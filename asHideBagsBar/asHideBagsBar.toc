@@ -1,0 +1,6 @@
+﻿## Interface: 80200
+## Author: |cffff3399아스필라|r [블랙무어]
+## Title: |cffff3399as|rHideBagsBar
+## Notes: 가방 숨김
+## Version : 180721
+asHideBagsBar.lua
