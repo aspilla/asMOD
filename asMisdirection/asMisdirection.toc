@@ -1,0 +1,6 @@
+## Interface: 80200
+## author: |cffff3399아스필라|r [블랙무어]
+## title: |cffff3399as|rMisdirection
+## notes: 눈속임/속거 도우미
+## version : 100721
+asMisdirection.lua
