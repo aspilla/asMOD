@@ -1,4 +1,4 @@
-local function hideBagBar(show)
+local function AHBB_HideBagBar(show)
 
 	if UnitInVehicle("player") then
 		show = 1;
@@ -19,45 +19,22 @@ local function hideBagBar(show)
 
 end
 
-
-local function OnEnter()
-	hideBagBar(1)
-end
-local function OnLeave()
-	hideBagBar(0)
-end
-
-
-local update = 0;
-
-local function OnUpdate(self, elapsed)
+local function AHBB_OnUpdate()
 		
-	update = update + elapsed;
+	local uiScale, x, y = UIParent:GetEffectiveScale(), GetCursorPosition()
 
-	if update >= 0.5 then
-		update = 0;
+	x =	x / uiScale;
+	y = y / uiScale;
+	x = UIParent:GetWidth() - x;
 
-		local uiScale, x, y = UIParent:GetEffectiveScale(), GetCursorPosition()
+	local bagx, bagy = MicroButtonAndBagsBar:GetSize();
 
-		x =	x / uiScale;
-		y = y / uiScale;
-
-		x = UIParent:GetWidth() - x;
-
-		local bagx, bagy = MicroButtonAndBagsBar:GetSize();
-
-		if x < bagx and y < bagy then
-			hideBagBar(1);
-
-		else
-			hideBagBar(0);
-		end
+	if x < bagx and y < bagy then
+		AHBB_HideBagBar(1);
+	else
+		AHBB_HideBagBar(0);
 	end
 end
 
-local bagframe;
-
-hideBagBar(0);
-
-bagframe = CreateFrame("Frame", "asBagHide", UIParent)
-bagframe:SetScript("OnUpdate", OnUpdate);
+AHBB_HideBagBar(0);
+C_Timer.NewTicker(0.5, AHBB_OnUpdate);
