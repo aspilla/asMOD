@@ -1,0 +1,6 @@
+## Interface: 100000
+## Author: |cffff3399아스필라|r [블랙무어]
+## Title: |cffff3399as|rNextSkill
+## Notes: 다음 Skill 안내
+## Version : 120917
+asNextSkill.xml

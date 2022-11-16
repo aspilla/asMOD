@@ -1,0 +1,17 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<MessageFrame name="asUIErrorsFrame" displayDuration="8" insertMode="TOP" parent="UIParent" frameStrata="DIALOG" frameLevel="1" toplevel="true">
+		<Size>
+			<AbsDimension x="512" y="40"/>
+		</Size>
+		<Anchors>
+			<Anchor point="BOTTOM">
+				<Offset>
+					<AbsDimension x="250" y="120"/>	<!--If you change this, make sure to change the dynamic positioning in BarberShopUI.xml -->
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<FontString inherits="ErrorFont" justifyH="CENTER"/>
+	</MessageFrame>
+	<Script file="asSpamFilter.lua"/>
+</Ui>

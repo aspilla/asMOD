@@ -1,0 +1,8 @@
+﻿## Interface: 100000
+
+## Author: |cffff3399아스필라|r [블랙무어]
+## Title: |cffff3399as|rCompactRaidBuff
+## Notes: 공격대 창에 생존기 표시
+## Version : 220420
+
+asCompactRaidBuff.xml

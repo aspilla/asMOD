@@ -1,0 +1,7 @@
+## Interface: 100000
+## Author: |cffff3399아스필라|r [블랙무어]
+## Title: |cffff3399as|rCombatInfo
+## Notes: WeakAura 류
+## Version : 160404
+## SavedVariablesPerCharacter: ACI_Settings
+asCombatInfo.xml

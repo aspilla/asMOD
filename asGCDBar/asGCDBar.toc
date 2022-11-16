@@ -1,0 +1,6 @@
+﻿## Interface: 100000
+## Author: |cffff3399아스필라|r [블랙무어]
+## Title: |cffff3399as|rGCDBar
+## Notes: 글쿨바
+## Version : 170421
+asGCDBar.xml

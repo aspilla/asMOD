@@ -1,0 +1,6 @@
+﻿## Interface: 100000
+## Author: |cffff3399아스필라|r [블랙무어]
+## Title: |cffff3399as|rFixClearFont
+## Notes: 폰트조정 
+## Version : 100425
+asFixClearFont.lua

@@ -1,0 +1,6 @@
+﻿## Interface: 100000
+## Author: |cffff3399아스필라|r [블랙무어]
+## Title: |cffff3399as|rFixHotKey
+## Notes: 단축버픈 프레임 변경
+## Version : 100425
+asFixHotkey.lua

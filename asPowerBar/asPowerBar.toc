@@ -1,0 +1,6 @@
+﻿## Interface: 100000
+## Author: |cffff3399아스필라|r [블랙무어]
+## Title: |cffff3399as|rPowerBar
+## Notes: Power Bar
+## Version : 161211
+asPowerBar.lua

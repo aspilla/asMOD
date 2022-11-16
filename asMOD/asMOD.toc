@@ -1,0 +1,7 @@
+﻿## Interface: 100000
+## Author: |cffff3399아스필라|r [블랙무어]
+## Title: |cffff3399as|rMOD
+## Notes: asMOD 기본 설정
+## Version : 160702
+##SavedVariablesPerCharacter: asMOD_config, asMOD_version, asMOD_position 
+asMOD.lua
