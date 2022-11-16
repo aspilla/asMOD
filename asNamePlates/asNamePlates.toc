@@ -1,6 +1,0 @@
-﻿## Interface: 100000
-## Author: |cffff3399아스필라|r [블랙무어]
-## Title: |cffff3399as|rNamePlates
-## Notes: NamePlates 강화
-## Version : 220419
-asNamePlates.xml
