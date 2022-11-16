@@ -1,0 +1,21 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<StatusBar name="asTargetSpellBarTemplate" inherits="SmallCastingBarFrameTemplate" hidden="true" virtual="true">
+		<Size x="150" y="10"/>
+		<Scripts>
+			<OnShow function="asTarget_Spellbar_AdjustPosition"/>
+			<OnEvent function="asCastingBarFrame_OnEvent"/>
+			<OnUpdate function="asCastingBarFrame_OnUpdate"/>
+		</Scripts>
+	</StatusBar>
+	<StatusBar name="asBossSpellBarTemplate" inherits="SmallCastingBarFrameTemplate" hidden="true" virtual="true">
+		<Size x="120" y="10"/>
+		<Scripts>
+			<OnShow function="asTarget_Spellbar_AdjustPosition"/>
+			<OnEvent function="asCastingBarFrame_OnEvent"/>
+			<OnUpdate function="asCastingBarFrame_OnUpdate"/>
+		</Scripts>
+	</StatusBar>
+
+	<Script file="asTargetCastingBar.lua" />
+</Ui>

@@ -1,0 +1,16 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Frame name="AREADYFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW">
+		<Size>
+			<AbsDimension x="17" y="17"/>
+		</Size>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentIcon" parentKey="icon"/>
+			</Layer>
+		</Layers>
+
+	</Frame>
+
+	<Script file="asReady.lua"/>
+</Ui>

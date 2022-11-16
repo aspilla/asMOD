@@ -1,0 +1,6 @@
+﻿## Interface: 80200
+## Author: |cffff3399아스필라|r [블랙무어]
+## Title: |cffff3399as|rOverlay
+## Notes: 스킬 발동 알림
+## Version : 181109
+asOverlay.xml
