@@ -1114,9 +1114,9 @@ local function ACRB_disableDefault(frame)
 		frame:UnregisterEvent("PLAYER_REGEN_ENABLED");
 		frame:UnregisterEvent("PLAYER_REGEN_DISABLED");
 
-		CompactUnitFrame_HideAllBuffs(frame);
-		CompactUnitFrame_HideAllDebuffs(frame)
-		CompactUnitFrame_HideAllDispelDebuffs(frame);
+		--CompactUnitFrame_HideAllBuffs(frame);
+		--CompactUnitFrame_HideAllDebuffs(frame)
+		--CompactUnitFrame_HideAllDispelDebuffs(frame);
 	end
 end
 

@@ -2623,8 +2623,8 @@ local function initAddon()
 	ANameP:RegisterEvent("PLAYER_ROLES_ASSIGNED");
 
 	ANameP:SetScript("OnEvent", ANameP_OnEvent)
-	hooksecurefunc(NamePlateDriverFrame, "OnTargetChanged", ANamePTargetHook);
-	hooksecurefunc(NamePlateDriverFrame, "OnSoftTargetUpdate", ANamePTargetHook);
+	--hooksecurefunc(NamePlateDriverFrame, "OnTargetChanged", ANamePTargetHook);
+	--hooksecurefunc(NamePlateDriverFrame, "OnSoftTargetUpdate", ANamePTargetHook);
 	
 	--주기적으로 Callback
 	C_Timer.NewTicker(ANameP_UpdateRate, ANameP_OnUpdate);
