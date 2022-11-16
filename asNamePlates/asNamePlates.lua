@@ -1817,11 +1817,11 @@ local function updateTargetNameP(self)
 	end
 
 
-	if not healthBar:IsForbidden() then
-		
+	--if not healthBar:IsForbidden() then
+	-- Healthbar 큭기 변경은 삭제	
 	--	healthBar:SetHeight(height);
 	--	healthBar:SetWidth(width);
-	end
+	--end
  
 	updateUnitHealthText(self, "target");
 end
