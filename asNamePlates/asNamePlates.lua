@@ -656,6 +656,10 @@ local ColorLevel = {
 	Name = 6,
 };
 
+local classheight_value = 13.5;
+local nameheight_value = 9;
+local castheight = 8;
+
 
 local function updateTankerList()
 
@@ -700,9 +704,7 @@ local function updateTankerList()
 	end
 end
 
-
-
-function ANameP_OverlayGlowAnimOutFinished(animGroup)
+local function ANameP_OverlayGlowAnimOutFinished(animGroup)
 	local overlay = animGroup:GetParent();
 	local actionButton = overlay:GetParent();
 	overlay:Hide();
@@ -710,7 +712,7 @@ function ANameP_OverlayGlowAnimOutFinished(animGroup)
 	actionButton.overlay = nil;
 end
 
-function  ANameP_GetOverlayGlow()
+local function  ANameP_GetOverlayGlow()
 	local overlay = tremove(unusedOverlayGlows);
 	if ( not overlay ) then
 		numOverlays = numOverlays + 1;
@@ -719,8 +721,7 @@ function  ANameP_GetOverlayGlow()
 	return overlay;
 end
 
-
-function ANameP_ShowOverlayGlow(self)
+local function ANameP_ShowOverlayGlow(self)
 	if ( self.overlay ) then
 		if ( self.overlay.animOut:IsPlaying() ) then
 			self.overlay.animOut:Stop();
@@ -739,7 +740,7 @@ function ANameP_ShowOverlayGlow(self)
 	end
 end
 
-function ANameP_HideOverlayGlow(self)
+local function ANameP_HideOverlayGlow(self)
 	if ( self.overlay ) then
 		if ( self.overlay.animIn:IsPlaying() ) then
 			self.overlay.animIn:Stop();
@@ -752,16 +753,9 @@ function ANameP_HideOverlayGlow(self)
 	end
 end
 
-
-
-
-
-
-function ANameP_OverlayGlowOnUpdate(self, elapsed)
+local function ANameP_OverlayGlowOnUpdate(self, elapsed)
 	AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01);
 end
-
-
 
 local function IsPlayerEffectivelyTank()
 	local assignedRole = UnitGroupRolesAssigned("player");
@@ -771,8 +765,6 @@ local function IsPlayerEffectivelyTank()
 	end
 	return assignedRole == "TANK";
 end
-
-
 
 local function asShouldShowBuff(name, caster, nameplateShowPersonal, nameplateShowAll, duration)
 	if (not name) then
@@ -843,8 +835,6 @@ local function setSize(frame, size)
 
 end
 
-
-
 local function updateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX, right, parent)
 
 	local buff = _G[debuffName..index];
@@ -886,7 +876,6 @@ local function updateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX,
 
 	end
 
-
 	-- Resize
 	buff:SetWidth(size);
 	buff:SetHeight(size * ANameP_Size_Rate);
@@ -895,11 +884,7 @@ local function updateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX,
 	debuffFrame:SetHeight((size+2) * ANameP_Size_Rate);
 end
 
-
 local function Comparison(AIndex, BIndex)
-
-
-
 	local AID = AIndex[2];
 	local BID = BIndex[2];
 
@@ -909,8 +894,6 @@ local function Comparison(AIndex, BIndex)
 
 	return false;
 end
-
-
 
 local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
@@ -940,8 +923,8 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 		if valuePct <= lowhealthpercent then
 			healthBar:SetStatusBarColor(ANameP_LowHealthColor.r, ANameP_LowHealthColor.g, ANameP_LowHealthColor.b);
 			self.colorlevel = ColorLevel.Lowhealth;
-		elseif self.colorlevel == ColorLevel.Lowhealth and healthBar.currcolor then
-			healthBar:SetStatusBarColor(healthBar.currcolor[1], healthBar.currcolor[2], healthBar.currcolor[3]);
+		elseif self.colorlevel == ColorLevel.Lowhealth and self.currcolor then
+			healthBar:SetStatusBarColor(self.currcolor[1], self.currcolor[2], self.currcolor[3]);
 			self.colorlevel = ColorLevel.None;
 		end		
 	end
@@ -971,7 +954,6 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
     	end
 	end
 ]]
-
 
 	if ( checkedRange and not inRange ) then	--If we weren't able to check the range for some reason, we'll just treat them as in-range (for example, enemy units)
 		parent.UnitFrame:SetAlpha(ANameP_Alpha_Normal);
@@ -1102,9 +1084,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 	end
 
 	if not showdebuff then
-		
-
-
+	
 		local aShowIdx = {};
 		local aShowNum = 1;
 
@@ -1286,8 +1266,8 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 
 		if self.colorlevel == ColorLevel.Debuff and bcannotfinddebuff == true then
-			if healthBar.currcolor then
-				healthBar:SetStatusBarColor(healthBar.currcolor[1], healthBar.currcolor[2], healthBar.currcolor[3]);
+			if self.currcolor then
+				healthBar:SetStatusBarColor(self.currcolor[1], self.currcolor[2], self.currcolor[3]);
 				self.colorlevel = ColorLevel.None
 			end
 		end
@@ -1332,7 +1312,6 @@ local function updateUnitAuras(unit)
 	end
 end
 
-
 local function updateUnitHealthText(self, unit)
 	local value
 	local valueMax;
@@ -1356,8 +1335,6 @@ local function updateUnitHealthText(self, unit)
 		end
 	end
 
-
-
 	value = UnitHealth(unit);
 	valueMax = UnitHealthMax(unit);
 
@@ -1375,7 +1352,6 @@ local function updateUnitHealthText(self, unit)
 		frame.healthtext:SetText("");
 	end
 
-
 	if valuePct <= lowhealthpercent then
 		frame.healthtext:SetTextColor(1, 0.5, 0.5, 1);
 	elseif valuePct > 0 then
@@ -1384,7 +1360,6 @@ local function updateUnitHealthText(self, unit)
 	end
 
 end
-
 
 local function updateUnitResourceText(self, unit)
 	local value;
@@ -1418,7 +1393,6 @@ local function updateUnitResourceText(self, unit)
 
 
 	if valuePct > 0 then
-
 		ANameP_Resourcetext:SetTextColor(1, 1, 1, 1);
 	end
 
@@ -1426,8 +1400,8 @@ end
 
 
 
-local orig_height = nil;
-local orig_width = nil;
+local orig_height = 3.87;
+local orig_width = 85.5;
 
 
 local function SetBorderColor(frame, r, g, b, a)
@@ -1488,7 +1462,6 @@ local function asShouldShowName(frame)
 
 		--if ( frame.optionTable.displayNameWhenSelected ) then
 		if ( true ) then
-
 			if ( UnitIsUnit(frame.unit, "target") ) then
 				return true;
 			end
@@ -1522,7 +1495,6 @@ end
 
 
 local function asUpdateName(frame)
-
 
 	if frame:IsForbidden() then
 		return
@@ -1577,8 +1549,8 @@ local function updateAggroColor(self, bFirst)
 
 	if not 	self.r or self.r ~= healthBar.r then
 		self.r, self.g, self.b = healthBar.r, healthBar.g, healthBar.b
-		healthBar.currcolor = {};
-		healthBar.currcolor = {healthBar.r, healthBar.g, healthBar.b};
+		self.currcolor = {};
+		self.currcolor = {healthBar.r, healthBar.g, healthBar.b};
 
 	end
 
@@ -1590,8 +1562,8 @@ local function updateAggroColor(self, bFirst)
 
 		if unitname and ANameP_AlertList[unitname] and not healthBar:IsForbidden() then
 			healthBar:SetStatusBarColor(ANameP_AlertList[unitname][1], ANameP_AlertList[unitname][2], ANameP_AlertList[unitname][3]);
-			healthBar.currcolor = {};
-			healthBar.currcolor = {ANameP_AlertList[unitname][1], ANameP_AlertList[unitname][2], ANameP_AlertList[unitname][3]};
+			self.currcolor = {};
+			self.currcolor = {ANameP_AlertList[unitname][1], ANameP_AlertList[unitname][2], ANameP_AlertList[unitname][3]};
 			return;
 		end
 
@@ -1693,12 +1665,11 @@ local function updateAggroColor(self, bFirst)
 
 	if ANameP_AggroStatusBarColor and nr and not healthBar:IsForbidden() then
 		healthBar:SetStatusBarColor(nr, ng, nb);
-		healthBar.currcolor = {};
-		healthBar.currcolor = {nr, ng, nb};
+		self.currcolor = {};
+		self.currcolor = {nr, ng, nb};
 	end
 
 end
-
 
 local function updateTargetNameP(self)
 
@@ -1718,27 +1689,25 @@ local function updateTargetNameP(self)
 		return;
     end
 
-	asUpdateSelectionHighlight(parent.UnitFrame);
-	asUpdateHealthBorder(parent.UnitFrame);
-	asUpdateName(parent.UnitFrame);
+	--asUpdateSelectionHighlight(parent.UnitFrame);
+	--asUpdateHealthBorder(parent.UnitFrame);
+	--asUpdateName(parent.UnitFrame);
 
 	local base_y = ANameP_TargetBuffY;
 
 	if parent.UnitFrame.name:IsShown() then
-		base_y = base_y + parent.UnitFrame.name:GetHeight();
+		if not nameheight_value then
+			nameheight_value = parent.UnitFrame.name:GetHeight();
+			print (nameheight_value);
+		end
+		base_y = base_y + nameheight_value;
+		
 	end
 	local 	Buff_Y = base_y;
 
-
 	if UnitIsUnit("target", self.unit) and GetCVar("nameplateResourceOnTarget") == "1" then
-
-		local class = NamePlateDriverFrame:GetClassNameplateBar()
-
-		if class  then
-			Buff_Y = base_y +  class:GetHeight() ;
-		end
+		Buff_Y = base_y +  classheight_value;		
 	end
-
 
     if not UnitIsUnit("player", self.unit) then
         self:ClearAllPoints();
@@ -1821,7 +1790,6 @@ local function updateTargetNameP(self)
 
 		
 		if casticon then
-			local castheight = parent.UnitFrame.castBar:GetHeight();
 			casticon:SetWidth(height + castheight);
 			casticon:SetHeight(height + castheight);
 		end
@@ -1907,8 +1875,8 @@ local function updatePVEAggro(self)
 		end
 	elseif (self.colorlevel == ColorLevel.Target) then
 
-		if healthBar.currcolor then
-			healthBar:SetStatusBarColor(healthBar.currcolor[1], healthBar.currcolor[2], healthBar.currcolor[3]);
+		if self.currcolor then
+			healthBar:SetStatusBarColor(self.currcolor[1], self.currcolor[2], self.currcolor[3]);
 		end
 
 		self.colorlevel = ColorLevel.None;
@@ -1994,6 +1962,7 @@ local function initAlertList()
 		end
 
 	end
+
 end
 
 local unit_guid_list = {};
@@ -2007,12 +1976,9 @@ local function isDangerousSpell(spellId, unit)
     return false
 end
 
-
-
 local function asNamePlates_OnEvent(self, event, ...)
 	
 	if ( event == "UNIT_THREAT_SITUATION_UPDATE" or event == "UNIT_THREAT_LIST_UPDATE" ) then
-
 		updateAggroColor(self);	
 	elseif( event == "PLAYER_TARGET_CHANGED" ) then
 		updateTargetNameP(self);
@@ -2060,23 +2026,50 @@ local function asNamePlates_OnEvent(self, event, ...)
 end
 
 local function createNamePlate(namePlateFrameBase)
+	
+end
 
-    local unitFrame = namePlateFrameBase.UnitFrame;
-	if	unitFrame:IsForbidden() then
+local function asUpdateHealthColor(frame)
+
+	if frame:IsForbidden() then
 		return;
 	end
+	
+	frame.healthBar:SetStatusBarColor(frame.healthBar.r, frame.healthBar.g, frame.healthBar.b);
+	if (frame.optionTable.colorHealthWithExtendedColors) then
+		frame.selectionHighlight:SetVertexColor(frame.healthBar.r,  frame.healthBar.g,  frame.healthBar.b);
+	else
+		frame.selectionHighlight:SetVertexColor(1, 1, 1);
+	end
+end
+
+local function OnRetailNamePlateShow(self) --private
+	print ("tt")
+	self:Hide()
+end
+
+local function addNamePlate(namePlateUnitToken)
+	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
+
+	if namePlateFrameBase.UnitFrame:IsForbidden() then
+		return;
+	end
+
+	local unitFrame = namePlateFrameBase.UnitFrame;
+	local healthbar = namePlateFrameBase.UnitFrame.healthBar;	
+
+	unitFrame.BuffFrame:SetAlpha(0);
+	unitFrame:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
+	unitFrame:UnregisterEvent("UNIT_THREAT_LIST_UPDATE");
 
 	if not namePlateFrameBase.asNamePlates  then
 		namePlateFrameBase.asNamePlates = CreateFrame("Frame", "$parentasNamePlates", namePlateFrameBase);
     else
     	return;
 	end
-
-	if unitFrame.BuffFrame then
-		unitFrame.BuffFrame:Hide();
-	end
-	namePlateFrameBase:SetScript("OnSizeChanged", nil);
+ 
 	namePlateFrameBase.asNamePlates:EnableMouse(false);
+	
 	if not namePlateFrameBase.asNamePlates.buffList then
 		namePlateFrameBase.asNamePlates.buffList = {}
 	end
@@ -2097,7 +2090,7 @@ local function createNamePlate(namePlateFrameBase)
 
 	local Size = ANameP_AggroSize;
 	local namePlateVerticalScale = tonumber(GetCVar("NamePlateVerticalScale"));
-	
+		
 	if namePlateVerticalScale > 1.0 then
 		Aggro_Y = -1
 		Size = ANameP_AggroSize + 2
@@ -2106,17 +2099,11 @@ local function createNamePlate(namePlateFrameBase)
 		debuffs_per_line = ANameP_DebuffsPerLine;
 	end
 
-
-
-
-	ANameP_MaxDebuff = debuffs_per_line * 2;
-	 
+	ANameP_MaxDebuff = debuffs_per_line * 2;	 
 	Aggro_Y = 0;
-
-
+	
 	if not namePlateFrameBase.asNamePlates.aggro1  then
-
-	namePlateFrameBase.asNamePlates.aggro1 = unitFrame.healthBar:CreateFontString(namePlateFrameBase.asNamePlates:GetName().."aggrotext1", "OVERLAY");
+		namePlateFrameBase.asNamePlates.aggro1 = unitFrame.healthBar:CreateFontString(namePlateFrameBase.asNamePlates:GetName().."aggrotext1", "OVERLAY");
 	end
 
 	namePlateFrameBase.asNamePlates.aggro1:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
@@ -2125,15 +2112,14 @@ local function createNamePlate(namePlateFrameBase)
 
 
 	if not namePlateFrameBase.asNamePlates.aggro2  then
-
-	namePlateFrameBase.asNamePlates.aggro2 = unitFrame.healthBar:CreateFontString(namePlateFrameBase.asNamePlates:GetName().."aggrotext2", "OVERLAY");
+		namePlateFrameBase.asNamePlates.aggro2 = unitFrame.healthBar:CreateFontString(namePlateFrameBase.asNamePlates:GetName().."aggrotext2", "OVERLAY");
 	end
 	namePlateFrameBase.asNamePlates.aggro2:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
     namePlateFrameBase.asNamePlates.aggro2:ClearAllPoints();
 	namePlateFrameBase.asNamePlates.aggro2:SetPoint("LEFT", unitFrame.healthBar, "RIGHT", 0, Aggro_Y)
 
 	if not namePlateFrameBase.asNamePlates.healer  then
-	namePlateFrameBase.asNamePlates.healer = unitFrame.healthBar:CreateFontString(namePlateFrameBase.asNamePlates:GetName().."Healer", "OVERLAY");
+		namePlateFrameBase.asNamePlates.healer = unitFrame.healthBar:CreateFontString(namePlateFrameBase.asNamePlates:GetName().."Healer", "OVERLAY");
 	end
 	if ANameP_HealerSize > 0 then
 		namePlateFrameBase.asNamePlates.healer:SetFont(STANDARD_TEXT_FONT, ANameP_HealerSize, "THICKOUTLINE");
@@ -2146,21 +2132,17 @@ local function createNamePlate(namePlateFrameBase)
 	namePlateFrameBase.asNamePlates.healer:SetTextColor(0, 1, 0, 1);
 	namePlateFrameBase.asNamePlates.healer:Hide();
 
-
 	if not namePlateFrameBase.asNamePlates.healthtext then
-	namePlateFrameBase.asNamePlates.healthtext = unitFrame.healthBar:CreateFontString(namePlateFrameBase.asNamePlates:GetName().."healthtext", "OVERLAY");
+		namePlateFrameBase.asNamePlates.healthtext = unitFrame.healthBar:CreateFontString(namePlateFrameBase.asNamePlates:GetName().."healthtext", "OVERLAY");
 	end
 
 	namePlateFrameBase.asNamePlates.healthtext:SetFont(STANDARD_TEXT_FONT, ANameP_HeathTextSize, "OUTLINE");
 	namePlateFrameBase.asNamePlates.healthtext:ClearAllPoints();
 	namePlateFrameBase.asNamePlates.healthtext:SetPoint("CENTER", unitFrame.healthBar, "CENTER", 0  , 0)
 
-
 	if unitFrame.castBar then
-
-
 		if not namePlateFrameBase.asNamePlates.casticon  then
-		namePlateFrameBase.asNamePlates.casticon = CreateFrame("Frame", namePlateFrameBase.asNamePlates:GetName().."casticon", unitFrame.castBar, "asNamePlatesBuffFrameTemplate");
+			namePlateFrameBase.asNamePlates.casticon = CreateFrame("Frame", namePlateFrameBase.asNamePlates:GetName().."casticon", unitFrame.castBar, "asNamePlatesBuffFrameTemplate");
 		end
 		namePlateFrameBase.asNamePlates.casticon:EnableMouse(false);
         namePlateFrameBase.asNamePlates.casticon:ClearAllPoints();
@@ -2173,82 +2155,14 @@ local function createNamePlate(namePlateFrameBase)
 		local frameIcon = _G[namePlateFrameBase.asNamePlates.casticon:GetName().."Icon"]; 
 		local frameBorder = _G[namePlateFrameBase.asNamePlates.casticon:GetName().."Border"];
 				
-		frameIcon:SetTexCoord(.08, .92, .08, .92)
-		frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga")
-		frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92)	
-
-
-
+		frameIcon:SetTexCoord(.08, .92, .08, .92);
+		frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
+		frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 		namePlateFrameBase.asNamePlates.casticon:Hide();
 	end
 
-
-end
-
-
-
-
-local function asUpdateHealthColor(frame)
-
-	if frame:IsForbidden() then
-		return
-	end
-
-
-	frame.healthBar:SetStatusBarColor(frame.healthBar.r, frame.healthBar.g, frame.healthBar.b);
-	if (frame.optionTable.colorHealthWithExtendedColors) then
-		frame.selectionHighlight:SetVertexColor(frame.healthBar.r,  frame.healthBar.g,  frame.healthBar.b);
-	else
-		frame.selectionHighlight:SetVertexColor(1, 1, 1);
-	end
-end
-
-local function OnRetailNamePlateShow (self) --private
-	print ("tt")
-	self:Hide()
-end
-
-
-local function addNamePlate(namePlateUnitToken)
-	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
-
-	if namePlateFrameBase.UnitFrame:IsForbidden() then
-		return;
-	end
-
-
-	local healthbar = namePlateFrameBase.UnitFrame.healthBar;
-	local Playername = namePlateFrameBase.UnitFrame.name;
-	local RaidTargetFrame = namePlateFrameBase.UnitFrame.RaidTargetFrame;
-	local ClassificationFrame = namePlateFrameBase.UnitFrame.ClassificationFrame;
-
-	if healthbar then
-		healthbar:Show();
-	end
-
-	Playername.color = nil;
-	Playername:ClearAllPoints();
-	Playername:SetPoint("BOTTOM", healthbar, "TOP", 0  , 3)
-	RaidTargetFrame:ClearAllPoints();
-	RaidTargetFrame:SetPoint("RIGHT", healthbar, "LEFT", -15  , 0)
-
-
-	if not orig_height then
-		orig_height = healthbar:GetHeight();
-		orig_width = healthbar:GetWidth();
-	end
-
-	namePlateFrameBase.UnitFrame:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
-	namePlateFrameBase.UnitFrame:UnregisterEvent("UNIT_THREAT_LIST_UPDATE");
-	namePlateFrameBase.UnitFrame:UnregisterEvent("PLAYER_TARGET_CHANGED");
-	namePlateFrameBase.UnitFrame:UnregisterEvent("GROUP_JOINED");
-	namePlateFrameBase.UnitFrame:UnregisterEvent("GROUP_LEFT");
-
-	--hooksecurefunc(namePlateFrameBase.UnitFrame.BuffFrame, "Show", OnRetailNamePlateShow);
-
-
 	asUpdateHealthColor(namePlateFrameBase.UnitFrame);
-	asUpdateName( namePlateFrameBase.UnitFrame);
+	--asUpdateName( namePlateFrameBase.UnitFrame);
 	
 	if namePlateFrameBase.asNamePlates then 
 	
@@ -2287,8 +2201,7 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates:SetScript("OnEvent", asNamePlates_OnEvent);
 		namePlateFrameBase.asNamePlates:RegisterEvent("PLAYER_TARGET_CHANGED");
 		namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_START", namePlateUnitToken);
-		namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", namePlateUnitToken);
-		
+		namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", namePlateUnitToken);	
 		
 			
 		if ANameP_SIZE > 0 then
@@ -2305,12 +2218,7 @@ local function addNamePlate(namePlateUnitToken)
 		local 	Buff_Y = base_y;
 
 		if UnitIsUnit("target", namePlateUnitToken) and GetCVar("nameplateResourceOnTarget") == "1" then
-
-			local class = NamePlateDriverFrame:GetClassNameplateBar()
-
-			if class  then
-				Buff_Y = base_y +  class:GetHeight() ;
-			end
+			Buff_Y = base_y +  classheight_value ;
 		end
 
 		if UnitIsUnit("player", namePlateUnitToken) then
@@ -2338,14 +2246,8 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates:ClearAllPoints();
 		if namePlateFrameBase.asNamePlates.downbuff and UnitIsUnit("player", namePlateUnitToken) then
 
-
-
-		
-			local class = NamePlateDriverFrame:GetClassNameplateBar()
-
-
 			if class and GetCVar("nameplateResourceOnTarget") == "0" then
-				namePlateFrameBase.asNamePlates:SetPoint("TOPLEFT", ClassNameplateManaBarFrame, "BOTTOMLEFT", 0, Buff_Y - class:GetHeight() );
+				namePlateFrameBase.asNamePlates:SetPoint("TOPLEFT", ClassNameplateManaBarFrame, "BOTTOMLEFT", 0, Buff_Y - classheight_value );
 			else
 				namePlateFrameBase.asNamePlates:SetPoint("TOPLEFT", ClassNameplateManaBarFrame, "BOTTOMLEFT", 0, Buff_Y);
 			end
@@ -2493,10 +2395,6 @@ local function updateHealerMark(guid)
 	end
 end
 
-
-
-
-
 local function asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken)
 
 	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
@@ -2510,12 +2408,19 @@ local function ANameP_OnEvent(self, event, ...)
 	
 	if event == "NAME_PLATE_CREATED" then
 		local namePlateFrameBase = ...;
-		--createNamePlate(namePlateFrameBase);
+		createNamePlate(namePlateFrameBase);
 	elseif event == "NAME_PLATE_UNIT_ADDED" then
 
 		local namePlateUnitToken = ...;
         local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
-        createNamePlate(namePlateFrameBase);
+
+		if GetCVar("nameplateResourceOnTarget") == "1" and (not classheight_value) then
+			local class = NamePlateDriverFrame:GetClassNameplateBar()
+			if class  then
+				classheight_value = class:GetHeight()
+				print (classheight_value);
+			end			
+		end        
 		addNamePlate(namePlateUnitToken);
 	elseif event == "NAME_PLATE_UNIT_REMOVED" then
 		local namePlateUnitToken = ...;
@@ -2552,15 +2457,15 @@ local function ANameP_OnEvent(self, event, ...)
 			end
 		end
 	elseif ( event == "UNIT_FACTION" ) then
-	local namePlateUnitToken = ...;
-	asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken);
+		local namePlateUnitToken = ...;
+		asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken);
 	elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
 		updateTankerList();
 	end
 
 end
 
-local function ANameP_OnUpdate ()
+local function ANameP_OnUpdate()
 
 	updateUnitHealthText(ANameP, "target")
 	updateUnitHealthText(ANameP, "player")
@@ -2572,7 +2477,7 @@ local function ANameP_OnUpdate ()
 		if (nameplate and  nameplate.asNamePlates and not nameplate:IsForbidden()) then
 
 			if nameplate.UnitFrame.BuffFrame then
-				nameplate.UnitFrame.BuffFrame:Hide();
+				nameplate.UnitFrame.BuffFrame:Hide();				
 			end
 
 			if nameplate.asNamePlates.checkaura then
@@ -2590,11 +2495,7 @@ local function ANameP_OnUpdate ()
 	end
 end
 
-function ANameP_tempOnUnitAuraUpdate(unit, unitAuraUpdateInfo)
-	
-end
-
-function ANamePTargetHook()
+local function ANamePTargetHook()
 	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit("target", issecure());
 	if namePlateFrameBase then
 		updateTargetNameP(namePlateFrameBase);
@@ -2615,11 +2516,10 @@ local function initAddon()
 
 	if bloaded then
 		NamePlateDriverFrame:UnregisterEvent("UNIT_AURA");
-	end
-	
+	end	
 	ANameP = CreateFrame("Frame", nil, UIParent)
 
-	ANameP:RegisterEvent("NAME_PLATE_CREATED");
+	--ANameP:RegisterEvent("NAME_PLATE_CREATED");
 	ANameP:RegisterEvent("NAME_PLATE_UNIT_ADDED");
 	ANameP:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
 	ANameP:RegisterEvent("PLAYER_TARGET_CHANGED");
@@ -2643,7 +2543,5 @@ local function initAddon()
 
 	
 end
-
-
 
 initAddon();
