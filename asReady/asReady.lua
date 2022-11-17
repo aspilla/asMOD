@@ -176,55 +176,44 @@ end
 local clearall = false;
 
 
-local function AREADY_OnUpdate(self, elapsed)
+local function AREADY_OnUpdate()
 
-	if not self.update  then
-		self.update = 0;
+	local idx = 1;
+
+	if clearall then
+		clearall = false;
+		partycool = {};
+		max_idx = 0;
+
+		if IsInRaid() then
+			AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+		else
+			AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+		end
 	end
 
-	self.update = self.update + elapsed
 
-	if self.update >= 0.2   then
-
-		local idx = 1;
-
-		if clearall then
-			clearall = false;
-			partycool = {}
-			max_idx = 0;
-
-			if IsInRaid() then
-				AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-			else
-				AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-			end
-		end
-
-
-		for i,v in pairs(partycool) do
+	for i,v in pairs(partycool) do
 			
-			if v then
-				local spellid = v[2];
-				local time = v[3];
-				local cool = v[4];
+		if v then
+			local spellid = v[2];
+			local time = v[3];
+			local cool = v[4];
 
-				if v[1] == 0 then
-					unit = "player"
-				else
-					unit = "party"..v[1];
-				end
-
-				create_bar_icon(idx, unit, spellid, time, cool);
-
-				idx = idx + 1;
-
+			if v[1] == 0 then
+				unit = "player"
+			else
+				unit = "party"..v[1];
 			end
+
+			create_bar_icon(idx, unit, spellid, time, cool);
+
+			idx = idx + 1;
+
 		end
-
-		hide_bar_icon(idx);
-
-		self.update = 0		
 	end
+
+	hide_bar_icon(idx);
 end
 
 
@@ -321,9 +310,8 @@ end
 
 
 AREADY:SetScript("OnEvent", AREADY_OnEvent)
-AREADY:SetScript("OnUpdate", AREADY_OnUpdate)
 AREADY:RegisterEvent("PLAYER_ENTERING_WORLD")
 AREADY:RegisterEvent("GROUP_JOINED")
 AREADY:RegisterEvent("GROUP_ROSTER_UPDATE")
 
-
+C_Timer.NewTicker(0.2, AREADY_OnUpdate);

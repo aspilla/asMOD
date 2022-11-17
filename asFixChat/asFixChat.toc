@@ -1,4 +1,4 @@
-﻿## Interface: 100000
+﻿## Interface: 100002
 ## Author: |cffff3399아스필라|r [블랙무어]
 ## Title: |cffff3399as|rFixChat
 ## Notes: 채팅창 기능 추가

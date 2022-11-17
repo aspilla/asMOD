@@ -188,6 +188,18 @@ ANameP_ShowList_DEATHKNIGHT_3 = {
 }
 
 
+ANameP_ShowList_EVOKER_1 = {
+	
+}
+
+ANameP_ShowList_EVOKER_2 = {
+	
+}
+
+ANameP_ShowList_EVOKER_3 = {
+	
+}
+
 -- 아래 유닛명이면 강조
 -- 색상 지정 가능
 -- { r, g, b, 빤작임 여부}

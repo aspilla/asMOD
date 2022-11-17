@@ -1095,28 +1095,29 @@ local function APB_CheckPower(self)
 	APB.buffbar.square2:Hide();
 	APB.buffbar.square3:Hide();
 	APB.buffbar.square4:Hide();
-
-
+	
+	if (englishClass == "EVOKER") then
+		--기원사
+		APB_UNIT_POWER = "POWER_TYPE_ESSENCE";
+		APB_POWER_LEVEL = Enum.PowerType.Essence;
+		APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
+		APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
+		bupdate_power = true;
+		bupdate_partial_power = true;
+	end
+	
 	if (englishClass == "PALADIN") then
 
-		if (spec and spec == 1) then
-			APB_UNIT_POWER = "HOLY_POWER"
-			APB_POWER_LEVEL = Enum.PowerType.HolyPower
-			APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-			APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
-			bupdate_power = true;
-		end
-
+		APB_UNIT_POWER = "HOLY_POWER";
+		APB_POWER_LEVEL = Enum.PowerType.HolyPower;
+		APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
+		APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
+		bupdate_power = true;
+		
 		if (spec and spec == 2) then
 			
-			APB_UNIT_POWER = "HOLY_POWER"
-			APB_POWER_LEVEL = Enum.PowerType.HolyPower
-			APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-			APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
-			bupdate_power = true;
 			bsmall_power_bar = true;
-			
-			
+					
 			APB_BUFF = "정의의 방패";
 			APB_SPELL = "정의의 방패";
 			APB_SpellMax(APB_SPELL);
@@ -1132,11 +1133,6 @@ local function APB_CheckPower(self)
 		end
 
 		if (spec and spec == 3) then
-			APB_UNIT_POWER = "HOLY_POWER"
-			APB_POWER_LEVEL = Enum.PowerType.HolyPower
-			APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-			APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
-			bupdate_power = true;
 			bsmall_power_bar = true;
 		end
 	end

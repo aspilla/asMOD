@@ -529,32 +529,30 @@ local function AHT_CheckPower()
 	AHT_Power:SetText("");
 	AHT_Power:Hide();
 	
+	if (englishClass == "EVOKER") then
+		
+		AHT_UNIT_POWER = "POWER_TYPE_ESSENCE";
+		AHT_POWER_LEVEL = Enum.PowerType.Essence;
+
+		AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
+		AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
+		bupdate_power = true;
+	end
+
 	if (englishClass == "DEATHKNIGHT") then
-		AHT_UpdateRune()
-		AHT_Rune:Show()
-		AHT_mainframe:RegisterEvent("RUNE_POWER_UPDATE")
+		AHT_UpdateRune();
+		AHT_Rune:Show();
+		AHT_mainframe:RegisterEvent("RUNE_POWER_UPDATE");
 	end
 
 	if (englishClass == "PALADIN") then
-	
+		
+		AHT_UNIT_POWER = "HOLY_POWER";
+		AHT_POWER_LEVEL = Enum.PowerType.HolyPower;
 
-		if (spec and spec == 2) then
-
-			AHT_UNIT_POWER = "HOLY_POWER"
-			AHT_POWER_LEVEL = Enum.PowerType.HolyPower
-
-			AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-			AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
-			bupdate_power = true;
-		elseif (spec and spec == 3) then
-
-			AHT_UNIT_POWER = "HOLY_POWER"
-			AHT_POWER_LEVEL = Enum.PowerType.HolyPower
-
-			AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-			AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
-			bupdate_power = true;
-		end
+		AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
+		AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
+		bupdate_power = true;
 	end
 
 	if (englishClass == "WARRIOR") then
@@ -568,12 +566,11 @@ local function AHT_CheckPower()
 
 
 	if (englishClass == "MAGE") then
-
 		if (spec and spec == 1) then
 
-			AHT_UNIT_POWER = "ARCANE_CHARGES"
-			AHT_POWER_LEVEL = Enum.PowerType.ArcaneCharges 
-			AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+			AHT_UNIT_POWER = "ARCANE_CHARGES";
+			AHT_POWER_LEVEL = Enum.PowerType.ArcaneCharges;
+			AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
 			AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 			bupdate_power = true;
 		end
@@ -581,37 +578,29 @@ local function AHT_CheckPower()
 
 
 	if (englishClass == "WARLOCK") then
-
-		AHT_UNIT_POWER = "SOUL_SHARDS"
-		AHT_POWER_LEVEL = Enum.PowerType.SoulShards 
-		AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+		AHT_UNIT_POWER = "SOUL_SHARDS";
+		AHT_POWER_LEVEL = Enum.PowerType.SoulShards;
+		AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
 		AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 		bupdate_power = true;
 	end
 
 	if (englishClass == "DRUID") then
 
-		if (spec and spec == 1) then
-		else
-			AHT_UNIT_POWER = "COMBO_POINTS"
-			AHT_POWER_LEVEL = Enum.PowerType.ComboPoints
-			AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-			AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
-			AHT_mainframe:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
-			bupdate_power = true;
-		end
-
+		AHT_UNIT_POWER = "COMBO_POINTS";
+		AHT_POWER_LEVEL = Enum.PowerType.ComboPoints;
+		AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
+		AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
+		AHT_mainframe:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
+		bupdate_power = true;
 	end
 
 	if (englishClass == "MONK") then
 
 		if (spec and spec == 3) then
-
-
-			AHT_UNIT_POWER = "CHI"
-			AHT_POWER_LEVEL = Enum.PowerType.Chi
-
-			AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+			AHT_UNIT_POWER = "CHI";
+			AHT_POWER_LEVEL = Enum.PowerType.Chi;
+			AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
 			AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 			bupdate_power = true;
 		elseif (spec and spec == 1) then
@@ -621,9 +610,9 @@ local function AHT_CheckPower()
 	end
 
 	if (englishClass == "ROGUE") then
-		AHT_UNIT_POWER = "COMBO_POINTS"
-		AHT_POWER_LEVEL = Enum.PowerType.ComboPoints
-		AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+		AHT_UNIT_POWER = "COMBO_POINTS";
+		AHT_POWER_LEVEL = Enum.PowerType.ComboPoints;
+		AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
 		AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 		bupdate_power = true;
 	end
