@@ -64,7 +64,8 @@ local function ARD_CheckRange(unit)
 	end
 
 	for i = 1, #itemlist do
-		if (IsItemInRange(itemlist[i][1], unit)) then
+
+		if GetItemInfo(itemlist[i][1]) and IsItemInRange(itemlist[i][1], unit) then
 			return itemlist[i][2];
 		end
 	end
