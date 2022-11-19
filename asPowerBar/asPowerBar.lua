@@ -1004,12 +1004,7 @@ end
 
 local function asCheckTalent (name)
 
-	return true;
-
-	--[[
-	ClassTalentFrame_LoadUI();
-
-    local specID = PlayerUtil.GetCurrentSpecID();
+	local specID = PlayerUtil.GetCurrentSpecID();
   
     local configID = C_ClassTalents.GetActiveConfigID();
 	C_ClassTalents.LoadConfig(configID, true);
@@ -1036,7 +1031,6 @@ local function asCheckTalent (name)
     end
 
 	return false;
-	]]
 end
 
 local function APB_CheckPower(self)
@@ -1397,8 +1391,9 @@ local function APB_CheckPower(self)
 			APB_UpdateSpell(APB_SPELL);
 			bupdate_spell = true;
 
-			APB_BUFF = "날카로운 사격";		
+			APB_BUFF = "사냥의 전율";		
 			APB.buffbar.unit = "player"
+			bupdate_buff_count = true;
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
 
@@ -1897,7 +1892,6 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 		checkSpellCost();
 		checkSpellPowerCost();
 	elseif event == "SPELLS_CHANGED" then
-		APB_CheckPower(self);
 		checkSpellCost();
 		checkSpellPowerCost();
 	elseif event == "UPDATE_SHAPESHIFT_FORM" then
@@ -1928,9 +1922,9 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 		end
 
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
-		hast19 = HowManyHasSet(1284);
-		hast20 = HowManyHasSet(1304);
-		APB_CheckPower(self);
+		--hast19 = HowManyHasSet(1284);
+		--hast20 = HowManyHasSet(1304);
+		--APB_CheckPower(self);
 
 	end
 
