@@ -1203,6 +1203,82 @@ local function updateUnitAuras(unit)
 		end
 	end
 end
+local function updateTargetNameP(self)
+
+	if self.unit then
+		if UnitIsUnit(self.unit, "target") and self.checkaura then		
+			self.healthtext:Show();
+		else
+			self.healthtext:Hide();
+		end		
+	end
+	
+
+	--Do Nothing 대상에 Health bar 크기를 변경하는 함수 이나... 반응이 늦어 끄자
+	--[[
+
+	if not self.unit or not self.checkaura then
+		return;
+	end
+
+	local parent = self:GetParent();
+
+    if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden()  then
+		return;
+    end
+	
+	local healthBar = parent.UnitFrame.healthBar;
+
+    if not healthBar then
+		return;
+    end
+	
+	local unitname = GetUnitName(self.unit);
+	local casticon = self.casticon;
+	local height = orig_height;
+	local width = orig_width;
+
+	if unitname and ANameP_AlertList[unitname] then
+		self.colorlevel = ColorLevel.Name;
+
+		if ANameP_AlertList[unitname][4] == 1 then
+			--ANameP_ShowOverlayGlow(healthBar);
+			self.alerthealthbar = true	
+		end
+	elseif self.alerthealthbar then
+		--ANameP_HideOverlayGlow(healthBar);
+		self.alerthealthbar = false;
+	end
+
+	if UnitIsUnit(self.unit, "target") then		
+		if self.alerthealthbar then
+			--ANameP_HideOverlayGlow(healthBar);
+		end
+
+		self.alerthealthbar = false;
+		height = orig_height + ANameP_TargetHealthBarHeight;
+		self.healthtext:Show();
+
+		if casticon then
+			casticon:SetWidth(16);
+			casticon:SetHeight(16);
+		end
+	else
+		height = orig_height;
+		width = orig_width;
+		self.healthtext:Hide();
+		
+		if casticon then
+			casticon:SetWidth(height + castheight);
+			casticon:SetHeight(height + castheight);
+		end
+	end
+	
+
+	healthBar:SetHeight(height);
+	healthBar:SetWidth(width);
+	]]
+end
 
 local function updateUnitHealthText(self, unit)
 	local value;
@@ -1239,7 +1315,7 @@ local function updateUnitHealthText(self, unit)
 		frame.healthtext:SetTextColor(1, 0.5, 0.5, 1);
 	elseif valuePct > 0 then
 		frame.healthtext:SetTextColor(1, 1, 1, 1);
-	end
+	end	
 end
 
 local function updateAggroColor(self, bFirst)
@@ -1360,73 +1436,7 @@ local function updateAggroColor(self, bFirst)
 	end
 end
 
-local function updateTargetNameP(self)
 
-	if not self.unit or not self.checkaura then
-		return;
-	end
-
-	local parent = self:GetParent();
-
-    if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden()  then
-		return;
-    end
-	
-	local healthBar = parent.UnitFrame.healthBar;
-
-    if not healthBar then
-		return;
-    end
-
-	if UnitIsPlayer(self.unit) then
-		self:Hide();
-		return;
-	end
-
-	local unitname = GetUnitName(self.unit);
-	local casticon = self.casticon;
-	local height = orig_height;
-	local width = orig_width;
-
-	if unitname and ANameP_AlertList[unitname] then
-		self.colorlevel = ColorLevel.Name;
-
-		if ANameP_AlertList[unitname][4] == 1 then
-			--ANameP_ShowOverlayGlow(healthBar);
-			self.alerthealthbar = true	
-		end
-	elseif self.alerthealthbar then
-		--ANameP_HideOverlayGlow(healthBar);
-		self.alerthealthbar = false;
-	end
-
-	if UnitIsUnit(self.unit, "target") then		
-		if self.alerthealthbar then
-			--ANameP_HideOverlayGlow(healthBar);
-		end
-
-		self.alerthealthbar = false;
-		height = orig_height + ANameP_TargetHealthBarHeight;
-		self.healthtext:Show();
-
-		if casticon then
-			casticon:SetWidth(16);
-			casticon:SetHeight(16);
-		end
-	else
-		height = orig_height;
-		width = orig_width;
-		self.healthtext:Hide();
-		
-		if casticon then
-			casticon:SetWidth(height + castheight);
-			casticon:SetHeight(height + castheight);
-		end
-	end
-	
-	healthBar:SetHeight(height);
-	healthBar:SetWidth(width);
-end
 
 
 local function updateBuffPosition(namePlateUnitToken)
@@ -1987,16 +1997,19 @@ local function ANameP_OnEvent(self, event, ...)
 		if namePlateFrameBase.asNamePlates then
 			updateTargetNameP(namePlateFrameBase.asNamePlates);
 			updateAggroColor(namePlateFrameBase.asNamePlates, true);
-			updateBuffPosition(namePlateUnitToken);			
+			updateBuffPosition(namePlateUnitToken);		
 			updateUnitAuras(namePlateUnitToken);
+			updateUnitHealthText(self, "target");
 		end		
 	elseif event == "NAME_PLATE_UNIT_REMOVED" then
 		local namePlateUnitToken = ...;
 		removeNamePlate(namePlateUnitToken);
 	elseif event == event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player"  then
 		updateUnitAuras("target");
+		updateUnitHealthText(self, "target");
 	elseif event == "PLAYER_TARGET_CHANGED" then
 		updateUnitAuras("target");
+		updateUnitHealthText(self, "target");
 	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") then
 		initAlertList();		
 	elseif (event == "PLAYER_ENTERING_WORLD") then
