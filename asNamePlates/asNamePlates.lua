@@ -1807,8 +1807,8 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.casticon:EnableMouse(false);
         namePlateFrameBase.asNamePlates.casticon:ClearAllPoints();
 		namePlateFrameBase.asNamePlates.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 2, 1);
-		namePlateFrameBase.asNamePlates.casticon:SetWidth(16);
-		namePlateFrameBase.asNamePlates.casticon:SetHeight(16);
+		namePlateFrameBase.asNamePlates.casticon:SetWidth(13);
+		namePlateFrameBase.asNamePlates.casticon:SetHeight(13);
 
 		local frameIcon = _G[namePlateFrameBase.asNamePlates.casticon:GetName().."Icon"]; 
 		local frameBorder = _G[namePlateFrameBase.asNamePlates.casticon:GetName().."Border"];
