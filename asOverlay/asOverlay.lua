@@ -75,13 +75,11 @@ function asOverlay_OnUpdate(self, elapsed)
 
 					if remain > 0 then
 						rate = remain/duration;
-					end
-					
+					end					
 				
 					for i=1, #overlayList do
 						local overlay = overlayList[i];
-
-						overlay.texture:SetAlpha(GetCVar("spellActivationOverlayOpacity") * rate)	
+						overlay.texture:SetAlpha(rate);
 					end
 				end
 			end
@@ -138,7 +136,7 @@ function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale, r, g
 		texLeft, texRight = 1, 0;
 	end
 	overlay.texture:SetTexCoord(texLeft, texRight, texTop, texBottom);
-
+	
 
 	local width, height;
 	if ( position == "CENTER" ) then
@@ -177,8 +175,6 @@ function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale, r, g
 	
 	overlay.texture:SetTexture(texturePath);
 	overlay.texture:SetVertexColor(r / 255, g / 255, b / 255);
-
-	overlay.texture:SetAlpha(GetCVar("spellActivationOverlayOpacity"))	
 	
 	overlay.animOut:Stop();	--In case we're in the process of animating this out.
 	PlaySound(SOUNDKIT.UI_POWER_AURA_GENERIC);
