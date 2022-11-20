@@ -287,8 +287,115 @@ local isBigReal = {};
 local update_expir = nil;
 
 
+--Overlay stuff
+local unusedOverlayGlows = {};
+local numOverlays = 0;
+local function ADF_ActionButton_GetOverlayGlow()
+	local overlay = tremove(unusedOverlayGlows);
+	if ( not overlay ) then
+		numOverlays = numOverlays + 1;
+		overlay = CreateFrame("Frame", "ADF_ActionButtonOverlay"..numOverlays, UIParent, "ADF_ActionBarButtonSpellActivationAlert");
+	end
+	return overlay;
+end
 
-function ADF_UpdateDebuff(unit)
+-- Shared between action button and MainMenuBarMicroButton
+local function ADF_ShowOverlayGlow(button)
+	if ( button.overlay ) then
+		if ( button.overlay.animOut:IsPlaying() ) then
+			button.overlay.animOut:Stop();
+			button.overlay.animIn:Play();
+		end
+	else
+		button.overlay = ADF_ActionButton_GetOverlayGlow();
+		local frameWidth, frameHeight = button:GetSize();
+		button.overlay:SetParent(button);
+		button.overlay:ClearAllPoints();
+		--Make the height/width available before the next frame:
+		button.overlay:SetSize(frameWidth * 1.5, frameHeight * 1.5);
+		button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
+		button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
+		button.overlay.animIn:Play();
+	end
+end
+
+-- Shared between action button and MainMenuBarMicroButton
+local function ADF_HideOverlayGlow(button)
+	if ( button.overlay ) then
+		if ( button.overlay.animIn:IsPlaying() ) then
+			button.overlay.animIn:Stop();
+		end
+		if ( button:IsVisible() ) then
+			button.overlay.animOut:Play();
+		else
+			button.overlay.animOut:OnFinished();	--We aren't shown anyway, so we'll instantly hide it.
+		end
+	end
+end
+
+ADF_ActionBarButtonSpellActivationAlertMixin = {};
+
+function ADF_ActionBarButtonSpellActivationAlertMixin:OnUpdate(elapsed)
+	AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01);
+	local cooldown = self:GetParent().cooldown;
+	-- we need some threshold to avoid dimming the glow during the gdc
+	-- (using 1500 exactly seems risky, what if casting speed is slowed or something?)
+	if(cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration() > 3000) then
+		self:SetAlpha(0.5);
+	else
+		self:SetAlpha(1.0);
+	end
+end
+
+function ADF_ActionBarButtonSpellActivationAlertMixin:OnHide()
+	if ( self.animOut:IsPlaying() ) then
+		self.animOut:Stop();
+		self.animOut:OnFinished();
+	end
+end
+
+ADF_ActionBarOverlayGlowAnimInMixin = {};
+
+function ADF_ActionBarOverlayGlowAnimInMixin:OnPlay()
+	local frame = self:GetParent();
+	local frameWidth, frameHeight = frame:GetSize();
+	frame.spark:SetSize(frameWidth, frameHeight);
+	frame.spark:SetAlpha(0.3);
+	frame.innerGlow:SetSize(frameWidth / 2, frameHeight / 2);
+	frame.innerGlow:SetAlpha(1.0);
+	frame.innerGlowOver:SetAlpha(1.0);
+	frame.outerGlow:SetSize(frameWidth * 2, frameHeight * 2);
+	frame.outerGlow:SetAlpha(1.0);
+	frame.outerGlowOver:SetAlpha(1.0);
+	frame.ants:SetSize(frameWidth * 0.85, frameHeight * 0.85)
+	frame.ants:SetAlpha(0);
+	frame:Show();
+end
+
+function ADF_ActionBarOverlayGlowAnimInMixin:OnFinished()
+	local frame = self:GetParent();
+	local frameWidth, frameHeight = frame:GetSize();
+	frame.spark:SetAlpha(0);
+	frame.innerGlow:SetAlpha(0);
+	frame.innerGlow:SetSize(frameWidth, frameHeight);
+	frame.innerGlowOver:SetAlpha(0.0);
+	frame.outerGlow:SetSize(frameWidth, frameHeight);
+	frame.outerGlowOver:SetAlpha(0.0);
+	frame.outerGlowOver:SetSize(frameWidth, frameHeight);
+	frame.ants:SetAlpha(1.0);
+end
+
+ADF_ActionBarOverlayGlowAnimOutMixin = {};
+
+function ADF_ActionBarOverlayGlowAnimOutMixin:OnFinished()
+	local overlay = self:GetParent();
+	local actionButton = overlay:GetParent();
+	overlay:Hide();
+	tinsert(unusedOverlayGlows, overlay);
+	actionButton.overlay = nil;
+end
+
+local function ADF_UpdateDebuff(unit)
 
 	local selfName;
 	local numDebuffs = 1;
@@ -775,63 +882,6 @@ local function ADF_OnUpdate()
 end
 
 
-local unusedOverlayGlows = {};
-local numOverlays = 0;
-
-function  ADF_GetOverlayGlow()
-	local overlay = tremove(unusedOverlayGlows);
-	if ( not overlay ) then
-		numOverlays = numOverlays + 1;
-		overlay = CreateFrame("Frame", "ADF_ActionButtonOverlay"..numOverlays, UIParent, "ADF_ActionBarButtonSpellActivationAlert");
-	end
-	return overlay;
-end
-
-
-function ADF_ShowOverlayGlow(self)
-	if ( self.overlay ) then
-		if ( self.overlay.animOut:IsPlaying() ) then
-			self.overlay.animOut:Stop();
-			self.overlay.animIn:Play();
-		end
-	else
-		self.overlay = ADF_GetOverlayGlow();
-		local frameWidth, frameHeight = self:GetSize();
-		self.overlay:SetParent(self);
-		self.overlay:ClearAllPoints();
-		--Make the height/width available before the next frame:
-		self.overlay:SetSize(frameWidth * 1.5, frameHeight * 1.5);
-		self.overlay:SetPoint("TOPLEFT", self, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
-		self.overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
-		self.overlay.animIn:Play();
-	end
-end
-
-function ADF_HideOverlayGlow(self)
-	if ( self.overlay ) then
-		if ( self.overlay.animIn:IsPlaying() ) then
-			self.overlay.animIn:Stop();
-		end
-		if ( self:IsVisible() ) then
-			self.overlay.animOut:Play();
-		else
-			ADF_OverlayGlowAnimOutFinished(self.overlay.animOut);	--We aren't shown anyway, so we'll instantly hide it.
-		end
-	end
-end
-
-
-function ADF_OverlayGlowAnimOutFinished(animGroup)
-	local overlay = animGroup:GetParent();
-	local actionButton = overlay:GetParent();
-	overlay:Hide();
-	tinsert(unusedOverlayGlows, overlay);
-	actionButton.overlay = nil;
-end
-
-function ADF_OverlayGlowOnUpdate(self, elapsed)
-	AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01);
-end
 
 function ADF_Init()
 

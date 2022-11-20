@@ -120,8 +120,116 @@ local ADotF_UnitList = {
 	"boss4",
 	"boss5",
 }
-
 local prev_info = {};
+
+
+--Overlay stuff
+local unusedOverlayGlows = {};
+local numOverlays = 0;
+local function ADotF_ActionButton_GetOverlayGlow()
+	local overlay = tremove(unusedOverlayGlows);
+	if ( not overlay ) then
+		numOverlays = numOverlays + 1;
+		overlay = CreateFrame("Frame", "ADotF_ActionButtonOverlay"..numOverlays, UIParent, "ADotF_ActionBarButtonSpellActivationAlert");
+	end
+	return overlay;
+end
+
+-- Shared between action button and MainMenuBarMicroButton
+local function ADotF_ActionButton_ShowOverlayGlow(button)
+	if ( button.overlay ) then
+		if ( button.overlay.animOut:IsPlaying() ) then
+			button.overlay.animOut:Stop();
+			button.overlay.animIn:Play();
+		end
+	else
+		button.overlay = ADotF_ActionButton_GetOverlayGlow();
+		local frameWidth, frameHeight = button:GetSize();
+		button.overlay:SetParent(button);
+		button.overlay:ClearAllPoints();
+		--Make the height/width available before the next frame:
+		button.overlay:SetSize(frameWidth * 1.5, frameHeight * 1.5);
+		button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
+		button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
+		button.overlay.animIn:Play();
+	end
+end
+
+-- Shared between action button and MainMenuBarMicroButton
+local function ADotF_ActionButton_HideOverlayGlow(button)
+	if ( button.overlay ) then
+		if ( button.overlay.animIn:IsPlaying() ) then
+			button.overlay.animIn:Stop();
+		end
+		if ( button:IsVisible() ) then
+			button.overlay.animOut:Play();
+		else
+			button.overlay.animOut:OnFinished();	--We aren't shown anyway, so we'll instantly hide it.
+		end
+	end
+end
+
+ADotF_ActionBarButtonSpellActivationAlertMixin = {};
+
+function ADotF_ActionBarButtonSpellActivationAlertMixin:OnUpdate(elapsed)
+	AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01);
+	local cooldown = self:GetParent().cooldown;
+	-- we need some threshold to avoid dimming the glow during the gdc
+	-- (using 1500 exactly seems risky, what if casting speed is slowed or something?)
+	if(cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration() > 3000) then
+		self:SetAlpha(0.5);
+	else
+		self:SetAlpha(1.0);
+	end
+end
+
+function ADotF_ActionBarButtonSpellActivationAlertMixin:OnHide()
+	if ( self.animOut:IsPlaying() ) then
+		self.animOut:Stop();
+		self.animOut:OnFinished();
+	end
+end
+
+ADotF_ActionBarOverlayGlowAnimInMixin = {};
+
+function ADotF_ActionBarOverlayGlowAnimInMixin:OnPlay()
+	local frame = self:GetParent();
+	local frameWidth, frameHeight = frame:GetSize();
+	frame.spark:SetSize(frameWidth, frameHeight);
+	frame.spark:SetAlpha(0.3);
+	frame.innerGlow:SetSize(frameWidth / 2, frameHeight / 2);
+	frame.innerGlow:SetAlpha(1.0);
+	frame.innerGlowOver:SetAlpha(1.0);
+	frame.outerGlow:SetSize(frameWidth * 2, frameHeight * 2);
+	frame.outerGlow:SetAlpha(1.0);
+	frame.outerGlowOver:SetAlpha(1.0);
+	frame.ants:SetSize(frameWidth * 0.85, frameHeight * 0.85)
+	frame.ants:SetAlpha(0);
+	frame:Show();
+end
+
+function ADotF_ActionBarOverlayGlowAnimInMixin:OnFinished()
+	local frame = self:GetParent();
+	local frameWidth, frameHeight = frame:GetSize();
+	frame.spark:SetAlpha(0);
+	frame.innerGlow:SetAlpha(0);
+	frame.innerGlow:SetSize(frameWidth, frameHeight);
+	frame.innerGlowOver:SetAlpha(0.0);
+	frame.outerGlow:SetSize(frameWidth, frameHeight);
+	frame.outerGlowOver:SetAlpha(0.0);
+	frame.outerGlowOver:SetSize(frameWidth, frameHeight);
+	frame.ants:SetAlpha(1.0);
+end
+
+ADotF_ActionBarOverlayGlowAnimOutMixin = {};
+
+function ADotF_ActionBarOverlayGlowAnimOutMixin:OnFinished()
+	local overlay = self:GetParent();
+	local actionButton = overlay:GetParent();
+	overlay:Hide();
+	tinsert(unusedOverlayGlows, overlay);
+	actionButton.overlay = nil;
+end
 
 
 local function ADotF_UnitDebuff_Name(unit, buff, filter)
@@ -146,8 +254,42 @@ local function ADotF_UnitDebuff_Name(unit, buff, filter)
 
 end
 
+local function ADotF_UpdateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX, right, parent, powerbar)
 
-function ADotF_UpdateDebuff(unit)
+	local buff = _G[debuffName..index];
+	local point1 = "LEFT";
+	local point2 = "RIGHT";
+	local point3 = "RIGHT";
+
+	if powerbar and (powerbar:IsShown())then
+		parent = powerbar;	
+	end
+
+
+	if (right == false) then
+		point1 = "RIGHT";
+		point2 = "LEFT";
+		point3 = "LEFT";
+		offsetX = -offsetX;
+	end
+	
+	if ( index == 1 ) then
+		buff:SetPoint(point1, parent, point2, ADotF_DEBUFF_X, ADotF_DEBUFF_Y);
+	else
+
+		buff:SetPoint(point1, _G[debuffName..anchorIndex], point3, offsetX, 0);
+	end
+
+	-- Resize
+	buff:SetWidth(size);
+	buff:SetHeight(size);
+	local debuffFrame =_G[debuffName..index.."Border"];
+	debuffFrame:SetWidth(size+2);
+	debuffFrame:SetHeight(size+2);
+end
+
+
+local function ADotF_UpdateDebuff(unit)
 
 	local selfName;
 	local numDebuffs = 1;
@@ -330,10 +472,10 @@ function ADotF_UpdateDebuff(unit)
 				frame:Show();
 
 				if (bAlert) then
-					ADotF_ShowOverlayGlow(frame);
+					ADotF_ActionButton_ShowOverlayGlow(frame);
 					Prev_ExTime[unit][i] = nil;
 				else
-					ADotF_HideOverlayGlow(frame);
+					ADotF_ActionButton_HideOverlayGlow(frame);
 				end
 
 
@@ -359,7 +501,7 @@ function ADotF_UpdateDebuff(unit)
 		frame = _G[frameName];
 
 		if ( frame ) then
-			ADotF_HideOverlayGlow(frame);
+			ADotF_ActionButton_HideOverlayGlow(frame);
 			frame:Hide();	
 		end
 
@@ -368,56 +510,8 @@ function ADotF_UpdateDebuff(unit)
 	end
 end
 
-function ADotF_UpdateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX, right, parent, powerbar)
 
-	local buff = _G[debuffName..index];
-	local point1 = "LEFT";
-	local point2 = "RIGHT";
-	local point3 = "RIGHT";
-
-	if powerbar and (powerbar:IsShown())then
-		parent = powerbar;	
-	end
-
-
-	if (right == false) then
-		point1 = "RIGHT";
-		point2 = "LEFT";
-		point3 = "LEFT";
-		offsetX = -offsetX;
-	end
-	
-	if ( index == 1 ) then
-		buff:SetPoint(point1, parent, point2, ADotF_DEBUFF_X, ADotF_DEBUFF_Y);
-	else
-
-		buff:SetPoint(point1, _G[debuffName..anchorIndex], point3, offsetX, 0);
-	end
-
-	-- Resize
-	buff:SetWidth(size);
-	buff:SetHeight(size);
-	local debuffFrame =_G[debuffName..index.."Border"];
-	debuffFrame:SetWidth(size+2);
-	debuffFrame:SetHeight(size+2);
-end
-
-
-function ADotF_ClearFrame()
-	
-	local selfName = "ADotF_FocusDEBUFF_";
-
-	for i = 1, MAX_TARGET_DEBUFFS do
-		frameName = selfName.."Debuff"..i;
-		frame = _G[frameName];
-
-		if ( frame ) then
-			frame:Hide();	
-		end
-	end
-end
-
-function ADotF_UpdateBossFrame()
+local function ADotF_UpdateBossFrame()
 
 		unit = "boss1";
 
@@ -469,13 +563,42 @@ function ADotF_UpdateBossFrame()
 		end
 		
 		ADotF_UpdateDebuff(unit);
-
-
 end
 
 
+local function ADotF_InitList()
 
-function ADotF_OnEvent(self, event, arg1)
+	local spec = GetSpecialization();
+	local localizedClass, englishClass = UnitClass("player")
+
+
+	if spec then
+		listname = "ADotF_ShowList_" .. englishClass .. "_" .. spec;
+	end
+
+	ADotF_ShowList = _G[listname];
+
+	for idx = 1, #ADotF_UnitList do
+		local unit = ADotF_UnitList[idx];
+
+		prev_info[unit] = {};
+
+		for i = 1, ADotF_MAX_DEBUFF_SHOW do 
+			prev_info[unit][i] =  {0, 0, 0, false};
+		end
+
+	end
+
+	ADotF_NameList = {};
+
+	if ADotF_ShowList then
+		for idx = 1, #ADotF_ShowList do	
+			ADotF_NameList[ADotF_ShowList[idx][1]] = ADotF_ShowList[idx][2];
+		end
+	end
+end
+
+local function ADotF_OnEvent(self, event, arg1)
 
 	local unit;
 
@@ -526,135 +649,14 @@ function ADotF_OnEvent(self, event, arg1)
 end
 
 local function ADotF_OnUpdate()
-
-	
-
 	for idx = 1, #ADotF_UnitList do
 
 		local unit = ADotF_UnitList[idx];
-
 		ADotF_UpdateDebuff(unit);
-			--[[
-
-
-			if not ADotF_ShowList then
-				return;
-			end
-
-			for i = 1, #ADotF_ShowList do 
-				if Prev_ExTime[unit] then
-					local expirationTime = Prev_ExTime[unit][i];
-					
-					if expirationTime and ((expirationTime - GetTime()) <= ADotF_ShowList[i][2]) then
-						Prev_ExTime[unit][i] = nil;
-						ADotF_UpdateDebuff(unit);
-					end
-				end
-			end
-			--]]
 	end
 end
 
-
-function ADotF_InitList()
-
-	local spec = GetSpecialization();
-	local localizedClass, englishClass = UnitClass("player")
-
-
-	if spec then
-		listname = "ADotF_ShowList_" .. englishClass .. "_" .. spec;
-	end
-
-	ADotF_ShowList = _G[listname];
-
-	for idx = 1, #ADotF_UnitList do
-		local unit = ADotF_UnitList[idx];
-
-		prev_info[unit] = {};
-
-		for i = 1, ADotF_MAX_DEBUFF_SHOW do 
-			prev_info[unit][i] =  {0, 0, 0, false};
-		end
-
-	end
-
-	ADotF_NameList = {};
-
-	if ADotF_ShowList then
-		for idx = 1, #ADotF_ShowList do	
-			ADotF_NameList[ADotF_ShowList[idx][1]] = ADotF_ShowList[idx][2];
-		end
-	end
-
-
-
-end
-
-
-local unusedOverlayGlows = {};
-local numOverlays = 0;
-
-function  ADotF_GetOverlayGlow()
-	local overlay = tremove(unusedOverlayGlows);
-	if ( not overlay ) then
-		numOverlays = numOverlays + 1;
-		overlay = CreateFrame("Frame", "ADotF_ActionButtonOverlay"..numOverlays, UIParent, "ADotF_ActionBarButtonSpellActivationAlert");
-	end
-	return overlay;
-end
-
-
-function ADotF_ShowOverlayGlow(self)
-	if ( self.overlay ) then
-		if ( self.overlay.animOut:IsPlaying() ) then
-			self.overlay.animOut:Stop();
-			self.overlay.animIn:Play();
-		end
-	else
-		self.overlay = ADotF_GetOverlayGlow();
-		local frameWidth, frameHeight = self:GetSize();
-		self.overlay:SetParent(self);
-		self.overlay:ClearAllPoints();
-		--Make the height/width available before the next frame:
-		self.overlay:SetSize(frameWidth * 1.5, frameHeight * 1.5);
-		self.overlay:SetPoint("TOPLEFT", self, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
-		self.overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
-		self.overlay.animIn:Play();
-	end
-end
-
-function ADotF_OverlayGlowAnimOutFinished(animGroup)
-	local overlay = animGroup:GetParent();
-	local actionButton = overlay:GetParent();
-	overlay:Hide();
-	tinsert(unusedOverlayGlows, overlay);
-	actionButton.overlay = nil;
-end
-
-
-function ADotF_HideOverlayGlow(self)
-	if ( self.overlay ) then
-		if ( self.overlay.animIn:IsPlaying() ) then
-			self.overlay.animIn:Stop();
-		end
-		if ( self:IsVisible() ) then
-			self.overlay.animOut:Play();
-		else
-			ADotF_OverlayGlowAnimOutFinished(self.overlay.animOut);	--We aren't shown anyway, so we'll instantly hide it.
-		end
-	end
-end
-
-function ADotF_OverlayGlowOnUpdate(self, elapsed)
-	AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01);
-end
-
-
-
-
-
-function ADotF_Init()
+local function ADotF_Init()
 	
 
 	ADotF = CreateFrame("Frame", "ADotF", UIParent)
@@ -671,9 +673,6 @@ function ADotF_Init()
 	ADotF:RegisterEvent("PLAYER_ENTERING_WORLD")
 	ADotF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 	ADotF:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
-
-
-
 	ADotF:SetScript("OnEvent", ADotF_OnEvent)
 	C_Timer.NewTicker(0.5, ADotF_OnUpdate);
 	

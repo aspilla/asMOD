@@ -1,13 +1,13 @@
 ﻿---설정부
 local ANameP_SIZE = 0; 					-- Icon Size 0 이면 자동으로 설정
-local ANameP_Size_Rate = 0.8;			-- Icon 가로 세로 비중
+local ANameP_Size_Rate = 0.7;			-- Icon 가로 세로 비중
 local ANameP_PVP_Debuff_Size_Rate = 4   -- PVP Debuff Icon Size 작게 하려면 - 값으로
 
 local ANameP_PlayerBuffY = -5			-- Player 바 Buff 위치
 local ANameP_TargetBuffY = 5			-- 대상바 Buff 위치
 local ANameP_ComboBuffY = ANameP_TargetBuffY + 30 -- 특수 자원 표시시 Buff 위치
 local ANameP_CooldownFontSize = 9;     --재사용 대기시간 Font Size
-local ANameP_CountFontSize = 9;		--Count 폰트 Size
+local ANameP_CountFontSize = 9;			--Count 폰트 Size
 local ANameP_MaxDebuff = 8;				--최대 Debuff
 local ANameP_DebuffsPerLine = 4;		--줄당 Debuff 수 (큰 이름표 일 경우 +1 됨)
 local ANameP_MaxBuff = 1;				--최대 PVP Buff (안보이게 하려면 0)
@@ -27,7 +27,7 @@ local ANameP_ShowListFirst = true		-- 알림 List 가 있다면 먼저 보인다
 
 local ANameP_AggroSize = 12;			-- 어그로 표시 Text Size
 local ANameP_HealerSize = 14;			-- 힐러표시 Text Size
-local ANameP_TargetHealthBarHeight = 3;	-- 대상 체력바 높이 증가치
+local ANameP_TargetHealthBarHeight = 3;	-- 대상 체력바 높이 증가치 (Option 동작안함)
 local ANameP_HeathTextSize = 8;			-- 대상 체력숫자 크기
 local ANameP_UpdateRate = 0.5;			-- 버프 Check 반복 시간 (초)
 local ANameP_LowHealthAlert = true  	-- 낮은 체력 색상 변경 사용
@@ -665,15 +665,11 @@ local orig_width = 85.5;
 local asnameplateResourceOnTarget = true;
 
 -- 반짝이 처리부
-local function ANameP_OverlayGlowAnimOutFinished(animGroup)
-	local overlay = animGroup:GetParent();
-	local actionButton = overlay:GetParent();
-	overlay:Hide();
-	tinsert(unusedOverlayGlows, overlay);
-	actionButton.overlay = nil;
-end
 
-local function  ANameP_GetOverlayGlow()
+--Overlay stuff
+local unusedOverlayGlows = {};
+local numOverlays = 0;
+local function ANameP_ActionButton_GetOverlayGlow()
 	local overlay = tremove(unusedOverlayGlows);
 	if ( not overlay ) then
 		numOverlays = numOverlays + 1;
@@ -682,43 +678,101 @@ local function  ANameP_GetOverlayGlow()
 	return overlay;
 end
 
-local function ANameP_ShowOverlayGlow(self)
-	if ( self.overlay ) then
-		if ( self.overlay.animOut:IsPlaying() ) then
-			self.overlay.animOut:Stop();
-			self.overlay.animIn:Play();
+-- Shared between action button and MainMenuBarMicroButton
+local function ANameP_ShowOverlayGlow(button)
+	if ( button.overlay ) then
+		if ( button.overlay.animOut:IsPlaying() ) then
+			button.overlay.animOut:Stop();
+			button.overlay.animIn:Play();
 		end
 	else
-		self.overlay = ANameP_GetOverlayGlow();
-		local frameWidth, frameHeight = self:GetSize();
-		self.overlay:SetParent(self);
-		self.overlay:ClearAllPoints();
+		button.overlay = ANameP_ActionButton_GetOverlayGlow();
+		local frameWidth, frameHeight = button:GetSize();
+		button.overlay:SetParent(button);
+		button.overlay:ClearAllPoints();
 		--Make the height/width available before the next frame:
-		self.overlay:SetSize(frameWidth * 1.4, frameHeight * 1.4);
-		self.overlay:SetPoint("TOPLEFT", self, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
-		self.overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
-		self.overlay.animIn:Play();
+		button.overlay:SetSize(frameWidth * 1.5, frameHeight * 1.5);
+		button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -frameWidth * 0.4, frameHeight * 0.4);
+		button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", frameWidth * 0.4, -frameHeight * 0.4);
+		button.overlay.animIn:Play();
 	end
 end
 
-local function ANameP_HideOverlayGlow(self)
-	if ( self.overlay ) then
-		if ( self.overlay.animIn:IsPlaying() ) then
-			self.overlay.animIn:Stop();
+-- Shared between action button and MainMenuBarMicroButton
+local function ANameP_HideOverlayGlow(button)
+	if ( button.overlay ) then
+		if ( button.overlay.animIn:IsPlaying() ) then
+			button.overlay.animIn:Stop();
 		end
-		if ( self:IsVisible() ) then
-			self.overlay.animOut:Play();
+		if ( button:IsVisible() ) then
+			button.overlay.animOut:Play();
 		else
-			ANameP_OverlayGlowAnimOutFinished(self.overlay.animOut);	--We aren't shown anyway, so we'll instantly hide it.
+			button.overlay.animOut:OnFinished();	--We aren't shown anyway, so we'll instantly hide it.
 		end
 	end
 end
 
---[[
-local function ANameP_OverlayGlowOnUpdate(self, elapsed)
+ANameP_ActionBarButtonSpellActivationAlertMixin = {};
+
+function ANameP_ActionBarButtonSpellActivationAlertMixin:OnUpdate(elapsed)
 	AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01);
+	local cooldown = self:GetParent().cooldown;
+	-- we need some threshold to avoid dimming the glow during the gdc
+	-- (using 1500 exactly seems risky, what if casting speed is slowed or something?)
+	if(cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration() > 3000) then
+		self:SetAlpha(0.5);
+	else
+		self:SetAlpha(1.0);
+	end
 end
-]]
+
+function ANameP_ActionBarButtonSpellActivationAlertMixin:OnHide()
+	if ( self.animOut:IsPlaying() ) then
+		self.animOut:Stop();
+		self.animOut:OnFinished();
+	end
+end
+
+ANameP_ActionBarOverlayGlowAnimInMixin = {};
+
+function ANameP_ActionBarOverlayGlowAnimInMixin:OnPlay()
+	local frame = self:GetParent();
+	local frameWidth, frameHeight = frame:GetSize();
+	frame.spark:SetSize(frameWidth, frameHeight);
+	frame.spark:SetAlpha(0.3);
+	frame.innerGlow:SetSize(frameWidth / 2, frameHeight / 2);
+	frame.innerGlow:SetAlpha(1.0);
+	frame.innerGlowOver:SetAlpha(1.0);
+	frame.outerGlow:SetSize(frameWidth * 2, frameHeight * 2);
+	frame.outerGlow:SetAlpha(1.0);
+	frame.outerGlowOver:SetAlpha(1.0);
+	frame.ants:SetSize(frameWidth * 0.85, frameHeight * 0.85)
+	frame.ants:SetAlpha(0);
+	frame:Show();
+end
+
+function ANameP_ActionBarOverlayGlowAnimInMixin:OnFinished()
+	local frame = self:GetParent();
+	local frameWidth, frameHeight = frame:GetSize();
+	frame.spark:SetAlpha(0);
+	frame.innerGlow:SetAlpha(0);
+	frame.innerGlow:SetSize(frameWidth, frameHeight);
+	frame.innerGlowOver:SetAlpha(0.0);
+	frame.outerGlow:SetSize(frameWidth, frameHeight);
+	frame.outerGlowOver:SetAlpha(0.0);
+	frame.outerGlowOver:SetSize(frameWidth, frameHeight);
+	frame.ants:SetAlpha(1.0);
+end
+
+ANameP_ActionBarOverlayGlowAnimOutMixin = {};
+
+function ANameP_ActionBarOverlayGlowAnimOutMixin:OnFinished()
+	local overlay = self:GetParent();
+	local actionButton = overlay:GetParent();
+	overlay:Hide();
+	tinsert(unusedOverlayGlows, overlay);
+	actionButton.overlay = nil;
+end
 
 -- 탱커 처리부
 local function updateTankerList()

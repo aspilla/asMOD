@@ -47,9 +47,9 @@
 			</Cooldown>
 		</Frames>
 	</Frame>
-	<Frame name="ANameP_ActionBarButtonSpellActivationAlert" virtual="true" mixin="ActionBarButtonSpellActivationAlertMixin">
+	<Frame name="ANameP_ActionBarButtonSpellActivationAlert" virtual="true" mixin="ANameP_ActionBarButtonSpellActivationAlertMixin">
 		<Animations>
-			<AnimationGroup parentKey="animIn" mixin="ActionBarOverlayGlowAnimInMixin">
+			<AnimationGroup parentKey="animIn" mixin="ANameP_ActionBarOverlayGlowAnimInMixin">
 				<Scale target="$parentSpark" duration="0.2" scaleX="1.5" scaleY="1.5" order="1"/>
 				<Alpha target="$parentSpark" duration="0.2" fromAlpha="0" toAlpha="1" order="1"/>
 				<Scale target="$parentInnerGlow" 			duration="0.3" scaleX="2" scaleY="2" order="1"/>
@@ -67,7 +67,7 @@
 					<OnFinished method="OnFinished"/>
 				</Scripts>
 			</AnimationGroup>
-			<AnimationGroup parentKey="animOut" mixin="ActionBarOverlayGlowAnimOutMixin">
+			<AnimationGroup parentKey="animOut" mixin="ANameP_ActionBarOverlayGlowAnimOutMixin">
 				<Alpha target="$parentOuterGlowOver" duration="0.2" fromAlpha="0" toAlpha="1" order="1"/>
 				<Alpha target="$parentAnts"	duration="0.2" fromAlpha="1" toAlpha="0" order="1"/>
 				<Alpha target="$parentOuterGlowOver" duration="0.2" fromAlpha="1" toAlpha="0" order="2"/>
