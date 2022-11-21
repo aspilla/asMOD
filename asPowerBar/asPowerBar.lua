@@ -153,11 +153,11 @@ local function APB_UnitBuff(unit, buff, casterid)
 	local ret = nil;
 
 	repeat
-		local name, _, _, _, duration, _, caster = UnitBuff(unit, i);
+		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = UnitBuff(unit, i, "INCLUDE_NAME_PLATE_ONLY");
 
-		if name == buff and duration > 0 and caster == casterid  then
-			return UnitBuff(unit, i);
-		elseif name == buff and duration == 0 and caster == casterid  then
+		if (name == buff or spellId == buff) and duration > 0 and caster == casterid  then
+			return UnitBuff(unit, i, "INCLUDE_NAME_PLATE_ONLY");
+		elseif (name == buff or spellId == buff) and duration == 0 and caster == casterid   then
 			ret = i;
 		end
 
@@ -166,7 +166,7 @@ local function APB_UnitBuff(unit, buff, casterid)
 	until (name == nil)
 
 	if ret then
-		return UnitBuff(unit, i);
+		return UnitBuff(unit, i, "INCLUDE_NAME_PLATE_ONLY");
 	end
 
 	return nil;
@@ -1391,7 +1391,7 @@ local function APB_CheckPower(self)
 			APB_UpdateSpell(APB_SPELL);
 			bupdate_spell = true;
 
-			APB_BUFF = "사냥의 전율";		
+			APB_BUFF = "광기";		
 			APB.buffbar.unit = "player"
 			bupdate_buff_count = true;
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
