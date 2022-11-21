@@ -82,22 +82,6 @@ local function asMOD_Setup()
 	ToggleChatColorNamesByClassGroup(true, "INSTANCE_CHAT")
 	ToggleChatColorNamesByClassGroup(true, "INSTANCE_CHAT_LEADER")	
 
---[[
-	print ("[asMOD] 기본 공격대 프레임 설정을 합니다.");
-
-	SetCVar("useCompactPartyFrames", 1);
-	LoadAddOn("Blizzard_CUFProfiles")
-
-	if CompactUnitFrameProfiles.selectedProfile then 
-		SetRaidProfileOption(CompactUnitFrameProfiles.selectedProfile, "useClassColors", true)
-		SetRaidProfileOption(CompactUnitFrameProfiles.selectedProfile, "displayPowerBar", false)
-		SetRaidProfileOption(CompactUnitFrameProfiles.selectedProfile, "displayBorder", false)
-		SetRaidProfileOption(CompactUnitFrameProfiles.selectedProfile, "keepGroupsTogether", true)
-		SetRaidProfileOption(CompactUnitFrameProfiles.selectedProfile, "displayMainTankAndAssist", false)
-		CompactUnitFrameProfiles_ApplyCurrentSettings()
-		CompactUnitFrameProfiles_UpdateCurrentPanel()
-	end
-
 	print ("[asMOD] Skada, DBM 설정을 합니다.");
 
 	SkadaDB = {
@@ -153,6 +137,7 @@ local function asMOD_Setup()
 }
 
 
+--[[
 DBM_AllSavedOptions = {
 	["Default"] = {
 		["HUDTextureOverride"] = false,
