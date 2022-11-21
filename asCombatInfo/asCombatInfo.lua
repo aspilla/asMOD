@@ -27,7 +27,6 @@ local ACI_RefreshRate = 0.5;							-- 반복 Check 주기 (초)
 -- 	Type : 6 버프 & Spell Cool down (버프 off 일때 회색으로)
 -- 	Type : 7 버프 only Spell ID 등록해야 함 arg1 없을 경우 "player", "pet"으로 pet 버프 확인가능 ex 	{118455, 7, "pet"},
 -- 	Type : 8 디버프 only Spell ID ex {55078, 8}, --> 죽기 역병
-
 -- 	Type : 9 1 + 대상 체력 % 미만이면 강조 ex {"영혼 쐐기", 9, 35}
 -- 	Type : 10 양조 수도 시간차 전용
 
@@ -91,11 +90,11 @@ ACI_SpellList_ROGUE_3 = {
 
 
 ACI_SpellList_HUNTER_1 = {
-	{272790, 7, "pet", 2},
+	{118455, 7, "pet"},
 	{"살상 명령", 1},
-	{"날카로운 사격", 1},
 	{"야수의 격노", 2},
-	{1, {"야생의 상", 2}, {"야생의 상", 2}, 1},
+	{"마무리 사격", 1},	
+	{"반격의 사격", 1},
 };
 
 
@@ -399,6 +398,114 @@ ACI_Alert_list = {};
 local ACI_Current_Buff = "";
 local ACI_Current_Count = 0;
 
+
+--Overlay stuff
+local unusedOverlayGlows = {};
+local numOverlays = 0;
+local function ACI_ActionButton_GetOverlayGlow()
+	local overlay = tremove(unusedOverlayGlows);
+	if ( not overlay ) then
+		numOverlays = numOverlays + 1;
+		overlay = CreateFrame("Frame", "ACI_ActionButtonOverlay"..numOverlays, UIParent, "ACI_ActionBarButtonSpellActivationAlert");
+	end
+	return overlay;
+end
+
+-- Shared between action button and MainMenuBarMicroButton
+local function ACI_ShowOverlayGlow(button)
+	if ( button.overlay ) then
+		if ( button.overlay.animOut:IsPlaying() ) then
+			button.overlay.animOut:Stop();
+			button.overlay.animIn:Play();
+		end
+	else
+		button.overlay = ACI_ActionButton_GetOverlayGlow();
+		local frameWidth, frameHeight = button:GetSize();
+		button.overlay:SetParent(button);
+		button.overlay:ClearAllPoints();
+		--Make the height/width available before the next frame:
+		button.overlay:SetSize(frameWidth * 1.5, frameHeight * 1.5);
+		button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
+		button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
+		button.overlay.animIn:Play();
+	end
+end
+
+-- Shared between action button and MainMenuBarMicroButton
+local function ACI_HideOverlayGlow(button)
+	if ( button.overlay ) then
+		if ( button.overlay.animIn:IsPlaying() ) then
+			button.overlay.animIn:Stop();
+		end
+		if ( button:IsVisible() ) then
+			button.overlay.animOut:Play();
+		else
+			button.overlay.animOut:OnFinished();	--We aren't shown anyway, so we'll instantly hide it.
+		end
+	end
+end
+
+ACI_ActionBarButtonSpellActivationAlertMixin = {};
+
+function ACI_ActionBarButtonSpellActivationAlertMixin:OnUpdate(elapsed)
+	AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01);
+	local cooldown = self:GetParent().cooldown;
+	-- we need some threshold to avoid dimming the glow during the gdc
+	-- (using 1500 exactly seems risky, what if casting speed is slowed or something?)
+	if(cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration() > 3000) then
+		self:SetAlpha(0.5);
+	else
+		self:SetAlpha(1.0);
+	end
+end
+
+function ACI_ActionBarButtonSpellActivationAlertMixin:OnHide()
+	if ( self.animOut:IsPlaying() ) then
+		self.animOut:Stop();
+		self.animOut:OnFinished();
+	end
+end
+
+ACI_ActionBarOverlayGlowAnimInMixin = {};
+
+function ACI_ActionBarOverlayGlowAnimInMixin:OnPlay()
+	local frame = self:GetParent();
+	local frameWidth, frameHeight = frame:GetSize();
+	frame.spark:SetSize(frameWidth, frameHeight);
+	frame.spark:SetAlpha(0.3);
+	frame.innerGlow:SetSize(frameWidth / 2, frameHeight / 2);
+	frame.innerGlow:SetAlpha(1.0);
+	frame.innerGlowOver:SetAlpha(1.0);
+	frame.outerGlow:SetSize(frameWidth * 2, frameHeight * 2);
+	frame.outerGlow:SetAlpha(1.0);
+	frame.outerGlowOver:SetAlpha(1.0);
+	frame.ants:SetSize(frameWidth * 0.85, frameHeight * 0.85)
+	frame.ants:SetAlpha(0);
+	frame:Show();
+end
+
+function ACI_ActionBarOverlayGlowAnimInMixin:OnFinished()
+	local frame = self:GetParent();
+	local frameWidth, frameHeight = frame:GetSize();
+	frame.spark:SetAlpha(0);
+	frame.innerGlow:SetAlpha(0);
+	frame.innerGlow:SetSize(frameWidth, frameHeight);
+	frame.innerGlowOver:SetAlpha(0.0);
+	frame.outerGlow:SetSize(frameWidth, frameHeight);
+	frame.outerGlowOver:SetAlpha(0.0);
+	frame.outerGlowOver:SetSize(frameWidth, frameHeight);
+	frame.ants:SetAlpha(1.0);
+end
+
+ACI_ActionBarOverlayGlowAnimOutMixin = {};
+
+function ACI_ActionBarOverlayGlowAnimOutMixin:OnFinished()
+	local overlay = self:GetParent();
+	local actionButton = overlay:GetParent();
+	overlay:Hide();
+	tinsert(unusedOverlayGlows, overlay);
+	actionButton.overlay = nil;
+end
 
 
 
@@ -1225,10 +1332,6 @@ local function ACI_Alert(self, bcastspell)
 	return;
 end
 
-
-
-
-
 local function ACI_OnUpdate()
 
 	for i = 1, ACI_mainframe.maxIdx do
@@ -1237,66 +1340,6 @@ local function ACI_OnUpdate()
 		end
 	end
 end
-
-local unusedOverlayGlows = {};
-local numOverlays = 0;
-
-function  ACI_GetOverlayGlow()
-	local overlay = tremove(unusedOverlayGlows);
-	if ( not overlay ) then
-		numOverlays = numOverlays + 1;
-		overlay = CreateFrame("Frame", "ACI_ActionButtonOverlay"..numOverlays, UIParent, "ACI_ActionBarButtonSpellActivationAlert");
-	end
-	return overlay;
-end
-
-
-function ACI_ShowOverlayGlow(self)
-	if ( self.overlay ) then
-		if ( self.overlay.animOut:IsPlaying() ) then
-			self.overlay.animOut:Stop();
-			self.overlay.animIn:Play();
-		end
-	else
-		self.overlay = ACI_GetOverlayGlow();
-		local frameWidth, frameHeight = self:GetSize();
-		self.overlay:SetParent(self);
-		self.overlay:ClearAllPoints();
-		--Make the height/width available before the next frame:
-		self.overlay:SetSize(frameWidth * 1.5, frameHeight * 1.5);
-		self.overlay:SetPoint("TOPLEFT", self, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
-		self.overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
-		self.overlay.animIn:Play();
-	end
-end
-
-function ACI_HideOverlayGlow(self)
-	if ( self.overlay ) then
-		if ( self.overlay.animIn:IsPlaying() ) then
-			self.overlay.animIn:Stop();
-		end
-		if ( self:IsVisible() ) then
-			self.overlay.animOut:Play();
-		else
-			ACI_OverlayGlowAnimOutFinished(self.overlay.animOut);	--We aren't shown anyway, so we'll instantly hide it.
-		end
-	end
-end
-
-
-function ACI_OverlayGlowAnimOutFinished(animGroup)
-	local overlay = animGroup:GetParent();
-	local actionButton = overlay:GetParent();
-	overlay:Hide();
-	tinsert(unusedOverlayGlows, overlay);
-	actionButton.overlay = nil;
-end
-
-function ACI_OverlayGlowOnUpdate(self, elapsed)
-	AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01);
-end
-
-
 
 local function ACI_ButtonOnEvent(self, event, arg1, ...)
 
