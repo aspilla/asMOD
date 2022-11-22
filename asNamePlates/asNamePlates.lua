@@ -1495,6 +1495,10 @@ end
 
 local function updateBuffPosition(namePlateUnitToken)
 
+	if not namePlateUnitToken then
+		return;
+	end
+
 	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
 
 	if not namePlateFrameBase or namePlateFrameBase.UnitFrame:IsForbidden() or not namePlateFrameBase.asNamePlates or not namePlateFrameBase.asNamePlates.checkaura then
@@ -1795,6 +1799,8 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
 	namePlateFrameBase.asNamePlates.bhideframe = false;
 	namePlateFrameBase.asNamePlates.isshown = nil;
+	namePlateFrameBase.asNamePlates.originalcolor = {r = healthbar.r, g = healthbar.g, b = healthbar.b};
+
 
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
 	namePlateFrameBase.asNamePlates:UnregisterEvent("PLAYER_TARGET_CHANGED");
@@ -2011,8 +2017,9 @@ local function removeNamePlate(namePlateUnitToken)
 
 		if namePlateFrameBase.asNamePlates.alerthealthbar then
 			if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
-				ANameP_HideOverlayGlow(namePlateFrameBase.UnitFrame.healthBar);
+				--ANameP_HideOverlayGlow(namePlateFrameBase.UnitFrame.healthBar);
 				namePlateFrameBase.asNamePlates.alerthealthbar = false;
+				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r, namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
 			end
 		end	
 	end
@@ -2143,7 +2150,20 @@ local function initAddon()
 	--주기적으로 Callback
 	C_Timer.NewTicker(ANameP_UpdateRate, ANameP_OnUpdate);	
 
-	--LoadAddOn("Blizzard_NamePlates");
+	LoadAddOn("Blizzard_NamePlates");
+
+	hooksecurefunc("DefaultCompactNamePlateFrameAnchorInternal", function(frame, setupOptions)
+		if ( frame:IsForbidden() ) then return end
+						
+		local pframe = C_NamePlate.GetNamePlateForUnit("target", issecure())
+
+		if pframe and frame.BuffFrame.unit == pframe.namePlateUnitToken  then
+			frame.healthBar:SetHeight(orig_height + ANameP_TargetHealthBarHeight);
+			updateBuffPosition(pframe.namePlateUnitToken);
+		end
+		
+	end)
 end
 
 initAddon();
+
