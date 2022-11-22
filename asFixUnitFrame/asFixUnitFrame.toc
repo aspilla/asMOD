@@ -1,0 +1,6 @@
+﻿## Interface: 80200
+## Author: |cffff3399아스필라|r [블랙무어]
+## Title: |cffff3399as|rFixUnitFrame
+## Notes: 유닛프레임 
+## Version : 100425
+asFixUnitFrame.xml

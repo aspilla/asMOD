@@ -103,28 +103,24 @@ ANS_SpellList_PALADIN_3 = {
 --7.1.5 완료
 ANS_SpellList_HUNTER_1 = {
 	{"저승까마귀", 2},
-	{"탄막", 2, true},
-	{"야수의 격노", 2},
-	{"날카로운 사격", 1, false, {2, "광기", "pet", 2, true, false}, {2, "광기", "pet", 0, false, false}},
+	{"날카로운 사격", 1, false, {2, "광기", "pet", 1.5, true, false}, {2, "광기", "pet", 0, false, false}},
 	{"날카로운 사격", 1, false, {7, 2, nil, 0.5}},
-	{"일제 사격", 1, true, {21, 3}, {2, "야수의 회전베기", "pet", 0.5, true, false}},
-	{"살상 명령", 1, false}, 
+	{"일제 사격", 2, true, {2, "야수의 회전베기", "pet", 1, true, false}},
+	{"살상 명령", 1, true}, 
 	{"마무리 사격", 1, false}, 
-	{"일제 사격", 1, true, {21, 2}, {2, "야수의 회전베기", "pet", 0.5, true, false}},
+	{"일제 사격", 1, true, {21, 2}, {2, "야수의 회전베기", "pet", 1, true, false}},
 	{"광포한 야수", 1, false}, 
 	{"키메라 사격", 1, false},
-	{"코브라 사격", 1, false, {4, 50, "player", false, false}, {2, "야수의 격노", "player", 0.1, false, false}, {9, 7, 2}},
+	{"코브라 사격", 1, false, {4, 50, "player", false, false}, {2, "야수의 격노", "player", 0.1, false, false}},
 	{"코브라 사격", 1, false, {4, 90, "player", false, false}},	
 };
 
 --사격
 --7.1.5 완료
 ANS_SpellList_HUNTER_2 = {
-	--
+	
 	{"사냥꾼의 징표", 2, true, {3, "사냥꾼의 징표","target", 0.1,  true, false}},
-	{"관통 사격", 2, true},
-	{"저승까마귀", 2, true},
-	{"탄막", 2, true},
+	{"마무리 사격", 1},
 	{"신비한 사격", 1, false, {1}},
 	{"신비한 사격", 1, false, {16, "조준 사격"}, {9,1,1}}, -- 사격의 명수
 	{"조준 사격", 1, false, {2, "실탄 장전", "player", 0.1, false, false}},
@@ -133,7 +129,7 @@ ANS_SpellList_HUNTER_2 = {
 	{"조준 사격", 0, false, {14, 50, "player", false, true, 4}},
 	{"신비한 사격", 1, false, {14, 70, "player", false, true, 4}},
 	{"속사", 1, false},
-	{"고정 사격", 1, true},
+	{"고정 사격", 1, true},	
 };
 
 
@@ -1422,10 +1418,8 @@ local function check_nameplate (skill, check_count, aggro, check_action)
 			local inRange = false;
 
 			if check_action and smackloc then
-
-			   inRange = IsActionInRange(smackloc,unit)
+			    inRange = IsActionInRange(smackloc,unit)
 			elseif skill then
-
 				inRange = IsSpellInRange(skill, unit);
 			end
 
@@ -1440,6 +1434,8 @@ local function check_nameplate (skill, check_count, aggro, check_action)
 					count = count + 1;
 				end
 			end
+		else
+			return count;
 		end
 
 		if count >= check_count then
@@ -1449,9 +1445,6 @@ local function check_nameplate (skill, check_count, aggro, check_action)
 
 
 	return count;
-
-
-
 end
 
 function ANS_UpdateCooldown()

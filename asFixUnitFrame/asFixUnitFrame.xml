@@ -1,0 +1,110 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="asFixUnitFrame.lua" />
+	<Frame name="UnitFrameClassIconTemplate" level="OVERLAY" hidden="true" virtual="true">
+		<Size>
+			<AbsDimension x="30" y="30"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+				<Offset>
+					<AbsDimension x="85" y="-5"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name ="$parentArtwork" file="Interface/TARGETINGFRAME/UI-CLASSES-CIRCLES.BLP">
+					<Size> <AbsDimension x="15" y="15" /> </Size>
+					<Anchors>
+						<Anchor point="TOP"> 
+							<Offset> <AbsDimension x="0" y="0" /> </Offset> 
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name ="$parentBorder" file="Interface/UNITPOWERBARALT/WowUI_Circular_Frame.blp">
+					<Size> <AbsDimension x="33" y="33" /> </Size>
+					<Anchors> <Anchor point="CENTER" relativeTo="$parentArtwork" /> </Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="$parentClassIcon" inherits="UnitFrameClassIconTemplate" parent="TargetFrame">
+		<Scripts>
+			<OnLoad>
+				this = TargetFrameClassIcon;
+				this:SetFrameLevel(this:GetFrameLevel()+2);
+				this:ClearAllPoints();
+				this:SetPoint("TOPRIGHT", "TargetFrame", "TOPRIGHT", -85, -5);
+			</OnLoad>
+		</Scripts>
+		</Frame>
+
+	<Frame name="$parentClassIcon" inherits="UnitFrameClassIconTemplate" parent="PartyMemberFrame1">
+		<Scripts>
+			<OnLoad>
+				this = PartyMemberFrame1ClassIcon;
+				this:SetFrameLevel(this:GetFrameLevel()+2);
+				this:ClearAllPoints();
+				this:SetPoint("TOPRIGHT", "PartyMemberFrame1", "TOPRIGHT", -79, 0);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="$parentClassIcon" inherits="UnitFrameClassIconTemplate" parent="PartyMemberFrame2">
+		<Scripts>
+			<OnLoad>
+				this = PartyMemberFrame2ClassIcon;
+				this:SetFrameLevel(this:GetFrameLevel()+2);
+				this:ClearAllPoints();
+				this:SetPoint("TOPRIGHT", "PartyMemberFrame2", "TOPRIGHT", -79, 0);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="$parentClassIcon" inherits="UnitFrameClassIconTemplate" parent="PartyMemberFrame3">
+		<Scripts>
+			<OnLoad>
+				this = PartyMemberFrame3ClassIcon;
+				this:SetFrameLevel(this:GetFrameLevel()+2);
+				this:ClearAllPoints();
+				this:SetPoint("TOPRIGHT", "PartyMemberFrame3", "TOPRIGHT", -79, 0);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="$parentClassIcon" inherits="UnitFrameClassIconTemplate" parent="PartyMemberFrame4">
+		<Scripts>
+			<OnLoad>
+				this = PartyMemberFrame4ClassIcon;
+				this:SetFrameLevel(this:GetFrameLevel()+2);
+				this:ClearAllPoints();
+				this:SetPoint("TOPRIGHT", "PartyMemberFrame4", "TOPRIGHT", -79, 0);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="ClassIcons" hidden="true">
+		<Scripts>
+			<OnLoad>
+				asFixUnitFrame_OnLoad(self);
+            </OnLoad>
+            <OnEvent>
+				asFixUnitFrame_OnEvent(self, event);
+            </OnEvent>
+		</Scripts>
+	</Frame>
+	<Frame name="asTargetTextureFrame" parent="TargetFrame" setAllPoints="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="asTargetHealthPercent" inherits="TextStatusBarText" JustifyH="CENTER" />
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				asTargetTextureFrame:SetFrameLevel(TargetFrame:GetFrameLevel()+1);
+				asTargetHealthPercent:ClearAllPoints();
+				asTargetHealthPercent:SetPoint("CENTER",TargetFrameHealthBar,"LEFT",-20,0);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>
