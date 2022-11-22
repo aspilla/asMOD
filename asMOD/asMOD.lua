@@ -136,8 +136,6 @@ local function asMOD_Setup()
 	},
 }
 
-
---[[
 DBM_AllSavedOptions = {
 	["Default"] = {
 		["HUDTextureOverride"] = false,
@@ -519,7 +517,6 @@ DBT_AllPersistentOptions = {
 	},
 }
 
-]]
 	ReloadUI();
 
 
