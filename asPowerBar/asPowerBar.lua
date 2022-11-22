@@ -25,9 +25,9 @@ local bupdate_partial_power = false;
 local bsmall_power_bar = false;
 local APB_UNIT_POWER;
 local APB_POWER_LEVEL;
-local APB_SPELL;
-local APB_SPELL2;
-local APB_BUFF;
+APB_SPELL = nil;
+APB_SPELL2 = nil;
+APB_BUFF = nil;
 
 
 local APB = nil;
@@ -1410,14 +1410,12 @@ local function APB_CheckPower(self)
 			APB_UpdateSpell(APB_SPELL);
 			bupdate_spell = true;
 
-			APB_BUFF = "교묘한 사격";		
-			APB.buffbar.unit = "player"
-			APB:RegisterUnitEvent("UNIT_AURA", "player");
-			--APB:SetScript("OnUpdate", APB_OnUpdate);
-
-			APB_UpdateBuff(self.buffbar)
-
-
+			if asCheckTalent("꾸준한 집중") then
+				APB_BUFF = "꾸준한 집중";		
+				APB.buffbar.unit = "player"
+				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				APB_UpdateBuff(self.buffbar)
+			end
 		end
 
 

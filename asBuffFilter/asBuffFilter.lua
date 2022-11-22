@@ -474,6 +474,11 @@ local function ABF_UpdateDebuff(unit)
 				stack = nil;
 			end
 
+			-- asPowerBar Check 
+			if APB_BUFF and APB_BUFF == name then
+				skip = true;
+			end
+
 			if (name ~= nil and ABF_PVPBuffList[spellId]) then
 				isBig[i] = true;
 				skip = false;
