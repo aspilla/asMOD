@@ -83,8 +83,8 @@ ANameP_ShowList_HUNTER_2 = {
 
 
 ANameP_ShowList_HUNTER_3 = {
-	["사냥꾼의 징표"] = {0, 1},
-	["독사 쐐기"] = {12 * 0.3, 1},	
+	["사냥꾼의 징표"] = {0, 2},
+	["독사 쐐기"] = {0, 1},	
 }
 
 ANameP_ShowList_MONK_1 = {
@@ -1259,18 +1259,6 @@ local function updateUnitAuras(unit)
 end
 local function updateTargetNameP(self)
 
-	if self.unit then
-		if UnitIsUnit(self.unit, "target") and self.checkaura then		
-			self.healthtext:Show();
-		else
-			self.healthtext:Hide();
-		end		
-	end
-	
-
-	--Do Nothing 대상에 Health bar 크기를 변경하는 함수 이나... 반응이 늦어 끄자
-	--[[
-
 	if not self.unit or not self.checkaura then
 		return;
 	end
@@ -1327,11 +1315,8 @@ local function updateTargetNameP(self)
 			casticon:SetHeight(height + castheight);
 		end
 	end
-	
-
 	healthBar:SetHeight(height);
 	healthBar:SetWidth(width);
-	]]
 end
 
 local function updateUnitHealthText(self, unit)
@@ -1543,8 +1528,14 @@ local function updateBuffPosition(namePlateUnitToken)
 		if valuePct <= lowhealthpercent then
 			healthbar:SetStatusBarColor(ANameP_LowHealthColor.r, ANameP_LowHealthColor.g, ANameP_LowHealthColor.b);
 			namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.Lowhealth;
-		elseif namePlateFrameBase.asNamePlates.colorlevel == ColorLevel.Lowhealth and namePlateFrameBase.asNamePlates.currcolor then
-			healthbar:SetStatusBarColor(namePlateFrameBase.asNamePlates.currcolor[1], namePlateFrameBase.asNamePlates.currcolor[2], namePlateFrameBase.asNamePlates.currcolor[3]);
+		elseif namePlateFrameBase.asNamePlates.colorlevel == ColorLevel.Lowhealth then
+
+			if namePlateFrameBase.asNamePlates.currcolor then
+				healthbar:SetStatusBarColor(namePlateFrameBase.asNamePlates.currcolor[1], namePlateFrameBase.asNamePlates.currcolor[2], namePlateFrameBase.asNamePlates.currcolor[3]);
+			else
+				healthbar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r, namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
+			end
+			
 			namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
 		end		
 	end
@@ -1747,6 +1738,55 @@ local function asNamePlates_OnEvent(self, event, ...)
 	end
 end
 
+local function asCompactUnitFrame_UpdateHealthColor(frame)
+	local r, g, b;
+	if ( not UnitIsConnected(frame.unit) ) then
+		--Color it gray
+		r, g, b = 0.5, 0.5, 0.5;
+	elseif (UnitIsDead(frame.unit)) then
+		--Color it gray
+		r, g, b = 0.5, 0.5, 0.5;
+		-- Also hide the health bar
+		frame.hideHealthbar = true;
+	else
+		--Try to color it by class.
+		local localizedClass, englishClass = UnitClass(frame.unit);
+		local classColor = RAID_CLASS_COLORS[englishClass];
+			--debug
+			--classColor = RAID_CLASS_COLORS["PRIEST"];
+			if ( (frame.optionTable.allowClassColorsForNPCs or UnitIsPlayer(frame.unit) or UnitTreatAsPlayerForDisplay(frame.unit)) and classColor and frame.optionTable.useClassColors ) then
+				-- Use class colors for players if class color option is turned on
+				r, g, b = classColor.r, classColor.g, classColor.b;
+			elseif ( CompactUnitFrame_IsTapDenied(frame) ) then
+				-- Use grey if not a player and can't get tap on unit
+				r, g, b = 0.9, 0.9, 0.9;
+			elseif ( frame.optionTable.colorHealthBySelection ) then
+				-- Use color based on the type of unit (neutral, etc.)
+				if ( frame.optionTable.considerSelectionInCombatAsHostile and CompactUnitFrame_IsOnThreatListWithPlayer(frame.displayedUnit) ) then
+					r, g, b = 1.0, 0.0, 0.0;
+				elseif ( UnitIsPlayer(frame.displayedUnit) and UnitIsFriend("player", frame.displayedUnit) ) then
+					-- We don't want to use the selection color for friendly player nameplates because
+					-- it doesn't show player health clearly enough.
+					r, g, b = 0.667, 0.667, 1.0;
+				else
+					r, g, b = UnitSelectionColor(frame.unit, frame.optionTable.colorHealthWithExtendedColors);
+				end
+			elseif ( UnitIsFriend("player", frame.unit) ) then
+				r, g, b = 0.0, 1.0, 0.0;
+			else
+				r, g, b = 1.0, 0.0, 0.0;
+			end
+	
+	end
+	frame.healthBar:SetStatusBarColor(r, g, b);
+
+	if (frame.optionTable.colorHealthWithExtendedColors) then
+		frame.selectionHighlight:SetVertexColor(r, g, b);
+	else
+		frame.selectionHighlight:SetVertexColor(1, 1, 1);
+	end	
+end
+
 local function createNamePlate(namePlateFrameBase)
 	--do nothing
 end
@@ -1764,9 +1804,7 @@ local function addNamePlate(namePlateUnitToken)
 	--적대적 대상만 asnameplates를 생성중
 	if not namePlateFrameBase.asNamePlates then
 		if UnitIsUnit("player", namePlateUnitToken) then
-		
-				return;
-	
+			return;
 		else
 			local reaction = UnitReaction("player", namePlateUnitToken);
 			if reaction and reaction <= 4 then
@@ -1779,7 +1817,12 @@ local function addNamePlate(namePlateUnitToken)
 	
 	if not namePlateFrameBase.asNamePlates then
 		namePlateFrameBase.asNamePlates = CreateFrame("Frame", "$parentasNamePlates", namePlateFrameBase);
+	else
+		if namePlateFrameBase.asNamePlates.colorlevel > ColorLevel.None  then
+			asCompactUnitFrame_UpdateHealthColor(unitFrame);
+		end
     end
+	--
  
 	namePlateFrameBase.asNamePlates:EnableMouse(false);
 	
@@ -2013,15 +2056,23 @@ local function removeNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
 		namePlateFrameBase.asNamePlates:SetScript("OnEvent", nil);
 		namePlateFrameBase.asNamePlates.r = nil;
-		namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
+		-- Add할때 다시 Color를 복구 하자
+		--namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
 
-		if namePlateFrameBase.asNamePlates.alerthealthbar then
-			if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
+		if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
+
+			if namePlateFrameBase.asNamePlates.alerthealthbar then
 				--ANameP_HideOverlayGlow(namePlateFrameBase.UnitFrame.healthBar);
 				namePlateFrameBase.asNamePlates.alerthealthbar = false;
 				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r, namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
+				namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
 			end
-		end	
+
+			if namePlateFrameBase.asNamePlates.colorlevel > ColorLevel.None then
+				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r, namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
+				namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
+			end
+		end		
 	end
 
 	if UnitIsPlayer(namePlateUnitToken) and  UnitGUID(namePlateUnitToken) then
@@ -2044,6 +2095,13 @@ local function asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken)
 	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
 	if namePlateFrameBase and namePlateFrameBase.asNamePlates and not namePlateFrameBase:IsForbidden() then
 		addNamePlate(namePlateUnitToken);
+		if namePlateFrameBase.asNamePlates then
+			updateTargetNameP(namePlateFrameBase.asNamePlates);
+			updateAggroColor(namePlateFrameBase.asNamePlates, true);
+			updateBuffPosition(namePlateUnitToken);		
+			updateUnitAuras(namePlateUnitToken);
+			updateUnitHealthText(self, "target");
+		end		
 	end
 end
 
@@ -2051,9 +2109,9 @@ local function ANameP_OnEvent(self, event, ...)
 	if event == "NAME_PLATE_CREATED" then
 		local namePlateFrameBase = ...;
 		createNamePlate(namePlateFrameBase);
-	elseif event == "NAME_PLATE_UNIT_ADDED" then
+	elseif event == "NAME_PLATE_UNIT_ADDED"then
 		local namePlateUnitToken = ...;
-        local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
+		local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
 		addNamePlate(namePlateUnitToken);
 		if namePlateFrameBase.asNamePlates then
 			updateTargetNameP(namePlateFrameBase.asNamePlates);
@@ -2062,7 +2120,7 @@ local function ANameP_OnEvent(self, event, ...)
 			updateUnitAuras(namePlateUnitToken);
 			updateUnitHealthText(self, "target");
 		end		
-	elseif event == "NAME_PLATE_UNIT_REMOVED" then
+	elseif event == "NAME_PLATE_UNIT_REMOVED"  then
 		local namePlateUnitToken = ...;
 		removeNamePlate(namePlateUnitToken);
 	elseif event == event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player"  then
@@ -2099,7 +2157,6 @@ local function ANameP_OnEvent(self, event, ...)
 		local name = ...;
 		if name == "Blizzard_NamePlates" then
 			asnameplateResourceOnTarget = GetCVarBool("nameplateResourceOnTarget");	
-			print (asnameplateResourceOnTarget);
 		end
 		
 	end
@@ -2134,6 +2191,8 @@ local function initAddon()
 	ANameP:RegisterEvent("NAME_PLATE_CREATED");
 	ANameP:RegisterEvent("NAME_PLATE_UNIT_ADDED");
 	ANameP:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
+	--ANameP:RegisterEvent("FORBIDDEN_NAME_PLATE_UNIT_ADDED");
+	--ANameP:RegisterEvent("FORBIDDEN_NAME_PLATE_UNIT_REMOVED");
 	ANameP:RegisterEvent("PLAYER_TARGET_CHANGED");
 	ANameP:RegisterEvent("PLAYER_ENTERING_WORLD");
 	ANameP:RegisterEvent("ADDON_LOADED")
@@ -2157,8 +2216,8 @@ local function initAddon()
 						
 		local pframe = C_NamePlate.GetNamePlateForUnit("target", issecure())
 
-		if pframe and frame.BuffFrame.unit == pframe.namePlateUnitToken  then
-			frame.healthBar:SetHeight(orig_height + ANameP_TargetHealthBarHeight);
+		if pframe and frame.BuffFrame.unit == pframe.namePlateUnitToken and pframe.asNamePlates then
+			updateTargetNameP(pframe.asNamePlates);
 			updateBuffPosition(pframe.namePlateUnitToken);
 		end
 		
