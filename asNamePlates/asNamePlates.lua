@@ -196,10 +196,6 @@ ANameP_ShowList_EVOKER_2 = {
 	
 }
 
-ANameP_ShowList_EVOKER_3 = {
-	
-}
-
 -- 아래 유닛명이면 강조
 -- 색상 지정 가능
 -- { r, g, b, 빤작임 여부}
@@ -2130,7 +2126,7 @@ local function ANameP_OnEvent(self, event, ...)
 		updateUnitAuras("target");
 		updateUnitHealthText(self, "target");
 	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") then
-		initAlertList();		
+		C_Timer.After(0.5, initAlertList);		
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		isInstance, instanceType = IsInInstance();
 		if isInstance and (instance=="party" or instance=="raid" or instance=="scenario") then
@@ -2139,6 +2135,10 @@ local function ANameP_OnEvent(self, event, ...)
 			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 		end
 		updateTankerList();
+
+		-- 0.5 초 뒤에 Load
+		C_Timer.After(0.5, initAlertList);
+
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then	
 		local _, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType = CombatLogGetCurrentEventInfo();
 		if eventType == "SPELL_CAST_SUCCESS" and sourceGUID and not (sourceGUID == "") then
@@ -2153,12 +2153,6 @@ local function ANameP_OnEvent(self, event, ...)
 		asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken);
 	elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
 		updateTankerList();
-	elseif (event == "ADDON_LOADED") then
-		local name = ...;
-		if name == "Blizzard_NamePlates" then
-			asnameplateResourceOnTarget = GetCVarBool("nameplateResourceOnTarget");	
-		end
-		
 	end
 end
 
@@ -2191,6 +2185,7 @@ local function initAddon()
 	ANameP:RegisterEvent("NAME_PLATE_CREATED");
 	ANameP:RegisterEvent("NAME_PLATE_UNIT_ADDED");
 	ANameP:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
+	-- 나중에 추가 처리가 필요하면 하자.
 	--ANameP:RegisterEvent("FORBIDDEN_NAME_PLATE_UNIT_ADDED");
 	--ANameP:RegisterEvent("FORBIDDEN_NAME_PLATE_UNIT_REMOVED");
 	ANameP:RegisterEvent("PLAYER_TARGET_CHANGED");

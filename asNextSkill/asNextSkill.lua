@@ -76,17 +76,20 @@ ANS_SpellList_PALADIN_1 = {
 --보호
 ----8.0.1 완료
 ANS_SpellList_PALADIN_2 = {
+	--[[
 	{"정의의 방패", 2, false, {2, "정의의 방패", "player", 0.5, true, false}},
 	{"수호자의 빛", 2, false, {6, 50, "player", true}},
 	{"신성화", 2, false},
 	{"심판", 1, false},
 	{"응징의 방패", 1, false},
 	{"정의의 망치", 0, false},
+	]]
 };
 
 --징벌
 --8.0.1 완료
 ANS_SpellList_PALADIN_3 = {
+	--[[
 	{"파멸의 재", 2, false, {5, 1, "player", true}}, 
 	{"심문", 1, false, {2, "심문", "player", 3, true, false}, {5, 2, "player", false}},
 	{"심판관의 복수", 2, false}, 
@@ -97,12 +100,12 @@ ANS_SpellList_PALADIN_3 = {
 	{"천벌의 망치", 1, false}, 
 	{"신성화", 1, false}, 
 	{"성전사의 일격", 1, false}, 
+	]]
 };
 
 -- 야수
---7.1.5 완료
+--10.0 완료
 ANS_SpellList_HUNTER_1 = {
-	{"저승까마귀", 2},
 	{"날카로운 사격", 1, false, {2, "광기", "pet", 1.5, true, false}, {2, "광기", "pet", 0, false, false}},
 	{"날카로운 사격", 1, false, {7, 2, nil, 0.5}},
 	{"일제 사격", 2, true, {2, "야수의 회전베기", "pet", 1, true, false}},
@@ -116,44 +119,40 @@ ANS_SpellList_HUNTER_1 = {
 };
 
 --사격
---7.1.5 완료
+--10.0 완료
 ANS_SpellList_HUNTER_2 = {
 	
 	{"사냥꾼의 징표", 2, true, {3, "사냥꾼의 징표","target", 0.1,  true, false}},
-	{"마무리 사격", 1},
-	{"신비한 사격", 1, false, {1}},
-	{"신비한 사격", 1, false, {16, "조준 사격"}, {9,1,1}}, -- 사격의 명수
-	{"조준 사격", 1, false, {2, "실탄 장전", "player", 0.1, false, false}},
-	{"조준 사격", 1, false, {7, 2}},
-	{"독사 쐐기", 1, false, {3, "독사 쐐기","target", 12 * 0.3,  true, false}},
-	{"조준 사격", 0, false, {14, 50, "player", false, true, 4}},
-	{"신비한 사격", 1, false, {14, 70, "player", false, true, 4}},
+	{"마무리 사격", 1, false},
 	{"속사", 1, false},
-	{"고정 사격", 1, true},	
+	{"신비한 사격", 1, false, {1}},
+	{"신비한 사격", 1, false, {16, "조준 사격"}}, 
+	{"조준 사격", 1, false, {7, 2}},
+	{"조준 사격", 1, false, {1}},
+	{"조준 사격", 0, false, {14, 50, "player", false, true, 4}},
+	{"신비한 사격", 1, false, {14, 80, "player", false, true, 4}},	
+	{"고정 사격", 1, true},
 };
 
 
 --생존
---7.1.5 완료
+--10.0 완료
 ANS_SpellList_HUNTER_3 = {
-	{"저승까마귀", 2, false},
-	{"회전 표창", 2, false},
-	{"강철 덫", 2, false},
-	{"도살", 2, false},
-	{"독사 쐐기", 1, false, {3, "독사 쐐기","target", 8.7 * 0.3,  true, false}},
-	{"야생불 폭탄", 1, false, {3, "야생불 폭탄","target", 0.1,  true, false}},
+	
+	{"야생불 폭탄", 2},
+	{"살상 명령",  1, false, {1}},
+	{"도살", 1, false, {3, "유산탄","target", 0,  false, false}},
+	{"랩터의 일격", 1, false, {3, "유산탄","target", 0,  false, false}},
+	{"살상 명령", 1, false, {3, "페로몬 폭탄","target", 0,  false, false}},
 	{"랩터의 일격", 1, false, {4, 80, "player", false, false}},
-	--{"랩터의 일격", 1, false},
 	{"살상 명령",  0},
 	{"살쾡이의 이빨",  1, false, {2, "살쾡이의 격노", "player", 0, false, true}},
-	{"랩터의 일격", 1, false, {9,6,2, true},  {4, 50, "player", false, false}},
-	{"측방 강타", 1},
-	
+	{"랩터의 일격", 1, false},	
 };
 
 --혈기
-----8.0.1 완료
 ANS_SpellList_DEATHKNIGHT_1 = {
+	--[[
 	{"죽음과 부패", 2},
 	{"골수분쇄", 1, false, {2, "뼈의 보호막","player", 3, true, false}},
 	{"죽음의 일격", 1, false, {4, 100, "player", false, true}},
@@ -162,12 +161,14 @@ ANS_SpellList_DEATHKNIGHT_1 = {
 	{"심장 강타", 1, false, {5, 3, "player", false}},
 	{"피의 소용돌이", 1},
 	{"자동 공격", 1},
+	]]
 
 };
 
 --냉기
 ----8.0.1 완료
 ANS_SpellList_DEATHKNIGHT_2 = {
+	--[[
 	{"얼음 결계", 2, false, {9,1,3}, {2, "차가운 마음", "player", 19, false, true}},
 	{"냉기의 일격", 1, false, {9,1,2}, {2, "얼음 발톱", "player", 2, true, false}},
 	{"울부짖는 한파", 1, false, {3, "서리 열병","target", 3, true, false}},
@@ -184,11 +185,13 @@ ANS_SpellList_DEATHKNIGHT_2 = {
 	{"냉기의 일격", 1, false, {9, 7, 3, true}},
 	{"냉기의 일격", 1, false, {9, 7, 3}, {2, "신드라고사의 숨결", "player", 0.1, true, false}},
 	{"냉혹한 겨울", 0},
+	]]
 }; 
 
 
 --부정
 ANS_SpellList_DEATHKNIGHT_3 = {
+	--[[
 	{"돌발 열병", 1, false, {3, "악성 역병","target", 3, true, false}},
 	{"죽음의 고리", 1, false, {4, 100, "player", false, true}},
 	{"스컬지의 일격", 1, false, {2, "죽음과 부패","player", 0, false, false}, {3, "고름 상처","target", 1, false, true}},
@@ -201,6 +204,7 @@ ANS_SpellList_DEATHKNIGHT_3 = {
 	{"죽음의 일격", 1, false, {1}},
 	{"자동 공격", 1, false},
 	{"고름 일격", 0, true},
+	]]
 
 };
 
@@ -208,6 +212,7 @@ ANS_SpellList_DEATHKNIGHT_3 = {
 --무기
 ----8.0.1 완료
 ANS_SpellList_WARRIOR_1 = {
+	--[[
 	{"분쇄", 1, false, {3, "분쇄", "target", 4, true, false}, {3, "거인의 강타","target", 0.1, true, false},},-- 분쇄 타겟 디버프 4 초
 	{"해골 쪼개기", 1, false, {4, 60, "player", true, false}},
 	{"거인의 강타", 2, false},
@@ -219,12 +224,14 @@ ANS_SpellList_WARRIOR_1 = {
 	{"소용돌이", 1, false, {4, 80, "player", false, false}, {9, 3, 2}}, -- 전투의 열정
 	{"격돌", 1, false, {4, 80, "player", false, false}},
 	{"자동 공격", 1},
+	]]
 }; 
 
 
 --분노
 ----8.0.1 완료
 ANS_SpellList_WARRIOR_2 = {
+	--[[
 	{"분노의 베기", 1, false,{2, "분노의 베기","player", 2, true, false}},
 	{"광란", 1, false, {2, "격노","player", 0.1, true, false},{4, 90, "player", false, false}}, -- 격노 없을 때 
 	{"마무리 일격", 1, false, {2, "격노","player", 0.1, false, false}}, -- 격노 있을 때
@@ -234,6 +241,7 @@ ANS_SpellList_WARRIOR_2 = {
 	{"분노의 강타", 1, false},
 	{"분노의 베기", 1, false},
 	{"소용돌이", 1, false},
+	]]
 }; 
 
 
@@ -242,6 +250,7 @@ ANS_SpellList_WARRIOR_2 = {
 -- 방어
 -- 8.0.1 완료
 ANS_SpellList_WARRIOR_3 = {
+	--[[
 	{"연전연승", 1, false, {6, 70, "player", true, false}},
 	{"방패 올리기", 2, false, {9, 4, 3, true}, {2, "방패 올리기","player", 0.3, true, false}},
 	{"방패 올리기", 2, false, {9, 4, 3}, {2, "방패 올리기","player", 0.3, true, false}, {2, "최후의 저항","player", 0.3, true, false}},
@@ -252,11 +261,13 @@ ANS_SpellList_WARRIOR_3 = {
 	{"복수", 1, false, {1}},
 	{"압도", 1, false, {9, 6, 3, true}}, 
 	{"자동 공격", 1},
+	]]
 }; 
 
 --양조
 ----8.0.1 완료
 ANS_SpellList_MONK_1 = {
+	--[[
 	{"무쇠가죽주", 2, false, {2, "무쇠가죽주","player", 1.5, true, false}},
 	{"해악 축출", 2, false, {6, 30, "player", true, false}},
 	{"범의 장풍", 1, false, {9, 7, 3}, {2, "의식 상실 연계", "player", 0, false, false}},
@@ -267,6 +278,7 @@ ANS_SpellList_MONK_1 = {
 	{"범의 장풍", 1, false, {4, 65, "player", false, true}}, 
 	{"기의 물결", 1},
 	{"기의 파동", 1, {15}},
+	]]
 }; 
 
 --운무
@@ -276,6 +288,7 @@ ANS_SpellList_MONK_2 = {
 --풍운
 ----8.0.1 완료
 ANS_SpellList_MONK_3 = {
+	--[[
 	{"비취 돌풍", 2, false, {8}},
 	{"백호의 주먹", 1, false, {8}, {5, 2, "player", true},{4, 99, "player", false, true}},
 	{"범의 장풍", 1, false, {8}, {5, 4, "player", true},{4, 99, "player", false, true}},
@@ -288,6 +301,7 @@ ANS_SpellList_MONK_3 = {
 	{"후려차기", 1, false, {8}},
 	{"기의 물결", 1, false, {8}},
 	{"범의 장풍", 1, false, {8}},
+	]]
 }; 
 
 
@@ -295,6 +309,7 @@ ANS_SpellList_MONK_3 = {
 ----8.0.1 완료
 ANS_SpellList_WARLOCK_1 = {
 
+	--[[
 	{"부패의 씨앗", 2, false},
 	{"고통", 1, false, {3, "고통","target", 18 * 0.3, true, false}},
 	{"부패", 1, false, {3, "부패","target", 14 * 0.3, true, false}},
@@ -306,10 +321,12 @@ ANS_SpellList_WARLOCK_1 = {
 	{"죽음의 화살", 1, false, {3, "불안정한 고통","target", 8 * 0.3, false, false}},
 	{"불안정한 고통", 1, false, {3, "불안정한 고통","target", 8 * 0.3, true, false},{15}},
 	{"어둠의 화살", 0, true},
+	]]
 }; 
 --악마
 ----8.0.1 완료
 ANS_SpellList_WARLOCK_2 = {
+	--[[
 	{"담즙스컬지 폭격", 2, false},
 	{"썩은마귀 소환", 2, false},
 	{"파멸", 2, false, {3, "파멸","target", 0.1, true, false}},
@@ -321,6 +338,7 @@ ANS_SpellList_WARLOCK_2 = {
 	{"영혼의 일격", 1, false},
 	{"어둠의 화살", 1, true},
 	{"공포사냥개 부르기",0 }
+	]]
 };
 
 
@@ -328,6 +346,7 @@ ANS_SpellList_WARLOCK_2 = {
 ----8.0.1 완료
 ANS_SpellList_WARLOCK_3 = {
 
+	--[[
 	{"제물", 1, false, {3, "제물","target", 18 * 0.3, true, false}, {15}},
 	{"혼돈의 화살",1, false, {5, 5, "player", false}},
 	{"점화", 1, false, {7, 2}},
@@ -338,12 +357,14 @@ ANS_SpellList_WARLOCK_3 = {
 	{"영혼의 불꽃",1, false},
 	{"점화", 0, false},
 	{"소각", 1, true},
+	]]
 }; 
 
 
 --정기
 ----8.0.1 완료
 ANS_SpellList_SHAMAN_1 = {
+	--[[
 	{"토템 특화", 1, false, {11, "토템 특화", 0.1, true}},
 	{"화염 충격", 1, false, {3, "화염 충격","target", 6, true, false}},
 	{"번개 화살", 1, false, {15},{3, "노출된 원소","target", 2, false, false}},
@@ -357,11 +378,13 @@ ANS_SpellList_SHAMAN_1 = {
 	{"냉기 충격", 1, false, {2, "얼음격노", "player", 0, false, false }},
 	{"토템 특화", 1, false, {11, "토템 특화", 9, true}},
 	{"번개 화살", 1},
+	]]
 }; 
 
 --고양
 ----8.0.1완료
 ANS_SpellList_SHAMAN_2 = {
+	--[[
 	{"바람의 격노", 1, false, {9, 6, 2}, {2, "바람의 격노", "player", 0.1, true, false}},
 	{"토템 특화", 1, false, {11, "토템 특화", 0.1, true}},
 	{"폭풍의 일격", 1, false, {2, "승천", "player", 0.1, false, false} },
@@ -379,6 +402,7 @@ ANS_SpellList_SHAMAN_2 = {
 	{"냉기의 무기", 1, false, {9, 4, 2}, {2, "냉기의 무기", "player", 4.5, true, false}},
 	{"용암 채찍", 1, false, {4, 50, "player", false, false}},
 	{"대지이빨", 1, false},
+	]]
 }; 
 
 --복원
@@ -398,6 +422,7 @@ ANS_SpellList_PRIEST_2 = {
 --암흑
 ----8.0.1 완료
 ANS_SpellList_PRIEST_3 = {
+	--[[
 	{"어둠의 권능: 고통", 1, false, {9, 3, 2, true}, {3, "어둠의 권능: 고통","target", 5.4, true, false}},
 	{"흡혈의 손길", 1, false, {3, "흡혈의 손길","target", 4, true, false}, {15}},
 	{"공허 방출", 1, false, {2, "공허의 형상","player", 0, false, false}},
@@ -410,12 +435,14 @@ ANS_SpellList_PRIEST_3 = {
 	{"공허의 격류", 1, false},
 	{"어둠의 권능: 공허", 1, false, {9, 1, 3}, {7, 1}},
 	{"정신의 채찍", 1},
+	]]
 };
 
 
 --조화
 ----8.0.1 완료
 ANS_SpellList_DRUID_1 = {
+	--[[
 	{"태양섬광", 1, false, {3, "태양섬광","target", 18 * 0.3, true, false}},
 
 	{"달빛섬광", 1, false, {3, "달빛섬광","target", 22 * 0.3, true, false}},
@@ -431,11 +458,13 @@ ANS_SpellList_DRUID_1 = {
 	{"태양의 격노", 1, false, {7, 1, true}},
 	{"초승달", 1, false},
 	{"태양의 격노", 1},
+	]]
 }; 
 
 --야성
 ----7.1.5 완료
 ANS_SpellList_DRUID_2 = {
+	--[[
 	{"호랑이의 분노", 2, false, {4, 40, "player", true, false}},
 	{"도려내기", 1, false, {3, "도려내기", "target", 19.2 * 0.3, true, false}, {5, 5, "player", false, false}},
 	{"도려내기", 1, false, {9, 7, 2}, {3, "도려내기", "target", 10, true, false}, {2, "피투성이 손길", "player", 0, false, false},{5, 5, "player", false, false}},
@@ -452,12 +481,14 @@ ANS_SpellList_DRUID_2 = {
 	{"달빛섬광", 1, false, {9, 1, 3}, {3, "달빛섬광", "target", 4.8, true, false}},
 	{"흉포한 이빨", 1, false, {4, 70, "player", false, false}},
 	{"자동 공격", 1, false},
+	]]
 
 }; 
 
 -- 수호
 -- --8.0.1 완료
 ANS_SpellList_DRUID_3 = {
+	--[[
 	{"무쇠가죽", 2, false, {2, "무쇠가죽","player", 0.3, true, false}},
 	{"달빛섬광", 1, false, {3, "달빛섬광","target", 4.8, true, false}},
 	{"파쇄", 1, false, {3, "난타", "target", 1, false, true}, {2, "파쇄","player", 3, true, false}},
@@ -466,6 +497,7 @@ ANS_SpellList_DRUID_3 = {
 	{"달빛섬광", 1, false, {1}},
 	{"후려갈기기", 1, false, {4, 80, "player", false, false}},
 	{"휘둘러치기", 1}, 
+	]]
 };
 -- 회복
 
@@ -475,6 +507,7 @@ ANS_SpellList_DRUID_4 = {
 -- 비전
 --8.0.1 완료
 ANS_SpellList_MAGE_1 = {
+	--[[
 	{"충전 완료", 2, false, {5, 1, "player", true}},
 	{"황천의 폭풍우", 1, false, {5, 4, "player", false} ,{3, "황천의 폭풍우", "target", 4, true, false}},
 	{"비전 보주", 2, false, {5, 4, "player", true}},
@@ -489,6 +522,7 @@ ANS_SpellList_MAGE_1 = {
 	{"초신성", 1},
 	{"비전 작렬", 1},
 	{"신비한 화살", 0},
+	]]
 };
 
 --화염
@@ -508,6 +542,7 @@ ANS_SpellList_MAGE_2 = {
 --냉기
 --8.0.1 완료
 ANS_SpellList_MAGE_3 = {
+	--[[
 	{"마력의 룬", 2, false, {7, 2}},
 	{"눈보라", 2, false},
 	{"얼음창", 1, false, {3, "혹한의 추위", "target", 0, false, false}},
@@ -531,11 +566,13 @@ ANS_SpellList_MAGE_3 = {
 	{"혜성 폭풍", 2},
 	{"얼음 화살", 1},
 	{"얼음창", 0},
+	]]
 };
 
 --암살
 ----8.0.1 완료
 ANS_SpellList_ROGUE_1 = {
+	--[[
 	{"파열", 1, true, {5, 2, "player", true, true}, {3, "파열", "target", 4, true, false}},
 	{"독살", 1, true, {5, 8, "player", false}},
 	{"맹독 칼날", 2, true},
@@ -547,6 +584,7 @@ ANS_SpellList_ROGUE_1 = {
 	{"독칼", 1, true, {2, "날카로운 날","player", 29, false, true} },
 	{"사각 지대", 1, true, {1}},
 	{"절단", 1, true},
+	]]
 
 };
 
@@ -554,6 +592,7 @@ ANS_SpellList_ROGUE_1 = {
 ----8.0.1 완료
 
 ANS_SpellList_ROGUE_2 = {
+	--[[
 	{"뼈주사위", 2, true, {2, "무자비한 정밀함", "player", 3.6, true, false}, {2, "숨겨진 보물", "player", 3.6, true, false}, {2, "집중 공격", "player", 3.6, true, false}, {2, "진방위", "player", 3.6, true, false}, {2, "대난투", "player", 3.6, true, false}, {2, "해적 징표", "player", 3.6, true, false}},
 	{"난도질", 2, true, {2, "난도질", "player", 10.8, true, false}},
 	{"유령의 일격", 1, true, {3, "유령의 일격", "target", 4.5, true, false}},
@@ -563,12 +602,14 @@ ANS_SpellList_ROGUE_2 = {
 	{"속결", 1, true, {5, 4, "player", false}},
 	{"권총 사격", 1, true, {2, "기회", "player", 0, false, false}},
 	{"사악한 일격", 1, true},
+	]]
 }; 
 
 --잠행
 ----8.0.1 완료
 
 ANS_SpellList_ROGUE_3 = {
+	--[[
 	{"암흑칼날", 1, true, {3, "암흑칼날", "target", 4.8, true, false}},
 	{"어둠의 춤", 2, true, {2, "어둠의 춤", "player", 0.1, true, false}, {2, "기만", "player", 0.1, true, false} },
 	{"죽음의 상징", 2, true},
@@ -577,11 +618,13 @@ ANS_SpellList_ROGUE_3 = {
 	{"그림자 일격", 1, true},
 	{"죽음의 표적", 2, true, {5, 2, "player", true} },
 	{"기습", 1, true},
+	]]
 };
 
 --파멸
 ----8.0.1완료
 ANS_SpellList_DEMONHUNTER_1 = {
+	--[[
 	{"복수의 퇴각", 2, false, {9, 7, 2},{2, "탄력", "player", 0.5, true, false} },
 	{"지옥 돌진", 2, false, {9, 7, 2},{7, 2},{2, "탄력", "player", 0.5, true, false} },
 	{"지옥 포화", 2, false},
@@ -596,11 +639,13 @@ ANS_SpellList_DEMONHUNTER_1 = {
 	{"글레이브 투척", 0, false}, 
 	{"지옥 돌진", 2, false},
 	{"악마 칼날", 1, false, {9, 2, 2}};
+	]]
 };
 
 --복수
 ----8.0.1 완료
 ANS_SpellList_DEMONHUNTER_2 = {
+	--[[
 	{"악마 쐐기", 2, false, {2, "악마 쐐기", "player", 0.5, true, false} },
 	{"영혼 베어내기", 2, false},
 	{"균열", 1, false, {4, 75, "player", true, false} },
@@ -608,11 +653,18 @@ ANS_SpellList_DEMONHUNTER_2 = {
 	{"지옥칼", 1, false,{4, 70, "player", true, false} },
 	{"불꽃의 인장", 2, false},
 	{"절단", 1, false},
-
+]]
 };
 
+ANS_SpellList_EVOKER_1 = {
+	
+};
 
+--복수
+----8.0.1 완료
+ANS_SpellList_EVOKER_2 = {
 
+};
 
 local update = 0;
 local prev_i = {0, 0, 0};
@@ -2609,11 +2661,12 @@ function ANS_Init()
 
 	if spec then
 		listname = "ANS_SpellList" .. "_" .. englishClass .. "_" .. spec;
+		ANS_SpellList = _G[listname];
+	else
+		ANS_SpellList = {};
 	end
 
 	prev_i = {0, 0};
-
-	ANS_SpellList = _G[listname];
 	ANS_SpellNameList = {};
 	ANS_Action_slot_list = {};
 

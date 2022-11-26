@@ -1035,10 +1035,11 @@ end
 
 local function APB_CheckPower(self)
 	
+	self = APB;
 	local localizedClass, englishClass = UnitClass("player")
 	local spec = GetSpecialization();
 	local talentgroup = GetActiveSpecGroup();
-
+	
 	APB:UnregisterEvent("UNIT_POWER_UPDATE")
 	APB:UnregisterEvent("UNIT_DISPLAYPOWER");
 	APB:UnregisterEvent("UPDATE_SHAPESHIFT_FORM");
@@ -1052,6 +1053,7 @@ local function APB_CheckPower(self)
 
 
 	APB:SetScript("OnUpdate", nil);
+
 
 
 	bupdate_power = false;
@@ -1144,7 +1146,21 @@ local function APB_CheckPower(self)
 		if (spec and spec == 2) then
 			
 
-			if (asCheckTalent("불꽃정신")) then
+			if (asCheckTalent("태양왕의 축복")) then
+				APB_BUFF = "태양왕의 축복";		
+	
+				APB_BUFF_COMBO = "태양왕의 축복";		
+				APB.combobar.unit = "player"
+				APB.buffbar.unit = "player"
+				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				--APB:SetScript("OnUpdate", APB_OnUpdate);
+	
+				bupdate_buff_count = true
+				--APB_MaxCombo(3);
+				--APB_UpdateBuffCombo(self.combobar)
+				APB_UpdateBuff(self.buffbar)
+				--bupdate_buff_combo = true;
+			elseif (asCheckTalent("불꽃정신")) then
 				APB_BUFF = "불꽃정신";		
 	
 				APB_BUFF_COMBO = "불꽃정신";		
@@ -1158,6 +1174,7 @@ local function APB_CheckPower(self)
 				--APB_UpdateBuffCombo(self.combobar)
 				APB_UpdateBuff(self.buffbar)
 				--bupdate_buff_combo = true;
+
 	
 			end
 			
@@ -1874,7 +1891,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 	elseif event == "PLAYER_TARGET_CHANGED" then
 		APB_UpdateBuff(self.buffbar);
 		APB_UpdateBuffCombo(self.combobar);
-	elseif event == "VARIABLES_LOADED" or event == "PLAYER_ENTERING_WORLD" then
+	elseif event == "PLAYER_ENTERING_WORLD" then
 		checkSpellCost();
 		checkSpellPowerCost();
 
@@ -1884,11 +1901,13 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 			APB:SetAlpha(APB_ALPHA_NORMAL);
 		end
 
+		C_Timer.After(0.5, APB_CheckPower);
+		C_Timer.After(0.5, APB_UpdatePower);
+	
+		
 	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") then
-		APB_CheckPower(self);
-		APB_UpdatePower();
-		checkSpellCost();
-		checkSpellPowerCost();
+		C_Timer.After(0.5, APB_CheckPower);
+		C_Timer.After(0.5, APB_UpdatePower);
 	elseif event == "SPELLS_CHANGED" then
 		checkSpellCost();
 		checkSpellPowerCost();
@@ -1922,8 +1941,8 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
 		--hast19 = HowManyHasSet(1284);
 		--hast20 = HowManyHasSet(1304);
-		--APB_CheckPower(self);
-
+		C_Timer.After(0.5, APB_CheckPower);
+		C_Timer.After(0.5, APB_UpdatePower);
 	end
 
 	return;
