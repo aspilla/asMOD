@@ -15,7 +15,6 @@ local ACI_MaxSpellCount = 11;							-- 최대 Spell Count
 local ACI_RefreshRate = 0.5;							-- 반복 Check 주기 (초)
 
 
--- 성기사 징벌
 -- 	ACI_SpellList_직업명_특성숫자
 -- 	{Spell, Type, arg1} 순으로 편집
 -- 	Spell 기술명 혹은 ID (버프는 ID로 입력해야 Icon 나옴)
@@ -29,6 +28,7 @@ local ACI_RefreshRate = 0.5;							-- 반복 Check 주기 (초)
 -- 	Type : 8 디버프 only Spell ID ex {55078, 8}, --> 죽기 역병
 -- 	Type : 9 1 + 대상 체력 % 미만이면 강조 ex {"영혼 쐐기", 9, 35}
 -- 	Type : 10 양조 수도 시간차 전용
+-- 시작은 99로 하면 다음 특성 이름이 켜 있을때 없을때로 구분 예 {99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}}, 면 주문술사 켜 있으면 첫 array, 아니면 다음 array
 
 ACI_SpellList_WARRIOR_1 = {
 
@@ -123,31 +123,28 @@ ACI_SpellList_HUNTER_3 = {
 
 
 ACI_SpellList_MAGE_1 = {
-	--[[
-	{4, {"점멸", 1}, 1, 1},
+	
+	{"점멸", 1},
 	{"냉정", 1},
-	{3, {116267, 7, "player", nil, 4 }, 1, {"마력의 룬", 11, nil, true}},
 	{"신비의 마법 강화", 2},
-	{"환기", 2},
-	]]
+	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},		
+	{99, "비전의 조화", {332769, 7, "player", nil, 15}, {"시간 왜곡", 2}},		
 };
 
 ACI_SpellList_MAGE_2 = {
-	{"일렁임", 1},
+	{"점멸", 1},
 	{"불태우기", 9, 30},
 	{"발화", 2},
-	{"마력의 룬", 2},	
+	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},	
 	{"얼음 방패", 1}, 
 };
 
 ACI_SpellList_MAGE_3 = {
-	--[[
-	{4, {"점멸", 1}, 2, 1},
-	{"눈보라", 1},
-	{3, {116267, 7, "player", nil, 4}, 1, {"마력의 룬", 11, nil, true}},
-	{"얼음 핏줄", 2},
+	{"진눈깨비", 1},
 	{"얼어붙은 구슬", 1},
-	]]
+	{"얼음 핏줄", 1},
+	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},	
+	{"눈보라", 1},
 };
 
 ACI_SpellList_PALADIN_1 = {
@@ -763,6 +760,8 @@ local function ACI_Alert(self, bcastspell)
 			else
 				ACI_Alert_list[spellname] = false;
 			end
+		else
+			ACI_Alert_list[spellname] = false;
 		end
 
 	elseif t == 2 or t==3 or t == 5  or t == 6 or t == 7 or t == 12 or t == 17 or t == 18 then
@@ -1517,12 +1516,12 @@ local function ACI_OnEvent(self, event, arg1, ...)
 			end
 		end
 
-	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "PLAYER_TALENT_UPDATE" then
-		ACI_Init();
+	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" then
+		C_Timer.After(0.5, ACI_Init);	
 		bfirst = true;
 	elseif event == "ACTIONBAR_SLOT_CHANGED" and bfirst then
+		C_Timer.After(0.5, ACI_Init);	
 		bfirst = false;
-		ACI_Init();
 	elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
 		local spell = GetSpellInfo(arg1);
 		ACI_Active_list[spell] = true;
@@ -1583,6 +1582,34 @@ local function deepcopy(orig)
     return copy
 end
 
+
+local function asCheckTalent(name)
+	local specID = PlayerUtil.GetCurrentSpecID();
+   
+    local configID = C_ClassTalents.GetActiveConfigID();
+    local configInfo = C_Traits.GetConfigInfo(configID);
+    local treeID = configInfo.treeIDs[1];
+
+    local nodes = C_Traits.GetTreeNodes(treeID);
+
+    for _, nodeID in ipairs(nodes) do
+        local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
+        if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
+            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
+            local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
+            local definitionInfo = entryInfo and entryInfo.definitionID and C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+
+            if definitionInfo ~= nil then
+                local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
+				--print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));;
+				if name == talentName then
+					return true;
+				end
+            end
+        end
+    end
+	return false;
+end
 
 
 local ACI_Spec = nil;
@@ -1702,72 +1729,44 @@ function ACI_Init()
 
 			--ACI_Action_slot_list[i] = ACI_GetActionSlot(ACI_SpellList[i][2]);
 
-			local tier = tonumber (ACI_SpellList[i][1]);
+			local check = tonumber (ACI_SpellList[i][1]);
 
-			if tier and talentgroup and tier < 9 then
+			if check and check == 99 then
 				local bselected = false;
-				for column = 1, 3 do
-					local talentID, name, texture, selected, available, spellID, _, _, _, _, grantedByAura = GetTalentInfo(tier, column, talentgroup);
+				local spell_name = ACI_SpellList[i][2];
+				if asCheckTalent(spell_name) then
 
-					if selected or grantedByAura  then
+					if ACI_SpellList[i][3] then
 
-						bselected = true;
-						local frame = _G["ACI"..i];
+						local array = ACI_SpellList[i][3];
+						if type(array) == "table"	then
+							local z;
 
-						local frameIcon = _G["ACI"..i.."Icon"];
+							ACI_SpellList[i][3] = nil;
+							ACI_SpellList[i][4] = nil;
 
-						frameIcon:SetTexture(texture);
-
-						frameIcon:SetVertexColor(1.0, 1.0, 1.0);
-						frameIcon:SetAlpha(1);
-						frameIcon:SetDesaturated(true)
-						frame:Show();
-
-
-						ACI_SpellList[i][1] = name;
-
-						if ACI_SpellList[i][column + 1] then
-
-							local array = ACI_SpellList[i][column + 1];
-
-
-							if type(array) == "table"	then
-								local z;
-
-								ACI_SpellList[i][3] = nil;
-								ACI_SpellList[i][4] = nil;
-
-								for z = 1, #array do
-									ACI_SpellList[i][z] = array[z];			
-								end
-
-							else
-								ACI_SpellList[i][2] = tonumber(ACI_SpellList[i][column + 1]);
-								ACI_SpellList[i][3] = nil;
-								ACI_SpellList[i][4] = nil;
+							for z = 1, #array do
+								ACI_SpellList[i][z] = array[z];			
 							end
-						else
 
-							if IsHarmfulSpell(name) then
-								ACI_SpellList[i][2] = 4;
-							elseif IsPassiveSpell(name) then
-								ACI_SpellList[i][2] = 2;
-							elseif IsHelpfulSpell(name) then
-								ACI_SpellList[i][2] = 2;
-							else
-								ACI_SpellList[i][2] = 6;
-							end
 						end
-					end
-				end
+					end					
+				else
+					if ACI_SpellList[i][4] then
 
-				if not bselected then
-					ACI_SpellList[i][1] = nil;
-					ACI_SpellList[i][2] = nil;
+						local array = ACI_SpellList[i][4];
+						if type(array) == "table"	then
+							local z;
 
-					ACI_SpellList[i][3] = nil;
-					ACI_SpellList[i][4] = nil;
+							ACI_SpellList[i][3] = nil;
+							ACI_SpellList[i][4] = nil;
 
+							for z = 1, #array do
+								ACI_SpellList[i][z] = array[z];			
+							end
+
+						end
+					end						
 				end
 			end
 
@@ -2006,11 +2005,11 @@ end
 ACI_mainframe = CreateFrame("Frame", nil, UIParent);
 ACI_mainframe:SetScript("OnEvent", ACI_OnEvent);
 ACI_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
-ACI_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+ACI_mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED");
+ACI_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 ACI_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 ACI_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
 ACI_mainframe:RegisterEvent("VARIABLES_LOADED");
-ACI_mainframe:RegisterEvent("PLAYER_TALENT_UPDATE");
 ACI_mainframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
 ACI_mainframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
 ACI_mainframe:RegisterEvent("ACTIONBAR_SLOT_CHANGED")

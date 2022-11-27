@@ -1193,18 +1193,22 @@ local function APB_CheckPower(self)
 			bsmall_power_bar = true;
 		end
 
-		if (spec and spec == 3) then
+		if (spec and spec == 3 ) then
 		
-			APB_BUFF_COMBO = "고드름";		
-			APB_MaxCombo(5);
+			if asCheckTalent("혹한의 쐐기") then
+				APB_BUFF_COMBO = "고드름";		
+				APB_MaxCombo(5);
+				APB.combobar.unit = "player"
+				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				APB_UpdateBuffCombo(self.combobar)
+				bupdate_buff_combo = true;				
+			end		
+			
+			APB_BUFF = "얼음 핏줄";		
 			APB.combobar.unit = "player"
+			APB.buffbar.unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
-			APB_UpdateBuffCombo(self.combobar)
-			bupdate_buff_combo = true;
-
 			bsmall_power_bar = true;
-
-			bshow_haste = true;
 		end		
 
 	end
@@ -1645,48 +1649,11 @@ local function checkSpellCost(id)
 
 		return;
 	end
-
-
-	--[[
-
-
-	while true do
-		local spellName, _, spellID = GetSpellBookItemName (i, BOOKTYPE_SPELL)
-
-		if not spellName then
-			do break end
-		end
-		if spellID then
-			local spell = Spell:CreateFromSpellID(spellID);
-			spell:ContinueOnSpellLoad(function()
-				local costText = spell:GetSpellDescription();
-				local powerType = UnitPowerType("player");
-
-				if  costText and PowerTypeString[powerType] and string.match(costText,  PowerTypeString[powerType] ) and string.match(costText,  "생성" )   then
-					local findstring = "%d의 "..PowerTypeString[powerType];
-					local start = string.find(costText, findstring, 0);
-					if start and start > 10 then
-						local costText2 = string.sub(costText, start - 5);
-						local cost = gsub(costText2, "[^0-9]", "")
-						if tonumber(cost) > 0 then
-							SpellGetCosts[spellID] = tonumber(cost);
-						end
-					end
-				end
-			end)
-		end
-
-	
-		i = i + 1
-	end
-	--]]
-
 end
 
 
 
 local function checkSpellPowerCost(id)
-
 
 	local i = 1
 
@@ -1708,9 +1675,6 @@ local function checkSpellPowerCost(id)
 		end
 	end
 
-
-
-
 	if id then
 		local spell = Spell:CreateFromSpellID(id);
 		spell:ContinueOnSpellLoad(function()
@@ -1725,12 +1689,9 @@ local function checkSpellPowerCost(id)
 					if tonumber(cost) > 0 then
 						
 						if disWarlock then
-
 							SpellGetPowerCosts[id] = tonumber(cost) / 10;
-
 						else
 							SpellGetPowerCosts[id] = tonumber(cost);
-
 						end
 						return;
 					end
@@ -1762,64 +1723,6 @@ local function checkSpellPowerCost(id)
 
 		return;
 	end
-
-
-
-	--[[
-
-
-	while true do
-		local spellName, _, spellID = GetSpellBookItemName (i, BOOKTYPE_SPELL)
-
-		if not spellName then
-			do break end
-		end
-		if spellID then
-			local spell = Spell:CreateFromSpellID(spellID);
-			spell:ContinueOnSpellLoad(function()
-				local costText = spell:GetSpellDescription();
-				local powerType = UnitPowerType("player");
-
-				if  costText and powerTypeString and string.match(costText,  powerTypeString ) and string.match(costText,  "생성" )   then
-					local findstring = "%d의 "..powerTypeString;
-					local start = string.find(costText, findstring, 0);
-					if start and start > 10 then
-						local costText2 = string.sub(costText, start - 5);
-						local cost = gsub(costText2, "[^0-9]", "")
-						if tonumber(cost) > 0 then
-							if disWarlock then
-								SpellGetPowerCosts[spellID] = tonumber(cost) / 10;
-							else
-								SpellGetPowerCosts[spellID] = tonumber(cost);
-							end						
-						end
-					end
-
-					local findstring = powerTypeString .. " %d개";
-					local start = string.find(costText, findstring, 0);
-					if start and start > 10 then
-						local costText2 = string.sub(costText, start);
-						local start2 = string.find(costText2, "합니다.", 0);
-						local costText2 = string.sub(costText2, 0, start2);
-						local cost = gsub(costText2, "[^0-9]", "")
-						if tonumber(cost) > 0 then
-							
-							if disWarlock then
-								SpellGetPowerCosts[spellID] = tonumber(cost) / 10;
-							else
-								SpellGetPowerCosts[spellID] = tonumber(cost);
-							end
-						end
-					end
-				end			
-			end)
-		end
-
-	
-		i = i + 1
-	end
-	--]]
-
 end
 
 
