@@ -34,6 +34,9 @@ local ANameP_LowHealthAlert = true  	-- 낮은 체력 색상 변경 사용
 local ANameP_LowHealthColor = {r = 1, g = 0.8, b= 0.5}; -- 낮은 체력 이름표 색상 변경
 local ANameP_Alpha_Normal = 0.5			-- 비전투 중 투명도
 local ANameP_Alpha_Combat = 1			-- 전투중 투명도
+local ANameP_Height = 3.9				-- 이름표 높이 기본 3.9
+local ANameP_Width = 85.5				-- 이름표 넓이 기본 85.5
+
 
 
 local ANameP_ShowList = nil;
@@ -656,8 +659,8 @@ local ColorLevel = {
 local classheight_value = 13.5;
 local nameheight_value = 9;
 local castheight = 8;
-local orig_height = 3.9;
-local orig_width = 85.5;
+local orig_height = ANameP_Height;
+local orig_width = ANameP_Width;
 local asnameplateResourceOnTarget = true;
 
 -- 반짝이 처리부
