@@ -31,6 +31,7 @@ local trackedPartySpells={
 	[132409] = 24, -- Warlock: Command Demon - Spell Lock
 	[132409] = 24, -- Warlock: Grimoire of Sacrifice: Spell Lock
 	[6552]   = 15, -- Pummel
+	[351338] = 20, -- Evoker
 }
 
 
