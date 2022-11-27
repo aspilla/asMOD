@@ -4,7 +4,7 @@ local ARD_FontSize = 16;
 local ARD_FontOutline = "THICKOUTLINE";
 local ARD_X	= 0;
 local ARD_Y = -110;
-local ARD_AHT = true				-- asHealthText에 연결
+local ARD_AHT = false				-- asHealthText에 연결
 -- 설정끝
 
 local ARD_mainframe = CreateFrame("Frame", "ARD_main", UIParent);
@@ -48,17 +48,23 @@ local HarmItems = {
 }
 
 
-local isHarm = false;
-local isMe = false;
-
 local function ARD_CheckRange(unit)
 
-	if isMe then
-		return 0;
-	end
-
+	local isHarm = true;
 	local itemlist = FriendItems;
 
+	if UnitIsUnit("player", unit) then
+		return 0;
+	else
+		local reaction = UnitReaction("player", unit);
+
+		if reaction and reaction <= 4 then
+			isHarm = true;
+		else
+			isHarm = false;
+		end
+	end
+	
 	if isHarm then
 		itemlist = HarmItems;
 	end
@@ -132,21 +138,7 @@ end
 function ARD_OnEvent(self, event, arg1, arg2, arg3, ...)
 
 	if event == "PLAYER_TARGET_CHANGED" then
-		unit = "target"
-		if UnitIsUnit("player", unit) then
-			isMe = true;
-		else
-			isMe = false;
-			local reaction = UnitReaction("player", unit);
-
-			if reaction and reaction <= 4 then
-				isHarm = true;
-			else
-				isHarm = false;
-			end
-		end
-
-		local range = ARD_CheckRange(unit);
+		local range = ARD_CheckRange("target");
 		if range == 0 then
 			ARD_RangeText:SetText("");
 		else
