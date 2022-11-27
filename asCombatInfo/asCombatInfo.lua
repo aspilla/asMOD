@@ -30,31 +30,30 @@ local ACI_RefreshRate = 0.5;							-- 반복 Check 주기 (초)
 -- 	Type : 10 양조 수도 시간차 전용
 -- 시작은 99로 하면 다음 특성 이름이 켜 있을때 없을때로 구분 예 {99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}}, 면 주문술사 켜 있으면 첫 array, 아니면 다음 array
 
+
+-- 무전
 ACI_SpellList_WARRIOR_1 = {
 
-	--[[
 	{"제압", 1},
 	{"필사의 일격", 1},
 	{"거인의 강타", 1},
-	{1, {"마무리 일격", 1, true}, {"마무리 일격", 1, true}, 1},
-	{"칼날폭풍", 1},
-	]]
-
+	{"마무리 일격", 1, true},
+	{99, "휩쓸기 일격", {"휩쓸기 일격", 2}, {394062, 8, nil, 15 * 0.3}},
+	
 };
 
 
+-- 분전
 ACI_SpellList_WARRIOR_2 = {
-
-	--[[
-	{3, {"돌진", 1}, {"돌진", 1}, 2},
 	{"분노의 강타", 1},
 	{"피의 갈증", 1},
 	{"무모한 희생", 2},
+	{"광란", 1},
 	{"마무리 일격", 1, true},
-	]]
-			
+				
 };
 
+-- 방전
 ACI_SpellList_WARRIOR_3 = {
 	{"고통 감내", 3},
 	{"방패 올리기", 1},
@@ -63,27 +62,25 @@ ACI_SpellList_WARRIOR_3 = {
 	{"천둥벼락", 1},
 };
 
+-- 암살
 ACI_SpellList_ROGUE_1 = {
-
-	--[[
-	{7, {"소멸", 1}, 2,{"소멸", 1}},
-	{6, {"그림자 밟기", 1}, 1, 1},
-	{"원한", 4},
-	{"목조르기", 4, nil, 5.4},
-	{"파열", 4, nil, 7.2},
-	]]
-
+	{145416, 7, "player"},
+	{"그림자 밟기", 1},
+	{"죽음표식", 4},
+	{"목조르기", 4, nil, 18 * 0.3},
+	{"파열", 4, nil, 24 * 0.3},
 };
 
-
+--무법
 ACI_SpellList_ROGUE_2 = {
 	{"뼈주사위", 14, nil, 5},
 	{"권총 사격", 1},
 	{"아드레날린 촉진", 2},
-	{"폭풍의 칼날", 1},
+	{"폭풍의 칼날", 2},
 	{"소멸", 1},
 };
 
+--잠행
 ACI_SpellList_ROGUE_3 = {
 	{"소멸", 2},
 	{"죽음의 상징", 2},
@@ -92,7 +89,7 @@ ACI_SpellList_ROGUE_3 = {
 	{"그림자 밟기", 2},
 };
 
-
+--야수
 ACI_SpellList_HUNTER_1 = {
 	{118455, 7, "pet"},
 	{"살상 명령", 1},
@@ -101,8 +98,7 @@ ACI_SpellList_HUNTER_1 = {
 	{"반격의 사격", 1},
 };
 
-
-
+--사격
 ACI_SpellList_HUNTER_2 = {
 	{257621, 7, "player"},
 	{"속사", 1},
@@ -111,7 +107,7 @@ ACI_SpellList_HUNTER_2 = {
 	{"연타 공격", 1},
 };
 
-
+--생존
 ACI_SpellList_HUNTER_3 = {
 	{"도살", 1},
 	{"야생불 폭탄", 1},
@@ -120,10 +116,8 @@ ACI_SpellList_HUNTER_3 = {
 	{"작살", 1},
 };
 
-
-
-ACI_SpellList_MAGE_1 = {
-	
+--냉기
+ACI_SpellList_MAGE_1 = {	
 	{"점멸", 1},
 	{"냉정", 1},
 	{"신비의 마법 강화", 2},
@@ -131,6 +125,7 @@ ACI_SpellList_MAGE_1 = {
 	{99, "비전의 조화", {332769, 7, "player", nil, 15}, {"시간 왜곡", 2}},		
 };
 
+--화염
 ACI_SpellList_MAGE_2 = {
 	{"점멸", 1},
 	{"불태우기", 9, 30},
@@ -139,6 +134,7 @@ ACI_SpellList_MAGE_2 = {
 	{"얼음 방패", 1}, 
 };
 
+--비전
 ACI_SpellList_MAGE_3 = {
 	{"진눈깨비", 1},
 	{"얼어붙은 구슬", 1},
@@ -417,7 +413,13 @@ ACI_SpellList_DEMONHUNTER_2 = {
 	]]
 }
 
+--황폐
 ACI_SpellList_EVOKER_1 = {
+	{"부양", 1},
+	{"파열", 1},
+	{"용의 분노", 2},
+	{"기염", 1},
+	{"불의 숨결", 1},
 	
 }
 
@@ -1885,10 +1887,6 @@ function ACI_Init()
 				EventsFrame_RegisterFrame("SPELL_UPDATE_CHARGES", ACI[i]);
 				EventsFrame_RegisterFrame("UNIT_SPELLCAST_SUCCEEDED", ACI[i]);
 
-
-
-
-
 			elseif t == 2 or t==3 or t == 5  or t == 6 or t == 7 or t == 10 or t == 14 or t == 17 or t == 18 then
 				ACI[i].unit =ACI_SpellList[i][3];
 				if ACI[i].unit == nil then
@@ -1943,7 +1941,7 @@ function ACI_Init()
 
 		end
 
-		ACI_Timer =	C_Timer.NewTicker(0.5, ACI_OnUpdate);
+		ACI_Timer =	C_Timer.NewTicker(0.2, ACI_OnUpdate);
 		
 		LoadAddOn("asCooldownPulse")
 
@@ -2085,20 +2083,3 @@ LoadAddOn("asMOD");
 if asMOD_setupFrame then
          asMOD_setupFrame (ACI[3], "asCombatInfo");
 end
-
-
---[[
-
-ACI_Options = {};
-ACI_Options.panel = CreateFrame( "Frame", "ACI_Panel", UIParent, "asCombatInfoOptionFrameTemplate" );
-ACI_Options.panel.name = "asCombatInfo";
-
-ACI_Options.panel.okay  = function()
-end
-
-ACI_Options.panel.cancel = function() 
-end
-
-	-- Add the panel to the Interface Options
-InterfaceOptions_AddCategory(ACI_Options.panel);
---]]
