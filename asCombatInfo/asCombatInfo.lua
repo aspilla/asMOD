@@ -118,11 +118,11 @@ ACI_SpellList_HUNTER_3 = {
 
 --냉기
 ACI_SpellList_MAGE_1 = {	
-	{"점멸", 1},
-	{"냉정", 1},
-	{"신비의 마법 강화", 2},
+	{"비전의 여파", 4, "target"},
+	{"비전 보주", 1},
+	{"비전 쇄도", 1},
 	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},		
-	{99, "비전의 조화", {332769, 7, "player", nil, 15}, {"시간 왜곡", 2}},		
+	{99, "비전의 조화", {332769, 7, "player", nil, 15}, {"빛나는 불꽃", 4, "target"}},		
 };
 
 --화염
@@ -1565,26 +1565,7 @@ local function ACI_GetActionSlot(arg1)
 	return nil;
 end
 
-
----------------
---  Options  --
----------------
-local function deepcopy(orig)
-    local orig_type = type(orig)
-    local copy
-    if orig_type == 'table' then
-        copy = {}
-        for orig_key, orig_value in next, orig, nil do
-            copy[deepcopy(orig_key)] = deepcopy(orig_value)
-        end
-        setmetatable(copy, deepcopy(getmetatable(orig)))
-    else -- number, string, boolean, etc
-        copy = orig
-    end
-    return copy
-end
-
-
+-- 용군단 Talent Check 함수
 local function asCheckTalent(name)
 	local specID = PlayerUtil.GetCurrentSpecID();
    
@@ -1675,26 +1656,6 @@ function ACI_Init()
 
 	end
 
-	--[[
-
-	if type(ACI_Settings)~="table" then
-		ACI_Settings = {}
-	end
-	if spec then
-
-		if type(ACI_Settings[spec])~="table" or #ACI_Settings[spec]== 0 then
-			ACI_Settings[spec] = deepcopy(ACI_SpellList)
-		end
-
-		ACI_SpellList = deepcopy(ACI_Settings[spec])
-	else
-		ACI_SpellList = nil;
-		return;
-
-	end
-
-	--]]
-	--
 	event_frames["PLAYER_TARGET_CHANGED"] = {};
 	event_frames["UNIT_AURA"] = {};
 	event_frames["ACTIONBAR_UPDATE_COOLDOWN"] = {};

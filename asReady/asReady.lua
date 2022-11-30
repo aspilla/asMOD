@@ -2,7 +2,7 @@
 
 local AREADY_WIDTH = 100	-- 쿨 바의 넓이
 local AREADY_HEIGHT = 14		-- 쿨 바의 높이
-local AREADY_X = 330;		-- X 위치
+local AREADY_X = -330;		-- X 위치
 local AREADY_Y = 15;		-- Y 위치
 local AREADY_Font = "Fonts\\2002.TTF";
 local AREDDY_Max = 10;		-- 최대 표시 List 수

@@ -9,7 +9,6 @@ CastingBarFrame:ClearAllPoints()
 CastingBarFrame:SetPoint("CENTER", "UIParent", "CENTER", ACB_Cast_X, ACB_Cast_Y)
 if asMOD_setupFrame then
     asMOD_setupFrame (CastingBarFrame, "asCastBar");
-
 end
 
 CastingBarFrame.ignoreFramePositionManager = true
