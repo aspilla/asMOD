@@ -1280,7 +1280,28 @@ end
 
 -- Healthbar 색상 처리부
 
-local function asCompactUnitFrame_UpdateHealthColor(frame)
+local function setColoronStatusBar(self, r, g, b)
+
+	local parent = self:GetParent();
+
+    if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden()  then
+		return;
+    end
+	
+	local healthBar = parent.UnitFrame.healthBar;
+
+    if not healthBar and healthBar:IsForbidden() then
+		return;
+    end
+
+	if ( r ~= self.r or g ~= self.g or b ~= self.b ) then
+		healthBar:SetStatusBarColor(r, g, b);
+		self.r, self.g, self.b = r, g, b;
+	end
+end
+
+
+local function asCompactUnitFrame_UpdateHealthColor(frame, asNameplates)
 	local r, g, b;
 	if ( not UnitIsConnected(frame.unit) ) then
 		--Color it gray
@@ -1320,7 +1341,7 @@ local function asCompactUnitFrame_UpdateHealthColor(frame)
 			end
 	
 	end
-	frame.healthBar:SetStatusBarColor(r, g, b);
+	setColoronStatusBar(asNameplates, r, g, b);
 
 	if (frame.optionTable.colorHealthWithExtendedColors) then
 		frame.selectionHighlight:SetVertexColor(r, g, b);
@@ -1372,7 +1393,7 @@ local function updateHealthbarColor(self)
 	if ( isTargetPlayer) then
 		if self.colorlevel < ColorLevel.Target then
 			self.colorlevel = ColorLevel.Target;
-			healthBar:SetStatusBarColor(ANameP_AggroTargetColor.r, ANameP_AggroTargetColor.g, ANameP_AggroTargetColor.b);
+			setColoronStatusBar(self, ANameP_AggroTargetColor.r, ANameP_AggroTargetColor.g, ANameP_AggroTargetColor.b);
 		end
 		return;
 	end
@@ -1381,38 +1402,34 @@ local function updateHealthbarColor(self)
 	local status = UnitThreatSituation("player", self.unit);
 	
 	if status and ANameP_AggroShow then
-		if self.colorlevel < ColorLevel.Aggro then
-			
-			local tanker = IsPlayerEffectivelyTank();		
-			if tanker then			
-				local aggrocolor;
-				if status >= 2 then
-					-- Tanking
-					aggrocolor = ANameP_AggroColor;
-				else
-					aggrocolor = ANameP_TankAggroLoseColor;
-
-					if #tanklist > 0 then
-						for _, othertank in ipairs(tanklist) do
-							if UnitIsUnit(self.unit.."target", othertank ) and not UnitIsUnit(self.unit.."target", "player" ) then
-								aggrocolor = ANameP_TankAggroLoseColor2;
-								break;
-							end
-						end													
-					end					
-				end
-				self.colorlevel = ColorLevel.Aggro;		
-				healthBar:SetStatusBarColor(aggrocolor.r, aggrocolor.g, aggrocolor.b);
+		local tanker = IsPlayerEffectivelyTank();		
+		if tanker then			
+			local aggrocolor;
+			if status >= 2 then
+				-- Tanking
+				aggrocolor = ANameP_AggroColor;
+			else
+				aggrocolor = ANameP_TankAggroLoseColor;
+				if #tanklist > 0 then
+					for _, othertank in ipairs(tanklist) do
+						if UnitIsUnit(self.unit.."target", othertank ) and not UnitIsUnit(self.unit.."target", "player" ) then
+							aggrocolor = ANameP_TankAggroLoseColor2;
+							break;
+						end
+					end													
+				end					
+			end
+			self.colorlevel = ColorLevel.Aggro;		
+			setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
+			return;
+		else -- Tanker가 아닐때
+			local aggrocolor;
+			if status >= 1 then
+				-- Tanking
+				aggrocolor = ANameP_AggroColor;
+				self.colorlevel = ColorLevel.Aggro;
+				setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
 				return;
-			else -- Tanker가 아닐때
-				local aggrocolor;
-				if status >= 1 then
-					-- Tanking
-					aggrocolor = ANameP_AggroColor;
-					self.colorlevel = ColorLevel.Aggro;
-					healthBar:SetStatusBarColor(aggrocolor.r, aggrocolor.g, aggrocolor.b);
-					return;
-				end
 			end
 		end
 	end
@@ -1428,7 +1445,7 @@ local function updateHealthbarColor(self)
 		end
 
 		if valuePct <= lowhealthpercent then
-			healthBar:SetStatusBarColor(ANameP_LowHealthColor.r, ANameP_LowHealthColor.g, ANameP_LowHealthColor.b);
+			setColoronStatusBar(self, ANameP_LowHealthColor.r, ANameP_LowHealthColor.g, ANameP_LowHealthColor.b);
 			self.colorlevel = ColorLevel.Lowhealth;
 			return;
 		end		
@@ -1436,7 +1453,7 @@ local function updateHealthbarColor(self)
 
 	-- Debuff Color
 	if self.colorlevel == ColorLevel.Debuff then
-		healthBar:SetStatusBarColor(self.debuffColor.r, self.debuffColor.g, self.debuffColor.b);
+		setColoronStatusBar(self, self.debuffColor.r, self.debuffColor.g, self.debuffColor.b);
 		return;
 	end
 
@@ -1447,7 +1464,7 @@ local function updateHealthbarColor(self)
 				if UnitIsUnit(self.unit.."target", othertank ) and not UnitIsUnit(self.unit.."target", "player" ) then
 					aggrocolor = ANameP_TankAggroLoseColor2;
 					self.colorlevel = ColorLevel.Custom;
-					healthBar:SetStatusBarColor(aggrocolor.r, aggrocolor.g, aggrocolor.b);
+					setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
 					return;					
 				end
 			end
@@ -1456,7 +1473,7 @@ local function updateHealthbarColor(self)
 		if UnitIsUnit(self.unit.."target", "pet" )  then
 			aggrocolor = ANameP_TankAggroLoseColor3;
 			self.colorlevel = ColorLevel.Custom;
-			healthBar:SetStatusBarColor(aggrocolor.r, aggrocolor.g, aggrocolor.b);
+			setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
 			return;
 		end		
 	end
@@ -1464,7 +1481,7 @@ local function updateHealthbarColor(self)
 	-- None
 	if self.colorlevel > ColorLevel.None then
 		self.colorlevel = ColorLevel.None;
-		asCompactUnitFrame_UpdateHealthColor(parent.UnitFrame);
+		asCompactUnitFrame_UpdateHealthColor(parent.UnitFrame, self);
 	end
 
 	return;
@@ -1662,7 +1679,8 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates = CreateFrame("Frame", "$parentasNamePlates", namePlateFrameBase);
 	else
 		if namePlateFrameBase.asNamePlates.colorlevel > ColorLevel.None  then
-			asCompactUnitFrame_UpdateHealthColor(unitFrame);
+			namePlateFrameBase.asNamePlates.r = nil; -- 무조건 Recover
+			asCompactUnitFrame_UpdateHealthColor(unitFrame, namePlateFrameBase.asNamePlates);
 		end
     end
 	--
