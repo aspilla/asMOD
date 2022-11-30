@@ -235,101 +235,6 @@ local ANameP_BigDebuff = {
 }
 
 
-
-
-local ANameP_PVPBuffList = {
-
-	-- Defensive Buffs
-	[122470] =1,	-- Touch of Karma
-	[116849] = 1,	-- Life Cocoon
-	[33206] =1,	-- Pain Suppression
-	[49039] = 1,	-- Lichborne
-	--54216,	-- Master's Call UNUSED?
-	[5277] = 1,	-- Evasion
-	[199754] =1,	-- Riposte
-	--110913,	-- Dark Bargain REMOVED IN LEGION
-	[108359] = 1,	-- Dark Regeneration
-	[104773] = 1,	-- Unending Resolve
-	[18499] =1,	-- Berserker Rage
-	[61336] = 1,	-- Survival Instincts
-	[22812] = 1,	-- Barkskin
-	[102342] = 1,	-- Iron Bark
-	[6940] = 1,	-- Hand of Sacrifice
-	[110909] = 1,	-- Alter Time
-	--30823,	-- Shamanistic Rage REMOVED IN LEGION
-	[118038] = 1,	-- Die by the Sword
-	[33891] = 1,	-- Incarnation: Tree of Life
-	[74001] = 1,	-- Combat Readiness
-	[108271] =1,	-- Astral Shift
-	--111397,	-- Blood Horror REMOVED IN LEGION
-	[108416] =1,	-- Dark Pact
-	--55694,	-- Enraged Regeneration REMOVED IN LEGION
-	[47788] =1,	-- Guardian Spirit
-	[122783] =1,	-- Diffuse Magic
-	[12975] = 1,	-- Last Stand
-	[871] = 1,	-- Shield Wall
-	[212800] = 1,	-- Blur
-	[55233] = 1,	-- Vampiric Blood
-	[194679] =1,	-- Rune Tap
-	[207319] = 1,	-- Corpse Shield
-
-
-		-- Immune
-	[19263] = 1,	-- Deterrence
-	[186265] = 1, -- Aspect of the Turtle
-	[45438] = 1,	-- Ice Block
-	[642] = 1,	-- Divine Shield    
-	[115018] = 1,	-- Desecrated Ground
-	[31821] = 1,	-- Aura Mastery
-	[1022] = 1,	-- Hand of Protection
-	[47585] = 1,	-- Dispersion
-	[31224] =1,	-- Cloak of Shadows
-	--45182,	-- Cheating Death PROBABLY UNNECESSARY
-	[8178] = 1,	-- Grounding Totem Effect (Grounding Totem)
-	[76577] = 1,	-- Smoke Bomb
-	[88611] = 1,	-- Smoke Bomb
-	[46924] = 1,	-- Bladestorm
-
-	-- Anti CC
-	[48792] = 1,	-- Icebound Fortitude
-	[48707] = 1,	-- Anti-Magic Shell
-	[23920] = 1,	-- Spell Reflection
-	[114028] = 1,	-- Mass Spell Reflection
-	[5384] = 1,	-- Feign Death
-
-	-- Offensive Buffs
-	[51690] = 2,	-- Killing Spree
-	--185422,	-- Shadow Dance UNNECESSARY, SUB ROGUES DANCE ALL THE DAMNED TIME
-	--84747,	-- Deep Insight (Rogue Red Buff) REMOVED IN LEGION
-	--84746,	-- Moderate Insight (Rogue Yellow Buff) REMOVED IN LEGION
-	[13750] = 2,	-- Adrenaline Rush
-	--112071,	-- Celestial Alignment REMOVED IN LEGION
-	[31884] = 2,	-- Avenging Wrath
-	[1719] = 2,	-- Battle Cry
-	--113858,	-- Dark Soul REMOVED IN LEGION
-	--113861,	-- Dark Soul REMOVED IN LEGION
-	--113860,	-- Dark Soul REMOVED IN LEGION
-	[102543] = 2,	-- Incarnation: King of the Jungle
-	[106951] = 2,	-- Berserk
-	[102560] = 2,	-- Incarnation: Chosen of Elune
-	[12472] = 2,	-- Icy Veins
-	--3045,	-- Rapid Fire UNUSED?
-	[193526] = 2, -- Trueshot
-	[19574] = 2,	-- Bestial Wrath
-	[186289] = 2,	-- Aspect of the Eagle
-	[51271] = 2,	-- Pillar of Frost
-	[152279] = 2,	-- Breath of Sindragosa
-	[105809] = 2,	-- Holy Avenger
-	[16166] = 2,	-- Elemental Mastery
-	[114050] = 2,	-- Ascendance
-	[107574] = 2,	-- Avatar
-	[121471] = 2,	-- Shadow Blades
-	[12292] = 2,	-- Bloodbath
-	[162264] = 2,	-- Metamorphosis
-
-
-
-}
 local ANameP_PVPBuffList = {
 
 
@@ -648,12 +553,13 @@ local lowhealthpercent = 0;
 
 local ColorLevel = {
 	None = 0,
-	Custom = 1,
-	Debuff = 2,
-	Lowhealth = 3,
-	Aggro = 4,
-	Target = 5,
-	Name = 6,
+	Reset = 1,
+	Custom = 2,
+	Debuff = 3,
+	Lowhealth = 4,
+	Aggro = 5,
+	Target = 6,
+	Name = 7,
 };
 
 local classheight_value = 13.5;
@@ -790,27 +696,21 @@ local function updateTankerList()
 				local notMe = not UnitIsUnit('player',unitid)
 				local unitName = UnitName(unitid)
 				if unitName and notMe then
-					local _,_,_,_,_,_,_,_,_,role,_, assignedRole = GetRaidRosterInfo(i) -- role = 'MAINTANK|MAINASSIST', assignedRole = 'TANK|HEALER|DAMAGER|NONE'
+					local _,_,_,_,_,_,_,_,_,role,_, assignedRole = GetRaidRosterInfo(i);
 					if assignedRole == "TANK" then
-						table.insert(tanklist, unitid)
+						table.insert(tanklist, unitid);
 					end
 				end
 			end
 		else -- party
 			for i=1,GetNumSubgroupMembers() do
-				local unitid = "party"..i
-				local unitName = UnitName(unitid)
+				local unitid = "party"..i;
+				local unitName = UnitName(unitid);
 				if unitName then
-					local role,assignedRole
-					if ( GetPartyAssignment('MAINTANK', unitid) ) then
-						role = 'MAINTANK'
-					end
-					assignedRole = UnitGroupRolesAssigned(unitid)
-
+					local assignedRole = UnitGroupRolesAssigned(unitid);
 					if assignedRole == "TANK" then
-						table.insert(tanklist, unitid)
+						table.insert(tanklist, unitid);
 					end
-
 				end
 			end
 		end
@@ -1161,8 +1061,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 						end
 
 						if ANameP_ShowList[name][3] and self.colorlevel <= ColorLevel.Debuff then
-							local color = ANameP_ShowList[name][3];
-							healthBar:SetStatusBarColor(color.r, color.g, color.b);
+							self.debuffColor = ANameP_ShowList[name][3];
 							self.colorlevel = ColorLevel.Debuff;
 							bcannotfinddebuff = false;
 						end
@@ -1222,10 +1121,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 		end
 
 		if self.colorlevel == ColorLevel.Debuff and bcannotfinddebuff == true then
-			if self.currcolor then
-				setStatusBarColor(self, self.currcolor);
-				self.colorlevel = ColorLevel.None;
-			end
+			self.colorlevel = ColorLevel.Reset;
 		end
 	end
 
@@ -1256,6 +1152,7 @@ local function updateUnitAuras(unit)
 		end
 	end
 end
+
 local function updateTargetNameP(self)
 
 	if not self.unit or not self.checkaura then
@@ -1274,22 +1171,9 @@ local function updateTargetNameP(self)
 		return;
     end
 	
-	local unitname = GetUnitName(self.unit);
 	local casticon = self.casticon;
 	local height = orig_height;
 	local width = orig_width;
-
-	if unitname and ANameP_AlertList[unitname] then
-		self.colorlevel = ColorLevel.Name;
-
-		if ANameP_AlertList[unitname][4] == 1 then
-			--ANameP_ShowOverlayGlow(healthBar);
-			self.alerthealthbar = true	
-		end
-	elseif self.alerthealthbar then
-		--ANameP_HideOverlayGlow(healthBar);
-		self.alerthealthbar = false;
-	end
 
 	if UnitIsUnit(self.unit, "target") then		
 		if self.alerthealthbar then
@@ -1356,127 +1240,6 @@ local function updateUnitHealthText(self, unit)
 	end	
 end
 
-local function updateAggroColor(self, bFirst)
-
-	if not ANameP_AggroShow then
-		return;
-	end
-	if not self.unit then
-		return;
-	end
-
-	local parent = self:GetParent();
-	local healthBar = parent.UnitFrame.healthBar;
-
-	if parent.UnitFrame:IsForbidden() then
-		return;
-	end
-
-	if not 	self.r or self.r ~= healthBar.r then
-		self.r, self.g, self.b = healthBar.r, healthBar.g, healthBar.b
-		self.currcolor = {};
-		self.currcolor = {healthBar.r, healthBar.g, healthBar.b};
-	end
-
-	local nr, ng, nb = healthBar.r, healthBar.g, healthBar.b;
-	
-	if self.colorlevel == ColorLevel.Name then
-       local unitname = GetUnitName(self.unit);
-		if unitname and ANameP_AlertList[unitname] and not healthBar:IsForbidden() then
-			healthBar:SetStatusBarColor(ANameP_AlertList[unitname][1], ANameP_AlertList[unitname][2], ANameP_AlertList[unitname][3]);
-			self.currcolor = {};
-			self.currcolor = {ANameP_AlertList[unitname][1], ANameP_AlertList[unitname][2], ANameP_AlertList[unitname][3]};
-			return;
-		end
-		return;
-	end
-
-    if bFirst then
-        return;
-    end
-
-	if self.colorlevel > ColorLevel.Aggro then
-		return;
-	end
-
-	if UnitIsUnit(self.unit.."target", "player" )  then
-		nr, ng, nb = ANameP_AggroTargetColor.r, ANameP_AggroTargetColor.g, ANameP_AggroTargetColor.b;
-		self.colorlevel = ColorLevel.Aggro;
-	else
-		local status = UnitThreatSituation("player", self.unit);
-		local tanker = IsPlayerEffectivelyTank();	
-
-		if status == nil then
-			self.colorlevel = ColorLevel.None;
-		else
-			if tanker then
-
-				if status >= 2 then
-					-- Tanking
-					local aggrocolor = ANameP_AggroColor;
-					nr, ng, nb = aggrocolor.r, aggrocolor.g, aggrocolor.b;
-					self.colorlevel = ColorLevel.Aggro;
-				else
-					local aggrocolor = ANameP_TankAggroLoseColor;
-
-					if #tanklist > 0 then
-						for _, othertank in ipairs(tanklist) do
-							if UnitIsUnit(self.unit.."target", othertank ) and not UnitIsUnit(self.unit.."target", "player" ) then
-								aggrocolor = ANameP_TankAggroLoseColor2;
-								self.colorlevel = ColorLevel.Aggro;
-								break;
-							end
-						end					
-						self.colorlevel = ColorLevel.Aggro;					
-					end	
-                    nr, ng, nb = aggrocolor.r, aggrocolor.g, aggrocolor.b;
-				end
-			else
-				if status >= 1 then
-					-- Tanking
-					local aggrocolor = ANameP_AggroColor;
-					nr, ng, nb = aggrocolor.r, aggrocolor.g, aggrocolor.b;
-					self.colorlevel = ColorLevel.Aggro;
-				else
-					if (self.colorlevel == ColorLevel.Debuff) or (self.colorlevel == ColorLevel.Lowhealth)  then
-						return;
-					end
-
-					local aggrocolor = ANameP_TankAggroLoseColor;
-					aggrocolor.r, aggrocolor.g, aggrocolor.b = healthBar.r, healthBar.g, healthBar.b;
-					self.colorlevel = ColorLevel.None;
-
-					if #tanklist > 0 then
-						for _, othertank in ipairs(tanklist) do
-							if UnitIsUnit(self.unit.."target", othertank ) and not UnitIsUnit(self.unit.."target", "player" ) then
-								aggrocolor = ANameP_TankAggroLoseColor2;
-								self.colorlevel = ColorLevel.Custom;
-
-								break;
-							end
-						end
-					end
-
-					if UnitIsUnit(self.unit.."target", "pet" )  then
-						aggrocolor = ANameP_TankAggroLoseColor3;
-						self.colorlevel = ColorLevel.Custom;
-					end
-					nr, ng, nb = aggrocolor.r, aggrocolor.g, aggrocolor.b;
-				end
-			end
-		end
-	end
-
-	if ANameP_AggroStatusBarColor and nr and not healthBar:IsForbidden() then
-		healthBar:SetStatusBarColor(nr, ng, nb);
-		self.currcolor = {};
-		self.currcolor = {nr, ng, nb};
-	end
-end
-
-
-
-
 local function updateBuffPosition(namePlateUnitToken)
 
 	if not namePlateUnitToken then
@@ -1513,32 +1276,198 @@ local function updateBuffPosition(namePlateUnitToken)
 			unitFrame.BuffFrame:Hide();
 		end
 	end
-	
-	--Lowhealth 처리부
-	local value = UnitHealth(unit);
-	local valueMax = UnitHealthMax(unit);
-	local valuePct = 0;
+end
 
-	if valueMax > 0 then
-		valuePct =  (math.ceil((value / valueMax) * 100));
+-- Healthbar 색상 처리부
+
+local function asCompactUnitFrame_UpdateHealthColor(frame)
+	local r, g, b;
+	if ( not UnitIsConnected(frame.unit) ) then
+		--Color it gray
+		r, g, b = 0.5, 0.5, 0.5;
+	elseif (UnitIsDead(frame.unit)) then
+		--Color it gray
+		r, g, b = 0.5, 0.5, 0.5;
+		-- Also hide the health bar
+		frame.hideHealthbar = true;
+	else
+		--Try to color it by class.
+		local localizedClass, englishClass = UnitClass(frame.unit);
+		local classColor = RAID_CLASS_COLORS[englishClass];
+			--debug
+			--classColor = RAID_CLASS_COLORS["PRIEST"];
+			if ( (frame.optionTable.allowClassColorsForNPCs or UnitIsPlayer(frame.unit) or UnitTreatAsPlayerForDisplay(frame.unit)) and classColor and frame.optionTable.useClassColors ) then
+				-- Use class colors for players if class color option is turned on
+				r, g, b = classColor.r, classColor.g, classColor.b;
+			elseif ( CompactUnitFrame_IsTapDenied(frame) ) then
+				-- Use grey if not a player and can't get tap on unit
+				r, g, b = 0.9, 0.9, 0.9;
+			elseif ( frame.optionTable.colorHealthBySelection ) then
+				-- Use color based on the type of unit (neutral, etc.)
+				if ( frame.optionTable.considerSelectionInCombatAsHostile and CompactUnitFrame_IsOnThreatListWithPlayer(frame.displayedUnit) ) then
+					r, g, b = 1.0, 0.0, 0.0;
+				elseif ( UnitIsPlayer(frame.displayedUnit) and UnitIsFriend("player", frame.displayedUnit) ) then
+					-- We don't want to use the selection color for friendly player nameplates because
+					-- it doesn't show player health clearly enough.
+					r, g, b = 0.667, 0.667, 1.0;
+				else
+					r, g, b = UnitSelectionColor(frame.unit, frame.optionTable.colorHealthWithExtendedColors);
+				end
+			elseif ( UnitIsFriend("player", frame.unit) ) then
+				r, g, b = 0.0, 1.0, 0.0;
+			else
+				r, g, b = 1.0, 0.0, 0.0;
+			end
+	
+	end
+	frame.healthBar:SetStatusBarColor(r, g, b);
+
+	if (frame.optionTable.colorHealthWithExtendedColors) then
+		frame.selectionHighlight:SetVertexColor(r, g, b);
+	else
+		frame.selectionHighlight:SetVertexColor(1, 1, 1);
+	end	
+end
+
+
+local function updateHealthbarColor(self)
+	--unit name 부터
+	if not self.unit or not self.checkaura then
+		return;
+	end
+	
+	local unit = self.unit;
+
+	local parent = self:GetParent();
+
+    if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden()  then
+		return;
+    end
+	
+	local healthBar = parent.UnitFrame.healthBar;
+
+    if not healthBar and healthBar:IsForbidden() then
+		return;
+    end
+
+	-- ColorLevel.Name;
+	local unitname = GetUnitName(self.unit);
+	
+	if unitname and ANameP_AlertList[unitname] then
+		if self.colorlevel < ColorLevel.Name then
+			self.colorlevel = ColorLevel.Name;
+			healthBar:SetStatusBarColor(ANameP_AlertList[unitname][1], ANameP_AlertList[unitname][2], ANameP_AlertList[unitname][3]);
+		end
+
+		if ANameP_AlertList[unitname][4] == 1 then
+			--ANameP_ShowOverlayGlow(healthBar);
+			self.alerthealthbar = true	
+		end
+		return;
 	end
 
-	if namePlateFrameBase.asNamePlates.colorlevel <= ColorLevel.Lowhealth and not UnitIsUnit(unit, "player") and lowhealthpercent > 0  then
-		if valuePct <= lowhealthpercent then
-			healthbar:SetStatusBarColor(ANameP_LowHealthColor.r, ANameP_LowHealthColor.g, ANameP_LowHealthColor.b);
-			namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.Lowhealth;
-		elseif namePlateFrameBase.asNamePlates.colorlevel == ColorLevel.Lowhealth then
+	--Target Check 
+	local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
 
-			if namePlateFrameBase.asNamePlates.currcolor then
-				healthbar:SetStatusBarColor(namePlateFrameBase.asNamePlates.currcolor[1], namePlateFrameBase.asNamePlates.currcolor[2], namePlateFrameBase.asNamePlates.currcolor[3]);
-			else
-				healthbar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r, namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
-			end
+	if ( isTargetPlayer) then
+		if self.colorlevel < ColorLevel.Target then
+			self.colorlevel = ColorLevel.Target;
+			healthBar:SetStatusBarColor(ANameP_AggroTargetColor.r, ANameP_AggroTargetColor.g, ANameP_AggroTargetColor.b);
+		end
+		return;
+	end
+
+	-- Aggro Check
+	local status = UnitThreatSituation("player", self.unit);
+	
+	if status and ANameP_AggroShow then
+		if self.colorlevel < ColorLevel.Aggro then
 			
-			namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
+			local tanker = IsPlayerEffectivelyTank();		
+			if tanker then			
+				local aggrocolor;
+				if status >= 2 then
+					-- Tanking
+					aggrocolor = ANameP_AggroColor;
+				else
+					aggrocolor = ANameP_TankAggroLoseColor;
+
+					if #tanklist > 0 then
+						for _, othertank in ipairs(tanklist) do
+							if UnitIsUnit(self.unit.."target", othertank ) and not UnitIsUnit(self.unit.."target", "player" ) then
+								aggrocolor = ANameP_TankAggroLoseColor2;
+								break;
+							end
+						end													
+					end					
+				end
+				self.colorlevel = ColorLevel.Aggro;		
+				healthBar:SetStatusBarColor(aggrocolor.r, aggrocolor.g, aggrocolor.b);
+				return;
+			else -- Tanker가 아닐때
+				local aggrocolor;
+				if status >= 1 then
+					-- Tanking
+					aggrocolor = ANameP_AggroColor;
+					self.colorlevel = ColorLevel.Aggro;
+					healthBar:SetStatusBarColor(aggrocolor.r, aggrocolor.g, aggrocolor.b);
+					return;
+				end
+			end
+		end
+	end
+	
+	if lowhealthpercent > 0  then
+		--Lowhealth 처리부
+		local value = UnitHealth(unit);
+		local valueMax = UnitHealthMax(unit);
+		local valuePct = 0;
+
+		if valueMax > 0 then
+			valuePct =  (math.ceil((value / valueMax) * 100));
+		end
+
+		if valuePct <= lowhealthpercent then
+			healthBar:SetStatusBarColor(ANameP_LowHealthColor.r, ANameP_LowHealthColor.g, ANameP_LowHealthColor.b);
+			self.colorlevel = ColorLevel.Lowhealth;
+			return;
 		end		
 	end
 
+	-- Debuff Color
+	if self.colorlevel == ColorLevel.Debuff then
+		healthBar:SetStatusBarColor(self.debuffColor.r, self.debuffColor.g, self.debuffColor.b);
+		return;
+	end
+
+	if status then
+		aggrocolor = ANameP_TankAggroLoseColor;
+		if #tanklist > 0 then
+			for _, othertank in ipairs(tanklist) do
+				if UnitIsUnit(self.unit.."target", othertank ) and not UnitIsUnit(self.unit.."target", "player" ) then
+					aggrocolor = ANameP_TankAggroLoseColor2;
+					self.colorlevel = ColorLevel.Custom;
+					healthBar:SetStatusBarColor(aggrocolor.r, aggrocolor.g, aggrocolor.b);
+					return;					
+				end
+			end
+		end
+	
+		if UnitIsUnit(self.unit.."target", "pet" )  then
+			aggrocolor = ANameP_TankAggroLoseColor3;
+			self.colorlevel = ColorLevel.Custom;
+			healthBar:SetStatusBarColor(aggrocolor.r, aggrocolor.g, aggrocolor.b);
+			return;
+		end		
+	end
+
+	-- None
+	if self.colorlevel > ColorLevel.None then
+		self.colorlevel = ColorLevel.None;
+		asCompactUnitFrame_UpdateHealthColor(parent.UnitFrame);
+	end
+
+	return;
 end
 
 local function updatePVPAggro(self)
@@ -1575,44 +1504,6 @@ local function updatePVPAggro(self)
 		self.aggro2:Hide();
 	end
 end
-
-local function updatePVEAggro(self)
-
-	if not ANameP_PVPAggroShow then
-		return
-	end
-
-	if not self.unit then
-		return
-	end
-
-	local unit = self.unit;
-	local parent = self:GetParent();
-
-	if parent.UnitFrame:IsForbidden() then
-		return;
-	end
-	
-	local parent = self:GetParent();
-	local healthBar = parent.UnitFrame.healthBar;
-
-	local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
-
-	if ( isTargetPlayer) and (self.colorlevel <= ColorLevel.Target) then
-		self.colorlevel = ColorLevel.Target;
-		if not healthBar:IsForbidden() then
-			healthBar:SetStatusBarColor(ANameP_AggroTargetColor.r, ANameP_AggroTargetColor.g, ANameP_AggroTargetColor.b);
-		end
-	elseif (self.colorlevel == ColorLevel.Target) then
-
-		if self.currcolor then
-			healthBar:SetStatusBarColor(self.currcolor[1], self.currcolor[2], self.currcolor[3]);
-		end
-
-		self.colorlevel = ColorLevel.None;
-	end
-end
-
 
 local function asCheckTalent(name)
 	local specID = PlayerUtil.GetCurrentSpecID();
@@ -1700,10 +1591,12 @@ end
 
 local function asNamePlates_OnEvent(self, event, ...)	
 	if ( event == "UNIT_THREAT_SITUATION_UPDATE" or event == "UNIT_THREAT_LIST_UPDATE" ) then
-		updateAggroColor(self);	
+		--updateAggroColor(self);	
+		updateHealthbarColor(self)
 	elseif( event == "PLAYER_TARGET_CHANGED") then
 		updateTargetNameP(self);
 		updateBuffPosition(self.unit);
+		updateHealthbarColor(self);
 	elseif( event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" ) then
 		local unit, name , spellid = ...;
 
@@ -1735,55 +1628,6 @@ local function asNamePlates_OnEvent(self, event, ...)
 			end
 		end
 	end
-end
-
-local function asCompactUnitFrame_UpdateHealthColor(frame)
-	local r, g, b;
-	if ( not UnitIsConnected(frame.unit) ) then
-		--Color it gray
-		r, g, b = 0.5, 0.5, 0.5;
-	elseif (UnitIsDead(frame.unit)) then
-		--Color it gray
-		r, g, b = 0.5, 0.5, 0.5;
-		-- Also hide the health bar
-		frame.hideHealthbar = true;
-	else
-		--Try to color it by class.
-		local localizedClass, englishClass = UnitClass(frame.unit);
-		local classColor = RAID_CLASS_COLORS[englishClass];
-			--debug
-			--classColor = RAID_CLASS_COLORS["PRIEST"];
-			if ( (frame.optionTable.allowClassColorsForNPCs or UnitIsPlayer(frame.unit) or UnitTreatAsPlayerForDisplay(frame.unit)) and classColor and frame.optionTable.useClassColors ) then
-				-- Use class colors for players if class color option is turned on
-				r, g, b = classColor.r, classColor.g, classColor.b;
-			elseif ( CompactUnitFrame_IsTapDenied(frame) ) then
-				-- Use grey if not a player and can't get tap on unit
-				r, g, b = 0.9, 0.9, 0.9;
-			elseif ( frame.optionTable.colorHealthBySelection ) then
-				-- Use color based on the type of unit (neutral, etc.)
-				if ( frame.optionTable.considerSelectionInCombatAsHostile and CompactUnitFrame_IsOnThreatListWithPlayer(frame.displayedUnit) ) then
-					r, g, b = 1.0, 0.0, 0.0;
-				elseif ( UnitIsPlayer(frame.displayedUnit) and UnitIsFriend("player", frame.displayedUnit) ) then
-					-- We don't want to use the selection color for friendly player nameplates because
-					-- it doesn't show player health clearly enough.
-					r, g, b = 0.667, 0.667, 1.0;
-				else
-					r, g, b = UnitSelectionColor(frame.unit, frame.optionTable.colorHealthWithExtendedColors);
-				end
-			elseif ( UnitIsFriend("player", frame.unit) ) then
-				r, g, b = 0.0, 1.0, 0.0;
-			else
-				r, g, b = 1.0, 0.0, 0.0;
-			end
-	
-	end
-	frame.healthBar:SetStatusBarColor(r, g, b);
-
-	if (frame.optionTable.colorHealthWithExtendedColors) then
-		frame.selectionHighlight:SetVertexColor(r, g, b);
-	else
-		frame.selectionHighlight:SetVertexColor(1, 1, 1);
-	end	
 end
 
 local function createNamePlate(namePlateFrameBase)
@@ -2096,10 +1940,10 @@ local function asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken)
 		addNamePlate(namePlateUnitToken);
 		if namePlateFrameBase.asNamePlates then
 			updateTargetNameP(namePlateFrameBase.asNamePlates);
-			updateAggroColor(namePlateFrameBase.asNamePlates, true);
 			updateBuffPosition(namePlateUnitToken);		
 			updateUnitAuras(namePlateUnitToken);
 			updateUnitHealthText(self, "target");
+			updateHealthbarColor(namePlateFrameBase.asNamePlates);
 		end		
 	end
 end
@@ -2114,10 +1958,10 @@ local function ANameP_OnEvent(self, event, ...)
 		addNamePlate(namePlateUnitToken);
 		if namePlateFrameBase.asNamePlates then
 			updateTargetNameP(namePlateFrameBase.asNamePlates);
-			updateAggroColor(namePlateFrameBase.asNamePlates, true);
 			updateBuffPosition(namePlateUnitToken);		
 			updateUnitAuras(namePlateUnitToken);
 			updateUnitHealthText(self, "target");
+			updateHealthbarColor(namePlateFrameBase.asNamePlates);
 		end		
 	elseif event == "NAME_PLATE_UNIT_REMOVED"  then
 		local namePlateUnitToken = ...;
@@ -2175,9 +2019,8 @@ local function ANameP_OnUpdate()
 
 			if nameplate.asNamePlates.checkpvptarget then
 				updatePVPAggro(nameplate.asNamePlates);
-			else
-				updatePVEAggro(nameplate.asNamePlates);
 			end
+			updateHealthbarColor(nameplate.asNamePlates);
 		end
 	end
 end
