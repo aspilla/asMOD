@@ -1164,8 +1164,9 @@ local function updateTargetNameP(self)
     if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden()  then
 		return;
     end
-	
-	local healthBar = parent.UnitFrame.healthBar;
+
+	local UnitFrame = parent.UnitFrame;	
+	local healthBar = UnitFrame.healthBar;
 
     if not healthBar then
 		return;
@@ -1174,6 +1175,11 @@ local function updateTargetNameP(self)
 	local casticon = self.casticon;
 	local height = orig_height;
 	local width = orig_width;
+	local base_y = ANameP_TargetBuffY;
+
+	if UnitFrame.name:IsShown() then
+		base_y = base_y + nameheight_value;
+	end
 
 	if UnitIsUnit(self.unit, "target") then		
 		if self.alerthealthbar then
@@ -1188,6 +1194,10 @@ local function updateTargetNameP(self)
 			casticon:SetWidth(16);
 			casticon:SetHeight(16);
 		end
+
+		if GetCVarBool("nameplateResourceOnTarget") then
+			base_y = base_y +  classheight_value ;
+		end
 	else
 		height = orig_height;
 		width = orig_width;
@@ -1198,8 +1208,22 @@ local function updateTargetNameP(self)
 			casticon:SetHeight(height + castheight);
 		end
 	end
+
+	--Healthbar 크기
 	healthBar:SetHeight(height);
 	healthBar:SetWidth(width);
+
+	--버프 Position
+	self:ClearAllPoints();
+	if UnitIsUnit(self.unit, "player") then
+		self:Hide();
+	else
+		self:SetPoint("BOTTOMLEFT", healthBar, "TOPLEFT", 0, base_y);
+		if UnitFrame.BuffFrame then
+			UnitFrame.BuffFrame:Hide();
+		end
+	end
+
 end
 
 local function updateUnitHealthText(self, unit)
@@ -1240,46 +1264,7 @@ local function updateUnitHealthText(self, unit)
 	end	
 end
 
-local function updateBuffPosition(namePlateUnitToken)
-
-	if not namePlateUnitToken then
-		return;
-	end
-
-	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
-
-	if not namePlateFrameBase or namePlateFrameBase.UnitFrame:IsForbidden() or not namePlateFrameBase.asNamePlates or not namePlateFrameBase.asNamePlates.checkaura then
-		return;
-	end
-
-	local unit = namePlateUnitToken;
-	local unitFrame = namePlateFrameBase.UnitFrame;
-	local healthbar = namePlateFrameBase.UnitFrame.healthBar;	
-	local base_y = ANameP_TargetBuffY;
-		
-	if namePlateFrameBase.UnitFrame.name:IsShown() then
-		base_y = base_y + nameheight_value;
-	end
-	
-	local Buff_Y = base_y;
-
-	if UnitIsUnit("target", namePlateUnitToken) and GetCVarBool("nameplateResourceOnTarget") then
-		Buff_Y = base_y +  classheight_value ;
-	end
-
-	namePlateFrameBase.asNamePlates:ClearAllPoints();
-	if UnitIsUnit("player", namePlateUnitToken) then
-		namePlateFrameBase.asNamePlates:Hide();
-	else
-		namePlateFrameBase.asNamePlates:SetPoint("BOTTOMLEFT", healthbar, "TOPLEFT", 0, Buff_Y);
-		if unitFrame.BuffFrame then
-			unitFrame.BuffFrame:Hide();
-		end
-	end
-end
-
 -- Healthbar 색상 처리부
-
 local function setColoronStatusBar(self, r, g, b)
 
 	local parent = self:GetParent();
@@ -1390,7 +1375,7 @@ local function updateHealthbarColor(self)
 	--Target Check 
 	local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
 
-	if ( isTargetPlayer) then
+	if (isTargetPlayer) then
 		if self.colorlevel < ColorLevel.Target then
 			self.colorlevel = ColorLevel.Target;
 			setColoronStatusBar(self, ANameP_AggroTargetColor.r, ANameP_AggroTargetColor.g, ANameP_AggroTargetColor.b);
@@ -1458,7 +1443,6 @@ local function updateHealthbarColor(self)
 	end
 
 	if status then
-		aggrocolor = ANameP_TankAggroLoseColor;
 		if #tanklist > 0 then
 			for _, othertank in ipairs(tanklist) do
 				if UnitIsUnit(self.unit.."target", othertank ) and not UnitIsUnit(self.unit.."target", "player" ) then
@@ -1468,15 +1452,15 @@ local function updateHealthbarColor(self)
 					return;					
 				end
 			end
-		end
-	
-		if UnitIsUnit(self.unit.."target", "pet" )  then
-			aggrocolor = ANameP_TankAggroLoseColor3;
-			self.colorlevel = ColorLevel.Custom;
-			setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
-			return;
 		end		
 	end
+
+	if UnitIsUnit(self.unit.."target", "pet" )  then
+		aggrocolor = ANameP_TankAggroLoseColor3;
+		self.colorlevel = ColorLevel.Custom;
+		setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
+		return;
+	end	
 
 	-- None
 	if self.colorlevel > ColorLevel.None then
@@ -1608,12 +1592,9 @@ end
 
 local function asNamePlates_OnEvent(self, event, ...)	
 	if ( event == "UNIT_THREAT_SITUATION_UPDATE" or event == "UNIT_THREAT_LIST_UPDATE" ) then
-		--updateAggroColor(self);	
 		updateHealthbarColor(self)
 	elseif( event == "PLAYER_TARGET_CHANGED") then
 		updateTargetNameP(self);
-		updateBuffPosition(self.unit);
-		updateHealthbarColor(self);
 	elseif( event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" ) then
 		local unit, name , spellid = ...;
 
@@ -1958,9 +1939,7 @@ local function asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken)
 		addNamePlate(namePlateUnitToken);
 		if namePlateFrameBase.asNamePlates then
 			updateTargetNameP(namePlateFrameBase.asNamePlates);
-			updateBuffPosition(namePlateUnitToken);		
 			updateUnitAuras(namePlateUnitToken);
-			updateUnitHealthText(self, "target");
 			updateHealthbarColor(namePlateFrameBase.asNamePlates);
 		end		
 	end
@@ -1976,7 +1955,6 @@ local function ANameP_OnEvent(self, event, ...)
 		addNamePlate(namePlateUnitToken);
 		if namePlateFrameBase.asNamePlates then
 			updateTargetNameP(namePlateFrameBase.asNamePlates);
-			updateBuffPosition(namePlateUnitToken);		
 			updateUnitAuras(namePlateUnitToken);
 			updateUnitHealthText(self, "target");
 			updateHealthbarColor(namePlateFrameBase.asNamePlates);
@@ -2027,8 +2005,6 @@ local function ANameP_OnUpdate()
 		local nameplate = v;
 
 		if (nameplate and  nameplate.asNamePlates and not nameplate:IsForbidden()) then
-			updateTargetNameP(nameplate.asNamePlates);
-			updateBuffPosition(nameplate.namePlateUnitToken);
 			if nameplate.asNamePlates.checkaura then
 				updateAuras(nameplate.asNamePlates, nameplate.namePlateUnitToken, nameplate.asNamePlates.filter, nameplate.asNamePlates.showbuff, nameplate.asNamePlates.helpful, nameplate.asNamePlates.showdebuff);
 			else
@@ -2077,9 +2053,7 @@ local function initAddon()
 
 		if pframe and frame.BuffFrame.unit == pframe.namePlateUnitToken and pframe.asNamePlates then
 			updateTargetNameP(pframe.asNamePlates);
-			updateBuffPosition(pframe.namePlateUnitToken);
-		end
-		
+		end		
 	end)
 end
 
