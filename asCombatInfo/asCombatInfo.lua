@@ -1906,22 +1906,9 @@ function ACI_Init()
 		
 		LoadAddOn("asCooldownPulse")
 
-		if #ACI_SpellList > 5 then
-			ACDP_Show_CoolList = false
-		else
-			ACDP_Show_CoolList = true
+		if #ACI_SpellList > 5 and ACDP_Show_CoolList == true  then
+			ACDP_Show_CoolList = false;
 		end
-	else
-		--ChatFrame1:AddMessage("[ACI] 비활성화 합니다.");
-		--[[
-		if ACDP_Show_CoolList then
-			ACDP_CoolButtons:SetPoint("CENTER", ACDP_CoolButtons_X , ACDP_CoolButtons_Y)
-			--ACDP_Show_CoolList = false
-		end
-		--]]
-
-		LoadAddOn("asCooldownPulse")
-		ACDP_Show_CoolList = true
 	end
 
 
