@@ -1222,6 +1222,14 @@ local function APB_CheckPower(self)
 		bupdate_power = true;
 
 		if (spec and spec == 3) then
+			if asCheckTalent("불확실성 역전") then
+				APB_BUFF = "불확실성 역전";		
+				APB.buffbar.unit = "player"
+				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				--APB:SetScript("OnUpdate", APB_OnUpdate);
+
+				APB_UpdateBuff(self.buffbar)
+			end
 			bupdate_partial_power = true;
 		end
 
