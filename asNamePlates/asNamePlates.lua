@@ -99,6 +99,7 @@ ANameP_ShowList_MONK_2 = {
 }
 
 ANameP_ShowList_MONK_3 = {
+	["주학의 징표"] = {0, 1},
 }
 
 
