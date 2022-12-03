@@ -1150,12 +1150,12 @@ local function APB_CheckPower(self)
 				APB_BUFF = "태양왕의 축복";		
 	
 				APB_BUFF_COMBO = "태양왕의 축복";		
-				APB.combobar.unit = "player"
-				APB.buffbar.unit = "player"
+				APB.combobar.unit = "player";
+				APB.buffbar.unit = "player";
 				APB:RegisterUnitEvent("UNIT_AURA", "player");
 				--APB:SetScript("OnUpdate", APB_OnUpdate);
 	
-				bupdate_buff_count = true
+				bupdate_buff_count = true;
 				--APB_MaxCombo(3);
 				--APB_UpdateBuffCombo(self.combobar)
 				APB_UpdateBuff(self.buffbar)
@@ -1325,6 +1325,7 @@ local function APB_CheckPower(self)
 			APB.buffbar.unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
+			bupdate_buff_count = true;
 
 			APB_UpdateBuff(self.buffbar)
 

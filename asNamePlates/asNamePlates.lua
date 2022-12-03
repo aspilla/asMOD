@@ -179,15 +179,16 @@ ANameP_ShowList_MAGE_3 = {
 
 
 ANameP_ShowList_DEATHKNIGHT_1 = {
-	
+	["피의 역병"] = {0, 1},
 }
 
 ANameP_ShowList_DEATHKNIGHT_2 = {
-	
+	["서리 열병"] = {0, 1},
 }
 
 ANameP_ShowList_DEATHKNIGHT_3 = {
-	["악성 역병"] = {24 * 0.3, 1},
+	["악성 역병"] = {27 * 0.3, 1},
+	["고름 상처"] = {0, 2},
 }
 
 
