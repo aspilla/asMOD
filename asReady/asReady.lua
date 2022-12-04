@@ -14,25 +14,58 @@ local AREADY_UpdateRate = 0.2 -- Refresh 시간 초
 -- Spell ID 와 쿨 Time을 초로 입력
 
 local trackedPartySpells={
-    [47528]  = 15, -- Mind Freeze
-    [183752] = 15, -- Disrupt
-    [78675]  = 60, -- Solar Beam
-    [106839] = 15, -- Skull Bash
-    [147362] = 24, -- Counter Shot
+    [6552]  = 15, -- Pummel
+    [386071] = 90, -- Disrupting Shout
+    [1766]  = 15, -- Kick
+    [183752] = 15, --Disrupt
+	[116705] = 15, --Spear Hand Strike
+    [47482] = 30, -- Leap
+    [47528]   = 15, --Mind Freeze
     [187707] = 15, -- Muzzle
-    [2139]   = 24, -- Counterspell
-    [116705] = 15, -- Spear Hand Strike
-    [96231]  = 15, -- Rebuke
-    [15487]  = 45, -- Silence
-	[23137]  = 15,
-    [1766]   = 15, -- Kick
-    [57994]  = 12, -- Wind Shear
-    [19647]  = 24, -- Spell Lock
-	[132409] = 24, -- Warlock: Command Demon - Spell Lock
-	[132409] = 24, -- Warlock: Grimoire of Sacrifice: Spell Lock
-	[6552]   = 15, -- Pummel
-	[351338] = 20, -- Evoker
+    [147362]  = 24, -- Counter Shot
+    [351338]  = 40, -- Quell
+	[106839]  = 15, -- "Skull Bash
+    [78675]   = 60, -- Solar Beam
+    [212619]  = 30, -- Call Felhunter
+    [119898]  = 24, -- Command Demon
+	[15487] = 45, -- Silence
+	[31935] = 15, -- Avenger's Shield
+	[96231]   = 15, -- Rebuke
+	[57994] = 12, -- Wind Shear
+	[2139] = 24, -- Counterspell
+
 }
+--[[
+	OmniCD 로 부터
+		["name"]="Pummel",["duration"]=15,["spellID"]=6552, },
+		["name"]="Disrupting Shout",["duration"]=90,["spellID"]=386071, },
+		["name"]="Kick",["duration"]=15,["spellID"]=1766, },
+		["name"]="Disrupt",["duration"]=15,["spellID"]=183752, },
+		["name"]="Spear Hand Strike",["duration"]=15,["spellID"]=116705, },
+		["duration"]=30,["name"]="Leap",["spellID"]=47482, },
+		["name"]="Mind Freeze",["duration"]=15,["spellID"]=47528, },
+		["name"]="Muzzle",["ID"]=25,["duration"]=15,["icon"]=1376045,["spellID"]=187707, },
+			["name"]="Counter Shot",["ID"]=100,["duration"]=24,["icon"]=249170,["spellID"]=147362, },
+			["name"]="Quell",["ID"]=98,["duration"]=40,["icon"]=4622469,["spellID"]=351338, },
+		["name"]="Skull Bash",["ID"]=148,["duration"]=15,["icon"]=236946,["spellID"]=106839, },
+			["name"]="Solar Beam",["ID"]=202,["duration"]=60,["icon"]=252188,["spellID"]=78675, },
+		["duration"]=30,["name"]="Call Felhunter",["icon"]=136174,["spellID"]=212619, },
+	["duration"]=24,["name"]="Command Demon",["icon"]=236292,["spellID"]=119898, },
+	["name"]="Silence",["ID"]=99,["duration"]=45,["icon"]=458230,["spellID"]=15487, },
+		["name"]="Avenger's Shield",["ID"]=33,["duration"]=15,["icon"]=135874,["spellID"]=31935, },
+		["name"]="Rebuke",["ID"]=135,["duration"]=15,["icon"]=523893,["spellID"]=96231, },
+		["name"]="Wind Shear",["ID"]=131,["duration"]=12,["icon"]=136018,["spellID"]=57994, },
+			["duration"]=24,["name"]="Counterspell",["icon"]=135856,["spellID"]=2139, },
+			
+
+
+
+
+
+			
+
+
+]]	
 
 
 -----------------설정 끝 ------------------------
@@ -174,25 +207,9 @@ local function hide_bar_icon(max)
 end
 
 
-local clearall = false;
-
-
 local function AREADY_OnUpdate()
 
 	local idx = 1;
-
-	if clearall then
-		clearall = false;
-		partycool = {};
-		max_idx = 0;
-
-		if IsInRaid() then
-			AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-		else
-			AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-		end
-	end
-
 
 	for i,v in pairs(partycool) do
 			
@@ -244,6 +261,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 		if IsInRaid() then
 
 		elseif GetNumGroupMembers() > 1 then
+		--elseif true then -- Test 용
 
 			if trackedPartySpells[spellid] then
 				
@@ -274,7 +292,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 
 					if not bfind and max_idx <= AREDDY_Max then
 	            	    partycool[max_idx + 1] = {0, spellid, time, cool};
-						table.sort(partycool, Comparison);
+						--table.sort(partycool, Comparison);
 						max_idx = max_idx + 1;
 					end
 				else
@@ -294,7 +312,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 
 							if not bfind and max_idx <= AREDDY_Max  then
 								partycool[max_idx + 1] = {k, spellid, time, cool};
-								table.sort(partycool, Comparison);
+								--table.sort(partycool, Comparison);
 								max_idx = max_idx + 1;
 							end
 						end
@@ -303,7 +321,15 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			end
 		end
 	else
-		clearall = true;
+		partycool = {};
+		max_idx = 0;
+	
+		if IsInRaid() then
+			AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+		else
+			AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+
+		end	
 	end
 
 	return;
@@ -311,8 +337,8 @@ end
 
 
 AREADY:SetScript("OnEvent", AREADY_OnEvent)
-AREADY:RegisterEvent("PLAYER_ENTERING_WORLD")
-AREADY:RegisterEvent("GROUP_JOINED")
-AREADY:RegisterEvent("GROUP_ROSTER_UPDATE")
+AREADY:RegisterEvent("PLAYER_ENTERING_WORLD");
+AREADY:RegisterEvent("GROUP_JOINED");
+AREADY:RegisterEvent("GROUP_ROSTER_UPDATE");
 
 C_Timer.NewTicker(0.2, AREADY_OnUpdate);
