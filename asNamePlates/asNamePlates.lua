@@ -142,6 +142,7 @@ ANameP_ShowList_SHAMAN_1 = {
 }
 
 ANameP_ShowList_SHAMAN_2 = {
+	["화염 충격"] = {18 * 0.3 , 1, {r = 1, g = 0.5, b = 0}},	
 }
 
 ANameP_ShowList_SHAMAN_3 = {
@@ -150,7 +151,7 @@ ANameP_ShowList_SHAMAN_3 = {
 
 ANameP_ShowList_DRUID_1 = {
 	["달빛섬광"] = {22 * 0.3, 2, {r = 1, g = 0.5, b = 0}},
-	["태양섬광"] = {18 * 0.3, 1},	
+	["항성의 섬광"] = {18 * 0.3, 1},	
 }
 
 

@@ -77,7 +77,7 @@ ACI_SpellList_ROGUE_2 = {
 	{"권총 사격", 1},
 	{"아드레날린 촉진", 2},
 	{"폭풍의 칼날", 2},
-	{"소멸", 1},
+	{"미간 적중", 1},
 };
 
 --잠행
@@ -95,7 +95,7 @@ ACI_SpellList_HUNTER_1 = {
 	{"살상 명령", 1},
 	{"야수의 격노", 2},
 	{"마무리 사격", 1},	
-	{"반격의 사격", 1},
+	{99, "광포한 야수", {"광포한 야수", 2}, {"반격의 사격", 1},};
 };
 
 --사격
@@ -323,24 +323,21 @@ ACI_SpellList_DRUID_4 = {
 
 
 ACI_SpellList_SHAMAN_1 = {
-	--[[
-	{7, 2, 1, 1},
-	{1, {"대지 충격", 1}, {"대지 충격", 1}, 1},
+	{16166, 7, "player"},
 	{"용암 폭발", 1},
-	{6, {"불의 정령", 1}, {"불의 정령", 1}, 1},
+	{"불의 정령", 1}, 
+	{99, "얼음격노", {"얼음격노", 1}, {"폭풍 수호자", 1}};
 	{"화염 충격", 4, nil, 18 * 0.3},
-	]]
+	
 };
 
 
 ACI_SpellList_SHAMAN_2= {
-	--[[
-	{7, {"대지의 정령", 1}, 1, 1},
-	{"대지이빨", 1},
+	{"용암 채찍", 1},
 	{"폭풍의 일격", 1},
 	{"낙뢰", 1},
 	{"야수 정령", 1},
-	]]
+	{"화염 충격", 4, nil, 18 * 0.3},
 };
 
 ACI_SpellList_SHAMAN_3= {
@@ -438,13 +435,12 @@ local cast_time = nil;
 
 -- 높은 수 일 수록 보이는 우선순위 높음 (조정 필요)
 local roguespell = {
-	[7] = "무자비한 정밀함",
-	[6] = "숨겨진 보물", 
-	[5] = "집중 공격",
-	[4] = "진방위",
-	[3] = "대난투",
-	[2] = "해적 징표", 
-	[1] = "난도질", 
+	[6] = "무자비한 정밀함",
+	[5] = "숨겨진 보물", 
+	[4] = "집중 공격",
+	[3] = "진방위",
+	[2] = "대난투",
+	[1] = "해적 징표", 	
 }
 
 
@@ -721,15 +717,12 @@ local function ACI_Alert(self, bcastspell)
 			count = 0;
 		end
 
-
 		if not count or count == 0 then
 			if ACI_Action_slot_list[i]  then
 				count = GetActionCount(ACI_Action_slot_list[i]);
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetActionCharges(ACI_Action_slot_list[i]);
 			end
 		end
-
-		
 
 		if isUsable and duration > gcd then
 			isUsable = false
@@ -1795,7 +1788,7 @@ function ACI_Init()
 				ACI_Player_Debuff_list["중간 시간차"] = true;
 				ACI_Player_Debuff_list["큰 시간차"] = true;
 			elseif ACI_SpellList[i][2] == 14 then 
-				ACI_Buff_list["난도질"] = true;
+				
 			elseif ACI_SpellList[i][2] == 11  or ACI_SpellList[i][2] == 15  then 
 
 				local slot_name = ACI_SpellList[i][3];

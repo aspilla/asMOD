@@ -1472,6 +1472,16 @@ local function APB_CheckPower(self)
 	end
 
 	if (englishClass == "SHAMAN") then
+
+		if spec and spec == 2 then
+			APB_BUFF_COMBO = "소용돌이치는 무기";		
+			APB_MaxCombo(10);
+			APB.combobar.unit = "player"
+			APB:RegisterUnitEvent("UNIT_AURA", "player");
+			APB_UpdateBuffCombo(self.combobar)
+			bupdate_buff_combo = true;		
+			bsmall_power_bar = true;		
+		end		
 		
 	end
 
