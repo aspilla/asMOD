@@ -56,15 +56,6 @@ local trackedPartySpells={
 		["name"]="Rebuke",["ID"]=135,["duration"]=15,["icon"]=523893,["spellID"]=96231, },
 		["name"]="Wind Shear",["ID"]=131,["duration"]=12,["icon"]=136018,["spellID"]=57994, },
 			["duration"]=24,["name"]="Counterspell",["icon"]=135856,["spellID"]=2139, },
-			
-
-
-
-
-
-			
-
-
 ]]	
 
 
@@ -234,22 +225,6 @@ local function AREADY_OnUpdate()
 	hide_bar_icon(idx);
 end
 
-
-local function Comparison(AIndex, BIndex)
-
-
-
-	local ACool = AIndex[4];
-	local BCool = BIndex[4];
-
-	if (ACool ~= BCool) then
-		return ACool > BCool;
-	end
-
-	return false;
-end
-
-
 local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 
 	if event == "UNIT_SPELLCAST_SUCCEEDED" then
@@ -281,19 +256,16 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
                 -- Create a reference to pass to several functions
         	    if UnitIsUnit("player", unit) then
 					local bfind = false
-					for i=1, max_idx do 
-						if partycool[i][1] == 0 and   partycool[i][2] == spellid then
+					for _, v in pairs(partycool) do 
+						if v[1] == 0 and   v[2] == spellid then
 							bfind = true;
-							partycool[i] = {0, spellid, time, cool};
+							v = {0, spellid, time, cool};
 							break;
-						end
-					
+						end					
 					end
 
-					if not bfind and max_idx <= AREDDY_Max then
-	            	    partycool[max_idx + 1] = {0, spellid, time, cool};
-						--table.sort(partycool, Comparison);
-						max_idx = max_idx + 1;
+					if not bfind and #partycool <= AREDDY_Max then
+	            	    table.insert(partycool, {0, spellid, time, cool});
 					end
 				else
     	        	for k=1,GetNumGroupMembers()-1 do 
@@ -301,19 +273,16 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 						if UnitIsUnit("party"..k, unit) then
 
 							local bfind = false
-							for i=1, max_idx do 
-								if partycool[i][1] == k and   partycool[i][2] == spellid then
+							for _, v in pairs(partycool) do 
+								if v[1] == k and   v[2] == spellid then
 									bfind = true;
-									partycool[i] = {k, spellid, time, cool};
+									v = {k, spellid, time, cool};
 									break;
-								end
-							
+								end					
 							end
-
-							if not bfind and max_idx <= AREDDY_Max  then
-								partycool[max_idx + 1] = {k, spellid, time, cool};
-								--table.sort(partycool, Comparison);
-								max_idx = max_idx + 1;
+		
+							if not bfind and #partycool <= AREDDY_Max then
+								table.insert(partycool, {k, spellid, time, cool});
 							end
 						end
 					end
@@ -321,14 +290,12 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			end
 		end
 	else
-		partycool = {};
-		max_idx = 0;
-	
+		table.wipe(partycool);
+		
 		if IsInRaid() then
 			AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
 		else
 			AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-
 		end	
 	end
 
