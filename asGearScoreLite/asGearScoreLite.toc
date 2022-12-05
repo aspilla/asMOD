@@ -1,7 +1,0 @@
-## Interface: 100000
-## Author: |cffff3399아스필라|r [블랙무어] 
-## Title: |cffff3399as|rGearScoreLite
-## Notes: 기어스코어 
-## Version : 110126
-## OptionalDeps: Blizzard_InspectUI
-asGearScoreLite.lua
