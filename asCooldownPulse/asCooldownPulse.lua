@@ -24,7 +24,7 @@ local CONFIG_SOUND = true				-- 음성안내
 
 
 ACDP_CoolButtons_X = -100				-- 쿨 List 위치
-ACDP_CoolButtons_Y = -203
+ACDP_CoolButtons_Y = -201
 local ACDP_AlertButtons_X = 0			-- Alert button 위치
 local ACDP_AlertButtons_Y = 0
 local ACDP_AlertButtons_Size = 60		-- Alert button size 

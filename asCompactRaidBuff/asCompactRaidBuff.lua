@@ -12,7 +12,7 @@ local ACRB_ShowListFirst = true			-- 알림 List 항목을 먼저 보임 (가나
 local ACRB_ShowAlert = true				-- HOT 리필 시 알림
 local ACRB_MaxBuffSize = 20				-- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
 local ACRB_HealerManaBarHeight = 1		-- 힐러 마나바 크기 (안보이게 하려면 0)
-local ACRB_UpdateRate = 0.4				-- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
+local ACRB_UpdateRate = 0.1				-- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 
 
 
@@ -338,6 +338,12 @@ local function ACRB_setupFrame(frame)
 
 		end
 
+		buffFrame.icon:SetTexCoord(.08, .92, .08, .92);
+		buffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
+		buffFrame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+		buffFrame.border:SetVertexColor(0, 0, 1);
+		buffFrame.border:Show();
+
 		frame.asbuffFrames[i] = buffFrame;
 		ACRB_HideOverlayGlow(buffFrame);
 	end
@@ -352,6 +358,7 @@ local function ACRB_setupFrame(frame)
 		local debuffFrame = _G[buffPrefix .. i] or CreateFrame("Button", buffPrefix .. i, frame, "asCompactDebuffTemplate")
 		debuffFrame:ClearAllPoints()
 		debuffFrame:EnableMouse(false); 
+		
 		if math.fmod(i - 1, 3) == 0 then
 			if i == 1 then
 				local debuffPos, debuffRelativePoint, debuffOffset = "BOTTOMLEFT", "BOTTOMRIGHT", CUF_AURA_BOTTOM_OFFSET + powerBarUsedHeight;
@@ -405,7 +412,7 @@ local function ACRB_setupFrame(frame)
 
 	for _,d in ipairs(frame.asdebuffFrames) do
 	   	d.baseSize = baseSize     -- 디버프
-		d.maxHeight = options.height - powerBarUsedHeight - CUF_AURA_BOTTOM_OFFSET - CUF_NAME_SECTION_SIZE;
+		d.maxHeight = 10 - powerBarUsedHeight - CUF_AURA_BOTTOM_OFFSET - CUF_NAME_SECTION_SIZE;
 
 		d.count:SetFont(STANDARD_TEXT_FONT, fontsize + 1,"OUTLINE")
 		d.count:SetPoint("BOTTOMRIGHT", 0, 0);
@@ -1153,9 +1160,12 @@ local together = nil;
 
 local function ACRB_updatePartyAllBuff(idx)
 
-	if IsInGroup() and  not (together == nil)  then
+	--if IsInGroup() and  not (together == nil)  Then
+	if true then
 		
-		if together == true then
+		--if together == true Then
+		if true then
+
 
 			if IsInRaid() then -- raid
 	
@@ -1198,9 +1208,10 @@ end
 
 local function ACRB_updatePartyAllDebuff(idx)
 
-	if IsInGroup() and  not (together == nil)  then
-
-		if together == true then
+	--if IsInGroup() and  not (together == nil)  Then
+	if true then
+		--if together == true Then
+		if true then
 
 			if IsInRaid() then -- raid
 	
@@ -1240,9 +1251,11 @@ end
 
 local function ACRB_updatePartyAllHealerMana(idx)
 
-	if IsInGroup() and  not (together == nil) then
+	--if IsInGroup() and  not (together == nil) Then
+	if true then
 
-		if together == true then
+		--if together == true Then
+		if true then
 
 			if IsInRaid() then -- raid
 	
@@ -1284,9 +1297,11 @@ end
 
 local function ACRB_DisableAura()
 
-	 if IsInGroup() and not (together == nil) then
+	 --if IsInGroup() and not (together == nil) Then
+	 if true then
 
-		if together == true then
+		--if together == true Then
+		if true then
 
 			if IsInRaid() then -- raid
 	
@@ -1339,16 +1354,20 @@ local mustdisable = true;
 
 local function ACRB_OnUpdate()
 
-	if updatecount <= 8 then
-		ACRB_updatePartyAllBuff(updatecount);
-	elseif updatecount <= 16 then
-		ACRB_updatePartyAllDebuff(updatecount - 8);
-	elseif updatecount <= 24 then
-		ACRB_updatePartyAllHealerMana(updatecount - 16);
-	elseif mustdisable then
+	ACRB_updatePartyAllBuff(updatecount);
+	ACRB_updatePartyAllDebuff(updatecount);
+	ACRB_updatePartyAllHealerMana(updatecount);
+
+	if mustdisable then
 
 		mustdisable = false;
-		together = IsInRaid();
+		
+		--[[
+		local profile = GetActiveRaidProfile();
+		if profile then
+			together = GetRaidProfileOption(profile, "keepGroupsTogether")
+		end
+		]]
 		
 		ACRB_DisableAura();
 	end
@@ -1378,8 +1397,7 @@ local function ACRB_OnEvent(self, event, ...)
 		elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
 			ACRB_InitList();
 		elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
-			mustdisable = true;
-			together = IsInRaid();			
+			mustdisable = true;			
 		end
 end
 
@@ -1389,6 +1407,7 @@ local function asCompactUnitFrame_UpdateAll(frame)
 		local name = frame:GetName();
 
 		if name and ( string.find (name, "CompactRaidGroup") or string.find (name, "CompactPartyFrameMember") or string.find (name, "CompactRaidFrame")) then
+			
 			mustdisable = true;
 		end
 

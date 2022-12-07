@@ -256,10 +256,10 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
                 -- Create a reference to pass to several functions
         	    if UnitIsUnit("player", unit) then
 					local bfind = false
-					for _, v in pairs(partycool) do 
+					for i, v in pairs(partycool) do 
 						if v[1] == 0 and   v[2] == spellid then
 							bfind = true;
-							v = {0, spellid, time, cool};
+							partycool[i] = {0, spellid, time, cool};
 							break;
 						end					
 					end
@@ -273,10 +273,10 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 						if UnitIsUnit("party"..k, unit) then
 
 							local bfind = false
-							for _, v in pairs(partycool) do 
+							for i, v in pairs(partycool) do 
 								if v[1] == k and   v[2] == spellid then
 									bfind = true;
-									v = {k, spellid, time, cool};
+									partycool[i] = {k, spellid, time, cool};
 									break;
 								end					
 							end
@@ -288,6 +288,14 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 					end
 	            end
 			end
+		end
+	elseif event == "PLAYER_ENTERING_WORLD" and (arg1 or arg2) then
+		table.wipe(partycool);
+		
+		if IsInRaid() then
+			AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+		else
+			AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
 		end
 	else
 		table.wipe(partycool);

@@ -45,9 +45,6 @@ local function asMOD_Setup()
 	print ("[asMOD] 개인 자원바를 끕니다.");
 	SetCVar("nameplateShowSelf", "0");
 
-	print ("[asMOD] 최대 시야 거리를 설정 합니다.");
-	SetCVar("cameraDistanceMaxZoomFactor", "2.6");
-
 	print ("[asMOD] 힐량와 데미지를 보이게 합니다.");
 	SetCVar("floatingCombatTextCombatHealing", 1);
 	SetCVar("floatingCombatTextCombatDamage", 1);
@@ -96,7 +93,7 @@ local function asMOD_Setup()
 						},
 						["barfontsize"] = 10,
 						["point"] = "BOTTOMRIGHT",
-						["mode"] = "DPS",
+						["mode"] = "피해",
 						["barwidth"] = 230,
 						["x"] = 0,
 					}, -- [1]

@@ -12,7 +12,7 @@ local function getExpirationTimeUnitAurabyID(unit, id, filter)
 		local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura(unit, i, filter);
 
 		if name and spellId == id then
-			return 	expirationTime, duration;
+			return 	expirationTime, duration, count;
 		end
 		i = i + 1;
 	until (name == nil)
@@ -66,7 +66,7 @@ function asOverlay_OnUpdate(self, elapsed)
 
 			if ( overlayList and #overlayList ) then
 
-				local extime, duration = getExpirationTimeUnitAurabyID("player", spellID, "HELPFUL|PLAYER");
+				local extime, duration, count = getExpirationTimeUnitAurabyID("player", spellID, "HELPFUL|PLAYER");
 
 				if extime then
 					local remain =	 extime - GetTime();

@@ -3,9 +3,9 @@ local ADF_PLAYER_DEBUFF;
 local ADF_TARGET_DEBUFF;
 local ADF_DeBuffList = {}
 
-local ADF_SIZE = 28;
-local ADF_SIZE_BIG = 29;
-local ADF_SIZE_SMALL = 28;
+local ADF_SIZE = 26;
+local ADF_SIZE_BIG = 27;
+local ADF_SIZE_SMALL = 26;
 local ADF_TARGET_DEBUFF_X = 73 + 30;
 local ADF_TARGET_DEBUFF_Y = -60;
 local ADF_PLAYER_DEBUFF_X = -73 - 30;
@@ -13,7 +13,7 @@ local ADF_PLAYER_DEBUFF_Y = -60;
 local ADF_MAX_DEBUFF_SHOW = 7;
 local ADF_ALPHA = 1
 local ADF_CooldownFontSize = 12			-- Cooldown Font Size
-local ADF_CountFontSize = 12;			-- Count Font Size
+local ADF_CountFontSize = 11;			-- Count Font Size
 local ADF_AlphaCombat = 1;				-- 전투중 Alpha 값
 local ADF_AlphaNormal = 0.5;			-- 비 전투중 Alpha 값
 local ADF_MAX_Cool = 120				-- 최대 120초까지의 Debuff를 보임
@@ -653,15 +653,15 @@ local function ADF_UpdateDebuff(unit)
 				for _,r in next,{_G[frameName.."Cooldown"]:GetRegions()}	do 
 					if r:GetObjectType()=="FontString" then 
 						r:SetFont("Fonts\\2002.TTF",ADF_CooldownFontSize,"OUTLINE")
-						r:SetPoint("TOPLEFT", -2, 2);
+						r:SetPoint("TOP", 0, 5);
 						break 
 					end 
 				end
 
 				local font, size, flag = _G[frameName.."Count"]:GetFont()
 
-				_G[frameName.."Count"]:SetFont(font, ADF_CountFontSize, "OUTLINE")
-				_G[frameName.."Count"]:SetPoint("BOTTOMRIGHT", -2, 2);
+				_G[frameName.."Count"]:SetFont(STANDARD_TEXT_FONT, ADF_CountFontSize, "OUTLINE")
+				_G[frameName.."Count"]:SetPoint("BOTTOMRIGHT", 0, 0);
 
 			end
 
@@ -678,10 +678,10 @@ local function ADF_UpdateDebuff(unit)
 
 			if isBig[i] then
 				frame:SetWidth(ADF_SIZE_BIG);
-				frame:SetHeight(ADF_SIZE_BIG);
+				frame:SetHeight(ADF_SIZE_BIG * 0.8);
 			else
 				frame:SetWidth(ADF_SIZE);
-				frame:SetHeight(ADF_SIZE);
+				frame:SetHeight(ADF_SIZE * 0.8);
 			end
 
 		
@@ -721,6 +721,10 @@ local function ADF_UpdateDebuff(unit)
 			frameBorder = _G[frameName.."Border"];
 			frameBorder:SetVertexColor(color.r, color.g, color.b);
 			frameBorder:SetAlpha(ADF_ALPHA);
+
+			frameIcon:SetTexCoord(.08, .92, .08, .92);
+			frameBorder:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
+			frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 					
 			frame:ClearAllPoints();
 			frame:Show();
@@ -796,10 +800,10 @@ function ADF_UpdateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX, r
 
 	-- Resize
 	buff:SetWidth(size);
-	buff:SetHeight(size);
+	buff:SetHeight(size * 0.8);
 	local debuffFrame =_G[debuffName..index.."Border"];
 	debuffFrame:SetWidth(size+2);
-	debuffFrame:SetHeight(size+2);
+	debuffFrame:SetHeight(size * 0.8+2);
 end
 
 

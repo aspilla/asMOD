@@ -7,7 +7,7 @@ local ANameP_PlayerBuffY = -5			-- Player 바 Buff 위치
 local ANameP_TargetBuffY = 5			-- 대상바 Buff 위치
 local ANameP_ComboBuffY = ANameP_TargetBuffY + 30 -- 특수 자원 표시시 Buff 위치
 local ANameP_CooldownFontSize = 9;     --재사용 대기시간 Font Size
-local ANameP_CountFontSize = 9;			--Count 폰트 Size
+local ANameP_CountFontSize = 8;			--Count 폰트 Size
 local ANameP_MaxDebuff = 8;				--최대 Debuff
 local ANameP_DebuffsPerLine = 4;		--줄당 Debuff 수 (큰 이름표 일 경우 +1 됨)
 local ANameP_MaxBuff = 1;				--최대 PVP Buff (안보이게 하려면 0)
@@ -746,7 +746,7 @@ local function createDebuffFrame(parent, frameName)
 
 	local font, size, flag = _G[frameName.."Count"]:GetFont()
 
-	_G[frameName.."Count"]:SetFont(font, ANameP_CountFontSize, "OUTLINE")
+	_G[frameName.."Count"]:SetFont(STANDARD_TEXT_FONT, ANameP_CountFontSize, "OUTLINE")
 	_G[frameName.."Count"]:SetPoint("BOTTOMRIGHT", 0, 0);
 
 	local frameIcon = _G[frameName.."Icon"];

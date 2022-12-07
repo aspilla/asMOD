@@ -6,11 +6,11 @@ ACI_SpellList = nil;
 local ACI_SIZE = 40;									-- Button Size
 
 local ACI_CoolButtons_X = 0 			-- 쿨 List 위치 X
-local ACI_CoolButtons_Y = -162 - 20							-- Y 위치
+local ACI_CoolButtons_Y = -182							-- Y 위치
 local ACI_Alpha = 1										-- 전투중 알파값
 local ACI_Alpha_Normal = 0.5							-- 비전투중 안보이게 하려면 0
 local ACI_CooldownFontSize = 12;						-- Cooldown Font Size
-local ACI_CountFontSize = 12;							-- Count Font Size
+local ACI_CountFontSize = 11;							-- Count Font Size
 local ACI_MaxSpellCount = 11;							-- 최대 Spell Count
 local ACI_RefreshRate = 0.5;							-- 반복 Check 주기 (초)
 
@@ -122,7 +122,7 @@ ACI_SpellList_MAGE_1 = {
 	{"비전 보주", 1},
 	{"비전 쇄도", 1},
 	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},		
-	{99, "비전의 조화", {332769, 7, "player", nil, 15}, {"빛나는 불꽃", 4, "target"}},		
+	{99, "빛나는 불꽃", {"빛나는 불꽃", 4, "target"}, {332769, 7, "player", nil, 15}},		
 };
 
 --화염
@@ -1242,7 +1242,7 @@ local function ACI_Alert(self, bcastspell)
 	if icon == nil then
 
 	--	frame:Hide();
-		frameBorder:Hide();
+		frameBorder:Hide();		
 		frameIcon:SetDesaturated(true)
 		frameCooldown:Hide();
 		frameCount:Hide();
@@ -1298,15 +1298,10 @@ local function ACI_Alert(self, bcastspell)
 		frameIcon:SetAlpha(1);
 		frameIcon:SetDesaturated(true)
 	end
-
-	--[[
-	frameIcon:SetTexCoord(.08, .92, .08, .92)
-
-	--CreateBDFrame(frameBorder, 1);
-	frameBorder:SetTexture("Interface\\Addons\\asCombatInfo\\border.tga")
-	frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92)	
-	frameBorder:SetVertexColor(0, 0, 0);
-	--]]
+	
+	frameIcon:SetTexCoord(.08, .92, .08, .92);
+	frameBorder:SetTexture("Interface\\Addons\\asCombatInfo\\border.tga");
+	frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 
 	if ( buff_cool ) then
 
@@ -1325,7 +1320,9 @@ local function ACI_Alert(self, bcastspell)
 		frameBorder:SetAlpha(1);
 		frameBorder:Show();
 	else
-		frameBorder:Hide();
+		frameBorder:SetVertexColor(0.1, 0.1, 0.1);
+		frameBorder:Show();
+		--frameBorder:Hide();
 	end
 
 	if alert_count and count and count >= alert_count  then
@@ -1921,9 +1918,9 @@ function ACI_Init()
 
 
 		if i < 6 then
-			_G["ACI"..i.."Count"]:SetFont(font, ACI_CountFontSize, "OUTLINE")
+			_G["ACI"..i.."Count"]:SetFont("Fonts\\2002.TTF", ACI_CountFontSize, "OUTLINE")
 		else
-			_G["ACI"..i.."Count"]:SetFont(font, ACI_CountFontSize - 2, "OUTLINE")
+			_G["ACI"..i.."Count"]:SetFont("Fonts\\2002.TTF", ACI_CountFontSize - 2, "OUTLINE")
 
 		end
 
@@ -1971,7 +1968,7 @@ for i = 1, 5 do
 
 	ACI[i] = CreateFrame("Button", "ACI"..i, UIParent, "asCombatInfoFrameTemplate");
 	ACI[i]:SetWidth(ACI_SIZE);
-	ACI[i]:SetHeight(ACI_SIZE);
+	ACI[i]:SetHeight(ACI_SIZE * 0.9);
 	ACI[i]:SetScale(1);
 	ACI[i]:SetAlpha(ACI_Alpha);
 	ACI[i]:EnableMouse(false);
@@ -1995,7 +1992,7 @@ for i = 6, 11 do
 	ACI[i] = CreateFrame("Button", "ACI"..i, UIParent, "asCombatInfoFrameTemplate");
 
 	ACI[i]:SetWidth(ACI_SIZE - 8);
-	ACI[i]:SetHeight(ACI_SIZE - 8);
+	ACI[i]:SetHeight((ACI_SIZE - 8) * 0.9);
 	ACI[i]:SetScale(1);
 	ACI[i]:SetAlpha(ACI_Alpha);
 	ACI[i]:EnableMouse(false);
