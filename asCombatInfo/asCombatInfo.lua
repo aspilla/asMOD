@@ -3,7 +3,7 @@ local ACI_mainframe;
 ACI_SpellList = nil;
 
 -- 설정
-local ACI_SIZE = 40;									-- Button Size
+local ACI_SIZE = 39;									-- Button Size
 
 local ACI_CoolButtons_X = 0 			-- 쿨 List 위치 X
 local ACI_CoolButtons_Y = -182							-- Y 위치
@@ -565,22 +565,6 @@ function ACI_ActionBarOverlayGlowAnimOutMixin:OnFinished()
 	actionButton.overlay = nil;
 end
 
-
-
-local function isArray(t)
-	if type(t)~="table" then return nil end
-	--check if all the table keys are numerical and count their number
-	local count=0
-	for k,v in pairs(t) do
-		if type(k)~="number" then return false else count=count+1 end
-	end
-	--all keys are numerical. now let's see if they are sequential and start with 1
-	for i=1,count do
-		--Hint: the VALUE might be "nil", in that case "not t[i]" isn't enough, that's why we check the type
-		if not t[i] and type(t[i])~="nil" then return false end
-	end
-	return true
-end
 
 
 local function getUnitBuffbyName(unit, buff, filter)
@@ -1320,7 +1304,7 @@ local function ACI_Alert(self, bcastspell)
 		frameBorder:SetAlpha(1);
 		frameBorder:Show();
 	else
-		frameBorder:SetVertexColor(0.1, 0.1, 0.1);
+		frameBorder:SetVertexColor(0, 0, 0);
 		frameBorder:Show();
 		--frameBorder:Hide();
 	end
@@ -1980,9 +1964,9 @@ for i = 1, 5 do
 	if i == 3 then
 		ACI[i]:SetPoint("CENTER", ACI_CoolButtons_X, ACI_CoolButtons_Y)
 	elseif i < 3 then
-		ACI[i]:SetPoint("RIGHT", ACI[i+1], "LEFT", -2, 0);
+		ACI[i]:SetPoint("RIGHT", ACI[i+1], "LEFT", -3, 0);
 	elseif i > 3 then
-		ACI[i]:SetPoint("LEFT", ACI[i-1], "RIGHT", 2, 0);
+		ACI[i]:SetPoint("LEFT", ACI[i-1], "RIGHT", 3, 0);
 	end
 end
 

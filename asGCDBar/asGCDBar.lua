@@ -1,8 +1,8 @@
 ﻿-----------------설정 ------------------------
-local AGCDB_WIDTH = 200
+local AGCDB_WIDTH = 195
 local AGCDB_HEIGHT = 8
 local AGCDB_X = 0;
-local AGCDB_Y = -241;
+local AGCDB_Y = -235;
 
 
 
@@ -56,4 +56,4 @@ local function AGCDB_OnUpdate()
 	end
 end
 
-C_Timer.NewTicker(0.2, AGCDB_OnUpdate);
+C_Timer.NewTicker(0.1, AGCDB_OnUpdate);

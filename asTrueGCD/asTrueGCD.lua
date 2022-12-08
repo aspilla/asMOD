@@ -1,7 +1,7 @@
 ﻿-----------------설정 ------------------------
-local ATGCD_X = -210 + 17;
-local ATGCD_Y = 53 + 13;
-local AGCICON = 15;
+local ATGCD_X = 22;
+local ATGCD_Y = -90;
+local AGCICON = 20;
 
 
 local AGCD_BlackList = {
@@ -173,11 +173,22 @@ for i = 1 , 3 do
 
 
 	ATGCD.icon[i]:SetWidth(AGCICON);
-	ATGCD.icon[i]:SetHeight(AGCICON);
+	ATGCD.icon[i]:SetHeight(AGCICON * 0.9);
 	ATGCD.icon[i]:SetScale(1);
 	ATGCD.icon[i]:SetAlpha(1);
 	ATGCD.icon[i]:EnableMouse(false);
+
+	local frameIcon = _G["ATGCDIcon" .. i.."Icon"];
+	frameIcon:SetTexCoord(.08, .92, .08, .92);
+
+	local frameBorder = _G["ATGCDIcon" .. i.."Border"];
+	frameBorder:SetTexture("Interface\\Addons\\asTrueGCD\\border.tga");
+	frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+	frameBorder:SetVertexColor(0, 0, 0);
+	frameBorder:Show();
 	ATGCD.icon[i]:Hide();
+	
+
 
 
    
@@ -325,7 +336,6 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 
 
 		if prev and prev == prev_spell and GetTime() - prevtime < GCDmax then
-
 		else
 
 			if KnownSpellList[prev_spell] == 1 then
