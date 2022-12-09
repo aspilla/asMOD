@@ -3,7 +3,7 @@ local APB_HealthSize = 12;
 local APB_BuffSize = 10;
 local APB_FontOutline = "OUTLINE";
 
-local APB_WIDTH = 206;			--위치
+local APB_WIDTH = 208;			--위치
 local APB_X = 0;
 local APB_Y = -142 - 20;
 local APB_HEIGHT = 10

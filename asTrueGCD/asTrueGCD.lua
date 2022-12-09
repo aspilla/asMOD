@@ -251,7 +251,7 @@ isCraftingReagent = GetItemInfo(spellid)
 			-- set the icon
 			frameIcon:SetTexture(icon);
 			frame:Show();
-			frameborder:Hide();
+			--frameborder:Hide();
 			ATGCD.icontime[4 - i] = GetTime();	
 			
 			if bcancel then
@@ -278,7 +278,7 @@ isCraftingReagent = GetItemInfo(spellid)
 				elseif time2 then
 
 					frameIcon:SetTexture(icon2);
-					frameborder:Hide();
+					--frameborder:Hide();
 					if frameCancel2:IsShown() then
 						frameCancel:SetText("X");
 						frameCancel:SetTextColor(1, 0 ,0 );

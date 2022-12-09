@@ -1341,7 +1341,7 @@ end
 
 local function updateHealthbarColor(self)
 	--unit name 부터
-	if not self.unit or not self.checkaura then
+	if not self.unit or not self.checkaura or self.checkpvptarget then
 		return;
 	end
 	
