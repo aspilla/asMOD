@@ -2,7 +2,7 @@
 
 ASAA_SpellList = {};
 local ASAA_SpellIcon = {}
-local ASAA_SIZE = 30;	
+local ASAA_SIZE = 26;	
 
 local ASAA_CoolButtons_X = 170			-- 쿨 List 위치
 local ASAA_CoolButtons_Y = 55
@@ -16,7 +16,29 @@ local ASAA_BackList = {
 	--["천상의 폭풍"] = true,
 };
 
+
+local action_list = {};
+
+local function ScanActionSlot()
+	local lActionSlot = 0;
+	table.wipe(action_list);
+
+	for lActionSlot = 1, 120 do
+		local type, id, subType, spellID = GetActionInfo(lActionSlot);
+
+		if type and type == "macro" then
+			 id = GetMacroSpell(id);
+		end
 	
+		if id then
+			local name = GetSpellInfo(id);
+
+			if name  then
+				action_list[id] = true;
+			end
+		end
+	end	
+end
 
 function ASAA_UpdateCooldown()
 
@@ -71,10 +93,17 @@ function ASAA_UpdateCooldown()
 
 			-- set the icon
 			frameIcon = _G[frameName.."Icon"];
+			local frameBorder = _G[frameName.."Border"];
 			frameIcon:SetTexture(icon);
 			frameIcon:SetAlpha(ASAA_Alpha);
 			frame:ClearAllPoints();
 			frame:Show();
+
+
+			frameIcon:SetTexCoord(.08, .92, .08, .92)
+			frameBorder:SetTexture("Interface\\Addons\\asActiveAlert\\border.tga")
+			frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92)	
+			frameBorder:SetVertexColor(0, 0, 0);
 
 			if ( isUsable ) then
 				frameIcon:SetVertexColor(1.0, 1.0, 1.0);
@@ -133,7 +162,7 @@ function ASAA_UpdateCoolAnchor(name, index, anchorIndex, size, offsetX, right, p
 
 	-- Resize
 	cool:SetWidth(size);
-	cool:SetHeight(size);
+	cool:SetHeight(size * 0.9);
 end
 
 
@@ -157,6 +186,7 @@ function ASAA_Init()
     
 	ASAA_SpellList = {};
 	ASAA_SpellIcon = {};
+	ScanActionSlot();
 
 	ASAA_UpdateCooldown();
 
@@ -182,6 +212,11 @@ function ASAA_Insert(id)
 	name, discard, icon = GetSpellInfo(id);
 
 	if ASAA_BackList and ASAA_BackList[name] then
+		return;
+	end
+
+	if not action_list[id] then
+		--Slot에 있는것만
 		return;
 	end
 

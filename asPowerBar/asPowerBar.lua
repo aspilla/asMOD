@@ -1274,16 +1274,6 @@ local function APB_CheckPower(self)
 	if (englishClass == "MONK") then
 
 		if (spec and spec == 1) then
-
-
-			APB_SPELL = "무쇠가죽주";
-			APB_SpellMax(APB_SPELL);
-			APB_UpdateSpell(APB_SPELL);
-			bupdate_spell = true;
-
-			APB:RegisterUnitEvent("UNIT_AURA", "player");
-			--APB:SetScript("OnUpdate", APB_OnUpdate);
-
 			bupdate_stagger = true;
 			APB_UpdateStagger(self.buffbar);
 		end

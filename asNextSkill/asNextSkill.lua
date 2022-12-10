@@ -5,7 +5,7 @@ ANS_Main= nil;
 ANS_SpellNameList = nil;
 
 -- 설정
-ANS_SIZE = 35;	
+ANS_SIZE = 30;	
 
 
 local ANS_CoolButtons_X = -210			-- 쿨 List 위치
@@ -1327,7 +1327,11 @@ function ANS_Alert(i, idx)
 		frameIcon:SetDesaturated(true)
 	end
 
-	frameBorder:Hide();
+	frameIcon:SetTexCoord(.08, .92, .08, .92)
+	frameBorder:SetTexture("Interface\\Addons\\asNextSkill\\border.tga")
+	frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92)	
+	frameBorder:SetVertexColor(0, 0, 0);
+	frameBorder:Show();
 
 	if count and  count > 0 then
 		frameCount:SetText(count);
@@ -2731,14 +2735,14 @@ ANS_mainframe = CreateFrame("Frame", nil, UIParent);
 ANS = CreateFrame("Button", "ANS", UIParent, "asNextSkillFrameTemplate");
 ANS:SetPoint("CENTER", ANS_CoolButtons_X, ANS_CoolButtons_Y);
 ANS:SetWidth(ANS_SIZE);
-ANS:SetHeight(ANS_SIZE);
+ANS:SetHeight(ANS_SIZE * 0.9);
 ANS:SetScale(1);
 ANS:SetAlpha(ANS_Alpha);
 ANS:EnableMouse(false);
 ANS:Hide();
 ANSMain = CreateFrame("Button", "ANSMain", UIParent, "asNextSkillFrameTemplate");
 ANSMain:SetWidth(ANS_SIZE - 5);
-ANSMain:SetHeight(ANS_SIZE - 5);
+ANSMain:SetHeight((ANS_SIZE - 5)* 0.9);
 ANSMain:SetScale(1);
 ANSMain:SetAlpha(ANS_Alpha);
 ANSMain:EnableMouse(false);
@@ -2746,7 +2750,7 @@ ANSMain:Hide();
 
 ANS2 = CreateFrame("Button", "ANS2", UIParent, "asNextSkillFrameTemplate");
 ANS2:SetWidth(ANS_SIZE - 5);
-ANS2:SetHeight(ANS_SIZE - 5);
+ANS2:SetHeight((ANS_SIZE - 5)* 0.9);
 ANS2:SetScale(1);
 ANS2:SetAlpha(ANS_Alpha);
 ANS2:EnableMouse(false);

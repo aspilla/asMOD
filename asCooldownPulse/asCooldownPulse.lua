@@ -490,14 +490,12 @@ local function ACDP_Init()
 		ACDP[i]:Show()
 
 
-		ACDP_Icon[i] = ACDP[i]:CreateTexture("ACDP_Texture", nil)
+		ACDP_Icon[i] = ACDP[i]:CreateTexture("ACDP_Texture"..i, nil)
 		ACDP_Icon[i]:SetTexture("")
 		ACDP_Icon[i]:ClearAllPoints()
 		ACDP_Icon[i]:SetAllPoints(ACDP[i])
 		ACDP_Icon[i]:SetTexCoord(.08, .92, .08, .92);
 		ACDP_Icon[i]:Show()
-	
-	
 		
 		i = i + 1;
 	end

@@ -93,7 +93,7 @@ local function create_bar_icon(idx, unit, spellid, time, cool)
 		AREADY.bar[idx].bg:SetPoint("TOPLEFT", AREADY.bar[idx], "TOPLEFT", -1, 1)
 		AREADY.bar[idx].bg:SetPoint("BOTTOMRIGHT", AREADY.bar[idx], "BOTTOMRIGHT", 1, -1)
 
-		AREADY.bar[idx].bg:SetTexture("Interface\\Addons\\asbar[idx]\\border.tga")
+		AREADY.bar[idx].bg:SetTexture("Interface\\Addons\\asReady\\border.tga")
 		AREADY.bar[idx].bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1)	
 		AREADY.bar[idx].bg:SetVertexColor(0, 0, 0, 0.8);
 

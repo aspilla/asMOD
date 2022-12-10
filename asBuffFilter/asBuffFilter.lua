@@ -431,7 +431,11 @@ local function ABF_UpdateDebuff(unit)
 			end
 			
 			if PLAYER_UNITS[caster] and duration > 0 and duration <= ABF_MAX_Cool then
+				skip = false;
+			end
 
+			if PLAYER_UNITS[caster] and duration == 0 and ABF_TalentBuffList and ABF_TalentBuffList[name]  then
+				-- 특성이면 보이게
 				skip = false;
 			end
 
@@ -476,11 +480,7 @@ local function ABF_UpdateDebuff(unit)
 					isBig[i] = true;
 				end
 				skip = false;
-			end
-
-			if ABF_TalentBuffList and ABF_TalentBuffList[name] then
-				skip = false;
-			end
+			end			
 
 			if ACI_Buff_list and skip == false and ACI_Buff_list[name] then
 				skip = true;
@@ -795,7 +795,7 @@ function ABF_OnEvent(self, event, arg1, ...)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ABF:SetAlpha(ABF_AlphaNormal);
 	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") then
-		asCheckTalent();
+		C_Timer.After(0.5, asCheckTalent);
 	end
 end
 
