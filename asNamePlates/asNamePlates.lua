@@ -794,7 +794,6 @@ end
 local function updateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX, right, parent)
 
 	local buff = _G[debuffName..index];
-	local debuff =_G[debuffName..index.."Border"];
 	local point1 = "BOTTOMLEFT";
 	local point2 = "BOTTOMLEFT";
 	local point3 = "BOTTOMRIGHT";
@@ -827,7 +826,6 @@ local function updateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX,
 	end
 
 	setSize(buff, size);
-	setSize(debuff, size + 2);
 end
 
 local function Comparison(AIndex, BIndex)

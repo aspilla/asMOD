@@ -49,52 +49,12 @@ local ABF_StackBuffList = {
 -- 발동 주요 공격 버프
 -- 보이게만 할려면 2, 강조하려면 1
 local ABF_ProcBuffList = {
-	--전설반지
-	["말루스"] = 1,
-	["니스라무스"] = 1,
-	["토라수스"] = 1,
-	["상투스"] = 1,
-	["에테랄루스"] = 1,
-	
-	-- 무기마부
-	["서리늑대의 징표"] = 1,
-	["어둠달의 징표"] = 1,
-	["천둥군주의 징표"] = 1,
-	["전쟁노래의 징표"] = 1,
-	["검은바위의 징표"] = 1,
-
-	--원거리 조준경
-	["오글소프의 탄환 분열기"] = 1,
-	["메가와트 전선"] = 1,
-	["헤멧의 심장추적자"] = 1,
-	
 	--블러드
 	["시간 왜곡"] = 1,
 	["영웅심"] = 1,
 	["피의 욕망"] = 1,
 	["황천바람"] = 1,
 	["고대의 격분"] = 1,
-
-	-- 정기술사
-	["토템 특화"] =2,
-
-	--법사
-	["주문술사의 흐름"] = 2,
-	["비전의 조화"] = 2,
-	["냉정"] = 2,
-
-	--드루 전설
-
-	--장신구
-
-	-- 도적
-	["숨겨진 칼날"] =2,
-
-
-
-	
-
-
 }
 	
 
@@ -194,6 +154,8 @@ local ABF_PVPBuffList = {
 	[162264] = 2,	-- Metamorphosis
 
 }
+
+local ABF_TalentBuffList = {};
 
 local isBig = {};
 local isBigReal = {};
@@ -304,6 +266,34 @@ function ABF_ActionBarOverlayGlowAnimOutMixin:OnFinished()
 	overlay:Hide();
 	tinsert(unusedOverlayGlows, overlay);
 	actionButton.overlay = nil;
+end
+
+
+local function asCheckTalent()
+	local specID = PlayerUtil.GetCurrentSpecID();
+   
+    local configID = C_ClassTalents.GetActiveConfigID();
+    local configInfo = C_Traits.GetConfigInfo(configID);
+    local treeID = configInfo.treeIDs[1];
+    local nodes = C_Traits.GetTreeNodes(treeID);
+
+	table.wipe(ABF_TalentBuffList);
+
+    for _, nodeID in ipairs(nodes) do
+        local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
+        if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
+            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
+            local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
+            local definitionInfo = entryInfo and entryInfo.definitionID and C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+
+            if definitionInfo ~= nil then
+                local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
+				--print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));;
+				ABF_TalentBuffList[talentName] = true;
+			end
+        end
+    end
+	return false;
 end
 
 local function ABF_UpdateDebuff(unit)
@@ -485,6 +475,10 @@ local function ABF_UpdateDebuff(unit)
 					alert = true;
 					isBig[i] = true;
 				end
+				skip = false;
+			end
+
+			if ABF_TalentBuffList and ABF_TalentBuffList[name] then
 				skip = false;
 			end
 
@@ -790,18 +784,6 @@ function ABF_OnEvent(self, event, arg1, ...)
 		else
 			ABF_UpdateDebuff("target");
 		end
-	elseif (event == "UNIT_AURA" and arg1 == "target") then
-		--[[
-		if UnitIsEnemy("player", "target") then
-			if (UnitIsPlayer("target")) then
-				ABF_UpdateDebuff("tebuff");
-			else
-				ABF_UpdateDebuff("tbuff");
-			end
-		else
-			ABF_UpdateDebuff("target");
-		end
-		--]]
 	elseif (event == "UNIT_AURA" and arg1 == "player") then
 		ABF_UpdateDebuff("pbuff");
 	elseif (event == "PLAYER_TOTEM_UPDATE") then
@@ -812,6 +794,8 @@ function ABF_OnEvent(self, event, arg1, ...)
 		ABF:SetAlpha(ABF_AlphaCombat);
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ABF:SetAlpha(ABF_AlphaNormal);
+	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") then
+		asCheckTalent();
 	end
 end
 
@@ -853,11 +837,11 @@ function ABF_Init()
 	ABF:RegisterEvent("PLAYER_REGEN_DISABLED");
 	ABF:RegisterEvent("PLAYER_REGEN_ENABLED");
 	ABF:RegisterEvent("PLAYER_TOTEM_UPDATE");
+	ABF:RegisterEvent("TRAIT_CONFIG_UPDATED");
+	ABF:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 
 	ABF:SetScript("OnEvent", ABF_OnEvent)
-	C_Timer.NewTicker(ABF_RefreshRate
-	
-	, ABF_OnUpdate);
+	C_Timer.NewTicker(ABF_RefreshRate, ABF_OnUpdate);
 
 end
 

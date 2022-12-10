@@ -46,7 +46,7 @@ local function asMOD_Setup()
 	SetCVar("floatingCombatTextCombatHealing", 1);
 	SetCVar("floatingCombatTextCombatDamage", 1);
 
-		print ("[asMOD] 자동룻 옵션");
+	print ("[asMOD] 자동룻 옵션");
 	SetCVar("autoLootDefault", 1)
 
 	print ("[asMOD] 이름표 항상 표시");
@@ -82,7 +82,7 @@ local function asMOD_Setup()
 	ToggleChatColorNamesByClassGroup(true, "INSTANCE_CHAT")
 	ToggleChatColorNamesByClassGroup(true, "INSTANCE_CHAT_LEADER")	
 
-	print ("[asMOD] Skada, DBM 설정을 합니다.");
+	print ("[asMOD] Skada, Bigwigs 설정을 합니다.");
 
 	SkadaDB = {
 		["profiles"] = {
@@ -115,399 +115,128 @@ local function asMOD_Setup()
 	}
 
 
-	DBM_AllSavedOptions = {
-		["Default"] = {
-			["DontShowFarWarnings"] = true,
-			["SpecialWarningFlashAlph2"] = 0.3,
-			["DontShowHudMap2"] = false,
-			["AlwaysPlayVoice"] = false,
-			["ShowSWarningsInChat"] = false,
-			["SpamSpecRoledefensive"] = false,
-			["RangeFrameRadarY"] = 219.4961395263672,
-			["SpamSpecRolestack"] = false,
-			["DontRestoreIcons"] = false,
-			["DontShowNameplateIcons"] = false,
-			["SpecialWarningFlash5"] = true,
-			["RangeFrameX"] = 50,
-			["RangeFrameY"] = -50,
-			["FilterInterruptNoteName"] = false,
-			["EnableModels"] = false,
-			["SpecialWarningFlashAlph3"] = 0.4,
-			["SpecialWarningVibrate3"] = true,
-			["SWarnNameInNote"] = true,
-			["SpecialWarningSound2"] = 15391,
-			["InfoFramePoint"] = "BOTTOMRIGHT",
-			["EventSoundMusicCombined"] = false,
-			["SpecialWarningFlashCol2"] = {
-				1, -- [1]
-				0.5, -- [2]
-				0, -- [3]
-			},
-			["WarningAlphabetical"] = false,
-			["WarningFont"] = "standardFont",
-			["CheckGear"] = false,
-			["SpecialWarningX"] = -3.792745351791382,
-			["WorldBossAlert"] = false,
-			["DontShowPT2"] = false,
-			["GroupOptionsBySpell"] = true,
-			["WorldBuffAlert"] = false,
-			["SpamSpecRoledispel"] = false,
-			["SpecialWarningFlashCount4"] = 2,
-			["FilterTrashWarnings2"] = true,
-			["DontShowPTCountdownText"] = false,
-			["MoviesSeen"] = {
-			},
-			["DisableGuildStatus"] = false,
-			["ShowQueuePop"] = true,
-			["ShowAllVersions"] = false,
-			["SpecialWarningSound3"] = "Interface\\AddOns\\DBM-Core\\sounds\\AirHorn.ogg",
-			["DontShowTargetAnnouncements"] = true,
-			["ShowWarningsInChat"] = false,
-			["WarningFontStyle"] = "None",
-			["ShowReminders"] = false,
-			["ChosenVoicePack2"] = "None",
-			["InfoFrameFontStyle"] = "None",
-			["EventSoundEngage2"] = "None",
-			["SpecialWarningVibrate1"] = false,
-			["VPReplacesSA1"] = true,
-			["InfoFrameY"] = -0,
-			["SpecialWarningSound"] = 8174,
-			["WarningIconRight"] = false,
-			["UseSoundChannel"] = "Master",
-			["ShowGuildMessages"] = false,
-			["EventSoundMusic"] = "None",
-			["RangeFrameRadarX"] = 0,
-			["ShowRespawn"] = true,
-			["SpamSpecRolesoak"] = false,
-			["SpecialWarningPoint"] = "CENTER",
-			["EventSoundWipe"] = "None",
-			["InfoFrameCols"] = 0,
-			["LogCurrentRaids"] = false,
-			["ShowGuildMessagesPlus"] = false,
-			["SpecialWarningFlashDura1"] = 0.3,
-			["VPReplacesSA3"] = true,
-			["DontShowPTNoID"] = false,
-			["AutoReplySound"] = false,
-			["HideBossEmoteFrame2"] = true,
-			["SpecialWarningFlashCol5"] = {
-				0.2, -- [1]
-				1, -- [2]
-				1, -- [3]
-			},
-			["AlwaysShowSpeedKillTimer2"] = false,
-			["LatencyThreshold"] = 250,
-			["SpecialWarningFlash3"] = true,
-			["DebugLevel"] = 1,
-			["LFDEnhance"] = false,
-			["BadTimerAlert"] = false,
-			["LogCurrentMythicRaids"] = false,
-			["HideGarrisonToasts"] = true,
-			["ArrowPosY"] = -150,
-			["GUIHeight"] = 600,
-			["SpecialWarningFontShadow"] = false,
-			["EventMusicMythicFilter"] = false,
-			["RLReadyCheckSound"] = false,
-			["RangeFrameSound2"] = "none",
-			["NPAuraSize"] = 40,
-			["HideObjectivesFrame"] = true,
-			["SpecialWarningShortText"] = true,
-			["SpamSpecRoleinterrupt"] = false,
-			["DontShowPTText"] = false,
-			["UseNameplateHandoff"] = true,
-			["SpecialWarningVibrate4"] = true,
-			["SpecialWarningFontSize2"] = 15.30293083190918,
-			["DontShowSpecialWarningText"] = false,
-			["NewsMessageShown2"] = 1,
-			["DontPlayTrivialSpecialWarningSound"] = true,
-			["EventSoundPullTimer"] = "None",
-			["PullVoice"] = "Corsica",
-			["WarningPoint"] = "CENTER",
-			["ArrowPoint"] = "TOP",
-			["SpecialWarningFlashAlph4"] = 0.4,
-			["SpecialWarningVibrate2"] = false,
-			["SWarnClassColor"] = true,
-			["PTCountThreshold2"] = 5,
-			["SpecialWarningFlashCount2"] = 1,
-			["VPReplacesAnnounce"] = true,
-			["EventSoundDungeonBGM"] = "None",
-			["oRA3AnnounceConsumables"] = false,
-			["CountdownVoice2"] = "Kolt",
-			["AutoAcceptGuildInvite"] = false,
-			["EnableWBSharing"] = true,
-			["VPReplacesCustom"] = false,
-			["VPReplacesSA4"] = true,
-			["AITimer"] = true,
-			["LogTWDungeons"] = false,
-			["WarningShortText"] = true,
-			["DontShowBossAnnounces"] = false,
-			["InfoFrameLines"] = 0,
-			["SpecialWarningSound4"] = 9278,
-			["SpecialWarningVibrate5"] = true,
-			["GUIX"] = 0,
-			["DisableSFX"] = false,
-			["AutologBosses"] = false,
-			["LogCurrentHeroic"] = false,
-			["SpecialWarningFlashCount5"] = 3,
-			["VPDontMuteSounds"] = false,
-			["SpecialWarningFlashCol3"] = {
-				1, -- [1]
-				0, -- [2]
-				0, -- [3]
-			},
-			["WarningColors"] = {
-				{
-					["r"] = 0.4117647409439087,
-					["g"] = 0.8000000715255737,
-					["b"] = 0.9411765336990356,
-				}, -- [1]
-				{
-					["r"] = 0.9490196704864502,
-					["g"] = 0.9490196704864502,
-					["b"] = 0,
-				}, -- [2]
-				{
-					["r"] = 1,
-					["g"] = 0.501960813999176,
-					["b"] = 0,
-				}, -- [3]
-				{
-					["r"] = 1,
-					["g"] = 0.1019607931375504,
-					["b"] = 0.1019607931375504,
-				}, -- [4]
-			},
-			["CoreSavedRevision"] = 20221206225337,
-			["SWarningAlphabetical"] = true,
-			["SpecialWarningFlash4"] = true,
-			["BlockNoteShare"] = false,
-			["SpecialWarningY"] = 165.0740356445313,
-			["LogTrivialDungeons"] = false,
-			["DontPlaySpecialWarningSound"] = false,
-			["ModelSoundValue"] = "Short",
-			["WarningY"] = 260,
-			["WarningFontShadow"] = true,
-			["LogCurrentMPlus"] = false,
-			["RangeFrameRadarPoint"] = "BOTTOMRIGHT",
-			["DontShowInfoFrame"] = true,
-			["ShowEngageMessage"] = false,
-			["VPReplacesSA2"] = true,
-			["RangeFrameUpdates"] = "Average",
-			["MovieFilter2"] = "Never",
-			["DontShowRangeFrame"] = true,
-			["RaidWarningSound"] = 11742,
-			["DontRestoreRange"] = false,
-			["WarningFontSize"] = 13.81205558776856,
-			["SpecialWarningFlashCount3"] = 3,
-			["RoleSpecAlert"] = false,
-			["WhisperStats"] = false,
-			["SilentMode"] = false,
-			["EventSoundVictory2"] = "Interface\\AddOns\\DBM-Core\\sounds\\Victory\\SmoothMcGroove_Fanfare.ogg",
-			["DontPlayPTCountdown"] = false,
-			["SpecialWarningFlashAlph5"] = 0.5,
-			["SpecialWarningDuration2"] = 1.5,
-			["DoNotLogLFG"] = true,
-			["SpecialWarningFlashDura2"] = 0.4,
-			["WarningIconLeft"] = true,
-			["RangeFrameSound1"] = "none",
-			["LastRevision"] = 0,
-			["DontDoSpecialWarningVibrate"] = false,
-			["SpamSpecRolegtfo"] = false,
-			["AutoExpandSpellGroups"] = false,
-			["LogTrivialRaids"] = false,
-			["GUIPoint"] = "TOPRIGHT",
-			["SettingsMessageShown"] = true,
-			["SpecialWarningFlashCol4"] = {
-				1, -- [1]
-				0, -- [2]
-				1, -- [3]
-			},
-			["SpamSpecRoleswitch"] = false,
-			["SpecialWarningFlash1"] = true,
-			["GroupOptionsExcludeIcon"] = false,
-			["DontSetIcons"] = false,
-			["SpecialWarningFlashDura3"] = 1,
-			["SpecialWarningFlashDura4"] = 0.7,
-			["CountdownVoice"] = "Corsica",
-			["AutoRespond"] = true,
-			["DontShowUserTimers"] = false,
-			["CountdownVoice3"] = "Smooth",
-			["SpecialWarningFlashDura5"] = 1,
-			["RecordOnlyBosses"] = false,
-			["DisableStatusWhisper"] = false,
-			["EventDungMusicMythicFilter"] = false,
-			["GUIY"] = -79.25929260253906,
-			["RangeFrameFrames"] = "radar",
-			["DontPlayCountdowns"] = false,
-			["SpecialWarningFlash2"] = true,
-			["SpecialWarningIcon"] = true,
-			["InfoFrameFont"] = "standardFont",
-			["SpecialWarningFlashAlph1"] = 0.3,
-			["ShowDefeatMessage"] = false,
-			["FilterTankSpec"] = true,
-			["WarningDuration2"] = 1.5,
-			["RangeFrameLocked"] = false,
-			["InfoFrameShowSelf"] = false,
-			["SpecialWarningFont"] = "standardFont",
-			["ShortTimerText"] = true,
-			["CustomSounds"] = 0,
-			["DontShowBossTimers"] = false,
-			["SpecialWarningFontStyle"] = "THICKOUTLINE",
-			["DontShowSpecialWarningFlash"] = false,
-			["InfoFrameFontSize"] = 12,
-			["SpecialWarningFontCol"] = {
-				1, -- [1]
-				0.7, -- [2]
-				0, -- [3]
-			},
-			["WorldBossNearAlert"] = false,
-			["WarningX"] = 0,
-			["BadIDAlert"] = false,
-			["ArrowPosX"] = 0,
-			["AutoAcceptFriendInvite"] = false,
-			["WarningIconChat"] = false,
-			["SpecialWarningFlashCount1"] = 1,
-			["HideGuildChallengeUpdates"] = true,
-			["SpecialWarningSound5"] = 128466,
-			["DontSendYells"] = false,
-			["ShowPizzaMessage"] = false,
-			["AdvancedAutologBosses"] = false,
-			["HideTooltips"] = false,
-			["LogCurrentMythicZero"] = false,
-			["SpecialWarningFlashCol1"] = {
-				1, -- [1]
-				1, -- [2]
-				0, -- [3]
-			},
-			["Enabled"] = true,
-			["RangeFramePoint"] = "CENTER",
-			["GUIWidth"] = 800,
-			["FilterVoidFormSay"] = true,
-			["FilterDispel"] = true,
-			["SpamSpecInformationalOnly"] = false,
-			["SpamSpecRoletaunt"] = false,
-			["InfoFrameX"] = -233.86669921875,
-			["StripServerName"] = true,
-			["FakeBWVersion"] = false,
-			["ChatFrame"] = "DEFAULT_CHAT_FRAME",
-			["LogTWRaids"] = false,
-			["DebugMode"] = false,
-			["AFKHealthWarning"] = false,
-			["FilterInterrupt2"] = "TandFandBossCooldown",
-			["HelpMessageVersion"] = 3,
+	
+	BigWigs3DB = {
+	["namespaces"] = {
+		["BigWigs_Plugins_Victory"] = {
 		},
-	}
-	DBM_MinimapIcon = {
-		["minimapPos"] = 18.22282104994326,
-	}
-	
-	
-DBT_AllPersistentOptions = {
-	["Default"] = {
-		["DBM"] = {
-			["StartColorPR"] = 1,
-			["Scale"] = 0.9,
-			["HugeBarsEnabled"] = true,
-			["StartColorR"] = 1,
-			["EndColorPR"] = 0.5,
-			["Sort"] = "Sort",
-			["ExpandUpwardsLarge"] = false,
-			["ExpandUpwards"] = false,
-			["TimerPoint"] = "BOTTOMRIGHT",
-			["EndColorDG"] = 0,
-			["Alpha"] = 0.8,
-			["HugeTimerPoint"] = "CENTER",
-			["StartColorIR"] = 0.47,
-			["StartColorUIR"] = 1,
-			["StartColorAG"] = 0.545,
-			["EndColorDR"] = 1,
-			["TDecimal"] = 11,
-			["StartColorRR"] = 0.5,
-			["StartColorUIG"] = 1,
-			["FillUpLargeBars"] = true,
-			["HugeScale"] = 1.03,
-			["BarYOffset"] = 0,
-			["StartColorDG"] = 0.3,
-			["StartColorAR"] = 0.375,
-			["TextColorR"] = 1,
-			["EndColorAER"] = 1,
-			["StartColorIB"] = 1,
-			["ClickThrough"] = false,
-			["Font"] = "standardFont",
-			["Skin"] = "",
-			["EndColorAEB"] = 0.247,
-			["Height"] = 20,
-			["HugeSort"] = "Invert",
-			["BarXOffset"] = 0,
-			["EndColorB"] = 0,
-			["EndColorAR"] = 0.15,
-			["EndColorG"] = 0,
-			["HugeBarXOffset"] = 0,
-			["StartColorB"] = 0,
-			["StartColorAEG"] = 0.466,
-			["FadeBars"] = true,
-			["TextColorB"] = 1,
-			["EndColorIB"] = 1,
-			["StartColorAER"] = 1,
-			["InlineIcons"] = true,
-			["EndColorRB"] = 0.3,
-			["TimerX"] = -313.54833984375,
-			["EndColorIR"] = 0.047,
-			["Bar7ForceLarge"] = false,
-			["EndColorRR"] = 0.11,
-			["DynamicColor"] = true,
-			["BarStyle"] = "NoAnim",
-			["EnlargeBarTime"] = 11,
-			["Spark"] = true,
-			["StartColorDR"] = 0.9,
-			["StartColorPB"] = 0.42,
-			["FontFlag"] = "None",
-			["EndColorAB"] = 1,
-			["IconLocked"] = true,
-			["EndColorPG"] = 0.41,
-			["HugeHeight"] = 17,
-			["EndColorIG"] = 0.88,
-			["EndColorAEG"] = 0.043,
-			["EndColorPB"] = 0.285,
-			["StartColorAEB"] = 0.459,
-			["FontSize"] = 10,
-			["TextColorG"] = 1,
-			["KeepBars"] = true,
-			["HugeTimerX"] = -325.2148742675781,
-			["HugeTimerY"] = -24.71101760864258,
-			["HugeAlpha"] = 1,
-			["IconLeft"] = true,
-			["ColorByType"] = true,
-			["HugeWidth"] = 100,
-			["HugeBarYOffset"] = 0,
-			["DesaturateValue"] = 1,
-			["StartColorAB"] = 1,
-			["FillUpBars"] = true,
-			["TimerY"] = 221.1336822509766,
-			["Bar7CustomInline"] = true,
-			["EndColorUIB"] = 0.0117647058823529,
-			["EndColorUIG"] = 0.92156862745098,
-			["FlashBar"] = false,
-			["EndColorUIR"] = 1,
-			["EndColorRG"] = 1,
-			["StartColorUIB"] = 0.0627450980392157,
-			["StartColorG"] = 0.7,
-			["Texture"] = "Interface\\Addons\\Skada\\media\\statusbar\\BantoBar",
-			["StartColorPG"] = 0.776,
-			["EndColorR"] = 1,
-			["StartColorRG"] = 1,
-			["Width"] = 183,
-			["StartColorRB"] = 0.5,
-			["EndColorAG"] = 0.385,
-			["NoBarFade"] = false,
-			["StartColorDB"] = 1,
-			["StartColorIG"] = 0.97,
-			["EndColorDB"] = 1,
-			["IconRight"] = false,
+		["BigWigs_Plugins_Wipe"] = {
+		},
+		["BigWigs_Plugins_Colors"] = {
+		},
+		["BigWigs_Plugins_Raid Icons"] = {
+			["profiles"] = {
+				["Default"] = {
+					["disabled"] = true,
+				},
+			},
+		},
+		["BigWigs_Plugins_BossBlock"] = {
+		},
+		["BigWigs_Plugins_Bars"] = {
+			["profiles"] = {
+				["Default"] = {
+					["outline"] = "OUTLINE",
+					["BigWigsAnchor_width"] = 231.3777618408203,
+					["BigWigsEmphasizeAnchor_height"] = 20.7407398223877,
+					["growup"] = true,
+					["BigWigsAnchor_height"] = 17.00739479064941,
+					["BigWigsAnchor_y"] = 178.0446281433106,
+					["BigWigsAnchor_x"] = 1191.800079345703,
+					["BigWigsEmphasizeAnchor_y"] = 385.1610260009766,
+					["BigWigsEmphasizeAnchor_width"] = 133.6889343261719,
+					["BigWigsEmphasizeAnchor_x"] = 386.3110656738281,
+					["fontSizeEmph"] = 10,
+				},
+			},
+		},
+		["BigWigs_Plugins_InfoBox"] = {
+			["profiles"] = {
+				["Default"] = {
+					["posx"] = 978.6938781738281,
+					["posy"] = 75,
+				},
+			},
+		},
+		["BigWigs_Plugins_AltPower"] = {
+			["profiles"] = {
+				["Default"] = {
+					["disabled"] = true,
+					["position"] = {
+						"BOTTOMRIGHT", -- [1]
+						"BOTTOMRIGHT", -- [2]
+						-230.7109680175781, -- [3]
+						134.1707458496094, -- [4]
+					},
+					["lock"] = true,
+				},
+			},
+		},
+		["BigWigs_Plugins_Sounds"] = {
+		},
+		["BigWigs_Plugins_Messages"] = {
+			["profiles"] = {
+				["Default"] = {
+					["outline"] = "OUTLINE",
+					["fontSize"] = 16,
+					["emphFontSize"] = 20,
+					["emphPosition"] = {
+						"TOP", -- [1]
+						"TOP", -- [2]
+						-1.896123766899109, -- [3]
+						-200.8296966552734, -- [4]
+					},
+				},
+			},
+		},
+		["BigWigs_Plugins_AutoReply"] = {
+		},
+		["BigWigs_Plugins_Statistics"] = {
+			["profiles"] = {
+				["Default"] = {
+					["enabled"] = false,
+				},
+			},
+		},
+		["BigWigs_Plugins_Proximity"] = {
+			["profiles"] = {
+				["Default"] = {
+					["fontSize"] = 11,
+					["width"] = 136.2075500488281,
+					["posy"] = 71.86664772033691,
+					["posx"] = 1090.022369384766,
+					["height"] = 95.82218933105469,
+					["disabled"] = true,
+				},
+			},
+		},
+		["LibDualSpec-1.0"] = {
+		},
+		["BigWigs_Plugins_Pull"] = {
+		},
+		["BigWigs_Plugins_Countdown"] = {
+			["profiles"] = {
+				["Default"] = {
+					["fontSize"] = 20,
+					["position"] = {
+						"CENTER", -- [1]
+						"CENTER", -- [2]
+						5, -- [3]
+						222, -- [4]
+					},
+				},
+			},
+		},
+	},
+
+	["profiles"] = {
+		["Default"] = {
+			["showZoneMessages"] = false,
+			["flash"] = false,
 		},
 	},
 }
-
-	
+		
 
 	ReloadUI();
 
