@@ -534,6 +534,14 @@ ANameP_HealSpellList["수도사"] = {
 
 };
 
+ANameP_HealSpellList["기원사"] = {
+        [355936] = "EVOKER", -- 꿈의 숨결
+		[364446] = "EVOKER", -- 메아리
+		[366155] = "EVOKER", -- 되감기
+		[367226] = "EVOKER", -- 영혼 만개
+        
+};
+
 
 local ANameP_HealerGuid = {
 
