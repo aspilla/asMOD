@@ -1817,7 +1817,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 		C_Timer.After(0.5, APB_UpdatePower);
 	
 		
-	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") then
+	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		C_Timer.After(0.5, APB_CheckPower);
 		C_Timer.After(0.5, APB_UpdatePower);
 	elseif event == "SPELLS_CHANGED" then
@@ -2097,6 +2097,7 @@ APB:RegisterEvent("PLAYER_REGEN_DISABLED");
 APB:RegisterEvent("PLAYER_REGEN_ENABLED");
 APB:RegisterEvent("TRAIT_CONFIG_UPDATED");
 APB:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+APB:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 APB:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
 APB:RegisterEvent("SPELLS_CHANGED");
 APB:RegisterEvent("ACTIONBAR_UPDATE_USABLE");

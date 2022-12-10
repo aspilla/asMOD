@@ -1484,7 +1484,7 @@ local function ACI_OnEvent(self, event, arg1, ...)
 			end
 		end
 
-	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" then
+	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		C_Timer.After(0.5, ACI_Init);	
 		bfirst = true;
 	elseif event == "ACTIONBAR_SLOT_CHANGED" and bfirst then
@@ -1919,6 +1919,7 @@ ACI_mainframe:SetScript("OnEvent", ACI_OnEvent);
 ACI_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 ACI_mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED");
 ACI_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+ACI_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 ACI_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 ACI_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
 ACI_mainframe:RegisterEvent("VARIABLES_LOADED");

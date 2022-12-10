@@ -573,7 +573,7 @@ local ColorLevel = {
 	Name = 7,
 };
 
-local classheight_value = 13.5;
+local classheight_value = 15;
 local nameheight_value = 9;
 local castheight = 8;
 local orig_height = ANameP_Height;
@@ -2034,7 +2034,7 @@ local function ANameP_OnEvent(self, event, ...)
 	elseif event == "PLAYER_TARGET_CHANGED" then
 		updateUnitAuras("target");
 		updateUnitHealthText(self, "target");
-	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") then
+	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED") then
 		C_Timer.After(0.5, initAlertList);		
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		isInstance, instanceType = IsInInstance();
@@ -2141,6 +2141,7 @@ local function initAddon()
 	ANameP:RegisterEvent("ADDON_LOADED")
 	ANameP:RegisterEvent("TRAIT_CONFIG_UPDATED");
 	ANameP:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+	ANameP:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 	ANameP:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 	ANameP:RegisterEvent("UNIT_FACTION");
 	ANameP:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");

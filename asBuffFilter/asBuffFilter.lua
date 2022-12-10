@@ -156,6 +156,7 @@ local ABF_PVPBuffList = {
 }
 
 local ABF_TalentBuffList = {};
+local ABF_TalentShowList = {};
 
 local isBig = {};
 local isBigReal = {};
@@ -434,10 +435,18 @@ local function ABF_UpdateDebuff(unit)
 				skip = false;
 			end
 
-			if PLAYER_UNITS[caster] and duration == 0 and ABF_TalentBuffList and ABF_TalentBuffList[name]  then
+			if PLAYER_UNITS[caster] and duration == 0 and ABF_TalentShowList and ABF_TalentShowList[name] then
 				-- 특성이면 보이게
 				skip = false;
 			end
+
+			if PLAYER_UNITS[caster] and duration == 0 and ABF_TalentBuffList and ABF_TalentBuffList[name] and count > 0 then
+				-- 특성이면 보이게
+				skip = false;
+				ABF_TalentShowList[name] = true;
+			end
+
+		
 
 			if nameplateShowPersonal and PLAYER_UNITS[caster]  then
 				skip = false;
