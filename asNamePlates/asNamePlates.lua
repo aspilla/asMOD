@@ -873,7 +873,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 	if not self.unit then
 		return
 	end
-
+	
 	local icon_size = self.icon_size; 
 
 	if showbuff and not showdebuff then
@@ -1207,6 +1207,10 @@ local function updateTargetNameP(self)
 		if GetCVarBool("nameplateResourceOnTarget") then
 			base_y = base_y +  classheight_value ;
 		end
+	elseif UnitIsUnit(self.unit, "player") then
+		self.alerthealthbar = false;
+		height = orig_height + ANameP_TargetHealthBarHeight + 3;
+		self.healthtext:Show();
 	else
 		height = orig_height;
 		width = orig_width;
@@ -1225,7 +1229,10 @@ local function updateTargetNameP(self)
 	--버프 Position
 	self:ClearAllPoints();
 	if UnitIsUnit(self.unit, "player") then
-		self:Hide();
+		self:SetPoint("BOTTOMLEFT", healthBar, "TOPLEFT", 0, base_y);
+		if UnitFrame.BuffFrame then
+			UnitFrame.BuffFrame:Hide();
+		end
 	else
 		self:SetPoint("BOTTOMLEFT", healthBar, "TOPLEFT", 0, base_y);
 		if UnitFrame.BuffFrame then
@@ -1347,7 +1354,7 @@ end
 
 local function updateHealthbarColor(self)
 	--unit name 부터
-	if not self.unit or not self.checkaura or self.checkpvptarget then
+	if not self.unit or not self.checkcolor then
 		return;
 	end
 	
@@ -1641,6 +1648,7 @@ local function createNamePlate(namePlateFrameBase)
 	--do nothing
 end
 
+
 local function addNamePlate(namePlateUnitToken)
 	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
 
@@ -1651,20 +1659,34 @@ local function addNamePlate(namePlateUnitToken)
 	local unitFrame = namePlateFrameBase.UnitFrame;
 	local healthbar = namePlateFrameBase.UnitFrame.healthBar;
 
-	--적대적 대상만 asnameplates를 생성중
-	if not namePlateFrameBase.asNamePlates then
-		if UnitIsUnit("player", namePlateUnitToken) then
-			return;
-		else
-			local reaction = UnitReaction("player", namePlateUnitToken);
-			if reaction and reaction <= 4 then
-				-- Reaction 4 is neutral and less than 4 becomes increasingly more hostile
-			elseif UnitIsPlayer(namePlateUnitToken) then
-				return;
+	if UnitIsUnit("player", namePlateUnitToken) then
+		--[[
+		if namePlateFrameBase.asNamePlates then
+			namePlateFrameBase.asNamePlates.checkaura = false;
+			namePlateFrameBase.asNamePlates.checkcolor = false;
+			namePlateFrameBase.asNamePlates.checkpvptarget = false;
+			namePlateFrameBase.asNamePlates:Hide();
+			unitFrame.BuffFrame:SetAlpha(1);
+		end
+		return;
+		]]
+	else
+		local reaction = UnitReaction("player", namePlateUnitToken);
+		if reaction and reaction <= 4 then
+			-- Reaction 4 is neutral and less than 4 becomes increasingly more hostile
+		elseif UnitIsPlayer(namePlateUnitToken) then
+			if namePlateFrameBase.asNamePlates then
+				namePlateFrameBase.asNamePlates.checkaura = false;
+				namePlateFrameBase.asNamePlates.checkcolor = false;
+				namePlateFrameBase.asNamePlates.checkpvptarget = false;
+				namePlateFrameBase.asNamePlates:Hide();
+				namePlateFrameBase.asNamePlates.healthtext:Hide();
+				unitFrame.BuffFrame:SetAlpha(1);
 			end
+			return;
 		end
 	end
-	
+		
 	if not namePlateFrameBase.asNamePlates then
 		namePlateFrameBase.asNamePlates = CreateFrame("Frame", "$parentasNamePlates", namePlateFrameBase);
 	else
@@ -1694,6 +1716,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.bhideframe = false;
 	namePlateFrameBase.asNamePlates.isshown = nil;
 	namePlateFrameBase.asNamePlates.originalcolor = {r = healthbar.r, g = healthbar.g, b = healthbar.b};
+	namePlateFrameBase.asNamePlates.checkcolor = false;
 
 
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
@@ -1702,6 +1725,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
 	namePlateFrameBase.asNamePlates:SetScript("OnEvent", nil);
 
+	
 	local Size = ANameP_AggroSize;
 	local namePlateVerticalScale = tonumber(GetCVar("NamePlateVerticalScale"));
 		
@@ -1715,6 +1739,9 @@ local function addNamePlate(namePlateUnitToken)
 
 	ANameP_MaxDebuff = debuffs_per_line * 2;	 
 	Aggro_Y = 0;
+
+	namePlateFrameBase.asNamePlates:ClearAllPoints();
+	namePlateFrameBase.asNamePlates:SetPoint("CENTER", healthbar, "CENTER", 0  , 0)
 	
 	if not namePlateFrameBase.asNamePlates.aggro1  then
 		namePlateFrameBase.asNamePlates.aggro1 = healthbar:CreateFontString(namePlateFrameBase.asNamePlates:GetName().."aggrotext1", "OVERLAY");
@@ -1783,6 +1810,7 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.healthtext:Hide();
 		namePlateFrameBase.asNamePlates.checkpvptarget = false;
 		namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
+		namePlateFrameBase.asNamePlates.checkcolor = false;
 
 		for i = 1, ANameP_MaxDebuff do
 			if ( namePlateFrameBase.asNamePlates.buffList[i] ) then
@@ -1834,9 +1862,33 @@ local function addNamePlate(namePlateUnitToken)
 		local checkaura = false;
 		local showdebuff = false;
 		local checkpvptarget = false;
+		local checkcolor = false;
 
 		if UnitIsUnit("player", namePlateUnitToken) then
-			namePlateFrameBase.asNamePlates:Hide();
+			--namePlateFrameBase.asNamePlates:Hide();
+			if ANameP_ShowPlayerBuff then
+
+				if ANameP_ShowPlayerBuffDefault then
+					filter = "HELPFUL|INCLUDE_NAME_PLATE_ONLY";
+				else
+					filter = "HELPFUL|PLAYER|INCLUDE_NAME_PLATE_ONLY";
+				end
+				helpful = true;
+				checkaura = true;				
+			else
+				checkaura = false;
+			end
+			
+			-- Resource Text
+			if ClassNameplateManaBarFrame and ANameP_Resourcetext == nil then
+				ANameP_Resourcetext = ClassNameplateManaBarFrame:CreateFontString("ANameP_Resourcetext", "OVERLAY");
+				ANameP_Resourcetext:SetFont(STANDARD_TEXT_FONT, ANameP_HeathTextSize, "OUTLINE");
+				ANameP_Resourcetext:SetAllPoints(true);
+				ANameP_Resourcetext:SetPoint("CENTER", ClassNameplateManaBarFrame, "CENTER", 0  , 0);
+			end
+
+			unitFrame.BuffFrame:SetAlpha(0);
+			namePlateFrameBase.asNamePlates:Show();
 		else
 			local reaction = UnitReaction("player", namePlateUnitToken);
 			if reaction and reaction <= 4 then
@@ -1850,6 +1902,8 @@ local function addNamePlate(namePlateUnitToken)
 
 				if UnitIsPlayer(namePlateUnitToken) then
 					checkpvptarget = true;
+				else
+					checkcolor = true;
 				end
 				checkaura = true;
 				unitFrame.BuffFrame:SetAlpha(0);
@@ -1876,6 +1930,7 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.showbuff = showbuff;
 		namePlateFrameBase.asNamePlates.showdebuff = showdebuff;
 		namePlateFrameBase.asNamePlates.checkpvptarget = checkpvptarget;
+		namePlateFrameBase.asNamePlates.checkcolor = checkcolor;
 
 		if showhealer and ANameP_HealerSize > 0  then
 			namePlateFrameBase.asNamePlates.healer:Show();
@@ -1966,6 +2021,7 @@ local function ANameP_OnEvent(self, event, ...)
 			updateTargetNameP(namePlateFrameBase.asNamePlates);
 			updateUnitAuras(namePlateUnitToken);
 			updateUnitHealthText(self, "target");
+			updateUnitHealthText(self, "player");
 			updateHealthbarColor(namePlateFrameBase.asNamePlates);
 		end		
 	elseif event == "NAME_PLATE_UNIT_REMOVED"  then
@@ -1973,6 +2029,7 @@ local function ANameP_OnEvent(self, event, ...)
 		removeNamePlate(namePlateUnitToken);
 	elseif event == event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player"  then
 		updateUnitAuras("target");
+		updateUnitAuras("player");
 		updateUnitHealthText(self, "target");
 	elseif event == "PLAYER_TARGET_CHANGED" then
 		updateUnitAuras("target");
@@ -2008,8 +2065,50 @@ local function ANameP_OnEvent(self, event, ...)
 	end
 end
 
+local function updateUnitResourceText(self, unit)
+	local value;
+	local valueMax;
+	local valuePct = ""
+	if UnitIsUnit("player", unit) then
+	else
+		return;
+	end
+
+	if ANameP_Resourcetext == nil then
+		return;
+	end
+
+	value = UnitPower(unit);
+	valueMax = UnitPowerMax(unit);
+
+	if valueMax > 0 then
+		valuePct =  (math.ceil((value / valueMax) * 100));
+	end
+
+	if (valueMax <= 300) then
+		valuePct = value;
+	end
+
+	if valuePct > 0 then
+		ANameP_Resourcetext:SetText(valuePct);
+	else
+		ANameP_Resourcetext:SetText("");
+	end
+
+
+	if valuePct > 0 then
+
+		ANameP_Resourcetext:SetTextColor(1, 1, 1, 1);
+	end
+
+end
+
+
 local function ANameP_OnUpdate()
 	updateUnitHealthText(ANameP, "target");
+	updateUnitHealthText(ANameP, "player");
+	updateUnitResourceText(ANameP, "player");
+	
 	for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
 		local nameplate = v;
 
@@ -2052,8 +2151,6 @@ local function initAddon()
 	ANameP:SetScript("OnEvent", ANameP_OnEvent)
 	--주기적으로 Callback
 	C_Timer.NewTicker(ANameP_UpdateRate, ANameP_OnUpdate);	
-
-	LoadAddOn("Blizzard_NamePlates");
 
 	hooksecurefunc("DefaultCompactNamePlateFrameAnchorInternal", function(frame, setupOptions)
 		if ( frame:IsForbidden() ) then return end
