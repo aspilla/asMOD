@@ -203,6 +203,8 @@ if asMOD_setupFrame then
 
 local prev_spell = nil;
 local prev_spell_time = nil;
+local prev_spell_id = nil;
+local seq_spell_count = 0;
 
 
 local function ATGCD_Alert(spellid, bcancel, bitem)
@@ -212,8 +214,18 @@ local function ATGCD_Alert(spellid, bcancel, bitem)
 		return
 	end	
 
+	local spell_count = 0;
+
+	
 	if AGCD_BlackList[spellid] then
 		return;
+	end
+
+	if spellid == prev_spell_id and not bcancel then
+		seq_spell_count = seq_spell_count + 1;
+	elseif not bcancel then
+		prev_spell_id = spellid;
+		seq_spell_count = 0;
 	end
 
 	local name,discard,icon = GetSpellInfo(spellid)
@@ -258,6 +270,10 @@ isCraftingReagent = GetItemInfo(spellid)
 				frameCancel:SetText("X");
 				frameCancel:SetTextColor(1, 0 ,0 );
 				frameCancel:Show();
+			elseif seq_spell_count > 0 then
+				frameCancel:SetText(seq_spell_count + 1);
+				frameCancel:SetTextColor(1, 1 ,1 );
+				frameCancel:Show();
 			else
 				frameCancel:SetText("");
 				frameCancel:Hide();
@@ -278,10 +294,15 @@ isCraftingReagent = GetItemInfo(spellid)
 				elseif time2 then
 
 					frameIcon:SetTexture(icon2);
+					local prev_text = frameCancel2:GetText();
 					--frameborder:Hide();
-					if frameCancel2:IsShown() then
+					if frameCancel2:IsShown() and prev_text == "X" then
 						frameCancel:SetText("X");
 						frameCancel:SetTextColor(1, 0 ,0 );
+						frameCancel:Show();
+					elseif frameCancel2:IsShown() then
+						frameCancel:SetText(prev_text);
+						frameCancel:SetTextColor(1, 1 ,1 );
 						frameCancel:Show();
 					else
 						frameCancel:Hide();
