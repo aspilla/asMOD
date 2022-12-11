@@ -574,7 +574,7 @@ local ColorLevel = {
 };
 
 local classheight_value = 15;
-local nameheight_value = 9;
+local nameheight_value = 11;
 local castheight = 8;
 local orig_height = ANameP_Height;
 local orig_width = ANameP_Width;
