@@ -356,7 +356,8 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 		local GCDmax = 1.5 / (( GetHaste() / 100 ) + 1)
 
 
-		if prev and prev == prev_spell and GetTime() - prevtime < GCDmax then
+		if prev and prev == prev_spell and (GetTime() - prevtime) < (GCDmax - 0.1)  then
+			
 		else
 
 			if KnownSpellList[prev_spell] == 1 then
@@ -375,7 +376,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 
 		local GCDmax = 1.5 / (( GetHaste() / 100 ) + 1)
 
-		if interruptprev and interruptprev == prev_spell and GetTime() - interrupttime < GCDmax then
+		if interruptprev and interruptprev == prev_spell and (GetTime() - interrupttime) < (GCDmax - 0.1 ) then
 
 		else
 
@@ -414,4 +415,5 @@ ATGCD:RegisterUnitEvent("UNIT_PET", "player")
 ATGCD:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
 ATGCD:RegisterEvent("PLAYER_ENTERING_WORLD")
 ATGCD:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+
 
