@@ -73,7 +73,7 @@ local function scanActionSlots()
 
 		local lActionSlot = 0;
 
-	for lActionSlot = 1, 120 do
+	for lActionSlot = 1, 240 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 		local itemid = nil;
 
