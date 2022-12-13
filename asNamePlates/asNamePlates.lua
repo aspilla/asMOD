@@ -14,6 +14,7 @@ local ANameP_MaxBuff = 1;				--최대 PVP Buff (안보이게 하려면 0)
 local ANameP_ShowMyAll = true;			--내 buff/Debuff면 모두 보임 false 로 하면 아래 Show List 항목만 보임
 local ANameP_ShowPVPDebuff = true;		--PVP Debuff 면 모두 보임 (다른 사람의 디법이면 회색으로 보임)
 local ANameP_ShowPlayerBuff = true;		--Player NamePlate에 Buff를 안보일려면 false;
+local ANameP_ShowPlayerBuffDefault = true; -- 기본 Plate 와 같은 BUff만 보이기
 local ANameP_BuffMaxCool = 60;			--buff의 최대 Cool
 local ANameP_AggroShow = true;			-- 어그로 여부를 표현할지 여부 
 local ANameP_PVPAggroShow = true;		-- PVP 어그로 여부를 표현할지 여부 
@@ -999,9 +1000,13 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 				-- Player 일 경우
 				if  UnitIsUnit("player", unit) then
-					if ANameP_ShowPlayerBuff and PLAYER_UNITS[caster] and duration > 0 and duration <= ANameP_BuffMaxCool then
-						show = true;
-					end			
+					if ANameP_ShowPlayerBuffDefault then
+						show = nameplateShowPersonal;
+					else
+						if ANameP_ShowPlayerBuff and PLAYER_UNITS[caster] and duration > 0 and duration <= ANameP_BuffMaxCool then
+							show = true;
+						end
+					end	
 				else
 					if ANameP_ShowMyAll and PLAYER_UNITS[caster] then
 						if helpful then
