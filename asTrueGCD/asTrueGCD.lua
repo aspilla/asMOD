@@ -1,6 +1,6 @@
 ﻿-----------------설정 ------------------------
-local ATGCD_X = 22;
-local ATGCD_Y = -90;
+local ATGCD_X = 22 + 20 * 1.3;
+local ATGCD_Y = -86;
 local AGCICON = 20;
 
 
@@ -73,7 +73,7 @@ local function scanActionSlots()
 
 		local lActionSlot = 0;
 
-	for lActionSlot = 1, 240 do
+	for lActionSlot = 1, 120 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 		local itemid = nil;
 
@@ -160,44 +160,39 @@ ATGCD:SetHeight(0)
 ATGCD:Show();
 
 
-ATGCD.icon = {};
+ATGCD.frame = {};
 ATGCD.icontime = {};
-for i = 1 , 3 do
-	ATGCD.icon[i] = CreateFrame("Button", "ATGCDIcon" .. i, UIParent, "ATGCDFrameTemplate");
+for i = 0 , 3 do
+	ATGCD.frame[i] = CreateFrame("Button", "ATGCDIcon" .. i, UIParent, "ATGCDFrameTemplate");
 
-	if i == 1 then
-		ATGCD.icon[i]:SetPoint("CENTER",UIParent,"CENTER", ATGCD_X, ATGCD_Y)
+	if i == 0 then
+		ATGCD.frame[i]:SetPoint("CENTER",UIParent,"CENTER", ATGCD_X, ATGCD_Y)
 	else
-		ATGCD.icon[i]:SetPoint("RIGHT", ATGCD.icon[i-1],"LEFT", -2, 0);
+		ATGCD.frame[i]:SetPoint("BOTTOMRIGHT", ATGCD.frame[i-1],"BOTTOMLEFT", -2, 0);
 	end
 
 
-	ATGCD.icon[i]:SetWidth(AGCICON);
-	ATGCD.icon[i]:SetHeight(AGCICON * 0.9);
-	ATGCD.icon[i]:SetScale(1);
-	ATGCD.icon[i]:SetAlpha(1);
-	ATGCD.icon[i]:EnableMouse(false);
-
-	local frameIcon = _G["ATGCDIcon" .. i.."Icon"];
-	frameIcon:SetTexCoord(.08, .92, .08, .92);
-
-	local frameBorder = _G["ATGCDIcon" .. i.."Border"];
-	frameBorder:SetTexture("Interface\\Addons\\asTrueGCD\\border.tga");
-	frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
-	frameBorder:SetVertexColor(0, 0, 0);
-	frameBorder:Show();
-	ATGCD.icon[i]:Hide();
-	
-
-
-
-   
-
+	ATGCD.frame[i]:SetWidth(AGCICON);
+	ATGCD.frame[i]:SetHeight(AGCICON * 0.9);
+	ATGCD.frame[i]:SetScale(1);
+	ATGCD.frame[i]:SetAlpha(1);
+	ATGCD.frame[i]:EnableMouse(false);
+	ATGCD.frame[i].icon:SetTexCoord(.08, .92, .08, .92);
+	ATGCD.frame[i].border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+	ATGCD.frame[i].border:SetVertexColor(0, 0, 0);
+	ATGCD.frame[i].border:Show();
+	ATGCD.frame[i]:Hide();
 end
+
+
+	ATGCD.frame[0]:SetWidth(AGCICON * 1.3);
+	ATGCD.frame[0]:SetHeight(AGCICON * 1.3 * 0.9);
+	ATGCD.frame[0].icon:Hide();
+	ATGCD.frame[0]:Hide();
 
  LoadAddOn("asMOD");
 if asMOD_setupFrame then
-        asMOD_setupFrame (	ATGCD.icon[1], "asTrueGCD");
+        asMOD_setupFrame (	ATGCD.frame[1], "asTrueGCD");
     end
 
 
@@ -231,9 +226,7 @@ local function ATGCD_Alert(spellid, bcancel, bitem)
 	local name,discard,icon = GetSpellInfo(spellid)
 
 	if bitem then
-		local 	itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount,
-itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, 
-isCraftingReagent = GetItemInfo(spellid)
+		local 	itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent = GetItemInfo(spellid);
 		name = itemName
 		icon = iconFileDataID
 	end
@@ -254,16 +247,16 @@ isCraftingReagent = GetItemInfo(spellid)
 	local current = GetTime();
 
 	for i = 1, 3 do
-		local frame = ATGCD.icon[4 - i];
-		local frameIcon = _G["ATGCDIcon"..(4 - i).."Icon"];
-		local frameborder = _G["ATGCDIcon"..(4 - i).."Border"];
-		local frameCancel = _G["ATGCDIcon"..(4 - i).."Cancel"];
+		local frame = ATGCD.frame[4 - i];
+		local frameIcon = frame.icon;
+		local frameborder = frame.border;
+		local frameCancel = frame.text;
 		
 		if i == 3 then
 			-- set the icon
 			frameIcon:SetTexture(icon);
+			frameIcon:Show();
 			frame:Show();
-			--frameborder:Hide();
 			ATGCD.icontime[4 - i] = GetTime();	
 			
 			if bcancel then
@@ -281,10 +274,10 @@ isCraftingReagent = GetItemInfo(spellid)
 
 			
 		else
-			local frameIcon2 = _G["ATGCDIcon"..(4 - i - 1).."Icon"];
+			local frameIcon2 = ATGCD.frame[(4 - i - 1)].icon
 			local icon2 = frameIcon2:GetTexture()
 			local time2 = ATGCD.icontime[4 - i - 1];
-			local frameCancel2 = _G["ATGCDIcon"..(4 - i - 1).."Cancel"];
+			local frameCancel2 = ATGCD.frame[(4 - i - 1)].text;
 		
 			if icon2  then
 				if time2 and current - time2 > 5 then
@@ -333,23 +326,55 @@ local function ATGCD_OnUpdate()
 	for	i = 1, 3 do
 		
 		if ATGCD.icontime[i]  and  current - ATGCD.icontime[i] > 5 then
-			ATGCD.icon[i]:Hide();
-			local frameCancel = _G["ATGCDIcon"..i.."Cancel"];
+			ATGCD.frame[i]:Hide();
+			local frameCancel = ATGCD.frame[i].text;
 			frameCancel:Hide();
 		end
 
 	end
 end
 local interruptprev = nil;
-local interrupttime = nil;
+local interrupttime = 0;
 
 
 local prev = nil;
-local prevtime = nil;
+local prevtime = 0;
 
 local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 
-	if event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
+	if( event == "UNIT_SPELLCAST_START") then
+		local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo("player");
+		local frameIcon = ATGCD.frame[0].icon; 
+		local frameCooldown =ATGCD.frame[0].cooldown;
+
+		if name and frameIcon then
+			--if name and frameIcon and isTargetPlayer then
+			frameIcon:SetTexture(texture);
+
+			if spellid == prev_spell_id  then
+				ATGCD.frame[0].text:SetText(seq_spell_count + 2);
+				ATGCD.frame[0].text:SetTextColor(1, 1 ,1 );
+				ATGCD.frame[0].text:Show();
+			else
+				ATGCD.frame[0].text:Hide();
+			end
+			frameIcon:Show();
+			local duration = (endTime - startTime)/1000;
+			endTime = endTime / 1000;
+			CooldownFrame_Set(frameCooldown, endTime - duration, duration, duration > 0, true);
+			frameCooldown:SetHideCountdownNumbers(true);
+			ATGCD.frame[0]:Show();
+		else
+			frameIcon:Hide();
+			ATGCD.frame[0]:Hide();
+		end
+	elseif event == "UNIT_SPELLCAST_STOP" then
+		local name = UnitCastingInfo("player");
+		if not name then
+			ATGCD.frame[0]:Hide();
+		end
+
+	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
 
 		prev_spell = arg3;
 
@@ -369,8 +394,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 				prevtime = GetTime();
 				ATGCD_Alert(KnownSpellList[prev_spell], nil, true);
 			end
-		end
-
+		end				
 	elseif event == "UNIT_SPELLCAST_INTERRUPTED" and   arg1 == "player" then
 		prev_spell = arg3;
 
@@ -389,7 +413,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 				interrupttime = GetTime();
 				ATGCD_Alert(KnownSpellList[prev_spell], true, true);
 			end
-		end
+		end		
 	elseif event == "SPELLS_CHANGED" then
 		scanSpells(2);
 	elseif event == "UNIT_PET" then
@@ -410,6 +434,8 @@ ATGCD:SetScript("OnEvent", ATGCD_OnEvent)
 
 ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player");
+ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_START", "player");
+ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player");
 ATGCD:RegisterEvent("SPELLS_CHANGED")
 ATGCD:RegisterUnitEvent("UNIT_PET", "player")
 ATGCD:RegisterEvent("ACTIONBAR_SLOT_CHANGED")

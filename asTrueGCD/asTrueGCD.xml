@@ -9,7 +9,7 @@
 				<Texture name="$parentIcon" parentKey="icon"/>
 			</Layer>
 			<Layer level="OVERLAY">
-				<FontString name="$parentCount" inherits="NumberFontNormalLarge" justifyH="RIGHT">
+				<FontString name="$parentCount" inherits="NumberFontNormalLarge" justifyH="RIGHT" parentKey ="count">
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT">
 							<Offset>
@@ -18,7 +18,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentCancel" inherits="NumberFontNormalLarge" justifyH="RIGHT">
+				<FontString name="$parentCancel" inherits="NumberFontNormalLarge" justifyH="RIGHT" parentKey ="text">
 					<Anchors>
 						<Anchor point="CENTER">
 							<Offset>
@@ -28,7 +28,7 @@
 					</Anchors>
 				</FontString>
 
-				<Texture name="$parentBorder" file="Interface\Buttons\UI-Debuff-Overlays">
+				<Texture name="$parentBorder" file="Interface\Addons\asTrueGCD\border.tga" parentKey ="border">
 					<Size>
 						<AbsDimension x="17" y="17"/>
 					</Size>
@@ -53,6 +53,5 @@
 			</Cooldown>
 		</Frames>
 	</Frame>
-
 	<Script file="asTrueGCD.lua"/>
 </Ui>
