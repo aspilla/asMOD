@@ -125,12 +125,11 @@ ANS_SpellList_HUNTER_2 = {
 	{"사냥꾼의 징표", 2, true, {3, "사냥꾼의 징표","target", 0.1,  true, false}},
 	{"마무리 사격", 1, false},
 	{"속사", 1, false},
-	{"신비한 사격", 1, false, {1}},
-	{"신비한 사격", 1, false, {16, "조준 사격"}}, 
 	{"조준 사격", 1, false, {7, 2}},
+	{"신비한 사격", 1, false, {1}},
+	{"신비한 사격", 1, false, {16, "조준 사격"}}, 	
 	{"조준 사격", 1, false, {1}},
 	{"조준 사격", 0, false, {14, 50, "player", false, true, 4}},
-	{"신비한 사격", 1, false, {14, 80, "player", false, true, 4}},	
 	{"고정 사격", 1, true},
 };
 
@@ -212,36 +211,30 @@ ANS_SpellList_DEATHKNIGHT_3 = {
 --무기
 ----8.0.1 완료
 ANS_SpellList_WARRIOR_1 = {
-	--[[
-	{"분쇄", 1, false, {3, "분쇄", "target", 4, true, false}, {3, "거인의 강타","target", 0.1, true, false},},-- 분쇄 타겟 디버프 4 초
-	{"해골 쪼개기", 1, false, {4, 60, "player", true, false}},
+	
+	{"분쇄", 1, false, {3, "난도질", "target", 4, true, false}},-- 분쇄 타겟 디버프 4 초
 	{"거인의 강타", 2, false},
-	{"회전베기", 2, false},
 	{"마무리 일격", 1, false, {1}},
-	{"필사의 일격", 0, false},
+	{"필사의 일격", 1, false, {2, "제압", "player", 1, false, true}},
+	{"필사의 일격", 0, false, {3, "치명상", "target", 2, true, false}},
 	{"제압", 1},
-	{"마무리 일격", 1, false, {4, 40, "player", false, false}},
-	{"소용돌이", 1, false, {4, 80, "player", false, false}, {9, 3, 2}}, -- 전투의 열정
+	{"마무리 일격", 1, false, {4, 80, "player", false, false}},
+	{"소용돌이", 2, false, {4, 80, "player", false, false}}, 
 	{"격돌", 1, false, {4, 80, "player", false, false}},
 	{"자동 공격", 1},
-	]]
 }; 
 
 
 --분노
 ----8.0.1 완료
 ANS_SpellList_WARRIOR_2 = {
-	--[[
-	{"분노의 베기", 1, false,{2, "분노의 베기","player", 2, true, false}},
 	{"광란", 1, false, {2, "격노","player", 0.1, true, false},{4, 90, "player", false, false}}, -- 격노 없을 때 
 	{"마무리 일격", 1, false, {2, "격노","player", 0.1, false, false}}, -- 격노 있을 때
 	{"피의 갈증", 1, false, {2, "격노","player", 0.1, true, false}}, -- 격노 없을 때 
 	{"분노의 강타", 1, false, {7, 2}},
 	{"피의 갈증", 0},
 	{"분노의 강타", 1, false},
-	{"분노의 베기", 1, false},
 	{"소용돌이", 1, false},
-	]]
 }; 
 
 
@@ -528,6 +521,7 @@ ANS_SpellList_MAGE_1 = {
 --화염
 --8.0.1 완료
 ANS_SpellList_MAGE_2 = {
+	--[[
 	{"불덩이 작렬", 1, true, {2, "몰아치는 열기!", "player", 0.1, false, false}},
 	{"불덩이 작렬", 1, false,{6, 30, "target", true}, {2, "열기","player", 0.1, false, false}, {16, "불태우기"}},
 	{"불덩이 작렬", 1, false, {2, "발화", "player", 0.1, false, false}, {2, "열기","player", 0.1, false, false}, {16, "불태우기"}},
@@ -537,6 +531,7 @@ ANS_SpellList_MAGE_2 = {
 	{"화염 작렬", 1, false, {2, "열기","player", 0.1, false, false}},
 	{"화염구", 1},
 	{"화염 작렬", 0},
+	]]
 };
 
 --냉기
