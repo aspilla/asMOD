@@ -45,11 +45,13 @@ local function scanSpells(tab)
 	for i=tabOffset + 1, tabOffset + numEntries do
 		local spellName, _, spellID = GetSpellBookItemName (i, BOOKTYPE_SPELL)
 
-		if not spellID then
+		if not spellName then
 			do break end
 		end
 
-		KnownSpellList[spellID] = 1;
+		if spellID then
+			KnownSpellList[spellID] = 1;
+		end		
 	end
 end
 
@@ -57,14 +59,16 @@ end
 local function scanPetSpells()
 
 	for i = 1, 20 do
-	   local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
-	   local spellName, _, spellID = GetSpellBookItemName (slot, BOOKTYPE_PET)
-	   
-		if not spellID then
+	   	local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
+	   	local spellName, _, spellID = GetSpellBookItemName (slot, BOOKTYPE_PET);
+	   	   
+	   if not spellName then
 			do break end
 		end
 
-		KnownSpellList[spellID] = 1;
+		if spellID then
+			KnownSpellList[spellID] = 1;
+		end		
 	end
 
 end
@@ -143,6 +147,7 @@ local function setupKnownSpell()
 
 	scanSpells(1)
 	scanSpells(2)
+	scanSpells(3)
 	scanPetSpells()
 
 	scanActionSlots();
@@ -339,6 +344,7 @@ local interrupttime = 0;
 
 local prev = nil;
 local prevtime = 0;
+local channel_spell = nil;
 
 local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 
@@ -368,31 +374,64 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			frameIcon:Hide();
 			ATGCD.frame[0]:Hide();
 		end
+	elseif( event == "UNIT_SPELLCAST_CHANNEL_START") then
+			local name,  text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo("player");
+			local frameIcon = ATGCD.frame[0].icon; 
+			local frameCooldown =ATGCD.frame[0].cooldown;
+	
+			if name and frameIcon then
+
+				channel_spell = spellid;
+				--if name and frameIcon and isTargetPlayer then
+				frameIcon:SetTexture(texture);
+	
+				if spellid == prev_spell_id  then
+					ATGCD.frame[0].text:SetText(seq_spell_count + 2);
+					ATGCD.frame[0].text:SetTextColor(1, 1 ,1 );
+					ATGCD.frame[0].text:Show();
+				else
+					ATGCD.frame[0].text:Hide();
+				end
+				frameIcon:Show();
+				local duration = (endTime - startTime)/1000;
+				endTime = endTime / 1000;
+				CooldownFrame_Set(frameCooldown, endTime - duration, duration, duration > 0, true);
+				frameCooldown:SetHideCountdownNumbers(true);
+				ATGCD.frame[0]:Show();
+			else
+				frameIcon:Hide();
+				ATGCD.frame[0]:Hide();
+			end	
 	elseif event == "UNIT_SPELLCAST_STOP" then
 		local name = UnitCastingInfo("player");
 		if not name then
 			ATGCD.frame[0]:Hide();
 		end
-
+	elseif event ==  "UNIT_SPELLCAST_CHANNEL_STOP" then
+		local name = UnitChannelInfo("player");
+		if not name then
+			channel_spell = nil;
+			ATGCD.frame[0]:Hide();
+		end
 	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
 
 		prev_spell = arg3;
-
 		local GCDmax = 1.5 / (( GetHaste() / 100 ) + 1)
+		
+		if (prev and prev == prev_spell and (GetTime() - prevtime) < (GCDmax - 0.1))  then
 
-
-		if prev and prev == prev_spell and (GetTime() - prevtime) < (GCDmax - 0.1)  then
-			
 		else
 
 			if KnownSpellList[prev_spell] == 1 then
 				prev = prev_spell;
 				prevtime = GetTime();
 				ATGCD_Alert(prev_spell, nil);
+
 			elseif KnownSpellList[prev_spell] then
 				prev = prev_spell;
 				prevtime = GetTime();
 				ATGCD_Alert(KnownSpellList[prev_spell], nil, true);
+
 			end
 		end				
 	elseif event == "UNIT_SPELLCAST_INTERRUPTED" and   arg1 == "player" then
@@ -415,7 +454,9 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			end
 		end		
 	elseif event == "SPELLS_CHANGED" then
+		scanSpells(1);
 		scanSpells(2);
+		scanSpells(3);
 	elseif event == "UNIT_PET" then
 		scanPetSpells();
 	elseif event == "ACTIONBAR_SLOT_CHANGED" then
@@ -435,6 +476,8 @@ ATGCD:SetScript("OnEvent", ATGCD_OnEvent)
 ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player");
 ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_START", "player");
+ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player");
+ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player");
 ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player");
 ATGCD:RegisterEvent("SPELLS_CHANGED")
 ATGCD:RegisterUnitEvent("UNIT_PET", "player")

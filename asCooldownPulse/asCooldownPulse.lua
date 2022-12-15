@@ -128,11 +128,13 @@ local function scanSpells(tab)
 
 	for i=tabOffset + 1, tabOffset + numEntries do
 		local spellName, _, spellID = GetSpellBookItemName (i, BOOKTYPE_SPELL)
-		if not spellID then
+		if not spellName then
 			do break end
 		end
 
-		KnownSpellList[spellID] = 1;
+		if spellID then
+			KnownSpellList[spellID] = 1;
+		end		
 	end
 end
 
@@ -140,14 +142,16 @@ end
 local function scanPetSpells()
 
 	for i = 1, 20 do
-	   local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
-	   local spellName, _, spellID = GetSpellBookItemName (slot, BOOKTYPE_PET)
+	   	local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
+	   	local spellName, _, spellID = GetSpellBookItemName (slot, BOOKTYPE_PET)
 	   
-		if not spellID then
+		if not spellName then
 			do break end
 		end
 
-		KnownSpellList[spellID] = 1;
+		if spellID then
+			KnownSpellList[spellID] = 1;
+		end		
 	end
 
 end
@@ -228,6 +232,7 @@ local function setupKnownSpell()
 
 	scanSpells(1)
 	scanSpells(2)
+	scanSpells(3)
 	scanPetSpells()
 
 	scanActionSlots();
@@ -829,7 +834,9 @@ local function ACDP_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ACDP_CoolButtons:SetAlpha(0.5);
 	elseif event == "SPELLS_CHANGED" then
+		scanSpells(1);
 		scanSpells(2);
+		scanSpells(3);
 	elseif event == "UNIT_PET" then
 		scanPetSpells();
 	elseif event == "ACTIONBAR_SLOT_CHANGED" then
