@@ -29,17 +29,6 @@ local a_isProc = {};
 local ASQA_Current_Buff = "";
 local ASQA_Current_Count = 0;
 
-local update = 0;
-local function ASQA_OnUpdate(self, elapsed)
-
-	update = update + elapsed
-
-	if update >= 1  then
-		update = 0
-		ASQA_UpdateDebuff("pbuff");
-	end
-end
-
 local function ASQA_UpdateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX, right, parent)
 
 	local buff = _G[debuffName..index];
@@ -283,6 +272,17 @@ local function ASQA_UpdateDebuff(unit)
 		if ( frame ) then
 			frame:Hide();	
 		end
+	end
+end
+
+local update = 0;
+local function ASQA_OnUpdate(self, elapsed)
+
+	update = update + elapsed
+
+	if update >= 1  then
+		update = 0
+		ASQA_UpdateDebuff("pbuff");
 	end
 end
 
