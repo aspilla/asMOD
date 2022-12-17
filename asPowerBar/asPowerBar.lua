@@ -34,76 +34,11 @@ local APB = nil;
 local max_combo = nil;
 local balert = false;
 
-
-local function GetAzeritePowerID(spellID)
-	local powerInfo = C_AzeriteEmpoweredItem.GetPowerInfo(spellID)
-    	if (powerInfo) then
-            local azeriteSpellID = powerInfo["spellID"]
-            return azeriteSpellID
-        end
-end
-
-
-local function checkAzerite(name)
-
-	local slotNames = {"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot", "MainHandSlot", "SecondaryHandSlot", "AmmoSlot" };    
-    local index = 1
-   
-	azeriteTraits = {};
-   
-    local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
-    if azeriteItemLocation  then
-        for slotNum=1, #slotNames do
-            local slotId = GetInventorySlotInfo(slotNames[slotNum])
-            local itemLink = GetInventoryItemLink('player', slotId)
-            
-            if itemLink ~= nil then
-                
-                local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
-                local currentLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
-                local allTierInfo = C_AzeriteEmpoweredItem.GetAllTierInfoByItemID(itemLink)
-                local itemLoc = ItemLocation:CreateFromEquipmentSlot(slotId)
-                
-                if itemLoc and C_AzeriteEmpoweredItem  then
-                    if C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItem(itemLoc) then
-                        
-                        local  tierInfo = C_AzeriteEmpoweredItem.GetAllTierInfo(itemLoc)
-                        for azeriteTier, tierInfo in pairs(tierInfo) do
-                            for i, idx in pairs(tierInfo.azeritePowerIDs) do
-                                if C_AzeriteEmpoweredItem.IsPowerSelected(itemLoc, idx) then
-                                    local azeriteSpellID = GetAzeritePowerID(idx)
-                                    if azeriteSpellID ~= 263978 then
-                                   		local azeritePowerName, _, icon = GetSpellInfo(azeriteSpellID)
-										if azeritePowerName == name then
-											return true;
-										end
-
-                                    end
-                                    
-                                    
-                                end
-                            end
-                        end
-                    end
-                end
-                
-            end
-        end
-   end
-
-   return false;
-
- 
-    
-end
-
-
-
 local PowerTypeString = {}
 PowerTypeString = {[Enum.PowerType.Focus] = "집중", [Enum.PowerType.Insanity] = "광기", [Enum.PowerType.Maelstrom] = "소용돌이", [Enum.PowerType.LunarPower] = "천공의 힘"};
 
 local PowerTypeComboString = {}
-PowerTypeComboString = {[Enum.PowerType.SoulShards] = "영혼의 조각", [Enum.PowerType.ArcaneCharges] = "비전 충전물이" };
+PowerTypeComboString = {[Enum.PowerType.SoulShards] = "영혼의 조각", [Enum.PowerType.ArcaneCharges] = "비전 충전물이", [Enum.PowerType.Essence] = "정수"};
 
 local SpellGetCosts = {};
 local SpellGetPowerCosts = {};
@@ -1595,35 +1530,6 @@ end
 
 local gpredictedPowerCost = nil;
 
-
-local function updatespellcost(spell)
-			local costText = spell:GetSpellDescription();
-			local powerType = UnitPowerType("player");
-
-
-			if  costText and PowerTypeString[powerType] and string.match(costText,  PowerTypeString[powerType] ) and string.match(costText,  "생성" )   then
-				local findstring = "%d의 "..PowerTypeString[powerType];
-				local start = string.find(costText, findstring, 0);
-		
-			
-				if start and start > 5 then
-
-					local costText2 = string.sub(costText, start-5);
-					local s2 = string.find(costText2, findstring, findstring:len() + 5);
-
-					if (s2) and s2 > 5 then
-						costText2 = string.sub(costText2, s2-5);
-					end
-
-					local cost = gsub(costText2, "[^0-9]", "")
-					if tonumber(cost) > 0 then
-						SpellGetCosts[id] = tonumber(cost);
-					end
-				end
-			end
-		end
-
-
 local function checkSpellCost(id)
 
 
@@ -1859,258 +1765,219 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 
 	return;
 end 
-APB = CreateFrame("FRAME", nil, UIParent)
-APB:SetPoint("BOTTOM",UIParent,"CENTER", APB_X, APB_Y)
-APB:SetWidth(APB_WIDTH)
-APB:SetHeight(APB_HEIGHT)
-APB:Show();
+
+do
+	APB = CreateFrame("FRAME", nil, UIParent)
+	APB:SetPoint("BOTTOM",UIParent,"CENTER", APB_X, APB_Y)
+	APB:SetWidth(APB_WIDTH)
+	APB:SetHeight(APB_HEIGHT)
+	APB:Show();
+
+	APB.bar = CreateFrame("StatusBar", nil, APB)
+	APB.bar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER")
+	APB.bar:GetStatusBarTexture():SetHorizTile(false)
+	APB.bar:SetMinMaxValues(0, 100)
+	APB.bar:SetValue(100)
+	APB.bar:SetWidth(APB_WIDTH)
+	APB.bar:SetHeight(APB_HEIGHT)
+	APB.bar:SetPoint("BOTTOM",APB,"BOTTOM", 0, 0)
+	APB.bar:Hide();
+
+	APB.bar.bg = APB.bar:CreateTexture(nil, "BACKGROUND");
+	APB.bar.bg:SetPoint("TOPLEFT", APB.bar, "TOPLEFT", -1, 1);
+	APB.bar.bg:SetPoint("BOTTOMRIGHT", APB.bar, "BOTTOMRIGHT", 1, -1);
+
+	APB.bar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
+	APB.bar.bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1);
+	APB.bar.bg:SetVertexColor(0, 0, 0, 0.8);
+
+	APB.bar.text = APB.bar:CreateFontString(nil, "ARTWORK");
+	APB.bar.text:SetFont(APB_Font, APB_HealthSize, APB_FontOutline);
+	APB.bar.text:SetPoint("CENTER", APB.bar, "CENTER", 0, 0);
+	APB.bar.text:SetTextColor(1, 1, 1, 1);
+
+	APB.bar.count = APB.bar:CreateFontString(nil, "ARTWORK");
+	APB.bar.count:SetFont(APB_Font, APB_HealthSize, APB_FontOutline);
+	APB.bar.count:SetPoint("RIGHT", APB.bar, "RIGHT", -4, 0);
+	APB.bar.count:SetTextColor(1, 1, 1, 1);
+
+	APB.bar.myManaCostPredictionBar = APB.bar:CreateTexture(nil, "BORDER" ,"MyManaCostPredictionBarTemplate");
+	APB.bar.myManaCostPredictionBar:Hide();
+
+	APB.healthbar = CreateFrame("StatusBar", nil, APB);
+	APB.healthbar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER")
+	APB.healthbar:GetStatusBarTexture():SetHorizTile(false)
+	APB.healthbar:SetMinMaxValues(0, 100)
+	APB.healthbar:SetValue(100)
+	APB.healthbar:SetWidth(APB_WIDTH)
+	APB.healthbar:SetHeight(APB_HEIGHT)
+	APB.healthbar:SetPoint("BOTTOMLEFT",APB.bar,"TOPLEFT", 0, 1)
+	APB.healthbar:Hide();
+
+	APB.healthbar.myManaCostPredictionBar = APB.healthbar:CreateTexture(nil, "BORDER" ,"MyManaCostPredictionBarTemplate") 
+	APB.healthbar.myManaCostPredictionBar:Hide();
+
+	APB.healthbar.bg = APB.bar:CreateTexture(nil, "BACKGROUND");
+	APB.healthbar.bg:SetPoint("TOPLEFT", APB.healthbar, "TOPLEFT", -1, 1);
+	APB.healthbar.bg:SetPoint("BOTTOMRIGHT", APB.healthbar, "BOTTOMRIGHT", 1, -1);
+
+	APB.healthbar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
+	APB.healthbar.bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1);
+	APB.healthbar.bg:SetVertexColor(0, 0, 0, 0.8);
+
+	APB.healthbar.text = APB.healthbar:CreateFontString(nil, "ARTWORK");
+	APB.healthbar.text:SetFont(APB_Font, APB_HealthSize, APB_FontOutline);
+	APB.healthbar.text:SetPoint("CENTER", APB.healthbar, "CENTER", 0, 0);
+	APB.healthbar.text:SetTextColor(1, 1, 1, 1)
+
+	APB.healthbar.count = APB.bar:CreateFontString(nil, "ARTWORK");
+	APB.healthbar.count:SetFont(APB_Font, APB_HealthSize, APB_FontOutline);
+	APB.healthbar.count:SetPoint("RIGHT", APB.bar, "RIGHT", -4, 0);
+	APB.healthbar.count:SetTextColor(1, 1, 1, 1);
+
+	APB.buffbar = CreateFrame("StatusBar", nil, APB);
+	APB.buffbar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER")
+	APB.buffbar:GetStatusBarTexture():SetHorizTile(false);
+	APB.buffbar:SetMinMaxValues(0, 100);
+	APB.buffbar:SetValue(100);
+	APB.buffbar:SetHeight(APB_HEIGHT);
+	APB.buffbar:SetWidth(APB_WIDTH);
+
+	APB.buffbar.bg = APB.buffbar:CreateTexture(nil, "BACKGROUND");
+	APB.buffbar.bg:SetPoint("TOPLEFT", APB.buffbar, "TOPLEFT", -1, 1);
+	APB.buffbar.bg:SetPoint("BOTTOMRIGHT", APB.buffbar, "BOTTOMRIGHT", 1, -1);
+
+	APB.buffbar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
+	APB.buffbar.bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1);
+	APB.buffbar.bg:SetVertexColor(0, 0, 0, 0.8);
+
+	APB.buffbar:SetPoint("BOTTOMLEFT",APB.healthbar,"TOPLEFT", 0, 1);
+	APB.buffbar:Hide();
+
+
+
+	APB.buffbar.text = APB.buffbar:CreateFontString(nil, "ARTWORK")
+	APB.buffbar.text:SetFont(APB_Font, APB_BuffSize, APB_FontOutline)
+	APB.buffbar.text:SetPoint("LEFT", APB.buffbar, "LEFT", 5, 0)
+	APB.buffbar.text:SetTextColor(1, 1, 1, 1)
+
+	APB.buffbar.count = APB.buffbar:CreateFontString(nil, "ARTWORK")
+	APB.buffbar.count:SetFont(APB_Font, APB_BuffSize + 5, APB_FontOutline)
+	APB.buffbar.count:SetPoint("RIGHT", APB.buffbar, "RIGHT", -4, 0)
+	APB.buffbar.count:SetTextColor(1, 1, 1, 1)
+
+	APB.buffbar.cast = APB.buffbar:CreateTexture(nil, "BACKGROUND");
+	APB.buffbar.cast:SetDrawLayer("ARTWORK", 0);
+	APB.buffbar.cast:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
+	APB.buffbar.cast:SetBlendMode("ALPHAKEY");
+	APB.buffbar.cast:SetVertexColor(1,1,1,0.3)
+	APB.buffbar.cast:SetWidth(50);
+	APB.buffbar.cast:SetHeight((APB.buffbar:GetHeight())/1.5);
+	APB.buffbar.cast:Hide();
 
 
 
 
-APB.bar = CreateFrame("StatusBar", nil, APB)
-APB.bar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER")
-APB.bar:GetStatusBarTexture():SetHorizTile(false)
-APB.bar:SetMinMaxValues(0, 100)
-APB.bar:SetValue(100)
-APB.bar:SetWidth(APB_WIDTH)
-APB.bar:SetHeight(APB_HEIGHT)
-APB.bar:SetPoint("BOTTOM",APB,"BOTTOM", 0, 0)
---APB.bar:SetStatusBarColor(0,1,0)
-APB.bar:Hide();
-
---[[
-APB.bg = APB:CreateTexture(nil, "BACKGROUND")
-APB.bg:SetTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER")
-APB.bg:SetAllPoints(true)
-APB.bg:SetVertexColor(0, 0, 0, 0.5)
---]]
-
---APB:SetBackdrop({bgFile=[[Interface\ChatFrame\ChatFrameBackground]],edgeFile=[[Interface/Tooltips/UI-Tooltip-Border]],tile=false,tileSize=2,edgeSize=1,insets={left=0,right=0,top=0,bottom=0}})
---APB:SetBackdropColor(0,0,0,1);
---APB:SetBackdropBorderColor(0, 0, 0, 1)
-
-APB.bar.bg = APB.bar:CreateTexture(nil, "BACKGROUND");
-APB.bar.bg:SetPoint("TOPLEFT", APB.bar, "TOPLEFT", -1, 1);
-APB.bar.bg:SetPoint("BOTTOMRIGHT", APB.bar, "BOTTOMRIGHT", 1, -1);
-
-APB.bar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
-APB.bar.bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1);
-APB.bar.bg:SetVertexColor(0, 0, 0, 0.8);
-
-APB.bar.text = APB.bar:CreateFontString(nil, "ARTWORK");
-APB.bar.text:SetFont(APB_Font, APB_HealthSize, APB_FontOutline);
-APB.bar.text:SetPoint("CENTER", APB.bar, "CENTER", 0, 0);
-APB.bar.text:SetTextColor(1, 1, 1, 1);
-
-APB.bar.count = APB.bar:CreateFontString(nil, "ARTWORK");
-APB.bar.count:SetFont(APB_Font, APB_HealthSize, APB_FontOutline);
-APB.bar.count:SetPoint("RIGHT", APB.bar, "RIGHT", -4, 0);
-APB.bar.count:SetTextColor(1, 1, 1, 1);
-
-APB.bar.myManaCostPredictionBar = APB.bar:CreateTexture(nil, "BORDER" ,"MyManaCostPredictionBarTemplate");
---APB.myManaCostPredictionBar:SetVertexColor(0.055, 0.875, 0.825)
-APB.bar.myManaCostPredictionBar:Hide();
-
-
-
-APB.healthbar = CreateFrame("StatusBar", nil, APB);
-APB.healthbar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER")
-APB.healthbar:GetStatusBarTexture():SetHorizTile(false)
-APB.healthbar:SetMinMaxValues(0, 100)
-APB.healthbar:SetValue(100)
-APB.healthbar:SetWidth(APB_WIDTH)
-APB.healthbar:SetHeight(APB_HEIGHT)
-APB.healthbar:SetPoint("BOTTOMLEFT",APB.bar,"TOPLEFT", 0, 1)
-
---APB.bar:SetStatusBarColor(0,1,0)
-APB.healthbar:Hide();
-
-APB.healthbar.myManaCostPredictionBar = APB.healthbar:CreateTexture(nil, "BORDER" ,"MyManaCostPredictionBarTemplate") 
---APB.myManaCostPredictionBar:SetVertexColor(0.055, 0.875, 0.825)
-APB.healthbar.myManaCostPredictionBar:Hide();
-
---[[
-APB.bg = APB:CreateTexture(nil, "BACKGROUND")
-APB.bg:SetTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER")
-APB.bg:SetAllPoints(true)
-APB.bg:SetVertexColor(0, 0, 0, 0.5)
---]]
-
---APB:SetBackdrop({bgFile=[[Interface\ChatFrame\ChatFrameBackground]],edgeFile=[[Interface/Tooltips/UI-Tooltip-Border]],tile=false,tileSize=2,edgeSize=1,insets={left=0,right=0,top=0,bottom=0}})
---APB:SetBackdropColor(0,0,0,1);
---APB:SetBackdropBorderColor(0, 0, 0, 1)
-
-APB.healthbar.bg = APB.bar:CreateTexture(nil, "BACKGROUND");
-APB.healthbar.bg:SetPoint("TOPLEFT", APB.healthbar, "TOPLEFT", -1, 1);
-APB.healthbar.bg:SetPoint("BOTTOMRIGHT", APB.healthbar, "BOTTOMRIGHT", 1, -1);
-
-APB.healthbar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
-APB.healthbar.bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1);
-APB.healthbar.bg:SetVertexColor(0, 0, 0, 0.8);
-
-APB.healthbar.text = APB.healthbar:CreateFontString(nil, "ARTWORK");
-APB.healthbar.text:SetFont(APB_Font, APB_HealthSize, APB_FontOutline);
-APB.healthbar.text:SetPoint("CENTER", APB.healthbar, "CENTER", 0, 0);
-APB.healthbar.text:SetTextColor(1, 1, 1, 1)
-
-APB.healthbar.count = APB.bar:CreateFontString(nil, "ARTWORK");
-APB.healthbar.count:SetFont(APB_Font, APB_HealthSize, APB_FontOutline);
-APB.healthbar.count:SetPoint("RIGHT", APB.bar, "RIGHT", -4, 0);
-APB.healthbar.count:SetTextColor(1, 1, 1, 1);
-
-APB.buffbar = CreateFrame("StatusBar", nil, APB);
-APB.buffbar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER")
-APB.buffbar:GetStatusBarTexture():SetHorizTile(false);
-APB.buffbar:SetMinMaxValues(0, 100);
-APB.buffbar:SetValue(100);
-APB.buffbar:SetHeight(APB_HEIGHT);
-APB.buffbar:SetWidth(APB_WIDTH);
-
-APB.buffbar.bg = APB.buffbar:CreateTexture(nil, "BACKGROUND");
-APB.buffbar.bg:SetPoint("TOPLEFT", APB.buffbar, "TOPLEFT", -1, 1);
-APB.buffbar.bg:SetPoint("BOTTOMRIGHT", APB.buffbar, "BOTTOMRIGHT", 1, -1);
-
-APB.buffbar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
-APB.buffbar.bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1);
-APB.buffbar.bg:SetVertexColor(0, 0, 0, 0.8);
-
-APB.buffbar:SetPoint("BOTTOMLEFT",APB.healthbar,"TOPLEFT", 0, 1);
-APB.buffbar:Hide();
-
-
-
-APB.buffbar.text = APB.buffbar:CreateFontString(nil, "ARTWORK")
-APB.buffbar.text:SetFont(APB_Font, APB_BuffSize, APB_FontOutline)
-APB.buffbar.text:SetPoint("LEFT", APB.buffbar, "LEFT", 5, 0)
-APB.buffbar.text:SetTextColor(1, 1, 1, 1)
-
-APB.buffbar.count = APB.buffbar:CreateFontString(nil, "ARTWORK")
-APB.buffbar.count:SetFont(APB_Font, APB_BuffSize + 5, APB_FontOutline)
-APB.buffbar.count:SetPoint("RIGHT", APB.buffbar, "RIGHT", -4, 0)
-APB.buffbar.count:SetTextColor(1, 1, 1, 1)
-
-APB.buffbar.cast = APB.buffbar:CreateTexture(nil, "BACKGROUND");
-APB.buffbar.cast:SetDrawLayer("ARTWORK", 0);
-APB.buffbar.cast:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-APB.buffbar.cast:SetBlendMode("ALPHAKEY");
-APB.buffbar.cast:SetVertexColor(1,1,1,0.3)
-APB.buffbar.cast:SetWidth(50);
-APB.buffbar.cast:SetHeight((APB.buffbar:GetHeight())/1.5);
-APB.buffbar.cast:Hide();
-
-
-
-
-APB.buffbar.square = {};
-for i = 1, 10 do
-	APB.buffbar.square[i] = APB.buffbar:CreateTexture(nil, "BACKGROUND");
-	APB.buffbar.square[i]:SetDrawLayer("ARTWORK", 0);
-	APB.buffbar.square[i]:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-	APB.buffbar.square[i]:SetBlendMode("ALPHAKEY");
-	APB.buffbar.square[i]:SetVertexColor(1,1,1,1)
-	APB.buffbar.square[i]:SetWidth(3);
-	APB.buffbar.square[i]:SetHeight(APB.buffbar:GetHeight()-1);
-	APB.buffbar.square[i]:Hide();
-end
-
-APB.buffbar.square2 = APB.buffbar:CreateTexture(nil, "BACKGROUND");
-APB.buffbar.square2:SetDrawLayer("ARTWORK", 0);
-APB.buffbar.square2:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-APB.buffbar.square2:SetBlendMode("ALPHAKEY");
-APB.buffbar.square2:SetVertexColor(1,1,1,1)
-APB.buffbar.square2:SetWidth(3);
-APB.buffbar.square2:SetHeight(5);
-APB.buffbar.square2:Hide();
-
-
-APB.buffbar.square3 = APB.buffbar:CreateTexture(nil, "BACKGROUND");
-APB.buffbar.square3:SetDrawLayer("ARTWORK", 0);
-APB.buffbar.square3:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-APB.buffbar.square3:SetBlendMode("ALPHAKEY");
-APB.buffbar.square3:SetVertexColor(1,1,1,1)
-APB.buffbar.square3:SetWidth(3);
-APB.buffbar.square3:SetHeight(3);
-APB.buffbar.square3:Hide();
-
-APB.buffbar.square4 = APB.buffbar:CreateTexture(nil, "BACKGROUND");
-APB.buffbar.square4:SetDrawLayer("ARTWORK", 0);
-APB.buffbar.square4:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-APB.buffbar.square4:SetBlendMode("ALPHAKEY");
-APB.buffbar.square4:SetVertexColor(1,1,1,1)
-APB.buffbar.square4:SetWidth(3);
-APB.buffbar.square4:SetHeight(3);
-APB.buffbar.square4:Hide();
-
-
-
-APB.combobar = {};
-APB.runeIndexes = {1, 2, 3, 4, 5, 6};
-
-
-for i = 1, 10 do
-	APB.combobar[i] = CreateFrame("StatusBar", nil, APB);
-	APB.combobar[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER");
-	APB.combobar[i]:GetStatusBarTexture():SetHorizTile(false);
-	APB.combobar[i]:SetMinMaxValues(0, 100);
-	APB.combobar[i]:SetValue(100);
-	APB.combobar[i]:SetHeight(APB_HEIGHT);
-	APB.combobar[i]:SetWidth(20);
-
-	--[[
-	APB.combobar[i].bg = APB.combobar[i]:CreateTexture(nil, "BACKGROUND")
-	APB.combobar[i].bg:SetTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp")
-	APB.combobar[i].bg:SetAllPoints(true)
-	APB.combobar[i].bg:SetVertexColor(0, 0, 0, 0.5)
-	--]]
-	APB.combobar[i].bg = APB.combobar[i]:CreateTexture(nil, "BACKGROUND");
-	APB.combobar[i].bg:SetPoint("TOPLEFT", APB.combobar[i], "TOPLEFT", -1, 1);
-	APB.combobar[i].bg:SetPoint("BOTTOMRIGHT", APB.combobar[i], "BOTTOMRIGHT", 1, -1);
-
-	APB.combobar[i].bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
-	APB.combobar[i].bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1);
-	APB.combobar[i].bg:SetVertexColor(0, 0, 0, 0.8);
-
-	if i == 1 then
-		APB.combobar[i]:SetPoint("BOTTOMLEFT",APB.buffbar,"TOPLEFT", 0, 1);
-	else
-		APB.combobar[i]:SetPoint("LEFT",APB.combobar[i-1],"RIGHT", 3, 0);
+	APB.buffbar.square = {};
+	for i = 1, 10 do
+		APB.buffbar.square[i] = APB.buffbar:CreateTexture(nil, "BACKGROUND");
+		APB.buffbar.square[i]:SetDrawLayer("ARTWORK", 0);
+		APB.buffbar.square[i]:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
+		APB.buffbar.square[i]:SetBlendMode("ALPHAKEY");
+		APB.buffbar.square[i]:SetVertexColor(1,1,1,1)
+		APB.buffbar.square[i]:SetWidth(3);
+		APB.buffbar.square[i]:SetHeight(APB.buffbar:GetHeight()-1);
+		APB.buffbar.square[i]:Hide();
 	end
 
-	APB.combobar[i]:Hide();
+	APB.buffbar.square2 = APB.buffbar:CreateTexture(nil, "BACKGROUND");
+	APB.buffbar.square2:SetDrawLayer("ARTWORK", 0);
+	APB.buffbar.square2:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
+	APB.buffbar.square2:SetBlendMode("ALPHAKEY");
+	APB.buffbar.square2:SetVertexColor(1,1,1,1)
+	APB.buffbar.square2:SetWidth(3);
+	APB.buffbar.square2:SetHeight(5);
+	APB.buffbar.square2:Hide();
 
-	--APB.combobar[i]:SetScript("OnUpdate", APB_OnUpdateCombo)
 
+	APB.buffbar.square3 = APB.buffbar:CreateTexture(nil, "BACKGROUND");
+	APB.buffbar.square3:SetDrawLayer("ARTWORK", 0);
+	APB.buffbar.square3:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
+	APB.buffbar.square3:SetBlendMode("ALPHAKEY");
+	APB.buffbar.square3:SetVertexColor(1,1,1,1)
+	APB.buffbar.square3:SetWidth(3);
+	APB.buffbar.square3:SetHeight(3);
+	APB.buffbar.square3:Hide();
+
+	APB.buffbar.square4 = APB.buffbar:CreateTexture(nil, "BACKGROUND");
+	APB.buffbar.square4:SetDrawLayer("ARTWORK", 0);
+	APB.buffbar.square4:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
+	APB.buffbar.square4:SetBlendMode("ALPHAKEY");
+	APB.buffbar.square4:SetVertexColor(1,1,1,1)
+	APB.buffbar.square4:SetWidth(3);
+	APB.buffbar.square4:SetHeight(3);
+	APB.buffbar.square4:Hide();
+
+
+
+	APB.combobar = {};
+	APB.runeIndexes = {1, 2, 3, 4, 5, 6};
+
+
+	for i = 1, 10 do
+		APB.combobar[i] = CreateFrame("StatusBar", nil, APB);
+		APB.combobar[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER");
+		APB.combobar[i]:GetStatusBarTexture():SetHorizTile(false);
+		APB.combobar[i]:SetMinMaxValues(0, 100);
+		APB.combobar[i]:SetValue(100);
+		APB.combobar[i]:SetHeight(APB_HEIGHT);
+		APB.combobar[i]:SetWidth(20);
+
+		APB.combobar[i].bg = APB.combobar[i]:CreateTexture(nil, "BACKGROUND");
+		APB.combobar[i].bg:SetPoint("TOPLEFT", APB.combobar[i], "TOPLEFT", -1, 1);
+		APB.combobar[i].bg:SetPoint("BOTTOMRIGHT", APB.combobar[i], "BOTTOMRIGHT", 1, -1);
+
+		APB.combobar[i].bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
+		APB.combobar[i].bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1);
+		APB.combobar[i].bg:SetVertexColor(0, 0, 0, 0.8);
+
+		if i == 1 then
+			APB.combobar[i]:SetPoint("BOTTOMLEFT",APB.buffbar,"TOPLEFT", 0, 1);
+		else
+			APB.combobar[i]:SetPoint("LEFT",APB.combobar[i-1],"RIGHT", 3, 0);
+		end
+
+		APB.combobar[i]:Hide();
+	end
+
+	LoadAddOn("asMOD");
+
+	if asMOD_setupFrame then
+		asMOD_setupFrame (APB, "asPowerBar");
+	end
+
+	--APB:SetScript("OnUpdate", APB_OnUpdate)
+	APB:SetScript("OnEvent", APB_OnEvent)
+
+	APB:RegisterEvent("PLAYER_ENTERING_WORLD");
+	APB:RegisterEvent("PLAYER_REGEN_DISABLED");
+	APB:RegisterEvent("PLAYER_REGEN_ENABLED");
+	APB:RegisterEvent("TRAIT_CONFIG_UPDATED");
+	APB:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+	APB:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+	APB:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+	APB:RegisterEvent("SPELLS_CHANGED");
+	APB:RegisterEvent("ACTIONBAR_UPDATE_USABLE");
+	APB:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
+	APB:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
+	APB:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
+	APB:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player");
+	APB:RegisterUnitEvent("UNIT_EXITING_VEHICLE", "player");
+
+
+	if UnitAffectingCombat("player") then
+		APB:SetAlpha(APB_ALPHA_COMBAT);
+	else
+		APB:SetAlpha(APB_ALPHA_NORMAL);
+	end
 end
-
-LoadAddOn("asMOD");
-
-if asMOD_setupFrame then
-    asMOD_setupFrame (APB, "asPowerBar");
-end
-
---APB:SetScript("OnUpdate", APB_OnUpdate)
-APB:SetScript("OnEvent", APB_OnEvent)
-
-APB:RegisterEvent("PLAYER_ENTERING_WORLD");
-APB:RegisterEvent("PLAYER_REGEN_DISABLED");
-APB:RegisterEvent("PLAYER_REGEN_ENABLED");
-APB:RegisterEvent("TRAIT_CONFIG_UPDATED");
-APB:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-APB:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-APB:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
-APB:RegisterEvent("SPELLS_CHANGED");
-APB:RegisterEvent("ACTIONBAR_UPDATE_USABLE");
-APB:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
-APB:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
-APB:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
-APB:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player");
-APB:RegisterUnitEvent("UNIT_EXITING_VEHICLE", "player");
-
-
-if UnitAffectingCombat("player") then
-	APB:SetAlpha(APB_ALPHA_COMBAT);
-else
-	APB:SetAlpha(APB_ALPHA_NORMAL);
-end
-
