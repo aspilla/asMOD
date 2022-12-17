@@ -186,7 +186,7 @@ local function ABF_ShowOverlayGlow(button)
 		button.overlay:SetParent(button);
 		button.overlay:ClearAllPoints();
 		--Make the height/width available before the next frame:
-		button.overlay:SetSize(frameWidth * 1.5, frameHeight * 1.5);
+		button.overlay:SetSize(frameWidth * 1.3, frameHeight * 1.3);
 		button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
 		button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
 		button.overlay.animIn:Play();

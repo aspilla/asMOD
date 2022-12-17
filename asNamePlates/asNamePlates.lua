@@ -77,18 +77,16 @@ ANameP_ShowList_ROGUE_3 = {
 
 
 ANameP_ShowList_HUNTER_1 = {
-	["사냥꾼의 징표"] = {0, 1},
+	["날카로운 사격"] = {0, 1, {r = 1, g = 0.5, b = 0}},
 }
 
 ANameP_ShowList_HUNTER_2 = {
-	["사냥꾼의 징표"] = {0, 1},
-
+	["독사 쐐기"] = {0, 1, {r = 1, g = 0.5, b = 0}},	
 }
 
 
 ANameP_ShowList_HUNTER_3 = {
-	["사냥꾼의 징표"] = {0, 2},
-	["독사 쐐기"] = {0, 1},	
+	["독사 쐐기"] = {0, 1, {r = 1, g = 0.5, b = 0}},	
 }
 
 ANameP_ShowList_MONK_1 = {
@@ -596,8 +594,9 @@ local function ANameP_ActionButton_GetOverlayGlow()
 end
 
 -- Shared between action button and MainMenuBarMicroButton
-local function ANameP_ShowOverlayGlow(button)
+local function ANameP_ShowOverlayGlow(button, bhideflash)
 	if ( button.overlay ) then
+		button.overlay.bhideflash = bhideflash;
 		if ( button.overlay.animOut:IsPlaying() ) then
 			button.overlay.animOut:Stop();
 			button.overlay.animIn:Play();
@@ -608,9 +607,10 @@ local function ANameP_ShowOverlayGlow(button)
 		button.overlay:SetParent(button);
 		button.overlay:ClearAllPoints();
 		--Make the height/width available before the next frame:
-		button.overlay:SetSize(frameWidth * 1.5, frameHeight * 1.5);
-		button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -frameWidth * 0.4, frameHeight * 0.4);
-		button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", frameWidth * 0.4, -frameHeight * 0.4);
+		button.overlay:SetSize(frameWidth * 1.3, frameHeight * 1.3);
+		button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
+		button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
+		button.overlay.bhideflash = bhideflash;
 		button.overlay.animIn:Play();
 	end
 end
@@ -665,6 +665,14 @@ function ANameP_ActionBarOverlayGlowAnimInMixin:OnPlay()
 	frame.outerGlowOver:SetAlpha(1.0);
 	frame.ants:SetSize(frameWidth * 0.85, frameHeight * 0.85)
 	frame.ants:SetAlpha(0);
+
+	if frame.bhideflash then
+		frame.spark:SetAlpha(0.3);
+		frame.innerGlow:SetAlpha(0);
+		frame.innerGlowOver:SetAlpha(0);
+		frame.outerGlow:SetAlpha(0);
+		frame.outerGlowOver:SetAlpha(0);
+	end
 	frame:Show();
 end
 
@@ -965,7 +973,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			setSize (frame, size_list[numDebuffs]);
 						
 			if isStealable then
-				ANameP_ShowOverlayGlow(frame);
+				ANameP_ShowOverlayGlow(frame, true);
 			else
 				ANameP_HideOverlayGlow(frame);
 			end
@@ -1110,7 +1118,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			setSize (frame, size_list[numDebuffs]);
 
 			if alert and duration > 0  then
-				ANameP_ShowOverlayGlow(frame);
+				ANameP_ShowOverlayGlow(frame, false);
 			else
 				ANameP_HideOverlayGlow(frame);
 			end

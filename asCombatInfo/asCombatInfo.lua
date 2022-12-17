@@ -64,7 +64,7 @@ ACI_SpellList_WARRIOR_3 = {
 
 -- 암살
 ACI_SpellList_ROGUE_1 = {
-	{145416, 7, "player"},
+	{145416, 7, "player", 2},
 	{"그림자 밟기", 1},
 	{"죽음표식", 4},
 	{"목조르기", 4, nil, 18 * 0.3},
@@ -91,16 +91,16 @@ ACI_SpellList_ROGUE_3 = {
 
 --야수
 ACI_SpellList_HUNTER_1 = {
-	{118455, 7, "pet"},
+	{118455, 7, "pet", 2},
 	{"살상 명령", 1},
 	{"야수의 격노", 2},
 	{"마무리 사격", 1},	
-	{99, "광포한 야수", {"광포한 야수", 2}, {"사냥꾼의 징표", 4},};
+	{99, "광포한 야수", {"광포한 야수", 2}, {"적자생존", 2},};
 };
 
 --사격
 ACI_SpellList_HUNTER_2 = {
-	{257621, 7, "player"},
+	{257621, 7, "player", 2},
 	{"속사", 1},
 	{"정조준", 2},	
 	{"마무리 사격", 1},	
@@ -465,8 +465,9 @@ local function ACI_ActionButton_GetOverlayGlow()
 end
 
 -- Shared between action button and MainMenuBarMicroButton
-local function ACI_ShowOverlayGlow(button)
+local function ACI_ShowOverlayGlow(button, bhideflash)
 	if ( button.overlay ) then
+		button.overlay.bhideflash = bhideflash;
 		if ( button.overlay.animOut:IsPlaying() ) then
 			button.overlay.animOut:Stop();
 			button.overlay.animIn:Play();
@@ -477,13 +478,13 @@ local function ACI_ShowOverlayGlow(button)
 		button.overlay:SetParent(button);
 		button.overlay:ClearAllPoints();
 		--Make the height/width available before the next frame:
-		button.overlay:SetSize(frameWidth * 1.5, frameHeight * 1.5);
+		button.overlay:SetSize(frameWidth * 1.4, frameHeight * 1.4);
 		button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
 		button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
+		button.overlay.bhideflash = bhideflash;
 		button.overlay.animIn:Play();
 	end
 end
-
 -- Shared between action button and MainMenuBarMicroButton
 local function ACI_HideOverlayGlow(button)
 	if ( button.overlay ) then
@@ -534,6 +535,14 @@ function ACI_ActionBarOverlayGlowAnimInMixin:OnPlay()
 	frame.outerGlowOver:SetAlpha(1.0);
 	frame.ants:SetSize(frameWidth * 0.85, frameHeight * 0.85)
 	frame.ants:SetAlpha(0);
+
+	if frame.bhideflash then
+		frame.spark:SetAlpha(0.3);
+		frame.innerGlow:SetAlpha(0);
+		frame.innerGlowOver:SetAlpha(0);
+		frame.outerGlow:SetAlpha(0);
+		frame.outerGlowOver:SetAlpha(0);
+	end
 	frame:Show();
 end
 
@@ -1311,7 +1320,7 @@ local function ACI_Alert(self, bcastspell)
 
 	if  ACI_Active_list[spellname] or ACI_Alert_list[spellname]  then
 		if self.alert == false then
-			ACI_ShowOverlayGlow(frame);
+			ACI_ShowOverlayGlow(frame, (t==7));
 		end
 		self.alert = true;
 	else
