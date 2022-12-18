@@ -100,7 +100,7 @@ ACI_SpellList_HUNTER_1 = {
 
 --사격
 ACI_SpellList_HUNTER_2 = {
-	{257621, 7, "player", 2},
+	{257621, 7, "player", 20},
 	{"속사", 1},
 	{"정조준", 2},	
 	{"마무리 사격", 1},	
@@ -865,7 +865,12 @@ local function ACI_Alert(self, bcastspell)
 		end
 
 		if t == 3 or t == 12 then
-			count = stack
+
+			if stack and stack > 1000 then
+				count = (math.ceil((stack / UnitHealthMax("player")) * 100));
+			else
+				count = stack;
+			end
 		end
 
 		if t == 5 then

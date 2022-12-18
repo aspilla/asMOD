@@ -1291,8 +1291,21 @@ local function APB_CheckPower(self)
 			APB.buffbar.unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
+			APB_UpdateBuff(self.buffbar);
 
-			APB_UpdateBuff(self.buffbar)
+
+			if asCheckTalent("소용돌이 연마") then
+				APB_BUFF_COMBO = "소용돌이";		
+
+				if asCheckTalent("고기칼") then
+					APB_MaxCombo(4);
+				else
+					APB_MaxCombo(2);
+				end
+				APB.combobar.unit = "player"
+				APB_UpdateBuffCombo(self.combobar)
+				bupdate_buff_combo = true;
+			end
 
 		end
 

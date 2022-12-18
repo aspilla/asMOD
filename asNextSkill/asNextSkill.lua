@@ -17,7 +17,6 @@ local ANS_ShowVertical = true			-- 새로로 보이게 ? false로 하면 가로 
 
 
 
--- 성기사 징벌
 -- 	ANS_SpellList_직업명_특성숫자
 --[[
 
@@ -50,8 +49,8 @@ local ANS_ShowVertical = true			-- 새로로 보이게 ? false로 하면 가로 
 	{6, 40, "player", true}
 
 	7. Action Count 시 
-	{7, action count}
-
+	{7, action count, do not check max, remain time to charge}
+	
 	8. 이전 Skill Check (풍운 전용)
 	{8}
 
@@ -107,29 +106,28 @@ ANS_SpellList_PALADIN_3 = {
 --10.0 완료
 ANS_SpellList_HUNTER_1 = {
 	{"날카로운 사격", 1, false, {2, "광기", "pet", 1.5, true, false}, {2, "광기", "pet", 0, false, false}},
-	{"날카로운 사격", 1, false, {7, 2, nil, 0.5}},
+	{"날카로운 사격", 0, false, {7, 2, nil, 2}},
+	{"살상 명령", 1, false, {7, 2, nil, 1}},
 	{"일제 사격", 2, true, {2, "야수의 회전베기", "pet", 1, true, false}},
-	{"살상 명령", 1, true}, 
+	{"야수의 격노", 2, false}, 
+	{"살상 명령", 1, false}, 
 	{"마무리 사격", 1, false}, 
-	{"일제 사격", 1, true, {21, 2}, {2, "야수의 회전베기", "pet", 1, true, false}},
-	{"광포한 야수", 1, false}, 
-	{"키메라 사격", 1, false},
-	{"코브라 사격", 1, false, {4, 50, "player", false, false}, {2, "야수의 격노", "player", 0.1, false, false}},
-	{"코브라 사격", 1, false, {4, 90, "player", false, false}},	
+	{"코브라 사격", 1, false, {14, 70, "player", false, true, 4}},
+	{"자동 사격", 1, false},
+	
 };
 
 --사격
 --10.0 완료
 ANS_SpellList_HUNTER_2 = {
 	
-	{"사냥꾼의 징표", 2, true, {3, "사냥꾼의 징표","target", 0.1,  true, false}},
+	
 	{"마무리 사격", 1, false},
 	{"속사", 1, false},
 	{"조준 사격", 1, false, {7, 2}},
-	{"신비한 사격", 1, false, {1}},
-	{"신비한 사격", 1, false, {16, "조준 사격"}}, 	
-	{"조준 사격", 1, false, {1}},
-	{"조준 사격", 0, false, {14, 50, "player", false, true, 4}},
+	{"신비한 사격", 1, false, {1}, {14, 55, "player", false, true, 4}},
+	{"신비한 사격", 1, false, {16, "조준 사격"}, {14, 55, "player", false, true, 4}}, 	
+	{"조준 사격", 0, false},
 	{"고정 사격", 1, true},
 };
 
@@ -137,7 +135,7 @@ ANS_SpellList_HUNTER_2 = {
 --생존
 --10.0 완료
 ANS_SpellList_HUNTER_3 = {
-	
+	--[[
 	{"야생불 폭탄", 2},
 	{"살상 명령",  1, false, {1}},
 	{"도살", 1, false, {3, "유산탄","target", 0,  false, false}},
@@ -147,6 +145,7 @@ ANS_SpellList_HUNTER_3 = {
 	{"살상 명령",  0},
 	{"살쾡이의 이빨",  1, false, {2, "살쾡이의 격노", "player", 0, false, true}},
 	{"랩터의 일격", 1, false},	
+	]]
 };
 
 --혈기
@@ -212,15 +211,13 @@ ANS_SpellList_DEATHKNIGHT_3 = {
 ----8.0.1 완료
 ANS_SpellList_WARRIOR_1 = {
 	
-	{"분쇄", 1, false, {3, "난도질", "target", 4, true, false}},-- 분쇄 타겟 디버프 4 초
+	{"분쇄", 2, false, {3, "분쇄", "target", 4, true, false}},-- 분쇄 타겟 디버프 4 초
 	{"거인의 강타", 2, false},
-	{"마무리 일격", 1, false, {1}},
-	{"필사의 일격", 1, false, {2, "제압", "player", 1, false, true}},
-	{"필사의 일격", 0, false, {3, "치명상", "target", 2, true, false}},
-	{"제압", 1},
-	{"마무리 일격", 1, false, {4, 80, "player", false, false}},
-	{"소용돌이", 2, false, {4, 80, "player", false, false}}, 
-	{"격돌", 1, false, {4, 80, "player", false, false}},
+	{"필사의 일격", 0, false, {3, "치명상", "target", 1, true, false}},
+	{"마무리 일격", 1, false},
+	{"필사의 일격", 1, false},	
+	{"제압", 1, false, {4, 70, "player", true, false}},
+	{"격돌", 1, false},
 	{"자동 공격", 1},
 }; 
 
@@ -228,12 +225,10 @@ ANS_SpellList_WARRIOR_1 = {
 --분노
 ----8.0.1 완료
 ANS_SpellList_WARRIOR_2 = {
-	{"광란", 1, false, {2, "격노","player", 0.1, true, false},{4, 90, "player", false, false}}, -- 격노 없을 때 
-	{"마무리 일격", 1, false, {2, "격노","player", 0.1, false, false}}, -- 격노 있을 때
-	{"피의 갈증", 1, false, {2, "격노","player", 0.1, true, false}}, -- 격노 없을 때 
-	{"분노의 강타", 1, false, {7, 2}},
-	{"피의 갈증", 0},
-	{"분노의 강타", 1, false},
+	{"광란", 1, false, {2, "격노","player", 0.1, true, false}}, -- 격노 없을 때 
+	{"마무리 일격", 1, false}, -- 격노 있을 때
+	{"분노의 강타", 0, false},
+	{"피의 갈증", 1, false},
 	{"소용돌이", 1, false},
 }; 
 
