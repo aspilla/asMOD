@@ -466,6 +466,10 @@ local function ABF_UpdateDebuff(unit)
 				skip = true;
 			end
 
+			if APB_BUFF_COMBO and APB_BUFF_COMBO == name then
+				skip = true;
+			end
+
 			if (name ~= nil and ABF_PVPBuffList[spellId]) then
 				isBig[i] = true;
 				skip = false;
