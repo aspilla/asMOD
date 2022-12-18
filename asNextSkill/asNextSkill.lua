@@ -227,7 +227,7 @@ ANS_SpellList_WARRIOR_1 = {
 ANS_SpellList_WARRIOR_2 = {
 	{"광란", 1, false, {2, "격노","player", 0.1, true, false}}, -- 격노 없을 때 
 	{"마무리 일격", 1, false}, -- 격노 있을 때
-	{"분노의 강타", 0, false},
+	{"분노의 강타", 0, false, {9, "파멸자", true}},
 	{"피의 갈증", 1, false},
 	{"소용돌이", 1, false},
 }; 
@@ -992,62 +992,6 @@ local function checkSpellPowerCost(id)
 		return;
 	end
 
-
-	
-
-	--[[
-	while true do
-		local spellName, _, spellID = GetSpellBookItemName (i, BOOKTYPE_SPELL)
-
-		if not spellName then
-			do break end
-		end
-		if spellID then
-			local spell = Spell:CreateFromSpellID(spellID);
-			spell:ContinueOnSpellLoad(function()
-				local costText = spell:GetSpellDescription();
-				local powerType = UnitPowerType("player");
-
-				if  costText and powerTypeString and string.match(costText,  powerTypeString ) and string.match(costText,  "생성" )   then
-					local findstring = "%d의 "..powerTypeString;
-					local start = string.find(costText, findstring, 0);
-					if start and start > 10 then
-						local costText2 = string.sub(costText, start - 5);
-						local cost = gsub(costText2, "[^0-9]", "")
-						if tonumber(cost) > 0 then
-							if disWarlock then
-								SpellGetPowerCosts[spellID] = tonumber(cost) / 10;
-							else
-								SpellGetPowerCosts[spellID] = tonumber(cost);
-							end						
-						end
-					end
-
-					local findstring = powerTypeString .. " %d개";
-					local start = string.find(costText, findstring, 0);
-					if start and start > 10 then
-						local costText2 = string.sub(costText, start);
-						local start2 = string.find(costText2, "합니다.", 0);
-						local costText2 = string.sub(costText2, 0, start2);
-						local cost = gsub(costText2, "[^0-9]", "")
-						if tonumber(cost) > 0 then
-							
-							if disWarlock then
-								SpellGetPowerCosts[spellID] = tonumber(cost) / 10;
-							else
-								SpellGetPowerCosts[spellID] = tonumber(cost);
-							end
-						end
-					end
-				end			
-			end)
-		end
-
-	
-		i = i + 1
-	end
-
-	--]]
 end
 
 
@@ -1491,6 +1435,34 @@ local function check_nameplate (skill, check_count, aggro, check_action)
 
 
 	return count;
+end
+
+local function asCheckTalent(name)
+	local specID = PlayerUtil.GetCurrentSpecID();
+   
+    local configID = C_ClassTalents.GetActiveConfigID();
+    local configInfo = C_Traits.GetConfigInfo(configID);
+    local treeID = configInfo.treeIDs[1];
+
+    local nodes = C_Traits.GetTreeNodes(treeID);
+
+    for _, nodeID in ipairs(nodes) do
+        local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
+        if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
+            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
+            local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
+            local definitionInfo = entryInfo and entryInfo.definitionID and C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+
+            if definitionInfo ~= nil then
+                local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
+				--print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));;
+				if name == talentName then
+					return true;
+				end
+            end
+        end
+    end
+	return false;
 end
 
 function ANS_UpdateCooldown()
@@ -2030,14 +2002,12 @@ function ANS_UpdateCooldown()
 		
 				elseif check_type == 9 then
 					-- 특성 보고 알림
-					-- {6, hast207, 1, reverse}
+					-- {9, "고기칼", reverse}
 
-					local tier = check_list[2];
-					local column = check_list[3];
-					local reverse = check_list[4];
+					local name = check_list[2];
+					local reverse = check_list[3];
 
-					local talentgroup = GetActiveSpecGroup();
-					local talentID, name, texture, selected, available = GetTalentInfo(tier, column, talentgroup);
+					local selected = asCheckTalent(name)
 
 					if reverse then
 						if selected then	
