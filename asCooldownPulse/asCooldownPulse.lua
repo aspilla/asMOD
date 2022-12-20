@@ -310,6 +310,17 @@ local function ACDP_UpdateCooldown()
 		if ACI_SpellID_list and ACI_SpellID_list[array[idx]] then
 			skip = true;
 		end
+
+		if (type == "spell") then
+			name, discard, icon = GetSpellInfo(array[idx]);
+			if APB_SPELL and APB_SPELL == name then
+				skip = true;
+			end
+	
+			if APB_SPELL2 and APB_SPELL2 == name then
+				skip = true;
+			end
+		end	
 					
 		if ACDP_StartTime[idx] > 0 and ACDP_bDelete[idx] == false and skip == false then
 			
@@ -322,15 +333,7 @@ local function ACDP_UpdateCooldown()
 			else
 				name, discard, discard, discard, discard, discard, discard, discard, discard, icon = GetItemInfo(array[idx])
 				start, duration = GetItemCooldown(array[idx]);
-			end
-
-			if ACI_SpellID_list and ACI_SpellID_list[name] then
-				skip = true;
-			end
-
-			if APB_SPELL and APB_SPELL == name then
-				skip = true;
-			end
+			end		
 
 			if (icon and duration > 0) and skip == false then
 				frameName = frametype..numCools;
@@ -662,9 +665,9 @@ local function ACDP_Spell(name, type, unit)
 	
 		for i = 1, #ACDP_SpellList do
 			local spell_name2 = GetSpellInfo(ACDP_SpellList[i]);
-			--if (ACDP_SpellList[i] == name or spell_name2 == spell_name) and ACDP_SpellListType[i] == type then
+			if (ACDP_SpellList[i] == name or spell_name2 == spell_name) and ACDP_SpellListType[i] == type then
 			--
-			if ACDP_SpellList[i] == name  and ACDP_SpellListType[i] == type then
+			--if ACDP_SpellList[i] == name  and ACDP_SpellListType[i] == type then
 				
 				if ACDP_StartTime[i] > 0 then
 					if ACDP_ExpirationTime[i] > 0 and  ACDP_ExpirationTime[i] - ACDP_Alert_Time <= curr_time then
