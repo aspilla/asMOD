@@ -321,9 +321,6 @@ local function ACRB_setupFrame(frame)
 
 	local frameWidth = EditModeManagerFrame:GetRaidFrameWidth(frame.isParty);
 	local frameHeight = EditModeManagerFrame:GetRaidFrameHeight(frame.isParty);
-	print (frameHeight);
-
-
 	local options = DefaultCompactUnitFrameSetupOptions;
 	local powerBarHeight = 8;
 	local powerBarUsedHeight = options.displayPowerBar and powerBarHeight or 0;
