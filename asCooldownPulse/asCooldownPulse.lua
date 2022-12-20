@@ -320,6 +320,10 @@ local function ACDP_UpdateCooldown()
 			if APB_SPELL2 and APB_SPELL2 == name then
 				skip = true;
 			end
+
+			if ACI_SpellID_list and ACI_SpellID_list[name] then
+				skip = true;
+			end
 		end	
 					
 		if ACDP_StartTime[idx] > 0 and ACDP_bDelete[idx] == false and skip == false then
