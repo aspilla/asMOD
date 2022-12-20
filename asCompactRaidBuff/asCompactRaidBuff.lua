@@ -17,7 +17,7 @@ local ACRB_UpdateRate = 0.04			-- 1회 Update 주기 (초) 작으면 작을 수�
 
 
 -- 버프 남은시간에 리필 알림
--- 두번째 숫자는 표시 위치, 4(우상) 5(우중) 6(좌상) 1,2,3 은 우하에 보이는 우선 순위이다.
+-- 두번째 숫자는 표시 위치, 4(우상) 5(우중) 6(상) 1,2,3 은 우하에 보이는 우선 순위이다.
 ACRB_ShowList_MONK_2 = {
 	["포용의 안개"] = {6 * 0.3, 1},
 	["소생의 안개"] = {20 * 0.3, 4}
@@ -28,7 +28,6 @@ ACRB_ShowList_MONK_2 = {
 -- 신기
 ACRB_ShowList_PALADIN_1 = {
 	["빛의 봉화"] = {0, 4},	
-	["고결의 봉화"] = {0, 4},	
 	["신념의 봉화"] = {0, 5},	
 }
 
@@ -64,6 +63,11 @@ ACRB_ShowList_DRUID_4 = {
 
 }
 
+ACRB_ShowList_EVOKER_2 = {
+	["메아리"] = {0, 4},
+
+}
+
 
 -- 안보이게 할 디법
 local ACRB_BlackList = {
@@ -73,7 +77,7 @@ local ACRB_BlackList = {
 
 -- 해제 알림 스킬
 local ACRB_DispelAlertList = {
-	--["시간 변위"] = 1,	
+	--["탈진"] = 1,	
 }
 
 
@@ -345,8 +349,10 @@ local function ACRB_setupFrame(frame)
 	for i = 1, ACRB_MAX_BUFFS do
 		local buffPrefix = frameName .. "asBuff"
 		local buffFrame = _G[buffPrefix .. i] or CreateFrame("Button", buffPrefix .. i, frame, "asCompactBuffTemplate")
+		buffFrame.icon:SetTexCoord(.08, .92, .08, .92);
 		buffFrame:ClearAllPoints()
 		buffFrame:EnableMouse(false); 
+
 
 		if i <= ACRB_MAX_BUFFS - 3 then
 
@@ -377,9 +383,9 @@ local function ACRB_setupFrame(frame)
 				buffFrame:SetPoint("RIGHT", frame, "RIGHT", -2, 0);
 
 			else
-				-- 좌상
+				-- 상
 				buffFrame:ClearAllPoints();
-				buffFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2);
+				buffFrame:SetPoint("TOP", frame, "TOP", 0, 0);
 
 			end
 
@@ -399,6 +405,7 @@ local function ACRB_setupFrame(frame)
 		local debuffFrame = _G[buffPrefix .. i] or CreateFrame("Button", buffPrefix .. i, frame, "asCompactDebuffTemplate")
 		debuffFrame:ClearAllPoints()
 		debuffFrame:EnableMouse(false); 
+		debuffFrame.icon:SetTexCoord(.08, .92, .08, .92);
 		if math.fmod(i - 1, 3) == 0 then
 			if i == 1 then
 				local debuffPos, debuffRelativePoint, debuffOffset = "BOTTOMLEFT", "BOTTOMRIGHT", CUF_AURA_BOTTOM_OFFSET + powerBarUsedHeight;
@@ -433,7 +440,7 @@ local function ACRB_setupFrame(frame)
 	end
 
     for _,d in ipairs(frame.asbuffFrames) do
-		d:SetSize(baseSize, baseSize);
+		d:SetSize(baseSize, baseSize * 0.8);
 
 		d.count:SetFont(STANDARD_TEXT_FONT, fontsize +1 ,"OUTLINE")
 		d.count:SetPoint("BOTTOMRIGHT", 0, 0);
@@ -442,7 +449,7 @@ local function ACRB_setupFrame(frame)
 			for _,r in next,{d.cooldown:GetRegions()}	do 
 				if r:GetObjectType()=="FontString" then 
 					r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE")
-					r:SetPoint("TOPLEFT", -2, 2);
+					r:SetPoint("TOP", 0, 2);
 					break 
 				end 
 			end
@@ -463,7 +470,7 @@ local function ACRB_setupFrame(frame)
 			for _,r in next,{d.cooldown:GetRegions()}	do 
 				if r:GetObjectType()=="FontString" then 
 					r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE")
-					r:SetPoint("TOPLEFT", -2, 2);
+					r:SetPoint("TOP", 0, 2);
 					break 
 				end 
 			end
@@ -474,7 +481,7 @@ local function ACRB_setupFrame(frame)
 	local borderPrefix = frameName .. "asBorder"
 
 	frame.asDispelBorder = _G[borderPrefix]  or frame:CreateTexture(borderPrefix,"BACKGROUND")
-	frame.asDispelBorder:SetTexture("Interface\\AddOns\\asCompactRaidBuff\\overborder.tga")
+	frame.asDispelBorder:SetTexture("Interface\\AddOns\\asCompactRaidBuff\\overborder.tga");	
 	frame.asDispelBorder:SetPoint("TOPLEFT",-2,2)
 	frame.asDispelBorder:SetPoint("BOTTOMRIGHT",2, -2)
 	frame.asDispelBorder:SetTexCoord(0,1,0,1)
@@ -579,6 +586,8 @@ local function asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, index, filter)
 
 			if expirationTime - GetTime() < showlist_time then
 				buffFrame.border:SetVertexColor(1, 1, 1);
+				buffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
+				buffFrame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 				buffFrame.border:Show();
 			else
 				buffFrame.border:Hide();
@@ -743,7 +752,7 @@ local function asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter)
 	end
 	
 	buffFrame.border:Hide();
-	buffFrame:SetSize(buffFrame.baseSize + ACRB_Size, buffFrame.baseSize + ACRB_Size);
+	buffFrame:SetSize(buffFrame.baseSize + ACRB_Size, (buffFrame.baseSize + ACRB_Size) * 0.8);
 	buffFrame:Show();
 end
 
@@ -783,13 +792,15 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 	
 	local color = DebuffTypeColor[debuffType] or DebuffTypeColor["none"];
 	debuffFrame.border:SetVertexColor(color.r, color.g, color.b);
+	debuffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
+	debuffFrame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 
 	debuffFrame.isBossBuff = isBossBuff;
 	if ( isBossAura ) then
 		local size = min(debuffFrame.baseSize + BOSS_DEBUFF_SIZE_INCREASE, debuffFrame.maxHeight);
-		debuffFrame:SetSize(size, size);
+		debuffFrame:SetSize(size, size * 0.8);
 	else
-		debuffFrame:SetSize(debuffFrame.baseSize, debuffFrame.baseSize);
+		debuffFrame:SetSize(debuffFrame.baseSize, debuffFrame.baseSize * 0.8);
 	end
 	
 	debuffFrame:Show();
@@ -1093,7 +1104,7 @@ local function asCompactUnitFrame_UpdateBuffsPVP(frame)
 
 		frame.asraidicon = frame:CreateFontString( buffPrefix , "OVERLAY")
 		frame.asraidicon:SetFont(STANDARD_TEXT_FONT, 13)
-		frame.asraidicon:SetPoint("TOPLEFT", frame.healthBar, "TOPLEFT", 13, 0)
+		frame.asraidicon:SetPoint("CENTER", frame.healthBar, "CENTER", 0, 0)
 	end
 
 
@@ -1107,7 +1118,7 @@ local function asCompactUnitFrame_UpdateBuffsPVP(frame)
 			local buffPrefix = frameName .. "Buff2_"
 			frame.buffFrames2[i] =  CreateFrame("Button", buffPrefix .. i, frame.healthBar, "asCompactBuffTemplate")
 			frame.buffFrames2[i]:EnableMouse(false); 
-
+			frame.buffFrames2[i].icon:SetTexCoord(.08, .92, .08, .92);
 
 			for _,r in next,{_G[buffPrefix .. i .."Cooldown"]:GetRegions()}	do 
 				if r:GetObjectType()=="FontString" then 
@@ -1118,7 +1129,7 @@ local function asCompactUnitFrame_UpdateBuffsPVP(frame)
 			end
 			frame.buffFrames2[i]:ClearAllPoints()
 			if i == 1 then
-				frame.buffFrames2[i]:SetPoint("TOPLEFT", frame.asraidicon, "TOPRIGHT", 2, 0)
+				frame.buffFrames2[i]:SetPoint("CENTER", frame.asraidicon, "CENTER", 0, 0)
 			else
 				frame.buffFrames2[i]:SetPoint("TOPLEFT", _G[buffPrefix .. i - 1], "TOPRIGHT", 0, 0)
 			end
@@ -1235,7 +1246,7 @@ local function ACRB_updatePartyAllBuff(idx)
 				if idx == 1 then
 
 					for i=1, 5 do
-						local frame = _G["CompactRaidFrame"..i]
+						local frame = _G["CompactPartyFrameMember"..i]
 						ACRB_updateAllBuff(frame)
 					end
 				end
@@ -1275,7 +1286,7 @@ local function ACRB_updatePartyAllDebuff(idx)
 			else -- party
 				if idx == 1 then
 					for i=1, 5 do
-						local frame = _G["CompactRaidFrame"..i]
+						local frame = _G["CompactPartyFrameMember"..i]
 						ACRB_updateAllDebuff(frame)
 					end
 				end
@@ -1320,7 +1331,7 @@ local function ACRB_updatePartyAllHealerMana(idx)
 				if idx == 1 then
 
 					for i=1, 5 do
-						local frame = _G["CompactRaidFrame"..i]
+						local frame = _G["CompactPartyFrameMember"..i]
 						ACRB_updateAllHealerMana(frame)
 					end
 				end
@@ -1363,7 +1374,7 @@ local function ACRB_DisableAura()
 				end
 			else -- party
 				for i=1, 5 do
-					local frame = _G["CompactRaidFrame"..i]
+					local frame = _G["CompactPartyFrameMember"..i]
 					ACRB_disableDefault(frame);
 					ACRB_setupFrame(frame);
 				end
@@ -1409,7 +1420,7 @@ local function ACRB_OnUpdate(self, elapsed)
 				together = GetRaidProfileOption(profile, "keepGroupsTogether")
 			end
 			]]
-			together = true;
+			together = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups();
 
 			ACRB_DisableAura();
 		end
@@ -1448,7 +1459,7 @@ local function ACRB_OnEvent(self, event, ...)
 				together = GetRaidProfileOption(profile, "keepGroupsTogether")
 			end
 			]]
-			together = true;
+			together = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups();
 		end
 end
 
