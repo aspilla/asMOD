@@ -226,10 +226,12 @@ ANS_SpellList_WARRIOR_1 = {
 ----8.0.1 완료
 ANS_SpellList_WARRIOR_2 = {
 	{"광란", 1, false, {2, "격노","player", 0.1, true, false}}, -- 격노 없을 때 
+	{"피의 갈증", 1, false, {2, "격노","player", 0.1, true, false}}, -- 격노 없을 때 
 	{"마무리 일격", 1, false}, -- 격노 있을 때
 	{"분노의 강타", 0, false, {9, "파멸자", true}},
 	{"피의 갈증", 1, false},
 	{"소용돌이", 1, false},
+	{"격돌", 1, false},
 }; 
 
 
