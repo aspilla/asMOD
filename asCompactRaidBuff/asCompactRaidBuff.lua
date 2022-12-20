@@ -12,7 +12,7 @@ local ACRB_ShowListFirst = true			-- 알림 List 항목을 먼저 보임 (가나
 local ACRB_ShowAlert = true				-- HOT 리필 시 알림
 local ACRB_MaxBuffSize = 20				-- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
 local ACRB_HealerManaBarHeight = 1		-- 힐러 마나바 크기 (안보이게 하려면 0)
-local ACRB_UpdateRate = 0.1				-- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
+local ACRB_UpdateRate = 0.04			-- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 
 
 
@@ -189,15 +189,13 @@ local function ACRB_InitList()
 
 end
 
-
--- 오버레이
-local unusedOverlayGlows = {};
-local numOverlays = 0;
 local framex, framey;
 local BOSS_DEBUFF_SIZE_INCREASE = 5;
 
-
-function  ACRB_GetOverlayGlow()
+--Overlay stuff
+local unusedOverlayGlows = {};
+local numOverlays = 0;
+local function ACRB_ActionButton_GetOverlayGlow()
 	local overlay = tremove(unusedOverlayGlows);
 	if ( not overlay ) then
 		numOverlays = numOverlays + 1;
@@ -206,63 +204,111 @@ function  ACRB_GetOverlayGlow()
 	return overlay;
 end
 
-
-function ACRB_ShowOverlayGlow(self)
-
-	if ( self.overlay ) then
-		if ( self.overlay.animOut:IsPlaying() ) then
-			self.overlay.animOut:Stop();
-			self.overlay.animIn:Play();
+-- Shared between action button and MainMenuBarMicroButton
+local function ACRB_ShowOverlayGlow(button, bhideflash)
+	if ( button.overlay ) then
+		button.overlay.bhideflash = bhideflash;
+		if ( button.overlay.animOut:IsPlaying() ) then
+			button.overlay.animOut:Stop();
+			button.overlay.animIn:Play();
 		end
 	else
-		self.overlay = ACRB_GetOverlayGlow();
-		local frameWidth, frameHeight = self:GetSize();
-		self.overlay:SetParent(self);
-		self.overlay:ClearAllPoints();
+		button.overlay = ACRB_ActionButton_GetOverlayGlow();
+		local frameWidth, frameHeight = button:GetSize();
+		button.overlay:SetParent(button);
+		button.overlay:ClearAllPoints();
 		--Make the height/width available before the next frame:
-		self.overlay:SetSize(frameWidth * 1.4, frameHeight * 1.4);
-		self.overlay:SetPoint("TOPLEFT", self, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
-		self.overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
-		self.overlay.animIn:Play();
+		button.overlay:SetSize(frameWidth * 1.4, frameHeight * 1.4);
+		button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
+		button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
+		button.overlay.bhideflash = bhideflash;
+		button.overlay.animIn:Play();
 	end
 end
-
-function ACRB_HideOverlayGlow(self)
-
-
-	if ( self.overlay ) then
-		if ( self.overlay.animIn:IsPlaying() ) then
-			self.overlay.animIn:Stop();
+-- Shared between action button and MainMenuBarMicroButton
+local function ACRB_HideOverlayGlow(button)
+	if ( button.overlay ) then
+		if ( button.overlay.animIn:IsPlaying() ) then
+			button.overlay.animIn:Stop();
 		end
-		if ( self:IsVisible() ) then
-			self.overlay.animOut:Play();
+		if ( button:IsVisible() ) then
+			button.overlay.animOut:Play();
 		else
-			ACRB_OverlayGlowAnimOutFinished(self.overlay.animOut);	--We aren't shown anyway, so we'll instantly hide it.
+			button.overlay.animOut:OnFinished();	--We aren't shown anyway, so we'll instantly hide it.
 		end
 	end
 end
 
+ACRB_ActionBarButtonSpellActivationAlertMixin = {};
 
-function ACRB_OverlayGlowAnimOutFinished(animGroup)
-	local overlay = animGroup:GetParent();
-	local actionButton = overlay:GetParent();
-	overlay:Hide();
-	tinsert(unusedOverlayGlows, overlay);
-	actionButton.overlay = nil;
-end
-
-
-function ACRB_OverlayGlowAnimOutFinished(animGroup)
-	local overlay = animGroup:GetParent();
-	local actionButton = overlay:GetParent();
-	overlay:Hide();
-	tinsert(unusedOverlayGlows, overlay);
-	actionButton.overlay = nil;
-end
-
-function ACRB_OverlayGlowOnUpdate(self, elapsed)
+function ACRB_ActionBarButtonSpellActivationAlertMixin:OnUpdate(elapsed)
 	AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01);
+	local cooldown = self:GetParent().cooldown;
+	-- we need some threshold to avoid dimming the glow during the gdc
+	-- (using 1500 exactly seems risky, what if casting speed is slowed or something?)
+	if(cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration() > 3000) then
+		self:SetAlpha(0.5);
+		else
+		self:SetAlpha(1.0);
+		end
+	end
+
+function ACRB_ActionBarButtonSpellActivationAlertMixin:OnHide()
+	if ( self.animOut:IsPlaying() ) then
+		self.animOut:Stop();
+		self.animOut:OnFinished();
+	end
 end
+
+ACRB_ActionBarOverlayGlowAnimInMixin = {};
+
+function ACRB_ActionBarOverlayGlowAnimInMixin:OnPlay()
+	local frame = self:GetParent();
+	local frameWidth, frameHeight = frame:GetSize();
+	frame.spark:SetSize(frameWidth, frameHeight);
+	frame.spark:SetAlpha(0.3);
+	frame.innerGlow:SetSize(frameWidth / 2, frameHeight / 2);
+	frame.innerGlow:SetAlpha(1.0);
+	frame.innerGlowOver:SetAlpha(1.0);
+	frame.outerGlow:SetSize(frameWidth * 2, frameHeight * 2);
+	frame.outerGlow:SetAlpha(1.0);
+	frame.outerGlowOver:SetAlpha(1.0);
+	frame.ants:SetSize(frameWidth * 0.85, frameHeight * 0.85)
+	frame.ants:SetAlpha(0);
+
+	if frame.bhideflash then
+		frame.spark:SetAlpha(0.3);
+		frame.innerGlow:SetAlpha(0);
+		frame.innerGlowOver:SetAlpha(0);
+		frame.outerGlow:SetAlpha(0);
+		frame.outerGlowOver:SetAlpha(0);
+	end
+	frame:Show();
+end
+
+function ACRB_ActionBarOverlayGlowAnimInMixin:OnFinished()
+	local frame = self:GetParent();
+	local frameWidth, frameHeight = frame:GetSize();
+	frame.spark:SetAlpha(0);
+	frame.innerGlow:SetAlpha(0);
+	frame.innerGlow:SetSize(frameWidth, frameHeight);
+	frame.innerGlowOver:SetAlpha(0.0);
+	frame.outerGlow:SetSize(frameWidth, frameHeight);
+	frame.outerGlowOver:SetAlpha(0.0);
+	frame.outerGlowOver:SetSize(frameWidth, frameHeight);
+	frame.ants:SetAlpha(1.0);
+end
+
+ACRB_ActionBarOverlayGlowAnimOutMixin = {};
+
+function ACRB_ActionBarOverlayGlowAnimOutMixin:OnFinished()
+	local overlay = self:GetParent();
+	local actionButton = overlay:GetParent();
+	overlay:Hide();
+	tinsert(unusedOverlayGlows, overlay);
+	actionButton.overlay = nil;
+end
+
 
 
 -- Setup
@@ -272,6 +318,10 @@ local function ACRB_setupFrame(frame)
 	
 	local CUF_AURA_BOTTOM_OFFSET = 2;
 	local CUF_NAME_SECTION_SIZE = 15;
+
+	local frameWidth = EditModeManagerFrame:GetRaidFrameWidth(frame.isParty);
+	local frameHeight = EditModeManagerFrame:GetRaidFrameHeight(frame.isParty);
+	print (frameHeight);
 
 
 	local options = DefaultCompactUnitFrameSetupOptions;
@@ -338,12 +388,6 @@ local function ACRB_setupFrame(frame)
 
 		end
 
-		buffFrame.icon:SetTexCoord(.08, .92, .08, .92);
-		buffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
-		buffFrame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
-		buffFrame.border:SetVertexColor(0, 0, 1);
-		buffFrame.border:Show();
-
 		frame.asbuffFrames[i] = buffFrame;
 		ACRB_HideOverlayGlow(buffFrame);
 	end
@@ -358,7 +402,6 @@ local function ACRB_setupFrame(frame)
 		local debuffFrame = _G[buffPrefix .. i] or CreateFrame("Button", buffPrefix .. i, frame, "asCompactDebuffTemplate")
 		debuffFrame:ClearAllPoints()
 		debuffFrame:EnableMouse(false); 
-		
 		if math.fmod(i - 1, 3) == 0 then
 			if i == 1 then
 				local debuffPos, debuffRelativePoint, debuffOffset = "BOTTOMLEFT", "BOTTOMRIGHT", CUF_AURA_BOTTOM_OFFSET + powerBarUsedHeight;
@@ -412,7 +455,8 @@ local function ACRB_setupFrame(frame)
 
 	for _,d in ipairs(frame.asdebuffFrames) do
 	   	d.baseSize = baseSize     -- 디버프
-		d.maxHeight = 10 - powerBarUsedHeight - CUF_AURA_BOTTOM_OFFSET - CUF_NAME_SECTION_SIZE;
+		
+		d.maxHeight = frameHeight - powerBarUsedHeight - CUF_AURA_BOTTOM_OFFSET - CUF_NAME_SECTION_SIZE;
 
 		d.count:SetFont(STANDARD_TEXT_FONT, fontsize + 1,"OUTLINE")
 		d.count:SetPoint("BOTTOMRIGHT", 0, 0);
@@ -515,7 +559,7 @@ local function asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, index, filter)
 	buffFrame.icon:SetTexture(icon);
 	if ( count > 1 ) then
 		local countText = count;
-		if ( count >= 100 ) then
+		if ( count >= 10 ) then
 			countText = BUFF_STACKS_OVERFLOW;
 		end
 		buffFrame.count:Show();
@@ -679,7 +723,7 @@ local function asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter)
 	buffFrame.icon:SetTexture(icon);
 	if ( count > 1 ) then
 		local countText = count;
-		if ( count >= 100) then
+		if ( count >= 10 ) then
 			countText = BUFF_STACKS_OVERFLOW;
 		end
 		buffFrame.count:Show();
@@ -723,7 +767,7 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 	debuffFrame.icon:SetTexture(icon);
 	if ( count > 1 ) then
 		local countText = count;
-		if ( count >= 100 ) then
+		if ( count >= 10 ) then
 			countText = BUFF_STACKS_OVERFLOW;
 		end
 		debuffFrame.count:Show();
@@ -1121,9 +1165,9 @@ local function ACRB_disableDefault(frame)
 		frame:UnregisterEvent("PLAYER_REGEN_ENABLED");
 		frame:UnregisterEvent("PLAYER_REGEN_DISABLED");
 
-		--CompactUnitFrame_HideAllBuffs(frame);
-		--CompactUnitFrame_HideAllDebuffs(frame)
-		--CompactUnitFrame_HideAllDispelDebuffs(frame);
+		CompactUnitFrame_HideAllBuffs(frame);
+		CompactUnitFrame_HideAllDebuffs(frame)
+		CompactUnitFrame_HideAllDispelDebuffs(frame);
 	end
 end
 
@@ -1156,16 +1200,14 @@ end
 
 
 local together = nil;
+local btest = false; -- Test 시 true 로 변경
 
 
 local function ACRB_updatePartyAllBuff(idx)
 
-	--if IsInGroup() and  not (together == nil)  Then
-	if true then
+	if (IsInGroup() or (btest)) and  not (together == nil)  then
 		
-		--if together == true Then
-		if true then
-
+		if together == true then
 
 			if IsInRaid() then -- raid
 	
@@ -1208,10 +1250,8 @@ end
 
 local function ACRB_updatePartyAllDebuff(idx)
 
-	--if IsInGroup() and  not (together == nil)  Then
-	if true then
-		--if together == true Then
-		if true then
+	if (IsInGroup() or (btest)) and  not (together == nil)  then
+		if together == true then
 
 			if IsInRaid() then -- raid
 	
@@ -1251,11 +1291,9 @@ end
 
 local function ACRB_updatePartyAllHealerMana(idx)
 
-	--if IsInGroup() and  not (together == nil) Then
-	if true then
+	if (IsInGroup() or (btest)) and  not (together == nil)  then
 
-		--if together == true Then
-		if true then
+		if together == true then
 
 			if IsInRaid() then -- raid
 	
@@ -1297,11 +1335,9 @@ end
 
 local function ACRB_DisableAura()
 
-	 --if IsInGroup() and not (together == nil) Then
-	 if true then
+	if (IsInGroup() or (btest)) and  not (together == nil)  then 
 
-		--if together == true Then
-		if true then
+		if together == true then
 
 			if IsInRaid() then -- raid
 	
@@ -1344,6 +1380,7 @@ end
 
 
 
+local update = 0;
 local updatecount = 1;
 
 local pending = {}
@@ -1352,30 +1389,39 @@ local mustdisable = true;
 
 
 
-local function ACRB_OnUpdate()
+local function ACRB_OnUpdate(self, elapsed)
 
-	ACRB_updatePartyAllBuff(updatecount);
-	ACRB_updatePartyAllDebuff(updatecount);
-	ACRB_updatePartyAllHealerMana(updatecount);
+	update = update + elapsed;
 
-	if mustdisable then
+	if update >= ACRB_UpdateRate  then
+		update = 0;
 
-		mustdisable = false;
-		
-		--[[
-		local profile = GetActiveRaidProfile();
-		if profile then
-			together = GetRaidProfileOption(profile, "keepGroupsTogether")
+		if updatecount <= 8 then
+			ACRB_updatePartyAllBuff(updatecount);
+		elseif updatecount <= 16 then
+			ACRB_updatePartyAllDebuff(updatecount - 8);
+		elseif updatecount <= 24 then
+			ACRB_updatePartyAllHealerMana(updatecount - 16);
+		elseif mustdisable then
+
+			mustdisable = false;
+			--[[
+				추후 수정
+			local profile = GetActiveRaidProfile();
+			if profile then
+				together = GetRaidProfileOption(profile, "keepGroupsTogether")
+			end
+			]]
+			together = true;
+
+			ACRB_DisableAura();
 		end
-		]]
 		
-		ACRB_DisableAura();
-	end
-		
-	updatecount = updatecount + 1;
+		updatecount = updatecount + 1;
 
-	if updatecount > 25 then
-		updatecount = 1;
+		if updatecount > 25 then
+			updatecount = 1;
+		end
 	end
 end
 
@@ -1397,7 +1443,15 @@ local function ACRB_OnEvent(self, event, ...)
 		elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
 			ACRB_InitList();
 		elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
-			mustdisable = true;			
+			mustdisable = true;
+		elseif (event == "COMPACT_UNIT_FRAME_PROFILES_LOADED") then
+			--[[
+			local profile = GetActiveRaidProfile();
+			if profile then
+				together = GetRaidProfileOption(profile, "keepGroupsTogether")
+			end
+			]]
+			together = true;
 		end
 end
 
@@ -1406,8 +1460,7 @@ local function asCompactUnitFrame_UpdateAll(frame)
 	if frame and not frame:IsForbidden() then 
 		local name = frame:GetName();
 
-		if name and ( string.find (name, "CompactRaidGroup") or string.find (name, "CompactPartyFrameMember") or string.find (name, "CompactRaidFrame")) then
-			
+		if name and not (name == nil) and (string.find (name, "CompactRaidGroup") or string.find (name, "CompactPartyFrameMember") or string.find (name, "CompactRaidFrame")) then
 			mustdisable = true;
 		end
 
@@ -1415,14 +1468,21 @@ local function asCompactUnitFrame_UpdateAll(frame)
 end
 
 local ACRB_mainframe = CreateFrame("Frame", "ACRB_main", UIParent);
+ACRB_mainframe:SetScript("OnUpdate", ACRB_OnUpdate)
+ACRB_mainframe:SetScript("OnEvent", ACRB_OnEvent)
 ACRB_mainframe:RegisterEvent("GROUP_ROSTER_UPDATE");
 ACRB_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 ACRB_mainframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 ACRB_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 ACRB_mainframe:RegisterEvent("CVAR_UPDATE");
 ACRB_mainframe:RegisterEvent("ROLE_CHANGED_INFORM");
+ACRB_mainframe:RegisterEvent("COMPACT_UNIT_FRAME_PROFILES_LOADED");
 ACRB_mainframe:RegisterEvent("VARIABLES_LOADED");
-ACRB_mainframe:SetScript("OnEvent", ACRB_OnEvent)
-C_Timer.NewTicker(ACRB_UpdateRate, ACRB_OnUpdate);
+
+
+
+
+
 
 hooksecurefunc("CompactUnitFrame_UpdateAll" ,asCompactUnitFrame_UpdateAll);
+
