@@ -328,6 +328,10 @@ local function ACDP_UpdateCooldown()
 				skip = true;
 			end
 
+			if APB_SPELL and APB_SPELL == name then
+				skip = true;
+			end
+
 			if (icon and duration > 0) and skip == false then
 				frameName = frametype..numCools;
 				frame = _G[frameName];
