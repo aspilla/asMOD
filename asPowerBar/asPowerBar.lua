@@ -28,6 +28,7 @@ local APB_POWER_LEVEL;
 APB_SPELL = nil;
 APB_SPELL2 = nil;
 APB_BUFF = nil;
+APB_BUFF2 = nil;
 
 
 local APB = nil;
@@ -254,7 +255,7 @@ local function APB_ShowComboBar(combo, partial, cast)
 	end
 end
 
-local function APB_UpdateBuffCombo(self)
+local function APB_UpdateBuffCombo(combobar)
 
 	if not (APB_BUFF_COMBO or APB_DEBUFF_COMBO) then
 		return;
@@ -266,7 +267,7 @@ local function APB_UpdateBuffCombo(self)
 	
 	if APB_BUFF_COMBO then
 
-		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = APB_UnitBuff(self.unit, APB_BUFF_COMBO, "player");
+		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = APB_UnitBuff(combobar.unit, APB_BUFF_COMBO, "player");
 
 		if name and caster == "player" then
 			APB_ShowComboBar(count);
@@ -278,7 +279,7 @@ local function APB_UpdateBuffCombo(self)
 
 	if APB_DEBUFF_COMBO then
 
-		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = APB_UnitDebuff(self.unit, APB_DEBUFF_COMBO, "player");
+		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = APB_UnitDebuff(combobar.unit, APB_DEBUFF_COMBO, "player");
 
 		if name and caster == "player" then
 			APB_ShowComboBar(count);
@@ -321,73 +322,73 @@ local function APB_OnUpdateBuff(self, elapsed)
 end
 
 
-local function APB_UpdateBuff(self)
+local function APB_UpdateBuff(buffbar)
 
-	if not (APB_BUFF or APB_DEBUFF) then
+	if not (buffbar.buff or buffbar.debuff) then
 		return;
 	end
 
 	
-	if APB_BUFF then
+	if buffbar.buff then
 
-		local name,  icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = APB_UnitBuff(self.unit, APB_BUFF, "player");
-
-		if name and caster == "player" then
-			self.start = expirationTime - duration;
-			self.duration = duration;
-			if bupdate_buff_count then
-				self.count:SetText(count);
-			end
-		else
-			self.start = nil;
-			self:SetMinMaxValues(0, 1)
-			self:SetValue(0)
-			self.text:SetText("");
-			self.count:SetText("");
-		end
-
-		self:SetStatusBarColor(0.8, 0.8, 1);
-
-		self:Show();
-		self.text:Show();
-		self.count:Show();
-	end
-
-	if APB_DEBUFF then
-
-		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = APB_UnitDebuff_Name(self.unit, APB_DEBUFF);
+		local name,  icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = APB_UnitBuff(buffbar.unit, buffbar.buff, "player");
 
 		if name and caster == "player" then
-			self.start = expirationTime - duration;
-			self.duration = duration;
+			buffbar.start = expirationTime - duration;
+			buffbar.duration = duration;
 			if bupdate_buff_count then
-				self.count:SetText(count);
+				buffbar.count:SetText(count);
 			end
 		else
-			self.start = nil;
-			self:SetMinMaxValues(0, 1)
-			self:SetValue(0)
-			self.text:SetText("");
-			self.count:SetText("");
+			buffbar.start = nil;
+			buffbar:SetMinMaxValues(0, 1)
+			buffbar:SetValue(0)
+			buffbar.text:SetText("");
+			buffbar.count:SetText("");
 		end
 
-		self:SetStatusBarColor(1, 0.9, 0.9);
+		buffbar:SetStatusBarColor(0.8, 0.8, 1);
 
-		self:Show();
-		self.text:Show();
-		self.count:Show();
+		buffbar:Show();
+		buffbar.text:Show();
+		buffbar.count:Show();
 	end
 
-	if self.start then
-		self:SetScript("OnUpdate", APB_OnUpdateBuff)
+	if buffbar.debuff then
+
+		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = APB_UnitDebuff_Name(buffbar.unit, buffbar.debuff);
+
+		if name and caster == "player" then
+			buffbar.start = expirationTime - duration;
+			buffbar.duration = duration;
+			if bupdate_buff_count then
+				buffbar.count:SetText(count);
+			end
+		else
+			buffbar.start = nil;
+			buffbar:SetMinMaxValues(0, 1)
+			buffbar:SetValue(0)
+			buffbar.text:SetText("");
+			buffbar.count:SetText("");
+		end
+
+		buffbar:SetStatusBarColor(1, 0.9, 0.9);
+
+		buffbar:Show();
+		buffbar.text:Show();
+		buffbar.count:Show();
+	end
+
+	if buffbar.start then
+		buffbar:SetScript("OnUpdate", APB_OnUpdateBuff)
 	else
-		self:SetScript("OnUpdate", nil)
+		buffbar:SetScript("OnUpdate", nil)
 
 		for i = 1, 10 do
-			APB.buffbar.square[i]:Hide();
+			APB.buffbar[0].square[i]:Hide();
 		end
 		if not bupdate_power and not bupdate_rune and not bupdate_spell then
-			self:Hide();
+			buffbar:Hide();
 		end
 	end
 
@@ -918,9 +919,9 @@ local function APB_OnUpdate(self, elapsed)
 
 	if update2 >= 0.5  then
 		update2 = 0
-		APB_UpdateBuff(self.buffbar);
+		APB_UpdateBuff(self.buffbar[0]);
 		APB_UpdateBuffCombo(self.combobar);
-		APB_UpdateStagger(self.buffbar);	
+		APB_UpdateStagger(self.buffbar[0]);	
 		APB_UpdatePower();
 	end
 
@@ -1003,7 +1004,9 @@ local function APB_CheckPower(self)
 	bsmall_power_bar = false;
 
 	APB_BUFF = nil;
+	APB_BUFF2 = nil;
 	APB_DEBUFF = nil;
+	APB_DEBUFF2 = nil;
 	APB_SPELL = nil;
 	APB_SPELL2 = nil;
 	APB_UNIT_POWER = nil;
@@ -1011,22 +1014,27 @@ local function APB_CheckPower(self)
 
 
 	APB.bar:Hide();
-	APB.buffbar:Hide();
-	APB.buffbar.text:SetText("");
-	APB.buffbar.count:SetText("");
 	APB.bar.text:SetText("");
 	APB.bar.count:SetText("");
-	APB.buffbar.cast:Hide();
-	APB.powermax = nil;
 
-	for i = 1, 10 do
-		APB.buffbar.square[i]:Hide();
+	for j = 0, 1 do
+		APB.buffbar[j]:Hide();
+		APB.buffbar[j].text:SetText("");
+		APB.buffbar[j].count:SetText("");	
+		APB.buffbar[j].cast:Hide();
+		APB.powermax = nil;
+
+		for i = 1, 10 do
+			APB.buffbar[j].square[i]:Hide();
+		end
+
+		APB.buffbar[j].square2:Hide();
+		APB.buffbar[j].square3:Hide();
+		APB.buffbar[j].square4:Hide();
+		APB.buffbar[j].buff = nil;
+		APB.buffbar[j].debuff = nil;
 	end
 
-	APB.buffbar.square2:Hide();
-	APB.buffbar.square3:Hide();
-	APB.buffbar.square4:Hide();
-	
 	if (englishClass == "EVOKER") then
 		--기원사
 		APB_UNIT_POWER = "POWER_TYPE_ESSENCE";
@@ -1050,6 +1058,7 @@ local function APB_CheckPower(self)
 			bsmall_power_bar = true;
 					
 			APB_BUFF = "정의의 방패";
+			APB.buffbar[0].buff = "정의의 방패"
 			APB_SPELL = "정의의 방패";
 			APB_SpellMax(APB_SPELL);
 			APB_UpdateSpell(APB_SPELL);
@@ -1057,9 +1066,10 @@ local function APB_CheckPower(self)
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
 
-			APB.buffbar.unit = "player"
+			APB.buffbar[0].unit = "player"
+			
 			bsmall_power_bar = true;
-			APB_UpdateBuff(self.buffbar)
+			APB_UpdateBuff(self.buffbar[0])
 
 		end
 
@@ -1079,38 +1089,21 @@ local function APB_CheckPower(self)
 		end
 
 		if (spec and spec == 2) then
-			
-
 			if (asCheckTalent("태양왕의 축복")) then
-				APB_BUFF = "태양왕의 축복";		
-	
-				APB_BUFF_COMBO = "태양왕의 축복";		
-				APB.combobar.unit = "player";
-				APB.buffbar.unit = "player";
+				APB_BUFF = "태양왕의 축복";	
+				APB.buffbar[0].buff = "태양왕의 축복"	
+				APB.buffbar[0].unit = "player";
 				APB:RegisterUnitEvent("UNIT_AURA", "player");
-				--APB:SetScript("OnUpdate", APB_OnUpdate);
-	
 				bupdate_buff_count = true;
-				--APB_MaxCombo(3);
-				--APB_UpdateBuffCombo(self.combobar)
-				APB_UpdateBuff(self.buffbar)
-				--bupdate_buff_combo = true;
+				APB_UpdateBuff(self.buffbar[0])
+	
 			elseif (asCheckTalent("불꽃정신")) then
 				APB_BUFF = "불꽃정신";		
-	
-				APB_BUFF_COMBO = "불꽃정신";		
-				APB.combobar.unit = "player"
-				APB.buffbar.unit = "player"
-				APB:RegisterUnitEvent("UNIT_AURA", "player");
-				--APB:SetScript("OnUpdate", APB_OnUpdate);
-	
-				bupdate_buff_count = true
-				--APB_MaxCombo(3);
-				--APB_UpdateBuffCombo(self.combobar)
-				APB_UpdateBuff(self.buffbar)
-				--bupdate_buff_combo = true;
-
-	
+				APB.buffbar[0].buff = "불꽃정신"
+				APB.buffbar[0].unit = "player"
+				APB:RegisterUnitEvent("UNIT_AURA", "player");	
+				bupdate_buff_count = true;				
+				APB_UpdateBuff(self.buffbar[0]);	
 			end
 			
 			APB_SPELL = "화염 작렬";
@@ -1139,9 +1132,10 @@ local function APB_CheckPower(self)
 				bupdate_buff_combo = true;				
 			end		
 			
-			APB_BUFF = "얼음 핏줄";		
+			APB_BUFF = "얼음 핏줄";	
+			APB.buffbar[0].buff = "얼음 핏줄";
 			APB.combobar.unit = "player"
-			APB.buffbar.unit = "player"
+			APB.buffbar[0].unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			bsmall_power_bar = true;
 		end		
@@ -1158,12 +1152,11 @@ local function APB_CheckPower(self)
 
 		if (spec and spec == 3) then
 			if asCheckTalent("불확실성 역전") then
-				APB_BUFF = "불확실성 역전";		
-				APB.buffbar.unit = "player"
+				APB_BUFF = "불확실성 역전";
+				APB.buffbar[0].buff = "불확실성 역전"		
+				APB.buffbar[0].unit = "player"
 				APB:RegisterUnitEvent("UNIT_AURA", "player");
-				--APB:SetScript("OnUpdate", APB_OnUpdate);
-
-				APB_UpdateBuff(self.buffbar)
+				APB_UpdateBuff(self.buffbar[0]);
 			end
 			bupdate_partial_power = true;
 		end
@@ -1173,6 +1166,22 @@ local function APB_CheckPower(self)
 	end
 
 	if (englishClass == "DRUID") then
+
+		if (spec and spec == 1) then
+			APB_BUFF = "일월식 (달)";		
+			APB.buffbar[0].buff = "일월식 (달)"
+			APB.buffbar[0].unit = "player"
+			APB:RegisterUnitEvent("UNIT_AURA", "player");			
+			APB_UpdateBuff(self.buffbar[0]);
+
+			APB_BUFF2 = "일월식 (태양)";		
+			APB.buffbar[1].buff = "일월식 (태양)"
+			APB.buffbar[1].unit = "player"
+			APB:RegisterUnitEvent("UNIT_AURA", "player");			
+			APB_UpdateBuff(self.buffbar[1]);
+			
+
+		end
 
 
 		if (spec and spec == 2) then
@@ -1187,30 +1196,20 @@ local function APB_CheckPower(self)
 
 		if (spec and spec == 3) then
 			APB_BUFF = "무쇠가죽";		
-
-			APB_BUFF_COMBO = "무쇠가죽";		
-			APB.combobar.unit = "player"
-			APB.buffbar.unit = "player"
+			APB.buffbar[0].buff = "무쇠가죽"
+			APB.buffbar[0].unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
-			--APB:SetScript("OnUpdate", APB_OnUpdate);
-
-			bupdate_buff_count = true
-			--APB_MaxCombo(3);
-			--APB_UpdateBuffCombo(self.combobar)
-			APB_UpdateBuff(self.buffbar)
-			--bupdate_buff_combo = true;
-
+			bupdate_buff_count = true;
+			
+			APB_UpdateBuff(self.buffbar[0]);
 		end
-
-
-
 	end
 
 	if (englishClass == "MONK") then
 
 		if (spec and spec == 1) then
 			bupdate_stagger = true;
-			APB_UpdateStagger(self.buffbar);
+			APB_UpdateStagger(self.buffbar[0]);
 		end
 
 
@@ -1230,12 +1229,11 @@ local function APB_CheckPower(self)
 		APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 		bupdate_power = true;
 
-		APB_BUFF = "난도질";		
-		APB.buffbar.unit = "player"
+		APB_BUFF = "난도질";
+		APB.buffbar[0].buff = "난도질";		
+		APB.buffbar[0].unit = "player"
 		APB:RegisterUnitEvent("UNIT_AURA", "player");
-		--APB:SetScript("OnUpdate", APB_OnUpdate);
-
-		APB_UpdateBuff(self.buffbar)
+		APB_UpdateBuff(self.buffbar[0])
 	end
 
 	if (englishClass == "DEATHKNIGHT") then
@@ -1246,13 +1244,12 @@ local function APB_CheckPower(self)
 
 
 		if (spec and spec == 1) then
-			APB_BUFF = "뼈의 보호막";		
-			APB.buffbar.unit = "player"
+			APB_BUFF = "뼈의 보호막";
+			APB.buffbar[0].buff = "뼈의 보호막";	
+			APB.buffbar[0].unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
-			--APB:SetScript("OnUpdate", APB_OnUpdate);
 			bupdate_buff_count = true;
-
-			APB_UpdateBuff(self.buffbar)
+			APB_UpdateBuff(self.buffbar[0]);
 
 		end
 
@@ -1274,24 +1271,25 @@ local function APB_CheckPower(self)
 
 
 		if (spec and spec == 1) then
-			APB_DEBUFF = "거인의 강타";		
-			APB.buffbar.unit = "target";
-			--APB:RegisterUnitEvent("UNIT_AURA", "target");
+			APB_DEBUFF = "거인의 강타";	
+			APB.buffbar[0].debuff = "거인의 강타"	
+			APB.buffbar[0].unit = "target";
 			APB:SetScript("OnUpdate", APB_OnUpdate);
 
 			APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-			APB_UpdateBuff(self.buffbar)
+			APB_UpdateBuff(self.buffbar[0])
 		end
 
 
 
 
 		if (spec and spec == 2) then
-			APB_BUFF = "격노";		
-			APB.buffbar.unit = "player"
+			APB_BUFF = "격노";
+			APB.buffbar[0].buff = "격노";
+			APB.buffbar[0].unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
-			APB_UpdateBuff(self.buffbar);
+			APB_UpdateBuff(self.buffbar[0]);
 
 
 			if asCheckTalent("소용돌이 연마") then
@@ -1310,12 +1308,13 @@ local function APB_CheckPower(self)
 		end
 
 		if (spec and spec == 3) then
-			APB_BUFF = "방패 올리기";		
-			APB.buffbar.unit = "player"
+			APB_BUFF = "방패 올리기";
+			APB.buffbar[0].buff = "방패 올리기"		
+			APB.buffbar[0].unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
 
-			APB_UpdateBuff(self.buffbar)
+			APB_UpdateBuff(self.buffbar[0])
 
 		end
 
@@ -1326,23 +1325,33 @@ local function APB_CheckPower(self)
 	if (englishClass == "DEMONHUNTER") then
 
 		if (spec and spec == 1) then
-			APB_BUFF = "탄력";		
-			APB.buffbar.unit = "player"
-			APB:RegisterUnitEvent("UNIT_AURA", "player");
-			--APB:SetScript("OnUpdate", APB_OnUpdate);
 
-			APB_UpdateBuff(self.buffbar)
+			if asCheckTalent("탄력") then
+				APB_BUFF = "탄력";
+				APB.buffbar[0].buff = "탄력";
+				APB.buffbar[0].unit = "player"
+				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				--APB:SetScript("OnUpdate", APB_OnUpdate);
+
+				APB_UpdateBuff(self.buffbar[0])
+			end
+
+			APB_SPELL = "지옥 돌진";
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
 
 		end
 
 
 		if (spec and spec == 2) then
-			APB_BUFF = "악마 쐐기";		
-			APB.buffbar.unit = "player"
+			APB_BUFF = "악마 쐐기";	
+			APB.buffbar[0].buff = "악마 쐐기";
+			APB.buffbar[0].unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
 
-			APB_UpdateBuff(self.buffbar)
+			APB_UpdateBuff(self.buffbar[0])
 
 		end
 
@@ -1360,12 +1369,13 @@ local function APB_CheckPower(self)
 			bupdate_spell = true;
 
 			APB_BUFF = "광기";		
-			APB.buffbar.unit = "player"
+			APB.buffbar[0].buff = "광기";
+			APB.buffbar[0].unit = "player"
 			bupdate_buff_count = true;
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
 
-			APB_UpdateBuff(self.buffbar)
+			APB_UpdateBuff(self.buffbar[0])
 		end
 
 
@@ -1379,10 +1389,11 @@ local function APB_CheckPower(self)
 			bupdate_spell = true;
 
 			if asCheckTalent("꾸준한 집중") then
-				APB_BUFF = "꾸준한 집중";		
-				APB.buffbar.unit = "player"
+				APB_BUFF = "꾸준한 집중";
+				APB.buffbar[0].buff = "꾸준한 집중";		
+				APB.buffbar[0].unit = "player"
 				APB:RegisterUnitEvent("UNIT_AURA", "player");
-				APB_UpdateBuff(self.buffbar)
+				APB_UpdateBuff(self.buffbar[0])
 			end
 		end
 
@@ -1400,11 +1411,12 @@ local function APB_CheckPower(self)
 			bupdate_buff_combo = true;
 
 			APB_BUFF = "살쾡이의 격노";
+			APB.buffbar[0].buff = "살쾌이의 격노";
 			--bupdate_buff_count = true;
-			APB.buffbar.unit = "player";
+			APB.buffbar[0].unit = "player";
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
-			APB_UpdateBuff(self.buffbar)
+			APB_UpdateBuff(self.buffbar[0])
 		end
 
 	end
@@ -1472,16 +1484,27 @@ local function APB_CheckPower(self)
 
 
 	if not (APB_BUFF or APB_DEBUFF or bupdate_stagger) then
-		APB.buffbar:SetHeight(0.01);
-		APB.buffbar.text:Hide();
-		APB.buffbar.count:Hide();
-		APB.buffbar:Hide();
+		APB.buffbar[0]:SetHeight(0.01);
+		APB.buffbar[0].text:Hide();
+		APB.buffbar[0].count:Hide();
+		APB.buffbar[0]:Hide();
 	else
-		APB.buffbar:SetHeight(APB_HEIGHT);
+		APB.buffbar[0]:SetHeight(APB_HEIGHT);
 
 		if bupdate_buff_count then
-			APB.buffbar:SetHeight(APB_HEIGHT + 2);
+			APB.buffbar[0]:SetHeight(APB_HEIGHT + 2);
 		end
+
+		if (APB_BUFF2 or APB_DEBUFF2) then
+			APB.buffbar[1]:SetHeight(APB_HEIGHT);
+			APB.buffbar[1]:SetWidth(APB_WIDTH/2);
+			APB.buffbar[0]:SetWidth(APB_WIDTH/2);
+			if bupdate_buff_count then
+				APB.buffbar[1]:SetHeight(APB_HEIGHT + 2);
+			end
+		else
+			APB.buffbar[0]:SetWidth(APB_WIDTH);
+		end 
 	end
 
 
@@ -1702,9 +1725,10 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 
 
 	if event == "UNIT_AURA" then
-		APB_UpdateBuff(self.buffbar);
+		APB_UpdateBuff(self.buffbar[0]);
+		APB_UpdateBuff(self.buffbar[1]);
 		APB_UpdateBuffCombo(self.combobar);
-		APB_UpdateStagger(self.buffbar);
+		APB_UpdateStagger(self.buffbar[0]);
 	elseif event == "ACTIONBAR_UPDATE_COOLDOWN"  or event == "ACTIONBAR_UPDATE_USABLE" then
 		if APB_SPELL then
 			APB_UpdateSpell(APB_SPELL, APB_SPELL2);
@@ -1720,7 +1744,8 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 			asUnitFrameManaCostPredictionBars_Update(self, (event == "UNIT_SPELLCAST_START" or not(startTime == endTime)), startTime, endTime, spellID);
 			APB_UpdatePower();
 	elseif event == "PLAYER_TARGET_CHANGED" then
-		APB_UpdateBuff(self.buffbar);
+		APB_UpdateBuff(self.buffbar[0]);
+		APB_UpdateBuff(self.buffbar[1]);
 		APB_UpdateBuffCombo(self.combobar);
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		checkSpellCost();
@@ -1847,91 +1872,99 @@ do
 	APB.healthbar.count:SetFont(APB_Font, APB_HealthSize, APB_FontOutline);
 	APB.healthbar.count:SetPoint("RIGHT", APB.bar, "RIGHT", -4, 0);
 	APB.healthbar.count:SetTextColor(1, 1, 1, 1);
+	
+	APB.buffbar = {};
 
-	APB.buffbar = CreateFrame("StatusBar", nil, APB);
-	APB.buffbar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER")
-	APB.buffbar:GetStatusBarTexture():SetHorizTile(false);
-	APB.buffbar:SetMinMaxValues(0, 100);
-	APB.buffbar:SetValue(100);
-	APB.buffbar:SetHeight(APB_HEIGHT);
-	APB.buffbar:SetWidth(APB_WIDTH);
+	for j = 0, 1 do
 
-	APB.buffbar.bg = APB.buffbar:CreateTexture(nil, "BACKGROUND");
-	APB.buffbar.bg:SetPoint("TOPLEFT", APB.buffbar, "TOPLEFT", -1, 1);
-	APB.buffbar.bg:SetPoint("BOTTOMRIGHT", APB.buffbar, "BOTTOMRIGHT", 1, -1);
+		APB.buffbar[j] = CreateFrame("StatusBar", nil, APB);
+		APB.buffbar[j]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER")
+		APB.buffbar[j]:GetStatusBarTexture():SetHorizTile(false);
+		APB.buffbar[j]:SetMinMaxValues(0, 100);
+		APB.buffbar[j]:SetValue(100);
+		APB.buffbar[j]:SetHeight(APB_HEIGHT);
+		APB.buffbar[j]:SetWidth(APB_WIDTH);
 
-	APB.buffbar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
-	APB.buffbar.bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1);
-	APB.buffbar.bg:SetVertexColor(0, 0, 0, 0.8);
+		APB.buffbar[j].bg = APB.buffbar[j]:CreateTexture(nil, "BACKGROUND");
+		APB.buffbar[j].bg:SetPoint("TOPLEFT", APB.buffbar[j], "TOPLEFT", -1, 1);
+		APB.buffbar[j].bg:SetPoint("BOTTOMRIGHT", APB.buffbar[j], "BOTTOMRIGHT", 1, -1);
 
-	APB.buffbar:SetPoint("BOTTOMLEFT",APB.healthbar,"TOPLEFT", 0, 1);
-	APB.buffbar:Hide();
+		APB.buffbar[j].bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
+		APB.buffbar[j].bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1);
+		APB.buffbar[j].bg:SetVertexColor(0, 0, 0, 0.8);
 
-
-
-	APB.buffbar.text = APB.buffbar:CreateFontString(nil, "ARTWORK")
-	APB.buffbar.text:SetFont(APB_Font, APB_BuffSize, APB_FontOutline)
-	APB.buffbar.text:SetPoint("LEFT", APB.buffbar, "LEFT", 5, 0)
-	APB.buffbar.text:SetTextColor(1, 1, 1, 1)
-
-	APB.buffbar.count = APB.buffbar:CreateFontString(nil, "ARTWORK")
-	APB.buffbar.count:SetFont(APB_Font, APB_BuffSize + 5, APB_FontOutline)
-	APB.buffbar.count:SetPoint("RIGHT", APB.buffbar, "RIGHT", -4, 0)
-	APB.buffbar.count:SetTextColor(1, 1, 1, 1)
-
-	APB.buffbar.cast = APB.buffbar:CreateTexture(nil, "BACKGROUND");
-	APB.buffbar.cast:SetDrawLayer("ARTWORK", 0);
-	APB.buffbar.cast:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-	APB.buffbar.cast:SetBlendMode("ALPHAKEY");
-	APB.buffbar.cast:SetVertexColor(1,1,1,0.3)
-	APB.buffbar.cast:SetWidth(50);
-	APB.buffbar.cast:SetHeight((APB.buffbar:GetHeight())/1.5);
-	APB.buffbar.cast:Hide();
+		if j == 0 then
+			APB.buffbar[j]:SetPoint("BOTTOMLEFT",APB.healthbar,"TOPLEFT", 0, 1);
+		else
+			APB.buffbar[j]:SetPoint("BOTTOMLEFT",APB.healthbar,"TOP", 0, 1);
+		end
+		APB.buffbar[j]:Hide();
 
 
 
+		APB.buffbar[j].text = APB.buffbar[j]:CreateFontString(nil, "ARTWORK")
+		APB.buffbar[j].text:SetFont(APB_Font, APB_BuffSize, APB_FontOutline)
+		APB.buffbar[j].text:SetPoint("LEFT", APB.buffbar[j], "LEFT", 5, 0)
+		APB.buffbar[j].text:SetTextColor(1, 1, 1, 1)
 
-	APB.buffbar.square = {};
-	for i = 1, 10 do
-		APB.buffbar.square[i] = APB.buffbar:CreateTexture(nil, "BACKGROUND");
-		APB.buffbar.square[i]:SetDrawLayer("ARTWORK", 0);
-		APB.buffbar.square[i]:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-		APB.buffbar.square[i]:SetBlendMode("ALPHAKEY");
-		APB.buffbar.square[i]:SetVertexColor(1,1,1,1)
-		APB.buffbar.square[i]:SetWidth(3);
-		APB.buffbar.square[i]:SetHeight(APB.buffbar:GetHeight()-1);
-		APB.buffbar.square[i]:Hide();
+		APB.buffbar[j].count = APB.buffbar[j]:CreateFontString(nil, "ARTWORK")
+		APB.buffbar[j].count:SetFont(APB_Font, APB_BuffSize + 5, APB_FontOutline)
+		APB.buffbar[j].count:SetPoint("RIGHT", APB.buffbar[j], "RIGHT", -4, 0)
+		APB.buffbar[j].count:SetTextColor(1, 1, 1, 1)
+
+		APB.buffbar[j].cast = APB.buffbar[j]:CreateTexture(nil, "BACKGROUND");
+		APB.buffbar[j].cast:SetDrawLayer("ARTWORK", 0);
+		APB.buffbar[j].cast:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
+		APB.buffbar[j].cast:SetBlendMode("ALPHAKEY");
+		APB.buffbar[j].cast:SetVertexColor(1,1,1,0.3)
+		APB.buffbar[j].cast:SetWidth(50);
+		APB.buffbar[j].cast:SetHeight((APB.buffbar[j]:GetHeight())/1.5);
+		APB.buffbar[j].cast:Hide();
+
+
+
+
+		APB.buffbar[j].square = {};
+		for i = 1, 10 do
+			APB.buffbar[j].square[i] = APB.buffbar[j]:CreateTexture(nil, "BACKGROUND");
+			APB.buffbar[j].square[i]:SetDrawLayer("ARTWORK", 0);
+			APB.buffbar[j].square[i]:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
+			APB.buffbar[j].square[i]:SetBlendMode("ALPHAKEY");
+			APB.buffbar[j].square[i]:SetVertexColor(1,1,1,1)
+			APB.buffbar[j].square[i]:SetWidth(3);
+			APB.buffbar[j].square[i]:SetHeight(APB.buffbar[j]:GetHeight()-1);
+			APB.buffbar[j].square[i]:Hide();
+		end
+
+		APB.buffbar[j].square2 = APB.buffbar[j]:CreateTexture(nil, "BACKGROUND");
+		APB.buffbar[j].square2:SetDrawLayer("ARTWORK", 0);
+		APB.buffbar[j].square2:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
+		APB.buffbar[j].square2:SetBlendMode("ALPHAKEY");
+		APB.buffbar[j].square2:SetVertexColor(1,1,1,1)
+		APB.buffbar[j].square2:SetWidth(3);
+		APB.buffbar[j].square2:SetHeight(5);
+		APB.buffbar[j].square2:Hide();
+
+
+		APB.buffbar[j].square3 = APB.buffbar[j]:CreateTexture(nil, "BACKGROUND");
+		APB.buffbar[j].square3:SetDrawLayer("ARTWORK", 0);
+		APB.buffbar[j].square3:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
+		APB.buffbar[j].square3:SetBlendMode("ALPHAKEY");
+		APB.buffbar[j].square3:SetVertexColor(1,1,1,1)
+		APB.buffbar[j].square3:SetWidth(3);
+		APB.buffbar[j].square3:SetHeight(3);
+		APB.buffbar[j].square3:Hide();
+
+		APB.buffbar[j].square4 = APB.buffbar[j]:CreateTexture(nil, "BACKGROUND");
+		APB.buffbar[j].square4:SetDrawLayer("ARTWORK", 0);
+		APB.buffbar[j].square4:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
+		APB.buffbar[j].square4:SetBlendMode("ALPHAKEY");
+		APB.buffbar[j].square4:SetVertexColor(1,1,1,1)
+		APB.buffbar[j].square4:SetWidth(3);
+		APB.buffbar[j].square4:SetHeight(3);
+		APB.buffbar[j].square4:Hide();
+
 	end
-
-	APB.buffbar.square2 = APB.buffbar:CreateTexture(nil, "BACKGROUND");
-	APB.buffbar.square2:SetDrawLayer("ARTWORK", 0);
-	APB.buffbar.square2:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-	APB.buffbar.square2:SetBlendMode("ALPHAKEY");
-	APB.buffbar.square2:SetVertexColor(1,1,1,1)
-	APB.buffbar.square2:SetWidth(3);
-	APB.buffbar.square2:SetHeight(5);
-	APB.buffbar.square2:Hide();
-
-
-	APB.buffbar.square3 = APB.buffbar:CreateTexture(nil, "BACKGROUND");
-	APB.buffbar.square3:SetDrawLayer("ARTWORK", 0);
-	APB.buffbar.square3:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-	APB.buffbar.square3:SetBlendMode("ALPHAKEY");
-	APB.buffbar.square3:SetVertexColor(1,1,1,1)
-	APB.buffbar.square3:SetWidth(3);
-	APB.buffbar.square3:SetHeight(3);
-	APB.buffbar.square3:Hide();
-
-	APB.buffbar.square4 = APB.buffbar:CreateTexture(nil, "BACKGROUND");
-	APB.buffbar.square4:SetDrawLayer("ARTWORK", 0);
-	APB.buffbar.square4:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-	APB.buffbar.square4:SetBlendMode("ALPHAKEY");
-	APB.buffbar.square4:SetVertexColor(1,1,1,1)
-	APB.buffbar.square4:SetWidth(3);
-	APB.buffbar.square4:SetHeight(3);
-	APB.buffbar.square4:Hide();
-
-
 
 	APB.combobar = {};
 	APB.runeIndexes = {1, 2, 3, 4, 5, 6};
@@ -1955,7 +1988,7 @@ do
 		APB.combobar[i].bg:SetVertexColor(0, 0, 0, 0.8);
 
 		if i == 1 then
-			APB.combobar[i]:SetPoint("BOTTOMLEFT",APB.buffbar,"TOPLEFT", 0, 1);
+			APB.combobar[i]:SetPoint("BOTTOMLEFT",APB.buffbar[0],"TOPLEFT", 0, 1);
 		else
 			APB.combobar[i]:SetPoint("LEFT",APB.combobar[i-1],"RIGHT", 3, 0);
 		end

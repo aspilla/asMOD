@@ -465,6 +465,10 @@ local function ABF_UpdateDebuff(unit)
 			if APB_BUFF and APB_BUFF == name then
 				skip = true;
 			end
+			
+			if APB_BUFF2 and APB_BUFF2 == name then
+				skip = true;
+			end
 
 			if APB_BUFF_COMBO and APB_BUFF_COMBO == name then
 				skip = true;

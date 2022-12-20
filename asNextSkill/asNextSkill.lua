@@ -614,22 +614,14 @@ ANS_SpellList_ROGUE_3 = {
 --파멸
 ----8.0.1완료
 ANS_SpellList_DEMONHUNTER_1 = {
-	--[[
-	{"복수의 퇴각", 2, false, {9, 7, 2},{2, "탄력", "player", 0.5, true, false} },
-	{"지옥 돌진", 2, false, {9, 7, 2},{7, 2},{2, "탄력", "player", 0.5, true, false} },
-	{"지옥 포화", 2, false},
-	{"칼춤", 2, false},
-	{"어둠의 베기", 1, false, {4, 80, "player", false, false} },
+	
+	{"안광", 2, false},	
+	{"혼돈의 일격", 1, false, {1}},
+	{"칼춤", 1, false},
+	{"지옥칼", 0, false, {4, 80, "player", true, false} },
 	{"제물의 오라", 1, false},
-	{"칼춤", 1, false, {9, 5, 2}},
-	{"지옥칼", 1, false, {4, 80, "player", true, false} },
-	{"안광", 2, false},
 	{"혼돈의 일격", 1, false},
-	{"악마의 이빨", 1, false, {9, 2, 2, true}},
-	{"글레이브 투척", 0, false}, 
-	{"지옥 돌진", 2, false},
-	{"악마 칼날", 1, false, {9, 2, 2}};
-	]]
+	{"악마의 이빨", 1, false},
 };
 
 --복수

@@ -54,7 +54,7 @@ local debuffs_per_line = ANameP_DebuffsPerLine;
 -- ["디법명"] = {알림 시간, 우선순위},
 -- 우선순위는 숫자가 큰 경우 우선적으로 보이고, 같을 경우 먼저 걸린 순서로 보임
 ANameP_ShowList_WARRIOR_1 = {
-	["난도질"] = {15 * 0.3, 1, {r = 1, g = 0.5, b = 0}},
+	["분쇄"] = {15 * 0.3, 1, {r = 1, g = 0.5, b = 0}},
 }
 
 ANameP_ShowList_WARRIOR_2 = {
@@ -149,7 +149,8 @@ ANameP_ShowList_SHAMAN_3 = {
 
 
 ANameP_ShowList_DRUID_1 = {
-	["달빛섬광"] = {22 * 0.3, 2, {r = 1, g = 0.5, b = 0}},
+	["달빛섬광"] = {22 * 0.3, 3, {r = 1, g = 0.5, b = 0}},
+	["태양섬광"] = {13.5 * 0.3, 2},	
 	["항성의 섬광"] = {18 * 0.3, 1},	
 }
 
