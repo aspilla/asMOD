@@ -461,7 +461,7 @@ local function ACRB_setupFrame(frame)
 	end
 
     for _,d in ipairs(frame.asbuffFrames) do
-		d:SetSize(baseSize, baseSize * 0.8);
+		d:SetSize(baseSize, baseSize);
 
 		d.count:SetFont(STANDARD_TEXT_FONT, fontsize +1 ,"OUTLINE")
 		d.count:SetPoint("BOTTOMRIGHT", 0, 0);
@@ -773,7 +773,7 @@ local function asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter)
 	end
 	
 	buffFrame.border:Hide();
-	buffFrame:SetSize(buffFrame.baseSize + ACRB_Size, (buffFrame.baseSize + ACRB_Size) * 0.8);
+	buffFrame:SetSize((buffFrame.baseSize + ACRB_Size), (buffFrame.baseSize + ACRB_Size));
 	buffFrame:Show();
 end
 
@@ -819,9 +819,9 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 	debuffFrame.isBossBuff = isBossBuff;
 	if ( isBossAura ) then
 		local size = min(debuffFrame.baseSize + BOSS_DEBUFF_SIZE_INCREASE, debuffFrame.maxHeight);
-		debuffFrame:SetSize(size, size * 0.8);
+		debuffFrame:SetSize(size, size);
 	else
-		debuffFrame:SetSize(debuffFrame.baseSize, debuffFrame.baseSize * 0.8);
+		debuffFrame:SetSize(debuffFrame.baseSize, debuffFrame.baseSize);
 	end
 	
 	debuffFrame:Show();
@@ -1229,7 +1229,7 @@ end
 
 
 local together = nil;
-local btest = true; -- Test 시 true 로 변경
+local btest = false; -- Test 시 true 로 변경
 
 
 local function ACRB_updatePartyAllBuff(idx)
