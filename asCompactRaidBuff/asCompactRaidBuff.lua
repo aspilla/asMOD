@@ -13,7 +13,7 @@ local ACRB_ShowAlert = true				-- HOT 리필 시 알림
 local ACRB_MaxBuffSize = 20				-- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
 local ACRB_HealerManaBarHeight = 1		-- 힐러 마나바 크기 (안보이게 하려면 0)
 local ACRB_UpdateRate = 0.04			-- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
-
+local ACRB_ShowWhenSolo = true			-- Solo Raid Frame 사용시 보이게 하려면 True
 
 
 -- 버프 남은시간에 리필 알림
@@ -335,7 +335,6 @@ function ACRB_ActionBarOverlayGlowAnimOutMixin:OnFinished()
 end
 
 
-
 -- Setup
 local function ACRB_setupFrame(frame)
 	if not frame or not frame.displayedUnit or not UnitIsPlayer(frame.displayedUnit) then return end
@@ -344,7 +343,6 @@ local function ACRB_setupFrame(frame)
 	local CUF_AURA_BOTTOM_OFFSET = 2;
 	local CUF_NAME_SECTION_SIZE = 15;
 
-	local frameWidth = EditModeManagerFrame:GetRaidFrameWidth(frame.isParty);
 	local frameHeight = EditModeManagerFrame:GetRaidFrameHeight(frame.isParty);
 	local options = DefaultCompactUnitFrameSetupOptions;
 	local powerBarHeight = 8;
@@ -406,7 +404,7 @@ local function ACRB_setupFrame(frame)
 			else
 				-- 상
 				buffFrame:ClearAllPoints();
-				buffFrame:SetPoint("TOP", frame, "TOP", 0, 0);
+				buffFrame:SetPoint("TOP", frame, "TOP", 0, -2);
 
 			end
 
@@ -461,9 +459,9 @@ local function ACRB_setupFrame(frame)
 	end
 
     for _,d in ipairs(frame.asbuffFrames) do
-		d:SetSize(baseSize, baseSize);
+		d:SetSize(baseSize * 1.2, baseSize * 0.9);
 
-		d.count:SetFont(STANDARD_TEXT_FONT, fontsize +1 ,"OUTLINE")
+		d.count:SetFont(STANDARD_TEXT_FONT, fontsize ,"OUTLINE")
 		d.count:SetPoint("BOTTOMRIGHT", 0, 0);
 		if  ACRB_ShowBuffCooldown and fontsize >= ACRB_MinShowBuffFontSize   then
 	   		d.cooldown:SetHideCountdownNumbers(false);
@@ -483,7 +481,7 @@ local function ACRB_setupFrame(frame)
 		
 		d.maxHeight = frameHeight - powerBarUsedHeight - CUF_AURA_BOTTOM_OFFSET - CUF_NAME_SECTION_SIZE;
 
-		d.count:SetFont(STANDARD_TEXT_FONT, fontsize + 1,"OUTLINE")
+		d.count:SetFont(STANDARD_TEXT_FONT, fontsize,"OUTLINE")
 		d.count:SetPoint("BOTTOMRIGHT", 0, 0);
 
 		if  ACRB_ShowBuffCooldown and fontsize >= ACRB_MinShowBuffFontSize   then
@@ -519,7 +517,47 @@ local function ACRB_setupFrame(frame)
 	frame.asManabar:SetHeight(ACRB_HealerManaBarHeight)
 	frame.asManabar:SetPoint("BOTTOM",frame.healthBar,"BOTTOM", 0, 0)
 
+	if (not frame.asraidicon) then
+		local frameName = frame:GetName()
+		local buffPrefix = frameName .. "RAIDICON_"
 
+
+		frame.asraidicon = frame:CreateFontString( buffPrefix , "OVERLAY")
+		frame.asraidicon:SetFont(STANDARD_TEXT_FONT, fontsize * 2)
+		frame.asraidicon:SetPoint("CENTER", frame.healthBar, "CENTER", 0, 0)
+	end
+
+
+	if (not frame.buffFrames2) then
+
+		local frameName = frame:GetName()
+
+		frame.buffFrames2 = {};
+	
+		for i = 1, ACRB_MAX_BUFFS_2 do
+			local buffPrefix = frameName .. "Buff2_"
+			frame.buffFrames2[i] =  CreateFrame("Button", buffPrefix .. i, frame.healthBar, "asCompactBuffTemplate")
+			frame.buffFrames2[i]:EnableMouse(false); 
+			frame.buffFrames2[i].icon:SetTexCoord(.08, .92, .08, .92);
+			frame.buffFrames2[i]:SetSize(baseSize * 1.2, baseSize * 0.9);
+			frame.buffFrames2[i].baseSize = baseSize;
+			frame.buffFrames2[i].count:SetFont(STANDARD_TEXT_FONT, fontsize,"OUTLINE")
+			
+			for _,r in next,{_G[buffPrefix .. i .."Cooldown"]:GetRegions()}	do 
+				if r:GetObjectType()=="FontString" then 
+					r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE")
+					r:SetPoint("TOP", 0, 2);
+					break 
+				end 
+			end
+			frame.buffFrames2[i]:ClearAllPoints()
+			if i == 1 then
+				frame.buffFrames2[i]:SetPoint("CENTER", frame.asraidicon, "CENTER", 0, 0)
+			else
+				frame.buffFrames2[i]:SetPoint("TOPLEFT", _G[buffPrefix .. i - 1], "TOPRIGHT", 0, 0)
+			end
+		end
+	end
 
 
 end
@@ -584,7 +622,7 @@ local function asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, index, filter)
 	buffFrame.icon:SetTexture(icon);
 	if ( count > 1 ) then
 		local countText = count;
-		if ( count >= 10 ) then
+		if ( count >= 100 ) then
 			countText = BUFF_STACKS_OVERFLOW;
 		end
 		buffFrame.count:Show();
@@ -750,7 +788,7 @@ local function asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter)
 	buffFrame.icon:SetTexture(icon);
 	if ( count > 1 ) then
 		local countText = count;
-		if ( count >= 10 ) then
+		if ( count >= 100 ) then
 			countText = BUFF_STACKS_OVERFLOW;
 		end
 		buffFrame.count:Show();
@@ -773,7 +811,7 @@ local function asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter)
 	end
 	
 	buffFrame.border:Hide();
-	buffFrame:SetSize((buffFrame.baseSize + ACRB_Size), (buffFrame.baseSize + ACRB_Size));
+	buffFrame:SetSize((buffFrame.baseSize + ACRB_Size) * 1.2, (buffFrame.baseSize + ACRB_Size) * 0.9);
 	buffFrame:Show();
 end
 
@@ -794,7 +832,7 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 	debuffFrame.icon:SetTexture(icon);
 	if ( count > 1 ) then
 		local countText = count;
-		if ( count >= 10 ) then
+		if ( count >= 100 ) then
 			countText = BUFF_STACKS_OVERFLOW;
 		end
 		debuffFrame.count:Show();
@@ -819,9 +857,9 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 	debuffFrame.isBossBuff = isBossBuff;
 	if ( isBossAura ) then
 		local size = min(debuffFrame.baseSize + BOSS_DEBUFF_SIZE_INCREASE, debuffFrame.maxHeight);
-		debuffFrame:SetSize(size, size);
+		debuffFrame:SetSize(size * 1.2, size * 0.9);
 	else
-		debuffFrame:SetSize(debuffFrame.baseSize, debuffFrame.baseSize);
+		debuffFrame:SetSize(debuffFrame.baseSize * 1.2, debuffFrame.baseSize * 0.9);
 	end
 	
 	debuffFrame:Show();
@@ -1118,71 +1156,34 @@ local function asCompactUnitFrame_UpdateBuffsPVP(frame)
 	end
 
 
-	if (not frame.asraidicon) then
-		local frameName = frame:GetName()
-		local buffPrefix = frameName .. "RAIDICON_"
-
-
-		frame.asraidicon = frame:CreateFontString( buffPrefix , "OVERLAY")
-		frame.asraidicon:SetFont(STANDARD_TEXT_FONT, 13)
-		frame.asraidicon:SetPoint("CENTER", frame.healthBar, "CENTER", 0, 0)
+	if (frame.asraidicon) then
+		local text = ACRB_DisplayRaidIcon(unit);
+		frame.asraidicon:SetText(text);
 	end
-
-
-	if (not frame.buffFrames2) then
-
-		local frameName = frame:GetName()
-
-		frame.buffFrames2 = {};
 	
-		for i = 1, ACRB_MAX_BUFFS_2 do
-			local buffPrefix = frameName .. "Buff2_"
-			frame.buffFrames2[i] =  CreateFrame("Button", buffPrefix .. i, frame.healthBar, "asCompactBuffTemplate")
-			frame.buffFrames2[i]:EnableMouse(false); 
-			frame.buffFrames2[i].icon:SetTexCoord(.08, .92, .08, .92);
-
-			for _,r in next,{_G[buffPrefix .. i .."Cooldown"]:GetRegions()}	do 
-				if r:GetObjectType()=="FontString" then 
-					r:SetFont(STANDARD_TEXT_FONT,ACRB_CooldownFontSize,"OUTLINE")
-					r:SetPoint("TOP", 0, 2);
-					break 
-				end 
-			end
-			frame.buffFrames2[i]:ClearAllPoints()
-			if i == 1 then
-				frame.buffFrames2[i]:SetPoint("CENTER", frame.asraidicon, "CENTER", 0, 0)
+	if (frame.buffFrames2) then
+		local index = 1;
+		local frameNum = 1;
+		local filter = nil;
+		while ( frameNum <= ACRB_MAX_BUFFS_2 ) do
+			local buffName = UnitBuff(unit, index, filter);
+			if ( buffName ) then
+				if ( asCompactUnitFrame_UtilShouldDisplayBuff(unit, index, filter)) then
+					local buffFrame = frame.buffFrames2[frameNum];
+					asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter);
+					frameNum = frameNum + 1;
+				end
 			else
-				frame.buffFrames2[i]:SetPoint("TOPLEFT", _G[buffPrefix .. i - 1], "TOPRIGHT", 0, 0)
+				break;
+			end
+			index = index + 1;
+		end
+			for i=frameNum, ACRB_MAX_BUFFS_2 do
+				local buffFrame = frame.buffFrames2[i];
+				if buffFrame then
+				buffFrame:Hide();
 			end
 		end
-	end
-
-	local text = ACRB_DisplayRaidIcon(unit);
-
-	frame.asraidicon:SetText(text);
-
-	
-	local index = 1;
-	local frameNum = 1;
-	local filter = nil;
-	while ( frameNum <= ACRB_MAX_BUFFS_2 ) do
-		local buffName = UnitBuff(unit, index, filter);
-		if ( buffName ) then
-			if ( asCompactUnitFrame_UtilShouldDisplayBuff(unit, index, filter)) then
-				local buffFrame = frame.buffFrames2[frameNum];
-				asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter);
-				frameNum = frameNum + 1;
-			end
-		else
-			break;
-		end
-		index = index + 1;
-	end
-	for i=frameNum, ACRB_MAX_BUFFS_2 do
-		local buffFrame = frame.buffFrames2[i];
-		if buffFrame then
-		buffFrame:Hide();
-	end
 	end
 end
 
@@ -1229,12 +1230,10 @@ end
 
 
 local together = nil;
-local btest = false; -- Test 시 true 로 변경
-
 
 local function ACRB_updatePartyAllBuff(idx)
 
-	if (IsInGroup() or (btest)) and  not (together == nil)  then
+	if (IsInGroup() or (ACRB_ShowWhenSolo)) and  not (together == nil)  then
 		
 		if together == true then
 
@@ -1279,7 +1278,7 @@ end
 
 local function ACRB_updatePartyAllDebuff(idx)
 
-	if (IsInGroup() or (btest)) and  not (together == nil)  then
+	if (IsInGroup() or (ACRB_ShowWhenSolo)) and  not (together == nil)  then
 		if together == true then
 
 			if IsInRaid() then -- raid
@@ -1320,7 +1319,7 @@ end
 
 local function ACRB_updatePartyAllHealerMana(idx)
 
-	if (IsInGroup() or (btest)) and  not (together == nil)  then
+	if (IsInGroup() or (ACRB_ShowWhenSolo)) and  not (together == nil)  then
 
 		if together == true then
 
@@ -1364,7 +1363,7 @@ end
 
 local function ACRB_DisableAura()
 
-	if (IsInGroup() or (btest)) and  not (together == nil)  then 
+	if (IsInGroup() or (ACRB_ShowWhenSolo)) and  not (together == nil)  then 
 
 		if together == true then
 
