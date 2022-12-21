@@ -1,7 +1,7 @@
 local ACRB_Size = 0; 					-- Buff 아이콘 증가 크기
 local ACRB_CooldownFontSize = 9; 		-- 쿨다운 폰트 사이즈
 local ACRB_BuffSizeRate = 1;			-- 기존 Size 크기 배수 
-local ACRB_ShowBuffCooldown = true 		-- 버프 지속시간을 보이려면
+local ACRB_ShowBuffCooldown = false		-- 버프 지속시간을 보이려면
 local ACRB_MinShowBuffFontSize = 5 		-- 이크기보다 Cooldown font Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0
 local ACRB_CooldownFontSizeRate = 0.5 	-- 버프 Size 대비 쿨다운 폰트 사이즈 
 local ACRB_MAX_BUFFS = 6			  	-- 최대 표시 버프 개수 (3개 + 3개)
@@ -335,6 +335,21 @@ function ACRB_ActionBarOverlayGlowAnimOutMixin:OnFinished()
 end
 
 
+local function asCooldownFrame_Clear(self)
+	self:Clear();
+end
+--cooldown
+local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+	if enable and enable ~= 0 and start > 0 and duration > 0 then
+		self:SetDrawEdge(forceShowDrawEdge);
+		self:SetCooldown(start, duration, modRate);
+	else
+		asCooldownFrame_Clear(self);
+	end
+end
+
+
+
 -- Setup
 local function ACRB_setupFrame(frame)
 	if not frame or not frame.displayedUnit or not UnitIsPlayer(frame.displayedUnit) then return end
@@ -541,14 +556,19 @@ local function ACRB_setupFrame(frame)
 			frame.buffFrames2[i].icon:SetTexCoord(.08, .92, .08, .92);
 			frame.buffFrames2[i]:SetSize(baseSize * 1.2, baseSize * 0.9);
 			frame.buffFrames2[i].baseSize = baseSize;
-			frame.buffFrames2[i].count:SetFont(STANDARD_TEXT_FONT, fontsize,"OUTLINE")
-			
-			for _,r in next,{_G[buffPrefix .. i .."Cooldown"]:GetRegions()}	do 
-				if r:GetObjectType()=="FontString" then 
-					r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE")
-					r:SetPoint("TOP", 0, 2);
-					break 
-				end 
+			frame.buffFrames2[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+	
+			if  ACRB_ShowBuffCooldown and fontsize >= ACRB_MinShowBuffFontSize   then
+				frame.buffFrames2[i].cooldown:SetHideCountdownNumbers(false);
+				for _,r in next,{_G[buffPrefix .. i .."Cooldown"]:GetRegions()}	do 
+					if r:GetObjectType()=="FontString" then 
+						r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE")
+						r:SetPoint("TOP", 0, 2);
+						break 
+					end 
+				end
+			else
+				frame.buffFrames2[i].cooldown:SetHideCountdownNumbers(true);
 			end
 			frame.buffFrames2[i]:ClearAllPoints()
 			if i == 1 then
@@ -634,7 +654,7 @@ local function asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, index, filter)
 	local enabled = expirationTime and expirationTime ~= 0;
 	if enabled then
 		local startTime = expirationTime - duration;
-		CooldownFrame_Set(buffFrame.cooldown, startTime, duration, true);
+		asCooldownFrame_Set(buffFrame.cooldown, startTime, duration, true);
 
 		if ACRB_ShowList and  ACRB_ShowAlert then
 			local showlist_time = 0;
@@ -800,10 +820,9 @@ local function asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter)
 	local enabled = expirationTime and expirationTime ~= 0;
 	if enabled then
 		local startTime = expirationTime - duration;
-		CooldownFrame_Set(buffFrame.cooldown, startTime, duration, true);
-		buffFrame.cooldown:SetHideCountdownNumbers(false);
+		asCooldownFrame_Set(buffFrame.cooldown, startTime, duration, true);
 	else
-		CooldownFrame_Clear(buffFrame.cooldown);
+		asCooldownFrame_Clear(buffFrame.cooldown);
 	end
 
 	if not buffFrame.baseSize then
@@ -844,9 +863,9 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 	local enabled = expirationTime and expirationTime ~= 0;
 	if enabled then
 		local startTime = expirationTime - duration;
-		CooldownFrame_Set(debuffFrame.cooldown, startTime, duration, true);
+		asCooldownFrame_Set(debuffFrame.cooldown, startTime, duration, true);
 	else
-		CooldownFrame_Clear(debuffFrame.cooldown);
+		asCooldownFrame_Clear(debuffFrame.cooldown);
 	end
 	
 	local color = DebuffTypeColor[debuffType] or DebuffTypeColor["none"];
