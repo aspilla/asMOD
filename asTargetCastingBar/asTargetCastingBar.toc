@@ -1,0 +1,6 @@
+## Interface: 80200
+## Author: |cffff3399아스필라|r [블랙무어]
+## Title: |cffff3399as|rTargetCastingBar
+## Notes: 대상 Casting bar
+## Version : 170108
+asTargetCastingBar.xml
