@@ -13,7 +13,7 @@ local ACRB_ShowAlert = true				-- HOT 리필 시 알림
 local ACRB_MaxBuffSize = 20				-- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
 local ACRB_HealerManaBarHeight = 1		-- 힐러 마나바 크기 (안보이게 하려면 0)
 local ACRB_UpdateRate = 0.04			-- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
-local ACRB_ShowWhenSolo = true			-- Solo Raid Frame 사용시 보이게 하려면 True
+local ACRB_ShowWhenSolo = false			-- Solo Raid Frame 사용시 보이게 하려면 True (반드시 Solo Raid Frame과 사용)
 
 
 -- 버프 남은시간에 리필 알림
