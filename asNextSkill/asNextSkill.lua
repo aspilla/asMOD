@@ -225,8 +225,12 @@ ANS_SpellList_WARRIOR_1 = {
 --분노
 ----8.0.1 완료
 ANS_SpellList_WARRIOR_2 = {
+	
+	{"소용돌이", 2, false, {2, "소용돌이","player", 0.1, true, false}},
 	{"광란", 1, false, {2, "격노","player", 0.1, true, false}}, -- 격노 없을 때 
-	{"피의 갈증", 1, false, {2, "격노","player", 0.1, true, false}}, -- 격노 없을 때 
+	{"광란", 1, false, {4, 100, "player", false, false}}, -- 분노 100
+	{"피의 갈증", 1, false, {2, "격노","player", 0.1, true, false}},
+	{"분노의 강타", 1, false, {1}, {9, "파멸자", true}}, -- 강화 분노 강타
 	{"마무리 일격", 1, false}, -- 격노 있을 때
 	{"분노의 강타", 0, false, {9, "파멸자", true}},
 	{"피의 갈증", 1, false},
