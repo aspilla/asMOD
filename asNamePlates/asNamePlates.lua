@@ -25,6 +25,7 @@ local ANameP_TankAggroLoseColor = {r = 1, g = 0.5, b= 0.5}; -- 탱커일때 어�
 local ANameP_TankAggroLoseColor2 = {r = 1, g = 0.1, b= 0.5}; -- 어그로가 파티내 다른 탱커일때
 local ANameP_TankAggroLoseColor3 = {r = 0.1, g = 0.3, b= 1}; -- 어그로가 Pet 일때 혹은 Tanking 중인데 어그로가 낮을때
 local ANameP_ShowListFirst = true		-- 알림 List 가 있다면 먼저 보인다. (가나다라 순서)
+local ANameP_WeakStealableBuffAlert = false -- 훔칠 버프 알림을 약하게 기본은 꺼 있음
 
 local ANameP_AggroSize = 12;			-- 어그로 표시 Text Size
 local ANameP_HealerSize = 14;			-- 힐러표시 Text Size
@@ -1019,7 +1020,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			setSize (frame, size_list[numDebuffs]);
 						
 			if isStealable then
-				ANameP_ShowOverlayGlow(frame, true);
+				ANameP_ShowOverlayGlow(frame, ANameP_WeakStealableBuffAlert);
 			else
 				ANameP_HideOverlayGlow(frame);
 			end
