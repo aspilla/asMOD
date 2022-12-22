@@ -396,10 +396,10 @@ local function ACRB_setupFrame(frame)
 					buffFrame:ClearAllPoints();
 					buffFrame:SetPoint(buffPos, frame, "BOTTOMRIGHT", -2, buffOffset);
 				else
-					buffFrame:SetPoint("BOTTOMRIGHT", _G[buffPrefix .. i - 3], "TOPRIGHT", 0, 1)
+					buffFrame:SetPoint("BOTTOMRIGHT", _G[buffPrefix .. i - 3], "TOPRIGHT", 0, 2)
 				end
 			else
-				buffFrame:SetPoint("BOTTOMRIGHT", _G[buffPrefix .. i - 1], "BOTTOMLEFT", -1, 0)
+				buffFrame:SetPoint("BOTTOMRIGHT", _G[buffPrefix .. i - 1], "BOTTOMLEFT", -2, 0)
 			end
 		else
 
@@ -446,10 +446,10 @@ local function ACRB_setupFrame(frame)
 				debuffFrame:ClearAllPoints();
 				debuffFrame:SetPoint(debuffPos, frame, "BOTTOMLEFT", 3, debuffOffset);
 			else
-				debuffFrame:SetPoint("BOTTOMLEFT", _G[buffPrefix .. i - 3], "TOPLEFT", 0, 1)
+				debuffFrame:SetPoint("BOTTOMLEFT", _G[buffPrefix .. i - 3], "TOPLEFT", 0, 2)
 			end
 		else
-			debuffFrame:SetPoint("BOTTOMLEFT", _G[buffPrefix .. i - 1], "BOTTOMRIGHT", 1, 0)
+			debuffFrame:SetPoint("BOTTOMLEFT", _G[buffPrefix .. i - 1], "BOTTOMRIGHT", 2, 0)
 		end
 		frame.asdebuffFrames[i] = debuffFrame;
 	end
