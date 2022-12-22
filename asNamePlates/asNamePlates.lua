@@ -607,6 +607,7 @@ local castheight = 8;
 local orig_height = ANameP_Height;
 local orig_width = ANameP_Width;
 local asnameplateResourceOnTarget = true;
+local playerbuffposition = ANameP_PlayerBuffY;
 
 -- 반짝이 처리부
 
@@ -728,6 +729,20 @@ function ANameP_ActionBarOverlayGlowAnimOutMixin:OnFinished()
 	actionButton.overlay = nil;
 end
 
+--Cooldown
+local function asCooldownFrame_Clear(self)
+	self:Clear();
+end
+--cooldown
+local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+	if enable and enable ~= 0 and start > 0 and duration > 0 then
+		self:SetDrawEdge(forceShowDrawEdge);
+		self:SetCooldown(start, duration, modRate);
+	else
+		asCooldownFrame_Clear(self);
+	end
+end
+
 -- 탱커 처리부
 local function updateTankerList()
 
@@ -823,8 +838,10 @@ local function setFrame(frameName, texture, count, expirationTime, duration, col
 		frameCooldown:SetDrawSwipe(true);
 	end
 
-	CooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0, true);
-	frameCooldown:SetHideCountdownNumbers(false);
+	asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0, true);
+	if ANameP_CooldownFontSize > 0 then
+		frameCooldown:SetHideCountdownNumbers(false);
+	end
 						
 	local frameBorder = _G[frameName.."Border"];
 	frameBorder:SetVertexColor(color.r, color.g, color.b);
@@ -1247,7 +1264,14 @@ local function updateTargetNameP(self)
 		end
 
 		if GetCVarBool("nameplateResourceOnTarget") then
-			base_y = base_y +  classheight_value ;
+			local class = NamePlateDriverFrame:GetClassNameplateBar();
+
+			if class then
+				base_y = base_y +  class:GetHeight() ;	
+			else
+				base_y = base_y +  classheight_value ;	
+			end
+			
 		end
 	elseif UnitIsUnit(self.unit, "player") then
 		self.alerthealthbar = false;
@@ -1271,7 +1295,12 @@ local function updateTargetNameP(self)
 	--버프 Position
 	self:ClearAllPoints();
 	if UnitIsUnit(self.unit, "player") then
-		self:SetPoint("BOTTOMLEFT", healthBar, "TOPLEFT", 0, base_y);
+
+		if self.downbuff then
+			self:SetPoint("TOPLEFT", ClassNameplateManaBarFrame, "BOTTOMLEFT", 0, playerbuffposition );		
+		else
+			self:SetPoint("BOTTOMLEFT", healthBar, "TOPLEFT", 0, base_y);
+		end
 		if UnitFrame.BuffFrame then
 			UnitFrame.BuffFrame:Hide();
 		end
@@ -1700,18 +1729,18 @@ local function addNamePlate(namePlateUnitToken)
 
 	local unitFrame = namePlateFrameBase.UnitFrame;
 	local healthbar = namePlateFrameBase.UnitFrame.healthBar;
-
+	
 	if UnitIsUnit("player", namePlateUnitToken) then
-		--[[
-		if namePlateFrameBase.asNamePlates then
-			namePlateFrameBase.asNamePlates.checkaura = false;
-			namePlateFrameBase.asNamePlates.checkcolor = false;
-			namePlateFrameBase.asNamePlates.checkpvptarget = false;
-			namePlateFrameBase.asNamePlates:Hide();
-			unitFrame.BuffFrame:SetAlpha(1);
+		if not ANameP_ShowPlayerBuff then
+			if namePlateFrameBase.asNamePlates then
+				namePlateFrameBase.asNamePlates.checkaura = false;
+				namePlateFrameBase.asNamePlates.checkcolor = false;
+				namePlateFrameBase.asNamePlates.checkpvptarget = false;
+				namePlateFrameBase.asNamePlates:Hide();
+				unitFrame.BuffFrame:SetAlpha(1);
+			end
+			return;
 		end
-		return;
-		]]
 	else
 		local reaction = UnitReaction("player", namePlateUnitToken);
 		if reaction and reaction <= 4 then
@@ -1737,7 +1766,6 @@ local function addNamePlate(namePlateUnitToken)
 			asCompactUnitFrame_UpdateHealthColor(unitFrame, namePlateFrameBase.asNamePlates);
 		end
     end
-	--
  
 	namePlateFrameBase.asNamePlates:EnableMouse(false);
 	
@@ -1759,8 +1787,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.isshown = nil;
 	namePlateFrameBase.asNamePlates.originalcolor = {r = healthbar.r, g = healthbar.g, b = healthbar.b};
 	namePlateFrameBase.asNamePlates.checkcolor = false;
-
-
+	
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
 	namePlateFrameBase.asNamePlates:UnregisterEvent("PLAYER_TARGET_CHANGED");
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_START");
@@ -1853,7 +1880,7 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.checkpvptarget = false;
 		namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
 		namePlateFrameBase.asNamePlates.checkcolor = false;
-
+		
 		for i = 1, ANameP_MaxDebuff do
 			if ( namePlateFrameBase.asNamePlates.buffList[i] ) then
 				namePlateFrameBase.asNamePlates.buffList[i]:Hide();	
@@ -1927,6 +1954,20 @@ local function addNamePlate(namePlateUnitToken)
 				ANameP_Resourcetext:SetFont(STANDARD_TEXT_FONT, ANameP_HeathTextSize, "OUTLINE");
 				ANameP_Resourcetext:SetAllPoints(true);
 				ANameP_Resourcetext:SetPoint("CENTER", ClassNameplateManaBarFrame, "CENTER", 0  , 0);
+			end
+
+			Buff_Y = ANameP_PlayerBuffY;
+
+			if Buff_Y < 0 then
+				namePlateFrameBase.asNamePlates.downbuff = true;
+				namePlateFrameBase.asNamePlates:ClearAllPoints();
+				local class = NamePlateDriverFrame:GetClassNameplateBar();
+
+				if class and GetCVar("nameplateResourceOnTarget") == "0" then
+					playerbuffposition = Buff_Y - class:GetHeight();
+				else
+					playerbuffposition = Buff_Y;
+				end	
 			end
 
 			unitFrame.BuffFrame:SetAlpha(0);
