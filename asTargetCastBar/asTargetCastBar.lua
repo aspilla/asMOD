@@ -9,7 +9,7 @@ local ATCB_TIME_SIZE = ATCB_HEIGHT * 0.5;						--Spell 시전시간 Font Size, �
 local ATCB_NOT_INTERRUPTIBLE_COLOR = {0.8, 0.8, 0.8}; 			--차단 불가시 (내가 아닐때) 색상 (r, g, b)
 local ATCB_NOT_INTERRUPTIBLE_COLOR_TARGET = {0.8, 0.5, 0.5}; 	--차단 불가시 (내가 타겟일때) 색상 (r, g, b)
 local ATCB_INTERRUPTIBLE_COLOR = {0, 0.9, 0}; 					--차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
-local ATCB_INTERRUPTIBLE_COLOR_TARGET = {1, 0.5, 0}; 			--차단 가능(내가 타겟일 때)시 색상 (r, g, b)
+local ATCB_INTERRUPTIBLE_COLOR_TARGET = {0.5, 1, 1}; 			--차단 가능(내가 타겟일 때)시 색상 (r, g, b)
 
 -----------------설정 끝끝------------------------
 local ATCB = CreateFrame("FRAME", nil, UIParent)
@@ -83,7 +83,6 @@ local function ATCB_OnEvent(self, event, ...)
 			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "target");
 			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "target");
 			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "target");
-			ATCB:RegisterUnitEvent("UNIT_TARGET", "target");
 		else
 			ATCB:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
 			ATCB:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
@@ -92,7 +91,6 @@ local function ATCB_OnEvent(self, event, ...)
 			ATCB:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
 			ATCB:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
 			ATCB:UnregisterEvent("UNIT_SPELLCAST_STOP");
-			ATCB:UnregisterEvent("UNIT_TARGET");
 		end	
 	end
 
