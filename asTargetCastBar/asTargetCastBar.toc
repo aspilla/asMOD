@@ -1,6 +1,6 @@
 ﻿## Interface: 100002
 ## Author: |cffff3399아스필라|r [블랙무어]
-## Title: |cffff3399as|rGCDBar
-## Notes: 글쿨바
-## Version : 170421
-asGCDBar.xml
+## Title: |cffff3399as|rTargetCastBar
+## Notes: 대상의 시전바
+## Version : 221223
+asTargetCastBar.xml
