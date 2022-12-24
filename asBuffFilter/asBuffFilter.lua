@@ -440,7 +440,7 @@ local function ABF_UpdateDebuff(unit)
 				skip = false;
 			end
 
-			if PLAYER_UNITS[caster] and duration == 0 and ABF_TalentBuffList and ABF_TalentBuffList[name] and count > 0 then
+			if PLAYER_UNITS[caster] and duration == 0 and ABF_TalentBuffList and ABF_TalentBuffList[name] and count > 1 then
 				-- 특성이면 보이게
 				skip = false;
 				ABF_TalentShowList[name] = true;
