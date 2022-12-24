@@ -104,6 +104,14 @@ local function APB_UnitBuff(unit, buff, casterid)
 	if ret then
 		return UnitBuff(unit, i, "INCLUDE_NAME_PLATE_ONLY");
 	end
+	
+	for slot=1, MAX_TOTEMS do
+		local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
+
+		if name == buff and duration > 0 then
+			return name, icon, 0, nil, duration, duration + start, "player";
+		end
+	end
 
 	return nil;
 

@@ -343,9 +343,9 @@ ACI_SpellList_SHAMAN_3= {
 ACI_SpellList_WARLOCK_1 = {
 	
 	{273522, 7, "player"},	
-	{"영원한 결의", 2}, 
 	{"암흑시선 소환", 11, "암흑시선"}, 
 	{"불안정한 고통", 4, nil , 21 * 0.3},	
+	{"부패", 4, nil , 14 * 0.3},	
 	{"고통", 4, nil , 18 * 0.3},	
 
 }
@@ -353,24 +353,22 @@ ACI_SpellList_WARLOCK_1 = {
 
 ACI_SpellList_WARLOCK_2 = {
 	
-	{"파열", 1 }, 
-	{"썩은마귀 소환", 1},
-	{"악마 폭군 소환", 1 }, 
+	{"지옥폭풍", 1},
+	--{138748, 15, "굴단의 손", 10},
 	{"공포사냥개 부르기", 1},	
-	{264173, 7, nil, 0},	
-	
-	
-	
+	{"악마 폭군 소환", 2, "player", nil ,nil , nil, "악마의 힘"}, 
+	{264173, 7, nil, 0},
+	{99, "영혼의 일격", {"영혼의 일격", 1}, {"악마의 기운", 1}}	
 }
 
 
 ACI_SpellList_WARLOCK_3 = {
 
 
-  	{"영원한 결의", 2},
-	{99, "발화점", {387259, 7, "player"}, {"지옥불정령 소환", 11, "지옥불정령" }},
-	{"점화", 1},	
-	{99, "대혼란", {"대혼란", 1}, {387506, 7, "player"}},	
+  	{196406, 7, "player"},	  
+	{"점화", 1},
+	{99, "지옥불정령 소환", {"지옥불정령 소환", 11, "지옥불정령"}, {"어둠의 연소", 1}},
+	{196412, 8},
 	{"제물", 4, nil, 24 * 0.3},	
 
 }
@@ -745,15 +743,7 @@ local function ACI_Alert(self, bcastspell)
 		end
 
 	elseif t == 2 or t==3 or t == 5  or t == 6 or t == 7 or t == 12 or t == 17 or t == 18 then
-
-
-
-		if t == 5 then
-			spellname = ACI_Current_Buff;
-			if spellname == "" then
-				spellname = 84745;
-			end
-		end
+		
 
 		local unit = ACI_SpellList[i][3];
 		if unit == nil then
@@ -764,9 +754,6 @@ local function ACI_Alert(self, bcastspell)
 
 		ACI_Alert_list[spellname] = false;
 		
-		if t == 5 and spellname == "깊은 통찰" then
-			ACI_Alert_list[spellname] = true;
-		end
 
 		local alert_du = ACI_SpellList[i][4];
 		local disablespell = ACI_SpellList[i][6];
@@ -776,11 +763,14 @@ local function ACI_Alert(self, bcastspell)
 		if 	t == 7 or t == 12 or t == 17 then
 			buff_name = GetSpellInfo(spellname)
 		end
-
+		
 		if not buff_name then
 			buff_name = spellname
 		end
 
+		if ACI_SpellList[i][7] then
+			buff_name = ACI_SpellList[i][7];
+		end
 		
 		if (t == 17) then
 			local debuff_idx = 1;
@@ -1084,7 +1074,6 @@ local function ACI_Alert(self, bcastspell)
 			check_buff = false;
 
 		end
-
 	
 		for slot=1, MAX_TOTEMS do
 			local haveTotem;
@@ -1630,8 +1619,10 @@ function ACI_Init()
 			local value3 =ACI_SpellListtmp[i][3];
 			local value4 =ACI_SpellListtmp[i][4];
 			local value5 =ACI_SpellListtmp[i][5];
+			local value6 =ACI_SpellListtmp[i][6];
+			local value7 =ACI_SpellListtmp[i][7];
 
-			ACI_SpellList[i] = {value1, value2, value3, value4, value5};
+			ACI_SpellList[i] = {value1, value2, value3, value4, value5, value6, value7};
 		end
 
 	end
