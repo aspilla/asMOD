@@ -914,6 +914,21 @@ local function setStatusBarColor(self, color)
 	end
 end
 
+local classbar_height = nil;
+local function GetClassBarHeight()
+
+	if not classbar_height then
+		local class = NamePlateDriverFrame:GetClassNameplateBar();
+
+		if class then
+			classbar_height = class:GetHeight();
+		end
+	end
+
+	return classbar_height;
+end
+
+
 
 local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
@@ -1265,14 +1280,7 @@ local function updateTargetNameP(self)
 		end
 
 		if GetCVarBool("nameplateResourceOnTarget") then
-			local class = NamePlateDriverFrame:GetClassNameplateBar();
-
-			if class then
-				base_y = base_y +  class:GetHeight() ;	
-			else
-				base_y = base_y +  classheight_value ;	
-			end
-			
+			base_y = base_y +  GetClassBarHeight();	
 		end
 	elseif UnitIsUnit(self.unit, "player") then
 		self.alerthealthbar = false;
@@ -1962,15 +1970,12 @@ local function addNamePlate(namePlateUnitToken)
 			if Buff_Y < 0 then
 				namePlateFrameBase.asNamePlates.downbuff = true;
 				namePlateFrameBase.asNamePlates:ClearAllPoints();
-				local class = NamePlateDriverFrame:GetClassNameplateBar();
-
-				if class and GetCVar("nameplateResourceOnTarget") == "0" then
-					playerbuffposition = Buff_Y - class:GetHeight();
+				if GetCVar("nameplateResourceOnTarget") == "0" then
+					playerbuffposition = Buff_Y - GetClassBarHeight();
 				else
 					playerbuffposition = Buff_Y;
 				end	
 			end
-
 			unitFrame.BuffFrame:SetAlpha(0);
 			namePlateFrameBase.asNamePlates:Show();
 		else
