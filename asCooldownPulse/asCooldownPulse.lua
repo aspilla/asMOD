@@ -452,24 +452,28 @@ local function ACDP_Alert(spell, type)
 	if type == "spell" then
 		local name,discard,icon,discard,discard,discard,discard,discard,discard = GetSpellInfo(spell)
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
-		if CONFIG_SOUND and FileExistList[name] then
+		--if CONFIG_SOUND and FileExistList[name] then
+		if CONFIG_SOUND then
             PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. name.. ".mp3", "DIALOG")
         end
 	elseif type == "action" then
 		local icon = select(10,GetItemInfo(GetInventoryItemLink("player",spell)))
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
 
-		if CONFIG_SOUND and FileExistList[spell] then
+		--if CONFIG_SOUND and FileExistList[spell] then
+		if CONFIG_SOUND then
             PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. spell.. ".mp3", "DIALOG")
 		end
 	elseif type == "item" then
 		local name, discard, discard, discard, discard, discard, discard, discard, discard, icon = GetItemInfo(spell)
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
-		if CONFIG_SOUND and FileExistList[name] then
+		--if CONFIG_SOUND and FileExistList[name] then
+		if CONFIG_SOUND then
 
             PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. name.. ".mp3")
 			
-			if ItemSlotList[spell] and FileExistList[ ItemSlotList[spell]] then
+			--if ItemSlotList[spell] and FileExistList[ ItemSlotList[spell]] then
+			if ItemSlotList[spell] then
                 PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. ItemSlotList[spell].. ".mp3", "DIALOG")
             end
 
