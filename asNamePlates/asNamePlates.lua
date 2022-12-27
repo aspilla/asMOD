@@ -29,17 +29,13 @@ local ANameP_WeakStealableBuffAlert = false -- 훔칠 버프 알림을 약하게
 
 local ANameP_AggroSize = 12;			-- 어그로 표시 Text Size
 local ANameP_HealerSize = 14;			-- 힐러표시 Text Size
-local ANameP_TargetHealthBarHeight = 3;	-- 대상 체력바 높이 증가치 (Option 동작안함)
+local ANameP_TargetHealthBarHeight = 3;	-- 대상 체력바 높이 증가치 (+3)
 local ANameP_HeathTextSize = 8;			-- 대상 체력숫자 크기
 local ANameP_UpdateRate = 0.5;			-- 버프 Check 반복 시간 (초)
 local ANameP_LowHealthAlert = true  	-- 낮은 체력 색상 변경 사용
 local ANameP_LowHealthColor = {r = 1, g = 0.8, b= 0.5}; -- 낮은 체력 이름표 색상 변경
 local ANameP_Alpha_Normal = 0.5			-- 비전투 중 투명도
 local ANameP_Alpha_Combat = 1			-- 전투중 투명도
-local ANameP_Height = 3.9				-- 이름표 높이 기본 3.9
-local ANameP_Width = 85.5				-- 이름표 넓이 기본 85.5
-
-
 
 local ANameP_ShowList = nil;
 
@@ -602,11 +598,9 @@ local ColorLevel = {
 	Name = 7,
 };
 
-local classheight_value = 15;
-local nameheight_value = 11;
-local castheight = 8;
-local orig_height = ANameP_Height;
-local orig_width = ANameP_Width;
+local nameheight_value = nil;
+local castheight = nil;
+local orig_height = nil;
 local asnameplateResourceOnTarget = true;
 local playerbuffposition = ANameP_PlayerBuffY;
 
@@ -922,6 +916,8 @@ local function GetClassBarHeight()
 
 		if class then
 			classbar_height = class:GetHeight();
+		else
+			classbar_height = 0;
 		end
 	end
 
@@ -1256,13 +1252,22 @@ local function updateTargetNameP(self)
 		return;
     end
 	
+	if orig_height == nil then
+		orig_height = healthBar:GetHeight();
+		if UnitFrame.castBar then
+			castheight = UnitFrame.castBar:GetHeight();
+		end
+		if castheight == nil then
+			castheight = 8;
+		end		
+	end
+
 	local casticon = self.casticon;
 	local height = orig_height;
-	local width = orig_width;
 	local base_y = ANameP_TargetBuffY;
-
+	
 	if UnitFrame.name:IsShown() then
-		base_y = base_y + nameheight_value;
+		base_y = base_y + UnitFrame.name:GetHeight();
 	end
 
 	if UnitIsUnit(self.unit, "target") then		
@@ -1275,8 +1280,8 @@ local function updateTargetNameP(self)
 		self.healthtext:Show();
 
 		if casticon then
-			casticon:SetWidth(16);
-			casticon:SetHeight(16);
+			casticon:SetWidth((height + castheight + 1) * 1.2);
+			casticon:SetHeight(height + castheight + 1);
 		end
 
 		if GetCVarBool("nameplateResourceOnTarget") then
@@ -1284,23 +1289,25 @@ local function updateTargetNameP(self)
 		end
 	elseif UnitIsUnit(self.unit, "player") then
 		self.alerthealthbar = false;
-		height = orig_height + ANameP_TargetHealthBarHeight + 3;
+		height = orig_height + ANameP_TargetHealthBarHeight;
 		self.healthtext:Show();
 	else
 		height = orig_height;
-		width = orig_width;
 		self.healthtext:Hide();
 		
 		if casticon then
-			casticon:SetWidth(height + castheight);
-			casticon:SetHeight(height + castheight);
+			casticon:SetWidth((height + castheight + 1) * 1.2);
+			casticon:SetHeight(height + castheight + 1);
+		end
+		
+		if UnitFrame.name:IsShown() then
+			base_y = base_y + 4;
 		end
 	end
 
 	--Healthbar 크기
 	healthBar:SetHeight(height);
-	healthBar:SetWidth(width);
-
+	
 	--버프 Position
 	self:ClearAllPoints();
 	if UnitIsUnit(self.unit, "player") then
@@ -1915,6 +1922,7 @@ local function addNamePlate(namePlateUnitToken)
 		if ANameP_SIZE > 0 then
 			namePlateFrameBase.asNamePlates.icon_size = ANameP_SIZE;
 		else
+			local orig_width = healthbar:GetWidth();
 			namePlateFrameBase.asNamePlates.icon_size = (orig_width / debuffs_per_line) - (debuffs_per_line - 1) -2;
 		end
 				
@@ -1952,32 +1960,33 @@ local function addNamePlate(namePlateUnitToken)
 					filter = "HELPFUL|PLAYER|INCLUDE_NAME_PLATE_ONLY";
 				end
 				helpful = true;
-				checkaura = true;				
+				checkaura = true;
+				unitFrame.BuffFrame:SetAlpha(0);
+				unitFrame:UnregisterEvent("UNIT_AURA");
+				namePlateFrameBase.asNamePlates:Show();	
+				
+				-- Resource Text
+				if ClassNameplateManaBarFrame and ANameP_Resourcetext == nil then
+					ANameP_Resourcetext = ClassNameplateManaBarFrame:CreateFontString("ANameP_Resourcetext", "OVERLAY");
+					ANameP_Resourcetext:SetFont(STANDARD_TEXT_FONT, ANameP_HeathTextSize, "OUTLINE");
+					ANameP_Resourcetext:SetAllPoints(true);
+					ANameP_Resourcetext:SetPoint("CENTER", ClassNameplateManaBarFrame, "CENTER", 0  , 0);
+				end
+
+				Buff_Y = ANameP_PlayerBuffY;
+
+				if Buff_Y < 0 then
+					namePlateFrameBase.asNamePlates.downbuff = true;
+					namePlateFrameBase.asNamePlates:ClearAllPoints();
+					if GetCVar("nameplateResourceOnTarget") == "0" then
+						playerbuffposition = Buff_Y - GetClassBarHeight();
+					else
+						playerbuffposition = Buff_Y;
+					end	
+				end
 			else
 				checkaura = false;
-			end
-			
-			-- Resource Text
-			if ClassNameplateManaBarFrame and ANameP_Resourcetext == nil then
-				ANameP_Resourcetext = ClassNameplateManaBarFrame:CreateFontString("ANameP_Resourcetext", "OVERLAY");
-				ANameP_Resourcetext:SetFont(STANDARD_TEXT_FONT, ANameP_HeathTextSize, "OUTLINE");
-				ANameP_Resourcetext:SetAllPoints(true);
-				ANameP_Resourcetext:SetPoint("CENTER", ClassNameplateManaBarFrame, "CENTER", 0  , 0);
-			end
-
-			Buff_Y = ANameP_PlayerBuffY;
-
-			if Buff_Y < 0 then
-				namePlateFrameBase.asNamePlates.downbuff = true;
-				namePlateFrameBase.asNamePlates:ClearAllPoints();
-				if GetCVar("nameplateResourceOnTarget") == "0" then
-					playerbuffposition = Buff_Y - GetClassBarHeight();
-				else
-					playerbuffposition = Buff_Y;
-				end	
-			end
-			unitFrame.BuffFrame:SetAlpha(0);
-			namePlateFrameBase.asNamePlates:Show();
+			end			
 		else
 			local reaction = UnitReaction("player", namePlateUnitToken);
 			if reaction and reaction <= 4 then
@@ -1998,6 +2007,7 @@ local function addNamePlate(namePlateUnitToken)
 				unitFrame.BuffFrame:SetAlpha(0);
 				unitFrame:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
 				unitFrame:UnregisterEvent("UNIT_THREAT_LIST_UPDATE");
+				unitFrame:UnregisterEvent("UNIT_AURA");
 				namePlateFrameBase.asNamePlates:Show();
 			elseif not namePlateFrameBase:IsForbidden() then
 				filter = "HELPFUL|INCLUDE_NAME_PLATE_ONLY|PLAYER";
@@ -2125,7 +2135,9 @@ local function ANameP_OnEvent(self, event, ...)
 		updateUnitHealthText(self, "target");
 	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED") then
 		C_Timer.After(0.5, initAlertList);		
+		orig_height = nil;
 	elseif (event == "PLAYER_ENTERING_WORLD") then
+		orig_height = nil
 		isInstance, instanceType = IsInInstance();
 		if isInstance and (instance=="party" or instance=="raid" or instance=="scenario") then
 			self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
@@ -2151,6 +2163,8 @@ local function ANameP_OnEvent(self, event, ...)
 		asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken);
 	elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
 		updateTankerList();
+	elseif (event == "CVAR_UPDATE") then
+		orig_height = nil;
 	end
 end
 
@@ -2237,6 +2251,8 @@ local function initAddon()
 	ANameP:RegisterEvent("GROUP_JOINED");
 	ANameP:RegisterEvent("GROUP_ROSTER_UPDATE");
 	ANameP:RegisterEvent("PLAYER_ROLES_ASSIGNED");
+	ANameP:RegisterEvent("CVAR_UPDATE");
+
 
 	ANameP:SetScript("OnEvent", ANameP_OnEvent)
 	--주기적으로 Callback
