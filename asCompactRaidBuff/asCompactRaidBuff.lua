@@ -12,7 +12,7 @@ local ACRB_ShowListFirst = true			-- 알림 List 항목을 먼저 보임 (가나
 local ACRB_ShowAlert = true				-- HOT 리필 시 알림
 local ACRB_MaxBuffSize = 20				-- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
 local ACRB_HealerManaBarHeight = 1		-- 힐러 마나바 크기 (안보이게 하려면 0)
-local ACRB_UpdateRate = 0.04			-- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
+local ACRB_UpdateRate = 0.02			-- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 local ACRB_ShowWhenSolo = true			-- Solo Raid Frame 사용시 보이게 하려면 True (반드시 Solo Raid Frame과 사용)
 
 
@@ -539,7 +539,7 @@ local function ACRB_setupFrame(frame)
 
 		frame.asraidicon = frame:CreateFontString( buffPrefix , "OVERLAY")
 		frame.asraidicon:SetFont(STANDARD_TEXT_FONT, fontsize * 2)
-		frame.asraidicon:SetPoint("CENTER", frame.healthBar, "CENTER", 0, 0)
+		frame.asraidicon:SetPoint("LEFT", frame.healthBar, "LEFT", 2, 0)
 	end
 
 
@@ -572,7 +572,7 @@ local function ACRB_setupFrame(frame)
 			end
 			frame.buffFrames2[i]:ClearAllPoints()
 			if i == 1 then
-				frame.buffFrames2[i]:SetPoint("CENTER", frame.asraidicon, "CENTER", 0, 0)
+				frame.buffFrames2[i]:SetPoint("CENTER", frame.healthBar, "CENTER", 0, 0)
 			else
 				frame.buffFrames2[i]:SetPoint("TOPLEFT", _G[buffPrefix .. i - 1], "TOPRIGHT", 0, 0)
 			end
@@ -1438,18 +1438,12 @@ local mustdisable = true;
 
 local function ACRB_OnUpdate(self, elapsed)
 
-	update = update + elapsed;
-
-	if update >= ACRB_UpdateRate  then
-		update = 0;
-
-		if updatecount <= 8 then
-			ACRB_updatePartyAllBuff(updatecount);
-		elseif updatecount <= 16 then
-			ACRB_updatePartyAllDebuff(updatecount - 8);
-		elseif updatecount <= 24 then
-			ACRB_updatePartyAllHealerMana(updatecount - 16);
-		elseif mustdisable then
+		
+		ACRB_updatePartyAllBuff(updatecount);
+		ACRB_updatePartyAllDebuff(updatecount);
+		ACRB_updatePartyAllHealerMana(updatecount);
+		
+		if mustdisable then
 
 			mustdisable = false;
 			--[[
@@ -1466,10 +1460,9 @@ local function ACRB_OnUpdate(self, elapsed)
 		
 		updatecount = updatecount + 1;
 
-		if updatecount > 25 then
+		if updatecount > 8 then
 			updatecount = 1;
 		end
-	end
 end
 
 
@@ -1515,7 +1508,6 @@ local function asCompactUnitFrame_UpdateAll(frame)
 end
 
 local ACRB_mainframe = CreateFrame("Frame", "ACRB_main", UIParent);
-ACRB_mainframe:SetScript("OnUpdate", ACRB_OnUpdate)
 ACRB_mainframe:SetScript("OnEvent", ACRB_OnEvent)
 ACRB_mainframe:RegisterEvent("GROUP_ROSTER_UPDATE");
 ACRB_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
@@ -1529,7 +1521,7 @@ ACRB_mainframe:RegisterEvent("VARIABLES_LOADED");
 
 
 
-
+C_Timer.NewTicker(ACRB_UpdateRate, ACRB_OnUpdate);	
 
 hooksecurefunc("CompactUnitFrame_UpdateAll" ,asCompactUnitFrame_UpdateAll);
 
