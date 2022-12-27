@@ -260,9 +260,6 @@ local function ASQA_UpdateDebuff(unit)
 				frame:Show();
 
 				numDebuffs = numDebuffs + 1;
-
-				ASQA:SetScript("OnUpdate", ASQA_OnUpdate)
-
 			end
 		end
 	end
@@ -287,22 +284,19 @@ local function ASQA_UpdateDebuff(unit)
 end
 
 local update = 0;
-local function ASQA_OnUpdate(self, elapsed)
-
-	update = update + elapsed
-
-	if update >= 1  then
-		update = 0
-		ASQA_UpdateDebuff("pbuff");
-	end
+local function ASQA_OnUpdate()
+	ASQA_UpdateDebuff("pbuff");
 end
 
+local timer = nil;
 local function ASQA_OnEvent(self, event, arg1, ...)
-	if (event == "UNIT_AURA" ) then
-		ASQA_UpdateDebuff("pbuff");
-	elseif (event == "PLAYER_ENTERING_WORLD") then
-		ASQA:SetScript("OnUpdate", nil)
+	if (event == "PLAYER_ENTERING_WORLD") then
+
+		if timer then
+			timer:Cancel();
+		end
 		a_isProc = {};
+		timer = C_Timer.NewTicker(0.1, ASQA_OnUpdate);
 	end
 end
 
@@ -343,7 +337,6 @@ local function ASQA_Init()
          asMOD_setupFrame (ASQA_PLAYER_BUFF, "asQuakingAlert");
     end
 	
-	ASQA:RegisterUnitEvent("UNIT_AURA", "player")
 	ASQA:RegisterEvent("PLAYER_ENTERING_WORLD")
 	ASQA:SetScript("OnEvent", ASQA_OnEvent)
 	
