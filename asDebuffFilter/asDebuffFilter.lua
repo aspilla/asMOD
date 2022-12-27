@@ -7,9 +7,9 @@ local ADF_SIZE = 26;
 local ADF_SIZE_BIG = 27;
 local ADF_SIZE_SMALL = 26;
 local ADF_TARGET_DEBUFF_X = 73 + 30;
-local ADF_TARGET_DEBUFF_Y = -60;
+local ADF_TARGET_DEBUFF_Y = -110;
 local ADF_PLAYER_DEBUFF_X = -73 - 30;
-local ADF_PLAYER_DEBUFF_Y = -60;
+local ADF_PLAYER_DEBUFF_Y = -110;
 local ADF_MAX_DEBUFF_SHOW = 7;
 local ADF_ALPHA = 1
 local ADF_CooldownFontSize = 12			-- Cooldown Font Size
@@ -395,6 +395,19 @@ function ADF_ActionBarOverlayGlowAnimOutMixin:OnFinished()
 	actionButton.overlay = nil;
 end
 
+local function asCooldownFrame_Clear(self)
+	self:Clear();
+end
+
+local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+	if enable and enable ~= 0 and start > 0 and duration > 0 then
+		self:SetDrawEdge(forceShowDrawEdge);
+		self:SetCooldown(start, duration, modRate);
+	else
+		asCooldownFrame_Clear(self);
+	end
+end
+
 local function ADF_UpdateDebuff(unit)
 
 	local selfName;
@@ -697,7 +710,7 @@ local function ADF_UpdateDebuff(unit)
 			
 			if ( duration > 0 ) then
 				frameCooldown:Show();
-				CooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0, true);
+				asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0, true);
 				frameCooldown:SetHideCountdownNumbers(false);
 			else
 				frameCooldown:Hide();

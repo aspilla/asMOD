@@ -5,9 +5,9 @@ local ABF_SIZE = 26;
 local ABF_SIZE_BIG = 27;
 local ABF_SIZE_SMALL = 26;
 local ABF_TARGET_BUFF_X = 73 + 30;
-local ABF_TARGET_BUFF_Y = -92;
+local ABF_TARGET_BUFF_Y = -142;
 local ABF_PLAYER_BUFF_X = -73 - 30;
-local ABF_PLAYER_BUFF_Y = -92 ;
+local ABF_PLAYER_BUFF_Y = -142 ;
 local ABF_MAX_BUFF_SHOW = 7;
 local ABF_ALPHA = 1;
 local ABF_CooldownFontSize = 12;		-- Cooldown Font Size
@@ -295,6 +295,19 @@ local function asCheckTalent()
         end
     end
 	return false;
+end
+
+local function asCooldownFrame_Clear(self)
+	self:Clear();
+end
+
+local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+	if enable and enable ~= 0 and start > 0 and duration > 0 then
+		self:SetDrawEdge(forceShowDrawEdge);
+		self:SetCooldown(start, duration, modRate);
+	else
+		asCooldownFrame_Clear(self);
+	end
 end
 
 local function ABF_UpdateDebuff(unit)
@@ -619,7 +632,7 @@ local function ABF_UpdateDebuff(unit)
 							
 				if ( duration > 0 and duration <= 120 ) then
 					frameCooldown:Show();
-					CooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration >0,  true);
+					asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration >0,  true);
 					frameCooldown:SetHideCountdownNumbers(false);
 				else
 					frameCooldown:Hide();

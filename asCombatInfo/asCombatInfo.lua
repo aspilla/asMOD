@@ -6,7 +6,7 @@ ACI_SpellList = nil;
 local ACI_SIZE = 39;									-- Button Size
 
 local ACI_CoolButtons_X = 0 			-- 쿨 List 위치 X
-local ACI_CoolButtons_Y = -182							-- Y 위치
+local ACI_CoolButtons_Y = -232							-- Y 위치
 local ACI_Alpha = 1										-- 전투중 알파값
 local ACI_Alpha_Normal = 0.5							-- 비전투중 안보이게 하려면 0
 local ACI_CooldownFontSize = 12;						-- Cooldown Font Size
@@ -642,6 +642,19 @@ local function checkBuffCount(buff)
 	end
 
 	return count;
+end
+
+local function asCooldownFrame_Clear(self)
+	self:Clear();
+end
+
+local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+	if enable and enable ~= 0 and start > 0 and duration > 0 then
+		self:SetDrawEdge(forceShowDrawEdge);
+		self:SetCooldown(start, duration, modRate);
+	else
+		asCooldownFrame_Clear(self);
+	end
 end
 
 
@@ -1329,7 +1342,7 @@ local function ACI_Alert(self, bcastspell)
 
 	if (duration ~= nil and duration > 0 and duration < 500 ) then		
 			-- set the count
-		CooldownFrame_Set(frameCooldown, start, duration, duration > 0, enable);
+		asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, enable);
 		frameCooldown:SetDrawSwipe(false);
 		frameCooldown:Show();
 		frameCooldown:SetHideCountdownNumbers(false);

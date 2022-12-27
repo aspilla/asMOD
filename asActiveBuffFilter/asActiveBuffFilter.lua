@@ -312,10 +312,20 @@ local function checkAzerite()
 		end
 
 	end
-
-    
 end
 
+local function asCooldownFrame_Clear(self)
+	self:Clear();
+end
+
+local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+	if enable and enable ~= 0 and start > 0 and duration > 0 then
+		self:SetDrawEdge(forceShowDrawEdge);
+		self:SetCooldown(start, duration, modRate);
+	else
+		asCooldownFrame_Clear(self);
+	end
+end
 
 function ASABF_UpdateBuff(unit)
 
@@ -452,7 +462,7 @@ function ASABF_UpdateBuff(unit)
 			
 			if ( duration > 0 and duration <= 120 ) then
 				frameCooldown:Show();
-				CooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration >0,  true);
+				asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration >0,  true);
 				frameCooldown:SetHideCountdownNumbers(false);
 
 			else
@@ -656,7 +666,7 @@ function ASABF_UpdateBuff(unit)
 
 					if ( duration > 0 ) then
 						frameCooldown:Show();
-						CooldownFrame_Set(frameCooldown, laststart, duration, duration >0,  true);
+						asCooldownFrame_Set(frameCooldown, laststart, duration, duration >0,  true);
 					else
 						frameCooldown:Hide();
 					end	

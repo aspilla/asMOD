@@ -1112,7 +1112,18 @@ local function checkAzerite()
     
 end
 
+local function asCooldownFrame_Clear(self)
+	self:Clear();
+end
 
+local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+	if enable and enable ~= 0 and start > 0 and duration > 0 then
+		self:SetDrawEdge(forceShowDrawEdge);
+		self:SetCooldown(start, duration, modRate);
+	else
+		asCooldownFrame_Clear(self);
+	end
+end
 
 function ANS_Alert(i, idx)
 
@@ -1226,7 +1237,7 @@ function ANS_Alert(i, idx)
 		frameCooldown:Show();
 
 		if skip == false  then
-			CooldownFrame_Set(frameCooldown, start, duration, duration > 0, enable);
+			asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, enable);
 			frameCooldown:SetHideCountdownNumbers(false);
 
 		end

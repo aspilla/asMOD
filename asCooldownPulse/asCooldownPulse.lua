@@ -24,7 +24,7 @@ local CONFIG_SOUND = true				-- 음성안내
 
 
 ACDP_CoolButtons_X = -97				-- 쿨 List 위치
-ACDP_CoolButtons_Y = -201
+ACDP_CoolButtons_Y = -251
 local ACDP_AlertButtons_X = 0			-- Alert button 위치
 local ACDP_AlertButtons_Y = 0
 local ACDP_AlertButtons_Size = 60		-- Alert button size 
@@ -262,6 +262,18 @@ local function ACDP_UpdateCoolAnchor(name, index, anchorIndex, size, offsetX, ri
 	end
 end
 
+local function asCooldownFrame_Clear(self)
+	self:Clear();
+end
+
+local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+	if enable and enable ~= 0 and start > 0 and duration > 0 then
+		self:SetDrawEdge(forceShowDrawEdge);
+		self:SetCooldown(start, duration, modRate);
+	else
+		asCooldownFrame_Clear(self);
+	end
+end
 
 local function ACDP_UpdateCooldown()
 
@@ -380,7 +392,7 @@ local function ACDP_UpdateCooldown()
 					-- set the count
 					frameCooldown = _G[frameName.."Cooldown"];
 					frameCooldown:Show();
-					CooldownFrame_Set(frameCooldown, start, duration, duration > 0, true);
+					asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, true);
 					frameCooldown:SetHideCountdownNumbers(false);
 					ACDP_bUpdate[idx] = false;
 					ACDP_ShowIdx[numCools] = array[idx]; 

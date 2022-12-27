@@ -40,6 +40,19 @@ local function ScanActionSlot()
 	end	
 end
 
+local function asCooldownFrame_Clear(self)
+	self:Clear();
+end
+
+local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+	if enable and enable ~= 0 and start > 0 and duration > 0 then
+		self:SetDrawEdge(forceShowDrawEdge);
+		self:SetCooldown(start, duration, modRate);
+	else
+		asCooldownFrame_Clear(self);
+	end
+end
+
 function ASAA_UpdateCooldown()
 
 	local selfName;
@@ -115,7 +128,7 @@ function ASAA_UpdateCooldown()
 		
 			frameCooldown = _G[frameName.."Cooldown"];
 			frameCooldown:Show();
-			CooldownFrame_Set(frameCooldown, start, duration, duration > 0, enable);
+			asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, enable);
 			frameCooldown:SetHideCountdownNumbers(false);
 							
 			numCools = numCools + 1;

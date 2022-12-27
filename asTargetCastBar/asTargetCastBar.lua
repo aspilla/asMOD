@@ -2,7 +2,7 @@
 local ATCB_WIDTH = 150
 local ATCB_HEIGHT = 17
 local ATCB_X = 0;
-local ATCB_Y = -50;
+local ATCB_Y = -100;
 local ATCB_ALPHA = 0.8;											--투명도 80%
 local ATCB_NAME_SIZE = ATCB_HEIGHT * 0.7;						--Spell 명 Font Size, 높이의 70%
 local ATCB_TIME_SIZE = ATCB_HEIGHT * 0.5;						--Spell 시전시간 Font Size, 높이의 50%

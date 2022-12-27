@@ -5,7 +5,7 @@ local APB_FontOutline = "OUTLINE";
 
 local APB_WIDTH = 208;			--위치
 local APB_X = 0;
-local APB_Y = -142 - 20;
+local APB_Y = -142 - 70;
 local APB_HEIGHT = 10
 local APB_ALPHA_COMBAT = 1	-- 전투중 알파 값
 local APB_ALPHA_NORMAL = 0.5

@@ -1,6 +1,6 @@
 ﻿-----------------설정 ------------------------
 local ATGCD_X = 22 + 20 * 1.3;
-local ATGCD_Y = -86;
+local ATGCD_Y = -136;
 local AGCICON = 20;
 
 
@@ -346,6 +346,19 @@ local prev = nil;
 local prevtime = 0;
 local channel_spell = nil;
 
+local function asCooldownFrame_Clear(self)
+	self:Clear();
+end
+
+local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+	if enable and enable ~= 0 and start > 0 and duration > 0 then
+		self:SetDrawEdge(forceShowDrawEdge);
+		self:SetCooldown(start, duration, modRate);
+	else
+		asCooldownFrame_Clear(self);
+	end
+end
+
 local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 
 	if( event == "UNIT_SPELLCAST_START") then
@@ -367,7 +380,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			frameIcon:Show();
 			local duration = (endTime - startTime)/1000;
 			endTime = endTime / 1000;
-			CooldownFrame_Set(frameCooldown, endTime - duration, duration, duration > 0, true);
+			asCooldownFrame_Set(frameCooldown, endTime - duration, duration, duration > 0, true);
 			frameCooldown:SetHideCountdownNumbers(true);
 			ATGCD.frame[0]:Show();
 		else
@@ -395,7 +408,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 				frameIcon:Show();
 				local duration = (endTime - startTime)/1000;
 				endTime = endTime / 1000;
-				CooldownFrame_Set(frameCooldown, endTime - duration, duration, duration > 0, true);
+				asCooldownFrame_Set(frameCooldown, endTime - duration, duration, duration > 0, true);
 				frameCooldown:SetHideCountdownNumbers(true);
 				ATGCD.frame[0]:Show();
 			else
