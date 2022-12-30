@@ -599,8 +599,6 @@ local ColorLevel = {
 };
 
 local nameheight_value = nil;
-local castheight = nil;
-local orig_height = nil;
 local asnameplateResourceOnTarget = true;
 local playerbuffposition = ANameP_PlayerBuffY;
 
@@ -1252,15 +1250,12 @@ local function updateTargetNameP(self)
 		return;
     end
 	
-	if orig_height == nil then
-		orig_height = healthBar:GetHeight();
-		if UnitFrame.castBar then
-			castheight = UnitFrame.castBar:GetHeight();
-		end
-		if castheight == nil then
-			castheight = 8;
-		end		
-	end
+	local orig_height = healthBar:GetHeight();
+	local castheight = 8;
+	if UnitFrame.castBar then
+		castheight = UnitFrame.castBar:GetHeight();
+	end		
+	
 
 	local casticon = self.casticon;
 	local height = orig_height;
@@ -1739,6 +1734,7 @@ local function createNamePlate(namePlateFrameBase)
 	--do nothing
 end
 
+local namePlateVerticalScale = nil;
 
 local function addNamePlate(namePlateUnitToken)
 	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
@@ -2139,9 +2135,7 @@ local function ANameP_OnEvent(self, event, ...)
 		updateUnitHealthText(self, "target");
 	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED") then
 		C_Timer.After(0.5, initAlertList);		
-		orig_height = nil;
 	elseif (event == "PLAYER_ENTERING_WORLD") then
-		orig_height = nil
 		isInstance, instanceType = IsInInstance();
 		if isInstance and (instance=="party" or instance=="raid" or instance=="scenario") then
 			self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
@@ -2166,9 +2160,7 @@ local function ANameP_OnEvent(self, event, ...)
 		local namePlateUnitToken = ...;
 		asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken);
 	elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
-		updateTankerList();
-	elseif (event == "CVAR_UPDATE") then
-		orig_height = nil;
+		updateTankerList();	
 	end
 end
 
@@ -2255,9 +2247,7 @@ local function initAddon()
 	ANameP:RegisterEvent("GROUP_JOINED");
 	ANameP:RegisterEvent("GROUP_ROSTER_UPDATE");
 	ANameP:RegisterEvent("PLAYER_ROLES_ASSIGNED");
-	ANameP:RegisterEvent("CVAR_UPDATE");
-
-
+	
 	ANameP:SetScript("OnEvent", ANameP_OnEvent)
 	--주기적으로 Callback
 	C_Timer.NewTicker(ANameP_UpdateRate, ANameP_OnUpdate);	
