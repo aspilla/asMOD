@@ -10,6 +10,7 @@ local ATCB_NOT_INTERRUPTIBLE_COLOR = {0.8, 0.8, 0.8}; 			--차단 불가시 (내
 local ATCB_NOT_INTERRUPTIBLE_COLOR_TARGET = {0.8, 0.5, 0.5}; 	--차단 불가시 (내가 타겟일때) 색상 (r, g, b)
 local ATCB_INTERRUPTIBLE_COLOR = {0, 0.9, 0}; 					--차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
 local ATCB_INTERRUPTIBLE_COLOR_TARGET = {0.5, 1, 1}; 			--차단 가능(내가 타겟일 때)시 색상 (r, g, b)
+local ATCB_UPDATE_RATE = 0.05									-- 20프레임
 
 -----------------설정 끝끝------------------------
 local ATCB = CreateFrame("FRAME", nil, UIParent)
@@ -168,4 +169,4 @@ ATCB:SetScript("OnEvent", ATCB_OnEvent)
 ATCB:RegisterEvent("PLAYER_TARGET_CHANGED");
 ATCB:RegisterEvent("PLAYER_ENTERING_WORLD");
 
-C_Timer.NewTicker(0.1, ATCB_OnUpdate);
+C_Timer.NewTicker(ATCB_UPDATE_RATE, ATCB_OnUpdate);

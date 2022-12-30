@@ -1551,6 +1551,9 @@ local function asCheckTalent(name)
 	local specID = PlayerUtil.GetCurrentSpecID();
    
     local configID = C_ClassTalents.GetActiveConfigID();
+	if not (configID) then
+		return false;
+	end
     local configInfo = C_Traits.GetConfigInfo(configID);
     local treeID = configInfo.treeIDs[1];
 

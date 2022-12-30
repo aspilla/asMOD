@@ -1450,6 +1450,11 @@ local function asCheckTalent(name)
 	local specID = PlayerUtil.GetCurrentSpecID();
    
     local configID = C_ClassTalents.GetActiveConfigID();
+
+	if not (configID) then
+		return false;
+	end
+
     local configInfo = C_Traits.GetConfigInfo(configID);
     local treeID = configInfo.treeIDs[1];
 
@@ -2607,6 +2612,10 @@ local function ANS_CheckPower()
 end
 
 function ANS_InitSlotInfo()
+
+	if not ANS_SpellList then
+		return;
+	end
 
 	local maxIdx = #ANS_SpellList;
 

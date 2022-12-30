@@ -271,14 +271,20 @@ end
 
 
 local function asCheckTalent()
+
+	table.wipe(ABF_TalentBuffList);
+
 	local specID = PlayerUtil.GetCurrentSpecID();
-   
-    local configID = C_ClassTalents.GetActiveConfigID();
+	local configID = C_ClassTalents.GetActiveConfigID();
+
+	if not (configID) then
+		return;
+	end
     local configInfo = C_Traits.GetConfigInfo(configID);
     local treeID = configInfo.treeIDs[1];
     local nodes = C_Traits.GetTreeNodes(treeID);
 
-	table.wipe(ABF_TalentBuffList);
+	
 
     for _, nodeID in ipairs(nodes) do
         local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
@@ -294,7 +300,7 @@ local function asCheckTalent()
 			end
         end
     end
-	return false;
+	return;
 end
 
 local function asCooldownFrame_Clear(self)

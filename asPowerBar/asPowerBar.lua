@@ -949,6 +949,10 @@ end
 local function asCheckTalent (name)
 
 	local specID = PlayerUtil.GetCurrentSpecID();
+
+	if not (configID) then
+		return false;
+	end
   
     local configID = C_ClassTalents.GetActiveConfigID();
 	C_ClassTalents.LoadConfig(configID, true);
