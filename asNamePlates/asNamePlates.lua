@@ -1249,13 +1249,13 @@ local function updateTargetNameP(self)
     if not healthBar then
 		return;
     end
-	
-	local orig_height = healthBar:GetHeight();
-	local castheight = 8;
-	if UnitFrame.castBar then
-		castheight = UnitFrame.castBar:GetHeight();
-	end		
-	
+
+	local orig_height = self.orig_height;
+	local cast_height = self.cast_height;
+
+	if orig_height == nil then
+		return;
+	end
 
 	local casticon = self.casticon;
 	local height = orig_height;
@@ -1275,8 +1275,8 @@ local function updateTargetNameP(self)
 		self.healthtext:Show();
 
 		if casticon then
-			casticon:SetWidth((height + castheight + 1) * 1.2);
-			casticon:SetHeight(height + castheight + 1);
+			casticon:SetWidth((height + cast_height + 1) * 1.2);
+			casticon:SetHeight(height + cast_height + 1);
 		end
 
 		if GetCVarBool("nameplateResourceOnTarget") then
@@ -1291,8 +1291,8 @@ local function updateTargetNameP(self)
 		self.healthtext:Hide();
 		
 		if casticon then
-			casticon:SetWidth((height + castheight + 1) * 1.2);
-			casticon:SetHeight(height + castheight + 1);
+			casticon:SetWidth((height + cast_height + 1) * 1.2);
+			casticon:SetHeight(height + cast_height + 1);
 		end
 		
 		if UnitFrame.name:IsShown() then
@@ -1824,6 +1824,13 @@ local function addNamePlate(namePlateUnitToken)
 
 	ANameP_MaxDebuff = debuffs_per_line * 2;	 
 	Aggro_Y = 0;
+
+
+	namePlateFrameBase.asNamePlates.orig_height = healthbar:GetHeight();
+	namePlateFrameBase.asNamePlates.cast_height = 8;
+	if unitFrame.castBar then
+		namePlateFrameBase.asNamePlates.cast_height = unitFrame.castBar:GetHeight();
+	end		
 
 	namePlateFrameBase.asNamePlates:ClearAllPoints();
 	namePlateFrameBase.asNamePlates:SetPoint("CENTER", healthbar, "CENTER", 0  , 0)
