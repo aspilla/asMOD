@@ -1250,8 +1250,14 @@ local function updateTargetNameP(self)
 		return;
     end
 
-	local orig_height = self.orig_height;
-	local cast_height = self.cast_height;
+
+
+	local orig_height = self.orig_height
+	local cast_height = 8;
+
+	if UnitFrame.castBar then
+		cast_height = UnitFrame.castBar:GetHeight();
+	end		
 
 	if orig_height == nil then
 		return;
@@ -1735,6 +1741,7 @@ local function createNamePlate(namePlateFrameBase)
 end
 
 local namePlateVerticalScale = nil;
+local g_orig_height = nil;
 
 local function addNamePlate(namePlateUnitToken)
 	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
@@ -1812,7 +1819,11 @@ local function addNamePlate(namePlateUnitToken)
 
 	
 	local Size = ANameP_AggroSize;
-	local namePlateVerticalScale = tonumber(GetCVar("NamePlateVerticalScale"));
+	
+	if namePlateVerticalScale ~= tonumber(GetCVar("NamePlateVerticalScale")) then
+		namePlateVerticalScale = tonumber(GetCVar("NamePlateVerticalScale"));
+		g_orig_height = healthbar:GetHeight();
+	end
 		
 	if namePlateVerticalScale > 1.0 then
 		Aggro_Y = -1
@@ -1825,12 +1836,7 @@ local function addNamePlate(namePlateUnitToken)
 	ANameP_MaxDebuff = debuffs_per_line * 2;	 
 	Aggro_Y = 0;
 
-
-	namePlateFrameBase.asNamePlates.orig_height = healthbar:GetHeight();
-	namePlateFrameBase.asNamePlates.cast_height = 8;
-	if unitFrame.castBar then
-		namePlateFrameBase.asNamePlates.cast_height = unitFrame.castBar:GetHeight();
-	end		
+	namePlateFrameBase.asNamePlates.orig_height = g_orig_height;
 
 	namePlateFrameBase.asNamePlates:ClearAllPoints();
 	namePlateFrameBase.asNamePlates:SetPoint("CENTER", healthbar, "CENTER", 0  , 0)
