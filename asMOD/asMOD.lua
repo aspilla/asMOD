@@ -31,23 +31,13 @@ local function asMOD_Setup()
 	end
 
 	LoadAddOn("Skada")
-	LoadAddOn("DBM-Core")
-	LoadAddOn("DBM-StatusBarTimers")
-
-
 
 	print ("[asMOD] 재사용 대기시간을 보이게 합니다.");
 	SetCVar("countdownForCooldowns", "1");
 
-	print ("[asMOD] 전투 메시지를 보이게 합니다.");
-	SetCVar("enableFloatingCombatText", "1");
-
 	print ("[asMOD] 힐량와 데미지를 보이게 합니다.");
 	SetCVar("floatingCombatTextCombatHealing", 1);
 	SetCVar("floatingCombatTextCombatDamage", 1);
-
-	print ("[asMOD] 자동룻 옵션");
-	SetCVar("autoLootDefault", 1)
 
 	print ("[asMOD] 이름표 항상 표시");
 	SetCVar("nameplateShowAll", 1)
@@ -59,8 +49,7 @@ local function asMOD_Setup()
 	SetCVar("nameplateShowSelf", "0");
 
 	print ("[asMOD] 공격대창 직업 색상 표시");
-	SetCVar("raidFramesDisplayClassColor", 1)
-	
+	SetCVar("raidFramesDisplayClassColor", 1)	
 
 	print ("[asMOD] Unit Frame 설정 변경");
 	SetCVar("showTargetOfTarget", 1)	
