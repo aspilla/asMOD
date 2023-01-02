@@ -26,6 +26,8 @@ local ANameP_TankAggroLoseColor2 = {r = 1, g = 0.1, b= 0.5}; -- 어그로가 파
 local ANameP_TankAggroLoseColor3 = {r = 0.1, g = 0.3, b= 1}; -- 어그로가 Pet 일때 혹은 Tanking 중인데 어그로가 낮을때
 local ANameP_ShowListFirst = true		-- 알림 List 가 있다면 먼저 보인다. (가나다라 순서)
 local ANameP_WeakStealableBuffAlert = false -- 훔칠 버프 알림을 약하게 기본은 꺼 있음
+local ANameP_ShowCCDebuff = true		-- 오른쪽에 CC Debuff만 별도로 보이기
+local ANameP_CCDebuffSize = 16			-- CC Debuff Size;
 
 local ANameP_AggroSize = 12;			-- 어그로 표시 Text Size
 local ANameP_HealerSize = 14;			-- 힐러표시 Text Size
@@ -935,6 +937,8 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 	self.unit = unit;
 	self.reflesh_time = nil;
 
+	local bShowCC = false;
+
 	if not self.unit then
 		return
 	end
@@ -1045,7 +1049,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 	if not showdebuff then
 		local aShowIdx = {};
 		local aShowNum = 1;
-
+		
 		for i = 1, BUFF_MAX_DISPLAY do
 			if (filter == "NONE" and self.buffList[i]) then
 				self.buffList[i]:Hide();
@@ -1084,8 +1088,21 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 						show = true;
 					end
 
-					if ANameP_ShowPVPDebuff and nameplateShowAll then
-						show = true;
+					if ANameP_ShowPVPDebuff and nameplateShowAll and duration <= 10 then
+
+						if ANameP_ShowCCDebuff then
+							show = false;
+							if bShowCC == false then
+								bShowCC = true;		
+
+								local color = { r = 0.3, g = 0.3, b = 0.3 };
+							
+								setFrame(self.CCdebuff:GetName(), texture, count, expirationTime, duration, color);		
+								self.CCdebuff:Show();
+							end
+						else
+							show = true;
+						end
 					end
 
 					if isBossDebuff or ( caster and  not UnitIsPlayer(unit) and UnitIsUnit(unit, caster)) then
@@ -1217,6 +1234,10 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 	if numDebuffs > 1 then
 		self:Show();
+	end
+
+	if bShowCC == false then		
+		self.CCdebuff:Hide();
 	end
 end
 
@@ -1712,11 +1733,14 @@ local function asNamePlates_OnEvent(self, event, ...)
 
 		local alert = false;		
 		local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);	
-		local isTargetPlayer = UnitIsUnit (unit .. "target", "player");
+		if not name then
+			name,  text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+		end
+		--local isTargetPlayer = UnitIsUnit (unit .. "target", "player");
 		if self.casticon then
 			local isDanger = isDangerousSpell (spellid, unit);
 			local frameIcon = _G[self.casticon:GetName().."Icon"]; 
-			if name and frameIcon and (isDanger or notInterruptible) then
+			if name and frameIcon then
 			--if name and frameIcon and isTargetPlayer then
 				frameIcon:SetTexture(texture);
 				self.casticon:Show();
@@ -1728,7 +1752,9 @@ local function asNamePlates_OnEvent(self, event, ...)
 			end
 
 			if alert then
-				ANameP_ShowOverlayGlow(self.casticon);
+				ANameP_ShowOverlayGlow(self.casticon, false);
+			elseif notInterruptible == false then
+				ANameP_ShowOverlayGlow(self.casticon, true);
 			else
 				ANameP_HideOverlayGlow(self.casticon);
 			end
@@ -1885,7 +1911,7 @@ local function addNamePlate(namePlateUnitToken)
 		end
 		namePlateFrameBase.asNamePlates.casticon:EnableMouse(false);
         namePlateFrameBase.asNamePlates.casticon:ClearAllPoints();
-		namePlateFrameBase.asNamePlates.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 2, 1);
+		namePlateFrameBase.asNamePlates.casticon:SetPoint("BOTTOMRIGHT", unitFrame.castBar, "BOTTOMLEFT", -2, 1);
 		namePlateFrameBase.asNamePlates.casticon:SetWidth(13);
 		namePlateFrameBase.asNamePlates.casticon:SetHeight(13);
 
@@ -1898,6 +1924,33 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.casticon:Hide();
 	end
 
+
+	if not namePlateFrameBase.asNamePlates.CCdebuff  then
+		namePlateFrameBase.asNamePlates.CCdebuff = CreateFrame("Frame", namePlateFrameBase.asNamePlates:GetName().."CCdebuff", unitFrame.healthBar, "asNamePlatesBuffFrameTemplate");
+	end
+	namePlateFrameBase.asNamePlates.CCdebuff:EnableMouse(false);
+    namePlateFrameBase.asNamePlates.CCdebuff:ClearAllPoints();
+	namePlateFrameBase.asNamePlates.CCdebuff:SetPoint("LEFT", unitFrame.healthBar, "RIGHT", 2, 0);
+	namePlateFrameBase.asNamePlates.CCdebuff:SetWidth(ANameP_CCDebuffSize * 1.2);
+	namePlateFrameBase.asNamePlates.CCdebuff:SetHeight(ANameP_CCDebuffSize);
+
+	local frameIcon = _G[namePlateFrameBase.asNamePlates.CCdebuff:GetName().."Icon"]; 
+	local frameBorder = _G[namePlateFrameBase.asNamePlates.CCdebuff:GetName().."Border"];
+			
+	frameIcon:SetTexCoord(.08, .92, .08, .92);
+	frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
+	frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+
+	for _,r in next,{_G[namePlateFrameBase.asNamePlates.CCdebuff:GetName().."Cooldown"]:GetRegions()}	do 
+		if r:GetObjectType()=="FontString" then 
+			r:SetFont(STANDARD_TEXT_FONT, ANameP_CooldownFontSize,"OUTLINE")
+			r:SetPoint("TOP", 0, 4);
+			break;
+		end 
+	end
+
+	namePlateFrameBase.asNamePlates.CCdebuff:Hide();
+	
 	if namePlateFrameBase.asNamePlates then 
 		namePlateFrameBase.asNamePlates.unit = namePlateUnitToken;
 		namePlateFrameBase.asNamePlates.filter = nil;
