@@ -354,7 +354,7 @@ end
 local function ACRB_setupFrame(frame)
 	if not frame or not frame.displayedUnit or not UnitIsPlayer(frame.displayedUnit) then return end
 	local frameName = frame:GetName()
-	
+
 	local CUF_AURA_BOTTOM_OFFSET = 2;
 	local CUF_NAME_SECTION_SIZE = 15;
 
@@ -709,7 +709,7 @@ local function asCompactUnitFrame_UpdateBuffs(frame)
 	if not (unit) then
 		return;
 	end
-	
+
 	local index = 1;
 	local frameNum = 1;
 	local filter = nil;
@@ -1132,17 +1132,8 @@ local function asCompactUnitFrame_UpdateHealerMana(frame)
 	else
 
 		frame.asManabar:Hide();
-	end
-
-
-	
+	end	
 end
-
-
-
-
-
-
 
 local RaidIconList = {
 	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
@@ -1446,13 +1437,6 @@ local function ACRB_OnUpdate(self, elapsed)
 		if mustdisable then
 
 			mustdisable = false;
-			--[[
-				추후 수정
-			local profile = GetActiveRaidProfile();
-			if profile then
-				together = GetRaidProfileOption(profile, "keepGroupsTogether")
-			end
-			]]
 			together = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups();
 
 			ACRB_DisableAura();
@@ -1485,12 +1469,7 @@ local function ACRB_OnEvent(self, event, ...)
 		elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
 			mustdisable = true;
 		elseif (event == "COMPACT_UNIT_FRAME_PROFILES_LOADED") then
-			--[[
-			local profile = GetActiveRaidProfile();
-			if profile then
-				together = GetRaidProfileOption(profile, "keepGroupsTogether")
-			end
-			]]
+
 			together = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups();
 		end
 end
@@ -1501,7 +1480,8 @@ local function asCompactUnitFrame_UpdateAll(frame)
 		local name = frame:GetName();
 
 		if name and not (name == nil) and (string.find (name, "CompactRaidGroup") or string.find (name, "CompactPartyFrameMember") or string.find (name, "CompactRaidFrame")) then
-			mustdisable = true;
+			ACRB_disableDefault(frame);
+			ACRB_setupFrame(frame);
 		end
 
 	end
@@ -1524,4 +1504,3 @@ ACRB_mainframe:RegisterEvent("VARIABLES_LOADED");
 C_Timer.NewTicker(ACRB_UpdateRate, ACRB_OnUpdate);	
 
 hooksecurefunc("CompactUnitFrame_UpdateAll" ,asCompactUnitFrame_UpdateAll);
-
