@@ -782,22 +782,28 @@ local function asCompactUnitFrame_UpdateBuffs(frame)
 	end
 
 	if frame.rangetex and not UnitIsUnit("player", unit)then
-		local reaction = UnitReaction("player", unit);
 
-		if reaction and reaction <= 4 then
-			if GetItemInfo(835) and IsItemInRange(835, unit) then
-				frame.rangetex:Hide();
-			else
-				frame.rangetex:Show();
-			end
+		local inRange, checkedRange = UnitInRange(unit);
+		--40미터 밖
+		if ( checkedRange and not inRange ) then	--If we weren't able to check the range for some reason, we'll just treat them as in-range (for example, enemy units)
+			frame.rangetex:Hide();
 		else
-			if GetItemInfo(1180) and IsItemInRange(1180, unit) then
-				frame.rangetex:Hide();
+			local reaction = UnitReaction("player", unit);
+
+			if reaction and reaction <= 4 then
+				if GetItemInfo(835) and IsItemInRange(835, unit) then
+					frame.rangetex:Hide();
+				else
+					frame.rangetex:Show();
+				end
 			else
-				frame.rangetex:Show();
+				if GetItemInfo(1180) and IsItemInRange(1180, unit) then
+					frame.rangetex:Hide();
+				else
+					frame.rangetex:Show();
+				end
 			end
-		end
-		 
+		end			 
 	end
 	
 
