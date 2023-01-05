@@ -14,6 +14,7 @@ local ACRB_MaxBuffSize = 20				-- 최대 Buff Size 창을 늘려도 이 크기 �
 local ACRB_HealerManaBarHeight = 1		-- 힐러 마나바 크기 (안보이게 하려면 0)
 local ACRB_UpdateRate = 0.02			-- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 local ACRB_ShowWhenSolo = true			-- Solo Raid Frame 사용시 보이게 하려면 True (반드시 Solo Raid Frame과 사용)
+local ACRB_ShowTooltip = true			-- GameTooltip을 보이게 하려면 True
 
 
 -- 버프 남은시간에 리필 알림
@@ -197,6 +198,7 @@ local ACRB_PVPBuffList = {
 -- 직업 리필 
 local ACRB_ShowList = nil;
 local ACRB_baseSize = 0;
+local show_30m_range = false;
 
 
 local function ACRB_InitList()
@@ -211,6 +213,11 @@ local function ACRB_InitList()
 	end
 
 	ACRB_ShowList = _G[listname];
+
+	--기원사 힐이면 30미터 Filter 추가
+	if englishClass == "EVOKER" and spec == 2 then
+		show_30m_range = true;
+	end
 
 end
 
@@ -374,7 +381,18 @@ local function ACRB_setupFrame(frame)
 		baseSize = ACRB_MaxBuffSize
 	end
 
-	local fontsize = baseSize * ACRB_CooldownFontSizeRate; 
+	local fontsize = baseSize * ACRB_CooldownFontSizeRate;
+
+	-- 힐거리 기능
+	if show_30m_range and not frame.rangetex then 
+		frame.rangetex = frame:CreateTexture("ARTWORK");
+    	frame.rangetex:SetAllPoints();
+    	frame.rangetex:SetColorTexture(1, 0, 0); 
+		frame.rangetex:SetAlpha(0.8);
+		frame.rangetex:Hide();				
+	end
+	
+
 
 	if not frame.asbuffFrames then
 		frame.asbuffFrames = {}
@@ -385,7 +403,7 @@ local function ACRB_setupFrame(frame)
 		local buffFrame = _G[buffPrefix .. i] or CreateFrame("Button", buffPrefix .. i, frame, "asCompactBuffTemplate")
 		buffFrame.icon:SetTexCoord(.08, .92, .08, .92);
 		buffFrame:ClearAllPoints()
-		buffFrame:EnableMouse(false); 
+		buffFrame:EnableMouse(ACRB_ShowTooltip); 
 
 
 		if i <= ACRB_MAX_BUFFS - 3 then
@@ -425,6 +443,23 @@ local function ACRB_setupFrame(frame)
 
 		end
 
+		buffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
+		buffFrame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+
+
+		 if ACRB_ShowTooltip and not buffFrame:GetScript("OnEnter") then
+            buffFrame:SetScript("OnEnter", function(s)
+				if s:GetID() > 0 then
+                    GameTooltip:SetOwner(s, "ANCHOR_BOTTOMRIGHT");
+					GameTooltip:SetUnitBuff(s.unit, s:GetID(), s.filter);
+				end
+            end)
+
+            buffFrame:SetScript("OnLeave", function()
+                GameTooltip:Hide();
+            end)
+        end
+
 		frame.asbuffFrames[i] = buffFrame;
 		ACRB_HideOverlayGlow(buffFrame);
 	end
@@ -438,7 +473,7 @@ local function ACRB_setupFrame(frame)
 		local buffPrefix = frameName .. "asDebuff"
 		local debuffFrame = _G[buffPrefix .. i] or CreateFrame("Button", buffPrefix .. i, frame, "asCompactDebuffTemplate")
 		debuffFrame:ClearAllPoints()
-		debuffFrame:EnableMouse(false); 
+		debuffFrame:EnableMouse(ACRB_ShowTooltip); 
 		debuffFrame.icon:SetTexCoord(.08, .92, .08, .92);
 		if math.fmod(i - 1, 3) == 0 then
 			if i == 1 then
@@ -451,6 +486,23 @@ local function ACRB_setupFrame(frame)
 		else
 			debuffFrame:SetPoint("BOTTOMLEFT", _G[buffPrefix .. i - 1], "BOTTOMRIGHT", 2, 0)
 		end
+
+		debuffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
+		debuffFrame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+
+		if ACRB_ShowTooltip and not debuffFrame:GetScript("OnEnter") then
+            debuffFrame:SetScript("OnEnter", function(s)
+				if s:GetID() > 0 then
+                    GameTooltip:SetOwner(s, "ANCHOR_BOTTOMRIGHT");
+					GameTooltip:SetUnitDebuff(s.unit, s:GetID(), s.filter);
+				end
+            end)
+
+            debuffFrame:SetScript("OnLeave", function()
+                GameTooltip:Hide();
+            end)
+        end
+
 		frame.asdebuffFrames[i] = debuffFrame;
 	end
 
@@ -477,12 +529,14 @@ local function ACRB_setupFrame(frame)
 		d:SetSize(baseSize * 1.2, baseSize * 0.9);
 
 		d.count:SetFont(STANDARD_TEXT_FONT, fontsize ,"OUTLINE")
-		d.count:SetPoint("BOTTOMRIGHT", 0, 0);
+		d.count:ClearAllPoints();
+		d.count:SetPoint("BOTTOM", 0, -2);
 		if  ACRB_ShowBuffCooldown and fontsize >= ACRB_MinShowBuffFontSize   then
 	   		d.cooldown:SetHideCountdownNumbers(false);
 			for _,r in next,{d.cooldown:GetRegions()}	do 
 				if r:GetObjectType()=="FontString" then 
 					r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE")
+					r:ClearAllPoints();
 					r:SetPoint("TOP", 0, 2);
 					break 
 				end 
@@ -497,13 +551,15 @@ local function ACRB_setupFrame(frame)
 		d.maxHeight = frameHeight - powerBarUsedHeight - CUF_AURA_BOTTOM_OFFSET - CUF_NAME_SECTION_SIZE;
 
 		d.count:SetFont(STANDARD_TEXT_FONT, fontsize,"OUTLINE")
-		d.count:SetPoint("BOTTOMRIGHT", 0, 0);
+		d.count:ClearAllPoints();
+		d.count:SetPoint("BOTTOM", 0, 0);
 
 		if  ACRB_ShowBuffCooldown and fontsize >= ACRB_MinShowBuffFontSize   then
 		   	d.cooldown:SetHideCountdownNumbers(false);
 			for _,r in next,{d.cooldown:GetRegions()}	do 
 				if r:GetObjectType()=="FontString" then 
-					r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE")
+					r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE");
+					r:ClearAllPoints();
 					r:SetPoint("TOP", 0, 2);
 					break 
 				end 
@@ -551,18 +607,21 @@ local function ACRB_setupFrame(frame)
 	
 		for i = 1, ACRB_MAX_BUFFS_2 do
 			local buffPrefix = frameName .. "Buff2_"
-			frame.buffFrames2[i] =  CreateFrame("Button", buffPrefix .. i, frame.healthBar, "asCompactBuffTemplate")
-			frame.buffFrames2[i]:EnableMouse(false); 
+			frame.buffFrames2[i] =  CreateFrame("Button", buffPrefix .. i, frame, "asCompactBuffTemplate")
+			frame.buffFrames2[i]:EnableMouse(ACRB_ShowTooltip); 
 			frame.buffFrames2[i].icon:SetTexCoord(.08, .92, .08, .92);
 			frame.buffFrames2[i]:SetSize(baseSize * 1.2, baseSize * 0.9);
 			frame.buffFrames2[i].baseSize = baseSize;
 			frame.buffFrames2[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+			frame.buffFrames2[i].count:ClearAllPoints();
+			frame.buffFrames2[i].count:SetPoint("BOTTOM", 0, 0);
 	
 			if  ACRB_ShowBuffCooldown and fontsize >= ACRB_MinShowBuffFontSize   then
 				frame.buffFrames2[i].cooldown:SetHideCountdownNumbers(false);
 				for _,r in next,{_G[buffPrefix .. i .."Cooldown"]:GetRegions()}	do 
 					if r:GetObjectType()=="FontString" then 
-						r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE")
+						r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE");
+						r:ClearAllPoints();
 						r:SetPoint("TOP", 0, 2);
 						break 
 					end 
@@ -576,6 +635,20 @@ local function ACRB_setupFrame(frame)
 			else
 				frame.buffFrames2[i]:SetPoint("TOPLEFT", _G[buffPrefix .. i - 1], "TOPRIGHT", 0, 0)
 			end
+			
+			if ACRB_ShowTooltip and not frame.buffFrames2[i]:GetScript("OnEnter") then
+				frame.buffFrames2[i]:SetScript("OnEnter", function(s)
+					if s:GetID() > 0 then
+						GameTooltip:SetOwner(s, "ANCHOR_BOTTOMRIGHT");
+						GameTooltip:SetUnitBuff(s.unit, s:GetID(), s.filter);
+					end
+				end)
+	
+				frame.buffFrames2[i]:SetScript("OnLeave", function()
+					GameTooltip:Hide();
+				end)
+			end
+			
 		end
 	end
 
@@ -651,6 +724,8 @@ local function asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, index, filter)
 		buffFrame.count:Hide();
 	end
 	buffFrame:SetID(index);
+	buffFrame.unit = unit;
+	buffFrame.filter = filter;
 	local enabled = expirationTime and expirationTime ~= 0;
 	if enabled then
 		local startTime = expirationTime - duration;
@@ -665,8 +740,6 @@ local function asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, index, filter)
 
 			if expirationTime - GetTime() < showlist_time then
 				buffFrame.border:SetVertexColor(1, 1, 1);
-				buffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
-				buffFrame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 				buffFrame.border:Show();
 			else
 				buffFrame.border:Hide();
@@ -674,8 +747,6 @@ local function asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, index, filter)
 		else
 			buffFrame.border:Hide();
 		end
-
-
 	else
 		buffFrame.border:Hide()
 		CooldownFrame_Clear(buffFrame.cooldown);
@@ -709,6 +780,26 @@ local function asCompactUnitFrame_UpdateBuffs(frame)
 	if not (unit) then
 		return;
 	end
+
+	if frame.rangetex and not UnitIsUnit("player", unit)then
+		local reaction = UnitReaction("player", unit);
+
+		if reaction and reaction <= 4 then
+			if GetItemInfo(835) and IsItemInRange(835, unit) then
+				frame.rangetex:Hide();
+			else
+				frame.rangetex:Show();
+			end
+		else
+			if GetItemInfo(1180) and IsItemInRange(1180, unit) then
+				frame.rangetex:Hide();
+			else
+				frame.rangetex:Show();
+			end
+		end
+		 
+	end
+	
 
 	local index = 1;
 	local frameNum = 1;
@@ -817,6 +908,8 @@ local function asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter)
 		buffFrame.count:Hide();
 	end
 	buffFrame:SetID(index);
+	buffFrame.unit = unit;
+	buffFrame.filter = filter;
 	local enabled = expirationTime and expirationTime ~= 0;
 	if enabled then
 		local startTime = expirationTime - duration;
@@ -847,7 +940,7 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 	else
 		name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId = UnitDebuff(unit, index, filter);
 	end
-	debuffFrame.filter = filter;
+	
 	debuffFrame.icon:SetTexture(icon);
 	if ( count > 1 ) then
 		local countText = count;
@@ -860,6 +953,8 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 		debuffFrame.count:Hide();
 	end
 	debuffFrame:SetID(index);
+	debuffFrame.filter = filter;
+	debuffFrame.unit = unit;
 	local enabled = expirationTime and expirationTime ~= 0;
 	if enabled then
 		local startTime = expirationTime - duration;
@@ -870,9 +965,7 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 	
 	local color = DebuffTypeColor[debuffType] or DebuffTypeColor["none"];
 	debuffFrame.border:SetVertexColor(color.r, color.g, color.b);
-	debuffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
-	debuffFrame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
-
+	
 	debuffFrame.isBossBuff = isBossBuff;
 	if ( isBossAura ) then
 		local size = min(debuffFrame.baseSize + BOSS_DEBUFF_SIZE_INCREASE, debuffFrame.maxHeight);
@@ -1201,6 +1294,8 @@ end
 local function ACRB_disableDefault(frame)
 
 	if frame and not frame:IsForbidden() then
+		-- 거리 기능 충돌 때문에 안됨
+		--frame.optionTable.fadeOutOfRange = false;
 		frame:UnregisterEvent("UNIT_AURA");
 		frame:UnregisterEvent("PLAYER_REGEN_ENABLED");
 		frame:UnregisterEvent("PLAYER_REGEN_DISABLED");

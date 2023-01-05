@@ -36,7 +36,7 @@
 	<Button name="asCompactDebuffTemplate" inherits="CompactAuraTemplate" virtual="true">
 		<Layers>
 			<Layer level="OVERLAY">
-				<Texture name="$parentBorder" parentKey="border" file="Interface\Buttons\UI-Debuff-Overlays">
+				<Texture name="$parentBorder" parentKey="border" file="Interface\AddOns\asCompactRaidBuff\overborder.tga">
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset x="-1" y="1"/>
