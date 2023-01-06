@@ -15,6 +15,8 @@ local ACRB_HealerManaBarHeight = 1		-- 힐러 마나바 크기 (안보이게 하
 local ACRB_UpdateRate = 0.02			-- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 local ACRB_ShowWhenSolo = true			-- Solo Raid Frame 사용시 보이게 하려면 True (반드시 Solo Raid Frame과 사용)
 local ACRB_ShowTooltip = true			-- GameTooltip을 보이게 하려면 True
+local ACRB_RangeFilterColor = {r = 0.3, g = 0.3, b = 0.3}; --30m 이상 RangeFilter Color
+local ACRB_RangeFilterAlpha = 0.5
 
 
 -- 버프 남은시간에 리필 알림
@@ -384,11 +386,11 @@ local function ACRB_setupFrame(frame)
 	local fontsize = baseSize * ACRB_CooldownFontSizeRate;
 
 	-- 힐거리 기능
-	if show_30m_range and not frame.rangetex then 
+	if not frame.rangetex then 
 		frame.rangetex = frame:CreateTexture("ARTWORK");
     	frame.rangetex:SetAllPoints();
-    	frame.rangetex:SetColorTexture(1, 0, 0); 
-		frame.rangetex:SetAlpha(0.8);
+    	frame.rangetex:SetColorTexture(ACRB_RangeFilterColor.r, ACRB_RangeFilterColor.g, ACRB_RangeFilterColor.b); 
+		frame.rangetex:SetAlpha(ACRB_RangeFilterAlpha);
 		frame.rangetex:Hide();				
 	end
 	
@@ -780,14 +782,14 @@ local function asCompactUnitFrame_UpdateBuffs(frame)
 	if not (unit) then
 		return;
 	end
-
+	
 	if frame.rangetex and not UnitIsUnit("player", unit)then
 
 		local inRange, checkedRange = UnitInRange(unit);
 		--40미터 밖
 		if ( checkedRange and not inRange ) then	--If we weren't able to check the range for some reason, we'll just treat them as in-range (for example, enemy units)
-			frame.rangetex:Hide();
-		else
+			frame.rangetex:Show();
+		elseif show_30m_range then
 			local reaction = UnitReaction("player", unit);
 
 			if reaction and reaction <= 4 then
@@ -803,9 +805,13 @@ local function asCompactUnitFrame_UpdateBuffs(frame)
 					frame.rangetex:Show();
 				end
 			end
+		else
+			frame.rangetex:Hide();
 		end			 
 	end
 	
+
+	--frame.rangetex:Show();
 
 	local index = 1;
 	local frameNum = 1;
