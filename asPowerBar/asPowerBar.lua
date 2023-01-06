@@ -169,11 +169,39 @@ local function APB_UnitDebuff_Name(unit, buff, filter)
 end
 
 
+local function APB_OnUpdateCombo(self, elapsed)
 
+	if not self.start then
+		return;
+	end
 
+	if not self.update  then
+		self.update = 0;
+	end
 
+	self.update = self.update + elapsed
 
-local function APB_ShowComboBar(combo, partial, cast)
+	if self.update >= 0.25  then
+		local curr_time = GetTime();
+		local curr_duration = curr_time - self.start;
+
+		self.update = 0		
+
+		if curr_duration < self.duration then
+			self:SetMinMaxValues(0, self.duration * 10)
+			self:SetValue((curr_time - self.start) * 10)
+		else
+			self:SetMinMaxValues(0, self.duration)
+			self:SetValue(self.duration)
+			self.start = nil;
+		end
+	end
+end
+
+local prev_combo = nil;
+local p_start = nil;
+
+local function APB_ShowComboBar(combo, partial, cast, cooldown)
 	
 	local bmax = false;
 
@@ -182,6 +210,12 @@ local function APB_ShowComboBar(combo, partial, cast)
 	local value = 1;
 	local gen = false;
 	
+	if prev_combo ~= combo then
+		p_start = GetTime();
+		prev_combo = combo;
+	end
+
+	
 	if not cast then
 		cast = 0;
 	end
@@ -189,8 +223,6 @@ local function APB_ShowComboBar(combo, partial, cast)
 	if not partial then
 		partial = 0;
 	end
-
-
 
 	if combo == max_combo and cast == 0 then
 		bmax = true;
@@ -227,9 +259,12 @@ local function APB_ShowComboBar(combo, partial, cast)
 
 	for i = 1, max_combo do
 
+		APB.combobar[i]:SetScript("OnUpdate", nil)
+
 		if i <= combo then
 			APB.combobar[i]:Show();
 			APB.combobar[i]:SetValue(1)
+			APB.combobar[i]:SetMinMaxValues(0, 1)
 
 
 			if bmax then
@@ -240,6 +275,7 @@ local function APB_ShowComboBar(combo, partial, cast)
 		elseif i <= (combo + cast) then
 			APB.combobar[i]:Show();
 			APB.combobar[i]:SetValue(1)
+			APB.combobar[i]:SetMinMaxValues(0, 1)
 
 			if gen == false then
 				APB.combobar[i]:SetStatusBarColor(0.5, 0.5, 0.5);
@@ -255,6 +291,11 @@ local function APB_ShowComboBar(combo, partial, cast)
 			else
 				APB.combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
 			end
+		elseif i == (combo + cast) + 1 and cooldown then
+			APB.combobar[i]:SetStatusBarColor(0.3, 0.3, 0.3);
+			APB.combobar[i].start = p_start;
+			APB.combobar[i].duration = cooldown;
+			APB.combobar[i]:SetScript("OnUpdate", APB_OnUpdateCombo)
 		else
 			APB.combobar[i]:Show();
 			APB.combobar[i]:SetValue(0)
@@ -511,35 +552,6 @@ local function RuneComparison(runeAIndex, runeBIndex)
 end
 
 
-local function APB_OnUpdateCombo(self, elapsed)
-
-	if not self.start then
-		return;
-	end
-
-	if not self.update  then
-		self.update = 0;
-	end
-
-	self.update = self.update + elapsed
-
-	if self.update >= 0.25  then
-		local curr_time = GetTime();
-		local curr_duration = curr_time - self.start;
-
-		self.update = 0		
-
-		if curr_duration < self.duration then
-			self:SetMinMaxValues(0, self.duration * 10)
-			self:SetValue((curr_time - self.start) * 10)
-		else
-			self:SetMinMaxValues(0, self.duration)
-			self:SetValue(self.duration)
-			self.start = nil;
-		end
-	end
-end
-
 
 local function APB_UpdateRune()
 
@@ -594,7 +606,16 @@ local function APB_UpdatePower()
 	local partial = nil;
 
 	if bupdate_partial_power then
-		_, partial = math.modf(UnitPower("player", APB_POWER_LEVEL, true) / UnitPowerDisplayMod(APB_POWER_LEVEL))
+		_, partial = math.modf(UnitPower("player", APB_POWER_LEVEL, true) / UnitPowerDisplayMod(APB_POWER_LEVEL));				
+	end
+
+	local cooldownDuration = nil;
+	if APB_UNIT_POWER == "POWER_TYPE_ESSENCE" then
+		local peace,interrupted = GetPowerRegenForPowerType(Enum.PowerType.Essence)
+		if (peace == nil or peace == 0) then
+			peace = 0.2;
+		end
+		cooldownDuration = 1 / peace;			
 	end
 
 
@@ -634,7 +655,7 @@ local function APB_UpdatePower()
 		end
 	end
 
-	APB_ShowComboBar(power, partial, cast);
+	APB_ShowComboBar(power, partial, cast, cooldownDuration);
 
 end
 
@@ -1054,8 +1075,7 @@ local function APB_CheckPower(self)
 		APB_POWER_LEVEL = Enum.PowerType.Essence;
 		APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
 		APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
-		bupdate_power = true;
-		bupdate_partial_power = true;
+		bupdate_power = true;		
 	end
 	
 	if (englishClass == "PALADIN") then
@@ -1136,15 +1156,13 @@ local function APB_CheckPower(self)
 
 		if (spec and spec == 3 ) then
 		
-			if asCheckTalent("혹한의 쐐기") then
-				APB_BUFF_COMBO = "고드름";		
-				APB_MaxCombo(5);
-				APB.combobar.unit = "player"
-				APB:RegisterUnitEvent("UNIT_AURA", "player");
-				APB_UpdateBuffCombo(self.combobar)
-				bupdate_buff_combo = true;				
-			end		
-			
+			APB_BUFF_COMBO = "고드름";		
+			APB_MaxCombo(5);
+			APB.combobar.unit = "player"
+			APB:RegisterUnitEvent("UNIT_AURA", "player");
+			APB_UpdateBuffCombo(self.combobar)
+			bupdate_buff_combo = true;				
+						
 			APB_BUFF = "얼음 핏줄";	
 			APB.buffbar[0].buff = "얼음 핏줄";
 			APB.combobar.unit = "player"
@@ -1321,6 +1339,10 @@ local function APB_CheckPower(self)
 		end
 
 		if (spec and spec == 3) then
+			APB_SPELL = "방패 올리기";
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
 			APB_BUFF = "방패 올리기";
 			APB.buffbar[0].buff = "방패 올리기"		
 			APB.buffbar[0].unit = "player"
@@ -1358,6 +1380,10 @@ local function APB_CheckPower(self)
 
 
 		if (spec and spec == 2) then
+			APB_SPELL = "악마 쐐기";
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
 			APB_BUFF = "악마 쐐기";	
 			APB.buffbar[0].buff = "악마 쐐기";
 			APB.buffbar[0].unit = "player"
