@@ -666,6 +666,7 @@ local function ADF_UpdateDebuff(unit)
 				for _,r in next,{_G[frameName.."Cooldown"]:GetRegions()}	do 
 					if r:GetObjectType()=="FontString" then 
 						r:SetFont("Fonts\\2002.TTF",ADF_CooldownFontSize,"OUTLINE")
+						r:ClearAllPoints();
 						r:SetPoint("TOP", 0, 5);
 						break 
 					end 
@@ -674,7 +675,8 @@ local function ADF_UpdateDebuff(unit)
 				local font, size, flag = _G[frameName.."Count"]:GetFont()
 
 				_G[frameName.."Count"]:SetFont(STANDARD_TEXT_FONT, ADF_CountFontSize, "OUTLINE")
-				_G[frameName.."Count"]:SetPoint("BOTTOMRIGHT", 0, 0);
+				_G[frameName.."Count"]:ClearAllPoints();
+				_G[frameName.."Count"]:SetPoint("BOTTOM", 0, -5);
 
 			end
 

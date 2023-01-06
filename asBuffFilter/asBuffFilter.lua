@@ -55,6 +55,7 @@ local ABF_ProcBuffList = {
 	["피의 욕망"] = 1,
 	["황천바람"] = 1,
 	["고대의 격분"] = 1,
+	["위상의 격노"] = 1,
 	["쾌활한 생기화"] = 2,
 }
 	
@@ -576,7 +577,8 @@ local function ABF_UpdateDebuff(unit)
 				frame:EnableMouse(false); 
 				for _,r in next,{_G[frameName.."Cooldown"]:GetRegions()}	do 
 					if r:GetObjectType()=="FontString" then 
-						r:SetFont(STANDARD_TEXT_FONT,ABF_CooldownFontSize,"OUTLINE")
+						r:SetFont(STANDARD_TEXT_FONT,ABF_CooldownFontSize,"OUTLINE");
+						r:ClearAllPoints();
 						r:SetPoint("TOP", 0, 5);
 						break 
 					end 
@@ -585,7 +587,8 @@ local function ABF_UpdateDebuff(unit)
 				local font, size, flag = _G[frameName.."Count"]:GetFont()
 
 				_G[frameName.."Count"]:SetFont(STANDARD_TEXT_FONT, ABF_CountFontSize, "OUTLINE")
-				_G[frameName.."Count"]:SetPoint("BOTTOMRIGHT", 0, 0);
+				_G[frameName.."Count"]:ClearAllPoints()
+				_G[frameName.."Count"]:SetPoint("BOTTOM", 0, -5);
 
 			end
 
