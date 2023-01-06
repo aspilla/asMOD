@@ -1098,6 +1098,16 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 								local color = { r = 0.3, g = 0.3, b = 0.3 };
 							
 								setFrame(self.CCdebuff:GetName(), texture, count, expirationTime, duration, color);		
+
+								self.CCdebuff:ClearAllPoints();
+								if self.casticon:IsShown() then
+									
+									self.CCdebuff:SetPoint("LEFT", self.casticon, "RIGHT", 1, 0);
+								else
+									
+									self.CCdebuff:SetPoint("LEFT", healthBar, "RIGHT", 2, 0);
+
+								end
 								self.CCdebuff:Show();
 							end
 						else
@@ -1304,7 +1314,20 @@ local function updateTargetNameP(self)
 		if casticon then
 			casticon:SetWidth((height + cast_height + 1) * 1.2);
 			casticon:SetHeight(height + cast_height + 1);
+			casticon.border:SetVertexColor(1,1,1);
+
+			--Alert 크기 조정
+			if casticon.alert then
+				ANameP_HideOverlayGlow(casticon);
+				if casticon.alert == 1 then
+					ANameP_ShowOverlayGlow(casticon, false);
+				else
+					ANameP_ShowOverlayGlow(casticon, true);
+				end
+			end
 		end
+
+		
 
 		if GetCVarBool("nameplateResourceOnTarget") then
 			base_y = base_y +  GetClassBarHeight();	
@@ -1320,6 +1343,17 @@ local function updateTargetNameP(self)
 		if casticon then
 			casticon:SetWidth((height + cast_height + 1) * 1.2);
 			casticon:SetHeight(height + cast_height + 1);
+			casticon.border:SetVertexColor(0,0,0);
+
+			--Alert 크기 조정
+			if casticon.alert then
+				ANameP_HideOverlayGlow(casticon);
+				if casticon.alert == 1 then
+					ANameP_ShowOverlayGlow(casticon, false);
+				else
+					ANameP_ShowOverlayGlow(casticon, true);
+				end
+			end
 		end
 		
 		if UnitFrame.name:IsShown() then
@@ -1724,7 +1758,10 @@ local function asNamePlates_OnEvent(self, event, ...)
 		updateHealthbarColor(self)
 	elseif( event == "PLAYER_TARGET_CHANGED") then
 		updateTargetNameP(self);
-	elseif( event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" ) then
+	elseif( event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" or event == "UNIT_SPELLCAST_SUCCEEDED" 
+	or event == "UNIT_SPELLCAST_INTERRUPTED"  or event == "UNIT_SPELLCAST_DELAYED"  or event == "UNIT_SPELLCAST_CHANNEL_STOP"
+	or event == "UNIT_SPELLCAST_STOP" ) then
+	
 		local unit, name , spellid = ...;
 
 		if not (unit == self.unit) then
@@ -1753,10 +1790,13 @@ local function asNamePlates_OnEvent(self, event, ...)
 
 			if alert then
 				ANameP_ShowOverlayGlow(self.casticon, false);
+				self.casticon.alert = 1;
 			elseif notInterruptible == false then
 				ANameP_ShowOverlayGlow(self.casticon, true);
+				self.casticon.alert = 2;
 			else
 				ANameP_HideOverlayGlow(self.casticon);
+				self.casticon.alert = nil;
 			end
 		end
 	end
@@ -1841,6 +1881,11 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates:UnregisterEvent("PLAYER_TARGET_CHANGED");
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_START");
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
+	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
+	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_DELAYED");
+	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
+	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_STOP");
 	namePlateFrameBase.asNamePlates:SetScript("OnEvent", nil);
 
 	
@@ -1911,7 +1956,7 @@ local function addNamePlate(namePlateUnitToken)
 		end
 		namePlateFrameBase.asNamePlates.casticon:EnableMouse(false);
         namePlateFrameBase.asNamePlates.casticon:ClearAllPoints();
-		namePlateFrameBase.asNamePlates.casticon:SetPoint("BOTTOMRIGHT", unitFrame.castBar, "BOTTOMLEFT", -2, 1);
+		namePlateFrameBase.asNamePlates.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 2, 1);
 		namePlateFrameBase.asNamePlates.casticon:SetWidth(13);
 		namePlateFrameBase.asNamePlates.casticon:SetHeight(13);
 
@@ -1930,7 +1975,7 @@ local function addNamePlate(namePlateUnitToken)
 	end
 	namePlateFrameBase.asNamePlates.CCdebuff:EnableMouse(false);
     namePlateFrameBase.asNamePlates.CCdebuff:ClearAllPoints();
-	namePlateFrameBase.asNamePlates.CCdebuff:SetPoint("LEFT", unitFrame.healthBar, "RIGHT", 2, 0);
+	namePlateFrameBase.asNamePlates.CCdebuff:SetPoint("LEFT", namePlateFrameBase.asNamePlates.casticon, "RIGHT", 2, 0);
 	namePlateFrameBase.asNamePlates.CCdebuff:SetWidth(ANameP_CCDebuffSize * 1.2);
 	namePlateFrameBase.asNamePlates.CCdebuff:SetHeight(ANameP_CCDebuffSize);
 
@@ -1983,6 +2028,12 @@ local function addNamePlate(namePlateUnitToken)
 			namePlateFrameBase.asNamePlates:RegisterEvent("PLAYER_TARGET_CHANGED");
 			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_START", namePlateUnitToken);
 			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", namePlateUnitToken);
+			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", namePlateUnitToken);
+			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", namePlateUnitToken);
+			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", namePlateUnitToken);
+			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", namePlateUnitToken);
+			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_STOP", namePlateUnitToken);
+
 		end			
 			
 		if ANameP_SIZE > 0 then
