@@ -1589,6 +1589,8 @@ local function asCompactUnitFrame_UpdateAll(frame)
 		if name and not (name == nil) and (string.find (name, "CompactRaidGroup") or string.find (name, "CompactPartyFrameMember") or string.find (name, "CompactRaidFrame")) then
 			ACRB_disableDefault(frame);
 			ACRB_setupFrame(frame);
+			--혹시 다른프레임도 안될까바
+			mustdisable = true;
 		end
 
 	end
