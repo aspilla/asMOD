@@ -831,6 +831,7 @@ local function ACDP_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		ACDP_UpdateCooldown()
 
+		
 		local GN={"ActionButton","MultiBarBottomLeftButton","MultiBarBottomRightButton","MultiBarLeftButton","MultiBarRightButton", "PetActionButton",  "StanceButton" }
 
 		for _,f in next,GN do 
@@ -846,6 +847,7 @@ local function ACDP_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 				end
 			end 
 		end
+		
 
 		setupKnownSpell();
 

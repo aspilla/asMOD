@@ -569,6 +569,7 @@ ANameP_HealSpellList["기원사"] = {
         
 };
 
+local _G = _G;
 
 local ANameP_HealerGuid = {
 
@@ -795,7 +796,8 @@ local function createDebuffFrame(parent, frameName)
 	for _,r in next,{_G[frameName.."Cooldown"]:GetRegions()}	do 
 		if r:GetObjectType()=="FontString" then 
 			r:SetFont(STANDARD_TEXT_FONT, ANameP_CooldownFontSize,"OUTLINE")
-			r:SetPoint("TOPLEFT", -2, 4);
+			r:ClearAllPoints();
+			r:SetPoint("TOP", 0, 4);
 			break;
 		end 
 	end
@@ -803,7 +805,8 @@ local function createDebuffFrame(parent, frameName)
 	local font, size, flag = _G[frameName.."Count"]:GetFont()
 
 	_G[frameName.."Count"]:SetFont(STANDARD_TEXT_FONT, ANameP_CountFontSize, "OUTLINE")
-	_G[frameName.."Count"]:SetPoint("BOTTOMRIGHT", 0, 0);
+	_G[frameName.."Count"]:ClearAllPoints();
+	_G[frameName.."Count"]:SetPoint("BOTTOM", 0, -4);
 
 	local frameIcon = _G[frameName.."Icon"];
 	local frameBorder = _G[frameName.."Border"];
