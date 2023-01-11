@@ -1427,9 +1427,9 @@ local function APB_CheckPower(self)
 			APB_UpdateSpell(APB_SPELL);
 			bupdate_spell = true;
 
-			if asCheckTalent("꾸준한 집중") then
-				APB_BUFF = "꾸준한 집중";
-				APB.buffbar[0].buff = "꾸준한 집중";		
+			if asCheckTalent("교묘한 사격") then
+				APB_BUFF = "교묘한 사격";
+				APB.buffbar[0].buff = "교묘한 사격";		
 				APB.buffbar[0].unit = "player"
 				APB:RegisterUnitEvent("UNIT_AURA", "player");
 				APB_UpdateBuff(self.buffbar[0])
