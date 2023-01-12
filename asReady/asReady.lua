@@ -76,15 +76,15 @@ local function create_bar_icon(idx, unit, spellid, time, cool)
 			AREADY.bar[idx]:SetPoint("BOTTOMLEFT",AREADY.bar[idx - 1],"TOPLEFT", 0, 2)
 		end
 
-		AREADY.bar[idx].playname = AREADY.bar[idx]:CreateFontString("AREADYPlayname".. idx, "OVERLAY")
+		AREADY.bar[idx].playname = AREADY.bar[idx]:CreateFontString(nil, "OVERLAY")
 		AREADY.bar[idx].playname:SetFont(AREADY_Font, AREADY_HEIGHT - 2,  "OUTLINE")
 		AREADY.bar[idx].playname:SetPoint("LEFT", AREADY.bar[idx], "LEFT", 2, 0)
-		AREADY.bar[idx].cooltime = AREADY.bar[idx]:CreateFontString("AREADYCooltime".. idx, "OVERLAY")
+		AREADY.bar[idx].cooltime = AREADY.bar[idx]:CreateFontString(nil, "OVERLAY")
 		AREADY.bar[idx].cooltime:SetFont(AREADY_Font, AREADY_HEIGHT - 3,  "OUTLINE")
 		AREADY.bar[idx].cooltime:SetPoint("RIGHT", AREADY.bar[idx], "RIGHT", -2, 0)
 
 			
-		AREADY.icon[idx] = CreateFrame("Button", "AREADYIcon" .. idx, AREADY.bar[idx], "AREADYFrameTemplate");
+		AREADY.icon[idx] = CreateFrame("Button", nil, "AREADYFrameTemplate");
 
 		AREADY.icon[idx]:SetPoint("TOPRIGHT", AREADY.bar[idx],"TOPLEFT", -2, 0);
 
@@ -129,9 +129,7 @@ local function create_bar_icon(idx, unit, spellid, time, cool)
 
 
 		if icon then
-
-
-			local frameIcon = _G["AREADYIcon"..idx.."Icon"];
+			local frameIcon = AREADY.icon[idx].icon;
 
 			frameIcon:SetTexture(icon);
 			frameIcon:Show();

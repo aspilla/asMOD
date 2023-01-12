@@ -197,8 +197,6 @@ local ACRB_PVPBuffList = {
 
 }
 
-local _G = _G;
-
 -- 직업 리필 
 local ACRB_ShowList = nil;
 local ACRB_baseSize = 0;
@@ -414,7 +412,7 @@ local function ACRB_setupFrame(frame)
 		asraid[frameName].asbuffFrames = {}
 		for i = 1, ACRB_MAX_BUFFS do
 			local buffPrefix = frameName .. "asBuff"
-			local buffFrame = _G[buffPrefix .. i] or CreateFrame("Button", buffPrefix .. i, frame, "asCompactBuffTemplate")
+			local buffFrame = CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
 			buffFrame.icon:SetTexCoord(.08, .92, .08, .92);
 			buffFrame:ClearAllPoints()
 			buffFrame:EnableMouse(ACRB_ShowTooltip); 
@@ -428,10 +426,10 @@ local function ACRB_setupFrame(frame)
 						buffFrame:ClearAllPoints();
 						buffFrame:SetPoint(buffPos, frame, "BOTTOMRIGHT", -2, buffOffset);
 					else
-						buffFrame:SetPoint("BOTTOMRIGHT", _G[buffPrefix .. i - 3], "TOPRIGHT", 0, 2)
+						buffFrame:SetPoint("BOTTOMRIGHT",asraid[frameName].asbuffFrames[i-3], "TOPRIGHT", 0, 2)
 					end
 				else
-					buffFrame:SetPoint("BOTTOMRIGHT", _G[buffPrefix .. i - 1], "BOTTOMLEFT", -2, 0)
+					buffFrame:SetPoint("BOTTOMRIGHT", asraid[frameName].asbuffFrames[i-1], "BOTTOMLEFT", -2, 0)
 				end
 			else
 	
@@ -506,7 +504,7 @@ local function ACRB_setupFrame(frame)
 		asraid[frameName].asdebuffFrames = {};
 		for i = 1, ACRB_MAX_DEBUFFS do
 			local buffPrefix = frameName .. "asDebuff"
-			local debuffFrame = _G[buffPrefix .. i] or CreateFrame("Button", buffPrefix .. i, frame, "asCompactDebuffTemplate")
+			local debuffFrame = CreateFrame("Button", nil, frame, "asCompactDebuffTemplate")
 			debuffFrame:ClearAllPoints()
 			debuffFrame:EnableMouse(ACRB_ShowTooltip); 
 			debuffFrame.icon:SetTexCoord(.08, .92, .08, .92);
@@ -516,10 +514,10 @@ local function ACRB_setupFrame(frame)
 					debuffFrame:ClearAllPoints();
 					debuffFrame:SetPoint(debuffPos, frame, "BOTTOMLEFT", 3, debuffOffset);
 				else
-					debuffFrame:SetPoint("BOTTOMLEFT", _G[buffPrefix .. i - 3], "TOPLEFT", 0, 2)
+					debuffFrame:SetPoint("BOTTOMLEFT",asraid[frameName].asdebuffFrames[i-3], "TOPLEFT", 0, 2)
 				end
 			else
-				debuffFrame:SetPoint("BOTTOMLEFT", _G[buffPrefix .. i - 1], "BOTTOMRIGHT", 2, 0)
+				debuffFrame:SetPoint("BOTTOMLEFT", asraid[frameName].asdebuffFrames[i-1], "BOTTOMRIGHT", 2, 0)
 			end
 	
 			debuffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
@@ -570,7 +568,7 @@ local function ACRB_setupFrame(frame)
 		asraid[frameName].asdispelDebuffFrames = {};
 		for i=1, ACRB_MAX_DISPELDEBUFFS do
 			local dispelDebuffPrefix = frameName .. "asdispelDebuff"
-			local dispelDebuffFrame = _G[dispelDebuffPrefix .. i] or CreateFrame("Button", dispelDebuffPrefix .. i, frame, "asCompactDispelDebuffTemplate")
+			local dispelDebuffFrame =  CreateFrame("Button", nil, frame, "asCompactDispelDebuffTemplate")
 			dispelDebuffFrame:EnableMouse(false); 
 			asraid[frameName].asdispelDebuffFrames[i] = dispelDebuffFrame;
 			dispelDebuffFrame:Hide();
@@ -587,8 +585,8 @@ local function ACRB_setupFrame(frame)
 	
 
 	if not asraid[frameName].asDispelBorder then
-		local borderPrefix = frameName .. "asBorder"
-		asraid[frameName].asDispelBorder = _G[borderPrefix]  or frame:CreateTexture(borderPrefix,"BACKGROUND")
+		
+		asraid[frameName].asDispelBorder = frame:CreateTexture(nil,"BACKGROUND")
 		asraid[frameName].asDispelBorder:SetTexture("Interface\\AddOns\\asCompactRaidBuff\\overborder.tga");	
 		asraid[frameName].asDispelBorder:SetPoint("TOPLEFT",-2,2)
 		asraid[frameName].asDispelBorder:SetPoint("BOTTOMRIGHT",2, -2)
@@ -599,8 +597,7 @@ local function ACRB_setupFrame(frame)
 	
 
 	if (not asraid[frameName].asManabar and not frame.powerBar:IsShown()) then
-		local manabarPrefix = frameName .. "_asManabar"
-		asraid[frameName].asManabar =  _G[manabarPrefix] or CreateFrame("StatusBar", manabarPrefix, frame.healthBar)
+		asraid[frameName].asManabar =   CreateFrame("StatusBar", nil, frame.healthBar)
 		asraid[frameName].asManabar:SetStatusBarTexture("Interface\\TARGETINGFRAME\\UI-StatusBar")
 		asraid[frameName].asManabar:GetStatusBarTexture():SetHorizTile(false)
 		asraid[frameName].asManabar:SetMinMaxValues(0, 100)
@@ -615,9 +612,7 @@ local function ACRB_setupFrame(frame)
 	end
 
 	if (not asraid[frameName].asraidicon) then
-		local buffPrefix = frameName .. "_asRAIDICON"
-
-		asraid[frameName].asraidicon =  _G[buffPrefix] or frame:CreateFontString( buffPrefix , "OVERLAY")
+		asraid[frameName].asraidicon =   frame:CreateFontString( nil , "OVERLAY")
 		asraid[frameName].asraidicon:SetFont(STANDARD_TEXT_FONT, fontsize * 2)
 		asraid[frameName].asraidicon:SetPoint("LEFT", frame.healthBar, "LEFT", 2, 0)
 		asraid[frameName].asraidicon:Hide();
@@ -629,8 +624,7 @@ local function ACRB_setupFrame(frame)
 		asraid[frameName].buffFrames2 = {};
 	
 		for i = 1, ACRB_MAX_BUFFS_2 do
-			local buffPrefix = frameName .. "Buff2_"
-			asraid[frameName].buffFrames2[i] =  _G[buffPrefix .. i] or CreateFrame("Button", buffPrefix .. i, frame, "asCompactBuffTemplate")
+			asraid[frameName].buffFrames2[i] =  CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
 			asraid[frameName].buffFrames2[i]:EnableMouse(ACRB_ShowTooltip); 
 			asraid[frameName].buffFrames2[i].icon:SetTexCoord(.08, .92, .08, .92);
 			asraid[frameName].buffFrames2[i]:SetSize(baseSize * 1.2, baseSize * 0.9);
@@ -642,7 +636,7 @@ local function ACRB_setupFrame(frame)
 	
 			if  ACRB_ShowBuffCooldown and fontsize >= ACRB_MinShowBuffFontSize   then
 				asraid[frameName].buffFrames2[i].cooldown:SetHideCountdownNumbers(false);
-				for _,r in next,{_G[buffPrefix .. i .."Cooldown"]:GetRegions()}	do 
+				for _,r in next,{asraid[frameName].buffFrames2[i].cooldown:GetRegions()}	do 
 					if r:GetObjectType()=="FontString" then 
 						r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE");
 						r:ClearAllPoints();
@@ -657,7 +651,7 @@ local function ACRB_setupFrame(frame)
 			if i == 1 then
 				asraid[frameName].buffFrames2[i]:SetPoint("CENTER", frame.healthBar, "CENTER", 0, 0)
 			else
-				asraid[frameName].buffFrames2[i]:SetPoint("TOPLEFT", _G[buffPrefix .. i - 1], "TOPRIGHT", 0, 0)
+				asraid[frameName].buffFrames2[i]:SetPoint("TOPLEFT", asraid[frameName].buffFrames2[i-1], "TOPRIGHT", 0, 0)
 			end
 			
 			if ACRB_ShowTooltip and not asraid[frameName].buffFrames2[i]:GetScript("OnEnter") then

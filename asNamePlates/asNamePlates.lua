@@ -569,8 +569,6 @@ ANameP_HealSpellList["기원사"] = {
         
 };
 
-local _G = _G;
-
 local ANameP_HealerGuid = {
 
 }
@@ -790,10 +788,13 @@ end
 -- 버프 디버프 처리부
 local function createDebuffFrame(parent, frameName)
 
-	local ret = CreateFrame("Frame", frameName, parent, "asNamePlatesBuffFrameTemplate");
+	local ret = CreateFrame("Frame", nil, parent, "asNamePlatesBuffFrameTemplate");
 	ret:EnableMouse(false);
+
+	local frameCooldown = ret.cooldown;
+	local frameCount = ret.count;
 					
-	for _,r in next,{_G[frameName.."Cooldown"]:GetRegions()}	do 
+	for _,r in next,{frameCooldown:GetRegions()}	do 
 		if r:GetObjectType()=="FontString" then 
 			r:SetFont(STANDARD_TEXT_FONT, ANameP_CooldownFontSize,"OUTLINE")
 			r:ClearAllPoints();
@@ -802,14 +803,14 @@ local function createDebuffFrame(parent, frameName)
 		end 
 	end
 
-	local font, size, flag = _G[frameName.."Count"]:GetFont()
+	local font, size, flag = frameCount:GetFont()
 
-	_G[frameName.."Count"]:SetFont(STANDARD_TEXT_FONT, ANameP_CountFontSize, "OUTLINE")
-	_G[frameName.."Count"]:ClearAllPoints();
-	_G[frameName.."Count"]:SetPoint("BOTTOM", 0, -4);
+	frameCount:SetFont(STANDARD_TEXT_FONT, ANameP_CountFontSize, "OUTLINE")
+	frameCount:ClearAllPoints();
+	frameCount:SetPoint("BOTTOM", 0, -4);
 
-	local frameIcon = _G[frameName.."Icon"];
-	local frameBorder = _G[frameName.."Border"];
+	local frameIcon = ret.icon;
+	local frameBorder = ret.border;
 					
 	frameIcon:SetTexCoord(.08, .92, .08, .92)
 	frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga")
@@ -819,13 +820,13 @@ local function createDebuffFrame(parent, frameName)
 
 end
 
-local function setFrame(frameName, texture, count, expirationTime, duration, color)
+local function setFrame(frame, texture, count, expirationTime, duration, color)
 
-	local frameIcon = _G[frameName.."Icon"];
+	local frameIcon = frame.icon;
 	frameIcon:SetTexture(texture);
 
-	local frameCount = _G[frameName.."Count"];
-	local frameCooldown = _G[frameName.."Cooldown"];
+	local frameCount = frame.count;
+	local frameCooldown = frame.cooldown;
 
 	if count and  (count > 1) then
 		frameCount:SetText(count);
@@ -841,7 +842,7 @@ local function setFrame(frameName, texture, count, expirationTime, duration, col
 		frameCooldown:SetHideCountdownNumbers(false);
 	end
 						
-	local frameBorder = _G[frameName.."Border"];
+	local frameBorder = frame.border;
 	frameBorder:SetVertexColor(color.r, color.g, color.b);
 end
 
@@ -852,9 +853,9 @@ local function setSize(frame, size)
 
 end
 
-local function updateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX, right, parent)
+local function updateDebuffAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
 
-	local buff = _G[debuffName..index];
+	local buff = frames[index];
 	local point1 = "BOTTOMLEFT";
 	local point2 = "BOTTOMLEFT";
 	local point3 = "BOTTOMRIGHT";
@@ -872,17 +873,17 @@ local function updateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX,
 		if ( index == 1 ) then
 			buff:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, 0);
 		elseif ( index == (debuffs_per_line + 1) ) then
-			buff:SetPoint("TOPLEFT", _G[debuffName..1], "BOTTOMLEFT", 0, -4);
+			buff:SetPoint("TOPLEFT", frames[1], "BOTTOMLEFT", 0, -4);
 		else
-			buff:SetPoint(point1, _G[debuffName..(index-1)], point3, offsetX, 0);
+			buff:SetPoint(point1, frames[index -1], point3, offsetX, 0);
 		end
 	else
 		if ( index == 1 ) then
 			buff:SetPoint("BOTTOMLEFT", parent, "TOPLEFT", 0, 0);
 		elseif ( index == (debuffs_per_line + 1) ) then
-			buff:SetPoint("BOTTOMLEFT", _G[debuffName..1], "TOPLEFT", 0, 4);
+			buff:SetPoint("BOTTOMLEFT", frames[1], "TOPLEFT", 0, 4);
 		else
-			buff:SetPoint(point1, _G[debuffName..(index-1)], point3, offsetX, 0);
+			buff:SetPoint(point1, frames[index-1], point3, offsetX, 0);
 		end
 	end
 
@@ -1042,7 +1043,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			end
 
 			local color = {r = 1, g = 1, b = 1};
-			setFrame(frameName, texture, count, expirationTime, duration, color);		
+			setFrame(self.buffList[numDebuffs], texture, count, expirationTime, duration, color);		
 			frame:Show();
 
 			numDebuffs = numDebuffs + 1;
@@ -1100,7 +1101,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 								local color = { r = 0.3, g = 0.3, b = 0.3 };
 							
-								setFrame(self.CCdebuff:GetName(), texture, count, expirationTime, duration, color);		
+								setFrame(self.CCdebuff, texture, count, expirationTime, duration, color);		
 
 								self.CCdebuff:ClearAllPoints();
 								if self.casticon:IsShown() then
@@ -1223,7 +1224,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 				color = DebuffTypeColor[debuffType];
 			end
 
-			setFrame(frameName, texture, count, expirationTime, duration, color);		
+			setFrame(self.buffList[numDebuffs], texture, count, expirationTime, duration, color);		
 			frame:Show();
 			numDebuffs = numDebuffs + 1;
 		end
@@ -1235,7 +1236,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 	if not showdebuff then
 		for i = 1, numDebuffs - 1 do
-			updateDebuffAnchor(frametype, i, i - 1, size_list[i], 4, true, self);
+			updateDebuffAnchor(self.buffList, i, i - 1, size_list[i], 4, true, self);
 		end
 	end
 
@@ -1779,7 +1780,7 @@ local function asNamePlates_OnEvent(self, event, ...)
 		--local isTargetPlayer = UnitIsUnit (unit .. "target", "player");
 		if self.casticon then
 			local isDanger = isDangerousSpell (spellid, unit);
-			local frameIcon = _G[self.casticon:GetName().."Icon"]; 
+			local frameIcon = self.casticon.icon; 
 			if name and frameIcon then
 			--if name and frameIcon and isTargetPlayer then
 				frameIcon:SetTexture(texture);
@@ -1963,8 +1964,8 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.casticon:SetWidth(13);
 		namePlateFrameBase.asNamePlates.casticon:SetHeight(13);
 
-		local frameIcon = _G[namePlateFrameBase.asNamePlates.casticon:GetName().."Icon"]; 
-		local frameBorder = _G[namePlateFrameBase.asNamePlates.casticon:GetName().."Border"];
+		local frameIcon = namePlateFrameBase.asNamePlates.casticon.icon; 
+		local frameBorder = namePlateFrameBase.asNamePlates.casticon.border;
 				
 		frameIcon:SetTexCoord(.08, .92, .08, .92);
 		frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
@@ -1982,14 +1983,14 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.CCdebuff:SetWidth(ANameP_CCDebuffSize * 1.2);
 	namePlateFrameBase.asNamePlates.CCdebuff:SetHeight(ANameP_CCDebuffSize);
 
-	local frameIcon = _G[namePlateFrameBase.asNamePlates.CCdebuff:GetName().."Icon"]; 
-	local frameBorder = _G[namePlateFrameBase.asNamePlates.CCdebuff:GetName().."Border"];
+	local frameIcon = namePlateFrameBase.asNamePlates.CCdebuff.icon;
+	local frameBorder = namePlateFrameBase.asNamePlates.CCdebuff.border;
 			
 	frameIcon:SetTexCoord(.08, .92, .08, .92);
 	frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
 	frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 
-	for _,r in next,{_G[namePlateFrameBase.asNamePlates.CCdebuff:GetName().."Cooldown"]:GetRegions()}	do 
+	for _,r in next,{namePlateFrameBase.asNamePlates.CCdebuff.cooldown:GetRegions()}	do 
 		if r:GetObjectType()=="FontString" then 
 			r:SetFont(STANDARD_TEXT_FONT, ANameP_CooldownFontSize,"OUTLINE")
 			r:SetPoint("TOP", 0, 4);

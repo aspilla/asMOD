@@ -19,7 +19,9 @@ local ASQA_DeBuffIDList = {}
 -- { 디버프 이름 or Spell ID, 내부 쿨}
 local ASQA_ProcDeBuffList = {
 
-	{"전율", 20},
+--	{"전율", 20},
+	{"저체온증", 60},
+	{"시간 변위", 60},
 
 }
 
@@ -29,12 +31,16 @@ local a_isProc = {};
 local ASQA_Current_Buff = "";
 local ASQA_Current_Count = 0;
 
-local function ASQA_UpdateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX, right, parent)
+local function ASQA_UpdateDebuffAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
 
-	local buff = _G[debuffName..index];
+	local buff = frames[index];
 	local point1 = "TOPLEFT";
 	local point2 = "BOTTOMLEFT";
 	local point3 = "TOPRIGHT";
+
+	if buff == nil then
+		return;
+	end
 
 	if (right == false) then
 		point1 = "TOPRIGHT";
@@ -46,7 +52,7 @@ local function ASQA_UpdateDebuffAnchor(debuffName, index, anchorIndex, size, off
 	if ( index == 1 ) then
 		buff:SetPoint(point1, parent, point2, 0, 0);
 	else
-		buff:SetPoint(point1, _G[debuffName..(index-1)], point3, offsetX, 0);
+		buff:SetPoint(point1, frames[index-1], point3, offsetX, 0);
 	end
 
 	-- Resize
@@ -91,6 +97,10 @@ local function ASQA_UpdateDebuff(unit)
 	--for i = 1, maxIdx do
 	i = 1;
 
+	if ASQA.frames == nil then
+		ASQA.frames = {};
+	end
+
 	repeat
 		local skip = false;
 		local debuff;
@@ -122,15 +132,15 @@ local function ASQA_UpdateDebuff(unit)
 			if numDebuffs > ASQA_MAX_BUFF_SHOW then
 				break;
 			end
-
-			local color;
-			frameName = frametype..numDebuffs;
-			frame = _G[frameName];
+					
+			frame = ASQA.frames[numDebuffs];
 			
 			if ( not frame ) then
-				frame = CreateFrame("Button", frameName, parent, "asQuakingAlertFrameTemplate");
+				frame = CreateFrame("Button", nil, parent, "asQuakingAlertFrameTemplate");
+				ASQA.frames[numDebuffs] = frame;
 				frame:EnableMouse(false); 
-				for _,r in next,{_G[frameName.."Cooldown"]:GetRegions()}	do 
+				frameCooldown = frame.cooldown;
+				for _,r in next,{frameCooldown:GetRegions()}	do 
 					if r:GetObjectType()=="FontString" then 
 						r:SetFont("Fonts\\2002.TTF",ASQA_CooldownFontSize,"OUTLINE")
 						r:SetPoint("CENTER", 0, 0);
@@ -138,23 +148,24 @@ local function ASQA_UpdateDebuff(unit)
 					end 
 				end
 
-				local font, size, flag = _G[frameName.."Count"]:GetFont()
+				frameCount = frame.count;
+				local font, size, flag = frameCount:GetFont()
 
-				_G[frameName.."Count"]:SetFont(font, ASQA_CountFontSize, "OUTLINE")
-				_G[frameName.."Count"]:SetPoint("BOTTOMRIGHT", -2, 2);
+				frameCount:SetFont(font, ASQA_CountFontSize, "OUTLINE")
+				frameCount:SetPoint("BOTTOMRIGHT", -2, 2);
 
 			end
 			-- set the icon
-			frameIcon = _G[frameName.."Icon"];
+			frameIcon = frame.icon;
 			frameIcon:SetTexture(icon);
 			frameIcon:SetAlpha(ASQA_ALPHA);
 			frameIcon:SetDesaturated(false)
 
 
 			-- set the count
-			frameCount = _G[frameName.."Count"];
+			frameCount = frame.count;
 			-- Handle cooldowns
-			frameCooldown = _G[frameName.."Cooldown"];
+			frameCooldown = frame.cooldown;
 			
 			frame:SetWidth(ASQA_SIZE);
 			frame:SetHeight(ASQA_SIZE);
@@ -168,7 +179,7 @@ local function ASQA_UpdateDebuff(unit)
 				frameCount:Hide();
 			end				
 			
-			if ( duration > 0 and duration <= 120 ) then
+			if ( duration > 0 ) then
 				frameCooldown:Show();
 				asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration >0,  true);
 				frameCooldown:SetHideCountdownNumbers(false);
@@ -210,14 +221,14 @@ local function ASQA_UpdateDebuff(unit)
 					break;
 				end
 
-				local color;
-				frameName = frametype..numDebuffs;
-				frame = _G[frameName];
+				frame = ASQA.frames[z];
 			
 				if ( not frame ) then
-					frame = CreateFrame("Button", frameName, parent, "asQuakingAlertFrameTemplate");
+					frame = CreateFrame("Button", nil, parent, "asQuakingAlertFrameTemplate");
 					frame:EnableMouse(false); 
-					for _,r in next,{_G[frameName.."Cooldown"]:GetRegions()}	do 
+
+					frameCooldown = frame.cooldown;
+					for _,r in next,{frameCooldown:GetRegions()}	do 
 						if r:GetObjectType()=="FontString" then 
 							r:SetFont("Fonts\\2002.TTF",ASQA_CooldownFontSize,"OUTLINE")
 							r:SetPoint("CENTER", 0, 0);
@@ -225,14 +236,15 @@ local function ASQA_UpdateDebuff(unit)
 						end 
 					end
 		
-					local font, size, flag = _G[frameName.."Count"]:GetFont()
+					frameCount = frame.count;
+					local font, size, flag = frameCount:GetFont()
 	
-					_G[frameName.."Count"]:SetFont(font, ASQA_CountFontSize, "OUTLINE")
-					_G[frameName.."Count"]:SetPoint("BOTTOMRIGHT", -2, 2);
+					frameCount:SetFont(font, ASQA_CountFontSize, "OUTLINE")
+					frameCount:SetPoint("BOTTOMRIGHT", -2, 2);
 
 				end
 				-- set the icon
-				frameIcon = _G[frameName.."Icon"];
+				frameIcon = frame.icon;
 				frameIcon:SetTexture(icon);
 				frameIcon:SetAlpha(ASQA_ALPHA);
 				frameIcon:SetDesaturated(true)
@@ -240,9 +252,9 @@ local function ASQA_UpdateDebuff(unit)
 				--frame:SetScale(0.5);
 
 				-- set the count
-				frameCount = _G[frameName.."Count"];
+				frameCount = frame.count;
 				-- Handle cooldowns
-				frameCooldown = _G[frameName.."Cooldown"];
+				frameCooldown = frame.cooldown;
 				
 				frame:SetWidth(ASQA_SIZE);
 				frame:SetHeight(ASQA_SIZE);
@@ -267,15 +279,14 @@ local function ASQA_UpdateDebuff(unit)
 
 	for i=1, numDebuffs - 1 do
 		if i < numShow then
-			ASQA_UpdateDebuffAnchor(frametype, i, i - 1, ASQA_SIZE, 4, false, parent);
+			ASQA_UpdateDebuffAnchor(ASQA.frames, i, i - 1, ASQA_SIZE, 4, false, parent);
 		else
-			ASQA_UpdateDebuffAnchor(frametype, i, i - 1, ASQA_SIZE, 4, false, parent);
+			ASQA_UpdateDebuffAnchor(ASQA.frames, i, i - 1, ASQA_SIZE, 4, false, parent);
 		end
 	end
 	
 	for i = numDebuffs, maxIdx do
-		frameName = frametype..i;
-		frame = _G[frameName];
+		frame = ASQA.frames[i];
 
 		if ( frame ) then
 			frame:Hide();	
@@ -323,7 +334,7 @@ local function ASQA_Init()
 	ASQA:SetAlpha(ASQA_ALPHA);
 	ASQA:Show()
 
-	ASQA_PLAYER_BUFF = CreateFrame("Frame", "ASQA_PLAYER_BUFF", ASQA)
+	ASQA_PLAYER_BUFF = CreateFrame("Frame", nil, ASQA)
     ASQA_PLAYER_BUFF:SetPoint("CENTER", ASQA_PLAYER_BUFF_X, ASQA_PLAYER_BUFF_Y)
 	ASQA_PLAYER_BUFF:SetWidth(1)
 	ASQA_PLAYER_BUFF:SetHeight(1)
