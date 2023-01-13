@@ -239,9 +239,9 @@ local function setupKnownSpell()
 	scanItemSlots();
 end
 
-local function ACDP_UpdateCoolAnchor(name, index, anchorIndex, size, offsetX, right, parent)
+local function ACDP_UpdateCoolAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
 
-	local cool = _G[name..index];
+	local cool = frames[index];
 	local point1 = "TOPLEFT";
 	local point2 = "BOTTOMLEFT";
 	local point3 = "TOPRIGHT";
@@ -258,7 +258,7 @@ local function ACDP_UpdateCoolAnchor(name, index, anchorIndex, size, offsetX, ri
 	if ( index % ACDP_CooldownCount == 1 ) then
 		cool:SetPoint(point1, parent, point2, 0, offsetY);
 	else
-		cool:SetPoint(point1, _G[name..(index-1)], point3, offsetX, 0);
+		cool:SetPoint(point1, frames[index-1], point3, offsetX, 0);
 	end
 end
 
@@ -279,31 +279,30 @@ local function ACDP_UpdateCooldown()
 
 	local selfName;
 	local numCools = 1;
-	local frame, frameName;
+	local frame;
 	local frameIcon, frameCooldown;
 	local name, icon, duration, start;
 	local color;
 	local frameBorder;
 	local maxIdx;
 	local parent;
-	local frametype;
+	
 
-	selfName = "ACDP_Cool_";
-
+	
 	maxIdx = #ACDP_SpellList;
 	parent = ACDP_CoolButtons;
-
-	frametype = selfName.."Button";
-
+	
+	if parent.frames == nil then
+		parent.frames = {};
+	end
 
 	if (ACDP_Show_CoolList == false) then
 
 		for i = 1, ACDP_CooldownCount do
-			frameName = frametype..i;
-			frame = _G[frameName];
+			frame = parent.frames[i];
 
 			if ( frame ) then
-			frame:Hide();	
+				frame:Hide();	
 			end
 		end
 
@@ -352,22 +351,26 @@ local function ACDP_UpdateCooldown()
 			end		
 
 			if (icon and duration > 0) and skip == false then
-				frameName = frametype..numCools;
-				frame = _G[frameName];
+				frame = parent.frames[numCools];
 
 				if ( not frame ) then
-					frame = CreateFrame("Button", frameName, parent, "asCooldownPulseFrameTemplate");
+					parent.frames[numCools] = CreateFrame("Button", nil, parent, "asCooldownPulseFrameTemplate");
+					frame = parent.frames[numCools];
 					frame:SetWidth(ACDP_SIZE);
 					frame:SetHeight(ACDP_SIZE * 0.9);
 					frame:EnableMouse(false); 
 					frame:Disable();
 
-					for _,r in next,{_G[frameName.."Cooldown"]:GetRegions()}	do 
+					for _,r in next,{frame.cooldown:GetRegions()}	do 
 						if r:GetObjectType()=="FontString" then 
 							r:SetFont("Fonts\\2002.TTF",ACDP_CooldownFontSize,"OUTLINE")
 							break 
 						end 
 					end
+
+					frame.icon:SetTexCoord(.08, .92, .08, .92);
+					frame.border:SetTexture("Interface\\Addons\\asCooldownPulse\\border.tga");
+					frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 
 				end
 
@@ -375,22 +378,18 @@ local function ACDP_UpdateCooldown()
 					(not (ACDP_ExpirationTime[idx] == start + duration)) or
 					(ACDP_bUpdate[idx] == true) then
 					-- set the icon
-					frameIcon = _G[frameName.."Icon"];
+					frameIcon = frame.icon;
 					frameIcon:SetTexture(icon);
 					frameIcon:SetAlpha(ACDP_ALPHA);
 					frameIcon:SetDesaturated(ACDP_GreyColor)
 
-					frameBorder = _G[frameName.."Border"];
-					
-					frameIcon:SetTexCoord(.08, .92, .08, .92);
-					frameBorder:SetTexture("Interface\\Addons\\asCooldownPulse\\border.tga");
-					frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+					frameBorder = frame.border;
 					frameBorder:SetVertexColor(0, 0, 0);
 					frameBorder:Show();
 
 
 					-- set the count
-					frameCooldown = _G[frameName.."Cooldown"];
+					frameCooldown = frame.cooldown;
 					frameCooldown:Show();
 					asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, true);
 					frameCooldown:SetHideCountdownNumbers(false);
@@ -425,13 +424,13 @@ local function ACDP_UpdateCooldown()
 
 	for i=1, numCools - 1 do
 		-- anchor the current aura
-		ACDP_UpdateCoolAnchor(frametype, i, i- 1, ACDP_SIZE, 3, true, parent);
+		ACDP_UpdateCoolAnchor(parent.frames, i, i- 1, ACDP_SIZE, 3, true, parent);
 	end
 
 	-- 이후 전에 보였던 frame을 지운다.
 	for i = numCools, prev_cnt do
-		frameName = frametype..i;
-		frame = _G[frameName];
+		
+		frame = parent.frames[i];
 
 		if ( frame ) then
 			frame:Hide();	
@@ -817,20 +816,11 @@ local function ACDP_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			ACDP_Spell( KnownSpellList[arg3] , "item")
 		end
 
-		--[[
-		if IsSpellKnown(arg3, (arg1 == "pet")) then
-			print (arg3);
-			ACDP_Spell(arg3, "spell", arg1)
-		else
-			print ("n"..arg3);
-		end
-		--]]
 	elseif event == "ACTIONBAR_UPDATE_COOLDOWN" or event == "BAG_UPDATE_COOLDOWN"  then
 		ACDP_Checkcooldown()
 
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		ACDP_UpdateCooldown()
-
+		ACDP_UpdateCooldown();
 		
 		local GN={"ActionButton","MultiBarBottomLeftButton","MultiBarBottomRightButton","MultiBarLeftButton","MultiBarRightButton", "PetActionButton",  "StanceButton" }
 
@@ -847,7 +837,6 @@ local function ACDP_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 				end
 			end 
 		end
-		
 
 		setupKnownSpell();
 
@@ -873,18 +862,6 @@ local function ACDP_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
 		scanItemSlots();
 	end
-
-
-
-	--[[
-	if UnitAffectingCombat("player") then
-		ACDP_CoolButtons:SetAlpha(ACDP_ALPHA);
-	else
-		ACDP_CoolButtons:SetAlpha(0.5);
-	end
-	--]]
-
-
 
 	return;
 end 

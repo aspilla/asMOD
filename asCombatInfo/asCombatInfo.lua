@@ -698,11 +698,11 @@ local function ACI_Alert(self, bcastspell)
 	local chargecool = false;
 
 
-	frame = _G["ACI"..i];
-	frameIcon = _G["ACI"..i.."Icon"];
-	frameCooldown = _G["ACI"..i.."Cooldown"];
-	frameCount =  _G["ACI"..i.."Count"];
-	frameBorder = _G["ACI"..i.."Border"];
+	frame = ACI[i];
+	frameIcon =frame.icon;
+	frameCooldown = frame.cooldown;
+	frameCount =  frame.count;
+	frameBorder = frame.border;
 	
 
 	if t == 1 or t == 9  then
@@ -1296,10 +1296,6 @@ local function ACI_Alert(self, bcastspell)
 		frameIcon:SetDesaturated(true)
 	end
 	
-	frameIcon:SetTexCoord(.08, .92, .08, .92);
-	frameBorder:SetTexture("Interface\\Addons\\asCombatInfo\\border.tga");
-	frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
-
 	if ( buff_cool ) then
 
 		if debuffType then
@@ -1903,9 +1899,9 @@ function ACI_Init()
 
 	for i = 1, ACI_MaxSpellCount do
 
-		local font, size, flag = _G["ACI"..i.."Count"]:GetFont()
+		local font, size, flag = ACI[i].count:GetFont()
 
-		for _,r in next,{_G["ACI".. i.."Cooldown"]:GetRegions()}	do 
+		for _,r in next,{ACI[i].cooldown:GetRegions()}	do 
 			if r:GetObjectType()=="FontString" then 
 				if i < 6 then
 					r:SetFont("Fonts\\2002.TTF",ACI_CooldownFontSize,"OUTLINE")
@@ -1920,15 +1916,19 @@ function ACI_Init()
 
 
 		if i < 6 then
-			_G["ACI"..i.."Count"]:SetFont("Fonts\\2002.TTF", ACI_CountFontSize, "OUTLINE")
+			ACI[i].count:SetFont("Fonts\\2002.TTF", ACI_CountFontSize, "OUTLINE")
 		else
-			_G["ACI"..i.."Count"]:SetFont("Fonts\\2002.TTF", ACI_CountFontSize - 2, "OUTLINE")
+			ACI[i].count:SetFont("Fonts\\2002.TTF", ACI_CountFontSize - 2, "OUTLINE")
 
 		end
 
-				_G["ACI"..i.."Count"]:SetPoint("BOTTOMRIGHT", -3, 3);
+		ACI[i].count:SetPoint("BOTTOMRIGHT", -3, 3);
 
-		_G["ACI".. i.."Border"]:Hide();
+		ACI[i].icon:SetTexCoord(.08, .92, .08, .92);
+		ACI[i].border:SetTexture("Interface\\Addons\\asCombatInfo\\border.tga");
+		ACI[i].border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+
+		ACI[i].border:Hide();		
 	end
 
 
@@ -1969,7 +1969,7 @@ ACI_mainframe:RegisterEvent("PLAYER_TARGET_CHANGED");
 
 for i = 1, 5 do
 
-	ACI[i] = CreateFrame("Button", "ACI"..i, UIParent, "asCombatInfoFrameTemplate");
+	ACI[i] = CreateFrame("Button", nil, UIParent, "asCombatInfoFrameTemplate");
 	ACI[i]:SetWidth(ACI_SIZE);
 	ACI[i]:SetHeight(ACI_SIZE * 0.9);
 	ACI[i]:SetScale(1);
@@ -1992,7 +1992,7 @@ end
 
 for i = 6, 11 do
 
-	ACI[i] = CreateFrame("Button", "ACI"..i, UIParent, "asCombatInfoFrameTemplate");
+	ACI[i] = CreateFrame("Button", nil, UIParent, "asCombatInfoFrameTemplate");
 
 	ACI[i]:SetWidth(ACI_SIZE - 8);
 	ACI[i]:SetHeight((ACI_SIZE - 8) * 0.9);

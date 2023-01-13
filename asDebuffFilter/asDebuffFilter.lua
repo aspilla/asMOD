@@ -412,39 +412,37 @@ local function ADF_UpdateDebuff(unit)
 
 	local selfName;
 	local numDebuffs = 1;
-	local frame, frameName;
+	local frame;
 	local frameIcon, frameCount, frameCooldown;
 	local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId ;
 	local color;
 	local frameBorder;
 	local maxIdx;
 	local parent;
-	local frametype;
 	local filter = nil;
 	local isBossDebuff = nil;
 
 
 	if (unit == "target") then
-		selfName = "ADF_TDEBUFF_";
+		
 		maxIdx = MAX_TARGET_DEBUFFS;
 		parent = ADF_TARGET_DEBUFF;
 	elseif (unit == "targethelp") then
-		selfName = "ADF_TDEBUFF_";
+		
 		maxIdx = MAX_TARGET_DEBUFFS;
 		parent = ADF_TARGET_DEBUFF;
 	elseif (unit == "targethelp2") then
-		selfName = "ADF_TDEBUFF_";
+		
 		maxIdx = MAX_TARGET_DEBUFFS;
 		parent = ADF_TARGET_DEBUFF;
 	elseif (unit == "player") then
-		selfName = "ADF_PDEBUFF_";
+		
 		maxIdx = MAX_TARGET_DEBUFFS;
 		parent = ADF_PLAYER_DEBUFF;
 	else
 		return;
 	end
 
-	frametype = selfName.."Button";
 	isMine = {};
 
 	local bBattle = false;
@@ -479,6 +477,9 @@ local function ADF_UpdateDebuff(unit)
 	filter = nil;
 
 
+	if parent.frames == nil then
+		parent.frames = {};
+	end
 
 	--for i = 1, maxIdx do
 	i = 1;
@@ -653,17 +654,17 @@ local function ADF_UpdateDebuff(unit)
 				break;
 			end
 
-			frameName = frametype..numDebuffs;
-
-			frame = _G[frameName];
+			
+			frame = parent.frames[numDebuffs];
 
 			isBigReal[numDebuffs] = isBig[i];
 
 
 			if ( not frame ) then
-				frame = CreateFrame("Button", frameName, parent, "asTargetDebuffFrameTemplate");
+				parent.frames[numDebuffs] = CreateFrame("Button", nil, parent, "asTargetDebuffFrameTemplate");
+				frame = parent.frames[numDebuffs];
 				frame:EnableMouse(false); 
-				for _,r in next,{_G[frameName.."Cooldown"]:GetRegions()}	do 
+				for _,r in next,{frame.cooldown:GetRegions()}	do 
 					if r:GetObjectType()=="FontString" then 
 						r:SetFont("Fonts\\2002.TTF",ADF_CooldownFontSize,"OUTLINE")
 						r:ClearAllPoints();
@@ -672,24 +673,28 @@ local function ADF_UpdateDebuff(unit)
 					end 
 				end
 
-				local font, size, flag = _G[frameName.."Count"]:GetFont()
+				local font, size, flag = frame.count:GetFont()
 
-				_G[frameName.."Count"]:SetFont(STANDARD_TEXT_FONT, ADF_CountFontSize, "OUTLINE")
-				_G[frameName.."Count"]:ClearAllPoints();
-				_G[frameName.."Count"]:SetPoint("BOTTOM", 0, -5);
+				frame.count:SetFont(STANDARD_TEXT_FONT, ADF_CountFontSize, "OUTLINE")
+				frame.count:ClearAllPoints();
+				frame.count:SetPoint("BOTTOM", 0, -5);
+
+				frame.icon:SetTexCoord(.08, .92, .08, .92);
+				frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
+				frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 
 			end
 
 			-- set the icon
-			frameIcon = _G[frameName.."Icon"];
+			frameIcon = frame.icon
 			frameIcon:SetTexture(icon);
 			frameIcon:SetAlpha(ADF_ALPHA);
 
 			-- set the count
-			frameCount = _G[frameName.."Count"];
+			frameCount = frame.count;
 
 			-- Handle cooldowns
-			frameCooldown = _G[frameName.."Cooldown"];
+			frameCooldown = frame.cooldown;
 
 			if isBig[i] then
 				frame:SetWidth(ADF_SIZE_BIG);
@@ -733,13 +738,11 @@ local function ADF_UpdateDebuff(unit)
 				color = { r = 1, g = 1, b = 1 };
 			end
 
-			frameBorder = _G[frameName.."Border"];
+			frameBorder = frame.border;
 			frameBorder:SetVertexColor(color.r, color.g, color.b);
 			frameBorder:SetAlpha(ADF_ALPHA);
 
-			frameIcon:SetTexCoord(.08, .92, .08, .92);
-			frameBorder:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
-			frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+			
 					
 			frame:ClearAllPoints();
 			frame:Show();
@@ -759,33 +762,33 @@ local function ADF_UpdateDebuff(unit)
 	if (unit == "target") then
 		for i=1, numDebuffs - 1 do
 			if (isBigReal[i]) then
-				ADF_UpdateDebuffAnchor(frametype, i, i- 1, ADF_SIZE_BIG, 4, true, parent);
+				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE_BIG, 4, true, parent);
 			else
-				ADF_UpdateDebuffAnchor(frametype, i, i- 1, ADF_SIZE, 4, true, parent);
+				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE, 4, true, parent);
 			end
 		end
 	elseif (unit == "targethelp") then
 		for i=1, numDebuffs - 1 do
 
 			if (isBigReal[i]) then
-				ADF_UpdateDebuffAnchor(frametype, i, i- 1, ADF_SIZE_BIG, 4, true, parent);
+				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE_BIG, 4, true, parent);
 			else
-				ADF_UpdateDebuffAnchor(frametype, i, i - 1, ADF_SIZE, 4, true, parent);
+				ADF_UpdateDebuffAnchor(parent.frames, i, i - 1, ADF_SIZE, 4, true, parent);
 			end
 		end
 	elseif (unit == "player")  then
 		for i=1, numDebuffs - 1 do
 			if (isBigReal[i]) then
-				ADF_UpdateDebuffAnchor(frametype, i, i- 1, ADF_SIZE_BIG, 4, false, parent);
+				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE_BIG, 4, false, parent);
 			else
-				ADF_UpdateDebuffAnchor(frametype, i, i - 1, ADF_SIZE, 4, false, parent);
+				ADF_UpdateDebuffAnchor(parent.frames, i, i - 1, ADF_SIZE, 4, false, parent);
 			end
 		end
 	end
 
 	for i = numDebuffs, maxIdx do
-		frameName = frametype..i;
-		frame = _G[frameName];
+		
+		frame = parent.frames[i];
 
 		if ( frame ) then
 			frame:Hide();	
@@ -793,9 +796,9 @@ local function ADF_UpdateDebuff(unit)
 	end
 end
 
-function ADF_UpdateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX, right, parent)
+function ADF_UpdateDebuffAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
 
-	local buff = _G[debuffName..index];
+	local buff = frames[index];
 	local point1 = "TOPLEFT";
 	local point2 = "BOTTOMLEFT";
 	local point3 = "TOPRIGHT";
@@ -810,25 +813,21 @@ function ADF_UpdateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX, r
 	if ( index == 1 ) then
 		buff:SetPoint(point1, parent, point2, 0, 0);
 	else
-		buff:SetPoint(point1, _G[debuffName..(index-1)], point3, offsetX, 0);
+		buff:SetPoint(point1, frames[index-1], point3, offsetX, 0);
 	end
 
 	-- Resize
 	buff:SetWidth(size);
 	buff:SetHeight(size * 0.8);
-	local debuffFrame =_G[debuffName..index.."Border"];
-	debuffFrame:SetWidth(size+2);
-	debuffFrame:SetHeight(size * 0.8+2);
+
 end
 
 
 function ADF_ClearFrame()
-	
-	local selfName = "ADF_TDEBUFF_";
-
+		
 	for i = 1, MAX_TARGET_DEBUFFS do
-		frameName = selfName.."Debuff"..i;
-		frame = _G[frameName];
+		
+		frame = ADF_TARGET_DEBUFF.frames[i];
 
 		if ( frame ) then
 			frame:Hide();	

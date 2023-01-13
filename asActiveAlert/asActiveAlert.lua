@@ -59,22 +59,21 @@ function ASAA_UpdateCooldown()
 
 	local selfName;
 	local numCools = 1;
-	local frame, frameName;
+	local frame;
 	local frameIcon, frameCooldown;
-	local name, icon, duration, start;
+	local name, icon, duration, start, enable;
 	local color;
 	local frameBorder;
 	local maxIdx;
 	local parent;
-	local frametype;
-
-
-	selfName = "ASAA_Cool_";
-
+		
 	maxIdx = #ASAA_SpellList;
 	parent = ASAA_CoolButtons;
 
-	frametype = selfName.."Button";
+	if parent.frames == nil then
+		parent.frames = {};
+	end
+	
 
 	for i = 1, maxIdx do
 		local skip = false;
@@ -89,35 +88,35 @@ function ASAA_UpdateCooldown()
 
 		--if (icon and enable > 0) then
 		if (icon) then
-
-			frameName = frametype..numCools;
-			frame = _G[frameName];
+			
+			frame = parent.frames[numCools];
 
 			if ( not frame ) then
-				frame = CreateFrame("Button", frameName, parent, "asActiveAlert2FrameTemplate");
+				parent.frames[numCools] = CreateFrame("Button", nil, parent, "asActiveAlert2FrameTemplate");
+				frame = parent.frames[numCools];
 				frame:EnableMouse(false); 
 
-				for _,r in next,{_G[frameName.."Cooldown"]:GetRegions()}	do 
+				for _,r in next,{frame.cooldown:GetRegions()}	do 
 					if r:GetObjectType()=="FontString" then 
 						r:SetFont("Fonts\\2002.TTF",ASAA_CooldownFontSize,"OUTLINE")
 						break 
 					end 
 				end
 
+				frame.icon:SetTexCoord(.08, .92, .08, .92)
+				frame.border:SetTexture("Interface\\Addons\\asActiveAlert\\border.tga")
+				frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92)	
+
 			end
 
 			-- set the icon
-			frameIcon = _G[frameName.."Icon"];
-			local frameBorder = _G[frameName.."Border"];
+			frameIcon = frame.icon;
+			local frameBorder = frame.border;
 			frameIcon:SetTexture(icon);
 			frameIcon:SetAlpha(ASAA_Alpha);
 			frame:ClearAllPoints();
 			frame:Show();
 
-
-			frameIcon:SetTexCoord(.08, .92, .08, .92)
-			frameBorder:SetTexture("Interface\\Addons\\asActiveAlert\\border.tga")
-			frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92)	
 			frameBorder:SetVertexColor(0, 0, 0);
 
 			if ( isUsable ) then
@@ -128,7 +127,7 @@ function ASAA_UpdateCooldown()
 				frameIcon:SetVertexColor(0.4, 0.4, 0.4);
 			end
 		
-			frameCooldown = _G[frameName.."Cooldown"];
+			frameCooldown = frame.cooldown;
 			frameCooldown:Show();
 			asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, enable);
 			frameCooldown:SetHideCountdownNumbers(false);
@@ -139,13 +138,12 @@ function ASAA_UpdateCooldown()
 
 	for i=1, numCools - 1 do
 		-- anchor the current aura
-		ASAA_UpdateCoolAnchor(frametype, i, i- 1, ASAA_SIZE, 2, true, parent);
+		ASAA_UpdateCoolAnchor(parent.frames, i, i- 1, ASAA_SIZE, 2, true, parent);
 	end
 
 	-- 이후 전에 보였던 frame을 지운다.
 	for i = numCools, prev_cnt do
-		frameName = frametype..i;
-		frame = _G[frameName];
+		frame = parent.frames[i];
 
 		if ( frame ) then
 			frame:Hide();	
@@ -155,9 +153,9 @@ function ASAA_UpdateCooldown()
 	prev_cnt = numCools;
 end
 
-function ASAA_UpdateCoolAnchor(name, index, anchorIndex, size, offsetX, right, parent)
+function ASAA_UpdateCoolAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
 
-	local cool = _G[name..index];
+	local cool = frames[index];
 	local point1 = "TOPLEFT";
 	local point2 = "BOTTOMLEFT";
 	local point3 = "TOPRIGHT";
@@ -172,7 +170,7 @@ function ASAA_UpdateCoolAnchor(name, index, anchorIndex, size, offsetX, right, p
 	if ( index == 1 ) then
 		cool:SetPoint(point1, parent, point2, 0, 0);
 	else
-		cool:SetPoint(point1, _G[name..(index-1)], point3, offsetX, 0);
+		cool:SetPoint(point1, frames[index-1], point3, offsetX, 0);
 	end
 
 	-- Resize

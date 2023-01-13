@@ -324,44 +324,43 @@ end
 
 local function ABF_UpdateDebuff(unit)
 
-	local selfName;
 	local numDebuffs = 1;
-	local frame, frameName;
+	local frame;
 	local frameIcon, frameCount, frameCooldown, frameStealable;
 	local name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable;
 	local color;
 	local frameBorder;
 	local maxIdx;
 	local parent;
-	local frametype;
 	local isFirst = true;
 
 	if (unit == "tbuff") then
-		selfName = "ABF_TBUFF_";
 		maxIdx = MAX_TARGET_BUFFS;
 		parent = ABF_TARGET_BUFF;
 	elseif (unit == "target") then
-		selfName = "ABF_TBUFF_";
+		
 		maxIdx = MAX_TARGET_BUFFS;
 		parent = ABF_TARGET_BUFF;
 	elseif (unit == "pbuff") then
-		selfName = "ABF_PBUFF_";
+		
 		maxIdx = MAX_TARGET_BUFFS;
 		parent = ABF_PLAYER_BUFF;
 	elseif (unit == "tebuff") then
-		selfName = "ABF_TBUFF_";
+		
 		maxIdx = MAX_TARGET_BUFFS;
 		parent = ABF_TARGET_BUFF;
 	else
 		return;
 	end
 
-	frametype = selfName.."Button";
-
 	--for i = 1, maxIdx do
 	i = 1;
 
 	local totem_i = 1;
+
+	if parent.frames == nil then
+		parent.frames = {};
+	end
 
 	repeat
 		local skip = false;
@@ -571,15 +570,15 @@ local function ABF_UpdateDebuff(unit)
 			end
 
 			local color;
-			frameName = frametype..numDebuffs;
-			frame = _G[frameName];
-
+			
+			frame = parent.frames[numDebuffs];
 			isBigReal[numDebuffs] = isBig[i];
 
 			if ( not frame ) then
-				frame = CreateFrame("Button", frameName, parent, "asTargetBuffFrameTemplate");
+				parent.frames[numDebuffs] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
+				frame = parent.frames[numDebuffs];
 				frame:EnableMouse(false); 
-				for _,r in next,{_G[frameName.."Cooldown"]:GetRegions()}	do 
+				for _,r in next,{frame.cooldown:GetRegions()}	do 
 					if r:GetObjectType()=="FontString" then 
 						r:SetFont(STANDARD_TEXT_FONT,ABF_CooldownFontSize,"OUTLINE");
 						r:ClearAllPoints();
@@ -588,25 +587,29 @@ local function ABF_UpdateDebuff(unit)
 					end 
 				end
 
-				local font, size, flag = _G[frameName.."Count"]:GetFont()
+				local font, size, flag = frame.count:GetFont()
 
-				_G[frameName.."Count"]:SetFont(STANDARD_TEXT_FONT, ABF_CountFontSize, "OUTLINE")
-				_G[frameName.."Count"]:ClearAllPoints()
-				_G[frameName.."Count"]:SetPoint("BOTTOM", 0, -5);
+				frame.count:SetFont(STANDARD_TEXT_FONT, ABF_CountFontSize, "OUTLINE")
+				frame.count:ClearAllPoints()
+				frame.count:SetPoint("BOTTOM", 0, -5);
+
+				frame.icon:SetTexCoord(.08, .92, .08, .92);
+				frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
+				frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 
 			end
 
 			if ((unit == "pbuff") or (unit == "target" and PLAYER_UNITS[caster] ) or (unit == "tbuff") or (unit == "tebuff")) then
 					
 				-- set the icon
-				frameIcon = _G[frameName.."Icon"];
+				frameIcon = frame.icon;
 				frameIcon:SetTexture(icon);
 				frameIcon:SetAlpha(ABF_ALPHA);
 
 				-- set the count
-				frameCount = _G[frameName.."Count"];
+				frameCount = frame.count;
 				-- Handle cooldowns
-				frameCooldown = _G[frameName.."Cooldown"];
+				frameCooldown = frame.cooldown;
 			
 				if isBig[i] then
 					frame:SetWidth(ABF_SIZE_BIG);
@@ -652,7 +655,7 @@ local function ABF_UpdateDebuff(unit)
 					frameCooldown:Hide();
 				end
 
-				frameBorder = _G[frameName.."Border"];
+				frameBorder = frame.border;
 
 				color = DebuffTypeColor["Disease"];
 	
@@ -676,11 +679,7 @@ local function ABF_UpdateDebuff(unit)
 
 				frameBorder:SetVertexColor(color.r, color.g, color.b);
 				frameBorder:SetAlpha(ABF_ALPHA);
-
-				frameIcon:SetTexCoord(.08, .92, .08, .92);
-				frameBorder:SetTexture("Interface\\Addons\\asBuffFilter\\border.tga");
-				frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
-								
+						
 				frame:ClearAllPoints();
 				frame:Show();
 
@@ -694,50 +693,51 @@ local function ABF_UpdateDebuff(unit)
 	if (unit == "pbuff") then
 		for i=1, numDebuffs - 1 do
 			if (isBigReal[i]) then
-				ABF_UpdateDebuffAnchor(frametype, i, i - 1, ABF_SIZE_BIG, 4, false, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 4, false, parent);
 			else
-				ABF_UpdateDebuffAnchor(frametype, i, i - 1, ABF_SIZE, 4, false, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 4, false, parent);
 			end
 		end
 	elseif (unit == "tbuff") then
 		for i=1, numDebuffs -1  do
 			if (isBigReal[i]) then
-				ABF_UpdateDebuffAnchor(frametype, i, i - 1, ABF_SIZE_BIG, 4, true, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 4, true, parent);
 			else
-				ABF_UpdateDebuffAnchor(frametype, i, i - 1, ABF_SIZE, 4, true, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 4, true, parent);
 			end
 		end
 	elseif (unit == "target") then
 		for i=1, numDebuffs -1  do
 			if (isBigReal[i]) then
-				ABF_UpdateDebuffAnchor(frametype, i, i - 1, ABF_SIZE_BIG, 4, true, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 4, true, parent);
 			else
-				ABF_UpdateDebuffAnchor(frametype, i, i - 1, ABF_SIZE, 4, true, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 4, true, parent);
 			end
 		end
 	elseif (unit == "tebuff") then
 		for i=1, numDebuffs -1  do
 			if (isBigReal[i]) then
-				ABF_UpdateDebuffAnchor(frametype, i, i - 1, ABF_SIZE_BIG, 4, true, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 4, true, parent);
 			else
-				ABF_UpdateDebuffAnchor(frametype, i, i - 1, ABF_SIZE, 4, true, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 4, true, parent);
 			end
 		end
 	end
 
 	for i = numDebuffs, maxIdx do
-		frameName = frametype..i;
-		frame = _G[frameName];
+
+		frame = parent.frames[i];
 
 		if ( frame ) then
 			frame:Hide();	
 		end
+		
 	end
 end
 
-function ABF_UpdateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX, right, parent)
+function ABF_UpdateDebuffAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
 
-	local buff = _G[debuffName..index];
+	local buff = frames[index];
 	local point1 = "TOPLEFT";
 	local point2 = "BOTTOMLEFT";
 	local point3 = "TOPRIGHT";
@@ -752,15 +752,17 @@ function ABF_UpdateDebuffAnchor(debuffName, index, anchorIndex, size, offsetX, r
 	if ( index == 1 ) then
 		buff:SetPoint(point1, parent, point2, 0, 0);
 	else
-		buff:SetPoint(point1, _G[debuffName..(index-1)], point3, offsetX, 0);
+		buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
 	end
 
 	-- Resize
 	buff:SetWidth(size);
 	buff:SetHeight(size * 0.8);
-	local debuffFrame =_G[debuffName..index.."Border"];
+	--[[
+	local border =frames[index].border;
 	debuffFrame:SetWidth(size+2);
 	debuffFrame:SetHeight(size * 0.8 +2);
+	]]
 end
 
 
