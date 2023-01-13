@@ -275,17 +275,28 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 	end
 end
 
+local function Comparison(AIndex, BIndex)
+	local AID = AIndex[1];
+	local BID = BIndex[1];
+
+	if (AID ~= BID) then
+		return AID < BID;
+	end
+
+	return false;
+end
+
 local function ACDP_UpdateCooldown()
 
 	local selfName;
 	local numCools = 1;
 	local frame;
 	local frameIcon, frameCooldown;
-	local name, icon, duration, start;
 	local color;
 	local frameBorder;
 	local maxIdx;
 	local parent;
+	local showlist = {};
 	
 
 	
@@ -316,6 +327,7 @@ local function ACDP_UpdateCooldown()
 		local idx = i;
 		local array = ACDP_SpellList;
 		local type = ACDP_SpellListType[idx];
+		local name, icon, duration, start;
 	
 	
 		if ACI_SpellID_list and ACI_SpellID_list[array[idx]] then
@@ -351,75 +363,81 @@ local function ACDP_UpdateCooldown()
 			end		
 
 			if (icon and duration > 0) and skip == false then
-				frame = parent.frames[numCools];
+				local currtime = GetTime();
+				tinsert(showlist, {start+duration -currtime, start, duration, icon} );
+				
+				ACDP_bUpdate[idx] = false;
+				ACDP_ShowIdx[numCools] = array[idx]; 
 
-				if ( not frame ) then
-					parent.frames[numCools] = CreateFrame("Button", nil, parent, "asCooldownPulseFrameTemplate");
-					frame = parent.frames[numCools];
-					frame:SetWidth(ACDP_SIZE);
-					frame:SetHeight(ACDP_SIZE * 0.9);
-					frame:EnableMouse(false); 
-					frame:Disable();
+				local ex = start + duration;
 
-					for _,r in next,{frame.cooldown:GetRegions()}	do 
-						if r:GetObjectType()=="FontString" then 
-							r:SetFont("Fonts\\2002.TTF",ACDP_CooldownFontSize,"OUTLINE")
-							break 
-						end 
-					end
-
-					frame.icon:SetTexCoord(.08, .92, .08, .92);
-					frame.border:SetTexture("Interface\\Addons\\asCooldownPulse\\border.tga");
-					frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
-
+				if ACDP_NextExTime > ex then
+					ACDP_NextExTime = ex;
 				end
-
-				if (not (ACDP_ShowIdx[numCools] == array[idx])) or 
-					(not (ACDP_ExpirationTime[idx] == start + duration)) or
-					(ACDP_bUpdate[idx] == true) then
-					-- set the icon
-					frameIcon = frame.icon;
-					frameIcon:SetTexture(icon);
-					frameIcon:SetAlpha(ACDP_ALPHA);
-					frameIcon:SetDesaturated(ACDP_GreyColor)
-
-					frameBorder = frame.border;
-					frameBorder:SetVertexColor(0, 0, 0);
-					frameBorder:Show();
-
-
-					-- set the count
-					frameCooldown = frame.cooldown;
-					frameCooldown:Show();
-					asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, true);
-					frameCooldown:SetHideCountdownNumbers(false);
-					ACDP_bUpdate[idx] = false;
-					ACDP_ShowIdx[numCools] = array[idx]; 
-
-					local ex = start + duration;
-
-					if ACDP_NextExTime > ex then
-						ACDP_NextExTime = ex;
-					end
-					
-					--ChatFrame1:AddMessage(start.." "..duration.." "..ACDP_SpellList[i].." "..ACDP_SpellListType[i].." "..name)
-				end
-			
-				numCools = numCools + 1;
-
-				frame:ClearAllPoints();
-				frame:Show();
-
-				if numCools > ACDP_CooldownCount then
-					break;
-
-				end
-
 			else
-				ACDP_bDelete[idx] = true;
+				ACDP_bDelete[idx] = true;			
+			end			
+		end
+	end
+
+	table.sort(showlist, Comparison);
+
+	numCools = 1;
+
+	for i = 1, #showlist do
+
+		local start = showlist[i][2];
+		local duration = showlist[i][3];
+		local icon = showlist[i][4];
+			
+		frame = parent.frames[i];
+
+		if ( not frame ) then
+			parent.frames[i] = CreateFrame("Button", nil, parent, "asCooldownPulseFrameTemplate");
+			frame = parent.frames[i];
+			frame:SetWidth(ACDP_SIZE);
+			frame:SetHeight(ACDP_SIZE * 0.9);
+			frame:EnableMouse(false); 
+			frame:Disable();
+
+			for _,r in next,{frame.cooldown:GetRegions()}	do 
+				if r:GetObjectType()=="FontString" then 
+					r:SetFont("Fonts\\2002.TTF",ACDP_CooldownFontSize,"OUTLINE")
+					break 
+				end 
 			end
 
+			frame.icon:SetTexCoord(.08, .92, .08, .92);
+			frame.border:SetTexture("Interface\\Addons\\asCooldownPulse\\border.tga");
+			frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+
 		end
+		-- set the icon
+		frameIcon = frame.icon;
+		frameIcon:SetTexture(icon);
+		frameIcon:SetAlpha(ACDP_ALPHA);
+		frameIcon:SetDesaturated(ACDP_GreyColor)
+
+		frameBorder = frame.border;
+		frameBorder:SetVertexColor(0, 0, 0);
+		frameBorder:Show();
+
+
+		-- set the count
+		frameCooldown = frame.cooldown;
+		frameCooldown:Show();
+		asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, true);
+		frameCooldown:SetHideCountdownNumbers(false);
+		frame:ClearAllPoints();
+		frame:Show();
+
+
+		numCools = numCools + 1;
+
+		if numCools > ACDP_CooldownCount then
+			break;
+		end
+
 	end
 
 	for i=1, numCools - 1 do
