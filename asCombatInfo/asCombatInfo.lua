@@ -415,6 +415,7 @@ ACI_SpellList_EVOKER_2 = {
 	
 }
 
+local _G = _G;
 local update = 0;
 local prev_i = {0, 0, 0, 0, 0 };
 local prev_s = {0, 0, 0, 0, 0};

@@ -157,11 +157,15 @@ local ABF_PVPBuffList = {
 
 }
 
+local _G = _G;
+
 local ABF_TalentBuffList = {};
 local ABF_TalentShowList = {};
 
 local isBig = {};
 local isBigReal = {};
+
+
 
 --Overlay stuff
 local unusedOverlayGlows = {};

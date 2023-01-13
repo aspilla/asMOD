@@ -19,6 +19,8 @@ local ASAA_BackList = {
 
 local action_list = {};
 
+local _G = _G;
+
 local function ScanActionSlot()
 	local lActionSlot = 0;
 	table.wipe(action_list);

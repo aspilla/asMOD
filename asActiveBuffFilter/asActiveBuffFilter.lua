@@ -165,6 +165,7 @@ local FileExistList = {
 
 }
 	
+local _G = _G;
 
 local ASABF_Current_Buff = "";
 local ASABF_Current_Count = 0;

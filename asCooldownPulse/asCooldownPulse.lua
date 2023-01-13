@@ -44,7 +44,7 @@ local ACDP_CooldownCount = 6;			-- 줄당 보일 CooldownCount 개수가 되면 
 local ACDP_NextExTime = 0xFFFFFFFF;
 
 
-
+local _G = _G;
 local KnownSpellList = {};
 local ItemSlotList = {};
 
