@@ -1,13 +1,12 @@
 ﻿local ASABF;
 local ASABF_PLAYER_BUFF;
-local ASABF_SIZE = 50;
-local ASABF_PLAYER_BUFF_X = -250;
-
-local ASABF_PLAYER_BUFF_Y = 100 ;
-local ASABF_MAX_BUFF_SHOW = 7;
+local ASABF_SIZE = 25;
+local ASABF_PLAYER_BUFF_X = -100;
+local ASABF_PLAYER_BUFF_Y = -145;
+local ASABF_MAX_BUFF_SHOW = 2;
 local ASABF_ALPHA = 1;
-local ASABF_CooldownFontSize = 18;		-- Cooldown Font Size
-local ASABF_CountFontSize = 18;			-- Count Font Size
+local ASABF_CooldownFontSize = 12;		-- Cooldown Font Size
+local ASABF_CountFontSize = 11;			-- Count Font Size
 local ASABF_AlphaBuff = 0.9;				-- 전투중 Alpha 값
 local ASABF_AlphaCool = 0.5;			-- 비 전투중 Alpha 값
 local ASABF_AzelateAutoDetect = true;	-- 자동으로 아제라이트 특성을 Detect
@@ -38,132 +37,23 @@ ASABF_AzeriteTraits = {};
 local ASABF_ProcBuffList = {
 
 	
-	--티탄의 길
-	{"골가네스의 천둥 분노", 0},
-	{"골가네스의 징표", 0},
-	{"지식의 돌진", 1, 1.4},
-	{"노르간논의 명령", 0},
-	{"세계창조주의 불길", 1, 1.4},
-	{"카즈고로스의 창조", 0},
-	{"이오나의 징표", 1, 1.4},
-	{"이오나의 신록의 품", 0},
-	{"아만툴의 위엄", 0},
-	{"천상의 보루", 1, 1.4},
-	{"아그라마르의 인내", 0},
-
-
-	-- 무기 마부
-	{"치명적인 항해", 4, 4},
-	{"강인한 항해", 4, 4},
-	{"유연한 항해", 4, 4},
-	{"재빠른 항해", 4, 4},
-	{"특화된 항해", 4, 4},
-	{"강풍의 일격", 1, 1},
-	{"원소의 격류", 1, 1},
-	--{"해안의 파도", 1, 3},
-
-
 
 	--장신구
-	{"로아의 의지", 1, 1},
-	{"영혼의 속도", 1, 1.5},
-	{"쉴 틈 없이 똑딱거리는 시계", 1, 3},
-	{"돌풍바람 풍경", 1, 2},
-	{"어두운 속삭임의 소라", 1, 1},
-	{"피의 증오", 1, 2.5},
-	{"리쇼크의 위대한 장치", 0},
-	{"해골 랩터 소환", 1, 1},
-	{"스위트의 달콤한 주사위", 1, 1},
-	{"란도이의 철저", 0},
-	{"냉담한 본능", 0},
-	{"공포선장의 망원경", 1, 1},
-	{"해상 폭풍우", 1, 2},
-	{"쿨 티란 포탄 주자", 1, 1.5},
-	{"응결된 정수", 1, 1},
-	{"단지 안의 작은 정령", 1, 1},
-	{"공명하는 정령의 심장", 1, 1},
-	{"부산스러운 혈구", 1, 2.25},
-	{"티탄 과충전", 1, 1},
-	{"잔존하는 포자 깍지", 1, 1.69},
-	{"영혼수호자", 1, 0.85},
-	{"유전적 병약의 주사기", 1, 1},
-	{"크롤로크의 힘", 1, 1.75}, 
-	{"도살자의 눈", 1, 1},
-	{"레잔의 번뜩이는 눈", 1, 1},
-	{"집중된 암흑", 1, 1},
-	{"룬의 냉기", 1, 2},
-	{"원시 본능", 1, 3},
-
-	{"달의 손길", 1, 2.25},
-
-	{"잘자익스의 잔존하는 힘", 4, 4},
-	{"억제되지 않은 힘", 0},
-	{"영혼 점화", 0},
-
-
-	-- 다자알로 (장신구)
-	{"원.기.촉.진. 가동", 0},
-	{"빛나는 광택", 0},
-	{"바람의 은총", 1, 1.5},
-	{"다이아몬드 보호막", 0},
-	{"브원삼디의 거래", 0},
-
-
-	--아제
-	{"구르는 천둥", 0},
-	{"압도적인 힘", 0},
-	{"순간 포착!", 0},
-
+	{"시카르 여사냥꾼의 기술", 1, 1.5},
+	{"소용돌이치는 바람", 1, 1},
+	
 
 	--물약
-	{"민첩의 전투 물약", 0},
-	{"지능의 전투 물약", 0},
-	{"체력의 전투 물약", 0},
-	{"힘의 전투 물약", 0},
-	{"강철피부 물약", 0},
-	{"원기회복의 물약", 0},
-	{"일어나는 죽음의 물약", 0},
-	{"폭팔하는 피의 물약", 0},
-
 
     --잔달라
-    {"파쿠의 은총", 1, 1},
-    {"크라그와의 은총", 0},
-
-
-    --용광로
-    {"심연의 보호", 0},
-
-    --정수
-    {"집중된 불길", 0},
-    {"원수의 피", 0},
-    {"자각몽의 기억", 0},
-    {"피투성이", 0},
-    {"강화된 무의 보호막", 0},
-    {"아제로스의 영원한 선물", 0},
-    {"고지 사수", 0},
-    {"심연의 아이기스", 0},
-    {"완벽의 환영", 0},
-    {"마나 과충전", 0},
-    {"억제의 구슬", 0},
-    {"끝없이 치솟는 파도", 0},
+   
 
     --8.2 장신구
-    {"폭풍의 명가 전서", 1, 6},
-    {"공허 타협", 0},
-    {"불지옥 연금술사 돌", 1, 1},
-    {"속박꾼의 영향력", 0},
-    {"무정함 증폭", 1, 1.25},
-    {"조류 폭풍우", 1, 8},
+  
+    
 
 }
 
-local FileExistList = {
-
-    ["원소의 격류"] = 1;
-    ["잘자익스의 잔존하는 힘"] = 1;
-
-}
 	
 local _G = _G;
 
@@ -236,85 +126,6 @@ function AABF_OverlayGlowOnUpdate(self, elapsed)
 	AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01);
 end
 
-local function GetAzeritePowerID(spellID)
-	local powerInfo = C_AzeriteEmpoweredItem.GetPowerInfo(spellID)
-    	if (powerInfo) then
-            local azeriteSpellID = powerInfo["spellID"]
-            return azeriteSpellID
-        end
-end
-
-
-local function checkAzerite()
-
-	local slotNames = {"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot", "MainHandSlot", "SecondaryHandSlot", "AmmoSlot" };    
-    local index = 1
-   
-	azeriteTraits = {};
-	ASABF_AzeriteTraits = {};
-   
-    local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
-    if azeriteItemLocation and ASABF_AzelateAutoDetect then
-        for slotNum=1, #slotNames do
-            local slotId = GetInventorySlotInfo(slotNames[slotNum])
-            local itemLink = GetInventoryItemLink('player', slotId)
-            
-            if itemLink ~= nil then
-                
-                local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
-                local currentLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
-                local allTierInfo = C_AzeriteEmpoweredItem.GetAllTierInfoByItemID(itemLink)
-                local itemLoc = ItemLocation:CreateFromEquipmentSlot(slotId)
-                
-                if itemLoc and C_AzeriteEmpoweredItem  then
-                    if C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItem(itemLoc) then
-                        
-                        local  tierInfo = C_AzeriteEmpoweredItem.GetAllTierInfo(itemLoc)
-                        if tierInfo then
-                            local tierCount = #tierInfo
-                            local showcount = ASABF_AzelateMaxCheckTier
-                            if tierCount < 5 then
-                                showcount = ASABF_AzelateMaxCheckTier - 1
-                            end
-
-                            for azeriteTier, tierInfo in pairs(tierInfo) do
-                              for i, idx in pairs(tierInfo.azeritePowerIDs) do
-                                    if C_AzeriteEmpoweredItem.IsPowerSelected(itemLoc, idx) then
-                                        local azeriteSpellID = GetAzeritePowerID(idx)
-                                        if azeriteSpellID ~= 263978 and azeriteTier <= showcount then
-                                   	    	local azeritePowerName, _, icon = GetSpellInfo(azeriteSpellID)
-		    							    ASABF_AzeriteTraits[azeritePowerName] = 1
-                                        end
-                                    end
-                                end
-                        end
-                        end
-                        
-                    end
-                end
-                
-            end
-        end
-   end
-
-
-   for i =1,#slotNames do 
-		local  idx = GetInventorySlotInfo(slotNames[i]);
-		local itemid = GetInventoryItemID("player",idx) 
-
-		if itemid and ASABF_TrinketAutoDetect then 
-
-			  _, id = GetItemSpell(itemid);
-
-			if id then
-				local SlotSpellName, _, icon = GetSpellInfo(id)
-				ASABF_AzeriteTraits[SlotSpellName] = 1
-			end
-		end
-
-	end
-end
-
 local function asCooldownFrame_Clear(self)
 	self:Clear();
 end
@@ -328,7 +139,32 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 	end
 end
 
-function ASABF_UpdateBuff(unit)
+local function ASABF_UpdateBuffAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
+
+	local buff = frames[index];
+	local point1 = "TOPLEFT";
+	local point2 = "BOTTOMLEFT";
+	local point3 = "TOPRIGHT";
+
+	if (right == false) then
+		point1 = "TOPRIGHT";
+		point2 = "BOTTOMRIGHT";
+		point3 = "TOPLEFT";
+		offsetX = -offsetX;
+	end
+
+	if ( index == 1 ) then
+		buff:SetPoint(point1, parent, point2, 0, 0);
+	else
+		buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
+	end
+
+	-- Resize
+	buff:SetWidth(size * 1.3);
+	buff:SetHeight(size);
+end
+
+local function ASABF_UpdateBuff(unit)
 
 	local selfName;
 	local numDebuffs = 1;
@@ -343,21 +179,19 @@ function ASABF_UpdateBuff(unit)
 	local frametype;
 	local isFirst = true;
 
-	selfName = "ASABF_PBUFF_";
 	maxIdx = MAX_TARGET_BUFFS;
 	parent = ASABF_PLAYER_BUFF;
-
-	frametype = selfName.."Button";
-
-	--for i = 1, maxIdx do
+		
 	i = 1;
 
 	local a_isShow = {};
 
+	if parent.frames == nil then
+		parent.frames = {};
+	end
+
 	for k = 1 , #ASABF_ProcBuffList do
 		a_isShow[k] = false;
-
-
 	end
 
 	a_isProc2Cnt = 0;
@@ -405,45 +239,45 @@ function ASABF_UpdateBuff(unit)
 			end
 
 			local color;
-			frameName = frametype..numDebuffs;
-			frame = _G[frameName];
+			frame = parent.frames[numDebuffs];
 			
 			if ( not frame ) then
-				frame = CreateFrame("Button", frameName, parent, "asActiveBuffFrameTemplate");
+				parent.frames[numDebuffs] = CreateFrame("Button", nil, parent, "asActiveBuffFrameTemplate");
+				frame = parent.frames[numDebuffs];
 				frame:EnableMouse(false); 
-				for _,r in next,{_G[frameName.."Cooldown"]:GetRegions()}	do 
+				for _,r in next,{frame.cooldown:GetRegions()}	do 
 					if r:GetObjectType()=="FontString" then 
 						r:SetFont("Fonts\\2002.TTF",ASABF_CooldownFontSize,"OUTLINE")
-						r:SetPoint("CENTER", 0, 0);
+						r:SetPoint("TOP", 0, 4);
 						break 
 					end 
 				end
 
-				local font, size, flag = _G[frameName.."Count"]:GetFont()
+				local font, size, flag = frame.count:GetFont()
 
-				_G[frameName.."Count"]:SetFont(font, ASABF_CountFontSize, "OUTLINE")
-				_G[frameName.."Count"]:SetPoint("BOTTOMRIGHT", -2, 2);
+				frame.count:SetFont(font, ASABF_CountFontSize, "OUTLINE")
+				frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
 
+				frame.icon:SetTexCoord(.08, .92, .08, .92);
+				frame.border:SetTexture("Interface\\Addons\\asActiveBuffFilter\\border.tga");
+				frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+				frame.border:SetVertexColor(0, 0, 0);
 			end
 			-- set the icon
-			frameIcon = _G[frameName.."Icon"];
+			frameIcon = frame.icon;
 			frameIcon:SetTexture(icon);
 			frameIcon:SetAlpha(ASABF_ALPHA);
 			frameIcon:SetDesaturated(false)
 
 
 			-- set the count
-			frameCount = _G[frameName.."Count"];
+			frameCount =frame.count;
 			-- Handle cooldowns
-			frameCooldown = _G[frameName.."Cooldown"];
-			
-			frame:SetWidth(ASABF_SIZE);
-			frame:SetHeight(ASABF_SIZE);
-			frame:SetAlpha(ASABF_AlphaBuff);
-			frame:SetScale(1);
+			frameCooldown = frame.cooldown;
+			frame:SetAlpha(ASABF_AlphaBuff);			
 
 			if ( count > 1 ) then
-				    frameCount:SetText(count);
+				frameCount:SetText(count);
 				frameCount:Show();
 			else
 				if (stack > 1) then
@@ -478,9 +312,7 @@ function ASABF_UpdateBuff(unit)
 					AABF_ShowOverlayGlow(frame);
 					if a_State[k] == nil or a_State[k] == 0 then
 						a_State[k] = 1;
-                        if FileExistList[name] then
-						    PlaySoundFile("Interface\\AddOns\\asActiveBuffFilter\\Sound\\".. name.. ".mp3", "DIALOG")
-                        end
+                        PlaySoundFile("Interface\\AddOns\\asActiveBuffFilter\\Sound\\".. name.. ".mp3", "DIALOG")                        
 					end
 
 
@@ -494,9 +326,7 @@ function ASABF_UpdateBuff(unit)
 
 					if a_State[k] == nil or a_State[k] == 0 then
 						a_State[k] = 1;
-                        if FileExistList[name] then
-    						PlaySoundFile("Interface\\AddOns\\asActiveBuffFilter\\Sound\\".. name.. ".mp3", "DIALOG")
-                        end
+						PlaySoundFile("Interface\\AddOns\\asActiveBuffFilter\\Sound\\".. name.. ".mp3", "DIALOG")                        
 					end
 
 			  	else
@@ -507,15 +337,10 @@ function ASABF_UpdateBuff(unit)
 			end
 
 			if  not azerite and ASABF_ProcBuffList[k][2] < 2 then
-
 				if a_State[k] == nil or a_State[k] == 0 then
 					a_State[k] = 1;
-                    if FileExistList[name] then
-    					PlaySoundFile("Interface\\AddOns\\asActiveBuffFilter\\Sound\\".. name.. ".mp3", "DIALOG")
-                    end
+                    PlaySoundFile("Interface\\AddOns\\asActiveBuffFilter\\Sound\\".. name.. ".mp3", "DIALOG")                    
 				end
-
-
 			end
 
 		
@@ -552,7 +377,7 @@ function ASABF_UpdateBuff(unit)
 				local since = currtime - laststart;
 
 
-				--print (haste, rppm, since);
+				--print (haste, rppm, since);ASABF_SIZE
 
 				--local proc_val = math.floor((rppm * haste * (currtime - laststart) / 60) * 100);
 
@@ -565,44 +390,42 @@ function ASABF_UpdateBuff(unit)
 					end
 
 					local color;
-					frameName = frametype..numDebuffs;
-					frame = _G[frameName];
+					frame = parent.frames[numDebuffs];
 			
 					if ( not frame ) then
-						frame = CreateFrame("Button", frameName, parent, "asActiveBuffFrameTemplate");
+						parent.frames[numDebuffs] = CreateFrame("Button", nil, parent, "asActiveBuffFrameTemplate");
+						frame = parent.frames[numDebuffs];
 						frame:EnableMouse(false); 
-						for _,r in next,{_G[frameName.."Cooldown"]:GetRegions()}	do 
+						for _,r in next,{frame.cooldown:GetRegions()}	do 
 							if r:GetObjectType()=="FontString" then 
 								r:SetFont("Fonts\\2002.TTF",ASABF_CooldownFontSize,"OUTLINE")
-								r:SetPoint("CENTER", 0, 0);
+								r:SetPoint("TOP", 0, 4);
 								break 
 							end 
 						end
 		
-						local font, size, flag = _G[frameName.."Count"]:GetFont()
+						local font, size, flag = frame.count:GetFont()
 	
-						_G[frameName.."Count"]:SetFont(font, ASABF_CountFontSize, "OUTLINE")
-						_G[frameName.."Count"]:SetPoint("BOTTOMRIGHT", -2, 2);
+						frame.count:SetFont(font, ASABF_CountFontSize, "OUTLINE")
+						frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
+						frame.icon:SetTexCoord(.08, .92, .08, .92);
+						frame.border:SetTexture("Interface\\Addons\\asActiveBuffFilter\\border.tga");
+						frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+						frame.border:SetVertexColor(0, 0, 0);	
 
 					end
 				-- set the icon
-					frameIcon = _G[frameName.."Icon"];
+					frameIcon = frame.icon;
 					frameIcon:SetTexture(icon);
 					frameIcon:SetAlpha(ASABF_ALPHA);
 					frameIcon:SetDesaturated(true)
 
 					frame:SetAlpha(ASABF_AlphaCool);
-					frame:SetScale(0.5);
-
-
+					
 					-- set the count
-					frameCount = _G[frameName.."Count"];
+					frameCount = frame.count;
 					-- Handle cooldowns
-					frameCooldown = _G[frameName.."Cooldown"];
-				
-					frame:SetWidth(ASABF_SIZE);
-					frame:SetHeight(ASABF_SIZE);
-
+					frameCooldown = frame.cooldown;
 					frameCooldown:Hide();
 
 					if ( proc_val > 0 ) then
@@ -629,41 +452,41 @@ function ASABF_UpdateBuff(unit)
 					end
 
 					local color;
-					frameName = frametype..numDebuffs;
-					frame = _G[frameName];
+					frame = parent.frames[numDebuffs];
 			
 					if ( not frame ) then
-						frame = CreateFrame("Button", frameName, parent, "asActiveBuffFrameTemplate");
+						parent.frames[numDebuffs] = CreateFrame("Button", frameName, parent, "asActiveBuffFrameTemplate");
+						frame = parent.frames[numDebuffs];
 						frame:EnableMouse(false); 
-						for _,r in next,{_G[frameName.."Cooldown"]:GetRegions()}	do 
+						for _,r in next,{frame.cooldown:GetRegions()}	do 
 							if r:GetObjectType()=="FontString" then 
 								r:SetFont("Fonts\\2002.TTF",ASABF_CooldownFontSize,"OUTLINE")
-								r:SetPoint("CENTER", 0, 0);
+								r:SetPoint("TOP", 0, 4);
 								break 
 							end 
 						end
 		
-						local font, size, flag = _G[frameName.."Count"]:GetFont()
+						local font, size, flag = frame.count:GetFont()
 	
-						_G[frameName.."Count"]:SetFont(font, ASABF_CountFontSize, "OUTLINE")
-						_G[frameName.."Count"]:SetPoint("BOTTOMRIGHT", -2, 2);
+						frame.count:SetFont(font, ASABF_CountFontSize, "OUTLINE")
+						frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
+						frame.icon:SetTexCoord(.08, .92, .08, .92);
+						frame.border:SetTexture("Interface\\Addons\\asActiveBuffFilter\\border.tga");
+						frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+						frame.border:SetVertexColor(0, 0, 0);
 
 					end
 				-- set the icon
-					frameIcon = _G[frameName.."Icon"];
+					frameIcon = frame.icon;
 					frameIcon:SetTexture(icon);
 					frameIcon:SetAlpha(ASABF_ALPHA);
 					frameIcon:SetDesaturated(true)
 					frame:SetAlpha(ASABF_AlphaCool);
-					frame:SetScale(0.5);
 
 					-- set the count
-					frameCount = _G[frameName.."Count"];
+					frameCount = frame.count;
 					-- Handle cooldowns
-					frameCooldown = _G[frameName.."Cooldown"];
-				
-					frame:SetWidth(ASABF_SIZE);
-					frame:SetHeight(ASABF_SIZE);
+					frameCooldown = frame.cooldown;
 
 					if ( duration > 0 ) then
 						frameCooldown:Show();
@@ -707,15 +530,14 @@ function ASABF_UpdateBuff(unit)
 
 	for i=1, numDebuffs - 1 do
 		if i < numShow then
-			ASABF_UpdateBuffAnchor(frametype, i, i - 1, ASABF_SIZE, 4, false, parent);
+			ASABF_UpdateBuffAnchor(parent.frames, i, i - 1, ASABF_SIZE, 1, true, parent);
 		else
-			ASABF_UpdateBuffAnchor(frametype, i, i - 1, ASABF_SIZE, 4, false, parent);
+			ASABF_UpdateBuffAnchor(parent.frames, i, i - 1, ASABF_SIZE, 1, true, parent);
 		end
 	end
 	
 	for i = numDebuffs, maxIdx do
-		frameName = frametype..i;
-		frame = _G[frameName];
+		frame = parent.frames[i];
 
 		if ( frame ) then
 			frame:Hide();	
@@ -723,42 +545,14 @@ function ASABF_UpdateBuff(unit)
 	end
 end
 
-function ASABF_UpdateBuffAnchor(debuffName, index, anchorIndex, size, offsetX, right, parent)
-
-	local buff = _G[debuffName..index];
-	local point1 = "TOPLEFT";
-	local point2 = "BOTTOMLEFT";
-	local point3 = "TOPRIGHT";
-
-	if (right == false) then
-		point1 = "TOPRIGHT";
-		point2 = "BOTTOMRIGHT";
-		point3 = "TOPLEFT";
-		offsetX = -offsetX;
-	end
-
-	if ( index == 1 ) then
-		buff:SetPoint(point1, parent, point2, 0, 0);
-	else
-		buff:SetPoint(point1, _G[debuffName..(index-1)], point3, offsetX, 0);
-	end
-
-	-- Resize
-	buff:SetWidth(size);
-	buff:SetHeight(size);
-end
-
-
-function ASABF_OnEvent(self, event, arg1, ...)
+local function ASABF_OnEvent(self, event, arg1, ...)
 	if (event == "UNIT_AURA" and arg1 == "player") then
 		ASABF_UpdateBuff("pbuff");
-	elseif (event == "AZERITE_ITEM_POWER_LEVEL_CHANGED" or event == "AZERITE_EMPOWERED_ITEM_SELECTION_UPDATED" or event == "PLAYER_EQUIPMENT_CHANGED" or event == "PLAYER_ENTERING_WORLD") then
-		checkAzerite();
 	end
 end
 
 local update = 0;
-function ASABF_OnUpdate(self, elapsed)
+local function ASABF_OnUpdate(self, elapsed)
 
 	update = update + elapsed
 
@@ -768,7 +562,7 @@ function ASABF_OnUpdate(self, elapsed)
 	end
 end
 
-function ASABF_Init()
+local function ASABF_Init()
 
 	for k = 1 , #ASABF_ProcBuffList do
 
@@ -791,8 +585,7 @@ function ASABF_Init()
 	ASABF:SetAlpha(ASABF_ALPHA);
 	ASABF:Show()
 
-	ASABF_PLAYER_BUFF = CreateFrame("Frame", "ASABF_PLAYER_BUFF", ASABF)
-
+	ASABF_PLAYER_BUFF = CreateFrame("Frame", nil, ASABF);
 	ASABF_PLAYER_BUFF:SetPoint("CENTER", ASABF_PLAYER_BUFF_X, ASABF_PLAYER_BUFF_Y)
 	ASABF_PLAYER_BUFF:SetWidth(1)
 	ASABF_PLAYER_BUFF:SetHeight(1)
