@@ -340,6 +340,8 @@ local function APB_UpdateBuffCombo(combobar)
 end
 
 
+local curr_gcd = 0;
+
 local function APB_OnUpdateBuff(self, elapsed)
 
 	if not self.start then
@@ -361,12 +363,28 @@ local function APB_OnUpdateBuff(self, elapsed)
 		if curr_duration < self.duration then
 
 			local remain_buff = (self.duration + self.start - curr_time)
+			local start, gcd  = GetSpellCooldown(61304);
+
+			if gcd > 0 then
+				curr_gcd = gcd;
+			end
 
 			self:SetMinMaxValues(0, self.duration * 1000)
 			self:SetValue( remain_buff * 1000)
 			self.text:SetText(("%02.1f"):format(self.duration + self.start - curr_time))
+
+			if self.buff then
+				if curr_gcd and remain_buff < curr_gcd * 2 then
+					self:SetStatusBarColor(1, 0, 0);	
+				else
+					self:SetStatusBarColor(0.8, 0.8, 1);	
+				end
+			end
 	
 		end
+
+	
+
 	end
 end
 
@@ -396,7 +414,7 @@ local function APB_UpdateBuff(buffbar)
 			buffbar.count:SetText("");
 		end
 
-		buffbar:SetStatusBarColor(0.8, 0.8, 1);
+		--buffbar:SetStatusBarColor(0.8, 0.8, 1);
 
 		buffbar:Show();
 		buffbar.text:Show();
