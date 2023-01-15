@@ -1468,7 +1468,7 @@ local function APB_CheckPower(self)
 			bupdate_buff_combo = true;
 
 			APB_BUFF = "살쾡이의 격노";
-			APB.buffbar[0].buff = "살쾌이의 격노";
+			APB.buffbar[0].buff = "살쾡이의 격노";
 			--bupdate_buff_count = true;
 			APB.buffbar[0].unit = "player";
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
