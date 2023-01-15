@@ -67,93 +67,245 @@ local ABF_Current_Count = 0;
 --
 local ABF_PVPBuffList = {
 
-		-- Defensive Buffs
-	[122470] =1,	-- Touch of Karma
-	[116849] = 1,	-- Life Cocoon
-	[33206] =1,	-- Pain Suppression
-	[49039] = 1,	-- Lichborne
-	--54216,	-- Master's Call UNUSED?
-	[5277] = 1,	-- Evasion
-	[199754] =1,	-- Riposte
-	--110913,	-- Dark Bargain REMOVED IN LEGION
-	[108359] = 1,	-- Dark Regeneration
-	[104773] = 1,	-- Unending Resolve
-	[18499] =1,	-- Berserker Rage
-	[61336] = 1,	-- Survival Instincts
-	[22812] = 1,	-- Barkskin
-	[102342] = 1,	-- Iron Bark
-	[6940] = 1,	-- Hand of Sacrifice
-	[110909] = 1,	-- Alter Time
-	--30823,	-- Shamanistic Rage REMOVED IN LEGION
-	[118038] = 1,	-- Die by the Sword
-	[33891] = 1,	-- Incarnation: Tree of Life
-	[74001] = 1,	-- Combat Readiness
-	[108271] =1,	-- Astral Shift
-	--111397,	-- Blood Horror REMOVED IN LEGION
-	[108416] =1,	-- Dark Pact
-	--55694,	-- Enraged Regeneration REMOVED IN LEGION
-	[47788] =1,	-- Guardian Spirit
-	[122783] =1,	-- Diffuse Magic
-	[12975] = 1,	-- Last Stand
-	[871] = 1,	-- Shield Wall
-	[212800] = 1,	-- Blur
-	[55233] = 1,	-- Vampiric Blood
-	[194679] =1,	-- Rune Tap
-	[207319] = 1,	-- Corpse Shield
+--생존기 시작 (용군단 Update 완료)
+	--기원사
+	[357170] = 1, --시간 팽창
+	[363916] = 1, --흑요석 비늘
+	[374348] = 1, --소생의 불길
+	[363534] = 1, --되돌리기
+	[370960] = 1, --애매랄드 교감
+	[378441] = 1, --시간정지
+
+	--전사
+	[236273] = 1, --결투
+	[118038] = 1, --투사의 혼
+	[12975] = 1, --최후의 저항
+	[871] = 1, --방패의 벽
+	[97463] = 1, --재집결의 함성
+	[184364] = 1, --격노의 재생력
+	[386394] = 1, --역전의 용사
+	[392966] = 1, --주문막기
+
+	--도적
+	[185311] = 1, --진홍색 약병
+	[11327] = 1, --소멸
+	[31224] = 1, --그림자 망토
+	[31230] = 1, --구사일생
+	[5277] = 1, --회피
+
+	--악사
+	[212800] = 1, --흐릿해지기
+	[187827] = 1, --탈태
+	[206803] = 1, --하늘에서 내리는 비
+	[196555] = 1, --황천걸음
+	[209426] = 1, --어둠
 
 
-		-- Immune
-	[19263] = 1,	-- Deterrence
-	[186265] = 1, -- Aspect of the Turtle
-	[45438] = 1,	-- Ice Block
-	[642] = 1,	-- Divine Shield    
-	[115018] = 1,	-- Desecrated Ground
-	[31821] = 1,	-- Aura Mastery
-	[1022] = 1,	-- Hand of Protection
-	[47585] = 1,	-- Dispersion
-	[31224] =1,	-- Cloak of Shadows
-	--45182,	-- Cheating Death PROBABLY UNNECESSARY
-	[8178] = 1,	-- Grounding Totem Effect (Grounding Totem)
-	[76577] = 1,	-- Smoke Bomb
-	[88611] = 1,	-- Smoke Bomb
-	[46924] = 1,	-- Bladestorm
+	--수도
+	[202162] = 1, --해악방지
+	[116849] = 1, --기의고치
+	[322507] = 1, --천신주
+	[115203] = 1, --강화주
+	[122783] = 1, --마법해소
+	[122278] = 1, --해악감퇴
+	[132578] = 1, --흑우의 원령
+	[115176] = 1, --명상
+	[125174] = 1, --업보의 손아귀
 
-	-- Anti CC
-	[48792] = 1,	-- Icebound Fortitude
-	[48707] = 1,	-- Anti-Magic Shell
-	[23920] = 1,	-- Spell Reflection
-	[114028] = 1,	-- Mass Spell Reflection
-	[5384] = 1,	-- Feign Death
+	--죽기
+	[51052] = 1, --대마법지대
+	[48707] = 1, --대마법 보호막
+	[48743] = 1, --죽음의 서약
+	[48792] = 1, --얼음같은 인내력
+	[114556] = 1, --연옥
+	[81256] = 1, --춤추는 룬무기
+	[219809] = 1, --묘비
+	[55233] = 1, --흡혈
 
-		-- Offensive Buffs
-	[51690] = 2,	-- Killing Spree
-	--185422,	-- Shadow Dance UNNECESSARY, SUB ROGUES DANCE ALL THE DAMNED TIME
-	--84747,	-- Deep Insight (Rogue Red Buff) REMOVED IN LEGION
-	--84746,	-- Moderate Insight (Rogue Yellow Buff) REMOVED IN LEGION
-	[13750] = 2,	-- Adrenaline Rush
-	--112071,	-- Celestial Alignment REMOVED IN LEGION
-	[31884] = 2,	-- Avenging Wrath
-	[1719] = 2,	-- Battle Cry
-	--113858,	-- Dark Soul REMOVED IN LEGION
-	--113861,	-- Dark Soul REMOVED IN LEGION
-	--113860,	-- Dark Soul REMOVED IN LEGION
-	[102543] = 2,	-- Incarnation: King of the Jungle
-	[106951] = 2,	-- Berserk
-	[102560] = 2,	-- Incarnation: Chosen of Elune
-	[12472] = 2,	-- Icy Veins
-	--3045,	-- Rapid Fire UNUSED?
-	[193526] = 2, -- Trueshot
-	[19574] = 2,	-- Bestial Wrath
-	[186289] = 2,	-- Aspect of the Eagle
-	[51271] = 2,	-- Pillar of Frost
-	[152279] = 2,	-- Breath of Sindragosa
-	[105809] = 2,	-- Holy Avenger
-	[16166] = 2,	-- Elemental Mastery
-	[114050] = 2,	-- Ascendance
-	[107574] = 2,	-- Avatar
-	[121471] = 2,	-- Shadow Blades
-	[12292] = 2,	-- Bloodbath
-	[162264] = 2,	-- Metamorphosis
+	--사냥꾼
+	[53480] = 1, --희생의 표효
+	[109304] = 1, --활기
+	[264735] = 1, --적자 생존
+	[186265] = 1, --거북의 상
+
+	--성기사
+	[228049] = 1, --잊힌 여왕의 수호자
+	[642] = 1, --천상의 보호막
+	[31850] = 1, --헌신적인 수호자
+	[86659] = 1, --고대 왕의 수호자
+	[327193] = 1, --영광의 순간
+	[205191] = 1, --눈에는 눈
+	[498] = 1, --신의 가호
+	[31821] = 1, --오라 숙련
+	[6940] = 1, --희생의 축복
+	[1022] = 1, --보호의 축복
+	[204018] = 1, --주문수호의 축복
+	
+	--주술사
+	[210918] = 1, -- 에테리얼 형상
+	[108271] = 1, --영혼-이동
+	[108281] = 1, --고대의 인도
+
+	--마법사 
+	[45438] = 1, --얼음 방패
+	[198111] = 1, --시간의 보호막
+	[110959] = 1, --상급 투명화
+	[342246] = 1, --시간돌리기
+	[55342] = 1, --환영복제
+	--드루이드
+	[305497] = 1, --가시
+	[354654] = 1, --숲의 보호
+	[22812] = 1, --나무 껍질
+	[157982] = 1, --평온
+	[102342] = 1, --무쇠 껍질
+	[61336] = 1, --생존본능
+	[200851] = 1, --잠자는-자의-분노
+
+	--흑마법사
+	[104773] = 1, --영원한 결의
+	[108416] = 1, --어둠의 서약
+
+	--사제
+	[215769] = 1, --구원의 영혼
+	[328530] = 1, --신속한 승천
+	[197268] = 1, --희망의 빛줄기
+	[19236] = 1, --구원의 기도
+	[81782] = 1, --신의 권능 방벽
+	[33206] = 1, --고통억제
+	[64843] = 1, --천상의 찬가
+	[47788] = 1, --수호영혼
+	[47585] = 1, --분산
+
+--공격버프 시작 (용군단 Update 필요)
+	-- Mage
+	[80353] = 2, --Timewarp
+	[12042] = 2, --Arcane Power
+	[190319] = 2, --Combustion - burst
+	[12472] = 2, --Icy Veins
+	[82691] = 2, --Ring of frost
+	[198144] = 2, --Ice form (pvp)
+	[86949] = 2, --Cauterize
+
+	-- DK
+	[47476] = 2, --Strangulate (pvp) - silence
+	[48792] = 2, --Icebound Fortitude
+	[116888] = 2, --Shroud of Purgatory
+	[114556] = 2, --Purgatory (cd)
+
+	-- Shaman
+	[32182] = 2, --Heroism
+	[2825] = 2, --Bloodlust
+	[108271] = 2, --Astral shift
+	[16166] = 2, --Elemental Mastery - burst
+	[204288] = 2, --Earth Shield
+	[114050] = 2, --Ascendance
+
+	-- Druid
+	[106951] = 2, --Berserk - burst
+	[102543] = 2, --Incarnation: King of the Jungle - burst
+	[102560] = 2, --Incarnation: Chosen of Elune - burst
+	[33891] = 2, --Incarnation: Tree of Life
+	[1850] = 2, --Dash
+	[22812] = 2, --Barkskin
+	[194223] = 2, --Celestial Alignment - burst
+	[78675] = 2, --Solar beam
+	[77761] = 2, --Stampeding Roar
+	[102793] = 2, --Ursol's Vortex
+	[102342] = 2, --Ironbark
+	[339] = 2, --Entangling Roots
+	[102359] = 2, --Mass Entanglement
+	[22570] = 2, --Maim
+
+	-- Paladin
+	[1022] = 2, --Blessing of Protection
+	[204018] = 2, --Blessing of Spellwarding
+	[1044] = 2, --Blessing of Freedom
+	[31884] = 2, --Avenging Wrath
+	[224668] = 2, --Crusade
+	[216331] = 2, --Avenging Crusader
+	[20066] = 2, --Repentance
+	[184662] = 2, --Shield of Vengeance
+	[498] = 2, --Divine Protection
+	[53563] = 2, --Beacon of Light
+	[156910] = 2, --Beacon of Faith
+	[115750] = 2, --Blinding Light
+
+	-- Warrior
+	[1719] = 2, --Battle Cry
+	[23920] = 2, --Spell Reflection
+	[46968] = 2, --Shockwave
+	[18499] = 2, --Berserker Rage
+	[107574] = 2, --Avatar
+	[213915] = 2, --Mass Spell Reflection
+	[118038] = 2, --Die by the Sword
+	[46924] = 2, --Bladestorm
+	[12292] = 2, --Bloodbath
+	[199261] = 2, --Death Wish
+	[107570] = 2, --Storm Bolt
+
+	-- Rogue
+	[45182] = 2, --Cheating Death
+	[31230] = 2, --Cheat Death (cd)
+	[31224] = 2, --Cloak of Shadows
+	[2983] = 2, --Sprint
+	[121471] = 2, --Shadow Blades
+	[1966] = 2, --Feint
+	[5277] = 2, --Evasion
+	[212182] = 2, --Smoke Bomb
+	[13750] = 2, --Adrenaline Rush
+	[199754] = 2, --Riposte
+	[198529] = 2, --Plunder Armor
+	[199804] = 2, --Between the Eyes
+	[1833] = 2, --Cheap Shot
+	[1776] = 2, --Gouge
+	[408] = 2, --Kidney Shot
+
+	-- Hunter
+	[117526] = 2, --Binding Shot
+	[209790] = 2, --Freezing Arrow
+	[213691] = 2, --Scatter Shot
+	[3355] = 2, --Freezing Trap
+	[162480] = 2, -- Steel Trap
+	[19574] = 2, --Bestial Wrath
+	[193526] = 2, --Trueshot
+	[19577] = 2, --Intimidation
+	[90355] = 2, --Ancient Hysteria
+	[160452] = 2, --Netherwinds
+
+	-- Monk
+	[125174] = 2, --Touch of Karma
+	[116849] = 2, -- Life Cocoon
+	[119381] = 2, --Leg Sweep
+
+	-- Priest
+	[10060] = 2, --Power Infusion
+	[9484] = 2, --Shackle Undead
+	[200183] = 2, --Apotheosis
+	[15487] = 2, --Silence
+	[15286] = 2, --Vampiric Embrace
+	[193223] = 2, --Surrender to Madness
+	[88625] = 2, --Holy Word: Chastise
+
+	-- Warlock
+	[108416] = 2, --Dark Pact
+	[196098] = 2 , --Soul Harvest
+	[30283] = 2, --Shadowfury
+
+	-- Demon Hunter
+	[198589] = 2, --Blur
+	[179057] = 2, --Chaos Nova
+	[209426] = 2, --Darkness
+	[217832] = 2, --Imprison
+	[206491] = 2, --Nemesis
+	[211048] = 2, --Chaos Blades
+	[207685] = 2, --Sigil of Misery
+	[209261] = 2, --Last Resort (cd)
+	[207810] = 2, --Nether Bond
+
+	----
+	[2335] = 2, --Swiftness Potion
+	[6624] = 2, --Free Action Potion
+	[67867] = 2, --Trampled (ToC arena spell when you run over someone)
 
 }
 
