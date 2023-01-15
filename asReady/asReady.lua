@@ -84,15 +84,19 @@ local function create_bar_icon(idx, unit, spellid, time, cool)
 		AREADY.bar[idx].cooltime:SetPoint("RIGHT", AREADY.bar[idx], "RIGHT", -2, 0)
 
 			
-		AREADY.icon[idx] = CreateFrame("Button", nil, "AREADYFrameTemplate");
+		AREADY.icon[idx] = CreateFrame("Button", nil, AREADY.bar[idx], "AREADYFrameTemplate");
 
-		AREADY.icon[idx]:SetPoint("TOPRIGHT", AREADY.bar[idx],"TOPLEFT", -2, 0);
+		AREADY.icon[idx]:SetPoint("RIGHT", AREADY.bar[idx],"LEFT", -1, 0);
 
-		AREADY.icon[idx]:SetWidth(AREADY_HEIGHT);
-		AREADY.icon[idx]:SetHeight(AREADY_HEIGHT);
+		AREADY.icon[idx]:SetWidth((AREADY_HEIGHT + 1) * 1.2);
+		AREADY.icon[idx]:SetHeight(AREADY_HEIGHT + 1);
 		AREADY.icon[idx]:SetScale(1);
 		AREADY.icon[idx]:SetAlpha(1);
 		AREADY.icon[idx]:EnableMouse(false);
+		AREADY.icon[idx].icon:SetTexCoord(.08, .92, .08, .92);
+		AREADY.icon[idx].border:SetTexture("Interface\\Addons\\asReady\\border.tga");
+		AREADY.icon[idx].border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+		AREADY.icon[idx].border:SetVertexColor(0, 0, 0);
 		
 
         if idx == 1 then
