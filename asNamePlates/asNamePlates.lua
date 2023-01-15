@@ -1109,7 +1109,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 									self.CCdebuff:SetPoint("LEFT", self.casticon, "RIGHT", 1, 0);
 								else
 									
-									self.CCdebuff:SetPoint("LEFT", healthBar, "RIGHT", 2, 0);
+									self.CCdebuff:SetPoint("LEFT", healthBar, "RIGHT", 1, 0);
 
 								end
 								self.CCdebuff:Show();
@@ -1236,7 +1236,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 	if not showdebuff then
 		for i = 1, numDebuffs - 1 do
-			updateDebuffAnchor(self.buffList, i, i - 1, size_list[i], 4, true, self);
+			updateDebuffAnchor(self.buffList, i, i - 1, size_list[i], 1, true, self);
 		end
 	end
 
@@ -1316,8 +1316,8 @@ local function updateTargetNameP(self)
 		self.healthtext:Show();
 
 		if casticon then
-			casticon:SetWidth((height + cast_height + 1) * 1.2);
-			casticon:SetHeight(height + cast_height + 1);
+			casticon:SetWidth((height + cast_height + 2) * 1.2);
+			casticon:SetHeight(height + cast_height + 2);
 			casticon.border:SetVertexColor(1,1,1);
 
 			--Alert 크기 조정
@@ -1345,8 +1345,8 @@ local function updateTargetNameP(self)
 		self.healthtext:Hide();
 		
 		if casticon then
-			casticon:SetWidth((height + cast_height + 1) * 1.2);
-			casticon:SetHeight(height + cast_height + 1);
+			casticon:SetWidth((height + cast_height + 2) * 1.2);
+			casticon:SetHeight(height + cast_height + 2);
 			casticon.border:SetVertexColor(0,0,0);
 
 			--Alert 크기 조정
@@ -1960,7 +1960,7 @@ local function addNamePlate(namePlateUnitToken)
 		end
 		namePlateFrameBase.asNamePlates.casticon:EnableMouse(false);
         namePlateFrameBase.asNamePlates.casticon:ClearAllPoints();
-		namePlateFrameBase.asNamePlates.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 2, 1);
+		namePlateFrameBase.asNamePlates.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 1, 1);
 		namePlateFrameBase.asNamePlates.casticon:SetWidth(13);
 		namePlateFrameBase.asNamePlates.casticon:SetHeight(13);
 
@@ -1979,7 +1979,7 @@ local function addNamePlate(namePlateUnitToken)
 	end
 	namePlateFrameBase.asNamePlates.CCdebuff:EnableMouse(false);
     namePlateFrameBase.asNamePlates.CCdebuff:ClearAllPoints();
-	namePlateFrameBase.asNamePlates.CCdebuff:SetPoint("LEFT", namePlateFrameBase.asNamePlates.casticon, "RIGHT", 2, 0);
+	namePlateFrameBase.asNamePlates.CCdebuff:SetPoint("LEFT", namePlateFrameBase.asNamePlates.casticon, "RIGHT", 1, 0);
 	namePlateFrameBase.asNamePlates.CCdebuff:SetWidth(ANameP_CCDebuffSize * 1.2);
 	namePlateFrameBase.asNamePlates.CCdebuff:SetHeight(ANameP_CCDebuffSize);
 
@@ -2044,7 +2044,7 @@ local function addNamePlate(namePlateUnitToken)
 			namePlateFrameBase.asNamePlates.icon_size = ANameP_SIZE;
 		else
 			local orig_width = healthbar:GetWidth();
-			namePlateFrameBase.asNamePlates.icon_size = (orig_width / debuffs_per_line) - (debuffs_per_line - 1) -2;
+			namePlateFrameBase.asNamePlates.icon_size = (orig_width / debuffs_per_line) - (debuffs_per_line - 1);
 		end
 				
 		local class = UnitClassification(namePlateUnitToken)

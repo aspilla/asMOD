@@ -1,6 +1,6 @@
 ﻿-----------------설정 ------------------------
-local AGCDB_WIDTH = 65
-local AGCDB_HEIGHT = 5
+local AGCDB_WIDTH = 62
+local AGCDB_HEIGHT = 4
 local AGCDB_X = 0;
 local AGCDB_Y = -126;
 

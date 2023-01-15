@@ -1,9 +1,9 @@
 ﻿local ABF;
 local ABF_PLAYER_BUFF;
 local ABF_TARGET_BUFF;
-local ABF_SIZE = 26;
-local ABF_SIZE_BIG = 27;
-local ABF_SIZE_SMALL = 26;
+local ABF_SIZE = 28;
+local ABF_SIZE_BIG = 30;
+local ABF_SIZE_SMALL = 28;
 local ABF_TARGET_BUFF_X = 73 + 30;
 local ABF_TARGET_BUFF_Y = -142;
 local ABF_PLAYER_BUFF_X = -73 - 30;
@@ -693,33 +693,33 @@ local function ABF_UpdateDebuff(unit)
 	if (unit == "pbuff") then
 		for i=1, numDebuffs - 1 do
 			if (isBigReal[i]) then
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 4, false, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 1, false, parent);
 			else
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 4, false, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 1, false, parent);
 			end
 		end
 	elseif (unit == "tbuff") then
 		for i=1, numDebuffs -1  do
 			if (isBigReal[i]) then
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 4, true, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 1, true, parent);
 			else
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 4, true, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 1, true, parent);
 			end
 		end
 	elseif (unit == "target") then
 		for i=1, numDebuffs -1  do
 			if (isBigReal[i]) then
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 4, true, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 1, true, parent);
 			else
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 4, true, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 1, true, parent);
 			end
 		end
 	elseif (unit == "tebuff") then
 		for i=1, numDebuffs -1  do
 			if (isBigReal[i]) then
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 4, true, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 1, true, parent);
 			else
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 4, true, parent);
+				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 1, true, parent);
 			end
 		end
 	end

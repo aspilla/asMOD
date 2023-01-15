@@ -3,9 +3,9 @@ local ADF_PLAYER_DEBUFF;
 local ADF_TARGET_DEBUFF;
 local ADF_DeBuffList = {}
 
-local ADF_SIZE = 26;
-local ADF_SIZE_BIG = 27;
-local ADF_SIZE_SMALL = 26;
+local ADF_SIZE = 28;
+local ADF_SIZE_BIG = 30;
+local ADF_SIZE_SMALL = 28;
 local ADF_TARGET_DEBUFF_X = 73 + 30;
 local ADF_TARGET_DEBUFF_Y = -110;
 local ADF_PLAYER_DEBUFF_X = -73 - 30;
@@ -762,26 +762,26 @@ local function ADF_UpdateDebuff(unit)
 	if (unit == "target") then
 		for i=1, numDebuffs - 1 do
 			if (isBigReal[i]) then
-				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE_BIG, 4, true, parent);
+				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE_BIG, 1, true, parent);
 			else
-				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE, 4, true, parent);
+				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE, 1, true, parent);
 			end
 		end
 	elseif (unit == "targethelp") then
 		for i=1, numDebuffs - 1 do
 
 			if (isBigReal[i]) then
-				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE_BIG, 4, true, parent);
+				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE_BIG, 1, true, parent);
 			else
-				ADF_UpdateDebuffAnchor(parent.frames, i, i - 1, ADF_SIZE, 4, true, parent);
+				ADF_UpdateDebuffAnchor(parent.frames, i, i - 1, ADF_SIZE, 1, true, parent);
 			end
 		end
 	elseif (unit == "player")  then
 		for i=1, numDebuffs - 1 do
 			if (isBigReal[i]) then
-				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE_BIG, 4, false, parent);
+				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE_BIG, 1, false, parent);
 			else
-				ADF_UpdateDebuffAnchor(parent.frames, i, i - 1, ADF_SIZE, 4, false, parent);
+				ADF_UpdateDebuffAnchor(parent.frames, i, i - 1, ADF_SIZE, 1, false, parent);
 			end
 		end
 	end

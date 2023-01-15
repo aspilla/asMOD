@@ -1,5 +1,5 @@
 ﻿-----------------설정 ------------------------
-local ATGCD_X = 22 + 20 * 1.3;
+local ATGCD_X = 46;
 local ATGCD_Y = -136;
 local AGCICON = 20;
 
@@ -173,7 +173,7 @@ for i = 0 , 3 do
 	if i == 0 then
 		ATGCD.frame[i]:SetPoint("CENTER",UIParent,"CENTER", ATGCD_X, ATGCD_Y)
 	else
-		ATGCD.frame[i]:SetPoint("BOTTOMRIGHT", ATGCD.frame[i-1],"BOTTOMLEFT", -2, 0);
+		ATGCD.frame[i]:SetPoint("BOTTOMRIGHT", ATGCD.frame[i-1],"BOTTOMLEFT", -1, 0);
 	end
 
 

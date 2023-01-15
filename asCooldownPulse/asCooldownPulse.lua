@@ -23,8 +23,8 @@ local CONFIG_MINCOOL_PET = 20
 local CONFIG_SOUND = true				-- 음성안내
 
 
-ACDP_CoolButtons_X = -97				-- 쿨 List 위치
-ACDP_CoolButtons_Y = -251
+ACDP_CoolButtons_X = -98				-- 쿨 List 위치
+ACDP_CoolButtons_Y = -250
 local ACDP_AlertButtons_X = 0			-- Alert button 위치
 local ACDP_AlertButtons_Y = 0
 local ACDP_AlertButtons_Size = 60		-- Alert button size 
@@ -33,7 +33,7 @@ local ACDP_AlertShowTime = 0.2			-- Alert button Fade in-out 시간 짧으면 �
 
 
 
-local ACDP_SIZE = 30;					-- 쿨 List Size
+local ACDP_SIZE = 32;					-- 쿨 List Size
 ACDP_Show_CoolList = true;				-- 쿨 List를 보일지 안보일지 (안보이게 하려면 false)
 local ACDP_Alert_Time = 0.5;			-- 쿨 0.5초전에 알림
 local ACDP_ALPHA = 1;					
@@ -442,7 +442,7 @@ local function ACDP_UpdateCooldown()
 
 	for i=1, numCools - 1 do
 		-- anchor the current aura
-		ACDP_UpdateCoolAnchor(parent.frames, i, i- 1, ACDP_SIZE, 3, true, parent);
+		ACDP_UpdateCoolAnchor(parent.frames, i, i- 1, ACDP_SIZE, 1, true, parent);
 	end
 
 	-- 이후 전에 보였던 frame을 지운다.

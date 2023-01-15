@@ -3,7 +3,7 @@ local ACI_mainframe;
 ACI_SpellList = nil;
 
 -- 설정
-local ACI_SIZE = 39;									-- Button Size
+local ACI_SIZE = 40;									-- Button Size
 
 local ACI_CoolButtons_X = 0 			-- 쿨 List 위치 X
 local ACI_CoolButtons_Y = -232							-- Y 위치
@@ -1985,9 +1985,9 @@ for i = 1, 5 do
 	if i == 3 then
 		ACI[i]:SetPoint("CENTER", ACI_CoolButtons_X, ACI_CoolButtons_Y)
 	elseif i < 3 then
-		ACI[i]:SetPoint("RIGHT", ACI[i+1], "LEFT", -3, 0);
+		ACI[i]:SetPoint("RIGHT", ACI[i+1], "LEFT", -1, 0);
 	elseif i > 3 then
-		ACI[i]:SetPoint("LEFT", ACI[i-1], "RIGHT", 3, 0);
+		ACI[i]:SetPoint("LEFT", ACI[i-1], "RIGHT", 1, 0);
 	end
 end
 
