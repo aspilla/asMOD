@@ -182,7 +182,7 @@ end
 function ASAA_Init()
 
     LoadAddOn("asMOD");
-	ASAA_CoolButtons = CreateFrame("Frame", "ASAA_CoolButtons", UIParent)
+	ASAA_CoolButtons = CreateFrame("Frame", nil, UIParent)
 
 	ASAA_CoolButtons:SetPoint("CENTER", ASAA_CoolButtons_X, ASAA_CoolButtons_Y)
 	ASAA_CoolButtons:SetWidth(1)

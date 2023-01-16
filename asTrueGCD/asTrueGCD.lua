@@ -168,7 +168,7 @@ ATGCD:Show();
 ATGCD.frame = {};
 ATGCD.icontime = {};
 for i = 0 , 3 do
-	ATGCD.frame[i] = CreateFrame("Button", "ATGCDIcon" .. i, UIParent, "ATGCDFrameTemplate");
+	ATGCD.frame[i] = CreateFrame("Button", nil, UIParent, "ATGCDFrameTemplate");
 
 	if i == 0 then
 		ATGCD.frame[i]:SetPoint("CENTER",UIParent,"CENTER", ATGCD_X, ATGCD_Y)

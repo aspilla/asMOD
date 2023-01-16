@@ -93,11 +93,11 @@ ACI_SpellList_ROGUE_3 = {
 
 --야수
 ACI_SpellList_HUNTER_1 = {
-	{118455, 7, "pet", 2},
+	{99, "야수의 회전베기", {118455, 7, "pet", 2}, {"유혈", 2}},
 	{"살상 명령", 1},
 	{"야수의 격노", 2},
 	{"마무리 사격", 1},	
-	{99, "광포한 야수", {"광포한 야수", 2}, {170361, 7, nil, 20}},
+	{99, "광포한 무리", {378745, 7, nil, 20}, {170361, 7, nil, 20}},
 };
 
 --사격
@@ -399,9 +399,9 @@ ACI_SpellList_DEMONHUNTER_2 = {
 --황폐
 ACI_SpellList_EVOKER_1 = {
 	{"부양", 1},
-	{"파열", 1},
+	{369297, 7, "player", 20},	 
 	{"용의 분노", 2},
-	{"기염", 1},
+	{"영원의 쇄도", 1},
 	{"불의 숨결", 1},
 	
 }
@@ -461,7 +461,7 @@ local function ACI_ActionButton_GetOverlayGlow()
 	local overlay = tremove(unusedOverlayGlows);
 	if ( not overlay ) then
 		numOverlays = numOverlays + 1;
-		overlay = CreateFrame("Frame", "ACI_ActionButtonOverlay"..numOverlays, UIParent, "ACI_ActionBarButtonSpellActivationAlert");
+		overlay = CreateFrame("Frame", nil, UIParent, "ACI_ActionBarButtonSpellActivationAlert");
 	end
 	return overlay;
 end

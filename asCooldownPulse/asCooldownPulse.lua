@@ -539,7 +539,7 @@ local function ACDP_Init()
 		ACDP[i]:Show()
 
 
-		ACDP_Icon[i] = ACDP[i]:CreateTexture("ACDP_Texture"..i, nil)
+		ACDP_Icon[i] = ACDP[i]:CreateTexture(nil, "BACKGROUND")
 		ACDP_Icon[i]:SetTexture("")
 		ACDP_Icon[i]:ClearAllPoints()
 		ACDP_Icon[i]:SetAllPoints(ACDP[i])
@@ -551,7 +551,7 @@ local function ACDP_Init()
 
 
 
-	ACDP_CoolButtons = CreateFrame("Frame", "ACDP_CoolButtons", UIParent)
+	ACDP_CoolButtons = CreateFrame("Frame", nil, UIParent)
 
 	ACDP_CoolButtons:SetPoint("CENTER", ACDP_CoolButtons_X, ACDP_CoolButtons_Y)
 

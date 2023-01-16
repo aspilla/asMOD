@@ -18,6 +18,6 @@ local onEvent = function(self)
 	end
 end
 
-local asScavenger = CreateFrame("Frame", "ASV_main", UIParent);
+local asScavenger = CreateFrame("Frame", nil, UIParent);
 asScavenger:SetScript("OnEvent", onEvent);
 asScavenger:RegisterEvent("MERCHANT_SHOW");

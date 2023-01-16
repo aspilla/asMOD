@@ -326,7 +326,7 @@ local function ABF_ActionButton_GetOverlayGlow()
 	local overlay = tremove(unusedOverlayGlows);
 	if ( not overlay ) then
 		numOverlays = numOverlays + 1;
-		overlay = CreateFrame("Frame", "ABF_ActionButtonOverlay"..numOverlays, UIParent, "ABF_ActionBarButtonSpellActivationAlert");
+		overlay = CreateFrame("Frame", nil, UIParent, "ABF_ActionBarButtonSpellActivationAlert");
 	end
 	return overlay;
 end
@@ -1010,7 +1010,7 @@ function ABF_Init()
 
 
   
-	ABF_TARGET_BUFF = CreateFrame("Frame", "ABF_TARGET_BUFF", ABF)
+	ABF_TARGET_BUFF = CreateFrame("Frame", nil, ABF)
 
 	ABF_TARGET_BUFF:SetPoint("CENTER", ABF_TARGET_BUFF_X, ABF_TARGET_BUFF_Y)
 	ABF_TARGET_BUFF:SetWidth(1)
@@ -1019,7 +1019,7 @@ function ABF_Init()
 	--ABF_TARGET_BUFF:SetFrameStrata("BACKGROUND")
 	ABF_TARGET_BUFF:Show()
 
-	ABF_PLAYER_BUFF = CreateFrame("Frame", "ABF_PLAYER_BUFF", ABF)
+	ABF_PLAYER_BUFF = CreateFrame("Frame", nil, ABF)
 
 	ABF_PLAYER_BUFF:SetPoint("CENTER", ABF_PLAYER_BUFF_X, ABF_PLAYER_BUFF_Y)
 	ABF_PLAYER_BUFF:SetWidth(1)

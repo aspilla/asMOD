@@ -1,4 +1,4 @@
-ClearFont = CreateFrame("Frame", "ClearFont");
+ClearFont = CreateFrame("Frame", nil);
 
 local CLEAR_FONT_BASE = "Interface\\AddOns\\asFixClearFont\\Fonts\\";
 --local CLEAR_FONT_BASE = "Fonts\\";

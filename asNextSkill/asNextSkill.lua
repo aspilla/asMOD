@@ -1,9 +1,3 @@
-ANS= nil;
-ANS_mainframe = nil;
-ANS_SpellList = nil;
-ANS_Main= nil;
-ANS_SpellNameList = nil;
-
 -- 설정
 ANS_SIZE = 30;	
 
@@ -654,6 +648,13 @@ ANS_SpellList_EVOKER_2 = {
 
 };
 
+local ANS= nil;
+local ANS_mainframe = nil;
+ANS_SpellList = nil;
+local ANSMain= nil;
+ANS_SpellNameList = nil;
+
+
 local _G = _G;
 local update = 0;
 local prev_i = {0, 0, 0};
@@ -702,7 +703,7 @@ local function ANS_ActionButton_GetOverlayGlow()
 	local overlay = tremove(unusedOverlayGlows);
 	if ( not overlay ) then
 		numOverlays = numOverlays + 1;
-		overlay = CreateFrame("Frame", "ANS_ActionButtonOverlay"..numOverlays, UIParent, "ANS_ActionBarButtonSpellActivationAlert");
+		overlay = CreateFrame("Frame", nil, UIParent, "ANS_ActionBarButtonSpellActivationAlert");
 	end
 	return overlay;
 end
@@ -1190,24 +1191,24 @@ function ANS_Alert(i, idx)
 	local frameBorder;
 
 	if idx == 2  then
-		frame = _G["ANSMain"];
-		frameIcon = _G["ANSMain".."Icon"];
-		frameCooldown = _G["ANSMain".."Cooldown"];
-		frameCount = _G["ANSMain".."Count"];
-		frameBorder = _G["ANSMain".."Border"];
+		frame = ANSMain;
+		frameIcon = ANSMain.icon;
+		frameCooldown = ANSMain.cooldown;
+		frameCount = ANSMain.count;
+		frameBorder = ANSMain.border;
 	elseif idx == 3 then
-		frame = _G["ANS2"];
-		frameIcon = _G["ANS2".."Icon"];
-		frameCooldown = _G["ANS2".."Cooldown"];
-		frameCount = _G["ANS2".."Count"];
-		frameBorder = _G["ANS2".."Border"];
+		frame = ANS2;
+		frameIcon = ANS2.icon;
+		frameCooldown = ANS2.cooldown;
+		frameCount = ANS2.count;
+		frameBorder = ANS2.border;
 
 	else
-		frame = _G["ANS"];
-		frameIcon = _G["ANS".."Icon"];
-		frameCooldown = _G["ANS".."Cooldown"];
-		frameCount = _G["ANS".."Count"];
-		frameBorder = _G["ANS".."Border"];
+		frame = ANS;
+		frameIcon = ANS.icon;
+		frameCooldown = ANS.cooldown;
+		frameCount = ANS.count;
+		frameBorder = ANS.border;
 	end
 
 	local skip = false
@@ -2711,7 +2712,7 @@ end
 
 
 ANS_mainframe = CreateFrame("Frame", nil, UIParent);
-ANS = CreateFrame("Button", "ANS", UIParent, "asNextSkillFrameTemplate");
+ANS = CreateFrame("Button", nil, UIParent, "asNextSkillFrameTemplate");
 ANS:SetPoint("CENTER", ANS_CoolButtons_X, ANS_CoolButtons_Y);
 ANS:SetWidth(ANS_SIZE);
 ANS:SetHeight(ANS_SIZE * 0.9);
@@ -2719,7 +2720,7 @@ ANS:SetScale(1);
 ANS:SetAlpha(ANS_Alpha);
 ANS:EnableMouse(false);
 ANS:Hide();
-ANSMain = CreateFrame("Button", "ANSMain", UIParent, "asNextSkillFrameTemplate");
+ANSMain = CreateFrame("Button", nil, UIParent, "asNextSkillFrameTemplate");
 ANSMain:SetWidth(ANS_SIZE - 5);
 ANSMain:SetHeight((ANS_SIZE - 5)* 0.9);
 ANSMain:SetScale(1);
@@ -2727,7 +2728,7 @@ ANSMain:SetAlpha(ANS_Alpha);
 ANSMain:EnableMouse(false);
 ANSMain:Hide();
 
-ANS2 = CreateFrame("Button", "ANS2", UIParent, "asNextSkillFrameTemplate");
+ANS2 = CreateFrame("Button", nil, UIParent, "asNextSkillFrameTemplate");
 ANS2:SetWidth(ANS_SIZE - 5);
 ANS2:SetHeight((ANS_SIZE - 5)* 0.9);
 ANS2:SetScale(1);
@@ -2741,7 +2742,6 @@ if ANS_ShowVertical then
 else
 	ANSMain:SetPoint("RIGHT", ANS, "LEFT", -1, 0);
 	ANS2:SetPoint("LEFT", ANS, "RIGHT", 1, 0);
-
 end
 
 
@@ -2776,7 +2776,7 @@ ANS_mainframe:RegisterEvent("AZERITE_EMPOWERED_ITEM_SELECTION_UPDATED")
 
 
 
-for _,r in next,{_G["ANSCooldown"]:GetRegions()}	do 
+for _,r in next,{ANS.cooldown:GetRegions()}	do 
 	if r:GetObjectType()=="FontString" then 
 		r:SetFont("Fonts\\2002.TTF",ANS_CooldownFontSize,"OUTLINE")
 		ANS.cooldownfont = r;
@@ -2784,7 +2784,7 @@ for _,r in next,{_G["ANSCooldown"]:GetRegions()}	do
 	end 
 end
 
-for _,r in next,{_G["ANS2Cooldown"]:GetRegions()}	do 
+for _,r in next,{ANS2.cooldown:GetRegions()}	do 
 	if r:GetObjectType()=="FontString" then 
 		r:SetFont("Fonts\\2002.TTF",ANS_CooldownFontSize,"OUTLINE")
 		ANS2.cooldownfont = r;
@@ -2792,7 +2792,7 @@ for _,r in next,{_G["ANS2Cooldown"]:GetRegions()}	do
 	end 
 end
 
-for _,r in next,{_G["ANSMainCooldown"]:GetRegions()}	do 
+for _,r in next,{ANSMain.cooldown:GetRegions()}	do 
 	if r:GetObjectType()=="FontString" then 
 		r:SetFont("Fonts\\2002.TTF",ANS_CooldownFontSize,"OUTLINE")
 		ANSMain.cooldownfont = r;

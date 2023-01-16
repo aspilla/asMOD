@@ -49,7 +49,7 @@ ATCB.castbar.time:SetPoint("RIGHT", ATCB.castbar, "RIGHT", -3, 0);
 ATCB.castbar:SetPoint("CENTER",UIParent,"CENTER", ATCB_X + ATCB_HEIGHT/2, ATCB_Y)
 ATCB.castbar:Hide();
 
-ATCB.button = CreateFrame("Button", "ATCBIcon", ATCB.castbar, "ATCBFrameTemplate");
+ATCB.button = CreateFrame("Button", nil, ATCB.castbar, "ATCBFrameTemplate");
 ATCB.button:SetPoint("RIGHT", ATCB.castbar,"LEFT", -1, 0)
 ATCB.button:SetWidth((ATCB_HEIGHT + 2) * 1.2);
 ATCB.button:SetHeight(ATCB_HEIGHT + 2);

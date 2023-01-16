@@ -9,7 +9,7 @@
 				<Texture name="$parentIcon" parentKey="icon"/>
 			</Layer>
 			<Layer level="OVERLAY">
-				<FontString name="$parentCount" inherits="NumberFontNormalLarge" justifyH="RIGHT">
+				<FontString name="$parentCount" parentKey="count" inherits="NumberFontNormalLarge" justifyH="RIGHT">
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT">
 							<Offset>
@@ -18,7 +18,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<Texture name="$parentBorder" file="Interface\Buttons\UI-Debuff-Overlays">
+				<Texture name="$parentBorder" parentKey="border" file="Interface\Buttons\UI-Debuff-Overlays">
 					<Size>
 						<AbsDimension x="17" y="17"/>
 					</Size>

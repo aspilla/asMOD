@@ -251,7 +251,7 @@ local asMOD_ASQA_frame;
 local function setupFrame(frame, Name, addonName,  config)
     frame = CreateFrame("Frame", Name, UIParent)
     frame.addonName = addonName;
-    frame.text = frame:CreateFontString(Name.."_Text", "OVERLAY")
+    frame.text = frame:CreateFontString(nil, "OVERLAY")
     frame.text:SetFont("Fonts\\2002.TTF", 10, "OUTLINE")
     frame.text:SetPoint("CENTER", frame, "CENTER", 0, 0)
     frame.text:SetText(frame.addonName);
@@ -274,7 +274,7 @@ local function setupFrame(frame, Name, addonName,  config)
         frame:SetHeight(64);
     end
 
-    local tex = frame:CreateTexture("ARTWORK");
+    local tex = frame:CreateTexture(nil, "ARTWORK");
     tex:SetAllPoints();
     tex:SetTexture(1.0, 0.5, 0); tex:SetAlpha(0.5);
     return frame

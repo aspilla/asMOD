@@ -1,4 +1,4 @@
-local AHM_Button = CreateFrame('Button', 'AHM_Button', UIParent, "SecureActionButtonTemplate")
+local AHM_Button = CreateFrame("Frame", nil, UIParent)
 
 
 local playerName	= UnitName("player")

@@ -7,7 +7,8 @@ local ARD_Y = -160;
 local ARD_AHT = false				-- asHealthText에 연결
 -- 설정끝
 
-local ARD_mainframe = CreateFrame("Frame", "ARD_main", UIParent);
+local ARD_mainframe = CreateFrame("Frame", nil, UIParent);
+local ARD_RangeText;
 
 
 local FriendItems  = {
@@ -116,7 +117,7 @@ end
 
 local function ARD_OnLoad()
 
-	ARD_mainframe:CreateFontString("ARD_RangeText", "OVERLAY")
+	ARD_RangeText = ARD_mainframe:CreateFontString(nil, "OVERLAY")
 	ARD_RangeText:SetFont(ARD_Font, ARD_FontSize, ARD_FontOutline)
 
 	local bloaded =  LoadAddOn("asHealthText")

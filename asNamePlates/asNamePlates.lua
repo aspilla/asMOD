@@ -612,7 +612,7 @@ local function ANameP_ActionButton_GetOverlayGlow()
 	local overlay = tremove(unusedOverlayGlows);
 	if ( not overlay ) then
 		numOverlays = numOverlays + 1;
-		overlay = CreateFrame("Frame", "ANameP_ActionButtonOverlay"..numOverlays, UIParent, "ANameP_ActionBarButtonSpellActivationAlert");
+		overlay = CreateFrame("Frame", nil, UIParent, "ANameP_ActionBarButtonSpellActivationAlert");
 	end
 	return overlay;
 end
@@ -1852,7 +1852,7 @@ local function addNamePlate(namePlateUnitToken)
 	end
 		
 	if not namePlateFrameBase.asNamePlates then
-		namePlateFrameBase.asNamePlates = CreateFrame("Frame", "$parentasNamePlates", namePlateFrameBase);
+		namePlateFrameBase.asNamePlates = CreateFrame("Frame", nil, namePlateFrameBase);
 	else
 		if namePlateFrameBase.asNamePlates.colorlevel > ColorLevel.None  then
 			namePlateFrameBase.asNamePlates.r = nil; -- 무조건 Recover
@@ -1917,7 +1917,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates:SetPoint("CENTER", healthbar, "CENTER", 0  , 0)
 	
 	if not namePlateFrameBase.asNamePlates.aggro1  then
-		namePlateFrameBase.asNamePlates.aggro1 = healthbar:CreateFontString(namePlateFrameBase.asNamePlates:GetName().."aggrotext1", "OVERLAY");
+		namePlateFrameBase.asNamePlates.aggro1 = healthbar:CreateFontString(nil, "OVERLAY");
 	end
 
 	namePlateFrameBase.asNamePlates.aggro1:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
@@ -1926,14 +1926,14 @@ local function addNamePlate(namePlateUnitToken)
 
 
 	if not namePlateFrameBase.asNamePlates.aggro2  then
-		namePlateFrameBase.asNamePlates.aggro2 = healthbar:CreateFontString(namePlateFrameBase.asNamePlates:GetName().."aggrotext2", "OVERLAY");
+		namePlateFrameBase.asNamePlates.aggro2 = healthbar:CreateFontString(nil, "OVERLAY");
 	end
 	namePlateFrameBase.asNamePlates.aggro2:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
     namePlateFrameBase.asNamePlates.aggro2:ClearAllPoints();
 	namePlateFrameBase.asNamePlates.aggro2:SetPoint("LEFT", healthbar, "RIGHT", 0, Aggro_Y)
 
 	if not namePlateFrameBase.asNamePlates.healer  then
-		namePlateFrameBase.asNamePlates.healer = healthbar:CreateFontString(namePlateFrameBase.asNamePlates:GetName().."Healer", "OVERLAY");
+		namePlateFrameBase.asNamePlates.healer = healthbar:CreateFontString(nil, "OVERLAY");
 	end
 	if ANameP_HealerSize > 0 then
 		namePlateFrameBase.asNamePlates.healer:SetFont(STANDARD_TEXT_FONT, ANameP_HealerSize, "THICKOUTLINE");
@@ -1947,7 +1947,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.healer:Hide();
 
 	if not namePlateFrameBase.asNamePlates.healthtext then
-		namePlateFrameBase.asNamePlates.healthtext = healthbar:CreateFontString(namePlateFrameBase.asNamePlates:GetName().."healthtext", "OVERLAY");
+		namePlateFrameBase.asNamePlates.healthtext = healthbar:CreateFontString(nil, "OVERLAY");
 	end
 
 	namePlateFrameBase.asNamePlates.healthtext:SetFont(STANDARD_TEXT_FONT, ANameP_HeathTextSize, "OUTLINE");
@@ -1956,7 +1956,7 @@ local function addNamePlate(namePlateUnitToken)
 
 	if unitFrame.castBar then
 		if not namePlateFrameBase.asNamePlates.casticon  then
-			namePlateFrameBase.asNamePlates.casticon = CreateFrame("Frame", namePlateFrameBase.asNamePlates:GetName().."casticon", unitFrame.castBar, "asNamePlatesBuffFrameTemplate");
+			namePlateFrameBase.asNamePlates.casticon = CreateFrame("Frame", nil, unitFrame.castBar, "asNamePlatesBuffFrameTemplate");
 		end
 		namePlateFrameBase.asNamePlates.casticon:EnableMouse(false);
         namePlateFrameBase.asNamePlates.casticon:ClearAllPoints();
@@ -1975,7 +1975,7 @@ local function addNamePlate(namePlateUnitToken)
 
 
 	if not namePlateFrameBase.asNamePlates.CCdebuff  then
-		namePlateFrameBase.asNamePlates.CCdebuff = CreateFrame("Frame", namePlateFrameBase.asNamePlates:GetName().."CCdebuff", unitFrame.healthBar, "asNamePlatesBuffFrameTemplate");
+		namePlateFrameBase.asNamePlates.CCdebuff = CreateFrame("Frame", nil, unitFrame.healthBar, "asNamePlatesBuffFrameTemplate");
 	end
 	namePlateFrameBase.asNamePlates.CCdebuff:EnableMouse(false);
     namePlateFrameBase.asNamePlates.CCdebuff:ClearAllPoints();
@@ -2088,7 +2088,7 @@ local function addNamePlate(namePlateUnitToken)
 				
 				-- Resource Text
 				if ClassNameplateManaBarFrame and ANameP_Resourcetext == nil then
-					ANameP_Resourcetext = ClassNameplateManaBarFrame:CreateFontString("ANameP_Resourcetext", "OVERLAY");
+					ANameP_Resourcetext = ClassNameplateManaBarFrame:CreateFontString(nil, "OVERLAY");
 					ANameP_Resourcetext:SetFont(STANDARD_TEXT_FONT, ANameP_HeathTextSize, "OUTLINE");
 					ANameP_Resourcetext:SetAllPoints(true);
 					ANameP_Resourcetext:SetPoint("CENTER", ClassNameplateManaBarFrame, "CENTER", 0  , 0);

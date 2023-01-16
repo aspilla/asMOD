@@ -27,11 +27,24 @@ AHT_UNIT_POWER_VALUE = 0;
 AHT_UNIT_MANA_VALUE = 0;
 AHT_TARGET_HEALTH_VALUE = 0;
 
-local AHT_mainframe = CreateFrame("Frame", "AHT_main", UIParent);
+local AHT_mainframe = CreateFrame("Frame", nil, UIParent);
 
 local AHT_TargetClass = nil;
 local unit_player = "player"
 local unit_pet = "pet"
+
+local AHT_PlayerHPT
+local AHT_PlayerMPT
+local AHT_TargetHPT
+local AHT_TargetMPT
+local AHT_PetHPT
+local AHT_PetMPT
+local AHT_Threat
+local AHT_ThreatPVP
+local AHT_Rune
+local AHT_Heal
+local AHT_RaidIcon
+local AHT_Power
 
 
 local function AHT_HealColor(value)
@@ -676,18 +689,19 @@ end
 
 local function AHT_OnLoad()
 
-	AHT_mainframe:CreateFontString("AHT_PlayerHPT", "OVERLAY")
-	AHT_mainframe:CreateFontString("AHT_PlayerMPT", "OVERLAY")
-	AHT_mainframe:CreateFontString("AHT_TargetHPT", "OVERLAY")
-	AHT_mainframe:CreateFontString("AHT_TargetMPT", "OVERLAY")
-	AHT_mainframe:CreateFontString("AHT_PetHPT", "OVERLAY")
-	AHT_mainframe:CreateFontString("AHT_PetMPT", "OVERLAY")
-	AHT_mainframe:CreateFontString("AHT_Threat", "OVERLAY")
-	AHT_mainframe:CreateFontString("AHT_ThreatPVP", "OVERLAY")
-	AHT_mainframe:CreateFontString("AHT_Rune", "OVERLAY")
-	AHT_mainframe:CreateFontString("AHT_Heal", "OVERLAY")
-	AHT_mainframe:CreateFontString("AHT_RaidIcon", "OVERLAY")
-	AHT_mainframe:CreateFontString("AHT_Power", "OVERLAY")
+	AHT_PlayerHPT = AHT_mainframe:CreateFontString(nil, "OVERLAY");
+	AHT_PlayerMPT = AHT_mainframe:CreateFontString(nil, "OVERLAY");
+	AHT_TargetHPT = AHT_mainframe:CreateFontString(nil, "OVERLAY");
+	AHT_TargetMPT = AHT_mainframe:CreateFontString(nil, "OVERLAY");
+	AHT_PetHPT = AHT_mainframe:CreateFontString(nil, "OVERLAY");
+	AHT_PetMPT = AHT_mainframe:CreateFontString(nil, "OVERLAY");
+	AHT_Threat = AHT_mainframe:CreateFontString(nil, "OVERLAY");
+	AHT_ThreatPVP = AHT_mainframe:CreateFontString(nil, "OVERLAY");
+	AHT_Rune = AHT_mainframe:CreateFontString(nil, "OVERLAY");
+	AHT_Heal = AHT_mainframe:CreateFontString(nil, "OVERLAY");
+	AHT_RaidIcon = AHT_mainframe:CreateFontString(nil, "OVERLAY");
+	AHT_Power = AHT_mainframe:CreateFontString(nil, "OVERLAY");
+	
 
 	AHT_PlayerHPT:SetFont(AHT_Font, AHT_HealthSize, AHT_FontOutline)
 	AHT_PlayerMPT:SetFont(AHT_Font, AHT_ManaSize, AHT_FontOutline)

@@ -235,7 +235,7 @@ local function ACRB_ActionButton_GetOverlayGlow()
 	local overlay = tremove(unusedOverlayGlows);
 	if ( not overlay ) then
 		numOverlays = numOverlays + 1;
-		overlay = CreateFrame("Frame", "ACRB_ActionButtonOverlay"..numOverlays, UIParent, "ACRB_ActionBarButtonSpellActivationAlert");
+		overlay = CreateFrame("Frame", nil, UIParent, "ACRB_ActionBarButtonSpellActivationAlert");
 	end
 	return overlay;
 end
@@ -400,7 +400,7 @@ local function ACRB_setupFrame(frame)
 
 	-- 힐거리 기능
 	if not asraid[frameName].rangetex then 
-		asraid[frameName].rangetex = frame:CreateTexture("ARTWORK");
+		asraid[frameName].rangetex = frame:CreateTexture(nil, "ARTWORK");
     	asraid[frameName].rangetex:SetAllPoints();
     	asraid[frameName].rangetex:SetColorTexture(ACRB_RangeFilterColor.r, ACRB_RangeFilterColor.g, ACRB_RangeFilterColor.b); 
 		asraid[frameName].rangetex:SetAlpha(ACRB_RangeFilterAlpha);
@@ -1590,7 +1590,7 @@ local function asCompactUnitFrame_UpdateAll(frame)
 	
 end
 
-local ACRB_mainframe = CreateFrame("Frame", "ACRB_main", UIParent);
+local ACRB_mainframe = CreateFrame("Frame", nil, UIParent);
 ACRB_mainframe:SetScript("OnEvent", ACRB_OnEvent)
 ACRB_mainframe:RegisterEvent("GROUP_ROSTER_UPDATE");
 ACRB_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");

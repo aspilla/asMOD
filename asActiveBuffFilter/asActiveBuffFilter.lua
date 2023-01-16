@@ -75,7 +75,7 @@ function  AABF_GetOverlayGlow()
 	local overlay = tremove(unusedOverlayGlows);
 	if ( not overlay ) then
 		numOverlays = numOverlays + 1;
-		overlay = CreateFrame("Frame", "AABF_ActionButtonOverlay"..numOverlays, UIParent, "AABF_ActionBarButtonSpellActivationAlert");
+		overlay = CreateFrame("Frame", nil, UIParent, "AABF_ActionBarButtonSpellActivationAlert");
 	end
 	return overlay;
 end
@@ -455,7 +455,7 @@ local function ASABF_UpdateBuff(unit)
 					frame = parent.frames[numDebuffs];
 			
 					if ( not frame ) then
-						parent.frames[numDebuffs] = CreateFrame("Button", frameName, parent, "asActiveBuffFrameTemplate");
+						parent.frames[numDebuffs] = CreateFrame("Button", nil, parent, "asActiveBuffFrameTemplate");
 						frame = parent.frames[numDebuffs];
 						frame:EnableMouse(false); 
 						for _,r in next,{frame.cooldown:GetRegions()}	do 
