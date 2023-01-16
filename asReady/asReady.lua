@@ -48,116 +48,105 @@ AREADY.bar = {};
 AREADY.icon = {};
 
 
- LoadAddOn("asMOD");
+LoadAddOn("asMOD");
+
+for idx = 0, 4 do
+	AREADY.bar[idx] = CreateFrame("StatusBar", nil, UIParent)
+	AREADY.bar[idx]:SetStatusBarTexture("Interface\\addons\\asReady\\UI-StatusBar.blp", "BORDER")
+	AREADY.bar[idx]:GetStatusBarTexture():SetHorizTile(false)
+	AREADY.bar[idx]:SetMinMaxValues(0, 100)
+	AREADY.bar[idx]:SetValue(0)
+	AREADY.bar[idx]:SetHeight(AREADY_HEIGHT)
+	AREADY.bar[idx]:SetWidth(AREADY_WIDTH)
+	
+	AREADY.bar[idx].bg = AREADY.bar[idx]:CreateTexture(nil, "BACKGROUND")
+	AREADY.bar[idx].bg:SetPoint("TOPLEFT", AREADY.bar[idx], "TOPLEFT", -1, 1)
+	AREADY.bar[idx].bg:SetPoint("BOTTOMRIGHT", AREADY.bar[idx], "BOTTOMRIGHT", 1, -1)
+
+	AREADY.bar[idx].bg:SetTexture("Interface\\Addons\\asReady\\border.tga")
+	AREADY.bar[idx].bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1)	
+	AREADY.bar[idx].bg:SetVertexColor(0, 0, 0, 0.8);
+
+	if idx == 1 then
+		AREADY.bar[idx]:SetPoint("CENTER",UIParent,"CENTER", AREADY_X, AREADY_Y)
+	else
+		AREADY.bar[idx]:SetPoint("BOTTOMLEFT",AREADY.bar[idx - 1],"TOPLEFT", 0, 2)
+	end
+
+	AREADY.bar[idx].playname = AREADY.bar[idx]:CreateFontString(nil, "OVERLAY")
+	AREADY.bar[idx].playname:SetFont(AREADY_Font, AREADY_HEIGHT - 2,  "OUTLINE")
+	AREADY.bar[idx].playname:SetPoint("LEFT", AREADY.bar[idx], "LEFT", 2, 0)
+	AREADY.bar[idx].cooltime = AREADY.bar[idx]:CreateFontString(nil, "OVERLAY")
+	AREADY.bar[idx].cooltime:SetFont(AREADY_Font, AREADY_HEIGHT - 3,  "OUTLINE")
+	AREADY.bar[idx].cooltime:SetPoint("RIGHT", AREADY.bar[idx], "RIGHT", -2, 0)
+
+		
+	AREADY.icon[idx] = CreateFrame("Button", nil, AREADY.bar[idx], "AREADYFrameTemplate");
+
+	AREADY.icon[idx]:SetPoint("RIGHT", AREADY.bar[idx],"LEFT", -1, 0);
+
+	AREADY.icon[idx]:SetWidth((AREADY_HEIGHT + 1) * 1.2);
+	AREADY.icon[idx]:SetHeight(AREADY_HEIGHT + 1);
+	AREADY.icon[idx]:SetScale(1);
+	AREADY.icon[idx]:SetAlpha(1);
+	AREADY.icon[idx]:EnableMouse(false);
+	AREADY.icon[idx].icon:SetTexCoord(.08, .92, .08, .92);
+	AREADY.icon[idx].border:SetTexture("Interface\\Addons\\asReady\\border.tga");
+	AREADY.icon[idx].border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+	AREADY.icon[idx].border:SetVertexColor(0, 0, 0);
+	AREADY.bar[idx]:Hide();
+	
+
+	if idx == 0 then
+		if asMOD_setupFrame then
+			  asMOD_setupFrame (AREADY.bar[idx], "asReady");
+		end			
+	end
+end
 
 
 local function create_bar_icon(idx, unit, spellid, time, cool)
 
-	if not AREADY.bar[idx] then
-		AREADY.bar[idx] = CreateFrame("StatusBar", nil, UIParent)
-		AREADY.bar[idx]:SetStatusBarTexture("Interface\\addons\\asReady\\UI-StatusBar.blp", "BORDER")
-		AREADY.bar[idx]:GetStatusBarTexture():SetHorizTile(false)
-		AREADY.bar[idx]:SetMinMaxValues(0, 100)
-		AREADY.bar[idx]:SetValue(0)
-		AREADY.bar[idx]:SetHeight(AREADY_HEIGHT)
-		AREADY.bar[idx]:SetWidth(AREADY_WIDTH)
-		
-		AREADY.bar[idx].bg = AREADY.bar[idx]:CreateTexture(nil, "BACKGROUND")
-		AREADY.bar[idx].bg:SetPoint("TOPLEFT", AREADY.bar[idx], "TOPLEFT", -1, 1)
-		AREADY.bar[idx].bg:SetPoint("BOTTOMRIGHT", AREADY.bar[idx], "BOTTOMRIGHT", 1, -1)
+	local name,_ ,icon = GetSpellInfo(spellid)
+	local playerclass=select(2,UnitClass(unit))
+	local color=RAID_CLASS_COLORS[playerclass]
+	local curtime = GetTime();
+	local maxcool = cool;
+	local curcool = maxcool;
 
-		AREADY.bar[idx].bg:SetTexture("Interface\\Addons\\asReady\\border.tga")
-		AREADY.bar[idx].bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1)	
-		AREADY.bar[idx].bg:SetVertexColor(0, 0, 0, 0.8);
-
-		if idx == 1 then
-			AREADY.bar[idx]:SetPoint("CENTER",UIParent,"CENTER", AREADY_X, AREADY_Y)
-		else
-			AREADY.bar[idx]:SetPoint("BOTTOMLEFT",AREADY.bar[idx - 1],"TOPLEFT", 0, 2)
-		end
-
-		AREADY.bar[idx].playname = AREADY.bar[idx]:CreateFontString(nil, "OVERLAY")
-		AREADY.bar[idx].playname:SetFont(AREADY_Font, AREADY_HEIGHT - 2,  "OUTLINE")
-		AREADY.bar[idx].playname:SetPoint("LEFT", AREADY.bar[idx], "LEFT", 2, 0)
-		AREADY.bar[idx].cooltime = AREADY.bar[idx]:CreateFontString(nil, "OVERLAY")
-		AREADY.bar[idx].cooltime:SetFont(AREADY_Font, AREADY_HEIGHT - 3,  "OUTLINE")
-		AREADY.bar[idx].cooltime:SetPoint("RIGHT", AREADY.bar[idx], "RIGHT", -2, 0)
-
-			
-		AREADY.icon[idx] = CreateFrame("Button", nil, AREADY.bar[idx], "AREADYFrameTemplate");
-
-		AREADY.icon[idx]:SetPoint("RIGHT", AREADY.bar[idx],"LEFT", -1, 0);
-
-		AREADY.icon[idx]:SetWidth((AREADY_HEIGHT + 1) * 1.2);
-		AREADY.icon[idx]:SetHeight(AREADY_HEIGHT + 1);
-		AREADY.icon[idx]:SetScale(1);
-		AREADY.icon[idx]:SetAlpha(1);
-		AREADY.icon[idx]:EnableMouse(false);
-		AREADY.icon[idx].icon:SetTexCoord(.08, .92, .08, .92);
-		AREADY.icon[idx].border:SetTexture("Interface\\Addons\\asReady\\border.tga");
-		AREADY.icon[idx].border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
-		AREADY.icon[idx].border:SetVertexColor(0, 0, 0);
-		
-
-        if idx == 1 then
-			
-
-            if asMOD_setupFrame then
-                  asMOD_setupFrame (AREADY.bar[idx], "asReady");
-             end
-	
-			
-		end
+	if curtime - time < cool then
+		curcool = curtime - time;
+	else	
+		curcool = maxcool;
 	end
 
-	if spellid then
+
+	AREADY.bar[idx]:SetStatusBarColor(color.r, color.g, color.b);
+	AREADY.bar[idx]:SetMinMaxValues(0, cool)
+	AREADY.bar[idx]:SetValue(curcool)
 
 
-		local name,_ ,icon = GetSpellInfo(spellid)
-		local playerclass=select(2,UnitClass(unit))
-		local color=RAID_CLASS_COLORS[playerclass]
-		local curtime = GetTime();
-		local maxcool = cool;
-		local curcool = maxcool;
+	if icon then
+		local frameIcon = AREADY.icon[idx].icon;
 
-		if curtime - time < cool then
-			curcool = curtime - time;
-		else	
-			curcool = maxcool;
-		end
-
-
-		AREADY.bar[idx]:SetStatusBarColor(color.r, color.g, color.b);
-		AREADY.bar[idx]:SetMinMaxValues(0, cool)
-		AREADY.bar[idx]:SetValue(curcool)
-
-
-		if icon then
-			local frameIcon = AREADY.icon[idx].icon;
-
-			frameIcon:SetTexture(icon);
-			frameIcon:Show();
-			AREADY.icon[idx]:Show();
-		end
-
-		AREADY.bar[idx].playname:SetText(UnitName(unit));
-		AREADY.bar[idx].playname:Show();
-
-		if maxcool == curcool then
-			AREADY.bar[idx].cooltime:SetText("ON");
-			AREADY.bar[idx].cooltime:SetTextColor(0, 1, 0);
-		else
-			AREADY.bar[idx].cooltime:SetText(format("%.1f", maxcool- curcool));
-			AREADY.bar[idx].cooltime:SetTextColor(1, 1, 1);
-
-		end
-		AREADY.bar[idx].cooltime:Show();
-
-
-
-		AREADY.bar[idx]:Show();
+		frameIcon:SetTexture(icon);
+		frameIcon:Show();
+		AREADY.icon[idx]:Show();
 	end
 
+	AREADY.bar[idx].playname:SetText(UnitName(unit));
+	AREADY.bar[idx].playname:Show();
+
+	if maxcool == curcool then
+		AREADY.bar[idx].cooltime:SetText("ON");
+		AREADY.bar[idx].cooltime:SetTextColor(0, 1, 0);
+	else
+		AREADY.bar[idx].cooltime:SetText(format("%.1f", maxcool- curcool));
+		AREADY.bar[idx].cooltime:SetTextColor(1, 1, 1);
+
+	end
+	AREADY.bar[idx].cooltime:Show();
+	AREADY.bar[idx]:Show();	
 end
 
 local function hide_bar_icon(max)
@@ -190,7 +179,10 @@ local function AREADY_OnUpdate()
 				unit = "party"..v[1];
 			end
 
-			create_bar_icon(idx, unit, spellid, time, cool);
+			local currtime = GetTime();
+			if currtime <= time + cool + 1 then
+				create_bar_icon(idx, unit, spellid, time, cool);
+			end
 
 			idx = idx + 1;
 
