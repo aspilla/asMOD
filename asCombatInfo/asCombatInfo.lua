@@ -278,7 +278,7 @@ ACI_SpellList_DRUID_1 = {
 
 	
 	{"달빛섬광", 4, nil, 22 *  0.3},
-	{393954, 7, "player"},
+	{393955, 7, "player", 7},
 	{"천체의 정렬", 2},
 	{"항성의 섬광", 4, nil, 18 *  0.3},
 	{"태양섬광", 4, nil, 13.5 * 0.3},
@@ -459,7 +459,7 @@ local function ACI_ActionButton_GetOverlayGlow()
 	local overlay = tremove(unusedOverlayGlows);
 	if ( not overlay ) then
 		numOverlays = numOverlays + 1;
-		overlay = CreateFrame("Frame", nil, UIParent, "ACI_ActionBarButtonSpellActivationAlert");
+		overlay = CreateFrame("Frame", "ACI_ActionButtonOverlay"..numOverlays, UIParent, "ACI_ActionBarButtonSpellActivationAlert");
 	end
 	return overlay;
 end
