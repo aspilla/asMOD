@@ -194,14 +194,13 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 
 	if event == "UNIT_SPELLCAST_SUCCEEDED" then
 
-		local spellid = arg3;
-		local unit = arg1;
-		local time = GetTime();
-
 		if IsInRaid() then
 
 		elseif GetNumGroupMembers() > 1 then
 		--elseif true then -- Test 용
+			local spellid = arg3;
+			local unit = arg1;
+			local time = GetTime();
 
 			if trackedPartySpells[spellid] then
 				
