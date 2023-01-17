@@ -1960,7 +1960,7 @@ local function addNamePlate(namePlateUnitToken)
 		end
 		namePlateFrameBase.asNamePlates.casticon:EnableMouse(false);
         namePlateFrameBase.asNamePlates.casticon:ClearAllPoints();
-		namePlateFrameBase.asNamePlates.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 1, 1);
+		namePlateFrameBase.asNamePlates.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0, 1);
 		namePlateFrameBase.asNamePlates.casticon:SetWidth(13);
 		namePlateFrameBase.asNamePlates.casticon:SetHeight(13);
 
