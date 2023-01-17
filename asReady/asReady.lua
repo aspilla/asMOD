@@ -5,7 +5,7 @@ local AREADY_HEIGHT = 14		-- 쿨 바의 높이
 local AREADY_X = -330;		-- X 위치
 local AREADY_Y = 15;		-- Y 위치
 local AREADY_Font = "Fonts\\2002.TTF";
-local AREDDY_Max = 10;		-- 최대 표시 List 수
+local AREADY_Max = 10;		-- 최대 표시 List 수
 local AREADY_UpdateRate = 0.2 -- Refresh 시간 초
 
 
@@ -35,8 +35,6 @@ local trackedPartySpells={
 -----------------설정 끝 ------------------------
 
 local partycool = {};
-local max_idx = 0;
-
 
 local AREADY = CreateFrame("FRAME", nil, UIParent)
 AREADY:SetPoint("BOTTOM",UIParent,"BOTTOM", 0, 0)
@@ -45,12 +43,10 @@ AREADY:SetHeight(0)
 AREADY:Show();
 
 AREADY.bar = {};
-AREADY.icon = {};
-
 
 LoadAddOn("asMOD");
 
-for idx = 0, 4 do
+for idx = 1, AREADY_Max do
 	AREADY.bar[idx] = CreateFrame("StatusBar", nil, UIParent)
 	AREADY.bar[idx]:SetStatusBarTexture("Interface\\addons\\asReady\\UI-StatusBar.blp", "BORDER")
 	AREADY.bar[idx]:GetStatusBarTexture():SetHorizTile(false)
@@ -81,35 +77,34 @@ for idx = 0, 4 do
 	AREADY.bar[idx].cooltime:SetPoint("RIGHT", AREADY.bar[idx], "RIGHT", -2, 0)
 
 		
-	AREADY.icon[idx] = CreateFrame("Button", nil, AREADY.bar[idx], "AREADYFrameTemplate");
+	AREADY.bar[idx].button = CreateFrame("Button", nil, AREADY.bar[idx], "AREADYFrameTemplate");
 
-	AREADY.icon[idx]:SetPoint("RIGHT", AREADY.bar[idx],"LEFT", -1, 0);
+	AREADY.bar[idx].button:SetPoint("RIGHT", AREADY.bar[idx],"LEFT", -1, 0);
 
-	AREADY.icon[idx]:SetWidth((AREADY_HEIGHT + 1) * 1.2);
-	AREADY.icon[idx]:SetHeight(AREADY_HEIGHT + 1);
-	AREADY.icon[idx]:SetScale(1);
-	AREADY.icon[idx]:SetAlpha(1);
-	AREADY.icon[idx]:EnableMouse(false);
-	AREADY.icon[idx].icon:SetTexCoord(.08, .92, .08, .92);
-	AREADY.icon[idx].border:SetTexture("Interface\\Addons\\asReady\\border.tga");
-	AREADY.icon[idx].border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
-	AREADY.icon[idx].border:SetVertexColor(0, 0, 0);
-	AREADY.bar[idx]:Hide();
+	AREADY.bar[idx].button:SetWidth((AREADY_HEIGHT + 1) * 1.2);
+	AREADY.bar[idx].button:SetHeight(AREADY_HEIGHT + 1);
+	AREADY.bar[idx].button:SetScale(1);
+	AREADY.bar[idx].button:SetAlpha(1);
+	AREADY.bar[idx].button:EnableMouse(false);
+	AREADY.bar[idx].button.icon:SetTexCoord(.08, .92, .08, .92);
+	AREADY.bar[idx].button.border:SetTexture("Interface\\Addons\\asReady\\border.tga");
+	AREADY.bar[idx].button.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+	AREADY.bar[idx].button.border:SetVertexColor(0, 0, 0);
+	AREADY.bar[idx].button:Hide();
 	
 
-	if idx == 0 then
+	if idx == 1 then
 		if asMOD_setupFrame then
 			  asMOD_setupFrame (AREADY.bar[idx], "asReady");
 		end			
 	end
 end
 
-
 local function create_bar_icon(idx, unit, spellid, time, cool)
 
 	local name,_ ,icon = GetSpellInfo(spellid)
-	local playerclass=select(2,UnitClass(unit))
-	local color=RAID_CLASS_COLORS[playerclass]
+	local localizedClass, englishClass = UnitClass(unit);
+	local color=RAID_CLASS_COLORS[englishClass]
 	local curtime = GetTime();
 	local maxcool = cool;
 	local curcool = maxcool;
@@ -120,18 +115,17 @@ local function create_bar_icon(idx, unit, spellid, time, cool)
 		curcool = maxcool;
 	end
 
-
 	AREADY.bar[idx]:SetStatusBarColor(color.r, color.g, color.b);
 	AREADY.bar[idx]:SetMinMaxValues(0, cool)
 	AREADY.bar[idx]:SetValue(curcool)
 
 
 	if icon then
-		local frameIcon = AREADY.icon[idx].icon;
+		local frameIcon = AREADY.bar[idx].button.icon;
 
 		frameIcon:SetTexture(icon);
 		frameIcon:Show();
-		AREADY.icon[idx]:Show();
+		AREADY.bar[idx].button:Show();
 	end
 
 	AREADY.bar[idx].playname:SetText(UnitName(unit));
@@ -151,10 +145,10 @@ end
 
 local function hide_bar_icon(max)
 
-	for i = max, AREDDY_Max do
+	for i = max, AREADY_Max do
 		if AREADY.bar and AREADY.bar[i] then
 			AREADY.bar[i]:Hide();
-			AREADY.icon[i]:Hide();
+			AREADY.bar[i].button:Hide();
 		end
 	end
 
@@ -185,6 +179,10 @@ local function AREADY_OnUpdate()
 			end
 
 			idx = idx + 1;
+
+			if idx > AREADY_Max then
+				break;
+			end
 
 		end
 	end
@@ -223,7 +221,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			end
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" and (arg1 or arg2) then
-		table.wipe(partycool);
+		partycool = {};
 		
 		if IsInRaid() then
 			AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
@@ -231,7 +229,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
 		end
 	else
-		table.wipe(partycool);
+		partycool = {};
 		
 		if IsInRaid() then
 			AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
@@ -249,4 +247,4 @@ AREADY:RegisterEvent("PLAYER_ENTERING_WORLD");
 AREADY:RegisterEvent("GROUP_JOINED");
 AREADY:RegisterEvent("GROUP_ROSTER_UPDATE");
 
-C_Timer.NewTicker(0.2, AREADY_OnUpdate);
+C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
