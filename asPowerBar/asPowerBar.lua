@@ -677,12 +677,45 @@ local function APB_UpdatePower()
 
 end
 
+local bupdate_druid = false;
+
+local function APB_GetActionSlot(arg1)
+	local lActionSlot = 0;
+
+	for lActionSlot = 1, 120 do
+		local type, id, subType, spellID = GetActionInfo(lActionSlot);
+
+		if type and type == "macro" then
+			 id = GetMacroSpell(id);
+		end
+	
+		if id then
+			local name = GetSpellInfo(id);
+
+
+			if name and name == arg1 then
+				return lActionSlot;
+			end
+		end
+	end
+
+	return nil;
+end
+
 local function APB_SpellMax(spell, spell2)
 
 	local _, maxCharges = GetSpellCharges(spell);
+
+	if bupdate_druid then
+		maxCharges = 2;
+	end
 	
 	if spell2 then
 		local _, maxCharges2 = GetSpellCharges(spell2);
+
+		if bupdate_druid then
+			maxCharges2 = 2;
+		end
 
 		if maxCharges2 then
 			maxCharges = maxCharges + maxCharges2
@@ -700,17 +733,23 @@ local function APB_SpellMax(spell, spell2)
 
 end
 
-
-
 local function APB_UpdateSpell(spell, spell2)
 
 	local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spell);
 
+	if bupdate_druid then
+		local slot = APB_GetActionSlot(spell);
+		if slot then
+			charges= GetActionCount(slot);
+			maxCharges = 2;
+			chargeStart = 0;
+			chargeDuration = 0;
+		end
+	end
+
 	if not maxCharges then
 		return;
 	end
-
-
 	for i = 1, charges do 
 		APB.combobar[i].start = nil;
 	--	APB.combobar[i]:SetStatusBarColor(1,1,0)
@@ -753,13 +792,23 @@ local function APB_UpdateSpell(spell, spell2)
 		local charges, maxCharges2, chargeStart, chargeDuration = GetSpellCharges(spell2);
 
 		if not maxCharges2 then
-			return;
+			local slot = APB_GetActionSlot(spell2);
+			if slot then
+				charges= GetActionCount(slot);
+				maxCharges2 = 2;
+				chargeStart = 0;
+				chargeDuration = 0;
+			end
+		
+			if not maxCharges2 then
+				return;
+			end
 		end
 
 
 		for i = maxCharges + 1, maxCharges + charges do 
 			APB.combobar[i].start = nil;
-			APB.combobar[i]:SetStatusBarColor(1, 0.5, 0);
+			APB.combobar[i]:SetStatusBarColor(1, 0.7, 0.3);
 
 			APB.combobar[i]:SetMinMaxValues(0, 1)
 			APB.combobar[i]:SetValue(1)
@@ -1215,6 +1264,7 @@ local function APB_CheckPower(self)
 	end
 
 	if (englishClass == "DRUID") then
+		bupdate_druid = false;
 
 		if (spec and spec == 1) then
 			APB_BUFF = "일월식 (달)";		
@@ -1228,6 +1278,15 @@ local function APB_CheckPower(self)
 			APB.buffbar[1].unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");			
 			APB_UpdateBuff(self.buffbar[1]);
+
+			APB_SPELL = "별빛섬광";
+			APB_SPELL2 = "천벌"
+			bupdate_druid = true;
+			APB_SpellMax(APB_SPELL, APB_SPELL2);			
+			APB_UpdateSpell(APB_SPELL, APB_SPELL2);			
+			
+			bupdate_spell = true;
+			
 			
 
 		end
