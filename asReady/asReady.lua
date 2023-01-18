@@ -144,15 +144,12 @@ local function create_bar_icon(idx, unit, spellid, time, cool)
 end
 
 local function hide_bar_icon(max)
-
 	for i = max, AREADY_Max do
 		if AREADY.bar and AREADY.bar[i] then
 			AREADY.bar[i]:Hide();
 			AREADY.bar[i].button:Hide();
 		end
 	end
-
-
 end
 
 
@@ -190,42 +187,29 @@ local function AREADY_OnUpdate()
 	hide_bar_icon(idx);
 end
 
-local function AREADY_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
+local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 
-	if event == "UNIT_SPELLCAST_SUCCEEDED" then
+	if event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 and arg3 then
 
 		if IsInRaid() then
-
-		elseif GetNumGroupMembers() > 1 then
+			--Do nothing
+		elseif IsInGroup() then
 		--elseif true then -- Test 용
 			local spellid = arg3;
 			local unit = arg1;
 			local time = GetTime();
-
 			if trackedPartySpells[spellid] then
-				
 				local cool = trackedPartySpells[spellid];
-        
-                -- Create a reference to pass to several functions
         	    if UnitIsUnit("player", unit) then
 					partycool[0] = {0, spellid, time, cool};
 				else
-    	        	for k=1,GetNumGroupMembers()-1 do 
-
+    	        	for k=1,GetNumGroupMembers()-1 do
 						if UnitIsUnit("party"..k, unit) then
 							partycool[k] = {k, spellid, time, cool};
 						end
 					end
 	            end
 			end
-		end
-	elseif event == "PLAYER_ENTERING_WORLD" and (arg1 or arg2) then
-		partycool = {};
-		
-		if IsInRaid() then
-			AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-		else
-			AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
 		end
 	else
 		partycool = {};

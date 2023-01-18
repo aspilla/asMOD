@@ -6,11 +6,6 @@ local ARD_X	= 0;
 local ARD_Y = -160;
 local ARD_AHT = false				-- asHealthText에 연결
 -- 설정끝
-
-local ARD_mainframe = CreateFrame("Frame", nil, UIParent);
-local ARD_RangeText;
-
-
 local FriendItems  = {
     {37727, 5}, -- Ruby Acorn
     {63427, 6}, -- Worgsaw
@@ -48,6 +43,8 @@ local HarmItems = {
 	{33119,100}, -- Malister's Frost Wand
 }
 
+local ARD_mainframe = CreateFrame("Frame", nil, UIParent);
+local ARD_RangeText;
 
 local function ARD_CheckRange(unit)
 
@@ -71,18 +68,16 @@ local function ARD_CheckRange(unit)
 	end
 
 	for i = 1, #itemlist do
-
 		if GetItemInfo(itemlist[i][1]) and IsItemInRange(itemlist[i][1], unit) then
 			return itemlist[i][2];
 		end
 	end
-
 	return 0;
 end
 
 local function ARD_GetRangeColor(range)
 
-	if not range or range == 0 then
+	if not range then
 		return 0.9, 0.9, 0.9;
 	end
 	
@@ -131,23 +126,18 @@ local function ARD_OnLoad()
 	ARD_RangeText:SetText("");
 	ARD_RangeText:Show();
 
+	if asMOD_setupFrame then
+		asMOD_setupFrame (ARD_RangeText, "asRangeDisplay");
+  	end			
 
 	ARD_mainframe:RegisterEvent("PLAYER_TARGET_CHANGED");
 end
 
 
-function ARD_OnEvent(self, event, arg1, arg2, arg3, ...)
+local function ARD_OnEvent(self, event)
 
 	if event == "PLAYER_TARGET_CHANGED" then
-		local range = ARD_CheckRange("target");
-		if range == 0 then
-			ARD_RangeText:SetText("");
-		else
-			ARD_RangeText:SetText(range);
-		end
-
-		ARD_RangeText:SetTextColor(ARD_GetRangeColor(range));
-
+		ARD_OnUpdate();
 	end
 end
 
