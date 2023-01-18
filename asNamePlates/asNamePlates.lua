@@ -635,6 +635,7 @@ local function ANameP_ShowOverlayGlow(button, bhideflash)
 		button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
 		button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
 		button.overlay.bhideflash = bhideflash;
+		button.overlay.spark:SetAlpha(0);
 		button.overlay.animIn:Play();
 	end
 end
@@ -680,18 +681,18 @@ function ANameP_ActionBarOverlayGlowAnimInMixin:OnPlay()
 	local frame = self:GetParent();
 	local frameWidth, frameHeight = frame:GetSize();
 	frame.spark:SetSize(frameWidth, frameHeight);
-	frame.spark:SetAlpha(0.3);
-	frame.innerGlow:SetSize(frameWidth / 2, frameHeight / 2);
-	frame.innerGlow:SetAlpha(1.0);
-	frame.innerGlowOver:SetAlpha(1.0);
-	frame.outerGlow:SetSize(frameWidth * 2, frameHeight * 2);
-	frame.outerGlow:SetAlpha(1.0);
-	frame.outerGlowOver:SetAlpha(1.0);
-	frame.ants:SetSize(frameWidth * 0.85, frameHeight * 0.85)
+	frame.spark:SetAlpha(0);
+	frame.innerGlow:SetSize(frameWidth, frameHeight);
+	frame.innerGlow:SetAlpha(1);
+	frame.innerGlowOver:SetAlpha(1);
+	frame.outerGlow:SetSize(frameWidth, frameHeight);
+	frame.outerGlow:SetAlpha(1);
+	frame.outerGlowOver:SetAlpha(1);
+	frame.ants:SetSize(frameWidth * 0.8, frameHeight * 0.8)
 	frame.ants:SetAlpha(0);
 
 	if frame.bhideflash then
-		frame.spark:SetAlpha(0.3);
+		frame.spark:SetAlpha(0);
 		frame.innerGlow:SetAlpha(0);
 		frame.innerGlowOver:SetAlpha(0);
 		frame.outerGlow:SetAlpha(0);

@@ -302,14 +302,14 @@ function ACRB_ActionBarOverlayGlowAnimInMixin:OnPlay()
 	local frame = self:GetParent();
 	local frameWidth, frameHeight = frame:GetSize();
 	frame.spark:SetSize(frameWidth, frameHeight);
-	frame.spark:SetAlpha(0.3);
-	frame.innerGlow:SetSize(frameWidth / 2, frameHeight / 2);
-	frame.innerGlow:SetAlpha(1.0);
-	frame.innerGlowOver:SetAlpha(1.0);
-	frame.outerGlow:SetSize(frameWidth * 2, frameHeight * 2);
-	frame.outerGlow:SetAlpha(1.0);
-	frame.outerGlowOver:SetAlpha(1.0);
-	frame.ants:SetSize(frameWidth * 0.85, frameHeight * 0.85)
+	frame.spark:SetAlpha(0);
+	frame.innerGlow:SetSize(frameWidth, frameHeight);
+	frame.innerGlow:SetAlpha(1);
+	frame.innerGlowOver:SetAlpha(1);
+	frame.outerGlow:SetSize(frameWidth, frameHeight);
+	frame.outerGlow:SetAlpha(1);
+	frame.outerGlowOver:SetAlpha(1);
+	frame.ants:SetSize(frameWidth * 0.8, frameHeight * 0.8)
 	frame.ants:SetAlpha(0);
 
 	if frame.bhideflash then
