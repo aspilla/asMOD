@@ -2,8 +2,6 @@
 local ABF_PLAYER_BUFF;
 local ABF_TARGET_BUFF;
 local ABF_SIZE = 28;
-local ABF_SIZE_BIG = 30;
-local ABF_SIZE_SMALL = 28;
 local ABF_TARGET_BUFF_X = 73 + 30;
 local ABF_TARGET_BUFF_Y = -142;
 local ABF_PLAYER_BUFF_X = -73 - 30;
@@ -427,6 +425,23 @@ function ABF_ActionBarOverlayGlowAnimOutMixin:OnFinished()
 	actionButton.overlay = nil;
 end
 
+local function scanSpells(tab)
+
+	local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
+
+	if not tabName then
+		return;
+	end
+
+	for i=tabOffset + 1, tabOffset + numEntries do
+		local spellName, _, spellID = GetSpellBookItemName (i, BOOKTYPE_SPELL)
+		if not spellName then
+			do break end
+		end
+
+		ABF_TalentBuffList[spellName] = true;		
+	end
+end
 
 local function asCheckTalent()
 
@@ -458,8 +473,13 @@ local function asCheckTalent()
 			end
         end
     end
+
+	scanSpells(1)
+	scanSpells(2)
+	scanSpells(3)
 	return;
 end
+
 
 local function asCooldownFrame_Clear(self)
 	self:Clear();
@@ -474,45 +494,42 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 	end
 end
 
+local function ABF_UpdateDebuffSize(frames, index, size)
+
+	local buff = frames[index];
+	-- Resize
+	buff:SetWidth(size);
+	buff:SetHeight(size * 0.8);
+end
+
 local function ABF_UpdateDebuff(unit)
 
 	local numDebuffs = 1;
 	local frame;
 	local frameIcon, frameCount, frameCooldown, frameStealable;
-	local name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable;
+	local name, icon, count, debuffType, duration, expirationTime, caster, nameplateShowPersonal, spellId, casterIsPlayer, nameplateShowAll, stack,value2,value3;
 	local color;
 	local frameBorder;
-	local maxIdx;
+	local maxIdx = ABF_MAX_BUFF_SHOW;
 	local parent;
 	local isFirst = true;
 
 	if (unit == "tbuff") then
-		maxIdx = MAX_TARGET_BUFFS;
 		parent = ABF_TARGET_BUFF;
 	elseif (unit == "target") then
-		
-		maxIdx = MAX_TARGET_BUFFS;
 		parent = ABF_TARGET_BUFF;
 	elseif (unit == "pbuff") then
-		
-		maxIdx = MAX_TARGET_BUFFS;
 		parent = ABF_PLAYER_BUFF;
 	elseif (unit == "tebuff") then
-		
-		maxIdx = MAX_TARGET_BUFFS;
 		parent = ABF_TARGET_BUFF;
 	else
 		return;
 	end
 
-	--for i = 1, maxIdx do
-	i = 1;
-
+	local i = 1;
 	local totem_i = 1;
-
-	if parent.frames == nil then
-		parent.frames = {};
-	end
+	local talentlist = {};
+	local talentcount = 0;
 
 	repeat
 		local skip = false;
@@ -526,7 +543,7 @@ local function ABF_UpdateDebuff(unit)
 		isBig[i] = false;
 		
 		if (unit == "tbuff") then
-			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = UnitBuff("target", i);
+			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId = UnitBuff("target", i);
 
 			-- 적대적 NPC 는 무조건 Buff 를 보임
 
@@ -541,7 +558,7 @@ local function ABF_UpdateDebuff(unit)
 
 		elseif (unit == "target") then
 						
-			name,  icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = UnitBuff("target", i);
+			name,  icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId = UnitBuff("target", i);
 			if (icon == nil) then
 				break;
 			end
@@ -562,7 +579,6 @@ local function ABF_UpdateDebuff(unit)
 			if ACI_Buff_list and skip == false and ACI_Buff_list[name] then
 				skip = true;
 			end
-
 
 		elseif (unit == "pbuff") then
 
@@ -592,7 +608,7 @@ local function ABF_UpdateDebuff(unit)
 
 				if icon == nil then
 					i = 1;
-					name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff("player", i, "INCLUDE_NAME_PLATE_ONLY");
+					name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff("player", i, "INCLUDE_NAME_PLATE_ONLY");
 
 				end
 
@@ -607,36 +623,19 @@ local function ABF_UpdateDebuff(unit)
 				break;
 			end
 			
-			if PLAYER_UNITS[caster] and duration > 0 and duration <= ABF_MAX_Cool then
+			if PLAYER_UNITS[caster] and (duration > 0 and duration <= ABF_MAX_Cool or count > 1) then
 				skip = false;
-			end
+			end			
 
-			if PLAYER_UNITS[caster] and duration == 0 and ABF_TalentShowList and ABF_TalentShowList[name] then
+			if PLAYER_UNITS[caster] and ABF_TalentBuffList and ABF_TalentBuffList[name] then
 				-- 특성이면 보이게
-				skip = false;
-			end
-
-			if PLAYER_UNITS[caster] and duration == 0 and ABF_TalentBuffList and ABF_TalentBuffList[name] and count > 1 then
-				-- 특성이면 보이게
-				skip = false;
-				ABF_TalentShowList[name] = true;
-			end
-
-		
-
+				skip = false;				
+			end	
+			
 			if nameplateShowPersonal and PLAYER_UNITS[caster]  then
 				skip = false;
 			end
-						
-			stack = nil;
-
-			--결의 보호막 처리부 asCombatInfo로 이동
-			if  ABF_StackBuffList[name] == 1 and stack and stack > 0 then
-				skip = false;
-			else
-				stack = nil;
-			end
-
+					
 			-- asPowerBar Check 
 			if APB_BUFF and APB_BUFF == name then
 				skip = true;
@@ -669,8 +668,7 @@ local function ABF_UpdateDebuff(unit)
 			if ABF_ProcBuffList and ABF_ProcBuffList[name] then
 
 				if	ABF_ProcBuffList[name] == 1 then
-					alert = true;
-					isBig[i] = true;
+					alert = true;					
 				end
 				skip = false;
 			end			
@@ -691,8 +689,17 @@ local function ABF_UpdateDebuff(unit)
 				skip = true;
 			end
 
+			if skip == false and debuffType ~= "totem" and PLAYER_UNITS[caster] and ABF_TalentBuffList and ABF_TalentBuffList[name] then
+				
+				if talentcount < ABF_MAX_BUFF_SHOW then
+					skip = true;
+					talentcount = talentcount + 1;	
+					talentlist[talentcount] = i;
+				end				
+			end
+
 		elseif (unit == "tebuff") then
-			name,  icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId  = UnitBuff("target", i);
+			name,  icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId  = UnitBuff("target", i);
 			if (icon == nil) then
 				break;
 			end
@@ -726,31 +733,6 @@ local function ABF_UpdateDebuff(unit)
 			frame = parent.frames[numDebuffs];
 			isBigReal[numDebuffs] = isBig[i];
 
-			if ( not frame ) then
-				parent.frames[numDebuffs] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
-				frame = parent.frames[numDebuffs];
-				frame:EnableMouse(false); 
-				for _,r in next,{frame.cooldown:GetRegions()}	do 
-					if r:GetObjectType()=="FontString" then 
-						r:SetFont(STANDARD_TEXT_FONT,ABF_CooldownFontSize,"OUTLINE");
-						r:ClearAllPoints();
-						r:SetPoint("TOP", 0, 5);
-						break 
-					end 
-				end
-
-				local font, size, flag = frame.count:GetFont()
-
-				frame.count:SetFont(STANDARD_TEXT_FONT, ABF_CountFontSize, "OUTLINE")
-				frame.count:ClearAllPoints()
-				frame.count:SetPoint("BOTTOM", 0, -5);
-
-				frame.icon:SetTexCoord(.08, .92, .08, .92);
-				frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
-				frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
-
-			end
-
 			if ((unit == "pbuff") or (unit == "target" and PLAYER_UNITS[caster] ) or (unit == "tbuff") or (unit == "tebuff")) then
 					
 				-- set the icon
@@ -763,42 +745,15 @@ local function ABF_UpdateDebuff(unit)
 				-- Handle cooldowns
 				frameCooldown = frame.cooldown;
 			
-				if isBig[i] then
-					frame:SetWidth(ABF_SIZE_BIG);
-					frame:SetHeight(ABF_SIZE_BIG * 0.8);
-				else
-					frame:SetWidth(ABF_SIZE);
-					frame:SetHeight(ABF_SIZE * 0.8);
-				end
-
 				if ( count > 1 ) then
 					frameCount:SetText(count);
 					frameCount:Show();
 					frameCooldown:SetDrawSwipe(false);
 				else
-					if (stack ) then
-						if(stack > 999999) then 
-							stack = math.ceil(stack/1000000) .. "m" 
-						elseif(stack > 999) then 
-							stack = math.ceil(stack/1000) .. "k" 
-						end   						
-						
-						frameCount:SetText(stack);
-						frameCount:Show();
-						frameCooldown:SetDrawSwipe(false);
-					else
-						if (name == ABF_Current_Buff) then
-							frameCount:SetText(ABF_Current_Count);
-							frameCount:Show();
-							frameCooldown:SetDrawSwipe(false);
-						else
-							frameCount:Hide();
-							frameCooldown:SetDrawSwipe(true);
-						end
-					end
-
+					frameCount:Hide();
+					frameCooldown:SetDrawSwipe(true);
 				end
-							
+
 				if ( duration > 0 and duration <= 120 ) then
 					frameCooldown:Show();
 					asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration >0,  true);
@@ -830,9 +785,8 @@ local function ABF_UpdateDebuff(unit)
 				end
 
 				frameBorder:SetVertexColor(color.r, color.g, color.b);
-				frameBorder:SetAlpha(ABF_ALPHA);
-						
-				frame:ClearAllPoints();
+				frameBorder:SetAlpha(ABF_ALPHA);					
+				
 				frame:Show();
 
 				numDebuffs = numDebuffs + 1;
@@ -840,91 +794,92 @@ local function ABF_UpdateDebuff(unit)
 		end
 		i = i+1
 	until (name == nil)
-	
-
-	if (unit == "pbuff") then
-		for i=1, numDebuffs - 1 do
-			if (isBigReal[i]) then
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 1, false, parent);
-			else
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 1, false, parent);
-			end
-		end
-	elseif (unit == "tbuff") then
-		for i=1, numDebuffs -1  do
-			if (isBigReal[i]) then
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 1, true, parent);
-			else
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 1, true, parent);
-			end
-		end
-	elseif (unit == "target") then
-		for i=1, numDebuffs -1  do
-			if (isBigReal[i]) then
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 1, true, parent);
-			else
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 1, true, parent);
-			end
-		end
-	elseif (unit == "tebuff") then
-		for i=1, numDebuffs -1  do
-			if (isBigReal[i]) then
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE_BIG, 1, true, parent);
-			else
-				ABF_UpdateDebuffAnchor(parent.frames, i, i - 1, ABF_SIZE, 1, true, parent);
-			end
-		end
-	end
 
 	for i = numDebuffs, maxIdx do
-
 		frame = parent.frames[i];
-
 		if ( frame ) then
 			frame:Hide();	
-		end
+		end		
+	end
+
+	if (unit == "pbuff") then
+		parent = ABF_TALENT_BUFF;
 		
+		for numDebuffs = 1, talentcount do
+			
+			frame = parent.frames[numDebuffs];
+			local isStealable;		
+			
+			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff("player", talentlist[numDebuffs], "INCLUDE_NAME_PLATE_ONLY");
+			
+			if name and frame then
+
+				-- set the icon
+				frameIcon = frame.icon;
+				frameIcon:SetTexture(icon);
+				frameIcon:SetAlpha(ABF_ALPHA);
+				frameIcon:Show();
+
+				-- set the count
+				frameCount = frame.count;
+				-- Handle cooldowns
+				frameCooldown = frame.cooldown;
+						
+				if ( count > 1 ) then
+					frameCount:SetText(count);
+					frameCount:Show();
+					frameCooldown:SetDrawSwipe(false);
+				else
+					frameCount:Hide();
+					frameCooldown:SetDrawSwipe(true);
+				end
+							
+				if ( duration > 0 and duration <= 120 ) then
+					frameCooldown:Show();
+					asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration >0,  true);
+					frameCooldown:SetHideCountdownNumbers(false);
+				else
+					frameCooldown:Hide();
+				end
+
+				frameBorder = frame.border;
+
+				color = DebuffTypeColor["Disease"];
+
+				if debuffType then
+					color = DebuffTypeColor[debuffType];
+				end
+
+				if isStealable then
+					color = { r = 1, g = 1, b = 1 };
+				end
+
+				ABF_HideOverlayGlow(frame);
+			
+				frameBorder:SetVertexColor(color.r, color.g, color.b);
+				frameBorder:SetAlpha(ABF_ALPHA);	
+				frame:Show();
+			end
+		end	
+
+		for i = talentcount + 1, maxIdx do
+			frame = parent.frames[i];
+			if ( frame ) then
+				frame:Hide();	
+			end		
+		end
 	end
+
 end
 
-function ABF_UpdateDebuffAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
-
-	local buff = frames[index];
-	local point1 = "TOPLEFT";
-	local point2 = "BOTTOMLEFT";
-	local point3 = "TOPRIGHT";
-
-	if (right == false) then
-		point1 = "TOPRIGHT";
-		point2 = "BOTTOMRIGHT";
-		point3 = "TOPLEFT";
-		offsetX = -offsetX;
-	end
-
-	if ( index == 1 ) then
-		buff:SetPoint(point1, parent, point2, 0, 0);
-	else
-		buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
-	end
-
-	-- Resize
-	buff:SetWidth(size);
-	buff:SetHeight(size * 0.8);
-	--[[
-	local border =frames[index].border;
-	debuffFrame:SetWidth(size+2);
-	debuffFrame:SetHeight(size * 0.8 +2);
-	]]
-end
 
 
-function ABF_ClearFrame()
+local function ABF_ClearFrame()
 	
-	local selfName = "ABF_TBUFF_";
+	local parent = ABF_TARGET_BUFF;
 
-	for i = 1, MAX_TARGET_BUFFS do
-		frameName = selfName.."Button"..i;
-		frame = _G[frameName];
+	for i = 1, ABF_MAX_BUFF_SHOW do
+		local frame = parent.frames[i];
 
 		if ( frame ) then
 			frame:Hide();	
@@ -934,7 +889,7 @@ function ABF_ClearFrame()
 	end
 end
 
-function ABF_InitShowList()
+local function ABF_InitShowList()
 
 	local localizedClass, englishClass = UnitClass("player")
 	local spec = GetSpecialization();
@@ -970,7 +925,7 @@ local function ABF_OnUpdate()
 end
 
 
-function ABF_OnEvent(self, event, arg1, ...)
+local function ABF_OnEvent(self, event, arg1, ...)
 	if (event == "PLAYER_TARGET_CHANGED") then
 		ABF_ClearFrame();
 		if UnitIsEnemy("player", "target") then
@@ -997,7 +952,83 @@ function ABF_OnEvent(self, event, arg1, ...)
 	end
 end
 
-function ABF_Init()
+local function ABF_UpdateDebuffAnchor(frames, index, offsetX, right, center, parent)
+
+	local buff = frames[index];
+	buff:ClearAllPoints();
+
+	if center then
+		if ( index == 1 ) then
+			buff:SetPoint("TOP", parent, "TOP", 0, 0);
+		elseif  (index == 2) then
+			buff:SetPoint("RIGHT", frames[index - 1], "LEFT", -offsetX, 0);
+		elseif (math.fmod(index, 2) == 1) then
+			buff:SetPoint("LEFT", frames[index - 2], "RIGHT", offsetX, 0);
+		else
+			buff:SetPoint("RIGHT", frames[index - 2], "LEFT", -offsetX, 0);
+		end
+	else
+		local point1 = "TOPLEFT";
+		local point2 = "CENTER";
+		local point3 = "TOPRIGHT";
+
+		if (right == false) then
+			point1 = "TOPRIGHT";
+			point2 = "CENTER";
+			point3 = "TOPLEFT";
+			offsetX = -offsetX;
+		end
+
+		if ( index == 1 ) then
+			buff:SetPoint(point1, parent, point2, 0, 0);
+		else
+			buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
+		end
+	end
+	-- Resize
+	buff:SetWidth(ABF_SIZE);
+	buff:SetHeight(ABF_SIZE * 0.8);
+end
+
+local function CreatBuffFrames(parent, bright, bcenter)
+
+	local idx;
+
+	if parent.frames == nil then
+		parent.frames = {};
+	end
+	
+	for idx = 1, ABF_MAX_BUFF_SHOW do
+		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
+		local frame = parent.frames[idx];
+		frame:EnableMouse(false); 
+		for _,r in next,{frame.cooldown:GetRegions()} do 
+			if r:GetObjectType()=="FontString" then 
+				r:SetFont(STANDARD_TEXT_FONT,ABF_CooldownFontSize,"OUTLINE");
+				r:ClearAllPoints();
+				r:SetPoint("TOP", 0, 5);
+				break
+			end 
+		end
+
+		local font, size, flag = frame.count:GetFont()
+
+		frame.count:SetFont(STANDARD_TEXT_FONT, ABF_CountFontSize, "OUTLINE")
+		frame.count:ClearAllPoints()
+		frame.count:SetPoint("BOTTOM", 0, -5);
+
+		frame.icon:SetTexCoord(.08, .92, .08, .92);
+		frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
+		frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+
+		ABF_UpdateDebuffAnchor(parent.frames, idx, 1,  bright, bcenter, parent);
+		frame:Hide();
+	end
+
+	return;
+end
+
+local function ABF_Init()
 
 	ABF = CreateFrame("Frame", nil, UIParent)
 
@@ -1019,6 +1050,8 @@ function ABF_Init()
 	--ABF_TARGET_BUFF:SetFrameStrata("BACKGROUND")
 	ABF_TARGET_BUFF:Show()
 
+	CreatBuffFrames(ABF_TARGET_BUFF, true, false);
+
 	ABF_PLAYER_BUFF = CreateFrame("Frame", nil, ABF)
 
 	ABF_PLAYER_BUFF:SetPoint("CENTER", ABF_PLAYER_BUFF_X, ABF_PLAYER_BUFF_Y)
@@ -1027,7 +1060,21 @@ function ABF_Init()
 	ABF_PLAYER_BUFF:SetScale(1)
 	--ABF_PLAYER_BUFF:SetFrameStrata("BACKGROUND")
 	ABF_PLAYER_BUFF:Show()
-	
+
+	CreatBuffFrames(ABF_PLAYER_BUFF, false, false);
+
+	ABF_TALENT_BUFF = CreateFrame("Frame", nil, ABF)
+
+	ABF_TALENT_BUFF:SetPoint("CENTER", 0, ABF_PLAYER_BUFF_Y)
+	ABF_TALENT_BUFF:SetWidth(1)
+	ABF_TALENT_BUFF:SetHeight(1)
+	ABF_TALENT_BUFF:SetScale(1)
+	--ABF_PLAYER_BUFF:SetFrameStrata("BACKGROUND")
+	ABF_TALENT_BUFF:Show()
+
+	CreatBuffFrames(ABF_TALENT_BUFF, false, true);
+
+
 	ABF:RegisterEvent("PLAYER_TARGET_CHANGED")
 	ABF:RegisterUnitEvent("UNIT_AURA", "player")
 	ABF:RegisterEvent("PLAYER_ENTERING_WORLD");
@@ -1043,6 +1090,4 @@ function ABF_Init()
 
 end
 
-ABF_Init()
-
-
+ABF_Init();

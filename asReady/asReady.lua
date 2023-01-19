@@ -103,7 +103,7 @@ end
 local function create_bar_icon(idx, unit, spellid, time, cool)
 
 	local name,_ ,icon = GetSpellInfo(spellid)
-	local localizedClass, englishClass = UnitClass(unit);
+	local _, englishClass = UnitClass(unit);
 	local color=RAID_CLASS_COLORS[englishClass]
 	local curtime = GetTime();
 	local maxcool = cool;

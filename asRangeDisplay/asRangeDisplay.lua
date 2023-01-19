@@ -3,7 +3,7 @@ local ARD_Font = "Fonts\\2002.TTF";
 local ARD_FontSize = 16;
 local ARD_FontOutline = "THICKOUTLINE";
 local ARD_X	= 0;
-local ARD_Y = -160;
+local ARD_Y = -130;
 local ARD_AHT = false				-- asHealthText에 연결
 -- 설정끝
 local FriendItems  = {
