@@ -164,7 +164,7 @@ local function AREADY_OnUpdate()
 			local time = v[3];
 			local cool = v[4];
 
-			if v[1] == 0 then
+			if v[1] == 5 then
 				unit = "player"
 			else
 				unit = "party"..v[1];
@@ -200,15 +200,15 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 			local time = GetTime();
 			if trackedPartySpells[spellid] then
 				local cool = trackedPartySpells[spellid];
-        	    if UnitIsUnit("player", unit) then
-					partycool[0] = {0, spellid, time, cool};
+        	    		if UnitIsUnit("player", unit) then
+					partycool[5] = {5, spellid, time, cool};
 				else
-    	        	for k=1,GetNumGroupMembers()-1 do
+    	        			for k=1,GetNumGroupMembers()-1 do
 						if UnitIsUnit("party"..k, unit) then
 							partycool[k] = {k, spellid, time, cool};
 						end
 					end
-	            end
+	            		end
 			end
 		end
 	else
