@@ -4,8 +4,6 @@ local ADF_TARGET_DEBUFF;
 local ADF_DeBuffList = {}
 
 local ADF_SIZE = 28;
-local ADF_SIZE_BIG = 30;
-local ADF_SIZE_SMALL = 28;
 local ADF_TARGET_DEBUFF_X = 73 + 30;
 local ADF_TARGET_DEBUFF_Y = -110;
 local ADF_PLAYER_DEBUFF_X = -73 - 30;
@@ -282,8 +280,6 @@ local ADF_PVPDebuffList = {
 local ADF_targethelplist = {};
 
 local isMine = {};
-local isBig = {};
-local isBigReal = {};
 local update_expir = nil;
 
 
@@ -414,30 +410,21 @@ local function ADF_UpdateDebuff(unit)
 	local numDebuffs = 1;
 	local frame;
 	local frameIcon, frameCount, frameCooldown;
-	local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId ;
+	local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura,isBossDebuff, casterIsPlayer, nameplateShowAll ;
 	local color;
 	local frameBorder;
-	local maxIdx;
 	local parent;
 	local filter = nil;
 	local isBossDebuff = nil;
 
 
-	if (unit == "target") then
-		
-		maxIdx = MAX_TARGET_DEBUFFS;
+	if (unit == "target") then		
 		parent = ADF_TARGET_DEBUFF;
 	elseif (unit == "targethelp") then
-		
-		maxIdx = MAX_TARGET_DEBUFFS;
 		parent = ADF_TARGET_DEBUFF;
 	elseif (unit == "targethelp2") then
-		
-		maxIdx = MAX_TARGET_DEBUFFS;
 		parent = ADF_TARGET_DEBUFF;
-	elseif (unit == "player") then
-		
-		maxIdx = MAX_TARGET_DEBUFFS;
+	elseif (unit == "player") then		
 		parent = ADF_PLAYER_DEBUFF;
 	else
 		return;
@@ -481,15 +468,12 @@ local function ADF_UpdateDebuff(unit)
 		parent.frames = {};
 	end
 
-	--for i = 1, maxIdx do
 	i = 1;
 	repeat
 		local skip = false;
 		local debuff;
 		local candispel = false;
 
-		isBig[i] = false;
-	
 		alert = false;
 
 		if (unit == "target") then
@@ -520,8 +504,6 @@ local function ADF_UpdateDebuff(unit)
 			-- 상대 가 Player 면 PVP Debuff 만 보임		
 			--if (spellId and ADF_Show_PVPDebuff and ADF_PVPDebuffList[spellId]) then
 			if (spellId and ADF_Show_PVPDebuff and nameplateShowAll) then
-
-				isBig[i] = true;
 				skip = false;
 			end
 			
@@ -561,20 +543,16 @@ local function ADF_UpdateDebuff(unit)
 			end
 
 			if ADF_Show_ShowBossDebuff and isBossDebuff then
-				skip = false;
-				isBig[i] = true;
+				skip = false;				
 			end
 			
 			-- 상대 가 Player 면 PVP Debuff 만 보임		
 			--if (spellId and ADF_Show_PVPDebuff and ADF_PVPDebuffList[spellId]) then
 			if (spellId and ADF_Show_PVPDebuff and nameplateShowAll) then
-
-				isBig[i] = true;
 				skip = false;
 			end
 
 			if dispel_debuff_name[spellId] then
-				isBig[i] = true;
 				skip = false;
 				candispel = true;
 			end
@@ -615,7 +593,6 @@ local function ADF_UpdateDebuff(unit)
 
 			-- 내가 해제할 수 있는 Debuff는 보이기
 			if dispel_debuff_name[spellId] then
-				isBig[i] = true;
 				skip = false;
 				candispel = true;
 			end
@@ -623,15 +600,12 @@ local function ADF_UpdateDebuff(unit)
 			-- 주요 PVP Debuff만 보이기
 			--if (spellId and ADF_PVPDebuffList[spellId]) then
 			if (spellId and nameplateShowAll) then
-
-				isBig[i] = true;
 				skip = false;
 			end
 
 
 			if isBossDebuff then
 				skip = false;
-				isBig[i] = true;
 				alert = true;
 			end
 
@@ -656,35 +630,7 @@ local function ADF_UpdateDebuff(unit)
 
 			
 			frame = parent.frames[numDebuffs];
-
-			isBigReal[numDebuffs] = isBig[i];
-
-
-			if ( not frame ) then
-				parent.frames[numDebuffs] = CreateFrame("Button", nil, parent, "asTargetDebuffFrameTemplate");
-				frame = parent.frames[numDebuffs];
-				frame:EnableMouse(false); 
-				for _,r in next,{frame.cooldown:GetRegions()}	do 
-					if r:GetObjectType()=="FontString" then 
-						r:SetFont("Fonts\\2002.TTF",ADF_CooldownFontSize,"OUTLINE")
-						r:ClearAllPoints();
-						r:SetPoint("TOP", 0, 5);
-						break 
-					end 
-				end
-
-				local font, size, flag = frame.count:GetFont()
-
-				frame.count:SetFont(STANDARD_TEXT_FONT, ADF_CountFontSize, "OUTLINE")
-				frame.count:ClearAllPoints();
-				frame.count:SetPoint("BOTTOM", 0, -5);
-
-				frame.icon:SetTexCoord(.08, .92, .08, .92);
-				frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
-				frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
-
-			end
-
+			
 			-- set the icon
 			frameIcon = frame.icon
 			frameIcon:SetTexture(icon);
@@ -696,15 +642,6 @@ local function ADF_UpdateDebuff(unit)
 			-- Handle cooldowns
 			frameCooldown = frame.cooldown;
 
-			if isBig[i] then
-				frame:SetWidth(ADF_SIZE_BIG);
-				frame:SetHeight(ADF_SIZE_BIG * 0.8);
-			else
-				frame:SetWidth(ADF_SIZE);
-				frame:SetHeight(ADF_SIZE * 0.8);
-			end
-
-		
 			 if ( count > 1 ) then
 				frameCount:SetText(count);
 				frameCount:Show();
@@ -713,7 +650,6 @@ local function ADF_UpdateDebuff(unit)
 				frameCount:Hide();
 				frameCooldown:SetDrawSwipe(true);
 			end
-
 			
 			if ( duration > 0 ) then
 				frameCooldown:Show();
@@ -740,9 +676,7 @@ local function ADF_UpdateDebuff(unit)
 
 			frameBorder = frame.border;
 			frameBorder:SetVertexColor(color.r, color.g, color.b);
-			frameBorder:SetAlpha(ADF_ALPHA);
-
-			
+			frameBorder:SetAlpha(ADF_ALPHA);			
 					
 			frame:ClearAllPoints();
 			frame:Show();
@@ -759,34 +693,7 @@ local function ADF_UpdateDebuff(unit)
 		i = i+1
 	until (name == nil)
 
-	if (unit == "target") then
-		for i=1, numDebuffs - 1 do
-			if (isBigReal[i]) then
-				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE_BIG, 1, true, parent);
-			else
-				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE, 1, true, parent);
-			end
-		end
-	elseif (unit == "targethelp") then
-		for i=1, numDebuffs - 1 do
-
-			if (isBigReal[i]) then
-				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE_BIG, 1, true, parent);
-			else
-				ADF_UpdateDebuffAnchor(parent.frames, i, i - 1, ADF_SIZE, 1, true, parent);
-			end
-		end
-	elseif (unit == "player")  then
-		for i=1, numDebuffs - 1 do
-			if (isBigReal[i]) then
-				ADF_UpdateDebuffAnchor(parent.frames, i, i- 1, ADF_SIZE_BIG, 1, false, parent);
-			else
-				ADF_UpdateDebuffAnchor(parent.frames, i, i - 1, ADF_SIZE, 1, false, parent);
-			end
-		end
-	end
-
-	for i = numDebuffs, maxIdx do
+	for i = numDebuffs, ADF_MAX_DEBUFF_SHOW do
 		
 		frame = parent.frames[i];
 
@@ -796,38 +703,11 @@ local function ADF_UpdateDebuff(unit)
 	end
 end
 
-function ADF_UpdateDebuffAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
-
-	local buff = frames[index];
-	local point1 = "TOPLEFT";
-	local point2 = "BOTTOMLEFT";
-	local point3 = "TOPRIGHT";
-
-	if (right == false) then
-		point1 = "TOPRIGHT";
-		point2 = "BOTTOMRIGHT";
-		point3 = "TOPLEFT";
-		offsetX = -offsetX;
-	end
-
-	if ( index == 1 ) then
-		buff:SetPoint(point1, parent, point2, 0, 0);
-	else
-		buff:SetPoint(point1, frames[index-1], point3, offsetX, 0);
-	end
-
-	-- Resize
-	buff:SetWidth(size);
-	buff:SetHeight(size * 0.8);
-
-end
-
-
 function ADF_ClearFrame()
 		
-	for i = 1, MAX_TARGET_DEBUFFS do
+	for i = 1, ADF_MAX_DEBUFF_SHOW do
 		
-		frame = ADF_TARGET_DEBUFF.frames[i];
+		local frame = ADF_TARGET_DEBUFF.frames[i];
 
 		if ( frame ) then
 			frame:Hide();	
@@ -899,9 +779,74 @@ local function ADF_OnUpdate()
 	end
 end
 
+local function ADF_UpdateDebuffAnchor(frames, index, offsetX, right, parent)
+
+	local buff = frames[index];
+	local point1 = "TOPLEFT";
+	local point2 = "BOTTOMLEFT";
+	local point3 = "TOPRIGHT";
+
+	if (right == false) then
+		point1 = "TOPRIGHT";
+		point2 = "BOTTOMRIGHT";
+		point3 = "TOPLEFT";
+		offsetX = -offsetX;
+	end
+
+	if ( index == 1 ) then
+		buff:SetPoint(point1, parent, point2, 0, 0);
+	else
+		buff:SetPoint(point1, frames[index-1], point3, offsetX, 0);
+	end
+
+	-- Resize
+	buff:SetWidth(ADF_SIZE);
+	buff:SetHeight(ADF_SIZE * 0.8);
+
+end
 
 
-function ADF_Init()
+local function CreatDebuffFrames(parent, bright)
+
+	local idx;
+
+	if parent.frames == nil then
+		parent.frames = {};
+	end
+	
+	for idx = 1, ADF_MAX_DEBUFF_SHOW do
+		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
+		local frame = parent.frames[idx];
+		frame:EnableMouse(false); 
+		for _,r in next,{frame.cooldown:GetRegions()} do 
+			if r:GetObjectType()=="FontString" then 
+				r:SetFont(STANDARD_TEXT_FONT, ADF_CooldownFontSize,"OUTLINE");
+				r:ClearAllPoints();
+				r:SetPoint("TOP", 0, 5);
+				break
+			end 
+		end
+
+		local font, size, flag = frame.count:GetFont()
+
+		frame.count:SetFont(STANDARD_TEXT_FONT, ADF_CountFontSize, "OUTLINE")
+		frame.count:ClearAllPoints()
+		frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
+
+		frame.icon:SetTexCoord(.08, .92, .08, .92);
+		frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
+		frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+
+		ADF_UpdateDebuffAnchor(parent.frames, idx, 1,  bright, parent);
+		frame:Hide();
+	end
+
+	return;
+end
+
+local function ADF_Init()
+
+	local bloaded =  LoadAddOn("asMOD")
 
 	ADF = CreateFrame("Frame", nil, UIParent)
 
@@ -920,6 +865,12 @@ function ADF_Init()
 	ADF_TARGET_DEBUFF:SetScale(1)
 	ADF_TARGET_DEBUFF:Show()
 
+	CreatDebuffFrames(ADF_TARGET_DEBUFF, true);
+
+	if bloaded and asMOD_setupFrame then
+		asMOD_setupFrame (ADF_TARGET_DEBUFF, "asDebuffFilter(Target)");
+  	end		
+
 	ADF_PLAYER_DEBUFF = CreateFrame("Frame", nil, ADF)
 
 	ADF_PLAYER_DEBUFF:SetPoint("CENTER", ADF_PLAYER_DEBUFF_X, ADF_PLAYER_DEBUFF_Y)
@@ -927,6 +878,12 @@ function ADF_Init()
 	ADF_PLAYER_DEBUFF:SetHeight(1)
 	ADF_PLAYER_DEBUFF:SetScale(1)
 	ADF_PLAYER_DEBUFF:Show()
+
+	CreatDebuffFrames(ADF_PLAYER_DEBUFF, false);
+
+	if bloaded and asMOD_setupFrame then
+		asMOD_setupFrame (ADF_PLAYER_DEBUFF, "asDebuffFilter(Player)");
+  	end		
 
 	ADF:RegisterEvent("PLAYER_TARGET_CHANGED")
 	ADF:RegisterUnitEvent("UNIT_AURA", "player")

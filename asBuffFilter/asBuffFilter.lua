@@ -13,7 +13,8 @@ local ABF_CountFontSize = 11;			-- Count Font Size
 local ABF_AlphaCombat = 1;				-- 전투중 Alpha 값
 local ABF_AlphaNormal = 0.5;			-- 비 전투중 Alpha 값
 local ABF_MAX_Cool = 60;				-- 최대 60초의 버프를 보임
-local ABF_RefreshRate = 0.5;			-- Target Buff Check 주기 (초)
+local ABF_RefreshRate = 0.2;			-- Target Buff Check 주기 (초)
+local ABF_ShowTalentList = false;		-- 중앙 Talent Buff List 를 무조건 보이게 (Powerbar가 있으면 보임)
 
 local PLAYER_UNITS = {
 	player = true,
@@ -311,10 +312,7 @@ local _G = _G;
 
 local ABF_TalentBuffList = {};
 local ABF_TalentShowList = {};
-
-local isBig = {};
-local isBigReal = {};
-
+local IsPowerbar = LoadAddOn("asPowerBar");
 
 
 --Overlay stuff
@@ -473,8 +471,7 @@ local function asCheckTalent()
 			end
         end
     end
-
-	scanSpells(1)
+	
 	scanSpells(2)
 	scanSpells(3)
 	return;
@@ -494,23 +491,48 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 	end
 end
 
-local function ABF_UpdateDebuffSize(frames, index, size)
+local function IsShown(name, spellId)
 
-	local buff = frames[index];
-	-- Resize
-	buff:SetWidth(size);
-	buff:SetHeight(size * 0.8);
+	-- asPowerBar Check 
+	if APB_BUFF and APB_BUFF == name then
+		return true;
+	end
+
+	if APB_BUFF2 and APB_BUFF2 == name then
+		return true;
+	end
+
+	if APB_BUFF_COMBO and APB_BUFF_COMBO == name then
+		return true;
+	end
+
+	if ACI_Buff_list and (ACI_Buff_list[name] or ACI_Buff_list[spellId] )  then
+		return true;
+	end
+	if ASABF_BuffIDList and skip == false and ASABF_BuffIDList[spellId] then
+		return true;
+	end
+
+	if ASABF_BuffNameList and skip == false and ASABF_BuffNameList[name] then
+		return true;
+	end
+
+	if ASABF_AzeriteTraits and skip == false and ASABF_AzeriteTraits[name] then
+		return true;
+	end
+
+	return false;
+
 end
 
-local function ABF_UpdateDebuff(unit)
+local function ABF_UpdateBuff(unit)
 
 	local numDebuffs = 1;
 	local frame;
 	local frameIcon, frameCount, frameCooldown, frameStealable;
-	local name, icon, count, debuffType, duration, expirationTime, caster, nameplateShowPersonal, spellId, casterIsPlayer, nameplateShowAll, stack,value2,value3;
+	local name, icon, count, debuffType, duration, expirationTime, caster, nameplateShowPersonal, spellId, casterIsPlayer, nameplateShowAll, stack,value2,value3, isStealable;
 	local color;
 	local frameBorder;
-	local maxIdx = ABF_MAX_BUFF_SHOW;
 	local parent;
 	local isFirst = true;
 
@@ -535,12 +557,10 @@ local function ABF_UpdateDebuff(unit)
 		local skip = false;
 		local debuff;
 		local bufidx;
-		local isStealable = false;
+		isStealable = false;
 		local stack = nil;
 		local isTarget = false;
 		local alert = false;
-
-		isBig[i] = false;
 		
 		if (unit == "tbuff") then
 			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId = UnitBuff("target", i);
@@ -552,7 +572,6 @@ local function ABF_UpdateDebuff(unit)
 			end
 
 			if isStealable  then
-				isBig[i] = true;
 				alert = true;
 			end
 
@@ -572,24 +591,21 @@ local function ABF_UpdateDebuff(unit)
 
 				-- PVP 주요 버프는 보임
 			if (name ~= nil and ABF_PVPBuffList[spellId]) then
-				isBig[i] = true;
 				skip = false;
-			end
-
-			if ACI_Buff_list and skip == false and ACI_Buff_list[name] then
-				skip = true;
 			end
 
 		elseif (unit == "pbuff") then
 
+			skip = true;
+
 			if totem_i <= MAX_TOTEMS then
 
 				for slot= totem_i, MAX_TOTEMS do
-					local haveTotem;
+					local haveTotem, start;
 					haveTotem, name, start, duration, icon = GetTotemInfo(slot);
 
-					totem_i = slot + 1;
-						
+					totem_i = totem_i + 1;
+				
 					if haveTotem and icon then
 						caster = "player";
 						expirationTime = start + duration;
@@ -604,53 +620,31 @@ local function ABF_UpdateDebuff(unit)
 					else
 						icon = nil;
 					end
+
+					
 				end
 
 				if icon == nil then
 					i = 1;
-					name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff("player", i, "INCLUDE_NAME_PLATE_ONLY");
-
-				end
+					name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff("player", i, "INCLUDE_NAME_PLATE_ONLY");				end
 
 			else
-
 				name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff("player", i, "INCLUDE_NAME_PLATE_ONLY");
 			end
-
-			skip = true;
-			
+						
 			if (icon == nil) then
 				break;
 			end
 			
-			if PLAYER_UNITS[caster] and (duration > 0 and duration <= ABF_MAX_Cool or count > 1) then
+			if PLAYER_UNITS[caster] and ((duration > 0 and duration <= ABF_MAX_Cool) or count > 1) then
 				skip = false;
 			end			
 
-			if PLAYER_UNITS[caster] and ABF_TalentBuffList and ABF_TalentBuffList[name] then
-				-- 특성이면 보이게
-				skip = false;				
-			end	
-			
-			if nameplateShowPersonal and PLAYER_UNITS[caster]  then
+			if nameplateShowAll and duration <= ABF_MAX_Cool then
 				skip = false;
 			end
-					
-			-- asPowerBar Check 
-			if APB_BUFF and APB_BUFF == name then
-				skip = true;
-			end
-			
-			if APB_BUFF2 and APB_BUFF2 == name then
-				skip = true;
-			end
-
-			if APB_BUFF_COMBO and APB_BUFF_COMBO == name then
-				skip = true;
-			end
-
-			if (name ~= nil and ABF_PVPBuffList[spellId]) then
-				isBig[i] = true;
+											
+			if (spellId ~= nil and ABF_PVPBuffList[spellId]) then
 				skip = false;
 			end			
 
@@ -666,35 +660,26 @@ local function ABF_UpdateDebuff(unit)
 			end
 			
 			if ABF_ProcBuffList and ABF_ProcBuffList[name] then
-
 				if	ABF_ProcBuffList[name] == 1 then
 					alert = true;					
 				end
 				skip = false;
-			end			
+			end	
 
-			if ACI_Buff_list and skip == false and ACI_Buff_list[name] then
+			if IsShown(name, spellId) then
 				skip = true;
-			end
-
-			if ASABF_BuffIDList and skip == false and ASABF_BuffIDList[spellId] then
-				skip = true;
-			end
-
-			if ASABF_BuffNameList and skip == false and ASABF_BuffNameList[name] then
-				skip = true;
-			end
-
-			if ASABF_AzeriteTraits and skip == false and ASABF_AzeriteTraits[name] then
-				skip = true;
-			end
-
-			if skip == false and debuffType ~= "totem" and PLAYER_UNITS[caster] and ABF_TalentBuffList and ABF_TalentBuffList[name] then
-				
+			end		
+						
+			if (IsPowerbar or ABF_ShowTalentList) and skip == false and (ABF_TalentBuffList[name] or debuffType == "totem" or nameplateShowAll or nameplateShowPersonal) then				
 				if talentcount < ABF_MAX_BUFF_SHOW then
 					skip = true;
 					talentcount = talentcount + 1;	
-					talentlist[talentcount] = i;
+
+					if debuffType ==  "totem" then
+						talentlist[talentcount] = {totem_i - 1, true};
+					else
+						talentlist[talentcount] = {i, false};
+					end
 				end				
 			end
 
@@ -705,7 +690,6 @@ local function ABF_UpdateDebuff(unit)
 			end
 
 			skip = true;
-			
 
 			if isStealable and isFirst then
 				skip = false;
@@ -713,13 +697,9 @@ local function ABF_UpdateDebuff(unit)
 				alert = true;
 			end
 
-
 			if (name ~= nil and ABF_PVPBuffList[spellId]) then
-				isBig[i] = true;
 				skip = false;
 			end
-
-
 		end
 
 		if (icon and skip == false) then
@@ -731,9 +711,8 @@ local function ABF_UpdateDebuff(unit)
 			local color;
 			
 			frame = parent.frames[numDebuffs];
-			isBigReal[numDebuffs] = isBig[i];
-
-			if ((unit == "pbuff") or (unit == "target" and PLAYER_UNITS[caster] ) or (unit == "tbuff") or (unit == "tebuff")) then
+			
+			if ((unit == "pbuff") or (unit == "target" and PLAYER_UNITS[caster] ) or  (unit == "tbuff") or (unit == "tebuff")) then
 					
 				-- set the icon
 				frameIcon = frame.icon;
@@ -795,7 +774,7 @@ local function ABF_UpdateDebuff(unit)
 		i = i+1
 	until (name == nil)
 
-	for i = numDebuffs, maxIdx do
+	for i = numDebuffs, ABF_MAX_BUFF_SHOW do
 		frame = parent.frames[i];
 		if ( frame ) then
 			frame:Hide();	
@@ -809,8 +788,28 @@ local function ABF_UpdateDebuff(unit)
 			
 			frame = parent.frames[numDebuffs];
 			local isStealable;		
-			
-			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff("player", talentlist[numDebuffs], "INCLUDE_NAME_PLATE_ONLY");
+			local IsTotem = talentlist[numDebuffs][2];
+			local idx = talentlist[numDebuffs][1]
+
+			if IsTotem then
+
+				local haveTotem, start;
+				
+				haveTotem, name, start, duration, icon = GetTotemInfo(idx);
+					
+				if haveTotem and icon then
+					caster = "player";
+					expirationTime = start + duration;
+					debuffType = "totem";
+					isStealable = nil;
+					stack = nil;
+					count = 0;
+				else
+					name = nil;
+				end				
+			else
+				name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff("player", idx, "INCLUDE_NAME_PLATE_ONLY");	
+			end	
 			
 			if name and frame then
 
@@ -847,7 +846,11 @@ local function ABF_UpdateDebuff(unit)
 				color = DebuffTypeColor["Disease"];
 
 				if debuffType then
-					color = DebuffTypeColor[debuffType];
+					if debuffType == "totem" then
+						color = { r = 0, g = 1, b = 0 };
+					else
+						color = DebuffTypeColor[debuffType];
+					end
 				end
 
 				if isStealable then
@@ -862,7 +865,7 @@ local function ABF_UpdateDebuff(unit)
 			end
 		end	
 
-		for i = talentcount + 1, maxIdx do
+		for i = talentcount + 1, ABF_MAX_BUFF_SHOW do
 			frame = parent.frames[i];
 			if ( frame ) then
 				frame:Hide();	
@@ -914,12 +917,12 @@ local function ABF_OnUpdate()
 
 	if UnitIsEnemy("player", "target") then
 		if (UnitIsPlayer("target")) then
-			ABF_UpdateDebuff("tebuff");
+			ABF_UpdateBuff("tebuff");
 		else
-			ABF_UpdateDebuff("tbuff");
+			ABF_UpdateBuff("tbuff");
 		end
 	else
-		ABF_UpdateDebuff("target");
+		ABF_UpdateBuff("target");
 	end
 
 end
@@ -930,17 +933,17 @@ local function ABF_OnEvent(self, event, arg1, ...)
 		ABF_ClearFrame();
 		if UnitIsEnemy("player", "target") then
 			if (UnitIsPlayer("target")) then
-				ABF_UpdateDebuff("tebuff");
+				ABF_UpdateBuff("tebuff");
 			else
-				ABF_UpdateDebuff("tbuff");
+				ABF_UpdateBuff("tbuff");
 			end
 		else
-			ABF_UpdateDebuff("target");
+			ABF_UpdateBuff("target");
 		end
 	elseif (event == "UNIT_AURA" and arg1 == "player") then
-		ABF_UpdateDebuff("pbuff");
+		ABF_UpdateBuff("pbuff");
 	elseif (event == "PLAYER_TOTEM_UPDATE") then
-		ABF_UpdateDebuff("pbuff");
+		ABF_UpdateBuff("pbuff");
 	elseif event == "PLAYER_ENTERING_WORLD" or event == "ACTIVE_TALENT_GROUP_CHANGED"  then
 		ABF_InitShowList();
 	elseif event == "PLAYER_REGEN_DISABLED" then
@@ -952,14 +955,14 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	end
 end
 
-local function ABF_UpdateDebuffAnchor(frames, index, offsetX, right, center, parent)
+local function ABF_UpdateBuffAnchor(frames, index, offsetX, right, center, parent)
 
 	local buff = frames[index];
 	buff:ClearAllPoints();
 
 	if center then
 		if ( index == 1 ) then
-			buff:SetPoint("TOP", parent, "TOP", 0, 0);
+			buff:SetPoint("TOP", parent, "CENTER", 0, 0);
 		elseif  (index == 2) then
 			buff:SetPoint("RIGHT", frames[index - 1], "LEFT", -offsetX, 0);
 		elseif (math.fmod(index, 2) == 1) then
@@ -1015,13 +1018,13 @@ local function CreatBuffFrames(parent, bright, bcenter)
 
 		frame.count:SetFont(STANDARD_TEXT_FONT, ABF_CountFontSize, "OUTLINE")
 		frame.count:ClearAllPoints()
-		frame.count:SetPoint("BOTTOM", 0, -5);
+		frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
 
 		frame.icon:SetTexCoord(.08, .92, .08, .92);
 		frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
 		frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 
-		ABF_UpdateDebuffAnchor(parent.frames, idx, 1,  bright, bcenter, parent);
+		ABF_UpdateBuffAnchor(parent.frames, idx, 1,  bright, bcenter, parent);
 		frame:Hide();
 	end
 
@@ -1040,6 +1043,7 @@ local function ABF_Init()
 	ABF:Show()
 
 
+	local bloaded =  LoadAddOn("asMOD")
   
 	ABF_TARGET_BUFF = CreateFrame("Frame", nil, ABF)
 
@@ -1047,10 +1051,13 @@ local function ABF_Init()
 	ABF_TARGET_BUFF:SetWidth(1)
 	ABF_TARGET_BUFF:SetHeight(1)
 	ABF_TARGET_BUFF:SetScale(1)
-	--ABF_TARGET_BUFF:SetFrameStrata("BACKGROUND")
 	ABF_TARGET_BUFF:Show()
 
 	CreatBuffFrames(ABF_TARGET_BUFF, true, false);
+
+	if bloaded and asMOD_setupFrame then
+		asMOD_setupFrame (ABF_TARGET_BUFF, "asBuffFilter(Target)");
+  	end		
 
 	ABF_PLAYER_BUFF = CreateFrame("Frame", nil, ABF)
 
@@ -1058,10 +1065,13 @@ local function ABF_Init()
 	ABF_PLAYER_BUFF:SetWidth(1)
 	ABF_PLAYER_BUFF:SetHeight(1)
 	ABF_PLAYER_BUFF:SetScale(1)
-	--ABF_PLAYER_BUFF:SetFrameStrata("BACKGROUND")
 	ABF_PLAYER_BUFF:Show()
 
 	CreatBuffFrames(ABF_PLAYER_BUFF, false, false);
+
+	if bloaded and asMOD_setupFrame then
+		asMOD_setupFrame (ABF_PLAYER_BUFF, "asBuffFilter(Player)");
+  	end		
 
 	ABF_TALENT_BUFF = CreateFrame("Frame", nil, ABF)
 
@@ -1069,10 +1079,14 @@ local function ABF_Init()
 	ABF_TALENT_BUFF:SetWidth(1)
 	ABF_TALENT_BUFF:SetHeight(1)
 	ABF_TALENT_BUFF:SetScale(1)
-	--ABF_PLAYER_BUFF:SetFrameStrata("BACKGROUND")
+	
 	ABF_TALENT_BUFF:Show()
 
 	CreatBuffFrames(ABF_TALENT_BUFF, false, true);
+
+	if bloaded and asMOD_setupFrame then
+		asMOD_setupFrame (ABF_TALENT_BUFF, "asBuffFilter(Talent)");
+  	end	
 
 
 	ABF:RegisterEvent("PLAYER_TARGET_CHANGED")
