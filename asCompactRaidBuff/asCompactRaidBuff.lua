@@ -484,7 +484,7 @@ local function ACRB_setupFrame(frame)
 
 		d.count:SetFont(STANDARD_TEXT_FONT, fontsize ,"OUTLINE")
 		d.count:ClearAllPoints();
-		d.count:SetPoint("BOTTOM", 0, 0);
+		d.count:SetPoint("BOTTOM", 0, 1);
 		if  ACRB_ShowBuffCooldown and fontsize >= ACRB_MinShowBuffFontSize   then
 			   d.cooldown:SetHideCountdownNumbers(false);
 			for _,r in next,{d.cooldown:GetRegions()}	do 
@@ -548,7 +548,7 @@ local function ACRB_setupFrame(frame)
 
 		d.count:SetFont(STANDARD_TEXT_FONT, fontsize,"OUTLINE")
 		d.count:ClearAllPoints();
-		d.count:SetPoint("BOTTOM", 0, 0);
+		d.count:SetPoint("BOTTOM", 0, 1);
 
 		if  ACRB_ShowBuffCooldown and fontsize >= ACRB_MinShowBuffFontSize   then
 				d.cooldown:SetHideCountdownNumbers(false);

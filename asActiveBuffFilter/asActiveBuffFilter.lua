@@ -41,6 +41,7 @@ local ASABF_ProcBuffList = {
 	--장신구
 	{"시카르 여사냥꾼의 기술", 1, 1.5},
 	{"소용돌이치는 바람", 1, 1},
+	{"통제된 해류의 길", 1, 1},
 	
 
 	--물약
@@ -213,16 +214,11 @@ local function ASABF_UpdateBuff(unit)
 
 		if (icon == nil) then
 			break;
-		end
-
-
-	
+		end	
 
 		local k = ASABF_BuffNameList[name] or ASABF_BuffIDList[spellId];
 
 		if k and (duration > 0 or count > 1)  then
-
-
 			a_isProc[k] = { expirationTime , duration, icon, spellId, name};
 			a_isShow[k] = true;
 			skip = false;

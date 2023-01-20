@@ -1,6 +1,6 @@
 local asMOD;
 local asMOD_UIScale = 0.75;
-local asMOD_CurrVersion = 221211;
+local asMOD_CurrVersion = 230121;
 local bAction = false;
 asMOD_t_position = {};
 
@@ -10,6 +10,9 @@ end
 
 
 local function asMOD_Setup()
+
+	-- 모든 UI 위치를 Reset 한다.
+	asMOD_position = {};
 
 	local curr = GetCVar("uiScale");
 	
@@ -226,7 +229,7 @@ local function asMOD_Setup()
 	},
 }
 		
-
+	
 	ReloadUI();
 
 
@@ -265,13 +268,13 @@ local function setupFrame(frame, Name, addonName,  config)
     if config["width"] and config["width"] > 5 then
         frame:SetWidth(config["width"]); 
     else
-        frame:SetWidth(64);
+        frame:SetWidth(40);
     end
 
     if config["height"] and config["height"] > 5  then
         frame:SetHeight(config["height"]);
     else
-        frame:SetHeight(64);
+        frame:SetHeight(10);
     end
 
     local tex = frame:CreateTexture(nil, "ARTWORK");

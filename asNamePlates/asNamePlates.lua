@@ -808,7 +808,7 @@ local function createDebuffFrame(parent, frameName)
 
 	frameCount:SetFont(STANDARD_TEXT_FONT, ANameP_CountFontSize, "OUTLINE")
 	frameCount:ClearAllPoints();
-	frameCount:SetPoint("BOTTOM", 0, -4);
+	frameCount:SetPoint("BOTTOMRIGHT", -2, 2);
 
 	local frameIcon = ret.icon;
 	local frameBorder = ret.border;

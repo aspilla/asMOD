@@ -126,7 +126,9 @@ local function ARD_OnLoad()
 	ARD_RangeText:SetText("");
 	ARD_RangeText:Show();
 
-	if asMOD_setupFrame then
+	local bloaded =  LoadAddOn("asMOD")
+
+	if bloaded and asMOD_setupFrame then
 		asMOD_setupFrame (ARD_RangeText, "asRangeDisplay");
   	end			
 
