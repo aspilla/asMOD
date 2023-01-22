@@ -1379,6 +1379,10 @@ local function APB_CheckPower(self)
 
 
 		if (spec and spec == 1) then
+			APB_SPELL = "제압";
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
 			APB_DEBUFF = "거인의 강타";	
 			APB.buffbar[0].debuff = "거인의 강타"	
 			APB.buffbar[0].unit = "target";
