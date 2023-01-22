@@ -106,23 +106,26 @@ local function create_bar_icon(idx, unit, spellid, time, cool)
 	local _, englishClass = UnitClass(unit);
 	local color=RAID_CLASS_COLORS[englishClass]
 	local curtime = GetTime();
-	local maxcool = cool;
-	local curcool = maxcool;
+	local curcool;
 
-	if curtime - time < cool then
-		curcool = curtime - time;
+	if time > curtime then
+		AREADY.bar[idx]:Hide();
+		return;
+	end
+
+	local remain = curtime - time;
+
+	if remain < cool then
+		curcool = remain;
 	else	
-		curcool = maxcool;
+		curcool = cool;
 	end
 
 	AREADY.bar[idx]:SetStatusBarColor(color.r, color.g, color.b);
 	AREADY.bar[idx]:SetMinMaxValues(0, cool)
 	AREADY.bar[idx]:SetValue(curcool)
-
-
 	if icon then
 		local frameIcon = AREADY.bar[idx].button.icon;
-
 		frameIcon:SetTexture(icon);
 		frameIcon:Show();
 		AREADY.bar[idx].button:Show();
@@ -131,16 +134,16 @@ local function create_bar_icon(idx, unit, spellid, time, cool)
 	AREADY.bar[idx].playname:SetText(UnitName(unit));
 	AREADY.bar[idx].playname:Show();
 
-	if maxcool == curcool then
+	if curcool == cool then
 		AREADY.bar[idx].cooltime:SetText("ON");
 		AREADY.bar[idx].cooltime:SetTextColor(0, 1, 0);
 	else
-		AREADY.bar[idx].cooltime:SetText(format("%.1f", maxcool- curcool));
+		AREADY.bar[idx].cooltime:SetText(format("%.1f", cool - curcool));
 		AREADY.bar[idx].cooltime:SetTextColor(1, 1, 1);
-
 	end
 	AREADY.bar[idx].cooltime:Show();
-	AREADY.bar[idx]:Show();	
+	AREADY.bar[idx]:Show();
+
 end
 
 local function hide_bar_icon(max)
@@ -153,44 +156,55 @@ local function hide_bar_icon(max)
 end
 
 
-local function AREADY_OnUpdate()
+local function AREADY_OnUpdate(self, elapsed)
 
-	local idx = 1;
-
-	for i,v in pairs(partycool) do
-			
-		if v then
-			local spellid = v[2];
-			local time = v[3];
-			local cool = v[4];
-
-			if v[1] == 5 then
-				unit = "player"
-			else
-				unit = "party"..v[1];
-			end
-
-			local currtime = GetTime();
-			if currtime <= time + cool + 1 then
-				create_bar_icon(idx, unit, spellid, time, cool);
-			end
-
-			idx = idx + 1;
-
-			if idx > AREADY_Max then
-				break;
-			end
-
-		end
+	if not self.update  then
+		self.update = 0;
 	end
 
-	hide_bar_icon(idx);
+	self.update = self.update + elapsed
+
+	if self.update >= AREADY_UpdateRate  then
+
+		self.update = 0;
+
+		local idx = 1;
+
+		for i,v in pairs(partycool) do
+				
+			if v then
+				local spellid = v[2];
+				local time = v[3];
+				local cool = v[4];
+				local unit;
+
+				if v[1] == 5 then
+					unit = "player"
+				else
+					unit = "party"..v[1];
+				end
+
+				local currtime = GetTime();
+				if currtime <= time + cool + 1 then
+					create_bar_icon(idx, unit, spellid, time, cool);
+				end
+
+				idx = idx + 1;
+
+				if idx > AREADY_Max then
+					break;
+				end
+
+			end
+		end
+
+		hide_bar_icon(idx);
+	end
 end
 
 local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 
 	if event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 and arg3 then
-
 		if IsInRaid() then
 			--Do nothing
 		elseif IsInGroup() then
@@ -200,15 +214,15 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 			local time = GetTime();
 			if trackedPartySpells[spellid] then
 				local cool = trackedPartySpells[spellid];
-        	    		if UnitIsUnit("player", unit) then
+        	    if UnitIsUnit("player", unit) then
 					partycool[5] = {5, spellid, time, cool};
 				else
-    	        			for k=1,GetNumGroupMembers()-1 do
+    	        	for k=1,GetNumGroupMembers()-1 do
 						if UnitIsUnit("party"..k, unit) then
 							partycool[k] = {k, spellid, time, cool};
 						end
 					end
-	            		end
+	            end
 			end
 		end
 	else
@@ -229,5 +243,4 @@ AREADY:SetScript("OnEvent", AREADY_OnEvent)
 AREADY:RegisterEvent("PLAYER_ENTERING_WORLD");
 AREADY:RegisterEvent("GROUP_JOINED");
 AREADY:RegisterEvent("GROUP_ROSTER_UPDATE");
-
-C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
+AREADY:SetScript("OnUpdate", AREADY_OnUpdate);

@@ -574,9 +574,6 @@ local ANameP_HealerGuid = {
 }
 
 local ANameP = nil;
-
-local unusedOverlayGlows = {};
-local numOverlays = 0;
 local tanklist = {}
 
 local PLAYER_UNITS = {
@@ -599,8 +596,6 @@ local ColorLevel = {
 	Name = 7,
 };
 
-local nameheight_value = nil;
-local asnameplateResourceOnTarget = true;
 local playerbuffposition = ANameP_PlayerBuffY;
 
 -- 반짝이 처리부
@@ -902,17 +897,6 @@ local function Comparison(AIndex, BIndex)
 	return false;
 end
 
-local function setStatusBarColor(self, color)	
-	local parent = self:GetParent();
-	if parent then
-		if parent.UnitFrame then
-			if parent.UnitFrame.healthBar and not parent.UnitFrame.healthBar:IsForbidden() then
-				parent.UnitFrame.healthBar:SetStatusBarColor(color[1], color[2], color[3]);		
-			end
-		end
-	end
-end
-
 local classbar_height = nil;
 local function GetClassBarHeight()
 
@@ -967,7 +951,9 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 				local bPVP = false;
 
 				if UnitIsPlayer(unit) then
-					show = ANameP_PVPBuffList[spellId];
+					if ANameP_PVPBuffList[spellId] then
+						show = true;
+					end
 					bPVP = true;
 				else
 					if ANameP_PVEBuffList and  ANameP_PVEBuffList[spellId] then
@@ -1225,7 +1211,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 				color = DebuffTypeColor[debuffType];
 			end
 
-			setFrame(self.buffList[numDebuffs], texture, count, expirationTime, duration, color);		
+			setFrame(self.buffList[numDebuffs], texture, count, expirationTime, duration, color);
 			frame:Show();
 			numDebuffs = numDebuffs + 1;
 		end
@@ -1332,8 +1318,6 @@ local function updateTargetNameP(self)
 			end
 		end
 
-		
-
 		if GetCVarBool("nameplateResourceOnTarget") then
 			base_y = base_y +  GetClassBarHeight();	
 		end
@@ -1393,7 +1377,7 @@ end
 local function updateUnitHealthText(self, unit)
 	local value;
 	local valueMax;
-	local valuePct = "";
+	local valuePct;
 	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(unit, issecure());
 	if not namePlateFrameBase then
 		return;
@@ -1549,11 +1533,11 @@ local function updateHealthbarColor(self)
 
 	-- Aggro Check
 	local status = UnitThreatSituation("player", self.unit);
+	local aggrocolor;
 	
 	if status and ANameP_AggroShow then
 		local tanker = IsPlayerEffectivelyTank();		
-		if tanker then			
-			local aggrocolor;
+		if tanker then						
 			if status >= 2 then
 				-- Tanking
 				aggrocolor = ANameP_AggroColor;
@@ -1705,7 +1689,8 @@ end
 local function initAlertList()
 
 	local spec = GetSpecialization();
-	local localizedClass, englishClass = UnitClass("player")
+	local localizedClass, englishClass = UnitClass("player");
+	local listname;
 
 	ANameP_ShowList = nil;
 
@@ -1815,9 +1800,10 @@ local namePlateVerticalScale = nil;
 local g_orig_height = nil;
 
 local function addNamePlate(namePlateUnitToken)
+	
 	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
 
-	if namePlateFrameBase.UnitFrame:IsForbidden() then
+	if not namePlateFrameBase or namePlateFrameBase.UnitFrame:IsForbidden() then
 		return;
 	end
 
@@ -2071,6 +2057,7 @@ local function addNamePlate(namePlateUnitToken)
 		local showdebuff = false;
 		local checkpvptarget = false;
 		local checkcolor = false;
+		local filter = nil;
 
 		if UnitIsUnit("player", namePlateUnitToken) then
 			--namePlateFrameBase.asNamePlates:Hide();
@@ -2237,14 +2224,16 @@ local function ANameP_OnEvent(self, event, ...)
 	elseif event == "NAME_PLATE_UNIT_ADDED"then
 		local namePlateUnitToken = ...;
 		local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
-		addNamePlate(namePlateUnitToken);
-		if namePlateFrameBase.asNamePlates then
-			updateTargetNameP(namePlateFrameBase.asNamePlates);
-			updateUnitAuras(namePlateUnitToken);
-			updateUnitHealthText(self, "target");
-			updateUnitHealthText(self, "player");
-			updateHealthbarColor(namePlateFrameBase.asNamePlates);
-		end		
+		if namePlateFrameBase then
+			addNamePlate(namePlateUnitToken);
+			if namePlateFrameBase.asNamePlates then
+				updateTargetNameP(namePlateFrameBase.asNamePlates);
+				updateUnitAuras(namePlateUnitToken);
+				updateUnitHealthText(self, "target");
+				updateUnitHealthText(self, "player");
+				updateHealthbarColor(namePlateFrameBase.asNamePlates);
+			end	
+		end
 	elseif event == "NAME_PLATE_UNIT_REMOVED"  then
 		local namePlateUnitToken = ...;
 		removeNamePlate(namePlateUnitToken);
@@ -2258,8 +2247,8 @@ local function ANameP_OnEvent(self, event, ...)
 	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED") then
 		C_Timer.After(0.5, initAlertList);		
 	elseif (event == "PLAYER_ENTERING_WORLD") then
-		isInstance, instanceType = IsInInstance();
-		if isInstance and (instance=="party" or instance=="raid" or instance=="scenario") then
+		local isInstance, instanceType = IsInInstance();
+		if isInstance and (instanceType=="party" or instanceType=="raid" or instanceType=="scenario") then
 			self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 		else
 			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
@@ -2289,7 +2278,7 @@ end
 local function updateUnitResourceText(self, unit)
 	local value;
 	local valueMax;
-	local valuePct = ""
+	local valuePct;
 	if UnitIsUnit("player", unit) then
 	else
 		return;
@@ -2318,7 +2307,6 @@ local function updateUnitResourceText(self, unit)
 
 
 	if valuePct > 0 then
-
 		ANameP_Resourcetext:SetTextColor(1, 1, 1, 1);
 	end
 
