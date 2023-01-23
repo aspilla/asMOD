@@ -187,14 +187,11 @@ local ABF_PVPBuffList = {
 
 	-- DK
 	[47476] = 2, --Strangulate (pvp) - silence
-	[48792] = 2, --Icebound Fortitude
 	[116888] = 2, --Shroud of Purgatory
-	[114556] = 2, --Purgatory (cd)
-
+	
 	-- Shaman
 	[32182] = 2, --Heroism
 	[2825] = 2, --Bloodlust
-	[108271] = 2, --Astral shift
 	[16166] = 2, --Elemental Mastery - burst
 	[204288] = 2, --Earth Shield
 	[114050] = 2, --Ascendance
@@ -205,26 +202,21 @@ local ABF_PVPBuffList = {
 	[102560] = 2, --Incarnation: Chosen of Elune - burst
 	[33891] = 2, --Incarnation: Tree of Life
 	[1850] = 2, --Dash
-	[22812] = 2, --Barkskin
 	[194223] = 2, --Celestial Alignment - burst
 	[78675] = 2, --Solar beam
 	[77761] = 2, --Stampeding Roar
 	[102793] = 2, --Ursol's Vortex
-	[102342] = 2, --Ironbark
 	[339] = 2, --Entangling Roots
 	[102359] = 2, --Mass Entanglement
 	[22570] = 2, --Maim
 
 	-- Paladin
-	[1022] = 2, --Blessing of Protection
-	[204018] = 2, --Blessing of Spellwarding
 	[1044] = 2, --Blessing of Freedom
 	[31884] = 2, --Avenging Wrath
 	[224668] = 2, --Crusade
 	[216331] = 2, --Avenging Crusader
 	[20066] = 2, --Repentance
 	[184662] = 2, --Shield of Vengeance
-	[498] = 2, --Divine Protection
 	[53563] = 2, --Beacon of Light
 	[156910] = 2, --Beacon of Faith
 	[115750] = 2, --Blinding Light
@@ -236,7 +228,6 @@ local ABF_PVPBuffList = {
 	[18499] = 2, --Berserker Rage
 	[107574] = 2, --Avatar
 	[213915] = 2, --Mass Spell Reflection
-	[118038] = 2, --Die by the Sword
 	[46924] = 2, --Bladestorm
 	[12292] = 2, --Bloodbath
 	[199261] = 2, --Death Wish
@@ -244,12 +235,9 @@ local ABF_PVPBuffList = {
 
 	-- Rogue
 	[45182] = 2, --Cheating Death
-	[31230] = 2, --Cheat Death (cd)
-	[31224] = 2, --Cloak of Shadows
 	[2983] = 2, --Sprint
 	[121471] = 2, --Shadow Blades
 	[1966] = 2, --Feint
-	[5277] = 2, --Evasion
 	[212182] = 2, --Smoke Bomb
 	[13750] = 2, --Adrenaline Rush
 	[199754] = 2, --Riposte
@@ -272,8 +260,6 @@ local ABF_PVPBuffList = {
 	[160452] = 2, --Netherwinds
 
 	-- Monk
-	[125174] = 2, --Touch of Karma
-	[116849] = 2, -- Life Cocoon
 	[119381] = 2, --Leg Sweep
 
 	-- Priest
@@ -286,14 +272,12 @@ local ABF_PVPBuffList = {
 	[88625] = 2, --Holy Word: Chastise
 
 	-- Warlock
-	[108416] = 2, --Dark Pact
 	[196098] = 2 , --Soul Harvest
 	[30283] = 2, --Shadowfury
 
 	-- Demon Hunter
 	[198589] = 2, --Blur
 	[179057] = 2, --Chaos Nova
-	[209426] = 2, --Darkness
 	[217832] = 2, --Imprison
 	[206491] = 2, --Nemesis
 	[211048] = 2, --Chaos Blades
@@ -455,9 +439,7 @@ local function asCheckTalent()
     local treeID = configInfo.treeIDs[1];
     local nodes = C_Traits.GetTreeNodes(treeID);
 
-	
-
-    for _, nodeID in ipairs(nodes) do
+	for _, nodeID in ipairs(nodes) do
         local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
         if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
             local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
@@ -471,7 +453,6 @@ local function asCheckTalent()
 			end
         end
     end
-	
 	scanSpells(2)
 	scanSpells(3)
 	return;
@@ -558,9 +539,9 @@ local function ABF_UpdateBuff(unit)
 		local debuff;
 		local bufidx;
 		isStealable = false;
-		local stack = nil;
 		local isTarget = false;
 		local alert = false;
+		stack = nil;
 		
 		if (unit == "tbuff") then
 			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId = UnitBuff("target", i);
@@ -620,8 +601,6 @@ local function ABF_UpdateBuff(unit)
 					else
 						icon = nil;
 					end
-
-					
 				end
 
 				if icon == nil then
@@ -631,19 +610,19 @@ local function ABF_UpdateBuff(unit)
 			else
 				name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff("player", i, "INCLUDE_NAME_PLATE_ONLY");
 			end
-						
+
 			if (icon == nil) then
 				break;
 			end
-			
+
 			if PLAYER_UNITS[caster] and ((duration > 0 and duration <= ABF_MAX_Cool) or count > 1) then
 				skip = false;
-			end			
+			end
 
 			if nameplateShowAll and duration <= ABF_MAX_Cool then
 				skip = false;
 			end
-											
+
 			if (spellId ~= nil and ABF_PVPBuffList[spellId]) then
 				skip = false;
 			end			
@@ -658,7 +637,7 @@ local function ABF_UpdateBuff(unit)
 					skip = false;
 				end
 			end
-			
+
 			if ABF_ProcBuffList and ABF_ProcBuffList[name] then
 				if	ABF_ProcBuffList[name] == 1 then
 					alert = true;					
@@ -906,10 +885,7 @@ local function ABF_InitShowList()
 	b_showlist = false;
 
 	if (ABF_ShowList and #ABF_ShowList) then
---		ChatFrame1:AddMessage("[ABF] ".. listname .. "을 Load 합니다.");
 		b_showlist = true;
-	else
---		ChatFrame1:AddMessage("[ABF] Show List를 비활성화 합니다..");
 	end
 end
 
