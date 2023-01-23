@@ -352,7 +352,7 @@ local function asMOD_Clear()
   	ReloadUI();
 end
 
-function asMOD_OnEvent(self, event, arg1)
+local function asMOD_OnEvent(self, event, arg1)
 
 	if event == "ADDON_LOADED" and arg1 == "asMOD" then
 		if not asMOD_version or asMOD_version ~= asMOD_CurrVersion then
@@ -426,4 +426,3 @@ StaticPopupDialogs["asClear"] = {
   hideOnEscape = true,
   preferredIndex = 3, 
 }
-

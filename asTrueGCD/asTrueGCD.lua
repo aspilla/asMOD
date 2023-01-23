@@ -75,15 +75,12 @@ end
 
 local function scanActionSlots()
 
-		local lActionSlot = 0;
-
 	for lActionSlot = 1, 120 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 		local itemid = nil;
 
 		
-		if type and type == "macro" then
-
+		if id and type and type == "macro" then
 			 id = GetMacroSpell(id);
 		end
 
@@ -128,7 +125,7 @@ local function scanItemSlots()
 
 		if itemid then 
 
-			  _, id = GetItemSpell(itemid);
+			 local  _, id = GetItemSpell(itemid);
 
 
 
@@ -140,22 +137,6 @@ local function scanItemSlots()
 	end
 
 end
-
-local function setupKnownSpell()
-
-	table.wipe(KnownSpellList);
-
-	scanSpells(1)
-	scanSpells(2)
-	scanSpells(3)
-	scanPetSpells()
-
-	scanActionSlots();
-	scanItemSlots();
-end
-
-
-
 
 
 local ATGCD = CreateFrame("FRAME", nil, UIParent)
@@ -497,5 +478,3 @@ ATGCD:RegisterUnitEvent("UNIT_PET", "player")
 ATGCD:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
 ATGCD:RegisterEvent("PLAYER_ENTERING_WORLD")
 ATGCD:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-
-

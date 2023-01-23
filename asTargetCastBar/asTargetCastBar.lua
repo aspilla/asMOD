@@ -95,10 +95,10 @@ local function ATCB_OnEvent(self, event, ...)
 		end	
 	end
 
-		local name,  text, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo("target");
+		local name,  _, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo("target");
 
 		if not name then
-			name,  text, texture, start, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo("target");
+			name,  _, texture, start, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo("target");
 		end
 		
 		local frameIcon = self.button.icon; 
