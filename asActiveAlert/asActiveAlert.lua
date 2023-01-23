@@ -22,9 +22,7 @@ local action_list = {};
 local _G = _G;
 
 local function ScanActionSlot()
-	local lActionSlot = 0;
 	table.wipe(action_list);
-
 	for lActionSlot = 1, 120 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
@@ -66,14 +64,13 @@ function ASAA_UpdateCooldown()
 	local frameBorder;
 	local maxIdx;
 	local parent;
-		
+
 	maxIdx = #ASAA_SpellList;
 	parent = ASAA_CoolButtons;
 
 	if parent.frames == nil then
 		parent.frames = {};
 	end
-	
 
 	for i = 1, maxIdx do
 		local skip = false;
@@ -111,7 +108,7 @@ function ASAA_UpdateCooldown()
 
 			-- set the icon
 			frameIcon = frame.icon;
-			local frameBorder = frame.border;
+			frameBorder = frame.border;
 			frameIcon:SetTexture(icon);
 			frameIcon:SetAlpha(ASAA_Alpha);
 			frame:ClearAllPoints();
