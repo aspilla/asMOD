@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Script file="asOverlay.lua"/>
-<Frame name="asOverlayTemplate" virtual="true">
+	<Frame name="asOverlayTemplate" virtual="true">
 		<Animations>
 			<AnimationGroup name="$parentAnimIn" parentKey="animIn">
 				<Alpha fromAlpha="0" toAlpha="1" duration="0.2"/>
@@ -29,17 +29,6 @@
 		</Layers>
 		<Scripts>
 			<OnShow function="asOverlayTexture_OnShow"/>
-		</Scripts>
-	</Frame>
-	<Frame name="asOverlayFrame" parent="UIParent">
-		<Size x="256" y="256"/>
-		<Anchors>
-			<Anchor point="CENTER"/>
-		</Anchors>
-		<Scripts>
-			<OnLoad function="asOverlay_OnLoad"/>
-			<OnUpdate function="asOverlay_OnUpdate"/>
-			<OnEvent function="asOverlay_OnEvent"/>
 		</Scripts>
 	</Frame>
 </Ui>

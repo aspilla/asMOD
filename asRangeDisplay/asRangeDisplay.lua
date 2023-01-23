@@ -5,6 +5,7 @@ local ARD_FontOutline = "THICKOUTLINE";
 local ARD_X	= 0;
 local ARD_Y = -130;
 local ARD_AHT = false				-- asHealthText에 연결
+local ARD_UpdateRate = 0.25			-- Update 주기
 -- 설정끝
 local FriendItems  = {
     {37727, 5}, -- Ruby Acorn
@@ -145,4 +146,4 @@ end
 
 ARD_mainframe:SetScript("OnEvent", ARD_OnEvent);
 ARD_OnLoad();
-C_Timer.NewTicker(0.25, ARD_OnUpdate);
+C_Timer.NewTicker(ARD_UpdateRate, ARD_OnUpdate);

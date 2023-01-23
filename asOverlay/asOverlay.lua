@@ -21,7 +21,7 @@ local function getExpirationTimeUnitAurabyID(unit, id, filter)
 end
 
 
-function asOverlay_OnLoad(self)
+local function asOverlay_OnLoad(self)
 	self.overlaysInUse = {};
 	self.unusedOverlays = {};
 		
@@ -35,61 +35,82 @@ function asOverlay_OnLoad(self)
 	self:SetSize(longSide, longSide)
 end
 
-function asOverlay_OnEvent(self, event, ...)
-	if ( event == "SPELL_ACTIVATION_OVERLAY_SHOW" ) then
-		local spellID, texture, positions, scale, r, g, b = ...;
-		--if ( GetCVarBool("displaySpellActivationOverlays") ) then 
-			asOverlay_ShowAllOverlays(self, spellID, texture, positions, scale, r, g, b)
-		--end
-	elseif ( event == "SPELL_ACTIVATION_OVERLAY_HIDE" ) then
-		local spellID = ...;
-		if ( spellID ) then
-			asOverlay_HideOverlays(self, spellID);
+
+local function asOverlay_CreateOverlay(self)
+	return CreateFrame("Frame", nil, self, "asOverlayTemplate");
+end
+
+local function asOverlay_GetUnusedOverlay(self)
+	local overlay = tremove(self.unusedOverlays, #self.unusedOverlays);
+	if ( not overlay ) then
+		overlay = asOverlay_CreateOverlay(self);
+	end
+	return overlay;
+end
+
+
+local function asOverlay_GetOverlay(self, spellID, position)
+	local overlayList = self.overlaysInUse[spellID];
+	local overlay;
+	if ( overlayList ) then
+		for i=1, #overlayList do
+			if ( overlayList[i].position == position ) then
+				overlay = overlayList[i];
+			end
+		end
+	end
+	
+	if ( not overlay ) then
+		overlay = asOverlay_GetUnusedOverlay(self);
+		if ( overlayList ) then
+			tinsert(overlayList, overlay);
 		else
-			asOverlay_HideAllOverlays(self);
+			self.overlaysInUse[spellID] = { overlay };
+		end
+	end
+	
+	return overlay;
+end
+
+local function asOverlay_HideOverlays(self, spellID)
+	local overlayList = self.overlaysInUse[spellID];
+	if ( overlayList ) then
+		for i=1, #overlayList do
+			local overlay = overlayList[i];
+			overlay.pulse:Pause();
+			overlay.animOut:Play();
 		end
 	end
 end
 
-
-local update = 0;
-
-function asOverlay_OnUpdate(self, elapsed)
-
-	
-
-	update = update + elapsed;
-
-	if update >= 0.25 and self.overlaysInUse then
-
-		for spellID, overlayList in pairs(self.overlaysInUse) do
-
-			if ( overlayList and #overlayList ) then
-
-				local extime, duration, count = getExpirationTimeUnitAurabyID("player", spellID, "HELPFUL|PLAYER");
-
-				if extime then
-					local remain =	 extime - GetTime();
-					local rate = 0;
-
-					if remain > 0 then
-						rate = remain/duration;
-					end					
-				
-					for i=1, #overlayList do
-						local overlay = overlayList[i];
-						overlay.texture:SetAlpha(rate * alpha);
-					end
-				end
-			end
-		end
-
-		update = 0;
+local function asOverlay_HideAllOverlays(self)
+	for spellID, overlayList in pairs(self.overlaysInUse) do
+		asOverlay_HideOverlays(self, spellID);
 	end
+end
 
-	
 
+local function asOverlayTexture_OnShow(self)
+	self.animIn:Play();
+end
 
+local function asOverlayTexture_OnFadeInPlay(animGroup)
+	animGroup:GetParent():SetAlpha(0);
+end
+
+local function asOverlayTexture_OnFadeInFinished(animGroup)
+	local overlay = animGroup:GetParent();
+	overlay:SetAlpha(1);
+	overlay.pulse:Play();
+end
+
+local function asOverlayTexture_OnFadeOutFinished(anim)
+	local overlay = anim:GetRegionParent();
+	local overlayParent = overlay:GetParent();
+	overlay.pulse:Stop();
+	overlay:Hide();
+	tDeleteItem(overlayParent.overlaysInUse[overlay.spellID], overlay)
+	tinsert(overlayParent.unusedOverlays, overlay);
 end
 
 local complexLocationTable = {
@@ -109,18 +130,9 @@ local complexLocationTable = {
 	},
 }
 
-function asOverlay_ShowAllOverlays(self, spellID, texturePath, positions, scale, r, g, b)
-	positions = strupper(positions);
-	if ( complexLocationTable[positions] ) then
-		for location, info in pairs(complexLocationTable[positions]) do
-			asOverlay_ShowOverlay(self, spellID, texturePath, location, scale, r, g, b, info.vFlip, info.hFlip);
-		end
-	else
-		asOverlay_ShowOverlay(self, spellID, texturePath, positions, scale, r, g, b, false, false);
-	end
-end
 
-function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale, r, g, b, vFlip, hFlip)
+
+local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale, r, g, b, vFlip, hFlip)
 	local overlay = asOverlay_GetOverlay(self, spellID, position);
 	overlay.spellID = spellID;
 	overlay.position = position;
@@ -180,77 +192,75 @@ function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale, r, g
 	overlay:Show();
 end
 
-function asOverlay_GetOverlay(self, spellID, position)
-	local overlayList = self.overlaysInUse[spellID];
-	local overlay;
-	if ( overlayList ) then
-		for i=1, #overlayList do
-			if ( overlayList[i].position == position ) then
-				overlay = overlayList[i];
+local function asOverlay_ShowAllOverlays(self, spellID, texturePath, positions, scale, r, g, b)
+	positions = strupper(positions);
+	if ( complexLocationTable[positions] ) then
+		for location, info in pairs(complexLocationTable[positions]) do
+			asOverlay_ShowOverlay(self, spellID, texturePath, location, scale, r, g, b, info.vFlip, info.hFlip);
+		end
+	else
+		asOverlay_ShowOverlay(self, spellID, texturePath, positions, scale, r, g, b, false, false);
+	end
+end
+
+local function asOverlay_OnEvent(self, event, ...)
+	if ( event == "SPELL_ACTIVATION_OVERLAY_SHOW" ) then
+		local spellID, texture, positions, scale, r, g, b = ...;
+		--if ( GetCVarBool("displaySpellActivationOverlays") ) then 
+			asOverlay_ShowAllOverlays(self, spellID, texture, positions, scale, r, g, b)
+		--end
+	elseif ( event == "SPELL_ACTIVATION_OVERLAY_HIDE" ) then
+		local spellID = ...;
+		if ( spellID ) then
+			asOverlay_HideOverlays(self, spellID);
+		else
+			asOverlay_HideAllOverlays(self);
+		end
+	end
+end
+
+
+local update = 0;
+
+local function asOverlay_OnUpdate(self, elapsed)
+
+	
+
+	update = update + elapsed;
+
+	if update >= 0.25 and self.overlaysInUse then
+
+		for spellID, overlayList in pairs(self.overlaysInUse) do
+
+			if ( overlayList and #overlayList ) then
+
+				local extime, duration, count = getExpirationTimeUnitAurabyID("player", spellID, "HELPFUL|PLAYER");
+
+				if extime then
+					local remain =	 extime - GetTime();
+					local rate = 0;
+
+					if remain > 0 then
+						rate = remain/duration;
+					end					
+				
+					for i=1, #overlayList do
+						local overlay = overlayList[i];
+						overlay.texture:SetAlpha(rate * alpha);
+					end
+				end
 			end
 		end
-	end
-	
-	if ( not overlay ) then
-		overlay = asOverlay_GetUnusedOverlay(self);
-		if ( overlayList ) then
-			tinsert(overlayList, overlay);
-		else
-			self.overlaysInUse[spellID] = { overlay };
-		end
-	end
-	
-	return overlay;
-end
 
-function asOverlay_HideOverlays(self, spellID)
-	local overlayList = self.overlaysInUse[spellID];
-	if ( overlayList ) then
-		for i=1, #overlayList do
-			local overlay = overlayList[i];
-			overlay.pulse:Pause();
-			overlay.animOut:Play();
-		end
+		update = 0;
 	end
 end
 
-function asOverlay_HideAllOverlays(self)
-	for spellID, overlayList in pairs(self.overlaysInUse) do
-		asOverlay_HideOverlays(self, spellID);
-	end
-end
+local frame = CreateFrame("FRAME", nil, UIParent)
+frame:SetPoint("CENTER",UIParent,"CENTER", 0, 0)
+frame:SetWidth(256)
+frame:SetHeight(256)
 
-function asOverlay_GetUnusedOverlay(self)
-	local overlay = tremove(self.unusedOverlays, #self.unusedOverlays);
-	if ( not overlay ) then
-		overlay = asOverlay_CreateOverlay(self);
-	end
-	return overlay;
-end
-
-function asOverlay_CreateOverlay(self)
-	return CreateFrame("Frame", nil, self, "asOverlayTemplate");
-end
-
-function asOverlayTexture_OnShow(self)
-	self.animIn:Play();
-end
-
-function asOverlayTexture_OnFadeInPlay(animGroup)
-	animGroup:GetParent():SetAlpha(0);
-end
-
-function asOverlayTexture_OnFadeInFinished(animGroup)
-	local overlay = animGroup:GetParent();
-	overlay:SetAlpha(1);
-	overlay.pulse:Play();
-end
-
-function asOverlayTexture_OnFadeOutFinished(anim)
-	local overlay = anim:GetRegionParent();
-	local overlayParent = overlay:GetParent();
-	overlay.pulse:Stop();
-	overlay:Hide();
-	tDeleteItem(overlayParent.overlaysInUse[overlay.spellID], overlay)
-	tinsert(overlayParent.unusedOverlays, overlay);
-end
+frame:SetScript("OnLoad", asOverlay_OnLoad);
+frame:SetScript("OnUpdate", asOverlay_OnUpdate);
+frame:SetScript("OnEvent", asOverlay_OnEvent);

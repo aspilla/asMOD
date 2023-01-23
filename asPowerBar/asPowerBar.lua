@@ -23,12 +23,16 @@ local bupdate_stagger = false;
 local bshow_haste = false;
 local bupdate_partial_power = false;
 local bsmall_power_bar = false;
+local bupdate_buff_combo = false;
 local APB_UNIT_POWER;
 local APB_POWER_LEVEL;
+
 APB_SPELL = nil;
 APB_SPELL2 = nil;
 APB_BUFF = nil;
 APB_BUFF2 = nil;
+APB_BUFF_COMBO = nil;
+APB_DEBUFF_COMBO = nil
 
 
 local APB = nil;
@@ -87,12 +91,13 @@ local function APB_UnitBuff(unit, buff, casterid)
 
 	local i = 1;
 	local ret = nil;
+	local filter = "INCLUDE_NAME_PLATE_ONLY";
 
 	repeat
-		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = UnitBuff(unit, i, "INCLUDE_NAME_PLATE_ONLY");
+		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = UnitBuff(unit, i, filter);
 
 		if (name == buff or spellId == buff) and duration > 0 and caster == casterid  then
-			return UnitBuff(unit, i, "INCLUDE_NAME_PLATE_ONLY");
+			return UnitBuff(unit, i, filter);
 		elseif (name == buff or spellId == buff) and duration == 0 and caster == casterid   then
 			ret = i;
 		end
@@ -102,7 +107,7 @@ local function APB_UnitBuff(unit, buff, casterid)
 	until (name == nil)
 
 	if ret then
-		return UnitBuff(unit, i, "INCLUDE_NAME_PLATE_ONLY");
+		return UnitBuff(unit, i, filter);
 	end
 	
 	for slot=1, MAX_TOTEMS do
@@ -379,12 +384,8 @@ local function APB_OnUpdateBuff(self, elapsed)
 				else
 					self:SetStatusBarColor(0.8, 0.8, 1);	
 				end
-			end
-	
+			end	
 		end
-
-	
-
 	end
 end
 
@@ -573,20 +574,11 @@ end
 
 local function APB_UpdateRune()
 
-	local runeReady, runeType;
-	local runeCount = 0;
-	runes = {0,0,0,0}
-
-
-
 	table.sort(APB.runeIndexes, RuneComparison);
-
-
-
 
 	for i, index in ipairs(APB.runeIndexes) do
  
-		start, duration, runeReady = GetRuneCooldown(index);
+		local start, duration, runeReady = GetRuneCooldown(index);
 
 		if runeReady then
 			APB.combobar[i].start = nil;
@@ -598,8 +590,7 @@ local function APB_UpdateRune()
 
 			APB.combobar[i]:SetMinMaxValues(0, 1)
 			APB.combobar[i]:SetValue(1)
-			APB.combobar[i]:SetScript("OnUpdate", nil)
-		
+			APB.combobar[i]:SetScript("OnUpdate", nil)		
 		else
 			APB.combobar[i]:SetStatusBarColor(1,1,1)
 			APB.combobar[i].start = start;
@@ -685,7 +676,7 @@ local function APB_GetActionSlot(arg1)
 	for lActionSlot = 1, 120 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
-		if type and type == "macro" then
+		if id and type and type == "macro" then
 			 id = GetMacroSpell(id);
 		end
 	
@@ -830,39 +821,7 @@ local function APB_UpdateSpell(spell, spell2)
 
 			end
 		end
-
-
-
-
-
 	end
-
-
-end
-
-
-
-
-
-
-local update = 0;
-
-
-local hast20 = 0;
-local hast19 = 0;
-
-local function HowManyHasSet(setID)
-    local itemList = C_LootJournal.GetItemSetItems(setID)
-    if not itemList then return end
-    local setName = GetItemSetInfo(setID)
-    local max = #itemList
-    local equipped = 0
-    for _,v in ipairs(itemList) do
-        if IsEquippedItem(v.itemID) then
-            equipped = equipped + 1
-        end
-    end
-    return equipped;
 end
 
 local APB_MAX_INCOMING_HEAL_OVERFLOW = 1.2;
@@ -972,21 +931,15 @@ local function APB_Update(self)
 		valuePct =  (math.ceil((value / valueMax) * 100));
 		valuePct_orig = (math.ceil((value_orig / valueMax) * 100));
 		local valuePctAbsorb = (math.ceil((total / valueMax) * 100));
-
-
 	
 		APB.healthbar:SetMinMaxValues(0, valueMax)
 		APB.healthbar:SetValue(value)
 
 		local r,g,b;
 
-
 		r,g,b = APB_HealColor(valuePct);
 
-
-
 		APB.healthbar:SetStatusBarColor(r, g, b);
-
 
 
 		if valuePctAbsorb > 0 then
@@ -1112,6 +1065,8 @@ local function APB_CheckPower(self)
 	APB_SPELL2 = nil;
 	APB_UNIT_POWER = nil;
 	APB_POWER_LEVEL = nil;
+	APB_BUFF_COMBO = nil;
+	APB_DEBUFF_COMBO = nil
 
 
 	APB.bar:Hide();
@@ -1365,19 +1320,13 @@ local function APB_CheckPower(self)
 
 	end
 
-	if (englishClass == "PRIEST") then
-
-
-		
+	if (englishClass == "PRIEST") then		
 		if (spec and spec == 3) then
 			bshow_haste = true;
-		end
-		
+		end	
 	end
 
 	if (englishClass == "WARRIOR") then
-
-
 		if (spec and spec == 1) then
 			APB_SPELL = "제압";
 			APB_SpellMax(APB_SPELL);
@@ -1391,9 +1340,6 @@ local function APB_CheckPower(self)
 			APB:RegisterEvent("PLAYER_TARGET_CHANGED");
 			APB_UpdateBuff(self.buffbar[0])
 		end
-
-
-
 
 		if (spec and spec == 2) then
 			APB_BUFF = "격노";
@@ -1519,11 +1465,6 @@ local function APB_CheckPower(self)
 
 
 		if (spec and spec == 3 and asCheckTalent("살쾡이의 이빨")) then
-		--	APB_SPELL = "살쾡이의 이빨";
-		--	APB_SpellMax(APB_SPELL);
-		--	APB_UpdateSpell(APB_SPELL);
-		--	bupdate_spell = true;
-
 			APB_BUFF_COMBO = "살쾡이의 격노";		
 			APB_MaxCombo(5);
 			APB.combobar.unit = "player"
@@ -1769,12 +1710,12 @@ local function checkSpellPowerCost(id)
 				end
 
 
-				local findstring = powerTypeString .. " %d개";
-				local start = string.find(costText, findstring, 0);
+				findstring = powerTypeString .. " %d개";
+				start = string.find(costText, findstring, 0);
 				if start and start > 10 then
 					local costText2 = string.sub(costText, start);
 					local start2 = string.find(costText2, "합니다.", 0);
-					local costText2 = string.sub(costText2, 0, start2);
+					costText2 = string.sub(costText2, 0, start2);
 					local cost = gsub(costText2, "[^0-9]", "")
 					if tonumber(cost) > 0 then
 						

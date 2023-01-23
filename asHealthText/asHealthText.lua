@@ -257,21 +257,13 @@ end
 
 local move_frame = false;
 
-local RUNETYPE_BLOOD = 1
-
-local RUNETYPE_FROST = 3
-local RUNETYPE_DEATH = 4
-local runes = {0,0,0,0}
-
 local function AHT_UpdateRune()
 
-	local i;
-	local text = "";
-	local runeReady, runeType;
+	local runeReady;
 	local runeCount = 0;
-	runes = {0,0,0,0}
+	
 	for i = 1, 6 do 
-		discard, discard, runeReady = GetRuneCooldown(i);
+		_, _, runeReady = GetRuneCooldown(i);
 			if runeReady then
 				runeCount = runeCount + 1;
 			end
@@ -339,52 +331,8 @@ local function AHT_UpdateStagger()
 		
 end
 
-local function AHT_UnitBuff(unit, buff, filter)
-
-	local i = 1;
-	repeat
-
-		local name = UnitBuff(unit, i, filter);
-
-		if name == buff then
-			return 	UnitBuff(unit, i, filter);
-		end
-
-
-		i = i + 1;
-
-
-	until (name == nil)
-
-	return nil
-end
-
-
-
-local function AHT_UpdateBuff()
-	if bupdate_buff then
-
-
-		local buff,  _, buff_count = AHT_UnitBuff("player", AHT_UNIT_POWER);
-
-		if buff and buff_count and  buff_count > 0 then
-			AHT_Power:SetText(buff_count);
-			AHT_UNIT_POWER_VALUE = buff_count;
-			AHT_Power:Show();
-		elseif buff then
-			AHT_Power:SetText(1);
-			AHT_UNIT_POWER_VALUE = 1;
-			AHT_Power:Show();
-		else
-			AHT_Power:Hide();
-		end				
-	end
-		
-end
-
 local function AHT_GetActionSlot(arg1)
-	local lActionSlot = 0;
-
+	
 	for lActionSlot = 1, 120 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
@@ -507,21 +455,6 @@ local function AHT_CheckHeal()
 		AHT_Heal:Hide();
 	end
 
-end
-
-local function AHT_CheckSpec(line,col)
-
-
-	local talentgroup = GetActiveSpecGroup();
-
-	if talentgroup then
-		local talentID, name, iconTexture, selected, available, _, _, _, _, _, grantedByAura  = GetTalentInfo(line, col, talentgroup);
-
-		if selected or grantedByAura  then
-			return true;
-		end
-	end
-	return false;
 end
 
 local function AHT_CheckPower()
@@ -866,8 +799,7 @@ function AHT_OnEvent(self, event, arg1, arg2, arg3, ...)
 	elseif event == "UNIT_POWER_UPDATE" and arg1 == "player" then
 		AHT_UpdatePower();
 	elseif event == "UNIT_AURA" and arg1 == "player" then
-		AHT_UpdateStagger();
-		AHT_UpdateBuff();
+		AHT_UpdateStagger();		
 	elseif event == "ACTIONBAR_UPDATE_COOLDOWN" then
 		AHT_UpdateActionCount();
 	elseif event == "UNIT_DISPLAYPOWER" and arg1 == "player"  then

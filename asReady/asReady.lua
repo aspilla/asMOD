@@ -156,50 +156,40 @@ local function hide_bar_icon(max)
 end
 
 
-local function AREADY_OnUpdate(self, elapsed)
+local function AREADY_OnUpdate()
 
-	if not self.update  then
-		self.update = 0;
-	end
+	local idx = 1;
 
-	self.update = self.update + elapsed
+	for i,v in pairs(partycool) do
+			
+		if v then
+			local spellid = v[2];
+			local time = v[3];
+			local cool = v[4];
+			local unit;
 
-	if self.update >= AREADY_UpdateRate  then
-
-		self.update = 0;
-
-		local idx = 1;
-
-		for i,v in pairs(partycool) do
-				
-			if v then
-				local spellid = v[2];
-				local time = v[3];
-				local cool = v[4];
-				local unit;
-
-				if v[1] == 5 then
-					unit = "player"
-				else
-					unit = "party"..v[1];
-				end
-
-				local currtime = GetTime();
-				if currtime <= time + cool + 1 then
-					create_bar_icon(idx, unit, spellid, time, cool);
-				end
-
-				idx = idx + 1;
-
-				if idx > AREADY_Max then
-					break;
-				end
-
+			if v[1] == 5 then
+				unit = "player"
+			else
+				unit = "party"..v[1];
 			end
-		end
 
-		hide_bar_icon(idx);
+			local currtime = GetTime();
+			if currtime <= time + cool + 1 then
+				create_bar_icon(idx, unit, spellid, time, cool);
+			end
+
+			idx = idx + 1;
+
+			if idx > AREADY_Max then
+				break;
+			end
+
+		end
 	end
+
+	hide_bar_icon(idx);
+
 end
 
 local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
@@ -243,4 +233,4 @@ AREADY:SetScript("OnEvent", AREADY_OnEvent)
 AREADY:RegisterEvent("PLAYER_ENTERING_WORLD");
 AREADY:RegisterEvent("GROUP_JOINED");
 AREADY:RegisterEvent("GROUP_ROSTER_UPDATE");
-AREADY:SetScript("OnUpdate", AREADY_OnUpdate);
+C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);

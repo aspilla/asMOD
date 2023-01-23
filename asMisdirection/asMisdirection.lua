@@ -20,9 +20,9 @@ local function GetPartyID()
 		if IsInRaid() then -- raid
 			for i=1,GetNumGroupMembers() do
 				local unitid = "raid"..i
-				local notMe = not UnitIsUnit('player',unitid)
+				local notMe = not UnitIsUnit("player",unitid)
 				local unitName = UnitName(unitid)
-				if unitName and notMe and UnitIsUnit('target',unitid) then
+				if unitName and notMe and UnitIsUnit("target",unitid) then
 					return unitid;
 				end
 			end
@@ -30,7 +30,7 @@ local function GetPartyID()
 			for i=1,GetNumSubgroupMembers() do
 				local unitid = "party"..i
 				local unitName = UnitName(unitid)
-				if unitName and  UnitIsUnit('target',unitid) then
+				if unitName and  UnitIsUnit("target",unitid) then
 					return unitid;
 				end
 			end
@@ -52,10 +52,10 @@ local function CheckPartyMember()
 		if IsInRaid() then -- raid
 			for i=1,GetNumGroupMembers() do
 				local unitid = "raid"..i
-				local notMe = not UnitIsUnit('player',unitid)
+				local notMe = not UnitIsUnit("player",unitid)
 				local unitName = UnitName(unitid)
 				if unitName and notMe then
-					local _,_,_,_,_,_,_,_,_,role,_, assignedRole = GetRaidRosterInfo(i) -- role = 'MAINTANK|MAINASSIST', assignedRole = 'TANK|HEALER|DAMAGER|NONE'
+					local _,_,_,_,_,_,_,_,_,role,_, assignedRole = GetRaidRosterInfo(i) -- role = "MAINTANK|MAINASSIST", assignedRole = "TANK|HEALER|DAMAGER|NONE"
 					if assignedRole == "TANK" then
 						return unitid;
 					end
@@ -66,10 +66,8 @@ local function CheckPartyMember()
 				local unitid = "party"..i
 				local unitName = UnitName(unitid)
 				if unitName then
-					local role,assignedRole
-					if ( GetPartyAssignment('MAINTANK', unitid) ) then
-						role = 'MAINTANK'
-					end
+					local assignedRole;
+					
 					assignedRole = UnitGroupRolesAssigned(unitid)
 
 					if assignedRole == "TANK" then
@@ -245,16 +243,16 @@ local function AHM_OnEvent(self, event, ...)
 	end
 end
 
-SlashCmdList['AFM_SLASHCMD'] = AHM_SetTargetName
-SLASH_AFM_SLASHCMD1 = '/afm'
+SlashCmdList["AFM_SLASHCMD"] = AHM_SetTargetName
+SLASH_AFM_SLASHCMD1 = "/afm"
 
-AHM_Button:RegisterEvent('PLAYER_LOGIN')
-AHM_Button:RegisterEvent('LEARNED_SPELL_IN_TAB')
-AHM_Button:RegisterEvent('GROUP_JOINED')
-AHM_Button:RegisterEvent('GROUP_ROSTER_UPDATE')
-AHM_Button:RegisterEvent('PLAYER_ROLES_ASSIGNED')
+AHM_Button:RegisterEvent("PLAYER_LOGIN")
+AHM_Button:RegisterEvent("LEARNED_SPELL_IN_TAB")
+AHM_Button:RegisterEvent("GROUP_JOINED")
+AHM_Button:RegisterEvent("GROUP_ROSTER_UPDATE")
+AHM_Button:RegisterEvent("PLAYER_ROLES_ASSIGNED")
 
-AHM_Button:RegisterEvent('PLAYER_REGEN_ENABLED')
+AHM_Button:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 
-AHM_Button:SetScript('OnEvent', function(self, event, ...) AHM_OnEvent(self, event, ...) end)
+AHM_Button:SetScript("OnEvent", function(self, event, ...) AHM_OnEvent(self, event, ...) end)
