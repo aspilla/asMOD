@@ -54,228 +54,6 @@ ADF_ShowList_PALADIN_3 = {
 }
 --]]
 
-local ADF_PVPDebuffList = {
-	--[[ INCAPACITATES ]]--
-	-- Druid
-	[    99] = 2, -- Incapacitating Roar (talent)
-	[203126] = 2, -- Maim (with blood trauma pvp talent)
-	-- Hunter
-	[  3355] = 2, -- Freezing Trap
-	[ 19386] = 2, -- Wyvern Sting
-	[209790] = 2, -- Freezing Arrow
-	-- Mage
-	[   118] = 2, -- Polymorph
-	[ 28272] = 2, -- Polymorph (pig)
-	[ 28271] = 2, -- Polymorph (turtle)
-	[ 61305] = 2, -- Polymorph (black cat)
-	[ 61721] = 2, -- Polymorph (rabbit)
-	[ 61780] = 2, -- Polymorph (turkey)
-	[126819] = 2, -- Polymorph (procupine)
-	[161353] = 2, -- Polymorph (bear cub)
-	[161354] = 2, -- Polymorph (monkey)
-	[161355] = 2, -- Polymorph (penguin)
-	[161372] = 2, -- Polymorph (peacock)
-	[ 82691] = 2, -- Ring of Frost
-	-- Monk
-	[115078] = 2, -- Paralysis
-	-- Paladin
-	[ 20066] = 2, -- Repentance
-	-- Priest
-	[   605] = 2, -- Mind Control
-	[  9484] = 2, -- Shackle Undead
-	[ 64044] = 2, -- Psychic Horror (Horror effect)
-	[ 88625] = 2, -- Holy Word: Chastise
-	-- Rogue
-	[  1776] = 2, -- Gouge
-	[  6770] = 2, -- Sap
-	-- Shaman
-	[ 51514] = 2, -- Hex
-	[211004] = 2, -- Hex (spider)
-	[210873] = 2, -- Hex (raptor)
-	[211015] = 2, -- Hex (cockroach)
-	[211010] = 2, -- Hex (snake)
-	-- Warlock
-	[   710] = 2, -- Banish
-	[  6789] = 2, -- Mortal Coil
-	-- Pandaren
-	[107079] = 2, -- Quaking Palm
-	
-	--[[ SILENCES ]]--
-	-- Death Knight
-	[ 47476] = 3, -- Strangulate
-	-- Demon Hunter
-	[204490] = 3, -- Sigil of Silence
-	-- Druid
-	-- Hunter
-	[202933] = 3, -- Spider Sting (pvp talent)
-	-- Mage
-	-- Paladin
-	[ 31935] = 3, -- Avenger's Shield
-	-- Priest
-	[ 15487] = 3, -- Silence
-	[199683] = 3, -- Last Word (SW: Death silence)
-	-- Rogue
-	[  1330] = 3, -- Garrote
-	-- Blood Elf
-	[ 25046] = 3, -- Arcane Torrent (Energy version)
-	[ 28730] = 3, -- Arcane Torrent (Priest/Mage/Lock version)
-	[ 50613] = 3, -- Arcane Torrent (Runic power version)
-	[ 69179] = 3, -- Arcane Torrent (Rage version)
-	[ 80483] = 3, -- Arcane Torrent (Focus version)
-	[129597] = 3, -- Arcane Torrent (Monk version)
-	[155145] = 3, -- Arcane Torrent (Paladin version)
-	[202719] = 3, -- Arcane Torrent (DH version)
-	
-	--[[ DISORIENTS ]]--
-	-- Death Knight
-	[207167] = 1, -- Blinding Sleet (talent) -- FIXME: is this the right category?
-	-- Demon Hunter
-	[207685] = 1, -- Sigil of Misery
-	-- Druid
-	[ 33786] = 1, -- Cyclone
-	-- Hunter
-	[213691] = 1, -- Scatter Shot
-	[186387] = 1, -- Bursting Shot
-	-- Mage
-	[ 31661] = 1, -- Dragon's Breath
-	-- Monk
-	[198909] = 1, -- Song of Chi-ji -- FIXME: is this the right category( tooltip specifically says disorient, so I guessed here)
-	[202274] = 1, -- Incendiary Brew -- FIXME: is this the right category( tooltip specifically says disorient, so I guessed here)
-	-- Paladin
-	[105421] = 1, -- Blinding Light -- FIXME: is this the right category? Its missing from blizzard's list
-	-- Priest
-	[  8122] = 1, -- Psychic Scream
-	-- Rogue
-	[  2094] = 1, -- Blind
-	-- Warlock
-	[  5782] = 1, -- Fear -- probably unused
-	[118699] = 1, -- Fear -- new debuff ID since MoP
-	[130616] = 1, -- Fear (with Glyph of Fear)
-	[  5484] = 1, -- Howl of Terror (talent)
-	[115268] = 1, -- Mesmerize (Shivarra)
-	[  6358] = 1, -- Seduction (Succubus)
-	-- Warrior
-	[  5246] = 1, -- Intimidating Shout (main target)
-	
-	--[[ STUNS ]]--
-	-- Death Knight
-	-- Abomination's Might note: 207165 is the stun, but is never applied to players,
-	-- so I haven't included it.
-	[108194] = 4, -- Asphyxiate (talent for unholy)
-	[221562] = 4, -- Asphyxiate (baseline for blood)
-	[ 91800] = 4, -- Gnaw (Ghoul)
-	[ 91797] = 4, -- Monstrous Blow (Dark Transformation Ghoul)
-	[207171] = 4, -- Winter is Coming (Remorseless winter stun)
-	-- Demon Hunter
-	[179057] = 4, -- Chaos Nova
-	[200166] = 4, -- Metamorphosis
-	[205630] = 4, -- Illidan's Grasp, primary effect
-	[208618] = 4, -- Illidan's Grasp, secondary effect
-	[211881] = 4, -- Fel Eruption
-	-- Druid
-	[203123] = 4, -- Maim
-	[  5211] = 4, -- Mighty Bash
-	[163505] = 4, -- Rake (Stun from Prowl)
-	-- Hunter
-	[117526] = 4, -- Binding Shot
-	[ 24394] = 4, -- Intimidation
-	-- Mage
-
-	-- Monk
-	[119381] = 4, -- Leg Sweep
-	-- Paladin
-	[   853] = 4, -- Hammer of Justice
-	-- Priest
-	[200200] = 4, -- Holy word: Chastise
-	[226943] = 4, -- Mind Bomb
-	-- Rogue
-	-- Shadowstrike note: 196958 is the stun, but it never applies to players,
-	-- so I haven't included it.
-	[  1833] = 4, -- Cheap Shot
-	[   408] = 4, -- Kidney Shot
-	[199804] = 4, -- Between the Eyes
-	-- Shaman
-	[118345] = 4, -- Pulverize (Primal Earth Elemental)
-	[118905] = 4, -- Static Charge (Capacitor Totem)
-	[204399] = 4, -- Earthfury (pvp talent)
-	-- Warlock
-	[ 89766] = 4, -- Axe Toss (Felguard)
-	[ 30283] = 4, -- Shadowfury
-	[ 22703] = 4, -- Summon Infernal
-	-- Warrior
-	[132168] = 4, -- Shockwave
-	[132169] = 4, -- Storm Bolt
-	-- Tauren
-	[ 20549] = 4, -- War Stomp
-	
-	--[[ ROOTS ]]--
-	-- Death Knight
-	[ 96294] = 5, -- Chains of Ice (Chilblains Root)
-	[204085] = 5, -- Deathchill (pvp talent)
-	-- Druid
-	[   339] = 5, -- Entangling Roots
-	[102359] = 5, -- Mass Entanglement (talent)
-	[ 45334] = 5, -- Immobilized (wild charge, bear form)
-	-- Hunter
-	[ 53148] = 5, -- Charge (Tenacity pet)
-	[162480] = 5, -- Steel Trap
-	[190927] = 5, -- Harpoon
-	[200108] = 5, -- Ranger's Net
-	[212638] = 5, -- tracker's net
-	[201158] = 5, -- Super Sticky Tar (Expert Trapper, Hunter talent, Tar Trap effect)
-	-- Mage
-	[   122] = 5, -- Frost Nova
-	[ 33395] = 5, -- Freeze (Water Elemental)
-	-- [157997] = 5, -- Ice Nova -- since 6.1, ice nova doesn't DR with anything
-	[228600] = 5, -- Glacial spike (talent)
-	-- Monk
-	[116706] = 5, -- Disable
-	-- Priest
-	-- Shaman
-	[ 64695] = 5, -- Earthgrab Totem
-	
-	--[[ KNOCKBACK ]]--
-	-- Death Knight
-	--[108199] = "Knockback", -- Gorefiend's Grasp
-	-- Druid
-	--[102793] = "Knockback", -- Ursol's Vortex
-	--[132469] = "Knockback", -- Typhoon
-	-- Hunter
-	-- Shaman
-	--[ 51490] = "Knockback", -- Thunderstorm
-	-- Warlock
-	--[  6360] = "Knockback", -- Whiplash
-	--[115770] = "Knockback", -- Fellash
-	
-		-- taunt
-	-- Death Knight
-	[ 56222] = 6, -- Dark Command
-	[ 57603] = 6, -- Death Grip
-	-- I have also seen this spellID used for the Death Grip debuff in MoP:
-	[ 51399] = 6, -- Death Grip
-	-- Demon Hunter
-	[185245] = 6, -- Torment
-	-- Druid
-	[  6795] = 6, -- Growl
-	-- Hunter
-	[ 20736] = 6, -- Distracting Shot
-	[ 2649] = 6, -- pet
-	[ 204683] = 6, -- pet
-	-- Monk
-	[116189] = 6, -- Provoke
-	[118635] = 6, -- Provoke via the Black Ox Statue -- NEED TESTING
-	-- Paladin
-	[ 62124] = 6, -- Reckoning
-	-- Warlock
-	[ 17735] = 6, -- Suffering (Voidwalker)
-	-- Warrior
-	[   355] = 6, -- Taunt
-	-- Shaman
-	[ 36213] = 6, -- Angered Earth (Earth Elemental)
-
-}
-
-
 
 local ADF_targethelplist = {};
 
@@ -406,7 +184,6 @@ end
 
 local function ADF_UpdateDebuff(unit)
 
-	local selfName;
 	local numDebuffs = 1;
 	local frame;
 	local frameIcon, frameCount, frameCooldown;
@@ -415,7 +192,8 @@ local function ADF_UpdateDebuff(unit)
 	local frameBorder;
 	local parent;
 	local filter = nil;
-	local isBossDebuff = nil;
+	isBossDebuff = nil;
+	local i;
 
 
 	if (unit == "target") then		
@@ -435,7 +213,7 @@ local function ADF_UpdateDebuff(unit)
 	local bBattle = false;
 
 	local RTB_PVPType = GetZonePVPInfo();
-	local discard, RTB_ZoneType = IsInInstance();
+	local _, RTB_ZoneType = IsInInstance();
 	local alert = false;
 
 	if RTB_PVPType == "combat" or RTB_ZoneType == "pvp" then
@@ -500,9 +278,7 @@ local function ADF_UpdateDebuff(unit)
 			if caster and ADF_Show_TargetDebuff and not UnitIsPlayer("target") and UnitIsUnit("target", caster) then
 				skip = false;
 			end
-			
-			-- 상대 가 Player 면 PVP Debuff 만 보임		
-			--if (spellId and ADF_Show_PVPDebuff and ADF_PVPDebuffList[spellId]) then
+						
 			if (spellId and ADF_Show_PVPDebuff and nameplateShowAll) then
 				skip = false;
 			end
@@ -547,7 +323,6 @@ local function ADF_UpdateDebuff(unit)
 			end
 			
 			-- 상대 가 Player 면 PVP Debuff 만 보임		
-			--if (spellId and ADF_Show_PVPDebuff and ADF_PVPDebuffList[spellId]) then
 			if (spellId and ADF_Show_PVPDebuff and nameplateShowAll) then
 				skip = false;
 			end
@@ -598,7 +373,6 @@ local function ADF_UpdateDebuff(unit)
 			end
 
 			-- 주요 PVP Debuff만 보이기
-			--if (spellId and ADF_PVPDebuffList[spellId]) then
 			if (spellId and nameplateShowAll) then
 				skip = false;
 			end
@@ -693,8 +467,7 @@ local function ADF_UpdateDebuff(unit)
 		i = i+1
 	until (name == nil)
 
-	for i = numDebuffs, ADF_MAX_DEBUFF_SHOW do
-		
+	for i = numDebuffs, ADF_MAX_DEBUFF_SHOW do		
 		frame = parent.frames[i];
 
 		if ( frame ) then
@@ -705,8 +478,7 @@ end
 
 function ADF_ClearFrame()
 		
-	for i = 1, ADF_MAX_DEBUFF_SHOW do
-		
+	for i = 1, ADF_MAX_DEBUFF_SHOW do		
 		local frame = ADF_TARGET_DEBUFF.frames[i];
 
 		if ( frame ) then
@@ -729,10 +501,7 @@ function ADF_InitShowList()
 	b_showlist = false;
 
 	if (ADF_ShowList and #ADF_ShowList) then
-	--	ChatFrame1:AddMessage("[ADF] ".. listname .. "을 Load 합니다.");
 		b_showlist = true;
-	else
-	--	ChatFrame1:AddMessage("[ADF] Show List를 비활성화 합니다..");
 	end
 end
 
@@ -808,8 +577,6 @@ end
 
 local function CreatDebuffFrames(parent, bright)
 
-	local idx;
-
 	if parent.frames == nil then
 		parent.frames = {};
 	end
@@ -826,9 +593,7 @@ local function CreatDebuffFrames(parent, bright)
 				break
 			end 
 		end
-
-		local font, size, flag = frame.count:GetFont()
-
+		
 		frame.count:SetFont(STANDARD_TEXT_FONT, ADF_CountFontSize, "OUTLINE")
 		frame.count:ClearAllPoints()
 		frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
