@@ -31,7 +31,7 @@ local function _CheckLongName(keyName)
   return keyName;
 end
 
-function _UpdateHotkeys(name, type, hide, total)
+local function _UpdateHotkeys(name, type, hide, total)
   for i = 1, total do
      local f =  getglobal(name..i);
      if not f then break end;
@@ -41,7 +41,6 @@ function _UpdateHotkeys(name, type, hide, total)
     local key = GetBindingKey(type..i) 
     local text = GetBindingText(key, "KEY_", 1);
     text = _CheckLongName(text);
-    hotkey.isApply = 1;
     if ( text == "" ) then
       hotkey:Hide();
     else
