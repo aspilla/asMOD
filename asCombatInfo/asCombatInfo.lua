@@ -102,13 +102,11 @@ ACI_SpellList_HUNTER_1 = {
 
 --사격
 ACI_SpellList_HUNTER_2 = {
-	{99, "연타 공격",  {"연타 공격", 2}, {260242, 7, "player", 20}},
+	{99, "꾸준한 집중", {193533, 7, "player"}, {194595, 7, "player", 20}},
 	{"속사", 1},
 	{"정조준", 2},	
 	{"마무리 사격", 1},	
-	{99, "꾸준한 집중", {193533, 7, "player"}, {"연발 공격", 1}},
-	
-	
+	{99, "연발 공격", {"연발 공격", 1}, {260242, 7, "player", 20}},	
 };
 
 --생존
@@ -147,6 +145,7 @@ ACI_SpellList_MAGE_3 = {
 	{"눈보라", 1},
 };
 
+--신성
 ACI_SpellList_PALADIN_1 = {
 	{"신의 은총", 1},
 	{"빛 주입", 2},
@@ -155,19 +154,17 @@ ACI_SpellList_PALADIN_1 = {
 	{"심판", 1},
 };
 
-
+--보호
 ACI_SpellList_PALADIN_2 = {
-	
 	{"신성화", 11},
 	{"응징의 방패", 1},
 	{"헌신적인 수호자", 2},
 	{99, "축복받은 망치", {"축복받은 망치", 1}, {"정의의 망치", 1}}, 	
 	{"심판", 4},
-	
 };
 
+--징벌
 ACI_SpellList_PALADIN_3 = {
-	
 	{"천벌의 망치", 1},
     {"성전사의 일격", 1},
 	{"응징의 격노", 2},
@@ -175,9 +172,8 @@ ACI_SpellList_PALADIN_3 = {
 	{"심판", 4},
 };
 
+--수양
 ACI_SpellList_PRIEST_1 = {
-
-	
 	{"회복의 기원", 1},
 	{"신의 권능: 광휘", 1},
 	{"속죄", 18},
@@ -186,6 +182,7 @@ ACI_SpellList_PRIEST_1 = {
 	
 };
 
+--신성
 ACI_SpellList_PRIEST_2 = {
 
 	{"천상의 찬가", 1},
@@ -196,7 +193,7 @@ ACI_SpellList_PRIEST_2 = {
 	
 };
 
-
+--암흑
 ACI_SpellList_PRIEST_3 = {
 
 	{"어둠의 권능: 죽음", 1},
@@ -206,7 +203,7 @@ ACI_SpellList_PRIEST_3 = {
 	{589, 8, nil, 5},
 };
 
-
+--혈기
 ACI_SpellList_DEATHKNIGHT_1 = {
 	
 	{"죽음과 부패", 1},
@@ -217,20 +214,19 @@ ACI_SpellList_DEATHKNIGHT_1 = {
 	
 };
 
+--냉기
 ACI_SpellList_DEATHKNIGHT_2 = {
 
-	
 	{"겨울의 뿔피리", 1},
 	{"냉혹한 겨울", 1},
 	{"룬 무기 강화", 2},
 	{"절멸", 1},
 	{"얼음 기둥", 2},
-	
-	
+
 };
 
+--부정
 ACI_SpellList_DEATHKNIGHT_3 = {
-
 
 	{"죽음과 부패", 1},
 	{"대재앙", 1},
@@ -240,7 +236,7 @@ ACI_SpellList_DEATHKNIGHT_3 = {
 
 };
 
-
+--양조
 ACI_SpellList_MONK_1 = {
 
 	{322120, 7, "player"},
@@ -251,6 +247,7 @@ ACI_SpellList_MONK_1 = {
 	
 };
 
+--운무
 ACI_SpellList_MONK_2 = {
 
 	{"기의 고치", 2},
@@ -261,7 +258,7 @@ ACI_SpellList_MONK_2 = {
 };
 
 
-
+--풍운
 ACI_SpellList_MONK_3 = {
 
 	{"회전 학다리차기", 1},
@@ -271,12 +268,8 @@ ACI_SpellList_MONK_3 = {
 	{"비룡차기", 1},
 };
 
-
-
-
+--조화
 ACI_SpellList_DRUID_1 = {
-
-	
 	{"달빛섬광", 4, nil, 22 *  0.3},
 	{393955, 7, "player", 7},
 	{"천체의 정렬", 2},
@@ -284,25 +277,25 @@ ACI_SpellList_DRUID_1 = {
 	{"태양섬광", 4, nil, 13.5 * 0.3},
 };
 
+--야성
 ACI_SpellList_DRUID_2 = {
 	{"난타", 4},
 	{"광폭화", 2},
 	{"호랑이의 분노", 2},
 	{"도려내기", 4, nil, 24 * 0.3},
 	{"갈퀴 발톱", 4, nil, 15 * 0.3},
-	
 };
 
+--수호
 ACI_SpellList_DRUID_3 = {
-	
 	{"생존 본능", 2},
 	{"광포한 재생력", 2},
 	{"나무 껍질", 2},
 	{"짓이기기", 1},
 	{"난타", 1},
-	
 };
 
+--회복
 ACI_SpellList_DRUID_4 = {
 	{"무쇠껍질", 2},
 	{"정신 자극", 1}, 
@@ -312,7 +305,7 @@ ACI_SpellList_DRUID_4 = {
 };
 
 
-
+--정기
 ACI_SpellList_SHAMAN_1 = {
 	{16166, 7, "player"},
 	{"용암 폭발", 1},
@@ -322,7 +315,7 @@ ACI_SpellList_SHAMAN_1 = {
 	
 };
 
-
+--고양
 ACI_SpellList_SHAMAN_2= {
 	{"용암 채찍", 1},
 	{"폭풍의 일격", 1},
@@ -331,6 +324,7 @@ ACI_SpellList_SHAMAN_2= {
 	{"화염 충격", 4, nil, 18 * 0.3},
 };
 
+--복원
 ACI_SpellList_SHAMAN_3= {
 	{"치유의 해일 토템", 11},
 	{"치유의 토템", 11},
@@ -340,7 +334,7 @@ ACI_SpellList_SHAMAN_3= {
 };
 
 
-
+--고통
 ACI_SpellList_WARLOCK_1 = {
 	
 	{273522, 7, "player"},	
@@ -351,7 +345,7 @@ ACI_SpellList_WARLOCK_1 = {
 
 }
 
-
+--악마
 ACI_SpellList_WARLOCK_2 = {
 	
 	{"지옥폭풍", 1},
@@ -362,7 +356,7 @@ ACI_SpellList_WARLOCK_2 = {
 	{99, "영혼의 일격", {"영혼의 일격", 1}, {"악마의 기운", 1}}	
 }
 
-
+--파괴
 ACI_SpellList_WARLOCK_3 = {
 
 
@@ -374,7 +368,7 @@ ACI_SpellList_WARLOCK_3 = {
 
 }
 
-
+--악딜
 ACI_SpellList_DEMONHUNTER_1 = {
 	
 	{99, "지옥칼", {"지옥칼", 1}, {"글레이브 투척", 1}},
@@ -385,6 +379,7 @@ ACI_SpellList_DEMONHUNTER_1 = {
 	
 }
 
+--복수
 ACI_SpellList_DEMONHUNTER_2 = {
 	
 	{99, "지옥칼", {"지옥칼", 1}, {"불꽃의 인장", 1}},
@@ -404,6 +399,7 @@ ACI_SpellList_EVOKER_1 = {
 	
 }
 
+--기원
 ACI_SpellList_EVOKER_2 = {
 
 	{"부양", 1},
