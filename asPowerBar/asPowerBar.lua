@@ -380,7 +380,7 @@ local function APB_OnUpdateBuff(self, elapsed)
 
 			if self.buff then
 				if curr_gcd and remain_buff < curr_gcd * 2 then
-					self:SetStatusBarColor(1, 0, 0);	
+					self:SetStatusBarColor(1, 0, 1);	
 				else
 					self:SetStatusBarColor(0.8, 0.8, 1);	
 				end
