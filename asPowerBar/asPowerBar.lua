@@ -633,7 +633,7 @@ local function APB_UpdatePower()
 		APB.powermax = max;
 	end
 
-	
+	--[[
 	local localizedClass, englishClass = UnitClass("player")
 
 	if (englishClass == "DRUID") then
@@ -644,7 +644,7 @@ local function APB_UpdatePower()
 		end
 
 	end
-
+	]]
 
 	local _, _, _, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo("player");
 	local cast = nil;
