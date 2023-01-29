@@ -166,6 +166,7 @@ local function AREADY_OnUpdate()
 			local spellid = v[2];
 			local time = v[3];
 			local cool = v[4];
+			local prev_idx = v[5];
 			local unit;
 
 			if v[1] == 5 then
@@ -175,8 +176,9 @@ local function AREADY_OnUpdate()
 			end
 
 			local currtime = GetTime();
-			if currtime <= time + cool + 1 then
+			if currtime <= time + cool + 1 or prev_idx ~= idx then
 				create_bar_icon(idx, unit, spellid, time, cool);
+				v[5] = idx;
 			end
 
 			idx = idx + 1;
@@ -205,11 +207,11 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 			if trackedPartySpells[spellid] then
 				local cool = trackedPartySpells[spellid];
         	    if UnitIsUnit("player", unit) then
-					partycool[5] = {5, spellid, time, cool};
+					partycool[5] = {5, spellid, time, cool, 0};
 				else
     	        	for k=1,GetNumGroupMembers()-1 do
 						if UnitIsUnit("party"..k, unit) then
-							partycool[k] = {k, spellid, time, cool};
+							partycool[k] = {k, spellid, time, cool, 0};
 						end
 					end
 	            end
