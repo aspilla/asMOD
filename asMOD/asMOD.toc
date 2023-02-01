@@ -3,5 +3,5 @@
 ## Title: |cffff3399as|rMOD
 ## Notes: asMOD 기본 설정
 ## Version : 160702
-##SavedVariablesPerCharacter: asMOD_config, asMOD_version, asMOD_position 
+##SavedVariablesPerCharacter: asMOD_config, asMOD_version, asMOD_position, asMOD_layout_version 
 asMOD.lua
