@@ -565,10 +565,10 @@ local function ACRB_setupFrame(frame)
 
 	if not asraid[frameName].asDispelBorder then
 		asraid[frameName].asDispelBorder = frame:CreateTexture(nil,"BACKGROUND")
-		asraid[frameName].asDispelBorder:SetTexture("Interface\\AddOns\\asCompactRaidBuff\\overborder.tga");	
-		asraid[frameName].asDispelBorder:SetPoint("TOPLEFT",-2,2)
-		asraid[frameName].asDispelBorder:SetPoint("BOTTOMRIGHT",2, -2)
-		asraid[frameName].asDispelBorder:SetTexCoord(0,1,0,1)
+		asraid[frameName].asDispelBorder:SetTexture("Interface\\AddOns\\asCompactRaidBuff\\border.tga");
+		asraid[frameName].asDispelBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);	
+		asraid[frameName].asDispelBorder:SetPoint("TOPLEFT",0 , 0);
+		asraid[frameName].asDispelBorder:SetPoint("BOTTOMRIGHT", 0, 0);
 		asraid[frameName].asDispelBorder:Hide();
 	end
 
@@ -735,7 +735,7 @@ local function asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, index, filter)
 		end
 	else
 		buffFrame.border:Hide()
-		CooldownFrame_Clear(buffFrame.cooldown);
+		asCooldownFrame_Clear(buffFrame.cooldown);
 	end
 	buffFrame:Show();
 end
@@ -1524,7 +1524,7 @@ end
 
 local function asCompactUnitFrame_UpdateAll(frame)
 
-	if frame  then 
+	if frame and frame.GetName then 
 		local name = frame:GetName();
 
 		if name and not (name == nil) and (string.find (name, "CompactRaidGroup") or string.find (name, "CompactPartyFrameMember") or string.find (name, "CompactRaidFrame")) then
