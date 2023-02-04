@@ -161,6 +161,11 @@ end
 
 local function IsLearndSpell(checkSpellName)
 	local i = 1
+
+	if playerClass == "HUNTER" or playerClass == "ROGUE" then
+		return true;	
+	end
+
 	while true do
 		local spellName = GetSpellBookItemName (i, BOOKTYPE_SPELL)
 		if not spellName then
