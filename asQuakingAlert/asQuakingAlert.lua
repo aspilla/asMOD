@@ -79,7 +79,7 @@ local function ASQA_UpdateDebuff(unit)
 		
 		if ASQA_DeBuffNameList[name] then
 			local k = ASQA_DeBuffNameList[name];
-			a_isProc[k] = { expirationTime , duration, icon, spellID};			
+			a_isProc[k] = { expirationTime - duration , duration, icon, spellID};			
 		end
 	
 		i = i + 1; 
