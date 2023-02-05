@@ -7,24 +7,24 @@
 		</Size>
 		<Layers>
 			<Layer level="ARTWORK">
-				<Texture name="$parentIcon" setAllPoints="true"/>
+				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
 			</Layer>
 			<Layer level="OVERLAY">
-				<Texture name="$parentBorder" file="Interface\Buttons\UI-Debuff-Overlays">
+				<Texture name="$parentBorder" parentKey="border" file="Interface\Buttons\UI-Debuff-Overlays">
 					<Size>
 						<AbsDimension x="17" y="17"/>
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT">
-							<Offset x="-1" y="1"/>
+							<Offset x="0" y="0"/>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT">
-							<Offset x="1" y="-1"/>
+							<Offset x="0" y="0"/>
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
 				</Texture>	
-				<FontString name="$parentCount" inherits="NumberFontNormalSmall" justifyH="RIGHT">
+				<FontString name="$parentCount" parentKey="count" inherits="NumberFontNormalSmall" justifyH="RIGHT">
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT">
 							<Offset>
@@ -36,7 +36,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true">
+			<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true">
 				<Anchors>
 					<Anchor point="CENTER">
 						<Offset>
@@ -50,15 +50,15 @@
 	<Frame name="ADotF_ActionBarButtonSpellActivationAlert" virtual="true" mixin="ADotF_ActionBarButtonSpellActivationAlertMixin">
 		<Animations>
 			<AnimationGroup parentKey="animIn" mixin="ADotF_ActionBarOverlayGlowAnimInMixin">
-				<Scale target="$parentSpark" duration="0.2" scaleX="1.5" scaleY="1.5" order="1"/>
+				<Scale target="$parentSpark" duration="0.2" scaleX="1" scaleY="1" order="1"/>
 				<Alpha target="$parentSpark" duration="0.2" fromAlpha="0" toAlpha="1" order="1"/>
-				<Scale target="$parentInnerGlow" 			duration="0.3" scaleX="2" scaleY="2" order="1"/>
-				<Scale target="$parentInnerGlowOver" 	duration="0.3" scaleX="2" scaleY="2" order="1"/>
+				<Scale target="$parentInnerGlow" 			duration="0.3" scaleX="1" scaleY="1" order="1"/>
+				<Scale target="$parentInnerGlowOver" 	duration="0.3" scaleX="1" scaleY="1" order="1"/>
 				<Alpha target="$parentInnerGlowOver"	duration="0.3" fromAlpha="1" toAlpha="0" order="1"/>
-				<Scale target="$parentOuterGlow" 			duration="0.3" scaleX="0.5" scaleY="0.5" order="1"/>
-				<Scale target="$parentOuterGlowOver" 	duration="0.3" scaleX="0.5" scaleY="0.5" order="1"/>
+				<Scale target="$parentOuterGlow" 			duration="0.3" scaleX="1" scaleY="1" order="1"/>
+				<Scale target="$parentOuterGlowOver" 	duration="0.3" scaleX="1" scaleY="1" order="1"/>
 				<Alpha target="$parentOuterGlowOver"	duration="0.3" fromAlpha="1" toAlpha="0" order="1"/>
-				<Scale target="$parentSpark" startDelay="0.2" duration="0.2" scaleX="0.666666" scaleY="0.666666" order="1"/>
+				<Scale target="$parentSpark" startDelay="0.2" duration="0.2" scaleX="1" scaleY="1" order="1"/>
 				<Alpha target="$parentSpark" startDelay="0.2" duration="0.2" fromAlpha="1" toAlpha="0" order="1"/>
 				<Alpha target="$parentInnerGlow" startDelay="0.3" duration="0.2" fromAlpha="1" toAlpha="0" order="1"/>
 				<Alpha target="$parentAnts"	startDelay="0.3" duration="0.2" fromAlpha="0" toAlpha="1" order="1"/>
