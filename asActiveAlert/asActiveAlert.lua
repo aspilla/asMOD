@@ -1,14 +1,14 @@
-﻿local ASAA_CoolButtons
-
-ASAA_SpellList = {};
-local ASAA_SpellIcon = {}
-local ASAA_SIZE = 26;	
+﻿local ASAA_SIZE = 26;	
 
 local ASAA_CoolButtons_X = 170			-- 쿨 List 위치
 local ASAA_CoolButtons_Y = 55
 local ASAA_Alpha = 0.9
 local ASAA_CooldownFontSize = 10
 
+-- 옵션끝
+
+local ASAA_CoolButtons;
+local ASAA_SpellList = {};
 local prev_cnt = 0;
 
 -- 원치 않는 발동 알림은 안보이게
@@ -16,10 +16,7 @@ local ASAA_BackList = {
 	--["천상의 폭풍"] = true,
 };
 
-
 local action_list = {};
-
-local _G = _G;
 
 local function ScanActionSlot()
 	table.wipe(action_list);
@@ -29,7 +26,7 @@ local function ScanActionSlot()
 		if type and type == "macro" then
 			 id = GetMacroSpell(id);
 		end
-	
+
 		if id then
 			local name = GetSpellInfo(id);
 
@@ -53,14 +50,37 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 	end
 end
 
-function ASAA_UpdateCooldown()
+local function ASAA_UpdateCoolAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
 
-	local selfName;
+	local cool = frames[index];
+	local point1 = "TOPLEFT";
+	local point2 = "BOTTOMLEFT";
+	local point3 = "TOPRIGHT";
+
+	if (right == false) then
+		point1 = "TOPRIGHT";
+		point2 = "BOTTOMRIGHT";
+		point3 = "TOPLEFT";
+		offsetX = -offsetX;
+	end
+
+	if ( index == 1 ) then
+		cool:SetPoint(point1, parent, point2, 0, 0);
+	else
+		cool:SetPoint(point1, frames[index-1], point3, offsetX, 0);
+	end
+
+	-- Resize
+	cool:SetWidth(size);
+	cool:SetHeight(size * 0.9);
+end
+
+local function ASAA_UpdateCooldown()
+
 	local numCools = 1;
 	local frame;
 	local frameIcon, frameCooldown;
-	local name, icon, duration, start, enable;
-	local color;
+	local icon, duration, start, enable;
 	local frameBorder;
 	local maxIdx;
 	local parent;
@@ -73,19 +93,16 @@ function ASAA_UpdateCooldown()
 	end
 
 	for i = 1, maxIdx do
-		local skip = false;
-		local debuff;
 		local idx = i;
 		local array = ASAA_SpellList;
 
-		icon = ASAA_SpellIcon[idx];
+		_, _, icon = GetSpellInfo(array[idx]);
 		start, duration, enable = GetSpellCooldown(array[idx]);
 		local isUsable, notEnoughMana = IsUsableSpell(array[idx]);
 
 
 		--if (icon and enable > 0) then
 		if (icon) then
-			
 			frame = parent.frames[numCools];
 
 			if ( not frame ) then
@@ -123,12 +140,12 @@ function ASAA_UpdateCooldown()
 			else
 				frameIcon:SetVertexColor(0.4, 0.4, 0.4);
 			end
-		
+
 			frameCooldown = frame.cooldown;
 			frameCooldown:Show();
 			asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, enable);
 			frameCooldown:SetHideCountdownNumbers(false);
-							
+
 			numCools = numCools + 1;
 		end
 	end
@@ -150,33 +167,7 @@ function ASAA_UpdateCooldown()
 	prev_cnt = numCools;
 end
 
-function ASAA_UpdateCoolAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
-
-	local cool = frames[index];
-	local point1 = "TOPLEFT";
-	local point2 = "BOTTOMLEFT";
-	local point3 = "TOPRIGHT";
-
-	if (right == false) then
-		point1 = "TOPRIGHT";
-		point2 = "BOTTOMRIGHT";
-		point3 = "TOPLEFT";
-		offsetX = -offsetX;
-	end
-
-	if ( index == 1 ) then
-		cool:SetPoint(point1, parent, point2, 0, 0);
-	else
-		cool:SetPoint(point1, frames[index-1], point3, offsetX, 0);
-	end
-
-	-- Resize
-	cool:SetWidth(size);
-	cool:SetHeight(size * 0.9);
-end
-
-
-function ASAA_Init()
+local function ASAA_Init()
 
     LoadAddOn("asMOD");
 	ASAA_CoolButtons = CreateFrame("Frame", nil, UIParent)
@@ -188,27 +179,18 @@ function ASAA_Init()
 
     if asMOD_setupFrame then
         asMOD_setupFrame (ASAA_CoolButtons, "asActiveAlert");
-
     end
 
 	ASAA_CoolButtons:Show()
-
-    
 	ASAA_SpellList = {};
-	ASAA_SpellIcon = {};
 	ScanActionSlot();
-
 	ASAA_UpdateCooldown();
-
-
 end
 
-function ASAA_Insert(id)
+local function ASAA_Insert(id)
 
-	local i
 	local maxIdx = #ASAA_SpellList;
-	local icon;
-
+	
 	if ACI_SpellID_list and ACI_SpellID_list[id] then
 		return;
 	end
@@ -219,7 +201,7 @@ function ASAA_Insert(id)
 		end
 	end
 
-	name, discard, icon = GetSpellInfo(id);
+	local name, _, _ = GetSpellInfo(id);
 
 	if ASAA_BackList and ASAA_BackList[name] then
 		return;
@@ -230,27 +212,17 @@ function ASAA_Insert(id)
 		return;
 	end
 
-	for i = 1, maxIdx do
-		if ASAA_SpellIcon[i] == icon then
-			return;
-		end
-	end
-
 	tinsert(ASAA_SpellList, id);
-	tinsert(ASAA_SpellIcon, icon);
-
 	ASAA_UpdateCooldown();
 end
 
-function ASAA_Delete(id)
+local function ASAA_Delete(id)
 	
-	local i
 	local maxIdx = #ASAA_SpellList;
 
 	for i = 1, maxIdx do
 		if ASAA_SpellList[i] == id then
 			tremove(ASAA_SpellList, i)
-			tremove(ASAA_SpellIcon, i)
 			ASAA_UpdateCooldown();
 			return;
 		end
@@ -258,7 +230,7 @@ function ASAA_Delete(id)
 
 end
 
-function ASAA_OnEvent(self, event, arg1, arg2, arg3)
+local function ASAA_OnEvent(self, event, arg1, arg2, arg3)
 
 	if event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
 		ASAA_Insert(arg1)
