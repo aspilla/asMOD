@@ -1,7 +1,4 @@
-﻿local ASQA;
-local ASQA_PLAYER_BUFF;
-
--- 설정부
+﻿-- 설정부
 local ASQA_SIZE = 50;
 local ASQA_PLAYER_BUFF_X = 250;
 local ASQA_PLAYER_BUFF_Y = 130 ;
@@ -20,11 +17,14 @@ local ASQA_ProcDeBuffList = {
 
 }
 
+local ASQA;
+local ASQA_PLAYER_BUFF;
+
 local ASQA_DeBuffNameList = {};
 
 local a_isProc = {};
 
-local function ASQA_UpdateDebuffAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
+local function ASQA_UpdateDebuffAnchor(frames, index, size, offsetX, right, parent)
 
 	local buff = frames[index];
 	local point1 = "TOPLEFT";
@@ -79,13 +79,12 @@ local function ASQA_UpdateDebuff(unit)
 		
 		if ASQA_DeBuffNameList[name] then
 			local k = ASQA_DeBuffNameList[name];
-			a_isProc[k] = { expirationTime - duration , duration, icon, spellID};			
+			a_isProc[k] = { expirationTime, duration, icon, spellID};			
 		end
 	
 		i = i + 1; 
 	until (name == nil)
 
-	local z;
 	local numDebuffs = 1;
 	local frame;
 	local frameIcon, frameCount, frameCooldown;
@@ -150,7 +149,7 @@ local function ASQA_UpdateDebuff(unit)
 
 			if currtime - laststart >= duration then
 				repeat
-					expirationTime = expirationTime + rppm;
+					expirationTime = expirationTime + rppm - duration;
 				until (expirationTime > currtime);
 				
 				if expirationTime - currtime < 3 then
@@ -177,8 +176,8 @@ local function ASQA_UpdateDebuff(unit)
 		end
 	end
 
-	for i=1, numDebuffs - 1 do
-		ASQA_UpdateDebuffAnchor(ASQA.frames, i, i - 1, ASQA_SIZE, 4, true, parent);
+	for i = 1, numDebuffs - 1 do
+		ASQA_UpdateDebuffAnchor(ASQA.frames, i, ASQA_SIZE, 4, true, parent);
 	end
 	
 	for i = numDebuffs,  #ASQA_ProcDeBuffList do
@@ -190,7 +189,6 @@ local function ASQA_UpdateDebuff(unit)
 	end
 end
 
-local update = 0;
 local function ASQA_OnUpdate()
 	ASQA_UpdateDebuff("pbuff");
 end
