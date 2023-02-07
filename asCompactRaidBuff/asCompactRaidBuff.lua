@@ -1509,7 +1509,7 @@ end
 
 local function asCompactUnitFrame_UpdateAll(frame)
 
-	if frame and frame.GetName then 
+	if frame and not frame:IsForbidden() and frame.GetName then 
 		local name = frame:GetName();
 
 		if name and not (name == nil) and (string.find (name, "CompactRaidGroup") or string.find (name, "CompactPartyFrameMember") or string.find (name, "CompactRaidFrame")) then
