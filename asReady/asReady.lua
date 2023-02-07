@@ -25,10 +25,10 @@ local trackedPartySpells={
 	[106839]  = 15, -- "Skull Bash
     [119898]  = 24, -- Command Demon
 	[15487] = 45, -- Silence
-	[31935] = 15, -- Avenger's Shield
 	[96231]   = 15, -- Rebuke
 	[57994] = 12, -- Wind Shear
 	[2139] = 24, -- Counterspell
+	[78675]  = 60, -- Solar Beam
 
 }
 
