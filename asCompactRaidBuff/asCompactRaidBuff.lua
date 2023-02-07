@@ -1491,9 +1491,7 @@ local function ACRB_OnEvent(self, event, ...)
 		local arg1 = ...;
 
 		if  event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player"  then
-			for i=1,8 do
-				ACRB_updatePartyAllBuff(i);
-			end
+			ACRB_updatePartyAllBuff();			
 		elseif (event == "PLAYER_ENTERING_WORLD") then
 			ACRB_InitList();
 			mustdisable = true;
