@@ -16,57 +16,32 @@ local function init_combattext()
 	SetCVar("floatingCombatTextCombatState" , 1)
 
 		
-  	--	if CombatText_UpdateDisplayedMessages then
-		CombatTextFont:SetFont("Fonts\\2002.ttf",18,"OUTLINE")
-		COMBAT_TEXT_HEIGHT = 16;
-		COMBAT_TEXT_CRIT_MAXHEIGHT = 24;
-		COMBAT_TEXT_CRIT_MINHEIGHT = 18;
-		COMBAT_TEXT_STAGGER_RANGE = 5;
+  	CombatTextFont:SetFont("Fonts\\2002.ttf",18,"OUTLINE")
+	COMBAT_TEXT_HEIGHT = 16;
+	COMBAT_TEXT_CRIT_MAXHEIGHT = 24;
+	COMBAT_TEXT_CRIT_MINHEIGHT = 18;
+	COMBAT_TEXT_STAGGER_RANGE = 5;
 
-		local role = nil
-
-		--[[
-		if GetSpecialization() ~= nil then
-
-			role = GetSpecializationRole(GetSpecialization())
-		end
-	
-
-		if role ~= nil and role == "TANK" then
-			bShowHeal = nil	
-			ChatFrame1:AddMessage("[ACT]방어특성이라 치유량 표시를 중지합니다.");
-		end
-		--]]
-		--
-
-		COMBAT_TEXT_TYPE_INFO["DAMAGE_SHIELD"] = {r = DAMAGE_SHIELD_COLOR[1], g = DAMAGE_SHIELD_COLOR[2], b = DAMAGE_SHIELD_COLOR[3], show = 1};
-		COMBAT_TEXT_TYPE_INFO["SPLIT_DAMAGE"] = {r = SPLIT_DAMAGE_COLOR[1], g = SPLIT_DAMAGE_COLOR[2], b = SPLIT_DAMAGE_COLOR[3], show = 1};
-		COMBAT_TEXT_TYPE_INFO["DAMAGE_CRIT"] = {r = DAMAGE_COLOR[1], g = DAMAGE_COLOR[2], b = DAMAGE_COLOR[3], show = 1};
-		COMBAT_TEXT_TYPE_INFO["DAMAGE"] = {r = DAMAGE_COLOR[1], g = DAMAGE_COLOR[2], b = DAMAGE_COLOR[3], isStaggered = ASCT_STAGGERED, show = 1};
-
-		COMBAT_TEXT_TYPE_INFO["SPELL_DAMAGE_CRIT"] = {r = SPELL_DAMAGE_COLOR[1], g = SPELL_DAMAGE_COLOR[2], b = SPELL_DAMAGE_COLOR[3], show = 1};
-		COMBAT_TEXT_TYPE_INFO["SPELL_DAMAGE"] = {r = SPELL_DAMAGE_COLOR[1], g = SPELL_DAMAGE_COLOR[2], b = SPELL_DAMAGE_COLOR[3], show = 1};
-
-		COMBAT_TEXT_TYPE_INFO["ENTERING_COMBAT"] = {r = 1, g = 0.1, b = 0.1, show = 1};
-		COMBAT_TEXT_TYPE_INFO["LEAVING_COMBAT"] = {r = 0.1, g = 1, b = 0.1, show = 1};
-
-
-	
-	
-		COMBAT_TEXT_TYPE_INFO["HEAL_CRIT"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
-		COMBAT_TEXT_TYPE_INFO["HEAL"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
-		COMBAT_TEXT_TYPE_INFO["PERIODIC_HEAL_ABSORB"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
-		COMBAT_TEXT_TYPE_INFO["HEAL_CRIT_ABSORB"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
-		COMBAT_TEXT_TYPE_INFO["HEAL_ABSORB"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
-		COMBAT_TEXT_TYPE_INFO["PERIODIC_HEAL"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
-		COMBAT_TEXT_TYPE_INFO["PERIODIC_HEAL_CRIT"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
-		COMBAT_TEXT_TYPE_INFO["ABSORB_ADDED"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
+	COMBAT_TEXT_TYPE_INFO["DAMAGE_SHIELD"] = {r = DAMAGE_SHIELD_COLOR[1], g = DAMAGE_SHIELD_COLOR[2], b = DAMAGE_SHIELD_COLOR[3], show = 1};
+	COMBAT_TEXT_TYPE_INFO["SPLIT_DAMAGE"] = {r = SPLIT_DAMAGE_COLOR[1], g = SPLIT_DAMAGE_COLOR[2], b = SPLIT_DAMAGE_COLOR[3], show = 1};
+	COMBAT_TEXT_TYPE_INFO["DAMAGE_CRIT"] = {r = DAMAGE_COLOR[1], g = DAMAGE_COLOR[2], b = DAMAGE_COLOR[3], show = 1};
+	COMBAT_TEXT_TYPE_INFO["DAMAGE"] = {r = DAMAGE_COLOR[1], g = DAMAGE_COLOR[2], b = DAMAGE_COLOR[3], isStaggered = ASCT_STAGGERED, show = 1};
+	COMBAT_TEXT_TYPE_INFO["SPELL_DAMAGE_CRIT"] = {r = SPELL_DAMAGE_COLOR[1], g = SPELL_DAMAGE_COLOR[2], b = SPELL_DAMAGE_COLOR[3], show = 1};
+	COMBAT_TEXT_TYPE_INFO["SPELL_DAMAGE"] = {r = SPELL_DAMAGE_COLOR[1], g = SPELL_DAMAGE_COLOR[2], b = SPELL_DAMAGE_COLOR[3], show = 1};
+	COMBAT_TEXT_TYPE_INFO["ENTERING_COMBAT"] = {r = 1, g = 0.1, b = 0.1, show = 1};
+	COMBAT_TEXT_TYPE_INFO["LEAVING_COMBAT"] = {r = 0.1, g = 1, b = 0.1, show = 1};
+	COMBAT_TEXT_TYPE_INFO["HEAL_CRIT"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
+	COMBAT_TEXT_TYPE_INFO["HEAL"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
+	COMBAT_TEXT_TYPE_INFO["PERIODIC_HEAL_ABSORB"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
+	COMBAT_TEXT_TYPE_INFO["HEAL_CRIT_ABSORB"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
+	COMBAT_TEXT_TYPE_INFO["HEAL_ABSORB"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
+	COMBAT_TEXT_TYPE_INFO["PERIODIC_HEAL"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
+	COMBAT_TEXT_TYPE_INFO["PERIODIC_HEAL_CRIT"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
+	COMBAT_TEXT_TYPE_INFO["ABSORB_ADDED"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
 		
 	
-		hooksecurefunc("CombatText_UpdateDisplayedMessages", ASCT_UpdateDisplayedMessages);
-		ASCT_UpdateDisplayedMessages()
-
---	end
+	hooksecurefunc("CombatText_UpdateDisplayedMessages", ASCT_UpdateDisplayedMessages);
+	ASCT_UpdateDisplayedMessages()
 	return;
 end 
 
@@ -79,7 +54,6 @@ function ASCT_UpdateDisplayedMessages()
       endX = ASCT_X_POSITION,
       endY = (ASCT_Y_POSITION + 225),
     };
-  CombatText_ClearAnimationList();
 end
 init_combattext();
 

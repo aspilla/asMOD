@@ -21,30 +21,19 @@ local ADF_Show_PVPDebuff = true			-- 다른사람이 건 PVP Debuff를 보임 (�
 local ADF_Show_ShowBossDebuff = true	-- Boss Type Debuff를 보임 (false 이면 Player가 건 Debuff 만 보임)
 local ADF_RefreshRate = 0.5;			-- Target Debuff Check 주기 (초)
 
-
-
-
-local PLAYER_UNITS = {
-	player = true,
-	vehicle = true,
-	pet = true,
-};
-
-
 local ADF_BlackList = {
 
 	["도전자의 짐"] = 1,	
 --	["상처 감염 독"] = 1,	
 --	["신경 마취 독"] = 1,
 --	["맹독"] = 1,
-
-
 }
 
-local ADF_ShowList;
-local b_showlist = false;
-local dispellableDebuffTypes = { Magic = true, Curse = true, Disease = true, Poison = true};
-
+local PLAYER_UNITS = {
+	player = true,
+	vehicle = true,
+	pet = true,
+};
 
 -- 특정한 버프만 보이게 하려면 직업별로 편집
 -- ABF_ShowList_직업명_특성
@@ -54,11 +43,9 @@ ADF_ShowList_PALADIN_3 = {
 }
 --]]
 
-
-local ADF_targethelplist = {};
-
-local isMine = {};
-local update_expir = nil;
+local ADF_ShowList;
+local b_showlist = false;
+local dispellableDebuffTypes = { Magic = true, Curse = true, Disease = true, Poison = true};
 
 
 --Overlay stuff
@@ -208,8 +195,6 @@ local function ADF_UpdateDebuff(unit)
 		return;
 	end
 
-	isMine = {};
-
 	local bBattle = false;
 
 	local RTB_PVPType = GetZonePVPInfo();
@@ -268,8 +253,7 @@ local function ADF_UpdateDebuff(unit)
 
 			if (casterIsPlayer) then
 		        skip = true;
-		    end
-	
+		    end	
 			-- 내가 시전한 Debuff는 보이고
 			if caster and PLAYER_UNITS[caster]  then
 				skip = false;
@@ -331,7 +315,6 @@ local function ADF_UpdateDebuff(unit)
 				skip = false;
 				candispel = true;
 			end
-
 
 			-- ACI 에서 보이는 Debuff 는 숨기고
 			if ACI_Debuff_list and ACI_Debuff_list[name] then

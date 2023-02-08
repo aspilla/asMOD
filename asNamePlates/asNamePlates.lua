@@ -11,7 +11,8 @@ local ANameP_CountFontSize = 8;			--Count 폰트 Size
 local ANameP_MaxDebuff = 8;				--최대 Debuff
 local ANameP_DebuffsPerLine = 4;		--줄당 Debuff 수 (큰 이름표 일 경우 +1 됨)
 local ANameP_MaxBuff = 1;				--최대 PVP Buff (안보이게 하려면 0)
-local ANameP_ShowMyAll = true;			--내 buff/Debuff면 모두 보임 false 로 하면 아래 Show List 항목만 보임
+local ANameP_ShowMyAll = false;			--내 buff/Debuff면 모두 보임 false 로 하면 아래 Show List 항목만 보임
+local ANameP_ShowKnownSpell = true;		--SpellBook에 있는 것만
 local ANameP_ShowPVPDebuff = true;		--PVP Debuff 면 모두 보임 (다른 사람의 디법이면 회색으로 보임)
 local ANameP_ShowPlayerBuff = true;		--Player NamePlate에 Buff를 안보일려면 false;
 local ANameP_ShowPlayerBuffDefault = true; -- 기본 Plate 와 같은 BUff만 보이기
@@ -733,6 +734,55 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 	end
 end
 
+local KnownSpellList = {};
+local function scanSpells(tab)
+
+	local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
+
+	if not tabName then
+		return;
+	end
+
+	for i=tabOffset + 1, tabOffset + numEntries do
+		local spellName, _, spellID = GetSpellBookItemName (i, BOOKTYPE_SPELL)
+		if not spellName then
+			do break end
+		end
+
+		if spellName then
+			KnownSpellList[spellName] = 1;
+		end		
+	end
+end
+
+local function scanPetSpells()
+
+	for i = 1, 20 do
+	   	local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
+	   	local spellName, _, spellID = GetSpellBookItemName (slot, BOOKTYPE_PET)
+	   
+		if not spellName then
+			do break end
+		end
+
+		if spellName then
+			KnownSpellList[spellName] = 1;
+		end		
+	end
+
+end
+
+
+local function setupKnownSpell()
+
+	table.wipe(KnownSpellList);
+
+	scanSpells(1)
+	scanSpells(2)
+	scanSpells(3)
+	scanPetSpells()
+end
+
 -- 탱커 처리부
 local function updateTankerList()
 
@@ -1075,32 +1125,27 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 						else
 							show = true;
 						end
-					elseif not ANameP_ShowMyAll and PLAYER_UNITS[caster] and nameplateShowPersonal then
+					elseif not ANameP_ShowMyAll and PLAYER_UNITS[caster] and (nameplateShowPersonal or (ANameP_ShowKnownSpell  and KnownSpellList[name])) then
 						show = true;
 					end
 
 					if ANameP_ShowPVPDebuff and nameplateShowAll and duration <= 10 then
 
-						if ANameP_ShowCCDebuff then
+						if ANameP_ShowCCDebuff and bShowCC == false then
 							show = false;
-							if bShowCC == false then
-								bShowCC = true;		
+							bShowCC = true;		
 
-								local color = { r = 0.3, g = 0.3, b = 0.3 };
+							local color = { r = 0.3, g = 0.3, b = 0.3 };
 							
-								setFrame(self.CCdebuff, texture, count, expirationTime, duration, color);		
+							setFrame(self.CCdebuff, texture, count, expirationTime, duration, color);		
 
-								self.CCdebuff:ClearAllPoints();
-								if self.casticon:IsShown() then
-									
-									self.CCdebuff:SetPoint("LEFT", self.casticon, "RIGHT", 1, 0);
-								else
-									
-									self.CCdebuff:SetPoint("LEFT", healthBar, "RIGHT", 1, 0);
-
-								end
-								self.CCdebuff:Show();
+							self.CCdebuff:ClearAllPoints();
+							if self.casticon:IsShown() then
+								self.CCdebuff:SetPoint("LEFT", self.casticon, "RIGHT", 1, 0);
+							else
+								self.CCdebuff:SetPoint("LEFT", healthBar, "RIGHT", 1, 0);
 							end
+							self.CCdebuff:Show();
 						else
 							show = true;
 						end
@@ -1793,7 +1838,6 @@ local function asNamePlates_OnEvent(self, event, ...)
 end
 
 local function createNamePlate(namePlateFrameBase)
-	--do nothing
 end
 
 local namePlateVerticalScale = nil;
@@ -1817,6 +1861,7 @@ local function addNamePlate(namePlateUnitToken)
 				namePlateFrameBase.asNamePlates.checkcolor = false;
 				namePlateFrameBase.asNamePlates.checkpvptarget = false;
 				namePlateFrameBase.asNamePlates:Hide();
+				namePlateFrameBase.asNamePlates.CCdebuff:Hide();
 				unitFrame.BuffFrame:SetAlpha(1);
 			end
 			return;
@@ -1832,6 +1877,7 @@ local function addNamePlate(namePlateUnitToken)
 				namePlateFrameBase.asNamePlates.checkpvptarget = false;
 				namePlateFrameBase.asNamePlates:Hide();
 				namePlateFrameBase.asNamePlates.healthtext:Hide();
+				namePlateFrameBase.asNamePlates.CCdebuff:Hide();
 				unitFrame.BuffFrame:SetAlpha(1);
 			end
 			return;
@@ -2163,6 +2209,7 @@ local function removeNamePlate(namePlateUnitToken)
 
 		namePlateFrameBase.asNamePlates.aggro1:Hide();
 		namePlateFrameBase.asNamePlates.aggro2:Hide();
+		namePlateFrameBase.asNamePlates.CCdebuff:Hide();
 		namePlateFrameBase.asNamePlates:Hide();
 		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
 		namePlateFrameBase.asNamePlates:UnregisterEvent("PLAYER_TARGET_CHANGED");
@@ -2217,6 +2264,16 @@ local function asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken)
 	end
 end
 
+local bfirst = true;
+local function setupFriendlyPlates()
+
+	local isInstance, instanceType = IsInInstance();
+	if bfirst and not isInstance then
+		C_Timer.After(0.5, function() C_NamePlate.SetNamePlateFriendlySize(60, 30); end)				
+		bfirst = false;
+	end
+end
+
 local function ANameP_OnEvent(self, event, ...)	
 	if event == "NAME_PLATE_CREATED" then
 		local namePlateFrameBase = ...;
@@ -2254,10 +2311,12 @@ local function ANameP_OnEvent(self, event, ...)
 			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 		end
 		updateTankerList();
+		setupKnownSpell();
 
 		-- 0.5 초 뒤에 Load
 		C_Timer.After(0.5, initAlertList);
 
+		setupFriendlyPlates();
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then	
 		local _, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType = CombatLogGetCurrentEventInfo();
 		if eventType == "SPELL_CAST_SUCCESS" and sourceGUID and not (sourceGUID == "") then
@@ -2272,6 +2331,8 @@ local function ANameP_OnEvent(self, event, ...)
 		asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken);
 	elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
 		updateTankerList();	
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		setupFriendlyPlates();
 	end
 end
 
@@ -2357,6 +2418,7 @@ local function initAddon()
 	ANameP:RegisterEvent("GROUP_JOINED");
 	ANameP:RegisterEvent("GROUP_ROSTER_UPDATE");
 	ANameP:RegisterEvent("PLAYER_ROLES_ASSIGNED");
+	ANameP:RegisterEvent("PLAYER_REGEN_ENABLED");
 	
 	ANameP:SetScript("OnEvent", ANameP_OnEvent)
 	--주기적으로 Callback

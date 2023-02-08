@@ -825,26 +825,8 @@ local function ACDP_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		ACDP_UpdateCooldown();
-		
-		local GN={"ActionButton","MultiBarBottomLeftButton","MultiBarBottomRightButton","MultiBarLeftButton","MultiBarRightButton", "PetActionButton",  "StanceButton" }
-
-		for _,f in next,GN do 
-			for i=1,12 do 
-				local cd = _G[f..i.."Cooldown"]
-				if cd then
-					for _,r in next,{cd:GetRegions()}	do 
-						if r:GetObjectType()=="FontString" then 
-							r:SetFont("Fonts\\2002.TTF",ACDP_CooldownFontSize,"OUTLINE")
-							break 
-						end 
-					end 
-				end
-			end 
-		end
-
 		setupKnownSpell();
-
-
+		
 		if UnitAffectingCombat("player") then
 			ACDP_CoolButtons:SetAlpha(ACDP_ALPHA);
 		else

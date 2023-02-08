@@ -97,4 +97,4 @@ end
 
 CHAT_FONT_HEIGHTS = {[1] = 8, [2] = 9, [3] = 10, [4] = 11, [5] = 12, [6] = 13, [7] = 14, [8] = 15, [9] = 16, [10] = 17, [11] = 18, [12] = 19, [20] = 20}
 
-hooksecurefunc("ChatEdit_OnTabPressed", asChatEdit_CustomTabPressed);
+--hooksecurefunc("ChatEdit_OnTabPressed", asChatEdit_CustomTabPressed);
