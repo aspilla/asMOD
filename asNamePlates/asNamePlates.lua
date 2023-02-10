@@ -2266,9 +2266,8 @@ end
 
 local bfirst = true;
 local function setupFriendlyPlates()
-
 	local isInstance, instanceType = IsInInstance();
-	if bfirst and not isInstance then
+	if bfirst and not isInstance and not UnitAffectingCombat("player") then
 		C_Timer.After(0.5, function() C_NamePlate.SetNamePlateFriendlySize(60, 30); end)				
 		bfirst = false;
 	end
