@@ -646,6 +646,38 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 	end
 end
 
+local PLAYER_UNITS = {
+	player = true,
+	vehicle = true,
+	pet = true,
+};
+
+local prev_dire_beast_time = 0;
+local prev_dire_pack_time = 0;
+local dire_beast_count = 0;
+local function checkDireBeast()
+
+
+	local i = 1;
+	local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId;
+
+	repeat
+		name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId  = UnitBuff("player", i, "INCLUDE_NAME_PLATE_ONLY");
+						
+		if name and spellId == 281036 and expirationTime > prev_dire_beast_time then
+			dire_beast_count = dire_beast_count + 1;
+			prev_dire_beast_time = expirationTime;			
+		elseif name and spellId == 378747 and expirationTime > prev_dire_pack_time then
+			dire_beast_count = 0;
+			prev_dire_pack_time = expirationTime;			
+		end       
+	
+		i = i + 1;
+	until (name == nil)
+
+	return dire_beast_count;
+	
+end
 
 local function ACI_Alert(self, bcastspell)
 
@@ -801,6 +833,7 @@ local function ACI_Alert(self, bcastspell)
 			_,  icon, count, _, duration, expirationTime, _, _, _, _, _,_ ,_,_,_,stack  = getUnitBuffbyName(unit, buff_name);
 
 		end
+
 		if icon then		
 			start = expirationTime - duration;
 			isUsable = true
@@ -868,6 +901,11 @@ local function ACI_Alert(self, bcastspell)
 			count = checkBuffCount(buff_name);
 		end
 
+		-- 광포한 무리
+		if t == 7 and spellname == 378745 then
+			count = checkDireBeast()
+		end
+
 	elseif t == 4 or t == 8 or t == 16 then
 
 
@@ -925,10 +963,9 @@ local function ACI_Alert(self, bcastspell)
 		
 		else
 			_, icon, count, debuffType, duration, expirationTime, caster, _, _, _, _,_ ,_,_,_,stack  = getUnitDebuffbyName(unit, buff_name, filter);
-			
 		end
 
-		if (not (unit == "player") ) and caster ~= "player" then
+		if (not (unit == "player") ) and not PLAYER_UNITS[caster] then
 			icon = nil;
 		end
 
