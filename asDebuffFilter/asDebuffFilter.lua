@@ -3,15 +3,15 @@ local ADF_PLAYER_DEBUFF;
 local ADF_TARGET_DEBUFF;
 local ADF_DeBuffList = {}
 
-local ADF_SIZE = 28;
+local ADF_SIZE = 32;
 local ADF_TARGET_DEBUFF_X = 73 + 30;
 local ADF_TARGET_DEBUFF_Y = -110;
 local ADF_PLAYER_DEBUFF_X = -73 - 30;
 local ADF_PLAYER_DEBUFF_Y = -110;
 local ADF_MAX_DEBUFF_SHOW = 7;
 local ADF_ALPHA = 1
-local ADF_CooldownFontSize = 12			-- Cooldown Font Size
-local ADF_CountFontSize = 11;			-- Count Font Size
+local ADF_CooldownFontSize = 14			-- Cooldown Font Size
+local ADF_CountFontSize = 13;			-- Count Font Size
 local ADF_AlphaCombat = 1;				-- 전투중 Alpha 값
 local ADF_AlphaNormal = 0.5;			-- 비 전투중 Alpha 값
 local ADF_MAX_Cool = 120				-- 최대 120초까지의 Debuff를 보임
