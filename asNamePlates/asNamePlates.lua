@@ -5,7 +5,6 @@ local ANameP_PVP_Debuff_Size_Rate = 4   -- PVP Debuff Icon Size 작게 하려면
 
 local ANameP_PlayerBuffY = -5			-- Player 바 Buff 위치
 local ANameP_TargetBuffY = 5			-- 대상바 Buff 위치
-local ANameP_ComboBuffY = ANameP_TargetBuffY + 30 -- 특수 자원 표시시 Buff 위치
 local ANameP_CooldownFontSize = 9;     --재사용 대기시간 Font Size
 local ANameP_CountFontSize = 8;			--Count 폰트 Size
 local ANameP_MaxDebuff = 8;				--최대 Debuff
@@ -25,6 +24,7 @@ local ANameP_AggroColor = {r = 0.5, g = 1, b = 1}; -- 어그로 대상일때 바
 local ANameP_TankAggroLoseColor = {r = 1, g = 0.5, b= 0.5}; -- 탱커일때 어그로가 다른 탱커가 아닌사람일때
 local ANameP_TankAggroLoseColor2 = {r = 1, g = 0.1, b= 0.5}; -- 어그로가 파티내 다른 탱커일때
 local ANameP_TankAggroLoseColor3 = {r = 0.1, g = 0.3, b= 1}; -- 어그로가 Pet 일때 혹은 Tanking 중인데 어그로가 낮을때
+local ANameP_InterruptAlertColor = {r = 0, g = 1, b = 0.5};	 -- 차단 이름표 색상상
 local ANameP_ShowListFirst = true		-- 알림 List 가 있다면 먼저 보인다. (가나다라 순서)
 local ANameP_WeakStealableBuffAlert = false -- 훔칠 버프 알림을 약하게 기본은 꺼 있음
 local ANameP_ShowCCDebuff = true		-- 오른쪽에 CC Debuff만 별도로 보이기
@@ -36,9 +36,10 @@ local ANameP_TargetHealthBarHeight = 3;	-- 대상 체력바 높이 증가치 (+3
 local ANameP_HeathTextSize = 8;			-- 대상 체력숫자 크기
 local ANameP_UpdateRate = 0.5;			-- 버프 Check 반복 시간 (초)
 local ANameP_LowHealthAlert = true  	-- 낮은 체력 색상 변경 사용
-local ANameP_LowHealthColor = {r = 1, g = 0.8, b= 0.5}; -- 낮은 체력 이름표 색상 변경
 local ANameP_Alpha_Normal = 0.5			-- 비전투 중 투명도
+local ANameP_LowHealthColor = {r = 1, g = 0.8, b= 0.5}; -- 낮은 체력 이름표 색상 변경
 local ANameP_Alpha_Combat = 1			-- 전투중 투명도
+local ANameP_EmemyPlateSize = {100, 20};
 
 local ANameP_ShowList = nil;
 
@@ -491,6 +492,244 @@ local ANameP_PVEBuffList = {
 	[209859] = 0, --'강화' 
 }
 
+--[[
+
+32,35: local specWarnEarthBolt					= mod:NewSpecialWarningInterrupt(385652, "HasInterrupt", nil, nil, 1, 2)
+42,39: local specWarnHealingTouch						= mod:NewSpecialWarningInterrupt(396640, "HasInterrupt", nil, nil, 1, 2)
+24,39: local specWarnHidiousCackle					= mod:NewSpecialWarningInterrupt(367500, "HasInterrupt", nil, nil, 1, 2)
+43,38: local specWarnMastersCall						= mod:NewSpecialWarningInterrupt(384638, "HasInterrupt", nil, nil, 1, 2)
+64,45: local specWarnGreaterHealingRapids				= mod:NewSpecialWarningInterrupt(377950, "HasInterrupt", nil, nil, 1, 2)
+41,38: local specWarnGushingOoze						= mod:NewSpecialWarningInterrupt(381770, "HasInterrupt", nil, nil, 1, 2)
+27,38: local specWarnBlastingGust					= mod:NewSpecialWarningInterrupt(374080, "HasInterrupt", nil, nil, 1, 2)
+40,38: local specWarnStaticSurge						= mod:NewSpecialWarningInterrupt(384014, "HasInterrupt", nil, nil, 1, 2)
+46,37: local specWarnBladeLock							= mod:NewSpecialWarningInterrupt(375056, nil, nil, nil, 1, 13)
+32,36: local specWarnMoltenCore					= mod:NewSpecialWarningInterrupt(378282, "HasInterrupt", nil, nil, 1, 2)
+41,39: local specWarnRoaringBlaze						= mod:NewSpecialWarningInterruptCount(373017, "HasInterrupt", nil, nil, 1, 2)
+40,40: local specWarnFrostOverload						= mod:NewSpecialWarningInterrupt(373680, "HasInterrupt", nil, nil, 1, 2, 4)
+43,36: local specWarnCinderbolt					= mod:NewSpecialWarningInterrupt(384194, "HasInterrupt", nil, nil, 1, 2)
+44,36: local specWarnFlashfire						= mod:NewSpecialWarningInterrupt(392451, "HasInterrupt", nil, nil, 1, 2)
+35,41: local specWarnIllusionaryBolt					= mod:NewSpecialWarningInterrupt(373932, "HasInterrupt", nil, nil, 1, 2)
+42,38: local specWarnMysticVapors					= mod:NewSpecialWarningInterrupt(387564, "HasInterrupt", nil, nil, 1, 2)
+43,36: local specWarnWakingBane					= mod:NewSpecialWarningInterrupt(386546, "HasInterrupt", nil, nil, 1, 2)
+53,37: local specWarnStormBolt							= mod:NewSpecialWarningInterrupt(376725, "HasInterrupt", nil, nil, 1, 2)
+39,39: local specWarnGuardianWind						= mod:NewSpecialWarningInterrupt(384808, "HasInterrupt", nil, nil, 1, 2)
+33,34: local specWarnTempest						= mod:NewSpecialWarningInterrupt(386024, "HasInterrupt", nil, nil, 1, 2)
+34,40: local specWarnDeathBoltVolley				= mod:NewSpecialWarningInterrupt(387411, "HasInterrupt", nil, nil, 1, 2)
+35,42: local specWarnBloodcurdlingShout			= mod:NewSpecialWarningInterrupt(373395, "HasInterrupt", nil, nil, 1, 2)
+40,40: local specWarnChainLightning					= mod:NewSpecialWarningInterrupt(369675, "HasInterrupt", nil, nil, 1, 2)
+61,42: local specWarnDefensiveBulwark					= mod:NewSpecialWarningInterrupt(369602, "HasInterrupt", nil, nil, 1, 2)
+24,36: local specWarnStoneSpike					= mod:NewSpecialWarningInterrupt(369674, "HasInterrupt", nil, nil, 1, 2)
+25,39: local specWarnSpikedCarapace				= mod:NewSpecialWarningInterrupt(369823, "HasInterrupt", nil, nil, 1, 2)
+27,35: local specWarnDarkMending			= mod:NewSpecialWarningInterrupt(225573, "HasInterrupt", nil, nil, 1, 2)
+39,35: local specWarnArcaneBlitz			= mod:NewSpecialWarningInterrupt(197797, "HasInterrupt", nil, nil, 1, 2)
+20,36: local specWarnAlluringAroma		= mod:NewSpecialWarningInterrupt(237391, "HasInterrupt", nil, nil, 1, 2)
+21,36: local specWarnDemonicMending	= mod:NewSpecialWarningInterrupt(238543, "HasInterrupt", nil, nil, 1, 2)
+22,34: local specWarnDreadScream		= mod:NewSpecialWarningInterrupt(242724, "HasInterrupt", nil, nil, 1, 2)
+47,34: local specWarnDrainMagic			= mod:NewSpecialWarningInterrupt(209485, "HasInterrupt", nil, nil, 1, 2)
+48,36: local specWarnNightfallOrb			= mod:NewSpecialWarningInterrupt(209410, "HasInterrupt", nil, nil, 1, 2)
+ 49,33: local specWarnSuppress				= mod:NewSpecialWarningInterrupt(209413, "HasInterrupt", nil, nil, 1, 2)
+ 50,32: local specWarnBewitch				= mod:NewSpecialWarningInterrupt(211470, "HasInterrupt", nil, nil, 1, 2)
+  51,38: local specWarnChargingStation		= mod:NewSpecialWarningInterrupt(225100, "HasInterrupt", nil, nil, 1, 2)
+  52,36: local specWarnSearingGlare			= mod:NewSpecialWarningInterrupt(211299, "HasInterrupt", nil, nil, 1, 2)
+  53,40: local specWarnDisintegrationBeam	= mod:NewSpecialWarningInterrupt(207980, "HasInterrupt", nil, nil, 1, 2)
+
+17,30: local specWarnStorm				= mod:NewSpecialWarningInterrupt(196870, "HasInterrupt", nil, nil, 1, 2)
+  18,34: local specWarnRejuvWaters		= mod:NewSpecialWarningInterrupt(195046, "HasInterrupt", nil, nil, 1, 2)
+  19,32: local specWarnUndertow			= mod:NewSpecialWarningInterrupt(195284, "HasInterrupt", nil, nil, 1, 2)--Might only be interruptable by stuns, if so change option default?
+
+ 23,35: local specWarnRestoration			= mod:NewSpecialWarningInterrupt(197502, "HasInterrupt", nil, nil, 1, 2)
+
+  31,35: local specWarnBlazingNova			= mod:NewSpecialWarningInterrupt(192003, false, nil, nil, 1, 2)
+  32,35: local specWarnArcaneBlast			= mod:NewSpecialWarningInterrupt(192005, false, nil, nil, 1, 2)
+  33,32: local specWarnRampage				= mod:NewSpecialWarningInterrupt(191848, "HasInterrupt", nil, nil, 1, 2)
+
+
+  33,36: local specWarnHolyRadiance			= mod:NewSpecialWarningInterrupt(215433, "HasInterrupt", nil, nil, 1, 2)
+  34,37: local specWarnRuneOfHealing			= mod:NewSpecialWarningInterrupt(198934, false, nil, nil, 1, 2)
+  35,37: local specWarnCleansingFlame		= mod:NewSpecialWarningInterrupt(192563, "HasInterrupt", nil, nil, 1, 2)
+  36,34: local specWarnUnrulyYell			= mod:NewSpecialWarningInterrupt(199726, "HasInterrupt", nil, nil, 1, 2)
+
+
+  39,36: local specWarnSearingLight			= mod:NewSpecialWarningInterrupt(192288, "HasInterrupt", nil, nil, 1, 2)
+
+
+  37,31: local specWarnSurge					= mod:NewSpecialWarningInterrupt(198750, "HasInterrupt", nil, nil, 1, 2)
+
+
+  21,32: local specWarnVoidSnap			= mod:NewSpecialWarningInterrupt(194266, "HasInterrupt", nil, nil, 1, 2)
+
+
+  25,33: local specWarnTorrent					= mod:NewSpecialWarningInterrupt(198495, "HasInterrupt", nil, nil, 1, 2)
+
+
+  13,30: local specWarnScream			= mod:NewSpecialWarningInterrupt(198405, "HasInterrupt", nil, nil, 1, 2)
+
+
+  29,34: local specWarnHolyShock				= mod:NewSpecialWarningInterrupt(227800, "HasInterrupt", nil, nil, 1, 2)
+  31,34: local specWarnHolyWrath				= mod:NewSpecialWarningInterrupt(227823, "HasInterrupt", nil, nil, 1, 2)
+
+
+  27,34: local specWarnFrostbite				= mod:NewSpecialWarningInterrupt(227592, "HasInterrupt", nil, nil, 1, 2)
+
+
+  34,37: local specWarnReverbShadows			= mod:NewSpecialWarningInterruptCount(229307, "HasInterrupt", nil, nil, 1, 3)
+
+
+  34,33: local specWarnHeatWave				= mod:NewSpecialWarningInterrupt(228025, "HasInterrupt", nil, nil, 1, 2)
+  37,34: local specWarnLeftovers				= mod:NewSpecialWarningInterrupt(228019, "HasInterrupt", nil, nil, 1, 2)
+  43,34: local specWarnDinnerBell			= mod:NewSpecialWarningInterrupt(227987, "HasInterrupt", nil, nil, 1, 2)
+
+
+  30,35: local specWarnBubbleBlast			= mod:NewSpecialWarningInterrupt(227420, "HasInterrupt", nil, nil, 1, 2)
+
+
+  23,34: local specWarnSoulLeech				= mod:NewSpecialWarningInterrupt(228255, "HasInterrupt", nil, nil, 1, 2)
+  24,37: local specWarnTerrifyingWail		= mod:NewSpecialWarningInterrupt(228239, "HasInterrupt", nil, nil, 1, 2)
+  25,34: local specWarnPoetrySlam			= mod:NewSpecialWarningInterrupt(227917, "HasInterrupt", nil, nil, 1, 2)
+  26,35: local specWarnBansheeWail			= mod:NewSpecialWarningInterrupt(228625, "HasInterrupt", nil, nil, 1, 2)
+  27,36: local specWarnHealingTouch			= mod:NewSpecialWarningInterrupt(228606, "HasInterrupt", nil, nil, 1, 2)
+  28,36: local specWarnConsumeMagic			= mod:NewSpecialWarningInterrupt(229714, "HasInterrupt", nil, nil, 1, 2)
+
+
+  37,36: local specWarnBurningBlast			= mod:NewSpecialWarningInterruptCount(229083, "HasInterrupt", nil, nil, 1, 2)
+
+
+  29,37: local specWarnDreadScreech				= mod:NewSpecialWarningInterrupt(248831, "HasInterrupt", nil, nil, 1, 2)
+
+
+  23,37: local specWarnVoidDiffusion			= mod:NewSpecialWarningInterrupt(245585, "HasInterrupt", nil, nil, 1, 2)
+  24,37: local specWarnConsumeEssence		= mod:NewSpecialWarningInterrupt(245727, "HasInterrupt", nil, nil, 1, 2)
+  25,36: local specWarnStygianBlast			= mod:NewSpecialWarningInterrupt(248133, "HasInterrupt", nil, nil, 1, 2)
+  26,33: local specWarnDarkFlay				= mod:NewSpecialWarningInterrupt(248184, "HasInterrupt", nil, nil, 1, 2)
+
+
+  25,36: local specWarnHowlingDark				= mod:NewSpecialWarningInterrupt(244751, "HasInterrupt", nil, nil, 1, 2)
+
+
+  15,35: local specWarnArgusPortal			= mod:NewSpecialWarningInterrupt(211757, "HasInterrupt", nil, nil, 1, 2)
+  16,42: local specWarnArcaneReconstitution	= mod:NewSpecialWarningInterrupt(226206, "HasInterrupt", nil, nil, 1, 2)
+
+
+  29,37: local specWarnOverchargeMana		= mod:NewSpecialWarningInterrupt(196392, "HasInterrupt", nil, nil, 1, 2)
+
+
+  28,31: local specWarnBlast					= mod:NewSpecialWarningInterruptCount(203176, "HasInterrupt", nil, 2, 1, 2)
+  30,33: local specWarnTimeLock				= mod:NewSpecialWarningInterrupt(203957, "HasInterrupt", nil, 2, 1, 2)
+
+
+  27,36: local specWarnFuriousBlast			= mod:NewSpecialWarningInterrupt(191823, "HasInterrupt", nil, nil, 1, 2)
+
+
+  20,31: local specWarnSapSoul			= mod:NewSpecialWarningInterrupt(200905, "HasInterrupt", nil, nil, 1, 2)
+
+
+  18,33: local specWarnNightmares		= mod:NewSpecialWarningInterrupt(193069, "HasInterrupt", nil, nil, 1, 2)
+
+
+  26,39: local specWarnShadowBoltVolley		= mod:NewSpecialWarningInterrupt(204963, "HasInterrupt", nil, nil, 1, 2)--Malgath interruptable aoe
+  27,33: local specWarnHellfire				= mod:NewSpecialWarningInterrupt(205088, "HasInterrupt", nil, nil, 1, 2)--Infernal AOE
+
+  30,39: local specWarnHauntingScream				= mod:NewSpecialWarningInterrupt(395859, "HasInterrupt", nil, nil, 1, 2)
+  31,40: local specWarnSleepySililoquy				= mod:NewSpecialWarningInterrupt(395872, "HasInterrupt", nil, nil, 1, 2)
+
+
+  37,34: local specWarnHydrolance			= mod:NewSpecialWarningInterrupt(397801, "HasInterrupt", nil, nil, 1, 2)
+
+
+  23,30: local specWarnShank				= mod:NewSpecialWarningInterrupt(118963, false, nil, nil, 1, 2)--specWarns can be spam. Default value is off. Use this manually.
+  24,36: local specWarnCleansingFlame	= mod:NewSpecialWarningInterrupt(118940, "HasInterrupt", nil, nil, 1, 2)
+  25,35: local specWarnHexInterrupt		= mod:NewSpecialWarningInterrupt(118903, "HasInterrupt", nil, nil, 1, 2)
+
+
+  31,35: local specWarnLightningBolt	= mod:NewSpecialWarningInterrupt(123654, false, nil, nil, 1, 2)
+
+
+  21,31: local specWarnMassRes			= mod:NewSpecialWarningInterrupt(113134, "HasInterrupt", nil, nil, 1, 2)
+  22,29: local specWarnHeal				= mod:NewSpecialWarningInterrupt(12039, "HasInterrupt", nil, nil, 1, 2)
+  23,27: local specWarnMC				= mod:NewSpecialWarningInterrupt(130857, "HasInterrupt", nil, nil, 1, 2)
+
+
+  20,36: local specWarnFireballVolley	= mod:NewSpecialWarningInterrupt(113691, "HasInterrupt", nil, nil, 1, 2)
+  21,33: local specWarnPyroblast			= mod:NewSpecialWarningInterrupt(113690, false, nil, nil, 1, 2)
+
+
+  23,32: local specWarnRisingHate	= mod:NewSpecialWarningInterrupt(107356, "-Healer", nil, nil, 1, 2)
+
+
+  15,33: local specWarnBendWill				= mod:NewSpecialWarningInterrupt(154527, "HasInterrupt", nil, 2, 1, 2)
+  17,35: local specWarnVoidMending			= mod:NewSpecialWarningInterrupt(154623, "HasInterrupt", nil, 2, 1, 2)
+  19,37: local specWarnArbitersHammer		= mod:NewSpecialWarningInterrupt(157797, "HasInterrupt", nil, 2, 1, 2)
+
+
+  35,33: local specWarnFelblast				= mod:NewSpecialWarningInterrupt(154221, "HasInterrupt", nil, 2, 1, 2)--Very spammy
+
+
+  33,33: local specWarnDrainLife			= mod:NewSpecialWarningInterrupt(156854, "HasInterrupt", nil, nil, 1, 2)
+  44,33: local specWarnChaosBolt			= mod:NewSpecialWarningInterrupt(156975, "HasInterrupt", nil, nil, 3, 2)
+
+
+  16,31: local specWarnRoar						= mod:NewSpecialWarningInterrupt(151545, "HasInterrupt", nil, 2, 1, 2)--Maybe healer need warning too, if interrupt gets off, healer can't heal for 5 seconds
+  17,35: local specWarnLavaBurst					= mod:NewSpecialWarningInterrupt(151558, "HasInterrupt", nil, 2, 1, 2)
+  18,40: local specWarnSuppressionField			= mod:NewSpecialWarningInterrupt(151581, "HasInterrupt", nil, 2, 1, 2)--Maybe healer need warning too, if interrupt gets off, healer can't heal for 5 seconds
+
+
+  19,36: local specWarnFerociousYell		= mod:NewSpecialWarningInterrupt(150759, "HasInterrupt", nil, 2, 1, 2)
+
+
+  22,34: local specWarnMoltenBlast		= mod:NewSpecialWarningInterrupt(150677, "HasInterrupt", nil, 3, 1, 2)
+
+
+  27,33: local specWarnFirestorm			= mod:NewSpecialWarningInterrupt(149997, "HasInterrupt", nil, 2, 1, 2)
+
+
+  32,40: local specWarnRevitalizingWaters	= mod:NewSpecialWarningInterrupt(168082, "HasInterrupt", nil, 2, 1, 2)
+  37,34: local specWarnBriarskin				= mod:NewSpecialWarningInterrupt(168041, false, nil, nil, 1, 2)--if you have more than one interruptor, great. but off by default because we can't assume you can interrupt every bosses abilities. and heal takes priority
+
+
+  22,35: local specWarnActivating				= mod:NewSpecialWarningInterrupt(163966, false, nil, 2, 1, 8)
+
+
+  31,32: local specWarnShielding		= mod:NewSpecialWarningInterrupt(154055, "HasInterrupt", nil, 2, 1, 2)
+
+  22,36: local specWarnShadowMend					= mod:NewSpecialWarningInterrupt(152818, "HasInterrupt", nil, nil, 1, 2)
+
+
+  21,42: local specWarnDebilitatingFixation	= mod:NewSpecialWarningInterrupt(161199, "HasInterrupt", nil, 3, 3, 2)
+
+
+  20,39: local specWarnDebilitatingRay			= mod:NewSpecialWarningInterrupt(155505, "HasInterrupt", nil, 2, 1, 2)
+  21,43: local specWarnSummonBlackIronDread		= mod:NewSpecialWarningInterrupt(169088, "HasInterrupt", nil, 2, 1, 2)
+  22,41: local specWarnSummonBlackIronVet		= mod:NewSpecialWarningInterrupt(169151, "HasInterrupt", nil, 2, 1, 2)
+  23,37: local specWarnVeilofShadow				= mod:NewSpecialWarningInterrupt(155586, "HasInterrupt", nil, 2, 1, 2)--Challenge mode only(little spammy for mage)
+  25,40: local specWarnShadowBoltVolley			= mod:NewSpecialWarningInterrupt(155588, "HasInterrupt", nil, 2, 1, 2)
+
+
+  77,37: local specWarnIceBarrage						= mod:NewSpecialWarningInterruptCount(375716, "HasInterrupt", nil, nil, 1, 2)
+  81,37: local specWarnStaticJolt						= mod:NewSpecialWarningInterruptCount(375653, "HasInterrupt", nil, nil, 1, 2)
+
+
+  61,41: local specWarnDivertedEssence					= mod:NewSpecialWarningInterruptCount(387943, "HasInterrupt", nil, nil, 1, 2)
+  69,37: local specWarnStormBolt							= mod:NewSpecialWarningInterruptCount(384273, false, nil, nil, 1, 2)
+
+
+  69,37: local specWarnPyroBlast							= mod:NewSpecialWarningInterruptCount(396040, "HasInterrupt", nil, nil, 1, 2)
+
+
+  160,37: local specWarnFrostBinds						= mod:NewSpecialWarningInterrupt(374623, "HasInterrupt", nil, nil, 1, 2)
+
+
+  96,37: local specWarnStormBolt							= mod:NewSpecialWarningInterruptCount(385553, "HasInterrupt", nil, nil, 1, 2)
+
+
+  40,37: local specWarnFrostSpike						= mod:NewSpecialWarningInterrupt(372315, "HasInterrupt", nil, nil, 1, 2)
+  54,40: local specWarnLightningBolt						= mod:NewSpecialWarningInterrupt(372394, "HasInterrupt", nil, nil, 1, 2)
+
+
+  
+
+
+]]
+
 local ANameP_DangerousSpellList = { 
 
    -- [297972] = true,
@@ -594,7 +833,8 @@ local ColorLevel = {
 	Lowhealth = 4,
 	Aggro = 5,
 	Target = 6,
-	Name = 7,
+	Interrupt = 7,
+	Name = 8,
 };
 
 local playerbuffposition = ANameP_PlayerBuffY;
@@ -1178,7 +1418,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			table.sort(aShowIdx, Comparison);
 		end
 
-		local bcannotfinddebuff = true;
+		self.debuffColor = nil;
 		
 		for v = 1 , aShowNum - 1 do
 			local i = aShowIdx[v][1];			
@@ -1201,10 +1441,8 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 							self.reflesh_time = alert_time;
 						end
 
-						if ANameP_ShowList[name][3] and self.colorlevel <= ColorLevel.Debuff then
-							self.debuffColor = ANameP_ShowList[name][3];
-							self.colorlevel = ColorLevel.Debuff;
-							bcannotfinddebuff = false;
+						if ANameP_ShowList[name][3] then
+							self.debuffColor = ANameP_ShowList[name][3];							
 						end
 					end
 				end
@@ -1259,10 +1497,6 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			setFrame(self.buffList[numDebuffs], texture, count, expirationTime, duration, color);
 			frame:Show();
 			numDebuffs = numDebuffs + 1;
-		end
-
-		if self.colorlevel == ColorLevel.Debuff and bcannotfinddebuff == true then
-			self.colorlevel = ColorLevel.Reset;
 		end
 	end
 
@@ -1353,9 +1587,9 @@ local function updateTargetNameP(self)
 			casticon.border:SetVertexColor(1,1,1);
 
 			--Alert 크기 조정
-			if casticon.alert then
+			if self.interruptalert then
 				ANameP_HideOverlayGlow(casticon);
-				if casticon.alert == 1 then
+				if self.interruptalert == 1 then
 					ANameP_ShowOverlayGlow(casticon, false);
 				else
 					ANameP_ShowOverlayGlow(casticon, true);
@@ -1380,9 +1614,9 @@ local function updateTargetNameP(self)
 			casticon.border:SetVertexColor(0,0,0);
 
 			--Alert 크기 조정
-			if casticon.alert then
+			if self.interruptalert then
 				ANameP_HideOverlayGlow(casticon);
-				if casticon.alert == 1 then
+				if self.interruptalert == 1 then
 					ANameP_ShowOverlayGlow(casticon, false);
 				else
 					ANameP_ShowOverlayGlow(casticon, true);
@@ -1555,7 +1789,7 @@ local function updateHealthbarColor(self)
 	if unitname and ANameP_AlertList[unitname] then
 		if self.colorlevel < ColorLevel.Name then
 			self.colorlevel = ColorLevel.Name;
-			healthBar:SetStatusBarColor(ANameP_AlertList[unitname][1], ANameP_AlertList[unitname][2], ANameP_AlertList[unitname][3]);
+			setColoronStatusBar(self, ANameP_AlertList[unitname][1], ANameP_AlertList[unitname][2], ANameP_AlertList[unitname][3]);
 		end
 
 		if ANameP_AlertList[unitname][4] == 1 then
@@ -1563,6 +1797,21 @@ local function updateHealthbarColor(self)
 			self.alerthealthbar = true	
 		end
 		return;
+	end
+
+	-- Cast Interrupt
+	local status = UnitThreatSituation("player", self.unit);
+
+	if self.interruptalert and self.interruptalert >= 1 and status then
+		if self.colorlevel < ColorLevel.Interrupt  then
+			self.colorlevel = ColorLevel.Interrupt;
+			setColoronStatusBar(self, ANameP_InterruptAlertColor.r, ANameP_InterruptAlertColor.g, ANameP_InterruptAlertColor.b);
+		end
+		return;
+	else
+		if self.colorlevel == ColorLevel.Interrupt then
+			self.colorlevel = ColorLevel.Reset;			
+		end
 	end
 
 	--Target Check 
@@ -1577,7 +1826,6 @@ local function updateHealthbarColor(self)
 	end
 
 	-- Aggro Check
-	local status = UnitThreatSituation("player", self.unit);
 	local aggrocolor;
 	
 	if status and ANameP_AggroShow then
@@ -1630,9 +1878,16 @@ local function updateHealthbarColor(self)
 	end
 
 	-- Debuff Color
-	if self.colorlevel == ColorLevel.Debuff then
-		setColoronStatusBar(self, self.debuffColor.r, self.debuffColor.g, self.debuffColor.b);
+	if self.debuffColor then
+		if self.colorlevel < ColorLevel.Debuff then
+			self.colorlevel = ColorLevel.Debuff;
+			setColoronStatusBar(self, self.debuffColor.r, self.debuffColor.g, self.debuffColor.b);
+		end
 		return;
+	else
+		if self.colorlevel == ColorLevel.Debuff then
+			self.colorlevel = ColorLevel.Reset;
+		end
 	end
 
 	if status then
@@ -1658,7 +1913,7 @@ local function updateHealthbarColor(self)
 	-- None
 	if self.colorlevel > ColorLevel.None then
 		self.colorlevel = ColorLevel.None;
-		asCompactUnitFrame_UpdateHealthColor(parent.UnitFrame, self);
+		asCompactUnitFrame_UpdateHealthColor(parent.UnitFrame, self);		
 	end
 
 	return;
@@ -1782,10 +2037,41 @@ local unit_guid_list = {};
 local Aggro_Y = -5;
 
 local function isDangerousSpell(spellId, unit)
-    if ANameP_DangerousSpellList[spellId] then
+    if spellId and ANameP_DangerousSpellList[spellId] then
     	return true
      end
     return false
+end
+
+local function checkSpellCasting(self)
+
+	local unit = self.unit;
+	local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);	
+	if not name then
+		name,  text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+	end
+	
+	if self.casticon then
+		local frameIcon = self.casticon.icon; 
+		if name and frameIcon then
+			local isDanger = isDangerousSpell (spellid, unit);
+			frameIcon:SetTexture(texture);
+			self.casticon:Show();
+			if  isDanger then
+				ANameP_ShowOverlayGlow(self.casticon, false);
+				self.interruptalert = 1;
+			elseif notInterruptible == false then
+				ANameP_ShowOverlayGlow(self.casticon, true);
+				self.interruptalert = 2;
+			else
+				self.interruptalert = nil;	
+			end	
+		else
+			self.casticon:Hide();
+			ANameP_HideOverlayGlow(self.casticon);
+			self.interruptalert = nil;
+		end						
+	end
 end
 
 local function asNamePlates_OnEvent(self, event, ...)	
@@ -1793,47 +2079,9 @@ local function asNamePlates_OnEvent(self, event, ...)
 		updateHealthbarColor(self)
 	elseif( event == "PLAYER_TARGET_CHANGED") then
 		updateTargetNameP(self);
-	elseif( event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" or event == "UNIT_SPELLCAST_SUCCEEDED" 
-	or event == "UNIT_SPELLCAST_INTERRUPTED"  or event == "UNIT_SPELLCAST_DELAYED"  or event == "UNIT_SPELLCAST_CHANNEL_STOP"
-	or event == "UNIT_SPELLCAST_STOP" ) then
-	
-		local unit, name , spellid = ...;
-
-		if not (unit == self.unit) then
-			return
-		end
-
-		local alert = false;		
-		local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);	
-		if not name then
-			name,  text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
-		end
-		--local isTargetPlayer = UnitIsUnit (unit .. "target", "player");
-		if self.casticon then
-			local isDanger = isDangerousSpell (spellid, unit);
-			local frameIcon = self.casticon.icon; 
-			if name and frameIcon then
-			--if name and frameIcon and isTargetPlayer then
-				frameIcon:SetTexture(texture);
-				self.casticon:Show();
-				if  isDanger then
-					alert = true;						
-				end
-			else
-				self.casticon:Hide();
-			end
-
-			if alert then
-				ANameP_ShowOverlayGlow(self.casticon, false);
-				self.casticon.alert = 1;
-			elseif notInterruptible == false then
-				ANameP_ShowOverlayGlow(self.casticon, true);
-				self.casticon.alert = 2;
-			else
-				ANameP_HideOverlayGlow(self.casticon);
-				self.casticon.alert = nil;
-			end
-		end
+	else
+		checkSpellCasting(self);
+		updateHealthbarColor(self);		
 	end
 end
 
@@ -1862,6 +2110,8 @@ local function addNamePlate(namePlateUnitToken)
 				namePlateFrameBase.asNamePlates.checkpvptarget = false;
 				namePlateFrameBase.asNamePlates:Hide();
 				namePlateFrameBase.asNamePlates.CCdebuff:Hide();
+				namePlateFrameBase.asNamePlates.interruptalert = nil;
+				namePlateFrameBase.asNamePlates.debuffColor = nil;
 				unitFrame.BuffFrame:SetAlpha(1);
 			end
 			return;
@@ -1878,6 +2128,8 @@ local function addNamePlate(namePlateUnitToken)
 				namePlateFrameBase.asNamePlates:Hide();
 				namePlateFrameBase.asNamePlates.healthtext:Hide();
 				namePlateFrameBase.asNamePlates.CCdebuff:Hide();
+				namePlateFrameBase.asNamePlates.interruptalert = nil;
+				namePlateFrameBase.asNamePlates.debuffColor = nil;			
 				unitFrame.BuffFrame:SetAlpha(1);
 			end
 			return;
@@ -1913,6 +2165,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.isshown = nil;
 	namePlateFrameBase.asNamePlates.originalcolor = {r = healthbar.r, g = healthbar.g, b = healthbar.b};
 	namePlateFrameBase.asNamePlates.checkcolor = false;
+	namePlateFrameBase.asNamePlates.debuffColor = nil;
 	
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
 	namePlateFrameBase.asNamePlates:UnregisterEvent("PLAYER_TARGET_CHANGED");
@@ -1923,6 +2176,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_DELAYED");
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_STOP");
+	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_FAILED");
 	namePlateFrameBase.asNamePlates:SetScript("OnEvent", nil);
 
 	
@@ -1931,6 +2185,10 @@ local function addNamePlate(namePlateUnitToken)
 	if namePlateVerticalScale ~= tonumber(GetCVar("NamePlateVerticalScale")) then
 		namePlateVerticalScale = tonumber(GetCVar("NamePlateVerticalScale"));
 		g_orig_height = healthbar:GetHeight();
+
+		if ANameP_EmemyPlateSize[2] then
+			--g_orig_height = ANameP_EmemyPlateSize[2];
+		end
 	end
 		
 	if namePlateVerticalScale > 1.0 then
@@ -2004,6 +2262,7 @@ local function addNamePlate(namePlateUnitToken)
 		frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
 		frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 		namePlateFrameBase.asNamePlates.casticon:Hide();
+		namePlateFrameBase.asNamePlates.interruptalert = nil;
 	end
 
 
@@ -2070,6 +2329,8 @@ local function addNamePlate(namePlateUnitToken)
 			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", namePlateUnitToken);
 			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", namePlateUnitToken);
 			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_STOP", namePlateUnitToken);
+			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", namePlateUnitToken);
+			
 
 		end			
 			
@@ -2217,8 +2478,8 @@ local function removeNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
 		namePlateFrameBase.asNamePlates:SetScript("OnEvent", nil);
 		namePlateFrameBase.asNamePlates.r = nil;
-		-- Add할때 다시 Color를 복구 하자
-		--namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
+		namePlateFrameBase.asNamePlates.debuffColor = nil;
+		namePlateFrameBase.asNamePlates.interruptalert = nil;
 
 		if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
 
@@ -2269,11 +2530,16 @@ local function setupFriendlyPlates()
 	local isInstance, instanceType = IsInInstance();
 	if bfirst and not isInstance and not UnitAffectingCombat("player") then
 		C_Timer.After(0.5, function() C_NamePlate.SetNamePlateFriendlySize(60, 30); end)				
+		--C_NamePlate.SetNamePlateEnemySize(ANameP_EmemyPlateSize[1], ANameP_EmemyPlateSize[2]);
+		
+		
 		bfirst = false;
 	end
 end
 
-local function ANameP_OnEvent(self, event, ...)	
+local function ANameP_OnEvent(self, event, ...)
+
+	local arg1 = ...;
 	if event == "NAME_PLATE_CREATED" then
 		local namePlateFrameBase = ...;
 		createNamePlate(namePlateFrameBase);
@@ -2293,7 +2559,7 @@ local function ANameP_OnEvent(self, event, ...)
 	elseif event == "NAME_PLATE_UNIT_REMOVED"  then
 		local namePlateUnitToken = ...;
 		removeNamePlate(namePlateUnitToken);
-	elseif event == event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player"  then
+	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player"  then
 		updateUnitAuras("target");
 		updateUnitAuras("player");
 		updateUnitHealthText(self, "target");
