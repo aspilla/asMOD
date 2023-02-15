@@ -207,15 +207,12 @@ ANameP_ShowList_EVOKER_2 = {
 -- 색상 지정 가능
 -- { r, g, b, 빤작임 여부}
 local ANameP_AlertList = {
-	["폭발물"] = {1, 1, 1, 0},	 -- 흰색 빤짝이 (없음)
-	["그훈의 피조물"] = {0, 1, 0, 0},	-- 녹색 빤짝이 (없음)
-	["고통받는 영혼"] = {0, 1, 0, 0},	-- 녹색 빤짝이 (없음)
-
+	["폭발물"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
+	["원한의 망령"] = {1, 1, 1, 0},	-- 흰색 빤짝이 (없음)
 --	["어둠그늘 곰팡이"] = {0, 1, 0, 0},	-- 녹색 빤짝이 (없음)
-	--["훈련용 허수아비"] = {1, 1, 1, 0},	
+--["절단 훈련용 허수아비"] = {0, 1, 0.5, 1},	
 --	["던전 사용자의 허수아비"] = {1, 0, 1, 0},	
 --["공격대원의 훈련용 허수아비"] = {1, 0, 1, 0},	
-
 
 }
 
@@ -241,249 +238,112 @@ local ANameP_BigDebuff = {
 
 local ANameP_PVPBuffList = {
 
-
---생존기 시작 (용군단 Update 완료)
-	--기원사
-	[357170] = 1, --시간 팽창
-	[363916] = 1, --흑요석 비늘
-	[374348] = 1, --소생의 불길
-	[363534] = 1, --되돌리기
-	[370960] = 1, --애매랄드 교감
-	[378441] = 1, --시간정지
-
-	--전사
-	[236273] = 1, --결투
-	[118038] = 1, --투사의 혼
-	[12975] = 1, --최후의 저항
-	[871] = 1, --방패의 벽
-	[97463] = 1, --재집결의 함성
-	[184364] = 1, --격노의 재생력
-	[386394] = 1, --역전의 용사
-	[392966] = 1, --주문막기
-
-	--도적
-	[185311] = 1, --진홍색 약병
-	[11327] = 1, --소멸
-	[31224] = 1, --그림자 망토
-	[31230] = 1, --구사일생
-	[5277] = 1, --회피
-
-	--악사
-	[212800] = 1, --흐릿해지기
-	[187827] = 1, --탈태
-	[206803] = 1, --하늘에서 내리는 비
-	[196555] = 1, --황천걸음
-	[209426] = 1, --어둠
-
-
-	--수도
-	[202162] = 1, --해악방지
-	[116849] = 1, --기의고치
-	[322507] = 1, --천신주
-	[115203] = 1, --강화주
-	[122783] = 1, --마법해소
-	[122278] = 1, --해악감퇴
-	[132578] = 1, --흑우의 원령
-	[115176] = 1, --명상
-	[125174] = 1, --업보의 손아귀
-
-	--죽기
-	[51052] = 1, --대마법지대
-	[48707] = 1, --대마법 보호막
-	[48743] = 1, --죽음의 서약
-	[48792] = 1, --얼음같은 인내력
-	[114556] = 1, --연옥
-	[81256] = 1, --춤추는 룬무기
-	[219809] = 1, --묘비
-	[55233] = 1, --흡혈
-
-	--사냥꾼
-	[53480] = 1, --희생의 표효
-	[109304] = 1, --활기
-	[264735] = 1, --적자 생존
-	[186265] = 1, --거북의 상
-
-	--성기사
-	[228049] = 1, --잊힌 여왕의 수호자
-	[642] = 1, --천상의 보호막
-	[31850] = 1, --헌신적인 수호자
-	[86659] = 1, --고대 왕의 수호자
-	[327193] = 1, --영광의 순간
-	[205191] = 1, --눈에는 눈
-	[498] = 1, --신의 가호
-	[31821] = 1, --오라 숙련
-	[6940] = 1, --희생의 축복
-	[1022] = 1, --보호의 축복
-	[204018] = 1, --주문수호의 축복
-	
-	--주술사
-	[210918] = 1, -- 에테리얼 형상
-	[108271] = 1, --영혼-이동
-	[108281] = 1, --고대의 인도
-
-	--마법사 
-	[45438] = 1, --얼음 방패
-	[198111] = 1, --시간의 보호막
-	[110959] = 1, --상급 투명화
-	[342246] = 1, --시간돌리기
-	[55342] = 1, --환영복제
-	--드루이드
-	[305497] = 1, --가시
-	[354654] = 1, --숲의 보호
-	[22812] = 1, --나무 껍질
-	[157982] = 1, --평온
-	[102342] = 1, --무쇠 껍질
-	[61336] = 1, --생존본능
-	[200851] = 1, --잠자는-자의-분노
-
-	--흑마법사
-	[104773] = 1, --영원한 결의
-	[108416] = 1, --어둠의 서약
-
-	--사제
-	[215769] = 1, --구원의 영혼
-	[328530] = 1, --신속한 승천
-	[197268] = 1, --희망의 빛줄기
-	[19236] = 1, --구원의 기도
-	[81782] = 1, --신의 권능 방벽
-	[33206] = 1, --고통억제
-	[64843] = 1, --천상의 찬가
-	[47788] = 1, --수호영혼
-	[47585] = 1, --분산
-
---공격버프 시작 (용군단 Update 필요)
-	-- Mage
-	[80353] = 2, --Timewarp
-	[12042] = 2, --Arcane Power
-	[190319] = 2, --Combustion - burst
-	[12472] = 2, --Icy Veins
-	[82691] = 2, --Ring of frost
-	[198144] = 2, --Ice form (pvp)
-	[86949] = 2, --Cauterize
-
-	-- DK
-	[47476] = 2, --Strangulate (pvp) - silence
-	[48792] = 2, --Icebound Fortitude
-	[116888] = 2, --Shroud of Purgatory
-	[114556] = 2, --Purgatory (cd)
-
-	-- Shaman
-	[32182] = 2, --Heroism
-	[2825] = 2, --Bloodlust
-	[108271] = 2, --Astral shift
-	[16166] = 2, --Elemental Mastery - burst
-	[204288] = 2, --Earth Shield
-	[114050] = 2, --Ascendance
-
-	-- Druid
-	[106951] = 2, --Berserk - burst
-	[102543] = 2, --Incarnation: King of the Jungle - burst
-	[102560] = 2, --Incarnation: Chosen of Elune - burst
-	[33891] = 2, --Incarnation: Tree of Life
-	[1850] = 2, --Dash
-	[22812] = 2, --Barkskin
-	[194223] = 2, --Celestial Alignment - burst
-	[78675] = 2, --Solar beam
-	[77761] = 2, --Stampeding Roar
-	[102793] = 2, --Ursol's Vortex
-	[102342] = 2, --Ironbark
-	[339] = 2, --Entangling Roots
-	[102359] = 2, --Mass Entanglement
-	[22570] = 2, --Maim
-
-	-- Paladin
-	[1022] = 2, --Blessing of Protection
-	[204018] = 2, --Blessing of Spellwarding
-	[1044] = 2, --Blessing of Freedom
-	[31884] = 2, --Avenging Wrath
-	[224668] = 2, --Crusade
-	[216331] = 2, --Avenging Crusader
-	[20066] = 2, --Repentance
-	[184662] = 2, --Shield of Vengeance
-	[498] = 2, --Divine Protection
-	[53563] = 2, --Beacon of Light
-	[156910] = 2, --Beacon of Faith
-	[115750] = 2, --Blinding Light
-
-	-- Warrior
-	[1719] = 2, --Battle Cry
-	[23920] = 2, --Spell Reflection
-	[46968] = 2, --Shockwave
-	[18499] = 2, --Berserker Rage
-	[107574] = 2, --Avatar
-	[213915] = 2, --Mass Spell Reflection
-	[118038] = 2, --Die by the Sword
-	[46924] = 2, --Bladestorm
-	[12292] = 2, --Bloodbath
-	[199261] = 2, --Death Wish
-	[107570] = 2, --Storm Bolt
-
-	-- Rogue
-	[45182] = 2, --Cheating Death
-	[31230] = 2, --Cheat Death (cd)
-	[31224] = 2, --Cloak of Shadows
-	[2983] = 2, --Sprint
-	[121471] = 2, --Shadow Blades
-	[1966] = 2, --Feint
-	[5277] = 2, --Evasion
-	[212182] = 2, --Smoke Bomb
-	[13750] = 2, --Adrenaline Rush
-	[199754] = 2, --Riposte
-	[198529] = 2, --Plunder Armor
-	[199804] = 2, --Between the Eyes
-	[1833] = 2, --Cheap Shot
-	[1776] = 2, --Gouge
-	[408] = 2, --Kidney Shot
-
-	-- Hunter
-	[117526] = 2, --Binding Shot
-	[209790] = 2, --Freezing Arrow
-	[213691] = 2, --Scatter Shot
-	[3355] = 2, --Freezing Trap
-	[162480] = 2, -- Steel Trap
-	[19574] = 2, --Bestial Wrath
-	[193526] = 2, --Trueshot
-	[19577] = 2, --Intimidation
-	[90355] = 2, --Ancient Hysteria
-	[160452] = 2, --Netherwinds
-
-	-- Monk
-	[125174] = 2, --Touch of Karma
-	[116849] = 2, -- Life Cocoon
-	[119381] = 2, --Leg Sweep
-
-	-- Priest
-	[10060] = 2, --Power Infusion
-	[9484] = 2, --Shackle Undead
-	[200183] = 2, --Apotheosis
-	[15487] = 2, --Silence
-	[15286] = 2, --Vampiric Embrace
-	[193223] = 2, --Surrender to Madness
-	[88625] = 2, --Holy Word: Chastise
-
-	-- Warlock
-	[108416] = 2, --Dark Pact
-	[196098] = 2 , --Soul Harvest
-	[30283] = 2, --Shadowfury
-
-	-- Demon Hunter
-	[198589] = 2, --Blur
-	[179057] = 2, --Chaos Nova
-	[209426] = 2, --Darkness
-	[217832] = 2, --Imprison
-	[206491] = 2, --Nemesis
-	[211048] = 2, --Chaos Blades
-	[207685] = 2, --Sigil of Misery
-	[209261] = 2, --Last Resort (cd)
-	[207810] = 2, --Nether Bond
-
-	----
-	[2335] = 2, --Swiftness Potion
-	[6624] = 2, --Free Action Potion
-	[67867] = 2, --Trampled (ToC arena spell when you run over someone)
-
-
-
+	[236273] = 1, --WARRIOR
+	[118038] = 1, --WARRIOR
+	[12975] = 1, --WARRIOR
+	[871] = 1, --WARRIOR
+	[97463] = 1, --WARRIOR
+	[383762] = 1, --WARRIOR
+	[184364] = 1, --WARRIOR
+	[386394] = 1, --WARRIOR
+	[392966] = 1, --WARRIOR
+	[11327] = 1, --ROGUE
+	[31224] = 1, --ROGUE
+	[31230] = 1, --ROGUE
+	[5277] = 1, --ROGUE
+	[212800] = 1, --DEMONHUNTER
+	[187827] = 1, --DEMONHUNTER
+	[206803] = 1, --DEMONHUNTER
+	[196555] = 1, --DEMONHUNTER
+	[204021] = 1, --DEMONHUNTER
+	[209258] = 1, --DEMONHUNTER
+	[209426] = 1, --DEMONHUNTER
+	[388615] = 1, --MONK
+	[115310] = 1, --MONK
+	[116849] = 1, --MONK
+	[115399] = 1, --MONK
+	[120954] = 1, --MONK
+	[122783] = 1, --MONK
+	[122278] = 1, --MONK
+	[132578] = 1, --MONK
+	[115176] = 1, --MONK
+	[51052] = 1, --DEATHKNIGHT
+	[48707] = 1, --DEATHKNIGHT
+	[327574] = 1, --DEATHKNIGHT
+	[48743] = 1, --DEATHKNIGHT
+	[48792] = 1, --DEATHKNIGHT
+	[114556] = 1, --DEATHKNIGHT
+	[81256] = 1, --DEATHKNIGHT
+	[219809] = 1, --DEATHKNIGHT
+	[55233] = 1, --DEATHKNIGHT
+	[53480] = 1, --HUNTER
+	[109304] = 1, --HUNTER
+	[264735] = 1, --HUNTER
+	[370960] = 1, --EVOKER
+	[363534] = 1, --EVOKER
+	[357170] = 1, --EVOKER
+	[374348] = 1, --EVOKER
+	[374227] = 1, --EVOKER
+	[363916] = 1, --EVOKER
+	[354654] = 1, --DRUID
+	[22812] = 1, --DRUID
+	[157982] = 1, --DRUID
+	[102342] = 1, --DRUID
+	[61336] = 1, --DRUID
+	[200851] = 1, --DRUID
+	[108238] = 1, --DRUID
+	[124974] = 1, --DRUID
+	[104773] = 1, --WARLOCK
+	[108416] = 1, --WARLOCK
+	[215769] = 1, --PRIEST
+	[328530] = 1, --PRIEST
+	[197268] = 1, --PRIEST
+	[19236] = 1, --PRIEST
+	[81782] = 1, --PRIEST
+	[33206] = 1, --PRIEST
+	[372835] = 1, --PRIEST
+	[391124] = 1, --PRIEST
+	[265202] = 1, --PRIEST
+	[64843] = 1, --PRIEST
+	[47788] = 1, --PRIEST
+	[47585] = 1, --PRIEST
+	[108968] = 1, --PRIEST
+	[15286] = 1, --PRIEST
+	[199452] = 1, --PALADIN
+	[31850] = 1, --PALADIN
+	[378974] = 1, --PALADIN
+	[86659] = 1, --PALADIN
+	[387174] = 1, --PALADIN
+	[327193] = 1, --PALADIN
+	[205191] = 1, --PALADIN
+	[184662] = 1, --PALADIN
+	[157047] = 1, --PALADIN
+	[31821] = 1, --PALADIN
+	[633] = 1, --PALADIN
+	[6940] = 1, --PALADIN
+	[1022] = 1, --PALADIN
+	[204018] = 1, --PALADIN
+	[210918] = 1, --SHAMAN
+	[108280] = 1, --SHAMAN
+	[98008] = 1, --SHAMAN
+	[198838] = 1, --SHAMAN
+	[207399] = 1, --SHAMAN
+	[108271] = 1, --SHAMAN
+	[198103] = 1, --SHAMAN
+	[108281] = 1, --SHAMAN
+	[198158] = 1, --MAGE
+	[110959] = 1, --MAGE
+	[342246] = 1, --MAGE
+	[66] = 1, --MAGE
+	[55342] = 1, --MAGE
+	[235219] = 1, --MAGE
+	[86949] = 1, --MAGE
+	[125174] = 1, --MONK
+	[186265] = 1, --HUNTER
+	[378441] = 1, --EVOKER
+	[228049] = 1, --PALADIN
+	[642] = 1, --PALADIN
+	[45438] = 1, --MAGE
 }
 
 local ANameP_PVEBuffList = {
@@ -492,247 +352,131 @@ local ANameP_PVEBuffList = {
 	[209859] = 0, --'강화' 
 }
 
---[[
-
-32,35: local specWarnEarthBolt					= mod:NewSpecialWarningInterrupt(385652, "HasInterrupt", nil, nil, 1, 2)
-42,39: local specWarnHealingTouch						= mod:NewSpecialWarningInterrupt(396640, "HasInterrupt", nil, nil, 1, 2)
-24,39: local specWarnHidiousCackle					= mod:NewSpecialWarningInterrupt(367500, "HasInterrupt", nil, nil, 1, 2)
-43,38: local specWarnMastersCall						= mod:NewSpecialWarningInterrupt(384638, "HasInterrupt", nil, nil, 1, 2)
-64,45: local specWarnGreaterHealingRapids				= mod:NewSpecialWarningInterrupt(377950, "HasInterrupt", nil, nil, 1, 2)
-41,38: local specWarnGushingOoze						= mod:NewSpecialWarningInterrupt(381770, "HasInterrupt", nil, nil, 1, 2)
-27,38: local specWarnBlastingGust					= mod:NewSpecialWarningInterrupt(374080, "HasInterrupt", nil, nil, 1, 2)
-40,38: local specWarnStaticSurge						= mod:NewSpecialWarningInterrupt(384014, "HasInterrupt", nil, nil, 1, 2)
-46,37: local specWarnBladeLock							= mod:NewSpecialWarningInterrupt(375056, nil, nil, nil, 1, 13)
-32,36: local specWarnMoltenCore					= mod:NewSpecialWarningInterrupt(378282, "HasInterrupt", nil, nil, 1, 2)
-41,39: local specWarnRoaringBlaze						= mod:NewSpecialWarningInterruptCount(373017, "HasInterrupt", nil, nil, 1, 2)
-40,40: local specWarnFrostOverload						= mod:NewSpecialWarningInterrupt(373680, "HasInterrupt", nil, nil, 1, 2, 4)
-43,36: local specWarnCinderbolt					= mod:NewSpecialWarningInterrupt(384194, "HasInterrupt", nil, nil, 1, 2)
-44,36: local specWarnFlashfire						= mod:NewSpecialWarningInterrupt(392451, "HasInterrupt", nil, nil, 1, 2)
-35,41: local specWarnIllusionaryBolt					= mod:NewSpecialWarningInterrupt(373932, "HasInterrupt", nil, nil, 1, 2)
-42,38: local specWarnMysticVapors					= mod:NewSpecialWarningInterrupt(387564, "HasInterrupt", nil, nil, 1, 2)
-43,36: local specWarnWakingBane					= mod:NewSpecialWarningInterrupt(386546, "HasInterrupt", nil, nil, 1, 2)
-53,37: local specWarnStormBolt							= mod:NewSpecialWarningInterrupt(376725, "HasInterrupt", nil, nil, 1, 2)
-39,39: local specWarnGuardianWind						= mod:NewSpecialWarningInterrupt(384808, "HasInterrupt", nil, nil, 1, 2)
-33,34: local specWarnTempest						= mod:NewSpecialWarningInterrupt(386024, "HasInterrupt", nil, nil, 1, 2)
-34,40: local specWarnDeathBoltVolley				= mod:NewSpecialWarningInterrupt(387411, "HasInterrupt", nil, nil, 1, 2)
-35,42: local specWarnBloodcurdlingShout			= mod:NewSpecialWarningInterrupt(373395, "HasInterrupt", nil, nil, 1, 2)
-40,40: local specWarnChainLightning					= mod:NewSpecialWarningInterrupt(369675, "HasInterrupt", nil, nil, 1, 2)
-61,42: local specWarnDefensiveBulwark					= mod:NewSpecialWarningInterrupt(369602, "HasInterrupt", nil, nil, 1, 2)
-24,36: local specWarnStoneSpike					= mod:NewSpecialWarningInterrupt(369674, "HasInterrupt", nil, nil, 1, 2)
-25,39: local specWarnSpikedCarapace				= mod:NewSpecialWarningInterrupt(369823, "HasInterrupt", nil, nil, 1, 2)
-27,35: local specWarnDarkMending			= mod:NewSpecialWarningInterrupt(225573, "HasInterrupt", nil, nil, 1, 2)
-39,35: local specWarnArcaneBlitz			= mod:NewSpecialWarningInterrupt(197797, "HasInterrupt", nil, nil, 1, 2)
-20,36: local specWarnAlluringAroma		= mod:NewSpecialWarningInterrupt(237391, "HasInterrupt", nil, nil, 1, 2)
-21,36: local specWarnDemonicMending	= mod:NewSpecialWarningInterrupt(238543, "HasInterrupt", nil, nil, 1, 2)
-22,34: local specWarnDreadScream		= mod:NewSpecialWarningInterrupt(242724, "HasInterrupt", nil, nil, 1, 2)
-47,34: local specWarnDrainMagic			= mod:NewSpecialWarningInterrupt(209485, "HasInterrupt", nil, nil, 1, 2)
-48,36: local specWarnNightfallOrb			= mod:NewSpecialWarningInterrupt(209410, "HasInterrupt", nil, nil, 1, 2)
- 49,33: local specWarnSuppress				= mod:NewSpecialWarningInterrupt(209413, "HasInterrupt", nil, nil, 1, 2)
- 50,32: local specWarnBewitch				= mod:NewSpecialWarningInterrupt(211470, "HasInterrupt", nil, nil, 1, 2)
-  51,38: local specWarnChargingStation		= mod:NewSpecialWarningInterrupt(225100, "HasInterrupt", nil, nil, 1, 2)
-  52,36: local specWarnSearingGlare			= mod:NewSpecialWarningInterrupt(211299, "HasInterrupt", nil, nil, 1, 2)
-  53,40: local specWarnDisintegrationBeam	= mod:NewSpecialWarningInterrupt(207980, "HasInterrupt", nil, nil, 1, 2)
-
-17,30: local specWarnStorm				= mod:NewSpecialWarningInterrupt(196870, "HasInterrupt", nil, nil, 1, 2)
-  18,34: local specWarnRejuvWaters		= mod:NewSpecialWarningInterrupt(195046, "HasInterrupt", nil, nil, 1, 2)
-  19,32: local specWarnUndertow			= mod:NewSpecialWarningInterrupt(195284, "HasInterrupt", nil, nil, 1, 2)--Might only be interruptable by stuns, if so change option default?
-
- 23,35: local specWarnRestoration			= mod:NewSpecialWarningInterrupt(197502, "HasInterrupt", nil, nil, 1, 2)
-
-  31,35: local specWarnBlazingNova			= mod:NewSpecialWarningInterrupt(192003, false, nil, nil, 1, 2)
-  32,35: local specWarnArcaneBlast			= mod:NewSpecialWarningInterrupt(192005, false, nil, nil, 1, 2)
-  33,32: local specWarnRampage				= mod:NewSpecialWarningInterrupt(191848, "HasInterrupt", nil, nil, 1, 2)
-
-
-  33,36: local specWarnHolyRadiance			= mod:NewSpecialWarningInterrupt(215433, "HasInterrupt", nil, nil, 1, 2)
-  34,37: local specWarnRuneOfHealing			= mod:NewSpecialWarningInterrupt(198934, false, nil, nil, 1, 2)
-  35,37: local specWarnCleansingFlame		= mod:NewSpecialWarningInterrupt(192563, "HasInterrupt", nil, nil, 1, 2)
-  36,34: local specWarnUnrulyYell			= mod:NewSpecialWarningInterrupt(199726, "HasInterrupt", nil, nil, 1, 2)
-
-
-  39,36: local specWarnSearingLight			= mod:NewSpecialWarningInterrupt(192288, "HasInterrupt", nil, nil, 1, 2)
-
-
-  37,31: local specWarnSurge					= mod:NewSpecialWarningInterrupt(198750, "HasInterrupt", nil, nil, 1, 2)
-
-
-  21,32: local specWarnVoidSnap			= mod:NewSpecialWarningInterrupt(194266, "HasInterrupt", nil, nil, 1, 2)
-
-
-  25,33: local specWarnTorrent					= mod:NewSpecialWarningInterrupt(198495, "HasInterrupt", nil, nil, 1, 2)
-
-
-  13,30: local specWarnScream			= mod:NewSpecialWarningInterrupt(198405, "HasInterrupt", nil, nil, 1, 2)
-
-
-  29,34: local specWarnHolyShock				= mod:NewSpecialWarningInterrupt(227800, "HasInterrupt", nil, nil, 1, 2)
-  31,34: local specWarnHolyWrath				= mod:NewSpecialWarningInterrupt(227823, "HasInterrupt", nil, nil, 1, 2)
-
-
-  27,34: local specWarnFrostbite				= mod:NewSpecialWarningInterrupt(227592, "HasInterrupt", nil, nil, 1, 2)
-
-
-  34,37: local specWarnReverbShadows			= mod:NewSpecialWarningInterruptCount(229307, "HasInterrupt", nil, nil, 1, 3)
-
-
-  34,33: local specWarnHeatWave				= mod:NewSpecialWarningInterrupt(228025, "HasInterrupt", nil, nil, 1, 2)
-  37,34: local specWarnLeftovers				= mod:NewSpecialWarningInterrupt(228019, "HasInterrupt", nil, nil, 1, 2)
-  43,34: local specWarnDinnerBell			= mod:NewSpecialWarningInterrupt(227987, "HasInterrupt", nil, nil, 1, 2)
-
-
-  30,35: local specWarnBubbleBlast			= mod:NewSpecialWarningInterrupt(227420, "HasInterrupt", nil, nil, 1, 2)
-
-
-  23,34: local specWarnSoulLeech				= mod:NewSpecialWarningInterrupt(228255, "HasInterrupt", nil, nil, 1, 2)
-  24,37: local specWarnTerrifyingWail		= mod:NewSpecialWarningInterrupt(228239, "HasInterrupt", nil, nil, 1, 2)
-  25,34: local specWarnPoetrySlam			= mod:NewSpecialWarningInterrupt(227917, "HasInterrupt", nil, nil, 1, 2)
-  26,35: local specWarnBansheeWail			= mod:NewSpecialWarningInterrupt(228625, "HasInterrupt", nil, nil, 1, 2)
-  27,36: local specWarnHealingTouch			= mod:NewSpecialWarningInterrupt(228606, "HasInterrupt", nil, nil, 1, 2)
-  28,36: local specWarnConsumeMagic			= mod:NewSpecialWarningInterrupt(229714, "HasInterrupt", nil, nil, 1, 2)
-
-
-  37,36: local specWarnBurningBlast			= mod:NewSpecialWarningInterruptCount(229083, "HasInterrupt", nil, nil, 1, 2)
-
-
-  29,37: local specWarnDreadScreech				= mod:NewSpecialWarningInterrupt(248831, "HasInterrupt", nil, nil, 1, 2)
-
-
-  23,37: local specWarnVoidDiffusion			= mod:NewSpecialWarningInterrupt(245585, "HasInterrupt", nil, nil, 1, 2)
-  24,37: local specWarnConsumeEssence		= mod:NewSpecialWarningInterrupt(245727, "HasInterrupt", nil, nil, 1, 2)
-  25,36: local specWarnStygianBlast			= mod:NewSpecialWarningInterrupt(248133, "HasInterrupt", nil, nil, 1, 2)
-  26,33: local specWarnDarkFlay				= mod:NewSpecialWarningInterrupt(248184, "HasInterrupt", nil, nil, 1, 2)
-
-
-  25,36: local specWarnHowlingDark				= mod:NewSpecialWarningInterrupt(244751, "HasInterrupt", nil, nil, 1, 2)
-
-
-  15,35: local specWarnArgusPortal			= mod:NewSpecialWarningInterrupt(211757, "HasInterrupt", nil, nil, 1, 2)
-  16,42: local specWarnArcaneReconstitution	= mod:NewSpecialWarningInterrupt(226206, "HasInterrupt", nil, nil, 1, 2)
-
-
-  29,37: local specWarnOverchargeMana		= mod:NewSpecialWarningInterrupt(196392, "HasInterrupt", nil, nil, 1, 2)
-
-
-  28,31: local specWarnBlast					= mod:NewSpecialWarningInterruptCount(203176, "HasInterrupt", nil, 2, 1, 2)
-  30,33: local specWarnTimeLock				= mod:NewSpecialWarningInterrupt(203957, "HasInterrupt", nil, 2, 1, 2)
-
-
-  27,36: local specWarnFuriousBlast			= mod:NewSpecialWarningInterrupt(191823, "HasInterrupt", nil, nil, 1, 2)
-
-
-  20,31: local specWarnSapSoul			= mod:NewSpecialWarningInterrupt(200905, "HasInterrupt", nil, nil, 1, 2)
-
-
-  18,33: local specWarnNightmares		= mod:NewSpecialWarningInterrupt(193069, "HasInterrupt", nil, nil, 1, 2)
-
-
-  26,39: local specWarnShadowBoltVolley		= mod:NewSpecialWarningInterrupt(204963, "HasInterrupt", nil, nil, 1, 2)--Malgath interruptable aoe
-  27,33: local specWarnHellfire				= mod:NewSpecialWarningInterrupt(205088, "HasInterrupt", nil, nil, 1, 2)--Infernal AOE
-
-  30,39: local specWarnHauntingScream				= mod:NewSpecialWarningInterrupt(395859, "HasInterrupt", nil, nil, 1, 2)
-  31,40: local specWarnSleepySililoquy				= mod:NewSpecialWarningInterrupt(395872, "HasInterrupt", nil, nil, 1, 2)
-
-
-  37,34: local specWarnHydrolance			= mod:NewSpecialWarningInterrupt(397801, "HasInterrupt", nil, nil, 1, 2)
-
-
-  23,30: local specWarnShank				= mod:NewSpecialWarningInterrupt(118963, false, nil, nil, 1, 2)--specWarns can be spam. Default value is off. Use this manually.
-  24,36: local specWarnCleansingFlame	= mod:NewSpecialWarningInterrupt(118940, "HasInterrupt", nil, nil, 1, 2)
-  25,35: local specWarnHexInterrupt		= mod:NewSpecialWarningInterrupt(118903, "HasInterrupt", nil, nil, 1, 2)
-
-
-  31,35: local specWarnLightningBolt	= mod:NewSpecialWarningInterrupt(123654, false, nil, nil, 1, 2)
-
-
-  21,31: local specWarnMassRes			= mod:NewSpecialWarningInterrupt(113134, "HasInterrupt", nil, nil, 1, 2)
-  22,29: local specWarnHeal				= mod:NewSpecialWarningInterrupt(12039, "HasInterrupt", nil, nil, 1, 2)
-  23,27: local specWarnMC				= mod:NewSpecialWarningInterrupt(130857, "HasInterrupt", nil, nil, 1, 2)
-
-
-  20,36: local specWarnFireballVolley	= mod:NewSpecialWarningInterrupt(113691, "HasInterrupt", nil, nil, 1, 2)
-  21,33: local specWarnPyroblast			= mod:NewSpecialWarningInterrupt(113690, false, nil, nil, 1, 2)
-
-
-  23,32: local specWarnRisingHate	= mod:NewSpecialWarningInterrupt(107356, "-Healer", nil, nil, 1, 2)
-
-
-  15,33: local specWarnBendWill				= mod:NewSpecialWarningInterrupt(154527, "HasInterrupt", nil, 2, 1, 2)
-  17,35: local specWarnVoidMending			= mod:NewSpecialWarningInterrupt(154623, "HasInterrupt", nil, 2, 1, 2)
-  19,37: local specWarnArbitersHammer		= mod:NewSpecialWarningInterrupt(157797, "HasInterrupt", nil, 2, 1, 2)
-
-
-  35,33: local specWarnFelblast				= mod:NewSpecialWarningInterrupt(154221, "HasInterrupt", nil, 2, 1, 2)--Very spammy
-
-
-  33,33: local specWarnDrainLife			= mod:NewSpecialWarningInterrupt(156854, "HasInterrupt", nil, nil, 1, 2)
-  44,33: local specWarnChaosBolt			= mod:NewSpecialWarningInterrupt(156975, "HasInterrupt", nil, nil, 3, 2)
-
-
-  16,31: local specWarnRoar						= mod:NewSpecialWarningInterrupt(151545, "HasInterrupt", nil, 2, 1, 2)--Maybe healer need warning too, if interrupt gets off, healer can't heal for 5 seconds
-  17,35: local specWarnLavaBurst					= mod:NewSpecialWarningInterrupt(151558, "HasInterrupt", nil, 2, 1, 2)
-  18,40: local specWarnSuppressionField			= mod:NewSpecialWarningInterrupt(151581, "HasInterrupt", nil, 2, 1, 2)--Maybe healer need warning too, if interrupt gets off, healer can't heal for 5 seconds
-
-
-  19,36: local specWarnFerociousYell		= mod:NewSpecialWarningInterrupt(150759, "HasInterrupt", nil, 2, 1, 2)
-
-
-  22,34: local specWarnMoltenBlast		= mod:NewSpecialWarningInterrupt(150677, "HasInterrupt", nil, 3, 1, 2)
-
-
-  27,33: local specWarnFirestorm			= mod:NewSpecialWarningInterrupt(149997, "HasInterrupt", nil, 2, 1, 2)
-
-
-  32,40: local specWarnRevitalizingWaters	= mod:NewSpecialWarningInterrupt(168082, "HasInterrupt", nil, 2, 1, 2)
-  37,34: local specWarnBriarskin				= mod:NewSpecialWarningInterrupt(168041, false, nil, nil, 1, 2)--if you have more than one interruptor, great. but off by default because we can't assume you can interrupt every bosses abilities. and heal takes priority
-
-
-  22,35: local specWarnActivating				= mod:NewSpecialWarningInterrupt(163966, false, nil, 2, 1, 8)
-
-
-  31,32: local specWarnShielding		= mod:NewSpecialWarningInterrupt(154055, "HasInterrupt", nil, 2, 1, 2)
-
-  22,36: local specWarnShadowMend					= mod:NewSpecialWarningInterrupt(152818, "HasInterrupt", nil, nil, 1, 2)
-
-
-  21,42: local specWarnDebilitatingFixation	= mod:NewSpecialWarningInterrupt(161199, "HasInterrupt", nil, 3, 3, 2)
-
-
-  20,39: local specWarnDebilitatingRay			= mod:NewSpecialWarningInterrupt(155505, "HasInterrupt", nil, 2, 1, 2)
-  21,43: local specWarnSummonBlackIronDread		= mod:NewSpecialWarningInterrupt(169088, "HasInterrupt", nil, 2, 1, 2)
-  22,41: local specWarnSummonBlackIronVet		= mod:NewSpecialWarningInterrupt(169151, "HasInterrupt", nil, 2, 1, 2)
-  23,37: local specWarnVeilofShadow				= mod:NewSpecialWarningInterrupt(155586, "HasInterrupt", nil, 2, 1, 2)--Challenge mode only(little spammy for mage)
-  25,40: local specWarnShadowBoltVolley			= mod:NewSpecialWarningInterrupt(155588, "HasInterrupt", nil, 2, 1, 2)
-
-
-  77,37: local specWarnIceBarrage						= mod:NewSpecialWarningInterruptCount(375716, "HasInterrupt", nil, nil, 1, 2)
-  81,37: local specWarnStaticJolt						= mod:NewSpecialWarningInterruptCount(375653, "HasInterrupt", nil, nil, 1, 2)
-
-
-  61,41: local specWarnDivertedEssence					= mod:NewSpecialWarningInterruptCount(387943, "HasInterrupt", nil, nil, 1, 2)
-  69,37: local specWarnStormBolt							= mod:NewSpecialWarningInterruptCount(384273, false, nil, nil, 1, 2)
-
-
-  69,37: local specWarnPyroBlast							= mod:NewSpecialWarningInterruptCount(396040, "HasInterrupt", nil, nil, 1, 2)
-
-
-  160,37: local specWarnFrostBinds						= mod:NewSpecialWarningInterrupt(374623, "HasInterrupt", nil, nil, 1, 2)
-
-
-  96,37: local specWarnStormBolt							= mod:NewSpecialWarningInterruptCount(385553, "HasInterrupt", nil, nil, 1, 2)
-
-
-  40,37: local specWarnFrostSpike						= mod:NewSpecialWarningInterrupt(372315, "HasInterrupt", nil, nil, 1, 2)
-  54,40: local specWarnLightningBolt						= mod:NewSpecialWarningInterrupt(372394, "HasInterrupt", nil, nil, 1, 2)
-
-
-  
-
-
-]]
-
 local ANameP_DangerousSpellList = { 
-
-   -- [297972] = true,
+	[383823] = true,
+	[385652] = true,
+	[396640] = true,
+	[367500] = true,
+	[384638] = true,
+	[377950] = true,
+	[381770] = true,
+	[374080] = true,
+	[384014] = true,
+	[375056] = true,
+	[378282] = true,
+	[373680] = true,
+	[384194] = true,
+	[392451] = true,
+	[373932] = true,
+	[375596] = true,
+	[387564] = true,
+	[386546] = true,
+	[376725] = true,
+	[363607] = true,
+	[384808] = true,
+	[386024] = true,
+	[387411] = true,
+	[373395] = true,
+	[369675] = true,
+	[369602] = true,
+	[369674] = true,
+	[369823] = true,
+	[225573] = true,
+	[197797] = true,
+	[237391] = true,
+	[238543] = true,
+	[242724] = true,
+	[209485] = true,
+	[209410] = true,
+	[209413] = true,
+	[211470] = true,
+	[225100] = true,
+	[211299] = true,
+	[207980] = true,
+	[196870] = true,
+	[195046] = true,
+	[195284] = true,
+	[197502] = true,
+	[192003] = true,
+	[192005] = true,
+	[191848] = true,
+	[215433] = true,
+	[198934] = true,
+	[192563] = true,
+	[199726] = true,
+	[192288] = true,
+	[198750] = true,
+	[194266] = true,
+	[198495] = true,
+	[198405] = true,
+	[227800] = true,
+	[227823] = true,
+	[227592] = true,
+	[228025] = true,
+	[228019] = true,
+	[227987] = true,
+	[227420] = true,
+	[228255] = true,
+	[228239] = true,
+	[227917] = true,
+	[228625] = true,
+	[228606] = true,
+	[229714] = true,
+	[248831] = true,
+	[245585] = true,
+	[245727] = true,
+	[248133] = true,
+	[248184] = true,
+	[244751] = true,
+	[211757] = true,
+	[226206] = true,
+	[196392] = true,
+	[203957] = true,
+	[191823] = true,
+	[200905] = true,
+	[193069] = true,
+	[204963] = true,
+	[205088] = true,
+	[395859] = true,
+	[395872] = true,
+	[397801] = true,
+	[118963] = true,
+	[118940] = true,
+	[118903] = true,
+	[123654] = true,
+	[113134] = true,
+	[12039] = true,
+	[130857] = true,
+	[113691] = true,
+	[113690] = true,
+	[107356] = true,
+	[154527] = true,
+	[154623] = true,
+	[157797] = true,
+	[154221] = true,
+	[156854] = true,
+	[156975] = true,
+	[151545] = true,
+	[151558] = true,
+	[151581] = true,
+	[150759] = true,
+	[150677] = true,
+	[149997] = true,
+	[168082] = true,
+	[168041] = true,
+	[163966] = true,
+	[154055] = true,
+	[152818] = true,
+	[161199] = true,
+	[155505] = true,
+	[169088] = true,
+	[169151] = true,
+	[155586] = true,
+	[155588] = true,
+	[374623] = true,
+	[372315] = true,
+	[372394] = true,
+	[310839] = true,
 }
 
 
@@ -840,6 +584,322 @@ local ColorLevel = {
 local playerbuffposition = ANameP_PlayerBuffY;
 
 -- 반짝이 처리부
+
+local lib = {};
+
+local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+local textureList = {
+    empty = [[Interface\AdventureMap\BrokenIsles\AM_29]],
+    white = [[Interface\BUTTONS\WHITE8X8]],
+    shine = [[Interface\ItemSocketingFrame\UI-ItemSockets]]
+}
+
+local shineCoords = {0.3984375, 0.4453125, 0.40234375, 0.44921875}
+if isRetail then
+    textureList.shine = [[Interface\Artifacts\Artifacts]]
+    shineCoords = {0.8115234375,0.9169921875,0.8798828125,0.9853515625}
+end
+
+function lib.RegisterTextures(texture,id)
+    textureList[id] = texture
+end
+
+lib.glowList = {}
+lib.startList = {}
+lib.stopList = {}
+
+local GlowParent = UIParent
+
+local GlowMaskPool = CreateFromMixins(ObjectPoolMixin)
+lib.GlowMaskPool = GlowMaskPool
+local function MaskPoolFactory(maskPool)
+    return maskPool.parent:CreateMaskTexture()
+end
+
+local MaskPoolResetter = function(maskPool,mask)
+    mask:Hide()
+    mask:ClearAllPoints()
+end
+
+ObjectPoolMixin.OnLoad(GlowMaskPool,MaskPoolFactory,MaskPoolResetter)
+GlowMaskPool.parent =  GlowParent
+
+local TexPoolResetter = function(pool,tex)
+    local maskNum = tex:GetNumMaskTextures()
+    for i = maskNum , 1, -1 do
+        tex:RemoveMaskTexture(tex:GetMaskTexture(i))
+    end
+    tex:Hide()
+    tex:ClearAllPoints()
+end
+local GlowTexPool = CreateTexturePool(GlowParent ,"ARTWORK",7,nil,TexPoolResetter)
+lib.GlowTexPool = GlowTexPool
+
+local FramePoolResetter = function(framePool,frame)
+    frame:SetScript("OnUpdate",nil)
+    local parent = frame:GetParent()
+    if parent[frame.name] then
+        parent[frame.name] = nil
+    end
+    if frame.textures then
+        for _, texture in pairs(frame.textures) do
+            GlowTexPool:Release(texture)
+        end
+    end
+    if frame.bg then
+        GlowTexPool:Release(frame.bg)
+        frame.bg = nil
+    end
+    if frame.masks then
+        for _,mask in pairs(frame.masks) do
+            GlowMaskPool:Release(mask)
+        end
+        frame.masks = nil
+    end
+    frame.textures = {}
+    frame.info = {}
+    frame.name = nil
+    frame.timer = nil
+    frame:Hide()
+    frame:ClearAllPoints()
+end
+local GlowFramePool = CreateFramePool("Frame",GlowParent,nil,FramePoolResetter)
+lib.GlowFramePool = GlowFramePool
+
+local function addFrameAndTex(r,color,name,key,N,xOffset,yOffset,texture,texCoord,desaturated,frameLevel)
+    key = key or ""
+	frameLevel = frameLevel or 8
+    if not r[name..key] then
+        r[name..key] = GlowFramePool:Acquire()
+        r[name..key]:SetParent(r)
+        r[name..key].name = name..key
+    end
+    local f = r[name..key]
+	f:SetFrameLevel(r:GetFrameLevel()+frameLevel)
+    f:SetPoint("TOPLEFT",r,"TOPLEFT",-xOffset+0.05,yOffset+0.05)
+    f:SetPoint("BOTTOMRIGHT",r,"BOTTOMRIGHT",xOffset,-yOffset+0.05)
+    f:Show()
+
+    if not f.textures then
+        f.textures = {}
+    end
+
+    for i=1,N do
+        if not f.textures[i] then
+            f.textures[i] = GlowTexPool:Acquire()
+            f.textures[i]:SetTexture(texture)
+            f.textures[i]:SetTexCoord(texCoord[1],texCoord[2],texCoord[3],texCoord[4])
+            f.textures[i]:SetDesaturated(desaturated)
+            f.textures[i]:SetParent(f)
+            f.textures[i]:SetDrawLayer("ARTWORK",7)
+            if not isRetail and name == "_AutoCastGlow" then
+                f.textures[i]:SetBlendMode("ADD")
+            end
+        end
+        f.textures[i]:SetVertexColor(color[1],color[2],color[3],color[4])
+        f.textures[i]:Show()
+    end
+    while #f.textures>N do
+        GlowTexPool:Release(f.textures[#f.textures])
+        table.remove(f.textures)
+    end
+end
+
+
+--Pixel Glow Functions--
+local pCalc1 = function(progress,s,th,p)
+    local c
+    if progress>p[3] or progress<p[0] then
+        c = 0
+    elseif progress>p[2] then
+        c =s-th-(progress-p[2])/(p[3]-p[2])*(s-th)
+    elseif progress>p[1] then
+        c =s-th
+    else
+        c = (progress-p[0])/(p[1]-p[0])*(s-th)
+    end
+    return math.floor(c+0.5)
+end
+
+local pCalc2 = function(progress,s,th,p)
+    local c
+    if progress>p[3] then
+        c = s-th-(progress-p[3])/(p[0]+1-p[3])*(s-th)
+    elseif progress>p[2] then
+        c = s-th
+    elseif progress>p[1] then
+        c = (progress-p[1])/(p[2]-p[1])*(s-th)
+    elseif progress>p[0] then
+        c = 0
+    else
+        c = s-th-(progress+1-p[3])/(p[0]+1-p[3])*(s-th)
+    end
+    return math.floor(c+0.5)
+end
+
+local  pUpdate = function(self,elapsed)
+    self.timer = self.timer+elapsed/self.info.period
+    if self.timer>1 or self.timer <-1 then
+        self.timer = self.timer%1
+    end
+    local progress = self.timer
+    local width,height = self:GetSize()
+    if width ~= self.info.width or height ~= self.info.height then
+        local perimeter = 2*(width+height)
+        if not (perimeter>0) then
+            return
+        end
+        self.info.width = width
+        self.info.height = height
+        self.info.pTLx = {
+            [0] = (height+self.info.length/2)/perimeter,
+            [1] = (height+width+self.info.length/2)/perimeter,
+            [2] = (2*height+width-self.info.length/2)/perimeter,
+            [3] = 1-self.info.length/2/perimeter
+        }
+        self.info.pTLy ={
+            [0] = (height-self.info.length/2)/perimeter,
+            [1] = (height+width+self.info.length/2)/perimeter,
+            [2] = (height*2+width+self.info.length/2)/perimeter,
+            [3] = 1-self.info.length/2/perimeter
+        }
+        self.info.pBRx ={
+            [0] = self.info.length/2/perimeter,
+            [1] = (height-self.info.length/2)/perimeter,
+            [2] = (height+width-self.info.length/2)/perimeter,
+            [3] = (height*2+width+self.info.length/2)/perimeter
+        }
+        self.info.pBRy ={
+            [0] = self.info.length/2/perimeter,
+            [1] = (height+self.info.length/2)/perimeter,
+            [2] = (height+width-self.info.length/2)/perimeter,
+            [3] = (height*2+width-self.info.length/2)/perimeter
+        }
+    end
+    if self:IsShown() then
+        if not (self.masks[1]:IsShown()) then
+            self.masks[1]:Show()
+            self.masks[1]:SetPoint("TOPLEFT",self,"TOPLEFT",self.info.th,-self.info.th)
+            self.masks[1]:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",-self.info.th,self.info.th)
+        end
+        if self.masks[2] and not(self.masks[2]:IsShown()) then
+            self.masks[2]:Show()
+            self.masks[2]:SetPoint("TOPLEFT",self,"TOPLEFT",self.info.th+1,-self.info.th-1)
+            self.masks[2]:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",-self.info.th-1,self.info.th+1)
+        end
+        if self.bg and not(self.bg:IsShown()) then
+            self.bg:Show()
+        end
+        for k,line  in pairs(self.textures) do
+            line:SetPoint("TOPLEFT",self,"TOPLEFT",pCalc1((progress+self.info.step*(k-1))%1,width,self.info.th,self.info.pTLx),-pCalc2((progress+self.info.step*(k-1))%1,height,self.info.th,self.info.pTLy))
+            line:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",self.info.th+pCalc2((progress+self.info.step*(k-1))%1,width,self.info.th,self.info.pBRx),-height+pCalc1((progress+self.info.step*(k-1))%1,height,self.info.th,self.info.pBRy))
+        end
+    end
+end
+
+function lib.PixelGlow_Start(r,color,N,frequency,length,th,xOffset,yOffset,border,key,frameLevel)
+    if not r then
+        return
+    end
+    if not color then
+        color = {0.95,0.95,0.32,1}
+    end
+
+    if not(N and N>0) then
+        N = 8
+    end
+
+    local period
+    if frequency then
+        if not(frequency>0 or frequency<0) then
+            period = 4
+        else
+            period = 1/frequency
+        end
+    else
+        period = 4
+    end
+    local width,height = r:GetSize()
+    length = length or math.floor((width+height)*(2/N-0.1))
+    length = min(length,min(width,height))
+    th = th or 1
+    xOffset = xOffset or 0
+    yOffset = yOffset or 0
+    key = key or ""
+
+    addFrameAndTex(r,color,"_PixelGlow",key,N,xOffset,yOffset,textureList.white,{0,1,0,1},nil,frameLevel)
+    local f = r["_PixelGlow"..key]
+    if not f.masks then
+        f.masks = {}
+    end
+    if not f.masks[1] then
+        f.masks[1] = GlowMaskPool:Acquire()
+        f.masks[1]:SetTexture(textureList.empty, "CLAMPTOWHITE","CLAMPTOWHITE")
+        f.masks[1]:Show()
+    end
+    f.masks[1]:SetPoint("TOPLEFT",f,"TOPLEFT",th,-th)
+    f.masks[1]:SetPoint("BOTTOMRIGHT",f,"BOTTOMRIGHT",-th,th)
+
+    if not(border==false) then
+        if not f.masks[2] then
+            f.masks[2] = GlowMaskPool:Acquire()
+            f.masks[2]:SetTexture(textureList.empty, "CLAMPTOWHITE","CLAMPTOWHITE")
+        end
+        f.masks[2]:SetPoint("TOPLEFT",f,"TOPLEFT",th+1,-th-1)
+        f.masks[2]:SetPoint("BOTTOMRIGHT",f,"BOTTOMRIGHT",-th-1,th+1)
+
+        if not f.bg then
+            f.bg = GlowTexPool:Acquire()
+            f.bg:SetColorTexture(0.1,0.1,0.1,0.8)
+            f.bg:SetParent(f)
+            f.bg:SetAllPoints(f)
+            f.bg:SetDrawLayer("ARTWORK",6)
+            f.bg:AddMaskTexture(f.masks[2])
+        end
+    else
+        if f.bg then
+            GlowTexPool:Release(f.bg)
+            f.bg = nil
+        end
+        if f.masks[2] then
+            GlowMaskPool:Release(f.masks[2])
+            f.masks[2] = nil
+        end
+    end
+    for _,tex in pairs(f.textures) do
+        if tex:GetNumMaskTextures() < 1 then
+            tex:AddMaskTexture(f.masks[1])
+        end
+    end
+    f.timer = f.timer or 0
+    f.info = f.info or {}
+    f.info.step = 1/N
+    f.info.period = period
+    f.info.th = th
+    if f.info.length ~= length then
+        f.info.width = nil
+        f.info.length = length
+    end
+    pUpdate(f, 0)
+    f:SetScript("OnUpdate",pUpdate)
+end
+
+function lib.PixelGlow_Stop(r,key)
+    if not r then
+        return
+    end
+    key = key or ""
+    if not r["_PixelGlow"..key] then
+        return false
+    else
+        GlowFramePool:Release(r["_PixelGlow"..key])
+    end
+end
+
+table.insert(lib.glowList, "Pixel Glow")
+lib.startList["Pixel Glow"] = lib.PixelGlow_Start
+lib.stopList["Pixel Glow"] = lib.PixelGlow_Stop
+
 
 --Overlay stuff
 local unusedOverlayGlows = {};
@@ -959,6 +1019,7 @@ function ANameP_ActionBarOverlayGlowAnimOutMixin:OnFinished()
 	tinsert(unusedOverlayGlows, overlay);
 	actionButton.overlay = nil;
 end
+
 
 --Cooldown
 local function asCooldownFrame_Clear(self)
@@ -1573,11 +1634,7 @@ local function updateTargetNameP(self)
 	end
 
 	if UnitIsUnit(self.unit, "target") then		
-		if self.alerthealthbar then
-			--ANameP_HideOverlayGlow(healthBar);
-		end
 
-		self.alerthealthbar = false;
 		height = orig_height + ANameP_TargetHealthBarHeight;
 		self.healthtext:Show();
 
@@ -1585,16 +1642,6 @@ local function updateTargetNameP(self)
 			casticon:SetWidth((height + cast_height + 2) * 1.2);
 			casticon:SetHeight(height + cast_height + 2);
 			casticon.border:SetVertexColor(1,1,1);
-
-			--Alert 크기 조정
-			if self.interruptalert then
-				ANameP_HideOverlayGlow(casticon);
-				if self.interruptalert == 1 then
-					ANameP_ShowOverlayGlow(casticon, false);
-				else
-					ANameP_ShowOverlayGlow(casticon, true);
-				end
-			end
 		end
 
 		if GetCVarBool("nameplateResourceOnTarget") then
@@ -1612,16 +1659,6 @@ local function updateTargetNameP(self)
 			casticon:SetWidth((height + cast_height + 2) * 1.2);
 			casticon:SetHeight(height + cast_height + 2);
 			casticon.border:SetVertexColor(0,0,0);
-
-			--Alert 크기 조정
-			if self.interruptalert then
-				ANameP_HideOverlayGlow(casticon);
-				if self.interruptalert == 1 then
-					ANameP_ShowOverlayGlow(casticon, false);
-				else
-					ANameP_ShowOverlayGlow(casticon, true);
-				end
-			end
 		end
 		
 		if UnitFrame.name:IsShown() then
@@ -1793,7 +1830,7 @@ local function updateHealthbarColor(self)
 		end
 
 		if ANameP_AlertList[unitname][4] == 1 then
-			--ANameP_ShowOverlayGlow(healthBar);
+			lib.PixelGlow_Start(healthBar);
 			self.alerthealthbar = true	
 		end
 		return;
@@ -1802,16 +1839,10 @@ local function updateHealthbarColor(self)
 	-- Cast Interrupt
 	local status = UnitThreatSituation("player", self.unit);
 
-	if self.interruptalert and self.interruptalert >= 1 and status then
-		if self.colorlevel < ColorLevel.Interrupt  then
-			self.colorlevel = ColorLevel.Interrupt;
-			setColoronStatusBar(self, ANameP_InterruptAlertColor.r, ANameP_InterruptAlertColor.g, ANameP_InterruptAlertColor.b);
-		end
-		return;
+	if self.interruptalert and self.interruptalert == 1 and status then
+		lib.PixelGlow_Start(healthBar, {0, 1, 0.32, 1});
 	else
-		if self.colorlevel == ColorLevel.Interrupt then
-			self.colorlevel = ColorLevel.Reset;			
-		end
+		lib.PixelGlow_Stop(healthBar);
 	end
 
 	--Target Check 
@@ -2058,17 +2089,22 @@ local function checkSpellCasting(self)
 			frameIcon:SetTexture(texture);
 			self.casticon:Show();
 			if  isDanger then
-				ANameP_ShowOverlayGlow(self.casticon, false);
+				lib.PixelGlow_Start(self.casticon, {0, 1, 0.32, 1});
 				self.interruptalert = 1;
 			elseif notInterruptible == false then
-				ANameP_ShowOverlayGlow(self.casticon, true);
+				--lib.PixelGlow_Start(self.casticon, {0, 1, 0.32, 1});
 				self.interruptalert = 2;
 			else
 				self.interruptalert = nil;	
 			end	
 		else
 			self.casticon:Hide();
-			ANameP_HideOverlayGlow(self.casticon);
+			if self.interruptalert == 1 then
+				ANameP_HideOverlayGlow(self.casticon);
+			elseif self.interruptalert == 2 then
+				lib.PixelGlow_Stop(self.casticon);
+			end
+
 			self.interruptalert = nil;
 		end						
 	end
@@ -2112,7 +2148,7 @@ local function addNamePlate(namePlateUnitToken)
 				namePlateFrameBase.asNamePlates.CCdebuff:Hide();
 				namePlateFrameBase.asNamePlates.interruptalert = nil;
 				namePlateFrameBase.asNamePlates.debuffColor = nil;
-				unitFrame.BuffFrame:SetAlpha(1);
+				unitFrame.BuffFrame:SetAlpha(1);				
 			end
 			return;
 		end
@@ -2130,7 +2166,7 @@ local function addNamePlate(namePlateUnitToken)
 				namePlateFrameBase.asNamePlates.CCdebuff:Hide();
 				namePlateFrameBase.asNamePlates.interruptalert = nil;
 				namePlateFrameBase.asNamePlates.debuffColor = nil;			
-				unitFrame.BuffFrame:SetAlpha(1);
+				unitFrame.BuffFrame:SetAlpha(1);				
 			end
 			return;
 		end
@@ -2420,7 +2456,7 @@ local function addNamePlate(namePlateUnitToken)
 					checkcolor = true;
 				end
 				checkaura = true;
-				unitFrame.BuffFrame:SetAlpha(0);
+				unitFrame.BuffFrame:SetAlpha(0);				
 				unitFrame:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
 				unitFrame:UnregisterEvent("UNIT_THREAT_LIST_UPDATE");
 				unitFrame:UnregisterEvent("UNIT_AURA");
@@ -2476,6 +2512,12 @@ local function removeNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates:UnregisterEvent("PLAYER_TARGET_CHANGED");
 		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_START");
 		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_DELAYED");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_STOP");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_FAILED");
 		namePlateFrameBase.asNamePlates:SetScript("OnEvent", nil);
 		namePlateFrameBase.asNamePlates.r = nil;
 		namePlateFrameBase.asNamePlates.debuffColor = nil;
@@ -2484,7 +2526,7 @@ local function removeNamePlate(namePlateUnitToken)
 		if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
 
 			if namePlateFrameBase.asNamePlates.alerthealthbar then
-				--ANameP_HideOverlayGlow(namePlateFrameBase.UnitFrame.healthBar);
+				lib.PixelGlow_Stop(namePlateFrameBase.UnitFrame.healthBar);
 				namePlateFrameBase.asNamePlates.alerthealthbar = false;
 				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r, namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
 				namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
@@ -2494,6 +2536,8 @@ local function removeNamePlate(namePlateUnitToken)
 				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r, namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
 				namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
 			end
+
+			
 		end		
 	end
 
