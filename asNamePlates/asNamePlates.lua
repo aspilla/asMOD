@@ -2100,9 +2100,9 @@ local function checkSpellCasting(self)
 		else
 			self.casticon:Hide();
 			if self.interruptalert == 1 then
-				ANameP_HideOverlayGlow(self.casticon);
-			elseif self.interruptalert == 2 then
 				lib.PixelGlow_Stop(self.casticon);
+			elseif self.interruptalert == 2 then
+				--lib.PixelGlow_Stop(self.casticon);
 			end
 
 			self.interruptalert = nil;
