@@ -1,6 +1,6 @@
 local asMOD;
 local asMOD_UIScale = 0.75;
-local asMOD_CurrVersion = 230204;
+local asMOD_CurrVersion = 230216;
 local bAction = false;
 asMOD_t_position = {};
 
@@ -119,7 +119,24 @@ local function asMOD_Setup()
 
 	print ("[asMOD] Details, Bigwigs, DBM 설정을 합니다.");
 
-	local bload = LoadAddOn("BigWigs")
+	local bload = LoadAddOn("BugSack")
+
+	if bload then
+		BugSackDB = {
+			["soundMedia"] = "BugSack: Fatality",
+			["altwipe"] = true,
+			["useMaster"] = false,
+			["fontSize"] = "GameFontHighlight",
+			["mute"] = true,
+			["auto"] = false,
+			["chatframe"] = false,
+		}
+		BugSackLDBIconDB = {
+			["minimapPos"] = 234.2022186215915,
+		}		
+	end
+
+	bload = LoadAddOn("BigWigs")
 
 	if bload then
 
