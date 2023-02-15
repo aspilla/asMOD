@@ -87,113 +87,112 @@ local ACRB_DispelAlertList = {
 --직업별 생존기 등록 (1분이상 쿨다운), 용군단 Version
 local ACRB_PVPBuffList = {
 
-	--기원사
-	[357170] = true, --시간 팽창
-	[363916] = true, --흑요석 비늘
-	[374348] = true, --소생의 불길
-	[363534] = true, --되돌리기
-	[370960] = true, --애매랄드 교감
-	[378441] = true, --시간정지
-
-	--전사
-	[236273] = true, --결투
-	[118038] = true, --투사의 혼
-	[12975] = true, --최후의 저항
-	[871] = true, --방패의 벽
-	[97463] = true, --재집결의 함성
-	[184364] = true, --격노의 재생력
-	[386394] = true, --역전의 용사
-	[392966] = true, --주문막기
-
-	--도적
-	[185311] = true, --진홍색 약병
-	[11327] = true, --소멸
-	[31224] = true, --그림자 망토
-	[31230] = true, --구사일생
-	[5277] = true, --회피
-
-	--악사
-	[212800] = true, --흐릿해지기
-	[187827] = true, --탈태
-	[206803] = true, --하늘에서 내리는 비
-	[196555] = true, --황천걸음
-	[209426] = true, --어둠
-
-
-	--수도
-	[202162] = true, --해악방지
-	[116849] = true, --기의고치
-	[322507] = true, --천신주
-	[115203] = true, --강화주
-	[122783] = true, --마법해소
-	[122278] = true, --해악감퇴
-	[132578] = true, --흑우의 원령
-	[115176] = true, --명상
-	[125174] = true, --업보의 손아귀
-
-	--죽기
-	[51052] = true, --대마법지대
-	[48707] = true, --대마법 보호막
-	[48743] = true, --죽음의 서약
-	[48792] = true, --얼음같은 인내력
-	[114556] = true, --연옥
-	[81256] = true, --춤추는 룬무기
-	[219809] = true, --묘비
-	[55233] = true, --흡혈
-
-	--사냥꾼
-	[53480] = true, --희생의 표효
-	[109304] = true, --활기
-	[264735] = true, --적자 생존
-	[186265] = true, --거북의 상
-
-	--성기사
-	[228049] = true, --잊힌 여왕의 수호자
-	[642] = true, --천상의 보호막
-	[31850] = true, --헌신적인 수호자
-	[86659] = true, --고대 왕의 수호자
-	[327193] = true, --영광의 순간
-	[205191] = true, --눈에는 눈
-	[498] = true, --신의 가호
-	[31821] = true, --오라 숙련
-	[6940] = true, --희생의 축복
-	[1022] = true, --보호의 축복
-	[204018] = true, --주문수호의 축복
-	
-	--주술사
-	[210918] = true, -- 에테리얼 형상
-	[108271] = true, --영혼-이동
-	[108281] = true, --고대의 인도
-
-	--마법사 
-	[45438] = true, --얼음 방패
-	[198111] = true, --시간의 보호막
-	[110959] = true, --상급 투명화
-	[342246] = true, --시간돌리기
-	[55342] = true, --환영복제
-	--드루이드
-	[305497] = true, --가시
-	[354654] = true, --숲의 보호
-	[22812] = true, --나무 껍질
-	[157982] = true, --평온
-	[102342] = true, --무쇠 껍질
-	[61336] = true, --생존본능
-	[200851] = true, --잠자는-자의-분노
-
-	--흑마법사
-	[104773] = true, --영원한 결의
-	[108416] = true, --어둠의 서약
-
-	--사제
-	[215769] = true, --구원의 영혼
-	[328530] = true, --신속한 승천
-	[197268] = true, --희망의 빛줄기
-	[19236] = true, --구원의 기도
-	[81782] = true, --신의 권능 방벽
-	[33206] = true, --고통억제
-	[64843] = true, --천상의 찬가
-	[47788] = true, --수호영혼
-	[47585] = true, --분산
+	[236273] = true, --WARRIOR
+	[118038] = true, --WARRIOR
+	[12975] = true, --WARRIOR
+	[871] = true, --WARRIOR
+	[97463] = true, --WARRIOR
+	[383762] = true, --WARRIOR
+	[184364] = true, --WARRIOR
+	[386394] = true, --WARRIOR
+	[392966] = true, --WARRIOR
+	[11327] = true, --ROGUE
+	[31224] = true, --ROGUE
+	[31230] = true, --ROGUE
+	[5277] = true, --ROGUE
+	[212800] = true, --DEMONHUNTER
+	[187827] = true, --DEMONHUNTER
+	[206803] = true, --DEMONHUNTER
+	[196555] = true, --DEMONHUNTER
+	[204021] = true, --DEMONHUNTER
+	[209258] = true, --DEMONHUNTER
+	[209426] = true, --DEMONHUNTER
+	[388615] = true, --MONK
+	[115310] = true, --MONK
+	[116849] = true, --MONK
+	[115399] = true, --MONK
+	[120954] = true, --MONK
+	[122783] = true, --MONK
+	[122278] = true, --MONK
+	[132578] = true, --MONK
+	[115176] = true, --MONK
+	[51052] = true, --DEATHKNIGHT
+	[48707] = true, --DEATHKNIGHT
+	[327574] = true, --DEATHKNIGHT
+	[48743] = true, --DEATHKNIGHT
+	[48792] = true, --DEATHKNIGHT
+	[114556] = true, --DEATHKNIGHT
+	[81256] = true, --DEATHKNIGHT
+	[219809] = true, --DEATHKNIGHT
+	[55233] = true, --DEATHKNIGHT
+	[53480] = true, --HUNTER
+	[109304] = true, --HUNTER
+	[264735] = true, --HUNTER
+	[370960] = true, --EVOKER
+	[363534] = true, --EVOKER
+	[357170] = true, --EVOKER
+	[374348] = true, --EVOKER
+	[374227] = true, --EVOKER
+	[363916] = true, --EVOKER
+	[354654] = true, --DRUID
+	[22812] = true, --DRUID
+	[157982] = true, --DRUID
+	[102342] = true, --DRUID
+	[61336] = true, --DRUID
+	[200851] = true, --DRUID
+	[108238] = true, --DRUID
+	[124974] = true, --DRUID
+	[104773] = true, --WARLOCK
+	[108416] = true, --WARLOCK
+	[215769] = true, --PRIEST
+	[328530] = true, --PRIEST
+	[197268] = true, --PRIEST
+	[19236] = true, --PRIEST
+	[81782] = true, --PRIEST
+	[33206] = true, --PRIEST
+	[372835] = true, --PRIEST
+	[391124] = true, --PRIEST
+	[265202] = true, --PRIEST
+	[64843] = true, --PRIEST
+	[47788] = true, --PRIEST
+	[47585] = true, --PRIEST
+	[108968] = true, --PRIEST
+	[15286] = true, --PRIEST
+	[199452] = true, --PALADIN
+	[31850] = true, --PALADIN
+	[378974] = true, --PALADIN
+	[86659] = true, --PALADIN
+	[387174] = true, --PALADIN
+	[327193] = true, --PALADIN
+	[205191] = true, --PALADIN
+	[184662] = true, --PALADIN
+	[157047] = true, --PALADIN
+	[31821] = true, --PALADIN
+	[633] = true, --PALADIN
+	[6940] = true, --PALADIN
+	[1022] = true, --PALADIN
+	[204018] = true, --PALADIN
+	[210918] = true, --SHAMAN
+	[108280] = true, --SHAMAN
+	[98008] = true, --SHAMAN
+	[198838] = true, --SHAMAN
+	[207399] = true, --SHAMAN
+	[108271] = true, --SHAMAN
+	[198103] = true, --SHAMAN
+	[108281] = true, --SHAMAN
+	[198158] = true, --MAGE
+	[110959] = true, --MAGE
+	[342246] = true, --MAGE
+	[66] = true, --MAGE
+	[55342] = true, --MAGE
+	[235219] = true, --MAGE
+	[86949] = true, --MAGE
+	[125174] = true, --MONK
+	[186265] = true, --HUNTER
+	[378441] = true, --EVOKER
+	[228049] = true, --PALADIN
+	[642] = true, --PALADIN
+	[45438] = true, --MAGE
 
 }
 
