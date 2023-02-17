@@ -24,11 +24,11 @@ local ANameP_AggroColor = {r = 0.5, g = 1, b = 1}; -- 어그로 대상일때 바
 local ANameP_TankAggroLoseColor = {r = 1, g = 0.5, b= 0.5}; -- 탱커일때 어그로가 다른 탱커가 아닌사람일때
 local ANameP_TankAggroLoseColor2 = {r = 1, g = 0.1, b= 0.5}; -- 어그로가 파티내 다른 탱커일때
 local ANameP_TankAggroLoseColor3 = {r = 0.1, g = 0.3, b= 1}; -- 어그로가 Pet 일때 혹은 Tanking 중인데 어그로가 낮을때
-local ANameP_InterruptAlertColor = {r = 0, g = 1, b = 0.5};	 -- 차단 이름표 색상상
 local ANameP_ShowListFirst = true		-- 알림 List 가 있다면 먼저 보인다. (가나다라 순서)
 local ANameP_WeakStealableBuffAlert = false -- 훔칠 버프 알림을 약하게 기본은 꺼 있음
 local ANameP_ShowCCDebuff = true		-- 오른쪽에 CC Debuff만 별도로 보이기
 local ANameP_CCDebuffSize = 16			-- CC Debuff Size;
+local ANameP_HideModifier = 1			-- ALT(1), CTRL(2), SHIFT(3) 지원 nil이면 기능 끄기
 
 local ANameP_AggroSize = 12;			-- 어그로 표시 Text Size
 local ANameP_HealerSize = 14;			-- 힐러표시 Text Size
@@ -797,10 +797,19 @@ local  pUpdate = function(self,elapsed)
     end
 end
 
+local checkAlert = {};
+
 function lib.PixelGlow_Start(r,color,N,frequency,length,th,xOffset,yOffset,border,key,frameLevel)
     if not r then
         return
     end
+
+	if checkAlert[r] then
+		return;
+	end
+
+	checkAlert[r] = true;
+
     if not color then
         color = {0.95,0.95,0.32,1}
     end
@@ -887,7 +896,14 @@ end
 function lib.PixelGlow_Stop(r,key)
     if not r then
         return
-    end
+   	end
+
+	if not checkAlert[r] then
+		return;
+	end
+
+	checkAlert[r] = nil;
+		
     key = key or ""
     if not r["_PixelGlow"..key] then
         return false
@@ -1612,8 +1628,6 @@ local function updateTargetNameP(self)
 		return;
     end
 
-
-
 	local orig_height = self.orig_height
 	local cast_height = 8;
 
@@ -1809,17 +1823,18 @@ local function updateHealthbarColor(self)
 	local unit = self.unit;
 
 	local parent = self:GetParent();
-
+	
     if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden()  then
 		return;
     end
-	
+	local UnitFrame  = parent.UnitFrame;	
 	local healthBar = parent.UnitFrame.healthBar;
 
     if not healthBar and healthBar:IsForbidden() then
 		return;
     end
 
+	local shouldshow = false;
 	-- ColorLevel.Name;
 	local unitname = GetUnitName(self.unit);
 	
@@ -1831,9 +1846,9 @@ local function updateHealthbarColor(self)
 
 		if ANameP_AlertList[unitname][4] == 1 then
 			lib.PixelGlow_Start(healthBar);
-			self.alerthealthbar = true	
-		end
-		return;
+			self.alerthealthbar = true;
+			shouldshow = true;
+		end		
 	end
 
 	-- Cast Interrupt
@@ -1843,6 +1858,27 @@ local function updateHealthbarColor(self)
 		lib.PixelGlow_Start(healthBar, {0, 1, 0.32, 1});
 	else
 		lib.PixelGlow_Stop(healthBar);
+	end
+
+	if self.interruptalert and self.interruptalert >= 1 then
+		shouldshow = true;
+	end
+
+	if (ANameP_HideModifier == 1 and  IsAltKeyDown()) or (ANameP_HideModifier == 2 and  IsControlKeyDown()) or  (ANameP_HideModifier == 3 and  IsShiftKeyDown()) then
+		if UnitIsUnit(self.unit, "target") or shouldshow then	
+			self:Show();
+			UnitFrame:Show();
+		else
+			self:Hide();
+			UnitFrame:Hide();
+		end
+	else
+		self:Show();
+		UnitFrame:Show();
+	end
+
+	if unitname and ANameP_AlertList[unitname] then
+		return;
 	end
 
 	--Target Check 
