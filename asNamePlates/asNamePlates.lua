@@ -1864,17 +1864,18 @@ local function updateHealthbarColor(self)
 		shouldshow = true;
 	end
 
+	-- 이름표 끄기
 	if (ANameP_HideModifier == 1 and  IsAltKeyDown()) or (ANameP_HideModifier == 2 and  IsControlKeyDown()) or  (ANameP_HideModifier == 3 and  IsShiftKeyDown()) then
-		if UnitIsUnit(self.unit, "target") or shouldshow then	
+		if UnitIsUnit(self.unit, "target") or UnitIsUnit(self.unit, "focus")  or shouldshow then
 			self:Show();
-			UnitFrame:Show();
+			UnitFrame:Show();			
 		else
 			self:Hide();
-			UnitFrame:Hide();
+			UnitFrame:Hide();			
 		end
 	else
 		self:Show();
-		UnitFrame:Show();
+		UnitFrame:Show();	
 	end
 
 	if unitname and ANameP_AlertList[unitname] then
