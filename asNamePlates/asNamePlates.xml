@@ -1,6 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Script file="asNamePlates.lua"/>
 	<Frame name="asNamePlatesBuffFrameTemplate" virtual="true" enableMouse="false">
 		<Size>
 			<AbsDimension x="17" y="17"/>
@@ -127,4 +126,5 @@
 			<OnHide method="OnHide"/>
 		</Scripts>
 	</Frame>
+	<Script file="asNamePlates.lua"/>
 </Ui>

@@ -1,6 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Script file="asOverlay.lua"/>
 	<Frame name="asOverlayTemplate" virtual="true">
 		<Animations>
 			<AnimationGroup name="$parentAnimIn" parentKey="animIn">
@@ -31,4 +30,5 @@
 			<OnShow function="asOverlayTexture_OnShow"/>
 		</Scripts>
 	</Frame>
+	<Script file="asOverlay.lua"/>
 </Ui>
