@@ -28,17 +28,13 @@ local ANameP_ShowListFirst = true		-- 알림 List 가 있다면 먼저 보인다
 local ANameP_WeakStealableBuffAlert = false -- 훔칠 버프 알림을 약하게 기본은 꺼 있음
 local ANameP_ShowCCDebuff = true		-- 오른쪽에 CC Debuff만 별도로 보이기
 local ANameP_CCDebuffSize = 16			-- CC Debuff Size;
-local ANameP_HideModifier = 1			-- ALT(1), CTRL(2), SHIFT(3) 지원 nil이면 기능 끄기
-
 local ANameP_AggroSize = 12;			-- 어그로 표시 Text Size
 local ANameP_HealerSize = 14;			-- 힐러표시 Text Size
 local ANameP_TargetHealthBarHeight = 3;	-- 대상 체력바 높이 증가치 (+3)
 local ANameP_HeathTextSize = 8;			-- 대상 체력숫자 크기
 local ANameP_UpdateRate = 0.5;			-- 버프 Check 반복 시간 (초)
 local ANameP_LowHealthAlert = true  	-- 낮은 체력 색상 변경 사용
-local ANameP_Alpha_Normal = 0.5			-- 비전투 중 투명도
 local ANameP_LowHealthColor = {r = 1, g = 0.8, b= 0.5}; -- 낮은 체력 이름표 색상 변경
-local ANameP_Alpha_Combat = 1			-- 전투중 투명도
 local ANameP_EmemyPlateSize = {100, 20};
 
 local ANameP_ShowList = nil;
@@ -208,6 +204,11 @@ ANameP_ShowList_EVOKER_2 = {
 -- { r, g, b, 빤작임 여부}
 local ANameP_AlertList = {
 	["폭발물"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
+	["쉬바라"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
+	["우르줄"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
+	["파멸수호병"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
+	["격노수호병"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
+	["지옥불정령"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
 	["원한의 망령"] = {1, 1, 1, 0},	-- 흰색 빤짝이 (없음)
 --	["어둠그늘 곰팡이"] = {0, 1, 0, 0},	-- 녹색 빤짝이 (없음)
 --["절단 훈련용 허수아비"] = {0, 1, 0.5, 1},	
@@ -353,13 +354,137 @@ local ANameP_PVEBuffList = {
 }
 
 local ANameP_DangerousSpellList = { 
-	[383823] = true,
+	[135234] = true,
+	[133262] = true,
+	[294665] = true,
+	[39945] = true,
+	[134795] = true,
+	[124935] = true,
+	[135621] = true,
+	[140983] = true,
+	[142621] = true,
+	[33975] = true,
+	[282081] = true,
 	[385652] = true,
+	[29427] = true,
+	[17843] = true,
+	[46181] = true,
+	[36819] = true,
+	[39013] = true,
+	[255824] = true,
+	[253562] = true,
+	[253583] = true,
+	[255041] = true,
+	[253544] = true,
+	[253517] = true,
+	[256849] = true,
+	[252781] = true,
+	[250368] = true,
+	[250096] = true,
+	[257397] = true,
+	[257899] = true,
+	[257736] = true,
+	[258779] = true,
+	[257784] = true,
+	[257732] = true,
+	[256060] = true,
+	[267273] = true,
+	[269973] = true,
+	[270923] = true,
+	[270901] = true,
+	[270492] = true,
+	[267763] = true,
+	[257791] = true,
+	[300764] = true,
+	[300650] = true,
+	[300171] = true,
+	[299588] = true,
+	[300087] = true,
+	[300414] = true,
+	[300514] = true,
+	[300436] = true,
+	[301629] = true,
+	[284219] = true,
+	[301088] = true,
+	[293729] = true,
+	[298669] = true,
+	[268050] = true,
+	[268030] = true,
+	[268309] = true,
+	[267977] = true,
+	[274437] = true,
+	[268317] = true,
+	[268322] = true,
+	[268375] = true,
+	[276767] = true,
+	[267818] = true,
+	[256957] = true,
+	[274569] = true,
+	[272571] = true,
+	[263318] = true,
+	[263775] = true,
+	[268061] = true,
+	[265968] = true,
+	[261635] = true,
+	[272700] = true,
+	[268061] = true,
+	[265912] = true,
+	[268709] = true,
+	[263202] = true,
+	[280604] = true,
+	[268129] = true,
+	[268702] = true,
+	[263103] = true,
+	[263066] = true,
+	[268797] = true,
+	[269090] = true,
+	[262540] = true,
+	[262092] = true,
+	[260879] = true,
+	[266106] = true,
+	[265089] = true,
+	[265091] = true,
+	[265433] = true,
+	[272183] = true,
+	[278961] = true,
+	[265523] = true,
+	[257791] = true,
+	[258128] = true,
+	[258153] = true,
+	[258313] = true,
+	[258869] = true,
+	[258634] = true,
+	[258935] = true,
+	[266225] = true,
+	[263959] = true,
+	[265876] = true,
+	[265368] = true,
+	[266036] = true,
+	[278551] = true,
+	[265407] = true,
+	[82362] = true,
+	[75823] = true,
+	[102173] = true,
+	[75763] = true,
+	[80352] = true,
+	[93468] = true,
+	[93844] = true,
+	[79351] = true,
+	[76171] = true,
+	[76008] = true,
+	[103241] = true,
+	[43451] = true,
+	[43431] = true,
+	[43548] = true,
+	[96435] = true,
+	[96466] = true,
+	[310839] = true,
 	[396640] = true,
 	[367500] = true,
 	[384638] = true,
 	[377950] = true,
 	[381770] = true,
+	[363607] = true,
 	[374080] = true,
 	[384014] = true,
 	[375056] = true,
@@ -386,6 +511,7 @@ local ANameP_DangerousSpellList = {
 	[237391] = true,
 	[238543] = true,
 	[242724] = true,
+	[212773] = true,
 	[209485] = true,
 	[209410] = true,
 	[209413] = true,
@@ -450,33 +576,138 @@ local ANameP_DangerousSpellList = {
 	[113691] = true,
 	[113690] = true,
 	[107356] = true,
-	[154527] = true,
-	[154623] = true,
-	[157797] = true,
-	[154221] = true,
-	[156854] = true,
-	[156975] = true,
-	[151545] = true,
-	[151558] = true,
-	[151581] = true,
-	[150759] = true,
-	[150677] = true,
-	[149997] = true,
-	[168082] = true,
-	[168041] = true,
-	[163966] = true,
-	[154055] = true,
-	[152818] = true,
-	[161199] = true,
-	[155505] = true,
-	[169088] = true,
-	[169151] = true,
-	[155586] = true,
-	[155588] = true,
+	[332666] = true,
+	[332706] = true,
+	[332612] = true,
+	[332084] = true,
+	[323064] = true,
+	[325700] = true,
+	[325701] = true,
+	[326607] = true,
+	[323538] = true,
+	[323552] = true,
+	[323057] = true,
+	[321828] = true,
+	[322938] = true,
+	[324914] = true,
+	[324776] = true,
+	[326046] = true,
+	[340544] = true,
+	[322450] = true,
+	[257397] = true,
+	[319070] = true,
+	[328338] = true,
+	[328016] = true,
+	[326836] = true,
+	[321038] = true,
+	[327481] = true,
+	[317936] = true,
+	[317963] = true,
+	[327413] = true,
+	[328295] = true,
+	[328137] = true,
+	[328331] = true,
+	[358131] = true,
+	[350922] = true,
+	[357404] = true,
+	[355888] = true,
+	[355930] = true,
+	[355934] = true,
+	[354297] = true,
+	[356537] = true,
+	[347775] = true,
+	[347903] = true,
+	[355057] = true,
+	[355225] = true,
+	[357260] = true,
+	[356407] = true,
+	[356404] = true,
+	[324589] = true,
+	[341902] = true,
+	[341969] = true,
+	[342139] = true,
+	[330562] = true,
+	[330810] = true,
+	[333231] = true,
+	[320170] = true,
+	[322493] = true,
+	[334748] = true,
+	[320462] = true,
+	[324293] = true,
+	[338353] = true,
+	[257397] = true,
+	[149955] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[11082] = true,
+	[11085] = true,
+	[93655] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[21807] = true,
+	[21807] = true,
+	[86620] = true,
+	[119300] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[86620] = true,
+	[15245] = true,
+	[16798] = true,
+	[86620] = true,
+	[12471] = true,
+	[68982] = true,
 	[374623] = true,
 	[372315] = true,
 	[372394] = true,
 	[310839] = true,
+	[81713] = true,
+	[80734] = true,
 }
 
 
@@ -1285,9 +1516,9 @@ end
 local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 	local numDebuffs = 1;
-	local frametype = self:GetParent():GetName() .. "Buff"
+	local frametype = self:GetParent():GetParent():GetName() .. "Buff"
 	local size_list = {};
-	local parent = self:GetParent();
+	local parent = self:GetParent():GetParent();
 	local healthBar = parent.UnitFrame.healthBar;
 
 	self.unit = unit;
@@ -1615,7 +1846,7 @@ local function updateTargetNameP(self)
 		return;
 	end
 
-	local parent = self:GetParent();
+	local parent = self:GetParent():GetParent();
 
     if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden()  then
 		return;
@@ -1745,7 +1976,7 @@ end
 -- Healthbar 색상 처리부
 local function setColoronStatusBar(self, r, g, b)
 
-	local parent = self:GetParent();
+	local parent = self:GetParent():GetParent();
 
     if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden()  then
 		return;
@@ -1822,7 +2053,7 @@ local function updateHealthbarColor(self)
 	
 	local unit = self.unit;
 
-	local parent = self:GetParent();
+	local parent = self:GetParent():GetParent();
 	
     if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden()  then
 		return;
@@ -1847,8 +2078,8 @@ local function updateHealthbarColor(self)
 		if ANameP_AlertList[unitname][4] == 1 then
 			lib.PixelGlow_Start(healthBar);
 			self.alerthealthbar = true;
-			shouldshow = true;
 		end		
+		return;
 	end
 
 	-- Cast Interrupt
@@ -1859,28 +2090,7 @@ local function updateHealthbarColor(self)
 	else
 		lib.PixelGlow_Stop(healthBar);
 	end
-
-	if self.interruptalert and self.interruptalert >= 1 then
-		shouldshow = true;
-	end
-
-	-- 이름표 끄기
-	if (ANameP_HideModifier == 1 and  IsAltKeyDown()) or (ANameP_HideModifier == 2 and  IsControlKeyDown()) or  (ANameP_HideModifier == 3 and  IsShiftKeyDown()) then
-		if UnitIsUnit(self.unit, "target") or UnitIsUnit(self.unit, "focus")  or shouldshow then
-			self:Show();
-			UnitFrame:Show();			
-		else
-			self:Hide();
-			UnitFrame:Hide();			
-		end
-	else
-		self:Show();
-		UnitFrame:Show();	
-	end
-
-	if unitname and ANameP_AlertList[unitname] then
-		return;
-	end
+	
 
 	--Target Check 
 	local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
@@ -1998,7 +2208,7 @@ local function updatePVPAggro(self)
 	end
 
 	local unit = self.unit;
-	local parent = self:GetParent();
+	local parent = self:GetParent():GetParent();
 
 	if parent.UnitFrame:IsForbidden() then
 		return;
@@ -2210,7 +2420,7 @@ local function addNamePlate(namePlateUnitToken)
 	end
 		
 	if not namePlateFrameBase.asNamePlates then
-		namePlateFrameBase.asNamePlates = CreateFrame("Frame", nil, namePlateFrameBase);
+		namePlateFrameBase.asNamePlates = CreateFrame("Frame", nil, unitFrame);
 	else
 		if namePlateFrameBase.asNamePlates.colorlevel > ColorLevel.None  then
 			namePlateFrameBase.asNamePlates.r = nil; -- 무조건 Recover
@@ -2702,7 +2912,7 @@ local function updateUnitResourceText(self, unit)
 		valuePct =  (math.ceil((value / valueMax) * 100));
 	end
 
-	if (valueMax <= 300) then
+	if (valueMax <= 300) then		
 		valuePct = value;
 	end
 
