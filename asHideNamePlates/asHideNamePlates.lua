@@ -6,11 +6,12 @@ local AHNameP_ActivateOnAllCasting = false -- 차단 가능 스킬 모두 발동
 
 local AHNameP_AlertList = {
 	["폭발물"] = true,
---	["쉬바라"] = true,	 -- 녹색 빤짝이 
---["우르줄"] = true,	 -- 녹색 빤짝이 
-	--["파멸수호병"] = true,	 -- 녹색 빤짝이 
-	--["지옥불정령"] = true,	 -- 녹색 빤짝이 
-	--["격노수호병"] = true,
+	--["쉬바라"] = true,	 -- 녹색 빤짝이 
+	--["우르줄"] = true,	 -- 녹색 빤짝이 
+--	["파멸수호병"] = true,	 -- 녹색 빤짝이 
+--	["지옥불정령"] = true,	 -- 녹색 빤짝이 
+--	["격노수호병"] = true,
+--	["지옥사냥개"] = true,
 }
 
 local AHNameP_InterruptSpellList = {
@@ -363,6 +364,70 @@ local function isFaction(unit)
 
 end
 
+local learnedlist = {};
+
+local function isInterruptReady()
+
+	for _,spellid in ipairs(learnedlist) do
+		local start, duration, enable = GetSpellCooldown(spellid);
+		local _, gcd  = GetSpellCooldown(61304);
+
+		if enable and duration <= gcd then
+			return true;
+		end
+
+	end
+
+	return false;
+
+end
+
+local function scanSpells(tab)
+
+	local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
+
+	if not tabName then
+		return;
+	end
+
+	for i=tabOffset + 1, tabOffset + numEntries do
+		local spellName, _, spellID = GetSpellBookItemName (i, BOOKTYPE_SPELL)
+		if not spellName then
+			do break end
+		end
+
+		if AHNameP_InterruptSpellList[spellID] then
+			learnedlist[#learnedlist + 1] = spellID;
+		end		
+	end
+end
+
+local function scanPetSpells()
+
+	for i = 1, 20 do
+	   	local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
+	   	local spellName, _, spellID = GetSpellBookItemName (slot, BOOKTYPE_PET)
+	   
+		if not spellName then
+			do break end
+		end
+
+		if AHNameP_InterruptSpellList[spellID] then
+			learnedlist[#learnedlist + 1] = spellID;
+		end	
+	end
+
+end
+
+local function updateInterruptIDs()
+	learnedlist = {};
+
+	scanSpells(2);
+	scanSpells(3);
+	scanPetSpells();
+	
+end
+
 local function isShow(unit)
 	local unitname = GetUnitName(unit);
 
@@ -379,11 +444,11 @@ local function isShow(unit)
 
 	if AHNameP_ActivateOnAllCasting then
 		 -- 차단 가능 스킬 모두 발동
-		if name and spellid and status and notInterruptible == false  then
+		if name and spellid and status and notInterruptible == false and (AHNameP_HideModifier <= 3 or isInterruptReady()) then
 			return true;
 		end
 	else
-		if name and spellid and AHNameP_DangerousSpellList[spellid] then
+		if name and spellid and status and AHNameP_DangerousSpellList[spellid] and (AHNameP_HideModifier <= 3 or isInterruptReady()) then
 			return true;
 		end
 	end
@@ -399,11 +464,15 @@ local function checkNeedtoHide(nameplate)
 		return false;
     end
 
-	if (AHNameP_HideModifier == 1 and  IsAltKeyDown()) or (AHNameP_HideModifier == 2 and  IsControlKeyDown()) or  (AHNameP_HideModifier == 3 and  IsShiftKeyDown()) then
-		return true;
+	local unit = nameplate.namePlateUnitToken;
+	
+	if UnitIsUnit(unit, "target") then
+		return false;
 	end
 
-	local unit = nameplate.namePlateUnitToken;
+	if (AHNameP_HideModifier == 1 and  IsAltKeyDown()) or (AHNameP_HideModifier == 2 and  IsControlKeyDown()) or  (AHNameP_HideModifier == 3 and  IsShiftKeyDown()) then
+		return true;
+	end	
 	
 	return isFaction(unit) and isShow(unit);
 end
@@ -466,9 +535,7 @@ local function AHNameP_OnUpdate()
 	end
 end
 
-local function updateInterruptIDs()
 
-end
 
 local function AHNameP_OnEvent(self)
 
@@ -492,4 +559,3 @@ local function initAddon()
 end
 
 initAddon();
-
