@@ -1,15 +1,16 @@
 ﻿---설정부
 local AHNameP_HideModifier = 4			-- ALT(1), CTRL(2), SHIFT(3), 자동(4) 지원 nil이면 기능 끄기
 local AHNameP_UpdateRate = 0.2			-- Check할 주기
+local AHNameP_ActivateOnAllCasting = false -- 차단 가능 스킬 모두 발동
 
 
 local AHNameP_AlertList = {
 	["폭발물"] = true,
-	["쉬바라"] = true,	 -- 녹색 빤짝이 
-	["우르줄"] = true,	 -- 녹색 빤짝이 
-	["파멸수호병"] = true,	 -- 녹색 빤짝이 
-	["지옥불정령"] = true,	 -- 녹색 빤짝이 
-	["격노수호병"] = true,
+--	["쉬바라"] = true,	 -- 녹색 빤짝이 
+--["우르줄"] = true,	 -- 녹색 빤짝이 
+	--["파멸수호병"] = true,	 -- 녹색 빤짝이 
+	--["지옥불정령"] = true,	 -- 녹색 빤짝이 
+	--["격노수호병"] = true,
 }
 
 local AHNameP_DangerousSpellList = { 
@@ -441,10 +442,16 @@ local function isShow(unit)
 	end
 
 	local status = UnitThreatSituation("player", unit);
-	
-	--if name and spellid and AHNameP_DangerousSpellList[spellid] then
-	if name and spellid and status and isCooldown() then
-		return true;
+
+	if AHNameP_ActivateOnAllCasting then
+		 -- 차단 가능 스킬 모두 발동
+		if name and spellid and status and notInterruptible == false and isCooldown() then
+			return true;
+		end
+	else
+		if name and spellid and AHNameP_DangerousSpellList[spellid] then
+			return true;
+		end
 	end
 end
 

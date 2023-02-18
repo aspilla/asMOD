@@ -204,11 +204,11 @@ ANameP_ShowList_EVOKER_2 = {
 -- { r, g, b, 빤작임 여부}
 local ANameP_AlertList = {
 	["폭발물"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
-	["쉬바라"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
-	["우르줄"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
-	["파멸수호병"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
-	["격노수호병"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
-	["지옥불정령"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
+	--["쉬바라"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
+	--["우르줄"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
+	--["파멸수호병"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
+	--["격노수호병"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
+	--["지옥불정령"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
 	["원한의 망령"] = {1, 1, 1, 0},	-- 흰색 빤짝이 (없음)
 --	["어둠그늘 곰팡이"] = {0, 1, 0, 0},	-- 녹색 빤짝이 (없음)
 --["절단 훈련용 허수아비"] = {0, 1, 0.5, 1},	
@@ -1380,7 +1380,7 @@ end
 
 
 -- 버프 디버프 처리부
-local function createDebuffFrame(parent, frameName)
+local function createDebuffFrame(parent)
 
 	local ret = CreateFrame("Frame", nil, parent, "asNamePlatesBuffFrameTemplate");
 	ret:EnableMouse(false);
@@ -1516,7 +1516,6 @@ end
 local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 	local numDebuffs = 1;
-	local frametype = self:GetParent():GetParent():GetName() .. "Buff"
 	local size_list = {};
 	local parent = self:GetParent():GetParent();
 	local healthBar = parent.UnitFrame.healthBar;
@@ -1605,10 +1604,9 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 			local i = aShowIdx[v][1];			
 			local name,  texture, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, _, nameplateShowAll = UnitAura(unit, i, "HELPFUL");
-			local frameName = frametype.. numDebuffs;
-					
+								
 			if (not self.buffList[numDebuffs]) then
-				self.buffList[numDebuffs] = createDebuffFrame(self, frameName);
+				self.buffList[numDebuffs] = createDebuffFrame(self);
 			end
 
 			local frame = self.buffList[numDebuffs];
@@ -1755,10 +1753,9 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 					end
 				end
 			end
-
-			local frameName = frametype.. numDebuffs;
+			
 			if (not self.buffList[numDebuffs]) then
-				self.buffList[numDebuffs] = createDebuffFrame(self, frameName)
+				self.buffList[numDebuffs] = createDebuffFrame(self)
 			end
 
 			local frame = self.buffList[numDebuffs];
