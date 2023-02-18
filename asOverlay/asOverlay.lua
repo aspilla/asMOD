@@ -1,7 +1,6 @@
 local sizeScale = 0.8;
 local longSide = 256 * sizeScale;
 local shortSide = 128 * sizeScale;
-local alpha = 0.7; -- 기본 Alpha 값값
 
 
 local function getExpirationTimeUnitAurabyID(unit, id, filter)
@@ -246,7 +245,7 @@ local function asOverlay_OnUpdate(self, elapsed)
 				
 					for i=1, #overlayList do
 						local overlay = overlayList[i];
-						overlay.texture:SetAlpha(rate * alpha);
+						overlay.texture:SetAlpha(rate * Settings.GetValue("spellActivationOverlayOpacity"));
 					end
 				end
 			end
