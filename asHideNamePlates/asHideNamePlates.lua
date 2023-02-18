@@ -466,6 +466,10 @@ local function AHNameP_OnUpdate()
 	end
 end
 
+local function updateInterruptIDs()
+
+end
+
 local function AHNameP_OnEvent(self)
 
 	-- 0.5 초 뒤에 Load
