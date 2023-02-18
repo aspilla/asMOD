@@ -2,6 +2,7 @@ local sizeScale = 0.8;
 local longSide = 256 * sizeScale;
 local shortSide = 128 * sizeScale;
 
+local settingalpha = 0.5;
 
 local function getExpirationTimeUnitAurabyID(unit, id, filter)
 
@@ -26,12 +27,12 @@ local function asOverlay_OnLoad(self)
 		
 	self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_SHOW");
 	self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE");
+	self:RegisterEvent("SETTINGS_LOADED");
 
 	SpellActivationOverlayFrame:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_SHOW");
 	SpellActivationOverlayFrame:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE");
-
 		
-	self:SetSize(longSide, longSide)
+	self:SetSize(longSide, longSide);
 end
 
 
@@ -89,21 +90,21 @@ local function asOverlay_HideAllOverlays(self)
 end
 
 
-local function asOverlayTexture_OnShow(self)
+function asOverlayTexture_OnShow(self)
 	self.animIn:Play();
 end
 
-local function asOverlayTexture_OnFadeInPlay(animGroup)
+function asOverlayTexture_OnFadeInPlay(animGroup)
 	animGroup:GetParent():SetAlpha(0);
 end
 
-local function asOverlayTexture_OnFadeInFinished(animGroup)
+function asOverlayTexture_OnFadeInFinished(animGroup)
 	local overlay = animGroup:GetParent();
 	overlay:SetAlpha(1);
 	overlay.pulse:Play();
 end
 
-local function asOverlayTexture_OnFadeOutFinished(anim)
+function asOverlayTexture_OnFadeOutFinished(anim)
 	local overlay = anim:GetRegionParent();
 	local overlayParent = overlay:GetParent();
 	overlay.pulse:Stop();
@@ -202,6 +203,8 @@ local function asOverlay_ShowAllOverlays(self, spellID, texturePath, positions, 
 	end
 end
 
+
+
 local function asOverlay_OnEvent(self, event, ...)
 	if ( event == "SPELL_ACTIVATION_OVERLAY_SHOW" ) then
 		local spellID, texture, positions, scale, r, g, b = ...;
@@ -215,6 +218,10 @@ local function asOverlay_OnEvent(self, event, ...)
 		else
 			asOverlay_HideAllOverlays(self);
 		end
+	elseif ( event == "SETTINGS_LOADED") then
+		
+		settingalpha = Settings.GetValue("spellActivationOverlayOpacity");
+		self:SetAlpha(settingalpha);
 	end
 end
 
@@ -222,8 +229,6 @@ end
 local update = 0;
 
 local function asOverlay_OnUpdate(self, elapsed)
-
-	
 
 	update = update + elapsed;
 
@@ -245,7 +250,8 @@ local function asOverlay_OnUpdate(self, elapsed)
 				
 					for i=1, #overlayList do
 						local overlay = overlayList[i];
-						overlay.texture:SetAlpha(rate * Settings.GetValue("spellActivationOverlayOpacity"));
+						settingalpha = Settings.GetValue("spellActivationOverlayOpacity");
+						overlay.texture:SetAlpha(rate * settingalpha);
 					end
 				end
 			end
@@ -260,6 +266,6 @@ frame:SetPoint("CENTER",UIParent,"CENTER", 0, 0)
 frame:SetWidth(256)
 frame:SetHeight(256)
 
-frame:SetScript("OnLoad", asOverlay_OnLoad);
 frame:SetScript("OnUpdate", asOverlay_OnUpdate);
 frame:SetScript("OnEvent", asOverlay_OnEvent);
+asOverlay_OnLoad(frame);
