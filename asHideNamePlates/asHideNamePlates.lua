@@ -13,6 +13,29 @@ local AHNameP_AlertList = {
 	--["격노수호병"] = true,
 }
 
+local AHNameP_InterruptSpellList = {
+
+	[6552] = true, --WARRIOR
+	[386071] = true, --WARRIOR
+	[1766] = true, --ROGUE
+	[183752] = true, --DEMONHUNTER
+	[116705] = true, --MONK
+	[47482] = true, --DEATHKNIGHT
+	[47528] = true, --DEATHKNIGHT
+	[187707] = true, --HUNTER
+	[147362] = true, --HUNTER
+	[351338] = true, --EVOKER
+	[106839] = true, --DRUID
+	[78675] = true, --DRUID
+	[212619] = true, --WARLOCK
+	[119898] = true, --WARLOCK
+	[15487] = true, --PRIEST
+	[31935] = true, --PALADIN
+	[96231] = true, --PALADIN
+	[57994] = true, --SHAMAN
+	[2139] = true, --MAGE
+}
+
 local AHNameP_DangerousSpellList = { 
 	[135234] = true,
 	[133262] = true,
@@ -316,103 +339,14 @@ local AHNameP_DangerousSpellList = {
 	[80734] = true,
 }
 
-local function isTalentLearned(nodeID)
-    local talentConfig = C_ClassTalents.GetActiveConfigID()
-    local nodeInfo = talentConfig and nodeID and C_Traits.GetNodeInfo(talentConfig, nodeID)
-    return nodeInfo and nodeInfo.entryIDsWithCommittedRanks and nodeInfo.entryIDsWithCommittedRanks[1] and true or false
-end
+local usePlater = LoadAddOn("Plater");
 
-local function isSpellOrTalentKnown(spellId)
-    if IsSpellKnown(spellId) then
-        return true
-    elseif isTalentLearned(spellId) then
-        return true
+local function getUnitFrame(nameplate)
+	if usePlater then
+        return nameplate.unitFrame
+    else
+        return nameplate.UnitFrame
     end
-end
-
-local interruptIDs = {};
-
-local function updateInterruptIDs()
-    local playerClass, englishClass, classIndex = UnitClass("player")
-    local specId = GetSpecializationInfo(GetSpecialization())
-     
-    if classIndex == 4 then -- 도적
-        interruptIDs[1766] = true
-    elseif classIndex == 6 then -- 죽기
-        interruptIDs[47528] = true
-    elseif classIndex == 12 then -- 악사
-        interruptIDs[183752] = true
-    elseif classIndex == 11 then -- 드루
-        if specId == 103 or specId == 104 or specId == 105 then
-            interruptIDs[106839] = true -- 야드/수드/회드
-        elseif specId == 102 then
-            interruptIDs[78675] = true -- 조드
-        end
-    elseif classIndex == 3 then -- 냥꾼
-        if specId == 255 then
-            interruptIDs[187707] = true -- SV
-        else
-            interruptIDs[147362] = true -- BM/MS
-        end
-    elseif classIndex == 10 then -- 수도사
-        interruptIDs[116705] = true --풍운/양조/운무
-    elseif classIndex == 2 then -- 기사
-        interruptIDs[96231] = true -- 보기/징기/신기
-        if specId == 66 then
-            interruptIDs[31935] = true --보기 응방
-            if IsPlayerSpell(375609) then
-                interruptIDs[375609] = true -- 천상의 종
-            end
-        end
-    elseif classIndex == 7 then -- 술사
-        interruptIDs[57994] = true
-    elseif classIndex == 1 then -- 전사
-        interruptIDs[6552] = true
-        if isTalentLearned(90307) then -- 훼방의 외침
-            interruptIDs[90307] = "386071"
-        end
-    elseif classIndex == 8 then -- 법사
-        interruptIDs[2139] = true
-    elseif classIndex == 5 then -- 사제
-        if specId == 258 then
-            interruptIDs[15487] = true
-        end
-    elseif classIndex == 9 then -- 흑마
-        interruptIDs[119910] = 119898 --Spell Lock (command ability)
-        if IsPlayerSpell(108503) then --GoSac
-            interruptIDs[132409] = 119898 --sacrificed Spell Lock (command ability)
-        end
-        if IsPlayerSpell(212619) then --Call Felhunter (PVP ability)
-            interruptIDs[212619] = true
-        end
-        if specId == 266 then
-            interruptIDs[119914] = 119898 --demo/fel guard  Axe Toss (command ability)
-        end
-    elseif classIndex == 13 then -- 기원사
-        interruptIDs[351338] = true --quell talent
-    end    
-end
-
-local function isCooldown()
-
-	local ableCD = false;
-	for interruptSpellId, playerAbility in pairs(interruptIDs) do
-        if playerAbility == true or type(playerAbility) == "string" then
-            if isSpellOrTalentKnown(interruptSpellId) then
-                interruptSpellId = tonumber(playerAbility) or interruptSpellId
-                local cdStart = GetSpellCooldown(interruptSpellId)
-                if cdStart == 0 then ableCD = true end
-            end
-        else
-            if type(playerAbility) == "number" then
-                if FindSpellOverrideByID(playerAbility) == interruptSpellId then
-                    local cdStart = GetSpellCooldown(interruptSpellId)
-                    if cdStart == 0 then ableCD = true end
-                end
-            end
-        end
-    end
-    return ableCD
 end
 
 local function isFaction(unit)
@@ -445,7 +379,7 @@ local function isShow(unit)
 
 	if AHNameP_ActivateOnAllCasting then
 		 -- 차단 가능 스킬 모두 발동
-		if name and spellid and status and notInterruptible == false and isCooldown() then
+		if name and spellid and status and notInterruptible == false  then
 			return true;
 		end
 	else
@@ -491,18 +425,17 @@ local function hideNameplates(nameplate, bshow)
 		return;
 	end
 
+	local unitframe = getUnitFrame(nameplate);
+
 	if bshow then
-		nameplate.UnitFrame:Show();
-		
+		unitframe:Show();		
 		return;
 	end
 
 	if UnitIsUnit(unit, "target") or UnitIsUnit(unit, "focus") or isShow(unit) then
-		nameplate.UnitFrame:Show();
-		
+		unitframe:Show();		
 	else
-		nameplate.UnitFrame:Hide()
-		
+		unitframe:Hide();		
 	end
 end
 
