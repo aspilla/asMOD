@@ -2125,7 +2125,6 @@ local function updateHealthbarColor(self)
 			setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
 			return;
 		else -- Tanker가 아닐때
-			local aggrocolor;
 			if status >= 1 then
 				-- Tanking
 				aggrocolor = ANameP_AggroColor;

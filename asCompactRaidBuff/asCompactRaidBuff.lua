@@ -1,5 +1,4 @@
 local ACRB_Size = 0; 					-- Buff 아이콘 증가 크기
-local ACRB_CooldownFontSize = 9; 		-- 쿨다운 폰트 사이즈
 local ACRB_BuffSizeRate = 1;			-- 기존 Size 크기 배수 
 local ACRB_ShowBuffCooldown = false		-- 버프 지속시간을 보이려면
 local ACRB_MinShowBuffFontSize = 5 		-- 이크기보다 Cooldown font Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0
@@ -30,13 +29,13 @@ ACRB_ShowList_MONK_2 = {
 
 -- 신기
 ACRB_ShowList_PALADIN_1 = {
-	["빛의 봉화"] = {0, 4},	
-	["신념의 봉화"] = {0, 5},	
+	["빛의 봉화"] = {0, 4},
+	["신념의 봉화"] = {0, 5},
 }
 
 -- 수사
 ACRB_ShowList_PRIEST_1 = {
-	["속죄"] = {3, 4},	
+	["속죄"] = {3, 4},
 	["신의 권능: 보호막"] = {15 * 0.3, 1}
 
 }
@@ -44,14 +43,14 @@ ACRB_ShowList_PRIEST_1 = {
 
 -- 신사
 ACRB_ShowList_PRIEST_2 = {
-	["소생"] = {15 * 0.3, 4},	
-	["회복의 기원"] = {0, 1},	
+	["소생"] = {15 * 0.3, 4},
+	["회복의 기원"] = {0, 1},
 
 }
 
 
 ACRB_ShowList_SHAMAN_3 = {
-	["성난 해일"] = {15 * 0.3, 1},	
+	["성난 해일"] = {15 * 0.3, 1},
 }
 
 
@@ -61,7 +60,7 @@ ACRB_ShowList_DRUID_4 = {
 	["피어나는 생명"] = {15 * 0.3, 6},
 	["회복 (싹틔우기)"] = {15 * 0.3, 2},
 	["세나리온 수호물"] = {0, 1},
-	
+
 
 }
 
@@ -73,7 +72,7 @@ ACRB_ShowList_EVOKER_2 = {
 
 -- 안보이게 할 디법
 local ACRB_BlackList = {
-	["도전자의 짐"] = 1,	
+	["도전자의 짐"] = 1,
 }
 
 
@@ -196,36 +195,323 @@ local ACRB_PVPBuffList = {
 
 }
 
--- 직업 리필 
-local ACRB_ShowList = nil;
-local ACRB_baseSize = 0;
-local show_30m_range = false;
-
-local asraid = {};
+--Overlay stuff
 
 
-local function ACRB_InitList()
+local lib = {};
 
-	local spec = GetSpecialization();
-	local localizedClass, englishClass = UnitClass("player")
-	local listname;
+local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+local textureList = {
+    empty = [[Interface\AdventureMap\BrokenIsles\AM_29]],
+    white = [[Interface\BUTTONS\WHITE8X8]],
+    shine = [[Interface\ItemSocketingFrame\UI-ItemSockets]]
+}
 
-	ACRB_ShowList = nil;
-
-	if spec then
-		listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
-	end
-
-	ACRB_ShowList = _G[listname];
-
-	--기원사 힐이면 30미터 Filter 추가
-	if englishClass == "EVOKER" and spec == 2 then
-		show_30m_range = true;
-	end
-
+local shineCoords = {0.3984375, 0.4453125, 0.40234375, 0.44921875}
+if isRetail then
+    textureList.shine = [[Interface\Artifacts\Artifacts]]
+    shineCoords = {0.8115234375,0.9169921875,0.8798828125,0.9853515625}
 end
 
-local BOSS_DEBUFF_SIZE_INCREASE = 5;
+function lib.RegisterTextures(texture,id)
+    textureList[id] = texture
+end
+
+lib.glowList = {}
+lib.startList = {}
+lib.stopList = {}
+
+local GlowParent = UIParent
+
+local GlowMaskPool = CreateFromMixins(ObjectPoolMixin)
+lib.GlowMaskPool = GlowMaskPool
+local function MaskPoolFactory(maskPool)
+    return maskPool.parent:CreateMaskTexture()
+end
+
+local MaskPoolResetter = function(maskPool,mask)
+    mask:Hide()
+    mask:ClearAllPoints()
+end
+
+ObjectPoolMixin.OnLoad(GlowMaskPool,MaskPoolFactory,MaskPoolResetter)
+GlowMaskPool.parent =  GlowParent
+
+local TexPoolResetter = function(pool,tex)
+    local maskNum = tex:GetNumMaskTextures()
+    for i = maskNum , 1, -1 do
+        tex:RemoveMaskTexture(tex:GetMaskTexture(i))
+    end
+    tex:Hide()
+    tex:ClearAllPoints()
+end
+local GlowTexPool = CreateTexturePool(GlowParent ,"ARTWORK",7,nil,TexPoolResetter)
+lib.GlowTexPool = GlowTexPool
+
+local FramePoolResetter = function(framePool,frame)
+    frame:SetScript("OnUpdate",nil)
+    local parent = frame:GetParent()
+    if parent[frame.name] then
+        parent[frame.name] = nil
+    end
+    if frame.textures then
+        for _, texture in pairs(frame.textures) do
+            GlowTexPool:Release(texture)
+        end
+    end
+    if frame.bg then
+        GlowTexPool:Release(frame.bg)
+        frame.bg = nil
+    end
+    if frame.masks then
+        for _,mask in pairs(frame.masks) do
+            GlowMaskPool:Release(mask)
+        end
+        frame.masks = nil
+    end
+    frame.textures = {}
+    frame.info = {}
+    frame.name = nil
+    frame.timer = nil
+    frame:Hide()
+    frame:ClearAllPoints()
+end
+local GlowFramePool = CreateFramePool("Frame",GlowParent,nil,FramePoolResetter)
+lib.GlowFramePool = GlowFramePool
+
+local function addFrameAndTex(r,color,name,key,N,xOffset,yOffset,texture,texCoord,desaturated,frameLevel)
+    key = key or ""
+	frameLevel = frameLevel or 8
+    if not r[name..key] then
+        r[name..key] = GlowFramePool:Acquire()
+        r[name..key]:SetParent(r)
+        r[name..key].name = name..key
+    end
+    local f = r[name..key]
+	f:SetFrameLevel(r:GetFrameLevel()+frameLevel)
+    f:SetPoint("TOPLEFT",r,"TOPLEFT",-xOffset+0.05,yOffset+0.05)
+    f:SetPoint("BOTTOMRIGHT",r,"BOTTOMRIGHT",xOffset,-yOffset+0.05)
+    f:Show()
+
+    if not f.textures then
+        f.textures = {}
+    end
+
+    for i=1,N do
+        if not f.textures[i] then
+            f.textures[i] = GlowTexPool:Acquire()
+            f.textures[i]:SetTexture(texture)
+            f.textures[i]:SetTexCoord(texCoord[1],texCoord[2],texCoord[3],texCoord[4])
+            f.textures[i]:SetDesaturated(desaturated)
+            f.textures[i]:SetParent(f)
+            f.textures[i]:SetDrawLayer("ARTWORK",7)
+            if not isRetail and name == "_AutoCastGlow" then
+                f.textures[i]:SetBlendMode("ADD")
+            end
+        end
+        f.textures[i]:SetVertexColor(color[1],color[2],color[3],color[4])
+        f.textures[i]:Show()
+    end
+    while #f.textures>N do
+        GlowTexPool:Release(f.textures[#f.textures])
+        table.remove(f.textures)
+    end
+end
+
+
+--Pixel Glow Functions--
+local pCalc1 = function(progress,s,th,p)
+    local c
+    if progress>p[3] or progress<p[0] then
+        c = 0
+    elseif progress>p[2] then
+        c =s-th-(progress-p[2])/(p[3]-p[2])*(s-th)
+    elseif progress>p[1] then
+        c =s-th
+    else
+        c = (progress-p[0])/(p[1]-p[0])*(s-th)
+    end
+    return math.floor(c+0.5)
+end
+
+local pCalc2 = function(progress,s,th,p)
+    local c
+    if progress>p[3] then
+        c = s-th-(progress-p[3])/(p[0]+1-p[3])*(s-th)
+    elseif progress>p[2] then
+        c = s-th
+    elseif progress>p[1] then
+        c = (progress-p[1])/(p[2]-p[1])*(s-th)
+    elseif progress>p[0] then
+        c = 0
+    else
+        c = s-th-(progress+1-p[3])/(p[0]+1-p[3])*(s-th)
+    end
+    return math.floor(c+0.5)
+end
+
+local  pUpdate = function(self,elapsed)
+    self.timer = self.timer+elapsed/self.info.period
+    if self.timer>1 or self.timer <-1 then
+        self.timer = self.timer%1
+    end
+    local progress = self.timer
+    local width,height = self:GetSize()
+    if width ~= self.info.width or height ~= self.info.height then
+        local perimeter = 2*(width+height)
+        if not (perimeter>0) then
+            return
+        end
+        self.info.width = width
+        self.info.height = height
+        self.info.pTLx = {
+            [0] = (height+self.info.length/2)/perimeter,
+            [1] = (height+width+self.info.length/2)/perimeter,
+            [2] = (2*height+width-self.info.length/2)/perimeter,
+            [3] = 1-self.info.length/2/perimeter
+        }
+        self.info.pTLy ={
+            [0] = (height-self.info.length/2)/perimeter,
+            [1] = (height+width+self.info.length/2)/perimeter,
+            [2] = (height*2+width+self.info.length/2)/perimeter,
+            [3] = 1-self.info.length/2/perimeter
+        }
+        self.info.pBRx ={
+            [0] = self.info.length/2/perimeter,
+            [1] = (height-self.info.length/2)/perimeter,
+            [2] = (height+width-self.info.length/2)/perimeter,
+            [3] = (height*2+width+self.info.length/2)/perimeter
+        }
+        self.info.pBRy ={
+            [0] = self.info.length/2/perimeter,
+            [1] = (height+self.info.length/2)/perimeter,
+            [2] = (height+width-self.info.length/2)/perimeter,
+            [3] = (height*2+width-self.info.length/2)/perimeter
+        }
+    end
+    if self:IsShown() then
+        if not (self.masks[1]:IsShown()) then
+            self.masks[1]:Show()
+            self.masks[1]:SetPoint("TOPLEFT",self,"TOPLEFT",self.info.th,-self.info.th)
+            self.masks[1]:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",-self.info.th,self.info.th)
+        end
+        if self.masks[2] and not(self.masks[2]:IsShown()) then
+            self.masks[2]:Show()
+            self.masks[2]:SetPoint("TOPLEFT",self,"TOPLEFT",self.info.th+1,-self.info.th-1)
+            self.masks[2]:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",-self.info.th-1,self.info.th+1)
+        end
+        if self.bg and not(self.bg:IsShown()) then
+            self.bg:Show()
+        end
+        for k,line  in pairs(self.textures) do
+            line:SetPoint("TOPLEFT",self,"TOPLEFT",pCalc1((progress+self.info.step*(k-1))%1,width,self.info.th,self.info.pTLx),-pCalc2((progress+self.info.step*(k-1))%1,height,self.info.th,self.info.pTLy))
+            line:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",self.info.th+pCalc2((progress+self.info.step*(k-1))%1,width,self.info.th,self.info.pBRx),-height+pCalc1((progress+self.info.step*(k-1))%1,height,self.info.th,self.info.pBRy))
+        end
+    end
+end
+
+function lib.PixelGlow_Start(r,color,N,frequency,length,th,xOffset,yOffset,border,key,frameLevel)
+    if not r then
+        return
+    end
+    if not color then
+        color = {0.95,0.95,0.32,1}
+    end
+
+    if not(N and N>0) then
+        N = 8
+    end
+
+    local period
+    if frequency then
+        if not(frequency>0 or frequency<0) then
+            period = 4
+        else
+            period = 1/frequency
+        end
+    else
+        period = 4
+    end
+    local width,height = r:GetSize()
+    length = length or math.floor((width+height)*(2/N-0.1))
+    length = min(length,min(width,height))
+    th = th or 1
+    xOffset = xOffset or 0
+    yOffset = yOffset or 0
+    key = key or ""
+
+    addFrameAndTex(r,color,"_PixelGlow",key,N,xOffset,yOffset,textureList.white,{0,1,0,1},nil,frameLevel)
+    local f = r["_PixelGlow"..key]
+    if not f.masks then
+        f.masks = {}
+    end
+    if not f.masks[1] then
+        f.masks[1] = GlowMaskPool:Acquire()
+        f.masks[1]:SetTexture(textureList.empty, "CLAMPTOWHITE","CLAMPTOWHITE")
+        f.masks[1]:Show()
+    end
+    f.masks[1]:SetPoint("TOPLEFT",f,"TOPLEFT",th,-th)
+    f.masks[1]:SetPoint("BOTTOMRIGHT",f,"BOTTOMRIGHT",-th,th)
+
+    if not(border==false) then
+        if not f.masks[2] then
+            f.masks[2] = GlowMaskPool:Acquire()
+            f.masks[2]:SetTexture(textureList.empty, "CLAMPTOWHITE","CLAMPTOWHITE")
+        end
+        f.masks[2]:SetPoint("TOPLEFT",f,"TOPLEFT",th+1,-th-1)
+        f.masks[2]:SetPoint("BOTTOMRIGHT",f,"BOTTOMRIGHT",-th-1,th+1)
+
+        if not f.bg then
+            f.bg = GlowTexPool:Acquire()
+            f.bg:SetColorTexture(0.1,0.1,0.1,0.8)
+            f.bg:SetParent(f)
+            f.bg:SetAllPoints(f)
+            f.bg:SetDrawLayer("ARTWORK",6)
+            f.bg:AddMaskTexture(f.masks[2])
+        end
+    else
+        if f.bg then
+            GlowTexPool:Release(f.bg)
+            f.bg = nil
+        end
+        if f.masks[2] then
+            GlowMaskPool:Release(f.masks[2])
+            f.masks[2] = nil
+        end
+    end
+    for _,tex in pairs(f.textures) do
+        if tex:GetNumMaskTextures() < 1 then
+            tex:AddMaskTexture(f.masks[1])
+        end
+    end
+    f.timer = f.timer or 0
+    f.info = f.info or {}
+    f.info.step = 1/N
+    f.info.period = period
+    f.info.th = th
+    if f.info.length ~= length then
+        f.info.width = nil
+        f.info.length = length
+    end
+    pUpdate(f, 0)
+    f:SetScript("OnUpdate",pUpdate)
+end
+
+function lib.PixelGlow_Stop(r,key)
+    if not r then
+        return
+    end
+    key = key or ""
+    if not r["_PixelGlow"..key] then
+        return false
+    else
+        GlowFramePool:Release(r["_PixelGlow"..key])
+    end
+end
+
+table.insert(lib.glowList, "Pixel Glow")
+lib.startList["Pixel Glow"] = lib.PixelGlow_Start
+lib.stopList["Pixel Glow"] = lib.PixelGlow_Stop
 
 --Overlay stuff
 local unusedOverlayGlows = {};
@@ -358,12 +644,38 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 	end
 end
 
+-- 직업 리필 
+local ACRB_ShowList = nil;
+local show_30m_range = false;
 
+local asraid = {};
+local BOSS_DEBUFF_SIZE_INCREASE = 5;
+
+local function ACRB_InitList()
+
+	local spec = GetSpecialization();
+	local localizedClass, englishClass = UnitClass("player")
+	local listname;
+
+	ACRB_ShowList = nil;
+
+	if spec then
+		listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
+	end
+
+	ACRB_ShowList = _G[listname];
+
+	--기원사 힐이면 30미터 Filter 추가
+	if englishClass == "EVOKER" and spec == 2 then
+		show_30m_range = true;
+	end
+
+end
 
 -- Setup
 local function ACRB_setupFrame(frame)
-	if not frame or frame:IsForbidden() or not frame.displayedUnit or not UnitIsPlayer(frame.displayedUnit)  then 
-		return 
+	if not frame or frame:IsForbidden() or not frame.displayedUnit or not UnitIsPlayer(frame.displayedUnit)  then
+		return
 	end
 
 	local frameName = frame:GetName()
@@ -398,12 +710,12 @@ local function ACRB_setupFrame(frame)
 	local fontsize = baseSize * ACRB_CooldownFontSizeRate;
 
 	-- 힐거리 기능
-	if not asraid[frameName].rangetex then 
+	if not asraid[frameName].rangetex then
 		asraid[frameName].rangetex = frame:CreateTexture(nil, "ARTWORK");
     	asraid[frameName].rangetex:SetAllPoints();
-    	asraid[frameName].rangetex:SetColorTexture(ACRB_RangeFilterColor.r, ACRB_RangeFilterColor.g, ACRB_RangeFilterColor.b); 
+    	asraid[frameName].rangetex:SetColorTexture(ACRB_RangeFilterColor.r, ACRB_RangeFilterColor.g, ACRB_RangeFilterColor.b);
 		asraid[frameName].rangetex:SetAlpha(ACRB_RangeFilterAlpha);
-		asraid[frameName].rangetex:Hide();				
+		asraid[frameName].rangetex:Hide();
 	end
 
 	if not asraid[frameName].asbuffFrames then
@@ -412,7 +724,7 @@ local function ACRB_setupFrame(frame)
 			local buffFrame = CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
 			buffFrame.icon:SetTexCoord(.08, .92, .08, .92);
 			buffFrame:ClearAllPoints()
-			buffFrame:EnableMouse(ACRB_ShowTooltip); 
+			buffFrame:EnableMouse(ACRB_ShowTooltip);
 
 			if i <= ACRB_MAX_BUFFS - 3 then
 				if math.fmod(i - 1, 3) == 0 then
@@ -458,9 +770,8 @@ local function ACRB_setupFrame(frame)
 			end
 
 			asraid[frameName].asbuffFrames[i] = buffFrame;
-			ACRB_HideOverlayGlow(buffFrame);
 			buffFrame:Hide();
-		end		
+		end
 	end
 
 	--크기 조정
@@ -472,13 +783,13 @@ local function ACRB_setupFrame(frame)
 		d.count:SetPoint("BOTTOM", 0, 1);
 		if  ACRB_ShowBuffCooldown and fontsize >= ACRB_MinShowBuffFontSize   then
 			   d.cooldown:SetHideCountdownNumbers(false);
-			for _,r in next,{d.cooldown:GetRegions()}	do 
-				if r:GetObjectType()=="FontString" then 
+			for _,r in next,{d.cooldown:GetRegions()}	do
+				if r:GetObjectType()=="FontString" then
 					r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE")
 					r:ClearAllPoints();
 					r:SetPoint("TOP", 0, 2);
-					break 
-				end 
+					break
+				end
 			end
 		end
 	end
@@ -488,7 +799,7 @@ local function ACRB_setupFrame(frame)
 		for i = 1, ACRB_MAX_DEBUFFS do
 			local debuffFrame = CreateFrame("Button", nil, frame, "asCompactDebuffTemplate")
 			debuffFrame:ClearAllPoints()
-			debuffFrame:EnableMouse(ACRB_ShowTooltip); 
+			debuffFrame:EnableMouse(ACRB_ShowTooltip);
 			debuffFrame.icon:SetTexCoord(.08, .92, .08, .92);
 			if math.fmod(i - 1, 3) == 0 then
 				if i == 1 then
@@ -501,10 +812,10 @@ local function ACRB_setupFrame(frame)
 			else
 				debuffFrame:SetPoint("BOTTOMLEFT", asraid[frameName].asdebuffFrames[i-1], "BOTTOMRIGHT", 2, 0)
 			end
-	
+
 			debuffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
 			debuffFrame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
-	
+
 			if ACRB_ShowTooltip and not debuffFrame:GetScript("OnEnter") then
 				debuffFrame:SetScript("OnEnter", function(s)
 					if s:GetID() > 0 then
@@ -512,15 +823,15 @@ local function ACRB_setupFrame(frame)
 						GameTooltip:SetUnitDebuff(s.unit, s:GetID(), s.filter);
 					end
 				end)
-	
+
 				debuffFrame:SetScript("OnLeave", function()
 					GameTooltip:Hide();
 				end)
 			end
-	
+
 			asraid[frameName].asdebuffFrames[i] = debuffFrame;
 			debuffFrame:Hide();
-		end				
+		end
 	end
 
 	for _,d in ipairs(asraid[frameName].asdebuffFrames) do
@@ -532,13 +843,13 @@ local function ACRB_setupFrame(frame)
 
 		if  ACRB_ShowBuffCooldown and fontsize >= ACRB_MinShowBuffFontSize   then
 				d.cooldown:SetHideCountdownNumbers(false);
-			for _,r in next,{d.cooldown:GetRegions()}	do 
-				if r:GetObjectType()=="FontString" then 
+			for _,r in next,{d.cooldown:GetRegions()}	do
+				if r:GetObjectType()=="FontString" then
 					r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE");
 					r:ClearAllPoints();
 					r:SetPoint("TOP", 0, 2);
-					break 
-				end 
+					break
+				end
 			end
 		end
 	end
@@ -548,10 +859,10 @@ local function ACRB_setupFrame(frame)
 		asraid[frameName].asdispelDebuffFrames = {};
 		for i=1, ACRB_MAX_DISPELDEBUFFS do
 			local dispelDebuffFrame =  CreateFrame("Button", nil, frame, "asCompactDispelDebuffTemplate")
-			dispelDebuffFrame:EnableMouse(false); 
+			dispelDebuffFrame:EnableMouse(false);
 			asraid[frameName].asdispelDebuffFrames[i] = dispelDebuffFrame;
 			dispelDebuffFrame:Hide();
-		end	
+		end
 	end
 
 	asraid[frameName].asdispelDebuffFrames[1]:SetPoint("RIGHT", asraid[frameName].asbuffFrames[(ACRB_MAX_BUFFS - 2)],  "LEFT", -1, 0);
@@ -560,15 +871,6 @@ local function ACRB_setupFrame(frame)
 			asraid[frameName].asdispelDebuffFrames[i]:SetPoint("RIGHT", asraid[frameName].asdispelDebuffFrames[i - 1], "LEFT", 0, 0);
 		end
 		asraid[frameName].asdispelDebuffFrames[i]:SetSize(baseSize, baseSize);
-	end
-
-	if not asraid[frameName].asDispelBorder then
-		asraid[frameName].asDispelBorder = frame:CreateTexture(nil,"BACKGROUND")
-		asraid[frameName].asDispelBorder:SetTexture("Interface\\AddOns\\asCompactRaidBuff\\border.tga");
-		asraid[frameName].asDispelBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);	
-		asraid[frameName].asDispelBorder:SetPoint("TOPLEFT",0 , 0);
-		asraid[frameName].asDispelBorder:SetPoint("BOTTOMRIGHT", 0, 0);
-		asraid[frameName].asDispelBorder:Hide();
 	end
 
 	if (not asraid[frameName].asManabar and not frame.powerBar:IsShown()) then
@@ -600,7 +902,7 @@ local function ACRB_setupFrame(frame)
 
 		for i = 1, ACRB_MAX_BUFFS_2 do
 			asraid[frameName].buffFrames2[i] =  CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
-			asraid[frameName].buffFrames2[i]:EnableMouse(ACRB_ShowTooltip); 
+			asraid[frameName].buffFrames2[i]:EnableMouse(ACRB_ShowTooltip);
 			asraid[frameName].buffFrames2[i].icon:SetTexCoord(.08, .92, .08, .92);
 			asraid[frameName].buffFrames2[i]:SetSize(baseSize * 1.2, baseSize * 0.9);
 			asraid[frameName].buffFrames2[i].baseSize = baseSize;
@@ -611,13 +913,13 @@ local function ACRB_setupFrame(frame)
 
 			if  ACRB_ShowBuffCooldown and fontsize >= ACRB_MinShowBuffFontSize   then
 				asraid[frameName].buffFrames2[i].cooldown:SetHideCountdownNumbers(false);
-				for _,r in next,{asraid[frameName].buffFrames2[i].cooldown:GetRegions()}	do 
-					if r:GetObjectType()=="FontString" then 
+				for _,r in next,{asraid[frameName].buffFrames2[i].cooldown:GetRegions()}	do
+					if r:GetObjectType()=="FontString" then
 						r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE");
 						r:ClearAllPoints();
 						r:SetPoint("TOP", 0, 2);
-						break 
-					end 
+						break
+					end
 				end
 			else
 				asraid[frameName].buffFrames2[i].cooldown:SetHideCountdownNumbers(true);
@@ -665,9 +967,9 @@ local function asCompactUnitFrame_UtilShouldDisplayBuff_buff(unit, index, filter
 	if ACRB_ShowListFirst and ACRB_ShowList and ACRB_ShowList[name] then
 		return false;
 	end
-	
+
 	local hasCustom, alwaysShowMine, showForMySpec = SpellGetVisibilityInfo(spellId, UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT");
-	
+
 	if ( hasCustom ) then
 		return showForMySpec or (alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
 	else
@@ -726,8 +1028,10 @@ local function asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, index, filter)
 			if expirationTime - GetTime() < showlist_time then
 				buffFrame.border:SetVertexColor(1, 1, 1);
 				buffFrame.border:Show();
+				--lib.PixelGlow_Start(buffFrame, {1,1,1,1});
 			else
 				buffFrame.border:Hide();
+				--lib.PixelGlow_Stop(buffFrame);
 			end
 		else
 			buffFrame.border:Hide();
@@ -754,43 +1058,43 @@ local function Comparison(AIndex, BIndex)
 end
 
 
-local function asCompactUnitFrame_UpdateBuffs(frame)
+local function asCompactUnitFrame_UpdateBuffs(asframe)
 
-	if ( not frame.asbuffFrames ) then
+	if ( not asframe.asbuffFrames ) then
 		return;
 	end
 
-	local unit = frame.displayedUnit
+	local unit = asframe.displayedUnit
 
 	if not (unit) then
 		return;
 	end
-	
-	if frame.rangetex and not UnitIsUnit("player", unit)then
+
+	if asframe.rangetex and not UnitIsUnit("player", unit)then
 
 		local inRange, checkedRange = UnitInRange(unit);
 		--40미터 밖
 		if ( checkedRange and not inRange ) then	--If we weren't able to check the range for some reason, we'll just treat them as in-range (for example, enemy units)
-			frame.rangetex:Show();
+			asframe.rangetex:Show();
 		elseif show_30m_range then
 			local reaction = UnitReaction("player", unit);
 
 			if reaction and reaction <= 4 then
 				if GetItemInfo(835) and IsItemInRange(835, unit) then
-					frame.rangetex:Hide();
+					asframe.rangetex:Hide();
 				else
-					frame.rangetex:Show();
+					asframe.rangetex:Show();
 				end
 			else
 				if GetItemInfo(1180) and IsItemInRange(1180, unit) then
-					frame.rangetex:Hide();
+					asframe.rangetex:Hide();
 				else
-					frame.rangetex:Show();
+					asframe.rangetex:Show();
 				end
 			end
 		else
-			frame.rangetex:Hide();
-		end			 
+			asframe.rangetex:Hide();
+		end
 	end
 
 	local index = 1;
@@ -834,11 +1138,11 @@ local function asCompactUnitFrame_UpdateBuffs(frame)
 	for i = 1, frameNum - 1 do
 
 		if aShowIdx[i][2] > ACRB_MAX_BUFFS - 3 then
-			local buffFrame = frame.asbuffFrames[aShowIdx[i][2]];
+			local buffFrame = asframe.asbuffFrames[aShowIdx[i][2]];
 			asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, aShowIdx[i][1], filter);
 			showframe[aShowIdx[i][2]] = true;
 		else
-			local buffFrame = frame.asbuffFrames[frameidx];
+			local buffFrame = asframe.asbuffFrames[frameidx];
 			asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, aShowIdx[i][1], filter);
 			frameidx = frameidx + 1;
 		end
@@ -853,18 +1157,18 @@ local function asCompactUnitFrame_UpdateBuffs(frame)
 
 
 	for i=frameidx, ACRB_MAX_BUFFS - 3 do
-		local buffFrame = frame.asbuffFrames[i];
+		local buffFrame = asframe.asbuffFrames[i];
 		buffFrame:Hide();
 	end
 
 	for i=ACRB_MAX_BUFFS - 2, ACRB_MAX_BUFFS do
 
 		if 	showframe[i] == nil then
-			local buffFrame = frame.asbuffFrames[i];
+			local buffFrame = asframe.asbuffFrames[i];
 			buffFrame:Hide();
 		end
 	end
- 
+
 end
 
 
@@ -907,7 +1211,7 @@ local function asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter)
 	if not buffFrame.baseSize then
 		buffFrame.baseSize = buffFrame:GetSize();
 	end
-	
+
 	buffFrame.border:Hide();
 	buffFrame:SetSize((buffFrame.baseSize + ACRB_Size) * 1.2, (buffFrame.baseSize + ACRB_Size) * 0.9);
 	buffFrame:Show();
@@ -926,7 +1230,7 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 	else
 		name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId = UnitDebuff(unit, index, filter);
 	end
-	
+
 	debuffFrame.icon:SetTexture(icon);
 	if ( count > 1 ) then
 		local countText = count;
@@ -948,10 +1252,10 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 	else
 		asCooldownFrame_Clear(debuffFrame.cooldown);
 	end
-	
+
 	local color = DebuffTypeColor[debuffType] or DebuffTypeColor["none"];
 	debuffFrame.border:SetVertexColor(color.r, color.g, color.b);
-	
+
 	debuffFrame.isBossBuff = isBossBuff;
 	if ( isBossAura ) then
 		local size = min(debuffFrame.baseSize + BOSS_DEBUFF_SIZE_INCREASE, debuffFrame.maxHeight);
@@ -959,7 +1263,7 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 	else
 		debuffFrame:SetSize(debuffFrame.baseSize * 1.2, debuffFrame.baseSize * 0.9);
 	end
-	
+
 	debuffFrame:Show();
 end
 
@@ -987,7 +1291,7 @@ local function asCompactUnitFrame_UtilShouldDisplayDebuff(unit, index, filter)
 		return true;
 	end
 
-	
+
 	local hasCustom, alwaysShowMine, showForMySpec = SpellGetVisibilityInfo(spellId, UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT");
 	if ( hasCustom ) then
 		return showForMySpec or (alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") );	--Would only be "mine" in the case of something like forbearance.
@@ -998,7 +1302,7 @@ end
 
 local function asCompactUnitFrame_UtilIsPriorityDebuff(unit, index, filter)
 	local name,  icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura = UnitDebuff(unit, index, filter);
-	
+
 	local _, classFilename = UnitClass("player");
 	if ( classFilename == "PALADIN" ) then
 		if ( spellId == 25771 ) then	--Forbearance
@@ -1009,26 +1313,22 @@ local function asCompactUnitFrame_UtilIsPriorityDebuff(unit, index, filter)
 			return true;
 		end
 	end
-	
 	return false;
 end
 
-
-
-
-local function asCompactUnitFrame_UpdateDebuffs(frame)
-	if ( not frame.asdebuffFrames ) then
+local function asCompactUnitFrame_UpdateDebuffs(asframe)
+	if ( not asframe.asdebuffFrames ) then
 		return;
 	end
 
 
-	local unit = frame.displayedUnit;
+	local unit = asframe.displayedUnit;
 
 	if not (unit) then
 		return;
 	end
 
-	
+
 	local index = 1;
 	local frameNum = 1;
 	local filter = nil;
@@ -1039,7 +1339,7 @@ local function asCompactUnitFrame_UpdateDebuffs(frame)
 		local debuffName = UnitDebuff(unit, index, filter);
 		if ( debuffName ) then
 			if ( asCompactUnitFrame_UtilIsBossAura(unit, index, filter, false) ) then
-				local debuffFrame = frame.asdebuffFrames[frameNum];
+				local debuffFrame = asframe.asdebuffFrames[frameNum];
 				asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, true, false);
 				frameNum = frameNum + 1;
 				--Boss debuffs are about twice as big as normal debuffs, so display one less.
@@ -1057,7 +1357,7 @@ local function asCompactUnitFrame_UpdateDebuffs(frame)
 		local debuffName = UnitBuff(unit, index, filter);
 		if ( debuffName ) then
 			if ( asCompactUnitFrame_UtilIsBossAura(unit, index, filter, true) ) then
-				local debuffFrame = frame.asdebuffFrames[frameNum];
+				local debuffFrame = asframe.asdebuffFrames[frameNum];
 				asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, true, true);
 				frameNum = frameNum + 1;
 				--Boss debuffs are about twice as big as normal debuffs, so display one less.
@@ -1069,14 +1369,14 @@ local function asCompactUnitFrame_UpdateDebuffs(frame)
 		end
 		index = index + 1;
 	end
-	
+
 	--Now we go through the debuffs with a priority (e.g. Weakened Soul and Forbearance)
 	index = 1;
 	while ( frameNum <= maxDebuffs ) do
 		local debuffName = UnitDebuff(unit, index, filter);
 		if ( debuffName ) then
 			if ( asCompactUnitFrame_UtilIsPriorityDebuff(unit, index, filter) ) then
-				local debuffFrame = frame.asdebuffFrames[frameNum];
+				local debuffFrame = asframe.asdebuffFrames[frameNum];
 				asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, false, false);
 
 				frameNum = frameNum + 1;
@@ -1086,8 +1386,8 @@ local function asCompactUnitFrame_UpdateDebuffs(frame)
 		end
 		index = index + 1;
 	end
-	
-	
+
+
 	index = 1;
 	--Now, we display all normal debuffs.
 	while ( frameNum <= maxDebuffs ) do
@@ -1095,7 +1395,7 @@ local function asCompactUnitFrame_UpdateDebuffs(frame)
 		if ( debuffName ) then
 			if ( asCompactUnitFrame_UtilShouldDisplayDebuff(unit, index, filter) and not asCompactUnitFrame_UtilIsBossAura(unit, index, filter, false) and
 				not asCompactUnitFrame_UtilIsPriorityDebuff(unit, index, filter)) then
-				local debuffFrame = frame.asdebuffFrames[frameNum];
+				local debuffFrame = asframe.asdebuffFrames[frameNum];
 				asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, false, false);
 				frameNum = frameNum + 1;
 			end
@@ -1104,9 +1404,9 @@ local function asCompactUnitFrame_UpdateDebuffs(frame)
 		end
 		index = index + 1;
 	end
-	
+
 	for i=frameNum, ACRB_MAX_DEBUFFS do
-		local debuffFrame = frame.asdebuffFrames[i];
+		local debuffFrame = asframe.asdebuffFrames[i];
 		debuffFrame:Hide();
 	end
 end
@@ -1114,53 +1414,50 @@ end
 -- 해제 디버프
 
 local dispellableDebuffTypes = { Magic = true, Curse = true, Disease = true, Poison = true};
-local function asCompactUnitFrame_UpdateDispellableDebuffs(frame)
+local function asCompactUnitFrame_UpdateDispellableDebuffs(asframe)
 
-	if not frame.asdispelDebuffFrames then
+	if not asframe.asdispelDebuffFrames then
 		return;
 	end
 
 	local showdispell = false;
-	
-	local unit = frame.displayedUnit;
+
+	local unit = asframe.displayedUnit;
 
 	if not (unit) then
 		return;
 	end
 
 
-			
+
 	--Clear what we currently have.
 	for debuffType, display in pairs(dispellableDebuffTypes) do
 		if ( display ) then
-			frame["ashasDispel"..debuffType] = false;
+			asframe["ashasDispel"..debuffType] = false;
 		end
 	end
-	
+
 	local index = 1;
 	local frameNum = 1;
 	local filter = "RAID";	--Only dispellable debuffs.
 	while ( frameNum <= ACRB_MAX_DISPELDEBUFFS ) do
 		local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId = UnitDebuff(unit, index, filter);
 
-		if ( dispellableDebuffTypes[debuffType] and not frame["ashasDispel"..debuffType] ) then
-			frame["ashasDispel"..debuffType] = true;
-			local dispellDebuffFrame = frame.asdispelDebuffFrames[frameNum];
+		if ( dispellableDebuffTypes[debuffType] and not asframe["ashasDispel"..debuffType] ) then
+			asframe["ashasDispel"..debuffType] = true;
+			local dispellDebuffFrame = asframe.asdispelDebuffFrames[frameNum];
 			asCompactUnitFrame_UtilSetDispelDebuff(dispellDebuffFrame, debuffType, index)
-		
+
 			showdispell = true;
 
+			local color = DebuffTypeColor[debuffType] or DebuffTypeColor["none"];
 
 			if ACRB_DispelAlertList and name and ACRB_DispelAlertList[name] then
-				ACRB_ShowOverlayGlow(frame);
+				ACRB_ShowOverlayGlow(asframe.frame);
+			else
+				lib.PixelGlow_Start(asframe.frame, {color.r, color.g, color.b, 1})
 			end
-			
-			if frame.asDispelBorder then
 
-				local color = DebuffTypeColor[debuffType] or DebuffTypeColor["none"];
-				frame.asDispelBorder:SetVertexColor(color.r, color.g, color.b);
-				frame.asDispelBorder:Show();
-			end
 			frameNum = frameNum + 1;
 
 		elseif ( not name ) then
@@ -1169,25 +1466,25 @@ local function asCompactUnitFrame_UpdateDispellableDebuffs(frame)
 		index = index + 1;
 	end
 	for i=frameNum, ACRB_MAX_DISPELDEBUFFS do
-		local dispellDebuffFrame = frame.asdispelDebuffFrames[i];
+		local dispellDebuffFrame = asframe.asdispelDebuffFrames[i];
 		dispellDebuffFrame:Hide();
 	end
 
-	if showdispell == false and frame.asDispelBorder then
-		frame.asDispelBorder:Hide();
-		ACRB_HideOverlayGlow(frame);
+	if showdispell == false then
+		ACRB_HideOverlayGlow(asframe.frame);
+		lib.PixelGlow_Stop(asframe.frame);
 	end
 end
 
 
 
-local function asCompactUnitFrame_UpdateHealerMana(frame)
+local function asCompactUnitFrame_UpdateHealerMana(asframe)
 
-	if ( not frame.asManabar ) then
+	if ( not asframe.asManabar ) then
 		return;
 	end
 
-	local unit = frame.displayedUnit
+	local unit = asframe.displayedUnit
 
 	if not (unit) then
 		return;
@@ -1198,20 +1495,20 @@ local function asCompactUnitFrame_UpdateHealerMana(frame)
 
 	if role == "HEALER" then
 
-		frame.asManabar:SetMinMaxValues(0, UnitPowerMax(unit, Enum.PowerType.Mana ))
-		frame.asManabar:SetValue(UnitPower(unit, Enum.PowerType.Mana ));
+		asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(unit, Enum.PowerType.Mana ))
+		asframe.asManabar:SetValue(UnitPower(unit, Enum.PowerType.Mana ));
 
 		local info = PowerBarColor["MANA"];
 		if ( info ) then
 			local r, g, b = info.r, info.g, info.b;
-			frame.asManabar:SetStatusBarColor(r, g, b);
+			asframe.asManabar:SetStatusBarColor(r, g, b);
 		end
 
-		frame.asManabar:Show();
+		asframe.asManabar:Show();
 	else
 
-		frame.asManabar:Hide();
-	end	
+		asframe.asManabar:Hide();
+	end
 end
 
 local RaidIconList = {
@@ -1229,15 +1526,15 @@ local function ACRB_DisplayRaidIcon(unit)
 	local icon = GetRaidTargetIndex(unit)
 	if icon and RaidIconList[icon] then
 		return RaidIconList[icon] .. "0|t"
-	else	
+	else
 		return ""
 	end
 end
 
 
-local function asCompactUnitFrame_UpdateBuffsPVP(frame)
+local function asCompactUnitFrame_UpdateBuffsPVP(asframe)
 
-	local unit = frame.displayedUnit
+	local unit = asframe.displayedUnit
 
 
 	if not (unit) then
@@ -1245,13 +1542,13 @@ local function asCompactUnitFrame_UpdateBuffsPVP(frame)
 	end
 
 
-	if (frame.asraidicon) then
+	if (asframe.asraidicon) then
 		local text = ACRB_DisplayRaidIcon(unit);
-		frame.asraidicon:SetText(text);
-		frame.asraidicon:Show();
+		asframe.asraidicon:SetText(text);
+		asframe.asraidicon:Show();
 	end
-	
-	if (frame.buffFrames2) then
+
+	if (asframe.buffFrames2) then
 		local index = 1;
 		local frameNum = 1;
 		local filter = nil;
@@ -1259,7 +1556,7 @@ local function asCompactUnitFrame_UpdateBuffsPVP(frame)
 			local buffName = UnitBuff(unit, index, filter);
 			if ( buffName ) then
 				if ( asCompactUnitFrame_UtilShouldDisplayBuff(unit, index, filter)) then
-					local buffFrame = frame.buffFrames2[frameNum];
+					local buffFrame = asframe.buffFrames2[frameNum];
 					asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter);
 					frameNum = frameNum + 1;
 				end
@@ -1269,7 +1566,7 @@ local function asCompactUnitFrame_UpdateBuffsPVP(frame)
 			index = index + 1;
 		end
 			for i=frameNum, ACRB_MAX_BUFFS_2 do
-				local buffFrame = frame.buffFrames2[i];
+				local buffFrame = asframe.buffFrames2[i];
 				if buffFrame then
 				buffFrame:Hide();
 			end
@@ -1433,7 +1730,7 @@ end
 
 local function ACRB_DisableAura()
 
-	if (IsInGroup() or (ACRB_ShowWhenSolo)) then 
+	if (IsInGroup() or (ACRB_ShowWhenSolo)) then
 
 		if IsInRaid() then -- raid
 			if together == true then
@@ -1442,27 +1739,24 @@ local function ACRB_DisableAura()
 					for k=1,5 do
 						local frame = _G["CompactRaidGroup"..i.."Member"..k]
 						ACRB_disableDefault(frame);
-						
+
 					end
 				end
 			else
 				for i=1,40 do
 					local frame = _G["CompactRaidFrame"..i]
 					ACRB_disableDefault(frame);
-					
+
 				end
 			end
 		else -- party
 			for i=1, 5 do
 				local frame = _G["CompactPartyFrameMember"..i]
-				ACRB_disableDefault(frame);				
+				ACRB_disableDefault(frame);
 			end
 		end
 	end
 end
-
-
-
 
 local mustdisable = true;
 
@@ -1490,7 +1784,7 @@ local function ACRB_OnEvent(self, event, ...)
 		local arg1 = ...;
 
 		if  event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player"  then
-			ACRB_updatePartyAllBuff();			
+			ACRB_updatePartyAllBuff();
 		elseif (event == "PLAYER_ENTERING_WORLD") then
 			ACRB_InitList();
 			mustdisable = true;
@@ -1508,16 +1802,16 @@ end
 
 local function asCompactUnitFrame_UpdateAll(frame)
 
-	if frame and not frame:IsForbidden() and frame.GetName then 
+	if frame and not frame:IsForbidden() and frame.GetName then
 		local name = frame:GetName();
 
 		if name and not (name == nil) and (string.find (name, "CompactRaidGroup") or string.find (name, "CompactPartyFrameMember") or string.find (name, "CompactRaidFrame")) then
 			ACRB_disableDefault(frame);
 			ACRB_setupFrame(frame);
-			mustdisable = true;					
+			mustdisable = true;
 		end
 	end
-	
+
 end
 
 local ACRB_mainframe = CreateFrame("Frame", nil, UIParent);
@@ -1531,6 +1825,6 @@ ACRB_mainframe:RegisterEvent("ROLE_CHANGED_INFORM");
 ACRB_mainframe:RegisterEvent("COMPACT_UNIT_FRAME_PROFILES_LOADED");
 ACRB_mainframe:RegisterEvent("VARIABLES_LOADED");
 
-C_Timer.NewTicker(ACRB_UpdateRate, ACRB_OnUpdate);	
+C_Timer.NewTicker(ACRB_UpdateRate, ACRB_OnUpdate);
 
 hooksecurefunc("CompactUnitFrame_UpdateAll" ,asCompactUnitFrame_UpdateAll);
