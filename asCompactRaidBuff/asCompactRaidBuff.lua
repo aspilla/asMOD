@@ -718,6 +718,10 @@ local function ACRB_setupFrame(frame)
 		asraid[frameName].rangetex:Hide();
 	end
 
+	if asraid[frameName].isDispellAlert == nil then
+		asraid[frameName].isDispellAlert = false;
+	end
+
 	if not asraid[frameName].asbuffFrames then
 		asraid[frameName].asbuffFrames = {}
 		for i = 1, ACRB_MAX_BUFFS do
@@ -954,6 +958,8 @@ local function ACRB_setupFrame(frame)
 			asraid[frameName].buffFrames2[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
 		end
 	end
+
+	
 end
 
 -- 버프 설정 부
@@ -1452,12 +1458,11 @@ local function asCompactUnitFrame_UpdateDispellableDebuffs(asframe)
 
 			local color = DebuffTypeColor[debuffType] or DebuffTypeColor["none"];
 
-			if ACRB_DispelAlertList and name and ACRB_DispelAlertList[name] then
-				ACRB_ShowOverlayGlow(asframe.frame);
-			else
+			if not asframe.isDispellAlert then
 				lib.PixelGlow_Start(asframe.frame, {color.r, color.g, color.b, 1})
+				asframe.isDispellAlert = true;
 			end
-
+			
 			frameNum = frameNum + 1;
 
 		elseif ( not name ) then
@@ -1471,8 +1476,10 @@ local function asCompactUnitFrame_UpdateDispellableDebuffs(asframe)
 	end
 
 	if showdispell == false then
-		ACRB_HideOverlayGlow(asframe.frame);
-		lib.PixelGlow_Stop(asframe.frame);
+		if asframe.isDispellAlert then
+			lib.PixelGlow_Stop(asframe.frame);
+			asframe.isDispellAlert = false;
+		end
 	end
 end
 
