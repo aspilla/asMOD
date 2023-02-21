@@ -7,11 +7,7 @@ local AHT_PetManaSize = 10;
 local AHT_FontOutline = "THICKOUTLINE";
 local AHT_X	= 150;
 local AHT_Y = -55;
-local AHT_SPELLBAR_X = 0;			-- Spell bar 위치
-local AHT_SPELLBAR_Y = -110 - 20;
-local AHT_SHOW_SPELLBAR = true;		-- Spell bar 숨기려면 false
 local AHT_COMBAT_OFF_SHOW = false;	-- 비전투중에도 보이려면 true
-local AHT_MANA_PREDICTION = false;	-- 마나 예상치 보이려면 true
 local AHT_RIGHT_COMBO = false;		-- 오른편에 Combo를 보이려면 true
 -- 설정끝
 
@@ -23,9 +19,6 @@ local bupdate_power = false;
 local bupdate_stagger = false;
 local bupdate_action_count = false;
 local action_list = {};
-AHT_UNIT_POWER_VALUE = 0;
-AHT_UNIT_MANA_VALUE = 0;
-AHT_TARGET_HEALTH_VALUE = 0;
 
 local AHT_mainframe = CreateFrame("Frame", nil, UIParent);
 
@@ -48,7 +41,7 @@ local AHT_Power
 
 
 local function AHT_HealColor(value)
-	
+
 	local r, g, b;
 	local min, max = 0, 100 * AHT_MAX_INCOMING_HEAL_OVERFLOW;
 
@@ -78,7 +71,7 @@ local function AHT_UpdateHeal()
 
 	local allIncomingHeal = UnitGetIncomingHeals("player") or 0;
 	local totalAbsorb = UnitGetTotalAbsorbs("player") or 0;
-	
+
 
 	local health = UnitHealth(unit_player);
 	local maxHealth = UnitHealthMax(unit_player);
@@ -92,10 +85,6 @@ local function AHT_UpdateHeal()
 	local valuePct = (math.ceil((health / maxHealth) * 100));
 	local valuePctAbsorb = (math.ceil((totalAbsorb / maxHealth) * 100));
 
-	local r,g,b;
-
-	r,g,b = AHT_HealColor(valuePct);
-	
 	if (allIncomingHeal > 0 and totalAbsorb > 0 ) then
 		AHT_Heal:SetText("|cffffffff" .. valuePct .." |r |cffff3399".. valuePctAbsorb);
 	elseif (allIncomingHeal > 0) then
@@ -103,8 +92,6 @@ local function AHT_UpdateHeal()
 	elseif (totalAbsorb > 0) then
 		AHT_Heal:SetText("|cffff3399" ..valuePctAbsorb);
 	end
-
-	--AHT_Heal:SetTextColor(r, g, b, 1);
 
 	if (allIncomingHeal > 0 or totalAbsorb > 0 ) then
 		AHT_Heal:Show();
@@ -114,8 +101,7 @@ local function AHT_UpdateHeal()
 end
 
 local function AHT_Update(self)
-	--local discard, valueMax = self:GetMinMaxValues();
-	--local value = self:GetValue();
+
 	local value;
 	local valueMax;
 	local valuePct = ""
@@ -123,19 +109,17 @@ local function AHT_Update(self)
 	local health = false;
 	local target = false;
 	local mana = false;
-	local pre_mana = nil;
-	local predict = false;
-	local powerType;
-	
+	local powerType, powerTypeString;
+
 	if self == 1 then
-		frame = AHT_PlayerHPT; 
+		frame = AHT_PlayerHPT;
 
 		value = UnitHealth(unit_player);
 		valueMax = UnitHealthMax(unit_player);
 		health = true;
 	elseif self == 2 then
 
-		frame = AHT_PlayerMPT; 
+		frame = AHT_PlayerMPT;
 
 		powerType, powerTypeString = UnitPowerType(unit_player);
 		value = UnitPower(unit_player, powerType);
@@ -143,8 +127,8 @@ local function AHT_Update(self)
 		mana = true;
 
 	elseif self == 3 then
-		frame = AHT_TargetHPT; 
-	
+		frame = AHT_TargetHPT;
+
 		if UnitExists("target") then
 			value = UnitHealth("target");
 			valueMax = UnitHealthMax("target");
@@ -156,8 +140,8 @@ local function AHT_Update(self)
 		health = true;
 		target = true;
 	elseif self == 4 then
-		frame = AHT_TargetMPT; 
-		
+		frame = AHT_TargetMPT;
+
 		if UnitExists("target") then
 			powerType, powerTypeString = UnitPowerType("target");
 			value = UnitPower("target", powerType);
@@ -191,7 +175,7 @@ local function AHT_Update(self)
 	end
 
 	if (valueMax <= 300) then
-		valuePct = value;
+		valuePct = (value);
 	end
 
 	if valuePct > 0 then
@@ -230,7 +214,7 @@ local function AHT_UpdateThreat()
 
 	if not (UnitClassification("target") == "minus")  then
 		local isTanking, status, percentage, rawPercentage = UnitDetailedThreatSituation("player", "target");
-	
+
 		local display;
 
 		if ( isTanking ) then
@@ -240,7 +224,7 @@ local function AHT_UpdateThreat()
 		if not display then
 			display = percentage;
 		end
-		
+
 		if ( display and display ~= 0 ) then
 			AHT_Threat:SetText(format("%1.0f", display).."%");
 			local r, g, b =	GetThreatStatusColor(status)
@@ -254,15 +238,12 @@ local function AHT_UpdateThreat()
 
 end
 
-
-local move_frame = false;
-
 local function AHT_UpdateRune()
 
 	local runeReady;
 	local runeCount = 0;
-	
-	for i = 1, 6 do 
+
+	for i = 1, 6 do
 		_, _, runeReady = GetRuneCooldown(i);
 			if runeReady then
 				runeCount = runeCount + 1;
@@ -276,35 +257,20 @@ end
 local function AHT_UpdatePower()
 
 	if  bupdate_power then
-	
+
 		local power = UnitPower("player", AHT_POWER_LEVEL);
 		local max = UnitPowerMax("player", AHT_POWER_LEVEL);
-	
+
 		AHT_Power:SetText(power);
-		AHT_UNIT_POWER_VALUE = power;
 		AHT_Power:Show();
 
 		if max == power then
 			AHT_Power:SetTextColor(1, 0, 0)
 		else
 			AHT_Power:SetTextColor(1, 1, 0)
-		end	
-
-
-		local localizedClass, englishClass = UnitClass("player")
-
-		if (englishClass == "DRUID") then
-			local form  = GetShapeshiftFormID();
-	
-			if (form ~= CAT_FORM) then
-				AHT_Power:SetText("");
-				AHT_Power:Hide();
-			end
-
 		end
 
 		if AHT_UNIT_POWER == "SHADOW_ORBS" then
-
 			if GetSpecialization() < 3 then
 				AHT_Power:SetText("");
 				AHT_Power:Hide();
@@ -318,28 +284,26 @@ local function AHT_UpdateStagger()
 
 		local stagger = math.ceil(UnitStagger("player")/UnitHealthMax("player") * 100);
 
-
 		if stagger > 0 then
 			AHT_Power:SetText(stagger);
-			AHT_UNIT_POWER_VALUE = stagger;
 			AHT_Power:Show();
 		else
 			AHT_Power:SetText("");
 			AHT_Power:Hide();
-		end				
+		end
 	end
-		
+
 end
 
 local function AHT_GetActionSlot(arg1)
-	
+
 	for lActionSlot = 1, 120 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
 		if type and type == "macro" then
 			id = GetMacroSpell(id);
 		end
-	
+
 		if id then
 			local name = GetSpellInfo(id);
 
@@ -369,7 +333,7 @@ local function AHT_UpdateActionCount()
 
 
 				local count, max = GetSpellCharges(action_list[i][1]);
-				
+
 				if (not count or (count and count == 0)) and 	action_list[i][2]  then
 					count = GetActionCount(	action_list[i][2] );
 
@@ -382,7 +346,7 @@ local function AHT_UpdateActionCount()
 					else
 						text = text .."/"..count;
 					end
-				end				
+				end
 			end
 
 		end
@@ -392,9 +356,9 @@ local function AHT_UpdateActionCount()
 			AHT_Power:Show();
 		else
 			AHT_Power:Hide();
-		end				
+		end
 	end
-		
+
 end
 
 local function AHT_UpdatePlayerUnit()
@@ -408,7 +372,7 @@ local function AHT_UpdatePlayerUnit()
 			hasValidVehicleUI = false;
 		end
 	end
-	
+
 	if ( hasValidVehicleUI ) then
 		unit_player = unitVehicleToken
 		unit_pet = "player"
@@ -450,7 +414,7 @@ local function AHT_CheckHeal()
 	AHT_mainframe:RegisterUnitEvent("UNIT_ABSORB_AMOUNT_CHANGED", "player");
 	AHT_mainframe:RegisterUnitEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", "player");
 
-		
+
 	if (bupdate_heal == false) then
 		AHT_Heal:Hide();
 	end
@@ -458,7 +422,7 @@ local function AHT_CheckHeal()
 end
 
 local function AHT_CheckPower()
-	
+
 	local localizedClass, englishClass = UnitClass("player")
 	local spec = GetSpecialization();
 
@@ -467,11 +431,11 @@ local function AHT_CheckPower()
 	AHT_mainframe:UnregisterEvent("RUNE_POWER_UPDATE")
 	AHT_mainframe:UnregisterEvent("UNIT_AURA");
 	AHT_mainframe:UnregisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
-	
+
 	bupdate_power = false;
 	bupdate_stagger = false;
 	bupdate_action_count = false;
-	
+
 	AHT_Power:SetText("");
 	AHT_Power:Hide();
 
@@ -480,44 +444,44 @@ local function AHT_CheckPower()
 	if not bloaded then
 
 		if (englishClass == "EVOKER") then
-		
+
 			AHT_UNIT_POWER = "POWER_TYPE_ESSENCE";
 			AHT_POWER_LEVEL = Enum.PowerType.Essence;
-	
+
 			AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
 			AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 			bupdate_power = true;
 		end
-	
+
 		if (englishClass == "DEATHKNIGHT") then
 			AHT_UpdateRune();
 			AHT_Rune:Show();
 			AHT_mainframe:RegisterEvent("RUNE_POWER_UPDATE");
 		end
-	
+
 		if (englishClass == "PALADIN") then
-			
+
 			AHT_UNIT_POWER = "HOLY_POWER";
 			AHT_POWER_LEVEL = Enum.PowerType.HolyPower;
-	
+
 			AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
 			AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 			bupdate_power = true;
 		end
-	
+
 		if (englishClass == "WARRIOR") then
-	
+
 		end
-	
+
 		if (englishClass == "DEMONHUNTER") then
-	
-	
+
+
 		end
-	
-	
+
+
 		if (englishClass == "MAGE") then
 			if (spec and spec == 1) then
-	
+
 				AHT_UNIT_POWER = "ARCANE_CHARGES";
 				AHT_POWER_LEVEL = Enum.PowerType.ArcaneCharges;
 				AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
@@ -525,8 +489,8 @@ local function AHT_CheckPower()
 				bupdate_power = true;
 			end
 		end
-	
-	
+
+
 		if (englishClass == "WARLOCK") then
 			AHT_UNIT_POWER = "SOUL_SHARDS";
 			AHT_POWER_LEVEL = Enum.PowerType.SoulShards;
@@ -534,9 +498,9 @@ local function AHT_CheckPower()
 			AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 			bupdate_power = true;
 		end
-	
+
 		if (englishClass == "DRUID") then
-	
+
 			AHT_UNIT_POWER = "COMBO_POINTS";
 			AHT_POWER_LEVEL = Enum.PowerType.ComboPoints;
 			AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
@@ -544,9 +508,9 @@ local function AHT_CheckPower()
 			AHT_mainframe:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
 			bupdate_power = true;
 		end
-	
+
 		if (englishClass == "MONK") then
-	
+
 			if (spec and spec == 3) then
 				AHT_UNIT_POWER = "CHI";
 				AHT_POWER_LEVEL = Enum.PowerType.Chi;
@@ -558,7 +522,7 @@ local function AHT_CheckPower()
 				AHT_mainframe:RegisterUnitEvent("UNIT_AURA", "player");
 			end
 		end
-	
+
 		if (englishClass == "ROGUE") then
 			AHT_UNIT_POWER = "COMBO_POINTS";
 			AHT_POWER_LEVEL = Enum.PowerType.ComboPoints;
@@ -566,16 +530,16 @@ local function AHT_CheckPower()
 			AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 			bupdate_power = true;
 		end
-		
+
 		if (englishClass == "SHAMAN") then
 		end
-	
+
 		if (englishClass == "HUNTER") then
 		end
-	
-	
+
+
 		if (englishClass == "PRIEST") then
-	
+
 		end
 	end
 end
@@ -595,7 +559,7 @@ local function AHT_DisplayRaidIcon(unit)
 	local icon = GetRaidTargetIndex(unit)
 	if icon and RaidIconList[icon] then
 		return RaidIconList[icon] .. "0|t"
-	else	
+	else
 		return ""
 	end
 end
@@ -616,7 +580,7 @@ local function AHT_OnUpdate()
 	AHT_Update(5)
 	AHT_Update(6)
 	AHT_UpdateThreat();
-	
+
 end
 
 
@@ -634,7 +598,7 @@ local function AHT_OnLoad()
 	AHT_Heal = AHT_mainframe:CreateFontString(nil, "OVERLAY");
 	AHT_RaidIcon = AHT_mainframe:CreateFontString(nil, "OVERLAY");
 	AHT_Power = AHT_mainframe:CreateFontString(nil, "OVERLAY");
-	
+
 
 	AHT_PlayerHPT:SetFont(AHT_Font, AHT_HealthSize, AHT_FontOutline)
 	AHT_PlayerMPT:SetFont(AHT_Font, AHT_ManaSize, AHT_FontOutline)
@@ -673,7 +637,7 @@ local function AHT_OnLoad()
 
 	AHT_Power:SetTextColor(1, 1, 0, 1)
 
-	
+
 	AHT_CheckPower();
 
 	AHT_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -752,7 +716,7 @@ function AHT_OnEvent(self, event, arg1, arg2, arg3, ...)
 		else
 			AHT_ThreatPVP:SetText("");
 			AHT_ThreatPVP:Hide();
-			
+
 			AHT_TargetHPT:SetText("");
 			AHT_TargetMPT:SetText("");
 		end
@@ -799,7 +763,7 @@ function AHT_OnEvent(self, event, arg1, arg2, arg3, ...)
 	elseif event == "UNIT_POWER_UPDATE" and arg1 == "player" then
 		AHT_UpdatePower();
 	elseif event == "UNIT_AURA" and arg1 == "player" then
-		AHT_UpdateStagger();		
+		AHT_UpdateStagger();
 	elseif event == "ACTIONBAR_UPDATE_COOLDOWN" then
 		AHT_UpdateActionCount();
 	elseif event == "UNIT_DISPLAYPOWER" and arg1 == "player"  then
@@ -827,7 +791,7 @@ function AHT_OnEvent(self, event, arg1, arg2, arg3, ...)
 	end
 
 	return;
-end 
+end
 
 
 AHT_mainframe:SetScript("OnEvent", AHT_OnEvent)

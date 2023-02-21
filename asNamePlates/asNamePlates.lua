@@ -37,14 +37,6 @@ local ANameP_LowHealthAlert = true  	-- 낮은 체력 색상 변경 사용
 local ANameP_LowHealthColor = {r = 1, g = 0.8, b= 0.5}; -- 낮은 체력 이름표 색상 변경
 local ANameP_EmemyPlateSize = {100, 20};
 
-local ANameP_ShowList = nil;
-
-
-local ANameP_Resourcetext = nil;
-
-
-local debuffs_per_line = ANameP_DebuffsPerLine;
-
 
 -- ANameP_ShowList_직업_특성 숫자
 -- 아래와 같은 배열을 추가 하면 된다.
@@ -170,6 +162,7 @@ ANameP_ShowList_MAGE_1 = {
 }
 
 ANameP_ShowList_MAGE_2 = {
+	["작열"] = {0, 1},
 }
 
 ANameP_ShowList_MAGE_3 = {
@@ -711,9 +704,6 @@ local ANameP_DangerousSpellList = {
 	[80734] = true,
 }
 
-
-
-
 local ANameP_HealSpellList = {};
 
 ANameP_HealSpellList["사제"] = {
@@ -813,6 +803,9 @@ local ColorLevel = {
 	Name = 8,
 };
 
+local ANameP_ShowList = nil;
+local ANameP_Resourcetext = nil;
+local debuffs_per_line = ANameP_DebuffsPerLine;
 local playerbuffposition = ANameP_PlayerBuffY;
 
 -- 반짝이 처리부
@@ -1299,7 +1292,7 @@ local function scanSpells(tab)
 		end
 
 		if spellName then
-			KnownSpellList[spellName] = 1;
+			KnownSpellList[spellName] = 1;			
 		end		
 	end
 end
@@ -1316,6 +1309,7 @@ local function scanPetSpells()
 
 		if spellName then
 			KnownSpellList[spellName] = 1;
+			
 		end		
 	end
 
@@ -2855,6 +2849,7 @@ local function ANameP_OnEvent(self, event, ...)
 		updateUnitAuras("target");
 		updateUnitHealthText(self, "target");
 	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED") then
+		setupKnownSpell();
 		C_Timer.After(0.5, initAlertList);		
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		local isInstance, instanceType = IsInInstance();

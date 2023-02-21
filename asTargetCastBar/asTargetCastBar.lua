@@ -77,21 +77,33 @@ local function ATCB_OnEvent(self, event, ...)
 	if event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
 		
 		if UnitExists("target") then
-			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "target");
 			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "target");
-			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_START", "target");
 			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", "target");
 			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "target");
+			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", "target");
 			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "target");
+			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "target");
+			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", "target");
+			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "target");
+			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", "target");
+			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", "target");
+			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_START", "target");
 			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "target");
+			ATCB:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "target");
 		else
-			ATCB:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
 			ATCB:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
-			ATCB:UnregisterEvent("UNIT_SPELLCAST_START");
 			ATCB:UnregisterEvent("UNIT_SPELLCAST_DELAYED");
 			ATCB:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
+			ATCB:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE");
 			ATCB:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
+			ATCB:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_START");
+			ATCB:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE");
+			ATCB:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_STOP");
+			ATCB:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE");
+			ATCB:UnregisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE");
+			ATCB:UnregisterEvent("UNIT_SPELLCAST_START");
 			ATCB:UnregisterEvent("UNIT_SPELLCAST_STOP");
+			ATCB:UnregisterEvent("UNIT_SPELLCAST_FAILED");
 		end	
 	end
 
