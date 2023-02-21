@@ -57,7 +57,7 @@ local ABF_ProcBuffList = {
 	["위상의 격노"] = 1,
 	["쾌활한 생기화"] = 2,
 }
-	
+
 
 local ABF_Current_Buff = "";
 local ABF_Current_Count = 0;
@@ -139,7 +139,7 @@ local ABF_PVPBuffList = {
 	[6940] = 1, --희생의 축복
 	[1022] = 1, --보호의 축복
 	[204018] = 1, --주문수호의 축복
-	
+
 	--주술사
 	[210918] = 1, -- 에테리얼 형상
 	[108271] = 1, --영혼-이동
@@ -188,7 +188,7 @@ local ABF_PVPBuffList = {
 	-- DK
 	[47476] = 2, --Strangulate (pvp) - silence
 	[116888] = 2, --Shroud of Purgatory
-	
+
 	-- Shaman
 	[32182] = 2, --Heroism
 	[2825] = 2, --Bloodlust
@@ -421,7 +421,7 @@ local function scanSpells(tab)
 			do break end
 		end
 
-		ABF_TalentBuffList[spellName] = true;		
+		ABF_TalentBuffList[spellName] = true;
 	end
 end
 
@@ -542,7 +542,7 @@ local function ABF_UpdateBuff(unit)
 		local isTarget = false;
 		local alert = false;
 		stack = nil;
-		
+
 		if (unit == "tbuff") then
 			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId = UnitBuff("target", i);
 
@@ -557,7 +557,7 @@ local function ABF_UpdateBuff(unit)
 			end
 
 		elseif (unit == "target") then
-						
+
 			name,  icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId = UnitBuff("target", i);
 			if (icon == nil) then
 				break;
@@ -586,7 +586,7 @@ local function ABF_UpdateBuff(unit)
 					haveTotem, name, start, duration, icon = GetTotemInfo(slot);
 
 					totem_i = totem_i + 1;
-				
+
 					if haveTotem and icon then
 						caster = "player";
 						expirationTime = start + duration;
@@ -625,7 +625,7 @@ local function ABF_UpdateBuff(unit)
 
 			if (spellId ~= nil and ABF_PVPBuffList[spellId]) then
 				skip = false;
-			end			
+			end
 
 			if skip == false and ABF_BlackList[name] then
 				skip = true;
@@ -640,26 +640,26 @@ local function ABF_UpdateBuff(unit)
 
 			if ABF_ProcBuffList and ABF_ProcBuffList[name] then
 				if	ABF_ProcBuffList[name] == 1 then
-					alert = true;					
+					alert = true;
 				end
 				skip = false;
-			end	
+			end
 
 			if IsShown(name, spellId) then
 				skip = true;
-			end		
-						
-			if (IsPowerbar or ABF_ShowTalentList) and skip == false and (ABF_TalentBuffList[name] or debuffType == "totem" or nameplateShowAll or nameplateShowPersonal) then				
+			end
+
+			if (IsPowerbar or ABF_ShowTalentList) and skip == false and (ABF_TalentBuffList[name] or debuffType == "totem" or nameplateShowAll or nameplateShowPersonal) then
 				if talentcount < ABF_MAX_BUFF_SHOW then
 					skip = true;
-					talentcount = talentcount + 1;	
+					talentcount = talentcount + 1;
 
 					if debuffType ==  "totem" then
 						talentlist[talentcount] = {totem_i - 1, true};
 					else
 						talentlist[talentcount] = {i, false};
 					end
-				end				
+				end
 			end
 
 		elseif (unit == "tebuff") then
@@ -688,11 +688,11 @@ local function ABF_UpdateBuff(unit)
 			end
 
 			local color;
-			
+
 			frame = parent.frames[numDebuffs];
-			
+
 			if ((unit == "pbuff") or (unit == "target" and PLAYER_UNITS[caster] ) or  (unit == "tbuff") or (unit == "tebuff")) then
-					
+
 				-- set the icon
 				frameIcon = frame.icon;
 				frameIcon:SetTexture(icon);
@@ -702,7 +702,7 @@ local function ABF_UpdateBuff(unit)
 				frameCount = frame.count;
 				-- Handle cooldowns
 				frameCooldown = frame.cooldown;
-			
+
 				if ( count > 1 ) then
 					frameCount:SetText(count);
 					frameCount:Show();
@@ -723,7 +723,7 @@ local function ABF_UpdateBuff(unit)
 				frameBorder = frame.border;
 
 				color = DebuffTypeColor["Disease"];
-	
+
 				if debuffType then
 					if debuffType == "totem" then
 						color = { r = 0, g = 1, b = 0 };
@@ -743,8 +743,8 @@ local function ABF_UpdateBuff(unit)
 				end
 
 				frameBorder:SetVertexColor(color.r, color.g, color.b);
-				frameBorder:SetAlpha(ABF_ALPHA);					
-				
+				frameBorder:SetAlpha(ABF_ALPHA);
+
 				frame:Show();
 
 				numDebuffs = numDebuffs + 1;
@@ -756,26 +756,26 @@ local function ABF_UpdateBuff(unit)
 	for i = numDebuffs, ABF_MAX_BUFF_SHOW do
 		frame = parent.frames[i];
 		if ( frame ) then
-			frame:Hide();	
-		end		
+			frame:Hide();
+		end
 	end
 
 	if (unit == "pbuff") then
 		parent = ABF_TALENT_BUFF;
-		
+
 		for numDebuffs = 1, talentcount do
-			
+
 			frame = parent.frames[numDebuffs];
-			local isStealable;		
+			local isStealable;
 			local IsTotem = talentlist[numDebuffs][2];
 			local idx = talentlist[numDebuffs][1]
 
 			if IsTotem then
 
 				local haveTotem, start;
-				
+
 				haveTotem, name, start, duration, icon = GetTotemInfo(idx);
-					
+
 				if haveTotem and icon then
 					caster = "player";
 					expirationTime = start + duration;
@@ -785,11 +785,11 @@ local function ABF_UpdateBuff(unit)
 					count = 0;
 				else
 					name = nil;
-				end				
+				end
 			else
-				name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff("player", idx, "INCLUDE_NAME_PLATE_ONLY");	
-			end	
-			
+				name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff("player", idx, "INCLUDE_NAME_PLATE_ONLY");
+			end
+
 			if name and frame then
 
 				-- set the icon
@@ -802,7 +802,7 @@ local function ABF_UpdateBuff(unit)
 				frameCount = frame.count;
 				-- Handle cooldowns
 				frameCooldown = frame.cooldown;
-						
+
 				if ( count > 1 ) then
 					frameCount:SetText(count);
 					frameCount:Show();
@@ -811,7 +811,7 @@ local function ABF_UpdateBuff(unit)
 					frameCount:Hide();
 					frameCooldown:SetDrawSwipe(true);
 				end
-							
+
 				if ( duration > 0 and duration <= 120 ) then
 					frameCooldown:Show();
 					asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration >0,  true);
@@ -837,18 +837,18 @@ local function ABF_UpdateBuff(unit)
 				end
 
 				ABF_HideOverlayGlow(frame);
-			
+
 				frameBorder:SetVertexColor(color.r, color.g, color.b);
-				frameBorder:SetAlpha(ABF_ALPHA);	
+				frameBorder:SetAlpha(ABF_ALPHA);
 				frame:Show();
 			end
-		end	
+		end
 
 		for i = talentcount + 1, ABF_MAX_BUFF_SHOW do
 			frame = parent.frames[i];
 			if ( frame ) then
-				frame:Hide();	
-			end		
+				frame:Hide();
+			end
 		end
 	end
 
@@ -857,14 +857,14 @@ end
 
 
 local function ABF_ClearFrame()
-	
+
 	local parent = ABF_TARGET_BUFF;
 
 	for i = 1, ABF_MAX_BUFF_SHOW do
 		local frame = parent.frames[i];
 
 		if ( frame ) then
-			frame:Hide();	
+			frame:Hide();
 		else
 			break;
 		end
@@ -976,18 +976,18 @@ local function CreatBuffFrames(parent, bright, bcenter)
 	if parent.frames == nil then
 		parent.frames = {};
 	end
-	
+
 	for idx = 1, ABF_MAX_BUFF_SHOW do
 		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
 		local frame = parent.frames[idx];
-		frame:EnableMouse(false); 
-		for _,r in next,{frame.cooldown:GetRegions()} do 
-			if r:GetObjectType()=="FontString" then 
+		frame:EnableMouse(false);
+		for _,r in next,{frame.cooldown:GetRegions()} do
+			if r:GetObjectType()=="FontString" then
 				r:SetFont(STANDARD_TEXT_FONT,ABF_CooldownFontSize,"OUTLINE");
 				r:ClearAllPoints();
 				r:SetPoint("TOP", 0, 5);
 				break
-			end 
+			end
 		end
 
 		local font, size, flag = frame.count:GetFont()
@@ -1020,7 +1020,7 @@ local function ABF_Init()
 
 
 	local bloaded =  LoadAddOn("asMOD")
-  
+
 	ABF_TARGET_BUFF = CreateFrame("Frame", nil, ABF)
 
 	ABF_TARGET_BUFF:SetPoint("CENTER", ABF_TARGET_BUFF_X, ABF_TARGET_BUFF_Y)
@@ -1033,7 +1033,7 @@ local function ABF_Init()
 
 	if bloaded and asMOD_setupFrame then
 		asMOD_setupFrame (ABF_TARGET_BUFF, "asBuffFilter(Target)");
-  	end		
+  	end
 
 	ABF_PLAYER_BUFF = CreateFrame("Frame", nil, ABF)
 
@@ -1047,7 +1047,7 @@ local function ABF_Init()
 
 	if bloaded and asMOD_setupFrame then
 		asMOD_setupFrame (ABF_PLAYER_BUFF, "asBuffFilter(Player)");
-  	end		
+  	end
 
 	ABF_TALENT_BUFF = CreateFrame("Frame", nil, ABF)
 
@@ -1055,14 +1055,14 @@ local function ABF_Init()
 	ABF_TALENT_BUFF:SetWidth(1)
 	ABF_TALENT_BUFF:SetHeight(1)
 	ABF_TALENT_BUFF:SetScale(1)
-	
+
 	ABF_TALENT_BUFF:Show()
 
 	CreatBuffFrames(ABF_TALENT_BUFF, false, true);
 
 	if bloaded and asMOD_setupFrame then
 		asMOD_setupFrame (ABF_TALENT_BUFF, "asBuffFilter(Talent)");
-  	end	
+  	end
 
 
 	ABF:RegisterEvent("PLAYER_TARGET_CHANGED")

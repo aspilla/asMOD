@@ -15,7 +15,7 @@ local function init_combattext()
 	LoadAddOn("Blizzard_CombatText")
 	SetCVar("floatingCombatTextCombatState" , 1)
 
-		
+
   	CombatTextFont:SetFont("Fonts\\2002.ttf",18,"OUTLINE")
 	COMBAT_TEXT_HEIGHT = 16;
 	COMBAT_TEXT_CRIT_MAXHEIGHT = 24;
@@ -38,12 +38,12 @@ local function init_combattext()
 	COMBAT_TEXT_TYPE_INFO["PERIODIC_HEAL"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
 	COMBAT_TEXT_TYPE_INFO["PERIODIC_HEAL_CRIT"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
 	COMBAT_TEXT_TYPE_INFO["ABSORB_ADDED"] = {r = 0.1, g = 1, b = 0.1, show = bShowHeal};
-		
-	
+
+
 	hooksecurefunc("CombatText_UpdateDisplayedMessages", ASCT_UpdateDisplayedMessages);
 	ASCT_UpdateDisplayedMessages()
 	return;
-end 
+end
 
 function ASCT_UpdateDisplayedMessages()
  -- Update scrolldirection

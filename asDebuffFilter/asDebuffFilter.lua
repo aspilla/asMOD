@@ -23,7 +23,7 @@ local ADF_RefreshRate = 0.5;			-- Target Debuff Check 주기 (초)
 
 local ADF_BlackList = {
 
-	["도전자의 짐"] = 1,	
+	["도전자의 짐"] = 1,
 --	["상처 감염 독"] = 1,	
 --	["신경 마취 독"] = 1,
 --	["맹독"] = 1,
@@ -183,13 +183,13 @@ local function ADF_UpdateDebuff(unit)
 	local i;
 
 
-	if (unit == "target") then		
+	if (unit == "target") then
 		parent = ADF_TARGET_DEBUFF;
 	elseif (unit == "targethelp") then
 		parent = ADF_TARGET_DEBUFF;
 	elseif (unit == "targethelp2") then
 		parent = ADF_TARGET_DEBUFF;
-	elseif (unit == "player") then		
+	elseif (unit == "player") then
 		parent = ADF_PLAYER_DEBUFF;
 	else
 		return;
@@ -217,13 +217,13 @@ local function ADF_UpdateDebuff(unit)
 			if ( dispellableDebuffTypes[debuffType]) then
 				dispel_debuff_name[spellId] = true;
 			end
-		
+
 			i = i + 1;
 
 		until (name == nil)
 
 	end
-		
+
 	filter = nil;
 
 
@@ -240,7 +240,7 @@ local function ADF_UpdateDebuff(unit)
 		alert = false;
 
 		if (unit == "target") then
-			
+
 			local filter = "";
 
 			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura,isBossDebuff, casterIsPlayer, nameplateShowAll  = UnitDebuff("target", i, filter);
@@ -248,12 +248,12 @@ local function ADF_UpdateDebuff(unit)
 			if (icon == nil) then
 				break;
 			end
-			
+
 			skip = true;
 
 			if (casterIsPlayer) then
 		        skip = true;
-		    end	
+		    end
 			-- 내가 시전한 Debuff는 보이고
 			if caster and PLAYER_UNITS[caster]  then
 				skip = false;
@@ -262,11 +262,11 @@ local function ADF_UpdateDebuff(unit)
 			if caster and ADF_Show_TargetDebuff and not UnitIsPlayer("target") and UnitIsUnit("target", caster) then
 				skip = false;
 			end
-						
+
 			if (spellId and ADF_Show_PVPDebuff and nameplateShowAll) then
 				skip = false;
 			end
-			
+
 			-- ACI 에서 보이는 Debuff 는 숨기고
 			if ACI_Debuff_list and ACI_Debuff_list[name] then
 				skip = true;
@@ -292,7 +292,7 @@ local function ADF_UpdateDebuff(unit)
 			end
 
 			skip = false;
-			
+
 			if (casterIsPlayer) then
 		        skip = true;
 		    end
@@ -303,9 +303,9 @@ local function ADF_UpdateDebuff(unit)
 			end
 
 			if ADF_Show_ShowBossDebuff and isBossDebuff then
-				skip = false;				
+				skip = false;
 			end
-			
+
 			-- 상대 가 Player 면 PVP Debuff 만 보임		
 			if (spellId and ADF_Show_PVPDebuff and nameplateShowAll) then
 				skip = false;
@@ -378,16 +378,16 @@ local function ADF_UpdateDebuff(unit)
 
 		end
 
-	
+
 		if (icon and skip == false) then
 
 			if numDebuffs > ADF_MAX_DEBUFF_SHOW then
 				break;
 			end
 
-			
+
 			frame = parent.frames[numDebuffs];
-			
+
 			-- set the icon
 			frameIcon = frame.icon
 			frameIcon:SetTexture(icon);
@@ -407,7 +407,7 @@ local function ADF_UpdateDebuff(unit)
 				frameCount:Hide();
 				frameCooldown:SetDrawSwipe(true);
 			end
-			
+
 			if ( duration > 0 ) then
 				frameCooldown:Show();
 				asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0, true);
@@ -426,15 +426,15 @@ local function ADF_UpdateDebuff(unit)
 			if (unit ~= "player" and caster ~= nil  and not PLAYER_UNITS[caster]) then
 				color = { r = 0.3, g = 0.3, b = 0.3 };
 			end
-		
+
 			if candispel then
 				color = { r = 1, g = 1, b = 1 };
 			end
 
 			frameBorder = frame.border;
 			frameBorder:SetVertexColor(color.r, color.g, color.b);
-			frameBorder:SetAlpha(ADF_ALPHA);			
-					
+			frameBorder:SetAlpha(ADF_ALPHA);
+
 			frame:ClearAllPoints();
 			frame:Show();
 
@@ -450,22 +450,22 @@ local function ADF_UpdateDebuff(unit)
 		i = i+1
 	until (name == nil)
 
-	for i = numDebuffs, ADF_MAX_DEBUFF_SHOW do		
+	for i = numDebuffs, ADF_MAX_DEBUFF_SHOW do
 		frame = parent.frames[i];
 
 		if ( frame ) then
-			frame:Hide();	
+			frame:Hide();
 		end
 	end
 end
 
 function ADF_ClearFrame()
-		
-	for i = 1, ADF_MAX_DEBUFF_SHOW do		
+
+	for i = 1, ADF_MAX_DEBUFF_SHOW do
 		local frame = ADF_TARGET_DEBUFF.frames[i];
 
 		if ( frame ) then
-			frame:Hide();	
+			frame:Hide();
 		end
 	end
 end
@@ -492,7 +492,7 @@ end
 function ADF_OnEvent(self, event, arg1)
 	if (event == "PLAYER_TARGET_CHANGED") then
 		ADF_ClearFrame();
-		
+
 		if UnitCanAssist("player", "target") then
 			ADF_UpdateDebuff("targethelp");
 		else
@@ -563,20 +563,20 @@ local function CreatDebuffFrames(parent, bright)
 	if parent.frames == nil then
 		parent.frames = {};
 	end
-	
+
 	for idx = 1, ADF_MAX_DEBUFF_SHOW do
 		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
 		local frame = parent.frames[idx];
-		frame:EnableMouse(false); 
-		for _,r in next,{frame.cooldown:GetRegions()} do 
-			if r:GetObjectType()=="FontString" then 
+		frame:EnableMouse(false);
+		for _,r in next,{frame.cooldown:GetRegions()} do
+			if r:GetObjectType()=="FontString" then
 				r:SetFont(STANDARD_TEXT_FONT, ADF_CooldownFontSize,"OUTLINE");
 				r:ClearAllPoints();
 				r:SetPoint("TOP", 0, 5);
 				break
-			end 
+			end
 		end
-		
+
 		frame.count:SetFont(STANDARD_TEXT_FONT, ADF_CountFontSize, "OUTLINE")
 		frame.count:ClearAllPoints()
 		frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
@@ -617,7 +617,7 @@ local function ADF_Init()
 
 	if bloaded and asMOD_setupFrame then
 		asMOD_setupFrame (ADF_TARGET_DEBUFF, "asDebuffFilter(Target)");
-  	end		
+  	end
 
 	ADF_PLAYER_DEBUFF = CreateFrame("Frame", nil, ADF)
 
@@ -631,7 +631,7 @@ local function ADF_Init()
 
 	if bloaded and asMOD_setupFrame then
 		asMOD_setupFrame (ADF_PLAYER_DEBUFF, "asDebuffFilter(Player)");
-  	end		
+  	end
 
 	ADF:RegisterEvent("PLAYER_TARGET_CHANGED")
 	ADF:RegisterUnitEvent("UNIT_AURA", "player")

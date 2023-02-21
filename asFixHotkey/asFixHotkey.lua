@@ -1,7 +1,7 @@
 ﻿local ASHK_ShowMacroName = false;				-- Macro 이름을 보이려면 true로
 
 local function _CheckLongName(keyName)
-			
+
   keyName = string.gsub(keyName,"숫자패드 ","");
   keyName = string.gsub(keyName,"숫자패드","");
   keyName = string.gsub(keyName,"마우스 가운데 버튼","M3");
@@ -27,7 +27,7 @@ local function _CheckLongName(keyName)
   keyName = string.gsub(keyName,"아래 화살표","V");
   keyName = string.gsub(keyName,"오른쪽 화살표",">");
   keyName = string.gsub(keyName,"왼쪽 화살표","<");
-  
+
   return keyName;
 end
 
@@ -38,7 +38,7 @@ local function _UpdateHotkeys(name, type, hide, total)
      local hotkey = getglobal(f:GetName().."HotKey");
      if not hotkey then break end;
 
-    local key = GetBindingKey(type..i) 
+    local key = GetBindingKey(type..i)
     local text = GetBindingText(key, "KEY_", 1);
     text = _CheckLongName(text);
     if ( text == "" ) then
@@ -76,7 +76,7 @@ local function onEvent(self, event, arg1)
     _UpdateHotkeys("MultiBar7Button", "MULTIACTIONBAR7BUTTON", 1, 12);
     return;
   end
-end 
+end
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")

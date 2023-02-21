@@ -2,10 +2,10 @@
 local ADotF_MAX_DEBUFF_SHOW = 5;
 local ADotF_ALPHA = 0.9;
 local ADotF_CooldownFontSize = 12;
-local ADotF_CountFontSize = 12;	
+local ADotF_CountFontSize = 12;
 
 ADotF_ShowList_WARRIOR_1 = {
-	{"분쇄" , 15 * 0.3},	
+	{"분쇄" , 15 * 0.3},
 }
 
 ADotF_ShowList_WARRIOR_2 = {
@@ -15,31 +15,31 @@ ADotF_ShowList_WARRIOR_3 = {
 }
 
 ADotF_ShowList_ROGUE_1 = {
-	{"파열" , 24 * 0.3},	
+	{"파열" , 24 * 0.3},
 }
 
 ADotF_ShowList_ROGUE_2 = {
-	
+
 }
 
 ADotF_ShowList_ROGUE_3 = {
-	{"파열" , 24 * 0.3},	
+	{"파열" , 24 * 0.3},
 }
 
 ADotF_ShowList_WARLOCK_1 = {
-	{"고통" , 14 * 0.3},	
-	{"불안정한 고통" , 21 * 0.3},	
-	{"부패" , 14 * 0.3},	
+	{"고통" , 14 * 0.3},
+	{"불안정한 고통" , 21 * 0.3},
+	{"부패" , 14 * 0.3},
 }
 
 ADotF_ShowList_WARLOCK_2 = {
-	
+
 }
 
 
 ADotF_ShowList_WARLOCK_3 = {
-	{"제물" , 24 * 0.3},	
-	
+	{"제물" , 24 * 0.3},
+
 }
 
 ADotF_ShowList_PRIEST_1 = {
@@ -50,11 +50,11 @@ ADotF_ShowList_PRIEST_2 = {
 }
 
 ADotF_ShowList_PRIEST_3 = {
-	{"어둠의 권능: 고통" , 16 * 0.3},	
+	{"어둠의 권능: 고통" , 16 * 0.3},
 }
 
 ADotF_ShowList_SHAMAN_1 = {
-	{"화염 충격" , 18 * 0.3},	
+	{"화염 충격" , 18 * 0.3},
 }
 
 ADotF_ShowList_SHAMAN_2 = {
@@ -64,23 +64,23 @@ ADotF_ShowList_SHAMAN_3 = {
 }
 
 ADotF_ShowList_DRUID_1 = {
-	{"달빛섬광" , 22 * 0.3},	
-	{"태양섬광" , 13.5 * 0.3},	
-	{"항성의 섬광" , 18 * 0.3},	
+	{"달빛섬광" , 22 * 0.3},
+	{"태양섬광" , 13.5 * 0.3},
+	{"항성의 섬광" , 18 * 0.3},
 }
 
 
 ADotF_ShowList_DRUID_2 = {
 	{"갈퀴 발톱" , 15 * 0.3},
-	{"도려내기" , 24 * 0.3},	
+	{"도려내기" , 24 * 0.3},
 }
 
 ADotF_ShowList_DRUID_3 = {
-	{"달빛섬광" , 22 * 0.3},		
+	{"달빛섬광" , 22 * 0.3},
 }
 
 ADotF_ShowList_DRUID_4 = {
-	{"달빛섬광" , 22 * 0.3},		
+	{"달빛섬광" , 22 * 0.3},
 }
 
 ADotF_ShowList_DEATHKNIGHT_1 = {
@@ -307,12 +307,12 @@ local function ADotF_UpdateDebuff(unit)
 	local parent;
 	local find = false;
 	local isboss = true;
-	
+
 	for i = 1, #ADotF_UnitList do
 		if unit == ADotF_UnitList[i] then
 			find = true;
 			break;
-		end			
+		end
 	end
 
 	if not find then
@@ -324,21 +324,21 @@ local function ADotF_UpdateDebuff(unit)
 	end
 
 	if not ADotF.units then
-		ADotF.units = {};		
+		ADotF.units = {};
 	end
 
 	if not ADotF.units[unit] then
-		ADotF.units[unit] = {};		
+		ADotF.units[unit] = {};
 	end
 
 	if not ADotF.units[unit].frames then
-		ADotF.units[unit].frames = {};		
+		ADotF.units[unit].frames = {};
 	end
 
 	local maxIdx =  #ADotF_ShowList;
 
 	if UnitExists(unit) then
-	
+
 		if (unit == "target") then
 			parent = _G["TargetFrame"];
 			isboss = false;
@@ -358,30 +358,30 @@ local function ADotF_UpdateDebuff(unit)
 		else
 			return;
 		end
-			
-		for i = 1, #ADotF_ShowList do 
-		
+
+		for i = 1, #ADotF_ShowList do
+
 			_, icon, count, debuffType, duration, expirationTime, caster = ADotF_UnitDebuff_Name(unit, ADotF_ShowList[i][1], "PLAYER");
 
 			if icon and  caster == "player" or caster == "pet"  then
-		
+
 				if numDebuffs > ADotF_MAX_DEBUFF_SHOW then
 					break;
 				end
-		
+
 				frame = ADotF.units[unit].frames[numDebuffs];
 
 				if ( not frame ) then
 					ADotF.units[unit].frames[numDebuffs] = CreateFrame("Button", nil, ADotF, "asTargetDotFrameTemplate");
 					frame = ADotF.units[unit].frames[numDebuffs];
-					frame:EnableMouse(false); 
-					for _,r in next,{frame.cooldown:GetRegions()}	do 
-						if r:GetObjectType()=="FontString" then 
+					frame:EnableMouse(false);
+					for _,r in next,{frame.cooldown:GetRegions()}	do
+						if r:GetObjectType()=="FontString" then
 							r:SetFont("Fonts\\2002.TTF",ADotF_CooldownFontSize,"OUTLINE");
 							r:ClearAllPoints();
 							r:SetPoint("TOP", 0, 5);
 							break;
-						end 
+						end
 					end
 
 					frame.icon:SetTexCoord(.08, .92, .08, .92);
@@ -404,7 +404,7 @@ local function ADotF_UpdateDebuff(unit)
 
 				-- Handle cooldowns
 				frameCooldown = frame.cooldown;
-			
+
 				if ( count > 1 ) then
 					frameCount:SetText(count);
 					frameCount:Show();
@@ -428,11 +428,11 @@ local function ADotF_UpdateDebuff(unit)
 				else
 					color = DebuffTypeColor["none"];
 				end
-				
+
 				frameBorder = frame.border;
 				frameBorder:SetVertexColor(color.r, color.g, color.b);
 				frameBorder:SetAlpha(ADotF_ALPHA);
-								
+
 				frame:ClearAllPoints();
 				frame:Show();
 
@@ -449,13 +449,13 @@ local function ADotF_UpdateDebuff(unit)
 			ADotF_UpdateDebuffAnchor(ADotF.units[unit].frames, i, ADotF_SIZE, 2, true, parent, isboss);
 		end
 	end
-	
+
 	for i = numDebuffs, maxIdx do
 		frame = ADotF.units[unit].frames[i];
 
 		if ( frame ) then
 			ADotF_ActionButton_HideOverlayGlow(frame);
-			frame:Hide();	
+			frame:Hide();
 		end
 	end
 end
@@ -481,7 +481,7 @@ local function ADotF_InitList()
 	ADotF_NameList = {};
 
 	if ADotF_ShowList then
-		for idx = 1, #ADotF_ShowList do	
+		for idx = 1, #ADotF_ShowList do
 			ADotF_NameList[ADotF_ShowList[idx][1]] = ADotF_ShowList[idx][2];
 		end
 	end
@@ -497,14 +497,14 @@ local function ADotF_OnEvent(self, event, arg1)
 	elseif (event == "PLAYER_TARGET_CHANGED") then
 		unit = "target";
 		ADotF_UpdateDebuff(unit);
-	elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then		
+	elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
 		ADotF_UpdateAllFrames();
 	elseif (event == "ACTIONBAR_UPDATE_COOLDOWN") then
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		ADotF_InitList();
 		ADotF_UpdateAllFrames();
 	elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
-		ADotF_InitList();		
+		ADotF_InitList();
 	end
 end
 
@@ -527,7 +527,7 @@ local function ADotF_Init()
 	ADotF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 	ADotF:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
 	ADotF:SetScript("OnEvent", ADotF_OnEvent)
-	C_Timer.NewTicker(0.2, ADotF_OnUpdate);	
+	C_Timer.NewTicker(0.2, ADotF_OnUpdate);
 end
 
 ADotF_Init();

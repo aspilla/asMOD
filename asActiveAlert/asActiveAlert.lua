@@ -1,4 +1,4 @@
-﻿local ASAA_SIZE = 26;	
+﻿local ASAA_SIZE = 26;
 
 local ASAA_CoolButtons_X = 170			-- 쿨 List 위치
 local ASAA_CoolButtons_Y = 55
@@ -34,7 +34,7 @@ local function ScanActionSlot()
 				action_list[id] = true;
 			end
 		end
-	end	
+	end
 end
 
 local function asCooldownFrame_Clear(self)
@@ -108,18 +108,18 @@ local function ASAA_UpdateCooldown()
 			if ( not frame ) then
 				parent.frames[numCools] = CreateFrame("Button", nil, parent, "asActiveAlert2FrameTemplate");
 				frame = parent.frames[numCools];
-				frame:EnableMouse(false); 
+				frame:EnableMouse(false);
 
-				for _,r in next,{frame.cooldown:GetRegions()}	do 
-					if r:GetObjectType()=="FontString" then 
+				for _,r in next,{frame.cooldown:GetRegions()}	do
+					if r:GetObjectType()=="FontString" then
 						r:SetFont("Fonts\\2002.TTF",ASAA_CooldownFontSize,"OUTLINE")
-						break 
-					end 
+						break
+					end
 				end
 
 				frame.icon:SetTexCoord(.08, .92, .08, .92)
 				frame.border:SetTexture("Interface\\Addons\\asActiveAlert\\border.tga")
-				frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92)	
+				frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92)
 
 			end
 
@@ -160,7 +160,7 @@ local function ASAA_UpdateCooldown()
 		frame = parent.frames[i];
 
 		if ( frame ) then
-			frame:Hide();	
+			frame:Hide();
 		end
 	end
 
@@ -190,7 +190,7 @@ end
 local function ASAA_Insert(id)
 
 	local maxIdx = #ASAA_SpellList;
-	
+
 	if ACI_SpellID_list and ACI_SpellID_list[id] then
 		return;
 	end
@@ -217,7 +217,7 @@ local function ASAA_Insert(id)
 end
 
 local function ASAA_Delete(id)
-	
+
 	local maxIdx = #ASAA_SpellList;
 
 	for i = 1, maxIdx do
@@ -247,7 +247,7 @@ local function ASAA_OnEvent(self, event, arg1, arg2, arg3)
 	end
 
 	return;
-end 
+end
 
 local ASAA_mainframe = CreateFrame("Frame")
 ASAA_mainframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")

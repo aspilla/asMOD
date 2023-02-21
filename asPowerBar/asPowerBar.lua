@@ -633,19 +633,6 @@ local function APB_UpdatePower()
 		APB.powermax = max;
 	end
 
-	--[[
-	local localizedClass, englishClass = UnitClass("player")
-
-	if (englishClass == "DRUID") then
-		local form  = GetShapeshiftFormID();
-
-		if (form ~= CAT_FORM) then
-			power = 0;
-		end
-
-	end
-	]]
-
 	local _, _, _, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo("player");
 	local cast = nil;
 

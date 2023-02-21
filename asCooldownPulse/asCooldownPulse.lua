@@ -34,7 +34,7 @@ local ACDP_AlertShowTime = 0.2			-- Alert button Fade in-out 시간 짧으면 �
 local ACDP_SIZE = 32;					-- 쿨 List Size
 ACDP_Show_CoolList = true;				-- 쿨 List를 보일지 안보일지 (안보이게 하려면 false)
 local ACDP_Alert_Time = 0.5;			-- 쿨 0.5초전에 알림
-local ACDP_ALPHA = 1;					
+local ACDP_ALPHA = 1;
 local ACDP_CooldownFontSize = 11;		-- Cooldown Font Size 기본 쿨다운 지원
 local ACDP_GreyColor = false 			-- Color Icon 원하면 false
 local ACDP_CooldownCount = 6;			-- 줄당 보일 CooldownCount 개수가 되면 줄을 바꾸어 표시됨 1줄로 보이려면 큰수로 지정
@@ -204,7 +204,7 @@ local function scanSpells(tab)
 
 		if spellID then
 			KnownSpellList[spellID] = 1;
-		end		
+		end
 	end
 end
 
@@ -214,25 +214,25 @@ local function scanPetSpells()
 	for i = 1, 20 do
 	   	local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
 	   	local spellName, _, spellID = GetSpellBookItemName (slot, BOOKTYPE_PET)
-	   
+
 		if not spellName then
 			do break end
 		end
 
 		if spellID then
 			KnownSpellList[spellID] = 1;
-		end		
+		end
 	end
 
 end
 
 local function scanActionSlots()
-		
+
 	for lActionSlot = 1, 120 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 		local itemid = nil;
 
-		
+
 		if id and type and type == "macro" then
 			 id = GetMacroSpell(id);
 		end
@@ -244,7 +244,7 @@ local function scanActionSlots()
 
 		if id then
 			if itemid then
-				KnownSpellList[id] = itemid; 
+				KnownSpellList[id] = itemid;
 			else
 				KnownSpellList[id] = 1;
 			end
@@ -262,15 +262,15 @@ end
 
 local function scanItemSlots()
 
-	for i =1,#itemslots do 
+	for i =1,#itemslots do
 
 		local idx = GetInventorySlotInfo(itemslots[i]);
-		local itemid = GetInventoryItemID("player",idx) 
+		local itemid = GetInventoryItemID("player",idx)
 
 		if itemid then
 			local  _, id = GetItemSpell(itemid);
 			if id then
-				KnownSpellList[id] = itemid; 
+				KnownSpellList[id] = itemid;
 				ItemSlotList[itemid] =  idx;
 			end
 		end
@@ -361,7 +361,7 @@ local function ACDP_UpdateCooldown()
 			frame = parent.frames[i];
 
 			if ( frame ) then
-				frame:Hide();	
+				frame:Hide();
 			end
 		end
 
@@ -385,7 +385,7 @@ local function ACDP_UpdateCooldown()
 			if APB_SPELL and APB_SPELL == name then
 				skip = true;
 			end
-	
+
 			if APB_SPELL2 and APB_SPELL2 == name then
 				skip = true;
 			end
@@ -393,10 +393,10 @@ local function ACDP_UpdateCooldown()
 			if ACI_SpellID_list and ACI_SpellID_list[name] then
 				skip = true;
 			end
-		end	
-					
+		end
+
 		if ACDP_StartTime[idx] > 0 and ACDP_bDelete[idx] == false and skip == false then
-			
+
 			if (type == "spell") then
 				name, _, icon = GetSpellInfo(array[idx]);
 				start, duration = GetSpellCooldown(array[idx]);
@@ -406,22 +406,22 @@ local function ACDP_UpdateCooldown()
 			else
 				name, _, _, _, _, _, _, _, _, icon = GetItemInfo(array[idx])
 				start, duration = GetItemCooldown(array[idx]);
-			end		
+			end
 
 			if (icon and duration > 0) and skip == false then
 				local currtime = GetTime();
 				tinsert(showlist, {start+duration -currtime, start, duration, icon} );
-				
+
 				ACDP_bUpdate[idx] = false;
-				
+
 				local ex = start + duration;
 
 				if ACDP_NextExTime > ex then
 					ACDP_NextExTime = ex;
 				end
 			else
-				ACDP_bDelete[idx] = true;			
-			end			
+				ACDP_bDelete[idx] = true;
+			end
 		end
 	end
 
@@ -434,7 +434,7 @@ local function ACDP_UpdateCooldown()
 		local start = showlist[i][2];
 		local duration = showlist[i][3];
 		local icon = showlist[i][4];
-			
+
 		frame = parent.frames[i];
 
 		if ( not frame ) then
@@ -442,14 +442,14 @@ local function ACDP_UpdateCooldown()
 			frame = parent.frames[i];
 			frame:SetWidth(ACDP_SIZE);
 			frame:SetHeight(ACDP_SIZE * 0.9);
-			frame:EnableMouse(false); 
+			frame:EnableMouse(false);
 			frame:Disable();
 
-			for _,r in next,{frame.cooldown:GetRegions()}	do 
-				if r:GetObjectType()=="FontString" then 
+			for _,r in next,{frame.cooldown:GetRegions()}	do
+				if r:GetObjectType()=="FontString" then
 					r:SetFont("Fonts\\2002.TTF",ACDP_CooldownFontSize,"OUTLINE")
-					break 
-				end 
+					break
+				end
 			end
 
 			frame.icon:SetTexCoord(.08, .92, .08, .92);
@@ -492,11 +492,11 @@ local function ACDP_UpdateCooldown()
 
 	-- 이후 전에 보였던 frame을 지운다.
 	for i = numCools, prev_cnt do
-		
+
 		frame = parent.frames[i];
 
 		if ( frame ) then
-			frame:Hide();				
+			frame:Hide();
 		end
 	end
 
@@ -519,7 +519,7 @@ local function ACDP_Alert(spell, type)
 	elseif type == "action" then
 		local icon = select(10,GetItemInfo(GetInventoryItemLink("player",spell)))
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
-		
+
 		if CONFIG_SOUND then
             PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. spell.. ".mp3", "DIALOG")
 		end
@@ -530,7 +530,7 @@ local function ACDP_Alert(spell, type)
 		if CONFIG_SOUND then
 
             PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. name.. ".mp3")
-			
+
 			if ItemSlotList[spell] then
                 PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. ItemSlotList[spell].. ".mp3", "DIALOG")
             end
@@ -566,7 +566,7 @@ local function ACDP_Init()
 		ACDP[i]:SetScale(1)
 		ACDP[i]:SetAlpha(0)
 		ACDP[i]:SetFrameStrata("LOW")
-		ACDP[i]:EnableMouse(false); 
+		ACDP[i]:EnableMouse(false);
 		ACDP[i]:Show()
 
 
@@ -597,7 +597,7 @@ local function ACDP_Init()
 end
 
 local function ACDP_Delete(idx)
-	
+
 	tremove(ACDP_SpellList, idx);
 	tremove(ACDP_SpellListType, idx);
 	tremove(ACDP_ExpirationTime, idx);
@@ -605,21 +605,21 @@ local function ACDP_Delete(idx)
 	tremove(ACDP_bDelete, idx);
 	tremove(ACDP_bPet, idx);
 	tremove(ACDP_bUpdate, idx);
-	tremove(ACDP_CheckCount, idx);	
+	tremove(ACDP_CheckCount, idx);
 end
 
 local function ACDP_Checkcooldown()
 
 	local i = 1;
 	local bupdate = false;
-	
+
 
 	while ( i <=  #ACDP_SpellList) do
 
 		if ACDP_SpellList[i] and ACDP_bDelete[i] == false then
 			local start, duration, enabled;
 			local check_duration = CONFIG_MINCOOL;
-		
+
 			if ACDP_bPet[i] == true then
 				check_duration = CONFIG_MINCOOL_PET;
 			end
@@ -640,7 +640,7 @@ local function ACDP_Checkcooldown()
 				if ACDP_NextExTime > expirationTime then
 					ACDP_NextExTime = expirationTime;
 				end
-									
+
 				if (ACDP_StartTime[i] == 0) then
 					if duration >= check_duration then
 						ACDP_ExpirationTime[i] = expirationTime;
@@ -648,13 +648,13 @@ local function ACDP_Checkcooldown()
 						ACDP_bUpdate[i] = true;
 						bupdate = true;
 					else
-						ACDP_CheckCount[i] = ACDP_CheckCount[i] + 1;						
+						ACDP_CheckCount[i] = ACDP_CheckCount[i] + 1;
 					end
 				elseif (not (ACDP_StartTime[i] == start) or not (ACDP_ExpirationTime[i] == expirationTime)) then
 
 					if (duration == gcd) then
 						--글쿨
-						ACDP_bDelete[i] = true;						
+						ACDP_bDelete[i] = true;
 					else
 						ACDP_StartTime[i] = start;
 						ACDP_ExpirationTime[i] = expirationTime;
@@ -662,7 +662,7 @@ local function ACDP_Checkcooldown()
 						ACDP_bUpdate[i] = true;
 					end
 				end
-			else				
+			else
 				if (ACDP_StartTime[i] > 0  and ACDP_ExpirationTime[i] > 0) then
 					ACDP_bDelete[i] = true;
 					ACDP_bUpdate[i] = true;
@@ -680,7 +680,7 @@ local function ACDP_Checkcooldown()
 			end
 
 		end
-		
+
 		i = i + 1
 	end
 
@@ -695,7 +695,7 @@ local function ACDP_Spell(name, type, unit)
 
 	if unit and unit == "pet" then
 		bPet = true;
-	end	
+	end
 
 	if type == "action" or type == "item" then
 		for i = 1, #ACDP_SpellList do
@@ -707,7 +707,7 @@ local function ACDP_Spell(name, type, unit)
 
 		local curr_time = GetTime();
 		local spell_name = GetSpellInfo(name);
-	
+
 		for i = 1, #ACDP_SpellList do
 			local spell_name2 = GetSpellInfo(ACDP_SpellList[i]);
 			if (ACDP_SpellList[i] == name or spell_name2 == spell_name) and ACDP_SpellListType[i] == type then
@@ -738,9 +738,9 @@ local function ACDP_Spell(name, type, unit)
 		tinsert(ACDP_bPet, bPet)
 		tinsert(ACDP_bUpdate, false)
 		tinsert(ACDP_CheckCount, 0);
-			
+
 		if type == "action" or type == "item" then
-			ACDP_Checkcooldown();	
+			ACDP_Checkcooldown();
 		end
 	end
 end
@@ -755,17 +755,17 @@ local function ACDP_OnUpdate()
 		local bupdate = false;
 		local bcheck = false;
 
-		ACDP_Checkcooldown();	
-	
+		ACDP_Checkcooldown();
+
 		if	ACDP_NextExTime  - ACDP_Alert_Time <= curr_time  then
 			ACDP_NextExTime = 0xFFFFFFFF;
 
 			while (i <= #ACDP_SpellList) do
-	
+
 				local bDelete = false;
 
 				if ACDP_SpellList[i] and (ACDP_StartTime[i] > 0 or ACDP_bDelete[i] == true) then
-								
+
 					if ACDP_ExpirationTime[i] - ACDP_Alert_Time <= curr_time  then
 						if ACDP_StartTime[i] > 0 then
 							ACDP_Alert(ACDP_SpellList[i], ACDP_SpellListType[i])
@@ -784,10 +784,10 @@ local function ACDP_OnUpdate()
 						ACDP_NextExTime = ACDP_ExpirationTime[i];
 
 					end
-				end	
+				end
 
 				if ACDP_StartTime[i] == 0 then
-					bcheck = true;				
+					bcheck = true;
 				end
 
 				if (bDelete == false) then
@@ -799,12 +799,12 @@ local function ACDP_OnUpdate()
 			if bcheck == true then
 				ACDP_Checkcooldown();
 			end
-	
+
 			if bupdate == true then
 				ACDP_UpdateCooldown();
 			end
 		end
-		
+
 	end
 end
 
@@ -826,7 +826,7 @@ local function ACDP_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		ACDP_UpdateCooldown();
 		setupKnownSpell();
-		
+
 		if UnitAffectingCombat("player") then
 			ACDP_CoolButtons:SetAlpha(ACDP_ALPHA);
 		else
@@ -850,7 +850,7 @@ local function ACDP_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 	end
 
 	return;
-end 
+end
 
 ACDP_mainframe = CreateFrame("Frame", nil, UIParent)
 ACDP_mainframe:SetScript("OnEvent", ACDP_OnEvent)

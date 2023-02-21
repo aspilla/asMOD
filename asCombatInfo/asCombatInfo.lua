@@ -1,8 +1,4 @@
-﻿local ACI = {nil, nil};
-local ACI_mainframe;
-ACI_SpellList = nil;
-
--- 설정
+﻿-- 설정
 local ACI_SIZE = 40;									-- Button Size
 
 local ACI_CoolButtons_X = 0 			-- 쿨 List 위치 X
@@ -40,7 +36,7 @@ ACI_SpellList_WARRIOR_1 = {
 	{"거인의 강타", 1},
 	{"마무리 일격", 1, true},
 	{"분쇄", 4, nil, 15 * 0.3},
-	
+
 };
 
 
@@ -51,7 +47,7 @@ ACI_SpellList_WARRIOR_2 = {
 	{"무모한 희생", 2},
 	{"광란", 1},
 	{"마무리 일격", 1, true},
-				
+
 };
 
 -- 방전
@@ -61,7 +57,7 @@ ACI_SpellList_WARRIOR_3 = {
 	{"방패 밀쳐내기", 1},
 	{"천둥벼락", 1},
 	{"사기의 외침", 4},
-	
+
 };
 
 -- 암살
@@ -86,7 +82,7 @@ ACI_SpellList_ROGUE_2 = {
 ACI_SpellList_ROGUE_3 = {
 	{"죽음의 상징", 2},
 	{"어둠의 춤", 2},
-	{"어둠의 칼날", 2}, 
+	{"어둠의 칼날", 2},
 	{91021, 8, nil, 10},
 	{"파열", 4, nil, 24 * 0.3},
 };
@@ -96,7 +92,7 @@ ACI_SpellList_HUNTER_1 = {
 	{99, "야수의 회전베기", {118455, 7, "pet", 2}, {"유혈", 4}},
 	{"살상 명령", 1},
 	{"야수의 격노", 2},
-	{"마무리 사격", 1},	
+	{"마무리 사격", 1},
 	{99, "광포한 무리", {378745, 7, nil, 20}, {"죽음의 회전 표창", 4}},
 };
 
@@ -104,9 +100,9 @@ ACI_SpellList_HUNTER_1 = {
 ACI_SpellList_HUNTER_2 = {
 	{99, "꾸준한 집중", {193533, 7, "player"}, {194595, 7, "player", 20}},
 	{"속사", 1},
-	{"정조준", 2},	
-	{"마무리 사격", 1},	
-	{99, "죽음의 회전 표창", {"죽음의 회전 표창", 4}, {260242, 7, "player", 20}},	
+	{"정조준", 2},
+	{"마무리 사격", 1},
+	{99, "죽음의 회전 표창", {"죽음의 회전 표창", 4}, {260242, 7, "player", 20}},
 };
 
 --생존
@@ -114,7 +110,7 @@ ACI_SpellList_HUNTER_3 = {
 	{99, "저미기", {"저미기", 1}, {"도살", 1}},
 	{"살상 명령", 1},
 	{"협공", 2},
-	{"마무리 사격", 1},		
+	{"마무리 사격", 1},
 	{"야생불 폭탄", 1},
 };
 
@@ -123,17 +119,17 @@ ACI_SpellList_MAGE_1 = {
 	{"비전의 여파", 4, "target"},
 	{"비전 보주", 1},
 	{"비전 쇄도", 2},
-	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},		
-	{99, "빛나는 불꽃", {"빛나는 불꽃", 4, "target"}, {332769, 7, "player", nil, 15}},		
+	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},
+	{99, "빛나는 불꽃", {"빛나는 불꽃", 4, "target"}, {332769, 7, "player", nil, 15}},
 };
 
 --화염
 ACI_SpellList_MAGE_2 = {
-	{"점멸", 1},
+	{383394, 7, nil, 2},
 	{"불태우기", 9, 30},
 	{"발화", 2},
-	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},	
-	{"얼음 방패", 1}, 
+	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},
+	{"이글거리는 방벽", 2},
 };
 
 --냉기
@@ -141,7 +137,7 @@ ACI_SpellList_MAGE_3 = {
 	{"진눈깨비", 1},
 	{"얼어붙은 구슬", 1},
 	{"얼음 핏줄", 1},
-	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},	
+	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},
 	{"눈보라", 1},
 };
 
@@ -159,7 +155,7 @@ ACI_SpellList_PALADIN_2 = {
 	{"신성화", 11},
 	{"응징의 방패", 1},
 	{"헌신적인 수호자", 2},
-	{99, "축복받은 망치", {"축복받은 망치", 1}, {"정의의 망치", 1}}, 	
+	{99, "축복받은 망치", {"축복받은 망치", 1}, {"정의의 망치", 1}},
 	{"심판", 4},
 };
 
@@ -179,7 +175,7 @@ ACI_SpellList_PRIEST_1 = {
 	{"속죄", 18},
 	{"환희", 2},
 	{"회개", 1},
-	
+
 };
 
 --신성
@@ -190,7 +186,7 @@ ACI_SpellList_PRIEST_2 = {
 	{"빛의 권능: 평온", 1},
 	{"회복의 기원", 1},
 	{99, "치유의 마법진", {"치유의 마법진", 1}, {"수호 영혼", 2}},
-	
+
 };
 
 --암흑
@@ -205,13 +201,13 @@ ACI_SpellList_PRIEST_3 = {
 
 --혈기
 ACI_SpellList_DEATHKNIGHT_1 = {
-	
+
 	{"죽음과 부패", 1},
 	{77535, 12},
 	{"춤추는 룬 무기", 2},
 	{"피의 소용돌이", 1},
 	{99, "죽음의 마수", {"죽음의 마수", 1}, {"흡혈", 2}},
-	
+
 };
 
 --냉기
@@ -244,7 +240,7 @@ ACI_SpellList_MONK_1 = {
 	{"맥주통 휘두르기", 1},
 	{"후려차기", 1},
 	{"불의 숨결", 1},
-	
+
 };
 
 --운무
@@ -298,7 +294,7 @@ ACI_SpellList_DRUID_3 = {
 --회복
 ACI_SpellList_DRUID_4 = {
 	{"무쇠껍질", 2},
-	{"정신 자극", 1}, 
+	{"정신 자극", 1},
 	{"신속한 치유", 1},
 	{"급속 성장", 1},
 	{"평온", 1},
@@ -309,10 +305,10 @@ ACI_SpellList_DRUID_4 = {
 ACI_SpellList_SHAMAN_1 = {
 	{16166, 7, "player"},
 	{"용암 폭발", 1},
-	{"불의 정령", 11, "상급 불의 정령"}, 
+	{"불의 정령", 11, "상급 불의 정령"},
 	{99, "얼음격노", {"얼음격노", 1}, {"폭풍 수호자", 1}};
 	{"화염 충격", 4, nil, 18 * 0.3},
-	
+
 };
 
 --고양
@@ -320,7 +316,7 @@ ACI_SpellList_SHAMAN_2= {
 	{"용암 채찍", 1},
 	{"폭풍의 일격", 1},
 	{"야수 정령", 2},
-	{"낙뢰", 1},	
+	{"낙뢰", 1},
 	{"화염 충격", 4, nil, 18 * 0.3},
 };
 
@@ -336,55 +332,55 @@ ACI_SpellList_SHAMAN_3= {
 
 --고통
 ACI_SpellList_WARLOCK_1 = {
-	
-	{273522, 7, "player"},	
-	{"암흑시선 소환", 11, "암흑시선"}, 
-	{"불안정한 고통", 4, nil , 21 * 0.3},	
-	{"부패", 4, nil , 14 * 0.3},	
-	{"고통", 4, nil , 18 * 0.3},	
+
+	{273522, 7, "player"},
+	{"암흑시선 소환", 11, "암흑시선"},
+	{"불안정한 고통", 4, nil , 21 * 0.3},
+	{"부패", 4, nil , 14 * 0.3},
+	{"고통", 4, nil , 18 * 0.3},
 
 }
 
 --악마
 ACI_SpellList_WARLOCK_2 = {
-	
+
 	{"지옥폭풍", 1},
 	--{138748, 15, "굴단의 손", 10},
-	{"공포사냥개 부르기", 1},	
-	{"악마 폭군 소환", 2, "player", nil ,nil , nil, "악마의 힘"}, 
+	{"공포사냥개 부르기", 1},
+	{"악마 폭군 소환", 2, "player", nil ,nil , nil, "악마의 힘"},
 	{264173, 7, nil, 0},
-	{99, "영혼의 일격", {"영혼의 일격", 1}, {"악마의 기운", 1}}	
+	{99, "영혼의 일격", {"영혼의 일격", 1}, {"악마의 기운", 1}}
 }
 
 --파괴
 ACI_SpellList_WARLOCK_3 = {
 
 
-  	{196406, 7, "player"},	  
+  	{196406, 7, "player"},
 	{"점화", 1},
 	{99, "지옥불정령 소환", {"지옥불정령 소환", 11, "지옥불정령"}, {"어둠의 연소", 1}},
 	{196412, 8},
-	{"제물", 4, nil, 24 * 0.3},	
+	{"제물", 4, nil, 24 * 0.3},
 
 }
 
 --악딜
 ACI_SpellList_DEMONHUNTER_1 = {
-	
+
 	{99, "지옥칼", {"지옥칼", 1}, {"글레이브 투척", 1}},
 	{"칼춤", 1},
 	{"탈태", 2},
-	{"안광", 1},	
+	{"안광", 1},
 	{"제물의 오라", 2},
-	
+
 }
 
 --복수
 ACI_SpellList_DEMONHUNTER_2 = {
-	
+
 	{99, "지옥칼", {"지옥칼", 1}, {"불꽃의 인장", 1}},
-	{"영혼 베어내기", 1},	
-	{"탈태", 2},	
+	{"영혼 베어내기", 1},
+	{"탈태", 2},
 	{"불타는 낙인", 4},
 	{"제물의 오라", 2},
 }
@@ -396,7 +392,7 @@ ACI_SpellList_EVOKER_1 = {
 	{"용의 분노", 2},
 	{"영원의 쇄도", 1},
 	{"불의 숨결", 1},
-	
+
 }
 
 --기원
@@ -407,34 +403,40 @@ ACI_SpellList_EVOKER_2 = {
 	{"되감기", 1},
 	{"꿈의 숨결", 1},
 	{"영혼 만개", 1},
-	
-	
+
+
 }
+
+-- 높은 수 일 수록 보이는 우선순위 높음 (조정 필요)
+local roguespell = {
+	[6] = "집중 공격",
+	[5] = "무자비한 정밀함",
+	[4] = "해적 징표",
+	[3] = "진방위",
+	[2] = "대난투",
+	[1] = "숨겨진 보물",
+}
+
 
 local _G = _G;
 local cast_spell = nil;
 local cast_time = nil;
 
--- 높은 수 일 수록 보이는 우선순위 높음 (조정 필요)
-local roguespell = {
-	[6] = "집중 공격",
-	[5] = "무자비한 정밀함",	
-	[4] = "해적 징표", 	
-	[3] = "진방위",
-	[2] = "대난투",	
-	[1] = "숨겨진 보물", 
-}
+local ACI = {nil, nil};
+local ACI_mainframe;
+local ACI_SpellList = nil;
 
-
-ACI_Cool_list = {};
+--globals
 ACI_Buff_list = {};
 ACI_Debuff_list = {};
 ACI_Player_Debuff_list = {};
-ACI_Active_list = {};
 ACI_SpellID_list = {};
-ACI_Action_slot_list = {};
-ACI_Alert_list = {};
 
+
+local ACI_Cool_list = {};
+local ACI_Active_list = {};
+local ACI_Action_slot_list = {};
+local ACI_Alert_list = {};
 local ACI_Current_Count = 0;
 
 
@@ -923,26 +925,26 @@ local function checkBuffCount(buff)
 		if IsInRaid() then -- raid
 			for i=1,GetNumGroupMembers() do
 				local unitid = "raid"..i
-				local name = getUnitBuffbyName(unitid, buff, "PLAYER") 
+				local name = getUnitBuffbyName(unitid, buff, "PLAYER")
 				if name then
-					count = count + 1;	
+					count = count + 1;
 				end
 			end
 		else -- party
 
 			for i=1,GetNumSubgroupMembers() do
 				local unitid = "party"..i
-				local name = getUnitBuffbyName(unitid, buff, "PLAYER") 
+				local name = getUnitBuffbyName(unitid, buff, "PLAYER")
 
 				if name then
-					count = count + 1;	
+					count = count + 1;
 				end
 			end
 
-			local name = getUnitBuffbyName("player", buff, "PLAYER") 
+			local name = getUnitBuffbyName("player", buff, "PLAYER")
 
 			if name then
-				count = count + 1;	
+				count = count + 1;
 			end
 		end
 	end
@@ -980,20 +982,20 @@ local function checkDireBeast()
 
 	repeat
 		name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId  = UnitBuff("player", i, "INCLUDE_NAME_PLATE_ONLY");
-						
+
 		if name and spellId == 281036 and expirationTime > prev_dire_beast_time then
 			dire_beast_count = dire_beast_count + 1;
-			prev_dire_beast_time = expirationTime;			
+			prev_dire_beast_time = expirationTime;
 		elseif name and spellId == 378747 and expirationTime > prev_dire_pack_time then
 			dire_beast_count = 0;
-			prev_dire_pack_time = expirationTime;			
-		end       
-	
+			prev_dire_pack_time = expirationTime;
+		end
+
 		i = i + 1;
 	until (name == nil)
 
 	return dire_beast_count;
-	
+
 end
 
 local function ACI_Alert(self, bcastspell)
@@ -1004,7 +1006,7 @@ local function ACI_Alert(self, bcastspell)
 
 	local i = self.idx;
 
-	
+
 	if ACI_SpellList == nil or ACI_SpellList[i] == nil then
 		ACI[i]:Hide();
 		return;
@@ -1016,7 +1018,7 @@ local function ACI_Alert(self, bcastspell)
 
 	local spellname = ACI_SpellList[i][1];
 	local t = ACI_SpellList[i][2];
-	local icon;	
+	local icon;
 	local start, duration, enable;
 	local isUsable, notEnoughMana;
 	local count;
@@ -1029,11 +1031,11 @@ local function ACI_Alert(self, bcastspell)
 	local frameBorder;
 	local frame;
 	local alert_count = nil;
-	local charges, maxCharges, chargeStart, chargeDuration, chargeModRate; 
+	local charges, maxCharges, chargeStart, chargeDuration, chargeModRate;
 	local expirationTime;
 	local caster;
 	local name;
-	
+
 	frame = ACI[i];
 	if not frame then
 		return;
@@ -1042,10 +1044,10 @@ local function ACI_Alert(self, bcastspell)
 	frameCooldown = frame.cooldown;
 	frameCount =  frame.count;
 	frameBorder = frame.border;
-	
+
 
 	if t == 1 or t == 9  then
-	
+
 		_,_,icon = GetSpellInfo(spellname)
 		start, duration, enable = GetSpellCooldown(spellname);
 		local _, gcd  = GetSpellCooldown(61304);
@@ -1141,36 +1143,36 @@ local function ACI_Alert(self, bcastspell)
 					icon = icontemp;
 					caster = "player";
 				end
-						
+
 				debuff_idx = debuff_idx + 1;
 
 			until (nametemp == nil)
-		
+
 		else
 			_,  icon, count, _, duration, expirationTime, _, _, _, _, _,_ ,_,_,_,stack  = getUnitBuffbyName(unit, buff_name);
 
 		end
 
-		if icon then		
+		if icon then
 			start = expirationTime - duration;
 			isUsable = true
 			enable = 1
-	
+
 			if count <= 1 then
 				count = GetSpellCharges(spellname);
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
-				
+
 				if count == 1 and (not maxCharges or maxCharges <= 1) then
 					count = 0;
 				end
 			end
 			buff_cool = true;
-		
+
 			self.exTime = nil;
 			if alert_du and (expirationTime - GetTime()) <= alert_du  then
 				ACI_Alert_list[spellname] = true;
 			elseif alert_du then
-				self.exTime = expirationTime - alert_du; 
+				self.exTime = expirationTime - alert_du;
 			end
 
 		elseif not disablespell then
@@ -1187,7 +1189,7 @@ local function ACI_Alert(self, bcastspell)
 			if not count or count == 0 then
 				if ACI_Action_slot_list[i]  then
 					count = GetActionCount(ACI_Action_slot_list[i]);
-					charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetActionCharges(ACI_Action_slot_list[i]);				
+					charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetActionCharges(ACI_Action_slot_list[i]);
 				end
 			end
 
@@ -1197,7 +1199,7 @@ local function ACI_Alert(self, bcastspell)
 
 			if ( charges and maxCharges and maxCharges > 1 and charges < maxCharges ) then
 				start = chargeStart;
-				duration = chargeDuration;				
+				duration = chargeDuration;
 			end
 		end
 
@@ -1232,7 +1234,7 @@ local function ACI_Alert(self, bcastspell)
 		end
 
 		local filter = nil;
-		
+
 		if unit == "target" then
 			filter = "PLAYER"
 		end
@@ -1273,11 +1275,11 @@ local function ACI_Alert(self, bcastspell)
 					icon = icontemp;
 					caster = "player";
 				end
-						
+
 				debuff_idx = debuff_idx + 1;
 
 			until (nametemp == nil)
-		
+
 		else
 			_, icon, count, debuffType, duration, expirationTime, caster, _, _, _, _,_ ,_,_,_,stack  = getUnitDebuffbyName(unit, buff_name, filter);
 		end
@@ -1286,7 +1288,7 @@ local function ACI_Alert(self, bcastspell)
 			icon = nil;
 		end
 
-		if icon then		
+		if icon then
 			start = expirationTime - duration;
 			isUsable = 1
 			enable = 1
@@ -1295,7 +1297,7 @@ local function ACI_Alert(self, bcastspell)
 				count = GetSpellCharges(spellname);
 
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
-				
+
 				if count == 1 and (not maxCharges or maxCharges <= 1) then
 					count = 0;
 				end
@@ -1308,7 +1310,7 @@ local function ACI_Alert(self, bcastspell)
 			if alert_du and (expirationTime - GetTime()) <= alert_du and duration > 0  then
 				ACI_Alert_list[spellname] = true;
 			elseif  alert_du then
-				self.exTime = expirationTime - alert_du; 
+				self.exTime = expirationTime - alert_du;
 			end
 
 		else
@@ -1333,7 +1335,7 @@ local function ACI_Alert(self, bcastspell)
 
 			if ( charges and maxCharges and maxCharges > 1 and charges < maxCharges ) then
 				start = chargeStart;
-				duration = chargeDuration;				
+				duration = chargeDuration;
 			end
 		end
 	elseif t == 11  then
@@ -1353,7 +1355,7 @@ local function ACI_Alert(self, bcastspell)
 			check_buff = false;
 
 		end
-	
+
 		for slot=1, MAX_TOTEMS do
 			local haveTotem;
 			haveTotem, name, start, duration, icon = GetTotemInfo(slot);
@@ -1369,7 +1371,7 @@ local function ACI_Alert(self, bcastspell)
 
 					if not hasbuff then
 						buff_miss = true;
-						
+
 					end
 				end
 
@@ -1397,16 +1399,16 @@ local function ACI_Alert(self, bcastspell)
 					charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetActionCharges(ACI_Action_slot_list[i]);
 				end
 			end
-		
+
 			if ( charges and maxCharges and maxCharges > 1 and charges < maxCharges ) then
 				start = chargeStart;
-				duration = chargeDuration;				
+				duration = chargeDuration;
 			end
 
 		end
 
 	elseif t == 14 then
-	
+
 		spellname = 193316;
 
 		local idx;
@@ -1500,7 +1502,7 @@ local function ACI_Alert(self, bcastspell)
 	if icon == nil then
 
 	--	frame:Hide();
-		frameBorder:Hide();		
+		frameBorder:Hide();
 		frameIcon:SetDesaturated(true)
 		frameCooldown:Hide();
 		frameCount:Hide();
@@ -1519,7 +1521,7 @@ local function ACI_Alert(self, bcastspell)
 
 		frameIcon:SetVertexColor(1.0, 1.0, 1.0);
 		frameIcon:SetAlpha(1);
-	
+
 		if t >= 2 and t ~= 9 then
 
 			if buff_cool then
@@ -1533,7 +1535,7 @@ local function ACI_Alert(self, bcastspell)
 			else
 				frameIcon:SetVertexColor(0.7, 0.7, 0.7);
 				frameIcon:SetAlpha(1);
-				
+
 				if  t == 6 then
 					frameIcon:SetDesaturated(false)
 				else
@@ -1556,8 +1558,8 @@ local function ACI_Alert(self, bcastspell)
 		frameIcon:SetAlpha(1);
 		frameIcon:SetDesaturated(true)
 	end
-	
-	
+
+
 
 	if ( buff_cool ) then
 		local color;
@@ -1594,7 +1596,7 @@ local function ACI_Alert(self, bcastspell)
 		self.alert = true;
 	else
 		if self.alert == true then
-			lib.PixelGlow_Stop(frame)				
+			lib.PixelGlow_Stop(frame)
 		end
 		self.alert = false;
 
@@ -1603,7 +1605,7 @@ local function ACI_Alert(self, bcastspell)
 
 	frameIcon:SetTexture(icon);
 
-	if (duration ~= nil and duration > 0 and duration < 500 ) then		
+	if (duration ~= nil and duration > 0 and duration < 500 ) then
 			-- set the count
 		asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, enable);
 		frameCooldown:SetDrawSwipe(false);
@@ -1615,18 +1617,18 @@ local function ACI_Alert(self, bcastspell)
 
 	if ( count and count > 0 ) then
 
-		if(count > 999999) then 
-			count = math.ceil(count/1000000) .. "m" 
-		elseif(count > 999) then 
-			count = math.ceil(count/1000) .. "k" 
-		end   						
+		if(count > 999999) then
+			count = math.ceil(count/1000000) .. "m"
+		elseif(count > 999) then
+			count = math.ceil(count/1000) .. "k"
+		end
 
 		if frame.cooldownfont then
 			frame.cooldownfont:ClearAllPoints();
 			frame.cooldownfont:SetPoint("TOPLEFT", 4, -4);
 			frameCooldown:SetDrawSwipe(false);
 		end
-	
+
 		frameCount:SetText(count)
 		frameCount:Show();
 	else
@@ -1655,7 +1657,7 @@ end
 local function ACI_ButtonOnEvent(self, event, arg1, ...)
 
 	if (event == "PLAYER_TARGET_CHANGED") then
-		
+
 		if UnitHealthMax(self.unit) > 0 then
 
 			local health =  UnitHealth(self.unit) / UnitHealthMax(self.unit) * 100
@@ -1717,8 +1719,8 @@ end
 
 
 local function ACI_OnEvent(self, event, arg1, ...)
-	
-	if event_frames[event] and #event_frames[event] > 0 then	
+
+	if event_frames[event] and #event_frames[event] > 0 then
 		for k, frame in pairs(event_frames[event]) do
 			ACI_ButtonOnEvent(frame, event, arg1, ...);
 		end
@@ -1763,10 +1765,10 @@ local function ACI_OnEvent(self, event, arg1, ...)
 		end
 
 	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
-		C_Timer.After(0.5, ACI_Init);	
+		C_Timer.After(0.5, ACI_Init);
 		bfirst = true;
 	elseif event == "ACTIONBAR_SLOT_CHANGED" and bfirst then
-		C_Timer.After(0.5, ACI_Init);	
+		C_Timer.After(0.5, ACI_Init);
 		bfirst = false;
 	elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
 		local spell = GetSpellInfo(arg1);
@@ -1784,7 +1786,7 @@ local function ACI_OnEvent(self, event, arg1, ...)
 		end
 	end
 	return;
-end 
+end
 
 local function ACI_GetActionSlot(arg1)
 
@@ -1794,7 +1796,7 @@ local function ACI_GetActionSlot(arg1)
 		if id and type and type == "macro" then
 			 id = GetMacroSpell(id);
 		end
-	
+
 		if id then
 			local name = GetSpellInfo(id);
 
@@ -1870,7 +1872,7 @@ function ACI_Init()
 	end
 
 	ACI_SpellList = nil;
-	
+
 	ACI_Cool_list = {}
 	ACI_Buff_list = {}
 	ACI_Debuff_list = {}
@@ -1949,11 +1951,11 @@ function ACI_Init()
 							ACI_SpellList[i][4] = nil;
 
 							for z = 1, #array do
-								ACI_SpellList[i][z] = array[z];			
+								ACI_SpellList[i][z] = array[z];
 							end
 
 						end
-					end					
+					end
 				else
 					if ACI_SpellList[i][4] then
 
@@ -1965,11 +1967,11 @@ function ACI_Init()
 							ACI_SpellList[i][4] = nil;
 
 							for z = 1, #array do
-								ACI_SpellList[i][z] = array[z];			
+								ACI_SpellList[i][z] = array[z];
 							end
 
 						end
-					end						
+					end
 				end
 			end
 
@@ -1993,7 +1995,7 @@ function ACI_Init()
 					ACI_SpellID_list[id] = true;
 				end
 
-			elseif ACI_SpellList[i][2] == 4 or ACI_SpellList[i][2] == 16  then 
+			elseif ACI_SpellList[i][2] == 4 or ACI_SpellList[i][2] == 16  then
 				ACI_Debuff_list[ACI_SpellList[i][1]] = i;
 
 				local id = select (7, GetSpellInfo(ACI_SpellList[i][1]));
@@ -2008,7 +2010,7 @@ function ACI_Init()
 					ACI_Player_Debuff_list[ACI_SpellList[i][1]] = i;
 				end
 
-			elseif ACI_SpellList[i][2] == 7 or ACI_SpellList[i][2] == 12 or ACI_SpellList[i][2] == 17 or ACI_SpellList[i][2] == 18  then 
+			elseif ACI_SpellList[i][2] == 7 or ACI_SpellList[i][2] == 12 or ACI_SpellList[i][2] == 17 or ACI_SpellList[i][2] == 18  then
 				local name = GetSpellInfo(ACI_SpellList[i][1]);
 
 				ACI_Action_slot_list[i] = ACI_GetActionSlot(name);
@@ -2018,7 +2020,7 @@ function ACI_Init()
 				end
 				ACI_SpellID_list[ACI_SpellList[i][1]] = true;
 
-			elseif ACI_SpellList[i][2] == 8 then 
+			elseif ACI_SpellList[i][2] == 8 then
 
 				local name = GetSpellInfo(ACI_SpellList[i][1]);
 
@@ -2032,9 +2034,9 @@ function ACI_Init()
 				if name and ACI_SpellList[i][3] and ACI_SpellList[i][3] == "player" then
 					ACI_Player_Debuff_list[name] = i;
 				end
-			elseif ACI_SpellList[i][2] == 14 then 
+			elseif ACI_SpellList[i][2] == 14 then
 
-			elseif ACI_SpellList[i][2] == 11  or ACI_SpellList[i][2] == 15  then 
+			elseif ACI_SpellList[i][2] == 11  or ACI_SpellList[i][2] == 15  then
 
 				local slot_name = ACI_SpellList[i][3];
 
@@ -2049,14 +2051,14 @@ function ACI_Init()
 
 			end
 			ACI[i].idx = i;
-	
+
 			ACI_Alert(ACI[i]);
 
 
 			ACI[i].update = 0;
 			ACI[i].updateaura = true;
 
-			
+
 			local t = ACI_SpellList[i][2];
 
 			if t == 4 or t == 8 or t == 16 then
@@ -2070,7 +2072,7 @@ function ACI_Init()
 				else
 					ACI[i].updateaura = true;
 				end
-				
+
 				if ACI[i].unit == "target" then
 					EventsFrame_RegisterFrame("PLAYER_TARGET_CHANGED", ACI[i]);
 				end
@@ -2122,7 +2124,7 @@ function ACI_Init()
 				EventsFrame_RegisterFrame("ACTIONBAR_UPDATE_COOLDOWN", ACI[i]);
 				EventsFrame_RegisterFrame("SPELL_UPDATE_CHARGES", ACI[i]);
 				EventsFrame_RegisterFrame("UNIT_SPELLCAST_SUCCEEDED", ACI[i]);
-			
+
 
 				if t == 9 and ACI_SpellList[i][3] then
 					ACI[i].unit = "target";
@@ -2135,7 +2137,7 @@ function ACI_Init()
 		end
 
 		ACI_Timer =	C_Timer.NewTicker(0.2, ACI_OnUpdate);
-		
+
 		local bload = LoadAddOn("asCooldownPulse")
 
 		if bload and #ACI_SpellList > 5 and ACDP_Show_CoolList == true  then
@@ -2145,8 +2147,8 @@ function ACI_Init()
 
 
 	for i = 1, ACI_MaxSpellCount do
-		for _,r in next,{ACI[i].cooldown:GetRegions()}	do 
-			if r:GetObjectType()=="FontString" then 
+		for _,r in next,{ACI[i].cooldown:GetRegions()}	do
+			if r:GetObjectType()=="FontString" then
 				if i < 6 then
 					r:SetFont("Fonts\\2002.TTF",ACI_CooldownFontSize,"OUTLINE")
 				else
@@ -2154,8 +2156,8 @@ function ACI_Init()
 				end
 
 				ACI[i].cooldownfont = r;
-				break 
-			end 
+				break
+			end
 		end
 
 
@@ -2172,7 +2174,7 @@ function ACI_Init()
 		ACI[i].border:SetTexture("Interface\\Addons\\asCombatInfo\\border.tga");
 		ACI[i].border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 
-		ACI[i].border:Hide();		
+		ACI[i].border:Hide();
 	end
 	return;
 
@@ -2233,7 +2235,7 @@ for i = 6, 11 do
 	ACI[i]:SetAlpha(ACI_Alpha);
 	ACI[i]:EnableMouse(false);
 	ACI[i]:Hide();
-	
+
 end
 
 for i = 6, 11 do
