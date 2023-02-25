@@ -1131,9 +1131,9 @@ local function APB_CheckPower(self)
 		end
 
 		if (spec and spec == 2) then
-			if (asCheckTalent("태양왕의 축복")) then
-				APB_BUFF = "태양왕의 축복";	
-				APB.buffbar[0].buff = "태양왕의 축복"	
+			if (asCheckTalent("화상의 자극")) then
+				APB_BUFF = "화상의 자극";	
+				APB.buffbar[0].buff = "화상의 자극"	
 				APB.buffbar[0].unit = "player";
 				APB:RegisterUnitEvent("UNIT_AURA", "player");
 				bupdate_buff_count = true;
@@ -1171,12 +1171,13 @@ local function APB_CheckPower(self)
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			APB_UpdateBuffCombo(self.combobar)
 			bupdate_buff_combo = true;				
-						
+			--[[
 			APB_BUFF = "얼음 핏줄";	
 			APB.buffbar[0].buff = "얼음 핏줄";
 			APB.combobar.unit = "player"
 			APB.buffbar[0].unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
+			]]	
 			bsmall_power_bar = true;
 		end		
 

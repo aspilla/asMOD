@@ -98,7 +98,7 @@ ACI_SpellList_HUNTER_1 = {
 
 --사격
 ACI_SpellList_HUNTER_2 = {
-	{99, "꾸준한 집중", {193533, 7, "player"}, {194595, 7, "player", 20}},
+	{99, "꾸준한 집중", {193533, 7, "player"}, {384790, 7, "player", 20}},
 	{"속사", 1},
 	{"정조준", 2},
 	{"마무리 사격", 1},
@@ -125,7 +125,7 @@ ACI_SpellList_MAGE_1 = {
 
 --화염
 ACI_SpellList_MAGE_2 = {
-	{383394, 7, nil, 2},
+	{333313, 7, nil, 15},
 	{"불태우기", 9, 30},
 	{"발화", 2},
 	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},
@@ -136,7 +136,7 @@ ACI_SpellList_MAGE_2 = {
 ACI_SpellList_MAGE_3 = {
 	{"진눈깨비", 1},
 	{"얼어붙은 구슬", 1},
-	{"얼음 핏줄", 1},
+	{"얼음 핏줄", 2},
 	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},
 	{"눈보라", 1},
 };
@@ -2145,37 +2145,6 @@ function ACI_Init()
 		end
 	end
 
-
-	for i = 1, ACI_MaxSpellCount do
-		for _,r in next,{ACI[i].cooldown:GetRegions()}	do
-			if r:GetObjectType()=="FontString" then
-				if i < 6 then
-					r:SetFont("Fonts\\2002.TTF",ACI_CooldownFontSize,"OUTLINE")
-				else
-					r:SetFont("Fonts\\2002.TTF",ACI_CooldownFontSize - 2,"OUTLINE")
-				end
-
-				ACI[i].cooldownfont = r;
-				break
-			end
-		end
-
-
-		if i < 6 then
-			ACI[i].count:SetFont("Fonts\\2002.TTF", ACI_CountFontSize, "OUTLINE")
-		else
-			ACI[i].count:SetFont("Fonts\\2002.TTF", ACI_CountFontSize - 2, "OUTLINE")
-
-		end
-
-		ACI[i].count:SetPoint("BOTTOMRIGHT", -3, 3);
-
-		ACI[i].icon:SetTexCoord(.08, .92, .08, .92);
-		ACI[i].border:SetTexture("Interface\\Addons\\asCombatInfo\\border.tga");
-		ACI[i].border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
-
-		ACI[i].border:Hide();
-	end
 	return;
 
 end
@@ -2248,6 +2217,37 @@ for i = 6, 11 do
 	elseif i > 9 then
 		ACI[i]:SetPoint("LEFT", ACI[i-1], "RIGHT", 1, 0);
 	end
+end
+
+for i = 1, ACI_MaxSpellCount do
+	for _,r in next,{ACI[i].cooldown:GetRegions()}	do
+		if r:GetObjectType()=="FontString" then
+			if i < 6 then
+				r:SetFont("Fonts\\2002.TTF",ACI_CooldownFontSize,"OUTLINE")
+			else
+				r:SetFont("Fonts\\2002.TTF",ACI_CooldownFontSize - 2,"OUTLINE")
+			end
+
+			ACI[i].cooldownfont = r;
+			break
+		end
+	end
+
+
+	if i < 6 then
+		ACI[i].count:SetFont("Fonts\\2002.TTF", ACI_CountFontSize, "OUTLINE")
+	else
+		ACI[i].count:SetFont("Fonts\\2002.TTF", ACI_CountFontSize - 2, "OUTLINE")
+
+	end
+
+	ACI[i].count:SetPoint("BOTTOMRIGHT", -3, 3);
+
+	ACI[i].icon:SetTexCoord(.08, .92, .08, .92);
+	ACI[i].border:SetTexture("Interface\\Addons\\asCombatInfo\\border.tga");
+	ACI[i].border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+
+	ACI[i].border:Hide();
 end
 
 

@@ -1791,7 +1791,8 @@ local function ACRB_OnEvent(self, event, ...)
 		local arg1 = ...;
 
 		if  event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player"  then
-			ACRB_updatePartyAllBuff();
+			--CPU 사용률 감소
+			--ACRB_updatePartyAllBuff();
 		elseif (event == "PLAYER_ENTERING_WORLD") then
 			ACRB_InitList();
 			mustdisable = true;
