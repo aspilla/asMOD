@@ -1,9 +1,12 @@
 ﻿local ADBMT_Font = "Fonts\\2002.TTF";
-local ADBMT_CoolFontSize = 18;
-local ADBMT_NameFontSize = 14;
+local ADBMT_CoolFontSize = 15;
+local ADBMT_NameFontSize = 12;
 local ADBMT_FontOutline = "THICKOUTLINE";
 local ADBMT_MaxButtons = 10;
-local ADBMT_1sHeight = 20;	-- 1초의 높이
+local ADBMT_1sHeight = 15;	-- 1초의 높이
+local ADBMT_IconSize = 30;
+local ADBMT_X = -330;
+local ADBMT_Y = 0;
 
 -- 설정 끝
 
@@ -81,7 +84,6 @@ end
 local dbm_event_list = {};
 
 function asDBMTimer_callback(...)
-	--print (...);
 
 	local event, id, msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
 
@@ -103,7 +105,7 @@ function asDBMTimer_callback(...)
 		end
 		dbm_event_list[id] = nil;
 	else
-		print (...);
+		--print (...);
 	end
 end
 
@@ -126,7 +128,7 @@ end
 local function setupUI()
 
 	asDBMTimer = CreateFrame("FRAME", nil, UIParent)
-	asDBMTimer:SetPoint("CENTER",UIParent,"CENTER", 250, 0)
+	asDBMTimer:SetPoint("CENTER",UIParent,"CENTER", ADBMT_X, ADBMT_Y)
 	asDBMTimer:SetWidth(100)
 	asDBMTimer:SetHeight(100)
 	asDBMTimer:Show();
@@ -137,21 +139,27 @@ local function setupUI()
 		asMOD_setupFrame (asDBMTimer, "asDBMTimer");
   	end
 
+	--[[
 	asDBMTimer.square = asDBMTimer:CreateTexture(nil, "BACKGROUND");
 	asDBMTimer.square:SetDrawLayer("ARTWORK", 0);
 	asDBMTimer.square:SetTexture("Interface\\Addons\\asDBMTimer\\Square_White.tga")
 	--asDBMTimer.square:SetBlendMode("ALPHAKEY");
-	asDBMTimer.square:SetVertexColor(1,1,1,1)
-	asDBMTimer.square:SetWidth(5);
-	asDBMTimer.square:SetHeight(200);
+	asDBMTimer.square:SetVertexColor(0.5,0.5,0.5, 0.3)
+	asDBMTimer.square:ClearAllPoints();
+	asDBMTimer.square:SetPoint("BOTTOM", asDBMTimer, "BOTTOM", 0, 0);
+	asDBMTimer.square:SetWidth(2);
+	asDBMTimer.square:SetHeight(ADBMT_1sHeight * 10);
+	asDBMTimer.square:SetAlpha(1);
 	asDBMTimer.square:Show();
+	]]
 
 	asDBMTimer.buttons = {};
 
 	for i = 1, ADBMT_MaxButtons do
 		asDBMTimer.buttons[i] = CreateFrame("Button", nil, asDBMTimer, "asDBMTimerFrameTemplate");
-		asDBMTimer.buttons[i]:SetWidth(40);
-		asDBMTimer.buttons[i]:SetHeight(40 * 0.9);
+		asDBMTimer.buttons[i].icon:SetDrawLayer("BACKGROUND", 2);
+		asDBMTimer.buttons[i]:SetWidth(ADBMT_IconSize);
+		asDBMTimer.buttons[i]:SetHeight(ADBMT_IconSize * 0.9);
 		asDBMTimer.buttons[i]:SetScale(1);
 		asDBMTimer.buttons[i]:SetAlpha(1);
 		asDBMTimer.buttons[i]:EnableMouse(false);

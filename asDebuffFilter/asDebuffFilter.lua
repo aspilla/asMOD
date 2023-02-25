@@ -454,6 +454,7 @@ local function ADF_UpdateDebuff(unit)
 		frame = parent.frames[i];
 
 		if ( frame ) then
+			ADF_HideOverlayGlow(frame);
 			frame:Hide();
 		end
 	end
@@ -465,6 +466,7 @@ function ADF_ClearFrame()
 		local frame = ADF_TARGET_DEBUFF.frames[i];
 
 		if ( frame ) then
+			ADF_HideOverlayGlow(frame);
 			frame:Hide();
 		end
 	end
