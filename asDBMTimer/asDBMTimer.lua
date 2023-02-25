@@ -1,5 +1,6 @@
 ﻿local ADBMT_Font = "Fonts\\2002.TTF";
-local ADBMT_FontSize = 16;
+local ADBMT_CoolFontSize = 18;
+local ADBMT_NameFontSize = 14;
 local ADBMT_FontOutline = "THICKOUTLINE";
 local ADBMT_MaxButtons = 10;
 local ADBMT_1sHeight = 20;	-- 1초의 높이
@@ -7,21 +8,6 @@ local ADBMT_1sHeight = 20;	-- 1초의 높이
 -- 설정 끝
 
 local asDBMTimer = nil;
-
-local function asCooldownFrame_Clear(self)
-	self:Clear();
-end
-
-local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
-	if enable and enable ~= 0 and start > 0 and duration > 0 then
-		self:SetDrawEdge(forceShowDrawEdge);
-		self:SetCooldown(start, duration, modRate);
-	else
-		asCooldownFrame_Clear(self);
-	end
-end
-
-local timerlist = {};
 
 local function getButton(id)
 
@@ -43,7 +29,7 @@ local function deleteButton(id)
 
 	if button then
 		button.id = nil;
-		button.cooldown:Hide();		
+		button.cooltext:Hide();		
 		button.text:Hide();
 		button:Hide();
 		button:SetScript("OnUpdate", nil)
@@ -59,7 +45,13 @@ function ADBMT_OnUpdate(self, elapsed)
 		local remain = self.start + self.duration - GetTime();
 		if remain > 0  then
 			self:ClearAllPoints();
-			self:SetPoint("BOTTOM", self:GetParent(), "BOTTOM", 0, remain * ADBMT_1sHeight);					
+			self:SetPoint("BOTTOM", self:GetParent(), "BOTTOM", 0, remain * ADBMT_1sHeight);
+			self.cooltext:SetText(("%02.1f"):format(remain))
+			if remain <= 3 then
+				self.cooltext:SetTextColor(1, 0, 0, 1);
+			else
+				self.cooltext:SetTextColor(1, 1, 1, 1);
+			end
 		end
 	end
 end
@@ -73,9 +65,7 @@ local function newButton(id, msg, duration, start, icon)
 			asDBMTimer.buttons[i].duration = duration;
 			asDBMTimer.buttons[i].icon:SetTexture(icon);
 			asDBMTimer.buttons[i].icon:Show();
-			asCooldownFrame_Set(asDBMTimer.buttons[i].cooldown, GetTime(), duration, duration > 0, true);
-			asDBMTimer.buttons[i].cooldown:SetDrawSwipe(false);
-			asDBMTimer.buttons[i].cooldown:Show();
+			asDBMTimer.buttons[i].cooltext:Show();
 			asDBMTimer.buttons[i].border:Show();
 			asDBMTimer.buttons[i].text:SetText(msg);
 			asDBMTimer.buttons[i].text:Show();
@@ -96,17 +86,24 @@ function asDBMTimer_callback(...)
 	local event, id, msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
 
 	if event == "DBM_TimerStart" then
-		dbm_event_list[id] = {msg, timer, GetTime(), icon, 0};
-	elseif event == "DBM_TimerUpdate" then
-		--if dbm_event_list[id] and dbm_event_list[id][5] then
-		--	deleteButton(id);		
-		--end
-		--dbm_event_list[id] = {msg, timer, icon, GetTime(), 0};
+		if dbm_event_list[id] and dbm_event_list[id][5] then
+			deleteButton(id);		
+		end			
+		local newmsg = msg;
+
+		local strFindStart, strFindEnd = string.find(msg, " 쿨타임")
+    	if strFindStart ~= nil then
+          	 newmsg = string.sub(msg, 1, strFindStart-1);
+		end
+		dbm_event_list[id] = {newmsg, timer, GetTime(), icon, 0};
+		--print (type, spellId, colorId, modid, keep, fade, name);
 	elseif event == "DBM_TimerStop" then
 		if dbm_event_list[id] and dbm_event_list[id][5] then
 			deleteButton(id);		
 		end
 		dbm_event_list[id] = nil;
+	else
+		print (...);
 	end
 end
 
@@ -129,10 +126,16 @@ end
 local function setupUI()
 
 	asDBMTimer = CreateFrame("FRAME", nil, UIParent)
-	asDBMTimer:SetPoint("CENTER",UIParent,"CENTER", -200, 0)
+	asDBMTimer:SetPoint("CENTER",UIParent,"CENTER", 250, 0)
 	asDBMTimer:SetWidth(100)
 	asDBMTimer:SetHeight(100)
 	asDBMTimer:Show();
+
+	local bloaded =  LoadAddOn("asMOD")
+
+	if bloaded and asMOD_setupFrame then
+		asMOD_setupFrame (asDBMTimer, "asDBMTimer");
+  	end
 
 	asDBMTimer.square = asDBMTimer:CreateTexture(nil, "BACKGROUND");
 	asDBMTimer.square:SetDrawLayer("ARTWORK", 0);
@@ -163,19 +166,12 @@ local function setupUI()
 
 		asDBMTimer.buttons[i]:SetPoint("CENTER", 0, 0);
 
-		local frameCooldown = asDBMTimer.buttons[i].cooldown;
-						
-		for _,r in next,{frameCooldown:GetRegions()}	do 
-			if r:GetObjectType()=="FontString" then 
-				r:SetFont(STANDARD_TEXT_FONT, ADBMT_FontSize,"OUTLINE")
-				r:ClearAllPoints();
-				r:SetPoint("LEFT", -ADBMT_FontSize, 0);
-				break;
-			end 
-		end
+		asDBMTimer.buttons[i].cooltext = asDBMTimer.buttons[i]:CreateFontString(nil, "OVERLAY");
+		asDBMTimer.buttons[i].cooltext:SetFont(ADBMT_Font, ADBMT_CoolFontSize, ADBMT_FontOutline)
+		asDBMTimer.buttons[i].cooltext:SetPoint("RIGHT", asDBMTimer.buttons[i], "LEFT", -2, 0);
 
 		asDBMTimer.buttons[i].text = asDBMTimer.buttons[i]:CreateFontString(nil, "OVERLAY");
-		asDBMTimer.buttons[i].text:SetFont(ADBMT_Font, ADBMT_FontSize, ADBMT_FontOutline)
+		asDBMTimer.buttons[i].text:SetFont(ADBMT_Font, ADBMT_NameFontSize, ADBMT_FontOutline)
 		asDBMTimer.buttons[i].text:SetPoint("LEFT", asDBMTimer.buttons[i], "RIGHT", 2, 0);
 		asDBMTimer.buttons[i].id = nil;
 		asDBMTimer.buttons[i].start = nil;
