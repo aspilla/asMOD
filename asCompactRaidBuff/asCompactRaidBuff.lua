@@ -1826,7 +1826,7 @@ local ACRB_mainframe = CreateFrame("Frame", nil, UIParent);
 ACRB_mainframe:SetScript("OnEvent", ACRB_OnEvent)
 ACRB_mainframe:RegisterEvent("GROUP_ROSTER_UPDATE");
 ACRB_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
-ACRB_mainframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
+--ACRB_mainframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 ACRB_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 ACRB_mainframe:RegisterEvent("CVAR_UPDATE");
 ACRB_mainframe:RegisterEvent("ROLE_CHANGED_INFORM");
