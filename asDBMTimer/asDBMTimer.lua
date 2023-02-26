@@ -15,12 +15,12 @@ local asDBMTimer = nil;
 local function getButton(id)
 
 	local button = nil
-	
+
 	for i = 1, ADBMT_MaxButtons do
 		if asDBMTimer.buttons[i].id == id then
-			button = asDBMTimer.buttons[i];			
+			button = asDBMTimer.buttons[i];
 			break;
-		end		
+		end
 	end
 
 	return button;
@@ -32,7 +32,7 @@ local function deleteButton(id)
 
 	if button then
 		button.id = nil;
-		button.cooltext:Hide();		
+		button.cooltext:Hide();
 		button.text:Hide();
 		button:Hide();
 		button:SetScript("OnUpdate", nil)
@@ -62,21 +62,22 @@ end
 local function newButton(id, msg, duration, start, icon)
 
 	for i = 1, ADBMT_MaxButtons do
-		if asDBMTimer.buttons[i].id == nil then
-			asDBMTimer.buttons[i].id = id;
-			asDBMTimer.buttons[i].start = start;
-			asDBMTimer.buttons[i].duration = duration;
-			asDBMTimer.buttons[i].icon:SetTexture(icon);
-			asDBMTimer.buttons[i].icon:Show();
-			asDBMTimer.buttons[i].cooltext:Show();
-			asDBMTimer.buttons[i].border:Show();
-			asDBMTimer.buttons[i].text:SetText(msg);
-			asDBMTimer.buttons[i].text:Show();
-			asDBMTimer.buttons[i].update = 0.1;
-			asDBMTimer.buttons[i]:SetScript("OnUpdate", ADBMT_OnUpdate);
-			asDBMTimer.buttons[i]:Show();
+		local button = asDBMTimer.buttons[i];
+		if button.id == nil then
+			button.id = id;
+			button.start = start;
+			button.duration = duration;
+			button.icon:SetTexture(icon);
+			button.icon:Show();
+			button.cooltext:Show();
+			button.border:Show();
+			button.text:SetText(msg);
+			button.text:Show();
+			button.update = 0.1;
+			button:SetScript("OnUpdate", ADBMT_OnUpdate);
+			button:Show();
 			return i;
-		end		
+		end
 	end
 	return nil;
 end
@@ -89,8 +90,8 @@ function asDBMTimer_callback(...)
 
 	if event == "DBM_TimerStart" then
 		if dbm_event_list[id] and dbm_event_list[id][5] then
-			deleteButton(id);		
-		end			
+			deleteButton(id);
+		end
 		local newmsg = msg;
 
 		local strFindStart, strFindEnd = string.find(msg, " 쿨타임")
@@ -98,14 +99,14 @@ function asDBMTimer_callback(...)
           	 newmsg = string.sub(msg, 1, strFindStart-1);
 		end
 		dbm_event_list[id] = {newmsg, timer, GetTime(), icon, 0};
-		--print (type, spellId, colorId, modid, keep, fade, name);
+
 	elseif event == "DBM_TimerStop" then
 		if dbm_event_list[id] and dbm_event_list[id][5] then
-			deleteButton(id);		
+			deleteButton(id);
 		end
 		dbm_event_list[id] = nil;
 	else
-		--print (...);
+		print (...);
 	end
 end
 
@@ -117,7 +118,7 @@ local function checkList()
 		if v[5] == 0 and remain > 0 and remain <= 10  then
 			local idx = newButton(id, v[1], remain, start, v[4]);
 			v[5] = idx;
-			
+
 		elseif remain <= 0 then
 			dbm_event_list[id] = nil;
 			deleteButton(id);
@@ -164,7 +165,7 @@ local function setupUI()
 		asDBMTimer.buttons[i]:SetAlpha(1);
 		asDBMTimer.buttons[i]:EnableMouse(false);
 		asDBMTimer.buttons[i]:Hide();
-		
+
 		asDBMTimer.buttons[i].count:SetPoint("BOTTOMRIGHT", -3, 3);
 
 		asDBMTimer.buttons[i].icon:SetTexCoord(.08, .92, .08, .92);
