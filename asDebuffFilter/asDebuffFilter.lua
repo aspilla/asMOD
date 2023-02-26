@@ -440,9 +440,15 @@ local function ADF_UpdateDebuff(unit)
 
 			if (alert) then
 				--print ("alert" );
-				ADF_ShowOverlayGlow(frame);
+				if frame.balert == false then
+					ADF_ShowOverlayGlow(frame);
+					frame.balert = true;
+				end
 			else
-				ADF_HideOverlayGlow(frame);
+				if frame.balert == true then
+					frame.balert = false;
+					ADF_HideOverlayGlow(frame);
+				end
 			end
 
 			numDebuffs = numDebuffs + 1;
@@ -454,7 +460,10 @@ local function ADF_UpdateDebuff(unit)
 		frame = parent.frames[i];
 
 		if ( frame ) then
-			ADF_HideOverlayGlow(frame);
+			if frame.balert == true then
+				frame.balert = false;
+				ADF_HideOverlayGlow(frame);
+			end
 			frame:Hide();
 		end
 	end
@@ -466,7 +475,10 @@ function ADF_ClearFrame()
 		local frame = ADF_TARGET_DEBUFF.frames[i];
 
 		if ( frame ) then
-			ADF_HideOverlayGlow(frame);
+			if frame.balert == true then
+				frame.balert = false;
+				ADF_HideOverlayGlow(frame);
+			end
 			frame:Hide();
 		end
 	end
@@ -588,6 +600,7 @@ local function CreatDebuffFrames(parent, bright)
 		frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 
 		ADF_UpdateDebuffAnchor(parent.frames, idx, 1,  bright, parent);
+		frame.balert = false;
 		frame:Hide();
 	end
 

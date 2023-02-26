@@ -1060,7 +1060,7 @@ local function ABF_UpdateBuff(unit)
 						frame.balert = true;
 					end
 				else
-					
+
 					if frame.balert == true then
 						frame.balert = false;
 						ABF_HideOverlayGlow(frame);
@@ -1074,7 +1074,7 @@ local function ABF_UpdateBuff(unit)
 					elseif frame.bpersonal == true then
 						frame.bpersonal = false;
 						lib.PixelGlow_Stop(frame);
-					end					
+					end
 				end
 
 				frameBorder:SetVertexColor(color.r, color.g, color.b);
@@ -1099,7 +1099,7 @@ local function ABF_UpdateBuff(unit)
 		if frame.bpersonal == true then
 			frame.bpersonal = false;
 			lib.PixelGlow_Stop(frame);
-		end		
+		end
 
 		if ( frame ) then
 			frame:Hide();
@@ -1143,7 +1143,7 @@ local function ABF_UpdateBuff(unit)
 					if	ABF_ProcBuffList[name] == 1 then
 						alert = true;
 					end
-				
+
 				end
 
 				-- set the icon
@@ -1190,8 +1190,8 @@ local function ABF_UpdateBuff(unit)
 					color = { r = 1, g = 1, b = 1 };
 				end
 
-				
-				if (alert) then					
+
+				if (alert) then
 					if frame.balert == false then
 						ABF_ShowOverlayGlow(frame);
 						frame.balert = true;
@@ -1202,7 +1202,7 @@ local function ABF_UpdateBuff(unit)
 						ABF_HideOverlayGlow(frame);
 					end
 
-					if (nameplateShowPersonal) then					
+					if (nameplateShowPersonal) then
 						if frame.bpersonal == false then
 							lib.PixelGlow_Start(frame);
 							frame.bpersonal = true;
@@ -1248,6 +1248,15 @@ local function ABF_ClearFrame()
 		local frame = parent.frames[i];
 
 		if ( frame ) then
+			if frame.balert == true then
+				frame.balert = false;
+				ABF_HideOverlayGlow(frame);
+			end
+
+			if frame.bpersonal == true then
+				frame.bpersonal = false;
+				lib.PixelGlow_Stop(frame);
+			end
 			frame:Hide();
 		else
 			break;
