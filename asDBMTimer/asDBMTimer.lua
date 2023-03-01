@@ -84,11 +84,11 @@ end
 
 local dbm_event_list = {};
 
-function asDBMTimer_callback(...)
-
-	local event, id, msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
+function asDBMTimer_callback(event, id, ...)
 
 	if event == "DBM_TimerStart" then
+
+		local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
 		if dbm_event_list[id] and dbm_event_list[id][5] then
 			deleteButton(id);
 		end
@@ -105,6 +105,16 @@ function asDBMTimer_callback(...)
 			deleteButton(id);
 		end
 		dbm_event_list[id] = nil;
+	elseif event == "DBM_TimerUpdate" then
+		local elapsed, totalTime = ...;
+		if dbm_event_list[id] then
+			if dbm_event_list[id][5] then
+				deleteButton(id);
+			end
+			dbm_event_list[id][5] = 0;
+			dbm_event_list[id][2] = totalTime;
+			dbm_event_list[id][3] = GetTime() - elapsed;
+		end
 	else
 		print (...);
 	end
