@@ -67,15 +67,18 @@ ANameP_ShowList_ROGUE_3 = {
 
 ANameP_ShowList_HUNTER_1 = {
 	["날카로운 사격"] = {0, 1, {r = 1, g = 0.5, b = 0}},
+	["잠재된 독"] = {0, 2},	
 }
 
 ANameP_ShowList_HUNTER_2 = {
 	["독사 쐐기"] = {0, 1, {r = 1, g = 0.5, b = 0}},	
+	["잠재된 독"] = {0, 2},	
 }
 
 
 ANameP_ShowList_HUNTER_3 = {
 	["독사 쐐기"] = {0, 1, {r = 1, g = 0.5, b = 0}},	
+	["잠재된 독"] = {0, 2},	
 }
 
 ANameP_ShowList_MONK_1 = {
