@@ -226,11 +226,6 @@ local function ADF_UpdateDebuff(unit)
 
 	filter = nil;
 
-
-	if parent.frames == nil then
-		parent.frames = {};
-	end
-
 	i = 1;
 	repeat
 		local skip = false;
@@ -334,8 +329,7 @@ local function ADF_UpdateDebuff(unit)
 
 
 		elseif (unit == "player") then
-			local blIdx;
-			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, _, nameplateShowAll = UnitDebuff("player", i);
+			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, _, nameplateShowAll = UnitDebuff("player", i, "");
 
 
 			skip = false;
@@ -344,7 +338,7 @@ local function ADF_UpdateDebuff(unit)
 			if (icon == nil) then
 				break;
 			end
-
+			
 			if duration > ADF_MAX_Cool then
 				skip = true;
 			end
@@ -366,8 +360,7 @@ local function ADF_UpdateDebuff(unit)
 				alert = true;
 			end
 
-			-- ACI 에서 보이는 Debuff 면 숨기기 
-
+			-- ACI 에서 보이는 Debuff 면 숨기기
 			if ACI_Player_Debuff_list and skip == false and ACI_Player_Debuff_list[name] then
 				skip = true;
 			end
@@ -375,12 +368,10 @@ local function ADF_UpdateDebuff(unit)
 			if skip == false and ADF_BlackList[name] then
 				skip = true;
 			end
-
 		end
 
 
 		if (icon and skip == false) then
-
 			if numDebuffs > ADF_MAX_DEBUFF_SHOW then
 				break;
 			end
@@ -392,7 +383,6 @@ local function ADF_UpdateDebuff(unit)
 			frameIcon = frame.icon
 			frameIcon:SetTexture(icon);
 			frameIcon:SetAlpha(ADF_ALPHA);
-
 			-- set the count
 			frameCount = frame.count;
 
@@ -434,10 +424,9 @@ local function ADF_UpdateDebuff(unit)
 			frameBorder = frame.border;
 			frameBorder:SetVertexColor(color.r, color.g, color.b);
 			frameBorder:SetAlpha(ADF_ALPHA);
-
-			frame:ClearAllPoints();
 			frame:Show();
 
+			
 			if (alert) then
 				--print ("alert" );
 				if frame.balert == false then
@@ -450,7 +439,7 @@ local function ADF_UpdateDebuff(unit)
 					ADF_HideOverlayGlow(frame);
 				end
 			end
-
+		
 			numDebuffs = numDebuffs + 1;
 		end
 		i = i+1
@@ -599,6 +588,7 @@ local function CreatDebuffFrames(parent, bright)
 		frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
 		frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 
+		frame:ClearAllPoints();
 		ADF_UpdateDebuffAnchor(parent.frames, idx, 1,  bright, parent);
 		frame.balert = false;
 		frame:Hide();
