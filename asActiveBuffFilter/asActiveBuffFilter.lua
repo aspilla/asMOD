@@ -106,11 +106,7 @@ function AABF_HideOverlayGlow(self)
 		if ( self.overlay.animIn:IsPlaying() ) then
 			self.overlay.animIn:Stop();
 		end
-		if ( self:IsVisible() ) then
-			self.overlay.animOut:Play();
-		else
-			AABF_OverlayGlowAnimOutFinished(self.overlay.animOut);	--We aren't shown anyway, so we'll instantly hide it.
-		end
+		AABF_OverlayGlowAnimOutFinished(self.overlay.animOut);	--We aren't shown anyway, so we'll instantly hide it.
 	end
 end
 

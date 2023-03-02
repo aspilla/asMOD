@@ -337,11 +337,7 @@ local function ABF_HideOverlayGlow(button)
 		if ( button.overlay.animIn:IsPlaying() ) then
 			button.overlay.animIn:Stop();
 		end
-		if ( button:IsVisible() ) then
-			button.overlay.animOut:Play();
-		else
-			button.overlay.animOut:OnFinished();	--We aren't shown anyway, so we'll instantly hide it.
-		end
+		button.overlay.animOut:OnFinished();	--We aren't shown anyway, so we'll instantly hide it.
 	end
 end
 
