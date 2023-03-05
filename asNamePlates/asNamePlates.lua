@@ -1025,18 +1025,10 @@ local  pUpdate = function(self,elapsed)
     end
 end
 
-local checkAlert = {};
-
 function lib.PixelGlow_Start(r,color,N,frequency,length,th,xOffset,yOffset,border,key,frameLevel)
     if not r then
         return
     end
-
-	if checkAlert[r] then
-		return;
-	end
-
-	checkAlert[r] = true;
 
     if not color then
         color = {0.95,0.95,0.32,1}
@@ -1125,12 +1117,6 @@ function lib.PixelGlow_Stop(r,key)
     if not r then
         return
    	end
-
-	if not checkAlert[r] then
-		return;
-	end
-
-	checkAlert[r] = nil;
 
     key = key or ""
     if not r["_PixelGlow"..key] then
@@ -2330,9 +2316,10 @@ local function checkSpellCasting(self)
 				lib.PixelGlow_Start(self.casticon, {0, 1, 0.32, 1});
 				self.interruptalert = 1;
 			elseif notInterruptible == false then
-				--lib.PixelGlow_Start(self.casticon, {0, 1, 0.32, 1});
+				lib.PixelGlow_Start(self.casticon);
 				self.interruptalert = 2;
 			else
+				lib.PixelGlow_Stop(self.casticon);
 				self.interruptalert = nil;
 			end
 		else
@@ -2340,7 +2327,7 @@ local function checkSpellCasting(self)
 			if self.interruptalert == 1 then
 				lib.PixelGlow_Stop(self.casticon);
 			elseif self.interruptalert == 2 then
-				--lib.PixelGlow_Stop(self.casticon);
+				lib.PixelGlow_Stop(self.casticon);
 			end
 
 			self.interruptalert = nil;
