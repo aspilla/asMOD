@@ -20,6 +20,7 @@ local bupdate_buff_count = false;
 local bupdate_powerbar = false;
 local bupdate_healthbar = APB_SHOW_HEALTHBAR;
 local bupdate_stagger = false;
+local bupdate_fronzen = false;
 local bshow_haste = false;
 local bupdate_partial_power = false;
 local bsmall_power_bar = false;
@@ -47,6 +48,8 @@ PowerTypeComboString = {[Enum.PowerType.SoulShards] = "영혼의 조각", [Enum.
 
 local SpellGetCosts = {};
 local SpellGetPowerCosts = {};
+local FrozenOrbID = 84714;
+local FrozenOrbDamageID = 84721;
 local function asGetCostTooltipInfo (spellID)
     if not spellID then return end
 
@@ -503,6 +506,38 @@ local function APB_UpdateStagger(self)
 		
 end
 
+local FrozenOrbTime = nil;
+local FrozenOrbDuration = 10;
+
+local function APB_UpdateFronzenOrb(self)
+	if bupdate_fronzen then
+		local start = FrozenOrbTime;
+		local currtime = GetTime();
+		local duration = 0;
+
+		if start ~= nil and currtime - start <= 10 then
+			duration = FrozenOrbDuration;
+		else
+			duration = 0;
+		end
+
+		if duration > 0 then
+			self.start = start;
+			self.duration = duration;
+			self:SetScript("OnUpdate", APB_OnUpdateBuff)
+		else
+			self:SetMinMaxValues(0, 1)
+			self:SetValue(0)
+			self.text:SetText("");
+			self.start = 0;
+			self.duraton = duration;
+			self:SetScript("OnUpdate", nil)
+		end
+		self.count:SetText("");
+		self:Show();
+	end
+		
+end
 
 
 local function APB_MaxCombo(max)
@@ -1027,6 +1062,8 @@ local function APB_CheckPower(self)
 	APB:UnregisterEvent("UNIT_SPELLCAST_FAILED");
 	APB:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
 	APB:UnregisterEvent("PLAYER_TARGET_CHANGED");
+	APB:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+
 
 
 	APB:SetScript("OnUpdate", nil);
@@ -1041,6 +1078,7 @@ local function APB_CheckPower(self)
 	bupdate_powerbar = true;
 	bupdate_buff_combo = false;
 	bupdate_stagger = false;
+	bupdate_fronzen = false;
 	bupdate_partial_power = false;
 	bsmall_power_bar = false;
 
@@ -1171,13 +1209,15 @@ local function APB_CheckPower(self)
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			APB_UpdateBuffCombo(self.combobar)
 			bupdate_buff_combo = true;				
-			--[[
-			APB_BUFF = "얼음 핏줄";	
-			APB.buffbar[0].buff = "얼음 핏줄";
-			APB.combobar.unit = "player"
-			APB.buffbar[0].unit = "player"
-			APB:RegisterUnitEvent("UNIT_AURA", "player");
-			]]	
+			
+			FrozenOrbDuration = 10;
+			if asCheckTalent("영원한 서리") then
+				FrozenOrbDuration = 12;
+			end
+
+			bupdate_fronzen = true;
+			APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+			
 			bsmall_power_bar = true;
 		end		
 
@@ -1532,7 +1572,7 @@ local function APB_CheckPower(self)
 	end
 
 
-	if not (APB_BUFF or APB_DEBUFF or bupdate_stagger) then
+	if not (APB_BUFF or APB_DEBUFF or bupdate_stagger or bupdate_fronzen) then
 		APB.buffbar[0]:SetHeight(0.01);
 		APB.buffbar[0].text:Hide();
 		APB.buffbar[0].count:Hide();
@@ -1782,6 +1822,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 		if APB_SPELL then
 			APB_UpdateSpell(APB_SPELL, APB_SPELL2);
 		end
+		APB_UpdateFronzenOrb(self.buffbar[0]);
 	elseif event == "UNIT_POWER_UPDATE" and arg1 == "player" then
 		APB_UpdatePower();
 	elseif event == "RUNE_POWER_UPDATE" then
@@ -1792,10 +1833,20 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 			checkSpellPowerCost(spellID);
 			asUnitFrameManaCostPredictionBars_Update(self, (event == "UNIT_SPELLCAST_START" or not(startTime == endTime)), startTime, endTime, spellID);
 			APB_UpdatePower();
+			APB_UpdateFronzenOrb(self.buffbar[0]);
 	elseif event == "PLAYER_TARGET_CHANGED" then
 		APB_UpdateBuff(self.buffbar[0]);
 		APB_UpdateBuff(self.buffbar[1]);
 		APB_UpdateBuffCombo(self.combobar);
+	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
+		local timestamp, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType = CombatLogGetCurrentEventInfo();
+		if sourceGUID and (sourceGUID == UnitGUID("player")) then
+			if (eventType == "SPELL_CAST_SUCCESS") and spellID == FrozenOrbID then
+				FrozenOrbTime = nil;
+			elseif FrozenOrbTime == nil and  (eventType == "SPELL_DAMAGE") and spellID == FrozenOrbDamageID then 
+				FrozenOrbTime = GetTime();
+			end
+		end	
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		checkSpellCost();
 		checkSpellPowerCost();
