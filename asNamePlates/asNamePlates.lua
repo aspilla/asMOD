@@ -170,6 +170,7 @@ ANameP_ShowList_MAGE_2 = {
 }
 
 ANameP_ShowList_MAGE_3 = {
+	["혹한의 추위"] = {10, 1},
 
 }
 
