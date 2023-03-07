@@ -162,6 +162,7 @@ ANameP_ShowList_DRUID_4 = {
 
 
 ANameP_ShowList_MAGE_1 = {
+	["빛나는 불꽃 약화"] = {0, 1},
 }
 
 ANameP_ShowList_MAGE_2 = {

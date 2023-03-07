@@ -120,7 +120,7 @@ ACI_SpellList_MAGE_1 = {
 	{"비전 보주", 1},
 	{"비전 쇄도", 2},
 	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},
-	{99, "빛나는 불꽃", {"빛나는 불꽃", 4, "target"}, {332769, 7, "player", nil, 15}},
+	{99, "빛나는 불꽃", {"빛나는 불꽃", 4, "target", 0, 3, "빛나는 불꽃 약화"}, {332769, 7, "player", nil, 15}},
 };
 
 --화염
@@ -129,7 +129,7 @@ ACI_SpellList_MAGE_2 = {
 	{"불태우기", 9, 30},
 	{"발화", 2},
 	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},
-	{"이글거리는 방벽", 2},
+	{99, "화염 파열", {269650, 7, "player", 5, 2}, {"이글거리는 방벽", 2}},
 };
 
 --냉기
@@ -139,12 +139,14 @@ ACI_SpellList_MAGE_3 = {
 	{"얼음 핏줄", 2},
 	{99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}},
 	{"눈보라", 1},
+	--[[
 	{"힘의 전환", 1},
 	{"점멸", 1},
 	{"마법 차단", 1},
 	{"시간 돌리기", 1},
 	{"상급 투명화", 1},
 	{"환영 복제", 1},
+	]]
 };
 
 --신성
@@ -1252,6 +1254,10 @@ local function ACI_Alert(self, bcastspell)
 		local alert_du = ACI_SpellList[i][4];
 
 		alert_count = ACI_SpellList[i][5];
+
+		if ACI_SpellList[i][6] then
+			buff_name = ACI_SpellList[i][6];
+		end
 
 		if 	t == 8 then
 			buff_name = GetSpellInfo(spellname)
