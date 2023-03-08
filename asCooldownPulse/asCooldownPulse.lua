@@ -1,27 +1,15 @@
-﻿local ACDP = {};
-local ACDP_Icon = {};
-local ACDP_mainframe
-local ACDP_CoolButtons = nil;
-
-local prev_cnt = 0;
-
--- 설정 최소 Cooldown (단위 초)
+﻿-- 설정 최소 Cooldown (단위 초)
 local CONFIG_MINCOOL = 3
 local CONFIG_MAXCOOL = (60 * 5)
 local CONFIG_MINCOOL_PET = 20
 local CONFIG_SOUND = true				-- 음성안내
-
-
-local ACDP_CoolButtons_X = -98				-- 쿨 List 위치
+local ACDP_CoolButtons_X = -98			-- 쿨 List 위치
 local ACDP_CoolButtons_Y = -250
 local ACDP_AlertButtons_X = 0			-- Alert button 위치
 local ACDP_AlertButtons_Y = 0
 local ACDP_AlertButtons_Size = 60		-- Alert button size 
 local ACDP_AlertFadeTime = 0.5			-- Alert button Fade in-out 시간 짧으면 빨리 사라짐
 local ACDP_AlertShowTime = 0.2			-- Alert button Fade in-out 시간 짧으면 빨리 사라짐
-
-
-
 local ACDP_SIZE = 32;					-- 쿨 List Size
 local ACDP_Show_CoolList = true;		-- 쿨 List를 보일지 안보일지 (안보이게 하려면 false)
 local ACDP_Alert_Time = 0.5;			-- 쿨 1초전에 알림
@@ -31,7 +19,27 @@ local ACDP_GreyColor = false 			-- Color Icon 원하면 false
 local ACDP_CooldownCount = 6;			-- 줄당 보일 CooldownCount 개수가 되면 줄을 바꾸어 표시됨 1줄로 보이려면 큰수로 지정
 local ACDP_UpdateRate = 0.2;			-- 0.2 초마다 check
 
-
+-- Check 할 item slot 기본은 장신구만 보이게
+local itemslots = {
+	--[[
+		"HeadSlot",
+		"NeckSlot",
+		"ShoulderSlot",
+		"BackSlot",
+		"ChestSlot",
+		"WristSlot",
+		"MainHandSlot",
+		"SecondaryHandSlot",
+		"HandsSlot",
+		"WaistSlot",
+		"LegsSlot",
+		"FeetSlot",
+		"Finger0Slot",
+		"Finger1Slot",
+		]]
+		"Trinket0Slot",
+		"Trinket1Slot",
+	}
 
 
 -- Alpha animation stuff
@@ -150,89 +158,40 @@ local function asUIFrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
 	asUIFrameFade(frame, fadeInfo);
 end
 
+local ACDP = {};
+local ACDP_Icon = {};
+local ACDP_mainframe
+local ACDP_CoolButtons = nil;
+
 local KnownSpellList = {};
 local ItemSlotList = {};
 local showlist_id = {};
+local SPELL_TYPE_USER = 1;
+local SPELL_TYPE_PET = 2;
 
-local itemslots = {
-
-	"HeadSlot",
-	"NeckSlot",
-	"ShoulderSlot",
-	"BackSlot",
-	"ChestSlot",
-	"WristSlot",
-	"MainHandSlot",
-	"SecondaryHandSlot",
-	"HandsSlot",
-	"WaistSlot",
-	"LegsSlot",
-	"FeetSlot",
-	"Finger0Slot",
-	"Finger1Slot",
-	"Trinket0Slot",
-	"Trinket1Slot",
-}
-
-local function scanSpells(tab)
-
-	local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
-
-	if not tabName then
-		return;
-	end
-
-	for i=tabOffset + 1, tabOffset + numEntries do
-		local spellName, _, spellID = GetSpellBookItemName (i, BOOKTYPE_SPELL)
-		if not spellName then
-			do break end
-		end
-
-		if spellID then
-			KnownSpellList[spellID] = 1;
-		end
-	end
-end
-
-
-local function scanPetSpells()
-
-	for i = 1, 20 do
-	   	local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
-	   	local spellName, _, spellID = GetSpellBookItemName (slot, BOOKTYPE_PET)
-
-		if not spellName then
-			do break end
-		end
-
-		if spellID then
-			KnownSpellList[spellID] = 2;
-		end
-	end
-
-end
+local prev_cnt = 0;
 
 local function scanActionSlots()
 
 	for lActionSlot = 1, 120 do
-		local type, id, subType, spellID = GetActionInfo(lActionSlot);
+		local type, id, subType = GetActionInfo(lActionSlot);
 		local itemid = nil;
-
-
-		if id and type and type == "macro" then
-			 id = GetMacroSpell(id);
-		end
-
-		if type and type == "item" then
-			itemid = id;
-			 _, id = GetItemSpell(id);
-		end
+		local spellID = id;
 
 		if id then
-			if itemid then
-				KnownSpellList[id] = itemid;
-			elseif KnownSpellList[id] == nil then
-				KnownSpellList[id] = 1;
+			if  type and type == "macro" then
+				spellID = GetMacroSpell(id);
+			elseif type and type == "item" then
+				itemid = id;
+				 _, spellID = GetItemSpell(id);
+			end
+
+			if spellID then
+				if itemid then
+					KnownSpellList[spellID] = itemid;
+				elseif KnownSpellList[spellID] == nil then
+					KnownSpellList[spellID] = SPELL_TYPE_USER;
+				end
 			end
 		end
 	end
@@ -240,7 +199,7 @@ local function scanActionSlots()
 	for i=1, NUM_PET_ACTION_SLOTS, 1 do
 		local name, texture, isToken, isActive, autoCastAllowed, autoCastEnabled, spellID = GetPetActionInfo(i);
 		if spellID and KnownSpellList[spellID] == nil then
-			KnownSpellList[spellID] = 2;
+			KnownSpellList[spellID] = SPELL_TYPE_PET;
 		end
 	end
 
@@ -269,10 +228,6 @@ local function setupKnownSpell()
 	table.wipe(ItemSlotList);
 	table.wipe(showlist_id);
 
-	scanSpells(1)
-	scanSpells(2)
-	scanSpells(3)
-	scanPetSpells()
 	scanItemSlots();
 	scanActionSlots();
 end
@@ -362,7 +317,7 @@ local function ACDP_UpdateCooldown()
 			skip = true;
 		end
 
-		if (type == 1 or type == 2) then
+		if (type == SPELL_TYPE_USER or type == SPELL_TYPE_PET) then
 			name, _, icon = GetSpellInfo(spellid);
 			if APB_SPELL and APB_SPELL == name then
 				skip = true;
@@ -379,12 +334,13 @@ local function ACDP_UpdateCooldown()
 
 		if skip == false then
 
-			if (type == 1 or type == 2) then
+			if (type == SPELL_TYPE_USER or type == SPELL_TYPE_PET) then
 				name, _, icon = GetSpellInfo(spellid);
 				start, duration = GetSpellCooldown(spellid);
 			else
-				name, _, _, _, _, _, _, _, _, icon = GetItemInfo(type)
-				start, duration = GetItemCooldown(type);
+				local itemid = type;
+				name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemid)
+				start, duration = GetItemCooldown(itemid);
 			end
 
 			if (icon and duration > 0) and skip == false then
@@ -479,7 +435,7 @@ local ACDP_Icon_Idx = 1;
 
 local function ACDP_Alert(spell, type)
 
-	if type == 1 or type == 2 then
+	if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
 		local name,_,icon,_,_,_,_,_,_ = GetSpellInfo(spell)
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
 		if CONFIG_SOUND and name then
@@ -563,17 +519,15 @@ local function ACDP_Checkcooldown()
 	for spellid, type in pairs(KnownSpellList) do
 		local start, duration, enabled;
 		local check_duration = CONFIG_MINCOOL;
-	
+
 		if type == 2 then
 			check_duration = CONFIG_MINCOOL_PET;
 		end
 
-		if type == 1 or type == 2 then
+		if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
 			start, duration, enabled = GetSpellCooldown(spellid);
 		else
-			--print(spellid);
 			start, duration, enabled = GetItemCooldown(type);
-			--print (duration);
 		end
 
 		local _, gcd  = GetSpellCooldown(61304);
@@ -586,7 +540,6 @@ local function ACDP_Checkcooldown()
 				ACDP_Alert(spellid, type);
 			elseif remain >= (check_duration - ACDP_UpdateRate) and duration >= check_duration and duration <= CONFIG_MAXCOOL and showlist_id[spellid] == nil then
 				showlist_id[spellid] = type;
-			
 			elseif duration > CONFIG_MAXCOOL then
 				-- remove from KnownSpellList
 			end
@@ -621,11 +574,11 @@ local function ACDP_OnEvent(self, event)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ACDP_CoolButtons:SetAlpha(0.5);
 	elseif event == "SPELLS_CHANGED" then
-		scanSpells(1);
-		scanSpells(2);
-		scanSpells(3);
+		scanItemSlots();
+		scanActionSlots();
 	elseif event == "UNIT_PET" then
-		scanPetSpells();
+		scanItemSlots();
+		scanActionSlots();
 	elseif event == "ACTIONBAR_SLOT_CHANGED" then
 		scanActionSlots();
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
