@@ -564,7 +564,7 @@ local function CreatDebuffFrames(parent, bright)
 	end
 
 	for idx = 1, ADF_MAX_DEBUFF_SHOW do
-		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
+		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetDebuffFrameTemplate");
 		local frame = parent.frames[idx];
 		frame:EnableMouse(false);
 		for _,r in next,{frame.cooldown:GetRegions()} do
