@@ -170,6 +170,7 @@ local SPELL_TYPE_USER = 1;
 local SPELL_TYPE_PET = 2;
 
 local prev_cnt = 0;
+local bCombatInfoLoaded = false;
 
 local function scanSpells(tab)
 
@@ -340,7 +341,7 @@ local function ACDP_UpdateCooldown()
 		parent.frames = {};
 	end
 
-	if (ACDP_Show_CoolList == false) then
+	if (ACDP_Show_CoolList == false or bCombatInfoLoaded == false) then
 
 		for i = 1, ACDP_CooldownCount do
 			frame = parent.frames[i];
@@ -557,6 +558,8 @@ local function ACDP_Init()
     if asMOD_setupFrame then
          asMOD_setupFrame (ACDP_CoolButtons, "asCooldownPulselist");
     end
+
+	bCombatInfoLoaded = LoadAddOn("asCombatInfo");
 end
 
 local function ACDP_Checkcooldown()
