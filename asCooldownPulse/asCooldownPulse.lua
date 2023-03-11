@@ -220,7 +220,7 @@ local function scanActionSlots()
 			if  type and type == "macro" then
 				spellID = GetMacroSpell(id);
 			end
-			
+
 			if type and type == "item" then
 				itemid = id;
 				 _, spellID = GetItemSpell(id);
