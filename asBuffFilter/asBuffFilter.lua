@@ -1050,6 +1050,13 @@ local function ABF_UpdateBuff(unit)
 					color = { r = 1, g = 1, b = 1 };
 				end
 
+				
+
+				frameBorder:SetVertexColor(color.r, color.g, color.b);
+				frameBorder:SetAlpha(ABF_ALPHA);
+
+				frame:Show();
+
 				if (alert)then
 					if frame.balert == false then
 						ABF_ShowOverlayGlow(frame);
@@ -1072,11 +1079,6 @@ local function ABF_UpdateBuff(unit)
 						lib.PixelGlow_Stop(frame);
 					end
 				end
-
-				frameBorder:SetVertexColor(color.r, color.g, color.b);
-				frameBorder:SetAlpha(ABF_ALPHA);
-
-				frame:Show();
 
 				numDebuffs = numDebuffs + 1;
 			end
@@ -1186,6 +1188,11 @@ local function ABF_UpdateBuff(unit)
 					color = { r = 1, g = 1, b = 1 };
 				end
 
+			
+
+				frameBorder:SetVertexColor(color.r, color.g, color.b);
+				frameBorder:SetAlpha(ABF_ALPHA);
+				frame:Show();
 
 				if (alert) then
 					if frame.balert == false then
@@ -1208,10 +1215,6 @@ local function ABF_UpdateBuff(unit)
 						lib.PixelGlow_Stop(frame);
 					end
 				end
-
-				frameBorder:SetVertexColor(color.r, color.g, color.b);
-				frameBorder:SetAlpha(ABF_ALPHA);
-				frame:Show();
 			end
 		end
 

@@ -54,6 +54,7 @@ ANameP_ShowList_WARRIOR_3 = {
 
 ANameP_ShowList_ROGUE_1 = {
 	["파열"] = {24 * 0.3, 1, {r = 1, g = 0.5, b = 0}},
+	["목조르기"] = {18 * 0.3, 2},
 }
 
 ANameP_ShowList_ROGUE_2 = {
@@ -1146,9 +1147,8 @@ local function ANameP_ActionButton_GetOverlayGlow()
 end
 
 -- Shared between action button and MainMenuBarMicroButton
-local function ANameP_ShowOverlayGlow(button, bhideflash)
+local function ANameP_ShowOverlayGlow(button)
 	if ( button.overlay ) then
-		button.overlay.bhideflash = bhideflash;
 		if ( button.overlay.animOut:IsPlaying() ) then
 			button.overlay.animOut:Stop();
 			button.overlay.animIn:Play();
@@ -1162,7 +1162,6 @@ local function ANameP_ShowOverlayGlow(button, bhideflash)
 		button.overlay:SetSize(frameWidth * 1.3, frameHeight * 1.3);
 		button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
 		button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
-		button.overlay.bhideflash = bhideflash;
 		button.overlay.spark:SetAlpha(0);
 		button.overlay.animIn:Play();
 	end
@@ -1214,14 +1213,6 @@ function ANameP_ActionBarOverlayGlowAnimInMixin:OnPlay()
 	frame.outerGlowOver:SetAlpha(1);
 	frame.ants:SetSize(frameWidth * 0.8, frameHeight * 0.8)
 	frame.ants:SetAlpha(0);
-
-	if frame.bhideflash then
-		frame.spark:SetAlpha(0);
-		frame.innerGlow:SetAlpha(0);
-		frame.innerGlowOver:SetAlpha(0);
-		frame.outerGlow:SetAlpha(0);
-		frame.outerGlowOver:SetAlpha(0);
-	end
 	frame:Show();
 end
 
@@ -1389,8 +1380,10 @@ local function createDebuffFrame(parent)
 	local frameBorder = ret.border;
 
 	frameIcon:SetTexCoord(.08, .92, .08, .92)
-	frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga")
-	frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92)
+	frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
+	frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+
+	ret.alert = false;
 
 	return ret;
 
@@ -1464,6 +1457,12 @@ local function updateDebuffAnchor(frames, index, anchorIndex, size, offsetX, rig
 	end
 
 	setSize(buff, size);
+	buff:Show();
+	if buff.alert then
+		ANameP_ShowOverlayGlow(buff);
+	else
+		ANameP_HideOverlayGlow(buff);
+	end
 end
 
 local function Comparison(AIndex, BIndex)
@@ -1592,6 +1591,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			end
 
 			local frame = self.buffList[numDebuffs];
+			frame.alert = false;
 
 			if bPVP == true then
 				size_list[numDebuffs] = icon_size + 2;
@@ -1601,15 +1601,11 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 			setSize (frame, size_list[numDebuffs]);
 
-			if isStealable then
-				ANameP_ShowOverlayGlow(frame, ANameP_WeakStealableBuffAlert);
-			else
-				ANameP_HideOverlayGlow(frame);
-			end
-
 			local color = {r = 1, g = 1, b = 1};
 			setFrame(self.buffList[numDebuffs], texture, count, expirationTime, duration, color);
-			frame:Show();
+			if isStealable then
+				frame.alert = true;
+			end
 
 			numDebuffs = numDebuffs + 1;
 		end
@@ -1741,6 +1737,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			end
 
 			local frame = self.buffList[numDebuffs];
+			frame.alert = false;
 			size_list[numDebuffs] = icon_size;
 
 			if (showlist_time) then
@@ -1761,12 +1758,6 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 			setSize (frame, size_list[numDebuffs]);
 
-			if alert and duration > 0  then
-				ANameP_ShowOverlayGlow(frame, false);
-			else
-				ANameP_HideOverlayGlow(frame);
-			end
-
 			local color =DebuffTypeColor["none"];
 
 			if helpful then
@@ -1782,7 +1773,12 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			end
 
 			setFrame(self.buffList[numDebuffs], texture, count, expirationTime, duration, color);
-			frame:Show();
+		
+			
+			if alert and duration > 0  then
+				frame.alert = true;
+			end
+
 			numDebuffs = numDebuffs + 1;
 		end
 	end
