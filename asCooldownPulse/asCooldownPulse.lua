@@ -171,8 +171,46 @@ local SPELL_TYPE_PET = 2;
 
 local prev_cnt = 0;
 
-local function scanActionSlots()
+local function scanSpells(tab)
 
+	local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
+
+	if not tabName then
+		return;
+	end
+
+	for i=tabOffset + 1, tabOffset + numEntries do
+		local spellName, _, spellID = GetSpellBookItemName (i, BOOKTYPE_SPELL)
+		if not spellName then
+			do break end
+		end
+
+		if spellID then
+			KnownSpellList[spellID] = SPELL_TYPE_USER;
+		end
+	end
+end
+
+
+local function scanPetSpells()
+
+	for i = 1, 20 do
+	   	local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
+	   	local spellName, _, spellID = GetSpellBookItemName (slot, BOOKTYPE_PET)
+
+		if not spellName then
+			do break end
+		end
+
+		if spellID then
+			KnownSpellList[spellID] = SPELL_TYPE_PET;
+		end
+	end
+
+end
+
+local function scanActionSlots()
+	--등록된 item만
 	for lActionSlot = 1, 120 do
 		local type, id, subType = GetActionInfo(lActionSlot);
 		local itemid = nil;
@@ -181,9 +219,13 @@ local function scanActionSlots()
 		if id then
 			if  type and type == "macro" then
 				spellID = GetMacroSpell(id);
-			elseif type and type == "item" then
+			end
+			
+			if type and type == "item" then
 				itemid = id;
 				 _, spellID = GetItemSpell(id);
+			else
+				spellID = nil;
 			end
 
 			if spellID then
@@ -227,7 +269,10 @@ local function setupKnownSpell()
 	table.wipe(KnownSpellList);
 	table.wipe(ItemSlotList);
 	table.wipe(showlist_id);
-
+	scanSpells(1);
+	scanSpells(2);
+	scanSpells(3);
+	scanPetSpells();
 	scanItemSlots();
 	scanActionSlots();
 end
@@ -574,15 +619,13 @@ local function ACDP_OnEvent(self, event)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ACDP_CoolButtons:SetAlpha(0.5);
 	elseif event == "SPELLS_CHANGED" then
-		scanItemSlots();
-		scanActionSlots();
+		setupKnownSpell();
 	elseif event == "UNIT_PET" then
-		scanItemSlots();
-		scanActionSlots();
+		setupKnownSpell();
 	elseif event == "ACTIONBAR_SLOT_CHANGED" then
-		scanActionSlots();
+		setupKnownSpell();
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
-		scanItemSlots();
+		setupKnownSpell();
 	end
 
 	return;
