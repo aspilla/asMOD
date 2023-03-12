@@ -508,39 +508,51 @@ local function hideNameplates(nameplate, bshow)
 	end
 end
 
-
+local needtowork = false;
 
 local function AHNameP_OnUpdate()
 
 	local needtohide = false;
 
-	for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-		local nameplate = v;
+	if needtowork then
+	
+		for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
+			local nameplate = v;
 
-		if (nameplate) then
-			if checkNeedtoHide(nameplate) then
-				needtohide = true;
-				break;
+			if (nameplate) then
+				if checkNeedtoHide(nameplate) then
+					needtohide = true;
+					break;
+				end
+
 			end
-
 		end
-	end
 
-	for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-		local nameplate = v;
+		for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
+			local nameplate = v;
 
-		if (nameplate) then
-			hideNameplates(nameplate, (not needtohide));
+			if (nameplate) then
+				hideNameplates(nameplate, (not needtohide));
+			end
 		end
 	end
 end
 
 
 
-local function AHNameP_OnEvent(self)
+local function AHNameP_OnEvent(self, event)
 
 	-- 0.5 초 뒤에 Load
 	C_Timer.After(0.5, updateInterruptIDs);
+
+	if event == "PLAYER_ENTERING_WORLD" then
+		needtowork = false;
+		local inInstance, instanceType = IsInInstance();
+
+		if (inInstance and instanceType == "party") then
+			needtowork = true;			
+		end	
+	end
 end
 
 
