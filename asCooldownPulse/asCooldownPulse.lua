@@ -484,6 +484,7 @@ local function ACDP_Alert(spell, type)
 	if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
 		local name,_,icon,_,_,_,_,_,_ = GetSpellInfo(spell)
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
+		--print(name);
 		if CONFIG_SOUND and name then
             PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. name.. ".mp3", "DIALOG")
         end
@@ -587,6 +588,8 @@ local function ACDP_Checkcooldown()
 				showlist_id[spellid] = nil;
 				ACDP_Alert(spellid, type);
 			elseif remain >= (check_duration - ACDP_UpdateRate) and duration >= check_duration and duration <= CONFIG_MAXCOOL and showlist_id[spellid] == nil then
+				--local name = GetSpellInfo(spellid);
+				--print(name.."등록");
 				showlist_id[spellid] = type;
 			elseif duration > CONFIG_MAXCOOL then
 				-- remove from KnownSpellList
