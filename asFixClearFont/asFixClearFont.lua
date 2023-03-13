@@ -1,11 +1,7 @@
-local ClearFont = CreateFrame("Frame", nil);
+local ClearFont = {};
 
 local CLEAR_FONT_BASE = "Interface\\AddOns\\asFixClearFont\\Fonts\\";
---local CLEAR_FONT_BASE = "Fonts\\";
-
 local CLEAR_FONT = CLEAR_FONT_BASE .. "ClearFont.ttf";
---local CLEAR_FONT =  "Fonts\2002.TTF";
-
 local CF_SCALE = 1.0
 
 local function CanSetFont(object) 
