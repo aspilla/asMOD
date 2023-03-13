@@ -1050,7 +1050,7 @@ local function ABF_UpdateBuff(unit)
 					color = { r = 1, g = 1, b = 1 };
 				end
 
-				
+
 
 				frameBorder:SetVertexColor(color.r, color.g, color.b);
 				frameBorder:SetAlpha(ABF_ALPHA);
@@ -1058,24 +1058,13 @@ local function ABF_UpdateBuff(unit)
 				frame:Show();
 
 				if (alert)then
-					if frame.balert == false then
-						ABF_ShowOverlayGlow(frame);
-						frame.balert = true;
-					end
+					ABF_ShowOverlayGlow(frame);
 				else
-
-					if frame.balert == true then
-						frame.balert = false;
-						ABF_HideOverlayGlow(frame);
-					end
+					ABF_HideOverlayGlow(frame);
 
 					if (nameplateShowPersonal)then
-						if frame.bpersonal == false then
-							lib.PixelGlow_Start(frame);
-							frame.bpersonal = true;
-						end
-					elseif frame.bpersonal == true then
-						frame.bpersonal = false;
+						lib.PixelGlow_Start(frame);
+					else
 						lib.PixelGlow_Stop(frame);
 					end
 				end
@@ -1088,19 +1077,10 @@ local function ABF_UpdateBuff(unit)
 
 	for i = numDebuffs, ABF_MAX_BUFF_SHOW do
 		frame = parent.frames[i];
-
-		if frame.balert == true then
-			frame.balert = false;
-			ABF_HideOverlayGlow(frame);
-		end
-
-		if frame.bpersonal == true then
-			frame.bpersonal = false;
-			lib.PixelGlow_Stop(frame);
-		end
-
 		if ( frame ) then
 			frame:Hide();
+			ABF_HideOverlayGlow(frame);
+			lib.PixelGlow_Stop(frame);
 		end
 	end
 
@@ -1188,30 +1168,20 @@ local function ABF_UpdateBuff(unit)
 					color = { r = 1, g = 1, b = 1 };
 				end
 
-			
+
 
 				frameBorder:SetVertexColor(color.r, color.g, color.b);
 				frameBorder:SetAlpha(ABF_ALPHA);
 				frame:Show();
 
 				if (alert) then
-					if frame.balert == false then
-						ABF_ShowOverlayGlow(frame);
-						frame.balert = true;
-					end
+					ABF_ShowOverlayGlow(frame);
 				else
-					if frame.balert == true then
-						frame.balert = false;
-						ABF_HideOverlayGlow(frame);
-					end
+					ABF_HideOverlayGlow(frame);
 
 					if (nameplateShowPersonal) then
-						if frame.bpersonal == false then
-							lib.PixelGlow_Start(frame);
-							frame.bpersonal = true;
-						end
-					elseif frame.bpersonal == true then
-						frame.bpersonal = false;
+						lib.PixelGlow_Start(frame);
+					else
 						lib.PixelGlow_Stop(frame);
 					end
 				end
@@ -1220,17 +1190,11 @@ local function ABF_UpdateBuff(unit)
 
 		for i = talentcount + 1, ABF_MAX_BUFF_SHOW do
 			frame = parent.frames[i];
-			if frame.balert == true then
-				frame.balert = false;
-				ABF_HideOverlayGlow(frame);
-			end
 
-			if frame.bpersonal == true then
-				frame.bpersonal = false;
-				lib.PixelGlow_Stop(frame);
-			end
 			if ( frame ) then
 				frame:Hide();
+				ABF_HideOverlayGlow(frame);
+				lib.PixelGlow_Stop(frame);
 			end
 		end
 	end
@@ -1247,16 +1211,9 @@ local function ABF_ClearFrame()
 		local frame = parent.frames[i];
 
 		if ( frame ) then
-			if frame.balert == true then
-				frame.balert = false;
-				ABF_HideOverlayGlow(frame);
-			end
-
-			if frame.bpersonal == true then
-				frame.bpersonal = false;
-				lib.PixelGlow_Stop(frame);
-			end
 			frame:Hide();
+			ABF_HideOverlayGlow(frame);
+			lib.PixelGlow_Stop(frame);
 		else
 			break;
 		end
@@ -1393,8 +1350,6 @@ local function CreatBuffFrames(parent, bright, bcenter)
 		frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 
 		ABF_UpdateBuffAnchor(parent.frames, idx, 1,  bright, bcenter, parent);
-		frame.balert = false;
-		frame.bpersonal = false;
 		frame:Hide();
 	end
 

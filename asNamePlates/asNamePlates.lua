@@ -1773,8 +1773,8 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			end
 
 			setFrame(self.buffList[numDebuffs], texture, count, expirationTime, duration, color);
-		
-			
+
+
 			if alert and duration > 0  then
 				frame.alert = true;
 			end
@@ -1791,8 +1791,8 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 	for i = numDebuffs, ANameP_MaxDebuff do
 		if ( self.buffList[i] ) then
-			ANameP_HideOverlayGlow(self.buffList[i]);
 			self.buffList[i]:Hide();
+			ANameP_HideOverlayGlow(self.buffList[i]);
 		end
 	end
 
@@ -2322,12 +2322,7 @@ local function checkSpellCasting(self)
 			end
 		else
 			self.casticon:Hide();
-			if self.interruptalert == 1 then
-				lib.PixelGlow_Stop(self.casticon);
-			elseif self.interruptalert == 2 then
-				lib.PixelGlow_Stop(self.casticon);
-			end
-
+			lib.PixelGlow_Stop(self.casticon);
 			self.interruptalert = nil;
 		end
 	end
@@ -2723,10 +2718,12 @@ local function removeNamePlate(namePlateUnitToken)
 	if namePlateFrameBase and namePlateFrameBase.asNamePlates then
 		for i = 1, ANameP_MaxDebuff do
 			if ( namePlateFrameBase.asNamePlates.buffList[i] ) then
-				ANameP_HideOverlayGlow(namePlateFrameBase.asNamePlates.buffList[i]);
 				namePlateFrameBase.asNamePlates.buffList[i]:Hide();
+				ANameP_HideOverlayGlow(namePlateFrameBase.asNamePlates.buffList[i]);
 			end
 		end
+
+		lib.PixelGlow_Stop(namePlateFrameBase.asNamePlates.casticon);
 
 		namePlateFrameBase.asNamePlates.aggro1:Hide();
 		namePlateFrameBase.asNamePlates.aggro2:Hide();
@@ -2746,6 +2743,7 @@ local function removeNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.r = nil;
 		namePlateFrameBase.asNamePlates.debuffColor = nil;
 		namePlateFrameBase.asNamePlates.interruptalert = nil;
+
 
 		if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
 

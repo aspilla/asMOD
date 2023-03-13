@@ -450,8 +450,8 @@ local function ADotF_UpdateDebuff(unit)
 		frame = ADotF.units[unit].frames[i];
 
 		if ( frame ) then
-			ADotF_ActionButton_HideOverlayGlow(frame);
 			frame:Hide();
+			ADotF_ActionButton_HideOverlayGlow(frame);
 		end
 	end
 end
