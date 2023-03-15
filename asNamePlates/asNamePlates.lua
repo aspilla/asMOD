@@ -10,22 +10,11 @@ local ANameP_CountFontSize = 8;			--Count 폰트 Size
 local ANameP_MaxDebuff = 8;				--최대 Debuff
 local ANameP_DebuffsPerLine = 4;		--줄당 Debuff 수 (큰 이름표 일 경우 +1 됨)
 local ANameP_MaxBuff = 1;				--최대 PVP Buff (안보이게 하려면 0)
-local ANameP_ShowMyAll = false;			--내 buff/Debuff면 모두 보임 false 로 하면 아래 Show List 항목만 보임
-local ANameP_ShowKnownSpell = true;		--SpellBook에 있는 것만
 local ANameP_ShowPVPDebuff = true;		--PVP Debuff 면 모두 보임 (다른 사람의 디법이면 회색으로 보임)
 local ANameP_ShowPlayerBuff = true;		--Player NamePlate에 Buff를 안보일려면 false;
-local ANameP_ShowPlayerBuffDefault = true; -- 기본 Plate 와 같은 BUff만 보이기
 local ANameP_BuffMaxCool = 60;			--buff의 최대 Cool
-local ANameP_AggroShow = true;			-- 어그로 여부를 표현할지 여부 
 local ANameP_PVPAggroShow = true;		-- PVP 어그로 여부를 표현할지 여부 
-local ANameP_AggroStatusBarColor = true --생명력 바 색상으로 어그로 표시 false이면 ▶◀ 모양으로 표시
-local ANameP_AggroTargetColor =  {r = 0.4, g = 0.2, b = 0.8}; -- PVE 대상이 player 였을때 Color
-local ANameP_AggroColor = {r = 0.5, g = 1, b = 1}; -- 어그로 대상일때 바 Color
-local ANameP_TankAggroLoseColor = {r = 1, g = 0.5, b= 0.5}; -- 탱커일때 어그로가 다른 탱커가 아닌사람일때
-local ANameP_TankAggroLoseColor2 = {r = 1, g = 0.1, b= 0.5}; -- 어그로가 파티내 다른 탱커일때
-local ANameP_TankAggroLoseColor3 = {r = 0.1, g = 0.3, b= 1}; -- 어그로가 Pet 일때 혹은 Tanking 중인데 어그로가 낮을때
 local ANameP_ShowListFirst = true		-- 알림 List 가 있다면 먼저 보인다. (가나다라 순서)
-local ANameP_WeakStealableBuffAlert = false -- 훔칠 버프 알림을 약하게 기본은 꺼 있음
 local ANameP_ShowCCDebuff = true		-- 오른쪽에 CC Debuff만 별도로 보이기
 local ANameP_CCDebuffSize = 16			-- CC Debuff Size;
 local ANameP_AggroSize = 12;			-- 어그로 표시 Text Size
@@ -33,170 +22,7 @@ local ANameP_HealerSize = 14;			-- 힐러표시 Text Size
 local ANameP_TargetHealthBarHeight = 3;	-- 대상 체력바 높이 증가치 (+3)
 local ANameP_HeathTextSize = 8;			-- 대상 체력숫자 크기
 local ANameP_UpdateRate = 0.5;			-- 버프 Check 반복 시간 (초)
-local ANameP_LowHealthAlert = true  	-- 낮은 체력 색상 변경 사용
-local ANameP_LowHealthColor = {r = 1, g = 0.8, b= 0.5}; -- 낮은 체력 이름표 색상 변경
-local ANameP_EmemyPlateSize = {100, 20};
 
-
--- ANameP_ShowList_직업_특성 숫자
--- 아래와 같은 배열을 추가 하면 된다.
--- ["디법명"] = {알림 시간, 우선순위},
--- 우선순위는 숫자가 큰 경우 우선적으로 보이고, 같을 경우 먼저 걸린 순서로 보임
-ANameP_ShowList_WARRIOR_1 = {
-	["분쇄"] = {15 * 0.3, 1, {r = 1, g = 0.5, b = 0}},
-}
-
-ANameP_ShowList_WARRIOR_2 = {
-}
-
-ANameP_ShowList_WARRIOR_3 = {
-}
-
-ANameP_ShowList_ROGUE_1 = {
-	["파열"] = {24 * 0.3, 1, {r = 1, g = 0.5, b = 0}},
-	["목조르기"] = {18 * 0.3, 2},
-}
-
-ANameP_ShowList_ROGUE_2 = {
-
-}
-
-ANameP_ShowList_ROGUE_3 = {
-	["파열"] = {24 * 0.3, 1, {r = 1, g = 0.5, b = 0}},
-}
-
-
-ANameP_ShowList_HUNTER_1 = {
-	["날카로운 사격"] = {0, 1, {r = 1, g = 0.5, b = 0}},
-	["잠재된 독"] = {0, 2},
-}
-
-ANameP_ShowList_HUNTER_2 = {
-	["독사 쐐기"] = {0, 1, {r = 1, g = 0.5, b = 0}},
-	["잠재된 독"] = {0, 2},
-}
-
-
-ANameP_ShowList_HUNTER_3 = {
-	["독사 쐐기"] = {0, 1, {r = 1, g = 0.5, b = 0}},
-	["잠재된 독"] = {0, 2},
-}
-
-ANameP_ShowList_MONK_1 = {
-}
-
-
-
-ANameP_ShowList_MONK_2 = {
-}
-
-ANameP_ShowList_MONK_3 = {
-	["주학의 징표"] = {0, 1},
-}
-
-
-
-
-
-ANameP_ShowList_WARLOCK_1 = {
-	["고통"] = {14 * 0.3, 3, {r = 1, g = 0.5, b = 0}},
-	["불안정한 고통"] = {21 * 0.3, 2},
-	["부패"] = {14 * 0.3, 1},
-}
-
-ANameP_ShowList_WARLOCK_2 = {
-
-}
-
-
-ANameP_ShowList_WARLOCK_3 = {
-	["제물"] = {24 * 0.3, 1, {r = 1, g = 0.5, b = 0}},
-}
-
-
-ANameP_ShowList_PRIEST_1 = {
-	["어둠의 권능: 고통"] = {16 * 0.3, 1, {r = 1, g = 0.5, b = 0}},
-}
-
-
-
-ANameP_ShowList_PRIEST_2 = {
-}
-
-
-
-ANameP_ShowList_PRIEST_3 = {
-	["어둠의 권능: 고통"] = {16 * 0.3 , 1, {r = 1, g = 0.5, b = 0}},
-}
-
-ANameP_ShowList_SHAMAN_1 = {
-	["화염 충격"] = {18 * 0.3 , 1, {r = 1, g = 0.5, b = 0}},
-}
-
-ANameP_ShowList_SHAMAN_2 = {
-	["화염 충격"] = {18 * 0.3 , 1, {r = 1, g = 0.5, b = 0}},
-}
-
-ANameP_ShowList_SHAMAN_3 = {
-}
-
-
-ANameP_ShowList_DRUID_1 = {
-	["달빛섬광"] = {22 * 0.3, 3, {r = 1, g = 0.5, b = 0}},
-	["태양섬광"] = {13.5 * 0.3, 2},
-	["항성의 섬광"] = {18 * 0.3, 1},
-}
-
-
-ANameP_ShowList_DRUID_2 = {
-	["갈퀴 발톱"] = {15 * 0.3, 2, {r = 1, g = 0.5, b = 0}},
-	["도려내기"] = {24 * 0.3, 1},
-}
-
-ANameP_ShowList_DRUID_3 = {
-	["달빛섬광"] = {22 * 0.3, 1},
-}
-
-
-ANameP_ShowList_DRUID_4 = {
-}
-
-
-ANameP_ShowList_MAGE_1 = {
-	["빛나는 불꽃 약화"] = {0, 1},
-}
-
-ANameP_ShowList_MAGE_2 = {
-	["작열"] = {0, 1},
-}
-
-ANameP_ShowList_MAGE_3 = {
-	["혹한의 추위"] = {10, 1},
-
-}
-
-
-ANameP_ShowList_DEATHKNIGHT_1 = {
-	["피의 역병"] = {0, 1},
-}
-
-ANameP_ShowList_DEATHKNIGHT_2 = {
-	["서리 열병"] = {0, 1},
-}
-
-ANameP_ShowList_DEATHKNIGHT_3 = {
-	["악성 역병"] = {27 * 0.3, 1},
-	["고름 상처"] = {0, 2},
-}
-
-
-ANameP_ShowList_EVOKER_1 = {
-
-}
-
-ANameP_ShowList_EVOKER_2 = {
-
-}
 
 -- 아래 유닛명이면 강조
 -- 색상 지정 가능
@@ -813,6 +639,7 @@ local ANameP_ShowList = nil;
 local ANameP_Resourcetext = nil;
 local debuffs_per_line = ANameP_DebuffsPerLine;
 local playerbuffposition = ANameP_PlayerBuffY;
+local options = CopyTable (ANameP_Options_Default);
 
 -- 반짝이 처리부
 
@@ -1633,7 +1460,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 				-- Player 일 경우
 				if  UnitIsUnit("player", unit) then
-					if ANameP_ShowPlayerBuffDefault then
+					if options.ANameP_ShowPlayerBuffAll == false then
 						show = nameplateShowPersonal;
 					else
 						if ANameP_ShowPlayerBuff and PLAYER_UNITS[caster] and duration > 0 and duration <= ANameP_BuffMaxCool then
@@ -1641,7 +1468,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 						end
 					end
 				else
-					if ANameP_ShowMyAll and PLAYER_UNITS[caster] then
+					if options.ANameP_ShowMyAll and PLAYER_UNITS[caster] then
 						if helpful then
 							if duration > 0 and duration <= ANameP_BuffMaxCool then
 								show = true;
@@ -1649,7 +1476,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 						else
 							show = true;
 						end
-					elseif not ANameP_ShowMyAll and PLAYER_UNITS[caster] and (nameplateShowPersonal or (ANameP_ShowKnownSpell  and KnownSpellList[name])) then
+					elseif not options.ANameP_ShowMyAll and PLAYER_UNITS[caster] and (nameplateShowPersonal or (options.ANameP_ShowKnownSpell  and KnownSpellList[name])) then
 						show = true;
 					end
 
@@ -1725,8 +1552,8 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 							self.reflesh_time = alert_time;
 						end
 
-						if ANameP_ShowList[name][3] then
-							self.debuffColor = ANameP_ShowList[name][3];
+						if ANameP_ShowList[name][3] and ANameP_ShowList[name][3] == true then
+							self.debuffColor = true;
 						end
 					end
 				end
@@ -2074,7 +1901,7 @@ local function updateHealthbarColor(self)
 	if (isTargetPlayer) then
 		if self.colorlevel < ColorLevel.Target then
 			self.colorlevel = ColorLevel.Target;
-			setColoronStatusBar(self, ANameP_AggroTargetColor.r, ANameP_AggroTargetColor.g, ANameP_AggroTargetColor.b);
+			setColoronStatusBar(self, options.ANameP_AggroTargetColor.r, options.ANameP_AggroTargetColor.g, options.ANameP_AggroTargetColor.b);
 		end
 		return;
 	end
@@ -2082,18 +1909,18 @@ local function updateHealthbarColor(self)
 	-- Aggro Check
 	local aggrocolor;
 
-	if status and ANameP_AggroShow then
+	if status and options.ANameP_AggroShow then
 		local tanker = IsPlayerEffectivelyTank();
 		if tanker then
 			if status >= 2 then
 				-- Tanking
-				aggrocolor = ANameP_AggroColor;
+				aggrocolor = options.ANameP_AggroColor;
 			else
-				aggrocolor = ANameP_TankAggroLoseColor;
+				aggrocolor = options.ANameP_TankAggroLoseColor;
 				if #tanklist > 0 then
 					for _, othertank in ipairs(tanklist) do
 						if UnitIsUnit(self.unit.."target", othertank ) and not UnitIsUnit(self.unit.."target", "player" ) then
-							aggrocolor = ANameP_TankAggroLoseColor2;
+							aggrocolor = options.ANameP_TankAggroLoseColor2;
 							break;
 						end
 					end
@@ -2105,7 +1932,7 @@ local function updateHealthbarColor(self)
 		else -- Tanker가 아닐때
 			if status >= 1 then
 				-- Tanking
-				aggrocolor = ANameP_AggroColor;
+				aggrocolor = options.ANameP_AggroColor;
 				self.colorlevel = ColorLevel.Aggro;
 				setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
 				return;
@@ -2124,7 +1951,7 @@ local function updateHealthbarColor(self)
 		end
 
 		if valuePct <= lowhealthpercent then
-			setColoronStatusBar(self, ANameP_LowHealthColor.r, ANameP_LowHealthColor.g, ANameP_LowHealthColor.b);
+			setColoronStatusBar(self, options.ANameP_LowHealthColor.r, options.ANameP_LowHealthColor.g, options.ANameP_LowHealthColor.b);
 			self.colorlevel = ColorLevel.Lowhealth;
 			return;
 		end
@@ -2134,7 +1961,7 @@ local function updateHealthbarColor(self)
 	if self.debuffColor then
 		if self.colorlevel < ColorLevel.Debuff then
 			self.colorlevel = ColorLevel.Debuff;
-			setColoronStatusBar(self, self.debuffColor.r, self.debuffColor.g, self.debuffColor.b);
+			setColoronStatusBar(self, options.ANameP_DebuffColor.r, options.ANameP_DebuffColor.g, options.ANameP_DebuffColor.b);
 		end
 		return;
 	else
@@ -2147,7 +1974,7 @@ local function updateHealthbarColor(self)
 		if #tanklist > 0 then
 			for _, othertank in ipairs(tanklist) do
 				if UnitIsUnit(self.unit.."target", othertank ) and not UnitIsUnit(self.unit.."target", "player" ) then
-					aggrocolor = ANameP_TankAggroLoseColor2;
+					aggrocolor = options.ANameP_TankAggroLoseColor2;
 					self.colorlevel = ColorLevel.Custom;
 					setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
 					return;
@@ -2157,7 +1984,7 @@ local function updateHealthbarColor(self)
 	end
 
 	if UnitIsUnit(self.unit.."target", "pet" )  then
-		aggrocolor = ANameP_TankAggroLoseColor3;
+		aggrocolor = options.ANameP_TankAggroLoseColor3;
 		self.colorlevel = ColorLevel.Custom;
 		setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
 		return;
@@ -2251,17 +2078,17 @@ local function initAlertList()
 		listname = "ANameP_ShowList_" .. englishClass .. "_" .. spec;
 	end
 
-	ANameP_ShowList = _G[listname];
+	if options[listname] then
+		ANameP_ShowList = CopyTable(options[listname]);
+	else
+		ANameP_ShowList = {};
+	end
 
 	ANameP_HealerGuid = {};
 
 	lowhealthpercent = 0;
 
-	if ANameP_LowHealthAlert then
-		local localizedClass, englishClass = UnitClass("player")
-		local spec = GetSpecialization();
-		local talentgroup = GetActiveSpecGroup();
-
+	if options.ANameP_LowHealthAlert then
 		if (englishClass == "MAGE") then
 			if (asCheckTalent("불타는 손길")) then
 				lowhealthpercent = 30;
@@ -2439,10 +2266,6 @@ local function addNamePlate(namePlateUnitToken)
 	if namePlateVerticalScale ~= tonumber(GetCVar("NamePlateVerticalScale")) then
 		namePlateVerticalScale = tonumber(GetCVar("NamePlateVerticalScale"));
 		g_orig_height = healthbar:GetHeight();
-
-		if ANameP_EmemyPlateSize[2] then
-			--g_orig_height = ANameP_EmemyPlateSize[2];
-		end
 	end
 
 	if namePlateVerticalScale > 1.0 then
@@ -2624,7 +2447,7 @@ local function addNamePlate(namePlateUnitToken)
 			--namePlateFrameBase.asNamePlates:Hide();
 			if ANameP_ShowPlayerBuff then
 
-				if ANameP_ShowPlayerBuffDefault then
+				if options.ANameP_ShowPlayerBuffAll == false then
 					filter = "HELPFUL|INCLUDE_NAME_PLATE_ONLY";
 				else
 					filter = "HELPFUL|PLAYER|INCLUDE_NAME_PLATE_ONLY";
@@ -2844,7 +2667,6 @@ local function ANameP_OnEvent(self, event, ...)
 		end
 		updateTankerList();
 		setupKnownSpell();
-
 		-- 0.5 초 뒤에 Load
 		C_Timer.After(0.5, initAlertList);
 
@@ -2929,6 +2751,10 @@ local function ANameP_OnUpdate()
 	end
 end
 
+local function flushoption()
+	options = CopyTable (ANameP_Options);
+end
+
 local function initAddon()
 	ANameP = CreateFrame("Frame", nil, UIParent)
 
@@ -2965,7 +2791,8 @@ local function initAddon()
 			updateTargetNameP(pframe.asNamePlates);
 		end
 	end)
+
+	ANameP_OptionM.RegisterCallback(flushoption);
 end
 
 initAddon();
-

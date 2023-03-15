@@ -3,4 +3,6 @@
 ## Title: |cffff3399as|rNamePlates
 ## Notes: NamePlates 강화
 ## Version : 220419
+## SavedVariablesPerCharacter: ANameP_Options 
+asNamePlates_Option.lua
 asNamePlates.xml
