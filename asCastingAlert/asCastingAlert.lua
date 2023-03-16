@@ -47,7 +47,7 @@ local function CheckCasting(nameplate)
 			if remain > 0 then
 				ACTA.cast[currshow]:SetText("|T"..texture..":0|t" .. format("%.1f", max(remain, 0)) .. "|T"..texture..":0|t");
 				if remain < 1.5 then
-					ACTA.cast[currshow]:SetTextColor(1, 0, 0);
+					ACTA.cast[currshow]:SetTextColor(0.8, 0.5, 0.5);
 				else
 					ACTA.cast[currshow]:SetTextColor(1, 1, 1);
 				end
