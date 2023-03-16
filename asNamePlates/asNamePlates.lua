@@ -1726,6 +1726,9 @@ local function updateTargetNameP(self)
 		else
 			self:SetPoint("BOTTOMLEFT", healthBar, "TOPLEFT", 0, base_y);
 		end
+		-- 크기 조정이 안된다.
+		--ClassNameplateManaBarFrame:SetHeight(height);
+
 		if UnitFrame.BuffFrame then
 			UnitFrame.BuffFrame:Hide();
 		end
@@ -2461,7 +2464,7 @@ local function addNamePlate(namePlateUnitToken)
 				-- Resource Text
 				if ClassNameplateManaBarFrame and ANameP_Resourcetext == nil then
 					ANameP_Resourcetext = ClassNameplateManaBarFrame:CreateFontString(nil, "OVERLAY");
-					ANameP_Resourcetext:SetFont(STANDARD_TEXT_FONT, ANameP_HeathTextSize, "OUTLINE");
+					ANameP_Resourcetext:SetFont(STANDARD_TEXT_FONT, ANameP_HeathTextSize - 3, "OUTLINE");
 					ANameP_Resourcetext:SetAllPoints(true);
 					ANameP_Resourcetext:SetPoint("CENTER", ClassNameplateManaBarFrame, "CENTER", 0  , 0);
 				end
