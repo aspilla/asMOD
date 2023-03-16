@@ -778,9 +778,8 @@ local function ACI_ActionButton_GetOverlayGlow()
 end
 
 -- Shared between action button and MainMenuBarMicroButton
-local function ACI_ShowOverlayGlow(button, bhideflash)
+local function ACI_ShowOverlayGlow(button)
 	if ( button.overlay ) then
-		button.overlay.bhideflash = bhideflash;
 		if ( button.overlay.animOut:IsPlaying() ) then
 			button.overlay.animOut:Stop();
 			button.overlay.animIn:Play();
@@ -794,7 +793,6 @@ local function ACI_ShowOverlayGlow(button, bhideflash)
 		button.overlay:SetSize(frameWidth * 1.4, frameHeight * 1.4);
 		button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
 		button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
-		button.overlay.bhideflash = bhideflash;
 		button.overlay.animIn:Play();
 	end
 end
@@ -804,11 +802,7 @@ local function ACI_HideOverlayGlow(button)
 		if ( button.overlay.animIn:IsPlaying() ) then
 			button.overlay.animIn:Stop();
 		end
-		if ( button:IsVisible() ) then
-			button.overlay.animOut:Play();
-		else
-			button.overlay.animOut:OnFinished();	--We aren't shown anyway, so we'll instantly hide it.
-		end
+		button.overlay.animOut:OnFinished();	--We aren't shown anyway, so we'll instantly hide it.
 	end
 end
 
@@ -848,14 +842,6 @@ function ACI_ActionBarOverlayGlowAnimInMixin:OnPlay()
 	frame.outerGlowOver:SetAlpha(1);
 	frame.ants:SetSize(frameWidth * 0.8, frameHeight * 0.8)
 	frame.ants:SetAlpha(0);
-
-	if frame.bhideflash then
-		frame.spark:SetAlpha(0.3);
-		frame.innerGlow:SetAlpha(0);
-		frame.innerGlowOver:SetAlpha(0);
-		frame.outerGlow:SetAlpha(0);
-		frame.outerGlowOver:SetAlpha(0);
-	end
 	frame:Show();
 end
 
