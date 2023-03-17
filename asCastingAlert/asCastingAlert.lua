@@ -3,7 +3,7 @@ local ACTA_UpdateRate = 0.2			-- Check할 주기
 local ACTA_MaxShow = 3				-- 최대로 보여줄 개수
 local ACTA_FontSize = 18;
 local ACTA_X = 0;
-local ACTA_Y = -40;
+local ACTA_Y = -80;
 local needtowork = false;
 
 local function isFaction(unit)
@@ -33,7 +33,7 @@ local function CheckCasting(nameplate)
 
 	local unit = nameplate.namePlateUnitToken;
 	
-	if isFaction(unit) and UnitIsUnit(unit .."target", "player") then
+	if isFaction(unit) and UnitIsUnit(unit .."target", "player") and not UnitIsUnit(unit, "target") then
 		local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);	
 		if not name then
 			name,  text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
@@ -105,7 +105,7 @@ local function initAddon()
 		if i == 1 then
 			ACTA.cast[i]:SetPoint("CENTER", UIParent, "CENTER", ACTA_X , ACTA_Y);
 		else
-			ACTA.cast[i]:SetPoint("CENTER", ACTA.cast[i - 1], "CENTER", 0 , -ACTA_FontSize - 3);
+			ACTA.cast[i]:SetPoint("BOTTOM", ACTA.cast[i - 1], "TOP", 0 , 3);
 		end
 		ACTA.cast[i]:Hide();
 	end
