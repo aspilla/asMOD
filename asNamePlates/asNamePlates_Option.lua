@@ -14,6 +14,10 @@ ANameP_Options_Default = {
     ANameP_LowHealthColor = {r = 1, g = 0.8, b= 0.5},       -- 낮은 체력 이름표 색상 변경
     ANameP_DebuffColor = {r = 1, g = 0.5, b = 0},           -- 디버프 걸렸을때 Color
 
+    nameplateOverlapV = 1.1,                                -- 이름표 상하 정렬
+
+
+
 -- ANameP_ShowList_직업_특성 숫자
 -- 아래와 같은 배열을 추가 하면 된다.
 -- ["디법명"] = {알림 시간, 우선순위, 색상 변경 여부},
@@ -223,6 +227,38 @@ local function UpdateCheckBoxValue(option)
     end
 end
 
+local function SetupSliderOption(text, option)
+
+    if ANameP_Options[option] == nil then
+        ANameP_Options[option] = ANameP_Options_Default[option];
+    end
+
+    curr_y = curr_y + y_adder;
+
+    local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    title:SetPoint("TOPLEFT", 20 , curr_y);
+    title:SetText(text);
+    ANameP_OptionM[option] = title;
+
+    local Slider = CreateFrame("Slider", nil, scrollChild, "OptionsSliderTemplate");
+    Slider:SetOrientation('HORIZONTAL');
+    Slider:SetPoint("LEFT", title, "RIGHT", 5, 0);
+    Slider:SetWidth(200)
+    Slider:SetHeight(20)
+    Slider.Text:SetText(format("%.1f", max(ANameP_Options[option], 0)));
+    Slider:SetMinMaxValues(0.3, 1.1);
+    Slider:SetValue(ANameP_Options[option]);
+
+    Slider:HookScript("OnUpdate", function()
+        ANameP_Options[option] = Slider:GetValue();
+        Slider.Text:SetText(format("%.1f", max(ANameP_Options[option], 0)));
+        SetCVar("nameplateOverlapV", ANameP_Options[option]);  
+    end)
+    Slider:Show();
+    SetCVar("nameplateOverlapV", ANameP_Options[option]); 
+
+end
+
 local function ShowColorPicker(r, g, b, a, changedCallback)
     ColorPickerFrame:SetColorRGB(r,g,b);
     ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = (a ~= nil), a;
@@ -247,7 +283,7 @@ local function SetupColorOption(text, option)
     ANameP_OptionM[option] = title;
 
     local btn = CreateFrame("Button", nil, scrollChild, "UIPanelButtonTemplate")
-    btn:SetPoint("TOPLEFT", 220, curr_y)
+    btn:SetPoint("LEFT", title, "RIGHT", 5, 0);
     btn:SetText("색상 변경")
     btn:SetWidth(100)
 
@@ -388,6 +424,7 @@ ANameP_OptionM.SetupAllOption = function()
     SetupCheckBoxOption("[버프] 내 버프 모두 보임", "ANameP_ShowPlayerBuffAll");
     SetupCheckBoxOption("[색상] 어그로 색상 표시", "ANameP_AggroShow");
     SetupCheckBoxOption("[색상] 낮은 생명력 색상 표시", "ANameP_LowHealthAlert");
+    SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");
     SetupEditBoxOption();
     SetupColorOption("[이름표 색상] 어그로 대상", "ANameP_AggroTargetColor");
     SetupColorOption("[이름표 색상] 어그로 상위", "ANameP_AggroColor");
