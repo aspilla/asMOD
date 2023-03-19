@@ -494,7 +494,7 @@ local function ACDP_Alert(spell, type)
 
 		if CONFIG_SOUND and name then
 
-            PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. name.. ".mp3")
+            PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. name.. ".mp3", "DIALOG")
 
 			if ItemSlotList[spell] then
                 PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. ItemSlotList[spell].. ".mp3", "DIALOG")
