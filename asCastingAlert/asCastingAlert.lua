@@ -61,6 +61,8 @@ end
 
 local function ACTA_OnUpdate()
 
+	local prev_show = currshow;
+
 	currshow = 1;
 
 	for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
@@ -76,6 +78,10 @@ local function ACTA_OnUpdate()
 
 	for i = currshow, ACTA_MaxShow do
 		ACTA.cast[i]:Hide();
+	end
+
+	if currshow > prev_show then
+		PlaySoundFile("Interface\\AddOns\\asCastingAlert\\alert.mp3", "DIALOG")
 	end
 end
 
