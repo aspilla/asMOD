@@ -698,6 +698,8 @@ if asMOD_setupFrame then
     asMOD_setupFrame (ATCB.castbar, "asTargetCastBar");
 end
 
+local prev_name = nil;
+
 local function ATCB_OnEvent(self, event, ...)
 
 	if event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
@@ -762,13 +764,18 @@ local function ATCB_OnEvent(self, event, ...)
 					color = ATCB_INTERRUPTIBLE_COLOR_TARGET;
 				end
 
+				if (name ~= prev_name) then
+					PlaySoundFile("Interface\\AddOns\\asTargetCastBar\\alert.mp3", "DIALOG");
+					prev_name = name;
+				end
+
 			else
 				if notInterruptible then
 					color = ATCB_NOT_INTERRUPTIBLE_COLOR;
 				else
 					color = ATCB_INTERRUPTIBLE_COLOR;
 				end
-
+				prev_name = nil;
 			end
 
 			castBar:SetStatusBarColor(color[1], color[2], color[3]);
@@ -788,6 +795,7 @@ local function ATCB_OnEvent(self, event, ...)
 			castBar:Hide();
 			lib.PixelGlow_Stop(castBar);
 			self.start = 0;
+			prev_name = nil;
 		end
 end
 
