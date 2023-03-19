@@ -249,7 +249,7 @@ local function SetupSliderOption(text, option)
     Slider:SetMinMaxValues(0.3, 1.1);
     Slider:SetValue(ANameP_Options[option]);
 
-    Slider:HookScript("OnUpdate", function()
+    Slider:HookScript("OnValueChanged", function()
         ANameP_Options[option] = Slider:GetValue();
         Slider.Text:SetText(format("%.1f", max(ANameP_Options[option], 0)));
         SetCVar("nameplateOverlapV", ANameP_Options[option]);  
