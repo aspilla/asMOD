@@ -512,7 +512,6 @@ end
 table.insert(lib.glowList, "Pixel Glow")
 lib.startList["Pixel Glow"] = lib.PixelGlow_Start
 lib.stopList["Pixel Glow"] = lib.PixelGlow_Stop
-
 --Action Button Glow--
 local function ButtonGlowResetter(framePool,frame)
     frame:SetScript("OnUpdate",nil)
@@ -566,7 +565,7 @@ local function AnimIn_OnPlay(group)
     frame.outerGlow:SetSize(frameWidth, frameHeight)
     frame.outerGlow:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
     frame.outerGlowOver:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
-    frame.ants:SetSize(frameWidth * 1.4 * 0.9, frameHeight * 1.4 * 0.9)
+    frame.ants:SetSize(frameWidth * 1.4 * 0.9, frameHeight *1.4 * 0.9)
     frame.ants:SetAlpha(0)
     frame:Show()
 end
