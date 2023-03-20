@@ -1007,13 +1007,13 @@ local function AnimIn_OnPlay(group)
     local frameWidth, frameHeight = frame:GetSize()
     frame.spark:SetSize(frameWidth, frameHeight)
     frame.spark:SetAlpha(not(frame.color) and 1.0 or 0.3*frame.color[4])
-    frame.innerGlow:SetSize(frameWidth / 2, frameHeight / 2)
+    frame.innerGlow:SetSize(frameWidth, frameHeight)
     frame.innerGlow:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
     frame.innerGlowOver:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
     frame.outerGlow:SetSize(frameWidth, frameHeight)
     frame.outerGlow:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
     frame.outerGlowOver:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
-    frame.ants:SetSize(frameWidth * 0.85, frameHeight * 0.85)
+    frame.ants:SetSize(frameWidth * 1.4 * 0.9, frameHeight *1.4 * 0.9)
     frame.ants:SetAlpha(0)
     frame:Show()
 end
@@ -1166,7 +1166,7 @@ function lib.ButtonGlow_Start(r,color,frequency,frameLevel)
         f:SetSize(width*1.4 , height*1.4)
         f:SetPoint("TOPLEFT", r, "TOPLEFT", -width * 0.3, height * 0.3)
         f:SetPoint("BOTTOMRIGHT", r, "BOTTOMRIGHT", width * 0.3, -height * 0.3)
-        f.ants:SetSize(width*1.4*0.85, height*1.4*0.85)
+        f.ants:SetSize(width*1.4*0.9, height*1.4*0.9)
 		AnimIn_OnFinished(f.animIn)
 		if f.animOut:IsPlaying() then
             f.animOut:Stop()
@@ -1222,13 +1222,6 @@ function lib.ButtonGlow_Start(r,color,frequency,frameLevel)
         f:SetScript("OnUpdate", bgUpdate)
 
         f.animIn:Play()
-
-        if Masque and Masque.UpdateSpellAlert and (not r.overlay or not issecurevariable(r, "overlay")) then
-            local old_overlay = r.overlay
-            r.overlay = f
-            Masque:UpdateSpellAlert(r)
-            r.overlay = old_overlay
-        end
     end
 end
 
@@ -1513,8 +1506,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 	local healthBar = parent.UnitFrame.healthBar;
 
 	self.unit = unit;
-	self.reflesh_time = nil;
-
+	
 	local bShowCC = false;
 
 	if not self.unit then
@@ -1723,22 +1715,22 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 			if ANameP_ShowList and ANameP_ShowList[name] then
 				showlist_time = ANameP_ShowList[name][1];
+				local alertcount = ANameP_ShowList[name][4] or false;
+				local alertnameplate = ANameP_ShowList[name][3] or false; 
 
-				if  showlist_time >= 0  then
+				if  showlist_time >= 0 and alertcount == false then
 					local alert_time = expirationTime - showlist_time;
 
 					if (GetTime() >= alert_time) and duration > 0  then
 						alert = true;
 					else
-						if self.reflesh_time and self.reflesh_time >= alert_time then
-							self.reflesh_time = alert_time;
-						elseif self.reflesh_time == nil then
-							self.reflesh_time = alert_time;
-						end
-
-						if ANameP_ShowList[name][3] and ANameP_ShowList[name][3] == true then
+						if alertnameplate then
 							self.debuffColor = true;
 						end
+					end
+				elseif showlist_time >= 0 and alertcount then
+					if (count >=  showlist_time) then
+						alert = true;
 					end
 				end
 			end
@@ -2419,7 +2411,6 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.buffList = {};
 	end
 	namePlateFrameBase.asNamePlates.unit = nil;
-	namePlateFrameBase.asNamePlates.reflesh_time = nil;
 	namePlateFrameBase.asNamePlates.update = 0;
 	namePlateFrameBase.asNamePlates.alerthealthbar = false;
 	namePlateFrameBase.asNamePlates.filter = nil;

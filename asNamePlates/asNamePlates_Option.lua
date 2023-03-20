@@ -1,5 +1,5 @@
 ANameP_Options_Default = {
-    version = 230314;
+    version = 230321;
     ANameP_ShowKnownSpell = true,                           -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                               -- [디버프] 전부 보이기
     ANameP_ShowPlayerBuffAll = false,                       -- [버프] 전부 보이기
@@ -48,17 +48,17 @@ ANameP_Options_Default = {
 
     ANameP_ShowList_HUNTER_1 = {
 	    ["날카로운 사격"] = {0, 1, true},
-	    ["잠재된 독"] = {0, 2},
+	    ["잠재된 독"] = {8, 2, false, true},
     },
 
     ANameP_ShowList_HUNTER_2 = {
 	    ["독사 쐐기"] = {0, 1, true},
-	    ["잠재된 독"] = {0, 2},
+	    ["잠재된 독"] = {8, 2, false, true},
     },
 
     ANameP_ShowList_HUNTER_3 = {
 	    ["독사 쐐기"] = {0, 1, true},
-	    ["잠재된 독"] = {0, 2},
+	    ["잠재된 독"] = {8, 2, false, true},
     },
 
     ANameP_ShowList_MONK_1 = {
