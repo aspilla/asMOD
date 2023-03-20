@@ -513,118 +513,295 @@ table.insert(lib.glowList, "Pixel Glow")
 lib.startList["Pixel Glow"] = lib.PixelGlow_Start
 lib.stopList["Pixel Glow"] = lib.PixelGlow_Stop
 
---Overlay stuff
-local unusedOverlayGlows = {};
-local numOverlays = 0;
-local function ACRB_ActionButton_GetOverlayGlow()
-	local overlay = tremove(unusedOverlayGlows);
-	if ( not overlay ) then
-		numOverlays = numOverlays + 1;
-		overlay = CreateFrame("Frame", nil, UIParent, "ACRB_ActionBarButtonSpellActivationAlert");
-	end
-	return overlay;
+
+--Action Button Glow--
+local function ButtonGlowResetter(framePool,frame)
+    frame:SetScript("OnUpdate",nil)
+    local parent = frame:GetParent()
+    if parent._ButtonGlow then
+        parent._ButtonGlow = nil
+    end
+    frame:Hide()
+    frame:ClearAllPoints()
+end
+local ButtonGlowPool = CreateFramePool("Frame",GlowParent,nil,ButtonGlowResetter)
+lib.ButtonGlowPool = ButtonGlowPool
+
+local function CreateScaleAnim(group, target, order, duration, x, y, delay)
+    local scale = group:CreateAnimation("Scale")
+    scale:SetChildKey(target)
+    scale:SetOrder(order)
+    scale:SetDuration(duration)
+    scale:SetScale(x, y)
+
+    if delay then
+        scale:SetStartDelay(delay)
+    end
 end
 
--- Shared between action button and MainMenuBarMicroButton
-local function ACRB_ShowOverlayGlow(button, bhideflash)
-	if ( button.overlay ) then
-		button.overlay.bhideflash = bhideflash;
-		if ( button.overlay.animOut:IsPlaying() ) then
-			button.overlay.animOut:Stop();
-			button.overlay.animIn:Play();
-		end
-	else
-		button.overlay = ACRB_ActionButton_GetOverlayGlow();
-		local frameWidth, frameHeight = button:GetSize();
-		button.overlay:SetParent(button);
-		button.overlay:ClearAllPoints();
-		--Make the height/width available before the next frame:
-		button.overlay:SetSize(frameWidth * 1.4, frameHeight * 1.4);
-		button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -frameWidth * 0.3, frameHeight * 0.3);
-		button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", frameWidth * 0.3, -frameHeight * 0.3);
-		button.overlay.bhideflash = bhideflash;
-		button.overlay.animIn:Play();
-	end
-end
--- Shared between action button and MainMenuBarMicroButton
-local function ACRB_HideOverlayGlow(button)
-	if ( button.overlay ) then
-		if ( button.overlay.animIn:IsPlaying() ) then
-			button.overlay.animIn:Stop();
-		end
-		button.overlay.animOut:OnFinished();	--We aren't shown anyway, so we'll instantly hide it.
-	end
+local function CreateAlphaAnim(group, target, order, duration, fromAlpha, toAlpha, delay, appear)
+    local alpha = group:CreateAnimation("Alpha")
+    alpha:SetChildKey(target)
+    alpha:SetOrder(order)
+    alpha:SetDuration(duration)
+    alpha:SetFromAlpha(fromAlpha)
+    alpha:SetToAlpha(toAlpha)
+    if delay then
+        alpha:SetStartDelay(delay)
+    end
+    if appear then
+        table.insert(group.appear, alpha)
+    else
+        table.insert(group.fade, alpha)
+    end
 end
 
-ACRB_ActionBarButtonSpellActivationAlertMixin = {};
-
-function ACRB_ActionBarButtonSpellActivationAlertMixin:OnUpdate(elapsed)
-	AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01);
-	local cooldown = self:GetParent().cooldown;
-	-- we need some threshold to avoid dimming the glow during the gdc
-	-- (using 1500 exactly seems risky, what if casting speed is slowed or something?)
-	if(cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration() > 3000) then
-		self:SetAlpha(0.5);
-		else
-		self:SetAlpha(1.0);
-		end
-	end
-
-function ACRB_ActionBarButtonSpellActivationAlertMixin:OnHide()
-	if ( self.animOut:IsPlaying() ) then
-		self.animOut:Stop();
-		self.animOut:OnFinished();
-	end
+local function AnimIn_OnPlay(group)
+    local frame = group:GetParent()
+    local frameWidth, frameHeight = frame:GetSize()
+    frame.spark:SetSize(frameWidth, frameHeight)
+    frame.spark:SetAlpha(not(frame.color) and 1.0 or 0.3*frame.color[4])
+    frame.innerGlow:SetSize(frameWidth / 2, frameHeight / 2)
+    frame.innerGlow:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
+    frame.innerGlowOver:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
+    frame.outerGlow:SetSize(frameWidth * 2, frameHeight * 2)
+    frame.outerGlow:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
+    frame.outerGlowOver:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
+    frame.ants:SetSize(frameWidth * 0.85, frameHeight * 0.85)
+    frame.ants:SetAlpha(0)
+    frame:Show()
 end
 
-ACRB_ActionBarOverlayGlowAnimInMixin = {};
-
-function ACRB_ActionBarOverlayGlowAnimInMixin:OnPlay()
-	local frame = self:GetParent();
-	local frameWidth, frameHeight = frame:GetSize();
-	frame.spark:SetSize(frameWidth, frameHeight);
-	frame.spark:SetAlpha(0);
-	frame.innerGlow:SetSize(frameWidth, frameHeight);
-	frame.innerGlow:SetAlpha(1);
-	frame.innerGlowOver:SetAlpha(1);
-	frame.outerGlow:SetSize(frameWidth, frameHeight);
-	frame.outerGlow:SetAlpha(1);
-	frame.outerGlowOver:SetAlpha(1);
-	frame.ants:SetSize(frameWidth * 0.8, frameHeight * 0.8)
-	frame.ants:SetAlpha(0);
-
-	if frame.bhideflash then
-		frame.spark:SetAlpha(0.3);
-		frame.innerGlow:SetAlpha(0);
-		frame.innerGlowOver:SetAlpha(0);
-		frame.outerGlow:SetAlpha(0);
-		frame.outerGlowOver:SetAlpha(0);
-	end
-	frame:Show();
+local function AnimIn_OnFinished(group)
+    local frame = group:GetParent()
+    local frameWidth, frameHeight = frame:GetSize()
+    frame.spark:SetAlpha(0)
+    frame.innerGlow:SetAlpha(0)
+    frame.innerGlow:SetSize(frameWidth, frameHeight)
+    frame.innerGlowOver:SetAlpha(0.0)
+    frame.outerGlow:SetSize(frameWidth, frameHeight)
+    frame.outerGlowOver:SetAlpha(0.0)
+    frame.outerGlowOver:SetSize(frameWidth, frameHeight)
+    frame.ants:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
 end
 
-function ACRB_ActionBarOverlayGlowAnimInMixin:OnFinished()
-	local frame = self:GetParent();
-	local frameWidth, frameHeight = frame:GetSize();
-	frame.spark:SetAlpha(0);
-	frame.innerGlow:SetAlpha(0);
-	frame.innerGlow:SetSize(frameWidth, frameHeight);
-	frame.innerGlowOver:SetAlpha(0.0);
-	frame.outerGlow:SetSize(frameWidth, frameHeight);
-	frame.outerGlowOver:SetAlpha(0.0);
-	frame.outerGlowOver:SetSize(frameWidth, frameHeight);
-	frame.ants:SetAlpha(1.0);
+local function AnimIn_OnStop(group)
+    local frame = group:GetParent()
+    local frameWidth, frameHeight = frame:GetSize()
+    frame.spark:SetAlpha(0)
+    frame.innerGlow:SetAlpha(0)
+    frame.innerGlowOver:SetAlpha(0.0)
+    frame.outerGlowOver:SetAlpha(0.0)
 end
 
-ACRB_ActionBarOverlayGlowAnimOutMixin = {};
-
-function ACRB_ActionBarOverlayGlowAnimOutMixin:OnFinished()
-	local overlay = self:GetParent();
-	local actionButton = overlay:GetParent();
-	overlay:Hide();
-	tinsert(unusedOverlayGlows, overlay);
-	actionButton.overlay = nil;
+local function bgHide(self)
+    if self.animOut:IsPlaying() then
+        self.animOut:Stop()
+        ButtonGlowPool:Release(self)
+    end
 end
+
+local function bgUpdate(self, elapsed)
+    AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, self.throttle);
+    local cooldown = self:GetParent().cooldown;
+    if(cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration() > 3000) then
+        self:SetAlpha(0.5);
+    else
+        self:SetAlpha(1.0);
+    end
+end
+
+local function configureButtonGlow(f,alpha)
+    f.spark = f:CreateTexture(nil, "BACKGROUND")
+    f.spark:SetPoint("CENTER")
+    f.spark:SetAlpha(0)
+    f.spark:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
+    f.spark:SetTexCoord(0.00781250, 0.61718750, 0.00390625, 0.26953125)
+
+    -- inner glow
+    f.innerGlow = f:CreateTexture(nil, "ARTWORK")
+    f.innerGlow:SetPoint("CENTER")
+    f.innerGlow:SetAlpha(0)
+    f.innerGlow:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
+    f.innerGlow:SetTexCoord(0.00781250, 0.50781250, 0.27734375, 0.52734375)
+
+    -- inner glow over
+    f.innerGlowOver = f:CreateTexture(nil, "ARTWORK")
+    f.innerGlowOver:SetPoint("TOPLEFT", f.innerGlow, "TOPLEFT")
+    f.innerGlowOver:SetPoint("BOTTOMRIGHT", f.innerGlow, "BOTTOMRIGHT")
+    f.innerGlowOver:SetAlpha(0)
+    f.innerGlowOver:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
+    f.innerGlowOver:SetTexCoord(0.00781250, 0.50781250, 0.53515625, 0.78515625)
+
+    -- outer glow
+    f.outerGlow = f:CreateTexture(nil, "ARTWORK")
+    f.outerGlow:SetPoint("CENTER")
+    f.outerGlow:SetAlpha(0)
+    f.outerGlow:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
+    f.outerGlow:SetTexCoord(0.00781250, 0.50781250, 0.27734375, 0.52734375)
+
+    -- outer glow over
+    f.outerGlowOver = f:CreateTexture(nil, "ARTWORK")
+    f.outerGlowOver:SetPoint("TOPLEFT", f.outerGlow, "TOPLEFT")
+    f.outerGlowOver:SetPoint("BOTTOMRIGHT", f.outerGlow, "BOTTOMRIGHT")
+    f.outerGlowOver:SetAlpha(0)
+    f.outerGlowOver:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
+    f.outerGlowOver:SetTexCoord(0.00781250, 0.50781250, 0.53515625, 0.78515625)
+
+    -- ants
+    f.ants = f:CreateTexture(nil, "OVERLAY")
+    f.ants:SetPoint("CENTER")
+    f.ants:SetAlpha(0)
+    f.ants:SetTexture([[Interface\SpellActivationOverlay\IconAlertAnts]])
+
+    f.animIn = f:CreateAnimationGroup()
+    f.animIn.appear = {}
+    f.animIn.fade = {}
+    CreateScaleAnim(f.animIn, "spark",          1, 0.2, 1.5, 1.5)
+    CreateAlphaAnim(f.animIn, "spark",          1, 0.2, 0, alpha, nil, true)
+    CreateScaleAnim(f.animIn, "innerGlow",      1, 0.3, 2, 2)
+    CreateScaleAnim(f.animIn, "innerGlowOver",  1, 0.3, 2, 2)
+    CreateAlphaAnim(f.animIn, "innerGlowOver",  1, 0.3, alpha, 0, nil, false)
+    CreateScaleAnim(f.animIn, "outerGlow",      1, 0.3, 0.5, 0.5)
+    CreateScaleAnim(f.animIn, "outerGlowOver",  1, 0.3, 0.5, 0.5)
+    CreateAlphaAnim(f.animIn, "outerGlowOver",  1, 0.3, alpha, 0, nil, false)
+    CreateScaleAnim(f.animIn, "spark",          1, 0.2, 2/3, 2/3, 0.2)
+    CreateAlphaAnim(f.animIn, "spark",          1, 0.2, alpha, 0, 0.2, false)
+    CreateAlphaAnim(f.animIn, "innerGlow",      1, 0.2, alpha, 0, 0.3, false)
+    CreateAlphaAnim(f.animIn, "ants",           1, 0.2, 0, alpha, 0.3, true)
+    f.animIn:SetScript("OnPlay", AnimIn_OnPlay)
+    f.animIn:SetScript("OnStop", AnimIn_OnStop)
+    f.animIn:SetScript("OnFinished", AnimIn_OnFinished)
+
+    f.animOut = f:CreateAnimationGroup()
+    f.animOut.appear = {}
+    f.animOut.fade = {}
+    CreateAlphaAnim(f.animOut, "outerGlowOver", 1, 0.2, 0, alpha, nil, true)
+    CreateAlphaAnim(f.animOut, "ants",          1, 0.2, alpha, 0, nil, false)
+    CreateAlphaAnim(f.animOut, "outerGlowOver", 2, 0.2, alpha, 0, nil, false)
+    CreateAlphaAnim(f.animOut, "outerGlow",     2, 0.2, alpha, 0, nil, false)
+    f.animOut:SetScript("OnFinished", function(self) ButtonGlowPool:Release(self:GetParent())  end)
+
+    f:SetScript("OnHide", bgHide)
+end
+
+local function updateAlphaAnim(f,alpha)
+    for _,anim in pairs(f.animIn.appear) do
+        anim:SetToAlpha(alpha)
+    end
+    for _,anim in pairs(f.animIn.fade) do
+        anim:SetFromAlpha(alpha)
+    end
+    for _,anim in pairs(f.animOut.appear) do
+        anim:SetToAlpha(alpha)
+    end
+    for _,anim in pairs(f.animOut.fade) do
+        anim:SetFromAlpha(alpha)
+    end
+end
+
+local ButtonGlowTextures = {["spark"] = true,["innerGlow"] = true,["innerGlowOver"] = true,["outerGlow"] = true,["outerGlowOver"] = true,["ants"] = true}
+
+function lib.ButtonGlow_Start(r,color,frequency,frameLevel)
+    if not r then
+        return
+    end
+	frameLevel = frameLevel or 8;
+    local throttle
+    if frequency and frequency > 0 then
+        throttle = 0.25/frequency*0.01
+    else
+        throttle = 0.01
+    end
+    if r._ButtonGlow then
+        local f = r._ButtonGlow
+        local width,height = r:GetSize()
+        f:SetFrameLevel(r:GetFrameLevel()+frameLevel)
+        f:SetSize(width*1.4 , height*1.4)
+        f:SetPoint("TOPLEFT", r, "TOPLEFT", -width * 0.3, height * 0.3)
+        f:SetPoint("BOTTOMRIGHT", r, "BOTTOMRIGHT", width * 0.3, -height * 0.3)
+        f.ants:SetSize(width*1.4*0.85, height*1.4*0.85)
+		AnimIn_OnFinished(f.animIn)
+		if f.animOut:IsPlaying() then
+            f.animOut:Stop()
+            f.animIn:Play()
+        end
+
+        if not(color) then
+            for texture in pairs(ButtonGlowTextures) do
+                f[texture]:SetDesaturated(nil)
+                f[texture]:SetVertexColor(1,1,1)
+                f[texture]:SetAlpha(f[texture]:GetAlpha()/(f.color and f.color[4] or 1))
+                updateAlphaAnim(f, 1)
+            end
+            f.color = false
+        else
+            for texture in pairs(ButtonGlowTextures) do
+                f[texture]:SetDesaturated(1)
+                f[texture]:SetVertexColor(color[1],color[2],color[3])
+                f[texture]:SetAlpha(f[texture]:GetAlpha()/(f.color and f.color[4] or 1)*color[4])
+                updateAlphaAnim(f,color and color[4] or 1)
+            end
+            f.color = color
+        end
+        f.throttle = throttle
+    else
+        local f, new = ButtonGlowPool:Acquire()
+        if new then
+            configureButtonGlow(f,color and color[4] or 1)
+        else
+            updateAlphaAnim(f,color and color[4] or 1)
+        end
+        r._ButtonGlow = f
+        local width,height = r:GetSize()
+        f:SetParent(r)
+        f:SetFrameLevel(r:GetFrameLevel()+frameLevel)
+        f:SetSize(width * 1.4, height * 1.4)
+        f:SetPoint("TOPLEFT", r, "TOPLEFT", -width * 0.3, height * 0.3)
+        f:SetPoint("BOTTOMRIGHT", r, "BOTTOMRIGHT", width * 0.3, -height * 0.3)
+        if not(color) then
+            f.color = false
+            for texture in pairs(ButtonGlowTextures) do
+                f[texture]:SetDesaturated(nil)
+                f[texture]:SetVertexColor(1,1,1)
+            end
+        else
+            f.color = color
+            for texture in pairs(ButtonGlowTextures) do
+                f[texture]:SetDesaturated(1)
+                f[texture]:SetVertexColor(color[1],color[2],color[3])
+            end
+        end
+        f.throttle = throttle
+        f:SetScript("OnUpdate", bgUpdate)
+
+        f.animIn:Play()
+
+        if Masque and Masque.UpdateSpellAlert and (not r.overlay or not issecurevariable(r, "overlay")) then
+            local old_overlay = r.overlay
+            r.overlay = f
+            Masque:UpdateSpellAlert(r)
+            r.overlay = old_overlay
+        end
+    end
+end
+
+function lib.ButtonGlow_Stop(r)
+    if r._ButtonGlow then
+        if r._ButtonGlow.animIn:IsPlaying() then
+            r._ButtonGlow.animIn:Stop()
+            ButtonGlowPool:Release(r._ButtonGlow)
+        elseif r:IsVisible() then
+            r._ButtonGlow.animOut:Play()
+        else
+            ButtonGlowPool:Release(r._ButtonGlow)
+        end
+    end
+end
+
+table.insert(lib.glowList, "Action Button Glow")
+lib.startList["Action Button Glow"] = lib.ButtonGlow_Start
+lib.stopList["Action Button Glow"] = lib.ButtonGlow_Stop
 
 
 local function asCooldownFrame_Clear(self)

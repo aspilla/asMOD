@@ -1,6 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Script file="asCooldownPulse.lua"/>
 	<Frame name="asCooldownPulseFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW">
 		<Size>
 			<AbsDimension x="17" y="17"/>
@@ -38,4 +37,5 @@
 			</Cooldown>
 		</Frames>
 	</Frame>
+	<Script file="asCooldownPulse.lua"/>
 </Ui>
