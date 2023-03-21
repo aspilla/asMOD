@@ -666,7 +666,7 @@ local function AnimIn_OnPlay(group)
     frame.outerGlow:SetSize(frameWidth, frameHeight)
     frame.outerGlow:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
     frame.outerGlowOver:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
-    frame.ants:SetSize(frameWidth * 1.4 * 0.9, frameHeight *1.4 * 0.9)
+    frame.ants:SetSize(frameWidth * 0.9, frameHeight * 0.9)
     frame.ants:SetAlpha(0)
     frame:Show()
 end
