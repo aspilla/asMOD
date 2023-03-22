@@ -1,4 +1,4 @@
-﻿## Interface: 100005
+﻿## Interface: 100007
 ## Author: |cffff3399아스필라|r [블랙무어]
 ## Title: |cffff3399as|rDebuffFilter
 ## Notes: 디버프 필터 
