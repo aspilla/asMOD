@@ -1,6 +1,19 @@
 ﻿---설정부
 local AAM_UpdateRate = 0.2			-- Check할 주기
-local needtowork = false;
+local AAM_MaxMark = 7				-- 최대 징표 X까지 찍도록 설정
+
+--[[
+
+1 = Yellow 4-point Star
+2 = Orange Circle
+3 = Purple Diamond
+4 = Green Triangle
+5 = White Crescent Moon
+6 = Blue Square
+7 = Red "X" Cross
+8 = White Skull
+
+]]
 
 local NPCTable = {
 	[56448] = true,
@@ -78,6 +91,8 @@ local NPCTable = {
 	[198047] = true,
 };
 
+local needtowork = false;
+
 local function isFaction(unit)
 	if UnitIsUnit("player", unit) then
 		return false;
@@ -93,8 +108,56 @@ end
 
 local curr_mark = 1;
 local tmp = {};
+local abledMarks = {true, true, true, true, true, true, true, true};
 
-local function UpdateMark(nameplate)
+
+local function CheckMarks(nameplate)
+
+	local unit;
+
+	if nameplate then
+		if not nameplate or nameplate:IsForbidden()  then
+			return false;
+		end
+
+		if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden()  then
+			return false;
+		end
+
+		unit = nameplate.namePlateUnitToken;
+	else
+		return
+	end
+
+	if unit and isFaction(unit)  then
+		local mark = GetRaidTargetIndex(unit);
+
+		if  mark ~= nil and mark <= AAM_MaxMark then
+			abledMarks[mark] = false;
+		end
+	end
+end
+
+local function CheckPartyMarks()
+
+	local unit = "player";
+	local mark = GetRaidTargetIndex(unit);
+
+	if  mark ~= nil and mark <= AAM_MaxMark then
+		abledMarks[mark] = false;
+	end
+
+	for i=1,GetNumGroupMembers() do
+		local unit = "party"..i;
+		local mark = GetRaidTargetIndex(unit);
+
+		if  mark ~= nil and mark <= AAM_MaxMark then
+			abledMarks[mark] = false;			
+		end
+	end
+end
+
+local function UpdateMarks(nameplate)
 
 	local unit = "mouseover"
 
@@ -122,11 +185,20 @@ local function UpdateMark(nameplate)
 
 				local mark = GetRaidTargetIndex(unit);
 
-				if tmp[guid] == nil and mark == nil and curr_mark < 9 then
+				while (curr_mark <= AAM_MaxMark) do
+
+					if abledMarks[curr_mark] then
+						break;
+					else
+						curr_mark = curr_mark + 1;
+					end
+				end
+
+				if tmp[guid] == nil and mark == nil and curr_mark <= AAM_MaxMark then
 					SetRaidTarget(unit, curr_mark);
 					tmp[guid] = true;
 					curr_mark = curr_mark + 1;
-				end				
+				end
 			end
 		end
 	end
@@ -138,14 +210,27 @@ local function AAM_OnUpdate()
 		return;
 	end
 
+	curr_mark = 1;
+
+	abledMarks = {true, true, true, true, true, true, true, true};
+
+	CheckPartyMarks();
+
 	for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
 		local nameplate = v;
 		if (nameplate) then
-			UpdateMark(nameplate);
+			CheckMarks(nameplate);
 		end
 	end
 
-	UpdateMark();
+	for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
+		local nameplate = v;
+		if (nameplate) then
+			UpdateMarks(nameplate);
+		end
+	end
+
+	UpdateMarks();
 end
 
 
@@ -156,12 +241,11 @@ local function AAM_OnEvent(self, event)
 		needtowork = false;
 		local inInstance, instanceType = IsInInstance();
 		local assignedRole = UnitGroupRolesAssigned("player");
-					
+
 		if (inInstance and instanceType == "party") and (assignedRole and assignedRole == "TANK") then
 			needtowork = true;
 		end
 	elseif event == "PLAYER_REGEN_ENABLED" then
-		curr_mark = 1;
 		tmp = {};
 	end
 end
