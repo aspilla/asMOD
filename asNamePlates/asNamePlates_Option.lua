@@ -310,112 +310,289 @@ local function UpdateSliderValue(option)
 end
 
 local function SetupEditBoxOption()
---[[
+
     local spec = GetSpecialization();
 	local localizedClass, englishClass = UnitClass("player");
 	local listname;
 
     if spec then
 		listname = "ANameP_ShowList_" .. englishClass .. "_" .. spec;
-	end
+    end
 
     if ANameP_Options[listname] == nil then
         ANameP_Options[listname] = ANameP_Options_Default[listname];
+        print ("false");
     end
 
-    local list = ANameP_Options[listname];
+    local listdata = ANameP_Options[listname];
     local count = 1;
 
-    for spell, value in pairs(list) do
+	curr_y = curr_y + y_adder;
+
+	local x = 10;
+
+    local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    title:SetPoint("TOPLEFT", x , curr_y);
+    title:SetText("우선순위");
+
+    x = 60;
+
+	title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    title:SetPoint("TOPLEFT", x , curr_y);
+    title:SetText("디버프명");
+
+	x = x + 150;
+
+
+	title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    title:SetPoint("TOPLEFT", x , curr_y);
+    title:SetText("시간/중첩");
+
+    x = x + 150
+
+    title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    title:SetPoint("TOPLEFT", x , curr_y);
+    title:SetText("이름표 색상");
+
+    x = x + 200
+
+    title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    title:SetPoint("TOPLEFT", x , curr_y);
+    title:SetText("디법 중첩 알림");
+
+    local prioritytable = {};
+
+    for spell, values in pairs(listdata) do
+
+        local priority = values[2];
+        local time = values[1];
+        local bshowcolor = values[3];
+        local bcount = values[4];
+
+        prioritytable[priority] = {spell, time, bshowcolor, bcount};
+
+    end
+
+
+
+	for idx = 1, 5 do
         curr_y = curr_y + y_adder;
-        local eb = CreateFrame("EditBox", nil, scrollChild, "InputBoxTemplate")
-        eb:SetTextInsets(5, 5, 5, -5);
-        eb:SetFont("GameFontNormal", 12, "OUTLINE, THICK");
-        eb:SetPoint("TOPLEFT", 20, curr_y);
-        eb:SetJustifyV("TOP")
-        eb:SetJustifyH("LEFT")
-        eb:SetHistoryLines(1);
-        eb:SetMaxLetters(20);
-        eb:SetSize(200, 70);
-        eb:SetAutoFocus(false);
-        eb:SetMultiLine(false);
-        eb:Show();
-        eb:Insert(spell);   
 
-        local eb = CreateFrame("EditBox", nil, scrollChild, "InputBoxTemplate")
-        eb:SetTextInsets(5, 5, 5, -5);
-        eb:SetFont("GameFontNormal", 12, "OUTLINE, THICK");
-        eb:SetPoint("TOPLEFT", 250, curr_y);
-        eb:SetJustifyV("TOP")
-        eb:SetJustifyH("LEFT")
-        eb:SetHistoryLines(1);
-        eb:SetMaxLetters(20);
-        eb:SetSize(200, 70);
-        eb:SetAutoFocus(false);
-        eb:SetMultiLine(false);
-        eb:Show();
-        eb:Insert(value[1]);
+        title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    	title:SetPoint("LEFT", 10 , curr_y);
+    	title:SetText(idx);
 
-        local eb = CreateFrame("EditBox", nil, scrollChild, "InputBoxTemplate")
-        eb:SetTextInsets(5, 5, 5, -5);
-        eb:SetFont("GameFontNormal", 12, "OUTLINE, THICK");
-        eb:SetPoint("TOPLEFT", 500, curr_y);
-        eb:SetJustifyV("TOP")
-        eb:SetJustifyH("LEFT")
-        eb:SetHistoryLines(1);
-        eb:SetMaxLetters(20);
-        eb:SetSize(200, 70);
-        eb:SetAutoFocus(false);
-        eb:SetMultiLine(false);
-        eb:Show();
+        local spell = "";
+        local time = 0;
+        local bshowcolor = 0;
+        local bcount = 0;
+
+        if prioritytable[idx] and type(prioritytable[idx]) == "table" then
+            spell = prioritytable[idx][1];
+            time = prioritytable[idx][2];
+
+            if prioritytable[idx][3] then
+                bshowcolor = 1;
+            else
+                bshowcolor = 2;
+            end
+            
+            if prioritytable[idx][4] then
+                bcount = 1;
+            else
+                bcount = 2;
+            end
+        end
+
+        local x = 50;
+	
+		local editBox = CreateFrame("EditBox", nil, scrollChild)
+		do
+			local editBoxLeft = editBox:CreateTexture(nil, "BACKGROUND")
+			editBoxLeft:SetTexture(130959)--"Interface\\ChatFrame\\UI-ChatInputBorder-Left"
+			editBoxLeft:SetHeight(32)
+			editBoxLeft:SetWidth(32)
+			editBoxLeft:SetPoint("LEFT", -14, 0)
+			editBoxLeft:SetTexCoord(0, 0.125, 0, 1)
+			local editBoxRight = editBox:CreateTexture(nil, "BACKGROUND")
+			editBoxRight:SetTexture(130960)--"Interface\\ChatFrame\\UI-ChatInputBorder-Right"
+			editBoxRight:SetHeight(32)
+			editBoxRight:SetWidth(32)
+			editBoxRight:SetPoint("RIGHT", 6, 0)
+			editBoxRight:SetTexCoord(0.875, 1, 0, 1)
+			local editBoxMiddle = editBox:CreateTexture(nil, "BACKGROUND")
+			editBoxMiddle:SetTexture(130960)--"Interface\\ChatFrame\\UI-ChatInputBorder-Right"
+			editBoxMiddle:SetHeight(32)
+			editBoxMiddle:SetWidth(1)
+			editBoxMiddle:SetPoint("LEFT", editBoxLeft, "RIGHT")
+			editBoxMiddle:SetPoint("RIGHT", editBoxRight, "LEFT")
+			editBoxMiddle:SetTexCoord(0, 0.9375, 0, 1)
+		end
+
+		editBox:HookScript("OnTextChanged", function()  end);
+		editBox:SetHeight(32)
+		editBox:SetWidth(150)
+		editBox:SetPoint("LEFT", scrollChild, "TOPLEFT", x, curr_y)
+		editBox:SetFontObject("GameFontHighlight")
+		editBox:SetMultiLine(false);
+		editBox:SetMaxLetters(20);
+		editBox:SetText(spell);
+		editBox:SetAutoFocus(false);
+		editBox:ClearFocus();
+		editBox:SetTextInsets(0, 0, 0, 1)
+		editBox:Show();
+		editBox:SetCursorPosition(0);
+		x = x + 180;
+
+        local editBox2 = CreateFrame("EditBox", nil, scrollChild)
+		do
+			local editBoxLeft = editBox2:CreateTexture(nil, "BACKGROUND")
+			editBoxLeft:SetTexture(130959)--"Interface\\ChatFrame\\UI-ChatInputBorder-Left"
+			editBoxLeft:SetHeight(32)
+			editBoxLeft:SetWidth(32)
+			editBoxLeft:SetPoint("LEFT", -14, 0)
+			editBoxLeft:SetTexCoord(0, 0.125, 0, 1)
+			local editBoxRight = editBox2:CreateTexture(nil, "BACKGROUND")
+			editBoxRight:SetTexture(130960)--"Interface\\ChatFrame\\UI-ChatInputBorder-Right"
+			editBoxRight:SetHeight(32)
+			editBoxRight:SetWidth(32)
+			editBoxRight:SetPoint("RIGHT", 6, 0)
+			editBoxRight:SetTexCoord(0.875, 1, 0, 1)
+			local editBoxMiddle = editBox2:CreateTexture(nil, "BACKGROUND")
+			editBoxMiddle:SetTexture(130960)--"Interface\\ChatFrame\\UI-ChatInputBorder-Right"
+			editBoxMiddle:SetHeight(32)
+			editBoxMiddle:SetWidth(1)
+			editBoxMiddle:SetPoint("LEFT", editBoxLeft, "RIGHT")
+			editBoxMiddle:SetPoint("RIGHT", editBoxRight, "LEFT")
+			editBoxMiddle:SetTexCoord(0, 0.9375, 0, 1)
+		end
+
+		editBox2:HookScript("OnTextChanged", function()  end);
+		editBox2:SetHeight(32)
+		editBox2:SetWidth(100)
+		editBox2:SetPoint("LEFT", scrollChild, "TOPLEFT", x, curr_y)
+		editBox2:SetFontObject("GameFontHighlight")
+		editBox2:SetMultiLine(false);
+		editBox2:SetMaxLetters(20);
+		editBox2:SetText(time);
+		editBox2:SetAutoFocus(false);
+		editBox2:ClearFocus();
+		editBox2:SetTextInsets(0, 0, 0, 1)
+		editBox2:Show();
+		editBox2:SetCursorPosition(0);
+		x = x + 130;
+
+
+		local dropDown = CreateFrame("Frame",	nil , scrollChild, "UIDropDownMenuTemplate")
+		dropDown:SetPoint("LEFT", scrollChild, "TOPLEFT", x, curr_y)
+		UIDropDownMenu_SetWidth(dropDown, 100) -- Use in place of dropDown:SetWidth
+
+
+		local dropdownOptions = {
+			{ text = "이름표색상변경", value = 1 },
+			{ text = "이름표색상그대로", value = 2 },
+		}
+
+        x = x + 130;
+
+        local dropDown2 = CreateFrame("Frame",	nil , scrollChild, "UIDropDownMenuTemplate")
+		dropDown2:SetPoint("LEFT", scrollChild, "TOPLEFT", x, curr_y)
+		UIDropDownMenu_SetWidth(dropDown2, 100) -- Use in place of dropDown:SetWidth
+
+
+		local dropdownOptions2 = {
+			{ text = "중첩으로 알림", value = 1 },
+			{ text = "시간으로 알림", value = 2 },
+		}
+
+		local function updatedata ()
+
+			local data = editBox:GetText();
+
+			local type = UIDropDownMenu_GetSelectedValue(dropDown);
+
+            --[[
+			if data ~= "" and type > 0 and type < 4 then
+
+				ANameP_Options[listname][idx] = {};
+
+				local number = tonumber(data);
+				ANameP_Options[listname][idx][10] = true;
+				if number then
+					ANameP_Options[listname][idx][1] = number;
+					ANameP_Options[listname][idx][2] = tonumber(type) + 5;
+				else
+					data = tostring(data);
+					ANameP_Options[listname][idx][1] = data;
+					if type == 3 then
+						ANameP_Options[listname][idx][2] = 4;
+					else
+						ANameP_Options[listname][idx][2] = tonumber(type);
+					end
+				end
+
+				update_callback();
+
+			end
+            ]]
+		end
+
+
+		UIDropDownMenu_Initialize(dropDown, function (self, level)
+			for _, option in ipairs(dropdownOptions) do
+				local info = UIDropDownMenu_CreateInfo()
+				info.text = option.text
+				info.value = option.value
+				info.disabled = option.disabled
+				local function Dropdown_OnClick()
+					UIDropDownMenu_SetSelectedValue(dropDown, option.value);
+					updatedata();
+				end
+				info.func = Dropdown_OnClick;
+				UIDropDownMenu_AddButton(info, level)
+			end
+		end);
+		UIDropDownMenu_SetSelectedValue(dropDown, bshowcolor);
+
+        UIDropDownMenu_Initialize(dropDown2, function (self, level)
+			for _, option in ipairs(dropdownOptions2) do
+				local info = UIDropDownMenu_CreateInfo()
+				info.text = option.text
+				info.value = option.value
+				info.disabled = option.disabled
+				local function Dropdown_OnClick()
+					UIDropDownMenu_SetSelectedValue(dropDown2, option.value);
+					updatedata();
+				end
+				info.func = Dropdown_OnClick;
+				UIDropDownMenu_AddButton(info, level)
+			end
+		end);
+		UIDropDownMenu_SetSelectedValue(dropDown2, bcount);
+
+
+		editBox:HookScript("OnTextChanged", function(self, updated)
+
+			if updated == false then
+				return;
+			end
+
+			updatedata();
+		end)
+
+        editBox2:HookScript("OnTextChanged", function(self, updated)
+
+			if updated == false then
+				return;
+			end
+
+			updatedata();
+		end)
+
         count = count + 1;
     end
-
-    for i = count, 5 do
-        curr_y = curr_y + y_adder;
-        local eb = CreateFrame("EditBox", nil, scrollChild, "InputBoxTemplate")
-        eb:SetTextInsets(5, 5, 5, -5);
-        eb:SetFont("GameFontNormal", 12, "OUTLINE, THICK");
-        eb:SetPoint("TOPLEFT", 20, curr_y);
-        eb:SetJustifyV("TOP")
-        eb:SetJustifyH("LEFT")
-        eb:SetHistoryLines(1);
-        eb:SetMaxLetters(20);
-        eb:SetSize(200, 70);
-        eb:SetAutoFocus(false);
-        eb:SetMultiLine(false);
-        eb:Show();
-        
-        local eb = CreateFrame("EditBox", nil, scrollChild, "InputBoxTemplate")
-        eb:SetTextInsets(5, 5, 5, -5);
-        eb:SetFont("GameFontNormal", 12, "OUTLINE, THICK");
-        eb:SetPoint("TOPLEFT", 250, curr_y);
-        eb:SetJustifyV("TOP")
-        eb:SetJustifyH("LEFT")
-        eb:SetHistoryLines(1);
-        eb:SetMaxLetters(20);
-        eb:SetSize(200, 70);
-        eb:SetAutoFocus(false);
-        eb:SetMultiLine(false);
-        eb:Show();
-
-        local eb = CreateFrame("EditBox", nil, scrollChild, "InputBoxTemplate")
-        eb:SetTextInsets(5, 5, 5, -5);
-        eb:SetFont("GameFontNormal", 12, "OUTLINE, THICK");
-        eb:SetPoint("TOPLEFT", 500, curr_y);
-        eb:SetJustifyV("TOP")
-        eb:SetJustifyH("LEFT")
-        eb:SetHistoryLines(1);
-        eb:SetMaxLetters(20);
-        eb:SetSize(200, 70);
-        eb:SetAutoFocus(false);
-        eb:SetMultiLine(false);
-        eb:Show();
-
-    end
-
-    ]]
 end
+
 
 
 ANameP_OptionM.SetupAllOption = function()
@@ -425,7 +602,6 @@ ANameP_OptionM.SetupAllOption = function()
     SetupCheckBoxOption("[색상] 어그로 색상 표시", "ANameP_AggroShow");
     SetupCheckBoxOption("[색상] 낮은 생명력 색상 표시", "ANameP_LowHealthAlert");
     SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");
-    SetupEditBoxOption();
     SetupColorOption("[이름표 색상] 어그로 대상", "ANameP_AggroTargetColor");
     SetupColorOption("[이름표 색상] 어그로 상위", "ANameP_AggroColor");
     SetupColorOption("[탱커 이름표 색상] 어그로 상실", "ANameP_TankAggroLoseColor");
@@ -433,6 +609,7 @@ ANameP_OptionM.SetupAllOption = function()
     SetupColorOption("[이름표 색상] 어그로 소환수", "ANameP_TankAggroLoseColor3");
     SetupColorOption("[이름표 색상] 낮은 체력", "ANameP_LowHealthColor");
     SetupColorOption("[이름표 색상] 디버프", "ANameP_DebuffColor");
+    SetupEditBoxOption();
     update_callback();
 end
 
@@ -466,8 +643,7 @@ function panel:OnEvent(event, addOnName)
         if ANameP_Options.version ~= ANameP_Options_Default.version then
             ANameP_Options = CopyTable(ANameP_Options_Default);
         end
-
-        ANameP_OptionM.SetupAllOption();
+        C_Timer.After(1.5, ANameP_OptionM.SetupAllOption)
 	end
 end
 
