@@ -442,71 +442,8 @@ btn:SetScript("OnClick", function()
 	ACI_Options = {};
     ACI_Options = CopyTable(ACI_Options_Default);
     ACI_OptionM.UpdateAllOption();
+	ReloadUI();
 end)
-
-local function SetupCheckBoxOption(text, option)
-
-    if ACI_Options[option] == nil then
-        ACI_Options[option] = ACI_Options_Default[option];
-    end
-
-    curr_y = curr_y + y_adder;
-
-    local cb = CreateFrame("CheckButton", nil, scrollChild, "InterfaceOptionsCheckButtonTemplate")
-    ACI_OptionM[option] = cb;
-    cb:SetPoint("TOPLEFT", 20, curr_y)
-    cb.Text:SetText(text)
-    cb:HookScript("OnClick", function()
-        ACI_Options[option] = cb:GetChecked();
-        ACI_OptionM.UpdateAllOption();
-    end)
-    cb:SetChecked(ACI_Options[option]);
-end
-
-local function UpdateCheckBoxValue(option)
-    if ACI_OptionM[option] then
-        ACI_OptionM[option]:SetChecked(ACI_Options[option]);
-    end
-end
-
-local function SetupSliderOption(text, option)
-
-    if ACI_Options[option] == nil then
-        ACI_Options[option] = ACI_Options_Default[option];
-    end
-
-    curr_y = curr_y + y_adder;
-
-    local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
-    title:SetPoint("TOPLEFT", 20 , curr_y);
-    title:SetText(text);
-    ACI_OptionM[option] = title;
-
-    local Slider = CreateFrame("Slider", nil, scrollChild, "OptionsSliderTemplate");
-    Slider:SetOrientation('HORIZONTAL');
-    Slider:SetPoint("LEFT", title, "RIGHT", 5, 0);
-    Slider:SetWidth(200)
-    Slider:SetHeight(20)
-    Slider.Text:SetText(format("%.1f", max(ACI_Options[option], 0)));
-    Slider:SetMinMaxValues(0.3, 1.1);
-    Slider:SetValue(ACI_Options[option]);
-
-    Slider:HookScript("OnValueChanged", function()
-        ACI_Options[option] = Slider:GetValue();
-        Slider.Text:SetText(format("%.1f", max(ACI_Options[option], 0)));
-        SetCVar("nameplateOverlapV", ACI_Options[option]);
-    end)
-    Slider:Show();
-    SetCVar("nameplateOverlapV", ACI_Options[option]);
-
-end
-
-
-local function UpdateSliderValue(option)
-    if ACI_OptionM[option] then
-        ACI_OptionM[option]:SetTextColor(ACI_Options[option].r,ACI_Options[option].g,ACI_Options[option].b,1);
-    end
-end
 
 
 
