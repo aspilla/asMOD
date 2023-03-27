@@ -3,5 +3,6 @@
 ## Title: |cffff3399as|rCombatInfo
 ## Notes: WeakAura 류
 ## Version : 160404
-## SavedVariablesPerCharacter: ACI_Settings
+## SavedVariablesPerCharacter: ACI_Options
+asCombatInfo_Option.lua
 asCombatInfo.xml

@@ -341,7 +341,7 @@ local function ACDP_UpdateCooldown()
 		parent.frames = {};
 	end
 
-	if (ACDP_Show_CoolList == false or bCombatInfoLoaded == false) then
+	if (ACDP_Show_CoolList == false or bCombatInfoLoaded == false or (bCombatInfoLoaded == true and ACI_HideCooldownPulse ~= nil and ACI_HideCooldownPulse == true))  then
 
 		for i = 1, ACDP_CooldownCount do
 			frame = parent.frames[i];
