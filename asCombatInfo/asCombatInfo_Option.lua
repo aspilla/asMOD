@@ -419,37 +419,44 @@ local panel = CreateFrame("Frame")
 panel.name = "asCombatInfo"               -- see panel fields
 InterfaceOptions_AddCategory(panel)  -- see InterfaceOptions API
 
-local scrollFrame = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
-scrollFrame:SetPoint("TOPLEFT", 3, -4)
-scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)
-
--- Create the scrolling child frame, set its width to fit, and give it an arbitrary minimum height (such as 1)
-local scrollChild = CreateFrame("Frame")
-scrollFrame:SetScrollChild(scrollChild)
-scrollChild:SetWidth(600)
-scrollChild:SetHeight(1)
-
--- add widgets to the panel as desired
-local title = panel:CreateFontString("ARTWORK", nil, "GameFontNormalLarge")
-title:SetPoint("TOP")
-title:SetText("asCombatInfo")
-
-local btn = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-btn:SetPoint("TOPRIGHT", -50, -10)
-btn:SetText("설정 초기화")
-btn:SetWidth(100)
-btn:SetScript("OnClick", function()
-	ACI_Options = {};
-    ACI_Options = CopyTable(ACI_Options_Default);
-    ACI_OptionM.UpdateAllOption();
-	ReloadUI();
-end)
-
-
-
 local spelllist = {};
+local scrollFrame = nil;
 
 local function SetupEditBoxOption()
+
+	curr_y = 0;
+
+	if scrollFrame then
+		scrollFrame:Hide()
+		scrollFrame:UnregisterAllEvents()
+		scrollFrame = nil;
+	end
+
+	scrollFrame = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
+	scrollFrame:SetPoint("TOPLEFT", 3, -4)
+	scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)
+
+	-- Create the scrolling child frame, set its width to fit, and give it an arbitrary minimum height (such as 1)
+	local scrollChild = CreateFrame("Frame")
+	scrollFrame:SetScrollChild(scrollChild)
+	scrollChild:SetWidth(600)
+	scrollChild:SetHeight(1)
+
+	-- add widgets to the panel as desired
+	local title = panel:CreateFontString("ARTWORK", nil, "GameFontNormalLarge")
+	title:SetPoint("TOP")
+	title:SetText("asCombatInfo")
+
+	local btn = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+	btn:SetPoint("TOPRIGHT", -50, -10)
+	btn:SetText("설정 초기화")
+	btn:SetWidth(100)
+	btn:SetScript("OnClick", function()
+		ACI_Options = {};
+		ACI_Options = CopyTable(ACI_Options_Default);
+		ACI_OptionM.UpdateAllOption();
+		ReloadUI();
+	end)
 
     local spec = GetSpecialization();
 	local localizedClass, englishClass = UnitClass("player");
@@ -648,11 +655,13 @@ function panel:OnEvent(event, arg1)
 
 
         C_Timer.After(1.5, ACI_OptionM.SetupAllOption)
-    elseif event == "PLAYER_ENTERING_WORLD" then
-        --ACI_OptionM.SetupAllOption();
+	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
+		C_Timer.After(1.5, ACI_OptionM.SetupAllOption)
 	end
 end
 
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_ENTERING_WORLD")
+panel:RegisterEvent("TRAIT_CONFIG_UPDATED");
+panel:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+panel:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 panel:SetScript("OnEvent", panel.OnEvent)
