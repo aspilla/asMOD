@@ -2931,6 +2931,7 @@ end
 
 local function flushoption()
 	options = CopyTable (ANameP_Options);
+	C_Timer.After(0.5, initAlertList);
 end
 
 local function initAddon()

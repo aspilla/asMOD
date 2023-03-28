@@ -1,5 +1,5 @@
 ANameP_Options_Default = {
-    version = 230321;
+    version = 230328;
     ANameP_ShowKnownSpell = true,                           -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                               -- [디버프] 전부 보이기
     ANameP_ShowPlayerBuffAll = false,                       -- [버프] 전부 보이기
@@ -23,7 +23,7 @@ ANameP_Options_Default = {
 -- ["디법명"] = {알림 시간, 우선순위, 색상 변경 여부},
 -- 우선순위는 숫자가 큰 경우 우선적으로 보이고, 같을 경우 먼저 걸린 순서로 보임
     ANameP_ShowList_WARRIOR_1 = {
-	    ["분쇄"] = {15 * 0.3, 1, true},
+	    ["분쇄"] = {15 * 0.3, 5, true},
     },
 
     ANameP_ShowList_WARRIOR_2 = {
@@ -33,8 +33,8 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_ROGUE_1 = {
-	    ["파열"] = {24 * 0.3, 1, true},
-	    ["목조르기"] = {18 * 0.3, 2},
+	    ["파열"] = {24 * 0.3, 4, true},
+	    ["목조르기"] = {18 * 0.3, 5},
     },
 
     ANameP_ShowList_ROGUE_2 = {
@@ -42,23 +42,23 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_ROGUE_3 = {
-	    ["파열"] = {24 * 0.3, 1, true},
+	    ["파열"] = {24 * 0.3, 5, true},
     },
 
 
     ANameP_ShowList_HUNTER_1 = {
-	    ["날카로운 사격"] = {0, 1, true},
-	    ["잠재된 독"] = {8, 2, false, true},
+	    ["날카로운 사격"] = {0, 4, true},
+	    ["잠재된 독"] = {8, 5, false, true},
     },
 
     ANameP_ShowList_HUNTER_2 = {
-	    ["독사 쐐기"] = {0, 1, true},
-	    ["잠재된 독"] = {8, 2, false, true},
+	    ["독사 쐐기"] = {0, 4, true},
+	    ["잠재된 독"] = {8, 5, false, true},
     },
 
     ANameP_ShowList_HUNTER_3 = {
-	    ["독사 쐐기"] = {0, 1, true},
-	    ["잠재된 독"] = {8, 2, false, true},
+	    ["독사 쐐기"] = {0, 4, true},
+	    ["잠재된 독"] = {8, 5, false, true},
     },
 
     ANameP_ShowList_MONK_1 = {
@@ -68,13 +68,13 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_MONK_3 = {
-	    ["주학의 징표"] = {0, 1},
+	    ["주학의 징표"] = {0, 5},
     },
 
     ANameP_ShowList_WARLOCK_1 = {
-	    ["고통"] = {14 * 0.3, 3, true},
-	    ["불안정한 고통"] = {21 * 0.3, 2},
-	    ["부패"] = {14 * 0.3, 1},
+	    ["고통"] = {14 * 0.3, 5, true},
+	    ["불안정한 고통"] = {21 * 0.3, 4},
+	    ["부패"] = {14 * 0.3, 3},
     },
 
     ANameP_ShowList_WARLOCK_2 = {
@@ -82,12 +82,12 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_WARLOCK_3 = {
-	    ["제물"] = {24 * 0.3, 1, true},
+	    ["제물"] = {24 * 0.3, 5, true},
     },
 
 
     ANameP_ShowList_PRIEST_1 = {
-	    ["어둠의 권능: 고통"] = {16 * 0.3, 1, true},
+	    ["어둠의 권능: 고통"] = {16 * 0.3, 5, true},
     },
 
     ANameP_ShowList_PRIEST_2 = {
@@ -95,15 +95,15 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_PRIEST_3 = {
-	    ["어둠의 권능: 고통"] = {16 * 0.3 , 1, true},
+	    ["어둠의 권능: 고통"] = {16 * 0.3 , 5, true},
     },
 
     ANameP_ShowList_SHAMAN_1 = {
-	    ["화염 충격"] = {18 * 0.3 , 1, true},
+	    ["화염 충격"] = {18 * 0.3 , 5, true},
     },
 
     ANameP_ShowList_SHAMAN_2 = {
-	    ["화염 충격"] = {18 * 0.3 , 1, true},
+	    ["화염 충격"] = {18 * 0.3 , 5, true},
     },
 
     ANameP_ShowList_SHAMAN_3 = {
@@ -111,19 +111,19 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_DRUID_1 = {
-	    ["달빛섬광"] = {22 * 0.3, 3, true},
-	    ["태양섬광"] = {13.5 * 0.3, 2},
-	    ["항성의 섬광"] = {18 * 0.3, 1},
+	    ["달빛섬광"] = {22 * 0.3, 5, true},
+	    ["태양섬광"] = {13.5 * 0.3, 4},
+	    ["항성의 섬광"] = {18 * 0.3, 3},
     },
 
 
     ANameP_ShowList_DRUID_2 = {
-	    ["갈퀴 발톱"] = {15 * 0.3, 2, true},
-	    ["도려내기"] = {24 * 0.3, 1},
+	    ["갈퀴 발톱"] = {15 * 0.3, 5, true},
+	    ["도려내기"] = {24 * 0.3, 4},
     },
 
     ANameP_ShowList_DRUID_3 = {
-	    ["달빛섬광"] = {22 * 0.3, 1, true},
+	    ["달빛섬광"] = {22 * 0.3, 5, true},
     },
 
 
@@ -132,30 +132,30 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_MAGE_1 = {
-	    ["빛나는 불꽃 약화"] = {0, 1, true},
+	    ["빛나는 불꽃 약화"] = {0, 5, true},
     },
 
     ANameP_ShowList_MAGE_2 = {
-	    ["작열"] = {0, 1},
+	    ["작열"] = {0, 5},
     },
 
     ANameP_ShowList_MAGE_3 = {
-	    ["혹한의 추위"] = {10, 1},
+	    ["혹한의 추위"] = {10, 5},
 
     },
 
 
     ANameP_ShowList_DEATHKNIGHT_1 = {
-	    ["피의 역병"] = {0, 1},
+	    ["피의 역병"] = {0, 5},
     },
 
     ANameP_ShowList_DEATHKNIGHT_2 = {
-	    ["서리 열병"] = {0, 1},
+	    ["서리 열병"] = {0, 5},
     },
 
     ANameP_ShowList_DEATHKNIGHT_3 = {
-	    ["악성 역병"] = {27 * 0.3, 1},
-	    ["고름 상처"] = {0, 2},
+	    ["악성 역병"] = {27 * 0.3, 4},
+	    ["고름 상처"] = {0, 5},
     },
 
 
@@ -177,30 +177,44 @@ local panel = CreateFrame("Frame")
 panel.name = "asNamePlates"               -- see panel fields
 InterfaceOptions_AddCategory(panel)  -- see InterfaceOptions API
 
-local scrollFrame = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
-scrollFrame:SetPoint("TOPLEFT", 3, -4)
-scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)
+local scrollFrame = nil
+local scrollChild = nil;
 
--- Create the scrolling child frame, set its width to fit, and give it an arbitrary minimum height (such as 1)
-local scrollChild = CreateFrame("Frame")
-scrollFrame:SetScrollChild(scrollChild)
-scrollChild:SetWidth(600)
-scrollChild:SetHeight(1)
+local function SetupChildPanel()
 
--- add widgets to the panel as desired
-local title = panel:CreateFontString("ARTWORK", nil, "GameFontNormalLarge")
-title:SetPoint("TOP")
-title:SetText("asNamePlates")
+    curr_y = 0;
 
-local btn = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-btn:SetPoint("TOPRIGHT", -50, -10)
-btn:SetText("설정 초기화")
-btn:SetWidth(100)
-btn:SetScript("OnClick", function()
-	ANameP_Options = {};
-    ANameP_Options = CopyTable(ANameP_Options_Default);
-    ANameP_OptionM.UpdateAllOption();
-end)
+    if scrollFrame then
+		scrollFrame:Hide()
+		scrollFrame:UnregisterAllEvents()
+		scrollFrame = nil;
+	end
+
+    scrollFrame = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
+    scrollFrame:SetPoint("TOPLEFT", 3, -4)
+    scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)
+
+    -- Create the scrolling child frame, set its width to fit, and give it an arbitrary minimum height (such as 1)
+    scrollChild = CreateFrame("Frame")
+    scrollFrame:SetScrollChild(scrollChild)
+    scrollChild:SetWidth(600)
+    scrollChild:SetHeight(1)
+
+    -- add widgets to the panel as desired
+    local title = panel:CreateFontString("ARTWORK", nil, "GameFontNormalLarge")
+    title:SetPoint("TOP")
+    title:SetText("asNamePlates")
+
+    local btn = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+    btn:SetPoint("TOPRIGHT", -50, -10)
+    btn:SetText("설정 초기화")
+    btn:SetWidth(100)
+    btn:SetScript("OnClick", function()
+        ANameP_Options = {};
+        ANameP_Options = CopyTable(ANameP_Options_Default);
+        ReloadUI();
+    end)
+end
 
 local function SetupCheckBoxOption(text, option)
 
@@ -211,7 +225,6 @@ local function SetupCheckBoxOption(text, option)
     curr_y = curr_y + y_adder;
 
     local cb = CreateFrame("CheckButton", nil, scrollChild, "InterfaceOptionsCheckButtonTemplate")
-    ANameP_OptionM[option] = cb;
     cb:SetPoint("TOPLEFT", 20, curr_y)
     cb.Text:SetText(text)
     cb:HookScript("OnClick", function()
@@ -219,12 +232,6 @@ local function SetupCheckBoxOption(text, option)
         ANameP_OptionM.UpdateAllOption();
     end)
     cb:SetChecked(ANameP_Options[option]);
-end
-
-local function UpdateCheckBoxValue(option)
-    if ANameP_OptionM[option] then
-        ANameP_OptionM[option]:SetChecked(ANameP_Options[option]);
-    end
 end
 
 local function SetupSliderOption(text, option)
@@ -238,8 +245,7 @@ local function SetupSliderOption(text, option)
     local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
     title:SetPoint("TOPLEFT", 20 , curr_y);
     title:SetText(text);
-    ANameP_OptionM[option] = title;
-
+    
     local Slider = CreateFrame("Slider", nil, scrollChild, "OptionsSliderTemplate");
     Slider:SetOrientation('HORIZONTAL');
     Slider:SetPoint("LEFT", title, "RIGHT", 5, 0);
@@ -280,8 +286,7 @@ local function SetupColorOption(text, option)
     title:SetPoint("TOPLEFT", 20 , curr_y);
     title:SetText(text);
     title:SetTextColor(ANameP_Options[option].r,ANameP_Options[option].g,ANameP_Options[option].b,1);
-    ANameP_OptionM[option] = title;
-
+    
     local btn = CreateFrame("Button", nil, scrollChild, "UIPanelButtonTemplate")
     btn:SetPoint("LEFT", title, "RIGHT", 5, 0);
     btn:SetText("색상 변경")
@@ -303,12 +308,6 @@ local function SetupColorOption(text, option)
     end)
 end
 
-local function UpdateSliderValue(option)
-    if ANameP_OptionM[option] then
-        ANameP_OptionM[option]:SetTextColor(ANameP_Options[option].r,ANameP_Options[option].g,ANameP_Options[option].b,1);
-    end
-end
-
 local function SetupEditBoxOption()
 
     local spec = GetSpecialization();
@@ -321,7 +320,6 @@ local function SetupEditBoxOption()
 
     if ANameP_Options[listname] == nil then
         ANameP_Options[listname] = ANameP_Options_Default[listname];
-        print ("false");
     end
 
     local listdata = ANameP_Options[listname];
@@ -364,7 +362,7 @@ local function SetupEditBoxOption()
 
     for spell, values in pairs(listdata) do
 
-        local priority = values[2];
+        local priority = 6 - values[2];
         local time = values[1];
         local bshowcolor = values[3];
         local bcount = values[4];
@@ -474,6 +472,7 @@ local function SetupEditBoxOption()
 		editBox2:SetFontObject("GameFontHighlight")
 		editBox2:SetMultiLine(false);
 		editBox2:SetMaxLetters(20);
+        editBox2:SetNumeric(false);
 		editBox2:SetText(time);
 		editBox2:SetAutoFocus(false);
 		editBox2:ClearFocus();
@@ -507,36 +506,15 @@ local function SetupEditBoxOption()
 
 		local function updatedata ()
 
-			local data = editBox:GetText();
-
-			local type = UIDropDownMenu_GetSelectedValue(dropDown);
-
-            --[[
-			if data ~= "" and type > 0 and type < 4 then
-
-				ANameP_Options[listname][idx] = {};
-
-				local number = tonumber(data);
-				ANameP_Options[listname][idx][10] = true;
-				if number then
-					ANameP_Options[listname][idx][1] = number;
-					ANameP_Options[listname][idx][2] = tonumber(type) + 5;
-				else
-					data = tostring(data);
-					ANameP_Options[listname][idx][1] = data;
-					if type == 3 then
-						ANameP_Options[listname][idx][2] = 4;
-					else
-						ANameP_Options[listname][idx][2] = tonumber(type);
-					end
-				end
-
-				update_callback();
-
+			local newspell = editBox:GetText();
+            local newtime = tonumber(editBox2:GetText());
+			local newbcolor = (UIDropDownMenu_GetSelectedValue(dropDown) == 1);
+            local newbcount = (UIDropDownMenu_GetSelectedValue(dropDown2) == 1);
+        
+			if newspell ~= "" and newtime ~= nil and newbcolor ~= nil and newbcount ~= nil then
+                prioritytable[idx] = {newspell, newtime, newbcolor, newbcount}
 			end
-            ]]
 		end
-
 
 		UIDropDownMenu_Initialize(dropDown, function (self, level)
 			for _, option in ipairs(dropdownOptions) do
@@ -591,11 +569,36 @@ local function SetupEditBoxOption()
 
         count = count + 1;
     end
+
+    curr_y = curr_y + y_adder;
+
+    local btn = CreateFrame("Button", nil, scrollChild, "UIPanelButtonTemplate")
+    btn:SetPoint("TOPRIGHT", -50, curr_y)
+    btn:SetText("설정 반영")
+    btn:SetWidth(100)
+    btn:SetScript("OnClick", function()
+
+        for idx, values in pairs(prioritytable) do
+
+            local priority = 6 - idx;
+            local spell = values[1];
+            local time = values[2];
+            local bshowcolor = values[3];
+            local bcount = values[4];
+
+            if spell and spell ~= "" then
+                ANameP_Options[listname][spell] = {time, priority, bshowcolor, bcount};
+            end
+        end
+        C_Timer.After(1.5, ReloadUI());
+    end)
 end
 
 
 
 ANameP_OptionM.SetupAllOption = function()
+
+    SetupChildPanel();
     SetupCheckBoxOption("[디버프] 기본에 스팰북 스킬 디버프 추가", "ANameP_ShowKnownSpell");
     SetupCheckBoxOption("[디버프] 내 디버프 모두 보임", "ANameP_ShowMyAll");
     SetupCheckBoxOption("[버프] 내 버프 모두 보임", "ANameP_ShowPlayerBuffAll");
@@ -614,19 +617,7 @@ ANameP_OptionM.SetupAllOption = function()
 end
 
 ANameP_OptionM.UpdateAllOption = function()
-    UpdateCheckBoxValue("ANameP_ShowKnownSpell");
-    UpdateCheckBoxValue("ANameP_ShowMyAll");
-    UpdateCheckBoxValue("ANameP_AggroShow");
-    UpdateCheckBoxValue("ANameP_ShowPlayerBuffAll");
-    UpdateCheckBoxValue("ANameP_LowHealthAlert");
-    UpdateSliderValue("ANameP_AggroTargetColor");
-    UpdateSliderValue("ANameP_AggroColor");
-    UpdateSliderValue("ANameP_TankAggroLoseColor");
-    UpdateSliderValue("ANameP_TankAggroLoseColor2");
-    UpdateSliderValue("ANameP_TankAggroLoseColor3");
-    UpdateSliderValue("ANameP_LowHealthColor");
-    UpdateSliderValue("ANameP_DebuffColor");
-    update_callback();
+    ANameP_OptionM.SetupAllOption()
 end
 
 ANameP_OptionM.RegisterCallback = function (callback_func)
@@ -644,8 +635,13 @@ function panel:OnEvent(event, addOnName)
             ANameP_Options = CopyTable(ANameP_Options_Default);
         end
         C_Timer.After(1.5, ANameP_OptionM.SetupAllOption)
+    elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
+		C_Timer.After(1.5, ANameP_OptionM.SetupAllOption)
 	end
 end
 
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("TRAIT_CONFIG_UPDATED");
+panel:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+panel:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 panel:SetScript("OnEvent", panel.OnEvent)
