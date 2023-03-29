@@ -168,12 +168,15 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_PALADIN_1 = {
+        ["심판"] = {0, 5},
     },
 
     ANameP_ShowList_PALADIN_2 = {
+        ["심판"] = {0, 5},
     },
 
     ANameP_ShowList_PALADIN_3 = {
+        ["심판"] = {0, 5},
     },
 
 
