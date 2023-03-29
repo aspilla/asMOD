@@ -1,5 +1,5 @@
 ANameP_Options_Default = {
-    version = 230328;
+    version = 230330;
     ANameP_ShowKnownSpell = true,                           -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                               -- [디버프] 전부 보이기
     ANameP_ShowPlayerBuffAll = false,                       -- [버프] 전부 보이기
@@ -165,6 +165,18 @@ ANameP_Options_Default = {
     ANameP_ShowList_EVOKER_2 = {
 
     },
+
+
+    ANameP_ShowList_PALADIN_1 = {
+    },
+
+    ANameP_ShowList_PALADIN_2 = {
+    },
+
+    ANameP_ShowList_PALADIN_3 = {
+    },
+
+
 };
 
 ANameP_OptionM = {};
@@ -316,6 +328,8 @@ local function SetupEditBoxOption()
 
     if spec then
 		listname = "ANameP_ShowList_" .. englishClass .. "_" .. spec;
+    else
+        return;
     end
 
     if ANameP_Options[listname] == nil then
@@ -323,6 +337,11 @@ local function SetupEditBoxOption()
     end
 
     local listdata = ANameP_Options[listname];
+
+    if listdata == nil then
+        return;
+    end
+
     local count = 1;
 
 	curr_y = curr_y + y_adder;
