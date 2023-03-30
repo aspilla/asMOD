@@ -37,7 +37,7 @@ local AHNameP_InterruptSpellList = {
 	[2139] = true, --MAGE
 }
 
-local AHNameP_DangerousSpellList = { 
+local AHNameP_DangerousSpellList = {
 	[135234] = true,
 	[133262] = true,
 	[294665] = true,
@@ -352,12 +352,12 @@ end
 
 local function isFaction(unit)
 	if UnitIsUnit("player", unit) then
-		return false;		
+		return false;
 	else
 		local reaction = UnitReaction("player", unit);
 		if reaction and reaction <= 4 then
-			return true;		
-		elseif UnitIsPlayer(unit) then		
+			return true;
+		elseif UnitIsPlayer(unit) then
 			return false;
 		end
 	end
@@ -398,7 +398,7 @@ local function scanSpells(tab)
 
 		if AHNameP_InterruptSpellList[spellID] then
 			learnedlist[#learnedlist + 1] = spellID;
-		end		
+		end
 	end
 end
 
@@ -407,14 +407,14 @@ local function scanPetSpells()
 	for i = 1, 20 do
 	   	local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
 	   	local spellName, _, spellID = GetSpellBookItemName (slot, BOOKTYPE_PET)
-	   
+
 		if not spellName then
 			do break end
 		end
 
 		if AHNameP_InterruptSpellList[spellID] then
 			learnedlist[#learnedlist + 1] = spellID;
-		end	
+		end
 	end
 
 end
@@ -425,7 +425,7 @@ local function updateInterruptIDs()
 	scanSpells(2);
 	scanSpells(3);
 	scanPetSpells();
-	
+
 end
 
 local function isShow(unit)
@@ -435,7 +435,7 @@ local function isShow(unit)
 		return true;
 	end
 
-	local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);	
+	local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);
 	if not name then
 		name,  text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
 	end
@@ -454,26 +454,48 @@ local function isShow(unit)
 	end
 end
 
+local isTank = false;
+
+local function mustShow(unit)
+
+	local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);
+	if not name then
+		name,  text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+	end
+
+	local status = UnitThreatSituation("player", unit);
+
+	 -- 차단 가능 스킬 모두 발동
+	if name and spellid and status  then
+		return true;
+	end
+
+	if isTank and status < 2 then
+		return true;
+	end
+
+end
+
 local function checkNeedtoHide(nameplate)
 
-	if not nameplate or nameplate:IsForbidden()  then		
+	if not nameplate or nameplate:IsForbidden()  then
 		return false;
     end
 
-	if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden()  then		
+	if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden()  then
 		return false;
     end
 
 	local unit = nameplate.namePlateUnitToken;
-	
+
 	if UnitIsUnit(unit, "target") then
 		return false;
 	end
 
 	if (AHNameP_HideModifier == 1 and  IsAltKeyDown()) or (AHNameP_HideModifier == 2 and  IsControlKeyDown()) or  (AHNameP_HideModifier == 3 and  IsShiftKeyDown()) then
 		return true;
-	end	
-	
+	end
+
 	return isFaction(unit) and isShow(unit);
 end
 
@@ -484,7 +506,7 @@ local function hideNameplates(nameplate, bshow)
 		return;
     end
 
-	if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden()  then		
+	if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden()  then
 		return false;
     end
 
@@ -497,14 +519,14 @@ local function hideNameplates(nameplate, bshow)
 	local unitframe = getUnitFrame(nameplate);
 
 	if bshow then
-		unitframe:Show();		
+		unitframe:Show();
 		return;
 	end
 
-	if UnitIsUnit(unit, "target") or UnitIsUnit(unit, "focus") or isShow(unit) then
-		unitframe:Show();		
+	if UnitIsUnit(unit, "target") or UnitIsUnit(unit, "focus") or isShow(unit) or mustShow(unit) then
+		unitframe:Show();
 	else
-		unitframe:Hide();		
+		unitframe:Hide();
 	end
 end
 
@@ -515,7 +537,7 @@ local function AHNameP_OnUpdate()
 	local needtohide = false;
 
 	if needtowork then
-	
+
 		for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
 			local nameplate = v;
 
@@ -550,8 +572,15 @@ local function AHNameP_OnEvent(self, event)
 		local inInstance, instanceType = IsInInstance();
 
 		if (inInstance and instanceType == "party") then
-			needtowork = true;			
-		end	
+			needtowork = true;
+		end
+
+		isTank = false;
+		local assignedRole = UnitGroupRolesAssigned("player");
+
+		if (assignedRole and assignedRole == "TANK") then
+			isTank = true;
+		end
 	end
 end
 
@@ -563,7 +592,7 @@ local function initAddon()
 	AHNameP:RegisterEvent("TRAIT_CONFIG_UPDATED");
 	AHNameP:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 	AHNameP:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-	
+
 	AHNameP:SetScript("OnEvent", AHNameP_OnEvent)
 	--주기적으로 Callback
 	C_Timer.NewTicker(AHNameP_UpdateRate, AHNameP_OnUpdate);
