@@ -470,7 +470,7 @@ local function mustShow(unit)
 		return true;
 	end
 
-	if isTank and status < 2 then
+	if isTank and status and status < 2 then
 		return true;
 	end
 
