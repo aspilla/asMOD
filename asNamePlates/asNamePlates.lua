@@ -2253,6 +2253,10 @@ local function initAlertList()
 
 	ANameP_ShowList = nil;
 
+	if spec == nil then
+		spec = 1;
+	end
+
 	if spec then
 		listname = "ANameP_ShowList_" .. englishClass .. "_" .. spec;
 	end

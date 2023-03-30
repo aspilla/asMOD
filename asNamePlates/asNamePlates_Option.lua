@@ -1,5 +1,5 @@
 ANameP_Options_Default = {
-    version = 230330;
+    version = 230331;
     ANameP_ShowKnownSpell = true,                           -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                               -- [디버프] 전부 보이기
     ANameP_ShowPlayerBuffAll = false,                       -- [버프] 전부 보이기
@@ -328,6 +328,10 @@ local function SetupEditBoxOption()
     local spec = GetSpecialization();
 	local localizedClass, englishClass = UnitClass("player");
 	local listname;
+
+    if spec == nil then
+        spec = 1;
+    end
 
     if spec then
 		listname = "ANameP_ShowList_" .. englishClass .. "_" .. spec;
