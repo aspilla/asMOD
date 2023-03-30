@@ -1445,12 +1445,18 @@ ACI_HideCooldownPulse = false;
 function ACI_Init()
 
 
-	
+
 	local localizedClass, englishClass = UnitClass("player")
 	local spec = GetSpecialization();
 	local talentgroup = GetActiveSpecGroup();
+	local specID = PlayerUtil.GetCurrentSpecID();
+	local configID = (C_ClassTalents.GetLastSelectedSavedConfigID(specID) or 0) + 19;
 	local listname = "ACI_SpellList";
 
+
+	if spec == nil then
+		spec = 1;
+	end
 
 	ACI_mainframe.update = 0;
 
@@ -1461,10 +1467,16 @@ function ACI_Init()
 	ACI_SpellList = {};
 
 
-	if spec then
+	if spec and configID then
 		listname = "ACI_SpellList" .. "_" .. englishClass .. "_" .. spec;
-		ACI_SpellListtmp = options[listname];
+		if options[spec] and options[spec][configID] then
+			ACI_SpellListtmp = CopyTable(options[spec][configID]);
+		else
+			ACI_SpellListtmp = CopyTable(ACI_Options_Default[listname]);
+		end
+
 	else
+		print(configID)
 		ACI_SpellListtmp = {};
 	end
 
@@ -1757,9 +1769,12 @@ function ACI_Init()
 end
 
 local function flushoption()
-	options = CopyTable (ACI_Options);
-	ACI_Init();
-	ACI_OptionM.UpdateSpellList(ACI_SpellList);
+
+	if ACI_Options then
+		options = CopyTable (ACI_Options);
+		ACI_Init();
+		ACI_OptionM.UpdateSpellList(ACI_SpellList);
+	end
 end
 
 

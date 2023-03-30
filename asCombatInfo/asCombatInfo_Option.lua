@@ -453,24 +453,61 @@ local function SetupEditBoxOption()
 	btn:SetWidth(100)
 	btn:SetScript("OnClick", function()
 		ACI_Options = {};
-		ACI_Options = CopyTable(ACI_Options_Default);
+		ACI_Options.version = ACI_Options_Default.version;
+		local spec = GetSpecialization();
+		local specID = PlayerUtil.GetCurrentSpecID();
+		local configID = (C_ClassTalents.GetLastSelectedSavedConfigID(specID) or 0) + 19;
+		local localizedClass, englishClass = UnitClass("player");
+		local listname;
+
+		if spec == nil then
+			spec = 1;
+		end
+
+		if spec and ACI_Options[spec] == nil then
+			ACI_Options[spec] = {};
+		end
+
+		if spec and configID and ACI_Options[spec][configID] == nil then
+			listname = "ACI_SpellList_" .. englishClass .. "_" .. spec;
+			ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
+	    end
 		ACI_OptionM.UpdateAllOption();
 		ReloadUI();
 	end)
 
     local spec = GetSpecialization();
+	local specID = PlayerUtil.GetCurrentSpecID();
+	local configID = (C_ClassTalents.GetLastSelectedSavedConfigID(specID) or 0) + 19;
 	local localizedClass, englishClass = UnitClass("player");
 	local listname;
 
-    if spec then
+	if spec == nil then
+		spec = 1;
+	end
+
+	if ACI_Options == nil or ACI_Options.version ~= ACI_Options_Default.version then
+		ACI_Options = {};
+		ACI_Options.version = (ACI_Options_Default.version);
+
+		if spec and configID then
+			listname = "ACI_SpellList_" .. englishClass .. "_" .. spec;
+			ACI_Options[spec] = {};
+			ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
+		end
+	end
+
+	if spec and ACI_Options[spec] == nil then
+		ACI_Options[spec] = {};
+	end
+
+	if spec and configID and ACI_Options[spec][configID] == nil then
 		listname = "ACI_SpellList_" .. englishClass .. "_" .. spec;
-    end
+		ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
+	end
 
-    if ACI_Options[listname] == nil then
-        ACI_Options[listname] = ACI_Options_Default[listname];
-    end
 
-    local list = ACI_Options[listname];
+    local list = ACI_Options[spec][configID];
 	local listdata = ACI_SpellID_list;
     local count = 1;
 
@@ -571,20 +608,20 @@ local function SetupEditBoxOption()
 
 			if data ~= "" and type > 0 and type < 4 then
 
-				ACI_Options[listname][idx] = {};
+				ACI_Options[spec][configID][idx] = {};
 
 				local number = tonumber(data);
-				ACI_Options[listname][idx][10] = true;
+				ACI_Options[spec][configID][idx][10] = true;
 				if number then
-					ACI_Options[listname][idx][1] = number;
-					ACI_Options[listname][idx][2] = tonumber(type) + 5;
+					ACI_Options[spec][configID][idx][1] = number;
+					ACI_Options[spec][configID][idx][2] = tonumber(type) + 5;
 				else
 					data = tostring(data);
-					ACI_Options[listname][idx][1] = data;
+					ACI_Options[spec][configID][idx][1] = data;
 					if type == 3 then
-						ACI_Options[listname][idx][2] = 4;
+						ACI_Options[spec][configID][idx][2] = 4;
 					else
-						ACI_Options[listname][idx][2] = tonumber(type);
+						ACI_Options[spec][configID][idx][2] = tonumber(type);
 					end
 				end
 
@@ -643,18 +680,10 @@ ACI_OptionM.UpdateSpellList = function (spell_list)
 end
 
 function panel:OnEvent(event, arg1)
+
+
 	if event == "ADDON_LOADED" and arg1 == "asCombatInfo" then
-		if ACI_Options == nil then
-            ACI_Options = {};
-            ACI_Options = CopyTable(ACI_Options_Default);
-        end
-
-        if ACI_Options.version ~= ACI_Options_Default.version then
-            ACI_Options = CopyTable(ACI_Options_Default);
-        end
-
-
-        C_Timer.After(1.5, ACI_OptionM.SetupAllOption)
+       C_Timer.After(1.5, ACI_OptionM.SetupAllOption)
 	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		C_Timer.After(1.5, ACI_OptionM.SetupAllOption)
 	end
