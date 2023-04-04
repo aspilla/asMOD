@@ -21,6 +21,9 @@ end
 
 local currshow = 1;
 
+local ACTA_DangerousSpellList = {};
+local IsDanger = false;
+
 local function CheckCasting(nameplate)
 
 	if not nameplate or nameplate:IsForbidden()  then		
@@ -55,6 +58,10 @@ local function CheckCasting(nameplate)
 				ACTA.cast[currshow]:Show();
 				currshow = currshow + 1;
 			end
+
+			if ACTA_DangerousSpellList[spellid] then
+				IsDanger = true;
+			end
 		end
 	end	
 end
@@ -64,6 +71,7 @@ local function ACTA_OnUpdate()
 	local prev_show = currshow;
 
 	currshow = 1;
+	IsDanger = false;
 
 	for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
 		local nameplate = v;
@@ -80,10 +88,11 @@ local function ACTA_OnUpdate()
 		ACTA.cast[i]:Hide();
 	end
 
-	if currshow > prev_show then
+	if currshow > prev_show and IsDanger then
 		PlaySoundFile("Interface\\AddOns\\asCastingAlert\\alert.mp3", "DIALOG")
 	end
 end
+
 
 
 
@@ -96,6 +105,15 @@ local function ACTA_OnEvent(self, event)
 		if (inInstance and instanceType == "party") then
 			needtowork = true;			
 		end	
+
+		ACTA_DangerousSpellList = {};
+	end
+end
+
+function ACTA_DBMTimer_callback(event, id, ...)
+	local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
+	if spellId then
+		ACTA_DangerousSpellList[spellId] = true;
 	end
 end
 
@@ -120,5 +138,11 @@ local function initAddon()
 	ACTA:SetScript("OnEvent", ACTA_OnEvent)
 	--주기적으로 Callback
 	C_Timer.NewTicker(ACTA_UpdateRate, ACTA_OnUpdate);
+
+	local bloaded = LoadAddOn("DBM-Core");
+	if bloaded then
+		DBM:RegisterCallback("DBM_TimerStart", ACTA_DBMTimer_callback );
+	end
+
 end
 initAddon();

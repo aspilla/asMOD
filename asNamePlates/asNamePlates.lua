@@ -180,360 +180,7 @@ local ANameP_PVEBuffList = {
 }
 
 local ANameP_DangerousSpellList = {
-	[135234] = true,
-	[133262] = true,
-	[294665] = true,
-	[39945] = true,
-	[134795] = true,
-	[124935] = true,
-	[135621] = true,
-	[140983] = true,
-	[142621] = true,
-	[33975] = true,
-	[282081] = true,
-	[385652] = true,
-	[29427] = true,
-	[17843] = true,
-	[46181] = true,
-	[36819] = true,
-	[39013] = true,
-	[255824] = true,
-	[253562] = true,
-	[253583] = true,
-	[255041] = true,
-	[253544] = true,
-	[253517] = true,
-	[256849] = true,
-	[252781] = true,
-	[250368] = true,
-	[250096] = true,
-	[257397] = true,
-	[257899] = true,
-	[257736] = true,
-	[258779] = true,
-	[257784] = true,
-	[257732] = true,
-	[256060] = true,
-	[267273] = true,
-	[269973] = true,
-	[270923] = true,
-	[270901] = true,
-	[270492] = true,
-	[267763] = true,
-	[257791] = true,
-	[300764] = true,
-	[300650] = true,
-	[300171] = true,
-	[299588] = true,
-	[300087] = true,
-	[300414] = true,
-	[300514] = true,
-	[300436] = true,
-	[301629] = true,
-	[284219] = true,
-	[301088] = true,
-	[293729] = true,
-	[298669] = true,
-	[268050] = true,
-	[268030] = true,
-	[268309] = true,
-	[267977] = true,
-	[274437] = true,
-	[268317] = true,
-	[268322] = true,
-	[268375] = true,
-	[276767] = true,
-	[267818] = true,
-	[256957] = true,
-	[274569] = true,
-	[272571] = true,
-	[263318] = true,
-	[263775] = true,
-	[268061] = true,
-	[265968] = true,
-	[261635] = true,
-	[272700] = true,
-	[268061] = true,
-	[265912] = true,
-	[268709] = true,
-	[263202] = true,
-	[280604] = true,
-	[268129] = true,
-	[268702] = true,
-	[263103] = true,
-	[263066] = true,
-	[268797] = true,
-	[269090] = true,
-	[262540] = true,
-	[262092] = true,
-	[260879] = true,
-	[266106] = true,
-	[265089] = true,
-	[265091] = true,
-	[265433] = true,
-	[272183] = true,
-	[278961] = true,
-	[265523] = true,
-	[257791] = true,
-	[258128] = true,
-	[258153] = true,
-	[258313] = true,
-	[258869] = true,
-	[258634] = true,
-	[258935] = true,
-	[266225] = true,
-	[263959] = true,
-	[265876] = true,
-	[265368] = true,
-	[266036] = true,
-	[278551] = true,
-	[265407] = true,
-	[82362] = true,
-	[75823] = true,
-	[102173] = true,
-	[75763] = true,
-	[80352] = true,
-	[93468] = true,
-	[93844] = true,
-	[79351] = true,
-	[76171] = true,
-	[76008] = true,
-	[103241] = true,
-	[43451] = true,
-	[43431] = true,
-	[43548] = true,
-	[96435] = true,
-	[96466] = true,
-	[310839] = true,
-	[396640] = true,
-	[367500] = true,
-	[384638] = true,
-	[377950] = true,
-	[381770] = true,
-	[363607] = true,
-	[374080] = true,
-	[384014] = true,
-	[375056] = true,
-	[378282] = true,
-	[373680] = true,
-	[384194] = true,
-	[392451] = true,
-	[373932] = true,
-	[375596] = true,
-	[387564] = true,
-	[386546] = true,
-	[376725] = true,
-	[363607] = true,
-	[384808] = true,
-	[386024] = true,
-	[387411] = true,
-	[373395] = true,
-	[369675] = true,
-	[369602] = true,
-	[369674] = true,
-	[369823] = true,
-	[225573] = true,
-	[197797] = true,
-	[237391] = true,
-	[238543] = true,
-	[242724] = true,
-	[212773] = true,
-	[209485] = true,
-	[209410] = true,
-	[209413] = true,
-	[211470] = true,
-	[225100] = true,
-	[211299] = true,
-	[207980] = true,
-	[196870] = true,
-	[195046] = true,
-	[195284] = true,
-	[197502] = true,
-	[192003] = true,
-	[192005] = true,
-	[191848] = true,
-	[215433] = true,
-	[198934] = true,
-	[192563] = true,
-	[199726] = true,
-	[192288] = true,
-	[198750] = true,
-	[194266] = true,
-	[198495] = true,
-	[198405] = true,
-	[227800] = true,
-	[227823] = true,
-	[227592] = true,
-	[228025] = true,
-	[228019] = true,
-	[227987] = true,
-	[227420] = true,
-	[228255] = true,
-	[228239] = true,
-	[227917] = true,
-	[228625] = true,
-	[228606] = true,
-	[229714] = true,
-	[248831] = true,
-	[245585] = true,
-	[245727] = true,
-	[248133] = true,
-	[248184] = true,
-	[244751] = true,
-	[211757] = true,
-	[226206] = true,
-	[196392] = true,
-	[203957] = true,
-	[191823] = true,
-	[200905] = true,
-	[193069] = true,
-	[204963] = true,
-	[205088] = true,
-	[395859] = true,
-	[395872] = true,
-	[397801] = true,
-	[118963] = true,
-	[118940] = true,
-	[118903] = true,
-	[123654] = true,
-	[113134] = true,
-	[12039] = true,
-	[130857] = true,
-	[113691] = true,
-	[113690] = true,
-	[107356] = true,
-	[332666] = true,
-	[332706] = true,
-	[332612] = true,
-	[332084] = true,
-	[323064] = true,
-	[325700] = true,
-	[325701] = true,
-	[326607] = true,
-	[323538] = true,
-	[323552] = true,
-	[323057] = true,
-	[321828] = true,
-	[322938] = true,
-	[324914] = true,
-	[324776] = true,
-	[326046] = true,
-	[340544] = true,
-	[322450] = true,
-	[257397] = true,
-	[319070] = true,
-	[328338] = true,
-	[328016] = true,
-	[326836] = true,
-	[321038] = true,
-	[327481] = true,
-	[317936] = true,
-	[317963] = true,
-	[327413] = true,
-	[328295] = true,
-	[328137] = true,
-	[328331] = true,
-	[358131] = true,
-	[350922] = true,
-	[357404] = true,
-	[355888] = true,
-	[355930] = true,
-	[355934] = true,
-	[354297] = true,
-	[356537] = true,
-	[347775] = true,
-	[347903] = true,
-	[355057] = true,
-	[355225] = true,
-	[357260] = true,
-	[356407] = true,
-	[356404] = true,
-	[324589] = true,
-	[341902] = true,
-	[341969] = true,
-	[342139] = true,
-	[330562] = true,
-	[330810] = true,
-	[333231] = true,
-	[320170] = true,
-	[322493] = true,
-	[334748] = true,
-	[320462] = true,
-	[324293] = true,
-	[338353] = true,
-	[257397] = true,
-	[149955] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[11082] = true,
-	[11085] = true,
-	[93655] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[21807] = true,
-	[21807] = true,
-	[86620] = true,
-	[119300] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[86620] = true,
-	[15245] = true,
-	[16798] = true,
-	[86620] = true,
-	[12471] = true,
-	[68982] = true,
-	[374623] = true,
-	[372315] = true,
-	[372394] = true,
-	[310839] = true,
-	[81713] = true,
-	[80734] = true,
+
 }
 
 local ANameP_HealSpellList = {};
@@ -1506,7 +1153,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 	local healthBar = parent.UnitFrame.healthBar;
 
 	self.unit = unit;
-	
+
 	local bShowCC = false;
 
 	if not self.unit then
@@ -1716,7 +1363,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			if ANameP_ShowList and ANameP_ShowList[name] then
 				showlist_time = ANameP_ShowList[name][1];
 				local alertcount = ANameP_ShowList[name][4] or false;
-				local alertnameplate = ANameP_ShowList[name][3] or false; 
+				local alertnameplate = ANameP_ShowList[name][3] or false;
 
 				if  showlist_time >= 0 and alertcount == false then
 					local alert_time = expirationTime - showlist_time;
@@ -2026,6 +1673,13 @@ local function asCompactUnitFrame_UpdateHealthColor(frame, asNameplates)
 	end
 end
 
+local function isDangerousSpell(spellId, unit)
+    if spellId and ANameP_DangerousSpellList[spellId] then
+    	return true
+     end
+    return false
+end
+
 
 local function updateHealthbarColor(self)
 	--unit name 부터
@@ -2041,7 +1695,7 @@ local function updateHealthbarColor(self)
 		return;
     end
 	local UnitFrame  = parent.UnitFrame;
-	local healthBar = parent.UnitFrame.healthBar;
+	local healthBar = UnitFrame.healthBar;
 
     if not healthBar and healthBar:IsForbidden() then
 		return;
@@ -2049,7 +1703,7 @@ local function updateHealthbarColor(self)
 
 	local shouldshow = false;
 	-- ColorLevel.Name;
-	local unitname = GetUnitName(self.unit);
+	local unitname = GetUnitName(unit);
 
 	if unitname and ANameP_AlertList[unitname] then
 		if self.colorlevel < ColorLevel.Name then
@@ -2065,14 +1719,42 @@ local function updateHealthbarColor(self)
 	end
 
 	-- Cast Interrupt
-	local status = UnitThreatSituation("player", self.unit);
+	local status = UnitThreatSituation("player", unit);
 
-	if self.interruptalert and self.interruptalert == 1 and status then
-		lib.PixelGlow_Start(healthBar, {0, 1, 0.32, 1});
+	if self.castspellid and self.casticon and status then
+
+		local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);
+		if not name then
+			name,  text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+		end
+
+		if spellid  then
+			local isDanger = isDangerousSpell (spellid, unit);
+
+			self.castspellid = spellid;
+			if isDanger and  notInterruptible == false then
+				lib.PixelGlow_Start(self.casticon, {0, 1, 0.32, 1});
+				lib.PixelGlow_Start(healthBar, {0, 1, 0.32, 1});
+			elseif isDanger  then
+				lib.PixelGlow_Start(self.casticon, {0, 1, 1, 1});
+				lib.PixelGlow_Start(healthBar, {0, 1, 1, 1});
+			elseif notInterruptible == false then
+				lib.PixelGlow_Start(self.casticon);				
+				lib.PixelGlow_Stop(healthBar);
+			else
+				lib.PixelGlow_Stop(self.casticon);
+				lib.PixelGlow_Stop(healthBar);
+			end
+		else
+			lib.PixelGlow_Stop(self.casticon);
+			lib.PixelGlow_Stop(healthBar);
+		end
 	else
+		if self.casticon then
+			lib.PixelGlow_Stop(self.casticon);
+		end
 		lib.PixelGlow_Stop(healthBar);
 	end
-
 
 	--Target Check 
 	local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
@@ -2098,7 +1780,7 @@ local function updateHealthbarColor(self)
 				aggrocolor = options.ANameP_TankAggroLoseColor;
 				if #tanklist > 0 then
 					for _, othertank in ipairs(tanklist) do
-						if UnitIsUnit(self.unit.."target", othertank ) and not UnitIsUnit(self.unit.."target", "player" ) then
+						if UnitIsUnit(unit.."target", othertank ) and not UnitIsUnit(unit.."target", "player" ) then
 							aggrocolor = options.ANameP_TankAggroLoseColor2;
 							break;
 						end
@@ -2152,7 +1834,7 @@ local function updateHealthbarColor(self)
 	if status then
 		if #tanklist > 0 then
 			for _, othertank in ipairs(tanklist) do
-				if UnitIsUnit(self.unit.."target", othertank ) and not UnitIsUnit(self.unit.."target", "player" ) then
+				if UnitIsUnit(unit.."target", othertank ) and not UnitIsUnit(unit.."target", "player" ) then
 					aggrocolor = options.ANameP_TankAggroLoseColor2;
 					self.colorlevel = ColorLevel.Custom;
 					setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
@@ -2162,7 +1844,7 @@ local function updateHealthbarColor(self)
 		end
 	end
 
-	if UnitIsUnit(self.unit.."target", "pet" )  then
+	if UnitIsUnit(unit.."target", "pet" )  then
 		aggrocolor = options.ANameP_TankAggroLoseColor3;
 		self.colorlevel = ColorLevel.Custom;
 		setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
@@ -2292,19 +1974,20 @@ local function initAlertList()
 				lowhealthpercent = 20;
 			end
 		end
+
+		if (englishClass == "PRIEST") then
+			lowhealthpercent = 20;
+		end
+
+		if (englishClass == "PALADIN") then
+			lowhealthpercent = 20;
+		end
 	end
 end
 
 local unit_guid_list = {};
 
 local Aggro_Y = -5;
-
-local function isDangerousSpell(spellId, unit)
-    if spellId and ANameP_DangerousSpellList[spellId] then
-    	return true
-     end
-    return false
-end
 
 local function checkSpellCasting(self)
 
@@ -2317,23 +2000,12 @@ local function checkSpellCasting(self)
 	if self.casticon then
 		local frameIcon = self.casticon.icon;
 		if name and frameIcon then
-			local isDanger = isDangerousSpell (spellid, unit);
 			frameIcon:SetTexture(texture);
 			self.casticon:Show();
-			if  isDanger then
-				lib.PixelGlow_Start(self.casticon, {0, 1, 0.32, 1});
-				self.interruptalert = 1;
-			elseif notInterruptible == false then
-				lib.PixelGlow_Start(self.casticon);
-				self.interruptalert = 2;
-			else
-				lib.PixelGlow_Stop(self.casticon);
-				self.interruptalert = nil;
-			end
+			self.castspellid = spellid;
 		else
 			self.casticon:Hide();
-			lib.PixelGlow_Stop(self.casticon);
-			self.interruptalert = nil;
+			self.castspellid = nil;
 		end
 	end
 end
@@ -2374,7 +2046,7 @@ local function addNamePlate(namePlateUnitToken)
 				namePlateFrameBase.asNamePlates.checkpvptarget = false;
 				namePlateFrameBase.asNamePlates:Hide();
 				namePlateFrameBase.asNamePlates.CCdebuff:Hide();
-				namePlateFrameBase.asNamePlates.interruptalert = nil;
+				namePlateFrameBase.asNamePlates.castspellid = nil;
 				namePlateFrameBase.asNamePlates.debuffColor = nil;
 				unitFrame.BuffFrame:SetAlpha(1);
 			end
@@ -2392,7 +2064,7 @@ local function addNamePlate(namePlateUnitToken)
 				namePlateFrameBase.asNamePlates:Hide();
 				namePlateFrameBase.asNamePlates.healthtext:Hide();
 				namePlateFrameBase.asNamePlates.CCdebuff:Hide();
-				namePlateFrameBase.asNamePlates.interruptalert = nil;
+				namePlateFrameBase.asNamePlates.castspellid = nil;
 				namePlateFrameBase.asNamePlates.debuffColor = nil;
 				unitFrame.BuffFrame:SetAlpha(1);
 			end
@@ -2521,7 +2193,7 @@ local function addNamePlate(namePlateUnitToken)
 		frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
 		frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 		namePlateFrameBase.asNamePlates.casticon:Hide();
-		namePlateFrameBase.asNamePlates.interruptalert = nil;
+		namePlateFrameBase.asNamePlates.castspellid = nil;
 	end
 
 
@@ -2747,7 +2419,7 @@ local function removeNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates:SetScript("OnEvent", nil);
 		namePlateFrameBase.asNamePlates.r = nil;
 		namePlateFrameBase.asNamePlates.debuffColor = nil;
-		namePlateFrameBase.asNamePlates.interruptalert = nil;
+		namePlateFrameBase.asNamePlates.castspellid = nil;
 
 
 		if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
@@ -2849,6 +2521,7 @@ local function ANameP_OnEvent(self, event, ...)
 		end
 		updateTankerList();
 		setupKnownSpell();
+		ANameP_DangerousSpellList = {};
 		-- 0.5 초 뒤에 Load
 		C_Timer.After(0.5, initAlertList);
 
@@ -2933,6 +2606,15 @@ local function ANameP_OnUpdate()
 	end
 end
 
+
+function ANameP_DBMTimer_callback(event, id, ...)
+	local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
+	if spellId then
+		ANameP_DangerousSpellList[spellId] = true;
+	end
+	
+end
+
 local function flushoption()
 	options = CopyTable (ANameP_Options);
 	C_Timer.After(0.5, initAlertList);
@@ -2976,6 +2658,12 @@ local function initAddon()
 	end)
 
 	ANameP_OptionM.RegisterCallback(flushoption);
+
+	local bloaded = LoadAddOn("DBM-Core");
+	if bloaded then
+		DBM:RegisterCallback("DBM_TimerStart", ANameP_DBMTimer_callback );
+	end
+
 end
 
 initAddon();

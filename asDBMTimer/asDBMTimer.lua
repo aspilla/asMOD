@@ -116,7 +116,7 @@ function asDBMTimer_callback(event, id, ...)
 			dbm_event_list[id][3] = GetTime() - elapsed;
 		end
 	else
-		print (...);
+		--print (...);
 	end
 end
 
