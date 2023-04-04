@@ -2496,6 +2496,7 @@ local function ANameP_OnEvent(self, event, ...)
 				updateUnitAuras(namePlateUnitToken);
 				updateUnitHealthText(self, "target");
 				updateUnitHealthText(self, "player");
+				checkSpellCasting(namePlateFrameBase.asNamePlates);
 				updateHealthbarColor(namePlateFrameBase.asNamePlates);
 			end
 		end
@@ -2601,6 +2602,7 @@ local function ANameP_OnUpdate()
 			if nameplate.asNamePlates.checkpvptarget then
 				updatePVPAggro(nameplate.asNamePlates);
 			end
+			checkSpellCasting(nameplate.asNamePlates);
 			updateHealthbarColor(nameplate.asNamePlates);
 		end
 	end
