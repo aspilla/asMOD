@@ -624,8 +624,9 @@ local function SetupEditBoxOption()
 						ACI_Options[spec][configID][idx][2] = tonumber(type);
 					end
 				end
-
-				update_callback();
+				if update_callback then
+					update_callback();
+				end
 
 			end
 		end
@@ -663,12 +664,16 @@ end
 
 
 ACI_OptionM.SetupAllOption = function()
-	update_callback();
+	if update_callback then
+		update_callback();
+	end
     SetupEditBoxOption();
 end
 
 ACI_OptionM.UpdateAllOption = function()
-    update_callback();
+	if update_callback then
+		update_callback();
+	end
 end
 
 ACI_OptionM.RegisterCallback = function (callback_func)

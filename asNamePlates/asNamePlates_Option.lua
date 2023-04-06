@@ -1,5 +1,5 @@
 ANameP_Options_Default = {
-    version = 230331;
+    version = 230405;
     ANameP_ShowKnownSpell = true,                           -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                               -- [디버프] 전부 보이기
     ANameP_ShowPlayerBuffAll = false,                       -- [버프] 전부 보이기
@@ -128,6 +128,7 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_DRUID_4 = {
+        ["달빛섬광"] = {22 * 0.3, 5, true},
     },
 
 
@@ -260,7 +261,7 @@ local function SetupSliderOption(text, option)
     local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
     title:SetPoint("TOPLEFT", 20 , curr_y);
     title:SetText(text);
-    
+
     local Slider = CreateFrame("Slider", nil, scrollChild, "OptionsSliderTemplate");
     Slider:SetOrientation('HORIZONTAL');
     Slider:SetPoint("LEFT", title, "RIGHT", 5, 0);
@@ -273,10 +274,10 @@ local function SetupSliderOption(text, option)
     Slider:HookScript("OnValueChanged", function()
         ANameP_Options[option] = Slider:GetValue();
         Slider.Text:SetText(format("%.1f", max(ANameP_Options[option], 0)));
-        SetCVar("nameplateOverlapV", ANameP_Options[option]);  
+        SetCVar("nameplateOverlapV", ANameP_Options[option]);
     end)
     Slider:Show();
-    SetCVar("nameplateOverlapV", ANameP_Options[option]); 
+    SetCVar("nameplateOverlapV", ANameP_Options[option]);
 
 end
 
@@ -301,7 +302,7 @@ local function SetupColorOption(text, option)
     title:SetPoint("TOPLEFT", 20 , curr_y);
     title:SetText(text);
     title:SetTextColor(ANameP_Options[option].r,ANameP_Options[option].g,ANameP_Options[option].b,1);
-    
+
     local btn = CreateFrame("Button", nil, scrollChild, "UIPanelButtonTemplate")
     btn:SetPoint("LEFT", title, "RIGHT", 5, 0);
     btn:SetText("색상 변경")
@@ -420,7 +421,7 @@ local function SetupEditBoxOption()
             else
                 bshowcolor = 2;
             end
-            
+
             if prioritytable[idx][4] then
                 bcount = 1;
             else
@@ -429,7 +430,7 @@ local function SetupEditBoxOption()
         end
 
         local x = 50;
-	
+
 		local editBox = CreateFrame("EditBox", nil, scrollChild)
 		do
 			local editBoxLeft = editBox:CreateTexture(nil, "BACKGROUND")
@@ -536,7 +537,7 @@ local function SetupEditBoxOption()
             local newtime = tonumber(editBox2:GetText());
 			local newbcolor = (UIDropDownMenu_GetSelectedValue(dropDown) == 1);
             local newbcount = (UIDropDownMenu_GetSelectedValue(dropDown2) == 1);
-        
+
 			if newspell ~= "" and newtime ~= nil and newbcolor ~= nil and newbcount ~= nil then
                 prioritytable[idx] = {newspell, newtime, newbcolor, newbcount}
 			end
@@ -639,7 +640,9 @@ ANameP_OptionM.SetupAllOption = function()
     SetupColorOption("[이름표 색상] 낮은 체력", "ANameP_LowHealthColor");
     SetupColorOption("[이름표 색상] 디버프", "ANameP_DebuffColor");
     SetupEditBoxOption();
-    update_callback();
+    if update_callback then
+        update_callback();
+    end
 end
 
 ANameP_OptionM.UpdateAllOption = function()

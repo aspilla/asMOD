@@ -1151,12 +1151,9 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 	local size_list = {};
 	local parent = self:GetParent():GetParent();
 	local healthBar = parent.UnitFrame.healthBar;
-
-	self.unit = unit;
-
 	local bShowCC = false;
 
-	if not self.unit then
+	if not unit then
 		return
 	end
 
@@ -1472,6 +1469,7 @@ local function updateTargetNameP(self)
 		return;
 	end
 
+	local unit = self.unit;
 	local parent = self:GetParent():GetParent();
 
     if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden()  then
@@ -1504,7 +1502,7 @@ local function updateTargetNameP(self)
 		base_y = base_y + UnitFrame.name:GetHeight();
 	end
 
-	if UnitIsUnit(self.unit, "target") then
+	if UnitIsUnit(unit, "target") then
 
 		height = orig_height + ANameP_TargetHealthBarHeight;
 		self.healthtext:Show();
@@ -1518,7 +1516,7 @@ local function updateTargetNameP(self)
 		if GetCVarBool("nameplateResourceOnTarget") then
 			base_y = base_y +  GetClassBarHeight();
 		end
-	elseif UnitIsUnit(self.unit, "player") then
+	elseif UnitIsUnit(unit, "player") then
 		self.alerthealthbar = false;
 		height = orig_height + ANameP_TargetHealthBarHeight;
 		self.healthtext:Show();
@@ -1542,7 +1540,7 @@ local function updateTargetNameP(self)
 
 	--버프 Position
 	self:ClearAllPoints();
-	if UnitIsUnit(self.unit, "player") then
+	if UnitIsUnit(unit, "player") then
 
 		if self.downbuff then
 			self:SetPoint("TOPLEFT", ClassNameplateManaBarFrame, "BOTTOMLEFT", 0, playerbuffposition );
