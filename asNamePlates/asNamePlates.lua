@@ -2222,7 +2222,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.CCdebuff:Hide();
 
 	if namePlateFrameBase.asNamePlates then
-		namePlateFrameBase.asNamePlates.unit = namePlateUnitToken;
+		namePlateFrameBase.asNamePlates.unit = unitFrame.unit;
 		namePlateFrameBase.asNamePlates.filter = nil;
 		namePlateFrameBase.asNamePlates.helpful = false;
 		namePlateFrameBase.asNamePlates.checkaura = false;
@@ -2400,6 +2400,7 @@ local function removeNamePlate(namePlateUnitToken)
 
 		lib.PixelGlow_Stop(namePlateFrameBase.asNamePlates.casticon);
 
+		namePlateFrameBase.asNamePlates.unit = nil;
 		namePlateFrameBase.asNamePlates.aggro1:Hide();
 		namePlateFrameBase.asNamePlates.aggro2:Hide();
 		namePlateFrameBase.asNamePlates.CCdebuff:Hide();

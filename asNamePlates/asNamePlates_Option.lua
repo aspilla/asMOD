@@ -653,6 +653,8 @@ ANameP_OptionM.RegisterCallback = function (callback_func)
     update_callback = callback_func;
 end
 
+local needtowait = false;
+
 function panel:OnEvent(event, addOnName)
 	if addOnName == "asNamePlates" then
 		if ANameP_Options == nil then
@@ -663,9 +665,20 @@ function panel:OnEvent(event, addOnName)
         if ANameP_Options.version ~= ANameP_Options_Default.version then
             ANameP_Options = CopyTable(ANameP_Options_Default);
         end
-        C_Timer.After(1.5, ANameP_OptionM.SetupAllOption)
+        if not UnitAffectingCombat("player") then
+            C_Timer.After(1.5, ANameP_OptionM.SetupAllOption);
+        else
+            needtowait = true;
+        end
     elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
-		C_Timer.After(1.5, ANameP_OptionM.SetupAllOption)
+		if not UnitAffectingCombat("player") then
+            C_Timer.After(1.5, ANameP_OptionM.SetupAllOption);
+        else
+            needtowait = true;
+        end
+    elseif event == "PLAYER_REGEN_ENABLED" and needtowait then
+        needtowait = false;
+        ANameP_OptionM.SetupAllOption();
 	end
 end
 
@@ -673,4 +686,5 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("TRAIT_CONFIG_UPDATED");
 panel:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 panel:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+panel:RegisterEvent("PLAYER_REGEN_ENABLED");
 panel:SetScript("OnEvent", panel.OnEvent)
