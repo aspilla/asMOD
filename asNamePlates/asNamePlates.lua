@@ -1686,7 +1686,6 @@ local function updateHealthbarColor(self)
 	end
 
 	local unit = self.unit;
-
 	local parent = self:GetParent():GetParent();
 
     if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden()  then
@@ -1989,6 +1988,10 @@ local Aggro_Y = -5;
 
 local function checkSpellCasting(self)
 
+	if not self.unit then
+		return;
+	end
+
 	local unit = self.unit;
 	local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);
 	if not name then
@@ -2008,6 +2011,7 @@ local function checkSpellCasting(self)
 	end
 end
 
+
 local function asNamePlates_OnEvent(self, event, ...)
 	if ( event == "UNIT_THREAT_SITUATION_UPDATE" or event == "UNIT_THREAT_LIST_UPDATE" ) then
 		updateHealthbarColor(self)
@@ -2022,8 +2026,76 @@ end
 local function createNamePlate(namePlateFrameBase)
 end
 
+
+
 local namePlateVerticalScale = nil;
 local g_orig_height = nil;
+
+
+local function removeNamePlate(namePlateUnitToken)
+	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
+	if namePlateFrameBase and namePlateFrameBase.asNamePlates then
+		for i = 1, ANameP_MaxDebuff do
+			if ( namePlateFrameBase.asNamePlates.buffList[i] ) then
+				namePlateFrameBase.asNamePlates.buffList[i]:Hide();
+				lib.ButtonGlow_Stop(namePlateFrameBase.asNamePlates.buffList[i]);
+				namePlateFrameBase.asNamePlates.buffList[i] = nil;
+			end
+		end
+
+		lib.PixelGlow_Stop(namePlateFrameBase.asNamePlates.casticon);
+
+		namePlateFrameBase.asNamePlates.unit = nil;
+		namePlateFrameBase.asNamePlates.aggro1:Hide();
+		namePlateFrameBase.asNamePlates.aggro1 = nil;
+		namePlateFrameBase.asNamePlates.aggro2:Hide();
+		namePlateFrameBase.asNamePlates.aggro2 = nil;
+		namePlateFrameBase.asNamePlates.CCdebuff:Hide();
+		namePlateFrameBase.asNamePlates.CCdebuff = nil;
+		namePlateFrameBase.asNamePlates.healthtext:Hide();
+		namePlateFrameBase.asNamePlates.healthtext = nil;
+		namePlateFrameBase.asNamePlates.casticon:Hide();
+		namePlateFrameBase.asNamePlates.casticon = nil;
+		namePlateFrameBase.asNamePlates:Hide();
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("PLAYER_TARGET_CHANGED");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_START");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_DELAYED");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_STOP");
+		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_FAILED");
+		namePlateFrameBase.asNamePlates:SetScript("OnEvent", nil);
+		namePlateFrameBase.asNamePlates.r = nil;
+		namePlateFrameBase.asNamePlates.debuffColor = nil;
+		namePlateFrameBase.asNamePlates.castspellid = nil;
+
+		if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
+
+			if namePlateFrameBase.asNamePlates.alerthealthbar then
+				lib.PixelGlow_Stop(namePlateFrameBase.UnitFrame.healthBar);
+				namePlateFrameBase.asNamePlates.alerthealthbar = false;
+				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r, namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
+				namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
+			end
+
+			if namePlateFrameBase.asNamePlates.colorlevel > ColorLevel.None then
+				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r, namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
+				namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
+			end
+
+
+		end
+
+		namePlateFrameBase.asNamePlates = nil;
+	end
+
+	if UnitIsPlayer(namePlateUnitToken) and  UnitGUID(namePlateUnitToken) then
+		unit_guid_list[UnitGUID(namePlateUnitToken)] = nil;
+	end
+end
 
 local function addNamePlate(namePlateUnitToken)
 
@@ -2035,35 +2107,23 @@ local function addNamePlate(namePlateUnitToken)
 
 	local unitFrame = namePlateFrameBase.UnitFrame;
 	local healthbar = namePlateFrameBase.UnitFrame.healthBar;
+	local unit = unitFrame.unit;
 
-	if UnitIsUnit("player", namePlateUnitToken) then
+	if UnitIsUnit("player", unit) then
 		if not ANameP_ShowPlayerBuff then
 			if namePlateFrameBase.asNamePlates then
-				namePlateFrameBase.asNamePlates.checkaura = false;
-				namePlateFrameBase.asNamePlates.checkcolor = false;
-				namePlateFrameBase.asNamePlates.checkpvptarget = false;
-				namePlateFrameBase.asNamePlates:Hide();
-				namePlateFrameBase.asNamePlates.CCdebuff:Hide();
-				namePlateFrameBase.asNamePlates.castspellid = nil;
-				namePlateFrameBase.asNamePlates.debuffColor = nil;
+				removeNamePlate(namePlateUnitToken);
 				unitFrame.BuffFrame:SetAlpha(1);
 			end
 			return;
 		end
 	else
-		local reaction = UnitReaction("player", namePlateUnitToken);
+		local reaction = UnitReaction("player", unit);
 		if reaction and reaction <= 4 then
 			-- Reaction 4 is neutral and less than 4 becomes increasingly more hostile
-		elseif UnitIsPlayer(namePlateUnitToken) then
+		elseif UnitIsPlayer(unit) then
 			if namePlateFrameBase.asNamePlates then
-				namePlateFrameBase.asNamePlates.checkaura = false;
-				namePlateFrameBase.asNamePlates.checkcolor = false;
-				namePlateFrameBase.asNamePlates.checkpvptarget = false;
-				namePlateFrameBase.asNamePlates:Hide();
-				namePlateFrameBase.asNamePlates.healthtext:Hide();
-				namePlateFrameBase.asNamePlates.CCdebuff:Hide();
-				namePlateFrameBase.asNamePlates.castspellid = nil;
-				namePlateFrameBase.asNamePlates.debuffColor = nil;
+				removeNamePlate(namePlateUnitToken);
 				unitFrame.BuffFrame:SetAlpha(1);
 			end
 			return;
@@ -2072,13 +2132,9 @@ local function addNamePlate(namePlateUnitToken)
 
 	if not namePlateFrameBase.asNamePlates then
 		namePlateFrameBase.asNamePlates = CreateFrame("Frame", nil, unitFrame);
-	else
-		if namePlateFrameBase.asNamePlates.colorlevel > ColorLevel.None  then
-			namePlateFrameBase.asNamePlates.r = nil; -- 무조건 Recover
-			asCompactUnitFrame_UpdateHealthColor(unitFrame, namePlateFrameBase.asNamePlates);
-		end
     end
 
+	asCompactUnitFrame_UpdateHealthColor(unitFrame, namePlateFrameBase.asNamePlates);
 	namePlateFrameBase.asNamePlates:EnableMouse(false);
 
 	if not namePlateFrameBase.asNamePlates.buffList then
@@ -2222,7 +2278,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.CCdebuff:Hide();
 
 	if namePlateFrameBase.asNamePlates then
-		namePlateFrameBase.asNamePlates.unit = unitFrame.unit;
+		namePlateFrameBase.asNamePlates.unit = unit;
 		namePlateFrameBase.asNamePlates.filter = nil;
 		namePlateFrameBase.asNamePlates.helpful = false;
 		namePlateFrameBase.asNamePlates.checkaura = false;
@@ -2239,26 +2295,26 @@ local function addNamePlate(namePlateUnitToken)
 			end
 		end
 
-        if UnitIsPlayer(namePlateUnitToken) then
+        if UnitIsPlayer(unit) then
 			namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.Name;
 		else
 			local bInstance, RTB_ZoneType = IsInInstance();
 			if not (RTB_ZoneType == "pvp" or RTB_ZoneType == "arena") then
 				--PVP 에서는 어그로 Check 안함
-				namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", "player", namePlateUnitToken );
-				namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", "player", namePlateUnitToken );
+				namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", "player", unit );
+				namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", "player", unit );
 			end
 
 			namePlateFrameBase.asNamePlates:SetScript("OnEvent", asNamePlates_OnEvent);
 			namePlateFrameBase.asNamePlates:RegisterEvent("PLAYER_TARGET_CHANGED");
-			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_START", namePlateUnitToken);
-			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", namePlateUnitToken);
-			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", namePlateUnitToken);
-			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", namePlateUnitToken);
-			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", namePlateUnitToken);
-			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", namePlateUnitToken);
-			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_STOP", namePlateUnitToken);
-			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", namePlateUnitToken);
+			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
+			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
+			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit);
+			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
+			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
+			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
+			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
+			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
 
 
 		end
@@ -2270,7 +2326,7 @@ local function addNamePlate(namePlateUnitToken)
 			namePlateFrameBase.asNamePlates.icon_size = (orig_width / debuffs_per_line) - (debuffs_per_line - 1);
 		end
 
-		local class = UnitClassification(namePlateUnitToken)
+		local class = UnitClassification(unit)
 
 		namePlateFrameBase.asNamePlates.aggro1:ClearAllPoints();
 
@@ -2295,7 +2351,7 @@ local function addNamePlate(namePlateUnitToken)
 		local checkcolor = false;
 		local filter = nil;
 
-		if UnitIsUnit("player", namePlateUnitToken) then
+		if UnitIsUnit("player", unit) then
 			--namePlateFrameBase.asNamePlates:Hide();
 			if ANameP_ShowPlayerBuff then
 
@@ -2333,17 +2389,17 @@ local function addNamePlate(namePlateUnitToken)
 				checkaura = false;
 			end
 		else
-			local reaction = UnitReaction("player", namePlateUnitToken);
+			local reaction = UnitReaction("player", unit);
 			if reaction and reaction <= 4 then
 				-- Reaction 4 is neutral and less than 4 becomes increasingly more hostile
 				filter = "HARMFUL|INCLUDE_NAME_PLATE_ONLY";
 				showbuff = true;
 
-				if UnitIsPlayer(namePlateUnitToken) and ANameP_HealerGuid[UnitGUID(namePlateUnitToken)] then
+				if UnitIsPlayer(unit) and ANameP_HealerGuid[UnitGUID(unit)] then
 					showhealer = true;
 				end
 
-				if UnitIsPlayer(namePlateUnitToken) then
+				if UnitIsPlayer(unit) then
 					checkpvptarget = true;
 				else
 					checkcolor = true;
@@ -2361,7 +2417,7 @@ local function addNamePlate(namePlateUnitToken)
 
 				checkaura = false
 
-				if not showdebuff  and not UnitIsUnit(namePlateUnitToken, "player") and  ANameP_HealerGuid[UnitGUID(namePlateUnitToken)] then
+				if not showdebuff  and not UnitIsUnit(unit, "player") and  ANameP_HealerGuid[UnitGUID(unit)] then
 					showhealer = true;
 				end
 				namePlateFrameBase.asNamePlates:Hide();
@@ -2383,66 +2439,11 @@ local function addNamePlate(namePlateUnitToken)
 		end
 	end
 
-	if UnitIsPlayer(namePlateUnitToken) then
-		unit_guid_list[UnitGUID(namePlateUnitToken)] = namePlateUnitToken;
+	if UnitIsPlayer(unit) then
+		unit_guid_list[UnitGUID(unit)] = unit;
 	end
 end
 
-local function removeNamePlate(namePlateUnitToken)
-	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
-	if namePlateFrameBase and namePlateFrameBase.asNamePlates then
-		for i = 1, ANameP_MaxDebuff do
-			if ( namePlateFrameBase.asNamePlates.buffList[i] ) then
-				namePlateFrameBase.asNamePlates.buffList[i]:Hide();
-				lib.ButtonGlow_Stop(namePlateFrameBase.asNamePlates.buffList[i]);
-			end
-		end
-
-		lib.PixelGlow_Stop(namePlateFrameBase.asNamePlates.casticon);
-
-		namePlateFrameBase.asNamePlates.unit = nil;
-		namePlateFrameBase.asNamePlates.aggro1:Hide();
-		namePlateFrameBase.asNamePlates.aggro2:Hide();
-		namePlateFrameBase.asNamePlates.CCdebuff:Hide();
-		namePlateFrameBase.asNamePlates:Hide();
-		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
-		namePlateFrameBase.asNamePlates:UnregisterEvent("PLAYER_TARGET_CHANGED");
-		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_START");
-		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
-		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
-		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_DELAYED");
-		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
-		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_STOP");
-		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_FAILED");
-		namePlateFrameBase.asNamePlates:SetScript("OnEvent", nil);
-		namePlateFrameBase.asNamePlates.r = nil;
-		namePlateFrameBase.asNamePlates.debuffColor = nil;
-		namePlateFrameBase.asNamePlates.castspellid = nil;
-
-
-		if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
-
-			if namePlateFrameBase.asNamePlates.alerthealthbar then
-				lib.PixelGlow_Stop(namePlateFrameBase.UnitFrame.healthBar);
-				namePlateFrameBase.asNamePlates.alerthealthbar = false;
-				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r, namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
-				namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
-			end
-
-			if namePlateFrameBase.asNamePlates.colorlevel > ColorLevel.None then
-				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r, namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
-				namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
-			end
-
-
-		end
-	end
-
-	if UnitIsPlayer(namePlateUnitToken) and  UnitGUID(namePlateUnitToken) then
-		unit_guid_list[UnitGUID(namePlateUnitToken)] = nil;
-	end
-end
 
 local function updateHealerMark(guid)
 	local unit = unit_guid_list[guid];
