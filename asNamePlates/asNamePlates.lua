@@ -1762,6 +1762,8 @@ local function updateHealthbarColor(self)
 			setColoronStatusBar(self, options.ANameP_AggroTargetColor.r, options.ANameP_AggroTargetColor.g, options.ANameP_AggroTargetColor.b);
 		end
 		return;
+	elseif self.colorlevel == ColorLevel.Target then
+		self.colorlevel = ColorLevel.Reset;
 	end
 
 	-- Aggro Check
@@ -1793,7 +1795,9 @@ local function updateHealthbarColor(self)
 				aggrocolor = options.ANameP_AggroColor;
 				self.colorlevel = ColorLevel.Aggro;
 				setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
-				return;
+				return;			
+			elseif self.colorlevel == ColorLevel.Aggro then
+				self.colorlevel = ColorLevel.Reset;
 			end
 		end
 	end
@@ -1812,6 +1816,8 @@ local function updateHealthbarColor(self)
 			setColoronStatusBar(self, options.ANameP_LowHealthColor.r, options.ANameP_LowHealthColor.g, options.ANameP_LowHealthColor.b);
 			self.colorlevel = ColorLevel.Lowhealth;
 			return;
+		elseif self.colorlevel == ColorLevel.Lowhealth then
+			self.colorlevel = ColorLevel.Reset;
 		end
 	end
 
@@ -1836,6 +1842,8 @@ local function updateHealthbarColor(self)
 					self.colorlevel = ColorLevel.Custom;
 					setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
 					return;
+				elseif self.colorlevel == ColorLevel.Custom then
+					self.colorlevel = ColorLevel.Reset;
 				end
 			end
 		end
@@ -1846,6 +1854,8 @@ local function updateHealthbarColor(self)
 		self.colorlevel = ColorLevel.Custom;
 		setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
 		return;
+	elseif self.colorlevel == ColorLevel.Custom then
+		self.colorlevel = ColorLevel.Reset;
 	end
 
 	-- None
