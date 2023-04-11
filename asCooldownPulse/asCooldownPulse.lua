@@ -11,7 +11,7 @@ local ACDP_AlertButtons_Size = 60		-- Alert button size
 local ACDP_AlertFadeTime = 0.5			-- Alert button Fade in-out 시간 짧으면 빨리 사라짐
 local ACDP_AlertShowTime = 0.2			-- Alert button Fade in-out 시간 짧으면 빨리 사라짐
 local ACDP_SIZE = 32;					-- 쿨 List Size
-local ACDP_Show_CoolList = true;		-- 쿨 List를 보일지 안보일지 (안보이게 하려면 false)
+local ACDP_Show_CoolList = false;		-- 쿨 List를 보일지 안보일지 (무조건 보이게 하려면 true)
 local ACDP_Alert_Time = 0.5;			-- 쿨 1초전에 알림
 local ACDP_ALPHA = 1;
 local ACDP_CooldownFontSize = 11;		-- Cooldown Font Size 기본 쿨다운 지원
@@ -341,7 +341,7 @@ local function ACDP_UpdateCooldown()
 		parent.frames = {};
 	end
 
-	if (ACDP_Show_CoolList == false or bCombatInfoLoaded == false or (bCombatInfoLoaded == true and ACI_HideCooldownPulse ~= nil and ACI_HideCooldownPulse == true))  then
+	if ACDP_Show_CoolList ~= true and (bCombatInfoLoaded == false or (bCombatInfoLoaded == true and ACI_HideCooldownPulse ~= nil and ACI_HideCooldownPulse == true))  then
 
 		for i = 1, ACDP_CooldownCount do
 			frame = parent.frames[i];
