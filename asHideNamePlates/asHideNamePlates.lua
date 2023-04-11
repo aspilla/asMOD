@@ -149,7 +149,7 @@ local function isShow(unit)
 			return true;
 		end
 	else
-		if name and spellid and status and AHNameP_DangerousSpellList[spellid] and (AHNameP_HideModifier <= 3 or isInterruptReady()) then
+		if name and spellid and status and notInterruptible == false and AHNameP_DangerousSpellList[spellid] and (AHNameP_HideModifier <= 3 or isInterruptReady()) then
 			return true;
 		end
 	end
