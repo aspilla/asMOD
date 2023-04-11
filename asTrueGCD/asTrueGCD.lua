@@ -51,7 +51,7 @@ local function scanSpells(tab)
 
 		if spellID then
 			KnownSpellList[spellID] = 1;
-		end		
+		end
 	end
 end
 
@@ -61,14 +61,14 @@ local function scanPetSpells()
 	for i = 1, 20 do
 	   	local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
 	   	local spellName, _, spellID = GetSpellBookItemName (slot, BOOKTYPE_PET);
-	   	   
+
 	   if not spellName then
 			do break end
 		end
 
 		if spellID then
 			KnownSpellList[spellID] = 1;
-		end		
+		end
 	end
 
 end
@@ -79,7 +79,7 @@ local function scanActionSlots()
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 		local itemid = nil;
 
-		
+
 		if id and type and type == "macro" then
 			 id = GetMacroSpell(id);
 		end
@@ -93,9 +93,9 @@ local function scanActionSlots()
 
 		if id then
 
-				
+
 			if itemid then
-				KnownSpellList[id] = itemid; 
+				KnownSpellList[id] = itemid;
 			else
 				KnownSpellList[id] = 1;
 			end
@@ -107,7 +107,7 @@ local function scanActionSlots()
 
 	for i=1, NUM_PET_ACTION_SLOTS, 1 do
 		local name, texture, isToken, isActive, autoCastAllowed, autoCastEnabled, spellID = GetPetActionInfo(i);
-		
+
 		if spellID then
 			KnownSpellList[spellID] = 1;
 		end
@@ -117,20 +117,20 @@ end
 
 local function scanItemSlots()
 
-	for i =1,#itemslots do 
+	for i =1,#itemslots do
 
 		local  idx = GetInventorySlotInfo(itemslots[i]);
 
-		local itemid = GetInventoryItemID("player",idx) 
+		local itemid = GetInventoryItemID("player",idx)
 
-		if itemid then 
+		if itemid then
 
 			 local  _, id = GetItemSpell(itemid);
 
 
 
 			if id then
-				KnownSpellList[id] = itemid; 
+				KnownSpellList[id] = itemid;
 			end
 		end
 
@@ -193,11 +193,11 @@ local function ATGCD_Alert(spellid, bcancel, bitem)
 	if spellid == nil then
 		--ATGCD.icon:Hide();
 		return
-	end	
+	end
 
 	local spell_count = 0;
 
-	
+
 	if AGCD_BlackList[spellid] then
 		return;
 	end
@@ -217,7 +217,7 @@ local function ATGCD_Alert(spellid, bcancel, bitem)
 		icon = iconFileDataID
 	end
 
-	
+
 	if icon == nil then
 		--ATGCD.icon:Hide();
 		return;
@@ -237,14 +237,14 @@ local function ATGCD_Alert(spellid, bcancel, bitem)
 		local frameIcon = frame.icon;
 		local frameborder = frame.border;
 		local frameCancel = frame.text;
-		
+
 		if i == 3 then
 			-- set the icon
 			frameIcon:SetTexture(icon);
 			frameIcon:Show();
 			frame:Show();
-			ATGCD.icontime[4 - i] = GetTime();	
-			
+			ATGCD.icontime[4 - i] = GetTime();
+
 			if bcancel then
 				frameCancel:SetText("X");
 				frameCancel:SetTextColor(1, 0 ,0 );
@@ -258,13 +258,13 @@ local function ATGCD_Alert(spellid, bcancel, bitem)
 				frameCancel:Hide();
 			end
 
-			
+
 		else
 			local frameIcon2 = ATGCD.frame[(4 - i - 1)].icon
 			local icon2 = frameIcon2:GetTexture()
 			local time2 = ATGCD.icontime[4 - i - 1];
 			local frameCancel2 = ATGCD.frame[(4 - i - 1)].text;
-		
+
 			if icon2  then
 				if time2 and current - time2 > 5 then
 					ATGCD.icontime[4 - i] = nil;
@@ -307,10 +307,10 @@ end
 
 local function ATGCD_OnUpdate()
 
-	
+
 	local current = GetTime();
 	for	i = 1, 3 do
-		
+
 		if ATGCD.icontime[i]  and  current - ATGCD.icontime[i] > 5 then
 			ATGCD.frame[i]:Hide();
 			local frameCancel = ATGCD.frame[i].text;
@@ -344,7 +344,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 
 	if( event == "UNIT_SPELLCAST_START") then
 		local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo("player");
-		local frameIcon = ATGCD.frame[0].icon; 
+		local frameIcon = ATGCD.frame[0].icon;
 		local frameCooldown =ATGCD.frame[0].cooldown;
 
 		if name and frameIcon then
@@ -370,15 +370,15 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 		end
 	elseif( event == "UNIT_SPELLCAST_CHANNEL_START") then
 			local name,  text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo("player");
-			local frameIcon = ATGCD.frame[0].icon; 
+			local frameIcon = ATGCD.frame[0].icon;
 			local frameCooldown =ATGCD.frame[0].cooldown;
-	
+
 			if name and frameIcon then
 
 				channel_spell = spellid;
 				--if name and frameIcon and isTargetPlayer then
 				frameIcon:SetTexture(texture);
-	
+
 				if spellid == prev_spell_id  then
 					ATGCD.frame[0].text:SetText(seq_spell_count + 2);
 					ATGCD.frame[0].text:SetTextColor(1, 1 ,1 );
@@ -395,7 +395,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			else
 				frameIcon:Hide();
 				ATGCD.frame[0]:Hide();
-			end	
+			end
 	elseif event == "UNIT_SPELLCAST_STOP" then
 		local name = UnitCastingInfo("player");
 		if not name then
@@ -411,7 +411,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 
 		prev_spell = arg3;
 		local GCDmax = 1.5 / (( GetHaste() / 100 ) + 1)
-		
+
 		if (prev and prev == prev_spell and (GetTime() - prevtime) < (GCDmax - 0.1))  then
 
 		else
@@ -427,7 +427,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 				ATGCD_Alert(KnownSpellList[prev_spell], nil, true);
 
 			end
-		end				
+		end
 	elseif event == "UNIT_SPELLCAST_INTERRUPTED" and   arg1 == "player" then
 		prev_spell = arg3;
 
@@ -446,7 +446,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 				interrupttime = GetTime();
 				ATGCD_Alert(KnownSpellList[prev_spell], true, true);
 			end
-		end		
+		end
 	elseif event == "SPELLS_CHANGED" then
 		scanSpells(1);
 		scanSpells(2);
@@ -460,7 +460,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 	end
 
 	return;
-end 
+end
 
 
 
