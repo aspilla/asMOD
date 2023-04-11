@@ -699,3 +699,24 @@ panel:RegisterEvent("TRAIT_CONFIG_UPDATED");
 panel:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 panel:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 panel:SetScript("OnEvent", panel.OnEvent)
+
+if EditModeManagerFrame and FriendsFrameStatusDropDown and (tonumber(EDITMAN_OPENDROP_PATCH_VERSION) or 0) < 1 then
+	EDITMAN_OPENDROP_PATCH_VERSION = 1
+	hooksecurefunc(EditModeManagerFrame, "GetAttribute", function(_, attr)
+		if attr ~= "UIPanelLayout-checkFit" or EDITMAN_OPENDROP_PATCH_VERSION ~= 1
+		   or (issecurevariable(DropDownList1, "maxWidth") and issecurevariable("UIDROPDOWNMENU_MENU_LEVEL")) then
+		elseif InCombatLockdown() and FriendsFrameStatusDropDown:IsProtected() then
+		elseif FriendsFrameStatusDropDown:IsVisible() then
+			FriendsFrameStatusDropDown:Hide()
+			FriendsFrameStatusDropDown:Show()
+		else
+			local op = FriendsFrameStatusDropDown:GetParent()
+			FriendsFrameStatusDropDown:SetParent(nil)
+			if not FriendsFrameStatusDropDown:IsShown() then
+				FriendsFrameStatusDropDown:Show()
+				FriendsFrameStatusDropDown:Hide()
+			end
+			FriendsFrameStatusDropDown:SetParent(op)
+		end
+	end)
+end

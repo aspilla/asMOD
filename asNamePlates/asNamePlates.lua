@@ -1280,7 +1280,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 				-- Player 일 경우
 				if  UnitIsUnit("player", unit) then
-					if options.ANameP_ShowPlayerBuffAll == false then
+					if options.ANameP_ShowPlayerBuffAll and options.ANameP_ShowPlayerBuffAll == false then
 						show = nameplateShowPersonal;
 					else
 						if ANameP_ShowPlayerBuff and PLAYER_UNITS[caster] and duration > 0 and duration <= ANameP_BuffMaxCool then
@@ -1756,7 +1756,7 @@ local function updateHealthbarColor(self)
 	--Target Check 
 	local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
 
-	if (isTargetPlayer) then
+	if (isTargetPlayer) and options.ANameP_AggroTargetColor then
 		if self.colorlevel < ColorLevel.Target then
 			self.colorlevel = ColorLevel.Target;
 			setColoronStatusBar(self, options.ANameP_AggroTargetColor.r, options.ANameP_AggroTargetColor.g, options.ANameP_AggroTargetColor.b);

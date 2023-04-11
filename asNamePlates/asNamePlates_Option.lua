@@ -543,8 +543,8 @@ local function SetupEditBoxOption()
 			end
 		end
 
-		UIDropDownMenu_Initialize(dropDown, function (self, level)
-			for _, option in ipairs(dropdownOptions) do
+        UIDropDownMenu_Initialize(dropDown, function (self, level)
+            for _, option in ipairs(dropdownOptions) do
 				local info = UIDropDownMenu_CreateInfo()
 				info.text = option.text
 				info.value = option.value
@@ -554,13 +554,13 @@ local function SetupEditBoxOption()
 					updatedata();
 				end
 				info.func = Dropdown_OnClick;
-				UIDropDownMenu_AddButton(info, level)
+    			UIDropDownMenu_AddButton(info, level)
 			end
 		end);
 		UIDropDownMenu_SetSelectedValue(dropDown, bshowcolor);
-
+        
         UIDropDownMenu_Initialize(dropDown2, function (self, level)
-			for _, option in ipairs(dropdownOptions2) do
+            for _, option in ipairs(dropdownOptions2) do
 				local info = UIDropDownMenu_CreateInfo()
 				info.text = option.text
 				info.value = option.value
@@ -570,7 +570,7 @@ local function SetupEditBoxOption()
 					updatedata();
 				end
 				info.func = Dropdown_OnClick;
-				UIDropDownMenu_AddButton(info, level)
+                UIDropDownMenu_AddButton(info, level)
 			end
 		end);
 		UIDropDownMenu_SetSelectedValue(dropDown2, bcount);
@@ -688,3 +688,24 @@ panel:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 panel:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 panel:RegisterEvent("PLAYER_REGEN_ENABLED");
 panel:SetScript("OnEvent", panel.OnEvent)
+
+if EditModeManagerFrame and FriendsFrameStatusDropDown and (tonumber(EDITMAN_OPENDROP_PATCH_VERSION) or 0) < 1 then
+	EDITMAN_OPENDROP_PATCH_VERSION = 1
+	hooksecurefunc(EditModeManagerFrame, "GetAttribute", function(_, attr)
+		if attr ~= "UIPanelLayout-checkFit" or EDITMAN_OPENDROP_PATCH_VERSION ~= 1
+		   or (issecurevariable(DropDownList1, "maxWidth") and issecurevariable("UIDROPDOWNMENU_MENU_LEVEL")) then
+		elseif InCombatLockdown() and FriendsFrameStatusDropDown:IsProtected() then
+		elseif FriendsFrameStatusDropDown:IsVisible() then
+			FriendsFrameStatusDropDown:Hide()
+			FriendsFrameStatusDropDown:Show()
+		else
+			local op = FriendsFrameStatusDropDown:GetParent()
+			FriendsFrameStatusDropDown:SetParent(nil)
+			if not FriendsFrameStatusDropDown:IsShown() then
+				FriendsFrameStatusDropDown:Show()
+				FriendsFrameStatusDropDown:Hide()
+			end
+			FriendsFrameStatusDropDown:SetParent(op)
+		end
+	end)
+end
