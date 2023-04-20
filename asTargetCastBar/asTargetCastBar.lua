@@ -478,7 +478,7 @@ local function ATCB_OnEvent(self, event, ...)
 				end
 
 				if (name ~= prev_name) and ATCB_DangerousSpellList[spellid] then
-					PlaySoundFile("Interface\\AddOns\\asTargetCastBar\\alert.mp3", "DIALOG");
+					--PlaySoundFile("Interface\\AddOns\\asTargetCastBar\\alert.mp3", "DIALOG");                    
 					prev_name = name;
 				end
 

@@ -8,12 +8,12 @@ local needtowork = false;
 
 local function isFaction(unit)
 	if UnitIsUnit("player", unit) then
-		return false;		
+		return false;
 	else
 		local reaction = UnitReaction("player", unit);
 		if reaction and reaction <= 4 then
-			return true;		
-		elseif UnitIsPlayer(unit) then		
+			return true;
+		elseif UnitIsPlayer(unit) then
 			return false;
 		end
 	end
@@ -26,18 +26,18 @@ local IsDanger = false;
 
 local function CheckCasting(nameplate)
 
-	if not nameplate or nameplate:IsForbidden()  then		
+	if not nameplate or nameplate:IsForbidden()  then
 		return false;
 	end
 
-	if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden()  then		
+	if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden()  then
 		return false;
 	end
 
-	local unit = nameplate.namePlateUnitToken;
-	
+	local unit = nameplate.UnitFrame.unit;
+
 	if isFaction(unit) and UnitIsUnit(unit .."target", "player") and not UnitIsUnit(unit, "target") then
-		local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);	
+		local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);
 		if not name then
 			name,  text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
 		end
@@ -57,13 +57,13 @@ local function CheckCasting(nameplate)
 
 				ACTA.cast[currshow]:Show();
 				currshow = currshow + 1;
-			end
 
-			if ACTA_DangerousSpellList[spellid] then
-				IsDanger = true;
-			end
+				if ACTA_DangerousSpellList[spellid] then
+					IsDanger = true;
+				end
+			end			
 		end
-	end	
+	end
 end
 
 local function ACTA_OnUpdate()
@@ -78,7 +78,7 @@ local function ACTA_OnUpdate()
 		if (nameplate) then
 
 			CheckCasting(nameplate);
-			if currshow > ACTA_MaxShow then	
+			if currshow > ACTA_MaxShow then
 				break;
 			end
 		end
@@ -89,7 +89,7 @@ local function ACTA_OnUpdate()
 	end
 
 	if currshow > prev_show and IsDanger then
-		PlaySoundFile("Interface\\AddOns\\asCastingAlert\\alert.mp3", "DIALOG")
+		--PlaySoundFile("Interface\\AddOns\\asCastingAlert\\alert.mp3", "DIALOG")
 	end
 end
 
@@ -103,8 +103,8 @@ local function ACTA_OnEvent(self, event)
 		local inInstance, instanceType = IsInInstance();
 
 		if (inInstance and instanceType == "party") then
-			needtowork = true;			
-		end	
+			needtowork = true;
+		end
 
 		ACTA_DangerousSpellList = {};
 	end
