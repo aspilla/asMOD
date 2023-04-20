@@ -17,7 +17,6 @@ local AAM_MaxMark = 7				-- 최대 징표 X까지 찍도록 설정
 
 local NPCTable = {
 	[56448] = true,
-	[62358] = true,
 	[200137] = true,
 	[200126] = true,
 	[59555] = true,
@@ -90,6 +89,23 @@ local NPCTable = {
 	[190206] = true,
 	[198047] = true,
 };
+
+asAutoMarkerF = {};
+
+asAutoMarkerF.IsAutoMarkerMob = function(unit)
+
+	local guid = UnitGUID(unit);
+	if guid then
+		local npcID = select(6, strsplit("-", guid));
+   		npcID = tonumber(npcID);
+
+		if NPCTable[npcID] == true then
+			return true;		
+		end
+	end
+
+	return false;
+end
 
 local needtowork = false;
 
@@ -177,28 +193,22 @@ local function UpdateMarks(nameplate)
 
 	if unit == "mouseover" or (unit and isFaction(unit) and status and status > 0) then
 		local guid = UnitGUID(unit);
-		if guid then
-			local npcID = select(6, strsplit("-", guid));
-   			npcID = tonumber(npcID);
+		if asAutoMarkerF.IsAutoMarkerMob(unit) then
+			local mark = GetRaidTargetIndex(unit);
 
-			if NPCTable[npcID] == true then
+			while (curr_mark <= AAM_MaxMark) do
 
-				local mark = GetRaidTargetIndex(unit);
-
-				while (curr_mark <= AAM_MaxMark) do
-
-					if abledMarks[curr_mark] then
-						break;
-					else
-						curr_mark = curr_mark + 1;
-					end
-				end
-
-				if tmp[guid] == nil and mark == nil and curr_mark <= AAM_MaxMark then
-					SetRaidTarget(unit, curr_mark);
-					tmp[guid] = true;
+				if abledMarks[curr_mark] then
+					break;
+				else
 					curr_mark = curr_mark + 1;
 				end
+			end
+
+			if tmp[guid] == nil and mark == nil and curr_mark <= AAM_MaxMark then
+				SetRaidTarget(unit, curr_mark);
+				tmp[guid] = true;
+				curr_mark = curr_mark + 1;
 			end
 		end
 	end

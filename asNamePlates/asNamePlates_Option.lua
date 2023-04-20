@@ -1,10 +1,12 @@
 ANameP_Options_Default = {
-    version = 230405;
+    version = 230419;
     ANameP_ShowKnownSpell = true,                           -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                               -- [디버프] 전부 보이기
     ANameP_ShowPlayerBuffAll = false,                       -- [버프] 전부 보이기
     ANameP_AggroShow = true,			                    -- 어그로 여부를 표현할지 여부 
     ANameP_LowHealthAlert = true,                           -- 낮은 체력 색상 변경 사용
+    ANameP_QuestAlert = true,                               -- Quest 몹 색상 변경 사용
+    ANameP_AutoMarker = true,                               -- AutoMarker 몹 색상 변경 사용
 
     ANameP_AggroTargetColor =  {r = 0.4, g = 0.2, b = 0.8}, -- PVE 대상이 player 였을때 Color
     ANameP_AggroColor = {r = 0.5, g = 1, b = 1},            -- 어그로 대상일때 바 Color
@@ -13,6 +15,8 @@ ANameP_Options_Default = {
     ANameP_TankAggroLoseColor3 = {r = 0.1, g = 0.3, b= 1},  -- 어그로가 Pet 일때 혹은 Tanking 중인데 어그로가 낮을때
     ANameP_LowHealthColor = {r = 1, g = 0.8, b= 0.5},       -- 낮은 체력 이름표 색상 변경
     ANameP_DebuffColor = {r = 1, g = 0.5, b = 0},           -- 디버프 걸렸을때 Color
+    ANameP_QuestColor = {r = 1, g = 0.8, b = 0.5},          -- Quest 몹 Color
+    ANameP_AutoMarkerColor = {r = 1, g = 0.5, b = 0.8},     -- AutoMarker 몹 Color
 
     nameplateOverlapV = 1.1,                                -- 이름표 상하 정렬
 
@@ -631,6 +635,8 @@ ANameP_OptionM.SetupAllOption = function()
     SetupCheckBoxOption("[버프] 내 버프 모두 보임", "ANameP_ShowPlayerBuffAll");
     SetupCheckBoxOption("[색상] 어그로 색상 표시", "ANameP_AggroShow");
     SetupCheckBoxOption("[색상] 낮은 생명력 색상 표시", "ANameP_LowHealthAlert");
+    SetupCheckBoxOption("[색상] Quest 몹 색상 표시", "ANameP_QuestAlert");
+    SetupCheckBoxOption("[색상] AutoMarker 몹 색상 표시", "ANameP_AutoMarker");
     SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");
     SetupColorOption("[이름표 색상] 어그로 대상", "ANameP_AggroTargetColor");
     SetupColorOption("[이름표 색상] 어그로 상위", "ANameP_AggroColor");
@@ -639,6 +645,8 @@ ANameP_OptionM.SetupAllOption = function()
     SetupColorOption("[이름표 색상] 어그로 소환수", "ANameP_TankAggroLoseColor3");
     SetupColorOption("[이름표 색상] 낮은 체력", "ANameP_LowHealthColor");
     SetupColorOption("[이름표 색상] 디버프", "ANameP_DebuffColor");
+    SetupColorOption("[이름표 색상] Quest", "ANameP_QuestColor");
+    SetupColorOption("[이름표 색상] AutoMarker", "ANameP_AutoMarkerColor");
     SetupEditBoxOption();
     if update_callback then
         update_callback();

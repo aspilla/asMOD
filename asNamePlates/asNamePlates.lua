@@ -1678,6 +1678,7 @@ local function isDangerousSpell(spellId, unit)
     return false
 end
 
+local bloadedAutoMarker = false;
 
 local function updateHealthbarColor(self)
 	--unit name 부터
@@ -1736,7 +1737,7 @@ local function updateHealthbarColor(self)
 				lib.PixelGlow_Start(self.casticon, {0, 1, 1, 1});
 				lib.PixelGlow_Start(healthBar, {0, 1, 1, 1});
 			elseif notInterruptible == false then
-				lib.PixelGlow_Start(self.casticon);				
+				lib.PixelGlow_Start(self.casticon);
 				lib.PixelGlow_Stop(healthBar);
 			else
 				lib.PixelGlow_Stop(self.casticon);
@@ -1795,7 +1796,7 @@ local function updateHealthbarColor(self)
 				aggrocolor = options.ANameP_AggroColor;
 				self.colorlevel = ColorLevel.Aggro;
 				setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
-				return;			
+				return;
 			elseif self.colorlevel == ColorLevel.Aggro then
 				self.colorlevel = ColorLevel.Reset;
 			end
@@ -1856,6 +1857,20 @@ local function updateHealthbarColor(self)
 		return;
 	elseif self.colorlevel == ColorLevel.Custom then
 		self.colorlevel = ColorLevel.Reset;
+	end
+
+	if options.ANameP_AutoMarker and bloadedAutoMarker and asAutoMarkerF and asAutoMarkerF.IsAutoMarkerMob(unit) then
+		local color = options.ANameP_AutoMarkerColor;
+		self.colorlevel = ColorLevel.Custom;
+		setColoronStatusBar(self, color.r, color.g, color.b);
+		return;
+	end
+
+	if options.ANameP_QuestAlert and C_QuestLog.UnitIsRelatedToActiveQuest(unit)  then
+		local color = options.ANameP_QuestColor;
+		self.colorlevel = ColorLevel.Custom;
+		setColoronStatusBar(self, color.r, color.g, color.b);
+		return;
 	end
 
 	-- None
@@ -2624,7 +2639,7 @@ function ANameP_DBMTimer_callback(event, id, ...)
 	if spellId then
 		ANameP_DangerousSpellList[spellId] = true;
 	end
-	
+
 end
 
 local function flushoption()
@@ -2675,6 +2690,8 @@ local function initAddon()
 	if bloaded then
 		DBM:RegisterCallback("DBM_TimerStart", ANameP_DBMTimer_callback );
 	end
+
+	bloadedAutoMarker = LoadAddOn("asAutoMarker");
 
 end
 
