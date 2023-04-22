@@ -8,6 +8,26 @@ local ADBMT_IconSize = 30;
 local ADBMT_X = -330;
 local ADBMT_Y = 0;
 
+
+local BarColors = {
+	--Type 0
+	[0] = {1, 0.7, 0, ""},
+	--Type 1 (Add)
+	[1] = {0.375, 0.545, 1, "[추가]"},
+	--Type 2 (AOE)
+	[2] = {1, 0.466, 0.459, "[광역]"},
+	--Type 3 (Targeted)
+	[3] = {0.9, 0.3, 1, "[대상]"},
+	--Type 4 (Interrupt)
+	[4] = {0.47, 0.97, 1, "[차단]"},
+	--Type 5 (Role)
+	[5] = {0.5, 1, 0.5, "[임무]"},
+	--Type 6 (Phase)
+	[6] = {1, 0.776, 0.420, "[단계]"},
+	--Type 7 (Important/User set only)
+	[7] = {1, 1, 0.06, ""},
+}
+
 -- 설정 끝
 
 local asDBMTimer = nil;
@@ -59,7 +79,7 @@ function ADBMT_OnUpdate(self, elapsed)
 	end
 end
 
-local function newButton(id, msg, duration, start, icon)
+local function newButton(id, msg, duration, start, icon, colorId)
 
 	for i = 1, ADBMT_MaxButtons do
 		local button = asDBMTimer.buttons[i];
@@ -71,6 +91,15 @@ local function newButton(id, msg, duration, start, icon)
 			button.icon:Show();
 			button.cooltext:Show();
 			button.border:Show();
+
+			if colorId and BarColors[colorId] then
+				local info = BarColors[colorId];
+				msg = info[4]..msg;
+				button.text:SetTextColor(info[1], info[2], info[3]);
+			else
+				button.text:SetTextColor(1, 1, 1);
+			end
+
 			button.text:SetText(msg);
 			button.text:Show();
 			button.update = 0.1;
@@ -93,12 +122,11 @@ function asDBMTimer_callback(event, id, ...)
 			deleteButton(id);
 		end
 		local newmsg = msg;
-
 		local strFindStart, strFindEnd = string.find(msg, " 쿨타임")
     	if strFindStart ~= nil then
           	 newmsg = string.sub(msg, 1, strFindStart-1);
 		end
-		dbm_event_list[id] = {newmsg, timer, GetTime(), icon, 0};
+		dbm_event_list[id] = {newmsg, timer, GetTime(), icon, 0, colorId};
 
 	elseif event == "DBM_TimerStop" then
 		if dbm_event_list[id] and dbm_event_list[id][5] then
@@ -126,9 +154,8 @@ local function checkList()
 		local start = GetTime();
 		local remain = v[3] + v[2] - GetTime();
 		if v[5] == 0 and remain > 0 and remain <= 10  then
-			local idx = newButton(id, v[1], remain, start, v[4]);
+			local idx = newButton(id, v[1], remain, start, v[4], v[6]);
 			v[5] = idx;
-
 		elseif remain <= 0 then
 			dbm_event_list[id] = nil;
 			deleteButton(id);
