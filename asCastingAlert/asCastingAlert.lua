@@ -104,9 +104,7 @@ local function ACTA_OnEvent(self, event)
 
 		if (inInstance and instanceType == "party") then
 			needtowork = true;
-		end
-
-		ACTA_DangerousSpellList = {};
+		end		
 	end
 end
 

@@ -441,10 +441,6 @@ local function ATCB_OnEvent(self, event, ...)
 			ATCB:UnregisterEvent("UNIT_SPELLCAST_STOP");
 			ATCB:UnregisterEvent("UNIT_SPELLCAST_FAILED");
 		end
-
-        if  event == "PLAYER_ENTERING_WORLD" then
-            ATCB_DangerousSpellList = {};
-        end
         
 	end
 

@@ -56,13 +56,6 @@ local ANameP_BlackList = {
 
 }
 
--- 크게 보이게 할 Debuff 값으로 추가 Size 를 입력 0 이거나 -도 가능
--- 일단 전장 Debuff 이 포함됨
-local ANameP_BigDebuff = {
-
-}
-
-
 local ANameP_PVPBuffList = {
 
 	[236273] = 1, --WARRIOR
@@ -175,7 +168,6 @@ local ANameP_PVPBuffList = {
 
 local ANameP_PVEBuffList = {
 
-	[277242] = 5, --'그훈의 공생체' 
 	[209859] = 0, --'강화' 
 }
 
@@ -2547,7 +2539,6 @@ local function ANameP_OnEvent(self, event, ...)
 		end
 		updateTankerList();
 		setupKnownSpell();
-		ANameP_DangerousSpellList = {};
 		-- 0.5 초 뒤에 Load
 		C_Timer.After(0.5, initAlertList);
 
@@ -2639,7 +2630,6 @@ function ANameP_DBMTimer_callback(event, id, ...)
 	if spellId then
 		ANameP_DangerousSpellList[spellId] = true;
 	end
-
 end
 
 local function flushoption()

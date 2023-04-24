@@ -267,9 +267,7 @@ local function AHNameP_OnEvent(self, event)
 
 	-- 0.5 초 뒤에 Load
 	C_Timer.After(0.5, updateInterruptIDs);
-
-	AHNameP_DangerousSpellList = {};
-
+	
 	if event == "PLAYER_ENTERING_WORLD" then
 		needtowork = false;
 		local inInstance, instanceType = IsInInstance();
