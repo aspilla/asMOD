@@ -163,11 +163,9 @@ local function UpdateMarks(nameplate)
 
 	local status = UnitThreatSituation("player", unit);
 
-	if unit == "mouseover" or (unit and isFaction(unit) and status and status > 0) then
+	if (unit == "mouseover"  or (unit and status and status > 0)) and isFaction(unit) then
 		local guid = UnitGUID(unit);
 		if asAutoMarkerF.IsAutoMarkerMob(unit) then
-			local mark = GetRaidTargetIndex(unit);
-
 			while (curr_mark <= AAM_MaxMark) do
 
 				if abledMarks[curr_mark] then
@@ -177,7 +175,7 @@ local function UpdateMarks(nameplate)
 				end
 			end
 
-			if tmp[guid] == nil and mark == nil and curr_mark <= AAM_MaxMark then
+			if tmp[guid] == nil and curr_mark <= AAM_MaxMark then
 				SetRaidTarget(unit, curr_mark);
 				tmp[guid] = curr_mark;
 				abledMarks[curr_mark] = false;
