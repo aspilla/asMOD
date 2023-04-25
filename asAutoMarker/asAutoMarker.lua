@@ -126,34 +126,6 @@ local curr_mark = 1;
 local tmp = {};
 local abledMarks = {true, true, true, true, true, true, true, true};
 
-
-local function CheckMarks(nameplate)
-
-	local unit;
-
-	if nameplate then
-		if not nameplate or nameplate:IsForbidden()  then
-			return false;
-		end
-
-		if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden()  then
-			return false;
-		end
-
-		unit = nameplate.namePlateUnitToken;
-	else
-		return
-	end
-
-	if unit and isFaction(unit)  then
-		local mark = GetRaidTargetIndex(unit);
-
-		if  mark ~= nil and mark <= AAM_MaxMark then
-			abledMarks[mark] = false;
-		end
-	end
-end
-
 local function CheckPartyMarks()
 
 	local unit = "player";
@@ -207,7 +179,8 @@ local function UpdateMarks(nameplate)
 
 			if tmp[guid] == nil and mark == nil and curr_mark <= AAM_MaxMark then
 				SetRaidTarget(unit, curr_mark);
-				tmp[guid] = true;
+				tmp[guid] = curr_mark;
+				abledMarks[curr_mark] = false;
 				curr_mark = curr_mark + 1;
 			end
 		end
@@ -221,50 +194,71 @@ local function AAM_OnUpdate()
 	end
 
 	curr_mark = 1;
-
-	abledMarks = {true, true, true, true, true, true, true, true};
-
+	
 	CheckPartyMarks();
-
-	for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-		local nameplate = v;
-		if (nameplate) then
-			CheckMarks(nameplate);
-		end
-	end
 
 	for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
 		local nameplate = v;
 		if (nameplate) then
 			UpdateMarks(nameplate);
 		end
-	end
+	end	
 
 	UpdateMarks();
 end
 
 
 
-local function AAM_OnEvent(self, event)
+local function AAM_OnEvent(self, event, ...)
 
-	if event == "PLAYER_ENTERING_WORLD" then
+	if event == "PLAYER_ENTERING_WORLD" or event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED" then
 		needtowork = false;
 		local inInstance, instanceType = IsInInstance();
 		local assignedRole = UnitGroupRolesAssigned("player");
 
 		if (inInstance and instanceType == "party") and (assignedRole and assignedRole == "TANK") then
 			needtowork = true;
+			AAM:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+			AAM:RegisterEvent("PLAYER_REGEN_ENABLED");
+			AAM:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
+		else
+			AAM:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+			AAM:UnregisterEvent("PLAYER_REGEN_ENABLED");
+			AAM:UnregisterEvent("UPDATE_MOUSEOVER_UNIT");
 		end
-	elseif event == "PLAYER_REGEN_ENABLED" then
+
+		abledMarks = {true, true, true, true, true, true, true, true};
 		tmp = {};
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		abledMarks = {true, true, true, true, true, true, true, true};
+		tmp = {};
+	elseif event == "UPDATE_MOUSEOVER_UNIT" then
+		AAM_OnUpdate();
+	elseif(event=="COMBAT_LOG_EVENT_UNFILTERED") then
+		local eventData = {CombatLogGetCurrentEventInfo()};
+		local logEvent = eventData[2];
+		local unitGUID = eventData[8];
+		if ((logEvent == "UNIT_DIED") or (logEvent == "UNIT_DESTROYED")) then
+			if tmp[unitGUID] then
+				local mark = tmp[unitGUID];
+
+				if mark <= AAM_MaxMark then
+					abledMarks[mark] = true;						
+				end
+				tmp[unitGUID] = nil;				
+			end
+		end
 	end
+	
 end
 
 
 local function initAddon()
 	AAM = CreateFrame("Frame", nil, UIParent);
 	AAM:RegisterEvent("PLAYER_ENTERING_WORLD");
-	AAM:RegisterEvent("PLAYER_REGEN_ENABLED");
+	AAM:RegisterEvent("GROUP_JOINED");
+	AAM:RegisterEvent("GROUP_ROSTER_UPDATE");
+	AAM:RegisterEvent("PLAYER_ROLES_ASSIGNED");	
 	AAM:SetScript("OnEvent", AAM_OnEvent)
 	--주기적으로 Callback
 	C_Timer.NewTicker(AAM_UpdateRate, AAM_OnUpdate);
