@@ -1827,6 +1827,13 @@ local function updateHealthbarColor(self)
 		end
 	end
 
+	if options.ANameP_AutoMarker and bloadedAutoMarker and asAutoMarkerF and asAutoMarkerF.IsAutoMarkerMob(unit) then
+		local color = options.ANameP_AutoMarkerColor;
+		self.colorlevel = ColorLevel.Custom;
+		setColoronStatusBar(self, color.r, color.g, color.b);
+		return;
+	end
+
 	if status then
 		if #tanklist > 0 then
 			for _, othertank in ipairs(tanklist) do
@@ -1851,12 +1858,7 @@ local function updateHealthbarColor(self)
 		self.colorlevel = ColorLevel.Reset;
 	end
 
-	if options.ANameP_AutoMarker and bloadedAutoMarker and asAutoMarkerF and asAutoMarkerF.IsAutoMarkerMob(unit) then
-		local color = options.ANameP_AutoMarkerColor;
-		self.colorlevel = ColorLevel.Custom;
-		setColoronStatusBar(self, color.r, color.g, color.b);
-		return;
-	end
+
 
 	if options.ANameP_QuestAlert and C_QuestLog.UnitIsRelatedToActiveQuest(unit)  then
 		local color = options.ANameP_QuestColor;
