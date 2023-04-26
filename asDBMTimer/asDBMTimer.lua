@@ -103,7 +103,7 @@ local function newButton(id, msg, duration, start, icon, colorId)
 			if colorId and BarColors[colorId] then
 				local info = BarColors[colorId];
 
-				msg =RGBToHex(info[1], info[2], info[3]).. info[4]..  RGBToHex(1, 1, 1) ..msg;
+				msg = RGBToHex(info[1], info[2], info[3]).. info[4].." "..RGBToHex(1, 1, 1)..msg;
 			end
 
 			button.text:SetText(msg);
