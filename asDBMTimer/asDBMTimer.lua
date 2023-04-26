@@ -79,6 +79,14 @@ function ADBMT_OnUpdate(self, elapsed)
 	end
 end
 
+
+local function RGBToHex(r, g, b)
+    r = math.floor(r * 255)
+    g = math.floor(g * 255)
+    b = math.floor(b * 255)
+    return string.format("|cff%02x%02x%02x", r, g, b)
+end
+
 local function newButton(id, msg, duration, start, icon, colorId)
 
 	for i = 1, ADBMT_MaxButtons do
@@ -94,10 +102,8 @@ local function newButton(id, msg, duration, start, icon, colorId)
 
 			if colorId and BarColors[colorId] then
 				local info = BarColors[colorId];
-				msg = info[4]..msg;
-				button.text:SetTextColor(info[1], info[2], info[3]);
-			else
-				button.text:SetTextColor(1, 1, 1);
+
+				msg =RGBToHex(info[1], info[2], info[3]).. info[4]..  RGBToHex(1, 1, 1) ..msg;
 			end
 
 			button.text:SetText(msg);
