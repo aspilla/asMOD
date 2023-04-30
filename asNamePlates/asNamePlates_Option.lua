@@ -628,26 +628,7 @@ end
 
 
 ANameP_OptionM.SetupAllOption = function()
-
-    SetupChildPanel();
-    SetupCheckBoxOption("[디버프] 기본에 스팰북 스킬 디버프 추가", "ANameP_ShowKnownSpell");
-    SetupCheckBoxOption("[디버프] 내 디버프 모두 보임", "ANameP_ShowMyAll");
-    SetupCheckBoxOption("[버프] 내 버프 모두 보임", "ANameP_ShowPlayerBuffAll");
-    SetupCheckBoxOption("[색상] 어그로 색상 표시", "ANameP_AggroShow");
-    SetupCheckBoxOption("[색상] 낮은 생명력 색상 표시", "ANameP_LowHealthAlert");
-    SetupCheckBoxOption("[색상] Quest 몹 색상 표시", "ANameP_QuestAlert");
-    SetupCheckBoxOption("[색상] AutoMarker 몹 색상 표시", "ANameP_AutoMarker");
-    SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");
-    SetupColorOption("[이름표 색상] 어그로 대상", "ANameP_AggroTargetColor");
-    SetupColorOption("[이름표 색상] 어그로 상위", "ANameP_AggroColor");
-    SetupColorOption("[탱커 이름표 색상] 어그로 상실", "ANameP_TankAggroLoseColor");
-    SetupColorOption("[탱커 이름표 색상] 어그로 다른 탱커",  "ANameP_TankAggroLoseColor2");
-    SetupColorOption("[이름표 색상] 어그로 소환수", "ANameP_TankAggroLoseColor3");
-    SetupColorOption("[이름표 색상] 낮은 체력", "ANameP_LowHealthColor");
-    SetupColorOption("[이름표 색상] 디버프", "ANameP_DebuffColor");
-    SetupColorOption("[이름표 색상] Quest", "ANameP_QuestColor");
-    SetupColorOption("[이름표 색상] AutoMarker", "ANameP_AutoMarkerColor");
-    SetupEditBoxOption();
+    
     if update_callback then
         update_callback();
     end
@@ -690,30 +671,40 @@ function panel:OnEvent(event, addOnName)
 	end
 end
 
+local function panelOnShow ()
+	SetupChildPanel();
+    SetupCheckBoxOption("[디버프] 기본에 스팰북 스킬 디버프 추가", "ANameP_ShowKnownSpell");
+    SetupCheckBoxOption("[디버프] 내 디버프 모두 보임", "ANameP_ShowMyAll");
+    SetupCheckBoxOption("[버프] 내 버프 모두 보임", "ANameP_ShowPlayerBuffAll");
+    SetupCheckBoxOption("[색상] 어그로 색상 표시", "ANameP_AggroShow");
+    SetupCheckBoxOption("[색상] 낮은 생명력 색상 표시", "ANameP_LowHealthAlert");
+    SetupCheckBoxOption("[색상] Quest 몹 색상 표시", "ANameP_QuestAlert");
+    SetupCheckBoxOption("[색상] AutoMarker 몹 색상 표시", "ANameP_AutoMarker");
+    SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");
+    SetupColorOption("[이름표 색상] 어그로 대상", "ANameP_AggroTargetColor");
+    SetupColorOption("[이름표 색상] 어그로 상위", "ANameP_AggroColor");
+    SetupColorOption("[탱커 이름표 색상] 어그로 상실", "ANameP_TankAggroLoseColor");
+    SetupColorOption("[탱커 이름표 색상] 어그로 다른 탱커",  "ANameP_TankAggroLoseColor2");
+    SetupColorOption("[이름표 색상] 어그로 소환수", "ANameP_TankAggroLoseColor3");
+    SetupColorOption("[이름표 색상] 낮은 체력", "ANameP_LowHealthColor");
+    SetupColorOption("[이름표 색상] 디버프", "ANameP_DebuffColor");
+    SetupColorOption("[이름표 색상] Quest", "ANameP_QuestColor");
+    SetupColorOption("[이름표 색상] AutoMarker", "ANameP_AutoMarkerColor");
+    SetupEditBoxOption();
+end
+local function panelOnHide ()
+	if scrollFrame then
+		scrollFrame:Hide()
+		scrollFrame:UnregisterAllEvents()		
+        scrollFrame = nil;
+	end
+end
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("TRAIT_CONFIG_UPDATED");
 panel:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 panel:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 panel:RegisterEvent("PLAYER_REGEN_ENABLED");
 panel:SetScript("OnEvent", panel.OnEvent)
-
-if EditModeManagerFrame and FriendsFrameStatusDropDown and (tonumber(EDITMAN_OPENDROP_PATCH_VERSION) or 0) < 1 then
-	EDITMAN_OPENDROP_PATCH_VERSION = 1
-	hooksecurefunc(EditModeManagerFrame, "GetAttribute", function(_, attr)
-		if attr ~= "UIPanelLayout-checkFit" or EDITMAN_OPENDROP_PATCH_VERSION ~= 1
-		   or (issecurevariable(DropDownList1, "maxWidth") and issecurevariable("UIDROPDOWNMENU_MENU_LEVEL")) then
-		elseif InCombatLockdown() and FriendsFrameStatusDropDown:IsProtected() then
-		elseif FriendsFrameStatusDropDown:IsVisible() then
-			FriendsFrameStatusDropDown:Hide()
-			FriendsFrameStatusDropDown:Show()
-		else
-			local op = FriendsFrameStatusDropDown:GetParent()
-			FriendsFrameStatusDropDown:SetParent(nil)
-			if not FriendsFrameStatusDropDown:IsShown() then
-				FriendsFrameStatusDropDown:Show()
-				FriendsFrameStatusDropDown:Hide()
-			end
-			FriendsFrameStatusDropDown:SetParent(op)
-		end
-	end)
-end
+panel:SetScript("OnShow", panelOnShow)
+panel:SetScript("OnHide", panelOnHide);

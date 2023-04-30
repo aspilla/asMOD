@@ -1,5 +1,5 @@
 ACI_Options_Default = {
-    version = 230326,
+    version = 230504,
 
 
 -- 	ACI_SpellList_직업명_특성숫자
@@ -292,9 +292,9 @@ ACI_SpellList_DRUID_3 = {
 
 --회복
 ACI_SpellList_DRUID_4 = {
-	{"무쇠껍질", 2},
 	{"정신 자극", 1},
 	{"신속한 치유", 1},
+	{"화신: 생명의 나무", 2},
 	{"급속 성장", 1},
 	{"평온", 1},
 },
@@ -666,8 +666,7 @@ end
 ACI_OptionM.SetupAllOption = function()
 	if update_callback then
 		update_callback();
-	end
-    SetupEditBoxOption();
+	end    
 end
 
 ACI_OptionM.UpdateAllOption = function()
@@ -694,29 +693,22 @@ function panel:OnEvent(event, arg1)
 	end
 end
 
+
+local function panelOnShow ()
+	SetupEditBoxOption();
+end
+local function panelOnHide ()
+	if scrollFrame then
+		scrollFrame:Hide()
+		scrollFrame:UnregisterAllEvents()
+		scrollFrame = nil;
+	end
+end
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("TRAIT_CONFIG_UPDATED");
 panel:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 panel:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 panel:SetScript("OnEvent", panel.OnEvent)
-
-if EditModeManagerFrame and FriendsFrameStatusDropDown and (tonumber(EDITMAN_OPENDROP_PATCH_VERSION) or 0) < 1 then
-	EDITMAN_OPENDROP_PATCH_VERSION = 1
-	hooksecurefunc(EditModeManagerFrame, "GetAttribute", function(_, attr)
-		if attr ~= "UIPanelLayout-checkFit" or EDITMAN_OPENDROP_PATCH_VERSION ~= 1
-		   or (issecurevariable(DropDownList1, "maxWidth") and issecurevariable("UIDROPDOWNMENU_MENU_LEVEL")) then
-		elseif InCombatLockdown() and FriendsFrameStatusDropDown:IsProtected() then
-		elseif FriendsFrameStatusDropDown:IsVisible() then
-			FriendsFrameStatusDropDown:Hide()
-			FriendsFrameStatusDropDown:Show()
-		else
-			local op = FriendsFrameStatusDropDown:GetParent()
-			FriendsFrameStatusDropDown:SetParent(nil)
-			if not FriendsFrameStatusDropDown:IsShown() then
-				FriendsFrameStatusDropDown:Show()
-				FriendsFrameStatusDropDown:Hide()
-			end
-			FriendsFrameStatusDropDown:SetParent(op)
-		end
-	end)
-end
+panel:SetScript("OnShow", panelOnShow)
+panel:SetScript("OnHide", panelOnHide);

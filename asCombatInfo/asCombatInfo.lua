@@ -639,7 +639,7 @@ local function ACI_Alert(self, bcastspell)
 
 	if t == 1 or t == 9  then
 
-		_,_,icon = GetSpellInfo(spellname)
+		spellname,_,icon = GetSpellInfo(spellname)
 		start, duration, enable = GetSpellCooldown(spellname);
 		local _, gcd  = GetSpellCooldown(61304);
 		isUsable, notEnoughMana = IsUsableSpell(spellname);
@@ -685,7 +685,7 @@ local function ACI_Alert(self, bcastspell)
 			end
 		else
 			ACI_Alert_list[spellname] = false;
-		end
+		end		
 
 	elseif t == 2 or t==3 or t == 5  or t == 6 or t == 7 or t == 12 or t == 17 or t == 18 then
 
@@ -1093,6 +1093,8 @@ local function ACI_Alert(self, bcastspell)
 			count = GetSpellCharges(spellname);
 		end
 	end
+
+	ACI_SpellID_list[spellname] = true;
 
 	if icon == nil then
 
