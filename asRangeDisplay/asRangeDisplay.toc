@@ -1,6 +1,7 @@
-## Interface: 100007
+## Interface: 100100
 ## Author: |cffff3399아스필라|r [블랙무어]
 ## Title: |cffff3399as|rRangeDisplay
 ## Notes: 간단한 RangeDisplay
 ## Version : 160926
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asRangeDisplay.lua

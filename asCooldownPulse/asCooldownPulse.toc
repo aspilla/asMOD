@@ -1,7 +1,8 @@
-﻿## Interface: 100007
+﻿## Interface: 100100
 ## Author: |cffff3399아스필라|r [블랙무어]
 ## Title: |cffff3399as|rCooldownPulse
 ## Notes: 쿨다운 알림
 ## Version : 100425
 ## SavedVariablesPerCharacter: ACDP_Options 
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asCooldownPulse.xml

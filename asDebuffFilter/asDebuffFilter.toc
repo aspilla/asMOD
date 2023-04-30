@@ -1,6 +1,7 @@
-﻿## Interface: 100007
+﻿## Interface: 100100
 ## Author: |cffff3399아스필라|r [블랙무어]
 ## Title: |cffff3399as|rDebuffFilter
 ## Notes: 디버프 필터 
 ## Version : 100425
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asDebuffFilter.xml

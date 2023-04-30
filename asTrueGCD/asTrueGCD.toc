@@ -1,6 +1,7 @@
-﻿## Interface: 100007
+﻿## Interface: 100100
 ## Author: |cffff3399아스필라|r [블랙무어]
 ## Title: |cffff3399as|rTrueGCD
 ## Notes: 사용 스킬 History
 ## Version : 181210
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asTrueGCD.xml

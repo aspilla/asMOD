@@ -1,6 +1,7 @@
-﻿## Interface: 100007
+﻿## Interface: 100100
 ## Author: |cffff3399아스필라|r [블랙무어]
 ## Title: |cffff3399as|rOverlay
 ## Notes: 스킬 발동 알림
 ## Version : 181109
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asOverlay.xml

@@ -1,8 +1,9 @@
-﻿## Interface: 100007
+﻿## Interface: 100100
 ## Author: |cffff3399아스필라|r [블랙무어]
 ## Title: |cffff3399as|rNamePlates
 ## Notes: NamePlates 강화
 ## Version : 220419
 ## SavedVariablesPerCharacter: ANameP_Options 
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asNamePlates_Option.lua
 asNamePlates.xml

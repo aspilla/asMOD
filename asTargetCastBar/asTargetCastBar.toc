@@ -1,6 +1,7 @@
-﻿## Interface: 100007
+﻿## Interface: 100100
 ## Author: |cffff3399아스필라|r [블랙무어]
 ## Title: |cffff3399as|rTargetCastBar
 ## Notes: 대상의 시전바
 ## Version : 221223
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asTargetCastBar.xml
