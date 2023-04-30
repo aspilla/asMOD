@@ -12,12 +12,13 @@ local ACDP_AlertFadeTime = 0.5			-- Alert button Fade in-out 시간 짧으면 �
 local ACDP_AlertShowTime = 0.2			-- Alert button Fade in-out 시간 짧으면 빨리 사라짐
 local ACDP_SIZE = 32;					-- 쿨 List Size
 local ACDP_Show_CoolList = false;		-- 쿨 List를 보일지 안보일지 (무조건 보이게 하려면 true)
-local ACDP_Alert_Time = 0.5;			-- 쿨 1초전에 알림
+local ACDP_Alert_Time = 0.7;			-- 쿨 1초전에 알림
 local ACDP_ALPHA = 1;
 local ACDP_CooldownFontSize = 11;		-- Cooldown Font Size 기본 쿨다운 지원
 local ACDP_GreyColor = false 			-- Color Icon 원하면 false
 local ACDP_CooldownCount = 6;			-- 줄당 보일 CooldownCount 개수가 되면 줄을 바꾸어 표시됨 1줄로 보이려면 큰수로 지정
 local ACDP_UpdateRate = 0.2;			-- 0.2 초마다 check
+
 
 -- Check 할 item slot 기본은 장신구만 보이게
 local itemslots = {
@@ -265,17 +266,20 @@ local function scanItemSlots()
 	end
 end
 
-local function setupKnownSpell()
+local function setupKnownSpell(bwipe)
 
-	table.wipe(KnownSpellList);
-	table.wipe(ItemSlotList);
-	table.wipe(showlist_id);
+	if bwipe then
+		table.wipe(KnownSpellList);
+		table.wipe(ItemSlotList);
+		table.wipe(showlist_id);
+	end
 	scanSpells(1);
 	scanSpells(2);
 	scanSpells(3);
 	scanPetSpells();
 	scanItemSlots();
 	scanActionSlots();
+	--print("초기화")
 end
 
 local function ACDP_UpdateCoolAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
@@ -487,6 +491,9 @@ local function ACDP_Alert(spell, type)
 		--print(name);
 		if CONFIG_SOUND and name then
             PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. name.. ".mp3", "DIALOG")
+			--TTS 이용은 다음에
+			--C_VoiceChat.SpeakText(0, name, Enum.VoiceTtsDestination.QueuedLocalPlayback, 0, 100)
+			--print(name);
         end
 	else
 		local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(spell)
@@ -584,19 +591,24 @@ local function ACDP_Checkcooldown()
 
 		if start and start > 0 and duration then
 			local remain = start + duration - currtime;
-			if (remain <= gcd or remain <= ACDP_Alert_Time) and showlist_id[spellid] ~= nil then
+			if (remain <= gcd or remain <= ACDP_Alert_Time) then
+				if showlist_id[spellid] and showlist_id[spellid] == type then
+					showlist_id[spellid] = nil;
+					ACDP_Alert(spellid, type);
+					--print("해제1")
+				end
+			elseif duration >= check_duration and duration <= CONFIG_MAXCOOL then
+				if  showlist_id[spellid] == nil then
+					showlist_id[spellid] = type;
+					--print("등록")
+				end
+			end
+		elseif start and start == 0 then
+			if showlist_id[spellid] and showlist_id[spellid] == type then
 				showlist_id[spellid] = nil;
 				ACDP_Alert(spellid, type);
-			elseif remain >= (check_duration - ACDP_UpdateRate) and duration >= check_duration and duration <= CONFIG_MAXCOOL and showlist_id[spellid] == nil then
-				--local name = GetSpellInfo(spellid);
-				--print(name.."등록");
-				showlist_id[spellid] = type;
-			elseif duration > CONFIG_MAXCOOL then
-				-- remove from KnownSpellList
+				--print("해제2".. GetSpellInfo(spellid));
 			end
-		elseif start and start == 0 and showlist_id[spellid] ~= nil then
-			showlist_id[spellid] = nil;
-			ACDP_Alert(spellid, type);
 		end
 
 	end
@@ -612,7 +624,7 @@ end
 local function ACDP_OnEvent(self, event)
 
 	if event == "PLAYER_ENTERING_WORLD" then
-		setupKnownSpell();
+		setupKnownSpell(true);
 
 		if UnitAffectingCombat("player") then
 			ACDP_CoolButtons:SetAlpha(ACDP_ALPHA);
@@ -625,13 +637,13 @@ local function ACDP_OnEvent(self, event)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ACDP_CoolButtons:SetAlpha(0.5);
 	elseif event == "SPELLS_CHANGED" then
-		setupKnownSpell();
+		setupKnownSpell(true);
 	elseif event == "UNIT_PET" then
-		setupKnownSpell();
-	elseif event == "ACTIONBAR_SLOT_CHANGED" then
-		setupKnownSpell();
+		setupKnownSpell(true);
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
-		setupKnownSpell();
+		setupKnownSpell(true);
+	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
+		setupKnownSpell(true);
 	end
 
 	return;
@@ -646,6 +658,55 @@ ACDP_mainframe:RegisterEvent("SPELLS_CHANGED")
 ACDP_mainframe:RegisterUnitEvent("UNIT_PET", "player")
 ACDP_mainframe:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
 ACDP_mainframe:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED")
+ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")
+ACDP_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
 ACDP_Init()
 C_Timer.NewTicker(ACDP_UpdateRate, ACDP_OnUpdate);
+
+--[[
+local frame = CreateFrame("Frame", nil, nil);
+local category, layout = Settings.RegisterCanvasLayoutCategory(frame, "asCooldownPulse");
+
+layout:AddAnchorPoint("TOPLEFT", 10, -10);
+layout:AddAnchorPoint("BOTTOMRIGHT", -10, 10);
+
+
+local category, layout = Settings.RegisterVerticalLayoutCategory("asCooldownPulse");
+Settings.RegisterAddOnCategory(category);
+
+-- To assign a subcategory:
+local category = category or Settings.GetCategory("asCooldownPulse");
+
+-- check box
+local variable, name, tooltip = "Show_CoolList", "Cool List를 언제나 보이기", "Cool List를 언제나 보이기";
+local setting = Settings.RegisterProxySetting(category, variable, ACDP_Options, Settings.VarType.Boolean, name, Settings.Default.False);
+Settings.CreateCheckBox(category, setting, tooltip);
+
+
+-- slider
+local variable, name, tooltip = "MySlider", "My Slider", "My Slider Tooltip";
+local minValue, maxValue, step = 1, 100, 1;
+local options = Settings.CreateSliderOptions(minValue, maxValue, step);
+options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+
+local defaultValue = 50;
+local setting = Settings.RegisterProxySetting(category, variable, myVariableTable, Settings.VarType.Number, name, defaultValue);
+Settings.CreateSlider(category, setting, options, tooltip);
+
+-- dropdown
+local variable, name, tooltip = "MyDropDown", "My DropDown", "My DropDown Tooltip";
+local function GetOptions()
+    local container = Settings.CreateControlTextContainer();
+    container:Add(0, "Option A");
+    container:Add(1, "Option B");
+    container:Add(2, "Option C");
+    return container:GetData();
+end
+
+local defaultValue = 0;
+local setting = Settings.RegisterProxySetting(category, variable, myVariableTable, Settings.VarType.Number, name, defaultValue);
+Settings.CreateDropDown(category, setting, GetOptions, tooltip);
+
+]]

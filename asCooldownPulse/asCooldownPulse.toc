@@ -3,4 +3,5 @@
 ## Title: |cffff3399as|rCooldownPulse
 ## Notes: 쿨다운 알림
 ## Version : 100425
+## SavedVariablesPerCharacter: ACDP_Options 
 asCooldownPulse.xml
