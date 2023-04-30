@@ -1,6 +1,0 @@
-﻿## Interface: 100007
-## Author: |cffff3399아스필라|r [블랙무어]
-## Title: |cffff3399as|rActiveBuffFilter
-## Notes: 발동버프필터
-## Version : 170505
-asActiveBuffFilter.xml
