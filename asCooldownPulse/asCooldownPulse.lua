@@ -20,27 +20,24 @@ local ACDP_CooldownCount = 6;			-- 줄당 보일 CooldownCount 개수가 되면 
 local ACDP_UpdateRate = 0.2;			-- 0.2 초마다 check
 
 
--- Check 할 item slot 기본은 장신구만 보이게
 local itemslots = {
-	--[[
-		"HeadSlot",
-		"NeckSlot",
-		"ShoulderSlot",
-		"BackSlot",
-		"ChestSlot",
-		"WristSlot",
-		"MainHandSlot",
-		"SecondaryHandSlot",
-		"HandsSlot",
-		"WaistSlot",
-		"LegsSlot",
-		"FeetSlot",
-		"Finger0Slot",
-		"Finger1Slot",
-		]]
-		"Trinket0Slot",
-		"Trinket1Slot",
-	}
+	"HeadSlot",
+	"NeckSlot",
+	"ShoulderSlot",
+	"BackSlot",
+	"ChestSlot",
+	"WristSlot",
+	"MainHandSlot",
+	"SecondaryHandSlot",
+	"HandsSlot",
+	"WaistSlot",
+	"LegsSlot",
+	"FeetSlot",
+	"Finger0Slot",
+	"Finger1Slot",
+	"Trinket0Slot",
+	"Trinket1Slot",
+}
 
 
 -- Alpha animation stuff
@@ -496,15 +493,15 @@ local function ACDP_Alert(spell, type)
 			--print(name);
         end
 	else
-		local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(spell)
+		local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(type)
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
 
 		if CONFIG_SOUND and name then
 
-            PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. name.. ".mp3", "DIALOG")
-
-			if ItemSlotList[spell] then
-                PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. ItemSlotList[spell].. ".mp3", "DIALOG")
+            if ItemSlotList[type] then
+                PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. ItemSlotList[type].. ".mp3", "DIALOG")
+			else
+				PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\".. name.. ".mp3", "DIALOG")
             end
 
 		end
