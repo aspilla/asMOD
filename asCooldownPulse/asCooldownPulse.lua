@@ -39,6 +39,10 @@ local itemslots = {
 	"Trinket1Slot",
 }
 
+local black_list = {
+	["애완동물 되살리기"] = true;
+
+}
 
 -- Alpha animation stuff
 local asFADEFRAMES = {};
@@ -184,7 +188,7 @@ local function scanSpells(tab)
 			do break end
 		end
 
-		if spellID then
+		if spellID and not black_list[spellName] then
 			KnownSpellList[spellID] = SPELL_TYPE_USER;
 		end
 	end
@@ -201,7 +205,7 @@ local function scanPetSpells()
 			do break end
 		end
 
-		if spellID then
+		if spellID and not black_list[spellName] then
 			KnownSpellList[spellID] = SPELL_TYPE_PET;
 		end
 	end
