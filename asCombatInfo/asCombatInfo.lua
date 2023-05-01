@@ -639,7 +639,11 @@ local function ACI_Alert(self, bcastspell)
 
 	if t == 1 or t == 9  then
 
-		spellname,_,icon = GetSpellInfo(spellname)
+		local spell_temp;
+		spell_temp,_,icon = GetSpellInfo(spellname)
+		if spell_temp then
+			spellname = spell_temp;
+		end
 		start, duration, enable = GetSpellCooldown(spellname);
 		local _, gcd  = GetSpellCooldown(61304);
 		isUsable, notEnoughMana = IsUsableSpell(spellname);
