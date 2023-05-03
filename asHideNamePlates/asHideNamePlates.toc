@@ -1,7 +1,0 @@
-﻿## Interface: 100100
-## Author: |cffff3399아스필라|r [아즈샤라]
-## Title: |cffff3399as|rHideNamePlates
-## Notes: 폭탄 주요 Casting 외 이름표 숨김
-## Version : 230218
-## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
-asHideNamePlates.lua
