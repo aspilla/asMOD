@@ -444,70 +444,81 @@ local function ATCB_OnEvent(self, event, ...)
         
 	end
 
-		local name,  _, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo("target");
+    local frameIcon = self.button.icon; 
+    local castBar = self.castbar;
+    local text  = self.castbar.name;
+    local time = self.castbar.time;
 
-		if not name then
-			name,  _, texture, start, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo("target");
-		end
-		
-		local frameIcon = self.button.icon; 
-		local castBar = self.castbar;
-		local text  = self.castbar.name;
-		local time = self.castbar.time;
-		
-		if name then
-			local current = GetTime();
-			frameIcon:SetTexture(texture);
+    if UnitExists("target") then
 
-			self.start = start / 1000;
-			self.duration = (endTime - start) /1000;
-			castBar:SetMinMaxValues(0, self.duration)
-			castBar:SetValue(current - self.start);
+        local name,  _, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo("target");
 
-			local color = {};
+        if not name then
+            name,  _, texture, start, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo("target");
+        end
+                        
+        if name then
+            local current = GetTime();
+            frameIcon:SetTexture(texture);
 
-			if UnitIsUnit("targettarget", "player") then
-				if notInterruptible then
-					color = ATCB_NOT_INTERRUPTIBLE_COLOR_TARGET;
-				else
-					color = ATCB_INTERRUPTIBLE_COLOR_TARGET;
-				end
+            self.start = start / 1000;
+            self.duration = (endTime - start) /1000;
+            castBar:SetMinMaxValues(0, self.duration)
+            castBar:SetValue(current - self.start);
 
-				if (name ~= prev_name) and ATCB_DangerousSpellList[spellid] then
-					--PlaySoundFile("Interface\\AddOns\\asTargetCastBar\\alert.mp3", "DIALOG");                    
-					prev_name = name;
-				end
+            local color = {};
 
-			else
-				if notInterruptible then
-					color = ATCB_NOT_INTERRUPTIBLE_COLOR;
-				else
-					color = ATCB_INTERRUPTIBLE_COLOR;
-				end
-				prev_name = nil;
-			end
+            if UnitIsUnit("targettarget", "player") then
+                if notInterruptible then
+                    color = ATCB_NOT_INTERRUPTIBLE_COLOR_TARGET;
+                else
+                    color = ATCB_INTERRUPTIBLE_COLOR_TARGET;
+                end
 
-			castBar:SetStatusBarColor(color[1], color[2], color[3]);
-						
-			text:SetText(name);
-			time:SetText(format("%.1f/%.1f", max((current - self.start), 0), max(self.duration, 0)));
-			
-			frameIcon:Show();			
-			castBar:Show();
-			if ATCB_DangerousSpellList[spellid] and notInterruptible == false then
-				lib.PixelGlow_Start(castBar, {0, 1, 0.32, 1});
+                if (name ~= prev_name) and ATCB_DangerousSpellList[spellid] then
+                    --PlaySoundFile("Interface\\AddOns\\asTargetCastBar\\alert.mp3", "DIALOG");                    
+                    prev_name = name;
+                end
+
+            else
+                if notInterruptible then
+                    color = ATCB_NOT_INTERRUPTIBLE_COLOR;
+                else
+                    color = ATCB_INTERRUPTIBLE_COLOR;
+                end
+                prev_name = nil;
+            end
+
+            castBar:SetStatusBarColor(color[1], color[2], color[3]);
+                        
+            text:SetText(name);
+            time:SetText(format("%.1f/%.1f", max((current - self.start), 0), max(self.duration, 0)));
+            
+            frameIcon:Show();			
+            castBar:Show();
+            if ATCB_DangerousSpellList[spellid] and notInterruptible == false then
+                lib.PixelGlow_Start(castBar, {0, 1, 0.32, 1});
             elseif ATCB_DangerousSpellList[spellid] then
                 lib.PixelGlow_Start(castBar, {0, 1, 1, 1});
-			end
-					
-		else
-			castBar:SetValue(0);
-			frameIcon:Hide();
-			castBar:Hide();
-			lib.PixelGlow_Stop(castBar);
-			self.start = 0;
-			prev_name = nil;
-		end
+            end
+                    
+        else
+            castBar:SetValue(0);
+            frameIcon:Hide();
+            castBar:Hide();
+            lib.PixelGlow_Stop(castBar);
+            self.start = 0;
+            prev_name = nil;
+        end
+    else
+        castBar:SetValue(0);
+        frameIcon:Hide();
+        castBar:Hide();
+        lib.PixelGlow_Stop(castBar);
+        self.start = 0;
+        prev_name = nil;
+    end
+
 end
 
 
