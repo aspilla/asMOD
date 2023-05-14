@@ -21,6 +21,7 @@ local bupdate_powerbar = false;
 local bupdate_healthbar = APB_SHOW_HEALTHBAR;
 local bupdate_stagger = false;
 local bupdate_fronzen = false;
+local bupdate_windrunner = false;
 local bshow_haste = false;
 local bupdate_partial_power = false;
 local bsmall_power_bar = false;
@@ -53,7 +54,7 @@ local FrozenOrbDamageID = 84721;
 local function asGetCostTooltipInfo (spellID)
     if not spellID then return end
 
-	local cost = SpellGetCosts[spellID] 
+	local cost = SpellGetCosts[spellID]
 
 
 	-- 8.0 change need
@@ -63,8 +64,8 @@ local function asGetCostTooltipInfo (spellID)
 		local powerType = UnitPowerType("player");
 		local mana = UnitPower("player", powerType);
 		local max = UnitPowerMax("player", powerType);
-		
-		local ret = math.min((max - mana), cost) 
+
+		local ret = math.min((max - mana), cost)
 		return 0 - ret;
 	end
 
@@ -75,7 +76,7 @@ end
 local function asGetPowerCostTooltipInfo (spellID)
     if not spellID then return end
 
-	local cost = SpellGetPowerCosts[spellID] 
+	local cost = SpellGetPowerCosts[spellID]
 
 
 	-- 8.0 change need
@@ -106,13 +107,13 @@ local function APB_UnitBuff(unit, buff, casterid)
 		end
 
 		i = i + 1;
-	
+
 	until (name == nil)
 
 	if ret then
 		return UnitBuff(unit, i, filter);
 	end
-	
+
 	for slot=1, MAX_TOTEMS do
 		local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
 
@@ -142,7 +143,7 @@ local function APB_UnitDebuff(unit, buff, casterid)
 		end
 
 		i = i + 1;
-	
+
 	until (name == nil)
 
 	if ret then
@@ -170,7 +171,7 @@ local function APB_UnitDebuff_Name(unit, buff, filter)
 		end
 
 		i = i + 1;
-	
+
 	until (name == nil)
 
 	return nil;
@@ -193,7 +194,7 @@ local function APB_OnUpdateCombo(self, elapsed)
 		local curr_time = GetTime();
 		local curr_duration = curr_time - self.start;
 
-		self.update = 0		
+		self.update = 0
 
 		if curr_duration < self.duration then
 			self:SetMinMaxValues(0, self.duration * 10)
@@ -210,20 +211,20 @@ local prev_combo = nil;
 local p_start = nil;
 
 local function APB_ShowComboBar(combo, partial, cast, cooldown)
-	
+
 	local bmax = false;
 
 	local _, Class = UnitClass("player")
 	local color =RAID_CLASS_COLORS[Class]
 	local value = 1;
 	local gen = false;
-	
+
 	if prev_combo ~= combo then
 		p_start = GetTime();
 		prev_combo = combo;
 	end
 
-	
+
 	if not cast then
 		cast = 0;
 	end
@@ -259,11 +260,9 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
 		cast = 0;
 	end
 
-
 	if partial > 0 then
-		value = partial;
+		value = partial;		
 	end
-
 
 	for i = 1, max_combo do
 
@@ -310,6 +309,17 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
 
 		end
 	end
+
+	if bupdate_partial_power then
+		local power = combo + partial;
+		if power > max_combo then
+			power = max_combo;
+		end
+		APB.combobar[1].text:SetText(power);
+		APB.combobar[1].text:ClearAllPoints();
+		APB.combobar[1].text:SetPoint("CENTER", APB.combobar[math.ceil(max_combo/2)], "CENTER", 0, 0);
+		APB.combobar[1].text:Show();
+	end
 end
 
 local function APB_UpdateBuffCombo(combobar)
@@ -321,7 +331,7 @@ local function APB_UpdateBuffCombo(combobar)
 	if not bupdate_buff_combo then
 		return;
 	end
-	
+
 	if APB_BUFF_COMBO then
 
 		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = APB_UnitBuff(combobar.unit, APB_BUFF_COMBO, "player");
@@ -366,7 +376,7 @@ local function APB_OnUpdateBuff(self, elapsed)
 		local curr_time = GetTime();
 		local curr_duration = curr_time - self.start;
 
-		self.update = 0		
+		self.update = 0
 
 		if curr_duration < self.duration then
 
@@ -383,11 +393,11 @@ local function APB_OnUpdateBuff(self, elapsed)
 
 			if self.buff then
 				if curr_gcd and remain_buff < curr_gcd * 2 then
-					self:SetStatusBarColor(1, 0, 1);	
+					self:SetStatusBarColor(1, 0, 1);
 				else
-					self:SetStatusBarColor(0.8, 0.8, 1);	
+					self:SetStatusBarColor(0.8, 0.8, 1);
 				end
-			end	
+			end
 		end
 	end
 end
@@ -399,7 +409,7 @@ local function APB_UpdateBuff(buffbar)
 		return;
 	end
 
-	
+
 	if buffbar.buff then
 
 		local name,  icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = APB_UnitBuff(buffbar.unit, buffbar.buff, "player");
@@ -480,7 +490,7 @@ local function APB_UpdateStagger(self)
 		local stagger = math.ceil(val/valmax * 100);
 
 		local info = PowerBarColor["STAGGER"];
-	
+
 
 		if (stagger > 100) then
 			stagger = 100
@@ -503,7 +513,7 @@ local function APB_UpdateStagger(self)
 		self:SetStatusBarColor(info.r, info.g, info.b);
 		self:Show();
 	end
-		
+
 end
 
 local FrozenOrbTime = nil;
@@ -536,7 +546,7 @@ local function APB_UpdateFronzenOrb(self)
 		self.count:SetText("");
 		self:Show();
 	end
-		
+
 end
 
 
@@ -552,7 +562,7 @@ local function APB_MaxCombo(max)
 	end
 
 	local width = (APB_WIDTH - (3 *(max - 1)))/max;
-	
+
 	for i = 1, 10 do
 		APB.combobar[i]:SetWidth(width)
 		APB.combobar[i].start = nil;
@@ -581,7 +591,7 @@ local function APB_MaxRune()
 		APB.combobar[i]:Hide();
 	end
 
-	
+
 	for i = 1, 6 do
 		APB.combobar[i]:SetWidth(width)
 		APB.combobar[i]:Show();
@@ -612,7 +622,7 @@ local function APB_UpdateRune()
 	table.sort(APB.runeIndexes, RuneComparison);
 
 	for i, index in ipairs(APB.runeIndexes) do
- 
+
 		local start, duration, runeReady = GetRuneCooldown(index);
 
 		if runeReady then
@@ -625,7 +635,7 @@ local function APB_UpdateRune()
 
 			APB.combobar[i]:SetMinMaxValues(0, 1)
 			APB.combobar[i]:SetValue(1)
-			APB.combobar[i]:SetScript("OnUpdate", nil)		
+			APB.combobar[i]:SetScript("OnUpdate", nil)
 		else
 			APB.combobar[i]:SetStatusBarColor(1,1,1)
 			APB.combobar[i].start = start;
@@ -650,7 +660,7 @@ local function APB_UpdatePower()
 	local partial = nil;
 
 	if bupdate_partial_power then
-		_, partial = math.modf(UnitPower("player", APB_POWER_LEVEL, true) / UnitPowerDisplayMod(APB_POWER_LEVEL));				
+		_, partial = math.modf(UnitPower("player", APB_POWER_LEVEL, true) / UnitPowerDisplayMod(APB_POWER_LEVEL));
 	end
 
 	local cooldownDuration = nil;
@@ -659,7 +669,7 @@ local function APB_UpdatePower()
 		if (peace == nil or peace == 0) then
 			peace = 0.2;
 		end
-		cooldownDuration = 1 / peace;			
+		cooldownDuration = 1 / peace;
 	end
 
 
@@ -673,7 +683,7 @@ local function APB_UpdatePower()
 
 	if spellID then
 		local costTable = GetSpellPowerCost(spellID);
-			
+
 		for _, costInfo in pairs(costTable) do
 			if (costInfo.type == APB_POWER_LEVEL) then
 				cast = costInfo.cost;
@@ -701,7 +711,7 @@ local function APB_GetActionSlot(arg1)
 		if id and type and type == "macro" then
 			 id = GetMacroSpell(id);
 		end
-	
+
 		if id then
 			local name = GetSpellInfo(id);
 
@@ -722,7 +732,7 @@ local function APB_SpellMax(spell, spell2)
 	if bupdate_druid then
 		maxCharges = 2;
 	end
-	
+
 	if spell2 then
 		local _, maxCharges2 = GetSpellCharges(spell2);
 
@@ -733,7 +743,7 @@ local function APB_SpellMax(spell, spell2)
 		if maxCharges2 then
 			maxCharges = maxCharges + maxCharges2
 		end
-	
+
 	end
 
 
@@ -763,7 +773,7 @@ local function APB_UpdateSpell(spell, spell2)
 	if not maxCharges then
 		return;
 	end
-	for i = 1, charges do 
+	for i = 1, charges do
 		APB.combobar[i].start = nil;
 	--	APB.combobar[i]:SetStatusBarColor(1,1,0)
 		local _, Class = UnitClass("player")
@@ -812,14 +822,14 @@ local function APB_UpdateSpell(spell, spell2)
 				chargeStart = 0;
 				chargeDuration = 0;
 			end
-		
+
 			if not maxCharges2 then
 				return;
 			end
 		end
 
 
-		for i = maxCharges + 1, maxCharges + charges do 
+		for i = maxCharges + 1, maxCharges + charges do
 			APB.combobar[i].start = nil;
 			APB.combobar[i]:SetStatusBarColor(1, 0.7, 0.3);
 
@@ -849,7 +859,7 @@ end
 local APB_MAX_INCOMING_HEAL_OVERFLOW = 1.2;
 
 local function APB_HealColor(value)
-	
+
 	local r, g, b;
 	local min, max = 0, 100 * APB_MAX_INCOMING_HEAL_OVERFLOW;
 
@@ -876,7 +886,7 @@ end
 local function APB_Update(self)
 	local valuePct;
 	local valuePct_orig;
-	
+
 	if not bupdate_powerbar then
 		APB.bar:Hide();
 	else
@@ -901,7 +911,7 @@ local function APB_Update(self)
 			valuePct = value;
 			valuePct_orig = value_orig
 		end
-	
+
 		if powerTypeString then
 			local info = PowerBarColor[powerTypeString];
 			APB.bar:SetStatusBarColor(info.r, info.g, info.b);
@@ -913,7 +923,7 @@ local function APB_Update(self)
 
 
 		if bshow_haste then
-			local haste = UnitSpellHaste("player") 
+			local haste = UnitSpellHaste("player")
 			APB.bar.count:SetText(format("%d%%", haste + 0.5));
 		end
 
@@ -953,7 +963,7 @@ local function APB_Update(self)
 		valuePct =  (math.ceil((value / valueMax) * 100));
 		valuePct_orig = (math.ceil((value_orig / valueMax) * 100));
 		local valuePctAbsorb = (math.ceil((total / valueMax) * 100));
-	
+
 		APB.healthbar:SetMinMaxValues(0, valueMax)
 		APB.healthbar:SetValue(value)
 
@@ -992,7 +1002,7 @@ local function APB_OnUpdate(self, elapsed)
 		update2 = 0
 		APB_UpdateBuff(self.buffbar[0]);
 		APB_UpdateBuffCombo(self.combobar);
-		APB_UpdateStagger(self.buffbar[0]);	
+		APB_UpdateStagger(self.buffbar[0]);
 		APB_UpdatePower();
 	end
 
@@ -1012,7 +1022,7 @@ end
 local function asCheckTalent (name)
 
 	local specID = PlayerUtil.GetCurrentSpecID();
-  
+
     local configID = C_ClassTalents.GetActiveConfigID();
 
 	if not (configID) then
@@ -1046,12 +1056,12 @@ local function asCheckTalent (name)
 end
 
 local function APB_CheckPower(self)
-	
+
 	self = APB;
 	local localizedClass, englishClass = UnitClass("player")
 	local spec = GetSpecialization();
 	local talentgroup = GetActiveSpecGroup();
-	
+
 	APB:UnregisterEvent("UNIT_POWER_UPDATE")
 	APB:UnregisterEvent("UNIT_DISPLAYPOWER");
 	APB:UnregisterEvent("UPDATE_SHAPESHIFT_FORM");
@@ -1079,6 +1089,7 @@ local function APB_CheckPower(self)
 	bupdate_buff_combo = false;
 	bupdate_stagger = false;
 	bupdate_fronzen = false;
+	bupdate_windrunner = false;
 	bupdate_partial_power = false;
 	bsmall_power_bar = false;
 
@@ -1097,11 +1108,12 @@ local function APB_CheckPower(self)
 	APB.bar:Hide();
 	APB.bar.text:SetText("");
 	APB.bar.count:SetText("");
-
+	APB.combobar[1].text:SetText("");
+	
 	for j = 0, 1 do
 		APB.buffbar[j]:Hide();
 		APB.buffbar[j].text:SetText("");
-		APB.buffbar[j].count:SetText("");	
+		APB.buffbar[j].count:SetText("");
 		APB.buffbar[j].cast:Hide();
 		APB.powermax = nil;
 
@@ -1109,12 +1121,10 @@ local function APB_CheckPower(self)
 			APB.buffbar[j].square[i]:Hide();
 		end
 
-		APB.buffbar[j].square2:Hide();
-		APB.buffbar[j].square3:Hide();
-		APB.buffbar[j].square4:Hide();
 		APB.buffbar[j].buff = nil;
 		APB.buffbar[j].debuff = nil;
 	end
+	APB.combobar[1].text:Hide();
 
 	if (englishClass == "EVOKER") then
 		--기원사
@@ -1122,9 +1132,9 @@ local function APB_CheckPower(self)
 		APB_POWER_LEVEL = Enum.PowerType.Essence;
 		APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
 		APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
-		bupdate_power = true;		
+		bupdate_power = true;
 	end
-	
+
 	if (englishClass == "PALADIN") then
 
 		APB_UNIT_POWER = "HOLY_POWER";
@@ -1132,11 +1142,11 @@ local function APB_CheckPower(self)
 		APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
 		APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 		bupdate_power = true;
-		
+
 		if (spec and spec == 2) then
-			
+
 			bsmall_power_bar = true;
-					
+
 			APB_BUFF = "정의의 방패";
 			APB.buffbar[0].buff = "정의의 방패"
 			APB_SPELL = "정의의 방패";
@@ -1147,7 +1157,7 @@ local function APB_CheckPower(self)
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
 
 			APB.buffbar[0].unit = "player"
-			
+
 			bsmall_power_bar = true;
 			APB_UpdateBuff(self.buffbar[0])
 
@@ -1161,7 +1171,7 @@ local function APB_CheckPower(self)
 	if (englishClass == "MAGE") then
 		if (spec and spec == 1) then
 			APB_UNIT_POWER = "ARCANE_CHARGES"
-			APB_POWER_LEVEL = Enum.PowerType.ArcaneCharges 
+			APB_POWER_LEVEL = Enum.PowerType.ArcaneCharges
 			APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 			APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 			bupdate_power = true;
@@ -1170,22 +1180,22 @@ local function APB_CheckPower(self)
 
 		if (spec and spec == 2) then
 			if (asCheckTalent("화상의 자극")) then
-				APB_BUFF = "화상의 자극";	
-				APB.buffbar[0].buff = "화상의 자극"	
+				APB_BUFF = "화상의 자극";
+				APB.buffbar[0].buff = "화상의 자극"
 				APB.buffbar[0].unit = "player";
 				APB:RegisterUnitEvent("UNIT_AURA", "player");
 				bupdate_buff_count = true;
 				APB_UpdateBuff(self.buffbar[0])
-	
+
 			elseif (asCheckTalent("불꽃정신")) then
-				APB_BUFF = "불꽃정신";		
+				APB_BUFF = "불꽃정신";
 				APB.buffbar[0].buff = "불꽃정신"
 				APB.buffbar[0].unit = "player"
-				APB:RegisterUnitEvent("UNIT_AURA", "player");	
-				bupdate_buff_count = true;				
-				APB_UpdateBuff(self.buffbar[0]);	
+				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				bupdate_buff_count = true;
+				APB_UpdateBuff(self.buffbar[0]);
 			end
-			
+
 			APB_SPELL = "화염 작렬";
 
 			if asCheckTalent("불사조의 불길") then
@@ -1196,20 +1206,20 @@ local function APB_CheckPower(self)
 				APB_SpellMax(APB_SPELL);
 				APB_UpdateSpell(APB_SPELL);
 			end
-			
+
 			bupdate_spell = true;
 			bsmall_power_bar = true;
 		end
 
 		if (spec and spec == 3 ) then
-		
-			APB_BUFF_COMBO = "고드름";		
+
+			APB_BUFF_COMBO = "고드름";
 			APB_MaxCombo(5);
 			APB.combobar.unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			APB_UpdateBuffCombo(self.combobar)
-			bupdate_buff_combo = true;				
-			
+			bupdate_buff_combo = true;
+
 			FrozenOrbDuration = 10;
 			if asCheckTalent("영원한 서리") then
 				FrozenOrbDuration = 12;
@@ -1217,16 +1227,16 @@ local function APB_CheckPower(self)
 
 			bupdate_fronzen = true;
 			APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-			
+
 			bsmall_power_bar = true;
-		end		
+		end
 
 	end
 
 
 	if (englishClass == "WARLOCK") then
 		APB_UNIT_POWER = "SOUL_SHARDS"
-		APB_POWER_LEVEL = Enum.PowerType.SoulShards 
+		APB_POWER_LEVEL = Enum.PowerType.SoulShards
 		APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 		APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 		bupdate_power = true;
@@ -1234,7 +1244,7 @@ local function APB_CheckPower(self)
 		if (spec and spec == 3) then
 			if asCheckTalent("불확실성 역전") then
 				APB_BUFF = "불확실성 역전";
-				APB.buffbar[0].buff = "불확실성 역전"		
+				APB.buffbar[0].buff = "불확실성 역전"
 				APB.buffbar[0].unit = "player"
 				APB:RegisterUnitEvent("UNIT_AURA", "player");
 				APB_UpdateBuff(self.buffbar[0]);
@@ -1250,27 +1260,27 @@ local function APB_CheckPower(self)
 		bupdate_druid = false;
 
 		if (spec and spec == 1) then
-			APB_BUFF = "일월식 (달)";		
+			APB_BUFF = "일월식 (달)";
 			APB.buffbar[0].buff = "일월식 (달)"
 			APB.buffbar[0].unit = "player"
-			APB:RegisterUnitEvent("UNIT_AURA", "player");			
+			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			APB_UpdateBuff(self.buffbar[0]);
 
-			APB_BUFF2 = "일월식 (태양)";		
+			APB_BUFF2 = "일월식 (태양)";
 			APB.buffbar[1].buff = "일월식 (태양)"
 			APB.buffbar[1].unit = "player"
-			APB:RegisterUnitEvent("UNIT_AURA", "player");			
+			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			APB_UpdateBuff(self.buffbar[1]);
 
 			APB_SPELL = "별빛섬광";
 			APB_SPELL2 = "천벌"
 			bupdate_druid = true;
-			APB_SpellMax(APB_SPELL, APB_SPELL2);			
-			APB_UpdateSpell(APB_SPELL, APB_SPELL2);			
-			
+			APB_SpellMax(APB_SPELL, APB_SPELL2);
+			APB_UpdateSpell(APB_SPELL, APB_SPELL2);
+
 			bupdate_spell = true;
-			
-			
+
+
 
 		end
 
@@ -1286,12 +1296,12 @@ local function APB_CheckPower(self)
 		end
 
 		if (spec and spec == 3) then
-			APB_BUFF = "무쇠가죽";		
+			APB_BUFF = "무쇠가죽";
 			APB.buffbar[0].buff = "무쇠가죽"
 			APB.buffbar[0].unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			bupdate_buff_count = true;
-			
+
 			APB_UpdateBuff(self.buffbar[0]);
 		end
 	end
@@ -1321,7 +1331,7 @@ local function APB_CheckPower(self)
 		bupdate_power = true;
 
 		APB_BUFF = "난도질";
-		APB.buffbar[0].buff = "난도질";		
+		APB.buffbar[0].buff = "난도질";
 		APB.buffbar[0].unit = "player"
 		APB:RegisterUnitEvent("UNIT_AURA", "player");
 		APB_UpdateBuff(self.buffbar[0])
@@ -1336,7 +1346,7 @@ local function APB_CheckPower(self)
 
 		if (spec and spec == 1) then
 			APB_BUFF = "뼈의 보호막";
-			APB.buffbar[0].buff = "뼈의 보호막";	
+			APB.buffbar[0].buff = "뼈의 보호막";
 			APB.buffbar[0].unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			bupdate_buff_count = true;
@@ -1348,10 +1358,10 @@ local function APB_CheckPower(self)
 
 	end
 
-	if (englishClass == "PRIEST") then		
+	if (englishClass == "PRIEST") then
 		if (spec and spec == 3) then
 			bshow_haste = true;
-		end	
+		end
 	end
 
 	if (englishClass == "WARRIOR") then
@@ -1360,8 +1370,8 @@ local function APB_CheckPower(self)
 			APB_SpellMax(APB_SPELL);
 			APB_UpdateSpell(APB_SPELL);
 			bupdate_spell = true;
-			APB_DEBUFF = "거인의 강타";	
-			APB.buffbar[0].debuff = "거인의 강타"	
+			APB_DEBUFF = "거인의 강타";
+			APB.buffbar[0].debuff = "거인의 강타"
 			APB.buffbar[0].unit = "target";
 			APB:SetScript("OnUpdate", APB_OnUpdate);
 
@@ -1379,7 +1389,7 @@ local function APB_CheckPower(self)
 
 
 			if asCheckTalent("소용돌이 연마") then
-				APB_BUFF_COMBO = "소용돌이";		
+				APB_BUFF_COMBO = "소용돌이";
 
 				if asCheckTalent("고기칼") then
 					APB_MaxCombo(4);
@@ -1399,7 +1409,7 @@ local function APB_CheckPower(self)
 			APB_UpdateSpell(APB_SPELL);
 			bupdate_spell = true;
 			APB_BUFF = "방패 올리기";
-			APB.buffbar[0].buff = "방패 올리기"		
+			APB.buffbar[0].buff = "방패 올리기"
 			APB.buffbar[0].unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
@@ -1439,7 +1449,7 @@ local function APB_CheckPower(self)
 			APB_SpellMax(APB_SPELL);
 			APB_UpdateSpell(APB_SPELL);
 			bupdate_spell = true;
-			APB_BUFF = "악마 쐐기";	
+			APB_BUFF = "악마 쐐기";
 			APB.buffbar[0].buff = "악마 쐐기";
 			APB.buffbar[0].unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
@@ -1462,7 +1472,7 @@ local function APB_CheckPower(self)
 			APB_UpdateSpell(APB_SPELL);
 			bupdate_spell = true;
 
-			APB_BUFF = "광기";		
+			APB_BUFF = "광기";
 			APB.buffbar[0].buff = "광기";
 			APB.buffbar[0].unit = "player"
 			bupdate_buff_count = true;
@@ -1484,16 +1494,21 @@ local function APB_CheckPower(self)
 
 			if asCheckTalent("교묘한 사격") then
 				APB_BUFF = "교묘한 사격";
-				APB.buffbar[0].buff = "교묘한 사격";		
+				APB.buffbar[0].buff = "교묘한 사격";
 				APB.buffbar[0].unit = "player"
 				APB:RegisterUnitEvent("UNIT_AURA", "player");
 				APB_UpdateBuff(self.buffbar[0])
+			end
+
+			if asCheckTalent("윈드러너의 인도") then
+				bupdate_windrunner = true;
+				APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 			end
 		end
 
 
 		if (spec and spec == 3 and asCheckTalent("살쾡이의 이빨")) then
-			APB_BUFF_COMBO = "살쾡이의 격노";		
+			APB_BUFF_COMBO = "살쾡이의 격노";
 			APB_MaxCombo(5);
 			APB.combobar.unit = "player"
 			APB_UpdateBuffCombo(self.combobar)
@@ -1513,15 +1528,15 @@ local function APB_CheckPower(self)
 	if (englishClass == "SHAMAN") then
 
 		if spec and spec == 2 then
-			APB_BUFF_COMBO = "소용돌이치는 무기";		
+			APB_BUFF_COMBO = "소용돌이치는 무기";
 			APB_MaxCombo(10);
 			APB.combobar.unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			APB_UpdateBuffCombo(self.combobar)
-			bupdate_buff_combo = true;		
-			bsmall_power_bar = true;		
-		end		
-		
+			bupdate_buff_combo = true;
+			bsmall_power_bar = true;
+		end
+
 	end
 
 
@@ -1530,7 +1545,7 @@ local function APB_CheckPower(self)
 		APB_MaxCombo(0);
 	end
 
-	
+
 	if bupdate_healthbar then
 
 		APB.bar:SetHeight(APB_HEIGHT);
@@ -1549,7 +1564,7 @@ local function APB_CheckPower(self)
 
 	end
 
-	
+
 	if bupdate_powerbar then
 		for i = 1, 10 do
 			APB.combobar[i]:SetHeight(APB_HEIGHT * 0.7);
@@ -1593,7 +1608,7 @@ local function APB_CheckPower(self)
 			end
 		else
 			APB.buffbar[0]:SetWidth(APB_WIDTH);
-		end 
+		end
 	end
 
 
@@ -1607,7 +1622,7 @@ local function APB_CheckPower(self)
 		APB.bar.text:Hide();
 		--APB.bar.count:Hide();
 	end
-	
+
 
 end
 
@@ -1670,7 +1685,7 @@ local function checkSpellCost(id)
 			if  costText and PowerTypeString[powerType] and string.match(costText,  PowerTypeString[powerType] ) and string.match(costText,  "생성" )   then
 				local findstring = "%d의 "..PowerTypeString[powerType];
 				local start = string.find(costText, findstring, 0);
-			
+
 				if start and start > 5 then
 					local costText2 = string.sub(costText, start-5);
 					local s2 = string.find(costText2, findstring, findstring:len() + 5);
@@ -1727,7 +1742,7 @@ local function checkSpellPowerCost(id)
 					local costText2 = string.sub(costText, start - 5);
 					local cost = gsub(costText2, "[^0-9]", "")
 					if tonumber(cost) > 0 then
-						
+
 						if disWarlock then
 							SpellGetPowerCosts[id] = tonumber(cost) / 10;
 						else
@@ -1746,7 +1761,7 @@ local function checkSpellPowerCost(id)
 					costText2 = string.sub(costText2, 0, start2);
 					local cost = gsub(costText2, "[^0-9]", "")
 					if tonumber(cost) > 0 then
-						
+
 						if disWarlock then
 							SpellGetPowerCosts[id] = tonumber(cost) / 10;
 						else
@@ -1777,7 +1792,7 @@ local function asUnitFrameManaCostPredictionBars_Update(frame, isStarting, start
 		gpredictedPowerCost = nil;
 	else
 		local costTable = GetSpellPowerCost(spellID);
-			
+
 		for _, costInfo in pairs(costTable) do
 
 			if (costInfo.type == frame.powerType) then
@@ -1798,7 +1813,7 @@ local function asUnitFrameManaCostPredictionBars_Update(frame, isStarting, start
 	end
 
 
-	
+
 	local manaBarTexture = frame.bar:GetStatusBarTexture();
 	APB_Update(frame);
 	asUnitFrameUtil_UpdateFillBarBase(frame, frame.bar, manaBarTexture, frame.bar.myManaCostPredictionBar, cost);
@@ -1809,6 +1824,7 @@ end
 
 
 local prev_cast_info = nil;
+local windrunner_count = 0;
 
 local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 
@@ -1839,14 +1855,38 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 		APB_UpdateBuff(self.buffbar[1]);
 		APB_UpdateBuffCombo(self.combobar);
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		local timestamp, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType = CombatLogGetCurrentEventInfo();
-		if sourceGUID and (sourceGUID == UnitGUID("player")) then
-			if (eventType == "SPELL_CAST_SUCCESS") and spellID == FrozenOrbID then
-				FrozenOrbTime = nil;
-			elseif FrozenOrbTime == nil and  (eventType == "SPELL_DAMAGE") and spellID == FrozenOrbDamageID then 
-				FrozenOrbTime = GetTime();
+
+		if bupdate_fronzen then
+			local timestamp, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType = CombatLogGetCurrentEventInfo();
+			if sourceGUID and (sourceGUID == UnitGUID("player")) then
+				if (eventType == "SPELL_CAST_SUCCESS") and spellID == FrozenOrbID then
+					FrozenOrbTime = nil;
+				elseif FrozenOrbTime == nil and  (eventType == "SPELL_DAMAGE") and spellID == FrozenOrbDamageID then
+					FrozenOrbTime = GetTime();
+				end
 			end
-		end	
+		elseif bupdate_windrunner then
+
+			local timestamp, subEvent, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType = CombatLogGetCurrentEventInfo();
+		    if sourceGUID == UnitGUID("player") and subEvent == "SPELL_DAMAGE" and spellID == 191043 then
+        		windrunner_count =  windrunner_count + 1
+    		end
+
+    		if sourceGUID == UnitGUID("player") and subEvent == "SPELL_ENERGIZE" and spellID == 406449 then
+        		windrunner_count = 0
+    		end
+
+    		local textToShow = windrunner_count.."/24";
+
+			APB.combobar[1].text:SetText(textToShow);
+			if windrunner_count >= 20 then
+				APB.combobar[1].text:SetTextColor(0,1,0);
+			else
+				APB.combobar[1].text:SetTextColor(1,1,1);
+			end
+			APB.combobar[1].text:Show();
+		end   	
+
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		checkSpellCost();
 		checkSpellPowerCost();
@@ -1859,8 +1899,8 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 
 		C_Timer.After(0.5, APB_CheckPower);
 		C_Timer.After(0.5, APB_UpdatePower);
-	
-		
+
+
 	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		C_Timer.After(0.5, APB_CheckPower);
 		C_Timer.After(0.5, APB_UpdatePower);
@@ -1902,7 +1942,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 	end
 
 	return;
-end 
+end
 
 do
 	APB = CreateFrame("FRAME", nil, UIParent)
@@ -1952,7 +1992,7 @@ do
 	APB.healthbar:SetPoint("BOTTOMLEFT",APB.bar,"TOPLEFT", 0, 1)
 	APB.healthbar:Hide();
 
-	APB.healthbar.myManaCostPredictionBar = APB.healthbar:CreateTexture(nil, "BORDER" ,"MyManaCostPredictionBarTemplate") 
+	APB.healthbar.myManaCostPredictionBar = APB.healthbar:CreateTexture(nil, "BORDER" ,"MyManaCostPredictionBarTemplate")
 	APB.healthbar.myManaCostPredictionBar:Hide();
 
 	APB.healthbar.bg = APB.bar:CreateTexture(nil, "BACKGROUND");
@@ -1972,7 +2012,7 @@ do
 	APB.healthbar.count:SetFont(APB_Font, APB_HealthSize, APB_FontOutline);
 	APB.healthbar.count:SetPoint("RIGHT", APB.bar, "RIGHT", -4, 0);
 	APB.healthbar.count:SetTextColor(1, 1, 1, 1);
-	
+
 	APB.buffbar = {};
 
 	for j = 0, 1 do
@@ -2021,9 +2061,6 @@ do
 		APB.buffbar[j].cast:SetHeight((APB.buffbar[j]:GetHeight())/1.5);
 		APB.buffbar[j].cast:Hide();
 
-
-
-
 		APB.buffbar[j].square = {};
 		for i = 1, 10 do
 			APB.buffbar[j].square[i] = APB.buffbar[j]:CreateTexture(nil, "BACKGROUND");
@@ -2035,35 +2072,6 @@ do
 			APB.buffbar[j].square[i]:SetHeight(APB.buffbar[j]:GetHeight()-1);
 			APB.buffbar[j].square[i]:Hide();
 		end
-
-		APB.buffbar[j].square2 = APB.buffbar[j]:CreateTexture(nil, "BACKGROUND");
-		APB.buffbar[j].square2:SetDrawLayer("ARTWORK", 0);
-		APB.buffbar[j].square2:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-		APB.buffbar[j].square2:SetBlendMode("ALPHAKEY");
-		APB.buffbar[j].square2:SetVertexColor(1,1,1,1)
-		APB.buffbar[j].square2:SetWidth(3);
-		APB.buffbar[j].square2:SetHeight(5);
-		APB.buffbar[j].square2:Hide();
-
-
-		APB.buffbar[j].square3 = APB.buffbar[j]:CreateTexture(nil, "BACKGROUND");
-		APB.buffbar[j].square3:SetDrawLayer("ARTWORK", 0);
-		APB.buffbar[j].square3:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-		APB.buffbar[j].square3:SetBlendMode("ALPHAKEY");
-		APB.buffbar[j].square3:SetVertexColor(1,1,1,1)
-		APB.buffbar[j].square3:SetWidth(3);
-		APB.buffbar[j].square3:SetHeight(3);
-		APB.buffbar[j].square3:Hide();
-
-		APB.buffbar[j].square4 = APB.buffbar[j]:CreateTexture(nil, "BACKGROUND");
-		APB.buffbar[j].square4:SetDrawLayer("ARTWORK", 0);
-		APB.buffbar[j].square4:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-		APB.buffbar[j].square4:SetBlendMode("ALPHAKEY");
-		APB.buffbar[j].square4:SetVertexColor(1,1,1,1)
-		APB.buffbar[j].square4:SetWidth(3);
-		APB.buffbar[j].square4:SetHeight(3);
-		APB.buffbar[j].square4:Hide();
-
 	end
 
 	APB.combobar = {};
@@ -2095,6 +2103,12 @@ do
 
 		APB.combobar[i]:Hide();
 	end
+
+	APB.combobar[1].text = APB.combobar[1]:CreateFontString(nil, "ARTWORK");
+	APB.combobar[1].text:SetFont(APB_Font, APB_HealthSize - 2, APB_FontOutline);
+	APB.combobar[1].text:SetPoint("BOTTOMLEFT", APB.combobar[1], "TOPLEFT", 0, 2);
+	APB.combobar[1].text:SetTextColor(1, 1, 1, 1)
+	APB.combobar[1].text:Hide();
 
 	LoadAddOn("asMOD");
 
