@@ -1,5 +1,5 @@
 ACI_Options_Default = {
-    version = 230504,
+    version = 230513,
 
 
 -- 	ACI_SpellList_직업명_특성숫자
@@ -89,7 +89,7 @@ ACI_SpellList_HUNTER_1 = {
 
 --사격
 ACI_SpellList_HUNTER_2 = {
-	{99, "꾸준한 집중", {193533, 7, "player"}, {384790, 7, "player", 20}},
+	{99, "꾸준한 집중", {193533, 7, "player"}, {"폭발 사격", 1}},
 	{"속사", 1},
 	{"정조준", 2},
 	{"마무리 사격", 1},
