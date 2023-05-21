@@ -1,5 +1,5 @@
 ﻿-- 설정 최소 Cooldown (단위 초)
-local CONFIG_MINCOOL = 3
+local CONFIG_MINCOOL = 0				-- 0 이면 글쿨보타 쿨이 긴 스킬을 알림
 local CONFIG_MAXCOOL = (60 * 5)
 local CONFIG_MINCOOL_PET = 20
 local CONFIG_SOUND = true				-- 음성안내
@@ -483,8 +483,17 @@ end
 local ACDP_Icon_Idx = 1;
 
 
+local alert_start = {};
 
 local function ACDP_Alert(spell, type)
+
+	local currtime = GetTime();
+
+	if not (alert_start[spell] == nil or ( currtime > alert_start[spell])) then
+		return;
+	end
+
+	alert_start[spell] = currtime + 1.6;
 
 	if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
 		local name,_,icon,_,_,_,_,_,_ = GetSpellInfo(spell)
@@ -576,9 +585,14 @@ local function ACDP_Checkcooldown()
 	for spellid, type in pairs(KnownSpellList) do
 		local start, duration, enabled;
 		local check_duration = CONFIG_MINCOOL;
+		local _, gcd  = GetSpellCooldown(61304);
 
 		if type == 2 then
 			check_duration = CONFIG_MINCOOL_PET;
+		end
+
+		if check_duration < gcd then
+			check_duration = gcd;
 		end
 
 		if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
@@ -587,21 +601,22 @@ local function ACDP_Checkcooldown()
 			start, duration, enabled = GetItemCooldown(type);
 		end
 
-		local _, gcd  = GetSpellCooldown(61304);
 		local currtime = GetTime();
 
 		if start and start > 0 and duration then
 			local remain = start + duration - currtime;
+			if duration > check_duration and duration <= CONFIG_MAXCOOL then
+				if  showlist_id[spellid] == nil then
+					showlist_id[spellid] = type;
+					--print("등록")
+				end
+			end
+
 			if (remain <= gcd or remain <= ACDP_Alert_Time) then
 				if showlist_id[spellid] and showlist_id[spellid] == type then
 					showlist_id[spellid] = nil;
 					ACDP_Alert(spellid, type);
 					--print("해제1")
-				end
-			elseif duration >= check_duration and duration <= CONFIG_MAXCOOL then
-				if  showlist_id[spellid] == nil then
-					showlist_id[spellid] = type;
-					--print("등록")
 				end
 			end
 		elseif start and start == 0 then
