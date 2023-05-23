@@ -1,5 +1,5 @@
 ﻿-- 설정 최소 Cooldown (단위 초)
-local CONFIG_MINCOOL = 0				-- 0 이면 글쿨보타 쿨이 긴 스킬을 알림
+local CONFIG_MINCOOL = 2				-- 최소안내 쿨타임
 local CONFIG_MAXCOOL = (60 * 5)
 local CONFIG_MINCOOL_PET = 20
 local CONFIG_SOUND = true				-- 음성안내
@@ -589,10 +589,6 @@ local function ACDP_Checkcooldown()
 
 		if type == 2 then
 			check_duration = CONFIG_MINCOOL_PET;
-		end
-
-		if check_duration < gcd then
-			check_duration = gcd;
 		end
 
 		if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
