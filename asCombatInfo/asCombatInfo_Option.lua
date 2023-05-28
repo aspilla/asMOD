@@ -1,5 +1,5 @@
 ACI_Options_Default = {
-    version = 230513,
+    version = 230528,
 
 
 -- 	ACI_SpellList_직업명_특성숫자
@@ -343,7 +343,7 @@ ACI_SpellList_WARLOCK_1 = {
 --악마
 ACI_SpellList_WARLOCK_2 = {
 
-	{"지옥폭풍", 1},
+	{99, "지옥수호병 소환", {"지옥수호병 소환", 11, "지옥수호병"}, {"지옥폭풍", 1}},
 	--{138748, 15, "굴단의 손", 10},
 	{"공포사냥개 부르기", 1},
 	{"악마 폭군 소환", 2, "player", nil ,nil , nil, "악마의 힘"},
