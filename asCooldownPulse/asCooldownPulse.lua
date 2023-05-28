@@ -1,5 +1,5 @@
 ﻿-- 설정 최소 Cooldown (단위 초)
-local CONFIG_MINCOOL = 2				-- 최소안내 쿨타임
+local CONFIG_MINCOOL = 1.5				-- 최소안내 쿨타임
 local CONFIG_MAXCOOL = (60 * 5)
 local CONFIG_MINCOOL_PET = 20
 local CONFIG_SOUND = true				-- 음성안내
