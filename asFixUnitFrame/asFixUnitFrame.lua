@@ -9,3 +9,9 @@ end
 
 hooksecurefunc("TargetFrame_UpdateBuffAnchor", asTargetFrame_UpdateBuffAnchor);
 hooksecurefunc("TargetFrame_UpdateDebuffAnchor", asTargetFrame_UpdateBuffAnchor);
+
+
+SetCVar("showTargetCastbar", "0");
+
+--ClassPowerBarFrame:UnregisterAllEvents();
+--ClassPowerBarFrame:Hide();

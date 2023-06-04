@@ -396,7 +396,7 @@ local function ACDP_UpdateCooldown()
 
 			if (icon and duration > 0) and skip == false then
 				local currtime = GetTime();
-				tinsert(showlist, {start+duration -currtime, start, duration, icon} );
+				tinsert(showlist, {start+duration -currtime, start, duration, icon, spellid, type} );
 			end
 		end
 	end
@@ -410,17 +410,19 @@ local function ACDP_UpdateCooldown()
 		local start = showlist[i][2];
 		local duration = showlist[i][3];
 		local icon = showlist[i][4];
+		local spellid = showlist[i][5];
+		local type = showlist[i][6];
 
 		frame = parent.frames[i];
+		
 
 		if ( not frame ) then
 			parent.frames[i] = CreateFrame("Button", nil, parent, "asCooldownPulseFrameTemplate");
 			frame = parent.frames[i];
 			frame:SetWidth(ACDP_SIZE);
 			frame:SetHeight(ACDP_SIZE * 0.9);
-			frame:EnableMouse(false);
-			frame:Disable();
-
+			frame:EnableMouse(true);
+			
 			for _,r in next,{frame.cooldown:GetRegions()}	do
 				if r:GetObjectType()=="FontString" then
 					r:SetFont("Fonts\\2002.TTF",ACDP_CooldownFontSize,"OUTLINE")
@@ -431,6 +433,21 @@ local function ACDP_UpdateCooldown()
 			frame.icon:SetTexCoord(.08, .92, .08, .92);
 			frame.border:SetTexture("Interface\\Addons\\asCooldownPulse\\border.tga");
 			frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+
+			if not frame:GetScript("OnEnter") then
+				frame:SetScript("OnEnter", function(s)
+					if s.spellid and s.spellid > 0 then
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
+						GameTooltip:SetSpellByID(s.spellid);
+					elseif s.itemid and s.itemid > 0 then
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
+						GameTooltip:SetItemByID(s.itemid);
+					end
+				end)
+				frame:SetScript("OnLeave", function()
+					GameTooltip:Hide();
+				end)
+			end
 
 		end
 		-- set the icon
@@ -450,8 +467,16 @@ local function ACDP_UpdateCooldown()
 		asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, true);
 		frameCooldown:SetHideCountdownNumbers(false);
 		frame:ClearAllPoints();
-		frame:Show();
 
+		if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
+			frame.spellid = spellid;
+			frame.itemid = 0;
+		else
+			frame.spellid = 0;
+			frame.itemid = type;
+		end
+
+		frame:Show();	
 
 		numCools = numCools + 1;
 

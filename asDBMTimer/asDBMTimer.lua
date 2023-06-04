@@ -87,7 +87,7 @@ local function RGBToHex(r, g, b)
     return string.format("|cff%02x%02x%02x", r, g, b)
 end
 
-local function newButton(id, msg, duration, start, icon, colorId)
+local function newButton(id, msg, duration, start, icon, colorId, spellID)
 
 	for i = 1, ADBMT_MaxButtons do
 		local button = asDBMTimer.buttons[i];
@@ -99,6 +99,7 @@ local function newButton(id, msg, duration, start, icon, colorId)
 			button.icon:Show();
 			button.cooltext:Show();
 			button.border:Show();
+			button.spellid = spellID;
 
 			if colorId and BarColors[colorId] then
 				local info = BarColors[colorId];
@@ -111,6 +112,7 @@ local function newButton(id, msg, duration, start, icon, colorId)
 			button.update = 0.1;
 			button:SetScript("OnUpdate", ADBMT_OnUpdate);
 			button:Show();
+
 			return i;
 		end
 	end
@@ -132,7 +134,7 @@ function asDBMTimer_callback(event, id, ...)
     	if strFindStart ~= nil then
           	 newmsg = string.sub(msg, 1, strFindStart-1);
 		end
-		dbm_event_list[id] = {newmsg, timer, GetTime(), icon, 0, colorId};
+		dbm_event_list[id] = {newmsg, timer, GetTime(), icon, 0, colorId, spellId};
 
 	elseif event == "DBM_TimerStop" then
 		if dbm_event_list[id] and dbm_event_list[id][5] then
@@ -160,7 +162,7 @@ local function checkList()
 		local start = GetTime();
 		local remain = v[3] + v[2] - GetTime();
 		if v[5] == 0 and remain > 0 and remain <= 10  then
-			local idx = newButton(id, v[1], remain, start, v[4], v[6]);
+			local idx = newButton(id, v[1], remain, start, v[4], v[6], v[7]);
 			v[5] = idx;
 		elseif remain <= 0 then
 			dbm_event_list[id] = nil;
@@ -228,6 +230,18 @@ local function setupUI()
 		asDBMTimer.buttons[i].id = nil;
 		asDBMTimer.buttons[i].start = nil;
 		asDBMTimer.buttons[i].duration = nil;
+
+		if not asDBMTimer.buttons[i]:GetScript("OnEnter") then
+			asDBMTimer.buttons[i]:SetScript("OnEnter", function(s)
+				if s.spellid and type(s.spellid) == "number" and s.spellid > 0 then
+					GameTooltip_SetDefaultAnchor(GameTooltip, s);
+					GameTooltip:SetSpellByID(s.spellid);
+				end
+			end)
+			asDBMTimer.buttons[i]:SetScript("OnLeave", function()
+				GameTooltip:Hide();
+			end)
+		end
 	end
 end
 

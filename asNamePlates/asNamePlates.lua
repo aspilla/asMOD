@@ -1000,7 +1000,7 @@ end
 local function createDebuffFrame(parent)
 
 	local ret = CreateFrame("Frame", nil, parent, "asNamePlatesBuffFrameTemplate");
-	ret:EnableMouse(false);
+	--ret:EnableMouse(true);
 
 	local frameCooldown = ret.cooldown;
 	local frameCount = ret.count;
@@ -1228,6 +1228,17 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 			if (not self.buffList[numDebuffs]) then
 				self.buffList[numDebuffs] = createDebuffFrame(self);
+				if not self.buffList[numDebuffs]:GetScript("OnEnter") then
+					self.buffList[numDebuffs]:SetScript("OnEnter", function(s)
+						if s:GetID() > 0 then
+							GameTooltip_SetDefaultAnchor(GameTooltip, s);
+							GameTooltip:SetUnitAura(s.unit, s:GetID(), s.filter);
+						end
+					end)
+					self.buffList[numDebuffs]:SetScript("OnLeave", function()
+						GameTooltip:Hide();
+					end)
+				end
 			end
 
 			local frame = self.buffList[numDebuffs];
@@ -1246,6 +1257,10 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			if isStealable then
 				frame.alert = true;
 			end
+
+			self.buffList[numDebuffs].filter = "HELPFUL";
+			self.buffList[numDebuffs]:SetID(i);
+			self.buffList[numDebuffs].unit = unit;		
 
 			numDebuffs = numDebuffs + 1;
 		end
@@ -1309,7 +1324,11 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 							else
 								self.CCdebuff:SetPoint("LEFT", healthBar, "RIGHT", 1, 0);
 							end
-							self.CCdebuff:Show();
+							self.CCdebuff.filter = filter;
+							self.CCdebuff:SetID(i);
+							self.CCdebuff.unit = unit;
+
+							self.CCdebuff:Show();							
 						else
 							show = true;
 						end
@@ -1349,7 +1368,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			local name,  texture, count, debuffType, duration, expirationTime, caster, _, nameplateShowPersonal, spellId, _, isBossDebuff, _, nameplateShowAll = UnitAura(unit, i, filter);
 			local alert = false;
 			local showlist_time = 0;
-
+			
 			if ANameP_ShowList and ANameP_ShowList[name] then
 				showlist_time = ANameP_ShowList[name][1];
 				local alertcount = ANameP_ShowList[name][4] or false;
@@ -1373,7 +1392,18 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			end
 
 			if (not self.buffList[numDebuffs]) then
-				self.buffList[numDebuffs] = createDebuffFrame(self)
+				self.buffList[numDebuffs] = createDebuffFrame(self);
+				if not self.buffList[numDebuffs]:GetScript("OnEnter") then
+					self.buffList[numDebuffs]:SetScript("OnEnter", function(s)
+						if s:GetID() > 0 then
+							GameTooltip_SetDefaultAnchor(GameTooltip, s);
+							GameTooltip:SetUnitAura(s.unit, s:GetID(), s.filter);
+						end
+					end)
+					self.buffList[numDebuffs]:SetScript("OnLeave", function()
+						GameTooltip:Hide();
+					end)
+				end
 			end
 
 			local frame = self.buffList[numDebuffs];
@@ -1414,10 +1444,12 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 			setFrame(self.buffList[numDebuffs], texture, count, expirationTime, duration, color);
 
-
 			if alert and duration > 0  then
 				frame.alert = true;
 			end
+			self.buffList[numDebuffs].filter = filter;
+			self.buffList[numDebuffs]:SetID(i);
+			self.buffList[numDebuffs].unit = unit;			
 
 			numDebuffs = numDebuffs + 1;
 		end
@@ -1934,7 +1966,7 @@ local function asCheckTalent(name)
 
             if definitionInfo ~= nil then
                 local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
-				--print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));;
+				--print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));
 				if name == talentName then
 					return true;
 				end
@@ -2024,6 +2056,7 @@ local function checkSpellCasting(self)
 			frameIcon:SetTexture(texture);
 			self.casticon:Show();
 			self.castspellid = spellid;
+			self.casticon.castspellid = spellid;			
 		else
 			self.casticon:Hide();
 			self.castspellid = nil;
@@ -2155,7 +2188,7 @@ local function addNamePlate(namePlateUnitToken)
     end
 
 	asCompactUnitFrame_UpdateHealthColor(unitFrame, namePlateFrameBase.asNamePlates);
-	namePlateFrameBase.asNamePlates:EnableMouse(false);
+	--namePlateFrameBase.asNamePlates:EnableMouse(true);
 
 	if not namePlateFrameBase.asNamePlates.buffList then
 		namePlateFrameBase.asNamePlates.buffList = {};
@@ -2253,8 +2286,20 @@ local function addNamePlate(namePlateUnitToken)
 	if unitFrame.castBar then
 		if not namePlateFrameBase.asNamePlates.casticon  then
 			namePlateFrameBase.asNamePlates.casticon = CreateFrame("Frame", nil, unitFrame.castBar, "asNamePlatesBuffFrameTemplate");
+
+			if not namePlateFrameBase.asNamePlates.casticon:GetScript("OnEnter") then
+				namePlateFrameBase.asNamePlates.casticon:SetScript("OnEnter", function(s)
+					if s.castspellid and s.castspellid > 0 then
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
+						GameTooltip:SetSpellByID(s.castspellid);
+					end
+				end)
+				namePlateFrameBase.asNamePlates.casticon:SetScript("OnLeave", function()
+					GameTooltip:Hide();
+				end)
+			end
 		end
-		namePlateFrameBase.asNamePlates.casticon:EnableMouse(false);
+		namePlateFrameBase.asNamePlates.casticon:EnableMouse(true);
         namePlateFrameBase.asNamePlates.casticon:ClearAllPoints();
 		namePlateFrameBase.asNamePlates.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0, 1);
 		namePlateFrameBase.asNamePlates.casticon:SetWidth(13);
@@ -2273,8 +2318,19 @@ local function addNamePlate(namePlateUnitToken)
 
 	if not namePlateFrameBase.asNamePlates.CCdebuff  then
 		namePlateFrameBase.asNamePlates.CCdebuff = CreateFrame("Frame", nil, unitFrame.healthBar, "asNamePlatesBuffFrameTemplate");
+		if not namePlateFrameBase.asNamePlates.CCdebuff:GetScript("OnEnter") then
+			namePlateFrameBase.asNamePlates.CCdebuff:SetScript("OnEnter", function(s)
+			if s:GetID() > 0 then
+				GameTooltip_SetDefaultAnchor(GameTooltip, s);
+				GameTooltip:SetUnitAura(s.unit, s:GetID(), s.filter);
+			end
+			end)
+			namePlateFrameBase.asNamePlates.CCdebuff:SetScript("OnLeave", function()
+				GameTooltip:Hide();
+			end)
+		end
 	end
-	namePlateFrameBase.asNamePlates.CCdebuff:EnableMouse(false);
+	--namePlateFrameBase.asNamePlates.CCdebuff:EnableMouse(false);
     namePlateFrameBase.asNamePlates.CCdebuff:ClearAllPoints();
 	namePlateFrameBase.asNamePlates.CCdebuff:SetPoint("LEFT", namePlateFrameBase.asNamePlates.casticon, "RIGHT", 1, 0);
 	namePlateFrameBase.asNamePlates.CCdebuff:SetWidth(ANameP_CCDebuffSize * 1.2);

@@ -374,6 +374,18 @@ ATCB.castbar.time:SetFont(STANDARD_TEXT_FONT, ATCB_TIME_SIZE);
 ATCB.castbar.time:SetPoint("RIGHT", ATCB.castbar, "RIGHT", -3, 0);
 
 ATCB.castbar:SetPoint("CENTER",UIParent,"CENTER", ATCB_X + ATCB_HEIGHT/2, ATCB_Y)
+
+if not ATCB.castbar:GetScript("OnEnter") then
+    ATCB.castbar:SetScript("OnEnter", function(s)
+        if s.castspellid and s.castspellid > 0 then
+            GameTooltip_SetDefaultAnchor(GameTooltip, s);
+            GameTooltip:SetSpellByID(s.castspellid);
+        end
+    end)
+    ATCB.castbar:SetScript("OnLeave", function()
+        GameTooltip:Hide();
+    end)
+end
 ATCB.castbar:Hide();
 
 ATCB.button = CreateFrame("Button", nil, ATCB.castbar, "ATCBFrameTemplate");
@@ -488,6 +500,8 @@ local function ATCB_OnEvent(self, event, ...)
                 end
                 prev_name = nil;
             end
+
+            castBar.castspellid = spellid;
 
             castBar:SetStatusBarColor(color[1], color[2], color[3]);
                         

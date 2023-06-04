@@ -928,7 +928,7 @@ local function ACRB_setupFrame(frame)
 			if ACRB_ShowTooltip and not buffFrame:GetScript("OnEnter") then
 				buffFrame:SetScript("OnEnter", function(s)
 					if s:GetID() > 0 then
-						GameTooltip:SetOwner(s, "ANCHOR_BOTTOMRIGHT");
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
 						GameTooltip:SetUnitBuff(s.unit, s:GetID(), s.filter);
 					end
 				end)
@@ -987,7 +987,7 @@ local function ACRB_setupFrame(frame)
 			if ACRB_ShowTooltip and not debuffFrame:GetScript("OnEnter") then
 				debuffFrame:SetScript("OnEnter", function(s)
 					if s:GetID() > 0 then
-						GameTooltip:SetOwner(s, "ANCHOR_BOTTOMRIGHT");
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
 						GameTooltip:SetUnitDebuff(s.unit, s:GetID(), s.filter);
 					end
 				end)
@@ -1102,7 +1102,7 @@ local function ACRB_setupFrame(frame)
 			if ACRB_ShowTooltip and not asraid[frameName].buffFrames2[i]:GetScript("OnEnter") then
 				asraid[frameName].buffFrames2[i]:SetScript("OnEnter", function(s)
 					if s:GetID() > 0 then
-						GameTooltip:SetOwner(s, "ANCHOR_BOTTOMRIGHT");
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
 						GameTooltip:SetUnitBuff(s.unit, s:GetID(), s.filter);
 					end
 				end)

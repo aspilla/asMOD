@@ -55,6 +55,8 @@ local function CheckCasting(nameplate)
 					ACTA.cast[currshow]:SetTextColor(1, 1, 1);
 				end
 
+				ACTA.cast[currshow].castspellid = spellid;
+
 				ACTA.cast[currshow]:Show();
 				currshow = currshow + 1;
 
@@ -128,6 +130,20 @@ local function initAddon()
 			ACTA.cast[i]:SetPoint("CENTER", UIParent, "CENTER", ACTA_X , ACTA_Y);
 		else
 			ACTA.cast[i]:SetPoint("BOTTOM", ACTA.cast[i - 1], "TOP", 0 , 3);
+		end
+
+		ACTA.cast[i]:EnableMouse(true);
+
+		if not ACTA.cast[i]:GetScript("OnEnter") then
+			ACTA.cast[i]:SetScript("OnEnter", function(s)
+				if s.castspellid and s.castspellid > 0 then
+					GameTooltip_SetDefaultAnchor(GameTooltip, s);
+					GameTooltip:SetSpellByID(s.castspellid);
+				end
+			end)
+			ACTA.cast[i]:SetScript("OnLeave", function()
+				GameTooltip:Hide();
+			end)
 		end
 		ACTA.cast[i]:Hide();
 	end

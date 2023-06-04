@@ -937,7 +937,7 @@ local function asCheckTalent()
 
             if definitionInfo ~= nil then
                 local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
-				--print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));;
+				--print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));
 				ABF_TalentBuffList[talentName] = true;
 			end
         end
@@ -1005,14 +1005,18 @@ local function ABF_UpdateBuff(unit)
 	local frameBorder;
 	local parent;
 	local isFirst = true;
+	local realunit = "target";
 
 	if (unit == "tbuff") then
+		realunit = "target"
 		parent = ABF_TARGET_BUFF;
 	elseif (unit == "target") then
 		parent = ABF_TARGET_BUFF;
 	elseif (unit == "pbuff") then
+		realunit = "player"
 		parent = ABF_PLAYER_BUFF;
 	elseif (unit == "tebuff") then
+		realunit = "target"
 		parent = ABF_TARGET_BUFF;
 	else
 		return;
@@ -1033,7 +1037,7 @@ local function ABF_UpdateBuff(unit)
 		stack = nil;
 
 		if (unit == "tbuff") then
-			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId = UnitBuff("target", i);
+			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId = UnitBuff(realunit, i);
 
 			-- 적대적 NPC 는 무조건 Buff 를 보임
 
@@ -1047,7 +1051,7 @@ local function ABF_UpdateBuff(unit)
 
 		elseif (unit == "target") then
 
-			name,  icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId = UnitBuff("target", i);
+			name,  icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId = UnitBuff(realunit, i);
 			if (icon == nil) then
 				break;
 			end
@@ -1094,10 +1098,10 @@ local function ABF_UpdateBuff(unit)
 
 				if icon == nil then
 					i = 1;
-					name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff("player", i, "INCLUDE_NAME_PLATE_ONLY");				end
+					name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff(realunit, i, "INCLUDE_NAME_PLATE_ONLY");				end
 
 			else
-				name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff("player", i, "INCLUDE_NAME_PLATE_ONLY");
+				name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _,_ , casterIsPlayer, nameplateShowAll, stack,value2,value3  = UnitBuff(realunit, i, "INCLUDE_NAME_PLATE_ONLY");
 			end
 
 			if (icon == nil) then
@@ -1232,6 +1236,26 @@ local function ABF_UpdateBuff(unit)
 
 				frame:Show();
 
+				frame.filter = "";
+				frame:SetID(i);
+				frame.unit = realunit;
+
+				if realunit == "player" then
+					frame.filter = "INCLUDE_NAME_PLATE_ONLY";
+				end		
+			
+				if not frame:GetScript("OnEnter") then
+					frame:SetScript("OnEnter", function(s)
+						if s:GetID() > 0 then
+							GameTooltip_SetDefaultAnchor(GameTooltip, s);
+							GameTooltip:SetUnitBuff(s.unit, s:GetID(), s.filter);
+						end
+					end)
+					frame:SetScript("OnLeave", function()
+						GameTooltip:Hide();
+					end)
+				end
+
 				if (alert)then
 					lib.ButtonGlow_Start(frame);
 				else
@@ -1347,6 +1371,10 @@ local function ABF_UpdateBuff(unit)
 
 				frameBorder:SetVertexColor(color.r, color.g, color.b);
 				frameBorder:SetAlpha(ABF_ALPHA);
+				frame.filter = "INCLUDE_NAME_PLATE_ONLY";
+				frame:SetID(idx);
+				frame.unit = "player";
+
 				frame:Show();
 
 				if (alert) then
@@ -1494,9 +1522,7 @@ local function ABF_UpdateBuffAnchor(frames, index, offsetX, right, center, paren
 end
 
 local function CreatBuffFrames(parent, bright, bcenter)
-
-	local idx;
-
+	
 	if parent.frames == nil then
 		parent.frames = {};
 	end
@@ -1525,6 +1551,19 @@ local function CreatBuffFrames(parent, bright, bcenter)
 		frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 
 		ABF_UpdateBuffAnchor(parent.frames, idx, 1,  bright, bcenter, parent);
+
+		if not frame:GetScript("OnEnter") then
+			frame:SetScript("OnEnter", function(s)
+				if s:GetID() > 0 then
+					GameTooltip_SetDefaultAnchor(GameTooltip, s);
+					GameTooltip:SetUnitBuff(s.unit, s:GetID(), s.filter);
+				end
+			end)
+			frame:SetScript("OnLeave", function()
+				GameTooltip:Hide();
+			end)
+		end
+
 		frame:Hide();
 	end
 

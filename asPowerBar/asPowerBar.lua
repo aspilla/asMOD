@@ -756,9 +756,34 @@ local function APB_SpellMax(spell, spell2)
 
 end
 
+local function setupMouseOver(frame)
+
+	if not frame:GetScript("OnEnter") then
+		frame:SetScript("OnEnter", function(s)
+			if s.spellid and s.spellid > 0 then
+				GameTooltip_SetDefaultAnchor(GameTooltip, s);
+				GameTooltip:SetSpellByID(s.spellid);
+			end
+		end)
+		frame:SetScript("OnLeave", function()
+			GameTooltip:Hide();
+		end)
+	end
+
+end
+
+local function clearMouseOver(frame)
+
+	if frame:GetScript("OnEnter") then
+		frame:SetScript("OnEnter", nil);
+		frame:SetScript("OnLeave", nil);
+	end
+end
+
 local function APB_UpdateSpell(spell, spell2)
 
 	local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spell);
+	local spellid = select(7, GetSpellInfo(spell));
 
 	if bupdate_druid then
 		local slot = APB_GetActionSlot(spell);
@@ -788,6 +813,9 @@ local function APB_UpdateSpell(spell, spell2)
 		if balert then
 			APB.combobar[i]:SetStatusBarColor(0,1,0)
 		end
+
+		APB.combobar[i].spellid = spellid;
+		setupMouseOver(APB.combobar[i]);
 	end
 
 	if charges < maxCharges then
@@ -800,6 +828,9 @@ local function APB_UpdateSpell(spell, spell2)
 			APB.combobar[charges + 1]:SetStatusBarColor(0,1,1)
 		end
 
+		APB.combobar[charges + 1].spellid = spellid;
+		setupMouseOver(APB.combobar[charges + 1]);
+
 	end
 
 	if charges < maxCharges - 1 then
@@ -807,12 +838,13 @@ local function APB_UpdateSpell(spell, spell2)
 			APB.combobar[i]:SetValue(0)
 			APB.combobar[i].start = nil;
 			APB.combobar[i]:SetScript("OnUpdate", nil)
-
+			
 		end
 	end
 
 	if spell2 then
 		local charges, maxCharges2, chargeStart, chargeDuration = GetSpellCharges(spell2);
+		spellid = select(7, GetSpellInfo(spell2));
 
 		if not maxCharges2 then
 			local slot = APB_GetActionSlot(spell2);
@@ -836,6 +868,8 @@ local function APB_UpdateSpell(spell, spell2)
 			APB.combobar[i]:SetMinMaxValues(0, 1)
 			APB.combobar[i]:SetValue(1)
 			APB.combobar[i]:SetScript("OnUpdate", nil)
+			APB.combobar[i].spellid = spellid;
+			setupMouseOver(APB.combobar[i]);
 		end
 
 		if charges < maxCharges2 then
@@ -843,6 +877,9 @@ local function APB_UpdateSpell(spell, spell2)
 			APB.combobar[maxCharges + charges + 1].start = chargeStart;
 			APB.combobar[maxCharges + charges + 1].duration = chargeDuration;
 			APB.combobar[maxCharges + charges + 1]:SetScript("OnUpdate", APB_OnUpdateCombo)
+
+			APB.combobar[maxCharges + charges + 1].spellid = spellid;
+			setupMouseOver(APB.combobar[maxCharges + charges + 1]);
 		end
 
 		if charges < maxCharges2 - 1 then
@@ -1044,7 +1081,7 @@ local function asCheckTalent (name)
 
             if definitionInfo ~= nil then
                 local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
-				--print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));;
+				--print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));
 				if name == talentName then
 					return true;
 				end
@@ -2102,6 +2139,7 @@ do
 		end
 
 		APB.combobar[i]:Hide();
+		APB.combobar[i]:EnableMouse(true);
 	end
 
 	APB.combobar[1].text = APB.combobar[1]:CreateFontString(nil, "ARTWORK");

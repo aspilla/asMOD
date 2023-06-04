@@ -728,8 +728,7 @@ local function ADF_UpdateDebuff(unit)
 
 		if (unit == "target") then
 
-			local filter = "";
-
+            filter = "";
 			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura,isBossDebuff, casterIsPlayer, nameplateShowAll  = UnitDebuff("target", i, filter);
 
 			if (icon == nil) then
@@ -821,7 +820,9 @@ local function ADF_UpdateDebuff(unit)
 
 
 		elseif (unit == "player") then
-			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, _, nameplateShowAll = UnitDebuff("player", i, "");
+
+            filter = "";
+			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, _, nameplateShowAll = UnitDebuff("player", i, filter);
 
 
 			skip = false;
@@ -916,6 +917,15 @@ local function ADF_UpdateDebuff(unit)
 			frameBorder = frame.border;
 			frameBorder:SetVertexColor(color.r, color.g, color.b);
 			frameBorder:SetAlpha(ADF_ALPHA);
+
+            frame.filter = filter;
+			frame:SetID(i);
+			frame.unit = unit;
+
+            if frame.unit == "targethelp" then
+                frame.unit = "target"
+            end
+
 			frame:Show();
 
 
@@ -923,7 +933,7 @@ local function ADF_UpdateDebuff(unit)
 				lib.ButtonGlow_Start(frame);
 			else
 				lib.ButtonGlow_Stop(frame);
-			end
+			end		
 
 			numDebuffs = numDebuffs + 1;
 		end
@@ -1069,6 +1079,19 @@ local function CreatDebuffFrames(parent, bright)
 
 		frame:ClearAllPoints();
 		ADF_UpdateDebuffAnchor(parent.frames, idx, 1,  bright, parent);
+
+        if not frame:GetScript("OnEnter") then
+            frame:SetScript("OnEnter", function(s)
+                if s:GetID() > 0 then
+                    GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                    GameTooltip:SetUnitDebuff(s.unit, s:GetID(), s.filter);
+                end
+            end)
+            frame:SetScript("OnLeave", function()
+                GameTooltip:Hide();
+            end)
+        end
+
 		frame:Hide();
 	end
 
