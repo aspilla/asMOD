@@ -2109,6 +2109,8 @@ local function removeNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.healthtext = nil;
 		namePlateFrameBase.asNamePlates.casticon:Hide();
 		namePlateFrameBase.asNamePlates.casticon = nil;
+		namePlateFrameBase.asNamePlates.healer:Hide();
+		namePlateFrameBase.asNamePlates.healer = nil;
 		namePlateFrameBase.asNamePlates:Hide();
 		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
 		namePlateFrameBase.asNamePlates:UnregisterEvent("PLAYER_TARGET_CHANGED");
@@ -2490,12 +2492,7 @@ local function addNamePlate(namePlateUnitToken)
 				filter = "HELPFUL|INCLUDE_NAME_PLATE_ONLY|PLAYER";
 				helpful = true;
 				showbuff = false;
-
-				checkaura = false
-
-				if not showdebuff  and not UnitIsUnit(unit, "player") and  ANameP_HealerGuid[UnitGUID(unit)] then
-					showhealer = true;
-				end
+				checkaura = false;
 				namePlateFrameBase.asNamePlates:Hide();
 			end
 		end
