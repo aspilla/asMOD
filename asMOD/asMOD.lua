@@ -1,6 +1,6 @@
 local asMOD;
 local asMOD_UIScale = 0.75;
-local asMOD_CurrVersion = 230503;
+local asMOD_CurrVersion = 230611;
 local bAction = false;
 asMOD_t_position = {};
 
@@ -45,6 +45,20 @@ end
 
 local function asMOD_Import_Commit()
 	C_EditMode.SaveLayouts(layoutInfo);
+
+	local layoutinfo = C_EditMode.GetLayouts()
+	local index = nil;
+
+	for i, element in ipairs(layoutinfo.layouts) do
+		if element.layoutName == "asMOD_layout2" then
+			index = i;
+			break;
+		end
+	end
+
+	if index then
+		C_EditMode.SetActiveLayout(index + 2);
+	end
 end
 
 
