@@ -3,5 +3,6 @@
 ## Title: |cffff3399as|rFixUnitFrame
 ## Notes: 유닛프레임 
 ## Version : 100425
+## SavedVariablesPerCharacter: AFUF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asFixUnitFrame.xml

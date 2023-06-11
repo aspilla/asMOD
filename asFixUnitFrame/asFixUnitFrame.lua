@@ -1,31 +1,54 @@
+AFUF_Options_Default = {
+    HideDebuff = true,                           
+    HideCombatText = true,                       
+    HideCastBar = true;
+    HideClassBar = true;
+    ShowClassColor = true;
+}
+
+
 local AFUF = CreateFrame("FRAME", nil, UIParent);
 
 function AFUF:HideCombatText()
-    -- 데미지 숫자 숨기기
-    PlayerFrame:UnregisterEvent("UNIT_COMBAT");
-    TargetFrame:UnregisterEvent("UNIT_COMBAT");
-    PetFrame:UnregisterEvent("UNIT_COMBAT");
+
+    if AFUF_Options["HideCombatText"] then
+        -- 데미지 숫자 숨기기
+        PlayerFrame:UnregisterEvent("UNIT_COMBAT");
+        TargetFrame:UnregisterEvent("UNIT_COMBAT");
+        PetFrame:UnregisterEvent("UNIT_COMBAT");
+    end
 end
 
 function AFUF:HideTargetBuffs()
     -- TargetFrame의 Buff Debuff를 숨긴다.
-    TargetFrame:UnregisterEvent("UNIT_AURA");
-    local function _UpdateBuffAnchor(self, buff)
-	    --For mirroring vertically
-	    buff:Hide();
-    end
+    if AFUF_Options["HideDebuff"] then
+        TargetFrame:UnregisterEvent("UNIT_AURA");
+        local function _UpdateBuffAnchor(self, buff)
+            --For mirroring vertically
+            buff:Hide();
+        end
 
-    hooksecurefunc("TargetFrame_UpdateBuffAnchor", _UpdateBuffAnchor);
-    hooksecurefunc("TargetFrame_UpdateDebuffAnchor", _UpdateBuffAnchor);
+        hooksecurefunc("TargetFrame_UpdateBuffAnchor", _UpdateBuffAnchor);
+        hooksecurefunc("TargetFrame_UpdateDebuffAnchor", _UpdateBuffAnchor);
+    end
 end
 
 
 function AFUF:HideTargetCastBar()
+
+    if AFUF_Options["HideCastBar"] then
     --TargetCastBar 를 숨긴다.
-    SetCVar("showTargetCastbar", "0");
+        SetCVar("showTargetCastbar", "0");
+    else
+        SetCVar("showTargetCastbar", "1");
+    end
 end
 
 function AFUF:HideClassBar()
+
+    if not AFUF_Options["HideClassBar"] then
+        return;
+    end
     --주요 자원바 숨기기
     local ClassBarOnShow = function (frame)
         frame:Hide()
@@ -57,6 +80,9 @@ end
 
 function AFUF:UpdateHealthBar()
 
+    if not AFUF_Options["ShowClassColor"] then
+        return;
+    end
     --Healthbar 직업 색상
     local function getFramesHealthBar()
 
@@ -73,34 +99,28 @@ function AFUF:UpdateHealthBar()
         local classColor = RAID_CLASS_COLORS[englishClass];
         if ( (UnitIsPlayer(unit)) and classColor ) then
             r, g, b = classColor.r, classColor.g, classColor.b;
-        elseif ( UnitIsFriend("player", unit) ) then
-            r, g, b = 0.0, 1.0, 0.0;
         else
-            r, g, b = 1.0, 0.0, 0.0;
+            r, g, b = 0.0, 1.0, 0.0;
         end	
+        frame:SetStatusBarTexture("Interface\\addons\\asFixUnitFrame\\UI-StatusBar.blp")
         frame:SetStatusBarColor(r, g, b);
-    end
-
-    local function updateHealthStatus(statusbar, unit)
-
-        if (UnitIsPlayer(unit) and UnitClass(unit)) then
-            -- player
-            local localizedClass, englishClass = UnitClass(unit);
-            local classColor = RAID_CLASS_COLORS[englishClass];
-            --statusbar.HealthBarMask:Hide();
-            statusbar:SetStatusBarTexture("Interface\\addons\\asFixUnitFrame\\UI-StatusBar.blp")
-            updateHealthColor(unit, statusbar)
-        end
     end
 
     local healthBars = getFramesHealthBar()
 
     for _, statusbar in pairs(healthBars) do
-        updateHealthStatus(statusbar, statusbar.unit)
+        updateHealthColor(statusbar.unit, statusbar)
     end
 end
 
+local bfirst = false;
+
 local function AFUF_OnEvent(self, event, ...)
+
+    if not bfirst then
+        self:SetupOptionPanels();
+        bfirst = true;
+    end
 
 	if event == "PLAYER_ENTERING_WORLD" or  event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		self:HideClassBar();
@@ -117,3 +137,36 @@ AFUF:RegisterEvent("PLAYER_TARGET_CHANGED");
 AFUF:RegisterEvent("PLAYER_ENTERING_WORLD");
 AFUF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
+
+local function OnSettingChanged(_, setting, value)
+	local variable = setting:GetVariable()
+	AFUF_Options[variable] = value;
+    ReloadUI();
+end
+
+function AFUF:SetupOptionPanels()
+
+    local category = Settings.RegisterVerticalLayoutCategory("asFixUnitFrame")
+
+    if AFUF_Options == nil then
+        AFUF_Options = {};
+        AFUF_Options = CopyTable(AFUF_Options_Default);
+    end
+
+    for variable, _ in pairs(AFUF_Options_Default) do
+
+        
+        local name = variable;
+        local tooltip = ""
+        if  AFUF_Options[variable] == nil then    
+            AFUF_Options[variable] = AFUF_Options_Default[variable];
+        end
+        local defaultValue = AFUF_Options[variable];
+
+        local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
+        Settings.CreateCheckBox(category, setting, tooltip)
+        Settings.SetOnValueChangedCallback(variable, OnSettingChanged)
+    end
+
+    Settings.RegisterAddOnCategory(category)
+end
