@@ -4,6 +4,7 @@ AFUF_Options_Default = {
     HideCastBar = true;
     HideClassBar = true;
     ShowClassColor = true;
+    ShowAggro = true;
 }
 
 
@@ -41,6 +42,16 @@ function AFUF:HideTargetCastBar()
         SetCVar("showTargetCastbar", "0");
     else
         SetCVar("showTargetCastbar", "1");
+    end
+end
+
+function AFUF:ShowAggro()
+
+    if AFUF_Options["ShowAggro"] then
+    --TargetCastBar 를 숨긴다.
+        SetCVar("threatShowNumeric", "1");
+    else
+        SetCVar("threatShowNumeric", "0");
     end
 end
 
@@ -126,6 +137,7 @@ local function AFUF_OnEvent(self, event, ...)
 		self:HideClassBar();
         self:HideCombatText();
         self:HideTargetBuffs();
+        self:ShowAggro();
 	end
 	self:UpdateHealthBar();
 	AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
