@@ -433,6 +433,8 @@ local function APB_UpdateBuff(buffbar)
 		buffbar:Show();
 		buffbar.text:Show();
 		buffbar.count:Show();
+
+		buffbar.tooltip = buffbar.buff;
 	end
 
 	if buffbar.debuff then
@@ -458,6 +460,7 @@ local function APB_UpdateBuff(buffbar)
 		buffbar:Show();
 		buffbar.text:Show();
 		buffbar.count:Show();
+		buffbar.tooltip = buffbar.debuff;
 	end
 
 	if buffbar.start then
@@ -512,6 +515,7 @@ local function APB_UpdateStagger(self)
 
 		self:SetStatusBarColor(info.r, info.g, info.b);
 		self:Show();
+		self.tooltip = "STAGGER";
 	end
 
 end
@@ -545,6 +549,7 @@ local function APB_UpdateFronzenOrb(self)
 		end
 		self.count:SetText("");
 		self:Show();
+		self.tooltip = "FrozenOrbTime";
 	end
 
 end
@@ -758,11 +763,17 @@ end
 
 local function setupMouseOver(frame)
 
+	frame.spellid = nil;
+	frame.tooltip = nil;
+
 	if not frame:GetScript("OnEnter") then
 		frame:SetScript("OnEnter", function(s)
 			if s.spellid and s.spellid > 0 then
 				GameTooltip_SetDefaultAnchor(GameTooltip, s);
 				GameTooltip:SetSpellByID(s.spellid);
+			elseif s.tooltip then
+				GameTooltip_SetDefaultAnchor(GameTooltip, s);
+				GameTooltip:SetText(s.tooltip);
 			end
 		end)
 		frame:SetScript("OnLeave", function()
@@ -770,14 +781,6 @@ local function setupMouseOver(frame)
 		end)
 	end
 
-end
-
-local function clearMouseOver(frame)
-
-	if frame:GetScript("OnEnter") then
-		frame:SetScript("OnEnter", nil);
-		frame:SetScript("OnLeave", nil);
-	end
 end
 
 local function APB_UpdateSpell(spell, spell2)
@@ -814,8 +817,7 @@ local function APB_UpdateSpell(spell, spell2)
 			APB.combobar[i]:SetStatusBarColor(0,1,0)
 		end
 
-		APB.combobar[i].spellid = spellid;
-		setupMouseOver(APB.combobar[i]);
+		APB.combobar[i].spellid = spellid;		
 	end
 
 	if charges < maxCharges then
@@ -829,8 +831,6 @@ local function APB_UpdateSpell(spell, spell2)
 		end
 
 		APB.combobar[charges + 1].spellid = spellid;
-		setupMouseOver(APB.combobar[charges + 1]);
-
 	end
 
 	if charges < maxCharges - 1 then
@@ -868,8 +868,7 @@ local function APB_UpdateSpell(spell, spell2)
 			APB.combobar[i]:SetMinMaxValues(0, 1)
 			APB.combobar[i]:SetValue(1)
 			APB.combobar[i]:SetScript("OnUpdate", nil)
-			APB.combobar[i].spellid = spellid;
-			setupMouseOver(APB.combobar[i]);
+			APB.combobar[i].spellid = spellid;			
 		end
 
 		if charges < maxCharges2 then
@@ -878,8 +877,7 @@ local function APB_UpdateSpell(spell, spell2)
 			APB.combobar[maxCharges + charges + 1].duration = chargeDuration;
 			APB.combobar[maxCharges + charges + 1]:SetScript("OnUpdate", APB_OnUpdateCombo)
 
-			APB.combobar[maxCharges + charges + 1].spellid = spellid;
-			setupMouseOver(APB.combobar[maxCharges + charges + 1]);
+			APB.combobar[maxCharges + charges + 1].spellid = spellid;			
 		end
 
 		if charges < maxCharges2 - 1 then
@@ -1145,8 +1143,15 @@ local function APB_CheckPower(self)
 	APB.bar:Hide();
 	APB.bar.text:SetText("");
 	APB.bar.count:SetText("");
+	setupMouseOver(APB.bar);
+
 	APB.combobar[1].text:SetText("");
-	
+	APB.combobar[1].text:Hide();
+
+	for i = 1, 10 do		
+		setupMouseOver(APB.combobar[i]);
+	end
+
 	for j = 0, 1 do
 		APB.buffbar[j]:Hide();
 		APB.buffbar[j].text:SetText("");
@@ -1160,8 +1165,10 @@ local function APB_CheckPower(self)
 
 		APB.buffbar[j].buff = nil;
 		APB.buffbar[j].debuff = nil;
-	end
-	APB.combobar[1].text:Hide();
+
+		setupMouseOver(APB.buffbar[j]);
+
+	end	
 
 	if (englishClass == "EVOKER") then
 		--기원사
@@ -1213,6 +1220,10 @@ local function APB_CheckPower(self)
 			APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 			bupdate_power = true;
 
+			for i = 1, 10 do		
+				APB.combobar[i].tooltip = "ARCANE_CHARGES";				
+			end
+
 		end
 
 		if (spec and spec == 2) then
@@ -1257,6 +1268,10 @@ local function APB_CheckPower(self)
 			APB_UpdateBuffCombo(self.combobar)
 			bupdate_buff_combo = true;
 
+			for i = 1, 10 do		
+				APB.combobar[i].tooltip = "고드름";				
+			end
+
 			FrozenOrbDuration = 10;
 			if asCheckTalent("영원한 서리") then
 				FrozenOrbDuration = 12;
@@ -1277,6 +1292,10 @@ local function APB_CheckPower(self)
 		APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 		APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 		bupdate_power = true;
+
+		for i = 1, 10 do		
+			APB.combobar[i].tooltip = "SOUL_SHARDS";				
+		end
 
 		if (spec and spec == 3) then
 			if asCheckTalent("불확실성 역전") then
@@ -1330,6 +1349,10 @@ local function APB_CheckPower(self)
 			APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 			APB:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
 			bupdate_power = true;
+
+			for i = 1, 10 do		
+				APB.combobar[i].tooltip = "COMBO_POINTS";				
+			end
 		end
 
 		if (spec and spec == 3) then
@@ -1367,6 +1390,10 @@ local function APB_CheckPower(self)
 		APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 		bupdate_power = true;
 
+		for i = 1, 10 do		
+			APB.combobar[i].tooltip = "COMBO_POINTS";				
+		end
+
 		APB_BUFF = "난도질";
 		APB.buffbar[0].buff = "난도질";
 		APB.buffbar[0].unit = "player"
@@ -1379,6 +1406,10 @@ local function APB_CheckPower(self)
 		APB_UpdateRune()
 		APB:RegisterEvent("RUNE_POWER_UPDATE")
 		bupdate_rune = true;
+
+		for i = 1, 10 do		
+			APB.combobar[i].tooltip = "RUNE_POWER";				
+		end
 
 
 		if (spec and spec == 1) then
@@ -1551,6 +1582,10 @@ local function APB_CheckPower(self)
 			APB_UpdateBuffCombo(self.combobar)
 			bupdate_buff_combo = true;
 
+			for i = 1, 10 do		
+				APB.combobar[i].tooltip = "살쾡이의 격노";				
+			end
+
 			APB_BUFF = "살쾡이의 격노";
 			APB.buffbar[0].buff = "살쾡이의 격노";
 			--bupdate_buff_count = true;
@@ -1572,6 +1607,10 @@ local function APB_CheckPower(self)
 			APB_UpdateBuffCombo(self.combobar)
 			bupdate_buff_combo = true;
 			bsmall_power_bar = true;
+
+			for i = 1, 10 do		
+				APB.combobar[i].tooltip = "소용돌이치는 무기";				
+			end
 		end
 
 	end

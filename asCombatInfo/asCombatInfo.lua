@@ -465,7 +465,27 @@ function ACI_ActionBarOverlayGlowAnimOutMixin:OnFinished()
 	actionButton.overlay = nil;
 end
 
+local function setupMouseOver(frame)
 
+	frame.spellid = nil;
+	frame.tooltip = nil;
+
+	if not frame:GetScript("OnEnter") then
+		frame:SetScript("OnEnter", function(s)
+			if s.spellid and s.spellid > 0 then
+				GameTooltip_SetDefaultAnchor(GameTooltip, s);
+				GameTooltip:SetSpellByID(s.spellid);
+			elseif s.tooltip then
+				GameTooltip_SetDefaultAnchor(GameTooltip, s);
+				GameTooltip:SetText(s.tooltip);
+			end
+		end)
+		frame:SetScript("OnLeave", function()
+			GameTooltip:Hide();
+		end)
+	end
+
+end
 
 local function getUnitBuffbyName(unit, buff, filter)
 
@@ -1536,6 +1556,7 @@ function ACI_Init()
 		ACI[i].update = 0;
 		ACI[i]:Hide();
 			--ACI_Alert(ACI[i]);
+		setupMouseOver(ACI[i]);
 	end
 
 	if (ACI_SpellList and #ACI_SpellList) then
@@ -1681,6 +1702,11 @@ function ACI_Init()
 			ACI[i].update = 0;
 			ACI[i].updateaura = true;
 
+			ACI[i].tooltip = (ACI_SpellList[i][1]);
+			ACI[i].spellid = tonumber(ACI_SpellList[i][1]);
+
+
+
 
 			local t = ACI_SpellList[i][2];
 
@@ -1815,6 +1841,8 @@ for i = 1, 5 do
 	ACI[i]:SetAlpha(ACI_Alpha);
 	ACI[i]:EnableMouse(false);
 	ACI[i]:Hide();
+
+	setupMouseOver(ACI[i])
 
 end
 
