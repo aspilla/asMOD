@@ -124,7 +124,7 @@ end
 
 AFUF.bfirst = false;
 
-function AFUF.OnEvent(self, event, ...)
+function AFUF:OnEvent(event, ...)
 
     if not self.bfirst then
         self:SetupOptionPanels();

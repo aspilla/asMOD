@@ -57,7 +57,12 @@ function AHCA:UpdateAlert()
     end
 end
 
-function AHCA.OnEvent(self, event, ...)
+function AHCA:OnEvent(event, ...)
+
+    if not self.bfirst then
+        self:SetupOptionPanels();
+        self.bfirst = true;
+    end
 
     self:CheckHealer();
 	if event == "PLAYER_REGEN_ENABLED" then
@@ -66,9 +71,6 @@ function AHCA.OnEvent(self, event, ...)
 end
 
 function AHCA:OnInit()
-
-    self:SetupOptionPanels();
-
 
     self:SetScript("OnEvent", self.OnEvent);
     self:RegisterEvent("PLAYER_REGEN_ENABLED");
