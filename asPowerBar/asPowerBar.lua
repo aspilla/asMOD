@@ -40,6 +40,7 @@ APB_DEBUFF_COMBO = nil
 local APB = nil;
 local max_combo = nil;
 local balert = false;
+local balert2 = false;
 
 local PowerTypeString = {}
 PowerTypeString = {[Enum.PowerType.Focus] = "집중", [Enum.PowerType.Insanity] = "광기", [Enum.PowerType.Maelstrom] = "소용돌이", [Enum.PowerType.LunarPower] = "천공의 힘"};
@@ -868,7 +869,11 @@ local function APB_UpdateSpell(spell, spell2)
 			APB.combobar[i]:SetMinMaxValues(0, 1)
 			APB.combobar[i]:SetValue(1)
 			APB.combobar[i]:SetScript("OnUpdate", nil)
-			APB.combobar[i].spellid = spellid;			
+			APB.combobar[i].spellid = spellid;		
+			
+			if balert2 then
+				APB.combobar[i]:SetStatusBarColor(0,1,1)
+			end
 		end
 
 		if charges < maxCharges2 then
@@ -2003,11 +2008,19 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 		if APB_SPELL and  APB_SPELL == name then
 			balert = true;
 		end
+
+		if APB_SPELL2 and  APB_SPELL2 == name then
+			balert2 = true;
+		end
+		
 	elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
 
 		local name = GetSpellInfo(arg1);
 		if APB_SPELL and  APB_SPELL == name then
 			balert = false;
+		end
+		if APB_SPELL2 and  APB_SPELL2 == name then
+			balert2 = false;
 		end
 
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
