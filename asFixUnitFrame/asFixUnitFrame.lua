@@ -1,14 +1,12 @@
-AFUF_Options_Default = {
-    HideDebuff = true,                           
-    HideCombatText = true,                       
+local AFUF = CreateFrame("FRAME", nil, UIParent);
+AFUF.Options_Default = {
+    HideDebuff = true,
+    HideCombatText = true,
     HideCastBar = true;
     HideClassBar = true;
     ShowClassColor = true;
     ShowAggro = true;
 }
-
-
-local AFUF = CreateFrame("FRAME", nil, UIParent);
 
 function AFUF:HideCombatText()
 
@@ -112,7 +110,7 @@ function AFUF:UpdateHealthBar()
             r, g, b = classColor.r, classColor.g, classColor.b;
         else
             r, g, b = 0.0, 1.0, 0.0;
-        end	
+        end
         frame:SetStatusBarTexture("Interface\\addons\\asFixUnitFrame\\UI-StatusBar.blp")
         frame:SetStatusBarColor(r, g, b);
     end
@@ -124,13 +122,13 @@ function AFUF:UpdateHealthBar()
     end
 end
 
-local bfirst = false;
+AFUF.bfirst = false;
 
-local function AFUF_OnEvent(self, event, ...)
+function AFUF.OnEvent(self, event, ...)
 
-    if not bfirst then
+    if not self.bfirst then
         self:SetupOptionPanels();
-        bfirst = true;
+        self.bfirst = true;
     end
 
 	if event == "PLAYER_ENTERING_WORLD" or  event == "ACTIVE_TALENT_GROUP_CHANGED" then
@@ -143,35 +141,36 @@ local function AFUF_OnEvent(self, event, ...)
 	AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
 end
 
-
-AFUF:SetScript("OnEvent", AFUF_OnEvent);
-AFUF:RegisterEvent("PLAYER_TARGET_CHANGED");
-AFUF:RegisterEvent("PLAYER_ENTERING_WORLD");
-AFUF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
-
-local function OnSettingChanged(_, setting, value)
-	local variable = setting:GetVariable()
-	AFUF_Options[variable] = value;
-    ReloadUI();
+function AFUF:OnInit()
+    self:SetScript("OnEvent", AFUF.OnEvent);
+    self:RegisterEvent("PLAYER_TARGET_CHANGED");
+    self:RegisterEvent("PLAYER_ENTERING_WORLD");
+    self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+    self:RegisterUnitEvent("UNIT_TARGET", "target");
 end
 
 function AFUF:SetupOptionPanels()
+
+    local function OnSettingChanged(_, setting, value)
+        local variable = setting:GetVariable()
+        AFUF_Options[variable] = value;
+        ReloadUI();
+    end
 
     local category = Settings.RegisterVerticalLayoutCategory("asFixUnitFrame")
 
     if AFUF_Options == nil then
         AFUF_Options = {};
-        AFUF_Options = CopyTable(AFUF_Options_Default);
+        AFUF_Options = CopyTable(self.Options_Default);
     end
 
-    for variable, _ in pairs(AFUF_Options_Default) do
+    for variable, _ in pairs(self.Options_Default) do
 
-        
+
         local name = variable;
         local tooltip = ""
-        if  AFUF_Options[variable] == nil then    
-            AFUF_Options[variable] = AFUF_Options_Default[variable];
+        if  AFUF_Options[variable] == nil then
+            AFUF_Options[variable] = self.Options_Default[variable];
         end
         local defaultValue = AFUF_Options[variable];
 
@@ -182,3 +181,5 @@ function AFUF:SetupOptionPanels()
 
     Settings.RegisterAddOnCategory(category)
 end
+
+AFUF:OnInit();
