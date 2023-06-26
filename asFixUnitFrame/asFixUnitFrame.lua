@@ -37,9 +37,7 @@ function AFUF:HideTargetCastBar()
 
     if AFUF_Options["HideCastBar"] then
     --TargetCastBar 를 숨긴다.
-        SetCVar("showTargetCastbar", "0");
-    else
-        SetCVar("showTargetCastbar", "1");
+       TargetFrame.spellbar.showCastbar = false;
     end
 end
 
@@ -136,8 +134,11 @@ function AFUF:OnEvent(event, ...)
         self:HideCombatText();
         self:HideTargetBuffs();
         self:ShowAggro();
+        self:HideTargetCastBar();
+        SetCVar("showTargetCastbar", "1");        
 	end
 	self:UpdateHealthBar();
+    
 	AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
 end
 
