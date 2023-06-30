@@ -2,9 +2,9 @@
 local ABF_PLAYER_BUFF;
 local ABF_TARGET_BUFF;
 local ABF_SIZE = 28;
-local ABF_TARGET_BUFF_X = 73 + 30;
+local ABF_TARGET_BUFF_X = 73 + 30 + 20;
 local ABF_TARGET_BUFF_Y = -142;
-local ABF_PLAYER_BUFF_X = -73 - 30;
+local ABF_PLAYER_BUFF_X = -73 - 30 -20;
 local ABF_PLAYER_BUFF_Y = -142 ;
 local ABF_MAX_BUFF_SHOW = 7;
 local ABF_ALPHA = 1;
@@ -907,11 +907,14 @@ local function scanSpells(tab)
 
 	for i=tabOffset + 1, tabOffset + numEntries do
 		local spellName, _, spellID = GetSpellBookItemName (i, BOOKTYPE_SPELL)
+		local _, _ , icon = GetSpellInfo(spellID);
 		if not spellName then
 			do break end
 		end
 
 		ABF_TalentBuffList[spellName] = true;
+		ABF_TalentBuffList[icon or 0] = true;
+		
 	end
 end
 
@@ -938,8 +941,14 @@ local function asCheckTalent()
 
             if definitionInfo ~= nil then
                 local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
-				--print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));
-				ABF_TalentBuffList[talentName] = true;
+				--print(string.format("%s/%d %s/%d", talentName, definitionInfo.spellID, definitionInfo.overrideName or "", definitionInfo.overriddenSpellID or 0));
+				local name, rank, icon = GetSpellInfo(definitionInfo.spellID);
+				ABF_TalentBuffList[talentName or ""] = true;
+				ABF_TalentBuffList[icon or 0] = true;
+				if definitionInfo.overrideName then
+					print (definitionInfo.overrideName)
+					ABF_TalentBuffList[definitionInfo.overrideName] = true;
+				end
 			end
         end
     end
@@ -1143,7 +1152,7 @@ local function ABF_UpdateBuff(unit)
 				skip = true;
 			end
 
-			if (IsPowerbar or ABF_ShowTalentList) and skip == false and (ABF_TalentBuffList[name] or debuffType == "totem" or nameplateShowAll or nameplateShowPersonal) then
+			if (IsPowerbar or ABF_ShowTalentList) and skip == false and PLAYER_UNITS[caster] and (ABF_TalentBuffList[name] or ABF_TalentBuffList[icon] or debuffType == "totem" or nameplateShowAll or nameplateShowPersonal) then
 				if talentcount < ABF_MAX_BUFF_SHOW then
 					skip = true;
 					talentcount = talentcount + 1;

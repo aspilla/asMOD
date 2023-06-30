@@ -4,9 +4,9 @@ local ADF_TARGET_DEBUFF;
 local ADF_DeBuffList = {}
 
 local ADF_SIZE = 32;
-local ADF_TARGET_DEBUFF_X = 73 + 30;
+local ADF_TARGET_DEBUFF_X = 73 + 30 + 20;
 local ADF_TARGET_DEBUFF_Y = -110;
-local ADF_PLAYER_DEBUFF_X = -73 - 30;
+local ADF_PLAYER_DEBUFF_X = -73 - 30 - 20;
 local ADF_PLAYER_DEBUFF_Y = -110;
 local ADF_MAX_DEBUFF_SHOW = 7;
 local ADF_ALPHA = 1
