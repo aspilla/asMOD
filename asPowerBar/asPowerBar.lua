@@ -1433,7 +1433,14 @@ local function APB_CheckPower(self)
 
 	if (englishClass == "PRIEST") then
 		if (spec and spec == 3) then
-			bshow_haste = true;
+			APB_SPELL = "정신 분열";
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
+			APB_DEBUFF = "파멸의 역병";
+			APB.buffbar[0].debuff = "파멸의 역병"
+			APB.buffbar[0].unit = "target";
+			APB:SetScript("OnUpdate", APB_OnUpdate);
 		end
 	end
 

@@ -43,14 +43,15 @@ ADotF_ShowList_WARLOCK_3 = {
 }
 
 ADotF_ShowList_PRIEST_1 = {
-	{"어둠의 권능: 고통" , 16 * 0.3},
+	{"어둠의 권능: 고통" , 21 * 0.3},
 }
 
 ADotF_ShowList_PRIEST_2 = {
+    {"어둠의 권능: 고통" , 21 * 0.3},
 }
 
 ADotF_ShowList_PRIEST_3 = {
-	{"어둠의 권능: 고통" , 16 * 0.3},
+	{"어둠의 권능: 고통" , 21 * 0.3},
 }
 
 ADotF_ShowList_SHAMAN_1 = {
