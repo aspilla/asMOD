@@ -946,7 +946,7 @@ local function asCheckTalent()
 				ABF_TalentBuffList[talentName or ""] = true;
 				ABF_TalentBuffList[icon or 0] = true;
 				if definitionInfo.overrideName then
-					print (definitionInfo.overrideName)
+					--print (definitionInfo.overrideName)
 					ABF_TalentBuffList[definitionInfo.overrideName] = true;
 				end
 			end
