@@ -167,22 +167,27 @@ local function ASAA_UpdateCooldown()
 	prev_cnt = numCools;
 end
 
+local bfirst = true;
+
 local function ASAA_Init()
 
-    LoadAddOn("asMOD");
-	ASAA_CoolButtons = CreateFrame("Frame", nil, UIParent)
+	if bfirst then
+		LoadAddOn("asMOD");
+		ASAA_CoolButtons = CreateFrame("Frame", nil, UIParent)
 
-	ASAA_CoolButtons:SetPoint("CENTER", ASAA_CoolButtons_X, ASAA_CoolButtons_Y)
-	ASAA_CoolButtons:SetWidth(1)
-	ASAA_CoolButtons:SetHeight(1)
-	ASAA_CoolButtons:SetScale(1)
+		ASAA_CoolButtons:SetPoint("CENTER", ASAA_CoolButtons_X, ASAA_CoolButtons_Y)
+		ASAA_CoolButtons:SetWidth(1)
+		ASAA_CoolButtons:SetHeight(1)
+		ASAA_CoolButtons:SetScale(1)
 
-    if asMOD_setupFrame then
-        asMOD_setupFrame (ASAA_CoolButtons, "asActiveAlert");
-    end
+		if asMOD_setupFrame then
+			asMOD_setupFrame (ASAA_CoolButtons, "asActiveAlert");
+		end
 
-	ASAA_CoolButtons:Show()
-	ASAA_SpellList = {};
+		ASAA_CoolButtons:Show()
+
+		ASAA_SpellList = {};
+	end
 	ScanActionSlot();
 	ASAA_UpdateCooldown();
 end
@@ -197,6 +202,7 @@ local function ASAA_Insert(id)
 
 	for i = 1, maxIdx do
 		if ASAA_SpellList[i] == id then
+			ASAA_UpdateCooldown();
 			return;
 		end
 	end
