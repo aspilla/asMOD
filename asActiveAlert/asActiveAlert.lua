@@ -186,8 +186,9 @@ local function ASAA_Init()
 
 		ASAA_CoolButtons:Show()
 
-		ASAA_SpellList = {};
+		
 	end
+	ASAA_SpellList = {};
 	ScanActionSlot();
 	ASAA_UpdateCooldown();
 end
