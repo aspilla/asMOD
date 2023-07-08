@@ -82,72 +82,72 @@ local function ASAA_UpdateCooldown()
 	local frameIcon, frameCooldown;
 	local icon, duration, start, enable;
 	local frameBorder;
-	local maxIdx;
 	local parent;
 
-	maxIdx = #ASAA_SpellList;
 	parent = ASAA_CoolButtons;
 
 	if parent.frames == nil then
 		parent.frames = {};
 	end
 
-	for i = 1, maxIdx do
-		local idx = i;
-		local array = ASAA_SpellList;
+	for id, isAlert in pairs(ASAA_SpellList) do
 
-		_, _, icon = GetSpellInfo(array[idx]);
-		start, duration, enable = GetSpellCooldown(array[idx]);
-		local isUsable, notEnoughMana = IsUsableSpell(array[idx]);
+		if isAlert == true then
+			_, _, icon = GetSpellInfo(id);
+			start, duration, enable = GetSpellCooldown(id);
+			local isUsable, notEnoughMana = IsUsableSpell(id);
 
 
-		--if (icon and enable > 0) then
-		if (icon) then
-			frame = parent.frames[numCools];
-
-			if ( not frame ) then
-				parent.frames[numCools] = CreateFrame("Button", nil, parent, "asActiveAlert2FrameTemplate");
+			--if (icon and enable > 0) then
+			if (icon) then
 				frame = parent.frames[numCools];
-				frame:EnableMouse(false);
 
-				for _,r in next,{frame.cooldown:GetRegions()}	do
-					if r:GetObjectType()=="FontString" then
-						r:SetFont("Fonts\\2002.TTF",ASAA_CooldownFontSize,"OUTLINE")
-						break
+				if ( not frame ) then
+					parent.frames[numCools] = CreateFrame("Button", nil, parent, "asActiveAlert2FrameTemplate");
+					frame = parent.frames[numCools];
+					frame:EnableMouse(false);
+
+					for _,r in next,{frame.cooldown:GetRegions()}	do
+						if r:GetObjectType()=="FontString" then
+							r:SetFont("Fonts\\2002.TTF",ASAA_CooldownFontSize,"OUTLINE")
+							break
+						end
 					end
+
+					frame.icon:SetTexCoord(.08, .92, .08, .92)
+					frame.border:SetTexture("Interface\\Addons\\asActiveAlert\\border.tga")
+					frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92)
+
 				end
 
-				frame.icon:SetTexCoord(.08, .92, .08, .92)
-				frame.border:SetTexture("Interface\\Addons\\asActiveAlert\\border.tga")
-				frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92)
+				-- set the icon
+				frameIcon = frame.icon;
+				frameBorder = frame.border;
+				frameIcon:SetTexture(icon);
+				frameIcon:SetAlpha(ASAA_Alpha);
+				frame:ClearAllPoints();
+				frame:Show();
 
+				frameBorder:SetVertexColor(0, 0, 0);
+
+				if ( isUsable ) then
+					frameIcon:SetVertexColor(1.0, 1.0, 1.0);
+				elseif ( notEnoughMana ) then
+					frameIcon:SetVertexColor(0.5, 0.5, 1.0);
+				else
+					frameIcon:SetVertexColor(0.4, 0.4, 0.4);
+				end
+
+				frameCooldown = frame.cooldown;
+				frameCooldown:Show();
+				asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, enable);
+				frameCooldown:SetHideCountdownNumbers(false);
+
+				numCools = numCools + 1;
 			end
 
-			-- set the icon
-			frameIcon = frame.icon;
-			frameBorder = frame.border;
-			frameIcon:SetTexture(icon);
-			frameIcon:SetAlpha(ASAA_Alpha);
-			frame:ClearAllPoints();
-			frame:Show();
-
-			frameBorder:SetVertexColor(0, 0, 0);
-
-			if ( isUsable ) then
-				frameIcon:SetVertexColor(1.0, 1.0, 1.0);
-			elseif ( notEnoughMana ) then
-				frameIcon:SetVertexColor(0.5, 0.5, 1.0);
-			else
-				frameIcon:SetVertexColor(0.4, 0.4, 0.4);
-			end
-
-			frameCooldown = frame.cooldown;
-			frameCooldown:Show();
-			asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, enable);
-			frameCooldown:SetHideCountdownNumbers(false);
-
-			numCools = numCools + 1;
 		end
+
 	end
 
 	for i=1, numCools - 1 do
@@ -186,7 +186,7 @@ local function ASAA_Init()
 
 		ASAA_CoolButtons:Show()
 
-		
+
 	end
 	ASAA_SpellList = {};
 	ScanActionSlot();
@@ -201,13 +201,6 @@ local function ASAA_Insert(id)
 		return;
 	end
 
-	for i = 1, maxIdx do
-		if ASAA_SpellList[i] == id then
-			ASAA_UpdateCooldown();
-			return;
-		end
-	end
-
 	local name, _, _ = GetSpellInfo(id);
 
 	if ASAA_BackList and ASAA_BackList[name] then
@@ -219,22 +212,12 @@ local function ASAA_Insert(id)
 		return;
 	end
 
-	tinsert(ASAA_SpellList, id);
+	ASAA_SpellList[id] = true;
 	ASAA_UpdateCooldown();
 end
 
 local function ASAA_Delete(id)
-
-	local maxIdx = #ASAA_SpellList;
-
-	for i = 1, maxIdx do
-		if ASAA_SpellList[i] == id then
-			tremove(ASAA_SpellList, i)
-			ASAA_UpdateCooldown();
-			return;
-		end
-	end
-
+	ASAA_SpellList[id] = false;
 end
 
 local function ASAA_OnEvent(self, event, arg1, arg2, arg3)
