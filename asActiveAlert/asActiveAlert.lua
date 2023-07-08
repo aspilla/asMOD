@@ -218,6 +218,7 @@ end
 
 local function ASAA_Delete(id)
 	ASAA_SpellList[id] = false;
+	ASAA_UpdateCooldown();
 end
 
 local function ASAA_OnEvent(self, event, arg1, arg2, arg3)
