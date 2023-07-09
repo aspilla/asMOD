@@ -1,5 +1,5 @@
 ANameP_Options_Default = {
-    version = 230702;
+    version = 230708;
     ANameP_ShowKnownSpell = true,                           -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                               -- [디버프] 전부 보이기
     ANameP_ShowPlayerBuffAll = false,                       -- [버프] 전부 보이기
@@ -167,10 +167,17 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_EVOKER_1 = {
+        ["불의 숨결"] = {0, 5, true},
     },
 
     ANameP_ShowList_EVOKER_2 = {
+        ["불의 숨결"] = {0, 5, true},
 
+    },
+
+    ANameP_ShowList_EVOKER_3 = {
+
+        ["시간의 상처"] = {0, 5, true},
     },
 
 

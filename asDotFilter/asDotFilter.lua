@@ -111,6 +111,20 @@ ADotF_ShowList_HUNTER_3 = {
 }
 
 
+ADotF_ShowList_EVOKER_1 = {
+	{"불의 숨결", 0},
+	
+}
+
+ADotF_ShowList_EVOKER_2 = {
+	{"불의 숨결", 0},
+}
+
+ADotF_ShowList_EVOKER_3 = {
+    {"시간의 상처", 0},	
+}
+
+
 --설정 표시할 Unit
 local ADotF_UnitList = {
 	"focus",			-- 주시대상 표시 안하길 원하면 이 줄 삭제

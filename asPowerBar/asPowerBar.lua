@@ -387,8 +387,13 @@ local function APB_OnUpdateBuff(self, elapsed)
 			if gcd > 0 then
 				curr_gcd = gcd;
 			end
-
-			self:SetMinMaxValues(0, self.duration * 1000)
+			
+			if self.max and self.max > self.duration then
+				self:SetMinMaxValues(0, self.max * 1000)
+			else
+				self:SetMinMaxValues(0, self.duration * 1000)
+			end
+			
 			self:SetValue( remain_buff * 1000)
 			self.text:SetText(("%02.1f"):format(self.duration + self.start - curr_time))
 
@@ -416,7 +421,7 @@ local function APB_UpdateBuff(buffbar)
 		local name,  icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = APB_UnitBuff(buffbar.unit, buffbar.buff, "player");
 
 		if name and caster == "player" then
-			buffbar.start = expirationTime - duration;
+			buffbar.start = expirationTime - duration;			
 			buffbar.duration = duration;
 			if bupdate_buff_count then
 				buffbar.count:SetText(count);
@@ -1170,6 +1175,7 @@ local function APB_CheckPower(self)
 
 		APB.buffbar[j].buff = nil;
 		APB.buffbar[j].debuff = nil;
+		APB.buffbar[j].max = nil;
 
 		setupMouseOver(APB.buffbar[j]);
 
@@ -1182,6 +1188,18 @@ local function APB_CheckPower(self)
 		APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
 		APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 		bupdate_power = true;
+		bsmall_power_bar = true;
+
+		if (spec and spec == 3) then
+			if asCheckTalent("칠흑의 힘") then
+				APB_BUFF = "칠흑의 힘";
+				APB.buffbar[0].buff = "칠흑의 힘"
+				APB.buffbar[0].unit = "player"
+				APB.buffbar[0].max = 20;
+				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				APB_UpdateBuff(self.buffbar[0]);
+			end			
+		end
 	end
 
 	if (englishClass == "PALADIN") then
