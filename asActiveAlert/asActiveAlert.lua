@@ -188,7 +188,7 @@ local function ASAA_Init()
 
 
 	end
-	ASAA_SpellList = {};
+	table.wipe(ASAA_SpellList);
 	ScanActionSlot();
 	ASAA_UpdateCooldown();
 end

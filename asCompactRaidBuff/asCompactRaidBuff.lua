@@ -838,19 +838,28 @@ end
 
 -- Setup
 local function ACRB_setupFrame(frame)
-	if not frame or frame:IsForbidden() or not frame.displayedUnit or not UnitIsPlayer(frame.displayedUnit)  then
+	if not frame or frame:IsForbidden()  then
 		return
 	end
 
+	
 	local frameName = frame:GetName()
-
 	if asraid[frameName] == nil then
 		asraid[frameName] = {};
 		--크기 조정을 위해 아래 코드를 돌린다.
 	end
 
-	asraid[frameName].displayedUnit = frame.displayedUnit;
+	if frame.displayedUnit then
+		asraid[frameName].displayedUnit = frame.displayedUnit;
+	else
+		asraid[frameName].displayedUnit = frame.unit;
+	end
+	
 	asraid[frameName].frame = frame;
+
+	if not UnitIsPlayer(asraid[frameName].displayedUnit) then
+		return;
+	end
 
 	local CUF_AURA_BOTTOM_OFFSET = 2;
 	local CUF_NAME_SECTION_SIZE = 15;
