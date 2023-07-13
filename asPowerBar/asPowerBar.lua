@@ -210,10 +210,12 @@ end
 
 local prev_combo = nil;
 local p_start = nil;
+local bhalf_combo = false;
 
 local function APB_ShowComboBar(combo, partial, cast, cooldown)
 
 	local bmax = false;
+	local bhalf = false;
 
 	local _, Class = UnitClass("player")
 	local color =RAID_CLASS_COLORS[Class]
@@ -236,6 +238,8 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
 
 	if combo == max_combo and cast == 0 then
 		bmax = true;
+	elseif combo >= (max_combo/2) and cast == 0 then
+		bhalf = bhalf_combo;
 	end
 
 	if combo > 10 then
@@ -277,6 +281,8 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
 
 			if bmax then
 				APB.combobar[i]:SetStatusBarColor(1, 0, 0);
+			elseif bhalf then
+				APB.combobar[i]:SetStatusBarColor(1, 0.5, 0);
 			else
 				APB.combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
 			end
@@ -296,6 +302,8 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
 
 			if bmax then
 				APB.combobar[i]:SetStatusBarColor(1, 0, 0);
+			elseif bhalf then
+				APB.combobar[i]:SetStatusBarColor(1, 0.5, 0);
 			else
 				APB.combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
 			end
@@ -1137,6 +1145,7 @@ local function APB_CheckPower(self)
 	bupdate_windrunner = false;
 	bupdate_partial_power = false;
 	bsmall_power_bar = false;
+	bhalf_combo = false;
 
 	APB_BUFF = nil;
 	APB_BUFF2 = nil;
@@ -1493,6 +1502,7 @@ local function APB_CheckPower(self)
 				APB.combobar.unit = "player"
 				APB_UpdateBuffCombo(self.combobar)
 				bupdate_buff_combo = true;
+				
 			end
 
 		end
@@ -1637,6 +1647,7 @@ local function APB_CheckPower(self)
 			for i = 1, 10 do		
 				APB.combobar[i].tooltip = "소용돌이치는 무기";				
 			end
+			bhalf_combo = true;
 		end
 
 	end

@@ -156,7 +156,7 @@ local function ASAA_UpdateCooldown()
 	end
 
 	-- 이후 전에 보였던 frame을 지운다.
-	for i = numCools, prev_cnt do
+	for i = numCools, #parent.frames do
 		frame = parent.frames[i];
 
 		if ( frame ) then
@@ -164,7 +164,7 @@ local function ASAA_UpdateCooldown()
 		end
 	end
 
-	prev_cnt = numCools;
+	--prev_cnt = numCools;
 end
 
 local bfirst = true;
