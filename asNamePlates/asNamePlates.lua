@@ -1640,10 +1640,10 @@ local function setColoronStatusBar(self, r, g, b)
 		return;
     end
 
-	if ( r ~= self.r or g ~= self.g or b ~= self.b ) then
+	--if ( r ~= self.r or g ~= self.g or b ~= self.b ) then
 		healthBar:SetStatusBarColor(r, g, b);
 		self.r, self.g, self.b = r, g, b;
-	end
+	--end
 end
 
 
@@ -1663,7 +1663,8 @@ local function asCompactUnitFrame_UpdateHealthColor(frame, asNameplates)
 		local classColor = RAID_CLASS_COLORS[englishClass];
 			--debug
 			--classColor = RAID_CLASS_COLORS["PRIEST"];
-			if ( (frame.optionTable.allowClassColorsForNPCs or UnitIsPlayer(frame.unit) or UnitTreatAsPlayerForDisplay(frame.unit)) and classColor and frame.optionTable.useClassColors ) then
+			local useClassColors = CompactUnitFrame_GetOptionUseClassColors(frame, frame.optionTable);
+			if ( (frame.optionTable.allowClassColorsForNPCs or UnitIsPlayer(frame.unit) or UnitTreatAsPlayerForDisplay(frame.unit)) and classColor and useClassColors ) then
 				-- Use class colors for players if class color option is turned on
 				r, g, b = classColor.r, classColor.g, classColor.b;
 			elseif ( CompactUnitFrame_IsTapDenied(frame) ) then
@@ -1723,6 +1724,8 @@ local function updateHealthbarColor(self)
     if not healthBar and healthBar:IsForbidden() then
 		return;
     end
+
+	self.colorlevel = ColorLevel.None;
 
 	local shouldshow = false;
 	-- ColorLevel.Name;
@@ -2511,6 +2514,7 @@ local function addNamePlate(namePlateUnitToken)
 			namePlateFrameBase.asNamePlates.healer:Hide();
 		end
 	end
+	
 
 	if UnitIsPlayer(unit) then
 		unit_guid_list[UnitGUID(unit)] = unit;
@@ -2727,6 +2731,17 @@ local function initAddon()
 
 		if pframe and frame.BuffFrame.unit == pframe.namePlateUnitToken and pframe.asNamePlates then
 			updateTargetNameP(pframe.asNamePlates);
+		end
+	end)
+
+	hooksecurefunc("CompactUnitFrame_UpdateHealthColor", function(frame)
+		if ( frame:IsForbidden() ) then 
+			return 
+		end	
+
+		local pframe = frame:GetParent();
+		if pframe and  not (pframe:IsForbidden()) and pframe.asNamePlates then
+			updateHealthbarColor(pframe.asNamePlates);
 		end
 	end)
 
