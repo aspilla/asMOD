@@ -1640,10 +1640,11 @@ local function setColoronStatusBar(self, r, g, b)
 		return;
     end
 
-	--if ( r ~= self.r or g ~= self.g or b ~= self.b ) then
+	
+	local oldR, oldG, oldB = healthBar:GetStatusBarColor();
+	if ( r ~= oldR or g ~= oldG or b ~= oldB ) then
 		healthBar:SetStatusBarColor(r, g, b);
-		self.r, self.g, self.b = r, g, b;
-	--end
+	end
 end
 
 
