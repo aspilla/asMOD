@@ -899,9 +899,32 @@ local function ACRB_setupFrame(frame)
 		asraid[frameName].asbuffFrames = {}
 		for i = 1, ACRB_MAX_BUFFS do
 			local buffFrame = CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
-			buffFrame.icon:SetTexCoord(.08, .92, .08, .92);
-			buffFrame:ClearAllPoints()
 			buffFrame:EnableMouse(ACRB_ShowTooltip);
+			buffFrame.icon:SetTexCoord(.08, .92, .08, .92);
+			buffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
+			buffFrame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+			if ACRB_ShowTooltip and not buffFrame:GetScript("OnEnter") then
+				buffFrame:SetScript("OnEnter", function(s)
+					if s:GetID() > 0 then
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
+						GameTooltip:SetUnitBuff(s.unit, s:GetID(), s.filter);
+					end
+				end)
+				buffFrame:SetScript("OnLeave", function()
+					GameTooltip:Hide();
+				end)
+			end
+
+			asraid[frameName].asbuffFrames[i] = buffFrame;
+			buffFrame:Hide();
+		end
+	end
+
+	if asraid[frameName].asbuffFrames then
+		for i = 1, ACRB_MAX_BUFFS do
+			local buffFrame = asraid[frameName].asbuffFrames[i] ;
+			buffFrame:ClearAllPoints()
+			
 
 			if i <= ACRB_MAX_BUFFS - 3 then
 				if math.fmod(i - 1, 3) == 0 then
@@ -931,25 +954,9 @@ local function ACRB_setupFrame(frame)
 					buffFrame:SetPoint("TOP", frame, "TOP", 0, -2);
 				end
 			end
-
-			buffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
-			buffFrame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
-			if ACRB_ShowTooltip and not buffFrame:GetScript("OnEnter") then
-				buffFrame:SetScript("OnEnter", function(s)
-					if s:GetID() > 0 then
-						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitBuff(s.unit, s:GetID(), s.filter);
-					end
-				end)
-				buffFrame:SetScript("OnLeave", function()
-					GameTooltip:Hide();
-				end)
-			end
-
-			asraid[frameName].asbuffFrames[i] = buffFrame;
-			buffFrame:Hide();
 		end
 	end
+
 
 	--크기 조정
 	for _,d in ipairs(asraid[frameName].asbuffFrames) do
@@ -975,21 +982,8 @@ local function ACRB_setupFrame(frame)
 		asraid[frameName].asdebuffFrames = {};
 		for i = 1, ACRB_MAX_DEBUFFS do
 			local debuffFrame = CreateFrame("Button", nil, frame, "asCompactDebuffTemplate")
-			debuffFrame:ClearAllPoints()
 			debuffFrame:EnableMouse(ACRB_ShowTooltip);
 			debuffFrame.icon:SetTexCoord(.08, .92, .08, .92);
-			if math.fmod(i - 1, 3) == 0 then
-				if i == 1 then
-					local debuffPos, debuffRelativePoint, debuffOffset = "BOTTOMLEFT", "BOTTOMRIGHT", CUF_AURA_BOTTOM_OFFSET + powerBarUsedHeight;
-					debuffFrame:ClearAllPoints();
-					debuffFrame:SetPoint(debuffPos, frame, "BOTTOMLEFT", 3, debuffOffset);
-				else
-					debuffFrame:SetPoint("BOTTOMLEFT",asraid[frameName].asdebuffFrames[i-3], "TOPLEFT", 0, 2)
-				end
-			else
-				debuffFrame:SetPoint("BOTTOMLEFT", asraid[frameName].asdebuffFrames[i-1], "BOTTOMRIGHT", 2, 0)
-			end
-
 			debuffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
 			debuffFrame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
 
@@ -1008,6 +1002,25 @@ local function ACRB_setupFrame(frame)
 
 			asraid[frameName].asdebuffFrames[i] = debuffFrame;
 			debuffFrame:Hide();
+		end
+	end
+
+	if asraid[frameName].asbuffFrames then
+		for i = 1, ACRB_MAX_DEBUFFS do
+			local debuffFrame = asraid[frameName].asdebuffFrames[i] ;
+			debuffFrame:ClearAllPoints()
+
+			if math.fmod(i - 1, 3) == 0 then
+				if i == 1 then
+					local debuffPos, debuffRelativePoint, debuffOffset = "BOTTOMLEFT", "BOTTOMRIGHT", CUF_AURA_BOTTOM_OFFSET + powerBarUsedHeight;
+					debuffFrame:ClearAllPoints();
+					debuffFrame:SetPoint(debuffPos, frame, "BOTTOMLEFT", 3, debuffOffset);
+				else
+					debuffFrame:SetPoint("BOTTOMLEFT",asraid[frameName].asdebuffFrames[i-3], "TOPLEFT", 0, 2)
+				end
+			else
+				debuffFrame:SetPoint("BOTTOMLEFT", asraid[frameName].asdebuffFrames[i-1], "BOTTOMRIGHT", 2, 0)
+			end
 		end
 	end
 
@@ -1101,13 +1114,7 @@ local function ACRB_setupFrame(frame)
 			else
 				asraid[frameName].buffFrames2[i].cooldown:SetHideCountdownNumbers(true);
 			end
-			asraid[frameName].buffFrames2[i]:ClearAllPoints()
-			if i == 1 then
-				asraid[frameName].buffFrames2[i]:SetPoint("CENTER", frame.healthBar, "CENTER", 0, 0)
-			else
-				asraid[frameName].buffFrames2[i]:SetPoint("TOPLEFT", asraid[frameName].buffFrames2[i-1], "TOPRIGHT", 0, 0)
-			end
-
+			
 			if ACRB_ShowTooltip and not asraid[frameName].buffFrames2[i]:GetScript("OnEnter") then
 				asraid[frameName].buffFrames2[i]:SetScript("OnEnter", function(s)
 					if s:GetID() > 0 then
@@ -1129,6 +1136,12 @@ local function ACRB_setupFrame(frame)
 			asraid[frameName].buffFrames2[i]:SetSize(baseSize * 1.2, baseSize * 0.9);
 			asraid[frameName].buffFrames2[i].baseSize = baseSize;
 			asraid[frameName].buffFrames2[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+			asraid[frameName].buffFrames2[i]:ClearAllPoints()
+			if i == 1 then
+				asraid[frameName].buffFrames2[i]:SetPoint("CENTER", frame.healthBar, "CENTER", 0, 0)
+			else
+				asraid[frameName].buffFrames2[i]:SetPoint("TOPLEFT", asraid[frameName].buffFrames2[i-1], "TOPRIGHT", 0, 0)
+			end
 		end
 	end
 
