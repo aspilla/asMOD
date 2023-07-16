@@ -709,7 +709,15 @@ local function ACI_Alert(self, bcastspell)
 			end
 		else
 			ACI_Alert_list[spellname] = false;
-		end		
+		end
+
+		-- 우박폭풍
+		if t == 1 and spellname == "냉기 충격" then
+			_,  _, count  = getUnitBuffbyName("player", "우박폭풍");
+			if count == nil then
+				count = 0;
+			end		
+		end
 
 	elseif t == 2 or t==3 or t == 5  or t == 6 or t == 7 or t == 12 or t == 17 or t == 18 then
 
