@@ -642,7 +642,7 @@ local function ACI_Alert(self, bcastspell)
 	local frameBorder;
 	local frame;
 	local alert_count = nil;
-	local charges, maxCharges, chargeStart, chargeDuration, chargeModRate;
+	local charges, maxCharges, chargeStart, chargeDuration, chargeModRate, stack;
 	local expirationTime;
 	local caster;
 	local name;
@@ -768,6 +768,10 @@ local function ACI_Alert(self, bcastspell)
 
 		end
 
+		
+		
+		
+
 		if icon then
 			start = expirationTime - duration;
 			isUsable = true
@@ -838,6 +842,14 @@ local function ACI_Alert(self, bcastspell)
 		-- 광포한 무리
 		if t == 7 and spellname == 378745 then
 			count = checkDireBeast()
+		end
+
+		-- 태양왕
+		if t == 7 and spellname == 383883 then
+			_,  _, count  = getUnitBuffbyName(unit, "태양왕의 축복");
+			if count == nil then
+				count = 0;
+			end		
 		end
 
 	elseif t == 4 or t == 8 or t == 16 then
