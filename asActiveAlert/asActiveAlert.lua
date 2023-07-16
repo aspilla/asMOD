@@ -167,32 +167,6 @@ local function ASAA_UpdateCooldown()
 	--prev_cnt = numCools;
 end
 
-local bfirst = true;
-
-local function ASAA_Init()
-
-	if bfirst then
-		LoadAddOn("asMOD");
-		ASAA_CoolButtons = CreateFrame("Frame", nil, UIParent)
-
-		ASAA_CoolButtons:SetPoint("CENTER", ASAA_CoolButtons_X, ASAA_CoolButtons_Y)
-		ASAA_CoolButtons:SetWidth(1)
-		ASAA_CoolButtons:SetHeight(1)
-		ASAA_CoolButtons:SetScale(1)
-
-		if asMOD_setupFrame then
-			asMOD_setupFrame (ASAA_CoolButtons, "asActiveAlert");
-		end
-
-		ASAA_CoolButtons:Show()
-
-
-	end
-	table.wipe(ASAA_SpellList);
-	ScanActionSlot();
-	ASAA_UpdateCooldown();
-end
-
 local function ASAA_Insert(id)
 
 	local maxIdx = #ASAA_SpellList;
@@ -232,15 +206,17 @@ local function ASAA_OnEvent(self, event, arg1, arg2, arg3)
 	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and (arg1 == "player" or arg1 == "pet") then
 		ASAA_UpdateCooldown();
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		ASAA_Init();
+		self.ASAA_Init(self);
 	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
-		ASAA_Init();
+		self.ASAA_Init(self);
 	end
 
 	return;
 end
 
+local bfirst = true;
 local ASAA_mainframe = CreateFrame("Frame")
+
 ASAA_mainframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
 ASAA_mainframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
 ASAA_mainframe:RegisterEvent("SPELL_UPDATE_COOLDOWN")
@@ -248,7 +224,33 @@ ASAA_mainframe:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 ASAA_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 ASAA_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 
+function ASAA_mainframe:ASAA_Init()
 
-ASAA_mainframe:SetScript("OnEvent", ASAA_OnEvent)
+	if bfirst then
+		LoadAddOn("asMOD");
+		ASAA_CoolButtons = CreateFrame("Frame", nil, UIParent)
 
-ASAA_Init()
+		ASAA_CoolButtons:SetPoint("CENTER", ASAA_CoolButtons_X, ASAA_CoolButtons_Y)
+		ASAA_CoolButtons:SetWidth(1)
+		ASAA_CoolButtons:SetHeight(1)
+		ASAA_CoolButtons:SetScale(1)
+
+		if asMOD_setupFrame then
+			asMOD_setupFrame (ASAA_CoolButtons, "asActiveAlert");
+		end
+
+		ASAA_CoolButtons:Show()
+
+
+	end
+
+	self:SetScript("OnEvent", nil)
+
+	table.wipe(ASAA_SpellList);
+	ScanActionSlot();
+	ASAA_UpdateCooldown();
+
+	self:SetScript("OnEvent", ASAA_OnEvent)
+end
+
+ASAA_mainframe:ASAA_Init()
