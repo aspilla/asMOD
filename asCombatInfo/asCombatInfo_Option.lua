@@ -1,5 +1,5 @@
 ACI_Options_Default = {
-    version = 230701,
+    version = 230717,
 
 
 -- 	ACI_SpellList_직업명_특성숫자
@@ -142,11 +142,11 @@ ACI_SpellList_MAGE_3 = {
 
 --신성
 ACI_SpellList_PALADIN_1 = {
-	{"신의 은총", 1},
 	{"빛 주입", 2},
+	{"성전사의 일격", 1},
 	{"응징의 격노", 2},
 	{"신성 충격", 1},
-	{"심판", 1},
+	{"심판", 4, nil, nil, nil, "무가치한 존재"},
 },
 
 --보호

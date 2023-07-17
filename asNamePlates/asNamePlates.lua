@@ -899,6 +899,45 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 end
 
 local KnownSpellList = {};
+
+
+
+
+local function asCheckTalent()
+
+	local specID = PlayerUtil.GetCurrentSpecID();
+	local configID = C_ClassTalents.GetActiveConfigID();
+
+	if not (configID) then
+		return;
+	end
+    local configInfo = C_Traits.GetConfigInfo(configID);
+    local treeID = configInfo.treeIDs[1];
+    local nodes = C_Traits.GetTreeNodes(treeID);
+
+	for _, nodeID in ipairs(nodes) do
+        local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
+        if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
+            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
+            local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
+            local definitionInfo = entryInfo and entryInfo.definitionID and C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+
+            if definitionInfo ~= nil then
+                local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
+				--print(string.format("%s/%d %s/%d", talentName, definitionInfo.spellID, definitionInfo.overrideName or "", definitionInfo.overriddenSpellID or 0));
+				local name, rank, icon = GetSpellInfo(definitionInfo.spellID);
+				KnownSpellList[talentName or ""] = true;
+				KnownSpellList[icon or 0] = true;
+				if definitionInfo.overrideName then
+					--print (definitionInfo.overrideName)
+					KnownSpellList[definitionInfo.overrideName] = true;
+				end
+			end
+        end
+    end
+	return;
+end
+
 local function scanSpells(tab)
 
 	local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
@@ -946,6 +985,7 @@ local function setupKnownSpell()
 	scanSpells(2)
 	scanSpells(3)
 	scanPetSpells()
+	asCheckTalent();
 end
 
 -- 탱커 처리부
@@ -1304,7 +1344,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 						else
 							show = true;
 						end
-					elseif not options.ANameP_ShowMyAll and PLAYER_UNITS[caster] and (nameplateShowPersonal or (options.ANameP_ShowKnownSpell  and KnownSpellList[name])) then
+					elseif not options.ANameP_ShowMyAll and PLAYER_UNITS[caster] and (nameplateShowPersonal or (options.ANameP_ShowKnownSpell  and (KnownSpellList[name] or KnownSpellList[texture]))) then
 						show = true;
 					end
 
