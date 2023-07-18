@@ -699,7 +699,11 @@ local function ACI_Alert(self, bcastspell)
 					ACI_Alert_list[spellname] = true;
 				else
 					ACI_Alert_list[spellname] = false;
+					isUsable = false;
 				end
+			else
+				ACI_Alert_list[spellname] = false;
+				isUsable = false;
 			end
 		elseif t == 1 and ACI_SpellList[i][3] then
 			if isUsable or notEnoughMana then
