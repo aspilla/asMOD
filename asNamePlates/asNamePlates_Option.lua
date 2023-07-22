@@ -1,5 +1,5 @@
 ANameP_Options_Default = {
-    version = 230717;
+    version = 230722;
     ANameP_ShowKnownSpell = true,                           -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                               -- [디버프] 전부 보이기
     ANameP_ShowPlayerBuffAll = false,                       -- [버프] 전부 보이기
@@ -51,8 +51,9 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_HUNTER_1 = {
-	    ["날카로운 사격"] = {0, 4, true},
-	    ["잠재된 독"] = {8, 5, false, true},
+        ["날카로운 사격"] = {0, 5, true},
+	    ["잠재된 독"] = {8, 4, false, true},
+        ["독사 쐐기"] = {0, 3},
     },
 
     ANameP_ShowList_HUNTER_2 = {
@@ -113,6 +114,7 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_SHAMAN_3 = {
+        ["화염 충격"] = {18 * 0.3 , 5, true},
     },
 
 
@@ -126,6 +128,7 @@ ANameP_Options_Default = {
     ANameP_ShowList_DRUID_2 = {
 	    ["갈퀴 발톱"] = {15 * 0.3, 5, true},
 	    ["도려내기"] = {24 * 0.3, 4},
+        ["달빛섬광"] = {22 * 0.3, 3},
     },
 
     ANameP_ShowList_DRUID_3 = {
@@ -157,11 +160,11 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_DEATHKNIGHT_2 = {
-	    ["서리 열병"] = {0, 5},
+	    ["서리 열병"] = {0, 5, true},
     },
 
     ANameP_ShowList_DEATHKNIGHT_3 = {
-	    ["악성 역병"] = {27 * 0.3, 4},
+	    ["악성 역병"] = {27 * 0.3, 4, true},
 	    ["고름 상처"] = {0, 5},
     },
 
