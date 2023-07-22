@@ -1508,9 +1508,9 @@ local function APB_CheckPower(self)
 
 		end
 		
-		if (spec and spec == 3 and asCheckTalent("역병 인도자")) then
-			APB_BUFF = "역병 인도자";
-			APB.buffbar[0].buff = "역병 인도자"
+		if (spec and spec == 3 and asCheckTalent("역병인도자")) then
+			APB_BUFF = "역병인도자";
+			APB.buffbar[0].buff = "역병인도자"
 			APB.buffbar[0].unit = "player"
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			APB_UpdateBuff(self.buffbar[0]);
