@@ -962,6 +962,8 @@ local function asCooldownFrame_Clear(self)
 	self:Clear();
 end
 
+local overlayspell = {};
+
 local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
 	if enable and enable ~= 0 and start > 0 and duration > 0 then
 		self:SetDrawEdge(forceShowDrawEdge);
@@ -1131,6 +1133,10 @@ local function ABF_UpdateBuff(unit)
 			end
 
 			if skip == false and ABF_BlackList[name] then
+				skip = true;
+			end
+			
+			if overlayspell[spellId] then
 				skip = true;
 			end
 
@@ -1453,7 +1459,10 @@ end
 
 local function ABF_OnUpdate()
 
-	if UnitIsEnemy("player", "target") then
+
+	local reaction = UnitReaction("player", "target");
+	if reaction and reaction <= 4 then
+		-- Reaction 4 is neutral and less than 4 becomes increasingly more hostile
 		if (UnitIsPlayer("target")) then
 			ABF_UpdateBuff("tebuff");
 		else
@@ -1463,13 +1472,16 @@ local function ABF_OnUpdate()
 		ABF_UpdateBuff("target");
 	end
 
-end
+	
 
+end
 
 local function ABF_OnEvent(self, event, arg1, ...)
 	if (event == "PLAYER_TARGET_CHANGED") then
 		ABF_ClearFrame();
-		if UnitIsEnemy("player", "target") then
+		local reaction = UnitReaction("player", "target");
+		if reaction and reaction <= 4 then
+			-- Reaction 4 is neutral and less than 4 becomes increasingly more hostile
 			if (UnitIsPlayer("target")) then
 				ABF_UpdateBuff("tebuff");
 			else
@@ -1490,6 +1502,12 @@ local function ABF_OnEvent(self, event, arg1, ...)
 		ABF:SetAlpha(ABF_AlphaNormal);
 	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") then
 		C_Timer.After(0.5, asCheckTalent);
+	elseif ( event == "SPELL_ACTIVATION_OVERLAY_SHOW" ) then
+		overlayspell[arg1] = true;	
+	elseif ( event == "SPELL_ACTIVATION_OVERLAY_HIDE" ) then
+		if overlayspell[arg1] then
+			overlayspell[arg1] = nil;
+		end
 	end
 end
 
@@ -1647,6 +1665,13 @@ local function ABF_Init()
 	ABF:RegisterEvent("PLAYER_TOTEM_UPDATE");
 	ABF:RegisterEvent("TRAIT_CONFIG_UPDATED");
 	ABF:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+
+	bloaded =  LoadAddOn("asOverlay")
+	if bloaded  then
+		ABF:RegisterEvent("SPELL_ACTIVATION_OVERLAY_SHOW");
+		ABF:RegisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE");
+	end
+
 
 	ABF:SetScript("OnEvent", ABF_OnEvent)
 	C_Timer.NewTicker(ABF_RefreshRate, ABF_OnUpdate);
