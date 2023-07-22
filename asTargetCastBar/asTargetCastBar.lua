@@ -401,6 +401,10 @@ ATCB.button.border:SetVertexColor(0, 0, 0);
 ATCB.button.border:Show();
 ATCB.button:Show();
 
+ATCB.targetname = ATCB:CreateFontString( nil , "OVERLAY");
+ATCB.targetname:SetFont(STANDARD_TEXT_FONT, ATCB_NAME_SIZE);
+ATCB.targetname:SetPoint("TOPRIGHT", ATCB.castbar, "BOTTOMRIGHT", 0, -2);
+
 ATCB.start = 0;
 ATCB.duration = 0;
 
@@ -460,6 +464,7 @@ local function ATCB_OnEvent(self, event, ...)
     local castBar = self.castbar;
     local text  = self.castbar.name;
     local time = self.castbar.time;
+    local targetname = self.targetname;
 
     if UnitExists("target") then
 
@@ -515,6 +520,17 @@ local function ATCB_OnEvent(self, event, ...)
             elseif ATCB_DangerousSpellList[spellid] then
                 lib.PixelGlow_Start(castBar, {0, 1, 1, 1});
             end
+
+            if UnitExists("targettarget") and UnitIsPlayer("targettarget") then
+                local _, Class = UnitClass("targettarget")
+		        local color =RAID_CLASS_COLORS[Class]
+		        targetname:SetTextColor(color.r, color.g, color.b);
+                targetname:SetText(UnitName("targettarget"));      
+                targetname:Show();
+            else
+                targetname:SetText("");
+                targetname:Hide();
+            end
                     
         else
             castBar:SetValue(0);
@@ -523,6 +539,8 @@ local function ATCB_OnEvent(self, event, ...)
             lib.PixelGlow_Stop(castBar);
             self.start = 0;
             prev_name = nil;
+            targetname:SetText("");
+            targetname:Hide();
         end
     else
         castBar:SetValue(0);
@@ -531,6 +549,9 @@ local function ATCB_OnEvent(self, event, ...)
         lib.PixelGlow_Stop(castBar);
         self.start = 0;
         prev_name = nil;
+        targetname:SetText("");
+        targetname:Hide();
+
     end
 
 end
