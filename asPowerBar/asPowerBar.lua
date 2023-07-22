@@ -39,6 +39,7 @@ APB_DEBUFF_COMBO = nil
 
 local APB = nil;
 local max_combo = nil;
+local max_spell = nil;
 local balert = false;
 local balert2 = false;
 
@@ -568,6 +569,43 @@ local function APB_UpdateFronzenOrb(self)
 
 end
 
+local bshowspell = false;
+
+local function APB_MaxSpell(max)
+
+	max_spell = max;
+
+	if not max or  max == 0 then
+		for i = 1, 10 do
+			APB.spellbar[i]:Hide();
+		end
+		bshowspell = false;
+		return;
+	end
+
+	local width = (APB_WIDTH - (3 *(max - 1)))/max;
+
+	for i = 1, 10 do
+		APB.spellbar[i]:SetWidth(width)
+		APB.spellbar[i].start = nil;
+		APB.spellbar[i]:SetMinMaxValues(0, 1)
+		APB.spellbar[i]:SetValue(1)
+		local _, Class = UnitClass("player")
+		local color =RAID_CLASS_COLORS[Class]
+		APB.spellbar[i]:SetStatusBarColor(color.r, color.g, color.b );
+		APB.spellbar[i]:SetScript("OnUpdate", nil)
+
+		if i > max then
+			APB.spellbar[i]:Hide()
+		else
+			APB.spellbar[i]:Show()
+		end
+	end	
+	bshowspell = true;
+
+end
+
+local bupdatecombo = false;
 
 local function APB_MaxCombo(max)
 
@@ -577,6 +615,7 @@ local function APB_MaxCombo(max)
 		for i = 1, 10 do
 			APB.combobar[i]:Hide();
 		end
+		bupdatecombo = false;
 		return;
 	end
 
@@ -597,7 +636,15 @@ local function APB_MaxCombo(max)
 		else
 			APB.combobar[i]:Show()
 		end
+	end	
+
+	if bshowspell then
+		APB.combobar[1]:SetPoint("BOTTOMLEFT",APB.spellbar[1],"TOPLEFT", 0, 1);
+	else
+		APB.combobar[1]:SetPoint("BOTTOMLEFT",APB.buffbar[0],"TOPLEFT", 0, 1);
 	end
+
+	bupdatecombo = true;
 end
 
 local function APB_MaxRune()
@@ -767,9 +814,9 @@ local function APB_SpellMax(spell, spell2)
 
 
 	if maxCharges and  maxCharges > 0 then
-		APB_MaxCombo(maxCharges);
+		APB_MaxSpell(maxCharges);
 	else
-		APB_MaxCombo(0);
+		APB_MaxSpell(0);
 	end
 
 
@@ -816,42 +863,47 @@ local function APB_UpdateSpell(spell, spell2)
 		return;
 	end
 	for i = 1, charges do
-		APB.combobar[i].start = nil;
-	--	APB.combobar[i]:SetStatusBarColor(1,1,0)
+		APB.spellbar[i].start = nil;
+	--	APB.spellbar[i]:SetStatusBarColor(1,1,0)
 		local _, Class = UnitClass("player")
 		local color =RAID_CLASS_COLORS[Class]
-		APB.combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
+		local rate = 0;
 
-		APB.combobar[i]:SetMinMaxValues(0, 1)
-		APB.combobar[i]:SetValue(1)
-		APB.combobar[i]:SetScript("OnUpdate", nil)
+		if bupdatecombo then
+			rate = 0.2;
+		end
+		APB.spellbar[i]:SetStatusBarColor(color.r + rate, color.g + rate, color.b + rate);
+
+		APB.spellbar[i]:SetMinMaxValues(0, 1)
+		APB.spellbar[i]:SetValue(1)
+		APB.spellbar[i]:SetScript("OnUpdate", nil)
 
 
 		if balert then
-			APB.combobar[i]:SetStatusBarColor(0,1,0)
+			APB.spellbar[i]:SetStatusBarColor(0,1,0)
 		end
 
-		APB.combobar[i].spellid = spellid;		
+		APB.spellbar[i].spellid = spellid;		
 	end
 
 	if charges < maxCharges then
-		APB.combobar[charges + 1]:SetStatusBarColor(1,1,1)
-		APB.combobar[charges + 1].start = chargeStart;
-		APB.combobar[charges + 1].duration = chargeDuration;
-		APB.combobar[charges + 1]:SetScript("OnUpdate", APB_OnUpdateCombo)
+		APB.spellbar[charges + 1]:SetStatusBarColor(1,1,1)
+		APB.spellbar[charges + 1].start = chargeStart;
+		APB.spellbar[charges + 1].duration = chargeDuration;
+		APB.spellbar[charges + 1]:SetScript("OnUpdate", APB_OnUpdateCombo)
 
 		if balert then
-			APB.combobar[charges + 1]:SetStatusBarColor(0,1,1)
+			APB.spellbar[charges + 1]:SetStatusBarColor(0,1,1)
 		end
 
-		APB.combobar[charges + 1].spellid = spellid;
+		APB.spellbar[charges + 1].spellid = spellid;
 	end
 
 	if charges < maxCharges - 1 then
 		for i = charges + 2, maxCharges do
-			APB.combobar[i]:SetValue(0)
-			APB.combobar[i].start = nil;
-			APB.combobar[i]:SetScript("OnUpdate", nil)
+			APB.spellbar[i]:SetValue(0)
+			APB.spellbar[i].start = nil;
+			APB.spellbar[i]:SetScript("OnUpdate", nil)
 			
 		end
 	end
@@ -876,33 +928,33 @@ local function APB_UpdateSpell(spell, spell2)
 
 
 		for i = maxCharges + 1, maxCharges + charges do
-			APB.combobar[i].start = nil;
-			APB.combobar[i]:SetStatusBarColor(1, 0.7, 0.3);
+			APB.spellbar[i].start = nil;
+			APB.spellbar[i]:SetStatusBarColor(1, 0.7, 0.3);
 
-			APB.combobar[i]:SetMinMaxValues(0, 1)
-			APB.combobar[i]:SetValue(1)
-			APB.combobar[i]:SetScript("OnUpdate", nil)
-			APB.combobar[i].spellid = spellid;		
+			APB.spellbar[i]:SetMinMaxValues(0, 1)
+			APB.spellbar[i]:SetValue(1)
+			APB.spellbar[i]:SetScript("OnUpdate", nil)
+			APB.spellbar[i].spellid = spellid;		
 			
 			if balert2 then
-				APB.combobar[i]:SetStatusBarColor(0,1,1)
+				APB.spellbar[i]:SetStatusBarColor(0,1,1)
 			end
 		end
 
 		if charges < maxCharges2 then
-			APB.combobar[maxCharges + charges + 1]:SetStatusBarColor(0.5,0.5,0.5)
-			APB.combobar[maxCharges + charges + 1].start = chargeStart;
-			APB.combobar[maxCharges + charges + 1].duration = chargeDuration;
-			APB.combobar[maxCharges + charges + 1]:SetScript("OnUpdate", APB_OnUpdateCombo)
+			APB.spellbar[maxCharges + charges + 1]:SetStatusBarColor(0.5,0.5,0.5)
+			APB.spellbar[maxCharges + charges + 1].start = chargeStart;
+			APB.spellbar[maxCharges + charges + 1].duration = chargeDuration;
+			APB.spellbar[maxCharges + charges + 1]:SetScript("OnUpdate", APB_OnUpdateCombo)
 
-			APB.combobar[maxCharges + charges + 1].spellid = spellid;			
+			APB.spellbar[maxCharges + charges + 1].spellid = spellid;			
 		end
 
 		if charges < maxCharges2 - 1 then
 			for i = maxCharges + charges + 2, maxCharges + maxCharges2 do
-				APB.combobar[i]:SetValue(0)
-				APB.combobar[i].start = nil;
-				APB.combobar[i]:SetScript("OnUpdate", nil)
+				APB.spellbar[i]:SetValue(0)
+				APB.spellbar[i].start = nil;
+				APB.spellbar[i]:SetScript("OnUpdate", nil)
 
 			end
 		end
@@ -1312,6 +1364,11 @@ local function APB_CheckPower(self)
 			bupdate_fronzen = true;
 			APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
+			APB_SPELL = "진눈깨비";
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
+
 			bsmall_power_bar = true;
 		end
 
@@ -1330,13 +1387,10 @@ local function APB_CheckPower(self)
 		end
 
 		if (spec and spec == 3) then
-			if asCheckTalent("불확실성 역전") then
-				APB_BUFF = "불확실성 역전";
-				APB.buffbar[0].buff = "불확실성 역전"
-				APB.buffbar[0].unit = "player"
-				APB:RegisterUnitEvent("UNIT_AURA", "player");
-				APB_UpdateBuff(self.buffbar[0]);
-			end
+			APB_SPELL = "점화";
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
 			bupdate_partial_power = true;
 		end
 
@@ -1453,9 +1507,15 @@ local function APB_CheckPower(self)
 			APB_UpdateBuff(self.buffbar[0]);
 
 		end
-
-
-
+		
+		if (spec and spec == 3 and asCheckTalent("역병 인도자")) then
+			APB_BUFF = "역병 인도자";
+			APB.buffbar[0].buff = "역병 인도자"
+			APB.buffbar[0].unit = "player"
+			APB:RegisterUnitEvent("UNIT_AURA", "player");
+			APB_UpdateBuff(self.buffbar[0]);
+		end
+		
 	end
 
 	if (englishClass == "PRIEST") then
@@ -1654,8 +1714,12 @@ local function APB_CheckPower(self)
 
 
 
-	if not bupdate_power and not bupdate_rune and not bupdate_spell and not bupdate_buff_combo then
+	if not bupdate_power and not bupdate_rune and not bupdate_buff_combo then
 		APB_MaxCombo(0);
+	end
+
+	if not bupdate_spell then
+		APB_MaxSpell(0);
 	end
 
 
@@ -1735,8 +1799,6 @@ local function APB_CheckPower(self)
 		APB.bar.text:Hide();
 		--APB.bar.count:Hide();
 	end
-
-
 end
 
 
@@ -2231,6 +2293,44 @@ do
 	APB.combobar[1].text:SetPoint("BOTTOMLEFT", APB.combobar[1], "TOPLEFT", 0, 2);
 	APB.combobar[1].text:SetTextColor(1, 1, 1, 1)
 	APB.combobar[1].text:Hide();
+
+
+	APB.spellbar = {};
+	
+	for i = 1, 10 do
+		APB.spellbar[i] = CreateFrame("StatusBar", nil, APB);
+		APB.spellbar[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER");
+		APB.spellbar[i]:GetStatusBarTexture():SetHorizTile(false);
+		APB.spellbar[i]:SetMinMaxValues(0, 100);
+		APB.spellbar[i]:SetValue(100);
+		APB.spellbar[i]:SetHeight(APB_HEIGHT * 0.7);
+		APB.spellbar[i]:SetWidth(20);
+
+		APB.spellbar[i].bg = APB.spellbar[i]:CreateTexture(nil, "BACKGROUND");
+		APB.spellbar[i].bg:SetPoint("TOPLEFT", APB.spellbar[i], "TOPLEFT", -1, 1);
+		APB.spellbar[i].bg:SetPoint("BOTTOMRIGHT", APB.spellbar[i], "BOTTOMRIGHT", 1, -1);
+
+		APB.spellbar[i].bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
+		APB.spellbar[i].bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1);
+		APB.spellbar[i].bg:SetVertexColor(0, 0, 0, 0.8);
+
+		if i == 1 then
+			APB.spellbar[i]:SetPoint("BOTTOMLEFT",APB.buffbar[0],"TOPLEFT", 0, 1);
+		else
+			APB.spellbar[i]:SetPoint("LEFT",APB.spellbar[i-1],"RIGHT", 3, 0);
+		end
+
+		APB.spellbar[i]:Hide();
+		APB.spellbar[i]:EnableMouse(true);
+	end
+
+	APB.spellbar[1].text = APB.spellbar[1]:CreateFontString(nil, "ARTWORK");
+	APB.spellbar[1].text:SetFont(APB_Font, APB_HealthSize - 2, APB_FontOutline);
+	APB.spellbar[1].text:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPLEFT", 0, 2);
+	APB.spellbar[1].text:SetTextColor(1, 1, 1, 1)
+	APB.spellbar[1].text:Hide();
+
+
 
 	LoadAddOn("asMOD");
 
