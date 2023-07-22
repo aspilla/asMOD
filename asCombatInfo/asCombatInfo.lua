@@ -1522,11 +1522,14 @@ function ACI_Init()
 		if options[spec] and options[spec][configID] then
 			ACI_SpellListtmp = CopyTable(options[spec][configID]);
 		else
-			ACI_SpellListtmp = CopyTable(ACI_Options_Default[listname]);
-		end
+			if ACI_Options_Default[listname] then
+				ACI_SpellListtmp = CopyTable(ACI_Options_Default[listname]);
+			else
+				ACI_SpellListtmp = {};
+			end
 
-	else
-		print(configID)
+		end
+	else		
 		ACI_SpellListtmp = {};
 	end
 
