@@ -148,6 +148,8 @@ function AFUF:OnInit()
     self:RegisterEvent("PLAYER_ENTERING_WORLD");
     self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
     self:RegisterUnitEvent("UNIT_TARGET", "target");
+    self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+	self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
 end
 
 function AFUF:SetupOptionPanels()
