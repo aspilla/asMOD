@@ -16,6 +16,7 @@ ADotF_ShowList_WARRIOR_3 = {
 
 ADotF_ShowList_ROGUE_1 = {
 	{"파열" , 24 * 0.3},
+    {"목조르기", 18 * 0.3},
 }
 
 ADotF_ShowList_ROGUE_2 = {
@@ -26,6 +27,32 @@ ADotF_ShowList_ROGUE_3 = {
 	{"파열" , 24 * 0.3},
 }
 
+ADotF_ShowList_HUNTER_1 = {
+	{"날카로운 사격", 2},
+	{"독사 쐐기", 12 * 0.3},
+    {"잠재된 독", 0},
+}
+
+ADotF_ShowList_HUNTER_2 = {
+	{"독사 쐐기", 12 * 0.3},
+    {"잠재된 독", 0},
+}
+
+ADotF_ShowList_HUNTER_3 = {
+	{"독사 쐐기", 12 * 0.3},
+    {"잠재된 독", 0},
+}
+
+ADotF_ShowList_MONK_1 = {
+}
+
+ADotF_ShowList_MONK_2 = {
+}
+
+ADotF_ShowList_MONK_3 = {
+   {"주학의 징표", 0},
+}
+
 ADotF_ShowList_WARLOCK_1 = {
 	{"고통" , 14 * 0.3},
 	{"불안정한 고통" , 21 * 0.3},
@@ -33,13 +60,12 @@ ADotF_ShowList_WARLOCK_1 = {
 }
 
 ADotF_ShowList_WARLOCK_2 = {
-
+    {"사냥개조련사의 책략", 0 },
 }
 
 
 ADotF_ShowList_WARLOCK_3 = {
 	{"제물" , 24 * 0.3},
-
 }
 
 ADotF_ShowList_PRIEST_1 = {
@@ -59,9 +85,11 @@ ADotF_ShowList_SHAMAN_1 = {
 }
 
 ADotF_ShowList_SHAMAN_2 = {
+    {"화염 충격" , 18 * 0.3},
 }
 
 ADotF_ShowList_SHAMAN_3 = {
+    {"화염 충격" , 18 * 0.3},
 }
 
 ADotF_ShowList_DRUID_1 = {
@@ -72,6 +100,7 @@ ADotF_ShowList_DRUID_1 = {
 
 
 ADotF_ShowList_DRUID_2 = {
+    {"달빛섬광" , 22 * 0.3},
 	{"갈퀴 발톱" , 15 * 0.3},
 	{"도려내기" , 24 * 0.3},
 }
@@ -84,32 +113,31 @@ ADotF_ShowList_DRUID_4 = {
 	{"달빛섬광" , 22 * 0.3},
 }
 
+
+ADotF_ShowList_MAGE_1 = {
+    {"빛나는 불꽃 약화", 0},
+}
+
+ADotF_ShowList_MAGE_2 = {
+	{"작열", 0},
+}
+
+ADotF_ShowList_MAGE_3 = {
+   {"혹한의 추위", 0},
+}
+
 ADotF_ShowList_DEATHKNIGHT_1 = {
-	{"서리 열병", 0},
+    {"피의 역병", 0},
 }
 
 ADotF_ShowList_DEATHKNIGHT_2 = {
-	{"피의 역병", 0},
+	{"서리 열병", 0},
 }
 
 ADotF_ShowList_DEATHKNIGHT_3 = {
-	{"악성 역병", 24 * 0.3},
+	{"악성 역병", 27 * 0.3},
 	{"고름 상처", 0},
 }
-
-ADotF_ShowList_HUNTER_1 = {
-	{"날카로운 사격", 2},
-	{"독사 쐐기", 12 * 0.3},
-}
-
-ADotF_ShowList_HUNTER_2 = {
-	{"독사 쐐기", 12 * 0.3},
-}
-
-ADotF_ShowList_HUNTER_3 = {
-	{"독사 쐐기", 12 * 0.3},
-}
-
 
 ADotF_ShowList_EVOKER_1 = {
 	{"불의 숨결", 0},
@@ -124,6 +152,18 @@ ADotF_ShowList_EVOKER_3 = {
     {"시간의 상처", 0},	
 }
 
+ADotF_ShowList_PALADIN_1 = {
+    {"빛의 자락", 0},
+    {"무가치한 존재", 0},
+}
+
+ADotF_ShowList_PALADIN_2 = {
+    {"심판", 0},
+}
+
+ADotF_ShowList_PALADIN_3 = {
+    {"심판", 0},
+}
 
 --설정 표시할 Unit
 local ADotF_UnitList = {
