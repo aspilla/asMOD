@@ -1507,6 +1507,26 @@ local function APB_CheckPower(self)
 			APB_UpdateBuff(self.buffbar[0]);
 
 		end
+
+		if (spec and spec == 2) then
+			
+		 	if asCheckTalent("풀려난 광란") then
+				APB_BUFF = "풀려난 광란";
+				APB.buffbar[0].buff = "풀려난 광란"
+				APB.buffbar[0].unit = "player"
+				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				bupdate_buff_count = true;
+				APB_UpdateBuff(self.buffbar[0]);
+			elseif asCheckTalent("얼음 발톱") then
+				APB_BUFF = "얼음 발톱";
+				APB.buffbar[0].buff = "얼음 발톱"
+				APB.buffbar[0].unit = "player"
+				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				bupdate_buff_count = true;
+				APB_UpdateBuff(self.buffbar[0]);
+
+			end
+		end
 		
 		if (spec and spec == 3 and asCheckTalent("역병인도자")) then
 			APB_BUFF = "역병인도자";
@@ -1515,6 +1535,8 @@ local function APB_CheckPower(self)
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			APB_UpdateBuff(self.buffbar[0]);
 		end
+
+		
 		
 	end
 

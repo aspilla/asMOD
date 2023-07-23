@@ -203,7 +203,7 @@ ACI_SpellList_DEATHKNIGHT_1 = {
 
 --냉기
 ACI_SpellList_DEATHKNIGHT_2 = {
-	{99, "얼음 발톱", {194878, 7, "player"}, {376907, 7, "player"}},
+	{"죽음과 부패", 2},
 	{377195, 7, "player"},
 	{"얼음 기둥", 2},
 	{"냉혹한 겨울", 2},	
