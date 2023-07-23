@@ -9,33 +9,12 @@ local ASAA_CooldownFontSize = 10
 
 local ASAA_CoolButtons;
 local ASAA_SpellList = {};
-local prev_cnt = 0;
 
 -- 원치 않는 발동 알림은 안보이게
 local ASAA_BackList = {
 	--["천상의 폭풍"] = true,
 };
 
-local action_list = {};
-
-local function ScanActionSlot()
-	table.wipe(action_list);
-	for lActionSlot = 1, 120 do
-		local type, id, subType, spellID = GetActionInfo(lActionSlot);
-
-		if type and type == "macro" then
-			 id = GetMacroSpell(id);
-		end
-
-		if id then
-			local name = GetSpellInfo(id);
-
-			if name  then
-				action_list[id] = true;
-			end
-		end
-	end
-end
 
 local function asCooldownFrame_Clear(self)
 	self:Clear();
@@ -92,6 +71,10 @@ local function ASAA_UpdateCooldown()
 
 	for id, isAlert in pairs(ASAA_SpellList) do
 
+		if ACI_SpellID_list and ACI_SpellID_list[id] then
+			isAlert = false;
+		end
+
 		if isAlert == true then
 			_, _, icon = GetSpellInfo(id);
 			start, duration, enable = GetSpellCooldown(id);
@@ -147,7 +130,6 @@ local function ASAA_UpdateCooldown()
 			end
 
 		end
-
 	end
 
 	for i=1, numCools - 1 do
@@ -169,20 +151,9 @@ end
 
 local function ASAA_Insert(id)
 
-	local maxIdx = #ASAA_SpellList;
-
-	if ACI_SpellID_list and ACI_SpellID_list[id] then
-		return;
-	end
-
 	local name, _, _ = GetSpellInfo(id);
 
 	if ASAA_BackList and ASAA_BackList[name] then
-		return;
-	end
-
-	if not action_list[id] then
-		--Slot에 있는것만
 		return;
 	end
 
@@ -191,7 +162,12 @@ local function ASAA_Insert(id)
 end
 
 local function ASAA_Delete(id)
-	ASAA_SpellList[id] = false;
+
+	if id then
+		ASAA_SpellList[id] = false;
+	else
+		ASAA_SpellList = {};
+	end
 	ASAA_UpdateCooldown();
 end
 
@@ -205,52 +181,33 @@ local function ASAA_OnEvent(self, event, arg1, arg2, arg3)
 		ASAA_UpdateCooldown();
 	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and (arg1 == "player" or arg1 == "pet") then
 		ASAA_UpdateCooldown();
-	elseif event == "PLAYER_ENTERING_WORLD" then
-		self.ASAA_Init(self);
-	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
-		self.ASAA_Init(self);
 	end
-
-	return;
 end
 
-local bfirst = true;
 local ASAA_mainframe = CreateFrame("Frame")
 
 ASAA_mainframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
 ASAA_mainframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
 ASAA_mainframe:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 ASAA_mainframe:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-ASAA_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
-ASAA_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+
+
 
 function ASAA_mainframe:ASAA_Init()
 
-	if bfirst then
-		LoadAddOn("asMOD");
-		ASAA_CoolButtons = CreateFrame("Frame", nil, UIParent)
+	LoadAddOn("asMOD");
+	ASAA_CoolButtons = CreateFrame("Frame", nil, UIParent)
+	ASAA_CoolButtons:SetPoint("CENTER", ASAA_CoolButtons_X, ASAA_CoolButtons_Y)
+	ASAA_CoolButtons:SetWidth(1)
+	ASAA_CoolButtons:SetHeight(1)
+	ASAA_CoolButtons:SetScale(1)
 
-		ASAA_CoolButtons:SetPoint("CENTER", ASAA_CoolButtons_X, ASAA_CoolButtons_Y)
-		ASAA_CoolButtons:SetWidth(1)
-		ASAA_CoolButtons:SetHeight(1)
-		ASAA_CoolButtons:SetScale(1)
-
-		if asMOD_setupFrame then
-			asMOD_setupFrame (ASAA_CoolButtons, "asActiveAlert");
-		end
-
-		ASAA_CoolButtons:Show()
-
-
+	if asMOD_setupFrame then
+		asMOD_setupFrame (ASAA_CoolButtons, "asActiveAlert");
 	end
 
-	self:SetScript("OnEvent", nil)
-
-	table.wipe(ASAA_SpellList);
-	ScanActionSlot();
-	ASAA_UpdateCooldown();
-
-	self:SetScript("OnEvent", ASAA_OnEvent)
+	ASAA_CoolButtons:Show()
 end
 
 ASAA_mainframe:ASAA_Init()
+ASAA_mainframe:SetScript("OnEvent", ASAA_OnEvent)

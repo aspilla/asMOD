@@ -1063,13 +1063,13 @@ local function ABF_UpdateBuff(unit)
 
 		elseif (unit == "target") then
 
-			name,  icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId = UnitBuff(realunit, i);
+			name,  icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId = UnitBuff(unit, i);
 			if (icon == nil) then
 				break;
 			end
 
 			skip = true;
-
+		
 			-- 우리편은 내가 시전한 Buff 보임
 			if PLAYER_UNITS[caster] and duration > 0  and duration <= ABF_MAX_Cool then
 				skip = false;
@@ -1505,8 +1505,10 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif ( event == "SPELL_ACTIVATION_OVERLAY_SHOW" ) then
 		overlayspell[arg1] = true;	
 	elseif ( event == "SPELL_ACTIVATION_OVERLAY_HIDE" ) then
-		if overlayspell[arg1] then
-			overlayspell[arg1] = nil;
+		if arg1 then
+			overlayspell[arg1] = false;
+		else
+			overlayspell = {};
 		end
 	end
 end
