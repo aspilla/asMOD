@@ -839,7 +839,6 @@ local ACRB_ShowList = nil;
 local show_30m_range = false;
 
 local asraid = {};
-local BOSS_DEBUFF_SIZE_INCREASE = 5;
 
 local function ACRB_InitList()
 
@@ -900,11 +899,13 @@ local function ACRB_setupFrame(frame)
 
 	y = y - powerBarUsedHeight;
 
-	local baseSize = math.min(x/7 * ACRB_BuffSizeRate,y/3 * ACRB_BuffSizeRate) ;
+	local baseSize = math.min(x/7 * ACRB_BuffSizeRate, y/3 * ACRB_BuffSizeRate);
 
 	if baseSize > ACRB_MaxBuffSize then
 		baseSize = ACRB_MaxBuffSize
 	end
+
+	baseSize = baseSize * 0.9;	
 
 	local fontsize = baseSize * ACRB_CooldownFontSizeRate;
 
@@ -986,7 +987,8 @@ local function ACRB_setupFrame(frame)
 
 	--크기 조정
 	for _,d in ipairs(asraid[frameName].asbuffFrames) do
-		d:SetSize(baseSize * 1.2, baseSize * 0.9);
+		d.baseSize = baseSize;
+		d:SetSize(baseSize * 1.2, baseSize);
 
 		d.count:SetFont(STANDARD_TEXT_FONT, fontsize ,"OUTLINE")
 		d.count:ClearAllPoints();
@@ -1120,8 +1122,6 @@ local function ACRB_setupFrame(frame)
 			asraid[frameName].buffFrames2[i] =  CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
 			asraid[frameName].buffFrames2[i]:EnableMouse(ACRB_ShowTooltip);
 			asraid[frameName].buffFrames2[i].icon:SetTexCoord(.08, .92, .08, .92);
-			asraid[frameName].buffFrames2[i]:SetSize(baseSize * 1.2, baseSize * 0.9);
-			asraid[frameName].buffFrames2[i].baseSize = baseSize;
 			asraid[frameName].buffFrames2[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
 			asraid[frameName].buffFrames2[i].count:ClearAllPoints();
 			asraid[frameName].buffFrames2[i].count:SetPoint("BOTTOM", 0, 0);
@@ -1159,7 +1159,7 @@ local function ACRB_setupFrame(frame)
 
 	if (asraid[frameName].buffFrames2) then
 		for i = 1, ACRB_MAX_BUFFS_2 do
-			asraid[frameName].buffFrames2[i]:SetSize(baseSize * 1.2, baseSize * 0.9);
+			asraid[frameName].buffFrames2[i]:SetSize(baseSize * 1.2, baseSize);
 			asraid[frameName].buffFrames2[i].baseSize = baseSize;
 			asraid[frameName].buffFrames2[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
 			asraid[frameName].buffFrames2[i]:ClearAllPoints()
@@ -1179,7 +1179,7 @@ local function ACRB_setupFrame(frame)
 			asraid[frameName].castFrames[i] =  CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
 			asraid[frameName].castFrames[i]:EnableMouse(ACRB_ShowTooltip);
 			asraid[frameName].castFrames[i].icon:SetTexCoord(.08, .92, .08, .92);
-			asraid[frameName].castFrames[i]:SetSize(baseSize * 1.2, baseSize * 0.9);
+			asraid[frameName].castFrames[i]:SetSize(baseSize * 1.2, baseSize);
 			asraid[frameName].castFrames[i].baseSize = baseSize;
 			asraid[frameName].castFrames[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
 			asraid[frameName].castFrames[i].count:ClearAllPoints();
@@ -1218,8 +1218,8 @@ local function ACRB_setupFrame(frame)
 
 	if (asraid[frameName].castFrames) then
 		for i = 1, ACRB_MAX_CASTING do
-			asraid[frameName].castFrames[i]:SetSize(baseSize * 1.2, baseSize * 0.9);
 			asraid[frameName].castFrames[i].baseSize = baseSize;
+			asraid[frameName].castFrames[i]:SetSize(baseSize * 1.2, baseSize);			
 			asraid[frameName].castFrames[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
 			asraid[frameName].castFrames[i]:ClearAllPoints()
 			if i == 1 then
@@ -1486,12 +1486,7 @@ local function asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter)
 		asCooldownFrame_Clear(buffFrame.cooldown);
 	end
 
-	if not buffFrame.baseSize then
-		buffFrame.baseSize = buffFrame:GetSize();
-	end
-
 	buffFrame.border:Hide();
-	buffFrame:SetSize((buffFrame.baseSize + ACRB_Size) * 1.2, (buffFrame.baseSize + ACRB_Size) * 0.9);
 	buffFrame:Show();
 end
 
@@ -1535,11 +1530,11 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 	debuffFrame.border:SetVertexColor(color.r, color.g, color.b);
 
 	debuffFrame.isBossBuff = isBossBuff;
+	
 	if ( isBossAura ) then
-		local size = min(debuffFrame.baseSize + BOSS_DEBUFF_SIZE_INCREASE, debuffFrame.maxHeight);
-		debuffFrame:SetSize(size * 1.2, size * 0.9);
+		debuffFrame:SetSize((debuffFrame.baseSize * 1.2) * 1.3, debuffFrame.baseSize * 1.3);
 	else
-		debuffFrame:SetSize(debuffFrame.baseSize * 1.2, debuffFrame.baseSize * 0.9);
+		debuffFrame:SetSize(debuffFrame.baseSize * 1.2, debuffFrame.baseSize);
 	end
 
 	debuffFrame:Show();
@@ -1621,7 +1616,7 @@ local function asCompactUnitFrame_UpdateDebuffs(asframe)
 				asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, true, false);
 				frameNum = frameNum + 1;
 				--Boss debuffs are about twice as big as normal debuffs, so display one less.
-				local bossDebuffScale = (debuffFrame.baseSize + BOSS_DEBUFF_SIZE_INCREASE)/debuffFrame.baseSize
+				local bossDebuffScale = 1.3;
 				maxDebuffs = maxDebuffs - (bossDebuffScale - 1);
 			end
 		else
@@ -1639,7 +1634,7 @@ local function asCompactUnitFrame_UpdateDebuffs(asframe)
 				asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, true, true);
 				frameNum = frameNum + 1;
 				--Boss debuffs are about twice as big as normal debuffs, so display one less.
-				local bossDebuffScale = (debuffFrame.baseSize + BOSS_DEBUFF_SIZE_INCREASE)/debuffFrame.baseSize
+				local bossDebuffScale = 1.3;
 				maxDebuffs = maxDebuffs - (bossDebuffScale - 1);
 			end
 		else
@@ -2076,7 +2071,6 @@ local function ACRB_updateCasting(asframe, unit)
 				end
 
 				castFrame.border:Hide();
-				castFrame:SetSize((castFrame.baseSize + ACRB_Size) * 1.2 , (castFrame.baseSize + ACRB_Size) * 0.9);
 				castFrame:Show();
 				asframe.ncasting = index;
 				
