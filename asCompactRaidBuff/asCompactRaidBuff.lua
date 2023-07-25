@@ -7,6 +7,7 @@ local ACRB_MAX_BUFFS = 6			  	-- 최대 표시 버프 개수 (3개 + 3개)
 local ACRB_MAX_BUFFS_2 = 2				-- 최대 생존기 개수
 local ACRB_MAX_DEBUFFS = 3				-- 최대 표시 디버프 개수 (3개)
 local ACRB_MAX_DISPELDEBUFFS = 3		-- 최대 해제 디버프 개수 (3개)
+local ACRB_MAX_CASTING = 2					-- 최대 Casting Alert
 local ACRB_ShowListFirst = true			-- 알림 List 항목을 먼저 보임 (가나다 순, 같은 디법이 여러게 걸리는 경우 1개만 보일 수 있음 ex 불고)
 local ACRB_ShowAlert = true				-- HOT 리필 시 알림
 local ACRB_MaxBuffSize = 20				-- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
@@ -958,10 +959,10 @@ local function ACRB_setupFrame(frame)
 						buffFrame:ClearAllPoints();
 						buffFrame:SetPoint(buffPos, frame, "BOTTOMRIGHT", -2, buffOffset);
 					else
-						buffFrame:SetPoint("BOTTOMRIGHT",asraid[frameName].asbuffFrames[i-3], "TOPRIGHT", 0, 2)
+						buffFrame:SetPoint("BOTTOMRIGHT",asraid[frameName].asbuffFrames[i-3], "TOPRIGHT", 0, 1)
 					end
 				else
-					buffFrame:SetPoint("BOTTOMRIGHT", asraid[frameName].asbuffFrames[i-1], "BOTTOMLEFT", -2, 0)
+					buffFrame:SetPoint("BOTTOMRIGHT", asraid[frameName].asbuffFrames[i-1], "BOTTOMLEFT", -1, 0)
 				end
 			else
 				-- 3개는 따로 뺀다.
@@ -974,9 +975,9 @@ local function ACRB_setupFrame(frame)
 					buffFrame:ClearAllPoints();
 					buffFrame:SetPoint("RIGHT", frame, "RIGHT", -2, 0);
 				else
-					-- 상
+					-- 우중2
 					buffFrame:ClearAllPoints();
-					buffFrame:SetPoint("TOP", frame, "TOP", 0, -2);
+					buffFrame:SetPoint("BOTTOMRIGHT", asraid[frameName].asbuffFrames[i-1], "BOTTOMLEFT", -1, 0)
 				end
 			end
 		end
@@ -1041,10 +1042,10 @@ local function ACRB_setupFrame(frame)
 					debuffFrame:ClearAllPoints();
 					debuffFrame:SetPoint(debuffPos, frame, "BOTTOMLEFT", 3, debuffOffset);
 				else
-					debuffFrame:SetPoint("BOTTOMLEFT",asraid[frameName].asdebuffFrames[i-3], "TOPLEFT", 0, 2)
+					debuffFrame:SetPoint("BOTTOMLEFT",asraid[frameName].asdebuffFrames[i-3], "TOPLEFT", 0, 1)
 				end
 			else
-				debuffFrame:SetPoint("BOTTOMLEFT", asraid[frameName].asdebuffFrames[i-1], "BOTTOMRIGHT", 2, 0)
+				debuffFrame:SetPoint("BOTTOMLEFT", asraid[frameName].asdebuffFrames[i-1], "BOTTOMRIGHT", 1, 0)
 			end
 		end
 	end
@@ -1165,11 +1166,71 @@ local function ACRB_setupFrame(frame)
 			if i == 1 then
 				asraid[frameName].buffFrames2[i]:SetPoint("CENTER", frame.healthBar, "CENTER", 0, 0)
 			else
-				asraid[frameName].buffFrames2[i]:SetPoint("TOPLEFT", asraid[frameName].buffFrames2[i-1], "TOPRIGHT", 0, 0)
+				asraid[frameName].buffFrames2[i]:SetPoint("TOPRIGHT", asraid[frameName].buffFrames2[i-1], "TOPLEFT", 0, 0)
 			end
 		end
 	end
 
+
+	if (not asraid[frameName].castFrames) then
+		asraid[frameName].castFrames = {};
+
+		for i = 1, ACRB_MAX_CASTING do
+			asraid[frameName].castFrames[i] =  CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
+			asraid[frameName].castFrames[i]:EnableMouse(ACRB_ShowTooltip);
+			asraid[frameName].castFrames[i].icon:SetTexCoord(.08, .92, .08, .92);
+			asraid[frameName].castFrames[i]:SetSize(baseSize * 1.2, baseSize * 0.9);
+			asraid[frameName].castFrames[i].baseSize = baseSize;
+			asraid[frameName].castFrames[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+			asraid[frameName].castFrames[i].count:ClearAllPoints();
+			asraid[frameName].castFrames[i].count:SetPoint("BOTTOM", 0, 0);
+			asraid[frameName].castFrames[i]:Hide();
+
+			if  ACRB_ShowBuffCooldown and fontsize >= ACRB_MinShowBuffFontSize   then
+				asraid[frameName].castFrames[i].cooldown:SetHideCountdownNumbers(false);
+				for _,r in next,{asraid[frameName].castFrames[i].cooldown:GetRegions()}	do
+					if r:GetObjectType()=="FontString" then
+						r:SetFont(STANDARD_TEXT_FONT,fontsize,"OUTLINE");
+						r:ClearAllPoints();
+						r:SetPoint("TOP", 0, 2);
+						break
+					end
+				end
+			else
+				asraid[frameName].castFrames[i].cooldown:SetHideCountdownNumbers(true);
+			end
+			
+			if ACRB_ShowTooltip and not asraid[frameName].castFrames[i]:GetScript("OnEnter") then
+				asraid[frameName].castFrames[i]:SetScript("OnEnter", function(s)
+					if s:GetID() > 0 then
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
+						GameTooltip:SetUnitBuff(s.unit, s:GetID(), s.filter);
+					end
+				end)
+
+				asraid[frameName].castFrames[i]:SetScript("OnLeave", function()
+					GameTooltip:Hide();
+				end)
+			end
+
+		end
+	end
+
+	if (asraid[frameName].castFrames) then
+		for i = 1, ACRB_MAX_CASTING do
+			asraid[frameName].castFrames[i]:SetSize(baseSize * 1.2, baseSize * 0.9);
+			asraid[frameName].castFrames[i].baseSize = baseSize;
+			asraid[frameName].castFrames[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+			asraid[frameName].castFrames[i]:ClearAllPoints()
+			if i == 1 then
+				asraid[frameName].castFrames[i]:SetPoint("TOP", frame.healthBar, "TOP", 0, 0)
+			else
+				asraid[frameName].castFrames[i]:SetPoint("TOPLEFT", asraid[frameName].castFrames[i-1], "TOPRIGHT", 1, 0)
+			end
+		end
+	end
+
+	asraid[frameName].ncasting = 0;
 	
 end
 
@@ -1849,7 +1910,9 @@ local function ACRB_updateAllDebuff(asframe)
 	if asframe and asframe.frame and asframe.frame:IsShown() then
 		asCompactUnitFrame_UpdateDebuffs(asframe);
 		asCompactUnitFrame_UpdateDispellableDebuffs(asframe);
+		asframe.ncasting = 0;
 	end
+	
 end
 
 
@@ -1976,6 +2039,174 @@ local function ACRB_DisableAura()
 	end
 end
 
+local ACRB_DangerousSpellList = {};
+
+local function ACRB_updateCasting(asframe, unit)
+
+	if asframe and asframe.frame and asframe.frame:IsShown() then
+		local index = asframe.ncasting + 1;
+		local castFrame = asframe.castFrames[index];
+
+		if asframe.displayedUnit and UnitIsUnit(unit .."target", asframe.displayedUnit) then
+		
+			local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);
+			if not name then
+				name,  text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+			end
+
+			if name and asframe.castFrames and index <= #(asframe.castFrames) then
+			
+				castFrame.icon:SetTexture(texture);
+				castFrame.count:Hide();
+				
+				local curr = GetTime();
+				local start = startTime/1000;
+				local duration = (endTime/1000) - start;
+
+				asCooldownFrame_Set(castFrame.cooldown, start, duration, true);
+				
+				if not castFrame.baseSize then
+					castFrame.baseSize = castFrame:GetSize();
+				end
+
+				if ACRB_DangerousSpellList[spellid] then
+					lib.PixelGlow_Start(castFrame);
+				else
+					lib.PixelGlow_Stop(castFrame);
+				end
+
+				castFrame.border:Hide();
+				castFrame:SetSize((castFrame.baseSize + ACRB_Size) * 1.2 , (castFrame.baseSize + ACRB_Size) * 0.9);
+				castFrame:Show();
+				asframe.ncasting = index;
+				
+				return true;
+			end
+
+		end
+	
+	end
+
+	return false;
+end
+
+local function isFaction(unit)
+	if UnitIsUnit("player", unit) then
+		return false;
+	else
+		local reaction = UnitReaction("player", unit);
+		if reaction and reaction <= 4 then
+			return true;
+		elseif UnitIsPlayer(unit) then
+			return false;
+		end
+	end
+end
+
+local function asCompactUnitFrame_HideCast(asframe)
+	if asframe.castFrames then
+		for i= asframe.ncasting + 1, #asframe.castFrames do
+			asframe.castFrames[i]:Hide();
+		end
+	end
+end
+
+local function CheckCasting(nameplate)
+
+	if not nameplate or nameplate:IsForbidden()  then
+		return;
+	end
+
+	if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden()  then
+		return;
+	end
+
+	if IsInRaid() then 
+		return;
+	end
+
+	local unit = nameplate.UnitFrame.unit;
+
+	if isFaction(unit) then
+		local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);
+		if not name then
+			name,  text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+		end
+
+		if name then
+			if (IsInGroup()) then
+				if IsInRaid() then -- raid
+					if together == true then
+						for i=1,8 do
+							for k=1,5 do
+								local asframe = asraid["CompactRaidGroup"..i.."Member"..k]
+								if ACRB_updateCasting(asframe, unit) then
+									return;
+								end
+							end
+						end
+					else
+						for i=1,40 do
+							local asframe = asraid["CompactRaidFrame"..i]
+							if ACRB_updateCasting(asframe, unit) then
+								return;
+							end
+						end
+					end
+				else -- party
+					for i=1, 5 do
+						local asframe = asraid["CompactPartyFrameMember"..i]
+						if ACRB_updateCasting(asframe, unit) then
+							return;
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+
+local function ACRB_CheckCasting()
+
+	for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
+		local nameplate = v;
+		if (nameplate) then
+			CheckCasting(nameplate);
+		end
+	end
+
+	if (IsInGroup()) then
+		if IsInRaid() then -- raid
+			if together == true then
+				for i=1,8 do
+					for k=1,5 do
+						local asframe = asraid["CompactRaidGroup"..i.."Member"..k]
+						asCompactUnitFrame_HideCast(asframe);							
+					end
+				end
+			else
+				for i=1,40 do
+					local asframe = asraid["CompactRaidFrame"..i]
+					asCompactUnitFrame_HideCast(asframe);
+				end
+			end
+		else -- party
+			for i=1, 5 do
+				local asframe = asraid["CompactPartyFrameMember"..i]
+				asCompactUnitFrame_HideCast(asframe);
+			end
+		end
+	end
+end
+
+function ACTA_DBMTimer_callback(event, id, ...)
+	local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
+	if spellId then
+		ACRB_DangerousSpellList[spellId] = true;
+	end
+end
+
 local mustdisable = true;
 
 
@@ -1994,6 +2225,7 @@ local function ACRB_OnUpdate()
 	ACRB_updatePartyAllBuff();
 	ACRB_updatePartyAllDebuff();
 	ACRB_updatePartyAllHealerMana();
+	ACRB_CheckCasting();
 
 end
 
@@ -2007,6 +2239,11 @@ local function ACRB_OnEvent(self, event, ...)
 		elseif (event == "PLAYER_ENTERING_WORLD") then
 			ACRB_InitList();
 			mustdisable = true;
+
+			local bloaded = LoadAddOn("DBM-Core");
+			if bloaded then
+				DBM:RegisterCallback("DBM_TimerStart", ACTA_DBMTimer_callback );
+			end
 		elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
 			ACRB_InitList();
 		elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
