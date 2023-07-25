@@ -668,13 +668,13 @@ function panel:OnEvent(event, addOnName)
             ANameP_Options = CopyTable(ANameP_Options_Default);
         end
         if not UnitAffectingCombat("player") then
-            C_Timer.After(1.5, ANameP_OptionM.SetupAllOption);
+            ANameP_OptionM.SetupAllOption();
         else
             needtowait = true;
         end        
     elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		if not UnitAffectingCombat("player") then
-            C_Timer.After(1.5, ANameP_OptionM.SetupAllOption);
+            ANameP_OptionM.SetupAllOption();
         else
             needtowait = true;
         end
