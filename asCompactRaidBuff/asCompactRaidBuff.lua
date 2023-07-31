@@ -161,6 +161,7 @@ local ACRB_PVPBuffList = {
 	[22842] = true, --DRUID
 	[108238] = true, --DRUID
 	[124974] = true, --DRUID
+	[22812] = true, --DRUID
 	[104773] = true, --WARLOCK
 	[108416] = true, --WARLOCK
 	[215769] = true, --PRIEST
@@ -1202,9 +1203,9 @@ local function ACRB_setupFrame(frame)
 			
 			if ACRB_ShowTooltip and not asraid[frameName].castFrames[i]:GetScript("OnEnter") then
 				asraid[frameName].castFrames[i]:SetScript("OnEnter", function(s)
-					if s:GetID() > 0 then
+					if s.castspellid and s.castspellid > 0 then
 						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitBuff(s.unit, s:GetID(), s.filter);
+						GameTooltip:SetSpellByID(s.castspellid);
 					end
 				end)
 
@@ -1225,7 +1226,7 @@ local function ACRB_setupFrame(frame)
 			if i == 1 then
 				asraid[frameName].castFrames[i]:SetPoint("TOP", frame.healthBar, "TOP", 0, 0)
 			else
-				asraid[frameName].castFrames[i]:SetPoint("TOPLEFT", asraid[frameName].castFrames[i-1], "TOPRIGHT", 1, 0)
+				asraid[frameName].castFrames[i]:SetPoint("TOPRIGHT", asraid[frameName].castFrames[i-1], "TOPLEFT", -1, 0)
 			end
 		end
 	end
@@ -1848,6 +1849,73 @@ local function asCompactUnitFrame_UpdateBuffsPVP(asframe)
 	end
 end
 
+local tanklist = {};
+local together = nil;
+-- 탱커 처리부
+local function updateTankerList()
+
+	local bInstance, RTB_ZoneType = IsInInstance();
+
+	if RTB_ZoneType == "pvp" or RTB_ZoneType == "arena" then
+		return nil;
+	end
+
+	tanklist =	table.wipe(tanklist)
+	if IsInGroup() then
+		if IsInRaid() then -- raid
+			if together == true then
+				for i=1,8 do
+					for k=1,5 do
+						local framename = "CompactRaidGroup"..i.."Member"..k
+						local asframe = asraid[framename]
+						if asframe and asframe.displayedUnit then
+							local assignedRole = UnitGroupRolesAssigned(asframe.displayedUnit);
+							if assignedRole == "TANK" then
+								table.insert(tanklist, framename);
+							end
+						end
+					end
+				end
+			else
+				for i=1,40 do
+					local framename = "CompactRaidFrame"..i
+					local asframe = asraid[framename]
+					if asframe and asframe.displayedUnit then
+						local assignedRole = UnitGroupRolesAssigned(asframe.displayedUnit);
+						if assignedRole == "TANK" then
+							table.insert(tanklist, framename);
+						end
+					end
+				end
+			end
+
+			for i=1,GetNumGroupMembers() do
+				local unitid = "raid"..i
+				local notMe = not UnitIsUnit('player',unitid)
+				local unitName = UnitName(unitid)
+				if unitName and notMe then
+					local _,_,_,_,_,_,_,_,_,role,_, assignedRole = GetRaidRosterInfo(i);
+					if assignedRole == "TANK" then
+						table.insert(tanklist, unitid);
+					end
+				end
+			end
+		else -- party
+
+			for i=1, 5 do
+				local framename = "CompactPartyFrameMember"..i
+				local asframe = asraid[framename]
+				if asframe and asframe.displayedUnit then
+					local assignedRole = UnitGroupRolesAssigned(asframe.displayedUnit);
+					if assignedRole == "TANK" then
+						table.insert(tanklist, framename);
+					end
+				end
+			end		
+		end
+	end
+end
+
 local function asCompactUnitFrame_HideAllBuffs(frame, startingIndex)
 	if frame.buffFrames then
 		for i=startingIndex or 1, #frame.buffFrames do
@@ -1918,10 +1986,6 @@ local function ACRB_updateAllHealerMana(asframe)
 	end
 end
 
-
-
-
-local together = nil;
 
 local function ACRB_updatePartyAllBuff()
 
@@ -2069,6 +2133,7 @@ local function ACRB_updateCasting(asframe, unit)
 				else
 					lib.PixelGlow_Stop(castFrame);
 				end
+				castFrame.castspellid = spellid;
 
 				castFrame.border:Hide();
 				castFrame:Show();
@@ -2076,9 +2141,7 @@ local function ACRB_updateCasting(asframe, unit)
 				
 				return true;
 			end
-
-		end
-	
+		end	
 	end
 
 	return false;
@@ -2098,7 +2161,7 @@ local function isFaction(unit)
 end
 
 local function asCompactUnitFrame_HideCast(asframe)
-	if asframe.castFrames then
+	if asframe and asframe.castFrames then
 		for i= asframe.ncasting + 1, #asframe.castFrames do
 			asframe.castFrames[i]:Hide();
 		end
@@ -2115,10 +2178,6 @@ local function CheckCasting(nameplate)
 		return;
 	end
 
-	if IsInRaid() then 
-		return;
-	end
-
 	local unit = nameplate.UnitFrame.unit;
 
 	if isFaction(unit) then
@@ -2128,6 +2187,15 @@ local function CheckCasting(nameplate)
 		end
 
 		if name then
+
+			--탱커 부터
+			for _, framename in pairs(tanklist) do
+				local asframe = asraid[framename]
+				if ACRB_updateCasting(asframe, unit) then
+					return;
+				end
+			end
+
 			if (IsInGroup()) then
 				if IsInRaid() then -- raid
 					if together == true then
@@ -2238,9 +2306,11 @@ local function ACRB_OnEvent(self, event, ...)
 			if bloaded then
 				DBM:RegisterCallback("DBM_TimerStart", ACTA_DBMTimer_callback );
 			end
+			updateTankerList();
 		elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
 			ACRB_InitList();
 		elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
+			updateTankerList();
 			mustdisable = true;
 		elseif (event == "COMPACT_UNIT_FRAME_PROFILES_LOADED") then
 			together = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups();
