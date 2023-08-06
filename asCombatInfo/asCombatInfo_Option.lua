@@ -1,5 +1,5 @@
 ACI_Options_Default = {
-    version = 230722,
+    version = 230806,
 
 
 -- 	ACI_SpellList_직업명_특성숫자
