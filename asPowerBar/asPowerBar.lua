@@ -212,10 +212,12 @@ end
 local prev_combo = nil;
 local p_start = nil;
 local bhalf_combo = false;
+local bdruid = false;
 
 local function APB_ShowComboBar(combo, partial, cast, cooldown)
 
 	local bmax = false;
+	local bmaxminus1 = false;
 	local bhalf = false;
 
 	local _, Class = UnitClass("player")
@@ -239,6 +241,8 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
 
 	if combo == max_combo and cast == 0 then
 		bmax = true;
+	elseif combo == max_combo -1 and cast == 0 then
+		bmaxminus1 = true;
 	elseif combo >= (max_combo/2) and cast == 0 then
 		bhalf = bhalf_combo;
 	end
@@ -282,8 +286,8 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
 
 			if bmax then
 				APB.combobar[i]:SetStatusBarColor(1, 0, 0);
-			elseif bhalf then
-				APB.combobar[i]:SetStatusBarColor(1, 0.5, 0);
+			elseif bhalf or bmaxminus1 then
+				APB.combobar[i]:SetStatusBarColor(1, 0.8, 0);
 			else
 				APB.combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
 			end
@@ -303,8 +307,8 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
 
 			if bmax then
 				APB.combobar[i]:SetStatusBarColor(1, 0, 0);
-			elseif bhalf then
-				APB.combobar[i]:SetStatusBarColor(1, 0.5, 0);
+			elseif bhalf or bmaxminus1 then
+				APB.combobar[i]:SetStatusBarColor(1, 0.8, 0);
 			else
 				APB.combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
 			end
@@ -516,8 +520,10 @@ local function APB_UpdateStagger(self)
 
 		self:SetMinMaxValues(0, 100)
 		self:SetValue(stagger)
-		self.text:SetText(stagger);
-		self.count:SetText("");
+		self.text:SetText(val);
+		self.count:SetText(stagger);
+		self.text:Show();
+		self.count:Show();
 
 
 		if (stagger > 30 and stagger < 60) then
@@ -1198,6 +1204,7 @@ local function APB_CheckPower(self)
 	bupdate_partial_power = false;
 	bsmall_power_bar = false;
 	bhalf_combo = false;
+	bdruid = false;
 
 	APB_BUFF = nil;
 	APB_BUFF2 = nil;
@@ -1449,6 +1456,34 @@ local function APB_CheckPower(self)
 			bupdate_buff_count = true;
 
 			APB_UpdateBuff(self.buffbar[0]);
+
+			APB_UNIT_POWER = "COMBO_POINTS"
+			APB_POWER_LEVEL = Enum.PowerType.ComboPoints
+			APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+			APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
+			APB:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
+			bupdate_power = false;
+			bdruid = true; 
+
+			for i = 1, 10 do		
+				APB.combobar[i].tooltip = "COMBO_POINTS";				
+			end
+
+		end
+
+		if (spec and spec == 4) then
+
+			APB_UNIT_POWER = "COMBO_POINTS"
+			APB_POWER_LEVEL = Enum.PowerType.ComboPoints
+			APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+			APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
+			APB:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
+			bupdate_power = false;
+			bdruid = true; 
+
+			for i = 1, 10 do		
+				APB.combobar[i].tooltip = "COMBO_POINTS";				
+			end
 		end
 	end
 
@@ -1457,6 +1492,11 @@ local function APB_CheckPower(self)
 		if (spec and spec == 1) then
 			bupdate_stagger = true;
 			APB_UpdateStagger(self.buffbar[0]);
+
+			APB_SPELL = "정화주";
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
 		end
 
 
@@ -2105,6 +2145,22 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 		checkSpellCost();
 		checkSpellPowerCost();
 	elseif event == "UPDATE_SHAPESHIFT_FORM" then
+
+		if bdruid then
+			local form = GetShapeshiftForm();
+			if form == 2 then
+				bupdate_power = true;
+			else
+				bupdate_power = false;
+				for i = 1, #APB.combobar do
+
+					APB.combobar[i]:Hide();
+				end
+
+			end
+
+		end
+		
 		APB_UpdatePower();
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		APB:SetAlpha(APB_ALPHA_COMBAT);
