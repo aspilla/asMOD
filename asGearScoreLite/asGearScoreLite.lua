@@ -1,7 +1,6 @@
 local AGS_FontSize = 11;
 
 local itemslots = {
-
 	"HeadSlot",
 	"NeckSlot",
 	"ShoulderSlot",
@@ -18,32 +17,23 @@ local itemslots = {
 	"Finger1Slot",
 	"Trinket0Slot",
 	"Trinket1Slot",
-}
+};
 
+local asGearScore = CreateFrame("Frame", nil, UIParent);
 local fontstrings = {};
-
-local PTxt;
-local PAvg;
-
 local inspectframe;
-local TTxt;
 local TAvg;
 
-
-function GearScore_OnEvent(GS_Nil, GS_EventName, GS_Prefix, GS_AddonMessage, GS_Whisper, GS_Sender)
-	if ( GS_EventName == "PLAYER_REGEN_ENABLED" ) then GS_PlayerIsInCombat = false; return; end
-	if ( GS_EventName == "PLAYER_REGEN_DISABLED" ) then GS_PlayerIsInCombat = true; return; end
-	if ( GS_EventName == "PLAYER_EQUIPMENT_CHANGED" ) then
-		MyPaperDoll(GS_Nil);
+local function OnEvent(self, event)
+	if ( event == "PLAYER_EQUIPMENT_CHANGED" ) then
+		MyPaperDoll();
 	end
 end
 
 local scantip = nil;
 local level_txt = string.gsub(ITEM_LEVEL, "%%d", "(.+)")
-local level_txt2 = string.gsub(ITEM_LEVEL, "%%d", "(.+)")
 
-function GetItemLevel (unit, slot)
-
+function GetItemLevel(unit, slot)
 	if scantip == nil then
 		scantip = CreateFrame("GameTooltip", "asItemLevelTip", nil, "GameTooltipTemplate");
 		scantip:SetOwner(UIParent, "ANCHOR_NONE");
@@ -59,19 +49,11 @@ function GetItemLevel (unit, slot)
 			local retval = tonumber(iLevel)
 			if(retval ~= nil) then
 				return retval
-			else
-				local iLevel2 = string.match(text, level_txt2)
-				if iLevel2 ~= nil then
-					local retval2 = tonumber(iLevel2)
-					if(retval2 ~= nil) then
-						return retval2
-					end
-				end
 			end
 		end
 	end
 
-
+	return nil;
 end
 
 function GetAvgIvl(unit)
@@ -92,7 +74,7 @@ function GetAvgIvl(unit)
 
 		if k then
 			 local name,_,quality ,_=GetItemInfo(k)
-			 lvl = GetItemLevel(unit, idx);
+			 local lvl = GetItemLevel(unit, idx);
 
 			 if lvl and lvl > 0 and quality  then
 				 fontstrings[unit][i]:SetText(lvl);
@@ -143,9 +125,9 @@ function GetAvgIvl(unit)
 end
 
 
-function MyPaperDoll(self)
+function MyPaperDoll()
 	
-	if ( GS_PlayerIsInCombat ) then return; end
+	if ( InCombatLockdown() ) then return; end
 
 	local Avg, Max, Min = GetAvgIvl("player");
 end
@@ -162,7 +144,7 @@ function MyInspectDoll(self, elapsed)
 		return
 	end
 	
-	if ( GS_PlayerIsInCombat ) then return; end
+	if ( InCombatLockdown() ) then return; end
 
 	local Avg, Max, Min = GetAvgIvl("target");
 	local Red, Green, Blue = GetItemQualityColor(Avg);
@@ -171,21 +153,10 @@ function MyInspectDoll(self, elapsed)
 
 end
 
-
-
--------------------------------------------------------------------------------
-
-
------------------------- GUI PROGRAMS -------------------------------------------------------
-
-local f = CreateFrame("Frame", "GearScore", UIParent);
 local font, _, flags = NumberFontNormal:GetFont()
 
-f:SetScript("OnEvent", GearScore_OnEvent);
-f:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
-f:RegisterEvent("ADDON_LOADED")
-f:RegisterEvent("PLAYER_REGEN_ENABLED")
-f:RegisterEvent("PLAYER_REGEN_DISABLED")
+asGearScore:SetScript("OnEvent", OnEvent);
+asGearScore:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
 
 CharacterFrame:HookScript("OnShow", MyPaperDoll)
 
