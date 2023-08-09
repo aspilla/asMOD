@@ -1,0 +1,8 @@
+## Interface: 100105
+## Author: |cffff3399아스필라|r [블랙무어] 
+## Title: |cffff3399as|rGearScoreLite
+## Notes: 기어스코어 
+## Version : 110126
+## OptionalDeps: Blizzard_InspectUI
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+asGearScoreLite.lua
