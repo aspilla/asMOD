@@ -40,7 +40,7 @@ end
 
 local scantip = nil;
 local level_txt = string.gsub(ITEM_LEVEL, "%%d", "(.+)")
-local level_txt2 = string.gsub(ITEM_LEVEL, "%%d", "(.+) \((.+)\)")
+local level_txt2 = string.gsub(ITEM_LEVEL, "%%d", "(.+)")
 
 function GetItemLevel (unit, slot)
 
@@ -144,13 +144,10 @@ end
 
 
 function MyPaperDoll(self)
+	
 	if ( GS_PlayerIsInCombat ) then return; end
 
 	local Avg, Max, Min = GetAvgIvl("player");
-	local Red, Green, Blue = GetItemQualityColor(Min);
-	PAvg:SetText(Avg);
-	PAvg:SetTextColor(Red, Green, Blue)
-
 end
 
 local update = 0;
@@ -164,15 +161,12 @@ function MyInspectDoll(self, elapsed)
 	else
 		return
 	end
-
-	local frame = _G["TargetGearScore"]
-
+	
 	if ( GS_PlayerIsInCombat ) then return; end
 
 	local Avg, Max, Min = GetAvgIvl("target");
-
-	local Red, Green, Blue = GetItemQualityColor(Min);
-	TAvg:SetText(Avg);
+	local Red, Green, Blue = GetItemQualityColor(Avg);
+	TAvg:SetText(Avg .. " Lvl");
 	TAvg:SetTextColor(Red, Green, Blue)
 
 end
@@ -195,31 +189,13 @@ f:RegisterEvent("PLAYER_REGEN_DISABLED")
 
 CharacterFrame:HookScript("OnShow", MyPaperDoll)
 
-PTxt = CharacterFrame:CreateFontString(nil, "OVERLAY")
-PTxt:SetFont(font, AGS_FontSize, flags)
-PTxt:SetText("ItemLevel")
-PTxt:SetPoint("BOTTOMLEFT",CharacterFrame,"TOPLEFT",50,-280)
-PTxt:Show()
-
-PAvg = CharacterFrame:CreateFontString(nil, "OVERLAY")
-PAvg:SetFont(font, AGS_FontSize + 2, flags)
-PAvg:SetText("Avg: 0")
-PAvg:SetPoint("BOTTOMLEFT",CharacterFrame,"TOPLEFT",10,-295)
-PAvg:Show()
-
 inspectframe = _G["InspectFrame"]
 inspectframe:HookScript("OnUpdate", MyInspectDoll)
-
-TTxt = inspectframe:CreateFontString(nil, "OVERLAY")
-TTxt:SetFont(font, AGS_FontSize, flags)
-TTxt:SetText("ItemLevel")
-TTxt:SetPoint("BOTTOMLEFT",inspectframe,"TOPLEFT",10,-280)
-TTxt:Show()
 
 TAvg = inspectframe:CreateFontString(nil, "OVERLAY")
 TAvg:SetFont(font, AGS_FontSize + 2, flags)
 TAvg:SetText("Avg: 0")
-TAvg:SetPoint("BOTTOMLEFT",inspectframe,"TOPLEFT",10,-295)
+TAvg:SetPoint("TOPRIGHT",inspectframe,"TOPRIGHT",-10, -30)
 TAvg:Show()
 
 fontstrings["player"] = {};
