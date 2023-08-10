@@ -73,33 +73,32 @@ function GetAvgIvl(unit)
 		local k= GetInventoryItemLink(unit,idx)
 
 		if k then
-			 local name,_,quality ,_=GetItemInfo(k)
-			 local lvl = GetItemLevel(unit, idx);
+			local name,_,quality ,_=GetItemInfo(k)
+			local lvl = GetItemLevel(unit, idx);
 
-			 if lvl and lvl > 0 and quality  then
-				 fontstrings[unit][i]:SetText(lvl);
-				 local r,g,b = GetItemQualityColor(quality);
-				 fontstrings[unit][i]:SetTextColor(r,g,b);
-			 end
+			if lvl and lvl > 0 and quality  then
+				fontstrings[unit][i]:SetText(lvl);
+				local r,g,b = GetItemQualityColor(quality);
+				fontstrings[unit][i]:SetTextColor(r,g,b);
+			end
 
-				 if idx == 16 or idx == 17 then
-					 weapon_count = weapon_count + 1;
-					 two_head = lvl;
-				 end
+			if idx == 16 or idx == 17 then
+				weapon_count = weapon_count + 1;
+				two_head = lvl;
+			end
 
-				 if lvl and lvl > 0  then
+			if lvl and lvl > 0  then
 
-					 t=t+lvl
-					 c=c+1
-					 if quality < min then
-						 min = quality
-					 end
+				t=t+lvl
+				c=c+1
+				if quality < min then
+					min = quality
+				end
 
-					 if quality > max then
-						 max = quality
-					 end
-				 end
---			 end
+				if quality > max then
+					max = quality
+				end
+			end
 		else
 			fontstrings[unit][i]:SetText("");
 		end
@@ -126,7 +125,7 @@ end
 
 
 function MyPaperDoll()
-	
+
 	if ( InCombatLockdown() ) then return; end
 
 	local Avg, Max, Min = GetAvgIvl("player");
@@ -143,10 +142,10 @@ function MyInspectDoll(self, elapsed)
 	else
 		return
 	end
-	
-	if ( InCombatLockdown() ) then return; end
 
-	local Avg, Max, Min = GetAvgIvl("target");
+	if ( InCombatLockdown() or not INSPECTED_UNIT) then return; end
+
+	local Avg, Max, Min = GetAvgIvl(INSPECTED_UNIT);
 	local Red, Green, Blue = GetItemQualityColor(Avg);
 	TAvg:SetText(Avg .. " Lvl");
 	TAvg:SetTextColor(Red, Green, Blue)
