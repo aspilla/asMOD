@@ -113,7 +113,7 @@ local function APB_UnitBuff(unit, buff, casterid)
 	until (name == nil)
 
 	if ret then
-		return UnitBuff(unit, i, filter);
+		return UnitBuff(unit, ret, filter);
 	end
 
 	for slot=1, MAX_TOTEMS do
@@ -1399,6 +1399,14 @@ local function APB_CheckPower(self)
 			APB_UpdateSpell(APB_SPELL);
 			bupdate_spell = true;
 			bupdate_partial_power = true;
+
+			if asCheckTalent("아즈아퀴르의 광기") then
+				APB_BUFF = "아즈아퀴르의 광기";
+				APB.buffbar[0].buff = "아즈아퀴르의 광기";
+				APB.buffbar[0].unit = "player"
+				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				APB_UpdateBuff(self.buffbar[0])
+			end
 		end
 
 		bsmall_power_bar = true;
@@ -1681,7 +1689,19 @@ local function APB_CheckPower(self)
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
 
-			APB_UpdateBuff(self.buffbar[0])
+			APB_UpdateBuff(self.buffbar[0]);
+
+			APB_BUFF_COMBO = "영혼 파편";
+			APB_MaxCombo(5);
+			APB.combobar.unit = "player"
+			APB:RegisterUnitEvent("UNIT_AURA", "player");
+			APB_UpdateBuffCombo(self.combobar)
+			bupdate_buff_combo = true;
+
+			for i = 1, 10 do		
+				APB.combobar[i].tooltip = "고영혼 파편";				
+			end
+			bsmall_power_bar = true;
 
 		end
 
