@@ -59,7 +59,7 @@ local function ASAA_UpdateCooldown()
 	local numCools = 1;
 	local frame;
 	local frameIcon, frameCooldown;
-	local icon, duration, start, enable;
+	local name, icon, duration, start, enable;
 	local frameBorder;
 	local parent;
 
@@ -75,8 +75,17 @@ local function ASAA_UpdateCooldown()
 			isAlert = false;
 		end
 
-		if isAlert == true then
-			_, _, icon = GetSpellInfo(id);
+		name , _, icon = GetSpellInfo(id);
+
+		if APB_SPELL and APB_SPELL == name then
+			isAlert = false;
+		end
+
+		if APB_SPELL2 and APB_SPELL2 == name then
+			isAlert = false;
+		end
+
+		if isAlert == true then			
 			start, duration, enable = GetSpellCooldown(id);
 			local isUsable, notEnoughMana = IsUsableSpell(id);
 
