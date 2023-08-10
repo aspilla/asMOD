@@ -29,7 +29,8 @@ local trackedPartySpells={
 	[57994] = 12, -- Wind Shear
 	[2139] = 24, -- Counterspell
 	[78675]  = 60, -- Solar Beam
-
+	[119910]  = 24, -- Command Demon
+	[119914]  = 30, -- Command Demon
 }
 
 -----------------설정 끝 ------------------------
