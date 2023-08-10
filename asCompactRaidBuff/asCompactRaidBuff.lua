@@ -1,5 +1,5 @@
 local ACRB_Size = 0; 					-- Buff 아이콘 증가 크기
-local ACRB_BuffSizeRate = 1;			-- 기존 Size 크기 배수 
+local ACRB_BuffSizeRate = 0.9;			-- 기존 Size 크기 배수 
 local ACRB_ShowBuffCooldown = false		-- 버프 지속시간을 보이려면
 local ACRB_MinShowBuffFontSize = 5 		-- 이크기보다 Cooldown font Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0
 local ACRB_CooldownFontSizeRate = 0.5 	-- 버프 Size 대비 쿨다운 폰트 사이즈 
@@ -900,6 +900,9 @@ local function ACRB_setupFrame(frame)
 
 	y = y - powerBarUsedHeight;
 
+	local size_x = x/6 * ACRB_BuffSizeRate;
+	local size_y = y/3 * ACRB_BuffSizeRate;
+
 	local baseSize = math.min(x/7 * ACRB_BuffSizeRate, y/3 * ACRB_BuffSizeRate);
 
 	if baseSize > ACRB_MaxBuffSize then
@@ -988,8 +991,7 @@ local function ACRB_setupFrame(frame)
 
 	--크기 조정
 	for _,d in ipairs(asraid[frameName].asbuffFrames) do
-		d.baseSize = baseSize;
-		d:SetSize(baseSize * 1.2, baseSize);
+		d:SetSize(size_x, size_y);
 
 		d.count:SetFont(STANDARD_TEXT_FONT, fontsize ,"OUTLINE")
 		d.count:ClearAllPoints();
@@ -1054,7 +1056,7 @@ local function ACRB_setupFrame(frame)
 	end
 
 	for _,d in ipairs(asraid[frameName].asdebuffFrames) do
-		d.baseSize = baseSize     -- 디버프
+		d.size_x, d.size_y = size_x, size_y;    -- 디버프
 		d.maxHeight = frameHeight - powerBarUsedHeight - CUF_AURA_BOTTOM_OFFSET - CUF_NAME_SECTION_SIZE;
 		d.count:SetFont(STANDARD_TEXT_FONT, fontsize,"OUTLINE")
 		d.count:ClearAllPoints();
@@ -1160,8 +1162,7 @@ local function ACRB_setupFrame(frame)
 
 	if (asraid[frameName].buffFrames2) then
 		for i = 1, ACRB_MAX_BUFFS_2 do
-			asraid[frameName].buffFrames2[i]:SetSize(baseSize * 1.2, baseSize);
-			asraid[frameName].buffFrames2[i].baseSize = baseSize;
+			asraid[frameName].buffFrames2[i]:SetSize(size_x, size_y);
 			asraid[frameName].buffFrames2[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
 			asraid[frameName].buffFrames2[i]:ClearAllPoints()
 			if i == 1 then
@@ -1180,8 +1181,6 @@ local function ACRB_setupFrame(frame)
 			asraid[frameName].castFrames[i] =  CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
 			asraid[frameName].castFrames[i]:EnableMouse(ACRB_ShowTooltip);
 			asraid[frameName].castFrames[i].icon:SetTexCoord(.08, .92, .08, .92);
-			asraid[frameName].castFrames[i]:SetSize(baseSize * 1.2, baseSize);
-			asraid[frameName].castFrames[i].baseSize = baseSize;
 			asraid[frameName].castFrames[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
 			asraid[frameName].castFrames[i].count:ClearAllPoints();
 			asraid[frameName].castFrames[i].count:SetPoint("BOTTOM", 0, 0);
@@ -1219,8 +1218,7 @@ local function ACRB_setupFrame(frame)
 
 	if (asraid[frameName].castFrames) then
 		for i = 1, ACRB_MAX_CASTING do
-			asraid[frameName].castFrames[i].baseSize = baseSize;
-			asraid[frameName].castFrames[i]:SetSize(baseSize * 1.2, baseSize);			
+			asraid[frameName].castFrames[i]:SetSize(size_x, size_y);				
 			asraid[frameName].castFrames[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
 			asraid[frameName].castFrames[i]:ClearAllPoints()
 			if i == 1 then
@@ -1533,9 +1531,9 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 	debuffFrame.isBossBuff = isBossBuff;
 	
 	if ( isBossAura ) then
-		debuffFrame:SetSize((debuffFrame.baseSize * 1.2) * 1.3, debuffFrame.baseSize * 1.3);
+		debuffFrame:SetSize((debuffFrame.size_x) * 1.3, debuffFrame.size_y * 1.3);
 	else
-		debuffFrame:SetSize(debuffFrame.baseSize * 1.2, debuffFrame.baseSize);
+		debuffFrame:SetSize(debuffFrame.size_x, debuffFrame.size_y);
 	end
 
 	debuffFrame:Show();
@@ -2124,10 +2122,6 @@ local function ACRB_updateCasting(asframe, unit)
 
 				asCooldownFrame_Set(castFrame.cooldown, start, duration, true);
 				
-				if not castFrame.baseSize then
-					castFrame.baseSize = castFrame:GetSize();
-				end
-
 				if ACRB_DangerousSpellList[spellid] then
 					lib.PixelGlow_Start(castFrame);
 				else
