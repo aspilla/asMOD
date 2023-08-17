@@ -54,9 +54,10 @@ ADotF_ShowList_MONK_3 = {
 }
 
 ADotF_ShowList_WARLOCK_1 = {
-	{"고통" , 14 * 0.3},
-	{"불안정한 고통" , 21 * 0.3},
-	{"부패" , 14 * 0.3},
+	{"고통" , 5},
+	{"불안정한 고통" , 5},
+	{"부패" , 5},
+    {"생명력 착취" , 5},
 }
 
 ADotF_ShowList_WARLOCK_2 = {

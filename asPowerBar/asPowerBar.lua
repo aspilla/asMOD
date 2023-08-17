@@ -1393,6 +1393,19 @@ local function APB_CheckPower(self)
 			APB.combobar[i].tooltip = "SOUL_SHARDS";				
 		end
 
+		if (spec and spec == 1) then
+			if asCheckTalent("어둠의 선물") then
+				APB_DEBUFF = "어둠의 선물";
+				APB.buffbar[0].debuff = "어둠의 선물"
+				APB.buffbar[0].unit = "target";
+				APB:SetScript("OnUpdate", APB_OnUpdate);
+
+				APB:RegisterEvent("PLAYER_TARGET_CHANGED");
+				APB_UpdateBuff(self.buffbar[0])
+				bupdate_buff_count = true;
+			end
+		end
+
 		if (spec and spec == 3) then
 			APB_SPELL = "점화";
 			APB_SpellMax(APB_SPELL);

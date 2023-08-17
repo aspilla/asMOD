@@ -1,5 +1,5 @@
 ANameP_Options_Default = {
-    version = 230722;
+    version = 230818;
     ANameP_ShowKnownSpell = true,                           -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                               -- [디버프] 전부 보이기
     ANameP_ShowPlayerBuffAll = false,                       -- [버프] 전부 보이기
@@ -77,9 +77,10 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_WARLOCK_1 = {
-	    ["고통"] = {14 * 0.3, 5, true},
-	    ["불안정한 고통"] = {21 * 0.3, 4},
-	    ["부패"] = {14 * 0.3, 3},
+	    ["고통"] = {5, 5, true},
+	    ["불안정한 고통"] = {5, 4},
+	    ["부패"] = {5, 3},
+        ["생명력 착취"] = {5, 2},
     },
 
     ANameP_ShowList_WARLOCK_2 = {

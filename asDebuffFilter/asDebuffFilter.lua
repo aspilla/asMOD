@@ -753,8 +753,13 @@ local function ADF_UpdateDebuff(unit)
 				skip = false;
 			end
 
-			-- ACI 에서 보이는 Debuff 는 숨기고
+			-- CombatInfo 에서 보이는 Debuff 는 숨기고
 			if ACI_Debuff_list and ACI_Debuff_list[name] then
+				skip = true;
+			end
+
+            -- PowerBar에서 보이는 Debuff 는 숨기고
+			if APB_DEBUFF and APB_DEBUFF == name then
 				skip = true;
 			end
 
