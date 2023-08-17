@@ -15,6 +15,8 @@ local ASAA_BackList = {
 	--["천상의 폭풍"] = true,
 };
 
+local show_icons = {};
+
 
 local function asCooldownFrame_Clear(self)
 	self:Clear();
@@ -160,22 +162,31 @@ end
 
 local function ASAA_Insert(id)
 
-	local name, _, _ = GetSpellInfo(id);
+	local name, _, icon = GetSpellInfo(id);
 
 	if ASAA_BackList and ASAA_BackList[name] then
 		return;
 	end
 
+	if show_icons[icon] == true then
+		return;
+	end
+
 	ASAA_SpellList[id] = true;
+	show_icons[icon] = true;
+	
 	ASAA_UpdateCooldown();
 end
 
 local function ASAA_Delete(id)
 
 	if id then
+		local _, _, icon = GetSpellInfo(id);
 		ASAA_SpellList[id] = false;
+		show_icons[icon] = false;
 	else
 		ASAA_SpellList = {};
+		show_icons = {};
 	end
 	ASAA_UpdateCooldown();
 end

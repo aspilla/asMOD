@@ -1674,10 +1674,6 @@ local function updateUnitHealthText(self, unit)
 		valuePct =  (math.ceil((value / valueMax) * 100));
 	end
 
-	if (valueMax <= 300) then
-		valuePct = value;
-	end
-
 	if valuePct > 0 then
 		frame.healthtext:SetText(valuePct);
 	else

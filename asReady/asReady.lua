@@ -31,6 +31,8 @@ local trackedPartySpells={
 	[78675]  = 60, -- Solar Beam
 	[119910]  = 24, -- Command Demon
 	[119914]  = 30, -- Command Demon
+	[132409]  = 24, -- Command Demon
+	["주문 잠금"] = 24,
 }
 
 -----------------설정 끝 ------------------------
@@ -205,8 +207,17 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 			local spellid = arg3;
 			local unit = arg1;
 			local time = GetTime();
-			if trackedPartySpells[spellid] then
+
+			local name = GetSpellInfo(spellid);
+
+	--			print (spellid);
+			if trackedPartySpells[spellid] or trackedPartySpells[name] then
 				local cool = trackedPartySpells[spellid];
+
+				if not cool then
+					cool = trackedPartySpells[name]
+				end
+
         	    if UnitIsUnit("player", unit) then
 					partycool[5] = {5, spellid, time, cool, 0};
 				else
