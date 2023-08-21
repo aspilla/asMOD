@@ -2,14 +2,13 @@ local AFUF = CreateFrame("FRAME", nil, UIParent);
 AFUF.Options_Default = {
     HideDebuff = true,
     HideCombatText = true,
-    HideCastBar = true;
-    HideClassBar = true;
-    ShowClassColor = true;
-    ShowAggro = true;
+    HideCastBar = true,
+    HideClassBar = true,
+    ShowClassColor = true,
+    ShowAggro = true,
 }
 
 function AFUF:HideCombatText()
-
     if AFUF_Options["HideCombatText"] then
         -- 데미지 숫자 숨기기
         PlayerFrame:UnregisterEvent("UNIT_COMBAT");
@@ -32,19 +31,16 @@ function AFUF:HideTargetBuffs()
     end
 end
 
-
 function AFUF:HideTargetCastBar()
-
     if AFUF_Options["HideCastBar"] then
-    --TargetCastBar 를 숨긴다.
-       TargetFrame.spellbar.showCastbar = false;
+        --TargetCastBar 를 숨긴다.
+        TargetFrame.spellbar.showCastbar = false;
     end
 end
 
 function AFUF:ShowAggro()
-
     if AFUF_Options["ShowAggro"] then
-    --TargetCastBar 를 숨긴다.
+        --TargetCastBar 를 숨긴다.
         SetCVar("threatShowNumeric", "1");
     else
         SetCVar("threatShowNumeric", "0");
@@ -52,12 +48,11 @@ function AFUF:ShowAggro()
 end
 
 function AFUF:HideClassBar()
-
     if not AFUF_Options["HideClassBar"] then
         return;
     end
     --주요 자원바 숨기기
-    local ClassBarOnShow = function (frame)
+    local ClassBarOnShow = function(frame)
         frame:Hide()
     end
 
@@ -86,13 +81,11 @@ function AFUF:HideClassBar()
 end
 
 function AFUF:UpdateHealthBar()
-
     if not AFUF_Options["ShowClassColor"] then
         return;
     end
     --Healthbar 직업 색상
     local function getFramesHealthBar()
-
         return {
             PlayerFrame_GetHealthBar(),
             TargetFrame.TargetFrameContent.TargetFrameContentMain.HealthBar,
@@ -104,7 +97,7 @@ function AFUF:UpdateHealthBar()
         local r, g, b;
         local localizedClass, englishClass = UnitClass(unit);
         local classColor = RAID_CLASS_COLORS[englishClass];
-        if ( (UnitIsPlayer(unit)) and classColor ) then
+        if ((UnitIsPlayer(unit)) and classColor) then
             r, g, b = classColor.r, classColor.g, classColor.b;
         else
             r, g, b = 0.0, 1.0, 0.0;
@@ -123,23 +116,22 @@ end
 AFUF.bfirst = false;
 
 function AFUF:OnEvent(event, ...)
-
     if not self.bfirst then
         self:SetupOptionPanels();
         self.bfirst = true;
     end
 
-	if event == "PLAYER_ENTERING_WORLD" or  event == "ACTIVE_TALENT_GROUP_CHANGED" then
-		self:HideClassBar();
+    if event == "PLAYER_ENTERING_WORLD" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
+        self:HideClassBar();
         self:HideCombatText();
         self:HideTargetBuffs();
         self:ShowAggro();
         self:HideTargetCastBar();
-        SetCVar("showTargetCastbar", "1");        
-	end
-	self:UpdateHealthBar();
-    
-	AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
+        SetCVar("showTargetCastbar", "1");
+    end
+    self:UpdateHealthBar();
+
+    AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
 end
 
 function AFUF:OnInit()
@@ -149,11 +141,10 @@ function AFUF:OnInit()
     self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
     self:RegisterUnitEvent("UNIT_TARGET", "target");
     self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
-	self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
+    self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
 end
 
 function AFUF:SetupOptionPanels()
-
     local function OnSettingChanged(_, setting, value)
         local variable = setting:GetVariable()
         AFUF_Options[variable] = value;
@@ -168,11 +159,9 @@ function AFUF:SetupOptionPanels()
     end
 
     for variable, _ in pairs(self.Options_Default) do
-
-
         local name = variable;
         local tooltip = ""
-        if  AFUF_Options[variable] == nil then
+        if AFUF_Options[variable] == nil then
             AFUF_Options[variable] = self.Options_Default[variable];
         end
         local defaultValue = AFUF_Options[variable];

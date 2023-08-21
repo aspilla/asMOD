@@ -25,7 +25,7 @@ local inspectframe;
 local TAvg;
 
 local function OnEvent(self, event)
-	if ( event == "PLAYER_EQUIPMENT_CHANGED" ) then
+	if (event == "PLAYER_EQUIPMENT_CHANGED") then
 		MyPaperDoll();
 	end
 end
@@ -47,7 +47,7 @@ function GetItemLevel(unit, slot)
 
 		if iLevel ~= nil then
 			local retval = tonumber(iLevel)
-			if(retval ~= nil) then
+			if (retval ~= nil) then
 				return retval
 			end
 		end
@@ -57,8 +57,7 @@ function GetItemLevel(unit, slot)
 end
 
 function GetAvgIvl(unit)
-
-    local t,c=0,0
+	local t, c = 0, 0
 	local min = 0xFFFFFFFF;
 	local max = 0
 	local weapon_lvl;
@@ -66,20 +65,19 @@ function GetAvgIvl(unit)
 	local two_head = nil;
 
 
-	 for i =1,#itemslots do
+	for i = 1, #itemslots do
+		local idx = GetInventorySlotInfo(itemslots[i]);
 
-		local  idx = GetInventorySlotInfo(itemslots[i]);
-
-		local k= GetInventoryItemLink(unit,idx)
+		local k = GetInventoryItemLink(unit, idx)
 
 		if k then
-			local name,_,quality ,_=GetItemInfo(k)
+			local name, _, quality, _ = GetItemInfo(k)
 			local lvl = GetItemLevel(unit, idx);
 
-			if lvl and lvl > 0 and quality  then
+			if lvl and lvl > 0 and quality then
 				fontstrings[unit][i]:SetText(lvl);
-				local r,g,b = GetItemQualityColor(quality);
-				fontstrings[unit][i]:SetTextColor(r,g,b);
+				local r, g, b = GetItemQualityColor(quality);
+				fontstrings[unit][i]:SetTextColor(r, g, b);
 			end
 
 			if idx == 16 or idx == 17 then
@@ -87,10 +85,9 @@ function GetAvgIvl(unit)
 				two_head = lvl;
 			end
 
-			if lvl and lvl > 0  then
-
-				t=t+lvl
-				c=c+1
+			if lvl and lvl > 0 then
+				t = t + lvl
+				c = c + 1
 				if quality < min then
 					min = quality
 				end
@@ -102,31 +99,27 @@ function GetAvgIvl(unit)
 		else
 			fontstrings[unit][i]:SetText("");
 		end
-
-	 end
+	end
 
 	if weapon_lvl then
-		t=t+ (weapon_lvl *2)
-		c=c+2
+		t = t + (weapon_lvl * 2)
+		c = c + 2
 	end
 
 	if weapon_count == 1 and two_head then
 		t = t + two_head;
-		c = c +1;
+		c = c + 1;
 	end
 
-	 if min == 0xFFFFFFFF then
-		 min = 0;
-	 end
+	if min == 0xFFFFFFFF then
+		min = 0;
+	end
 
-	 return floor(t/c), max, min
-
+	return floor(t / c), max, min
 end
 
-
 function MyPaperDoll()
-
-	if ( InCombatLockdown() ) then return; end
+	if (InCombatLockdown()) then return; end
 
 	local Avg, Max, Min = GetAvgIvl("player");
 end
@@ -134,22 +127,20 @@ end
 local update = 0;
 
 function MyInspectDoll(self, elapsed)
-
 	update = update + elapsed;
 
-	if update >= 1  then
+	if update >= 1 then
 		update = 0
 	else
 		return
 	end
 
-	if ( InCombatLockdown() or not INSPECTED_UNIT) then return; end
+	if (InCombatLockdown() or not INSPECTED_UNIT) then return; end
 
 	local Avg, Max, Min = GetAvgIvl(INSPECTED_UNIT);
 	local Red, Green, Blue = GetItemQualityColor(Avg);
 	TAvg:SetText(Avg .. " Lvl");
 	TAvg:SetTextColor(Red, Green, Blue)
-
 end
 
 local font, _, flags = NumberFontNormal:GetFont()
@@ -165,24 +156,24 @@ inspectframe:HookScript("OnUpdate", MyInspectDoll)
 TAvg = inspectframe:CreateFontString(nil, "OVERLAY")
 TAvg:SetFont(font, AGS_FontSize + 2, flags)
 TAvg:SetText("Avg: 0")
-TAvg:SetPoint("TOPRIGHT",inspectframe,"TOPRIGHT",-10, -30)
+TAvg:SetPoint("TOPRIGHT", inspectframe, "TOPRIGHT", -10, -30)
 TAvg:Show()
 
 fontstrings["player"] = {};
 fontstrings["target"] = {};
 
-for slot,n in pairs(itemslots) do
-	local gslot = _G["Character"..n]
+for slot, n in pairs(itemslots) do
+	local gslot = _G["Character" .. n]
 	fontstrings["player"][slot] = gslot:CreateFontString(nil, "OVERLAY")
 	fontstrings["player"][slot]:SetFont(font, AGS_FontSize, flags)
 	fontstrings["player"][slot]:SetPoint("TOP", gslot, "TOP", 0, -3)
-	fontstrings["player"][slot]:SetTextColor(1,1,1)
+	fontstrings["player"][slot]:SetTextColor(1, 1, 1)
 end
 
-for slot,n in pairs(itemslots) do
-	local gslot = _G["Inspect"..n]
+for slot, n in pairs(itemslots) do
+	local gslot = _G["Inspect" .. n]
 	fontstrings["target"][slot] = gslot:CreateFontString(nil, "OVERLAY")
 	fontstrings["target"][slot]:SetFont(font, AGS_FontSize, flags)
 	fontstrings["target"][slot]:SetPoint("TOP", gslot, "TOP", 0, -3)
-	fontstrings["target"][slot]:SetTextColor(1,1,1)
+	fontstrings["target"][slot]:SetTextColor(1, 1, 1)
 end

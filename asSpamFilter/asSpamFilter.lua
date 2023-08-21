@@ -1,4 +1,4 @@
-local ASF_MaxTime = 4; 			--4초 뒤에도 같은 Message면 보이게
+local ASF_MaxTime = 4; --4초 뒤에도 같은 Message면 보이게
 local ASF_X = 300;
 local ASF_Y = 160;
 
@@ -7,8 +7,8 @@ asUIErrorsFrame:SetPoint("BOTTOM", ASF_X, ASF_Y);
 
 LoadAddOn("asMOD");
 if asMOD_setupFrame then
-        asMOD_setupFrame (	asUIErrorsFrame, "asSpamFilter");
-    end
+	asMOD_setupFrame(asUIErrorsFrame, "asSpamFilter");
+end
 local originalOnEvent = UIErrorsFrame:GetScript("OnEvent")
 
 local flashingFontStrings = {};
@@ -23,7 +23,8 @@ local function asSpamOnUpdate()
 				local percent = (now - timeStart) / FLASH_DURATION_SEC;
 				local easedPercent = (percent > .5 and (1.0 - percent) / .5 or percent / .5) * .4;
 
-				fontString:SetTextColor(fontString.origR + easedPercent, fontString.origG + easedPercent, fontString.origB + easedPercent);
+				fontString:SetTextColor(fontString.origR + easedPercent, fontString.origG + easedPercent,
+					fontString.origB + easedPercent);
 				needsMoreUpdates = true;
 			else
 				fontString:SetTextColor(fontString.origR, fontString.origG, fontString.origB);
@@ -146,12 +147,12 @@ local function TryDisplayMessage(messageType, message, r, g, b)
 end
 
 
-UIErrorsFrame:SetScript("OnEvent", function(self, event, messageType, message,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
-
-	if event == "UI_ERROR_MESSAGE" then
-		TryDisplayMessage(messageType, message, RED_FONT_COLOR:GetRGB());
-	else
-		originalOnEvent(self, event, messageType, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
-	end	
-end
+UIErrorsFrame:SetScript("OnEvent",
+	function(self, event, messageType, message, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+		if event == "UI_ERROR_MESSAGE" then
+			TryDisplayMessage(messageType, message, RED_FONT_COLOR:GetRGB());
+		else
+			originalOnEvent(self, event, messageType, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+		end
+	end
 )

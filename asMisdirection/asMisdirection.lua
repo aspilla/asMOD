@@ -1,36 +1,35 @@
 local AHM_Button = CreateFrame("Frame", nil, UIParent)
 
 
-local playerName	= UnitName("player")
-local playerClass	= select(2, UnitClass("player"))
-local targetName	= nil
+local playerName        = UnitName("player")
+local playerClass       = select(2, UnitClass("player"))
+local targetName        = nil
 local MisDirectionSpell = nil
-local UnitMounted	= false
+local UnitMounted       = false
 
-local colorRed		= "|cFFFF0000"
-local colorYellow	= "|cFFffff00"
-local colorOrange	= "|cFFF86832" 
-local colorWhite	= "|cFFFFFFFF"
-local color_		= "|r"
-local bHunter 		= false;
+local colorRed          = "|cFFFF0000"
+local colorYellow       = "|cFFffff00"
+local colorOrange       = "|cFFF86832"
+local colorWhite        = "|cFFFFFFFF"
+local color_            = "|r"
+local bHunter           = false;
 
 local function GetPartyID()
-
 	if IsInGroup() then
 		if IsInRaid() then -- raid
-			for i=1,GetNumGroupMembers() do
-				local unitid = "raid"..i
-				local notMe = not UnitIsUnit("player",unitid)
+			for i = 1, GetNumGroupMembers() do
+				local unitid = "raid" .. i
+				local notMe = not UnitIsUnit("player", unitid)
 				local unitName = UnitName(unitid)
-				if unitName and notMe and UnitIsUnit("target",unitid) then
+				if unitName and notMe and UnitIsUnit("target", unitid) then
 					return unitid;
 				end
 			end
 		else -- party
-			for i=1,GetNumSubgroupMembers() do
-				local unitid = "party"..i
+			for i = 1, GetNumSubgroupMembers() do
+				local unitid = "party" .. i
 				local unitName = UnitName(unitid)
-				if unitName and  UnitIsUnit("target",unitid) then
+				if unitName and UnitIsUnit("target", unitid) then
 					return unitid;
 				end
 			end
@@ -41,7 +40,6 @@ local function GetPartyID()
 end
 
 local function CheckPartyMember()
-
 	local bInstance, RTB_ZoneType = IsInInstance();
 
 	if RTB_ZoneType == "pvp" then
@@ -50,30 +48,29 @@ local function CheckPartyMember()
 
 	if IsInGroup() then
 		if IsInRaid() then -- raid
-			for i=1,GetNumGroupMembers() do
-				local unitid = "raid"..i
-				local notMe = not UnitIsUnit("player",unitid)
+			for i = 1, GetNumGroupMembers() do
+				local unitid = "raid" .. i
+				local notMe = not UnitIsUnit("player", unitid)
 				local unitName = UnitName(unitid)
 				if unitName and notMe then
-					local _,_,_,_,_,_,_,_,_,role,_, assignedRole = GetRaidRosterInfo(i) -- role = "MAINTANK|MAINASSIST", assignedRole = "TANK|HEALER|DAMAGER|NONE"
+					local _, _, _, _, _, _, _, _, _, role, _, assignedRole = GetRaidRosterInfo(i) -- role = "MAINTANK|MAINASSIST", assignedRole = "TANK|HEALER|DAMAGER|NONE"
 					if assignedRole == "TANK" then
 						return unitid;
 					end
 				end
 			end
 		else -- party
-			for i=1,GetNumSubgroupMembers() do
-				local unitid = "party"..i
+			for i = 1, GetNumSubgroupMembers() do
+				local unitid = "party" .. i
 				local unitName = UnitName(unitid)
 				if unitName then
 					local assignedRole;
-					
+
 					assignedRole = UnitGroupRolesAssigned(unitid)
 
 					if assignedRole == "TANK" then
 						return unitid;
 					end
-
 				end
 			end
 		end
@@ -87,9 +84,8 @@ local prev_unit = nil;
 local force_unit = nil;
 
 local function AHM_SetAssist(unit, force)
-
 	if not force and force_unit then
-		return;		
+		return;
 	end
 
 	if force then
@@ -108,7 +104,7 @@ local function AHM_SetAssist(unit, force)
 
 	prev_unit = unit;
 
-	local macroText = "/assist [@".. unit .." ,exists,nodead]";
+	local macroText = "/assist [@" .. unit .. " ,exists,nodead]";
 	local macroName = "탱커지원"
 	local macroID = GetMacroIndexByName(macroName)
 
@@ -120,7 +116,8 @@ local function AHM_SetAssist(unit, force)
 
 	if MisDirectionSpell then
 		--macroText = string.format("#showtooltip %s\n/cast [@mouseover, exists, help, nodead][target=" .. unit ..", exists, help, nodead][help] %s", MisDirectionSpell, MisDirectionSpell)
-		macroText = string.format("#showtooltip %s\n/cast [target=" .. unit ..", exists, help, nodead][help] %s", MisDirectionSpell, MisDirectionSpell)
+		macroText = string.format("#showtooltip %s\n/cast [target=" .. unit .. ", exists, help, nodead][help] %s",
+			MisDirectionSpell, MisDirectionSpell)
 		macroID = GetMacroIndexByName(MisDirectionSpell)
 		macroName = MisDirectionSpell
 
@@ -133,25 +130,24 @@ local function AHM_SetAssist(unit, force)
 
 	if UnitExists(unit) then
 		if force then
-			print("[afm] 강제으로 "..UnitName(unit).." 이 탱커로 지정");
+			print("[afm] 강제으로 " .. UnitName(unit) .. " 이 탱커로 지정");
 		else
-			print("[afm] 자동으로 "..UnitName(unit).." 이 탱커로 지정");
+			print("[afm] 자동으로 " .. UnitName(unit) .. " 이 탱커로 지정");
 		end
 	end
-	
 end
 
 
 -----------------------------
 local function AHM_SetTargetName(...)
------------------------------
+	-----------------------------
 
 	if InCombatLockdown() then
 		ChatFrame1:AddMessage("asMisdirection: 전투중엔 대상을 설정 할 수 없습니다.")
 		return
 	end
 
-	local unit =  GetPartyID()
+	local unit = GetPartyID()
 
 	if unit then
 		AHM_SetAssist(unit, true);
@@ -163,11 +159,11 @@ local function IsLearndSpell(checkSpellName)
 	local i = 1
 
 	if playerClass == "HUNTER" or playerClass == "ROGUE" then
-		return true;	
+		return true;
 	end
 
 	while true do
-		local spellName = GetSpellBookItemName (i, BOOKTYPE_SPELL)
+		local spellName = GetSpellBookItemName(i, BOOKTYPE_SPELL)
 		if not spellName then
 			do break end
 		end
@@ -185,12 +181,11 @@ local tempTarget = nil;
 
 local function AHM_OnEvent(self, event, ...)
 	if (event == "PLAYER_LOGIN" or event == "LEARNED_SPELL_IN_TAB") then
-
 		MisDirectionSpell = nil;
 
 		print("/afm : 대상을 탱커으로 지정")
 		print("[afm] 매크로 창에서 탱커지원 매크로를 이용하세요.")
-	
+
 		AHM_Button:UnregisterEvent("PLAYER_LOGIN")
 		local spellId
 		if playerClass == "HUNTER" then
@@ -199,15 +194,14 @@ local function AHM_OnEvent(self, event, ...)
 		elseif playerClass == "ROGUE" then
 			spellId = 57934
 		else
-
 			AHM_Button:UnregisterEvent("LEARNED_SPELL_IN_TAB");
 
-			if  not InCombatLockdown() then
+			if not InCombatLockdown() then
 				AHM_SetAssist("pet");
 			else
 				tempTarget = "pet"
 			end
-			return 
+			return
 		end
 
 		local spellName = select(1, GetSpellInfo(spellId))
@@ -216,35 +210,29 @@ local function AHM_OnEvent(self, event, ...)
 
 		MisDirectionSpell = spellName
 
-		if  not InCombatLockdown() then
+		if not InCombatLockdown() then
 			AHM_SetAssist("pet");
 		else
 			tempTarget = "pet"
 		end
 
 
-		print("[afm] 매크로 창에서 "..MisDirectionSpell.." 매크로를 이용하세요.")
-
-
+		print("[afm] 매크로 창에서 " .. MisDirectionSpell .. " 매크로를 이용하세요.")
 	elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
-
 		local unit = CheckPartyMember();
 
-		if unit and  not InCombatLockdown() then
-			if  UnitExists(unit)  then
+		if unit and not InCombatLockdown() then
+			if UnitExists(unit) then
 				AHM_SetAssist(unit);
 			end
 		else
 			tempTarget = unit;
 		end
-	
 	elseif event == "PLAYER_REGEN_ENABLED" and tempTarget then
-
-		if tempTarget and UnitExists(tempTarget)  then
+		if tempTarget and UnitExists(tempTarget) then
 			AHM_SetAssist(tempTarget);
 		end
 		tempTarget = nil;
-	
 	end
 end
 

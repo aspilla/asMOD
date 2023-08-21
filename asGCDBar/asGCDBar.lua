@@ -8,7 +8,7 @@ local AGCDB_Y = -284;
 
 
 local AGCDB = CreateFrame("FRAME", nil, UIParent)
-AGCDB:SetPoint("BOTTOM",UIParent,"BOTTOM", 0, 0)
+AGCDB:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
 AGCDB:SetWidth(0)
 AGCDB:SetHeight(0)
 AGCDB:Show();
@@ -28,25 +28,24 @@ AGCDB.gcdbar.bg:SetPoint("TOPLEFT", AGCDB.gcdbar, "TOPLEFT", -1, 1)
 AGCDB.gcdbar.bg:SetPoint("BOTTOMRIGHT", AGCDB.gcdbar, "BOTTOMRIGHT", 1, -1)
 
 AGCDB.gcdbar.bg:SetTexture("Interface\\Addons\\asGCDBar\\border.tga")
-AGCDB.gcdbar.bg:SetTexCoord(0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1,0.1)	
+AGCDB.gcdbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
 AGCDB.gcdbar.bg:SetVertexColor(0, 0, 0, 0.8);
 
-AGCDB.gcdbar:SetPoint("CENTER",UIParent,"CENTER", AGCDB_X, AGCDB_Y)
+AGCDB.gcdbar:SetPoint("CENTER", UIParent, "CENTER", AGCDB_X, AGCDB_Y)
 AGCDB.gcdbar:Show();
 
 LoadAddOn("asMOD");
 
 if asMOD_setupFrame then
-    asMOD_setupFrame (AGCDB.gcdbar, "asGCDBar");
+	asMOD_setupFrame(AGCDB.gcdbar, "asGCDBar");
 end
 local function AGCDB_OnUpdate()
-
-	local start, gcd  = GetSpellCooldown(61304);
-	local current = GetTime();
+	local start, gcd = GetSpellCooldown(61304);
+	local current    = GetTime();
 
 	if gcd > 0 then
 		AGCDB.gcdbar:SetMinMaxValues(0, gcd * 1000)
-		AGCDB.gcdbar:SetValue((current - start) * 1000);			
+		AGCDB.gcdbar:SetValue((current - start) * 1000);
 		AGCDB.gcdbar.start = start;
 		AGCDB.gcdbar.duration = gcd;
 		AGCDB.gcdbar:Show();

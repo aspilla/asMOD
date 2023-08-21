@@ -1,10 +1,9 @@
 local function asChatEdit_CustomTabPressed(this)
-
 	local bBattle = false;
 
 	local RTB_PVPType = GetZonePVPInfo();
 	local bInstance, RTB_ZoneType = IsInInstance();
-	local bRaid = (GetNumGroupMembers()>0 and IsInRaid());
+	local bRaid = (GetNumGroupMembers() > 0 and IsInRaid());
 
 	bInstance = (IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance());
 
@@ -15,8 +14,8 @@ local function asChatEdit_CustomTabPressed(this)
 
 	-- SAY, PARTY, RAID, BATTLEGROUND, GUIDE, INSTANCE_CHAT
 
-	if  (this:GetAttribute("chatType") == "SAY")  then
-		if (GetNumSubgroupMembers()>0) then
+	if (this:GetAttribute("chatType") == "SAY") then
+		if (GetNumSubgroupMembers() > 0) then
 			this:SetAttribute("chatType", "PARTY")
 			ChatEdit_UpdateHeader(this)
 		elseif (bRaid) then
@@ -84,14 +83,12 @@ local function asChatEdit_CustomTabPressed(this)
 			this:SetAttribute("chatType", "SAY")
 			ChatEdit_UpdateHeader(this)
 		end
-	elseif (this:GetAttribute("chatType") ==  "INSTANCE_CHAT") then
+	elseif (this:GetAttribute("chatType") == "INSTANCE_CHAT") then
 		this:SetAttribute("chatType", "SAY")
 		ChatEdit_UpdateHeader(this)
-
-	elseif (this:GetAttribute("chatType") ==  "CHANNEL") then
+	elseif (this:GetAttribute("chatType") == "CHANNEL") then
 		this:SetAttribute("chatType", "SAY")
 		ChatEdit_UpdateHeader(this)
-
 	end
 end
 

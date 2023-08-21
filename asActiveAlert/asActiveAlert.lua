@@ -1,6 +1,6 @@
 ﻿local ASAA_SIZE = 26;
 
-local ASAA_CoolButtons_X = 170			-- 쿨 List 위치
+local ASAA_CoolButtons_X = 170 -- 쿨 List 위치
 local ASAA_CoolButtons_Y = 55
 local ASAA_Alpha = 0.9
 local ASAA_CooldownFontSize = 10
@@ -32,7 +32,6 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 end
 
 local function ASAA_UpdateCoolAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
-
 	local cool = frames[index];
 	local point1 = "TOPLEFT";
 	local point2 = "BOTTOMLEFT";
@@ -45,10 +44,10 @@ local function ASAA_UpdateCoolAnchor(frames, index, anchorIndex, size, offsetX, 
 		offsetX = -offsetX;
 	end
 
-	if ( index == 1 ) then
+	if (index == 1) then
 		cool:SetPoint(point1, parent, point2, 0, 0);
 	else
-		cool:SetPoint(point1, frames[index-1], point3, offsetX, 0);
+		cool:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
 	end
 
 	-- Resize
@@ -57,7 +56,6 @@ local function ASAA_UpdateCoolAnchor(frames, index, anchorIndex, size, offsetX, 
 end
 
 local function ASAA_UpdateCooldown()
-
 	local numCools = 1;
 	local frame;
 	local frameIcon, frameCooldown;
@@ -72,12 +70,11 @@ local function ASAA_UpdateCooldown()
 	end
 
 	for id, isAlert in pairs(ASAA_SpellList) do
-
 		if ACI_SpellID_list and ACI_SpellID_list[id] then
 			isAlert = false;
 		end
 
-		name , _, icon = GetSpellInfo(id);
+		name, _, icon = GetSpellInfo(id);
 
 		if APB_SPELL and APB_SPELL == name then
 			isAlert = false;
@@ -87,7 +84,7 @@ local function ASAA_UpdateCooldown()
 			isAlert = false;
 		end
 
-		if isAlert == true then			
+		if isAlert == true then
 			start, duration, enable = GetSpellCooldown(id);
 			local isUsable, notEnoughMana = IsUsableSpell(id);
 
@@ -96,22 +93,21 @@ local function ASAA_UpdateCooldown()
 			if (icon) then
 				frame = parent.frames[numCools];
 
-				if ( not frame ) then
+				if (not frame) then
 					parent.frames[numCools] = CreateFrame("Button", nil, parent, "asActiveAlert2FrameTemplate");
 					frame = parent.frames[numCools];
 					frame:EnableMouse(false);
 
-					for _,r in next,{frame.cooldown:GetRegions()}	do
-						if r:GetObjectType()=="FontString" then
-							r:SetFont("Fonts\\2002.TTF",ASAA_CooldownFontSize,"OUTLINE")
+					for _, r in next, { frame.cooldown:GetRegions() } do
+						if r:GetObjectType() == "FontString" then
+							r:SetFont("Fonts\\2002.TTF", ASAA_CooldownFontSize, "OUTLINE")
 							break
 						end
 					end
 
 					frame.icon:SetTexCoord(.08, .92, .08, .92)
 					frame.border:SetTexture("Interface\\Addons\\asActiveAlert\\border.tga")
-					frame.border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92)
-
+					frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92)
 				end
 
 				-- set the icon
@@ -124,9 +120,9 @@ local function ASAA_UpdateCooldown()
 
 				frameBorder:SetVertexColor(0, 0, 0);
 
-				if ( isUsable ) then
+				if (isUsable) then
 					frameIcon:SetVertexColor(1.0, 1.0, 1.0);
-				elseif ( notEnoughMana ) then
+				elseif (notEnoughMana) then
 					frameIcon:SetVertexColor(0.5, 0.5, 1.0);
 				else
 					frameIcon:SetVertexColor(0.4, 0.4, 0.4);
@@ -139,20 +135,19 @@ local function ASAA_UpdateCooldown()
 
 				numCools = numCools + 1;
 			end
-
 		end
 	end
 
-	for i=1, numCools - 1 do
+	for i = 1, numCools - 1 do
 		-- anchor the current aura
-		ASAA_UpdateCoolAnchor(parent.frames, i, i- 1, ASAA_SIZE, 2, true, parent);
+		ASAA_UpdateCoolAnchor(parent.frames, i, i - 1, ASAA_SIZE, 2, true, parent);
 	end
 
 	-- 이후 전에 보였던 frame을 지운다.
 	for i = numCools, #parent.frames do
 		frame = parent.frames[i];
 
-		if ( frame ) then
+		if (frame) then
 			frame:Hide();
 		end
 	end
@@ -161,7 +156,6 @@ local function ASAA_UpdateCooldown()
 end
 
 local function ASAA_Insert(id)
-
 	local name, _, icon = GetSpellInfo(id);
 
 	if ASAA_BackList and ASAA_BackList[name] then
@@ -174,12 +168,11 @@ local function ASAA_Insert(id)
 
 	ASAA_SpellList[id] = true;
 	show_icons[icon] = true;
-	
+
 	ASAA_UpdateCooldown();
 end
 
 local function ASAA_Delete(id)
-
 	if id then
 		local _, _, icon = GetSpellInfo(id);
 		ASAA_SpellList[id] = false;
@@ -192,7 +185,6 @@ local function ASAA_Delete(id)
 end
 
 local function ASAA_OnEvent(self, event, arg1, arg2, arg3)
-
 	if event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
 		ASAA_Insert(arg1)
 	elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
@@ -214,7 +206,6 @@ ASAA_mainframe:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 
 
 function ASAA_mainframe:ASAA_Init()
-
 	LoadAddOn("asMOD");
 	ASAA_CoolButtons = CreateFrame("Frame", nil, UIParent)
 	ASAA_CoolButtons:SetPoint("CENTER", ASAA_CoolButtons_X, ASAA_CoolButtons_Y)
@@ -223,7 +214,7 @@ function ASAA_mainframe:ASAA_Init()
 	ASAA_CoolButtons:SetScale(1)
 
 	if asMOD_setupFrame then
-		asMOD_setupFrame (ASAA_CoolButtons, "asActiveAlert");
+		asMOD_setupFrame(ASAA_CoolButtons, "asActiveAlert");
 	end
 
 	ASAA_CoolButtons:Show()

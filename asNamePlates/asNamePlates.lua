@@ -1,57 +1,57 @@
 ﻿---설정부
-local ANameP_SIZE = 0; 					-- Icon Size 0 이면 자동으로 설정
-local ANameP_Size_Rate = 0.7;			-- Icon 가로 세로 비중
+local ANameP_SIZE = 0;                  -- Icon Size 0 이면 자동으로 설정
+local ANameP_Size_Rate = 0.7;           -- Icon 가로 세로 비중
 local ANameP_PVP_Debuff_Size_Rate = 4   -- PVP Debuff Icon Size 작게 하려면 - 값으로
 
-local ANameP_PlayerBuffY = -5			-- Player 바 Buff 위치
-local ANameP_TargetBuffY = 5			-- 대상바 Buff 위치
-local ANameP_CooldownFontSize = 9;     --재사용 대기시간 Font Size
-local ANameP_CountFontSize = 8;			--Count 폰트 Size
-local ANameP_MaxDebuff = 8;				--최대 Debuff
-local ANameP_DebuffsPerLine = 4;		--줄당 Debuff 수 (큰 이름표 일 경우 +1 됨)
-local ANameP_MaxBuff = 1;				--최대 PVP Buff (안보이게 하려면 0)
-local ANameP_ShowPVPDebuff = true;		--PVP Debuff 면 모두 보임 (다른 사람의 디법이면 회색으로 보임)
-local ANameP_ShowPlayerBuff = true;		--Player NamePlate에 Buff를 안보일려면 false;
-local ANameP_BuffMaxCool = 60;			--buff의 최대 Cool
-local ANameP_PVPAggroShow = true;		-- PVP 어그로 여부를 표현할지 여부 
-local ANameP_ShowListFirst = true		-- 알림 List 가 있다면 먼저 보인다. (가나다라 순서)
-local ANameP_ShowCCDebuff = true		-- 오른쪽에 CC Debuff만 별도로 보이기
-local ANameP_CCDebuffSize = 16			-- CC Debuff Size;
-local ANameP_AggroSize = 12;			-- 어그로 표시 Text Size
-local ANameP_HealerSize = 14;			-- 힐러표시 Text Size
-local ANameP_TargetHealthBarHeight = 3;	-- 대상 체력바 높이 증가치 (+3)
-local ANameP_HeathTextSize = 8;			-- 대상 체력숫자 크기
-local ANameP_UpdateRate = 0.5;			-- 버프 Check 반복 시간 (초)
+local ANameP_PlayerBuffY = -5           -- Player 바 Buff 위치
+local ANameP_TargetBuffY = 5            -- 대상바 Buff 위치
+local ANameP_CooldownFontSize = 9;      --재사용 대기시간 Font Size
+local ANameP_CountFontSize = 8;         --Count 폰트 Size
+local ANameP_MaxDebuff = 8;             --최대 Debuff
+local ANameP_DebuffsPerLine = 4;        --줄당 Debuff 수 (큰 이름표 일 경우 +1 됨)
+local ANameP_MaxBuff = 1;               --최대 PVP Buff (안보이게 하려면 0)
+local ANameP_ShowPVPDebuff = true;      --PVP Debuff 면 모두 보임 (다른 사람의 디법이면 회색으로 보임)
+local ANameP_ShowPlayerBuff = true;     --Player NamePlate에 Buff를 안보일려면 false;
+local ANameP_BuffMaxCool = 60;          --buff의 최대 Cool
+local ANameP_PVPAggroShow = true;       -- PVP 어그로 여부를 표현할지 여부
+local ANameP_ShowListFirst = true       -- 알림 List 가 있다면 먼저 보인다. (가나다라 순서)
+local ANameP_ShowCCDebuff = true        -- 오른쪽에 CC Debuff만 별도로 보이기
+local ANameP_CCDebuffSize = 16          -- CC Debuff Size;
+local ANameP_AggroSize = 12;            -- 어그로 표시 Text Size
+local ANameP_HealerSize = 14;           -- 힐러표시 Text Size
+local ANameP_TargetHealthBarHeight = 3; -- 대상 체력바 높이 증가치 (+3)
+local ANameP_HeathTextSize = 8;         -- 대상 체력숫자 크기
+local ANameP_UpdateRate = 0.5;          -- 버프 Check 반복 시간 (초)
 
 
 -- 아래 유닛명이면 강조
 -- 색상 지정 가능
 -- { r, g, b, 빤작임 여부}
 local ANameP_AlertList = {
-	["폭발물"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
-	["무형의 존재"] = {0, 1, 0.5, 0},	 -- 녹색 빤짝이 
-	--["쉬바라"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
-	--["우르줄"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
---	["파멸수호병"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
---	["격노수호병"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
---	["지옥불정령"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
---	["지옥사냥개"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이 
---	["원한의 망령"] = {1, 1, 1, 0},	-- 흰색 빤짝이 (없음)
---	["어둠그늘 곰팡이"] = {0, 1, 0, 0},	-- 녹색 빤짝이 (없음)
---["절단 훈련용 허수아비"] = {0, 1, 0.5, 1},	
---	["던전 사용자의 허수아비"] = {1, 0, 1, 0},	
---["공격대원의 훈련용 허수아비"] = {1, 0, 1, 0},	
+	["폭발물"] = { 0, 1, 0.5, 1 }, -- 녹색 빤짝이
+	["무형의 존재"] = { 0, 1, 0.5, 0 }, -- 녹색 빤짝이
+	--["쉬바라"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
+	--["우르줄"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
+	--	["파멸수호병"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
+	--	["격노수호병"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
+	--	["지옥불정령"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
+	--	["지옥사냥개"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
+	--	["원한의 망령"] = {1, 1, 1, 0},	-- 흰색 빤짝이 (없음)
+	--	["어둠그늘 곰팡이"] = {0, 1, 0, 0},	-- 녹색 빤짝이 (없음)
+	--["절단 훈련용 허수아비"] = {0, 1, 0.5, 1},	
+	--	["던전 사용자의 허수아비"] = {1, 0, 1, 0},	
+	--["공격대원의 훈련용 허수아비"] = {1, 0, 1, 0},	
 
 }
 
 
 -- 안보이게 할 디법
 local ANameP_BlackList = {
---	["상처 감염 독"] = 1,	
---	["맹독"] = 1,
---	["약자 고문"] = 1,
---	["슬픔"] = 1,
---	["순환하는 기원"] = 1,
+	--	["상처 감염 독"] = 1,	
+	--	["맹독"] = 1,
+	--	["약자 고문"] = 1,
+	--	["슬픔"] = 1,
+	--	["순환하는 기원"] = 1,
 	["도전자의 짐"] = 1,
 	["도전자의 힘"] = 1,
 
@@ -182,7 +182,7 @@ local ANameP_PVPBuffList = {
 	[110959] = 1, --MAGE
 	[342246] = 1, --MAGE
 	[11426] = 1, --MAGE
-	[66] = 1, --MAGE
+	[66] = 1,  --MAGE
 	[235313] = 1, --MAGE
 	[235450] = 1, --MAGE
 	[55342] = 1, --MAGE
@@ -195,7 +195,7 @@ local ANameP_PVPBuffList = {
 
 local ANameP_PVEBuffList = {
 
-	[209859] = 0, --'강화' 
+	[209859] = 0, --'강화'
 }
 
 local ANameP_DangerousSpellList = {
@@ -206,70 +206,70 @@ local ANameP_HealSpellList = {};
 
 ANameP_HealSpellList["사제"] = {
 
- 	    [047540] = "PRIEST", -- Penance XXX strange error received from user on 2015-10-15 (this spell was cast by a hunter...)
-        [109964] = "PRIEST", -- Spirit shell -- not seen in disc
-        [002060] = "PRIEST", -- Greater Heal
-        [014914] = "PRIEST", -- Holy Fire
-        [033206] = "PRIEST", -- Pain Suppression
-        [000596] = "PRIEST", -- Prayer of Healing
-        [000527] = "PRIEST", -- Purify
-        [081749] = "PRIEST", -- Atonement
-        [132157] = "PRIEST", -- Holy Nova
-        [034861] = "PRIEST", -- Circle of Healing
-        [064843] = "PRIEST", -- Divine Hymn
-        [047788] = "PRIEST", -- Guardian Spirit
-        [032546] = "PRIEST", -- Binding Heal
-        [077485] = "PRIEST", -- Mastery: Echo of Light -- the passibe ability
-        [077489] = "PRIEST", -- Echo of Light -- the aura applied by the afformentioned
-        [000139] = "PRIEST", -- Renew
+	[047540] = "PRIEST",     -- Penance XXX strange error received from user on 2015-10-15 (this spell was cast by a hunter...)
+	[109964] = "PRIEST",     -- Spirit shell -- not seen in disc
+	[002060] = "PRIEST",     -- Greater Heal
+	[014914] = "PRIEST",     -- Holy Fire
+	[033206] = "PRIEST",     -- Pain Suppression
+	[000596] = "PRIEST",     -- Prayer of Healing
+	[000527] = "PRIEST",     -- Purify
+	[081749] = "PRIEST",     -- Atonement
+	[132157] = "PRIEST",     -- Holy Nova
+	[034861] = "PRIEST",     -- Circle of Healing
+	[064843] = "PRIEST",     -- Divine Hymn
+	[047788] = "PRIEST",     -- Guardian Spirit
+	[032546] = "PRIEST",     -- Binding Heal
+	[077485] = "PRIEST",     -- Mastery: Echo of Light -- the passibe ability
+	[077489] = "PRIEST",     -- Echo of Light -- the aura applied by the afformentioned
+	[000139] = "PRIEST",     -- Renew
 
-	};
+};
 
 ANameP_HealSpellList["드루이드"] = {
 
-        [102342] = "DRUID", -- Ironbark
-        [033763] = "DRUID", -- Lifebloom
-        [088423] = "DRUID", -- Nature's Cure
-        [033891] = "DRUID", -- Incarnation: Tree of Life
-        [048438] = "DRUID", -- Wild Growth
-        [000740] = "DRUID", -- Tranquility
-	};
+	[102342] = "DRUID",     -- Ironbark
+	[033763] = "DRUID",     -- Lifebloom
+	[088423] = "DRUID",     -- Nature's Cure
+	[033891] = "DRUID",     -- Incarnation: Tree of Life
+	[048438] = "DRUID",     -- Wild Growth
+	[000740] = "DRUID",     -- Tranquility
+};
 
 
 ANameP_HealSpellList["주술사"] = {
 
-        [061295] = "SHAMAN", -- Riptide
-        [077472] = "SHAMAN", -- Healing Wave
-        [098008] = "SHAMAN", -- Spirit link totem
-        [001064] = "SHAMAN", -- Chain Heal
-        [073920] = "SHAMAN", -- Healing Rain
+	[061295] = "SHAMAN",     -- Riptide
+	[077472] = "SHAMAN",     -- Healing Wave
+	[098008] = "SHAMAN",     -- Spirit link totem
+	[001064] = "SHAMAN",     -- Chain Heal
+	[073920] = "SHAMAN",     -- Healing Rain
 
-	};
+};
 
 ANameP_HealSpellList["성기사"] = {
 
-        [020473] = "PALADIN", -- Holy Shock
-        [053563] = "PALADIN", -- Beacon of Light
-        [082326] = "PALADIN", -- Holy Light
-        [085222] = "PALADIN", -- Light of Dawn
-	};
+	[020473] = "PALADIN",     -- Holy Shock
+	[053563] = "PALADIN",     -- Beacon of Light
+	[082326] = "PALADIN",     -- Holy Light
+	[085222] = "PALADIN",     -- Light of Dawn
+};
 
 
 ANameP_HealSpellList["수도사"] = {
-        [115175] = "MONK", -- Soothing Mist
-        [115310] = "MONK", -- Revival
-        [116670] = "MONK", -- Vivify
-        [116680] = "MONK", -- Thunder Focus Tea
-        [116849] = "MONK", -- Life Cocoon
-        [119611] = "MONK", -- Renewing mist
+	[115175] = "MONK",     -- Soothing Mist
+	[115310] = "MONK",     -- Revival
+	[116670] = "MONK",     -- Vivify
+	[116680] = "MONK",     -- Thunder Focus Tea
+	[116849] = "MONK",     -- Life Cocoon
+	[119611] = "MONK",     -- Renewing mist
 
 };
 
 ANameP_HealSpellList["기원사"] = {
-        [355936] = "EVOKER", -- 꿈의 숨결
-		[364446] = "EVOKER", -- 메아리
-		[366155] = "EVOKER", -- 되감기
-		[367226] = "EVOKER", -- 영혼 만개
+	[355936] = "EVOKER",     -- 꿈의 숨결
+	[364446] = "EVOKER",     -- 메아리
+	[366155] = "EVOKER",     -- 되감기
+	[367226] = "EVOKER",     -- 영혼 만개
 
 };
 
@@ -305,7 +305,7 @@ local ANameP_ShowList = nil;
 local ANameP_Resourcetext = nil;
 local debuffs_per_line = ANameP_DebuffsPerLine;
 local playerbuffposition = ANameP_PlayerBuffY;
-local options = CopyTable (ANameP_Options_Default);
+local options = CopyTable(ANameP_Options_Default);
 
 -- 반짝이 처리부
 
@@ -313,19 +313,19 @@ local lib = {};
 
 local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 local textureList = {
-    empty = [[Interface\AdventureMap\BrokenIsles\AM_29]],
-    white = [[Interface\BUTTONS\WHITE8X8]],
-    shine = [[Interface\ItemSocketingFrame\UI-ItemSockets]]
+	empty = [[Interface\AdventureMap\BrokenIsles\AM_29]],
+	white = [[Interface\BUTTONS\WHITE8X8]],
+	shine = [[Interface\ItemSocketingFrame\UI-ItemSockets]]
 }
 
-local shineCoords = {0.3984375, 0.4453125, 0.40234375, 0.44921875}
+local shineCoords = { 0.3984375, 0.4453125, 0.40234375, 0.44921875 }
 if isRetail then
-    textureList.shine = [[Interface\Artifacts\Artifacts]]
-    shineCoords = {0.8115234375,0.9169921875,0.8798828125,0.9853515625}
+	textureList.shine = [[Interface\Artifacts\Artifacts]]
+	shineCoords = { 0.8115234375, 0.9169921875, 0.8798828125, 0.9853515625 }
 end
 
-function lib.RegisterTextures(texture,id)
-    textureList[id] = texture
+function lib.RegisterTextures(texture, id)
+	textureList[id] = texture
 end
 
 lib.glowList = {}
@@ -337,289 +337,293 @@ local GlowParent = UIParent
 local GlowMaskPool = CreateFromMixins(ObjectPoolMixin)
 lib.GlowMaskPool = GlowMaskPool
 local function MaskPoolFactory(maskPool)
-    return maskPool.parent:CreateMaskTexture()
+	return maskPool.parent:CreateMaskTexture()
 end
 
-local MaskPoolResetter = function(maskPool,mask)
-    mask:Hide()
-    mask:ClearAllPoints()
+local MaskPoolResetter = function(maskPool, mask)
+	mask:Hide()
+	mask:ClearAllPoints()
 end
 
-ObjectPoolMixin.OnLoad(GlowMaskPool,MaskPoolFactory,MaskPoolResetter)
-GlowMaskPool.parent =  GlowParent
+ObjectPoolMixin.OnLoad(GlowMaskPool, MaskPoolFactory, MaskPoolResetter)
+GlowMaskPool.parent = GlowParent
 
-local TexPoolResetter = function(pool,tex)
-    local maskNum = tex:GetNumMaskTextures()
-    for i = maskNum , 1, -1 do
-        tex:RemoveMaskTexture(tex:GetMaskTexture(i))
-    end
-    tex:Hide()
-    tex:ClearAllPoints()
+local TexPoolResetter = function(pool, tex)
+	local maskNum = tex:GetNumMaskTextures()
+	for i = maskNum, 1, -1 do
+		tex:RemoveMaskTexture(tex:GetMaskTexture(i))
+	end
+	tex:Hide()
+	tex:ClearAllPoints()
 end
-local GlowTexPool = CreateTexturePool(GlowParent ,"ARTWORK",7,nil,TexPoolResetter)
+local GlowTexPool = CreateTexturePool(GlowParent, "ARTWORK", 7, nil, TexPoolResetter)
 lib.GlowTexPool = GlowTexPool
 
-local FramePoolResetter = function(framePool,frame)
-    frame:SetScript("OnUpdate",nil)
-    local parent = frame:GetParent()
-    if parent[frame.name] then
-        parent[frame.name] = nil
-    end
-    if frame.textures then
-        for _, texture in pairs(frame.textures) do
-            GlowTexPool:Release(texture)
-        end
-    end
-    if frame.bg then
-        GlowTexPool:Release(frame.bg)
-        frame.bg = nil
-    end
-    if frame.masks then
-        for _,mask in pairs(frame.masks) do
-            GlowMaskPool:Release(mask)
-        end
-        frame.masks = nil
-    end
-    frame.textures = {}
-    frame.info = {}
-    frame.name = nil
-    frame.timer = nil
-    frame:Hide()
-    frame:ClearAllPoints()
+local FramePoolResetter = function(framePool, frame)
+	frame:SetScript("OnUpdate", nil)
+	local parent = frame:GetParent()
+	if parent[frame.name] then
+		parent[frame.name] = nil
+	end
+	if frame.textures then
+		for _, texture in pairs(frame.textures) do
+			GlowTexPool:Release(texture)
+		end
+	end
+	if frame.bg then
+		GlowTexPool:Release(frame.bg)
+		frame.bg = nil
+	end
+	if frame.masks then
+		for _, mask in pairs(frame.masks) do
+			GlowMaskPool:Release(mask)
+		end
+		frame.masks = nil
+	end
+	frame.textures = {}
+	frame.info = {}
+	frame.name = nil
+	frame.timer = nil
+	frame:Hide()
+	frame:ClearAllPoints()
 end
-local GlowFramePool = CreateFramePool("Frame",GlowParent,nil,FramePoolResetter)
+local GlowFramePool = CreateFramePool("Frame", GlowParent, nil, FramePoolResetter)
 lib.GlowFramePool = GlowFramePool
 
-local function addFrameAndTex(r,color,name,key,N,xOffset,yOffset,texture,texCoord,desaturated,frameLevel)
-    key = key or ""
+local function addFrameAndTex(r, color, name, key, N, xOffset, yOffset, texture, texCoord, desaturated, frameLevel)
+	key = key or ""
 	frameLevel = frameLevel or 8
-    if not r[name..key] then
-        r[name..key] = GlowFramePool:Acquire()
-        r[name..key]:SetParent(r)
-        r[name..key].name = name..key
-    end
-    local f = r[name..key]
-	f:SetFrameLevel(r:GetFrameLevel()+frameLevel)
-    f:SetPoint("TOPLEFT",r,"TOPLEFT",-xOffset+0.05,yOffset+0.05)
-    f:SetPoint("BOTTOMRIGHT",r,"BOTTOMRIGHT",xOffset,-yOffset+0.05)
-    f:Show()
+	if not r[name .. key] then
+		r[name .. key] = GlowFramePool:Acquire()
+		r[name .. key]:SetParent(r)
+		r[name .. key].name = name .. key
+	end
+	local f = r[name .. key]
+	f:SetFrameLevel(r:GetFrameLevel() + frameLevel)
+	f:SetPoint("TOPLEFT", r, "TOPLEFT", -xOffset + 0.05, yOffset + 0.05)
+	f:SetPoint("BOTTOMRIGHT", r, "BOTTOMRIGHT", xOffset, -yOffset + 0.05)
+	f:Show()
 
-    if not f.textures then
-        f.textures = {}
-    end
+	if not f.textures then
+		f.textures = {}
+	end
 
-    for i=1,N do
-        if not f.textures[i] then
-            f.textures[i] = GlowTexPool:Acquire()
-            f.textures[i]:SetTexture(texture)
-            f.textures[i]:SetTexCoord(texCoord[1],texCoord[2],texCoord[3],texCoord[4])
-            f.textures[i]:SetDesaturated(desaturated)
-            f.textures[i]:SetParent(f)
-            f.textures[i]:SetDrawLayer("ARTWORK",7)
-            if not isRetail and name == "_AutoCastGlow" then
-                f.textures[i]:SetBlendMode("ADD")
-            end
-        end
-        f.textures[i]:SetVertexColor(color[1],color[2],color[3],color[4])
-        f.textures[i]:Show()
-    end
-    while #f.textures>N do
-        GlowTexPool:Release(f.textures[#f.textures])
-        table.remove(f.textures)
-    end
+	for i = 1, N do
+		if not f.textures[i] then
+			f.textures[i] = GlowTexPool:Acquire()
+			f.textures[i]:SetTexture(texture)
+			f.textures[i]:SetTexCoord(texCoord[1], texCoord[2], texCoord[3], texCoord[4])
+			f.textures[i]:SetDesaturated(desaturated)
+			f.textures[i]:SetParent(f)
+			f.textures[i]:SetDrawLayer("ARTWORK", 7)
+			if not isRetail and name == "_AutoCastGlow" then
+				f.textures[i]:SetBlendMode("ADD")
+			end
+		end
+		f.textures[i]:SetVertexColor(color[1], color[2], color[3], color[4])
+		f.textures[i]:Show()
+	end
+	while #f.textures > N do
+		GlowTexPool:Release(f.textures[#f.textures])
+		table.remove(f.textures)
+	end
 end
 
 
 --Pixel Glow Functions--
-local pCalc1 = function(progress,s,th,p)
-    local c
-    if progress>p[3] or progress<p[0] then
-        c = 0
-    elseif progress>p[2] then
-        c =s-th-(progress-p[2])/(p[3]-p[2])*(s-th)
-    elseif progress>p[1] then
-        c =s-th
-    else
-        c = (progress-p[0])/(p[1]-p[0])*(s-th)
-    end
-    return math.floor(c+0.5)
+local pCalc1 = function(progress, s, th, p)
+	local c
+	if progress > p[3] or progress < p[0] then
+		c = 0
+	elseif progress > p[2] then
+		c = s - th - (progress - p[2]) / (p[3] - p[2]) * (s - th)
+	elseif progress > p[1] then
+		c = s - th
+	else
+		c = (progress - p[0]) / (p[1] - p[0]) * (s - th)
+	end
+	return math.floor(c + 0.5)
 end
 
-local pCalc2 = function(progress,s,th,p)
-    local c
-    if progress>p[3] then
-        c = s-th-(progress-p[3])/(p[0]+1-p[3])*(s-th)
-    elseif progress>p[2] then
-        c = s-th
-    elseif progress>p[1] then
-        c = (progress-p[1])/(p[2]-p[1])*(s-th)
-    elseif progress>p[0] then
-        c = 0
-    else
-        c = s-th-(progress+1-p[3])/(p[0]+1-p[3])*(s-th)
-    end
-    return math.floor(c+0.5)
+local pCalc2 = function(progress, s, th, p)
+	local c
+	if progress > p[3] then
+		c = s - th - (progress - p[3]) / (p[0] + 1 - p[3]) * (s - th)
+	elseif progress > p[2] then
+		c = s - th
+	elseif progress > p[1] then
+		c = (progress - p[1]) / (p[2] - p[1]) * (s - th)
+	elseif progress > p[0] then
+		c = 0
+	else
+		c = s - th - (progress + 1 - p[3]) / (p[0] + 1 - p[3]) * (s - th)
+	end
+	return math.floor(c + 0.5)
 end
 
-local  pUpdate = function(self,elapsed)
-    self.timer = self.timer+elapsed/self.info.period
-    if self.timer>1 or self.timer <-1 then
-        self.timer = self.timer%1
-    end
-    local progress = self.timer
-    local width,height = self:GetSize()
-    if width ~= self.info.width or height ~= self.info.height then
-        local perimeter = 2*(width+height)
-        if not (perimeter>0) then
-            return
-        end
-        self.info.width = width
-        self.info.height = height
-        self.info.pTLx = {
-            [0] = (height+self.info.length/2)/perimeter,
-            [1] = (height+width+self.info.length/2)/perimeter,
-            [2] = (2*height+width-self.info.length/2)/perimeter,
-            [3] = 1-self.info.length/2/perimeter
-        }
-        self.info.pTLy ={
-            [0] = (height-self.info.length/2)/perimeter,
-            [1] = (height+width+self.info.length/2)/perimeter,
-            [2] = (height*2+width+self.info.length/2)/perimeter,
-            [3] = 1-self.info.length/2/perimeter
-        }
-        self.info.pBRx ={
-            [0] = self.info.length/2/perimeter,
-            [1] = (height-self.info.length/2)/perimeter,
-            [2] = (height+width-self.info.length/2)/perimeter,
-            [3] = (height*2+width+self.info.length/2)/perimeter
-        }
-        self.info.pBRy ={
-            [0] = self.info.length/2/perimeter,
-            [1] = (height+self.info.length/2)/perimeter,
-            [2] = (height+width-self.info.length/2)/perimeter,
-            [3] = (height*2+width-self.info.length/2)/perimeter
-        }
-    end
-    if self:IsShown() then
-        if not (self.masks[1]:IsShown()) then
-            self.masks[1]:Show()
-            self.masks[1]:SetPoint("TOPLEFT",self,"TOPLEFT",self.info.th,-self.info.th)
-            self.masks[1]:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",-self.info.th,self.info.th)
-        end
-        if self.masks[2] and not(self.masks[2]:IsShown()) then
-            self.masks[2]:Show()
-            self.masks[2]:SetPoint("TOPLEFT",self,"TOPLEFT",self.info.th+1,-self.info.th-1)
-            self.masks[2]:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",-self.info.th-1,self.info.th+1)
-        end
-        if self.bg and not(self.bg:IsShown()) then
-            self.bg:Show()
-        end
-        for k,line  in pairs(self.textures) do
-            line:SetPoint("TOPLEFT",self,"TOPLEFT",pCalc1((progress+self.info.step*(k-1))%1,width,self.info.th,self.info.pTLx),-pCalc2((progress+self.info.step*(k-1))%1,height,self.info.th,self.info.pTLy))
-            line:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",self.info.th+pCalc2((progress+self.info.step*(k-1))%1,width,self.info.th,self.info.pBRx),-height+pCalc1((progress+self.info.step*(k-1))%1,height,self.info.th,self.info.pBRy))
-        end
-    end
+local pUpdate = function(self, elapsed)
+	self.timer = self.timer + elapsed / self.info.period
+	if self.timer > 1 or self.timer < -1 then
+		self.timer = self.timer % 1
+	end
+	local progress = self.timer
+	local width, height = self:GetSize()
+	if width ~= self.info.width or height ~= self.info.height then
+		local perimeter = 2 * (width + height)
+		if not (perimeter > 0) then
+			return
+		end
+		self.info.width = width
+		self.info.height = height
+		self.info.pTLx = {
+			[0] = (height + self.info.length / 2) / perimeter,
+			[1] = (height + width + self.info.length / 2) / perimeter,
+			[2] = (2 * height + width - self.info.length / 2) / perimeter,
+			[3] = 1 - self.info.length / 2 / perimeter
+		}
+		self.info.pTLy = {
+			[0] = (height - self.info.length / 2) / perimeter,
+			[1] = (height + width + self.info.length / 2) / perimeter,
+			[2] = (height * 2 + width + self.info.length / 2) / perimeter,
+			[3] = 1 - self.info.length / 2 / perimeter
+		}
+		self.info.pBRx = {
+			[0] = self.info.length / 2 / perimeter,
+			[1] = (height - self.info.length / 2) / perimeter,
+			[2] = (height + width - self.info.length / 2) / perimeter,
+			[3] = (height * 2 + width + self.info.length / 2) / perimeter
+		}
+		self.info.pBRy = {
+			[0] = self.info.length / 2 / perimeter,
+			[1] = (height + self.info.length / 2) / perimeter,
+			[2] = (height + width - self.info.length / 2) / perimeter,
+			[3] = (height * 2 + width - self.info.length / 2) / perimeter
+		}
+	end
+	if self:IsShown() then
+		if not (self.masks[1]:IsShown()) then
+			self.masks[1]:Show()
+			self.masks[1]:SetPoint("TOPLEFT", self, "TOPLEFT", self.info.th, -self.info.th)
+			self.masks[1]:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -self.info.th, self.info.th)
+		end
+		if self.masks[2] and not (self.masks[2]:IsShown()) then
+			self.masks[2]:Show()
+			self.masks[2]:SetPoint("TOPLEFT", self, "TOPLEFT", self.info.th + 1, -self.info.th - 1)
+			self.masks[2]:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -self.info.th - 1, self.info.th + 1)
+		end
+		if self.bg and not (self.bg:IsShown()) then
+			self.bg:Show()
+		end
+		for k, line in pairs(self.textures) do
+			line:SetPoint("TOPLEFT", self, "TOPLEFT",
+				pCalc1((progress + self.info.step * (k - 1)) % 1, width, self.info.th, self.info.pTLx),
+				-pCalc2((progress + self.info.step * (k - 1)) % 1, height, self.info.th, self.info.pTLy))
+			line:SetPoint("BOTTOMRIGHT", self, "TOPLEFT",
+				self.info.th + pCalc2((progress + self.info.step * (k - 1)) % 1, width, self.info.th, self.info.pBRx),
+				-height + pCalc1((progress + self.info.step * (k - 1)) % 1, height, self.info.th, self.info.pBRy))
+		end
+	end
 end
 
-function lib.PixelGlow_Start(r,color,N,frequency,length,th,xOffset,yOffset,border,key,frameLevel)
-    if not r then
-        return
-    end
+function lib.PixelGlow_Start(r, color, N, frequency, length, th, xOffset, yOffset, border, key, frameLevel)
+	if not r then
+		return
+	end
 
-    if not color then
-        color = {0.95,0.95,0.32,1}
-    end
+	if not color then
+		color = { 0.95, 0.95, 0.32, 1 }
+	end
 
-    if not(N and N>0) then
-        N = 8
-    end
+	if not (N and N > 0) then
+		N = 8
+	end
 
-    local period
-    if frequency then
-        if not(frequency>0 or frequency<0) then
-            period = 4
-        else
-            period = 1/frequency
-        end
-    else
-        period = 4
-    end
-    local width,height = r:GetSize()
-    length = length or math.floor((width+height)*(2/N-0.1))
-    length = min(length,min(width,height))
-    th = th or 1
-    xOffset = xOffset or 0
-    yOffset = yOffset or 0
-    key = key or ""
+	local period
+	if frequency then
+		if not (frequency > 0 or frequency < 0) then
+			period = 4
+		else
+			period = 1 / frequency
+		end
+	else
+		period = 4
+	end
+	local width, height = r:GetSize()
+	length = length or math.floor((width + height) * (2 / N - 0.1))
+	length = min(length, min(width, height))
+	th = th or 1
+	xOffset = xOffset or 0
+	yOffset = yOffset or 0
+	key = key or ""
 
-    addFrameAndTex(r,color,"_PixelGlow",key,N,xOffset,yOffset,textureList.white,{0,1,0,1},nil,frameLevel)
-    local f = r["_PixelGlow"..key]
-    if not f.masks then
-        f.masks = {}
-    end
-    if not f.masks[1] then
-        f.masks[1] = GlowMaskPool:Acquire()
-        f.masks[1]:SetTexture(textureList.empty, "CLAMPTOWHITE","CLAMPTOWHITE")
-        f.masks[1]:Show()
-    end
-    f.masks[1]:SetPoint("TOPLEFT",f,"TOPLEFT",th,-th)
-    f.masks[1]:SetPoint("BOTTOMRIGHT",f,"BOTTOMRIGHT",-th,th)
+	addFrameAndTex(r, color, "_PixelGlow", key, N, xOffset, yOffset, textureList.white, { 0, 1, 0, 1 }, nil, frameLevel)
+	local f = r["_PixelGlow" .. key]
+	if not f.masks then
+		f.masks = {}
+	end
+	if not f.masks[1] then
+		f.masks[1] = GlowMaskPool:Acquire()
+		f.masks[1]:SetTexture(textureList.empty, "CLAMPTOWHITE", "CLAMPTOWHITE")
+		f.masks[1]:Show()
+	end
+	f.masks[1]:SetPoint("TOPLEFT", f, "TOPLEFT", th, -th)
+	f.masks[1]:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -th, th)
 
-    if not(border==false) then
-        if not f.masks[2] then
-            f.masks[2] = GlowMaskPool:Acquire()
-            f.masks[2]:SetTexture(textureList.empty, "CLAMPTOWHITE","CLAMPTOWHITE")
-        end
-        f.masks[2]:SetPoint("TOPLEFT",f,"TOPLEFT",th+1,-th-1)
-        f.masks[2]:SetPoint("BOTTOMRIGHT",f,"BOTTOMRIGHT",-th-1,th+1)
+	if not (border == false) then
+		if not f.masks[2] then
+			f.masks[2] = GlowMaskPool:Acquire()
+			f.masks[2]:SetTexture(textureList.empty, "CLAMPTOWHITE", "CLAMPTOWHITE")
+		end
+		f.masks[2]:SetPoint("TOPLEFT", f, "TOPLEFT", th + 1, -th - 1)
+		f.masks[2]:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -th - 1, th + 1)
 
-        if not f.bg then
-            f.bg = GlowTexPool:Acquire()
-            f.bg:SetColorTexture(0.1,0.1,0.1,0.8)
-            f.bg:SetParent(f)
-            f.bg:SetAllPoints(f)
-            f.bg:SetDrawLayer("ARTWORK",6)
-            f.bg:AddMaskTexture(f.masks[2])
-        end
-    else
-        if f.bg then
-            GlowTexPool:Release(f.bg)
-            f.bg = nil
-        end
-        if f.masks[2] then
-            GlowMaskPool:Release(f.masks[2])
-            f.masks[2] = nil
-        end
-    end
-    for _,tex in pairs(f.textures) do
-        if tex:GetNumMaskTextures() < 1 then
-            tex:AddMaskTexture(f.masks[1])
-        end
-    end
-    f.timer = f.timer or 0
-    f.info = f.info or {}
-    f.info.step = 1/N
-    f.info.period = period
-    f.info.th = th
-    if f.info.length ~= length then
-        f.info.width = nil
-        f.info.length = length
-    end
-    pUpdate(f, 0)
-    f:SetScript("OnUpdate",pUpdate)
+		if not f.bg then
+			f.bg = GlowTexPool:Acquire()
+			f.bg:SetColorTexture(0.1, 0.1, 0.1, 0.8)
+			f.bg:SetParent(f)
+			f.bg:SetAllPoints(f)
+			f.bg:SetDrawLayer("ARTWORK", 6)
+			f.bg:AddMaskTexture(f.masks[2])
+		end
+	else
+		if f.bg then
+			GlowTexPool:Release(f.bg)
+			f.bg = nil
+		end
+		if f.masks[2] then
+			GlowMaskPool:Release(f.masks[2])
+			f.masks[2] = nil
+		end
+	end
+	for _, tex in pairs(f.textures) do
+		if tex:GetNumMaskTextures() < 1 then
+			tex:AddMaskTexture(f.masks[1])
+		end
+	end
+	f.timer = f.timer or 0
+	f.info = f.info or {}
+	f.info.step = 1 / N
+	f.info.period = period
+	f.info.th = th
+	if f.info.length ~= length then
+		f.info.width = nil
+		f.info.length = length
+	end
+	pUpdate(f, 0)
+	f:SetScript("OnUpdate", pUpdate)
 end
 
-function lib.PixelGlow_Stop(r,key)
-    if not r then
-        return
-   	end
+function lib.PixelGlow_Stop(r, key)
+	if not r then
+		return
+	end
 
-    key = key or ""
-    if not r["_PixelGlow"..key] then
-        return false
-    else
-        GlowFramePool:Release(r["_PixelGlow"..key])
-    end
+	key = key or ""
+	if not r["_PixelGlow" .. key] then
+		return false
+	else
+		GlowFramePool:Release(r["_PixelGlow" .. key])
+	end
 end
 
 table.insert(lib.glowList, "Pixel Glow")
@@ -627,281 +631,282 @@ lib.startList["Pixel Glow"] = lib.PixelGlow_Start
 lib.stopList["Pixel Glow"] = lib.PixelGlow_Stop
 
 --Action Button Glow--
-local function ButtonGlowResetter(framePool,frame)
-    frame:SetScript("OnUpdate",nil)
-    local parent = frame:GetParent()
-    if parent._ButtonGlow then
-        parent._ButtonGlow = nil
-    end
-    frame:Hide()
-    frame:ClearAllPoints()
+local function ButtonGlowResetter(framePool, frame)
+	frame:SetScript("OnUpdate", nil)
+	local parent = frame:GetParent()
+	if parent._ButtonGlow then
+		parent._ButtonGlow = nil
+	end
+	frame:Hide()
+	frame:ClearAllPoints()
 end
-local ButtonGlowPool = CreateFramePool("Frame",GlowParent,nil,ButtonGlowResetter)
+local ButtonGlowPool = CreateFramePool("Frame", GlowParent, nil, ButtonGlowResetter)
 lib.ButtonGlowPool = ButtonGlowPool
 
 local function CreateScaleAnim(group, target, order, duration, x, y, delay)
-    local scale = group:CreateAnimation("Scale")
-    scale:SetChildKey(target)
-    scale:SetOrder(order)
-    scale:SetDuration(duration)
-    scale:SetScale(x, y)
+	local scale = group:CreateAnimation("Scale")
+	scale:SetChildKey(target)
+	scale:SetOrder(order)
+	scale:SetDuration(duration)
+	scale:SetScale(x, y)
 
-    if delay then
-        scale:SetStartDelay(delay)
-    end
+	if delay then
+		scale:SetStartDelay(delay)
+	end
 end
 
 local function CreateAlphaAnim(group, target, order, duration, fromAlpha, toAlpha, delay, appear)
-    local alpha = group:CreateAnimation("Alpha")
-    alpha:SetChildKey(target)
-    alpha:SetOrder(order)
-    alpha:SetDuration(duration)
-    alpha:SetFromAlpha(fromAlpha)
-    alpha:SetToAlpha(toAlpha)
-    if delay then
-        alpha:SetStartDelay(delay)
-    end
-    if appear then
-        table.insert(group.appear, alpha)
-    else
-        table.insert(group.fade, alpha)
-    end
+	local alpha = group:CreateAnimation("Alpha")
+	alpha:SetChildKey(target)
+	alpha:SetOrder(order)
+	alpha:SetDuration(duration)
+	alpha:SetFromAlpha(fromAlpha)
+	alpha:SetToAlpha(toAlpha)
+	if delay then
+		alpha:SetStartDelay(delay)
+	end
+	if appear then
+		table.insert(group.appear, alpha)
+	else
+		table.insert(group.fade, alpha)
+	end
 end
 
 local function AnimIn_OnPlay(group)
-    local frame = group:GetParent()
-    local frameWidth, frameHeight = frame:GetSize()
-    frame.spark:SetSize(frameWidth, frameHeight)
-    frame.spark:SetAlpha(not(frame.color) and 1.0 or 0.3*frame.color[4])
-    frame.innerGlow:SetSize(frameWidth, frameHeight)
-    frame.innerGlow:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
-    frame.innerGlowOver:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
-    frame.outerGlow:SetSize(frameWidth, frameHeight)
-    frame.outerGlow:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
-    frame.outerGlowOver:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
-    frame.ants:SetSize(frameWidth * 0.9, frameHeight * 0.9)
-    frame.ants:SetAlpha(0)
-    frame:Show()
+	local frame = group:GetParent()
+	local frameWidth, frameHeight = frame:GetSize()
+	frame.spark:SetSize(frameWidth, frameHeight)
+	frame.spark:SetAlpha(not (frame.color) and 1.0 or 0.3 * frame.color[4])
+	frame.innerGlow:SetSize(frameWidth, frameHeight)
+	frame.innerGlow:SetAlpha(not (frame.color) and 1.0 or frame.color[4])
+	frame.innerGlowOver:SetAlpha(not (frame.color) and 1.0 or frame.color[4])
+	frame.outerGlow:SetSize(frameWidth, frameHeight)
+	frame.outerGlow:SetAlpha(not (frame.color) and 1.0 or frame.color[4])
+	frame.outerGlowOver:SetAlpha(not (frame.color) and 1.0 or frame.color[4])
+	frame.ants:SetSize(frameWidth * 0.9, frameHeight * 0.9)
+	frame.ants:SetAlpha(0)
+	frame:Show()
 end
 
 local function AnimIn_OnFinished(group)
-    local frame = group:GetParent()
-    local frameWidth, frameHeight = frame:GetSize()
-    frame.spark:SetAlpha(0)
-    frame.innerGlow:SetAlpha(0)
-    frame.innerGlow:SetSize(frameWidth, frameHeight)
-    frame.innerGlowOver:SetAlpha(0.0)
-    frame.outerGlow:SetSize(frameWidth, frameHeight)
-    frame.outerGlowOver:SetAlpha(0.0)
-    frame.outerGlowOver:SetSize(frameWidth, frameHeight)
-    frame.ants:SetAlpha(not(frame.color) and 1.0 or frame.color[4])
+	local frame = group:GetParent()
+	local frameWidth, frameHeight = frame:GetSize()
+	frame.spark:SetAlpha(0)
+	frame.innerGlow:SetAlpha(0)
+	frame.innerGlow:SetSize(frameWidth, frameHeight)
+	frame.innerGlowOver:SetAlpha(0.0)
+	frame.outerGlow:SetSize(frameWidth, frameHeight)
+	frame.outerGlowOver:SetAlpha(0.0)
+	frame.outerGlowOver:SetSize(frameWidth, frameHeight)
+	frame.ants:SetAlpha(not (frame.color) and 1.0 or frame.color[4])
 end
 
 local function AnimIn_OnStop(group)
-    local frame = group:GetParent()
-    local frameWidth, frameHeight = frame:GetSize()
-    frame.spark:SetAlpha(0)
-    frame.innerGlow:SetAlpha(0)
-    frame.innerGlowOver:SetAlpha(0.0)
-    frame.outerGlowOver:SetAlpha(0.0)
+	local frame = group:GetParent()
+	local frameWidth, frameHeight = frame:GetSize()
+	frame.spark:SetAlpha(0)
+	frame.innerGlow:SetAlpha(0)
+	frame.innerGlowOver:SetAlpha(0.0)
+	frame.outerGlowOver:SetAlpha(0.0)
 end
 
 local function bgHide(self)
-    if self.animOut:IsPlaying() then
-        self.animOut:Stop()
-        ButtonGlowPool:Release(self)
-    end
+	if self.animOut:IsPlaying() then
+		self.animOut:Stop()
+		ButtonGlowPool:Release(self)
+	end
 end
 
 local function bgUpdate(self, elapsed)
-    AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, self.throttle);
-    local cooldown = self:GetParent().cooldown;
-    if(cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration() > 3000) then
-        self:SetAlpha(0.5);
-    else
-        self:SetAlpha(1.0);
-    end
+	AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, self.throttle);
+	local cooldown = self:GetParent().cooldown;
+	if (cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration() > 3000) then
+		self:SetAlpha(0.5);
+	else
+		self:SetAlpha(1.0);
+	end
 end
 
-local function configureButtonGlow(f,alpha)
-    f.spark = f:CreateTexture(nil, "BACKGROUND")
-    f.spark:SetPoint("CENTER")
-    f.spark:SetAlpha(0)
-    f.spark:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
-    f.spark:SetTexCoord(0.00781250, 0.61718750, 0.00390625, 0.26953125)
+local function configureButtonGlow(f, alpha)
+	f.spark = f:CreateTexture(nil, "BACKGROUND")
+	f.spark:SetPoint("CENTER")
+	f.spark:SetAlpha(0)
+	f.spark:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
+	f.spark:SetTexCoord(0.00781250, 0.61718750, 0.00390625, 0.26953125)
 
-    -- inner glow
-    f.innerGlow = f:CreateTexture(nil, "ARTWORK")
-    f.innerGlow:SetPoint("CENTER")
-    f.innerGlow:SetAlpha(0)
-    f.innerGlow:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
-    f.innerGlow:SetTexCoord(0.00781250, 0.50781250, 0.27734375, 0.52734375)
+	-- inner glow
+	f.innerGlow = f:CreateTexture(nil, "ARTWORK")
+	f.innerGlow:SetPoint("CENTER")
+	f.innerGlow:SetAlpha(0)
+	f.innerGlow:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
+	f.innerGlow:SetTexCoord(0.00781250, 0.50781250, 0.27734375, 0.52734375)
 
-    -- inner glow over
-    f.innerGlowOver = f:CreateTexture(nil, "ARTWORK")
-    f.innerGlowOver:SetPoint("TOPLEFT", f.innerGlow, "TOPLEFT")
-    f.innerGlowOver:SetPoint("BOTTOMRIGHT", f.innerGlow, "BOTTOMRIGHT")
-    f.innerGlowOver:SetAlpha(0)
-    f.innerGlowOver:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
-    f.innerGlowOver:SetTexCoord(0.00781250, 0.50781250, 0.53515625, 0.78515625)
+	-- inner glow over
+	f.innerGlowOver = f:CreateTexture(nil, "ARTWORK")
+	f.innerGlowOver:SetPoint("TOPLEFT", f.innerGlow, "TOPLEFT")
+	f.innerGlowOver:SetPoint("BOTTOMRIGHT", f.innerGlow, "BOTTOMRIGHT")
+	f.innerGlowOver:SetAlpha(0)
+	f.innerGlowOver:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
+	f.innerGlowOver:SetTexCoord(0.00781250, 0.50781250, 0.53515625, 0.78515625)
 
-    -- outer glow
-    f.outerGlow = f:CreateTexture(nil, "ARTWORK")
-    f.outerGlow:SetPoint("CENTER")
-    f.outerGlow:SetAlpha(0)
-    f.outerGlow:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
-    f.outerGlow:SetTexCoord(0.00781250, 0.50781250, 0.27734375, 0.52734375)
+	-- outer glow
+	f.outerGlow = f:CreateTexture(nil, "ARTWORK")
+	f.outerGlow:SetPoint("CENTER")
+	f.outerGlow:SetAlpha(0)
+	f.outerGlow:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
+	f.outerGlow:SetTexCoord(0.00781250, 0.50781250, 0.27734375, 0.52734375)
 
-    -- outer glow over
-    f.outerGlowOver = f:CreateTexture(nil, "ARTWORK")
-    f.outerGlowOver:SetPoint("TOPLEFT", f.outerGlow, "TOPLEFT")
-    f.outerGlowOver:SetPoint("BOTTOMRIGHT", f.outerGlow, "BOTTOMRIGHT")
-    f.outerGlowOver:SetAlpha(0)
-    f.outerGlowOver:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
-    f.outerGlowOver:SetTexCoord(0.00781250, 0.50781250, 0.53515625, 0.78515625)
+	-- outer glow over
+	f.outerGlowOver = f:CreateTexture(nil, "ARTWORK")
+	f.outerGlowOver:SetPoint("TOPLEFT", f.outerGlow, "TOPLEFT")
+	f.outerGlowOver:SetPoint("BOTTOMRIGHT", f.outerGlow, "BOTTOMRIGHT")
+	f.outerGlowOver:SetAlpha(0)
+	f.outerGlowOver:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
+	f.outerGlowOver:SetTexCoord(0.00781250, 0.50781250, 0.53515625, 0.78515625)
 
-    -- ants
-    f.ants = f:CreateTexture(nil, "OVERLAY")
-    f.ants:SetPoint("CENTER")
-    f.ants:SetAlpha(0)
-    f.ants:SetTexture([[Interface\SpellActivationOverlay\IconAlertAnts]])
+	-- ants
+	f.ants = f:CreateTexture(nil, "OVERLAY")
+	f.ants:SetPoint("CENTER")
+	f.ants:SetAlpha(0)
+	f.ants:SetTexture([[Interface\SpellActivationOverlay\IconAlertAnts]])
 
-    f.animIn = f:CreateAnimationGroup()
-    f.animIn.appear = {}
-    f.animIn.fade = {}
-    CreateScaleAnim(f.animIn, "spark",          1, 0.2, 1.5, 1.5)
-    CreateAlphaAnim(f.animIn, "spark",          1, 0.2, 0, alpha, nil, true)
-    CreateScaleAnim(f.animIn, "innerGlow",      1, 0.3, 2, 2)
-    CreateScaleAnim(f.animIn, "innerGlowOver",  1, 0.3, 2, 2)
-    CreateAlphaAnim(f.animIn, "innerGlowOver",  1, 0.3, alpha, 0, nil, false)
-    CreateScaleAnim(f.animIn, "outerGlow",      1, 0.3, 0.5, 0.5)
-    CreateScaleAnim(f.animIn, "outerGlowOver",  1, 0.3, 0.5, 0.5)
-    CreateAlphaAnim(f.animIn, "outerGlowOver",  1, 0.3, alpha, 0, nil, false)
-    CreateScaleAnim(f.animIn, "spark",          1, 0.2, 2/3, 2/3, 0.2)
-    CreateAlphaAnim(f.animIn, "spark",          1, 0.2, alpha, 0, 0.2, false)
-    CreateAlphaAnim(f.animIn, "innerGlow",      1, 0.2, alpha, 0, 0.3, false)
-    CreateAlphaAnim(f.animIn, "ants",           1, 0.2, 0, alpha, 0.3, true)
-    f.animIn:SetScript("OnPlay", AnimIn_OnPlay)
-    f.animIn:SetScript("OnStop", AnimIn_OnStop)
-    f.animIn:SetScript("OnFinished", AnimIn_OnFinished)
+	f.animIn = f:CreateAnimationGroup()
+	f.animIn.appear = {}
+	f.animIn.fade = {}
+	CreateScaleAnim(f.animIn, "spark", 1, 0.2, 1.5, 1.5)
+	CreateAlphaAnim(f.animIn, "spark", 1, 0.2, 0, alpha, nil, true)
+	CreateScaleAnim(f.animIn, "innerGlow", 1, 0.3, 2, 2)
+	CreateScaleAnim(f.animIn, "innerGlowOver", 1, 0.3, 2, 2)
+	CreateAlphaAnim(f.animIn, "innerGlowOver", 1, 0.3, alpha, 0, nil, false)
+	CreateScaleAnim(f.animIn, "outerGlow", 1, 0.3, 0.5, 0.5)
+	CreateScaleAnim(f.animIn, "outerGlowOver", 1, 0.3, 0.5, 0.5)
+	CreateAlphaAnim(f.animIn, "outerGlowOver", 1, 0.3, alpha, 0, nil, false)
+	CreateScaleAnim(f.animIn, "spark", 1, 0.2, 2 / 3, 2 / 3, 0.2)
+	CreateAlphaAnim(f.animIn, "spark", 1, 0.2, alpha, 0, 0.2, false)
+	CreateAlphaAnim(f.animIn, "innerGlow", 1, 0.2, alpha, 0, 0.3, false)
+	CreateAlphaAnim(f.animIn, "ants", 1, 0.2, 0, alpha, 0.3, true)
+	f.animIn:SetScript("OnPlay", AnimIn_OnPlay)
+	f.animIn:SetScript("OnStop", AnimIn_OnStop)
+	f.animIn:SetScript("OnFinished", AnimIn_OnFinished)
 
-    f.animOut = f:CreateAnimationGroup()
-    f.animOut.appear = {}
-    f.animOut.fade = {}
-    CreateAlphaAnim(f.animOut, "outerGlowOver", 1, 0.2, 0, alpha, nil, true)
-    CreateAlphaAnim(f.animOut, "ants",          1, 0.2, alpha, 0, nil, false)
-    CreateAlphaAnim(f.animOut, "outerGlowOver", 2, 0.2, alpha, 0, nil, false)
-    CreateAlphaAnim(f.animOut, "outerGlow",     2, 0.2, alpha, 0, nil, false)
-    f.animOut:SetScript("OnFinished", function(self) ButtonGlowPool:Release(self:GetParent())  end)
+	f.animOut = f:CreateAnimationGroup()
+	f.animOut.appear = {}
+	f.animOut.fade = {}
+	CreateAlphaAnim(f.animOut, "outerGlowOver", 1, 0.2, 0, alpha, nil, true)
+	CreateAlphaAnim(f.animOut, "ants", 1, 0.2, alpha, 0, nil, false)
+	CreateAlphaAnim(f.animOut, "outerGlowOver", 2, 0.2, alpha, 0, nil, false)
+	CreateAlphaAnim(f.animOut, "outerGlow", 2, 0.2, alpha, 0, nil, false)
+	f.animOut:SetScript("OnFinished", function(self) ButtonGlowPool:Release(self:GetParent()) end)
 
-    f:SetScript("OnHide", bgHide)
+	f:SetScript("OnHide", bgHide)
 end
 
-local function updateAlphaAnim(f,alpha)
-    for _,anim in pairs(f.animIn.appear) do
-        anim:SetToAlpha(alpha)
-    end
-    for _,anim in pairs(f.animIn.fade) do
-        anim:SetFromAlpha(alpha)
-    end
-    for _,anim in pairs(f.animOut.appear) do
-        anim:SetToAlpha(alpha)
-    end
-    for _,anim in pairs(f.animOut.fade) do
-        anim:SetFromAlpha(alpha)
-    end
+local function updateAlphaAnim(f, alpha)
+	for _, anim in pairs(f.animIn.appear) do
+		anim:SetToAlpha(alpha)
+	end
+	for _, anim in pairs(f.animIn.fade) do
+		anim:SetFromAlpha(alpha)
+	end
+	for _, anim in pairs(f.animOut.appear) do
+		anim:SetToAlpha(alpha)
+	end
+	for _, anim in pairs(f.animOut.fade) do
+		anim:SetFromAlpha(alpha)
+	end
 end
 
-local ButtonGlowTextures = {["spark"] = true,["innerGlow"] = true,["innerGlowOver"] = true,["outerGlow"] = true,["outerGlowOver"] = true,["ants"] = true}
+local ButtonGlowTextures = { ["spark"] = true, ["innerGlow"] = true, ["innerGlowOver"] = true, ["outerGlow"] = true,
+	["outerGlowOver"] = true, ["ants"] = true }
 
-function lib.ButtonGlow_Start(r,color,frequency,frameLevel)
-    if not r then
-        return
-    end
+function lib.ButtonGlow_Start(r, color, frequency, frameLevel)
+	if not r then
+		return
+	end
 	frameLevel = frameLevel or 8;
-    local throttle
-    if frequency and frequency > 0 then
-        throttle = 0.25/frequency*0.01
-    else
-        throttle = 0.01
-    end
-    if r._ButtonGlow then
-        local f = r._ButtonGlow
-        local width,height = r:GetSize()
-        f:SetFrameLevel(r:GetFrameLevel()+frameLevel)
-        f:SetSize(width*1.4 , height*1.4)
-        f:SetPoint("TOPLEFT", r, "TOPLEFT", -width * 0.3, height * 0.3)
-        f:SetPoint("BOTTOMRIGHT", r, "BOTTOMRIGHT", width * 0.3, -height * 0.3)
-        f.ants:SetSize(width*1.4*0.9, height*1.4*0.9)
+	local throttle
+	if frequency and frequency > 0 then
+		throttle = 0.25 / frequency * 0.01
+	else
+		throttle = 0.01
+	end
+	if r._ButtonGlow then
+		local f = r._ButtonGlow
+		local width, height = r:GetSize()
+		f:SetFrameLevel(r:GetFrameLevel() + frameLevel)
+		f:SetSize(width * 1.4, height * 1.4)
+		f:SetPoint("TOPLEFT", r, "TOPLEFT", -width * 0.3, height * 0.3)
+		f:SetPoint("BOTTOMRIGHT", r, "BOTTOMRIGHT", width * 0.3, -height * 0.3)
+		f.ants:SetSize(width * 1.4 * 0.9, height * 1.4 * 0.9)
 		AnimIn_OnFinished(f.animIn)
 		if f.animOut:IsPlaying() then
-            f.animOut:Stop()
-            f.animIn:Play()
-        end
+			f.animOut:Stop()
+			f.animIn:Play()
+		end
 
-        if not(color) then
-            for texture in pairs(ButtonGlowTextures) do
-                f[texture]:SetDesaturated(nil)
-                f[texture]:SetVertexColor(1,1,1)
-                f[texture]:SetAlpha(f[texture]:GetAlpha()/(f.color and f.color[4] or 1))
-                updateAlphaAnim(f, 1)
-            end
-            f.color = false
-        else
-            for texture in pairs(ButtonGlowTextures) do
-                f[texture]:SetDesaturated(1)
-                f[texture]:SetVertexColor(color[1],color[2],color[3])
-                f[texture]:SetAlpha(f[texture]:GetAlpha()/(f.color and f.color[4] or 1)*color[4])
-                updateAlphaAnim(f,color and color[4] or 1)
-            end
-            f.color = color
-        end
-        f.throttle = throttle
-    else
-        local f, new = ButtonGlowPool:Acquire()
-        if new then
-            configureButtonGlow(f,color and color[4] or 1)
-        else
-            updateAlphaAnim(f,color and color[4] or 1)
-        end
-        r._ButtonGlow = f
-        local width,height = r:GetSize()
-        f:SetParent(r)
-        f:SetFrameLevel(r:GetFrameLevel()+frameLevel)
-        f:SetSize(width * 1.4, height * 1.4)
-        f:SetPoint("TOPLEFT", r, "TOPLEFT", -width * 0.3, height * 0.3)
-        f:SetPoint("BOTTOMRIGHT", r, "BOTTOMRIGHT", width * 0.3, -height * 0.3)
-        if not(color) then
-            f.color = false
-            for texture in pairs(ButtonGlowTextures) do
-                f[texture]:SetDesaturated(nil)
-                f[texture]:SetVertexColor(1,1,1)
-            end
-        else
-            f.color = color
-            for texture in pairs(ButtonGlowTextures) do
-                f[texture]:SetDesaturated(1)
-                f[texture]:SetVertexColor(color[1],color[2],color[3])
-            end
-        end
-        f.throttle = throttle
-        f:SetScript("OnUpdate", bgUpdate)
+		if not (color) then
+			for texture in pairs(ButtonGlowTextures) do
+				f[texture]:SetDesaturated(nil)
+				f[texture]:SetVertexColor(1, 1, 1)
+				f[texture]:SetAlpha(f[texture]:GetAlpha() / (f.color and f.color[4] or 1))
+				updateAlphaAnim(f, 1)
+			end
+			f.color = false
+		else
+			for texture in pairs(ButtonGlowTextures) do
+				f[texture]:SetDesaturated(1)
+				f[texture]:SetVertexColor(color[1], color[2], color[3])
+				f[texture]:SetAlpha(f[texture]:GetAlpha() / (f.color and f.color[4] or 1) * color[4])
+				updateAlphaAnim(f, color and color[4] or 1)
+			end
+			f.color = color
+		end
+		f.throttle = throttle
+	else
+		local f, new = ButtonGlowPool:Acquire()
+		if new then
+			configureButtonGlow(f, color and color[4] or 1)
+		else
+			updateAlphaAnim(f, color and color[4] or 1)
+		end
+		r._ButtonGlow = f
+		local width, height = r:GetSize()
+		f:SetParent(r)
+		f:SetFrameLevel(r:GetFrameLevel() + frameLevel)
+		f:SetSize(width * 1.4, height * 1.4)
+		f:SetPoint("TOPLEFT", r, "TOPLEFT", -width * 0.3, height * 0.3)
+		f:SetPoint("BOTTOMRIGHT", r, "BOTTOMRIGHT", width * 0.3, -height * 0.3)
+		if not (color) then
+			f.color = false
+			for texture in pairs(ButtonGlowTextures) do
+				f[texture]:SetDesaturated(nil)
+				f[texture]:SetVertexColor(1, 1, 1)
+			end
+		else
+			f.color = color
+			for texture in pairs(ButtonGlowTextures) do
+				f[texture]:SetDesaturated(1)
+				f[texture]:SetVertexColor(color[1], color[2], color[3])
+			end
+		end
+		f.throttle = throttle
+		f:SetScript("OnUpdate", bgUpdate)
 
-        f.animIn:Play()
-    end
+		f.animIn:Play()
+	end
 end
 
 function lib.ButtonGlow_Stop(r)
-    if r._ButtonGlow then
-        if r._ButtonGlow.animIn:IsPlaying() then
-            r._ButtonGlow.animIn:Stop()
-            ButtonGlowPool:Release(r._ButtonGlow)
-        elseif r:IsVisible() then
-            r._ButtonGlow.animOut:Play()
-        else
-            ButtonGlowPool:Release(r._ButtonGlow)
-        end
-    end
+	if r._ButtonGlow then
+		if r._ButtonGlow.animIn:IsPlaying() then
+			r._ButtonGlow.animIn:Stop()
+			ButtonGlowPool:Release(r._ButtonGlow)
+		elseif r:IsVisible() then
+			r._ButtonGlow.animOut:Play()
+		else
+			ButtonGlowPool:Release(r._ButtonGlow)
+		end
+	end
 end
 
 table.insert(lib.glowList, "Action Button Glow")
@@ -930,26 +935,26 @@ local KnownSpellList = {};
 
 
 local function asCheckTalent()
-
 	local specID = PlayerUtil.GetCurrentSpecID();
 	local configID = C_ClassTalents.GetActiveConfigID();
 
 	if not (configID) then
 		return;
 	end
-    local configInfo = C_Traits.GetConfigInfo(configID);
-    local treeID = configInfo.treeIDs[1];
-    local nodes = C_Traits.GetTreeNodes(treeID);
+	local configInfo = C_Traits.GetConfigInfo(configID);
+	local treeID = configInfo.treeIDs[1];
+	local nodes = C_Traits.GetTreeNodes(treeID);
 
 	for _, nodeID in ipairs(nodes) do
-        local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
-        if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
-            local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
-            local definitionInfo = entryInfo and entryInfo.definitionID and C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+		local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
+		if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
+			local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
+			local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
+			local definitionInfo = entryInfo and entryInfo.definitionID and
+			C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
-            if definitionInfo ~= nil then
-                local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
+			if definitionInfo ~= nil then
+				local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
 				--print(string.format("%s/%d %s/%d", talentName, definitionInfo.spellID, definitionInfo.overrideName or "", definitionInfo.overriddenSpellID or 0));
 				local name, rank, icon = GetSpellInfo(definitionInfo.spellID);
 				KnownSpellList[talentName or ""] = true;
@@ -959,21 +964,20 @@ local function asCheckTalent()
 					KnownSpellList[definitionInfo.overrideName] = true;
 				end
 			end
-        end
-    end
+		end
+	end
 	return;
 end
 
 local function scanSpells(tab)
-
 	local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
 
 	if not tabName then
 		return;
 	end
 
-	for i=tabOffset + 1, tabOffset + numEntries do
-		local spellName, _, spellID = GetSpellBookItemName (i, BOOKTYPE_SPELL)
+	for i = tabOffset + 1, tabOffset + numEntries do
+		local spellName, _, spellID = GetSpellBookItemName(i, BOOKTYPE_SPELL)
 		if not spellName then
 			do break end
 		end
@@ -985,10 +989,9 @@ local function scanSpells(tab)
 end
 
 local function scanPetSpells()
-
 	for i = 1, 20 do
-	   	local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
-	   	local spellName, _, spellID = GetSpellBookItemName (slot, BOOKTYPE_PET)
+		local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
+		local spellName, _, spellID = GetSpellBookItemName(slot, BOOKTYPE_PET)
 
 		if not spellName then
 			do break end
@@ -996,15 +999,12 @@ local function scanPetSpells()
 
 		if spellName then
 			KnownSpellList[spellName] = 1;
-
 		end
 	end
-
 end
 
 
 local function setupKnownSpell()
-
 	table.wipe(KnownSpellList);
 
 	scanSpells(1)
@@ -1016,30 +1016,29 @@ end
 
 -- 탱커 처리부
 local function updateTankerList()
-
 	local bInstance, RTB_ZoneType = IsInInstance();
 
 	if RTB_ZoneType == "pvp" or RTB_ZoneType == "arena" then
 		return nil;
 	end
 
-	tanklist =	table.wipe(tanklist)
+	tanklist = table.wipe(tanklist)
 	if IsInGroup() then
 		if IsInRaid() then -- raid
-			for i=1,GetNumGroupMembers() do
-				local unitid = "raid"..i
-				local notMe = not UnitIsUnit('player',unitid)
+			for i = 1, GetNumGroupMembers() do
+				local unitid = "raid" .. i
+				local notMe = not UnitIsUnit('player', unitid)
 				local unitName = UnitName(unitid)
 				if unitName and notMe then
-					local _,_,_,_,_,_,_,_,_,role,_, assignedRole = GetRaidRosterInfo(i);
+					local _, _, _, _, _, _, _, _, _, role, _, assignedRole = GetRaidRosterInfo(i);
 					if assignedRole == "TANK" then
 						table.insert(tanklist, unitid);
 					end
 				end
 			end
 		else -- party
-			for i=1,GetNumSubgroupMembers() do
-				local unitid = "party"..i;
+			for i = 1, GetNumSubgroupMembers() do
+				local unitid = "party" .. i;
 				local unitName = UnitName(unitid);
 				if unitName then
 					local assignedRole = UnitGroupRolesAssigned(unitid);
@@ -1054,7 +1053,7 @@ end
 
 local function IsPlayerEffectivelyTank()
 	local assignedRole = UnitGroupRolesAssigned("player");
-	if ( assignedRole == "NONE" ) then
+	if (assignedRole == "NONE") then
 		local spec = GetSpecialization();
 		return spec and GetSpecializationRole(spec) == "TANK";
 	end
@@ -1064,16 +1063,15 @@ end
 
 -- 버프 디버프 처리부
 local function createDebuffFrame(parent)
-
 	local ret = CreateFrame("Frame", nil, parent, "asNamePlatesBuffFrameTemplate");
-	--ret:EnableMouse(true);
+	ret:EnableMouse(false);
 
 	local frameCooldown = ret.cooldown;
 	local frameCount = ret.count;
 
-	for _,r in next,{frameCooldown:GetRegions()}	do
-		if r:GetObjectType()=="FontString" then
-			r:SetFont(STANDARD_TEXT_FONT, ANameP_CooldownFontSize,"OUTLINE")
+	for _, r in next, { frameCooldown:GetRegions() } do
+		if r:GetObjectType() == "FontString" then
+			r:SetFont(STANDARD_TEXT_FONT, ANameP_CooldownFontSize, "OUTLINE")
 			r:ClearAllPoints();
 			r:SetPoint("TOP", 0, 4);
 			break;
@@ -1091,23 +1089,33 @@ local function createDebuffFrame(parent)
 
 	frameIcon:SetTexCoord(.08, .92, .08, .92)
 	frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
-	frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+	frameBorder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 
 	ret.alert = false;
 
-	return ret;
+	if not ret:GetScript("OnEnter") and options.ANameP_Tooltip then
+		ret:SetScript("OnEnter", function(s)
+			if s:GetID() > 0 then
+				GameTooltip_SetDefaultAnchor(GameTooltip, s);
+				GameTooltip:SetUnitAura(s.unit, s:GetID(), s.filter);
+			end
+		end)
+		ret:SetScript("OnLeave", function()
+			GameTooltip:Hide();
+		end)
+	end
 
+	return ret;
 end
 
 local function setFrame(frame, texture, count, expirationTime, duration, color)
-
 	local frameIcon = frame.icon;
 	frameIcon:SetTexture(texture);
 
 	local frameCount = frame.count;
 	local frameCooldown = frame.cooldown;
 
-	if count and  (count > 1) then
+	if count and (count > 1) then
 		frameCount:SetText(count);
 		frameCount:Show();
 		frameCooldown:SetDrawSwipe(false);
@@ -1126,14 +1134,11 @@ local function setFrame(frame, texture, count, expirationTime, duration, color)
 end
 
 local function setSize(frame, size)
-
 	frame:SetWidth(size + 2);
 	frame:SetHeight((size + 2) * ANameP_Size_Rate);
-
 end
 
 local function updateDebuffAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
-
 	local buff = frames[index];
 	local point1 = "BOTTOMLEFT";
 	local point2 = "BOTTOMLEFT";
@@ -1149,20 +1154,20 @@ local function updateDebuffAnchor(frames, index, anchorIndex, size, offsetX, rig
 	buff:ClearAllPoints();
 
 	if parent.downbuff then
-		if ( index == 1 ) then
+		if (index == 1) then
 			buff:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, 0);
-		elseif ( index == (debuffs_per_line + 1) ) then
+		elseif (index == (debuffs_per_line + 1)) then
 			buff:SetPoint("TOPLEFT", frames[1], "BOTTOMLEFT", 0, -4);
 		else
-			buff:SetPoint(point1, frames[index -1], point3, offsetX, 0);
+			buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
 		end
 	else
-		if ( index == 1 ) then
+		if (index == 1) then
 			buff:SetPoint("BOTTOMLEFT", parent, "TOPLEFT", 0, 0);
-		elseif ( index == (debuffs_per_line + 1) ) then
+		elseif (index == (debuffs_per_line + 1)) then
 			buff:SetPoint("BOTTOMLEFT", frames[1], "TOPLEFT", 0, 4);
 		else
-			buff:SetPoint(point1, frames[index-1], point3, offsetX, 0);
+			buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
 		end
 	end
 
@@ -1188,7 +1193,6 @@ end
 
 local classbar_height = nil;
 local function GetClassBarHeight()
-
 	if not classbar_height then
 		local class = NamePlateDriverFrame:GetClassNameplateBar();
 
@@ -1205,7 +1209,6 @@ end
 
 
 local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
-
 	local numDebuffs = 1;
 	local size_list = {};
 	local parent = self:GetParent():GetParent();
@@ -1229,7 +1232,8 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 				return;
 			end
 
-			local name,  texture, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, _, nameplateShowAll = UnitAura(unit, i, "HELPFUL");
+			local name, texture, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, _, nameplateShowAll =
+			UnitAura(unit, i, "HELPFUL");
 			if name then
 				local show = false;
 				local bPVP = false;
@@ -1240,7 +1244,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 					end
 					bPVP = true;
 				else
-					if ANameP_PVEBuffList and  ANameP_PVEBuffList[spellId] then
+					if ANameP_PVEBuffList and ANameP_PVEBuffList[spellId] then
 						show = true;
 					elseif isStealable then
 						show = true;
@@ -1255,22 +1259,22 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 				if show then
 					if UnitIsPlayer(unit) then
-						aShowIdx[aShowNum] = {i, 0};
-						aShowNum =aShowNum  + 1;
+						aShowIdx[aShowNum] = { i, 0 };
+						aShowNum = aShowNum + 1;
 						-- 일단 1개만
 						if numDebuffs + aShowNum - 1 > ANameP_MaxBuff then
 							break;
 						end
 					else
 						if ANameP_PVEBuffList and ANameP_PVEBuffList[spellId] then
-							aShowIdx[aShowNum] = {i, ANameP_PVEBuffList[spellId]};
+							aShowIdx[aShowNum] = { i, ANameP_PVEBuffList[spellId] };
 						elseif isStealable then
-							aShowIdx[aShowNum] = {i, 4};
+							aShowIdx[aShowNum] = { i, 4 };
 						else
-							aShowIdx[aShowNum] = {i, 1};
+							aShowIdx[aShowNum] = { i, 1 };
 						end
 
-						aShowNum =aShowNum  + 1;
+						aShowNum = aShowNum + 1;
 						-- PVE 는 계속
 					end
 				end
@@ -1285,27 +1289,19 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 		end
 
 		for v = 1, aShowNum - 1 do
-			if numDebuffs  > ANameP_MaxBuff  then
+			if numDebuffs > ANameP_MaxBuff then
 				break;
 			end
 
 			local i = aShowIdx[v][1];
-			local name,  texture, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, _, nameplateShowAll = UnitAura(unit, i, "HELPFUL");
+			local name, texture, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, _, nameplateShowAll =
+			UnitAura(unit, i, "HELPFUL");
+
 
 			if (not self.buffList[numDebuffs]) then
 				self.buffList[numDebuffs] = createDebuffFrame(self);
-				if not self.buffList[numDebuffs]:GetScript("OnEnter") then
-					self.buffList[numDebuffs]:SetScript("OnEnter", function(s)
-						if s:GetID() > 0 then
-							GameTooltip_SetDefaultAnchor(GameTooltip, s);
-							GameTooltip:SetUnitAura(s.unit, s:GetID(), s.filter);
-						end
-					end)
-					self.buffList[numDebuffs]:SetScript("OnLeave", function()
-						GameTooltip:Hide();
-					end)
-				end
 			end
+
 
 			local frame = self.buffList[numDebuffs];
 			frame.alert = false;
@@ -1316,9 +1312,9 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 				size_list[numDebuffs] = icon_size;
 			end
 
-			setSize (frame, size_list[numDebuffs]);
+			setSize(frame, size_list[numDebuffs]);
 
-			local color = {r = 1, g = 1, b = 1};
+			local color = { r = 1, g = 1, b = 1 };
 			setFrame(self.buffList[numDebuffs], texture, count, expirationTime, duration, color);
 			if isStealable then
 				frame.alert = true;
@@ -1326,7 +1322,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 			self.buffList[numDebuffs].filter = "HELPFUL";
 			self.buffList[numDebuffs]:SetID(i);
-			self.buffList[numDebuffs].unit = unit;		
+			self.buffList[numDebuffs].unit = unit;
 
 			numDebuffs = numDebuffs + 1;
 		end
@@ -1347,13 +1343,14 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 				break;
 			end
 
-			local name,  texture, count, debuffType, duration, expirationTime, caster, _, nameplateShowPersonal, spellId, _, isBossDebuff, _, nameplateShowAll  = UnitAura(unit, i, filter);
+			local name, texture, count, debuffType, duration, expirationTime, caster, _, nameplateShowPersonal, spellId, _, isBossDebuff, _, nameplateShowAll =
+			UnitAura(unit, i, filter);
 			if name then
 				-- Default 로 Show List 에 있는 것만 보임
 				local show = PLAYER_UNITS[caster] and (ANameP_ShowList and ANameP_ShowList[name]);
 
 				-- Player 일 경우
-				if  UnitIsUnit("player", unit) then
+				if UnitIsUnit("player", unit) then
 					if options.ANameP_ShowPlayerBuffAll and options.ANameP_ShowPlayerBuffAll == false then
 						show = nameplateShowPersonal;
 					else
@@ -1370,12 +1367,11 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 						else
 							show = true;
 						end
-					elseif not options.ANameP_ShowMyAll and PLAYER_UNITS[caster] and (nameplateShowPersonal or (options.ANameP_ShowKnownSpell  and (KnownSpellList[name] or KnownSpellList[texture]))) then
+					elseif not options.ANameP_ShowMyAll and PLAYER_UNITS[caster] and (nameplateShowPersonal or (options.ANameP_ShowKnownSpell and (KnownSpellList[name] or KnownSpellList[texture]))) then
 						show = true;
 					end
 
 					if ANameP_ShowPVPDebuff and nameplateShowAll and duration <= 10 then
-
 						if ANameP_ShowCCDebuff and bShowCC == false then
 							show = false;
 							bShowCC = true;
@@ -1394,28 +1390,28 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 							self.CCdebuff:SetID(i);
 							self.CCdebuff.unit = unit;
 
-							self.CCdebuff:Show();							
+							self.CCdebuff:Show();
 						else
 							show = true;
 						end
 					end
 
-					if isBossDebuff or ( caster and  not UnitIsPlayer(unit) and UnitIsUnit(unit, caster)) then
+					if isBossDebuff or (caster and not UnitIsPlayer(unit) and UnitIsUnit(unit, caster)) then
 						show = true;
 					end
 				end
 
-				if show  and ANameP_BlackList[name] then
+				if show and ANameP_BlackList[name] then
 					show = false;
 				end
 
 				if show then
-					if ANameP_ShowList and ANameP_ShowList[name]  then
-						aShowIdx[aShowNum] = {i, ANameP_ShowList[name][2]};
+					if ANameP_ShowList and ANameP_ShowList[name] then
+						aShowIdx[aShowNum] = { i, ANameP_ShowList[name][2] };
 					else
-						aShowIdx[aShowNum] = {i, 0};
+						aShowIdx[aShowNum] = { i, 0 };
 					end
-					aShowNum =aShowNum  + 1;
+					aShowNum = aShowNum + 1;
 				end
 			else
 				break;
@@ -1429,21 +1425,22 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 		self.debuffColor = nil;
 
-		for v = 1 , aShowNum - 1 do
+		for v = 1, aShowNum - 1 do
 			local i = aShowIdx[v][1];
-			local name,  texture, count, debuffType, duration, expirationTime, caster, _, nameplateShowPersonal, spellId, _, isBossDebuff, _, nameplateShowAll = UnitAura(unit, i, filter);
+			local name, texture, count, debuffType, duration, expirationTime, caster, _, nameplateShowPersonal, spellId, _, isBossDebuff, _, nameplateShowAll =
+			UnitAura(unit, i, filter);
 			local alert = false;
 			local showlist_time = 0;
-			
+
 			if ANameP_ShowList and ANameP_ShowList[name] then
 				showlist_time = ANameP_ShowList[name][1];
 				local alertcount = ANameP_ShowList[name][4] or false;
 				local alertnameplate = ANameP_ShowList[name][3] or false;
 
-				if  showlist_time >= 0 and alertcount == false then
+				if showlist_time >= 0 and alertcount == false then
 					local alert_time = expirationTime - showlist_time;
 
-					if (GetTime() >= alert_time) and duration > 0  then
+					if (GetTime() >= alert_time) and duration > 0 then
 						alert = true;
 					else
 						if alertnameplate then
@@ -1451,26 +1448,17 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 						end
 					end
 				elseif showlist_time >= 0 and alertcount then
-					if (count >=  showlist_time) then
+					if (count >= showlist_time) then
 						alert = true;
 					end
 				end
 			end
 
+
 			if (not self.buffList[numDebuffs]) then
 				self.buffList[numDebuffs] = createDebuffFrame(self);
-				if not self.buffList[numDebuffs]:GetScript("OnEnter") then
-					self.buffList[numDebuffs]:SetScript("OnEnter", function(s)
-						if s:GetID() > 0 then
-							GameTooltip_SetDefaultAnchor(GameTooltip, s);
-							GameTooltip:SetUnitAura(s.unit, s:GetID(), s.filter);
-						end
-					end)
-					self.buffList[numDebuffs]:SetScript("OnLeave", function()
-						GameTooltip:Hide();
-					end)
-				end
 			end
+
 
 			local frame = self.buffList[numDebuffs];
 			frame.alert = false;
@@ -1492,15 +1480,15 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 				size_list[numDebuffs] = icon_size + ANameP_PVP_Debuff_Size_Rate;
 			end
 
-			setSize (frame, size_list[numDebuffs]);
+			setSize(frame, size_list[numDebuffs]);
 
-			local color =DebuffTypeColor["none"];
+			local color = DebuffTypeColor["none"];
 
 			if helpful then
-				color =DebuffTypeColor["Disease"];
+				color = DebuffTypeColor["Disease"];
 			end
 
-			if ( not UnitIsUnit("player", unit) and not PLAYER_UNITS[caster]) then
+			if (not UnitIsUnit("player", unit) and not PLAYER_UNITS[caster]) then
 				color = { r = 0.3, g = 0.3, b = 0.3 };
 			end
 
@@ -1510,12 +1498,12 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 			setFrame(self.buffList[numDebuffs], texture, count, expirationTime, duration, color);
 
-			if alert and duration > 0  then
+			if alert and duration > 0 then
 				frame.alert = true;
 			end
 			self.buffList[numDebuffs].filter = filter;
 			self.buffList[numDebuffs]:SetID(i);
-			self.buffList[numDebuffs].unit = unit;			
+			self.buffList[numDebuffs].unit = unit;
 
 			numDebuffs = numDebuffs + 1;
 		end
@@ -1528,7 +1516,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 	end
 
 	for i = numDebuffs, ANameP_MaxDebuff do
-		if ( self.buffList[i] ) then
+		if (self.buffList[i]) then
 			self.buffList[i]:Hide();
 			lib.ButtonGlow_Stop(self.buffList[i]);
 		end
@@ -1547,7 +1535,8 @@ local function updateUnitAuras(unit)
 	local nameplate = C_NamePlate.GetNamePlateForUnit(unit, issecure());
 	if (nameplate and nameplate.asNamePlates and not nameplate:IsForbidden()) then
 		if nameplate.asNamePlates.checkaura then
-			updateAuras(nameplate.asNamePlates, nameplate.namePlateUnitToken, nameplate.asNamePlates.filter, nameplate.asNamePlates.showbuff, nameplate.asNamePlates.helpful, nameplate.asNamePlates.showdebuff);
+			updateAuras(nameplate.asNamePlates, nameplate.namePlateUnitToken, nameplate.asNamePlates.filter,
+				nameplate.asNamePlates.showbuff, nameplate.asNamePlates.helpful, nameplate.asNamePlates.showdebuff);
 		else
 			nameplate.asNamePlates:Hide();
 		end
@@ -1555,7 +1544,6 @@ local function updateUnitAuras(unit)
 end
 
 local function updateTargetNameP(self)
-
 	if not self.unit or not self.checkaura then
 		return;
 	end
@@ -1563,16 +1551,16 @@ local function updateTargetNameP(self)
 	local unit = self.unit;
 	local parent = self:GetParent():GetParent();
 
-    if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden()  then
+	if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden() then
 		return;
-    end
+	end
 
 	local UnitFrame = parent.UnitFrame;
 	local healthBar = UnitFrame.healthBar;
 
-    if not healthBar then
+	if not healthBar then
 		return;
-    end
+	end
 
 	local orig_height = self.orig_height
 	local cast_height = 8;
@@ -1594,18 +1582,17 @@ local function updateTargetNameP(self)
 	end
 
 	if UnitIsUnit(unit, "target") then
-
 		height = orig_height + ANameP_TargetHealthBarHeight;
 		self.healthtext:Show();
 
 		if casticon then
 			casticon:SetWidth((height + cast_height + 2) * 1.2);
 			casticon:SetHeight(height + cast_height + 2);
-			casticon.border:SetVertexColor(1,1,1);
+			casticon.border:SetVertexColor(1, 1, 1);
 		end
 
 		if GetCVarBool("nameplateResourceOnTarget") then
-			base_y = base_y +  GetClassBarHeight();
+			base_y = base_y + GetClassBarHeight();
 		end
 	elseif UnitIsUnit(unit, "player") then
 		self.alerthealthbar = false;
@@ -1618,7 +1605,7 @@ local function updateTargetNameP(self)
 		if casticon then
 			casticon:SetWidth((height + cast_height + 2) * 1.2);
 			casticon:SetHeight(height + cast_height + 2);
-			casticon.border:SetVertexColor(0,0,0);
+			casticon.border:SetVertexColor(0, 0, 0);
 		end
 
 		if UnitFrame.name:IsShown() then
@@ -1632,9 +1619,8 @@ local function updateTargetNameP(self)
 	--버프 Position
 	self:ClearAllPoints();
 	if UnitIsUnit(unit, "player") then
-
 		if self.downbuff then
-			self:SetPoint("TOPLEFT", ClassNameplateManaBarFrame, "BOTTOMLEFT", 0, playerbuffposition );
+			self:SetPoint("TOPLEFT", ClassNameplateManaBarFrame, "BOTTOMLEFT", 0, playerbuffposition);
 		else
 			self:SetPoint("BOTTOMLEFT", healthBar, "TOPLEFT", 0, base_y);
 		end
@@ -1650,7 +1636,6 @@ local function updateTargetNameP(self)
 			UnitFrame.BuffFrame:Hide();
 		end
 	end
-
 end
 
 local function updateUnitHealthText(self, unit)
@@ -1671,7 +1656,7 @@ local function updateUnitHealthText(self, unit)
 	valueMax = UnitHealthMax(unit);
 
 	if valueMax > 0 then
-		valuePct =  (math.ceil((value / valueMax) * 100));
+		valuePct = (math.ceil((value / valueMax) * 100));
 	end
 
 	if valuePct > 0 then
@@ -1689,22 +1674,21 @@ end
 
 -- Healthbar 색상 처리부
 local function setColoronStatusBar(self, r, g, b)
-
 	local parent = self:GetParent():GetParent();
 
-    if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden()  then
+	if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden() then
 		return;
-    end
+	end
 
 	local healthBar = parent.UnitFrame.healthBar;
 
-    if not healthBar and healthBar:IsForbidden() then
+	if not healthBar and healthBar:IsForbidden() then
 		return;
-    end
+	end
 
-	
+
 	local oldR, oldG, oldB = healthBar:GetStatusBarColor();
-	if ( r ~= oldR or g ~= oldG or b ~= oldB ) then
+	if (r ~= oldR or g ~= oldG or b ~= oldB) then
 		healthBar:SetStatusBarColor(r, g, b);
 	end
 end
@@ -1712,7 +1696,7 @@ end
 
 local function asCompactUnitFrame_UpdateHealthColor(frame, asNameplates)
 	local r, g, b;
-	if ( not UnitIsConnected(frame.unit) ) then
+	if (not UnitIsConnected(frame.unit)) then
 		--Color it gray
 		r, g, b = 0.5, 0.5, 0.5;
 	elseif (UnitIsDead(frame.unit)) then
@@ -1724,32 +1708,31 @@ local function asCompactUnitFrame_UpdateHealthColor(frame, asNameplates)
 		--Try to color it by class.
 		local localizedClass, englishClass = UnitClass(frame.unit);
 		local classColor = RAID_CLASS_COLORS[englishClass];
-			--debug
-			--classColor = RAID_CLASS_COLORS["PRIEST"];
-			local useClassColors = CompactUnitFrame_GetOptionUseClassColors(frame, frame.optionTable);
-			if ( (frame.optionTable.allowClassColorsForNPCs or UnitIsPlayer(frame.unit) or UnitTreatAsPlayerForDisplay(frame.unit)) and classColor and useClassColors ) then
-				-- Use class colors for players if class color option is turned on
-				r, g, b = classColor.r, classColor.g, classColor.b;
-			elseif ( CompactUnitFrame_IsTapDenied(frame) ) then
-				-- Use grey if not a player and can't get tap on unit
-				r, g, b = 0.9, 0.9, 0.9;
-			elseif ( frame.optionTable.colorHealthBySelection ) then
-				-- Use color based on the type of unit (neutral, etc.)
-				if ( frame.optionTable.considerSelectionInCombatAsHostile and CompactUnitFrame_IsOnThreatListWithPlayer(frame.displayedUnit) ) then
-					r, g, b = 1.0, 0.0, 0.0;
-				elseif ( UnitIsPlayer(frame.displayedUnit) and UnitIsFriend("player", frame.displayedUnit) ) then
-					-- We don't want to use the selection color for friendly player nameplates because
-					-- it doesn't show player health clearly enough.
-					r, g, b = 0.667, 0.667, 1.0;
-				else
-					r, g, b = UnitSelectionColor(frame.unit, frame.optionTable.colorHealthWithExtendedColors);
-				end
-			elseif ( UnitIsFriend("player", frame.unit) ) then
-				r, g, b = 0.0, 1.0, 0.0;
-			else
+		--debug
+		--classColor = RAID_CLASS_COLORS["PRIEST"];
+		local useClassColors = CompactUnitFrame_GetOptionUseClassColors(frame, frame.optionTable);
+		if ((frame.optionTable.allowClassColorsForNPCs or UnitIsPlayer(frame.unit) or UnitTreatAsPlayerForDisplay(frame.unit)) and classColor and useClassColors) then
+			-- Use class colors for players if class color option is turned on
+			r, g, b = classColor.r, classColor.g, classColor.b;
+		elseif (CompactUnitFrame_IsTapDenied(frame)) then
+			-- Use grey if not a player and can't get tap on unit
+			r, g, b = 0.9, 0.9, 0.9;
+		elseif (frame.optionTable.colorHealthBySelection) then
+			-- Use color based on the type of unit (neutral, etc.)
+			if (frame.optionTable.considerSelectionInCombatAsHostile and CompactUnitFrame_IsOnThreatListWithPlayer(frame.displayedUnit)) then
 				r, g, b = 1.0, 0.0, 0.0;
+			elseif (UnitIsPlayer(frame.displayedUnit) and UnitIsFriend("player", frame.displayedUnit)) then
+				-- We don't want to use the selection color for friendly player nameplates because
+				-- it doesn't show player health clearly enough.
+				r, g, b = 0.667, 0.667, 1.0;
+			else
+				r, g, b = UnitSelectionColor(frame.unit, frame.optionTable.colorHealthWithExtendedColors);
 			end
-
+		elseif (UnitIsFriend("player", frame.unit)) then
+			r, g, b = 0.0, 1.0, 0.0;
+		else
+			r, g, b = 1.0, 0.0, 0.0;
+		end
 	end
 	setColoronStatusBar(asNameplates, r, g, b);
 
@@ -1761,10 +1744,10 @@ local function asCompactUnitFrame_UpdateHealthColor(frame, asNameplates)
 end
 
 local function isDangerousSpell(spellId, unit)
-    if spellId and ANameP_DangerousSpellList[spellId] then
-    	return true
-     end
-    return false
+	if spellId and ANameP_DangerousSpellList[spellId] then
+		return true
+	end
+	return false
 end
 
 local bloadedAutoMarker = false;
@@ -1778,15 +1761,15 @@ local function updateHealthbarColor(self)
 	local unit = self.unit;
 	local parent = self:GetParent():GetParent();
 
-    if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden()  then
+	if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden() then
 		return;
-    end
-	local UnitFrame  = parent.UnitFrame;
+	end
+	local UnitFrame = parent.UnitFrame;
 	local healthBar = UnitFrame.healthBar;
 
-    if not healthBar and healthBar:IsForbidden() then
+	if not healthBar and healthBar:IsForbidden() then
 		return;
-    end
+	end
 
 	self.colorlevel = ColorLevel.None;
 
@@ -1797,7 +1780,8 @@ local function updateHealthbarColor(self)
 	if unitname and ANameP_AlertList[unitname] then
 		if self.colorlevel < ColorLevel.Name then
 			self.colorlevel = ColorLevel.Name;
-			setColoronStatusBar(self, ANameP_AlertList[unitname][1], ANameP_AlertList[unitname][2], ANameP_AlertList[unitname][3]);
+			setColoronStatusBar(self, ANameP_AlertList[unitname][1], ANameP_AlertList[unitname][2],
+				ANameP_AlertList[unitname][3]);
 		end
 
 		if ANameP_AlertList[unitname][4] == 1 then
@@ -1811,22 +1795,22 @@ local function updateHealthbarColor(self)
 	local status = UnitThreatSituation("player", unit);
 
 	if self.castspellid and self.casticon and status then
-
-		local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);
+		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
+		unit);
 		if not name then
-			name,  text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+			name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
 		end
 
-		if spellid  then
-			local isDanger = isDangerousSpell (spellid, unit);
+		if spellid then
+			local isDanger = isDangerousSpell(spellid, unit);
 
 			self.castspellid = spellid;
-			if isDanger and  notInterruptible == false then
-				lib.PixelGlow_Start(self.casticon, {0, 1, 0.32, 1});
-				lib.PixelGlow_Start(healthBar, {0, 1, 0.32, 1});
-			elseif isDanger  then
-				lib.PixelGlow_Start(self.casticon, {0, 1, 1, 1});
-				lib.PixelGlow_Start(healthBar, {0, 1, 1, 1});
+			if isDanger and notInterruptible == false then
+				lib.PixelGlow_Start(self.casticon, { 0, 1, 0.32, 1 });
+				lib.PixelGlow_Start(healthBar, { 0, 1, 0.32, 1 });
+			elseif isDanger then
+				lib.PixelGlow_Start(self.casticon, { 0, 1, 1, 1 });
+				lib.PixelGlow_Start(healthBar, { 0, 1, 1, 1 });
 			elseif notInterruptible == false then
 				lib.PixelGlow_Start(self.casticon);
 				lib.PixelGlow_Stop(healthBar);
@@ -1845,13 +1829,14 @@ local function updateHealthbarColor(self)
 		lib.PixelGlow_Stop(healthBar);
 	end
 
-	--Target Check 
+	--Target Check
 	local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
 
 	if (isTargetPlayer) and options.ANameP_AggroTargetColor then
 		if self.colorlevel < ColorLevel.Target then
 			self.colorlevel = ColorLevel.Target;
-			setColoronStatusBar(self, options.ANameP_AggroTargetColor.r, options.ANameP_AggroTargetColor.g, options.ANameP_AggroTargetColor.b);
+			setColoronStatusBar(self, options.ANameP_AggroTargetColor.r, options.ANameP_AggroTargetColor.g,
+				options.ANameP_AggroTargetColor.b);
 		end
 		return;
 	elseif self.colorlevel == ColorLevel.Target then
@@ -1871,7 +1856,7 @@ local function updateHealthbarColor(self)
 				aggrocolor = options.ANameP_TankAggroLoseColor;
 				if #tanklist > 0 then
 					for _, othertank in ipairs(tanklist) do
-						if UnitIsUnit(unit.."target", othertank ) and not UnitIsUnit(unit.."target", "player" ) then
+						if UnitIsUnit(unit .. "target", othertank) and not UnitIsUnit(unit .. "target", "player") then
 							aggrocolor = options.ANameP_TankAggroLoseColor2;
 							break;
 						end
@@ -1894,18 +1879,19 @@ local function updateHealthbarColor(self)
 		end
 	end
 
-	if lowhealthpercent > 0  then
+	if lowhealthpercent > 0 then
 		--Lowhealth 처리부
 		local value = UnitHealth(unit);
 		local valueMax = UnitHealthMax(unit);
 		local valuePct = 0;
 
 		if valueMax > 0 then
-			valuePct =  (math.ceil((value / valueMax) * 100));
+			valuePct = (math.ceil((value / valueMax) * 100));
 		end
 
 		if valuePct <= lowhealthpercent then
-			setColoronStatusBar(self, options.ANameP_LowHealthColor.r, options.ANameP_LowHealthColor.g, options.ANameP_LowHealthColor.b);
+			setColoronStatusBar(self, options.ANameP_LowHealthColor.r, options.ANameP_LowHealthColor.g,
+				options.ANameP_LowHealthColor.b);
 			self.colorlevel = ColorLevel.Lowhealth;
 			return;
 		elseif self.colorlevel == ColorLevel.Lowhealth then
@@ -1917,7 +1903,8 @@ local function updateHealthbarColor(self)
 	if self.debuffColor then
 		if self.colorlevel < ColorLevel.Debuff then
 			self.colorlevel = ColorLevel.Debuff;
-			setColoronStatusBar(self, options.ANameP_DebuffColor.r, options.ANameP_DebuffColor.g, options.ANameP_DebuffColor.b);
+			setColoronStatusBar(self, options.ANameP_DebuffColor.r, options.ANameP_DebuffColor.g,
+				options.ANameP_DebuffColor.b);
 		end
 		return;
 	else
@@ -1936,7 +1923,7 @@ local function updateHealthbarColor(self)
 	if status then
 		if #tanklist > 0 then
 			for _, othertank in ipairs(tanklist) do
-				if UnitIsUnit(unit.."target", othertank ) and not UnitIsUnit(unit.."target", "player" ) then
+				if UnitIsUnit(unit .. "target", othertank) and not UnitIsUnit(unit .. "target", "player") then
 					aggrocolor = options.ANameP_TankAggroLoseColor2;
 					self.colorlevel = ColorLevel.Custom;
 					setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
@@ -1948,7 +1935,7 @@ local function updateHealthbarColor(self)
 		end
 	end
 
-	if UnitIsUnit(unit.."target", "pet" )  then
+	if UnitIsUnit(unit .. "target", "pet") then
 		aggrocolor = options.ANameP_TankAggroLoseColor3;
 		self.colorlevel = ColorLevel.Custom;
 		setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
@@ -1959,7 +1946,7 @@ local function updateHealthbarColor(self)
 
 
 
-	if options.ANameP_QuestAlert and C_QuestLog.UnitIsRelatedToActiveQuest(unit)  then
+	if options.ANameP_QuestAlert and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
 		local color = options.ANameP_QuestColor;
 		self.colorlevel = ColorLevel.Custom;
 		setColoronStatusBar(self, color.r, color.g, color.b);
@@ -1976,7 +1963,6 @@ local function updateHealthbarColor(self)
 end
 
 local function updatePVPAggro(self)
-
 	if not ANameP_PVPAggroShow then
 		return
 	end
@@ -1994,7 +1980,7 @@ local function updatePVPAggro(self)
 
 	local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
 
-	if ( isTargetPlayer) then
+	if (isTargetPlayer) then
 		self.aggro1:SetTextColor(1, 0, 0, 1);
 
 		self.aggro1:SetText("▶");
@@ -2013,37 +1999,37 @@ end
 local function asCheckTalent(name)
 	local specID = PlayerUtil.GetCurrentSpecID();
 
-    local configID = C_ClassTalents.GetActiveConfigID();
+	local configID = C_ClassTalents.GetActiveConfigID();
 
 	if not (configID) then
 		return false;
 	end
-    local configInfo = C_Traits.GetConfigInfo(configID);
-    local treeID = configInfo.treeIDs[1];
+	local configInfo = C_Traits.GetConfigInfo(configID);
+	local treeID = configInfo.treeIDs[1];
 
-    local nodes = C_Traits.GetTreeNodes(treeID);
+	local nodes = C_Traits.GetTreeNodes(treeID);
 
-    for _, nodeID in ipairs(nodes) do
-        local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
-        if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
-            local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
-            local definitionInfo = entryInfo and entryInfo.definitionID and C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+	for _, nodeID in ipairs(nodes) do
+		local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
+		if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
+			local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
+			local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
+			local definitionInfo = entryInfo and entryInfo.definitionID and
+			C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
-            if definitionInfo ~= nil then
-                local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
+			if definitionInfo ~= nil then
+				local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
 				--print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));
 				if name == talentName then
 					return true;
 				end
-            end
-        end
-    end
+			end
+		end
+	end
 	return false;
 end
 
 local function initAlertList()
-
 	local spec = GetSpecialization();
 	local localizedClass, englishClass = UnitClass("player");
 	local listname;
@@ -2105,15 +2091,15 @@ local unit_guid_list = {};
 local Aggro_Y = -5;
 
 local function checkSpellCasting(self)
-
 	if not self.unit then
 		return;
 	end
 
 	local unit = self.unit;
-	local name,  text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);
+	local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
+	unit);
 	if not name then
-		name,  text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+		name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
 	end
 
 	if self.casticon then
@@ -2122,7 +2108,7 @@ local function checkSpellCasting(self)
 			frameIcon:SetTexture(texture);
 			self.casticon:Show();
 			self.castspellid = spellid;
-			self.casticon.castspellid = spellid;			
+			self.casticon.castspellid = spellid;
 		else
 			self.casticon:Hide();
 			self.castspellid = nil;
@@ -2132,9 +2118,9 @@ end
 
 
 local function asNamePlates_OnEvent(self, event, ...)
-	if ( event == "UNIT_THREAT_SITUATION_UPDATE" or event == "UNIT_THREAT_LIST_UPDATE" ) then
+	if (event == "UNIT_THREAT_SITUATION_UPDATE" or event == "UNIT_THREAT_LIST_UPDATE") then
 		updateHealthbarColor(self)
-	elseif( event == "PLAYER_TARGET_CHANGED") then
+	elseif (event == "PLAYER_TARGET_CHANGED") then
 		updateTargetNameP(self);
 	else
 		checkSpellCasting(self);
@@ -2155,7 +2141,7 @@ local function removeNamePlate(namePlateUnitToken)
 	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
 	if namePlateFrameBase and namePlateFrameBase.asNamePlates then
 		for i = 1, ANameP_MaxDebuff do
-			if ( namePlateFrameBase.asNamePlates.buffList[i] ) then
+			if (namePlateFrameBase.asNamePlates.buffList[i]) then
 				namePlateFrameBase.asNamePlates.buffList[i]:Hide();
 				lib.ButtonGlow_Stop(namePlateFrameBase.asNamePlates.buffList[i]);
 				namePlateFrameBase.asNamePlates.buffList[i] = nil;
@@ -2194,32 +2180,30 @@ local function removeNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.castspellid = nil;
 
 		if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
-
 			if namePlateFrameBase.asNamePlates.alerthealthbar then
 				lib.PixelGlow_Stop(namePlateFrameBase.UnitFrame.healthBar);
 				namePlateFrameBase.asNamePlates.alerthealthbar = false;
-				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r, namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
+				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r,
+					namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
 				namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
 			end
 
 			if namePlateFrameBase.asNamePlates.colorlevel > ColorLevel.None then
-				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r, namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
+				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r,
+					namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
 				namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
 			end
-
-
 		end
 
 		namePlateFrameBase.asNamePlates = nil;
 	end
 
-	if UnitIsPlayer(namePlateUnitToken) and  UnitGUID(namePlateUnitToken) then
+	if UnitIsPlayer(namePlateUnitToken) and UnitGUID(namePlateUnitToken) then
 		unit_guid_list[UnitGUID(namePlateUnitToken)] = nil;
 	end
 end
 
 local function addNamePlate(namePlateUnitToken)
-
 	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
 
 	if not namePlateFrameBase or namePlateFrameBase.UnitFrame:IsForbidden() then
@@ -2235,6 +2219,7 @@ local function addNamePlate(namePlateUnitToken)
 			if namePlateFrameBase.asNamePlates then
 				removeNamePlate(namePlateUnitToken);
 				unitFrame.BuffFrame:SetAlpha(1);
+				unitFrame.BuffFrame:Show();
 			end
 			return;
 		end
@@ -2246,6 +2231,7 @@ local function addNamePlate(namePlateUnitToken)
 			if namePlateFrameBase.asNamePlates then
 				removeNamePlate(namePlateUnitToken);
 				unitFrame.BuffFrame:SetAlpha(1);
+				unitFrame.BuffFrame:Show();
 			end
 			return;
 		end
@@ -2253,10 +2239,10 @@ local function addNamePlate(namePlateUnitToken)
 
 	if not namePlateFrameBase.asNamePlates then
 		namePlateFrameBase.asNamePlates = CreateFrame("Frame", nil, unitFrame);
-    end
+	end
 
 	asCompactUnitFrame_UpdateHealthColor(unitFrame, namePlateFrameBase.asNamePlates);
-	--namePlateFrameBase.asNamePlates:EnableMouse(true);
+	namePlateFrameBase.asNamePlates:EnableMouse(false);
 
 	if not namePlateFrameBase.asNamePlates.buffList then
 		namePlateFrameBase.asNamePlates.buffList = {};
@@ -2273,7 +2259,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
 	namePlateFrameBase.asNamePlates.bhideframe = false;
 	namePlateFrameBase.asNamePlates.isshown = nil;
-	namePlateFrameBase.asNamePlates.originalcolor = {r = healthbar.r, g = healthbar.g, b = healthbar.b};
+	namePlateFrameBase.asNamePlates.originalcolor = { r = healthbar.r, g = healthbar.g, b = healthbar.b };
 	namePlateFrameBase.asNamePlates.checkcolor = false;
 	namePlateFrameBase.asNamePlates.debuffColor = nil;
 
@@ -2311,25 +2297,25 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.orig_height = g_orig_height;
 
 	namePlateFrameBase.asNamePlates:ClearAllPoints();
-	namePlateFrameBase.asNamePlates:SetPoint("CENTER", healthbar, "CENTER", 0  , 0)
+	namePlateFrameBase.asNamePlates:SetPoint("CENTER", healthbar, "CENTER", 0, 0)
 
-	if not namePlateFrameBase.asNamePlates.aggro1  then
+	if not namePlateFrameBase.asNamePlates.aggro1 then
 		namePlateFrameBase.asNamePlates.aggro1 = healthbar:CreateFontString(nil, "OVERLAY");
 	end
 
 	namePlateFrameBase.asNamePlates.aggro1:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
-    namePlateFrameBase.asNamePlates.aggro1:ClearAllPoints();
-	namePlateFrameBase.asNamePlates.aggro1:SetPoint("RIGHT", healthbar, "LEFT", -5  , Aggro_Y)
+	namePlateFrameBase.asNamePlates.aggro1:ClearAllPoints();
+	namePlateFrameBase.asNamePlates.aggro1:SetPoint("RIGHT", healthbar, "LEFT", -5, Aggro_Y)
 
 
-	if not namePlateFrameBase.asNamePlates.aggro2  then
+	if not namePlateFrameBase.asNamePlates.aggro2 then
 		namePlateFrameBase.asNamePlates.aggro2 = healthbar:CreateFontString(nil, "OVERLAY");
 	end
 	namePlateFrameBase.asNamePlates.aggro2:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
-    namePlateFrameBase.asNamePlates.aggro2:ClearAllPoints();
+	namePlateFrameBase.asNamePlates.aggro2:ClearAllPoints();
 	namePlateFrameBase.asNamePlates.aggro2:SetPoint("LEFT", healthbar, "RIGHT", 0, Aggro_Y)
 
-	if not namePlateFrameBase.asNamePlates.healer  then
+	if not namePlateFrameBase.asNamePlates.healer then
 		namePlateFrameBase.asNamePlates.healer = healthbar:CreateFontString(nil, "OVERLAY");
 	end
 	if ANameP_HealerSize > 0 then
@@ -2337,8 +2323,8 @@ local function addNamePlate(namePlateUnitToken)
 	else
 		namePlateFrameBase.asNamePlates.healer:SetFont(STANDARD_TEXT_FONT, 1, "THICKOUTLINE");
 	end
-    namePlateFrameBase.asNamePlates.healer:ClearAllPoints();
-	namePlateFrameBase.asNamePlates.healer:SetPoint("RIGHT", healthbar, "LEFT", -5  , Aggro_Y)
+	namePlateFrameBase.asNamePlates.healer:ClearAllPoints();
+	namePlateFrameBase.asNamePlates.healer:SetPoint("RIGHT", healthbar, "LEFT", -5, Aggro_Y)
 	namePlateFrameBase.asNamePlates.healer:SetText("★");
 	namePlateFrameBase.asNamePlates.healer:SetTextColor(0, 1, 0, 1);
 	namePlateFrameBase.asNamePlates.healer:Hide();
@@ -2349,11 +2335,12 @@ local function addNamePlate(namePlateUnitToken)
 
 	namePlateFrameBase.asNamePlates.healthtext:SetFont(STANDARD_TEXT_FONT, ANameP_HeathTextSize, "OUTLINE");
 	namePlateFrameBase.asNamePlates.healthtext:ClearAllPoints();
-	namePlateFrameBase.asNamePlates.healthtext:SetPoint("CENTER", healthbar, "CENTER", 0  , 0)
+	namePlateFrameBase.asNamePlates.healthtext:SetPoint("CENTER", healthbar, "CENTER", 0, 0)
 
 	if unitFrame.castBar then
-		if not namePlateFrameBase.asNamePlates.casticon  then
-			namePlateFrameBase.asNamePlates.casticon = CreateFrame("Frame", nil, unitFrame.castBar, "asNamePlatesBuffFrameTemplate");
+		if not namePlateFrameBase.asNamePlates.casticon then
+			namePlateFrameBase.asNamePlates.casticon = CreateFrame("Frame", nil, unitFrame.castBar,
+				"asNamePlatesBuffFrameTemplate");
 
 			if not namePlateFrameBase.asNamePlates.casticon:GetScript("OnEnter") then
 				namePlateFrameBase.asNamePlates.casticon:SetScript("OnEnter", function(s)
@@ -2368,7 +2355,7 @@ local function addNamePlate(namePlateUnitToken)
 			end
 		end
 		namePlateFrameBase.asNamePlates.casticon:EnableMouse(true);
-        namePlateFrameBase.asNamePlates.casticon:ClearAllPoints();
+		namePlateFrameBase.asNamePlates.casticon:ClearAllPoints();
 		namePlateFrameBase.asNamePlates.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0, 1);
 		namePlateFrameBase.asNamePlates.casticon:SetWidth(13);
 		namePlateFrameBase.asNamePlates.casticon:SetHeight(13);
@@ -2378,20 +2365,21 @@ local function addNamePlate(namePlateUnitToken)
 
 		frameIcon:SetTexCoord(.08, .92, .08, .92);
 		frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
-		frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+		frameBorder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 		namePlateFrameBase.asNamePlates.casticon:Hide();
 		namePlateFrameBase.asNamePlates.castspellid = nil;
 	end
 
 
-	if not namePlateFrameBase.asNamePlates.CCdebuff  then
-		namePlateFrameBase.asNamePlates.CCdebuff = CreateFrame("Frame", nil, unitFrame.healthBar, "asNamePlatesBuffFrameTemplate");
+	if not namePlateFrameBase.asNamePlates.CCdebuff then
+		namePlateFrameBase.asNamePlates.CCdebuff = CreateFrame("Frame", nil, unitFrame.healthBar,
+			"asNamePlatesBuffFrameTemplate");
 		if not namePlateFrameBase.asNamePlates.CCdebuff:GetScript("OnEnter") then
 			namePlateFrameBase.asNamePlates.CCdebuff:SetScript("OnEnter", function(s)
-			if s:GetID() > 0 then
-				GameTooltip_SetDefaultAnchor(GameTooltip, s);
-				GameTooltip:SetUnitAura(s.unit, s:GetID(), s.filter);
-			end
+				if s:GetID() > 0 then
+					GameTooltip_SetDefaultAnchor(GameTooltip, s);
+					GameTooltip:SetUnitAura(s.unit, s:GetID(), s.filter);
+				end
 			end)
 			namePlateFrameBase.asNamePlates.CCdebuff:SetScript("OnLeave", function()
 				GameTooltip:Hide();
@@ -2399,7 +2387,7 @@ local function addNamePlate(namePlateUnitToken)
 		end
 	end
 	--namePlateFrameBase.asNamePlates.CCdebuff:EnableMouse(false);
-    namePlateFrameBase.asNamePlates.CCdebuff:ClearAllPoints();
+	namePlateFrameBase.asNamePlates.CCdebuff:ClearAllPoints();
 	namePlateFrameBase.asNamePlates.CCdebuff:SetPoint("LEFT", namePlateFrameBase.asNamePlates.casticon, "RIGHT", 1, 0);
 	namePlateFrameBase.asNamePlates.CCdebuff:SetWidth(ANameP_CCDebuffSize * 1.2);
 	namePlateFrameBase.asNamePlates.CCdebuff:SetHeight(ANameP_CCDebuffSize);
@@ -2409,11 +2397,11 @@ local function addNamePlate(namePlateUnitToken)
 
 	frameIcon:SetTexCoord(.08, .92, .08, .92);
 	frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
-	frameBorder:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+	frameBorder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 
-	for _,r in next,{namePlateFrameBase.asNamePlates.CCdebuff.cooldown:GetRegions()}	do
-		if r:GetObjectType()=="FontString" then
-			r:SetFont(STANDARD_TEXT_FONT, ANameP_CooldownFontSize,"OUTLINE")
+	for _, r in next, { namePlateFrameBase.asNamePlates.CCdebuff.cooldown:GetRegions() } do
+		if r:GetObjectType() == "FontString" then
+			r:SetFont(STANDARD_TEXT_FONT, ANameP_CooldownFontSize, "OUTLINE")
 			r:SetPoint("TOP", 0, 4);
 			break;
 		end
@@ -2434,19 +2422,19 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.checkcolor = false;
 
 		for i = 1, ANameP_MaxDebuff do
-			if ( namePlateFrameBase.asNamePlates.buffList[i] ) then
+			if (namePlateFrameBase.asNamePlates.buffList[i]) then
 				namePlateFrameBase.asNamePlates.buffList[i]:Hide();
 			end
 		end
 
-        if UnitIsPlayer(unit) then
+		if UnitIsPlayer(unit) then
 			namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.Name;
 		else
 			local bInstance, RTB_ZoneType = IsInInstance();
 			if not (RTB_ZoneType == "pvp" or RTB_ZoneType == "arena") then
 				--PVP 에서는 어그로 Check 안함
-				namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", "player", unit );
-				namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", "player", unit );
+				namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", "player", unit);
+				namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", "player", unit);
 			end
 
 			namePlateFrameBase.asNamePlates:SetScript("OnEvent", asNamePlates_OnEvent);
@@ -2459,8 +2447,6 @@ local function addNamePlate(namePlateUnitToken)
 			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
 			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
 			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
-
-
 		end
 
 		if ANameP_SIZE > 0 then
@@ -2498,7 +2484,6 @@ local function addNamePlate(namePlateUnitToken)
 		if UnitIsUnit("player", unit) then
 			--namePlateFrameBase.asNamePlates:Hide();
 			if ANameP_ShowPlayerBuff then
-
 				if options.ANameP_ShowPlayerBuffAll == false then
 					filter = "HELPFUL|INCLUDE_NAME_PLATE_ONLY";
 				else
@@ -2507,6 +2492,7 @@ local function addNamePlate(namePlateUnitToken)
 				helpful = true;
 				checkaura = true;
 				unitFrame.BuffFrame:SetAlpha(0);
+				unitFrame.BuffFrame:Hide();
 				unitFrame:UnregisterEvent("UNIT_AURA");
 				namePlateFrameBase.asNamePlates:Show();
 
@@ -2515,7 +2501,7 @@ local function addNamePlate(namePlateUnitToken)
 					ANameP_Resourcetext = ClassNameplateManaBarFrame:CreateFontString(nil, "OVERLAY");
 					ANameP_Resourcetext:SetFont(STANDARD_TEXT_FONT, ANameP_HeathTextSize - 3, "OUTLINE");
 					ANameP_Resourcetext:SetAllPoints(true);
-					ANameP_Resourcetext:SetPoint("CENTER", ClassNameplateManaBarFrame, "CENTER", 0  , 0);
+					ANameP_Resourcetext:SetPoint("CENTER", ClassNameplateManaBarFrame, "CENTER", 0, 0);
 				end
 
 				Buff_Y = ANameP_PlayerBuffY;
@@ -2550,6 +2536,8 @@ local function addNamePlate(namePlateUnitToken)
 				end
 				checkaura = true;
 				unitFrame.BuffFrame:SetAlpha(0);
+				unitFrame.BuffFrame:Hide();
+
 				unitFrame:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
 				unitFrame:UnregisterEvent("UNIT_THREAT_LIST_UPDATE");
 				unitFrame:UnregisterEvent("UNIT_AURA");
@@ -2571,13 +2559,13 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.checkpvptarget = checkpvptarget;
 		namePlateFrameBase.asNamePlates.checkcolor = checkcolor;
 
-		if showhealer and ANameP_HealerSize > 0  then
+		if showhealer and ANameP_HealerSize > 0 then
 			namePlateFrameBase.asNamePlates.healer:Show();
 		else
 			namePlateFrameBase.asNamePlates.healer:Hide();
 		end
 	end
-	
+
 
 	if UnitIsPlayer(unit) then
 		unit_guid_list[UnitGUID(unit)] = unit;
@@ -2590,7 +2578,7 @@ local function updateHealerMark(guid)
 
 	if unit and ANameP_HealerGuid[guid] and not UnitIsUnit(unit, "player") then
 		local nameplate = C_NamePlate.GetNamePlateForUnit(unit, issecure());
-		if (nameplate and nameplate.asNamePlates and not nameplate:IsForbidden() and not nameplate.asNamePlates.showdebuff and nameplate.asNamePlates.checkpvptarget ) then
+		if (nameplate and nameplate.asNamePlates and not nameplate:IsForbidden() and not nameplate.asNamePlates.showdebuff and nameplate.asNamePlates.checkpvptarget) then
 			nameplate.asNamePlates.healer:Show();
 		end
 	end
@@ -2621,12 +2609,11 @@ local function setupFriendlyPlates()
 end
 
 local function ANameP_OnEvent(self, event, ...)
-
 	local arg1 = ...;
 	if event == "NAME_PLATE_CREATED" then
 		local namePlateFrameBase = ...;
 		createNamePlate(namePlateFrameBase);
-	elseif event == "NAME_PLATE_UNIT_ADDED"then
+	elseif event == "NAME_PLATE_UNIT_ADDED" then
 		local namePlateUnitToken = ...;
 		local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
 		if namePlateFrameBase then
@@ -2640,10 +2627,10 @@ local function ANameP_OnEvent(self, event, ...)
 				updateHealthbarColor(namePlateFrameBase.asNamePlates);
 			end
 		end
-	elseif event == "NAME_PLATE_UNIT_REMOVED"  then
+	elseif event == "NAME_PLATE_UNIT_REMOVED" then
 		local namePlateUnitToken = ...;
 		removeNamePlate(namePlateUnitToken);
-	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player"  then
+	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
 		updateUnitAuras("target");
 		updateUnitAuras("player");
 		updateUnitHealthText(self, "target");
@@ -2655,7 +2642,7 @@ local function ANameP_OnEvent(self, event, ...)
 		C_Timer.After(0.5, initAlertList);
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		local isInstance, instanceType = IsInInstance();
-		if isInstance and (instanceType=="party" or instanceType=="raid" or instanceType=="scenario") then
+		if isInstance and (instanceType == "party" or instanceType == "raid" or instanceType == "scenario") then
 			self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 		else
 			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
@@ -2667,15 +2654,16 @@ local function ANameP_OnEvent(self, event, ...)
 
 		setupFriendlyPlates();
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		local _, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType = CombatLogGetCurrentEventInfo();
+		local _, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType =
+		CombatLogGetCurrentEventInfo();
 		if eventType == "SPELL_CAST_SUCCESS" and sourceGUID and not (sourceGUID == "") then
 			local className = GetPlayerInfoByGUID(sourceGUID);
-			if className  and ANameP_HealSpellList[className] and  ANameP_HealSpellList[className][spellID]  then
+			if className and ANameP_HealSpellList[className] and ANameP_HealSpellList[className][spellID] then
 				ANameP_HealerGuid[sourceGUID] = true;
 				updateHealerMark(sourceGUID);
 			end
 		end
-	elseif ( event == "UNIT_FACTION" ) then
+	elseif (event == "UNIT_FACTION") then
 		local namePlateUnitToken = ...;
 		asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken);
 	elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
@@ -2702,7 +2690,7 @@ local function updateUnitResourceText(self, unit)
 	valueMax = UnitPowerMax(unit);
 
 	if valueMax > 0 then
-		valuePct =  (math.ceil((value / valueMax) * 100));
+		valuePct = (math.ceil((value / valueMax) * 100));
 	end
 
 	if (valueMax <= 300) then
@@ -2719,7 +2707,6 @@ local function updateUnitResourceText(self, unit)
 	if valuePct > 0 then
 		ANameP_Resourcetext:SetTextColor(1, 1, 1, 1);
 	end
-
 end
 
 
@@ -2728,12 +2715,13 @@ local function ANameP_OnUpdate()
 	updateUnitHealthText(ANameP, "player");
 	updateUnitResourceText(ANameP, "player");
 
-	for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
+	for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
 		local nameplate = v;
 
-		if (nameplate and  nameplate.asNamePlates and not nameplate:IsForbidden()) then
+		if (nameplate and nameplate.asNamePlates and not nameplate:IsForbidden()) then
 			if nameplate.asNamePlates.checkaura then
-				updateAuras(nameplate.asNamePlates, nameplate.namePlateUnitToken, nameplate.asNamePlates.filter, nameplate.asNamePlates.showbuff, nameplate.asNamePlates.helpful, nameplate.asNamePlates.showdebuff);
+				updateAuras(nameplate.asNamePlates, nameplate.namePlateUnitToken, nameplate.asNamePlates.filter,
+					nameplate.asNamePlates.showbuff, nameplate.asNamePlates.helpful, nameplate.asNamePlates.showdebuff);
 			else
 				nameplate.asNamePlates:Hide();
 			end
@@ -2756,7 +2744,7 @@ function ANameP_DBMTimer_callback(event, id, ...)
 end
 
 local function flushoption()
-	options = CopyTable (ANameP_Options);
+	options = CopyTable(ANameP_Options);
 	C_Timer.After(0.5, initAlertList);
 end
 
@@ -2788,7 +2776,7 @@ local function initAddon()
 	C_Timer.NewTicker(ANameP_UpdateRate, ANameP_OnUpdate);
 
 	hooksecurefunc("DefaultCompactNamePlateFrameAnchorInternal", function(frame, setupOptions)
-		if ( frame:IsForbidden() ) then return end
+		if (frame:IsForbidden()) then return end
 
 		local pframe = C_NamePlate.GetNamePlateForUnit("target", issecure())
 
@@ -2798,12 +2786,12 @@ local function initAddon()
 	end)
 
 	hooksecurefunc("CompactUnitFrame_UpdateHealthColor", function(frame)
-		if ( frame:IsForbidden() ) then 
-			return 
-		end	
+		if (frame:IsForbidden()) then
+			return
+		end
 
 		local pframe = frame:GetParent();
-		if pframe and  not (pframe:IsForbidden()) and pframe.asNamePlates then
+		if pframe and not (pframe:IsForbidden()) and pframe.asNamePlates then
 			updateHealthbarColor(pframe.asNamePlates);
 		end
 	end)
@@ -2812,11 +2800,10 @@ local function initAddon()
 
 	local bloaded = LoadAddOn("DBM-Core");
 	if bloaded then
-		DBM:RegisterCallback("DBM_TimerStart", ANameP_DBMTimer_callback );
+		DBM:RegisterCallback("DBM_TimerStart", ANameP_DBMTimer_callback);
 	end
 
 	bloadedAutoMarker = LoadAddOn("asAutoMarker");
-
 end
 
 initAddon();

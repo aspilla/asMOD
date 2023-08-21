@@ -1,6 +1,6 @@
 ﻿---설정부
-local AAM_UpdateRate = 0.2			-- Check할 주기
-local AAM_MaxMark = 7				-- 최대 징표 X까지 찍도록 설정
+local AAM_UpdateRate = 0.2 -- Check할 주기
+local AAM_MaxMark = 7      -- 최대 징표 X까지 찍도록 설정
 
 --[[
 
@@ -80,7 +80,7 @@ local NPCTable = {
 	[195135] = true,
 	[196043] = true,
 	[199037] = true,
-	[45477 ] = false,
+	[45477] = false,
 	[45704] = true,
 	[45912] = true,
 	[45915] = false,
@@ -173,14 +173,13 @@ local NPCTable = {
 asAutoMarkerF = {};
 
 asAutoMarkerF.IsAutoMarkerMob = function(unit)
-
 	local guid = UnitGUID(unit);
 	if guid then
 		local npcID = select(6, strsplit("-", guid));
-   		npcID = tonumber(npcID);
+		npcID = tonumber(npcID);
 
 		if NPCTable[npcID] == true then
-			return true;		
+			return true;
 		end
 	end
 
@@ -204,37 +203,35 @@ end
 
 local curr_mark = 1;
 local tmp = {};
-local abledMarks = {true, true, true, true, true, true, true, true};
+local abledMarks = { true, true, true, true, true, true, true, true };
 
 local function CheckPartyMarks()
-
 	local unit = "player";
 	local mark = GetRaidTargetIndex(unit);
 
-	if  mark ~= nil and mark <= AAM_MaxMark then
+	if mark ~= nil and mark <= AAM_MaxMark then
 		abledMarks[mark] = false;
 	end
 
-	for i=1,GetNumGroupMembers() do
-		local unit = "party"..i;
+	for i = 1, GetNumGroupMembers() do
+		local unit = "party" .. i;
 		local mark = GetRaidTargetIndex(unit);
 
-		if  mark ~= nil and mark <= AAM_MaxMark then
-			abledMarks[mark] = false;			
+		if mark ~= nil and mark <= AAM_MaxMark then
+			abledMarks[mark] = false;
 		end
 	end
 end
 
 local function UpdateMarks(nameplate)
-
 	local unit = "mouseover"
 
 	if nameplate then
-		if not nameplate or nameplate:IsForbidden()  then
+		if not nameplate or nameplate:IsForbidden() then
 			return false;
 		end
 
-		if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden()  then
+		if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden() then
 			return false;
 		end
 
@@ -243,11 +240,10 @@ local function UpdateMarks(nameplate)
 
 	local status = UnitThreatSituation("player", unit);
 
-	if (unit == "mouseover"  or (unit and status and status > 0)) and isFaction(unit) then
+	if (unit == "mouseover" or (unit and status and status > 0)) and isFaction(unit) then
 		local guid = UnitGUID(unit);
 		if asAutoMarkerF.IsAutoMarkerMob(unit) then
 			while (curr_mark <= AAM_MaxMark) do
-
 				if abledMarks[curr_mark] then
 					break;
 				else
@@ -266,21 +262,20 @@ local function UpdateMarks(nameplate)
 end
 
 local function AAM_OnUpdate()
-
 	if not needtowork then
 		return;
 	end
 
 	curr_mark = 1;
-	
+
 	CheckPartyMarks();
 
-	for _,v in pairs(C_NamePlate.GetNamePlates(issecure())) do
+	for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
 		local nameplate = v;
 		if (nameplate) then
 			UpdateMarks(nameplate);
 		end
-	end	
+	end
 
 	UpdateMarks();
 end
@@ -288,7 +283,6 @@ end
 
 
 local function AAM_OnEvent(self, event, ...)
-
 	if event == "PLAYER_ENTERING_WORLD" or event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED" then
 		needtowork = false;
 		local inInstance, instanceType = IsInInstance();
@@ -305,15 +299,15 @@ local function AAM_OnEvent(self, event, ...)
 			AAM:UnregisterEvent("UPDATE_MOUSEOVER_UNIT");
 		end
 
-		abledMarks = {true, true, true, true, true, true, true, true};
+		abledMarks = { true, true, true, true, true, true, true, true };
 		tmp = {};
 	elseif event == "PLAYER_REGEN_ENABLED" then
-		abledMarks = {true, true, true, true, true, true, true, true};
+		abledMarks = { true, true, true, true, true, true, true, true };
 		tmp = {};
 	elseif event == "UPDATE_MOUSEOVER_UNIT" then
 		AAM_OnUpdate();
-	elseif(event=="COMBAT_LOG_EVENT_UNFILTERED") then
-		local eventData = {CombatLogGetCurrentEventInfo()};
+	elseif (event == "COMBAT_LOG_EVENT_UNFILTERED") then
+		local eventData = { CombatLogGetCurrentEventInfo() };
 		local logEvent = eventData[2];
 		local unitGUID = eventData[8];
 		if ((logEvent == "UNIT_DIED") or (logEvent == "UNIT_DESTROYED")) then
@@ -321,13 +315,12 @@ local function AAM_OnEvent(self, event, ...)
 				local mark = tmp[unitGUID];
 
 				if mark <= AAM_MaxMark then
-					abledMarks[mark] = true;						
+					abledMarks[mark] = true;
 				end
-				tmp[unitGUID] = nil;				
+				tmp[unitGUID] = nil;
 			end
 		end
 	end
-	
 end
 
 
@@ -336,7 +329,7 @@ local function initAddon()
 	AAM:RegisterEvent("PLAYER_ENTERING_WORLD");
 	AAM:RegisterEvent("GROUP_JOINED");
 	AAM:RegisterEvent("GROUP_ROSTER_UPDATE");
-	AAM:RegisterEvent("PLAYER_ROLES_ASSIGNED");	
+	AAM:RegisterEvent("PLAYER_ROLES_ASSIGNED");
 	AAM:SetScript("OnEvent", AAM_OnEvent)
 	--주기적으로 Callback
 	C_Timer.NewTicker(AAM_UpdateRate, AAM_OnUpdate);

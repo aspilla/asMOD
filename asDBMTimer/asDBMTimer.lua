@@ -3,7 +3,7 @@ local ADBMT_CoolFontSize = 15;
 local ADBMT_NameFontSize = 12;
 local ADBMT_FontOutline = "THICKOUTLINE";
 local ADBMT_MaxButtons = 10;
-local ADBMT_1sHeight = 15;	-- 1초의 높이
+local ADBMT_1sHeight = 15; -- 1초의 높이
 local ADBMT_IconSize = 30;
 local ADBMT_X = -380;
 local ADBMT_Y = 0;
@@ -11,21 +11,21 @@ local ADBMT_Y = 0;
 
 local BarColors = {
 	--Type 0
-	[0] = {1, 0.7, 0, ""},
+	[0] = { 1, 0.7, 0, "" },
 	--Type 1 (Add)
-	[1] = {0.375, 0.545, 1, "[추가]"},
+	[1] = { 0.375, 0.545, 1, "[추가]" },
 	--Type 2 (AOE)
-	[2] = {1, 0.466, 0.459, "[광역]"},
+	[2] = { 1, 0.466, 0.459, "[광역]" },
 	--Type 3 (Targeted)
-	[3] = {0.9, 0.3, 1, "[대상]"},
+	[3] = { 0.9, 0.3, 1, "[대상]" },
 	--Type 4 (Interrupt)
-	[4] = {0.47, 0.97, 1, "[차단]"},
+	[4] = { 0.47, 0.97, 1, "[차단]" },
 	--Type 5 (Role)
-	[5] = {0.5, 1, 0.5, "[임무]"},
+	[5] = { 0.5, 1, 0.5, "[임무]" },
 	--Type 6 (Phase)
-	[6] = {1, 0.776, 0.420, "[단계]"},
+	[6] = { 1, 0.776, 0.420, "[단계]" },
 	--Type 7 (Important/User set only)
-	[7] = {1, 1, 0.06, ""},
+	[7] = { 1, 1, 0.06, "" },
 }
 
 -- 설정 끝
@@ -33,7 +33,6 @@ local BarColors = {
 local asDBMTimer = nil;
 
 local function getButton(id)
-
 	local button = nil
 
 	for i = 1, ADBMT_MaxButtons do
@@ -47,7 +46,6 @@ local function getButton(id)
 end
 
 local function deleteButton(id)
-
 	local button = getButton(id);
 
 	if button then
@@ -60,13 +58,12 @@ local function deleteButton(id)
 end
 
 function ADBMT_OnUpdate(self, elapsed)
-
 	self.update = self.update + elapsed
 
-	if self.update >= 0.05  then
+	if self.update >= 0.05 then
 		self.update = 0;
 		local remain = self.start + self.duration - GetTime();
-		if remain > 0  then
+		if remain > 0 then
 			self:ClearAllPoints();
 			self:SetPoint("BOTTOM", self:GetParent(), "BOTTOM", 0, remain * ADBMT_1sHeight);
 			self.cooltext:SetText(("%02.1f"):format(remain))
@@ -79,16 +76,14 @@ function ADBMT_OnUpdate(self, elapsed)
 	end
 end
 
-
 local function RGBToHex(r, g, b)
-    r = math.floor(r * 255)
-    g = math.floor(g * 255)
-    b = math.floor(b * 255)
-    return string.format("|cff%02x%02x%02x", r, g, b)
+	r = math.floor(r * 255)
+	g = math.floor(g * 255)
+	b = math.floor(b * 255)
+	return string.format("|cff%02x%02x%02x", r, g, b)
 end
 
 local function newButton(id, msg, duration, start, icon, colorId, spellID)
-
 	for i = 1, ADBMT_MaxButtons do
 		local button = asDBMTimer.buttons[i];
 		if button.id == nil then
@@ -104,7 +99,7 @@ local function newButton(id, msg, duration, start, icon, colorId, spellID)
 			if colorId and BarColors[colorId] then
 				local info = BarColors[colorId];
 
-				msg = RGBToHex(info[1], info[2], info[3]).. info[4].." "..RGBToHex(1, 1, 1)..msg;
+				msg = RGBToHex(info[1], info[2], info[3]) .. info[4] .. " " .. RGBToHex(1, 1, 1) .. msg;
 			end
 
 			button.text:SetText(msg);
@@ -122,20 +117,17 @@ end
 local dbm_event_list = {};
 
 function asDBMTimer_callback(event, id, ...)
-
 	if event == "DBM_TimerStart" then
-
 		local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
 		if dbm_event_list[id] and dbm_event_list[id][5] then
 			deleteButton(id);
 		end
 		local newmsg = msg;
 		local strFindStart, strFindEnd = string.find(msg, " 쿨타임")
-    	if strFindStart ~= nil then
-          	 newmsg = string.sub(msg, 1, strFindStart-1);
+		if strFindStart ~= nil then
+			newmsg = string.sub(msg, 1, strFindStart - 1);
 		end
-		dbm_event_list[id] = {newmsg, timer, GetTime(), icon, 0, colorId, spellId};
-
+		dbm_event_list[id] = { newmsg, timer, GetTime(), icon, 0, colorId, spellId };
 	elseif event == "DBM_TimerStop" then
 		if dbm_event_list[id] and dbm_event_list[id][5] then
 			deleteButton(id);
@@ -157,11 +149,10 @@ function asDBMTimer_callback(event, id, ...)
 end
 
 local function checkList()
-	for id,v in pairs(dbm_event_list) do
-
+	for id, v in pairs(dbm_event_list) do
 		local start = GetTime();
 		local remain = v[3] + v[2] - GetTime();
-		if v[5] == 0 and remain > 0 and remain <= 10  then
+		if v[5] == 0 and remain > 0 and remain <= 10 then
 			local idx = newButton(id, v[1], remain, start, v[4], v[6], v[7]);
 			v[5] = idx;
 		elseif remain <= 0 then
@@ -172,18 +163,17 @@ local function checkList()
 end
 
 local function setupUI()
-
 	asDBMTimer = CreateFrame("FRAME", nil, UIParent)
-	asDBMTimer:SetPoint("CENTER",UIParent,"CENTER", ADBMT_X, ADBMT_Y)
+	asDBMTimer:SetPoint("CENTER", UIParent, "CENTER", ADBMT_X, ADBMT_Y)
 	asDBMTimer:SetWidth(100)
 	asDBMTimer:SetHeight(100)
 	asDBMTimer:Show();
 
-	local bloaded =  LoadAddOn("asMOD")
+	local bloaded = LoadAddOn("asMOD")
 
 	if bloaded and asMOD_setupFrame then
-		asMOD_setupFrame (asDBMTimer, "asDBMTimer");
-  	end
+		asMOD_setupFrame(asDBMTimer, "asDBMTimer");
+	end
 
 	--[[
 	asDBMTimer.square = asDBMTimer:CreateTexture(nil, "BACKGROUND");
@@ -215,7 +205,7 @@ local function setupUI()
 
 		asDBMTimer.buttons[i].icon:SetTexCoord(.08, .92, .08, .92);
 		asDBMTimer.buttons[i].border:SetTexture("Interface\\Addons\\asDBMTimer\\border.tga");
-		asDBMTimer.buttons[i].border:SetTexCoord(0.08,0.08, 0.08,0.92, 0.92,0.08, 0.92,0.92);
+		asDBMTimer.buttons[i].border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 		asDBMTimer.buttons[i].border:SetVertexColor(0, 0, 0);
 
 		asDBMTimer.buttons[i]:SetPoint("CENTER", 0, 0);
@@ -246,12 +236,12 @@ local function setupUI()
 end
 
 local function initAddon()
-	DBM:RegisterCallback("DBM_TimerStart", asDBMTimer_callback );
-	DBM:RegisterCallback("DBM_TimerStop", asDBMTimer_callback );
-	DBM:RegisterCallback("DBM_TimerFadeUpdate", asDBMTimer_callback );
-	DBM:RegisterCallback("DBM_TimerUpdate", asDBMTimer_callback );
-	DBM:RegisterCallback("DBM_TimerPause", asDBMTimer_callback );
-	DBM:RegisterCallback("DBM_TimerResume", asDBMTimer_callback );
+	DBM:RegisterCallback("DBM_TimerStart", asDBMTimer_callback);
+	DBM:RegisterCallback("DBM_TimerStop", asDBMTimer_callback);
+	DBM:RegisterCallback("DBM_TimerFadeUpdate", asDBMTimer_callback);
+	DBM:RegisterCallback("DBM_TimerUpdate", asDBMTimer_callback);
+	DBM:RegisterCallback("DBM_TimerPause", asDBMTimer_callback);
+	DBM:RegisterCallback("DBM_TimerResume", asDBMTimer_callback);
 
 	C_Timer.NewTicker(0.1, checkList);
 end

@@ -5,14 +5,13 @@ local shortSide = 128 * sizeScale;
 local settingalpha = 0.5;
 
 local function getExpirationTimeUnitAurabyID(unit, id, filter)
-
 	local i = 1;
 	repeat
-
-		local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura(unit, i, filter);
+		local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId =
+		UnitAura(unit, i, filter);
 
 		if name and spellId == id then
-			return 	expirationTime, duration, count;
+			return expirationTime, duration, count;
 		end
 		i = i + 1;
 	until (name == nil)
@@ -24,14 +23,14 @@ end
 local function asOverlay_OnLoad(self)
 	self.overlaysInUse = {};
 	self.unusedOverlays = {};
-		
+
 	self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_SHOW");
 	self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE");
 	self:RegisterEvent("SETTINGS_LOADED");
 
 	SpellActivationOverlayFrame:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_SHOW");
 	SpellActivationOverlayFrame:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE");
-		
+
 	self:SetSize(longSide, longSide);
 end
 
@@ -42,7 +41,7 @@ end
 
 local function asOverlay_GetUnusedOverlay(self)
 	local overlay = tremove(self.unusedOverlays, #self.unusedOverlays);
-	if ( not overlay ) then
+	if (not overlay) then
 		overlay = asOverlay_CreateOverlay(self);
 	end
 	return overlay;
@@ -52,30 +51,30 @@ end
 local function asOverlay_GetOverlay(self, spellID, position)
 	local overlayList = self.overlaysInUse[spellID];
 	local overlay;
-	if ( overlayList ) then
-		for i=1, #overlayList do
-			if ( overlayList[i].position == position ) then
+	if (overlayList) then
+		for i = 1, #overlayList do
+			if (overlayList[i].position == position) then
 				overlay = overlayList[i];
 			end
 		end
 	end
-	
-	if ( not overlay ) then
+
+	if (not overlay) then
 		overlay = asOverlay_GetUnusedOverlay(self);
-		if ( overlayList ) then
+		if (overlayList) then
 			tinsert(overlayList, overlay);
 		else
 			self.overlaysInUse[spellID] = { overlay };
 		end
 	end
-	
+
 	return overlay;
 end
 
 local function asOverlay_HideOverlays(self, spellID)
 	local overlayList = self.overlaysInUse[spellID];
-	if ( overlayList ) then
-		for i=1, #overlayList do
+	if (overlayList) then
+		for i = 1, #overlayList do
 			local overlay = overlayList[i];
 			overlay.pulse:Pause();
 			overlay.animOut:Play();
@@ -115,7 +114,7 @@ end
 
 local complexLocationTable = {
 	["RIGHT (FLIPPED)"] = {
-		RIGHT = {	hFlip = true },
+		RIGHT = { hFlip = true },
 	},
 	["BOTTOM (FLIPPED)"] = {
 		BOTTOM = { vFlip = true },
@@ -136,65 +135,65 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	local overlay = asOverlay_GetOverlay(self, spellID, position);
 	overlay.spellID = spellID;
 	overlay.position = position;
-	
+
 	overlay:ClearAllPoints();
-	
+
 	local texLeft, texRight, texTop, texBottom = 0, 1, 0, 1;
-	if ( vFlip ) then
+	if (vFlip) then
 		texTop, texBottom = 1, 0;
 	end
-	if ( hFlip ) then
+	if (hFlip) then
 		texLeft, texRight = 1, 0;
 	end
 	overlay.texture:SetTexCoord(texLeft, texRight, texTop, texBottom);
-	
+
 
 	local width, height;
-	if ( position == "CENTER" ) then
+	if (position == "CENTER") then
 		width, height = longSide, longSide;
 		overlay:SetPoint("CENTER", self, "CENTER", 0, 0);
-	elseif ( position == "LEFT" ) then
+	elseif (position == "LEFT") then
 		width, height = shortSide, longSide;
 		overlay:SetPoint("RIGHT", self, "LEFT", 0, 0);
-	elseif ( position == "RIGHT" ) then
+	elseif (position == "RIGHT") then
 		width, height = shortSide, longSide;
 		overlay:SetPoint("LEFT", self, "RIGHT", 0, 0);
-	elseif ( position == "TOP" ) then
+	elseif (position == "TOP") then
 		width, height = longSide, shortSide;
 		overlay:SetPoint("BOTTOM", self, "TOP");
-	elseif ( position == "BOTTOM" ) then
+	elseif (position == "BOTTOM") then
 		width, height = longSide, shortSide;
 		overlay:SetPoint("TOP", self, "BOTTOM");
-	elseif ( position == "TOPRIGHT" ) then
+	elseif (position == "TOPRIGHT") then
 		width, height = shortSide, shortSide;
 		overlay:SetPoint("BOTTOMLEFT", self, "TOPRIGHT", 0, 0);
-	elseif ( position == "TOPLEFT" ) then
+	elseif (position == "TOPLEFT") then
 		width, height = shortSide, shortSide;
 		overlay:SetPoint("BOTTOMRIGHT", self, "TOPLEFT", 0, 0);
-	elseif ( position == "BOTTOMRIGHT" ) then
+	elseif (position == "BOTTOMRIGHT") then
 		width, height = shortSide, shortSide;
 		overlay:SetPoint("TOPLEFT", self, "BOTTOMRIGHT", 0, 0);
-	elseif ( position == "BOTTOMLEFT" ) then
+	elseif (position == "BOTTOMLEFT") then
 		width, height = shortSide, shortSide;
 		overlay:SetPoint("TOPRIGHT", self, "BOTTOMLEFT", 0, 0);
 	else
 		--GMError("Unknown asOverlay position: "..tostring(position));
 		return;
 	end
-	
+
 	overlay:SetSize(width * scale, height * scale);
-	
+
 	overlay.texture:SetTexture(texturePath);
 	overlay.texture:SetVertexColor(r / 255, g / 255, b / 255);
-	
-	overlay.animOut:Stop();	--In case we're in the process of animating this out.
+
+	overlay.animOut:Stop(); --In case we're in the process of animating this out.
 	PlaySound(SOUNDKIT.UI_POWER_AURA_GENERIC);
 	overlay:Show();
 end
 
 local function asOverlay_ShowAllOverlays(self, spellID, texturePath, positions, scale, r, g, b)
 	positions = strupper(positions);
-	if ( complexLocationTable[positions] ) then
+	if (complexLocationTable[positions]) then
 		for location, info in pairs(complexLocationTable[positions]) do
 			asOverlay_ShowOverlay(self, spellID, texturePath, location, scale, r, g, b, info.vFlip, info.hFlip);
 		end
@@ -206,20 +205,19 @@ end
 
 
 local function asOverlay_OnEvent(self, event, ...)
-	if ( event == "SPELL_ACTIVATION_OVERLAY_SHOW" ) then
+	if (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
 		local spellID, texture, positions, scale, r, g, b = ...;
-		--if ( GetCVarBool("displaySpellActivationOverlays") ) then 
-			asOverlay_ShowAllOverlays(self, spellID, texture, positions, scale, r, g, b)
+		--if ( GetCVarBool("displaySpellActivationOverlays") ) then
+		asOverlay_ShowAllOverlays(self, spellID, texture, positions, scale, r, g, b)
 		--end
-	elseif ( event == "SPELL_ACTIVATION_OVERLAY_HIDE" ) then
+	elseif (event == "SPELL_ACTIVATION_OVERLAY_HIDE") then
 		local spellID = ...;
-		if ( spellID ) then
+		if (spellID) then
 			asOverlay_HideOverlays(self, spellID);
 		else
 			asOverlay_HideAllOverlays(self);
 		end
-	elseif ( event == "SETTINGS_LOADED") then
-		
+	elseif (event == "SETTINGS_LOADED") then
 		settingalpha = Settings.GetValue("spellActivationOverlayOpacity");
 		self:SetAlpha(settingalpha);
 	end
@@ -229,26 +227,22 @@ end
 local update = 0;
 
 local function asOverlay_OnUpdate(self, elapsed)
-
 	update = update + elapsed;
 
 	if update >= 0.25 and self.overlaysInUse then
-
 		for spellID, overlayList in pairs(self.overlaysInUse) do
-
-			if ( overlayList and #overlayList ) then
-
+			if (overlayList and #overlayList) then
 				local extime, duration, count = getExpirationTimeUnitAurabyID("player", spellID, "HELPFUL|PLAYER");
 
 				if extime then
-					local remain =	 extime - GetTime();
+					local remain = extime - GetTime();
 					local rate = 0;
 
 					if remain > 0 then
-						rate = remain/duration;
-					end					
-				
-					for i=1, #overlayList do
+						rate = remain / duration;
+					end
+
+					for i = 1, #overlayList do
 						local overlay = overlayList[i];
 						settingalpha = Settings.GetValue("spellActivationOverlayOpacity");
 						overlay.texture:SetAlpha(rate * settingalpha);
@@ -262,7 +256,7 @@ local function asOverlay_OnUpdate(self, elapsed)
 end
 
 local frame = CreateFrame("FRAME", nil, UIParent)
-frame:SetPoint("CENTER",UIParent,"CENTER", 0, 0)
+frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 frame:SetWidth(256)
 frame:SetHeight(256)
 
