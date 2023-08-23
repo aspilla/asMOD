@@ -1,24 +1,9 @@
-local AHM_Button = CreateFrame("Frame", nil, UIParent)
+local AHM_Button        = CreateFrame("Frame", nil, UIParent)
 
-local Options_Default = {
-	Text = "",
-}
-
-
-local playerName        = UnitName("player")
 local playerClass       = select(2, UnitClass("player"))
-local targetName        = nil
 local MisDirectionSpell = nil
-local UnitMounted       = false
 
-local colorRed          = "|cFFFF0000"
-local colorYellow       = "|cFFffff00"
-local colorOrange       = "|cFFF86832"
-local colorWhite        = "|cFFFFFFFF"
-local color_            = "|r"
-local bHunter           = false;
-
-local function GetPartyID()
+local function GetTargetPartyID()
 	if IsInGroup() then
 		if IsInRaid() then -- raid
 			for i = 1, GetNumGroupMembers() do
@@ -43,11 +28,18 @@ local function GetPartyID()
 	return "pet";
 end
 
-local function CheckPartyMember(bfinddealer)
-	local bInstance, RTB_ZoneType = IsInInstance();
+local bfinddealer = false;
+
+local function CheckPartyMember(btank)
+	local _, RTB_ZoneType = IsInInstance();
 
 	if RTB_ZoneType == "pvp" then
 		return nil;
+	end
+
+	local finddealer = bfinddealer;
+	if btank then
+		finddealer = false;
 	end
 
 	if IsInGroup() then
@@ -57,9 +49,9 @@ local function CheckPartyMember(bfinddealer)
 				local notMe = not UnitIsUnit("player", unitid)
 				local unitName = UnitName(unitid)
 				if unitName and notMe then
-					local _, _, _, _, _, _, _, _, _, role, _, assignedRole = GetRaidRosterInfo(i) -- role = "MAINTANK|MAINASSIST", assignedRole = "TANK|HEALER|DAMAGER|NONE"
+					local _, _, _, _, _, _, _, _, _, role, _, assignedRole = GetRaidRosterInfo(i);
 
-					if bfinddealer and assignedRole == "DAMAGER" and not UnitIsUnit(unitid, "player") then
+					if finddealer and assignedRole == "DAMAGER" and not UnitIsUnit(unitid, "player") then
 						return unitid;
 					elseif assignedRole == "TANK" then
 						return unitid;
@@ -73,9 +65,9 @@ local function CheckPartyMember(bfinddealer)
 				if unitName then
 					local assignedRole;
 
-					assignedRole = UnitGroupRolesAssigned(unitid)
+					assignedRole = UnitGroupRolesAssigned(unitid);
 
-					if bfinddealer and assignedRole == "DAMAGER" and not UnitIsUnit(unitid, "player") then
+					if finddealer and assignedRole == "DAMAGER" and not UnitIsUnit(unitid, "player") then
 						return unitid;
 					elseif assignedRole == "TANK" then
 						return unitid;
@@ -85,7 +77,7 @@ local function CheckPartyMember(bfinddealer)
 		end
 	end
 
-	if bfinddealer then
+	if finddealer then
 		return "player";
 	end
 	return "pet";
@@ -104,10 +96,12 @@ local function AHM_SetAssist(unit, force)
 		if unit == force_unit then
 			force_unit = nil;
 			force = nil;
-			unit = CheckPartyMember();
+			unit = CheckPartyMember(true);
 		else
 			force_unit = unit;
 		end
+	elseif bfinddealer then
+		unit = CheckPartyMember(true);
 	end
 
 	if unit == prev_unit then
@@ -126,25 +120,6 @@ local function AHM_SetAssist(unit, force)
 		EditMacro(macroID, macroName, "ABILITY_ROGUE_FEIGNDEATH", macroText)
 	end
 
-	if MisDirectionSpell then
-		--macroText = string.format("#showtooltip %s\n/cast [@mouseover, exists, help, nodead][target=" .. unit ..", exists, help, nodead][help] %s", MisDirectionSpell, MisDirectionSpell)
-		macroText = string.format("#showtooltip %s\n/cast [target=" .. unit .. ", exists, help, nodead][help] %s",
-			MisDirectionSpell, MisDirectionSpell)
-		macroID = GetMacroIndexByName(MisDirectionSpell)
-		macroName = MisDirectionSpell
-
-		if AMD_Options.Text then
-			macroText = macroText .. "\n" .. AMD_Options.Text;
-			print (macroText);
-		end
-
-		if (macroID == 0) then
-			CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText, 1)
-		else
-			EditMacro(macroID, macroName, "INV_MISC_QUESTIONMARK", macroText, 1)
-		end
-	end
-
 	if UnitExists(unit) then
 		if force then
 			print("[afm] 강제으로 " .. UnitName(unit) .. " 이 탱커로 지정");
@@ -154,23 +129,74 @@ local function AHM_SetAssist(unit, force)
 	end
 end
 
+local prev_md_unit = nil;
+local force_md_unit = nil;
 
------------------------------
-local function AHM_SetTargetName(...)
-	-----------------------------
-
-	if InCombatLockdown() then
-		ChatFrame1:AddMessage("asMisdirection: 전투중엔 대상을 설정 할 수 없습니다.")
-		return
+local function AHM_SetMisdirection(unit, force)
+	if not force and force_md_unit then
+		return;
 	end
 
-	local unit = GetPartyID()
+	if force then
+		if unit == force_md_unit then
+			force_md_unit = nil;
+			force = nil;
+			unit = CheckPartyMember(false);
+		else
+			force_md_unit = unit;
+		end
+	end
 
-	if unit then
-		AHM_SetAssist(unit, true);
+	if unit == prev_md_unit then
+		return;
+	end
+
+	prev_md_unit = unit;
+
+	if MisDirectionSpell then
+		--macroText = string.format("#showtooltip %s\n/cast [@mouseover, exists, help, nodead][target=" .. unit ..", exists, help, nodead][help] %s", MisDirectionSpell, MisDirectionSpell)
+		local macroText = string.format("#showtooltip %s\n/cast [target=" .. unit .. ", exists, help, nodead][help] %s",
+			MisDirectionSpell, MisDirectionSpell)
+		local macroID = GetMacroIndexByName(MisDirectionSpell)
+		local macroName = MisDirectionSpell
+
+		if (macroID == 0) then
+			CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText, 1)
+		else
+			local oldtext = GetMacroBody(macroID);
+			local start = string.find(oldtext, "help] " .. MisDirectionSpell, 0);
+
+			if start and start > 0 then
+				local addedtext = string.sub(oldtext, start + string.len("help] " .. MisDirectionSpell), -1);
+				macroText = macroText .. addedtext;
+			end
+
+			EditMacro(macroID, macroName, "INV_MISC_QUESTIONMARK", macroText, 1)
+		end
+	end
+
+	if UnitExists(unit) then
+		if force then
+			print("[afm] 강제으로 " .. UnitName(unit) .. " 이 " .. MisDirectionSpell .. " 대상으로 지정");
+		else
+			print("[afm] 자동으로 " .. UnitName(unit) .. " 이 " .. MisDirectionSpell .. " 대상으로 지정");
+		end
 	end
 end
 
+local function AHM_SetTargetName(...)
+	if InCombatLockdown() then
+		ChatFrame1:AddMessage("asMisdirection: 전투중엔 대상을 설정 할 수 없습니다.");
+		return;
+	end
+
+	local unit = GetTargetPartyID();
+
+	if unit then
+		AHM_SetAssist(unit, true);
+		AHM_SetMisdirection(unit, true);
+	end
+end
 
 local function IsLearndSpell(checkSpellName)
 	local i = 1
@@ -192,97 +218,9 @@ local function IsLearndSpell(checkSpellName)
 	return false
 end
 
-local panel = CreateFrame("Frame")
-panel.name = "asMisdirection"         -- see panel fields
-InterfaceOptions_AddCategory(panel) -- see InterfaceOptions API
-
-local scrollFrame;
-local scrollChild;
-local function SetupOptionPanels()
-
-	if scrollFrame then
-        scrollFrame:Hide()
-        scrollFrame:UnregisterAllEvents()
-        scrollFrame = nil;
-    end
-
-    scrollFrame = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
-    scrollFrame:SetPoint("TOPLEFT", 3, -4)
-    scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)
-
-    -- Create the scrolling child frame, set its width to fit, and give it an arbitrary minimum height (such as 1)
-    scrollChild = CreateFrame("Frame")
-    scrollFrame:SetScrollChild(scrollChild)
-    scrollChild:SetWidth(600)
-    scrollChild:SetHeight(1)
-
-    -- add widgets to the panel as desired
-    local title = panel:CreateFontString("ARTWORK", nil, "GameFontNormalLarge")
-    title:SetPoint("TOP")
-    title:SetText("asMisdirection")
-	
-	if AMD_Options == nil then
-		AMD_Options = {};
-		AMD_Options = CopyTable(Options_Default);
-	end
-
-	local editBox = CreateFrame("EditBox", nil, scrollChild)
-	do
-		local editBoxLeft = editBox:CreateTexture(nil, "BACKGROUND")
-		editBoxLeft:SetTexture(130959) --"Interface\\ChatFrame\\UI-ChatInputBorder-Left"
-		editBoxLeft:SetHeight(32)
-		editBoxLeft:SetWidth(32)
-		editBoxLeft:SetPoint("LEFT", -14, 0)
-		editBoxLeft:SetTexCoord(0, 0.125, 0, 1)
-		local editBoxRight = editBox:CreateTexture(nil, "BACKGROUND")
-		editBoxRight:SetTexture(130960) --"Interface\\ChatFrame\\UI-ChatInputBorder-Right"
-		editBoxRight:SetHeight(32)
-		editBoxRight:SetWidth(32)
-		editBoxRight:SetPoint("RIGHT", 6, 0)
-		editBoxRight:SetTexCoord(0.875, 1, 0, 1)
-		local editBoxMiddle = editBox:CreateTexture(nil, "BACKGROUND")
-		editBoxMiddle:SetTexture(130960) --"Interface\\ChatFrame\\UI-ChatInputBorder-Right"
-		editBoxMiddle:SetHeight(32)
-		editBoxMiddle:SetWidth(1)
-		editBoxMiddle:SetPoint("LEFT", editBoxLeft, "RIGHT")
-		editBoxMiddle:SetPoint("RIGHT", editBoxRight, "LEFT")
-		editBoxMiddle:SetTexCoord(0, 0.9375, 0, 1)
-	end
-
-	editBox:HookScript("OnTextChanged", function() end);
-	editBox:SetHeight(300)
-	editBox:SetWidth(300)
-	editBox:SetPoint("LEFT", scrollChild, "TOPLEFT", 100, -100)
-	editBox:SetFontObject("GameFontHighlight")
-	editBox:SetMultiLine(true);
-	editBox:SetMaxLetters(1000);
-	editBox:SetText(AMD_Options.Text);
-	editBox:SetAutoFocus(false);
-	editBox:ClearFocus();
-	editBox:SetTextInsets(0, 0, 0, 1)
-	editBox:Show();
-	editBox:SetCursorPosition(0);
-
-	local btn = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-    btn:SetPoint("TOPRIGHT", -50, -10)
-    btn:SetText("설정 적용")
-    btn:SetWidth(100)
-    btn:SetScript("OnClick", function()
-        AMD_Options.Text = editBox:GetText();
-		ReloadUI();
-    end)
-end
-
 local tempTarget = nil;
-local bFirst = true;
 
 local function AHM_OnEvent(self, event, ...)
-
-	if bFirst then
-		SetupOptionPanels();
-		bFirst = false;
-	end
-	local bfinddealer = false;
 	if (event == "PLAYER_LOGIN" or event == "LEARNED_SPELL_IN_TAB") then
 		MisDirectionSpell = nil;
 		local maintarget = "pet";
@@ -294,7 +232,6 @@ local function AHM_OnEvent(self, event, ...)
 		local spellId
 		if playerClass == "HUNTER" then
 			spellId = 34477;
-			bHunter = true;
 		elseif playerClass == "ROGUE" then
 			spellId = 57934;
 		elseif playerClass == "EVOKER" then
@@ -317,24 +254,43 @@ local function AHM_OnEvent(self, event, ...)
 
 		local spellName = select(1, GetSpellInfo(spellId))
 		if not spellName then return end
-		if not IsLearndSpell(spellName) then return else AHM_Button:UnregisterEvent("LEARNED_SPELL_IN_TAB") end
+		if not IsLearndSpell(spellName) then
+			return
+		else
+			AHM_Button:UnregisterEvent("LEARNED_SPELL_IN_TAB")
+		end
 
 		MisDirectionSpell = spellName
 
 		if not InCombatLockdown() then
 			AHM_SetAssist(maintarget);
+			AHM_SetMisdirection(maintarget);
 		else
 			tempTarget = maintarget
 		end
 
-
 		print("[afm] 매크로 창에서 " .. MisDirectionSpell .. " 매크로를 이용하세요.")
 	elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
-		local unit = CheckPartyMember(bfinddealer);
+		local unit = CheckPartyMember();
 
 		if unit and not InCombatLockdown() then
 			if UnitExists(unit) then
 				AHM_SetAssist(unit);
+				AHM_SetMisdirection(unit);
+			end
+		else
+			tempTarget = unit;
+		end
+	elseif (event == "GROUP_LEFT") then
+		force_md_unit = nil;
+		force_unit = nil;
+
+		local unit = CheckPartyMember();
+
+		if unit and not InCombatLockdown() then
+			if UnitExists(unit) then
+				AHM_SetAssist(unit);
+				AHM_SetMisdirection(unit);
 			end
 		else
 			tempTarget = unit;
@@ -342,6 +298,7 @@ local function AHM_OnEvent(self, event, ...)
 	elseif event == "PLAYER_REGEN_ENABLED" and tempTarget then
 		if tempTarget and UnitExists(tempTarget) then
 			AHM_SetAssist(tempTarget);
+			AHM_SetMisdirection(tempTarget);
 		end
 		tempTarget = nil;
 	end
@@ -352,6 +309,7 @@ SLASH_AFM_SLASHCMD1 = "/afm"
 
 AHM_Button:RegisterEvent("PLAYER_LOGIN")
 AHM_Button:RegisterEvent("LEARNED_SPELL_IN_TAB")
+AHM_Button:RegisterEvent("GROUP_LEFT")
 AHM_Button:RegisterEvent("GROUP_JOINED")
 AHM_Button:RegisterEvent("GROUP_ROSTER_UPDATE")
 AHM_Button:RegisterEvent("PLAYER_ROLES_ASSIGNED")
