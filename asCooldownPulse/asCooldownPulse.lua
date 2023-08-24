@@ -399,7 +399,7 @@ local function ACDP_UpdateCooldown()
 
 	local prev_icon;
 	local prev_duration;
-
+	
 	for i = 1, #showlist do
 		local start = showlist[i][2];
 		local duration = showlist[i][3];
@@ -407,17 +407,16 @@ local function ACDP_UpdateCooldown()
 		local spellid = showlist[i][5];
 		local type = showlist[i][6];
 
-		if icon ~= prev_icon and duration ~= prev_duration then
-
+		if not (icon == prev_icon) then
 			prev_icon = icon;
 			prev_duration = duration;
 			
-			frame = parent.frames[i];
+			frame = parent.frames[numCools];
 
 
 			if (not frame) then
-				parent.frames[i] = CreateFrame("Button", nil, parent, "asCooldownPulseFrameTemplate");
-				frame = parent.frames[i];
+				parent.frames[numCools] = CreateFrame("Button", nil, parent, "asCooldownPulseFrameTemplate");
+				frame = parent.frames[numCools];
 				frame:SetWidth(ACDP_SIZE);
 				frame:SetHeight(ACDP_SIZE * 0.9);
 				frame:EnableMouse(true);
