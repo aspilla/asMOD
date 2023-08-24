@@ -173,15 +173,17 @@ local function AHM_SetMisdirection(unit, force)
 
 			EditMacro(macroID, macroName, "INV_MISC_QUESTIONMARK", macroText, 1)
 		end
-	end
 
-	if UnitExists(unit) then
-		if force then
-			print("[afm] 강제으로 " .. UnitName(unit) .. " 이 " .. MisDirectionSpell .. " 대상으로 지정");
-		else
-			print("[afm] 자동으로 " .. UnitName(unit) .. " 이 " .. MisDirectionSpell .. " 대상으로 지정");
+		if UnitExists(unit) then
+			if force then
+				print("[afm] 강제으로 " .. UnitName(unit) .. " 이 " .. MisDirectionSpell .. " 대상으로 지정");
+			else
+				print("[afm] 자동으로 " .. UnitName(unit) .. " 이 " .. MisDirectionSpell .. " 대상으로 지정");
+			end
 		end
 	end
+
+	
 end
 
 local function AHM_SetTargetName(...)

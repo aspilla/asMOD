@@ -397,6 +397,9 @@ local function ACDP_UpdateCooldown()
 
 	numCools = 1;
 
+	local prev_icon;
+	local prev_duration;
+
 	for i = 1, #showlist do
 		local start = showlist[i][2];
 		local duration = showlist[i][3];
@@ -404,74 +407,80 @@ local function ACDP_UpdateCooldown()
 		local spellid = showlist[i][5];
 		local type = showlist[i][6];
 
-		frame = parent.frames[i];
+		if icon ~= prev_icon and duration ~= prev_duration then
 
-
-		if (not frame) then
-			parent.frames[i] = CreateFrame("Button", nil, parent, "asCooldownPulseFrameTemplate");
+			prev_icon = icon;
+			prev_duration = duration;
+			
 			frame = parent.frames[i];
-			frame:SetWidth(ACDP_SIZE);
-			frame:SetHeight(ACDP_SIZE * 0.9);
-			frame:EnableMouse(true);
 
-			for _, r in next, { frame.cooldown:GetRegions() } do
-				if r:GetObjectType() == "FontString" then
-					r:SetFont("Fonts\\2002.TTF", ACDP_CooldownFontSize, "OUTLINE")
-					break
+
+			if (not frame) then
+				parent.frames[i] = CreateFrame("Button", nil, parent, "asCooldownPulseFrameTemplate");
+				frame = parent.frames[i];
+				frame:SetWidth(ACDP_SIZE);
+				frame:SetHeight(ACDP_SIZE * 0.9);
+				frame:EnableMouse(true);
+
+				for _, r in next, { frame.cooldown:GetRegions() } do
+					if r:GetObjectType() == "FontString" then
+						r:SetFont("Fonts\\2002.TTF", ACDP_CooldownFontSize, "OUTLINE")
+						break
+					end
+				end
+
+				frame.icon:SetTexCoord(.08, .92, .08, .92);
+				frame.border:SetTexture("Interface\\Addons\\asCooldownPulse\\border.tga");
+				frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+
+				if not frame:GetScript("OnEnter") then
+					frame:SetScript("OnEnter", function(s)
+						if s.spellid and s.spellid > 0 then
+							GameTooltip_SetDefaultAnchor(GameTooltip, s);
+							GameTooltip:SetSpellByID(s.spellid);
+						elseif s.itemid and s.itemid > 0 then
+							GameTooltip_SetDefaultAnchor(GameTooltip, s);
+							GameTooltip:SetItemByID(s.itemid);
+						end
+					end)
+					frame:SetScript("OnLeave", function()
+						GameTooltip:Hide();
+					end)
 				end
 			end
+			-- set the icon
+			frameIcon = frame.icon;
+			frameIcon:SetTexture(icon);
+			frameIcon:SetAlpha(ACDP_ALPHA);
+			frameIcon:SetDesaturated(ACDP_GreyColor)
 
-			frame.icon:SetTexCoord(.08, .92, .08, .92);
-			frame.border:SetTexture("Interface\\Addons\\asCooldownPulse\\border.tga");
-			frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+			frameBorder = frame.border;
+			frameBorder:SetVertexColor(0, 0, 0);
+			frameBorder:Show();
 
-			if not frame:GetScript("OnEnter") then
-				frame:SetScript("OnEnter", function(s)
-					if s.spellid and s.spellid > 0 then
-						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetSpellByID(s.spellid);
-					elseif s.itemid and s.itemid > 0 then
-						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetItemByID(s.itemid);
-					end
-				end)
-				frame:SetScript("OnLeave", function()
-					GameTooltip:Hide();
-				end)
+
+			-- set the count
+			frameCooldown = frame.cooldown;
+			frameCooldown:Show();
+			asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, true);
+			frameCooldown:SetHideCountdownNumbers(false);
+			frame:ClearAllPoints();
+
+			if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
+				frame.spellid = spellid;
+				frame.itemid = 0;
+			else
+				frame.spellid = 0;
+				frame.itemid = type;
 			end
-		end
-		-- set the icon
-		frameIcon = frame.icon;
-		frameIcon:SetTexture(icon);
-		frameIcon:SetAlpha(ACDP_ALPHA);
-		frameIcon:SetDesaturated(ACDP_GreyColor)
 
-		frameBorder = frame.border;
-		frameBorder:SetVertexColor(0, 0, 0);
-		frameBorder:Show();
+			frame:Show();
 
+			numCools = numCools + 1;
 
-		-- set the count
-		frameCooldown = frame.cooldown;
-		frameCooldown:Show();
-		asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, true);
-		frameCooldown:SetHideCountdownNumbers(false);
-		frame:ClearAllPoints();
-
-		if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
-			frame.spellid = spellid;
-			frame.itemid = 0;
-		else
-			frame.spellid = 0;
-			frame.itemid = type;
-		end
-
-		frame:Show();
-
-		numCools = numCools + 1;
-
-		if numCools > ACDP_CooldownCount then
-			break;
+			if numCools > ACDP_CooldownCount then
+				break;
+			end
 		end
 	end
 
