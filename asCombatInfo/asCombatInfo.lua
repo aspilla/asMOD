@@ -636,6 +636,7 @@ local function ACI_Alert(self, bcastspell)
 	local expirationTime;
 	local caster;
 	local name;
+	local bspell = false;
 
 	frame = ACI[i];
 	if not frame then
@@ -711,6 +712,8 @@ local function ACI_Alert(self, bcastspell)
 				count = 0;
 			end
 		end
+
+		bspell = true;
 	elseif t == 2 or t == 3 or t == 5 or t == 6 or t == 7 or t == 12 or t == 17 or t == 18 then
 		local unit = ACI_SpellList[i][3];
 		if unit == nil then
@@ -765,10 +768,6 @@ local function ACI_Alert(self, bcastspell)
 			_, icon, count, _, duration, expirationTime, _, _, _, _, _, _, _, _, _, stack = getUnitBuffbyName(unit,
 				buff_name);
 		end
-
-
-
-
 
 		if icon then
 			start = expirationTime - duration;
@@ -1221,6 +1220,11 @@ local function ACI_Alert(self, bcastspell)
 		frameCooldown:SetDrawSwipe(false);
 		frameCooldown:Show();
 		frameCooldown:SetHideCountdownNumbers(false);
+		if bspell then
+			frameCooldown:SetReverse(false);
+		else
+			frameCooldown:SetReverse(true);
+		end
 	else
 		frameCooldown:Hide();
 	end
