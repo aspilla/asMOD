@@ -5,7 +5,7 @@ local ADotF_CooldownFontSize = 12;
 local ADotF_CountFontSize = 12;
 
 ADotF_ShowList_WARRIOR_1 = {
-    { "분쇄", 15 * 0.3 },
+    { "분쇄", 1 },
 }
 
 ADotF_ShowList_WARRIOR_2 = {
@@ -16,7 +16,7 @@ ADotF_ShowList_WARRIOR_3 = {
 
 ADotF_ShowList_ROGUE_1 = {
     { "파열", 24 * 0.3 },
-    { "목조르기", 18 * 0.3 },
+    { "목조르기", 1 },
 }
 
 ADotF_ShowList_ROGUE_2 = {
@@ -28,18 +28,18 @@ ADotF_ShowList_ROGUE_3 = {
 }
 
 ADotF_ShowList_HUNTER_1 = {
-    { "날카로운 사격", 2 },
-    { "독사 쐐기", 12 * 0.3 },
+    { "날카로운 사격", 1 },
+    { "독사 쐐기", 1 },
     { "잠재된 독", 0 },
 }
 
 ADotF_ShowList_HUNTER_2 = {
-    { "독사 쐐기", 12 * 0.3 },
+    { "독사 쐐기", 1 },
     { "잠재된 독", 0 },
 }
 
 ADotF_ShowList_HUNTER_3 = {
-    { "독사 쐐기", 12 * 0.3 },
+    { "독사 쐐기", 1 },
     { "잠재된 독", 0 },
 }
 
@@ -54,10 +54,10 @@ ADotF_ShowList_MONK_3 = {
 }
 
 ADotF_ShowList_WARLOCK_1 = {
-    { "고통", 5 },
-    { "불안정한 고통", 5 },
-    { "부패", 5 },
-    { "생명력 착취", 5 },
+    { "고통", 1 },
+    { "불안정한 고통", 1 },
+    { "부패", 1 },
+    { "생명력 착취", 1 },
 }
 
 ADotF_ShowList_WARLOCK_2 = {
@@ -66,52 +66,52 @@ ADotF_ShowList_WARLOCK_2 = {
 
 
 ADotF_ShowList_WARLOCK_3 = {
-    { "제물", 24 * 0.3 },
+    { "제물", 1 },
 }
 
 ADotF_ShowList_PRIEST_1 = {
-    { "어둠의 권능: 고통", 21 * 0.3 },
+    { "어둠의 권능: 고통", 1 },
 }
 
 ADotF_ShowList_PRIEST_2 = {
-    { "어둠의 권능: 고통", 21 * 0.3 },
+    { "어둠의 권능: 고통", 1 },
 }
 
 ADotF_ShowList_PRIEST_3 = {
-    { "어둠의 권능: 고통", 21 * 0.3 },
+    { "어둠의 권능: 고통", 1 },
 }
 
 ADotF_ShowList_SHAMAN_1 = {
-    { "화염 충격", 18 * 0.3 },
+    { "화염 충격", 1 },
 }
 
 ADotF_ShowList_SHAMAN_2 = {
-    { "화염 충격", 18 * 0.3 },
+    { "화염 충격", 1 },
 }
 
 ADotF_ShowList_SHAMAN_3 = {
-    { "화염 충격", 18 * 0.3 },
+    { "화염 충격", 1 },
 }
 
 ADotF_ShowList_DRUID_1 = {
-    { "달빛섬광", 22 * 0.3 },
-    { "태양섬광", 13.5 * 0.3 },
-    { "항성의 섬광", 18 * 0.3 },
+    { "달빛섬광", 1 },
+    { "태양섬광", 1 },
+    { "항성의 섬광", 1 },
 }
 
 
 ADotF_ShowList_DRUID_2 = {
-    { "달빛섬광", 22 * 0.3 },
-    { "갈퀴 발톱", 15 * 0.3 },
-    { "도려내기", 24 * 0.3 },
+    { "달빛섬광", 1 },
+    { "갈퀴 발톱", 1 },
+    { "도려내기", 1 },
 }
 
 ADotF_ShowList_DRUID_3 = {
-    { "달빛섬광", 22 * 0.3 },
+    { "달빛섬광", 1 },
 }
 
 ADotF_ShowList_DRUID_4 = {
-    { "달빛섬광", 22 * 0.3 },
+    { "달빛섬광", 1 },
 }
 
 
@@ -136,7 +136,7 @@ ADotF_ShowList_DEATHKNIGHT_2 = {
 }
 
 ADotF_ShowList_DEATHKNIGHT_3 = {
-    { "악성 역병", 13.5 * 0.3 },
+    { "악성 역병", 1 },
     { "고름 상처", 0 },
 }
 
@@ -988,7 +988,14 @@ local function ADotF_UpdateDebuff(unit)
                 frame:ClearAllPoints();
                 frame:Show();
 
-                if (((expirationTime - GetTime()) <= ADotF_ShowList[i][2]) and duration > 0) then
+                local alert_du = ADotF_ShowList[i][2];
+
+                if alert_du == 1 then
+                    alert_du = duration * 0.3;
+                    ADotF_ShowList[i][2] = alert_du;
+                end
+
+                if (((expirationTime - GetTime()) <= alert_du) and duration > 0) then
                     lib.ButtonGlow_Start(frame);
                 else
                     lib.ButtonGlow_Stop(frame);
