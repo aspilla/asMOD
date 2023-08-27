@@ -584,7 +584,7 @@ local function checkDireBeast()
 
 	repeat
 		name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId =
-		UnitBuff("player", i, "INCLUDE_NAME_PLATE_ONLY");
+			UnitBuff("player", i, "INCLUDE_NAME_PLATE_ONLY");
 
 		if name and spellId == 281036 and expirationTime > prev_dire_beast_time then
 			dire_beast_count = dire_beast_count + 1;
@@ -668,7 +668,7 @@ local function ACI_Alert(self, bcastspell)
 			if ACI_Action_slot_list[i] then
 				count = GetActionCount(ACI_Action_slot_list[i]);
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetActionCharges(ACI_Action_slot_list
-				[i]);
+					[i]);
 			end
 		end
 
@@ -749,7 +749,7 @@ local function ACI_Alert(self, bcastspell)
 
 			repeat
 				local nametemp, icontemp, _, debuffTypetemp, durationtemp, expirationTimetemp, castertemp, _, _ =
-				UnitBuff(unit, debuff_idx);
+					UnitBuff(unit, debuff_idx);
 
 				if nametemp and nametemp == buff_name and castertemp and UnitIsUnit(castertemp, "player") then
 					count = count + 1;
@@ -785,6 +785,12 @@ local function ACI_Alert(self, bcastspell)
 			buff_cool = true;
 
 			self.exTime = nil;
+
+			if alert_du == 1 then
+				alert_du = duration * 0.3;
+				ACI_SpellList[i][4] = alert_du;
+			end
+
 			if alert_du and (expirationTime - GetTime()) <= alert_du then
 				ACI_Alert_list[spellname] = true;
 			elseif alert_du then
@@ -805,7 +811,7 @@ local function ACI_Alert(self, bcastspell)
 				if ACI_Action_slot_list[i] then
 					count = GetActionCount(ACI_Action_slot_list[i]);
 					charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetActionCharges(
-					ACI_Action_slot_list[i]);
+						ACI_Action_slot_list[i]);
 				end
 			end
 
@@ -888,7 +894,7 @@ local function ACI_Alert(self, bcastspell)
 
 			repeat
 				local nametemp, icontemp, _, debuffTypetemp, durationtemp, expirationTimetemp, castertemp, _, _ =
-				UnitDebuff(unit, debuff_idx, filter);
+					UnitDebuff(unit, debuff_idx, filter);
 
 				if nametemp and nametemp == buff_name and castertemp and UnitIsUnit(castertemp, "player") then
 					count = count + 1;
@@ -905,7 +911,7 @@ local function ACI_Alert(self, bcastspell)
 			until (nametemp == nil)
 		else
 			_, icon, count, debuffType, duration, expirationTime, caster, _, _, _, _, _, _, _, _, stack =
-			getUnitDebuffbyName(unit, buff_name, filter);
+				getUnitDebuffbyName(unit, buff_name, filter);
 		end
 
 		if (not (unit == "player")) and not PLAYER_UNITS[caster] then
@@ -930,6 +936,11 @@ local function ACI_Alert(self, bcastspell)
 
 			self.exTime = nil;
 
+			if alert_du == 1 then
+				alert_du = duration * 0.3;
+				ACI_SpellList[i][4] = alert_du;
+			end
+
 			if alert_du and (expirationTime - GetTime()) <= alert_du and duration > 0 then
 				ACI_Alert_list[spellname] = true;
 			elseif alert_du then
@@ -949,7 +960,7 @@ local function ACI_Alert(self, bcastspell)
 				if ACI_Action_slot_list[i] then
 					count = GetActionCount(ACI_Action_slot_list[i]);
 					charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetActionCharges(
-					ACI_Action_slot_list[i]);
+						ACI_Action_slot_list[i]);
 				end
 			end
 
@@ -1016,7 +1027,7 @@ local function ACI_Alert(self, bcastspell)
 				if ACI_Action_slot_list[i] then
 					count = GetActionCount(ACI_Action_slot_list[i]);
 					charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetActionCharges(
-					ACI_Action_slot_list[i]);
+						ACI_Action_slot_list[i]);
 				end
 			end
 
@@ -1431,7 +1442,7 @@ local function asCheckTalent(name)
 			local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
 			local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
 			local definitionInfo = entryInfo and entryInfo.definitionID and
-			C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+				C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
 			if definitionInfo ~= nil then
 				local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
