@@ -206,70 +206,70 @@ local ANameP_HealSpellList = {};
 
 ANameP_HealSpellList["사제"] = {
 
-	[047540] = "PRIEST",     -- Penance XXX strange error received from user on 2015-10-15 (this spell was cast by a hunter...)
-	[109964] = "PRIEST",     -- Spirit shell -- not seen in disc
-	[002060] = "PRIEST",     -- Greater Heal
-	[014914] = "PRIEST",     -- Holy Fire
-	[033206] = "PRIEST",     -- Pain Suppression
-	[000596] = "PRIEST",     -- Prayer of Healing
-	[000527] = "PRIEST",     -- Purify
-	[081749] = "PRIEST",     -- Atonement
-	[132157] = "PRIEST",     -- Holy Nova
-	[034861] = "PRIEST",     -- Circle of Healing
-	[064843] = "PRIEST",     -- Divine Hymn
-	[047788] = "PRIEST",     -- Guardian Spirit
-	[032546] = "PRIEST",     -- Binding Heal
-	[077485] = "PRIEST",     -- Mastery: Echo of Light -- the passibe ability
-	[077489] = "PRIEST",     -- Echo of Light -- the aura applied by the afformentioned
-	[000139] = "PRIEST",     -- Renew
+	[047540] = "PRIEST", -- Penance XXX strange error received from user on 2015-10-15 (this spell was cast by a hunter...)
+	[109964] = "PRIEST", -- Spirit shell -- not seen in disc
+	[002060] = "PRIEST", -- Greater Heal
+	[014914] = "PRIEST", -- Holy Fire
+	[033206] = "PRIEST", -- Pain Suppression
+	[000596] = "PRIEST", -- Prayer of Healing
+	[000527] = "PRIEST", -- Purify
+	[081749] = "PRIEST", -- Atonement
+	[132157] = "PRIEST", -- Holy Nova
+	[034861] = "PRIEST", -- Circle of Healing
+	[064843] = "PRIEST", -- Divine Hymn
+	[047788] = "PRIEST", -- Guardian Spirit
+	[032546] = "PRIEST", -- Binding Heal
+	[077485] = "PRIEST", -- Mastery: Echo of Light -- the passibe ability
+	[077489] = "PRIEST", -- Echo of Light -- the aura applied by the afformentioned
+	[000139] = "PRIEST", -- Renew
 
 };
 
 ANameP_HealSpellList["드루이드"] = {
 
-	[102342] = "DRUID",     -- Ironbark
-	[033763] = "DRUID",     -- Lifebloom
-	[088423] = "DRUID",     -- Nature's Cure
-	[033891] = "DRUID",     -- Incarnation: Tree of Life
-	[048438] = "DRUID",     -- Wild Growth
-	[000740] = "DRUID",     -- Tranquility
+	[102342] = "DRUID", -- Ironbark
+	[033763] = "DRUID", -- Lifebloom
+	[088423] = "DRUID", -- Nature's Cure
+	[033891] = "DRUID", -- Incarnation: Tree of Life
+	[048438] = "DRUID", -- Wild Growth
+	[000740] = "DRUID", -- Tranquility
 };
 
 
 ANameP_HealSpellList["주술사"] = {
 
-	[061295] = "SHAMAN",     -- Riptide
-	[077472] = "SHAMAN",     -- Healing Wave
-	[098008] = "SHAMAN",     -- Spirit link totem
-	[001064] = "SHAMAN",     -- Chain Heal
-	[073920] = "SHAMAN",     -- Healing Rain
+	[061295] = "SHAMAN", -- Riptide
+	[077472] = "SHAMAN", -- Healing Wave
+	[098008] = "SHAMAN", -- Spirit link totem
+	[001064] = "SHAMAN", -- Chain Heal
+	[073920] = "SHAMAN", -- Healing Rain
 
 };
 
 ANameP_HealSpellList["성기사"] = {
 
-	[020473] = "PALADIN",     -- Holy Shock
-	[053563] = "PALADIN",     -- Beacon of Light
-	[082326] = "PALADIN",     -- Holy Light
-	[085222] = "PALADIN",     -- Light of Dawn
+	[020473] = "PALADIN", -- Holy Shock
+	[053563] = "PALADIN", -- Beacon of Light
+	[082326] = "PALADIN", -- Holy Light
+	[085222] = "PALADIN", -- Light of Dawn
 };
 
 
 ANameP_HealSpellList["수도사"] = {
-	[115175] = "MONK",     -- Soothing Mist
-	[115310] = "MONK",     -- Revival
-	[116670] = "MONK",     -- Vivify
-	[116680] = "MONK",     -- Thunder Focus Tea
-	[116849] = "MONK",     -- Life Cocoon
-	[119611] = "MONK",     -- Renewing mist
+	[115175] = "MONK", -- Soothing Mist
+	[115310] = "MONK", -- Revival
+	[116670] = "MONK", -- Vivify
+	[116680] = "MONK", -- Thunder Focus Tea
+	[116849] = "MONK", -- Life Cocoon
+	[119611] = "MONK", -- Renewing mist
 
 };
 
 ANameP_HealSpellList["기원사"] = {
-	[355936] = "EVOKER",     -- 꿈의 숨결
-	[364446] = "EVOKER",     -- 메아리
-	[366155] = "EVOKER",     -- 되감기
-	[367226] = "EVOKER",     -- 영혼 만개
+	[355936] = "EVOKER", -- 꿈의 숨결
+	[364446] = "EVOKER", -- 메아리
+	[366155] = "EVOKER", -- 되감기
+	[367226] = "EVOKER", -- 영혼 만개
 
 };
 
@@ -816,8 +816,14 @@ local function updateAlphaAnim(f, alpha)
 	end
 end
 
-local ButtonGlowTextures = { ["spark"] = true, ["innerGlow"] = true, ["innerGlowOver"] = true, ["outerGlow"] = true,
-	["outerGlowOver"] = true, ["ants"] = true }
+local ButtonGlowTextures = {
+	["spark"] = true,
+	["innerGlow"] = true,
+	["innerGlowOver"] = true,
+	["outerGlow"] = true,
+	["outerGlowOver"] = true,
+	["ants"] = true
+}
 
 function lib.ButtonGlow_Start(r, color, frequency, frameLevel)
 	if not r then
@@ -951,7 +957,7 @@ local function asCheckTalent()
 			local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
 			local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
 			local definitionInfo = entryInfo and entryInfo.definitionID and
-			C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+				C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
 			if definitionInfo ~= nil then
 				local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
@@ -1233,7 +1239,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			end
 
 			local name, texture, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, _, nameplateShowAll =
-			UnitAura(unit, i, "HELPFUL");
+				UnitAura(unit, i, "HELPFUL");
 			if name then
 				local show = false;
 				local bPVP = false;
@@ -1295,7 +1301,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 			local i = aShowIdx[v][1];
 			local name, texture, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, _, nameplateShowAll =
-			UnitAura(unit, i, "HELPFUL");
+				UnitAura(unit, i, "HELPFUL");
 
 
 			if (not self.buffList[numDebuffs]) then
@@ -1344,7 +1350,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			end
 
 			local name, texture, count, debuffType, duration, expirationTime, caster, _, nameplateShowPersonal, spellId, _, isBossDebuff, _, nameplateShowAll =
-			UnitAura(unit, i, filter);
+				UnitAura(unit, i, filter);
 			if name then
 				-- Default 로 Show List 에 있는 것만 보임
 				local show = PLAYER_UNITS[caster] and (ANameP_ShowList and ANameP_ShowList[name]);
@@ -1396,6 +1402,12 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 						end
 					end
 
+					if options.ANameP_ShowListOnly then
+						if not (ANameP_ShowList and ANameP_ShowList[name]) then
+							show = false;
+						end
+					end
+
 					if isBossDebuff or (caster and not UnitIsPlayer(unit) and UnitIsUnit(unit, caster)) then
 						show = true;
 					end
@@ -1428,7 +1440,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 		for v = 1, aShowNum - 1 do
 			local i = aShowIdx[v][1];
 			local name, texture, count, debuffType, duration, expirationTime, caster, _, nameplateShowPersonal, spellId, _, isBossDebuff, _, nameplateShowAll =
-			UnitAura(unit, i, filter);
+				UnitAura(unit, i, filter);
 			local alert = false;
 			local showlist_time = 0;
 
@@ -1436,6 +1448,11 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 				showlist_time = ANameP_ShowList[name][1];
 				local alertcount = ANameP_ShowList[name][4] or false;
 				local alertnameplate = ANameP_ShowList[name][3] or false;
+
+				if showlist_time == 1 then
+					showlist_time = duration * 0.3;
+					ANameP_ShowList[name][1] = showlist_time;
+				end
 
 				if showlist_time >= 0 and alertcount == false then
 					local alert_time = expirationTime - showlist_time;
@@ -1796,7 +1813,7 @@ local function updateHealthbarColor(self)
 
 	if self.castspellid and self.casticon and status then
 		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-		unit);
+			unit);
 		if not name then
 			name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
 		end
@@ -2015,7 +2032,7 @@ local function asCheckTalent(name)
 			local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
 			local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
 			local definitionInfo = entryInfo and entryInfo.definitionID and
-			C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+				C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
 			if definitionInfo ~= nil then
 				local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
@@ -2097,7 +2114,7 @@ local function checkSpellCasting(self)
 
 	local unit = self.unit;
 	local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-	unit);
+		unit);
 	if not name then
 		name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
 	end
@@ -2655,7 +2672,7 @@ local function ANameP_OnEvent(self, event, ...)
 		setupFriendlyPlates();
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
 		local _, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType =
-		CombatLogGetCurrentEventInfo();
+			CombatLogGetCurrentEventInfo();
 		if eventType == "SPELL_CAST_SUCCESS" and sourceGUID and not (sourceGUID == "") then
 			local className = GetPlayerInfoByGUID(sourceGUID);
 			if className and ANameP_HealSpellList[className] and ANameP_HealSpellList[className][spellID] then

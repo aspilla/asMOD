@@ -1,7 +1,8 @@
 ANameP_Options_Default = {
-    version = 230821,
+    version = 230827,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
+    ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
     ANameP_ShowPlayerBuffAll = false,                         -- [버프] 전부 보이기
     ANameP_AggroShow = true,                                  -- 어그로 여부를 표현할지 여부
     ANameP_LowHealthAlert = true,                             -- 낮은 체력 색상 변경 사용
@@ -28,7 +29,7 @@ ANameP_Options_Default = {
     -- ["디법명"] = {알림 시간, 우선순위, 색상 변경 여부},
     -- 우선순위는 숫자가 큰 경우 우선적으로 보이고, 같을 경우 먼저 걸린 순서로 보임
     ANameP_ShowList_WARRIOR_1 = {
-        ["분쇄"] = { 15 * 0.3, 5, true },
+        ["분쇄"] = { 1, 5, true },
     },
 
     ANameP_ShowList_WARRIOR_2 = {
@@ -39,7 +40,7 @@ ANameP_Options_Default = {
 
     ANameP_ShowList_ROGUE_1 = {
         ["파열"] = { 24 * 0.3, 4, true },
-        ["목조르기"] = { 18 * 0.3, 5 },
+        ["목조르기"] = { 1, 5 },
     },
 
     ANameP_ShowList_ROGUE_2 = {
@@ -52,18 +53,18 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_HUNTER_1 = {
-        ["날카로운 사격"] = { 0, 5, true },
+        ["날카로운 사격"] = { 1, 5, true },
         ["잠재된 독"] = { 8, 4, false, true },
-        ["독사 쐐기"] = { 0, 3 },
+        ["독사 쐐기"] = { 1, 3 },
     },
 
     ANameP_ShowList_HUNTER_2 = {
-        ["독사 쐐기"] = { 0, 4, true },
+        ["독사 쐐기"] = { 1, 4, true },
         ["잠재된 독"] = { 8, 5, false, true },
     },
 
     ANameP_ShowList_HUNTER_3 = {
-        ["독사 쐐기"] = { 0, 4, true },
+        ["독사 쐐기"] = { 1, 4, true },
         ["잠재된 독"] = { 8, 5, false, true },
     },
 
@@ -78,10 +79,10 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_WARLOCK_1 = {
-        ["고통"] = { 5, 5, true },
-        ["불안정한 고통"] = { 5, 4 },
-        ["부패"] = { 5, 3 },
-        ["생명력 착취"] = { 5, 2 },
+        ["고통"] = { 1, 5, true },
+        ["불안정한 고통"] = { 1, 4 },
+        ["부패"] = { 1, 3 },
+        ["생명력 착취"] = { 1, 2 },
     },
 
     ANameP_ShowList_WARLOCK_2 = {
@@ -90,56 +91,56 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_WARLOCK_3 = {
-        ["제물"] = { 24 * 0.3, 5, true },
+        ["제물"] = { 1, 5, true },
     },
 
 
     ANameP_ShowList_PRIEST_1 = {
-        ["어둠의 권능: 고통"] = { 21 * 0.3, 5, true },
+        ["어둠의 권능: 고통"] = { 1, 5, true },
     },
 
     ANameP_ShowList_PRIEST_2 = {
-        ["어둠의 권능: 고통"] = { 21 * 0.3, 5, true },
+        ["어둠의 권능: 고통"] = { 1, 5, true },
     },
 
 
     ANameP_ShowList_PRIEST_3 = {
-        ["어둠의 권능: 고통"] = { 21 * 0.3, 5, true },
+        ["어둠의 권능: 고통"] = { 1, 5, true },
     },
 
     ANameP_ShowList_SHAMAN_1 = {
-        ["화염 충격"] = { 18 * 0.3, 5, true },
+        ["화염 충격"] = { 1, 5, true },
     },
 
     ANameP_ShowList_SHAMAN_2 = {
-        ["화염 충격"] = { 18 * 0.3, 5, true },
+        ["화염 충격"] = { 1, 5, true },
     },
 
     ANameP_ShowList_SHAMAN_3 = {
-        ["화염 충격"] = { 18 * 0.3, 5, true },
+        ["화염 충격"] = { 1, 5, true },
     },
 
 
     ANameP_ShowList_DRUID_1 = {
-        ["달빛섬광"] = { 22 * 0.3, 5, true },
-        ["태양섬광"] = { 13.5 * 0.3, 4 },
-        ["항성의 섬광"] = { 18 * 0.3, 3 },
+        ["달빛섬광"] = { 1, 5, true },
+        ["태양섬광"] = { 1, 4 },
+        ["항성의 섬광"] = { 1, 3 },
     },
 
 
     ANameP_ShowList_DRUID_2 = {
-        ["갈퀴 발톱"] = { 15 * 0.3, 5, true },
-        ["도려내기"] = { 24 * 0.3, 4 },
-        ["달빛섬광"] = { 22 * 0.3, 3 },
+        ["갈퀴 발톱"] = { 1, 5, true },
+        ["도려내기"] = { 1, 4 },
+        ["달빛섬광"] = { 1, 3 },
     },
 
     ANameP_ShowList_DRUID_3 = {
-        ["달빛섬광"] = { 22 * 0.3, 5, true },
+        ["달빛섬광"] = { 1, 5, true },
     },
 
 
     ANameP_ShowList_DRUID_4 = {
-        ["달빛섬광"] = { 22 * 0.3, 5, true },
+        ["달빛섬광"] = { 1, 5, true },
     },
 
 
@@ -166,7 +167,7 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_DEATHKNIGHT_3 = {
-        ["악성 역병"] = { 13.5 * 0.3, 4, true },
+        ["악성 역병"] = { 1, 4, true },
         ["고름 상처"] = { 0, 5 },
     },
 
@@ -678,7 +679,7 @@ local function panelOnShow()
     SetupChildPanel();
     SetupCheckBoxOption("[디버프] 기본에 스팰북 스킬 디버프 추가", "ANameP_ShowKnownSpell");
     SetupCheckBoxOption("[디버프] 내 디버프 모두 보임", "ANameP_ShowMyAll");
-    --SetupCheckBoxOption("[디버프] 툴팁 표시", "ANameP_Tooltip");
+    SetupCheckBoxOption("[디버프] List 등록 디버프만 보임", "ANameP_ShowListOnly");
     SetupCheckBoxOption("[버프] 내 버프 모두 보임", "ANameP_ShowPlayerBuffAll");
     SetupCheckBoxOption("[색상] 어그로 색상 표시", "ANameP_AggroShow");
     SetupCheckBoxOption("[색상] 낮은 생명력 색상 표시", "ANameP_LowHealthAlert");
