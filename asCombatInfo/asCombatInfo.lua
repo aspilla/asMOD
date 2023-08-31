@@ -41,6 +41,7 @@ ACI_SpellID_list = {};
 local ACI_Cool_list = {};
 local ACI_Active_list = {};
 local ACI_Action_slot_list = {};
+local ACI_Action_to_index = {};
 local ACI_Alert_list = {};
 local ACI_Current_Count = 0;
 
@@ -637,6 +638,8 @@ local function ACI_Alert(self, bcastspell)
 	local caster;
 	local name;
 	local bspell = false;
+	local not_buffed = false;
+	local spell_usable = false;
 
 	frame = ACI[i];
 	if not frame then
@@ -714,7 +717,7 @@ local function ACI_Alert(self, bcastspell)
 		end
 
 		bspell = true;
-	elseif t == 2 or t == 3 or t == 5 or t == 6 or t == 7 or t == 12 or t == 17 or t == 18 then
+	elseif t == 2 or t == 3 or t == 5 or t == 6 or t == 7 then
 		local unit = ACI_SpellList[i][3];
 		if unit == nil then
 			unit = "player"
@@ -725,11 +728,9 @@ local function ACI_Alert(self, bcastspell)
 		ACI_Alert_list[spellname] = false;
 
 		local alert_du = ACI_SpellList[i][4];
-		local disablespell = ACI_SpellList[i][6];
-
 		local buff_name = spellname;
 
-		if t == 7 or t == 12 or t == 17 then
+		if t == 7 then
 			buff_name = GetSpellInfo(spellname)
 		end
 
@@ -741,33 +742,8 @@ local function ACI_Alert(self, bcastspell)
 			buff_name = ACI_SpellList[i][7];
 		end
 
-		if (t == 17) then
-			local debuff_idx = 1;
-			count = 0;
-			expirationTime = 0xFFFFFFFF;
-			icon = nil;
-
-			repeat
-				local nametemp, icontemp, _, debuffTypetemp, durationtemp, expirationTimetemp, castertemp, _, _ =
-					UnitBuff(unit, debuff_idx);
-
-				if nametemp and nametemp == buff_name and castertemp and UnitIsUnit(castertemp, "player") then
-					count = count + 1;
-
-					if expirationTimetemp < expirationTime then
-						expirationTime = expirationTimetemp
-						duration = durationtemp;
-					end
-					icon = icontemp;
-					caster = "player";
-				end
-
-				debuff_idx = debuff_idx + 1;
-			until (nametemp == nil)
-		else
-			_, icon, count, _, duration, expirationTime, _, _, _, _, _, _, _, _, _, stack = getUnitBuffbyName(unit,
-				buff_name);
-		end
+		_, icon, count, _, duration, expirationTime, _, _, _, _, _, _, _, _, _, stack = getUnitBuffbyName(unit,
+			buff_name);
 
 		if icon then
 			start = expirationTime - duration;
@@ -796,12 +772,13 @@ local function ACI_Alert(self, bcastspell)
 			elseif alert_du then
 				self.exTime = expirationTime - alert_du;
 			end
-		elseif not disablespell then
-			_, _, icon = GetSpellInfo(spellname)
-			start, duration, enable = GetSpellCooldown(spellname);
-			isUsable, notEnoughMana = IsUsableSpell(spellname);
-			count = GetSpellCharges(spellname);
+		else
+			_, _, icon                                                      = GetSpellInfo(spellname)
+			start, duration, enable                                         = GetSpellCooldown(spellname);
+			isUsable, notEnoughMana                                         = IsUsableSpell(spellname);
+			count                                                           = GetSpellCharges(spellname);
 			charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
+			local _, gcd                                                    = GetSpellCooldown(61304);
 
 			if count == 1 and (not maxCharges or maxCharges <= 1) then
 				count = 0;
@@ -815,10 +792,16 @@ local function ACI_Alert(self, bcastspell)
 				end
 			end
 
-			if buff_name ~= spellname then
-				isUsable = false;
+			if isUsable and duration > gcd then
+				isUsable = false
 			end
 
+
+			if isUsable and alert_du then
+				spell_usable = true;
+				isUsable = false;
+			end
+			
 			if (charges and maxCharges and maxCharges > 1 and charges < maxCharges) then
 				start = chargeStart;
 				duration = chargeDuration;
@@ -837,10 +820,6 @@ local function ACI_Alert(self, bcastspell)
 			count = ACI_Current_Count;
 		end
 
-		if t == 18 then
-			count = checkBuffCount(buff_name);
-		end
-
 		-- 광포한 무리
 		if t == 7 and spellname == 378745 then
 			count = checkDireBeast()
@@ -853,7 +832,7 @@ local function ACI_Alert(self, bcastspell)
 				count = 0;
 			end
 		end
-	elseif t == 4 or t == 8 or t == 16 then
+	elseif t == 4 or t == 8 then
 		local unit = ACI_SpellList[i][3];
 		if unit == nil then
 			unit = "target"
@@ -885,34 +864,8 @@ local function ACI_Alert(self, bcastspell)
 			buff_name = spellname
 		end
 
-
-		if (t == 16) then
-			local debuff_idx = 1;
-			count = 0;
-			expirationTime = 0xFFFFFFFF;
-			icon = nil;
-
-			repeat
-				local nametemp, icontemp, _, debuffTypetemp, durationtemp, expirationTimetemp, castertemp, _, _ =
-					UnitDebuff(unit, debuff_idx, filter);
-
-				if nametemp and nametemp == buff_name and castertemp and UnitIsUnit(castertemp, "player") then
-					count = count + 1;
-
-					if expirationTimetemp < expirationTime then
-						expirationTime = expirationTimetemp
-						duration = durationtemp;
-					end
-					icon = icontemp;
-					caster = "player";
-				end
-
-				debuff_idx = debuff_idx + 1;
-			until (nametemp == nil)
-		else
-			_, icon, count, debuffType, duration, expirationTime, caster, _, _, _, _, _, _, _, _, stack =
-				getUnitDebuffbyName(unit, buff_name, filter);
-		end
+		_, icon, count, debuffType, duration, expirationTime, caster, _, _, _, _, _, _, _, _, stack =
+			getUnitDebuffbyName(unit, buff_name, filter);
 
 		if (not (unit == "player")) and not PLAYER_UNITS[caster] then
 			icon = nil;
@@ -947,11 +900,13 @@ local function ACI_Alert(self, bcastspell)
 				self.exTime = expirationTime - alert_du;
 			end
 		else
-			_, _, icon = GetSpellInfo(spellname)
-			start, duration, enable = GetSpellCooldown(spellname);
-			isUsable, notEnoughMana = IsUsableSpell(spellname);
-			count = GetSpellCharges(spellname);
+			_, _, icon                                                      = GetSpellInfo(spellname)
+			start, duration, enable                                         = GetSpellCooldown(spellname);
+			isUsable, notEnoughMana                                         = IsUsableSpell(spellname);
+			count                                                           = GetSpellCharges(spellname);
 			charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
+			local _, gcd                                                    = GetSpellCooldown(61304);
+
 			if count == 1 and (not maxCharges or maxCharges <= 1) then
 				count = 0;
 			end
@@ -964,8 +919,16 @@ local function ACI_Alert(self, bcastspell)
 				end
 			end
 
+			if isUsable and duration > gcd then
+				isUsable = false
+			end
 
-			isUsable = false;
+			if isUsable and alert_du then				
+				if t == 4 then
+					spell_usable = true;
+				end				
+				isUsable = false;
+			end			
 
 			if (charges and maxCharges and maxCharges > 1 and charges < maxCharges) then
 				start = chargeStart;
@@ -984,7 +947,7 @@ local function ACI_Alert(self, bcastspell)
 
 
 		if check_buff == nil then
-			check_buff = false;
+			check_buff = true;
 		end
 
 		for slot = 1, MAX_TOTEMS do
@@ -1014,12 +977,17 @@ local function ACI_Alert(self, bcastspell)
 			start, duration, enable = GetSpellCooldown(spellname);
 			isUsable, notEnoughMana = IsUsableSpell(spellname);
 			count = GetSpellCharges(spellname);
+			local _, gcd                                                    = GetSpellCooldown(61304);
 
 
 			charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
 
 			if count == 1 and (not maxCharges or maxCharges <= 1) then
 				count = 0;
+			end
+
+			if isUsable and duration > gcd then
+				isUsable = false
 			end
 
 
@@ -1044,7 +1012,7 @@ local function ACI_Alert(self, bcastspell)
 		_, _, icon = GetSpellInfo(spellname);
 		duration = 0;
 		start = 0;
-		isUsable = 0
+		isUsable = false
 		enable = 0
 		count = 0;
 		for _, buffname in ipairs(roguespell) do
@@ -1070,57 +1038,38 @@ local function ACI_Alert(self, bcastspell)
 		else
 			ACI_Alert_list[spellname] = false;
 		end
-	elseif t == 15 then
-		isUsable = false;
-
-		local slot_name = ACI_SpellList[i][3];
-		local slot_du = ACI_SpellList[i][4];
-
-
-		if slot_name == nil then
-			slot_name = spellname;
-		end
-
-		if slot_du == nil then
-			slot_du = 0;
-		end
-
-
-		if ACI_SpellList[i][5] == nil then
-			ACI_SpellList[i][5] = {};
-		end
-
-
-		count = 0;
-		if cast_spell and GetSpellInfo(cast_spell) == slot_name and bcastspell then
-			cast_spell = nil;
-			tinsert(ACI_SpellList[i][5], cast_time)
-		end
-
-
-
-		local currtime = GetTime();
-		for k, v in pairs(ACI_SpellList[i][5]) do
-			if (v + slot_du) < currtime then
-				tremove(ACI_SpellList[i][5], k);
-			else
-				_, _, icon = GetSpellInfo(spellname)
-				start = v;
-				duration = slot_du;
-				buff_cool = true;
-				isUsable = true;
-				enable = 1;
-			end
-		end
-
-		count = #ACI_SpellList[i][5];
-
 
 		if isUsable == false then
-			_, _, icon = GetSpellInfo(spellname)
+			spellname, _, icon = GetSpellInfo(spellname)
+			
 			start, duration, enable = GetSpellCooldown(spellname);
 			isUsable, notEnoughMana = IsUsableSpell(spellname);
 			count = GetSpellCharges(spellname);
+			local _, gcd                                                    = GetSpellCooldown(61304);
+
+
+			charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
+
+			if count == 1 and (not maxCharges or maxCharges <= 1) then
+				count = 0;
+			end
+
+			if isUsable and duration > gcd then
+				isUsable = false
+			end
+
+			if not count or count == 0 then
+				if ACI_Action_slot_list[i] then
+					count = GetActionCount(ACI_Action_slot_list[i]);
+					charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetActionCharges(
+						ACI_Action_slot_list[i]);
+				end
+			end
+
+			if (charges and maxCharges and maxCharges > 1 and charges < maxCharges) then
+				start = chargeStart;
+				duration = chargeDuration;
+			end
 		end
 	end
 
@@ -1140,26 +1089,28 @@ local function ACI_Alert(self, bcastspell)
 	end
 
 	local skip = false
+	frameIcon:SetAlpha(1);
 
 	if (isUsable) then
-		frameIcon:SetDesaturated(false)
-
+		frameIcon:SetDesaturated(false);
 		frameIcon:SetVertexColor(1.0, 1.0, 1.0);
-		frameIcon:SetAlpha(1);
+		
 
 		if t >= 2 and t ~= 9 then
 			if buff_cool then
 				frameIcon:SetVertexColor(1.0, 1.0, 1.0);
-				frameIcon:SetAlpha(1);
-
+				
 				if t == 3 and count == 0 then
 					frameIcon:SetDesaturated(true)
 				end
 			else
-				frameIcon:SetVertexColor(0.7, 0.7, 0.7);
-				frameIcon:SetAlpha(1);
+				if frame.inRange == false then
+					frameIcon:SetVertexColor(0.3, 0, 0);
+				else
+					frameIcon:SetVertexColor(0.3, 0.3, 0.3);
+				end
 
-				if t == 6 then
+				if t == 6 or t == 2 or t == 4 or t == 11 or t == 14 then
 					frameIcon:SetDesaturated(false)
 				else
 					frameIcon:SetDesaturated(true)
@@ -1167,17 +1118,24 @@ local function ACI_Alert(self, bcastspell)
 			end
 		end
 
+
+		if (t == 1 or t == 9 or t == 11) and frame.inRange == false then
+			frameIcon:SetVertexColor(0.3, 0, 0);
+		end
+
 		if t == 5 and count == 0 then
 			frameIcon:SetDesaturated(true)
 		end
 	elseif (notEnoughMana) then
 		frameIcon:SetVertexColor(0.5, 0.5, 1);
-		frameIcon:SetAlpha(1);
 		frameIcon:SetDesaturated(true)
 	else
 		frameIcon:SetVertexColor(0.4, 0.4, 0.4);
-		frameIcon:SetAlpha(1);
 		frameIcon:SetDesaturated(true)
+
+		if spell_usable and frame.inRange == false then
+			frameIcon:SetVertexColor(0.3, 0, 0);
+		end
 	end
 
 
@@ -1188,7 +1146,7 @@ local function ACI_Alert(self, bcastspell)
 		if debuffType then
 			color = DebuffTypeColor[debuffType];
 		elseif buff_miss then
-			color = { r = 1.0, g = 0, b = 0 };
+			color = { r = 1.0, g = 0, b = 0 };			
 		else
 			if t == 4 or t == 8 then
 				color = DebuffTypeColor["none"];
@@ -1201,8 +1159,7 @@ local function ACI_Alert(self, bcastspell)
 		frameBorder:Show();
 	else
 		frameBorder:SetVertexColor(0, 0, 0);
-		frameBorder:Show();
-		--frameBorder:Hide();
+		frameBorder:Show();		
 	end
 
 	if alert_count and count and count >= alert_count then
@@ -1286,6 +1243,10 @@ local function ACI_ButtonOnEvent(self, event, arg1, ...)
 			else
 				self.checkhealth = false;
 			end
+		end
+
+		if not UnitExists("target") then
+			self.inRange = true;
 		end
 
 		ACI_Alert(self);
@@ -1399,6 +1360,19 @@ local function ACI_OnEvent(self, event, arg1, ...)
 		if ACI_Cool_list and ACI_Cool_list[spell] then
 			ACI_Alert(ACI[ACI_Cool_list[spell]]);
 		end
+	elseif event == "ACTION_RANGE_CHECK_UPDATE" then
+		local action, inRange, checksRange = arg1, ...;
+
+		if not UnitExists("target") then
+			inRange = true;
+		end
+
+		if ACI_Action_to_index[action] then
+			local index = ACI_Action_to_index[action];
+			if ACI[index] then
+				ACI[index].inRange = inRange;
+			end
+		end
 	end
 	return;
 end
@@ -1507,6 +1481,7 @@ function ACI_Init()
 	ACI_SpellID_list = {}
 	ACI_Player_Debuff_list = {}
 	ACI_Action_slot_list = {};
+	ACI_Action_to_index = {};
 
 
 	if ACI_SpellListtmp and #ACI_SpellListtmp then
@@ -1541,7 +1516,6 @@ function ACI_Init()
 	event_frames["UNIT_SPELLCAST_SUCCEEDED"] = {};
 	event_frames["PLAYER_TOTEM_UPDATE"] = {};
 	event_frames["UNIT_HEALTH"] = {};
-
 
 	for i = 1, ACI_MaxSpellCount do
 		ACI[i].update = 0;
@@ -1609,24 +1583,31 @@ function ACI_Init()
 				local id = select(7, GetSpellInfo(ACI_SpellList[i][1]));
 
 				ACI_Action_slot_list[i] = ACI_GetActionSlot(ACI_SpellList[i][1]);
+				ACI_Action_to_index[ACI_Action_slot_list[i]] = i;
 
 				if id then
 					ACI_SpellID_list[id] = true;
 				end
 			elseif ACI_SpellList[i][2] == 2 or ACI_SpellList[i][2] == 3 or ACI_SpellList[i][2] == 5 or ACI_SpellList[i][2] == 6 then
 				ACI_Action_slot_list[i] = ACI_GetActionSlot(ACI_SpellList[i][1]);
+				if ACI_Action_slot_list[i] then
+					ACI_Action_to_index[ACI_Action_slot_list[i]] = i;
+				end
 
 				ACI_Buff_list[ACI_SpellList[i][1]] = i;
 				local id = select(7, GetSpellInfo(ACI_SpellList[i][1]));
 				if id then
 					ACI_SpellID_list[id] = true;
 				end
-			elseif ACI_SpellList[i][2] == 4 or ACI_SpellList[i][2] == 16 then
+			elseif ACI_SpellList[i][2] == 4 then
 				ACI_Debuff_list[ACI_SpellList[i][1]] = i;
 
 				local id = select(7, GetSpellInfo(ACI_SpellList[i][1]));
 
 				ACI_Action_slot_list[i] = ACI_GetActionSlot(ACI_SpellList[i][1]);
+				if ACI_Action_slot_list[i] then
+					ACI_Action_to_index[ACI_Action_slot_list[i]] = i;
+				end
 
 				if id then
 					ACI_SpellID_list[id] = true;
@@ -1635,7 +1616,7 @@ function ACI_Init()
 				if ACI_SpellList[i][3] and ACI_SpellList[i][3] == "player" then
 					ACI_Player_Debuff_list[ACI_SpellList[i][1]] = i;
 				end
-			elseif ACI_SpellList[i][2] == 7 or ACI_SpellList[i][2] == 12 or ACI_SpellList[i][2] == 17 or ACI_SpellList[i][2] == 18 then
+			elseif ACI_SpellList[i][2] == 7 then
 				local name = GetSpellInfo(ACI_SpellList[i][1]);
 
 				ACI_Action_slot_list[i] = ACI_GetActionSlot(name);
@@ -1658,8 +1639,12 @@ function ACI_Init()
 					ACI_Player_Debuff_list[name] = i;
 				end
 			elseif ACI_SpellList[i][2] == 14 then
+				ACI_Action_slot_list[i] = ACI_GetActionSlot(ACI_SpellList[i][1]);
+				if ACI_Action_slot_list[i] then
+					ACI_Action_to_index[ACI_Action_slot_list[i]] = i;
+				end
 
-			elseif ACI_SpellList[i][2] == 11 or ACI_SpellList[i][2] == 15 then
+			elseif ACI_SpellList[i][2] == 11 then
 				local slot_name = ACI_SpellList[i][3];
 
 				if slot_name == nil then
@@ -1681,13 +1666,14 @@ function ACI_Init()
 
 			ACI[i].tooltip = (ACI_SpellList[i][1]);
 			ACI[i].spellid = tonumber(ACI_SpellList[i][1]);
+			ACI[i].inRange = true;
 
 
 
 
 			local t = ACI_SpellList[i][2];
 
-			if t == 4 or t == 8 or t == 16 then
+			if t == 4 or t == 8 then
 				ACI[i].unit = ACI_SpellList[i][3];
 				if ACI[i].unit == nil then
 					ACI[i].unit = "target"
@@ -1707,7 +1693,7 @@ function ACI_Init()
 				EventsFrame_RegisterFrame("ACTIONBAR_UPDATE_COOLDOWN", ACI[i]);
 				EventsFrame_RegisterFrame("SPELL_UPDATE_CHARGES", ACI[i]);
 				EventsFrame_RegisterFrame("UNIT_SPELLCAST_SUCCEEDED", ACI[i]);
-			elseif t == 2 or t == 3 or t == 5 or t == 6 or t == 7 or t == 10 or t == 14 or t == 17 or t == 18 then
+			elseif t == 2 or t == 3 or t == 5 or t == 6 or t == 7 then
 				ACI[i].unit = ACI_SpellList[i][3];
 				if ACI[i].unit == nil then
 					ACI[i].unit = "player"
@@ -1723,7 +1709,7 @@ function ACI_Init()
 					EventsFrame_RegisterFrame("PLAYER_TARGET_CHANGED", ACI[i]);
 				end
 
-				if t == 2 or t == 6 or t == 18 then
+				if t == 2 or t == 6 then
 					EventsFrame_RegisterFrame("ACTIONBAR_UPDATE_USABLE", ACI[i]);
 					EventsFrame_RegisterFrame("ACTIONBAR_UPDATE_COOLDOWN", ACI[i]);
 					EventsFrame_RegisterFrame("SPELL_UPDATE_CHARGES", ACI[i]);
@@ -1803,6 +1789,8 @@ ACI_mainframe:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
 ACI_mainframe:RegisterEvent("SPELL_UPDATE_CHARGES");
 ACI_mainframe:RegisterEvent("PLAYER_TOTEM_UPDATE");
 ACI_mainframe:RegisterEvent("PLAYER_TARGET_CHANGED");
+ACI_mainframe:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");
+
 
 for i = 1, 5 do
 	ACI[i] = CreateFrame("Button", nil, UIParent, "asCombatInfoFrameTemplate");

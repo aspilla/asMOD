@@ -1,20 +1,20 @@
-local ACRB_Size = 0;                                       -- Buff 아이콘 증가 크기
-local ACRB_BuffSizeRate = 0.9;                             -- 기존 Size 크기 배수
-local ACRB_ShowBuffCooldown = false                        -- 버프 지속시간을 보이려면
-local ACRB_MinShowBuffFontSize = 5                         -- 이크기보다 Cooldown font Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0
-local ACRB_CooldownFontSizeRate = 0.5                      -- 버프 Size 대비 쿨다운 폰트 사이즈
-local ACRB_MAX_BUFFS = 6                                   -- 최대 표시 버프 개수 (3개 + 3개)
-local ACRB_MAX_BUFFS_2 = 2                                 -- 최대 생존기 개수
-local ACRB_MAX_DEBUFFS = 3                                 -- 최대 표시 디버프 개수 (3개)
-local ACRB_MAX_DISPELDEBUFFS = 3                           -- 최대 해제 디버프 개수 (3개)
-local ACRB_MAX_CASTING = 2                                 -- 최대 Casting Alert
-local ACRB_ShowListFirst = true                            -- 알림 List 항목을 먼저 보임 (가나다 순, 같은 디법이 여러게 걸리는 경우 1개만 보일 수 있음 ex 불고)
-local ACRB_ShowAlert = true                                -- HOT 리필 시 알림
-local ACRB_MaxBuffSize = 20                                -- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
-local ACRB_HealerManaBarHeight = 2                         -- 힐러 마나바 크기 (안보이게 하려면 0)
-local ACRB_UpdateRate = (0.1)                              -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
-local ACRB_ShowWhenSolo = true                             -- Solo Raid Frame 사용시 보이게 하려면 True (반드시 Solo Raid Frame과 사용)
-local ACRB_ShowTooltip = true                              -- GameTooltip을 보이게 하려면 True
+local ACRB_Size = 0;                                         -- Buff 아이콘 증가 크기
+local ACRB_BuffSizeRate = 0.9;                               -- 기존 Size 크기 배수
+local ACRB_ShowBuffCooldown = false                          -- 버프 지속시간을 보이려면
+local ACRB_MinShowBuffFontSize = 5                           -- 이크기보다 Cooldown font Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0
+local ACRB_CooldownFontSizeRate = 0.5                        -- 버프 Size 대비 쿨다운 폰트 사이즈
+local ACRB_MAX_BUFFS = 6                                     -- 최대 표시 버프 개수 (3개 + 3개)
+local ACRB_MAX_BUFFS_2 = 2                                   -- 최대 생존기 개수
+local ACRB_MAX_DEBUFFS = 3                                   -- 최대 표시 디버프 개수 (3개)
+local ACRB_MAX_DISPELDEBUFFS = 3                             -- 최대 해제 디버프 개수 (3개)
+local ACRB_MAX_CASTING = 2                                   -- 최대 Casting Alert
+local ACRB_ShowListFirst = true                              -- 알림 List 항목을 먼저 보임 (가나다 순, 같은 디법이 여러게 걸리는 경우 1개만 보일 수 있음 ex 불고)
+local ACRB_ShowAlert = true                                  -- HOT 리필 시 알림
+local ACRB_MaxBuffSize = 20                                  -- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
+local ACRB_HealerManaBarHeight = 2                           -- 힐러 마나바 크기 (안보이게 하려면 0)
+local ACRB_UpdateRate = (0.1)                                -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
+local ACRB_ShowWhenSolo = true                               -- Solo Raid Frame 사용시 보이게 하려면 True (반드시 Solo Raid Frame과 사용)
+local ACRB_ShowTooltip = true                                -- GameTooltip을 보이게 하려면 True
 local ACRB_RangeFilterColor = { r = 0.3, g = 0.3, b = 0.3 }; --30m 이상 RangeFilter Color
 local ACRB_RangeFilterAlpha = 0.5
 
@@ -144,9 +144,11 @@ local ACRB_PVPBuffList = {
 	[274156] = true, --DEATHKNIGHT
 	[194679] = true, --DEATHKNIGHT
 	[55233] = true, --DEATHKNIGHT
+	[272679] = true, --HUNTER
 	[53480] = true, --HUNTER
 	[109304] = true, --HUNTER
 	[264735] = true, --HUNTER
+	[186265] = true, --HUNTER
 	[355913] = true, --EVOKER
 	[370960] = true, --EVOKER
 	[363534] = true, --EVOKER
@@ -226,6 +228,15 @@ local ACRB_PVPBuffList = {
 	[86949] = true, --MAGE
 	[235219] = true, --MAGE
 	[414658] = true, --MAGE
+	[110960] = true, --MAGE
+	[125174] = true, --MONK
+	[186265] = true, --HUNTER
+	[378441] = true, --EVOKER
+	[228049] = true, --PALADIN
+	[642] = true, --PALADIN
+	[409293] = true, --SHAMAN
+	[45438] = true, --MAGE	
+	[586] = true, --PRIEST
 }
 
 --Overlay stuff
@@ -735,8 +746,14 @@ local function updateAlphaAnim(f, alpha)
 	end
 end
 
-local ButtonGlowTextures = { ["spark"] = true, ["innerGlow"] = true, ["innerGlowOver"] = true, ["outerGlow"] = true,
-	["outerGlowOver"] = true, ["ants"] = true }
+local ButtonGlowTextures = {
+	["spark"] = true,
+	["innerGlow"] = true,
+	["innerGlowOver"] = true,
+	["outerGlow"] = true,
+	["outerGlowOver"] = true,
+	["ants"] = true
+}
 
 function lib.ButtonGlow_Start(r, color, frequency, frameLevel)
 	if not r then
@@ -1246,10 +1263,38 @@ local function ACRB_setupFrame(frame)
 	asraid[frameName].ncasting = 0;
 end
 
+local cachedVisualizationInfo = {};
+local hasValidPlayer = false;
+
+local function GetCachedVisibilityInfo(spellId)
+	if cachedVisualizationInfo[spellId] == nil then
+		local newInfo = {
+			SpellGetVisibilityInfo(spellId, UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT") };
+		if not hasValidPlayer then
+			-- Don't cache the info if the player is not valid since we didn't get a valid result
+			return unpack(newInfo);
+		end
+		cachedVisualizationInfo[spellId] = newInfo;
+	end
+
+	local info = cachedVisualizationInfo[spellId];
+	return unpack(info);
+end
+
+
+local cachedSelfBuffChecks = {};
+local function CheckIsSelfBuff(spellId)
+	if cachedSelfBuffChecks[spellId] == nil then
+		cachedSelfBuffChecks[spellId] = SpellIsSelfBuff(spellId);
+	end
+
+	return cachedSelfBuffChecks[spellId];
+end
+
 -- 버프 설정 부
 local function asCompactUnitFrame_UtilShouldDisplayBuff_buff(unit, index, filter)
 	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura =
-	UnitBuff(unit, index, filter);
+		UnitBuff(unit, index, filter);
 
 	if ACRB_BlackList and ACRB_BlackList[name] then
 		return false;
@@ -1259,15 +1304,14 @@ local function asCompactUnitFrame_UtilShouldDisplayBuff_buff(unit, index, filter
 		return false;
 	end
 
-	local hasCustom, alwaysShowMine, showForMySpec = SpellGetVisibilityInfo(spellId,
-		UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT");
+	local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
 
 	if (hasCustom) then
 		return showForMySpec or
-		(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
+			(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
 	else
 		return (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") and canApplyAura and
-		not SpellIsSelfBuff(spellId);
+			not CheckIsSelfBuff(spellId);
 	end
 end
 
@@ -1276,10 +1320,10 @@ local function asCompactUnitFrame_UtilIsBossAura(unit, index, filter, checkAsBuf
 	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura;
 	if (checkAsBuff) then
 		name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura =
-		UnitBuff(unit, index, filter);
+			UnitBuff(unit, index, filter);
 	else
 		name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura =
-		UnitDebuff(unit, index, filter);
+			UnitDebuff(unit, index, filter);
 	end
 	return isBossAura;
 end
@@ -1295,7 +1339,7 @@ end
 
 local function asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, index, filter)
 	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura =
-	UnitBuff(unit, index, filter);
+		UnitBuff(unit, index, filter);
 	buffFrame.icon:SetTexture(icon);
 	if (count > 1) then
 		local countText = count;
@@ -1459,7 +1503,7 @@ end
 
 local function asCompactUnitFrame_UtilShouldDisplayBuff(unit, index, filter)
 	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura =
-	UnitBuff(unit, index, filter);
+		UnitBuff(unit, index, filter);
 
 	if ACRB_PVPBuffList[spellId] then
 		return true;
@@ -1470,7 +1514,7 @@ end
 
 local function asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter)
 	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura =
-	UnitBuff(unit, index, filter);
+		UnitBuff(unit, index, filter);
 	buffFrame.icon:SetTexture(icon);
 	if (count > 1) then
 		local countText = count;
@@ -1510,7 +1554,7 @@ local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter
 			index, filter);
 	else
 		name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId = UnitDebuff(
-		unit, index, filter);
+			unit, index, filter);
 	end
 
 	debuffFrame.icon:SetTexture(icon);
@@ -1554,10 +1598,10 @@ local function asCompactUnitFrame_UtilIsBossAura(unit, index, filter, checkAsBuf
 	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura, nameplateShowAll;
 	if (checkAsBuff) then
 		name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura =
-		UnitBuff(unit, index, filter);
+			UnitBuff(unit, index, filter);
 	else
 		name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura, _, nameplateShowAll =
-		UnitDebuff(unit, index, filter);
+			UnitDebuff(unit, index, filter);
 	end
 
 	return isBossAura or nameplateShowAll;
@@ -1565,7 +1609,7 @@ end
 
 local function asCompactUnitFrame_UtilShouldDisplayDebuff(unit, index, filter)
 	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura, _, nameplateShowAll =
-	UnitDebuff(unit, index, filter);
+		UnitDebuff(unit, index, filter);
 
 
 	if ACRB_BlackList and ACRB_BlackList[name] then
@@ -1576,32 +1620,38 @@ local function asCompactUnitFrame_UtilShouldDisplayDebuff(unit, index, filter)
 		return true;
 	end
 
-
-	local hasCustom, alwaysShowMine, showForMySpec = SpellGetVisibilityInfo(spellId,
-		UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT");
+	local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
 	if (hasCustom) then
 		return showForMySpec or
-		(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));                    --Would only be "mine" in the case of something like forbearance.
+		(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));                     
+		--Would only be "mine" in the case of something like forbearance.
 	else
 		return true;
 	end
 end
 
+local cachedPriorityChecks = {};
+local function CheckIsPriorityAura(spellId)
+	if cachedPriorityChecks[spellId] == nil then
+		cachedPriorityChecks[spellId] = SpellIsPriorityAura(spellId);
+	end
+
+	return cachedPriorityChecks[spellId];
+end
+
+
 local function asCompactUnitFrame_UtilIsPriorityDebuff(unit, index, filter)
 	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura =
-	UnitDebuff(unit, index, filter);
+		UnitDebuff(unit, index, filter);
+
 
 	local _, classFilename = UnitClass("player");
 	if (classFilename == "PALADIN") then
-		if (spellId == 25771) then --Forbearance
-			return true;
-		end
-	elseif (classFilename == "PRIEST") then
-		if (spellId == 6788) then --Weakened Soul
-			return true;
-		end
+		local isForbearance = (spellId == 25771);
+		return isForbearance or CheckIsPriorityAura(spellId);
+	else
+		return CheckIsPriorityAura(spellId);
 	end
-	return false;
 end
 
 local function asCompactUnitFrame_UpdateDebuffs(asframe)
@@ -1729,7 +1779,7 @@ local function asCompactUnitFrame_UpdateDispellableDebuffs(asframe)
 	local filter = "RAID"; --Only dispellable debuffs.
 	while (frameNum <= ACRB_MAX_DISPELDEBUFFS) do
 		local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId =
-		UnitDebuff(unit, index, filter);
+			UnitDebuff(unit, index, filter);
 
 		if (dispellableDebuffTypes[debuffType] and not asframe["ashasDispel" .. debuffType]) then
 			asframe["ashasDispel" .. debuffType] = true;
@@ -2100,7 +2150,7 @@ local function ACRB_updateCasting(asframe, unit)
 
 		if asframe.displayedUnit and UnitIsUnit(unit .. "target", asframe.displayedUnit) then
 			local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid =
-			UnitCastingInfo(unit);
+				UnitCastingInfo(unit);
 			if not name then
 				name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
 			end
@@ -2168,7 +2218,7 @@ local function CheckCasting(nameplate)
 
 	if isFaction(unit) then
 		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-		unit);
+			unit);
 		if not name then
 			name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
 		end
@@ -2274,6 +2324,12 @@ local function ACRB_OnUpdate()
 	ACRB_CheckCasting();
 end
 
+local function DumpCaches()
+	cachedVisualizationInfo = {};
+	cachedSelfBuffChecks = {};
+	cachedPriorityChecks = {};
+end
+
 local function ACRB_OnEvent(self, event, ...)
 	local arg1 = ...;
 
@@ -2283,6 +2339,7 @@ local function ACRB_OnEvent(self, event, ...)
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		ACRB_InitList();
 		mustdisable = true;
+		hasValidPlayer = true;
 
 		local bloaded = LoadAddOn("DBM-Core");
 		if bloaded then
@@ -2299,6 +2356,10 @@ local function ACRB_OnEvent(self, event, ...)
 		if together == nil then
 			together = true;
 		end
+	elseif (event == "PLAYER_REGEN_ENABLED" and event == "PLAYER_REGEN_DISABLED") then
+		DumpCaches();
+	elseif (event == "PLAYER_LEAVING_WORLD") then
+		hasValidPlayer = false;
 	end
 end
 
@@ -2318,12 +2379,15 @@ local ACRB_mainframe = CreateFrame("Frame", nil, UIParent);
 ACRB_mainframe:SetScript("OnEvent", ACRB_OnEvent)
 ACRB_mainframe:RegisterEvent("GROUP_ROSTER_UPDATE");
 ACRB_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
+ACRB_mainframe:RegisterEvent("PLAYER_LEAVING_WORLD");
 --ACRB_mainframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 ACRB_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 ACRB_mainframe:RegisterEvent("CVAR_UPDATE");
 ACRB_mainframe:RegisterEvent("ROLE_CHANGED_INFORM");
 ACRB_mainframe:RegisterEvent("COMPACT_UNIT_FRAME_PROFILES_LOADED");
 ACRB_mainframe:RegisterEvent("VARIABLES_LOADED");
+ACRB_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
+ACRB_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 
 C_Timer.NewTicker(ACRB_UpdateRate, ACRB_OnUpdate);
 

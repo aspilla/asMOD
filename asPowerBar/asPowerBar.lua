@@ -44,12 +44,19 @@ local balert = false;
 local balert2 = false;
 
 local PowerTypeString = {}
-PowerTypeString = { [Enum.PowerType.Focus] = "집중", [Enum.PowerType.Insanity] = "광기",
-	[Enum.PowerType.Maelstrom] = "소용돌이", [Enum.PowerType.LunarPower] = "천공의 힘" };
+PowerTypeString = {
+	[Enum.PowerType.Focus] = "집중",
+	[Enum.PowerType.Insanity] = "광기",
+	[Enum.PowerType.Maelstrom] = "소용돌이",
+	[Enum.PowerType.LunarPower] = "천공의 힘"
+};
 
 local PowerTypeComboString = {}
-PowerTypeComboString = { [Enum.PowerType.SoulShards] = "영혼의 조각", [Enum.PowerType.ArcaneCharges] = "비전 충전물이",
-	[Enum.PowerType.Essence] = "정수" };
+PowerTypeComboString = {
+	[Enum.PowerType.SoulShards] = "영혼의 조각",
+	[Enum.PowerType.ArcaneCharges] = "비전 충전물이",
+	[Enum.PowerType.Essence] = "정수"
+};
 
 local SpellGetCosts = {};
 local SpellGetPowerCosts = {};
@@ -100,7 +107,7 @@ local function APB_UnitBuff(unit, buff, casterid)
 
 	repeat
 		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
-		UnitBuff(unit, i, filter);
+			UnitBuff(unit, i, filter);
 
 		if (name == buff or spellId == buff) and duration > 0 and caster == casterid then
 			return UnitBuff(unit, i, filter);
@@ -329,7 +336,7 @@ local function APB_UpdateBuffCombo(combobar)
 
 	if APB_BUFF_COMBO then
 		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
-		APB_UnitBuff(combobar.unit, APB_BUFF_COMBO, "player");
+			APB_UnitBuff(combobar.unit, APB_BUFF_COMBO, "player");
 
 		if name and caster == "player" then
 			APB_ShowComboBar(count);
@@ -341,7 +348,7 @@ local function APB_UpdateBuffCombo(combobar)
 
 	if APB_DEBUFF_COMBO then
 		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
-		APB_UnitDebuff(combobar.unit, APB_DEBUFF_COMBO, "player");
+			APB_UnitDebuff(combobar.unit, APB_DEBUFF_COMBO, "player");
 
 		if name and caster == "player" then
 			APB_ShowComboBar(count);
@@ -408,7 +415,7 @@ local function APB_UpdateBuff(buffbar)
 
 	if buffbar.buff then
 		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
-		APB_UnitBuff(buffbar.unit, buffbar.buff, "player");
+			APB_UnitBuff(buffbar.unit, buffbar.buff, "player");
 
 		if name and caster == "player" then
 			buffbar.start = expirationTime - duration;
@@ -435,7 +442,7 @@ local function APB_UpdateBuff(buffbar)
 
 	if buffbar.debuff then
 		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
-		APB_UnitDebuff_Name(buffbar.unit, buffbar.debuff);
+			APB_UnitDebuff_Name(buffbar.unit, buffbar.debuff);
 
 		if name and caster == "player" then
 			buffbar.start = expirationTime - duration;
@@ -638,6 +645,12 @@ local function APB_MaxRune()
 		APB.combobar[i]:SetWidth(width)
 		APB.combobar[i]:Show();
 	end
+
+	if bshowspell then
+		APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPLEFT", 0, 1);
+	else
+		APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.buffbar[0], "TOPLEFT", 0, 1);
+	end
 end
 
 local function RuneComparison(runeAIndex, runeBIndex)
@@ -806,6 +819,8 @@ local function setupMouseOver(frame)
 	end
 end
 
+local inrange, inrange2 = true, true;
+
 local function APB_UpdateSpell(spell, spell2)
 	local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spell);
 	local spellid = select(7, GetSpellInfo(spell));
@@ -844,6 +859,10 @@ local function APB_UpdateSpell(spell, spell2)
 			APB.spellbar[i]:SetStatusBarColor(0, 1, 0)
 		end
 
+		if inrange == false then
+			APB.spellbar[i]:SetStatusBarColor(0.3, 0, 0);
+		end
+
 		APB.spellbar[i].spellid = spellid;
 	end
 
@@ -855,6 +874,10 @@ local function APB_UpdateSpell(spell, spell2)
 
 		if balert then
 			APB.spellbar[charges + 1]:SetStatusBarColor(0, 1, 1)
+		end
+
+		if inrange == false then
+			APB.spellbar[charges + 1]:SetStatusBarColor(0.3, 0, 0);
 		end
 
 		APB.spellbar[charges + 1].spellid = spellid;
@@ -898,6 +921,10 @@ local function APB_UpdateSpell(spell, spell2)
 
 			if balert2 then
 				APB.spellbar[i]:SetStatusBarColor(0, 1, 1)
+			end
+
+			if inrange2 == false then
+				APB.spellbar[i]:SetStatusBarColor(0.3, 0, 0);
 			end
 		end
 
@@ -1093,7 +1120,7 @@ local function asCheckTalent(name)
 			local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
 			local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
 			local definitionInfo = entryInfo and entryInfo.definitionID and
-			C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+				C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
 			if definitionInfo ~= nil then
 				local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
@@ -1106,6 +1133,27 @@ local function asCheckTalent(name)
 	end
 
 	return false;
+end
+
+local function APB_GetActionSlot(arg1)
+	for lActionSlot = 1, 120 do
+		local type, id, subType, spellID = GetActionInfo(lActionSlot);
+
+		if id and type and type == "macro" then
+			id = GetMacroSpell(id);
+		end
+
+		if id then
+			local name = GetSpellInfo(id);
+
+
+			if name and name == arg1 then
+				return lActionSlot;
+			end
+		end
+	end
+
+	return nil;
 end
 
 local function APB_CheckPower(self)
@@ -1153,6 +1201,8 @@ local function APB_CheckPower(self)
 	APB_DEBUFF2 = nil;
 	APB_SPELL = nil;
 	APB_SPELL2 = nil;
+	APB_ACTION = nil;
+	APB_ACTION2 = nil;
 	APB_UNIT_POWER = nil;
 	APB_POWER_LEVEL = nil;
 	APB_BUFF_COMBO = nil;
@@ -1709,6 +1759,13 @@ local function APB_CheckPower(self)
 		end
 	end
 
+	if APB_SPELL then
+		APB_ACTION = APB_GetActionSlot(APB_SPELL);
+	end
+
+	if APB_SPELL2 then
+		APB_ACTION2 = APB_GetActionSlot(APB_SPELL2);
+	end
 
 
 	if not bupdate_power and not bupdate_rune and not bupdate_buff_combo then
@@ -2009,7 +2066,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 		APB_UpdateRune();
 	elseif (event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_SUCCEEDED") and arg1 == "player" then
 		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo(
-		arg1);
+			arg1);
 		checkSpellCost(spellID);
 		checkSpellPowerCost(spellID);
 		asUnitFrameManaCostPredictionBars_Update(self, (event == "UNIT_SPELLCAST_START" or not (startTime == endTime)),
@@ -2023,7 +2080,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
 		if bupdate_fronzen then
 			local timestamp, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType =
-			CombatLogGetCurrentEventInfo();
+				CombatLogGetCurrentEventInfo();
 			if sourceGUID and (sourceGUID == UnitGUID("player")) then
 				if (eventType == "SPELL_CAST_SUCCESS") and spellID == FrozenOrbID then
 					FrozenOrbTime = nil;
@@ -2033,7 +2090,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 			end
 		elseif bupdate_windrunner then
 			local timestamp, subEvent, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType =
-			CombatLogGetCurrentEventInfo();
+				CombatLogGetCurrentEventInfo();
 			if sourceGUID == UnitGUID("player") and subEvent == "SPELL_DAMAGE" and spellID == 191043 then
 				windrunner_count = windrunner_count + 1
 			end
@@ -2118,6 +2175,18 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 		--hast20 = HowManyHasSet(1304);
 		C_Timer.After(0.5, APB_CheckPower);
 		C_Timer.After(0.5, APB_UpdatePower);
+	elseif event == "ACTION_RANGE_CHECK_UPDATE" then
+		local action, inRange, checksRange = arg1, arg2, arg3;
+
+		if not UnitExists("target") then
+			inRange = true;
+		end
+
+		if APB_ACTION and APB_ACTION == action then
+			inrange = inRange;
+		elseif APB_ACTION2 and APB_ACTION2 == action then
+			inrange2 = inRange;
+		end
 	end
 
 	return;
@@ -2348,6 +2417,7 @@ do
 	APB:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
 	APB:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
 	APB:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
+	APB:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");
 	APB:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player");
 	APB:RegisterUnitEvent("UNIT_EXITING_VEHICLE", "player");
 

@@ -1,5 +1,5 @@
 ACI_Options_Default = {
-	version = 230826,
+	version = 230830,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -9,12 +9,10 @@ ACI_Options_Default = {
 	-- 	Type : 2 버프 & Spell Cool down
 	-- 	Type : 3 버프 & Spell Cool down 상세 Value가 있는경우
 	-- 	Type : 4 디버프 & Spell Cool down, arg1 이 없을 경우 "target", "player"로 하면 자신의 디버프 확인 가능 "focus" 활용가능  ex	{"약점 공격", 4},
-	-- 	Type : 5 삭제
-	-- 	Type : 6 버프 & Spell Cool down (버프 off 일때 회색으로)
 	-- 	Type : 7 버프 only Spell ID 등록해야 함 arg1 없을 경우 "player", "pet"으로 pet 버프 확인가능 ex 	{118455, 7, "pet"},
 	-- 	Type : 8 디버프 only Spell ID ex {55078, 8}, --> 죽기 역병
 	-- 	Type : 9 1 + 대상 체력 % 미만이면 강조 ex {"영혼 쐐기", 9, 35}
-	-- 	Type : 10 양조 수도 시간차 전용
+	-- 	Type : 11 Totem 버프
 	-- 	Type : 14 뼈주사위
 	-- 시작은 99로 하면 다음 특성 이름이 켜 있을때 없을때로 구분 예 {99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}}, 면 주문술사 켜 있으면 첫 array, 아니면 다음 array
 
@@ -215,7 +213,7 @@ ACI_Options_Default = {
 	--부정
 	ACI_SpellList_DEATHKNIGHT_3 = {
 		{ "죽음과 부패", 2 },
-		{ "대재앙", 1 },
+		{99, "곪아 터진 힘", { 377590, 7, "player", 5}, { "룬 무기 강화", 2 }},
 		{ "어둠의 변신", 2, "pet" },
 		{ 191587, 8, nil, 1 },
 		{ 194310, 8 },
