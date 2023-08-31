@@ -1583,7 +1583,9 @@ function ACI_Init()
 				local id = select(7, GetSpellInfo(ACI_SpellList[i][1]));
 
 				ACI_Action_slot_list[i] = ACI_GetActionSlot(ACI_SpellList[i][1]);
-				ACI_Action_to_index[ACI_Action_slot_list[i]] = i;
+				if ACI_Action_slot_list[i] then
+					ACI_Action_to_index[ACI_Action_slot_list[i]] = i;
+				end
 
 				if id then
 					ACI_SpellID_list[id] = true;
