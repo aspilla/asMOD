@@ -717,7 +717,7 @@ local function ACI_Alert(self, bcastspell)
 		end
 
 		bspell = true;
-	elseif t == 2 or t == 3 or t == 5 or t == 6 or t == 7 then
+	elseif t == 2 or t == 3 or t == 5 or t == 6 or t == 7 or t == 12 then
 		local unit = ACI_SpellList[i][3];
 		if unit == nil then
 			unit = "player"
@@ -730,7 +730,7 @@ local function ACI_Alert(self, bcastspell)
 		local alert_du = ACI_SpellList[i][4];
 		local buff_name = spellname;
 
-		if t == 7 then
+		if t == 7 or t == 12 then
 			buff_name = GetSpellInfo(spellname)
 		end
 
@@ -923,12 +923,14 @@ local function ACI_Alert(self, bcastspell)
 				isUsable = false
 			end
 
-			if isUsable and alert_du then				
+			--[[
+			if isUsable and alert_du and alert_du > 0 then				
 				if t == 4 then
 					spell_usable = true;
 				end				
 				isUsable = false;
-			end			
+			end	
+			]]		
 
 			if (charges and maxCharges and maxCharges > 1 and charges < maxCharges) then
 				start = chargeStart;
@@ -1107,7 +1109,7 @@ local function ACI_Alert(self, bcastspell)
 				if frame.inRange == false then
 					frameIcon:SetVertexColor(0.3, 0, 0);
 				else
-					frameIcon:SetVertexColor(0.3, 0.3, 0.3);
+					frameIcon:SetVertexColor(0.5, 0.5, 0.5);
 				end
 
 				if t == 6 or t == 2 or t == 4 or t == 11 or t == 14 then
@@ -1130,7 +1132,7 @@ local function ACI_Alert(self, bcastspell)
 		frameIcon:SetVertexColor(0.5, 0.5, 1);
 		frameIcon:SetDesaturated(true)
 	else
-		frameIcon:SetVertexColor(0.4, 0.4, 0.4);
+		frameIcon:SetVertexColor(0.5, 0.5, 0.5);
 		frameIcon:SetDesaturated(true)
 
 		if spell_usable and frame.inRange == false then
@@ -1602,7 +1604,12 @@ function ACI_Init()
 					ACI_SpellID_list[id] = true;
 				end
 			elseif ACI_SpellList[i][2] == 4 then
-				ACI_Debuff_list[ACI_SpellList[i][1]] = i;
+				if ACI_SpellList[i][6] then
+					ACI_Debuff_list[ACI_SpellList[i][6]] = i;
+				else
+					ACI_Debuff_list[ACI_SpellList[i][1]] = i;
+				end
+				
 
 				local id = select(7, GetSpellInfo(ACI_SpellList[i][1]));
 
@@ -1618,7 +1625,7 @@ function ACI_Init()
 				if ACI_SpellList[i][3] and ACI_SpellList[i][3] == "player" then
 					ACI_Player_Debuff_list[ACI_SpellList[i][1]] = i;
 				end
-			elseif ACI_SpellList[i][2] == 7 then
+			elseif ACI_SpellList[i][2] == 7 or ACI_SpellList[i][2] == 12 then
 				local name = GetSpellInfo(ACI_SpellList[i][1]);
 
 				ACI_Action_slot_list[i] = ACI_GetActionSlot(name);
