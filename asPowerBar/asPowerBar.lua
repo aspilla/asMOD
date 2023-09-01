@@ -2182,10 +2182,12 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 			inRange = true;
 		end
 
-		if APB_ACTION and APB_ACTION == action then
-			inrange = inRange;
-		elseif APB_ACTION2 and APB_ACTION2 == action then
-			inrange2 = inRange;
+		if checksRange then
+			if APB_ACTION and APB_ACTION == action then
+				inrange = inRange;
+			elseif APB_ACTION2 and APB_ACTION2 == action then
+				inrange2 = inRange;
+			end
 		end
 	end
 

@@ -639,8 +639,7 @@ local function ACI_Alert(self, bcastspell)
 	local name;
 	local bspell = false;
 	local not_buffed = false;
-	local spell_usable = false;
-
+	
 	frame = ACI[i];
 	if not frame then
 		return;
@@ -796,12 +795,6 @@ local function ACI_Alert(self, bcastspell)
 				isUsable = false
 			end
 
-
-			if isUsable and alert_du then
-				spell_usable = true;
-				isUsable = false;
-			end
-			
 			if (charges and maxCharges and maxCharges > 1 and charges < maxCharges) then
 				start = chargeStart;
 				duration = chargeDuration;
@@ -923,15 +916,6 @@ local function ACI_Alert(self, bcastspell)
 				isUsable = false
 			end
 
-			--[[
-			if isUsable and alert_du and alert_du > 0 then				
-				if t == 4 then
-					spell_usable = true;
-				end				
-				isUsable = false;
-			end	
-			]]		
-
 			if (charges and maxCharges and maxCharges > 1 and charges < maxCharges) then
 				start = chargeStart;
 				duration = chargeDuration;
@@ -975,11 +959,11 @@ local function ACI_Alert(self, bcastspell)
 		end
 
 		if isUsable == false then
-			_, _, icon = GetSpellInfo(spellname)
+			_, _, icon              = GetSpellInfo(spellname)
 			start, duration, enable = GetSpellCooldown(spellname);
 			isUsable, notEnoughMana = IsUsableSpell(spellname);
-			count = GetSpellCharges(spellname);
-			local _, gcd                                                    = GetSpellCooldown(61304);
+			count                   = GetSpellCharges(spellname);
+			local _, gcd            = GetSpellCooldown(61304);
 
 
 			charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
@@ -1042,12 +1026,12 @@ local function ACI_Alert(self, bcastspell)
 		end
 
 		if isUsable == false then
-			spellname, _, icon = GetSpellInfo(spellname)
-			
+			spellname, _, icon      = GetSpellInfo(spellname)
+
 			start, duration, enable = GetSpellCooldown(spellname);
 			isUsable, notEnoughMana = IsUsableSpell(spellname);
-			count = GetSpellCharges(spellname);
-			local _, gcd                                                    = GetSpellCooldown(61304);
+			count                   = GetSpellCharges(spellname);
+			local _, gcd            = GetSpellCooldown(61304);
 
 
 			charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
@@ -1096,12 +1080,12 @@ local function ACI_Alert(self, bcastspell)
 	if (isUsable) then
 		frameIcon:SetDesaturated(false);
 		frameIcon:SetVertexColor(1.0, 1.0, 1.0);
-		
+
 
 		if t >= 2 and t ~= 9 then
 			if buff_cool then
 				frameIcon:SetVertexColor(1.0, 1.0, 1.0);
-				
+
 				if t == 3 and count == 0 then
 					frameIcon:SetDesaturated(true)
 				end
@@ -1134,10 +1118,6 @@ local function ACI_Alert(self, bcastspell)
 	else
 		frameIcon:SetVertexColor(0.5, 0.5, 0.5);
 		frameIcon:SetDesaturated(true)
-
-		if spell_usable and frame.inRange == false then
-			frameIcon:SetVertexColor(0.3, 0, 0);
-		end
 	end
 
 
@@ -1148,7 +1128,7 @@ local function ACI_Alert(self, bcastspell)
 		if debuffType then
 			color = DebuffTypeColor[debuffType];
 		elseif buff_miss then
-			color = { r = 1.0, g = 0, b = 0 };			
+			color = { r = 1.0, g = 0, b = 0 };
 		else
 			if t == 4 or t == 8 then
 				color = DebuffTypeColor["none"];
@@ -1161,7 +1141,7 @@ local function ACI_Alert(self, bcastspell)
 		frameBorder:Show();
 	else
 		frameBorder:SetVertexColor(0, 0, 0);
-		frameBorder:Show();		
+		frameBorder:Show();
 	end
 
 	if alert_count and count and count >= alert_count then
@@ -1552,8 +1532,6 @@ function ACI_Init()
 					if ACI_SpellList[i][3] then
 						local array = ACI_SpellList[i][3];
 						if type(array) == "table" then
-							local z;
-
 							ACI_SpellList[i][3] = nil;
 							ACI_SpellList[i][4] = nil;
 
@@ -1566,8 +1544,6 @@ function ACI_Init()
 					if ACI_SpellList[i][4] then
 						local array = ACI_SpellList[i][4];
 						if type(array) == "table" then
-							local z;
-
 							ACI_SpellList[i][3] = nil;
 							ACI_SpellList[i][4] = nil;
 
@@ -1609,7 +1585,6 @@ function ACI_Init()
 				else
 					ACI_Debuff_list[ACI_SpellList[i][1]] = i;
 				end
-				
 
 				local id = select(7, GetSpellInfo(ACI_SpellList[i][1]));
 
@@ -1652,7 +1627,6 @@ function ACI_Init()
 				if ACI_Action_slot_list[i] then
 					ACI_Action_to_index[ACI_Action_slot_list[i]] = i;
 				end
-
 			elseif ACI_SpellList[i][2] == 11 then
 				local slot_name = ACI_SpellList[i][3];
 
