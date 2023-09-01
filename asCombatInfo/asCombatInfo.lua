@@ -1367,7 +1367,7 @@ local function ACI_OnEvent(self, event, arg1, ...)
 			inRange = true;
 		end
 
-		if ACI_Action_to_index[action] then
+		if ACI_Action_to_index[action] and checksRange then
 			local index = ACI_Action_to_index[action];
 			if ACI[index] then
 				ACI[index].inRange = inRange;
