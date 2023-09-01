@@ -2356,7 +2356,7 @@ local function ACRB_OnEvent(self, event, ...)
 		if together == nil then
 			together = true;
 		end
-	elseif (event == "PLAYER_REGEN_ENABLED" and event == "PLAYER_REGEN_DISABLED") then
+	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
 		DumpCaches();
 	elseif (event == "PLAYER_LEAVING_WORLD") then
 		hasValidPlayer = false;
