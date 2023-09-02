@@ -193,6 +193,8 @@ local function ASAA_OnEvent(self, event, arg1, arg2, arg3)
 		ASAA_UpdateCooldown();
 	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and (arg1 == "player" or arg1 == "pet") then
 		ASAA_UpdateCooldown();
+	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
+		ASAA_Delete()
 	end
 end
 
@@ -202,6 +204,7 @@ ASAA_mainframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
 ASAA_mainframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
 ASAA_mainframe:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 ASAA_mainframe:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+ASAA_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 
 
 
