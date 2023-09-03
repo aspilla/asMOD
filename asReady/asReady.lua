@@ -187,6 +187,8 @@ local function AREADY_OnUpdate()
 	hide_bar_icon(idx);
 end
 
+local prev_number = 0;
+
 local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 	if event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 and arg3 then
 		if IsInRaid() then
@@ -214,12 +216,18 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 			end
 		end
 	else
-		partycool = {};
+		local new_number = GetNumGroupMembers();
 
-		if IsInRaid() then
-			AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-		else
-			AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+		if new_number and new_number ~= prev_number then
+			partycool = {};
+
+			if IsInRaid() then
+				AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+			else
+				AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+			end
+
+			prev_number = new_number;
 		end
 	end
 
@@ -228,7 +236,7 @@ end
 
 
 AREADY:SetScript("OnEvent", AREADY_OnEvent)
-AREADY:RegisterEvent("PLAYER_ENTERING_WORLD");
+--AREADY:RegisterEvent("PLAYER_ENTERING_WORLD");
 AREADY:RegisterEvent("GROUP_JOINED");
 AREADY:RegisterEvent("GROUP_ROSTER_UPDATE");
 C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
