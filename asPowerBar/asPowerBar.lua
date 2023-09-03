@@ -359,10 +359,37 @@ local function APB_UpdateBuffCombo(combobar)
 end
 
 
-local curr_gcd = 0;
+
+local function asUnitFrameUtil_UpdateFillBuffBarBase(realbar, bar, amount, alert)
+	if not amount or (amount == 0) then
+		bar:Hide();
+		return
+	end
+
+	local previousTexture = realbar:GetStatusBarTexture();
+	bar:ClearAllPoints();
+	bar:SetPoint("TOPRIGHT", previousTexture, "TOPRIGHT", 0, 0);
+	bar:SetPoint("BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
+	local totalWidth, totalHeight = realbar:GetSize();
+
+	local _, totalMax = realbar:GetMinMaxValues();
+
+	local barSize = (amount / totalMax) * totalWidth;
+	bar:SetWidth(barSize);
+	if alert == true then
+		bar:SetVertexColor(1, 0.5, 0.5);
+	else
+
+		bar:SetVertexColor(0.5, 0.5, 1);
+	end
+	bar:Show();
+end
+
 
 local function APB_OnUpdateBuff(self, elapsed)
 	if not self.start then
+		self:SetValue(0);
+		self.castbar:Hide();
 		return;
 	end
 
@@ -375,17 +402,13 @@ local function APB_OnUpdateBuff(self, elapsed)
 	if self.update >= 0.1 and self.start then
 		local curr_time = GetTime();
 		local curr_duration = curr_time - self.start;
+		local expertedendtime = self.duration + self.start;
 
 		self.update = 0
 
 		if curr_duration < self.duration then
 			local remain_buff = (self.duration + self.start - curr_time)
-			local start, gcd  = GetSpellCooldown(61304);
-
-			if gcd > 0 then
-				curr_gcd = gcd;
-			end
-
+				
 			if self.max and self.max > self.duration then
 				self:SetMinMaxValues(0, self.max * 1000)
 			else
@@ -396,16 +419,40 @@ local function APB_OnUpdateBuff(self, elapsed)
 			self.text:SetText(("%02.1f"):format(self.duration + self.start - curr_time))
 
 			if self.buff then
-				if curr_gcd and remain_buff < curr_gcd * 2 then
-					self:SetStatusBarColor(1, 0, 1);
-				else
-					self:SetStatusBarColor(0.8, 0.8, 1);
-				end
+				self:SetStatusBarColor(0.8, 0.8, 1);
 			end
+
+			--Check Casting And GCD
+			local timetoready = 0;
+			local _, _, _, _, endTime = UnitCastingInfo("player");
+			local alert = false;
+
+			if not endTime then
+				_, _, _, _, endTime = UnitChannelInfo("player");
+			end
+
+			if not endTime then
+				local start, duration = GetSpellCooldown(61304);
+				endTime = (start + duration) * 1000;
+			end
+
+			if endTime then
+				if endTime > (expertedendtime * 1000) then
+					endTime = (expertedendtime * 1000);
+					alert = true;
+				end
+
+				timetoready = endTime - (curr_time * 1000);
+			end
+
+			if timetoready < 0 then
+				timetoready = 0;
+			end
+
+			asUnitFrameUtil_UpdateFillBuffBarBase(self, self.castbar, timetoready, alert);
 		end
 	end
 end
-
 
 local function APB_UpdateBuff(buffbar)
 	if not (buffbar.buff or buffbar.debuff) then
@@ -430,8 +477,6 @@ local function APB_UpdateBuff(buffbar)
 			buffbar.text:SetText("");
 			buffbar.count:SetText("");
 		end
-
-		--buffbar:SetStatusBarColor(0.8, 0.8, 1);
 
 		buffbar:Show();
 		buffbar.text:Show();
@@ -466,17 +511,14 @@ local function APB_UpdateBuff(buffbar)
 		buffbar.tooltip = buffbar.debuff;
 	end
 
+	local timetoready = 0;
+
 	if buffbar.start then
 		buffbar:SetScript("OnUpdate", APB_OnUpdateBuff)
 	else
 		buffbar:SetScript("OnUpdate", nil)
-
-		for i = 1, 10 do
-			APB.buffbar[0].square[i]:Hide();
-		end
-		if not bupdate_power and not bupdate_rune and not bupdate_spell then
-			buffbar:Hide();
-		end
+		buffbar:SetValue(0);
+		buffbar.castbar:Hide();
 	end
 end
 
@@ -1003,8 +1045,7 @@ local function APB_Update(self)
 
 		if powerTypeString then
 			local info = PowerBarColor[powerTypeString];
-			APB.bar:SetStatusBarColor(info.r, info.g, info.b);
-			--APB.bg:SetVertexColor(info.r, info.g, info.b);
+			APB.bar:SetStatusBarColor(info.r, info.g, info.b);			
 		end
 
 		APB.bar:SetMinMaxValues(0, valueMax)
@@ -1225,12 +1266,8 @@ local function APB_CheckPower(self)
 		APB.buffbar[j]:Hide();
 		APB.buffbar[j].text:SetText("");
 		APB.buffbar[j].count:SetText("");
-		APB.buffbar[j].cast:Hide();
+		APB.buffbar[j].castbar:Hide();
 		APB.powermax = nil;
-
-		for i = 1, 10 do
-			APB.buffbar[j].square[i]:Hide();
-		end
 
 		APB.buffbar[j].buff = nil;
 		APB.buffbar[j].debuff = nil;
@@ -1743,6 +1780,16 @@ local function APB_CheckPower(self)
 	end
 
 	if (englishClass == "SHAMAN") then
+		if spec and spec == 1 and asCheckTalent("전기 충격") then
+			APB_DEBUFF = "전기 충격";
+			APB.buffbar[0].debuff = APB_DEBUFF
+			APB.buffbar[0].unit = "target";
+			APB:SetScript("OnUpdate", APB_OnUpdate);
+
+			APB:RegisterEvent("PLAYER_TARGET_CHANGED");
+			APB_UpdateBuff(self.buffbar[0])
+		end
+
 		if spec and spec == 2 then
 			APB_BUFF_COMBO = "소용돌이치는 무기";
 			APB_MaxCombo(10);
@@ -1851,7 +1898,7 @@ end
 
 
 
-local function asUnitFrameUtil_UpdateFillBarBase(frame, realbar, previousTexture, bar, amount, barOffsetXPercent)
+local function asUnitFrameUtil_UpdateFillBarBase(frame, realbar, previousTexture, bar, amount)
 	if not amount or (amount == 0) then
 		bar:Hide();
 		return
@@ -1860,17 +1907,10 @@ local function asUnitFrameUtil_UpdateFillBarBase(frame, realbar, previousTexture
 
 	local gen = false;
 
-
-	local barOffsetX = 0;
-	if (barOffsetXPercent) then
-		local realbarSizeX = realbar:GetWidth();
-		barOffsetX = realbarSizeX * barOffsetXPercent;
-	end
-
 	bar:ClearAllPoints();
 
-	bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", barOffsetX, 0);
-	bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", barOffsetX, 0);
+	bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", 0, 0);
+	bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", 0, 0);
 
 	if amount < 0 then
 		amount = 0 - amount;
@@ -2013,8 +2053,6 @@ local function asUnitFrameManaCostPredictionBars_Update(frame, isStarting, start
 	local cost = 0;
 	if (not isStarting or startTime == endTime) then
 		frame.predictedPowerCost = nil;
-		frame.caststart = nil;
-		gpredictedPowerCost = nil;
 	else
 		local costTable = GetSpellPowerCost(spellID);
 
@@ -2030,23 +2068,13 @@ local function asUnitFrameManaCostPredictionBars_Update(frame, isStarting, start
 		end
 
 		frame.predictedPowerCost = cost;
-		gpredictedPowerCost = cost;
-		frame.caststart = startTime;
-		frame.castend = endTime;
 	end
-
-
 
 	local manaBarTexture = frame.bar:GetStatusBarTexture();
 	APB_Update(frame);
 	asUnitFrameUtil_UpdateFillBarBase(frame, frame.bar, manaBarTexture, frame.bar.myManaCostPredictionBar, cost);
 end
 
-
-
-
-
-local prev_cast_info = nil;
 local windrunner_count = 0;
 
 local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
@@ -2229,7 +2257,7 @@ do
 	APB.bar.count:SetPoint("RIGHT", APB.bar, "RIGHT", -4, 0);
 	APB.bar.count:SetTextColor(1, 1, 1, 1);
 
-	APB.bar.myManaCostPredictionBar = APB.bar:CreateTexture(nil, "BORDER", "MyManaCostPredictionBarTemplate");
+	APB.bar.myManaCostPredictionBar = APB.bar:CreateTexture(nil, "BORDER", "asPredictionBarTemplate");
 	APB.bar.myManaCostPredictionBar:Hide();
 
 	APB.healthbar = CreateFrame("StatusBar", nil, APB);
@@ -2242,7 +2270,7 @@ do
 	APB.healthbar:SetPoint("BOTTOMLEFT", APB.bar, "TOPLEFT", 0, 1)
 	APB.healthbar:Hide();
 
-	APB.healthbar.myManaCostPredictionBar = APB.healthbar:CreateTexture(nil, "BORDER", "MyManaCostPredictionBarTemplate")
+	APB.healthbar.myManaCostPredictionBar = APB.healthbar:CreateTexture(nil, "BORDER", "asPredictionBarTemplate")
 	APB.healthbar.myManaCostPredictionBar:Hide();
 
 	APB.healthbar.bg = APB.bar:CreateTexture(nil, "BACKGROUND");
@@ -2290,6 +2318,8 @@ do
 		APB.buffbar[j]:Hide();
 
 
+		APB.buffbar[j].castbar = APB.buffbar[j]:CreateTexture(nil, "ARTWORK", "asPredictionBarTemplate", 2);
+		APB.buffbar[j].castbar:Hide();
 
 		APB.buffbar[j].text = APB.buffbar[j]:CreateFontString(nil, "ARTWORK")
 		APB.buffbar[j].text:SetFont(APB_Font, APB_BuffSize, APB_FontOutline)
@@ -2299,28 +2329,7 @@ do
 		APB.buffbar[j].count = APB.buffbar[j]:CreateFontString(nil, "ARTWORK")
 		APB.buffbar[j].count:SetFont(APB_Font, APB_BuffSize + 5, APB_FontOutline)
 		APB.buffbar[j].count:SetPoint("RIGHT", APB.buffbar[j], "RIGHT", -4, 0)
-		APB.buffbar[j].count:SetTextColor(1, 1, 1, 1)
-
-		APB.buffbar[j].cast = APB.buffbar[j]:CreateTexture(nil, "BACKGROUND");
-		APB.buffbar[j].cast:SetDrawLayer("ARTWORK", 0);
-		APB.buffbar[j].cast:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-		APB.buffbar[j].cast:SetBlendMode("ALPHAKEY");
-		APB.buffbar[j].cast:SetVertexColor(1, 1, 1, 0.3)
-		APB.buffbar[j].cast:SetWidth(50);
-		APB.buffbar[j].cast:SetHeight((APB.buffbar[j]:GetHeight()) / 1.5);
-		APB.buffbar[j].cast:Hide();
-
-		APB.buffbar[j].square = {};
-		for i = 1, 10 do
-			APB.buffbar[j].square[i] = APB.buffbar[j]:CreateTexture(nil, "BACKGROUND");
-			APB.buffbar[j].square[i]:SetDrawLayer("ARTWORK", 0);
-			APB.buffbar[j].square[i]:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
-			APB.buffbar[j].square[i]:SetBlendMode("ALPHAKEY");
-			APB.buffbar[j].square[i]:SetVertexColor(1, 1, 1, 1)
-			APB.buffbar[j].square[i]:SetWidth(3);
-			APB.buffbar[j].square[i]:SetHeight(APB.buffbar[j]:GetHeight() - 1);
-			APB.buffbar[j].square[i]:Hide();
-		end
+		APB.buffbar[j].count:SetTextColor(1, 1, 1, 1)		
 	end
 
 	APB.combobar = {};
