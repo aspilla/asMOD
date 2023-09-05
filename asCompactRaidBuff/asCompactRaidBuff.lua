@@ -11,7 +11,7 @@ local ACRB_MAX_CASTING = 2                                   -- 최대 Casting A
 local ACRB_ShowListFirst = true                              -- 알림 List 항목을 먼저 보임 (가나다 순, 같은 디법이 여러게 걸리는 경우 1개만 보일 수 있음 ex 불고)
 local ACRB_ShowAlert = true                                  -- HOT 리필 시 알림
 local ACRB_MaxBuffSize = 20                                  -- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
-local ACRB_HealerManaBarHeight = 2                           -- 힐러 마나바 크기 (안보이게 하려면 0)
+local ACRB_HealerManaBarHeight = 3                           -- 힐러 마나바 크기 (안보이게 하려면 0)
 local ACRB_UpdateRate = (0.1)                                -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 local ACRB_ShowWhenSolo = true                               -- Solo Raid Frame 사용시 보이게 하려면 True (반드시 Solo Raid Frame과 사용)
 local ACRB_ShowTooltip = true                                -- GameTooltip을 보이게 하려면 True
@@ -20,7 +20,7 @@ local ACRB_RangeFilterAlpha = 0.5
 
 
 -- 버프 남은시간에 리필 알림
--- 두번째 숫자는 표시 위치, 4(우상) 5(우중) 6(상) 1,2,3 은 우하에 보이는 우선 순위이다.
+-- 두번째 숫자는 표시 위치, 4(우상) 5(우중) 6(상) 7(상바) 1,2,3 은 우하에 보이는 우선 순위이다.
 ACRB_ShowList_MONK_2 = {
 	["포용의 안개"] = { 6 * 0.3, 1 },
 	["소생의 안개"] = { 20 * 0.3, 4 }
@@ -36,8 +36,9 @@ ACRB_ShowList_PALADIN_1 = {
 
 -- 수사
 ACRB_ShowList_PRIEST_1 = {
-	["속죄"] = { 3, 4 },
-	["신의 권능: 보호막"] = { 15 * 0.3, 1 },
+	["속죄"] = { 0, 7 },
+	["신의 권능: 보호막"] = { 15 * 0.3, 4 },
+	["소생"] = { 15 * 0.3, 5 },
 	["마력 주입"] = { 0, 2 },
 
 }
@@ -953,6 +954,11 @@ local function ACRB_setupFrame(frame)
 		asraid[frameName].isDispellAlert = false;
 	end
 
+	if not asraid[frameName].buffcolor then
+		asraid[frameName].buffcolor = frame:CreateTexture(nil, "ARTWORK", "asBuffTextureTemplate", -1);
+		asraid[frameName].buffcolor:Hide();
+	end
+
 	if not asraid[frameName].asbuffFrames then
 		asraid[frameName].asbuffFrames = {}
 		for i = 1, ACRB_MAX_BUFFS do
@@ -1138,6 +1144,22 @@ local function ACRB_setupFrame(frame)
 	if asraid[frameName].asManabar then
 		asraid[frameName].asManabar:SetWidth(x - 2);
 		asraid[frameName].asManabar:SetHeight(ACRB_HealerManaBarHeight)
+	end
+
+
+	if (not asraid[frameName].asBuffbar) then
+		asraid[frameName].asBuffbar = CreateFrame("StatusBar", nil, frame.healthBar)
+		asraid[frameName].asBuffbar:SetStatusBarTexture("Interface\\TARGETINGFRAME\\UI-StatusBar")
+		asraid[frameName].asBuffbar:GetStatusBarTexture():SetHorizTile(false)
+		asraid[frameName].asBuffbar:SetMinMaxValues(0, 100)
+		asraid[frameName].asBuffbar:SetValue(100)
+		asraid[frameName].asBuffbar:SetPoint("TOP", frame.healthBar, "TOP", 0, 0)
+		asraid[frameName].asBuffbar:Hide();
+	end
+
+	if asraid[frameName].asBuffbar then
+		asraid[frameName].asBuffbar:SetWidth(x - 2);
+		asraid[frameName].asBuffbar:SetHeight(ACRB_HealerManaBarHeight)
 	end
 
 	if (not asraid[frameName].asraidicon) then
@@ -1384,6 +1406,36 @@ local function asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, index, filter)
 	buffFrame:Show();
 end
 
+local function asCompactUnitFrame_UtilSetBuff3(asframe, unit, index, filter)
+	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura =
+		UnitBuff(unit, index, filter);
+
+	if (not asframe.asBuffbar) then
+		return;
+	end
+
+	local currtime = GetTime();
+	local startTime = expirationTime - duration;
+	asframe.asBuffbar:SetMinMaxValues(0, duration)
+	asframe.asBuffbar:SetValue(duration - (currtime - startTime));
+	asframe.asBuffbar:SetStatusBarColor(1, 1, 1);
+	asframe.asBuffbar:Show();
+
+
+	local previousTexture = asframe.frame.healthBar:GetStatusBarTexture();
+	asframe.buffcolor:ClearAllPoints();
+	asframe.buffcolor:SetPoint("TOPRIGHT", previousTexture, "TOPRIGHT", 0, 0);
+	asframe.buffcolor:SetPoint("BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
+	local totalWidth, totalHeight = asframe.frame.healthBar:GetSize();
+	local _, totalMax = asframe.frame.healthBar:GetMinMaxValues();
+	local amount = asframe.frame.healthBar:GetValue();
+
+	local barSize = (amount / totalMax) * totalWidth;
+	asframe.buffcolor:SetWidth(barSize);
+	asframe.buffcolor:SetVertexColor(0, 1, 0);
+	asframe.buffcolor:Show();
+end
+
 local function Comparison(AIndex, BIndex)
 	local AID = AIndex[2];
 	local BID = BIndex[2];
@@ -1469,7 +1521,10 @@ local function asCompactUnitFrame_UpdateBuffs(asframe)
 	local showframe = {};
 
 	for i = 1, frameNum - 1 do
-		if aShowIdx[i][2] > ACRB_MAX_BUFFS - 3 then
+		if aShowIdx[i][2] == 7 then
+			asCompactUnitFrame_UtilSetBuff3(asframe, unit, aShowIdx[i][1], filter);
+			showframe[aShowIdx[i][2]] = true;
+		elseif aShowIdx[i][2] > ACRB_MAX_BUFFS - 3 then
 			local buffFrame = asframe.asbuffFrames[aShowIdx[i][2]];
 			asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, aShowIdx[i][1], filter);
 			showframe[aShowIdx[i][2]] = true;
@@ -1484,8 +1539,6 @@ local function asCompactUnitFrame_UpdateBuffs(asframe)
 		end
 	end
 
-
-
 	for i = frameidx, ACRB_MAX_BUFFS - 3 do
 		local buffFrame = asframe.asbuffFrames[i];
 		buffFrame:Hide();
@@ -1496,6 +1549,11 @@ local function asCompactUnitFrame_UpdateBuffs(asframe)
 			local buffFrame = asframe.asbuffFrames[i];
 			buffFrame:Hide();
 		end
+	end
+
+	if showframe[7] == nil then
+		asframe.asBuffbar:Hide();
+		asframe.buffcolor:Hide();
 	end
 end
 
@@ -1623,7 +1681,7 @@ local function asCompactUnitFrame_UtilShouldDisplayDebuff(unit, index, filter)
 	local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
 	if (hasCustom) then
 		return showForMySpec or
-		(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));                     
+			(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
 		--Would only be "mine" in the case of something like forbearance.
 	else
 		return true;

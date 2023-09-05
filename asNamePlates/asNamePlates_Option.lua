@@ -39,8 +39,10 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_ROGUE_1 = {
-        ["파열"] = { 24 * 0.3, 4, true },
         ["목조르기"] = { 1, 5 },
+        ["파열"] = { 24 * 0.3, 4, true },
+        ["혈폭풍"] = { 12 * 0.3, 3 },
+        
     },
 
     ANameP_ShowList_ROGUE_2 = {
@@ -97,6 +99,7 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_PRIEST_1 = {
+        ["사악의 정화"] = { 1, 5, true },
         ["어둠의 권능: 고통"] = { 1, 5, true },
     },
 

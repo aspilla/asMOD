@@ -70,6 +70,7 @@ ADotF_ShowList_WARLOCK_3 = {
 }
 
 ADotF_ShowList_PRIEST_1 = {
+    { "사악의 정화", 1 },
     { "어둠의 권능: 고통", 1 },
 }
 

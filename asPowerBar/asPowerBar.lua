@@ -1608,6 +1608,15 @@ local function APB_CheckPower(self)
 	end
 
 	if (englishClass == "PRIEST") then
+
+		if (spec and spec == 1) then
+			APB_SPELL = "신의 권능: 광휘";
+			APB_SPELL2 = "정신 분열";
+			APB_SpellMax(APB_SPELL, APB_SPELL2);
+			APB_UpdateSpell(APB_SPELL, APB_SPELL2);
+			bupdate_spell = true;
+		end
+
 		if (spec and spec == 3) then
 			APB_SPELL = "정신 분열";
 			APB_SpellMax(APB_SPELL);

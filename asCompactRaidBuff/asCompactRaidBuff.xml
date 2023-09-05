@@ -156,5 +156,8 @@
 			<OnHide method="OnHide"/>
 		</Scripts>
 	</Frame>
+	<Texture name="asBuffTextureTemplate" virtual="true" file="Interface\TargetingFrame\UI-StatusBar">
+		<Color r="0.0" g="0.447" b="1.0"/>
+	</Texture>
 	<Script file="asCompactRaidBuff.lua"/>
 </Ui>
