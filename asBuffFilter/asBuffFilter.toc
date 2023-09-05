@@ -1,4 +1,4 @@
-﻿## Interface: 100105
+﻿## Interface: 100107
 ## Author: |cffff3399아스필라|r [블랙무어]
 ## Title: |cffff3399as|rBuffFilter
 ## Notes: 버프필터

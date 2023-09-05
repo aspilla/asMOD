@@ -1,4 +1,4 @@
-## Interface: 100105
+## Interface: 100107
 ## author: |cffff3399아스필라|r [블랙무어]
 ## title: |cffff3399as|rMisdirection
 ## notes: 눈속임/속거/마주/비늘 도우미
