@@ -1515,6 +1515,13 @@ local function APB_CheckPower(self)
 			bupdate_power = false;
 			bdruid = true;
 
+			if asCheckTalent("숲 수호자") then
+				APB_SPELL = "숲 수호자";
+				APB_SpellMax(APB_SPELL);
+				APB_UpdateSpell(APB_SPELL);
+				bupdate_spell = true;
+			end
+			
 			for i = 1, 10 do
 				APB.combobar[i].tooltip = "COMBO_POINTS";
 			end
@@ -1612,6 +1619,14 @@ local function APB_CheckPower(self)
 		if (spec and spec == 1) then
 			APB_SPELL = "신의 권능: 광휘";
 			APB_SPELL2 = "정신 분열";
+			APB_SpellMax(APB_SPELL, APB_SPELL2);
+			APB_UpdateSpell(APB_SPELL, APB_SPELL2);
+			bupdate_spell = true;
+		end
+
+		if (spec and spec == 2) then
+			APB_SPELL = "빛의 권능: 평온";
+			APB_SPELL2 = "빛의 권능: 신성화";
 			APB_SpellMax(APB_SPELL, APB_SPELL2);
 			APB_UpdateSpell(APB_SPELL, APB_SPELL2);
 			bupdate_spell = true;

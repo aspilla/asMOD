@@ -22,23 +22,25 @@ local ACRB_RangeFilterAlpha = 0.5
 -- 버프 남은시간에 리필 알림
 -- 두번째 숫자는 표시 위치, 4(우상) 5(우중) 6(상) 7(상바) 1,2,3 은 우하에 보이는 우선 순위이다.
 ACRB_ShowList_MONK_2 = {
-	["포용의 안개"] = { 6 * 0.3, 1 },
-	["소생의 안개"] = { 20 * 0.3, 4 }
+	["포용의 안개"] = { 1 },
+	["소생의 안개"] = { 1 }
 
 
 }
 
 -- 신기
 ACRB_ShowList_PALADIN_1 = {
-	["빛의 봉화"] = { 0, 4 },
-	["신념의 봉화"] = { 0, 5 },
+	["빛의 봉화"] = { 0, 5 },
+	["신념의 봉화"] = { 0, 6 },
+	["빛의 자락"] = { 0, 4 },
 }
 
 -- 수사
 ACRB_ShowList_PRIEST_1 = {
 	["속죄"] = { 0, 7 },
-	["신의 권능: 보호막"] = { 15 * 0.3, 4 },
-	["소생"] = { 15 * 0.3, 5 },
+	["신의 권능: 보호막"] = { 0, 4 },
+	["소생"] = { 1, 5 },
+	["회복의 기원"] = { 0, 1 },
 	["마력 주입"] = { 0, 2 },
 
 }
@@ -46,7 +48,8 @@ ACRB_ShowList_PRIEST_1 = {
 
 -- 신사
 ACRB_ShowList_PRIEST_2 = {
-	["소생"] = { 15 * 0.3, 4 },
+	["신의 권능: 보호막"] = { 0, 4 },
+	["소생"] = { 1, 5 },
 	["회복의 기원"] = { 0, 1 },
 	["마력 주입"] = { 0, 2 },
 
@@ -58,15 +61,15 @@ ACRB_ShowList_PRIEST_3 = {
 
 
 ACRB_ShowList_SHAMAN_3 = {
-	["성난 해일"] = { 15 * 0.3, 1 },
+	["성난 해일"] = { 1, 1 },
 }
 
 
 ACRB_ShowList_DRUID_4 = {
-	["회복"] = { 15 * 0.3, 4 },
-	["재생"] = { 12 * 0.3, 5 },
-	["피어나는 생명"] = { 15 * 0.3, 6 },
-	["회복 (싹틔우기)"] = { 15 * 0.3, 2 },
+	["회복"] = { 1, 4 },
+	["재생"] = { 1, 5 },
+	["피어나는 생명"] = { 1, 6 },
+	["회복 (싹틔우기)"] = { 1, 2 },
 	["세나리온 수호물"] = { 0, 1 },
 
 
@@ -959,6 +962,30 @@ local function ACRB_setupFrame(frame)
 		asraid[frameName].buffcolor:Hide();
 	end
 
+	if asraid[frameName].buffcolor then
+		local previousTexture = frame.healthBar:GetStatusBarTexture();
+		asraid[frameName].buffcolor:ClearAllPoints();
+		asraid[frameName].buffcolor:SetPoint("TOPRIGHT", previousTexture, "TOPRIGHT", 0, 0);
+		asraid[frameName].buffcolor:SetPoint("BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
+		asraid[frameName].buffcolor:SetWidth(0);
+		asraid[frameName].buffcolor:SetVertexColor(0, 1, 0);
+	end
+
+	if not asraid[frameName].aborbcolor then
+		asraid[frameName].aborbcolor = frame:CreateTexture(nil, "ARTWORK", "asBuffTextureTemplate", 0);
+		asraid[frameName].aborbcolor:Hide();
+	end
+
+	if asraid[frameName].aborbcolor then
+		local previousTexture = frame.healthBar:GetStatusBarTexture();
+		asraid[frameName].aborbcolor:ClearAllPoints();
+		asraid[frameName].aborbcolor:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
+		asraid[frameName].aborbcolor:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMLEFT", 0, 0);
+		asraid[frameName].aborbcolor:SetWidth(0);
+		asraid[frameName].aborbcolor:SetVertexColor(0, 0, 0);
+		asraid[frameName].aborbcolor:SetAlpha(0.2);
+	end
+
 	if not asraid[frameName].asbuffFrames then
 		asraid[frameName].asbuffFrames = {}
 		for i = 1, ACRB_MAX_BUFFS do
@@ -1161,6 +1188,7 @@ local function ACRB_setupFrame(frame)
 		asraid[frameName].asBuffbar:SetWidth(x - 2);
 		asraid[frameName].asBuffbar:SetHeight(ACRB_HealerManaBarHeight)
 	end
+
 
 	if (not asraid[frameName].asraidicon) then
 		asraid[frameName].asraidicon = frame:CreateFontString(nil, "OVERLAY")
@@ -1386,6 +1414,9 @@ local function asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, index, filter)
 
 			if ACRB_ShowList[name] then
 				showlist_time = ACRB_ShowList[name][1];
+				if showlist_time == 1 then
+					ACRB_ShowList[name][1] = duration * 0.3;
+				end
 			end
 
 			if expirationTime - GetTime() < showlist_time then
@@ -1422,17 +1453,12 @@ local function asCompactUnitFrame_UtilSetBuff3(asframe, unit, index, filter)
 	asframe.asBuffbar:Show();
 
 
-	local previousTexture = asframe.frame.healthBar:GetStatusBarTexture();
-	asframe.buffcolor:ClearAllPoints();
-	asframe.buffcolor:SetPoint("TOPRIGHT", previousTexture, "TOPRIGHT", 0, 0);
-	asframe.buffcolor:SetPoint("BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
 	local totalWidth, totalHeight = asframe.frame.healthBar:GetSize();
 	local _, totalMax = asframe.frame.healthBar:GetMinMaxValues();
 	local amount = asframe.frame.healthBar:GetValue();
 
 	local barSize = (amount / totalMax) * totalWidth;
 	asframe.buffcolor:SetWidth(barSize);
-	asframe.buffcolor:SetVertexColor(0, 1, 0);
 	asframe.buffcolor:Show();
 end
 
@@ -1482,6 +1508,23 @@ local function asCompactUnitFrame_UpdateBuffs(asframe)
 			end
 		else
 			asframe.rangetex:Hide();
+		end
+	end
+
+	do
+		local value = UnitHealth("player");
+		local valueMax = UnitHealthMax("player");
+		local totalAbsorb = UnitGetTotalAbsorbs("player") or 0;
+		local remainAbsorb = totalAbsorb - (valueMax - value);
+
+		if remainAbsorb > 0 then
+			local totalWidth, _ = asframe.frame.healthBar:GetSize();
+			local barSize = (remainAbsorb / valueMax) * totalWidth;
+
+			asframe.aborbcolor:SetWidth(barSize);
+			asframe.aborbcolor:Show();
+		else
+			asframe.aborbcolor:Hide();
 		end
 	end
 
