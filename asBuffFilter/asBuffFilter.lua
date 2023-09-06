@@ -976,6 +976,52 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 	end
 end
 
+local cachedVisualizationInfo = {};
+local hasValidPlayer = false;
+
+local function GetCachedVisibilityInfo(spellId)
+	if cachedVisualizationInfo[spellId] == nil then
+		local newInfo = {
+			SpellGetVisibilityInfo(spellId, UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT") };
+		if not hasValidPlayer then
+			-- Don't cache the info if the player is not valid since we didn't get a valid result
+			return unpack(newInfo);
+		end
+		cachedVisualizationInfo[spellId] = newInfo;
+	end
+
+	local info = cachedVisualizationInfo[spellId];
+	return unpack(info);
+end
+
+
+local cachedSelfBuffChecks = {};
+local function CheckIsSelfBuff(spellId)
+	if cachedSelfBuffChecks[spellId] == nil then
+		cachedSelfBuffChecks[spellId] = SpellIsSelfBuff(spellId);
+	end
+
+	return cachedSelfBuffChecks[spellId];
+end
+
+local function DumpCaches()
+	cachedVisualizationInfo = {};
+	cachedSelfBuffChecks = {};	
+end
+
+-- 버프 설정 부
+local function IsShouldDisplayBuff(name, spellId, unitCaster, canApplyAura)
+	local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
+
+	if (hasCustom) then
+		return showForMySpec or
+			(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
+	else
+		return (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") and canApplyAura and
+			not CheckIsSelfBuff(spellId);
+	end
+end
+
 local function IsShown(name, spellId)
 	-- asPowerBar Check
 	if APB_BUFF and APB_BUFF == name then
@@ -1012,7 +1058,7 @@ local function ABF_UpdateBuff(unit)
 	local numDebuffs = 1;
 	local frame;
 	local frameIcon, frameCount, frameCooldown, frameStealable;
-	local name, icon, count, debuffType, duration, expirationTime, caster, nameplateShowPersonal, spellId, casterIsPlayer, nameplateShowAll, stack, value2, value3, isStealable;
+	local name, icon, count, debuffType, duration, expirationTime, caster, nameplateShowPersonal, spellId, canApplyAura, nameplateShowAll, stack, value2, value3, isStealable;
 	local color;
 	local frameBorder;
 	local parent;
@@ -1049,7 +1095,7 @@ local function ABF_UpdateBuff(unit)
 		stack = nil;
 
 		if (unit == "tbuff") then
-			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId =
+			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, canApplyAura, nameplateShowAll =
 			UnitBuff(realunit, i);
 
 			-- 적대적 NPC 는 무조건 Buff 를 보임
@@ -1062,7 +1108,7 @@ local function ABF_UpdateBuff(unit)
 				alert = true;
 			end
 		elseif (unit == "target") then
-			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId =
+			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, canApplyAura, nameplateShowAll =
 			UnitBuff(unit, i);
 			if (icon == nil) then
 				break;
@@ -1107,11 +1153,11 @@ local function ABF_UpdateBuff(unit)
 
 				if icon == nil then
 					i                                                                                                                                                                         = 1;
-					name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, casterIsPlayer, nameplateShowAll, stack, value2, value3 =
+					name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, canApplyAura, nameplateShowAll, stack, value2, value3 =
 					UnitBuff(realunit, i, "INCLUDE_NAME_PLATE_ONLY");
 				end
 			else
-				name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, casterIsPlayer, nameplateShowAll, stack, value2, value3 =
+				name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, canApplyAura, nameplateShowAll, stack, value2, value3 =
 				UnitBuff(realunit, i, "INCLUDE_NAME_PLATE_ONLY");
 			end
 
@@ -1157,7 +1203,7 @@ local function ABF_UpdateBuff(unit)
 				skip = true;
 			end
 
-			if (IsPowerbar or ABF_ShowTalentList) and skip == false and PLAYER_UNITS[caster] and (ABF_TalentBuffList[name] or ABF_TalentBuffList[icon] or debuffType == "totem" or nameplateShowAll or nameplateShowPersonal) then
+			if (IsPowerbar or ABF_ShowTalentList) and skip == false and PLAYER_UNITS[caster] and (ABF_TalentBuffList[name] or ABF_TalentBuffList[icon] or debuffType == "totem" or nameplateShowAll or nameplateShowPersonal)  and (debuffType == "totem" or not IsShouldDisplayBuff(name, spellId, caster, canApplyAura)) then
 				if talentcount < ABF_MAX_BUFF_SHOW then
 					skip = true;
 					talentcount = talentcount + 1;
@@ -1321,7 +1367,7 @@ local function ABF_UpdateBuff(unit)
 					name = nil;
 				end
 			else
-				name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, casterIsPlayer, nameplateShowAll, stack, value2, value3 =
+				name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, canApplyAura, nameplateShowAll, stack, value2, value3 =
 				UnitBuff("player", idx, "INCLUDE_NAME_PLATE_ONLY");
 			end
 
@@ -1483,10 +1529,13 @@ local function ABF_OnEvent(self, event, arg1, ...)
 		ABF_UpdateBuff("pbuff");
 	elseif event == "PLAYER_ENTERING_WORLD" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		ABF_InitShowList();
+		hasValidPlayer = true;
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		ABF:SetAlpha(ABF_AlphaCombat);
+		DumpCaches();
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ABF:SetAlpha(ABF_AlphaNormal);
+		DumpCaches();
 	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") then
 		C_Timer.After(0.5, asCheckTalent);
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
@@ -1497,6 +1546,8 @@ local function ABF_OnEvent(self, event, arg1, ...)
 		else
 			overlayspell = {};
 		end
+	elseif (event == "PLAYER_LEAVING_WORLD") then
+		hasValidPlayer = false;
 	end
 end
 
@@ -1645,6 +1696,7 @@ local function ABF_Init()
 	ABF:RegisterEvent("PLAYER_TARGET_CHANGED")
 	ABF:RegisterUnitEvent("UNIT_AURA", "player")
 	ABF:RegisterEvent("PLAYER_ENTERING_WORLD");
+	ABF:RegisterEvent("PLAYER_LEAVING_WORLD");
 	ABF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 	ABF:RegisterEvent("PLAYER_REGEN_DISABLED");
 	ABF:RegisterEvent("PLAYER_REGEN_ENABLED");
