@@ -1706,13 +1706,6 @@ local function setColoronStatusBar(self, r, g, b)
 	self.BarColor:Show();
 end
 
-
-local function asCompactUnitFrame_UpdateHealthColor(asNameplates)
-	if asNameplates.BarColor then		
-		asNameplates.BarColor:Hide();
-	end
-end
-
 local function isDangerousSpell(spellId, unit)
 	if spellId and ANameP_DangerousSpellList[spellId] then
 		return true
@@ -1740,8 +1733,6 @@ local function updateHealthbarColor(self)
 	if not healthBar and healthBar:IsForbidden() then
 		return;
 	end
-
-	self.colorlevel = ColorLevel.None;
 
 	local shouldshow = false;
 	-- ColorLevel.Name;
@@ -1916,7 +1907,7 @@ local function updateHealthbarColor(self)
 
 
 
-	if options.ANameP_QuestAlert and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
+	if options.ANameP_QuestAlert and not IsInInstance() and C_QuestLog.UnitIsRelatedToActiveQuest(unit)  then
 		local color = options.ANameP_QuestColor;
 		self.colorlevel = ColorLevel.Custom;
 		setColoronStatusBar(self, color.r, color.g, color.b);
@@ -1928,7 +1919,9 @@ local function updateHealthbarColor(self)
 		self.colorlevel = ColorLevel.None;				
 	end
 
-	asCompactUnitFrame_UpdateHealthColor(self);
+	if self.BarColor then		
+		self.BarColor:Hide();
+	end
 
 	return;
 end
@@ -2210,7 +2203,6 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates = CreateFrame("Frame", nil, unitFrame);
 	end
 
-	asCompactUnitFrame_UpdateHealthColor(namePlateFrameBase.asNamePlates);
 	namePlateFrameBase.asNamePlates:EnableMouse(false);
 
 	if not namePlateFrameBase.asNamePlates.buffList then
