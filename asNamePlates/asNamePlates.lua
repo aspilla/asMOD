@@ -937,9 +937,6 @@ end
 
 local KnownSpellList = {};
 
-
-
-
 local function asCheckTalent()
 	local specID = PlayerUtil.GetCurrentSpecID();
 	local configID = C_ClassTalents.GetActiveConfigID();
@@ -1008,6 +1005,7 @@ local function scanPetSpells()
 		end
 	end
 end
+
 
 
 local function setupKnownSpell()
@@ -1698,9 +1696,9 @@ local function setColoronStatusBar(self, r, g, b)
 	end
 
 	local oldR, oldG, oldB = self.BarColor:GetVertexColor();
-	
+
 	if (r ~= oldR or g ~= oldG or b ~= oldB) then
-		self.BarColor:SetVertexColor(r, g, b);		
+		self.BarColor:SetVertexColor(r, g, b);
 	end
 
 	self.BarColor:Show();
@@ -1907,7 +1905,7 @@ local function updateHealthbarColor(self)
 
 
 
-	if options.ANameP_QuestAlert and not IsInInstance() and C_QuestLog.UnitIsRelatedToActiveQuest(unit)  then
+	if options.ANameP_QuestAlert and not IsInInstance() and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
 		local color = options.ANameP_QuestColor;
 		self.colorlevel = ColorLevel.Custom;
 		setColoronStatusBar(self, color.r, color.g, color.b);
@@ -1916,10 +1914,10 @@ local function updateHealthbarColor(self)
 
 	-- None
 	if self.colorlevel > ColorLevel.None then
-		self.colorlevel = ColorLevel.None;				
+		self.colorlevel = ColorLevel.None;
 	end
 
-	if self.BarColor then		
+	if self.BarColor then
 		self.BarColor:Hide();
 	end
 
@@ -1960,38 +1958,6 @@ local function updatePVPAggro(self)
 	end
 end
 
-local function asCheckTalent(name)
-	local specID = PlayerUtil.GetCurrentSpecID();
-
-	local configID = C_ClassTalents.GetActiveConfigID();
-
-	if not (configID) then
-		return false;
-	end
-	local configInfo = C_Traits.GetConfigInfo(configID);
-	local treeID = configInfo.treeIDs[1];
-
-	local nodes = C_Traits.GetTreeNodes(treeID);
-
-	for _, nodeID in ipairs(nodes) do
-		local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
-		if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-			local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
-			local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
-			local definitionInfo = entryInfo and entryInfo.definitionID and
-				C_Traits.GetDefinitionInfo(entryInfo.definitionID);
-
-			if definitionInfo ~= nil then
-				local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
-				--print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));
-				if name == talentName then
-					return true;
-				end
-			end
-		end
-	end
-	return false;
-end
 
 local function initAlertList()
 	local spec = GetSpecialization();
@@ -2223,7 +2189,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.originalcolor = { r = healthbar.r, g = healthbar.g, b = healthbar.b };
 	namePlateFrameBase.asNamePlates.checkcolor = false;
 	namePlateFrameBase.asNamePlates.debuffColor = nil;
-	
+
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
 	namePlateFrameBase.asNamePlates:UnregisterEvent("PLAYER_TARGET_CHANGED");
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_START");
@@ -2371,7 +2337,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.CCdebuff:Hide();
 
 	if not namePlateFrameBase.asNamePlates.BarColor then
-		namePlateFrameBase.asNamePlates.BarColor = healthbar:CreateTexture(nil, "ARTWORK", "asColorTextureTemplate", 2);		
+		namePlateFrameBase.asNamePlates.BarColor = healthbar:CreateTexture(nil, "ARTWORK", "asColorTextureTemplate", 2);
 	end
 
 	if namePlateFrameBase.asNamePlates.BarColor then
@@ -2381,7 +2347,7 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.BarColor:SetPoint("BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
 		namePlateFrameBase.asNamePlates.BarColor:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
 		namePlateFrameBase.asNamePlates.BarColor:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMLEFT", 0, 0);
-		namePlateFrameBase.asNamePlates.BarColor:SetVertexColor(1,1,1)
+		namePlateFrameBase.asNamePlates.BarColor:SetVertexColor(1, 1, 1)
 		namePlateFrameBase.asNamePlates.BarColor:Hide();
 	end
 
@@ -2761,7 +2727,7 @@ local function initAddon()
 			updateTargetNameP(pframe.asNamePlates);
 		end
 	end)
-	
+
 	ANameP_OptionM.RegisterCallback(flushoption);
 
 	local bloaded = LoadAddOn("DBM-Core");
