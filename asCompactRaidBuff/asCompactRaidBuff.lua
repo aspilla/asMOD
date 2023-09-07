@@ -30,9 +30,9 @@ ACRB_ShowList_MONK_2 = {
 
 -- 신기
 ACRB_ShowList_PALADIN_1 = {
-	["빛의 봉화"] = { 0, 5 },
-	["신념의 봉화"] = { 0, 6 },
-	["빛의 자락"] = { 0, 4 },
+	["빛의 봉화"] = { 0, 4 },
+	["신념의 봉화"] = { 0, 5 },
+	["빛의 자락"] = { 0, 7 },
 }
 
 -- 수사
@@ -869,8 +869,6 @@ end
 
 -- 직업 리필
 local ACRB_ShowList = nil;
-local show_30m_range = false;
-
 local asraid = {};
 
 local function ACRB_InitList()
@@ -886,10 +884,6 @@ local function ACRB_InitList()
 
 	ACRB_ShowList = _G[listname];
 
-	--기원사 힐이면 30미터 Filter 추가
-	if englishClass == "EVOKER" and spec == 2 then
-		show_30m_range = true;
-	end
 end
 
 -- Setup
@@ -943,16 +937,6 @@ local function ACRB_setupFrame(frame)
 
 	local fontsize = baseSize * ACRB_CooldownFontSizeRate;
 
-	-- 힐거리 기능
-	if not asraid[frameName].rangetex then
-		asraid[frameName].rangetex = frame:CreateTexture(nil, "ARTWORK");
-		asraid[frameName].rangetex:SetAllPoints();
-		asraid[frameName].rangetex:SetColorTexture(ACRB_RangeFilterColor.r, ACRB_RangeFilterColor.g,
-			ACRB_RangeFilterColor.b);
-		asraid[frameName].rangetex:SetAlpha(ACRB_RangeFilterAlpha);
-		asraid[frameName].rangetex:Hide();
-	end
-
 	if asraid[frameName].isDispellAlert == nil then
 		asraid[frameName].isDispellAlert = false;
 	end
@@ -967,8 +951,10 @@ local function ACRB_setupFrame(frame)
 		asraid[frameName].buffcolor:ClearAllPoints();
 		asraid[frameName].buffcolor:SetPoint("TOPRIGHT", previousTexture, "TOPRIGHT", 0, 0);
 		asraid[frameName].buffcolor:SetPoint("BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
+		asraid[frameName].buffcolor:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
+		asraid[frameName].buffcolor:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMLEFT", 0, 0);
 		asraid[frameName].buffcolor:SetWidth(0);
-		asraid[frameName].buffcolor:SetVertexColor(0, 1, 0);
+		asraid[frameName].buffcolor:SetVertexColor(0.5, 0.5, 0.5);
 	end
 
 	if not asraid[frameName].aborbcolor then
@@ -1451,14 +1437,6 @@ local function asCompactUnitFrame_UtilSetBuff3(asframe, unit, index, filter)
 	asframe.asBuffbar:SetValue(duration - (currtime - startTime));
 	asframe.asBuffbar:SetStatusBarColor(1, 1, 1);
 	asframe.asBuffbar:Show();
-
-
-	local totalWidth, totalHeight = asframe.frame.healthBar:GetSize();
-	local _, totalMax = asframe.frame.healthBar:GetMinMaxValues();
-	local amount = asframe.frame.healthBar:GetValue();
-
-	local barSize = (amount / totalMax) * totalWidth;
-	asframe.buffcolor:SetWidth(barSize);
 	asframe.buffcolor:Show();
 end
 
@@ -1483,32 +1461,6 @@ local function asCompactUnitFrame_UpdateBuffs(asframe)
 
 	if not (unit) then
 		return;
-	end
-
-	if asframe.rangetex and not UnitIsUnit("player", unit) then
-		local inRange, checkedRange = UnitInRange(unit);
-		--40미터 밖
-		if (checkedRange and not inRange) then --If we weren't able to check the range for some reason, we'll just treat them as in-range (for example, enemy units)
-			asframe.rangetex:Show();
-		elseif show_30m_range then
-			local reaction = UnitReaction("player", unit);
-
-			if reaction and reaction <= 4 then
-				if GetItemInfo(835) and IsItemInRange(835, unit) then
-					asframe.rangetex:Hide();
-				else
-					asframe.rangetex:Show();
-				end
-			else
-				if GetItemInfo(1180) and IsItemInRange(1180, unit) then
-					asframe.rangetex:Hide();
-				else
-					asframe.rangetex:Show();
-				end
-			end
-		else
-			asframe.rangetex:Hide();
-		end
 	end
 
 	do
