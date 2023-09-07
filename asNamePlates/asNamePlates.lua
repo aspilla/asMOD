@@ -1693,70 +1693,23 @@ end
 local function setColoronStatusBar(self, r, g, b)
 	local parent = self:GetParent():GetParent();
 
-	if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden() then
+	if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden() or not self.BarColor then
 		return;
 	end
 
-	local healthBar = parent.UnitFrame.healthBar;
-
-	if not healthBar and healthBar:IsForbidden() then
-		return;
-	end
-
-
-	local oldR, oldG, oldB = healthBar:GetStatusBarColor();
+	local oldR, oldG, oldB = self.BarColor:GetVertexColor();
+	
 	if (r ~= oldR or g ~= oldG or b ~= oldB) then
-		healthBar:SetStatusBarColor(r, g, b);
+		self.BarColor:SetVertexColor(r, g, b);		
 	end
+
+	self.BarColor:Show();
 end
 
 
-local function asCompactUnitFrame_UpdateHealthColor(frame, asNameplates)
-	local r, g, b;
-	if (not UnitIsConnected(frame.unit)) then
-		--Color it gray
-		r, g, b = 0.5, 0.5, 0.5;
-	elseif (UnitIsDead(frame.unit)) then
-		--Color it gray
-		r, g, b = 0.5, 0.5, 0.5;
-		-- Also hide the health bar
-		frame.hideHealthbar = true;
-	else
-		--Try to color it by class.
-		local localizedClass, englishClass = UnitClass(frame.unit);
-		local classColor = RAID_CLASS_COLORS[englishClass];
-		--debug
-		--classColor = RAID_CLASS_COLORS["PRIEST"];
-		local useClassColors = CompactUnitFrame_GetOptionUseClassColors(frame, frame.optionTable);
-		if ((frame.optionTable.allowClassColorsForNPCs or UnitIsPlayer(frame.unit) or UnitTreatAsPlayerForDisplay(frame.unit)) and classColor and useClassColors) then
-			-- Use class colors for players if class color option is turned on
-			r, g, b = classColor.r, classColor.g, classColor.b;
-		elseif (CompactUnitFrame_IsTapDenied(frame)) then
-			-- Use grey if not a player and can't get tap on unit
-			r, g, b = 0.9, 0.9, 0.9;
-		elseif (frame.optionTable.colorHealthBySelection) then
-			-- Use color based on the type of unit (neutral, etc.)
-			if (frame.optionTable.considerSelectionInCombatAsHostile and CompactUnitFrame_IsOnThreatListWithPlayer(frame.displayedUnit)) then
-				r, g, b = 1.0, 0.0, 0.0;
-			elseif (UnitIsPlayer(frame.displayedUnit) and UnitIsFriend("player", frame.displayedUnit)) then
-				-- We don't want to use the selection color for friendly player nameplates because
-				-- it doesn't show player health clearly enough.
-				r, g, b = 0.667, 0.667, 1.0;
-			else
-				r, g, b = UnitSelectionColor(frame.unit, frame.optionTable.colorHealthWithExtendedColors);
-			end
-		elseif (UnitIsFriend("player", frame.unit)) then
-			r, g, b = 0.0, 1.0, 0.0;
-		else
-			r, g, b = 1.0, 0.0, 0.0;
-		end
-	end
-	setColoronStatusBar(asNameplates, r, g, b);
-
-	if (frame.optionTable.colorHealthWithExtendedColors) then
-		frame.selectionHighlight:SetVertexColor(r, g, b);
-	else
-		frame.selectionHighlight:SetVertexColor(1, 1, 1);
+local function asCompactUnitFrame_UpdateHealthColor(asNameplates)
+	if asNameplates.BarColor then		
+		asNameplates.BarColor:Hide();
 	end
 end
 
@@ -1972,9 +1925,10 @@ local function updateHealthbarColor(self)
 
 	-- None
 	if self.colorlevel > ColorLevel.None then
-		self.colorlevel = ColorLevel.None;
-		asCompactUnitFrame_UpdateHealthColor(parent.UnitFrame, self);
+		self.colorlevel = ColorLevel.None;				
 	end
+
+	asCompactUnitFrame_UpdateHealthColor(self);
 
 	return;
 end
@@ -2195,19 +2149,17 @@ local function removeNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.r = nil;
 		namePlateFrameBase.asNamePlates.debuffColor = nil;
 		namePlateFrameBase.asNamePlates.castspellid = nil;
+		namePlateFrameBase.asNamePlates.BarColor:Hide();
+		namePlateFrameBase.asNamePlates.BarColor = nil;
 
 		if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
 			if namePlateFrameBase.asNamePlates.alerthealthbar then
 				lib.PixelGlow_Stop(namePlateFrameBase.UnitFrame.healthBar);
 				namePlateFrameBase.asNamePlates.alerthealthbar = false;
-				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r,
-					namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
 				namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
 			end
 
 			if namePlateFrameBase.asNamePlates.colorlevel > ColorLevel.None then
-				namePlateFrameBase.UnitFrame.healthBar:SetStatusBarColor(namePlateFrameBase.asNamePlates.originalcolor.r,
-					namePlateFrameBase.asNamePlates.originalcolor.g, namePlateFrameBase.asNamePlates.originalcolor.b);
 				namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
 			end
 		end
@@ -2258,7 +2210,7 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates = CreateFrame("Frame", nil, unitFrame);
 	end
 
-	asCompactUnitFrame_UpdateHealthColor(unitFrame, namePlateFrameBase.asNamePlates);
+	asCompactUnitFrame_UpdateHealthColor(namePlateFrameBase.asNamePlates);
 	namePlateFrameBase.asNamePlates:EnableMouse(false);
 
 	if not namePlateFrameBase.asNamePlates.buffList then
@@ -2279,7 +2231,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.originalcolor = { r = healthbar.r, g = healthbar.g, b = healthbar.b };
 	namePlateFrameBase.asNamePlates.checkcolor = false;
 	namePlateFrameBase.asNamePlates.debuffColor = nil;
-
+	
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
 	namePlateFrameBase.asNamePlates:UnregisterEvent("PLAYER_TARGET_CHANGED");
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_START");
@@ -2425,6 +2377,22 @@ local function addNamePlate(namePlateUnitToken)
 	end
 
 	namePlateFrameBase.asNamePlates.CCdebuff:Hide();
+
+	if not namePlateFrameBase.asNamePlates.BarColor then
+		namePlateFrameBase.asNamePlates.BarColor = healthbar:CreateTexture(nil, "ARTWORK", "asColorTextureTemplate", 2);		
+	end
+
+	if namePlateFrameBase.asNamePlates.BarColor then
+		local previousTexture = healthbar:GetStatusBarTexture();
+		namePlateFrameBase.asNamePlates.BarColor:ClearAllPoints();
+		namePlateFrameBase.asNamePlates.BarColor:SetPoint("TOPRIGHT", previousTexture, "TOPRIGHT", 0, 0);
+		namePlateFrameBase.asNamePlates.BarColor:SetPoint("BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
+		namePlateFrameBase.asNamePlates.BarColor:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
+		namePlateFrameBase.asNamePlates.BarColor:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMLEFT", 0, 0);
+		namePlateFrameBase.asNamePlates.BarColor:SetVertexColor(1,1,1)
+		namePlateFrameBase.asNamePlates.BarColor:Hide();
+	end
+
 
 	if namePlateFrameBase.asNamePlates then
 		namePlateFrameBase.asNamePlates.unit = unit;
@@ -2801,18 +2769,7 @@ local function initAddon()
 			updateTargetNameP(pframe.asNamePlates);
 		end
 	end)
-
-	hooksecurefunc("CompactUnitFrame_UpdateHealthColor", function(frame)
-		if (frame:IsForbidden()) then
-			return
-		end
-
-		local pframe = frame:GetParent();
-		if pframe and not (pframe:IsForbidden()) and pframe.asNamePlates then
-			updateHealthbarColor(pframe.asNamePlates);
-		end
-	end)
-
+	
 	ANameP_OptionM.RegisterCallback(flushoption);
 
 	local bloaded = LoadAddOn("DBM-Core");

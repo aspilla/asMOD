@@ -46,5 +46,8 @@
 			</Cooldown>
 		</Frames>
 	</Frame>
+	<Texture name="asColorTextureTemplate" virtual="true" file="Interface\TargetingFrame\UI-StatusBar">
+		<Color r="0.0" g="0.447" b="1.0"/>
+	</Texture>
 	<Script file="asNamePlates.lua"/>
 </Ui>

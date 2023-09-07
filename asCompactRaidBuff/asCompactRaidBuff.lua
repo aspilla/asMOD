@@ -953,7 +953,6 @@ local function ACRB_setupFrame(frame)
 		asraid[frameName].buffcolor:SetPoint("BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
 		asraid[frameName].buffcolor:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
 		asraid[frameName].buffcolor:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMLEFT", 0, 0);
-		asraid[frameName].buffcolor:SetWidth(0);
 		asraid[frameName].buffcolor:SetVertexColor(0.5, 0.5, 0.5);
 	end
 
