@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Texture name="asPredictionBarTemplate" virtual="true" file="Interface\TargetingFrame\UI-StatusBar">
+	<Texture name="asPredictionBarTemplate" virtual="true" file="Interface\addons\asPowerBar\UI-StatusBar">
 		<Color r="0.0" g="0.447" b="1.0"/>
 	</Texture>
 	<Script file="asPowerBar.lua"/>

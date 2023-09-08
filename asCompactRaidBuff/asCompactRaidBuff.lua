@@ -1145,7 +1145,7 @@ local function ACRB_setupFrame(frame)
 
 	if (not asraid[frameName].asManabar and not frame.powerBar:IsShown()) then
 		asraid[frameName].asManabar = CreateFrame("StatusBar", nil, frame.healthBar)
-		asraid[frameName].asManabar:SetStatusBarTexture("Interface\\TARGETINGFRAME\\UI-StatusBar")
+		asraid[frameName].asManabar:SetStatusBarTexture("Interface\\Addons\\asCompactRaidBuff\\UI-StatusBar")
 		asraid[frameName].asManabar:GetStatusBarTexture():SetHorizTile(false)
 		asraid[frameName].asManabar:SetMinMaxValues(0, 100)
 		asraid[frameName].asManabar:SetValue(100)
@@ -1161,7 +1161,7 @@ local function ACRB_setupFrame(frame)
 
 	if (not asraid[frameName].asBuffbar) then
 		asraid[frameName].asBuffbar = CreateFrame("StatusBar", nil, frame.healthBar)
-		asraid[frameName].asBuffbar:SetStatusBarTexture("Interface\\TARGETINGFRAME\\UI-StatusBar")
+		asraid[frameName].asBuffbar:SetStatusBarTexture("Interface\\Addons\\asCompactRaidBuff\\UI-StatusBar")
 		asraid[frameName].asBuffbar:GetStatusBarTexture():SetHorizTile(false)
 		asraid[frameName].asBuffbar:SetMinMaxValues(0, 100)
 		asraid[frameName].asBuffbar:SetValue(100)
