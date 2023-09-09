@@ -66,17 +66,16 @@ ACRB_ShowList_SHAMAN_3 = {
 
 
 ACRB_ShowList_DRUID_4 = {
-	["회복"] = { 1, 4 },
-	["재생"] = { 1, 5 },
-	["피어나는 생명"] = { 1, 6 },
+	["회복"] = { 1, 7 },
+	["피어나는 생명"] = { 1, 4 },
+	["재생"] = { 1, 5 },	
 	["회복 (싹틔우기)"] = { 1, 2 },
 	["세나리온 수호물"] = { 0, 1 },
-
-
 }
 
 ACRB_ShowList_EVOKER_2 = {
-	["메아리"] = { 0, 4 },
+	["메아리"] = { 0, 7 },
+	["되감기"] = { 1, 4 },
 
 }
 
@@ -1434,9 +1433,30 @@ local function asCompactUnitFrame_UtilSetBuff3(asframe, unit, index, filter)
 	local startTime = expirationTime - duration;
 	asframe.asBuffbar:SetMinMaxValues(0, duration)
 	asframe.asBuffbar:SetValue(duration - (currtime - startTime));
-	asframe.asBuffbar:SetStatusBarColor(1, 1, 1);
+
+	if ACRB_ShowList and ACRB_ShowAlert then
+		local showlist_time = 0;
+
+		if ACRB_ShowList[name] then
+			showlist_time = ACRB_ShowList[name][1];
+			if showlist_time == 1 then
+				ACRB_ShowList[name][1] = duration * 0.3;
+			end
+		end
+
+		if expirationTime - GetTime() < showlist_time then
+			asframe.asBuffbar:SetStatusBarColor(1, 1, 0);
+			asframe.buffcolor:Hide();			
+		else
+			asframe.asBuffbar:SetStatusBarColor(1, 1, 1);
+			asframe.buffcolor:Show();
+		end
+	else
+		asframe.asBuffbar:SetStatusBarColor(1, 1, 1);
+		asframe.buffcolor:Show();
+	end
+	
 	asframe.asBuffbar:Show();
-	asframe.buffcolor:Show();
 end
 
 local function Comparison(AIndex, BIndex)
