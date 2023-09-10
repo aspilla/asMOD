@@ -639,7 +639,7 @@ local function ACI_Alert(self, bcastspell)
 	local name;
 	local bspell = false;
 	local not_buffed = false;
-	
+
 	frame = ACI[i];
 	if not frame then
 		return;
@@ -1217,18 +1217,16 @@ end
 
 local function ACI_ButtonOnEvent(self, event, arg1, ...)
 	if (event == "PLAYER_TARGET_CHANGED") then
-		if UnitHealthMax(self.unit) > 0 then
-			local health = UnitHealth(self.unit) / UnitHealthMax(self.unit) * 100
+		if self.unit then
+			if UnitHealthMax(self.unit) > 0 then
+				local health = UnitHealth(self.unit) / UnitHealthMax(self.unit) * 100
 
-			if self.health and self.health >= health then
-				self.checkhealth = true;
-			else
-				self.checkhealth = false;
+				if self.health and self.health >= health then
+					self.checkhealth = true;
+				else
+					self.checkhealth = false;
+				end
 			end
-		end
-
-		if not UnitExists("target") then
-			self.inRange = true;
 		end
 
 		ACI_Alert(self);
@@ -1345,14 +1343,15 @@ local function ACI_OnEvent(self, event, arg1, ...)
 	elseif event == "ACTION_RANGE_CHECK_UPDATE" then
 		local action, inRange, checksRange = arg1, ...;
 
-		if not UnitExists("target") then
-			inRange = true;
-		end
-
-		if ACI_Action_to_index[action] and checksRange then
+		if ACI_Action_to_index[action] then
 			local index = ACI_Action_to_index[action];
 			if ACI[index] then
-				ACI[index].inRange = inRange;
+				if ( checksRange and not inRange ) then
+					ACI[index].inRange = false;
+				else
+					ACI[index].inRange = true
+				end
+				ACI_Alert(ACI[index]);
 			end
 		end
 	end
@@ -1360,7 +1359,7 @@ local function ACI_OnEvent(self, event, arg1, ...)
 end
 
 local function ACI_GetActionSlot(arg1)
-	for lActionSlot = 1, 120 do
+	for lActionSlot = 1, 180 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
 		if id and type and type == "macro" then

@@ -71,7 +71,7 @@ local function scanPetSpells()
 end
 
 local function scanActionSlots()
-	for lActionSlot = 1, 120 do
+	for lActionSlot = 1, 180 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 		local itemid = nil;
 

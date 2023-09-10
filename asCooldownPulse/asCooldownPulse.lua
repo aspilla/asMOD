@@ -214,7 +214,7 @@ end
 
 local function scanActionSlots()
 	--등록된 item만
-	for lActionSlot = 1, 120 do
+	for lActionSlot = 1, 180 do
 		local type, id, subType = GetActionInfo(lActionSlot);
 		local itemid = nil;
 		local spellID = id;

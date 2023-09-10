@@ -379,7 +379,6 @@ local function asUnitFrameUtil_UpdateFillBuffBarBase(realbar, bar, amount, alert
 	if alert == true then
 		bar:SetVertexColor(1, 0.5, 0.5);
 	else
-
 		bar:SetVertexColor(0.5, 0.5, 1);
 	end
 	bar:Show();
@@ -408,7 +407,7 @@ local function APB_OnUpdateBuff(self, elapsed)
 
 		if curr_duration < self.duration then
 			local remain_buff = (self.duration + self.start - curr_time)
-				
+
 			if self.max and self.max > self.duration then
 				self:SetMinMaxValues(0, self.max * 1000)
 			else
@@ -794,7 +793,7 @@ local bupdate_druid = false;
 local function APB_GetActionSlot(arg1)
 	local lActionSlot = 0;
 
-	for lActionSlot = 1, 120 do
+	for lActionSlot = 1, 180 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
 		if id and type and type == "macro" then
@@ -1045,7 +1044,7 @@ local function APB_Update(self)
 
 		if powerTypeString then
 			local info = PowerBarColor[powerTypeString];
-			APB.bar:SetStatusBarColor(info.r, info.g, info.b);			
+			APB.bar:SetStatusBarColor(info.r, info.g, info.b);
 		end
 
 		APB.bar:SetMinMaxValues(0, valueMax)
@@ -1177,7 +1176,7 @@ local function asCheckTalent(name)
 end
 
 local function APB_GetActionSlot(arg1)
-	for lActionSlot = 1, 120 do
+	for lActionSlot = 1, 180 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
 		if id and type and type == "macro" then
@@ -1186,8 +1185,6 @@ local function APB_GetActionSlot(arg1)
 
 		if id then
 			local name = GetSpellInfo(id);
-
-
 			if name and name == arg1 then
 				return lActionSlot;
 			end
@@ -1521,7 +1518,7 @@ local function APB_CheckPower(self)
 				APB_UpdateSpell(APB_SPELL);
 				bupdate_spell = true;
 			end
-			
+
 			for i = 1, 10 do
 				APB.combobar[i].tooltip = "COMBO_POINTS";
 			end
@@ -1615,7 +1612,6 @@ local function APB_CheckPower(self)
 	end
 
 	if (englishClass == "PRIEST") then
-
 		if (spec and spec == 1) then
 			APB_SPELL = "신의 권능: 광휘";
 			APB_SPELL2 = "정신 분열";
@@ -1827,6 +1823,13 @@ local function APB_CheckPower(self)
 				APB.combobar[i].tooltip = "소용돌이치는 무기";
 			end
 			bhalf_combo = true;
+		end
+
+		if (spec and spec == 3) then
+			APB_SPELL = "성난 해일";
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
 		end
 	end
 
@@ -2230,16 +2233,22 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 	elseif event == "ACTION_RANGE_CHECK_UPDATE" then
 		local action, inRange, checksRange = arg1, arg2, arg3;
 
-		if not UnitExists("target") then
-			inRange = true;
+		if APB_ACTION and APB_ACTION == action then
+			if (checksRange and not inRange) then
+				inrange = false;
+			else
+				inrange = true;
+			end
+		elseif APB_ACTION2 and APB_ACTION2 == action then
+			if (checksRange and not inRange) then
+				inrange = false;
+			else
+				inrange = true;
+			end
 		end
 
-		if checksRange then
-			if APB_ACTION and APB_ACTION == action then
-				inrange = inRange;
-			elseif APB_ACTION2 and APB_ACTION2 == action then
-				inrange2 = inRange;
-			end
+		if APB_SPELL then
+			APB_UpdateSpell(APB_SPELL, APB_SPELL2);
 		end
 	end
 
@@ -2353,7 +2362,7 @@ do
 		APB.buffbar[j].count = APB.buffbar[j]:CreateFontString(nil, "ARTWORK")
 		APB.buffbar[j].count:SetFont(APB_Font, APB_BuffSize + 5, APB_FontOutline)
 		APB.buffbar[j].count:SetPoint("RIGHT", APB.buffbar[j], "RIGHT", -4, 0)
-		APB.buffbar[j].count:SetTextColor(1, 1, 1, 1)		
+		APB.buffbar[j].count:SetTextColor(1, 1, 1, 1)
 	end
 
 	APB.combobar = {};

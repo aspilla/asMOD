@@ -61,7 +61,7 @@ ACRB_ShowList_PRIEST_3 = {
 
 
 ACRB_ShowList_SHAMAN_3 = {
-	["성난 해일"] = { 1, 1 },
+	["성난 해일"] = { 1, 4 },
 }
 
 
