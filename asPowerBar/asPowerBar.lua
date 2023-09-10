@@ -1535,7 +1535,12 @@ local function APB_CheckPower(self)
 			APB_UpdateSpell(APB_SPELL);
 			bupdate_spell = true;
 		end
-
+		if (spec and spec == 2) then
+			APB_SPELL = "소생의 안개";
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
+		end
 
 		if (spec and spec == 3) then
 			APB_UNIT_POWER = "CHI"
