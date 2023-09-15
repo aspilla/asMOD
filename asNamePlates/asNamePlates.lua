@@ -2343,10 +2343,7 @@ local function addNamePlate(namePlateUnitToken)
 	if namePlateFrameBase.asNamePlates.BarColor then
 		local previousTexture = healthbar:GetStatusBarTexture();
 		namePlateFrameBase.asNamePlates.BarColor:ClearAllPoints();
-		namePlateFrameBase.asNamePlates.BarColor:SetPoint("TOPRIGHT", previousTexture, "TOPRIGHT", 0, 0);
-		namePlateFrameBase.asNamePlates.BarColor:SetPoint("BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
-		namePlateFrameBase.asNamePlates.BarColor:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
-		namePlateFrameBase.asNamePlates.BarColor:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMLEFT", 0, 0);
+		namePlateFrameBase.asNamePlates.BarColor:SetAllPoints(previousTexture);
 		namePlateFrameBase.asNamePlates.BarColor:SetVertexColor(1, 1, 1)
 		namePlateFrameBase.asNamePlates.BarColor:Hide();
 	end

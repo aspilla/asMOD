@@ -948,10 +948,7 @@ local function ACRB_setupFrame(frame)
 	if asraid[frameName].buffcolor then
 		local previousTexture = frame.healthBar:GetStatusBarTexture();
 		asraid[frameName].buffcolor:ClearAllPoints();
-		asraid[frameName].buffcolor:SetPoint("TOPRIGHT", previousTexture, "TOPRIGHT", 0, 0);
-		asraid[frameName].buffcolor:SetPoint("BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
-		asraid[frameName].buffcolor:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
-		asraid[frameName].buffcolor:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMLEFT", 0, 0);
+		asraid[frameName].buffcolor:SetAllPoints(previousTexture);
 		asraid[frameName].buffcolor:SetVertexColor(0.5, 0.5, 0.5);
 	end
 

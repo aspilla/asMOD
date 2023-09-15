@@ -1014,6 +1014,39 @@ end
 
 
 
+local function asUnitFrameUtil_UpdateFillBarBase(frame, realbar, previousTexture, bar, amount)
+	if not amount or (amount == 0) then
+		bar:Hide();
+		return
+	end
+
+
+	local gen = false;
+
+	bar:ClearAllPoints();
+
+	bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", 0, 0);
+	bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", 0, 0);
+
+	if amount < 0 then
+		amount = 0 - amount;
+		gen = true;
+	end
+
+	local totalWidth, totalHeight = realbar:GetSize();
+
+	local _, totalMax = realbar:GetMinMaxValues();
+
+	local barSize = (amount / totalMax) * totalWidth;
+	bar:SetWidth(barSize);
+	if gen then
+		bar:SetVertexColor(1, 1, 1)
+	else
+		bar:SetVertexColor(0.5, 0.5, 0.5)
+	end
+	bar:Show();
+end
+
 local function APB_Update(self)
 	local valuePct;
 	local valuePct_orig;
@@ -1028,9 +1061,10 @@ local function APB_Update(self)
 		local value = UnitPower("player", powerType);
 		local valueMax = UnitPowerMax("player", powerType);
 		local value_orig = value;
+		local predictedPowerCost = self.predictedPowerCost;
 
-		if self.predictedPowerCost and self.predictedPowerCost > 0 then
-			value = value - self.predictedPowerCost;
+		if predictedPowerCost and predictedPowerCost > 0 then
+			value = value - predictedPowerCost;
 		end
 
 
@@ -1050,18 +1084,38 @@ local function APB_Update(self)
 		APB.bar:SetMinMaxValues(0, valueMax)
 		APB.bar:SetValue(value)
 
+		if predictedPowerCost and predictedPowerCost < 0 and self.startTime and self.endTime then
+			local currtime = GetTime() * 1000;
+
+			if currtime >= self.startTime and currtime < self.endTime then
+				local totalsec = math.floor((self.endTime - self.startTime) / 1000 + 0.5); -- round up
+				local numtick = math.floor(totalsec / 0.75);
+				local tick = predictedPowerCost / numtick;
+				local remaintick = numtick - math.floor((currtime - self.startTime) / 750);
+				predictedPowerCost = tick * remaintick;
+			end
+		end
+
+		if predictedPowerCost and predictedPowerCost < 0 then
+			local remain = valueMax - value;
+
+			if remain < -predictedPowerCost then
+				predictedPowerCost = -remain;
+			end
+		end
+
 
 		if bshow_haste then
 			local haste = UnitSpellHaste("player")
 			APB.bar.count:SetText(format("%d%%", haste + 0.5));
 		end
 
-		if self.predictedPowerCost and not (self.predictedPowerCost == 0) then
-			if self.predictedPowerCost < 0 then
+		if predictedPowerCost and not (predictedPowerCost == 0) then
+			if predictedPowerCost < 0 then
 				if (powerType == Enum.PowerType.Mana) then
-					valuePct = (math.ceil(((value - self.predictedPowerCost) / valueMax) * 100));
+					valuePct = (math.ceil(((value - predictedPowerCost) / valueMax) * 100));
 				else
-					valuePct = (math.ceil(((value - self.predictedPowerCost))));
+					valuePct = (math.ceil(((value - predictedPowerCost))));
 				end
 
 				APB.bar.text:SetText(valuePct_orig .. "(" .. valuePct .. ")");
@@ -1071,6 +1125,10 @@ local function APB_Update(self)
 		else
 			APB.bar.text:SetText(valuePct);
 		end
+
+		local manaBarTexture = self.bar:GetStatusBarTexture();
+		asUnitFrameUtil_UpdateFillBarBase(self, self.bar, manaBarTexture, self.bar.myManaCostPredictionBar,
+			predictedPowerCost);
 	end
 
 
@@ -1137,6 +1195,8 @@ local function APB_InitPowerBar(self)
 	self:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player");
 	self:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player");
 	self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
+	--self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player");
+	--self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player");
 end
 
 local function asCheckTalent(name)
@@ -1209,6 +1269,8 @@ local function APB_CheckPower(self)
 	APB:UnregisterEvent("UNIT_SPELLCAST_STOP");
 	APB:UnregisterEvent("UNIT_SPELLCAST_FAILED");
 	APB:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+	APB:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
+	APB:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
 	APB:UnregisterEvent("PLAYER_TARGET_CHANGED");
 	APB:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
@@ -1930,39 +1992,6 @@ end
 
 
 
-local function asUnitFrameUtil_UpdateFillBarBase(frame, realbar, previousTexture, bar, amount)
-	if not amount or (amount == 0) then
-		bar:Hide();
-		return
-	end
-
-
-	local gen = false;
-
-	bar:ClearAllPoints();
-
-	bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", 0, 0);
-	bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", 0, 0);
-
-	if amount < 0 then
-		amount = 0 - amount;
-		gen = true;
-	end
-
-	local totalWidth, totalHeight = realbar:GetSize();
-
-	local _, totalMax = realbar:GetMinMaxValues();
-
-	local barSize = (amount / totalMax) * totalWidth;
-	bar:SetWidth(barSize);
-	if gen then
-		bar:SetVertexColor(1, 1, 1)
-	else
-		bar:SetVertexColor(0.5, 0.5, 0.5)
-	end
-	bar:Show();
-end
-
 local gpredictedPowerCost = nil;
 
 local function checkSpellCost(id)
@@ -2079,12 +2108,15 @@ local function checkSpellPowerCost(id)
 end
 
 
+local ticktime = {}
 
 
-local function asUnitFrameManaCostPredictionBars_Update(frame, isStarting, startTime, endTime, spellID)
+local function asUnitFrameManaCostPredictionBars_Update(frame, isStarting, startTime, endTime, spellID, bchanneling)
 	local cost = 0;
 	if (not isStarting or startTime == endTime) then
 		frame.predictedPowerCost = nil;
+		frame.startTime = nil;
+		frame.endTime = nil;
 	else
 		local costTable = GetSpellPowerCost(spellID);
 
@@ -2100,11 +2132,16 @@ local function asUnitFrameManaCostPredictionBars_Update(frame, isStarting, start
 		end
 
 		frame.predictedPowerCost = cost;
+		if bchanneling then
+			frame.startTime = startTime;
+			frame.endTime = endTime;
+		else
+			frame.startTime = nil;
+			frame.endTime = nil;
+		end
 	end
 
-	local manaBarTexture = frame.bar:GetStatusBarTexture();
 	APB_Update(frame);
-	asUnitFrameUtil_UpdateFillBarBase(frame, frame.bar, manaBarTexture, frame.bar.myManaCostPredictionBar, cost);
 end
 
 local windrunner_count = 0;
@@ -2124,13 +2161,22 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 		APB_UpdatePower();
 	elseif event == "RUNE_POWER_UPDATE" then
 		APB_UpdateRune();
+		--elseif (event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_SUCCEEDED" or event == "UNIT_SPELLCAST_CHANNEL_START" or event == "UNIT_SPELLCAST_CHANNEL_STOP") and arg1 == "player" then
 	elseif (event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_SUCCEEDED") and arg1 == "player" then
 		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo(
 			arg1);
+		local bchanneling = false;
+		--[[
+		if not name then
+			name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID = UnitChannelInfo(arg1);
+			bchanneling = true;
+		end
+		]]
 		checkSpellCost(spellID);
 		checkSpellPowerCost(spellID);
+		--asUnitFrameManaCostPredictionBars_Update(self, (event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" or not (startTime == endTime)),
 		asUnitFrameManaCostPredictionBars_Update(self, (event == "UNIT_SPELLCAST_START" or not (startTime == endTime)),
-			startTime, endTime, spellID);
+			startTime, endTime, spellID, bchanneling);
 		APB_UpdatePower();
 		APB_UpdateFronzenOrb(self.buffbar[0]);
 	elseif event == "PLAYER_TARGET_CHANGED" then

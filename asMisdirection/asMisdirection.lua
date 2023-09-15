@@ -2,6 +2,7 @@ local AHM_Button        = CreateFrame("Frame", nil, UIParent)
 
 local playerClass       = select(2, UnitClass("player"))
 local MisDirectionSpell = nil
+local MindInfusionSpell = nil;
 
 local function GetTargetPartyID()
 	if IsInGroup() then
@@ -28,18 +29,11 @@ local function GetTargetPartyID()
 	return "pet";
 end
 
-local bfinddealer = false;
-
 local function CheckPartyMember(btank)
 	local _, RTB_ZoneType = IsInInstance();
 
 	if RTB_ZoneType == "pvp" then
 		return nil;
-	end
-
-	local finddealer = bfinddealer;
-	if btank then
-		finddealer = false;
 	end
 
 	if IsInGroup() then
@@ -51,7 +45,7 @@ local function CheckPartyMember(btank)
 				if unitName and notMe then
 					local _, _, _, _, _, _, _, _, _, role, _, assignedRole = GetRaidRosterInfo(i);
 
-					if finddealer and assignedRole == "DAMAGER" and not UnitIsUnit(unitid, "player") then
+					if btank == false and assignedRole == "DAMAGER" and not UnitIsUnit(unitid, "player") then
 						return unitid;
 					elseif assignedRole == "TANK" then
 						return unitid;
@@ -67,7 +61,7 @@ local function CheckPartyMember(btank)
 
 					assignedRole = UnitGroupRolesAssigned(unitid);
 
-					if finddealer and assignedRole == "DAMAGER" and not UnitIsUnit(unitid, "player") then
+					if btank == false and assignedRole == "DAMAGER" and not UnitIsUnit(unitid, "player") then
 						return unitid;
 					elseif assignedRole == "TANK" then
 						return unitid;
@@ -77,7 +71,7 @@ local function CheckPartyMember(btank)
 		end
 	end
 
-	if finddealer then
+	if btank == false then
 		return "player";
 	end
 	return "pet";
@@ -100,8 +94,6 @@ local function AHM_SetAssist(unit, force)
 		else
 			force_unit = unit;
 		end
-	elseif bfinddealer then
-		unit = CheckPartyMember(true);
 	end
 
 	if unit == prev_unit then
@@ -141,7 +133,7 @@ local function AHM_SetMisdirection(unit, force)
 		if unit == force_md_unit then
 			force_md_unit = nil;
 			force = nil;
-			unit = CheckPartyMember(false);
+			unit = CheckPartyMember(true);
 		else
 			force_md_unit = unit;
 		end
@@ -182,8 +174,61 @@ local function AHM_SetMisdirection(unit, force)
 			end
 		end
 	end
+end
 
-	
+local prev_mi_unit = nil;
+local force_mi_unit = nil;
+
+local function AHM_SetMindInfusion(unit, force)
+	if not force and force_mi_unit then
+		return;
+	end
+
+	if force then
+		if unit == force_mi_unit then
+			force_mi_unit = nil;
+			force = nil;
+			unit = CheckPartyMember(false);
+		else
+			force_mi_unit = unit;
+		end
+	end
+
+	if unit == prev_mi_unit then
+		return;
+	end
+
+	prev_mi_unit = unit;
+
+	if MindInfusionSpell then
+		--macroText = string.format("#showtooltip %s\n/cast [@mouseover, exists, help, nodead][target=" .. unit ..", exists, help, nodead][help] %s", MindInfusionSpell, MindInfusionSpell)
+		local macroText = string.format("#showtooltip %s\n/cast [target=" .. unit .. ", exists, help, nodead][help] %s",
+			MindInfusionSpell, MindInfusionSpell)
+		local macroID = GetMacroIndexByName(MindInfusionSpell)
+		local macroName = MindInfusionSpell
+
+		if (macroID == 0) then
+			CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText, 1)
+		else
+			local oldtext = GetMacroBody(macroID);
+			local start = string.find(oldtext, "help] " .. MindInfusionSpell, 0);
+
+			if start and start > 0 then
+				local addedtext = string.sub(oldtext, start + string.len("help] " .. MindInfusionSpell), -1);
+				macroText = macroText .. addedtext;
+			end
+
+			EditMacro(macroID, macroName, "INV_MISC_QUESTIONMARK", macroText, 1)
+		end
+
+		if UnitExists(unit) then
+			if force then
+				print("[afm] 강제으로 " .. UnitName(unit) .. " 이 " .. MindInfusionSpell .. " 대상으로 지정");
+			else
+				print("[afm] 자동으로 " .. UnitName(unit) .. " 이 " .. MindInfusionSpell .. " 대상으로 지정");
+			end
+		end
+	end
 end
 
 local function AHM_SetTargetName(...)
@@ -197,6 +242,7 @@ local function AHM_SetTargetName(...)
 	if unit then
 		AHM_SetAssist(unit, true);
 		AHM_SetMisdirection(unit, true);
+		AHM_SetMindInfusion(unit, true);
 	end
 end
 
@@ -225,7 +271,9 @@ local tempTarget = nil;
 local function AHM_OnEvent(self, event, ...)
 	if (event == "PLAYER_LOGIN" or event == "LEARNED_SPELL_IN_TAB") then
 		MisDirectionSpell = nil;
+		MindInfusionSpell = nil;
 		local maintarget = "pet";
+		local dealspell = false;
 
 		print("/afm : 대상을 탱커으로 지정")
 		print("[afm] 매크로 창에서 탱커지원 매크로를 이용하세요.")
@@ -240,9 +288,9 @@ local function AHM_OnEvent(self, event, ...)
 			spellId = 360827;
 			maintarget = "player"
 		elseif playerClass == "PRIEST" then
-			spellId = 122860;
-			bfinddealer = true;
+			spellId = 122860;			
 			maintarget = "player"
+			dealspell = true;
 		else
 			AHM_Button:UnregisterEvent("LEARNED_SPELL_IN_TAB");
 
@@ -262,16 +310,32 @@ local function AHM_OnEvent(self, event, ...)
 			AHM_Button:UnregisterEvent("LEARNED_SPELL_IN_TAB")
 		end
 
-		MisDirectionSpell = spellName
+		if dealspell then
 
-		if not InCombatLockdown() then
-			AHM_SetAssist(maintarget);
-			AHM_SetMisdirection(maintarget);
+			MindInfusionSpell = spellName
+
+			if not InCombatLockdown() then
+				AHM_SetAssist(maintarget);
+				AHM_SetMindInfusion(maintarget);
+			else
+				tempTarget = maintarget
+			end
+
+			print("[afm] 매크로 창에서 " .. MindInfusionSpell .. " 매크로를 이용하세요.")
+
 		else
-			tempTarget = maintarget
-		end
 
-		print("[afm] 매크로 창에서 " .. MisDirectionSpell .. " 매크로를 이용하세요.")
+			MisDirectionSpell = spellName
+
+			if not InCombatLockdown() then
+				AHM_SetAssist(maintarget);
+				AHM_SetMisdirection(maintarget);
+			else
+				tempTarget = maintarget
+			end
+
+			print("[afm] 매크로 창에서 " .. MisDirectionSpell .. " 매크로를 이용하세요.")
+		end
 	elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
 		local unit = CheckPartyMember();
 
@@ -279,6 +343,7 @@ local function AHM_OnEvent(self, event, ...)
 			if UnitExists(unit) then
 				AHM_SetAssist(unit);
 				AHM_SetMisdirection(unit);
+				AHM_SetMindInfusion(unit);
 			end
 		else
 			tempTarget = unit;
@@ -293,6 +358,7 @@ local function AHM_OnEvent(self, event, ...)
 			if UnitExists(unit) then
 				AHM_SetAssist(unit);
 				AHM_SetMisdirection(unit);
+				AHM_SetMindInfusion(unit);
 			end
 		else
 			tempTarget = unit;
@@ -301,6 +367,7 @@ local function AHM_OnEvent(self, event, ...)
 		if tempTarget and UnitExists(tempTarget) then
 			AHM_SetAssist(tempTarget);
 			AHM_SetMisdirection(tempTarget);
+			AHM_SetMindInfusion(tempTarget);
 		end
 		tempTarget = nil;
 	end

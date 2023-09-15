@@ -6,6 +6,7 @@ AFUF.Options_Default = {
     HideClassBar = true,
     ShowClassColor = true,
     ShowAggro = true,
+    ShowDebuff = true,
 }
 
 function AFUF:HideCombatText()
@@ -94,16 +95,22 @@ function AFUF:UpdateHealthBar()
     end
 
     local function updateHealthColor(unit, frame)
+
+        if not (unit and frame) then
+            return;
+        end
+        
         local r, g, b;
-        local localizedClass, englishClass = UnitClass(unit);
+        local _, englishClass = UnitClass(unit);
         local classColor = RAID_CLASS_COLORS[englishClass];
+
         if ((UnitIsPlayer(unit)) and classColor) then
             r, g, b = classColor.r, classColor.g, classColor.b;
+            frame:SetStatusBarDesaturated(true);
+            frame:SetStatusBarColor(r, g, b);
         else
-            r, g, b = 0.0, 1.0, 0.0;
+            frame:SetStatusBarColor(0, 1, 0);
         end
-        frame:SetStatusBarTexture("Interface\\addons\\asFixUnitFrame\\UI-StatusBar.blp")
-        frame:SetStatusBarColor(r, g, b);
     end
 
     local healthBars = getFramesHealthBar()
@@ -111,6 +118,106 @@ function AFUF:UpdateHealthBar()
     for _, statusbar in pairs(healthBars) do
         updateHealthColor(statusbar.unit, statusbar)
     end
+end
+
+local function asCooldownFrame_Clear(self)
+    self:Clear();
+end
+
+local function asCooldownFrame_Set(self, start, duration, enable, modRate)
+    if enable and enable ~= 0 and start > 0 and duration > 0 then
+        self:SetCooldown(start, duration, modRate);
+    else
+        asCooldownFrame_Clear(self);
+    end
+end
+
+function AFUF:UpdateTargetDebuff()
+    if not AFUF_Options["ShowDebuff"] then
+        return;
+    end
+
+    if not UnitExists("target") then
+        return;
+    end
+
+    if not (TargetFrame and TargetFrame.TargetFrameContainer and TargetFrame.TargetFrameContainer.Portrait and TargetFrame.TargetFrameContainer) then
+        return;
+    end
+
+    if not self.debuffframe and TargetFrame.TargetFrameContainer.Portrait then
+        local parent = TargetFrame.TargetFrameContainer;
+        local portrait = parent.Portrait;
+
+        self.debuffframe = CreateFrame("Button", nil, parent, "asFUFDebuffFrameTemplate");
+        local frame = self.debuffframe;
+        frame:EnableMouse(false);
+        frame:ClearAllPoints();
+        frame:SetAllPoints(portrait)
+        frame:SetFrameLevel(parent:GetFrameLevel())
+        frame.icon:SetDrawLayer("BACKGROUND", 2);
+        frame.icon:SetMask("Interface\\CHARACTERFRAME\\TempPortraitAlphaMask");
+        frame.cooldown:SetSwipeTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMaskSmall")
+        frame.cooldown:SetDrawEdge(false);
+        frame.cooldown:SetSwipeColor(0, 0, 0, 0.5);
+        frame.cooldown:SetUseCircularEdge(true);
+        frame.cooldown:SetHideCountdownNumbers(false);
+        parent.FrameTexture:SetDrawLayer("BACKGROUND", 3);
+
+
+        if not frame:GetScript("OnEnter") then
+            frame:SetScript("OnEnter", function(s)
+                if s:GetID() > 0 then
+                    GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                    GameTooltip:SetUnitDebuff(s.unit, s:GetID(), s.filter);
+                end
+            end)
+            frame:SetScript("OnLeave", function()
+                GameTooltip:Hide();
+            end)
+        end
+    end
+
+    local i = 1;
+    local bshow = false;
+
+    repeat
+        local name, icon, _, _, duration, expirationTime, _, _, _, _, _, _, _, nameplateShowAll = UnitDebuff("target", i,"");
+
+        if (name == nil) then
+            break;
+        end
+
+        if nameplateShowAll then
+            local frame = self.debuffframe;
+
+            frame.icon:SetTexture(icon);
+
+            if (duration > 0) then
+                asCooldownFrame_Set(frame.cooldown, expirationTime - duration, duration, duration > 0);
+                frame.cooldown:Show();
+            else
+                frame.cooldown:Hide();
+            end
+
+            frame.filter = "";
+            frame:SetID(i);
+            frame.unit = "target";
+            frame:Show();
+            bshow = true;
+            break;
+        end
+
+        i = i + 1;
+    until (true)
+
+    if not bshow then
+        self.debuffframe:Hide();
+    end
+end
+
+function AFUF:OnUpdate()
+    AFUF:UpdateTargetDebuff();
 end
 
 AFUF.bfirst = false;
@@ -142,6 +249,8 @@ function AFUF:OnInit()
     self:RegisterUnitEvent("UNIT_TARGET", "target");
     self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
     self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
+
+    C_Timer.NewTicker(0.1, AFUF.OnUpdate);
 end
 
 function AFUF:SetupOptionPanels()
