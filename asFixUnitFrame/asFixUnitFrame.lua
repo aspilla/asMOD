@@ -95,11 +95,10 @@ function AFUF:UpdateHealthBar()
     end
 
     local function updateHealthColor(unit, frame)
-
         if not (unit and frame) then
             return;
         end
-        
+
         local r, g, b;
         local _, englishClass = UnitClass(unit);
         local classColor = RAID_CLASS_COLORS[englishClass];
@@ -132,6 +131,8 @@ local function asCooldownFrame_Set(self, start, duration, enable, modRate)
     end
 end
 
+
+
 function AFUF:UpdateTargetDebuff()
     if not AFUF_Options["ShowDebuff"] then
         return;
@@ -141,11 +142,11 @@ function AFUF:UpdateTargetDebuff()
         return;
     end
 
-    if not (TargetFrame and TargetFrame.TargetFrameContainer and TargetFrame.TargetFrameContainer.Portrait and TargetFrame.TargetFrameContainer) then
-        return;
-    end
+    if not self.debuffframe then
+        if not (TargetFrame and TargetFrame.TargetFrameContainer and TargetFrame.TargetFrameContainer.Portrait and TargetFrame.TargetFrameContainer.FrameTexture) then
+            return;
+        end
 
-    if not self.debuffframe and TargetFrame.TargetFrameContainer.Portrait then
         local parent = TargetFrame.TargetFrameContainer;
         local portrait = parent.Portrait;
 
@@ -181,8 +182,13 @@ function AFUF:UpdateTargetDebuff()
     local i = 1;
     local bshow = false;
 
+    if not self.debuffframe then
+        return
+    end
+
     repeat
-        local name, icon, _, _, duration, expirationTime, _, _, _, _, _, _, _, nameplateShowAll = UnitDebuff("target", i,"");
+        local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, casterIsPlayer, nameplateShowAll =
+        UnitDebuff("target", i, "");
 
         if (name == nil) then
             break;
@@ -194,7 +200,7 @@ function AFUF:UpdateTargetDebuff()
             frame.icon:SetTexture(icon);
 
             if (duration > 0) then
-                asCooldownFrame_Set(frame.cooldown, expirationTime - duration, duration, duration > 0);
+                asCooldownFrame_Set(frame.cooldown, expirationTime - duration, duration, true);
                 frame.cooldown:Show();
             else
                 frame.cooldown:Hide();
@@ -209,15 +215,22 @@ function AFUF:UpdateTargetDebuff()
         end
 
         i = i + 1;
-    until (true)
+    until (false)
 
     if not bshow then
         self.debuffframe:Hide();
     end
 end
 
-function AFUF:OnUpdate()
-    AFUF:UpdateTargetDebuff();
+AFUF.total = 0;
+
+function AFUF:OnUpdate(elapsed)
+    self.total = self.total + elapsed
+
+    if self.total > 0.1 then
+        self:UpdateTargetDebuff();
+        self.total = 0;
+    end
 end
 
 AFUF.bfirst = false;
@@ -235,22 +248,21 @@ function AFUF:OnEvent(event, ...)
         self:ShowAggro();
         self:HideTargetCastBar();
         SetCVar("showTargetCastbar", "1");
+    elseif event == "PLAYER_TARGET_CHANGED" then
+        self:RegisterUnitEvent("UNIT_TARGET", "target");
     end
     self:UpdateHealthBar();
-
-    AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
 end
 
 function AFUF:OnInit()
     self:SetScript("OnEvent", AFUF.OnEvent);
+    self:SetScript("OnUpdate", AFUF.OnUpdate);
     self:RegisterEvent("PLAYER_TARGET_CHANGED");
     self:RegisterEvent("PLAYER_ENTERING_WORLD");
     self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
     self:RegisterUnitEvent("UNIT_TARGET", "target");
-    self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
-    self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
-
-    C_Timer.NewTicker(0.1, AFUF.OnUpdate);
+    self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
+    self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
 end
 
 function AFUF:SetupOptionPanels()
