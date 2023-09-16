@@ -662,6 +662,10 @@ local function ACI_Alert(self, bcastspell)
 		count                                                           = GetSpellCharges(spellname);
 		charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
 
+		if ACI_Action_slot_list[i] then
+			start, duration, enable = GetActionCooldown(ACI_Action_slot_list[i]);
+		end
+
 		if count == 1 and (not maxCharges or maxCharges <= 1) then
 			count = 0;
 		end
@@ -900,6 +904,10 @@ local function ACI_Alert(self, bcastspell)
 			charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
 			local _, gcd                                                    = GetSpellCooldown(61304);
 
+			if  ACI_Action_slot_list[i] then
+				start, duration, enable = GetActionCooldown(ACI_Action_slot_list[i]);
+			end
+
 			if count == 1 and (not maxCharges or maxCharges <= 1) then
 				count = 0;
 			end
@@ -964,9 +972,13 @@ local function ACI_Alert(self, bcastspell)
 			isUsable, notEnoughMana = IsUsableSpell(spellname);
 			count                   = GetSpellCharges(spellname);
 			local _, gcd            = GetSpellCooldown(61304);
-
+			
 
 			charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
+
+			if ACI_Action_slot_list[i] then
+				start, duration, enable = GetActionCooldown(ACI_Action_slot_list[i]);
+			end
 
 			if count == 1 and (not maxCharges or maxCharges <= 1) then
 				count = 0;
@@ -1035,6 +1047,10 @@ local function ACI_Alert(self, bcastspell)
 
 
 			charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
+
+			if ACI_Action_slot_list[i] then
+				start, duration, enable = GetActionCooldown(ACI_Action_slot_list[i]);
+			end
 
 			if count == 1 and (not maxCharges or maxCharges <= 1) then
 				count = 0;
