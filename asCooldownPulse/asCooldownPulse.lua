@@ -44,6 +44,33 @@ local black_list = {
 
 }
 
+local voice_remap = {
+	["들이치기"] = "차단쿨다운",
+	["발차기"] = "차단쿨다운",
+	["분열"] = "차단쿨다운",
+	["손날 찌르기"] = "차단쿨다운",
+	["정신 얼리기"] = "차단쿨다운",
+	["재갈"] = "차단쿨다운",
+	["반격의 사격"] = "차단쿨다운",
+	["진압"] = "차단쿨다운",
+	["두개골 강타"] = "차단쿨다운",
+	["침묵"] = "차단쿨다운",
+	["비난"] = "차단쿨다운",
+	["날카로운 바람"] = "차단쿨다운",
+	["마법 차단"] = "차단쿨다운",
+	["태양 광선"] = "차단쿨다운",
+	["도끼 던지기"] = "차단쿨다운",
+	["주문 잠금"] = "차단쿨다운",
+	["정화"] = "해제쿨다운",
+	["소작의 불길"] = "해제쿨다운",
+	["자연화"] = "해제쿨다운",
+	["영혼 정화"] = "해제쿨다운",
+	["해독"] = "해제쿨다운",
+	["해제"] = "해제쿨다운",
+	["독소 정화"] = "해제쿨다운",
+	["저주 해제"] = "해제쿨다운",
+}
+
 -- Alpha animation stuff
 local asFADEFRAMES = {};
 
@@ -399,7 +426,7 @@ local function ACDP_UpdateCooldown()
 
 	local prev_icon;
 	local prev_duration;
-	
+
 	for i = 1, #showlist do
 		local start = showlist[i][2];
 		local duration = showlist[i][3];
@@ -410,7 +437,7 @@ local function ACDP_UpdateCooldown()
 		if not (icon == prev_icon) then
 			prev_icon = icon;
 			prev_duration = duration;
-			
+
 			frame = parent.frames[numCools];
 
 
@@ -518,6 +545,10 @@ local function ACDP_Alert(spell, type)
 	if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
 		local name, _, icon, _, _, _, _, _, _ = GetSpellInfo(spell)
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
+
+		if voice_remap[name] then
+			name = voice_remap[name];
+		end
 		--print(name);
 		if CONFIG_SOUND and name then
 			PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\" .. name .. ".mp3", "DIALOG")
