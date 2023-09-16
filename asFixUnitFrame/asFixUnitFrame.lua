@@ -1,5 +1,5 @@
 local AFUF = CreateFrame("FRAME", nil, UIParent);
-AFUF.Options_Default = {
+Options_Default = {
     HideDebuff = true,
     HideCombatText = true,
     HideCastBar = true,
@@ -7,10 +7,12 @@ AFUF.Options_Default = {
     ShowClassColor = true,
     ShowAggro = true,
     ShowDebuff = true,
-}
+};
 
-function AFUF:HideCombatText()
-    if AFUF_Options["HideCombatText"] then
+local options = {};
+
+local function HideCombatText()
+    if options["HideCombatText"] then
         -- 데미지 숫자 숨기기
         PlayerFrame:UnregisterEvent("UNIT_COMBAT");
         TargetFrame:UnregisterEvent("UNIT_COMBAT");
@@ -18,9 +20,9 @@ function AFUF:HideCombatText()
     end
 end
 
-function AFUF:HideTargetBuffs()
+local function HideTargetBuffs()
     -- TargetFrame의 Buff Debuff를 숨긴다.
-    if AFUF_Options["HideDebuff"] then
+    if options["HideDebuff"] then
         TargetFrame:UnregisterEvent("UNIT_AURA");
         local function _UpdateBuffAnchor(self, buff)
             --For mirroring vertically
@@ -32,15 +34,15 @@ function AFUF:HideTargetBuffs()
     end
 end
 
-function AFUF:HideTargetCastBar()
-    if AFUF_Options["HideCastBar"] then
+local function HideTargetCastBar()
+    if options["HideCastBar"] then
         --TargetCastBar 를 숨긴다.
         TargetFrame.spellbar.showCastbar = false;
     end
 end
 
-function AFUF:ShowAggro()
-    if AFUF_Options["ShowAggro"] then
+local function ShowAggro()
+    if options["ShowAggro"] then
         --TargetCastBar 를 숨긴다.
         SetCVar("threatShowNumeric", "1");
     else
@@ -48,8 +50,8 @@ function AFUF:ShowAggro()
     end
 end
 
-function AFUF:HideClassBar()
-    if not AFUF_Options["HideClassBar"] then
+local function HideClassBar()
+    if not options["HideClassBar"] then
         return;
     end
     --주요 자원바 숨기기
@@ -81,47 +83,56 @@ function AFUF:HideClassBar()
     end
 end
 
-function AFUF:UpdateHealthBar()
-    if not AFUF_Options["ShowClassColor"] then
+local frames = {
+    ["player"] = PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar,
+    ["target"] = TargetFrame.TargetFrameContent.TargetFrameContentMain.HealthBar,
+    ["targettarget"] = TargetFrameToT.HealthBar,
+}
+
+local function UpdateHealthBar(unit)
+
+    if not options["ShowClassColor"] then
         return;
     end
-    --Healthbar 직업 색상
-    local function getFramesHealthBar()
-        return {
-            PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar,
-            TargetFrame.TargetFrameContent.TargetFrameContentMain.HealthBar,
-            TargetFrameToT.HealthBar,
-        }
+
+    if not unit then
+        return;
+    end
+   
+    if not UnitExists(unit) then
+        return;
     end
 
-    local function updateHealthColor(unit, frame)
-
-        if not (unit and frame) then
+    --Healthbar 직업 색상
+    local function updateHealthColor(frame)
+        if not (frame) then
             return;
         end
 
         if (frame:IsForbidden()) then
             return;
         end
-
+       
         local r, g, b;
-        local _, englishClass = UnitClass(unit);
-        local classColor = RAID_CLASS_COLORS[englishClass];
 
-        if ((UnitIsPlayer(unit)) and classColor) then
-            r, g, b = classColor.r, classColor.g, classColor.b;
-            frame:SetStatusBarDesaturated(true);
-            frame:SetStatusBarColor(r, g, b);
+        if UnitIsPlayer(unit) then
+            local _, englishClass = UnitClass(unit);
+            local classColor = RAID_CLASS_COLORS[englishClass];
+
+            if (classColor) then
+                r, g, b = classColor.r, classColor.g, classColor.b;
+                frame:SetStatusBarDesaturated(true);
+                frame:SetStatusBarColor(r, g, b);
+            else
+                frame:SetStatusBarColor(0, 1, 0);
+            end
         else
             frame:SetStatusBarColor(0, 1, 0);
         end
     end
 
-    local healthBars = getFramesHealthBar()
-
-    for _, statusbar in pairs(healthBars) do
-        updateHealthColor(statusbar.unit, statusbar)
-    end
+    local statusbar = frames[unit];
+    updateHealthColor(statusbar);    
 end
 
 local function asCooldownFrame_Clear(self)
@@ -138,8 +149,8 @@ end
 
 
 
-function AFUF:UpdateTargetDebuff()
-    if not AFUF_Options["ShowDebuff"] then
+local function UpdateTargetDebuff()
+    if not options["ShowDebuff"] then
         return;
     end
 
@@ -147,7 +158,7 @@ function AFUF:UpdateTargetDebuff()
         return;
     end
 
-    if not self.debuffframe then
+    if not AFUF.debuffframe then
         if not (TargetFrame and TargetFrame.TargetFrameContainer and TargetFrame.TargetFrameContainer.Portrait and TargetFrame.TargetFrameContainer.FrameTexture) then
             return;
         end
@@ -159,8 +170,8 @@ function AFUF:UpdateTargetDebuff()
         local parent = TargetFrame.TargetFrameContainer;
         local portrait = parent.Portrait;
 
-        self.debuffframe = CreateFrame("Button", nil, parent, "asFUFDebuffFrameTemplate");
-        local frame = self.debuffframe;
+        AFUF.debuffframe = CreateFrame("Button", nil, parent, "asFUFDebuffFrameTemplate");
+        local frame = AFUF.debuffframe;
         frame:EnableMouse(false);
         frame:ClearAllPoints();
         frame:SetAllPoints(portrait)
@@ -173,7 +184,6 @@ function AFUF:UpdateTargetDebuff()
         frame.cooldown:SetUseCircularEdge(true);
         frame.cooldown:SetHideCountdownNumbers(false);
         parent.FrameTexture:SetDrawLayer("BACKGROUND", 3);
-
 
         if not frame:GetScript("OnEnter") then
             frame:SetScript("OnEnter", function(s)
@@ -191,20 +201,20 @@ function AFUF:UpdateTargetDebuff()
     local i = 1;
     local bshow = false;
 
-    if not self.debuffframe then
+    if not AFUF.debuffframe then
         return
     end
 
     repeat
-        local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, casterIsPlayer, nameplateShowAll =
-        UnitDebuff("target", i, "");
+        local name, icon, _, _, duration, expirationTime, _, _, _, _, _, _, _, nameplateShowAll = UnitDebuff("target", i,
+            "");
 
         if (name == nil) then
             break;
         end
 
         if nameplateShowAll then
-            local frame = self.debuffframe;
+            local frame = AFUF.debuffframe;
 
             frame.icon:SetTexture(icon);
 
@@ -227,57 +237,26 @@ function AFUF:UpdateTargetDebuff()
     until (false)
 
     if not bshow then
-        self.debuffframe:Hide();
+        AFUF.debuffframe:Hide();
     end
 end
 
-AFUF.total = 0;
+local total = 0;
 
-function AFUF:OnUpdate(elapsed)
-    self.total = self.total + elapsed
+local function OnUpdate(self, elapsed)
+    total = total + elapsed
 
-    if self.total > 0.1 then
-        self:UpdateTargetDebuff();
-        self.total = 0;
+    if total > 0.1 then
+        UpdateTargetDebuff();
+        total = 0;
     end
 end
 
-AFUF.bfirst = false;
-
-function AFUF:OnEvent(event, ...)
-    if not self.bfirst then
-        self:SetupOptionPanels();
-        self.bfirst = true;
-    end
-
-    if event == "PLAYER_ENTERING_WORLD" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
-        self:HideClassBar();
-        self:HideCombatText();
-        self:HideTargetBuffs();
-        self:ShowAggro();
-        self:HideTargetCastBar();
-        SetCVar("showTargetCastbar", "1");
-    elseif event == "PLAYER_TARGET_CHANGED" then
-        self:RegisterUnitEvent("UNIT_TARGET", "target");
-    end
-    self:UpdateHealthBar();
-end
-
-function AFUF:OnInit()
-    self:SetScript("OnEvent", AFUF.OnEvent);
-    self:SetScript("OnUpdate", AFUF.OnUpdate);
-    self:RegisterEvent("PLAYER_TARGET_CHANGED");
-    self:RegisterEvent("PLAYER_ENTERING_WORLD");
-    self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-    self:RegisterUnitEvent("UNIT_TARGET", "target");
-    self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
-    self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
-end
-
-function AFUF:SetupOptionPanels()
+local function SetupOptionPanels()
     local function OnSettingChanged(_, setting, value)
         local variable = setting:GetVariable()
         AFUF_Options[variable] = value;
+        options[variable] = value;
         ReloadUI();
     end
 
@@ -285,14 +264,16 @@ function AFUF:SetupOptionPanels()
 
     if AFUF_Options == nil then
         AFUF_Options = {};
-        AFUF_Options = CopyTable(self.Options_Default);
+        AFUF_Options = CopyTable(Options_Default);
+        options = CopyTable(AFUF_Options);
     end
 
-    for variable, _ in pairs(self.Options_Default) do
+    for variable, _ in pairs(Options_Default) do
         local name = variable;
         local tooltip = ""
         if AFUF_Options[variable] == nil then
-            AFUF_Options[variable] = self.Options_Default[variable];
+            AFUF_Options[variable] = Options_Default[variable];
+            options[variable] = Options_Default[variable];
         end
         local defaultValue = AFUF_Options[variable];
 
@@ -304,4 +285,47 @@ function AFUF:SetupOptionPanels()
     Settings.RegisterAddOnCategory(category)
 end
 
-AFUF:OnInit();
+local bfirst = false;
+
+local function OnEvent(self, event, ...)
+    if not bfirst then
+        SetupOptionPanels();
+        options = CopyTable(AFUF_Options);
+        bfirst = true;
+    end
+
+    if event == "PLAYER_ENTERING_WORLD" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
+        HideClassBar();
+        HideCombatText();
+        HideTargetBuffs();
+        ShowAggro();
+        HideTargetCastBar();
+        UpdateHealthBar("player");
+        UpdateHealthBar("target");
+        UpdateHealthBar("targettarget");
+        SetCVar("showTargetCastbar", "1");
+    elseif event == "PLAYER_TARGET_CHANGED" then
+        AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
+        UpdateHealthBar("target");
+        UpdateHealthBar("targettarget");
+    elseif event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" then
+        UpdateHealthBar("player");
+    elseif event == "UNIT_TARGET" then
+        UpdateHealthBar("targettarget");
+    end    
+end
+
+local function OnInit()
+    AFUF:SetScript("OnEvent", OnEvent);
+    AFUF:SetScript("OnUpdate", OnUpdate);
+    AFUF:RegisterEvent("PLAYER_TARGET_CHANGED");
+    AFUF:RegisterEvent("PLAYER_ENTERING_WORLD");
+    AFUF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+    AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
+    AFUF:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
+    AFUF:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
+end
+
+
+
+OnInit();
