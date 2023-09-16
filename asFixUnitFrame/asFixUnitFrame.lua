@@ -88,14 +88,19 @@ function AFUF:UpdateHealthBar()
     --Healthbar 직업 색상
     local function getFramesHealthBar()
         return {
-            PlayerFrame_GetHealthBar(),
+            PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar,
             TargetFrame.TargetFrameContent.TargetFrameContentMain.HealthBar,
             TargetFrameToT.HealthBar,
         }
     end
 
     local function updateHealthColor(unit, frame)
+
         if not (unit and frame) then
+            return;
+        end
+
+        if (frame:IsForbidden()) then
             return;
         end
 
@@ -144,6 +149,10 @@ function AFUF:UpdateTargetDebuff()
 
     if not self.debuffframe then
         if not (TargetFrame and TargetFrame.TargetFrameContainer and TargetFrame.TargetFrameContainer.Portrait and TargetFrame.TargetFrameContainer.FrameTexture) then
+            return;
+        end
+
+        if TargetFrame:IsForbidden() then
             return;
         end
 
