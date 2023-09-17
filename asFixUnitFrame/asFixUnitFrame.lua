@@ -90,7 +90,6 @@ local frames = {
 }
 
 local function UpdateHealthBar(unit)
-
     if not options["ShowClassColor"] then
         return;
     end
@@ -98,7 +97,7 @@ local function UpdateHealthBar(unit)
     if not unit then
         return;
     end
-   
+
     if not UnitExists(unit) then
         return;
     end
@@ -114,7 +113,7 @@ local function UpdateHealthBar(unit)
         end
 
         local unit = frame.unit;
-       
+
         local r, g, b;
 
         if UnitIsPlayer(unit) then
@@ -134,7 +133,7 @@ local function UpdateHealthBar(unit)
     end
 
     local statusbar = frames[unit];
-    updateHealthColor(statusbar);    
+    updateHealthColor(statusbar);
 end
 
 local function asCooldownFrame_Clear(self)
@@ -157,6 +156,9 @@ local function UpdateTargetDebuff()
     end
 
     if not UnitExists("target") then
+        if AFUF.debuffframe then
+            AFUF.debuffframe:Hide();
+        end
         return;
     end
 
@@ -172,20 +174,23 @@ local function UpdateTargetDebuff()
         local parent = TargetFrame.TargetFrameContainer;
         local portrait = parent.Portrait;
 
-        AFUF.debuffframe = CreateFrame("Button", nil, parent, "asFUFDebuffFrameTemplate");
+        AFUF.debuffframe = CreateFrame("Button", nil, AFUF, "asFUFDebuffFrameTemplate");
         local frame = AFUF.debuffframe;
         frame:EnableMouse(false);
+        frame:SetParent(parent);
+        frame:SetFrameStrata(parent:GetFrameStrata());
+        frame:SetFrameLevel(parent:GetFrameLevel());
         frame:ClearAllPoints();
-        frame:SetAllPoints(portrait)
-        frame:SetFrameLevel(parent:GetFrameLevel())
-        frame.icon:SetDrawLayer("BACKGROUND", 2);
+        frame:SetAllPoints(portrait);
         frame.icon:SetMask("Interface\\CHARACTERFRAME\\TempPortraitAlphaMask");
         frame.cooldown:SetSwipeTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMaskSmall")
         frame.cooldown:SetDrawEdge(false);
         frame.cooldown:SetSwipeColor(0, 0, 0, 0.5);
         frame.cooldown:SetUseCircularEdge(true);
         frame.cooldown:SetHideCountdownNumbers(false);
-        parent.FrameTexture:SetDrawLayer("BACKGROUND", 3);
+        local l, s = parent.FrameTexture:GetDrawLayer();
+        frame.icon:SetDrawLayer(l, s);
+        parent.FrameTexture:SetDrawLayer(l, s + 1);
 
         if not frame:GetScript("OnEnter") then
             frame:SetScript("OnEnter", function(s)
@@ -310,11 +315,12 @@ local function OnEvent(self, event, ...)
         AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
         UpdateHealthBar("target");
         UpdateHealthBar("targettarget");
+        UpdateTargetDebuff();
     elseif event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" then
         UpdateHealthBar("player");
     elseif event == "UNIT_TARGET" then
         UpdateHealthBar("targettarget");
-    end    
+    end
 end
 
 local function OnInit()
