@@ -112,6 +112,8 @@ local function UpdateHealthBar(unit)
         if (frame:IsForbidden()) then
             return;
         end
+
+        local unit = frame.unit;
        
         local r, g, b;
 
