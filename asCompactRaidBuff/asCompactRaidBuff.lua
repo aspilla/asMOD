@@ -68,7 +68,7 @@ ACRB_ShowList_SHAMAN_3 = {
 ACRB_ShowList_DRUID_4 = {
 	["회복"] = { 1, 7 },
 	["피어나는 생명"] = { 1, 4 },
-	["재생"] = { 1, 5 },	
+	["재생"] = { 1, 5 },
 	["회복 (싹틔우기)"] = { 1, 2 },
 	["세나리온 수호물"] = { 0, 1 },
 }
@@ -852,6 +852,7 @@ table.insert(lib.glowList, "Action Button Glow")
 lib.startList["Action Button Glow"] = lib.ButtonGlow_Start
 lib.stopList["Action Button Glow"] = lib.ButtonGlow_Stop
 
+local ACRB_mainframe = CreateFrame("Frame", nil, UIParent);
 
 local function asCooldownFrame_Clear(self)
 	self:Clear();
@@ -882,8 +883,1094 @@ local function ACRB_InitList()
 	end
 
 	ACRB_ShowList = _G[listname];
-
 end
+
+-- 버프 설정 부
+local function ACRB_UtilSetDispelDebuff(dispellDebuffFrame, aura)
+	dispellDebuffFrame:Show();
+	dispellDebuffFrame.icon:SetTexture("Interface\\RaidFrame\\Raid-Icon-Debuff" .. aura.dispelName);
+	dispellDebuffFrame.auraInstanceID = aura.auraInstanceID;
+end
+
+
+local function ACRB_OnUpdateBuffBar(self, elapsed)
+	if not self.start then
+		self:SetValue(0);
+		return;
+	end
+
+	if not self.update then
+		self.update = 0;
+	end
+
+	self.update = self.update + elapsed
+
+	if self.update >= 0.1 and self.start then
+		local curr_time = GetTime();
+		local curr_duration = curr_time - self.start;
+		local expertedendtime = self.duration + self.start;
+
+		self.update = 0
+
+		if curr_duration < self.duration then
+			local remain_buff = (self.duration + self.start - curr_time)
+
+			self:SetMinMaxValues(0, self.duration)
+			self:SetValue(remain_buff)
+		end
+	end
+end
+
+local function ARCB_UtilSetBuffBar(asframe, aura)
+	if (not asframe.asBuffbar) then
+		return;
+	end
+
+	local currtime = GetTime();
+	local startTime = aura.expirationTime - aura.duration;
+	asframe.asBuffbar:SetMinMaxValues(0, aura.duration)
+	asframe.asBuffbar:SetValue(aura.duration - (currtime - startTime));
+	asframe.asBuffbar.start = startTime;
+	asframe.asBuffbar.duration = aura.duration;
+
+
+	if ACRB_ShowList and ACRB_ShowAlert then
+		local showlist_time = 0;
+
+		if ACRB_ShowList[aura.name] then
+			showlist_time = ACRB_ShowList[aura.name][1];
+			if showlist_time == 1 then
+				ACRB_ShowList[aura.name][1] = aura.duration * 0.3;
+			end
+		end
+
+		if aura.expirationTime - GetTime() < showlist_time then
+			asframe.asBuffbar:SetStatusBarColor(1, 1, 0);
+			asframe.buffcolor:Hide();
+		else
+			asframe.asBuffbar:SetStatusBarColor(1, 1, 1);
+			asframe.buffcolor:Show();
+		end
+	else
+		asframe.asBuffbar:SetStatusBarColor(1, 1, 1);
+		asframe.buffcolor:Show();
+	end
+
+	asframe.asBuffbar:Show();
+	asframe.asBuffbar:SetScript("OnUpdate", ACRB_OnUpdateBuffBar)
+end
+
+
+
+
+
+local function ARCB_UtilSetBuff(buffFrame, aura)
+	buffFrame.icon:SetTexture(aura.icon);
+	if (aura.applications > 1) then
+		local countText = aura.applications;
+		if (aura.applications >= 100) then
+			countText = BUFF_STACKS_OVERFLOW;
+		end
+		buffFrame.count:Show();
+		buffFrame.count:SetText(countText);
+	else
+		buffFrame.count:Hide();
+	end
+	buffFrame.auraInstanceID = aura.auraInstanceID;
+	local enabled = aura.expirationTime and aura.expirationTime ~= 0;
+	if enabled then
+		local startTime = aura.expirationTime - aura.duration;
+		asCooldownFrame_Set(buffFrame.cooldown, startTime, aura.duration, true);
+
+		if ACRB_ShowList and ACRB_ShowAlert then
+			local showlist_time = 0;
+
+			if ACRB_ShowList[aura.name] then
+				showlist_time = ACRB_ShowList[aura.name][1];
+				if showlist_time == 1 then
+					ACRB_ShowList[aura.name][1] = aura.duration * 0.3;
+				end
+			end
+
+			if aura.expirationTime - GetTime() < showlist_time then
+				buffFrame.border:SetVertexColor(1, 1, 1);
+				buffFrame.border:Show();
+			else
+				buffFrame.border:Hide();
+			end
+		else
+			buffFrame.border:Hide();
+		end
+	else
+		buffFrame.border:Hide();
+		asCooldownFrame_Clear(buffFrame.cooldown);
+	end
+
+	buffFrame:Show();
+end
+
+
+-- Debuff 설정 부
+local function ACRB_UtilSetDebuff(debuffFrame, aura)
+	debuffFrame.filter = aura.isRaid and AuraUtil.AuraFilters.Raid or nil;
+	debuffFrame.icon:SetTexture(aura.icon);
+	if (aura.applications > 1) then
+		local countText = aura.applications;
+		if (aura.applications >= 100) then
+			countText = BUFF_STACKS_OVERFLOW;
+		end
+		debuffFrame.count:Show();
+		debuffFrame.count:SetText(countText);
+	else
+		debuffFrame.count:Hide();
+	end
+	debuffFrame.auraInstanceID = aura.auraInstanceID;
+	local enabled = aura.expirationTime and aura.expirationTime ~= 0;
+	if enabled then
+		local startTime = aura.expirationTime - aura.duration;
+		asCooldownFrame_Set(debuffFrame.cooldown, startTime, aura.duration, true);
+	else
+		asCooldownFrame_Clear(debuffFrame.cooldown);
+	end
+
+	local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
+	debuffFrame.border:SetVertexColor(color.r, color.g, color.b);
+
+	debuffFrame.isBossBuff = aura.isBossAura and aura.isHelpful;
+	if (aura.isBossAura) then
+		debuffFrame:SetSize((debuffFrame.size_x) * 1.3, debuffFrame.size_y * 1.3);
+	else
+		debuffFrame:SetSize(debuffFrame.size_x, debuffFrame.size_y);
+	end
+
+	debuffFrame:Show();
+end
+
+-- 해제 디버프
+local dispellableDebuffTypes = { Magic = true, Curse = true, Disease = true, Poison = true };
+
+local function ACRB_UpdateHealerMana(asframe)
+	if (not asframe.asManabar) then
+		return;
+	end
+
+	--마나는 unit으로만
+	local unit = asframe.unit
+
+	if not (unit) then
+		return;
+	end
+
+	local role = UnitGroupRolesAssigned(unit)
+
+
+	if role == "HEALER" then
+		asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(unit, Enum.PowerType.Mana))
+		asframe.asManabar:SetValue(UnitPower(unit, Enum.PowerType.Mana));
+
+		local info = PowerBarColor["MANA"];
+		if (info) then
+			local r, g, b = info.r, info.g, info.b;
+			asframe.asManabar:SetStatusBarColor(r, g, b);
+		end
+
+		asframe.asManabar:Show();
+	else
+		asframe.asManabar:Hide();
+	end
+end
+
+local RaidIconList = {
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
+}
+
+
+
+
+local function ACRB_UpdateRaidIcon(asframe)
+	local unit = asframe.unit
+
+	if asframe.displayedUnit and asframe.displayedUnit ~= unit then
+		unit = asframe.displayedUnit;
+	end
+
+
+	if not (unit) then
+		return;
+	end
+
+	local function ACRB_DisplayRaidIcon(unit)
+		local icon = GetRaidTargetIndex(unit)
+		if icon and RaidIconList[icon] then
+			return RaidIconList[icon] .. "0|t"
+		else
+			return ""
+		end
+	end
+
+
+	if (asframe.asraidicon) then
+		local text = ACRB_DisplayRaidIcon(unit);
+		asframe.asraidicon:SetText(text);
+		asframe.asraidicon:Show();
+	end
+
+	do
+		local value = UnitHealth(unit);
+		local valueMax = UnitHealthMax(unit);
+		local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0;
+		local remainAbsorb = totalAbsorb - (valueMax - value);
+
+		if remainAbsorb > 0 then
+			local totalWidth, _ = asframe.frame.healthBar:GetSize();
+			local barSize = (remainAbsorb / valueMax) * totalWidth;
+
+			asframe.aborbcolor:SetWidth(barSize);
+			asframe.aborbcolor:Show();
+		else
+			asframe.aborbcolor:Hide();
+		end
+	end
+end
+
+local tanklist = {};
+local together = nil;
+-- 탱커 처리부
+local function updateTankerList()
+	local bInstance, RTB_ZoneType = IsInInstance();
+
+	if RTB_ZoneType == "pvp" or RTB_ZoneType == "arena" then
+		return nil;
+	end
+
+	tanklist = table.wipe(tanklist)
+	if IsInGroup() then
+		if IsInRaid() then -- raid
+			if together == true then
+				for i = 1, 8 do
+					for k = 1, 5 do
+						local framename = "CompactRaidGroup" .. i .. "Member" .. k
+						local asframe = asraid[framename]
+						if asframe and asframe.unit then
+							local assignedRole = UnitGroupRolesAssigned(asframe.unit);
+							if assignedRole == "TANK" then
+								table.insert(tanklist, framename);
+							end
+						end
+					end
+				end
+			else
+				for i = 1, 40 do
+					local framename = "CompactRaidFrame" .. i
+					local asframe = asraid[framename]
+					if asframe and asframe.unit then
+						local assignedRole = UnitGroupRolesAssigned(asframe.unit);
+						if assignedRole == "TANK" then
+							table.insert(tanklist, framename);
+						end
+					end
+				end
+			end
+
+			for i = 1, GetNumGroupMembers() do
+				local unitid = "raid" .. i
+				local notMe = not UnitIsUnit('player', unitid)
+				local unitName = UnitName(unitid)
+				if unitName and notMe then
+					local _, _, _, _, _, _, _, _, _, role, _, assignedRole = GetRaidRosterInfo(i);
+					if assignedRole == "TANK" then
+						table.insert(tanklist, unitid);
+					end
+				end
+			end
+		else -- party
+			for i = 1, 5 do
+				local framename = "CompactPartyFrameMember" .. i
+				local asframe = asraid[framename]
+				if asframe and asframe.unit then
+					local assignedRole = UnitGroupRolesAssigned(asframe.unit);
+					if assignedRole == "TANK" then
+						table.insert(tanklist, framename);
+					end
+				end
+			end
+		end
+	end
+end
+
+local function ARCB_HideAllBuffs(frame, startingIndex)
+	if frame.buffFrames then
+		for i = startingIndex or 1, #frame.buffFrames do
+			frame.buffFrames[i]:SetAlpha(0);
+			frame.buffFrames[i]:Hide();
+		end
+	end
+end
+
+local function ARCB_HideAllDebuffs(frame, startingIndex)
+	if frame.debuffFrames then
+		for i = startingIndex or 1, #frame.debuffFrames do
+			frame.debuffFrames[i]:SetAlpha(0);
+			frame.debuffFrames[i]:Hide();
+		end
+	end
+end
+
+local function ARCB_HideAllDispelDebuffs(frame, startingIndex)
+	if frame.dispelDebuffFrames then
+		for i = startingIndex or 1, #frame.dispelDebuffFrames do
+			frame.dispelDebuffFrames[i]:SetAlpha(0);
+			frame.dispelDebuffFrames[i]:Hide();
+		end
+	end
+end
+
+local function ACRB_disableDefault(frame)
+	if frame and not frame:IsForbidden() then
+		-- 거리 기능 충돌 때문에 안됨
+		--frame.optionTable.fadeOutOfRange = false;
+		frame:UnregisterEvent("UNIT_AURA");
+		frame:UnregisterEvent("PLAYER_REGEN_ENABLED");
+		frame:UnregisterEvent("PLAYER_REGEN_DISABLED");
+
+		ARCB_HideAllBuffs(frame);
+		ARCB_HideAllDebuffs(frame)
+		ARCB_HideAllDispelDebuffs(frame);
+	end
+end
+
+local function ACRB_updateAllHealerMana(asframe)
+	if asframe and asframe.frame and asframe.frame:IsShown() then
+		ACRB_UpdateHealerMana(asframe);
+		ACRB_UpdateRaidIcon(asframe);
+		asframe.ncasting = 0;
+	end
+end
+
+local function ACRB_updatePartyAllHealerMana()
+	if (IsInGroup() or (ACRB_ShowWhenSolo)) then
+		if IsInRaid() then -- raid
+			if together == true then
+				for i = 1, 8 do
+					for k = 1, 5 do
+						local asframe = asraid["CompactRaidGroup" .. i .. "Member" .. k]
+						ACRB_updateAllHealerMana(asframe);
+					end
+				end
+			else
+				for i = 1, 40 do
+					local asframe = asraid["CompactRaidFrame" .. i]
+					ACRB_updateAllHealerMana(asframe);
+				end
+			end
+		else -- party
+			for i = 1, 5 do
+				local asframe = asraid["CompactPartyFrameMember" .. i]
+				ACRB_updateAllHealerMana(asframe);
+			end
+		end
+	end
+end
+
+
+local function ACRB_DisableAura()
+	if (IsInGroup() or (ACRB_ShowWhenSolo)) then
+		if IsInRaid() then -- raid
+			if together == true then
+				for i = 1, 8 do
+					for k = 1, 5 do
+						local frame = _G["CompactRaidGroup" .. i .. "Member" .. k]
+						ACRB_disableDefault(frame);
+					end
+				end
+			else
+				for i = 1, 40 do
+					local frame = _G["CompactRaidFrame" .. i]
+					ACRB_disableDefault(frame);
+				end
+			end
+		else -- party
+			for i = 1, 5 do
+				local frame = _G["CompactPartyFrameMember" .. i]
+				ACRB_disableDefault(frame);
+			end
+		end
+	end
+end
+
+local ACRB_DangerousSpellList = {};
+
+local function ACRB_updateCasting(asframe, unit)
+	if asframe and asframe.frame and asframe.frame:IsShown() then
+		local index = asframe.ncasting + 1;
+		local castFrame = asframe.castFrames[index];
+
+		local frameunit = asframe.unit
+
+		if asframe.displayedUnit and asframe.displayedUnit ~= frameunit then
+			frameunit = asframe.displayedUnit;
+		end
+
+		if frameunit and UnitIsUnit(unit .. "target", frameunit) then
+			local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid =
+				UnitCastingInfo(unit);
+			if not name then
+				name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+			end
+
+			if name and asframe.castFrames and index <= #(asframe.castFrames) then
+				castFrame.icon:SetTexture(texture);
+				castFrame.count:Hide();
+
+				local curr = GetTime();
+				local start = startTime / 1000;
+				local duration = (endTime / 1000) - start;
+
+				asCooldownFrame_Set(castFrame.cooldown, start, duration, true);
+
+				if ACRB_DangerousSpellList[spellid] then
+					lib.PixelGlow_Start(castFrame);
+				else
+					lib.PixelGlow_Stop(castFrame);
+				end
+				castFrame.castspellid = spellid;
+
+				castFrame.border:Hide();
+				castFrame:Show();
+				asframe.ncasting = index;
+
+				return true;
+			end
+		end
+	end
+
+	return false;
+end
+
+local function isFaction(unit)
+	if UnitIsUnit("player", unit) then
+		return false;
+	else
+		local reaction = UnitReaction("player", unit);
+		if reaction and reaction <= 4 then
+			return true;
+		elseif UnitIsPlayer(unit) then
+			return false;
+		end
+	end
+end
+
+local function ARCB_HideCast(asframe)
+	if asframe and asframe.castFrames then
+		for i = asframe.ncasting + 1, #asframe.castFrames do
+			asframe.castFrames[i]:Hide();
+		end
+	end
+end
+
+local function CheckCasting(nameplate)
+	if not nameplate or nameplate:IsForbidden() then
+		return;
+	end
+
+	if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden() then
+		return;
+	end
+
+	local unit = nameplate.UnitFrame.unit;
+
+	if isFaction(unit) then
+		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
+			unit);
+		if not name then
+			name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+		end
+
+		if name then
+			--탱커 부터
+			for _, framename in pairs(tanklist) do
+				local asframe = asraid[framename]
+				if ACRB_updateCasting(asframe, unit) then
+					return;
+				end
+			end
+
+			if (IsInGroup()) then
+				if IsInRaid() then -- raid
+					if together == true then
+						for i = 1, 8 do
+							for k = 1, 5 do
+								local asframe = asraid["CompactRaidGroup" .. i .. "Member" .. k]
+								if ACRB_updateCasting(asframe, unit) then
+									return;
+								end
+							end
+						end
+					else
+						for i = 1, 40 do
+							local asframe = asraid["CompactRaidFrame" .. i]
+							if ACRB_updateCasting(asframe, unit) then
+								return;
+							end
+						end
+					end
+				else -- party
+					for i = 1, 5 do
+						local asframe = asraid["CompactPartyFrameMember" .. i]
+						if ACRB_updateCasting(asframe, unit) then
+							return;
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+
+local function ACRB_CheckCasting()
+	for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
+		local nameplate = v;
+		if (nameplate) then
+			CheckCasting(nameplate);
+		end
+	end
+
+	if (IsInGroup()) then
+		if IsInRaid() then -- raid
+			if together == true then
+				for i = 1, 8 do
+					for k = 1, 5 do
+						local asframe = asraid["CompactRaidGroup" .. i .. "Member" .. k]
+						ARCB_HideCast(asframe);
+					end
+				end
+			else
+				for i = 1, 40 do
+					local asframe = asraid["CompactRaidFrame" .. i]
+					ARCB_HideCast(asframe);
+				end
+			end
+		else -- party
+			for i = 1, 5 do
+				local asframe = asraid["CompactPartyFrameMember" .. i]
+				ARCB_HideCast(asframe);
+			end
+		end
+	end
+end
+
+function ACTA_DBMTimer_callback(event, id, ...)
+	local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
+	if spellId then
+		ACRB_DangerousSpellList[spellId] = true;
+	end
+end
+
+local mustdisable = true;
+
+
+
+local function ACRB_OnUpdate()
+	if mustdisable then
+		mustdisable = false;
+		together = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups();
+		if together == nil then
+			together = true;
+		end
+		ACRB_DisableAura();
+	end
+	ACRB_updatePartyAllHealerMana();
+	ACRB_CheckCasting();
+end
+
+local cachedVisualizationInfo = {};
+local hasValidPlayer = false;
+
+local function GetCachedVisibilityInfo(spellId)
+	if cachedVisualizationInfo[spellId] == nil then
+		local newInfo = {
+			SpellGetVisibilityInfo(spellId, UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT") };
+		if not hasValidPlayer then
+			-- Don't cache the info if the player is not valid since we didn't get a valid result
+			return unpack(newInfo);
+		end
+		cachedVisualizationInfo[spellId] = newInfo;
+	end
+
+	local info = cachedVisualizationInfo[spellId];
+	return unpack(info);
+end
+
+local cachedSelfBuffChecks = {};
+local function CheckIsSelfBuff(spellId)
+	if cachedSelfBuffChecks[spellId] == nil then
+		cachedSelfBuffChecks[spellId] = SpellIsSelfBuff(spellId);
+	end
+
+	return cachedSelfBuffChecks[spellId];
+end
+
+-- 버프 설정 부
+local function ShouldDisplayBuff(aura)
+	local unitCaster = aura.sourceUnit;
+	local spellId = aura.spellId;
+	local canApplyAura = aura.canApplyAura;
+
+	local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
+
+	if (hasCustom) then
+		return showForMySpec or
+		(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
+	else
+		return (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") and ((canApplyAura and
+		not CheckIsSelfBuff(spellId)) or (ACRB_ShowList and ACRB_ShowList[aura.name]));
+	end
+end
+
+local cachedPriorityChecks = {};
+local function CheckIsPriorityAura(spellId)
+	if cachedPriorityChecks[spellId] == nil then
+		cachedPriorityChecks[spellId] = SpellIsPriorityAura(spellId);
+	end
+
+	return cachedPriorityChecks[spellId];
+end
+
+
+local function IsPriorityDebuff(spellId)
+	local _, classFilename = UnitClass("player");
+	if (classFilename == "PALADIN") then
+		local isForbearance = (spellId == 25771);
+		return isForbearance or CheckIsPriorityAura(spellId);
+	else
+		return CheckIsPriorityAura(spellId);
+	end
+end
+
+local function ShouldDisplayDebuff(aura)
+	local unitCaster = aura.sourceUnit;
+	local spellId = aura.spellId;
+
+	local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
+	if (hasCustom) then
+		return showForMySpec or
+			(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
+		--Would only be "mine" in the case of something like forbearance.
+	else
+		return true;
+	end
+end
+
+local function DumpCaches()
+	cachedVisualizationInfo = {};
+	cachedSelfBuffChecks = {};
+	cachedPriorityChecks = {};
+end
+
+local function ACRB_OnEvent(self, event, ...)
+	local arg1 = ...;
+
+	if (event == "PLAYER_ENTERING_WORLD") then
+		ACRB_InitList();
+		mustdisable = true;
+		hasValidPlayer = true;
+		local bloaded = LoadAddOn("DBM-Core");
+		if bloaded then
+			DBM:RegisterCallback("DBM_TimerStart", ACTA_DBMTimer_callback);
+		end
+		updateTankerList();
+		DumpCaches();
+	elseif (event == "PLAYER_SPECIALIZATION_CHANGED") then
+		print ("test");
+		ACRB_InitList();
+		DumpCaches();
+	elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
+		updateTankerList();
+		mustdisable = true;
+	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
+		DumpCaches();
+	elseif (event == "PLAYER_LEAVING_WORLD") then
+		hasValidPlayer = false;
+	elseif (event == "COMPACT_UNIT_FRAME_PROFILES_LOADED") then
+		together = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups();
+		if together == nil then
+			together = true;
+		end
+	end
+end
+
+
+local AuraUpdateChangedType = EnumUtil.MakeEnum(
+	"None",
+	"Debuff",
+	"Buff",
+	"PVP",
+	"Dispel"
+);
+
+
+local function ProcessAura(aura)
+	if aura == nil then
+		return AuraUpdateChangedType.None;
+	end
+
+	if ACRB_BlackList and ACRB_BlackList[aura.name] then
+		return AuraUpdateChangedType.None;
+	end
+
+	if aura.spellId and ACRB_PVPBuffList[aura.spellId] then
+		return AuraUpdateChangedType.PVP;
+	end
+
+	if aura.isNameplateOnly then
+		return AuraUpdateChangedType.None;
+	end
+
+	if aura.isBossAura and not aura.isRaid then
+		aura.debuffType = aura.isHarmful and AuraUtil.UnitFrameDebuffType.BossDebuff or
+			AuraUtil.UnitFrameDebuffType.BossBuff;
+		return AuraUpdateChangedType.Debuff;
+	elseif aura.isHarmful and not aura.isRaid then
+		if IsPriorityDebuff(aura.spellId) then
+			aura.debuffType = AuraUtil.UnitFrameDebuffType.PriorityDebuff;
+			return AuraUpdateChangedType.Debuff;
+		elseif ShouldDisplayDebuff(aura) then
+			aura.debuffType = AuraUtil.UnitFrameDebuffType.NonBossDebuff;
+			return AuraUpdateChangedType.Debuff;
+		end
+	elseif aura.isHelpful and ShouldDisplayBuff(aura) then
+		aura.isBuff = true;
+		return AuraUpdateChangedType.Buff;
+	elseif aura.isHarmful and aura.isRaid then
+		if AuraUtil.DispellableDebuffTypes[aura.dispelName] ~= nil then
+			aura.debuffType = aura.isBossAura and AuraUtil.UnitFrameDebuffType.BossDebuff or
+				AuraUtil.UnitFrameDebuffType.NonBossRaidDebuff;
+			return AuraUpdateChangedType.Dispel;
+		end
+	end
+
+	return AuraUpdateChangedType.None;
+end
+
+function ACRB_IsPvpFrame(asframe)
+	local frame = asframe.frame;
+	return frame.groupType and frame.groupType == CompactRaidGroupTypeEnum.Arena;
+end
+
+function ACRB_ProcessAura(asframe, aura)
+	local type = ProcessAura(aura);
+
+	-- Can't dispell debuffs on pvp frames
+	if type == AuraUpdateChangedType.Dispel and ACRB_IsPvpFrame(asframe) then
+		type = AuraUpdateChangedType.Debuff;
+	end
+
+
+
+	return type;
+end
+
+local bufffilter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
+local debufffilter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful);
+local dispelfilter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Raid);
+
+local function ACRB_ParseAllAuras(asframe)
+	if asframe.debuffs == nil then
+		asframe.debuffs = TableUtil.CreatePriorityTable(AuraUtil.UnitFrameDebuffComparator,
+			TableUtil.Constants.AssociativePriorityTable);
+		asframe.buffs = TableUtil.CreatePriorityTable(AuraUtil.DefaultAuraCompare,
+			TableUtil.Constants.AssociativePriorityTable);
+		asframe.pvpbuffs = TableUtil.CreatePriorityTable(AuraUtil.DefaultAuraCompare,
+			TableUtil.Constants.AssociativePriorityTable);
+		asframe.dispels = {};
+		for type, _ in pairs(AuraUtil.DispellableDebuffTypes) do
+			asframe.dispels[type] = TableUtil.CreatePriorityTable(AuraUtil.DefaultAuraCompare,
+				TableUtil.Constants.AssociativePriorityTable);
+		end
+	else
+		asframe.debuffs:Clear();
+		asframe.buffs:Clear();
+		asframe.pvpbuffs:Clear();
+		for type, _ in pairs(AuraUtil.DispellableDebuffTypes) do
+			asframe.dispels[type]:Clear();
+		end
+	end
+
+	local batchCount = nil;
+	local usePackedAura = true;
+	local function HandleAura(aura)
+		local type = ACRB_ProcessAura(asframe, aura);
+
+		if type == AuraUpdateChangedType.Debuff then
+			asframe.debuffs[aura.auraInstanceID] = aura;
+		elseif type == AuraUpdateChangedType.Buff then
+			asframe.buffs[aura.auraInstanceID] = aura;
+		elseif type == AuraUpdateChangedType.PVP then
+			asframe.pvpbuffs[aura.auraInstanceID] = aura;
+		elseif type == AuraUpdateChangedType.Dispel then
+			asframe.debuffs[aura.auraInstanceID] = aura;
+		end
+	end
+	AuraUtil.ForEachAura(asframe.displayedUnit, bufffilter, batchCount, HandleAura, usePackedAura);
+	AuraUtil.ForEachAura(asframe.displayedUnit, debufffilter, batchCount, HandleAura, usePackedAura);
+	AuraUtil.ForEachAura(asframe.displayedUnit, dispelfilter, batchCount, HandleAura, usePackedAura);
+end
+
+local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
+	local debuffsChanged = false;
+	local buffsChanged = false;
+	local pvpbuffsChanged = false;
+	local dispelsChanged = false;
+
+	if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate or asframe.debuffs == nil then
+		ACRB_ParseAllAuras(asframe);
+		debuffsChanged = true;
+		buffsChanged = true;
+		pvpbuffsChanged = true;
+		dispelsChanged = true;
+	else
+		if unitAuraUpdateInfo.addedAuras ~= nil then
+			for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
+				local type = ACRB_ProcessAura(asframe, aura);
+				if type == AuraUpdateChangedType.Debuff then
+					asframe.debuffs[aura.auraInstanceID] = aura;
+					debuffsChanged = true;
+				elseif type == AuraUpdateChangedType.Buff then
+					asframe.buffs[aura.auraInstanceID] = aura;
+					buffsChanged = true;
+				elseif type == AuraUpdateChangedType.PVP then
+					asframe.pvpbuffs[aura.auraInstanceID] = aura;
+					pvpbuffsChanged = true;
+				elseif type == AuraUpdateChangedType.Dispel then
+					asframe.debuffs[aura.auraInstanceID] = aura;
+					debuffsChanged = true;
+					asframe.dispels[aura.dispelName][aura.auraInstanceID] = aura;
+					dispelsChanged = true;
+				end
+			end
+		end
+
+		if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
+			for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
+				if asframe.debuffs[auraInstanceID] ~= nil then
+					local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(asframe.displayedUnit, auraInstanceID);
+					local oldDebuffType = asframe.debuffs[auraInstanceID].debuffType;
+					if newAura ~= nil then
+						newAura.debuffType = oldDebuffType;
+					end
+					asframe.debuffs[auraInstanceID] = newAura;
+					debuffsChanged = true;
+
+					for _, tbl in pairs(asframe.dispels) do
+						if tbl[auraInstanceID] ~= nil then
+							tbl[auraInstanceID] = C_UnitAuras.GetAuraDataByAuraInstanceID(asframe.displayedUnit,
+								auraInstanceID);
+							dispelsChanged = true;
+							break;
+						end
+					end
+				elseif asframe.buffs[auraInstanceID] ~= nil then
+					local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(asframe.displayedUnit, auraInstanceID);
+					if newAura ~= nil then
+						newAura.isBuff = true;
+					end
+					asframe.buffs[auraInstanceID] = newAura;
+					buffsChanged = true;
+				elseif asframe.pvpbuffs[auraInstanceID] ~= nil then
+					local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(asframe.displayedUnit, auraInstanceID);
+					if newAura ~= nil then
+						newAura.isBuff = true;
+					end
+					asframe.pvpbuffs[auraInstanceID] = newAura;
+					pvpbuffsChanged = true;
+				end
+			end
+		end
+
+		if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
+			for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
+				if asframe.debuffs[auraInstanceID] ~= nil then
+					asframe.debuffs[auraInstanceID] = nil;
+					debuffsChanged = true;
+
+					for _, tbl in pairs(asframe.dispels) do
+						if tbl[auraInstanceID] ~= nil then
+							tbl[auraInstanceID] = nil;
+							dispelsChanged = true;
+							break;
+						end
+					end
+				elseif asframe.buffs[auraInstanceID] ~= nil then
+					asframe.buffs[auraInstanceID] = nil;
+					buffsChanged = true;
+				elseif asframe.pvpbuffs[auraInstanceID] ~= nil then
+					asframe.pvpbuffs[auraInstanceID] = nil;
+					pvpbuffsChanged = true;
+				end
+			end
+		end
+	end
+
+	if debuffsChanged then
+		local frameNum = 1;
+		local maxDebuffs = ACRB_MAX_DEBUFFS;
+		asframe.debuffs:Iterate(function(auraInstanceID, aura)
+			if frameNum > maxDebuffs then
+				return true;
+			end
+
+			local debuffFrame = asframe.asdebuffFrames[frameNum];
+			debuffFrame.unit = asframe.displayedUnit;
+			ACRB_UtilSetDebuff(debuffFrame, aura);
+			frameNum = frameNum + 1;
+
+			if aura.isBossAura then
+				-- Boss auras are about twice as big as normal debuffs, so we may need to display fewer buffs
+				local bossDebuffScale = 1.3;
+				maxDebuffs = maxDebuffs - (bossDebuffScale - 1);
+			end
+
+			return false;
+		end);
+
+		for i = frameNum, ACRB_MAX_DEBUFFS do
+			local debuffFrame = asframe.asdebuffFrames[i];
+			debuffFrame:Hide();
+		end
+	end
+
+	if buffsChanged then
+		local frameNum = 1;
+		local frameIdx = 1;
+		local showframe = {};
+		asframe.buffs:Iterate(function(auraInstanceID, aura)
+			if frameNum > ACRB_MAX_BUFFS + 1 then
+				return true;
+			end
+
+			local type = 1;
+
+			if ACRB_ShowList and ACRB_ShowList[aura.name] and ACRB_ShowList[aura.name][2] then
+				type = ACRB_ShowList[aura.name][2];
+			end
+
+			if type == 7 and not showframe[type] then
+				ARCB_UtilSetBuffBar(asframe, aura);
+				showframe[type] = true;
+			elseif type > ACRB_MAX_BUFFS - 3 and not showframe[type] then
+				local buffFrame = asframe.asbuffFrames[type];
+				buffFrame.unit = asframe.displayedUnit;
+				ARCB_UtilSetBuff(buffFrame, aura);
+				showframe[type] = true;
+			else
+				local buffFrame = asframe.asbuffFrames[frameIdx];
+				buffFrame.unit = asframe.displayedUnit;
+				ARCB_UtilSetBuff(buffFrame, aura);
+				frameIdx = frameIdx + 1;
+			end
+
+			frameNum = frameNum + 1;
+			return false;
+		end);
+
+		for i = frameIdx, ACRB_MAX_BUFFS - 3 do
+			local buffFrame = asframe.asbuffFrames[i];
+			buffFrame:Hide();
+		end
+
+		for i = ACRB_MAX_BUFFS - 2, ACRB_MAX_BUFFS do
+			if not showframe[i] then
+				local buffFrame = asframe.asbuffFrames[i];
+				buffFrame:Hide();
+			end
+		end
+
+		if not showframe[7] then
+			asframe.asBuffbar:Hide();
+			asframe.asBuffbar:SetScript("OnUpdate", nil);
+			asframe.buffcolor:Hide();
+		end
+	end
+
+	if pvpbuffsChanged then
+		local frameNum = 1;
+		local maxBuffs = ACRB_MAX_BUFFS_2;
+		asframe.pvpbuffs:Iterate(function(auraInstanceID, aura)
+			if frameNum > maxBuffs then
+				return true;
+			end
+
+			local buffFrame = asframe.pvpbuffFrames[frameNum];
+			buffFrame.unit = asframe.displayedUnit;
+			ARCB_UtilSetBuff(buffFrame, aura);
+			frameNum = frameNum + 1;
+
+			return false;
+		end);
+
+		for i = frameNum, ACRB_MAX_BUFFS_2 do
+			local buffFrame = asframe.pvpbuffFrames[i];
+			if buffFrame then
+				buffFrame:Hide();
+			end
+		end
+	end
+
+	if dispelsChanged then
+		local frameNum = 1;
+		local showdispell = false;
+
+		for _, auraTbl in pairs(asframe.dispels) do
+			if frameNum > ACRB_MAX_DISPELDEBUFFS then
+				break;
+			end
+
+			if auraTbl:Size() ~= 0 then
+				local aura = auraTbl:GetTop();
+				local dispellDebuffFrame = asframe.asdispelDebuffFrames[frameNum];
+				ACRB_UtilSetDispelDebuff(dispellDebuffFrame, aura);
+				frameNum = frameNum + 1;
+
+				local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
+
+				if not asframe.isDispellAlert then
+					lib.PixelGlow_Start(asframe.frame, { color.r, color.g, color.b, 1 })
+					asframe.isDispellAlert = true;
+					showdispell = true;
+				end
+			end
+		end
+		for i = frameNum, ACRB_MAX_DISPELDEBUFFS do
+			local dispellDebuffFrame = asframe.asdispelDebuffFrames[i];
+			dispellDebuffFrame:Hide();
+		end
+
+		if showdispell == false then
+			if asframe.isDispellAlert then
+				lib.PixelGlow_Stop(asframe.frame);
+				asframe.isDispellAlert = false;
+			end
+		end
+	end
+end
+
+local function asframe_OnEvent(self, event, ...)
+	if event == "UNIT_AURA" then
+		local unitAuraUpdateInfo = select(2, ...);
+		ACRB_UpdateAuras(self.asframe, unitAuraUpdateInfo);
+	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
+		ACRB_UpdateAuras(self.asframe, nil);
+	end
+end
+
 
 -- Setup
 local function ACRB_setupFrame(frame)
@@ -896,19 +1983,33 @@ local function ACRB_setupFrame(frame)
 	if asraid[frameName] == nil then
 		asraid[frameName] = {};
 		--크기 조정을 위해 아래 코드를 돌린다.
+		asraid[frameName].eventframe = CreateFrame("Frame", nil, ACRB_mainframe);
+		asraid[frameName].eventframe:Hide();
+		asraid[frameName].eventframe.asframe = asraid[frameName];
 	end
+
+	if frame.unit then
+		asraid[frameName].unit = frame.unit;
+	end
+
+	local displayedUnit;
 
 	if frame.displayedUnit then
 		asraid[frameName].displayedUnit = frame.displayedUnit;
-	else
-		asraid[frameName].displayedUnit = frame.unit;
+
+		if (frame.unit ~= frame.displayedUnit) then
+			displayedUnit = frame.displayedUnit;
+		end
 	end
 
 	asraid[frameName].frame = frame;
+	asraid[frameName].eventframe:SetScript("OnEvent", nil);
 
-	if not UnitIsPlayer(asraid[frameName].displayedUnit) then
+	if not UnitIsPlayer(asraid[frameName].unit) then
 		return;
 	end
+
+
 
 	local CUF_AURA_BOTTOM_OFFSET = 2;
 	local CUF_NAME_SECTION_SIZE = 15;
@@ -977,9 +2078,9 @@ local function ACRB_setupFrame(frame)
 			buffFrame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 			if ACRB_ShowTooltip and not buffFrame:GetScript("OnEnter") then
 				buffFrame:SetScript("OnEnter", function(s)
-					if s:GetID() > 0 then
+					if s.auraInstanceID then
 						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitBuff(s.unit, s:GetID(), s.filter);
+						GameTooltip:SetUnitBuff(s.unit, s.auraInstanceID, bufffilter);
 					end
 				end)
 				buffFrame:SetScript("OnLeave", function()
@@ -1062,9 +2163,9 @@ local function ACRB_setupFrame(frame)
 
 			if ACRB_ShowTooltip and not debuffFrame:GetScript("OnEnter") then
 				debuffFrame:SetScript("OnEnter", function(s)
-					if s:GetID() > 0 then
+					if s.auraInstanceID then
 						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitDebuff(s.unit, s:GetID(), s.filter);
+						GameTooltip:SetUnitDebuff(s.unit, s.auraInstanceID, debufffilter);
 					end
 				end)
 
@@ -1180,21 +2281,21 @@ local function ACRB_setupFrame(frame)
 
 	asraid[frameName].asraidicon:SetFont(STANDARD_TEXT_FONT, fontsize * 2);
 
-	if (not asraid[frameName].buffFrames2) then
-		asraid[frameName].buffFrames2 = {};
+	if (not asraid[frameName].pvpbuffFrames) then
+		asraid[frameName].pvpbuffFrames = {};
 
 		for i = 1, ACRB_MAX_BUFFS_2 do
-			asraid[frameName].buffFrames2[i] = CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
-			asraid[frameName].buffFrames2[i]:EnableMouse(ACRB_ShowTooltip);
-			asraid[frameName].buffFrames2[i].icon:SetTexCoord(.08, .92, .08, .92);
-			asraid[frameName].buffFrames2[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-			asraid[frameName].buffFrames2[i].count:ClearAllPoints();
-			asraid[frameName].buffFrames2[i].count:SetPoint("BOTTOM", 0, 0);
-			asraid[frameName].buffFrames2[i]:Hide();
+			asraid[frameName].pvpbuffFrames[i] = CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
+			asraid[frameName].pvpbuffFrames[i]:EnableMouse(ACRB_ShowTooltip);
+			asraid[frameName].pvpbuffFrames[i].icon:SetTexCoord(.08, .92, .08, .92);
+			asraid[frameName].pvpbuffFrames[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+			asraid[frameName].pvpbuffFrames[i].count:ClearAllPoints();
+			asraid[frameName].pvpbuffFrames[i].count:SetPoint("BOTTOM", 0, 0);
+			asraid[frameName].pvpbuffFrames[i]:Hide();
 
 			if ACRB_ShowBuffCooldown and fontsize >= ACRB_MinShowBuffFontSize then
-				asraid[frameName].buffFrames2[i].cooldown:SetHideCountdownNumbers(false);
-				for _, r in next, { asraid[frameName].buffFrames2[i].cooldown:GetRegions() } do
+				asraid[frameName].pvpbuffFrames[i].cooldown:SetHideCountdownNumbers(false);
+				for _, r in next, { asraid[frameName].pvpbuffFrames[i].cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
 						r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
 						r:ClearAllPoints();
@@ -1203,33 +2304,34 @@ local function ACRB_setupFrame(frame)
 					end
 				end
 			else
-				asraid[frameName].buffFrames2[i].cooldown:SetHideCountdownNumbers(true);
+				asraid[frameName].pvpbuffFrames[i].cooldown:SetHideCountdownNumbers(true);
 			end
 
-			if ACRB_ShowTooltip and not asraid[frameName].buffFrames2[i]:GetScript("OnEnter") then
-				asraid[frameName].buffFrames2[i]:SetScript("OnEnter", function(s)
-					if s:GetID() > 0 then
+			if ACRB_ShowTooltip and not asraid[frameName].pvpbuffFrames[i]:GetScript("OnEnter") then
+				asraid[frameName].pvpbuffFrames[i]:SetScript("OnEnter", function(s)
+					if s.auraInstanceID then
 						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitBuff(s.unit, s:GetID(), s.filter);
+						GameTooltip:SetUnitBuff(s.unit, s.auraInstanceID, bufffilter);
 					end
 				end)
 
-				asraid[frameName].buffFrames2[i]:SetScript("OnLeave", function()
+				asraid[frameName].pvpbuffFrames[i]:SetScript("OnLeave", function()
 					GameTooltip:Hide();
 				end)
 			end
 		end
 	end
 
-	if (asraid[frameName].buffFrames2) then
+	if (asraid[frameName].pvpbuffFrames) then
 		for i = 1, ACRB_MAX_BUFFS_2 do
-			asraid[frameName].buffFrames2[i]:SetSize(size_x, size_y);
-			asraid[frameName].buffFrames2[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-			asraid[frameName].buffFrames2[i]:ClearAllPoints()
+			asraid[frameName].pvpbuffFrames[i]:SetSize(size_x, size_y);
+			asraid[frameName].pvpbuffFrames[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+			asraid[frameName].pvpbuffFrames[i]:ClearAllPoints()
 			if i == 1 then
-				asraid[frameName].buffFrames2[i]:SetPoint("CENTER", frame.healthBar, "CENTER", 0, 0)
+				asraid[frameName].pvpbuffFrames[i]:SetPoint("CENTER", frame.healthBar, "CENTER", 0, 0)
 			else
-				asraid[frameName].buffFrames2[i]:SetPoint("TOPRIGHT", asraid[frameName].buffFrames2[i - 1], "TOPLEFT", 0,
+				asraid[frameName].pvpbuffFrames[i]:SetPoint("TOPRIGHT", asraid[frameName].pvpbuffFrames[i - 1], "TOPLEFT",
+					0,
 					0)
 			end
 		end
@@ -1292,1147 +2394,17 @@ local function ACRB_setupFrame(frame)
 	end
 
 	asraid[frameName].ncasting = 0;
-end
 
-local cachedVisualizationInfo = {};
-local hasValidPlayer = false;
+	asraid[frameName].eventframe:RegisterUnitEvent("UNIT_AURA", asraid[frameName].unit, displayedUnit);
+	asraid[frameName].eventframe:RegisterEvent("PLAYER_REGEN_ENABLED");
+	asraid[frameName].eventframe:RegisterEvent("PLAYER_REGEN_DISABLED");
+	asraid[frameName].eventframe:SetScript("OnEvent", asframe_OnEvent);
 
-local function GetCachedVisibilityInfo(spellId)
-	if cachedVisualizationInfo[spellId] == nil then
-		local newInfo = {
-			SpellGetVisibilityInfo(spellId, UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT") };
-		if not hasValidPlayer then
-			-- Don't cache the info if the player is not valid since we didn't get a valid result
-			return unpack(newInfo);
-		end
-		cachedVisualizationInfo[spellId] = newInfo;
-	end
-
-	local info = cachedVisualizationInfo[spellId];
-	return unpack(info);
+	ACRB_UpdateAuras(asraid[frameName], nil);
 end
 
 
-local cachedSelfBuffChecks = {};
-local function CheckIsSelfBuff(spellId)
-	if cachedSelfBuffChecks[spellId] == nil then
-		cachedSelfBuffChecks[spellId] = SpellIsSelfBuff(spellId);
-	end
-
-	return cachedSelfBuffChecks[spellId];
-end
-
--- 버프 설정 부
-local function asCompactUnitFrame_UtilShouldDisplayBuff_buff(unit, index, filter)
-	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura =
-		UnitBuff(unit, index, filter);
-
-	if ACRB_BlackList and ACRB_BlackList[name] then
-		return false;
-	end
-
-	if ACRB_ShowListFirst and ACRB_ShowList and ACRB_ShowList[name] then
-		return false;
-	end
-
-	local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
-
-	if (hasCustom) then
-		return showForMySpec or
-			(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
-	else
-		return (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") and canApplyAura and
-			not CheckIsSelfBuff(spellId);
-	end
-end
-
-local function asCompactUnitFrame_UtilIsBossAura(unit, index, filter, checkAsBuff)
-	-- make sure you are using the correct index here!	allAurasIndex ~= debuffIndex
-	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura;
-	if (checkAsBuff) then
-		name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura =
-			UnitBuff(unit, index, filter);
-	else
-		name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura =
-			UnitDebuff(unit, index, filter);
-	end
-	return isBossAura;
-end
-
-local function asCompactUnitFrame_UtilSetDispelDebuff(dispellDebuffFrame, debuffType, index)
-	dispellDebuffFrame:Show();
-	dispellDebuffFrame.icon:SetTexture("Interface\\RaidFrame\\Raid-Icon-Debuff" .. debuffType);
-	dispellDebuffFrame:SetID(index);
-end
-
-
-
-
-local function asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, index, filter)
-	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura =
-		UnitBuff(unit, index, filter);
-	buffFrame.icon:SetTexture(icon);
-	if (count > 1) then
-		local countText = count;
-		if (count >= 100) then
-			countText = BUFF_STACKS_OVERFLOW;
-		end
-		buffFrame.count:Show();
-		buffFrame.count:SetText(countText);
-	else
-		buffFrame.count:Hide();
-	end
-	buffFrame:SetID(index);
-	buffFrame.unit = unit;
-	buffFrame.filter = filter;
-	local enabled = expirationTime and expirationTime ~= 0;
-	if enabled then
-		local startTime = expirationTime - duration;
-		asCooldownFrame_Set(buffFrame.cooldown, startTime, duration, true);
-
-		if ACRB_ShowList and ACRB_ShowAlert then
-			local showlist_time = 0;
-
-			if ACRB_ShowList[name] then
-				showlist_time = ACRB_ShowList[name][1];
-				if showlist_time == 1 then
-					ACRB_ShowList[name][1] = duration * 0.3;
-				end
-			end
-
-			if expirationTime - GetTime() < showlist_time then
-				buffFrame.border:SetVertexColor(1, 1, 1);
-				buffFrame.border:Show();
-				--lib.PixelGlow_Start(buffFrame, {1,1,1,1});
-			else
-				buffFrame.border:Hide();
-				--lib.PixelGlow_Stop(buffFrame);
-			end
-		else
-			buffFrame.border:Hide();
-		end
-	else
-		buffFrame.border:Hide()
-		asCooldownFrame_Clear(buffFrame.cooldown);
-	end
-	buffFrame:Show();
-end
-
-local function asCompactUnitFrame_UtilSetBuff3(asframe, unit, index, filter)
-	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura =
-		UnitBuff(unit, index, filter);
-
-	if (not asframe.asBuffbar) then
-		return;
-	end
-
-	local currtime = GetTime();
-	local startTime = expirationTime - duration;
-	asframe.asBuffbar:SetMinMaxValues(0, duration)
-	asframe.asBuffbar:SetValue(duration - (currtime - startTime));
-
-	if ACRB_ShowList and ACRB_ShowAlert then
-		local showlist_time = 0;
-
-		if ACRB_ShowList[name] then
-			showlist_time = ACRB_ShowList[name][1];
-			if showlist_time == 1 then
-				ACRB_ShowList[name][1] = duration * 0.3;
-			end
-		end
-
-		if expirationTime - GetTime() < showlist_time then
-			asframe.asBuffbar:SetStatusBarColor(1, 1, 0);
-			asframe.buffcolor:Hide();			
-		else
-			asframe.asBuffbar:SetStatusBarColor(1, 1, 1);
-			asframe.buffcolor:Show();
-		end
-	else
-		asframe.asBuffbar:SetStatusBarColor(1, 1, 1);
-		asframe.buffcolor:Show();
-	end
-	
-	asframe.asBuffbar:Show();
-end
-
-local function Comparison(AIndex, BIndex)
-	local AID = AIndex[2];
-	local BID = BIndex[2];
-
-	if (AID ~= BID) then
-		return AID > BID;
-	end
-
-	return false;
-end
-
-
-local function asCompactUnitFrame_UpdateBuffs(asframe)
-	if (not asframe.asbuffFrames) then
-		return;
-	end
-
-	local unit = asframe.displayedUnit
-
-	if not (unit) then
-		return;
-	end
-
-	do
-		local value = UnitHealth("player");
-		local valueMax = UnitHealthMax("player");
-		local totalAbsorb = UnitGetTotalAbsorbs("player") or 0;
-		local remainAbsorb = totalAbsorb - (valueMax - value);
-
-		if remainAbsorb > 0 then
-			local totalWidth, _ = asframe.frame.healthBar:GetSize();
-			local barSize = (remainAbsorb / valueMax) * totalWidth;
-
-			asframe.aborbcolor:SetWidth(barSize);
-			asframe.aborbcolor:Show();
-		else
-			asframe.aborbcolor:Hide();
-		end
-	end
-
-	local index = 1;
-	local frameNum = 1;
-	local filter = nil;
-
-
-	if UnitAffectingCombat("player") then
-		filter = "PLAYER"
-	end
-
-	local aShowIdx = {};
-
-	while (frameNum <= 20) do
-		local buffName = UnitBuff(unit, index, filter);
-		if (buffName) then
-			if ACRB_ShowList and ACRB_ShowList[buffName] then
-				aShowIdx[frameNum] = { index, ACRB_ShowList[buffName][2] }
-				frameNum = frameNum + 1;
-			elseif (asCompactUnitFrame_UtilShouldDisplayBuff_buff(unit, index, filter) and not asCompactUnitFrame_UtilIsBossAura(unit, index, filter, true)) then
-				aShowIdx[frameNum] = { index, 0 }
-				frameNum = frameNum + 1;
-			end
-		else
-			break;
-		end
-		index = index + 1;
-	end
-
-	if ACRB_ShowListFirst then
-		-- sort
-		table.sort(aShowIdx, Comparison);
-	end
-
-	local frameidx = 1;
-	local showframe = {};
-
-	for i = 1, frameNum - 1 do
-		if aShowIdx[i][2] == 7 then
-			asCompactUnitFrame_UtilSetBuff3(asframe, unit, aShowIdx[i][1], filter);
-			showframe[aShowIdx[i][2]] = true;
-		elseif aShowIdx[i][2] > ACRB_MAX_BUFFS - 3 then
-			local buffFrame = asframe.asbuffFrames[aShowIdx[i][2]];
-			asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, aShowIdx[i][1], filter);
-			showframe[aShowIdx[i][2]] = true;
-		else
-			local buffFrame = asframe.asbuffFrames[frameidx];
-			asCompactUnitFrame_UtilSetBuff2(buffFrame, unit, aShowIdx[i][1], filter);
-			frameidx = frameidx + 1;
-		end
-
-		if frameidx > (ACRB_MAX_BUFFS - 3) then
-			break
-		end
-	end
-
-	for i = frameidx, ACRB_MAX_BUFFS - 3 do
-		local buffFrame = asframe.asbuffFrames[i];
-		buffFrame:Hide();
-	end
-
-	for i = ACRB_MAX_BUFFS - 2, ACRB_MAX_BUFFS do
-		if showframe[i] == nil then
-			local buffFrame = asframe.asbuffFrames[i];
-			buffFrame:Hide();
-		end
-	end
-
-	if showframe[7] == nil then
-		asframe.asBuffbar:Hide();
-		asframe.buffcolor:Hide();
-	end
-end
-
-
-
-local function asCompactUnitFrame_UtilShouldDisplayBuff(unit, index, filter)
-	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura =
-		UnitBuff(unit, index, filter);
-
-	if ACRB_PVPBuffList[spellId] then
-		return true;
-	end
-
-	return false;
-end
-
-local function asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter)
-	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura =
-		UnitBuff(unit, index, filter);
-	buffFrame.icon:SetTexture(icon);
-	if (count > 1) then
-		local countText = count;
-		if (count >= 100) then
-			countText = BUFF_STACKS_OVERFLOW;
-		end
-		buffFrame.count:Show();
-		buffFrame.count:SetText(countText);
-	else
-		buffFrame.count:Hide();
-	end
-	buffFrame:SetID(index);
-	buffFrame.unit = unit;
-	buffFrame.filter = filter;
-	local enabled = expirationTime and expirationTime ~= 0;
-	if enabled then
-		local startTime = expirationTime - duration;
-		asCooldownFrame_Set(buffFrame.cooldown, startTime, duration, true);
-	else
-		asCooldownFrame_Clear(buffFrame.cooldown);
-	end
-
-	buffFrame.border:Hide();
-	buffFrame:Show();
-end
-
-
-
--- Debuff 설정 부
-local function asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, isBossAura, isBossBuff)
-	-- make sure you are using the correct index here!
-	--isBossAura says make this look large.
-	--isBossBuff looks in HELPFULL auras otherwise it looks in HARMFULL ones
-	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId;
-	if (isBossBuff) then
-		name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId = UnitBuff(unit,
-			index, filter);
-	else
-		name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId = UnitDebuff(
-			unit, index, filter);
-	end
-
-	debuffFrame.icon:SetTexture(icon);
-	if (count > 1) then
-		local countText = count;
-		if (count >= 100) then
-			countText = BUFF_STACKS_OVERFLOW;
-		end
-		debuffFrame.count:Show();
-		debuffFrame.count:SetText(countText);
-	else
-		debuffFrame.count:Hide();
-	end
-	debuffFrame:SetID(index);
-	debuffFrame.filter = filter;
-	debuffFrame.unit = unit;
-	local enabled = expirationTime and expirationTime ~= 0;
-	if enabled then
-		local startTime = expirationTime - duration;
-		asCooldownFrame_Set(debuffFrame.cooldown, startTime, duration, true);
-	else
-		asCooldownFrame_Clear(debuffFrame.cooldown);
-	end
-
-	local color = DebuffTypeColor[debuffType] or DebuffTypeColor["none"];
-	debuffFrame.border:SetVertexColor(color.r, color.g, color.b);
-
-	debuffFrame.isBossBuff = isBossBuff;
-
-	if (isBossAura) then
-		debuffFrame:SetSize((debuffFrame.size_x) * 1.3, debuffFrame.size_y * 1.3);
-	else
-		debuffFrame:SetSize(debuffFrame.size_x, debuffFrame.size_y);
-	end
-
-	debuffFrame:Show();
-end
-
-local function asCompactUnitFrame_UtilIsBossAura(unit, index, filter, checkAsBuff)
-	-- make sure you are using the correct index here!	allAurasIndex ~= debuffIndex
-	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura, nameplateShowAll;
-	if (checkAsBuff) then
-		name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura =
-			UnitBuff(unit, index, filter);
-	else
-		name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura, _, nameplateShowAll =
-			UnitDebuff(unit, index, filter);
-	end
-
-	return isBossAura or nameplateShowAll;
-end
-
-local function asCompactUnitFrame_UtilShouldDisplayDebuff(unit, index, filter)
-	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura, _, nameplateShowAll =
-		UnitDebuff(unit, index, filter);
-
-
-	if ACRB_BlackList and ACRB_BlackList[name] then
-		return false;
-	end
-
-	if nameplateShowAll then
-		return true;
-	end
-
-	local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
-	if (hasCustom) then
-		return showForMySpec or
-			(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
-		--Would only be "mine" in the case of something like forbearance.
-	else
-		return true;
-	end
-end
-
-local cachedPriorityChecks = {};
-local function CheckIsPriorityAura(spellId)
-	if cachedPriorityChecks[spellId] == nil then
-		cachedPriorityChecks[spellId] = SpellIsPriorityAura(spellId);
-	end
-
-	return cachedPriorityChecks[spellId];
-end
-
-
-local function asCompactUnitFrame_UtilIsPriorityDebuff(unit, index, filter)
-	local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura =
-		UnitDebuff(unit, index, filter);
-
-
-	local _, classFilename = UnitClass("player");
-	if (classFilename == "PALADIN") then
-		local isForbearance = (spellId == 25771);
-		return isForbearance or CheckIsPriorityAura(spellId);
-	else
-		return CheckIsPriorityAura(spellId);
-	end
-end
-
-local function asCompactUnitFrame_UpdateDebuffs(asframe)
-	if (not asframe.asdebuffFrames) then
-		return;
-	end
-
-
-	local unit = asframe.displayedUnit;
-
-	if not (unit) then
-		return;
-	end
-
-
-	local index = 1;
-	local frameNum = 1;
-	local filter = nil;
-	local maxDebuffs = ACRB_MAX_DEBUFFS;
-	--Show both Boss buffs & debuffs in the debuff location
-	--First, we go through all the debuffs looking for any boss flagged ones.
-	while (frameNum <= maxDebuffs) do
-		local debuffName = UnitDebuff(unit, index, filter);
-		if (debuffName) then
-			if (asCompactUnitFrame_UtilIsBossAura(unit, index, filter, false)) then
-				local debuffFrame = asframe.asdebuffFrames[frameNum];
-				asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, true, false);
-				frameNum = frameNum + 1;
-				--Boss debuffs are about twice as big as normal debuffs, so display one less.
-				local bossDebuffScale = 1.3;
-				maxDebuffs = maxDebuffs - (bossDebuffScale - 1);
-			end
-		else
-			break;
-		end
-		index = index + 1;
-	end
-	--Then we go through all the buffs looking for any boss flagged ones.
-	index = 1;
-	while (frameNum <= maxDebuffs) do
-		local debuffName = UnitBuff(unit, index, filter);
-		if (debuffName) then
-			if (asCompactUnitFrame_UtilIsBossAura(unit, index, filter, true)) then
-				local debuffFrame = asframe.asdebuffFrames[frameNum];
-				asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, true, true);
-				frameNum = frameNum + 1;
-				--Boss debuffs are about twice as big as normal debuffs, so display one less.
-				local bossDebuffScale = 1.3;
-				maxDebuffs = maxDebuffs - (bossDebuffScale - 1);
-			end
-		else
-			break;
-		end
-		index = index + 1;
-	end
-
-	--Now we go through the debuffs with a priority (e.g. Weakened Soul and Forbearance)
-	index = 1;
-	while (frameNum <= maxDebuffs) do
-		local debuffName = UnitDebuff(unit, index, filter);
-		if (debuffName) then
-			if (asCompactUnitFrame_UtilIsPriorityDebuff(unit, index, filter)) then
-				local debuffFrame = asframe.asdebuffFrames[frameNum];
-				asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, false, false);
-
-				frameNum = frameNum + 1;
-			end
-		else
-			break;
-		end
-		index = index + 1;
-	end
-
-
-	index = 1;
-	--Now, we display all normal debuffs.
-	while (frameNum <= maxDebuffs) do
-		local debuffName = UnitDebuff(unit, index, filter);
-		if (debuffName) then
-			if (asCompactUnitFrame_UtilShouldDisplayDebuff(unit, index, filter) and not asCompactUnitFrame_UtilIsBossAura(unit, index, filter, false) and
-					not asCompactUnitFrame_UtilIsPriorityDebuff(unit, index, filter)) then
-				local debuffFrame = asframe.asdebuffFrames[frameNum];
-				asCompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, false, false);
-				frameNum = frameNum + 1;
-			end
-		else
-			break;
-		end
-		index = index + 1;
-	end
-
-	for i = frameNum, ACRB_MAX_DEBUFFS do
-		local debuffFrame = asframe.asdebuffFrames[i];
-		debuffFrame:Hide();
-	end
-end
-
--- 해제 디버프
-
-local dispellableDebuffTypes = { Magic = true, Curse = true, Disease = true, Poison = true };
-local function asCompactUnitFrame_UpdateDispellableDebuffs(asframe)
-	if not asframe.asdispelDebuffFrames then
-		return;
-	end
-
-	local showdispell = false;
-
-	local unit = asframe.displayedUnit;
-
-	if not (unit) then
-		return;
-	end
-
-
-
-	--Clear what we currently have.
-	for debuffType, display in pairs(dispellableDebuffTypes) do
-		if (display) then
-			asframe["ashasDispel" .. debuffType] = false;
-		end
-	end
-
-	local index = 1;
-	local frameNum = 1;
-	local filter = "RAID"; --Only dispellable debuffs.
-	while (frameNum <= ACRB_MAX_DISPELDEBUFFS) do
-		local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId =
-			UnitDebuff(unit, index, filter);
-
-		if (dispellableDebuffTypes[debuffType] and not asframe["ashasDispel" .. debuffType]) then
-			asframe["ashasDispel" .. debuffType] = true;
-			local dispellDebuffFrame = asframe.asdispelDebuffFrames[frameNum];
-			asCompactUnitFrame_UtilSetDispelDebuff(dispellDebuffFrame, debuffType, index)
-
-			showdispell = true;
-
-			local color = DebuffTypeColor[debuffType] or DebuffTypeColor["none"];
-
-			if not asframe.isDispellAlert then
-				lib.PixelGlow_Start(asframe.frame, { color.r, color.g, color.b, 1 })
-				asframe.isDispellAlert = true;
-			end
-
-			frameNum = frameNum + 1;
-		elseif (not name) then
-			break;
-		end
-		index = index + 1;
-	end
-	for i = frameNum, ACRB_MAX_DISPELDEBUFFS do
-		local dispellDebuffFrame = asframe.asdispelDebuffFrames[i];
-		dispellDebuffFrame:Hide();
-	end
-
-	if showdispell == false then
-		if asframe.isDispellAlert then
-			lib.PixelGlow_Stop(asframe.frame);
-			asframe.isDispellAlert = false;
-		end
-	end
-end
-
-
-
-local function asCompactUnitFrame_UpdateHealerMana(asframe)
-	if (not asframe.asManabar) then
-		return;
-	end
-
-	local unit = asframe.displayedUnit
-
-	if not (unit) then
-		return;
-	end
-
-	local role = UnitGroupRolesAssigned(unit)
-
-
-	if role == "HEALER" then
-		asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(unit, Enum.PowerType.Mana))
-		asframe.asManabar:SetValue(UnitPower(unit, Enum.PowerType.Mana));
-
-		local info = PowerBarColor["MANA"];
-		if (info) then
-			local r, g, b = info.r, info.g, info.b;
-			asframe.asManabar:SetStatusBarColor(r, g, b);
-		end
-
-		asframe.asManabar:Show();
-	else
-		asframe.asManabar:Hide();
-	end
-end
-
-local RaidIconList = {
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
-}
-
-local function ACRB_DisplayRaidIcon(unit)
-	local icon = GetRaidTargetIndex(unit)
-	if icon and RaidIconList[icon] then
-		return RaidIconList[icon] .. "0|t"
-	else
-		return ""
-	end
-end
-
-
-local function asCompactUnitFrame_UpdateBuffsPVP(asframe)
-	local unit = asframe.displayedUnit
-
-
-	if not (unit) then
-		return;
-	end
-
-
-	if (asframe.asraidicon) then
-		local text = ACRB_DisplayRaidIcon(unit);
-		asframe.asraidicon:SetText(text);
-		asframe.asraidicon:Show();
-	end
-
-	if (asframe.buffFrames2) then
-		local index = 1;
-		local frameNum = 1;
-		local filter = nil;
-		while (frameNum <= ACRB_MAX_BUFFS_2) do
-			local buffName = UnitBuff(unit, index, filter);
-			if (buffName) then
-				if (asCompactUnitFrame_UtilShouldDisplayBuff(unit, index, filter)) then
-					local buffFrame = asframe.buffFrames2[frameNum];
-					asCompactUnitFrame_UtilSetBuff(buffFrame, unit, index, filter);
-					frameNum = frameNum + 1;
-				end
-			else
-				break;
-			end
-			index = index + 1;
-		end
-		for i = frameNum, ACRB_MAX_BUFFS_2 do
-			local buffFrame = asframe.buffFrames2[i];
-			if buffFrame then
-				buffFrame:Hide();
-			end
-		end
-	end
-end
-
-local tanklist = {};
-local together = nil;
--- 탱커 처리부
-local function updateTankerList()
-	local bInstance, RTB_ZoneType = IsInInstance();
-
-	if RTB_ZoneType == "pvp" or RTB_ZoneType == "arena" then
-		return nil;
-	end
-
-	tanklist = table.wipe(tanklist)
-	if IsInGroup() then
-		if IsInRaid() then -- raid
-			if together == true then
-				for i = 1, 8 do
-					for k = 1, 5 do
-						local framename = "CompactRaidGroup" .. i .. "Member" .. k
-						local asframe = asraid[framename]
-						if asframe and asframe.displayedUnit then
-							local assignedRole = UnitGroupRolesAssigned(asframe.displayedUnit);
-							if assignedRole == "TANK" then
-								table.insert(tanklist, framename);
-							end
-						end
-					end
-				end
-			else
-				for i = 1, 40 do
-					local framename = "CompactRaidFrame" .. i
-					local asframe = asraid[framename]
-					if asframe and asframe.displayedUnit then
-						local assignedRole = UnitGroupRolesAssigned(asframe.displayedUnit);
-						if assignedRole == "TANK" then
-							table.insert(tanklist, framename);
-						end
-					end
-				end
-			end
-
-			for i = 1, GetNumGroupMembers() do
-				local unitid = "raid" .. i
-				local notMe = not UnitIsUnit('player', unitid)
-				local unitName = UnitName(unitid)
-				if unitName and notMe then
-					local _, _, _, _, _, _, _, _, _, role, _, assignedRole = GetRaidRosterInfo(i);
-					if assignedRole == "TANK" then
-						table.insert(tanklist, unitid);
-					end
-				end
-			end
-		else -- party
-			for i = 1, 5 do
-				local framename = "CompactPartyFrameMember" .. i
-				local asframe = asraid[framename]
-				if asframe and asframe.displayedUnit then
-					local assignedRole = UnitGroupRolesAssigned(asframe.displayedUnit);
-					if assignedRole == "TANK" then
-						table.insert(tanklist, framename);
-					end
-				end
-			end
-		end
-	end
-end
-
-local function asCompactUnitFrame_HideAllBuffs(frame, startingIndex)
-	if frame.buffFrames then
-		for i = startingIndex or 1, #frame.buffFrames do
-			frame.buffFrames[i]:SetAlpha(0);
-			frame.buffFrames[i]:Hide();
-		end
-	end
-end
-
-local function asCompactUnitFrame_HideAllDebuffs(frame, startingIndex)
-	if frame.debuffFrames then
-		for i = startingIndex or 1, #frame.debuffFrames do
-			frame.debuffFrames[i]:SetAlpha(0);
-			frame.debuffFrames[i]:Hide();
-		end
-	end
-end
-
-local function asCompactUnitFrame_HideAllDispelDebuffs(frame, startingIndex)
-	if frame.dispelDebuffFrames then
-		for i = startingIndex or 1, #frame.dispelDebuffFrames do
-			frame.dispelDebuffFrames[i]:SetAlpha(0);
-			frame.dispelDebuffFrames[i]:Hide();
-		end
-	end
-end
-
-local function ACRB_disableDefault(frame)
-	if frame and not frame:IsForbidden() then
-		-- 거리 기능 충돌 때문에 안됨
-		--frame.optionTable.fadeOutOfRange = false;
-		frame:UnregisterEvent("UNIT_AURA");
-		frame:UnregisterEvent("PLAYER_REGEN_ENABLED");
-		frame:UnregisterEvent("PLAYER_REGEN_DISABLED");
-
-		asCompactUnitFrame_HideAllBuffs(frame);
-		asCompactUnitFrame_HideAllDebuffs(frame)
-		asCompactUnitFrame_HideAllDispelDebuffs(frame);
-	end
-end
-
-local function ACRB_updateAllBuff(asframe)
-	if asframe and asframe.frame and asframe.frame:IsShown() then
-		asCompactUnitFrame_UpdateBuffs(asframe);
-		asCompactUnitFrame_UpdateBuffsPVP(asframe);
-	end
-end
-
-
-local function ACRB_updateAllDebuff(asframe)
-	if asframe and asframe.frame and asframe.frame:IsShown() then
-		asCompactUnitFrame_UpdateDebuffs(asframe);
-		asCompactUnitFrame_UpdateDispellableDebuffs(asframe);
-		asframe.ncasting = 0;
-	end
-end
-
-
-local function ACRB_updateAllHealerMana(asframe)
-	if asframe and asframe.frame and asframe.frame:IsShown() then
-		asCompactUnitFrame_UpdateHealerMana(asframe);
-	end
-end
-
-
-local function ACRB_updatePartyAllBuff()
-	if (IsInGroup() or (ACRB_ShowWhenSolo)) then
-		if IsInRaid() then -- raid
-			if together == true then
-				for i = 1, 8 do
-					for k = 1, 5 do
-						local asframe = asraid["CompactRaidGroup" .. i .. "Member" .. k]
-						ACRB_updateAllBuff(asframe);
-					end
-				end
-			else
-				for i = 1, 40 do
-					local asframe = asraid["CompactRaidFrame" .. i]
-					ACRB_updateAllBuff(asframe);
-				end
-			end
-		else -- party
-			for i = 1, 5 do
-				local asframe = asraid["CompactPartyFrameMember" .. i]
-				ACRB_updateAllBuff(asframe);
-			end
-		end
-	end
-end
-
-
-local function ACRB_updatePartyAllDebuff()
-	if (IsInGroup() or (ACRB_ShowWhenSolo)) then
-		if IsInRaid() then -- raid
-			if together == true then
-				for i = 1, 8 do
-					for k = 1, 5 do
-						local asframe = asraid["CompactRaidGroup" .. i .. "Member" .. k]
-						ACRB_updateAllDebuff(asframe);
-					end
-				end
-			else
-				for i = 1, 40 do
-					local asframe = asraid["CompactRaidFrame" .. i]
-					ACRB_updateAllDebuff(asframe);
-				end
-			end
-		else -- party
-			for i = 1, 5 do
-				local asframe = asraid["CompactPartyFrameMember" .. i]
-				ACRB_updateAllDebuff(asframe);
-			end
-		end
-	end
-end
-
-
-local function ACRB_updatePartyAllHealerMana()
-	if (IsInGroup() or (ACRB_ShowWhenSolo)) then
-		if IsInRaid() then -- raid
-			if together == true then
-				for i = 1, 8 do
-					for k = 1, 5 do
-						local asframe = asraid["CompactRaidGroup" .. i .. "Member" .. k]
-						ACRB_updateAllHealerMana(asframe);
-					end
-				end
-			else
-				for i = 1, 40 do
-					local asframe = asraid["CompactRaidFrame" .. i]
-					ACRB_updateAllHealerMana(asframe);
-				end
-			end
-		else -- party
-			for i = 1, 5 do
-				local asframe = asraid["CompactPartyFrameMember" .. i]
-				ACRB_updateAllHealerMana(asframe);
-			end
-		end
-	end
-end
-
-
-local function ACRB_DisableAura()
-	if (IsInGroup() or (ACRB_ShowWhenSolo)) then
-		if IsInRaid() then -- raid
-			if together == true then
-				for i = 1, 8 do
-					for k = 1, 5 do
-						local frame = _G["CompactRaidGroup" .. i .. "Member" .. k]
-						ACRB_disableDefault(frame);
-					end
-				end
-			else
-				for i = 1, 40 do
-					local frame = _G["CompactRaidFrame" .. i]
-					ACRB_disableDefault(frame);
-				end
-			end
-		else -- party
-			for i = 1, 5 do
-				local frame = _G["CompactPartyFrameMember" .. i]
-				ACRB_disableDefault(frame);
-			end
-		end
-	end
-end
-
-local ACRB_DangerousSpellList = {};
-
-local function ACRB_updateCasting(asframe, unit)
-	if asframe and asframe.frame and asframe.frame:IsShown() then
-		local index = asframe.ncasting + 1;
-		local castFrame = asframe.castFrames[index];
-
-		if asframe.displayedUnit and UnitIsUnit(unit .. "target", asframe.displayedUnit) then
-			local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid =
-				UnitCastingInfo(unit);
-			if not name then
-				name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
-			end
-
-			if name and asframe.castFrames and index <= #(asframe.castFrames) then
-				castFrame.icon:SetTexture(texture);
-				castFrame.count:Hide();
-
-				local curr = GetTime();
-				local start = startTime / 1000;
-				local duration = (endTime / 1000) - start;
-
-				asCooldownFrame_Set(castFrame.cooldown, start, duration, true);
-
-				if ACRB_DangerousSpellList[spellid] then
-					lib.PixelGlow_Start(castFrame);
-				else
-					lib.PixelGlow_Stop(castFrame);
-				end
-				castFrame.castspellid = spellid;
-
-				castFrame.border:Hide();
-				castFrame:Show();
-				asframe.ncasting = index;
-
-				return true;
-			end
-		end
-	end
-
-	return false;
-end
-
-local function isFaction(unit)
-	if UnitIsUnit("player", unit) then
-		return false;
-	else
-		local reaction = UnitReaction("player", unit);
-		if reaction and reaction <= 4 then
-			return true;
-		elseif UnitIsPlayer(unit) then
-			return false;
-		end
-	end
-end
-
-local function asCompactUnitFrame_HideCast(asframe)
-	if asframe and asframe.castFrames then
-		for i = asframe.ncasting + 1, #asframe.castFrames do
-			asframe.castFrames[i]:Hide();
-		end
-	end
-end
-
-local function CheckCasting(nameplate)
-	if not nameplate or nameplate:IsForbidden() then
-		return;
-	end
-
-	if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden() then
-		return;
-	end
-
-	local unit = nameplate.UnitFrame.unit;
-
-	if isFaction(unit) then
-		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-			unit);
-		if not name then
-			name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
-		end
-
-		if name then
-			--탱커 부터
-			for _, framename in pairs(tanklist) do
-				local asframe = asraid[framename]
-				if ACRB_updateCasting(asframe, unit) then
-					return;
-				end
-			end
-
-			if (IsInGroup()) then
-				if IsInRaid() then -- raid
-					if together == true then
-						for i = 1, 8 do
-							for k = 1, 5 do
-								local asframe = asraid["CompactRaidGroup" .. i .. "Member" .. k]
-								if ACRB_updateCasting(asframe, unit) then
-									return;
-								end
-							end
-						end
-					else
-						for i = 1, 40 do
-							local asframe = asraid["CompactRaidFrame" .. i]
-							if ACRB_updateCasting(asframe, unit) then
-								return;
-							end
-						end
-					end
-				else -- party
-					for i = 1, 5 do
-						local asframe = asraid["CompactPartyFrameMember" .. i]
-						if ACRB_updateCasting(asframe, unit) then
-							return;
-						end
-					end
-				end
-			end
-		end
-	end
-end
-
-
-local function ACRB_CheckCasting()
-	for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-		local nameplate = v;
-		if (nameplate) then
-			CheckCasting(nameplate);
-		end
-	end
-
-	if (IsInGroup()) then
-		if IsInRaid() then -- raid
-			if together == true then
-				for i = 1, 8 do
-					for k = 1, 5 do
-						local asframe = asraid["CompactRaidGroup" .. i .. "Member" .. k]
-						asCompactUnitFrame_HideCast(asframe);
-					end
-				end
-			else
-				for i = 1, 40 do
-					local asframe = asraid["CompactRaidFrame" .. i]
-					asCompactUnitFrame_HideCast(asframe);
-				end
-			end
-		else -- party
-			for i = 1, 5 do
-				local asframe = asraid["CompactPartyFrameMember" .. i]
-				asCompactUnitFrame_HideCast(asframe);
-			end
-		end
-	end
-end
-
-function ACTA_DBMTimer_callback(event, id, ...)
-	local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
-	if spellId then
-		ACRB_DangerousSpellList[spellId] = true;
-	end
-end
-
-local mustdisable = true;
-
-
-
-local function ACRB_OnUpdate()
-	if mustdisable then
-		mustdisable = false;
-		together = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups();
-		if together == nil then
-			together = true;
-		end
-		ACRB_DisableAura();
-	end
-
-	ACRB_updatePartyAllBuff();
-	ACRB_updatePartyAllDebuff();
-	ACRB_updatePartyAllHealerMana();
-	ACRB_CheckCasting();
-end
-
-local function DumpCaches()
-	cachedVisualizationInfo = {};
-	cachedSelfBuffChecks = {};
-	cachedPriorityChecks = {};
-end
-
-local function ACRB_OnEvent(self, event, ...)
-	local arg1 = ...;
-
-	if event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
-		--CPU 사용률 감소
-		--ACRB_updatePartyAllBuff();
-	elseif (event == "PLAYER_ENTERING_WORLD") then
-		ACRB_InitList();
-		mustdisable = true;
-		hasValidPlayer = true;
-
-		local bloaded = LoadAddOn("DBM-Core");
-		if bloaded then
-			DBM:RegisterCallback("DBM_TimerStart", ACTA_DBMTimer_callback);
-		end
-		updateTankerList();
-	elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
-		ACRB_InitList();
-	elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
-		updateTankerList();
-		mustdisable = true;
-	elseif (event == "COMPACT_UNIT_FRAME_PROFILES_LOADED") then
-		together = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups();
-		if together == nil then
-			together = true;
-		end
-	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
-		DumpCaches();
-	elseif (event == "PLAYER_LEAVING_WORLD") then
-		hasValidPlayer = false;
-	end
-end
-
-local function asCompactUnitFrame_UpdateAll(frame)
+local function ARCB_UpdateAll(frame)
 	if frame and not frame:IsForbidden() and frame.GetName then
 		local name = frame:GetName();
 
@@ -2444,13 +2416,14 @@ local function asCompactUnitFrame_UpdateAll(frame)
 	end
 end
 
-local ACRB_mainframe = CreateFrame("Frame", nil, UIParent);
+ACRB_InitList();
+
 ACRB_mainframe:SetScript("OnEvent", ACRB_OnEvent)
 ACRB_mainframe:RegisterEvent("GROUP_ROSTER_UPDATE");
 ACRB_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 ACRB_mainframe:RegisterEvent("PLAYER_LEAVING_WORLD");
 --ACRB_mainframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
-ACRB_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+ACRB_mainframe:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");
 ACRB_mainframe:RegisterEvent("CVAR_UPDATE");
 ACRB_mainframe:RegisterEvent("ROLE_CHANGED_INFORM");
 ACRB_mainframe:RegisterEvent("COMPACT_UNIT_FRAME_PROFILES_LOADED");
@@ -2460,4 +2433,4 @@ ACRB_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 
 C_Timer.NewTicker(ACRB_UpdateRate, ACRB_OnUpdate);
 
-hooksecurefunc("CompactUnitFrame_UpdateAll", asCompactUnitFrame_UpdateAll);
+hooksecurefunc("CompactUnitFrame_UpdateAll", ARCB_UpdateAll);

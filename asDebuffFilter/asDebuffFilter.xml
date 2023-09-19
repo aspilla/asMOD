@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Frame name="asTargetDebuffFrameTemplate" virtual="true" enableMouse="false">
+	<Frame  frameStrata="LOW" name="asTargetDebuffFrameTemplate" virtual="true" enableMouse="false">
 		<Size>
 			<AbsDimension x="17" y="17"/>
 		</Size>

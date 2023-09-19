@@ -35,16 +35,6 @@ local PLAYER_UNITS = {
     pet = true,
 };
 
--- 특정한 버프만 보이게 하려면 직업별로 편집
--- ABF_ShowList_직업명_특성
---[[
-ADF_ShowList_PALADIN_3 = {
-	["불신임"] = 1,	
-}
---]]
-
-local ADF_ShowList;
-local b_showlist = false;
 local dispellableDebuffTypes = { Magic = true, Curse = true, Disease = true, Poison = true };
 
 -- 반짝이 처리부
@@ -556,8 +546,14 @@ local function updateAlphaAnim(f, alpha)
     end
 end
 
-local ButtonGlowTextures = { ["spark"] = true, ["innerGlow"] = true, ["innerGlowOver"] = true, ["outerGlow"] = true,
-    ["outerGlowOver"] = true, ["ants"] = true }
+local ButtonGlowTextures = {
+    ["spark"] = true,
+    ["innerGlow"] = true,
+    ["innerGlowOver"] = true,
+    ["outerGlow"] = true,
+    ["outerGlowOver"] = true,
+    ["ants"] = true
+}
 
 function lib.ButtonGlow_Start(r, color, frequency, frameLevel)
     if not r then
@@ -653,6 +649,8 @@ table.insert(lib.glowList, "Action Button Glow")
 lib.startList["Action Button Glow"] = lib.ButtonGlow_Start
 lib.stopList["Action Button Glow"] = lib.ButtonGlow_Stop
 
+local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
+
 local function asCooldownFrame_Clear(self)
     self:Clear();
 end
@@ -666,227 +664,125 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
     end
 end
 
-local function ADF_UpdateDebuff(unit)
-    local numDebuffs = 1;
-    local frame;
-    local frameIcon, frameCount, frameCooldown;
-    local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, casterIsPlayer, nameplateShowAll;
-    local color;
-    local frameBorder;
-    local parent;
-    local filter = nil;
-    isBossDebuff = nil;
-    local i;
+local activeDebuffs = {};
+local AuraUpdateChangedType = EnumUtil.MakeEnum(
+    "None",
+    "Debuff",
+    "Buff"
+);
 
-
-    if (unit == "target") then
-        parent = ADF_TARGET_DEBUFF;
-    elseif (unit == "targethelp") then
-        parent = ADF_TARGET_DEBUFF;
-    elseif (unit == "targethelp2") then
-        parent = ADF_TARGET_DEBUFF;
-    elseif (unit == "player") then
-        parent = ADF_PLAYER_DEBUFF;
-    else
-        return;
+local function ProcessAura(aura, unit)
+    if aura == nil or aura.icon == nil or unit == nil then
+        return AuraUpdateChangedType.None;
     end
 
-    local bBattle = false;
-
-    local RTB_PVPType = GetZonePVPInfo();
-    local _, RTB_ZoneType = IsInInstance();
-    local alert = false;
-
-    if RTB_PVPType == "combat" or RTB_ZoneType == "pvp" then
-        bBattle = true;
-    end
-
-    local dispel_debuff_name = {};
-
-    if unit ~= "target" then
-        i = 1;
-        -- Dispel Debuff Check
-        repeat
-            filter = "RAID"
-            name, _, _, debuffType, _, _, _, _, _, spellId = UnitDebuff(unit, i, filter);
-            if (dispellableDebuffTypes[debuffType]) then
-                dispel_debuff_name[spellId] = true;
-            end
-
-            i = i + 1;
-        until (name == nil)
-    end
-
-    filter = nil;
-
-    i = 1;
-    repeat
-        local skip = false;
-        local debuff;
-        local candispel = false;
-
-        alert = false;
-
-        if (unit == "target") then
-            filter                                                                                                                                                                = "";
-            name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, casterIsPlayer, nameplateShowAll =
-            UnitDebuff("target", i, filter);
-
-            if (icon == nil) then
-                break;
-            end
-
-            skip = true;
-
-            if (casterIsPlayer) then
-                skip = true;
-            end
-            -- 내가 시전한 Debuff는 보이고
-            if caster and PLAYER_UNITS[caster] then
+    if aura.isHarmful then
+        local skip = true;
+        if unit == "target" then
+            if UnitCanAssist("target", "player") then
                 skip = false;
-            end
-
-            if caster and ADF_Show_TargetDebuff and not UnitIsPlayer("target") and UnitIsUnit("target", caster) then
-                skip = false;
-            end
-
-            if (spellId and ADF_Show_PVPDebuff and nameplateShowAll) then
-                skip = false;
-            end
-
-            -- CombatInfo 에서 보이는 Debuff 는 숨기고
-            if ACI_Debuff_list and ACI_Debuff_list[name] then
+            else
                 skip = true;
-            end
-
-            -- PowerBar에서 보이는 Debuff 는 숨기고
-            if APB_DEBUFF and APB_DEBUFF == name then
-                skip = true;
-            end
-
-            if b_showlist == true then
-                skip = true;
-                if ADF_ShowList[name] then
+                -- 내가 시전한 Debuff는 보이고
+                if PLAYER_UNITS[aura.sourceUnit] then
                     skip = false;
                 end
-            end
 
-            if skip == false and ADF_BlackList[name] then
-                skip = true;
-            end
-        elseif (unit == "targethelp") then
-            name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, casterIsPlayer, nameplateShowAll =
-            UnitDebuff("target", i, filter);
+                if (ADF_Show_PVPDebuff and aura.nameplateShowAll) then
+                    skip = false;
+                end
 
-            if (icon == nil) then
-                break;
-            end
-
-            skip = false;
-
-            if (casterIsPlayer) then
-                skip = true;
-            end
-
-            -- 내가 시전한 Debuff는 보이고
-            if PLAYER_UNITS[caster] then
-                skip = false;
-            end
-
-            if ADF_Show_ShowBossDebuff and isBossDebuff then
-                skip = false;
-            end
-
-            -- 상대 가 Player 면 PVP Debuff 만 보임		
-            if (spellId and ADF_Show_PVPDebuff and nameplateShowAll) then
-                skip = false;
-            end
-
-            if dispel_debuff_name[spellId] then
-                skip = false;
-                candispel = true;
+                -- PowerBar에서 보이는 Debuff 는 숨기고
+                if APB_DEBUFF and APB_DEBUFF == aura.name then
+                    skip = true;
+                end
             end
 
             -- ACI 에서 보이는 Debuff 는 숨기고
-            if ACI_Debuff_list and ACI_Debuff_list[name] then
+            if ACI_Debuff_list and ACI_Debuff_list[aura.name] then
                 skip = true;
             end
-
-            if b_showlist == true then
-                skip = true;
-                if ADF_ShowList[name] then
-                    skip = false;
-                end
-            end
-
-            if skip == false and ADF_BlackList[name] then
-                skip = true;
-            end
-        elseif (unit == "player") then
-            filter = "";
-            name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, _, nameplateShowAll =
-            UnitDebuff("player", i, filter);
-
-
+        elseif unit == "player" then
             skip = false;
 
-
-            if (icon == nil) then
-                break;
-            end
-
-            if duration > ADF_MAX_Cool then
+            if aura.duration > ADF_MAX_Cool then
                 skip = true;
             end
 
-            -- 내가 해제할 수 있는 Debuff는 보이기
-            if dispel_debuff_name[spellId] then
+            if aura.isRaid then
                 skip = false;
-                candispel = true;
-            end
-
-            -- 주요 PVP Debuff만 보이기
-            if (spellId and nameplateShowAll) then
-                skip = false;
-            end
-
-
-            if isBossDebuff then
-                skip = false;
-                alert = true;
             end
 
             -- ACI 에서 보이는 Debuff 면 숨기기
-            if ACI_Player_Debuff_list and skip == false and ACI_Player_Debuff_list[name] then
-                skip = true;
-            end
-
-            if skip == false and ADF_BlackList[name] then
+            if ACI_Player_Debuff_list and ACI_Player_Debuff_list[aura.name] then
                 skip = true;
             end
         end
 
+        if ADF_BlackList[aura.name] then
+            skip = true;
+        end
 
-        if (icon and skip == false) then
-            if numDebuffs > ADF_MAX_DEBUFF_SHOW then
-                break;
+        if skip == false then
+            activeDebuffs[unit][aura.auraInstanceID] = aura;
+            return AuraUpdateChangedType.Debuff;
+        end
+    end
+
+    return AuraUpdateChangedType.None;
+end
+
+local function ParseAllAuras(unit)
+    if activeDebuffs[unit] == nil then
+        activeDebuffs[unit] = TableUtil.CreatePriorityTable(AuraUtil.DefaultAuraCompare,
+            TableUtil.Constants.AssociativePriorityTable);
+    else
+        activeDebuffs[unit]:Clear();
+    end
+
+    local function HandleAura(aura)
+        ProcessAura(aura, unit);
+        return false;
+    end
+
+    local batchCount = nil;
+    local usePackedAura = true;
+    AuraUtil.ForEachAura(unit, filter, batchCount, HandleAura, usePackedAura);
+end
+
+local function UpdateAuraFrames(unit, auraList, numAuras)
+    local i = 0;
+    local parent = ADF_TARGET_DEBUFF;
+
+    if (unit == "player") then
+        parent = ADF_PLAYER_DEBUFF;
+    end
+
+
+    auraList:Iterate(
+        function(auraInstanceID, aura)
+            i = i + 1;
+            if i > numAuras then
+                return true;
             end
 
+            local frame = parent.frames[i];
 
-            frame = parent.frames[numDebuffs];
+            frame.unit = unit;
+            frame.auraInstanceID = aura.auraInstanceID;
 
             -- set the icon
-            frameIcon = frame.icon
-            frameIcon:SetTexture(icon);
+            local frameIcon = frame.icon
+            frameIcon:SetTexture(aura.icon);
             frameIcon:SetAlpha(ADF_ALPHA);
             -- set the count
-            frameCount = frame.count;
+            local frameCount = frame.count;
 
             -- Handle cooldowns
-            frameCooldown = frame.cooldown;
+            local frameCooldown = frame.cooldown;
 
-            if (count > 1) then
-                frameCount:SetText(count);
+            if (aura.charges and aura.charges > 1) then
+                frameCount:SetText(aura.charges);
                 frameCount:Show();
                 frameCooldown:SetDrawSwipe(false);
             else
@@ -894,63 +790,105 @@ local function ADF_UpdateDebuff(unit)
                 frameCooldown:SetDrawSwipe(true);
             end
 
-            if (duration > 0) then
+            if (aura.duration > 0) then
                 frameCooldown:Show();
-                asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0, true);
+                asCooldownFrame_Set(frameCooldown, aura.expirationTime - aura.duration, aura.duration, aura.duration > 0,
+                    true);
                 frameCooldown:SetHideCountdownNumbers(false);
             else
                 frameCooldown:Hide();
             end
 
+            local color = nil;
             -- set debuff type color
-            if (debuffType) then
-                color = DebuffTypeColor[debuffType];
+            if (aura.dispelName) then
+                color = DebuffTypeColor[aura.dispelName];
             else
                 color = DebuffTypeColor["none"];
             end
 
-            if (unit ~= "player" and caster ~= nil and not PLAYER_UNITS[caster]) then
+            if (unit ~= "player" and aura.sourceUnit ~= nil and not PLAYER_UNITS[aura.sourceUnit]) then
                 color = { r = 0.3, g = 0.3, b = 0.3 };
             end
 
-            if candispel then
-                color = { r = 1, g = 1, b = 1 };
+            if aura.isRaid and (unit == "player" or UnitCanAssist(unit, "player")) then
+                lib.PixelGlow_Start(frame, { color.r, color.g, color.b, 1 });
+            else
+                lib.PixelGlow_Stop(frame);
             end
 
-            frameBorder = frame.border;
+            local frameBorder = frame.border;
             frameBorder:SetVertexColor(color.r, color.g, color.b);
             frameBorder:SetAlpha(ADF_ALPHA);
 
-            frame.filter = filter;
-            frame:SetID(i);
-            frame.unit = unit;
-
-            if frame.unit == "targethelp" then
-                frame.unit = "target"
-            end
-
             frame:Show();
 
-
-            if (alert) then
+            if (aura.isBossDebuff) then
                 lib.ButtonGlow_Start(frame);
             else
                 lib.ButtonGlow_Stop(frame);
             end
+            return false;
+        end);
 
-            numDebuffs = numDebuffs + 1;
-        end
-        i = i + 1
-    until (name == nil)
-
-    for i = numDebuffs, ADF_MAX_DEBUFF_SHOW do
-        frame = parent.frames[i];
+    for j = i + 1, ADF_MAX_DEBUFF_SHOW do
+        local frame = parent.frames[j];
 
         if (frame) then
             frame:Hide();
             lib.ButtonGlow_Stop(frame);
+            lib.PixelGlow_Stop(frame);
         end
     end
+end
+
+local function UpdateAuras(unitAuraUpdateInfo, unit)
+    local debuffsChanged = false;
+    
+    if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate or activeDebuffs[unit] == nil then
+        ParseAllAuras(unit);
+        debuffsChanged = true;
+    else
+        if unitAuraUpdateInfo.addedAuras ~= nil then
+            for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
+                local type = ProcessAura(aura, unit);
+                if type == AuraUpdateChangedType.Debuff then
+                    debuffsChanged = true;
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
+                local wasInDebuff = activeDebuffs[unit][auraInstanceID] ~= nil;
+                if wasInDebuff then
+                    local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
+                    activeDebuffs[unit][auraInstanceID] = nil;
+                    local type = ProcessAura(newAura, unit);
+                    if type == AuraUpdateChangedType.Debuff or wasInDebuff then
+                        debuffsChanged = true;
+                    end
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
+                if activeDebuffs[unit][auraInstanceID] ~= nil then
+                    activeDebuffs[unit][auraInstanceID] = nil;
+                    debuffsChanged = true;
+                end
+            end
+        end
+    end
+
+    if not debuffsChanged then
+        return;
+    end
+
+    local numDebuffs = math.min(ADF_MAX_DEBUFF_SHOW, activeDebuffs[unit]:Size());
+
+    UpdateAuraFrames(unit, activeDebuffs[unit], numDebuffs);
 end
 
 function ADF_ClearFrame()
@@ -960,60 +898,26 @@ function ADF_ClearFrame()
         if (frame) then
             frame:Hide();
             lib.ButtonGlow_Stop(frame);
+            lib.PixelGlow_Stop(frame);
         end
     end
 end
 
-function ADF_InitShowList()
-    local localizedClass, englishClass = UnitClass("player")
-    local spec = GetSpecialization();
-    local listname = "ADF_ShowList";
-    if spec then
-        listname = "ADF_ShowList" .. "_" .. englishClass .. "_" .. spec;
-    end
-
-    ADF_ShowList = _G[listname];
-
-    b_showlist = false;
-
-    if (ADF_ShowList and #ADF_ShowList) then
-        b_showlist = true;
-    end
-end
-
-function ADF_OnEvent(self, event, arg1)
+function ADF_OnEvent(self, event, arg1, ...)
     if (event == "PLAYER_TARGET_CHANGED") then
         ADF_ClearFrame();
-
-        if UnitCanAssist("player", "target") then
-            ADF_UpdateDebuff("targethelp");
-        else
-            ADF_UpdateDebuff("target");
-        end
-    elseif (event == "ACTIONBAR_UPDATE_COOLDOWN") and UnitExists("target") then
-        if UnitCanAssist("player", "target") then
-            ADF_UpdateDebuff("targethelp");
-        else
-            ADF_UpdateDebuff("target");
-        end
-    elseif (event == "UNIT_AURA" and arg1 == "player") then
-        ADF_UpdateDebuff("player");
-    elseif event == "PLAYER_ENTERING_WORLD" then
-        ADF_InitShowList();
-    elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
-        ADF_InitShowList();
+        ADF_TARGET_DEBUFF:RegisterUnitEvent("UNIT_AURA", "target");
+        UpdateAuras(nil, "target");
+    elseif (event == "UNIT_AURA") then
+        local unitAuraUpdateInfo = ...;
+        UpdateAuras(unitAuraUpdateInfo, arg1);
+    elseif (event == "PLAYER_ENTERING_WORLD") then
+        UpdateAuras(nil, "target");
+        UpdateAuras(nil, "player");
     elseif event == "PLAYER_REGEN_DISABLED" then
         ADF:SetAlpha(ADF_AlphaCombat);
     elseif event == "PLAYER_REGEN_ENABLED" then
         ADF:SetAlpha(ADF_AlphaNormal);
-    end
-end
-
-local function ADF_OnUpdate()
-    if UnitCanAssist("player", "target") then
-        ADF_UpdateDebuff("targethelp");
-    else
-        ADF_UpdateDebuff("target");
     end
 end
 
@@ -1073,9 +977,9 @@ local function CreatDebuffFrames(parent, bright)
 
         if not frame:GetScript("OnEnter") then
             frame:SetScript("OnEnter", function(s)
-                if s:GetID() > 0 then
+                if s.auraInstanceID then
                     GameTooltip_SetDefaultAnchor(GameTooltip, s);
-                    GameTooltip:SetUnitDebuff(s.unit, s:GetID(), s.filter);
+                    GameTooltip:SetUnitDebuffByAuraInstanceID(s.unit, s.auraInstanceID, filter);
                 end
             end)
             frame:SetScript("OnLeave", function()
@@ -1122,7 +1026,7 @@ local function ADF_Init()
     ADF_PLAYER_DEBUFF:SetHeight(1)
     ADF_PLAYER_DEBUFF:SetScale(1)
     ADF_PLAYER_DEBUFF:Show()
-
+    
     CreatDebuffFrames(ADF_PLAYER_DEBUFF, false);
 
     if bloaded and asMOD_setupFrame then
@@ -1130,16 +1034,16 @@ local function ADF_Init()
     end
 
     ADF:RegisterEvent("PLAYER_TARGET_CHANGED")
-    ADF:RegisterUnitEvent("UNIT_AURA", "player")
+    ADF_TARGET_DEBUFF:RegisterUnitEvent("UNIT_AURA", "target")
+    ADF_PLAYER_DEBUFF:RegisterUnitEvent("UNIT_AURA", "player")
     ADF:RegisterEvent("PLAYER_ENTERING_WORLD");
-    ADF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
     ADF:RegisterEvent("PLAYER_REGEN_DISABLED");
     ADF:RegisterEvent("PLAYER_REGEN_ENABLED");
-    ADF:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
-
-
+    
     ADF:SetScript("OnEvent", ADF_OnEvent)
-    C_Timer.NewTicker(ADF_RefreshRate, ADF_OnUpdate);
+    ADF_TARGET_DEBUFF:SetScript("OnEvent", ADF_OnEvent)
+    ADF_PLAYER_DEBUFF:SetScript("OnEvent", ADF_OnEvent)
+    --C_Timer.NewTicker(ADF_RefreshRate, ADF_OnUpdate);
 end
 
 ADF_Init();

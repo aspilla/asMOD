@@ -148,20 +148,9 @@ local function asCooldownFrame_Set(self, start, duration, enable, modRate)
     end
 end
 
+local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.IncludeNameplateOnly);
 
-
-local function UpdateTargetDebuff()
-    if not options["ShowDebuff"] then
-        return;
-    end
-
-    if not UnitExists("target") then
-        if AFUF.debuffframe then
-            AFUF.debuffframe:Hide();
-        end
-        return;
-    end
-
+local function CreateDebuffFrame()
     if not AFUF.debuffframe then
         if not (TargetFrame and TargetFrame.TargetFrameContainer and TargetFrame.TargetFrameContainer.Portrait and TargetFrame.TargetFrameContainer.FrameTexture) then
             return;
@@ -194,68 +183,15 @@ local function UpdateTargetDebuff()
 
         if not frame:GetScript("OnEnter") then
             frame:SetScript("OnEnter", function(s)
-                if s:GetID() > 0 then
+                if s.auraInstanceID then
                     GameTooltip_SetDefaultAnchor(GameTooltip, s);
-                    GameTooltip:SetUnitDebuff(s.unit, s:GetID(), s.filter);
+                    GameTooltip:SetUnitDebuffByAuraInstanceID("target", s.auraInstanceID, filter);
                 end
             end)
             frame:SetScript("OnLeave", function()
                 GameTooltip:Hide();
             end)
         end
-    end
-
-    local i = 1;
-    local bshow = false;
-
-    if not AFUF.debuffframe then
-        return
-    end
-
-    repeat
-        local name, icon, _, _, duration, expirationTime, _, _, _, _, _, _, _, nameplateShowAll = UnitDebuff("target", i,
-            "");
-
-        if (name == nil) then
-            break;
-        end
-
-        if nameplateShowAll then
-            local frame = AFUF.debuffframe;
-
-            frame.icon:SetTexture(icon);
-
-            if (duration > 0) then
-                asCooldownFrame_Set(frame.cooldown, expirationTime - duration, duration, true);
-                frame.cooldown:Show();
-            else
-                frame.cooldown:Hide();
-            end
-
-            frame.filter = "";
-            frame:SetID(i);
-            frame.unit = "target";
-            frame:Show();
-            bshow = true;
-            break;
-        end
-
-        i = i + 1;
-    until (false)
-
-    if not bshow then
-        AFUF.debuffframe:Hide();
-    end
-end
-
-local total = 0;
-
-local function OnUpdate(self, elapsed)
-    total = total + elapsed
-
-    if total > 0.1 then
-        UpdateTargetDebuff();
-        total = 0;
     end
 end
 
@@ -292,6 +228,152 @@ local function SetupOptionPanels()
     Settings.RegisterAddOnCategory(category)
 end
 
+local activeDebuffs = nil;
+local AuraUpdateChangedType = EnumUtil.MakeEnum(
+    "None",
+    "Debuff",
+    "Buff"
+);
+
+local function ProcessAura(aura)
+    if aura == nil or aura.icon == nil then
+        return AuraUpdateChangedType.None;
+    end
+
+    if aura.isHarmful and aura.nameplateShowAll then
+        activeDebuffs[aura.auraInstanceID] = aura;
+        return AuraUpdateChangedType.Debuff;
+    end
+
+    return AuraUpdateChangedType.None;
+end
+
+local function ParseAllAuras()
+    if activeDebuffs == nil then
+        activeDebuffs = TableUtil.CreatePriorityTable(AuraUtil.DefaultAuraCompare,
+            TableUtil.Constants.AssociativePriorityTable);
+    else
+        activeDebuffs:Clear();
+    end
+
+    local function HandleAura(aura)
+        ProcessAura(aura);
+        return false;
+    end
+
+    local batchCount = nil;
+    local usePackedAura = true;
+    AuraUtil.ForEachAura("target", filter, batchCount, HandleAura, usePackedAura);
+end
+
+local function UpdateAuraFrames(auraList, numAuras)
+    if not options["ShowDebuff"] then
+        return;
+    end
+
+    if not UnitExists("target") then
+        if AFUF.debuffframe then
+            AFUF.debuffframe:Hide();
+        end
+        return;
+    end
+
+    CreateDebuffFrame();
+
+    if not AFUF.debuffframe then
+        return;
+    end
+
+    local i = 0;
+    local bshow = false;
+
+
+    auraList:Iterate(function(auraInstanceID, aura)
+        i = i + 1;
+        if i > numAuras then
+            return true;
+        end
+
+        -- update size and offset info based on large aura status
+        local icon = aura.icon;
+        local expirationTime = aura.expirationTime;
+        local duration = aura.duration;
+
+        local frame = AFUF.debuffframe;
+        frame.icon:SetTexture(icon);
+
+        if (duration > 0) then
+            asCooldownFrame_Set(frame.cooldown, expirationTime - duration, duration, true);
+            frame.cooldown:Show();
+        else
+            frame.cooldown:Hide();
+        end
+
+        frame.auraInstanceID = auraInstanceID;
+
+        bshow = true;
+        frame:Show();
+        return false;
+    end);
+
+    if not bshow then
+        AFUF.debuffframe:Hide();
+    end
+end
+
+
+
+local function UpdateAuras(unitAuraUpdateInfo)
+    local debuffsChanged = false;
+    
+    if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate or activeDebuffs == nil then
+        ParseAllAuras();
+        debuffsChanged = true;
+    else
+        if unitAuraUpdateInfo.addedAuras ~= nil then
+            for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
+                local type = ProcessAura(aura);
+                if type == AuraUpdateChangedType.Debuff then
+                    debuffsChanged = true;
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
+                local wasInDebuff = activeDebuffs[auraInstanceID] ~= nil;
+                if wasInDebuff then
+                    local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID("target", auraInstanceID);
+                    activeDebuffs[auraInstanceID] = nil;
+                    local type = ProcessAura(newAura);
+                    if type == AuraUpdateChangedType.Debuff or wasInDebuff then
+                        debuffsChanged = true;
+                    end
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
+                if activeDebuffs[auraInstanceID] ~= nil then
+                    activeDebuffs[auraInstanceID] = nil;
+                    debuffsChanged = true;
+                end
+            end
+        end
+    end
+
+    if not debuffsChanged then
+        return;
+    end
+
+    local numDebuffs = math.min(1, activeDebuffs:Size());
+
+    UpdateAuraFrames(activeDebuffs, numDebuffs);
+end
+
+
+
 local bfirst = false;
 
 local function OnEvent(self, event, ...)
@@ -301,7 +383,10 @@ local function OnEvent(self, event, ...)
         bfirst = true;
     end
 
-    if event == "PLAYER_ENTERING_WORLD" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
+    if event == "UNIT_AURA" then
+        local unitAuraUpdateInfo = select(2, ...);
+        UpdateAuras(unitAuraUpdateInfo);        
+    elseif event == "PLAYER_ENTERING_WORLD" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
         HideClassBar();
         HideCombatText();
         HideTargetBuffs();
@@ -313,9 +398,10 @@ local function OnEvent(self, event, ...)
         SetCVar("showTargetCastbar", "1");
     elseif event == "PLAYER_TARGET_CHANGED" then
         AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
+        AFUF:RegisterUnitEvent("UNIT_AURA", "target");
         UpdateHealthBar("target");
         UpdateHealthBar("targettarget");
-        UpdateTargetDebuff();
+        UpdateAuras();
     elseif event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" then
         UpdateHealthBar("player");
     elseif event == "UNIT_TARGET" then
@@ -325,15 +411,13 @@ end
 
 local function OnInit()
     AFUF:SetScript("OnEvent", OnEvent);
-    AFUF:SetScript("OnUpdate", OnUpdate);
     AFUF:RegisterEvent("PLAYER_TARGET_CHANGED");
     AFUF:RegisterEvent("PLAYER_ENTERING_WORLD");
     AFUF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
     AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
+    AFUF:RegisterUnitEvent("UNIT_AURA", "target");
     AFUF:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
     AFUF:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
 end
-
-
 
 OnInit();
