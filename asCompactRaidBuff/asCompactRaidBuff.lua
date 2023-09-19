@@ -1,4 +1,3 @@
-local ACRB_Size = 0;                                         -- Buff 아이콘 증가 크기
 local ACRB_BuffSizeRate = 0.9;                               -- 기존 Size 크기 배수
 local ACRB_ShowBuffCooldown = false                          -- 버프 지속시간을 보이려면
 local ACRB_MinShowBuffFontSize = 5                           -- 이크기보다 Cooldown font Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0
@@ -8,16 +7,12 @@ local ACRB_MAX_BUFFS_2 = 2                                   -- 최대 생존기
 local ACRB_MAX_DEBUFFS = 3                                   -- 최대 표시 디버프 개수 (3개)
 local ACRB_MAX_DISPELDEBUFFS = 3                             -- 최대 해제 디버프 개수 (3개)
 local ACRB_MAX_CASTING = 2                                   -- 최대 Casting Alert
-local ACRB_ShowListFirst = true                              -- 알림 List 항목을 먼저 보임 (가나다 순, 같은 디법이 여러게 걸리는 경우 1개만 보일 수 있음 ex 불고)
 local ACRB_ShowAlert = true                                  -- HOT 리필 시 알림
 local ACRB_MaxBuffSize = 20                                  -- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
 local ACRB_HealerManaBarHeight = 3                           -- 힐러 마나바 크기 (안보이게 하려면 0)
-local ACRB_UpdateRate = (0.1)                                -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
+local ACRB_UpdateRate = (0.2)                                -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 local ACRB_ShowWhenSolo = true                               -- Solo Raid Frame 사용시 보이게 하려면 True (반드시 Solo Raid Frame과 사용)
 local ACRB_ShowTooltip = true                                -- GameTooltip을 보이게 하려면 True
-local ACRB_RangeFilterColor = { r = 0.3, g = 0.3, b = 0.3 }; --30m 이상 RangeFilter Color
-local ACRB_RangeFilterAlpha = 0.5
-
 
 -- 버프 남은시간에 리필 알림
 -- 두번째 숫자는 표시 위치, 4(우상) 5(우중) 6(상) 7(상바) 1,2,3 은 우하에 보이는 우선 순위이다.
@@ -852,8 +847,192 @@ table.insert(lib.glowList, "Action Button Glow")
 lib.startList["Action Button Glow"] = lib.ButtonGlow_Start
 lib.stopList["Action Button Glow"] = lib.ButtonGlow_Stop
 
-local ACRB_mainframe = CreateFrame("Frame", nil, UIParent);
+--AuraUtil
 
+local DispellableDebuffTypes =
+{
+	Magic = true,
+	Curse = true,
+	Disease = true,
+	Poison = true
+};
+
+
+local AuraUpdateChangedType = EnumUtil.MakeEnum(
+	"None",
+	"Debuff",
+	"Buff",
+	"PVP",
+	"Dispel"
+);
+
+local UnitFrameDebuffType = EnumUtil.MakeEnum(
+	"BossDebuff",
+	"BossBuff",
+	"PriorityDebuff",
+	"NonBossRaidDebuff",
+	"NonBossDebuff"
+);
+
+
+
+local AuraFilters =
+{
+	Helpful = "HELPFUL",
+	Harmful = "HARMFUL",
+	Raid = "RAID",
+	IncludeNameplateOnly = "INCLUDE_NAME_PLATE_ONLY",
+	Player = "PLAYER",
+	Cancelable = "CANCELABLE",
+	NotCancelable = "NOT_CANCELABLE",
+	Maw = "MAW",
+};
+
+local function CreateFilterString(...)
+	return table.concat({ ... }, '|');
+end
+
+local function DefaultAuraCompare(a, b)
+	local aFromPlayer = (a.sourceUnit ~= nil) and UnitIsUnit("player", a.sourceUnit) or false;
+	local bFromPlayer = (b.sourceUnit ~= nil) and UnitIsUnit("player", b.sourceUnit) or false;
+	if aFromPlayer ~= bFromPlayer then
+		return aFromPlayer;
+	end
+
+	if a.canApplyAura ~= b.canApplyAura then
+		return a.canApplyAura;
+	end
+
+	return a.auraInstanceID < b.auraInstanceID;
+end
+
+local function UnitFrameDebuffComparator(a, b)
+	if a.debuffType ~= b.debuffType then
+		return a.debuffType < b.debuffType;
+	end
+
+	return DefaultAuraCompare(a, b);
+end
+
+
+local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuationToken, ...)
+	-- continuationToken is the first return value of UnitAuraSlots()
+	local n = select('#', ...);
+	for i = 1, n do
+		local slot = select(i, ...);
+		local done;
+		if usePackedAura then
+			local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
+			done = func(auraInfo);
+		else
+			done = func(UnitAuraBySlot(unit, slot));
+		end
+		if done then
+			-- if func returns true then no further slots are needed, so don't return continuationToken
+			return nil;
+		end
+	end
+	return continuationToken;
+end
+local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
+	if maxCount and maxCount <= 0 then
+		return;
+	end
+	local continuationToken;
+	repeat
+		-- continuationToken is the first return value of UnitAuraSltos
+		continuationToken = ForEachAuraHelper(unit, filter, func, usePackedAura,
+			UnitAuraSlots(unit, filter, maxCount, continuationToken));
+	until continuationToken == nil;
+end
+
+
+
+local bufffilter = CreateFilterString(AuraFilters.Harmful);
+local debufffilter = CreateFilterString(AuraFilters.Helpful);
+local dispelfilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.Raid);
+-- Buff/Debuff Cache
+
+
+local cachedVisualizationInfo = {};
+local hasValidPlayer = false;
+
+local function GetCachedVisibilityInfo(spellId)
+	if cachedVisualizationInfo[spellId] == nil then
+		local newInfo = {
+			SpellGetVisibilityInfo(spellId, UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT") };
+		if not hasValidPlayer then
+			-- Don't cache the info if the player is not valid since we didn't get a valid result
+			return unpack(newInfo);
+		end
+		cachedVisualizationInfo[spellId] = newInfo;
+	end
+
+	local info = cachedVisualizationInfo[spellId];
+	return unpack(info);
+end
+
+local cachedSelfBuffChecks = {};
+local function CheckIsSelfBuff(spellId)
+	if cachedSelfBuffChecks[spellId] == nil then
+		cachedSelfBuffChecks[spellId] = SpellIsSelfBuff(spellId);
+	end
+
+	return cachedSelfBuffChecks[spellId];
+end
+
+-- 버프 설정 부
+local function ShouldDisplayBuff(aura)
+	local unitCaster = aura.sourceUnit;
+	local spellId = aura.spellId;
+	local canApplyAura = aura.canApplyAura;
+
+	local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
+
+	if (hasCustom) then
+		return showForMySpec or
+			(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
+	else
+		return (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") and ((canApplyAura and
+			not CheckIsSelfBuff(spellId)) or (ACRB_ShowList and ACRB_ShowList[aura.name]));
+	end
+end
+
+local cachedPriorityChecks = {};
+local function CheckIsPriorityAura(spellId)
+	if cachedPriorityChecks[spellId] == nil then
+		cachedPriorityChecks[spellId] = SpellIsPriorityAura(spellId);
+	end
+
+	return cachedPriorityChecks[spellId];
+end
+
+
+local function IsPriorityDebuff(spellId)
+	local _, classFilename = UnitClass("player");
+	if (classFilename == "PALADIN") then
+		local isForbearance = (spellId == 25771);
+		return isForbearance or CheckIsPriorityAura(spellId);
+	else
+		return CheckIsPriorityAura(spellId);
+	end
+end
+
+local function ShouldDisplayDebuff(aura)
+	local unitCaster = aura.sourceUnit;
+	local spellId = aura.spellId;
+
+	local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
+	if (hasCustom) then
+		return showForMySpec or
+			(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
+		--Would only be "mine" in the case of something like forbearance.
+	else
+		return true;
+	end
+end
+
+--cooldown 
 local function asCooldownFrame_Clear(self)
 	self:Clear();
 end
@@ -866,6 +1045,9 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 		asCooldownFrame_Clear(self);
 	end
 end
+
+
+local ACRB_mainframe = CreateFrame("Frame", nil, UIParent);
 
 -- 직업 리필
 local ACRB_ShowList = nil;
@@ -905,7 +1087,7 @@ local function ACRB_OnUpdateBuffBar(self, elapsed)
 
 	self.update = self.update + elapsed
 
-	if self.update >= 0.1 and self.start then
+	if self.update >= ACRB_UpdateRate and self.start then
 		local curr_time = GetTime();
 		local curr_duration = curr_time - self.start;
 		local expertedendtime = self.duration + self.start;
@@ -933,36 +1115,11 @@ local function ARCB_UtilSetBuffBar(asframe, aura)
 	asframe.asBuffbar.start = startTime;
 	asframe.asBuffbar.duration = aura.duration;
 
-
-	if ACRB_ShowList and ACRB_ShowAlert then
-		local showlist_time = 0;
-
-		if ACRB_ShowList[aura.name] then
-			showlist_time = ACRB_ShowList[aura.name][1];
-			if showlist_time == 1 then
-				ACRB_ShowList[aura.name][1] = aura.duration * 0.3;
-			end
-		end
-
-		if aura.expirationTime - GetTime() < showlist_time then
-			asframe.asBuffbar:SetStatusBarColor(1, 1, 0);
-			asframe.buffcolor:Hide();
-		else
-			asframe.asBuffbar:SetStatusBarColor(1, 1, 1);
-			asframe.buffcolor:Show();
-		end
-	else
-		asframe.asBuffbar:SetStatusBarColor(1, 1, 1);
-		asframe.buffcolor:Show();
-	end
-
+	asframe.asBuffbar:SetStatusBarColor(1, 1, 1);
+	asframe.buffcolor:Show();
 	asframe.asBuffbar:Show();
 	asframe.asBuffbar:SetScript("OnUpdate", ACRB_OnUpdateBuffBar)
 end
-
-
-
-
 
 local function ARCB_UtilSetBuff(buffFrame, aura)
 	buffFrame.icon:SetTexture(aura.icon);
@@ -981,26 +1138,7 @@ local function ARCB_UtilSetBuff(buffFrame, aura)
 	if enabled then
 		local startTime = aura.expirationTime - aura.duration;
 		asCooldownFrame_Set(buffFrame.cooldown, startTime, aura.duration, true);
-
-		if ACRB_ShowList and ACRB_ShowAlert then
-			local showlist_time = 0;
-
-			if ACRB_ShowList[aura.name] then
-				showlist_time = ACRB_ShowList[aura.name][1];
-				if showlist_time == 1 then
-					ACRB_ShowList[aura.name][1] = aura.duration * 0.3;
-				end
-			end
-
-			if aura.expirationTime - GetTime() < showlist_time then
-				buffFrame.border:SetVertexColor(1, 1, 1);
-				buffFrame.border:Show();
-			else
-				buffFrame.border:Hide();
-			end
-		else
-			buffFrame.border:Hide();
-		end
+		buffFrame.border:Hide();		
 	else
 		buffFrame.border:Hide();
 		asCooldownFrame_Clear(buffFrame.cooldown);
@@ -1012,7 +1150,7 @@ end
 
 -- Debuff 설정 부
 local function ACRB_UtilSetDebuff(debuffFrame, aura)
-	debuffFrame.filter = aura.isRaid and AuraUtil.AuraFilters.Raid or nil;
+	debuffFrame.filter = aura.isRaid and AuraFilters.Raid or nil;
 	debuffFrame.icon:SetTexture(aura.icon);
 	if (aura.applications > 1) then
 		local countText = aura.applications;
@@ -1047,8 +1185,6 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura)
 end
 
 -- 해제 디버프
-local dispellableDebuffTypes = { Magic = true, Curse = true, Disease = true, Poison = true };
-
 local function ACRB_UpdateHealerMana(asframe)
 	if (not asframe.asManabar) then
 		return;
@@ -1475,8 +1611,6 @@ end
 
 local mustdisable = true;
 
-
-
 local function ACRB_OnUpdate()
 	if mustdisable then
 		mustdisable = false;
@@ -1489,93 +1623,6 @@ local function ACRB_OnUpdate()
 	ACRB_updatePartyAllHealerMana();
 	ACRB_CheckCasting();
 end
-
-local cachedVisualizationInfo = {};
-local hasValidPlayer = false;
-
-local function GetCachedVisibilityInfo(spellId)
-	if cachedVisualizationInfo[spellId] == nil then
-		local newInfo = {
-			SpellGetVisibilityInfo(spellId, UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT") };
-		if not hasValidPlayer then
-			-- Don't cache the info if the player is not valid since we didn't get a valid result
-			return unpack(newInfo);
-		end
-		cachedVisualizationInfo[spellId] = newInfo;
-	end
-
-	local info = cachedVisualizationInfo[spellId];
-	return unpack(info);
-end
-
-local cachedSelfBuffChecks = {};
-local function CheckIsSelfBuff(spellId)
-	if cachedSelfBuffChecks[spellId] == nil then
-		cachedSelfBuffChecks[spellId] = SpellIsSelfBuff(spellId);
-	end
-
-	return cachedSelfBuffChecks[spellId];
-end
-
--- 버프 설정 부
-local function ShouldDisplayBuff(aura)
-	local unitCaster = aura.sourceUnit;
-	local spellId = aura.spellId;
-	local canApplyAura = aura.canApplyAura;
-
-	local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
-
-	if (hasCustom) then
-		return showForMySpec or
-			(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
-	else
-		return (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") and ((canApplyAura and
-			not CheckIsSelfBuff(spellId)) or (ACRB_ShowList and ACRB_ShowList[aura.name]));
-	end
-end
-
-local cachedPriorityChecks = {};
-local function CheckIsPriorityAura(spellId)
-	if cachedPriorityChecks[spellId] == nil then
-		cachedPriorityChecks[spellId] = SpellIsPriorityAura(spellId);
-	end
-
-	return cachedPriorityChecks[spellId];
-end
-
-
-local function IsPriorityDebuff(spellId)
-	local _, classFilename = UnitClass("player");
-	if (classFilename == "PALADIN") then
-		local isForbearance = (spellId == 25771);
-		return isForbearance or CheckIsPriorityAura(spellId);
-	else
-		return CheckIsPriorityAura(spellId);
-	end
-end
-
-local function ShouldDisplayDebuff(aura)
-	local unitCaster = aura.sourceUnit;
-	local spellId = aura.spellId;
-
-	local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
-	if (hasCustom) then
-		return showForMySpec or
-			(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
-		--Would only be "mine" in the case of something like forbearance.
-	else
-		return true;
-	end
-end
-
-
-local AuraUpdateChangedType = EnumUtil.MakeEnum(
-	"None",
-	"Debuff",
-	"Buff",
-	"PVP",
-	"Dispel"
-);
 
 
 local function ProcessAura(aura)
@@ -1596,24 +1643,24 @@ local function ProcessAura(aura)
 	end
 
 	if aura.isBossAura and not aura.isRaid then
-		aura.debuffType = aura.isHarmful and AuraUtil.UnitFrameDebuffType.BossDebuff or
-			AuraUtil.UnitFrameDebuffType.BossBuff;
+		aura.debuffType = aura.isHarmful and UnitFrameDebuffType.BossDebuff or
+			UnitFrameDebuffType.BossBuff;
 		return AuraUpdateChangedType.Debuff;
 	elseif aura.isHarmful and not aura.isRaid then
 		if IsPriorityDebuff(aura.spellId) then
-			aura.debuffType = AuraUtil.UnitFrameDebuffType.PriorityDebuff;
+			aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
 			return AuraUpdateChangedType.Debuff;
 		elseif ShouldDisplayDebuff(aura) then
-			aura.debuffType = AuraUtil.UnitFrameDebuffType.NonBossDebuff;
+			aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
 			return AuraUpdateChangedType.Debuff;
 		end
 	elseif aura.isHelpful and ShouldDisplayBuff(aura) then
 		aura.isBuff = true;
 		return AuraUpdateChangedType.Buff;
 	elseif aura.isHarmful and aura.isRaid then
-		if AuraUtil.DispellableDebuffTypes[aura.dispelName] ~= nil then
-			aura.debuffType = aura.isBossAura and AuraUtil.UnitFrameDebuffType.BossDebuff or
-				AuraUtil.UnitFrameDebuffType.NonBossRaidDebuff;
+		if DispellableDebuffTypes[aura.dispelName] ~= nil then
+			aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
+				UnitFrameDebuffType.NonBossRaidDebuff;
 			return AuraUpdateChangedType.Dispel;
 		end
 	end
@@ -1633,34 +1680,28 @@ function ACRB_ProcessAura(asframe, aura)
 	if type == AuraUpdateChangedType.Dispel and ACRB_IsPvpFrame(asframe) then
 		type = AuraUpdateChangedType.Debuff;
 	end
-
-
-
+	
 	return type;
 end
 
-local bufffilter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
-local debufffilter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful);
-local dispelfilter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Raid);
 
 local function ACRB_ParseAllAuras(asframe)
 	if asframe.debuffs == nil then
-		asframe.debuffs = TableUtil.CreatePriorityTable(AuraUtil.UnitFrameDebuffComparator,
+		asframe.debuffs = TableUtil.CreatePriorityTable(UnitFrameDebuffComparator,
 			TableUtil.Constants.AssociativePriorityTable);
-		asframe.buffs = TableUtil.CreatePriorityTable(AuraUtil.DefaultAuraCompare,
-			TableUtil.Constants.AssociativePriorityTable);
-		asframe.pvpbuffs = TableUtil.CreatePriorityTable(AuraUtil.DefaultAuraCompare,
-			TableUtil.Constants.AssociativePriorityTable);
+		asframe.buffs = TableUtil.CreatePriorityTable(DefaultAuraCompare, TableUtil.Constants.AssociativePriorityTable);
+		asframe.pvpbuffs = TableUtil.CreatePriorityTable(DefaultAuraCompare, TableUtil.Constants
+		.AssociativePriorityTable);
 		asframe.dispels = {};
-		for type, _ in pairs(AuraUtil.DispellableDebuffTypes) do
-			asframe.dispels[type] = TableUtil.CreatePriorityTable(AuraUtil.DefaultAuraCompare,
+		for type, _ in pairs(DispellableDebuffTypes) do
+			asframe.dispels[type] = TableUtil.CreatePriorityTable(DefaultAuraCompare,
 				TableUtil.Constants.AssociativePriorityTable);
 		end
 	else
 		asframe.debuffs:Clear();
 		asframe.buffs:Clear();
 		asframe.pvpbuffs:Clear();
-		for type, _ in pairs(AuraUtil.DispellableDebuffTypes) do
+		for type, _ in pairs(DispellableDebuffTypes) do
 			asframe.dispels[type]:Clear();
 		end
 	end
@@ -1680,9 +1721,9 @@ local function ACRB_ParseAllAuras(asframe)
 			asframe.debuffs[aura.auraInstanceID] = aura;
 		end
 	end
-	AuraUtil.ForEachAura(asframe.displayedUnit, bufffilter, batchCount, HandleAura, usePackedAura);
-	AuraUtil.ForEachAura(asframe.displayedUnit, debufffilter, batchCount, HandleAura, usePackedAura);
-	AuraUtil.ForEachAura(asframe.displayedUnit, dispelfilter, batchCount, HandleAura, usePackedAura);
+	ForEachAura(asframe.displayedUnit, bufffilter, batchCount, HandleAura, usePackedAura);
+	ForEachAura(asframe.displayedUnit, debufffilter, batchCount, HandleAura, usePackedAura);
+	ForEachAura(asframe.displayedUnit, dispelfilter, batchCount, HandleAura, usePackedAura);
 end
 
 local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)

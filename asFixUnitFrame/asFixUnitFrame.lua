@@ -148,7 +148,107 @@ local function asCooldownFrame_Set(self, start, duration, enable, modRate)
     end
 end
 
-local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.IncludeNameplateOnly);
+--AuraUtil
+
+local DispellableDebuffTypes =
+{
+	Magic = true,
+	Curse = true,
+	Disease = true,
+	Poison = true
+};
+
+
+local AuraUpdateChangedType = EnumUtil.MakeEnum(
+	"None",
+	"Debuff",
+	"Buff",
+	"PVP",
+	"Dispel"
+);
+
+local UnitFrameDebuffType = EnumUtil.MakeEnum(
+	"BossDebuff",
+	"BossBuff",
+	"PriorityDebuff",
+	"NonBossRaidDebuff",
+	"NonBossDebuff"
+);
+
+
+
+local AuraFilters =
+{
+	Helpful = "HELPFUL",
+	Harmful = "HARMFUL",
+	Raid = "RAID",
+	IncludeNameplateOnly = "INCLUDE_NAME_PLATE_ONLY",
+	Player = "PLAYER",
+	Cancelable = "CANCELABLE",
+	NotCancelable = "NOT_CANCELABLE",
+	Maw = "MAW",
+};
+
+local function CreateFilterString(...)
+	return table.concat({ ... }, '|');
+end
+
+local function DefaultAuraCompare(a, b)
+	local aFromPlayer = (a.sourceUnit ~= nil) and UnitIsUnit("player", a.sourceUnit) or false;
+	local bFromPlayer = (b.sourceUnit ~= nil) and UnitIsUnit("player", b.sourceUnit) or false;
+	if aFromPlayer ~= bFromPlayer then
+		return aFromPlayer;
+	end
+
+	if a.canApplyAura ~= b.canApplyAura then
+		return a.canApplyAura;
+	end
+
+	return a.auraInstanceID < b.auraInstanceID;
+end
+
+local function UnitFrameDebuffComparator(a, b)
+	if a.debuffType ~= b.debuffType then
+		return a.debuffType < b.debuffType;
+	end
+
+	return DefaultAuraCompare(a, b);
+end
+
+
+local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuationToken, ...)
+	-- continuationToken is the first return value of UnitAuraSlots()
+	local n = select('#', ...);
+	for i = 1, n do
+		local slot = select(i, ...);
+		local done;
+		if usePackedAura then
+			local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
+			done = func(auraInfo);
+		else
+			done = func(UnitAuraBySlot(unit, slot));
+		end
+		if done then
+			-- if func returns true then no further slots are needed, so don't return continuationToken
+			return nil;
+		end
+	end
+	return continuationToken;
+end
+local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
+	if maxCount and maxCount <= 0 then
+		return;
+	end
+	local continuationToken;
+	repeat
+		-- continuationToken is the first return value of UnitAuraSltos
+		continuationToken = ForEachAuraHelper(unit, filter, func, usePackedAura,
+			UnitAuraSlots(unit, filter, maxCount, continuationToken));
+	until continuationToken == nil;
+end
+
+
+local filter = CreateFilterString(AuraFilters.Harmful, AuraFilters.IncludeNameplateOnly);
 
 local function CreateDebuffFrame()
     if not AFUF.debuffframe then
@@ -250,7 +350,7 @@ end
 
 local function ParseAllAuras()
     if activeDebuffs == nil then
-        activeDebuffs = TableUtil.CreatePriorityTable(AuraUtil.DefaultAuraCompare,
+        activeDebuffs = TableUtil.CreatePriorityTable(DefaultAuraCompare,
             TableUtil.Constants.AssociativePriorityTable);
     else
         activeDebuffs:Clear();
@@ -263,7 +363,7 @@ local function ParseAllAuras()
 
     local batchCount = nil;
     local usePackedAura = true;
-    AuraUtil.ForEachAura("target", filter, batchCount, HandleAura, usePackedAura);
+    ForEachAura("target", filter, batchCount, HandleAura, usePackedAura);
 end
 
 local function UpdateAuraFrames(auraList, numAuras)
