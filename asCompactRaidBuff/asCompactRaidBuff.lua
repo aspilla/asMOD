@@ -948,8 +948,8 @@ end
 
 
 
-local bufffilter = CreateFilterString(AuraFilters.Harmful);
-local debufffilter = CreateFilterString(AuraFilters.Helpful);
+local debufffilter = CreateFilterString(AuraFilters.Harmful);
+local bufffilter = CreateFilterString(AuraFilters.Helpful);
 local dispelfilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.Raid);
 -- Buff/Debuff Cache
 
@@ -1830,7 +1830,6 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 			end
 
 			local debuffFrame = asframe.asdebuffFrames[frameNum];
-			debuffFrame.unit = asframe.displayedUnit;
 			ACRB_UtilSetDebuff(debuffFrame, aura);
 			frameNum = frameNum + 1;
 
@@ -1869,12 +1868,10 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 				showframe[type] = true;
 			elseif type > ACRB_MAX_BUFFS - 3 and not showframe[type] then
 				local buffFrame = asframe.asbuffFrames[type];
-				buffFrame.unit = asframe.displayedUnit;
 				ARCB_UtilSetBuff(buffFrame, aura);
 				showframe[type] = true;
 			else
 				local buffFrame = asframe.asbuffFrames[frameIdx];
-				buffFrame.unit = asframe.displayedUnit;
 				ARCB_UtilSetBuff(buffFrame, aura);
 				frameIdx = frameIdx + 1;
 			end
@@ -1911,7 +1908,6 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 			end
 
 			local buffFrame = asframe.pvpbuffFrames[frameNum];
-			buffFrame.unit = asframe.displayedUnit;
 			ARCB_UtilSetBuff(buffFrame, aura);
 			frameNum = frameNum + 1;
 
@@ -2077,18 +2073,6 @@ local function ACRB_setupFrame(frame)
 			buffFrame.icon:SetTexCoord(.08, .92, .08, .92);
 			buffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
 			buffFrame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-			if ACRB_ShowTooltip and not buffFrame:GetScript("OnEnter") then
-				buffFrame:SetScript("OnEnter", function(s)
-					if s.auraInstanceID then
-						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitBuff(s.unit, s.auraInstanceID, bufffilter);
-					end
-				end)
-				buffFrame:SetScript("OnLeave", function()
-					GameTooltip:Hide();
-				end)
-			end
-
 			asraid[frameName].asbuffFrames[i] = buffFrame;
 			buffFrame:Hide();
 		end
@@ -2098,6 +2082,18 @@ local function ACRB_setupFrame(frame)
 		for i = 1, ACRB_MAX_BUFFS do
 			local buffFrame = asraid[frameName].asbuffFrames[i];
 			buffFrame:ClearAllPoints()
+
+			if ACRB_ShowTooltip and not buffFrame:GetScript("OnEnter") then
+				buffFrame:SetScript("OnEnter", function(s)
+					if s.auraInstanceID then
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
+						GameTooltip:SetUnitDebuffByAuraInstanceID(asraid[frameName].displayedUnit, s.auraInstanceID, bufffilter);
+					end
+				end)
+				buffFrame:SetScript("OnLeave", function()
+					GameTooltip:Hide();
+				end)
+			end
 
 
 			if i <= ACRB_MAX_BUFFS - 3 then
@@ -2161,20 +2157,6 @@ local function ACRB_setupFrame(frame)
 			debuffFrame.icon:SetTexCoord(.08, .92, .08, .92);
 			debuffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
 			debuffFrame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-
-			if ACRB_ShowTooltip and not debuffFrame:GetScript("OnEnter") then
-				debuffFrame:SetScript("OnEnter", function(s)
-					if s.auraInstanceID then
-						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitDebuff(s.unit, s.auraInstanceID, debufffilter);
-					end
-				end)
-
-				debuffFrame:SetScript("OnLeave", function()
-					GameTooltip:Hide();
-				end)
-			end
-
 			asraid[frameName].asdebuffFrames[i] = debuffFrame;
 			debuffFrame:Hide();
 		end
@@ -2196,6 +2178,19 @@ local function ACRB_setupFrame(frame)
 				end
 			else
 				debuffFrame:SetPoint("BOTTOMLEFT", asraid[frameName].asdebuffFrames[i - 1], "BOTTOMRIGHT", 1, 0)
+			end
+
+			if ACRB_ShowTooltip and not debuffFrame:GetScript("OnEnter") then
+				debuffFrame:SetScript("OnEnter", function(s)
+					if s.auraInstanceID then
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
+						GameTooltip:SetUnitDebuffByAuraInstanceID(asraid[frameName].displayedUnit, s.auraInstanceID, debufffilter);
+					end
+				end)
+
+				debuffFrame:SetScript("OnLeave", function()
+					GameTooltip:Hide();
+				end)
 			end
 		end
 	end
@@ -2308,18 +2303,6 @@ local function ACRB_setupFrame(frame)
 				asraid[frameName].pvpbuffFrames[i].cooldown:SetHideCountdownNumbers(true);
 			end
 
-			if ACRB_ShowTooltip and not asraid[frameName].pvpbuffFrames[i]:GetScript("OnEnter") then
-				asraid[frameName].pvpbuffFrames[i]:SetScript("OnEnter", function(s)
-					if s.auraInstanceID then
-						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitBuff(s.unit, s.auraInstanceID, bufffilter);
-					end
-				end)
-
-				asraid[frameName].pvpbuffFrames[i]:SetScript("OnLeave", function()
-					GameTooltip:Hide();
-				end)
-			end
 		end
 	end
 
@@ -2334,6 +2317,19 @@ local function ACRB_setupFrame(frame)
 				asraid[frameName].pvpbuffFrames[i]:SetPoint("TOPRIGHT", asraid[frameName].pvpbuffFrames[i - 1], "TOPLEFT",
 					0,
 					0)
+			end
+			
+			if ACRB_ShowTooltip and not asraid[frameName].pvpbuffFrames[i]:GetScript("OnEnter") then
+				asraid[frameName].pvpbuffFrames[i]:SetScript("OnEnter", function(s)
+					if s.auraInstanceID then
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
+						GameTooltip:SetUnitDebuffByAuraInstanceID(asraid[frameName].displayedUnit, s.auraInstanceID, bufffilter);
+					end
+				end)
+
+				asraid[frameName].pvpbuffFrames[i]:SetScript("OnLeave", function()
+					GameTooltip:Hide();
+				end)
 			end
 		end
 	end
