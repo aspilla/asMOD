@@ -1279,7 +1279,6 @@ local function ACRB_updatePartyAllHealerMana()
 	end
 end
 
-
 local function ACRB_DisableAura()
 	if (IsInGroup() or (ACRB_ShowWhenSolo)) then
 		if IsInRaid() then -- raid
@@ -1528,10 +1527,10 @@ local function ShouldDisplayBuff(aura)
 
 	if (hasCustom) then
 		return showForMySpec or
-		(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
+			(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
 	else
 		return (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") and ((canApplyAura and
-		not CheckIsSelfBuff(spellId)) or (ACRB_ShowList and ACRB_ShowList[aura.name]));
+			not CheckIsSelfBuff(spellId)) or (ACRB_ShowList and ACRB_ShowList[aura.name]));
 	end
 end
 
@@ -1566,44 +1565,6 @@ local function ShouldDisplayDebuff(aura)
 		--Would only be "mine" in the case of something like forbearance.
 	else
 		return true;
-	end
-end
-
-local function DumpCaches()
-	cachedVisualizationInfo = {};
-	cachedSelfBuffChecks = {};
-	cachedPriorityChecks = {};
-end
-
-local function ACRB_OnEvent(self, event, ...)
-	local arg1 = ...;
-
-	if (event == "PLAYER_ENTERING_WORLD") then
-		ACRB_InitList();
-		mustdisable = true;
-		hasValidPlayer = true;
-		local bloaded = LoadAddOn("DBM-Core");
-		if bloaded then
-			DBM:RegisterCallback("DBM_TimerStart", ACTA_DBMTimer_callback);
-		end
-		updateTankerList();
-		DumpCaches();
-	elseif (event == "PLAYER_SPECIALIZATION_CHANGED") then
-		print ("test");
-		ACRB_InitList();
-		DumpCaches();
-	elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
-		updateTankerList();
-		mustdisable = true;
-	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
-		DumpCaches();
-	elseif (event == "PLAYER_LEAVING_WORLD") then
-		hasValidPlayer = false;
-	elseif (event == "COMPACT_UNIT_FRAME_PROFILES_LOADED") then
-		together = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups();
-		if together == nil then
-			together = true;
-		end
 	end
 end
 
@@ -1966,11 +1927,8 @@ local function asframe_OnEvent(self, event, ...)
 	if event == "UNIT_AURA" then
 		local unitAuraUpdateInfo = select(2, ...);
 		ACRB_UpdateAuras(self.asframe, unitAuraUpdateInfo);
-	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
-		ACRB_UpdateAuras(self.asframe, nil);
 	end
 end
-
 
 -- Setup
 local function ACRB_setupFrame(frame)
@@ -2000,6 +1958,8 @@ local function ACRB_setupFrame(frame)
 		if (frame.unit ~= frame.displayedUnit) then
 			displayedUnit = frame.displayedUnit;
 		end
+	else
+		asraid[frameName].displayedUnit = frame.unit;
 	end
 
 	asraid[frameName].frame = frame;
@@ -2396,8 +2356,6 @@ local function ACRB_setupFrame(frame)
 	asraid[frameName].ncasting = 0;
 
 	asraid[frameName].eventframe:RegisterUnitEvent("UNIT_AURA", asraid[frameName].unit, displayedUnit);
-	asraid[frameName].eventframe:RegisterEvent("PLAYER_REGEN_ENABLED");
-	asraid[frameName].eventframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 	asraid[frameName].eventframe:SetScript("OnEvent", asframe_OnEvent);
 
 	ACRB_UpdateAuras(asraid[frameName], nil);
@@ -2416,7 +2374,70 @@ local function ARCB_UpdateAll(frame)
 	end
 end
 
+local function ACRB_updatePartyAllAura()
+	if (IsInGroup() or (ACRB_ShowWhenSolo)) then
+		if IsInRaid() then -- raid
+			if together == true then
+				for i = 1, 8 do
+					for k = 1, 5 do
+						local frame = _G["CompactRaidGroup" .. i .. "Member" .. k]
+						ACRB_setupFrame(frame);
+					end
+				end
+			else
+				for i = 1, 40 do
+					local frame = _G["CompactRaidFrame" .. i]
+					ACRB_setupFrame(frame);
+				end
+			end
+		else -- party
+			for i = 1, 5 do
+				local frame = _G["CompactPartyFrameMember" .. i]
+				ACRB_setupFrame(frame);
+			end
+		end
+	end
+end
+
 ACRB_InitList();
+
+local function DumpCaches()
+	cachedVisualizationInfo = {};
+	cachedSelfBuffChecks = {};
+	cachedPriorityChecks = {};
+	ACRB_updatePartyAllAura();
+end
+
+local function ACRB_OnEvent(self, event, ...)
+	local arg1 = ...;
+
+	if (event == "PLAYER_ENTERING_WORLD") then
+		ACRB_InitList();
+		mustdisable = true;
+		hasValidPlayer = true;
+		local bloaded = LoadAddOn("DBM-Core");
+		if bloaded then
+			DBM:RegisterCallback("DBM_TimerStart", ACTA_DBMTimer_callback);
+		end
+		updateTankerList();
+		DumpCaches();
+	elseif (event == "PLAYER_SPECIALIZATION_CHANGED") then
+		ACRB_InitList();
+		DumpCaches();
+	elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
+		updateTankerList();
+		mustdisable = true;
+	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
+		DumpCaches();
+	elseif (event == "PLAYER_LEAVING_WORLD") then
+		hasValidPlayer = false;
+	elseif (event == "COMPACT_UNIT_FRAME_PROFILES_LOADED") then
+		together = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups();
+		if together == nil then
+			together = true;
+		end
+	end
+end
 
 ACRB_mainframe:SetScript("OnEvent", ACRB_OnEvent)
 ACRB_mainframe:RegisterEvent("GROUP_ROSTER_UPDATE");
