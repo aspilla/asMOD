@@ -1834,9 +1834,7 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 			frameNum = frameNum + 1;
 
 			if aura.isBossAura then
-				-- Boss auras are about twice as big as normal debuffs, so we may need to display fewer buffs
-				local bossDebuffScale = 1.3;
-				maxDebuffs = maxDebuffs - (bossDebuffScale - 1);
+				maxDebuffs = maxDebuffs - 1;
 			end
 
 			return false;
@@ -2087,7 +2085,7 @@ local function ACRB_setupFrame(frame)
 				buffFrame:SetScript("OnEnter", function(s)
 					if s.auraInstanceID then
 						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitDebuffByAuraInstanceID(asraid[frameName].displayedUnit, s.auraInstanceID, bufffilter);
+						GameTooltip:SetUnitBuffByAuraInstanceID(asraid[frameName].displayedUnit, s.auraInstanceID, bufffilter);
 					end
 				end)
 				buffFrame:SetScript("OnLeave", function()
@@ -2321,9 +2319,10 @@ local function ACRB_setupFrame(frame)
 			
 			if ACRB_ShowTooltip and not asraid[frameName].pvpbuffFrames[i]:GetScript("OnEnter") then
 				asraid[frameName].pvpbuffFrames[i]:SetScript("OnEnter", function(s)
+
 					if s.auraInstanceID then
 						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitDebuffByAuraInstanceID(asraid[frameName].displayedUnit, s.auraInstanceID, bufffilter);
+						GameTooltip:SetUnitBuffByAuraInstanceID(asraid[frameName].displayedUnit, s.auraInstanceID, bufffilter);
 					end
 				end)
 
