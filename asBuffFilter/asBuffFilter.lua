@@ -1222,7 +1222,7 @@ local function ProcessAura(aura, unit)
 			elseif aura.nameplateShowPersonal then
 				aura.buffType = UnitFrameBuffType.PriorityBuff;
 			elseif IsShouldDisplayBuff(aura.spellId, aura.sourceUnit, aura.isFromPlayerOrPlayerPet) then
-				aura.buffType = UnitFrameBuffType.Normal;		
+				aura.buffType = UnitFrameBuffType.Normal;
 			elseif ABF_TalentBuffList[aura.name] == true or ABF_TalentBuffList[aura.icon] == true then
 				aura.buffType = UnitFrameBuffType.TalentBuff;
 			else
@@ -1521,7 +1521,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
 		hasValidPlayer = true;
 		UpdateAuras(nil, "player");
 		UpdateAuras(nil, "target");
-		asCheckTalent();	
+		asCheckTalent();
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		ABF:SetAlpha(ABF_AlphaCombat);
 		DumpCaches();
@@ -1529,7 +1529,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
 		ABF:SetAlpha(ABF_AlphaNormal);
 		DumpCaches();
 	elseif (event == "PLAYER_SPECIALIZATION_CHANGED") then
-		asCheckTalent();		
+		asCheckTalent();
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
 		if Settings.GetValue("spellActivationOverlayOpacity") > 0 then
 			overlayspell[arg1] = true;

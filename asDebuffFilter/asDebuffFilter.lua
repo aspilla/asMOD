@@ -653,100 +653,100 @@ lib.stopList["Action Button Glow"] = lib.ButtonGlow_Stop
 
 local DispellableDebuffTypes =
 {
-	Magic = true,
-	Curse = true,
-	Disease = true,
-	Poison = true
+    Magic = true,
+    Curse = true,
+    Disease = true,
+    Poison = true
 };
 
 
 local AuraUpdateChangedType = EnumUtil.MakeEnum(
-	"None",
-	"Debuff",
-	"Buff",
-	"PVP",
-	"Dispel"
+    "None",
+    "Debuff",
+    "Buff",
+    "PVP",
+    "Dispel"
 );
 
 local UnitFrameDebuffType = EnumUtil.MakeEnum(
-	"BossDebuff",
-	"BossBuff",
+    "BossDebuff",
+    "BossBuff",
     "namePlateShowAll",
-	"PriorityDebuff",
-	"NonBossRaidDebuff",
-	"NonBossDebuff"
+    "PriorityDebuff",
+    "NonBossRaidDebuff",
+    "NonBossDebuff"
 );
 
 
 
 local AuraFilters =
 {
-	Helpful = "HELPFUL",
-	Harmful = "HARMFUL",
-	Raid = "RAID",
-	IncludeNameplateOnly = "INCLUDE_NAME_PLATE_ONLY",
-	Player = "PLAYER",
-	Cancelable = "CANCELABLE",
-	NotCancelable = "NOT_CANCELABLE",
-	Maw = "MAW",
+    Helpful = "HELPFUL",
+    Harmful = "HARMFUL",
+    Raid = "RAID",
+    IncludeNameplateOnly = "INCLUDE_NAME_PLATE_ONLY",
+    Player = "PLAYER",
+    Cancelable = "CANCELABLE",
+    NotCancelable = "NOT_CANCELABLE",
+    Maw = "MAW",
 };
 
 local function CreateFilterString(...)
-	return table.concat({ ... }, '|');
+    return table.concat({ ... }, '|');
 end
 
 local function DefaultAuraCompare(a, b)
-	local aFromPlayer = (a.sourceUnit ~= nil) and UnitIsUnit("player", a.sourceUnit) or false;
-	local bFromPlayer = (b.sourceUnit ~= nil) and UnitIsUnit("player", b.sourceUnit) or false;
-	if aFromPlayer ~= bFromPlayer then
-		return aFromPlayer;
-	end
+    local aFromPlayer = (a.sourceUnit ~= nil) and UnitIsUnit("player", a.sourceUnit) or false;
+    local bFromPlayer = (b.sourceUnit ~= nil) and UnitIsUnit("player", b.sourceUnit) or false;
+    if aFromPlayer ~= bFromPlayer then
+        return aFromPlayer;
+    end
 
-	if a.canApplyAura ~= b.canApplyAura then
-		return a.canApplyAura;
-	end
+    if a.canApplyAura ~= b.canApplyAura then
+        return a.canApplyAura;
+    end
 
-	return a.spellId < b.spellId
+    return a.spellId < b.spellId
 end
 
 local function UnitFrameDebuffComparator(a, b)
-	if a.debuffType ~= b.debuffType then
-		return a.debuffType < b.debuffType;
-	end
+    if a.debuffType ~= b.debuffType then
+        return a.debuffType < b.debuffType;
+    end
 
-	return DefaultAuraCompare(a, b);
+    return DefaultAuraCompare(a, b);
 end
 
 
 local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuationToken, ...)
-	-- continuationToken is the first return value of UnitAuraSlots()
-	local n = select('#', ...);
-	for i = 1, n do
-		local slot = select(i, ...);
-		local done;
-		if usePackedAura then
-			local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
-			done = func(auraInfo);
-		else
-			done = func(UnitAuraBySlot(unit, slot));
-		end
-		if done then
-			-- if func returns true then no further slots are needed, so don't return continuationToken
-			return nil;
-		end
-	end
-	return continuationToken;
+    -- continuationToken is the first return value of UnitAuraSlots()
+    local n = select('#', ...);
+    for i = 1, n do
+        local slot = select(i, ...);
+        local done;
+        if usePackedAura then
+            local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
+            done = func(auraInfo);
+        else
+            done = func(UnitAuraBySlot(unit, slot));
+        end
+        if done then
+            -- if func returns true then no further slots are needed, so don't return continuationToken
+            return nil;
+        end
+    end
+    return continuationToken;
 end
 local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
-	if maxCount and maxCount <= 0 then
-		return;
-	end
-	local continuationToken;
-	repeat
-		-- continuationToken is the first return value of UnitAuraSltos
-		continuationToken = ForEachAuraHelper(unit, filter, func, usePackedAura,
-			UnitAuraSlots(unit, filter, maxCount, continuationToken));
-	until continuationToken == nil;
+    if maxCount and maxCount <= 0 then
+        return;
+    end
+    local continuationToken;
+    repeat
+        -- continuationToken is the first return value of UnitAuraSltos
+        continuationToken = ForEachAuraHelper(unit, filter, func, usePackedAura,
+            UnitAuraSlots(unit, filter, maxCount, continuationToken));
+    until continuationToken == nil;
 end
 
 
@@ -768,45 +768,45 @@ end
 
 local cachedPriorityChecks = {};
 local function CheckIsPriorityAura(spellId)
-	if cachedPriorityChecks[spellId] == nil then
-		cachedPriorityChecks[spellId] = SpellIsPriorityAura(spellId);
-	end
+    if cachedPriorityChecks[spellId] == nil then
+        cachedPriorityChecks[spellId] = SpellIsPriorityAura(spellId);
+    end
 
-	return cachedPriorityChecks[spellId];
+    return cachedPriorityChecks[spellId];
 end
 
 
 local function IsPriorityDebuff(spellId)
-	local _, classFilename = UnitClass("player");
-	if (classFilename == "PALADIN") then
-		local isForbearance = (spellId == 25771);
-		return isForbearance or CheckIsPriorityAura(spellId);
-	else
-		return CheckIsPriorityAura(spellId);
-	end
+    local _, classFilename = UnitClass("player");
+    if (classFilename == "PALADIN") then
+        local isForbearance = (spellId == 25771);
+        return isForbearance or CheckIsPriorityAura(spellId);
+    else
+        return CheckIsPriorityAura(spellId);
+    end
 end
 
 local function ShouldShowDebuffs(unit, caster, nameplateShowAll, casterIsAPlayer)
-	if (GetCVarBool("noBuffDebuffFilterOnTarget")) then
-		return true;
-	end
+    if (GetCVarBool("noBuffDebuffFilterOnTarget")) then
+        return true;
+    end
 
-	if (nameplateShowAll) then
-		return true;
-	end
+    if (nameplateShowAll) then
+        return true;
+    end
 
-	if (caster and (UnitIsUnit("player", caster) or UnitIsOwnerOrControllerOfUnit("player", caster))) then
-		return true;
-	end
+    if (caster and (UnitIsUnit("player", caster) or UnitIsOwnerOrControllerOfUnit("player", caster))) then
+        return true;
+    end
 
-	if (UnitIsUnit("player", unit)) then
-		return true;
-	end
+    if (UnitIsUnit("player", unit)) then
+        return true;
+    end
 
-	local targetIsFriendly = not UnitCanAttack("player", unit);
-	local targetIsAPlayer =  UnitIsPlayer(unit);
-	local targetIsAPlayerPet = UnitIsOtherPlayersPet(unit);
-	if (not targetIsAPlayer and not targetIsAPlayerPet and not targetIsFriendly and casterIsAPlayer) then
+    local targetIsFriendly = not UnitCanAttack("player", unit);
+    local targetIsAPlayer = UnitIsPlayer(unit);
+    local targetIsAPlayerPet = UnitIsOtherPlayersPet(unit);
+    if (not targetIsAPlayer and not targetIsAPlayerPet and not targetIsFriendly and casterIsAPlayer) then
         return false;
     end
 
@@ -829,15 +829,14 @@ local function ProcessAura(aura, unit)
     if aura.isHarmful then
         local skip = true;
         if unit == "target" then
-
             skip = true;
-            
+
             if ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll, aura.isFromPlayerOrPlayerPet) then
                 skip = false;
             end
 
-             -- PowerBar에서 보이는 Debuff 는 숨기고
-             if APB_DEBUFF and APB_DEBUFF == aura.name then
+            -- PowerBar에서 보이는 Debuff 는 숨기고
+            if APB_DEBUFF and APB_DEBUFF == aura.name then
                 skip = true;
             end
 
@@ -860,23 +859,22 @@ local function ProcessAura(aura, unit)
             if ACI_Player_Debuff_list and ACI_Player_Debuff_list[aura.name] then
                 skip = true;
             end
-        end        
+        end
 
         if skip == false then
-
             if C_SpellBook.GetDeadlyDebuffInfo(aura.spellId) then
-                aura.debuffType = aura.isHarmful and UnitFrameDebuffType.BossDebuff;            
+                aura.debuffType = aura.isHarmful and UnitFrameDebuffType.BossDebuff;
             elseif aura.isBossAura and not aura.isRaid then
                 aura.debuffType = aura.isHarmful and UnitFrameDebuffType.BossDebuff or
-                    UnitFrameDebuffType.BossBuff; 
+                    UnitFrameDebuffType.BossBuff;
             elseif aura.nameplateShowAll then
-                aura.debuffType = UnitFrameDebuffType.namePlateShowAll;              
+                aura.debuffType = UnitFrameDebuffType.namePlateShowAll;
             elseif aura.isHarmful and not aura.isRaid then
                 if IsPriorityDebuff(aura.spellId) then
                     aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
                 elseif DispellableDebuffTypes[aura.dispelName] ~= nil then
                     aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
-                        UnitFrameDebuffType.NonBossRaidDebuff;                    
+                        UnitFrameDebuffType.NonBossRaidDebuff;
                 else
                     aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
                 end
@@ -1004,7 +1002,7 @@ end
 
 local function UpdateAuras(unitAuraUpdateInfo, unit)
     local debuffsChanged = false;
-    
+
     if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate or activeDebuffs[unit] == nil then
         ParseAllAuras(unit);
         debuffsChanged = true;
@@ -1188,7 +1186,7 @@ local function ADF_Init()
     ADF_PLAYER_DEBUFF:SetHeight(1)
     ADF_PLAYER_DEBUFF:SetScale(1)
     ADF_PLAYER_DEBUFF:Show()
-    
+
     CreatDebuffFrames(ADF_PLAYER_DEBUFF, false);
 
     if bloaded and asMOD_setupFrame then
@@ -1201,7 +1199,7 @@ local function ADF_Init()
     ADF:RegisterEvent("PLAYER_ENTERING_WORLD");
     ADF:RegisterEvent("PLAYER_REGEN_DISABLED");
     ADF:RegisterEvent("PLAYER_REGEN_ENABLED");
-    
+
     ADF:SetScript("OnEvent", ADF_OnEvent)
     ADF_TARGET_DEBUFF:SetScript("OnEvent", ADF_OnEvent)
     ADF_PLAYER_DEBUFF:SetScript("OnEvent", ADF_OnEvent)
