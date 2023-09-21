@@ -1373,18 +1373,12 @@ local function UpdateAuraFrames(unit, auraList)
 				frameCooldown:Hide();
 			end
 
+			local frameBorder = frame.border;
 			local color = DebuffTypeColor["Disease"];
+			frameBorder:SetVertexColor(color.r, color.g, color.b);
+			frameBorder:SetAlpha(ABF_ALPHA);
 
-			if aura.debuffType then
-				if aura.debuffType == "totem" then
-					color = { r = 0, g = 1, b = 0 };
-				else
-					color = DebuffTypeColor[aura.debuffType];
-				end
-			end
-
-
-			if (aura.isStealable) then
+			if (aura.isStealable) or (ABF_ProcBuffList and ABF_ProcBuffList[aura.name]) then
 				lib.ButtonGlow_Start(frame);
 			else
 				lib.ButtonGlow_Stop(frame);
@@ -1396,17 +1390,7 @@ local function UpdateAuraFrames(unit, auraList)
 				end
 			end
 
-			local frameBorder = frame.border;
-			frameBorder:SetVertexColor(color.r, color.g, color.b);
-			frameBorder:SetAlpha(ABF_ALPHA);
-
 			frame:Show();
-
-			if (aura.isBossDebuff) then
-				lib.ButtonGlow_Start(frame);
-			else
-				lib.ButtonGlow_Stop(frame);
-			end
 			return false;
 		end);
 
@@ -1525,19 +1509,6 @@ end
 local function ABF_OnEvent(self, event, arg1, ...)
 	if (event == "PLAYER_TARGET_CHANGED") then
 		ABF_ClearFrame();
-		--[[
-		local reaction = UnitReaction("player", "target");
-		if reaction and reaction <= 4 then
-			-- Reaction 4 is neutral and less than 4 becomes increasingly more hostile
-			if (UnitIsPlayer("target")) then
-				ABF_UpdateBuff("tebuff");
-			else
-				ABF_UpdateBuff("tbuff");
-			end
-		else
-			ABF_UpdateBuff("target");
-		end
-		]]
 		ABF:RegisterUnitEvent("UNIT_AURA", "target");
 		UpdateAuras(nil, "target");
 	elseif (event == "UNIT_AURA") then
@@ -1545,7 +1516,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
 		UpdateAuras(unitAuraUpdateInfo, arg1);
 	elseif (event == "PLAYER_TOTEM_UPDATE") then
 		UpdateAuras(nil, "player");
-	elseif event == "PLAYER_ENTERING_WORLD" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
+	elseif event == "PLAYER_ENTERING_WORLD" then
 		ABF_InitShowList();
 		hasValidPlayer = true;
 		UpdateAuras(nil, "player");
@@ -1560,6 +1531,9 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif (event == "PLAYER_SPECIALIZATION_CHANGED") then
 		asCheckTalent();		
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
+		if Settings.GetValue("spellActivationOverlayOpacity") > 0 then
+			overlayspell[arg1] = true;
+		end
 		overlayspell[arg1] = true;
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_HIDE") then
 		if arg1 then
@@ -1719,7 +1693,6 @@ local function ABF_Init()
 	ABF_PLAYER_BUFF:RegisterUnitEvent("UNIT_AURA", "player");
 	ABF:RegisterEvent("PLAYER_ENTERING_WORLD");
 	ABF:RegisterEvent("PLAYER_LEAVING_WORLD");
-	ABF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 	ABF:RegisterEvent("PLAYER_REGEN_DISABLED");
 	ABF:RegisterEvent("PLAYER_REGEN_ENABLED");
 	ABF:RegisterEvent("PLAYER_TOTEM_UPDATE");

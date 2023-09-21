@@ -874,11 +874,11 @@ local function ProcessAura(aura, unit)
             elseif aura.isHarmful and not aura.isRaid then
                 if IsPriorityDebuff(aura.spellId) then
                     aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
-                end
-            elseif aura.isHarmful and aura.isRaid then
-                if DispellableDebuffTypes[aura.dispelName] ~= nil then
+                elseif DispellableDebuffTypes[aura.dispelName] ~= nil then
                     aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
                         UnitFrameDebuffType.NonBossRaidDebuff;                    
+                else
+                    aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
                 end
             else
                 aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
