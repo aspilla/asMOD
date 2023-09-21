@@ -296,7 +296,6 @@ local ABF_PVPBuffList = {
 local _G = _G;
 
 local ABF_TalentBuffList = {};
-local ABF_TalentShowList = {};
 local IsPowerbar = LoadAddOn("asPowerBar");
 
 local lib = {};
@@ -804,8 +803,14 @@ local function updateAlphaAnim(f, alpha)
 	end
 end
 
-local ButtonGlowTextures = { ["spark"] = true, ["innerGlow"] = true, ["innerGlowOver"] = true, ["outerGlow"] = true,
-	["outerGlowOver"] = true, ["ants"] = true }
+local ButtonGlowTextures = {
+	["spark"] = true,
+	["innerGlow"] = true,
+	["innerGlowOver"] = true,
+	["outerGlow"] = true,
+	["outerGlowOver"] = true,
+	["ants"] = true
+}
 
 function lib.ButtonGlow_Start(r, color, frequency, frameLevel)
 	if not r then
@@ -901,6 +906,109 @@ table.insert(lib.glowList, "Action Button Glow")
 lib.startList["Action Button Glow"] = lib.ButtonGlow_Start
 lib.stopList["Action Button Glow"] = lib.ButtonGlow_Stop
 
+--AuraUtil
+
+local DispellableDebuffTypes =
+{
+	Magic = true,
+	Curse = true,
+	Disease = true,
+	Poison = true
+};
+
+
+local AuraUpdateChangedType = EnumUtil.MakeEnum(
+	"None",
+	"Debuff",
+	"Buff",
+	"PVP",
+	"Dispel"
+);
+
+local UnitFrameBuffType = EnumUtil.MakeEnum(
+	"BossBuff",
+	"PriorityBuff",
+	"TalentBuff",
+	"ShouldShowBuff",
+	"Normal"
+);
+
+
+
+local AuraFilters =
+{
+	Helpful = "HELPFUL",
+	Harmful = "HARMFUL",
+	Raid = "RAID",
+	IncludeNameplateOnly = "INCLUDE_NAME_PLATE_ONLY",
+	Player = "PLAYER",
+	Cancelable = "CANCELABLE",
+	NotCancelable = "NOT_CANCELABLE",
+	Maw = "MAW",
+};
+
+local function CreateFilterString(...)
+	return table.concat({ ... }, '|');
+end
+
+local function DefaultAuraCompare(a, b)
+	local aFromPlayer = (a.sourceUnit ~= nil) and UnitIsUnit("player", a.sourceUnit) or false;
+	local bFromPlayer = (b.sourceUnit ~= nil) and UnitIsUnit("player", b.sourceUnit) or false;
+	if aFromPlayer ~= bFromPlayer then
+		return aFromPlayer;
+	end
+
+	if a.canApplyAura ~= b.canApplyAura then
+		return a.canApplyAura;
+	end
+
+	return a.spellId < b.spellId
+end
+
+local function UnitFrameBuffComparator(a, b)
+	if a.buffType ~= b.buffType then
+		return a.buffType < b.buffType;
+	end
+
+	return DefaultAuraCompare(a, b);
+end
+
+
+local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuationToken, ...)
+	-- continuationToken is the first return value of UnitAuraSlots()
+	local n = select('#', ...);
+	for i = 1, n do
+		local slot = select(i, ...);
+		local done;
+		if usePackedAura then
+			local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
+			done = func(auraInfo);
+		else
+			done = func(UnitAuraBySlot(unit, slot));
+		end
+		if done then
+			-- if func returns true then no further slots are needed, so don't return continuationToken
+			return nil;
+		end
+	end
+	return continuationToken;
+end
+local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
+	if maxCount and maxCount <= 0 then
+		return;
+	end
+	local continuationToken;
+	repeat
+		-- continuationToken is the first return value of UnitAuraSltos
+		continuationToken = ForEachAuraHelper(unit, filter, func, usePackedAura,
+			UnitAuraSlots(unit, filter, maxCount, continuationToken));
+	until continuationToken == nil;
+end
+
+
+
+local filter = CreateFilterString(AuraFilters.Helpful);
+
 
 local function scanSpells(tab)
 	local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
@@ -940,7 +1048,7 @@ local function asCheckTalent()
 			local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
 			local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
 			local definitionInfo = entryInfo and entryInfo.definitionID and
-			C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+				C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
 			if definitionInfo ~= nil then
 				local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
@@ -1006,11 +1114,11 @@ end
 
 local function DumpCaches()
 	cachedVisualizationInfo = {};
-	cachedSelfBuffChecks = {};	
+	cachedSelfBuffChecks = {};
 end
 
 -- 버프 설정 부
-local function IsShouldDisplayBuff(name, spellId, unitCaster, canApplyAura)
+local function IsShouldDisplayBuff(spellId, unitCaster, canApplyAura)
 	local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
 
 	if (hasCustom) then
@@ -1021,6 +1129,7 @@ local function IsShouldDisplayBuff(name, spellId, unitCaster, canApplyAura)
 			not CheckIsSelfBuff(spellId);
 	end
 end
+
 
 local function IsShown(name, spellId)
 	-- asPowerBar Check
@@ -1039,230 +1148,136 @@ local function IsShown(name, spellId)
 	if ACI_Buff_list and (ACI_Buff_list[name] or ACI_Buff_list[spellId]) then
 		return true;
 	end
-	if ASABF_BuffIDList and skip == false and ASABF_BuffIDList[spellId] then
-		return true;
-	end
 
-	if ASABF_BuffNameList and skip == false and ASABF_BuffNameList[name] then
-		return true;
-	end
-
-	if ASABF_AzeriteTraits and skip == false and ASABF_AzeriteTraits[name] then
+	if overlayspell[spellId] then
 		return true;
 	end
 
 	return false;
 end
 
-local function ABF_UpdateBuff(unit)
-	local numDebuffs = 1;
-	local frame;
-	local frameIcon, frameCount, frameCooldown, frameStealable;
-	local name, icon, count, debuffType, duration, expirationTime, caster, nameplateShowPersonal, spellId, canApplyAura, nameplateShowAll, stack, value2, value3, isStealable;
-	local color;
-	local frameBorder;
-	local parent;
-	local isFirst = true;
-	local realunit = "target";
+local activeBuffs = {};
 
-	if (unit == "tbuff") then
-		realunit = "target"
-		parent = ABF_TARGET_BUFF;
-	elseif (unit == "target") then
-		parent = ABF_TARGET_BUFF;
-	elseif (unit == "pbuff") then
-		realunit = "player"
-		parent = ABF_PLAYER_BUFF;
-	elseif (unit == "tebuff") then
-		realunit = "target"
-		parent = ABF_TARGET_BUFF;
-	else
-		return;
+
+
+
+local function ProcessAura(aura, unit)
+	if aura == nil or aura.icon == nil or unit == nil then
+		return AuraUpdateChangedType.None;
 	end
 
-	local i = 1;
-	local totem_i = 1;
-	local talentlist = {};
-	local talentcount = 0;
+	if IsShown(aura.name, aura.spellId) then
+		return AuraUpdateChangedType.None;
+	end
 
-	repeat
-		local skip = false;
-		local debuff;
-		local bufidx;
-		isStealable = false;
-		local isTarget = false;
-		local alert = false;
-		stack = nil;
+	if ABF_BlackList[aura.name] then
+		return AuraUpdateChangedType.None;
+	end
 
-		if (unit == "tbuff") then
-			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, canApplyAura, nameplateShowAll =
-			UnitBuff(realunit, i);
-
-			-- 적대적 NPC 는 무조건 Buff 를 보임
-
-			if (icon == nil) then
-				break;
-			end
-
-			if isStealable then
-				alert = true;
-			end
-		elseif (unit == "target") then
-			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, canApplyAura, nameplateShowAll =
-			UnitBuff(unit, i);
-			if (icon == nil) then
-				break;
-			end
-
-			skip = true;
-
-			-- 우리편은 내가 시전한 Buff 보임
-			if PLAYER_UNITS[caster] and duration > 0 and duration <= ABF_MAX_Cool then
-				skip = false;
-			end
-
-			-- PVP 주요 버프는 보임
-			if (name ~= nil and ABF_PVPBuffList[spellId]) then
-				skip = false;
-			end
-		elseif (unit == "pbuff") then
-			skip = true;
-
-			if totem_i <= MAX_TOTEMS then
-				for slot = totem_i, MAX_TOTEMS do
-					local haveTotem, start;
-					haveTotem, name, start, duration, icon = GetTotemInfo(slot);
-
-					totem_i = totem_i + 1;
-
-					if haveTotem and icon then
-						caster = "player";
-						expirationTime = start + duration;
-						debuffType = "totem";
-						isStealable = nil;
-						stack = nil;
-						count = 0;
-
+	if aura.isHelpful then
+		local skip = true;
+		if unit == "target" then
+			if UnitIsPlayer("target") then
+				skip = true;
+				if UnitCanAssist("target", "player") then
+					-- 우리편은 내가 시전한 Buff 보임
+					if PLAYER_UNITS[aura.sourceUnit] and aura.duration > 0 and aura.duration <= ABF_MAX_Cool then
 						skip = false;
-						i = 0;
-						break;
-					else
-						icon = nil;
 					end
 				end
 
-				if icon == nil then
-					i                                                                                                                                                                         = 1;
-					name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, canApplyAura, nameplateShowAll, stack, value2, value3 =
-					UnitBuff(realunit, i, "INCLUDE_NAME_PLATE_ONLY");
-				end
-			else
-				name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, canApplyAura, nameplateShowAll, stack, value2, value3 =
-				UnitBuff(realunit, i, "INCLUDE_NAME_PLATE_ONLY");
-			end
-
-			if (icon == nil) then
-				break;
-			end
-
-			if PLAYER_UNITS[caster] and ((duration > 0 and duration <= ABF_MAX_Cool) or count > 1) then
-				skip = false;
-			end
-
-			if nameplateShowAll and duration <= ABF_MAX_Cool then
-				skip = false;
-			end
-
-			if (spellId ~= nil and ABF_PVPBuffList[spellId]) then
-				skip = false;
-			end
-
-			if skip == false and ABF_BlackList[name] then
-				skip = true;
-			end
-
-			if overlayspell[spellId] then
-				skip = true;
-			end
-
-			if b_showlist == true then
-				skip = true;
-				if ABF_ShowList[name] then
+				if aura.isStealable then
 					skip = false;
 				end
-			end
 
-			if ABF_ProcBuffList and ABF_ProcBuffList[name] then
-				if ABF_ProcBuffList[name] == 1 then
-					alert = true;
+				-- PVP 주요 버프는 보임
+				if (aura.name ~= nil and ABF_PVPBuffList[aura.spellId]) then
+					skip = false;
 				end
+			else
 				skip = false;
 			end
-
-			if IsShown(name, spellId) then
-				skip = true;
-			end
-
-			if (IsPowerbar or ABF_ShowTalentList) and skip == false and PLAYER_UNITS[caster] and (ABF_TalentBuffList[name] or ABF_TalentBuffList[icon] or debuffType == "totem" or nameplateShowAll or nameplateShowPersonal)  and (debuffType == "totem" or not IsShouldDisplayBuff(name, spellId, caster, canApplyAura)) then
-				if talentcount < ABF_MAX_BUFF_SHOW then
-					skip = true;
-					talentcount = talentcount + 1;
-
-					if debuffType == "totem" then
-						talentlist[talentcount] = { totem_i - 1, true };
-					else
-						talentlist[talentcount] = { i, false };
-					end
-				end
-			end
-		elseif (unit == "tebuff") then
-			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId =
-			UnitBuff("target", i);
-			if (icon == nil) then
-				break;
-			end
-
+		elseif unit == "player" then
 			skip = true;
-
-			if isStealable and isFirst then
+			if PLAYER_UNITS[aura.sourceUnit] and ((aura.duration > 0 and aura.duration <= ABF_MAX_Cool) or (aura.applications and aura.applications > 1)) then
 				skip = false;
-				isFirst = false;
-				alert = true;
 			end
 
-			if (name ~= nil and ABF_PVPBuffList[spellId]) then
+			if aura.nameplateShowPersonal then
+				skip = false;
+			end
+
+			if (aura.spellId ~= nil and ABF_PVPBuffList[aura.spellId]) then
+				skip = false;
+			end
+
+			if ABF_ProcBuffList and ABF_ProcBuffList[aura.name] then
 				skip = false;
 			end
 		end
 
-		if (icon and skip == false) then
-			if numDebuffs > ABF_MAX_BUFF_SHOW then
-				break;
+		if skip == false then
+			if aura.isBossAura and not aura.isRaid then
+				aura.buffType = UnitFrameBuffType.BossBuff;
+			elseif aura.nameplateShowPersonal then
+				aura.buffType = UnitFrameBuffType.PriorityBuff;
+			elseif IsShouldDisplayBuff(aura.spellId, aura.sourceUnit, aura.isFromPlayerOrPlayerPet) then
+				aura.buffType = UnitFrameBuffType.Normal;		
+			elseif ABF_TalentBuffList[aura.name] == true or ABF_TalentBuffList[aura.icon] == true then
+				aura.buffType = UnitFrameBuffType.TalentBuff;
+			else
+				aura.buffType = UnitFrameBuffType.Normal;
 			end
 
-			local color;
+			activeBuffs[unit][aura.auraInstanceID] = aura;
+			return AuraUpdateChangedType.Buff;
+		end
+	end
 
-			frame = parent.frames[numDebuffs];
+	return AuraUpdateChangedType.None;
+end
 
-			if ((unit == "pbuff") or (unit == "target" and PLAYER_UNITS[caster]) or (unit == "tbuff") or (unit == "tebuff")) then
+local function ParseAllAuras(unit)
+	if activeBuffs[unit] == nil then
+		activeBuffs[unit] = TableUtil.CreatePriorityTable(UnitFrameBuffComparator,
+			TableUtil.Constants.AssociativePriorityTable);
+	else
+		activeBuffs[unit]:Clear();
+	end
+
+	local function HandleAura(aura)
+		ProcessAura(aura, unit);
+		return false;
+	end
+
+	local batchCount = nil;
+	local usePackedAura = true;
+	ForEachAura(unit, filter, batchCount, HandleAura, usePackedAura);
+end
+
+local function updateTotemAura()
+	local totem_i = 0;
+
+	for slot = 1, MAX_TOTEMS do
+		local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
+
+		if haveTotem and icon then
+			if not (ACI_Buff_list and ACI_Buff_list[name]) then
+				totem_i = totem_i + 1;
+				local expirationTime = start + duration;
+				local frame = ABF_TALENT_BUFF.frames[totem_i];
+
 				-- set the icon
-				frameIcon = frame.icon;
+				local frameIcon = frame.icon;
 				frameIcon:SetTexture(icon);
 				frameIcon:SetAlpha(ABF_ALPHA);
 
 				-- set the count
-				frameCount = frame.count;
+				local frameCount = frame.count;
 				-- Handle cooldowns
-				frameCooldown = frame.cooldown;
+				local frameCooldown = frame.cooldown;
 
-				if (count > 1) then
-					frameCount:SetText(count);
-					frameCount:Show();
-					frameCooldown:SetDrawSwipe(false);
-				else
-					frameCount:Hide();
-					frameCooldown:SetDrawSwipe(true);
-				end
+				frameCount:Hide();
 
 				if (duration > 0 and duration <= 120) then
 					frameCooldown:Show();
@@ -1272,69 +1287,132 @@ local function ABF_UpdateBuff(unit)
 					frameCooldown:Hide();
 				end
 
-				frameBorder = frame.border;
+				local frameBorder = frame.border;
 
-				color = DebuffTypeColor["Disease"];
-
-				if debuffType then
-					if debuffType == "totem" then
-						color = { r = 0, g = 1, b = 0 };
-					else
-						color = DebuffTypeColor[debuffType];
-					end
-				end
-
-				if isStealable then
-					color = { r = 1, g = 1, b = 1 };
-				end
-
-
+				local color = { r = 0, g = 1, b = 0 };
 
 				frameBorder:SetVertexColor(color.r, color.g, color.b);
 				frameBorder:SetAlpha(ABF_ALPHA);
-
 				frame:Show();
-
-				frame.filter = "";
-				frame:SetID(i);
-				frame.unit = realunit;
-
-				if realunit == "player" then
-					frame.filter = "INCLUDE_NAME_PLATE_ONLY";
-				end
-
-				if not frame:GetScript("OnEnter") then
-					frame:SetScript("OnEnter", function(s)
-						if s:GetID() > 0 then
-							GameTooltip_SetDefaultAnchor(GameTooltip, s);
-							GameTooltip:SetUnitBuff(s.unit, s:GetID(), s.filter);
-						end
-					end)
-					frame:SetScript("OnLeave", function()
-						GameTooltip:Hide();
-					end)
-				end
-
-				if (alert) then
-					lib.ButtonGlow_Start(frame);
-				else
-					lib.ButtonGlow_Stop(frame);
-
-					if (nameplateShowPersonal) then
-						lib.PixelGlow_Start(frame);
-					else
-						lib.PixelGlow_Stop(frame);
-					end
-				end
-
-				numDebuffs = numDebuffs + 1;
 			end
+		else
+			return totem_i + 1;
 		end
-		i = i + 1
-	until (name == nil)
+	end
 
-	for i = numDebuffs, ABF_MAX_BUFF_SHOW do
-		frame = parent.frames[i];
+	return totem_i + 1;
+end
+
+local function UpdateAuraFrames(unit, auraList)
+	local i = 0;
+	local parent = ABF_TARGET_BUFF;
+	local numAuras = math.min(ABF_MAX_BUFF_SHOW, auraList:Size());
+	local tcount = 1;
+	local lcount = 1;
+	local mparent = nil;
+
+	if (unit == "player") then
+		tcount = updateTotemAura();
+		parent = ABF_PLAYER_BUFF;
+		mparent = ABF_TALENT_BUFF;
+		numAuras = math.min(ABF_MAX_BUFF_SHOW * 2, auraList:Size());
+	end
+
+
+	auraList:Iterate(
+		function(auraInstanceID, aura)
+			i = i + 1;
+			if i > numAuras then
+				return true;
+			end
+
+			local frame = nil;
+
+			if mparent then
+				if mparent and aura.buffType ~= UnitFrameBuffType.Normal and tcount < ABF_MAX_BUFF_SHOW then
+					frame = mparent.frames[tcount];
+					tcount = tcount + 1;
+				elseif mparent and lcount < ABF_MAX_BUFF_SHOW then
+					frame = parent.frames[lcount];
+					lcount = lcount + 1;
+				else
+					return true;
+				end
+			else
+				frame = parent.frames[i];
+			end
+
+			frame.unit = unit;
+			frame.auraInstanceID = aura.auraInstanceID;
+
+			-- set the icon
+			local frameIcon = frame.icon
+			frameIcon:SetTexture(aura.icon);
+			frameIcon:SetAlpha(ABF_ALPHA);
+			-- set the count
+			local frameCount = frame.count;
+
+			-- Handle cooldowns
+			local frameCooldown = frame.cooldown;
+
+			if (aura.applications and aura.applications > 1) then
+				frameCount:SetText(aura.applications);
+				frameCount:Show();
+				frameCooldown:SetDrawSwipe(false);
+			else
+				frameCount:Hide();
+				frameCooldown:SetDrawSwipe(true);
+			end
+
+			if (aura.duration > 0) then
+				frameCooldown:Show();
+				asCooldownFrame_Set(frameCooldown, aura.expirationTime - aura.duration, aura.duration, aura.duration > 0,
+					true);
+				frameCooldown:SetHideCountdownNumbers(false);
+			else
+				frameCooldown:Hide();
+			end
+
+			local color = DebuffTypeColor["Disease"];
+
+			if aura.debuffType then
+				if aura.debuffType == "totem" then
+					color = { r = 0, g = 1, b = 0 };
+				else
+					color = DebuffTypeColor[aura.debuffType];
+				end
+			end
+
+
+			if (aura.isStealable) then
+				lib.ButtonGlow_Start(frame);
+			else
+				lib.ButtonGlow_Stop(frame);
+
+				if aura.nameplateShowPersonal then
+					lib.PixelGlow_Start(frame);
+				else
+					lib.PixelGlow_Stop(frame);
+				end
+			end
+
+			local frameBorder = frame.border;
+			frameBorder:SetVertexColor(color.r, color.g, color.b);
+			frameBorder:SetAlpha(ABF_ALPHA);
+
+			frame:Show();
+
+			if (aura.isBossDebuff) then
+				lib.ButtonGlow_Start(frame);
+			else
+				lib.ButtonGlow_Stop(frame);
+			end
+			return false;
+		end);
+
+	local function HideFrame(p, idx)
+		local frame = p.frames[idx];
+
 		if (frame) then
 			frame:Hide();
 			lib.ButtonGlow_Stop(frame);
@@ -1342,122 +1420,67 @@ local function ABF_UpdateBuff(unit)
 		end
 	end
 
-	if (unit == "pbuff") then
-		parent = ABF_TALENT_BUFF;
 
-		for numDebuffs = 1, talentcount do
-			frame = parent.frames[numDebuffs];
-			local isStealable;
-			local IsTotem = talentlist[numDebuffs][2];
-			local idx = talentlist[numDebuffs][1]
+	if mparent then
+		for j = tcount, ABF_MAX_BUFF_SHOW do
+			HideFrame(mparent, j);
+		end
+		for j = lcount, ABF_MAX_BUFF_SHOW do
+			HideFrame(parent, j);
+		end
+	else
+		for j = i + 1, ABF_MAX_BUFF_SHOW do
+			HideFrame(parent, j);
+		end
+	end
+end
 
-			if IsTotem then
-				local haveTotem, start;
 
-				haveTotem, name, start, duration, icon = GetTotemInfo(idx);
+local function UpdateAuras(unitAuraUpdateInfo, unit)
+	local buffsChanged = false;
 
-				if haveTotem and icon then
-					caster = "player";
-					expirationTime = start + duration;
-					debuffType = "totem";
-					isStealable = nil;
-					stack = nil;
-					count = 0;
-				else
-					name = nil;
+	if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate or activeBuffs[unit] == nil then
+		ParseAllAuras(unit);
+		buffsChanged = true;
+	else
+		if unitAuraUpdateInfo.addedAuras ~= nil then
+			for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
+				local type = ProcessAura(aura, unit);
+				if type == AuraUpdateChangedType.Buff then
+					buffsChanged = true;
 				end
-			else
-				name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, canApplyAura, nameplateShowAll, stack, value2, value3 =
-				UnitBuff("player", idx, "INCLUDE_NAME_PLATE_ONLY");
 			end
+		end
 
-			if name and frame then
-				local alert = false;
-
-				if ABF_ProcBuffList and ABF_ProcBuffList[name] then
-					if ABF_ProcBuffList[name] == 1 then
-						alert = true;
-					end
-				end
-
-				-- set the icon
-				frameIcon = frame.icon;
-				frameIcon:SetTexture(icon);
-				frameIcon:SetAlpha(ABF_ALPHA);
-				frameIcon:Show();
-
-				-- set the count
-				frameCount = frame.count;
-				-- Handle cooldowns
-				frameCooldown = frame.cooldown;
-
-				if (count > 1) then
-					frameCount:SetText(count);
-					frameCount:Show();
-					frameCooldown:SetDrawSwipe(false);
-				else
-					frameCount:Hide();
-					frameCooldown:SetDrawSwipe(true);
-				end
-
-				if (duration > 0 and duration <= 120) then
-					frameCooldown:Show();
-					asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0, true);
-					frameCooldown:SetHideCountdownNumbers(false);
-				else
-					frameCooldown:Hide();
-				end
-
-				frameBorder = frame.border;
-
-				color = DebuffTypeColor["Disease"];
-
-				if debuffType then
-					if debuffType == "totem" then
-						color = { r = 0, g = 1, b = 0 };
-					else
-						color = DebuffTypeColor[debuffType];
-					end
-				end
-
-				if isStealable then
-					color = { r = 1, g = 1, b = 1 };
-				end
-
-
-
-				frameBorder:SetVertexColor(color.r, color.g, color.b);
-				frameBorder:SetAlpha(ABF_ALPHA);
-				frame.filter = "INCLUDE_NAME_PLATE_ONLY";
-				frame:SetID(idx);
-				frame.unit = "player";
-
-				frame:Show();
-
-				if (alert) then
-					lib.ButtonGlow_Start(frame);
-				else
-					lib.ButtonGlow_Stop(frame);
-
-					if (nameplateShowPersonal) then
-						lib.PixelGlow_Start(frame);
-					else
-						lib.PixelGlow_Stop(frame);
+		if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
+			for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
+				local wasInBuff = activeBuffs[unit][auraInstanceID] ~= nil;
+				if wasInBuff then
+					local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
+					activeBuffs[unit][auraInstanceID] = nil;
+					local type = ProcessAura(newAura, unit);
+					if type == AuraUpdateChangedType.Buff or wasInBuff then
+						buffsChanged = true;
 					end
 				end
 			end
 		end
 
-		for i = talentcount + 1, ABF_MAX_BUFF_SHOW do
-			frame = parent.frames[i];
-
-			if (frame) then
-				frame:Hide();
-				lib.ButtonGlow_Stop(frame);
-				lib.PixelGlow_Stop(frame);
+		if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
+			for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
+				if activeBuffs[unit][auraInstanceID] ~= nil then
+					activeBuffs[unit][auraInstanceID] = nil;
+					buffsChanged = true;
+				end
 			end
 		end
 	end
+
+	if not buffsChanged then
+		return;
+	end
+
+	UpdateAuraFrames(unit, activeBuffs[unit]);
 end
 
 
@@ -1496,22 +1519,13 @@ local function ABF_InitShowList()
 end
 
 local function ABF_OnUpdate()
-	local reaction = UnitReaction("player", "target");
-	if reaction and reaction <= 4 then
-		-- Reaction 4 is neutral and less than 4 becomes increasingly more hostile
-		if (UnitIsPlayer("target")) then
-			ABF_UpdateBuff("tebuff");
-		else
-			ABF_UpdateBuff("tbuff");
-		end
-	else
-		ABF_UpdateBuff("target");
-	end
+
 end
 
 local function ABF_OnEvent(self, event, arg1, ...)
 	if (event == "PLAYER_TARGET_CHANGED") then
 		ABF_ClearFrame();
+		--[[
 		local reaction = UnitReaction("player", "target");
 		if reaction and reaction <= 4 then
 			-- Reaction 4 is neutral and less than 4 becomes increasingly more hostile
@@ -1523,21 +1537,28 @@ local function ABF_OnEvent(self, event, arg1, ...)
 		else
 			ABF_UpdateBuff("target");
 		end
-	elseif (event == "UNIT_AURA" and arg1 == "player") then
-		ABF_UpdateBuff("pbuff");
+		]]
+		ABF:RegisterUnitEvent("UNIT_AURA", "target");
+		UpdateAuras(nil, "target");
+	elseif (event == "UNIT_AURA") then
+		local unitAuraUpdateInfo = ...;
+		UpdateAuras(unitAuraUpdateInfo, arg1);
 	elseif (event == "PLAYER_TOTEM_UPDATE") then
-		ABF_UpdateBuff("pbuff");
+		UpdateAuras(nil, "player");
 	elseif event == "PLAYER_ENTERING_WORLD" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		ABF_InitShowList();
 		hasValidPlayer = true;
+		UpdateAuras(nil, "player");
+		UpdateAuras(nil, "target");
+		asCheckTalent();	
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		ABF:SetAlpha(ABF_AlphaCombat);
 		DumpCaches();
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ABF:SetAlpha(ABF_AlphaNormal);
 		DumpCaches();
-	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") then
-		C_Timer.After(0.5, asCheckTalent);
+	elseif (event == "PLAYER_SPECIALIZATION_CHANGED") then
+		asCheckTalent();		
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
 		overlayspell[arg1] = true;
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_HIDE") then
@@ -1694,15 +1715,16 @@ local function ABF_Init()
 
 
 	ABF:RegisterEvent("PLAYER_TARGET_CHANGED")
-	ABF:RegisterUnitEvent("UNIT_AURA", "player")
+	ABF_TARGET_BUFF:RegisterUnitEvent("UNIT_AURA", "target")
+	ABF_PLAYER_BUFF:RegisterUnitEvent("UNIT_AURA", "player");
 	ABF:RegisterEvent("PLAYER_ENTERING_WORLD");
 	ABF:RegisterEvent("PLAYER_LEAVING_WORLD");
 	ABF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 	ABF:RegisterEvent("PLAYER_REGEN_DISABLED");
 	ABF:RegisterEvent("PLAYER_REGEN_ENABLED");
 	ABF:RegisterEvent("PLAYER_TOTEM_UPDATE");
-	ABF:RegisterEvent("TRAIT_CONFIG_UPDATED");
-	ABF:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+	ABF:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");
+
 
 	bloaded = LoadAddOn("asOverlay")
 	if bloaded then
@@ -1712,7 +1734,9 @@ local function ABF_Init()
 
 
 	ABF:SetScript("OnEvent", ABF_OnEvent)
-	C_Timer.NewTicker(ABF_RefreshRate, ABF_OnUpdate);
+	ABF_TARGET_BUFF:SetScript("OnEvent", ABF_OnEvent)
+	ABF_PLAYER_BUFF:SetScript("OnEvent", ABF_OnEvent)
+	--C_Timer.NewTicker(ABF_RefreshRate, ABF_OnUpdate);
 end
 
 ABF_Init();

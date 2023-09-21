@@ -671,6 +671,7 @@ local AuraUpdateChangedType = EnumUtil.MakeEnum(
 local UnitFrameDebuffType = EnumUtil.MakeEnum(
 	"BossDebuff",
 	"BossBuff",
+    "namePlateShowAll",
 	"PriorityDebuff",
 	"NonBossRaidDebuff",
 	"NonBossDebuff"
@@ -705,7 +706,7 @@ local function DefaultAuraCompare(a, b)
 		return a.canApplyAura;
 	end
 
-	return a.auraInstanceID < b.auraInstanceID;
+	return a.spellId < b.spellId
 end
 
 local function UnitFrameDebuffComparator(a, b)
@@ -765,6 +766,52 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
     end
 end
 
+local cachedPriorityChecks = {};
+local function CheckIsPriorityAura(spellId)
+	if cachedPriorityChecks[spellId] == nil then
+		cachedPriorityChecks[spellId] = SpellIsPriorityAura(spellId);
+	end
+
+	return cachedPriorityChecks[spellId];
+end
+
+
+local function IsPriorityDebuff(spellId)
+	local _, classFilename = UnitClass("player");
+	if (classFilename == "PALADIN") then
+		local isForbearance = (spellId == 25771);
+		return isForbearance or CheckIsPriorityAura(spellId);
+	else
+		return CheckIsPriorityAura(spellId);
+	end
+end
+
+local function ShouldShowDebuffs(unit, caster, nameplateShowAll, casterIsAPlayer)
+	if (GetCVarBool("noBuffDebuffFilterOnTarget")) then
+		return true;
+	end
+
+	if (nameplateShowAll) then
+		return true;
+	end
+
+	if (caster and (UnitIsUnit("player", caster) or UnitIsOwnerOrControllerOfUnit("player", caster))) then
+		return true;
+	end
+
+	if (UnitIsUnit("player", unit)) then
+		return true;
+	end
+
+	local targetIsFriendly = not UnitCanAttack("player", unit);
+	local targetIsAPlayer =  UnitIsPlayer(unit);
+	local targetIsAPlayerPet = UnitIsOtherPlayersPet(unit);
+	if (not targetIsAPlayer and not targetIsAPlayerPet and not targetIsFriendly and casterIsAPlayer) then
+        return false;
+    end
+
+    return true;
+end
 
 
 local activeDebuffs = {};
@@ -775,26 +822,23 @@ local function ProcessAura(aura, unit)
         return AuraUpdateChangedType.None;
     end
 
+    if ADF_BlackList[aura.name] then
+        return AuraUpdateChangedType.None;
+    end
+
     if aura.isHarmful then
         local skip = true;
         if unit == "target" then
-            if UnitCanAssist("target", "player") then
+
+            skip = true;
+            
+            if ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll, aura.isFromPlayerOrPlayerPet) then
                 skip = false;
-            else
+            end
+
+             -- PowerBar에서 보이는 Debuff 는 숨기고
+             if APB_DEBUFF and APB_DEBUFF == aura.name then
                 skip = true;
-                -- 내가 시전한 Debuff는 보이고
-                if PLAYER_UNITS[aura.sourceUnit] then
-                    skip = false;
-                end
-
-                if (ADF_Show_PVPDebuff and aura.nameplateShowAll) then
-                    skip = false;
-                end
-
-                -- PowerBar에서 보이는 Debuff 는 숨기고
-                if APB_DEBUFF and APB_DEBUFF == aura.name then
-                    skip = true;
-                end
             end
 
             -- ACI 에서 보이는 Debuff 는 숨기고
@@ -808,7 +852,7 @@ local function ProcessAura(aura, unit)
                 skip = true;
             end
 
-            if aura.isRaid then
+            if aura.isRaid or aura.isBossAura then
                 skip = false;
             end
 
@@ -816,13 +860,30 @@ local function ProcessAura(aura, unit)
             if ACI_Player_Debuff_list and ACI_Player_Debuff_list[aura.name] then
                 skip = true;
             end
-        end
-
-        if ADF_BlackList[aura.name] then
-            skip = true;
-        end
+        end        
 
         if skip == false then
+
+            if C_SpellBook.GetDeadlyDebuffInfo(aura.spellId) then
+                aura.debuffType = aura.isHarmful and UnitFrameDebuffType.BossDebuff;            
+            elseif aura.isBossAura and not aura.isRaid then
+                aura.debuffType = aura.isHarmful and UnitFrameDebuffType.BossDebuff or
+                    UnitFrameDebuffType.BossBuff; 
+            elseif aura.nameplateShowAll then
+                aura.debuffType = UnitFrameDebuffType.namePlateShowAll;              
+            elseif aura.isHarmful and not aura.isRaid then
+                if IsPriorityDebuff(aura.spellId) then
+                    aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
+                end
+            elseif aura.isHarmful and aura.isRaid then
+                if DispellableDebuffTypes[aura.dispelName] ~= nil then
+                    aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
+                        UnitFrameDebuffType.NonBossRaidDebuff;                    
+                end
+            else
+                aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
+            end
+
             activeDebuffs[unit][aura.auraInstanceID] = aura;
             return AuraUpdateChangedType.Debuff;
         end
@@ -833,7 +894,7 @@ end
 
 local function ParseAllAuras(unit)
     if activeDebuffs[unit] == nil then
-        activeDebuffs[unit] = TableUtil.CreatePriorityTable(DefaultAuraCompare,
+        activeDebuffs[unit] = TableUtil.CreatePriorityTable(UnitFrameDebuffComparator,
             TableUtil.Constants.AssociativePriorityTable);
     else
         activeDebuffs[unit]:Clear();
@@ -880,8 +941,8 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             -- Handle cooldowns
             local frameCooldown = frame.cooldown;
 
-            if (aura.charges and aura.charges > 1) then
-                frameCount:SetText(aura.charges);
+            if (aura.applications and aura.applications > 1) then
+                frameCount:SetText(aura.applications);
                 frameCount:Show();
                 frameCooldown:SetDrawSwipe(false);
             else
@@ -1015,8 +1076,10 @@ function ADF_OnEvent(self, event, arg1, ...)
         UpdateAuras(nil, "player");
     elseif event == "PLAYER_REGEN_DISABLED" then
         ADF:SetAlpha(ADF_AlphaCombat);
+        cachedPriorityChecks = {};
     elseif event == "PLAYER_REGEN_ENABLED" then
         ADF:SetAlpha(ADF_AlphaNormal);
+        cachedPriorityChecks = {};
     end
 end
 
