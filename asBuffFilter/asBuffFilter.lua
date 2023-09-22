@@ -1370,6 +1370,8 @@ local function ProcessAura(aura, unit)
 	if skip == false then
 		if aura.isBossAura and not aura.isRaid then
 			aura.buffType = UnitFrameBuffType.BossBuff;
+		elseif not PLAYER_UNITS[aura.sourceUnit] then
+			aura.buffType = UnitFrameBuffType.Normal;
 		elseif aura.nameplateShowPersonal then
 			aura.buffType = UnitFrameBuffType.PriorityBuff;
 		elseif IsShouldDisplayBuff(aura.spellId, aura.sourceUnit, aura.isFromPlayerOrPlayerPet) then
