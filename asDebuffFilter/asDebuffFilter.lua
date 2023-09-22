@@ -818,7 +818,7 @@ local activeDebuffs = {};
 
 
 local function ProcessAura(aura, unit)
-    if aura == nil or aura.icon == nil or unit == nil then
+    if aura == nil or aura.icon == nil or unit == nil or not aura.isHarmful then
         return AuraUpdateChangedType.None;
     end
 
@@ -826,66 +826,68 @@ local function ProcessAura(aura, unit)
         return AuraUpdateChangedType.None;
     end
 
-    if aura.isHarmful then
-        local skip = true;
-        if unit == "target" then
-            skip = true;
+    local skip = true;
+    if unit == "target" then
+        skip = true;
 
-            if ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll, aura.isFromPlayerOrPlayerPet) then
-                skip = false;
-            end
-
-            -- PowerBar에서 보이는 Debuff 는 숨기고
-            if APB_DEBUFF and APB_DEBUFF == aura.name then
-                skip = true;
-            end
-
-            -- ACI 에서 보이는 Debuff 는 숨기고
-            if ACI_Debuff_list and ACI_Debuff_list[aura.name] then
-                skip = true;
-            end
-        elseif unit == "player" then
+        if ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll, aura.isFromPlayerOrPlayerPet) then
             skip = false;
-
-            if aura.duration > ADF_MAX_Cool then
-                skip = true;
-            end
-
-            if aura.isRaid or aura.isBossAura then
-                skip = false;
-            end
-
-            -- ACI 에서 보이는 Debuff 면 숨기기
-            if ACI_Player_Debuff_list and ACI_Player_Debuff_list[aura.name] then
-                skip = true;
-            end
         end
 
-        if skip == false then
-            if C_SpellBook.GetDeadlyDebuffInfo(aura.spellId) then
-                aura.debuffType = aura.isHarmful and UnitFrameDebuffType.BossDebuff;
-            elseif aura.isBossAura and not aura.isRaid then
-                aura.debuffType = aura.isHarmful and UnitFrameDebuffType.BossDebuff or
-                    UnitFrameDebuffType.BossBuff;
-            elseif aura.nameplateShowAll then
-                aura.debuffType = UnitFrameDebuffType.namePlateShowAll;
-            elseif aura.isHarmful and not aura.isRaid then
-                if IsPriorityDebuff(aura.spellId) then
-                    aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
-                elseif DispellableDebuffTypes[aura.dispelName] ~= nil then
-                    aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
-                        UnitFrameDebuffType.NonBossRaidDebuff;
-                else
-                    aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
-                end
+        -- PowerBar에서 보이는 Debuff 는 숨기고
+        if APB_DEBUFF and APB_DEBUFF == aura.name then
+            skip = true;
+        end
+
+        -- ACI 에서 보이는 Debuff 는 숨기고
+        if ACI_Debuff_list and ACI_Debuff_list[aura.name] then
+            skip = true;
+        end
+    elseif unit == "player" then
+        skip = false;
+
+        if aura.duration > ADF_MAX_Cool then
+            skip = true;
+        end
+
+        if aura.isRaid or aura.isBossAura then
+            skip = false;
+        end
+
+        -- ACI 에서 보이는 Debuff 면 숨기기
+        if ACI_Player_Debuff_list and ACI_Player_Debuff_list[aura.name] then
+            skip = true;
+        end
+    end
+
+    if skip == false then
+        if C_SpellBook.GetDeadlyDebuffInfo(aura.spellId) then
+            aura.debuffType = UnitFrameDebuffType.BossDebuff;
+        elseif aura.isBossAura and not aura.isRaid then
+            aura.debuffType = UnitFrameDebuffType.BossDebuff 
+        elseif aura.nameplateShowAll then
+            aura.debuffType = UnitFrameDebuffType.namePlateShowAll;
+        elseif not aura.isRaid then
+            if IsPriorityDebuff(aura.spellId) then
+                aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
             else
                 aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
             end
-
-            activeDebuffs[unit][aura.auraInstanceID] = aura;
-            return AuraUpdateChangedType.Debuff;
+        elseif aura.isRaid then    
+            if DispellableDebuffTypes[aura.dispelName] ~= nil then
+                aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
+                    UnitFrameDebuffType.NonBossRaidDebuff;
+            else
+                aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
+            end
+        else
+            aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
         end
+
+        activeDebuffs[unit][aura.auraInstanceID] = aura;
+        return AuraUpdateChangedType.Debuff;
     end
+
 
     return AuraUpdateChangedType.None;
 end

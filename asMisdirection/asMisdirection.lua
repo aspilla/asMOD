@@ -43,7 +43,7 @@ local function CheckPartyMember(btank)
 				local notMe = not UnitIsUnit("player", unitid)
 				local unitName = UnitName(unitid)
 				if unitName and notMe then
-					local _, _, _, _, _, _, _, _, _, role, _, assignedRole = GetRaidRosterInfo(i);
+					local assignedRole = UnitGroupRolesAssigned(unitid);
 
 					if btank == false and assignedRole == "DAMAGER" and not UnitIsUnit(unitid, "player") then
 						return unitid;

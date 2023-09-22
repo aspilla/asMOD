@@ -293,10 +293,7 @@ local ABF_PVPBuffList = {
 
 }
 
-local _G = _G;
 
-local ABF_TalentBuffList = {};
-local IsPowerbar = LoadAddOn("asPowerBar");
 
 local lib = {};
 
@@ -906,6 +903,16 @@ table.insert(lib.glowList, "Action Button Glow")
 lib.startList["Action Button Glow"] = lib.ButtonGlow_Start
 lib.stopList["Action Button Glow"] = lib.ButtonGlow_Stop
 
+
+
+
+local _G = _G;
+
+local ABF_TalentBuffList = {};
+local IsPowerbar = LoadAddOn("asPowerBar");
+
+
+
 --AuraUtil
 
 local DispellableDebuffTypes =
@@ -1162,7 +1169,7 @@ local activeBuffs = {};
 
 
 local function ProcessAura(aura, unit)
-	if aura == nil or aura.icon == nil or unit == nil then
+	if aura == nil or aura.icon == nil or unit == nil or not aura.isHelpful then
 		return AuraUpdateChangedType.None;
 	end
 
@@ -1174,65 +1181,64 @@ local function ProcessAura(aura, unit)
 		return AuraUpdateChangedType.None;
 	end
 
-	if aura.isHelpful then
-		local skip = true;
-		if unit == "target" then
-			if UnitIsPlayer("target") then
-				skip = true;
-				if UnitCanAssist("target", "player") then
-					-- 우리편은 내가 시전한 Buff 보임
-					if PLAYER_UNITS[aura.sourceUnit] and aura.duration > 0 and aura.duration <= ABF_MAX_Cool then
-						skip = false;
-					end
-				end
-
-				if aura.isStealable then
-					skip = false;
-				end
-
-				-- PVP 주요 버프는 보임
-				if (aura.name ~= nil and ABF_PVPBuffList[aura.spellId]) then
-					skip = false;
-				end
-			else
-				skip = false;
-			end
-		elseif unit == "player" then
+	local skip = true;
+	if unit == "target" then
+		if UnitIsPlayer("target") then
 			skip = true;
-			if PLAYER_UNITS[aura.sourceUnit] and ((aura.duration > 0 and aura.duration <= ABF_MAX_Cool) or (aura.applications and aura.applications > 1)) then
+			if UnitCanAssist("target", "player") then
+				-- 우리편은 내가 시전한 Buff 보임
+				if PLAYER_UNITS[aura.sourceUnit] and aura.duration > 0 and aura.duration <= ABF_MAX_Cool then
+					skip = false;
+				end
+			end
+
+			if aura.isStealable then
 				skip = false;
 			end
 
-			if aura.nameplateShowPersonal then
+			-- PVP 주요 버프는 보임
+			if (aura.name ~= nil and ABF_PVPBuffList[aura.spellId]) then
 				skip = false;
 			end
-
-			if (aura.spellId ~= nil and ABF_PVPBuffList[aura.spellId]) then
-				skip = false;
-			end
-
-			if ABF_ProcBuffList and ABF_ProcBuffList[aura.name] then
-				skip = false;
-			end
+		else
+			skip = false;
+		end
+	elseif unit == "player" then
+		skip = true;
+		if PLAYER_UNITS[aura.sourceUnit] and ((aura.duration > 0 and aura.duration <= ABF_MAX_Cool) or (aura.applications and aura.applications > 1)) then
+			skip = false;
 		end
 
-		if skip == false then
-			if aura.isBossAura and not aura.isRaid then
-				aura.buffType = UnitFrameBuffType.BossBuff;
-			elseif aura.nameplateShowPersonal then
-				aura.buffType = UnitFrameBuffType.PriorityBuff;
-			elseif IsShouldDisplayBuff(aura.spellId, aura.sourceUnit, aura.isFromPlayerOrPlayerPet) then
-				aura.buffType = UnitFrameBuffType.Normal;
-			elseif ABF_TalentBuffList[aura.name] == true or ABF_TalentBuffList[aura.icon] == true then
-				aura.buffType = UnitFrameBuffType.TalentBuff;
-			else
-				aura.buffType = UnitFrameBuffType.Normal;
-			end
+		if aura.nameplateShowPersonal then
+			skip = false;
+		end
 
-			activeBuffs[unit][aura.auraInstanceID] = aura;
-			return AuraUpdateChangedType.Buff;
+		if (aura.spellId ~= nil and ABF_PVPBuffList[aura.spellId]) then
+			skip = false;
+		end
+
+		if ABF_ProcBuffList and ABF_ProcBuffList[aura.name] then
+			skip = false;
 		end
 	end
+
+	if skip == false then
+		if aura.isBossAura and not aura.isRaid then
+			aura.buffType = UnitFrameBuffType.BossBuff;
+		elseif aura.nameplateShowPersonal then
+			aura.buffType = UnitFrameBuffType.PriorityBuff;
+		elseif IsShouldDisplayBuff(aura.spellId, aura.sourceUnit, aura.isFromPlayerOrPlayerPet) then
+			aura.buffType = UnitFrameBuffType.Normal;
+		elseif ABF_TalentBuffList[aura.name] == true or ABF_TalentBuffList[aura.icon] == true then
+			aura.buffType = UnitFrameBuffType.TalentBuff;
+		else
+			aura.buffType = UnitFrameBuffType.Normal;
+		end
+
+		activeBuffs[unit][aura.auraInstanceID] = aura;
+		return AuraUpdateChangedType.Buff;
+	end
+
 
 	return AuraUpdateChangedType.None;
 end
@@ -1378,7 +1384,7 @@ local function UpdateAuraFrames(unit, auraList)
 			frameBorder:SetVertexColor(color.r, color.g, color.b);
 			frameBorder:SetAlpha(ABF_ALPHA);
 
-			if (aura.isStealable) or (ABF_ProcBuffList and ABF_ProcBuffList[aura.name]) then
+			if (aura.isStealable) or (ABF_ProcBuffList and ABF_ProcBuffList[aura.name] and ABF_ProcBuffList[aura.name] == 1) then
 				lib.ButtonGlow_Start(frame);
 			else
 				lib.ButtonGlow_Stop(frame);
@@ -1615,10 +1621,10 @@ local function CreatBuffFrames(parent, bright, bcenter)
 
 		if not frame:GetScript("OnEnter") then
 			frame:SetScript("OnEnter", function(s)
-				if s:GetID() > 0 then
-					GameTooltip_SetDefaultAnchor(GameTooltip, s);
-					GameTooltip:SetUnitBuff(s.unit, s:GetID(), s.filter);
-				end
+				if s.auraInstanceID then
+                    GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                    GameTooltip:SetUnitBuffByAuraInstanceID(s.unit, s.auraInstanceID, filter);
+                end
 			end)
 			frame:SetScript("OnLeave", function()
 				GameTooltip:Hide();
