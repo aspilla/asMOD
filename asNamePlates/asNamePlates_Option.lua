@@ -1,5 +1,5 @@
 ANameP_Options_Default = {
-    version = 230830,
+    version = 230922,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -153,11 +153,12 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_MAGE_2 = {
-        ["작열"] = { 0, 5 },
+        ["사르는 잿불"] = { 0, 5, true },
+        ["작열"] = { 0, 4 },
     },
 
     ANameP_ShowList_MAGE_3 = {
-        ["혹한의 추위"] = { 10, 5 },
+        ["혹한의 추위"] = { 0, 5, true },
 
     },
 

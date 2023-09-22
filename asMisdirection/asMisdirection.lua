@@ -266,7 +266,8 @@ local function IsLearndSpell(checkSpellName)
 	return false
 end
 
-local tempTarget = nil;
+local tempTanker = nil;
+local tempDealer = nil;
 
 local function AHM_OnEvent(self, event, ...)
 	if (event == "PLAYER_LOGIN" or event == "LEARNED_SPELL_IN_TAB") then
@@ -297,7 +298,8 @@ local function AHM_OnEvent(self, event, ...)
 			if not InCombatLockdown() then
 				AHM_SetAssist(maintarget);
 			else
-				tempTarget = maintarget
+				tempTanker = maintarget;
+				tempDealer = maintarget;
 			end
 			return
 		end
@@ -318,7 +320,8 @@ local function AHM_OnEvent(self, event, ...)
 				AHM_SetAssist(maintarget);
 				AHM_SetMindInfusion(maintarget);
 			else
-				tempTarget = maintarget
+				tempTanker = maintarget
+				tempDealer = maintarget
 			end
 
 			print("[afm] 매크로 창에서 " .. MindInfusionSpell .. " 매크로를 이용하세요.")
@@ -331,45 +334,66 @@ local function AHM_OnEvent(self, event, ...)
 				AHM_SetAssist(maintarget);
 				AHM_SetMisdirection(maintarget);
 			else
-				tempTarget = maintarget
+				tempTanker = maintarget
 			end
 
 			print("[afm] 매크로 창에서 " .. MisDirectionSpell .. " 매크로를 이용하세요.")
 		end
 	elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
-		local unit = CheckPartyMember();
+		local tank = CheckPartyMember(true);
+		local dealer = CheckPartyMember(false); 
 
-		if unit and not InCombatLockdown() then
-			if UnitExists(unit) then
-				AHM_SetAssist(unit);
-				AHM_SetMisdirection(unit);
-				AHM_SetMindInfusion(unit);
+		if tank and not InCombatLockdown() then
+			if UnitExists(tank) then
+				AHM_SetAssist(tank);
+				AHM_SetMisdirection(tank);				
 			end
 		else
-			tempTarget = unit;
+			tempTanker = tank;
+		end
+
+		if dealer and not InCombatLockdown() then
+			if UnitExists(dealer) then
+				AHM_SetMindInfusion(dealer);			
+			end
+		else
+			tempDealer = dealer;
 		end
 	elseif (event == "GROUP_LEFT") then
 		force_md_unit = nil;
 		force_unit = nil;
 
-		local unit = CheckPartyMember();
+		local tank = CheckPartyMember(true);
+		local dealer = CheckPartyMember(false); 
 
-		if unit and not InCombatLockdown() then
-			if UnitExists(unit) then
-				AHM_SetAssist(unit);
-				AHM_SetMisdirection(unit);
-				AHM_SetMindInfusion(unit);
+		if tank and not InCombatLockdown() then
+			if UnitExists(tank) then
+				AHM_SetAssist(tank);
+				AHM_SetMisdirection(tank);				
 			end
 		else
-			tempTarget = unit;
+			tempTanker = tank;
 		end
-	elseif event == "PLAYER_REGEN_ENABLED" and tempTarget then
-		if tempTarget and UnitExists(tempTarget) then
-			AHM_SetAssist(tempTarget);
-			AHM_SetMisdirection(tempTarget);
-			AHM_SetMindInfusion(tempTarget);
+
+		if dealer and not InCombatLockdown() then
+			if UnitExists(dealer) then
+				AHM_SetMindInfusion(dealer);			
+			end
+		else
+			tempDealer = dealer;
 		end
-		tempTarget = nil;
+	elseif event == "PLAYER_REGEN_ENABLED" and tempTanker then
+		if tempTanker and UnitExists(tempTanker) then
+			AHM_SetAssist(tempTanker);
+			AHM_SetMisdirection(tempTanker);		
+		end
+		tempTanker = nil;
+
+		if tempDealer and UnitExists(tempDealer) then
+		
+			AHM_SetMindInfusion(tempDealer);
+		end
+		tempDealer = nil;
 	end
 end
 

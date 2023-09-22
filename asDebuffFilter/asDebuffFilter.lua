@@ -1,7 +1,6 @@
 ﻿local ADF;
 local ADF_PLAYER_DEBUFF;
 local ADF_TARGET_DEBUFF;
-local ADF_DeBuffList = {}
 
 local ADF_SIZE = 32;
 local ADF_TARGET_DEBUFF_X = 73 + 30 + 20;
@@ -15,11 +14,7 @@ local ADF_CountFontSize = 13;        -- Count Font Size
 local ADF_AlphaCombat = 1;           -- 전투중 Alpha 값
 local ADF_AlphaNormal = 0.5;         -- 비 전투중 Alpha 값
 local ADF_MAX_Cool = 120             -- 최대 120초까지의 Debuff를 보임
-local ADF_Show_TargetDebuff = true   -- 대상이 시전한 Debuff를 보임 (false 이면 Player가 건 Debuff 만 보임)
-local ADF_Show_PVPDebuff = true      -- 다른사람이 건 PVP Debuff를 보임 (점감 효과를 갖는 Debuff) (false 이면 Player가 건 Debuff 만 보임)
 
-local ADF_Show_ShowBossDebuff = true -- Boss Type Debuff를 보임 (false 이면 Player가 건 Debuff 만 보임)
-local ADF_RefreshRate = 0.5;         -- Target Debuff Check 주기 (초)
 
 local ADF_BlackList = {
 
@@ -28,14 +23,6 @@ local ADF_BlackList = {
     --	["신경 마취 독"] = 1,
     --	["맹독"] = 1,
 }
-
-local PLAYER_UNITS = {
-    player = true,
-    vehicle = true,
-    pet = true,
-};
-
-local dispellableDebuffTypes = { Magic = true, Curse = true, Disease = true, Poison = true };
 
 -- 반짝이 처리부
 
@@ -651,6 +638,12 @@ lib.stopList["Action Button Glow"] = lib.ButtonGlow_Stop
 
 --AuraUtil
 
+local PLAYER_UNITS = {
+    player = true,
+    vehicle = true,
+    pet = true,
+};
+
 local DispellableDebuffTypes =
 {
     Magic = true,
@@ -864,7 +857,7 @@ local function ProcessAura(aura, unit)
         if C_SpellBook.GetDeadlyDebuffInfo(aura.spellId) then
             aura.debuffType = UnitFrameDebuffType.BossDebuff;
         elseif aura.isBossAura and not aura.isRaid then
-            aura.debuffType = UnitFrameDebuffType.BossDebuff 
+            aura.debuffType = UnitFrameDebuffType.BossDebuff
         elseif aura.nameplateShowAll then
             aura.debuffType = UnitFrameDebuffType.namePlateShowAll;
         elseif not aura.isRaid then
@@ -873,7 +866,7 @@ local function ProcessAura(aura, unit)
             else
                 aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
             end
-        elseif aura.isRaid then    
+        elseif aura.isRaid then
             if DispellableDebuffTypes[aura.dispelName] ~= nil then
                 aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
                     UnitFrameDebuffType.NonBossRaidDebuff;
@@ -1020,14 +1013,11 @@ local function UpdateAuras(unitAuraUpdateInfo, unit)
 
         if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
             for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
-                local wasInDebuff = activeDebuffs[unit][auraInstanceID] ~= nil;
-                if wasInDebuff then
-                    local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
-                    activeDebuffs[unit][auraInstanceID] = nil;
-                    local type = ProcessAura(newAura, unit);
-                    if type == AuraUpdateChangedType.Debuff or wasInDebuff then
-                        debuffsChanged = true;
-                    end
+                local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
+                activeDebuffs[unit][auraInstanceID] = nil;
+                local type = ProcessAura(newAura, unit);
+                if type == AuraUpdateChangedType.Debuff then
+                    debuffsChanged = true;
                 end
             end
         end
@@ -1116,7 +1106,9 @@ local function CreatDebuffFrames(parent, bright)
     for idx = 1, ADF_MAX_DEBUFF_SHOW do
         parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetDebuffFrameTemplate");
         local frame = parent.frames[idx];
+        frame:SetFrameStrata("LOW");
         frame:EnableMouse(false);
+        frame.cooldown:SetFrameStrata("MEDIUM");
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, ADF_CooldownFontSize, "OUTLINE");
@@ -1204,8 +1196,7 @@ local function ADF_Init()
 
     ADF:SetScript("OnEvent", ADF_OnEvent)
     ADF_TARGET_DEBUFF:SetScript("OnEvent", ADF_OnEvent)
-    ADF_PLAYER_DEBUFF:SetScript("OnEvent", ADF_OnEvent)
-    --C_Timer.NewTicker(ADF_RefreshRate, ADF_OnUpdate);
+    ADF_PLAYER_DEBUFF:SetScript("OnEvent", ADF_OnEvent)    
 end
 
 ADF_Init();
