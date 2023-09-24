@@ -1,52 +1,52 @@
-local ACRB_BuffSizeRate = 0.9;                               -- 기존 Size 크기 배수
-local ACRB_ShowBuffCooldown = false                          -- 버프 지속시간을 보이려면
-local ACRB_MinShowBuffFontSize = 5                           -- 이크기보다 Cooldown font Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0
-local ACRB_CooldownFontSizeRate = 0.5                        -- 버프 Size 대비 쿨다운 폰트 사이즈
-local ACRB_MAX_BUFFS = 6                                     -- 최대 표시 버프 개수 (3개 + 3개)
-local ACRB_MAX_BUFFS_2 = 2                                   -- 최대 생존기 개수
-local ACRB_MAX_DEBUFFS = 3                                   -- 최대 표시 디버프 개수 (3개)
-local ACRB_MAX_DISPELDEBUFFS = 3                             -- 최대 해제 디버프 개수 (3개)
-local ACRB_MAX_CASTING = 2                                   -- 최대 Casting Alert
-local ACRB_ShowAlert = true                                  -- HOT 리필 시 알림
-local ACRB_MaxBuffSize = 20                                  -- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
-local ACRB_HealerManaBarHeight = 3                           -- 힐러 마나바 크기 (안보이게 하려면 0)
-local ACRB_UpdateRate = (0.2)                                -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
-local ACRB_ShowWhenSolo = true                               -- Solo Raid Frame 사용시 보이게 하려면 True (반드시 Solo Raid Frame과 사용)
-local ACRB_ShowTooltip = true                                -- GameTooltip을 보이게 하려면 True
+local ACRB_BuffSizeRate = 0.9;        -- 기존 Size 크기 배수
+local ACRB_ShowBuffCooldown = false   -- 버프 지속시간을 보이려면
+local ACRB_MinShowBuffFontSize = 5    -- 이크기보다 Cooldown font Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0
+local ACRB_CooldownFontSizeRate = 0.5 -- 버프 Size 대비 쿨다운 폰트 사이즈
+local ACRB_MAX_BUFFS = 6              -- 최대 표시 버프 개수 (3개 + 3개)
+local ACRB_MAX_BUFFS_2 = 2            -- 최대 생존기 개수
+local ACRB_MAX_DEBUFFS = 3            -- 최대 표시 디버프 개수 (3개)
+local ACRB_MAX_DISPELDEBUFFS = 3      -- 최대 해제 디버프 개수 (3개)
+local ACRB_MAX_CASTING = 2            -- 최대 Casting Alert
+local ACRB_ShowAlert = true           -- HOT 리필 시 알림
+local ACRB_MaxBuffSize = 20           -- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
+local ACRB_HealerManaBarHeight = 3    -- 힐러 마나바 크기 (안보이게 하려면 0)
+local ACRB_UpdateRate = (0.2)         -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
+local ACRB_ShowWhenSolo = true        -- Solo Raid Frame 사용시 보이게 하려면 True (반드시 Solo Raid Frame과 사용)
+local ACRB_ShowTooltip = true         -- GameTooltip을 보이게 하려면 True
 
 -- 버프 남은시간에 리필 알림
--- 두번째 숫자는 표시 위치, 4(우상) 5(우중) 6(상) 7(상바) 1,2,3 은 우하에 보이는 우선 순위이다.
+-- 두번째 숫자는 표시 위치, 4(우상) 5(우중) 6(우중2) 7(상바) 1,2,3 은 우하에 보이는 우선 순위이다.
 ACRB_ShowList_MONK_2 = {
-	["소생의 안개"] = { 0, 7 },
-	["포용의 안개"] = { 0, 4 },
+	["소생의 안개"] = { 0, 4 },
+	["포용의 안개"] = { 0, 5 },
 
 
 }
 
 -- 신기
 ACRB_ShowList_PALADIN_1 = {
-	["빛의 봉화"] = { 0, 4 },
-	["신념의 봉화"] = { 0, 5 },
-	["빛의 자락"] = { 0, 7 },
+	["빛의 자락"] = { 0, 4 },
+	["빛의 봉화"] = { 0, 5 },
+	["신념의 봉화"] = { 0, 6 },
 }
 
 -- 수사
 ACRB_ShowList_PRIEST_1 = {
-	["속죄"] = { 0, 7 },
-	["신의 권능: 보호막"] = { 0, 4 },
+	["속죄"] = { 0, 4 },
 	["소생"] = { 1, 5 },
-	["회복의 기원"] = { 0, 1 },
-	["마력 주입"] = { 0, 2 },
+	["신의 권능: 보호막"] = { 0, 6 },
+	["회복의 기원"] = { 0, 2 },
+	["마력 주입"] = { 0, 1 },
 
 }
 
 
 -- 신사
 ACRB_ShowList_PRIEST_2 = {
-	["신의 권능: 보호막"] = { 0, 4 },
-	["소생"] = { 1, 5 },
-	["회복의 기원"] = { 0, 1 },
-	["마력 주입"] = { 0, 2 },
+	["소생"] = { 1, 4 },
+	["신의 권능: 보호막"] = { 0, 5 },
+	["회복의 기원"] = { 0, 2 },
+	["마력 주입"] = { 0, 1 },
 
 }
 
@@ -56,21 +56,21 @@ ACRB_ShowList_PRIEST_3 = {
 
 
 ACRB_ShowList_SHAMAN_3 = {
-	["성난 해일"] = { 1, 7 },
+	["성난 해일"] = { 1, 4 },
 }
 
 
 ACRB_ShowList_DRUID_4 = {
-	["회복"] = { 1, 7 },
-	["피어나는 생명"] = { 1, 4 },
-	["재생"] = { 1, 5 },
+	["회복"] = { 1, 4 },
+	["피어나는 생명"] = { 1, 5 },
+	["재생"] = { 1, 6 },
 	["회복 (싹틔우기)"] = { 1, 2 },
 	["세나리온 수호물"] = { 0, 1 },
 }
 
 ACRB_ShowList_EVOKER_2 = {
-	["메아리"] = { 0, 7 },
-	["되감기"] = { 1, 4 },
+	["메아리"] = { 0, 4 },
+	["되감기"] = { 1, 5 },
 
 }
 
@@ -994,7 +994,7 @@ local function ShouldDisplayBuff(aura)
 			(alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
 	else
 		return (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") and ((canApplyAura and
-			not CheckIsSelfBuff(spellId)) or (ACRB_ShowList and ACRB_ShowList[aura.name]));
+			not CheckIsSelfBuff(spellId)));
 	end
 end
 
@@ -1032,7 +1032,7 @@ local function ShouldDisplayDebuff(aura)
 	end
 end
 
---cooldown 
+--cooldown
 local function asCooldownFrame_Clear(self)
 	self:Clear();
 end
@@ -1041,6 +1041,7 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 	if enable and enable ~= 0 and start > 0 and duration > 0 then
 		self:SetDrawEdge(forceShowDrawEdge);
 		self:SetCooldown(start, duration, modRate);
+		self:SetSwipeColor(0, 0, 0, 1);
 	else
 		asCooldownFrame_Clear(self);
 	end
@@ -1075,51 +1076,7 @@ local function ACRB_UtilSetDispelDebuff(dispellDebuffFrame, aura)
 end
 
 
-local function ACRB_OnUpdateBuffBar(self, elapsed)
-	if not self.start then
-		self:SetValue(0);
-		return;
-	end
 
-	if not self.update then
-		self.update = 0;
-	end
-
-	self.update = self.update + elapsed
-
-	if self.update >= ACRB_UpdateRate and self.start then
-		local curr_time = GetTime();
-		local curr_duration = curr_time - self.start;
-		local expertedendtime = self.duration + self.start;
-
-		self.update = 0
-
-		if curr_duration < self.duration then
-			local remain_buff = (self.duration + self.start - curr_time)
-
-			self:SetMinMaxValues(0, self.duration)
-			self:SetValue(remain_buff)
-		end
-	end
-end
-
-local function ARCB_UtilSetBuffBar(asframe, aura)
-	if (not asframe.asBuffbar) then
-		return;
-	end
-
-	local currtime = GetTime();
-	local startTime = aura.expirationTime - aura.duration;
-	asframe.asBuffbar:SetMinMaxValues(0, aura.duration)
-	asframe.asBuffbar:SetValue(aura.duration - (currtime - startTime));
-	asframe.asBuffbar.start = startTime;
-	asframe.asBuffbar.duration = aura.duration;
-
-	asframe.asBuffbar:SetStatusBarColor(1, 1, 1);
-	asframe.buffcolor:Show();
-	asframe.asBuffbar:Show();
-	asframe.asBuffbar:SetScript("OnUpdate", ACRB_OnUpdateBuffBar)
-end
 
 local function ARCB_UtilSetBuff(buffFrame, aura)
 	buffFrame.icon:SetTexture(aura.icon);
@@ -1138,7 +1095,7 @@ local function ARCB_UtilSetBuff(buffFrame, aura)
 	if enabled then
 		local startTime = aura.expirationTime - aura.duration;
 		asCooldownFrame_Set(buffFrame.cooldown, startTime, aura.duration, true);
-		buffFrame.border:Hide();		
+		buffFrame.border:Hide();
 	else
 		buffFrame.border:Hide();
 		asCooldownFrame_Clear(buffFrame.cooldown);
@@ -1630,18 +1587,14 @@ local function ProcessAura(aura)
 		return AuraUpdateChangedType.None;
 	end
 
-	if ACRB_BlackList and ACRB_BlackList[aura.name] then
-		return AuraUpdateChangedType.None;
-	end
-
-	if aura.spellId and ACRB_PVPBuffList[aura.spellId] then
-		return AuraUpdateChangedType.PVP;
-	end
-
 	if aura.isNameplateOnly then
 		return AuraUpdateChangedType.None;
 	end
 
+	if ACRB_BlackList and ACRB_BlackList[aura.name] then
+		return AuraUpdateChangedType.None;
+	end	
+	
 	if aura.isBossAura and not aura.isRaid then
 		aura.debuffType = aura.isHarmful and UnitFrameDebuffType.BossDebuff or
 			UnitFrameDebuffType.BossBuff;
@@ -1654,9 +1607,14 @@ local function ProcessAura(aura)
 			aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
 			return AuraUpdateChangedType.Debuff;
 		end
+	elseif aura.isHelpful and aura.spellId and ACRB_PVPBuffList[aura.spellId] then
+		return AuraUpdateChangedType.PVP;
 	elseif aura.isHelpful and ShouldDisplayBuff(aura) then
 		aura.isBuff = true;
 		return AuraUpdateChangedType.Buff;
+	elseif aura.isHelpful and (ACRB_ShowList and ACRB_ShowList[aura.name]) then
+		aura.isBuff = true;
+		return AuraUpdateChangedType.Buff;		
 	elseif aura.isHarmful and aura.isRaid then
 		if DispellableDebuffTypes[aura.dispelName] ~= nil then
 			aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
@@ -1680,10 +1638,9 @@ function ACRB_ProcessAura(asframe, aura)
 	if type == AuraUpdateChangedType.Dispel and ACRB_IsPvpFrame(asframe) then
 		type = AuraUpdateChangedType.Debuff;
 	end
-	
+
 	return type;
 end
-
 
 local function ACRB_ParseAllAuras(asframe)
 	if asframe.debuffs == nil then
@@ -1691,7 +1648,7 @@ local function ACRB_ParseAllAuras(asframe)
 			TableUtil.Constants.AssociativePriorityTable);
 		asframe.buffs = TableUtil.CreatePriorityTable(DefaultAuraCompare, TableUtil.Constants.AssociativePriorityTable);
 		asframe.pvpbuffs = TableUtil.CreatePriorityTable(DefaultAuraCompare, TableUtil.Constants
-		.AssociativePriorityTable);
+			.AssociativePriorityTable);
 		asframe.dispels = {};
 		for type, _ in pairs(DispellableDebuffTypes) do
 			asframe.dispels[type] = TableUtil.CreatePriorityTable(DefaultAuraCompare,
@@ -1861,11 +1818,11 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 				type = ACRB_ShowList[aura.name][2];
 			end
 
-			if type == 7 and not showframe[type] then
-				ARCB_UtilSetBuffBar(asframe, aura);
-				showframe[type] = true;
-			elseif type > ACRB_MAX_BUFFS - 3 and not showframe[type] then
+			if type > ACRB_MAX_BUFFS - 3 and not showframe[type] then
 				local buffFrame = asframe.asbuffFrames[type];
+				if type == 4 then
+					asframe.buffcolor:Show();
+				end
 				ARCB_UtilSetBuff(buffFrame, aura);
 				showframe[type] = true;
 			else
@@ -1886,14 +1843,11 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 		for i = ACRB_MAX_BUFFS - 2, ACRB_MAX_BUFFS do
 			if not showframe[i] then
 				local buffFrame = asframe.asbuffFrames[i];
+				if i == 4 then
+					asframe.buffcolor:Hide();
+				end
 				buffFrame:Hide();
 			end
-		end
-
-		if not showframe[7] then
-			asframe.asBuffbar:Hide();
-			asframe.asBuffbar:SetScript("OnUpdate", nil);
-			asframe.buffcolor:Hide();
 		end
 	end
 
@@ -2085,7 +2039,8 @@ local function ACRB_setupFrame(frame)
 				buffFrame:SetScript("OnEnter", function(s)
 					if s.auraInstanceID then
 						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitBuffByAuraInstanceID(asraid[frameName].displayedUnit, s.auraInstanceID, bufffilter);
+						GameTooltip:SetUnitBuffByAuraInstanceID(asraid[frameName].displayedUnit, s.auraInstanceID,
+							bufffilter);
 					end
 				end)
 				buffFrame:SetScript("OnLeave", function()
@@ -2182,7 +2137,8 @@ local function ACRB_setupFrame(frame)
 				debuffFrame:SetScript("OnEnter", function(s)
 					if s.auraInstanceID then
 						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitDebuffByAuraInstanceID(asraid[frameName].displayedUnit, s.auraInstanceID, debufffilter);
+						GameTooltip:SetUnitDebuffByAuraInstanceID(asraid[frameName].displayedUnit, s.auraInstanceID,
+							debufffilter);
 					end
 				end)
 
@@ -2249,23 +2205,6 @@ local function ACRB_setupFrame(frame)
 		asraid[frameName].asManabar:SetHeight(ACRB_HealerManaBarHeight)
 	end
 
-
-	if (not asraid[frameName].asBuffbar) then
-		asraid[frameName].asBuffbar = CreateFrame("StatusBar", nil, frame.healthBar)
-		asraid[frameName].asBuffbar:SetStatusBarTexture("Interface\\Addons\\asCompactRaidBuff\\UI-StatusBar")
-		asraid[frameName].asBuffbar:GetStatusBarTexture():SetHorizTile(false)
-		asraid[frameName].asBuffbar:SetMinMaxValues(0, 100)
-		asraid[frameName].asBuffbar:SetValue(100)
-		asraid[frameName].asBuffbar:SetPoint("TOP", frame.healthBar, "TOP", 0, 0)
-		asraid[frameName].asBuffbar:Hide();
-	end
-
-	if asraid[frameName].asBuffbar then
-		asraid[frameName].asBuffbar:SetWidth(x - 2);
-		asraid[frameName].asBuffbar:SetHeight(ACRB_HealerManaBarHeight)
-	end
-
-
 	if (not asraid[frameName].asraidicon) then
 		asraid[frameName].asraidicon = frame:CreateFontString(nil, "OVERLAY")
 		asraid[frameName].asraidicon:SetFont(STANDARD_TEXT_FONT, fontsize * 2)
@@ -2300,7 +2239,6 @@ local function ACRB_setupFrame(frame)
 			else
 				asraid[frameName].pvpbuffFrames[i].cooldown:SetHideCountdownNumbers(true);
 			end
-
 		end
 	end
 
@@ -2316,13 +2254,13 @@ local function ACRB_setupFrame(frame)
 					0,
 					0)
 			end
-			
+
 			if ACRB_ShowTooltip and not asraid[frameName].pvpbuffFrames[i]:GetScript("OnEnter") then
 				asraid[frameName].pvpbuffFrames[i]:SetScript("OnEnter", function(s)
-
 					if s.auraInstanceID then
 						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitBuffByAuraInstanceID(asraid[frameName].displayedUnit, s.auraInstanceID, bufffilter);
+						GameTooltip:SetUnitBuffByAuraInstanceID(asraid[frameName].displayedUnit, s.auraInstanceID,
+							bufffilter);
 					end
 				end)
 
