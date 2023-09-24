@@ -849,6 +849,13 @@ lib.stopList["Action Button Glow"] = lib.ButtonGlow_Stop
 
 --AuraUtil
 
+local PLAYER_UNITS = {
+	player = true,
+	vehicle = true,
+	pet = true,
+};
+
+
 local DispellableDebuffTypes =
 {
 	Magic = true,
@@ -1607,12 +1614,12 @@ local function ProcessAura(aura)
 			aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
 			return AuraUpdateChangedType.Debuff;
 		end
-	elseif aura.isHelpful and aura.spellId and ACRB_PVPBuffList[aura.spellId] then
+	elseif aura.isHelpful and ACRB_PVPBuffList[aura.spellId] then
 		return AuraUpdateChangedType.PVP;
 	elseif aura.isHelpful and ShouldDisplayBuff(aura) then
 		aura.isBuff = true;
 		return AuraUpdateChangedType.Buff;
-	elseif aura.isHelpful and (ACRB_ShowList and ACRB_ShowList[aura.name]) then
+	elseif aura.isHelpful and (PLAYER_UNITS[aura.sourceUnit] and ACRB_ShowList and ACRB_ShowList[aura.name]) then
 		aura.isBuff = true;
 		return AuraUpdateChangedType.Buff;		
 	elseif aura.isHarmful and aura.isRaid then
