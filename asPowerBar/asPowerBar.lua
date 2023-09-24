@@ -1798,8 +1798,7 @@ local function APB_CheckPower(self)
 
 			for i = 1, 10 do
 				APB.combobar[i].tooltip = "고영혼 파편";
-			end
-			bsmall_power_bar = true;
+			end			
 		end
 	end
 
