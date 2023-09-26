@@ -1485,10 +1485,10 @@ local function UpdateAuraFrames(unit, auraList)
 			local frame = nil;
 
 			if mparent then
-				if mparent and aura.buffType ~= UnitFrameBuffType.Normal and tcount < ABF_MAX_BUFF_SHOW then
+				if mparent and aura.buffType ~= UnitFrameBuffType.Normal and tcount <= ABF_MAX_BUFF_SHOW then
 					frame = mparent.frames[tcount];
 					tcount = tcount + 1;
-				elseif mparent and lcount < ABF_MAX_BUFF_SHOW then
+				elseif mparent and lcount <= ABF_MAX_BUFF_SHOW then
 					frame = parent.frames[lcount];
 					lcount = lcount + 1;
 				else
@@ -1669,7 +1669,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
 		overlayspell = {};
 		asCheckTalent();
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
-		if Settings.GetValue("spellActivationOverlayOpacity") > 0 then
+		if Settings.GetValue("spellActivationOverlayOpacity") and Settings.GetValue("spellActivationOverlayOpacity") > 0 then
 			local name = GetSpellInfo(arg1);
 			overlayspell[arg1] = true;
 			overlayspell[name] = true;

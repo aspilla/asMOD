@@ -135,8 +135,10 @@ function MyInspectDoll(self, elapsed)
 		return
 	end
 
-	if (InCombatLockdown() or not INSPECTED_UNIT) then return; end
-
+	if (InCombatLockdown() or not (INSPECTED_UNIT and (INSPECTED_UNIT == "target") and UnitExists(INSPECTED_UNIT))) then 
+		return; 
+	end
+	
 	local Avg, Max, Min = GetAvgIvl(INSPECTED_UNIT);
 	local Red, Green, Blue = GetItemQualityColor(Avg);
 	TAvg:SetText(Avg .. " Lvl");

@@ -731,18 +731,14 @@ local function ACI_Alert(self, bcastspell)
 		ACI_Alert_list[spellname] = false;
 
 		local alert_du = ACI_SpellList[i][4];
-		local buff_name = spellname;
-
-		if t == 7 or t == 12 then
-			buff_name = GetSpellInfo(spellname)
-		end
-
+		local buff_name = GetSpellInfo(spellname);
+		
 		if not buff_name then
 			buff_name = spellname
 		end
 
 		if ACI_SpellList[i][7] then
-			buff_name = ACI_SpellList[i][7];
+			buff_name = ACI_SpellList[i][7];			
 		end
 
 		_, icon, count, _, duration, expirationTime, _, _, _, _, _, _, _, _, _, stack = getUnitBuffbyName(unit,
@@ -842,7 +838,7 @@ local function ACI_Alert(self, bcastspell)
 		end
 
 
-		local buff_name = spellname;
+		local buff_name = GetSpellInfo(spellname);
 
 		ACI_Alert_list[spellname] = false;
 		local alert_du = ACI_SpellList[i][4];
@@ -851,10 +847,6 @@ local function ACI_Alert(self, bcastspell)
 
 		if ACI_SpellList[i][6] then
 			buff_name = ACI_SpellList[i][6];
-		end
-
-		if t == 8 then
-			buff_name = GetSpellInfo(spellname)
 		end
 
 		if not buff_name then
@@ -1550,8 +1542,8 @@ function ACI_Init()
 							ACI_SpellList[i][3] = nil;
 							ACI_SpellList[i][4] = nil;
 
-							for z = 1, #array do
-								ACI_SpellList[i][z] = array[z];
+							for z, v in ipairs(array) do
+								ACI_SpellList[i][z] = v;
 							end
 						end
 					end
@@ -1562,8 +1554,8 @@ function ACI_Init()
 							ACI_SpellList[i][3] = nil;
 							ACI_SpellList[i][4] = nil;
 
-							for z = 1, #array do
-								ACI_SpellList[i][z] = array[z];
+							for z, v in ipairs(array) do
+								ACI_SpellList[i][z] = v;
 							end
 						end
 					end
@@ -1589,14 +1581,25 @@ function ACI_Init()
 					ACI_Action_to_index[ACI_Action_slot_list[i]] = i;
 				end
 
-				ACI_Buff_list[ACI_SpellList[i][1]] = i;
+				local name = GetSpellInfo(ACI_SpellList[i][1]);
+
+				if name then
+					ACI_Buff_list[name] = i;
+				else
+					ACI_Buff_list[ACI_SpellList[i][1]] = i;
+				end
+
+
 				local id = select(7, GetSpellInfo(ACI_SpellList[i][1]));
 				if id then
 					ACI_SpellID_list[id] = true;
 				end
 			elseif ACI_SpellList[i][2] == 4 then
+				local name = GetSpellInfo(ACI_SpellList[i][1]);
 				if ACI_SpellList[i][6] then
 					ACI_Debuff_list[ACI_SpellList[i][6]] = i;
+				elseif name then
+					ACI_Debuff_list[name] = i;
 				else
 					ACI_Debuff_list[ACI_SpellList[i][1]] = i;
 				end

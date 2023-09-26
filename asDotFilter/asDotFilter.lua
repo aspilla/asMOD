@@ -103,8 +103,8 @@ ADotF_ShowList_DRUID_1 = {
 
 ADotF_ShowList_DRUID_2 = {
     { "달빛섬광", 1 },
-    { "갈퀴 발톱", 1 },
-    { "도려내기", 1 },
+    { "갈퀴 발톱", 12 * 0.3 },
+    { "도려내기", 19 * 0.3 },
 }
 
 ADotF_ShowList_DRUID_3 = {

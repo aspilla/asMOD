@@ -1,5 +1,5 @@
 ACI_Options_Default = {
-	version = 230910,
+	version = 230938,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -43,8 +43,8 @@ ACI_Options_Default = {
 	-- 방전
 	ACI_SpellList_WARRIOR_3 = {
 		{ "고통 감내", 3 },
-		{ "복수", 1 },
 		{ "방패 밀쳐내기", 1 },
+		{ "투신", 2 },
 		{ "천둥벼락", 1 },
 		{ "사기의 외침", 4 },
 
@@ -195,7 +195,7 @@ ACI_Options_Default = {
 	--혈기
 	ACI_SpellList_DEATHKNIGHT_1 = {
 
-		{ "죽음과 부패", 2 },
+		{ "죽음과 부패", 2, nil, nil, nil, nil, "죽음과 부패" },
 		{ 77535, 12 },
 		{ "춤추는 룬 무기", 2 },
 		{ "피의 소용돌이", 1 },
@@ -205,7 +205,7 @@ ACI_Options_Default = {
 
 	--냉기
 	ACI_SpellList_DEATHKNIGHT_2 = {
-		{ "죽음과 부패", 2 },
+		{ "죽음과 부패", 2, nil, nil, nil, nil, "죽음과 부패" },
 		{ 377195, 7, "player" },
 		{ "얼음 기둥", 2 },
 		{ "냉혹한 겨울", 2 },
@@ -215,7 +215,7 @@ ACI_Options_Default = {
 
 	--부정
 	ACI_SpellList_DEATHKNIGHT_3 = {
-		{ "죽음과 부패", 2 },
+		{ "죽음과 부패", 2, nil, nil, nil, nil, "죽음과 부패" },
 		{ 99, "곪아 터진 힘", { 377590, 7, "player", 5 }, { "룬 무기 강화", 2 } },
 		{ "어둠의 변신", 2, "pet" },
 		{ "돌발 열병", 4, nil, 1, nil, "악성 역병" },
@@ -244,7 +244,7 @@ ACI_Options_Default = {
 	--풍운
 	ACI_SpellList_MONK_3 = {
 		{ 99, "츠지의 춤", { "회전 학다리차기", 1 }, { "해악 축출", 1 } },
-		{ 99, "폭풍과 대지와 불", { "폭풍과 대지와 불", 2 }, { "평안", 2 } },
+		{ 99, "폭풍과 대지와 불", { "폭풍과 대지와 불", 2, nil, nil, nil, nil, "폭풍과 대지와 불" }, { "평안", 2 } },
 		{ "백호 쉬엔의 원령", 11, "쉬엔" },
 		{ "분노의 주먹", 1 },
 		{ "해오름차기", 1 },
@@ -255,7 +255,7 @@ ACI_Options_Default = {
 	ACI_SpellList_DRUID_1 = {
 		{ "달빛섬광", 4, nil, 1 },
 		{ 393955, 7, "player", 7 },
-		{ "천체의 정렬", 1 },
+		{ "천체의 정렬", 2 },
 		{ 99, "항성의 섬광", { "항성의 섬광", 4, nil, 1 }, { 202345, 7, "player" } },
 		{ "태양섬광", 4, nil, 1 },
 	},
@@ -263,17 +263,17 @@ ACI_Options_Default = {
 	--야성
 	ACI_SpellList_DRUID_2 = {
 		{ "난타", 4 },
-		{ 99, "잔혹한 베기", { "잔혹한 베기", 1 }, { "광폭화", 2 } },
+		{ 99, "최상위 포식자의 갈망", { 339139, 7, "player" } , { "광폭화", 2 } },
 		{ "호랑이의 분노", 2 },
-		{ "도려내기", 4, nil, 1 },
-		{ "갈퀴 발톱", 4, nil, 1 },
+		{ "도려내기", 4, nil, 19 * 0.3 },
+		{ "갈퀴 발톱", 4, nil, 12 * 0.3 },
 	},
 
 	--수호
 	ACI_SpellList_DRUID_3 = {
-		{ "광포한 재생력", 2 },
-		{ "난타", 1 },		
 		{ "나무 껍질", 2 },
+		{ "난타", 1 },		
+		{ "광폭화", 2 },
 		{ "짓이기기", 1 },
 		{ "달빛섬광", 4, nil, 1 },
 	},
@@ -481,27 +481,6 @@ local function SetupEditBoxOption()
 		spec = 1;
 	end
 
-	if ACI_Options == nil or ACI_Options.version ~= ACI_Options_Default.version then
-		ACI_Options = {};
-		ACI_Options.version = (ACI_Options_Default.version);
-
-		if spec and configID then
-			listname = "ACI_SpellList_" .. englishClass .. "_" .. spec;
-			ACI_Options[spec] = {};
-			ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
-		end
-	end
-
-	if spec and ACI_Options[spec] == nil then
-		ACI_Options[spec] = {};
-	end
-
-	if spec and configID and ACI_Options[spec][configID] == nil then
-		listname = "ACI_SpellList_" .. englishClass .. "_" .. spec;
-		ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
-	end
-
-
 	local list = ACI_Options[spec][configID];
 	local listdata = ACI_SpellID_list;
 	local count = 1;
@@ -653,6 +632,41 @@ local function SetupEditBoxOption()
 	end
 end
 
+local function InitOption()
+
+	local spec = GetSpecialization();
+	local specID = PlayerUtil.GetCurrentSpecID();
+	local configID = (C_ClassTalents.GetLastSelectedSavedConfigID(specID) or 0) + 19;
+	local localizedClass, englishClass = UnitClass("player");
+	local listname;
+
+	if spec == nil then
+		spec = 1;
+	end
+
+
+	if ACI_Options == nil or ACI_Options.version ~= ACI_Options_Default.version then
+		ACI_Options = {};
+		ACI_Options.version = (ACI_Options_Default.version);
+
+		if spec and configID then
+			listname = "ACI_SpellList_" .. englishClass .. "_" .. spec;
+			ACI_Options[spec] = {};
+			ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
+		end
+	end
+
+	if spec and ACI_Options[spec] == nil then
+		ACI_Options[spec] = {};
+	end
+
+	if spec and configID and ACI_Options[spec][configID] == nil then
+		listname = "ACI_SpellList_" .. englishClass .. "_" .. spec;
+		ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
+	end
+
+end
+
 
 ACI_OptionM.SetupAllOption = function()
 	if update_callback then
@@ -676,8 +690,10 @@ end
 
 function panel:OnEvent(event, arg1)
 	if event == "ADDON_LOADED" and arg1 == "asCombatInfo" then
+		C_Timer.After(1, InitOption);		
 		C_Timer.After(1.5, ACI_OptionM.SetupAllOption)
 	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
+		C_Timer.After(1, InitOption);	
 		C_Timer.After(1.5, ACI_OptionM.SetupAllOption)
 	end
 end

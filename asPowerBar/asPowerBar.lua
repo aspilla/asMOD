@@ -408,14 +408,14 @@ local function APB_OnUpdateBuff(self, elapsed)
 		if curr_duration < self.duration then
 			local remain_buff = (self.duration + self.start - curr_time)
 
-			if self.max and self.max > self.duration then
+			if self.max and self.max >= remain_buff then
 				self:SetMinMaxValues(0, self.max * 1000)
 			else
 				self:SetMinMaxValues(0, self.duration * 1000)
 			end
 
 			self:SetValue(remain_buff * 1000)
-			self.text:SetText(("%02.1f"):format(self.duration + self.start - curr_time))
+			self.text:SetText(("%02.1f"):format(remain_buff))
 
 			if self.buff then
 				self:SetStatusBarColor(0.8, 0.8, 1);
@@ -1538,6 +1538,14 @@ local function APB_CheckPower(self)
 			APB:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
 			bupdate_power = true;
 
+			if asCheckTalent("잔혹한 베기") then
+				APB_SPELL = "잔혹한 베기";
+				APB_SpellMax(APB_SPELL);
+				APB_UpdateSpell(APB_SPELL);
+				bupdate_spell = true;
+			end
+
+
 			for i = 1, 10 do
 				APB.combobar[i].tooltip = "COMBO_POINTS";
 			end
@@ -1559,6 +1567,12 @@ local function APB_CheckPower(self)
 			APB:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
 			bupdate_power = false;
 			bdruid = true;
+
+			APB_SPELL = "광포한 재생력";
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
+			
 
 			for i = 1, 10 do
 				APB.combobar[i].tooltip = "COMBO_POINTS";
@@ -1763,6 +1777,7 @@ local function APB_CheckPower(self)
 				APB_BUFF = "탄력";
 				APB.buffbar[0].buff = "탄력";
 				APB.buffbar[0].unit = "player"
+				APB.buffbar[0].max = 10;
 				APB:RegisterUnitEvent("UNIT_AURA", "player");
 				--APB:SetScript("OnUpdate", APB_OnUpdate);
 
