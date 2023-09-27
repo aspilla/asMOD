@@ -167,6 +167,17 @@ ADotF_ShowList_PALADIN_3 = {
     { "심판", 0 },
 }
 
+ADotF_ShowList_DEMONHUNTER_1 = {
+    {"불타는 상처", 0},
+}
+
+ADotF_ShowList_DEMONHUNTER_2 = {
+    { "불타는 낙인", 0 },
+    { "약화", 0 },
+}
+
+
+
 --설정 표시할 Unit
 local ADotF_UnitList = {
     "focus", -- 주시대상 표시 안하길 원하면 이 줄 삭제
