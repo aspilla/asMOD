@@ -4,4 +4,5 @@
 ## Notes: 공격대 창에 생존기 표시
 ## Version : 161019
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+asCompactRaidBuffLib.lua
 asCompactRaidBuff.xml

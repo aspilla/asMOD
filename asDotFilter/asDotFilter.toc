@@ -4,4 +4,5 @@
 ## Notes: Dot 필터 
 ## Version : 160427
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+asDotFilterLib.lua
 asDotFilter.xml

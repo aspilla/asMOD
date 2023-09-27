@@ -5,5 +5,6 @@
 ## Version : 220419
 ## SavedVariablesPerCharacter: ANameP_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+asNamePlatesLib.lua
 asNamePlates_Option.lua
 asNamePlates.xml

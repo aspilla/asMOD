@@ -4,4 +4,5 @@
 ## Notes: 버프필터
 ## Version : 100425
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+asBuffFilterLib.lua
 asBuffFilter.xml
