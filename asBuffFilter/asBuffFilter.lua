@@ -2,444 +2,6 @@
 local ABF;
 local ABF_PLAYER_BUFF;
 local ABF_TARGET_BUFF;
-local ABF_SIZE = 28;
-local ABF_TARGET_BUFF_X = 73 + 30 + 20;
-local ABF_TARGET_BUFF_Y = -142;
-local ABF_PLAYER_BUFF_X = -73 - 30 - 20;
-local ABF_PLAYER_BUFF_Y = -142;
-local ABF_MAX_BUFF_SHOW = 7;
-local ABF_ALPHA = 1;
-local ABF_CooldownFontSize = 12; -- Cooldown Font Size
-local ABF_CountFontSize = 11;    -- Count Font Size
-local ABF_AlphaCombat = 1;       -- 전투중 Alpha 값
-local ABF_AlphaNormal = 0.5;     -- 비 전투중 Alpha 값
-local ABF_MAX_Cool = 60;         -- 최대 60초의 버프를 보임
-
-local ABF_BlackList = {
-	--	["문양: 기사단의 선고"] = 1,
-	--	["문양: 이중 판결"] = 1,
-	--	["관대한 치유사"] = 1,
-	--	["법의 위세"] = 1,
-	--	["피의 광기"] = 1,
-
-}
-
--- 발동 주요 공격 버프
--- 보이게만 할려면 2, 강조하려면 1
-local ABF_ProcBuffList = {
-	--블러드
-	["시간 왜곡"] = 1,
-	["영웅심"] = 1,
-	["피의 욕망"] = 1,
-	["황천바람"] = 1,
-	["고대의 격분"] = 1,
-	["위상의 격노"] = 1,
-	["쾌활한 생기화"] = 2,
-	["넬타루스의 전리품"] = 2,
-}
-
--- PVP Buff List
-local ABF_PVPBuffList = {
-
-	--생존기 (용군단 Update 완료)
-	[236273] = true, --WARRIOR
-	[213871] = true, --WARRIOR
-	[118038] = true, --WARRIOR
-	[12975] = true, --WARRIOR
-	[1160] = true, --WARRIOR
-	[871] = true, --WARRIOR
-	[202168] = true, --WARRIOR
-	[97463] = true, --WARRIOR
-	[383762] = true, --WARRIOR
-	[184364] = true, --WARRIOR
-	[386394] = true, --WARRIOR
-	[392966] = true, --WARRIOR
-	[185311] = true, --ROGUE
-	[11327] = true, --ROGUE
-	[1966] = true, --ROGUE
-	[31224] = true, --ROGUE
-	[31230] = true, --ROGUE
-	[5277] = true, --ROGUE
-	[212800] = true, --DEMONHUNTER
-	[203720] = true, --DEMONHUNTER
-	[187827] = true, --DEMONHUNTER
-	[206803] = true, --DEMONHUNTER
-	[196555] = true, --DEMONHUNTER
-	[204021] = true, --DEMONHUNTER
-	[263648] = true, --DEMONHUNTER
-	[209258] = true, --DEMONHUNTER
-	[209426] = true, --DEMONHUNTER
-	[202162] = true, --MONK
-	[388615] = true, --MONK
-	[115310] = true, --MONK
-	[116849] = true, --MONK
-	[115399] = true, --MONK
-	[119582] = true, --MONK
-	[122281] = true, --MONK
-	[322507] = true, --MONK
-	[120954] = true, --MONK
-	[122783] = true, --MONK
-	[122278] = true, --MONK
-	[132578] = true, --MONK
-	[115176] = true, --MONK
-	[51052] = true, --DEATHKNIGHT
-	[48707] = true, --DEATHKNIGHT
-	[327574] = true, --DEATHKNIGHT
-	[48743] = true, --DEATHKNIGHT
-	[48792] = true, --DEATHKNIGHT
-	[114556] = true, --DEATHKNIGHT
-	[81256] = true, --DEATHKNIGHT
-	[219809] = true, --DEATHKNIGHT
-	[206931] = true, --DEATHKNIGHT
-	[274156] = true, --DEATHKNIGHT
-	[194679] = true, --DEATHKNIGHT
-	[55233] = true, --DEATHKNIGHT
-	[272679] = true, --HUNTER
-	[53480] = true, --HUNTER
-	[109304] = true, --HUNTER
-	[264735] = true, --HUNTER
-	[186265] = true, --HUNTER
-	[355913] = true, --EVOKER
-	[370960] = true, --EVOKER
-	[363534] = true, --EVOKER
-	[357170] = true, --EVOKER
-	[374348] = true, --EVOKER
-	[374227] = true, --EVOKER
-	[363916] = true, --EVOKER
-	[360827] = true, --EVOKER
-	[404381] = true, --EVOKER
-	[305497] = true, --DRUID
-	[354654] = true, --DRUID
-	[201664] = true, --DRUID
-	[157982] = true, --DRUID
-	[102342] = true, --DRUID
-	[61336] = true, --DRUID
-	[200851] = true, --DRUID
-	[80313] = true, --DRUID
-	[22842] = true, --DRUID
-	[108238] = true, --DRUID
-	[124974] = true, --DRUID
-	[22812] = true, --DRUID
-	[104773] = true, --WARLOCK
-	[108416] = true, --WARLOCK
-	[215769] = true, --PRIEST
-	[328530] = true, --PRIEST
-	[197268] = true, --PRIEST
-	[19236] = true, --PRIEST
-	[81782] = true, --PRIEST
-	[33206] = true, --PRIEST
-	[372835] = true, --PRIEST
-	[391124] = true, --PRIEST
-	[265202] = true, --PRIEST
-	[64843] = true, --PRIEST
-	[47788] = true, --PRIEST
-	[47585] = true, --PRIEST
-	[108968] = true, --PRIEST
-	[15286] = true, --PRIEST
-	[271466] = true, --PRIEST
-	[199452] = true, --PALADIN
-	[403876] = true, --PALADIN
-	[31850] = true, --PALADIN
-	[378279] = true, --PALADIN
-	[378974] = true, --PALADIN
-	[86659] = true, --PALADIN
-	[387174] = true, --PALADIN
-	[327193] = true, --PALADIN
-	[205191] = true, --PALADIN
-	[184662] = true, --PALADIN
-	[498] = true, --PALADIN
-	[148039] = true, --PALADIN
-	[157047] = true, --PALADIN
-	[31821] = true, --PALADIN
-	[633] = true, --PALADIN
-	[6940] = true, --PALADIN
-	[1022] = true, --PALADIN
-	[204018] = true, --PALADIN
-	[204331] = true, --SHAMAN
-	[108280] = true, --SHAMAN
-	[98008] = true, --SHAMAN
-	[198838] = true, --SHAMAN
-	[207399] = true, --SHAMAN
-	[108271] = true, --SHAMAN
-	[198103] = true, --SHAMAN
-	[30884] = true, --SHAMAN
-	[383017] = true, --SHAMAN
-	[108281] = true, --SHAMAN
-	[198111] = true, --MAGE
-	[110959] = true, --MAGE
-	[342246] = true, --MAGE
-	[11426] = true, --MAGE
-	[66] = true,  --MAGE
-	[235313] = true, --MAGE
-	[235450] = true, --MAGE
-	[55342] = true, --MAGE
-	[414660] = true, --MAGE
-	[414664] = true, --MAGE
-	[86949] = true, --MAGE
-	[235219] = true, --MAGE
-	[414658] = true, --MAGE
-	[110960] = true, --MAGE
-	[125174] = true, --MONK
-	[186265] = true, --HUNTER
-	[378441] = true, --EVOKER
-	[228049] = true, --PALADIN
-	[642] = true, --PALADIN
-	[409293] = true, --SHAMAN
-	[45438] = true, --MAGE	
-	[586] = true, --PRIEST
-
-	--공격버프 시작 (용군단 update 완료)
-	[198817] = true, --WARRIOR
-	[260708] = true, --WARRIOR
-	[260643] = true, --WARRIOR
-	[262161] = true, --WARRIOR
-	[167105] = true, --WARRIOR
-	[384110] = true, --WARRIOR
-	[384318] = true, --WARRIOR
-	[107574] = true, --WARRIOR
-	[376079] = true, --WARRIOR
-	[228920] = true, --WARRIOR
-	[1719] = true, --WARRIOR
-	[385059] = true, --WARRIOR
-	[227847] = true, --WARRIOR
-	[401150] = true, --WARRIOR
-	[315341] = true, --ROGUE
-	[221622] = true, --ROGUE
-	[269513] = true, --ROGUE
-	[212283] = true, --ROGUE
-	[385424] = true, --ROGUE
-	[385408] = true, --ROGUE
-	[385616] = true, --ROGUE
-	[271877] = true, --ROGUE
-	[381989] = true, --ROGUE
-	[315508] = true, --ROGUE
-	[13750] = true, --ROGUE
-	[343142] = true, --ROGUE
-	[51690] = true, --ROGUE
-	[13877] = true, --ROGUE
-	[196937] = true, --ROGUE
-	[185422] = true, --ROGUE
-	[280719] = true, --ROGUE
-	[277925] = true, --ROGUE
-	[384631] = true, --ROGUE
-	[121471] = true, --ROGUE
-	[5938] = true, --ROGUE
-	[382245] = true, --ROGUE
-	[381623] = true, --ROGUE
-	[360194] = true, --ROGUE
-	[381802] = true, --ROGUE
-	[200806] = true, --ROGUE
-	[385627] = true, --ROGUE
-	[162264] = true, --DEMONHUNTER
-	[370965] = true, --DEMONHUNTER
-	[204596] = true, --DEMONHUNTER
-	[390163] = true, --DEMONHUNTER
-	[207407] = true, --DEMONHUNTER
-	[212084] = true, --DEMONHUNTER
-	[198013] = true, --DEMONHUNTER
-	[258925] = true, --DEMONHUNTER
-	[342817] = true, --DEMONHUNTER
-	[258860] = true, --DEMONHUNTER
-	[322109] = true, --MONK
-	[388193] = true, --MONK
-	[196725] = true, --MONK
-	[124081] = true, --MONK
-	[386276] = true, --MONK
-	[322118] = true, --MONK
-	[325197] = true, --MONK
-	[116680] = true, --MONK
-	[113656] = true, --MONK
-	[137639] = true, --MONK
-	[152173] = true, --MONK
-	[123904] = true, --MONK
-	[152175] = true, --MONK
-	[392983] = true, --MONK
-	[388686] = true, --MONK
-	[123986] = true, --MONK
-	[387184] = true, --MONK
-	[325153] = true, --MONK
-	[203173] = true, --DEATHKNIGHT
-	[196770] = true, --DEATHKNIGHT
-	[288853] = true, --DEATHKNIGHT
-	[196770] = true, --DEATHKNIGHT
-	[383269] = true, --DEATHKNIGHT
-	[47568] = true, --DEATHKNIGHT
-	[152279] = true, --DEATHKNIGHT
-	[279302] = true, --DEATHKNIGHT
-	[305392] = true, --DEATHKNIGHT
-	[51271] = true, --DEATHKNIGHT
-	[194844] = true, --DEATHKNIGHT
-	[207289] = true, --DEATHKNIGHT
-	[390279] = true, --DEATHKNIGHT
-	[115989] = true, --DEATHKNIGHT
-	[49206] = true, --DEATHKNIGHT
-	[275699] = true, --DEATHKNIGHT
-	[63560] = true, --DEATHKNIGHT
-	[46584] = true, --DEATHKNIGHT
-	[42650] = true, --DEATHKNIGHT
-	[208652] = true, --HUNTER
-	[205691] = true, --HUNTER
-	[400456] = true, --HUNTER
-	[269751] = true, --HUNTER
-	[203415] = true, --HUNTER
-	[360952] = true, --HUNTER
-	[360966] = true, --HUNTER
-	[257044] = true, --HUNTER
-	[288613] = true, --HUNTER
-	[260243] = true, --HUNTER
-	[120360] = true, --HUNTER
-	[212431] = true, --HUNTER
-	[375891] = true, --HUNTER
-	[201430] = true, --HUNTER
-	[321530] = true, --HUNTER
-	[131894] = true, --HUNTER
-	[193530] = true, --HUNTER
-	[19574] = true, --HUNTER
-	[120679] = true, --HUNTER
-	[359844] = true, --HUNTER
-	[377509] = true, --EVOKER
-	[390386] = true, --EVOKER
-	[357210] = true, --EVOKER
-	[382266] = true, --EVOKER
-	[359816] = true, --EVOKER
-	[370537] = true, --EVOKER
-	[368412] = true, --EVOKER
-	[367226] = true, --EVOKER
-	[355936] = true, --EVOKER
-	[370452] = true, --EVOKER
-	[359073] = true, --EVOKER
-	[368847] = true, --EVOKER
-	[375087] = true, --EVOKER
-	[370553] = true, --EVOKER
-	[395152] = true, --EVOKER
-	[403631] = true, --EVOKER
-	[50334] = true, --DRUID
-	[102351] = true, --DRUID
-	[203651] = true, --DRUID
-	[117679] = true, --DRUID
-	[391528] = true, --DRUID
-	[391888] = true, --DRUID
-	[392160] = true, --DRUID
-	[197721] = true, --DRUID
-	[274837] = true, --DRUID
-	[391891] = true, --DRUID
-	[102543] = true, --DRUID
-	[5217] = true, --DRUID
-	[102558] = true, --DRUID
-	[319454] = true, --DRUID
-	[102560] = true, --DRUID
-	[194223] = true, --DRUID
-	[88747] = true, --DRUID
-	[202770] = true, --DRUID
-	[274281] = true, --DRUID
-	[202425] = true, --DRUID
-	[417537] = true, --WARLOCK
-	[344566] = true, --WARLOCK
-	[212459] = true, --WARLOCK
-	[353601] = true, --WARLOCK
-	[201996] = true, --WARLOCK
-	[353753] = true, --WARLOCK
-	[89751] = true, --WARLOCK
-	[328774] = true, --WARLOCK
-	[387976] = true, --WARLOCK
-	[152108] = true, --WARLOCK
-	[6353] = true, --WARLOCK
-	[1122] = true, --WARLOCK
-	[267218] = true, --WARLOCK
-	[264130] = true, --WARLOCK
-	[386833] = true, --WARLOCK
-	[264119] = true, --WARLOCK
-	[267171] = true, --WARLOCK
-	[267211] = true, --WARLOCK
-	[104316] = true, --WARLOCK
-	[265273] = true, --WARLOCK
-	[205180] = true, --WARLOCK
-	[278350] = true, --WARLOCK
-	[205179] = true, --WARLOCK
-	[386951] = true, --WARLOCK
-	[386997] = true, --WARLOCK
-	[196447] = true, --WARLOCK
-	[211522] = true, --PRIEST
-	[197871] = true, --PRIEST
-	[197862] = true, --PRIEST
-	[316262] = true, --PRIEST
-	[372760] = true, --PRIEST
-	[205385] = true, --PRIEST
-	[246287] = true, --PRIEST
-	[373178] = true, --PRIEST
-	[214621] = true, --PRIEST
-	[314867] = true, --PRIEST
-	[123040] = true, --PRIEST
-	[47536] = true, --PRIEST
-	[372616] = true, --PRIEST
-	[200183] = true, --PRIEST
-	[34861] = true, --PRIEST
-	[2050] = true, --PRIEST
-	[200174] = true, --PRIEST
-	[263165] = true, --PRIEST
-	[391109] = true, --PRIEST
-	[228260] = true, --PRIEST
-	[373481] = true, --PRIEST
-	[120644] = true, --PRIEST
-	[120517] = true, --PRIEST
-	[375901] = true, --PRIEST
-	[10060] = true, --PRIEST
-	[34433] = true, --PRIEST
-	[389539] = true, --PALADIN
-	[375576] = true, --PALADIN
-	[255937] = true, --PALADIN
-	[231895] = true, --PALADIN
-	[343527] = true, --PALADIN
-	[343721] = true, --PALADIN
-	[210294] = true, --PALADIN
-	[114165] = true, --PALADIN
-	[114158] = true, --PALADIN
-	[216331] = true, --PALADIN
-	[200652] = true, --PALADIN
-	[388007] = true, --PALADIN
-	[105809] = true, --PALADIN
-	[152262] = true, --PALADIN
-	[193876] = true, --SHAMAN
-	[2825] = true, --SHAMAN
-	[204330] = true, --SHAMAN
-	[384352] = true, --SHAMAN
-	[375982] = true, --SHAMAN
-	[51533] = true, --SHAMAN
-	[198067] = true, --SHAMAN
-	[192249] = true, --SHAMAN
-	[191634] = true, --SHAMAN
-	[210714] = true, --SHAMAN
-	[114050] = true, --SHAMAN
-	[192222] = true, --SHAMAN
-	[157153] = true, --SHAMAN
-	[197995] = true, --SHAMAN
-	[114052] = true, --SHAMAN
-	[5394] = true, --SHAMAN
-	[114051] = true, --SHAMAN
-	[353128] = true, --MAGE
-	[353082] = true, --MAGE
-	[198144] = true, --MAGE
-	[80353] = true, --MAGE
-	[382440] = true, --MAGE
-	[153561] = true, --MAGE
-	[116011] = true, --MAGE
-	[205025] = true, --MAGE
-	[205021] = true, --MAGE
-	[12472] = true, --MAGE
-	[84714] = true, --MAGE
-	[44614] = true, --MAGE
-	[153595] = true, --MAGE
-	[190319] = true, --MAGE
-	[257541] = true, --MAGE
-	[365350] = true, --MAGE
-	[321507] = true, --MAGE
-	[376103] = true, --MAGE
-	[153626] = true, --MAGE
-
-};
-
-
-
 local ABF_TalentBuffList = {};
 
 --AuraUtil
@@ -712,7 +274,7 @@ local function ProcessAura(aura, unit)
 		return AuraUpdateChangedType.None;
 	end
 
-	if ABF_BlackList[aura.name] then
+	if ns.ABF_BlackList[aura.name] then
 		return AuraUpdateChangedType.None;
 	end
 
@@ -722,7 +284,7 @@ local function ProcessAura(aura, unit)
 			skip = true;
 			if UnitCanAssist("target", "player") then
 				-- 우리편은 내가 시전한 Buff 보임
-				if PLAYER_UNITS[aura.sourceUnit] and aura.duration > 0 and aura.duration <= ABF_MAX_Cool then
+				if PLAYER_UNITS[aura.sourceUnit] and aura.duration > 0 and aura.duration <= ns.ABF_MAX_Cool then
 					skip = false;
 				end
 			end
@@ -732,7 +294,7 @@ local function ProcessAura(aura, unit)
 			end
 
 			-- PVP 주요 버프는 보임
-			if (ABF_PVPBuffList and ABF_PVPBuffList[aura.spellId]) then
+			if (ns.ABF_PVPBuffList and ns.ABF_PVPBuffList[aura.spellId]) then
 				skip = false;
 			end
 		else
@@ -740,11 +302,11 @@ local function ProcessAura(aura, unit)
 		end
 	elseif unit == "player" then
 		skip = true;
-		if PLAYER_UNITS[aura.sourceUnit] and ((aura.duration > 0 and aura.duration <= ABF_MAX_Cool)) then
+		if PLAYER_UNITS[aura.sourceUnit] and ((aura.duration > 0 and aura.duration <= ns.ABF_MAX_Cool)) then
 			skip = false;
 		end
 
-		if PLAYER_UNITS[aura.sourceUnit] and ((aura.applications and aura.applications > 1)) then
+		if PLAYER_UNITS[aura.sourceUnit] and ((aura.applications and aura.applications > 1 and aura.duration <= ns.ABF_MAX_Cool)) then
 			skip = false;
 		end
 
@@ -752,11 +314,11 @@ local function ProcessAura(aura, unit)
 			skip = false;
 		end
 
-		if (ABF_PVPBuffList and ABF_PVPBuffList[aura.spellId]) then
+		if (ns.ABF_PVPBuffList and ns.ABF_PVPBuffList[aura.spellId]) then
 			skip = false;
 		end
 
-		if ABF_ProcBuffList and ABF_ProcBuffList[aura.name] then
+		if ns.ABF_ProcBuffList and ns.ABF_ProcBuffList[aura.name] then
 			skip = false;
 		end
 	end
@@ -817,7 +379,7 @@ local function updateTotemAura()
 				-- set the icon
 				local frameIcon = frame.icon;
 				frameIcon:SetTexture(icon);
-				frameIcon:SetAlpha(ABF_ALPHA);
+				frameIcon:SetAlpha(ns.ABF_ALPHA);
 
 				frame.totemslot = slot;
 				frame.auraInstanceID = nil;
@@ -842,7 +404,7 @@ local function updateTotemAura()
 				local color = { r = 0, g = 1, b = 0 };
 
 				frameBorder:SetVertexColor(color.r, color.g, color.b);
-				frameBorder:SetAlpha(ABF_ALPHA);
+				frameBorder:SetAlpha(ns.ABF_ALPHA);
 				frame:Show();
 			end
 		else
@@ -856,7 +418,7 @@ end
 local function UpdateAuraFrames(unit, auraList)
 	local i = 0;
 	local parent = ABF_TARGET_BUFF;
-	local numAuras = math.min(ABF_MAX_BUFF_SHOW, auraList:Size());
+	local numAuras = math.min(ns.ABF_MAX_BUFF_SHOW, auraList:Size());
 	local tcount = 1;
 	local lcount = 1;
 	local mparent = nil;
@@ -865,7 +427,7 @@ local function UpdateAuraFrames(unit, auraList)
 		tcount = updateTotemAura();
 		parent = ABF_PLAYER_BUFF;
 		mparent = ABF_TALENT_BUFF;
-		numAuras = math.min(ABF_MAX_BUFF_SHOW * 2, auraList:Size());
+		numAuras = math.min(ns.ABF_MAX_BUFF_SHOW * 2, auraList:Size());
 	end
 
 
@@ -879,10 +441,10 @@ local function UpdateAuraFrames(unit, auraList)
 			local frame = nil;
 
 			if mparent then
-				if mparent and aura.buffType ~= UnitFrameBuffType.Normal and tcount <= ABF_MAX_BUFF_SHOW then
+				if mparent and aura.buffType ~= UnitFrameBuffType.Normal and tcount <= ns.ABF_MAX_BUFF_SHOW then
 					frame = mparent.frames[tcount];
 					tcount = tcount + 1;
-				elseif mparent and lcount <= ABF_MAX_BUFF_SHOW then
+				elseif mparent and lcount <= ns.ABF_MAX_BUFF_SHOW then
 					frame = parent.frames[lcount];
 					lcount = lcount + 1;
 				else
@@ -899,7 +461,7 @@ local function UpdateAuraFrames(unit, auraList)
 			-- set the icon
 			local frameIcon = frame.icon
 			frameIcon:SetTexture(aura.icon);
-			frameIcon:SetAlpha(ABF_ALPHA);
+			frameIcon:SetAlpha(ns.ABF_ALPHA);
 			-- set the count
 			local frameCount = frame.count;
 
@@ -927,9 +489,9 @@ local function UpdateAuraFrames(unit, auraList)
 			local frameBorder = frame.border;
 			local color = DebuffTypeColor["Disease"];
 			frameBorder:SetVertexColor(color.r, color.g, color.b);
-			frameBorder:SetAlpha(ABF_ALPHA);
+			frameBorder:SetAlpha(ns.ABF_ALPHA);
 
-			if (aura.isStealable) or (ABF_ProcBuffList and ABF_ProcBuffList[aura.name] and ABF_ProcBuffList[aura.name] == 1) then
+			if (aura.isStealable) or (ns.ABF_ProcBuffList and ns.ABF_ProcBuffList[aura.name] and ns.ABF_ProcBuffList[aura.name] == 1) then
 				ns.lib.ButtonGlow_Start(frame);
 			else
 				ns.lib.ButtonGlow_Stop(frame);
@@ -957,14 +519,14 @@ local function UpdateAuraFrames(unit, auraList)
 
 
 	if mparent then
-		for j = tcount, ABF_MAX_BUFF_SHOW do
+		for j = tcount, ns.ABF_MAX_BUFF_SHOW do
 			HideFrame(mparent, j);
 		end
-		for j = lcount, ABF_MAX_BUFF_SHOW do
+		for j = lcount, ns.ABF_MAX_BUFF_SHOW do
 			HideFrame(parent, j);
 		end
 	else
-		for j = i + 1, ABF_MAX_BUFF_SHOW do
+		for j = i + 1, ns.ABF_MAX_BUFF_SHOW do
 			HideFrame(parent, j);
 		end
 	end
@@ -1020,7 +582,7 @@ end
 local function ABF_ClearFrame()
 	local parent = ABF_TARGET_BUFF;
 
-	for i = 1, ABF_MAX_BUFF_SHOW do
+	for i = 1, ns.ABF_MAX_BUFF_SHOW do
 		local frame = parent.frames[i];
 
 		if (frame) then
@@ -1054,10 +616,10 @@ local function ABF_OnEvent(self, event, arg1, ...)
 		UpdateAuras(nil, "player");
 		UpdateAuras(nil, "target");
 	elseif event == "PLAYER_REGEN_DISABLED" then
-		ABF:SetAlpha(ABF_AlphaCombat);
+		ABF:SetAlpha(ns.ABF_AlphaCombat);
 		DumpCaches();
 	elseif event == "PLAYER_REGEN_ENABLED" then
-		ABF:SetAlpha(ABF_AlphaNormal);
+		ABF:SetAlpha(ns.ABF_AlphaNormal);
 		DumpCaches();
 	elseif (event == "PLAYER_SPECIALIZATION_CHANGED") then
 		overlayspell = {};
@@ -1108,8 +670,8 @@ local function ABF_UpdateBuffAnchor(frames, index, offsetX, right, center, paren
 		end
 	end
 	-- Resize
-	buff:SetWidth(ABF_SIZE);
-	buff:SetHeight(ABF_SIZE * 0.8);
+	buff:SetWidth(ns.ABF_SIZE);
+	buff:SetHeight(ns.ABF_SIZE * 0.8);
 end
 
 local function CreatBuffFrames(parent, bright, bcenter)
@@ -1117,7 +679,7 @@ local function CreatBuffFrames(parent, bright, bcenter)
 		parent.frames = {};
 	end
 
-	for idx = 1, ABF_MAX_BUFF_SHOW do
+	for idx = 1, ns.ABF_MAX_BUFF_SHOW do
 		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
 		local frame = parent.frames[idx];
 		frame:SetFrameStrata("LOW");
@@ -1125,7 +687,7 @@ local function CreatBuffFrames(parent, bright, bcenter)
 		frame.cooldown:SetFrameStrata("MEDIUM");
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
-				r:SetFont(STANDARD_TEXT_FONT, ABF_CooldownFontSize, "OUTLINE");
+				r:SetFont(STANDARD_TEXT_FONT, ns.ABF_CooldownFontSize, "OUTLINE");
 				r:ClearAllPoints();
 				r:SetPoint("TOP", 0, 5);
 				break
@@ -1134,7 +696,7 @@ local function CreatBuffFrames(parent, bright, bcenter)
 
 		local font, size, flag = frame.count:GetFont()
 
-		frame.count:SetFont(STANDARD_TEXT_FONT, ABF_CountFontSize, "OUTLINE")
+		frame.count:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize, "OUTLINE")
 		frame.count:ClearAllPoints()
 		frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
 
@@ -1172,7 +734,7 @@ local function ABF_Init()
 	ABF:SetWidth(1)
 	ABF:SetHeight(1)
 	ABF:SetScale(1)
-	ABF:SetAlpha(ABF_AlphaNormal);
+	ABF:SetAlpha(ns.ABF_AlphaNormal);
 	ABF:Show()
 
 
@@ -1180,7 +742,7 @@ local function ABF_Init()
 
 	ABF_TARGET_BUFF = CreateFrame("Frame", nil, ABF)
 
-	ABF_TARGET_BUFF:SetPoint("CENTER", ABF_TARGET_BUFF_X, ABF_TARGET_BUFF_Y)
+	ABF_TARGET_BUFF:SetPoint("CENTER", ns.ABF_TARGET_BUFF_X, ns.ABF_TARGET_BUFF_Y)
 	ABF_TARGET_BUFF:SetWidth(1)
 	ABF_TARGET_BUFF:SetHeight(1)
 	ABF_TARGET_BUFF:SetScale(1)
@@ -1194,7 +756,7 @@ local function ABF_Init()
 
 	ABF_PLAYER_BUFF = CreateFrame("Frame", nil, ABF)
 
-	ABF_PLAYER_BUFF:SetPoint("CENTER", ABF_PLAYER_BUFF_X, ABF_PLAYER_BUFF_Y)
+	ABF_PLAYER_BUFF:SetPoint("CENTER", ns.ABF_PLAYER_BUFF_X, ns.ABF_PLAYER_BUFF_Y)
 	ABF_PLAYER_BUFF:SetWidth(1)
 	ABF_PLAYER_BUFF:SetHeight(1)
 	ABF_PLAYER_BUFF:SetScale(1)
@@ -1208,7 +770,7 @@ local function ABF_Init()
 
 	ABF_TALENT_BUFF = CreateFrame("Frame", nil, ABF)
 
-	ABF_TALENT_BUFF:SetPoint("CENTER", 0, ABF_PLAYER_BUFF_Y)
+	ABF_TALENT_BUFF:SetPoint("CENTER", 0, ns.ABF_PLAYER_BUFF_Y)
 	ABF_TALENT_BUFF:SetWidth(1)
 	ABF_TALENT_BUFF:SetHeight(1)
 	ABF_TALENT_BUFF:SetScale(1)
