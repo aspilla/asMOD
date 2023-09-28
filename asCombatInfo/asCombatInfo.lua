@@ -1542,7 +1542,7 @@ function ACI_Init()
 							ACI_SpellList[i][3] = nil;
 							ACI_SpellList[i][4] = nil;
 
-							for z, v in ipairs(array) do
+							for z, v in pairs(array) do
 								ACI_SpellList[i][z] = v;
 							end
 						end
@@ -1554,7 +1554,7 @@ function ACI_Init()
 							ACI_SpellList[i][3] = nil;
 							ACI_SpellList[i][4] = nil;
 
-							for z, v in ipairs(array) do
+							for z, v in pairs(array) do
 								ACI_SpellList[i][z] = v;
 							end
 						end
