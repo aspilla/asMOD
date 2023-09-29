@@ -683,9 +683,10 @@ local function CreatBuffFrames(parent, bright, bcenter)
 	for idx = 1, ns.ABF_MAX_BUFF_SHOW do
 		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
 		local frame = parent.frames[idx];
-		frame:SetFrameStrata("LOW");
-		frame:EnableMouse(false);
-		frame.cooldown:SetFrameStrata("MEDIUM");
+		frame:SetFrameStrata("MEDIUM");
+		frame:SetFrameLevel(9000);
+		frame:EnableMouse(false);		
+		frame.cooldown:SetFrameLevel(9100);
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
 				r:SetFont(STANDARD_TEXT_FONT, ns.ABF_CooldownFontSize, "OUTLINE");
@@ -694,8 +695,6 @@ local function CreatBuffFrames(parent, bright, bcenter)
 				break
 			end
 		end
-
-		local font, size, flag = frame.count:GetFont()
 
 		frame.count:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize, "OUTLINE")
 		frame.count:ClearAllPoints()

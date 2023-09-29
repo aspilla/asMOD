@@ -487,9 +487,10 @@ local function CreatDebuffFrames(parent, bright)
     for idx = 1, ns.ADF_MAX_DEBUFF_SHOW do
         parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetDebuffFrameTemplate");
         local frame = parent.frames[idx];
-        frame:SetFrameStrata("LOW");
-        frame:EnableMouse(false);
-        frame.cooldown:SetFrameStrata("MEDIUM");
+        frame:SetFrameStrata("MEDIUM");
+        frame:SetFrameLevel(9000);
+        frame:EnableMouse(false);        
+        frame.cooldown:SetFrameLevel(9100);
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, ns.ADF_CooldownFontSize, "OUTLINE");
