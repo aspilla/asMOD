@@ -440,8 +440,7 @@ end
 local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
 	if enable and enable ~= 0 and start > 0 and duration > 0 then
 		self:SetDrawEdge(forceShowDrawEdge);
-		self:SetCooldown(start, duration, modRate);
-		self:SetSwipeColor(0, 0, 0, 1);
+		self:SetCooldown(start, duration, modRate);		
 	else
 		asCooldownFrame_Clear(self);
 	end
@@ -1042,6 +1041,30 @@ function ACRB_ProcessAura(asframe, aura)
 	return type;
 end
 
+local function UpdateNameColor(frame)
+
+	if not frame or frame:IsForbidden() then
+		return
+	end
+
+	local frameName = frame:GetName()
+	local asframe = (frameName and asraid[frameName]) or nil;
+
+	if asframe == nil or not asframe.buffcolor then
+		return;
+	end
+	
+	if  asframe.buffcolor:IsShown() then
+		local classColor = RAID_CLASS_COLORS[select(2, UnitClass(frame.unit))];
+		if classColor then
+			frame.name:SetVertexColor(classColor.r, classColor.g, classColor.b);
+		end
+	else
+		frame.name:SetVertexColor(1.0, 1.0, 1.0);
+	end
+
+end
+
 local function ACRB_ParseAllAuras(asframe)
 	if asframe.debuffs == nil then
 		asframe.debuffs = TableUtil.CreatePriorityTable(UnitFrameDebuffComparator,
@@ -1222,6 +1245,7 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 				local buffFrame = asframe.asbuffFrames[type];
 				if type == 4 then
 					asframe.buffcolor:Show();
+					UpdateNameColor(asframe.frame);
 				end
 				ARCB_UtilSetBuff(buffFrame, aura);
 				showframe[type] = true;
@@ -1245,6 +1269,7 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 				local buffFrame = asframe.asbuffFrames[i];
 				if i == 4 then
 					asframe.buffcolor:Hide();
+					UpdateNameColor(asframe.frame);
 				end
 				buffFrame:Hide();
 			end
@@ -1477,6 +1502,8 @@ local function ACRB_setupFrame(frame)
 					buffFrame:ClearAllPoints();
 					buffFrame:SetPoint("BOTTOMRIGHT", asraid[frameName].asbuffFrames[i - 1], "BOTTOMLEFT", -1, 0)
 				end
+
+				buffFrame.cooldown:SetSwipeColor(0, 0, 0, 1);
 			end
 		end
 	end
@@ -1829,3 +1856,4 @@ ACRB_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 C_Timer.NewTicker(ACRB_UpdateRate, ACRB_OnUpdate);
 
 hooksecurefunc("CompactUnitFrame_UpdateAll", ARCB_UpdateAll);
+hooksecurefunc("CompactUnitFrame_UpdateName", UpdateNameColor);

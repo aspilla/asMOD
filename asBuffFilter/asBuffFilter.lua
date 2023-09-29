@@ -236,6 +236,11 @@ end
 
 
 local function IsShown(name, spellId)
+
+	if ns.ABF_BlackList[name] then
+		return true;
+	end
+
 	-- asPowerBar Check
 	if APB_BUFF and APB_BUFF == name then
 		return true;
@@ -249,11 +254,11 @@ local function IsShown(name, spellId)
 		return true;
 	end
 
-	if ACI_Buff_list and (ACI_Buff_list[name] or ACI_Buff_list[spellId]) then
+	if ACI_Buff_list and (ACI_Buff_list[name] or ( spellId and ACI_Buff_list[spellId])) then
 		return true;
 	end
 
-	if overlayspell[name] or overlayspell[spellId]  then
+	if overlayspell[name] or (spellId and overlayspell[spellId])  then
 		return true;
 	end
 
@@ -272,11 +277,7 @@ local function ProcessAura(aura, unit)
 
 	if IsShown(aura.name, aura.spellId) then
 		return AuraUpdateChangedType.None;
-	end
-
-	if ns.ABF_BlackList[aura.name] then
-		return AuraUpdateChangedType.None;
-	end
+	end	
 
 	local skip = true;
 	if unit == "target" then
@@ -371,7 +372,7 @@ local function updateTotemAura()
 		local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
 
 		if haveTotem and icon then
-			if not (ACI_Buff_list and ACI_Buff_list[name]) then
+			if not (IsShown(name)) then
 				totem_i = totem_i + 1;
 				local expirationTime = start + duration;
 				local frame = ABF_TALENT_BUFF.frames[totem_i];

@@ -662,7 +662,7 @@ local function ACI_Alert(self, bcastspell)
 		count                                                           = GetSpellCharges(spellname);
 		charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
 
-		if ACI_Action_slot_list[i] then
+		if start == 0 and ACI_Action_slot_list[i] then
 			start, duration, enable = GetActionCooldown(ACI_Action_slot_list[i]);
 		end
 
@@ -732,13 +732,13 @@ local function ACI_Alert(self, bcastspell)
 
 		local alert_du = ACI_SpellList[i][4];
 		local buff_name = GetSpellInfo(spellname);
-		
+
 		if not buff_name then
 			buff_name = spellname
 		end
 
 		if ACI_SpellList[i][7] then
-			buff_name = ACI_SpellList[i][7];			
+			buff_name = ACI_SpellList[i][7];
 		end
 
 		_, icon, count, _, duration, expirationTime, _, _, _, _, _, _, _, _, _, stack = getUnitBuffbyName(unit,
@@ -896,7 +896,7 @@ local function ACI_Alert(self, bcastspell)
 			charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
 			local _, gcd                                                    = GetSpellCooldown(61304);
 
-			if  ACI_Action_slot_list[i] then
+			if start == 0 and ACI_Action_slot_list[i] then
 				start, duration, enable = GetActionCooldown(ACI_Action_slot_list[i]);
 			end
 
@@ -964,11 +964,11 @@ local function ACI_Alert(self, bcastspell)
 			isUsable, notEnoughMana = IsUsableSpell(spellname);
 			count                   = GetSpellCharges(spellname);
 			local _, gcd            = GetSpellCooldown(61304);
-			
+
 
 			charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
 
-			if ACI_Action_slot_list[i] then
+			if start == 0 and ACI_Action_slot_list[i] then
 				start, duration, enable = GetActionCooldown(ACI_Action_slot_list[i]);
 			end
 
@@ -1040,7 +1040,7 @@ local function ACI_Alert(self, bcastspell)
 
 			charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
 
-			if ACI_Action_slot_list[i] then
+			if start == 0 and ACI_Action_slot_list[i] then
 				start, duration, enable = GetActionCooldown(ACI_Action_slot_list[i]);
 			end
 
@@ -1354,7 +1354,7 @@ local function ACI_OnEvent(self, event, arg1, ...)
 		if ACI_Action_to_index[action] then
 			local index = ACI_Action_to_index[action];
 			if ACI[index] then
-				if ( checksRange and not inRange ) then
+				if (checksRange and not inRange) then
 					ACI[index].inRange = false;
 				else
 					ACI[index].inRange = true
@@ -1367,6 +1367,17 @@ local function ACI_OnEvent(self, event, arg1, ...)
 end
 
 local function ACI_GetActionSlot(arg1)
+	for lActionSlot = 1, 180 do
+		local type, id, subType, spellID = GetActionInfo(lActionSlot);
+
+		if id then
+			local name = GetSpellInfo(id);
+			if name and name == arg1 then
+				return lActionSlot;
+			end
+		end
+	end
+
 	for lActionSlot = 1, 180 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 

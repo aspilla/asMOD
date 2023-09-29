@@ -4,5 +4,6 @@
 ## Notes: 디버프 필터 
 ## Version : 100425
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+asDebuffFilterOptions.lua
 asDebuffFilterLib.lua
 asDebuffFilter.xml

@@ -3,19 +3,6 @@ local ADF;
 local ADF_PLAYER_DEBUFF;
 local ADF_TARGET_DEBUFF;
 
-local ADF_SIZE = 32;
-local ADF_TARGET_DEBUFF_X = 73 + 30 + 20;
-local ADF_TARGET_DEBUFF_Y = -110;
-local ADF_PLAYER_DEBUFF_X = -73 - 30 - 20;
-local ADF_PLAYER_DEBUFF_Y = -110;
-local ADF_MAX_DEBUFF_SHOW = 7;
-local ADF_ALPHA = 1
-local ADF_CooldownFontSize = 14      -- Cooldown Font Size
-local ADF_CountFontSize = 13;        -- Count Font Size
-local ADF_AlphaCombat = 1;           -- 전투중 Alpha 값
-local ADF_AlphaNormal = 0.5;         -- 비 전투중 Alpha 값
-local ADF_MAX_Cool = 120             -- 최대 120초까지의 Debuff를 보임
-
 
 local ADF_BlackList = {
 
@@ -55,6 +42,7 @@ local AuraUpdateChangedType = EnumUtil.MakeEnum(
 local UnitFrameDebuffType = EnumUtil.MakeEnum(
     "BossDebuff",
     "BossBuff",
+    "nameplateShowPersonal",
     "namePlateShowAll",
     "PriorityDebuff",
     "NonBossRaidDebuff",
@@ -230,7 +218,7 @@ local function ProcessAura(aura, unit)
     elseif unit == "player" then
         skip = false;
 
-        if aura.duration > ADF_MAX_Cool then
+        if aura.duration > ns.ADF_MAX_Cool then
             skip = true;
         end
 
@@ -249,6 +237,8 @@ local function ProcessAura(aura, unit)
             aura.debuffType = UnitFrameDebuffType.BossDebuff;
         elseif aura.isBossAura and not aura.isRaid then
             aura.debuffType = UnitFrameDebuffType.BossDebuff
+        elseif aura.nameplateShowPersonal then
+            aura.debuffType = UnitFrameDebuffType.nameplateShowPersonal;
         elseif aura.nameplateShowAll then
             aura.debuffType = UnitFrameDebuffType.namePlateShowAll;
         elseif not aura.isRaid then
@@ -318,7 +308,7 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             -- set the icon
             local frameIcon = frame.icon
             frameIcon:SetTexture(aura.icon);
-            frameIcon:SetAlpha(ADF_ALPHA);
+            frameIcon:SetAlpha(ns.ADF_ALPHA);
             -- set the count
             local frameCount = frame.count;
 
@@ -363,7 +353,7 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
 
             local frameBorder = frame.border;
             frameBorder:SetVertexColor(color.r, color.g, color.b);
-            frameBorder:SetAlpha(ADF_ALPHA);
+            frameBorder:SetAlpha(ns.ADF_ALPHA);
 
             frame:Show();
 
@@ -375,7 +365,7 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             return false;
         end);
 
-    for j = i + 1, ADF_MAX_DEBUFF_SHOW do
+    for j = i + 1, ns.ADF_MAX_DEBUFF_SHOW do
         local frame = parent.frames[j];
 
         if (frame) then
@@ -427,13 +417,13 @@ local function UpdateAuras(unitAuraUpdateInfo, unit)
         return;
     end
 
-    local numDebuffs = math.min(ADF_MAX_DEBUFF_SHOW, activeDebuffs[unit]:Size());
+    local numDebuffs = math.min(ns.ADF_MAX_DEBUFF_SHOW, activeDebuffs[unit]:Size());
 
     UpdateAuraFrames(unit, activeDebuffs[unit], numDebuffs);
 end
 
 function ADF_ClearFrame()
-    for i = 1, ADF_MAX_DEBUFF_SHOW do
+    for i = 1, ns.ADF_MAX_DEBUFF_SHOW do
         local frame = ADF_TARGET_DEBUFF.frames[i];
 
         if (frame) then
@@ -456,10 +446,10 @@ function ADF_OnEvent(self, event, arg1, ...)
         UpdateAuras(nil, "target");
         UpdateAuras(nil, "player");
     elseif event == "PLAYER_REGEN_DISABLED" then
-        ADF:SetAlpha(ADF_AlphaCombat);
+        ADF:SetAlpha(ns.ADF_AlphaCombat);
         cachedPriorityChecks = {};
     elseif event == "PLAYER_REGEN_ENABLED" then
-        ADF:SetAlpha(ADF_AlphaNormal);
+        ADF:SetAlpha(ns.ADF_AlphaNormal);
         cachedPriorityChecks = {};
     end
 end
@@ -484,8 +474,8 @@ local function ADF_UpdateDebuffAnchor(frames, index, offsetX, right, parent)
     end
 
     -- Resize
-    buff:SetWidth(ADF_SIZE);
-    buff:SetHeight(ADF_SIZE * 0.8);
+    buff:SetWidth(ns.ADF_SIZE);
+    buff:SetHeight(ns.ADF_SIZE * 0.8);
 end
 
 
@@ -494,7 +484,7 @@ local function CreatDebuffFrames(parent, bright)
         parent.frames = {};
     end
 
-    for idx = 1, ADF_MAX_DEBUFF_SHOW do
+    for idx = 1, ns.ADF_MAX_DEBUFF_SHOW do
         parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetDebuffFrameTemplate");
         local frame = parent.frames[idx];
         frame:SetFrameStrata("LOW");
@@ -502,14 +492,14 @@ local function CreatDebuffFrames(parent, bright)
         frame.cooldown:SetFrameStrata("MEDIUM");
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
-                r:SetFont(STANDARD_TEXT_FONT, ADF_CooldownFontSize, "OUTLINE");
+                r:SetFont(STANDARD_TEXT_FONT, ns.ADF_CooldownFontSize, "OUTLINE");
                 r:ClearAllPoints();
                 r:SetPoint("TOP", 0, 5);
                 break
             end
         end
 
-        frame.count:SetFont(STANDARD_TEXT_FONT, ADF_CountFontSize, "OUTLINE")
+        frame.count:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize, "OUTLINE")
         frame.count:ClearAllPoints()
         frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
 
@@ -547,12 +537,12 @@ local function ADF_Init()
     ADF:SetWidth(1)
     ADF:SetHeight(1)
     ADF:SetScale(1)
-    ADF:SetAlpha(ADF_AlphaNormal);
+    ADF:SetAlpha(ns.ADF_AlphaNormal);
     ADF:Show()
 
     ADF_TARGET_DEBUFF = CreateFrame("Frame", nil, ADF)
 
-    ADF_TARGET_DEBUFF:SetPoint("CENTER", ADF_TARGET_DEBUFF_X, ADF_TARGET_DEBUFF_Y)
+    ADF_TARGET_DEBUFF:SetPoint("CENTER", ns.ADF_TARGET_DEBUFF_X, ns.ADF_TARGET_DEBUFF_Y)
     ADF_TARGET_DEBUFF:SetWidth(1)
     ADF_TARGET_DEBUFF:SetHeight(1)
     ADF_TARGET_DEBUFF:SetScale(1)
@@ -566,7 +556,7 @@ local function ADF_Init()
 
     ADF_PLAYER_DEBUFF = CreateFrame("Frame", nil, ADF)
 
-    ADF_PLAYER_DEBUFF:SetPoint("CENTER", ADF_PLAYER_DEBUFF_X, ADF_PLAYER_DEBUFF_Y)
+    ADF_PLAYER_DEBUFF:SetPoint("CENTER", ns.ADF_PLAYER_DEBUFF_X, ns.ADF_PLAYER_DEBUFF_Y)
     ADF_PLAYER_DEBUFF:SetWidth(1)
     ADF_PLAYER_DEBUFF:SetHeight(1)
     ADF_PLAYER_DEBUFF:SetScale(1)
