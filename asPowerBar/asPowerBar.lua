@@ -791,7 +791,16 @@ end
 local bupdate_druid = false;
 
 local function APB_GetActionSlot(arg1)
-	local lActionSlot = 0;
+	for lActionSlot = 1, 180 do
+		local type, id, subType, spellID = GetActionInfo(lActionSlot);
+
+		if id and type and type == "spell" then
+			local name = GetSpellInfo(id);
+			if name and name == arg1 then
+				return lActionSlot;
+			end
+		end
+	end
 
 	for lActionSlot = 1, 180 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
@@ -1235,24 +1244,6 @@ local function asCheckTalent(name)
 	return false;
 end
 
-local function APB_GetActionSlot(arg1)
-	for lActionSlot = 1, 180 do
-		local type, id, subType, spellID = GetActionInfo(lActionSlot);
-
-		if id and type and type == "macro" then
-			id = GetMacroSpell(id);
-		end
-
-		if id then
-			local name = GetSpellInfo(id);
-			if name and name == arg1 then
-				return lActionSlot;
-			end
-		end
-	end
-
-	return nil;
-end
 
 local function APB_CheckPower(self)
 	self = APB;

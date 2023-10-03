@@ -493,10 +493,8 @@ local function ARCB_UtilSetBuff(buffFrame, aura)
 	local enabled = aura.expirationTime and aura.expirationTime ~= 0;
 	if enabled then
 		local startTime = aura.expirationTime - aura.duration;
-		asCooldownFrame_Set(buffFrame.cooldown, startTime, aura.duration, true);
-		buffFrame.border:Hide();
-	else
-		buffFrame.border:Hide();
+		asCooldownFrame_Set(buffFrame.cooldown, startTime, aura.duration, true);		
+	else		
 		asCooldownFrame_Clear(buffFrame.cooldown);
 	end
 
@@ -1398,8 +1396,8 @@ local function ACRB_setupFrame(frame)
 
 	y = y - powerBarUsedHeight;
 
-	local size_x = x / 6 * ACRB_BuffSizeRate;
-	local size_y = y / 3 * ACRB_BuffSizeRate;
+	local size_x = x / 6 * ACRB_BuffSizeRate - 1;
+	local size_y = y / 3 * ACRB_BuffSizeRate - 1;
 
 	local baseSize = math.min(x / 7 * ACRB_BuffSizeRate, y / 3 * ACRB_BuffSizeRate);
 
@@ -1450,6 +1448,8 @@ local function ACRB_setupFrame(frame)
 			buffFrame.icon:SetTexCoord(.08, .92, .08, .92);
 			buffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
 			buffFrame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+			buffFrame.border:SetVertexColor(0, 0, 0);
+			buffFrame.border:Show();
 			asraid[frameName].asbuffFrames[i] = buffFrame;
 			buffFrame:Hide();
 		end
@@ -1666,6 +1666,10 @@ local function ACRB_setupFrame(frame)
 			else
 				asraid[frameName].pvpbuffFrames[i].cooldown:SetHideCountdownNumbers(true);
 			end
+			asraid[frameName].pvpbuffFrames[i].border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
+			asraid[frameName].pvpbuffFrames[i].border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+			asraid[frameName].pvpbuffFrames[i].border:SetVertexColor(0,0,0);
+			asraid[frameName].pvpbuffFrames[i].border:Show();
 		end
 	end
 
@@ -1767,7 +1771,7 @@ local function ARCB_UpdateAll(frame)
 	if frame and not frame:IsForbidden() and frame.GetName then
 		local name = frame:GetName();
 
-		if name and not (name == nil) and (string.find(name, "CompactRaidGroup") or string.find(name, "CompactPartyFrameMember") or string.find(name, "CompactRaidFrame")) then
+		if name and not (name == nil) and (string.find(name, "CompactRaidGroup") or string.find(name, "CompactPartyFrameMember") or string.find(name, "CompactRaidFrame")) then			
 			ACRB_disableDefault(frame);
 			ACRB_setupFrame(frame);
 			mustdisable = true;
