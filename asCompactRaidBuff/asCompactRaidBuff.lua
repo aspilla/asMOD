@@ -1,12 +1,12 @@
 local _, ns = ...;
 
-local ACRB_MAX_BUFFS = 6              -- 최대 표시 버프 개수 (3개 + 3개)
-local ACRB_MAX_BUFFS_2 = 2            -- 최대 생존기 개수
-local ACRB_MAX_DEBUFFS = 3            -- 최대 표시 디버프 개수 (3개)
-local ACRB_MAX_DISPELDEBUFFS = 3      -- 최대 해제 디버프 개수 (3개)
-local ACRB_MAX_CASTING = 2            -- 최대 Casting Alert
-local ACRB_MaxBuffSize = 20           -- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
-local ACRB_HealerManaBarHeight = 3    -- 힐러 마나바 크기 (안보이게 하려면 0)
+local ACRB_MAX_BUFFS = 6           -- 최대 표시 버프 개수 (3개 + 3개)
+local ACRB_MAX_BUFFS_2 = 2         -- 최대 생존기 개수
+local ACRB_MAX_DEBUFFS = 3         -- 최대 표시 디버프 개수 (3개)
+local ACRB_MAX_DISPELDEBUFFS = 3   -- 최대 해제 디버프 개수 (3개)
+local ACRB_MAX_CASTING = 2         -- 최대 Casting Alert
+local ACRB_MaxBuffSize = 20        -- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
+local ACRB_HealerManaBarHeight = 3 -- 힐러 마나바 크기 (안보이게 하려면 0)
 
 
 --Overlay stuff
@@ -402,7 +402,6 @@ local function ACRB_UpdateRaidIcon(asframe)
 end
 
 local tanklist = {};
-local together = nil;
 -- 탱커 처리부
 local function updateTankerList()
 	local bInstance, RTB_ZoneType = IsInInstance();
@@ -413,53 +412,11 @@ local function updateTankerList()
 
 	tanklist = table.wipe(tanklist)
 	if IsInGroup() then
-		if IsInRaid() then -- raid
-			if together == true then
-				for i = 1, 8 do
-					for k = 1, 5 do
-						local framename = "CompactRaidGroup" .. i .. "Member" .. k
-						local asframe = asraid[framename]
-						if asframe and asframe.unit then
-							local assignedRole = UnitGroupRolesAssigned(asframe.unit);
-							if assignedRole == "TANK" then
-								table.insert(tanklist, framename);
-							end
-						end
-					end
-				end
-			else
-				for i = 1, 40 do
-					local framename = "CompactRaidFrame" .. i
-					local asframe = asraid[framename]
-					if asframe and asframe.unit then
-						local assignedRole = UnitGroupRolesAssigned(asframe.unit);
-						if assignedRole == "TANK" then
-							table.insert(tanklist, framename);
-						end
-					end
-				end
-			end
-
-			for i = 1, GetNumGroupMembers() do
-				local unitid = "raid" .. i
-				local notMe = not UnitIsUnit('player', unitid)
-				local unitName = UnitName(unitid)
-				if unitName and notMe then
-					local _, _, _, _, _, _, _, _, _, role, _, assignedRole = GetRaidRosterInfo(i);
-					if assignedRole == "TANK" then
-						table.insert(tanklist, unitid);
-					end
-				end
-			end
-		else -- party
-			for i = 1, 5 do
-				local framename = "CompactPartyFrameMember" .. i
-				local asframe = asraid[framename]
-				if asframe and asframe.unit then
-					local assignedRole = UnitGroupRolesAssigned(asframe.unit);
-					if assignedRole == "TANK" then
-						table.insert(tanklist, framename);
-					end
+		for framename, asframe in pairs(asraid) do
+			if asframe and asframe.frame and asframe.frame:IsShown() and asframe.unit then
+				local assignedRole = UnitGroupRolesAssigned(asframe.unit);
+				if assignedRole == "TANK" or assignedRole == "MAINTANK" then
+					table.insert(tanklist, framename);					
 				end
 			end
 		end
@@ -521,7 +478,7 @@ local function ACRB_updatePartyAllHealerMana()
 			if asframe and asframe.frame and asframe.frame:IsShown() then
 				ACRB_updateAllHealerMana(asframe);
 			end
-		end	
+		end
 	end
 end
 
@@ -1504,15 +1461,10 @@ local function ACRB_OnEvent(self, event, ...)
 		updateTankerList();
 	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
 		DumpCaches();
-	elseif (event == "GROUP_LEFT") then		
-		asraid = {};
+	elseif (event == "GROUP_LEFT") then
+		table.wipe(asraid);
 	elseif (event == "PLAYER_LEAVING_WORLD") then
 		hasValidPlayer = false;
-	elseif (event == "COMPACT_UNIT_FRAME_PROFILES_LOADED") then
-		together = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups();
-		if together == nil then
-			together = true;
-		end
 	end
 end
 
@@ -1524,7 +1476,6 @@ ACRB_mainframe:RegisterEvent("GROUP_LEFT");
 ACRB_mainframe:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");
 ACRB_mainframe:RegisterEvent("CVAR_UPDATE");
 ACRB_mainframe:RegisterEvent("ROLE_CHANGED_INFORM");
-ACRB_mainframe:RegisterEvent("COMPACT_UNIT_FRAME_PROFILES_LOADED");
 ACRB_mainframe:RegisterEvent("VARIABLES_LOADED");
 ACRB_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
 ACRB_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
