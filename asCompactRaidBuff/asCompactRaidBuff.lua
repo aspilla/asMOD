@@ -440,7 +440,7 @@ end
 local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
 	if enable and enable ~= 0 and start > 0 and duration > 0 then
 		self:SetDrawEdge(forceShowDrawEdge);
-		self:SetCooldown(start, duration, modRate);		
+		self:SetCooldown(start, duration, modRate);
 	else
 		asCooldownFrame_Clear(self);
 	end
@@ -493,8 +493,8 @@ local function ARCB_UtilSetBuff(buffFrame, aura)
 	local enabled = aura.expirationTime and aura.expirationTime ~= 0;
 	if enabled then
 		local startTime = aura.expirationTime - aura.duration;
-		asCooldownFrame_Set(buffFrame.cooldown, startTime, aura.duration, true);		
-	else		
+		asCooldownFrame_Set(buffFrame.cooldown, startTime, aura.duration, true);
+	else
 		asCooldownFrame_Clear(buffFrame.cooldown);
 	end
 
@@ -612,7 +612,7 @@ local function ACRB_UpdateRaidIcon(asframe)
 		asframe.asraidicon:Show();
 	end
 
-	do
+	if (asframe.aborbcolor) then
 		local value = UnitHealth(unit);
 		local valueMax = UnitHealthMax(unit);
 		local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0;
@@ -745,59 +745,19 @@ local function ACRB_updateAllHealerMana(asframe)
 end
 
 local function ACRB_updatePartyAllHealerMana()
-	if (IsInGroup() or (ACRB_ShowWhenSolo)) then
-		if IsInRaid() then -- raid
-			if together == true then
-				for i = 1, 8 do
-					for k = 1, 5 do
-						local asframe = asraid["CompactRaidGroup" .. i .. "Member" .. k]
-						ACRB_updateAllHealerMana(asframe);
-					end
-				end
-			else
-				for i = 1, 40 do
-					local asframe = asraid["CompactRaidFrame" .. i]
-					ACRB_updateAllHealerMana(asframe);
-				end
-			end
-		else -- party
-			for i = 1, 5 do
-				local asframe = asraid["CompactPartyFrameMember" .. i]
+	if IsInGroup() then
+		for _, asframe in pairs(asraid) do
+			if asframe and asframe.frame and asframe.frame:IsShown() then
 				ACRB_updateAllHealerMana(asframe);
 			end
-		end
-	end
-end
-
-local function ACRB_DisableAura()
-	if (IsInGroup() or (ACRB_ShowWhenSolo)) then
-		if IsInRaid() then -- raid
-			if together == true then
-				for i = 1, 8 do
-					for k = 1, 5 do
-						local frame = _G["CompactRaidGroup" .. i .. "Member" .. k]
-						ACRB_disableDefault(frame);
-					end
-				end
-			else
-				for i = 1, 40 do
-					local frame = _G["CompactRaidFrame" .. i]
-					ACRB_disableDefault(frame);
-				end
-			end
-		else -- party
-			for i = 1, 5 do
-				local frame = _G["CompactPartyFrameMember" .. i]
-				ACRB_disableDefault(frame);
-			end
-		end
+		end	
 	end
 end
 
 local ACRB_DangerousSpellList = {};
 
 local function ACRB_updateCasting(asframe, unit)
-	if asframe and asframe.frame and asframe.frame:IsShown() then
+	if asframe and asframe.frame and asframe.frame:IsShown() and asframe.castFrames then
 		local index = asframe.ncasting + 1;
 		local castFrame = asframe.castFrames[index];
 
@@ -814,7 +774,7 @@ local function ACRB_updateCasting(asframe, unit)
 				name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
 			end
 
-			if name and asframe.castFrames and index <= #(asframe.castFrames) then
+			if name and index <= #(asframe.castFrames) then
 				castFrame.icon:SetTexture(texture);
 				castFrame.count:Hide();
 
@@ -892,27 +852,8 @@ local function CheckCasting(nameplate)
 			end
 
 			if (IsInGroup()) then
-				if IsInRaid() then -- raid
-					if together == true then
-						for i = 1, 8 do
-							for k = 1, 5 do
-								local asframe = asraid["CompactRaidGroup" .. i .. "Member" .. k]
-								if ACRB_updateCasting(asframe, unit) then
-									return;
-								end
-							end
-						end
-					else
-						for i = 1, 40 do
-							local asframe = asraid["CompactRaidFrame" .. i]
-							if ACRB_updateCasting(asframe, unit) then
-								return;
-							end
-						end
-					end
-				else -- party
-					for i = 1, 5 do
-						local asframe = asraid["CompactPartyFrameMember" .. i]
+				for _, asframe in pairs(asraid) do
+					if asframe and asframe.frame and asframe.frame:IsShown() then
 						if ACRB_updateCasting(asframe, unit) then
 							return;
 						end
@@ -925,31 +866,17 @@ end
 
 
 local function ACRB_CheckCasting()
-	for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-		local nameplate = v;
-		if (nameplate) then
-			CheckCasting(nameplate);
-		end
-	end
-
 	if (IsInGroup()) then
-		if IsInRaid() then -- raid
-			if together == true then
-				for i = 1, 8 do
-					for k = 1, 5 do
-						local asframe = asraid["CompactRaidGroup" .. i .. "Member" .. k]
-						ARCB_HideCast(asframe);
-					end
-				end
-			else
-				for i = 1, 40 do
-					local asframe = asraid["CompactRaidFrame" .. i]
-					ARCB_HideCast(asframe);
-				end
+		for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
+			local nameplate = v;
+			if (nameplate) then
+				CheckCasting(nameplate);
 			end
-		else -- party
-			for i = 1, 5 do
-				local asframe = asraid["CompactPartyFrameMember" .. i]
+		end
+
+
+		for _, asframe in pairs(asraid) do
+			if asframe and asframe.frame and asframe.frame:IsShown() then
 				ARCB_HideCast(asframe);
 			end
 		end
@@ -963,17 +890,7 @@ function ACTA_DBMTimer_callback(event, id, ...)
 	end
 end
 
-local mustdisable = true;
-
 local function ACRB_OnUpdate()
-	if mustdisable then
-		mustdisable = false;
-		together = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups();
-		if together == nil then
-			together = true;
-		end
-		ACRB_DisableAura();
-	end
 	ACRB_updatePartyAllHealerMana();
 	ACRB_CheckCasting();
 end
@@ -990,8 +907,8 @@ local function ProcessAura(aura)
 
 	if ACRB_BlackList and ACRB_BlackList[aura.name] then
 		return AuraUpdateChangedType.None;
-	end	
-	
+	end
+
 	if aura.isBossAura and not aura.isRaid then
 		aura.debuffType = aura.isHarmful and UnitFrameDebuffType.BossDebuff or
 			UnitFrameDebuffType.BossBuff;
@@ -1011,7 +928,7 @@ local function ProcessAura(aura)
 		return AuraUpdateChangedType.Buff;
 	elseif aura.isHelpful and (PLAYER_UNITS[aura.sourceUnit] and ACRB_ShowList and ACRB_ShowList[aura.name]) then
 		aura.isBuff = true;
-		return AuraUpdateChangedType.Buff;		
+		return AuraUpdateChangedType.Buff;
 	elseif aura.isHarmful and aura.isRaid then
 		if DispellableDebuffTypes[aura.dispelName] ~= nil then
 			aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
@@ -1040,7 +957,6 @@ function ACRB_ProcessAura(asframe, aura)
 end
 
 local function UpdateNameColor(frame)
-
 	if not frame or frame:IsForbidden() then
 		return
 	end
@@ -1051,8 +967,8 @@ local function UpdateNameColor(frame)
 	if asframe == nil or not asframe.buffcolor then
 		return;
 	end
-	
-	if  asframe.buffcolor:IsShown() then
+
+	if asframe.buffcolor:IsShown() then
 		local classColor = RAID_CLASS_COLORS[select(2, UnitClass(frame.unit))];
 		if classColor then
 			frame.name:SetVertexColor(classColor.r, classColor.g, classColor.b);
@@ -1060,7 +976,6 @@ local function UpdateNameColor(frame)
 	else
 		frame.name:SetVertexColor(1.0, 1.0, 1.0);
 	end
-
 end
 
 local function ACRB_ParseAllAuras(asframe)
@@ -1668,7 +1583,7 @@ local function ACRB_setupFrame(frame)
 			end
 			asraid[frameName].pvpbuffFrames[i].border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
 			asraid[frameName].pvpbuffFrames[i].border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-			asraid[frameName].pvpbuffFrames[i].border:SetVertexColor(0,0,0);
+			asraid[frameName].pvpbuffFrames[i].border:SetVertexColor(0, 0, 0);
 			asraid[frameName].pvpbuffFrames[i].border:Show();
 		end
 	end
@@ -1771,34 +1686,20 @@ local function ARCB_UpdateAll(frame)
 	if frame and not frame:IsForbidden() and frame.GetName then
 		local name = frame:GetName();
 
-		if name and not (name == nil) and (string.find(name, "CompactRaidGroup") or string.find(name, "CompactPartyFrameMember") or string.find(name, "CompactRaidFrame")) then			
+		if name and not (name == nil) and (string.find(name, "CompactRaidGroup") or string.find(name, "CompactPartyFrameMember") or string.find(name, "CompactRaidFrame")) then
+			if not (frame.displayedUnit and UnitIsPlayer(frame.displayedUnit)) then return end
+			if not (frame.unit and UnitIsPlayer(frame.unit)) then return end
 			ACRB_disableDefault(frame);
 			ACRB_setupFrame(frame);
-			mustdisable = true;
 		end
 	end
 end
 
 local function ACRB_updatePartyAllAura()
-	if (IsInGroup() or (ACRB_ShowWhenSolo)) then
-		if IsInRaid() then -- raid
-			if together == true then
-				for i = 1, 8 do
-					for k = 1, 5 do
-						local frame = _G["CompactRaidGroup" .. i .. "Member" .. k]
-						ACRB_setupFrame(frame);
-					end
-				end
-			else
-				for i = 1, 40 do
-					local frame = _G["CompactRaidFrame" .. i]
-					ACRB_setupFrame(frame);
-				end
-			end
-		else -- party
-			for i = 1, 5 do
-				local frame = _G["CompactPartyFrameMember" .. i]
-				ACRB_setupFrame(frame);
+	if (IsInGroup()) then
+		for _, asframe in pairs(asraid) do
+			if asframe and asframe.frame and asframe.frame:IsShown() then
+				ACRB_setupFrame(asframe.frame);
 			end
 		end
 	end
@@ -1818,7 +1719,6 @@ local function ACRB_OnEvent(self, event, ...)
 
 	if (event == "PLAYER_ENTERING_WORLD") then
 		ACRB_InitList();
-		mustdisable = true;
 		hasValidPlayer = true;
 		local bloaded = LoadAddOn("DBM-Core");
 		if bloaded then
@@ -1831,9 +1731,10 @@ local function ACRB_OnEvent(self, event, ...)
 		DumpCaches();
 	elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
 		updateTankerList();
-		mustdisable = true;
 	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
 		DumpCaches();
+	elseif (event == "GROUP_LEFT") then		
+		asraid = {};
 	elseif (event == "PLAYER_LEAVING_WORLD") then
 		hasValidPlayer = false;
 	elseif (event == "COMPACT_UNIT_FRAME_PROFILES_LOADED") then
@@ -1848,7 +1749,7 @@ ACRB_mainframe:SetScript("OnEvent", ACRB_OnEvent)
 ACRB_mainframe:RegisterEvent("GROUP_ROSTER_UPDATE");
 ACRB_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 ACRB_mainframe:RegisterEvent("PLAYER_LEAVING_WORLD");
---ACRB_mainframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
+ACRB_mainframe:RegisterEvent("GROUP_LEFT");
 ACRB_mainframe:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");
 ACRB_mainframe:RegisterEvent("CVAR_UPDATE");
 ACRB_mainframe:RegisterEvent("ROLE_CHANGED_INFORM");
