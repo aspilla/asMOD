@@ -108,8 +108,7 @@ local function APB_UnitBuff(unit, buff, casterid)
 	repeat
 		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
 			UnitBuff(unit, i, filter);
-
-		if (name == buff or spellId == buff) and duration > 0 and caster == casterid then
+		if (name == buff or spellId == buff) and duration > 0 and caster == casterid then			
 			return UnitBuff(unit, i, filter);
 		elseif (name == buff or spellId == buff) and duration == 0 and caster == casterid then
 			ret = i;
@@ -1895,6 +1894,14 @@ local function APB_CheckPower(self)
 				APB.combobar[i].tooltip = "소용돌이치는 무기";
 			end
 			bhalf_combo = true;
+
+			if asCheckTalent("낙뢰") then
+				APB_BUFF = "낙뢰";
+				APB.buffbar[0].buff = 187878;
+				APB.buffbar[0].unit = "player"
+				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				APB_UpdateBuff(self.buffbar[0])
+			end
 		end
 
 		if (spec and spec == 3) then
