@@ -572,7 +572,7 @@ local function APB_UpdateFronzenOrb(self)
 		local currtime = GetTime();
 		local duration = 0;
 
-		if start ~= nil and currtime - start <= 10 then
+		if start ~= nil and currtime - start <= FrozenOrbDuration then
 			duration = FrozenOrbDuration;
 		else
 			duration = 0;
