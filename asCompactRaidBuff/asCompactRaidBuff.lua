@@ -1463,7 +1463,7 @@ local function ACRB_OnEvent(self, event, ...)
 	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
 		DumpCaches();
 	elseif (event == "GROUP_LEFT") then
-		table.wipe(asraid);
+		asraid = {};
 	elseif (event == "PLAYER_LEAVING_WORLD") then
 		hasValidPlayer = false;
 	end
