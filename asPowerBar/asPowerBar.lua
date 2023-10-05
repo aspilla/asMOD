@@ -588,6 +588,7 @@ local function APB_UpdateFronzenOrb(self)
 			self.text:SetText("");
 			self.start = 0;
 			self.duraton = duration;
+			self.castbar:Hide();
 			self:SetScript("OnUpdate", nil)
 		end
 		self.count:SetText("");
@@ -1309,6 +1310,10 @@ local function APB_CheckPower(self)
 
 	for i = 1, 10 do
 		setupMouseOver(APB.combobar[i]);
+	end
+
+	for i = 1, 10 do
+		setupMouseOver(APB.spellbar[i]);
 	end
 
 	for j = 0, 1 do
