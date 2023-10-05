@@ -41,7 +41,7 @@ ACI_SpellID_list = {};
 local ACI_Cool_list = {};
 local ACI_Active_list = {};
 local ACI_Action_slot_list = {};
-local ACI_SpellID_list = {};
+local ACI_Spell_slot_list = {};
 local ACI_Action_to_index = {};
 local ACI_Alert_list = {};
 local ACI_Current_Count = 0;
@@ -521,7 +521,7 @@ local function ACI_Alert(self, bcastspell)
 			spellname = spell_temp;
 		end
 
-		local spellid = ACI_SpellID_list[i];
+		local spellid = select(7, GetSpellInfo(spellname));
 
 		if spellid then
 			_, _, icon = GetSpellInfo(spellid)
@@ -650,7 +650,7 @@ local function ACI_Alert(self, bcastspell)
 			end
 		else
 
-			local spellid = ACI_SpellID_list[i];
+			local spellid = select(7, GetSpellInfo(spellname));
 
 			if spellid then
 				_, _, icon = GetSpellInfo(spellid)
@@ -781,7 +781,7 @@ local function ACI_Alert(self, bcastspell)
 				self.exTime = expirationTime - alert_du;
 			end
 		else
-			local spellid = ACI_SpellID_list[i];
+			local spellid = select(7, GetSpellInfo(spellname));
 
 			if spellid then
 				_, _, icon = GetSpellInfo(spellid)
@@ -862,7 +862,7 @@ local function ACI_Alert(self, bcastspell)
 
 		if isUsable == false then
 
-			local spellid = ACI_SpellID_list[i];
+			local spellid = select(7, GetSpellInfo(spellname));
 
 			if spellid then
 				_, _, icon = GetSpellInfo(spellid)
@@ -944,7 +944,7 @@ local function ACI_Alert(self, bcastspell)
 
 		if isUsable == false then
 
-			local spellid = ACI_SpellID_list[i];
+			local spellid = select(7, GetSpellInfo(spellname));
 
 			if spellid then
 				_, _, icon = GetSpellInfo(spellid)
@@ -1217,7 +1217,7 @@ local function ACI_OnEvent(self, event, arg1, ...)
 
 
 	if event == "PLAYER_ENTERING_WORLD" then
-		ACI_Init();
+		C_Timer.After(0.5, ACI_Init);
 		bfirst = true;
 		if UnitAffectingCombat("player") then
 			for i = 1, ACI_MaxSpellCount do
@@ -1335,7 +1335,10 @@ local function ACI_GetSpellID(name)
 				do break end
 			end
 
-			if spellID and spellName == name then
+			
+
+			
+			if spellID and spellName == name then				
 				return spellID;
 			end
 		end
@@ -1523,20 +1526,33 @@ function ACI_Init()
 
 			if ACI_SpellList[i][2] == 1 or ACI_SpellList[i][2] == 9 then
 				ACI_Cool_list[ACI_SpellList[i][1]] = i;
-				local id = select(7, GetSpellInfo(ACI_SpellList[i][1]));
 
+				if tonumber(ACI_SpellList[i][1]) then
+					ACI_Spell_slot_list[i] = ACI_SpellList[i][1];
+					ACI_SpellList[i][1] = select(1, GetSpellInfo(ACI_Spell_slot_list[i]))				
+				else
+					ACI_Spell_slot_list[i] = ACI_GetSpellID(ACI_SpellList[i][1]);
+				end
+			
 				ACI_Action_slot_list[i] = ACI_GetActionSlot(ACI_SpellList[i][1]);
-				ACI_SpellID_list[i] = ACI_GetSpellID(ACI_SpellList[i][1]);
+				
+				
 				if ACI_Action_slot_list[i] then
 					ACI_Action_to_index[ACI_Action_slot_list[i]] = i;
 				end
 
-				if id then
-					ACI_SpellID_list[id] = true;
+				if ACI_Spell_slot_list[i] then
+					ACI_SpellID_list[ACI_Spell_slot_list[i]] = true;
 				end
 			elseif ACI_SpellList[i][2] == 2 or ACI_SpellList[i][2] == 3 or ACI_SpellList[i][2] == 5 or ACI_SpellList[i][2] == 6 then
-				ACI_Action_slot_list[i] = ACI_GetActionSlot(ACI_SpellList[i][1]);
-				ACI_SpellID_list[i] = ACI_GetSpellID(ACI_SpellList[i][1]);
+
+				if tonumber(ACI_SpellList[i][1]) then
+					ACI_Spell_slot_list[i] = ACI_SpellList[i][1];
+					ACI_SpellList[i][1] = select(1, GetSpellInfo(ACI_Spell_slot_list[i]))				
+				else
+					ACI_Spell_slot_list[i] = ACI_GetSpellID(ACI_SpellList[i][1]);
+				end
+				ACI_Action_slot_list[i] = ACI_GetActionSlot(ACI_SpellList[i][1]);				
 				if ACI_Action_slot_list[i] then
 					ACI_Action_to_index[ACI_Action_slot_list[i]] = i;
 				end
@@ -1550,10 +1566,11 @@ function ACI_Init()
 				end
 
 
-				local id = select(7, GetSpellInfo(ACI_SpellList[i][1]));
-				if id then
-					ACI_SpellID_list[id] = true;
+				if ACI_Spell_slot_list[i] then
+					ACI_SpellID_list[ACI_Spell_slot_list[i]] = true;
 				end
+
+				ACI_SpellID_list[ACI_SpellList[i][1]] = true;
 			elseif ACI_SpellList[i][2] == 4 then
 				local name = GetSpellInfo(ACI_SpellList[i][1]);
 				if ACI_SpellList[i][6] then
@@ -1569,18 +1586,19 @@ function ACI_Init()
 				local id = select(7, GetSpellInfo(ACI_SpellList[i][1]));
 
 				ACI_Action_slot_list[i] = ACI_GetActionSlot(ACI_SpellList[i][1]);
-				ACI_SpellID_list[i] = ACI_GetSpellID(ACI_SpellList[i][1]);
+				ACI_Spell_slot_list[i] = ACI_GetSpellID(ACI_SpellList[i][1]);
 				if ACI_Action_slot_list[i] then
 					ACI_Action_to_index[ACI_Action_slot_list[i]] = i;
 				end
 
-				if id then
-					ACI_SpellID_list[id] = true;
+				if ACI_Spell_slot_list[i] then
+					ACI_SpellID_list[ACI_Spell_slot_list[i]] = true;
 				end
 
 				if ACI_SpellList[i][3] and ACI_SpellList[i][3] == "player" then
 					ACI_Player_Debuff_list[ACI_SpellList[i][1]] = i;
 				end
+				ACI_SpellID_list[ACI_SpellList[i][1]] = true;
 			elseif ACI_SpellList[i][2] == 7 or ACI_SpellList[i][2] == 12 then
 				local name = GetSpellInfo(ACI_SpellList[i][1]);
 
@@ -1605,7 +1623,7 @@ function ACI_Init()
 				end
 			elseif ACI_SpellList[i][2] == 14 then
 				ACI_Action_slot_list[i] = ACI_GetActionSlot(ACI_SpellList[i][1]);
-				ACI_SpellID_list[i] = ACI_GetSpellID(ACI_SpellList[i][1]);
+				ACI_Spell_slot_list[i] = ACI_GetSpellID(ACI_SpellList[i][1]);
 				if ACI_Action_slot_list[i] then
 					ACI_Action_to_index[ACI_Action_slot_list[i]] = i;
 				end

@@ -301,7 +301,7 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura)
 	debuffFrame.border:SetVertexColor(color.r, color.g, color.b);
 
 	debuffFrame.isBossBuff = aura.isBossAura and aura.isHelpful;
-	if (aura.isBossAura) then
+	if (aura.isBossAura or aura.nameplateShowAll) then
 		debuffFrame:SetSize((debuffFrame.size_x) * 1.3, debuffFrame.size_y * 1.3);
 	else
 		debuffFrame:SetSize(debuffFrame.size_x, debuffFrame.size_y);
@@ -325,8 +325,7 @@ local function ACRB_UpdateHealerMana(asframe)
 
 	local role = UnitGroupRolesAssigned(unit)
 
-
-	if role == "HEALER" then
+	if role and role == "HEALER" then
 		asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(unit, Enum.PowerType.Mana))
 		asframe.asManabar:SetValue(UnitPower(unit, Enum.PowerType.Mana));
 
@@ -849,7 +848,7 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 			ACRB_UtilSetDebuff(debuffFrame, aura);
 			frameNum = frameNum + 1;
 
-			if aura.isBossAura then
+			if aura.isBossAura or aura.nameplateShowAll then
 				maxDebuffs = maxDebuffs - 1;
 			end
 
