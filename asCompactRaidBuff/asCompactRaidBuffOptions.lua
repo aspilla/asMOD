@@ -50,6 +50,7 @@ ns.ACRB_ShowList_PRIEST_3 = {
 
 ns.ACRB_ShowList_SHAMAN_3 = {
 	["성난 해일"] = { 1, 4 },
+	["대지의 보호막"] = { 0, 5 },
 }
 
 
