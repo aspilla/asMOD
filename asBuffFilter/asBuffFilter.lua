@@ -622,7 +622,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ABF:SetAlpha(ns.ABF_AlphaNormal);
 		DumpCaches();
-	elseif (event == "PLAYER_SPECIALIZATION_CHANGED") then
+	elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
 		overlayspell = {};
 		asCheckTalent();
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
@@ -792,7 +792,7 @@ local function ABF_Init()
 	ABF:RegisterEvent("PLAYER_REGEN_DISABLED");
 	ABF:RegisterEvent("PLAYER_REGEN_ENABLED");
 	ABF:RegisterEvent("PLAYER_TOTEM_UPDATE");
-	ABF:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");
+	ABF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 
 
 	bloaded = LoadAddOn("asOverlay")

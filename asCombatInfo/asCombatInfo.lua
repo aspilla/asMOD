@@ -393,7 +393,7 @@ local function ACI_Alert(self, bcastspell)
 
 		if icon then
 			start = expirationTime - duration;
-			isUsable = 1
+			isUsable = true;
 			enable = 1
 
 			if count <= 1 then
@@ -546,8 +546,6 @@ local function ACI_Alert(self, bcastspell)
 	elseif t == 14 then
 		spellname = 193316;
 
-		local idx;
-
 		_, _, icon = GetSpellInfo(spellname);
 		duration = 0;
 		start = 0;
@@ -566,7 +564,7 @@ local function ACI_Alert(self, bcastspell)
 				icon = texture;
 				duration = temp_du;
 				start = temp_ex - duration;
-				isUsable = 1
+				isUsable = true;
 				enable = 1
 				buff_cool = true;
 			end
@@ -803,8 +801,6 @@ local function ACI_ButtonOnEvent(self, event, arg1, ...)
 	elseif event == "SPELL_UPDATE_CHARGES" then
 		ACI_Alert(self);
 	elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
-		_, cast_spell = ...;
-		cast_time = GetTime();
 		ACI_Alert(self, true);
 	elseif event == "PLAYER_TOTEM_UPDATE" then
 		ACI_Alert(self);
@@ -892,7 +888,7 @@ local function ACI_OnEvent(self, event, arg1, ...)
 		bfirst = false;
 	elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
 		local spell = GetSpellInfo(arg1);
-		ACI_Active_list[spell] = true;		
+		ACI_Active_list[spell] = true;
 		if ACI_Cool_list and ACI_Cool_list[spell] then
 			ACI_Alert(ACI[ACI_Cool_list[spell]]);
 		end
@@ -916,8 +912,7 @@ local function ACI_OnEvent(self, event, arg1, ...)
 				ACI_Alert(ACI[index]);
 			end
 		end
-	end
-	return;
+	end	
 end
 
 local function ACI_GetActionSlot(arg1)
@@ -1026,7 +1021,7 @@ function ACI_Init()
 	else
 		ACI_SpellListtmp = {};
 	end
-	
+
 	ACI_Cool_list = {}
 	ACI_Buff_list = {}
 	ACI_Debuff_list = {}

@@ -1455,7 +1455,7 @@ local function ACRB_OnEvent(self, event, ...)
 		end
 		updateTankerList();
 		DumpCaches();
-	elseif (event == "PLAYER_SPECIALIZATION_CHANGED") then
+	elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
 		ACRB_InitList();
 		DumpCaches();
 	elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
@@ -1474,7 +1474,7 @@ ACRB_mainframe:RegisterEvent("GROUP_ROSTER_UPDATE");
 ACRB_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 ACRB_mainframe:RegisterEvent("PLAYER_LEAVING_WORLD");
 ACRB_mainframe:RegisterEvent("GROUP_LEFT");
-ACRB_mainframe:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");
+ACRB_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 ACRB_mainframe:RegisterEvent("CVAR_UPDATE");
 ACRB_mainframe:RegisterEvent("ROLE_CHANGED_INFORM");
 ACRB_mainframe:RegisterEvent("VARIABLES_LOADED");

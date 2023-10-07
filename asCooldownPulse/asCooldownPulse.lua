@@ -1,4 +1,6 @@
-﻿-- 설정 최소 Cooldown (단위 초)
+﻿local _, ns = ...;
+
+-- 설정 최소 Cooldown (단위 초)
 local CONFIG_MINCOOL = 1.5 -- 최소안내 쿨타임
 local CONFIG_MAXCOOL = (60 * 5)
 local CONFIG_MINCOOL_PET = 20
@@ -72,124 +74,6 @@ local voice_remap = {
 	["자연의 치유력"] = "해제쿨다운",
 }
 
--- Alpha animation stuff
-local asFADEFRAMES = {};
-
-
-local frameFadeManager = CreateFrame("FRAME");
-
-local function asUIFrameFadeRemoveFrame(frame)
-	tDeleteItem(asFADEFRAMES, frame);
-end
-
-local function asUIFrameFade_OnUpdate(self, elapsed)
-	local index = 1;
-	local frame, fadeInfo;
-	while asFADEFRAMES[index] do
-		frame = asFADEFRAMES[index];
-		fadeInfo = asFADEFRAMES[index].fadeInfo;
-		-- Reset the timer if there isn't one, this is just an internal counter
-		if (not fadeInfo.fadeTimer) then
-			fadeInfo.fadeTimer = 0;
-		end
-		fadeInfo.fadeTimer = fadeInfo.fadeTimer + elapsed;
-
-		-- If the fadeTimer is less then the desired fade time then set the alpha otherwise hold the fade state, call the finished function, or just finish the fade
-		if (fadeInfo.fadeTimer < fadeInfo.timeToFade) then
-			if (fadeInfo.mode == "IN") then
-				frame:SetAlpha((fadeInfo.fadeTimer / fadeInfo.timeToFade) * (fadeInfo.endAlpha - fadeInfo.startAlpha) +
-					fadeInfo.startAlpha);
-			elseif (fadeInfo.mode == "OUT") then
-				frame:SetAlpha(((fadeInfo.timeToFade - fadeInfo.fadeTimer) / fadeInfo.timeToFade) *
-					(fadeInfo.startAlpha - fadeInfo.endAlpha) + fadeInfo.endAlpha);
-			end
-		else
-			frame:SetAlpha(fadeInfo.endAlpha);
-			-- If there is a fadeHoldTime then wait until its passed to continue on
-			if (fadeInfo.fadeHoldTime and fadeInfo.fadeHoldTime > 0) then
-				fadeInfo.fadeHoldTime = fadeInfo.fadeHoldTime - elapsed;
-			else
-				-- Complete the fade and call the finished function if there is one
-				asUIFrameFadeRemoveFrame(frame);
-				if (fadeInfo.finishedFunc) then
-					fadeInfo.finishedFunc(fadeInfo.finishedArg1, fadeInfo.finishedArg2, fadeInfo.finishedArg3,
-						fadeInfo.finishedArg4);
-					fadeInfo.finishedFunc = nil;
-				end
-			end
-		end
-
-		index = index + 1;
-	end
-
-	if (#asFADEFRAMES == 0) then
-		self:SetScript("OnUpdate", nil);
-	end
-end
-
-
--- Generic fade function
-local function asUIFrameFade(frame, fadeInfo)
-	if (not frame) then
-		return;
-	end
-	if (not fadeInfo.mode) then
-		fadeInfo.mode = "IN";
-	end
-	local alpha;
-	if (fadeInfo.mode == "IN") then
-		if (not fadeInfo.startAlpha) then
-			fadeInfo.startAlpha = 0;
-		end
-		if (not fadeInfo.endAlpha) then
-			fadeInfo.endAlpha = 1.0;
-		end
-		alpha = 0;
-	elseif (fadeInfo.mode == "OUT") then
-		if (not fadeInfo.startAlpha) then
-			fadeInfo.startAlpha = 1.0;
-		end
-		if (not fadeInfo.endAlpha) then
-			fadeInfo.endAlpha = 0;
-		end
-		alpha = 1.0;
-	end
-	frame:SetAlpha(fadeInfo.startAlpha);
-
-	frame.fadeInfo = fadeInfo;
-	frame:Show();
-
-	local index = 1;
-	while asFADEFRAMES[index] do
-		-- If frame is already set to fade then return
-		if (asFADEFRAMES[index] == frame) then
-			return;
-		end
-		index = index + 1;
-	end
-	tinsert(asFADEFRAMES, frame);
-	frameFadeManager:SetScript("OnUpdate", asUIFrameFade_OnUpdate);
-end
-
--- Convenience function to do a simple fade in
-local function asUIFrameFadeIn(frame, timeToFade, startAlpha, endAlpha)
-	local fadeInfo = {};
-	fadeInfo.mode = "IN";
-	fadeInfo.timeToFade = timeToFade;
-	fadeInfo.startAlpha = startAlpha;
-	fadeInfo.endAlpha = endAlpha;
-	asUIFrameFade(frame, fadeInfo);
-end
-
--- Convenience function to do a simple fade out
-local function asUIFrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
-	local fadeInfo = {};
-	fadeInfo.mode = "OUT";
-	fadeInfo.timeToFade = timeToFade;
-	fadeInfo.startAlpha = startAlpha;
-	fadeInfo.endAlpha = endAlpha;
-	asUIFrameFade(frame, fadeInfo);
-end
 
 local ACDP = {};
 local ACDP_Icon = {};
@@ -571,8 +455,8 @@ local function ACDP_Alert(spell, type)
 		end
 	end
 
-	asUIFrameFadeIn(ACDP[ACDP_Icon_Idx], ACDP_AlertShowTime, 0, 1)
-	asUIFrameFadeOut(ACDP[ACDP_Icon_Idx], ACDP_AlertFadeTime, 1, 0)
+	ns.asUIFrameFadeIn(ACDP[ACDP_Icon_Idx], ACDP_AlertShowTime, 0, 1)
+	ns.asUIFrameFadeOut(ACDP[ACDP_Icon_Idx], ACDP_AlertFadeTime, 1, 0)
 
 	ACDP_Icon_Idx = ACDP_Icon_Idx + 1;
 
@@ -719,49 +603,3 @@ ACDP_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
 ACDP_Init()
 C_Timer.NewTicker(ACDP_UpdateRate, ACDP_OnUpdate);
-
---[[
-local frame = CreateFrame("Frame", nil, nil);
-local category, layout = Settings.RegisterCanvasLayoutCategory(frame, "asCooldownPulse");
-
-layout:AddAnchorPoint("TOPLEFT", 10, -10);
-layout:AddAnchorPoint("BOTTOMRIGHT", -10, 10);
-
-
-local category, layout = Settings.RegisterVerticalLayoutCategory("asCooldownPulse");
-Settings.RegisterAddOnCategory(category);
-
--- To assign a subcategory:
-local category = category or Settings.GetCategory("asCooldownPulse");
-
--- check box
-local variable, name, tooltip = "Show_CoolList", "Cool List를 언제나 보이기", "Cool List를 언제나 보이기";
-local setting = Settings.RegisterProxySetting(category, variable, ACDP_Options, Settings.VarType.Boolean, name, Settings.Default.False);
-Settings.CreateCheckBox(category, setting, tooltip);
-
-
--- slider
-local variable, name, tooltip = "MySlider", "My Slider", "My Slider Tooltip";
-local minValue, maxValue, step = 1, 100, 1;
-local options = Settings.CreateSliderOptions(minValue, maxValue, step);
-options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
-
-local defaultValue = 50;
-local setting = Settings.RegisterProxySetting(category, variable, myVariableTable, Settings.VarType.Number, name, defaultValue);
-Settings.CreateSlider(category, setting, options, tooltip);
-
--- dropdown
-local variable, name, tooltip = "MyDropDown", "My DropDown", "My DropDown Tooltip";
-local function GetOptions()
-    local container = Settings.CreateControlTextContainer();
-    container:Add(0, "Option A");
-    container:Add(1, "Option B");
-    container:Add(2, "Option C");
-    return container:GetData();
-end
-
-local defaultValue = 0;
-local setting = Settings.RegisterProxySetting(category, variable, myVariableTable, Settings.VarType.Number, name, defaultValue);
-Settings.CreateDropDown(category, setting, GetOptions, tooltip);
-
-]]

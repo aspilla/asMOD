@@ -16,13 +16,12 @@ PlayerCastingBarFrame.casticon.border:SetVertexColor(0, 0, 0);
 PlayerCastingBarFrame.casticon.border:Show();
 PlayerCastingBarFrame.casticon:Hide();
 
-local function casticon_OnEvent(self, event, ...)
-	local unit, name, spellid = ...;
-	local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-	"player");
+local function casticon_OnEvent(self, event)
+	
+	local name, _, texture = UnitCastingInfo("player");
 
 	if not name then
-		name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo("player")
+		name, _, texture = UnitChannelInfo("player")
 	end
 
 	local frameIcon = self.icon

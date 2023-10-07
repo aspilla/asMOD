@@ -4,7 +4,6 @@ local ACTA_MaxShow = 3      -- 최대로 보여줄 개수
 local ACTA_FontSize = 18;
 local ACTA_X = 0;
 local ACTA_Y = -80;
-local needtowork = false;
 
 local function isFaction(unit)
 	if UnitIsUnit("player", unit) then
@@ -20,9 +19,7 @@ local function isFaction(unit)
 end
 
 local currshow = 1;
-
 local ACTA_DangerousSpellList = {};
-local IsDanger = false;
 
 local function CheckCasting(nameplate)
 	if not nameplate or nameplate:IsForbidden() then
@@ -36,10 +33,9 @@ local function CheckCasting(nameplate)
 	local unit = nameplate.UnitFrame.unit;
 
 	if isFaction(unit) and UnitIsUnit(unit .. "target", "player") and not UnitIsUnit(unit, "target") then
-		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-			unit);
+		local name, _, texture, _, endTime, _, _, _, spellid = UnitCastingInfo(unit);
 		if not name then
-			name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+			name, _, texture, _, endTime, _, _, spellid = UnitChannelInfo(unit);
 		end
 
 		if name then
@@ -69,11 +65,8 @@ local function CheckCasting(nameplate)
 end
 
 local function ACTA_OnUpdate()
-	local prev_show = currshow;
-
 	currshow = 1;
-	IsDanger = false;
-
+	
 	for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
 		local nameplate = v;
 		if (nameplate) then
@@ -86,29 +79,12 @@ local function ACTA_OnUpdate()
 
 	for i = currshow, ACTA_MaxShow do
 		ACTA.cast[i]:Hide();
-	end
-
-	if currshow > prev_show and IsDanger then
-		--PlaySoundFile("Interface\\AddOns\\asCastingAlert\\alert.mp3", "DIALOG")
-	end
+	end	
 end
 
-
-
-
-local function ACTA_OnEvent(self, event)
-	if event == "PLAYER_ENTERING_WORLD" then
-		needtowork = false;
-		local inInstance, instanceType = IsInInstance();
-
-		if (inInstance and instanceType == "party") then
-			needtowork = true;
-		end
-	end
-end
 
 function ACTA_DBMTimer_callback(event, id, ...)
-	local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
+	local spellId = select(5, ...);
 	if spellId then
 		ACTA_DangerousSpellList[spellId] = true;
 	end
@@ -144,8 +120,6 @@ local function initAddon()
 		ACTA.cast[i]:Hide();
 	end
 
-	ACTA:RegisterEvent("PLAYER_ENTERING_WORLD");
-	ACTA:SetScript("OnEvent", ACTA_OnEvent)
 	--주기적으로 Callback
 	C_Timer.NewTicker(ACTA_UpdateRate, ACTA_OnUpdate);
 
