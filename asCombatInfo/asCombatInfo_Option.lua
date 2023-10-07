@@ -480,9 +480,7 @@ local function SetupEditBoxOption()
 	if spec == nil then
 		spec = 1;
 	end
-
-	local list = ACI_Options[spec][configID];
-	local listdata = ACI_SpellID_list;
+	
 	local count = 1;
 
 	curr_y = curr_y + y_adder;

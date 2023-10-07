@@ -134,7 +134,7 @@ local function scanSpells(tab)
 end
 
 local function asCheckTalent()
-	table.wipe(ABF_TalentBuffList);
+	ABF_TalentBuffList = {};
 
 	local specID = PlayerUtil.GetCurrentSpecID();
 	local configID = C_ClassTalents.GetActiveConfigID();

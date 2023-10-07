@@ -294,9 +294,9 @@ end
 
 local function setupKnownSpell(bwipe)
 	if bwipe then
-		table.wipe(KnownSpellList);
-		table.wipe(ItemSlotList);
-		table.wipe(showlist_id);
+		KnownSpellList = {};
+		ItemSlotList = {};
+		showlist_id = {};
 	end
 	scanSpells(1);
 	scanSpells(2);

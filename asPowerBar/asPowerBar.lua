@@ -26,6 +26,7 @@ local bshow_haste = false;
 local bupdate_partial_power = false;
 local bsmall_power_bar = false;
 local bupdate_buff_combo = false;
+local bupdate_direbeast_combo = false;
 local APB_UNIT_POWER;
 local APB_POWER_LEVEL;
 
@@ -356,6 +357,48 @@ local function APB_UpdateBuffCombo(combobar)
 		end
 	end
 end
+
+local prev_dire_beast_time = 0;
+local prev_dire_pack_time = 0;
+local dire_beast_count = 0;
+local function checkDireBeast()
+	local i = 1;
+	local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId;
+
+	repeat
+		name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId =
+			UnitBuff("player", i, "INCLUDE_NAME_PLATE_ONLY");
+
+		if name and spellId == 281036 and expirationTime > prev_dire_beast_time then
+			dire_beast_count = dire_beast_count + 1;
+			prev_dire_beast_time = expirationTime;
+		elseif name and spellId == 378747 and expirationTime > prev_dire_pack_time then
+			dire_beast_count = 0;
+			prev_dire_pack_time = expirationTime;
+		end
+
+		i = i + 1;
+	until (name == nil)
+
+	return dire_beast_count;
+end
+
+local function APB_UpdateDireBeastCombo(combobar)
+
+	if not bupdate_direbeast_combo then
+		return;
+	end
+
+	local count = checkDireBeast();
+
+	if count > 0 then
+		APB_ShowComboBar(count);
+	else
+		APB_ShowComboBar(0);
+	end
+	
+end
+
 
 
 
@@ -1191,7 +1234,7 @@ local function APB_OnUpdate(self, elapsed)
 	if update2 >= 0.5 then
 		update2 = 0
 		APB_UpdateBuff(self.buffbar[0]);
-		APB_UpdateBuffCombo(self.combobar);
+		APB_UpdateBuffCombo(self.combobar);		
 		APB_UpdateStagger(self.buffbar[0]);
 		APB_UpdatePower();
 	end
@@ -1278,6 +1321,7 @@ local function APB_CheckPower(self)
 	bshow_haste = false;
 	bupdate_powerbar = true;
 	bupdate_buff_combo = false;
+	bupdate_direbeast_combo = false;
 	bupdate_stagger = false;
 	bupdate_fronzen = false;
 	bupdate_windrunner = false;
@@ -1828,6 +1872,13 @@ local function APB_CheckPower(self)
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
 
+			if asCheckTalent("광포한 무리") then
+				APB_MaxCombo(5);
+				APB.combobar.unit = "player"
+				bupdate_direbeast_combo = true;
+				APB_UpdateDireBeastCombo(self.combobar);
+			end
+
 			APB_UpdateBuff(self.buffbar[0])
 		end
 
@@ -1926,7 +1977,7 @@ local function APB_CheckPower(self)
 	end
 
 
-	if not bupdate_power and not bupdate_rune and not bupdate_buff_combo then
+	if not bupdate_power and not bupdate_rune and not bupdate_buff_combo and not bupdate_direbeast_combo then
 		APB_MaxCombo(0);
 	end
 
@@ -2168,6 +2219,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 		APB_UpdateBuff(self.buffbar[0]);
 		APB_UpdateBuff(self.buffbar[1]);
 		APB_UpdateBuffCombo(self.combobar);
+		APB_UpdateDireBeastCombo(self.combobar);
 		APB_UpdateStagger(self.buffbar[0]);
 	elseif event == "ACTIONBAR_UPDATE_COOLDOWN" or event == "ACTIONBAR_UPDATE_USABLE" then
 		if APB_SPELL then

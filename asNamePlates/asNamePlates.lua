@@ -396,7 +396,7 @@ end
 
 
 local function setupKnownSpell()
-	table.wipe(KnownSpellList);
+	KnownSpellList = {};
 
 	scanSpells(1)
 	scanSpells(2)
@@ -413,7 +413,7 @@ local function updateTankerList()
 		return nil;
 	end
 
-	tanklist = table.wipe(tanklist)
+	tanklist = {}
 	if IsInGroup() then
 		if IsInRaid() then -- raid
 			for i = 1, GetNumGroupMembers() do

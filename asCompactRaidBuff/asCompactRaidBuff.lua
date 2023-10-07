@@ -410,7 +410,7 @@ local function updateTankerList()
 		return nil;
 	end
 
-	tanklist = table.wipe(tanklist)
+	tanklist = {};
 	if IsInGroup() then
 		for framename, asframe in pairs(asraid) do
 			if asframe and asframe.frame and asframe.frame:IsShown() and asframe.unit then

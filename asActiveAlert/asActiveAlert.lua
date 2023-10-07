@@ -70,11 +70,14 @@ local function ASAA_UpdateCooldown()
 	end
 
 	for id, isAlert in pairs(ASAA_SpellList) do
-		if ACI_SpellID_list and ACI_SpellID_list[id] then
+
+		name, _, icon = GetSpellInfo(id);
+
+		if ACI_SpellID_list and (ACI_SpellID_list[id] or ACI_SpellID_list[name]) then
 			isAlert = false;
 		end
 
-		name, _, icon = GetSpellInfo(id);
+		
 
 		if APB_SPELL and APB_SPELL == name then
 			isAlert = false;

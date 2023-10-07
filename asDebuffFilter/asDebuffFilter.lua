@@ -6,7 +6,7 @@ local ADF_TARGET_DEBUFF;
 
 local ADF_BlackList = {
 
-    ["도전자의 짐"] = 1,
+    ["도전자의 짐"] = 1,    
     --	["상처 감염 독"] = 1,	
     --	["신경 마취 독"] = 1,
     --	["맹독"] = 1,
@@ -224,11 +224,6 @@ local function ProcessAura(aura, unit)
 
         if aura.isRaid or aura.isBossAura then
             skip = false;
-        end
-
-        -- ACI 에서 보이는 Debuff 면 숨기기
-        if ACI_Player_Debuff_list and ACI_Player_Debuff_list[aura.name] then
-            skip = true;
         end
     end
 
