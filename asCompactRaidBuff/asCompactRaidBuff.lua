@@ -609,12 +609,6 @@ function ACTA_DBMTimer_callback(event, id, ...)
 	end
 end
 
-local function ACRB_OnUpdate()
-	ACRB_updatePartyAllHealerMana();
-	ACRB_CheckCasting();
-end
-
-
 local function ProcessAura(aura)
 	if aura == nil then
 		return AuraUpdateChangedType.None;
@@ -1404,8 +1398,8 @@ local function ACRB_setupFrame(frame)
 
 	asframe.ncasting = 0;
 
-	asframe.eventframe:RegisterUnitEvent("UNIT_AURA", asframe.unit, displayedUnit);
-	asframe.eventframe:SetScript("OnEvent", asframe_OnEvent);
+	--asframe.eventframe:RegisterUnitEvent("UNIT_AURA", asframe.unit, displayedUnit);
+	--asframe.eventframe:SetScript("OnEvent", asframe_OnEvent);
 
 	ACRB_UpdateAuras(asframe, nil);
 end
@@ -1419,20 +1413,31 @@ local function ARCB_UpdateAll(frame)
 			if not (frame.displayedUnit and UnitIsPlayer(frame.displayedUnit)) then return end
 			if not (frame.unit and UnitIsPlayer(frame.unit)) then return end
 			ACRB_disableDefault(frame);
-			ACRB_setupFrame(frame);
+			ACRB_setupFrame(frame);			
 		end
 	end
 end
 
-local function ACRB_updatePartyAllAura()
+local function ACRB_updatePartyAllAura(auraonly)
 	if (IsInGroup()) then
 		for _, asframe in pairs(asraid) do
 			if asframe and asframe.frame and asframe.frame:IsShown() then
-				ACRB_setupFrame(asframe.frame);
+				if auraonly then
+					ACRB_UpdateAuras(asframe, nil);
+				else
+					ACRB_setupFrame(asframe.frame);
+				end			
 			end
 		end
 	end
 end
+
+local function ACRB_OnUpdate()
+	ACRB_updatePartyAllAura(true);
+	ACRB_updatePartyAllHealerMana();
+	ACRB_CheckCasting();
+end
+
 
 ACRB_InitList();
 
@@ -1440,7 +1445,7 @@ local function DumpCaches()
 	cachedVisualizationInfo = {};
 	cachedSelfBuffChecks = {};
 	cachedPriorityChecks = {};
-	ACRB_updatePartyAllAura();
+	ACRB_updatePartyAllAura(false);
 end
 
 local function ACRB_OnEvent(self, event, ...)
@@ -1462,8 +1467,8 @@ local function ACRB_OnEvent(self, event, ...)
 		updateTankerList();
 	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
 		DumpCaches();
-	elseif (event == "GROUP_LEFT") then
-		asraid = {};
+	--elseif (event == "GROUP_LEFT") then
+		--table.wipe(asraid);
 	elseif (event == "PLAYER_LEAVING_WORLD") then
 		hasValidPlayer = false;
 	end
@@ -1473,7 +1478,7 @@ ACRB_mainframe:SetScript("OnEvent", ACRB_OnEvent)
 ACRB_mainframe:RegisterEvent("GROUP_ROSTER_UPDATE");
 ACRB_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 ACRB_mainframe:RegisterEvent("PLAYER_LEAVING_WORLD");
-ACRB_mainframe:RegisterEvent("GROUP_LEFT");
+--ACRB_mainframe:RegisterEvent("GROUP_LEFT");
 ACRB_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 ACRB_mainframe:RegisterEvent("CVAR_UPDATE");
 ACRB_mainframe:RegisterEvent("ROLE_CHANGED_INFORM");
