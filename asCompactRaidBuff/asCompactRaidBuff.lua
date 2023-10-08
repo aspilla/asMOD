@@ -270,6 +270,23 @@ local function ARCB_UtilSetBuff(buffFrame, aura)
 		asCooldownFrame_Clear(buffFrame.cooldown);
 	end
 
+	if ns.ACRB_ShowAlert and ACRB_ShowList then
+		local showlist_time = 0;
+
+		if ACRB_ShowList[aura.name] then
+			showlist_time = ACRB_ShowList[aura.name][1];
+			if showlist_time == 1 then
+				ACRB_ShowList[aura.name][1] = aura.duration * 0.3;
+			end
+		end
+
+		if aura.expirationTime - GetTime() < showlist_time then
+			buffFrame.border:SetVertexColor(1, 1, 1);
+		else
+			buffFrame.border:SetVertexColor(0, 0, 0);
+		end
+	end
+
 	buffFrame:Show();
 end
 
@@ -656,8 +673,7 @@ local function ProcessAura(aura)
 end
 
 function ACRB_IsPvpFrame(asframe)
-	local frame = asframe.frame;
-	return frame.groupType and frame.groupType == CompactRaidGroupTypeEnum.Arena;
+	return false;
 end
 
 function ACRB_ProcessAura(asframe, aura)
@@ -685,7 +701,7 @@ local function UpdateNameColor(frame)
 
 	if asframe.buffcolor:IsShown() then
 		local class = select(2, UnitClass(frame.unit));
-		local classColor = class and  RAID_CLASS_COLORS[class] or nil;
+		local classColor = class and RAID_CLASS_COLORS[class] or nil;
 		if classColor then
 			frame.name:SetVertexColor(classColor.r, classColor.g, classColor.b);
 		end
@@ -1120,6 +1136,8 @@ local function ACRB_setupFrame(frame)
 				else
 					buffFrame:SetPoint("BOTTOMRIGHT", asframe.asbuffFrames[i - 1], "BOTTOMLEFT", -1, 0)
 				end
+
+				buffFrame.cooldown:SetSwipeColor(0, 0, 0, 0.5);
 			else
 				-- 3개는 따로 뺀다.
 				if i == ACRB_MAX_BUFFS - 2 then
@@ -1192,6 +1210,8 @@ local function ACRB_setupFrame(frame)
 			else
 				debuffFrame:SetPoint("BOTTOMLEFT", asframe.asdebuffFrames[i - 1], "BOTTOMRIGHT", 1, 0)
 			end
+
+			debuffFrame.cooldown:SetSwipeColor(0, 0, 0, 0.5);
 
 			if ns.ACRB_ShowTooltip and not debuffFrame:GetScript("OnEnter") then
 				debuffFrame:SetScript("OnEnter", function(s)
@@ -1308,6 +1328,8 @@ local function ACRB_setupFrame(frame)
 			asframe.pvpbuffFrames[i].border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 			asframe.pvpbuffFrames[i].border:SetVertexColor(0, 0, 0);
 			asframe.pvpbuffFrames[i].border:Show();
+
+			asframe.pvpbuffFrames[i].cooldown:SetSwipeColor(0, 0, 0, 0.5);
 		end
 	end
 
@@ -1353,6 +1375,8 @@ local function ACRB_setupFrame(frame)
 			asframe.castFrames[i].count:SetPoint("BOTTOM", 0, 0);
 			asframe.castFrames[i]:Hide();
 
+			asframe.castFrames[i].cooldown:SetSwipeColor(0, 0, 0, 0.5);
+
 			if ns.ACRB_ShowBuffCooldown and fontsize >= ns.ACRB_MinShowBuffFontSize then
 				asframe.castFrames[i].cooldown:SetHideCountdownNumbers(false);
 				for _, r in next, { asframe.castFrames[i].cooldown:GetRegions() } do
@@ -1366,6 +1390,8 @@ local function ACRB_setupFrame(frame)
 			else
 				asframe.castFrames[i].cooldown:SetHideCountdownNumbers(true);
 			end
+
+
 
 			if ns.ACRB_ShowTooltip and not asframe.castFrames[i]:GetScript("OnEnter") then
 				asframe.castFrames[i]:SetScript("OnEnter", function(s)
@@ -1413,7 +1439,7 @@ local function ARCB_UpdateAll(frame)
 			if not (frame.displayedUnit and UnitIsPlayer(frame.displayedUnit)) then return end
 			if not (frame.unit and UnitIsPlayer(frame.unit)) then return end
 			ACRB_disableDefault(frame);
-			ACRB_setupFrame(frame);			
+			ACRB_setupFrame(frame);
 		end
 	end
 end
@@ -1426,7 +1452,7 @@ local function ACRB_updatePartyAllAura(auraonly)
 					ACRB_UpdateAuras(asframe, nil);
 				else
 					ACRB_setupFrame(asframe.frame);
-				end			
+				end
 			end
 		end
 	end
@@ -1467,7 +1493,7 @@ local function ACRB_OnEvent(self, event, ...)
 		updateTankerList();
 	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
 		DumpCaches();
-	--elseif (event == "GROUP_LEFT") then
+		--elseif (event == "GROUP_LEFT") then
 		--table.wipe(asraid);
 	elseif (event == "PLAYER_LEAVING_WORLD") then
 		hasValidPlayer = false;
