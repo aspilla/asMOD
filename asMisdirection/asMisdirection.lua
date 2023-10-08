@@ -45,11 +45,16 @@ local function CheckPartyMember(btank)
 				if unitName and notMe then
 					local assignedRole = UnitGroupRolesAssigned(unitid);
 
-					if btank == false and assignedRole == "DAMAGER" and not UnitIsUnit(unitid, "player") then
-						return unitid;
-					elseif assignedRole == "TANK" then
-						return unitid;
+					if btank == false then
+						if assignedRole == "DAMAGER" and not UnitIsUnit(unitid, "player") then
+							return unitid;
+						end
+					else
+						if assignedRole == "TANK" then
+							return unitid;
+						end
 					end
+					
 				end
 			end
 		else -- party
@@ -61,10 +66,14 @@ local function CheckPartyMember(btank)
 
 					assignedRole = UnitGroupRolesAssigned(unitid);
 
-					if btank == false and assignedRole == "DAMAGER" and not UnitIsUnit(unitid, "player") then
-						return unitid;
-					elseif assignedRole == "TANK" then
-						return unitid;
+					if btank == false then
+						if assignedRole == "DAMAGER" and not UnitIsUnit(unitid, "player") then
+							return unitid;
+						end
+					else
+						if assignedRole == "TANK" then
+							return unitid;
+						end
 					end
 				end
 			end
@@ -354,7 +363,7 @@ local function AHM_OnEvent(self, event, ...)
 
 		if dealer and not InCombatLockdown() then
 			if UnitExists(dealer) then
-				AHM_SetMindInfusion(dealer);			
+				AHM_SetMindInfusion(dealer);						
 			end
 		else
 			tempDealer = dealer;

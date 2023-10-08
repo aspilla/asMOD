@@ -672,21 +672,6 @@ local function ProcessAura(aura)
 	return AuraUpdateChangedType.None;
 end
 
-function ACRB_IsPvpFrame(asframe)
-	return false;
-end
-
-function ACRB_ProcessAura(asframe, aura)
-	local type = ProcessAura(aura);
-
-	-- Can't dispell debuffs on pvp frames
-	if type == AuraUpdateChangedType.Dispel and ACRB_IsPvpFrame(asframe) then
-		type = AuraUpdateChangedType.Debuff;
-	end
-
-	return type;
-end
-
 local function UpdateNameColor(frame)
 	if not frame or frame:IsForbidden() then
 		return
@@ -734,7 +719,7 @@ local function ACRB_ParseAllAuras(asframe)
 	local batchCount = nil;
 	local usePackedAura = true;
 	local function HandleAura(aura)
-		local type = ACRB_ProcessAura(asframe, aura);
+		local type = ProcessAura(aura);
 
 		if type == AuraUpdateChangedType.Debuff then
 			asframe.debuffs[aura.auraInstanceID] = aura;
@@ -743,6 +728,7 @@ local function ACRB_ParseAllAuras(asframe)
 		elseif type == AuraUpdateChangedType.PVP then
 			asframe.pvpbuffs[aura.auraInstanceID] = aura;
 		elseif type == AuraUpdateChangedType.Dispel then
+			asframe.dispels[aura.dispelName][aura.auraInstanceID] = aura;
 			asframe.debuffs[aura.auraInstanceID] = aura;
 		end
 	end
@@ -766,7 +752,7 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 	else
 		if unitAuraUpdateInfo.addedAuras ~= nil then
 			for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
-				local type = ACRB_ProcessAura(asframe, aura);
+				local type = ProcessAura(aura);
 				if type == AuraUpdateChangedType.Debuff then
 					asframe.debuffs[aura.auraInstanceID] = aura;
 					debuffsChanged = true;
@@ -964,8 +950,8 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 				if not asframe.isDispellAlert then
 					ns.lib.PixelGlow_Start(asframe.frame, { color.r, color.g, color.b, 1 })
 					asframe.isDispellAlert = true;
-					showdispell = true;
 				end
+				showdispell = true;
 			end
 		end
 		for i = frameNum, ACRB_MAX_DISPELDEBUFFS do
