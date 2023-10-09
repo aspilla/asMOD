@@ -356,8 +356,12 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             end
 
             local frameBorder = frame.border;
-            frameBorder:SetVertexColor(color.r, color.g, color.b);
-            frameBorder:SetAlpha(ns.ADF_ALPHA);
+            if aura.nameplateShowAll then
+                frameBorder:SetVertexColor(0.3, 0.3, 0.3);
+            else
+                frameBorder:SetVertexColor(color.r, color.g, color.b);
+            end
+
 
             frame:Show();
 
@@ -511,6 +515,7 @@ local function CreatDebuffFrames(parent, bright)
         frame.icon:SetTexCoord(.08, .92, .08, .92);
         frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+        frame.border:SetAlpha(ns.ADF_ALPHA);
 
         frame:ClearAllPoints();
         ADF_UpdateDebuffAnchor(parent.frames, idx, 1, bright, parent);

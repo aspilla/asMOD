@@ -280,7 +280,7 @@ local function ARCB_UtilSetBuff(buffFrame, aura)
 			end
 		end
 
-		if aura.expirationTime - GetTime() < showlist_time then
+		if showlist_time > 0 and aura.expirationTime - GetTime() < showlist_time then
 			buffFrame.border:SetVertexColor(1, 1, 1);
 		else
 			buffFrame.border:SetVertexColor(0, 0, 0);
@@ -1289,17 +1289,18 @@ local function ACRB_setupFrame(frame)
 		asframe.pvpbuffFrames = {};
 
 		for i = 1, ACRB_MAX_BUFFS_2 do
-			asframe.pvpbuffFrames[i] = CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
-			asframe.pvpbuffFrames[i]:EnableMouse(ns.ACRB_ShowTooltip);
-			asframe.pvpbuffFrames[i].icon:SetTexCoord(.08, .92, .08, .92);
-			asframe.pvpbuffFrames[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-			asframe.pvpbuffFrames[i].count:ClearAllPoints();
-			asframe.pvpbuffFrames[i].count:SetPoint("BOTTOM", 0, 0);
-			asframe.pvpbuffFrames[i]:Hide();
+			local pvpbuffFrame = CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
+			asframe.pvpbuffFrames[i] = pvpbuffFrame;
+			pvpbuffFrame:EnableMouse(ns.ACRB_ShowTooltip);
+			pvpbuffFrame.icon:SetTexCoord(.08, .92, .08, .92);
+			pvpbuffFrame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+			pvpbuffFrame.count:ClearAllPoints();
+			pvpbuffFrame.count:SetPoint("BOTTOM", 0, 0);
+			pvpbuffFrame:Hide();
 
 			if ns.ACRB_ShowBuffCooldown and fontsize >= ns.ACRB_MinShowBuffFontSize then
-				asframe.pvpbuffFrames[i].cooldown:SetHideCountdownNumbers(false);
-				for _, r in next, { asframe.pvpbuffFrames[i].cooldown:GetRegions() } do
+				pvpbuffFrame.cooldown:SetHideCountdownNumbers(false);
+				for _, r in next, { pvpbuffFrame.cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
 						r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
 						r:ClearAllPoints();
@@ -1308,43 +1309,41 @@ local function ACRB_setupFrame(frame)
 					end
 				end
 			else
-				asframe.pvpbuffFrames[i].cooldown:SetHideCountdownNumbers(true);
+				pvpbuffFrame.cooldown:SetHideCountdownNumbers(true);
 			end
-			asframe.pvpbuffFrames[i].border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
-			asframe.pvpbuffFrames[i].border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-			asframe.pvpbuffFrames[i].border:SetVertexColor(0, 0, 0);
-			asframe.pvpbuffFrames[i].border:Show();
+			pvpbuffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
+			pvpbuffFrame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+			pvpbuffFrame.border:SetVertexColor(0, 0, 0);
+			pvpbuffFrame.border:Show();
 
-			asframe.pvpbuffFrames[i].cooldown:SetSwipeColor(0, 0, 0, 0.5);
+			pvpbuffFrame.cooldown:SetSwipeColor(0, 0, 0, 0.5);
 		end
 	end
 
-	if (asframe.pvpbuffFrames) then
-		for i = 1, ACRB_MAX_BUFFS_2 do
-			asframe.pvpbuffFrames[i]:SetSize(size_x, size_y);
-			asframe.pvpbuffFrames[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-			asframe.pvpbuffFrames[i]:ClearAllPoints()
-			if i == 1 then
-				asframe.pvpbuffFrames[i]:SetPoint("CENTER", frame.healthBar, "CENTER", 0, 0)
-			else
-				asframe.pvpbuffFrames[i]:SetPoint("TOPRIGHT", asframe.pvpbuffFrames[i - 1], "TOPLEFT",
-					0,
-					0)
-			end
+	for i, d in ipairs(asframe.pvpbuffFrames) do
+		d:SetSize(size_x, size_y);
+		d.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+		d:ClearAllPoints()
+		if i == 1 then
+			d:SetPoint("CENTER", frame.healthBar, "CENTER", 0, 0)
+		else
+			d:SetPoint("TOPRIGHT", asframe.pvpbuffFrames[i - 1], "TOPLEFT",
+				0,
+				0)
+		end
 
-			if ns.ACRB_ShowTooltip and not asframe.pvpbuffFrames[i]:GetScript("OnEnter") then
-				asframe.pvpbuffFrames[i]:SetScript("OnEnter", function(s)
-					if s.auraInstanceID then
-						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitBuffByAuraInstanceID(asframe.displayedUnit, s.auraInstanceID,
-							bufffilter);
-					end
-				end)
+		if ns.ACRB_ShowTooltip and not d:GetScript("OnEnter") then
+			d:SetScript("OnEnter", function(s)
+				if s.auraInstanceID then
+					GameTooltip_SetDefaultAnchor(GameTooltip, s);
+					GameTooltip:SetUnitBuffByAuraInstanceID(asframe.displayedUnit, s.auraInstanceID,
+						bufffilter);
+				end
+			end)
 
-				asframe.pvpbuffFrames[i]:SetScript("OnLeave", function()
-					GameTooltip:Hide();
-				end)
-			end
+			d:SetScript("OnLeave", function()
+				GameTooltip:Hide();
+			end)
 		end
 	end
 
@@ -1353,19 +1352,20 @@ local function ACRB_setupFrame(frame)
 		asframe.castFrames = {};
 
 		for i = 1, ACRB_MAX_CASTING do
-			asframe.castFrames[i] = CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
-			asframe.castFrames[i]:EnableMouse(ns.ACRB_ShowTooltip);
-			asframe.castFrames[i].icon:SetTexCoord(.08, .92, .08, .92);
-			asframe.castFrames[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-			asframe.castFrames[i].count:ClearAllPoints();
-			asframe.castFrames[i].count:SetPoint("BOTTOM", 0, 0);
-			asframe.castFrames[i]:Hide();
+			local castFrame = CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
+			asframe.castFrames[i] = castFrame;
+			castFrame:EnableMouse(ns.ACRB_ShowTooltip);
+			castFrame.icon:SetTexCoord(.08, .92, .08, .92);
+			castFrame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+			castFrame.count:ClearAllPoints();
+			castFrame.count:SetPoint("BOTTOM", 0, 0);
+			castFrame:Hide();
 
-			asframe.castFrames[i].cooldown:SetSwipeColor(0, 0, 0, 0.5);
+			castFrame.cooldown:SetSwipeColor(0, 0, 0, 0.5);
 
 			if ns.ACRB_ShowBuffCooldown and fontsize >= ns.ACRB_MinShowBuffFontSize then
-				asframe.castFrames[i].cooldown:SetHideCountdownNumbers(false);
-				for _, r in next, { asframe.castFrames[i].cooldown:GetRegions() } do
+				castFrame.cooldown:SetHideCountdownNumbers(false);
+				for _, r in next, { castFrame.cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
 						r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
 						r:ClearAllPoints();
@@ -1374,37 +1374,35 @@ local function ACRB_setupFrame(frame)
 					end
 				end
 			else
-				asframe.castFrames[i].cooldown:SetHideCountdownNumbers(true);
+				castFrame.cooldown:SetHideCountdownNumbers(true);
 			end
 
 
 
-			if ns.ACRB_ShowTooltip and not asframe.castFrames[i]:GetScript("OnEnter") then
-				asframe.castFrames[i]:SetScript("OnEnter", function(s)
+			if ns.ACRB_ShowTooltip and not castFrame:GetScript("OnEnter") then
+				castFrame:SetScript("OnEnter", function(s)
 					if s.castspellid and s.castspellid > 0 then
 						GameTooltip_SetDefaultAnchor(GameTooltip, s);
 						GameTooltip:SetSpellByID(s.castspellid);
 					end
 				end)
 
-				asframe.castFrames[i]:SetScript("OnLeave", function()
+				castFrame:SetScript("OnLeave", function()
 					GameTooltip:Hide();
 				end)
 			end
 		end
 	end
 
-	if (asframe.castFrames) then
-		for i = 1, ACRB_MAX_CASTING do
-			asframe.castFrames[i]:SetSize(size_x, size_y);
-			asframe.castFrames[i].count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-			asframe.castFrames[i]:ClearAllPoints()
-			if i == 1 then
-				asframe.castFrames[i]:SetPoint("TOP", frame.healthBar, "TOP", 0, 0)
-			else
-				asframe.castFrames[i]:SetPoint("TOPRIGHT", asframe.castFrames[i - 1], "TOPLEFT", -1,
-					0)
-			end
+	for i, d in ipairs(asframe.castFrames) do
+		d:SetSize(size_x, size_y);
+		d.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+		d:ClearAllPoints()
+		if i == 1 then
+			d:SetPoint("TOP", frame.healthBar, "TOP", 0, 0)
+		else
+			d:SetPoint("TOPRIGHT", asframe.castFrames[i - 1], "TOPLEFT", -1,
+				0)
 		end
 	end
 
