@@ -6,7 +6,7 @@ local ADF_TARGET_DEBUFF;
 
 local ADF_BlackList = {
 
-    ["도전자의 짐"] = 1,    
+    ["도전자의 짐"] = 1,
     --	["상처 감염 독"] = 1,	
     --	["신경 마취 독"] = 1,
     --	["맹독"] = 1,
@@ -346,6 +346,15 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
                 ns.lib.PixelGlow_Stop(frame);
             end
 
+            if aura.debuffType == UnitFrameDebuffType.NonBossDebuff then
+                frame:SetWidth(ns.ADF_SIZE);
+                frame:SetHeight((ns.ADF_SIZE) * 0.8);
+            else
+                -- Resize
+                frame:SetWidth(ns.ADF_SIZE + 4);
+                frame:SetHeight((ns.ADF_SIZE + 4) * 0.8);
+            end
+
             local frameBorder = frame.border;
             frameBorder:SetVertexColor(color.r, color.g, color.b);
             frameBorder:SetAlpha(ns.ADF_ALPHA);
@@ -451,14 +460,14 @@ end
 
 local function ADF_UpdateDebuffAnchor(frames, index, offsetX, right, parent)
     local buff = frames[index];
-    local point1 = "TOPLEFT";
+    local point1 = "BOTTOMLEFT";
     local point2 = "BOTTOMLEFT";
-    local point3 = "TOPRIGHT";
+    local point3 = "BOTTOMRIGHT";
 
     if (right == false) then
-        point1 = "TOPRIGHT";
+        point1 = "BOTTOMRIGHT";
         point2 = "BOTTOMRIGHT";
-        point3 = "TOPLEFT";
+        point3 = "BOTTOMLEFT";
         offsetX = -offsetX;
     end
 
@@ -484,7 +493,7 @@ local function CreatDebuffFrames(parent, bright)
         local frame = parent.frames[idx];
         frame:SetFrameStrata("MEDIUM");
         frame:SetFrameLevel(9000);
-        frame:EnableMouse(false);        
+        frame:EnableMouse(false);
         frame.cooldown:SetFrameLevel(9100);
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
@@ -573,7 +582,7 @@ local function ADF_Init()
 
     ADF:SetScript("OnEvent", ADF_OnEvent)
     ADF_TARGET_DEBUFF:SetScript("OnEvent", ADF_OnEvent)
-    ADF_PLAYER_DEBUFF:SetScript("OnEvent", ADF_OnEvent)    
+    ADF_PLAYER_DEBUFF:SetScript("OnEvent", ADF_OnEvent)
 end
 
 ADF_Init();

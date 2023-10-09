@@ -1,10 +1,10 @@
 local _, ns = ...;
 
-ns.ADF_SIZE = 32;
+ns.ADF_SIZE = 28;
 ns.ADF_TARGET_DEBUFF_X = 73 + 30 + 20;
-ns.ADF_TARGET_DEBUFF_Y = -110;
+ns.ADF_TARGET_DEBUFF_Y = -110 - 28;
 ns.ADF_PLAYER_DEBUFF_X = -73 - 30 - 20;
-ns.ADF_PLAYER_DEBUFF_Y = -110;
+ns.ADF_PLAYER_DEBUFF_Y = -110 - 28;
 ns.ADF_MAX_DEBUFF_SHOW = 7;
 ns.ADF_ALPHA = 1
 ns.ADF_CooldownFontSize = 14      -- Cooldown Font Size

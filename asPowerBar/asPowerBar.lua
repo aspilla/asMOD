@@ -1905,24 +1905,35 @@ local function APB_CheckPower(self)
 		end
 
 
-		if (spec and spec == 3 and asCheckTalent("살쾡이의 이빨")) then
-			APB_BUFF_COMBO = "살쾡이의 격노";
-			APB_MaxCombo(5);
-			APB.combobar.unit = "player"
-			APB_UpdateBuffCombo(self.combobar)
-			bupdate_buff_combo = true;
+		if (spec and spec == 3) then
 
-			for i = 1, 10 do
-				APB.combobar[i].tooltip = "살쾡이의 격노";
+			if asCheckTalent("도살") then
+				APB_SPELL = "도살";
+				APB_SpellMax(APB_SPELL);
+				APB_UpdateSpell(APB_SPELL);
+				bupdate_spell = true;
 			end
 
-			APB_BUFF = "살쾡이의 격노";
-			APB.buffbar[0].buff = "살쾡이의 격노";
-			--bupdate_buff_count = true;
-			APB.buffbar[0].unit = "player";
-			APB:RegisterUnitEvent("UNIT_AURA", "player");
-			--APB:SetScript("OnUpdate", APB_OnUpdate);
-			APB_UpdateBuff(self.buffbar[0])
+						
+			if asCheckTalent("살쾡이의 이빨") then
+				APB_BUFF_COMBO = "살쾡이의 격노";
+				APB_MaxCombo(5);
+				APB.combobar.unit = "player"
+				APB_UpdateBuffCombo(self.combobar)
+				bupdate_buff_combo = true;
+
+				for i = 1, 10 do
+					APB.combobar[i].tooltip = "살쾡이의 격노";
+				end
+
+				APB_BUFF = "살쾡이의 격노";
+				APB.buffbar[0].buff = "살쾡이의 격노";
+				--bupdate_buff_count = true;
+				APB.buffbar[0].unit = "player";
+				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				--APB:SetScript("OnUpdate", APB_OnUpdate);
+				APB_UpdateBuff(self.buffbar[0])
+			end
 		end
 	end
 
