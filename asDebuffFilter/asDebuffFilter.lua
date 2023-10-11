@@ -302,8 +302,7 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
 
             -- set the icon
             local frameIcon = frame.icon
-            frameIcon:SetTexture(aura.icon);
-            frameIcon:SetAlpha(ns.ADF_ALPHA);
+            frameIcon:SetTexture(aura.icon);            
             -- set the count
             local frameCount = frame.count;
 
@@ -513,6 +512,7 @@ local function CreatDebuffFrames(parent, bright)
         frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
 
         frame.icon:SetTexCoord(.08, .92, .08, .92);
+        frame.icon:SetAlpha(ns.ADF_ALPHA);
         frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
         frame.border:SetAlpha(ns.ADF_ALPHA);

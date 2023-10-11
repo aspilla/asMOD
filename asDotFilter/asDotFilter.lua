@@ -342,8 +342,10 @@ local function ADotF_UpdateDebuff(unit)
                     end
 
                     frame.icon:SetTexCoord(.08, .92, .08, .92);
+                    frame.icon:SetAlpha(ADotF_ALPHA);
                     frame.border:SetTexture("Interface\\Addons\\asDotFilter\\border.tga");
                     frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+                    frame.border:SetAlpha(ADotF_ALPHA);
 
                     local font = frame.count:GetFont()
 
@@ -353,8 +355,7 @@ local function ADotF_UpdateDebuff(unit)
 
                 -- set the icon
                 frameIcon = frame.icon;
-                frameIcon:SetTexture(icon);
-                frameIcon:SetAlpha(ADotF_ALPHA);
+                frameIcon:SetTexture(icon);                
 
                 -- set the count
                 frameCount = frame.count;
@@ -387,8 +388,7 @@ local function ADotF_UpdateDebuff(unit)
                 end
 
                 frameBorder = frame.border;
-                frameBorder:SetVertexColor(color.r, color.g, color.b);
-                frameBorder:SetAlpha(ADotF_ALPHA);
+                frameBorder:SetVertexColor(color.r, color.g, color.b);                
 
                 frame:ClearAllPoints();
                 frame:Show();

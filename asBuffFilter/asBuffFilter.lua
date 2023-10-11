@@ -236,7 +236,6 @@ end
 
 
 local function IsShown(name, spellId)
-
 	if ns.ABF_BlackList[name] then
 		return true;
 	end
@@ -254,11 +253,11 @@ local function IsShown(name, spellId)
 		return true;
 	end
 
-	if ACI_Buff_list and (ACI_Buff_list[name] or ( spellId and ACI_Buff_list[spellId])) then
+	if ACI_Buff_list and (ACI_Buff_list[name] or (spellId and ACI_Buff_list[spellId])) then
 		return true;
 	end
 
-	if overlayspell[name] or (spellId and overlayspell[spellId])  then
+	if overlayspell[name] or (spellId and overlayspell[spellId]) then
 		return true;
 	end
 
@@ -277,7 +276,7 @@ local function ProcessAura(aura, unit)
 
 	if IsShown(aura.name, aura.spellId) then
 		return AuraUpdateChangedType.None;
-	end	
+	end
 
 	local skip = true;
 	if unit == "target" then
@@ -380,7 +379,6 @@ local function updateTotemAura()
 				-- set the icon
 				local frameIcon = frame.icon;
 				frameIcon:SetTexture(icon);
-				frameIcon:SetAlpha(ns.ABF_ALPHA);
 
 				frame.totemslot = slot;
 				frame.auraInstanceID = nil;
@@ -405,7 +403,6 @@ local function updateTotemAura()
 				local color = { r = 0, g = 1, b = 0 };
 
 				frameBorder:SetVertexColor(color.r, color.g, color.b);
-				frameBorder:SetAlpha(ns.ABF_ALPHA);
 				frame:Show();
 			end
 		else
@@ -462,7 +459,6 @@ local function UpdateAuraFrames(unit, auraList)
 			-- set the icon
 			local frameIcon = frame.icon
 			frameIcon:SetTexture(aura.icon);
-			frameIcon:SetAlpha(ns.ABF_ALPHA);
 			-- set the count
 			local frameCount = frame.count;
 
@@ -490,7 +486,6 @@ local function UpdateAuraFrames(unit, auraList)
 			local frameBorder = frame.border;
 			local color = DebuffTypeColor["Disease"];
 			frameBorder:SetVertexColor(color.r, color.g, color.b);
-			frameBorder:SetAlpha(ns.ABF_ALPHA);
 
 			if (aura.isStealable) or (ns.ABF_ProcBuffList and ns.ABF_ProcBuffList[aura.name] and ns.ABF_ProcBuffList[aura.name] == 1) then
 				ns.lib.ButtonGlow_Start(frame);
@@ -610,10 +605,10 @@ local function ABF_OnEvent(self, event, arg1, ...)
 			UpdateAuras(nil, "player");
 		else
 			UpdateAuraFrames("player", activeBuffs["player"]);
-		end		
+		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		hasValidPlayer = true;
-		asCheckTalent();		
+		asCheckTalent();
 		UpdateAuras(nil, "player");
 		UpdateAuras(nil, "target");
 	elseif event == "PLAYER_REGEN_DISABLED" then
@@ -685,7 +680,7 @@ local function CreatBuffFrames(parent, bright, bcenter)
 		local frame = parent.frames[idx];
 		frame:SetFrameStrata("MEDIUM");
 		frame:SetFrameLevel(9000);
-		frame:EnableMouse(false);		
+		frame:EnableMouse(false);
 		frame.cooldown:SetFrameLevel(9100);
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
@@ -701,8 +696,10 @@ local function CreatBuffFrames(parent, bright, bcenter)
 		frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
 
 		frame.icon:SetTexCoord(.08, .92, .08, .92);
+		frame.icon:SetAlpha(ns.ABF_ALPHA);
 		frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
 		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+		frame.border:SetAlpha(ns.ABF_ALPHA);
 
 		ABF_UpdateBuffAnchor(parent.frames, idx, 1, bright, bcenter, parent);
 

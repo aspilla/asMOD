@@ -175,60 +175,47 @@ local function setupUI()
 		asMOD_setupFrame(asDBMTimer, "asDBMTimer");
 	end
 
-	--[[
-	asDBMTimer.square = asDBMTimer:CreateTexture(nil, "BACKGROUND");
-	asDBMTimer.square:SetDrawLayer("ARTWORK", 0);
-	asDBMTimer.square:SetTexture("Interface\\Addons\\asDBMTimer\\Square_White.tga")
-	--asDBMTimer.square:SetBlendMode("ALPHAKEY");
-	asDBMTimer.square:SetVertexColor(0.5,0.5,0.5, 0.3)
-	asDBMTimer.square:ClearAllPoints();
-	asDBMTimer.square:SetPoint("BOTTOM", asDBMTimer, "BOTTOM", 0, 0);
-	asDBMTimer.square:SetWidth(2);
-	asDBMTimer.square:SetHeight(ADBMT_1sHeight * 10);
-	asDBMTimer.square:SetAlpha(1);
-	asDBMTimer.square:Show();
-	]]
-
 	asDBMTimer.buttons = {};
 
 	for i = 1, ADBMT_MaxButtons do
 		asDBMTimer.buttons[i] = CreateFrame("Button", nil, asDBMTimer, "asDBMTimerFrameTemplate");
-		asDBMTimer.buttons[i].icon:SetDrawLayer("BACKGROUND", 2);
-		asDBMTimer.buttons[i]:SetWidth(ADBMT_IconSize);
-		asDBMTimer.buttons[i]:SetHeight(ADBMT_IconSize * 0.9);
-		asDBMTimer.buttons[i]:SetScale(1);
-		asDBMTimer.buttons[i]:SetAlpha(1);
-		asDBMTimer.buttons[i]:EnableMouse(false);
-		asDBMTimer.buttons[i]:Hide();
+		local button = asDBMTimer.buttons[i];
+		button.icon:SetDrawLayer("BACKGROUND", 2);
+		button:SetWidth(ADBMT_IconSize);
+		button:SetHeight(ADBMT_IconSize * 0.9);
+		button:SetScale(1);
+		button:SetAlpha(1);
+		button:EnableMouse(false);
+		button:Hide();
 
-		asDBMTimer.buttons[i].count:SetPoint("BOTTOMRIGHT", -3, 3);
+		button.count:SetPoint("BOTTOMRIGHT", -3, 3);
 
-		asDBMTimer.buttons[i].icon:SetTexCoord(.08, .92, .08, .92);
-		asDBMTimer.buttons[i].border:SetTexture("Interface\\Addons\\asDBMTimer\\border.tga");
-		asDBMTimer.buttons[i].border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-		asDBMTimer.buttons[i].border:SetVertexColor(0, 0, 0);
+		button.icon:SetTexCoord(.08, .92, .08, .92);
+		button.border:SetTexture("Interface\\Addons\\asDBMTimer\\border.tga");
+		button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+		button.border:SetVertexColor(0, 0, 0);
 
-		asDBMTimer.buttons[i]:SetPoint("CENTER", 0, 0);
+		button:SetPoint("CENTER", 0, 0);
 
-		asDBMTimer.buttons[i].cooltext = asDBMTimer.buttons[i]:CreateFontString(nil, "OVERLAY");
-		asDBMTimer.buttons[i].cooltext:SetFont(ADBMT_Font, ADBMT_CoolFontSize, ADBMT_FontOutline)
-		asDBMTimer.buttons[i].cooltext:SetPoint("RIGHT", asDBMTimer.buttons[i], "LEFT", -2, 0);
+		button.cooltext = button:CreateFontString(nil, "OVERLAY");
+		button.cooltext:SetFont(ADBMT_Font, ADBMT_CoolFontSize, ADBMT_FontOutline)
+		button.cooltext:SetPoint("RIGHT", button, "LEFT", -2, 0);
 
-		asDBMTimer.buttons[i].text = asDBMTimer.buttons[i]:CreateFontString(nil, "OVERLAY");
-		asDBMTimer.buttons[i].text:SetFont(ADBMT_Font, ADBMT_NameFontSize, ADBMT_FontOutline)
-		asDBMTimer.buttons[i].text:SetPoint("LEFT", asDBMTimer.buttons[i], "RIGHT", 2, 0);
-		asDBMTimer.buttons[i].id = nil;
-		asDBMTimer.buttons[i].start = nil;
-		asDBMTimer.buttons[i].duration = nil;
+		button.text = button:CreateFontString(nil, "OVERLAY");
+		button.text:SetFont(ADBMT_Font, ADBMT_NameFontSize, ADBMT_FontOutline)
+		button.text:SetPoint("LEFT", button, "RIGHT", 2, 0);
+		button.id = nil;
+		button.start = nil;
+		button.duration = nil;
 
-		if not asDBMTimer.buttons[i]:GetScript("OnEnter") then
-			asDBMTimer.buttons[i]:SetScript("OnEnter", function(s)
+		if not button:GetScript("OnEnter") then
+			button:SetScript("OnEnter", function(s)
 				if s.spellid and type(s.spellid) == "number" and s.spellid > 0 then
 					GameTooltip_SetDefaultAnchor(GameTooltip, s);
 					GameTooltip:SetSpellByID(s.spellid);
 				end
 			end)
-			asDBMTimer.buttons[i]:SetScript("OnLeave", function()
+			button:SetScript("OnLeave", function()
 				GameTooltip:Hide();
 			end)
 		end
