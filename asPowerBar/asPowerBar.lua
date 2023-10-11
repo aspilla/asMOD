@@ -109,7 +109,7 @@ local function APB_UnitBuff(unit, buff, casterid)
 	repeat
 		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
 			UnitBuff(unit, i, filter);
-		if (name == buff or spellId == buff) and duration > 0 and caster == casterid then			
+		if (name == buff or spellId == buff) and duration > 0 and caster == casterid then
 			return UnitBuff(unit, i, filter);
 		elseif (name == buff or spellId == buff) and duration == 0 and caster == casterid then
 			ret = i;
@@ -384,7 +384,6 @@ local function checkDireBeast()
 end
 
 local function APB_UpdateDireBeastCombo(combobar)
-
 	if not bupdate_direbeast_combo then
 		return;
 	end
@@ -396,7 +395,6 @@ local function APB_UpdateDireBeastCombo(combobar)
 	else
 		APB_ShowComboBar(0);
 	end
-	
 end
 
 
@@ -929,6 +927,7 @@ local function APB_UpdateSpell(spell, spell2)
 	end
 
 	if not maxCharges then
+		print(GetSpellCharges(spell));
 		return;
 	end
 	for i = 1, charges do
@@ -1234,7 +1233,7 @@ local function APB_OnUpdate(self, elapsed)
 	if update2 >= 0.5 then
 		update2 = 0
 		APB_UpdateBuff(self.buffbar[0]);
-		APB_UpdateBuffCombo(self.combobar);		
+		APB_UpdateBuffCombo(self.combobar);
 		APB_UpdateStagger(self.buffbar[0]);
 		APB_UpdatePower();
 	end
@@ -1402,15 +1401,23 @@ local function APB_CheckPower(self)
 		APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 		bupdate_power = true;
 
+		if (spec and spec == 1) then
+			APB_SPELL = "신성 충격"
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
+		end
+
 		if (spec and spec == 2) then
+			APB_SPELL = "성전사의 일격"
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
+
 			bsmall_power_bar = true;
 
 			APB_BUFF = "정의의 방패";
 			APB.buffbar[0].buff = "정의의 방패"
-			APB_SPELL = "정의의 방패";
-			APB_SpellMax(APB_SPELL);
-			APB_UpdateSpell(APB_SPELL);
-			bupdate_spell = true;
 			APB:RegisterUnitEvent("UNIT_AURA", "player");
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
 
@@ -1421,6 +1428,10 @@ local function APB_CheckPower(self)
 		end
 
 		if (spec and spec == 3) then
+			APB_SPELL = "심판의 칼날"
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
 			bsmall_power_bar = true;
 		end
 	end
@@ -1611,7 +1622,7 @@ local function APB_CheckPower(self)
 			APB_SpellMax(APB_SPELL);
 			APB_UpdateSpell(APB_SPELL);
 			bupdate_spell = true;
-			
+
 
 			for i = 1, 10 do
 				APB.combobar[i].tooltip = "COMBO_POINTS";
@@ -1824,16 +1835,25 @@ local function APB_CheckPower(self)
 			end
 
 			APB_SPELL = "지옥 돌진";
-			APB_SpellMax(APB_SPELL);
-			APB_UpdateSpell(APB_SPELL);
+			APB_SPELL2 = "글레이브 투척"
+			APB_SpellMax(APB_SPELL, APB_SPELL2);
+			APB_UpdateSpell(APB_SPELL, APB_SPELL2);
 			bupdate_spell = true;
 		end
 
 
 		if (spec and spec == 2) then
 			APB_SPELL = "악마 쐐기";
-			APB_SpellMax(APB_SPELL);
-			APB_UpdateSpell(APB_SPELL);
+
+			if asCheckTalent("균열") then
+				APB_SPELL2 = "균열"
+				APB_SpellMax(APB_SPELL, APB_SPELL2);
+				APB_UpdateSpell(APB_SPELL, APB_SPELL2);
+			else
+				APB_SpellMax(APB_SPELL);
+				APB_UpdateSpell(APB_SPELL);
+			end
+
 			bupdate_spell = true;
 			APB_BUFF = "악마 쐐기";
 			APB.buffbar[0].buff = "악마 쐐기";
@@ -1852,7 +1872,7 @@ local function APB_CheckPower(self)
 
 			for i = 1, 10 do
 				APB.combobar[i].tooltip = "고영혼 파편";
-			end			
+			end
 		end
 	end
 
@@ -1906,15 +1926,17 @@ local function APB_CheckPower(self)
 
 
 		if (spec and spec == 3) then
-
 			if asCheckTalent("도살") then
 				APB_SPELL = "도살";
-				APB_SpellMax(APB_SPELL);
-				APB_UpdateSpell(APB_SPELL);
-				bupdate_spell = true;
+			else
+				APB_SPELL = "저미기"
 			end
 
-						
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
+
+
 			if asCheckTalent("살쾡이의 이빨") then
 				APB_BUFF_COMBO = "살쾡이의 격노";
 				APB_MaxCombo(5);
