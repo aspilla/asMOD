@@ -1,8 +1,8 @@
 ------------------------------------------------------------------------
-r292 | funkehdude | 2023-09-20 18:11:02 +0000 (Wed, 20 Sep 2023) | 1 line
+r294 | funkehdude | 2023-10-11 09:51:59 +0000 (Wed, 11 Oct 2023) | 1 line
 Changed paths:
-   M /trunk/BugGrabber.lua
+   M /trunk/!BugGrabber_Wrath.toc
 
-Add a nil check for debugstack
+bump toc
 ------------------------------------------------------------------------
 
