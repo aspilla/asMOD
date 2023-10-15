@@ -1,0 +1,7 @@
+﻿## Interface: 100107
+## Author: |cffff3399아스필라|r [아즈샤라]
+## Title: |cffff3399as|rDBMVoiceAlert
+## Notes: DBM 스킬 음성 알림
+## Version : 231015
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+asDBMVoiceAlert.lua

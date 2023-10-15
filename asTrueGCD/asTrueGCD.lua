@@ -107,16 +107,13 @@ local function scanActionSlots()
 end
 
 local function scanItemSlots()
-	for i = 1, #itemslots do
-		local idx = GetInventorySlotInfo(itemslots[i]);
+	for _, v in pairs(itemslots) do
+		local idx = GetInventorySlotInfo(v);
 
 		local itemid = GetInventoryItemID("player", idx)
 
 		if itemid then
 			local _, id = GetItemSpell(itemid);
-
-
-
 			if id then
 				KnownSpellList[id] = itemid;
 			end
@@ -180,9 +177,6 @@ local function ATGCD_Alert(spellid, bcancel, bitem)
 		return
 	end
 
-	local spell_count = 0;
-
-
 	if AGCD_BlackList[spellid] then
 		return;
 	end
@@ -198,7 +192,7 @@ local function ATGCD_Alert(spellid, bcancel, bitem)
 
 	if bitem then
 		local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent =
-		GetItemInfo(spellid);
+			GetItemInfo(spellid);
 		name = itemName
 		icon = iconFileDataID
 	end
@@ -321,7 +315,7 @@ end
 local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 	if (event == "UNIT_SPELLCAST_START") then
 		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-		"player");
+			"player");
 		local frameIcon = ATGCD.frame[0].icon;
 		local frameCooldown = ATGCD.frame[0].cooldown;
 
@@ -348,7 +342,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 		end
 	elseif (event == "UNIT_SPELLCAST_CHANNEL_START") then
 		local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(
-		"player");
+			"player");
 		local frameIcon = ATGCD.frame[0].icon;
 		local frameCooldown = ATGCD.frame[0].cooldown;
 

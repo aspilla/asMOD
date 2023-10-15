@@ -1119,7 +1119,7 @@ local function APB_Update(self)
 		end
 
 
-		if (powerType == Enum.PowerType.Mana) then
+		if (powerType == Enum.PowerType.Mana) and valueMax then
 			valuePct = (math.ceil((value / valueMax) * 100));
 			valuePct_orig = (math.ceil((value_orig / valueMax) * 100));
 		else
@@ -1688,6 +1688,13 @@ local function APB_CheckPower(self)
 			APB.combobar[i].tooltip = "COMBO_POINTS";
 		end
 
+		if asCheckTalent("엉겅퀴 차") then
+			APB_SPELL = "엉겅퀴 차";
+			APB_SpellMax(APB_SPELL);
+			APB_UpdateSpell(APB_SPELL);
+			bupdate_spell = true;
+		end
+
 		APB_BUFF = "난도질";
 		APB.buffbar[0].buff = "난도질";
 		APB.buffbar[0].unit = "player"
@@ -1827,7 +1834,23 @@ local function APB_CheckPower(self)
 				APB_BUFF = "탄력";
 				APB.buffbar[0].buff = "탄력";
 				APB.buffbar[0].unit = "player"
-				APB.buffbar[0].max = 10;
+				local version = select(4, GetBuildInfo());
+
+				if version == 100200 then
+					APB.buffbar[0].max = 20;
+				else
+					APB.buffbar[0].max = 10;
+				end
+				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				--APB:SetScript("OnUpdate", APB_OnUpdate);
+
+				APB_UpdateBuff(self.buffbar[0])
+			end
+
+			if asCheckTalent("타성") then
+				APB_BUFF = "타성";
+				APB.buffbar[0].buff = "타성";
+				APB.buffbar[0].unit = "player"
 				APB:RegisterUnitEvent("UNIT_AURA", "player");
 				--APB:SetScript("OnUpdate", APB_OnUpdate);
 

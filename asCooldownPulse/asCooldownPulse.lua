@@ -177,22 +177,6 @@ local function scanItemSlots()
 	end
 end
 
-local function setupKnownSpell(bwipe)
-	if bwipe then
-		KnownSpellList = {};
-		showlist_id = {};
-		spell_cooldown = {};
-		item_cooldown = {};
-	end
-	scanSpells(1);
-	scanSpells(2);
-	scanSpells(3);
-	scanPetSpells();
-	scanItemSlots();
-	scanActionSlots();
-	--print("초기화")
-end
-
 local function ACDP_UpdateCoolAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
 	local cool = frames[index];
 	local point1 = "TOPLEFT";
@@ -572,6 +556,30 @@ local function ACDP_OnUpdate()
 	ACDP_UpdateCooldown();
 end
 
+local timer;
+
+local function setupKnownSpell(bwipe)
+
+	if timer then
+		timer:Cancel();
+	end
+
+	if bwipe then
+		KnownSpellList = {};
+		showlist_id = {};
+		spell_cooldown = {};
+		item_cooldown = {};
+	end
+	scanSpells(1);
+	scanSpells(2);
+	scanSpells(3);
+	scanPetSpells();
+	scanItemSlots();
+	scanActionSlots();
+	--print("초기화")
+	timer = C_Timer.NewTicker(ACDP_UpdateRate, ACDP_OnUpdate);
+end
+
 local function ACDP_OnEvent(self, event)
 	if event == "PLAYER_ENTERING_WORLD" then
 		setupKnownSpell(true);
@@ -612,4 +620,3 @@ ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")
 ACDP_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
 ACDP_Init()
-C_Timer.NewTicker(ACDP_UpdateRate, ACDP_OnUpdate);

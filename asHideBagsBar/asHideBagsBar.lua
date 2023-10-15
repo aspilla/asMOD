@@ -22,10 +22,12 @@ local function AHBB_OnUpdate()
 	y = y / uiScale;
 	local menu_left, menu_top = MicroMenu:GetLeft(), MicroMenu:GetTop();
 	local menu_right, menu_bottom = MicroMenu:GetRight(), MicroMenu:GetBottom();
+	
 	local bag_left, bag_top = BagsBar:GetLeft(), BagsBar:GetTop();
 	local bag_right, bag_bottom = BagsBar:GetRight(), BagsBar:GetBottom();
-
+	
 	if x >= menu_left - AHBB_Offset and x <= menu_right + AHBB_Offset and y >= menu_bottom - AHBB_Offset and y <= menu_top + AHBB_Offset then
+		
 		AHBB_HideMenuBar(1);
 	else
 		AHBB_HideMenuBar(0);

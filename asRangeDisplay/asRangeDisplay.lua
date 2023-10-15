@@ -67,9 +67,9 @@ local function ARD_CheckRange(unit)
 		itemlist = HarmItems;
 	end
 
-	for i = 1, #itemlist do
-		if GetItemInfo(itemlist[i][1]) and IsItemInRange(itemlist[i][1], unit) then
-			return itemlist[i][2];
+	for _, v in pairs(itemlist) do
+		if GetItemInfo(v[1]) and IsItemInRange(v[1], unit) then
+			return v[2];
 		end
 	end
 	return 0;
