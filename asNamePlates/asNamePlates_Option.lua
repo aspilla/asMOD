@@ -1,5 +1,5 @@
 ANameP_Options_Default = {
-    version = 231004,
+    version = 231013,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -165,7 +165,9 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_DEATHKNIGHT_1 = {
-        ["피의 역병"] = { 0, 5 },
+        ["잿빛 부패"] = { 0, 5 },
+        ["피의 역병"] = { 0, 4 },
+        
     },
 
     ANameP_ShowList_DEATHKNIGHT_2 = {

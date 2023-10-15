@@ -742,9 +742,9 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 
 				-- Player 일 경우
 				if UnitIsUnit("player", unit) then
-					if options.ANameP_ShowPlayerBuffAll and options.ANameP_ShowPlayerBuffAll == false then
+					if options.ANameP_ShowPlayerBuffAll == false then
 						show = nameplateShowPersonal;
-					else
+					else						
 						if ANameP_ShowPlayerBuff and PLAYER_UNITS[caster] and duration > 0 and duration <= ANameP_BuffMaxCool then
 							show = true;
 						end

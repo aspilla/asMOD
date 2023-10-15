@@ -5,12 +5,13 @@ local CONFIG_MINCOOL = 1.5 -- 최소안내 쿨타임
 local CONFIG_MAXCOOL = (60 * 5)
 local CONFIG_MINCOOL_PET = 20
 local CONFIG_SOUND = true         -- 음성안내
+local CONFIG_MINSOUNDTIME = 30    -- 음성안내 최소 Cooldown
 local ACDP_CoolButtons_X = -98    -- 쿨 List 위치
 local ACDP_CoolButtons_Y = -250
 local ACDP_AlertButtons_X = 0     -- Alert button 위치
 local ACDP_AlertButtons_Y = 0
 local ACDP_AlertButtons_Size = 60 -- Alert button size
-local ACDP_AlertFadeTime = 1    -- Alert button Fade in-out 시간 짧으면 빨리 사라짐
+local ACDP_AlertFadeTime = 1      -- Alert button Fade in-out 시간 짧으면 빨리 사라짐
 local ACDP_AlertShowTime = 0.2    -- Alert button Fade in-out 시간 짧으면 빨리 사라짐
 local ACDP_SIZE = 32;             -- 쿨 List Size
 local ACDP_Show_CoolList = false; -- 쿨 List를 보일지 안보일지 (무조건 보이게 하려면 true)
@@ -81,8 +82,9 @@ local ACDP_mainframe
 local ACDP_CoolButtons = nil;
 
 local KnownSpellList = {};
-local ItemSlotList = {};
 local showlist_id = {};
+local spell_cooldown = {};
+local item_cooldown = {};
 local SPELL_TYPE_USER = 1;
 local SPELL_TYPE_PET = 2;
 
@@ -162,15 +164,14 @@ local function scanActionSlots()
 end
 
 local function scanItemSlots()
-	for i = 1, #itemslots do
-		local idx = GetInventorySlotInfo(itemslots[i]);
+	for _, v in pairs(itemslots) do
+		local idx = GetInventorySlotInfo(v);
 		local itemid = GetInventoryItemID("player", idx)
 
 		if itemid then
 			local _, id = GetItemSpell(itemid);
 			if id then
 				KnownSpellList[id] = itemid;
-				ItemSlotList[itemid] = idx;
 			end
 		end
 	end
@@ -179,8 +180,9 @@ end
 local function setupKnownSpell(bwipe)
 	if bwipe then
 		KnownSpellList = {};
-		ItemSlotList = {};
 		showlist_id = {};
+		spell_cooldown = {};
+		item_cooldown = {};
 	end
 	scanSpells(1);
 	scanSpells(2);
@@ -310,19 +312,17 @@ local function ACDP_UpdateCooldown()
 	numCools = 1;
 
 	local prev_icon;
-	local prev_duration;
 
-	for i = 1, #showlist do
-		local start = showlist[i][2];
-		local duration = showlist[i][3];
-		local icon = showlist[i][4];
-		local spellid = showlist[i][5];
-		local type = showlist[i][6];
+	for _, v in pairs(showlist) do
+		local start = v[2];
+		local duration = v[3];
+		local icon = v[4];
+		local spellid = v[5];
+		local type = v[6];
 
 		if not (icon == prev_icon) then
 			prev_icon = icon;
-			prev_duration = duration;
-
+			
 			frame = parent.frames[numCools];
 
 
@@ -420,6 +420,8 @@ local alert_start = {};
 
 local function ACDP_Alert(spell, type)
 	local currtime = GetTime();
+	local bsound = false;
+	local name, _, icon;
 
 	if not (alert_start[spell] == nil or (currtime > alert_start[spell])) then
 		return;
@@ -428,31 +430,33 @@ local function ACDP_Alert(spell, type)
 	alert_start[spell] = currtime + 1.6;
 
 	if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
-		local name, _, icon, _, _, _, _, _, _ = GetSpellInfo(spell)
+		name, _, icon, _, _, _, _, _, _ = GetSpellInfo(spell)
+
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
 
 		if voice_remap[name] then
 			name = voice_remap[name];
+			bsound = true;
 		end
 		--print(name);
 		if CONFIG_SOUND and name then
-			PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\" .. name .. ".mp3", "DIALOG")
-			--TTS 이용은 다음에
-			--C_VoiceChat.SpeakText(0, name, Enum.VoiceTtsDestination.QueuedLocalPlayback, 0, 100)
-			--print(name);
+			if (spell_cooldown[spell] and spell_cooldown[spell] >= CONFIG_MINSOUNDTIME) then
+				bsound = true;
+			end
 		end
 	else
-		local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(type)
+		name, _, _, _, _, _, _, _, _, icon = GetItemInfo(type)
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
 
 		if CONFIG_SOUND and name then
-			if ItemSlotList[type] then
-				PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\" .. ItemSlotList[type] .. ".mp3",
-					"DIALOG")
-			else
-				PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\" .. name .. ".mp3", "DIALOG")
+			if item_cooldown[type] and item_cooldown[type] >= CONFIG_MINSOUNDTIME then
+				bsound = true;
 			end
 		end
+	end
+
+	if bsound then
+		C_VoiceChat.SpeakText(0, name, Enum.VoiceTtsDestination.LocalPlayback, 0, 100);
 	end
 
 	ns.asUIFrameFadeIn(ACDP[ACDP_Icon_Idx], ACDP_AlertShowTime, 0, 1)
@@ -524,8 +528,14 @@ local function ACDP_Checkcooldown()
 
 		if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
 			start, duration, enabled = GetSpellCooldown(spellid);
+			if spell_cooldown[spellid] == nil or spell_cooldown[spellid] < duration then
+				spell_cooldown[spellid] = duration;
+			end
 		else
 			start, duration, enabled = GetItemCooldown(type);
+			if item_cooldown[type] == nil or item_cooldown[type] < duration then
+				item_cooldown[type] = duration;
+			end
 		end
 
 		local currtime = GetTime();
