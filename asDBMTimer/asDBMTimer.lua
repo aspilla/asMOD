@@ -69,6 +69,10 @@ function ADBMT_OnUpdate(self, elapsed)
 			self.cooltext:SetText(("%02.1f"):format(remain))
 			if remain <= 3 then
 				self.cooltext:SetTextColor(1, 0, 0, 1);
+				if self.voice and remain <= 1.5 then
+					self.voice = false;
+					--C_VoiceChat.SpeakText(0, self.msg, Enum.VoiceTtsDestination.LocalPlayback, 1, 100);
+				end
 			else
 				self.cooltext:SetTextColor(1, 1, 1, 1);
 			end
@@ -95,16 +99,23 @@ local function newButton(id, msg, duration, start, icon, colorId, spellID)
 			button.cooltext:Show();
 			button.border:Show();
 			button.spellid = spellID;
-
+			button.msg = msg;
+					
 			if colorId and BarColors[colorId] then
 				local info = BarColors[colorId];
 
 				msg = RGBToHex(info[1], info[2], info[3]) .. info[4] .. " " .. RGBToHex(1, 1, 1) .. msg;
 			end
 
-			button.text:SetText(msg);
+			button.text:SetText(msg);			
 			button.text:Show();
 			button.update = 0.1;
+			if colorId >= 2 and colorId < 5 then
+				button.voice = true;
+			else
+				button.voice = false;
+			end
+			
 			button:SetScript("OnUpdate", ADBMT_OnUpdate);
 			button:Show();
 

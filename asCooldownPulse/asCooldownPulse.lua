@@ -6,6 +6,9 @@ local CONFIG_MAXCOOL = (60 * 5)
 local CONFIG_MINCOOL_PET = 20
 local CONFIG_SOUND = true         -- 음성안내
 local CONFIG_MINSOUNDTIME = 30    -- 음성안내 최소 Cooldown
+local CONFIG_SOUND_SPEED = 1      -- 음성안내 읽기 속도
+local CONFIG_VOICE_ID = 0         -- 음성 종류 (한국 Client 는 0번 1가지만 지원)
+local CONFIG_VOICE_VOL = 100	  -- 음성 크기
 local ACDP_CoolButtons_X = -98    -- 쿨 List 위치
 local ACDP_CoolButtons_Y = -250
 local ACDP_AlertButtons_X = 0     -- Alert button 위치
@@ -306,7 +309,7 @@ local function ACDP_UpdateCooldown()
 
 		if not (icon == prev_icon) then
 			prev_icon = icon;
-			
+
 			frame = parent.frames[numCools];
 
 
@@ -440,7 +443,7 @@ local function ACDP_Alert(spell, type)
 	end
 
 	if bsound then
-		C_VoiceChat.SpeakText(0, name, Enum.VoiceTtsDestination.LocalPlayback, 0, 100);
+		C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.QueuedLocalPlayback, CONFIG_SOUND_SPEED, CONFIG_VOICE_VOL);
 	end
 
 	ns.asUIFrameFadeIn(ACDP[ACDP_Icon_Idx], ACDP_AlertShowTime, 0, 1)
@@ -455,50 +458,6 @@ local function ACDP_Alert(spell, type)
 	return;
 end
 
-local function ACDP_Init()
-	local i = 1;
-
-	while (i <= 10) do
-		ACDP[i] = CreateFrame("Frame", nil, UIParent)
-		ACDP[i]:SetPoint("CENTER", ACDP_AlertButtons_X, ACDP_AlertButtons_Y)
-
-
-		ACDP[i]:SetWidth(ACDP_AlertButtons_Size)
-		ACDP[i]:SetHeight(ACDP_AlertButtons_Size * 0.9)
-		ACDP[i]:SetScale(1)
-		ACDP[i]:SetAlpha(0)
-		ACDP[i]:SetFrameStrata("LOW")
-		ACDP[i]:EnableMouse(false);
-		ACDP[i]:Show()
-
-
-		ACDP_Icon[i] = ACDP[i]:CreateTexture(nil, "BACKGROUND")
-		ACDP_Icon[i]:SetTexture("")
-		ACDP_Icon[i]:ClearAllPoints()
-		ACDP_Icon[i]:SetAllPoints(ACDP[i])
-		ACDP_Icon[i]:SetTexCoord(.08, .92, .08, .92);
-		ACDP_Icon[i]:Show()
-
-		i = i + 1;
-	end
-	ACDP_CoolButtons = CreateFrame("Frame", nil, UIParent)
-
-	ACDP_CoolButtons:SetPoint("CENTER", ACDP_CoolButtons_X, ACDP_CoolButtons_Y)
-
-	ACDP_CoolButtons:SetWidth(1)
-	ACDP_CoolButtons:SetHeight(1)
-	ACDP_CoolButtons:SetScale(1)
-	ACDP_CoolButtons:SetFrameStrata("LOW")
-	ACDP_CoolButtons:Show()
-
-	LoadAddOn("asMOD");
-
-	if asMOD_setupFrame then
-		asMOD_setupFrame(ACDP_CoolButtons, "asCooldownPulselist");
-	end
-
-	bCombatInfoLoaded = LoadAddOn("asCombatInfo");
-end
 
 local function ACDP_Checkcooldown()
 	for spellid, type in pairs(KnownSpellList) do
@@ -559,7 +518,6 @@ end
 local timer;
 
 local function setupKnownSpell(bwipe)
-
 	if timer then
 		timer:Cancel();
 	end
@@ -606,17 +564,63 @@ local function ACDP_OnEvent(self, event)
 	return;
 end
 
-ACDP_mainframe = CreateFrame("Frame", nil, UIParent)
-ACDP_mainframe:SetScript("OnEvent", ACDP_OnEvent)
-ACDP_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD")
-ACDP_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED")
-ACDP_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED")
-ACDP_mainframe:RegisterEvent("SPELLS_CHANGED")
-ACDP_mainframe:RegisterUnitEvent("UNIT_PET", "player")
-ACDP_mainframe:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
-ACDP_mainframe:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED")
-ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")
-ACDP_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+local function ACDP_Init()
+	local i = 1;
+
+	while (i <= 10) do
+		ACDP[i] = CreateFrame("Frame", nil, UIParent)
+		ACDP[i]:SetPoint("CENTER", ACDP_AlertButtons_X, ACDP_AlertButtons_Y)
+
+
+		ACDP[i]:SetWidth(ACDP_AlertButtons_Size)
+		ACDP[i]:SetHeight(ACDP_AlertButtons_Size * 0.9)
+		ACDP[i]:SetScale(1)
+		ACDP[i]:SetAlpha(0)
+		ACDP[i]:SetFrameStrata("LOW")
+		ACDP[i]:EnableMouse(false);
+		ACDP[i]:Show()
+
+
+		ACDP_Icon[i] = ACDP[i]:CreateTexture(nil, "BACKGROUND")
+		ACDP_Icon[i]:SetTexture("")
+		ACDP_Icon[i]:ClearAllPoints()
+		ACDP_Icon[i]:SetAllPoints(ACDP[i])
+		ACDP_Icon[i]:SetTexCoord(.08, .92, .08, .92);
+		ACDP_Icon[i]:Show()
+
+		i = i + 1;
+	end
+	ACDP_CoolButtons = CreateFrame("Frame", nil, UIParent)
+
+	ACDP_CoolButtons:SetPoint("CENTER", ACDP_CoolButtons_X, ACDP_CoolButtons_Y)
+
+	ACDP_CoolButtons:SetWidth(1)
+	ACDP_CoolButtons:SetHeight(1)
+	ACDP_CoolButtons:SetScale(1)
+	ACDP_CoolButtons:SetFrameStrata("LOW")
+	ACDP_CoolButtons:Show()
+
+	LoadAddOn("asMOD");
+
+	if asMOD_setupFrame then
+		asMOD_setupFrame(ACDP_CoolButtons, "asCooldownPulselist");
+	end
+
+	bCombatInfoLoaded = LoadAddOn("asCombatInfo");
+
+	ACDP_mainframe = CreateFrame("Frame", nil, UIParent)
+	ACDP_mainframe:SetScript("OnEvent", ACDP_OnEvent)
+	ACDP_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD")
+	ACDP_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED")
+	ACDP_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED")
+	ACDP_mainframe:RegisterEvent("SPELLS_CHANGED")
+	ACDP_mainframe:RegisterUnitEvent("UNIT_PET", "player")
+	ACDP_mainframe:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
+	ACDP_mainframe:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+	ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED")
+	ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")
+	ACDP_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+end
+
 
 ACDP_Init()

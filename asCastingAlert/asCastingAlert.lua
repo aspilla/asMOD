@@ -48,14 +48,14 @@ local function CheckCasting(nameplate)
 				
 				ACTA.cast[currshow].castspellid = spellid;
 
-				ACTA.cast[currshow]:Show();
-				currshow = currshow + 1;
-
 				if ACTA_DangerousSpellList[spellid] then
 					ACTA.cast[currshow]:SetTextColor(0.8, 0.5, 0.5);
 				else
 					ACTA.cast[currshow]:SetTextColor(1, 1, 1);
 				end
+
+				ACTA.cast[currshow]:Show();
+				currshow = currshow + 1;				
 			end
 		end
 	end
