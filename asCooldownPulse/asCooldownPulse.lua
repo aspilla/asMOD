@@ -443,7 +443,7 @@ local function ACDP_Alert(spell, type)
 	end
 
 	if bsound then
-		C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.QueuedLocalPlayback, CONFIG_SOUND_SPEED, CONFIG_VOICE_VOL);
+		C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback, CONFIG_SOUND_SPEED, CONFIG_VOICE_VOL);
 	end
 
 	ns.asUIFrameFadeIn(ACDP[ACDP_Icon_Idx], ACDP_AlertShowTime, 0, 1)
