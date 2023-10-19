@@ -1382,6 +1382,10 @@ local function APB_CheckPower(self)
 		bupdate_power = true;
 		bsmall_power_bar = true;
 
+		if (spec and spec == 2) then
+			bsmall_power_bar = false;
+		end
+
 		if (spec and spec == 3) then
 			if asCheckTalent("칠흑의 힘") then
 				APB_BUFF = "칠흑의 힘";
@@ -1447,6 +1451,7 @@ local function APB_CheckPower(self)
 			for i = 1, 10 do
 				APB.combobar[i].tooltip = "ARCANE_CHARGES";
 			end
+			
 		end
 
 		if (spec and spec == 2) then
@@ -1666,7 +1671,17 @@ local function APB_CheckPower(self)
 			APB_SpellMax(APB_SPELL);
 			APB_UpdateSpell(APB_SPELL);
 			bupdate_spell = true;
+
+			if asCheckTalent("고대의 가르침") then
+				APB_BUFF = "고대의 가르침";
+				APB.buffbar[0].buff = "고대의 가르침";
+				APB.buffbar[0].unit = "player"
+				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				APB_UpdateBuff(self.buffbar[0])
+			end
 		end
+
+
 
 		if (spec and spec == 3) then
 			APB_UNIT_POWER = "CHI"

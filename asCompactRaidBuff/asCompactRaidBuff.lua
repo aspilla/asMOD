@@ -122,8 +122,6 @@ end
 
 local debufffilter = CreateFilterString(AuraFilters.Harmful);
 local bufffilter = CreateFilterString(AuraFilters.Helpful);
-local dispelfilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.Raid);
--- Buff/Debuff Cache
 
 
 local cachedVisualizationInfo = {};
@@ -734,103 +732,15 @@ local function ACRB_ParseAllAuras(asframe)
 	end
 	ForEachAura(asframe.displayedUnit, bufffilter, batchCount, HandleAura, usePackedAura);
 	ForEachAura(asframe.displayedUnit, debufffilter, batchCount, HandleAura, usePackedAura);
-	ForEachAura(asframe.displayedUnit, dispelfilter, batchCount, HandleAura, usePackedAura);
 end
 
 local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
-	local debuffsChanged = false;
-	local buffsChanged = false;
-	local pvpbuffsChanged = false;
-	local dispelsChanged = false;
+	local debuffsChanged = true;
+	local buffsChanged = true;
+	local pvpbuffsChanged = true;
+	local dispelsChanged = true;
 
-	if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate or asframe.debuffs == nil then
-		ACRB_ParseAllAuras(asframe);
-		debuffsChanged = true;
-		buffsChanged = true;
-		pvpbuffsChanged = true;
-		dispelsChanged = true;
-	else
-		if unitAuraUpdateInfo.addedAuras ~= nil then
-			for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
-				local type = ProcessAura(aura);
-				if type == AuraUpdateChangedType.Debuff then
-					asframe.debuffs[aura.auraInstanceID] = aura;
-					debuffsChanged = true;
-				elseif type == AuraUpdateChangedType.Buff then
-					asframe.buffs[aura.auraInstanceID] = aura;
-					buffsChanged = true;
-				elseif type == AuraUpdateChangedType.PVP then
-					asframe.pvpbuffs[aura.auraInstanceID] = aura;
-					pvpbuffsChanged = true;
-				elseif type == AuraUpdateChangedType.Dispel then
-					asframe.debuffs[aura.auraInstanceID] = aura;
-					debuffsChanged = true;
-					asframe.dispels[aura.dispelName][aura.auraInstanceID] = aura;
-					dispelsChanged = true;
-				end
-			end
-		end
-
-		if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
-			for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
-				if asframe.debuffs[auraInstanceID] ~= nil then
-					local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(asframe.displayedUnit, auraInstanceID);
-					local oldDebuffType = asframe.debuffs[auraInstanceID].debuffType;
-					if newAura ~= nil then
-						newAura.debuffType = oldDebuffType;
-					end
-					asframe.debuffs[auraInstanceID] = newAura;
-					debuffsChanged = true;
-
-					for _, tbl in pairs(asframe.dispels) do
-						if tbl[auraInstanceID] ~= nil then
-							tbl[auraInstanceID] = C_UnitAuras.GetAuraDataByAuraInstanceID(asframe.displayedUnit,
-								auraInstanceID);
-							dispelsChanged = true;
-							break;
-						end
-					end
-				elseif asframe.buffs[auraInstanceID] ~= nil then
-					local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(asframe.displayedUnit, auraInstanceID);
-					if newAura ~= nil then
-						newAura.isBuff = true;
-					end
-					asframe.buffs[auraInstanceID] = newAura;
-					buffsChanged = true;
-				elseif asframe.pvpbuffs[auraInstanceID] ~= nil then
-					local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(asframe.displayedUnit, auraInstanceID);
-					if newAura ~= nil then
-						newAura.isBuff = true;
-					end
-					asframe.pvpbuffs[auraInstanceID] = newAura;
-					pvpbuffsChanged = true;
-				end
-			end
-		end
-
-		if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
-			for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
-				if asframe.debuffs[auraInstanceID] ~= nil then
-					asframe.debuffs[auraInstanceID] = nil;
-					debuffsChanged = true;
-
-					for _, tbl in pairs(asframe.dispels) do
-						if tbl[auraInstanceID] ~= nil then
-							tbl[auraInstanceID] = nil;
-							dispelsChanged = true;
-							break;
-						end
-					end
-				elseif asframe.buffs[auraInstanceID] ~= nil then
-					asframe.buffs[auraInstanceID] = nil;
-					buffsChanged = true;
-				elseif asframe.pvpbuffs[auraInstanceID] ~= nil then
-					asframe.pvpbuffs[auraInstanceID] = nil;
-					pvpbuffsChanged = true;
-				end
-			end
-		end
-	end
+	ACRB_ParseAllAuras(asframe);
 
 	if debuffsChanged then
 		local frameNum = 1;
@@ -968,13 +878,6 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 	end
 end
 
-local function asframe_OnEvent(self, event, ...)
-	if event == "UNIT_AURA" then
-		local unitAuraUpdateInfo = select(2, ...);
-		ACRB_UpdateAuras(self.asframe, unitAuraUpdateInfo);
-	end
-end
-
 -- Setup
 local function ACRB_setupFrame(frame)
 	if not frame or frame:IsForbidden() then
@@ -985,10 +888,6 @@ local function ACRB_setupFrame(frame)
 	local frameName = frame:GetName()
 	if asraid[frameName] == nil then
 		asraid[frameName] = {};
-		--크기 조정을 위해 아래 코드를 돌린다.
-		asraid[frameName].eventframe = CreateFrame("Frame", nil, ACRB_mainframe);
-		asraid[frameName].eventframe:Hide();
-		asraid[frameName].eventframe.asframe = asraid[frameName];
 	end
 
 	local asframe = asraid[frameName];
@@ -1010,7 +909,6 @@ local function ACRB_setupFrame(frame)
 	end
 
 	asframe.frame = frame;
-	asframe.eventframe:SetScript("OnEvent", nil);
 
 	if not UnitIsPlayer(asframe.unit) then
 		return;
@@ -1408,9 +1306,6 @@ local function ACRB_setupFrame(frame)
 
 	asframe.ncasting = 0;
 
-	--asframe.eventframe:RegisterUnitEvent("UNIT_AURA", asframe.unit, displayedUnit);
-	--asframe.eventframe:SetScript("OnEvent", asframe_OnEvent);
-
 	ACRB_UpdateAuras(asframe, nil);
 end
 
@@ -1477,8 +1372,6 @@ local function ACRB_OnEvent(self, event, ...)
 		updateTankerList();
 	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
 		DumpCaches();
-		--elseif (event == "GROUP_LEFT") then
-		--table.wipe(asraid);
 	elseif (event == "PLAYER_LEAVING_WORLD") then
 		hasValidPlayer = false;
 	end
@@ -1488,7 +1381,6 @@ ACRB_mainframe:SetScript("OnEvent", ACRB_OnEvent)
 ACRB_mainframe:RegisterEvent("GROUP_ROSTER_UPDATE");
 ACRB_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 ACRB_mainframe:RegisterEvent("PLAYER_LEAVING_WORLD");
---ACRB_mainframe:RegisterEvent("GROUP_LEFT");
 ACRB_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 ACRB_mainframe:RegisterEvent("CVAR_UPDATE");
 ACRB_mainframe:RegisterEvent("ROLE_CHANGED_INFORM");

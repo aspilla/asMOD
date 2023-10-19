@@ -266,6 +266,7 @@ local function ACI_Alert(self, bcastspell)
 
 		if ACI_SpellList[i][7] then
 			buff_name = ACI_SpellList[i][7];
+			ACI_Buff_list[buff_name] = i;
 		end
 
 		_, icon, count, _, duration, expirationTime, _, _, _, _, _, _, _, _, _, stack = getUnitBuffbyName(unit,
@@ -378,6 +379,7 @@ local function ACI_Alert(self, bcastspell)
 
 		if ACI_SpellList[i][6] then
 			buff_name = ACI_SpellList[i][6];
+			ACI_Buff_list[buff_name] = i;
 		end
 
 		if not buff_name then

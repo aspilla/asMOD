@@ -111,7 +111,7 @@ end
 
 
 
-local filter = CreateFilterString(AuraFilters.Helpful);
+local filter = CreateFilterString(AuraFilters.Helpful, AuraFilters.IncludeNameplateOnly);
 
 
 local function scanSpells(tab)

@@ -69,6 +69,12 @@ ns.ACRB_ShowList_EVOKER_2 = {
 
 }
 
+ns.ACRB_ShowList_EVOKER_3 = {
+	["예지"] = { 0, 4 },
+	["끓어오르는 비늘"] = { 0, 5 },
+
+}
+
 
 -- 안보이게 할 디법
 ns.ACRB_ShowList = {
