@@ -1357,6 +1357,7 @@ local function ACRB_OnEvent(self, event, ...)
 	local arg1 = ...;
 
 	if (event == "PLAYER_ENTERING_WORLD") then
+		ACRB_DangerousSpellList = {};
 		ACRB_InitList();
 		hasValidPlayer = true;
 		local bloaded = LoadAddOn("DBM-Core");

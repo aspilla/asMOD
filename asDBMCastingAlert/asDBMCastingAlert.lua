@@ -23,7 +23,8 @@ end
 local ADVA = nil;
 local timer = nil;
 local ADCA_DangerousSpellList = {};
-local CastingInfo = {};
+local CastingUnits = {};
+local SoundedUnits = {};
 
 function ADCA_DBMTimer_callback(event, id, ...)
 	local spellId = select(5, ...);
@@ -66,10 +67,9 @@ local function ADCA_DisplayRaidIcon(unit)
 	end
 end
 
-
 local function ADCA_OnUpdate()
 	local i = 1;
-	for unit, endTime in pairs(CastingInfo) do
+	for unit, bupdate in pairs(CastingUnits) do
 		if UnitExists(unit) then
 			local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, castID, notInterruptible, spellId =
 				UnitCastingInfo(unit);
@@ -80,6 +80,11 @@ local function ADCA_OnUpdate()
 
 			if name then
 				if i <= 3 and ADCA_DangerousSpellList[spellId] then
+					if CONFIG_SOUND and SoundedUnits[unit] == nil then
+						C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback,
+							CONFIG_SOUND_SPEED, CONFIG_SOUND_VOL);
+						SoundedUnits[unit] = true;
+					end
 					local frame = ADVA.frames[i];
 					frame.castspellid = spellId;
 
@@ -122,10 +127,12 @@ local function ADCA_OnUpdate()
 					i = i + 1;
 				end
 			else
-				CastingInfo[unit] = nil;
+				CastingUnits[unit] = nil;
+				SoundedUnits[unit] = nil;
 			end
 		else
-			CastingInfo[unit] = nil;
+			CastingUnits[unit] = nil;
+			SoundedUnits[unit] = nil;
 		end
 	end
 
@@ -137,32 +144,20 @@ local function ADCA_OnUpdate()
 end
 
 local function ADCA_OnEvent(self, event, arg1, arg2, arg3, arg4)
-	local unit = arg1;
-	local spellid = arg3;
-
-	if unit and spellid and isFaction(unit) and string.find(unit, "nameplate") then
-		local name, _, _, _, endTime, _, _, _, spellid = UnitCastingInfo(unit);
-		if not name then
-			name, _, _, _, endTime, _, _, spellid = UnitChannelInfo(unit);
-		end
-
-		if name and (CastingInfo[unit] == nil or CastingInfo[unit] < endTime) then
-			--if ADCA_DangerousSpellList[spellid] then
-			if true then
-				if CONFIG_SOUND and ADCA_DangerousSpellList[spellid] then
-					C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback,
-						CONFIG_SOUND_SPEED, CONFIG_SOUND_VOL);
-				end
-
-				CastingInfo[unit] = endTime;
-				ADCA_OnUpdate();
-			end
+	if event == "PLAYER_ENTERING_WORLD" then
+		ADCA_DangerousSpellList = {};
+	else
+		local unit = arg1;
+		local spellid = arg3;
+		if unit and spellid and isFaction(unit) and string.find(unit, "nameplate") then
+			CastingUnits[unit] = true;
+			ADCA_OnUpdate();
 		end
 	end
 end
 
 
-local function ABF_UpdateBuffAnchor(frames, index, offsetX, right, center, parent)
+local function UpdateBuffAnchor(frames, index, offsetX, right, center, parent)
 	local buff = frames[index];
 	buff:ClearAllPoints();
 
@@ -214,7 +209,7 @@ local function CreatBuffFrames(parent, bright, bcenter)
 		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 		frame.border:SetAlpha(1);
 
-		ABF_UpdateBuffAnchor(parent.frames, idx, 1, bright, bcenter, parent);
+		UpdateBuffAnchor(parent.frames, idx, 1, bright, bcenter, parent);
 
 		if not frame:GetScript("OnEnter") then
 			frame:SetScript("OnEnter", function(s)
@@ -257,6 +252,7 @@ local function initAddon()
 	ADVA:SetScript("OnEvent", ADCA_OnEvent);
 	ADVA:RegisterEvent("UNIT_SPELLCAST_START");
 	ADVA:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");
+	ADVA:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 	timer = C_Timer.NewTicker(0.2, ADCA_OnUpdate);
 end

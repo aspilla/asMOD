@@ -1968,6 +1968,7 @@ local function ANameP_OnEvent(self, event, ...)
 		setupKnownSpell();
 		C_Timer.After(0.5, initAlertList);
 	elseif (event == "PLAYER_ENTERING_WORLD") then
+		ANameP_DangerousSpellList = {};
 		local isInstance, instanceType = IsInInstance();
 		if isInstance and (instanceType == "party" or instanceType == "raid" or instanceType == "scenario") then
 			self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");

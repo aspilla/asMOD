@@ -87,6 +87,12 @@ function ACTA_DBMTimer_callback(event, id, ...)
 	end
 end
 
+local function ACTA_OnEvent(self, event, arg1, arg2, arg3, arg4)
+	if event == "PLAYER_ENTERING_WORLD" then
+		ACTA_DangerousSpellList = {};
+	end
+end
+
 local function initAddon()
 	ACTA = CreateFrame("Frame", nil, UIParent);
 	ACTA.cast = {};
@@ -119,6 +125,9 @@ local function initAddon()
 
 	--주기적으로 Callback
 	C_Timer.NewTicker(ACTA_UpdateRate, ACTA_OnUpdate);
+
+	ACTA:SetScript("OnEvent", ACTA_OnEvent);
+	ACTA:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 	local bloaded = LoadAddOn("DBM-Core");
 	if bloaded then
