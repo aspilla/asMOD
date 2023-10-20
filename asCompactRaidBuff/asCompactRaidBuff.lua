@@ -651,20 +651,20 @@ local function ProcessAura(aura)
 			aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
 			return AuraUpdateChangedType.Debuff;
 		end
-	elseif aura.isHelpful and ns.ACRB_PVPBuffList[aura.spellId] then
-		return AuraUpdateChangedType.PVP;
-	elseif aura.isHelpful and ShouldDisplayBuff(aura) then
-		aura.isBuff = true;
-		return AuraUpdateChangedType.Buff;
-	elseif aura.isHelpful and (PLAYER_UNITS[aura.sourceUnit] and ACRB_ShowList and ACRB_ShowList[aura.name]) then
-		aura.isBuff = true;
-		return AuraUpdateChangedType.Buff;
 	elseif aura.isHarmful and aura.isRaid then
 		if DispellableDebuffTypes[aura.dispelName] ~= nil then
 			aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
 				UnitFrameDebuffType.NonBossRaidDebuff;
 			return AuraUpdateChangedType.Dispel;
 		end
+	elseif aura.isHelpful and ShouldDisplayBuff(aura) then
+		aura.isBuff = true;
+		return AuraUpdateChangedType.Buff;
+	elseif aura.isHelpful and (PLAYER_UNITS[aura.sourceUnit] and ACRB_ShowList and ACRB_ShowList[aura.name]) then
+		aura.isBuff = true;
+		return AuraUpdateChangedType.Buff;
+	elseif aura.isHelpful and ns.ACRB_PVPBuffList[aura.spellId] then
+		return AuraUpdateChangedType.PVP;	
 	end
 
 	return AuraUpdateChangedType.None;
