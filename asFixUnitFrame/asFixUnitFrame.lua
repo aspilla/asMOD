@@ -1,18 +1,9 @@
-local AFUF = CreateFrame("FRAME", nil, UIParent);
-Options_Default = {
-    HideDebuff = true,
-    HideCombatText = true,
-    HideCastBar = true,
-    HideClassBar = true,
-    ShowClassColor = true,
-    ShowAggro = true,
-    ShowDebuff = true,
-};
+local _, ns = ...;
 
-local options = {};
+local AFUF = CreateFrame("FRAME", nil, UIParent);
 
 local function HideCombatText()
-    if options["HideCombatText"] then
+    if ns.options.HideCombatText then
         -- 데미지 숫자 숨기기
         PlayerFrame:UnregisterEvent("UNIT_COMBAT");
         TargetFrame:UnregisterEvent("UNIT_COMBAT");
@@ -22,7 +13,7 @@ end
 
 local function HideTargetBuffs()
     -- TargetFrame의 Buff Debuff를 숨긴다.
-    if options["HideDebuff"] then
+    if ns.options.HideDebuff then
         TargetFrame:UnregisterEvent("UNIT_AURA");
         local function _UpdateBuffAnchor(self, buff)
             --For mirroring vertically
@@ -35,14 +26,14 @@ local function HideTargetBuffs()
 end
 
 local function HideTargetCastBar()
-    if options["HideCastBar"] then
+    if ns.options.HideCastBar then
         --TargetCastBar 를 숨긴다.
         TargetFrame.spellbar.showCastbar = false;
     end
 end
 
 local function ShowAggro()
-    if options["ShowAggro"] then
+    if ns.options.ShowAggro then
         --TargetCastBar 를 숨긴다.
         SetCVar("threatShowNumeric", "1");
     else
@@ -51,7 +42,7 @@ local function ShowAggro()
 end
 
 local function HideClassBar()
-    if not options["HideClassBar"] then
+    if not ns.options.HideClassBar then
         return;
     end
     --주요 자원바 숨기기
@@ -90,7 +81,7 @@ local frames = {
 }
 
 local function UpdateHealthBar(unit)
-    if not options["ShowClassColor"] then
+    if not ns.options.ShowClassColor then
         return;
     end
 
@@ -152,99 +143,90 @@ end
 
 local DispellableDebuffTypes =
 {
-	Magic = true,
-	Curse = true,
-	Disease = true,
-	Poison = true
+    Magic = true,
+    Curse = true,
+    Disease = true,
+    Poison = true
 };
 
 
 local AuraUpdateChangedType = EnumUtil.MakeEnum(
-	"None",
-	"Debuff",
-	"Buff",
-	"PVP",
-	"Dispel"
+    "None",
+    "Debuff",
+    "Buff",
+    "PVP",
+    "Dispel"
 );
 
 local UnitFrameDebuffType = EnumUtil.MakeEnum(
-	"BossDebuff",
-	"BossBuff",
-	"PriorityDebuff",
-	"NonBossRaidDebuff",
-	"NonBossDebuff"
+    "BossDebuff",
+    "BossBuff",
+    "PriorityDebuff",
+    "NonBossRaidDebuff",
+    "NonBossDebuff"
 );
 
 
 
 local AuraFilters =
 {
-	Helpful = "HELPFUL",
-	Harmful = "HARMFUL",
-	Raid = "RAID",
-	IncludeNameplateOnly = "INCLUDE_NAME_PLATE_ONLY",
-	Player = "PLAYER",
-	Cancelable = "CANCELABLE",
-	NotCancelable = "NOT_CANCELABLE",
-	Maw = "MAW",
+    Helpful = "HELPFUL",
+    Harmful = "HARMFUL",
+    Raid = "RAID",
+    IncludeNameplateOnly = "INCLUDE_NAME_PLATE_ONLY",
+    Player = "PLAYER",
+    Cancelable = "CANCELABLE",
+    NotCancelable = "NOT_CANCELABLE",
+    Maw = "MAW",
 };
 
 local function CreateFilterString(...)
-	return table.concat({ ... }, '|');
+    return table.concat({ ... }, '|');
 end
 
 local function DefaultAuraCompare(a, b)
-	local aFromPlayer = (a.sourceUnit ~= nil) and UnitIsUnit("player", a.sourceUnit) or false;
-	local bFromPlayer = (b.sourceUnit ~= nil) and UnitIsUnit("player", b.sourceUnit) or false;
-	if aFromPlayer ~= bFromPlayer then
-		return aFromPlayer;
-	end
+    local aFromPlayer = (a.sourceUnit ~= nil) and UnitIsUnit("player", a.sourceUnit) or false;
+    local bFromPlayer = (b.sourceUnit ~= nil) and UnitIsUnit("player", b.sourceUnit) or false;
+    if aFromPlayer ~= bFromPlayer then
+        return aFromPlayer;
+    end
 
-	if a.canApplyAura ~= b.canApplyAura then
-		return a.canApplyAura;
-	end
+    if a.canApplyAura ~= b.canApplyAura then
+        return a.canApplyAura;
+    end
 
-	return a.auraInstanceID < b.auraInstanceID;
+    return a.auraInstanceID < b.auraInstanceID;
 end
-
-local function UnitFrameDebuffComparator(a, b)
-	if a.debuffType ~= b.debuffType then
-		return a.debuffType < b.debuffType;
-	end
-
-	return DefaultAuraCompare(a, b);
-end
-
 
 local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuationToken, ...)
-	-- continuationToken is the first return value of UnitAuraSlots()
-	local n = select('#', ...);
-	for i = 1, n do
-		local slot = select(i, ...);
-		local done;
-		if usePackedAura then
-			local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
-			done = func(auraInfo);
-		else
-			done = func(UnitAuraBySlot(unit, slot));
-		end
-		if done then
-			-- if func returns true then no further slots are needed, so don't return continuationToken
-			return nil;
-		end
-	end
-	return continuationToken;
+    -- continuationToken is the first return value of UnitAuraSlots()
+    local n = select('#', ...);
+    for i = 1, n do
+        local slot = select(i, ...);
+        local done;
+        if usePackedAura then
+            local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
+            done = func(auraInfo);
+        else
+            done = func(UnitAuraBySlot(unit, slot));
+        end
+        if done then
+            -- if func returns true then no further slots are needed, so don't return continuationToken
+            return nil;
+        end
+    end
+    return continuationToken;
 end
 local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
-	if maxCount and maxCount <= 0 then
-		return;
-	end
-	local continuationToken;
-	repeat
-		-- continuationToken is the first return value of UnitAuraSltos
-		continuationToken = ForEachAuraHelper(unit, filter, func, usePackedAura,
-			UnitAuraSlots(unit, filter, maxCount, continuationToken));
-	until continuationToken == nil;
+    if maxCount and maxCount <= 0 then
+        return;
+    end
+    local continuationToken;
+    repeat
+        -- continuationToken is the first return value of UnitAuraSltos
+        continuationToken = ForEachAuraHelper(unit, filter, func, usePackedAura,
+            UnitAuraSlots(unit, filter, maxCount, continuationToken));
+    until continuationToken == nil;
 end
 
 
@@ -295,39 +277,6 @@ local function CreateDebuffFrame()
     end
 end
 
-local function SetupOptionPanels()
-    local function OnSettingChanged(_, setting, value)
-        local variable = setting:GetVariable()
-        AFUF_Options[variable] = value;
-        options[variable] = value;
-        ReloadUI();
-    end
-
-    local category = Settings.RegisterVerticalLayoutCategory("asFixUnitFrame")
-
-    if AFUF_Options == nil then
-        AFUF_Options = {};
-        AFUF_Options = CopyTable(Options_Default);
-        options = CopyTable(AFUF_Options);
-    end
-
-    for variable, _ in pairs(Options_Default) do
-        local name = variable;
-        local tooltip = ""
-        if AFUF_Options[variable] == nil then
-            AFUF_Options[variable] = Options_Default[variable];
-            options[variable] = Options_Default[variable];
-        end
-        local defaultValue = AFUF_Options[variable];
-
-        local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
-        Settings.CreateCheckBox(category, setting, tooltip)
-        Settings.SetOnValueChangedCallback(variable, OnSettingChanged)
-    end
-
-    Settings.RegisterAddOnCategory(category)
-end
-
 local activeDebuffs = nil;
 local AuraUpdateChangedType = EnumUtil.MakeEnum(
     "None",
@@ -367,7 +316,7 @@ local function ParseAllAuras()
 end
 
 local function UpdateAuraFrames(auraList, numAuras)
-    if not options["ShowDebuff"] then
+    if not ns.options.ShowDebuff then
         return;
     end
 
@@ -425,7 +374,7 @@ end
 
 local function UpdateAuras(unitAuraUpdateInfo)
     local debuffsChanged = false;
-    
+
     if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate or activeDebuffs == nil then
         ParseAllAuras();
         debuffsChanged = true;
@@ -474,18 +423,17 @@ end
 
 
 
-local bfirst = false;
+local bfirst = true;
 
 local function OnEvent(self, event, ...)
-    if not bfirst then
-        SetupOptionPanels();
-        options = CopyTable(AFUF_Options);
-        bfirst = true;
+    if bfirst then
+        ns.SetupOptionPanels();
+        bfirst = false;
     end
 
     if event == "UNIT_AURA" then
         local unitAuraUpdateInfo = select(2, ...);
-        UpdateAuras(unitAuraUpdateInfo);        
+        UpdateAuras(unitAuraUpdateInfo);
     elseif event == "PLAYER_ENTERING_WORLD" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
         HideClassBar();
         HideCombatText();

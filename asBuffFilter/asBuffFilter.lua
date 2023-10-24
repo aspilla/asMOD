@@ -3,6 +3,7 @@ local ABF;
 local ABF_PLAYER_BUFF;
 local ABF_TARGET_BUFF;
 local ABF_TalentBuffList = {};
+local overlayspell = {};
 
 --AuraUtil
 local PLAYER_UNITS = {
@@ -135,6 +136,9 @@ end
 
 local function asCheckTalent()
 	ABF_TalentBuffList = {};
+	overlayspell = {};
+	scanSpells(2)
+	scanSpells(3)
 
 	local specID = PlayerUtil.GetCurrentSpecID();
 	local configID = C_ClassTalents.GetActiveConfigID();
@@ -167,8 +171,7 @@ local function asCheckTalent()
 			end
 		end
 	end
-	scanSpells(2)
-	scanSpells(3)
+
 	return;
 end
 
@@ -176,8 +179,6 @@ end
 local function asCooldownFrame_Clear(self)
 	self:Clear();
 end
-
-local overlayspell = {};
 
 local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
 	if enable and enable ~= 0 and start > 0 and duration > 0 then
@@ -599,7 +600,13 @@ local function ABF_OnEvent(self, event, arg1, ...)
 		UpdateAuras(nil, "target");
 	elseif (event == "UNIT_AURA") then
 		local unitAuraUpdateInfo = ...;
-		UpdateAuras(unitAuraUpdateInfo, arg1);
+		local unit = arg1;
+		if unit and  unit == "player" then
+			UpdateAuras(nil, unit);
+		else
+			UpdateAuras(unitAuraUpdateInfo, unit);
+		end
+
 	elseif (event == "PLAYER_TOTEM_UPDATE") then
 		if activeBuffs["player"] == nil then
 			UpdateAuras(nil, "player");
@@ -617,8 +624,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ABF:SetAlpha(ns.ABF_AlphaNormal);
 		DumpCaches();
-	elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
-		overlayspell = {};
+	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then		
 		asCheckTalent();
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
 		if Settings.GetValue("spellActivationOverlayOpacity") and Settings.GetValue("spellActivationOverlayOpacity") > 0 then
@@ -790,6 +796,8 @@ local function ABF_Init()
 	ABF:RegisterEvent("PLAYER_REGEN_ENABLED");
 	ABF:RegisterEvent("PLAYER_TOTEM_UPDATE");
 	ABF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+	ABF:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+	ABF:RegisterEvent("TRAIT_CONFIG_UPDATED");
 
 
 	bloaded = LoadAddOn("asOverlay")

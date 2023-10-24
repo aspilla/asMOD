@@ -6,4 +6,5 @@
 ## SavedVariablesPerCharacter: ACDP_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asCooldownPulseLib.lua
+asCooldownPulseOption.lua
 asCooldownPulse.xml

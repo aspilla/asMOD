@@ -5,4 +5,5 @@
 ## Version : 100425
 ## SavedVariablesPerCharacter: AHCA_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+asHealerChatAlertOption.lua
 asHealerChatAlert.lua

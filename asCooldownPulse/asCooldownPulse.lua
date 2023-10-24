@@ -4,7 +4,6 @@
 local CONFIG_MINCOOL = 1.5 -- 최소안내 쿨타임
 local CONFIG_MAXCOOL = (60 * 5)
 local CONFIG_MINCOOL_PET = 20
-local CONFIG_SOUND = true         -- 음성안내
 local CONFIG_MINSOUNDTIME = 30    -- 음성안내 최소 Cooldown
 local CONFIG_SOUND_SPEED = 1      -- 음성안내 읽기 속도
 local CONFIG_VOICE_ID = 0         -- 음성 종류 (한국 Client 는 0번 1가지만 지원)
@@ -17,7 +16,6 @@ local ACDP_AlertButtons_Size = 60 -- Alert button size
 local ACDP_AlertFadeTime = 1      -- Alert button Fade in-out 시간 짧으면 빨리 사라짐
 local ACDP_AlertShowTime = 0.2    -- Alert button Fade in-out 시간 짧으면 빨리 사라짐
 local ACDP_SIZE = 32;             -- 쿨 List Size
-local ACDP_Show_CoolList = false; -- 쿨 List를 보일지 안보일지 (무조건 보이게 하려면 true)
 local ACDP_Alert_Time = 0.7;      -- 쿨 1초전에 알림
 local ACDP_ALPHA = 1;
 local ACDP_CooldownFontSize = 11; -- Cooldown Font Size 기본 쿨다운 지원
@@ -81,8 +79,8 @@ local voice_remap = {
 
 local ACDP = {};
 local ACDP_Icon = {};
-local ACDP_mainframe
-local ACDP_CoolButtons = nil;
+local ACDP_mainframe = CreateFrame("Frame", nil, UIParent);
+local ACDP_CoolButtons = CreateFrame("Frame", nil, UIParent);
 
 local KnownSpellList = {};
 local showlist_id = {};
@@ -241,7 +239,7 @@ local function ACDP_UpdateCooldown()
 		parent.frames = {};
 	end
 
-	if ACDP_Show_CoolList ~= true and (bCombatInfoLoaded == false or (bCombatInfoLoaded == true and ACI_HideCooldownPulse ~= nil and ACI_HideCooldownPulse == true)) then
+	if ns.options.AlwaysShowButtons ~= true and (bCombatInfoLoaded == false or (bCombatInfoLoaded == true and ACI_HideCooldownPulse ~= nil and ACI_HideCooldownPulse == true)) then
 		for i = 1, ACDP_CooldownCount do
 			frame = parent.frames[i];
 
@@ -426,7 +424,7 @@ local function ACDP_Alert(spell, type)
 			bsound = true;
 		end
 		--print(name);
-		if CONFIG_SOUND and name then
+		if ns.options.PlaySound and name then
 			if (spell_cooldown[spell] and spell_cooldown[spell] >= CONFIG_MINSOUNDTIME) then
 				bsound = true;
 			end
@@ -435,7 +433,7 @@ local function ACDP_Alert(spell, type)
 		name, _, _, _, _, _, _, _, _, icon = GetItemInfo(type)
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
 
-		if CONFIG_SOUND and name then
+		if ns.options.PlaySound and name then
 			if item_cooldown[type] and item_cooldown[type] >= CONFIG_MINSOUNDTIME then
 				bsound = true;
 			end
@@ -538,7 +536,15 @@ local function setupKnownSpell(bwipe)
 	timer = C_Timer.NewTicker(ACDP_UpdateRate, ACDP_OnUpdate);
 end
 
+local bfirst = true;
+    
 local function ACDP_OnEvent(self, event)
+
+	if bfirst then
+        ns.SetupOptionPanels();
+        bfirst = false;
+    end
+
 	if event == "PLAYER_ENTERING_WORLD" then
 		setupKnownSpell(true);
 
@@ -590,8 +596,7 @@ local function ACDP_Init()
 
 		i = i + 1;
 	end
-	ACDP_CoolButtons = CreateFrame("Frame", nil, UIParent)
-
+	
 	ACDP_CoolButtons:SetPoint("CENTER", ACDP_CoolButtons_X, ACDP_CoolButtons_Y)
 
 	ACDP_CoolButtons:SetWidth(1)
@@ -608,7 +613,6 @@ local function ACDP_Init()
 
 	bCombatInfoLoaded = LoadAddOn("asCombatInfo");
 
-	ACDP_mainframe = CreateFrame("Frame", nil, UIParent)
 	ACDP_mainframe:SetScript("OnEvent", ACDP_OnEvent)
 	ACDP_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD")
 	ACDP_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED")

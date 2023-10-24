@@ -1,32 +1,31 @@
+local _, ns = ...;
+
 local AHCA = CreateFrame("FRAME", nil, UIParent);
-AHCA.unit = nil;
-AHCA.Options_Default = {
-    AlertAnyway = false, -- 무조건 알리기
-}
+local gunit = nil;
+local bfirst = true;
 
-
-function AHCA:CheckHealer()
+local function CheckHealer()
     local playerishealer = (UnitGroupRolesAssigned("player") == "HEALER") or AHCA_Options["AlertAnyway"];
 
     if playerishealer == false then
-        self.unit = nil;
+        gunit = nil;
         return;
     end
 
     if (IsInGroup()) then
         if IsInRaid() then -- raid
-            self.unit = nil;
+            gunit = nil;
             return;
         else -- party
             if UnitGroupRolesAssigned("player") == "HEALER" then
-                self.unit = "player";
+                gunit = "player";
                 return;
             end
             for i = 1, 5 do
                 local unit = "party" .. i;
                 local role = UnitGroupRolesAssigned(unit);
                 if role == "HEALER" then
-                    self.unit = unit;
+                    gunit = unit;
                     return;
                 end
             end
@@ -34,8 +33,8 @@ function AHCA:CheckHealer()
     end
 end
 
-function AHCA:UpdateAlert()
-    if self.unit == nil then
+local function UpdateAlert()
+    if gunit == nil then
         return;
     end
 
@@ -43,8 +42,8 @@ function AHCA:UpdateAlert()
         return;
     end
 
-    local max = UnitPowerMax(self.unit, Enum.PowerType.Mana);
-    local mana = UnitPower(self.unit, Enum.PowerType.Mana);
+    local max = UnitPowerMax(gunit, Enum.PowerType.Mana);
+    local mana = UnitPower(gunit, Enum.PowerType.Mana);
     if max and mana and mana > 0 and max > 0 then
         local msg = "힐러마나 " .. math.ceil(mana / max * 100) .. "%";
         --print (msg);
@@ -52,55 +51,25 @@ function AHCA:UpdateAlert()
     end
 end
 
-function AHCA:OnEvent(event, ...)
-    if not self.bfirst then
-        self:SetupOptionPanels();
-        self.bfirst = true;
+local function OnEvent(self, event, ...)
+    if bfirst then
+        ns.SetupOptionPanels();
+        bfirst = false;
     end
 
-    self:CheckHealer();
+    CheckHealer();
     if event == "PLAYER_REGEN_ENABLED" then
-        self:UpdateAlert();
+        UpdateAlert();
     end
 end
 
-function AHCA:OnInit()
-    self:SetScript("OnEvent", self.OnEvent);
-    self:RegisterEvent("PLAYER_REGEN_ENABLED");
-    self:RegisterEvent("PLAYER_ENTERING_WORLD");
-    self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-    self:RegisterEvent("GROUP_ROSTER_UPDATE");
-    self:RegisterEvent("ROLE_CHANGED_INFORM");
+local function OnInit()
+    AHCA:SetScript("OnEvent", OnEvent);
+    AHCA:RegisterEvent("PLAYER_REGEN_ENABLED");
+    AHCA:RegisterEvent("PLAYER_ENTERING_WORLD");
+    AHCA:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+    AHCA:RegisterEvent("GROUP_ROSTER_UPDATE");
+    AHCA:RegisterEvent("ROLE_CHANGED_INFORM");
 end
 
-function AHCA:SetupOptionPanels()
-    local function OnSettingChanged(_, setting, value)
-        local variable = setting:GetVariable()
-        AHCA_Options[variable] = value;
-        ReloadUI();
-    end
-
-    local category = Settings.RegisterVerticalLayoutCategory("asHealthChatAlert")
-
-    if AHCA_Options == nil then
-        AHCA_Options = {};
-        AHCA_Options = CopyTable(self.Options_Default);
-    end
-
-    for variable, _ in pairs(self.Options_Default) do
-        local name = variable;
-        local tooltip = ""
-        if AHCA_Options[variable] == nil then
-            AHCA_Options[variable] = self.Options_Default[variable];
-        end
-        local defaultValue = AHCA_Options[variable];
-
-        local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
-        Settings.CreateCheckBox(category, setting, tooltip)
-        Settings.SetOnValueChangedCallback(variable, OnSettingChanged)
-    end
-
-    Settings.RegisterAddOnCategory(category)
-end
-
-AHCA:OnInit();
+OnInit();

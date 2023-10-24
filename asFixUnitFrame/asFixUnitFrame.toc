@@ -5,4 +5,5 @@
 ## Version : 100425
 ## SavedVariablesPerCharacter: AFUF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+asFixUnitFrameOption.lua
 asFixUnitFrame.xml

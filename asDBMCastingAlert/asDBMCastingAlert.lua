@@ -1,8 +1,8 @@
+local _, ns = ...;
 ---설정부
 local CONFIG_SOUND_SPEED = 1 -- 음성안내 읽기 속도
 local CONFIG_VOICE_ID = 3    -- 음성 종류 (한국 Client 는 0번 1가지만 지원)
 local CONFIG_SOUND_VOL = 100 -- 음성 안내 소리 크기
-local CONFIG_SOUND = true    -- 음성 여부
 local CONFIG_X = 170;
 local CONFIG_Y = 0;
 local CONFIG_SIZE = 45;
@@ -24,7 +24,6 @@ local ADVA = nil;
 local timer = nil;
 local ADCA_DangerousSpellList = {};
 local CastingUnits = {};
-local SoundedUnits = {};
 
 function ADCA_DBMTimer_callback(event, id, ...)
 	local spellId = select(5, ...);
@@ -69,7 +68,7 @@ end
 
 local function ADCA_OnUpdate()
 	local i = 1;
-	for unit, bupdate in pairs(CastingUnits) do
+	for unit, needtosound in pairs(CastingUnits) do
 		if UnitExists(unit) then
 			local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, castID, notInterruptible, spellId =
 				UnitCastingInfo(unit);
@@ -80,10 +79,10 @@ local function ADCA_OnUpdate()
 
 			if name then
 				if i <= 3 and ADCA_DangerousSpellList[spellId] then
-					if CONFIG_SOUND and SoundedUnits[unit] == nil then
+					if ns.options.PlaySound and needtosound == true then
 						C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback,
 							CONFIG_SOUND_SPEED, CONFIG_SOUND_VOL);
-						SoundedUnits[unit] = true;
+						CastingUnits[unit] = false;
 					end
 					local frame = ADVA.frames[i];
 					frame.castspellid = spellId;
@@ -128,11 +127,9 @@ local function ADCA_OnUpdate()
 				end
 			else
 				CastingUnits[unit] = nil;
-				SoundedUnits[unit] = nil;
 			end
 		else
 			CastingUnits[unit] = nil;
-			SoundedUnits[unit] = nil;
 		end
 	end
 
@@ -143,7 +140,14 @@ local function ADCA_OnUpdate()
 	end
 end
 
+local bfirst = true;
 local function ADCA_OnEvent(self, event, arg1, arg2, arg3, arg4)
+
+	if bfirst then
+        ns.SetupOptionPanels();
+        bfirst = false;
+    end
+
 	if event == "PLAYER_ENTERING_WORLD" then
 		ADCA_DangerousSpellList = {};
 	else
