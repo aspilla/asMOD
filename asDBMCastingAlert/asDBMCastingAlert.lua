@@ -2,9 +2,8 @@ local _, ns = ...;
 ---설정부
 local CONFIG_SOUND_SPEED = 1 -- 음성안내 읽기 속도
 local CONFIG_VOICE_ID = 3    -- 음성 종류 (한국 Client 는 0번 1가지만 지원)
-local CONFIG_SOUND_VOL = 100 -- 음성 안내 소리 크기
-local CONFIG_X = 170;
-local CONFIG_Y = 0;
+local CONFIG_X = 230;
+local CONFIG_Y = -50;
 local CONFIG_SIZE = 45;
 
 local function isFaction(unit)
@@ -81,7 +80,7 @@ local function ADCA_OnUpdate()
 				if i <= 3 and ADCA_DangerousSpellList[spellId] then
 					if ns.options.PlaySound and needtosound == true then
 						C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback,
-							CONFIG_SOUND_SPEED, CONFIG_SOUND_VOL);
+							CONFIG_SOUND_SPEED, ns.options.SoundVolume);
 						CastingUnits[unit] = false;
 					end
 					local frame = ADVA.frames[i];
@@ -236,7 +235,7 @@ end
 local function initAddon()
 	local bloaded = LoadAddOn("DBM-Core");
 	if bloaded then
-		DBM:RegisterCallback("DBM_TimerStart", ADCA_DBMTimer_callback);
+		DBM:RegisterCallback("DBM_TimerStart", ADCA_DBMTimer_callback);		
 	end
 
 	ADVA = CreateFrame("FRAME", nil, UIParent)

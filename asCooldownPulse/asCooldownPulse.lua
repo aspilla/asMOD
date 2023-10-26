@@ -4,10 +4,8 @@
 local CONFIG_MINCOOL = 1.5 -- 최소안내 쿨타임
 local CONFIG_MAXCOOL = (60 * 5)
 local CONFIG_MINCOOL_PET = 20
-local CONFIG_MINSOUNDTIME = 30    -- 음성안내 최소 Cooldown
 local CONFIG_SOUND_SPEED = 1      -- 음성안내 읽기 속도
 local CONFIG_VOICE_ID = 0         -- 음성 종류 (한국 Client 는 0번 1가지만 지원)
-local CONFIG_VOICE_VOL = 100	  -- 음성 크기
 local ACDP_CoolButtons_X = -98    -- 쿨 List 위치
 local ACDP_CoolButtons_Y = -250
 local ACDP_AlertButtons_X = 0     -- Alert button 위치
@@ -425,7 +423,7 @@ local function ACDP_Alert(spell, type)
 		end
 		--print(name);
 		if ns.options.PlaySound and name then
-			if (spell_cooldown[spell] and spell_cooldown[spell] >= CONFIG_MINSOUNDTIME) then
+			if (spell_cooldown[spell] and spell_cooldown[spell] >= ns.options.SoundCooldown) then
 				bsound = true;
 			end
 		end
@@ -434,14 +432,14 @@ local function ACDP_Alert(spell, type)
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
 
 		if ns.options.PlaySound and name then
-			if item_cooldown[type] and item_cooldown[type] >= CONFIG_MINSOUNDTIME then
+			if item_cooldown[type] and item_cooldown[type] >= ns.options.SoundCooldown then
 				bsound = true;
 			end
 		end
 	end
 
 	if bsound then
-		C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback, CONFIG_SOUND_SPEED, CONFIG_VOICE_VOL);
+		C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback, CONFIG_SOUND_SPEED, ns.options.SoundVolume);
 	end
 
 	ns.asUIFrameFadeIn(ACDP[ACDP_Icon_Idx], ACDP_AlertShowTime, 0, 1)

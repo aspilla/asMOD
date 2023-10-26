@@ -5,7 +5,7 @@ local gunit = nil;
 local bfirst = true;
 
 local function CheckHealer()
-    local playerishealer = (UnitGroupRolesAssigned("player") == "HEALER") or AHCA_Options["AlertAnyway"];
+    local playerishealer = (UnitGroupRolesAssigned("player") == "HEALER") or AHCA_Options.AlertAnyway;
 
     if playerishealer == false then
         gunit = nil;
@@ -42,12 +42,16 @@ local function UpdateAlert()
         return;
     end
 
+
     local max = UnitPowerMax(gunit, Enum.PowerType.Mana);
     local mana = UnitPower(gunit, Enum.PowerType.Mana);
     if max and mana and mana > 0 and max > 0 then
-        local msg = "힐러마나 " .. math.ceil(mana / max * 100) .. "%";
-        --print (msg);
-        SendChatMessage(msg);
+        local percent = math.ceil(mana / max * 100);
+        if AHCA_Options.AnnounceMana and percent < tonumber(AHCA_Options.AnnounceMana) then
+            local msg = "힐러마나 " .. percent .. "%";
+            --print (msg);
+            SendChatMessage(msg);
+        end
     end
 end
 

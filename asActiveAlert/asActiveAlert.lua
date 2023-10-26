@@ -1,7 +1,7 @@
 ﻿local ASAA_SIZE = 26;
 
-local ASAA_CoolButtons_X = 170 -- 쿨 List 위치
-local ASAA_CoolButtons_Y = 55
+local ASAA_CoolButtons_X = -100 -- 쿨 List 위치
+local ASAA_CoolButtons_Y = 0
 local ASAA_Alpha = 0.9
 local ASAA_CooldownFontSize = 10
 
@@ -129,7 +129,7 @@ local function ASAA_UpdateCooldown()
 
 	for i = 1, numCools - 1 do
 		-- anchor the current aura
-		ASAA_UpdateCoolAnchor(parent.frames, i, i - 1, ASAA_SIZE, 2, true, parent);
+		ASAA_UpdateCoolAnchor(parent.frames, i, i - 1, ASAA_SIZE, 2, false, parent);
 	end
 
 	-- 이후 전에 보였던 frame을 지운다.

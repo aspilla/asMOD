@@ -1,5 +1,7 @@
 local _, ns = ...;
 
+local CONFIG_MAX_COOL = 10;
+
 local AFUF = CreateFrame("FRAME", nil, UIParent);
 
 local function HideCombatText()
@@ -289,7 +291,7 @@ local function ProcessAura(aura)
         return AuraUpdateChangedType.None;
     end
 
-    if aura.isHarmful and aura.nameplateShowAll then
+    if aura.isHarmful and aura.nameplateShowAll and aura.duration > 0 and aura.duration <= CONFIG_MAX_COOL then
         activeDebuffs[aura.auraInstanceID] = aura;
         return AuraUpdateChangedType.Debuff;
     end

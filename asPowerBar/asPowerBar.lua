@@ -1292,6 +1292,7 @@ local function APB_CheckPower(self)
 	local localizedClass, englishClass = UnitClass("player")
 	local spec = GetSpecialization();
 	local talentgroup = GetActiveSpecGroup();
+	local version = select(4, GetBuildInfo());
 
 	APB:UnregisterEvent("UNIT_POWER_UPDATE")
 	APB:UnregisterEvent("UNIT_DISPLAYPOWER");
@@ -1547,11 +1548,18 @@ local function APB_CheckPower(self)
 			bupdate_spell = true;
 			bupdate_partial_power = true;
 
-			if asCheckTalent("아즈아퀴르의 광기") then
+			if version < 100200 and asCheckTalent("아즈아퀴르의 광기") then
 				APB_BUFF = "아즈아퀴르의 광기";
-				APB.buffbar[0].buff = "아즈아퀴르의 광기";
+				APB.buffbar[0].buff = APB_BUFF;
 				APB.buffbar[0].unit = "player"
 				APB:RegisterUnitEvent("UNIT_AURA", "player");
+				APB_UpdateBuff(self.buffbar[0])
+			elseif version == 100200 and asCheckTalent("박멸") then
+				APB_DEBUFF = "박멸";
+				APB.buffbar[0].debuff = APB_DEBUFF;
+				APB.buffbar[0].unit = "target"
+				APB:SetScript("OnUpdate", APB_OnUpdate);
+				APB:RegisterEvent("PLAYER_TARGET_CHANGED");
 				APB_UpdateBuff(self.buffbar[0])
 			end
 		end
@@ -1849,8 +1857,7 @@ local function APB_CheckPower(self)
 				APB_BUFF = "탄력";
 				APB.buffbar[0].buff = "탄력";
 				APB.buffbar[0].unit = "player"
-				local version = select(4, GetBuildInfo());
-
+				
 				if version == 100200 then
 					APB.buffbar[0].max = 20;
 				else

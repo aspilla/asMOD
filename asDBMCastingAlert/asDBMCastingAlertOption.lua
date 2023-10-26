@@ -1,6 +1,7 @@
 local _, ns = ...;
 local Options_Default = {
     PlaySound = true,
+    SoundVolume = 100,
 };
 
 ns.options = {};
@@ -11,7 +12,6 @@ function ns.SetupOptionPanels()
         local variable = setting:GetVariable()
         ADCA_Options[variable] = value;
         ns.options[variable] = value;
-        ReloadUI();
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asDBMCastingAlert")
@@ -32,9 +32,17 @@ function ns.SetupOptionPanels()
         end
         local defaultValue = ADCA_Options[variable];
 
-        local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
-        Settings.CreateCheckBox(category, setting, tooltip)
-        Settings.SetOnValueChangedCallback(variable, OnSettingChanged)
+        if tonumber(defaultValue) ~= nil then
+            local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+            local options = Settings.CreateSliderOptions(0, 100, 1);
+            options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+            Settings.CreateSlider(category, setting, options, tooltip);
+            Settings.SetOnValueChangedCallback(variable, OnSettingChanged);
+        else
+            local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+            Settings.CreateCheckBox(category, setting, tooltip);
+            Settings.SetOnValueChangedCallback(variable, OnSettingChanged);
+        end
     end
 
     Settings.RegisterAddOnCategory(category)

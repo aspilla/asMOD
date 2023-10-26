@@ -762,7 +762,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 						show = true;
 					end
 
-					if ANameP_ShowPVPDebuff and nameplateShowAll and duration <= 10 then
+					if ANameP_ShowPVPDebuff and nameplateShowAll and duration > 0 and duration <= 10 then
 						if ANameP_ShowCCDebuff and bShowCC == false then
 							show = false;
 							bShowCC = true;

@@ -1,7 +1,9 @@
 local _, ns = ...;
 local Options_Default = {
     PlaySound = true,
-    AlwaysShowButtons = false;
+    AlwaysShowButtons = false,
+    SoundVolume = 100,
+    SoundCooldown = 30,
 };
 
 ns.options = {};
@@ -12,7 +14,6 @@ function ns.SetupOptionPanels()
         local variable = setting:GetVariable()
         ACDP_Options[variable] = value;
         ns.options[variable] = value;
-        ReloadUI();
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asCooldownPulse")
@@ -33,9 +34,17 @@ function ns.SetupOptionPanels()
         end
         local defaultValue = ACDP_Options[variable];
 
-        local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
-        Settings.CreateCheckBox(category, setting, tooltip)
-        Settings.SetOnValueChangedCallback(variable, OnSettingChanged)
+        if tonumber(defaultValue) ~= nil then
+            local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+            local options = Settings.CreateSliderOptions(0, 100, 1);
+            options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+            Settings.CreateSlider(category, setting, options, tooltip);
+            Settings.SetOnValueChangedCallback(variable, OnSettingChanged);
+        else
+            local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+            Settings.CreateCheckBox(category, setting, tooltip);
+            Settings.SetOnValueChangedCallback(variable, OnSettingChanged);       
+        end
     end
 
     Settings.RegisterAddOnCategory(category)

@@ -5,8 +5,8 @@ local ADBMT_FontOutline = "THICKOUTLINE";
 local ADBMT_MaxButtons = 10;
 local ADBMT_1sHeight = 15; -- 1초의 높이
 local ADBMT_IconSize = 30;
-local ADBMT_X = -380;
-local ADBMT_Y = 0;
+local ADBMT_X = 230;
+local ADBMT_Y = 25;
 
 
 local BarColors = {
