@@ -3,7 +3,7 @@ local version = select(4, GetBuildInfo());
 
 if version == 100200 then
 	ACI_Options_Default = {
-		version = 231031,
+		version = 231109,
 
 
 		-- 	ACI_SpellList_직업명_특성숫자
