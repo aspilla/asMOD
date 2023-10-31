@@ -417,12 +417,12 @@ local function ACDP_Alert(spell, type)
 
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
 
-		if voice_remap[name] then
+		if voice_remap[name] and type ~= SPELL_TYPE_PET then
 			name = voice_remap[name];
 			bsound = true;
 		end
 		--print(name);
-		if ns.options.PlaySound and name then
+		if ns.options.PlaySound and name and type ~= SPELL_TYPE_PET then
 			if (spell_cooldown[spell] and spell_cooldown[spell] >= ns.options.SoundCooldown) then
 				bsound = true;
 			end
@@ -467,12 +467,12 @@ local function ACDP_Checkcooldown()
 
 		if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
 			start, duration, enabled = GetSpellCooldown(spellid);
-			if spell_cooldown[spellid] == nil or spell_cooldown[spellid] < duration then
-				spell_cooldown[spellid] = duration;
+			if duration > 2 then
+				spell_cooldown[spellid] = duration;			
 			end
 		else
 			start, duration, enabled = GetItemCooldown(type);
-			if item_cooldown[type] == nil or item_cooldown[type] < duration then
+			if duration > 2 then
 				item_cooldown[type] = duration;
 			end
 		end

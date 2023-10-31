@@ -1452,7 +1452,6 @@ local function APB_CheckPower(self)
 			for i = 1, 10 do
 				APB.combobar[i].tooltip = "ARCANE_CHARGES";
 			end
-			
 		end
 
 		if (spec and spec == 2) then
@@ -1539,6 +1538,15 @@ local function APB_CheckPower(self)
 				APB_UpdateBuff(self.buffbar[0])
 				bupdate_buff_count = true;
 			end
+		end
+
+		if (spec and spec == 2) then
+			APB_BUFF = "악마의 핵";
+			APB.buffbar[0].buff = APB_BUFF;
+			APB.buffbar[0].unit = "player"
+			APB:RegisterUnitEvent("UNIT_AURA", "player");
+			APB_UpdateBuff(self.buffbar[0])
+			bupdate_buff_count = true;
 		end
 
 		if (spec and spec == 3) then
@@ -1779,6 +1787,16 @@ local function APB_CheckPower(self)
 			APB_SpellMax(APB_SPELL, APB_SPELL2);
 			APB_UpdateSpell(APB_SPELL, APB_SPELL2);
 			bupdate_spell = true;
+
+			if asCheckTalent("분파") then
+				APB_DEBUFF = "분파";
+				APB.buffbar[0].debuff = APB_DEBUFF;
+				APB.buffbar[0].unit = "target"
+				APB:SetScript("OnUpdate", APB_OnUpdate);
+				APB:RegisterEvent("PLAYER_TARGET_CHANGED");
+				APB_UpdateBuff(self.buffbar[0])
+			end
+			
 		end
 
 		if (spec and spec == 2) then
@@ -1857,7 +1875,7 @@ local function APB_CheckPower(self)
 				APB_BUFF = "탄력";
 				APB.buffbar[0].buff = "탄력";
 				APB.buffbar[0].unit = "player"
-				
+
 				if version == 100200 then
 					APB.buffbar[0].max = 20;
 				else
