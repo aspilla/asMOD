@@ -467,12 +467,12 @@ local function ACDP_Checkcooldown()
 
 		if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
 			start, duration, enabled = GetSpellCooldown(spellid);
-			if duration > 2 then
+			if duration > gcd then
 				spell_cooldown[spellid] = duration;			
 			end
 		else
 			start, duration, enabled = GetItemCooldown(type);
-			if duration > 2 then
+			if duration > gcd then
 				item_cooldown[type] = duration;
 			end
 		end
