@@ -1364,6 +1364,13 @@ local function scanDBM()
 					end
 				end
 			end
+			if mod.announces then
+				for k, obj in pairs(mod.announces) do
+					if obj.spellId and obj.announceType then
+						ACRB_DangerousSpellList[obj.spellId] = obj.announceType;
+					end
+				end
+			end
 		end
 	end
 

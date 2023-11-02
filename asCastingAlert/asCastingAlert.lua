@@ -54,7 +54,6 @@ local function CheckCasting(nameplate)
 					else
 						ACTA.cast[currshow]:SetTextColor(0.8, 0.5, 0.5);
 					end
-					
 				else
 					ACTA.cast[currshow]:SetTextColor(1, 1, 1);
 				end
@@ -97,14 +96,21 @@ local function scanDBM()
 					end
 				end
 			end
+
+			if mod.announces then
+				for k, obj in pairs(mod.announces) do
+					if obj.spellId and obj.announceType then
+						ACTA_DangerousSpellList[obj.spellId] = obj.announceType;
+					end
+				end
+			end
 		end
 	end
-
 end
 
 local function NewMod(self, ...)
 	DBMobj = self;
-	C_Timer.After(0.25, scanDBM);	
+	C_Timer.After(0.25, scanDBM);
 end
 
 local function initAddon()
