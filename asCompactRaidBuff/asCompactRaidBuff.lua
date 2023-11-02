@@ -519,7 +519,12 @@ local function ACRB_updateCasting(asframe, unit)
 				asCooldownFrame_Set(castFrame.cooldown, start, duration, true);
 
 				if ACRB_DangerousSpellList[spellid] then
-					ns.lib.PixelGlow_Start(castFrame);
+					if ACRB_DangerousSpellList[spellid] == "interrupt" then
+						ns.lib.PixelGlow_Start(castFrame, { 0, 1, 0.32, 1 });
+					else
+						ns.lib.PixelGlow_Start(castFrame, { 0.5, 0.5, 0.5, 1 });
+					end
+					
 				else
 					ns.lib.PixelGlow_Stop(castFrame);
 				end
@@ -617,13 +622,6 @@ local function ACRB_CheckCasting()
 	end
 end
 
-function ACTA_DBMTimer_callback(event, id, ...)
-	local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
-	if spellId then
-		ACRB_DangerousSpellList[spellId] = true;
-	end
-end
-
 local function ProcessAura(aura)
 	if aura == nil then
 		return AuraUpdateChangedType.None;
@@ -664,7 +662,7 @@ local function ProcessAura(aura)
 		aura.isBuff = true;
 		return AuraUpdateChangedType.Buff;
 	elseif aura.isHelpful and ns.ACRB_PVPBuffList[aura.spellId] then
-		return AuraUpdateChangedType.PVP;	
+		return AuraUpdateChangedType.PVP;
 	end
 
 	return AuraUpdateChangedType.None;
@@ -1353,16 +1351,37 @@ local function DumpCaches()
 	ACRB_updatePartyAllAura(false);
 end
 
+local DBMobj;
+
+local function scanDBM()
+	ACRB_DangerousSpellList = {};
+	if DBMobj.Mods then
+		for i, mod in ipairs(DBMobj.Mods) do
+			if mod.specwarns then
+				for k, obj in pairs(mod.specwarns) do
+					if obj.spellId and obj.announceType then
+						ACRB_DangerousSpellList[obj.spellId] = obj.announceType;
+					end
+				end
+			end
+		end
+	end
+
+end
+
+local function NewMod(self, ...)
+	DBMobj = self;
+	C_Timer.After(0.25, scanDBM);	
+end
 local function ACRB_OnEvent(self, event, ...)
 	local arg1 = ...;
 
 	if (event == "PLAYER_ENTERING_WORLD") then
-		ACRB_DangerousSpellList = {};
 		ACRB_InitList();
 		hasValidPlayer = true;
 		local bloaded = LoadAddOn("DBM-Core");
 		if bloaded then
-			DBM:RegisterCallback("DBM_TimerStart", ACTA_DBMTimer_callback);
+			hooksecurefunc(DBM, "NewMod", NewMod)
 		end
 		updateTankerList();
 		DumpCaches();

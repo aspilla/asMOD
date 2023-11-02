@@ -45,17 +45,22 @@ local function CheckCasting(nameplate)
 			if remain > 0 then
 				ACTA.cast[currshow]:SetText("|T" ..
 					texture .. ":0|t" .. format("%.1f", max(remain, 0)) .. "|T" .. texture .. ":0|t");
-				
+
 				ACTA.cast[currshow].castspellid = spellid;
 
 				if ACTA_DangerousSpellList[spellid] then
-					ACTA.cast[currshow]:SetTextColor(0.8, 0.5, 0.5);
+					if ACTA_DangerousSpellList[spellid] == "interrupt" then
+						ACTA.cast[currshow]:SetTextColor(0, 1, 0.35);
+					else
+						ACTA.cast[currshow]:SetTextColor(0.8, 0.5, 0.5);
+					end
+					
 				else
 					ACTA.cast[currshow]:SetTextColor(1, 1, 1);
 				end
 
 				ACTA.cast[currshow]:Show();
-				currshow = currshow + 1;				
+				currshow = currshow + 1;
 			end
 		end
 	end
@@ -63,7 +68,7 @@ end
 
 local function ACTA_OnUpdate()
 	currshow = 1;
-	
+
 	for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
 		local nameplate = v;
 		if (nameplate) then
@@ -76,21 +81,30 @@ local function ACTA_OnUpdate()
 
 	for i = currshow, ACTA_MaxShow do
 		ACTA.cast[i]:Hide();
-	end	
-end
-
-
-function ACTA_DBMTimer_callback(event, id, ...)
-	local spellId = select(5, ...);
-	if spellId then
-		ACTA_DangerousSpellList[spellId] = true;
 	end
 end
 
-local function ACTA_OnEvent(self, event, arg1, arg2, arg3, arg4)
-	if event == "PLAYER_ENTERING_WORLD" then
-		ACTA_DangerousSpellList = {};
+local DBMobj;
+
+local function scanDBM()
+	ACTA_DangerousSpellList = {};
+	if DBMobj.Mods then
+		for i, mod in ipairs(DBMobj.Mods) do
+			if mod.specwarns then
+				for k, obj in pairs(mod.specwarns) do
+					if obj.spellId and obj.announceType then
+						ACTA_DangerousSpellList[obj.spellId] = obj.announceType;
+					end
+				end
+			end
+		end
 	end
+
+end
+
+local function NewMod(self, ...)
+	DBMobj = self;
+	C_Timer.After(0.25, scanDBM);	
 end
 
 local function initAddon()
@@ -126,12 +140,9 @@ local function initAddon()
 	--주기적으로 Callback
 	C_Timer.NewTicker(ACTA_UpdateRate, ACTA_OnUpdate);
 
-	ACTA:SetScript("OnEvent", ACTA_OnEvent);
-	ACTA:RegisterEvent("PLAYER_ENTERING_WORLD");
-
 	local bloaded = LoadAddOn("DBM-Core");
 	if bloaded then
-		DBM:RegisterCallback("DBM_TimerStart", ACTA_DBMTimer_callback);
+		hooksecurefunc(DBM, "NewMod", NewMod)
 	end
 end
 initAddon();

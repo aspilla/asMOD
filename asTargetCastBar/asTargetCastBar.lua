@@ -4,14 +4,14 @@ local ATCB_WIDTH = 150
 local ATCB_HEIGHT = 17
 local ATCB_X = 0;
 local ATCB_Y = -100;
-local ATCB_ALPHA = 0.8;                                      --투명도 80%
-local ATCB_NAME_SIZE = ATCB_HEIGHT * 0.7;                    --Spell 명 Font Size, 높이의 70%
-local ATCB_TIME_SIZE = ATCB_HEIGHT * 0.5;                    --Spell 시전시간 Font Size, 높이의 50%
-local ATCB_NOT_INTERRUPTIBLE_COLOR = { 0.8, 0.8, 0.8 };      --차단 불가시 (내가 아닐때) 색상 (r, g, b)
+local ATCB_ALPHA = 0.8;                                        --투명도 80%
+local ATCB_NAME_SIZE = ATCB_HEIGHT * 0.7;                      --Spell 명 Font Size, 높이의 70%
+local ATCB_TIME_SIZE = ATCB_HEIGHT * 0.5;                      --Spell 시전시간 Font Size, 높이의 50%
+local ATCB_NOT_INTERRUPTIBLE_COLOR = { 0.8, 0.8, 0.8 };        --차단 불가시 (내가 아닐때) 색상 (r, g, b)
 local ATCB_NOT_INTERRUPTIBLE_COLOR_TARGET = { 0.8, 0.5, 0.5 }; --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
-local ATCB_INTERRUPTIBLE_COLOR = { 0, 0.9, 0 };              --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
-local ATCB_INTERRUPTIBLE_COLOR_TARGET = { 0.5, 1, 1 };       --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
-local ATCB_UPDATE_RATE = 0.05                                -- 20프레임
+local ATCB_INTERRUPTIBLE_COLOR = { 0, 0.9, 0 };                --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
+local ATCB_INTERRUPTIBLE_COLOR_TARGET = { 0.5, 1, 1 };         --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
+local ATCB_UPDATE_RATE = 0.05                                  -- 20프레임
 
 
 local ATCB_DangerousSpellList = {
@@ -96,13 +96,6 @@ if asMOD_setupFrame then
     asMOD_setupFrame(ATCB.castbar, "asTargetCastBar");
 end
 
-function ATCB_DBMTimer_callback(event, id, ...)
-    local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
-    if spellId then
-        ATCB_DangerousSpellList[spellId] = true;
-    end
-end
-
 local prev_name = nil;
 
 local function ATCB_OnEvent(self, event, ...)
@@ -137,9 +130,6 @@ local function ATCB_OnEvent(self, event, ...)
             ATCB:UnregisterEvent("UNIT_SPELLCAST_FAILED");
         end
 
-        if event == "PLAYER_ENTERING_WORLD" then
-            ATCB_DangerousSpellList = {};
-        end
     end
 
     local frameIcon  = self.button.icon;
@@ -150,7 +140,7 @@ local function ATCB_OnEvent(self, event, ...)
 
     if UnitExists("target") then
         local name, _, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-        "target");
+            "target");
 
         if not name then
             name, _, texture, start, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo("target");
@@ -196,10 +186,10 @@ local function ATCB_OnEvent(self, event, ...)
 
             frameIcon:Show();
             castBar:Show();
-            if ATCB_DangerousSpellList[spellid] and notInterruptible == false then
+            if ATCB_DangerousSpellList[spellid] and ATCB_DangerousSpellList[spellid] == "interrupt" then
                 ns.lib.PixelGlow_Start(castBar, { 0, 1, 0.32, 1 });
             elseif ATCB_DangerousSpellList[spellid] then
-                ns.lib.PixelGlow_Start(castBar, { 0, 1, 1, 1 });
+                ns.lib.PixelGlow_Start(castBar, { 0.5, 0.5, 0.5, 1 });
             end
 
             if UnitExists("targettarget") and UnitIsPlayer("targettarget") then
@@ -254,7 +244,29 @@ ATCB:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 C_Timer.NewTicker(ATCB_UPDATE_RATE, ATCB_OnUpdate);
 
+local DBMobj;
+
+local function scanDBM()
+	ANameP_DangerousSpellList = {};
+	if DBMobj.Mods then
+		for i, mod in ipairs(DBMobj.Mods) do
+			if mod.specwarns then
+				for k, obj in pairs(mod.specwarns) do
+					if obj.spellId and obj.announceType then
+						ATCB_DangerousSpellList[obj.spellId] = obj.announceType;
+					end
+				end
+			end
+		end
+	end
+end
+
+local function NewMod(self, ...)
+	DBMobj = self;
+	C_Timer.After(0.25, scanDBM);
+end
+
 local bloaded = LoadAddOn("DBM-Core");
 if bloaded then
-    DBM:RegisterCallback("DBM_TimerStart", ATCB_DBMTimer_callback);
+    hooksecurefunc(DBM, "NewMod", NewMod)
 end

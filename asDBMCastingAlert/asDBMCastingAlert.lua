@@ -1,7 +1,7 @@
 local _, ns = ...;
 ---설정부
 local CONFIG_SOUND_SPEED = 1 -- 음성안내 읽기 속도
-local CONFIG_VOICE_ID = 3    -- 음성 종류 (한국 Client 는 0번 1가지만 지원)
+local CONFIG_VOICE_ID = 0    -- 음성 종류 (한국 Client 는 0번 1가지만 지원)
 local CONFIG_X = 230;
 local CONFIG_Y = -50;
 local CONFIG_SIZE = 45;
@@ -23,13 +23,6 @@ local ADVA = nil;
 local timer = nil;
 local ADCA_DangerousSpellList = {};
 local CastingUnits = {};
-
-function ADCA_DBMTimer_callback(event, id, ...)
-	local spellId = select(5, ...);
-	if spellId then
-		ADCA_DangerousSpellList[spellId] = true;
-	end
-end
 
 local function asCooldownFrame_Clear(self)
 	self:Clear();
@@ -79,8 +72,16 @@ local function ADCA_OnUpdate()
 			if name then
 				if i <= 3 and ADCA_DangerousSpellList[spellId] then
 					if ns.options.PlaySound and needtosound == true then
-						C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback,
-							CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+						if ns.options.SoundOnlyforInterrupt then
+							if ADCA_DangerousSpellList[spellId] == "interrupt" then
+								C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback,
+									CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+							end
+						else
+							C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback,
+								CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+						end
+
 						CastingUnits[unit] = false;
 					end
 					local frame = ADVA.frames[i];
@@ -141,14 +142,13 @@ end
 
 local bfirst = true;
 local function ADCA_OnEvent(self, event, arg1, arg2, arg3, arg4)
-
 	if bfirst then
-        ns.SetupOptionPanels();
-        bfirst = false;
-    end
+		ns.SetupOptionPanels();
+		bfirst = false;
+	end
 
 	if event == "PLAYER_ENTERING_WORLD" then
-		ADCA_DangerousSpellList = {};
+		--ADCA_DangerousSpellList = {};
 	else
 		local unit = arg1;
 		local spellid = arg3;
@@ -232,10 +232,33 @@ local function CreatBuffFrames(parent, bright, bcenter)
 	return;
 end
 
+local DBMobj;
+
+local function scanDBM()
+	ADCA_DangerousSpellList = {};
+
+	if DBMobj.Mods then
+		for i, mod in ipairs(DBMobj.Mods) do
+			if mod.specwarns then
+				for k, obj in pairs(mod.specwarns) do
+					if obj.spellId and obj.announceType then
+						ADCA_DangerousSpellList[obj.spellId] = obj.announceType;
+					end
+				end
+			end
+		end
+	end
+end
+
+local function NewMod(self, ...)
+	DBMobj = self;
+	C_Timer.After(0.25, scanDBM);
+end
+
 local function initAddon()
 	local bloaded = LoadAddOn("DBM-Core");
 	if bloaded then
-		DBM:RegisterCallback("DBM_TimerStart", ADCA_DBMTimer_callback);		
+		hooksecurefunc(DBM, "NewMod", NewMod)
 	end
 
 	ADVA = CreateFrame("FRAME", nil, UIParent)

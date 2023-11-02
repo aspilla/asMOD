@@ -744,7 +744,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 				if UnitIsUnit("player", unit) then
 					if options.ANameP_ShowPlayerBuffAll == false then
 						show = nameplateShowPersonal;
-					else						
+					else
 						if ANameP_ShowPlayerBuff and PLAYER_UNITS[caster] and duration > 0 and duration <= ANameP_BuffMaxCool then
 							show = true;
 						end
@@ -1091,11 +1091,14 @@ local function setColoronStatusBar(self, r, g, b)
 	self.BarColor:Show();
 end
 
-local function isDangerousSpell(spellId, unit)
+local function isDangerousSpell(spellId)
 	if spellId and ANameP_DangerousSpellList[spellId] then
-		return true
+		if ANameP_DangerousSpellList[spellId] == "interrupt" then
+			return true, true;
+		end
+		return true, false;
 	end
-	return false
+	return false, false;
 end
 
 local bloadedAutoMarker = false;
@@ -1148,15 +1151,15 @@ local function updateHealthbarColor(self)
 		end
 
 		if spellid then
-			local isDanger = isDangerousSpell(spellid, unit);
+			local isDanger, binterrupt = isDangerousSpell(spellid);
 
 			self.castspellid = spellid;
-			if isDanger and notInterruptible == false then
+			if isDanger and binterrupt == true then
 				ns.lib.PixelGlow_Start(self.casticon, { 0, 1, 0.32, 1 });
 				ns.lib.PixelGlow_Start(healthBar, { 0, 1, 0.32, 1 });
 			elseif isDanger then
-				ns.lib.PixelGlow_Start(self.casticon, { 0, 1, 1, 1 });
-				ns.lib.PixelGlow_Start(healthBar, { 0, 1, 1, 1 });
+				ns.lib.PixelGlow_Start(self.casticon, { 0.5, 0.5, 0.5, 1 });
+				ns.lib.PixelGlow_Start(healthBar, { 0.5, 0.5, 0.5, 1 });
 			elseif notInterruptible == false then
 				ns.lib.PixelGlow_Start(self.casticon);
 				ns.lib.PixelGlow_Stop(healthBar);
@@ -1968,7 +1971,6 @@ local function ANameP_OnEvent(self, event, ...)
 		setupKnownSpell();
 		C_Timer.After(0.5, initAlertList);
 	elseif (event == "PLAYER_ENTERING_WORLD") then
-		ANameP_DangerousSpellList = {};
 		local isInstance, instanceType = IsInInstance();
 		if isInstance and (instanceType == "party" or instanceType == "raid" or instanceType == "scenario") then
 			self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
@@ -2063,17 +2065,31 @@ local function ANameP_OnUpdate()
 	end
 end
 
-
-function ANameP_DBMTimer_callback(event, id, ...)
-	local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
-	if spellId then
-		ANameP_DangerousSpellList[spellId] = true;
-	end
-end
-
 local function flushoption()
 	options = CopyTable(ANameP_Options);
 	C_Timer.After(0.5, initAlertList);
+end
+
+local DBMobj;
+
+local function scanDBM()
+	ANameP_DangerousSpellList = {};
+	if DBMobj.Mods then
+		for i, mod in ipairs(DBMobj.Mods) do
+			if mod.specwarns then
+				for k, obj in pairs(mod.specwarns) do
+					if obj.spellId and obj.announceType then
+						ANameP_DangerousSpellList[obj.spellId] = obj.announceType;
+					end
+				end
+			end
+		end
+	end
+end
+
+local function NewMod(self, ...)
+	DBMobj = self;
+	C_Timer.After(0.25, scanDBM);
 end
 
 local function initAddon()
@@ -2117,7 +2133,7 @@ local function initAddon()
 
 	local bloaded = LoadAddOn("DBM-Core");
 	if bloaded then
-		DBM:RegisterCallback("DBM_TimerStart", ANameP_DBMTimer_callback);
+		hooksecurefunc(DBM, "NewMod", NewMod)
 	end
 
 	bloadedAutoMarker = LoadAddOn("asAutoMarker");

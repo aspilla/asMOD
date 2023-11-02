@@ -2,6 +2,7 @@ local _, ns = ...;
 local Options_Default = {
     PlaySound = true,
     SoundVolume = 100,
+    SoundOnlyforInterrupt = true,
 };
 
 ns.options = {};
