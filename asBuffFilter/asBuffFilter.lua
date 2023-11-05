@@ -3,6 +3,7 @@ local ABF;
 local ABF_PLAYER_BUFF;
 local ABF_TARGET_BUFF;
 local ABF_TalentBuffList = {};
+local ABF_TalentBuffIconList = {};
 local overlayspell = {};
 
 --AuraUtil
@@ -32,7 +33,9 @@ local AuraUpdateChangedType = EnumUtil.MakeEnum(
 
 local UnitFrameBuffType = EnumUtil.MakeEnum(
 	"BossBuff",
+	"ImportantBuff",
 	"PriorityBuff",
+	"SelectedBuff",
 	"TalentBuff",
 	"ShouldShowBuff",
 	"Normal"
@@ -130,12 +133,14 @@ local function scanSpells(tab)
 		end
 
 		ABF_TalentBuffList[spellName] = true;
-		ABF_TalentBuffList[icon or 0] = true;
+		ABF_TalentBuffIconList[icon or 0] = true;
+		ABF_TalentBuffList[spellID or 0] = true;
 	end
 end
 
 local function asCheckTalent()
 	ABF_TalentBuffList = {};
+	ABF_TalentBuffIconList = {};
 	overlayspell = {};
 	scanSpells(2)
 	scanSpells(3)
@@ -163,7 +168,8 @@ local function asCheckTalent()
 				--print(string.format("%s/%d %s/%d", talentName, definitionInfo.spellID, definitionInfo.overrideName or "", definitionInfo.overriddenSpellID or 0));
 				local name, rank, icon = GetSpellInfo(definitionInfo.spellID);
 				ABF_TalentBuffList[talentName or ""] = true;
-				ABF_TalentBuffList[icon or 0] = true;
+				ABF_TalentBuffIconList[icon or 0] = true;
+				ABF_TalentBuffList[definitionInfo.spellID] = true;
 				if definitionInfo.overrideName then
 					--print (definitionInfo.overrideName)
 					ABF_TalentBuffList[definitionInfo.overrideName] = true;
@@ -236,7 +242,7 @@ local function IsShouldDisplayBuff(spellId, unitCaster, canApplyAura)
 end
 
 
-local function IsShown(name, spellId)
+local function IsShown(name, spellId, bpersonal)
 	if ns.ABF_BlackList[name] then
 		return true;
 	end
@@ -258,7 +264,7 @@ local function IsShown(name, spellId)
 		return true;
 	end
 
-	if overlayspell[name] or (spellId and overlayspell[spellId]) then
+	if spellId and overlayspell[spellId] and not bpersonal then
 		return true;
 	end
 
@@ -275,7 +281,7 @@ local function ProcessAura(aura, unit)
 		return AuraUpdateChangedType.None;
 	end
 
-	if IsShown(aura.name, aura.spellId) then
+	if IsShown(aura.name, aura.spellId, aura.nameplateShowPersonal) then
 		return AuraUpdateChangedType.None;
 	end
 
@@ -311,7 +317,7 @@ local function ProcessAura(aura, unit)
 			skip = false;
 		end
 
-		if PLAYER_UNITS[aura.sourceUnit] and aura.nameplateShowPersonal then
+		if PLAYER_UNITS[aura.sourceUnit] and (aura.nameplateShowPersonal or ns.ABF_ClassBuffList[aura.name]) then
 			skip = false;
 		end
 
@@ -329,12 +335,24 @@ local function ProcessAura(aura, unit)
 			aura.buffType = UnitFrameBuffType.BossBuff;
 		elseif not PLAYER_UNITS[aura.sourceUnit] then
 			aura.buffType = UnitFrameBuffType.Normal;
+		elseif ns.ABF_ClassBuffList[aura.name] then
+			if ns.ABF_ClassBuffList[aura.name] == 1 then
+				aura.buffType = UnitFrameBuffType.SelectedBuff;
+			elseif ns.ABF_ClassBuffList[aura.name] == 2 then				
+				aura.buffType = UnitFrameBuffType.PriorityBuff;
+			elseif ns.ABF_ClassBuffList[aura.name] == 3 then
+				aura.buffType = UnitFrameBuffType.ImportantBuff;
+			else
+				aura.buffType = UnitFrameBuffType.Normal;
+			end
 		elseif aura.nameplateShowPersonal then
 			aura.buffType = UnitFrameBuffType.PriorityBuff;
 		elseif IsShouldDisplayBuff(aura.spellId, aura.sourceUnit, aura.isFromPlayerOrPlayerPet) then
-			aura.buffType = UnitFrameBuffType.Normal;
-		elseif ABF_TalentBuffList[aura.name] == true or ABF_TalentBuffList[aura.icon] == true then
+			aura.buffType = UnitFrameBuffType.Normal;		
+		elseif ABF_TalentBuffList[aura.spellId] == true then
 			aura.buffType = UnitFrameBuffType.TalentBuff;
+		elseif ABF_TalentBuffList[aura.name] == true or ABF_TalentBuffIconList[aura.icon] == true then
+			aura.buffType = UnitFrameBuffType.TalentBuff;		
 		else
 			aura.buffType = UnitFrameBuffType.Normal;
 		end
@@ -375,7 +393,7 @@ local function updateTotemAura()
 			if not (IsShown(name)) then
 				totem_i = totem_i + 1;
 				local expirationTime = start + duration;
-				local frame = ABF_TALENT_BUFF.frames[totem_i];
+				local frame = ABF_PLAYER_BUFF.frames[totem_i];
 
 				-- set the icon
 				local frameIcon = frame.icon;
@@ -423,7 +441,7 @@ local function UpdateAuraFrames(unit, auraList)
 	local mparent = nil;
 
 	if (unit == "player") then
-		tcount = updateTotemAura();
+		lcount = updateTotemAura();
 		parent = ABF_PLAYER_BUFF;
 		mparent = ABF_TALENT_BUFF;
 		numAuras = math.min(ns.ABF_MAX_BUFF_SHOW * 2, auraList:Size());
@@ -440,7 +458,7 @@ local function UpdateAuraFrames(unit, auraList)
 			local frame = nil;
 
 			if mparent then
-				if mparent and aura.buffType ~= UnitFrameBuffType.Normal and tcount <= ns.ABF_MAX_BUFF_SHOW then
+				if aura.buffType ~= UnitFrameBuffType.Normal and tcount <= ns.ABF_MAX_BUFF_SHOW then
 					frame = mparent.frames[tcount];
 					tcount = tcount + 1;
 				elseif mparent and lcount <= ns.ABF_MAX_BUFF_SHOW then
@@ -491,11 +509,14 @@ local function UpdateAuraFrames(unit, auraList)
 			if (aura.isStealable) or (ns.ABF_ProcBuffList and ns.ABF_ProcBuffList[aura.name] and ns.ABF_ProcBuffList[aura.name] == 1) then
 				ns.lib.ButtonGlow_Start(frame);
 			else
-				ns.lib.ButtonGlow_Stop(frame);
-
-				if aura.nameplateShowPersonal then
+				if aura.buffType == UnitFrameBuffType.PriorityBuff then
+					ns.lib.ButtonGlow_Stop(frame);
 					ns.lib.PixelGlow_Start(frame);
+				elseif aura.buffType == UnitFrameBuffType.ImportantBuff then
+					ns.lib.PixelGlow_Stop(frame);
+					ns.lib.ButtonGlow_Start(frame);
 				else
+					ns.lib.ButtonGlow_Stop(frame);
 					ns.lib.PixelGlow_Stop(frame);
 				end
 			end
@@ -508,9 +529,9 @@ local function UpdateAuraFrames(unit, auraList)
 		local frame = p.frames[idx];
 
 		if (frame) then
-			frame:Hide();
 			ns.lib.ButtonGlow_Stop(frame);
 			ns.lib.PixelGlow_Stop(frame);
+			frame:Hide();		
 		end
 	end
 
@@ -601,12 +622,11 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif (event == "UNIT_AURA") then
 		local unitAuraUpdateInfo = ...;
 		local unit = arg1;
-		if unit and  unit == "player" then
+		if unit and unit == "player" then
 			UpdateAuras(nil, unit);
 		else
 			UpdateAuras(unitAuraUpdateInfo, unit);
 		end
-
 	elseif (event == "PLAYER_TOTEM_UPDATE") then
 		if activeBuffs["player"] == nil then
 			UpdateAuras(nil, "player");
@@ -624,15 +644,18 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ABF:SetAlpha(ns.ABF_AlphaNormal);
 		DumpCaches();
-	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then		
+	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		asCheckTalent();
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
-		if Settings.GetValue("spellActivationOverlayOpacity") and Settings.GetValue("spellActivationOverlayOpacity") > 0 then
-			local name = GetSpellInfo(arg1);
-			overlayspell[arg1] = true;
-			overlayspell[name] = true;
+		if Settings.GetValue("spellActivationOverlayOpacity")  then
+			if Settings.GetValue("spellActivationOverlayOpacity") > 0 then
+				overlayspell[arg1] = true;
+			else
+				if overlayspell[arg1] then
+					overlayspell = {};
+				end
+			end
 		end
-		overlayspell[arg1] = true;
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_HIDE") then
 	elseif (event == "PLAYER_LEAVING_WORLD") then
 		hasValidPlayer = false;
@@ -813,3 +836,4 @@ local function ABF_Init()
 end
 
 ABF_Init();
+

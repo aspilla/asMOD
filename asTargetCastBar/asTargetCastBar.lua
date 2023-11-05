@@ -14,7 +14,7 @@ local ATCB_INTERRUPTIBLE_COLOR_TARGET = { 0.5, 1, 1 };         --차단 가능(�
 local ATCB_UPDATE_RATE = 0.05                                  -- 20프레임
 
 
-local ATCB_DangerousSpellList = {
+local DangerousSpellList = {
 
 }
 
@@ -129,7 +129,6 @@ local function ATCB_OnEvent(self, event, ...)
             ATCB:UnregisterEvent("UNIT_SPELLCAST_STOP");
             ATCB:UnregisterEvent("UNIT_SPELLCAST_FAILED");
         end
-
     end
 
     local frameIcon  = self.button.icon;
@@ -164,7 +163,7 @@ local function ATCB_OnEvent(self, event, ...)
                     color = ATCB_INTERRUPTIBLE_COLOR_TARGET;
                 end
 
-                if (name ~= prev_name) and ATCB_DangerousSpellList[spellid] then
+                if (name ~= prev_name) and DangerousSpellList[spellid] then
                     --PlaySoundFile("Interface\\AddOns\\asTargetCastBar\\alert.mp3", "DIALOG");
                     prev_name = name;
                 end
@@ -186,9 +185,9 @@ local function ATCB_OnEvent(self, event, ...)
 
             frameIcon:Show();
             castBar:Show();
-            if ATCB_DangerousSpellList[spellid] and ATCB_DangerousSpellList[spellid] == "interrupt" then
+            if DangerousSpellList[spellid] and DangerousSpellList[spellid] == "interrupt" then
                 ns.lib.PixelGlow_Start(castBar, { 0, 1, 0.32, 1 });
-            elseif ATCB_DangerousSpellList[spellid] then
+            elseif DangerousSpellList[spellid] then
                 ns.lib.PixelGlow_Start(castBar, { 0.5, 0.5, 0.5, 1 });
             end
 
@@ -247,31 +246,34 @@ C_Timer.NewTicker(ATCB_UPDATE_RATE, ATCB_OnUpdate);
 local DBMobj;
 
 local function scanDBM()
-	ANameP_DangerousSpellList = {};
-	if DBMobj.Mods then
-		for i, mod in ipairs(DBMobj.Mods) do
-			if mod.specwarns then
-				for k, obj in pairs(mod.specwarns) do
-					if obj.spellId and obj.announceType then
-						ATCB_DangerousSpellList[obj.spellId] = obj.announceType;
-					end
-				end
-			end
-
+    DangerousSpellList = {};
+    if DBMobj.Mods then
+        for i, mod in ipairs(DBMobj.Mods) do
             if mod.announces then
-				for k, obj in pairs(mod.announces) do
-					if obj.spellId and obj.announceType then
-						ATCB_DangerousSpellList[obj.spellId] = obj.announceType;
-					end
-				end
-			end
-		end
-	end
+                for k, obj in pairs(mod.announces) do
+                    if obj.spellId and obj.announceType then
+                        if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        end
+                    end
+                end
+            end
+            if mod.specwarns then
+                for k, obj in pairs(mod.specwarns) do
+                    if obj.spellId and obj.announceType then
+                        if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        end
+                    end
+                end
+            end
+        end
+    end
 end
 
 local function NewMod(self, ...)
-	DBMobj = self;
-	C_Timer.After(0.25, scanDBM);
+    DBMobj = self;
+    C_Timer.After(0.25, scanDBM);
 end
 
 local bloaded = LoadAddOn("DBM-Core");

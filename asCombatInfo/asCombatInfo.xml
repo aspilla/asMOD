@@ -1,4 +1,5 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Frame name="asCombatInfoFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW">
 		<Size>
@@ -8,7 +9,7 @@
 			<Layer level="BACKGROUND">
 				<Texture name="$parentIcon" parentKey="icon"/>
 			</Layer>
-			<Layer level="OVERLAY">
+			<Layer level="ARTWORK">
 				<Texture name="$parentBorder" parentKey="border" file="Interface\Buttons\UI-Debuff-Overlays">
 					<Size>
 						<AbsDimension x="17" y="17"/>
@@ -22,12 +23,21 @@
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
-				</Texture>	
+				</Texture>
 				<FontString name="$parentCount" parentKey="count" inherits="NumberFontNormalLarge" justifyH="RIGHT">
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT">
 							<Offset>
 								<AbsDimension x="-3" y="3"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentSpellCool" parentKey="spellcool" inherits="NumberFontNormalLarge" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="BOTTOM">
+							<Offset>
+								<AbsDimension x="0" y="-3"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -40,6 +50,27 @@
 					<Anchor point="CENTER" x="0" y="-1"/>
 				</Anchors>
 			</Cooldown>
+			<Frame name="$parentSpellCooldown" parentKey="spellcoolframe" virtual="true" enableMouse="false" frameStrata="MEDIUM">
+				<Size>
+					<AbsDimension x="17" y="17"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="-8"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentSpellCool" parentKey="spellcool" inherits="NumberFontNormalLarge" justifyH="RIGHT">
+							<Anchors>
+								<Anchor point="CENTER">
+									<Offset>
+										<AbsDimension x="0" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
 		</Frames>
 	</Frame>
 
@@ -56,7 +87,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-										</OnLoad>
+					</OnLoad>
 				</Scripts>
 			</CheckButton>
 		</Frames>

@@ -1,5 +1,5 @@
 ﻿---설정부
-local ACTA_UpdateRate = 0.2 -- Check할 주기
+local ACTA_UpdateRate = 0.1 -- Check할 주기
 local ACTA_MaxShow = 3      -- 최대로 보여줄 개수
 local ACTA_FontSize = 18;
 local ACTA_X = 0;
@@ -18,8 +18,8 @@ local function isFaction(unit)
 	end
 end
 
-local currshow = 1;
-local ACTA_DangerousSpellList = {};
+local DangerousSpellList = {};
+local showlist = {};
 
 local function CheckCasting(nameplate)
 	if not nameplate or nameplate:IsForbidden() then
@@ -43,38 +43,60 @@ local function CheckCasting(nameplate)
 			local remain = (endTime / 1000) - curr;
 
 			if remain > 0 then
-				ACTA.cast[currshow]:SetText("|T" ..
-					texture .. ":0|t" .. format("%.1f", max(remain, 0)) .. "|T" .. texture .. ":0|t");
+				local type = 3;
 
-				ACTA.cast[currshow].castspellid = spellid;
-
-				if ACTA_DangerousSpellList[spellid] then
-					if ACTA_DangerousSpellList[spellid] == "interrupt" then
-						ACTA.cast[currshow]:SetTextColor(0, 1, 0.35);
+				if DangerousSpellList[spellid] then
+					if DangerousSpellList[spellid] == "interrupt" then
+						type = 1;
 					else
-						ACTA.cast[currshow]:SetTextColor(0.8, 0.5, 0.5);
+						type = 2;
 					end
-				else
-					ACTA.cast[currshow]:SetTextColor(1, 1, 1);
 				end
 
-				ACTA.cast[currshow]:Show();
-				currshow = currshow + 1;
+				tinsert(showlist, { type, remain, texture, spellid });
 			end
 		end
 	end
 end
 
-local function ACTA_OnUpdate()
-	currshow = 1;
+local function Comparison(AIndex, BIndex)
+	if AIndex[1] ~= BIndex[1] then
+		return AIndex[1] < BIndex[1]
+	elseif AIndex[2] ~= BIndex[2] then
+		return AIndex[2] < BIndex[2]
+	end	
+	return false;
+end
 
-	for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-		local nameplate = v;
-		if (nameplate) then
-			CheckCasting(nameplate);
-			if currshow > ACTA_MaxShow then
-				break;
-			end
+
+local function ShowCasting()
+	local currshow = 1;
+
+	table.sort(showlist, Comparison);
+	for _, v in pairs(showlist) do
+		local type = v[1];
+		local remain = v[2];
+		local texture = v[3];
+		local spellid = v[4];
+
+
+		ACTA.cast[currshow]:SetText("|T" ..
+			texture .. ":0|t " .. format("%.1f", max(remain, 0)) .. " |T" .. texture .. ":0|t");
+
+		ACTA.cast[currshow].castspellid = spellid;
+
+		if type == 1 then
+			ACTA.cast[currshow]:SetTextColor(0, 1, 0.35);
+		elseif type == 2 then
+			ACTA.cast[currshow]:SetTextColor(0.8, 0.5, 0.5);
+		else
+			ACTA.cast[currshow]:SetTextColor(1, 1, 1);
+		end
+		ACTA.cast[currshow]:Show();
+		currshow = currshow + 1;
+
+		if currshow > ACTA_MaxShow then
+			break;
 		end
 	end
 
@@ -83,27 +105,45 @@ local function ACTA_OnUpdate()
 	end
 end
 
+local function ACTA_OnUpdate()
+
+	showlist = {};
+	for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
+		local nameplate = v;
+		if (nameplate) then
+			CheckCasting(nameplate);
+		end
+	end
+
+	ShowCasting();
+end
+
 local DBMobj;
 
 local function scanDBM()
-	ACTA_DangerousSpellList = {};
+	DangerousSpellList = {};
 	if DBMobj.Mods then
 		for i, mod in ipairs(DBMobj.Mods) do
-			if mod.specwarns then
-				for k, obj in pairs(mod.specwarns) do
-					if obj.spellId and obj.announceType then
-						ACTA_DangerousSpellList[obj.spellId] = obj.announceType;
-					end
-				end
-			end
 
 			if mod.announces then
 				for k, obj in pairs(mod.announces) do
 					if obj.spellId and obj.announceType then
-						ACTA_DangerousSpellList[obj.spellId] = obj.announceType;
+						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        end						
 					end
 				end
 			end
+
+			if mod.specwarns then
+				for k, obj in pairs(mod.specwarns) do
+					if obj.spellId and obj.announceType then
+						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        end
+					end
+				end
+			end			
 		end
 	end
 end

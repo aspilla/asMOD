@@ -1,15 +1,16 @@
 ﻿local _, ns = ...;
 -- 설정
-local ACI_SIZE = 40;             -- Button Size
+local ACI_SIZE = 40;               -- Button Size
 
-local ACI_CoolButtons_X = 0      -- 쿨 List 위치 X
-local ACI_CoolButtons_Y = -232   -- Y 위치
-local ACI_Alpha = 1              -- 전투중 알파값
-local ACI_Alpha_Normal = 0.5     -- 비전투중 안보이게 하려면 0
-local ACI_CooldownFontSize = 12; -- Cooldown Font Size
-local ACI_CountFontSize = 11;    -- Count Font Size
-local ACI_MaxSpellCount = 11;    -- 최대 Spell Count
-local ACI_RefreshRate = 0.5;     -- 반복 Check 주기 (초)
+local ACI_CoolButtons_X = 0        -- 쿨 List 위치 X
+local ACI_CoolButtons_Y = -232     -- Y 위치
+local ACI_Alpha = 1                -- 전투중 알파값
+local ACI_Alpha_Normal = 0.5       -- 비전투중 안보이게 하려면 0
+local ACI_CooldownFontSize = 12;   -- Cooldown Font Size
+local ACI_CountFontSize = 11;      -- Count Font Size
+local ACI_MaxSpellCount = 11;      -- 최대 Spell Count
+local ACI_RefreshRate = 0.2;       -- 반복 Check 주기 (초)
+local ACI_BackGroundCoolDiff = 10; -- 버프/디버프시 Spell Cool이 보이는 시간차이 (초)
 
 
 
@@ -146,6 +147,7 @@ local function ACI_Alert(self, bcastspell)
 	local frameCooldown;
 	local frameCount;
 	local frameBorder;
+	local frameSpellCool;
 	local frame;
 	local alert_count = nil;
 	local charges, maxCharges, chargeStart, chargeDuration, chargeModRate, stack;
@@ -154,6 +156,7 @@ local function ACI_Alert(self, bcastspell)
 	local name;
 	local bspell = false;
 	local balert = false;
+	local spellcool = 0;
 
 	frame = ACI[i];
 	if not frame then
@@ -163,6 +166,7 @@ local function ACI_Alert(self, bcastspell)
 	frameCooldown = frame.cooldown;
 	frameCount = frame.count;
 	frameBorder = frame.border;
+	frameSpellCool = frame.spellcoolframe;
 
 
 	if t == 1 or t == 9 then
@@ -178,16 +182,16 @@ local function ACI_Alert(self, bcastspell)
 			_, _, icon                                                      = GetSpellInfo(spellid)
 			start, duration, enable                                         = GetSpellCooldown(spellid);
 			isUsable, notEnoughMana                                         = IsUsableSpell(spellid);
-			count                                                           = GetSpellCharges(spellid);
 			charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellid);
+			count                                                           = charges;
 		else
 			start, duration, enable = GetSpellCooldown(spellname);
 			if ACI_Action_slot_list[i] then
 				start, duration, enable = GetActionCooldown(ACI_Action_slot_list[i]);
 			end
 			isUsable, notEnoughMana                                         = IsUsableSpell(spellname);
-			count                                                           = GetSpellCharges(spellname);
 			charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
+			count                                                           = charges;
 		end
 		local _, gcd = GetSpellCooldown(61304);
 
@@ -239,8 +243,17 @@ local function ACI_Alert(self, bcastspell)
 		end
 
 		-- 우박폭풍
-		if t == 1 and spellname == "냉기 충격" then
-			_, _, count = getUnitBuffbyName("player", "우박폭풍");
+		if ACI_SpellList[i][4] then
+			local buffname = ACI_SpellList[i][4]
+			_, _, count = getUnitBuffbyName("player", buffname, "player");
+			if count == nil then
+				count = 0;
+			end
+		end
+
+		if ACI_SpellList[i][5] then
+			local buffname = ACI_SpellList[i][5]
+			_, _, count = getUnitDebuffbyName("target", buffname, "player");
 			if count == nil then
 				count = 0;
 			end
@@ -264,8 +277,8 @@ local function ACI_Alert(self, bcastspell)
 			buff_name = spellname
 		end
 
-		if ACI_SpellList[i][7] then
-			buff_name = ACI_SpellList[i][7];
+		if ACI_SpellList[i][6] then
+			buff_name = ACI_SpellList[i][6];
 			ACI_Buff_list[buff_name] = i;
 		end
 
@@ -278,8 +291,8 @@ local function ACI_Alert(self, bcastspell)
 			enable = 1
 
 			if count <= 1 then
-				count = GetSpellCharges(spellname);
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
+				count = charges;
 
 				if count == 1 and (not maxCharges or maxCharges <= 1) then
 					count = 0;
@@ -299,6 +312,30 @@ local function ACI_Alert(self, bcastspell)
 			elseif alert_du then
 				self.exTime = expirationTime - alert_du;
 			end
+
+			do
+				local spellid = select(7, GetSpellInfo(spellname));
+				local spellstart, spellduration, spellcharges;
+
+				if spellid then
+					spellstart, spellduration = GetSpellCooldown(spellid);
+				else
+					spellstart, spellduration = GetSpellCooldown(spellname);
+					if ACI_Action_slot_list[i] then
+						spellstart, spellduration = GetActionCooldown(ACI_Action_slot_list[i]);
+					end
+				end
+
+				if spellduration then
+					local _, gcd = GetSpellCooldown(61304);
+					local ex = spellduration + spellstart;
+					local remain = ex - GetTime();
+
+					if spellduration > gcd and (ex < expirationTime + ACI_BackGroundCoolDiff) then
+						spellcool = math.ceil(remain);
+					end
+				end
+			end
 		else
 			local spellid = select(7, GetSpellInfo(spellname));
 
@@ -306,8 +343,8 @@ local function ACI_Alert(self, bcastspell)
 				_, _, icon                                                      = GetSpellInfo(spellid)
 				start, duration, enable                                         = GetSpellCooldown(spellid);
 				isUsable, notEnoughMana                                         = IsUsableSpell(spellid);
-				count                                                           = GetSpellCharges(spellid);
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellid);
+				count                                                           = charges;
 			else
 				_, _, icon              = GetSpellInfo(spellname)
 				start, duration, enable = GetSpellCooldown(spellname);
@@ -315,8 +352,8 @@ local function ACI_Alert(self, bcastspell)
 					start, duration, enable = GetActionCooldown(ACI_Action_slot_list[i]);
 				end
 				isUsable, notEnoughMana                                         = IsUsableSpell(spellname);
-				count                                                           = GetSpellCharges(spellname);
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
+				count                                                           = charges;
 			end
 			local _, gcd = GetSpellCooldown(61304);
 
@@ -350,9 +387,17 @@ local function ACI_Alert(self, bcastspell)
 			end
 		end
 
-		-- 태양왕
-		if t == 7 and spellname == 383883 then
-			_, _, count = getUnitBuffbyName(unit, "태양왕의 축복");
+		if ACI_SpellList[i][7] then
+			local buffname = ACI_SpellList[i][7]
+			_, _, count = getUnitBuffbyName("player", buffname, "player");
+			if count == nil then
+				count = 0;
+			end
+		end
+
+		if ACI_SpellList[i][8] then
+			local buffname = ACI_SpellList[i][8]
+			_, _, count = getUnitDebuffbyName("target", buffname, "player");
 			if count == nil then
 				count = 0;
 			end
@@ -399,9 +444,8 @@ local function ACI_Alert(self, bcastspell)
 			enable = 1
 
 			if count <= 1 then
-				count = GetSpellCharges(spellname);
-
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
+				count = charges;
 
 				if count == 1 and (not maxCharges or maxCharges <= 1) then
 					count = 0;
@@ -421,6 +465,29 @@ local function ACI_Alert(self, bcastspell)
 			elseif alert_du then
 				self.exTime = expirationTime - alert_du;
 			end
+
+			do
+				local spellid = select(7, GetSpellInfo(spellname));
+				local spellstart, spellduration, spellcharges;
+
+				if spellid then
+					spellstart, spellduration = GetSpellCooldown(spellid);
+				else
+					spellstart, spellduration = GetSpellCooldown(spellname);
+					if ACI_Action_slot_list[i] then
+						spellstart, spellduration = GetActionCooldown(ACI_Action_slot_list[i]);
+					end
+				end
+				if spellduration then
+					local _, gcd = GetSpellCooldown(61304);
+					local ex = spellduration + spellstart;
+					local remain = ex - GetTime();
+
+					if spellduration > gcd and (ex < expirationTime + ACI_BackGroundCoolDiff) then
+						spellcool = math.ceil(remain);
+					end
+				end
+			end
 		else
 			local spellid = select(7, GetSpellInfo(spellname));
 
@@ -428,8 +495,8 @@ local function ACI_Alert(self, bcastspell)
 				_, _, icon                                                      = GetSpellInfo(spellid)
 				start, duration, enable                                         = GetSpellCooldown(spellid);
 				isUsable, notEnoughMana                                         = IsUsableSpell(spellid);
-				count                                                           = GetSpellCharges(spellid);
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellid);
+				count                                                           = charges;
 			else
 				_, _, icon              = GetSpellInfo(spellname)
 				start, duration, enable = GetSpellCooldown(spellname);
@@ -437,8 +504,8 @@ local function ACI_Alert(self, bcastspell)
 					start, duration, enable = GetActionCooldown(ACI_Action_slot_list[i]);
 				end
 				isUsable, notEnoughMana                                         = IsUsableSpell(spellname);
-				count                                                           = GetSpellCharges(spellname);
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
+				count                                                           = charges;
 			end
 			local _, gcd = GetSpellCooldown(61304);
 
@@ -461,6 +528,22 @@ local function ACI_Alert(self, bcastspell)
 			if (charges and maxCharges and maxCharges > 1 and charges < maxCharges) then
 				start = chargeStart;
 				duration = chargeDuration;
+			end
+		end
+
+		if ACI_SpellList[i][7] then
+			local buffname = ACI_SpellList[i][7]
+			_, _, count = getUnitBuffbyName("player", buffname, "player");
+			if count == nil then
+				count = 0;
+			end
+		end
+
+		if ACI_SpellList[i][8] then
+			local buffname = ACI_SpellList[i][8]
+			_, _, count = getUnitDebuffbyName("target", buffname, "player");
+			if count == nil then
+				count = 0;
 			end
 		end
 	elseif t == 11 then
@@ -482,17 +565,43 @@ local function ACI_Alert(self, bcastspell)
 			local haveTotem;
 			haveTotem, name, start, duration, icon = GetTotemInfo(slot);
 
+
 			if name == slot_name then
 				buff_cool = true;
 				isUsable = true;
 				enable = 1;
 				count = 0;
+				expirationTime = start + duration;
+
 
 				if check_buff then
 					local hasbuff = getUnitBuffbyName("player", slot_name);
 
 					if not hasbuff then
 						buff_miss = true;
+					end
+				end
+
+				do
+					local spellid = select(7, GetSpellInfo(spellname));
+					local spellstart, spellduration, spellcharges;
+
+					if spellid then
+						spellstart, spellduration = GetSpellCooldown(spellid);
+					else
+						spellstart, spellduration = GetSpellCooldown(spellname);
+						if ACI_Action_slot_list[i] then
+							spellstart, spellduration = GetActionCooldown(ACI_Action_slot_list[i]);
+						end
+					end
+					if spellduration then
+						local _, gcd = GetSpellCooldown(61304);
+						local ex = spellduration + spellstart;
+						local remain = ex - GetTime();
+	
+						if spellduration > gcd and (ex < expirationTime + ACI_BackGroundCoolDiff) then
+							spellcool = math.ceil(remain);
+						end
 					end
 				end
 
@@ -507,8 +616,8 @@ local function ACI_Alert(self, bcastspell)
 				_, _, icon                                                      = GetSpellInfo(spellid)
 				start, duration, enable                                         = GetSpellCooldown(spellid);
 				isUsable, notEnoughMana                                         = IsUsableSpell(spellid);
-				count                                                           = GetSpellCharges(spellid);
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellid);
+				count                                                           = charges;
 			else
 				_, _, icon              = GetSpellInfo(spellname)
 				start, duration, enable = GetSpellCooldown(spellname);
@@ -516,8 +625,8 @@ local function ACI_Alert(self, bcastspell)
 					start, duration, enable = GetActionCooldown(ACI_Action_slot_list[i]);
 				end
 				isUsable, notEnoughMana                                         = IsUsableSpell(spellname);
-				count                                                           = GetSpellCharges(spellname);
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
+				count                                                           = charges;
 			end
 
 			local _, gcd = GetSpellCooldown(61304);
@@ -543,6 +652,22 @@ local function ACI_Alert(self, bcastspell)
 			if (charges and maxCharges and maxCharges > 1 and charges < maxCharges) then
 				start = chargeStart;
 				duration = chargeDuration;
+			end
+		end
+
+		if ACI_SpellList[i][5] then
+			local buffname = ACI_SpellList[i][5]
+			_, _, count = getUnitBuffbyName("player", buffname, "player");
+			if count == nil then
+				count = 0;
+			end
+		end
+
+		if ACI_SpellList[i][6] then
+			local buffname = ACI_SpellList[i][6]
+			_, _, count = getUnitDebuffbyName("target", buffname, "player");
+			if count == nil then
+				count = 0;
 			end
 		end
 	elseif t == 14 then
@@ -566,6 +691,7 @@ local function ACI_Alert(self, bcastspell)
 				icon = texture;
 				duration = temp_du;
 				start = temp_ex - duration;
+				expirationTime = start + duration;
 				isUsable = true;
 				enable = 1
 				buff_cool = true;
@@ -585,8 +711,8 @@ local function ACI_Alert(self, bcastspell)
 				_, _, icon                                                      = GetSpellInfo(spellid)
 				start, duration, enable                                         = GetSpellCooldown(spellid);
 				isUsable, notEnoughMana                                         = IsUsableSpell(spellid);
-				count                                                           = GetSpellCharges(spellid);
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellid);
+				count                                                           = charges;
 			else
 				_, _, icon              = GetSpellInfo(spellname)
 				start, duration, enable = GetSpellCooldown(spellname);
@@ -594,8 +720,8 @@ local function ACI_Alert(self, bcastspell)
 					start, duration, enable = GetActionCooldown(ACI_Action_slot_list[i]);
 				end
 				isUsable, notEnoughMana                                         = IsUsableSpell(spellname);
-				count                                                           = GetSpellCharges(spellname);
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
+				count                                                           = charges;
 			end
 			local _, gcd = GetSpellCooldown(61304);
 
@@ -620,6 +746,29 @@ local function ACI_Alert(self, bcastspell)
 				start = chargeStart;
 				duration = chargeDuration;
 			end
+		else
+			do
+				local spellid = select(7, GetSpellInfo("뼈주사위"));
+				local spellstart, spellduration, spellcharges;
+
+				if spellid then
+					spellstart, spellduration = GetSpellCooldown(spellid);
+				else
+					spellstart, spellduration = GetSpellCooldown(spellname);
+					if ACI_Action_slot_list[i] then
+						spellstart, spellduration = GetActionCooldown(ACI_Action_slot_list[i]);
+					end
+				end
+				if spellduration then
+					local _, gcd = GetSpellCooldown(61304);
+					local ex = spellduration + spellstart;
+					local remain = ex - GetTime();
+
+					if spellduration > gcd and (ex < expirationTime + ACI_BackGroundCoolDiff) then
+						spellcool = math.ceil(remain);
+					end
+				end
+			end
 		end
 	end
 
@@ -631,6 +780,7 @@ local function ACI_Alert(self, bcastspell)
 		frameIcon:SetDesaturated(true)
 		frameCooldown:Hide();
 		frameCount:Hide();
+		frameSpellCool:Hide();
 
 
 		return;
@@ -741,6 +891,14 @@ local function ACI_Alert(self, bcastspell)
 		end
 	else
 		frameCooldown:Hide();
+	end
+
+	if spellcool > 0 then
+		frameSpellCool.spellcool:SetText(spellcool)
+		frameSpellCool.spellcool:Show();
+		frameSpellCool:Show();
+	else
+		frameSpellCool:Hide();
 	end
 
 	if (count and count > 0) then
@@ -914,7 +1072,7 @@ local function ACI_OnEvent(self, event, arg1, ...)
 				ACI_Alert(ACI[index]);
 			end
 		end
-	end	
+	end
 end
 
 local function ACI_GetActionSlot(arg1)
@@ -1139,6 +1297,26 @@ function ACI_Init()
 					ACI_SpellID_list[id] = true;
 				end
 
+				if ACI_SpellList[i][4] then
+					local name = GetSpellInfo(ACI_SpellList[i][4]);
+
+					if name then
+						ACI_Buff_list[name] = i;
+					else
+						ACI_Buff_list[ACI_SpellList[i][4]] = i;
+					end
+				end
+
+				if ACI_SpellList[i][5] then
+					local name = GetSpellInfo(ACI_SpellList[i][5]);
+
+					if name then
+						ACI_Debuff_list[name] = i;
+					else
+						ACI_Debuff_list[ACI_SpellList[i][5]] = i;
+					end
+				end
+
 				ACI_SpellID_list[ACI_SpellList[i][1]] = true;
 			elseif ACI_SpellList[i][2] == 2 or ACI_SpellList[i][2] == 3 or ACI_SpellList[i][2] == 5 or ACI_SpellList[i][2] == 6 then
 				local id = select(7, GetSpellInfo(ACI_SpellList[i][1]));
@@ -1161,6 +1339,26 @@ function ACI_Init()
 
 				if id then
 					ACI_SpellID_list[id] = true;
+				end
+
+				if ACI_SpellList[i][7] then
+					local name = GetSpellInfo(ACI_SpellList[i][7]);
+
+					if name then
+						ACI_Buff_list[name] = i;
+					else
+						ACI_Buff_list[ACI_SpellList[i][7]] = i;
+					end
+				end
+
+				if ACI_SpellList[i][8] then
+					local name = GetSpellInfo(ACI_SpellList[i][8]);
+
+					if name then
+						ACI_Debuff_list[name] = i;
+					else
+						ACI_Debuff_list[ACI_SpellList[i][8]] = i;
+					end
 				end
 
 				ACI_SpellID_list[ACI_SpellList[i][1]] = true;
@@ -1188,6 +1386,26 @@ function ACI_Init()
 				end
 
 				ACI_SpellID_list[ACI_SpellList[i][1]] = true;
+
+				if ACI_SpellList[i][7] then
+					local name = GetSpellInfo(ACI_SpellList[i][7]);
+
+					if name then
+						ACI_Buff_list[name] = i;
+					else
+						ACI_Buff_list[ACI_SpellList[i][7]] = i;
+					end
+				end
+
+				if ACI_SpellList[i][8] then
+					local name = GetSpellInfo(ACI_SpellList[i][8]);
+
+					if name then
+						ACI_Debuff_list[name] = i;
+					else
+						ACI_Debuff_list[ACI_SpellList[i][8]] = i;
+					end
+				end
 			elseif ACI_SpellList[i][2] == 7 or ACI_SpellList[i][2] == 12 then
 				local name = GetSpellInfo(ACI_SpellList[i][1]);
 
@@ -1197,6 +1415,26 @@ function ACI_Init()
 					ACI_Buff_list[name] = i;
 				end
 				ACI_SpellID_list[ACI_SpellList[i][1]] = true;
+
+				if ACI_SpellList[i][7] then
+					local name = GetSpellInfo(ACI_SpellList[i][7]);
+
+					if name then
+						ACI_Buff_list[name] = i;
+					else
+						ACI_Buff_list[ACI_SpellList[i][7]] = i;
+					end
+				end
+
+				if ACI_SpellList[i][8] then
+					local name = GetSpellInfo(ACI_SpellList[i][8]);
+
+					if name then
+						ACI_Debuff_list[name] = i;
+					else
+						ACI_Debuff_list[ACI_SpellList[i][8]] = i;
+					end
+				end
 			elseif ACI_SpellList[i][2] == 8 then
 				local name = GetSpellInfo(ACI_SpellList[i][1]);
 
@@ -1206,11 +1444,41 @@ function ACI_Init()
 					ACI_Debuff_list[name] = i;
 				end
 				ACI_SpellID_list[ACI_SpellList[i][1]] = true;
-			elseif ACI_SpellList[i][2] == 14 then
-				ACI_Action_slot_list[i] = ACI_GetActionSlot(ACI_SpellList[i][1]);
 
+				if ACI_SpellList[i][7] then
+					local name = GetSpellInfo(ACI_SpellList[i][7]);
+
+					if name then
+						ACI_Buff_list[name] = i;
+					else
+						ACI_Buff_list[ACI_SpellList[i][7]] = i;
+					end
+				end
+
+				if ACI_SpellList[i][8] then
+					local name = GetSpellInfo(ACI_SpellList[i][8]);
+
+					if name then
+						ACI_Debuff_list[name] = i;
+					else
+						ACI_Debuff_list[ACI_SpellList[i][8]] = i;
+					end
+				end
+			elseif ACI_SpellList[i][2] == 14 then
+				local id = select(7, GetSpellInfo(ACI_SpellList[i][1]));
+
+				if tonumber(ACI_SpellList[i][1]) then
+					ACI_SpellList[i][1] = select(1, GetSpellInfo(ACI_SpellList[i][1]))
+				end
+				ACI_Action_slot_list[i] = ACI_GetActionSlot(ACI_SpellList[i][1]);
 				if ACI_Action_slot_list[i] then
 					ACI_Action_to_index[ACI_Action_slot_list[i]] = i;
+				end
+
+				local name = GetSpellInfo(ACI_SpellList[i][1]);
+
+				if id then
+					ACI_SpellID_list[id] = true;
 				end
 			elseif ACI_SpellList[i][2] == 11 then
 				local slot_name = ACI_SpellList[i][3];
@@ -1222,6 +1490,26 @@ function ACI_Init()
 				end
 
 				ACI_SpellID_list[ACI_SpellList[i][1]] = true;
+
+				if ACI_SpellList[i][5] then
+					local name = GetSpellInfo(ACI_SpellList[i][5]);
+
+					if name then
+						ACI_Buff_list[name] = i;
+					else
+						ACI_Buff_list[ACI_SpellList[i][5]] = i;
+					end
+				end
+
+				if ACI_SpellList[i][6] then
+					local name = GetSpellInfo(ACI_SpellList[i][6]);
+
+					if name then
+						ACI_Debuff_list[name] = i;
+					else
+						ACI_Debuff_list[ACI_SpellList[i][6]] = i;
+					end
+				end
 			end
 			ACI[i].idx = i;
 
@@ -1311,7 +1599,7 @@ function ACI_Init()
 			end
 		end
 
-		ACI_Timer = C_Timer.NewTicker(0.2, ACI_OnUpdate);
+		ACI_Timer = C_Timer.NewTicker(ACI_RefreshRate, ACI_OnUpdate);
 
 		local bload = LoadAddOn("asCooldownPulse")
 
@@ -1427,6 +1715,8 @@ for i = 1, ACI_MaxSpellCount do
 	end
 
 	ACI[i].count:SetPoint("BOTTOMRIGHT", -3, 3);
+	ACI[i].spellcoolframe.spellcool:SetFont("Fonts\\2002.TTF", ACI_CooldownFontSize - 2, "OUTLINE");
+	ACI[i].spellcoolframe.spellcool:SetTextColor(0.8, 0.8, 1);
 
 	ACI[i].icon:SetTexCoord(.08, .92, .08, .92);
 	ACI[i].border:SetTexture("Interface\\Addons\\asCombatInfo\\border.tga");

@@ -5,6 +5,7 @@ local CONFIG_VOICE_ID = 0    -- 음성 종류 (한국 Client 는 0번 1가지만
 local CONFIG_X = 230;
 local CONFIG_Y = -50;
 local CONFIG_SIZE = 45;
+local CONFIG_VOICE_DELAY = 2 -- 케스팅 끝나고 같은 음성 2초간 금지
 
 local function isFaction(unit)
 	if UnitIsUnit("player", unit) then
@@ -21,8 +22,9 @@ end
 
 local ADVA = nil;
 local timer = nil;
-local ADCA_DangerousSpellList = {};
+local DangerousSpellList = {};
 local CastingUnits = {};
+local VoiceAlertTime = {};
 
 local function asCooldownFrame_Clear(self)
 	self:Clear();
@@ -70,16 +72,23 @@ local function ADCA_OnUpdate()
 			end
 
 			if name then
-				if i <= 3 and ADCA_DangerousSpellList[spellId] then
+				if i <= 3 and DangerousSpellList[spellId] then
+					if needtosound and VoiceAlertTime[name] and VoiceAlertTime[name] > startTimeMS then
+						needtosound = false;
+						CastingUnits[unit] = false;						
+					end
+
 					if ns.options.PlaySound and needtosound == true then
 						if ns.options.SoundOnlyforInterrupt then
-							if ADCA_DangerousSpellList[spellId] == "interrupt" then
+							if DangerousSpellList[spellId] == "interrupt" then
 								C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback,
 									CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+								VoiceAlertTime[name] = endTimeMS + (CONFIG_VOICE_DELAY * 1000);								
 							end
 						else
 							C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback,
 								CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+							VoiceAlertTime[name] = endTimeMS;
 						end
 
 						CastingUnits[unit] = false;
@@ -113,10 +122,10 @@ local function ADCA_OnUpdate()
 
 					local frameBorder = frame.border;
 
-					if notInterruptible then
-						frameBorder:SetVertexColor(0, 0, 0);
-					else
+					if DangerousSpellList[spellId] == "interrupt" then
 						frameBorder:SetVertexColor(0, 1, 0);
+					else
+						frameBorder:SetVertexColor(0.3, 0.3, 0.3);
 					end
 
 
@@ -148,7 +157,7 @@ local function ADCA_OnEvent(self, event, arg1, arg2, arg3, arg4)
 	end
 
 	if event == "PLAYER_ENTERING_WORLD" then
-		--ADCA_DangerousSpellList = {};
+		VoiceAlertTime = {};
 	else
 		local unit = arg1;
 		local spellid = arg3;
@@ -235,22 +244,25 @@ end
 local DBMobj;
 
 local function scanDBM()
-	ADCA_DangerousSpellList = {};
+	DangerousSpellList = {};
 
 	if DBMobj.Mods then
 		for i, mod in ipairs(DBMobj.Mods) do
-			if mod.specwarns then
-				for k, obj in pairs(mod.specwarns) do
-					if obj.spellId and obj.announceType then
-						ADCA_DangerousSpellList[obj.spellId] = obj.announceType;
-					end
-				end
-			end
-
 			if mod.announces then
 				for k, obj in pairs(mod.announces) do
 					if obj.spellId and obj.announceType then
-						ADCA_DangerousSpellList[obj.spellId] = obj.announceType;
+						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+							DangerousSpellList[obj.spellId] = obj.announceType;
+						end
+					end
+				end
+			end
+			if mod.specwarns then
+				for k, obj in pairs(mod.specwarns) do
+					if obj.spellId and obj.announceType then
+						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+							DangerousSpellList[obj.spellId] = obj.announceType;
+						end
 					end
 				end
 			end

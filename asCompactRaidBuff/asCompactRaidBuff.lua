@@ -46,6 +46,13 @@ local UnitFrameDebuffType = EnumUtil.MakeEnum(
 	"NonBossDebuff"
 );
 
+local UnitFrameBuffType = EnumUtil.MakeEnum(
+	"PriorityBuff",
+	"ShouldShow1",
+	"ShouldShow2",
+	"Normal"
+);
+
 
 
 local AuraFilters =
@@ -79,6 +86,14 @@ local function DefaultAuraCompare(a, b)
 end
 
 local function UnitFrameDebuffComparator(a, b)
+	if a.debuffType ~= b.debuffType then
+		return a.debuffType < b.debuffType;
+	end
+
+	return DefaultAuraCompare(a, b);
+end
+
+local function UnitFrameBuffComparator(a, b)
 	if a.debuffType ~= b.debuffType then
 		return a.debuffType < b.debuffType;
 	end
@@ -488,7 +503,7 @@ local function ACRB_updatePartyAllHealerMana()
 	end
 end
 
-local ACRB_DangerousSpellList = {};
+local DangerousSpellList = {};
 
 local function ACRB_updateCasting(asframe, unit)
 	if asframe and asframe.frame and asframe.frame:IsShown() and asframe.castFrames then
@@ -518,13 +533,12 @@ local function ACRB_updateCasting(asframe, unit)
 
 				asCooldownFrame_Set(castFrame.cooldown, start, duration, true);
 
-				if ACRB_DangerousSpellList[spellid] then
-					if ACRB_DangerousSpellList[spellid] == "interrupt" then
+				if DangerousSpellList[spellid] then
+					if DangerousSpellList[spellid] == "interrupt" then
 						ns.lib.PixelGlow_Start(castFrame, { 0, 1, 0.32, 1 });
 					else
 						ns.lib.PixelGlow_Start(castFrame, { 0.5, 0.5, 0.5, 1 });
 					end
-					
 				else
 					ns.lib.PixelGlow_Stop(castFrame);
 				end
@@ -655,13 +669,25 @@ local function ProcessAura(aura)
 				UnitFrameDebuffType.NonBossRaidDebuff;
 			return AuraUpdateChangedType.Dispel;
 		end
+	elseif aura.isHelpful and (ACRB_ShowList and PLAYER_UNITS[aura.sourceUnit] and ACRB_ShowList[aura.name]) then
+		aura.isBuff = true;
+		if ACRB_ShowList[aura.name][2] > 2 then
+			aura.debuffType = UnitFrameBuffType.PriorityBuff;
+		elseif ACRB_ShowList[aura.name][2] == 2 then
+			aura.debuffType = UnitFrameBuffType.ShouldShow1;
+		elseif ACRB_ShowList[aura.name][2] == 1 then
+			aura.debuffType = UnitFrameBuffType.ShouldShow2;
+		else
+			aura.debuffType = UnitFrameBuffType.Normal;
+		end
+
+		return AuraUpdateChangedType.Buff;
 	elseif aura.isHelpful and ShouldDisplayBuff(aura) then
 		aura.isBuff = true;
-		return AuraUpdateChangedType.Buff;
-	elseif aura.isHelpful and (PLAYER_UNITS[aura.sourceUnit] and ACRB_ShowList and ACRB_ShowList[aura.name]) then
-		aura.isBuff = true;
+		aura.debuffType = UnitFrameBuffType.Normal;
 		return AuraUpdateChangedType.Buff;
 	elseif aura.isHelpful and ns.ACRB_PVPBuffList[aura.spellId] then
+		aura.debuffType = UnitFrameBuffType.Normal;
 		return AuraUpdateChangedType.PVP;
 	end
 
@@ -695,7 +721,8 @@ local function ACRB_ParseAllAuras(asframe)
 	if asframe.debuffs == nil then
 		asframe.debuffs = TableUtil.CreatePriorityTable(UnitFrameDebuffComparator,
 			TableUtil.Constants.AssociativePriorityTable);
-		asframe.buffs = TableUtil.CreatePriorityTable(DefaultAuraCompare, TableUtil.Constants.AssociativePriorityTable);
+		asframe.buffs = TableUtil.CreatePriorityTable(UnitFrameBuffComparator,
+			TableUtil.Constants.AssociativePriorityTable);
 		asframe.pvpbuffs = TableUtil.CreatePriorityTable(DefaultAuraCompare, TableUtil.Constants
 			.AssociativePriorityTable);
 		asframe.dispels = {};
@@ -780,7 +807,7 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 				type = ACRB_ShowList[aura.name][2];
 			end
 
-			if type > ACRB_MAX_BUFFS - 3 and not showframe[type] then
+			if type > 3 and not showframe[type] then
 				local buffFrame = asframe.asbuffFrames[type];
 				if type == 4 then
 					asframe.buffcolor:Show();
@@ -1354,31 +1381,36 @@ end
 local DBMobj;
 
 local function scanDBM()
-	ACRB_DangerousSpellList = {};
+	DangerousSpellList = {};
 	if DBMobj.Mods then
 		for i, mod in ipairs(DBMobj.Mods) do
-			if mod.specwarns then
-				for k, obj in pairs(mod.specwarns) do
-					if obj.spellId and obj.announceType then
-						ACRB_DangerousSpellList[obj.spellId] = obj.announceType;
-					end
-				end
-			end
+
 			if mod.announces then
 				for k, obj in pairs(mod.announces) do
 					if obj.spellId and obj.announceType then
-						ACRB_DangerousSpellList[obj.spellId] = obj.announceType;
+						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        end
 					end
 				end
 			end
+			if mod.specwarns then
+				for k, obj in pairs(mod.specwarns) do
+					if obj.spellId and obj.announceType then
+						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        end
+					end
+				end
+			end
+			
 		end
 	end
-
 end
 
 local function NewMod(self, ...)
 	DBMobj = self;
-	C_Timer.After(0.25, scanDBM);	
+	C_Timer.After(0.25, scanDBM);
 end
 local function ACRB_OnEvent(self, event, ...)
 	local arg1 = ...;

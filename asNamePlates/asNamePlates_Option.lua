@@ -1,5 +1,5 @@
 ANameP_Options_Default = {
-    version = 231029,
+    version = 231105,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -84,6 +84,7 @@ ANameP_Options_Default = {
     ANameP_ShowList_MONK_3 = {
         ["하늘탑"] = { 10, 5 },
         ["주학의 징표"] = { 0, 4, true },
+        ["암흑불길 저항력 약화"] = { 0, 3},         --시즌2
     },
 
     ANameP_ShowList_WARLOCK_1 = {
@@ -94,7 +95,8 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_WARLOCK_2 = {
-        ["사냥개조련사의 책략"] = { 0, 5, true },
+        ["파멸의 낙인"] = { 0, 5 },                 --시즌3
+        ["사냥개조련사의 책략"] = { 0, 4, true },
     },
 
 
@@ -145,7 +147,7 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_DRUID_3 = {
-        ["달빛섬광"] = { 1, 5, true },
+        ["달빛섬광"] = { 1, 5},
     },
 
 
@@ -159,7 +161,7 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_MAGE_2 = {
-        ["사르는 잿불"] = { 0, 5, true },
+        ["사르는 잿불"] = { 0, 5, true },       --시즌2
         ["작열"] = { 0, 4 },
     },
 
@@ -170,13 +172,14 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_DEATHKNIGHT_1 = {
-        ["잿빛 부패"] = { 0, 5 },
+        ["잿빛 부패"] = { 0, 5 },               --시즌3
         ["피의 역병"] = { 0, 4 },
         
     },
 
     ANameP_ShowList_DEATHKNIGHT_2 = {
-        ["서리 열병"] = { 0, 5, true },
+        ["잔존하는 한기"] = { 0, 5, true },     --시즌2
+        ["서리 열병"] = { 0, 4 },
     },
 
     ANameP_ShowList_DEATHKNIGHT_3 = {

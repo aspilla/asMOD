@@ -302,7 +302,7 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
 
             -- set the icon
             local frameIcon = frame.icon
-            frameIcon:SetTexture(aura.icon);            
+            frameIcon:SetTexture(aura.icon);
             -- set the count
             local frameCount = frame.count;
 
@@ -376,9 +376,9 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
         local frame = parent.frames[j];
 
         if (frame) then
-            frame:Hide();
             ns.lib.ButtonGlow_Stop(frame);
             ns.lib.PixelGlow_Stop(frame);
+            frame:Hide();
         end
     end
 end

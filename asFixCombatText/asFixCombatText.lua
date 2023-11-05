@@ -8,14 +8,16 @@ local DAMAGE_COLOR = { 1, 0.1, 0.1 };
 local SPELL_DAMAGE_COLOR = { 0.79, 0.3, 0.85 };
 local DAMAGE_SHIELD_COLOR = { 1, 0.3, 0.3 };
 local SPLIT_DAMAGE_COLOR = { 1, 1, 1 }
+local function updateCVar ()
+	SetCVar("enableFloatingCombatText", 1);
+end
 
 local function init_combattext()
 	local bShowHeal = ASCT_DEFAULT_SHOW_HEAL
 
 	LoadAddOn("Blizzard_CombatText")
-	SetCVar("floatingCombatTextCombatState", 1)
-
-
+	C_Timer.After(1, updateCVar)
+		
 	CombatTextFont:SetFont("Fonts\\2002.ttf", 18, "OUTLINE")
 	COMBAT_TEXT_HEIGHT = 16;
 	COMBAT_TEXT_CRIT_MAXHEIGHT = 24;

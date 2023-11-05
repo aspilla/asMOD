@@ -199,7 +199,7 @@ local ANameP_PVEBuffList = {
 	[209859] = 0, --'강화'
 }
 
-local ANameP_DangerousSpellList = {
+local DangerousSpellList = {
 
 }
 
@@ -1092,8 +1092,8 @@ local function setColoronStatusBar(self, r, g, b)
 end
 
 local function isDangerousSpell(spellId)
-	if spellId and ANameP_DangerousSpellList[spellId] then
-		if ANameP_DangerousSpellList[spellId] == "interrupt" then
+	if spellId and DangerousSpellList[spellId] then
+		if DangerousSpellList[spellId] == "interrupt" then
 			return true, true;
 		end
 		return true, false;
@@ -2073,24 +2073,32 @@ end
 local DBMobj;
 
 local function scanDBM()
-	ANameP_DangerousSpellList = {};
+	DangerousSpellList = {};
 	if DBMobj.Mods then
 		for i, mod in ipairs(DBMobj.Mods) do
-			if mod.specwarns then
-				for k, obj in pairs(mod.specwarns) do
-					if obj.spellId and obj.announceType then
-						ANameP_DangerousSpellList[obj.spellId] = obj.announceType;
-					end
-				end
-			end
 
 			if mod.announces then
 				for k, obj in pairs(mod.announces) do
 					if obj.spellId and obj.announceType then
-						ANameP_DangerousSpellList[obj.spellId] = obj.announceType;
+						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        end		
+						
 					end
 				end
 			end
+
+			if mod.specwarns then
+				for k, obj in pairs(mod.specwarns) do
+					if obj.spellId and obj.announceType then
+						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        end		
+					end
+				end
+			end
+
+			
 		end
 	end
 end

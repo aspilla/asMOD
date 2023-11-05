@@ -151,7 +151,7 @@ local function ASAA_Insert(id)
 		return;
 	end
 
-	if ACI_SpellID_list and (ACI_SpellID_list[id] or ACI_SpellID_list[name]) then
+	if ACI_SpellID_list and (ACI_SpellID_list[id] or ACI_SpellID_list[name]) then		
 		return;
 	end	
 
