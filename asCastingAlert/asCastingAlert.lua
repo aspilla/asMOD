@@ -33,9 +33,9 @@ local function CheckCasting(nameplate)
 	local unit = nameplate.UnitFrame.unit;
 
 	if isFaction(unit) and UnitIsUnit(unit .. "target", "player") and not UnitIsUnit(unit, "target") then
-		local name, _, texture, _, endTime, _, _, _, spellid = UnitCastingInfo(unit);
+		local name, _, texture, _, endTime, _, _, notInterruptible, spellid = UnitCastingInfo(unit);
 		if not name then
-			name, _, texture, _, endTime, _, _, spellid = UnitChannelInfo(unit);
+			name, _, texture, _, endTime, _, notInterruptible, spellid = UnitChannelInfo(unit);
 		end
 
 		if name then
@@ -46,7 +46,7 @@ local function CheckCasting(nameplate)
 				local type = 3;
 
 				if DangerousSpellList[spellid] then
-					if DangerousSpellList[spellid] == "interrupt" then
+					if DangerousSpellList[spellid] == "interrupt" or not notInterruptible then
 						type = 1;
 					else
 						type = 2;

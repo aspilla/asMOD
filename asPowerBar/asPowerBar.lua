@@ -1,3 +1,5 @@
+local _, ns = ...;
+
 local APB_Font = "Fonts\\2002.TTF";
 local APB_HealthSize = 12;
 local APB_BuffSize = 10;
@@ -207,6 +209,7 @@ local prev_combo = nil;
 local p_start = nil;
 local bhalf_combo = false;
 local bdruid = false;
+local brogue = false;
 
 local function APB_ShowComboBar(combo, partial, cast, cooldown)
 	local bmax = false;
@@ -263,6 +266,23 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
 
 	if partial > 0 then
 		value = partial;
+	end
+
+	--문책
+	if brogue then
+		local chargedPowerPoints = GetUnitChargedPowerPoints("player");
+		for i = 1, max_combo do
+			local isCharged = chargedPowerPoints and tContains(chargedPowerPoints, i) or false;
+
+			if isCharged then
+				ns.lib.PixelGlow_Start(APB.combobar[i], {0.5, 0.5, 1});
+				if combo == i then
+					bmax = true;
+				end
+			else
+				ns.lib.PixelGlow_Stop(APB.combobar[i]);
+			end
+		end
 	end
 
 	for i = 1, max_combo do
@@ -322,7 +342,7 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
 		APB.combobar[1].text:ClearAllPoints();
 		APB.combobar[1].text:SetPoint("CENTER", APB.combobar[math.ceil(max_combo / 2)], "CENTER", 0, 0);
 		APB.combobar[1].text:Show();
-	end
+	end	
 end
 
 local function APB_UpdateBuffCombo(combobar)
@@ -731,7 +751,7 @@ local function APB_MaxRune()
 	local width = (APB_WIDTH - (3 * (max - 1))) / max;
 
 
-	for i = 1, 10 do
+	for i = 1, 10 do		
 		APB.combobar[i]:Hide();
 	end
 
@@ -1359,6 +1379,7 @@ local function APB_CheckPower(self)
 	bsmall_power_bar = false;
 	bhalf_combo = false;
 	bdruid = false;
+	brogue = false;
 
 	APB_BUFF = nil;
 	APB_BUFF2 = nil;
@@ -1383,6 +1404,7 @@ local function APB_CheckPower(self)
 	APB.combobar[1].text:Hide();
 
 	for i = 1, 10 do
+		ns.lib.PixelGlow_Stop(APB.combobar[i]);
 		setupMouseOver(APB.combobar[i]);
 	end
 
@@ -1422,7 +1444,7 @@ local function APB_CheckPower(self)
 
 				APB:RegisterEvent("PLAYER_TARGET_CHANGED");
 				APB_UpdateBuff(self.buffbar[0])
-			end			
+			end
 		end
 
 		if (spec and spec == 2) then
@@ -1760,6 +1782,8 @@ local function APB_CheckPower(self)
 	end
 
 	if (englishClass == "ROGUE") then
+
+		brogue = true;
 		APB_UNIT_POWER = "COMBO_POINTS"
 		APB_POWER_LEVEL = Enum.PowerType.ComboPoints
 		APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")

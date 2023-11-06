@@ -1093,7 +1093,7 @@ end
 
 local function isDangerousSpell(spellId)
 	if spellId and DangerousSpellList[spellId] then
-		if DangerousSpellList[spellId] == "interrupt" then
+		if DangerousSpellList[spellId] == "interrupt"  then
 			return true, true;
 		end
 		return true, false;
@@ -1154,7 +1154,7 @@ local function updateHealthbarColor(self)
 			local isDanger, binterrupt = isDangerousSpell(spellid);
 
 			self.castspellid = spellid;
-			if isDanger and binterrupt == true then
+			if isDanger and (binterrupt == true or not notInterruptible) then
 				ns.lib.PixelGlow_Start(self.casticon, { 0, 1, 0.32, 1 });
 				ns.lib.PixelGlow_Start(healthBar, { 0, 1, 0.32, 1 });
 			elseif isDanger then

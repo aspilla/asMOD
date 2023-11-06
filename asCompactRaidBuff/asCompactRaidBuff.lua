@@ -534,7 +534,7 @@ local function ACRB_updateCasting(asframe, unit)
 				asCooldownFrame_Set(castFrame.cooldown, start, duration, true);
 
 				if DangerousSpellList[spellid] then
-					if DangerousSpellList[spellid] == "interrupt" then
+					if DangerousSpellList[spellid] == "interrupt" or not notInterruptible then
 						ns.lib.PixelGlow_Start(castFrame, { 0, 1, 0.32, 1 });
 					else
 						ns.lib.PixelGlow_Start(castFrame, { 0.5, 0.5, 0.5, 1 });

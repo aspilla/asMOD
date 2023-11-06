@@ -384,16 +384,27 @@ local function ParseAllAuras(unit)
 end
 
 local function updateTotemAura()
-	local totem_i = 0;
+	local left = 1;
+	local center = 1;
 
 	for slot = 1, MAX_TOTEMS do
 		local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
 
 		if haveTotem and icon then
 			if not (IsShown(name)) then
-				totem_i = totem_i + 1;
+				local frame = nil;
+				local alert = ns.ABF_ClassBuffList[name] or 0;
+
+				if alert > 0 then
+					frame = ABF_TALENT_BUFF.frames[center];
+					center = center + 1;					
+				else
+					frame = ABF_PLAYER_BUFF.frames[left];
+					left = left + 1;
+				end
+
 				local expirationTime = start + duration;
-				local frame = ABF_PLAYER_BUFF.frames[totem_i];
+				
 
 				-- set the icon
 				local frameIcon = frame.icon;
@@ -423,13 +434,24 @@ local function updateTotemAura()
 
 				frameBorder:SetVertexColor(color.r, color.g, color.b);
 				frame:Show();
+
+				if alert == 2 then
+					ns.lib.ButtonGlow_Stop(frame);
+					ns.lib.PixelGlow_Start(frame);
+				elseif alert == 3 then
+					ns.lib.PixelGlow_Stop(frame);
+					ns.lib.ButtonGlow_Start(frame);
+				else
+					ns.lib.ButtonGlow_Stop(frame);
+					ns.lib.PixelGlow_Stop(frame);
+				end
 			end
 		else
-			return totem_i + 1;
+			return left, center;
 		end
 	end
 
-	return totem_i + 1;
+	return left, center;
 end
 
 local function UpdateAuraFrames(unit, auraList)
@@ -441,7 +463,7 @@ local function UpdateAuraFrames(unit, auraList)
 	local mparent = nil;
 
 	if (unit == "player") then
-		lcount = updateTotemAura();
+		lcount, tcount = updateTotemAura();
 		parent = ABF_PLAYER_BUFF;
 		mparent = ABF_TALENT_BUFF;
 		numAuras = math.min(ns.ABF_MAX_BUFF_SHOW * 2, auraList:Size());

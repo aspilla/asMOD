@@ -80,7 +80,7 @@ local function ADCA_OnUpdate()
 
 					if ns.options.PlaySound and needtosound == true then
 						if ns.options.SoundOnlyforInterrupt then
-							if DangerousSpellList[spellId] == "interrupt" then
+							if DangerousSpellList[spellId] == "interrupt" or not notInterruptible then
 								C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback,
 									CONFIG_SOUND_SPEED, ns.options.SoundVolume);
 								VoiceAlertTime[name] = endTimeMS + (CONFIG_VOICE_DELAY * 1000);								
@@ -122,7 +122,7 @@ local function ADCA_OnUpdate()
 
 					local frameBorder = frame.border;
 
-					if DangerousSpellList[spellId] == "interrupt" then
+					if DangerousSpellList[spellId] == "interrupt" or not notInterruptible then
 						frameBorder:SetVertexColor(0, 1, 0);
 					else
 						frameBorder:SetVertexColor(0.3, 0.3, 0.3);
