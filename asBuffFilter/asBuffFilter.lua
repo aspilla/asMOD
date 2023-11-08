@@ -338,7 +338,7 @@ local function ProcessAura(aura, unit)
 		elseif ns.ABF_ClassBuffList[aura.name] then
 			if ns.ABF_ClassBuffList[aura.name] == 1 then
 				aura.buffType = UnitFrameBuffType.SelectedBuff;
-			elseif ns.ABF_ClassBuffList[aura.name] == 2 then				
+			elseif ns.ABF_ClassBuffList[aura.name] == 2 then
 				aura.buffType = UnitFrameBuffType.PriorityBuff;
 			elseif ns.ABF_ClassBuffList[aura.name] == 3 then
 				aura.buffType = UnitFrameBuffType.ImportantBuff;
@@ -348,11 +348,11 @@ local function ProcessAura(aura, unit)
 		elseif aura.nameplateShowPersonal then
 			aura.buffType = UnitFrameBuffType.PriorityBuff;
 		elseif IsShouldDisplayBuff(aura.spellId, aura.sourceUnit, aura.isFromPlayerOrPlayerPet) then
-			aura.buffType = UnitFrameBuffType.Normal;		
+			aura.buffType = UnitFrameBuffType.Normal;
 		elseif ABF_TalentBuffList[aura.spellId] == true then
 			aura.buffType = UnitFrameBuffType.TalentBuff;
 		elseif ABF_TalentBuffList[aura.name] == true or ABF_TalentBuffIconList[aura.icon] == true then
-			aura.buffType = UnitFrameBuffType.TalentBuff;		
+			aura.buffType = UnitFrameBuffType.TalentBuff;
 		else
 			aura.buffType = UnitFrameBuffType.Normal;
 		end
@@ -397,14 +397,14 @@ local function updateTotemAura()
 
 				if alert > 0 then
 					frame = ABF_TALENT_BUFF.frames[center];
-					center = center + 1;					
+					center = center + 1;
 				else
 					frame = ABF_PLAYER_BUFF.frames[left];
 					left = left + 1;
 				end
 
 				local expirationTime = start + duration;
-				
+
 
 				-- set the icon
 				local frameIcon = frame.icon;
@@ -553,7 +553,7 @@ local function UpdateAuraFrames(unit, auraList)
 		if (frame) then
 			ns.lib.ButtonGlow_Stop(frame);
 			ns.lib.PixelGlow_Stop(frame);
-			frame:Hide();		
+			frame:Hide();
 		end
 	end
 
@@ -669,7 +669,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		asCheckTalent();
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
-		if Settings.GetValue("spellActivationOverlayOpacity")  then
+		if Settings.GetValue("spellActivationOverlayOpacity") then
 			if Settings.GetValue("spellActivationOverlayOpacity") > 0 then
 				overlayspell[arg1] = true;
 			else
@@ -858,4 +858,3 @@ local function ABF_Init()
 end
 
 ABF_Init();
-

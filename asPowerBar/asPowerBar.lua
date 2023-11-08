@@ -275,7 +275,7 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
 			local isCharged = chargedPowerPoints and tContains(chargedPowerPoints, i) or false;
 
 			if isCharged then
-				ns.lib.PixelGlow_Start(APB.combobar[i], {0.5, 0.5, 1});
+				ns.lib.PixelGlow_Start(APB.combobar[i], { 0.5, 0.5, 1 });
 				if combo == i then
 					bmax = true;
 				end
@@ -342,7 +342,7 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
 		APB.combobar[1].text:ClearAllPoints();
 		APB.combobar[1].text:SetPoint("CENTER", APB.combobar[math.ceil(max_combo / 2)], "CENTER", 0, 0);
 		APB.combobar[1].text:Show();
-	end	
+	end
 end
 
 local function APB_UpdateBuffCombo(combobar)
@@ -751,7 +751,7 @@ local function APB_MaxRune()
 	local width = (APB_WIDTH - (3 * (max - 1))) / max;
 
 
-	for i = 1, 10 do		
+	for i = 1, 10 do
 		APB.combobar[i]:Hide();
 	end
 
@@ -1782,7 +1782,6 @@ local function APB_CheckPower(self)
 	end
 
 	if (englishClass == "ROGUE") then
-
 		brogue = true;
 		APB_UNIT_POWER = "COMBO_POINTS"
 		APB_POWER_LEVEL = Enum.PowerType.ComboPoints
@@ -1794,11 +1793,20 @@ local function APB_CheckPower(self)
 			APB.combobar[i].tooltip = "COMBO_POINTS";
 		end
 
-		APB_BUFF = "난도질";
-		APB.buffbar[0].buff = APB_BUFF;
-		APB.buffbar[0].unit = "player"
-		APB:RegisterUnitEvent("UNIT_AURA", "player");
-		APB_UpdateBuff(self.buffbar[0])
+		if asCheckTalent("부식성 분사") then
+			APB_DEBUFF = "부식성 분사";
+			APB.buffbar[0].debuff = APB_DEBUFF;
+			APB.buffbar[0].unit = "target"
+			APB:SetScript("OnUpdate", APB_OnUpdate);
+			APB:RegisterEvent("PLAYER_TARGET_CHANGED");
+			APB_UpdateBuff(self.buffbar[0])
+		else
+			APB_BUFF = "난도질";
+			APB.buffbar[0].buff = APB_BUFF;
+			APB.buffbar[0].unit = "player"
+			APB:RegisterUnitEvent("UNIT_AURA", "player");
+			APB_UpdateBuff(self.buffbar[0])
+		end
 	end
 
 	if (englishClass == "DEATHKNIGHT") then

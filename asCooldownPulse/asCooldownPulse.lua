@@ -81,6 +81,7 @@ local ACDP_mainframe = CreateFrame("Frame", nil, UIParent);
 local ACDP_CoolButtons = CreateFrame("Frame", nil, UIParent);
 
 local KnownSpellList = {};
+local ItemSlotList = {};
 local showlist_id = {};
 local spell_cooldown = {};
 local item_cooldown = {};
@@ -171,6 +172,7 @@ local function scanItemSlots()
 			local _, id = GetItemSpell(itemid);
 			if id then
 				KnownSpellList[id] = itemid;
+				ItemSlotList[itemid] = idx;
 			end
 		end
 	end
@@ -434,12 +436,20 @@ local function ACDP_Alert(spell, type)
 		if ns.options.PlaySound and name then
 			if item_cooldown[type] and item_cooldown[type] >= ns.options.SoundCooldown then
 				bsound = true;
+				if not ns.options.EnableTTS and ItemSlotList[type] then
+					name = ItemSlotList[type];
+				end
 			end
 		end
 	end
 
 	if bsound then
-		C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback, CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+		if ns.options.EnableTTS then
+			C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback, CONFIG_SOUND_SPEED,
+				ns.options.SoundVolume);
+		else
+			PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\" .. name .. ".mp3", "DIALOG")
+		end
 	end
 
 	ns.asUIFrameFadeIn(ACDP[ACDP_Icon_Idx], ACDP_AlertShowTime, 0, 1)
@@ -468,7 +478,7 @@ local function ACDP_Checkcooldown()
 		if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
 			start, duration, enabled = GetSpellCooldown(spellid);
 			if duration > gcd then
-				spell_cooldown[spellid] = duration;			
+				spell_cooldown[spellid] = duration;
 			end
 		else
 			start, duration, enabled = GetItemCooldown(type);
@@ -520,6 +530,7 @@ local function setupKnownSpell(bwipe)
 
 	if bwipe then
 		KnownSpellList = {};
+		ItemSlotList = {};
 		showlist_id = {};
 		spell_cooldown = {};
 		item_cooldown = {};
@@ -535,13 +546,12 @@ local function setupKnownSpell(bwipe)
 end
 
 local bfirst = true;
-    
-local function ACDP_OnEvent(self, event)
 
+local function ACDP_OnEvent(self, event)
 	if bfirst then
-        ns.SetupOptionPanels();
-        bfirst = false;
-    end
+		ns.SetupOptionPanels();
+		bfirst = false;
+	end
 
 	if event == "PLAYER_ENTERING_WORLD" then
 		setupKnownSpell(true);
@@ -594,7 +604,7 @@ local function ACDP_Init()
 
 		i = i + 1;
 	end
-	
+
 	ACDP_CoolButtons:SetPoint("CENTER", ACDP_CoolButtons_X, ACDP_CoolButtons_Y)
 
 	ACDP_CoolButtons:SetWidth(1)

@@ -433,10 +433,7 @@ local function OnEvent(self, event, ...)
         bfirst = false;
     end
 
-    if event == "UNIT_AURA" then
-        local unitAuraUpdateInfo = select(2, ...);
-        UpdateAuras(unitAuraUpdateInfo);
-    elseif event == "PLAYER_ENTERING_WORLD" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
+    if event == "PLAYER_ENTERING_WORLD" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
         HideClassBar();
         HideCombatText();
         HideTargetBuffs();
@@ -448,7 +445,6 @@ local function OnEvent(self, event, ...)
         SetCVar("showTargetCastbar", "1");
     elseif event == "PLAYER_TARGET_CHANGED" then
         AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
-        AFUF:RegisterUnitEvent("UNIT_AURA", "target");
         UpdateHealthBar("target");
         UpdateHealthBar("targettarget");
         UpdateAuras();
@@ -459,15 +455,23 @@ local function OnEvent(self, event, ...)
     end
 end
 
+local function OnUpdate()
+	if (UnitExists("target")) then
+        UpdateAuras();
+    end
+end
+
 local function OnInit()
     AFUF:SetScript("OnEvent", OnEvent);
     AFUF:RegisterEvent("PLAYER_TARGET_CHANGED");
     AFUF:RegisterEvent("PLAYER_ENTERING_WORLD");
     AFUF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
     AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
-    AFUF:RegisterUnitEvent("UNIT_AURA", "target");
     AFUF:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
     AFUF:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
+
+    --주기적으로 Callback
+	C_Timer.NewTicker(0.2, OnUpdate);
 end
 
 OnInit();

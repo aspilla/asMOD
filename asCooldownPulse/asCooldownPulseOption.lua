@@ -4,6 +4,7 @@ local Options_Default = {
     AlwaysShowButtons = false,
     SoundVolume = 100,
     SoundCooldown = 30,
+    EnableTTS = true,
 };
 
 ns.options = {};
