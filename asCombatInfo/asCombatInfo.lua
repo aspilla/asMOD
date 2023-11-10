@@ -290,7 +290,7 @@ local function ACI_Alert(self, bcastspell)
 			isUsable = true
 			enable = 1
 
-			if count <= 1 then
+			if count <= 1 and t ~= 7 then
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
 				count = charges;
 
@@ -313,7 +313,7 @@ local function ACI_Alert(self, bcastspell)
 				self.exTime = expirationTime - alert_du;
 			end
 
-			do
+			if t ~= 7 then
 				local spellid = select(7, GetSpellInfo(spellname));
 				local spellstart, spellduration, spellcharges;
 
@@ -336,7 +336,7 @@ local function ACI_Alert(self, bcastspell)
 					end
 				end
 			end
-		else
+		elseif t ~= 7 then
 			local spellid = select(7, GetSpellInfo(spellname));
 
 			if spellid then
@@ -377,6 +377,15 @@ local function ACI_Alert(self, bcastspell)
 				start = chargeStart;
 				duration = chargeDuration;
 			end
+		else
+			local spellid = select(7, GetSpellInfo(spellname));
+
+			if spellid then
+				_, _, icon                                                      = GetSpellInfo(spellid)		
+			else
+				_, _, icon              = GetSpellInfo(spellname)				
+			end
+			isUsable = false			
 		end
 
 		if t == 3 or t == 12 then
@@ -443,7 +452,7 @@ local function ACI_Alert(self, bcastspell)
 			isUsable = true;
 			enable = 1
 
-			if count <= 1 then
+			if count <= 1 and t ~= 8 then
 				charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellname);
 				count = charges;
 
@@ -466,7 +475,7 @@ local function ACI_Alert(self, bcastspell)
 				self.exTime = expirationTime - alert_du;
 			end
 
-			do
+			if t ~= 8 then
 				local spellid = select(7, GetSpellInfo(spellname));
 				local spellstart, spellduration, spellcharges;
 
@@ -488,7 +497,7 @@ local function ACI_Alert(self, bcastspell)
 					end
 				end
 			end
-		else
+		elseif t ~= 8 then
 			local spellid = select(7, GetSpellInfo(spellname));
 
 			if spellid then
@@ -529,6 +538,15 @@ local function ACI_Alert(self, bcastspell)
 				start = chargeStart;
 				duration = chargeDuration;
 			end
+		else
+			local spellid = select(7, GetSpellInfo(spellname));
+
+			if spellid then
+				_, _, icon                                                      = GetSpellInfo(spellid)		
+			else
+				_, _, icon              = GetSpellInfo(spellname)				
+			end
+			isUsable = false	
 		end
 
 		if ACI_SpellList[i][7] then

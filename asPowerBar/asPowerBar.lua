@@ -611,24 +611,13 @@ local function APB_UpdateStagger(self)
 
 		local version = select(4, GetBuildInfo());
 
-		if version >= 100200 then
-			if stagger >= 60 then
-				info = info.red;
-			elseif stagger >= 30 then
-				info = info.yellow;
-			else
-				info = info.green;
-			end
+		if stagger >= 60 then
+			info = info.red;
+		elseif stagger >= 30 then
+			info = info.yellow;
 		else
-			if stagger >= 60 then
-				info = info[3];
-			elseif stagger >= 30 then
-				info = info[2];
-			else
-				info = info[1];
-			end
+			info = info.green;
 		end
-
 
 
 		self:SetStatusBarColor(info.r, info.g, info.b);
@@ -1267,7 +1256,7 @@ local function APB_OnUpdate(self, elapsed)
 		APB_Update(self)
 	end
 
-	if update2 >= 0.5 then
+	if update2 >= 0.2 then
 		update2 = 0
 		APB_UpdateBuff(self.buffbar[0]);
 		APB_UpdateBuffCombo(self.combobar);
@@ -1402,6 +1391,9 @@ local function APB_CheckPower(self)
 
 	APB.combobar[1].text:SetText("");
 	APB.combobar[1].text:Hide();
+
+	APB.text:SetText("")
+	APB.text:Hide();
 
 	for i = 1, 10 do
 		ns.lib.PixelGlow_Stop(APB.combobar[i]);
@@ -1629,13 +1621,7 @@ local function APB_CheckPower(self)
 			bupdate_spell = true;
 			bupdate_partial_power = true;
 
-			if version < 100200 and asCheckTalent("아즈아퀴르의 광기") then
-				APB_BUFF = "아즈아퀴르의 광기";
-				APB.buffbar[0].buff = APB_BUFF;
-				APB.buffbar[0].unit = "player"
-				APB:RegisterUnitEvent("UNIT_AURA", "player");
-				APB_UpdateBuff(self.buffbar[0])
-			elseif version == 100200 and asCheckTalent("박멸") then
+			if asCheckTalent("박멸") then
 				APB_DEBUFF = "박멸";
 				APB.buffbar[0].debuff = APB_DEBUFF;
 				APB.buffbar[0].unit = "target"
@@ -1950,12 +1936,7 @@ local function APB_CheckPower(self)
 				APB_BUFF = "탄력";
 				APB.buffbar[0].buff = APB_BUFF;
 				APB.buffbar[0].unit = "player"
-
-				if version == 100200 then
-					APB.buffbar[0].max = 20;
-				else
-					APB.buffbar[0].max = 10;
-				end
+				APB.buffbar[0].max = 20;				
 				APB:RegisterUnitEvent("UNIT_AURA", "player");
 				--APB:SetScript("OnUpdate", APB_OnUpdate);
 
@@ -2031,7 +2012,7 @@ local function APB_CheckPower(self)
 			--APB:SetScript("OnUpdate", APB_OnUpdate);
 
 			if asCheckTalent("광포한 무리") then
-				APB_MaxCombo(5);
+				APB_MaxCombo(4);
 				APB.combobar.unit = "player"
 				bupdate_direbeast_combo = true;
 				APB_UpdateDireBeastCombo(self.combobar);
@@ -2056,8 +2037,8 @@ local function APB_CheckPower(self)
 				APB_UpdateBuff(self.buffbar[0])
 			end
 
-			if asCheckTalent("윈드러너의 인도") then
-				bupdate_windrunner = true;
+			if asCheckTalent("윈드러너의 유산") then
+				bupdate_windrunner = true;				
 				APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 			end
 		end
@@ -2437,6 +2418,9 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 		elseif bupdate_windrunner then
 			local timestamp, subEvent, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType =
 				CombatLogGetCurrentEventInfo();
+
+		
+
 			if sourceGUID == UnitGUID("player") and subEvent == "SPELL_DAMAGE" and spellID == 191043 then
 				windrunner_count = windrunner_count + 1
 			end
@@ -2444,16 +2428,17 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 			if sourceGUID == UnitGUID("player") and subEvent == "SPELL_ENERGIZE" and spellID == 406449 then
 				windrunner_count = 0
 			end
+			
+			local textToShow =tostring(windrunner_count) .. "/24";
 
-			local textToShow = windrunner_count .. "/24";
-
-			APB.combobar[1].text:SetText(textToShow);
+			APB.text:SetText(textToShow);
+			
 			if windrunner_count >= 20 then
-				APB.combobar[1].text:SetTextColor(0, 1, 0);
+				APB.text:SetTextColor(0, 1, 0);
 			else
-				APB.combobar[1].text:SetTextColor(1, 1, 1);
+				APB.text:SetTextColor(1, 1, 1);
 			end
-			APB.combobar[1].text:Show();
+			APB.text:Show();
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		checkSpellCost();
@@ -2723,11 +2708,11 @@ do
 		APB.spellbar[i]:EnableMouse(true);
 	end
 
-	APB.spellbar[1].text = APB.spellbar[1]:CreateFontString(nil, "ARTWORK");
-	APB.spellbar[1].text:SetFont(APB_Font, APB_HealthSize - 2, APB_FontOutline);
-	APB.spellbar[1].text:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPLEFT", 0, 2);
-	APB.spellbar[1].text:SetTextColor(1, 1, 1, 1)
-	APB.spellbar[1].text:Hide();
+	APB.text = APB:CreateFontString(nil, "ARTWORK");
+	APB.text:SetFont(APB_Font, APB_HealthSize - 2, APB_FontOutline);
+	APB.text:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPLEFT", 0, 2);
+	APB.text:SetTextColor(1, 1, 1, 1)
+	APB.text:Hide();
 
 
 

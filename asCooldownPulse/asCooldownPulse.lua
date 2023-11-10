@@ -402,6 +402,7 @@ local ACDP_Icon_Idx = 1;
 
 
 local alert_start = {};
+local voicealert_start = {};
 
 local function ACDP_Alert(spell, type)
 	local currtime = GetTime();
@@ -419,12 +420,12 @@ local function ACDP_Alert(spell, type)
 
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
 
-		if voice_remap[name] and type ~= SPELL_TYPE_PET then
+		if voice_remap[name]  then
 			name = voice_remap[name];
 			bsound = true;
 		end
 		--print(name);
-		if ns.options.PlaySound and name and type ~= SPELL_TYPE_PET then
+		if ns.options.PlaySound and name  then
 			if (spell_cooldown[spell] and spell_cooldown[spell] >= ns.options.SoundCooldown) then
 				bsound = true;
 			end
@@ -443,7 +444,9 @@ local function ACDP_Alert(spell, type)
 		end
 	end
 
-	if bsound then
+	if bsound and (voicealert_start[name] == nil or voicealert_start[name] < currtime) then
+		--3초간 금지
+		voicealert_start[name] = currtime + 3;
 		if ns.options.EnableTTS then
 			C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback, CONFIG_SOUND_SPEED,
 				ns.options.SoundVolume);

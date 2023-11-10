@@ -1379,6 +1379,10 @@ local function initAlertList()
 			if (asCheckTalent("불타는 손길")) then
 				lowhealthpercent = 30;
 			end
+			
+			if (asCheckTalent("비전 폭격")) then
+				lowhealthpercent = 35;
+			end
 		end
 
 		if (englishClass == "HUNTER") then

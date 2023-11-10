@@ -162,6 +162,12 @@ local function ASAA_Insert(id)
 	if APB_SPELL2 and APB_SPELL2 == name then
 		return;
 	end
+
+	local isUsable = IsUsableSpell(id);
+
+	if not isUsable then
+		return;
+	end
 	
 	if show_icons[icon] == true then
 		return;
