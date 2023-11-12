@@ -8,8 +8,11 @@ local DAMAGE_COLOR = { 1, 0.1, 0.1 };
 local SPELL_DAMAGE_COLOR = { 0.79, 0.3, 0.85 };
 local DAMAGE_SHIELD_COLOR = { 1, 0.3, 0.3 };
 local SPLIT_DAMAGE_COLOR = { 1, 1, 1 }
+
 local function updateCVar ()
-	SetCVar("enableFloatingCombatText", 1);
+	if not InCombatLockdown() then
+		SetCVar("enableFloatingCombatText", 1);
+	end
 end
 
 local function init_combattext()

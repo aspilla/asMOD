@@ -1931,13 +1931,11 @@ local function asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken)
 end
 
 local bfirst = true;
+
 local function setupFriendlyPlates()
 	local isInstance, instanceType = IsInInstance();
-	if bfirst and not isInstance and not UnitAffectingCombat("player") then
-		C_Timer.After(0.5, function() C_NamePlate.SetNamePlateFriendlySize(60, 30); end)
-		--C_NamePlate.SetNamePlateEnemySize(ANameP_EmemyPlateSize[1], ANameP_EmemyPlateSize[2]);
-
-
+	if bfirst and not isInstance and not InCombatLockdown()  then
+		C_NamePlate.SetNamePlateFriendlySize(60, 30);
 		bfirst = false;
 	end
 end
@@ -1985,8 +1983,7 @@ local function ANameP_OnEvent(self, event, ...)
 		setupKnownSpell();
 		-- 0.5 초 뒤에 Load
 		C_Timer.After(0.5, initAlertList);
-
-		setupFriendlyPlates();
+		C_Timer.After(0.5, setupFriendlyPlates);
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
 		local _, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType =
 			CombatLogGetCurrentEventInfo();

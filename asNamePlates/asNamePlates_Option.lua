@@ -42,7 +42,7 @@ ANameP_Options_Default = {
         ["목조르기"] = { 1, 5 },
         ["파열"] = { 24 * 0.3, 4, true },
         ["혈폭풍"] = { 12 * 0.3, 3 },
-        
+
     },
 
     ANameP_ShowList_ROGUE_2 = {
@@ -65,14 +65,14 @@ ANameP_Options_Default = {
         ["사냥꾼의 징표"] = { 0, 5 },
         ["잠재된 독"] = { 8, 4, false, true },
         ["독사 쐐기"] = { 1, 3, true },
-        
+
     },
 
     ANameP_ShowList_HUNTER_3 = {
         ["사냥꾼의 징표"] = { 0, 5 },
         ["잠재된 독"] = { 8, 4, false, true },
         ["독사 쐐기"] = { 1, 3, true },
-        
+
     },
 
     ANameP_ShowList_MONK_1 = {
@@ -84,7 +84,7 @@ ANameP_Options_Default = {
     ANameP_ShowList_MONK_3 = {
         ["하늘탑"] = { 10, 5 },
         ["주학의 징표"] = { 0, 4, true },
-        ["암흑불길 저항력 약화"] = { 0, 3},         --시즌2
+        ["암흑불길 저항력 약화"] = { 0, 3 }, --시즌2
     },
 
     ANameP_ShowList_WARLOCK_1 = {
@@ -95,7 +95,7 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_WARLOCK_2 = {
-        ["파멸의 낙인"] = { 0, 5 },                 --시즌3
+        ["파멸의 낙인"] = { 0, 5 }, --시즌3
         ["사냥개조련사의 책략"] = { 0, 4, true },
     },
 
@@ -124,7 +124,7 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_SHAMAN_2 = {
-        ["채찍 화염"] = { 0, 5},
+        ["채찍 화염"] = { 0, 5 },
         ["화염 충격"] = { 1, 4, true },
     },
 
@@ -147,7 +147,7 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_DRUID_3 = {
-        ["달빛섬광"] = { 1, 5},
+        ["달빛섬광"] = { 1, 5 },
     },
 
 
@@ -161,7 +161,7 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_MAGE_2 = {
-        ["사르는 잿불"] = { 0, 5, true },       --시즌2
+        ["사르는 잿불"] = { 0, 5, true }, --시즌2
         ["작열"] = { 0, 4 },
     },
 
@@ -172,13 +172,13 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_DEATHKNIGHT_1 = {
-        ["잿빛 부패"] = { 0, 5 },               --시즌3
+        ["잿빛 부패"] = { 0, 5 }, --시즌3
         ["피의 역병"] = { 0, 4 },
-        
+
     },
 
     ANameP_ShowList_DEATHKNIGHT_2 = {
-        ["잔존하는 한기"] = { 0, 5, true },     --시즌2
+        ["잔존하는 한기"] = { 0, 5, true }, --시즌2
         ["서리 열병"] = { 0, 4 },
     },
 
@@ -316,10 +316,14 @@ local function SetupSliderOption(text, option)
     Slider:HookScript("OnValueChanged", function()
         ANameP_Options[option] = Slider:GetValue();
         Slider.Text:SetText(format("%.1f", max(ANameP_Options[option], 0)));
-        SetCVar("nameplateOverlapV", ANameP_Options[option]);
+        if not InCombatLockdown() then
+            SetCVar("nameplateOverlapV", ANameP_Options[option]);
+        end
     end)
     Slider:Show();
-    SetCVar("nameplateOverlapV", ANameP_Options[option]);
+    if not InCombatLockdown() then
+        SetCVar("nameplateOverlapV", ANameP_Options[option]);
+    end
 end
 
 local function ShowColorPicker(r, g, b, a, changedCallback)
@@ -655,11 +659,14 @@ local function SetupEditBoxOption()
 end
 
 
-
+local bfirst = true;
 ANameP_OptionM.SetupAllOption = function()
-    SetCVar("nameplateOverlapV", ANameP_Options["nameplateOverlapV"]);
-    if update_callback then
-        update_callback();
+    if bfirst and not InCombatLockdown() then
+        SetCVar("nameplateOverlapV", ANameP_Options["nameplateOverlapV"]);
+        if update_callback then
+            update_callback();
+        end
+        bfirst = false;
     end
 end
 
@@ -671,8 +678,6 @@ ANameP_OptionM.RegisterCallback = function(callback_func)
     update_callback = callback_func;
 end
 
-local needtowait = false;
-
 function panel:OnEvent(event, addOnName)
     if addOnName == "asNamePlates" then
         if ANameP_Options == nil then
@@ -683,19 +688,11 @@ function panel:OnEvent(event, addOnName)
         if ANameP_Options.version ~= ANameP_Options_Default.version then
             ANameP_Options = CopyTable(ANameP_Options_Default);
         end
-        if not UnitAffectingCombat("player") then
-            ANameP_OptionM.SetupAllOption();
-        else
-            needtowait = true;
-        end
+
+        ANameP_OptionM.SetupAllOption();
     elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
-        if not UnitAffectingCombat("player") then
-            ANameP_OptionM.SetupAllOption();
-        else
-            needtowait = true;
-        end
-    elseif event == "PLAYER_REGEN_ENABLED" and needtowait then
-        needtowait = false;
+        ANameP_OptionM.SetupAllOption();
+    elseif event == "PLAYER_REGEN_ENABLED" then
         ANameP_OptionM.SetupAllOption();
     end
 end

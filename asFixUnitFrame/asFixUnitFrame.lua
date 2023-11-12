@@ -35,11 +35,13 @@ local function HideTargetCastBar()
 end
 
 local function ShowAggro()
-    if ns.options.ShowAggro then
-        --TargetCastBar 를 숨긴다.
-        SetCVar("threatShowNumeric", "1");
-    else
-        SetCVar("threatShowNumeric", "0");
+    if not InCombatLockdown() then
+        if ns.options.ShowAggro then
+            --TargetCastBar 를 숨긴다.
+            SetCVar("threatShowNumeric", "1");
+        else
+            SetCVar("threatShowNumeric", "0");
+        end
     end
 end
 
@@ -442,7 +444,6 @@ local function OnEvent(self, event, ...)
         UpdateHealthBar("player");
         UpdateHealthBar("target");
         UpdateHealthBar("targettarget");
-        SetCVar("showTargetCastbar", "1");
     elseif event == "PLAYER_TARGET_CHANGED" then
         AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
         UpdateHealthBar("target");
@@ -456,7 +457,7 @@ local function OnEvent(self, event, ...)
 end
 
 local function OnUpdate()
-	if (UnitExists("target")) then
+    if (UnitExists("target")) then
         UpdateAuras();
     end
 end
@@ -471,7 +472,7 @@ local function OnInit()
     AFUF:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
 
     --주기적으로 Callback
-	C_Timer.NewTicker(0.2, OnUpdate);
+    C_Timer.NewTicker(0.2, OnUpdate);
 end
 
 OnInit();
