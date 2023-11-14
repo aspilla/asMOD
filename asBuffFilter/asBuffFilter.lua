@@ -638,16 +638,13 @@ end
 
 local function ABF_OnEvent(self, event, arg1, ...)
 	if (event == "PLAYER_TARGET_CHANGED") then
-		ABF_ClearFrame();
-		ABF:RegisterUnitEvent("UNIT_AURA", "target");
+		ABF_ClearFrame();		
 		UpdateAuras(nil, "target");
 	elseif (event == "UNIT_AURA") then
 		local unitAuraUpdateInfo = ...;
 		local unit = arg1;
 		if unit and unit == "player" then
 			UpdateAuras(nil, unit);
-		else
-			UpdateAuras(unitAuraUpdateInfo, unit);
 		end
 	elseif (event == "PLAYER_TOTEM_UPDATE") then
 		if activeBuffs["player"] == nil then
@@ -682,6 +679,12 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif (event == "PLAYER_LEAVING_WORLD") then
 		hasValidPlayer = false;
 	end
+end
+
+local function OnUpdate()
+	if (UnitExists("target")) then
+        UpdateAuras(nil, "target");
+    end
 end
 
 local function ABF_UpdateBuffAnchor(frames, index, offsetX, right, center, parent)
@@ -833,7 +836,6 @@ local function ABF_Init()
 
 
 	ABF:RegisterEvent("PLAYER_TARGET_CHANGED")
-	ABF_TARGET_BUFF:RegisterUnitEvent("UNIT_AURA", "target")
 	ABF_PLAYER_BUFF:RegisterUnitEvent("UNIT_AURA", "player");
 	ABF:RegisterEvent("PLAYER_ENTERING_WORLD");
 	ABF:RegisterEvent("PLAYER_LEAVING_WORLD");
@@ -855,6 +857,9 @@ local function ABF_Init()
 	ABF:SetScript("OnEvent", ABF_OnEvent)
 	ABF_TARGET_BUFF:SetScript("OnEvent", ABF_OnEvent)
 	ABF_PLAYER_BUFF:SetScript("OnEvent", ABF_OnEvent)
+
+	 --주기적으로 Callback
+	 C_Timer.NewTicker(0.2, OnUpdate);
 end
 
 ABF_Init();

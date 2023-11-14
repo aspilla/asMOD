@@ -869,10 +869,6 @@ local function APB_GetActionSlot(arg1)
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
 		if id and type and type == "macro" then
-			id = GetMacroSpell(id);
-		end
-
-		if id then
 			local name = GetSpellInfo(id);
 
 

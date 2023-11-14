@@ -1107,12 +1107,8 @@ local function ACI_GetActionSlot(arg1)
 
 	for lActionSlot = 1, 180 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
-
+	
 		if id and type and type == "macro" then
-			id = GetMacroSpell(id);
-		end
-
-		if id then
 			local name = GetSpellInfo(id);
 
 

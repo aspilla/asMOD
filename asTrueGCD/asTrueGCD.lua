@@ -77,7 +77,7 @@ local function scanActionSlots()
 
 
 		if id and type and type == "macro" then
-			id = GetMacroSpell(id);
+			id = id;
 		end
 
 		if type and type == "item" then

@@ -1,5 +1,5 @@
 ANameP_Options_Default = {
-    version = 231110,
+    version = 231115,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -17,8 +17,10 @@ ANameP_Options_Default = {
     ANameP_TankAggroLoseColor3 = { r = 0.1, g = 0.3, b = 1 }, -- 어그로가 Pet 일때 혹은 Tanking 중인데 어그로가 낮을때
     ANameP_LowHealthColor = { r = 1, g = 0.8, b = 0.5 },      -- 낮은 체력 이름표 색상 변경
     ANameP_DebuffColor = { r = 1, g = 0.5, b = 0 },           -- 디버프 걸렸을때 Color
+    ANameP_DebuffColor2 = { r = 0, g = 0.5, b = 1 },          -- 디버프 걸렸을때 Color
+    ANameP_DebuffColor3 = { r = 1, g = 0.5, b = 1 },      -- 디버프 걸렸을때 Color
     ANameP_QuestColor = { r = 1, g = 0.8, b = 0.5 },          -- Quest 몹 Color
-    ANameP_AutoMarkerColor = { r = 1, g = 0.5, b = 0.8 },     -- AutoMarker 몹 Color
+    ANameP_AutoMarkerColor = { r = 0.5, g = 1, b = 0.5 },     -- AutoMarker 몹 Color
 
     nameplateOverlapV = 0.7,                                  -- 이름표 상하 정렬
 
@@ -29,7 +31,7 @@ ANameP_Options_Default = {
     -- ["디법명"] = {알림 시간, 우선순위, 색상 변경 여부},
     -- 우선순위는 숫자가 큰 경우 우선적으로 보이고, 같을 경우 먼저 걸린 순서로 보임
     ANameP_ShowList_WARRIOR_1 = {
-        ["분쇄"] = { 1, 5, true },
+        ["분쇄"] = { 1, 5, 1 },
     },
 
     ANameP_ShowList_WARRIOR_2 = {
@@ -39,8 +41,8 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_ROGUE_1 = {
-        ["목조르기"] = { 1, 5 },
-        ["파열"] = { 24 * 0.3, 4, true },
+        ["목조르기"] = { 1, 5, 2 },
+        ["파열"] = { 24 * 0.3, 4, 1 },
         ["혈폭풍"] = { 12 * 0.3, 3 },
 
     },
@@ -50,28 +52,28 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_ROGUE_3 = {
-        ["파열"] = { 24 * 0.3, 5, true },
+        ["파열"] = { 24 * 0.3, 5, 1 },
     },
 
 
     ANameP_ShowList_HUNTER_1 = {
         ["사냥꾼의 징표"] = { 0, 5 },
-        ["날카로운 사격"] = { 1, 4, true },
-        ["잠재된 독"] = { 8, 3, false, true },
-        ["독사 쐐기"] = { 1, 2 },
+        ["날카로운 사격"] = { 1, 4, 1 },
+        ["잠재된 독"] = { 8, 3, 0, true },
+        ["독사 쐐기"] = { 1, 2, 2 },
     },
 
     ANameP_ShowList_HUNTER_2 = {
         ["사냥꾼의 징표"] = { 0, 5 },
-        ["잠재된 독"] = { 8, 4, false, true },
-        ["독사 쐐기"] = { 1, 3, true },
+        ["잠재된 독"] = { 8, 4, 2, true },
+        ["독사 쐐기"] = { 1, 3, 1 },
 
     },
 
     ANameP_ShowList_HUNTER_3 = {
         ["사냥꾼의 징표"] = { 0, 5 },
-        ["잠재된 독"] = { 8, 4, false, true },
-        ["독사 쐐기"] = { 1, 3, true },
+        ["잠재된 독"] = { 8, 4, 2, true },
+        ["독사 쐐기"] = { 1, 3, 1 },
 
     },
 
@@ -83,49 +85,49 @@ ANameP_Options_Default = {
 
     ANameP_ShowList_MONK_3 = {
         ["하늘탑"] = { 10, 5 },
-        ["주학의 징표"] = { 0, 4, true },
+        ["주학의 징표"] = { 0, 4, 1 },
         ["암흑불길 저항력 약화"] = { 0, 3 }, --시즌2
     },
 
     ANameP_ShowList_WARLOCK_1 = {
-        ["고통"] = { 1, 5, true },
+        ["고통"] = { 1, 5, 1 },
         ["불안정한 고통"] = { 1, 4 },
-        ["부패"] = { 1, 3 },
+        ["부패"] = { 1, 3, 2 },
         ["생명력 착취"] = { 1, 2 },
     },
 
     ANameP_ShowList_WARLOCK_2 = {
-        ["파멸의 낙인"] = { 0, 5 }, --시즌3
-        ["사냥개조련사의 책략"] = { 0, 4, true },
+        ["파멸의 낙인"] = { 0, 5, 2 }, --시즌3
+        ["사냥개조련사의 책략"] = { 0, 4, 1 },
     },
 
 
     ANameP_ShowList_WARLOCK_3 = {
-        ["제물"] = { 1, 5, true },
+        ["제물"] = { 1, 5, 1 },
     },
 
 
     ANameP_ShowList_PRIEST_1 = {
-        ["사악의 정화"] = { 1, 5, true },
-        ["어둠의 권능: 고통"] = { 1, 5, true },
+        ["사악의 정화"] = { 1, 5, 1 },
+        ["어둠의 권능: 고통"] = { 1, 5, 1 },
     },
 
     ANameP_ShowList_PRIEST_2 = {
-        ["어둠의 권능: 고통"] = { 1, 5, true },
+        ["어둠의 권능: 고통"] = { 1, 5, 1 },
     },
 
 
     ANameP_ShowList_PRIEST_3 = {
-        ["어둠의 권능: 고통"] = { 1, 5, true },
+        ["어둠의 권능: 고통"] = { 1, 5, 1 },
     },
 
     ANameP_ShowList_SHAMAN_1 = {
-        ["화염 충격"] = { 1, 5, true },
+        ["화염 충격"] = { 1, 5, 1 },
     },
 
     ANameP_ShowList_SHAMAN_2 = {
         ["채찍 화염"] = { 0, 5 },
-        ["화염 충격"] = { 1, 4, true },
+        ["화염 충격"] = { 1, 4, 1 },
     },
 
     ANameP_ShowList_SHAMAN_3 = {
@@ -134,14 +136,14 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_DRUID_1 = {
-        ["달빛섬광"] = { 1, 5, true },
-        ["태양섬광"] = { 1, 4 },
+        ["달빛섬광"] = { 1, 5, 1 },
+        ["태양섬광"] = { 1, 4, 2 },
         ["항성의 섬광"] = { 1, 3 },
     },
 
 
     ANameP_ShowList_DRUID_2 = {
-        ["갈퀴 발톱"] = { 12 * 0.3, 5, true },
+        ["갈퀴 발톱"] = { 12 * 0.3, 5, 1 },
         ["도려내기"] = { 19 * 0.3, 4 },
         ["달빛섬광"] = { 1, 3 },
     },
@@ -152,21 +154,21 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_DRUID_4 = {
-        ["달빛섬광"] = { 1, 5, true },
+        ["달빛섬광"] = { 1, 5, 1 },
     },
 
 
     ANameP_ShowList_MAGE_1 = {
-        ["빛나는 불꽃 약화"] = { 0, 5, true },
+        ["빛나는 불꽃 약화"] = { 0, 5, 1 },
     },
 
     ANameP_ShowList_MAGE_2 = {
-        ["사르는 잿불"] = { 0, 5, true }, --시즌2
+        ["사르는 잿불"] = { 0, 5, 1 }, --시즌2
         ["작열"] = { 0, 4 },
     },
 
     ANameP_ShowList_MAGE_3 = {
-        ["혹한의 추위"] = { 0, 5, true },
+        ["혹한의 추위"] = { 0, 5, 1 },
 
     },
 
@@ -178,33 +180,33 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_DEATHKNIGHT_2 = {
-        ["잔존하는 한기"] = { 0, 5, true }, --시즌2
+        ["잔존하는 한기"] = { 0, 5, 1 }, --시즌2
         ["서리 열병"] = { 0, 4 },
     },
 
     ANameP_ShowList_DEATHKNIGHT_3 = {
-        ["악성 역병"] = { 1, 4, true },
+        ["악성 역병"] = { 1, 4, 1 },
         ["고름 상처"] = { 0, 5 },
     },
 
 
     ANameP_ShowList_EVOKER_1 = {
-        ["불의 숨결"] = { 0, 5, true },
+        ["불의 숨결"] = { 0, 5, 1 },
     },
 
     ANameP_ShowList_EVOKER_2 = {
-        ["불의 숨결"] = { 0, 5, true },
+        ["불의 숨결"] = { 0, 5, 1 },
 
     },
 
     ANameP_ShowList_EVOKER_3 = {
 
-        ["시간의 상처"] = { 0, 5, true },
+        ["시간의 상처"] = { 0, 5, 1 },
     },
 
 
     ANameP_ShowList_PALADIN_1 = {
-        ["빛의 자락"] = { 0, 5, true },
+        ["빛의 자락"] = { 0, 5, 1 },
         ["무가치한 존재"] = { 0, 4 },
     },
 
@@ -213,11 +215,11 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_PALADIN_3 = {
-        ["심판"] = { 0, 5, true },
+        ["심판"] = { 0, 5, 1 },
     },
 
     ANameP_ShowList_DEMONHUNTER_1 = {
-        ["불타는 상처"] = { 0, 5, true },
+        ["불타는 상처"] = { 0, 5, 1 },
     },
 
     ANameP_ShowList_DEMONHUNTER_2 = {
@@ -451,7 +453,7 @@ local function SetupEditBoxOption()
 
         local spell = "";
         local time = 0;
-        local bshowcolor = 0;
+        local showcolor = 0;
         local bcount = 0;
 
         if prioritytable[idx] and type(prioritytable[idx]) == "table" then
@@ -459,9 +461,9 @@ local function SetupEditBoxOption()
             time = prioritytable[idx][2];
 
             if prioritytable[idx][3] then
-                bshowcolor = 1;
+                showcolor = prioritytable[idx][3];
             else
-                bshowcolor = 2;
+                showcolor = 0;
             end
 
             if prioritytable[idx][4] then
@@ -557,8 +559,10 @@ local function SetupEditBoxOption()
 
 
         local dropdownOptions = {
+            { text = "이름표색상없음", value = 0 },
             { text = "이름표색상변경", value = 1 },
-            { text = "이름표색상그대로", value = 2 },
+            { text = "이름표색상변경2", value = 2 },
+            
         }
 
         x = x + 130;
@@ -576,11 +580,11 @@ local function SetupEditBoxOption()
         local function updatedata()
             local newspell = editBox:GetText();
             local newtime = tonumber(editBox2:GetText());
-            local newbcolor = (UIDropDownMenu_GetSelectedValue(dropDown) == 1);
+            local newcolor = (UIDropDownMenu_GetSelectedValue(dropDown));
             local newbcount = (UIDropDownMenu_GetSelectedValue(dropDown2) == 1);
 
-            if newspell ~= "" and newtime ~= nil and newbcolor ~= nil and newbcount ~= nil then
-                prioritytable[idx] = { newspell, newtime, newbcolor, newbcount }
+            if newspell ~= "" and newtime ~= nil and newcolor >= 0 and newbcount ~= nil then
+                prioritytable[idx] = { newspell, newtime, newcolor, newbcount }
             end
         end
 
@@ -598,7 +602,7 @@ local function SetupEditBoxOption()
                 UIDropDownMenu_AddButton(info, level)
             end
         end);
-        UIDropDownMenu_SetSelectedValue(dropDown, bshowcolor);
+        UIDropDownMenu_SetSelectedValue(dropDown, showcolor);
 
         UIDropDownMenu_Initialize(dropDown2, function(self, level)
             for _, option in ipairs(dropdownOptions2) do
@@ -715,6 +719,8 @@ local function panelOnShow()
     SetupColorOption("[이름표 색상] 어그로 소환수", "ANameP_TankAggroLoseColor3");
     SetupColorOption("[이름표 색상] 낮은 체력", "ANameP_LowHealthColor");
     SetupColorOption("[이름표 색상] 디버프", "ANameP_DebuffColor");
+    SetupColorOption("[이름표 색상] 디버프2", "ANameP_DebuffColor2");
+    SetupColorOption("[이름표 색상] 디버프3", "ANameP_DebuffColor3");
     SetupColorOption("[이름표 색상] Quest", "ANameP_QuestColor");
     SetupColorOption("[이름표 색상] AutoMarker", "ANameP_AutoMarkerColor");
     SetupEditBoxOption();
@@ -735,3 +741,4 @@ panel:RegisterEvent("PLAYER_REGEN_ENABLED");
 panel:SetScript("OnEvent", panel.OnEvent)
 panel:SetScript("OnShow", panelOnShow)
 panel:SetScript("OnHide", panelOnHide);
+

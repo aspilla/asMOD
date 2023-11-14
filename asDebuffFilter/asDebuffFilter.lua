@@ -591,8 +591,7 @@ end
 
 function ADF_OnEvent(self, event, arg1, ...)
     if (event == "PLAYER_TARGET_CHANGED") then
-        ADF_ClearFrame();
-        --ADF_TARGET_DEBUFF:RegisterUnitEvent("UNIT_AURA", "target");
+        ADF_ClearFrame();        
         UpdateAuras(nil, "target");
     elseif (event == "UNIT_AURA") then
         
@@ -741,7 +740,6 @@ local function ADF_Init()
     end
 
     ADF:RegisterEvent("PLAYER_TARGET_CHANGED")
-    ADF_TARGET_DEBUFF:RegisterUnitEvent("UNIT_AURA", "target")
     ADF_PLAYER_DEBUFF:RegisterUnitEvent("UNIT_AURA", "player")
     ADF:RegisterEvent("PLAYER_ENTERING_WORLD");
     ADF:RegisterEvent("PLAYER_REGEN_DISABLED");

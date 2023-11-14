@@ -820,7 +820,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			table.sort(aShowIdx, Comparison);
 		end
 
-		self.debuffColor = nil;
+		self.debuffColor = 0;
 
 		for v = 1, aShowNum - 1 do
 			local i = aShowIdx[v][1];
@@ -832,7 +832,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			if ANameP_ShowList and ANameP_ShowList[name] then
 				showlist_time = ANameP_ShowList[name][1];
 				local alertcount = ANameP_ShowList[name][4] or false;
-				local alertnameplate = ANameP_ShowList[name][3] or false;
+				local alertnameplate = ANameP_ShowList[name][3] or 0;
 
 				if showlist_time == 1 then
 					showlist_time = duration * 0.3;
@@ -846,12 +846,15 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 						alert = true;
 					else
 						if alertnameplate then
-							self.debuffColor = true;
+							self.debuffColor = self.debuffColor + alertnameplate;
 						end
 					end
 				elseif showlist_time >= 0 and alertcount then
 					if (count >= showlist_time) then
 						alert = true;
+						if alertnameplate then
+							self.debuffColor = self.debuffColor + alertnameplate;
+						end
 					end
 				end
 			end
@@ -1093,7 +1096,7 @@ end
 
 local function isDangerousSpell(spellId)
 	if spellId and DangerousSpellList[spellId] then
-		if DangerousSpellList[spellId] == "interrupt"  then
+		if DangerousSpellList[spellId] == "interrupt" then
 			return true, true;
 		end
 		return true, false;
@@ -1249,12 +1252,21 @@ local function updateHealthbarColor(self)
 	end
 
 	-- Debuff Color
-	if self.debuffColor then
-		if self.colorlevel < ColorLevel.Debuff then
+	if self.debuffColor > 0 then
+		if self.colorlevel <= ColorLevel.Debuff then
 			self.colorlevel = ColorLevel.Debuff;
-			setColoronStatusBar(self, options.ANameP_DebuffColor.r, options.ANameP_DebuffColor.g,
-				options.ANameP_DebuffColor.b);
+			if self.debuffColor == 1 then
+				setColoronStatusBar(self, options.ANameP_DebuffColor.r, options.ANameP_DebuffColor.g,
+					options.ANameP_DebuffColor.b);
+			elseif self.debuffColor == 2 then
+				setColoronStatusBar(self, options.ANameP_DebuffColor2.r, options.ANameP_DebuffColor2.g,
+					options.ANameP_DebuffColor2.b);
+			elseif self.debuffColor > 2 then
+				setColoronStatusBar(self, options.ANameP_DebuffColor3.r, options.ANameP_DebuffColor3.g,
+					options.ANameP_DebuffColor3.b);
+			end
 		end
+
 		return;
 	else
 		if self.colorlevel == ColorLevel.Debuff then
@@ -1379,7 +1391,7 @@ local function initAlertList()
 			if (asCheckTalent("불타는 손길")) then
 				lowhealthpercent = 30;
 			end
-			
+
 			if (asCheckTalent("비전 폭격")) then
 				lowhealthpercent = 35;
 			end
@@ -1500,7 +1512,7 @@ local function removeNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_SPELLCAST_FAILED");
 		namePlateFrameBase.asNamePlates:SetScript("OnEvent", nil);
 		namePlateFrameBase.asNamePlates.r = nil;
-		namePlateFrameBase.asNamePlates.debuffColor = nil;
+		namePlateFrameBase.asNamePlates.debuffColor = 0;
 		namePlateFrameBase.asNamePlates.castspellid = nil;
 		namePlateFrameBase.asNamePlates.BarColor:Hide();
 		namePlateFrameBase.asNamePlates.BarColor = nil;
@@ -1582,7 +1594,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.isshown = nil;
 	namePlateFrameBase.asNamePlates.originalcolor = { r = healthbar.r, g = healthbar.g, b = healthbar.b };
 	namePlateFrameBase.asNamePlates.checkcolor = false;
-	namePlateFrameBase.asNamePlates.debuffColor = nil;
+	namePlateFrameBase.asNamePlates.debuffColor = 0;
 
 	namePlateFrameBase.asNamePlates:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
 	namePlateFrameBase.asNamePlates:UnregisterEvent("PLAYER_TARGET_CHANGED");
@@ -1934,7 +1946,7 @@ local bfirst = true;
 
 local function setupFriendlyPlates()
 	local isInstance, instanceType = IsInInstance();
-	if bfirst and not isInstance and not InCombatLockdown()  then
+	if bfirst and not isInstance and not InCombatLockdown() then
 		C_NamePlate.SetNamePlateFriendlySize(60, 30);
 		bfirst = false;
 	end
@@ -2077,14 +2089,12 @@ local function scanDBM()
 	DangerousSpellList = {};
 	if DBMobj.Mods then
 		for i, mod in ipairs(DBMobj.Mods) do
-
 			if mod.announces then
 				for k, obj in pairs(mod.announces) do
 					if obj.spellId and obj.announceType then
 						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
-                            DangerousSpellList[obj.spellId] = obj.announceType;
-                        end		
-						
+							DangerousSpellList[obj.spellId] = obj.announceType;
+						end
 					end
 				end
 			end
@@ -2093,13 +2103,11 @@ local function scanDBM()
 				for k, obj in pairs(mod.specwarns) do
 					if obj.spellId and obj.announceType then
 						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
-                            DangerousSpellList[obj.spellId] = obj.announceType;
-                        end		
+							DangerousSpellList[obj.spellId] = obj.announceType;
+						end
 					end
 				end
 			end
-
-			
 		end
 	end
 end
