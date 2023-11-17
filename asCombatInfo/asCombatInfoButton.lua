@@ -2,6 +2,7 @@ local _, ns = ...;
 
 ns.Button = {
     type = nil,
+    realspell = nil,
     spell = nil,
     unit = nil,
     spellid = nil,
@@ -40,6 +41,25 @@ function ns.Button:initButton()
     self.spellcool = 0;
     self.count = nil;
     self.buffalert = false;
+    self.alert2 = false;
+
+    local spellid = select(7, GetSpellInfo(self.spell));
+    local name = select(1, GetSpellInfo(self.spell));
+
+    if spellid == nil then
+        spellid = select(7, GetSpellInfo(self.realspell));
+        name = select(1, GetSpellInfo(self.realspell));
+    end
+
+    if spellid and spellid ~= self.spellid then
+        self.spellid = spellid;
+        ACI_SpellID_list[self.spellid] = true;
+        if name then
+            ACI_SpellID_list[name] = true;
+        end
+    end
+
+    
 end
 
 function ns.Button:checkTotem()
@@ -158,9 +178,7 @@ function ns.Button:checkBuffList()
     end
 
     if count > 2 then
-        self.alert = true;
-    else
-        self.alert = false;
+        self.alert2 = true;
     end
 
     if count >= 1 then
@@ -259,6 +277,9 @@ function ns.Button:checkBuff()
                     self.spellcool = math.ceil(remain);
                 end
             end
+            if self.count == nil and charges and charges > 0 and maxCharges and maxCharges > 1 then
+                self.count = charges;                
+            end
         end
     end
 end
@@ -269,15 +290,15 @@ function ns.Button:checkSpell()
     end
 
 
-    local spellid                                                         = self.spellid;
-    local action                                                          = self.action;
+    local spellid                                          = self.spellid;
+    local action                                           = self.action;
 
-    local _, _, icon                                                      = GetSpellInfo(spellid)
-    local start, duration, enable                                         = GetSpellCooldown(spellid);
-    local isUsable, notEnoughMana                                         = IsUsableSpell(spellid);
-    local charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetSpellCharges(spellid);
-    local count                                                           = charges;
-    local _, gcd                                                          = GetSpellCooldown(61304);
+    local _, _, icon                                       = GetSpellInfo(spellid)
+    local start, duration, enable                          = GetSpellCooldown(spellid);
+    local isUsable, notEnoughMana                          = IsUsableSpell(spellid);
+    local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellid);
+    local count                                            = charges;
+    local _, gcd                                           = GetSpellCooldown(61304);
 
     if count == 1 and (not maxCharges or maxCharges <= 1) then
         count = 0;
@@ -286,7 +307,7 @@ function ns.Button:checkSpell()
     if not count or count == 0 then
         if action then
             count = GetActionCount(action);
-            charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetActionCharges(action);
+            charges, maxCharges, chargeStart, chargeDuration = GetActionCharges(action);
         end
     end
 
@@ -315,21 +336,21 @@ function ns.Button:checkSpell()
         if self.number == 1 then
             if isUsable then
                 --마격
-                self.alert = true;
+                self.alert2 = true;            
             end
-        else
+        elseif self.number > 10 then
             if UnitHealth("target") and UnitHealthMax("target") > 0 and UnitHealth("target") > 0 then
                 local health = UnitHealth("target") / UnitHealthMax("target") * 100
 
                 if health <= self.number then
-                    self.alert = true;
-                else
-                    self.alert = false;
+                    self.alert2 = true;
+                else     
                     isUsable = false;
+                
                 end
-            else
-                self.alert = false;
+            else 
                 isUsable = false;
+                
             end
         end
     end
@@ -358,7 +379,7 @@ function ns.Button:checkSpell()
     self.duration = duration;
     self.enable = false;
 
-    if count and count > 0 then
+    if count and count > 0 then        
         self.count = count;
     end
 
@@ -366,10 +387,10 @@ function ns.Button:checkSpell()
         for _, buff in pairs(self.alertbufflist) do
             local aura = ns.aurafunctions.checkAura(self.unit, buff);
             if aura and (aura.expirationTime - GetTime()) > gcd then
-                self.alert = true;
+                self.alert2 = true;
                 break;
             end
-        end
+        end        
     end
 end
 
@@ -481,6 +502,8 @@ function ns.Button:showButton()
 
     if self.buffalert then
         ns.lib.PixelGlow_Start(frame, { 0.5, 1, 0.5 });
+    elseif self.alert2 then
+        ns.lib.PixelGlow_Start(frame, { 0.7, 0.7, 1 });
     elseif self.alert then
         ns.lib.PixelGlow_Start(frame);
     else
@@ -527,6 +550,7 @@ local function GetActionSlot(arg1)
 end
 
 function ns.Button:init(config, frame)
+    self.realspell = config[1];
     self.spell = select(1, GetSpellInfo(config[1]));
     self.type = config[2];
     self.unit = config[3];
@@ -538,10 +562,16 @@ function ns.Button:init(config, frame)
     self.alertbufflist = config[9];
     self.spellid = select(7, GetSpellInfo(self.spell));
     if self.spellid == nil then
-        self.spellid = select(7, GetSpellInfo(config[1]));
+        self.spellid = select(7, GetSpellInfo(self.realspell));
     end
+
+    if self.spell == nil then
+        return;
+    end
+
     self.frame = frame;
     self.action = GetActionSlot(self.spell);
+    self.inRange = true;
 
     if self.unit == nil then
         if self.type == ns.EnumButtonType.Debuff or self.type == ns.EnumButtonType.DebuffOnly then
@@ -553,7 +583,8 @@ function ns.Button:init(config, frame)
 
     if self.type ~= ns.EnumButtonType.BuffOnly and self.type ~= ns.EnumButtonType.DebuffOnly then
         ACI_SpellID_list[self.spell] = true;
-        ns.eventhandler.registerEvent(self.spell, self);
+        ACI_SpellID_list[self.spellid] = true;
+        ns.eventhandler.registerEventFilter(self.spell, self);
     end
     if self.type == ns.EnumButtonType.Debuff or self.type == ns.EnumButtonType.DebuffOnly then
         ACI_Debuff_list[self.spell] = true;

@@ -189,14 +189,14 @@ local function ABF_OnEvent(self, event, arg1, ...)
         UpdateTotem();
     elseif (event == "PLAYER_TARGET_CHANGED") then
         UpdateAuras("target");
-    elseif (event == "ACTIONBAR_UPDATE_COOLDOWN") then
+    elseif (event == "ACTIONBAR_UPDATE_COOLDOWN" or event == "ACTIONBAR_UPDATE_USABLE") then
         -- call back
         for _, button in pairs(actionfilter) do
             button:update();
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
         local spell = GetSpellInfo(arg1);
-        if eventfilter[spell] then
+        if eventfilter[spell] then            
             local button = eventfilter[spell];
             button.alert = true;
             button:update();
@@ -221,6 +221,8 @@ local function ABF_OnEvent(self, event, arg1, ...)
             end
             button:update();
         end
+    elseif event == "PLAYER_ENTERING_WORLD" then
+
     end
 end
 
@@ -237,10 +239,12 @@ do
     eventframe:RegisterUnitEvent("UNIT_AURA", "player", "pet");
     eventframe:RegisterEvent("PLAYER_TARGET_CHANGED");
     eventframe:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
+    eventframe:RegisterEvent("ACTIONBAR_UPDATE_USABLE");
     eventframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
     eventframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
-    eventframe:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");
+    eventframe:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");    
     eventframe:RegisterEvent("PLAYER_TOTEM_UPDATE");
+    eventframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 
     eventframe:SetScript("OnEvent", ABF_OnEvent)
 
@@ -262,17 +266,17 @@ end
 
 function ns.eventhandler.registerAura(unit, spell)
     if unit == nil then
-
-    else
-        if aurafilter[unit] == nil then
-            aurafilter[unit] = {};
-        end
-
-        aurafilter[unit][spell] = true;
+        return;
     end
+    if aurafilter[unit] == nil then
+        aurafilter[unit] = {};
+    end
+
+    aurafilter[unit][spell] = true;
+    UpdateAuras(unit);
 end
 
-function ns.eventhandler.registerEvent(spell, button)
+function ns.eventhandler.registerEventFilter(spell, button)
     eventfilter[spell] = button;
 end
 

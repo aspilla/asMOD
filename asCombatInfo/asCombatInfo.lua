@@ -59,8 +59,6 @@ local function setupMouseOver(frame)
 end
 
 
-local bfirst = false;
-
 local function ACI_OnEvent(self, event, arg1, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		C_Timer.After(0.5, ACI_Init);
@@ -96,12 +94,8 @@ local function ACI_OnEvent(self, event, arg1, ...)
 				ACI[i]:SetAlpha(ACI_Alpha_Normal);
 			end
 		end
-	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
+	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED"   then
 		C_Timer.After(0.5, ACI_Init);
-		bfirst = true;
-	elseif event == "ACTIONBAR_SLOT_CHANGED" and bfirst then
-		C_Timer.After(0.5, ACI_Init);
-		bfirst = false;
 	end
 end
 
@@ -281,7 +275,7 @@ end
 
 local function flushoption()
 	if ACI_Options then
-		options = CopyTable(ACI_Options);
+		options = CopyTable(ACI_Options);		
 		ACI_Init();
 		ACI_OptionM.UpdateSpellList(ACI_SpellList);
 	end
@@ -296,7 +290,6 @@ ACI_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 ACI_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 ACI_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 ACI_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
-ACI_mainframe:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
 ACI_mainframe:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
 ACI_mainframe:RegisterUnitEvent("UNIT_EXITING_VEHICLE", "player")
 
@@ -335,6 +328,7 @@ for i = 6, 11 do
 	ACI[i]:SetAlpha(ACI_Alpha);
 	ACI[i]:EnableMouse(false);
 	ACI[i]:Hide();
+	ACI[i].obutton = ns.Button:new();
 end
 
 for i = 6, 11 do

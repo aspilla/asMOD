@@ -3,16 +3,16 @@ local _, ns = ...;
 local version = select(4, GetBuildInfo());
 
 ns.EnumButtonType = EnumUtil.MakeEnum(
-    "Spell",
-    "Buff",
-    "BuffOnly",
-    "Debuff",
-    "DebuffOnly",
-    "Totem"
+	"Spell",
+	"Buff",
+	"BuffOnly",
+	"Debuff",
+	"DebuffOnly",
+	"Totem"
 );
 
 ACI_Options_Default = {
-	version = 231117,
+	version = 231118,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -36,7 +36,7 @@ ACI_Options_Default = {
 		{ "휩쓸기 일격", 2 },
 		{ "필사의 일격", 1, nil, nil, "제압" },
 		{ "거인의 강타", 1 },
-		{ "마무리 일격", 1, nil, 1 },
+		{ "마무리 일격", 1},
 		{ "분쇄", 4, nil, 1 },
 
 	},
@@ -47,7 +47,7 @@ ACI_Options_Default = {
 		{ 99, "파멸자", { 335077, 3 }, { "분노의 강타", 1 } },
 		{ "피의 갈증", 1, nil, nil, "끓어오르는 피의 갈증" },
 		{ "무모한 희생", 2 },
-		{ "마무리 일격", 1, nil, 1 },
+		{ "마무리 일격", 1},
 		{ 99, "맹공", { "맹공", 1 }, { "오딘의 격노", 1 } },
 
 
@@ -73,11 +73,11 @@ ACI_Options_Default = {
 	},
 
 	ACI_SpellList_ROGUE_2 = {
-		{ "뼈주사위", 2, nil, 5, nil, nil, nil, {"집중 공격","무자비한 정밀함","해적 징표","진방위","대난투", "숨겨진 보물"}},
+		{ "뼈주사위", 2, nil, 5, nil, nil, nil, { "집중 공격", "무자비한 정밀함", "해적 징표", "진방위", "대난투", "숨겨진 보물" } },
 		{ 195627, 3, nil, 20 },
 		{ "아드레날린 촉진", 2 },
 		{ "폭풍의 칼날", 2 },
-		{ "미간 적중", 1, nil, nil, nil, nil, nil, nil, {"기만", "어둠의 춤"}},
+		{ "미간 적중", 1, nil, nil, nil, nil, nil, nil, { "기만", "어둠의 춤" } },
 	},
 
 	--잠행
@@ -100,7 +100,7 @@ ACI_Options_Default = {
 
 	--사격
 	ACI_SpellList_HUNTER_2 = {
-		{ 99, "꾸준한 집중", { 193533, 3}, { "폭발 사격", 1 } },
+		{ 99, "꾸준한 집중", { 193533, 3 }, { "폭발 사격", 1 } },
 		{ "속사", 1 },
 		{ "정조준", 2, nil, nil, "윈드러너의 인도" },
 		{ "마무리 사격", 1 },
@@ -112,17 +112,17 @@ ACI_Options_Default = {
 		{ "야생불 폭탄", 1 },
 		{ "살상 명령", 1, nil, nil, "창끝" },
 		{ 99, "협공", { "협공", 2 }, { "측방 강타", 1 } },
-		{ "마무리 사격", 1 },
+		{ "마무리 사격", 1},
 		{ "독사 쐐기", 4, nil, 1 },
 	},
 
 	--비전
 	ACI_SpellList_MAGE_1 = {
-		{ "비전의 여파", 4},
+		{ "비전의 여파", 4 },
 		{ "비전 보주", 1 },
 		{ "비전 쇄도", 2 },
 		{ 99, "빛나는 불꽃", { "빛나는 불꽃", 4, nil, nil, nil, "빛나는 불꽃 약화" },
-			{ 332769, 3} },
+			{ 332769, 3 } },
 		{ "황천의 폭풍우", 4 },
 	},
 
@@ -146,10 +146,10 @@ ACI_Options_Default = {
 
 	--신성
 	ACI_SpellList_PALADIN_1 = {
-		{ "천벌의 망치", 1 },
+		{ 99, "신성한 반사", { "신성한 반사", 1 }, { "빛의 망치", 1 } },
 		{ "성전사의 일격", 1 },
 		{ "응징의 격노", 2 },
-		{ 99, "신성한 반사", { "신성한 반사", 1 }, { "빛의 망치", 1 } },
+		{ "천벌의 망치", 1 },
 		{ "심판", 4, nil, nil, nil, "무가치한 존재" },
 	},
 
@@ -197,7 +197,7 @@ ACI_Options_Default = {
 		{ "파멸의 역병", 4 },
 		{ 99, "공허의 격류", { "공허의 격류", 1 }, { "어둠의 권능: 고통", 4, nil, 1 } },
 		{ 99, "공허 방출", { "공허 방출", 1 }, { "어둠의 승천", 2 } },
-		{ "어둠의 권능: 죽음", 1, nil,nil,  "죽음의 고통" },
+		{ "어둠의 권능: 죽음", 1, nil, nil, "죽음의 고통" },
 		{ "흡혈의 손길", 4, nil, 1 },
 	},
 
@@ -215,7 +215,7 @@ ACI_Options_Default = {
 	--냉기
 	ACI_SpellList_DEATHKNIGHT_2 = {
 		{ "죽음과 부패", 2, nil, nil, nil, "죽음과 부패" },
-		{ 99, "몰아치는 한기", { "몰아치는 한기", 2, nil, nil, nil, "싸늘한 분노" }, { 377195, 3, "player" } },
+		{ 99, "영혼 수확자", {"영혼 수확자", 1, nil, 35}, { "몰아치는 한기", 2, nil, nil, nil, "싸늘한 분노" }},
 		{ "얼음 기둥", 2 },
 		{ "냉혹한 겨울", 2 },
 		{ "울부짖는 한파", 4, nil, nil, nil, "서리 열병" },
@@ -225,7 +225,7 @@ ACI_Options_Default = {
 	--부정
 	ACI_SpellList_DEATHKNIGHT_3 = {
 		{ "죽음과 부패", 2, nil, nil, nil, "죽음과 부패" },
-		{ 99, "부정의 습격", { "부정의 습격", 2 }, { "룬 무기 강화", 2 } },
+		{ 99, "영혼 수확자", {"영혼 수확자", 1, nil, 35}, { "부정의 습격", 2 }},
 		{ "어둠의 변신", 2, "pet" },
 		{ "돌발 열병", 4, nil, 1, nil, "악성 역병" },
 		{ "고름 일격", 4, nil, 0, nil, "고름 상처" },
@@ -233,7 +233,7 @@ ACI_Options_Default = {
 
 	--양조
 	ACI_SpellList_MONK_1 = {
-		{ 99, "비취 돌풍", { "비취 돌풍", 2 }, { 322120, 3} },
+		{ 99, "비취 돌풍", { "비취 돌풍", 2 }, { 322120, 3 } },
 		{ "해오름차기", 1 },
 		{ "맥주통 휘두르기", 1 },
 		{ "후려차기", 1 },
@@ -267,7 +267,7 @@ ACI_Options_Default = {
 		{ "달빛섬광", 4, nil, 1 },
 		{ 99, "엘룬의 분노", { "엘룬의 분노", 1 }, { "초승달", 1 } },
 		{ "천체의 정렬", 2, nil, nil, "태고의 비전 맥동" },
-		{ 99, "항성의 섬광", { "항성의 섬광", 4, nil, 1 }, { 202345, 3, "player" } },
+		{ 99, "항성의 섬광", { "항성의 섬광", 4, nil, 1 }, { 202345, 3 } },
 		{ "태양섬광", 4, nil, 1 },
 	},
 
@@ -304,7 +304,7 @@ ACI_Options_Default = {
 	ACI_SpellList_SHAMAN_1 = {
 		{ 99, "폭풍수호자", { "폭풍수호자", 2 }, { 16166, 3, "player" } },
 		{ "용암 폭발", 1 },
-		{ 99, "폭풍의 정령", { "폭풍의 정령", 6,nil, nil, nil,  "상급 폭풍의 정령" }, { "불의 정령", 11,
+		{ 99, "폭풍의 정령", { "폭풍의 정령", 6, nil, nil, nil, "상급 폭풍의 정령" }, { "불의 정령", 11,
 			"상급 불의 정령" } },
 		{ 99, "얼음격노", { "얼음격노", 2 }, { "태고의 파도", 2 } },
 		{ "화염 충격", 4, nil, 1 },
@@ -334,7 +334,7 @@ ACI_Options_Default = {
 	--고통
 	ACI_SpellList_WARLOCK_1 = {
 
-		{ 99, "생명력 착취", { "생명력 착취", 4, nil, 1 }, { "암흑시선 소환", 6, nil, nil,nil,"암흑시선" } },
+		{ 99, "생명력 착취", { "생명력 착취", 4, nil, 1 }, { "암흑시선 소환", 6, nil, nil, nil, "암흑시선" } },
 		{ "유령 출몰", 4 },
 		{ "불안정한 고통", 4, nil, 1 },
 		{ "부패", 4, nil, 1 },
@@ -389,7 +389,7 @@ ACI_Options_Default = {
 
 	--황폐
 	ACI_SpellList_EVOKER_1 = {
-		{ 99, "불태움", { 375802, 3}, { "깊은 숨결", 1 } },
+		{ 99, "불태움", { 375802, 3 }, { "깊은 숨결", 1 } },
 		{ 99, "산산이 부서지는 별", { "산산이 부서지는 별", 4 }, { "기염", 1 } },
 		{ "용의 분노", 2 },
 		{ "영원의 쇄도", 1 },
@@ -531,7 +531,7 @@ local function SetupEditBoxOption()
 			initselect = values[2];
 		elseif values and type(values) == "table" and values[1] ~= nil then
 			initdata = values[1];
-			initselect = 4;
+			initselect = 6;
 		end
 
 		local editBox = CreateFrame("EditBox", nil, scrollChild)
@@ -580,8 +580,10 @@ local function SetupEditBoxOption()
 		local dropdownOptions = {
 			{ text = "스펠", value = 1 },
 			{ text = "버프", value = 2 },
-			{ text = "디버프", value = 3 },
-			{ text = "기본 설정 사용", disabled = true, value = 4 },
+			{ text = "버프(숫자)", disabled = true , value = 3 },						
+			{ text = "디버프", value = 4 },
+			{ text = "디버프(숫자)", disabled = true , value = 5 },						
+			{ text = "기본 설정 사용", disabled = true, value = 6 },
 
 		}
 
@@ -590,24 +592,20 @@ local function SetupEditBoxOption()
 
 			local type = UIDropDownMenu_GetSelectedValue(dropDown);
 
-			if data ~= "" and type > 0 and type < 4 then
+			if data ~= "" and type > 0 and type <= 4 then
 				ACI_Options[spec][configID][idx] = {};
 
 				local number = tonumber(data);
-				ACI_Options[spec][configID][idx][10] = true;
+				ACI_Options[spec][configID][idx][10] = true;				
 				if number then
 					ACI_Options[spec][configID][idx][1] = number;
-					ACI_Options[spec][configID][idx][2] = tonumber(type) + 5;
+					ACI_Options[spec][configID][idx][2] = tonumber(type) + 1;
 				else
 					data = tostring(data);
 					ACI_Options[spec][configID][idx][1] = data;
-					if type == 3 then
-						ACI_Options[spec][configID][idx][2] = 4;
-					else
-						ACI_Options[spec][configID][idx][2] = tonumber(type);
-					end
+					ACI_Options[spec][configID][idx][2] = tonumber(type);				
 				end
-				if update_callback then
+				if update_callback then					
 					update_callback();
 				end
 			end

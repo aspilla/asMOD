@@ -1374,10 +1374,13 @@ local function APB_CheckPower(self)
 	APB_SPELL2 = nil;
 	APB_ACTION = nil;
 	APB_ACTION2 = nil;
+	inrange = true;
+	inrange2 = true;
 	APB_UNIT_POWER = nil;
 	APB_POWER_LEVEL = nil;
 	APB_BUFF_COMBO = nil;
 	APB_DEBUFF_COMBO = nil
+
 
 
 	APB.bar:Hide();
@@ -2448,7 +2451,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 
 		C_Timer.After(0.5, APB_CheckPower);
 		C_Timer.After(0.5, APB_UpdatePower);
-	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or event == "ACTIVE_TALENT_GROUP_CHANGED" then
+	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or event == "ACTIVE_TALENT_GROUP_CHANGED"  then		
 		C_Timer.After(0.5, APB_CheckPower);
 		C_Timer.After(0.5, APB_UpdatePower);
 	elseif event == "SPELLS_CHANGED" then
@@ -2513,9 +2516,9 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 			end
 		elseif APB_ACTION2 and APB_ACTION2 == action then
 			if (checksRange and not inRange) then
-				inrange = false;
+				inrange2 = false;
 			else
-				inrange = true;
+				inrange2 = true;
 			end
 		end
 
@@ -2733,7 +2736,7 @@ do
 	APB:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
 	APB:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
 	APB:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
-	APB:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");
+	APB:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");	
 	APB:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player");
 	APB:RegisterUnitEvent("UNIT_EXITING_VEHICLE", "player");
 

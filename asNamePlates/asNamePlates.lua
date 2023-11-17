@@ -1419,6 +1419,12 @@ local function initAlertList()
 		if (englishClass == "PALADIN") then
 			lowhealthpercent = 20;
 		end
+
+		if (englishClass == "DEATHKNIGHT") then
+			if (asCheckTalent("영혼 수확자")) then
+				lowhealthpercent = 35;			
+			end
+		end
 	end
 end
 
