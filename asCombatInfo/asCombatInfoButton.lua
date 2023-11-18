@@ -21,7 +21,8 @@ ns.Button = {
     duration = 0,
     enable = false,
     reversecool = false,
-    spellcool = 0,
+    spellcool = nil,
+    spellcoolColor = { r = 0.8, g = 0.8, b = 1 },
     count = nil,
     buffalert = false,
     bufflist = {},
@@ -38,7 +39,8 @@ function ns.Button:initButton()
     self.duration = 0;
     self.enable = false;
     self.reversecool = false;
-    self.spellcool = 0;
+    self.spellcool = nil;
+    self.spellcoolColor = { r = 0.8, g = 0.8, b = 1 };
     self.count = nil;
     self.buffalert = false;
     self.alert2 = false;
@@ -58,8 +60,6 @@ function ns.Button:initButton()
             ACI_SpellID_list[name] = true;
         end
     end
-
-    
 end
 
 function ns.Button:checkTotem()
@@ -110,21 +110,6 @@ function ns.Button:checkTotem()
             color = { r = 1, g = 0, b = 0 };
         end
         self.borderColor = color;
-
-        if self.spellid then
-            local spellstart, spellduration = GetSpellCooldown(self.spellid);
-            local charges, maxCharges = GetSpellCharges(self.spellid);
-
-            if spellduration and (charges == nil or charges == 0) then
-                local _, gcd = GetSpellCooldown(61304);
-                local ex = spellduration + spellstart;
-                local remain = ex - GetTime();
-
-                if spellduration > gcd and (ex < expirationTime + 10) then
-                    self.spellcool = math.ceil(remain);
-                end
-            end
-        end
     end
 end
 
@@ -183,20 +168,6 @@ function ns.Button:checkBuffList()
 
     if count >= 1 then
         self.count = count;
-        if (t ~= ns.EnumButtonType.DebuffOnly and t ~= ns.EnumButtonType.BuffOnly) and self.spellid then
-            local spellstart, spellduration = GetSpellCooldown(self.spellid);
-            local charges, maxCharges = GetSpellCharges(self.spellid);
-
-            if spellduration and (charges == nil or charges == 0) then
-                local _, gcd = GetSpellCooldown(61304);
-                local ex = spellduration + spellstart;
-                local remain = ex - GetTime();
-
-                if spellduration > gcd and (ex < extemp + 10) then
-                    self.spellcool = math.ceil(remain);
-                end
-            end
-        end
     end
 end
 
@@ -263,22 +234,40 @@ function ns.Button:checkBuff()
             end
         end
         self.borderColor = color;
+    end
+end
 
-        if (t ~= ns.EnumButtonType.DebuffOnly and t ~= ns.EnumButtonType.BuffOnly) and self.spellid then
-            local spellstart, spellduration = GetSpellCooldown(self.spellid);
-            local charges, maxCharges = GetSpellCharges(self.spellid);
+function ns.Button:checkSpellCoolInBuff()
+    if not self.icon and self.start and self.duration then
+        return;
+    end
 
-            if spellduration and (charges == nil or charges == 0) then
-                local _, gcd = GetSpellCooldown(61304);
-                local ex = spellduration + spellstart;
-                local remain = ex - GetTime();
+    local t = self.type;
 
-                if spellduration > gcd and (ex < aura.expirationTime + 10) then
-                    self.spellcool = math.ceil(remain);
-                end
+
+    if (t ~= ns.EnumButtonType.DebuffOnly and t ~= ns.EnumButtonType.BuffOnly) and self.spellid then
+        local spellstart, spellduration = GetSpellCooldown(self.spellid);
+        local charges, maxCharges = GetSpellCharges(self.spellid);
+
+        if spellduration and (charges == nil or charges == 0) then
+            local _, gcd = GetSpellCooldown(61304);
+            local ex = spellduration + spellstart;
+            local remain = ex - GetTime();
+
+            if spellduration > gcd then
+                self.spellcool = math.ceil(remain);
             end
-            if self.count == nil and charges and charges > 0 and maxCharges and maxCharges > 1 then
-                self.count = charges;                
+        end
+
+        local isUsable, notEnoughMana = IsUsableSpell(self.spellid);
+
+        if self.spellcool == nil then
+            if self.inRange == false and isUsable then
+                self.spellcool = "●"
+                self.spellcoolColor = { r = 0.8, g = 0, b = 0 };
+            elseif not isUsable then
+                self.spellcool = "●"
+                self.spellcoolColor = { r = 0.3, g = 0.3, b = 0.3 };
             end
         end
     end
@@ -336,7 +325,7 @@ function ns.Button:checkSpell()
         if self.number == 1 then
             if isUsable then
                 --마격
-                self.alert2 = true;            
+                self.alert2 = true;
             end
         elseif self.number > 10 then
             if UnitHealth("target") and UnitHealthMax("target") > 0 and UnitHealth("target") > 0 then
@@ -344,13 +333,11 @@ function ns.Button:checkSpell()
 
                 if health <= self.number then
                     self.alert2 = true;
-                else     
+                else
                     isUsable = false;
-                
                 end
-            else 
+            else
                 isUsable = false;
-                
             end
         end
     end
@@ -379,7 +366,7 @@ function ns.Button:checkSpell()
     self.duration = duration;
     self.enable = false;
 
-    if count and count > 0 then        
+    if count and count > 0 then
         self.count = count;
     end
 
@@ -390,7 +377,7 @@ function ns.Button:checkSpell()
                 self.alert2 = true;
                 break;
             end
-        end        
+        end
     end
 end
 
@@ -472,8 +459,9 @@ function ns.Button:showButton()
         frameCooldown:Hide();
     end
 
-    if self.spellcool > 0 then
-        frameSpellCool.spellcool:SetText(self.spellcool)
+    if self.spellcool then
+        frameSpellCool.spellcool:SetText(self.spellcool);
+        frameSpellCool.spellcool:SetVertexColor(self.spellcoolColor.r, self.spellcoolColor.g, self.spellcoolColor.b);
         frameSpellCool.spellcool:Show();
         frameSpellCool:Show();
     else
@@ -516,19 +504,21 @@ function ns.Button:update()
     self:checkTotem();
     self:checkBuffList();
     self:checkBuff();
+    self:checkSpellCoolInBuff();
     self:checkSpell();
     self:checkCount();
     self:showButton();
 end
 
 local function GetActionSlot(arg1)
+    local ret = {};
     for lActionSlot = 1, 180 do
         local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
         if id and type and type == "spell" then
             local name = GetSpellInfo(id);
             if name and name == arg1 then
-                return lActionSlot;
+                tinsert(ret, lActionSlot);
             end
         end
     end
@@ -538,15 +528,13 @@ local function GetActionSlot(arg1)
 
         if id and type and type == "macro" then
             local name = GetSpellInfo(id);
-
-
             if name and name == arg1 then
-                return lActionSlot;
+                tinsert(ret, lActionSlot);
             end
         end
     end
 
-    return nil;
+    return ret;
 end
 
 function ns.Button:init(config, frame)
@@ -570,7 +558,11 @@ function ns.Button:init(config, frame)
     end
 
     self.frame = frame;
-    self.action = GetActionSlot(self.spell);
+
+    local actionlist = GetActionSlot(self.spell);
+    if actionlist[1] then
+        self.action = actionlist[1];
+    end
     self.inRange = true;
 
     if self.unit == nil then
@@ -594,7 +586,10 @@ function ns.Button:init(config, frame)
     end
 
     ns.eventhandler.registerAura(self.unit, self.spell);
-    ns.eventhandler.registerAction(self.action, self);
+
+    for _, action in pairs(actionlist) do
+        ns.eventhandler.registerAction(action, self);
+    end
 
     if self.type == ns.EnumButtonType.Totem then
         ns.eventhandler.registerTotem(self.spell, self);

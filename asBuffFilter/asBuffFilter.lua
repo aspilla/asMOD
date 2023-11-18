@@ -255,6 +255,9 @@ local function IsShown(name, spellId, bpersonal)
 	if APB_BUFF2 and APB_BUFF2 == name then
 		return true;
 	end
+	if APB_BUFF3 and APB_BUFF3 == name then
+		return true;
+	end
 
 	if APB_BUFF_COMBO and APB_BUFF_COMBO == name then
 		return true;
@@ -515,7 +518,7 @@ local function UpdateAuraFrames(unit, auraList)
 				frameCooldown:SetDrawSwipe(true);
 			end
 
-			if (aura.duration > 0) then
+			if (aura.duration > 0 and aura.duration <= 60) then
 				frameCooldown:Show();
 				asCooldownFrame_Set(frameCooldown, aura.expirationTime - aura.duration, aura.duration, aura.duration > 0,
 					true);

@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 231118,
+	version = 231119,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -73,7 +73,7 @@ ACI_Options_Default = {
 	},
 
 	ACI_SpellList_ROGUE_2 = {
-		{ "뼈주사위", 2, nil, 5, nil, nil, nil, { "집중 공격", "무자비한 정밀함", "해적 징표", "진방위", "대난투", "숨겨진 보물" } },
+		{ "뼈주사위", 2, nil, nil, nil, nil, nil, { "집중 공격", "무자비한 정밀함", "해적 징표", "진방위", "대난투", "숨겨진 보물" } },
 		{ 195627, 3, nil, 20 },
 		{ "아드레날린 촉진", 2 },
 		{ "폭풍의 칼날", 2 },

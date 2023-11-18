@@ -209,9 +209,9 @@ local function ABF_OnEvent(self, event, arg1, ...)
             button:update();
         end
     elseif event == "ACTION_RANGE_CHECK_UPDATE" then
-        local action, inRange, checksRange = arg1, ...;
+        local action, inRange, checksRange = arg1, ...;       
 
-        if actionfilter[action] then
+        if actionfilter[action] then            
             local button = actionfilter[action];
 
             if (checksRange and not inRange) then

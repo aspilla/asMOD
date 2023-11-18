@@ -36,6 +36,7 @@ APB_SPELL = nil;
 APB_SPELL2 = nil;
 APB_BUFF = nil;
 APB_BUFF2 = nil;
+APB_BUFF3 = nil;
 APB_BUFF_COMBO = nil;
 APB_DEBUFF_COMBO = nil
 
@@ -518,10 +519,17 @@ local function APB_UpdateBuff(buffbar)
 		return;
 	end
 
-
 	if buffbar.buff then
+		buffbar.tooltip = buffbar.buff;
 		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
 			APB_UnitBuff(buffbar.unit, buffbar.buff, "player");
+		if not name and buffbar.buff2 then
+			name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
+				APB_UnitBuff(buffbar.unit, buffbar.buff2, "player");
+			if name then
+				buffbar.tooltip = buffbar.buff2;
+			end
+		end
 
 		if name and caster == "player" then
 			buffbar.start = expirationTime - duration;
@@ -540,9 +548,8 @@ local function APB_UpdateBuff(buffbar)
 		buffbar:Show();
 		buffbar.text:Show();
 		buffbar.count:Show();
-
-		buffbar.tooltip = buffbar.buff;
 	end
+
 
 	if buffbar.debuff then
 		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
@@ -854,13 +861,14 @@ end
 local bupdate_druid = false;
 
 local function APB_GetActionSlot(arg1)
+	local ret = {};
 	for lActionSlot = 1, 180 do
 		local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
 		if id and type and type == "spell" then
 			local name = GetSpellInfo(id);
 			if name and name == arg1 then
-				return lActionSlot;
+				ret[lActionSlot] = true;
 			end
 		end
 	end
@@ -870,15 +878,13 @@ local function APB_GetActionSlot(arg1)
 
 		if id and type and type == "macro" then
 			local name = GetSpellInfo(id);
-
-
 			if name and name == arg1 then
-				return lActionSlot;
+				ret[lActionSlot] = true;
 			end
 		end
 	end
 
-	return nil;
+	return ret;
 end
 
 local function APB_SpellMax(spell, spell2)
@@ -935,12 +941,19 @@ local function APB_UpdateSpell(spell, spell2)
 	local spellid = select(7, GetSpellInfo(spell));
 
 	if bupdate_druid then
-		local slot = APB_GetActionSlot(spell);
-		if slot then
-			charges = GetActionCount(slot);
-			maxCharges = 2;
-			chargeStart = 0;
-			chargeDuration = 0;
+		if APB_ACTION then
+			local slot;
+			for k, v in pairs(APB_ACTION) do -- might need to use ipairs() instead?
+				slot = k
+				break;
+			end
+
+			if slot then
+				charges = GetActionCount(slot);
+				maxCharges = 2;
+				chargeStart = 0;
+				chargeDuration = 0;
+			end
 		end
 	end
 
@@ -1006,16 +1019,22 @@ local function APB_UpdateSpell(spell, spell2)
 		spellid = select(7, GetSpellInfo(spell2));
 
 		if not maxCharges2 then
-			local slot = APB_GetActionSlot(spell2);
-			if slot then
-				charges = GetActionCount(slot);
-				maxCharges2 = 2;
-				chargeStart = 0;
-				chargeDuration = 0;
-			end
+			if APB_ACTION2 then
+				local slot;
+				for k, v in pairs(APB_ACTION2) do -- might need to use ipairs() instead?
+					slot = k
+					break;
+				end
+				if slot then
+					charges = GetActionCount(slot);
+					maxCharges2 = 2;
+					chargeStart = 0;
+					chargeDuration = 0;
+				end
 
-			if not maxCharges2 then
-				return;
+				if not maxCharges2 then
+					return;
+				end
 			end
 		end
 
@@ -1368,6 +1387,7 @@ local function APB_CheckPower(self)
 
 	APB_BUFF = nil;
 	APB_BUFF2 = nil;
+	APB_BUFF3 = nil;
 	APB_DEBUFF = nil;
 	APB_DEBUFF2 = nil;
 	APB_SPELL = nil;
@@ -1411,6 +1431,7 @@ local function APB_CheckPower(self)
 		APB.powermax = nil;
 
 		APB.buffbar[j].buff = nil;
+		APB.buffbar[j].buff2 = nil;
 		APB.buffbar[j].debuff = nil;
 		APB.buffbar[j].max = nil;
 
@@ -1785,6 +1806,14 @@ local function APB_CheckPower(self)
 			APB:SetScript("OnUpdate", APB_OnUpdate);
 			APB:RegisterEvent("PLAYER_TARGET_CHANGED");
 			APB_UpdateBuff(self.buffbar[0])
+		elseif (spec and spec == 2) then
+			APB_BUFF = "기만";
+			APB_BUFF3 = "어둠의 춤";
+			APB.buffbar[0].buff = APB_BUFF;
+			APB.buffbar[0].buff2 = APB_BUFF3;
+			APB.buffbar[0].unit = "player"
+			APB:RegisterUnitEvent("UNIT_AURA", "player");
+			APB_UpdateBuff(self.buffbar[0])
 		else
 			APB_BUFF = "난도질";
 			APB.buffbar[0].buff = APB_BUFF;
@@ -1935,7 +1964,7 @@ local function APB_CheckPower(self)
 				APB_BUFF = "탄력";
 				APB.buffbar[0].buff = APB_BUFF;
 				APB.buffbar[0].unit = "player"
-				APB.buffbar[0].max = 20;				
+				APB.buffbar[0].max = 20;
 				APB:RegisterUnitEvent("UNIT_AURA", "player");
 				--APB:SetScript("OnUpdate", APB_OnUpdate);
 
@@ -2037,7 +2066,7 @@ local function APB_CheckPower(self)
 			end
 
 			if asCheckTalent("윈드러너의 유산") then
-				bupdate_windrunner = true;				
+				bupdate_windrunner = true;
 				APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 			end
 		end
@@ -2418,7 +2447,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 			local timestamp, subEvent, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType =
 				CombatLogGetCurrentEventInfo();
 
-		
+
 
 			if sourceGUID == UnitGUID("player") and subEvent == "SPELL_DAMAGE" and spellID == 191043 then
 				windrunner_count = windrunner_count + 1
@@ -2427,11 +2456,11 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 			if sourceGUID == UnitGUID("player") and subEvent == "SPELL_ENERGIZE" and spellID == 406449 then
 				windrunner_count = 0
 			end
-			
-			local textToShow =tostring(windrunner_count) .. "/24";
+
+			local textToShow = tostring(windrunner_count) .. "/24";
 
 			APB.text:SetText(textToShow);
-			
+
 			if windrunner_count >= 20 then
 				APB.text:SetTextColor(0, 1, 0);
 			else
@@ -2451,7 +2480,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 
 		C_Timer.After(0.5, APB_CheckPower);
 		C_Timer.After(0.5, APB_UpdatePower);
-	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or event == "ACTIVE_TALENT_GROUP_CHANGED"  then		
+	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		C_Timer.After(0.5, APB_CheckPower);
 		C_Timer.After(0.5, APB_UpdatePower);
 	elseif event == "SPELLS_CHANGED" then
@@ -2508,13 +2537,13 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 	elseif event == "ACTION_RANGE_CHECK_UPDATE" then
 		local action, inRange, checksRange = arg1, arg2, arg3;
 
-		if APB_ACTION and APB_ACTION == action then
+		if APB_ACTION and APB_ACTION[action] then
 			if (checksRange and not inRange) then
 				inrange = false;
 			else
 				inrange = true;
 			end
-		elseif APB_ACTION2 and APB_ACTION2 == action then
+		elseif APB_ACTION2 and APB_ACTION2[action] then
 			if (checksRange and not inRange) then
 				inrange2 = false;
 			else
@@ -2736,7 +2765,7 @@ do
 	APB:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
 	APB:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
 	APB:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
-	APB:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");	
+	APB:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");
 	APB:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player");
 	APB:RegisterUnitEvent("UNIT_EXITING_VEHICLE", "player");
 
