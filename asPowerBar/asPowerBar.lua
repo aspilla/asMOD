@@ -2538,21 +2538,43 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 		local action, inRange, checksRange = arg1, arg2, arg3;
 
 		if APB_ACTION and APB_ACTION[action] then
-			if (checksRange and not inRange) then
-				inrange = false;
-			else
-				inrange = true;
+			local type, id, subType, spellID = GetActionInfo(action);
+
+			if id then
+				local name = GetSpellInfo(id);
+				local spellname = GetSpellInfo(APB_SPELL);
+
+				if name and spellname and name == spellname then
+					if (checksRange and not inRange) then
+						inrange = false;
+					else
+						inrange = true;
+					end
+				end
+			end
+
+			if APB_SPELL then
+				APB_UpdateSpell(APB_SPELL, APB_SPELL2);
 			end
 		elseif APB_ACTION2 and APB_ACTION2[action] then
-			if (checksRange and not inRange) then
-				inrange2 = false;
-			else
-				inrange2 = true;
-			end
-		end
+			local type, id, subType, spellID = GetActionInfo(action);
 
-		if APB_SPELL then
-			APB_UpdateSpell(APB_SPELL, APB_SPELL2);
+			if id then
+				local name = GetSpellInfo(id);
+				local spellname = GetSpellInfo(APB_SPELL2);
+
+				if name and spellname and name == spellname then
+					if (checksRange and not inRange) then
+						inrange2 = false;
+					else
+						inrange2 = true;
+					end
+				end
+			end
+
+			if APB_SPELL then
+				APB_UpdateSpell(APB_SPELL, APB_SPELL2);
+			end
 		end
 	end
 

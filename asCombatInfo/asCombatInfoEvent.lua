@@ -196,7 +196,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
         local spell = GetSpellInfo(arg1);
-        if eventfilter[spell] then            
+        if eventfilter[spell] then
             local button = eventfilter[spell];
             button.alert = true;
             button:update();
@@ -209,17 +209,26 @@ local function ABF_OnEvent(self, event, arg1, ...)
             button:update();
         end
     elseif event == "ACTION_RANGE_CHECK_UPDATE" then
-        local action, inRange, checksRange = arg1, ...;       
+        local action, inRange, checksRange = arg1, ...;
 
-        if actionfilter[action] then            
+        if actionfilter[action] then
             local button = actionfilter[action];
 
-            if (checksRange and not inRange) then
-                button.inRange = false;
-            else
-                button.inRange = true
+            local type, id, subType, spellID = GetActionInfo(action);
+
+            if id then
+                local name = GetSpellInfo(id);
+                local buttonname = GetSpellInfo(button.realspell);
+
+                if name and buttonname and name == buttonname then
+                    if (checksRange and not inRange) then
+                        button.inRange = false;
+                    else
+                        button.inRange = true
+                    end
+                    button:update();
+                end
             end
-            button:update();
         end
     elseif event == "PLAYER_ENTERING_WORLD" then
 
@@ -242,7 +251,7 @@ do
     eventframe:RegisterEvent("ACTIONBAR_UPDATE_USABLE");
     eventframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
     eventframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
-    eventframe:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");    
+    eventframe:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");
     eventframe:RegisterEvent("PLAYER_TOTEM_UPDATE");
     eventframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 

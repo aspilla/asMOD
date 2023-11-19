@@ -601,7 +601,12 @@ function ns.Button:init(config, frame)
 
     if self.realbuff then
         ns.eventhandler.registerAura(self.unit, self.realbuff);
-        ACI_Buff_list[self.realbuff] = true;
+
+        if self.type == ns.EnumButtonType.Debuff or self.type == ns.EnumButtonType.DebuffOnly then
+            ACI_Debuff_list[self.realbuff] = true;
+        else
+            ACI_Buff_list[self.realbuff] = true;
+        end
     end
 
     if self.countbuff then
