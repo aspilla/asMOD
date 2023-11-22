@@ -12,21 +12,18 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 231119,
+	version = 231123,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
-	-- 	{Spell, Type, arg1} 순으로 편집
+	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist} 순으로 편집
 	-- 	Spell 기술명 혹은 ID (버프는 ID로 입력해야 Icon 나옴)
 	-- 	Type : 1 Spell Cool down
-	-- 	Type : 2 버프 & Spell Cool down
-	-- 	Type : 3 버프 & Spell Cool down 상세 Value가 있는경우
+	-- 	Type : 2 버프 & Spell Cool down, buff가 없으면 Cooldown check
+	-- 	Type : 3 버프 only buff ID 등록해야 함 arg1 없을 경우 "player", "pet"으로 pet 버프 확인가능 ex 	{118455, 3, "pet"},
 	-- 	Type : 4 디버프 & Spell Cool down, arg1 이 없을 경우 "target", "player"로 하면 자신의 디버프 확인 가능 "focus" 활용가능  ex	{"약점 공격", 4},
-	-- 	Type : 7 버프 only Spell ID 등록해야 함 arg1 없을 경우 "player", "pet"으로 pet 버프 확인가능 ex 	{118455, 7, "pet"},
-	-- 	Type : 8 디버프 only Spell ID ex {55078, 8}, --> 죽기 역병
-	-- 	Type : 9 1 + 대상 체력 % 미만이면 강조 ex {"영혼 쐐기", 9, 35}
-	-- 	Type : 11 Totem 버프
-	-- 	Type : 14 뼈주사위
+	-- 	Type : 5 디버프 only debuff ID ex {55078, 5}, --> 죽기 역병
+	-- 	Type : 6 Totem 버프
 	-- 시작은 99로 하면 다음 특성 이름이 켜 있을때 없을때로 구분 예 {99, "주문술사의 흐름", {116267, 7, "player", nil, 4}, {"마력의 룬", 11, nil, true}}, 면 주문술사 켜 있으면 첫 array, 아니면 다음 array
 
 
@@ -104,7 +101,7 @@ ACI_Options_Default = {
 		{ "속사", 1 },
 		{ "정조준", 2, nil, nil, "윈드러너의 인도" },
 		{ "마무리 사격", 1 },
-		{ 99, "죽음의 회전 표창", { "죽음의 회전 표창", 4 }, { "독사 쐐기", 4, nil, 1 } },
+		{ "독사 쐐기", 4, nil, 1 },
 	},
 
 	--생존
@@ -360,7 +357,7 @@ ACI_Options_Default = {
 		{ 99, "악마불 집중", { "악마불 집중", 1 }, { "어둠의 연소", 1 } },
 		{ 196406, 3 },
 		{ 99, "지옥불정령 소환", { "지옥불정령 소환", 6, nil, nil, nil, "지옥불정령" }, { "어둠의 연소", 1 } },
-		{ 99, "차원의 균열", { "차원의 균열", 1 }, { "대혼란", 1 } },
+		{99, "격동", {394087, 5, "nameplate", 5, nil, "대혼란" }, { "대혼란", 4, "nameplate" }},
 		{ "제물", 4, nil, 1 },
 
 	},

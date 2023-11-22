@@ -101,7 +101,7 @@ local function ProcessAura(unit, aura)
     if aura == nil then
         return AuraUpdateChangedType.None;
     end
-    if PLAYER_UNITS[aura.sourceUnit] and (aurafilter[unit][aura.name] or aurafilter[unit][aura.spellId]) then
+    if PLAYER_UNITS[aura.sourceUnit] and aurafilter[unit][aura.name] then
         return AuraUpdateChangedType.Show;
     end
 
@@ -143,13 +143,62 @@ local function ACRB_ParseAllAuras(unit, filter)
     return ret;
 end
 
-local function UpdateAuras(unit)
-    local trigger = false;
+local function ACRB_ParseAllNameplateAuras(filter)
+    local ret = false;
+    local unit = "nameplate"
 
-    if unit == "target" then
-        trigger = ACRB_ParseAllAuras(unit, debufffilter);
+    if aurafilter[unit] == nil then
+        return ret;
+    end
+
+    if eventlib[unit] == nil then
+        eventlib[unit] = {};
+        eventlib[unit].auralist = TableUtil.CreatePriorityTable(DefaultAuraCompare,
+            TableUtil.Constants.AssociativePriorityTable);
     else
-        trigger = ACRB_ParseAllAuras(unit, bufffilter);
+        eventlib[unit].auralist:Clear();
+    end
+
+    local function checkNameplate(nameplate)
+        if nameplate then
+            if not nameplate or nameplate:IsForbidden() then
+                return false;
+            end
+
+            local nunit = nameplate.namePlateUnitToken;
+
+            local reaction = UnitReaction("player", nunit);
+            if reaction and reaction <= 4 then
+                local batchCount = nil;
+                local usePackedAura = true;
+                local function HandleAura(aura)
+                    if aurafilter[unit][aura.name] then
+                        eventlib[unit].auralist[aura.spellId] = aura;
+                        ret = true;
+                    end
+                end
+                ForEachAura(nunit, filter, batchCount, HandleAura, usePackedAura);
+            end
+        end
+    end
+
+    for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
+        local nameplate = v;
+        if (nameplate) then
+            checkNameplate(nameplate);
+        end
+    end
+
+    return ret;
+end
+
+local function UpdateAuras(unit)
+    if unit == "target" then
+        ACRB_ParseAllAuras(unit, debufffilter);
+    elseif unit == "nameplate" then
+        ACRB_ParseAllNameplateAuras(debufffilter);
+    else
+        ACRB_ParseAllAuras(unit, bufffilter);
 
         -- call back
         for _, button in pairs(bufftimerfilter) do
@@ -238,6 +287,7 @@ end
 
 local function OnUpdate()
     UpdateAuras("target");
+    UpdateAuras("nameplate");
 
     for _, button in pairs(timerfilter) do
         button:update();
@@ -262,9 +312,7 @@ do
 end
 
 function ns.eventhandler.init()
-    aurafilter["target"] = {};
-    aurafilter["player"] = {};
-    aurafilter["pet"] = {};
+    aurafilter = {};
     eventfilter = {};
     actionfilter = {};
     totemfilter = {};
@@ -282,6 +330,7 @@ function ns.eventhandler.registerAura(unit, spell)
     end
 
     aurafilter[unit][spell] = true;
+
     UpdateAuras(unit);
 end
 

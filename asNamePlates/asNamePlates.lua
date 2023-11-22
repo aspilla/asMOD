@@ -1,278 +1,8 @@
 ﻿local _, ns = ...;
----설정부
-local ANameP_SIZE = 0;                  -- Icon Size 0 이면 자동으로 설정
-local ANameP_Size_Rate = 0.7;           -- Icon 가로 세로 비중
-local ANameP_PVP_Debuff_Size_Rate = 4   -- PVP Debuff Icon Size 작게 하려면 - 값으로
-
-local ANameP_PlayerBuffY = -5           -- Player 바 Buff 위치
-local ANameP_TargetBuffY = 5            -- 대상바 Buff 위치
-local ANameP_CooldownFontSize = 9;      --재사용 대기시간 Font Size
-local ANameP_CountFontSize = 8;         --Count 폰트 Size
-local ANameP_MaxDebuff = 8;             --최대 Debuff
-local ANameP_DebuffsPerLine = 4;        --줄당 Debuff 수 (큰 이름표 일 경우 +1 됨)
-local ANameP_MaxBuff = 1;               --최대 PVP Buff (안보이게 하려면 0)
-local ANameP_ShowPVPDebuff = true;      --PVP Debuff 면 모두 보임 (다른 사람의 디법이면 회색으로 보임)
-local ANameP_ShowPlayerBuff = true;     --Player NamePlate에 Buff를 안보일려면 false;
-local ANameP_BuffMaxCool = 60;          --buff의 최대 Cool
-local ANameP_PVPAggroShow = true;       -- PVP 어그로 여부를 표현할지 여부
-local ANameP_ShowListFirst = true       -- 알림 List 가 있다면 먼저 보인다. (가나다라 순서)
-local ANameP_ShowCCDebuff = true        -- 오른쪽에 CC Debuff만 별도로 보이기
-local ANameP_CCDebuffSize = 16          -- CC Debuff Size;
-local ANameP_AggroSize = 12;            -- 어그로 표시 Text Size
-local ANameP_HealerSize = 14;           -- 힐러표시 Text Size
-local ANameP_TargetHealthBarHeight = 3; -- 대상 체력바 높이 증가치 (+3)
-local ANameP_HeathTextSize = 8;         -- 대상 체력숫자 크기
-local ANameP_UpdateRate = 0.5;          -- 버프 Check 반복 시간 (초)
-
-
--- 아래 유닛명이면 강조
--- 색상 지정 가능
--- { r, g, b, 빤작임 여부}
-local ANameP_AlertList = {
-	["폭발물"] = { 0, 1, 0.5, 1 }, -- 녹색 빤짝이
-	["무형의 존재"] = { 0, 1, 0.5, 0 }, -- 녹색 빤짝이
-	--["쉬바라"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
-	--["우르줄"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
-	--	["파멸수호병"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
-	--	["격노수호병"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
-	--	["지옥불정령"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
-	--	["지옥사냥개"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
-	--	["원한의 망령"] = {1, 1, 1, 0},	-- 흰색 빤짝이 (없음)
-	--	["어둠그늘 곰팡이"] = {0, 1, 0, 0},	-- 녹색 빤짝이 (없음)
-	--["절단 훈련용 허수아비"] = {0, 1, 0.5, 1},	
-	--	["던전 사용자의 허수아비"] = {1, 0, 1, 0},	
-	--["공격대원의 훈련용 허수아비"] = {1, 0, 1, 0},	
-
-}
-
-
--- 안보이게 할 디법
-local ANameP_BlackList = {
-	--	["상처 감염 독"] = 1,	
-	--	["맹독"] = 1,
-	--	["약자 고문"] = 1,
-	--	["슬픔"] = 1,
-	--	["순환하는 기원"] = 1,
-	["도전자의 짐"] = 1,
-	["도전자의 힘"] = 1,
-
-}
-
-local ANameP_PVPBuffList = {
-	[236273] = 1, --WARRIOR
-	[213871] = 1, --WARRIOR
-	[118038] = 1, --WARRIOR
-	[12975] = 1, --WARRIOR
-	[1160] = 1, --WARRIOR
-	[871] = 1, --WARRIOR
-	[202168] = 1, --WARRIOR
-	[97463] = 1, --WARRIOR
-	[383762] = 1, --WARRIOR
-	[184364] = 1, --WARRIOR
-	[386394] = 1, --WARRIOR
-	[392966] = 1, --WARRIOR
-	[185311] = 1, --ROGUE
-	[11327] = 1, --ROGUE
-	[1966] = 1, --ROGUE
-	[31224] = 1, --ROGUE
-	[31230] = 1, --ROGUE
-	[5277] = 1, --ROGUE
-	[212800] = 1, --DEMONHUNTER
-	[203720] = 1, --DEMONHUNTER
-	[187827] = 1, --DEMONHUNTER
-	[206803] = 1, --DEMONHUNTER
-	[196555] = 1, --DEMONHUNTER
-	[204021] = 1, --DEMONHUNTER
-	[263648] = 1, --DEMONHUNTER
-	[209258] = 1, --DEMONHUNTER
-	[209426] = 1, --DEMONHUNTER
-	[202162] = 1, --MONK
-	[388615] = 1, --MONK
-	[115310] = 1, --MONK
-	[116849] = 1, --MONK
-	[115399] = 1, --MONK
-	[119582] = 1, --MONK
-	[122281] = 1, --MONK
-	[322507] = 1, --MONK
-	[120954] = 1, --MONK
-	[122783] = 1, --MONK
-	[122278] = 1, --MONK
-	[132578] = 1, --MONK
-	[115176] = 1, --MONK
-	[51052] = 1, --DEATHKNIGHT
-	[48707] = 1, --DEATHKNIGHT
-	[327574] = 1, --DEATHKNIGHT
-	[48743] = 1, --DEATHKNIGHT
-	[48792] = 1, --DEATHKNIGHT
-	[114556] = 1, --DEATHKNIGHT
-	[81256] = 1, --DEATHKNIGHT
-	[219809] = 1, --DEATHKNIGHT
-	[206931] = 1, --DEATHKNIGHT
-	[274156] = 1, --DEATHKNIGHT
-	[194679] = 1, --DEATHKNIGHT
-	[55233] = 1, --DEATHKNIGHT
-	[53480] = 1, --HUNTER
-	[109304] = 1, --HUNTER
-	[264735] = 1, --HUNTER
-	[355913] = 1, --EVOKER
-	[370960] = 1, --EVOKER
-	[363534] = 1, --EVOKER
-	[357170] = 1, --EVOKER
-	[374348] = 1, --EVOKER
-	[374227] = 1, --EVOKER
-	[363916] = 1, --EVOKER
-	[360827] = 1, --EVOKER
-	[404381] = 1, --EVOKER
-	[305497] = 1, --DRUID
-	[354654] = 1, --DRUID
-	[201664] = 1, --DRUID
-	[157982] = 1, --DRUID
-	[102342] = 1, --DRUID
-	[61336] = 1, --DRUID
-	[200851] = 1, --DRUID
-	[80313] = 1, --DRUID
-	[22842] = 1, --DRUID
-	[108238] = 1, --DRUID
-	[124974] = 1, --DRUID
-	[104773] = 1, --WARLOCK
-	[108416] = 1, --WARLOCK
-	[215769] = 1, --PRIEST
-	[328530] = 1, --PRIEST
-	[197268] = 1, --PRIEST
-	[19236] = 1, --PRIEST
-	[81782] = 1, --PRIEST
-	[33206] = 1, --PRIEST
-	[372835] = 1, --PRIEST
-	[391124] = 1, --PRIEST
-	[265202] = 1, --PRIEST
-	[64843] = 1, --PRIEST
-	[47788] = 1, --PRIEST
-	[47585] = 1, --PRIEST
-	[108968] = 1, --PRIEST
-	[15286] = 1, --PRIEST
-	[271466] = 1, --PRIEST
-	[199452] = 1, --PALADIN
-	[403876] = 1, --PALADIN
-	[31850] = 1, --PALADIN
-	[378279] = 1, --PALADIN
-	[378974] = 1, --PALADIN
-	[86659] = 1, --PALADIN
-	[387174] = 1, --PALADIN
-	[327193] = 1, --PALADIN
-	[205191] = 1, --PALADIN
-	[184662] = 1, --PALADIN
-	[498] = 1, --PALADIN
-	[148039] = 1, --PALADIN
-	[157047] = 1, --PALADIN
-	[31821] = 1, --PALADIN
-	[633] = 1, --PALADIN
-	[6940] = 1, --PALADIN
-	[1022] = 1, --PALADIN
-	[204018] = 1, --PALADIN
-	[204331] = 1, --SHAMAN
-	[108280] = 1, --SHAMAN
-	[98008] = 1, --SHAMAN
-	[198838] = 1, --SHAMAN
-	[207399] = 1, --SHAMAN
-	[108271] = 1, --SHAMAN
-	[198103] = 1, --SHAMAN
-	[30884] = 1, --SHAMAN
-	[383017] = 1, --SHAMAN
-	[108281] = 1, --SHAMAN
-	[198111] = 1, --MAGE
-	[110959] = 1, --MAGE
-	[342246] = 1, --MAGE
-	[11426] = 1, --MAGE
-	[66] = 1,  --MAGE
-	[235313] = 1, --MAGE
-	[235450] = 1, --MAGE
-	[55342] = 1, --MAGE
-	[414660] = 1, --MAGE
-	[414664] = 1, --MAGE
-	[86949] = 1, --MAGE
-	[235219] = 1, --MAGE
-	[414658] = 1, --MAGE
-}
-
-local ANameP_PVEBuffList = {
-
-	[209859] = 0, --'강화'
-}
 
 local DangerousSpellList = {
 
 }
-
-local ANameP_HealSpellList = {};
-
-ANameP_HealSpellList["사제"] = {
-
-	[047540] = "PRIEST", -- Penance XXX strange error received from user on 2015-10-15 (this spell was cast by a hunter...)
-	[109964] = "PRIEST", -- Spirit shell -- not seen in disc
-	[002060] = "PRIEST", -- Greater Heal
-	[014914] = "PRIEST", -- Holy Fire
-	[033206] = "PRIEST", -- Pain Suppression
-	[000596] = "PRIEST", -- Prayer of Healing
-	[000527] = "PRIEST", -- Purify
-	[081749] = "PRIEST", -- Atonement
-	[132157] = "PRIEST", -- Holy Nova
-	[034861] = "PRIEST", -- Circle of Healing
-	[064843] = "PRIEST", -- Divine Hymn
-	[047788] = "PRIEST", -- Guardian Spirit
-	[032546] = "PRIEST", -- Binding Heal
-	[077485] = "PRIEST", -- Mastery: Echo of Light -- the passibe ability
-	[077489] = "PRIEST", -- Echo of Light -- the aura applied by the afformentioned
-	[000139] = "PRIEST", -- Renew
-
-};
-
-ANameP_HealSpellList["드루이드"] = {
-
-	[102342] = "DRUID", -- Ironbark
-	[033763] = "DRUID", -- Lifebloom
-	[088423] = "DRUID", -- Nature's Cure
-	[033891] = "DRUID", -- Incarnation: Tree of Life
-	[048438] = "DRUID", -- Wild Growth
-	[000740] = "DRUID", -- Tranquility
-};
-
-
-ANameP_HealSpellList["주술사"] = {
-
-	[061295] = "SHAMAN", -- Riptide
-	[077472] = "SHAMAN", -- Healing Wave
-	[098008] = "SHAMAN", -- Spirit link totem
-	[001064] = "SHAMAN", -- Chain Heal
-	[073920] = "SHAMAN", -- Healing Rain
-
-};
-
-ANameP_HealSpellList["성기사"] = {
-
-	[020473] = "PALADIN", -- Holy Shock
-	[053563] = "PALADIN", -- Beacon of Light
-	[082326] = "PALADIN", -- Holy Light
-	[085222] = "PALADIN", -- Light of Dawn
-};
-
-
-ANameP_HealSpellList["수도사"] = {
-	[115175] = "MONK", -- Soothing Mist
-	[115310] = "MONK", -- Revival
-	[116670] = "MONK", -- Vivify
-	[116680] = "MONK", -- Thunder Focus Tea
-	[116849] = "MONK", -- Life Cocoon
-	[119611] = "MONK", -- Renewing mist
-
-};
-
-ANameP_HealSpellList["기원사"] = {
-	[355936] = "EVOKER", -- 꿈의 숨결
-	[364446] = "EVOKER", -- 메아리
-	[366155] = "EVOKER", -- 되감기
-	[367226] = "EVOKER", -- 영혼 만개
-
-};
 
 local ANameP_HealerGuid = {
 
@@ -302,11 +32,11 @@ local ColorLevel = {
 	Name = 8,
 };
 
-local ANameP_ShowList = nil;
+ns.ANameP_ShowList = nil;
 local ANameP_Resourcetext = nil;
-local debuffs_per_line = ANameP_DebuffsPerLine;
-local playerbuffposition = ANameP_PlayerBuffY;
-local options = CopyTable(ANameP_Options_Default);
+local debuffs_per_line = ns.ANameP_DebuffsPerLine;
+local playerbuffposition = ns.ANameP_PlayerBuffY;
+ns.options = CopyTable(ANameP_Options_Default);
 
 --Cooldown
 local function asCooldownFrame_Clear(self)
@@ -322,7 +52,7 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 	end
 end
 
-local KnownSpellList = {};
+ns.KnownSpellList = {};
 
 local function asCheckTalent()
 	local specID = PlayerUtil.GetCurrentSpecID();
@@ -347,11 +77,11 @@ local function asCheckTalent()
 				local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
 				--print(string.format("%s/%d %s/%d", talentName, definitionInfo.spellID, definitionInfo.overrideName or "", definitionInfo.overriddenSpellID or 0));
 				local name, rank, icon = GetSpellInfo(definitionInfo.spellID);
-				KnownSpellList[talentName or ""] = true;
-				KnownSpellList[icon or 0] = true;
+				ns.KnownSpellList[talentName or ""] = true;
+				ns.KnownSpellList[icon or 0] = true;
 				if definitionInfo.overrideName then
 					--print (definitionInfo.overrideName)
-					KnownSpellList[definitionInfo.overrideName] = true;
+					ns.KnownSpellList[definitionInfo.overrideName] = true;
 				end
 			end
 		end
@@ -373,7 +103,7 @@ local function scanSpells(tab)
 		end
 
 		if spellName then
-			KnownSpellList[spellName] = 1;
+			ns.KnownSpellList[spellName] = 1;
 		end
 	end
 end
@@ -388,7 +118,7 @@ local function scanPetSpells()
 		end
 
 		if spellName then
-			KnownSpellList[spellName] = 1;
+			ns.KnownSpellList[spellName] = 1;
 		end
 	end
 end
@@ -396,7 +126,7 @@ end
 
 
 local function setupKnownSpell()
-	KnownSpellList = {};
+	ns.KnownSpellList = {};
 
 	scanSpells(1)
 	scanSpells(2)
@@ -462,7 +192,7 @@ local function createDebuffFrame(parent)
 
 	for _, r in next, { frameCooldown:GetRegions() } do
 		if r:GetObjectType() == "FontString" then
-			r:SetFont(STANDARD_TEXT_FONT, ANameP_CooldownFontSize, "OUTLINE")
+			r:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CooldownFontSize, "OUTLINE")
 			r:ClearAllPoints();
 			r:SetPoint("TOP", 0, 4);
 			break;
@@ -471,7 +201,7 @@ local function createDebuffFrame(parent)
 
 	local font, size, flag = frameCount:GetFont()
 
-	frameCount:SetFont(STANDARD_TEXT_FONT, ANameP_CountFontSize, "OUTLINE")
+	frameCount:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CountFontSize, "OUTLINE")
 	frameCount:ClearAllPoints();
 	frameCount:SetPoint("BOTTOMRIGHT", -2, 2);
 
@@ -484,11 +214,15 @@ local function createDebuffFrame(parent)
 
 	ret.alert = false;
 
-	if not ret:GetScript("OnEnter") and options.ANameP_Tooltip then
+	if not ret:GetScript("OnEnter") and ns.options.ANameP_Tooltip then
 		ret:SetScript("OnEnter", function(s)
 			if s:GetID() > 0 then
 				GameTooltip_SetDefaultAnchor(GameTooltip, s);
-				GameTooltip:SetUnitAura(s.unit, s:GetID(), s.filter);
+				if s.type == 1 then
+					GameTooltip:SetUnitBuffByAuraInstanceID(s.unit, s:GetID(), s.filter);
+				else
+					GameTooltip:SetUnitDebuffByAuraInstanceID(s.unit, s:GetID(), s.filter);
+				end
 			end
 		end)
 		ret:SetScript("OnLeave", function()
@@ -516,7 +250,7 @@ local function setFrame(frame, texture, count, expirationTime, duration, color)
 	end
 
 	asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0, true);
-	if ANameP_CooldownFontSize > 0 then
+	if ns.ANameP_CooldownFontSize > 0 then
 		frameCooldown:SetHideCountdownNumbers(false);
 	end
 
@@ -526,7 +260,7 @@ end
 
 local function setSize(frame, size)
 	frame:SetWidth(size + 2);
-	frame:SetHeight((size + 2) * ANameP_Size_Rate);
+	frame:SetHeight((size + 2) * ns.ANameP_Size_Rate);
 end
 
 local function updateDebuffAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
@@ -599,95 +333,55 @@ end
 
 
 
-local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
+local function updateAuras(self, unit)
 	local numDebuffs = 1;
 	local size_list = {};
 	local parent = self:GetParent():GetParent();
 	local healthBar = parent.UnitFrame.healthBar;
 	local bShowCC = false;
+	local auraData;
+	local icon_size = self.icon_size;
 
 	if not unit then
 		return
 	end
 
-	local icon_size = self.icon_size;
+	auraData = ns.UpdateAuras(unit);
 
-	if showbuff and not showdebuff then
-		local aShowIdx = {};
-		local aShowNum = 1;
-
-		for i = 1, BUFF_MAX_DISPLAY do
-			if (filter == "NONE" and self.buffList[i]) then
-				self.buffList[i]:Hide();
-				self:Hide();
-				return;
+	if auraData and auraData.type == 2 then
+		auraData.buffs:Iterate(function(auraInstanceID, aura)
+			if numDebuffs > ns.ANameP_MaxDebuff then
+				return true;
 			end
-
-			local name, texture, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, _, nameplateShowAll =
-				UnitAura(unit, i, "HELPFUL");
-			if name then
-				local show = false;
-				local bPVP = false;
-
-				if UnitIsPlayer(unit) then
-					if ANameP_PVPBuffList[spellId] then
-						show = true;
-					end
-					bPVP = true;
-				else
-					if ANameP_PVEBuffList and ANameP_PVEBuffList[spellId] then
-						show = true;
-					elseif isStealable then
-						show = true;
-					elseif caster and UnitIsUnit(unit, caster) then
-						show = true;
-					end
-
-					if show and ANameP_BlackList[name] then
-						show = false;
-					end
-				end
-
-				if show then
-					if UnitIsPlayer(unit) then
-						aShowIdx[aShowNum] = { i, 0 };
-						aShowNum = aShowNum + 1;
-						-- 일단 1개만
-						if numDebuffs + aShowNum - 1 > ANameP_MaxBuff then
-							break;
-						end
-					else
-						if ANameP_PVEBuffList and ANameP_PVEBuffList[spellId] then
-							aShowIdx[aShowNum] = { i, ANameP_PVEBuffList[spellId] };
-						elseif isStealable then
-							aShowIdx[aShowNum] = { i, 4 };
-						else
-							aShowIdx[aShowNum] = { i, 1 };
-						end
-
-						aShowNum = aShowNum + 1;
-						-- PVE 는 계속
-					end
-				end
-			else
-				break;
+	
+			if (not self.buffList[numDebuffs]) then
+				self.buffList[numDebuffs] = createDebuffFrame(self);
 			end
-		end
+	
+	
+			local frame = self.buffList[numDebuffs];
+			frame.alert = false;
+			size_list[numDebuffs] = icon_size;			
+	
+			setSize(frame, size_list[numDebuffs]);
+	
+			local color = DebuffTypeColor["Disease"];
+			setFrame(self.buffList[numDebuffs], aura.icon, aura.applications, aura.expirationTime, aura.duration, color);
+	
+			self.buffList[numDebuffs].filter = auraData.bufffilter;
+			self.buffList[numDebuffs].type = 1;
+			self.buffList[numDebuffs]:SetID(auraInstanceID);
+			self.buffList[numDebuffs].unit = unit;
+	
+			numDebuffs = numDebuffs + 1;
+			return false;
+		end);
 
-		if ANameP_ShowListFirst then
-			-- sort
-			table.sort(aShowIdx, Comparison);
-		end
-
-		for v = 1, aShowNum - 1 do
-			if numDebuffs > ANameP_MaxBuff then
-				break;
+	elseif auraData and auraData.type == 1 then
+		auraData.buffs:Iterate(function(auraInstanceID, aura)
+			if numDebuffs > ns.ANameP_MaxBuff then
+				return true;
 			end
-
-			local i = aShowIdx[v][1];
-			local name, texture, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId, _, _, _, nameplateShowAll =
-				UnitAura(unit, i, "HELPFUL");
-
 
 			if (not self.buffList[numDebuffs]) then
 				self.buffList[numDebuffs] = createDebuffFrame(self);
@@ -697,7 +391,7 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			local frame = self.buffList[numDebuffs];
 			frame.alert = false;
 
-			if bPVP == true then
+			if aura.debuffType == ns.UnitFrameBuffType.PVP then
 				size_list[numDebuffs] = icon_size + 2;
 			else
 				size_list[numDebuffs] = icon_size;
@@ -706,221 +400,131 @@ local function updateAuras(self, unit, filter, showbuff, helpful, showdebuff)
 			setSize(frame, size_list[numDebuffs]);
 
 			local color = { r = 1, g = 1, b = 1 };
-			setFrame(self.buffList[numDebuffs], texture, count, expirationTime, duration, color);
-			if isStealable then
+			setFrame(self.buffList[numDebuffs], aura.icon, aura.applications, aura.expirationTime, aura.duration, color);
+			if aura.isStealable then
 				frame.alert = true;
 			end
 
-			self.buffList[numDebuffs].filter = "HELPFUL";
-			self.buffList[numDebuffs]:SetID(i);
+			self.buffList[numDebuffs].filter = auraData.bufffilter;
+			self.buffList[numDebuffs].type = 1;
+			self.buffList[numDebuffs]:SetID(auraInstanceID);
 			self.buffList[numDebuffs].unit = unit;
 
 			numDebuffs = numDebuffs + 1;
-		end
-	end
-
-	if not showdebuff then
-		local aShowIdx = {};
-		local aShowNum = 1;
-
-		for i = 1, BUFF_MAX_DISPLAY do
-			if (filter == "NONE" and self.buffList[i]) then
-				self.buffList[i]:Hide();
-				self:Hide();
-				return;
-			end
-
-			if numDebuffs + aShowNum - 1 > ANameP_MaxDebuff then
-				break;
-			end
-
-			local name, texture, count, debuffType, duration, expirationTime, caster, _, nameplateShowPersonal, spellId, _, isBossDebuff, _, nameplateShowAll =
-				UnitAura(unit, i, filter);
-			if name then
-				-- Default 로 Show List 에 있는 것만 보임
-				local show = PLAYER_UNITS[caster] and (ANameP_ShowList and ANameP_ShowList[name]);
-
-				-- Player 일 경우
-				if UnitIsUnit("player", unit) then
-					if options.ANameP_ShowPlayerBuffAll == false then
-						show = nameplateShowPersonal;
-					else
-						if ANameP_ShowPlayerBuff and PLAYER_UNITS[caster] and duration > 0 and duration <= ANameP_BuffMaxCool then
-							show = true;
-						end
-					end
-				else
-					if options.ANameP_ShowMyAll and PLAYER_UNITS[caster] then
-						if helpful then
-							if duration > 0 and duration <= ANameP_BuffMaxCool then
-								show = true;
-							end
-						else
-							show = true;
-						end
-					elseif not options.ANameP_ShowMyAll and PLAYER_UNITS[caster] and (nameplateShowPersonal or (options.ANameP_ShowKnownSpell and (KnownSpellList[name] or KnownSpellList[texture]))) then
-						show = true;
-					end
-
-					if ANameP_ShowPVPDebuff and nameplateShowAll and duration > 0 and duration <= 10 then
-						if ANameP_ShowCCDebuff and bShowCC == false then
-							show = false;
-							bShowCC = true;
-
-							local color = { r = 0.3, g = 0.3, b = 0.3 };
-
-							setFrame(self.CCdebuff, texture, count, expirationTime, duration, color);
-
-							self.CCdebuff:ClearAllPoints();
-							if self.casticon:IsShown() then
-								self.CCdebuff:SetPoint("LEFT", self.casticon, "RIGHT", 1, 0);
-							else
-								self.CCdebuff:SetPoint("LEFT", healthBar, "RIGHT", 1, 0);
-							end
-							self.CCdebuff.filter = filter;
-							self.CCdebuff:SetID(i);
-							self.CCdebuff.unit = unit;
-
-							self.CCdebuff:Show();
-						else
-							show = true;
-						end
-					end
-
-					if options.ANameP_ShowListOnly then
-						if not (ANameP_ShowList and ANameP_ShowList[name]) then
-							show = false;
-						end
-					end
-
-					if isBossDebuff or (caster and not UnitIsPlayer(unit) and UnitIsUnit(unit, caster)) then
-						show = true;
-					end
-				end
-
-				if show and ANameP_BlackList[name] then
-					show = false;
-				end
-
-				if show then
-					if ANameP_ShowList and ANameP_ShowList[name] then
-						aShowIdx[aShowNum] = { i, ANameP_ShowList[name][2] };
-					else
-						aShowIdx[aShowNum] = { i, 0 };
-					end
-					aShowNum = aShowNum + 1;
-				end
-			else
-				break;
-			end
-		end
-
-		if ANameP_ShowListFirst then
-			-- sort
-			table.sort(aShowIdx, Comparison);
-		end
+			return false;
+		end);
 
 		self.debuffColor = 0;
 
-		for v = 1, aShowNum - 1 do
-			local i = aShowIdx[v][1];
-			local name, texture, count, debuffType, duration, expirationTime, caster, _, nameplateShowPersonal, spellId, _, isBossDebuff, _, nameplateShowAll =
-				UnitAura(unit, i, filter);
-			local alert = false;
-			local showlist_time = 0;
+		auraData.debuffs:Iterate(function(auraInstanceID, aura)
+			if numDebuffs > ns.ANameP_MaxDebuff then
+				return true;
+			end
 
-			if ANameP_ShowList and ANameP_ShowList[name] then
-				showlist_time = ANameP_ShowList[name][1];
-				local alertcount = ANameP_ShowList[name][4] or false;
-				local alertnameplate = ANameP_ShowList[name][3] or 0;
+			if ns.ANameP_ShowCCDebuff and bShowCC == false and aura.nameplateShowAll and aura.duration > 0 and aura.duration <= 10 then
+				show = false;
+				bShowCC = true;
 
-				if showlist_time == 1 then
-					showlist_time = duration * 0.3;
-					ANameP_ShowList[name][1] = showlist_time;
+				local color = { r = 0.3, g = 0.3, b = 0.3 };
+
+				setFrame(self.CCdebuff, aura.icon, aura.applications, aura.expirationTime, aura.duration, color);
+
+
+				self.CCdebuff:ClearAllPoints();
+				if self.casticon:IsShown() then
+					self.CCdebuff:SetPoint("LEFT", self.casticon, "RIGHT", 1, 0);
+				else
+					self.CCdebuff:SetPoint("LEFT", healthBar, "RIGHT", 1, 0);
 				end
+				self.CCdebuff.filter = auraData.debufffilter;
+				self.CCdebuff:SetID(auraInstanceID);
+				self.CCdebuff.unit = unit;
 
-				if showlist_time >= 0 and alertcount == false then
-					local alert_time = expirationTime - showlist_time;
+				self.CCdebuff:Show();
+			else
+				local alert = false;
+				local showlist_time = nil;
+				if ns.ANameP_ShowList and ns.ANameP_ShowList[aura.name] then
+					showlist_time = ns.ANameP_ShowList[aura.name][1];
+					local alertcount = ns.ANameP_ShowList[aura.name][4] or false;
+					local alertnameplate = ns.ANameP_ShowList[aura.name][3] or 0;
 
-					if (GetTime() >= alert_time) and duration > 0 then
-						alert = true;
-					else
-						if alertnameplate then
-							self.debuffColor = self.debuffColor + alertnameplate;
+					if showlist_time == 1 then
+						showlist_time = aura.duration * 0.3;
+						ns.ANameP_ShowList[aura.name][1] = showlist_time;
+					end
+
+					if showlist_time and showlist_time >= 0 and alertcount == false then
+						local alert_time = aura.expirationTime - showlist_time;
+
+						if (GetTime() >= alert_time) and aura.duration > 0 then
+							alert = true;
+						else
+							if alertnameplate then
+								self.debuffColor = self.debuffColor + alertnameplate;
+							end
+						end
+					elseif showlist_time and showlist_time >= 0 and alertcount then
+						if (aura.applications >= showlist_time) then
+							alert = true;
+							if alertnameplate then
+								self.debuffColor = self.debuffColor + alertnameplate;
+							end
 						end
 					end
-				elseif showlist_time >= 0 and alertcount then
-					if (count >= showlist_time) then
-						alert = true;
-						if alertnameplate then
-							self.debuffColor = self.debuffColor + alertnameplate;
-						end
-					end
 				end
+
+
+				if (not self.buffList[numDebuffs]) then
+					self.buffList[numDebuffs] = createDebuffFrame(self);
+				end
+
+
+				local frame = self.buffList[numDebuffs];
+				frame.alert = false;
+
+				local size = icon_size;
+
+				if aura.nameplateShowAll then
+					size = icon_size + ns.ANameP_PVP_Debuff_Size_Rate;
+				end
+
+				size_list[numDebuffs] = size;
+
+				setSize(frame, size_list[numDebuffs]);
+
+				local color = DebuffTypeColor["none"];
+
+				if (not PLAYER_UNITS[aura.sourceUnit]) then
+					color = { r = 0.3, g = 0.3, b = 0.3 };
+				end
+
+				if aura.dispelName then
+					color = DebuffTypeColor[aura.dispelName];
+				end
+
+				setFrame(self.buffList[numDebuffs], aura.icon, aura.applications, aura.expirationTime, aura.duration, color);
+
+				if alert and aura.duration > 0 then
+					frame.alert = true;
+				end
+				self.buffList[numDebuffs].filter = auraData.debufffilter;
+				self.buffList[numDebuffs].type = 2;
+				self.buffList[numDebuffs]:SetID(auraInstanceID);
+				self.buffList[numDebuffs].unit = unit;
+
+				numDebuffs = numDebuffs + 1;
 			end
 
-
-			if (not self.buffList[numDebuffs]) then
-				self.buffList[numDebuffs] = createDebuffFrame(self);
-			end
-
-
-			local frame = self.buffList[numDebuffs];
-			frame.alert = false;
-			size_list[numDebuffs] = icon_size;
-
-			if (showlist_time) then
-				size_list[numDebuffs] = icon_size;
-			end
-
-			if not PLAYER_UNITS[caster] then
-				size_list[numDebuffs] = icon_size - 2;
-			end
-
-			if nameplateShowAll then
-				size_list[numDebuffs] = icon_size + ANameP_PVP_Debuff_Size_Rate;
-			end
-
-			if isBossDebuff then
-				size_list[numDebuffs] = icon_size + ANameP_PVP_Debuff_Size_Rate;
-			end
-
-			setSize(frame, size_list[numDebuffs]);
-
-			local color = DebuffTypeColor["none"];
-
-			if helpful then
-				color = DebuffTypeColor["Disease"];
-			end
-
-			if (not UnitIsUnit("player", unit) and not PLAYER_UNITS[caster]) then
-				color = { r = 0.3, g = 0.3, b = 0.3 };
-			end
-
-			if debuffType then
-				color = DebuffTypeColor[debuffType];
-			end
-
-			setFrame(self.buffList[numDebuffs], texture, count, expirationTime, duration, color);
-
-			if alert and duration > 0 then
-				frame.alert = true;
-			end
-			self.buffList[numDebuffs].filter = filter;
-			self.buffList[numDebuffs]:SetID(i);
-			self.buffList[numDebuffs].unit = unit;
-
-			numDebuffs = numDebuffs + 1;
-		end
+			return false;
+		end);
 	end
 
-	if not showdebuff then
-		for i = 1, numDebuffs - 1 do
-			updateDebuffAnchor(self.buffList, i, i - 1, size_list[i], 1, true, self);
-		end
-	end
+	for i = 1, numDebuffs - 1 do
+		updateDebuffAnchor(self.buffList, i, i - 1, size_list[i], 1, true, self);
+	end	
 
-	for i = numDebuffs, ANameP_MaxDebuff do
+	for i = numDebuffs, ns.ANameP_MaxDebuff do
 		if (self.buffList[i]) then
 			self.buffList[i]:Hide();
 			ns.lib.ButtonGlow_Stop(self.buffList[i]);
@@ -940,8 +544,7 @@ local function updateUnitAuras(unit)
 	local nameplate = C_NamePlate.GetNamePlateForUnit(unit, issecure());
 	if (nameplate and nameplate.asNamePlates and not nameplate:IsForbidden()) then
 		if nameplate.asNamePlates.checkaura then
-			updateAuras(nameplate.asNamePlates, nameplate.namePlateUnitToken, nameplate.asNamePlates.filter,
-				nameplate.asNamePlates.showbuff, nameplate.asNamePlates.helpful, nameplate.asNamePlates.showdebuff);
+			updateAuras(nameplate.asNamePlates, nameplate.namePlateUnitToken);
 		else
 			nameplate.asNamePlates:Hide();
 		end
@@ -980,14 +583,14 @@ local function updateTargetNameP(self)
 
 	local casticon = self.casticon;
 	local height = orig_height;
-	local base_y = ANameP_TargetBuffY;
+	local base_y = ns.ANameP_TargetBuffY;
 
 	if UnitFrame.name:IsShown() then
 		base_y = base_y + UnitFrame.name:GetHeight();
 	end
 
 	if UnitIsUnit(unit, "target") then
-		height = orig_height + ANameP_TargetHealthBarHeight;
+		height = orig_height + ns.ANameP_TargetHealthBarHeight;
 		self.healthtext:Show();
 
 		if casticon then
@@ -1001,7 +604,7 @@ local function updateTargetNameP(self)
 		end
 	elseif UnitIsUnit(unit, "player") then
 		self.alerthealthbar = false;
-		height = orig_height + ANameP_TargetHealthBarHeight;
+		height = orig_height + ns.ANameP_TargetHealthBarHeight;
 		self.healthtext:Show();
 	else
 		height = orig_height;
@@ -1129,14 +732,14 @@ local function updateHealthbarColor(self)
 	-- ColorLevel.Name;
 	local unitname = GetUnitName(unit);
 
-	if unitname and ANameP_AlertList[unitname] then
+	if unitname and ns.ANameP_AlertList[unitname] then
 		if self.colorlevel < ColorLevel.Name then
 			self.colorlevel = ColorLevel.Name;
-			setColoronStatusBar(self, ANameP_AlertList[unitname][1], ANameP_AlertList[unitname][2],
-				ANameP_AlertList[unitname][3]);
+			setColoronStatusBar(self, ns.ANameP_AlertList[unitname][1], ns.ANameP_AlertList[unitname][2],
+				ns.ANameP_AlertList[unitname][3]);
 		end
 
-		if ANameP_AlertList[unitname][4] == 1 then
+		if ns.ANameP_AlertList[unitname][4] == 1 then
 			ns.lib.PixelGlow_Start(healthBar);
 			self.alerthealthbar = true;
 		end
@@ -1184,11 +787,11 @@ local function updateHealthbarColor(self)
 	--Target Check
 	local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
 
-	if (isTargetPlayer) and options.ANameP_AggroTargetColor then
+	if (isTargetPlayer) and ns.options.ANameP_AggroTargetColor then
 		if self.colorlevel < ColorLevel.Target then
 			self.colorlevel = ColorLevel.Target;
-			setColoronStatusBar(self, options.ANameP_AggroTargetColor.r, options.ANameP_AggroTargetColor.g,
-				options.ANameP_AggroTargetColor.b);
+			setColoronStatusBar(self, ns.options.ANameP_AggroTargetColor.r, ns.options.ANameP_AggroTargetColor.g,
+				ns.options.ANameP_AggroTargetColor.b);
 		end
 		return;
 	elseif self.colorlevel == ColorLevel.Target then
@@ -1198,18 +801,18 @@ local function updateHealthbarColor(self)
 	-- Aggro Check
 	local aggrocolor;
 
-	if status and options.ANameP_AggroShow then
+	if status and ns.options.ANameP_AggroShow then
 		local tanker = IsPlayerEffectivelyTank();
 		if tanker then
 			if status >= 2 then
 				-- Tanking
-				aggrocolor = options.ANameP_AggroColor;
+				aggrocolor = ns.options.ANameP_AggroColor;
 			else
-				aggrocolor = options.ANameP_TankAggroLoseColor;
+				aggrocolor = ns.options.ANameP_TankAggroLoseColor;
 				if #tanklist > 0 then
 					for _, othertank in ipairs(tanklist) do
 						if UnitIsUnit(unit .. "target", othertank) and not UnitIsUnit(unit .. "target", "player") then
-							aggrocolor = options.ANameP_TankAggroLoseColor2;
+							aggrocolor = ns.options.ANameP_TankAggroLoseColor2;
 							break;
 						end
 					end
@@ -1221,7 +824,7 @@ local function updateHealthbarColor(self)
 		else -- Tanker가 아닐때
 			if status >= 1 then
 				-- Tanking
-				aggrocolor = options.ANameP_AggroColor;
+				aggrocolor = ns.options.ANameP_AggroColor;
 				self.colorlevel = ColorLevel.Aggro;
 				setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
 				return;
@@ -1242,8 +845,8 @@ local function updateHealthbarColor(self)
 		end
 
 		if valuePct <= lowhealthpercent then
-			setColoronStatusBar(self, options.ANameP_LowHealthColor.r, options.ANameP_LowHealthColor.g,
-				options.ANameP_LowHealthColor.b);
+			setColoronStatusBar(self, ns.options.ANameP_LowHealthColor.r, ns.options.ANameP_LowHealthColor.g,
+				ns.options.ANameP_LowHealthColor.b);
 			self.colorlevel = ColorLevel.Lowhealth;
 			return;
 		elseif self.colorlevel == ColorLevel.Lowhealth then
@@ -1256,14 +859,14 @@ local function updateHealthbarColor(self)
 		if self.colorlevel <= ColorLevel.Debuff then
 			self.colorlevel = ColorLevel.Debuff;
 			if self.debuffColor == 1 then
-				setColoronStatusBar(self, options.ANameP_DebuffColor.r, options.ANameP_DebuffColor.g,
-					options.ANameP_DebuffColor.b);
+				setColoronStatusBar(self, ns.options.ANameP_DebuffColor.r, ns.options.ANameP_DebuffColor.g,
+					ns.options.ANameP_DebuffColor.b);
 			elseif self.debuffColor == 2 then
-				setColoronStatusBar(self, options.ANameP_DebuffColor2.r, options.ANameP_DebuffColor2.g,
-					options.ANameP_DebuffColor2.b);
+				setColoronStatusBar(self, ns.options.ANameP_DebuffColor2.r, ns.options.ANameP_DebuffColor2.g,
+					ns.options.ANameP_DebuffColor2.b);
 			elseif self.debuffColor > 2 then
-				setColoronStatusBar(self, options.ANameP_DebuffColor3.r, options.ANameP_DebuffColor3.g,
-					options.ANameP_DebuffColor3.b);
+				setColoronStatusBar(self, ns.options.ANameP_DebuffColor3.r, ns.options.ANameP_DebuffColor3.g,
+					ns.options.ANameP_DebuffColor3.b);
 			end
 		end
 
@@ -1274,8 +877,8 @@ local function updateHealthbarColor(self)
 		end
 	end
 
-	if options.ANameP_AutoMarker and bloadedAutoMarker and asAutoMarkerF and asAutoMarkerF.IsAutoMarkerMob(unit) then
-		local color = options.ANameP_AutoMarkerColor;
+	if ns.options.ANameP_AutoMarker and bloadedAutoMarker and asAutoMarkerF and asAutoMarkerF.IsAutoMarkerMob(unit) then
+		local color = ns.options.ANameP_AutoMarkerColor;
 		self.colorlevel = ColorLevel.Custom;
 		setColoronStatusBar(self, color.r, color.g, color.b);
 		return;
@@ -1285,7 +888,7 @@ local function updateHealthbarColor(self)
 		if #tanklist > 0 then
 			for _, othertank in ipairs(tanklist) do
 				if UnitIsUnit(unit .. "target", othertank) and not UnitIsUnit(unit .. "target", "player") then
-					aggrocolor = options.ANameP_TankAggroLoseColor2;
+					aggrocolor = ns.options.ANameP_TankAggroLoseColor2;
 					self.colorlevel = ColorLevel.Custom;
 					setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
 					return;
@@ -1297,7 +900,7 @@ local function updateHealthbarColor(self)
 	end
 
 	if UnitIsUnit(unit .. "target", "pet") then
-		aggrocolor = options.ANameP_TankAggroLoseColor3;
+		aggrocolor = ns.options.ANameP_TankAggroLoseColor3;
 		self.colorlevel = ColorLevel.Custom;
 		setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
 		return;
@@ -1307,8 +910,8 @@ local function updateHealthbarColor(self)
 
 
 
-	if options.ANameP_QuestAlert and not IsInInstance() and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
-		local color = options.ANameP_QuestColor;
+	if ns.options.ANameP_QuestAlert and not IsInInstance() and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
+		local color = ns.options.ANameP_QuestColor;
 		self.colorlevel = ColorLevel.Custom;
 		setColoronStatusBar(self, color.r, color.g, color.b);
 		return;
@@ -1327,7 +930,7 @@ local function updateHealthbarColor(self)
 end
 
 local function updatePVPAggro(self)
-	if not ANameP_PVPAggroShow then
+	if not ns.ANameP_PVPAggroShow then
 		return
 	end
 
@@ -1366,7 +969,7 @@ local function initAlertList()
 	local localizedClass, englishClass = UnitClass("player");
 	local listname;
 
-	ANameP_ShowList = nil;
+	ns.ANameP_ShowList = nil;
 
 	if spec == nil then
 		spec = 1;
@@ -1376,17 +979,17 @@ local function initAlertList()
 		listname = "ANameP_ShowList_" .. englishClass .. "_" .. spec;
 	end
 
-	if options[listname] then
-		ANameP_ShowList = CopyTable(options[listname]);
+	if ns.options[listname] then
+		ns.ANameP_ShowList = CopyTable(ns.options[listname]);
 	else
-		ANameP_ShowList = {};
+		ns.ANameP_ShowList = {};
 	end
 
 	ANameP_HealerGuid = {};
 
 	lowhealthpercent = 0;
 
-	if options.ANameP_LowHealthAlert then
+	if ns.options.ANameP_LowHealthAlert then
 		if (englishClass == "MAGE") then
 			if (asCheckTalent("불타는 손길")) then
 				lowhealthpercent = 30;
@@ -1422,7 +1025,7 @@ local function initAlertList()
 
 		if (englishClass == "DEATHKNIGHT") then
 			if (asCheckTalent("영혼 수확자")) then
-				lowhealthpercent = 35;			
+				lowhealthpercent = 35;
 			end
 		end
 	end
@@ -1482,7 +1085,7 @@ local g_orig_height = nil;
 local function removeNamePlate(namePlateUnitToken)
 	local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
 	if namePlateFrameBase and namePlateFrameBase.asNamePlates then
-		for i = 1, ANameP_MaxDebuff do
+		for i = 1, ns.ANameP_MaxDebuff do
 			if (namePlateFrameBase.asNamePlates.buffList[i]) then
 				namePlateFrameBase.asNamePlates.buffList[i]:Hide();
 				ns.lib.ButtonGlow_Stop(namePlateFrameBase.asNamePlates.buffList[i]);
@@ -1555,7 +1158,7 @@ local function addNamePlate(namePlateUnitToken)
 	local unit = unitFrame.unit;
 
 	if UnitIsUnit("player", unit) then
-		if not ANameP_ShowPlayerBuff then
+		if not ns.ANameP_ShowPlayerBuff then
 			if namePlateFrameBase.asNamePlates then
 				removeNamePlate(namePlateUnitToken);
 				unitFrame.BuffFrame:SetAlpha(1);
@@ -1589,10 +1192,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates.unit = nil;
 	namePlateFrameBase.asNamePlates.update = 0;
 	namePlateFrameBase.asNamePlates.alerthealthbar = false;
-	namePlateFrameBase.asNamePlates.filter = nil;
-	namePlateFrameBase.asNamePlates.helpful = false;
 	namePlateFrameBase.asNamePlates.checkaura = false;
-	namePlateFrameBase.asNamePlates.showbuff = false;
 	namePlateFrameBase.asNamePlates.downbuff = false;
 	namePlateFrameBase.asNamePlates.checkpvptarget = false;
 	namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
@@ -1615,7 +1215,7 @@ local function addNamePlate(namePlateUnitToken)
 	namePlateFrameBase.asNamePlates:SetScript("OnEvent", nil);
 
 
-	local Size = ANameP_AggroSize;
+	local Size = ns.ANameP_AggroSize;
 
 	if namePlateVerticalScale ~= tonumber(GetCVar("NamePlateVerticalScale")) then
 		namePlateVerticalScale = tonumber(GetCVar("NamePlateVerticalScale"));
@@ -1624,13 +1224,13 @@ local function addNamePlate(namePlateUnitToken)
 
 	if namePlateVerticalScale > 1.0 then
 		Aggro_Y = -1
-		Size = ANameP_AggroSize + 2
-		debuffs_per_line = ANameP_DebuffsPerLine + 1;
+		Size = ns.ANameP_AggroSize + 2
+		debuffs_per_line = ns.ANameP_DebuffsPerLine + 1;
 	else
-		debuffs_per_line = ANameP_DebuffsPerLine;
+		debuffs_per_line = ns.ANameP_DebuffsPerLine;
 	end
 
-	ANameP_MaxDebuff = debuffs_per_line * 2;
+	ns.ANameP_MaxDebuff = debuffs_per_line * 2;
 	Aggro_Y = 0;
 
 	namePlateFrameBase.asNamePlates.orig_height = g_orig_height;
@@ -1657,8 +1257,8 @@ local function addNamePlate(namePlateUnitToken)
 	if not namePlateFrameBase.asNamePlates.healer then
 		namePlateFrameBase.asNamePlates.healer = healthbar:CreateFontString(nil, "OVERLAY");
 	end
-	if ANameP_HealerSize > 0 then
-		namePlateFrameBase.asNamePlates.healer:SetFont(STANDARD_TEXT_FONT, ANameP_HealerSize, "THICKOUTLINE");
+	if ns.ANameP_HealerSize > 0 then
+		namePlateFrameBase.asNamePlates.healer:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HealerSize, "THICKOUTLINE");
 	else
 		namePlateFrameBase.asNamePlates.healer:SetFont(STANDARD_TEXT_FONT, 1, "THICKOUTLINE");
 	end
@@ -1672,7 +1272,7 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates.healthtext = healthbar:CreateFontString(nil, "OVERLAY");
 	end
 
-	namePlateFrameBase.asNamePlates.healthtext:SetFont(STANDARD_TEXT_FONT, ANameP_HeathTextSize, "OUTLINE");
+	namePlateFrameBase.asNamePlates.healthtext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
 	namePlateFrameBase.asNamePlates.healthtext:ClearAllPoints();
 	namePlateFrameBase.asNamePlates.healthtext:SetPoint("CENTER", healthbar, "CENTER", 0, 0)
 
@@ -1717,7 +1317,7 @@ local function addNamePlate(namePlateUnitToken)
 			namePlateFrameBase.asNamePlates.CCdebuff:SetScript("OnEnter", function(s)
 				if s:GetID() > 0 then
 					GameTooltip_SetDefaultAnchor(GameTooltip, s);
-					GameTooltip:SetUnitAura(s.unit, s:GetID(), s.filter);
+					GameTooltip:SetUnitDebuffByAuraInstanceID(s.unit, s:GetID(), s.filter);
 				end
 			end)
 			namePlateFrameBase.asNamePlates.CCdebuff:SetScript("OnLeave", function()
@@ -1728,8 +1328,8 @@ local function addNamePlate(namePlateUnitToken)
 	--namePlateFrameBase.asNamePlates.CCdebuff:EnableMouse(false);
 	namePlateFrameBase.asNamePlates.CCdebuff:ClearAllPoints();
 	namePlateFrameBase.asNamePlates.CCdebuff:SetPoint("LEFT", namePlateFrameBase.asNamePlates.casticon, "RIGHT", 1, 0);
-	namePlateFrameBase.asNamePlates.CCdebuff:SetWidth(ANameP_CCDebuffSize * 1.2);
-	namePlateFrameBase.asNamePlates.CCdebuff:SetHeight(ANameP_CCDebuffSize);
+	namePlateFrameBase.asNamePlates.CCdebuff:SetWidth(ns.ANameP_CCDebuffSize * 1.2);
+	namePlateFrameBase.asNamePlates.CCdebuff:SetHeight(ns.ANameP_CCDebuffSize);
 
 	local frameIcon = namePlateFrameBase.asNamePlates.CCdebuff.icon;
 	local frameBorder = namePlateFrameBase.asNamePlates.CCdebuff.border;
@@ -1740,7 +1340,7 @@ local function addNamePlate(namePlateUnitToken)
 
 	for _, r in next, { namePlateFrameBase.asNamePlates.CCdebuff.cooldown:GetRegions() } do
 		if r:GetObjectType() == "FontString" then
-			r:SetFont(STANDARD_TEXT_FONT, ANameP_CooldownFontSize, "OUTLINE")
+			r:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CooldownFontSize, "OUTLINE")
 			r:SetPoint("TOP", 0, 4);
 			break;
 		end
@@ -1763,17 +1363,14 @@ local function addNamePlate(namePlateUnitToken)
 
 	if namePlateFrameBase.asNamePlates then
 		namePlateFrameBase.asNamePlates.unit = unit;
-		namePlateFrameBase.asNamePlates.filter = nil;
-		namePlateFrameBase.asNamePlates.helpful = false;
 		namePlateFrameBase.asNamePlates.checkaura = false;
-		namePlateFrameBase.asNamePlates.showbuff = false;
 		namePlateFrameBase.asNamePlates.downbuff = false;
 		namePlateFrameBase.asNamePlates.healthtext:Hide();
 		namePlateFrameBase.asNamePlates.checkpvptarget = false;
 		namePlateFrameBase.asNamePlates.colorlevel = ColorLevel.None;
 		namePlateFrameBase.asNamePlates.checkcolor = false;
 
-		for i = 1, ANameP_MaxDebuff do
+		for i = 1, ns.ANameP_MaxDebuff do
 			if (namePlateFrameBase.asNamePlates.buffList[i]) then
 				namePlateFrameBase.asNamePlates.buffList[i]:Hide();
 			end
@@ -1801,8 +1398,8 @@ local function addNamePlate(namePlateUnitToken)
 			namePlateFrameBase.asNamePlates:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
 		end
 
-		if ANameP_SIZE > 0 then
-			namePlateFrameBase.asNamePlates.icon_size = ANameP_SIZE;
+		if ns.ANameP_SIZE > 0 then
+			namePlateFrameBase.asNamePlates.icon_size = ns.ANameP_SIZE;
 		else
 			local orig_width = healthbar:GetWidth();
 			namePlateFrameBase.asNamePlates.icon_size = (orig_width / debuffs_per_line) - (debuffs_per_line - 1);
@@ -1824,24 +1421,16 @@ local function addNamePlate(namePlateUnitToken)
 		namePlateFrameBase.asNamePlates:SetHeight(1);
 		namePlateFrameBase.asNamePlates:SetScale(1);
 
-		local showbuff = false;
 		local helpful = false;
 		local showhealer = false;
 		local checkaura = false;
-		local showdebuff = false;
 		local checkpvptarget = false;
 		local checkcolor = false;
 		local filter = nil;
 
 		if UnitIsUnit("player", unit) then
 			--namePlateFrameBase.asNamePlates:Hide();
-			if ANameP_ShowPlayerBuff then
-				if options.ANameP_ShowPlayerBuffAll == false then
-					filter = "HELPFUL|INCLUDE_NAME_PLATE_ONLY";
-				else
-					filter = "HELPFUL|PLAYER|INCLUDE_NAME_PLATE_ONLY";
-				end
-				helpful = true;
+			if ns.ANameP_ShowPlayerBuff then
 				checkaura = true;
 				unitFrame.BuffFrame:SetAlpha(0);
 				unitFrame.BuffFrame:Hide();
@@ -1851,12 +1440,12 @@ local function addNamePlate(namePlateUnitToken)
 				-- Resource Text
 				if ClassNameplateManaBarFrame and ANameP_Resourcetext == nil then
 					ANameP_Resourcetext = ClassNameplateManaBarFrame:CreateFontString(nil, "OVERLAY");
-					ANameP_Resourcetext:SetFont(STANDARD_TEXT_FONT, ANameP_HeathTextSize - 3, "OUTLINE");
+					ANameP_Resourcetext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize - 3, "OUTLINE");
 					ANameP_Resourcetext:SetAllPoints(true);
 					ANameP_Resourcetext:SetPoint("CENTER", ClassNameplateManaBarFrame, "CENTER", 0, 0);
 				end
 
-				Buff_Y = ANameP_PlayerBuffY;
+				Buff_Y = ns.ANameP_PlayerBuffY;
 
 				if Buff_Y < 0 then
 					namePlateFrameBase.asNamePlates.downbuff = true;
@@ -1873,10 +1462,6 @@ local function addNamePlate(namePlateUnitToken)
 		else
 			local reaction = UnitReaction("player", unit);
 			if reaction and reaction <= 4 then
-				-- Reaction 4 is neutral and less than 4 becomes increasingly more hostile
-				filter = "HARMFUL|INCLUDE_NAME_PLATE_ONLY";
-				showbuff = true;
-
 				if UnitIsPlayer(unit) and ANameP_HealerGuid[UnitGUID(unit)] then
 					showhealer = true;
 				end
@@ -1895,23 +1480,16 @@ local function addNamePlate(namePlateUnitToken)
 				unitFrame:UnregisterEvent("UNIT_AURA");
 				namePlateFrameBase.asNamePlates:Show();
 			elseif not namePlateFrameBase:IsForbidden() then
-				filter = "HELPFUL|INCLUDE_NAME_PLATE_ONLY|PLAYER";
-				helpful = true;
-				showbuff = false;
 				checkaura = false;
 				namePlateFrameBase.asNamePlates:Hide();
 			end
 		end
 
-		namePlateFrameBase.asNamePlates.filter = filter;
-		namePlateFrameBase.asNamePlates.helpful = helpful;
 		namePlateFrameBase.asNamePlates.checkaura = checkaura;
-		namePlateFrameBase.asNamePlates.showbuff = showbuff;
-		namePlateFrameBase.asNamePlates.showdebuff = showdebuff;
 		namePlateFrameBase.asNamePlates.checkpvptarget = checkpvptarget;
 		namePlateFrameBase.asNamePlates.checkcolor = checkcolor;
 
-		if showhealer and ANameP_HealerSize > 0 then
+		if showhealer and ns.ANameP_HealerSize > 0 then
 			namePlateFrameBase.asNamePlates.healer:Show();
 		else
 			namePlateFrameBase.asNamePlates.healer:Hide();
@@ -1930,7 +1508,7 @@ local function updateHealerMark(guid)
 
 	if unit and ANameP_HealerGuid[guid] and not UnitIsUnit(unit, "player") then
 		local nameplate = C_NamePlate.GetNamePlateForUnit(unit, issecure());
-		if (nameplate and nameplate.asNamePlates and not nameplate:IsForbidden() and not nameplate.asNamePlates.showdebuff and nameplate.asNamePlates.checkpvptarget) then
+		if (nameplate and nameplate.asNamePlates and not nameplate:IsForbidden() and nameplate.asNamePlates.checkpvptarget) then
 			nameplate.asNamePlates.healer:Show();
 		end
 	end
@@ -2007,7 +1585,7 @@ local function ANameP_OnEvent(self, event, ...)
 			CombatLogGetCurrentEventInfo();
 		if eventType == "SPELL_CAST_SUCCESS" and sourceGUID and not (sourceGUID == "") then
 			local className = GetPlayerInfoByGUID(sourceGUID);
-			if className and ANameP_HealSpellList[className] and ANameP_HealSpellList[className][spellID] then
+			if className and ns.ANameP_HealSpellList[className] and ns.ANameP_HealSpellList[className][spellID] then
 				ANameP_HealerGuid[sourceGUID] = true;
 				updateHealerMark(sourceGUID);
 			end
@@ -2069,8 +1647,7 @@ local function ANameP_OnUpdate()
 
 		if (nameplate and nameplate.asNamePlates and not nameplate:IsForbidden()) then
 			if nameplate.asNamePlates.checkaura then
-				updateAuras(nameplate.asNamePlates, nameplate.namePlateUnitToken, nameplate.asNamePlates.filter,
-					nameplate.asNamePlates.showbuff, nameplate.asNamePlates.helpful, nameplate.asNamePlates.showdebuff);
+				updateAuras(nameplate.asNamePlates, nameplate.namePlateUnitToken);
 			else
 				nameplate.asNamePlates:Hide();
 			end
@@ -2085,7 +1662,7 @@ local function ANameP_OnUpdate()
 end
 
 local function flushoption()
-	options = CopyTable(ANameP_Options);
+	ns.options = CopyTable(ANameP_Options);
 	C_Timer.After(0.5, initAlertList);
 end
 
@@ -2148,7 +1725,7 @@ local function initAddon()
 
 	ANameP:SetScript("OnEvent", ANameP_OnEvent)
 	--주기적으로 Callback
-	C_Timer.NewTicker(ANameP_UpdateRate, ANameP_OnUpdate);
+	C_Timer.NewTicker(ns.ANameP_UpdateRate, ANameP_OnUpdate);
 
 	hooksecurefunc("DefaultCompactNamePlateFrameAnchorInternal", function(frame, setupOptions)
 		if (frame:IsForbidden()) then return end

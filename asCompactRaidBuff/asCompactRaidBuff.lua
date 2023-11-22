@@ -38,18 +38,15 @@ local AuraUpdateChangedType = EnumUtil.MakeEnum(
 );
 
 local UnitFrameDebuffType = EnumUtil.MakeEnum(
-	"BossDebuff",
-	"BossBuff",
-	"namePlateShowAll",
-	"PriorityDebuff",
+	"NonBossDebuff",
 	"NonBossRaidDebuff",
-	"NonBossDebuff"
+	"PriorityDebuff",
+	"namePlateShowAll",
+	"BossBuff",
+	"BossDebuff"	
 );
 
 local UnitFrameBuffType = EnumUtil.MakeEnum(
-	"PriorityBuff",
-	"ShouldShow1",
-	"ShouldShow2",
 	"Normal"
 );
 
@@ -87,7 +84,7 @@ end
 
 local function UnitFrameDebuffComparator(a, b)
 	if a.debuffType ~= b.debuffType then
-		return a.debuffType < b.debuffType;
+		return a.debuffType > b.debuffType;
 	end
 
 	return DefaultAuraCompare(a, b);
@@ -95,7 +92,7 @@ end
 
 local function UnitFrameBuffComparator(a, b)
 	if a.debuffType ~= b.debuffType then
-		return a.debuffType < b.debuffType;
+		return a.debuffType > b.debuffType;
 	end
 
 	return DefaultAuraCompare(a, b);
@@ -582,10 +579,6 @@ local function CheckCasting(nameplate)
 		return;
 	end
 
-	if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden() then
-		return;
-	end
-
 	local unit = nameplate.UnitFrame.unit;
 
 	if isFaction(unit) then
@@ -645,7 +638,7 @@ local function ProcessAura(aura)
 		return AuraUpdateChangedType.None;
 	end
 
-	if ns.ACRB_ShowList and ns.ACRB_ShowList[aura.name] then
+	if ns.ACRB_BlackList and ns.ACRB_BlackList[aura.name] then
 		return AuraUpdateChangedType.None;
 	end
 
@@ -671,16 +664,7 @@ local function ProcessAura(aura)
 		end
 	elseif aura.isHelpful and (ACRB_ShowList and PLAYER_UNITS[aura.sourceUnit] and ACRB_ShowList[aura.name]) then
 		aura.isBuff = true;
-		if ACRB_ShowList[aura.name][2] > 2 then
-			aura.debuffType = UnitFrameBuffType.PriorityBuff;
-		elseif ACRB_ShowList[aura.name][2] == 2 then
-			aura.debuffType = UnitFrameBuffType.ShouldShow1;
-		elseif ACRB_ShowList[aura.name][2] == 1 then
-			aura.debuffType = UnitFrameBuffType.ShouldShow2;
-		else
-			aura.debuffType = UnitFrameBuffType.Normal;
-		end
-
+		aura.debuffType = UnitFrameBuffType.Normal + ACRB_ShowList[aura.name][2];
 		return AuraUpdateChangedType.Buff;
 	elseif aura.isHelpful and ShouldDisplayBuff(aura) then
 		aura.isBuff = true;

@@ -939,6 +939,7 @@ local inrange, inrange2 = true, true;
 local function APB_UpdateSpell(spell, spell2)
 	local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spell);
 	local spellid = select(7, GetSpellInfo(spell));
+	local isUsable, notEnoughMana = IsUsableSpell(spellid);
 
 	if bupdate_druid then
 		if APB_ACTION then
@@ -958,12 +959,12 @@ local function APB_UpdateSpell(spell, spell2)
 	end
 
 	if not maxCharges then
-		print(GetSpellCharges(spell));
 		return;
 	end
 	for i = 1, charges do
-		APB.spellbar[i].start = nil;
-		--	APB.spellbar[i]:SetStatusBarColor(1,1,0)
+		local spellbar = APB.spellbar[i];
+		spellbar.start = nil;
+		--	spellbar:SetStatusBarColor(1,1,0)
 		local _, Class = UnitClass("player")
 		local color = RAID_CLASS_COLORS[Class]
 		local rate = 0;
@@ -971,52 +972,56 @@ local function APB_UpdateSpell(spell, spell2)
 		if bupdatecombo then
 			rate = 0.2;
 		end
-		APB.spellbar[i]:SetStatusBarColor(color.r + rate, color.g + rate, color.b + rate);
+		spellbar:SetStatusBarColor(color.r + rate, color.g + rate, color.b + rate);
 
-		APB.spellbar[i]:SetMinMaxValues(0, 1)
-		APB.spellbar[i]:SetValue(1)
-		APB.spellbar[i]:SetScript("OnUpdate", nil)
-
+		spellbar:SetMinMaxValues(0, 1)
+		spellbar:SetValue(1)
+		spellbar:SetScript("OnUpdate", nil)
+		spellbar.spellid = spellid;
 
 		if balert then
-			APB.spellbar[i]:SetStatusBarColor(0, 1, 0)
+			spellbar:SetStatusBarColor(0, 1, 0)
 		end
 
 		if inrange == false then
-			APB.spellbar[i]:SetStatusBarColor(0.3, 0, 0);
+			spellbar:SetStatusBarColor(0.6, 0, 0);
+		elseif notEnoughMana then
+			spellbar:SetStatusBarColor(0.3, 0.3, 0.3);
 		end
-
-		APB.spellbar[i].spellid = spellid;
 	end
 
 	if charges < maxCharges then
-		APB.spellbar[charges + 1]:SetStatusBarColor(1, 1, 1)
-		APB.spellbar[charges + 1].start = chargeStart;
-		APB.spellbar[charges + 1].duration = chargeDuration;
-		APB.spellbar[charges + 1]:SetScript("OnUpdate", APB_OnUpdateCombo)
+		local spellbar = APB.spellbar[charges + 1];
+		spellbar:SetStatusBarColor(1, 1, 1)
+		spellbar.start = chargeStart;
+		spellbar.duration = chargeDuration;
+		spellbar:SetScript("OnUpdate", APB_OnUpdateCombo)
+		spellbar.spellid = spellid;
 
 		if balert then
-			APB.spellbar[charges + 1]:SetStatusBarColor(0, 1, 1)
+			spellbar:SetStatusBarColor(0, 1, 1)
 		end
 
 		if inrange == false then
-			APB.spellbar[charges + 1]:SetStatusBarColor(0.3, 0, 0);
+			spellbar:SetStatusBarColor(0.6, 0, 0);
+		elseif notEnoughMana then
+			spellbar:SetStatusBarColor(0.3, 0.3, 0.3);
 		end
-
-		APB.spellbar[charges + 1].spellid = spellid;
 	end
 
 	if charges < maxCharges - 1 then
 		for i = charges + 2, maxCharges do
-			APB.spellbar[i]:SetValue(0)
-			APB.spellbar[i].start = nil;
-			APB.spellbar[i]:SetScript("OnUpdate", nil)
+			local spellbar = APB.spellbar[i];
+			spellbar:SetValue(0)
+			spellbar.start = nil;
+			spellbar:SetScript("OnUpdate", nil)
 		end
 	end
 
 	if spell2 then
 		local charges, maxCharges2, chargeStart, chargeDuration = GetSpellCharges(spell2);
 		spellid = select(7, GetSpellInfo(spell2));
+		local isUsable, notEnoughMana = IsUsableSpell(spellid);
 
 		if not maxCharges2 then
 			if APB_ACTION2 then
@@ -1040,37 +1045,52 @@ local function APB_UpdateSpell(spell, spell2)
 
 
 		for i = maxCharges + 1, maxCharges + charges do
-			APB.spellbar[i].start = nil;
-			APB.spellbar[i]:SetStatusBarColor(1, 0.7, 0.3);
+			local spellbar = APB.spellbar[i];
+			spellbar.start = nil;
+			spellbar:SetStatusBarColor(1, 0.7, 0.3);
 
-			APB.spellbar[i]:SetMinMaxValues(0, 1)
-			APB.spellbar[i]:SetValue(1)
-			APB.spellbar[i]:SetScript("OnUpdate", nil)
-			APB.spellbar[i].spellid = spellid;
+			spellbar:SetMinMaxValues(0, 1)
+			spellbar:SetValue(1)
+			spellbar:SetScript("OnUpdate", nil)
+			spellbar.spellid = spellid;
 
 			if balert2 then
-				APB.spellbar[i]:SetStatusBarColor(0, 1, 1)
+				spellbar:SetStatusBarColor(0, 1, 1)
 			end
 
 			if inrange2 == false then
-				APB.spellbar[i]:SetStatusBarColor(0.3, 0, 0);
+				spellbar:SetStatusBarColor(0.3, 0, 0);
+			elseif notEnoughMana then
+				spellbar:SetStatusBarColor(0.6, 0.6, 0.6);
 			end
 		end
 
 		if charges < maxCharges2 then
-			APB.spellbar[maxCharges + charges + 1]:SetStatusBarColor(0.5, 0.5, 0.5)
-			APB.spellbar[maxCharges + charges + 1].start = chargeStart;
-			APB.spellbar[maxCharges + charges + 1].duration = chargeDuration;
-			APB.spellbar[maxCharges + charges + 1]:SetScript("OnUpdate", APB_OnUpdateCombo)
+			local spellbar = APB.spellbar[maxCharges + charges + 1];
+			spellbar:SetStatusBarColor(0.5, 0.5, 0.5)
+			spellbar.start = chargeStart;
+			spellbar.duration = chargeDuration;
+			spellbar:SetScript("OnUpdate", APB_OnUpdateCombo)
 
-			APB.spellbar[maxCharges + charges + 1].spellid = spellid;
+			spellbar.spellid = spellid;
+
+			if balert2 then
+				spellbar:SetStatusBarColor(0, 1, 1)
+			end
+
+			if inrange2 == false then
+				spellbar:SetStatusBarColor(0.3, 0, 0);
+			elseif notEnoughMana then
+				spellbar:SetStatusBarColor(0.6, 0.6, 0.6);
+			end
 		end
 
 		if charges < maxCharges2 - 1 then
 			for i = maxCharges + charges + 2, maxCharges + maxCharges2 do
-				APB.spellbar[i]:SetValue(0)
-				APB.spellbar[i].start = nil;
-				APB.spellbar[i]:SetScript("OnUpdate", nil)
+				local spellbar = APB.spellbar[i];
+				spellbar:SetValue(0)
+				spellbar.start = nil;
+				spellbar:SetScript("OnUpdate", nil)
 			end
 		end
 	end
@@ -1806,7 +1826,7 @@ local function APB_CheckPower(self)
 			APB:SetScript("OnUpdate", APB_OnUpdate);
 			APB:RegisterEvent("PLAYER_TARGET_CHANGED");
 			APB_UpdateBuff(self.buffbar[0])
-		elseif (spec and spec == 2) then
+		elseif asCheckTalent("일발필중") then
 			APB_BUFF = "기만";
 			APB_BUFF3 = "어둠의 춤";
 			APB.buffbar[0].buff = APB_BUFF;

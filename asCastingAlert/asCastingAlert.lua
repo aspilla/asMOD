@@ -26,10 +26,6 @@ local function CheckCasting(nameplate)
 		return false;
 	end
 
-	if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden() then
-		return false;
-	end
-
 	local unit = nameplate.UnitFrame.unit;
 
 	if isFaction(unit) and UnitIsUnit(unit .. "target", "player") and not UnitIsUnit(unit, "target") then

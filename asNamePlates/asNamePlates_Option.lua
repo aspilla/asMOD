@@ -1,3 +1,271 @@
+local _, ns = ...;
+
+---설정부
+ns.ANameP_SIZE = 0;                  -- Icon Size 0 이면 자동으로 설정
+ns.ANameP_Size_Rate = 0.7;           -- Icon 가로 세로 비중
+ns.ANameP_PVP_Debuff_Size_Rate = 4   -- PVP Debuff Icon Size 작게 하려면 - 값으로
+
+ns.ANameP_PlayerBuffY = -5           -- Player 바 Buff 위치
+ns.ANameP_TargetBuffY = 5            -- 대상바 Buff 위치
+ns.ANameP_CooldownFontSize = 9;      --재사용 대기시간 Font Size
+ns.ANameP_CountFontSize = 8;         --Count 폰트 Size
+ns.ANameP_MaxDebuff = 8;             --최대 Debuff
+ns.ANameP_DebuffsPerLine = 4;        --줄당 Debuff 수 (큰 이름표 일 경우 +1 됨)
+ns.ANameP_MaxBuff = 1;               --최대 PVP Buff (안보이게 하려면 0)
+ns.ANameP_ShowPlayerBuff = true;        --Player NamePlate에 Buff를 안보일려면 false;
+ns.ANameP_BuffMaxCool = 60;             --buff의 최대 Cool
+ns.ANameP_PVPAggroShow = true;       -- PVP 어그로 여부를 표현할지 여부
+ns.ANameP_ShowCCDebuff = true        -- 오른쪽에 CC Debuff만 별도로 보이기
+ns.ANameP_CCDebuffSize = 16          -- CC Debuff Size;
+ns.ANameP_AggroSize = 12;            -- 어그로 표시 Text Size
+ns.ANameP_HealerSize = 14;           -- 힐러표시 Text Size
+ns.ANameP_TargetHealthBarHeight = 3; -- 대상 체력바 높이 증가치 (+3)
+ns.ANameP_HeathTextSize = 8;         -- 대상 체력숫자 크기
+ns.ANameP_UpdateRate = 0.5;          -- 버프 Check 반복 시간 (초)
+
+
+-- 아래 유닛명이면 강조
+-- 색상 지정 가능
+-- { r, g, b, 빤작임 여부}
+ns.ANameP_AlertList = {
+	["폭발물"] = { 0, 1, 0.5, 1 }, -- 녹색 빤짝이
+	["무형의 존재"] = { 0, 1, 0.5, 0 }, -- 녹색 빤짝이
+	--["쉬바라"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
+	--["우르줄"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
+	--	["파멸수호병"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
+	--	["격노수호병"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
+	--	["지옥불정령"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
+	--	["지옥사냥개"] = {0, 1, 0.5, 1},	 -- 녹색 빤짝이
+	--	["원한의 망령"] = {1, 1, 1, 0},	-- 흰색 빤짝이 (없음)
+	--	["어둠그늘 곰팡이"] = {0, 1, 0, 0},	-- 녹색 빤짝이 (없음)
+	--["절단 훈련용 허수아비"] = {0, 1, 0.5, 1},	
+	--	["던전 사용자의 허수아비"] = {1, 0, 1, 0},	
+	--["공격대원의 훈련용 허수아비"] = {1, 0, 1, 0},	
+
+}
+
+
+-- 안보이게 할 디법
+ns.ANameP_BlackList = {
+	--	["상처 감염 독"] = 1,	
+	--	["맹독"] = 1,
+	--	["약자 고문"] = 1,
+	--	["슬픔"] = 1,
+	--	["순환하는 기원"] = 1,
+	["도전자의 짐"] = 1,
+	["도전자의 힘"] = 1,
+
+}
+
+ns.ANameP_PVPBuffList = {
+	[236273] = 1, --WARRIOR
+	[213871] = 1, --WARRIOR
+	[118038] = 1, --WARRIOR
+	[12975] = 1, --WARRIOR
+	[1160] = 1, --WARRIOR
+	[871] = 1, --WARRIOR
+	[202168] = 1, --WARRIOR
+	[97463] = 1, --WARRIOR
+	[383762] = 1, --WARRIOR
+	[184364] = 1, --WARRIOR
+	[386394] = 1, --WARRIOR
+	[392966] = 1, --WARRIOR
+	[185311] = 1, --ROGUE
+	[11327] = 1, --ROGUE
+	[1966] = 1, --ROGUE
+	[31224] = 1, --ROGUE
+	[31230] = 1, --ROGUE
+	[5277] = 1, --ROGUE
+	[212800] = 1, --DEMONHUNTER
+	[203720] = 1, --DEMONHUNTER
+	[187827] = 1, --DEMONHUNTER
+	[206803] = 1, --DEMONHUNTER
+	[196555] = 1, --DEMONHUNTER
+	[204021] = 1, --DEMONHUNTER
+	[263648] = 1, --DEMONHUNTER
+	[209258] = 1, --DEMONHUNTER
+	[209426] = 1, --DEMONHUNTER
+	[202162] = 1, --MONK
+	[388615] = 1, --MONK
+	[115310] = 1, --MONK
+	[116849] = 1, --MONK
+	[115399] = 1, --MONK
+	[119582] = 1, --MONK
+	[122281] = 1, --MONK
+	[322507] = 1, --MONK
+	[120954] = 1, --MONK
+	[122783] = 1, --MONK
+	[122278] = 1, --MONK
+	[132578] = 1, --MONK
+	[115176] = 1, --MONK
+	[51052] = 1, --DEATHKNIGHT
+	[48707] = 1, --DEATHKNIGHT
+	[327574] = 1, --DEATHKNIGHT
+	[48743] = 1, --DEATHKNIGHT
+	[48792] = 1, --DEATHKNIGHT
+	[114556] = 1, --DEATHKNIGHT
+	[81256] = 1, --DEATHKNIGHT
+	[219809] = 1, --DEATHKNIGHT
+	[206931] = 1, --DEATHKNIGHT
+	[274156] = 1, --DEATHKNIGHT
+	[194679] = 1, --DEATHKNIGHT
+	[55233] = 1, --DEATHKNIGHT
+	[53480] = 1, --HUNTER
+	[109304] = 1, --HUNTER
+	[264735] = 1, --HUNTER
+	[355913] = 1, --EVOKER
+	[370960] = 1, --EVOKER
+	[363534] = 1, --EVOKER
+	[357170] = 1, --EVOKER
+	[374348] = 1, --EVOKER
+	[374227] = 1, --EVOKER
+	[363916] = 1, --EVOKER
+	[360827] = 1, --EVOKER
+	[404381] = 1, --EVOKER
+	[305497] = 1, --DRUID
+	[354654] = 1, --DRUID
+	[201664] = 1, --DRUID
+	[157982] = 1, --DRUID
+	[102342] = 1, --DRUID
+	[61336] = 1, --DRUID
+	[200851] = 1, --DRUID
+	[80313] = 1, --DRUID
+	[22842] = 1, --DRUID
+	[108238] = 1, --DRUID
+	[124974] = 1, --DRUID
+	[104773] = 1, --WARLOCK
+	[108416] = 1, --WARLOCK
+	[215769] = 1, --PRIEST
+	[328530] = 1, --PRIEST
+	[197268] = 1, --PRIEST
+	[19236] = 1, --PRIEST
+	[81782] = 1, --PRIEST
+	[33206] = 1, --PRIEST
+	[372835] = 1, --PRIEST
+	[391124] = 1, --PRIEST
+	[265202] = 1, --PRIEST
+	[64843] = 1, --PRIEST
+	[47788] = 1, --PRIEST
+	[47585] = 1, --PRIEST
+	[108968] = 1, --PRIEST
+	[15286] = 1, --PRIEST
+	[271466] = 1, --PRIEST
+	[199452] = 1, --PALADIN
+	[403876] = 1, --PALADIN
+	[31850] = 1, --PALADIN
+	[378279] = 1, --PALADIN
+	[378974] = 1, --PALADIN
+	[86659] = 1, --PALADIN
+	[387174] = 1, --PALADIN
+	[327193] = 1, --PALADIN
+	[205191] = 1, --PALADIN
+	[184662] = 1, --PALADIN
+	[498] = 1, --PALADIN
+	[148039] = 1, --PALADIN
+	[157047] = 1, --PALADIN
+	[31821] = 1, --PALADIN
+	[633] = 1, --PALADIN
+	[6940] = 1, --PALADIN
+	[1022] = 1, --PALADIN
+	[204018] = 1, --PALADIN
+	[204331] = 1, --SHAMAN
+	[108280] = 1, --SHAMAN
+	[98008] = 1, --SHAMAN
+	[198838] = 1, --SHAMAN
+	[207399] = 1, --SHAMAN
+	[108271] = 1, --SHAMAN
+	[198103] = 1, --SHAMAN
+	[30884] = 1, --SHAMAN
+	[383017] = 1, --SHAMAN
+	[108281] = 1, --SHAMAN
+	[198111] = 1, --MAGE
+	[110959] = 1, --MAGE
+	[342246] = 1, --MAGE
+	[11426] = 1, --MAGE
+	[66] = 1,  --MAGE
+	[235313] = 1, --MAGE
+	[235450] = 1, --MAGE
+	[55342] = 1, --MAGE
+	[414660] = 1, --MAGE
+	[414664] = 1, --MAGE
+	[86949] = 1, --MAGE
+	[235219] = 1, --MAGE
+	[414658] = 1, --MAGE
+}
+
+ns.ANameP_HealSpellList = {};
+
+ns.ANameP_HealSpellList["사제"] = {
+
+	[047540] = "PRIEST", -- Penance XXX strange error received from user on 2015-10-15 (this spell was cast by a hunter...)
+	[109964] = "PRIEST", -- Spirit shell -- not seen in disc
+	[002060] = "PRIEST", -- Greater Heal
+	[014914] = "PRIEST", -- Holy Fire
+	[033206] = "PRIEST", -- Pain Suppression
+	[000596] = "PRIEST", -- Prayer of Healing
+	[000527] = "PRIEST", -- Purify
+	[081749] = "PRIEST", -- Atonement
+	[132157] = "PRIEST", -- Holy Nova
+	[034861] = "PRIEST", -- Circle of Healing
+	[064843] = "PRIEST", -- Divine Hymn
+	[047788] = "PRIEST", -- Guardian Spirit
+	[032546] = "PRIEST", -- Binding Heal
+	[077485] = "PRIEST", -- Mastery: Echo of Light -- the passibe ability
+	[077489] = "PRIEST", -- Echo of Light -- the aura applied by the afformentioned
+	[000139] = "PRIEST", -- Renew
+
+};
+
+ns.ANameP_HealSpellList["드루이드"] = {
+
+	[102342] = "DRUID", -- Ironbark
+	[033763] = "DRUID", -- Lifebloom
+	[088423] = "DRUID", -- Nature's Cure
+	[033891] = "DRUID", -- Incarnation: Tree of Life
+	[048438] = "DRUID", -- Wild Growth
+	[000740] = "DRUID", -- Tranquility
+};
+
+
+ns.ANameP_HealSpellList["주술사"] = {
+
+	[061295] = "SHAMAN", -- Riptide
+	[077472] = "SHAMAN", -- Healing Wave
+	[098008] = "SHAMAN", -- Spirit link totem
+	[001064] = "SHAMAN", -- Chain Heal
+	[073920] = "SHAMAN", -- Healing Rain
+
+};
+
+ns.ANameP_HealSpellList["성기사"] = {
+
+	[020473] = "PALADIN", -- Holy Shock
+	[053563] = "PALADIN", -- Beacon of Light
+	[082326] = "PALADIN", -- Holy Light
+	[085222] = "PALADIN", -- Light of Dawn
+};
+
+
+ns.ANameP_HealSpellList["수도사"] = {
+	[115175] = "MONK", -- Soothing Mist
+	[115310] = "MONK", -- Revival
+	[116670] = "MONK", -- Vivify
+	[116680] = "MONK", -- Thunder Focus Tea
+	[116849] = "MONK", -- Life Cocoon
+	[119611] = "MONK", -- Renewing mist
+
+};
+
+ns.ANameP_HealSpellList["기원사"] = {
+	[355936] = "EVOKER", -- 꿈의 숨결
+	[364446] = "EVOKER", -- 메아리
+	[366155] = "EVOKER", -- 되감기
+	[367226] = "EVOKER", -- 영혼 만개
+
+};
+
+
+
 ANameP_Options_Default = {
     version = 231119,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가

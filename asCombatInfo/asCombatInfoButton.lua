@@ -353,13 +353,22 @@ function ns.Button:checkSpell()
         if self.inRange == false then
             self.iconColor = { r = 0.3, g = 0, b = 0 };
         end
-    elseif (notEnoughMana) then
-        self.iconColor = { r = 0.5, g = 0.5, b = 1 };
-        self.iconDes = true;
     else
-        self.iconColor = { r = 0.5, g = 0.5, b = 0.5 };
         self.iconDes = true;
+        self.iconColor = { r = 0.5, g = 0.5, b = 0.5 };
+
+        if (notEnoughMana) then
+            -- do nothing
+        end
+
+        if not (t == ns.EnumButtonType.BuffOnly or t == ns.EnumButtonType.DebuffOnly) then
+            if self.inRange == false then
+                self.spellcool = "●"
+                self.spellcoolColor = { r = 0.8, g = 0, b = 0 };
+            end
+        end
     end
+
 
     self.alpha = 1;
     self.start = start;
@@ -577,20 +586,20 @@ function ns.Button:init(config, frame)
         ACI_SpellID_list[self.spell] = true;
         ACI_SpellID_list[self.spellid] = true;
         ns.eventhandler.registerEventFilter(self.spell, self);
+
+        for _, action in pairs(actionlist) do
+            ns.eventhandler.registerAction(action, self);
+        end
     end
     if self.type == ns.EnumButtonType.Debuff or self.type == ns.EnumButtonType.DebuffOnly then
         ACI_Debuff_list[self.spell] = true;
+        ns.eventhandler.registerAura(self.unit, self.spell);
     elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then
         ACI_Buff_list[self.spell] = true;
         ns.eventhandler.registerBuffTimer(self);
+        ns.eventhandler.registerAura(self.unit, self.spell);
     end
-
-    ns.eventhandler.registerAura(self.unit, self.spell);
-
-    for _, action in pairs(actionlist) do
-        ns.eventhandler.registerAction(action, self);
-    end
-
+    
     if self.type == ns.EnumButtonType.Totem then
         ns.eventhandler.registerTotem(self.spell, self);
         ns.eventhandler.registerTotemTimer(self);

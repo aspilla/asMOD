@@ -40,19 +40,15 @@ local AuraUpdateChangedType = EnumUtil.MakeEnum(
 );
 
 local UnitFrameDebuffType = EnumUtil.MakeEnum(
-    "L5",
-    "L4",
-    "L3",
-    "L2",
-    "L1",
-    "BossDebuff",
-    "BossBuff",
-    "nameplateShowPersonal",
-    "L0",
-    "namePlateShowAll",
-    "PriorityDebuff",
+
+    "NonBossDebuff",
     "NonBossRaidDebuff",
-    "NonBossDebuff"
+    "PriorityDebuff",
+    "namePlateShowAll",
+    "L0",
+    "nameplateShowPersonal",
+    "BossBuff",
+    "BossDebuff"
 );
 
 
@@ -91,7 +87,7 @@ end
 
 local function UnitFrameDebuffComparator(a, b)
     if a.debuffType ~= b.debuffType then
-        return a.debuffType < b.debuffType;
+        return a.debuffType > b.debuffType;
     end
 
     return DefaultAuraCompare(a, b);
@@ -169,84 +165,84 @@ end
 local KnownSpellList = {};
 
 local function asCheckTalent()
-	local specID = PlayerUtil.GetCurrentSpecID();
-	local configID = C_ClassTalents.GetActiveConfigID();
+    local specID = PlayerUtil.GetCurrentSpecID();
+    local configID = C_ClassTalents.GetActiveConfigID();
 
-	if not (configID) then
-		return;
-	end
-	local configInfo = C_Traits.GetConfigInfo(configID);
-	local treeID = configInfo.treeIDs[1];
-	local nodes = C_Traits.GetTreeNodes(treeID);
+    if not (configID) then
+        return;
+    end
+    local configInfo = C_Traits.GetConfigInfo(configID);
+    local treeID = configInfo.treeIDs[1];
+    local nodes = C_Traits.GetTreeNodes(treeID);
 
-	for _, nodeID in ipairs(nodes) do
-		local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
-		if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-			local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
-			local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
-			local definitionInfo = entryInfo and entryInfo.definitionID and
-				C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+    for _, nodeID in ipairs(nodes) do
+        local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
+        if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
+            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
+            local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
+            local definitionInfo = entryInfo and entryInfo.definitionID and
+                C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
-			if definitionInfo ~= nil then
-				local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
-				--print(string.format("%s/%d %s/%d", talentName, definitionInfo.spellID, definitionInfo.overrideName or "", definitionInfo.overriddenSpellID or 0));
-				local name, rank, icon = GetSpellInfo(definitionInfo.spellID);
-				KnownSpellList[talentName or ""] = true;
+            if definitionInfo ~= nil then
+                local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
+                --print(string.format("%s/%d %s/%d", talentName, definitionInfo.spellID, definitionInfo.overrideName or "", definitionInfo.overriddenSpellID or 0));
+                local name, rank, icon = GetSpellInfo(definitionInfo.spellID);
+                KnownSpellList[talentName or ""] = true;
                 KnownSpellList[icon or 0] = true;
-				if definitionInfo.overrideName then
-					--print (definitionInfo.overrideName)
-					KnownSpellList[definitionInfo.overrideName] = true;
-				end
-			end
-		end
-	end
-	return;
+                if definitionInfo.overrideName then
+                    --print (definitionInfo.overrideName)
+                    KnownSpellList[definitionInfo.overrideName] = true;
+                end
+            end
+        end
+    end
+    return;
 end
 
 local function scanSpells(tab)
-	local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
+    local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
 
-	if not tabName then
-		return;
-	end
+    if not tabName then
+        return;
+    end
 
-	for i = tabOffset + 1, tabOffset + numEntries do
-		local spellName, _, spellID = GetSpellBookItemName(i, BOOKTYPE_SPELL)
-		if not spellName then
-			do break end
-		end
+    for i = tabOffset + 1, tabOffset + numEntries do
+        local spellName, _, spellID = GetSpellBookItemName(i, BOOKTYPE_SPELL)
+        if not spellName then
+            do break end
+        end
 
-		if spellName then
-			KnownSpellList[spellName] = 1;
-		end
-	end
+        if spellName then
+            KnownSpellList[spellName] = 1;
+        end
+    end
 end
 
 local function scanPetSpells()
-	for i = 1, 20 do
-		local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
-		local spellName, _, spellID = GetSpellBookItemName(slot, BOOKTYPE_PET)
+    for i = 1, 20 do
+        local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
+        local spellName, _, spellID = GetSpellBookItemName(slot, BOOKTYPE_PET)
 
-		if not spellName then
-			do break end
-		end
+        if not spellName then
+            do break end
+        end
 
-		if spellName then
-			KnownSpellList[spellName] = 1;
-		end
-	end
+        if spellName then
+            KnownSpellList[spellName] = 1;
+        end
+    end
 end
 
 
 
 local function setupKnownSpell()
-	KnownSpellList = {};
+    KnownSpellList = {};
 
-	scanSpells(1)
-	scanSpells(2)
-	scanSpells(3)
+    scanSpells(1)
+    scanSpells(2)
+    scanSpells(3)
     scanPetSpells();
-	asCheckTalent();
+    asCheckTalent();
 end
 
 local function ShouldShowDebuffs(unit, caster, nameplateShowAll, casterIsAPlayer)
@@ -319,10 +315,9 @@ local function ProcessAura(aura, unit)
     end
 
     if skip == false then
-
         if unit == "target" and show_list[aura.name] then
-            if show_list[aura.name][2] and show_list[aura.name][2] <= 5 then
-                aura.debuffType = UnitFrameDebuffType.L5 + (5 - show_list[aura.name][2]);                
+            if show_list[aura.name][2] then
+                aura.debuffType = UnitFrameDebuffType.BossDebuff + show_list[aura.name][2];
             end
         elseif unit == "target" and (KnownSpellList[aura.name] or KnownSpellList[aura.texture]) then
             aura.debuffType = UnitFrameDebuffType.L0;
@@ -418,27 +413,27 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             end
 
             if unit == "target" and show_list and show_list[aura.name] then
-				local showlist_time = show_list[aura.name][1];
-				local alertcount = show_list[aura.name][4] or false;
-				local alertnameplate = show_list[aura.name][3] or false;
+                local showlist_time = show_list[aura.name][1];
+                local alertcount = show_list[aura.name][4] or false;
+                local alertnameplate = show_list[aura.name][3] or false;
 
-				if showlist_time == 1 then
-					showlist_time = aura.duration * 0.3;
-					show_list[aura.name][1] = showlist_time;
-				end
+                if showlist_time == 1 then
+                    showlist_time = aura.duration * 0.3;
+                    show_list[aura.name][1] = showlist_time;
+                end
 
-				if showlist_time >= 0 and alertcount == false then
-					local alert_time = aura.expirationTime - showlist_time;
+                if showlist_time >= 0 and alertcount == false then
+                    local alert_time = aura.expirationTime - showlist_time;
 
-					if (GetTime() >= alert_time) and aura.duration > 0 then
-						alert = true;
-					end
-				elseif showlist_time >= 0 and alertcount then
-					if (aura.applications >= showlist_time) then
-						alert = true;
-					end
-				end
-			end
+                    if (GetTime() >= alert_time) and aura.duration > 0 then
+                        alert = true;
+                    end
+                elseif showlist_time >= 0 and alertcount then
+                    if (aura.applications >= showlist_time) then
+                        alert = true;
+                    end
+                end
+            end
 
             if (aura.duration > 0) then
                 frameCooldown:Show();
@@ -564,40 +559,38 @@ function ADF_ClearFrame()
     end
 end
 
-
 local function initList()
-	local spec = GetSpecialization();
-	local localizedClass, englishClass = UnitClass("player");
-	local listname;
+    local spec = GetSpecialization();
+    local localizedClass, englishClass = UnitClass("player");
+    local listname;
 
-	show_list = nil;
+    show_list = nil;
 
-	if spec == nil then
-		spec = 1;
-	end
+    if spec == nil then
+        spec = 1;
+    end
 
-	if spec then
-		listname = "ShowList_" .. englishClass .. "_" .. spec;
-	end
+    if spec then
+        listname = "ShowList_" .. englishClass .. "_" .. spec;
+    end
 
-	if ns[listname] then
-		show_list = CopyTable(ns[listname]);        
-	else
-		show_list = {};
-	end
+    if ns[listname] then
+        show_list = CopyTable(ns[listname]);
+    else
+        show_list = {};
+    end
 
     setupKnownSpell();
 end
 
 function ADF_OnEvent(self, event, arg1, ...)
     if (event == "PLAYER_TARGET_CHANGED") then
-        ADF_ClearFrame();        
+        ADF_ClearFrame();
         UpdateAuras(nil, "target");
     elseif (event == "UNIT_AURA") then
-        
         local unitAuraUpdateInfo = ...;
         local unit = arg1;
-		if unit and unit == "player" then
+        if unit and unit == "player" then
             UpdateAuras(unitAuraUpdateInfo, arg1);
         end
     elseif (event == "PLAYER_ENTERING_WORLD") then
@@ -610,14 +603,14 @@ function ADF_OnEvent(self, event, arg1, ...)
         ADF:SetAlpha(ns.ADF_AlphaNormal);
         cachedPriorityChecks = {};
     elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED") then
-		C_Timer.After(0.5, initList);
-	elseif (event == "PLAYER_ENTERING_WORLD") then
-		C_Timer.After(0.5, initList);
+        C_Timer.After(0.5, initList);
+    elseif (event == "PLAYER_ENTERING_WORLD") then
+        C_Timer.After(0.5, initList);
     end
 end
 
 local function OnUpdate()
-	if (UnitExists("target")) then
+    if (UnitExists("target")) then
         UpdateAuras(nil, "target");
     end
 end
@@ -745,15 +738,15 @@ local function ADF_Init()
     ADF:RegisterEvent("PLAYER_REGEN_DISABLED");
     ADF:RegisterEvent("PLAYER_REGEN_ENABLED");
     ADF:RegisterEvent("TRAIT_CONFIG_UPDATED");
-	ADF:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-	ADF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+    ADF:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+    ADF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 
     ADF:SetScript("OnEvent", ADF_OnEvent)
     ADF_TARGET_DEBUFF:SetScript("OnEvent", ADF_OnEvent)
     ADF_PLAYER_DEBUFF:SetScript("OnEvent", ADF_OnEvent)
 
     --주기적으로 Callback
-	C_Timer.NewTicker(0.2, OnUpdate);
+    C_Timer.NewTicker(0.2, OnUpdate);
 end
 
 ADF_Init();

@@ -7,4 +7,5 @@
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asNamePlatesLib.lua
 asNamePlates_Option.lua
+asNamePlatesAura.lua
 asNamePlates.xml

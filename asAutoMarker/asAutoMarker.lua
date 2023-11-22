@@ -305,10 +305,6 @@ local function UpdateMarks(nameplate)
 			return false;
 		end
 
-		if not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden() then
-			return false;
-		end
-
 		unit = nameplate.namePlateUnitToken;
 	end
 

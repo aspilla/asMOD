@@ -80,7 +80,7 @@ ns.ACRB_ShowList_EVOKER_3 = {
 
 
 -- 안보이게 할 디법
-ns.ACRB_ShowList = {
+ns.ACRB_BlackList = {
 	["도전자의 짐"] = 1,
 }
 
