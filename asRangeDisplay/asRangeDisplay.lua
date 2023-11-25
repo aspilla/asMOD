@@ -44,9 +44,51 @@ local HarmItems       = {
 	{ 33119,  100 }, -- Malister's Frost Wand
 }
 
+local mspells         = {
+	--악사
+	["혼돈의 일격"] = 3,
+	["영혼 베어내기"] = 3,
+
+	--전사
+	["방패 밀쳐내기"] = 3,
+	["필사의 일격"] = 3,
+	["피의 갈증"] = 3,
+
+	--도적
+	["속결"] = 3,
+	["독살"] = 3,
+	["절개"] = 3,
+
+	--사냥꾼
+	["날개 절단"] = 3,
+
+	--성기사	
+	["정의의 방패"] = 8,
+	["성전사 일격"] = 8,
+	["기사단의 공세"] = 8,
+	["기사단의 베기"] = 8,
+	["성전의 강타"] = 8,
+
+	--죽음의 기사
+	["죽음의 일격"] = 3,
+
+	--수도사
+	["후려차기"] = 3,
+
+	--드루이드
+	["칼날 발톱"] = 9,
+	["짓이기기"] = 11,
+
+	--주술사
+	["폭풍의 일격"] = 3,
+
+
+}
+
 local ARD_mainframe   = CreateFrame("Frame", nil, UIParent);
+ARD_mainframe:SetFrameStrata("MEDIUM");
+ARD_mainframe:SetFrameLevel(9000);
 local ARD_RangeText;
-local inrange         = true;
 
 local function ARD_CheckRange(unit)
 	local isHarm = true;
@@ -94,6 +136,32 @@ local function ARD_GetRangeColor(range)
 	end
 end
 
+local cache = {}
+
+local function scanSpells()
+	cache = {};
+	for tab = 1, 3 do
+		local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
+
+		if not tabName then
+			return;
+		end
+
+		for i = tabOffset + 1, tabOffset + numEntries do
+			local spellName, _, spellID = GetSpellBookItemName(i, BOOKTYPE_SPELL)
+			local name, rank, icon, castTime, minRange, maxRange, ID, originalIcon = GetSpellInfo(spellID);
+			local mrange = mspells[name];
+
+			if maxRange and (maxRange > 0 or mrange) then
+				if mrange and mrange > maxRange then
+					maxRange = mrange
+				end
+				tinsert(cache, { i, maxRange });
+			end
+		end
+	end
+end
+
 local function ARD_OnUpdate()
 	if UnitExists("target") then
 		if not InCombatLockdown() then
@@ -105,12 +173,18 @@ local function ARD_OnUpdate()
 			end
 			ARD_RangeText:SetTextColor(ARD_GetRangeColor(range));
 		else
-			if inrange == false then
-				ARD_RangeText:SetText("R");
-				ARD_RangeText:SetTextColor(1, 0, 0);
-			else
-				ARD_RangeText:SetText("");
+			local grange = 100;
+
+			for _, v in pairs(cache) do
+				local able = IsSpellInRange(v[1], BOOKTYPE_SPELL, "target")
+
+				if able == 1 and v[2] < grange then
+					grange = v[2];
+				end
 			end
+
+			ARD_RangeText:SetText(math.floor(grange + 0.5));
+			ARD_RangeText:SetTextColor(ARD_GetRangeColor(grange));
 		end
 	else
 		ARD_RangeText:SetText("");
@@ -139,21 +213,18 @@ local function ARD_OnLoad()
 	end
 
 	ARD_mainframe:RegisterEvent("PLAYER_TARGET_CHANGED");
-	ARD_mainframe:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");
+	ARD_mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED");
+	ARD_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+	ARD_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+	ARD_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
+	ARD_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
 end
-
 
 local function ARD_OnEvent(self, event, ...)
 	if event == "PLAYER_TARGET_CHANGED" then
 		ARD_OnUpdate();
-	elseif event == "ACTION_RANGE_CHECK_UPDATE" then
-		local action, inRange, checksRange = ...;
-
-		if (checksRange and not inRange) then
-			inrange = false;
-		else
-			inrange = true;
-		end
+	else
+		scanSpells();
 	end
 end
 

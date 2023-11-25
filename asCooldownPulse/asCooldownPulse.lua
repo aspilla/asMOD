@@ -29,8 +29,6 @@ local itemslots = {
 	"BackSlot",
 	"ChestSlot",
 	"WristSlot",
-	"MainHandSlot",
-	"SecondaryHandSlot",
 	"HandsSlot",
 	"WaistSlot",
 	"LegsSlot",
@@ -39,6 +37,29 @@ local itemslots = {
 	"Finger1Slot",
 	"Trinket0Slot",
 	"Trinket1Slot",
+	"MainHandSlot",
+	"SecondaryHandSlot",
+}
+
+local itemslotNames = {
+
+	"투구",
+	"목걸이",
+	"어깨",
+	"겉옷",
+	"가슴",
+	"허리",
+	"다리",
+	"장화",
+	"손목",
+	"장갑",
+	"반지 1",
+	"반지 2",
+	"장신구 1",
+	"장신구 2",
+	"등",
+	"무기 1",
+	"무기 2",
 }
 
 local black_list = {
@@ -437,7 +458,7 @@ local function ACDP_Alert(spell, type)
 		if ns.options.PlaySound and name then
 			if item_cooldown[type] and item_cooldown[type] >= ns.options.SoundCooldown then
 				bsound = true;
-				if not ns.options.EnableTTS and ItemSlotList[type] then
+				if (not ns.options.EnableTTS or ns.options.SlotNameTTS) and ItemSlotList[type] then
 					name = ItemSlotList[type];
 				end
 			end
@@ -448,6 +469,9 @@ local function ACDP_Alert(spell, type)
 		--3초간 금지
 		voicealert_start[name] = currtime + 3;
 		if ns.options.EnableTTS then
+			if ns.options.SlotNameTTS and itemslotNames[name] then
+				name = itemslotNames[name];
+			end
 			C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback, CONFIG_SOUND_SPEED,
 				ns.options.SoundVolume);
 		else

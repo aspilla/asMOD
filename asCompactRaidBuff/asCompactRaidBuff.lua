@@ -43,7 +43,7 @@ local UnitFrameDebuffType = EnumUtil.MakeEnum(
 	"PriorityDebuff",
 	"namePlateShowAll",
 	"BossBuff",
-	"BossDebuff"	
+	"BossDebuff"
 );
 
 local UnitFrameBuffType = EnumUtil.MakeEnum(
@@ -328,7 +328,7 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura)
 	debuffFrame.border:SetVertexColor(color.r, color.g, color.b);
 
 	debuffFrame.isBossBuff = aura.isBossAura and aura.isHelpful;
-	if (aura.isBossAura or aura.nameplateShowAll) then
+	if (aura.isBossAura or (aura.nameplateShowAll and aura.duration > 0 and aura.duration < 10)) then
 		debuffFrame:SetSize((debuffFrame.size_x) * 1.3, debuffFrame.size_y * 1.3);
 	else
 		debuffFrame:SetSize(debuffFrame.size_x, debuffFrame.size_y);
@@ -646,33 +646,37 @@ local function ProcessAura(aura)
 		aura.debuffType = aura.isHarmful and UnitFrameDebuffType.BossDebuff or
 			UnitFrameDebuffType.BossBuff;
 		return AuraUpdateChangedType.Debuff;
-	elseif aura.isHarmful and not aura.isRaid then
-		if aura.nameplateShowAll then
-			aura.debuffType = UnitFrameDebuffType.namePlateShowAll;
-		elseif IsPriorityDebuff(aura.spellId) then
-			aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
-			return AuraUpdateChangedType.Debuff;
-		elseif ShouldDisplayDebuff(aura) then
-			aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
-			return AuraUpdateChangedType.Debuff;
+	elseif aura.isHarmful then
+		if not aura.isRaid then
+			if aura.nameplateShowAll then
+				aura.debuffType = UnitFrameDebuffType.namePlateShowAll;
+				return AuraUpdateChangedType.Debuff;
+			elseif IsPriorityDebuff(aura.spellId) then
+				aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
+				return AuraUpdateChangedType.Debuff;
+			elseif ShouldDisplayDebuff(aura) then
+				aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
+				return AuraUpdateChangedType.Debuff;
+			end
+		else --aura.isRaid
+			if DispellableDebuffTypes[aura.dispelName] ~= nil then
+				aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
+					UnitFrameDebuffType.NonBossRaidDebuff;
+				return AuraUpdateChangedType.Dispel;
+			end
 		end
-	elseif aura.isHarmful and aura.isRaid then
-		if DispellableDebuffTypes[aura.dispelName] ~= nil then
-			aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
-				UnitFrameDebuffType.NonBossRaidDebuff;
-			return AuraUpdateChangedType.Dispel;
+	elseif aura.isHelpful then
+		local showlist = ACRB_ShowList and ACRB_ShowList[aura.name];
+		if showlist and PLAYER_UNITS[aura.sourceUnit] then
+			aura.debuffType = UnitFrameBuffType.Normal + showlist[2];
+			return AuraUpdateChangedType.Buff;
+		elseif ShouldDisplayBuff(aura) then
+			aura.debuffType = UnitFrameBuffType.Normal;
+			return AuraUpdateChangedType.Buff;
+		elseif ns.ACRB_PVPBuffList[aura.spellId] then
+			aura.debuffType = UnitFrameBuffType.Normal;
+			return AuraUpdateChangedType.PVP;
 		end
-	elseif aura.isHelpful and (ACRB_ShowList and PLAYER_UNITS[aura.sourceUnit] and ACRB_ShowList[aura.name]) then
-		aura.isBuff = true;
-		aura.debuffType = UnitFrameBuffType.Normal + ACRB_ShowList[aura.name][2];
-		return AuraUpdateChangedType.Buff;
-	elseif aura.isHelpful and ShouldDisplayBuff(aura) then
-		aura.isBuff = true;
-		aura.debuffType = UnitFrameBuffType.Normal;
-		return AuraUpdateChangedType.Buff;
-	elseif aura.isHelpful and ns.ACRB_PVPBuffList[aura.spellId] then
-		aura.debuffType = UnitFrameBuffType.Normal;
-		return AuraUpdateChangedType.PVP;
 	end
 
 	return AuraUpdateChangedType.None;
@@ -763,7 +767,7 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 			ACRB_UtilSetDebuff(debuffFrame, aura);
 			frameNum = frameNum + 1;
 
-			if aura.isBossAura or aura.nameplateShowAll then
+			if aura.isBossAura or (aura.nameplateShowAll and aura.duration > 0 and aura.duration < 10) then
 				maxDebuffs = maxDebuffs - 1;
 			end
 
@@ -1368,13 +1372,12 @@ local function scanDBM()
 	DangerousSpellList = {};
 	if DBMobj.Mods then
 		for i, mod in ipairs(DBMobj.Mods) do
-
 			if mod.announces then
 				for k, obj in pairs(mod.announces) do
 					if obj.spellId and obj.announceType then
 						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
-                            DangerousSpellList[obj.spellId] = obj.announceType;
-                        end
+							DangerousSpellList[obj.spellId] = obj.announceType;
+						end
 					end
 				end
 			end
@@ -1382,12 +1385,11 @@ local function scanDBM()
 				for k, obj in pairs(mod.specwarns) do
 					if obj.spellId and obj.announceType then
 						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
-                            DangerousSpellList[obj.spellId] = obj.announceType;
-                        end
+							DangerousSpellList[obj.spellId] = obj.announceType;
+						end
 					end
 				end
 			end
-			
 		end
 	end
 end

@@ -562,6 +562,7 @@ function ns.Button:init(config, frame)
         self.spellid = select(7, GetSpellInfo(self.realspell));
     end
 
+    ns.lib.PixelGlow_Stop(self.frame)
     if self.spell == nil then
         return;
     end

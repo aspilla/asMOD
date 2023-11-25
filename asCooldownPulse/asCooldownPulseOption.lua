@@ -5,6 +5,7 @@ local Options_Default = {
     SoundVolume = 100,
     SoundCooldown = 30,
     EnableTTS = true,
+    SlotNameTTS = true,
 };
 
 ns.options = {};
