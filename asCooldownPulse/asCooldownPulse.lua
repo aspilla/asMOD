@@ -659,6 +659,8 @@ local function ACDP_Init()
 	ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED")
 	ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")
 	ACDP_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+
+	SetCVar("remoteTextToSpeech", 1);
 end
 
 

@@ -301,6 +301,7 @@ local function initAddon()
 	ADVA:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 	timer = C_Timer.NewTicker(0.2, ADCA_OnUpdate);
+	SetCVar("remoteTextToSpeech", 1);
 end
 
 
