@@ -1,9 +1,9 @@
 local _, ns = ...;
 
 ns.ACRB_BuffSizeRate = 0.9;       -- 기존 Size 크기 배수
-ns.ACRB_ShowBuffCooldown = false  -- 버프 지속시간을 보이려면
-ns.ACRB_MinShowBuffFontSize = 5   -- 이크기보다 Cooldown font Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0
-ns.ACRB_MinShowBuffFontSize = 0.5 -- 버프 Size 대비 쿨다운 폰트 사이즈
+ns.ACRB_ShowBuffCooldown = true  -- 버프 지속시간을 보이려면
+ns.ACRB_MinShowBuffFontSize = 8   -- 이크기보다 Cooldown font Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0
+ns.ACRB_MinShowBuffFontSizeRate = 0.6 -- 버프 Size 대비 쿨다운 폰트 사이즈
 ns.ACRB_UpdateRate = (0.2)        -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 ns.ACRB_ShowTooltip = true        -- GameTooltip을 보이게 하려면 True
 ns.ACRB_ShowAlert = true          --버피 리필 알림 표시
@@ -28,9 +28,9 @@ ns.ACRB_ShowList_PALADIN_1 = {
 
 -- 수사
 ns.ACRB_ShowList_PRIEST_1 = {
-	["속죄"] = { 0, 4 },
-	["소생"] = { 1, 5 },
-	["신의 권능: 보호막"] = { 0, 6 },
+	["속죄"] = { 0, 6 },
+	["신의 권능: 보호막"] = { 0, 5 },
+	["소생"] = { 1, 4 },
 	["회복의 기원"] = { 0, 2 },
 	["마력 주입"] = { 0, 1 },
 

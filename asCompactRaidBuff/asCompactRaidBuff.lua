@@ -330,8 +330,10 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura)
 	debuffFrame.isBossBuff = aura.isBossAura and aura.isHelpful;
 	if (aura.isBossAura or (aura.nameplateShowAll and aura.duration > 0 and aura.duration < 10)) then
 		debuffFrame:SetSize((debuffFrame.size_x) * 1.3, debuffFrame.size_y * 1.3);
+		debuffFrame.cooldown:SetHideCountdownNumbers(false);
 	else
 		debuffFrame:SetSize(debuffFrame.size_x, debuffFrame.size_y);
+		debuffFrame.cooldown:SetHideCountdownNumbers(true);
 	end
 
 	debuffFrame:Show();
@@ -351,8 +353,17 @@ local function ACRB_UpdateHealerMana(asframe)
 	end
 
 	local role = UnitGroupRolesAssigned(unit)
+	local CUF_AURA_BOTTOM_OFFSET = 4;
 
-	if role and role == "HEALER" then
+	local centeryoffset = 0;
+	local powerBarUsedHeight = 0;
+
+
+	if asframe.frame.powerBar and asframe.frame.powerBar:IsShown() then
+		powerBarUsedHeight = 8;
+	end
+
+	if role and role == "HEALER" and powerBarUsedHeight == 0 then
 		asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(unit, Enum.PowerType.Mana))
 		asframe.asManabar:SetValue(UnitPower(unit, Enum.PowerType.Mana));
 
@@ -363,8 +374,40 @@ local function ACRB_UpdateHealerMana(asframe)
 		end
 
 		asframe.asManabar:Show();
+		centeryoffset = 1;
 	else
+		CUF_AURA_BOTTOM_OFFSET = 1;
 		asframe.asManabar:Hide();
+	end
+
+	local function layout(bottomoffset, centeroffset)
+		asframe.asbuffFrames[1]:ClearAllPoints();
+		asframe.asbuffFrames[1]:SetPoint("BOTTOMRIGHT", asframe.frame, "BOTTOMRIGHT", -2, bottomoffset);
+
+		asframe.asbuffFrames[4]:ClearAllPoints();
+		asframe.asbuffFrames[4]:SetPoint("RIGHT", asframe.frame, "RIGHT", -2, centeroffset);
+
+		asframe.pvpbuffFrames[1]:ClearAllPoints()
+		asframe.pvpbuffFrames[1]:SetPoint("CENTER", asframe.frame, "CENTER", 0, centeroffset);
+
+		asframe.asdebuffFrames[1]:ClearAllPoints();
+		asframe.asdebuffFrames[1]:SetPoint("BOTTOMLEFT", asframe.frame, "BOTTOMLEFT", 2, bottomoffset);
+	end
+
+	if powerBarUsedHeight > 0 then
+		local buffOffset = CUF_AURA_BOTTOM_OFFSET + powerBarUsedHeight;
+		centeryoffset = 4;
+
+		if asframe.layout and asframe.layout ~= 2 then
+			layout(buffOffset, centeryoffset);
+			asframe.layout = 2;
+		end
+	elseif role and role == "HEALER" then
+		local buffOffset = CUF_AURA_BOTTOM_OFFSET;
+		if asframe.layout and asframe.layout ~= 1 then
+			layout(buffOffset, centeryoffset);
+			asframe.layout = 1;
+		end
 	end
 end
 
@@ -783,6 +826,7 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 	if buffsChanged then
 		local frameNum = 1;
 		local frameIdx = 1;
+		local frameIdx2 = 4;
 		local showframe = {};
 		asframe.buffs:Iterate(function(auraInstanceID, aura)
 			if frameNum > ACRB_MAX_BUFFS + 1 then
@@ -795,14 +839,17 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 				type = ACRB_ShowList[aura.name][2];
 			end
 
-			if type > 3 and not showframe[type] then
+			if type == 6 and not showframe[type] then
 				local buffFrame = asframe.asbuffFrames[type];
-				if type == 4 then
-					asframe.buffcolor:Show();
-					UpdateNameColor(asframe.frame);
-				end
+				asframe.buffcolor:Show();
+				UpdateNameColor(asframe.frame);
 				ARCB_UtilSetBuff(buffFrame, aura);
 				showframe[type] = true;
+			elseif type > 3 and not showframe[frameIdx2] then
+				local buffFrame = asframe.asbuffFrames[frameIdx2];
+				ARCB_UtilSetBuff(buffFrame, aura);
+				showframe[frameIdx2] = true;
+				frameIdx2 = frameIdx2 + 1;
 			else
 				local buffFrame = asframe.asbuffFrames[frameIdx];
 				ARCB_UtilSetBuff(buffFrame, aura);
@@ -821,7 +868,7 @@ local function ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
 		for i = ACRB_MAX_BUFFS - 2, ACRB_MAX_BUFFS do
 			if not showframe[i] then
 				local buffFrame = asframe.asbuffFrames[i];
-				if i == 4 then
+				if i == 6 then
 					asframe.buffcolor:Hide();
 					UpdateNameColor(asframe.frame);
 				end
@@ -929,18 +976,21 @@ local function ACRB_setupFrame(frame)
 
 
 
-	local CUF_AURA_BOTTOM_OFFSET = 2;
-	local CUF_NAME_SECTION_SIZE = 15;
+	local CUF_AURA_BOTTOM_OFFSET = 4;
 
 	local frameHeight = EditModeManagerFrame:GetRaidFrameHeight(frame.isParty);
 	local options = DefaultCompactUnitFrameSetupOptions;
 	local powerBarHeight = 8;
 	local powerBarUsedHeight = options.displayPowerBar and powerBarHeight or 0;
-
+	local centeryoffset = 0;
 
 	local x, y = frame:GetSize();
-
-	y = y - powerBarUsedHeight;
+	if powerBarUsedHeight > 0 then
+		CUF_AURA_BOTTOM_OFFSET = 1;
+		centeryoffset = 4;
+		y = y - powerBarUsedHeight;
+	end
+	asframe.layout = 0;
 
 	local size_x = x / 6 * ns.ACRB_BuffSizeRate - 1;
 	local size_y = y / 3 * ns.ACRB_BuffSizeRate - 1;
@@ -953,7 +1003,7 @@ local function ACRB_setupFrame(frame)
 
 	baseSize = baseSize * 0.9;
 
-	local fontsize = baseSize * ns.ACRB_MinShowBuffFontSize;
+	local fontsize = baseSize * ns.ACRB_MinShowBuffFontSizeRate;
 
 	if asframe.isDispellAlert == nil then
 		asframe.isDispellAlert = false;
@@ -986,16 +1036,67 @@ local function ACRB_setupFrame(frame)
 		asframe.aborbcolor:SetAlpha(0.2);
 	end
 
+	local function layoutbuff(f, t)
+		f:EnableMouse(ns.ACRB_ShowTooltip);
+		f.icon:SetTexCoord(.08, .92, .08, .92);
+		f.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
+		f.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+		f.border:SetVertexColor(0, 0, 0);
+		f.border:Show();
+
+		f.cooldown:SetSwipeColor(0, 0, 0, 0.5);
+		f.count:ClearAllPoints();
+		f.count:SetPoint("BOTTOM", 0, 1);
+
+		if ns.ACRB_ShowTooltip and not f:GetScript("OnEnter") then
+			f:SetScript("OnEnter", function(s)
+				if s.auraInstanceID then
+					GameTooltip_SetDefaultAnchor(GameTooltip, s);
+					if t == 1 then
+						GameTooltip:SetUnitBuffByAuraInstanceID(asframe.displayedUnit, s.auraInstanceID,
+							bufffilter);
+					elseif t == 2 then
+						if s.isBossBuff then
+							GameTooltip:SetUnitBuffByAuraInstanceID(asframe.displayedUnit, s.auraInstanceID,
+								bufffilter);
+						else
+							GameTooltip:SetUnitDebuffByAuraInstanceID(asframe.displayedUnit, s.auraInstanceID,
+								debufffilter);
+						end
+					else
+						if s.castspellid and s.castspellid > 0 then
+							GameTooltip_SetDefaultAnchor(GameTooltip, s);
+							GameTooltip:SetSpellByID(s.castspellid);
+						end
+					end
+				end
+			end)
+			f:SetScript("OnLeave", function()
+				GameTooltip:Hide();
+			end)
+		end
+	end
+
+	local function layoutcooldown(f)
+		f.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+		if ns.ACRB_ShowBuffCooldown and fontsize >= ns.ACRB_MinShowBuffFontSize then
+			f.cooldown:SetHideCountdownNumbers(true);
+			for _, r in next, { d.cooldown:GetRegions() } do
+				if r:GetObjectType() == "FontString" then
+					r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+					r:ClearAllPoints();
+					r:SetPoint("TOPLEFT", 1, 0);
+					break
+				end
+			end
+		end
+	end
+
 	if not asframe.asbuffFrames then
 		asframe.asbuffFrames = {}
 		for i = 1, ACRB_MAX_BUFFS do
 			local buffFrame = CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
-			buffFrame:EnableMouse(ns.ACRB_ShowTooltip);
-			buffFrame.icon:SetTexCoord(.08, .92, .08, .92);
-			buffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
-			buffFrame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-			buffFrame.border:SetVertexColor(0, 0, 0);
-			buffFrame.border:Show();
+			layoutbuff(buffFrame, 1);
 			asframe.asbuffFrames[i] = buffFrame;
 			buffFrame:Hide();
 		end
@@ -1004,29 +1105,14 @@ local function ACRB_setupFrame(frame)
 	if asframe.asbuffFrames then
 		for i = 1, ACRB_MAX_BUFFS do
 			local buffFrame = asframe.asbuffFrames[i];
-			buffFrame:ClearAllPoints()
-
-			if ns.ACRB_ShowTooltip and not buffFrame:GetScript("OnEnter") then
-				buffFrame:SetScript("OnEnter", function(s)
-					if s.auraInstanceID then
-						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetUnitBuffByAuraInstanceID(asframe.displayedUnit, s.auraInstanceID,
-							bufffilter);
-					end
-				end)
-				buffFrame:SetScript("OnLeave", function()
-					GameTooltip:Hide();
-				end)
-			end
-
+			buffFrame:ClearAllPoints();
 
 			if i <= ACRB_MAX_BUFFS - 3 then
 				if math.fmod(i - 1, 3) == 0 then
 					if i == 1 then
-						local buffPos, buffRelativePoint, buffOffset = "BOTTOMRIGHT", "BOTTOMLEFT",
-							CUF_AURA_BOTTOM_OFFSET + powerBarUsedHeight;
+						local buffOffset = CUF_AURA_BOTTOM_OFFSET + powerBarUsedHeight;
 						buffFrame:ClearAllPoints();
-						buffFrame:SetPoint(buffPos, frame, "BOTTOMRIGHT", -2, buffOffset);
+						buffFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, buffOffset);
 					else
 						buffFrame:SetPoint("BOTTOMRIGHT", asframe.asbuffFrames[i - 3], "TOPRIGHT", 0, 1)
 					end
@@ -1037,18 +1123,18 @@ local function ACRB_setupFrame(frame)
 				buffFrame.cooldown:SetSwipeColor(0, 0, 0, 0.5);
 			else
 				-- 3개는 따로 뺀다.
-				if i == ACRB_MAX_BUFFS - 2 then
+				if i == ACRB_MAX_BUFFS then
 					-- 우상
 					buffFrame:ClearAllPoints();
 					buffFrame:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2, -2);
 				elseif i == ACRB_MAX_BUFFS - 1 then
-					-- 우중
-					buffFrame:ClearAllPoints();
-					buffFrame:SetPoint("RIGHT", frame, "RIGHT", -2, 0);
-				else
 					-- 우중2
 					buffFrame:ClearAllPoints();
 					buffFrame:SetPoint("BOTTOMRIGHT", asframe.asbuffFrames[i - 1], "BOTTOMLEFT", -1, 0)
+				else
+					-- 우중
+					buffFrame:ClearAllPoints();
+					buffFrame:SetPoint("RIGHT", frame, "RIGHT", -2, centeryoffset);
 				end
 
 				buffFrame.cooldown:SetSwipeColor(0, 0, 0, 1);
@@ -1058,97 +1144,44 @@ local function ACRB_setupFrame(frame)
 
 
 	--크기 조정
-	for _, d in ipairs(asframe.asbuffFrames) do
+	for i, d in ipairs(asframe.asbuffFrames) do
 		d:SetSize(size_x, size_y);
-
-		d.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-		d.count:ClearAllPoints();
-		d.count:SetPoint("BOTTOM", 0, 1);
-		if ns.ACRB_ShowBuffCooldown and fontsize >= ns.ACRB_MinShowBuffFontSize then
-			d.cooldown:SetHideCountdownNumbers(false);
-			for _, r in next, { d.cooldown:GetRegions() } do
-				if r:GetObjectType() == "FontString" then
-					r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-					r:ClearAllPoints();
-					r:SetPoint("TOP", 0, 2);
-					break
-				end
-			end
-		end
+		layoutcooldown(d);
 	end
 
 	if not asframe.asdebuffFrames then
 		asframe.asdebuffFrames = {};
 		for i = 1, ACRB_MAX_DEBUFFS do
 			local debuffFrame = CreateFrame("Button", nil, frame, "asCompactDebuffTemplate")
-			debuffFrame:EnableMouse(ns.ACRB_ShowTooltip);
-			debuffFrame.icon:SetTexCoord(.08, .92, .08, .92);
-			debuffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
-			debuffFrame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+			layoutbuff(debuffFrame, 2);
 			asframe.asdebuffFrames[i] = debuffFrame;
 			debuffFrame:Hide();
 		end
 	end
 
-	if asframe.asbuffFrames then
+	if asframe.asdebuffFrames then
 		for i = 1, ACRB_MAX_DEBUFFS do
 			local debuffFrame = asframe.asdebuffFrames[i];
 			debuffFrame:ClearAllPoints()
 
 			if math.fmod(i - 1, 3) == 0 then
 				if i == 1 then
-					local debuffPos, debuffRelativePoint, debuffOffset = "BOTTOMLEFT", "BOTTOMRIGHT",
-						CUF_AURA_BOTTOM_OFFSET + powerBarUsedHeight;
+					local debuffOffset = CUF_AURA_BOTTOM_OFFSET + powerBarUsedHeight;
 					debuffFrame:ClearAllPoints();
-					debuffFrame:SetPoint(debuffPos, frame, "BOTTOMLEFT", 3, debuffOffset);
+					debuffFrame:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 2, debuffOffset);
 				else
 					debuffFrame:SetPoint("BOTTOMLEFT", asframe.asdebuffFrames[i - 3], "TOPLEFT", 0, 1)
 				end
 			else
 				debuffFrame:SetPoint("BOTTOMLEFT", asframe.asdebuffFrames[i - 1], "BOTTOMRIGHT", 1, 0)
 			end
-
-			debuffFrame.cooldown:SetSwipeColor(0, 0, 0, 0.5);
-
-			if ns.ACRB_ShowTooltip and not debuffFrame:GetScript("OnEnter") then
-				debuffFrame:SetScript("OnEnter", function(s)
-					if s.auraInstanceID then
-						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						if s.isBossBuff then
-							GameTooltip:SetUnitBuffByAuraInstanceID(asframe.displayedUnit, s.auraInstanceID,
-								bufffilter);
-						else
-							GameTooltip:SetUnitDebuffByAuraInstanceID(asframe.displayedUnit, s.auraInstanceID,
-								debufffilter);
-						end
-					end
-				end)
-
-				debuffFrame:SetScript("OnLeave", function()
-					GameTooltip:Hide();
-				end)
-			end
 		end
 	end
 
 	for _, d in ipairs(asframe.asdebuffFrames) do
 		d.size_x, d.size_y = size_x, size_y; -- 디버프
-		d.maxHeight = frameHeight - powerBarUsedHeight - CUF_AURA_BOTTOM_OFFSET - CUF_NAME_SECTION_SIZE;
-		d.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-		d.count:ClearAllPoints();
-		d.count:SetPoint("BOTTOM", 0, 1);
-
-		if ns.ACRB_ShowBuffCooldown and fontsize >= ns.ACRB_MinShowBuffFontSize then
-			d.cooldown:SetHideCountdownNumbers(false);
-			for _, r in next, { d.cooldown:GetRegions() } do
-				if r:GetObjectType() == "FontString" then
-					r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-					r:ClearAllPoints();
-					r:SetPoint("TOP", 0, 2);
-					break
-				end
-			end
-		end
+		d:SetSize(size_x, size_y);
+		layoutcooldown(d);
 	end
 
 
@@ -1172,7 +1205,7 @@ local function ACRB_setupFrame(frame)
 		asframe.asdispelDebuffFrames[i]:SetSize(baseSize, baseSize);
 	end
 
-	if (not asframe.asManabar and not frame.powerBar:IsShown()) then
+	if (not asframe.asManabar) then
 		asframe.asManabar = CreateFrame("StatusBar", nil, frame.healthBar)
 		asframe.asManabar:SetStatusBarTexture("Interface\\Addons\\asCompactRaidBuff\\UI-StatusBar")
 		asframe.asManabar:GetStatusBarTexture():SetHorizTile(false)
@@ -1194,7 +1227,9 @@ local function ACRB_setupFrame(frame)
 		asframe.asraidicon:Hide();
 	end
 
-	asframe.asraidicon:SetFont(STANDARD_TEXT_FONT, fontsize * 2);
+	if asframe.asraidicon then
+		asframe.asraidicon:SetFont(STANDARD_TEXT_FONT, fontsize * 2);
+	end
 
 	if (not asframe.pvpbuffFrames) then
 		asframe.pvpbuffFrames = {};
@@ -1202,59 +1237,20 @@ local function ACRB_setupFrame(frame)
 		for i = 1, ACRB_MAX_BUFFS_2 do
 			local pvpbuffFrame = CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
 			asframe.pvpbuffFrames[i] = pvpbuffFrame;
-			pvpbuffFrame:EnableMouse(ns.ACRB_ShowTooltip);
-			pvpbuffFrame.icon:SetTexCoord(.08, .92, .08, .92);
-			pvpbuffFrame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-			pvpbuffFrame.count:ClearAllPoints();
-			pvpbuffFrame.count:SetPoint("BOTTOM", 0, 0);
-			pvpbuffFrame:Hide();
-
-			if ns.ACRB_ShowBuffCooldown and fontsize >= ns.ACRB_MinShowBuffFontSize then
-				pvpbuffFrame.cooldown:SetHideCountdownNumbers(false);
-				for _, r in next, { pvpbuffFrame.cooldown:GetRegions() } do
-					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-						r:ClearAllPoints();
-						r:SetPoint("TOP", 0, 2);
-						break
-					end
-				end
-			else
-				pvpbuffFrame.cooldown:SetHideCountdownNumbers(true);
-			end
-			pvpbuffFrame.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
-			pvpbuffFrame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-			pvpbuffFrame.border:SetVertexColor(0, 0, 0);
-			pvpbuffFrame.border:Show();
-
-			pvpbuffFrame.cooldown:SetSwipeColor(0, 0, 0, 0.5);
+			layoutbuff(pvpbuffFrame, 1);
 		end
 	end
 
 	for i, d in ipairs(asframe.pvpbuffFrames) do
 		d:SetSize(size_x, size_y);
-		d.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+		layoutcooldown(d);
 		d:ClearAllPoints()
 		if i == 1 then
-			d:SetPoint("CENTER", frame.healthBar, "CENTER", 0, 0)
+			d:SetPoint("CENTER", frame, "CENTER", 0, centeryoffset)
 		else
 			d:SetPoint("TOPRIGHT", asframe.pvpbuffFrames[i - 1], "TOPLEFT",
 				0,
 				0)
-		end
-
-		if ns.ACRB_ShowTooltip and not d:GetScript("OnEnter") then
-			d:SetScript("OnEnter", function(s)
-				if s.auraInstanceID then
-					GameTooltip_SetDefaultAnchor(GameTooltip, s);
-					GameTooltip:SetUnitBuffByAuraInstanceID(asframe.displayedUnit, s.auraInstanceID,
-						bufffilter);
-				end
-			end)
-
-			d:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end)
 		end
 	end
 
@@ -1265,52 +1261,16 @@ local function ACRB_setupFrame(frame)
 		for i = 1, ACRB_MAX_CASTING do
 			local castFrame = CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
 			asframe.castFrames[i] = castFrame;
-			castFrame:EnableMouse(ns.ACRB_ShowTooltip);
-			castFrame.icon:SetTexCoord(.08, .92, .08, .92);
-			castFrame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-			castFrame.count:ClearAllPoints();
-			castFrame.count:SetPoint("BOTTOM", 0, 0);
-			castFrame:Hide();
-
-			castFrame.cooldown:SetSwipeColor(0, 0, 0, 0.5);
-
-			if ns.ACRB_ShowBuffCooldown and fontsize >= ns.ACRB_MinShowBuffFontSize then
-				castFrame.cooldown:SetHideCountdownNumbers(false);
-				for _, r in next, { castFrame.cooldown:GetRegions() } do
-					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-						r:ClearAllPoints();
-						r:SetPoint("TOP", 0, 2);
-						break
-					end
-				end
-			else
-				castFrame.cooldown:SetHideCountdownNumbers(true);
-			end
-
-
-
-			if ns.ACRB_ShowTooltip and not castFrame:GetScript("OnEnter") then
-				castFrame:SetScript("OnEnter", function(s)
-					if s.castspellid and s.castspellid > 0 then
-						GameTooltip_SetDefaultAnchor(GameTooltip, s);
-						GameTooltip:SetSpellByID(s.castspellid);
-					end
-				end)
-
-				castFrame:SetScript("OnLeave", function()
-					GameTooltip:Hide();
-				end)
-			end
+			layoutbuff(castFrame, 3);
 		end
 	end
 
 	for i, d in ipairs(asframe.castFrames) do
 		d:SetSize(size_x, size_y);
-		d.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+		layoutcooldown(d);
 		d:ClearAllPoints()
 		if i == 1 then
-			d:SetPoint("TOP", frame.healthBar, "TOP", 0, 0)
+			d:SetPoint("TOP", frame, "TOP", 0, -2)
 		else
 			d:SetPoint("TOPRIGHT", asframe.castFrames[i - 1], "TOPLEFT", -1,
 				0)
