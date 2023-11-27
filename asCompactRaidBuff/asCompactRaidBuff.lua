@@ -1081,7 +1081,7 @@ local function ACRB_setupFrame(frame)
 		f.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
 		if ns.ACRB_ShowBuffCooldown and fontsize >= ns.ACRB_MinShowBuffFontSize then
 			f.cooldown:SetHideCountdownNumbers(true);
-			for _, r in next, { d.cooldown:GetRegions() } do
+			for _, r in next, { f.cooldown:GetRegions() } do
 				if r:GetObjectType() == "FontString" then
 					r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
 					r:ClearAllPoints();
@@ -1195,14 +1195,16 @@ local function ACRB_setupFrame(frame)
 		end
 	end
 
-	asframe.asdispelDebuffFrames[1]:SetPoint("RIGHT", asframe.asbuffFrames[(ACRB_MAX_BUFFS - 2)],
-		"LEFT", -1, 0);
-	for i = 1, ACRB_MAX_DISPELDEBUFFS do
-		if (i > 1) then
-			asframe.asdispelDebuffFrames[i]:SetPoint("RIGHT", asframe.asdispelDebuffFrames[i - 1],
-				"LEFT", 0, 0);
+	if asframe.asdispelDebuffFrames then
+		asframe.asdispelDebuffFrames[1]:SetPoint("RIGHT", asframe.asbuffFrames[ACRB_MAX_BUFFS],
+			"LEFT", -1, 0);
+		for i = 1, ACRB_MAX_DISPELDEBUFFS do
+			if (i > 1) then
+				asframe.asdispelDebuffFrames[i]:SetPoint("RIGHT", asframe.asdispelDebuffFrames[i - 1],
+					"LEFT", 0, 0);
+			end
+			asframe.asdispelDebuffFrames[i]:SetSize(baseSize, baseSize);
 		end
-		asframe.asdispelDebuffFrames[i]:SetSize(baseSize, baseSize);
 	end
 
 	if (not asframe.asManabar) then
