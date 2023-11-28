@@ -303,10 +303,8 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura)
 	debuffFrame.isBossBuff = aura.isBossAura and aura.isHelpful;
 	if (aura.isBossAura or (aura.nameplateShowAll and aura.duration > 0 and aura.duration < 10)) then
 		debuffFrame:SetSize((debuffFrame.size_x) * 1.3, debuffFrame.size_y * 1.3);
-		debuffFrame.cooldown:SetHideCountdownNumbers(false);
 	else
 		debuffFrame:SetSize(debuffFrame.size_x, debuffFrame.size_y);
-		debuffFrame.cooldown:SetHideCountdownNumbers(true);
 	end
 
 	if not ns.ACRB_ShowBuffCooldown or select(1, debuffFrame:GetSize()) < ns.ACRB_MinCoolShowBuffSize then

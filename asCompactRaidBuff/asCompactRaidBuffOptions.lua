@@ -2,11 +2,11 @@ local _, ns = ...;
 
 ns.ACRB_BuffSizeRate = 0.9;           -- 기존 Size 크기 배수
 ns.ACRB_ShowBuffCooldown = true       -- 버프 지속시간을 보이려면
-ns.ACRB_MinCoolShowBuffSize = 20       -- 이크기보다 Icon Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0
+ns.ACRB_MinCoolShowBuffSize = 20      -- 이크기보다 Icon Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0 (기본 Buff Debuff만 보임)
 ns.ACRB_MinShowBuffFontSizeRate = 0.6 -- 버프 Size 대비 쿨다운 폰트 사이즈
 ns.ACRB_UpdateRate = (0.2)            -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 ns.ACRB_ShowTooltip = true            -- GameTooltip을 보이게 하려면 True
-ns.ACRB_ShowAlert = true              --버피 리필 알림 표시
+ns.ACRB_ShowAlert = true              -- 버피 리필 알림 표시
 ns.ACRB_MaxBuffSize = 20              -- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
 ns.ACRB_HealerManaBarHeight = 3       -- 힐러 마나바 크기 (안보이게 하려면 0)
 
@@ -16,8 +16,6 @@ ns.ACRB_ShowList_MONK_2 = {
 	["소생의 안개"] = { 0, 6 },
 	["포용의 안개"] = { 0, 5 },
 	["전지교태"] = { 0, 3 }, --시즌3
-
-
 }
 
 -- 신기
@@ -35,7 +33,6 @@ ns.ACRB_ShowList_PRIEST_1 = {
 	["소생"] = { 1, 4 },
 	["회복의 기원"] = { 0, 2 },
 	["마력 주입"] = { 0, 1 },
-
 }
 
 
@@ -45,7 +42,6 @@ ns.ACRB_ShowList_PRIEST_2 = {
 	["신의 권능: 보호막"] = { 0, 5 },
 	["회복의 기원"] = { 0, 4 },
 	["마력 주입"] = { 0, 1 },
-
 }
 
 ns.ACRB_ShowList_PRIEST_3 = {
