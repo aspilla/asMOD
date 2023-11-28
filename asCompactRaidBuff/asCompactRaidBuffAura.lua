@@ -1,13 +1,6 @@
 local _, ns = ...;
 
-
-local ACRB_MAX_BUFFS = 6           -- 최대 표시 버프 개수 (3개 + 3개)
-local ACRB_MAX_BUFFS_2 = 2         -- 최대 생존기 개수
-local ACRB_MAX_DEBUFFS = 3         -- 최대 표시 디버프 개수 (3개)
-local ACRB_MAX_DISPELDEBUFFS = 3   -- 최대 해제 디버프 개수 (3개)
-
 --AuraUtil
-
 local PLAYER_UNITS = {
 	player = true,
 	vehicle = true,
@@ -226,7 +219,7 @@ end
 function ns.DumpCaches()
 	cachedVisualizationInfo = {};
 	cachedSelfBuffChecks = {};
-	cachedPriorityChecks = {};	
+	cachedPriorityChecks = {};
 end
 
 -- 버프 설정 부
@@ -314,6 +307,12 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura)
 	else
 		debuffFrame:SetSize(debuffFrame.size_x, debuffFrame.size_y);
 		debuffFrame.cooldown:SetHideCountdownNumbers(true);
+	end
+
+	if not ns.ACRB_ShowBuffCooldown or select(1, debuffFrame:GetSize()) < ns.ACRB_MinCoolShowBuffSize then
+		debuffFrame.cooldown:SetHideCountdownNumbers(true);
+	else
+		debuffFrame.cooldown:SetHideCountdownNumbers(false);
 	end
 
 	debuffFrame:Show();
@@ -422,7 +421,7 @@ function ns.UpdateNameColor(frame)
 	end
 
 	local frameName = frame:GetName()
-	local asframe = (frameName and asraid[frameName]) or nil;
+	local asframe = (frameName and ns.asraid[frameName]) or nil;
 
 	if asframe == nil or not asframe.buffcolor then
 		return;
@@ -449,7 +448,7 @@ function ns.ACRB_UpdateAuras(asframe)
 
 	if debuffsChanged then
 		local frameNum = 1;
-		local maxDebuffs = ACRB_MAX_DEBUFFS;
+		local maxDebuffs = ns.ACRB_MAX_DEBUFFS;
 		asframe.debuffs:Iterate(function(auraInstanceID, aura)
 			if frameNum > maxDebuffs then
 				return true;
@@ -466,7 +465,7 @@ function ns.ACRB_UpdateAuras(asframe)
 			return false;
 		end);
 
-		for i = frameNum, ACRB_MAX_DEBUFFS do
+		for i = frameNum, ns.ACRB_MAX_DEBUFFS do
 			local debuffFrame = asframe.asdebuffFrames[i];
 			debuffFrame:Hide();
 		end
@@ -478,7 +477,7 @@ function ns.ACRB_UpdateAuras(asframe)
 		local frameIdx2 = 4;
 		local showframe = {};
 		asframe.buffs:Iterate(function(auraInstanceID, aura)
-			if frameNum > ACRB_MAX_BUFFS + 1 then
+			if frameNum > ns.ACRB_MAX_BUFFS + 1 then
 				return true;
 			end
 
@@ -509,12 +508,12 @@ function ns.ACRB_UpdateAuras(asframe)
 			return false;
 		end);
 
-		for i = frameIdx, ACRB_MAX_BUFFS - 3 do
+		for i = frameIdx, ns.ACRB_MAX_BUFFS - 3 do
 			local buffFrame = asframe.asbuffFrames[i];
 			buffFrame:Hide();
 		end
 
-		for i = ACRB_MAX_BUFFS - 2, ACRB_MAX_BUFFS do
+		for i = ns.ACRB_MAX_BUFFS - 2, ns.ACRB_MAX_BUFFS do
 			if not showframe[i] then
 				local buffFrame = asframe.asbuffFrames[i];
 				if i == 6 then
@@ -528,7 +527,7 @@ function ns.ACRB_UpdateAuras(asframe)
 
 	if pvpbuffsChanged then
 		local frameNum = 1;
-		local maxBuffs = ACRB_MAX_BUFFS_2;
+		local maxBuffs = ns.ACRB_MAX_PVP_BUFFS;
 		asframe.pvpbuffs:Iterate(function(auraInstanceID, aura)
 			if frameNum > maxBuffs then
 				return true;
@@ -541,7 +540,7 @@ function ns.ACRB_UpdateAuras(asframe)
 			return false;
 		end);
 
-		for i = frameNum, ACRB_MAX_BUFFS_2 do
+		for i = frameNum, ns.ACRB_MAX_PVP_BUFFS do
 			local buffFrame = asframe.pvpbuffFrames[i];
 			if buffFrame then
 				buffFrame:Hide();
@@ -554,7 +553,7 @@ function ns.ACRB_UpdateAuras(asframe)
 		local showdispell = false;
 
 		for _, auraTbl in pairs(asframe.dispels) do
-			if frameNum > ACRB_MAX_DISPELDEBUFFS then
+			if frameNum > ns.ACRB_MAX_DISPEL_DEBUFFS then
 				break;
 			end
 
@@ -573,7 +572,7 @@ function ns.ACRB_UpdateAuras(asframe)
 				showdispell = true;
 			end
 		end
-		for i = frameNum, ACRB_MAX_DISPELDEBUFFS do
+		for i = frameNum, ns.ACRB_MAX_DISPEL_DEBUFFS do
 			local dispellDebuffFrame = asframe.asdispelDebuffFrames[i];
 			dispellDebuffFrame:Hide();
 		end
