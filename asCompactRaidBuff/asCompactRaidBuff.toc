@@ -7,4 +7,6 @@
 asCompactRaidBuffLib.lua
 asCompactRaidBuffOptions.lua
 asCompactRaidBuffAura.lua
+asCompactRaidBuffCast.lua
+asCompactRaidBuffColor.lua
 asCompactRaidBuff.xml

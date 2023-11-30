@@ -1,24 +1,47 @@
 local _, ns = ...;
 
-
-local RaidIconList = {
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
-}
-
-
 local ACRB_mainframe = CreateFrame("Frame", nil, UIParent);
 
--- 직업 리필
 ns.ACRB_ShowList = nil;
 ns.asraid = {};
-local tanklist = {};
+ns.lowhealth = 0;
+
+local function asCheckTalent(name)
+	local specID = PlayerUtil.GetCurrentSpecID();
+
+	local configID = C_ClassTalents.GetActiveConfigID();
+
+	if not (configID) then
+		return false;
+	end
+
+	C_ClassTalents.LoadConfig(configID, true);
+	local configInfo = C_Traits.GetConfigInfo(configID);
+	local treeID = configInfo.treeIDs[1];
+
+	local nodes = C_Traits.GetTreeNodes(treeID);
+
+	for _, nodeID in ipairs(nodes) do
+		local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
+		if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
+			local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
+			local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
+			local definitionInfo = entryInfo and entryInfo.definitionID and
+				C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+
+			if definitionInfo ~= nil then
+				local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
+				--print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));
+				if name == talentName then
+					return true;
+				end
+			end
+		end
+	end
+
+	return false;
+end
+
 
 local function ACRB_InitList()
 	local spec = GetSpecialization();
@@ -32,320 +55,25 @@ local function ACRB_InitList()
 	end
 
 	ns.ACRB_ShowList = ns[listname];
-end
 
+	ns.lowhealth = 0;
 
-
--- 해제 디버프
-local function ACRB_UpdateHealerMana(asframe)
-	if (not asframe.asManabar) then
-		return;
-	end
-
-	--마나는 unit으로만
-	local unit = asframe.unit;
-
-	if not (unit) then
-		return;
-	end
-
-	local role = UnitGroupRolesAssigned(unit);
-	local CUF_AURA_BOTTOM_OFFSET = ns.ACRB_HealerManaBarHeight + 1;
-
-	local centeryoffset = 0;
-	local powerBarUsedHeight = 0;
-
-
-	if asframe.frame.powerBar and asframe.frame.powerBar:IsShown() then
-		powerBarUsedHeight = 8;
-	end
-
-	if role and role == "HEALER" and powerBarUsedHeight == 0 then
-		asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(unit, Enum.PowerType.Mana));
-		asframe.asManabar:SetValue(UnitPower(unit, Enum.PowerType.Mana));
-
-		local info = PowerBarColor["MANA"];
-		if (info) then
-			local r, g, b = info.r, info.g, info.b;
-			asframe.asManabar:SetStatusBarColor(r, g, b);
-		end
-
-		asframe.asManabar:Show();
-		centeryoffset = 1;
-	else
-		CUF_AURA_BOTTOM_OFFSET = 1;
-		asframe.asManabar:Hide();
-	end
-
-	local function layout(bottomoffset, centeroffset)
-		asframe.asbuffFrames[1]:ClearAllPoints();
-		asframe.asbuffFrames[1]:SetPoint("BOTTOMRIGHT", asframe.frame, "BOTTOMRIGHT", -2, bottomoffset);
-
-		asframe.asbuffFrames[4]:ClearAllPoints();
-		asframe.asbuffFrames[4]:SetPoint("RIGHT", asframe.frame, "RIGHT", -2, centeroffset);
-
-		asframe.pvpbuffFrames[1]:ClearAllPoints();
-		asframe.pvpbuffFrames[1]:SetPoint("CENTER", asframe.frame, "CENTER", 0, centeroffset);
-
-		asframe.asdebuffFrames[1]:ClearAllPoints();
-		asframe.asdebuffFrames[1]:SetPoint("BOTTOMLEFT", asframe.frame, "BOTTOMLEFT", 2, bottomoffset);
-	end
-
-	if powerBarUsedHeight > 0 then
-		local buffOffset = CUF_AURA_BOTTOM_OFFSET + powerBarUsedHeight;
-		centeryoffset = 4;
-
-		if asframe.layout and asframe.layout ~= 2 then
-			layout(buffOffset, centeryoffset);
-			asframe.layout = 2;
-		end
-	else
-		local buffOffset = CUF_AURA_BOTTOM_OFFSET;
-		if asframe.layout and asframe.layout ~= 1 then
-			layout(buffOffset, centeryoffset);
-			asframe.layout = 1;
-		end
-	end
-end
-
-local function ACRB_UpdateRaidIconAborbColor(asframe)
-	local unit = asframe.unit;
-
-	if asframe.displayedUnit and asframe.displayedUnit ~= unit then
-		unit = asframe.displayedUnit;
-	end
-
-
-	if not (unit) then
-		return;
-	end
-
-	local function ACRB_DisplayRaidIcon(u)
-		local icon = GetRaidTargetIndex(u);
-		if icon and RaidIconList[icon] then
-			return RaidIconList[icon] .. "0|t"
-		else
-			return ""
-		end
-	end
-
-	if (asframe.asraidicon) then
-		local text = ACRB_DisplayRaidIcon(unit);
-		asframe.asraidicon:SetText(text);
-		asframe.asraidicon:Show();
-	end
-
-	if (asframe.aborbcolor) then
-		local value = UnitHealth(unit);
-		local valueMax = UnitHealthMax(unit);
-		local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0;
-		local remainAbsorb = totalAbsorb - (valueMax - value);
-
-		if remainAbsorb > 0 and remainAbsorb <= valueMax then
-			local totalWidth, _ = asframe.frame.healthBar:GetSize();
-			local barSize = (remainAbsorb / valueMax) * totalWidth;
-
-			asframe.aborbcolor:SetWidth(barSize);
-			asframe.aborbcolor:Show();
-		else
-			asframe.aborbcolor:Hide();
-		end
-	end
-end
-
--- 탱커 처리부
-local function updateTankerList()
-	local _, RTB_ZoneType = IsInInstance();
-
-	if RTB_ZoneType == "pvp" or RTB_ZoneType == "arena" then
-		return nil;
-	end
-
-	tanklist = {};
-	if IsInGroup() then
-		for framename, asframe in pairs(ns.asraid) do
-			if asframe and asframe.frame and asframe.frame:IsShown() and asframe.unit then
-				local assignedRole = UnitGroupRolesAssigned(asframe.unit);
-				if assignedRole == "TANK" or assignedRole == "MAINTANK" then
-					table.insert(tanklist, framename);
-				end
-			end
+	if (englishClass == "PRIEST") then
+		if asCheckTalent("신의 권능: 생명") then
+			ns.lowhealth = 35;
 		end
 	end
 end
 
 
-local function ACRB_disableDefault(frame)
-	if frame and not frame:IsForbidden() then
-		-- 거리 기능 충돌 때문에 안됨
-		--frame.optionTable.fadeOutOfRange = false;
-		frame:UnregisterEvent("UNIT_AURA");
-		frame:UnregisterEvent("PLAYER_REGEN_ENABLED");
-		frame:UnregisterEvent("PLAYER_REGEN_DISABLED");
-
-		do
-			if frame.buffFrames then
-				for i = 1, #frame.buffFrames do
-					frame.buffFrames[i]:SetAlpha(0);
-					frame.buffFrames[i]:Hide();
-				end
-			end
-		end
-
-		do
-			if frame.debuffFrames then
-				for i = 1, #frame.debuffFrames do
-					frame.debuffFrames[i]:SetAlpha(0);
-					frame.debuffFrames[i]:Hide();
-				end
-			end
-		end
-
-		do
-			if frame.dispelDebuffFrames then
-				for i = 1, #frame.dispelDebuffFrames do
-					frame.dispelDebuffFrames[i]:SetAlpha(0);
-					frame.dispelDebuffFrames[i]:Hide();
-				end
-			end
-		end
-	end
-end
 
 local function ACRB_updatePartyAllHealerMana()
 	if IsInGroup() then
 		for _, asframe in pairs(ns.asraid) do
 			if asframe and asframe.frame and asframe.frame:IsShown() then
-				ACRB_UpdateHealerMana(asframe);
-				ACRB_UpdateRaidIconAborbColor(asframe);
+				ns.ACRB_UpdateHealerMana(asframe);
+				ns.ACRB_UpdateRaidIconAborbColor(asframe);
 				asframe.ncasting = 0;
-			end
-		end
-	end
-end
-
-local DangerousSpellList = {};
-
-local function ACRB_updateCasting(asframe, unit)
-	if asframe and asframe.frame and asframe.frame:IsShown() and asframe.castFrames then
-		local index = asframe.ncasting + 1;
-		local castFrame = asframe.castFrames[index];
-
-		local frameunit = asframe.unit
-
-		if asframe.displayedUnit and asframe.displayedUnit ~= frameunit then
-			frameunit = asframe.displayedUnit;
-		end
-
-		if frameunit and UnitIsUnit(unit .. "target", frameunit) then
-			local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid =
-				UnitCastingInfo(unit);
-			if not name then
-				name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
-			end
-
-			if name and index <= #(asframe.castFrames) then
-				castFrame.icon:SetTexture(texture);
-				castFrame.count:Hide();
-
-				local curr = GetTime();
-				local start = startTime / 1000;
-				local duration = (endTime / 1000) - start;
-
-				ns.asCooldownFrame_Set(castFrame.cooldown, start, duration, true);
-
-				if DangerousSpellList[spellid] then
-					if DangerousSpellList[spellid] == "interrupt" or not notInterruptible then
-						ns.lib.PixelGlow_Start(castFrame, { 0, 1, 0.32, 1 });
-					else
-						ns.lib.PixelGlow_Start(castFrame, { 0.5, 0.5, 0.5, 1 });
-					end
-				else
-					ns.lib.PixelGlow_Stop(castFrame);
-				end
-				castFrame.castspellid = spellid;
-				castFrame:Show();
-				asframe.ncasting = index;
-
-				return true;
-			end
-		end
-	end
-
-	return false;
-end
-
-local function isFaction(unit)
-	if UnitIsUnit("player", unit) then
-		return false;
-	else
-		local reaction = UnitReaction("player", unit);
-		if reaction and reaction <= 4 then
-			return true;
-		elseif UnitIsPlayer(unit) then
-			return false;
-		end
-	end
-end
-
-local function ARCB_HideCast(asframe)
-	if asframe and asframe.castFrames then
-		for i = asframe.ncasting + 1, #asframe.castFrames do
-			asframe.castFrames[i]:Hide();
-		end
-	end
-end
-
-local function CheckCasting(nameplate)
-	if not nameplate or nameplate:IsForbidden() then
-		return;
-	end
-
-	local unit = nameplate.UnitFrame.unit;
-
-	if isFaction(unit) then
-		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-			unit);
-		if not name then
-			name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
-		end
-
-		if name then
-			--탱커 부터
-			for _, framename in pairs(tanklist) do
-				local asframe = ns.asraid[framename]
-				if ACRB_updateCasting(asframe, unit) then
-					return;
-				end
-			end
-
-			if (IsInGroup()) then
-				for _, asframe in pairs(ns.asraid) do
-					if asframe and asframe.frame and asframe.frame:IsShown() then
-						if ACRB_updateCasting(asframe, unit) then
-							return;
-						end
-					end
-				end
-			end
-		end
-	end
-end
-
-
-local function ACRB_CheckCasting()
-	if (IsInGroup()) then
-		for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-			local nameplate = v;
-			if (nameplate) then
-				CheckCasting(nameplate);
-			end
-		end
-
-
-		for _, asframe in pairs(ns.asraid) do
-			if asframe and asframe.frame and asframe.frame:IsShown() then
-				ARCB_HideCast(asframe);
 			end
 		end
 	end
@@ -356,8 +84,7 @@ local function ACRB_setupFrame(frame)
 	if not frame or frame:IsForbidden() then
 		return
 	end
-
-
+	
 	local frameName = frame:GetName()
 	if ns.asraid[frameName] == nil then
 		ns.asraid[frameName] = {};
@@ -369,14 +96,8 @@ local function ACRB_setupFrame(frame)
 		asframe.unit = frame.unit;
 	end
 
-	local displayedUnit;
-
 	if frame.displayedUnit then
 		asframe.displayedUnit = frame.displayedUnit;
-
-		if (frame.unit ~= frame.displayedUnit) then
-			displayedUnit = frame.displayedUnit;
-		end
 	else
 		asframe.displayedUnit = frame.unit;
 	end
@@ -387,11 +108,8 @@ local function ACRB_setupFrame(frame)
 		return;
 	end
 
+	local CUF_AURA_BOTTOM_OFFSET = 2;
 
-
-	local CUF_AURA_BOTTOM_OFFSET = 4;
-
-	local frameHeight = EditModeManagerFrame:GetRaidFrameHeight(frame.isParty);
 	local options = DefaultCompactUnitFrameSetupOptions;
 	local powerBarHeight = 8;
 	local powerBarUsedHeight = options.displayPowerBar and powerBarHeight or 0;
@@ -436,12 +154,14 @@ local function ACRB_setupFrame(frame)
 
 		if ns.ACRB_ShowTooltip and not f:GetScript("OnEnter") then
 			f:SetScript("OnEnter", function(s)
-				if s.auraInstanceID then
-					GameTooltip_SetDefaultAnchor(GameTooltip, s);
-					if t == 1 then
+				if t == 1 then
+					if s.auraInstanceID then
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
 						GameTooltip:SetUnitBuffByAuraInstanceID(asframe.displayedUnit, s.auraInstanceID,
 							ns.bufffilter);
-					elseif t == 2 then
+					end
+				elseif t == 2 then
+					if s.auraInstanceID then
 						if s.isBossBuff then
 							GameTooltip:SetUnitBuffByAuraInstanceID(asframe.displayedUnit, s.auraInstanceID,
 								ns.bufffilter);
@@ -449,11 +169,11 @@ local function ACRB_setupFrame(frame)
 							GameTooltip:SetUnitDebuffByAuraInstanceID(asframe.displayedUnit, s.auraInstanceID,
 								ns.debufffilter);
 						end
-					else
-						if s.castspellid and s.castspellid > 0 then
-							GameTooltip_SetDefaultAnchor(GameTooltip, s);
-							GameTooltip:SetSpellByID(s.castspellid);
-						end
+					end
+				else
+					if s.castspellid and s.castspellid > 0 then
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
+						GameTooltip:SetSpellByID(s.castspellid);
 					end
 				end
 			end)
@@ -676,6 +396,19 @@ local function ACRB_setupFrame(frame)
 		asframe.buffcolor:SetVertexColor(0.5, 0.5, 0.5);
 	end
 
+	if not asframe.healthcolor then
+		asframe.healthcolor = frame:CreateTexture(nil, "ARTWORK", "asBuffTextureTemplate", -1);
+		asframe.healthcolor:Hide();
+	end
+
+	if asframe.healthcolor then
+		asframe.healthcolor:ClearAllPoints();
+		asframe.healthcolor:SetAllPoints(asframe.buffcolor);
+		asframe.healthcolor:SetVertexColor(1, 0.3, 0.3);
+		asframe.healthcolor:SetDrawLayer("ARTWORK");
+		asframe.healthcolor:SetAlpha(0.5);
+	end
+
 	if not asframe.aborbcolor then
 		asframe.aborbcolor = frame:CreateTexture(nil, "ARTWORK", "asBuffTextureTemplate", 0);
 		asframe.aborbcolor:Hide();
@@ -691,9 +424,50 @@ local function ACRB_setupFrame(frame)
 		asframe.aborbcolor:SetAlpha(0.2);
 	end
 
+
 	asframe.ncasting = 0;
 
+	ns.ACRB_UpdateHealerMana(asframe);
+	ns.ACRB_UpdateRaidIconAborbColor(asframe);
 	ns.ACRB_UpdateAuras(asframe);
+end
+
+
+local function ACRB_disableDefault(frame)
+	if frame and not frame:IsForbidden() then
+		-- 거리 기능 충돌 때문에 안됨
+		--frame.optionTable.fadeOutOfRange = false;
+		frame:UnregisterEvent("UNIT_AURA");
+		frame:UnregisterEvent("PLAYER_REGEN_ENABLED");
+		frame:UnregisterEvent("PLAYER_REGEN_DISABLED");
+
+		do
+			if frame.buffFrames then
+				for i = 1, #frame.buffFrames do
+					frame.buffFrames[i]:SetAlpha(0);
+					frame.buffFrames[i]:Hide();
+				end
+			end
+		end
+
+		do
+			if frame.debuffFrames then
+				for i = 1, #frame.debuffFrames do
+					frame.debuffFrames[i]:SetAlpha(0);
+					frame.debuffFrames[i]:Hide();
+				end
+			end
+		end
+
+		do
+			if frame.dispelDebuffFrames then
+				for i = 1, #frame.dispelDebuffFrames do
+					frame.dispelDebuffFrames[i]:SetAlpha(0);
+					frame.dispelDebuffFrames[i]:Hide();
+				end
+			end
+		end
+	end
 end
 
 
@@ -727,9 +501,8 @@ end
 local function ACRB_OnUpdate()
 	ACRB_updatePartyAllAura(true);
 	ACRB_updatePartyAllHealerMana();
-	ACRB_CheckCasting();
+	ns.ACRB_CheckCasting();
 end
-
 
 ACRB_InitList();
 
@@ -738,38 +511,6 @@ local function DumpCaches()
 	ACRB_updatePartyAllAura(false);
 end
 
-local DBMobj;
-
-local function scanDBM()
-	DangerousSpellList = {};
-	if DBMobj.Mods then
-		for i, mod in ipairs(DBMobj.Mods) do
-			if mod.announces then
-				for k, obj in pairs(mod.announces) do
-					if obj.spellId and obj.announceType then
-						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
-							DangerousSpellList[obj.spellId] = obj.announceType;
-						end
-					end
-				end
-			end
-			if mod.specwarns then
-				for k, obj in pairs(mod.specwarns) do
-					if obj.spellId and obj.announceType then
-						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
-							DangerousSpellList[obj.spellId] = obj.announceType;
-						end
-					end
-				end
-			end
-		end
-	end
-end
-
-local function NewMod(self, ...)
-	DBMobj = self;
-	C_Timer.After(0.25, scanDBM);
-end
 local function ACRB_OnEvent(self, event, ...)
 	local arg1 = ...;
 
@@ -778,15 +519,15 @@ local function ACRB_OnEvent(self, event, ...)
 		ns.hasValidPlayer = true;
 		local bloaded = LoadAddOn("DBM-Core");
 		if bloaded then
-			hooksecurefunc(DBM, "NewMod", NewMod)
+			hooksecurefunc(DBM, "NewMod", ns.NewMod)
 		end
-		updateTankerList();
+		ns.updateTankerList();
 		DumpCaches();
 	elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
 		ACRB_InitList();
 		DumpCaches();
 	elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
-		updateTankerList();
+		ns.updateTankerList();
 	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
 		DumpCaches();
 	elseif (event == "PLAYER_LEAVING_WORLD") then
