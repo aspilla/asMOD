@@ -130,6 +130,10 @@ local function CheckCasting(nameplate)
 end
 
 function ns.ACRB_CheckCasting()
+	if not ns.options.TopCastAlert then
+		return;
+	end
+
 	if (IsInGroup()) then
 		for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
 			local nameplate = v;
@@ -146,7 +150,6 @@ function ns.ACRB_CheckCasting()
 		end
 	end
 end
-
 
 local DBMobj;
 

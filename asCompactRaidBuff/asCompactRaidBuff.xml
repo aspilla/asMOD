@@ -1,4 +1,5 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Button name="asCompactAuraTemplate" virtual="true" enableMouse="false">
 		<Size>
@@ -45,7 +46,7 @@
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
-				</Texture>	
+				</Texture>
 			</Layer>
 		</Layers>
 	</Button>
@@ -62,7 +63,7 @@
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0" right="1" top="0" bottom="1"/>
-				</Texture>	
+				</Texture>
 			</Layer>
 		</Layers>
 	</Button>
@@ -74,7 +75,7 @@
 				</Texture>
 			</Layer>
 		</Layers>
-	</Button>	
+	</Button>
 	<Texture name="asBuffTextureTemplate" virtual="true" file="Interface\addons\asCompactRaidBuff\UI-StatusBar">
 		<Color r="0.0" g="0.447" b="1.0"/>
 	</Texture>

@@ -1,14 +1,21 @@
 local _, ns = ...;
 
-ns.ACRB_BuffSizeRate = 0.9;           -- 기존 Size 크기 배수
-ns.ACRB_ShowBuffCooldown = true       -- 버프 지속시간을 보이려면
-ns.ACRB_MinCoolShowBuffSize = 20      -- 이크기보다 Icon Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0 (기본 Buff Debuff만 보임)
-ns.ACRB_MinShowBuffFontSizeRate = 0.6 -- 버프 Size 대비 쿨다운 폰트 사이즈
-ns.ACRB_UpdateRate = (0.2)            -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
-ns.ACRB_ShowTooltip = true            -- GameTooltip을 보이게 하려면 True
-ns.ACRB_ShowAlert = true              -- 버피 리필 알림 표시
-ns.ACRB_MaxBuffSize = 20              -- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
-ns.ACRB_HealerManaBarHeight = 3       -- 힐러 마나바 크기 (안보이게 하려면 0)
+local Options_Default = {
+	ShowBuffColor = true,       -- 버프가 Frame Color 를 변경 할지
+	ShowHealthColor = true,     -- 체력 낮은 사람 Color 변경 (사제 생명)
+	LeftAbsorbBar = true,       -- 보호막 바
+	TopCastAlert = true,        -- 케스팅 알림 (상단)
+	MiddleDefensiveAlert = true, -- 생존기 Alert (중앙)
+	BorderDispelAlert = true,   -- Dispel Alert (태두리)
+	LeftTopRaidIcon = true,     -- Raid Icon
+	BottomHealerManaBar = true, -- 힐러 마나바
+	BuffSizeRate = 0.9,         -- 기존 Size 크기 배수
+	ShowBuffCooldown = true,    -- 버프 지속시간을 보이려면
+	MinCoolShowBuffSize = 20,   -- 이크기보다 Icon Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0 (기본 Buff Debuff만 보임)
+	MinShowBuffFontSizeRate = 0.6, -- 버프 Size 대비 쿨다운 폰트 사이즈
+	UpdateRate = 0.3,           -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
+	ShowTooltip = true,         -- GameTooltip을 보이게 하려면 True
+};
 
 -- 버프 남은시간에 리필 알림
 -- 두번째 숫자는 표시 위치, 4(우상) 5(우중) 6(우중2) 7(상바) 1,2,3 은 우하에 보이는 우선 순위이다.
@@ -233,8 +240,64 @@ ns.ACRB_PVPBuffList = {
 }
 
 -- 변경하면 안됨
-ns.ACRB_MAX_BUFFS = 6          -- 최대 표시 버프 개수 (3개 + 3개)
-ns.ACRB_MAX_DEBUFFS = 3        -- 최대 표시 디버프 개수 (3개)
-ns.ACRB_MAX_PVP_BUFFS = 2      -- 최대 생존기 개수
-ns.ACRB_MAX_DISPEL_DEBUFFS = 3 -- 최대 해제 디버프 개수 (3개)
-ns.ACRB_MAX_CASTING = 2        -- 최대 Casting Alert
+ns.ACRB_MAX_BUFFS = 6           -- 최대 표시 버프 개수 (3개 + 3개)
+ns.ACRB_MAX_DEBUFFS = 3         -- 최대 표시 디버프 개수 (3개)
+ns.ACRB_MAX_PVP_BUFFS = 2       -- 최대 생존기 개수
+ns.ACRB_MAX_DISPEL_DEBUFFS = 3  -- 최대 해제 디버프 개수 (3개)
+ns.ACRB_MAX_CASTING = 2         -- 최대 Casting Alert
+ns.ACRB_MaxBuffSize = 20        -- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
+ns.ACRB_HealerManaBarHeight = 3 -- 힐러 마나바 크기 (안보이게 하려면 0)
+
+ns.options = {};
+
+
+
+function ns.SetupOptionPanels()
+	local function OnSettingChanged(_, setting, value)
+		local variable = setting:GetVariable()
+		ACRB_Options[variable] = value;
+		ns.options[variable] = value;
+		ns.SetupAll();
+	end
+
+	local category = Settings.RegisterVerticalLayoutCategory("asCompactRaidBuff")
+
+	if ACRB_Options == nil then
+		ACRB_Options = {};
+		ACRB_Options = CopyTable(Options_Default);
+	end
+
+	ns.options = CopyTable(ACRB_Options);
+
+	for variable, _ in pairs(Options_Default) do
+		local name = variable;
+		local tooltip = ""
+		if ACRB_Options[variable] == nil then
+			ACRB_Options[variable] = Options_Default[variable];
+			ns.options[variable] = Options_Default[variable];
+		end
+		local defaultValue = ACRB_Options[variable];
+
+		if tonumber(defaultValue) ~= nil then
+			if tonumber(defaultValue) < 1 and tonumber(defaultValue) > 0 then
+				local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+				local options = Settings.CreateSliderOptions(0.1, 0.9, 0.1);
+				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+				Settings.CreateSlider(category, setting, options, tooltip);
+				Settings.SetOnValueChangedCallback(variable, OnSettingChanged);
+			else
+				local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+				local options = Settings.CreateSliderOptions(0, 100, 1);
+				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+				Settings.CreateSlider(category, setting, options, tooltip);
+				Settings.SetOnValueChangedCallback(variable, OnSettingChanged);
+			end
+		else
+			local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+			Settings.CreateCheckBox(category, setting, tooltip);
+			Settings.SetOnValueChangedCallback(variable, OnSettingChanged);
+		end
+	end
+
+	Settings.RegisterAddOnCategory(category)
+end

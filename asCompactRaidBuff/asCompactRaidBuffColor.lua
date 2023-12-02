@@ -12,7 +12,7 @@ local RaidIconList = {
 }
 
 
-function ns.UpdateNameColor(frame)
+function ns.UpdateNameColor(frame, showbuffcolor, showhealthcolor)
 	if not frame or frame:IsForbidden() then
 		return
 	end
@@ -22,6 +22,21 @@ function ns.UpdateNameColor(frame)
 
 	if asframe == nil or not asframe.buffcolor then
 		return;
+	end
+
+
+	if showbuffcolor ~= nil and ns.options.ShowBuffColor then
+		if showbuffcolor == true then
+			asframe.buffcolor:Show();
+		elseif showbuffcolor == false then
+			asframe.buffcolor:Hide();
+		end
+	elseif showhealthcolor ~= nil and ns.options.ShowHealthColor then
+		if showhealthcolor == true then
+			asframe.healthcolor:Show();
+		elseif showhealthcolor == false then
+			asframe.healthcolor:Hide();
+		end
 	end
 
 	if asframe.buffcolor:IsShown() or asframe.healthcolor:IsShown() then
@@ -56,7 +71,7 @@ function ns.ACRB_UpdateRaidIconAborbColor(asframe)
 		end
 	end
 
-	if (asframe.asraidicon) then
+	if (asframe.asraidicon and ns.options.LeftTopRaidIcon) then
 		local text = ACRB_DisplayRaidIcon(unit);
 		asframe.asraidicon:SetText(text);
 		asframe.asraidicon:Show();
@@ -65,7 +80,7 @@ function ns.ACRB_UpdateRaidIconAborbColor(asframe)
 	local value = UnitHealth(unit);
 	local valueMax = UnitHealthMax(unit);
 
-	if (asframe.aborbcolor) then
+	if (asframe.aborbcolor and ns.options.LeftAbsorbBar) then
 		local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0;
 		local remainAbsorb = totalAbsorb - (valueMax - value);
 
@@ -83,11 +98,10 @@ function ns.ACRB_UpdateRaidIconAborbColor(asframe)
 	if ns.lowhealth and asframe.healthcolor then
 		local percent = (value / valueMax) * 100;
 		if percent <= ns.lowhealth then
-			asframe.healthcolor:Show();            
+			ns.UpdateNameColor(asframe.frame, nil, true);
 		else
-			asframe.healthcolor:Hide();            
+			ns.UpdateNameColor(asframe.frame, nil, false);
 		end
-        ns.UpdateNameColor(asframe.frame);
 	end
 end
 
@@ -110,7 +124,7 @@ function ns.ACRB_UpdateHealerMana(asframe)
 		powerBarUsedHeight = 8;
 	end
 
-	if role and role == "HEALER" and powerBarUsedHeight == 0 then
+	if role and role == "HEALER" and powerBarUsedHeight == 0 and ns.options.BottomHealerManaBar then
 		asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(unit, Enum.PowerType.Mana));
 		asframe.asManabar:SetValue(UnitPower(unit, Enum.PowerType.Mana));
 
@@ -120,7 +134,7 @@ function ns.ACRB_UpdateHealerMana(asframe)
 			asframe.asManabar:SetStatusBarColor(r, g, b);
 		end
 
-		asframe.asManabar:Show();		
+		asframe.asManabar:Show();
 	else
 		asframe.asManabar:Hide();
 	end
@@ -146,8 +160,8 @@ function ns.ACRB_UpdateHealerMana(asframe)
 	if powerBarUsedHeight > 0 then
 		CUF_AURA_BOTTOM_OFFSET = 1 + powerBarUsedHeight;
 		centeryoffset = 4;
-		layouttype = 3;	
-	elseif role and role == "HEALER" then
+		layouttype = 3;
+	elseif asframe.asManabar:IsShown() then
 		CUF_AURA_BOTTOM_OFFSET = ns.ACRB_HealerManaBarHeight + 1;
 		centeryoffset = 1;
 		layouttype = 2;

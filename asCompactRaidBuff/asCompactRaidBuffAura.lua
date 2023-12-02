@@ -253,7 +253,7 @@ local function ARCB_UtilSetBuff(buffFrame, aura)
 		asCooldownFrame_Clear(buffFrame.cooldown);
 	end
 
-	if ns.ACRB_ShowAlert and ns.ACRB_ShowList then
+	if ns.ACRB_ShowList then
 		local showlist_time = 0;
 
 		if ns.ACRB_ShowList[aura.name] then
@@ -307,7 +307,7 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura)
 		debuffFrame:SetSize(debuffFrame.size_x, debuffFrame.size_y);
 	end
 
-	if not ns.ACRB_ShowBuffCooldown or select(1, debuffFrame:GetSize()) < ns.ACRB_MinCoolShowBuffSize then
+	if not ns.options.ShowBuffCooldown or select(1, debuffFrame:GetSize()) < ns.options.MinCoolShowBuffSize then
 		debuffFrame.cooldown:SetHideCountdownNumbers(true);
 	else
 		debuffFrame.cooldown:SetHideCountdownNumbers(false);
@@ -413,28 +413,6 @@ local function ACRB_ParseAllAuras(asframe)
 	ForEachAura(asframe.displayedUnit, ns.debufffilter, batchCount, HandleAura, usePackedAura);
 end
 
-function ns.UpdateNameColor(frame)
-	if not frame or frame:IsForbidden() then
-		return
-	end
-
-	local frameName = frame:GetName()
-	local asframe = (frameName and ns.asraid[frameName]) or nil;
-
-	if asframe == nil or not asframe.buffcolor then
-		return;
-	end
-
-	if asframe.buffcolor:IsShown() then
-		local class = select(2, UnitClass(frame.unit));
-		local classColor = class and RAID_CLASS_COLORS[class] or nil;
-		if classColor then
-			frame.name:SetVertexColor(classColor.r, classColor.g, classColor.b);
-		end
-	else
-		frame.name:SetVertexColor(1.0, 1.0, 1.0);
-	end
-end
 
 function ns.ACRB_UpdateAuras(asframe)
 	local debuffsChanged = true;
@@ -487,8 +465,7 @@ function ns.ACRB_UpdateAuras(asframe)
 
 			if type == 6 and not showframe[type] then
 				local buffFrame = asframe.asbuffFrames[type];
-				asframe.buffcolor:Show();
-				ns.UpdateNameColor(asframe.frame);
+				ns.UpdateNameColor(asframe.frame, true);
 				ARCB_UtilSetBuff(buffFrame, aura);
 				showframe[type] = true;
 			elseif type > 3 and not showframe[frameIdx2] then
@@ -515,8 +492,7 @@ function ns.ACRB_UpdateAuras(asframe)
 			if not showframe[i] then
 				local buffFrame = asframe.asbuffFrames[i];
 				if i == 6 then
-					asframe.buffcolor:Hide();
-					ns.UpdateNameColor(asframe.frame);
+					ns.UpdateNameColor(asframe.frame, false);
 				end
 				buffFrame:Hide();
 			end
@@ -526,17 +502,20 @@ function ns.ACRB_UpdateAuras(asframe)
 	if pvpbuffsChanged then
 		local frameNum = 1;
 		local maxBuffs = ns.ACRB_MAX_PVP_BUFFS;
-		asframe.pvpbuffs:Iterate(function(auraInstanceID, aura)
-			if frameNum > maxBuffs then
-				return true;
-			end
 
-			local buffFrame = asframe.pvpbuffFrames[frameNum];
-			ARCB_UtilSetBuff(buffFrame, aura);
-			frameNum = frameNum + 1;
+		if ns.options.MiddleDefensiveAlert then
+			asframe.pvpbuffs:Iterate(function(auraInstanceID, aura)
+				if frameNum > maxBuffs then
+					return true;
+				end
 
-			return false;
-		end);
+				local buffFrame = asframe.pvpbuffFrames[frameNum];
+				ARCB_UtilSetBuff(buffFrame, aura);
+				frameNum = frameNum + 1;
+
+				return false;
+			end);
+		end
 
 		for i = frameNum, ns.ACRB_MAX_PVP_BUFFS do
 			local buffFrame = asframe.pvpbuffFrames[i];
@@ -563,7 +542,7 @@ function ns.ACRB_UpdateAuras(asframe)
 
 				local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
 
-				if not asframe.isDispellAlert then
+				if not asframe.isDispellAlert and ns.options.BorderDispelAlert then
 					ns.lib.PixelGlow_Start(asframe.frame, { color.r, color.g, color.b, 1 })
 					asframe.isDispellAlert = true;
 				end

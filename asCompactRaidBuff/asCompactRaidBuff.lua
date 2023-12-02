@@ -84,7 +84,7 @@ local function ACRB_setupFrame(frame)
 	if not frame or frame:IsForbidden() then
 		return
 	end
-	
+
 	local frameName = frame:GetName()
 	if ns.asraid[frameName] == nil then
 		ns.asraid[frameName] = {};
@@ -123,10 +123,10 @@ local function ACRB_setupFrame(frame)
 	end
 	asframe.layout = 0;
 
-	local size_x = x / 6 * ns.ACRB_BuffSizeRate - 1;
-	local size_y = y / 3 * ns.ACRB_BuffSizeRate - 1;
+	local size_x = x / 6 * ns.options.BuffSizeRate - 1;
+	local size_y = y / 3 * ns.options.BuffSizeRate - 1;
 
-	local baseSize = math.min(x / 7 * ns.ACRB_BuffSizeRate, y / 3 * ns.ACRB_BuffSizeRate);
+	local baseSize = math.min(x / 7 * ns.options.BuffSizeRate, y / 3 * ns.options.BuffSizeRate);
 
 	if baseSize > ns.ACRB_MaxBuffSize then
 		baseSize = ns.ACRB_MaxBuffSize
@@ -134,14 +134,14 @@ local function ACRB_setupFrame(frame)
 
 	baseSize = baseSize * 0.9;
 
-	local fontsize = baseSize * ns.ACRB_MinShowBuffFontSizeRate;
+	local fontsize = baseSize * ns.options.MinShowBuffFontSizeRate;
 
 	if asframe.isDispellAlert == nil then
 		asframe.isDispellAlert = false;
 	end
 
 	local function layoutbuff(f, t)
-		f:EnableMouse(ns.ACRB_ShowTooltip);
+		f:EnableMouse(ns.options.ShowTooltip);
 		f.icon:SetTexCoord(.08, .92, .08, .92);
 		f.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
 		f.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
@@ -152,7 +152,7 @@ local function ACRB_setupFrame(frame)
 		f.count:ClearAllPoints();
 		f.count:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 1);
 
-		if ns.ACRB_ShowTooltip and not f:GetScript("OnEnter") then
+		if ns.options.ShowTooltip and not f:GetScript("OnEnter") then
 			f:SetScript("OnEnter", function(s)
 				if t == 1 then
 					if s.auraInstanceID then
@@ -195,7 +195,7 @@ local function ACRB_setupFrame(frame)
 			end
 		end
 
-		if not ns.ACRB_ShowBuffCooldown or select(1, f:GetSize()) < ns.ACRB_MinCoolShowBuffSize then
+		if not ns.options.ShowBuffCooldown or select(1, f:GetSize()) < ns.options.MinCoolShowBuffSize then
 			f.cooldown:SetHideCountdownNumbers(true);
 		else
 			f.cooldown:SetHideCountdownNumbers(false);
@@ -421,6 +421,7 @@ local function ACRB_setupFrame(frame)
 		asframe.aborbcolor:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMLEFT", 0, 0);
 		asframe.aborbcolor:SetWidth(0);
 		asframe.aborbcolor:SetVertexColor(0, 0, 0);
+		asframe.aborbcolor:SetDrawLayer("ARTWORK");
 		asframe.aborbcolor:SetAlpha(0.2);
 	end
 
@@ -504,15 +505,26 @@ local function ACRB_OnUpdate()
 	ns.ACRB_CheckCasting();
 end
 
-ACRB_InitList();
+local timero;
 
-local function DumpCaches()
+function ns.SetupAll()
 	ns.DumpCaches();
+	if timero then
+		timero:Cancel();
+	end
+	ACRB_InitList();
 	ACRB_updatePartyAllAura(false);
+	timero = C_Timer.NewTicker(ns.options.UpdateRate, ACRB_OnUpdate);
 end
 
-local function ACRB_OnEvent(self, event, ...)
-	local arg1 = ...;
+local bfirst = true;
+
+local function ACRB_OnEvent(self, event)
+	if bfirst then
+		ns.SetupOptionPanels();
+		ns.SetupAll();
+		bfirst = false;
+	end
 
 	if (event == "PLAYER_ENTERING_WORLD") then
 		ACRB_InitList();
@@ -522,14 +534,14 @@ local function ACRB_OnEvent(self, event, ...)
 			hooksecurefunc(DBM, "NewMod", ns.NewMod)
 		end
 		ns.updateTankerList();
-		DumpCaches();
+		ns.SetupAll();
 	elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
 		ACRB_InitList();
-		DumpCaches();
+		ns.SetupAll();
 	elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
 		ns.updateTankerList();
 	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
-		DumpCaches();
+		ns.SetupAll();
 	elseif (event == "PLAYER_LEAVING_WORLD") then
 		ns.hasValidPlayer = false;
 	end
@@ -546,7 +558,6 @@ ACRB_mainframe:RegisterEvent("VARIABLES_LOADED");
 ACRB_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
 ACRB_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 
-C_Timer.NewTicker(ns.ACRB_UpdateRate, ACRB_OnUpdate);
 
 hooksecurefunc("CompactUnitFrame_UpdateAll", ARCB_UpdateAll);
 hooksecurefunc("CompactUnitFrame_UpdateName", ns.UpdateNameColor);
