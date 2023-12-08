@@ -57,6 +57,18 @@ local function ACRB_InitList()
 
 	ns.ACRB_ShowList = ns.options[listname];
 
+	if ns.ACRBShowList then
+		for key, value in pairs(ns.ACRBShowList) do
+			if tonumber(key) > 0 then
+				local name = GetSpellInfo(key);
+				if name then
+					ns.ACRBShowList[name] = value;
+				end
+			end
+		end
+
+	end
+
 	ns.lowhealth = 0;
 
 	if (englishClass == "PRIEST") then
@@ -546,12 +558,24 @@ function ns.SetupAll(init)
 		timeroAura:Cancel();
 	end
 
+	local function get_party_count(member_count)
+
+		if member_count == 0 then
+			return 1;
+		end
+		if member_count % NUM_MEMBERS == 0 then
+		  return member_count / NUM_MEMBERS
+		else
+		  return math.floor(member_count / NUM_MEMBERS) + 1
+		end
+	  end
+
+	numberofgroups = get_party_count(GetNumGroupMembers());
+	
 	if init then
 		ACRB_InitList();
 	end
-	ACRB_updatePartyAllAura(false);
-
-	numberofgroups = math.floor(GetNumGroupMembers() / NUM_MEMBERS) + 1;
+	ACRB_updatePartyAllAura(false);	
 	timero = C_Timer.NewTicker(ns.options.UpdateRate, ACRB_OnUpdate);
 	timeroAura = C_Timer.NewTicker(ns.options.UpdateRate / numberofgroups, ACRB_OnUpdateAura);
 end
@@ -576,6 +600,7 @@ local function ACRB_OnEvent(self, event)
 		ns.SetupAll(true);
 	elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
 		ns.updateTankerList();
+		ns.SetupAll(false);
 	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
 		ns.SetupAll(false);
 	elseif (event == "PLAYER_LEAVING_WORLD") then

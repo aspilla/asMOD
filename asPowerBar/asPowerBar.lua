@@ -9,10 +9,8 @@ local APB_WIDTH = 203; --위치
 local APB_X = 0;
 local APB_Y = -142 - 70;
 local APB_HEIGHT = 10
-local APB_ALPHA_COMBAT = 1       -- 전투중 알파 값
+local APB_ALPHA_COMBAT = 1 -- 전투중 알파 값
 local APB_ALPHA_NORMAL = 0.5
-local APB_SHOW_HEALTHBAR = false -- 생명력바 표시
-
 
 
 local bupdate_power = false;
@@ -20,11 +18,9 @@ local bupdate_rune = false;
 local bupdate_spell = false;
 local bupdate_buff_count = false;
 local bupdate_powerbar = false;
-local bupdate_healthbar = APB_SHOW_HEALTHBAR;
 local bupdate_stagger = false;
 local bupdate_fronzen = false;
 local bupdate_windrunner = false;
-local bshow_haste = false;
 local bupdate_partial_power = false;
 local bsmall_power_bar = false;
 local bupdate_buff_combo = false;
@@ -577,8 +573,6 @@ local function APB_UpdateBuff(buffbar)
 		buffbar.tooltip = buffbar.debuff;
 	end
 
-	local timetoready = 0;
-
 	if buffbar.start then
 		buffbar:SetScript("OnUpdate", APB_OnUpdateBuff)
 	else
@@ -603,6 +597,7 @@ local function APB_UpdateStagger(self)
 		local stagger = math.ceil(val / valmax * 100);
 
 		local info = PowerBarColor["STAGGER"];
+		local color = nil;
 
 
 		if (stagger > 100) then
@@ -616,18 +611,16 @@ local function APB_UpdateStagger(self)
 		self.text:Show();
 		self.count:Show();
 
-		local version = select(4, GetBuildInfo());
-
 		if stagger >= 60 then
-			info = info.red;
+			color = info.red;
 		elseif stagger >= 30 then
-			info = info.yellow;
+			color = info.yellow;
 		else
-			info = info.green;
+			color = info.green;
 		end
 
 
-		self:SetStatusBarColor(info.r, info.g, info.b);
+		self:SetStatusBarColor(color.r, color.g, color.b);
 		self:Show();
 		self.tooltip = "STAGGER";
 	end
@@ -1096,38 +1089,13 @@ local function APB_UpdateSpell(spell, spell2)
 	end
 end
 
-local APB_MAX_INCOMING_HEAL_OVERFLOW = 1.2;
-
-local function APB_HealColor(value)
-	local r, g, b;
-	local min, max = 0, 100 * APB_MAX_INCOMING_HEAL_OVERFLOW;
-
-	if ((max - min) > 0) then
-		value = (value - min) / (max - min);
-	else
-		value = 0;
-	end
-
-	if (value > 0.5) then
-		r = (1.0 - value) * 2;
-		g = 1.0;
-	else
-		r = 1.0;
-		g = value * 2;
-	end
-	b = 0.0;
-
-	return r, g, b;
-end
-
-
-
-local function asUnitFrameUtil_UpdateFillBarBase(frame, realbar, previousTexture, bar, amount)
+local function UpdateFillBarBase(realbar, bar, amount)
 	if not amount or (amount == 0) then
 		bar:Hide();
 		return
 	end
 
+	local previousTexture = realbar:GetStatusBarTexture();
 
 	local gen = false;
 
@@ -1172,13 +1140,11 @@ local function APB_Update(self)
 
 		if predictedPowerCost and predictedPowerCost > 0 then
 			if predictedPowerCost >= value then
-				--비법 쐐도 버그
-				predictedPowerCost = 0;
-				self.predictedPowerCost = 0;
+				predictedPowerCost = value;
+				self.predictedPowerCost = value;
 			end
 			value = value - predictedPowerCost;
 		end
-
 
 		if (powerType == Enum.PowerType.Mana) and valueMax then
 			valuePct = (math.ceil((value / valueMax) * 100));
@@ -1216,12 +1182,6 @@ local function APB_Update(self)
 			end
 		end
 
-
-		if bshow_haste then
-			local haste = UnitSpellHaste("player")
-			APB.bar.count:SetText(format("%d%%", haste + 0.5));
-		end
-
 		if predictedPowerCost and not (predictedPowerCost == 0) then
 			if predictedPowerCost < 0 then
 				if (powerType == Enum.PowerType.Mana) then
@@ -1238,43 +1198,7 @@ local function APB_Update(self)
 			APB.bar.text:SetText(valuePct);
 		end
 
-		local manaBarTexture = self.bar:GetStatusBarTexture();
-		asUnitFrameUtil_UpdateFillBarBase(self, self.bar, manaBarTexture, self.bar.myManaCostPredictionBar,
-			predictedPowerCost);
-	end
-
-
-	if not bupdate_healthbar then
-		APB.healthbar:Hide();
-	else
-		local value = UnitHealth("player");
-		local valueMax = UnitHealthMax("player");
-		local value_orig = value;
-
-
-		local allIncomingHeal = UnitGetIncomingHeals("player") or 0;
-		local totalAbsorb = UnitGetTotalAbsorbs("player") or 0;
-		local total = allIncomingHeal + totalAbsorb;
-
-		valuePct = (math.ceil((value / valueMax) * 100));
-		valuePct_orig = (math.ceil((value_orig / valueMax) * 100));
-		local valuePctAbsorb = (math.ceil((total / valueMax) * 100));
-
-		APB.healthbar:SetMinMaxValues(0, valueMax)
-		APB.healthbar:SetValue(value)
-
-		local r, g, b;
-
-		r, g, b = APB_HealColor(valuePct);
-
-		APB.healthbar:SetStatusBarColor(r, g, b);
-
-
-		if valuePctAbsorb > 0 then
-			APB.healthbar.text:SetText(valuePct .. "(" .. valuePctAbsorb .. ")");
-		else
-			APB.healthbar.text:SetText(valuePct);
-		end
+		UpdateFillBarBase(self.bar, self.bar.PredictionBar, predictedPowerCost);
 	end
 end
 
@@ -1307,13 +1231,9 @@ local function APB_InitPowerBar(self)
 	self:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player");
 	self:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player");
 	self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
-	--self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player");
-	--self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player");
 end
 
 local function asCheckTalent(name)
-	local specID = PlayerUtil.GetCurrentSpecID();
-
 	local configID = C_ClassTalents.GetActiveConfigID();
 
 	if not (configID) then
@@ -1380,10 +1300,7 @@ local function APB_CheckPower(self)
 	APB:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
 	APB:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
 	APB:UnregisterEvent("PLAYER_TARGET_CHANGED");
-	APB:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-
-
-
+	APB:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 	APB:SetScript("OnUpdate", nil);
 
 
@@ -1392,7 +1309,6 @@ local function APB_CheckPower(self)
 	bupdate_rune = false;
 	bupdate_spell = false;
 	bupdate_buff_count = false;
-	bshow_haste = false;
 	bupdate_powerbar = true;
 	bupdate_buff_combo = false;
 	bupdate_direbeast_combo = false;
@@ -2186,20 +2102,6 @@ local function APB_CheckPower(self)
 	end
 
 
-	if bupdate_healthbar then
-		APB.bar:SetHeight(APB_HEIGHT);
-		APB.healthbar:SetHeight(APB_HEIGHT);
-		APB:SetScript("OnUpdate", APB_OnUpdate);
-		APB.healthbar:Show();
-		APB.healthbar.text:Show();
-	else
-		APB.healthbar:SetHeight(0.01);
-		APB.healthbar.text:Hide();
-		APB.healthbar.count:Hide();
-		APB.healthbar:Hide();
-	end
-
-
 	if bupdate_powerbar then
 		for i = 1, 10 do
 			APB.combobar[i]:SetHeight(APB_HEIGHT * 0.7);
@@ -2430,20 +2332,12 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 		APB_UpdatePower();
 	elseif event == "RUNE_POWER_UPDATE" then
 		APB_UpdateRune();
-		--elseif (event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_SUCCEEDED" or event == "UNIT_SPELLCAST_CHANNEL_START" or event == "UNIT_SPELLCAST_CHANNEL_STOP") and arg1 == "player" then
 	elseif (event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_SUCCEEDED") and arg1 == "player" then
 		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo(
 			arg1);
 		local bchanneling = false;
-		--[[
-		if not name then
-			name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID = UnitChannelInfo(arg1);
-			bchanneling = true;
-		end
-		]]
 		checkSpellCost(spellID);
 		checkSpellPowerCost(spellID);
-		--asUnitFrameManaCostPredictionBars_Update(self, (event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" or not (startTime == endTime)),
 		asUnitFrameManaCostPredictionBars_Update(self, (event == "UNIT_SPELLCAST_START" or not (startTime == endTime)),
 			startTime, endTime, spellID, bchanneling);
 		APB_UpdatePower();
@@ -2636,39 +2530,8 @@ do
 	APB.bar.count:SetPoint("RIGHT", APB.bar, "RIGHT", -4, 0);
 	APB.bar.count:SetTextColor(1, 1, 1, 1);
 
-	APB.bar.myManaCostPredictionBar = APB.bar:CreateTexture(nil, "BORDER", "asPredictionBarTemplate");
-	APB.bar.myManaCostPredictionBar:Hide();
-
-	APB.healthbar = CreateFrame("StatusBar", nil, APB);
-	APB.healthbar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER")
-	APB.healthbar:GetStatusBarTexture():SetHorizTile(false)
-	APB.healthbar:SetMinMaxValues(0, 100)
-	APB.healthbar:SetValue(100)
-	APB.healthbar:SetWidth(APB_WIDTH)
-	APB.healthbar:SetHeight(APB_HEIGHT)
-	APB.healthbar:SetPoint("BOTTOMLEFT", APB.bar, "TOPLEFT", 0, 1)
-	APB.healthbar:Hide();
-
-	APB.healthbar.myManaCostPredictionBar = APB.healthbar:CreateTexture(nil, "BORDER", "asPredictionBarTemplate")
-	APB.healthbar.myManaCostPredictionBar:Hide();
-
-	APB.healthbar.bg = APB.bar:CreateTexture(nil, "BACKGROUND");
-	APB.healthbar.bg:SetPoint("TOPLEFT", APB.healthbar, "TOPLEFT", -1, 1);
-	APB.healthbar.bg:SetPoint("BOTTOMRIGHT", APB.healthbar, "BOTTOMRIGHT", 1, -1);
-
-	APB.healthbar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
-	APB.healthbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-	APB.healthbar.bg:SetVertexColor(0, 0, 0, 0.8);
-
-	APB.healthbar.text = APB.healthbar:CreateFontString(nil, "ARTWORK");
-	APB.healthbar.text:SetFont(APB_Font, APB_HealthSize, APB_FontOutline);
-	APB.healthbar.text:SetPoint("CENTER", APB.healthbar, "CENTER", 0, 0);
-	APB.healthbar.text:SetTextColor(1, 1, 1, 1)
-
-	APB.healthbar.count = APB.bar:CreateFontString(nil, "ARTWORK");
-	APB.healthbar.count:SetFont(APB_Font, APB_HealthSize, APB_FontOutline);
-	APB.healthbar.count:SetPoint("RIGHT", APB.bar, "RIGHT", -4, 0);
-	APB.healthbar.count:SetTextColor(1, 1, 1, 1);
+	APB.bar.PredictionBar = APB.bar:CreateTexture(nil, "BORDER", "asPredictionBarTemplate");
+	APB.bar.PredictionBar:Hide();
 
 	APB.buffbar = {};
 
@@ -2690,9 +2553,9 @@ do
 		APB.buffbar[j].bg:SetVertexColor(0, 0, 0, 0.8);
 
 		if j == 0 then
-			APB.buffbar[j]:SetPoint("BOTTOMLEFT", APB.healthbar, "TOPLEFT", 0, 1);
+			APB.buffbar[j]:SetPoint("BOTTOMLEFT", APB.bar, "TOPLEFT", 0, 1);
 		else
-			APB.buffbar[j]:SetPoint("BOTTOMLEFT", APB.healthbar, "TOP", 0, 1);
+			APB.buffbar[j]:SetPoint("BOTTOMLEFT", APB.bar, "TOP", 0, 1);
 		end
 		APB.buffbar[j]:Hide();
 
