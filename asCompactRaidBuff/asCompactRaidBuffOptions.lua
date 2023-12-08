@@ -1,6 +1,7 @@
 local _, ns = ...;
 
 local Options_Default = {
+	version = 231202,
 	ShowBuffColor = true,       -- 버프가 Frame Color 를 변경 할지
 	ShowHealthColor = true,     -- 체력 낮은 사람 Color 변경 (사제 생명)
 	LeftAbsorbBar = true,       -- 보호막 바
@@ -15,74 +16,72 @@ local Options_Default = {
 	MinShowBuffFontSizeRate = 0.6, -- 버프 Size 대비 쿨다운 폰트 사이즈
 	UpdateRate = 0.3,           -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 	ShowTooltip = true,         -- GameTooltip을 보이게 하려면 True
+
+	-- 첫 숫자 남은시간에 리필 알림 (1이면 자동으로 30% 남으면 알림)
+	-- 두번째 숫자는 표시 위치, 6(우상) 5/4(우중) 1,2,3 은 우하에 보이는 우선 순위이다. (숫자가 클수록 우측에 보임)
+	
+	ACRB_ShowList_MONK_2 = {
+		["소생의 안개"] = { 0, 6 },
+		["포용의 안개"] = { 0, 5 },
+		["전지교태"] = { 0, 3 }, --시즌3
+	},
+
+	-- 신기
+	ACRB_ShowList_PALADIN_1 = {
+		["빛의 자락"] = { 0, 6 },
+		["빛의 봉화"] = { 0, 5 },
+		["신념의 봉화"] = { 0, 4 },
+		["신성한 울림"] = { 0, 3 }, --시즌3
+	},
+
+	-- 수사
+	ACRB_ShowList_PRIEST_1 = {
+		["속죄"] = { 0, 6 },
+		["신의 권능: 보호막"] = { 0, 5 },
+		["소생"] = { 1, 4 },
+		["회복의 기원"] = { 0, 2 },
+		["마력 주입"] = { 0, 1 },
+	},
+
+
+	-- 신사
+	ACRB_ShowList_PRIEST_2 = {
+		["소생"] = { 1, 6 },
+		["신의 권능: 보호막"] = { 0, 5 },
+		["회복의 기원"] = { 0, 2 },
+		["마력 주입"] = { 0, 1 },
+	},
+
+	ACRB_ShowList_PRIEST_3 = {
+		["마력 주입"] = { 0, 1 },
+	},
+
+
+	ACRB_ShowList_SHAMAN_3 = {
+		["성난 해일"] = { 1, 6 },
+		["대지의 보호막"] = { 0, 5 },
+		["해일의 저장소"] = { 0, 3 }, --시즌3
+	},
+
+
+	ACRB_ShowList_DRUID_4 = {
+		["회복"] = { 1, 6 },
+		["피어나는 생명"] = { 1, 5 },
+		["재생"] = { 1, 4 },
+		["회복 (싹틔우기)"] = { 1, 2 },
+		["세나리온 수호물"] = { 0, 1 },
+	},
+
+	ACRB_ShowList_EVOKER_2 = {
+		["메아리"] = { 0, 6 },
+		["되감기"] = { 1, 5 },
+	},
+
+	ACRB_ShowList_EVOKER_3 = {
+		["예지"] = { 0, 6 },
+		["끓어오르는 비늘"] = { 0, 5 },
+	},
 };
-
--- 버프 남은시간에 리필 알림
--- 두번째 숫자는 표시 위치, 4(우상) 5(우중) 6(우중2) 7(상바) 1,2,3 은 우하에 보이는 우선 순위이다.
-ns.ACRB_ShowList_MONK_2 = {
-	["소생의 안개"] = { 0, 6 },
-	["포용의 안개"] = { 0, 5 },
-	["전지교태"] = { 0, 3 }, --시즌3
-}
-
--- 신기
-ns.ACRB_ShowList_PALADIN_1 = {
-	["빛의 자락"] = { 0, 6 },
-	["빛의 봉화"] = { 0, 5 },
-	["신념의 봉화"] = { 0, 4 },
-	["신성한 울림"] = { 0, 3 }, --시즌3
-}
-
--- 수사
-ns.ACRB_ShowList_PRIEST_1 = {
-	["속죄"] = { 0, 6 },
-	["신의 권능: 보호막"] = { 0, 5 },
-	["소생"] = { 1, 4 },
-	["회복의 기원"] = { 0, 2 },
-	["마력 주입"] = { 0, 1 },
-}
-
-
--- 신사
-ns.ACRB_ShowList_PRIEST_2 = {
-	["소생"] = { 1, 6 },
-	["신의 권능: 보호막"] = { 0, 5 },
-	["회복의 기원"] = { 0, 2 },
-	["마력 주입"] = { 0, 1 },
-}
-
-ns.ACRB_ShowList_PRIEST_3 = {
-	["마력 주입"] = { 0, 1 },
-}
-
-
-ns.ACRB_ShowList_SHAMAN_3 = {
-	["성난 해일"] = { 1, 6 },
-	["대지의 보호막"] = { 0, 5 },
-	["해일의 저장소"] = { 0, 3 }, --시즌3
-}
-
-
-ns.ACRB_ShowList_DRUID_4 = {
-	["회복"] = { 1, 6 },
-	["피어나는 생명"] = { 1, 5 },
-	["재생"] = { 1, 4 },
-	["회복 (싹틔우기)"] = { 1, 2 },
-	["세나리온 수호물"] = { 0, 1 },
-}
-
-ns.ACRB_ShowList_EVOKER_2 = {
-	["메아리"] = { 0, 6 },
-	["되감기"] = { 1, 5 },
-
-}
-
-ns.ACRB_ShowList_EVOKER_3 = {
-	["예지"] = { 0, 6 },
-	["끓어오르는 비늘"] = { 0, 5 },
-
-}
-
 
 -- 안보이게 할 디법
 ns.ACRB_BlackList = {
@@ -257,12 +256,12 @@ function ns.SetupOptionPanels()
 		local variable = setting:GetVariable()
 		ACRB_Options[variable] = value;
 		ns.options[variable] = value;
-		ns.SetupAll();
+		ns.SetupAll(true);
 	end
 
 	local category = Settings.RegisterVerticalLayoutCategory("asCompactRaidBuff")
 
-	if ACRB_Options == nil then
+	if ACRB_Options == nil or ACRB_Options.version ~= Options_Default.version then
 		ACRB_Options = {};
 		ACRB_Options = CopyTable(Options_Default);
 	end
@@ -271,31 +270,40 @@ function ns.SetupOptionPanels()
 
 	for variable, _ in pairs(Options_Default) do
 		local name = variable;
-		local tooltip = ""
-		if ACRB_Options[variable] == nil then
-			ACRB_Options[variable] = Options_Default[variable];
-			ns.options[variable] = Options_Default[variable];
-		end
-		local defaultValue = ACRB_Options[variable];
 
-		if tonumber(defaultValue) ~= nil then
-			if tonumber(defaultValue) < 1 and tonumber(defaultValue) > 0 then
-				local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
-				local options = Settings.CreateSliderOptions(0.1, 0.9, 0.1);
+		if name ~= "version" then
+			local tooltip = ""
+			if ACRB_Options[variable] == nil then
+				if type(Options_Default[variable]) == "table" then
+					ACRB_Options[variable] = CopyTable(Options_Default[variable]);
+					ns.options[variable] = CopyTable(Options_Default[variable]);
+				else
+					ACRB_Options[variable] = Options_Default[variable];
+					ns.options[variable] = Options_Default[variable];
+				end
+			end
+			local defaultValue = ACRB_Options[variable];
+
+			if type(defaultValue) == "table" then
+				--do nothing
+			elseif tonumber(defaultValue) ~= nil then
+				local setting, options;
+				if tonumber(defaultValue) < 1 and tonumber(defaultValue) > 0 then
+					setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+					options = Settings.CreateSliderOptions(0.1, 0.9, 0.1);
+				else
+					setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+					options = Settings.CreateSliderOptions(0, 100, 1);
+				end
+
 				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
 				Settings.CreateSlider(category, setting, options, tooltip);
 				Settings.SetOnValueChangedCallback(variable, OnSettingChanged);
 			else
 				local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
-				local options = Settings.CreateSliderOptions(0, 100, 1);
-				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
-				Settings.CreateSlider(category, setting, options, tooltip);
+				Settings.CreateCheckBox(category, setting, tooltip);
 				Settings.SetOnValueChangedCallback(variable, OnSettingChanged);
 			end
-		else
-			local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
-			Settings.CreateCheckBox(category, setting, tooltip);
-			Settings.SetOnValueChangedCallback(variable, OnSettingChanged);
 		end
 	end
 

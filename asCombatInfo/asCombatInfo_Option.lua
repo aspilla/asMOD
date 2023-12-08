@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 231123,
+	version = 231206,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -41,7 +41,7 @@ ACI_Options_Default = {
 
 	-- 분전
 	ACI_SpellList_WARRIOR_2 = {
-		{ 99, "파멸자", { 335077, 3 }, { "분노의 강타", 1 } },
+		{ 99, "파멸자", { "격돌", 1 }, { "분노의 강타", 1 } },
 		{ "피의 갈증", 1, nil, nil, "끓어오르는 피의 갈증" },
 		{ "무모한 희생", 2 },
 		{ "마무리 일격", 1},

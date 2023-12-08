@@ -6,6 +6,7 @@ ns.ACRB_ShowList = nil;
 ns.asraid = {};
 ns.lowhealth = 0;
 
+
 local function asCheckTalent(name)
 	local specID = PlayerUtil.GetCurrentSpecID();
 
@@ -54,7 +55,7 @@ local function ACRB_InitList()
 		listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
 	end
 
-	ns.ACRB_ShowList = ns[listname];
+	ns.ACRB_ShowList = ns.options[listname];
 
 	ns.lowhealth = 0;
 
@@ -103,6 +104,7 @@ local function ACRB_setupFrame(frame)
 	end
 
 	asframe.frame = frame;
+	asframe.updatecount = nil;
 
 	if not UnitIsPlayer(asframe.unit) then
 		return;
@@ -485,13 +487,34 @@ local function ARCB_UpdateAll(frame)
 	end
 end
 
+local updatecount = 0;
+local NUM_MEMBERS = 5;
+
 local function ACRB_updatePartyAllAura(auraonly)
-	if (IsInGroup()) then
-		for _, asframe in pairs(ns.asraid) do
-			if asframe and asframe.frame and asframe.frame:IsShown() then
-				if auraonly then
-					ns.ACRB_UpdateAuras(asframe);
-				else
+	if auraonly then
+		local count = 0;
+		local newcount = (updatecount + 1) % 100;
+
+		if (IsInGroup()) then
+			for _, asframe in pairs(ns.asraid) do
+				if asframe and asframe.frame and (asframe.updatecount == nil or asframe.updatecount == updatecount) then
+					if asframe.frame:IsShown() then
+						ns.ACRB_UpdateAuras(asframe);
+						count = count + 1;
+					end
+					asframe.updatecount = newcount;
+					if count == NUM_MEMBERS then
+						return;
+					end
+				end
+			end
+
+			updatecount = newcount;
+		end
+	else
+		if (IsInGroup()) then
+			for _, asframe in pairs(ns.asraid) do
+				if asframe and asframe.frame and asframe.frame:IsShown() then
 					ACRB_setupFrame(asframe.frame);
 				end
 			end
@@ -499,22 +522,38 @@ local function ACRB_updatePartyAllAura(auraonly)
 	end
 end
 
-local function ACRB_OnUpdate()
+local numberofgroups = 1;
+
+local function ACRB_OnUpdateAura()
 	ACRB_updatePartyAllAura(true);
+end
+
+local function ACRB_OnUpdate()
 	ACRB_updatePartyAllHealerMana();
 	ns.ACRB_CheckCasting();
 end
 
 local timero;
+local timeroAura;
 
-function ns.SetupAll()
+function ns.SetupAll(init)
 	ns.DumpCaches();
 	if timero then
 		timero:Cancel();
 	end
-	ACRB_InitList();
+
+	if timeroAura then
+		timeroAura:Cancel();
+	end
+
+	if init then
+		ACRB_InitList();
+	end
 	ACRB_updatePartyAllAura(false);
+
+	numberofgroups = math.floor(GetNumGroupMembers() / NUM_MEMBERS) + 1;
 	timero = C_Timer.NewTicker(ns.options.UpdateRate, ACRB_OnUpdate);
+	timeroAura = C_Timer.NewTicker(ns.options.UpdateRate / numberofgroups, ACRB_OnUpdateAura);
 end
 
 local bfirst = true;
@@ -522,26 +561,23 @@ local bfirst = true;
 local function ACRB_OnEvent(self, event)
 	if bfirst then
 		ns.SetupOptionPanels();
-		ns.SetupAll();
+		ns.SetupAll(true);
 		bfirst = false;
 	end
 
 	if (event == "PLAYER_ENTERING_WORLD") then
-		ACRB_InitList();
 		ns.hasValidPlayer = true;
 		local bloaded = LoadAddOn("DBM-Core");
 		if bloaded then
 			hooksecurefunc(DBM, "NewMod", ns.NewMod)
 		end
 		ns.updateTankerList();
-		ns.SetupAll();
 	elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
-		ACRB_InitList();
-		ns.SetupAll();
+		ns.SetupAll(true);
 	elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
 		ns.updateTankerList();
 	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
-		ns.SetupAll();
+		ns.SetupAll(false);
 	elseif (event == "PLAYER_LEAVING_WORLD") then
 		ns.hasValidPlayer = false;
 	end

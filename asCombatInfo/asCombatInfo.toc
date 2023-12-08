@@ -1,8 +1,8 @@
 ## Interface: 100200
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rCombatInfo
-## Notes: WeakAura 류
-## Version : 160404
+## Notes: 주요 버프/디버프/스킬 쿨다운 확인
+## Version : 231208
 ## SavedVariablesPerCharacter: ACI_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asCombatInfoLib.lua
