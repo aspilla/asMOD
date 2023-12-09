@@ -13,7 +13,14 @@ ns.options = {};
 
 function ns.SetupOptionPanels()
     local function OnSettingChanged(_, setting, value)
-        local variable = setting:GetVariable()
+
+        local function get_variable_from_cvar_name(cvar_name)
+            local variable_start_index = string.find(cvar_name, "_") + 1
+            local variable = string.sub(cvar_name, variable_start_index)
+            return variable
+        end
+        local cvar_name = setting:GetVariable()
+        local variable = get_variable_from_cvar_name(cvar_name)
         ACDP_Options[variable] = value;
         ns.options[variable] = value;
     end
@@ -29,6 +36,7 @@ function ns.SetupOptionPanels()
 
     for variable, _ in pairs(Options_Default) do
         local name = variable;
+        local cvar_name = "asCooldownPulse_" .. variable;
         local tooltip = ""
         if ACDP_Options[variable] == nil then
             ACDP_Options[variable] = Options_Default[variable];
@@ -37,15 +45,15 @@ function ns.SetupOptionPanels()
         local defaultValue = ACDP_Options[variable];
 
         if tonumber(defaultValue) ~= nil then
-            local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+            local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
             local options = Settings.CreateSliderOptions(0, 100, 1);
             options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
             Settings.CreateSlider(category, setting, options, tooltip);
-            Settings.SetOnValueChangedCallback(variable, OnSettingChanged);
+            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
         else
-            local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+            local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
             Settings.CreateCheckBox(category, setting, tooltip);
-            Settings.SetOnValueChangedCallback(variable, OnSettingChanged);       
+            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);       
         end
     end
 

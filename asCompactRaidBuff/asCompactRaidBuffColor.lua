@@ -25,16 +25,26 @@ function ns.UpdateNameColor(frame, showbuffcolor, showhealthcolor)
 	end
 
 
-	if showbuffcolor ~= nil and ns.options.ShowBuffColor then
-		if showbuffcolor == true then
-			asframe.buffcolor:Show();
-		elseif showbuffcolor == false then
+	if showbuffcolor ~= nil then
+		if ns.options.ShowBuffColor then
+			if showbuffcolor == true then
+				asframe.buffcolor:Show();
+			elseif showbuffcolor == false then
+				asframe.buffcolor:Hide();
+			end
+		else
 			asframe.buffcolor:Hide();
 		end
-	elseif showhealthcolor ~= nil and ns.options.ShowHealthColor then
-		if showhealthcolor == true then
-			asframe.healthcolor:Show();
-		elseif showhealthcolor == false then
+	end
+
+	if showhealthcolor ~= nil then
+		if ns.options.ShowHealthColor then
+			if showhealthcolor == true then
+				asframe.healthcolor:Show();
+			elseif showhealthcolor == false then
+				asframe.healthcolor:Hide();
+			end
+		else
 			asframe.healthcolor:Hide();
 		end
 	end

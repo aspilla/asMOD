@@ -253,7 +253,14 @@ ns.options = {};
 
 function ns.SetupOptionPanels()
 	local function OnSettingChanged(_, setting, value)
-		local variable = setting:GetVariable()
+		local function get_variable_from_cvar_name(cvar_name)
+            local variable_start_index = string.find(cvar_name, "_") + 1
+            local variable = string.sub(cvar_name, variable_start_index)
+            return variable
+        end
+
+        local cvar_name = setting:GetVariable()
+        local variable = get_variable_from_cvar_name(cvar_name)
 		ACRB_Options[variable] = value;
 		ns.options[variable] = value;
 		ns.SetupAll(true);
@@ -272,6 +279,7 @@ function ns.SetupOptionPanels()
 		local name = variable;
 
 		if name ~= "version" then
+			local cvar_name = "asCompactRaidBuff_" .. variable;
 			local tooltip = ""
 			if ACRB_Options[variable] == nil then
 				if type(Options_Default[variable]) == "table" then
@@ -289,20 +297,20 @@ function ns.SetupOptionPanels()
 			elseif tonumber(defaultValue) ~= nil then
 				local setting, options;
 				if tonumber(defaultValue) < 1 and tonumber(defaultValue) > 0 then
-					setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+					setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
 					options = Settings.CreateSliderOptions(0.1, 0.9, 0.1);
 				else
-					setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+					setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
 					options = Settings.CreateSliderOptions(0, 100, 1);
 				end
 
 				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
 				Settings.CreateSlider(category, setting, options, tooltip);
-				Settings.SetOnValueChangedCallback(variable, OnSettingChanged);
+				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
 			else
-				local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+				local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
 				Settings.CreateCheckBox(category, setting, tooltip);
-				Settings.SetOnValueChangedCallback(variable, OnSettingChanged);
+				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
 			end
 		end
 	end
