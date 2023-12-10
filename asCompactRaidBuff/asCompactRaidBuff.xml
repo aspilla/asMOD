@@ -19,6 +19,15 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
+				<FontString name="$parentRemain" parentKey="remain" inherits="NumberFontNormalSmall" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="2" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>
@@ -33,7 +42,7 @@
 			</Cooldown>
 		</Frames>
 	</Button>
-	<Button name="asCompactDebuffTemplate" inherits="CompactAuraTemplate" virtual="true">
+	<Button name="asCompactDebuffTemplate" inherits="asCompactAuraTemplate" virtual="true">
 		<Layers>
 			<Layer level="OVERLAY">
 				<Texture name="$parentBorder" parentKey="border" file="Interface\AddOns\asCompactRaidBuff\overborder.tga">
@@ -50,7 +59,7 @@
 			</Layer>
 		</Layers>
 	</Button>
-	<Button name="asCompactBuffTemplate" inherits="CompactAuraTemplate" virtual="true">
+	<Button name="asCompactBuffTemplate" inherits="asCompactAuraTemplate" virtual="true">
 		<Layers>
 			<Layer level="OVERLAY">
 				<Texture name="$parentBorder" parentKey="border" file="Interface\AddOns\asCompactRaidBuff\overborder.tga">

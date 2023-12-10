@@ -37,6 +37,7 @@ local UnitFrameBuffType = EnumUtil.MakeEnum(
 	"PriorityBuff",
 	"SelectedBuff",
 	"TalentBuff",
+	"ProcBuff",
 	"ShouldShowBuff",
 	"Normal"
 );
@@ -350,6 +351,8 @@ local function ProcessAura(aura, unit)
 			end
 		elseif aura.nameplateShowPersonal then
 			aura.buffType = UnitFrameBuffType.PriorityBuff;
+		elseif ns.ABF_ProcBuffList and ns.ABF_ProcBuffList[aura.name] then
+			aura.buffType = UnitFrameBuffType.ProcBuff;
 		elseif IsShouldDisplayBuff(aura.spellId, aura.sourceUnit, aura.isFromPlayerOrPlayerPet) then
 			aura.buffType = UnitFrameBuffType.Normal;
 		elseif ABF_TalentBuffList[aura.spellId] == true then
@@ -483,7 +486,7 @@ local function UpdateAuraFrames(unit, auraList)
 			local frame = nil;
 
 			if mparent then
-				if aura.buffType ~= UnitFrameBuffType.Normal and tcount <= ns.ABF_MAX_BUFF_SHOW then
+				if aura.buffType < UnitFrameBuffType.ProcBuff and tcount <= ns.ABF_MAX_BUFF_SHOW then
 					frame = mparent.frames[tcount];
 					tcount = tcount + 1;
 				elseif mparent and lcount <= ns.ABF_MAX_BUFF_SHOW then

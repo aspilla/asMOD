@@ -199,6 +199,7 @@ local function ACRB_setupFrame(frame)
 
 	local function layoutcooldown(f)
 		f.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+		f.remain:SetFont(STANDARD_TEXT_FONT, fontsize + 2, "OUTLINE")
 
 		for _, r in next, { f.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then

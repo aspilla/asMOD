@@ -16,6 +16,7 @@ local Options_Default = {
 	MinShowBuffFontSizeRate = 0.6, -- 버프 Size 대비 쿨다운 폰트 사이즈
 	UpdateRate = 0.3,           -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 	ShowTooltip = true,         -- GameTooltip을 보이게 하려면 True
+	HideCooldown = false,		-- CooldownSwipe를 숨기게
 
 	-- 첫 숫자 남은시간에 리필 알림 (1이면 자동으로 30% 남으면 알림)
 	-- 두번째 숫자는 표시 위치, 6(우상) 5/4(우중) 1,2,3 은 우하에 보이는 우선 순위이다. (숫자가 클수록 우측에 보임)

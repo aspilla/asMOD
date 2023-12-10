@@ -246,11 +246,24 @@ local function ARCB_UtilSetBuff(buffFrame, aura)
 	end
 	buffFrame.auraInstanceID = aura.auraInstanceID;
 	local enabled = aura.expirationTime and aura.expirationTime ~= 0;
-	if enabled then
+	if enabled and not ns.options.HideCooldown then
 		local startTime = aura.expirationTime - aura.duration;
 		ns.asCooldownFrame_Set(buffFrame.cooldown, startTime, aura.duration, true);
 	else
 		asCooldownFrame_Clear(buffFrame.cooldown);
+	end
+
+	if ns.options.HideCooldown then
+		local remain = math.floor(aura.expirationTime - GetTime());
+
+		if remain >= 0 and remain < 10 then
+			buffFrame.remain:SetText(remain);
+			buffFrame.remain:Show();
+		else
+			buffFrame.remain:Hide();
+		end
+	else
+		buffFrame.remain:Hide();
 	end
 
 	if ns.ACRB_ShowList then
@@ -265,8 +278,10 @@ local function ARCB_UtilSetBuff(buffFrame, aura)
 
 		if showlist_time > 0 and aura.expirationTime - GetTime() < showlist_time then
 			buffFrame.border:SetVertexColor(1, 1, 1);
+			buffFrame.remain:SetTextColor(1, 0, 0);
 		else
 			buffFrame.border:SetVertexColor(0, 0, 0);
+			buffFrame.remain:SetTextColor(1, 1, 1);
 		end
 	end
 
@@ -290,11 +305,24 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura)
 	end
 	debuffFrame.auraInstanceID = aura.auraInstanceID;
 	local enabled = aura.expirationTime and aura.expirationTime ~= 0;
-	if enabled then
+	if enabled and not ns.options.HideCooldown then
 		local startTime = aura.expirationTime - aura.duration;
 		ns.asCooldownFrame_Set(debuffFrame.cooldown, startTime, aura.duration, true);
 	else
 		asCooldownFrame_Clear(debuffFrame.cooldown);
+	end
+
+	if ns.options.HideCooldown then
+		local remain = math.floor(aura.expirationTime - GetTime());
+
+		if remain >= 0 and remain < 10 then
+			debuffFrame.remain:SetText(remain);
+			debuffFrame.remain:Show();
+		else
+			debuffFrame.remain:Hide();
+		end
+	else
+		debuffFrame.remain:Hide();
 	end
 
 	local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
