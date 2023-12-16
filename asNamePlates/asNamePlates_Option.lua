@@ -267,7 +267,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 231119,
+    version = 231214,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -976,10 +976,12 @@ local function panelOnShow()
     SetupCheckBoxOption("[디버프] 내 디버프 모두 보임", "ANameP_ShowMyAll");
     SetupCheckBoxOption("[디버프] List 등록 디버프만 보임", "ANameP_ShowListOnly");
     SetupCheckBoxOption("[버프] 내 버프 모두 보임", "ANameP_ShowPlayerBuffAll");
+    SetupCheckBoxOption("[툴팁] 버프/디버프 툴팁 표시", "ANameP_Tooltip");
     SetupCheckBoxOption("[색상] 어그로 색상 표시", "ANameP_AggroShow");
     SetupCheckBoxOption("[색상] 낮은 생명력 색상 표시", "ANameP_LowHealthAlert");
     SetupCheckBoxOption("[색상] Quest 몹 색상 표시", "ANameP_QuestAlert");
     SetupCheckBoxOption("[색상] AutoMarker 몹 색상 표시", "ANameP_AutoMarker");
+    
     SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");
     SetupColorOption("[이름표 색상] 어그로 대상", "ANameP_AggroTargetColor");
     SetupColorOption("[이름표 색상] 어그로 상위", "ANameP_AggroColor");

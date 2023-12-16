@@ -156,8 +156,8 @@ function ns.ACRB_UpdateHealerMana(asframe)
 		asframe.asbuffFrames[4]:ClearAllPoints();
 		asframe.asbuffFrames[4]:SetPoint("RIGHT", asframe.frame, "RIGHT", -2, centeroffset);
 
-		asframe.pvpbuffFrames[1]:ClearAllPoints();
-		asframe.pvpbuffFrames[1]:SetPoint("CENTER", asframe.frame, "CENTER", 0, centeroffset);
+		asframe.defensivebuffFrames[1]:ClearAllPoints();
+		asframe.defensivebuffFrames[1]:SetPoint("CENTER", asframe.frame, "CENTER", 0, centeroffset);
 
 		asframe.asdebuffFrames[1]:ClearAllPoints();
 		asframe.asdebuffFrames[1]:SetPoint("BOTTOMLEFT", asframe.frame, "BOTTOMLEFT", 2, bottomoffset);

@@ -66,7 +66,6 @@ local function ACRB_InitList()
 				end
 			end
 		end
-
 	end
 
 	ns.lowhealth = 0;
@@ -125,6 +124,7 @@ local function ACRB_setupFrame(frame)
 	local CUF_AURA_BOTTOM_OFFSET = 2;
 
 	local options = DefaultCompactUnitFrameSetupOptions;
+	local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(CompactPartyFrame.groupType);
 	local powerBarHeight = 8;
 	local powerBarUsedHeight = options.displayPowerBar and powerBarHeight or 0;
 	local centeryoffset = 0;
@@ -309,24 +309,24 @@ local function ACRB_setupFrame(frame)
 		layoutcooldown(d);
 	end
 
-	if (not asframe.pvpbuffFrames) then
-		asframe.pvpbuffFrames = {};
+	if (not asframe.defensivebuffFrames) then
+		asframe.defensivebuffFrames = {};
 
-		for i = 1, ns.ACRB_MAX_PVP_BUFFS do
+		for i = 1, ns.ACRB_MAX_DEFENSIVE_BUFFS do
 			local pvpbuffFrame = CreateFrame("Button", nil, frame, "asCompactBuffTemplate");
-			asframe.pvpbuffFrames[i] = pvpbuffFrame;
+			asframe.defensivebuffFrames[i] = pvpbuffFrame;
 			layoutbuff(pvpbuffFrame, 1);
 		end
 	end
 
-	for i, d in ipairs(asframe.pvpbuffFrames) do
+	for i, d in ipairs(asframe.defensivebuffFrames) do
 		d:SetSize(size_x, size_y);
 		layoutcooldown(d);
 		d:ClearAllPoints();
 		if i == 1 then
 			d:SetPoint("CENTER", frame, "CENTER", 0, centeryoffset);
 		else
-			d:SetPoint("TOPRIGHT", asframe.pvpbuffFrames[i - 1], "TOPLEFT", 0, 0);
+			d:SetPoint("TOPRIGHT", asframe.defensivebuffFrames[i - 1], "TOPLEFT", 0, 0);
 		end
 	end
 
@@ -560,19 +560,18 @@ function ns.SetupAll(init)
 	end
 
 	local function get_party_count(member_count)
-
 		if member_count == 0 then
 			return 1;
 		end
 		if member_count % NUM_MEMBERS == 0 then
-		  return member_count / NUM_MEMBERS
+			return member_count / NUM_MEMBERS
 		else
-		  return math.floor(member_count / NUM_MEMBERS) + 1
+			return math.floor(member_count / NUM_MEMBERS) + 1
 		end
-	  end
+	end
 
 	numberofgroups = get_party_count(GetNumGroupMembers());
-	
+
 	if init then
 		ACRB_InitList();
 	end

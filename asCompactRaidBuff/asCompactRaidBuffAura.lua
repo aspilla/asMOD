@@ -1,5 +1,7 @@
 local _, ns = ...;
 
+ns.IsInRaid = true;
+
 --AuraUtil
 local PLAYER_UNITS = {
 	player = true,
@@ -21,7 +23,7 @@ local AuraUpdateChangedType = EnumUtil.MakeEnum(
 	"None",
 	"Debuff",
 	"Buff",
-	"PVP",
+	"Defensive",
 	"Dispel"
 );
 
@@ -81,6 +83,14 @@ end
 local function UnitFrameBuffComparator(a, b)
 	if a.debuffType ~= b.debuffType then
 		return a.debuffType > b.debuffType;
+	end
+
+	return DefaultAuraCompare(a, b);
+end
+
+local function UnitFrameDefensiveComparator(a, b)
+	if a.debuffType ~= b.debuffType then
+		return a.debuffType < b.debuffType;
 	end
 
 	return DefaultAuraCompare(a, b);
@@ -389,9 +399,10 @@ local function ProcessAura(aura)
 		elseif ShouldDisplayBuff(aura) then
 			aura.debuffType = UnitFrameBuffType.Normal;
 			return AuraUpdateChangedType.Buff;
-		elseif ns.ACRB_PVPBuffList[aura.spellId] then
-			aura.debuffType = UnitFrameBuffType.Normal;
-			return AuraUpdateChangedType.PVP;
+		elseif ns.ACRB_DefensiveBuffList[aura.spellId] then
+			-- longer duration should have lower priority.
+			aura.debuffType = UnitFrameBuffType.Normal + aura.duration;
+			return AuraUpdateChangedType.Defensive;
 		end
 	end
 
@@ -405,7 +416,7 @@ local function ACRB_ParseAllAuras(asframe)
 			TableUtil.Constants.AssociativePriorityTable);
 		asframe.buffs = TableUtil.CreatePriorityTable(UnitFrameBuffComparator,
 			TableUtil.Constants.AssociativePriorityTable);
-		asframe.pvpbuffs = TableUtil.CreatePriorityTable(DefaultAuraCompare, TableUtil.Constants
+		asframe.defensivebuffs = TableUtil.CreatePriorityTable(UnitFrameDefensiveComparator, TableUtil.Constants
 			.AssociativePriorityTable);
 		asframe.dispels = {};
 		for type, _ in pairs(DispellableDebuffTypes) do
@@ -415,7 +426,7 @@ local function ACRB_ParseAllAuras(asframe)
 	else
 		asframe.debuffs:Clear();
 		asframe.buffs:Clear();
-		asframe.pvpbuffs:Clear();
+		asframe.defensivebuffs:Clear();
 		for type, _ in pairs(DispellableDebuffTypes) do
 			asframe.dispels[type]:Clear();
 		end
@@ -424,14 +435,14 @@ local function ACRB_ParseAllAuras(asframe)
 	local batchCount = nil;
 	local usePackedAura = true;
 	local function HandleAura(aura)
-		local type = ProcessAura(aura);
+		local type = ProcessAura(aura, asframe.displayedUnit);
 
 		if type == AuraUpdateChangedType.Debuff then
 			asframe.debuffs[aura.auraInstanceID] = aura;
 		elseif type == AuraUpdateChangedType.Buff then
 			asframe.buffs[aura.auraInstanceID] = aura;
-		elseif type == AuraUpdateChangedType.PVP then
-			asframe.pvpbuffs[aura.auraInstanceID] = aura;
+		elseif type == AuraUpdateChangedType.Defensive then
+			asframe.defensivebuffs[aura.auraInstanceID] = aura;
 		elseif type == AuraUpdateChangedType.Dispel then
 			asframe.dispels[aura.dispelName][aura.auraInstanceID] = aura;
 			asframe.debuffs[aura.auraInstanceID] = aura;
@@ -443,14 +454,9 @@ end
 
 
 function ns.ACRB_UpdateAuras(asframe)
-	local debuffsChanged = true;
-	local buffsChanged = true;
-	local pvpbuffsChanged = true;
-	local dispelsChanged = true;
-
 	ACRB_ParseAllAuras(asframe);
 
-	if debuffsChanged then
+	do
 		local frameNum = 1;
 		local maxDebuffs = ns.ACRB_MAX_DEBUFFS;
 		asframe.debuffs:Iterate(function(auraInstanceID, aura)
@@ -475,7 +481,7 @@ function ns.ACRB_UpdateAuras(asframe)
 		end
 	end
 
-	if buffsChanged then
+	do
 		local frameNum = 1;
 		local frameIdx = 1;
 		local frameIdx2 = 4;
@@ -527,17 +533,17 @@ function ns.ACRB_UpdateAuras(asframe)
 		end
 	end
 
-	if pvpbuffsChanged then
+	do
 		local frameNum = 1;
-		local maxBuffs = ns.ACRB_MAX_PVP_BUFFS;
+		local maxBuffs = ns.ACRB_MAX_DEFENSIVE_BUFFS;
 
 		if ns.options.MiddleDefensiveAlert then
-			asframe.pvpbuffs:Iterate(function(auraInstanceID, aura)
+			asframe.defensivebuffs:Iterate(function(auraInstanceID, aura)
 				if frameNum > maxBuffs then
 					return true;
 				end
 
-				local buffFrame = asframe.pvpbuffFrames[frameNum];
+				local buffFrame = asframe.defensivebuffFrames[frameNum];
 				ARCB_UtilSetBuff(buffFrame, aura);
 				frameNum = frameNum + 1;
 
@@ -545,15 +551,15 @@ function ns.ACRB_UpdateAuras(asframe)
 			end);
 		end
 
-		for i = frameNum, ns.ACRB_MAX_PVP_BUFFS do
-			local buffFrame = asframe.pvpbuffFrames[i];
+		for i = frameNum, ns.ACRB_MAX_DEFENSIVE_BUFFS do
+			local buffFrame = asframe.defensivebuffFrames[i];
 			if buffFrame then
 				buffFrame:Hide();
 			end
 		end
 	end
 
-	if dispelsChanged then
+	do
 		local frameNum = 1;
 		local showdispell = false;
 

@@ -346,6 +346,10 @@ local function updateAuras(self, unit)
 		return
 	end
 
+	parent.UnitFrame.BuffFrame:SetAlpha(0);
+	parent.UnitFrame.BuffFrame:Hide();
+	parent.UnitFrame:UnregisterEvent("UNIT_AURA");
+
 	auraData = ns.UpdateAuras(unit);
 
 	if auraData and auraData.type == 2 then

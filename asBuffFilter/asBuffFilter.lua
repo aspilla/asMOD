@@ -338,7 +338,11 @@ local function ProcessAura(aura, unit)
 		if aura.isBossAura and not aura.isRaid then
 			aura.buffType = UnitFrameBuffType.BossBuff;
 		elseif not PLAYER_UNITS[aura.sourceUnit] then
-			aura.buffType = UnitFrameBuffType.Normal;
+			if ns.ABF_ProcBuffList and ns.ABF_ProcBuffList[aura.name] then
+				aura.buffType = UnitFrameBuffType.ProcBuff;
+			else
+				aura.buffType = UnitFrameBuffType.Normal;
+			end
 		elseif ns.ABF_ClassBuffList[aura.name] then
 			if ns.ABF_ClassBuffList[aura.name] == 1 then
 				aura.buffType = UnitFrameBuffType.SelectedBuff;
@@ -644,7 +648,7 @@ end
 
 local function ABF_OnEvent(self, event, arg1, ...)
 	if (event == "PLAYER_TARGET_CHANGED") then
-		ABF_ClearFrame();		
+		ABF_ClearFrame();
 		UpdateAuras(nil, "target");
 	elseif (event == "UNIT_AURA") then
 		local unitAuraUpdateInfo = ...;
@@ -689,8 +693,8 @@ end
 
 local function OnUpdate()
 	if (UnitExists("target")) then
-        UpdateAuras(nil, "target");
-    end
+		UpdateAuras(nil, "target");
+	end
 end
 
 local function ABF_UpdateBuffAnchor(frames, index, offsetX, right, center, parent)
@@ -864,8 +868,8 @@ local function ABF_Init()
 	ABF_TARGET_BUFF:SetScript("OnEvent", ABF_OnEvent)
 	ABF_PLAYER_BUFF:SetScript("OnEvent", ABF_OnEvent)
 
-	 --주기적으로 Callback
-	 C_Timer.NewTicker(0.2, OnUpdate);
+	--주기적으로 Callback
+	C_Timer.NewTicker(0.2, OnUpdate);
 end
 
 ABF_Init();
