@@ -24,9 +24,23 @@ local fontstrings = {};
 local inspectframe;
 local TAvg;
 
-local function OnEvent(self, event)
+local function OnEvent(self, event, arg1)
 	if (event == "PLAYER_EQUIPMENT_CHANGED") then
 		MyPaperDoll();
+	elseif (event == "INSPECT_READY") then
+
+		local guid = arg1;
+
+		if not (UnitGUID("target") == guid) then 
+			return; 
+		end
+		
+		if CanInspect("target") then
+			local Avg, Max, Min = GetAvgIvl("target");
+			local Red, Green, Blue = GetItemQualityColor(Avg);
+			TAvg:SetText(Avg .. " Lvl");
+			TAvg:SetTextColor(Red, Green, Blue);
+		end
 	end
 end
 
@@ -124,36 +138,15 @@ function MyPaperDoll()
 	local Avg, Max, Min = GetAvgIvl("player");
 end
 
-local update = 0;
-
-function MyInspectDoll(self, elapsed)
-	update = update + elapsed;
-
-	if update >= 1 then
-		update = 0
-	else
-		return
-	end
-
-	if (InCombatLockdown() or not (INSPECTED_UNIT and (INSPECTED_UNIT == "target") and UnitExists(INSPECTED_UNIT))) then 
-		return; 
-	end
-	
-	local Avg, Max, Min = GetAvgIvl(INSPECTED_UNIT);
-	local Red, Green, Blue = GetItemQualityColor(Avg);
-	TAvg:SetText(Avg .. " Lvl");
-	TAvg:SetTextColor(Red, Green, Blue)
-end
-
 local font, _, flags = NumberFontNormal:GetFont()
 
 asGearScore:SetScript("OnEvent", OnEvent);
 asGearScore:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+asGearScore:RegisterEvent("INSPECT_READY")
 
 CharacterFrame:HookScript("OnShow", MyPaperDoll)
 
 inspectframe = _G["InspectFrame"]
-inspectframe:HookScript("OnUpdate", MyInspectDoll)
 
 TAvg = inspectframe:CreateFontString(nil, "OVERLAY")
 TAvg:SetFont(font, AGS_FontSize + 2, flags)
