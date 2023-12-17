@@ -118,7 +118,7 @@ local trackedCoolSpellNames = {
 	},
 
 	SHAMAN_2 = {
-		["야수의 정령"] = { 90, 15 },
+		["야수 정령"] = { 90, 15 },
 	},
 
 	SHAMAN_3 = {
@@ -210,11 +210,11 @@ local trackedCoolSpellNames = {
 	},
 
 	DEMONHUNTER_1 = {
-		[191427] = { 120, 20 },
+		["탈태"] = { 120, 20 },
 	},
 
 	DEMONHUNTER_2 = {
-		[187827] = { 120, 15 },
+		["탈태"] = { 120, 15 },
 	},
 }
 
@@ -521,25 +521,27 @@ local function layoutcooldown(f)
 	f.cooldown:SetHideCountdownNumbers(false);
 end
 
-local function SpecIDfromSpecName(specname, classID)
-	for i = 1, 3 do
-		local name = select(2, GetSpecializationInfoForClassID(classID, i));
-		if string.find(specname, name) then
-			return i;
+local function SpecIDfromSpecName(specname, unit)
+	local localizedClass, englishClass, classID = UnitClass(unit);
+	if classID then
+		for i = 1, 4 do
+			local name = select(2, GetSpecializationInfoForClassID(classID, i));
+			if name and string.find(specname, name) then
+				return i;
+			end
 		end
 	end
 	return nil;
 end
 
 local function scanUnitSpecID(unit)
-	local localizedClass, englishClass, classID = UnitClass(unit);
 	GameTooltip:SetUnit(unit);
 	local tooltipdata = GameTooltip:GetTooltipData();
 
 	if tooltipdata and tooltipdata.lines then
 		for i = 1, #tooltipdata.lines do
 			if tooltipdata.lines[i].leftText then
-				local spec = SpecIDfromSpecName(tooltipdata.lines[i].leftText, classID);
+				local spec = SpecIDfromSpecName(tooltipdata.lines[i].leftText, unit);
 
 				if spec ~= nil then
 					return spec;
@@ -547,7 +549,7 @@ local function scanUnitSpecID(unit)
 			end
 
 			if tooltipdata.lines[i].rightText then
-				local spec = SpecIDfromSpecName(tooltipdata.lines[i].rightText, classID);
+				local spec = SpecIDfromSpecName(tooltipdata.lines[i].rightText, unit);
 
 				if spec ~= nil then
 					return spec;
@@ -573,7 +575,8 @@ local function SetupPartyCool(frame)
 				raidframes[frame.unit] = {};
 			end
 			local raidframe = raidframes[frame.unit];
-			local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(CompactPartyFrame.groupType);
+			local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(CompactPartyFrame
+				.groupType);
 			local x, y = frame:GetSize();
 			raidframe.frame = frame;
 
@@ -581,16 +584,22 @@ local function SetupPartyCool(frame)
 			local spec = scanUnitSpecID(frame.unit);
 
 			if spec == nil or spec == 0 then
+				spec = scanUnitSpecID(frame.unit);
+			end
+
+			if spec == nil or spec == 0 then
 				spec = 1;
 			end
 
-			local newcoollist = trackedCoolSpellNames[englishClass .. "_" .. spec];
+			if englishClass then
+				local newcoollist = trackedCoolSpellNames[englishClass .. "_" .. spec];
 
-			if raidframe.coolspelllist == nil or raidframe.coolspelllist ~= newcoollist then
-				offensivecools = {};
+				if raidframe.coolspelllist == nil or raidframe.coolspelllist ~= newcoollist then
+					offensivecools = {};
+				end
+
+				raidframe.coolspelllist = newcoollist;
 			end
-
-			raidframe.coolspelllist = newcoollist;
 
 			if not raidframe.asbuffFrames then
 				raidframe.asbuffFrames = {}
@@ -606,7 +615,7 @@ local function SetupPartyCool(frame)
 				d:SetSize(y / 2 * 1.2, y / 2);
 				layoutcooldown(d);
 				d:ClearAllPoints();
-				if useHorizontalGroups then					
+				if useHorizontalGroups then
 					if i == 1 then
 						d:SetPoint("TOP", frame, "BOTTOM", 0, -1);
 					else
@@ -638,7 +647,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 			if raidframes[unit] and raidframes[unit].coolspelllist then
 				local coolspelllist = raidframes[unit].coolspelllist;
 
-				if coolspelllist[name] or coolspelllist[spellid] then
+				if coolspelllist and coolspelllist[name] or coolspelllist[spellid] then
 					local info = coolspelllist[name] or coolspelllist[spellid];
 					local cool = info[1];
 					local buffcool = info[2];
@@ -669,12 +678,12 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 		end
 	else
 		local new_number = GetNumGroupMembers();
-
-		if new_number and new_number ~= prev_number then
+		
+		if (new_number and new_number ~= prev_number) or new_number == 0 then
 			interruptcools = {};
 			offensivecools = {};
 
-			prev_number = new_number;
+			prev_number = new_number;		
 		end
 
 		if timer then
@@ -708,5 +717,6 @@ AREADY:SetScript("OnEvent", AREADY_OnEvent)
 AREADY:RegisterEvent("GROUP_JOINED");
 AREADY:RegisterEvent("GROUP_ROSTER_UPDATE");
 AREADY:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+AREADY:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");
 
 AREADY_OnEvent(AREADY, "");
