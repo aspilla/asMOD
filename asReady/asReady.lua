@@ -33,11 +33,11 @@ local trackedPartySpellNames = {
 
 local trackedCoolSpellNames = {
 	WARRIOR_1 = {
-		["투신"] = { 120, 20 },
+		["투신"] = { 90, 20 },
 	},
 
 	WARRIOR_2 = {
-		["투신"] = { 120, 20 },
+		["무모한 희생"] = { 90, 12 },
 	},
 
 	WARRIOR_3 = {
@@ -167,16 +167,16 @@ local trackedCoolSpellNames = {
 
 
 	DEATHKNIGHT_1 = {
-		["룬 무기 강화"] = { 120, 20 },
+		["춤추는 룬 무기"] = { 120, 16 },
 
 	},
 
 	DEATHKNIGHT_2 = {
-		["룬 무기 강화"] = { 120, 20 },
+		["얼음 기둥"] = { 60, 12 },
 	},
 
 	DEATHKNIGHT_3 = {
-		["룬 무기 강화"] = { 120, 20 },
+		["부정의 습격"] = { 90, 20 },
 	},
 
 
@@ -210,7 +210,7 @@ local trackedCoolSpellNames = {
 	},
 
 	DEMONHUNTER_1 = {
-		["탈태"] = { 120, 20 },
+		[191427] = { 120, 20 },
 	},
 
 	DEMONHUNTER_2 = {
@@ -395,14 +395,17 @@ local function UtilSetCooldown(offensivecool, unit)
 	local x, y = frame:GetSize();
 
 	if name then
-		buffFrame.icon:SetTexture(icon);
+		
 		buffFrame:SetSize(y / 2 * 1.2, y / 2);
 
-		local getname, _, _, _, getcool, getexpirationTime = GetUnitBuff(unit, name);
+		local getname, geticon, _, _, getcool, getexpirationTime = GetUnitBuff(unit, name);
 
 		if getname then
 			buffcool = getcool;
 			time = getexpirationTime - getcool;
+			buffFrame.icon:SetTexture(geticon);
+		else
+			buffFrame.icon:SetTexture(icon);
 		end
 
 		local currtime = GetTime();
@@ -492,10 +495,7 @@ end
 
 
 
-local prev_number = 0;
 local timer = nil;
-local bupdate = false;
-
 
 local function layoutbuff(f, unit)
 	f:EnableMouse(false);
@@ -560,10 +560,6 @@ local function scanUnitSpecID(unit)
 end
 
 local function SetupPartyCool(frame)
-	if bupdate == false then
-		return;
-	end
-
 	if frame and not frame:IsForbidden() and frame:IsShown() and frame.GetName then
 		local name = frame:GetName();
 
@@ -572,7 +568,7 @@ local function SetupPartyCool(frame)
 			if not (frame.unit and UnitIsPlayer(frame.unit)) then return end
 
 			if not raidframes[frame.unit] then
-				raidframes[frame.unit] = {};
+				raidframes[frame.unit] = {};				
 			end
 			local raidframe = raidframes[frame.unit];
 			local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(CompactPartyFrame
@@ -593,9 +589,12 @@ local function SetupPartyCool(frame)
 
 			if englishClass then
 				local newcoollist = trackedCoolSpellNames[englishClass .. "_" .. spec];
+				local newlistname = GetUnitName(frame.unit)..englishClass .. "_" .. spec;
 
-				if raidframe.coolspelllist == nil or raidframe.coolspelllist ~= newcoollist then
+				if raidframe.listname == nil or raidframe.listname ~= newlistname then
+					interruptcools = {};
 					offensivecools = {};
+					raidframe.listname = newlistname;					
 				end
 
 				raidframe.coolspelllist = newcoollist;
@@ -635,9 +634,6 @@ end
 
 local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 	if event == "UNIT_SPELLCAST_SUCCEEDED" then
-		if bupdate == false then
-			return;
-		end
 		if arg1 and arg3 then
 			--elseif true then -- Test 용
 			local spellid = arg3;
@@ -677,25 +673,17 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 			end
 		end
 	else
-		local new_number = GetNumGroupMembers();
 		
-		if (new_number and new_number ~= prev_number) or new_number == 0 then
-			interruptcools = {};
-			offensivecools = {};
-
-			prev_number = new_number;		
-		end
-
 		if timer then
 			timer:Cancel();
 		end
 		AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-		bupdate = false;
-
+		
 		if IsInRaid() then
-			-- do nothing
+			interruptcools = {};
+			offensivecools = {};
 		elseif IsInGroup() then
-			bupdate = true;
+			
 			for k = 1, 5 do
 				local frame = _G["CompactPartyFrameMember" .. k];
 				if frame then
@@ -705,6 +693,9 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 
 			AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
 			timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
+		else
+			interruptcools = {};
+			offensivecools = {};
 		end
 	end
 

@@ -320,7 +320,7 @@ local function ParseAllAuras()
 end
 
 local function UpdateAuraFrames(auraList, numAuras)
-    if not ns.options.ShowDebuff then
+    if not ns.options.ShowPotraitDebuff then
         return;
     end
 
