@@ -31,9 +31,198 @@ local trackedPartySpellNames = {
 	["주문 잠금"] = 24,
 };
 
+local trackedCoolSpellNames = {
+	WARRIOR_1 = {
+		["투신"] = { 120, 20 },
+	},
+
+	WARRIOR_2 = {
+		["투신"] = { 120, 20 },
+	},
+
+	WARRIOR_3 = {
+		["투신"] = { 120, 20 },
+	},
+
+	ROGUE_1 = {
+		["죽음표식"] = { 120, 16 },
+	},
+
+	ROGUE_2 = {
+
+		["아드레날린 촉진"] = { 180, 20 },
+	},
+
+	ROGUE_3 = {
+		["어둠의 칼날"] = { 120, 20 },
+	},
+
+
+	HUNTER_1 = {
+		["야생의 부름"] = { 120, 20 },
+	},
+
+	HUNTER_2 = {
+		["정조준"] = { 120, 18 },
+
+	},
+
+	HUNTER_3 = {
+		["협공"] = { 120, 20 },
+
+	},
+
+	MONK_1 = {
+		["흑우 니우짜오의 원령"] = { 180, 25 },
+	},
+
+	MONK_2 = {
+		["주학 츠지의 원령"] = { 60, 12 },
+		["옥룡 위론의 원령"] = { 60, 12 },
+	},
+
+	MONK_3 = {
+		["백호 쉬엔의 원령"] = { 120, 20 },
+	},
+
+	WARLOCK_1 = {
+		["암흑시선 소환"] = { 120, 30 },
+	},
+
+	WARLOCK_2 = {
+		["악마 폭군 소환"] = { 60, 15 },
+	},
+
+
+	WARLOCK_3 = {
+		["지옥불정령 소환"] = { 120, 30 },
+	},
+
+
+	PRIEST_1 = {
+		["마력 주입"] = { 120, 15 },
+	},
+
+	PRIEST_2 = {
+		["마력 주입"] = { 120, 15 },
+	},
+
+
+	PRIEST_3 = {
+		["마력 주입"] = { 120, 15 },
+	},
+
+	SHAMAN_1 = {
+		["불의 정령"] = { 150, 30 },
+		["폭풍의 정령"] = { 150, 30 },
+	},
+
+	SHAMAN_2 = {
+		["야수의 정령"] = { 90, 15 },
+	},
+
+	SHAMAN_3 = {
+		[114052] = { 180, 15 },
+	},
+
+
+	DRUID_1 = {
+		[194223] = { 180, 20 },
+		[102560] = { 180, 30 },
+
+	},
+
+
+	DRUID_2 = {
+		[102543] = { 180, 30 },
+		[106951] = { 180, 20 },
+
+	},
+
+	DRUID_3 = {
+		[102558] = { 180, 30 },
+
+	},
+
+
+	DRUID_4 = {
+		[33891] = { 180, 30 },
+		["영혼 소집"] = { 60, 3 },
+
+	},
+
+
+	MAGE_1 = {
+		["비전 쇄도"] = { 90, 18 },
+	},
+
+	MAGE_2 = {
+		["발화"] = { 120, 12 },
+	},
+
+	MAGE_3 = {
+		["얼음 핏줄"] = { 120, 30 },
+
+	},
+
+
+	DEATHKNIGHT_1 = {
+		["룬 무기 강화"] = { 120, 20 },
+
+	},
+
+	DEATHKNIGHT_2 = {
+		["룬 무기 강화"] = { 120, 20 },
+	},
+
+	DEATHKNIGHT_3 = {
+		["룬 무기 강화"] = { 120, 20 },
+	},
+
+
+	EVOKER_1 = {
+		["용의 분노"] = { 120, 18 },
+	},
+
+	EVOKER_2 = {
+		["되돌리기"] = { 180, 5 },
+
+	},
+
+	EVOKER_3 = {
+
+		["영겁의 숨결"] = { 108, 11.5 },
+	},
+
+
+	PALADIN_1 = {
+		[31884] = { 120, 20 },
+		["응징의 성전사"] = { 60, 12 },
+	},
+
+	PALADIN_2 = {
+		[31884] = { 120, 25 },
+		["파수꾼"] = { 120, 25 },
+	},
+
+	PALADIN_3 = {
+		[31884] = { 60, 20 },
+	},
+
+	DEMONHUNTER_1 = {
+		[191427] = { 120, 20 },
+	},
+
+	DEMONHUNTER_2 = {
+		[187827] = { 120, 15 },
+	},
+}
+
 -----------------설정 끝 ------------------------
 
-local partycool = {};
+local interruptcools = {};
+local offensivecools = {};
+local raidframes = {};
 
 local AREADY = CreateFrame("FRAME", nil, UIParent)
 AREADY:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
@@ -90,6 +279,7 @@ for idx = 1, AREADY_Max do
 	AREADY.bar[idx].button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 	AREADY.bar[idx].button.border:SetVertexColor(0, 0, 0);
 	AREADY.bar[idx].button:Hide();
+	AREADY.bar[idx]:Hide();
 
 
 	if idx == 1 then
@@ -152,11 +342,108 @@ local function hide_bar_icon(max)
 	end
 end
 
+--cooldown
+local function asCooldownFrame_Clear(self)
+	self:Clear();
+end
+--cooldown
+local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+	if enable and enable ~= 0 and start > 0 and duration > 0 then
+		self:SetDrawEdge(forceShowDrawEdge);
+		self:SetCooldown(start, duration, modRate);
+	else
+		asCooldownFrame_Clear(self);
+	end
+end
+
+
+local function GetUnitBuff(unit, buff)
+	local i = 1;
+	local ret = nil;
+	local filter = "INCLUDE_NAME_PLATE_ONLY";
+
+	repeat
+		local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
+			UnitBuff(unit, i, filter);
+		if (name == buff or spellId == buff) and duration > 0 and caster == unit then
+			return UnitBuff(unit, i, filter);
+		elseif (name == buff or spellId == buff) and duration == 0 and caster == unit then
+			ret = i;
+		end
+
+		i = i + 1;
+	until (name == nil)
+
+	if ret then
+		return UnitBuff(unit, ret, filter);
+	end
+
+	return ret;
+end
+
+
+local function UtilSetCooldown(offensivecool, unit)
+	local spellid = offensivecool[2];
+	local time = offensivecool[3];
+	local cool = offensivecool[4];
+	local buffcool = offensivecool[5];
+	local buffFrame = raidframes[unit].asbuffFrames[1];
+	local frame = raidframes[unit].frame;
+
+	local name, _, icon = GetSpellInfo(offensivecool[2]);
+
+	local x, y = frame:GetSize();
+
+	if name then
+		buffFrame.icon:SetTexture(icon);
+		buffFrame:SetSize(y / 2 * 1.2, y / 2);
+
+		local getname, _, _, _, getcool, getexpirationTime = GetUnitBuff(unit, name);
+
+		if getname then
+			buffcool = getcool;
+			time = getexpirationTime - getcool;
+		end
+
+		local currtime = GetTime();
+		if currtime <= time + buffcool then
+			local expirationTime = time + buffcool;
+			local duration = buffcool;
+			local enabled = expirationTime and expirationTime ~= 0;
+			if enabled then
+				local startTime = expirationTime - duration;
+				asCooldownFrame_Set(buffFrame.cooldown, startTime, duration, true);
+				buffFrame.icon:SetDesaturated(false);
+			else
+				asCooldownFrame_Clear(buffFrame.cooldown);
+				buffFrame.icon:SetDesaturated(true);
+			end
+		elseif currtime <= time + cool + 1 then
+			local expirationTime = time + cool;
+			local duration = cool;
+			local enabled = expirationTime and expirationTime ~= 0;
+			buffFrame.icon:SetDesaturated(true);
+			if enabled then
+				local startTime = expirationTime - duration;
+				asCooldownFrame_Set(buffFrame.cooldown, startTime, duration, true);
+			else
+				asCooldownFrame_Clear(buffFrame.cooldown);
+			end
+		else
+			buffFrame.icon:SetDesaturated(true);
+			asCooldownFrame_Clear(buffFrame.cooldown);
+		end
+		buffFrame:Show();
+	else
+		buffFrame:Hide();
+	end
+end
+
 
 local function AREADY_OnUpdate()
 	local idx = 1;
 
-	for i, v in pairs(partycool) do
+	for i, v in pairs(interruptcools) do
 		if v then
 			local spellid = v[2];
 			local time = v[3];
@@ -185,31 +472,196 @@ local function AREADY_OnUpdate()
 	end
 
 	hide_bar_icon(idx);
+
+	for i = 1, 5 do
+		local unit;
+		if i == 5 then
+			unit = "player"
+		else
+			unit = "party" .. i;
+		end
+		if raidframes[unit] then
+			if offensivecools[i] and offensivecools[i][1] and raidframes[unit].frame:IsShown() then
+				UtilSetCooldown(offensivecools[i], unit);
+			else
+				raidframes[unit].asbuffFrames[1]:Hide()
+			end
+		end
+	end
 end
 
+
+
 local prev_number = 0;
+local timer = nil;
+local bupdate = false;
+
+
+local function layoutbuff(f, unit)
+	f:EnableMouse(false);
+	f.icon:SetTexCoord(.08, .92, .08, .92);
+	f.border:SetTexture("Interface\\Addons\\asReady\\border.tga");
+	f.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+	f.border:SetVertexColor(0, 0, 0);
+	f.border:Show();
+
+	f.cooldown:SetSwipeColor(0, 0, 0, 0.5);
+end
+
+local function layoutcooldown(f)
+	for _, r in next, { f.cooldown:GetRegions() } do
+		if r:GetObjectType() == "FontString" then
+			r:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
+			r:ClearAllPoints();
+			r:SetPoint("CENTER", 0, 0);
+			break
+		end
+	end
+
+	f.cooldown:SetHideCountdownNumbers(false);
+end
+
+local function SpecIDfromSpecName(specname, classID)
+	for i = 1, 3 do
+		local name = select(2, GetSpecializationInfoForClassID(classID, i));
+		if string.find(specname, name) then
+			return i;
+		end
+	end
+	return nil;
+end
+
+local function scanUnitSpecID(unit)
+	local localizedClass, englishClass, classID = UnitClass(unit);
+	GameTooltip:SetUnit(unit);
+	local tooltipdata = GameTooltip:GetTooltipData();
+
+	if tooltipdata and tooltipdata.lines then
+		for i = 1, #tooltipdata.lines do
+			if tooltipdata.lines[i].leftText then
+				local spec = SpecIDfromSpecName(tooltipdata.lines[i].leftText, classID);
+
+				if spec ~= nil then
+					return spec;
+				end
+			end
+
+			if tooltipdata.lines[i].rightText then
+				local spec = SpecIDfromSpecName(tooltipdata.lines[i].rightText, classID);
+
+				if spec ~= nil then
+					return spec;
+				end
+			end
+		end
+	end
+end
+
+local function SetupPartyCool(frame)
+	if bupdate == false then
+		return;
+	end
+
+	if frame and not frame:IsForbidden() and frame:IsShown() and frame.GetName then
+		local name = frame:GetName();
+
+		if name and not (name == nil) and string.find(name, "CompactPartyFrameMember") then
+			if not (frame.displayedUnit and UnitIsPlayer(frame.displayedUnit)) then return end
+			if not (frame.unit and UnitIsPlayer(frame.unit)) then return end
+
+			if not raidframes[frame.unit] then
+				raidframes[frame.unit] = {};
+			end
+			local raidframe = raidframes[frame.unit];
+			local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(CompactPartyFrame.groupType);
+			local x, y = frame:GetSize();
+			raidframe.frame = frame;
+
+			local localizedClass, englishClass, classID = UnitClass(frame.unit);
+			local spec = scanUnitSpecID(frame.unit);
+
+			if spec == nil or spec == 0 then
+				spec = 1;
+			end
+
+			local newcoollist = trackedCoolSpellNames[englishClass .. "_" .. spec];
+
+			if raidframe.coolspelllist == nil or raidframe.coolspelllist ~= newcoollist then
+				offensivecools = {};
+			end
+
+			raidframe.coolspelllist = newcoollist;
+
+			if not raidframe.asbuffFrames then
+				raidframe.asbuffFrames = {}
+				for i = 1, 1 do
+					local buffFrame = CreateFrame("Button", nil, frame, "AREADYFrameTemplate")
+					layoutbuff(buffFrame, frame.unit);
+					raidframe.asbuffFrames[i] = buffFrame;
+					buffFrame:Hide();
+				end
+			end
+
+			for i, d in ipairs(raidframe.asbuffFrames) do
+				d:SetSize(y / 2 * 1.2, y / 2);
+				layoutcooldown(d);
+				d:ClearAllPoints();
+				if useHorizontalGroups then					
+					if i == 1 then
+						d:SetPoint("TOP", frame, "BOTTOM", 0, -1);
+					else
+						d:SetPoint("TOP", raidframe.asbuffFrames[i - 1], "BOTTOM", 0, -1);
+					end
+				else
+					if i == 1 then
+						d:SetPoint("RIGHT", frame, "LEFT", -1, 0);
+					else
+						d:SetPoint("RIGHT", raidframe.asbuffFrames[i - 1], "LEFT", -1, 0);
+					end
+				end
+			end
+		end
+	end
+end
 
 local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
-	if event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 and arg3 then
-		if IsInRaid() then
-			--Do nothing
-		elseif IsInGroup() then
+	if event == "UNIT_SPELLCAST_SUCCEEDED" then
+		if bupdate == false then
+			return;
+		end
+		if arg1 and arg3 then
 			--elseif true then -- Test 용
 			local spellid = arg3;
 			local unit = arg1;
 			local time = GetTime();
 			local name = GetSpellInfo(spellid);
+			if raidframes[unit] and raidframes[unit].coolspelllist then
+				local coolspelllist = raidframes[unit].coolspelllist;
 
-			--			print (spellid);
-			if trackedPartySpellNames[name] then
-				local cool = trackedPartySpellNames[name]
+				if coolspelllist[name] or coolspelllist[spellid] then
+					local info = coolspelllist[name] or coolspelllist[spellid];
+					local cool = info[1];
+					local buffcool = info[2];
 
-				if UnitIsUnit("player", unit) then
-					partycool[5] = { 5, spellid, time, cool, 0 };
-				else
-					for k = 1, GetNumGroupMembers() - 1 do
-						if UnitIsUnit("party" .. k, unit) then
-							partycool[k] = { k, spellid, time, cool, 0 };
+					if UnitIsUnit("player", unit) then
+						offensivecools[5] = { 5, spellid, time, cool, buffcool };
+					else
+						for k = 1, GetNumGroupMembers() - 1 do
+							if UnitIsUnit("party" .. k, unit) then
+								offensivecools[k] = { k, spellid, time, cool, buffcool };
+							end
+						end
+					end
+				elseif trackedPartySpellNames[name] or trackedPartySpellNames[spellid] then
+					local cool = trackedPartySpellNames[name] or trackedPartySpellNames[spellid];
+
+					if UnitIsUnit("player", unit) then
+						interruptcools[5] = { 5, spellid, time, cool, 0 };
+					else
+						for k = 1, GetNumGroupMembers() - 1 do
+							if UnitIsUnit("party" .. k, unit) then
+								interruptcools[k] = { k, spellid, time, cool, 0 };
+							end
 						end
 					end
 				end
@@ -219,15 +671,31 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 		local new_number = GetNumGroupMembers();
 
 		if new_number and new_number ~= prev_number then
-			partycool = {};
-
-			if IsInRaid() then
-				AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-			else
-				AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-			end
+			interruptcools = {};
+			offensivecools = {};
 
 			prev_number = new_number;
+		end
+
+		if timer then
+			timer:Cancel();
+		end
+		AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+		bupdate = false;
+
+		if IsInRaid() then
+			-- do nothing
+		elseif IsInGroup() then
+			bupdate = true;
+			for k = 1, 5 do
+				local frame = _G["CompactPartyFrameMember" .. k];
+				if frame then
+					SetupPartyCool(frame);
+				end
+			end
+
+			AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+			timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
 		end
 	end
 
@@ -235,8 +703,10 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 end
 
 
+
 AREADY:SetScript("OnEvent", AREADY_OnEvent)
---AREADY:RegisterEvent("PLAYER_ENTERING_WORLD");
 AREADY:RegisterEvent("GROUP_JOINED");
 AREADY:RegisterEvent("GROUP_ROSTER_UPDATE");
-C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
+AREADY:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+
+AREADY_OnEvent(AREADY, "");
