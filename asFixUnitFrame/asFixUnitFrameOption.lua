@@ -1,12 +1,13 @@
 local _, ns = ...;
 local Options_Default = {
-    HideDebuff = true,
+    version = 231218,
+    HideDebuff = false,
     HideCombatText = true,
     HideCastBar = true,
     HideClassBar = true,
     ShowClassColor = true,
     ShowAggro = true,
-    ShowDebuff = true,
+    ShowPotraitDebuff = true,
 };
 
 ns.options = {};
@@ -29,25 +30,30 @@ function ns.SetupOptionPanels()
 
     local category = Settings.RegisterVerticalLayoutCategory("asFixUnitFrame")
 
-    if AFUF_Options == nil then
+
+
+    if AFUF_Options == nil or AFUF_Options.version ~= Options_Default.version then
         AFUF_Options = {};
         AFUF_Options = CopyTable(Options_Default);        
     end
     ns.options = CopyTable(AFUF_Options);
 
     for variable, _ in pairs(Options_Default) do
-        local name = variable;
-        local cvar_name = "asFixUnitFrame_" .. variable;
-        local tooltip = ""
-        if AFUF_Options[variable] == nil then
-            AFUF_Options[variable] = Options_Default[variable];
-            ns.options[variable] = Options_Default[variable];
-        end
-        local defaultValue = AFUF_Options[variable];
 
-        local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue)
-        Settings.CreateCheckBox(category, setting, tooltip)
-        Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)
+        if variable ~= "version" then
+            local name = variable;
+            local cvar_name = "asFixUnitFrame_" .. variable;
+            local tooltip = ""
+            if AFUF_Options[variable] == nil then
+                AFUF_Options[variable] = Options_Default[variable];
+                ns.options[variable] = Options_Default[variable];
+            end
+            local defaultValue = AFUF_Options[variable];
+
+            local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue)
+            Settings.CreateCheckBox(category, setting, tooltip)
+            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)
+        end
     end
 
     Settings.RegisterAddOnCategory(category)
