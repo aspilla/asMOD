@@ -91,6 +91,18 @@ local function ACRB_updatePartyAllHealerMana()
 	end
 end
 
+local function isParty(unit)
+
+	for i = 1, 4 do
+		if unit and UnitIsUnit(unit, "party"..i) then
+			return true
+		end
+	end
+
+	return false;
+
+end
+
 -- Setup
 local function ACRB_setupFrame(frame)
 	if not frame or frame:IsForbidden() then
@@ -117,7 +129,7 @@ local function ACRB_setupFrame(frame)
 	asframe.frame = frame;
 	asframe.updatecount = nil;
 
-	if not UnitIsPlayer(asframe.unit) then
+	if (not UnitIsPlayer(asframe.unit)) and not isParty(asframe.unit) then
 		return;
 	end
 
@@ -491,9 +503,8 @@ local function ARCB_UpdateAll(frame)
 	if frame and not frame:IsForbidden() and frame.GetName then
 		local name = frame:GetName();
 
-		if name and not (name == nil) and (string.find(name, "CompactRaidGroup") or string.find(name, "CompactPartyFrameMember") or string.find(name, "CompactRaidFrame")) then
-			if not (frame.displayedUnit and UnitIsPlayer(frame.displayedUnit)) then return end
-			if not (frame.unit and UnitIsPlayer(frame.unit)) then return end
+		if name and not (name == nil) and (string.find(name, "CompactPartyFrameMember") or string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame")) then
+			if not (frame.unit and UnitIsPlayer(frame.unit)) and not isParty(frame.unit) then return end
 			ACRB_disableDefault(frame);
 			ACRB_setupFrame(frame);
 		end

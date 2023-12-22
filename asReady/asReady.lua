@@ -665,6 +665,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
         if IsInRaid() then
             interruptcools = {};
             offensivecools = {};
+            AREADY_OnUpdate();
         elseif IsInGroup() then
 
             for k = 1, 5 do
@@ -679,6 +680,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
         else
             interruptcools = {};
             offensivecools = {};
+            AREADY_OnUpdate();
         end
     end
 
@@ -686,9 +688,8 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 end
 
 AREADY:SetScript("OnEvent", AREADY_OnEvent)
+AREADY:RegisterEvent("PLAYER_ENTERING_WORLD");
 AREADY:RegisterEvent("GROUP_JOINED");
 AREADY:RegisterEvent("GROUP_ROSTER_UPDATE");
 AREADY:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 AREADY:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");
-
-AREADY_OnEvent(AREADY, "");
