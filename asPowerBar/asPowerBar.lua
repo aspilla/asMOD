@@ -1288,6 +1288,10 @@ local function APB_CheckPower(self)
 	local talentgroup = GetActiveSpecGroup();
 	local version = select(4, GetBuildInfo());
 
+	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
+		spec = 1;
+	end
+
 	APB:UnregisterEvent("UNIT_POWER_UPDATE")
 	APB:UnregisterEvent("UNIT_DISPLAYPOWER");
 	APB:UnregisterEvent("UPDATE_SHAPESHIFT_FORM");
@@ -2213,6 +2217,10 @@ local function checkSpellPowerCost(id)
 	local localizedClass, englishClass = UnitClass("player")
 	local spec = GetSpecialization();
 	local disWarlock = false;
+
+	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
+		spec = 1;
+	end
 
 	if (englishClass == "WARLOCK") then
 		if (spec and spec == 3) then

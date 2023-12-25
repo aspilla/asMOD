@@ -566,9 +566,9 @@ local function initList()
 
     show_list = nil;
 
-    if spec == nil then
-        spec = 1;
-    end
+    if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
+		spec = 1;
+	end
 
     if spec then
         listname = "ShowList_" .. englishClass .. "_" .. spec;

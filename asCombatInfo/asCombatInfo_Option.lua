@@ -465,7 +465,7 @@ local function SetupEditBoxOption()
 		local localizedClass, englishClass = UnitClass("player");
 		local listname;
 
-		if spec == nil then
+		if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
 			spec = 1;
 		end
 
@@ -487,7 +487,7 @@ local function SetupEditBoxOption()
 	local localizedClass, englishClass = UnitClass("player");
 	local listname;
 
-	if spec == nil then
+	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
 		spec = 1;
 	end
 
@@ -645,7 +645,7 @@ local function InitOption()
 	local localizedClass, englishClass = UnitClass("player");
 	local listname;
 
-	if spec == nil then
+	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
 		spec = 1;
 	end
 
@@ -654,10 +654,15 @@ local function InitOption()
 		ACI_Options = {};
 		ACI_Options.version = (ACI_Options_Default.version);
 
-		if spec and configID then
+		if englishClass and spec and configID then
 			listname = "ACI_SpellList_" .. englishClass .. "_" .. spec;
 			ACI_Options[spec] = {};
-			ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
+			if ACI_Options_Default[listname] then
+				ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
+			else
+				listname = "ACI_SpellList_" .. englishClass .. "_" .. 1;
+				ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
+			end
 		end
 	end
 
@@ -665,9 +670,15 @@ local function InitOption()
 		ACI_Options[spec] = {};
 	end
 
-	if spec and configID and ACI_Options[spec][configID] == nil then
+	if spec and configID and englishClass and ACI_Options[spec][configID] == nil then
 		listname = "ACI_SpellList_" .. englishClass .. "_" .. spec;
-		ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
+		if ACI_Options_Default[listname] then
+			ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
+		else
+			listname = "ACI_SpellList_" .. englishClass .. "_" .. 1;
+			ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
+		end
+
 	end
 end
 

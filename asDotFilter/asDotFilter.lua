@@ -436,6 +436,10 @@ local function ADotF_InitList()
     local _, englishClass = UnitClass("player");
     local listname = "ADotF_ShowList_";
 
+    if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
+		spec = 1;
+	end
+
     if spec then
         listname = "ADotF_ShowList_" .. englishClass .. "_" .. spec;
     end

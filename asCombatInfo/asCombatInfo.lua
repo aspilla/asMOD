@@ -146,7 +146,7 @@ function ACI_Init()
 	local listname = "ACI_SpellList";
 
 
-	if spec == nil then
+	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
 		spec = 1;
 	end
 	

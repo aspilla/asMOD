@@ -645,9 +645,9 @@ local function SetupEditBoxOption()
     local localizedClass, englishClass = UnitClass("player");
     local listname;
 
-    if spec == nil then
-        spec = 1;
-    end
+    if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
+		spec = 1;
+	end
 
     if spec then
         listname = "ANameP_ShowList_" .. englishClass .. "_" .. spec;
@@ -656,7 +656,12 @@ local function SetupEditBoxOption()
     end
 
     if ANameP_Options[listname] == nil then
-        ANameP_Options[listname] = ANameP_Options_Default[listname];
+        if ANameP_Options_Default[listname] then
+            ANameP_Options[listname] = ANameP_Options_Default[listname];
+        else
+            listname = "ANameP_ShowList_" .. englishClass .. "_" .. 1;            
+            ANameP_Options[listname] = ANameP_Options_Default[listname];
+        end
     end
 
     local listdata = ANameP_Options[listname];

@@ -51,6 +51,10 @@ local function ACRB_InitList()
 
 	ns.ACRB_ShowList = nil;
 
+	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
+		spec = 1;
+	end
+
 	if spec then
 		listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
 	end
