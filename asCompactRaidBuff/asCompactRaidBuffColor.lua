@@ -18,7 +18,13 @@ function ns.UpdateNameColor(frame, showbuffcolor, showhealthcolor)
 	end
 
 	local frameName = frame:GetName()
-	local asframe = (frameName and ns.asraid[frameName]) or nil;
+	local asframe;
+
+	if IsInRaid() then
+		asframe = (frameName and ns.asraid[frameName]) or nil;
+	else
+		asframe = (frameName and ns.asparty[frameName]) or nil;
+	end
 
 	if asframe == nil or not asframe.buffcolor then
 		return;
@@ -182,3 +188,4 @@ function ns.ACRB_UpdateHealerMana(asframe)
 		asframe.layout = layouttype;
 	end
 end
+
