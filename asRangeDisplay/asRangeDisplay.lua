@@ -90,6 +90,23 @@ ARD_mainframe:SetFrameStrata("MEDIUM");
 ARD_mainframe:SetFrameLevel(9000);
 local ARD_RangeText;
 
+local function IsHelpful(unit)
+
+	if UnitIsUnit("player", unit) then
+		return false;
+	else
+		local reaction = UnitReaction("player", unit);
+
+		if reaction and reaction <= 4 then
+			return false;
+		else
+			return true;
+		end
+	end
+
+	return false;
+end
+
 local function ARD_CheckRange(unit)
 	local isHarm = true;
 	local itemlist = FriendItems;
@@ -164,7 +181,7 @@ end
 
 local function ARD_OnUpdate()
 	if UnitExists("target") then
-		if not InCombatLockdown() then
+		if not InCombatLockdown() or not IsHelpful("target") then
 			local range = ARD_CheckRange("target");
 			if range == 0 then
 				ARD_RangeText:SetText("");

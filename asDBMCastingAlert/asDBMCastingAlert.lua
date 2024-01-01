@@ -300,7 +300,10 @@ local function initAddon()
 	ADVA:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");
 	ADVA:RegisterEvent("PLAYER_ENTERING_WORLD");
 
-	timer = C_Timer.NewTicker(0.2, ADCA_OnUpdate);	
+	timer = C_Timer.NewTicker(0.2, ADCA_OnUpdate);
+	local voiceID = C_TTSSettings.GetVoiceOptionID(0)
+
+	
 end
 
 
