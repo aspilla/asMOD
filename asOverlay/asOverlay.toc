@@ -2,6 +2,6 @@
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rOverlay
 ## Notes: 스킬 발동 알림
-## Version : 181109
+## Version : 240107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asOverlay.xml

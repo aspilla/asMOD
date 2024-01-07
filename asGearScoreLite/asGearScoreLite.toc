@@ -2,7 +2,7 @@
 ## Author: |cffff3399아스필라|r [아즈샤라] 
 ## Title: |cffff3399as|rGearScoreLite
 ## Notes: 기어스코어 
-## Version : 110126
+## Version : 240107
 ## OptionalDeps: Blizzard_InspectUI
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asGearScoreLite.lua

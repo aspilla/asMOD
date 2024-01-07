@@ -2,7 +2,7 @@
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rTargetCastBar
 ## Notes: 대상의 시전바
-## Version : 221223
+## Version : 240107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asTargetCastBarLib.lua
 asTargetCastBar.xml

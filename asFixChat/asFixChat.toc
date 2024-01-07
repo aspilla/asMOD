@@ -2,6 +2,6 @@
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rFixChat
 ## Notes: 채팅창 기능 추가
-## Version : 100425
+## Version : 240107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asFixChat.lua

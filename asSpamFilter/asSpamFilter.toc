@@ -2,6 +2,6 @@
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rSpamFilter
 ## Notes: Error Message 필터 
-## Version : 160630
+## Version : 240107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asSpamFilter.xml

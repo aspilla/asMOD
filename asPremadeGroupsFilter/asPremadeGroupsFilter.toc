@@ -2,6 +2,6 @@
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rPremadeGroupsFilter
 ## Notes: 파티찾기 직업 색상 추가
-## Version : 240101
+## Version : 240107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asPremadeGroupsFilter.lua
