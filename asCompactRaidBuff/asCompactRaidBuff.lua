@@ -196,7 +196,15 @@ local function ACRB_setupFrame(frame)
     end
 
     local function layoutbuff(f, t)
-        f:EnableMouse(ns.options.ShowTooltip);
+
+        local bshow = ns.options.ShowBuffTooltip;
+
+        if t == 2 then
+            bshow = ns.options.ShowDebuffTooltip;
+        end
+
+        f:EnableMouse(bshow);
+
         f.icon:SetTexCoord(.08, .92, .08, .92);
         f.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
         f.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
@@ -207,7 +215,7 @@ local function ACRB_setupFrame(frame)
         f.count:ClearAllPoints();
         f.count:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 1);
 
-        if ns.options.ShowTooltip and not f:GetScript("OnEnter") then
+        if bshow and not f:GetScript("OnEnter") then
             f:SetScript("OnEnter", function(s)
                 if t == 1 then
                     if s.auraInstanceID then
@@ -540,7 +548,7 @@ end
 local updatecount = 0;
 local NUM_MEMBERS = 5;
 
-local function ACRB_updatePartyAllAura(auraonly)
+local function ACRB_updatePartyAllAura(auraonly, update_all)
     if auraonly then
         local count = 0;
         local newcount = (updatecount + 1) % 100;
@@ -553,7 +561,7 @@ local function ACRB_updatePartyAllAura(auraonly)
                         count = count + 1;
                     end
                     asframe.updatecount = newcount;
-                    if count == NUM_MEMBERS then
+                    if count == NUM_MEMBERS and update_all == false then
                         return;
                     end
                 end
@@ -589,7 +597,7 @@ end
 local numberofgroups = 1;
 
 local function ACRB_OnUpdateAura()
-    ACRB_updatePartyAllAura(true);
+    ACRB_updatePartyAllAura(true, false);
 end
 
 local function ACRB_OnUpdate()
@@ -626,21 +634,23 @@ function ns.SetupAll(init)
     if init then
         ACRB_InitList();
     end
-    ACRB_updatePartyAllAura(false);
+    ACRB_updatePartyAllAura(false, true);
     timero = C_Timer.NewTicker(ns.UpdateRate, ACRB_OnUpdate);
     timeroAura = C_Timer.NewTicker(ns.UpdateRate / numberofgroups, ACRB_OnUpdateAura);
 end
 
 local bfirst = true;
 
-local function ACRB_OnEvent(self, event)
+local function ACRB_OnEvent(self, event, arg1)
     if bfirst then
         ns.SetupOptionPanels();
         ns.SetupAll(true);
         bfirst = false;
     end
 
-    if (event == "PLAYER_ENTERING_WORLD") then
+    if event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
+        ACRB_updatePartyAllAura(true, true);
+    elseif (event == "PLAYER_ENTERING_WORLD") then
         ns.hasValidPlayer = true;
         local bloaded = LoadAddOn("DBM-Core");
         if bloaded then
@@ -669,6 +679,8 @@ ACRB_mainframe:RegisterEvent("ROLE_CHANGED_INFORM");
 ACRB_mainframe:RegisterEvent("VARIABLES_LOADED");
 ACRB_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
 ACRB_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
+-- CPU 리소스
+--ACRB_mainframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 
 hooksecurefunc("CompactUnitFrame_UpdateAll", ARCB_UpdateAll);
 hooksecurefunc("CompactUnitFrame_UpdateName", ns.UpdateNameColor);

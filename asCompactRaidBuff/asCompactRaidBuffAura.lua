@@ -422,6 +422,35 @@ end
 
 function ns.ACRB_UpdateAuras(asframe)
 
+    local frame = asframe.frame;
+
+    do
+        if frame.buffFrames then
+            for i = 1, #frame.buffFrames do
+                frame.buffFrames[i]:SetAlpha(0);
+                frame.buffFrames[i]:Hide();
+            end
+        end
+    end
+
+    do
+        if frame.debuffFrames then
+            for i = 1, #frame.debuffFrames do
+                frame.debuffFrames[i]:SetAlpha(0);
+                frame.debuffFrames[i]:Hide();
+            end
+        end
+    end
+
+    do
+        if frame.dispelDebuffFrames then
+            for i = 1, #frame.dispelDebuffFrames do
+                frame.dispelDebuffFrames[i]:SetAlpha(0);
+                frame.dispelDebuffFrames[i]:Hide();
+            end
+        end
+    end
+
     ACRB_ParseAllAuras(asframe);
 
     do
