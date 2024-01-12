@@ -129,7 +129,11 @@ function GetAvgIvl(unit)
 		min = 0;
 	end
 
-	return floor(t / c), max, min
+	if c > 0 then
+		return floor(t / c), max, min
+	else
+		return 0, max, min
+	end
 end
 
 function MyPaperDoll()

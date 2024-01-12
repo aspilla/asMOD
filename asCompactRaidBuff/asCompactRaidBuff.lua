@@ -265,6 +265,15 @@ local function ACRB_setupFrame(frame)
         end
     end
 
+    local strata = "LOW";
+    local framelevel = 4;
+
+    
+    if frame.buffFrames[1] then
+        strata = frame.buffFrames[1]:GetFrameStrata();
+        framelevel = frame.buffFrames[1]:GetFrameLevel();
+    end
+    
     if not asframe.asbuffFrames then
         asframe.asbuffFrames = {}
         for i = 1, ns.ACRB_MAX_BUFFS do
@@ -272,6 +281,9 @@ local function ACRB_setupFrame(frame)
             layoutbuff(buffFrame, 1);
             asframe.asbuffFrames[i] = buffFrame;
             buffFrame:Hide();
+
+            buffFrame:SetFrameStrata(strata);
+            buffFrame:SetFrameLevel(framelevel);
         end
     end
 
@@ -328,6 +340,10 @@ local function ACRB_setupFrame(frame)
             layoutbuff(debuffFrame, 2);
             asframe.asdebuffFrames[i] = debuffFrame;
             debuffFrame:Hide();
+
+            debuffFrame:SetFrameStrata(strata);
+            debuffFrame:SetFrameLevel(framelevel);
+
         end
     end
 
@@ -363,6 +379,9 @@ local function ACRB_setupFrame(frame)
             local pvpbuffFrame = CreateFrame("Button", nil, frame, "asCompactBuffTemplate");
             asframe.defensivebuffFrames[i] = pvpbuffFrame;
             layoutbuff(pvpbuffFrame, 1);
+
+            pvpbuffFrame:SetFrameStrata(strata);
+            pvpbuffFrame:SetFrameLevel(framelevel);
         end
     end
 
@@ -383,6 +402,8 @@ local function ACRB_setupFrame(frame)
         for i = 1, ns.ACRB_MAX_CASTING do
             local castFrame = CreateFrame("Button", nil, frame, "asCompactBuffTemplate");
             asframe.castFrames[i] = castFrame;
+            castFrame:SetFrameStrata(strata);
+            castFrame:SetFrameLevel(framelevel);
             layoutbuff(castFrame, 3);
         end
     end
@@ -405,6 +426,9 @@ local function ACRB_setupFrame(frame)
             dispelDebuffFrame:EnableMouse(false);
             asframe.asdispelDebuffFrames[i] = dispelDebuffFrame;
             dispelDebuffFrame:Hide();
+
+            dispelDebuffFrame:SetFrameStrata(strata);
+            dispelDebuffFrame:SetFrameLevel(framelevel);
         end
     end
 
@@ -425,6 +449,8 @@ local function ACRB_setupFrame(frame)
         asframe.asManabar:SetMinMaxValues(0, 100);
         asframe.asManabar:SetValue(100);
         asframe.asManabar:SetPoint("BOTTOM", frame.healthBar, "BOTTOM", 0, 0);
+        asframe.asManabar:SetFrameStrata(strata);
+        asframe.asManabar:SetFrameLevel(framelevel);
         asframe.asManabar:Hide();
     end
 
@@ -680,7 +706,7 @@ ACRB_mainframe:RegisterEvent("VARIABLES_LOADED");
 ACRB_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
 ACRB_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 -- CPU 리소스
---ACRB_mainframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
+-- ACRB_mainframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 
 hooksecurefunc("CompactUnitFrame_UpdateAll", ARCB_UpdateAll);
 hooksecurefunc("CompactUnitFrame_UpdateName", ns.UpdateNameColor);

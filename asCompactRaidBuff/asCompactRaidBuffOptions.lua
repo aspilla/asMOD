@@ -3,7 +3,7 @@ local _, ns = ...;
 ns.UpdateRate = 0.2;           -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 
 local Options_Default = {
-	version = 240109,
+	version = 240110,
 	ShowBuffColor = true,       -- 버프가 Frame Color 를 변경 할지
 	ShowHealthColor = true,     -- 체력 낮은 사람 Color 변경 (사제 생명)
 	LeftAbsorbBar = true,       -- 보호막 바
@@ -19,7 +19,7 @@ local Options_Default = {
 	MinShowBuffFontSizeRate = 0.6, -- 버프 Size 대비 쿨다운 폰트 사이즈	
 	ShowBuffTooltip = false,         -- Buff GameTooltip을 보이게 하려면 True
 	ShowDebuffTooltip = true,         -- Debuff GameTooltip을 보이게 하려면 True
-	HideCooldown = false,		-- CooldownSwipe를 숨기게
+	HideCooldown = false,		-- CooldownSwipe를 숨기고 숫자만으로 Cooldown
 
 	-- 첫 숫자 남은시간에 리필 알림 (1이면 자동으로 30% 남으면 알림)
 	-- 두번째 숫자는 표시 위치, 6(우상) 5/4(우중) 1,2,3 은 우하에 보이는 우선 순위이다. (숫자가 클수록 우측에 보임)
@@ -72,6 +72,7 @@ local Options_Default = {
 		["회복"] = { 1, 6 },
 		["피어나는 생명"] = { 1, 5 },
 		["재생"] = { 1, 4 },
+		["적응의 무리"] = { 0, 3 },
 		["회복 (싹틔우기)"] = { 1, 2 },
 		["세나리온 수호물"] = { 0, 1 },
 	},
