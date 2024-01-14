@@ -268,10 +268,6 @@ local function IsShown(name, spellId, bpersonal)
 		return true;
 	end
 
-	if spellId and overlayspell[spellId] and not bpersonal then
-		return true;
-	end
-
 	return false;
 end
 

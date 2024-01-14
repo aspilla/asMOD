@@ -1,4 +1,5 @@
-﻿-----------------설정 ------------------------
+﻿local _, ns = ...;
+-----------------설정 ------------------------
 local AREADY_WIDTH = 100 -- 쿨 바의 넓이
 local AREADY_HEIGHT = 14 -- 쿨 바의 높이
 local AREADY_X = -500; -- X 위치
@@ -280,6 +281,10 @@ local function create_bar_icon(idx, unit, spellid, time, cool)
     local curtime = GetTime();
     local curcool;
 
+    if not color then
+        return;
+    end
+
     if time > curtime then
         AREADY.bar[idx]:Hide();
         return;
@@ -341,25 +346,18 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 end
 
 local function GetUnitBuff(unit, buff)
-    local i = 1;
     local ret = nil;
-    local filter = "INCLUDE_NAME_PLATE_ONLY";
+    local auraList = ns.ParseAllBuff(unit);
 
-    repeat
-        local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
-            UnitBuff(unit, i, filter);
-        if (name == buff or spellId == buff) and duration > 0 and caster == unit then
-            return UnitBuff(unit, i, filter);
-        elseif (name == buff or spellId == buff) and duration == 0 and caster == unit then
-            ret = i;
+    auraList:Iterate(function(auraInstanceID, aura)
+        if aura and (aura.name == buff or aura.spellId == buff) and aura.sourceUnit == casterid then
+            if aura.duration > 0 then
+                ret = aura;
+            elseif ret == nil then
+                ret = aura;
+            end
         end
-
-        i = i + 1;
-    until (name == nil)
-
-    if ret then
-        return UnitBuff(unit, ret, filter);
-    end
+    end);
 
     return ret;
 end
@@ -380,12 +378,12 @@ local function UtilSetCooldown(offensivecool, unit)
 
         buffFrame:SetSize(y / 2 * 1.2, y / 2);
 
-        local getname, geticon, _, _, getcool, getexpirationTime = GetUnitBuff(unit, name);
+        local aura = GetUnitBuff(unit, name);
 
-        if getname then
-            buffcool = getcool;
-            time = getexpirationTime - getcool;
-            buffFrame.icon:SetTexture(geticon);
+        if aura then
+            buffcool = aura.duration;
+            time = aura.expirationTime - aura.duration;
+            buffFrame.icon:SetTexture(aura.icon);
         else
             buffFrame.icon:SetTexture(icon);
         end

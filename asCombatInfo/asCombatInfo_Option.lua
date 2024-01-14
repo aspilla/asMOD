@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 231206,
+	version = 240114,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -293,7 +293,7 @@ ACI_Options_Default = {
 		{ "신속한 치유", 1 },
 		{ 99, "영혼 소집", { "영혼 소집", 1 }, { "화신: 생명의 나무", 2, nil, nil, nil, "화신" } },
 		{ "급속 성장", 1 },
-		{ 99, "평온", { "평온", 1 }, { "번성", 1 } },
+		{ "달빛섬광", 4, nil, 1 },
 	},
 
 

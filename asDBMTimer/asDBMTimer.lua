@@ -1,4 +1,6 @@
-﻿local ADBMT_Font = "Fonts\\2002.TTF";
+﻿local _, ns = ...;
+
+local ADBMT_Font = "Fonts\\2002.TTF";
 local ADBMT_CoolFontSize = 15;
 local ADBMT_NameFontSize = 12;
 local ADBMT_FontOutline = "THICKOUTLINE";
@@ -163,7 +165,7 @@ local function checkList()
 	for id, v in pairs(dbm_event_list) do
 		local start = GetTime();
 		local remain = v[3] + v[2] - GetTime();
-		if v[5] == 0 and remain > 0 and remain <= 10 then
+		if v[5] == 0 and remain > 0 and remain <= ns.options.MinTimetoShow then
 			local idx = newButton(id, v[1], remain, start, v[4], v[6], v[7]);
 			v[5] = idx;
 		elseif remain <= 0 then
@@ -234,6 +236,9 @@ local function setupUI()
 end
 
 local function initAddon()
+
+	C_Timer.After(1, ns.SetupOptionPanels);
+	
 	DBM:RegisterCallback("DBM_TimerStart", asDBMTimer_callback);
 	DBM:RegisterCallback("DBM_TimerStop", asDBMTimer_callback);
 	DBM:RegisterCallback("DBM_TimerFadeUpdate", asDBMTimer_callback);

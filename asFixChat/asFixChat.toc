@@ -1,4 +1,4 @@
-﻿## Interface: 100200
+﻿## Interface: 100205
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rFixChat
 ## Notes: 채팅창 기능 추가

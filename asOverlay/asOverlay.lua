@@ -1,23 +1,10 @@
+local _, ns = ...;
+
 local sizeScale = 0.8;
 local longSide = 256 * sizeScale;
 local shortSide = 128 * sizeScale;
 
 local settingalpha = 0.5;
-
-local function getExpirationTimeUnitAurabyID(unit, id, filter)
-	local i = 1;
-	repeat
-		local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId =
-		UnitAura(unit, i, filter);
-
-		if name and spellId == id then
-			return expirationTime, duration, count;
-		end
-		i = i + 1;
-	until (name == nil)
-
-	return nil;
-end
 
 
 local function asOverlay_OnLoad(self)
@@ -232,9 +219,12 @@ local function asOverlay_OnUpdate(self, elapsed)
 	if update >= 0.25 and self.overlaysInUse then
 		for spellID, overlayList in pairs(self.overlaysInUse) do
 			if (overlayList and #overlayList) then
-				local extime, duration, count = getExpirationTimeUnitAurabyID("player", spellID, "HELPFUL|PLAYER");
+				local aura = ns.getExpirationTimeUnitAurabyID("player", spellID);
+				
 
-				if extime then
+				if aura then
+					local extime = aura.expirationTime;
+					local duration = aura.duration;
 					local remain = extime - GetTime();
 					local rate = 0;
 

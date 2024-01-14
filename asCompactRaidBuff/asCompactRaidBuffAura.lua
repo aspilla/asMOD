@@ -236,9 +236,9 @@ local function ARCB_UtilSetBuff(buffFrame, aura)
     end
 
     if ns.options.HideCooldown then
-        local remain = math.floor(aura.expirationTime - GetTime());
+        local remain = math.ceil(aura.expirationTime - GetTime());
 
-        if remain >= 0 and remain < 10 then
+        if remain > 0 and remain < 10 then
             buffFrame.remain:SetText(remain);
             buffFrame.remain:Show();
         else
@@ -294,9 +294,9 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura)
     end
 
     if ns.options.HideCooldown then
-        local remain = math.floor(aura.expirationTime - GetTime());
+        local remain = math.ceil(aura.expirationTime - GetTime());
 
-        if remain >= 0 and remain < 10 then
+        if remain > 0 and remain < 10 then
             debuffFrame.remain:SetText(remain);
             debuffFrame.remain:Show();
         else

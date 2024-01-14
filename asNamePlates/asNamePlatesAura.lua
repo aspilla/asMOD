@@ -1,47 +1,19 @@
 local _, ns = ...;
 
---AuraUtil
-
+-- AuraUtil
 local PLAYER_UNITS = {
     player = true,
     vehicle = true,
-    pet = true,
+    pet = true
 };
 
+local AuraUpdateChangedType = EnumUtil.MakeEnum("None", "Debuff", "Buff");
 
-local DispellableDebuffTypes =
-{
-    Magic = true,
-    Curse = true,
-    Disease = true,
-    Poison = true
-};
+ns.UnitFrameDebuffType = EnumUtil.MakeEnum("Normal", "namePlateShowAll", "Player", "Priority");
 
+ns.UnitFrameBuffType = EnumUtil.MakeEnum("Normal", "PVP", "Stealable", "nameplateShowPersonal");
 
-local AuraUpdateChangedType = EnumUtil.MakeEnum(
-    "None",
-    "Debuff",
-    "Buff"
-);
-
-ns.UnitFrameDebuffType = EnumUtil.MakeEnum(
-    "Normal",
-    "namePlateShowAll",
-    "Player",
-    "Priority"
-);
-
-ns.UnitFrameBuffType = EnumUtil.MakeEnum(
-    "Normal",
-    "PVP",
-    "Stealable",
-    "nameplateShowPersonal"
-);
-
-
-
-local AuraFilters =
-{
+local AuraFilters = {
     Helpful = "HELPFUL",
     Harmful = "HARMFUL",
     Raid = "RAID",
@@ -49,11 +21,11 @@ local AuraFilters =
     Player = "PLAYER",
     Cancelable = "CANCELABLE",
     NotCancelable = "NOT_CANCELABLE",
-    Maw = "MAW",
+    Maw = "MAW"
 };
 
 local function CreateFilterString(...)
-    return table.concat({ ... }, '|');
+    return table.concat({...}, '|');
 end
 
 local function DefaultAuraCompare(a, b)
@@ -86,7 +58,6 @@ local function UnitFrameBuffComparator(a, b)
     return DefaultAuraCompare(a, b);
 end
 
-
 local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuationToken, ...)
     -- continuationToken is the first return value of UnitAuraSlots()
     local n = select('#', ...);
@@ -118,8 +89,6 @@ local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
     until continuationToken == nil;
 end
 
-
-
 local function ProcessAura(aura, unit, type)
     if aura == nil then
         return AuraUpdateChangedType.None;
@@ -134,7 +103,8 @@ local function ProcessAura(aura, unit, type)
                     show = true;
                 end
             else
-                if (aura.nameplateShowPersonal or (ns.options.ANameP_ShowKnownSpell and (ns.KnownSpellList[aura.name] or ns.KnownSpellList[aura.icon]))) then
+                if (aura.nameplateShowPersonal or
+                    (ns.options.ANameP_ShowKnownSpell and (ns.KnownSpellList[aura.name] or ns.KnownSpellList[aura.icon]))) then
                     show = true;
                 end
             end
@@ -200,7 +170,8 @@ local function ProcessAura(aura, unit, type)
             if ns.options.ANameP_ShowPlayerBuffAll == false then
                 show = aura.nameplateShowPersonal;
             else
-                if ns.ANameP_ShowPlayerBuff and PLAYER_UNITS[aura.sourceUnit] and aura.duration > 0 and aura.duration <= ns.ANameP_BuffMaxCool then
+                if ns.ANameP_ShowPlayerBuff and PLAYER_UNITS[aura.sourceUnit] and aura.duration > 0 and aura.duration <=
+                    ns.ANameP_BuffMaxCool then
                     show = true;
                 end
             end
@@ -237,7 +208,7 @@ local function ParseAllAuras(unit)
     else
         auraData.debuffs:Clear();
         auraData.buffs:Clear();
-    end    
+    end
 
     local batchCount = nil;
     local usePackedAura = true;
@@ -245,7 +216,7 @@ local function ParseAllAuras(unit)
         local type = ProcessAura(aura, unit, auraData.type);
 
         if type == AuraUpdateChangedType.Debuff then
-            auraData.debuffs[aura.auraInstanceID] = aura;            
+            auraData.debuffs[aura.auraInstanceID] = aura;
         elseif type == AuraUpdateChangedType.Buff then
             auraData.buffs[aura.auraInstanceID] = aura;
         end

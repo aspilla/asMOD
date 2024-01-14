@@ -98,24 +98,21 @@ local function asGetPowerCostTooltipInfo(spellID)
 end
 
 local function APB_UnitBuff(unit, buff, casterid)
-    local i = 1;
     local ret = nil;
-    local filter = "INCLUDE_NAME_PLATE_ONLY";
-
-    repeat
-        local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
-            UnitBuff(unit, i, filter);
-        if (name == buff or spellId == buff) and duration > 0 and caster == casterid then
-            return UnitBuff(unit, i, filter);
-        elseif (name == buff or spellId == buff) and duration == 0 and caster == casterid then
-            ret = i;
+    local auraList = ns.ParseAllBuff(unit);
+    
+    auraList:Iterate(function(auraInstanceID, aura)
+        if aura and (aura.name == buff or aura.spellId == buff) and aura.sourceUnit == casterid then
+            if  aura.duration > 0 then        
+                ret = aura;
+            elseif ret == nil then
+                ret = aura;
+            end
         end
-
-        i = i + 1;
-    until (name == nil)
+    end);
 
     if ret then
-        return UnitBuff(unit, ret, filter);
+        return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit;
     end
 
     for slot = 1, MAX_TOTEMS do
@@ -133,20 +130,20 @@ local function APB_UnitDebuff(unit, buff, casterid)
     local i = 1;
     local ret = nil;
 
-    repeat
-        local name, _, _, _, duration, _, caster = UnitDebuff(unit, i);
-
-        if name == buff and duration > 0 and caster == casterid then
-            return UnitDebuff(unit, i);
-        elseif name == buff and duration == 0 and caster == casterid then
-            ret = i;
+    local auraList = ns.ParseAllDebuff(unit);
+    
+    auraList:Iterate(function(auraInstanceID, aura)
+        if aura and (aura.name == buff or aura.spellId == buff) and aura.sourceUnit == casterid then
+            if  aura.duration > 0 then
+                ret = aura;
+            elseif ret == nil then
+                ret = aura;
+            end
         end
-
-        i = i + 1;
-    until (name == nil)
+    end);
 
     if ret then
-        return UnitDebuff(unit, i);
+        return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit;
     end
 
     return nil;
@@ -154,16 +151,23 @@ end
 
 local function APB_UnitDebuff_Name(unit, buff, filter)
     local i = 1;
+    local ret = nil;
 
-    repeat
-        local name = UnitDebuff(unit, i, filter);
-
-        if name == buff then
-            return UnitDebuff(unit, i, filter);
+    local auraList = ns.ParseAllDebuff(unit);
+    
+    auraList:Iterate(function(auraInstanceID, aura)
+        if aura and aura.name == buff then
+            if  aura.duration > 0 then
+                ret = aura;
+            elseif ret == nil then
+                ret = aura;
+            end
         end
+    end);
 
-        i = i + 1;
-    until (name == nil)
+    if ret then
+        return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit;
+    end
 
     return nil;
 end
@@ -344,8 +348,7 @@ local function APB_UpdateBuffCombo(combobar)
     end
 
     if APB_BUFF_COMBO then
-        local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
-            APB_UnitBuff(combobar.unit, APB_BUFF_COMBO, "player");
+        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff(combobar.unit, APB_BUFF_COMBO, "player");
 
         if name and caster == "player" then
             APB_ShowComboBar(count);
@@ -355,8 +358,7 @@ local function APB_UpdateBuffCombo(combobar)
     end
 
     if APB_DEBUFF_COMBO then
-        local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
-            APB_UnitDebuff(combobar.unit, APB_DEBUFF_COMBO, "player");
+        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitDebuff(combobar.unit, APB_DEBUFF_COMBO, "player");
 
         if name and caster == "player" then
             APB_ShowComboBar(count);
@@ -370,23 +372,18 @@ local prev_dire_beast_time = 0;
 local prev_dire_pack_time = 0;
 local dire_beast_count = 0;
 local function checkDireBeast()
-    local i = 1;
-    local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId;
-
-    repeat
-        name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellId =
-            UnitBuff("player", i, "INCLUDE_NAME_PLATE_ONLY");
-
-        if name and spellId == 281036 and expirationTime > prev_dire_beast_time then
+      
+    local auraList = ns.ParseAllBuff("player");
+    
+    auraList:Iterate(function(auraInstanceID, aura)
+        if aura.name and aura.spellId == 281036 and aura.expirationTime > prev_dire_beast_time then
             dire_beast_count = dire_beast_count + 1;
-            prev_dire_beast_time = expirationTime;
-        elseif name and spellId == 378747 and expirationTime > prev_dire_pack_time then
+            prev_dire_beast_time = aura.expirationTime;
+        elseif aura.name and aura.spellId == 378747 and aura.expirationTime > prev_dire_pack_time then
             dire_beast_count = 0;
-            prev_dire_pack_time = expirationTime;
+            prev_dire_pack_time = aura.expirationTime;
         end
-
-        i = i + 1;
-    until (name == nil)
+    end);
 
     return dire_beast_count;
 end
@@ -504,10 +501,10 @@ local function APB_UpdateBuff(buffbar)
 
     if buffbar.buff then
         buffbar.tooltip = buffbar.buff;
-        local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
+        local name, icon, count, debuffType, duration, expirationTime, caster =
             APB_UnitBuff(buffbar.unit, buffbar.buff, "player");
         if not name and buffbar.buff2 then
-            name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
+            name, icon, count, debuffType, duration, expirationTime, caster =
                 APB_UnitBuff(buffbar.unit, buffbar.buff2, "player");
             if name then
                 buffbar.tooltip = buffbar.buff2;
@@ -534,8 +531,7 @@ local function APB_UpdateBuff(buffbar)
     end
 
     if buffbar.debuff then
-        local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId =
-            APB_UnitDebuff_Name(buffbar.unit, buffbar.debuff);
+        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitDebuff_Name(buffbar.unit, buffbar.debuff);
 
         if name and caster == "player" then
             buffbar.start = expirationTime - duration;
@@ -1010,9 +1006,9 @@ local function APB_UpdateSpell(spell, spell2)
             end
         end
 
-		if not charges or not maxCharges2 then
-			return;
-		end
+        if not charges or not maxCharges2 then
+            return;
+        end
 
         for i = maxCharges + 1, maxCharges + charges do
             local spellbar = APB.spellbar[i];
@@ -1652,6 +1648,15 @@ local function APB_CheckPower(self)
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
                 bupdate_spell = true;
+            end
+
+            if asCheckTalent("광합성") then
+                APB_BUFF = "피어나는 생명";
+                APB.buffbar[0].buff = APB_BUFF
+                APB.buffbar[0].unit = "player"
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
+
+                APB_UpdateBuff(self.buffbar[0]);
             end
 
             for i = 1, 10 do
