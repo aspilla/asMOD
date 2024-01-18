@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240114,
+	version = 240117,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -244,7 +244,7 @@ ACI_Options_Default = {
 		{ 99, "주학 츠지의 원령", { "주학 츠지의 원령", 6, nil, nil, "주학 츠지의 원령", "츠지" },
 			{ "옥룡 위론의 원령",
 				6, nil, nil, nil, "위론" } },
-		{ 99, "페이 지맥 울리기", { "페이 지맥 울리기", 1 }, { "집중의 천둥 차", 2 } },
+		{ 99, "페이 지맥 울리기", { "페이 지맥 울리기", 1}, { "집중의 천둥 차", 2 } },
 		{ "정수의 샘", 1 },
 	},
 
@@ -301,8 +301,7 @@ ACI_Options_Default = {
 	ACI_SpellList_SHAMAN_1 = {
 		{ 99, "폭풍수호자", { "폭풍수호자", 2 }, { 16166, 3, "player" } },
 		{ "용암 폭발", 1 },
-		{ 99, "폭풍의 정령", { "폭풍의 정령", 6, nil, nil, nil, "상급 폭풍의 정령" }, { "불의 정령", 11,
-			"상급 불의 정령" } },
+		{ 99, "폭풍의 정령", { "폭풍의 정령", 6, nil, nil, nil, "상급 폭풍의 정령" }, { "불의 정령", 6, nil, nil, nil, "상급 불의 정령" } },
 		{ 99, "얼음격노", { "얼음격노", 2 }, { "태고의 파도", 2 } },
 		{ "화염 충격", 4, nil, 1 },
 
@@ -411,6 +410,20 @@ ACI_Options_Default = {
 	},
 
 };
+
+if version > 100200 then
+
+	ACI_Options_Default.ACI_SpellList_MONK_2 = {
+		{ 99, "셰이룬의 선물", { "셰이룬의 선물", 1 }, { "후려차기", 1, nil, nil, "수도원의 가르침" } },
+		{ 99, "셰이룬의 선물", { "해오름차기", 1, nil, nil, "수도원의 가르침" }, { "해오름차기", 1 } },
+		{ 99, "주학 츠지의 원령", { "주학 츠지의 원령", 6, nil, nil, "주학 츠지의 원령", "츠지" },
+			{ "옥룡 위론의 원령",
+				6, nil, nil, nil, "위론" } },
+		{ 99, "비취불꽃 진각", { "비취불꽃 진각", 1 }, { "집중의 천둥 차", 2 } },
+		{ "정수의 샘", 1 },
+	}
+
+end
 
 
 
@@ -665,7 +678,7 @@ local function InitOption()
 			end
 		end
 	end
-
+	
 	if spec and ACI_Options[spec] == nil then
 		ACI_Options[spec] = {};
 	end

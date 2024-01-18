@@ -243,7 +243,7 @@ local function IsShouldDisplayBuff(spellId, unitCaster, canApplyAura)
 end
 
 
-local function IsShown(name, spellId, bpersonal)
+local function IsShown(name, spellId)
 	if ns.ABF_BlackList[name] then
 		return true;
 	end
@@ -281,7 +281,7 @@ local function ProcessAura(aura, unit)
 		return AuraUpdateChangedType.None;
 	end
 
-	if IsShown(aura.name, aura.spellId, aura.nameplateShowPersonal) then
+	if IsShown(aura.name, aura.spellId) then
 		return AuraUpdateChangedType.None;
 	end
 
@@ -452,8 +452,6 @@ local function updateTotemAura()
 					ns.lib.PixelGlow_Stop(frame);
 				end
 			end
-		else
-			return left, center;
 		end
 	end
 
@@ -739,8 +737,7 @@ local function CreatBuffFrames(parent, bright, bcenter)
 		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
 		local frame = parent.frames[idx];
 		frame:SetFrameStrata("MEDIUM");
-		frame:SetFrameLevel(9000);
-		frame:EnableMouse(false);
+		frame:SetFrameLevel(9000);			
 		frame.cooldown:SetFrameLevel(9100);
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
@@ -777,6 +774,9 @@ local function CreatBuffFrames(parent, bright, bcenter)
 				GameTooltip:Hide();
 			end)
 		end
+
+		frame:EnableMouse(false);
+		frame:SetMouseMotionEnabled(true);
 
 		frame:Hide();
 	end

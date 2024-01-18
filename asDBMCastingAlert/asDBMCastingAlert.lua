@@ -234,6 +234,8 @@ local function CreatBuffFrames(parent, bright, bcenter)
 				GameTooltip:Hide();
 			end)
 		end
+		frame:EnableMouse(false);
+		frame:SetMouseMotionEnabled(true);
 
 		frame:Hide();
 	end

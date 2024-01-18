@@ -63,6 +63,7 @@ ADotF_ShowList_WARLOCK_1 = {
 
 ADotF_ShowList_WARLOCK_2 = {
     { "사냥개조련사의 책략", 0 },
+    { "파멸의 낙인", 0 },
 }
 
 
@@ -114,6 +115,7 @@ ADotF_ShowList_DRUID_3 = {
 
 ADotF_ShowList_DRUID_4 = {
     { "달빛섬광", 1 },
+    { "갈퀴 발톱", 12 * 0.3 },
 }
 
 

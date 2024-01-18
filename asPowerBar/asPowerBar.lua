@@ -118,7 +118,7 @@ local function APB_UnitBuff(unit, buff, casterid)
     for slot = 1, MAX_TOTEMS do
         local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
 
-        if name == buff and duration > 0 then
+        if haveTotem and name == buff and duration > 0 then
             return name, icon, 0, nil, duration, duration + start, "player";
         end
     end
@@ -895,6 +895,8 @@ local function setupMouseOver(frame)
             GameTooltip:Hide();
         end)
     end
+    frame:EnableMouse(false);
+	frame:SetMouseMotionEnabled(true);
 end
 
 local inrange, inrange2 = true, true;
@@ -2559,7 +2561,7 @@ do
         end
 
         APB.combobar[i]:Hide();
-        APB.combobar[i]:EnableMouse(true);
+        APB.combobar[i]:EnableMouse(false);        
     end
 
     APB.combobar[1].text = APB.combobar[1]:CreateFontString(nil, "ARTWORK");
@@ -2594,7 +2596,7 @@ do
         end
 
         APB.spellbar[i]:Hide();
-        APB.spellbar[i]:EnableMouse(true);
+        APB.spellbar[i]:EnableMouse(false);        
     end
 
     APB.text = APB:CreateFontString(nil, "ARTWORK");

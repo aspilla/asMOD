@@ -650,7 +650,7 @@ local function CreatDebuffFrames(parent, bright)
         local frame = parent.frames[idx];
         frame:SetFrameStrata("MEDIUM");
         frame:SetFrameLevel(9000);
-        frame:EnableMouse(false);
+        
         frame.cooldown:SetFrameLevel(9100);
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
@@ -685,6 +685,9 @@ local function CreatDebuffFrames(parent, bright)
                 GameTooltip:Hide();
             end)
         end
+
+        frame:EnableMouse(false);
+		frame:SetMouseMotionEnabled(true);
 
         frame:Hide();
     end

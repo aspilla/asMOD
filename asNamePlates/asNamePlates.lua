@@ -181,8 +181,6 @@ end
 -- 버프 디버프 처리부
 local function createDebuffFrame(parent)
     local ret = CreateFrame("Frame", nil, parent, "asNamePlatesBuffFrameTemplate");
-    ret:EnableMouse(false);
-
     local frameCooldown = ret.cooldown;
     local frameCount = ret.count;
 
@@ -210,7 +208,7 @@ local function createDebuffFrame(parent)
 
     ret.alert = false;
 
-    if not ret:GetScript("OnEnter") and ns.options.ANameP_Tooltip then
+    if not ret:GetScript("OnEnter") then
         ret:SetScript("OnEnter", function(s)
             if s:GetID() > 0 then
                 GameTooltip_SetDefaultAnchor(GameTooltip, s);
@@ -225,6 +223,9 @@ local function createDebuffFrame(parent)
             GameTooltip:Hide();
         end)
     end
+
+    ret:EnableMouse(false);
+	ret:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
 
     return ret;
 end
@@ -1296,7 +1297,8 @@ local function addNamePlate(namePlateUnitToken)
                 end)
             end
         end
-        namePlateFrameBase.asNamePlates.casticon:EnableMouse(true);
+        namePlateFrameBase.asNamePlates.casticon:EnableMouse(false);
+	    namePlateFrameBase.asNamePlates.casticon:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);        
         namePlateFrameBase.asNamePlates.casticon:ClearAllPoints();
         namePlateFrameBase.asNamePlates.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0, 1);
         namePlateFrameBase.asNamePlates.casticon:SetWidth(13);
@@ -1327,7 +1329,8 @@ local function addNamePlate(namePlateUnitToken)
             end)
         end
     end
-    -- namePlateFrameBase.asNamePlates.CCdebuff:EnableMouse(false);
+    namePlateFrameBase.asNamePlates.CCdebuff:EnableMouse(false);
+    namePlateFrameBase.asNamePlates.CCdebuff:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
     namePlateFrameBase.asNamePlates.CCdebuff:ClearAllPoints();
     namePlateFrameBase.asNamePlates.CCdebuff:SetPoint("LEFT", namePlateFrameBase.asNamePlates.casticon, "RIGHT", 1, 0);
     namePlateFrameBase.asNamePlates.CCdebuff:SetWidth(ns.ANameP_CCDebuffSize * 1.2);

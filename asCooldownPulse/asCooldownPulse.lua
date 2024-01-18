@@ -337,7 +337,8 @@ local function ACDP_UpdateCooldown()
 				frame = parent.frames[numCools];
 				frame:SetWidth(ACDP_SIZE);
 				frame:SetHeight(ACDP_SIZE * 0.9);
-				frame:EnableMouse(true);
+				frame:EnableMouse(false);
+				frame:SetMouseMotionEnabled();
 
 				for _, r in next, { frame.cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
@@ -364,6 +365,8 @@ local function ACDP_UpdateCooldown()
 						GameTooltip:Hide();
 					end)
 				end
+				frame:EnableMouse(false);
+				frame:SetMouseMotionEnabled(true);
 			end
 			-- set the icon
 			frameIcon = frame.icon;

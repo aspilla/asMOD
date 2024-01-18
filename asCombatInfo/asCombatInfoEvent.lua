@@ -214,7 +214,7 @@ local function UpdateTotem()
     for slot = 1, MAX_TOTEMS do
         local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
 
-        if totemfilter[name] then
+        if haveTotem and totemfilter[name] then
             tinsert(eventlib.totemlist, { name, start, duration, icon })
             trigger = true;
         end

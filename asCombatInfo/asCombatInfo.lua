@@ -56,6 +56,8 @@ local function setupMouseOver(frame)
 			GameTooltip:Hide();
 		end)
 	end
+	frame:EnableMouse(false);
+	frame:SetMouseMotionEnabled(true);
 end
 
 

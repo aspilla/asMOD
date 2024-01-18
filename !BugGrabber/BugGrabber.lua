@@ -2,7 +2,11 @@
 local _G = _G
 local type, table, next, tostring, tonumber, print = type, table, next, tostring, tonumber, print
 local debuglocals, debugstack, wipe, IsEncounterInProgress, GetTime = debuglocals, debugstack, table.wipe, IsEncounterInProgress, GetTime
-local GetAddOnMetadata = GetAddOnMetadata or C_AddOns.GetAddOnMetadata
+local GetAddOnMetadata = C_AddOns.GetAddOnMetadata
+local DisableAddOn = C_AddOns.DisableAddOn or DisableAddOn
+local GetAddOnInfo = C_AddOns.GetAddOnInfo or GetAddOnInfo
+local IsAddOnLoaded = C_AddOns.IsAddOnLoaded or IsAddOnLoaded
+local GetNumAddOns = C_AddOns.GetNumAddOns or GetNumAddOns
 
 -----------------------------------------------------------------------
 -- Check if we already exist in the global space
@@ -93,10 +97,10 @@ local tableToString = "table: %s"
 local function setupCallbacks()
 	if not callbacks and LibStub and LibStub("CallbackHandler-1.0", true) then
 		callbacks = LibStub("CallbackHandler-1.0"):New(addon)
-		function callbacks:OnUsed(target, eventname)
+		function callbacks:OnUsed(_, eventname)
 			if eventname == "BugGrabber_BugGrabbed" then isBugGrabbedRegistered = true end
 		end
-		function callbacks:OnUnused(target, eventname)
+		function callbacks:OnUnused(_, eventname)
 			if eventname == "BugGrabber_BugGrabbed" then isBugGrabbedRegistered = nil end
 		end
 		setupCallbacks = nil
@@ -390,7 +394,7 @@ end
 
 function addon:GetErrorByID(id)
 	local errorId = tableToString:format(id)
-	for i, err in next, db do
+	for _, err in next, db do
 		if tostring(err) == errorId then
 			return err
 		end
@@ -433,7 +437,7 @@ local function initDatabase()
 
 	-- If there were any load errors, we need to iterate them and
 	-- insert the relevant ones into our SV DB.
-	for i, err in next, loadErrors do
+	for _, err in next, loadErrors do
 		err.session = sv.session -- Update the session ID directly
 		local exists = fetchFromDatabase(db, err.message)
 		addon:StoreError(exists or err)

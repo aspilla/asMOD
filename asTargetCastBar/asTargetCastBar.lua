@@ -67,6 +67,9 @@ if not ATCB.castbar:GetScript("OnEnter") then
         GameTooltip:Hide();
     end)
 end
+
+ATCB.castbar:EnableMouse(false);
+ATCB.castbar:SetMouseMotionEnabled(true);
 ATCB.castbar:Hide();
 
 ATCB.button = CreateFrame("Button", nil, ATCB.castbar, "ATCBFrameTemplate");

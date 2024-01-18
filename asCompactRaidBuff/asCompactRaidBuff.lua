@@ -203,8 +203,8 @@ local function ACRB_setupFrame(frame)
             bshow = ns.options.ShowDebuffTooltip;
         end
 
-        f:EnableMouse(bshow);
-
+        f:EnableMouse(false);
+              
         f.icon:SetTexCoord(.08, .92, .08, .92);
         f.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
         f.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
@@ -215,7 +215,7 @@ local function ACRB_setupFrame(frame)
         f.count:ClearAllPoints();
         f.count:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 1);
 
-        if bshow and not f:GetScript("OnEnter") then
+        if not f:GetScript("OnEnter") then
             f:SetScript("OnEnter", function(s)
                 if t == 1 then
                     if s.auraInstanceID then
@@ -242,6 +242,8 @@ local function ACRB_setupFrame(frame)
             f:SetScript("OnLeave", function()
                 GameTooltip:Hide();
             end)
+            f:EnableMouse(false);
+            f:SetMouseMotionEnabled(bshow);
         end
     end
 
