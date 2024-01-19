@@ -1,6 +1,7 @@
 local _, ns = ...;
 local Options_Default = {
-    MinTimetoShow = 10,    
+    MinTimetoShow = 10,
+    HideNamePlatesCooldown = true,    
 };
 
 ns.options = {};

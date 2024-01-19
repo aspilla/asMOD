@@ -66,7 +66,7 @@ local function asCheckTalent()
             local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
             local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
             local definitionInfo = entryInfo and entryInfo.definitionID and
-                                       C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+                C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
             if definitionInfo ~= nil then
                 local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
@@ -184,7 +184,7 @@ local function createDebuffFrame(parent)
     local frameCooldown = ret.cooldown;
     local frameCount = ret.count;
 
-    for _, r in next, {frameCooldown:GetRegions()} do
+    for _, r in next, { frameCooldown:GetRegions() } do
         if r:GetObjectType() == "FontString" then
             r:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CooldownFontSize, "OUTLINE")
             r:ClearAllPoints();
@@ -225,7 +225,7 @@ local function createDebuffFrame(parent)
     end
 
     ret:EnableMouse(false);
-	ret:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
+    ret:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
 
     return ret;
 end
@@ -376,7 +376,6 @@ local function updateAuras(self, unit)
             numDebuffs = numDebuffs + 1;
             return false;
         end);
-
     elseif auraData and auraData.type == 1 then
         auraData.buffs:Iterate(function(auraInstanceID, aura)
             if numDebuffs > ns.ANameP_MaxBuff then
@@ -771,11 +770,11 @@ local function updateHealthbarColor(self)
 
             self.castspellid = spellid;
             if isDanger and (binterrupt == true or not notInterruptible) then
-                ns.lib.PixelGlow_Start(self.casticon, {0, 1, 0.32, 1});
-                ns.lib.PixelGlow_Start(healthBar, {0, 1, 0.32, 1});
+                ns.lib.PixelGlow_Start(self.casticon, { 0, 1, 0.32, 1 });
+                ns.lib.PixelGlow_Start(healthBar, { 0, 1, 0.32, 1 });
             elseif isDanger then
-                ns.lib.PixelGlow_Start(self.casticon, {0.5, 0.5, 0.5, 1});
-                ns.lib.PixelGlow_Start(healthBar, {0.5, 0.5, 0.5, 1});
+                ns.lib.PixelGlow_Start(self.casticon, { 0.5, 0.5, 0.5, 1 });
+                ns.lib.PixelGlow_Start(healthBar, { 0.5, 0.5, 0.5, 1 });
             elseif notInterruptible == false then
                 ns.lib.PixelGlow_Start(self.casticon);
                 ns.lib.PixelGlow_Stop(healthBar);
@@ -979,8 +978,8 @@ local function initAlertList()
     ns.ANameP_ShowList = nil;
 
     if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
-		spec = 1;
-	end
+        spec = 1;
+    end
 
     if spec then
         listname = "ANameP_ShowList_" .. englishClass .. "_" .. spec;
@@ -1055,14 +1054,66 @@ local function checkSpellCasting(self)
 
     if self.casticon then
         local frameIcon = self.casticon.icon;
-        if name and frameIcon then
-            frameIcon:SetTexture(texture);
-            self.casticon:Show();
-            self.castspellid = spellid;
-            self.casticon.castspellid = spellid;
-        else
-            self.casticon:Hide();
-            self.castspellid = nil;
+        if frameIcon then
+            if name then
+                frameIcon:SetTexture(texture);
+                frameIcon:SetDesaturated(false);
+                frameIcon:SetVertexColor(1, 1, 1);
+                self.casticon:Show();
+                self.casticon.timetext:Hide();
+                self.castspellid = spellid;
+                self.casticon.castspellid = spellid;
+            else
+                local dbm_show = false;
+                local min_remain = 100;
+                if ns.dbm_event_list then
+                    for id, v in pairs(ns.dbm_event_list) do
+                        local icon = v[4]
+                        local remain = v[3] + v[2] - GetTime();
+                        local guid = v[8];
+                        local colorid = v[6];
+
+                        if guid and UnitGUID(unit) == guid and remain < min_remain then
+                            frameIcon:SetTexture(icon);
+                            self.casticon:Show();
+                            frameIcon:SetDesaturated(true);
+                            if remain > 2 then
+                                if colorid ~= 4 then
+                                    frameIcon:SetVertexColor(1, 0.7, 0.7);
+                                    self.casticon.timetext:SetTextColor(1, 1, 1);
+                                else
+                                    frameIcon:SetVertexColor(0.7, 1, 0.7);
+                                    self.casticon.timetext:SetTextColor(1, 1, 1);
+                                end
+                            else
+                                local color = frameIcon:GetVertexColor();
+                                if colorid ~= 4 then
+                                    frameIcon:SetVertexColor(1, 0, 0);
+                                    self.casticon.timetext:SetTextColor(0, 1, 0);                                    
+                                else
+                                    frameIcon:SetVertexColor(0, 1, 0);
+                                    self.casticon.timetext:SetTextColor(1, 0, 0);
+                                end
+                            end
+
+                            if remain > 0 then
+                                self.casticon.timetext:SetText(math.ceil(remain));
+                                self.casticon.timetext:Show();
+                            else
+                                self.casticon.timetext:Hide();
+                            end
+
+                            dbm_show = true;
+                            min_remain = remain;
+                        end
+                    end
+                end
+
+                if dbm_show == false then
+                    self.casticon:Hide();
+                end
+                self.castspellid = nil;
+            end
         end
     end
 end
@@ -1282,8 +1333,19 @@ local function addNamePlate(namePlateUnitToken)
 
     if unitFrame.castBar then
         if not namePlateFrameBase.asNamePlates.casticon then
-            namePlateFrameBase.asNamePlates.casticon = CreateFrame("Frame", nil, unitFrame.castBar,
+            namePlateFrameBase.asNamePlates.casticon = CreateFrame("Frame", nil, namePlateFrameBase.asNamePlates,
                 "asNamePlatesBuffFrameTemplate");
+
+            if not namePlateFrameBase.asNamePlates.casticon.timetext then
+                namePlateFrameBase.asNamePlates.casticon.timetext =
+                    namePlateFrameBase.asNamePlates.casticon:CreateFontString(nil, "OVERLAY");
+            end
+
+            namePlateFrameBase.asNamePlates.casticon.timetext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize,
+                "OUTLINE");
+            namePlateFrameBase.asNamePlates.casticon.timetext:ClearAllPoints();
+            namePlateFrameBase.asNamePlates.casticon.timetext:SetPoint("CENTER",
+                namePlateFrameBase.asNamePlates.casticon, "CENTER", 0, 0)
 
             if not namePlateFrameBase.asNamePlates.casticon:GetScript("OnEnter") then
                 namePlateFrameBase.asNamePlates.casticon:SetScript("OnEnter", function(s)
@@ -1298,7 +1360,7 @@ local function addNamePlate(namePlateUnitToken)
             end
         end
         namePlateFrameBase.asNamePlates.casticon:EnableMouse(false);
-	    namePlateFrameBase.asNamePlates.casticon:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);        
+        namePlateFrameBase.asNamePlates.casticon:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
         namePlateFrameBase.asNamePlates.casticon:ClearAllPoints();
         namePlateFrameBase.asNamePlates.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0, 1);
         namePlateFrameBase.asNamePlates.casticon:SetWidth(13);
@@ -1315,7 +1377,7 @@ local function addNamePlate(namePlateUnitToken)
     end
 
     if not namePlateFrameBase.asNamePlates.CCdebuff then
-        namePlateFrameBase.asNamePlates.CCdebuff = CreateFrame("Frame", nil, unitFrame.healthBar,
+        namePlateFrameBase.asNamePlates.CCdebuff = CreateFrame("Frame", nil, namePlateFrameBase.asNamePlates,
             "asNamePlatesBuffFrameTemplate");
         if not namePlateFrameBase.asNamePlates.CCdebuff:GetScript("OnEnter") then
             namePlateFrameBase.asNamePlates.CCdebuff:SetScript("OnEnter", function(s)
@@ -1343,7 +1405,7 @@ local function addNamePlate(namePlateUnitToken)
     frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
     frameBorder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 
-    for _, r in next, {namePlateFrameBase.asNamePlates.CCdebuff.cooldown:GetRegions()} do
+    for _, r in next, { namePlateFrameBase.asNamePlates.CCdebuff.cooldown:GetRegions() } do
         if r:GetObjectType() == "FontString" then
             r:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CooldownFontSize, "OUTLINE")
             r:SetPoint("TOP", 0, 4);
@@ -1511,7 +1573,7 @@ local function updateHealerMark(guid)
     if unit and ANameP_HealerGuid[guid] and not UnitIsUnit(unit, "player") then
         local nameplate = C_NamePlate.GetNamePlateForUnit(unit, issecure());
         if (nameplate and nameplate.asNamePlates and not nameplate:IsForbidden() and
-            nameplate.asNamePlates.checkpvptarget) then
+                nameplate.asNamePlates.checkpvptarget) then
             nameplate.asNamePlates.healer:Show();
         end
     end

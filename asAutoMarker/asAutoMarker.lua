@@ -310,7 +310,7 @@ local function UpdateMarks(nameplate)
 
 	local status = UnitThreatSituation("player", unit);
 
-	if (unit == "mouseover" or (unit and status and status > 0)) and isFaction(unit) then
+	if (unit == "mouseover" or (unit and status and status > 0)) and isFaction(unit) and not UnitIsDead(unit) then
 		local guid = UnitGUID(unit);
 		if asAutoMarkerF.IsAutoMarkerMob(unit) then
 			while (curr_mark <= AAM_MaxMark) do
@@ -329,6 +329,7 @@ local function UpdateMarks(nameplate)
 			end
 		end
 	end
+
 end
 
 local function AAM_OnUpdate()
@@ -340,14 +341,14 @@ local function AAM_OnUpdate()
 
 	CheckPartyMarks();
 
+	UpdateMarks();
+
 	for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
 		local nameplate = v;
 		if (nameplate) then
 			UpdateMarks(nameplate);
 		end
-	end
-
-	UpdateMarks();
+	end	
 end
 
 
@@ -385,7 +386,7 @@ local function AAM_OnEvent(self, event, ...)
 				local mark = tmp[unitGUID];
 
 				if mark <= AAM_MaxMark then
-					abledMarks[mark] = true;
+					abledMarks[mark] = true;					
 				end
 				tmp[unitGUID] = nil;
 			end
