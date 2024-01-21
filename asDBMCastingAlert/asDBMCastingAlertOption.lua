@@ -48,7 +48,7 @@ function ns.SetupOptionPanels()
             Settings.CreateSlider(category, setting, options, tooltip);
             Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
         else
-            local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue);
+            local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
             Settings.CreateCheckBox(category, setting, tooltip);
             Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
         end

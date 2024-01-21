@@ -32,23 +32,10 @@ local BarColors = {
 
 -- 설정 끝
 
-local asDBMTimer = nil;
+local asDBMTimer = {};
 
-local function getButton(id)
-	local button = nil
-
-	for i = 1, ADBMT_MaxButtons do
-		if asDBMTimer.buttons[i].id == id then
-			button = asDBMTimer.buttons[i];
-			break;
-		end
-	end
-
-	return button;
-end
-
-local function deleteButton(id)
-	local button = getButton(id);
+local function deleteButton(idx)
+	local button = asDBMTimer.buttons[idx]
 
 	if button then
 		button.id = nil;
@@ -59,29 +46,6 @@ local function deleteButton(id)
 	end
 end
 
-function ADBMT_OnUpdate(self, elapsed)
-	self.update = self.update + elapsed
-
-	if self.update >= 0.05 then
-		self.update = 0;
-		local remain = self.start + self.duration - GetTime();
-		if remain > 0 then
-			self:ClearAllPoints();
-			self:SetPoint("BOTTOM", self:GetParent(), "BOTTOM", 0, remain * ADBMT_1sHeight);
-			self.cooltext:SetText(("%02.1f"):format(remain))
-			if remain <= 3 then
-				self.cooltext:SetTextColor(1, 0, 0, 1);
-				if self.voice and remain <= 1.5 then
-					self.voice = false;
-					--C_VoiceChat.SpeakText(0, self.msg, Enum.VoiceTtsDestination.LocalPlayback, 1, 100);
-				end
-			else
-				self.cooltext:SetTextColor(1, 1, 1, 1);
-			end
-		end
-	end
-end
-
 local function RGBToHex(r, g, b)
 	r = math.floor(r * 255)
 	g = math.floor(g * 255)
@@ -89,76 +53,71 @@ local function RGBToHex(r, g, b)
 	return string.format("|cff%02x%02x%02x", r, g, b)
 end
 
-local function newButton(id, msg, duration, start, icon, colorId, spellID)
+local function newButton(id, event)
 	for i = 1, ADBMT_MaxButtons do
 		local button = asDBMTimer.buttons[i];
 		if button.id == nil then
 			button.id = id;
-			button.start = start;
-			button.duration = duration;
-			button.icon:SetTexture(icon);
+			button.icon:SetTexture(event.icon);
 			button.icon:Show();
 			button.cooltext:Show();
 			button.border:Show();
-			button.spellid = spellID;
-			button.msg = msg;
-					
-			if colorId and BarColors[colorId] then
-				local info = BarColors[colorId];
+			button.spellid = event.spellID;
+			local msg = event.msg;
 
+			if event.colorId and BarColors[event.colorId] then
+				local info = BarColors[event.colorId];
 				msg = RGBToHex(info[1], info[2], info[3]) .. info[4] .. " " .. RGBToHex(1, 1, 1) .. msg;
 			end
 
-			button.text:SetText(msg);			
+			button.text:SetText(msg);
 			button.text:Show();
-			button.update = 0.1;
-			if colorId >= 2 and colorId < 5 then
-				button.voice = true;
-			else
-				button.voice = false;
-			end
-			
-			button:SetScript("OnUpdate", ADBMT_OnUpdate);
 			button:Show();
-
 			return i;
 		end
 	end
 	return nil;
 end
 
-local dbm_event_list = {};
+local function DefaultCompare(a, b)	
+	return a.expirationTime < b.expirationTime;
+end
+
+local dbm_event_list = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
 
 function asDBMTimer_callback(event, id, ...)
 	if event == "DBM_TimerStart" then
 		local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
-		
-		if ns.options.HideNamePlatesCooldown and type == "cd" and string.find(id, "cdnp") or string.find(id, "nextnp") then    
+
+		if ns.options.HideNamePlatesCooldown and type == "cd" and string.find(id, "cdnp") or string.find(id, "nextnp") then
 			return;
 		end
-		if dbm_event_list[id] and dbm_event_list[id][5] then
-			deleteButton(id);
+		if dbm_event_list[id] and dbm_event_list[id].button_id then
+			deleteButton(dbm_event_list[id].button_id);
 		end
 		local newmsg = msg;
 		local strFindStart, strFindEnd = string.find(msg, " 쿨타임")
 		if strFindStart ~= nil then
 			newmsg = string.sub(msg, 1, strFindStart - 1);
 		end
-		dbm_event_list[id] = { newmsg, timer, GetTime(), icon, 0, colorId, spellId };
+		local curtime = GetTime();
+		dbm_event_list[id] = { msg = newmsg, duration = timer, start = curtime, expirationTime = timer + curtime, icon = icon, button_id = nil, colorId = colorId, spellId = spellId };
 	elseif event == "DBM_TimerStop" then
-		if dbm_event_list[id] and dbm_event_list[id][5] then
-			deleteButton(id);
-		end
-		dbm_event_list[id] = nil;
+		if dbm_event_list[id] then
+			if	dbm_event_list[id].button_id then
+				deleteButton(dbm_event_list[id].button_id);
+			end
+			dbm_event_list:Remove(id);
+		end		
 	elseif event == "DBM_TimerUpdate" then
 		local elapsed, totalTime = ...;
 		if dbm_event_list[id] then
-			if dbm_event_list[id][5] then
-				deleteButton(id);
+			if dbm_event_list[id].button_id then
+				deleteButton(dbm_event_list[id].button_id);
 			end
-			dbm_event_list[id][5] = 0;
-			dbm_event_list[id][2] = totalTime;
-			dbm_event_list[id][3] = GetTime() - elapsed;
+			dbm_event_list[id].button_id = nil;
+			dbm_event_list[id].duration = totalTime;
+			dbm_event_list[id].start = GetTime() - elapsed;
 		end
 	else
 		--print (...);
@@ -166,17 +125,54 @@ function asDBMTimer_callback(event, id, ...)
 end
 
 local function checkList()
-	for id, v in pairs(dbm_event_list) do
-		local start = GetTime();
-		local remain = v[3] + v[2] - GetTime();
-		if v[5] == 0 and remain > 0 and remain <= ns.options.MinTimetoShow then
-			local idx = newButton(id, v[1], remain, start, v[4], v[6], v[7]);
-			v[5] = idx;
+
+	local curtime = GetTime();
+
+	dbm_event_list:Iterate(function(id, event)
+		local start_old = event.start;
+		local duration = event.duration;
+		local remain = start_old + duration - curtime;
+		if remain > 0 and remain <= ns.options.MinTimetoShow then
+			if event.button_id == nil then
+				local idx = newButton(id, event);
+				event.button_id = idx;
+			end			
 		elseif remain <= 0 then
-			dbm_event_list[id] = nil;
-			deleteButton(id);
+			if event.button_id then
+				deleteButton(event.button_id);
+			end
+			dbm_event_list:Remove(id);
 		end
-	end
+	end)
+
+	local prev_ex = 0;
+	local prev_button = nil;
+
+	dbm_event_list:Iterate(function(id, event)
+		if event.button_id then
+			local button = asDBMTimer.buttons[event.button_id];
+			local remain = event.start + event.duration - curtime;
+			if remain > 0 then
+				button:ClearAllPoints();
+
+				if prev_ex > 0 and event.expirationTime - prev_ex <= (ADBMT_IconSize / ADBMT_1sHeight) then
+					button:SetPoint("BOTTOM", prev_button, "TOP", 0, 1);
+					prev_ex = prev_ex + (ADBMT_IconSize / ADBMT_1sHeight);
+				else
+					button:SetPoint("BOTTOM", button:GetParent(), "BOTTOM", 0, remain * ADBMT_1sHeight);
+					prev_ex = event.expirationTime;
+				end
+
+				button.cooltext:SetText(("%02.1f"):format(remain))
+				if remain <= 3 then
+					button.cooltext:SetTextColor(1, 0, 0, 1);
+				else
+					button.cooltext:SetTextColor(1, 1, 1, 1);
+				end
+				prev_button = button;
+			end
+		end
+	end)
 end
 
 local function setupUI()
@@ -240,9 +236,8 @@ local function setupUI()
 end
 
 local function initAddon()
-
 	C_Timer.After(1, ns.SetupOptionPanels);
-	
+
 	DBM:RegisterCallback("DBM_TimerStart", asDBMTimer_callback);
 	DBM:RegisterCallback("DBM_TimerStop", asDBMTimer_callback);
 	DBM:RegisterCallback("DBM_TimerFadeUpdate", asDBMTimer_callback);
@@ -250,7 +245,7 @@ local function initAddon()
 	DBM:RegisterCallback("DBM_TimerPause", asDBMTimer_callback);
 	DBM:RegisterCallback("DBM_TimerResume", asDBMTimer_callback);
 
-	C_Timer.NewTicker(0.1, checkList);
+	C_Timer.NewTicker(0.05, checkList);
 end
 
 local bloaded = LoadAddOn("DBM-Core");

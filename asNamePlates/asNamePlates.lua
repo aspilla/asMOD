@@ -1079,19 +1079,19 @@ local function checkSpellCasting(self)
                             frameIcon:SetDesaturated(true);
                             if remain > 2 then
                                 if colorid ~= 4 then
-                                    frameIcon:SetVertexColor(1, 0.7, 0.7);
+                                    frameIcon:SetVertexColor(1, 0.9, 0.9);
                                     self.casticon.timetext:SetTextColor(1, 1, 1);
                                 else
-                                    frameIcon:SetVertexColor(0.7, 1, 0.7);
+                                    frameIcon:SetVertexColor(0.9, 1, 0.9);
                                     self.casticon.timetext:SetTextColor(1, 1, 1);
                                 end
                             else
                                 local color = frameIcon:GetVertexColor();
                                 if colorid ~= 4 then
-                                    frameIcon:SetVertexColor(1, 0, 0);
+                                    frameIcon:SetVertexColor(1, 0.3, 0.3);
                                     self.casticon.timetext:SetTextColor(0, 1, 0);                                    
                                 else
-                                    frameIcon:SetVertexColor(0, 1, 0);
+                                    frameIcon:SetVertexColor(0.3, 1, 0.3);
                                     self.casticon.timetext:SetTextColor(1, 0, 0);
                                 end
                             end

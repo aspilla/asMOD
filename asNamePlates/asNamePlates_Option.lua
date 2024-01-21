@@ -61,21 +61,21 @@ ns.ANameP_PVPBuffList = {
     [236273] = 1, --WARRIOR
     [213871] = 1, --WARRIOR
     [118038] = 1, --WARRIOR
-    [12975] = 1, --WARRIOR
-    [1160] = 1, --WARRIOR
-    [871] = 1, --WARRIOR
+    [12975] = 1,  --WARRIOR
+    [1160] = 1,   --WARRIOR
+    [871] = 1,    --WARRIOR
     [202168] = 1, --WARRIOR
-    [97463] = 1, --WARRIOR
+    [97463] = 1,  --WARRIOR
     [383762] = 1, --WARRIOR
     [184364] = 1, --WARRIOR
     [386394] = 1, --WARRIOR
     [392966] = 1, --WARRIOR
     [185311] = 1, --ROGUE
-    [11327] = 1, --ROGUE
-    [1966] = 1, --ROGUE
-    [31224] = 1, --ROGUE
-    [31230] = 1, --ROGUE
-    [5277] = 1, --ROGUE
+    [11327] = 1,  --ROGUE
+    [1966] = 1,   --ROGUE
+    [31224] = 1,  --ROGUE
+    [31230] = 1,  --ROGUE
+    [5277] = 1,   --ROGUE
     [212800] = 1, --DEMONHUNTER
     [203720] = 1, --DEMONHUNTER
     [187827] = 1, --DEMONHUNTER
@@ -98,19 +98,19 @@ ns.ANameP_PVPBuffList = {
     [122278] = 1, --MONK
     [132578] = 1, --MONK
     [115176] = 1, --MONK
-    [51052] = 1, --DEATHKNIGHT
-    [48707] = 1, --DEATHKNIGHT
+    [51052] = 1,  --DEATHKNIGHT
+    [48707] = 1,  --DEATHKNIGHT
     [327574] = 1, --DEATHKNIGHT
-    [48743] = 1, --DEATHKNIGHT
-    [48792] = 1, --DEATHKNIGHT
+    [48743] = 1,  --DEATHKNIGHT
+    [48792] = 1,  --DEATHKNIGHT
     [114556] = 1, --DEATHKNIGHT
-    [81256] = 1, --DEATHKNIGHT
+    [81256] = 1,  --DEATHKNIGHT
     [219809] = 1, --DEATHKNIGHT
     [206931] = 1, --DEATHKNIGHT
     [274156] = 1, --DEATHKNIGHT
     [194679] = 1, --DEATHKNIGHT
-    [55233] = 1, --DEATHKNIGHT
-    [53480] = 1, --HUNTER
+    [55233] = 1,  --DEATHKNIGHT
+    [53480] = 1,  --HUNTER
     [109304] = 1, --HUNTER
     [264735] = 1, --HUNTER
     [355913] = 1, --EVOKER
@@ -127,10 +127,10 @@ ns.ANameP_PVPBuffList = {
     [201664] = 1, --DRUID
     [157982] = 1, --DRUID
     [102342] = 1, --DRUID
-    [61336] = 1, --DRUID
+    [61336] = 1,  --DRUID
     [200851] = 1, --DRUID
-    [80313] = 1, --DRUID
-    [22842] = 1, --DRUID
+    [80313] = 1,  --DRUID
+    [22842] = 1,  --DRUID
     [108238] = 1, --DRUID
     [124974] = 1, --DRUID
     [104773] = 1, --WARLOCK
@@ -138,57 +138,57 @@ ns.ANameP_PVPBuffList = {
     [215769] = 1, --PRIEST
     [328530] = 1, --PRIEST
     [197268] = 1, --PRIEST
-    [19236] = 1, --PRIEST
-    [81782] = 1, --PRIEST
-    [33206] = 1, --PRIEST
+    [19236] = 1,  --PRIEST
+    [81782] = 1,  --PRIEST
+    [33206] = 1,  --PRIEST
     [372835] = 1, --PRIEST
     [391124] = 1, --PRIEST
     [265202] = 1, --PRIEST
-    [64843] = 1, --PRIEST
-    [47788] = 1, --PRIEST
-    [47585] = 1, --PRIEST
+    [64843] = 1,  --PRIEST
+    [47788] = 1,  --PRIEST
+    [47585] = 1,  --PRIEST
     [108968] = 1, --PRIEST
-    [15286] = 1, --PRIEST
+    [15286] = 1,  --PRIEST
     [271466] = 1, --PRIEST
     [199452] = 1, --PALADIN
     [403876] = 1, --PALADIN
-    [31850] = 1, --PALADIN
+    [31850] = 1,  --PALADIN
     [378279] = 1, --PALADIN
     [378974] = 1, --PALADIN
-    [86659] = 1, --PALADIN
+    [86659] = 1,  --PALADIN
     [387174] = 1, --PALADIN
     [327193] = 1, --PALADIN
     [205191] = 1, --PALADIN
     [184662] = 1, --PALADIN
-    [498] = 1, --PALADIN
+    [498] = 1,    --PALADIN
     [148039] = 1, --PALADIN
     [157047] = 1, --PALADIN
-    [31821] = 1, --PALADIN
-    [633] = 1, --PALADIN
-    [6940] = 1, --PALADIN
-    [1022] = 1, --PALADIN
+    [31821] = 1,  --PALADIN
+    [633] = 1,    --PALADIN
+    [6940] = 1,   --PALADIN
+    [1022] = 1,   --PALADIN
     [204018] = 1, --PALADIN
     [204331] = 1, --SHAMAN
     [108280] = 1, --SHAMAN
-    [98008] = 1, --SHAMAN
+    [98008] = 1,  --SHAMAN
     [198838] = 1, --SHAMAN
     [207399] = 1, --SHAMAN
     [108271] = 1, --SHAMAN
     [198103] = 1, --SHAMAN
-    [30884] = 1, --SHAMAN
+    [30884] = 1,  --SHAMAN
     [383017] = 1, --SHAMAN
     [108281] = 1, --SHAMAN
     [198111] = 1, --MAGE
     [110959] = 1, --MAGE
     [342246] = 1, --MAGE
-    [11426] = 1, --MAGE
-    [66] = 1,  --MAGE
+    [11426] = 1,  --MAGE
+    [66] = 1,     --MAGE
     [235313] = 1, --MAGE
     [235450] = 1, --MAGE
-    [55342] = 1, --MAGE
+    [55342] = 1,  --MAGE
     [414660] = 1, --MAGE
     [414664] = 1, --MAGE
-    [86949] = 1, --MAGE
+    [86949] = 1,  --MAGE
     [235219] = 1, --MAGE
     [414658] = 1, --MAGE
 }
@@ -267,7 +267,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 240120,
+    version = 240121,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -425,6 +425,7 @@ ANameP_Options_Default = {
 
     ANameP_ShowList_DRUID_4 = {
         ["달빛섬광"] = { 1, 5, 1 },
+        ["갈퀴 발톱"] = { 12 * 0.3, 4, 2 },
     },
 
 
@@ -599,13 +600,11 @@ local function SetupSliderOption(text, option)
 end
 
 local function ShowColorPicker(r, g, b, a, changedCallback)
-    ColorPickerFrame:SetColorRGB(r, g, b);
-    ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = (a ~= nil), a;
-    ColorPickerFrame.previousValues = { r, g, b, a };
-    ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = changedCallback, changedCallback,
-        changedCallback;
-    ColorPickerFrame:Hide(); -- Need to run the OnShow handler.
-    ColorPickerFrame:Show();
+    local info = {};
+    info.r, info.g, info.b = r, g, b;
+    info.swatchFunc = changedCallback;
+    info.cancelFunc = changedCallback;
+    ColorPickerFrame:SetupColorPickerAndShow(info);
 end
 
 local function SetupColorOption(text, option)
@@ -630,7 +629,7 @@ local function SetupColorOption(text, option)
         if restore then
             newR, newG, newB, newA = unpack(restore);
         else
-            newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB();
+            newR, newG, newB, newA = ColorPickerFrame:GetColorRGB();
         end
         ANameP_Options[option].r, ANameP_Options[option].g, ANameP_Options[option].b = newR, newG, newB;
         ANameP_OptionM.UpdateAllOption();
@@ -988,7 +987,7 @@ local function panelOnShow()
     SetupCheckBoxOption("[색상] 낮은 생명력 색상 표시", "ANameP_LowHealthAlert");
     SetupCheckBoxOption("[색상] Quest 몹 색상 표시", "ANameP_QuestAlert");
     SetupCheckBoxOption("[색상] AutoMarker 몹 색상 표시", "ANameP_AutoMarker");
-    
+
 
     SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");
     SetupColorOption("[이름표 색상] 어그로 대상", "ANameP_AggroTargetColor");
