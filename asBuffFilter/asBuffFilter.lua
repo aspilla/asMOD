@@ -133,16 +133,30 @@ local function scanSpells(tab)
 			do break end
 		end
 
-		ABF_TalentBuffList[spellName] = true;
-		ABF_TalentBuffIconList[icon or 0] = true;
-		ABF_TalentBuffList[spellID or 0] = true;
+		local slotType, actionID = GetSpellBookItemInfo(i, BOOKTYPE_SPELL);
+
+		if (slotType == "FLYOUT") then
+			local _, _, numSlots = GetFlyoutInfo(actionID);
+			for j = 1, numSlots do
+				local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
+
+				if flyoutSpellName then					
+					ABF_TalentBuffList[flyoutSpellName] = true;
+					ABF_TalentBuffList[flyoutSpellID or 0] = true;
+				end
+			end
+		else
+			ABF_TalentBuffList[spellName] = true;
+			ABF_TalentBuffIconList[icon or 0] = true;
+			ABF_TalentBuffList[spellID or 0] = true;
+		end
 	end
 end
 
 local function asCheckTalent()
 	ABF_TalentBuffList = {};
 	ABF_TalentBuffIconList = {};
-	overlayspell = {};
+	overlayspell = {};	
 	scanSpells(2)
 	scanSpells(3)
 
@@ -357,7 +371,7 @@ local function ProcessAura(aura, unit)
 			aura.buffType = UnitFrameBuffType.Normal;
 		elseif ABF_TalentBuffList[aura.spellId] == true then
 			aura.buffType = UnitFrameBuffType.TalentBuff;
-		elseif ABF_TalentBuffList[aura.name] == true  then
+		elseif ABF_TalentBuffList[aura.name] == true then
 			aura.buffType = UnitFrameBuffType.TalentBuff;
 		else
 			aura.buffType = UnitFrameBuffType.Normal;
@@ -737,7 +751,7 @@ local function CreatBuffFrames(parent, bright, bcenter)
 		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
 		local frame = parent.frames[idx];
 		frame:SetFrameStrata("MEDIUM");
-		frame:SetFrameLevel(9000);			
+		frame:SetFrameLevel(9000);
 		frame.cooldown:SetFrameLevel(9100);
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then

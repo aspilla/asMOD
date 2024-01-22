@@ -28,7 +28,7 @@ local function asCheckTalent(name)
             local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
             local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
             local definitionInfo = entryInfo and entryInfo.definitionID and
-                                       C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+                C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
             if definitionInfo ~= nil then
                 local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
@@ -53,7 +53,8 @@ local function ACRB_InitList()
     if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
         spec = 1;
     end
-
+       
+    
     if spec then
         listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
     end
@@ -101,7 +102,6 @@ local function ACRB_updatePartyAllHealerMana()
 end
 
 function ns.isParty(unit)
-
     for i = 1, 4 do
         if unit and UnitIsUnit(unit, "party" .. i) then
             return true
@@ -109,7 +109,6 @@ function ns.isParty(unit)
     end
 
     return false;
-
 end
 
 local max_y = 0;
@@ -196,7 +195,6 @@ local function ACRB_setupFrame(frame)
     end
 
     local function layoutbuff(f, t)
-
         local bshow = ns.options.ShowBuffTooltip;
 
         if t == 2 then
@@ -204,7 +202,7 @@ local function ACRB_setupFrame(frame)
         end
 
         f:EnableMouse(false);
-              
+
         f.icon:SetTexCoord(.08, .92, .08, .92);
         f.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
         f.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
@@ -251,7 +249,7 @@ local function ACRB_setupFrame(frame)
         f.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
         f.remain:SetFont(STANDARD_TEXT_FONT, fontsize + 2, "OUTLINE")
 
-        for _, r in next, {f.cooldown:GetRegions()} do
+        for _, r in next, { f.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                 r:ClearAllPoints();
@@ -270,12 +268,12 @@ local function ACRB_setupFrame(frame)
     local strata = "LOW";
     local framelevel = 4;
 
-    
+
     if frame.buffFrames[1] then
         strata = frame.buffFrames[1]:GetFrameStrata();
         framelevel = frame.buffFrames[1]:GetFrameLevel();
     end
-    
+
     if not asframe.asbuffFrames then
         asframe.asbuffFrames = {}
         for i = 1, ns.ACRB_MAX_BUFFS do
@@ -345,7 +343,6 @@ local function ACRB_setupFrame(frame)
 
             debuffFrame:SetFrameStrata(strata);
             debuffFrame:SetFrameLevel(framelevel);
-
         end
     end
 
@@ -617,7 +614,6 @@ local function ACRB_updatePartyAllAura(auraonly, update_all)
                     ACRB_setupFrame(asframe.frame);
                 end
             end
-
         end
     end
 end
@@ -685,8 +681,9 @@ local function ACRB_OnEvent(self, event, arg1)
             hooksecurefunc(DBM, "NewMod", ns.NewMod)
         end
         ns.updateTankerList();
-    elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
+    elseif  (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED")  then
         ns.SetupAll(true);
+        ns.UpdateDispellable();
     elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
         ns.updateTankerList();
         ns.SetupAll(false);
@@ -702,6 +699,8 @@ ACRB_mainframe:RegisterEvent("GROUP_ROSTER_UPDATE");
 ACRB_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 ACRB_mainframe:RegisterEvent("PLAYER_LEAVING_WORLD");
 ACRB_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+ACRB_mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED");
+ACRB_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 ACRB_mainframe:RegisterEvent("CVAR_UPDATE");
 ACRB_mainframe:RegisterEvent("ROLE_CHANGED_INFORM");
 ACRB_mainframe:RegisterEvent("VARIABLES_LOADED");
