@@ -120,13 +120,27 @@ local function scanSpells(tab)
 	end
 
 	for i = tabOffset + 1, tabOffset + numEntries do
-		local spellName, _, spellID = GetSpellBookItemName(i, BOOKTYPE_SPELL)
+		local spellName, _, spellID = GetSpellBookItemName(i, BOOKTYPE_SPELL);
+
 		if not spellName then
 			do break end
 		end
 
-		if spellID and not black_list[spellName] then
-			KnownSpellList[spellID] = SPELL_TYPE_USER;
+		local slotType, actionID = GetSpellBookItemInfo(i, BOOKTYPE_SPELL);
+
+		if (slotType == "FLYOUT") then
+			local _, _, numSlots = GetFlyoutInfo(actionID);
+			for j = 1, numSlots do
+				local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
+
+				if flyoutSpellID and not black_list[flyoutSpellName] then					
+					KnownSpellList[flyoutSpellID] = SPELL_TYPE_USER;
+				end
+			end
+		else
+			if spellID and not black_list[spellName] then
+				KnownSpellList[spellID] = SPELL_TYPE_USER;
+			end
 		end
 	end
 end
@@ -444,12 +458,12 @@ local function ACDP_Alert(spell, type)
 
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
 
-		if voice_remap[name]  then
+		if voice_remap[name] then
 			name = voice_remap[name];
 			bsound = true;
 		end
 		--print(name);
-		if ns.options.PlaySound and name  then
+		if ns.options.PlaySound and name then
 			if (spell_cooldown[spell] and spell_cooldown[spell] >= ns.options.SoundCooldown) then
 				bsound = true;
 			end

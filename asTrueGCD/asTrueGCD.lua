@@ -48,8 +48,21 @@ local function scanSpells(tab)
 			do break end
 		end
 
-		if spellID then
-			KnownSpellList[spellID] = 1;
+		local slotType, actionID = GetSpellBookItemInfo(i, BOOKTYPE_SPELL);
+
+		if (slotType == "FLYOUT") then
+			local _, _, numSlots = GetFlyoutInfo(actionID);
+			for j = 1, numSlots do
+				local flyoutSpellID = GetFlyoutSlotInfo(actionID, j);
+
+				if flyoutSpellID then
+					KnownSpellList[flyoutSpellID] = 1;
+				end
+			end
+		else
+			if spellID then
+				KnownSpellList[spellID] = 1;
+			end
 		end
 	end
 end
