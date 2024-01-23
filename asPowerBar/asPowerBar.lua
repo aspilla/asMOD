@@ -9,7 +9,7 @@ local APB_WIDTH = 203; -- 위치
 local APB_X = 0;
 local APB_Y = -142 - 70;
 local APB_HEIGHT = 10
-local APB_ALPHA_COMBAT = 1 -- 전투중 알파 값
+local APB_ALPHA_COMBAT = 1       -- 전투중 알파 값
 local APB_ALPHA_NORMAL = 0.5
 local APB_SHOW_HEALTHBAR = false -- 생명력바 표시
 
@@ -271,7 +271,7 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
             local isCharged = chargedPowerPoints and tContains(chargedPowerPoints, i) or false;
 
             if isCharged then
-                ns.lib.PixelGlow_Start(APB.combobar[i], {0.5, 0.5, 1});
+                ns.lib.PixelGlow_Start(APB.combobar[i], { 0.5, 0.5, 1 });
                 if combo == i then
                     bmax = true;
                 end
@@ -376,7 +376,6 @@ local prev_dire_beast_time = 0;
 local prev_dire_pack_time = 0;
 local dire_beast_count = 0;
 local function checkDireBeast()
-
     local auraList = ns.ParseAllBuff("player");
 
     auraList:Iterate(function(auraInstanceID, aura)
@@ -1066,7 +1065,6 @@ local function APB_UpdateSpell(spell, spell2)
                 spellbar:SetScript("OnUpdate", nil)
             end
         end
-
     end
 end
 local APB_MAX_INCOMING_HEAL_OVERFLOW = 1.2;
@@ -1202,7 +1200,7 @@ local function APB_Update(self)
             APB.bar.text:SetText(valuePct);
         end
 
-        UpdateFillBarBase(self.bar, self.bar.PredictionBar, predictedPowerCost);        
+        UpdateFillBarBase(self.bar, self.bar.PredictionBar, predictedPowerCost);
     end
 
     if not bupdate_healthbar then
@@ -1284,7 +1282,7 @@ local function asCheckTalent(name)
             local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
             local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
             local definitionInfo = entryInfo and entryInfo.definitionID and
-                                       C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+                C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
             if definitionInfo ~= nil then
                 local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
@@ -2070,14 +2068,23 @@ local function APB_CheckPower(self)
     end
 
     if (englishClass == "SHAMAN") then
-        if spec and spec == 1 and asCheckTalent("전기 충격") then
-            APB_DEBUFF = "전기 충격";
-            APB.buffbar[0].debuff = APB_DEBUFF
-            APB.buffbar[0].unit = "target";
-            APB:SetScript("OnUpdate", APB_OnUpdate);
+        if spec and spec == 1 then
+            if asCheckTalent("전기 충격") then
+                APB_DEBUFF = "전기 충격";
+                APB.buffbar[0].debuff = APB_DEBUFF
+                APB.buffbar[0].unit = "target";
+                APB:SetScript("OnUpdate", APB_OnUpdate);
 
-            APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-            APB_UpdateBuff(self.buffbar[0])
+                APB:RegisterEvent("PLAYER_TARGET_CHANGED");
+                APB_UpdateBuff(self.buffbar[0])
+            elseif asCheckTalent("깊이 뿌리내린 정기") then
+                APB_BUFF = "승천";
+                APB.buffbar[0].buff = APB_BUFF;
+                APB.buffbar[0].unit = "player"
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
+                APB_UpdateBuff(self.buffbar[0])
+
+            end
         end
 
         if spec and spec == 2 then
@@ -2366,7 +2373,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
     elseif event == "RUNE_POWER_UPDATE" then
         APB_UpdateRune();
     elseif (event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED" or
-        event == "UNIT_SPELLCAST_SUCCEEDED") and arg1 == "player" then
+            event == "UNIT_SPELLCAST_SUCCEEDED") and arg1 == "player" then
         local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID =
             UnitCastingInfo(arg1);
         local bchanneling = false;
@@ -2638,7 +2645,7 @@ do
     end
 
     APB.combobar = {};
-    APB.runeIndexes = {1, 2, 3, 4, 5, 6};
+    APB.runeIndexes = { 1, 2, 3, 4, 5, 6 };
 
     for i = 1, 10 do
         APB.combobar[i] = CreateFrame("StatusBar", nil, APB);
