@@ -85,15 +85,15 @@ ADotF_ShowList_PRIEST_3 = {
 }
 
 ADotF_ShowList_SHAMAN_1 = {
-    { "화염 충격", 1 },
+    { "화염 충격", 18 * 0.3 },
 }
 
 ADotF_ShowList_SHAMAN_2 = {
-    { "화염 충격", 1 },
+    { "화염 충격", 18 * 0.3 },
 }
 
 ADotF_ShowList_SHAMAN_3 = {
-    { "화염 충격", 1 },
+    { "화염 충격", 18 * 0.3 },
 }
 
 ADotF_ShowList_DRUID_1 = {

@@ -267,7 +267,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 240121,
+    version = 240124,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -392,16 +392,16 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_SHAMAN_1 = {
-        ["화염 충격"] = { 1, 5, 1 },
+        ["화염 충격"] = { 18 * 0.3, 5, 1 },
     },
 
     ANameP_ShowList_SHAMAN_2 = {
         ["채찍 화염"] = { 0, 5 },
-        ["화염 충격"] = { 1, 4, 1 },
+        ["화염 충격"] = { 18 * 0.3, 4, 1 },
     },
 
     ANameP_ShowList_SHAMAN_3 = {
-        ["화염 충격"] = { 1, 5, 1 },
+        ["화염 충격"] = { 18 * 0.31, 5, 1 },
     },
 
 

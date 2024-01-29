@@ -109,16 +109,16 @@ ns.ShowList_PRIEST_3 = {
 }
 
 ns.ShowList_SHAMAN_1 = {
-    ["화염 충격"] = { 1, 5, true },
+    ["화염 충격"] = { 18 * 0.3, 5, true },
 }
 
 ns.ShowList_SHAMAN_2 = {
     ["채찍 화염"] = { 0, 5 },
-    ["화염 충격"] = { 1, 4, true },
+    ["화염 충격"] = { 18 * 0.3, 4, true },
 }
 
 ns.ShowList_SHAMAN_3 = {
-    ["화염 충격"] = { 1, 5, true },
+    ["화염 충격"] = { 18 * 0.3, 5, true },
 }
 
 

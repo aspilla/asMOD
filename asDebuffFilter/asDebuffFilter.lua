@@ -110,13 +110,13 @@ local dispelNodeIDs = {
 local function UpdateDispellable()
     -- update dispellable
     wipe(DispellableDebuffTypes)
-    local specID = GetSpecializationInfo(GetSpecialization())    
+    local specID = GetSpecializationInfo(GetSpecialization())
     local activeConfigID = C_ClassTalents.GetActiveConfigID()
     if activeConfigID and dispelNodeIDs[specID] then
         for dispelType, value in pairs(dispelNodeIDs[specID]) do
-            if type(value) == "boolean" then                
+            if type(value) == "boolean" then
                 DispellableDebuffTypes[dispelType] = value
-            elseif type(value) == "table" then     -- more than one trait
+            elseif type(value) == "table" then -- more than one trait
                 for _, v in pairs(value) do
                     local nodeInfo = C_Traits.GetNodeInfo(activeConfigID, v)
                     if nodeInfo and nodeInfo.ranksPurchased ~= 0 then
@@ -124,9 +124,9 @@ local function UpdateDispellable()
                         break
                     end
                 end
-            else     -- number: check node info
+            else -- number: check node info
                 local nodeInfo = C_Traits.GetNodeInfo(activeConfigID, value)
-                if nodeInfo and nodeInfo.ranksPurchased ~= 0 then                    
+                if nodeInfo and nodeInfo.ranksPurchased ~= 0 then
                     DispellableDebuffTypes[dispelType] = true
                 end
             end
@@ -188,7 +188,7 @@ local function DefaultAuraCompare(a, b)
         return a.canApplyAura;
     end
 
-    return a.spellId < b.spellId
+    return a.auraInstanceID < b.auraInstanceID;
 end
 
 local function UnitFrameDebuffComparator(a, b)
@@ -351,7 +351,7 @@ local function setupKnownSpell()
     asCheckTalent();
 end
 
-local function ShouldShowDebuffs(unit, caster, nameplateShowAll, casterIsAPlayer)
+local function ShouldShowDebuffs(unit, caster, nameplateShowAll)
     if (GetCVarBool("noBuffDebuffFilterOnTarget")) then
         return true;
     end
@@ -371,7 +371,7 @@ local function ShouldShowDebuffs(unit, caster, nameplateShowAll, casterIsAPlayer
     local targetIsFriendly = not UnitCanAttack("player", unit);
     local targetIsAPlayer = UnitIsPlayer(unit);
     local targetIsAPlayerPet = UnitIsOtherPlayersPet(unit);
-    if (not targetIsAPlayer and not targetIsAPlayerPet and not targetIsFriendly and casterIsAPlayer) then
+    if (not targetIsAPlayer and not targetIsAPlayerPet and not targetIsFriendly) then
         return false;
     end
 
@@ -395,7 +395,7 @@ local function ProcessAura(aura, unit)
     if unit == "target" then
         skip = true;
 
-        if ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll, aura.isFromPlayerOrPlayerPet) then
+        if ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll) then
             skip = false;
         end
 
@@ -421,32 +421,38 @@ local function ProcessAura(aura, unit)
     end
 
     if skip == false then
-        if unit == "target" and show_list[aura.name] then
-            if show_list[aura.name][2] then
-                aura.debuffType = UnitFrameDebuffType.BossDebuff + show_list[aura.name][2];
-            end
-        elseif unit == "target" and (KnownSpellList[aura.name] or KnownSpellList[aura.texture]) then
-            aura.debuffType = UnitFrameDebuffType.L0;
-        elseif C_SpellBook.GetDeadlyDebuffInfo(aura.spellId) then
-            aura.debuffType = UnitFrameDebuffType.BossDebuff;
-        elseif aura.isBossAura and not aura.isRaid then
-            aura.debuffType = UnitFrameDebuffType.BossDebuff
-        elseif aura.nameplateShowPersonal then
-            aura.debuffType = UnitFrameDebuffType.nameplateShowPersonal;
-        elseif aura.nameplateShowAll then
-            aura.debuffType = UnitFrameDebuffType.namePlateShowAll;
-        elseif not aura.isRaid then
-            if IsPriorityDebuff(aura.spellId) then
-                aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
+        if unit == "target" then
+            if show_list[aura.name] then
+                if show_list[aura.name][2] then
+                    aura.debuffType = UnitFrameDebuffType.BossDebuff + show_list[aura.name][2];
+                end
+            elseif aura.nameplateShowPersonal then
+                aura.debuffType = UnitFrameDebuffType.nameplateShowPersonal;
+            elseif (KnownSpellList[aura.name] or KnownSpellList[aura.texture]) then
+                aura.debuffType = UnitFrameDebuffType.L0;
+            elseif aura.nameplateShowAll then
+                aura.debuffType = UnitFrameDebuffType.namePlateShowAll;
             else
                 aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
             end
-        elseif aura.isRaid then
-            aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
-                    UnitFrameDebuffType.NonBossRaidDebuff;
         else
-            aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
+            if not aura.isRaid then
+                if aura.isBossAura then
+                    aura.debuffType = UnitFrameDebuffType.BossDebuff
+                elseif IsPriorityDebuff(aura.spellId) then
+                    aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
+                else
+                    aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
+                end
+            elseif aura.isRaid then
+                aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
+                    UnitFrameDebuffType.NonBossRaidDebuff;
+            else
+                aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
+            end
         end
+
+
 
         activeDebuffs[unit][aura.auraInstanceID] = aura;
         return AuraUpdateChangedType.Debuff;
@@ -669,8 +675,8 @@ local function initList()
     show_list = nil;
 
     if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
-		spec = 1;
-	end
+        spec = 1;
+    end
 
     if spec then
         listname = "ShowList_" .. englishClass .. "_" .. spec;
@@ -753,7 +759,7 @@ local function CreatDebuffFrames(parent, bright)
         local frame = parent.frames[idx];
         frame:SetFrameStrata("MEDIUM");
         frame:SetFrameLevel(9000);
-        
+
         frame.cooldown:SetFrameLevel(9100);
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
@@ -790,7 +796,7 @@ local function CreatDebuffFrames(parent, bright)
         end
 
         frame:EnableMouse(false);
-		frame:SetMouseMotionEnabled(true);
+        frame:SetMouseMotionEnabled(true);
 
         frame:Hide();
     end
