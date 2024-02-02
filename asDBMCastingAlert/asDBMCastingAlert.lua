@@ -3,9 +3,17 @@ local _, ns = ...;
 local CONFIG_SOUND_SPEED = 1 -- 음성안내 읽기 속도
 local CONFIG_VOICE_ID = 0    -- 음성 종류 (한국 Client 는 0번 1가지만 지원)
 local CONFIG_X = 230;
-local CONFIG_Y = -50;
+local CONFIG_Y = -25;
 local CONFIG_SIZE = 45;
 local CONFIG_VOICE_DELAY = 2 -- 케스팅 끝나고 같은 음성 2초간 금지
+
+-- Castbar 설정
+local CONFIG_WIDTH = 175
+local CONFIG_HEIGHT = 20
+local CONFIG_ALPHA = 0.8;                     --투명도 80%
+local CONFIG_NAME_SIZE = CONFIG_HEIGHT * 0.5; --Spell 명 Font Size, 높이의 50%
+local CONFIG_TIME_SIZE = CONFIG_HEIGHT * 0.3; --Spell 시전시간 Font Size, 높이의 30%
+local CONFIG_UPDATE_RATE = 0.05               -- 20프레임
 
 local function isFaction(unit)
 	if UnitIsUnit("player", unit) then
@@ -60,8 +68,19 @@ local function ADCA_DisplayRaidIcon(unit)
 	end
 end
 
+local function Comparator(a, b)
+	return a.expiration < b.expiration;
+end
+
+local castingInfos;
+
 local function ADCA_OnUpdate()
-	local i = 1;
+	if castingInfos == nil then
+		castingInfos = TableUtil.CreatePriorityTable(Comparator, TableUtil.Constants.AssociativePriorityTable);
+	else
+		castingInfos:Clear();
+	end
+
 	for unit, needtosound in pairs(CastingUnits) do
 		if UnitExists(unit) then
 			local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, castID, notInterruptible, spellId =
@@ -72,10 +91,10 @@ local function ADCA_OnUpdate()
 			end
 
 			if name then
-				if i <= 3 and DangerousSpellList[spellId] then
+				if DangerousSpellList[spellId] then
 					if needtosound and VoiceAlertTime[name] and VoiceAlertTime[name] > startTimeMS then
 						needtosound = false;
-						CastingUnits[unit] = false;						
+						CastingUnits[unit] = false;
 					end
 
 					if ns.options.PlaySound and needtosound == true then
@@ -83,7 +102,7 @@ local function ADCA_OnUpdate()
 							if DangerousSpellList[spellId] == "interrupt" or not notInterruptible then
 								C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback,
 									CONFIG_SOUND_SPEED, ns.options.SoundVolume);
-								VoiceAlertTime[name] = endTimeMS + (CONFIG_VOICE_DELAY * 1000);								
+								VoiceAlertTime[name] = endTimeMS + (CONFIG_VOICE_DELAY * 1000);
 							end
 						else
 							C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback,
@@ -93,46 +112,22 @@ local function ADCA_OnUpdate()
 
 						CastingUnits[unit] = false;
 					end
-					local frame = ADVA.frames[i];
-					frame.castspellid = spellId;
 
-					-- set the icon
-					local frameIcon = frame.icon
-					frameIcon:SetTexture(texture);
-					local frameName = frame.text;
-					frameName:SetText(name);
-					frameName:Show();
 
-					local frameMark = frame.mark;
-					frameMark:SetText(ADCA_DisplayRaidIcon(unit));
-					frameMark:Show();
-
-					-- Handle cooldowns
-					local frameCooldown = frame.cooldown;
-					local expirationTime = endTimeMS / 1000;
+					-- Handle cooldowns						
+					local start = startTimeMS / 1000;
 					local duration = (endTimeMS - startTimeMS) / 1000;
+					local expirationTime = endTimeMS / 1000;
 
-					if (duration > 0) then
-						frameCooldown:Show();
-						asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0,
-							true);
-					else
-						frameCooldown:Hide();
-					end
-
-					local frameBorder = frame.border;
-
-					if DangerousSpellList[spellId] == "interrupt" or not notInterruptible then
-						frameBorder:SetVertexColor(0, 1, 0);
-					else
-						frameBorder:SetVertexColor(0.3, 0.3, 0.3);
-					end
-
-
-					frame:Show();
-
-
-					i = i + 1;
+					castingInfos[unit] = {
+						icon = texture,
+						name = name,
+						start = start,
+						duration = duration,
+						expiration = expirationTime,
+						spellId = spellId,
+						notInterruptible = notInterruptible
+					}
 				end
 			else
 				CastingUnits[unit] = nil;
@@ -142,9 +137,105 @@ local function ADCA_OnUpdate()
 		end
 	end
 
-	for j = i, 3 do
-		local frame = ADVA.frames[j];
+	local i = 1;
 
+	castingInfos:Iterate(
+		function(unit, castingInfo)
+			if i > 3 then
+				return;
+			end
+
+			if ns.options.BarType then
+				local frame = ADVA.bars[i];
+				frame.castspellid = castingInfo.spellId;
+
+				-- set the icon
+				local frameIcon = frame.button.icon
+				frameIcon:SetTexture(castingInfo.icon);
+				local frameName = frame.name;
+				frameName:SetText(castingInfo.name);
+				frameName:Show();
+
+				local frameMark = frame.button.mark;
+				frameMark:SetText(ADCA_DisplayRaidIcon(unit));
+				frameMark:Show();
+
+
+
+				frame.start = castingInfo.start;
+				frame.duration = castingInfo.duration;
+
+				frame:SetMinMaxValues(0, frame.duration);
+
+				if DangerousSpellList[castingInfo.spellId] == "interrupt" or not castingInfo.notInterruptible then
+					frame:SetStatusBarColor(0, 1, 0);
+				else
+					frame:SetStatusBarColor(0.6, 0.6, 0.6);
+				end
+
+				local targetunit = unit .. "target";
+				local targetname = frame.targetname;
+
+				if UnitExists(targetunit) and UnitIsPlayer(targetunit) then
+					local _, Class = UnitClass(targetunit)
+					local color = RAID_CLASS_COLORS[Class]
+					targetname:SetTextColor(color.r, color.g, color.b);
+					targetname:SetText(UnitName(targetunit));
+					targetname:Show();
+				else
+					targetname:SetText("");
+					targetname:Hide();
+				end
+
+				frame:Show();
+			else
+				local frame = ADVA.frames[i];
+				frame.castspellid = castingInfo.spellId;
+
+				-- set the icon
+				local frameIcon = frame.icon
+				frameIcon:SetTexture(castingInfo.icon);
+				local frameName = frame.text;
+				frameName:SetText(castingInfo.name);
+				frameName:Show();
+
+				local frameMark = frame.mark;
+				frameMark:SetText(ADCA_DisplayRaidIcon(unit));
+				frameMark:Show();
+
+				-- Handle cooldowns
+				local frameCooldown = frame.cooldown;
+
+				if (castingInfo.duration > 0) then
+					frameCooldown:Show();
+					asCooldownFrame_Set(frameCooldown, castingInfo.expiration - castingInfo.duration,
+						castingInfo.duration, castingInfo.duration > 0,
+						true);
+				else
+					frameCooldown:Hide();
+				end
+
+				local frameBorder = frame.border;
+
+				if DangerousSpellList[castingInfo.spellId] == "interrupt" or not castingInfo.notInterruptible then
+					frameBorder:SetVertexColor(0, 1, 0);
+				else
+					frameBorder:SetVertexColor(0.3, 0.3, 0.3);
+				end
+
+
+				frame:Show();
+			end
+			i = i + 1;
+		end)
+
+	for j = i, 3 do
+		local frame = ADVA.bars[j];
+		frame.start = 0;
+		frame:Hide();
+
+		frame = ADVA.frames[j];
+		frame.start = 0;
 		frame:Hide();
 	end
 end
@@ -243,6 +334,108 @@ local function CreatBuffFrames(parent, bright, bcenter)
 	return;
 end
 
+local function Bar_OnUpdate(self, ef)
+	local start = self.start;
+	self.ef = self.ef + ef;
+
+
+	if start > 0 and self.ef > CONFIG_UPDATE_RATE then
+		self.ef = 0;
+
+		local castBar = self;
+		local duration = self.duration;
+		local current = GetTime();
+		local time = self.time;
+		castBar:SetValue((current - start));
+		time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
+	end
+end
+
+
+local function CreateCastbars(parent)
+	if parent.bars == nil then
+		parent.bars = {};
+	end
+
+	for idx = 1, 3 do
+		parent.bars[idx] = CreateFrame("StatusBar", nil, UIParent)
+		local frame = parent.bars[idx];
+		frame:SetStatusBarTexture("Interface\\addons\\asDBMCastingAlert\\UI-StatusBar.blp", "BORDER")
+		frame:GetStatusBarTexture():SetHorizTile(false)
+		frame:SetMinMaxValues(0, 100)
+		frame:SetValue(100)
+		frame:SetHeight(CONFIG_HEIGHT)
+		frame:SetWidth(CONFIG_WIDTH - CONFIG_HEIGHT / 2)
+		frame:SetStatusBarColor(1, 0.9, 0.9);
+		frame:SetAlpha(1);
+
+		frame.bg = frame:CreateTexture(nil, "BACKGROUND")
+		frame.bg:SetPoint("TOPLEFT", frame, "TOPLEFT", -1, 1)
+		frame.bg:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 1, -1)
+
+		frame.bg:SetTexture("Interface\\Addons\\asDBMCastingAlert\\border.tga")
+		frame.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+		frame.bg:SetVertexColor(0, 0, 0, 0.8);
+		frame.bg:Show();
+
+		frame.name = frame:CreateFontString(nil, "OVERLAY");
+		frame.name:SetFont(STANDARD_TEXT_FONT, CONFIG_NAME_SIZE);
+		frame.name:SetPoint("LEFT", frame, "LEFT", 3, 0);
+
+		frame.time = frame:CreateFontString(nil, "OVERLAY");
+		frame.time:SetFont(STANDARD_TEXT_FONT, CONFIG_TIME_SIZE);
+		frame.time:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -3, -2);
+
+		if idx == 1 then
+			frame:SetPoint("TOPRIGHT", parent, "TOP", 150, 0)
+		else
+			frame:SetPoint("TOPRIGHT", parent.bars[idx - 1], "BOTTOMRIGHT", 0, -1)
+		end
+
+		if not frame:GetScript("OnEnter") then
+			frame:SetScript("OnEnter", function(s)
+				if s.castspellid and s.castspellid > 0 then
+					GameTooltip_SetDefaultAnchor(GameTooltip, s);
+					GameTooltip:SetSpellByID(s.castspellid);
+				end
+			end)
+			frame:SetScript("OnLeave", function()
+				GameTooltip:Hide();
+			end)
+		end
+
+		frame:EnableMouse(false);
+		frame:SetMouseMotionEnabled(true);
+		frame:Hide();
+
+		frame.button = CreateFrame("Button", nil, frame, "asDCATemplate");
+		frame.button:SetPoint("RIGHT", frame, "LEFT", -1, 0)
+		frame.button:SetWidth((CONFIG_HEIGHT + 2) * 1.2);
+		frame.button:SetHeight(CONFIG_HEIGHT + 2);
+		frame.button:SetScale(1);
+		frame.button:SetAlpha(1);
+		frame.button:EnableMouse(false);
+		frame.button:Show();
+		frame.button.mark:ClearAllPoints();
+		frame.button.mark:SetPoint("RIGHT", frame.button, "LEFT", -1, 0)
+		frame.button.icon:SetTexCoord(.08, .92, .08, .92);
+		frame.button.border:SetTexture("Interface\\Addons\\asDBMCastingAlert\\border.tga");
+		frame.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+		frame.button.border:SetVertexColor(0, 0, 0);
+		frame.button.border:Show();
+
+		frame.targetname = frame:CreateFontString(nil, "OVERLAY");
+		frame.targetname:SetFont(STANDARD_TEXT_FONT, CONFIG_TIME_SIZE);
+		frame.targetname:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2);
+
+		frame.start = 0;
+		frame.duration = 0;
+		frame.ef = 0;
+
+		frame:SetScript("OnUpdate", Bar_OnUpdate);
+	end
+end
+
 local DBMobj;
 
 local function scanDBM()
@@ -291,6 +484,7 @@ local function initAddon()
 
 	bloaded = LoadAddOn("asMOD")
 
+	CreateCastbars(ADVA);
 	CreatBuffFrames(ADVA, true, false);
 
 	if bloaded and asMOD_setupFrame then
@@ -304,8 +498,6 @@ local function initAddon()
 
 	timer = C_Timer.NewTicker(0.2, ADCA_OnUpdate);
 	local voiceID = C_TTSSettings.GetVoiceOptionID(0)
-
-	
 end
 
 

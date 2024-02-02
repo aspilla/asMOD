@@ -8,7 +8,7 @@ local ADBMT_MaxButtons = 10;
 local ADBMT_1sHeight = 15; -- 1초의 높이
 local ADBMT_IconSize = 30;
 local ADBMT_X = 230;
-local ADBMT_Y = 25;
+local ADBMT_Y = 50;
 
 
 local BarColors = {
@@ -62,7 +62,7 @@ local function newButton(id, event)
 			button.icon:Show();
 			button.cooltext:Show();
 			button.border:Show();
-			button.spellid = event.spellID;
+			button.spellid = event.spellId;
 			local msg = event.msg;
 
 			if event.colorId and BarColors[event.colorId] then
@@ -79,7 +79,7 @@ local function newButton(id, event)
 	return nil;
 end
 
-local function DefaultCompare(a, b)	
+local function DefaultCompare(a, b)
 	return a.expirationTime < b.expirationTime;
 end
 
@@ -101,14 +101,15 @@ function asDBMTimer_callback(event, id, ...)
 			newmsg = string.sub(msg, 1, strFindStart - 1);
 		end
 		local curtime = GetTime();
-		dbm_event_list[id] = { msg = newmsg, duration = timer, start = curtime, expirationTime = timer + curtime, icon = icon, button_id = nil, colorId = colorId, spellId = spellId };
+		dbm_event_list[id] = { msg = newmsg, duration = timer, start = curtime, expirationTime = timer + curtime, icon =
+		icon, button_id = nil, colorId = colorId, spellId = spellId };
 	elseif event == "DBM_TimerStop" then
 		if dbm_event_list[id] then
-			if	dbm_event_list[id].button_id then
+			if dbm_event_list[id].button_id then
 				deleteButton(dbm_event_list[id].button_id);
 			end
 			dbm_event_list:Remove(id);
-		end		
+		end
 	elseif event == "DBM_TimerUpdate" then
 		local elapsed, totalTime = ...;
 		if dbm_event_list[id] then
@@ -125,7 +126,6 @@ function asDBMTimer_callback(event, id, ...)
 end
 
 local function checkList()
-
 	local curtime = GetTime();
 
 	dbm_event_list:Iterate(function(id, event)
@@ -136,7 +136,7 @@ local function checkList()
 			if event.button_id == nil then
 				local idx = newButton(id, event);
 				event.button_id = idx;
-			end			
+			end
 		elseif remain <= 0 then
 			if event.button_id then
 				deleteButton(event.button_id);

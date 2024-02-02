@@ -3,6 +3,7 @@ local Options_Default = {
     PlaySound = true,
     SoundVolume = 100,
     SoundOnlyforInterrupt = true,
+    BarType = true,
 };
 
 ns.options = {};

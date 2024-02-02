@@ -59,7 +59,7 @@ local function ACRB_InitList()
         listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
     end
 
-    ns.ACRB_ShowList = ns.options[listname];
+    ns.ACRB_ShowList = ns[listname];
 
     if ns.ACRBShowList then
         for key, value in pairs(ns.ACRBShowList) do

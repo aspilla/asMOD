@@ -1,9 +1,9 @@
 local _, ns = ...;
 
-ns.UpdateRate = 0.2;           -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
+ns.UpdateRate = 0.2; -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 
 local Options_Default = {
-	version = 240118,
+	version = 240131,
 	ShowBuffColor = true,       -- 버프가 Frame Color 를 변경 할지
 	ShowHealthColor = true,     -- 체력 낮은 사람 Color 변경 (사제 생명)
 	LeftAbsorbBar = true,       -- 보호막 바
@@ -17,76 +17,79 @@ local Options_Default = {
 	ShowBuffCooldown = true,    -- 버프 지속시간을 보이려면
 	MinCoolShowBuffSize = 20,   -- 이크기보다 Icon Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0 (기본 Buff Debuff만 보임)
 	MinShowBuffFontSizeRate = 0.6, -- 버프 Size 대비 쿨다운 폰트 사이즈	
-	ShowBuffTooltip = true,         -- Buff GameTooltip을 보이게 하려면 True
-	ShowDebuffTooltip = true,         -- Debuff GameTooltip을 보이게 하려면 True
-	HideCooldown = false,		-- CooldownSwipe를 숨기고 숫자만으로 Cooldown
-
-	-- 첫 숫자 남은시간에 리필 알림 (1이면 자동으로 30% 남으면 알림)
-	-- 두번째 숫자는 표시 위치, 6(우상) 5/4(우중) 1,2,3 은 우하에 보이는 우선 순위이다. (숫자가 클수록 우측에 보임)
-	
-	ACRB_ShowList_MONK_2 = {
-		["소생의 안개"] = { 0, 6 },
-		["포용의 안개"] = { 0, 5 },
-		["천지교태"] = { 0, 3 }, --시즌3
-	},
-
-	-- 신기
-	ACRB_ShowList_PALADIN_1 = {
-		["빛의 자락"] = { 0, 6 },
-		["빛의 봉화"] = { 0, 5 },
-		["신념의 봉화"] = { 0, 4 },
-		["신성한 울림"] = { 0, 3 }, --시즌3
-	},
-
-	-- 수사
-	ACRB_ShowList_PRIEST_1 = {
-		["속죄"] = { 0, 6 },
-		["신의 권능: 보호막"] = { 0, 5 },
-		["소생"] = { 1, 4 },
-		["회복의 기원"] = { 0, 2 },
-		["마력 주입"] = { 0, 1 },
-	},
-
-
-	-- 신사
-	ACRB_ShowList_PRIEST_2 = {
-		["소생"] = { 1, 6 },
-		["신의 권능: 보호막"] = { 0, 5 },
-		["회복의 기원"] = { 0, 2 },
-		["마력 주입"] = { 0, 1 },
-	},
-
-	ACRB_ShowList_PRIEST_3 = {
-		["마력 주입"] = { 0, 1 },
-	},
-
-
-	ACRB_ShowList_SHAMAN_3 = {
-		["성난 해일"] = { 1, 6 },
-		["대지의 보호막"] = { 0, 5 },
-		["해일의 저장소"] = { 0, 3 }, --시즌3
-	},
-
-
-	ACRB_ShowList_DRUID_4 = {
-		["회복"] = { 1, 6 },
-		["피어나는 생명"] = { 1, 5 },
-		["재생"] = { 1, 4 },
-		["적응의 무리"] = { 0, 3 },
-		["회복 (싹틔우기)"] = { 1, 2 },
-		["세나리온 수호물"] = { 0, 1 },
-	},
-
-	ACRB_ShowList_EVOKER_2 = {
-		["메아리"] = { 0, 6 },
-		["되감기"] = { 1, 5 },
-	},
-
-	ACRB_ShowList_EVOKER_3 = {
-		["예지"] = { 0, 6 },
-		["끓어오르는 비늘"] = { 0, 5 },
-	},
+	ShowBuffTooltip = true,     -- Buff GameTooltip을 보이게 하려면 True
+	ShowDebuffTooltip = true,   -- Debuff GameTooltip을 보이게 하려면 True
+	HideCooldown = false,       -- CooldownSwipe를 숨기고 숫자만으로 Cooldown
 };
+
+-- 첫 숫자 남은시간에 리필 알림 (1이면 자동으로 30% 남으면 알림)
+-- 두번째 숫자는 표시 위치, 6(우상) 5/4(우중) 1,2,3 은 우하에 보이는 우선 순위이다. (숫자가 클수록 우측에 보임)
+
+ns.ACRB_ShowList_MONK_2 = {
+	["소생의 안개"] = { 0, 6 },
+	["포용의 안개"] = { 0, 5 },
+	["천지교태"] = { 0, 3 }, --시즌3
+}
+
+-- 신기
+ns.ACRB_ShowList_PALADIN_1 = {
+	["빛의 자락"] = { 0, 6 },
+	["빛의 봉화"] = { 0, 5 },
+	["고결의 봉화"] = { 0, 5 },
+	["신념의 봉화"] = { 0, 5 },
+	[200654] = { 0, 3 }, -- 티르	
+	["신성한 울림"] = { 0, 2 }, --시즌3	
+
+}
+
+-- 수사
+ns.ACRB_ShowList_PRIEST_1 = {
+	["속죄"] = { 0, 6 },
+	["신의 권능: 보호막"] = { 0, 5 },
+	["소생"] = { 1, 4 },
+	["회복의 기원"] = { 0, 2 },
+	["마력 주입"] = { 0, 1 },
+}
+
+
+-- 신사
+ns.ACRB_ShowList_PRIEST_2 = {
+	["소생"] = { 1, 6 },
+	["신의 권능: 보호막"] = { 0, 5 },
+	["회복의 기원"] = { 0, 2 },
+	["마력 주입"] = { 0, 1 },
+}
+
+ns.ACRB_ShowList_PRIEST_3 = {
+	["마력 주입"] = { 0, 1 },
+}
+
+
+ns.ACRB_ShowList_SHAMAN_3 = {
+	["성난 해일"] = { 1, 6 },
+	["대지의 보호막"] = { 0, 5 },
+	["해일의 저장소"] = { 0, 3 }, --시즌3
+}
+
+
+ns.ACRB_ShowList_DRUID_4 = {
+	["회복"] = { 1, 6 },
+	["피어나는 생명"] = { 1, 5 },
+	["재생"] = { 1, 4 },
+	["적응의 무리"] = { 0, 3 },
+	["회복 (싹틔우기)"] = { 1, 2 },
+	["세나리온 수호물"] = { 0, 1 },
+}
+
+ns.ACRB_ShowList_EVOKER_2 = {
+	["메아리"] = { 0, 6 },
+	["되감기"] = { 1, 5 },
+}
+
+ns.ACRB_ShowList_EVOKER_3 = {
+	["예지"] = { 0, 6 },
+	["끓어오르는 비늘"] = { 0, 5 },
+}
 
 -- 안보이게 할 디법
 ns.ACRB_BlackList = {
@@ -246,7 +249,7 @@ ns.ACRB_DefensiveBuffList = {
 -- 변경하면 안됨
 ns.ACRB_MAX_BUFFS = 6           -- 최대 표시 버프 개수 (3개 + 3개)
 ns.ACRB_MAX_DEBUFFS = 3         -- 최대 표시 디버프 개수 (3개)
-ns.ACRB_MAX_DEFENSIVE_BUFFS = 2       -- 최대 생존기 개수
+ns.ACRB_MAX_DEFENSIVE_BUFFS = 2 -- 최대 생존기 개수
 ns.ACRB_MAX_DISPEL_DEBUFFS = 3  -- 최대 해제 디버프 개수 (3개)
 ns.ACRB_MAX_CASTING = 2         -- 최대 Casting Alert
 ns.ACRB_MaxBuffSize = 20        -- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
@@ -259,13 +262,13 @@ ns.options = {};
 function ns.SetupOptionPanels()
 	local function OnSettingChanged(_, setting, value)
 		local function get_variable_from_cvar_name(cvar_name)
-            local variable_start_index = string.find(cvar_name, "_") + 1
-            local variable = string.sub(cvar_name, variable_start_index)
-            return variable
-        end
+			local variable_start_index = string.find(cvar_name, "_") + 1
+			local variable = string.sub(cvar_name, variable_start_index)
+			return variable
+		end
 
-        local cvar_name = setting:GetVariable()
-        local variable = get_variable_from_cvar_name(cvar_name)
+		local cvar_name = setting:GetVariable()
+		local variable = get_variable_from_cvar_name(cvar_name)
 		ACRB_Options[variable] = value;
 		ns.options[variable] = value;
 		ns.SetupAll(true);
