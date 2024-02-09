@@ -46,6 +46,20 @@ local function deleteButton(idx)
 	end
 end
 
+local function checkAllButton()
+	for idx = 1, ADBMT_MaxButtons do
+		local button = asDBMTimer.buttons[idx]
+
+		if button and button.id and button.start and button.duration then
+			local ex = button.start + button.duration;
+
+			if ex < GetTime() then
+				deleteButton(idx);
+			end
+		end
+	end
+end
+
 local function RGBToHex(r, g, b)
 	r = math.floor(r * 255)
 	g = math.floor(g * 255)
@@ -101,8 +115,17 @@ function asDBMTimer_callback(event, id, ...)
 			newmsg = string.sub(msg, 1, strFindStart - 1);
 		end
 		local curtime = GetTime();
-		dbm_event_list[id] = { msg = newmsg, duration = timer, start = curtime, expirationTime = timer + curtime, icon =
-		icon, button_id = nil, colorId = colorId, spellId = spellId };
+		dbm_event_list[id] = {
+			msg = newmsg,
+			duration = timer,
+			start = curtime,
+			expirationTime = timer + curtime,
+			icon =
+				icon,
+			button_id = nil,
+			colorId = colorId,
+			spellId = spellId
+		};
 	elseif event == "DBM_TimerStop" then
 		if dbm_event_list[id] then
 			if dbm_event_list[id].button_id then
@@ -173,6 +196,8 @@ local function checkList()
 			end
 		end
 	end)
+
+	checkAllButton();
 end
 
 local function setupUI()

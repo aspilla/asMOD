@@ -1,0 +1,140 @@
+local _, ns = ...;
+
+local objects = {};
+
+-- 버프 디버프 처리부
+local function createDebuffFrame(parent)
+    local ret = CreateFrame("Frame", nil, parent, "asNamePlatesBuffFrameTemplate");
+    local frameCooldown = ret.cooldown;
+    local frameCount = ret.count;
+
+    for _, r in next, { frameCooldown:GetRegions() } do
+        if r:GetObjectType() == "FontString" then
+            r:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CooldownFontSize, "OUTLINE")
+            r:ClearAllPoints();
+            r:SetPoint("TOP", 0, 4);
+            break
+        end
+    end
+
+    local font, size, flag = frameCount:GetFont()
+
+    frameCount:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CountFontSize, "OUTLINE")
+    frameCount:ClearAllPoints();
+    frameCount:SetPoint("BOTTOMRIGHT", -2, 2);
+
+    local frameIcon = ret.icon;
+    local frameBorder = ret.border;
+
+    frameIcon:SetTexCoord(.08, .92, .08, .92)
+    frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
+    frameBorder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+
+    ret.alert = false;
+
+    if not ret:GetScript("OnEnter") then
+        ret:SetScript("OnEnter", function(s)
+            if s:GetID() > 0 then
+                GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                if s.type == 1 then
+                    GameTooltip:SetUnitBuffByAuraInstanceID(s.unit, s:GetID(), s.filter);
+                else
+                    GameTooltip:SetUnitDebuffByAuraInstanceID(s.unit, s:GetID(), s.filter);
+                end
+            end
+        end)
+        ret:SetScript("OnLeave", function()
+            GameTooltip:Hide();
+        end)
+    end
+
+    ret:EnableMouse(false);
+
+    return ret;
+end
+
+local function creatframe()
+    local object = CreateFrame("Frame", nil);
+
+    object:EnableMouse(false);
+    object.aggro1 = object:CreateFontString(nil, "OVERLAY");
+    object.aggro2 = object:CreateFontString(nil, "OVERLAY");
+    object.healer = object:CreateFontString(nil, "OVERLAY");
+    object.casticon = CreateFrame("Frame", nil, object, "asNamePlatesBuffFrameTemplate");
+    object.casticon.timetext = object.casticon:CreateFontString(nil, "OVERLAY");
+    object.CCdebuff = CreateFrame("Frame", nil, object, "asNamePlatesBuffFrameTemplate");
+    object.BarColor = object:CreateTexture(nil, "OVERLAY", "asColorTextureTemplate", 2);
+    object.healthtext = object:CreateFontString(nil, "OVERLAY");
+    object.buffList = {};
+
+    for i = 1, ns.ANameP_MaxDebuff do
+        object.buffList[i] = createDebuffFrame(object);
+    end
+
+    if not object.CCdebuff:GetScript("OnEnter") then
+        object.CCdebuff:SetScript("OnEnter", function(s)
+            if s:GetID() > 0 then
+                GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                GameTooltip:SetUnitDebuffByAuraInstanceID(s.unit, s:GetID(), s.filter);
+            end
+        end)
+        object.CCdebuff:SetScript("OnLeave", function()
+            GameTooltip:Hide();
+        end)
+    end
+
+    object.CCdebuff:EnableMouse(false);
+
+    local frameIcon = object.CCdebuff.icon;
+    local frameBorder = object.CCdebuff.border;
+
+    frameIcon:SetTexCoord(.08, .92, .08, .92);
+    frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
+    frameBorder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+
+
+    object.casticon:EnableMouse(false);
+
+    object.casticon.timetext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
+    object.casticon.timetext:ClearAllPoints();
+    object.casticon.timetext:SetPoint("CENTER", object.casticon, "CENTER", 0, 0)
+
+    if not object.casticon:GetScript("OnEnter") then
+        object.casticon:SetScript("OnEnter", function(s)
+            if s.castspellid and s.castspellid > 0 then
+                GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                GameTooltip:SetSpellByID(s.castspellid);
+            end
+        end)
+        object.casticon:SetScript("OnLeave", function()
+            GameTooltip:Hide();
+        end)
+    end
+
+    frameIcon = object.casticon.icon;
+    frameBorder = object.casticon.border;
+
+    frameIcon:SetTexCoord(.08, .92, .08, .92);
+    frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
+    frameBorder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+
+    object.healthtext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
+
+    return object;
+end
+
+local function initpools()
+    for i = 1, 50 do
+        local unit = "nameplate" .. i;
+        objects[unit] = creatframe();
+    end
+end
+
+function ns.getasframe(unit)
+    if objects[unit] == nil then
+        objects[unit] = creatframe();
+    end
+    return objects[unit];
+end
+
+initpools();
