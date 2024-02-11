@@ -3,6 +3,8 @@ local _, ns = ...;
 local DangerousSpellList = {};
 local tanklist = {};
 
+ns.CastingUnits = {};
+
 -- 탱커 처리부
 function ns.updateTankerList()
     local _, RTB_ZoneType = IsInInstance();
@@ -63,9 +65,9 @@ local function ACRB_updateCasting(asframe, unit)
 
                 if DangerousSpellList[spellid] then
                     if DangerousSpellList[spellid] == "interrupt" or not notInterruptible then
-                        ns.lib.PixelGlow_Start(castFrame, {0, 1, 0.32, 1});
+                        ns.lib.PixelGlow_Start(castFrame, { 0, 1, 0.32, 1 });
                     else
-                        ns.lib.PixelGlow_Start(castFrame, {0.5, 0.5, 0.5, 1});
+                        ns.lib.PixelGlow_Start(castFrame, { 0.5, 0.5, 0.5, 1 });
                     end
                 else
                     ns.lib.PixelGlow_Stop(castFrame);
@@ -82,7 +84,7 @@ local function ACRB_updateCasting(asframe, unit)
     return false;
 end
 
-local function isFaction(unit)
+function ns.isFaction(unit)
     if UnitIsUnit("player", unit) then
         return false;
     else
@@ -103,14 +105,8 @@ local function ARCB_HideCast(asframe)
     end
 end
 
-local function CheckCasting(nameplate)
-    if not nameplate or nameplate:IsForbidden() then
-        return;
-    end
-
-    local unit = nameplate.UnitFrame.unit;
-
-    if isFaction(unit) then
+local function CheckCasting(unit)
+    if ns.isFaction(unit) then
         local name = UnitCastingInfo(unit);
         if not name then
             name = UnitChannelInfo(unit);
@@ -119,12 +115,12 @@ local function CheckCasting(nameplate)
         if name then
             -- 탱커 부터
             for _, framename in pairs(tanklist) do
-				local asframe;
-				if IsInRaid() then
-                	asframe = ns.asraid[framename];
-				else
-					asframe = ns.asparty[framename];
-				end
+                local asframe;
+                if IsInRaid() then
+                    asframe = ns.asraid[framename];
+                else
+                    asframe = ns.asparty[framename];
+                end
                 if ACRB_updateCasting(asframe, unit) then
                     return;
                 end
@@ -147,8 +143,11 @@ local function CheckCasting(nameplate)
                     end
                 end
             end
+            return false;
         end
     end
+
+    return true;
 end
 
 function ns.ACRB_CheckCasting()
@@ -157,10 +156,11 @@ function ns.ACRB_CheckCasting()
     end
 
     if (IsInGroup()) then
-        for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-            local nameplate = v;
-            if (nameplate) then
-                CheckCasting(nameplate);
+        for unit, _ in pairs(ns.CastingUnits) do
+            local notcasting = CheckCasting(unit);
+
+            if notcasting then
+                ns.CastingUnits[unit] = nil;
             end
         end
 
@@ -177,7 +177,6 @@ function ns.ACRB_CheckCasting()
                 end
             end
         end
-
     end
 end
 

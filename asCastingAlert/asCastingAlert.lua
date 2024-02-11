@@ -1,6 +1,6 @@
 ﻿---설정부
 local ACTA_UpdateRate = 0.1 -- Check할 주기
-local ACTA_MaxShow = 3 -- 최대로 보여줄 개수
+local ACTA_MaxShow = 3      -- 최대로 보여줄 개수
 local ACTA_FontSize = 18;
 local ACTA_X = 0;
 local ACTA_Y = -80;
@@ -20,14 +20,9 @@ end
 
 local DangerousSpellList = {};
 local showlist = {};
+local CastingUnits = {};
 
-local function CheckCasting(nameplate)
-    if not nameplate or nameplate:IsForbidden() then
-        return false;
-    end
-
-    local unit = nameplate.UnitFrame.unit;
-
+local function CheckCasting(unit)
     if isFaction(unit) and UnitIsUnit(unit .. "target", "player") and not UnitIsUnit(unit, "target") then
         local name, _, texture, _, endTime, _, _, notInterruptible, spellid = UnitCastingInfo(unit);
         if not name then
@@ -49,10 +44,14 @@ local function CheckCasting(nameplate)
                     end
                 end
 
-                tinsert(showlist, {type, remain, texture, spellid});
+                tinsert(showlist, { type, remain, texture, spellid });
+
+                return false;
             end
         end
     end
+
+    return true;
 end
 
 local function Comparison(AIndex, BIndex)
@@ -75,7 +74,7 @@ local function ShowCasting()
         local spellid = v[4];
 
         ACTA.cast[currshow]:SetText("|T" .. texture .. ":0|t " .. format("%.1f", max(remain, 0)) .. " |T" .. texture ..
-                                        ":0|t");
+            ":0|t");
 
         ACTA.cast[currshow].castspellid = spellid;
 
@@ -100,12 +99,12 @@ local function ShowCasting()
 end
 
 local function ACTA_OnUpdate()
-
     showlist = {};
-    for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-        local nameplate = v;
-        if (nameplate) then
-            CheckCasting(nameplate);
+    for unit, _ in pairs(CastingUnits) do
+        local notcasting = CheckCasting(unit);
+
+        if notcasting then
+            CastingUnits[unit] = nil;
         end
     end
 
@@ -118,7 +117,6 @@ local function scanDBM()
     DangerousSpellList = {};
     if DBMobj.Mods then
         for i, mod in ipairs(DBMobj.Mods) do
-
             if mod.announces then
                 for k, obj in pairs(mod.announces) do
                     if obj.spellId and obj.announceType then
@@ -147,6 +145,15 @@ local function NewMod(self, ...)
     C_Timer.After(0.25, scanDBM);
 end
 
+local function ACTA_OnEvent(self, event, arg1, arg2, arg3, arg4)
+    local unit = arg1;
+    local spellid = arg3;
+
+    if unit and spellid and isFaction(unit) and string.find(unit, "nameplate") then
+        CastingUnits[unit] = true;        
+    end
+end
+
 local function initAddon()
     ACTA = CreateFrame("Frame", nil, UIParent);
     ACTA.cast = {};
@@ -163,7 +170,7 @@ local function initAddon()
 
         ACTA.cast[i]:EnableMouse(false);
 
-		
+
         if not ACTA.cast[i]:GetScript("OnEnter") then
             ACTA.cast[i]:SetScript("OnEnter", function(s)
                 if s.castspellid and s.castspellid > 0 then
@@ -175,11 +182,16 @@ local function initAddon()
                 GameTooltip:Hide();
             end)
         end
-		
+
         ACTA.cast[i]:EnableMouse(false);
-		ACTA.cast[i]:SetMouseMotionEnabled(true);
+        ACTA.cast[i]:SetMouseMotionEnabled(true);
         ACTA.cast[i]:Hide();
     end
+
+
+    ACTA:SetScript("OnEvent", ACTA_OnEvent);
+    ACTA:RegisterEvent("UNIT_SPELLCAST_START");
+    ACTA:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");
 
     -- 주기적으로 Callback
     C_Timer.NewTicker(ACTA_UpdateRate, ACTA_OnUpdate);

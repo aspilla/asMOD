@@ -53,8 +53,8 @@ local function ACRB_InitList()
     if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
         spec = 1;
     end
-       
-    
+
+
     if spec then
         listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
     end
@@ -247,7 +247,7 @@ local function ACRB_setupFrame(frame)
 
     local function layoutcooldown(f)
         f.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-        f.remain:SetFont(STANDARD_TEXT_FONT, fontsize + 2, "OUTLINE")
+        f.remain:SetFont(STANDARD_TEXT_FONT, fontsize + 1, "OUTLINE")
 
         for _, r in next, { f.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
@@ -665,7 +665,7 @@ end
 
 local bfirst = true;
 
-local function ACRB_OnEvent(self, event, arg1)
+local function ACRB_OnEvent(self, event, arg1, arg2, arg3)
     if bfirst then
         ns.SetupOptionPanels();
         ns.SetupAll(true);
@@ -674,6 +674,12 @@ local function ACRB_OnEvent(self, event, arg1)
 
     if event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
         ACRB_updatePartyAllAura(true, true);
+    elseif event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" then
+        local unit = arg1;
+        local spellid = arg3;
+        if unit and spellid and ns.isFaction(unit) and string.find(unit, "nameplate") then
+            ns.CastingUnits[unit] = true;
+        end
     elseif (event == "PLAYER_ENTERING_WORLD") then
         ns.hasValidPlayer = true;
         local bloaded = LoadAddOn("DBM-Core");
@@ -681,7 +687,7 @@ local function ACRB_OnEvent(self, event, arg1)
             hooksecurefunc(DBM, "NewMod", ns.NewMod)
         end
         ns.updateTankerList();
-    elseif  (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED")  then
+    elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED") then
         ns.SetupAll(true);
         ns.UpdateDispellable();
     elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
@@ -695,6 +701,8 @@ local function ACRB_OnEvent(self, event, arg1)
 end
 
 ACRB_mainframe:SetScript("OnEvent", ACRB_OnEvent)
+ACRB_mainframe:RegisterEvent("UNIT_SPELLCAST_START");
+ACRB_mainframe:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");
 ACRB_mainframe:RegisterEvent("GROUP_ROSTER_UPDATE");
 ACRB_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 ACRB_mainframe:RegisterEvent("PLAYER_LEAVING_WORLD");

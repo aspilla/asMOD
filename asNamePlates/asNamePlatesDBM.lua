@@ -6,7 +6,8 @@ function asNamePlatesDBM_callback(event, id, ...)
     if event == "DBM_TimerStart" then
         local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
         
-        if ns.options.ANameP_ShowDBM and type == "cd"  and string.find(id, "cdnp") or string.find(id, "nextnp") then
+        --if ns.options.ANameP_ShowDBM and type == "cd"  and string.find(id, "cdnp") or string.find(id, "nextnp") then
+        if ns.options.ANameP_ShowDBM and type == "cd" then
             ns.dbm_event_list[id] = {msg, timer, GetTime(), icon, 0, colorId, spellId, guid};
         end
     elseif event == "DBM_TimerStop" then

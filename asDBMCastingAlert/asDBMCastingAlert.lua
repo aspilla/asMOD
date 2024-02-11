@@ -32,7 +32,6 @@ local ADVA = nil;
 local timer = nil;
 local DangerousSpellList = {};
 local CastingUnits = {};
-local VoiceAlertTime = {};
 
 local function asCooldownFrame_Clear(self)
 	self:Clear();
@@ -73,6 +72,7 @@ local function Comparator(a, b)
 end
 
 local castingInfos;
+local prev_count = 0;
 
 local function ADCA_OnUpdate()
 	if castingInfos == nil then
@@ -80,6 +80,8 @@ local function ADCA_OnUpdate()
 	else
 		castingInfos:Clear();
 	end
+
+	local alert_name = nil;
 
 	for unit, needtosound in pairs(CastingUnits) do
 		if UnitExists(unit) then
@@ -90,45 +92,21 @@ local function ADCA_OnUpdate()
 					unit);
 			end
 
-			if name then
-				if DangerousSpellList[spellId] then
-					if needtosound and VoiceAlertTime[name] and VoiceAlertTime[name] > startTimeMS then
-						needtosound = false;
-						CastingUnits[unit] = false;
-					end
+			if name and DangerousSpellList[spellId] then
+				-- Handle cooldowns						
+				local start = startTimeMS / 1000;
+				local duration = (endTimeMS - startTimeMS) / 1000;
+				local expirationTime = endTimeMS / 1000;
 
-					if ns.options.PlaySound and needtosound == true then
-						if ns.options.SoundOnlyforInterrupt then
-							if DangerousSpellList[spellId] == "interrupt" or not notInterruptible then
-								C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback,
-									CONFIG_SOUND_SPEED, ns.options.SoundVolume);
-								VoiceAlertTime[name] = endTimeMS + (CONFIG_VOICE_DELAY * 1000);
-							end
-						else
-							C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback,
-								CONFIG_SOUND_SPEED, ns.options.SoundVolume);
-							VoiceAlertTime[name] = endTimeMS;
-						end
-
-						CastingUnits[unit] = false;
-					end
-
-
-					-- Handle cooldowns						
-					local start = startTimeMS / 1000;
-					local duration = (endTimeMS - startTimeMS) / 1000;
-					local expirationTime = endTimeMS / 1000;
-
-					castingInfos[unit] = {
-						icon = texture,
-						name = name,
-						start = start,
-						duration = duration,
-						expiration = expirationTime,
-						spellId = spellId,
-						notInterruptible = notInterruptible
-					}
-				end
+				castingInfos[unit] = {
+					icon = texture,
+					name = name,
+					start = start,
+					duration = duration,
+					expiration = expirationTime,
+					spellId = spellId,
+					notInterruptible = notInterruptible
+				}
 			else
 				CastingUnits[unit] = nil;
 			end
@@ -169,8 +147,16 @@ local function ADCA_OnUpdate()
 
 				if DangerousSpellList[castingInfo.spellId] == "interrupt" or not castingInfo.notInterruptible then
 					frame:SetStatusBarColor(0, 1, 0);
+
+					if ns.options.SoundOnlyforInterrupt and alert_name == nil then
+						alert_name = castingInfo.name;
+					end
 				else
 					frame:SetStatusBarColor(0.6, 0.6, 0.6);
+				end
+
+				if not ns.options.SoundOnlyforInterrupt and alert_name == nil then
+					alert_name = castingInfo.name;
 				end
 
 				local targetunit = unit .. "target";
@@ -219,10 +205,16 @@ local function ADCA_OnUpdate()
 
 				if DangerousSpellList[castingInfo.spellId] == "interrupt" or not castingInfo.notInterruptible then
 					frameBorder:SetVertexColor(0, 1, 0);
+					if ns.options.SoundOnlyforInterrupt and alert_name == nil then
+						alert_name = castingInfo.name;
+					end
 				else
 					frameBorder:SetVertexColor(0.3, 0.3, 0.3);
 				end
 
+				if not ns.options.SoundOnlyforInterrupt and alert_name == nil then
+					alert_name = castingInfo.name;
+				end
 
 				frame:Show();
 			end
@@ -237,6 +229,21 @@ local function ADCA_OnUpdate()
 		frame = ADVA.frames[j];
 		frame.start = 0;
 		frame:Hide();
+	end
+
+	if ns.options.PlaySound and alert_name and prev_count == 0 then
+		if not ns.options.TTS then
+			PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\alert.mp3", "DIALOG");
+		else
+			C_VoiceChat.SpeakText(CONFIG_VOICE_ID, alert_name, Enum.VoiceTtsDestination.LocalPlayback,
+				CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+		end
+	end
+
+	if alert_name then
+		prev_count = 1;
+	else
+		prev_count = 0;
 	end
 end
 
@@ -254,7 +261,6 @@ local function ADCA_OnEvent(self, event, arg1, arg2, arg3, arg4)
 		local spellid = arg3;
 		if unit and spellid and isFaction(unit) and string.find(unit, "nameplate") then
 			CastingUnits[unit] = true;
-			ADCA_OnUpdate();
 		end
 	end
 end

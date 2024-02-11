@@ -7,6 +7,7 @@
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
+				
 			</Layer>
 			<Layer level="OVERLAY">
 				<Texture name="$parentBorder" parentKey="border" file="Interface\Buttons\UI-Debuff-Overlays">
@@ -22,7 +23,16 @@
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
-				</Texture>					
+				</Texture>
+				<FontString name="$parentRemain" parentKey="remain" inherits="NumberFontNormalSmall" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset>
+								<AbsDimension x="0" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>				
 			</Layer>
 		</Layers>
 		<Frames>

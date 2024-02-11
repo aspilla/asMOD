@@ -1095,7 +1095,7 @@ local function removeNamePlate(namePlateUnitToken)
         asframe:UnregisterEvent("UNIT_SPELLCAST_STOP");
         asframe:UnregisterEvent("UNIT_SPELLCAST_FAILED");
         asframe:SetScript("OnEvent", nil);
-    
+
         if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
             if asframe.alerthealthbar then
                 ns.lib.PixelGlow_Stop(namePlateFrameBase.UnitFrame.healthBar);
@@ -1155,8 +1155,8 @@ local function addNamePlate(namePlateUnitToken)
     local asframe = ns.getasframe(unit);
     asframe.parent = namePlateFrameBase;
 
-    asframe:SetParent(namePlateFrameBase);
-    asframe:SetFrameLevel(200);
+    asframe:ClearAllPoints();
+    asframe:SetParent(healthbar);
 
     if not asframe.buffList then
         asframe.buffList = {};
@@ -1420,7 +1420,7 @@ end
 local function asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken)
     local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
     if namePlateFrameBase and not namePlateFrameBase:IsForbidden() then
-        addNamePlate(namePlateUnitToken);        
+        addNamePlate(namePlateUnitToken);
         if namePlateFrameBase.asNamePlate ~= nil then
             updateTargetNameP(namePlateFrameBase.asNamePlates);
             updateUnitAuras(namePlateUnitToken);
@@ -1637,7 +1637,7 @@ local function initAddon()
 
         local pframe = C_NamePlate.GetNamePlateForUnit("target", issecure())
 
-        if pframe and pframe.asNamePlates ~= nil and frame.BuffFrame.unit == pframe.asNamePlates.unit then            
+        if pframe and pframe.asNamePlates ~= nil and frame.BuffFrame.unit == pframe.asNamePlates.unit then
             updateTargetNameP(pframe.asNamePlates);
         end
     end)
