@@ -129,7 +129,8 @@ function ns.Button:checkBuffList()
 
         if aura then
             count = count + 1;
-            if self.icon == nil then
+            -- 주사위 최대 버프 시간을 우선으로 보이자
+            if self.icon == nil or aura.expirationTime > (self.start + self.duration)  then
                 self.icon = aura.icon;
                 self.start = aura.expirationTime - aura.duration
                 self.duration = aura.duration;

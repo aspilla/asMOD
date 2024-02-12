@@ -103,7 +103,7 @@ function asDBMTimer_callback(event, id, ...)
 	if event == "DBM_TimerStart" then
 		local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
 
-		if ns.options.HideNamePlatesCooldown and type == "cd" and string.find(id, "cdnp") or string.find(id, "nextnp") then
+		if ns.options.HideNamePlatesCooldown and type == "cd" then
 			return;
 		end
 		if dbm_event_list[id] and dbm_event_list[id].button_id then
