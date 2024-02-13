@@ -19,7 +19,7 @@ function ns.SetupOptionPanels()
 
         local cvar_name = setting:GetVariable()
         local variable = get_variable_from_cvar_name(cvar_name)
-        AFUF_Options[variable] = value;
+        ARDY_Options[variable] = value;
         ns.options[variable] = value;
         ReloadUI();
     end
@@ -28,22 +28,22 @@ function ns.SetupOptionPanels()
 
 
 
-    if AFUF_Options == nil or AFUF_Options.version ~= Options_Default.version then
-        AFUF_Options = {};
-        AFUF_Options = CopyTable(Options_Default);
+    if ARDY_Options == nil or ARDY_Options.version ~= Options_Default.version then
+        ARDY_Options = {};
+        ARDY_Options = CopyTable(Options_Default);
     end
-    ns.options = CopyTable(AFUF_Options);
+    ns.options = CopyTable(ARDY_Options);
 
     for variable, _ in pairs(Options_Default) do
         if variable ~= "version" then
             local name = variable;
             local cvar_name = "asReady_" .. variable;
             local tooltip = ""
-            if AFUF_Options[variable] == nil then
-                AFUF_Options[variable] = Options_Default[variable];
+            if ARDY_Options[variable] == nil then
+                ARDY_Options[variable] = Options_Default[variable];
                 ns.options[variable] = Options_Default[variable];
             end
-            local defaultValue = AFUF_Options[variable];
+            local defaultValue = ARDY_Options[variable];
 
             local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue)
             Settings.CreateCheckBox(category, setting, tooltip)

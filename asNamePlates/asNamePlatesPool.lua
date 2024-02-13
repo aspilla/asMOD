@@ -53,8 +53,8 @@ local function createDebuffFrame(parent)
     return ret;
 end
 
-local function creatframe()
-    local object = CreateFrame("Frame", nil);
+function ns.creatframe(parent)
+    local object = CreateFrame("Frame", nil, parent);
 
     object:EnableMouse(false);
     object.aggro1 = object:CreateFontString(nil, "OVERLAY");
@@ -123,18 +123,39 @@ local function creatframe()
     return object;
 end
 
+local point = 0;
+
 local function initpools()
-    for i = 1, 50 do
-        local unit = "nameplate" .. i;
-        objects[unit] = creatframe();
+    for i = 1, 50 do        
+        objects[i] = ns.creatframe();
     end
 end
 
-function ns.getasframe(unit)
-    if objects[unit] == nil then
-        objects[unit] = creatframe();
+function ns.getasframe()
+    
+    point = point + 1;
+
+    if objects[point] == nil then
+        objects[point] = ns.creatframe();
+        print("create")
     end
-    return objects[unit];
+
+    local ret = objects[point];
+    objects[point] = nil;
+        
+    return ret;
+end
+
+function ns.freeasframe(asframe)
+
+    if point == 0 then
+        print ("test");
+        return;
+    end
+
+    objects[point] = asframe;
+    point = point - 1;    
+    return;
 end
 
 initpools();
