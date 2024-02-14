@@ -53,8 +53,8 @@ local function createDebuffFrame(parent)
     return ret;
 end
 
-function ns.creatframe(parent)
-    local object = CreateFrame("Frame", nil, parent);
+local function creatframe()
+    local object = CreateFrame("Frame", nil);
 
     object:EnableMouse(false);
     object.aggro1 = object:CreateFontString(nil, "OVERLAY");
@@ -65,6 +65,7 @@ function ns.creatframe(parent)
     object.CCdebuff = CreateFrame("Frame", nil, object, "asNamePlatesBuffFrameTemplate");
     object.BarColor = object:CreateTexture(nil, "OVERLAY", "asColorTextureTemplate", 2);
     object.healthtext = object:CreateFontString(nil, "OVERLAY");
+    object.resourcetext = object:CreateFontString(nil, "OVERLAY");
     object.buffList = {};
 
     for i = 1, ns.ANameP_MaxDebuff do
@@ -124,38 +125,34 @@ function ns.creatframe(parent)
 end
 
 local point = 0;
+local CONFIG_POOL_SIZE = 20;
 
 local function initpools()
-    for i = 1, 50 do        
-        objects[i] = ns.creatframe();
+    for i = 1, CONFIG_POOL_SIZE do
+        objects[i] = creatframe();
     end
 end
 
 function ns.getasframe()
-    
     point = point + 1;
 
     if objects[point] == nil then
-        objects[point] = ns.creatframe();
-        print("create")
+        objects[point] = creatframe();
     end
 
     local ret = objects[point];
     objects[point] = nil;
-        
+
     return ret;
 end
 
 function ns.freeasframe(asframe)
-
     if point == 0 then
-        print ("test");
         return;
     end
 
     objects[point] = asframe;
-    point = point - 1;    
-    return;
+    point = point - 1;
 end
 
 initpools();

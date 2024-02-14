@@ -233,7 +233,7 @@ local function ADCA_OnUpdate()
 
 	if ns.options.PlaySound and alert_name and prev_count == 0 then
 		if not ns.options.TTS then
-			PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\alert.mp3", "DIALOG");
+			PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\alert.mp3", "MASTER");
 		else
 			C_VoiceChat.SpeakText(CONFIG_VOICE_ID, alert_name, Enum.VoiceTtsDestination.LocalPlayback,
 				CONFIG_SOUND_SPEED, ns.options.SoundVolume);

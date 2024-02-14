@@ -1,6 +1,6 @@
 local asMOD;
 local asMOD_UIScale = 0.75;
-local asMOD_CurrVersion = 240114;
+local asMOD_CurrVersion = 240212;
 local bAction = false;
 asMOD_t_position = {};
 
@@ -84,9 +84,7 @@ local function asMOD_Setup()
 		else
 			SetCVar("uiScale", asMOD_UIScale)
 		end
-	end
-
-	LoadAddOn("Skada")
+	end	
 
 	print("[asMOD] 재사용 대기시간을 보이게 합니다.");
 	SetCVar("countdownForCooldowns", "1");
@@ -151,6 +149,7 @@ local function asMOD_Setup()
 
 	bload = LoadAddOn("DBM-Core")
 	if bload then
+
 		DBM_AllSavedOptions = {
 			["Default"] = {
 				["DontShowFarWarnings"] = true,
@@ -170,6 +169,7 @@ local function asMOD_Setup()
 				["SpamSpecInformationalOnly"] = false,
 				["WorldBuffAlert"] = false,
 				["SpamSpecRoledispel"] = false,
+				["DisableMusic"] = false,
 				["ShowGuildMessages"] = false,
 				["ShowAllVersions"] = true,
 				["SpecialWarningSound3"] = "Interface\\AddOns\\DBM-Core\\sounds\\AirHorn.ogg",
@@ -271,7 +271,7 @@ local function asMOD_Setup()
 				["SpamSpecRoledefensive"] = false,
 				["RangeFrameRadarY"] = 0.9783453345298767,
 				["OverrideBossAnnounce"] = false,
-				["CoreSavedRevision"] = 20231110040824,
+				["CoreSavedRevision"] = 20240208174317,
 				["RangeFrameX"] = -229.7040557861328,
 				["NPIconGrowthDirection"] = "CENTER",
 				["RangeFrameY"] = 76.74076080322266,
@@ -291,6 +291,8 @@ local function asMOD_Setup()
 				["SpecialWarningX"] = 0,
 				["DontShowPT2"] = false,
 				["MoviesSeen"] = {
+					[1003] = true,
+					["2238아미드랏실의 심장"] = true,
 				},
 				["ShowQueuePop"] = true,
 				["SpecialWarningFlashCol4"] = {
@@ -312,8 +314,9 @@ local function asMOD_Setup()
 				["InfoFrameY"] = 18.01542472839356,
 				["SpecialWarningSound"] = 569200,
 				["WarningIconRight"] = false,
-				["UseSoundChannel"] = "Dialog",
+				["UseSoundChannel"] = "Master",
 				["ShowRespawn"] = true,
+				["HideMovieNonInstanceAnywhere"] = false,
 				["DontAutoGossip"] = false,
 				["VPReplacesSA3"] = true,
 				["AlwaysShowSpeedKillTimer2"] = false,
@@ -350,67 +353,73 @@ local function asMOD_Setup()
 				["VPDontMuteSounds"] = false,
 				["WarningColors"] = {
 					{
-						["r"] = 0.4117647409439087,
-						["g"] = 0.8000000715255737,
 						["b"] = 0.9411765336990356,
+						["g"] = 0.8000000715255737,
+						["r"] = 0.4117647409439087,
 					}, -- [1]
 					{
-						["r"] = 0.9490196704864502,
-						["g"] = 0.9490196704864502,
 						["b"] = 0,
+						["g"] = 0.9490196704864502,
+						["r"] = 0.9490196704864502,
 					}, -- [2]
 					{
-						["r"] = 1,
-						["g"] = 0.501960813999176,
 						["b"] = 0,
+						["g"] = 0.501960813999176,
+						["r"] = 1,
 					}, -- [3]
 					{
-						["r"] = 1,
-						["g"] = 0.1019607931375504,
 						["b"] = 0.1019607931375504,
+						["g"] = 0.1019607931375504,
+						["r"] = 1,
 					}, -- [4]
 				},
 				["SWarningAlphabetical"] = true,
 				["BlockNoteShare"] = false,
 				["DontPlaySpecialWarningSound"] = false,
+				["NPIconSize"] = 30,
 				["RangeFrameRadarPoint"] = "BOTTOMRIGHT",
 				["DontShowInfoFrame"] = true,
+				["DontShowNameplateIconsCD"] = true,
+				["InfoFrameLocked"] = true,
+				["NPIconYOffset"] = 0,
 				["MovieFilter2"] = "Never",
+				["AlwaysPlayVoice"] = false,
+				["WarningX"] = 0,
 				["DontRestoreRange"] = false,
-				["FilterDispel"] = true,
+				["ArrowPoint"] = "TOP",
 				["SpecialWarningFlashCount3"] = 3,
 				["RoleSpecAlert"] = true,
 				["WhisperStats"] = false,
 				["SilentMode"] = false,
-				["AFKHealthWarning"] = false,
-				["RaidWarningSound"] = 566558,
+				["SpecialWarningFlash1"] = true,
+				["SpecialWarningVibrate3"] = true,
 				["SpecialWarningFlashAlph5"] = 0.5,
 				["SpecialWarningDuration2"] = 1.5,
-				["DontShowUserTimers"] = false,
-				["WarningFontSize"] = 16.47568893432617,
+				["FilterTInterruptCooldown"] = true,
+				["SpecialWarningSound2"] = 543587,
 				["ShowEngageMessage"] = false,
 				["RangeFrameSound1"] = "none",
-				["RangeFrameUpdates"] = "Average",
-				["FilterTTargetFocus"] = true,
+				["EventSoundMusicCombined"] = false,
+				["WarningFontSize"] = 16.47568893432617,
 				["EventSoundVictory2"] = "Interface\\AddOns\\DBM-Core\\sounds\\Victory\\SmoothMcGroove_Fanfare.ogg",
 				["AutoExpandSpellGroups"] = false,
 				["LastRevision"] = 0,
 				["GUIPoint"] = "CENTER",
 				["SettingsMessageShown"] = true,
-				["DontRestoreIcons"] = false,
-				["InfoFrameFontSize"] = 12,
+				["SpamSpecRoletaunt"] = false,
+				["WarningFont"] = "standardFont",
 				["AutologBosses"] = false,
-				["DontShowTimersWithNameplates"] = true,
-				["DontSetIcons"] = false,
 				["AutoAcceptGuildInvite"] = false,
-				["WarningDuration2"] = 1.5,
-				["CountdownVoice"] = "Corsica",
-				["ShowWAKeys"] = true,
+				["DontSetIcons"] = false,
+				["FilterTrashWarnings2"] = true,
 				["SpecialWarningFont"] = "standardFont",
-				["CountdownVoice3"] = "Smooth",
+				["CountdownVoice"] = "Corsica",
+				["AdvancedAutologBosses"] = false,
 				["SpamSpecRoleswitch"] = false,
+				["CountdownVoice3"] = "Smooth",
 				["DontShowSpecialWarningText"] = false,
 				["DisableStatusWhisper"] = false,
+				["AutoRespond"] = true,
 				["EventDungMusicMythicFilter"] = false,
 				["GUIY"] = -0.0002178665745304897,
 				["RangeFrameFrames"] = "radar",
@@ -418,56 +427,58 @@ local function asMOD_Setup()
 				["DontShowEventTimers"] = false,
 				["SpecialWarningIcon"] = true,
 				["InfoFrameFont"] = "standardFont",
-				["SpecialWarningFlash2"] = true,
+				["SpecialWarningFlashDura5"] = 1,
 				["GroupOptionsBySpell"] = true,
 				["FilterTankSpec"] = true,
 				["HideTooltips"] = false,
-				["SpecialWarningVibrate5"] = true,
-				["OverrideBossTimer"] = false,
+				["EventSoundWipe"] = "None",
+				["RLReadyCheckSound"] = true,
+				["DontSendBossGUIDs"] = true,
 				["DontShowTargetAnnouncements"] = true,
-				["AutoReplySound"] = true,
-				["SpecialWarningFlashCount5"] = 3,
+				["InfoFrameLines"] = 0,
 				["ArrowPosY"] = -150,
 				["SpecialWarningFlashDura1"] = 0.3,
 				["DontShowSpecialWarningFlash"] = false,
+				["SpecialWarningFlashCount5"] = 3,
+				["AutoReplySound"] = true,
 				["WorldBossNearAlert"] = false,
-				["InfoFrameLines"] = 0,
-				["DontSendBossGUIDs"] = true,
-				["RLReadyCheckSound"] = true,
-				["EventSoundWipe"] = "None",
-				["ChosenVoicePack2"] = "None",
+				["OverrideBossTimer"] = false,
+				["SpecialWarningVibrate5"] = true,
+				["DebugSound"] = true,
 				["AutoAcceptFriendInvite"] = false,
-				["SpecialWarningFlashDura5"] = 1,
+				["ShowWAKeys"] = true,
 				["SpecialWarningFlashCount1"] = 1,
 				["PullVoice"] = "Corsica",
 				["SpecialWarningSound5"] = 554236,
 				["DontSendYells"] = false,
 				["SpamSpecRoleinterrupt"] = false,
-				["AdvancedAutologBosses"] = false,
-				["FilterTrashWarnings2"] = true,
+				["SpecialWarningFlash2"] = true,
+				["WarningDuration2"] = 1.5,
 				["SpecialWarningFlash3"] = true,
-				["AutoRespond"] = true,
+				["DontShowTimersWithNameplates"] = true,
 				["Enabled"] = true,
-				["WarningFont"] = "standardFont",
-				["SpamSpecRoletaunt"] = false,
-				["EventSoundMusicCombined"] = false,
-				["SpecialWarningSound2"] = 543587,
-				["FilterTInterruptCooldown"] = true,
-				["SpecialWarningVibrate3"] = true,
-				["SpecialWarningFlash1"] = true,
+				["InfoFrameFontSize"] = 12,
+				["DontRestoreIcons"] = false,
+				["FilterTTargetFocus"] = true,
+				["RangeFrameUpdates"] = "Average",
+				["DontShowUserTimers"] = false,
+				["RaidWarningSound"] = 566558,
+				["HideMovieDuringFight"] = true,
 				["StripServerName"] = true,
-				["ArrowPoint"] = "TOP",
-				["WarningX"] = 0,
-				["AlwaysPlayVoice"] = false,
-				["NPIconYOffset"] = 0,
-				["InfoFrameLocked"] = true,
-				["DontShowNameplateIconsCD"] = true,
-				["NPIconSize"] = 30,
+				["FilterDispel"] = true,
+				["FilterCrowdControl"] = true,
+				["HideMovieOnlyAfterSeen"] = true,
+				["HideMovieInstanceAnywhere"] = true,
+				["AFKHealthWarning"] = false,
+				["ChosenVoicePack2"] = "None",
+				["DisableAmbiance"] = false,
 			},
 		}
 		DBM_MinimapIcon = {
 			["minimapPos"] = 249.9876931591084,
+			["showInCompartment"] = true,
 		}
+		
 
 
 		DBT_AllPersistentOptions = {

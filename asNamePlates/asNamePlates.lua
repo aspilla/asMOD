@@ -28,7 +28,6 @@ local ColorLevel = {
 };
 
 ns.ANameP_ShowList = nil;
-local ANameP_Resourcetext = nil;
 local debuffs_per_line = ns.ANameP_DebuffsPerLine;
 local playerbuffposition = ns.ANameP_PlayerBuffY;
 ns.options = CopyTable(ANameP_Options_Default);
@@ -569,7 +568,7 @@ local function updateTargetNameP(self)
     self:ClearAllPoints();
     if UnitIsUnit(unit, "player") then
         if self.downbuff then
-            self:SetPoint("TOPLEFT", healthBar, "BOTTOMLEFT", 0, playerbuffposition);
+            self:SetPoint("TOPLEFT", ClassNameplateManaBarFrame, "BOTTOMLEFT", 0, playerbuffposition);
         else
             self:SetPoint("BOTTOMLEFT", healthBar, "TOPLEFT", 0, base_y);
         end
@@ -1085,9 +1084,11 @@ local function removeNamePlate(namePlateFrameBase)
         asframe.aggro2:Hide();
         asframe.CCdebuff:Hide();
         asframe.healthtext:Hide();
+        asframe.resourcetext:Hide();
         asframe.casticon:Hide();
         asframe.healer:Hide();
         asframe.BarColor:Hide();
+
         asframe:Hide();
         asframe:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
         asframe:UnregisterEvent("PLAYER_TARGET_CHANGED");
@@ -1101,6 +1102,7 @@ local function removeNamePlate(namePlateFrameBase)
         asframe:UnregisterEvent("UNIT_SPELLCAST_FAILED");
         asframe:SetScript("OnEvent", nil);
 
+
         if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
             if asframe.alerthealthbar then
                 ns.lib.PixelGlow_Stop(namePlateFrameBase.UnitFrame.healthBar);
@@ -1112,6 +1114,10 @@ local function removeNamePlate(namePlateFrameBase)
                 asframe.colorlevel = ColorLevel.None;
             end
         end
+
+        asframe:ClearAllPoints();
+        ns.freeasframe(asframe);
+        asframe = nil;
     end
 
     if namePlateFrameBase and namePlateFrameBase.asNamePlates ~= nil then
@@ -1159,10 +1165,15 @@ local function addNamePlate(namePlateFrameBase)
 
 
     if namePlateFrameBase.asNamePlates == nil then
-        namePlateFrameBase.asNamePlates = ns.creatframe(healthbar);
+        namePlateFrameBase.asNamePlates = ns.getasframe();
     end
 
     local asframe = namePlateFrameBase.asNamePlates;
+
+    asframe:ClearAllPoints();
+    asframe:SetParent(healthbar);
+    asframe:SetFrameLevel(healthbar:GetFrameLevel() + 20);
+    asframe:SetPoint("CENTER", healthbar, "CENTER", 0, 0);
     asframe.nameplateBase = namePlateFrameBase;
     asframe.unit = unit;
     asframe.update = 0;
@@ -1324,12 +1335,10 @@ local function addNamePlate(namePlateFrameBase)
     asframe:SetHeight(1);
     asframe:SetScale(1);
 
-    local helpful = false;
     local showhealer = false;
     local checkaura = false;
     local checkpvptarget = false;
     local checkcolor = false;
-    local filter = nil;
 
     if UnitIsUnit("player", unit) then
         -- asframe:Hide();
@@ -1339,11 +1348,11 @@ local function addNamePlate(namePlateFrameBase)
             unitFrame:UnregisterEvent("UNIT_AURA");
 
             -- Resource Text
-            if ClassNameplateManaBarFrame and ANameP_Resourcetext == nil then
-                ANameP_Resourcetext = asframe:CreateFontString(nil, "OVERLAY");
-                ANameP_Resourcetext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize - 3, "OUTLINE");
-                ANameP_Resourcetext:SetAllPoints(true);
-                ANameP_Resourcetext:SetPoint("CENTER", ClassNameplateManaBarFrame, "CENTER", 0, 0);
+
+            if ClassNameplateManaBarFrame then
+                asframe.resourcetext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize - 3, "OUTLINE");
+                asframe.resourcetext:ClearAllPoints();
+                asframe.resourcetext:SetPoint("CENTER", ClassNameplateManaBarFrame, "CENTER", 0, 0);
             end
 
             Buff_Y = ns.ANameP_PlayerBuffY;
@@ -1503,16 +1512,21 @@ local function ANameP_OnEvent(self, event, ...)
     end
 end
 
-local function updateUnitResourceText(unit)
+local function updateUnitResourceText()
     local value;
     local valueMax;
     local valuePct;
-    if UnitIsUnit("player", unit) then
-    else
+    local unit = "player"
+    local frame;
+    local pframe = C_NamePlate.GetNamePlateForUnit("player", issecure())
+
+    if not pframe or pframe.asNamePlates == nil then
         return;
+    else
+        frame = pframe.asNamePlates.resourcetext;
     end
 
-    if ANameP_Resourcetext == nil then
+    if frame == nil then
         return;
     end
 
@@ -1528,20 +1542,22 @@ local function updateUnitResourceText(unit)
     end
 
     if valuePct > 0 then
-        ANameP_Resourcetext:SetText(valuePct);
+        frame:SetText(valuePct);
     else
-        ANameP_Resourcetext:SetText("");
+        frame:SetText("");
     end
 
     if valuePct > 0 then
-        ANameP_Resourcetext:SetTextColor(1, 1, 1, 1);
+        frame:SetTextColor(1, 1, 1, 1);
     end
+
+    frame:Show();
 end
 
 local function ANameP_OnUpdate()
     updateUnitHealthText("target");
     updateUnitHealthText("player");
-    updateUnitResourceText("player");
+    updateUnitResourceText();
 
     for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
         local nameplate = v;
