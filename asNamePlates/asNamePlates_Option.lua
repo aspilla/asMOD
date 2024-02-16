@@ -267,7 +267,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 240124,
+    version = 240216,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -307,6 +307,7 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_WARRIOR_3 = {
+        ["분쇄"] = { 1, 5 },
     },
 
     ANameP_ShowList_ROGUE_1 = {
@@ -983,7 +984,7 @@ local function panelOnShow()
     SetupCheckBoxOption("[버프] 내 버프 모두 보임", "ANameP_ShowPlayerBuffAll");
     SetupCheckBoxOption("[툴팁] 버프/디버프 툴팁 표시", "ANameP_Tooltip");
     SetupCheckBoxOption("[쿨다운] DBM 쿨다운 표시", "ANameP_ShowDBM");
-    SetupCheckBoxOption("[색상] 어그로 색상 표시", "ANameP_AggroShow");
+    SetupCheckBoxOption("[색상] 어그로 색상 표시", "ANameP_AggroShow");    
     SetupCheckBoxOption("[색상] 낮은 생명력 색상 표시", "ANameP_LowHealthAlert");
     SetupCheckBoxOption("[색상] Quest 몹 색상 표시", "ANameP_QuestAlert");
     SetupCheckBoxOption("[색상] AutoMarker 몹 색상 표시", "ANameP_AutoMarker");

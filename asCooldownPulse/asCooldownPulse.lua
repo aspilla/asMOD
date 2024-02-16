@@ -492,7 +492,7 @@ local function ACDP_Alert(spell, type)
 			C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback, CONFIG_SOUND_SPEED,
 				ns.options.SoundVolume);
 		else
-			PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\" .. name .. ".mp3", "DIALOG")
+			PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\" .. name .. ".mp3", "MASTER")
 		end
 	end
 

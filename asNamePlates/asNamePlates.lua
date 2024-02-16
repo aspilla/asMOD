@@ -15,18 +15,6 @@ local PLAYER_UNITS = {
 
 local lowhealthpercent = 0;
 
-local ColorLevel = {
-    None = 0,
-    Reset = 1,
-    Custom = 2,
-    Debuff = 3,
-    Lowhealth = 4,
-    Aggro = 5,
-    Target = 6,
-    Interrupt = 7,
-    Name = 8
-};
-
 ns.ANameP_ShowList = nil;
 local debuffs_per_line = ns.ANameP_DebuffsPerLine;
 local playerbuffposition = ns.ANameP_PlayerBuffY;
@@ -48,7 +36,7 @@ end
 
 ns.KnownSpellList = {};
 
-local function asCheckTalent()
+local function asCheckTalent(name)
     local specID = PlayerUtil.GetCurrentSpecID();
     local configID = C_ClassTalents.GetActiveConfigID();
 
@@ -73,9 +61,14 @@ local function asCheckTalent()
                 local name, rank, icon = GetSpellInfo(definitionInfo.spellID);
                 ns.KnownSpellList[talentName or ""] = true;
                 ns.KnownSpellList[icon or 0] = true;
+
                 if definitionInfo.overrideName then
                     -- print (definitionInfo.overrideName)
                     ns.KnownSpellList[definitionInfo.overrideName] = true;
+                end
+
+                if name and name == talentName then
+                    return true;
                 end
             end
         end
@@ -144,9 +137,8 @@ local function updateTankerList()
         if IsInRaid() then -- raid
             for i = 1, GetNumGroupMembers() do
                 local unitid = "raid" .. i
-                local notMe = not UnitIsUnit('player', unitid)
-                local unitName = UnitName(unitid)
-                if unitName and notMe then
+                local notMe = not UnitIsUnit("player", unitid)
+                if UnitExists(unitid) and notMe then
                     local _, _, _, _, _, _, _, _, _, role, _, assignedRole = GetRaidRosterInfo(i);
                     if assignedRole == "TANK" then
                         table.insert(tanklist, unitid);
@@ -154,10 +146,9 @@ local function updateTankerList()
                 end
             end
         else -- party
-            for i = 1, GetNumSubgroupMembers() do
+            for i = 1, 4 do
                 local unitid = "party" .. i;
-                local unitName = UnitName(unitid);
-                if unitName then
+                if UnitExists(unitid) then
                     local assignedRole = UnitGroupRolesAssigned(unitid);
                     if assignedRole == "TANK" then
                         table.insert(tanklist, unitid);
@@ -166,15 +157,6 @@ local function updateTankerList()
             end
         end
     end
-end
-
-local function IsPlayerEffectivelyTank()
-    local assignedRole = UnitGroupRolesAssigned("player");
-    if (assignedRole == "NONE") then
-        local spec = GetSpecialization();
-        return spec and GetSpecializationRole(spec) == "TANK";
-    end
-    return assignedRole == "TANK";
 end
 
 
@@ -664,27 +646,11 @@ local function updateHealthbarColor(self)
         return;
     end
 
-    local shouldshow = false;
-    -- ColorLevel.Name;
     local unitname = GetUnitName(unit);
-
-    if unitname and ns.ANameP_AlertList[unitname] then
-        if self.colorlevel < ColorLevel.Name then
-            self.colorlevel = ColorLevel.Name;
-            setColoronStatusBar(self, ns.ANameP_AlertList[unitname][1], ns.ANameP_AlertList[unitname][2],
-                ns.ANameP_AlertList[unitname][3]);
-        end
-
-        if ns.ANameP_AlertList[unitname][4] == 1 then
-            ns.lib.PixelGlow_Start(healthBar);
-            self.alerthealthbar = true;
-        end
-        return;
-    end
+    local status = UnitThreatSituation("player", unit);
+    local bCastingColorAlert = false;
 
     -- Cast Interrupt
-    local status = UnitThreatSituation("player", unit);
-
     if self.castspellid and self.casticon and status then
         local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid =
             UnitCastingInfo(unit);
@@ -697,8 +663,9 @@ local function updateHealthbarColor(self)
 
             self.castspellid = spellid;
             if isDanger and (binterrupt == true or not notInterruptible) then
-                ns.lib.PixelGlow_Start(self.casticon, { 0, 1, 0.32, 1 });
-                ns.lib.PixelGlow_Start(healthBar, { 0, 1, 0.32, 1 });
+                ns.lib.PixelGlow_Start(self.casticon, { 1, 0.6, 0.6, 1 });
+                ns.lib.PixelGlow_Start(healthBar, { 1, 0.6, 0.6, 1 });
+                bCastingColorAlert = true;
             elseif isDanger then
                 ns.lib.PixelGlow_Start(self.casticon, { 0.5, 0.5, 0.5, 1 });
                 ns.lib.PixelGlow_Start(healthBar, { 0.5, 0.5, 0.5, 1 });
@@ -720,147 +687,154 @@ local function updateHealthbarColor(self)
         ns.lib.PixelGlow_Stop(healthBar);
     end
 
-    -- Target Check
-    local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
-
-    if (isTargetPlayer) and ns.options.ANameP_AggroTargetColor then
-        if self.colorlevel < ColorLevel.Target then
-            self.colorlevel = ColorLevel.Target;
-            setColoronStatusBar(self, ns.options.ANameP_AggroTargetColor.r, ns.options.ANameP_AggroTargetColor.g,
-                ns.options.ANameP_AggroTargetColor.b);
+    local function IsPlayerEffectivelyTank()
+        local assignedRole = UnitGroupRolesAssigned("player");
+        if (assignedRole == "NONE") then
+            local spec = GetSpecialization();
+            return spec and GetSpecializationRole(spec) == "TANK";
         end
-        return;
-    elseif self.colorlevel == ColorLevel.Target then
-        self.colorlevel = ColorLevel.Reset;
+        return assignedRole == "TANK";
     end
 
-    -- Aggro Check
-    local aggrocolor;
+    local function IsTanking()
+        if #tanklist > 0 then
+            for _, othertank in ipairs(tanklist) do
+                if UnitIsUnit(unit .. "target", othertank) then
+                    return true;
+                end
+            end
+        end
+        return false;
+    end
 
-    if status and ns.options.ANameP_AggroShow then
-        local tanker = IsPlayerEffectivelyTank();
-        if tanker then
-            if status >= 2 then
-                -- Tanking
-                aggrocolor = ns.options.ANameP_AggroColor;
-            else
-                aggrocolor = ns.options.ANameP_TankAggroLoseColor;
-                if #tanklist > 0 then
-                    for _, othertank in ipairs(tanklist) do
-                        if UnitIsUnit(unit .. "target", othertank) and not UnitIsUnit(unit .. "target", "player") then
-                            aggrocolor = ns.options.ANameP_TankAggroLoseColor2;
-                            break
-                        end
+    local tanker = IsPlayerEffectivelyTank();
+    local isTanking = IsTanking();
+    local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
+    local isTargetPet = UnitIsUnit(unit .. "target", "pet");
+
+    local function getColor()
+        local color;
+
+        if UnitIsPlayer(unit) then
+            return nil;
+        end
+        -- ColorLevel.Name;
+        if unitname and ns.ANameP_AlertList[unitname] then
+            color.r, color.g, color.b = ns.ANameP_AlertList[unitname][1], ns.ANameP_AlertList[unitname][2],
+                ns.ANameP_AlertList[unitname][3];
+
+            if ns.ANameP_AlertList[unitname][4] == 1 then
+                ns.lib.PixelGlow_Start(healthBar);
+                self.alerthealthbar = true;
+            end
+            return color;
+        end
+
+        --Target and Aggro High Priority
+        if IsInGroup() and ns.options.ANameP_AggroShow and status then
+            if tanker then
+                if not isTargetPlayer or not isTargetPet then
+                    if isTanking then
+                        return ns.options.ANameP_TankAggroLoseColor2;
+                    elseif status == 0 then
+                        return ns.options.ANameP_TankAggroLoseColor;
                     end
                 end
             end
-            self.colorlevel = ColorLevel.Aggro;
-            setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
-            return;
-        else -- Tanker가 아닐때
+
+            if bCastingColorAlert then
+                return ns.options.ANameP_AutoMarkerColor;
+            end
+
+            if (isTargetPlayer) then
+                return ns.options.ANameP_AggroTargetColor;
+            end
+            if (isTargetPet) then
+                return ns.options.ANameP_TankAggroLoseColor3;
+            end
             if status >= 1 then
-                -- Tanking
-                aggrocolor = ns.options.ANameP_AggroColor;
-                self.colorlevel = ColorLevel.Aggro;
-                setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
-                return;
-            elseif self.colorlevel == ColorLevel.Aggro then
-                self.colorlevel = ColorLevel.Reset;
+                return ns.options.ANameP_AggroColor;
+            end
+
+            if bCastingColorAlert then
+                return ns.options.ANameP_AutoMarkerColor;
             end
         end
-    end
 
-    if lowhealthpercent > 0 then
-        -- Lowhealth 처리부
-        local value = UnitHealth(unit);
-        local valueMax = UnitHealthMax(unit);
-        local valuePct = 0;
 
-        if valueMax > 0 then
-            valuePct = (math.ceil((value / valueMax) * 100));
+        if lowhealthpercent > 0 then
+            -- Lowhealth 처리부
+            local value = UnitHealth(unit);
+            local valueMax = UnitHealthMax(unit);
+            local valuePct = 0;
+
+            if valueMax > 0 then
+                valuePct = (math.ceil((value / valueMax) * 100));
+            end
+
+            if valuePct <= lowhealthpercent then
+                return ns.options.ANameP_LowHealthColor;
+            end
         end
 
-        if valuePct <= lowhealthpercent then
-            setColoronStatusBar(self, ns.options.ANameP_LowHealthColor.r, ns.options.ANameP_LowHealthColor.g,
-                ns.options.ANameP_LowHealthColor.b);
-            self.colorlevel = ColorLevel.Lowhealth;
-            return;
-        elseif self.colorlevel == ColorLevel.Lowhealth then
-            self.colorlevel = ColorLevel.Reset;
-        end
-    end
-
-    -- Debuff Color
-    if self.debuffColor > 0 then
-        if self.colorlevel <= ColorLevel.Debuff then
-            self.colorlevel = ColorLevel.Debuff;
+        -- Debuff Color
+        if self.debuffColor > 0 then
             if self.debuffColor == 1 then
-                setColoronStatusBar(self, ns.options.ANameP_DebuffColor.r, ns.options.ANameP_DebuffColor.g,
-                    ns.options.ANameP_DebuffColor.b);
+                return ns.options.ANameP_DebuffColor;
             elseif self.debuffColor == 2 then
-                setColoronStatusBar(self, ns.options.ANameP_DebuffColor2.r, ns.options.ANameP_DebuffColor2.g,
-                    ns.options.ANameP_DebuffColor2.b);
+                return ns.options.ANameP_DebuffColor2;
             elseif self.debuffColor > 2 then
-                setColoronStatusBar(self, ns.options.ANameP_DebuffColor3.r, ns.options.ANameP_DebuffColor3.g,
-                    ns.options.ANameP_DebuffColor3.b);
+                return ns.options.ANameP_DebuffColor3;
             end
         end
 
-        return;
-    else
-        if self.colorlevel == ColorLevel.Debuff then
-            self.colorlevel = ColorLevel.Reset;
-        end
-    end
-
-    if ns.options.ANameP_AutoMarker and bloadedAutoMarker and asAutoMarkerF and asAutoMarkerF.IsAutoMarkerMob(unit) then
-        local color = ns.options.ANameP_AutoMarkerColor;
-        self.colorlevel = ColorLevel.Custom;
-        setColoronStatusBar(self, color.r, color.g, color.b);
-        return;
-    end
-
-    if status then
-        if #tanklist > 0 then
-            for _, othertank in ipairs(tanklist) do
-                if UnitIsUnit(unit .. "target", othertank) and not UnitIsUnit(unit .. "target", "player") then
-                    aggrocolor = ns.options.ANameP_TankAggroLoseColor2;
-                    self.colorlevel = ColorLevel.Custom;
-                    setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
-                    return;
-                elseif self.colorlevel == ColorLevel.Custom then
-                    self.colorlevel = ColorLevel.Reset;
+        -- 정상 Tanking
+        if ns.options.ANameP_AggroShow and status then
+            if tanker then
+                if (isTargetPlayer) then
+                    return ns.options.ANameP_AggroTargetColor;
+                elseif (isTargetPet) then
+                    return ns.options.ANameP_TankAggroLoseColor3;
+                elseif isTanking then
+                    return ns.options.ANameP_TankAggroLoseColor2;
+                elseif status > 0 then
+                    return ns.options.ANameP_AggroColor;
+                else
+                    return ns.options.ANameP_TankAggroLoseColor;
+                end
+            else
+                if (isTargetPlayer) then
+                    return ns.options.ANameP_AggroTargetColor;
+                elseif (isTargetPet) then
+                    return ns.options.ANameP_TankAggroLoseColor3;
+                elseif isTanking then
+                    return ns.options.ANameP_TankAggroLoseColor2;
+                else
+                    return ns.options.ANameP_TankAggroLoseColor;
                 end
             end
         end
+
+        if ns.options.ANameP_AutoMarker and bloadedAutoMarker and asAutoMarkerF and asAutoMarkerF.IsAutoMarkerMob(unit) then
+            return ns.options.ANameP_AutoMarkerColor;
+        end
+
+        if ns.options.ANameP_QuestAlert and not IsInInstance() and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
+            return ns.options.ANameP_QuestColor;
+        end
+
+        return nil;
     end
 
-    if UnitIsUnit(unit .. "target", "pet") then
-        aggrocolor = ns.options.ANameP_TankAggroLoseColor3;
-        self.colorlevel = ColorLevel.Custom;
-        setColoronStatusBar(self, aggrocolor.r, aggrocolor.g, aggrocolor.b);
-        return;
-    elseif self.colorlevel == ColorLevel.Custom then
-        self.colorlevel = ColorLevel.Reset;
-    end
+    local color = getColor();
 
-    if ns.options.ANameP_QuestAlert and not IsInInstance() and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
-        local color = ns.options.ANameP_QuestColor;
-        self.colorlevel = ColorLevel.Custom;
+    if color then
         setColoronStatusBar(self, color.r, color.g, color.b);
-        return;
+    else
+        if self.BarColor then
+            self.BarColor:Hide();
+        end
     end
-
-    -- None
-    if self.colorlevel > ColorLevel.None then
-        self.colorlevel = ColorLevel.None;
-    end
-
-    if self.BarColor then
-        self.BarColor:Hide();
-    end
-
-    return;
 end
 
 local function updatePVPAggro(self)
@@ -921,6 +895,7 @@ local function initAlertList()
     ANameP_HealerGuid = {};
 
     lowhealthpercent = 0;
+
 
     if ns.options.ANameP_LowHealthAlert then
         if (englishClass == "MAGE") then
@@ -1107,11 +1082,6 @@ local function removeNamePlate(namePlateFrameBase)
             if asframe.alerthealthbar then
                 ns.lib.PixelGlow_Stop(namePlateFrameBase.UnitFrame.healthBar);
                 asframe.alerthealthbar = false;
-                asframe.colorlevel = ColorLevel.None;
-            end
-
-            if asframe.colorlevel > ColorLevel.None then
-                asframe.colorlevel = ColorLevel.None;
             end
         end
 
@@ -1181,7 +1151,6 @@ local function addNamePlate(namePlateFrameBase)
     asframe.checkaura = false;
     asframe.downbuff = false;
     asframe.checkpvptarget = false;
-    asframe.colorlevel = ColorLevel.None;
     asframe.bhideframe = false;
     asframe.isshown = nil;
     asframe.originalcolor = {
@@ -1281,7 +1250,6 @@ local function addNamePlate(namePlateFrameBase)
     asframe.downbuff = false;
     asframe.healthtext:Hide();
     asframe.checkpvptarget = false;
-    asframe.colorlevel = ColorLevel.None;
     asframe.checkcolor = false;
 
     for i = 1, ns.ANameP_MaxDebuff do
@@ -1290,9 +1258,7 @@ local function addNamePlate(namePlateFrameBase)
         end
     end
 
-    if UnitIsPlayer(unit) then
-        asframe.colorlevel = ColorLevel.Name;
-    else
+    if not UnitIsPlayer(unit) then
         local bInstance, RTB_ZoneType = IsInInstance();
         if not (RTB_ZoneType == "pvp" or RTB_ZoneType == "arena") then
             -- PVP 에서는 어그로 Check 안함
