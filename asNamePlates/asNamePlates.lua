@@ -36,7 +36,7 @@ end
 
 ns.KnownSpellList = {};
 
-local function asCheckTalent(name)
+local function asCheckTalent(findname)
     local specID = PlayerUtil.GetCurrentSpecID();
     local configID = C_ClassTalents.GetActiveConfigID();
 
@@ -67,7 +67,7 @@ local function asCheckTalent(name)
                     ns.KnownSpellList[definitionInfo.overrideName] = true;
                 end
 
-                if name and name == talentName then
+                if findname and findname == talentName then
                     return true;
                 end
             end

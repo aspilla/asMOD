@@ -25,7 +25,7 @@ local AuraFilters = {
 };
 
 local function CreateFilterString(...)
-    return table.concat({...}, '|');
+    return table.concat({ ... }, '|');
 end
 
 local function DefaultAuraCompare(a, b)
@@ -104,7 +104,9 @@ local function ProcessAura(aura, unit, type)
                 end
             else
                 if (aura.nameplateShowPersonal or
-                    (ns.options.ANameP_ShowKnownSpell and (ns.KnownSpellList[aura.name] or ns.KnownSpellList[aura.icon]))) then
+                        (ns.options.ANameP_ShowKnownSpell and (ns.KnownSpellList[aura.name] or ns.KnownSpellList[aura.icon]))) then
+                    show = true;
+                elseif (ns.ANameP_ShowList and ns.ANameP_ShowList[aura.name]) then
                     show = true;
                 end
             end

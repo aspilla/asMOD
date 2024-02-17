@@ -409,6 +409,12 @@ function ns.Button:checkCount()
     if aura then
         if aura.applications and aura.applications > 0 then
             self.count = aura.applications;
+
+            if self.number and self.count >= self.number then
+                self.buffalert = true;
+            else
+                self.buffalert = false;
+            end
         end
     end
 end

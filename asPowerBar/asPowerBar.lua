@@ -2711,7 +2711,7 @@ do
 
     APB.text = APB:CreateFontString(nil, "ARTWORK");
     APB.text:SetFont(APB_Font, APB_HealthSize - 2, APB_FontOutline);
-    APB.text:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPLEFT", 0, 2);
+    APB.text:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPRIGHT", -10, 2);
     APB.text:SetTextColor(1, 1, 1, 1)
     APB.text:Hide();
 
