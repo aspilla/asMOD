@@ -1,5 +1,5 @@
 ﻿-----------------설정 ------------------------
-local ATGCD_X = 62;
+local ATGCD_X = 56;
 local ATGCD_Y = -350;
 local AGCICON = 25;
 
@@ -174,7 +174,7 @@ ATGCD.frame[0]:Hide();
 
 local bloaded = LoadAddOn("asMOD")
 if bloaded and asMOD_setupFrame then
-	asMOD_setupFrame(ATGCD, "asTrueGCD");
+	asMOD_setupFrame(ATGCD.frame[0], "asTrueGCD");	
 end
 
 

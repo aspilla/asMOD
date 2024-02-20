@@ -677,7 +677,7 @@ local function ACRB_OnEvent(self, event, arg1, arg2, arg3)
     elseif event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" then
         local unit = arg1;
         local spellid = arg3;
-        if unit and spellid and ns.isFaction(unit) and string.find(unit, "nameplate") then
+        if unit and spellid and ns.isAttackable(unit) and string.find(unit, "nameplate") then
             ns.CastingUnits[unit] = true;
         end
     elseif (event == "PLAYER_ENTERING_WORLD") then

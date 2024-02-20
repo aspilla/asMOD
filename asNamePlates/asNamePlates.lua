@@ -34,6 +34,14 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
     end
 end
 
+local function isAttackable(unit)
+    local reaction = UnitReaction("player", unit);
+    if reaction and reaction <= 4 then
+        return true;
+    end
+    return false;
+end
+
 ns.KnownSpellList = {};
 
 local function asCheckTalent(findname)
@@ -648,10 +656,11 @@ local function updateHealthbarColor(self)
 
     local unitname = GetUnitName(unit);
     local status = UnitThreatSituation("player", unit);
+    local incombat = UnitAffectingCombat(unit);
     local bCastingColorAlert = false;
 
     -- Cast Interrupt
-    if self.castspellid and self.casticon and status then
+    if self.castspellid and self.casticon and incombat then
         local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid =
             UnitCastingInfo(unit);
         if not name then
@@ -663,8 +672,8 @@ local function updateHealthbarColor(self)
 
             self.castspellid = spellid;
             if isDanger and (binterrupt == true or not notInterruptible) then
-                ns.lib.PixelGlow_Start(self.casticon, { 1, 0.6, 0.6, 1 });
-                ns.lib.PixelGlow_Start(healthBar, { 1, 0.6, 0.6, 1 });
+                ns.lib.PixelGlow_Start(self.casticon, { 1, 1, 0, 1 });
+                ns.lib.PixelGlow_Start(healthBar, { 1, 1, 0, 1 });
                 bCastingColorAlert = true;
             elseif isDanger then
                 ns.lib.PixelGlow_Start(self.casticon, { 0.5, 0.5, 0.5, 1 });
@@ -731,12 +740,12 @@ local function updateHealthbarColor(self)
         end
 
         --Target and Aggro High Priority
-        if IsInGroup() and ns.options.ANameP_AggroShow and status then
+        if IsInGroup() and ns.options.ANameP_AggroShow and incombat then
             if tanker then
-                if not isTargetPlayer or not isTargetPet then
+                if (not isTargetPlayer or not isTargetPet) and UnitExists(unit .. "target") and not (isAttackable(unit .. "target")) then
                     if isTanking then
                         return ns.options.ANameP_TankAggroLoseColor2;
-                    elseif status == 0 then
+                    elseif status == nil or status == 0 then
                         return ns.options.ANameP_TankAggroLoseColor;
                     end
                 end
@@ -749,15 +758,13 @@ local function updateHealthbarColor(self)
             if (isTargetPlayer) then
                 return ns.options.ANameP_AggroTargetColor;
             end
+
             if (isTargetPet) then
                 return ns.options.ANameP_TankAggroLoseColor3;
             end
-            if status >= 1 then
-                return ns.options.ANameP_AggroColor;
-            end
 
-            if bCastingColorAlert then
-                return ns.options.ANameP_AutoMarkerColor;
+            if status and status > 0 then
+                return ns.options.ANameP_AggroColor;
             end
         end
 
@@ -789,29 +796,17 @@ local function updateHealthbarColor(self)
         end
 
         -- 정상 Tanking
-        if ns.options.ANameP_AggroShow and status then
-            if tanker then
-                if (isTargetPlayer) then
-                    return ns.options.ANameP_AggroTargetColor;
-                elseif (isTargetPet) then
-                    return ns.options.ANameP_TankAggroLoseColor3;
-                elseif isTanking then
-                    return ns.options.ANameP_TankAggroLoseColor2;
-                elseif status > 0 then
-                    return ns.options.ANameP_AggroColor;
-                else
-                    return ns.options.ANameP_TankAggroLoseColor;
-                end
-            else
-                if (isTargetPlayer) then
-                    return ns.options.ANameP_AggroTargetColor;
-                elseif (isTargetPet) then
-                    return ns.options.ANameP_TankAggroLoseColor3;
-                elseif isTanking then
-                    return ns.options.ANameP_TankAggroLoseColor2;
-                else
-                    return ns.options.ANameP_TankAggroLoseColor;
-                end
+        if ns.options.ANameP_AggroShow and incombat then
+            if (isTargetPlayer) then
+                return ns.options.ANameP_AggroTargetColor;
+            elseif (isTargetPet) then
+                return ns.options.ANameP_TankAggroLoseColor3;
+            elseif isTanking then
+                return ns.options.ANameP_TankAggroLoseColor2;
+            elseif status and status > 0 then
+                return ns.options.ANameP_AggroColor;
+            elseif status then
+                return ns.options.ANameP_TankAggroLoseColor;
             end
         end
 
@@ -974,10 +969,12 @@ local function checkSpellCasting(self)
                         local remain = v[3] + v[2] - GetTime();
                         local guid = v[8];
                         local colorid = v[6];
+                        local dbmspellid = v[7];
 
                         if guid and UnitGUID(unit) == guid and remain < min_remain then
                             frameIcon:SetTexture(icon);
                             self.casticon:Show();
+                            self.casticon.castspellid = dbmspellid;
                             frameIcon:SetDesaturated(true);
                             if remain > 2 then
                                 if colorid ~= 4 then
@@ -1122,8 +1119,7 @@ local function addNamePlate(namePlateFrameBase)
             return;
         end
     else
-        local reaction = UnitReaction("player", unit);
-        if not (reaction and reaction <= 4) then
+        if not isAttackable(unit) then
             if namePlateFrameBase.asNamePlates ~= nil then
                 removeNamePlate(namePlateFrameBase);
                 unitFrame.BuffFrame:SetAlpha(1);

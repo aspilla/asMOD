@@ -44,7 +44,7 @@ local NPCTable = {
 	[131850] = 2,
 	[131858] = 0,
 	[132126] = 0,
-	[134024] = 1,			-- 탐욕스러운 구더기, 징표 안찍음
+	[134024] = 1, -- 탐욕스러운 구더기, 징표 안찍음
 	[135365] = 2,
 	[135474] = 2,
 	[135552] = 0,
@@ -276,17 +276,12 @@ end
 
 local needtowork = false;
 
-local function isFaction(unit)
-	if UnitIsUnit("player", unit) then
-		return false;
-	else
-		local reaction = UnitReaction("player", unit);
-		if reaction and reaction <= 4 then
-			return true;
-		elseif UnitIsPlayer(unit) then
-			return false;
-		end
+local function isAttackable(unit)
+	local reaction = UnitReaction("player", unit);
+	if reaction and reaction <= 4 then
+		return true;
 	end
+	return false;
 end
 
 local curr_mark = 1;
@@ -324,7 +319,7 @@ local function UpdateMarks(nameplate)
 
 	local status = UnitThreatSituation("player", unit);
 
-	if (unit == "mouseover" or (unit and status and status > 0)) and isFaction(unit) and not UnitIsDead(unit) then
+	if (unit == "mouseover" or (unit and status and status > 0)) and isAttackable(unit) and not UnitIsDead(unit) then
 		local guid = UnitGUID(unit);
 		if checkMob(unit) > 1 then
 			while (curr_mark <= AAM_MaxMark) do
@@ -343,7 +338,6 @@ local function UpdateMarks(nameplate)
 			end
 		end
 	end
-
 end
 
 local function AAM_OnUpdate()
@@ -362,7 +356,7 @@ local function AAM_OnUpdate()
 		if (nameplate) then
 			UpdateMarks(nameplate);
 		end
-	end	
+	end
 end
 
 
@@ -400,7 +394,7 @@ local function AAM_OnEvent(self, event, ...)
 				local mark = tmp[unitGUID];
 
 				if mark <= AAM_MaxMark then
-					abledMarks[mark] = true;					
+					abledMarks[mark] = true;
 				end
 				tmp[unitGUID] = nil;
 			end

@@ -84,17 +84,12 @@ local function ACRB_updateCasting(asframe, unit)
     return false;
 end
 
-function ns.isFaction(unit)
-    if UnitIsUnit("player", unit) then
-        return false;
-    else
-        local reaction = UnitReaction("player", unit);
-        if reaction and reaction <= 4 then
-            return true;
-        elseif UnitIsPlayer(unit) then
-            return false;
-        end
+function ns.isAttackable(unit)
+    local reaction = UnitReaction("player", unit);
+    if reaction and reaction <= 4 then
+        return true;
     end
+    return false;
 end
 
 local function ARCB_HideCast(asframe)
@@ -106,7 +101,7 @@ local function ARCB_HideCast(asframe)
 end
 
 local function CheckCasting(unit)
-    if ns.isFaction(unit) then
+    if ns.isAttackable(unit) then
         local name = UnitCastingInfo(unit);
         if not name then
             name = UnitChannelInfo(unit);

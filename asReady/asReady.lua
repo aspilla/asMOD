@@ -586,6 +586,30 @@ local function scanUnitSpecID(unit)
     end
 end
 
+local function OnEvent(self, event, arg1, arg2, arg3)
+    if arg1 and arg3 then
+        local spellid = arg3;
+        local unit = arg1;
+        local time = GetTime();
+        local name = GetSpellInfo(spellid);
+        if self.coolspelllist then
+            local coolspelllist = self.coolspelllist;
+
+            if coolspelllist and coolspelllist[name] or coolspelllist[spellid] then
+                local info = coolspelllist[name] or coolspelllist[spellid];
+                local cool = info[1];
+                local buffcool = info[2];
+                offensivecools[self.partynum] = { self.partynum, spellid, time, cool, buffcool };
+            end
+        end
+
+        if not IsInRaid() and (trackedPartySpellNames[name] or trackedPartySpellNames[spellid]) then
+            local cool = trackedPartySpellNames[name] or trackedPartySpellNames[spellid];
+            interruptcools[self.partynum] = { self.partynum, spellid, time, cool, 0 };            
+        end
+    end
+end
+
 local function SetupPartyCool(frame)
     if frame and not frame:IsForbidden() and frame:IsShown() and frame.GetName then
         local name = frame:GetName();
@@ -602,15 +626,29 @@ local function SetupPartyCool(frame)
 
             if IsInRaid() then
                 if not raidframes[frame.unit] then
-                    raidframes[frame.unit] = {};
+                    raidframes[frame.unit] = CreateFrame("FRAME", nil);
                 end
                 raidframe = raidframes[frame.unit];
+                raidframe.partynum = UnitInRaid(frame.unit);
             else
                 if not partyframes[frame.unit] then
-                    partyframes[frame.unit] = {};
+                    partyframes[frame.unit] = CreateFrame("FRAME", nil);
                 end
                 raidframe = partyframes[frame.unit];
+
+                if UnitIsUnit("player", frame.unit) then
+                    raidframe.partynum = 5;
+                else
+                    for k = 1, GetNumGroupMembers() - 1 do
+                        if UnitIsUnit("party" .. k, frame.unit) then
+                            raidframe.partynum = k;
+                        end
+                    end
+                end
             end
+
+            raidframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", frame.unit);
+            raidframe:SetScript("OnEvent", OnEvent)
 
             local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(
                 CompactPartyFrame.groupType);
@@ -688,94 +726,36 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
         bfirst = false;
     end
 
-    if event == "UNIT_SPELLCAST_SUCCEEDED" then
-        if arg1 and arg3 then
-            local spellid = arg3;
-            local unit = arg1;
-            local time = GetTime();
-            local name = GetSpellInfo(spellid);
-            if IsInRaid() then
-                local partynum = UnitInRaid(unit);
+    if timer then
+        timer:Cancel();
+    end   
 
-                if partynum and raidframes[unit] and raidframes[unit].coolspelllist then
-                    local coolspelllist = raidframes[unit].coolspelllist;
-
-                    if coolspelllist and coolspelllist[name] or coolspelllist[spellid] then
-                        local info = coolspelllist[name] or coolspelllist[spellid];
-                        local cool = info[1];
-                        local buffcool = info[2];
-                        offensivecools[partynum] = { partynum, spellid, time, cool, buffcool };
-                    end
-                end
-            else
-                if partyframes[unit] and partyframes[unit].coolspelllist then
-                    local coolspelllist = partyframes[unit].coolspelllist;
-
-                    if coolspelllist and coolspelllist[name] or coolspelllist[spellid] then
-                        local info = coolspelllist[name] or coolspelllist[spellid];
-                        local cool = info[1];
-                        local buffcool = info[2];
-
-                        if UnitIsUnit("player", unit) then
-                            offensivecools[5] = { 5, spellid, time, cool, buffcool };
-                        else
-                            for k = 1, GetNumGroupMembers() - 1 do
-                                if UnitIsUnit("party" .. k, unit) then
-                                    offensivecools[k] = { k, spellid, time, cool, buffcool };
-                                end
-                            end
-                        end
-                    elseif trackedPartySpellNames[name] or trackedPartySpellNames[spellid] then
-                        local cool = trackedPartySpellNames[name] or trackedPartySpellNames[spellid];
-
-                        if UnitIsUnit("player", unit) then
-                            interruptcools[5] = { 5, spellid, time, cool, 0 };
-                        else
-                            for k = 1, GetNumGroupMembers() - 1 do
-                                if UnitIsUnit("party" .. k, unit) then
-                                    interruptcools[5 - k] = { k, spellid, time, cool, 0 };
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    else
-        if timer then
-            timer:Cancel();
-        end
-        AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-
-        if IsInRaid() then
-            if ns.options.ShowRaidCool then
-                if event == "ENCOUNTER_END" then
-                    offensivecools = {};
-                end
-
-                checkallraid();
-                AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-                timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
-            else
-                interruptcools = {};
+    if IsInRaid() then
+        if ns.options.ShowRaidCool then
+            if event == "ENCOUNTER_END" then
                 offensivecools = {};
-                AREADY_OnUpdate();
-            end
-        elseif IsInGroup() then
-            for k = 1, 5 do
-                local frame = _G["CompactPartyFrameMember" .. k];
-                if frame then
-                    SetupPartyCool(frame);
-                end
             end
 
-            AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+            checkallraid();            
             timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
         else
             interruptcools = {};
             offensivecools = {};
             AREADY_OnUpdate();
         end
+    elseif IsInGroup() then
+        for k = 1, 5 do
+            local frame = _G["CompactPartyFrameMember" .. k];
+            if frame then
+                SetupPartyCool(frame);
+            end
+        end
+       
+        timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
+    else
+        interruptcools = {};
+        offensivecools = {};
+        AREADY_OnUpdate();
     end
 
     return;

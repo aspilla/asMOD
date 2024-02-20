@@ -429,6 +429,31 @@ local function asUnitFrameUtil_UpdateFillBuffBarBase(realbar, bar, amount, alert
     bar:Show();
 end
 
+local function asUnitFrameUtil_UpdateFillBuffBarBaseforBuff(realbar, bar, amount, alert)
+    if not amount or (amount == 0) then
+        bar:Hide();
+        return
+    end
+
+    local previousTexture = realbar:GetStatusBarTexture();
+    bar:ClearAllPoints();
+    bar:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
+    bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMLEFT", 0, 0);
+    local totalWidth, totalHeight = realbar:GetSize();
+
+    local _, totalMax = realbar:GetMinMaxValues();
+
+    local barSize = (amount / totalMax) * totalWidth;
+    bar:SetWidth(barSize);
+    if alert == true then
+        bar:SetVertexColor(1, 0.5, 0.5);
+    else
+        bar:SetVertexColor(0.5, 1, 1);
+    end
+
+    bar:Show();
+end
+
 local function APB_OnUpdateBuff(self, elapsed)
     if not self.start then
         self:SetValue(0);
@@ -461,8 +486,13 @@ local function APB_OnUpdateBuff(self, elapsed)
             self:SetValue(remain_buff * 1000)
             self.text:SetText(("%02.1f"):format(remain_buff))
 
-            if self.buff then
-                self:SetStatusBarColor(0.8, 0.8, 1);
+            if self.maxshow then
+                self:SetMinMaxValues(0, self.maxshow * 1000)
+                if self.maxshow < remain_buff then
+                    remain_buff = self.maxshow;
+                    expertedendtime = self.start + remain_buff;
+                    self:SetValue(remain_buff * 1000);
+                end
             end
 
             -- Check Casting And GCD
@@ -493,6 +523,12 @@ local function APB_OnUpdateBuff(self, elapsed)
             end
 
             asUnitFrameUtil_UpdateFillBuffBarBase(self, self.castbar, timetoready, alert);
+            if self.buff3barex then
+                local buff3remain = (self.buff3barex - curr_time) * 1000;
+                asUnitFrameUtil_UpdateFillBuffBarBaseforBuff(self, self.buff3bar, buff3remain, timetoready > buff3remain);
+            else
+                self.buff3bar:Hide();
+            end
         end
     end
 end
@@ -502,16 +538,24 @@ local function APB_UpdateBuff(buffbar)
         return;
     end
 
+    local bbuff2 = false;
+
     if buffbar.buff then
-        buffbar.tooltip = buffbar.buff;
-        local name, icon, count, debuffType, duration, expirationTime, caster =
-            APB_UnitBuff(buffbar.unit, buffbar.buff, "player");
-        if not name and buffbar.buff2 then
+        local name, icon, count, debuffType, duration, expirationTime, caster;
+
+        if buffbar.buff2 then
             name, icon, count, debuffType, duration, expirationTime, caster =
                 APB_UnitBuff(buffbar.unit, buffbar.buff2, "player");
             if name then
                 buffbar.tooltip = buffbar.buff2;
+                bbuff2 = true;
             end
+        end
+
+        if not name then
+            buffbar.tooltip = buffbar.buff;
+            name, icon, count, debuffType, duration, expirationTime, caster =
+                APB_UnitBuff(buffbar.unit, buffbar.buff, "player");
         end
 
         if name and caster == "player" then
@@ -528,9 +572,25 @@ local function APB_UpdateBuff(buffbar)
             buffbar.count:SetText("");
         end
 
+        if bbuff2 then
+            buffbar:SetStatusBarColor(0.7, 0.9, 0.9);
+        else
+            buffbar:SetStatusBarColor(0.8, 0.8, 1);
+        end
+
         buffbar:Show();
         buffbar.text:Show();
         buffbar.count:Show();
+
+        if buffbar.buff3 then
+            name, icon, count, debuffType, duration, expirationTime, caster =
+                APB_UnitBuff(buffbar.unit, buffbar.buff3, "player");
+            if name and caster == "player" then
+                buffbar.buff3barex = expirationTime;
+            else
+                buffbar.buff3barex = nil;
+            end
+        end
     end
 
     if buffbar.debuff then
@@ -565,6 +625,7 @@ local function APB_UpdateBuff(buffbar)
         buffbar:SetScript("OnUpdate", nil)
         buffbar:SetValue(0);
         buffbar.castbar:Hide();
+        buffbar.buff3bar:Hide();
     end
 end
 
@@ -1402,6 +1463,8 @@ local function APB_CheckPower(self)
         APB.buffbar[j].buff2 = nil;
         APB.buffbar[j].debuff = nil;
         APB.buffbar[j].max = nil;
+        APB.buffbar[j].maxshow = nil;
+
 
         setupMouseOver(APB.buffbar[j]);
     end
@@ -1778,8 +1841,8 @@ local function APB_CheckPower(self)
             APB:RegisterEvent("PLAYER_TARGET_CHANGED");
             APB_UpdateBuff(self.buffbar[0])
         elseif asCheckTalent("일발필중") then
-            APB_BUFF = "기만";
-            APB_BUFF3 = "어둠의 춤";
+            APB_BUFF = "어둠의 춤";
+            APB_BUFF3 = "기만";
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].buff2 = APB_BUFF3;
             APB.buffbar[0].unit = "player"
@@ -2020,10 +2083,20 @@ local function APB_CheckPower(self)
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
 
-            if asCheckTalent("교묘한 사격") then
+            if asCheckTalent("교묘한 사격") and asCheckTalent("연발 공격") then
+                APB_BUFF = "교묘한 사격";
+                APB_BUFF3 = "연발 공격";
+                APB.buffbar[0].buff = APB_BUFF;
+                APB.buffbar[0].buff3 = APB_BUFF3;
+                APB.buffbar[0].unit = "player"
+                APB.buffbar[0].maxshow = 6;
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
+                APB_UpdateBuff(self.buffbar[0])
+            elseif asCheckTalent("교묘한 사격") then
                 APB_BUFF = "교묘한 사격";
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
+                APB.buffbar[0].maxshow = 6;
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 APB_UpdateBuff(self.buffbar[0])
             end
@@ -2083,7 +2156,6 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 APB_UpdateBuff(self.buffbar[0])
-
             end
         end
 
@@ -2630,7 +2702,10 @@ do
         end
         APB.buffbar[j]:Hide();
 
-        APB.buffbar[j].castbar = APB.buffbar[j]:CreateTexture(nil, "ARTWORK", "asPredictionBarTemplate", 2);
+        APB.buffbar[j].buff3bar = APB.buffbar[j]:CreateTexture(nil, "ARTWORK", "asPredictionBarTemplate", 2);
+        APB.buffbar[j].buff3bar:Hide();
+
+        APB.buffbar[j].castbar = APB.buffbar[j]:CreateTexture(nil, "ARTWORK", "asPredictionBarTemplate", 3);
         APB.buffbar[j].castbar:Hide();
 
         APB.buffbar[j].text = APB.buffbar[j]:CreateFontString(nil, "ARTWORK")

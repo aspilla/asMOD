@@ -5,17 +5,12 @@ local ACTA_FontSize = 18;
 local ACTA_X = 0;
 local ACTA_Y = -80;
 
-local function isFaction(unit)
-    if UnitIsUnit("player", unit) then
-        return false;
-    else
-        local reaction = UnitReaction("player", unit);
-        if reaction and reaction <= 4 then
-            return true;
-        elseif UnitIsPlayer(unit) then
-            return false;
-        end
+local function isAttackable(unit)
+    local reaction = UnitReaction("player", unit);
+    if reaction and reaction <= 4 then
+        return true;
     end
+    return false;
 end
 
 local DangerousSpellList = {};
@@ -23,7 +18,7 @@ local showlist = {};
 local CastingUnits = {};
 
 local function CheckCasting(unit)
-    if isFaction(unit) and UnitIsUnit(unit .. "target", "player") and not UnitIsUnit(unit, "target") then
+    if isAttackable(unit) and UnitIsUnit(unit .. "target", "player") and not UnitIsUnit(unit, "target") then
         local name, _, texture, _, endTime, _, _, notInterruptible, spellid = UnitCastingInfo(unit);
         if not name then
             name, _, texture, _, endTime, _, notInterruptible, spellid = UnitChannelInfo(unit);
@@ -149,8 +144,8 @@ local function ACTA_OnEvent(self, event, arg1, arg2, arg3, arg4)
     local unit = arg1;
     local spellid = arg3;
 
-    if unit and spellid and isFaction(unit) and string.find(unit, "nameplate") then
-        CastingUnits[unit] = true;        
+    if unit and spellid and isAttackable(unit) and string.find(unit, "nameplate") then
+        CastingUnits[unit] = true;
     end
 end
 

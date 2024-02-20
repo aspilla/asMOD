@@ -15,17 +15,12 @@ local CONFIG_NAME_SIZE = CONFIG_HEIGHT * 0.5; --Spell 명 Font Size, 높이의 5
 local CONFIG_TIME_SIZE = CONFIG_HEIGHT * 0.3; --Spell 시전시간 Font Size, 높이의 30%
 local CONFIG_UPDATE_RATE = 0.05               -- 20프레임
 
-local function isFaction(unit)
-	if UnitIsUnit("player", unit) then
-		return false;
-	else
-		local reaction = UnitReaction("player", unit);
-		if reaction and reaction <= 4 then
-			return true;
-		elseif UnitIsPlayer(unit) then
-			return false;
-		end
+local function isAttackable(unit)
+	local reaction = UnitReaction("player", unit);
+	if reaction and reaction <= 4 then
+		return true;
 	end
+	return false;
 end
 
 local ADVA = nil;
@@ -259,7 +254,7 @@ local function ADCA_OnEvent(self, event, arg1, arg2, arg3, arg4)
 	else
 		local unit = arg1;
 		local spellid = arg3;
-		if unit and spellid and isFaction(unit) and string.find(unit, "nameplate") then
+		if unit and spellid and isAttackable(unit) and UnitAffectingCombat(unit) and string.find(unit, "nameplate") then
 			CastingUnits[unit] = true;
 		end
 	end
