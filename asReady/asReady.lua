@@ -479,21 +479,24 @@ local function AREADY_OnUpdate()
                 end
                 if interruptcools[unit] then
                     local v = interruptcools[unit];
-                    local spellid = v[2];
-                    local time = v[3];
-                    local cool = v[4];
-                    local prev_idx = v[5];
 
-                    local currtime = GetTime();
-                    if currtime <= time + cool + 1 or prev_idx ~= idx then
-                        create_bar_icon(idx, unit, spellid, time, cool);
-                        v[5] = idx;
-                    end
+                    if (v[2]) then
+                        local spellid = v[2];
+                        local time = v[3];
+                        local cool = v[4];
+                        local prev_idx = v[5];
 
-                    idx = idx + 1;
+                        local currtime = GetTime();
+                        if currtime <= time + cool + 1 or prev_idx ~= idx then
+                            create_bar_icon(idx, unit, spellid, time, cool);
+                            v[5] = idx;
+                        end
 
-                    if idx > AREADY_Max then
-                        break
+                        idx = idx + 1;
+
+                        if idx > AREADY_Max then
+                            break
+                        end
                     end
                 end
             end
@@ -610,6 +613,8 @@ local function OnEvent(self, event, arg1, arg2, arg3)
     end
 end
 
+local max_y = 0;
+
 local function SetupPartyCool(frame, raidframe)
     if frame and not frame:IsForbidden() and frame:IsShown() and frame.GetName then
         local name = frame:GetName();
@@ -620,6 +625,17 @@ local function SetupPartyCool(frame, raidframe)
             end
             if not (frame.unit and UnitIsPlayer(frame.unit)) then
                 return;
+            end
+
+            if IsInRaid() then
+                local x, y = frame:GetSize();
+                if y > max_y then
+                    max_y = y;
+                end
+
+                if y <= max_y / 2 then
+                    return;
+                end
             end
 
             if raidframe == nil then
@@ -659,8 +675,8 @@ local function SetupPartyCool(frame, raidframe)
                 local newlistname = GetUnitName(frame.unit) .. englishClass .. "_" .. spec;
 
                 if raidframe.listname == nil or raidframe.listname ~= newlistname then
-                    interruptcools = {};
-                    offensivecools = {};
+                    interruptcools[frame.unit] = {};
+                    offensivecools[frame.unit] = {};
                     raidframe.listname = newlistname;
                 end
 
