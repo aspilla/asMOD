@@ -459,30 +459,30 @@ local function AREADY_OnUpdate()
         hide_bar_icon(idx);
 
         if ns.options.ShowRaidCool then
-            for unit, frame in pairs(raidframes) do
-                local i = UnitInRaid(unit);
-                if i and offensivecools[i] and offensivecools[i][1] and frame.frame:IsShown() then
-                    UtilSetCooldown(offensivecools[i], unit, frame);
+            for name, raidframe in pairs(raidframes) do
+                local unit = raidframe.frame.unit;
+                if raidframe.needtocheck and unit and offensivecools[unit] and offensivecools[unit][1] and raidframe.frame:IsShown() then
+                    UtilSetCooldown(offensivecools[unit], unit, raidframe);
                 else
-                    frame.asbuffFrame:Hide()
+                    raidframe.asbuffFrame:Hide()
                 end
             end
         end
     else
         if ns.options.ShowPartyInterrupt then
-            for i, v in pairs(interruptcools) do
-                if v then
+            for i = 1, 5 do
+                local unit;
+                if i == 5 then
+                    unit = "player"
+                else
+                    unit = "party" .. (5 - i);
+                end
+                if interruptcools[unit] then
+                    local v = interruptcools[unit];
                     local spellid = v[2];
                     local time = v[3];
                     local cool = v[4];
                     local prev_idx = v[5];
-                    local unit;
-
-                    if v[1] == 5 then
-                        unit = "player"
-                    else
-                        unit = "party" .. v[1];
-                    end
 
                     local currtime = GetTime();
                     if currtime <= time + cool + 1 or prev_idx ~= idx then
@@ -510,8 +510,8 @@ local function AREADY_OnUpdate()
                     unit = "party" .. i;
                 end
                 if partyframes[unit] then
-                    if offensivecools[i] and offensivecools[i][1] and partyframes[unit].frame:IsShown() then
-                        UtilSetCooldown(offensivecools[i], unit, partyframes[unit]);
+                    if offensivecools[unit] and offensivecools[unit][1] and partyframes[unit].frame:IsShown() then
+                        UtilSetCooldown(offensivecools[unit], unit, partyframes[unit]);
                     elseif partyframes[unit] then
                         partyframes[unit].asbuffFrame:Hide()
                     end
@@ -599,18 +599,18 @@ local function OnEvent(self, event, arg1, arg2, arg3)
                 local info = coolspelllist[name] or coolspelllist[spellid];
                 local cool = info[1];
                 local buffcool = info[2];
-                offensivecools[self.partynum] = { self.partynum, spellid, time, cool, buffcool };
+                offensivecools[unit] = { unit, spellid, time, cool, buffcool };
             end
         end
 
         if not IsInRaid() and (trackedPartySpellNames[name] or trackedPartySpellNames[spellid]) then
             local cool = trackedPartySpellNames[name] or trackedPartySpellNames[spellid];
-            interruptcools[self.partynum] = { self.partynum, spellid, time, cool, 0 };            
+            interruptcools[unit] = { unit, spellid, time, cool, 0 };
         end
     end
 end
 
-local function SetupPartyCool(frame)
+local function SetupPartyCool(frame, raidframe)
     if frame and not frame:IsForbidden() and frame:IsShown() and frame.GetName then
         local name = frame:GetName();
 
@@ -622,33 +622,21 @@ local function SetupPartyCool(frame)
                 return;
             end
 
-            local raidframe;
-
-            if IsInRaid() then
-                if not raidframes[frame.unit] then
-                    raidframes[frame.unit] = CreateFrame("FRAME", nil);
-                end
-                raidframe = raidframes[frame.unit];
-                raidframe.partynum = UnitInRaid(frame.unit);
-            else
-                if not partyframes[frame.unit] then
-                    partyframes[frame.unit] = CreateFrame("FRAME", nil);
-                end
-                raidframe = partyframes[frame.unit];
-
-                if UnitIsUnit("player", frame.unit) then
-                    raidframe.partynum = 5;
-                else
-                    for k = 1, GetNumGroupMembers() - 1 do
-                        if UnitIsUnit("party" .. k, frame.unit) then
-                            raidframe.partynum = k;
-                        end
+            if raidframe == nil then
+                if IsInRaid() then
+                    if not raidframes[name] then
+                        raidframes[name] = CreateFrame("FRAME", nil);
+                        raidframes[name]:Hide();
                     end
+                    raidframe = raidframes[name];
+                else
+                    if not partyframes[frame.unit] then
+                        partyframes[frame.unit] = CreateFrame("FRAME", nil);
+                        partyframes[frame.unit]:Hide();
+                    end
+                    raidframe = partyframes[frame.unit];
                 end
             end
-
-            raidframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", frame.unit);
-            raidframe:SetScript("OnEvent", OnEvent)
 
             local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(
                 CompactPartyFrame.groupType);
@@ -706,14 +694,26 @@ local function SetupPartyCool(frame)
                     d:SetPoint("RIGHT", frame, "LEFT", -1, 0);
                 end
             end
+
+            local assignedRole = UnitGroupRolesAssigned(frame.unit);
+
+            if (IsInRaid() and assignedRole and assignedRole ~= "DAMAGER") then
+                raidframe:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+                raidframe:SetScript("OnEvent", nil);
+                raidframe.needtocheck = false;
+            else
+                raidframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", frame.unit);
+                raidframe:SetScript("OnEvent", OnEvent);
+                raidframe.needtocheck = true;
+            end
         end
     end
 end
 
 local function checkallraid()
-    for unit, frame in pairs(raidframes) do
-        if frame and frame.frame then
-            SetupPartyCool(frame.frame);
+    for name, raidframe in pairs(raidframes) do
+        if raidframe and raidframe.frame then
+            SetupPartyCool(raidframe.frame, raidframe);
         end
     end
 end
@@ -728,7 +728,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
 
     if timer then
         timer:Cancel();
-    end   
+    end
 
     if IsInRaid() then
         if ns.options.ShowRaidCool then
@@ -736,7 +736,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
                 offensivecools = {};
             end
 
-            checkallraid();            
+            checkallraid();
             timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
         else
             interruptcools = {};
@@ -744,13 +744,17 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
             AREADY_OnUpdate();
         end
     elseif IsInGroup() then
+        if event == "ENCOUNTER_END" then
+            return;
+        end
+
         for k = 1, 5 do
             local frame = _G["CompactPartyFrameMember" .. k];
             if frame then
                 SetupPartyCool(frame);
             end
         end
-       
+
         timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
     else
         interruptcools = {};
@@ -767,7 +771,7 @@ local function checkraidframe(frame)
 
         if name and not (name == nil) and
             (string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame")) then
-            if not (frame.unit and UnitIsPlayer(frame.unit)) and not UnitInRaid(frame.unit) then
+            if not (frame.unit and UnitIsPlayer(frame.unit)) then
                 return
             end
             SetupPartyCool(frame);
