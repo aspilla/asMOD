@@ -640,13 +640,13 @@ local function SetupPartyCool(frame, raidframe)
 
             if raidframe == nil then
                 if IsInRaid() then
-                    if not raidframes[name] then
+                    if raidframes[name] == nil then
                         raidframes[name] = CreateFrame("FRAME", nil);
                         raidframes[name]:Hide();
                     end
                     raidframe = raidframes[name];
                 else
-                    if not partyframes[frame.unit] then
+                    if partyframes[frame.unit] == nil then
                         partyframes[frame.unit] = CreateFrame("FRAME", nil);
                         partyframes[frame.unit]:Hide();
                     end

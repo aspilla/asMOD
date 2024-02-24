@@ -971,7 +971,9 @@ local function checkSpellCasting(self)
                         local colorid = v[6];
                         local dbmspellid = v[7];
 
-                        if guid and UnitGUID(unit) == guid and remain < min_remain then
+                        if remain < -1 then
+                            ns.dbm_event_list[id] = nil;
+                        elseif guid and UnitGUID(unit) == guid and remain < min_remain then
                             frameIcon:SetTexture(icon);
                             self.casticon:Show();
                             self.casticon.castspellid = dbmspellid;
