@@ -64,6 +64,9 @@ function ns.UpdateNameColor(frame, showbuffcolor, showhealthcolor)
 	else
 		frame.name:SetVertexColor(1.0, 1.0, 1.0);
 	end
+
+	local previousTexture = frame.healthBar:GetStatusBarTexture();
+    asframe.frametexture:SetVertexColor(previousTexture:GetVertexColor());
 end
 
 function ns.ACRB_UpdateRaidIconAborbColor(asframe)
