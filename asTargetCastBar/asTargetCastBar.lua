@@ -28,7 +28,7 @@ ATCB:SetHeight(0)
 ATCB:Show();
 
 ATCB.castbar = CreateFrame("StatusBar", nil, UIParent)
-ATCB.castbar:SetStatusBarTexture("Interface\\addons\\asTargetCastBar\\UI-StatusBar.blp", "BORDER")
+ATCB.castbar:SetStatusBarTexture("Interface\\addons\\asTargetCastBar\\UI-StatusBar", "BORDER")
 ATCB.castbar:GetStatusBarTexture():SetHorizTile(false)
 ATCB.castbar:SetMinMaxValues(0, 100)
 ATCB.castbar:SetValue(100)

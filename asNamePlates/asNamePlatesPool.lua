@@ -63,6 +63,7 @@ local function creatframe()
     object.casticon = CreateFrame("Frame", nil, object, "asNamePlatesBuffFrameTemplate");
     object.casticon.timetext = object.casticon:CreateFontString(nil, "OVERLAY");
     object.CCdebuff = CreateFrame("Frame", nil, object, "asNamePlatesBuffFrameTemplate");
+    object.BarTexture = object:CreateTexture(nil, "OVERLAY", "asColorTextureTemplate", 1);
     object.BarColor = object:CreateTexture(nil, "OVERLAY", "asColorTextureTemplate", 2);
     object.healthtext = object:CreateFontString(nil, "OVERLAY");
     object.resourcetext = object:CreateFontString(nil, "OVERLAY");

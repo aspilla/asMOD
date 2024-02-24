@@ -1059,6 +1059,7 @@ local function removeNamePlate(namePlateFrameBase)
         asframe.resourcetext:Hide();
         asframe.casticon:Hide();
         asframe.healer:Hide();
+        asframe.BarTexture:Hide();
         asframe.BarColor:Hide();
 
         asframe:Hide();
@@ -1235,6 +1236,13 @@ local function addNamePlate(namePlateFrameBase)
     asframe.CCdebuff:Hide();
 
     local previousTexture = healthbar:GetStatusBarTexture();
+
+    
+    asframe.BarTexture:ClearAllPoints();
+    asframe.BarTexture:SetAllPoints(previousTexture);
+    asframe.BarTexture:SetVertexColor(previousTexture:GetVertexColor());
+    asframe.BarTexture:Show();
+
     asframe.BarColor:ClearAllPoints();
     asframe.BarColor:SetAllPoints(previousTexture);
     asframe.BarColor:SetVertexColor(1, 1, 1)

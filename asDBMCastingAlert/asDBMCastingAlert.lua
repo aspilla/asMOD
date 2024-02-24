@@ -361,7 +361,7 @@ local function CreateCastbars(parent)
 	for idx = 1, 3 do
 		parent.bars[idx] = CreateFrame("StatusBar", nil, UIParent)
 		local frame = parent.bars[idx];
-		frame:SetStatusBarTexture("Interface\\addons\\asDBMCastingAlert\\UI-StatusBar.blp", "BORDER")
+		frame:SetStatusBarTexture("Interface\\addons\\asDBMCastingAlert\\UI-StatusBar", "BORDER")
 		frame:GetStatusBarTexture():SetHorizTile(false)
 		frame:SetMinMaxValues(0, 100)
 		frame:SetValue(100)

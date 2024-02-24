@@ -469,6 +469,18 @@ local function ACRB_setupFrame(frame)
         asframe.asraidicon:SetFont(STANDARD_TEXT_FONT, fontsize * 2);
     end
 
+    if not asframe.frametexture then
+        asframe.frametexture = frame:CreateTexture(nil, "ARTWORK", "asBuffTextureTemplate", -2);
+        asframe.frametexture:Show();
+    end
+
+    if asframe.frametexture then
+        local previousTexture = frame.healthBar:GetStatusBarTexture();
+        asframe.frametexture:ClearAllPoints();
+        asframe.frametexture:SetAllPoints(previousTexture);
+        asframe.frametexture:SetVertexColor(previousTexture:GetVertexColor());
+    end
+
     if not asframe.buffcolor then
         asframe.buffcolor = frame:CreateTexture(nil, "ARTWORK", "asBuffTextureTemplate", -1);
         asframe.buffcolor:Hide();

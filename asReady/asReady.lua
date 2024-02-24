@@ -226,7 +226,7 @@ LoadAddOn("asMOD");
 
 for idx = 1, AREADY_Max do
     AREADY.bar[idx] = CreateFrame("StatusBar", nil, UIParent)
-    AREADY.bar[idx]:SetStatusBarTexture("Interface\\addons\\asReady\\UI-StatusBar.blp", "BORDER")
+    AREADY.bar[idx]:SetStatusBarTexture("Interface\\addons\\asReady\\UI-StatusBar", "BORDER")
     AREADY.bar[idx]:GetStatusBarTexture():SetHorizTile(false)
     AREADY.bar[idx]:SetMinMaxValues(0, 100)
     AREADY.bar[idx]:SetValue(0)

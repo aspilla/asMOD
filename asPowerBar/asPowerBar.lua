@@ -2615,7 +2615,7 @@ do
     APB:Show();
 
     APB.bar = CreateFrame("StatusBar", nil, APB)
-    APB.bar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER")
+    APB.bar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER")
     APB.bar:GetStatusBarTexture():SetHorizTile(false)
     APB.bar:SetMinMaxValues(0, 100)
     APB.bar:SetValue(100)
@@ -2646,7 +2646,7 @@ do
     APB.bar.PredictionBar:Hide();
 
     APB.healthbar = CreateFrame("StatusBar", nil, APB);
-    APB.healthbar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER")
+    APB.healthbar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER")
     APB.healthbar:GetStatusBarTexture():SetHorizTile(false)
     APB.healthbar:SetMinMaxValues(0, 100)
     APB.healthbar:SetValue(100)
@@ -2680,7 +2680,7 @@ do
 
     for j = 0, 1 do
         APB.buffbar[j] = CreateFrame("StatusBar", nil, APB);
-        APB.buffbar[j]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER")
+        APB.buffbar[j]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER")
         APB.buffbar[j]:GetStatusBarTexture():SetHorizTile(false);
         APB.buffbar[j]:SetMinMaxValues(0, 100);
         APB.buffbar[j]:SetValue(100);
@@ -2724,7 +2724,7 @@ do
 
     for i = 1, 10 do
         APB.combobar[i] = CreateFrame("StatusBar", nil, APB);
-        APB.combobar[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER");
+        APB.combobar[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER");
         APB.combobar[i]:GetStatusBarTexture():SetHorizTile(false);
         APB.combobar[i]:SetMinMaxValues(0, 100);
         APB.combobar[i]:SetValue(100);
@@ -2759,7 +2759,7 @@ do
 
     for i = 1, 10 do
         APB.spellbar[i] = CreateFrame("StatusBar", nil, APB);
-        APB.spellbar[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar.blp", "BORDER");
+        APB.spellbar[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER");
         APB.spellbar[i]:GetStatusBarTexture():SetHorizTile(false);
         APB.spellbar[i]:SetMinMaxValues(0, 100);
         APB.spellbar[i]:SetValue(100);
