@@ -760,7 +760,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
             AREADY_OnUpdate();
         end
     elseif IsInGroup() then
-        if not event == "ENCOUNTER_END" then
+        if not (event == "ENCOUNTER_END") then
             for k = 1, 5 do
                 local frame = _G["CompactPartyFrameMember" .. k];
                 if frame then
