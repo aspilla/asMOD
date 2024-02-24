@@ -760,17 +760,14 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
             AREADY_OnUpdate();
         end
     elseif IsInGroup() then
-        if event == "ENCOUNTER_END" then
-            return;
-        end
-
-        for k = 1, 5 do
-            local frame = _G["CompactPartyFrameMember" .. k];
-            if frame then
-                SetupPartyCool(frame);
+        if not event == "ENCOUNTER_END" then
+            for k = 1, 5 do
+                local frame = _G["CompactPartyFrameMember" .. k];
+                if frame then
+                    SetupPartyCool(frame);
+                end
             end
         end
-
         timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
     else
         interruptcools = {};
