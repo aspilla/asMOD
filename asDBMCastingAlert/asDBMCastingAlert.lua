@@ -63,11 +63,21 @@ local function ADCA_DisplayRaidIcon(unit)
 end
 
 local function Comparator(a, b)
+	if a.focus then
+		return true;
+	end
+
+	if b.focus then
+		return false;
+	end
+
 	return a.expiration < b.expiration;
 end
 
 local castingInfos;
 local prev_count = 0;
+local prev_focus = 0;
+
 
 local function ADCA_OnUpdate()
 	if castingInfos == nil then
@@ -77,6 +87,9 @@ local function ADCA_OnUpdate()
 	end
 
 	local alert_name = nil;
+	local alert_noi = false;
+	local alert_focus = false;
+	local alert_focus_noi = false;
 
 	for unit, needtosound in pairs(CastingUnits) do
 		if UnitExists(unit) then
@@ -100,7 +113,9 @@ local function ADCA_OnUpdate()
 					duration = duration,
 					expiration = expirationTime,
 					spellId = spellId,
-					notInterruptible = notInterruptible
+					notInterruptible = notInterruptible,
+					focus = UnitExists("focus") and UnitIsUnit("focus", unit),
+					needtointerrupt = (DangerousSpellList[spellId] == "interrupt")
 				}
 			else
 				CastingUnits[unit] = nil;
@@ -140,14 +155,37 @@ local function ADCA_OnUpdate()
 
 				frame:SetMinMaxValues(0, frame.duration);
 
-				if DangerousSpellList[castingInfo.spellId] == "interrupt" or not castingInfo.notInterruptible then
-					frame:SetStatusBarColor(0, 1, 0);
+				if castingInfo.needtointerrupt then
+					local r, g, b = 0, 1, 0;
+
+					if castingInfo.notInterruptible then
+						r, g, b = 0.5, 0.5, 0.8;
+					else
+						r, g, b = 0, 1, 0;
+					end
+
+					frame:SetStatusBarColor(r, g, b);
+					if castingInfo.focus then
+						if castingInfo.notInterruptible then
+							alert_focus_noi = true;
+						end
+						ns.lib.PixelGlow_Start(frame.button, { 1, 1, 0, 1 });
+						ns.lib.PixelGlow_Start(frame, { 1, 1, 0, 1 });
+						alert_focus = true;
+					end
 
 					if ns.options.SoundOnlyforInterrupt and alert_name == nil then
 						alert_name = castingInfo.name;
+						if castingInfo.notInterruptible then
+							alert_noi = true;
+						end
 					end
 				else
-					frame:SetStatusBarColor(0.6, 0.6, 0.6);
+					if castingInfo.notInterruptible then
+						frame:SetStatusBarColor(0.6, 0.6, 0.6);						
+					else
+						frame:SetStatusBarColor(0.6, 1, 0.6);
+					end
 				end
 
 				if not ns.options.SoundOnlyforInterrupt and alert_name == nil then
@@ -166,6 +204,11 @@ local function ADCA_OnUpdate()
 				else
 					targetname:SetText("");
 					targetname:Hide();
+				end
+
+				if alert_focus == false then
+					ns.lib.PixelGlow_Stop(frame.button);
+					ns.lib.PixelGlow_Stop(frame);
 				end
 
 				frame:Show();
@@ -198,17 +241,45 @@ local function ADCA_OnUpdate()
 
 				local frameBorder = frame.border;
 
-				if DangerousSpellList[castingInfo.spellId] == "interrupt" or not castingInfo.notInterruptible then
-					frameBorder:SetVertexColor(0, 1, 0);
+				if castingInfo.needtointerrupt then
+					local r, g, b = 0, 1, 0;
+
+					if castingInfo.notInterruptible then
+						r, g, b = 0.5, 0.5, 0.8;
+					else
+						r, g, b = 0, 1, 0;
+					end
+
+					frameBorder:SetVertexColor(r, g, b);
+					if castingInfo.focus then
+						if castingInfo.notInterruptible then
+							alert_focus_noi = true;
+						end
+						
+						ns.lib.PixelGlow_Start(frame, { 1, 1, 0, 1 });
+						alert_focus = true;
+					end
+
 					if ns.options.SoundOnlyforInterrupt and alert_name == nil then
-						alert_name = castingInfo.name;
+						alert_name = castingInfo.name;												
+						if castingInfo.notInterruptible then
+							alert_noi = true;
+						end
 					end
 				else
-					frameBorder:SetVertexColor(0.3, 0.3, 0.3);
+					if castingInfo.notInterruptible then
+						frameBorder:SetVertexColor(0.6, 0.6, 0.6);						
+					else
+						frameBorder:SetVertexColor(0.6, 1, 0.6);
+					end
 				end
 
 				if not ns.options.SoundOnlyforInterrupt and alert_name == nil then
 					alert_name = castingInfo.name;
+				end
+
+				if alert_focus == false then					
+					ns.lib.PixelGlow_Stop(frame);
 				end
 
 				frame:Show();
@@ -226,13 +297,43 @@ local function ADCA_OnUpdate()
 		frame:Hide();
 	end
 
-	if ns.options.PlaySound and alert_name and prev_count == 0 then
-		if not ns.options.TTS then
-			PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\alert.mp3", "MASTER");
-		else
-			C_VoiceChat.SpeakText(CONFIG_VOICE_ID, alert_name, Enum.VoiceTtsDestination.LocalPlayback,
-				CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+	if ns.options.PlaySound then
+		if alert_focus and prev_focus == 0 then
+			if not ns.options.TTS then
+				if alert_focus_noi then
+					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\stun.mp3", "MASTER");
+				else
+					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\focus.mp3", "MASTER");
+				end
+			else
+
+				if alert_focus_noi then
+					C_VoiceChat.SpeakText(CONFIG_VOICE_ID, "스턴", Enum.VoiceTtsDestination.LocalPlayback,
+					CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+				else
+					C_VoiceChat.SpeakText(CONFIG_VOICE_ID, "짤", Enum.VoiceTtsDestination.LocalPlayback,
+					CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+				end
+				
+			end
+		elseif alert_name and prev_count == 0 then
+			if not ns.options.TTS then
+				if alert_noi then
+					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\stun2.mp3", "MASTER");
+				else
+					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\alert.mp3", "MASTER");
+				end
+			else
+				C_VoiceChat.SpeakText(CONFIG_VOICE_ID, alert_name, Enum.VoiceTtsDestination.LocalPlayback,
+					CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+			end
 		end
+	end
+
+	if alert_focus then
+		prev_focus = 1;
+	else
+		prev_focus = 0;
 	end
 
 	if alert_name then

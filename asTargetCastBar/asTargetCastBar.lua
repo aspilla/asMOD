@@ -189,10 +189,14 @@ local function ATCB_OnEvent(self, event, ...)
             frameIcon:Show();
             castBar:Show();
             if DangerousSpellList[spellid] then
-                if DangerousSpellList[spellid] == "interrupt" or not notInterruptible then
-                    ns.lib.PixelGlow_Start(castBar, { 0, 1, 0.32, 1 });
+                if DangerousSpellList[spellid] == "interrupt" then
+                    ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
                 else
-                    ns.lib.PixelGlow_Start(castBar, { 0.5, 0.5, 0.5, 1 });
+                    if notInterruptible then
+                        ns.lib.PixelGlow_Start(castBar, { 0.5, 0.5, 0.5, 1 });
+                    else
+                        ns.lib.PixelGlow_Start(castBar, { 0.5, 1, 0.5, 1 });
+                    end
                 end
             end
 

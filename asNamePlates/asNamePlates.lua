@@ -671,13 +671,19 @@ local function updateHealthbarColor(self)
             local isDanger, binterrupt = isDangerousSpell(spellid);
 
             self.castspellid = spellid;
-            if isDanger and (binterrupt == true or not notInterruptible) then
+            if isDanger and binterrupt == true then
+                --PixelGlow_Start(r, color, N, frequency, length, th, xOffset, yOffset, border, key, frameLevel)
                 ns.lib.PixelGlow_Start(self.casticon, { 1, 1, 0, 1 });
-                ns.lib.PixelGlow_Start(healthBar, { 1, 1, 0, 1 });
+                ns.lib.PixelGlow_Start(healthBar, { 1, 1, 0, 1 }, nil, nil, nil, nil, nil, nil, nil, nil, healthBar:GetFrameLevel() + 10);
                 bCastingColorAlert = true;
             elseif isDanger then
-                ns.lib.PixelGlow_Start(self.casticon, { 0.5, 0.5, 0.5, 1 });
-                ns.lib.PixelGlow_Start(healthBar, { 0.5, 0.5, 0.5, 1 });
+                if notInterruptible == false then
+                    ns.lib.PixelGlow_Start(self.casticon, { 0.5, 1, 0.5, 1 }, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+                    ns.lib.PixelGlow_Start(healthBar, { 0.5, 1, 0.5, 1 }, nil, nil, nil, nil, nil, nil, nil, nil, healthBar:GetFrameLevel() + 10);
+                else
+                    ns.lib.PixelGlow_Start(self.casticon, { 0.5, 0.5, 0.5, 1 });
+                    ns.lib.PixelGlow_Start(healthBar, { 0.5, 0.5, 0.5, 1 }, nil, nil, nil, nil, nil, nil, nil, nil, healthBar:GetFrameLevel() + 10);
+                end
             elseif notInterruptible == false then
                 ns.lib.PixelGlow_Start(self.casticon);
                 ns.lib.PixelGlow_Stop(healthBar);
