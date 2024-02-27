@@ -10,6 +10,7 @@ ns.Button = {
     frame = nil,
     inRange = true,
     alert = false,
+    checkcool = nil,
 
 
     icon = nil,
@@ -25,8 +26,10 @@ ns.Button = {
     spellcoolColor = { r = 0.8, g = 0.8, b = 1 },
     count = nil,
     buffalert = false,
+    coolalert = false,
     bufflist = {},
     alertbufflist = {},
+
 };
 
 function ns.Button:initButton()
@@ -44,6 +47,7 @@ function ns.Button:initButton()
     self.count = nil;
     self.buffalert = false;
     self.alert2 = false;
+    self.coolalert = false;
 
     local spellid = select(7, GetSpellInfo(self.spell));
     local name = select(1, GetSpellInfo(self.spell));
@@ -130,7 +134,7 @@ function ns.Button:checkBuffList()
         if aura then
             count = count + 1;
             -- 주사위 최대 버프 시간을 우선으로 보이자
-            if self.icon == nil or aura.expirationTime > (self.start + self.duration)  then
+            if self.icon == nil or aura.expirationTime > (self.start + self.duration) then
                 self.icon = aura.icon;
                 self.start = aura.expirationTime - aura.duration
                 self.duration = aura.duration;
@@ -438,8 +442,9 @@ function ns.Button:showButton()
     local frameCount;
     local frameBorder;
     local frameSpellCool;
+    local _, gcd = GetSpellCooldown(61304);
 
-    local frame = self.frame;
+    local frame  = self.frame;
     if not frame then
         return;
     end
@@ -484,6 +489,19 @@ function ns.Button:showButton()
         frameSpellCool:Hide();
     end
 
+    self.coolalert = false;
+    if self.checkcool then
+        if (self.reversecool == false) then
+            if self.duration == nil or self.duration <= gcd then
+                self.coolalert = true;
+            end
+        else
+            if self.spellcool == nil or tonumber(self.spellcool) == nil then
+                self.coolalert = true;
+            end
+        end
+    end
+
     if self.count then
         if frame.cooldownfont then
             frame.cooldownfont:ClearAllPoints();
@@ -508,6 +526,8 @@ function ns.Button:showButton()
         ns.lib.PixelGlow_Start(frame, { 0.5, 1, 0.5 });
     elseif self.alert2 then
         ns.lib.PixelGlow_Start(frame, { 0.7, 0.7, 1 });
+    elseif self.coolalert then
+        ns.lib.PixelGlow_Start(frame, { 1, 1, 1 });
     elseif self.alert then
         ns.lib.PixelGlow_Start(frame);
     else
@@ -564,6 +584,7 @@ function ns.Button:init(config, frame)
     self.countdebuff = config[7];
     self.bufflist = config[8];
     self.alertbufflist = config[9];
+    self.checkcool = config[10];
     self.spellid = select(7, GetSpellInfo(self.spell));
     if self.spellid == nil then
         self.spellid = select(7, GetSpellInfo(self.realspell));
@@ -607,7 +628,7 @@ function ns.Button:init(config, frame)
         ns.eventhandler.registerBuffTimer(self);
         ns.eventhandler.registerAura(self.unit, self.spell);
     end
-    
+
     if self.type == ns.EnumButtonType.Totem then
         ns.eventhandler.registerTotem(self.spell, self);
         ns.eventhandler.registerTotemTimer(self);

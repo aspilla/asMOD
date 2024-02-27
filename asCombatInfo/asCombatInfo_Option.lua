@@ -12,11 +12,11 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240218,
+	version = 240228,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
-	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist} 순으로 편집
+	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool} 순으로 편집
 	-- 	Spell 기술명 혹은 ID (버프는 ID로 입력해야 Icon 나옴)
 	-- 	Type : 1 Spell Cool down
 	-- 	Type : 2 버프 & Spell Cool down, buff가 없으면 Cooldown check
@@ -72,8 +72,8 @@ ACI_Options_Default = {
 	ACI_SpellList_ROGUE_2 = {
 		{ "뼈주사위", 2, nil, nil, nil, nil, nil, { "집중 공격", "무자비한 정밀함", "해적 징표", "진방위", "대난투", "숨겨진 보물" } },
 		{ 195627, 3, nil, 20 },
-		{ "아드레날린 촉진", 2 },
-		{ "폭풍의 칼날", 2 },
+		{ "아드레날린 촉진", 2, nil, nil, nil, nil, nil, nil, nil, 1 },
+		{ "폭풍의 칼날", 2, nil, nil, nil, nil, nil, nil, nil, 1 },
 		{ "미간 적중", 1, nil, nil, nil, nil, nil, nil, { "기만", "어둠의 춤" } },
 	},
 
