@@ -4,7 +4,7 @@ local Options_Default = {
     HideNamePlatesCooldown = true,    
 };
 
-ns.options = {};
+ns.options = CopyTable(Options_Default);
 
 
 function ns.SetupOptionPanels()
