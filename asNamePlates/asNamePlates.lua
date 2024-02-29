@@ -735,8 +735,7 @@ local function updateHealthbarColor(self)
         end
         -- ColorLevel.Name;
         if unitname and ns.ANameP_AlertList[unitname] then
-            color.r, color.g, color.b = ns.ANameP_AlertList[unitname][1], ns.ANameP_AlertList[unitname][2],
-                ns.ANameP_AlertList[unitname][3];
+            color = {r = ns.ANameP_AlertList[unitname][1], g = ns.ANameP_AlertList[unitname][2], b = ns.ANameP_AlertList[unitname][3]};
 
             if ns.ANameP_AlertList[unitname][4] == 1 then
                 ns.lib.PixelGlow_Start(healthBar);
