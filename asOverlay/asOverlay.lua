@@ -137,7 +137,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	end
 
 	local aura = ns.getExpirationTimeUnitAurabyID("player", spellID);
-	local rate = 0;
+	local rate = 1;
 
 	if aura then
 		local extime = aura.expirationTime;
@@ -146,11 +146,6 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 
 		if remain > 0 then
 			rate = remain / duration;
-		end
-	else
-		if ns.options.ShowAlpha == false then
-			rate = 1;
-			print("test");
 		end
 	end
 
