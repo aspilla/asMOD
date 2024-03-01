@@ -4,8 +4,7 @@ local sizeScale = 0.8;
 local longSide = 256 * sizeScale;
 local shortSide = 128 * sizeScale;
 
-local settingalpha = 0.5;
-
+local settingalpha = 1;
 
 local function asOverlay_OnLoad(self)
 	self.overlaysInUse = {};
@@ -126,14 +125,34 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	overlay:ClearAllPoints();
 
 	local texLeft, texRight, texTop, texBottom = 0, 1, 0, 1;
+	overlay.vflip = false;
+	overlay.hflip = false;
 	if (vFlip) then
 		texTop, texBottom = 1, 0;
+		overlay.vflip = true;
 	end
 	if (hFlip) then
 		texLeft, texRight = 1, 0;
+		overlay.hflip = true;
 	end
-	overlay.texture:SetTexCoord(texLeft, texRight, texTop, texBottom);
 
+	local aura = ns.getExpirationTimeUnitAurabyID("player", spellID);
+	local rate = 0;
+
+	if aura then
+		local extime = aura.expirationTime;
+		local duration = aura.duration;
+		local remain = extime - GetTime();
+
+		if remain > 0 then
+			rate = remain / duration;
+		end
+	else
+		if ns.options.ShowAlpha == false then
+			rate = 1;
+			print("test");
+		end
+	end
 
 	local width, height;
 	if (position == "CENTER") then
@@ -141,16 +160,16 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		overlay:SetPoint("CENTER", self, "CENTER", 0, 0);
 	elseif (position == "LEFT") then
 		width, height = shortSide, longSide;
-		overlay:SetPoint("RIGHT", self, "LEFT", 0, 0);
+		overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", 0, 0);
 	elseif (position == "RIGHT") then
 		width, height = shortSide, longSide;
-		overlay:SetPoint("LEFT", self, "RIGHT", 0, 0);
+		overlay:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 0, 0);
 	elseif (position == "TOP") then
 		width, height = longSide, shortSide;
-		overlay:SetPoint("BOTTOM", self, "TOP");
+		overlay:SetPoint("BOTTOMLEFT", self, "TOPLEFT");
 	elseif (position == "BOTTOM") then
 		width, height = longSide, shortSide;
-		overlay:SetPoint("TOP", self, "BOTTOM");
+		overlay:SetPoint("TOPLEFT", self, "BOTTOMLEFT");
 	elseif (position == "TOPRIGHT") then
 		width, height = shortSide, shortSide;
 		overlay:SetPoint("BOTTOMLEFT", self, "TOPRIGHT", 0, 0);
@@ -168,13 +187,43 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		return;
 	end
 
-	overlay:SetSize(width * scale, height * scale);
+	if string.find(position, "LEFT") or string.find(position, "RIGHT") then
+		overlay.side = true;
+	else
+		overlay.side = false;
+	end
+
+	overlay.width = width * scale;
+	overlay.height = height * scale;
 
 	overlay.texture:SetTexture(texturePath);
 	overlay.texture:SetVertexColor(r / 255, g / 255, b / 255);
 
+	if ns.options.ShowAlpha == false then
+		if overlay.side then
+			if (overlay.vflip) then
+				overlay.texture:SetTexCoord(texLeft, texRight, texTop, 1 - rate);
+			else
+				overlay.texture:SetTexCoord(texLeft, texRight, 1 - rate, texBottom);
+			end
+			overlay:SetSize(overlay.width, overlay.height * rate);
+		else
+			if (overlay.hflip) then
+				overlay.texture:SetTexCoord(rate, texRight, texTop, texBottom);
+			else
+				overlay.texture:SetTexCoord(texLeft, rate, texTop, texBottom);
+			end
+			overlay:SetSize(overlay.width * rate, overlay.height);
+		end
+	else
+		overlay:SetSize(overlay.width, overlay.height);
+		overlay.texture:SetTexCoord(texLeft, texRight, texTop, texBottom);
+		overlay:SetAlpha(rate * settingalpha);
+	end
+
 	overlay.animOut:Stop(); --In case we're in the process of animating this out.
 	PlaySound(SOUNDKIT.UI_POWER_AURA_GENERIC);
+
 	overlay:Show();
 end
 
@@ -190,8 +239,19 @@ local function asOverlay_ShowAllOverlays(self, spellID, texturePath, positions, 
 end
 
 
+local bfirst = true;
+
 
 local function asOverlay_OnEvent(self, event, ...)
+	local cvaralpha = Settings.GetValue("spellActivationOverlayOpacity");
+	if cvaralpha then
+		self:SetAlpha(cvaralpha);
+	end
+	if bfirst then
+		ns.SetupOptionPanels();
+		bfirst = false;
+	end
+
 	if (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
 		local spellID, texture, positions, scale, r, g, b = ...;
 		--if ( GetCVarBool("displaySpellActivationOverlays") ) then
@@ -204,9 +264,6 @@ local function asOverlay_OnEvent(self, event, ...)
 		else
 			asOverlay_HideAllOverlays(self);
 		end
-	elseif (event == "SETTINGS_LOADED") then
-		settingalpha = Settings.GetValue("spellActivationOverlayOpacity");
-		self:SetAlpha(settingalpha);
 	end
 end
 
@@ -216,11 +273,10 @@ local update = 0;
 local function asOverlay_OnUpdate(self, elapsed)
 	update = update + elapsed;
 
-	if update >= 0.25 and self.overlaysInUse then
+	if update >= 0.1 and self.overlaysInUse then
 		for spellID, overlayList in pairs(self.overlaysInUse) do
 			if (overlayList and #overlayList) then
 				local aura = ns.getExpirationTimeUnitAurabyID("player", spellID);
-				
 
 				if aura then
 					local extime = aura.expirationTime;
@@ -232,10 +288,37 @@ local function asOverlay_OnUpdate(self, elapsed)
 						rate = remain / duration;
 					end
 
+
 					for i = 1, #overlayList do
 						local overlay = overlayList[i];
-						settingalpha = Settings.GetValue("spellActivationOverlayOpacity");
-						overlay.texture:SetAlpha(rate * settingalpha);
+						if ns.options.ShowAlpha == true then
+							overlay:SetAlpha(rate * settingalpha);
+						else
+							local texLeft, texRight, texTop, texBottom = 0, 1, 0, 1;
+
+							if (overlay.vflip) then
+								texTop, texBottom = 1, 0;
+							end
+							if (overlay.hflip) then
+								texLeft, texRight = 1, 0;
+							end
+
+							if overlay.side then
+								if (overlay.vflip) then
+									overlay.texture:SetTexCoord(texLeft, texRight, texTop, 1 - rate);
+								else
+									overlay.texture:SetTexCoord(texLeft, texRight, 1 - rate, texBottom);
+								end
+								overlay:SetSize(overlay.width, overlay.height * rate);
+							else
+								if (overlay.hflip) then
+									overlay.texture:SetTexCoord(rate, texRight, texTop, texBottom);
+								else
+									overlay.texture:SetTexCoord(texLeft, rate, texTop, texBottom);
+								end
+								overlay:SetSize(overlay.width * rate, overlay.height);
+							end
+						end
 					end
 				end
 			end

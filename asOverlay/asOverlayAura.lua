@@ -12,7 +12,7 @@ local AuraFilters = {
 };
 
 local function CreateFilterString(...)
-    return table.concat({...}, '|');
+    return table.concat({ ... }, '|');
 end
 
 local function DefaultCompare(a, b)
@@ -50,12 +50,12 @@ local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
     until continuationToken == nil;
 end
 
-local function ProcessAura(aura, id)
+local function ProcessAura(aura, id, name)
     if aura == nil then
         return false;
     end
 
-    if aura.spellId == id then
+    if aura.spellId == id or aura.name == name then
         return true;
     end
 end
@@ -64,7 +64,6 @@ local auraData = {};
 auraData.bufffilter = CreateFilterString(AuraFilters.Helpful, AuraFilters.Player, AuraFilters.IncludeNameplateOnly);
 
 local function ParseAllAuras(unit, id)
-
     if auraData.buffs == nil then
         auraData.buffs = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
     else
@@ -73,8 +72,9 @@ local function ParseAllAuras(unit, id)
 
     local batchCount = nil;
     local usePackedAura = true;
+    local name = GetSpellInfo(id);
     local function HandleAura(aura)
-        local type = ProcessAura(aura, id);
+        local type = ProcessAura(aura, id, name);
 
         if type then
             auraData.buffs[aura.auraInstanceID] = aura;
@@ -84,7 +84,6 @@ local function ParseAllAuras(unit, id)
 end
 
 function ns.getExpirationTimeUnitAurabyID(unit, id)
-
     ParseAllAuras(unit, id);
 
     local auraList = auraData.buffs;
@@ -95,6 +94,16 @@ function ns.getExpirationTimeUnitAurabyID(unit, id)
             ret = aura;
         end
     end);
+
+    if ret == nil then
+        local name = GetSpellInfo(id);
+
+        auraList:Iterate(function(auraInstanceID, aura)
+            if aura.name == name then
+                ret = aura;
+            end
+        end);
+    end
 
     return ret;
 end
