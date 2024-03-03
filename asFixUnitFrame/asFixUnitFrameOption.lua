@@ -10,7 +10,7 @@ local Options_Default = {
     ShowPotraitDebuff = true,
 };
 
-ns.options = {};
+ns.options = CopyTable(Options_Default);
 
 
 function ns.SetupOptionPanels()

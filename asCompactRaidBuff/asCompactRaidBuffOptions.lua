@@ -255,7 +255,7 @@ ns.ACRB_MAX_CASTING = 2         -- 최대 Casting Alert
 ns.ACRB_MaxBuffSize = 20        -- 최대 Buff Size 창을 늘려도 이 크기 이상은 안커짐
 ns.ACRB_HealerManaBarHeight = 3 -- 힐러 마나바 크기 (안보이게 하려면 0)
 
-ns.options = {};
+ns.options = CopyTable(Options_Default);
 
 
 

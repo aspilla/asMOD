@@ -7,7 +7,7 @@ local Options_Default = {
     BarType = true,
 };
 
-ns.options = {};
+ns.options = CopyTable(Options_Default);
 
 
 function ns.SetupOptionPanels()

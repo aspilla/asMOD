@@ -1,6 +1,6 @@
 local asMOD;
 local asMOD_UIScale = 0.75;
-local asMOD_CurrVersion = 240218;
+local asMOD_CurrVersion = 240303;
 local bAction = false;
 asMOD_t_position = {};
 
@@ -88,6 +88,9 @@ local function asMOD_Setup()
 
 	print("[asMOD] 재사용 대기시간을 보이게 합니다.");
 	SetCVar("countdownForCooldowns", "1");
+
+	print("[asMOD] 주문 경보 투명도 설정");
+	SetCVar("spellActivationOverlayOpacity", 0.5);	
 
 	print("[asMOD] 힐량와 데미지를 보이게 합니다.");
 	SetCVar("floatingCombatTextCombatHealing", 1);
