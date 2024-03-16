@@ -3,7 +3,7 @@ local Options_Default = {
     PlaySound = true,
     AlwaysShowButtons = false,
     SoundVolume = 100,
-    SoundCooldown = 30,
+    SoundCooldown = 15,
     EnableTTS = true,
     SlotNameTTS = true,
 };

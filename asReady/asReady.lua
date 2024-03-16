@@ -6,7 +6,7 @@ local AREADY_X = -500;        -- X 위치
 local AREADY_Y = 150;         -- Y 위치
 local AREADY_Font = "Fonts\\2002.TTF";
 local AREADY_Max = 10;        -- 최대 표시 List 수
-local AREADY_UpdateRate = 0.2 -- Refresh 시간 초
+local AREADY_UpdateRate = 0.3 -- Refresh 시간 초
 
 
 -----------------설정 끝 ------------------------
@@ -257,7 +257,6 @@ local function UtilSetCooldown(offensivecool, unit, asframe)
 end
 
 local function showallframes(frames)
-
     for _, raidframe in pairs(frames) do
         local unit = raidframe.frame.unit;
         if raidframe.needtocheck and unit and offensivecools[unit] and offensivecools[unit][1] and raidframe.frame:IsShown() then
@@ -384,14 +383,16 @@ local function scanUnitSpecID(unit)
     end
 end
 
-local function OnEvent(self, event, arg1, arg2, arg3)
+local checkcoollist = {};
+
+local function OnSpellEvent(self, event, arg1, arg2, arg3)
     if arg1 and arg3 then
         local spellid = arg3;
         local unit = arg1;
         local time = GetTime();
         local name = GetSpellInfo(spellid);
-        if self.coolspelllist then
-            local coolspelllist = self.coolspelllist;
+        if checkcoollist[unit] then
+            local coolspelllist = checkcoollist[unit];
 
             if coolspelllist and coolspelllist[name] or coolspelllist[spellid] then
                 local info = coolspelllist[name] or coolspelllist[spellid];
@@ -435,15 +436,16 @@ local function SetupPartyCool(frame, raidframe)
 
             if raidframe == nil then
                 if string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame") then
+                    if not ns.options.ShowRaidCool then
+                        return;
+                    end
                     if raidframes[name] == nil then
-                        raidframes[name] = CreateFrame("FRAME", nil);
-                        raidframes[name]:Hide();
+                        raidframes[name] = {};
                     end
                     raidframe = raidframes[name];
                 else
                     if partyframes[name] == nil then
-                        partyframes[name] = CreateFrame("FRAME", nil);
-                        partyframes[name]:Hide();
+                        partyframes[name] = {};
                     end
                     raidframe = partyframes[name];
                 end
@@ -476,6 +478,8 @@ local function SetupPartyCool(frame, raidframe)
                 end
 
                 raidframe.coolspelllist = newcoollist;
+                checkcoollist[frame.unit] = newcoollist;
+                
             end
 
             if not raidframe.asbuffFrame then
@@ -509,12 +513,8 @@ local function SetupPartyCool(frame, raidframe)
             local assignedRole = UnitGroupRolesAssigned(frame.unit);
 
             if (IsInRaid() and assignedRole and assignedRole ~= "DAMAGER") then
-                raidframe:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-                raidframe:SetScript("OnEvent", nil);
                 raidframe.needtocheck = false;
             else
-                raidframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", frame.unit);
-                raidframe:SetScript("OnEvent", OnEvent);
                 raidframe.needtocheck = true;
             end
         end
@@ -532,54 +532,45 @@ end
 local bfirst = true;
 
 local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
-    if bfirst then
-        ns.SetupOptionPanels();
-        bfirst = false;
-    end
+    if event == "UNIT_SPELLCAST_SUCCEEDED" then
+        OnSpellEvent(self, event, arg1, arg2, arg3);
+    else
+        if bfirst then
+            ns.SetupOptionPanels();
+            bfirst = false;
+        end
 
-    if timer then
-        timer:Cancel();
-    end
+        if timer then
+            timer:Cancel();
+        end
 
-    if IsInRaid() then
-        if ns.options.ShowRaidCool then
-            if event == "ENCOUNTER_END" then
+        if IsInRaid() then
+            if ns.options.ShowRaidCool then
+                if event == "ENCOUNTER_END" then
+                    offensivecools = {};
+                end
+
+
+                checkallraid(raidframes);
+                timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
+            else
+                interruptcools = {};
                 offensivecools = {};
+                AREADY_OnUpdate();
             end
-
-            checkallraid(raidframes);
+        elseif IsInGroup() then
+            if not (event == "ENCOUNTER_END") then
+                checkallraid(partyframes);
+            end
             timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
         else
             interruptcools = {};
             offensivecools = {};
             AREADY_OnUpdate();
         end
-    elseif IsInGroup() then
-        if not (event == "ENCOUNTER_END") then
-            checkallraid(partyframes);
-        end
-        timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
-    else
-        interruptcools = {};
-        offensivecools = {};
-        AREADY_OnUpdate();
     end
 
     return;
-end
-
-local function checkraidframe(frame)
-    if ns.options.ShowRaidCool and frame and not frame:IsForbidden() and frame.GetName then
-        local name = frame:GetName();
-
-        if name and not (name == nil) and
-            (string.find(name, "CompactPartyFrameMember") or string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame")) then
-            if not (frame.unit and UnitIsPlayer(frame.unit)) then
-                return
-            end
-            SetupPartyCool(frame);
-        end
-    end
 end
 
 AREADY:SetScript("OnEvent", AREADY_OnEvent)
@@ -589,5 +580,6 @@ AREADY:RegisterEvent("GROUP_ROSTER_UPDATE");
 AREADY:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 AREADY:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");
 AREADY:RegisterEvent("ENCOUNTER_END");
+AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
 
-hooksecurefunc("CompactUnitFrame_UpdateAll", checkraidframe);
+hooksecurefunc("CompactUnitFrame_UpdateAll", SetupPartyCool);

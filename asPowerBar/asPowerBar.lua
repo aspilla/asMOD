@@ -26,6 +26,7 @@ local bupdate_partial_power = false;
 local bsmall_power_bar = false;
 local bupdate_buff_combo = false;
 local bupdate_direbeast_combo = false;
+local bupdate_shadow_tech = false;
 local APB_UNIT_POWER;
 local APB_POWER_LEVEL;
 
@@ -278,6 +279,19 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
             else
                 ns.lib.PixelGlow_Stop(APB.combobar[i]);
             end
+        end
+    end
+
+    if bupdate_shadow_tech then
+        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff("player", "그림자 기술", "player");
+
+        if name and count > 0 then
+            APB.combobar[1].text:SetText(count);
+            APB.combobar[1].text:ClearAllPoints();
+            APB.combobar[1].text:SetPoint("CENTER", APB.combobar[math.ceil(max_combo / 2)], "CENTER", 0, 0);
+            APB.combobar[1].text:Show();
+        else
+            APB.combobar[1].text:Hide();
         end
     end
 
@@ -1407,6 +1421,7 @@ local function APB_CheckPower(self)
     bupdate_powerbar = true;
     bupdate_buff_combo = false;
     bupdate_direbeast_combo = false;
+    bupdate_shadow_tech = false;
     bupdate_stagger = false;
     bupdate_fronzen = false;
     bupdate_windrunner = false;
@@ -1854,6 +1869,10 @@ local function APB_CheckPower(self)
             APB.buffbar[0].unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
             APB_UpdateBuff(self.buffbar[0])
+        end
+
+        if (spec and spec == 3) then
+            bupdate_shadow_tech = true;
         end
     end
 
