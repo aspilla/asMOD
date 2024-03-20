@@ -95,6 +95,9 @@ local voice_remap = {
 	["자연의 치유력"] = "해제쿨다운",
 }
 
+local GetItemInfo = C_Item and C_Item.GetItemInfo or GetItemInfo;
+local GetItemSpell = C_Item and C_Item.GetItemSpell or GetItemSpell;
+local GetItemCooldown = C_Item and C_Item.GetItemCooldown or GetItemCooldown;
 
 local ACDP = {};
 local ACDP_Icon = {};

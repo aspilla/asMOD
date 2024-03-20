@@ -22,7 +22,12 @@ end
 
 
 local function asOverlay_CreateOverlay(self)
-	return CreateFrame("Frame", nil, self, "asOverlayTemplate");
+	local ret = CreateFrame("Frame", nil, self, "asOverlayTemplate");
+	ret.count:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
+	ret.count:SetTextColor(0,1,0);
+	ret.remain:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
+	ret.remain:SetTextColor(1,1,1);
+	return ret;
 end
 
 local function asOverlay_GetUnusedOverlay(self)
@@ -138,11 +143,14 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 
 	local aura = ns.getExpirationTimeUnitAurabyID("player", spellID);
 	local rate = 1;
+	local count = 0;
+	local remain = 0;
 
 	if aura then
 		local extime = aura.expirationTime;
 		local duration = aura.duration;
-		local remain = extime - GetTime();
+		remain = extime - GetTime();
+		count = aura.applications;
 
 		if remain > 0 then
 			rate = remain / duration;
@@ -184,8 +192,16 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 
 	if string.find(position, "LEFT") or string.find(position, "RIGHT") then
 		overlay.side = true;
+		overlay.count:ClearAllPoints()
+		overlay.count:SetPoint("BOTTOM", overlay, "BOTTOM", 0, 0);
+		overlay.remain:ClearAllPoints()
+		overlay.remain:SetPoint("BOTTOM", overlay, "BOTTOM", 20, 0);
 	else
 		overlay.side = false;
+		overlay.count:ClearAllPoints()
+		overlay.count:SetPoint("LEFT", overlay, "LEFT", 0, 0);
+		overlay.remain:ClearAllPoints()
+		overlay.remain:SetPoint("LEFT", overlay, "LEFT", -20, 0);
 	end
 
 	overlay.width = width * scale;
@@ -278,6 +294,7 @@ local function asOverlay_OnUpdate(self, elapsed)
 					local duration = aura.duration;
 					local remain = extime - GetTime();
 					local rate = 0;
+					local count = aura.applications;
 
 					if remain > 0 then
 						rate = remain / duration;
@@ -314,6 +331,26 @@ local function asOverlay_OnUpdate(self, elapsed)
 								overlay:SetSize(overlay.width * rate, overlay.height);
 							end
 						end
+
+						if count > 1 and i == 1 and ns.options.ShowCount then
+							overlay.count:SetText(count);
+							overlay.count:Show();
+						else
+							overlay.count:Hide();
+						end
+
+						if remain > 0 and i == 1 and ns.options.ShowRemainTime then
+							overlay.remain:SetText(math.ceil(remain));
+							overlay.remain:Show();
+						else
+							overlay.remain:Hide();
+						end
+					end
+				else
+					for i = 1, #overlayList do
+						local overlay = overlayList[i];
+						overlay.count:Hide();
+						overlay.remain:Hide();
 					end
 				end
 			end

@@ -19,6 +19,9 @@ local itemslots = {
 	"Trinket1Slot",
 };
 
+local GetItemInfo = C_Item and C_Item.GetItemInfo or GetItemInfo;
+local GetItemQualityColor = C_Item and C_Item.GetItemQualityColor or GetItemQualityColor;
+
 local asGearScore = CreateFrame("Frame", nil, UIParent);
 local fontstrings = {};
 local inspectframe;

@@ -1,4 +1,4 @@
-﻿## Interface: 100205
+﻿## Interface: 100206
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rCompactRaidBuff
 ## Notes: 공격대/파티 창 강화

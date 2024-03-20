@@ -114,37 +114,15 @@ end
 local max_y = 0;
 
 -- Setup
-local function ACRB_setupFrame(frame)
-    if not frame or frame:IsForbidden() then
+function ns.ACRB_setupFrame(asframe, bupdate)
+    if not asframe.frame or asframe.frame:IsForbidden() then
         return
     end
-
-    local frameName = frame:GetName()
-
-    local asframe;
+    local frame = asframe.frame;
     local x, y = frame:GetSize();
 
-    if string.find(frameName, "CompactPartyFrameMember") then
-        if ns.asparty[frameName] == nil then
-            ns.asparty[frameName] = {};
-        end
-        asframe = ns.asparty[frameName];
-    else
-        if y > max_y then
-            max_y = y;
-        end
-
-        if y <= max_y / 2 then
-            ns.asraid[frameName] = nil;
-            return;
-        end
-
-        if ns.asraid[frameName] == nil then
-            ns.asraid[frameName] = {};
-        end
-
-        asframe = ns.asraid[frameName];
-    end
+    asframe.needtosetup = false;
+    asframe.updatecount = nil;
 
     if frame.unit then
         asframe.unit = frame.unit;
@@ -155,9 +133,6 @@ local function ACRB_setupFrame(frame)
     else
         asframe.displayedUnit = frame.unit;
     end
-
-    asframe.frame = frame;
-    asframe.updatecount = nil;
 
     if (not UnitIsPlayer(asframe.unit)) and not ns.isParty(asframe.unit) then
         return;
@@ -524,9 +499,11 @@ local function ACRB_setupFrame(frame)
 
     asframe.ncasting = 0;
 
-    ns.ACRB_UpdateHealerMana(asframe);
-    ns.ACRB_UpdateRaidIconAborbColor(asframe);
-    ns.ACRB_UpdateAuras(asframe);
+    if bupdate then
+        ns.ACRB_UpdateHealerMana(asframe);
+        ns.ACRB_UpdateRaidIconAborbColor(asframe);
+        ns.ACRB_UpdateAuras(asframe);
+    end
 end
 
 local function ACRB_disableDefault(frame)
@@ -570,14 +547,43 @@ local function ARCB_UpdateAll(frame)
     if frame and not frame:IsForbidden() and frame.GetName then
         local name = frame:GetName();
 
-        if name and not (name == nil) and
-            (string.find(name, "CompactPartyFrameMember") or string.find(name, "CompactRaidGroup") or
-                string.find(name, "CompactRaidFrame")) then
-            if not (frame.unit and UnitIsPlayer(frame.unit)) and not ns.isParty(frame.unit) then
-                return
+        if name and not (name == nil) then
+            if string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame") then
+                if not (frame.unit and UnitIsPlayer(frame.unit)) and not ns.isParty(frame.unit) then
+                    return
+                end
+                ACRB_disableDefault(frame);
+
+                local x, y = frame:GetSize();
+
+                if y > max_y then
+                    max_y = y;
+                end
+
+                if y <= max_y / 2 then
+                    ns.asraid[name] = nil;
+                    return;
+                end
+
+                if ns.asraid[name] == nil then
+                    ns.asraid[name] = {};
+                end
+
+                ns.asraid[name].needtosetup = true;
+                ns.asraid[name].frame = frame;
+            elseif string.find(name, "CompactPartyFrameMember") then
+                if not (frame.unit and UnitIsPlayer(frame.unit)) and not ns.isParty(frame.unit) then
+                    return
+                end
+                ACRB_disableDefault(frame);
+
+                if ns.asparty[name] == nil then
+                    ns.asparty[name] = {};
+                end
+
+                ns.asparty[name].needtosetup = true;
+                ns.asparty[name].frame = frame;
             end
-            ACRB_disableDefault(frame);
-            ACRB_setupFrame(frame);
         end
     end
 end
@@ -617,13 +623,13 @@ local function ACRB_updatePartyAllAura(auraonly, update_all)
         if (IsInRaid()) then
             for _, asframe in pairs(ns.asraid) do
                 if asframe and asframe.frame and asframe.frame:IsShown() then
-                    ACRB_setupFrame(asframe.frame);
+                    ns.ACRB_setupFrame(asframe, true);
                 end
             end
         elseif (IsInGroup()) then
             for _, asframe in pairs(ns.asparty) do
                 if asframe and asframe.frame and asframe.frame:IsShown() then
-                    ACRB_setupFrame(asframe.frame);
+                    ns.ACRB_setupFrame(asframe, true);
                 end
             end
         end

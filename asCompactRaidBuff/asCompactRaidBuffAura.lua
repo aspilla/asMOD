@@ -96,13 +96,13 @@ local dispelNodeIDs = {
 function ns.UpdateDispellable()
     -- update dispellable
     wipe(DispellableDebuffTypes)
-    local specID = GetSpecializationInfo(GetSpecialization())    
+    local specID = GetSpecializationInfo(GetSpecialization())
     local activeConfigID = C_ClassTalents.GetActiveConfigID()
     if activeConfigID and dispelNodeIDs[specID] then
         for dispelType, value in pairs(dispelNodeIDs[specID]) do
-            if type(value) == "boolean" then                
+            if type(value) == "boolean" then
                 DispellableDebuffTypes[dispelType] = value
-            elseif type(value) == "table" then     -- more than one trait
+            elseif type(value) == "table" then -- more than one trait
                 for _, v in pairs(value) do
                     local nodeInfo = C_Traits.GetNodeInfo(activeConfigID, v)
                     if nodeInfo and nodeInfo.ranksPurchased ~= 0 then
@@ -110,9 +110,9 @@ function ns.UpdateDispellable()
                         break
                     end
                 end
-            else     -- number: check node info
+            else -- number: check node info
                 local nodeInfo = C_Traits.GetNodeInfo(activeConfigID, value)
-                if nodeInfo and nodeInfo.ranksPurchased ~= 0 then                    
+                if nodeInfo and nodeInfo.ranksPurchased ~= 0 then
                     DispellableDebuffTypes[dispelType] = true
                 end
             end
@@ -141,7 +141,7 @@ local AuraFilters = {
 };
 
 local function CreateFilterString(...)
-    return table.concat({...}, '|');
+    return table.concat({ ... }, '|');
 end
 
 local function DefaultAuraCompare(a, b)
@@ -225,8 +225,8 @@ ns.hasValidPlayer = false;
 
 local function GetCachedVisibilityInfo(spellId)
     if cachedVisualizationInfo[spellId] == nil then
-        local newInfo = {SpellGetVisibilityInfo(spellId,
-            UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT")};
+        local newInfo = { SpellGetVisibilityInfo(spellId,
+            UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT") };
         if not ns.hasValidPlayer then
             -- Don't cache the info if the player is not valid since we didn't get a valid result
             return unpack(newInfo);
@@ -257,10 +257,10 @@ local function ShouldDisplayBuff(aura)
 
     if (hasCustom) then
         return showForMySpec or
-                   (alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
+            (alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
     else
         return (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") and
-                   ((canApplyAura and not CheckIsSelfBuff(spellId)));
+            ((canApplyAura and not CheckIsSelfBuff(spellId)));
     end
 end
 
@@ -290,7 +290,7 @@ local function ShouldDisplayDebuff(aura)
     local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
     if (hasCustom) then
         return showForMySpec or
-                   (alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
+            (alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
         -- Would only be "mine" in the case of something like forbearance.
     else
         return true;
@@ -467,8 +467,8 @@ local function ProcessAura(aura)
             end
         else -- aura.isRaid
             aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
-                                      UnitFrameDebuffType.NonBossRaidDebuff;
-            if DispellableDebuffTypes[aura.dispelName] then                
+                UnitFrameDebuffType.NonBossRaidDebuff;
+            if DispellableDebuffTypes[aura.dispelName] then
                 return AuraUpdateChangedType.Dispel;
             else
                 return AuraUpdateChangedType.Debuff;
@@ -493,7 +493,6 @@ local function ProcessAura(aura)
 end
 
 local function ACRB_ParseAllAuras(asframe)
-
     local DispellTypes = {
         Magic = true,
         Curse = true,
@@ -543,8 +542,11 @@ local function ACRB_ParseAllAuras(asframe)
 end
 
 function ns.ACRB_UpdateAuras(asframe)
-
     local frame = asframe.frame;
+
+    if asframe.needtosetup then
+        ns.ACRB_setupFrame(asframe);
+    end
 
     do
         if frame.buffFrames then
@@ -698,7 +700,7 @@ function ns.ACRB_UpdateAuras(asframe)
                 local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
 
                 if not asframe.isDispellAlert and ns.options.BorderDispelAlert then
-                    ns.lib.PixelGlow_Start(asframe.frame, {color.r, color.g, color.b, 1})
+                    ns.lib.PixelGlow_Start(asframe.frame, { color.r, color.g, color.b, 1 })
                     asframe.isDispellAlert = true;
                 end
                 showdispell = true;

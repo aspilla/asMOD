@@ -85,6 +85,9 @@ local mspells         = {
 
 }
 
+local GetItemInfo = C_Item and C_Item.GetItemInfo or GetItemInfo;
+local IsItemInRange = C_Item and C_Item.IsItemInRange or IsItemInRange;
+
 local ARD_mainframe   = CreateFrame("Frame", nil, UIParent);
 ARD_mainframe:SetFrameStrata("MEDIUM");
 ARD_mainframe:SetFrameLevel(9000);

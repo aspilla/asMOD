@@ -1,7 +1,9 @@
 local _, ns = ...;
 local Options_Default = {
     version = 240301,
-    ShowAlpha = false,    
+    ShowAlpha = false,
+    ShowCount = false,
+    ShowRemainTime = false,
 };
 
 ns.options = CopyTable(Options_Default);

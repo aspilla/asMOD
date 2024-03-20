@@ -10,6 +10,8 @@ local AGCD_BlackList = {
 	[240022] = 1,
 }
 
+local GetItemInfo = C_Item and C_Item.GetItemInfo or GetItemInfo;
+local GetItemSpell = C_Item and C_Item.GetItemSpell or GetItemSpell;
 
 local KnownSpellList = {};
 

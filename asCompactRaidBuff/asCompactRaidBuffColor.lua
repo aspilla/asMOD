@@ -125,6 +125,11 @@ function ns.ACRB_UpdateRaidIconAborbColor(asframe)
 end
 
 function ns.ACRB_UpdateHealerMana(asframe)
+
+	if asframe.needtosetup then
+		ns.ACRB_setupFrame(asframe);
+	end
+
 	if (not asframe.asManabar) then
 		return;
 	end

@@ -1,3 +1,6 @@
+
+local GetItemInfo = C_Item and C_Item.GetItemInfo or GetItemInfo;
+
 local onEvent = function(self)
 	local c = C_Container;
 
