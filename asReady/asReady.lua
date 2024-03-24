@@ -259,9 +259,13 @@ end
 local function showallframes(frames)
     for _, raidframe in pairs(frames) do
         local unit = raidframe.frame.unit;
+
+        if raidframe.needtosetup then
+            ns.SetupPartyCool(raidframe);
+        end
         if raidframe.needtocheck and unit and offensivecools[unit] and offensivecools[unit][1] and raidframe.frame:IsShown() then
             UtilSetCooldown(offensivecools[unit], unit, raidframe);
-        else
+        elseif raidframe.asbuffFrame then
             raidframe.asbuffFrame:Hide()
         end
     end
@@ -411,11 +415,96 @@ end
 
 local max_y = 0;
 
-local function SetupPartyCool(frame, raidframe)
+function ns.SetupPartyCool(raidframe)
+    local frame = raidframe.frame;
+    raidframe.needtosetup = false;
+    if frame and not frame:IsForbidden() and frame:IsShown() then
+        if not (frame.displayedUnit and UnitIsPlayer(frame.displayedUnit)) then
+            return;
+        end
+        if not (frame.unit and UnitIsPlayer(frame.unit)) then
+            return;
+        end
+
+        local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(
+            CompactPartyFrame.groupType);
+        local x, y = frame:GetSize();
+        raidframe.frame = frame;
+
+        local localizedClass, englishClass, classID = UnitClass(frame.unit);
+        local spec = scanUnitSpecID(frame.unit);
+
+        if spec == nil or spec == 0 then
+            spec = scanUnitSpecID(frame.unit);
+        end
+
+        if spec == nil or spec == 0 then
+            spec = 1;
+        end
+
+        if englishClass then
+            local newcoollist = ns.trackedCoolSpellNames[englishClass .. "_" .. spec];
+            local newlistname = GetUnitName(frame.unit) .. englishClass .. "_" .. spec;
+
+            if raidframe.listname == nil or raidframe.listname ~= newlistname then
+                interruptcools[frame.unit] = {};
+                offensivecools[frame.unit] = {};
+                raidframe.listname = newlistname;
+            end
+
+            raidframe.coolspelllist = newcoollist;
+            checkcoollist[frame.unit] = newcoollist;
+        end
+
+        if not raidframe.asbuffFrame then
+            local buffFrame = CreateFrame("Button", nil, frame, "AREADYFrameTemplate")
+            layoutbuff(buffFrame, frame.unit);
+            raidframe.asbuffFrame = buffFrame;
+            buffFrame:Hide();
+        end
+
+        if IsInRaid() then
+            --if true then
+            local d = raidframe.asbuffFrame;
+            d:SetSize(x / 6 - 1, y / 3 - 1);
+            d.remain:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE");
+            layoutcooldown(d);
+            d:ClearAllPoints();
+            d:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2);
+        else
+            local d = raidframe.asbuffFrame;
+            d:SetSize(y / 2 * 1.2, y / 2);
+            d.remain:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
+            layoutcooldown(d);
+            d:ClearAllPoints();
+            if useHorizontalGroups then
+                d:SetPoint("TOP", frame, "BOTTOM", 0, -1);
+            else
+                d:SetPoint("RIGHT", frame, "LEFT", -1, 0);
+            end
+        end
+
+        local assignedRole = UnitGroupRolesAssigned(frame.unit);
+
+        if (IsInRaid() and assignedRole and assignedRole ~= "DAMAGER") then
+            raidframe.needtocheck = false;
+        else
+            raidframe.needtocheck = true;
+        end
+    end
+end
+
+local function checkallraid(frames)
+    for _, raidframe in pairs(frames) do
+        ns.SetupPartyCool(raidframe);        
+    end
+end
+
+local function hookfunc(frame)
     if frame and not frame:IsForbidden() and frame:IsShown() and frame.GetName then
         local name = frame:GetName();
 
-        if name and not (name == nil) and (string.find(name, "CompactPartyFrameMember") or string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame")) then
+        if name and not (name == nil) then
             if not (frame.displayedUnit and UnitIsPlayer(frame.displayedUnit)) then
                 return;
             end
@@ -423,7 +512,13 @@ local function SetupPartyCool(frame, raidframe)
                 return;
             end
 
-            if IsInRaid() then
+            local raidframe;
+
+            if string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame") then
+                if not ns.options.ShowRaidCool then
+                    return;
+                end
+
                 local x, y = frame:GetSize();
                 if y > max_y then
                     max_y = y;
@@ -432,99 +527,21 @@ local function SetupPartyCool(frame, raidframe)
                 if y <= max_y / 2 then
                     return;
                 end
-            end
-
-            if raidframe == nil then
-                if string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame") then
-                    if not ns.options.ShowRaidCool then
-                        return;
-                    end
-                    if raidframes[name] == nil then
-                        raidframes[name] = {};
-                    end
-                    raidframe = raidframes[name];
-                else
-                    if partyframes[name] == nil then
-                        partyframes[name] = {};
-                    end
-                    raidframe = partyframes[name];
+                if raidframes[name] == nil then
+                    raidframes[name] = {};
                 end
+                raidframe = raidframes[name];
+            elseif string.find(name, "CompactPartyFrameMember") then
+                if partyframes[name] == nil then
+                    partyframes[name] = {};
+                end
+                raidframe = partyframes[name];
+            else
+                return;
             end
 
-            local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(
-                CompactPartyFrame.groupType);
-            local x, y = frame:GetSize();
             raidframe.frame = frame;
-
-            local localizedClass, englishClass, classID = UnitClass(frame.unit);
-            local spec = scanUnitSpecID(frame.unit);
-
-            if spec == nil or spec == 0 then
-                spec = scanUnitSpecID(frame.unit);
-            end
-
-            if spec == nil or spec == 0 then
-                spec = 1;
-            end
-
-            if englishClass then
-                local newcoollist = ns.trackedCoolSpellNames[englishClass .. "_" .. spec];
-                local newlistname = GetUnitName(frame.unit) .. englishClass .. "_" .. spec;
-
-                if raidframe.listname == nil or raidframe.listname ~= newlistname then
-                    interruptcools[frame.unit] = {};
-                    offensivecools[frame.unit] = {};
-                    raidframe.listname = newlistname;
-                end
-
-                raidframe.coolspelllist = newcoollist;
-                checkcoollist[frame.unit] = newcoollist;
-                
-            end
-
-            if not raidframe.asbuffFrame then
-                local buffFrame = CreateFrame("Button", nil, frame, "AREADYFrameTemplate")
-                layoutbuff(buffFrame, frame.unit);
-                raidframe.asbuffFrame = buffFrame;
-                buffFrame:Hide();
-            end
-
-            if IsInRaid() then
-                --if true then
-                local d = raidframe.asbuffFrame;
-                d:SetSize(x / 6 - 1, y / 3 - 1);
-                d.remain:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE");
-                layoutcooldown(d);
-                d:ClearAllPoints();
-                d:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2);
-            else
-                local d = raidframe.asbuffFrame;
-                d:SetSize(y / 2 * 1.2, y / 2);
-                d.remain:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
-                layoutcooldown(d);
-                d:ClearAllPoints();
-                if useHorizontalGroups then
-                    d:SetPoint("TOP", frame, "BOTTOM", 0, -1);
-                else
-                    d:SetPoint("RIGHT", frame, "LEFT", -1, 0);
-                end
-            end
-
-            local assignedRole = UnitGroupRolesAssigned(frame.unit);
-
-            if (IsInRaid() and assignedRole and assignedRole ~= "DAMAGER") then
-                raidframe.needtocheck = false;
-            else
-                raidframe.needtocheck = true;
-            end
-        end
-    end
-end
-
-local function checkallraid(frames)
-    for _, raidframe in pairs(frames) do
-        if raidframe and raidframe.frame then
-            SetupPartyCool(raidframe.frame, raidframe);
+            raidframe.needtosetup = true;
         end
     end
 end
@@ -544,15 +561,16 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
             timer:Cancel();
         end
 
+        AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+
         if IsInRaid() then
             if ns.options.ShowRaidCool then
                 if event == "ENCOUNTER_END" then
                     offensivecools = {};
                 end
-
-
                 checkallraid(raidframes);
                 timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
+                AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
             else
                 interruptcools = {};
                 offensivecools = {};
@@ -562,7 +580,8 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
             if not (event == "ENCOUNTER_END") then
                 checkallraid(partyframes);
             end
-            timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
+            timer = C_Timer.NewTicker(AREADY_UpdateRate / 3, AREADY_OnUpdate);
+            AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
         else
             interruptcools = {};
             offensivecools = {};
@@ -580,6 +599,6 @@ AREADY:RegisterEvent("GROUP_ROSTER_UPDATE");
 AREADY:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 AREADY:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");
 AREADY:RegisterEvent("ENCOUNTER_END");
-AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
 
-hooksecurefunc("CompactUnitFrame_UpdateAll", SetupPartyCool);
+
+hooksecurefunc("CompactUnitFrame_UpdateAll", hookfunc);
