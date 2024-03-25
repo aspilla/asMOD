@@ -13,6 +13,8 @@ local bufftimerfilter = {};
 local totemtimerfilter = {};
 ns.eventhandler = {};
 ns.aurafunctions = {};
+local platedebuffcount = 0;
+local platemaxcount = 0;
 
 local PLAYER_UNITS = {
     player = true,
@@ -146,6 +148,7 @@ end
 local function ACRB_ParseAllNameplateAuras(filter)
     local ret = false;
     local unit = "nameplate"
+    platedebuffcount = 0;
 
     if aurafilter[unit] == nil then
         return ret;
@@ -174,7 +177,11 @@ local function ACRB_ParseAllNameplateAuras(filter)
                 local function HandleAura(aura)
                     if aurafilter[unit][aura.name] then
                         eventlib[unit].auralist[aura.spellId] = aura;
-                        ret = true;
+                        platedebuffcount = platedebuffcount + 1;
+                        if platedebuffcount >=  platemaxcount then
+                            ret = true;
+                        end
+                        return true;
                     end
                 end
                 ForEachAura(nunit, filter, batchCount, HandleAura, usePackedAura);
@@ -186,9 +193,11 @@ local function ACRB_ParseAllNameplateAuras(filter)
         local nameplate = v;
         if (nameplate) then
             checkNameplate(nameplate);
+            if ret then
+                return ret;
+            end
         end
     end
-
     return ret;
 end
 
@@ -286,6 +295,7 @@ end
 
 
 local function OnUpdate()
+
     UpdateAuras("target");
     UpdateAuras("nameplate");
 
@@ -321,7 +331,7 @@ function ns.eventhandler.init()
     totemtimerfilter = {};
 end
 
-function ns.eventhandler.registerAura(unit, spell)
+function ns.eventhandler.registerAura(unit, spell, count)
     if unit == nil then
         return;
     end
@@ -331,6 +341,14 @@ function ns.eventhandler.registerAura(unit, spell)
 
     aurafilter[unit][spell] = true;
 
+    if unit == "nameplate" then
+        if count then
+            platemaxcount = count;
+        else
+            platemaxcount = 1;
+        end
+    end
+    
     UpdateAuras(unit);
 end
 
@@ -394,4 +412,8 @@ function ns.aurafunctions.checkTotem(spell)
     end
 
     return ret;
+end
+
+function ns.aurafunctions.getPlateCount()
+    return platedebuffcount;
 end

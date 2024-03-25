@@ -12,11 +12,11 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240322,
+	version = 240326,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
-	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool} 순으로 편집
+	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount} 순으로 편집
 	-- 	Spell 기술명 혹은 ID (버프는 ID로 입력해야 Icon 나옴)
 	-- 	Type : 1 Spell Cool down
 	-- 	Type : 2 버프 & Spell Cool down, buff가 없으면 Cooldown check
@@ -303,7 +303,7 @@ ACI_Options_Default = {
 		{ "용암 폭발", 1 },
 		{ 99, "폭풍의 정령", { "폭풍의 정령", 6, nil, nil, nil, "상급 폭풍의 정령" }, { "불의 정령", 6, nil, nil, nil, "상급 불의 정령" } },
 		{ 99, "얼음격노", { "얼음격노", 2 }, { "태고의 파도", 2 } },
-		{ "화염 충격", 4, nil, 18 * 0.3},
+		{ "화염 충격", 4, nil, 18 * 0.3, nil, nil, nil, nil, nil, nil, 6 },
 
 	},
 
@@ -313,7 +313,7 @@ ACI_Options_Default = {
 		{ "용암 채찍", 1, nil, nil, "잿빛 수정" },
 		{ "야수 정령", 2, nil, nil, nil, nil, nil, nil, nil, 1 },
 		{ 99, "우박폭풍", { "냉기 충격", 1, nil, nil, "우박폭풍" }, { "용암 폭발", 1 } },
-		{ "화염 충격", 4, nil, 18 * 0.3 },
+		{ "화염 충격", 4, nil, 18 * 0.3, nil, nil, nil, nil, nil, nil, 6 },
 	},
 
 	--복원

@@ -184,18 +184,7 @@ function ACI_Init()
 		ACI_SpellList = {}
 
 		for i = 1, #ACI_SpellListtmp do
-			local value1 = ACI_SpellListtmp[i][1];
-			local value2 = ACI_SpellListtmp[i][2];
-			local value3 = ACI_SpellListtmp[i][3];
-			local value4 = ACI_SpellListtmp[i][4];
-			local value5 = ACI_SpellListtmp[i][5];
-			local value6 = ACI_SpellListtmp[i][6];
-			local value7 = ACI_SpellListtmp[i][7];
-			local value8 = ACI_SpellListtmp[i][8];
-			local value9 = ACI_SpellListtmp[i][9];
-			local value10 = ACI_SpellListtmp[i][10];
-
-			ACI_SpellList[i] = { value1, value2, value3, value4, value5, value6, value7, value8, value9, value10 };
+			ACI_SpellList[i] = CopyTable(ACI_SpellListtmp[i]);
 		end
 	end
 

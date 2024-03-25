@@ -11,6 +11,7 @@ ns.Button = {
     inRange = true,
     alert = false,
     checkcool = nil,
+    checkplatecount = nil,
 
 
     icon = nil,
@@ -396,9 +397,23 @@ function ns.Button:checkSpell()
 end
 
 function ns.Button:checkCount()
+
+    if self.checkplatecount then
+        local buff = self.spell;
+
+        if self.realbuff then
+            buff = self.realbuff;
+        end
+        local count = ns.aurafunctions.getPlateCount(buff);
+
+        if count then
+            self.count = count;
+        end
+    end
+
     local buff = self.countbuff;
     local unit = "player"
-
+    
     if self.countdebuff then
         buff = self.countdebuff;
         unit = "target"
@@ -585,6 +600,7 @@ function ns.Button:init(config, frame)
     self.bufflist = config[8];
     self.alertbufflist = config[9];
     self.checkcool = config[10];
+    self.checkplatecount = config[11];
     self.spellid = select(7, GetSpellInfo(self.spell));
     if self.spellid == nil then
         self.spellid = select(7, GetSpellInfo(self.realspell));
@@ -623,6 +639,9 @@ function ns.Button:init(config, frame)
     if self.type == ns.EnumButtonType.Debuff or self.type == ns.EnumButtonType.DebuffOnly then
         ACI_Debuff_list[self.spell] = true;
         ns.eventhandler.registerAura(self.unit, self.spell);
+        if self.checkplatecount then
+            ns.eventhandler.registerAura("nameplate", self.spell, self.checkplatecount);
+        end
     elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then
         ACI_Buff_list[self.spell] = true;
         ns.eventhandler.registerBuffTimer(self);
