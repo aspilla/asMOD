@@ -267,7 +267,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 240325,
+    version = 240326,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -464,6 +464,7 @@ ANameP_Options_Default = {
 
     ANameP_ShowList_EVOKER_1 = {
         ["불의 숨결"] = { 0, 5, 1 },
+        ["흑요석 파편"] = { 0, 4, 2 }, --시즌1
     },
 
     ANameP_ShowList_EVOKER_2 = {

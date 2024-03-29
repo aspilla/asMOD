@@ -24,9 +24,9 @@ end
 local function asOverlay_CreateOverlay(self)
 	local ret = CreateFrame("Frame", nil, self, "asOverlayTemplate");
 	ret.count:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
-	ret.count:SetTextColor(0,1,0);
+	ret.count:SetTextColor(0, 1, 0);
 	ret.remain:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
-	ret.remain:SetTextColor(1,1,1);
+	ret.remain:SetTextColor(1, 1, 1);
 	return ret;
 end
 
@@ -154,6 +154,24 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 
 		if remain > 0 then
 			rate = remain / duration;
+		end
+
+		if ns.spelllists[spellID] then
+			local procid = ns.spelllists[spellID][1];
+			local proc_count = ns.spelllists[spellID][2];
+			local proc_r = ns.spelllists[spellID][3];
+			local proc_g = ns.spelllists[spellID][4];
+			local proc_b = ns.spelllists[spellID][5];
+
+			local procaura = ns.getExpirationTimeUnitAurabyID("player", procid);
+
+			if procaura then				
+				if (proc_count > 0 and procaura.applications >= proc_count) or proc_count == 0 then
+					r = proc_r * 255;
+					g = proc_g * 255;
+					b = proc_b * 255;
+				end
+			end
 		end
 	end
 

@@ -1575,7 +1575,7 @@ local function APB_CheckPower(self)
                 APB.combobar[i].tooltip = "ARCANE_CHARGES";
             end
 
-            if HowManyHasSet(1562) >= 2 then
+            if HowManyHasSet(1562) >= 2 or HowManyHasSet(1605) >= 2 then
                 APB_BUFF = "사전 숙고";
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player";
@@ -2575,8 +2575,6 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             balert2 = false;
         end
     elseif event == "PLAYER_EQUIPMENT_CHANGED" then
-        -- hast19 = HowManyHasSet(1284);
-        -- hast20 = HowManyHasSet(1304);
         C_Timer.After(0.5, APB_CheckPower);
         C_Timer.After(0.5, APB_UpdatePower);
     elseif event == "ACTION_RANGE_CHECK_UPDATE" then
