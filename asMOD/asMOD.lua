@@ -84,13 +84,13 @@ local function asMOD_Setup()
 		else
 			SetCVar("uiScale", asMOD_UIScale)
 		end
-	end	
+	end
 
 	print("[asMOD] 재사용 대기시간을 보이게 합니다.");
 	SetCVar("countdownForCooldowns", "1");
 
 	print("[asMOD] 주문 경보 투명도 설정");
-	SetCVar("spellActivationOverlayOpacity", 0.5);	
+	SetCVar("spellActivationOverlayOpacity", 0.5);
 
 	print("[asMOD] 힐량와 데미지를 보이게 합니다.");
 	SetCVar("floatingCombatTextCombatHealing", 1);
@@ -152,7 +152,6 @@ local function asMOD_Setup()
 
 	bload = LoadAddOn("DBM-Core")
 	if bload then
-
 		DBM_AllSavedOptions = {
 			["Default"] = {
 				["DontShowFarWarnings"] = true,
@@ -185,6 +184,7 @@ local function asMOD_Setup()
 				["RangeFrameRadarX"] = -230.9038238525391,
 				["LogCurrentRaids"] = true,
 				["InfoFrameCols"] = 0,
+				["NPIconTimerEnabled"] = true,
 				["LatencyThreshold"] = 250,
 				["ShowGuildMessagesPlus"] = false,
 				["LFDEnhance"] = true,
@@ -204,7 +204,9 @@ local function asMOD_Setup()
 					1, -- [3]
 				},
 				["NewsMessageShown2"] = 1,
+				["NPIconTextFont"] = "standardFont",
 				["EventSoundPullTimer"] = "None",
+				["NPIconTimerFontStyle"] = "None",
 				["SpecialWarningVibrate2"] = false,
 				["SpecialWarningFlashCount2"] = 1,
 				["NPAuraText"] = true,
@@ -262,6 +264,7 @@ local function asMOD_Setup()
 				["LogCurrentMythicZero"] = false,
 				["GUIWidth"] = 800,
 				["FilterVoidFormSay"] = true,
+				["NPIconTextFontSize"] = 10,
 				["EventSoundMusic"] = "None",
 				["GroupOptionsExcludePAura"] = false,
 				["LogTWRaids"] = false,
@@ -274,7 +277,7 @@ local function asMOD_Setup()
 				["SpamSpecRoledefensive"] = false,
 				["RangeFrameRadarY"] = 0.9783453345298767,
 				["OverrideBossAnnounce"] = false,
-				["CoreSavedRevision"] = 20240208174317,
+				["CoreSavedRevision"] = 20240402112844,
 				["RangeFrameX"] = -229.7040557861328,
 				["NPIconGrowthDirection"] = "CENTER",
 				["RangeFrameY"] = 76.74076080322266,
@@ -291,12 +294,9 @@ local function asMOD_Setup()
 				["SpecialWarningPoint"] = "CENTER",
 				["FilterBInterruptCooldown"] = true,
 				["CheckGear"] = true,
+				["NPIconTextEnabled"] = true,
 				["SpecialWarningX"] = 0,
 				["DontShowPT2"] = false,
-				["MoviesSeen"] = {
-					[1003] = true,
-					["2238아미드랏실의 심장"] = true,
-				},
 				["ShowQueuePop"] = true,
 				["SpecialWarningFlashCol4"] = {
 					1, -- [1]
@@ -311,6 +311,7 @@ local function asMOD_Setup()
 					0.7, -- [2]
 					0, -- [3]
 				},
+				["NPIconTimerFont"] = "standardFont",
 				["AFKHealthWarning2"] = false,
 				["SpecialWarningVibrate1"] = false,
 				["EventSoundEngage2"] = "None",
@@ -351,7 +352,7 @@ local function asMOD_Setup()
 				["LogTWDungeons"] = false,
 				["SpecialWarningSound4"] = 552035,
 				["DontShowTrashTimers"] = false,
-				["GUIX"] = -56.77048492431641,
+				["GUIX"] = -92.32605743408203,
 				["LogCurrentHeroic"] = false,
 				["VPDontMuteSounds"] = false,
 				["WarningColors"] = {
@@ -378,65 +379,70 @@ local function asMOD_Setup()
 				},
 				["SWarningAlphabetical"] = true,
 				["BlockNoteShare"] = false,
+				["WarningDuration2"] = 1.5,
+				["NPIconAnchorPoint"] = "TOP",
 				["DontPlaySpecialWarningSound"] = false,
+				["InfoFrameLocked"] = true,
+				["NPIconTextMaxLen"] = 7,
 				["NPIconSize"] = 30,
+				["DontShowNameplateIconsCD"] = true,
 				["RangeFrameRadarPoint"] = "BOTTOMRIGHT",
 				["DontShowInfoFrame"] = true,
-				["DontShowNameplateIconsCD"] = true,
-				["InfoFrameLocked"] = true,
+				["NPIconTimerFontSize"] = 18,
 				["NPIconYOffset"] = 0,
-				["MovieFilter2"] = "Never",
 				["AlwaysPlayVoice"] = false,
+				["MovieFilter2"] = "Never",
 				["WarningX"] = 0,
-				["DontRestoreRange"] = false,
 				["ArrowPoint"] = "TOP",
-				["SpecialWarningFlashCount3"] = 3,
+				["DontRestoreRange"] = false,
 				["RoleSpecAlert"] = true,
+				["SpecialWarningFlashCount3"] = 3,
+				["SpecialWarningFlash1"] = true,
 				["WhisperStats"] = false,
 				["SilentMode"] = false,
-				["SpecialWarningFlash1"] = true,
 				["SpecialWarningVibrate3"] = true,
+				["FilterTInterruptCooldown"] = true,
 				["SpecialWarningFlashAlph5"] = 0.5,
 				["SpecialWarningDuration2"] = 1.5,
-				["FilterTInterruptCooldown"] = true,
-				["SpecialWarningSound2"] = 543587,
+				["DontShowTimersWithNameplates"] = true,
+				["EventSoundMusicCombined"] = false,
 				["ShowEngageMessage"] = false,
 				["RangeFrameSound1"] = "none",
-				["EventSoundMusicCombined"] = false,
+				["FilterTTargetFocus"] = true,
 				["WarningFontSize"] = 16.47568893432617,
 				["EventSoundVictory2"] = "Interface\\AddOns\\DBM-Core\\sounds\\Victory\\SmoothMcGroove_Fanfare.ogg",
 				["AutoExpandSpellGroups"] = false,
 				["LastRevision"] = 0,
 				["GUIPoint"] = "CENTER",
 				["SettingsMessageShown"] = true,
-				["SpamSpecRoletaunt"] = false,
 				["WarningFont"] = "standardFont",
-				["AutologBosses"] = false,
-				["AutoAcceptGuildInvite"] = false,
-				["DontSetIcons"] = false,
-				["FilterTrashWarnings2"] = true,
-				["SpecialWarningFont"] = "standardFont",
-				["CountdownVoice"] = "Corsica",
 				["AdvancedAutologBosses"] = false,
+				["AutoAcceptGuildInvite"] = false,
+				["FilterTrashWarnings2"] = true,
+				["DontSetIcons"] = false,
+				["SpecialWarningFont"] = "standardFont",
+				["AutologBosses"] = false,
+				["CountdownVoice"] = "Corsica",
 				["SpamSpecRoleswitch"] = false,
-				["CountdownVoice3"] = "Smooth",
 				["DontShowSpecialWarningText"] = false,
+				["CountdownVoice3"] = "Smooth",
 				["DisableStatusWhisper"] = false,
+				["NPIconSpacing"] = 0,
 				["AutoRespond"] = true,
 				["EventDungMusicMythicFilter"] = false,
-				["GUIY"] = -0.0002178665745304897,
+				["GUIY"] = -30.34099960327148,
 				["RangeFrameFrames"] = "radar",
 				["WarningPoint"] = "CENTER",
 				["DontShowEventTimers"] = false,
 				["SpecialWarningIcon"] = true,
 				["InfoFrameFont"] = "standardFont",
-				["SpecialWarningFlashDura5"] = 1,
+				["DontSendBossGUIDs"] = true,
 				["GroupOptionsBySpell"] = true,
 				["FilterTankSpec"] = true,
 				["HideTooltips"] = false,
 				["EventSoundWipe"] = "None",
 				["RLReadyCheckSound"] = true,
-				["DontSendBossGUIDs"] = true,
+				["SpecialWarningFlashDura5"] = 1,
 				["DontShowTargetAnnouncements"] = true,
 				["InfoFrameLines"] = 0,
 				["ArrowPosY"] = -150,
@@ -456,13 +462,13 @@ local function asMOD_Setup()
 				["DontSendYells"] = false,
 				["SpamSpecRoleinterrupt"] = false,
 				["SpecialWarningFlash2"] = true,
-				["WarningDuration2"] = 1.5,
+				["NPIconTextFontStyle"] = "None",
 				["SpecialWarningFlash3"] = true,
-				["DontShowTimersWithNameplates"] = true,
+				["SpamSpecRoletaunt"] = false,
 				["Enabled"] = true,
+				["SpecialWarningSound2"] = 543587,
 				["InfoFrameFontSize"] = 12,
 				["DontRestoreIcons"] = false,
-				["FilterTTargetFocus"] = true,
 				["RangeFrameUpdates"] = "Average",
 				["DontShowUserTimers"] = false,
 				["RaidWarningSound"] = 566558,
@@ -481,7 +487,7 @@ local function asMOD_Setup()
 			["minimapPos"] = 249.9876931591084,
 			["showInCompartment"] = true,
 		}
-		
+
 
 
 		DBT_AllPersistentOptions = {

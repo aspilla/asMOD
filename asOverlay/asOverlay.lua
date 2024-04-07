@@ -165,7 +165,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 
 			local procaura = ns.getExpirationTimeUnitAurabyID("player", procid);
 
-			if procaura then				
+			if procaura then
 				if (proc_count > 0 and procaura.applications >= proc_count) or proc_count == 0 then
 					r = proc_r * 255;
 					g = proc_g * 255;

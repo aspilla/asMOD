@@ -289,7 +289,10 @@ local function ABF_OnEvent(self, event, arg1, ...)
             end
         end
     elseif event == "PLAYER_ENTERING_WORLD" then
-
+        UpdateTotem();
+        UpdateAuras("target");
+        UpdateAuras("player");
+        UpdateAuras("pet");
     end
 end
 

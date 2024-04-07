@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240326,
+	version = 240405,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -204,7 +204,7 @@ ACI_Options_Default = {
 
 		{ "죽음과 부패", 2, nil, nil, nil, "죽음과 부패" },
 		{ 77535, 3 },
-		{ "춤추는 룬 무기", 2 },
+		{ "흡혈", 2 },
 		{ "피의 소용돌이", 1 },
 		{ "죽음의 마수", 4, nil, nil, nil, "피의 역병" },
 
@@ -213,7 +213,7 @@ ACI_Options_Default = {
 	--냉기
 	ACI_SpellList_DEATHKNIGHT_2 = {
 		{ "죽음과 부패", 2, nil, nil, nil, "죽음과 부패" },
-		{ 99, "영혼 수확자", {"영혼 수확자", 1, nil, 35}, { "몰아치는 한기", 2, nil, nil, nil, "싸늘한 분노" }},
+		{ 99, "영혼 수확자", {"영혼 수확자", 1, nil, 35}, { "룬 무기 강화", 2}},
 		{ "얼음 기둥", 2 },
 		{ "냉혹한 겨울", 2 },
 		{ "울부짖는 한파", 4, nil, nil, nil, "서리 열병" },
@@ -330,9 +330,9 @@ ACI_Options_Default = {
 	--고통
 	ACI_SpellList_WARLOCK_1 = {
 
-		{ 99, "생명력 착취", { "생명력 착취", 4, nil, 1 }, { "암흑시선 소환", 6, nil, nil, nil, "암흑시선" } },
-		{ "유령 출몰", 4 },
+		{ 99, "생명력 착취", { "생명력 착취", 4, nil, 1 }, { "영혼 부식", 4 }, },
 		{ "불안정한 고통", 4, nil, 1 },
+		{ 99, "유령 출몰", { "유령 출몰", 4 }, { "암흑시선 소환", 6, nil, nil, nil, "암흑시선" } },
 		{ "부패", 4, nil, 1 },
 		{ "고통", 4, nil, 1 },
 
