@@ -143,6 +143,7 @@ function asDBMTimer_callback(event, id, ...)
 			dbm_event_list[id].button_id = nil;
 			dbm_event_list[id].duration = totalTime;
 			dbm_event_list[id].start = GetTime() - elapsed;
+			dbm_event_list[id].expirationTime = dbm_event_list[id].start + dbm_event_list[id].duration;
 		end
 	else
 		--print (...);
