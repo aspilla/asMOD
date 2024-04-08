@@ -117,6 +117,7 @@ local function ATCB_OnEvent(self, event, ...)
             ATCB:RegisterUnitEvent("UNIT_SPELLCAST_START", "target");
             ATCB:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "target");
             ATCB:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "target");
+            ATCB:RegisterUnitEvent("UNIT_TARGET", "target");
         else
             ATCB:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
             ATCB:UnregisterEvent("UNIT_SPELLCAST_DELAYED");
@@ -131,6 +132,7 @@ local function ATCB_OnEvent(self, event, ...)
             ATCB:UnregisterEvent("UNIT_SPELLCAST_START");
             ATCB:UnregisterEvent("UNIT_SPELLCAST_STOP");
             ATCB:UnregisterEvent("UNIT_SPELLCAST_FAILED");
+            ATCB:UnregisterEvent("UNIT_TARGET");
         end
     end
 
