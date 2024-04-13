@@ -10,10 +10,15 @@ local CONFIG_VOICE_DELAY = 2 -- 케스팅 끝나고 같은 음성 2초간 금지
 -- Castbar 설정
 local CONFIG_WIDTH = 175
 local CONFIG_HEIGHT = 20
-local CONFIG_ALPHA = 0.8;                     --투명도 80%
-local CONFIG_NAME_SIZE = CONFIG_HEIGHT * 0.5; --Spell 명 Font Size, 높이의 50%
-local CONFIG_TIME_SIZE = CONFIG_HEIGHT * 0.3; --Spell 시전시간 Font Size, 높이의 30%
-local CONFIG_UPDATE_RATE = 0.05               -- 20프레임
+local CONFIG_ALPHA = 0.8;                                                 --투명도 80%
+local CONFIG_NAME_SIZE = CONFIG_HEIGHT * 0.5;                             --Spell 명 Font Size, 높이의 50%
+local CONFIG_TIME_SIZE = CONFIG_HEIGHT * 0.3;                             --Spell 시전시간 Font Size, 높이의 30%
+local CONFIG_UPDATE_RATE = 0.05                                           -- 20프레임
+
+local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };                 --차단 불가시 (내가 아닐때) 색상 (r, g, b)
+local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { 153 / 255, 0, 76 / 255 }; --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
+local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 };   --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
+local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };     --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
 
 local function isAttackable(unit)
 	local reaction = UnitReaction("player", unit);
@@ -71,12 +76,21 @@ local function Comparator(a, b)
 		return false;
 	end
 
+	if a.target then
+		return true;
+	end
+
+	if b.target then
+		return false;
+	end
+
 	return a.expiration < b.expiration;
 end
 
 local castingInfos;
 local prev_count = 0;
 local prev_focus = 0;
+local prev_target = 0;
 
 
 local function ADCA_OnUpdate()
@@ -90,6 +104,8 @@ local function ADCA_OnUpdate()
 	local alert_noi = false;
 	local alert_focus = false;
 	local alert_focus_noi = false;
+	local alert_target = false;
+	local alert_target_noi = false;
 
 	for unit, needtosound in pairs(CastingUnits) do
 		if UnitExists(unit) then
@@ -115,7 +131,8 @@ local function ADCA_OnUpdate()
 					spellId = spellId,
 					notInterruptible = notInterruptible,
 					focus = UnitExists("focus") and UnitIsUnit("focus", unit),
-					needtointerrupt = (DangerousSpellList[spellId] == "interrupt")
+					needtointerrupt = (DangerousSpellList[spellId] == "interrupt"),
+					target = UnitExists("target") and UnitIsUnit("target", unit),
 				}
 			else
 				CastingUnits[unit] = nil;
@@ -130,169 +147,101 @@ local function ADCA_OnUpdate()
 	castingInfos:Iterate(
 		function(unit, castingInfo)
 			if i > 3 then
-				return;
+				return true;
 			end
 
-			if ns.options.BarType then
-				local frame = ADVA.bars[i];
-				frame.castspellid = castingInfo.spellId;
+			local targetunit = unit .. "target";
+			local btargeted = UnitExists(targetunit) and UnitIsUnit(targetunit, "player");
 
-				-- set the icon
-				local frameIcon = frame.button.icon
-				frameIcon:SetTexture(castingInfo.icon);
-				local frameName = frame.name;
-				frameName:SetText(castingInfo.name);
-				frameName:Show();
-
-				local frameMark = frame.button.mark;
-				frameMark:SetText(ADCA_DisplayRaidIcon(unit));
-				frameMark:Show();
-
-
-
-				frame.start = castingInfo.start;
-				frame.duration = castingInfo.duration;
-
-				frame:SetMinMaxValues(0, frame.duration);
-
-				if castingInfo.needtointerrupt then
-					local r, g, b = 0, 1, 0;
-
+			if castingInfo.needtointerrupt then
+				if castingInfo.focus then
 					if castingInfo.notInterruptible then
-						r, g, b = 0.5, 0.5, 0.8;
-					else
-						r, g, b = 0, 1, 0;
+						alert_focus_noi = true;
 					end
-
-					frame:SetStatusBarColor(r, g, b);
-					if castingInfo.focus then
-						if castingInfo.notInterruptible then
-							alert_focus_noi = true;
-						end
-						ns.lib.PixelGlow_Start(frame.button, { 1, 1, 0, 1 });
-						ns.lib.PixelGlow_Start(frame, { 1, 1, 0, 1 });
-						alert_focus = true;
+					alert_focus = true;
+				elseif castingInfo.target then
+					if castingInfo.notInterruptible then
+						alert_target_noi = true;
 					end
-
-					if ns.options.SoundOnlyforInterrupt and alert_name == nil then
+					alert_target = true;
+				else
+					if alert_name == nil then
 						alert_name = castingInfo.name;
 						if castingInfo.notInterruptible then
 							alert_noi = true;
 						end
 					end
-				else
-					if castingInfo.notInterruptible then
-						frame:SetStatusBarColor(0.6, 0.6, 0.6);						
-					else
-						frame:SetStatusBarColor(0.6, 1, 0.6);
-					end
 				end
-
-				if not ns.options.SoundOnlyforInterrupt and alert_name == nil then
-					alert_name = castingInfo.name;
-				end
-
-				local targetunit = unit .. "target";
-				local targetname = frame.targetname;
-
-				if UnitExists(targetunit) and UnitIsPlayer(targetunit) then
-					local _, Class = UnitClass(targetunit)
-					local color = RAID_CLASS_COLORS[Class]
-					targetname:SetTextColor(color.r, color.g, color.b);
-					targetname:SetText(UnitName(targetunit));
-					targetname:Show();
-				else
-					targetname:SetText("");
-					targetname:Hide();
-				end
-
-				if alert_focus == false then
-					ns.lib.PixelGlow_Stop(frame.button);
-					ns.lib.PixelGlow_Stop(frame);
-				end
-
-				frame:Show();
-			else
-				local frame = ADVA.frames[i];
-				frame.castspellid = castingInfo.spellId;
-
-				-- set the icon
-				local frameIcon = frame.icon
-				frameIcon:SetTexture(castingInfo.icon);
-				local frameName = frame.text;
-				frameName:SetText(castingInfo.name);
-				frameName:Show();
-
-				local frameMark = frame.mark;
-				frameMark:SetText(ADCA_DisplayRaidIcon(unit));
-				frameMark:Show();
-
-				-- Handle cooldowns
-				local frameCooldown = frame.cooldown;
-
-				if (castingInfo.duration > 0) then
-					frameCooldown:Show();
-					asCooldownFrame_Set(frameCooldown, castingInfo.expiration - castingInfo.duration,
-						castingInfo.duration, castingInfo.duration > 0,
-						true);
-				else
-					frameCooldown:Hide();
-				end
-
-				local frameBorder = frame.border;
-
-				if castingInfo.needtointerrupt then
-					local r, g, b = 0, 1, 0;
-
-					if castingInfo.notInterruptible then
-						r, g, b = 0.5, 0.5, 0.8;
-					else
-						r, g, b = 0, 1, 0;
-					end
-
-					frameBorder:SetVertexColor(r, g, b);
-					if castingInfo.focus then
-						if castingInfo.notInterruptible then
-							alert_focus_noi = true;
-						end
-						
-						ns.lib.PixelGlow_Start(frame, { 1, 1, 0, 1 });
-						alert_focus = true;
-					end
-
-					if ns.options.SoundOnlyforInterrupt and alert_name == nil then
-						alert_name = castingInfo.name;												
-						if castingInfo.notInterruptible then
-							alert_noi = true;
-						end
-					end
-				else
-					if castingInfo.notInterruptible then
-						frameBorder:SetVertexColor(0.6, 0.6, 0.6);						
-					else
-						frameBorder:SetVertexColor(0.6, 1, 0.6);
-					end
-				end
-
-				if not ns.options.SoundOnlyforInterrupt and alert_name == nil then
-					alert_name = castingInfo.name;
-				end
-
-				if alert_focus == false then					
-					ns.lib.PixelGlow_Stop(frame);
-				end
-
-				frame:Show();
 			end
+
+			if ns.options.HideTarget and castingInfo.target and not castingInfo.focus then
+				return false;
+			end
+
+
+			local frame = ADVA.bars[i];
+			local color = CONFIG_INTERRUPTIBLE_COLOR;
+			frame.castspellid = castingInfo.spellId;
+
+			-- set the icon
+			local frameIcon = frame.button.icon
+			frameIcon:SetTexture(castingInfo.icon);
+			local frameName = frame.name;
+			frameName:SetText(castingInfo.name);
+			frameName:Show();
+
+			local frameMark = frame.button.mark;
+			frameMark:SetText(ADCA_DisplayRaidIcon(unit));
+			frameMark:Show();
+
+			frame.start = castingInfo.start;
+			frame.duration = castingInfo.duration;
+
+			frame:SetMinMaxValues(0, frame.duration);
+
+			if castingInfo.notInterruptible then
+				if btargeted then
+					color = CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET;
+				else
+					color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
+				end
+			else
+				if btargeted then
+					color = CONFIG_INTERRUPTIBLE_COLOR_TARGET;
+				else
+					color = CONFIG_INTERRUPTIBLE_COLOR;
+				end
+			end
+
+			if castingInfo.needtointerrupt then
+				ns.lib.PixelGlow_Start(frame.button, { 1, 1, 0, 1 });
+				ns.lib.PixelGlow_Start(frame, { 1, 1, 0, 1 });
+			else
+				ns.lib.PixelGlow_Stop(frame.button);
+				ns.lib.PixelGlow_Stop(frame);
+			end
+
+			frame:SetStatusBarColor(color[1], color[2], color[3]);
+			local targetname = frame.targetname;
+
+			if UnitExists(targetunit) and UnitIsPlayer(targetunit) then
+				local _, Class = UnitClass(targetunit)
+				local color = RAID_CLASS_COLORS[Class]
+				targetname:SetTextColor(color.r, color.g, color.b);
+				targetname:SetText(UnitName(targetunit));
+				targetname:Show();
+			else
+				targetname:SetText("");
+				targetname:Hide();
+			end
+
+			frame:Show();
+
 			i = i + 1;
 		end)
 
 	for j = i, 3 do
 		local frame = ADVA.bars[j];
-		frame.start = 0;
-		frame:Hide();
-
-		frame = ADVA.frames[j];
 		frame.start = 0;
 		frame:Hide();
 	end
@@ -301,22 +250,40 @@ local function ADCA_OnUpdate()
 		if alert_focus and prev_focus == 0 then
 			if not ns.options.TTS then
 				if alert_focus_noi then
-					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\stun.mp3", "MASTER");
+					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\focusstun.mp3", "MASTER");
 				else
 					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\focus.mp3", "MASTER");
 				end
 			else
-
 				if alert_focus_noi then
+					C_VoiceChat.SpeakText(CONFIG_VOICE_ID, "주시스턴", Enum.VoiceTtsDestination.LocalPlayback,
+						CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+				else
+					C_VoiceChat.SpeakText(CONFIG_VOICE_ID, "주시짤", Enum.VoiceTtsDestination.LocalPlayback,
+						CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+				end
+			end
+		end
+
+		if alert_target and prev_target == 0 then
+			if not ns.options.TTS then
+				if alert_target_noi then
+					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\stun.mp3", "MASTER");
+				else
+					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\target.mp3", "MASTER");
+				end
+			else
+				if alert_target_noi then
 					C_VoiceChat.SpeakText(CONFIG_VOICE_ID, "스턴", Enum.VoiceTtsDestination.LocalPlayback,
-					CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+						CONFIG_SOUND_SPEED, ns.options.SoundVolume);
 				else
 					C_VoiceChat.SpeakText(CONFIG_VOICE_ID, "짤", Enum.VoiceTtsDestination.LocalPlayback,
-					CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+						CONFIG_SOUND_SPEED, ns.options.SoundVolume);
 				end
-				
 			end
-		elseif alert_name and prev_count == 0 then
+		end
+
+		if alert_name and prev_count == 0 then
 			if not ns.options.TTS then
 				if alert_noi then
 					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\stun2.mp3", "MASTER");
@@ -334,6 +301,12 @@ local function ADCA_OnUpdate()
 		prev_focus = 1;
 	else
 		prev_focus = 0;
+	end
+
+	if alert_target then
+		prev_target = 1;
+	else
+		prev_target = 0;
 	end
 
 	if alert_name then
@@ -359,81 +332,6 @@ local function ADCA_OnEvent(self, event, arg1, arg2, arg3, arg4)
 			CastingUnits[unit] = true;
 		end
 	end
-end
-
-
-local function UpdateBuffAnchor(frames, index, offsetX, right, center, parent)
-	local buff = frames[index];
-	buff:ClearAllPoints();
-
-	if center then
-		if (index == 1) then
-			buff:SetPoint("TOP", parent, "CENTER", 0, 0);
-		elseif (index == 2) then
-			buff:SetPoint("RIGHT", frames[index - 1], "LEFT", -offsetX, 0);
-		elseif (math.fmod(index, 2) == 1) then
-			buff:SetPoint("LEFT", frames[index - 2], "RIGHT", offsetX, 0);
-		else
-			buff:SetPoint("RIGHT", frames[index - 2], "LEFT", -offsetX, 0);
-		end
-	else
-		local point1 = "TOPLEFT";
-		local point2 = "CENTER";
-		local point3 = "TOPRIGHT";
-
-		if (right == false) then
-			point1 = "TOPRIGHT";
-			point2 = "CENTER";
-			point3 = "TOPLEFT";
-			offsetX = -offsetX;
-		end
-
-		if (index == 1) then
-			buff:SetPoint(point1, parent, point2, 0, 0);
-		else
-			buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
-		end
-	end
-	-- Resize
-	buff:SetWidth(CONFIG_SIZE);
-	buff:SetHeight(CONFIG_SIZE * 0.8);
-end
-
-local function CreatBuffFrames(parent, bright, bcenter)
-	if parent.frames == nil then
-		parent.frames = {};
-	end
-
-	for idx = 1, 3 do
-		parent.frames[idx] = CreateFrame("Button", nil, parent, "asDCATemplate");
-		local frame = parent.frames[idx];
-		frame:EnableMouse(false);
-		frame.icon:SetTexCoord(.08, .92, .08, .92);
-		frame.icon:SetAlpha(1);
-		frame.border:SetTexture("Interface\\Addons\\asDBMCastingAlert\\border.tga");
-		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-		frame.border:SetAlpha(1);
-
-		UpdateBuffAnchor(parent.frames, idx, 1, bright, bcenter, parent);
-
-		if not frame:GetScript("OnEnter") then
-			frame:SetScript("OnEnter", function(s)
-				if s.castspellid and s.castspellid > 0 then
-					GameTooltip_SetDefaultAnchor(GameTooltip, s);
-					GameTooltip:SetSpellByID(s.castspellid);
-				end
-			end)
-			frame:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end)
-		end
-		frame:EnableMouse(false);
-		frame:SetMouseMotionEnabled(true);
-
-		frame:Hide();
-	end
-
-	return;
 end
 
 local function Bar_OnUpdate(self, ef)
@@ -587,7 +485,6 @@ local function initAddon()
 	bloaded = LoadAddOn("asMOD")
 
 	CreateCastbars(ADVA);
-	CreatBuffFrames(ADVA, true, false);
 
 	if bloaded and asMOD_setupFrame then
 		asMOD_setupFrame(ADVA, "asDBMCastingAlert");

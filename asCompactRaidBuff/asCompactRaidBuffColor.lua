@@ -114,7 +114,7 @@ function ns.ACRB_UpdateRaidIconAborbColor(asframe)
 		end
 	end
 
-	if ns.lowhealth and asframe.healthcolor then
+	if ns.lowhealth and asframe.healthcolor and valueMax and valueMax > 0 then
 		local percent = (value / valueMax) * 100;
 		if percent <= ns.lowhealth then
 			ns.UpdateNameColor(asframe.frame, nil, true);

@@ -1,5 +1,10 @@
 ﻿local _, ns = ...;
 
+local CONFIG_NOT_INTERRUPTIBLE_COLOR = { r = 0.9, g = 0.9, b = 0.9 };                       --차단 불가시 (내가 아닐때) 색상 (r, g, b)
+local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { r = 153 / 255, g = 0, b = 76 / 255 };       --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
+local CONFIG_INTERRUPTIBLE_COLOR = { r = 204 / 255, g = 255 / 255, b = 153 / 255 };         --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
+local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { r = 76 / 255, g = 153 / 255, b = 0 };           --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
+
 local DangerousSpellList = {}
 
 local ANameP_HealerGuid = {}
@@ -654,54 +659,6 @@ local function updateHealthbarColor(self)
         return;
     end
 
-    local unitname = GetUnitName(unit);
-    local status = UnitThreatSituation("player", unit);
-    local incombat = UnitAffectingCombat(unit);
-    local bCastingColorAlert = false;
-
-    -- Cast Interrupt
-    if self.castspellid and self.casticon and incombat then
-        local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid =
-            UnitCastingInfo(unit);
-        if not name then
-            name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
-        end
-
-        if spellid then
-            local isDanger, binterrupt = isDangerousSpell(spellid);
-
-            self.castspellid = spellid;
-            if isDanger and binterrupt == true then
-                --PixelGlow_Start(r, color, N, frequency, length, th, xOffset, yOffset, border, key, frameLevel)
-                ns.lib.PixelGlow_Start(self.casticon, { 1, 1, 0, 1 });
-                ns.lib.PixelGlow_Start(healthBar, { 1, 1, 0, 1 }, nil, nil, nil, nil, nil, nil, nil, nil, healthBar:GetFrameLevel() + 10);
-                bCastingColorAlert = true;
-            elseif isDanger then
-                if notInterruptible == false then
-                    ns.lib.PixelGlow_Start(self.casticon, { 0.5, 1, 0.5, 1 }, nil, nil, nil, nil, nil, nil, nil, nil, nil);
-                    ns.lib.PixelGlow_Start(healthBar, { 0.5, 1, 0.5, 1 }, nil, nil, nil, nil, nil, nil, nil, nil, healthBar:GetFrameLevel() + 10);
-                else
-                    ns.lib.PixelGlow_Start(self.casticon, { 0.5, 0.5, 0.5, 1 });
-                    ns.lib.PixelGlow_Start(healthBar, { 0.5, 0.5, 0.5, 1 }, nil, nil, nil, nil, nil, nil, nil, nil, healthBar:GetFrameLevel() + 10);
-                end
-            elseif notInterruptible == false then
-                ns.lib.PixelGlow_Start(self.casticon);
-                ns.lib.PixelGlow_Stop(healthBar);
-            else
-                ns.lib.PixelGlow_Stop(self.casticon);
-                ns.lib.PixelGlow_Stop(healthBar);
-            end
-        else
-            ns.lib.PixelGlow_Stop(self.casticon);
-            ns.lib.PixelGlow_Stop(healthBar);
-        end
-    else
-        if self.casticon then
-            ns.lib.PixelGlow_Stop(self.casticon);
-        end
-        ns.lib.PixelGlow_Stop(healthBar);
-    end
-
     local function IsPlayerEffectivelyTank()
         local assignedRole = UnitGroupRolesAssigned("player");
         if (assignedRole == "NONE") then
@@ -722,10 +679,69 @@ local function updateHealthbarColor(self)
         return false;
     end
 
+    local unitname = GetUnitName(unit);
+    local status = UnitThreatSituation("player", unit);
+    local incombat = UnitAffectingCombat(unit);
     local tanker = IsPlayerEffectivelyTank();
     local isTanking = IsTanking();
     local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
     local isTargetPet = UnitIsUnit(unit .. "target", "pet");
+    local CastingAlertColor = nil;
+
+
+    -- Cast Interrupt
+    if self.castspellid and self.casticon and incombat then
+        local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid =
+            UnitCastingInfo(unit);
+        if not name then
+            name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+        end
+
+        if spellid then
+            local isDanger, binterrupt = isDangerousSpell(spellid);
+
+            self.castspellid = spellid;
+            if isDanger then
+                if binterrupt then
+                    ns.lib.PixelGlow_Start(self.casticon, { 1, 1, 0, 1 });
+                    ns.lib.PixelGlow_Start(healthBar, { 1, 1, 0, 1 }, nil, nil, nil, nil, nil, nil, nil, nil,
+                        healthBar:GetFrameLevel() + 10);
+                end
+
+                if isTargetPlayer then
+                    if notInterruptible then
+                        CastingAlertColor = CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET;
+                    else
+                        CastingAlertColor = CONFIG_INTERRUPTIBLE_COLOR_TARGET;
+                    end
+                else
+                    if notInterruptible then
+                        CastingAlertColor = CONFIG_NOT_INTERRUPTIBLE_COLOR;
+                    else
+                        CastingAlertColor = CONFIG_INTERRUPTIBLE_COLOR;
+                    end
+                end
+            elseif notInterruptible == false then
+                ns.lib.PixelGlow_Start(self.casticon);
+                ns.lib.PixelGlow_Stop(healthBar);
+            else
+                ns.lib.PixelGlow_Stop(self.casticon);
+                ns.lib.PixelGlow_Stop(healthBar);
+            end
+        else
+            ns.lib.PixelGlow_Stop(self.casticon);
+            ns.lib.PixelGlow_Stop(healthBar);
+        end
+    else
+        if self.casticon then
+            ns.lib.PixelGlow_Stop(self.casticon);
+        end
+        ns.lib.PixelGlow_Stop(healthBar);
+    end
+
+    if ns.options.ANameP_ShowDBMCastingColor == false then
+        CastingAlertColor = nil;
+    end
 
     local function getColor()
         local color;
@@ -735,7 +751,12 @@ local function updateHealthbarColor(self)
         end
         -- ColorLevel.Name;
         if unitname and ns.ANameP_AlertList[unitname] then
-            color = {r = ns.ANameP_AlertList[unitname][1], g = ns.ANameP_AlertList[unitname][2], b = ns.ANameP_AlertList[unitname][3]};
+            color = {
+                r = ns.ANameP_AlertList[unitname][1],
+                g = ns.ANameP_AlertList[unitname][2],
+                b = ns
+                    .ANameP_AlertList[unitname][3]
+            };
 
             if ns.ANameP_AlertList[unitname][4] == 1 then
                 ns.lib.PixelGlow_Start(healthBar);
@@ -756,8 +777,8 @@ local function updateHealthbarColor(self)
                 end
             end
 
-            if bCastingColorAlert then
-                return ns.options.ANameP_AutoMarkerColor;
+            if CastingAlertColor then
+                return CastingAlertColor;
             end
 
             if (isTargetPlayer) then
@@ -1244,7 +1265,7 @@ local function addNamePlate(namePlateFrameBase)
 
     local previousTexture = healthbar:GetStatusBarTexture();
 
-    
+
     asframe.BarTexture:ClearAllPoints();
     asframe.BarTexture:SetAllPoints(previousTexture);
     asframe.BarTexture:SetVertexColor(previousTexture:GetVertexColor());

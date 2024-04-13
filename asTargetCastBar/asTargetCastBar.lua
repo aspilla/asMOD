@@ -4,15 +4,14 @@ local ATCB_WIDTH = 150
 local ATCB_HEIGHT = 17
 local ATCB_X = 0;
 local ATCB_Y = -100;
-local ATCB_ALPHA = 0.8;                                        --투명도 80%
-local ATCB_NAME_SIZE = ATCB_HEIGHT * 0.7;                      --Spell 명 Font Size, 높이의 70%
-local ATCB_TIME_SIZE = ATCB_HEIGHT * 0.5;                      --Spell 시전시간 Font Size, 높이의 50%
-local ATCB_NOT_INTERRUPTIBLE_COLOR = { 0.8, 0.8, 0.8 };        --차단 불가시 (내가 아닐때) 색상 (r, g, b)
-local ATCB_NOT_INTERRUPTIBLE_COLOR_TARGET = { 0.8, 0.5, 0.5 }; --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
-local ATCB_INTERRUPTIBLE_COLOR = { 0, 0.9, 0 };                --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
-local ATCB_INTERRUPTIBLE_COLOR_TARGET = { 0.5, 1, 1 };         --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
-local ATCB_UPDATE_RATE = 0.05                                  -- 20프레임
-
+local ATCB_ALPHA = 0.8;                                                         --투명도 80%
+local ATCB_NAME_SIZE = ATCB_HEIGHT * 0.7;                                       --Spell 명 Font Size, 높이의 70%
+local ATCB_TIME_SIZE = ATCB_HEIGHT * 0.5;                                       --Spell 시전시간 Font Size, 높이의 50%
+local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };                       --차단 불가시 (내가 아닐때) 색상 (r, g, b)
+local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { 153 / 255, 0, 76 / 255 };       --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
+local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 };         --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
+local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };           --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
+local ATCB_UPDATE_RATE = 0.05 -- 20프레임
 
 local DangerousSpellList = {
 
@@ -99,8 +98,6 @@ if asMOD_setupFrame then
     asMOD_setupFrame(ATCB.castbar, "asTargetCastBar");
 end
 
-local prev_name = nil;
-
 local function ATCB_OnEvent(self, event, ...)
     if event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
         if UnitExists("target") then
@@ -163,22 +160,16 @@ local function ATCB_OnEvent(self, event, ...)
 
             if UnitIsUnit("targettarget", "player") then
                 if notInterruptible then
-                    color = ATCB_NOT_INTERRUPTIBLE_COLOR_TARGET;
+                    color = CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET;
                 else
-                    color = ATCB_INTERRUPTIBLE_COLOR_TARGET;
-                end
-
-                if (name ~= prev_name) and DangerousSpellList[spellid] then
-                    --PlaySoundFile("Interface\\AddOns\\asTargetCastBar\\alert.mp3", "MASTER");
-                    prev_name = name;
+                    color = CONFIG_INTERRUPTIBLE_COLOR_TARGET;
                 end
             else
                 if notInterruptible then
-                    color = ATCB_NOT_INTERRUPTIBLE_COLOR;
+                    color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
                 else
-                    color = ATCB_INTERRUPTIBLE_COLOR;
+                    color = CONFIG_INTERRUPTIBLE_COLOR;
                 end
-                prev_name = nil;
             end
 
             castBar.castspellid = spellid;
@@ -190,16 +181,8 @@ local function ATCB_OnEvent(self, event, ...)
 
             frameIcon:Show();
             castBar:Show();
-            if DangerousSpellList[spellid] then
-                if DangerousSpellList[spellid] == "interrupt" then
-                    ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
-                else
-                    if notInterruptible then
-                        ns.lib.PixelGlow_Start(castBar, { 0.5, 0.5, 0.5, 1 });
-                    else
-                        ns.lib.PixelGlow_Start(castBar, { 0.5, 1, 0.5, 1 });
-                    end
-                end
+            if DangerousSpellList[spellid] and DangerousSpellList[spellid] == "interrupt" then
+                ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
             end
 
             if UnitExists("targettarget") and UnitIsPlayer("targettarget") then
@@ -218,7 +201,6 @@ local function ATCB_OnEvent(self, event, ...)
             castBar:Hide();
             ns.lib.PixelGlow_Stop(castBar);
             self.start = 0;
-            prev_name = nil;
             targetname:SetText("");
             targetname:Hide();
         end
@@ -228,7 +210,6 @@ local function ATCB_OnEvent(self, event, ...)
         castBar:Hide();
         ns.lib.PixelGlow_Stop(castBar);
         self.start = 0;
-        prev_name = nil;
         targetname:SetText("");
         targetname:Hide();
     end

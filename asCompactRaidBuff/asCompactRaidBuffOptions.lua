@@ -99,6 +99,10 @@ ns.ACRB_BlackList = {
 
 --직업별 생존기 등록 (10초 쿨다운), 용군단 Version
 ns.ACRB_DefensiveBuffList = {
+	-- 종특
+	[215479] = 2, --'무쇠',
+	[65116]  = 2, --'석화',
+
 	[213871] = 2, --WARRIOR
 	[118038] = 2, --WARRIOR
 	[236273] = 2, --WARRIOR

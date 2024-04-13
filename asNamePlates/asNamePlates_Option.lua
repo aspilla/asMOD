@@ -267,7 +267,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 240326,
+    version = 240412,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -278,6 +278,7 @@ ANameP_Options_Default = {
     ANameP_AutoMarker = true,                                 -- AutoMarker 몹 색상 변경 사용
     ANameP_Tooltip = true,                                    -- Tooltip 표시
     ANameP_ShowDBM = true,                                    -- DBM Cooldown을 표시
+    ANameP_ShowDBMCastingColor = true,                        -- DBM CastingColor을 표시
 
     ANameP_AggroTargetColor = { r = 0.4, g = 0.2, b = 0.8 },  -- PVE 대상이 player 였을때 Color
     ANameP_AggroColor = { r = 0.5, g = 1, b = 1 },            -- 어그로 대상일때 바 Color
@@ -291,7 +292,7 @@ ANameP_Options_Default = {
     ANameP_QuestColor = { r = 1, g = 0.8, b = 0.5 },          -- Quest 몹 Color
     ANameP_AutoMarkerColor = { r = 0.5, g = 1, b = 0.5 },     -- AutoMarker 몹 Color
 
-    nameplateOverlapV = 0.7,                                  -- 이름표 상하 정렬
+    nameplateOverlapV = 1.0,                                  -- 이름표 상하 정렬
 
 
 
@@ -989,6 +990,7 @@ local function panelOnShow()
     SetupCheckBoxOption("[색상] 낮은 생명력 색상 표시", "ANameP_LowHealthAlert");
     SetupCheckBoxOption("[색상] Quest 몹 색상 표시", "ANameP_QuestAlert");
     SetupCheckBoxOption("[색상] AutoMarker 몹 색상 표시", "ANameP_AutoMarker");
+    SetupCheckBoxOption("[색상] DBM Casting 몹 색상 표시", "ANameP_ShowDBMCastingColor");
 
 
     SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");

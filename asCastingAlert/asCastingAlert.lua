@@ -29,14 +29,10 @@ local function CheckCasting(unit)
             local remain = (endTime / 1000) - curr;
 
             if remain > 0 then
-                local type = 3;
+                local type = 2;
 
                 if DangerousSpellList[spellid] then
-                    if DangerousSpellList[spellid] == "interrupt" or not notInterruptible then
-                        type = 1;
-                    else
-                        type = 2;
-                    end
+                    type = 1;
                 end
 
                 tinsert(showlist, { type, remain, texture, spellid });
@@ -74,9 +70,7 @@ local function ShowCasting()
         ACTA.cast[currshow].castspellid = spellid;
 
         if type == 1 then
-            ACTA.cast[currshow]:SetTextColor(0, 1, 0.35);
-        elseif type == 2 then
-            ACTA.cast[currshow]:SetTextColor(0.8, 0.5, 0.5);
+            ACTA.cast[currshow]:SetTextColor(1, 0, 0);
         else
             ACTA.cast[currshow]:SetTextColor(1, 1, 1);
         end
