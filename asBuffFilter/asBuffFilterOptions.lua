@@ -12,6 +12,7 @@ ns.ABF_CountFontSize = 11; -- Count Font Size
 ns.ABF_AlphaCombat = 1; -- 전투중 Alpha 값
 ns.ABF_AlphaNormal = 0.5; -- 비 전투중 Alpha 값
 ns.ABF_MAX_Cool = 60; -- 최대 60초의 버프를 보임
+ns.ABF_CheckTalentTree = true; --특성 트리 이름 버프를 가운데 표시 (가운데 너무 많아 진다)
 
 ns.ABF_BlackList = {
     ["뽑기 운"] = 1

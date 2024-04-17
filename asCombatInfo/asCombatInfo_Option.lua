@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240405,
+	version = 240417,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -519,7 +519,7 @@ local function SetupEditBoxOption()
 		local initselect = 0;
 		local values = spelllist[idx];
 
-		if values and type(values) == "table" and values[10] == true and values[1] ~= nil and values[2] ~= nil then
+		if values and type(values) == "table" and values[20] == true and values[1] ~= nil and values[2] ~= nil then
 			initdata = values[1];
 			initselect = values[2];
 		elseif values and type(values) == "table" and values[1] ~= nil then
@@ -589,7 +589,7 @@ local function SetupEditBoxOption()
 				ACI_Options[spec][configID][idx] = {};
 
 				local number = tonumber(data);
-				ACI_Options[spec][configID][idx][10] = true;				
+				ACI_Options[spec][configID][idx][20] = true;				
 				if number then
 					ACI_Options[spec][configID][idx][1] = number;
 					ACI_Options[spec][configID][idx][2] = tonumber(type) + 1;

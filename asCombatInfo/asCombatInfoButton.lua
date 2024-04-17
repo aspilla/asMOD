@@ -168,7 +168,7 @@ function ns.Button:checkBuffList()
         end
     end
 
-    if count > 2 then
+    if count > 3 then
         self.alert2 = true;
     end
 

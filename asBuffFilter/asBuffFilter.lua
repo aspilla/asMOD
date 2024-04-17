@@ -38,6 +38,7 @@ local UnitFrameBuffType = EnumUtil.MakeEnum(
 	"SelectedBuff",
 	"TalentBuff",
 	"ProcBuff",
+	"TalentBuffLeft",
 	"ShouldShowBuff",
 	"Normal"
 );
@@ -140,7 +141,7 @@ local function scanSpells(tab)
 			for j = 1, numSlots do
 				local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
 
-				if flyoutSpellName then					
+				if flyoutSpellName then
 					ABF_TalentBuffList[flyoutSpellName] = true;
 					ABF_TalentBuffList[flyoutSpellID or 0] = true;
 				end
@@ -156,7 +157,12 @@ end
 local function asCheckTalent()
 	ABF_TalentBuffList = {};
 	ABF_TalentBuffIconList = {};
-	overlayspell = {};	
+	overlayspell = {};
+
+	if not ns.ABF_CheckTalentTree then
+		return;
+	end
+
 	scanSpells(2)
 	scanSpells(3)
 
@@ -361,7 +367,7 @@ local function ProcessAura(aura, unit)
 			elseif ns.ABF_ClassBuffList[aura.name] == 3 then
 				aura.buffType = UnitFrameBuffType.ImportantBuff;
 			else
-				aura.buffType = UnitFrameBuffType.Normal;
+				aura.buffType = UnitFrameBuffType.TalentBuffLeft;
 			end
 		elseif aura.nameplateShowPersonal then
 			aura.buffType = UnitFrameBuffType.PriorityBuff;
@@ -479,6 +485,7 @@ local function UpdateAuraFrames(unit, auraList)
 	local tcount = 1;
 	local lcount = 1;
 	local mparent = nil;
+	local curr_time = GetTime();
 
 	if (unit == "player") then
 		lcount, tcount = updateTotemAura();
@@ -533,7 +540,7 @@ local function UpdateAuraFrames(unit, auraList)
 				frameCooldown:SetDrawSwipe(true);
 			end
 
-			if (aura.duration > 0 and aura.duration <= 60) then
+			if (aura.duration > 0 and (aura.expirationTime - curr_time) <= 60) then
 				frameCooldown:Show();
 				asCooldownFrame_Set(frameCooldown, aura.expirationTime - aura.duration, aura.duration, aura.duration > 0,
 					true);
