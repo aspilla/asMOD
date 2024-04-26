@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240417,
+	version = 240418,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -192,7 +192,7 @@ ACI_Options_Default = {
 	--암흑
 	ACI_SpellList_PRIEST_3 = {
 
-		{ "파멸의 역병", 4 },
+		{ "파멸의 역병", 4, nil, nil, "어둠불꽃 불씨" },
 		{ 99, "공허의 격류", { "공허의 격류", 1 }, { "어둠의 권능: 고통", 4, nil, 1 } },
 		{ 99, "공허 방출", { "공허 방출", 1 }, { "어둠의 승천", 2 } },
 		{ "어둠의 권능: 죽음", 1, nil, nil, "죽음의 고통" },

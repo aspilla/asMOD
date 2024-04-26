@@ -1,9 +1,9 @@
 ﻿local _, ns = ...;
 
-local CONFIG_NOT_INTERRUPTIBLE_COLOR = { r = 0.9, g = 0.9, b = 0.9 };                       --차단 불가시 (내가 아닐때) 색상 (r, g, b)
-local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { r = 153 / 255, g = 0, b = 76 / 255 };       --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
-local CONFIG_INTERRUPTIBLE_COLOR = { r = 204 / 255, g = 255 / 255, b = 153 / 255 };         --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
-local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { r = 76 / 255, g = 153 / 255, b = 0 };           --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
+local CONFIG_NOT_INTERRUPTIBLE_COLOR = { r = 0.9, g = 0.9, b = 0.9 };                 --차단 불가시 (내가 아닐때) 색상 (r, g, b)
+local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { r = 153 / 255, g = 0, b = 76 / 255 }; --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
+local CONFIG_INTERRUPTIBLE_COLOR = { r = 204 / 255, g = 255 / 255, b = 153 / 255 };   --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
+local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { r = 76 / 255, g = 153 / 255, b = 0 };     --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
 
 local DangerousSpellList = {}
 
@@ -625,6 +625,7 @@ local function setColoronStatusBar(self, r, g, b)
         self.BarColor:SetVertexColor(r, g, b);
     end
 
+    self.BarTexture:Hide();
     self.BarColor:Show();
 end
 
@@ -642,7 +643,7 @@ local bloadedAutoMarker = false;
 
 local function updateHealthbarColor(self)
     -- unit name 부터
-    if not self.unit or not self.checkcolor then
+    if not self.unit or not self.checkcolor or not self.BarColor or not self.BarTexture then
         return;
     end
 
@@ -762,9 +763,12 @@ local function updateHealthbarColor(self)
                 ns.lib.PixelGlow_Start(healthBar);
                 self.alerthealthbar = true;
             end
+
+            self.namecolor = true;
             return color;
         end
 
+        self.namecolor = false;
         --Target and Aggro High Priority
         if IsInGroup() and ns.options.ANameP_AggroShow and incombat then
             if tanker then
@@ -852,14 +856,14 @@ local function updateHealthbarColor(self)
     if color then
         setColoronStatusBar(self, color.r, color.g, color.b);
     else
-        if self.BarColor then
-            self.BarColor:Hide();
-        end
+        self.BarColor:Hide();
+        self.BarTexture:Show();
+        --parent.UnitFrame.healthBar:SetStatusBarColor(self.BarTexture:GetVertexColor());
     end
 end
 
 local function updatePVPAggro(self)
-    if not ns.ANameP_PVPAggroShow then
+    if not ns.ANameP_PVPAggroShow or not self.namecolor then
         return
     end
 
@@ -1173,6 +1177,7 @@ local function addNamePlate(namePlateFrameBase)
     asframe.unit = unit;
     asframe.update = 0;
     asframe.alerthealthbar = false;
+    asframe.namecolor = false;
     asframe.checkaura = false;
     asframe.downbuff = false;
     asframe.checkpvptarget = false;
@@ -1221,6 +1226,7 @@ local function addNamePlate(namePlateFrameBase)
     asframe.aggro1:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
     asframe.aggro1:ClearAllPoints();
     asframe.aggro1:SetPoint("RIGHT", healthbar, "LEFT", -5, Aggro_Y)
+ 
 
     asframe.aggro2:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
     asframe.aggro2:ClearAllPoints();
@@ -1268,12 +1274,14 @@ local function addNamePlate(namePlateFrameBase)
 
     asframe.BarTexture:ClearAllPoints();
     asframe.BarTexture:SetAllPoints(previousTexture);
+    asframe.BarTexture:SetDrawLayer("OVERLAY", 6);
     asframe.BarTexture:SetVertexColor(previousTexture:GetVertexColor());
     asframe.BarTexture:Show();
 
     asframe.BarColor:ClearAllPoints();
     asframe.BarColor:SetAllPoints(previousTexture);
-    asframe.BarColor:SetVertexColor(1, 1, 1)
+    asframe.BarColor:SetDrawLayer("OVERLAY", 7);
+    asframe.BarColor:SetVertexColor(previousTexture:GetVertexColor())
     asframe.BarColor:Hide();
 
     asframe.healthtext:ClearAllPoints();
@@ -1321,8 +1329,8 @@ local function addNamePlate(namePlateFrameBase)
 
     asframe.aggro1:ClearAllPoints();
 
-    if class == "worldboss" or class == "elite" then
-        asframe.aggro1:SetPoint("RIGHT", healthbar, "LEFT", -5, Aggro_Y);
+    if (class == "elite" or class == "worldboss" or class == "rare" or class == "rareelite") then
+        asframe.aggro1:SetPoint("RIGHT", healthbar, "LEFT", -12, Aggro_Y);
     else
         asframe.aggro1:SetPoint("RIGHT", healthbar, "LEFT", 0, Aggro_Y);
     end
@@ -1567,7 +1575,7 @@ local function ANameP_OnUpdate()
                 nameplate.asNamePlates:Hide();
             end
 
-            if nameplate.asNamePlates.checkpvptarget then
+            if nameplate.asNamePlates.checkpvptarget or nameplate.asNamePlates.namecolor then
                 updatePVPAggro(nameplate.asNamePlates);
             end
             checkSpellCasting(nameplate.asNamePlates);
