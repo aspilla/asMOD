@@ -496,7 +496,20 @@ local function initAddon()
 	ADVA:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 	timer = C_Timer.NewTicker(0.2, ADCA_OnUpdate);
-	local voiceID = C_TTSSettings.GetVoiceOptionID(0)
+	local ttsinfos = C_VoiceChat.GetTtsVoices();
+	local locale = GetLocale();
+	local findLang = "Korean";
+
+	if not (locale == "koKR") then
+		findLang = "English";
+	end
+
+	for id, v in pairs(ttsinfos) do
+		if strfind(v.name, findLang) then
+			CONFIG_VOICE_ID = v.voiceID;
+			print("[asDBMCastingAlert]" .. v.name .. "로 음성 설정");
+		end
+	end
 end
 
 

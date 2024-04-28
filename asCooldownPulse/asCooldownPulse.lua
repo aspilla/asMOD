@@ -5,7 +5,7 @@ local CONFIG_MINCOOL = 1.5 -- 최소안내 쿨타임
 local CONFIG_MAXCOOL = (60 * 5)
 local CONFIG_MINCOOL_PET = 20
 local CONFIG_SOUND_SPEED = 1      -- 음성안내 읽기 속도
-local CONFIG_VOICE_ID = 0         -- 음성 종류 (한국 Client 는 0번 1가지만 지원)
+local CONFIG_VOICE_ID = 1         -- 음성 종류 (한국 Client 는 0번 1가지만 지원)
 local ACDP_CoolButtons_X = -98    -- 쿨 List 위치
 local ACDP_CoolButtons_Y = -250
 local ACDP_AlertButtons_X = 0     -- Alert button 위치
@@ -492,6 +492,7 @@ local function ACDP_Alert(spell, type)
 			if ns.options.SlotNameTTS and itemslotNames[name] then
 				name = itemslotNames[name];
 			end
+			
 			C_VoiceChat.SpeakText(CONFIG_VOICE_ID, name, Enum.VoiceTtsDestination.LocalPlayback, CONFIG_SOUND_SPEED,
 				ns.options.SoundVolume);
 		else
@@ -680,7 +681,20 @@ local function ACDP_Init()
 	ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")
 	ACDP_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
-	local voiceID = C_TTSSettings.GetVoiceOptionID(0)
+	local ttsinfos = C_VoiceChat.GetTtsVoices();
+	local locale = GetLocale();
+	local findLang = "Korean";
+
+	if not (locale == "koKR") then
+		findLang = "English";
+	end
+
+	for id, v in pairs(ttsinfos) do
+		if strfind(v.name, findLang) then
+			CONFIG_VOICE_ID = v.voiceID;
+			print("[asCooldownPulse]" .. v.name .. "로 음성 설정");
+		end
+	end
 
 end
 
