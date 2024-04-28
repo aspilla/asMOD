@@ -1274,13 +1274,11 @@ local function addNamePlate(namePlateFrameBase)
 
     asframe.BarTexture:ClearAllPoints();
     asframe.BarTexture:SetAllPoints(previousTexture);
-    asframe.BarTexture:SetDrawLayer("OVERLAY", 6);
     asframe.BarTexture:SetVertexColor(previousTexture:GetVertexColor());
     asframe.BarTexture:Show();
 
     asframe.BarColor:ClearAllPoints();
     asframe.BarColor:SetAllPoints(previousTexture);
-    asframe.BarColor:SetDrawLayer("OVERLAY", 7);
     asframe.BarColor:SetVertexColor(previousTexture:GetVertexColor())
     asframe.BarColor:Hide();
 
