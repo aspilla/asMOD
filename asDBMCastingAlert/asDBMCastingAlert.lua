@@ -1,7 +1,6 @@
 local _, ns = ...;
 ---설정부
 local CONFIG_SOUND_SPEED = 1 -- 음성안내 읽기 속도
-local CONFIG_VOICE_ID = 0    -- 음성 종류 (한국 Client 는 0번 1가지만 지원)
 local CONFIG_X = 230;
 local CONFIG_Y = -25;
 local CONFIG_SIZE = 45;
@@ -256,10 +255,10 @@ local function ADCA_OnUpdate()
 				end
 			else
 				if alert_focus_noi then
-					C_VoiceChat.SpeakText(CONFIG_VOICE_ID, "주시스턴", Enum.VoiceTtsDestination.LocalPlayback,
+					C_VoiceChat.SpeakText(ns.options.TTS_ID, "주시스턴", Enum.VoiceTtsDestination.LocalPlayback,
 						CONFIG_SOUND_SPEED, ns.options.SoundVolume);
 				else
-					C_VoiceChat.SpeakText(CONFIG_VOICE_ID, "주시짤", Enum.VoiceTtsDestination.LocalPlayback,
+					C_VoiceChat.SpeakText(ns.options.TTS_ID, "주시짤", Enum.VoiceTtsDestination.LocalPlayback,
 						CONFIG_SOUND_SPEED, ns.options.SoundVolume);
 				end
 			end
@@ -274,10 +273,10 @@ local function ADCA_OnUpdate()
 				end
 			else
 				if alert_target_noi then
-					C_VoiceChat.SpeakText(CONFIG_VOICE_ID, "스턴", Enum.VoiceTtsDestination.LocalPlayback,
+					C_VoiceChat.SpeakText(ns.options.TTS_ID, "스턴", Enum.VoiceTtsDestination.LocalPlayback,
 						CONFIG_SOUND_SPEED, ns.options.SoundVolume);
 				else
-					C_VoiceChat.SpeakText(CONFIG_VOICE_ID, "짤", Enum.VoiceTtsDestination.LocalPlayback,
+					C_VoiceChat.SpeakText(ns.options.TTS_ID, "짤", Enum.VoiceTtsDestination.LocalPlayback,
 						CONFIG_SOUND_SPEED, ns.options.SoundVolume);
 				end
 			end
@@ -291,7 +290,7 @@ local function ADCA_OnUpdate()
 					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\alert.mp3", "MASTER");
 				end
 			else
-				C_VoiceChat.SpeakText(CONFIG_VOICE_ID, alert_name, Enum.VoiceTtsDestination.LocalPlayback,
+				C_VoiceChat.SpeakText(ns.options.TTS_ID, alert_name, Enum.VoiceTtsDestination.LocalPlayback,
 					CONFIG_SOUND_SPEED, ns.options.SoundVolume);
 			end
 		end
@@ -496,20 +495,6 @@ local function initAddon()
 	ADVA:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 	timer = C_Timer.NewTicker(0.2, ADCA_OnUpdate);
-	local ttsinfos = C_VoiceChat.GetTtsVoices();
-	local locale = GetLocale();
-	local findLang = "Korean";
-
-	if not (locale == "koKR") then
-		findLang = "English";
-	end
-
-	for id, v in pairs(ttsinfos) do
-		if strfind(v.name, findLang) then
-			CONFIG_VOICE_ID = v.voiceID;
-			print("[asDBMCastingAlert]" .. v.name .. "로 음성 설정");
-		end
-	end
 end
 
 

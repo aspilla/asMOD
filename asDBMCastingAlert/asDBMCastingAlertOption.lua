@@ -4,6 +4,7 @@ local Options_Default = {
     SoundVolume = 100,    
     TTS = false,
     HideTarget = true,
+    TTS_ID = -1,
 };
 
 ns.options = CopyTable(Options_Default);
@@ -42,7 +43,43 @@ function ns.SetupOptionPanels()
         end
         local defaultValue = ADCA_Options[variable];
 
-        if tonumber(defaultValue) ~= nil then
+        if name == "TTS_ID" then
+            local function GetOptions()
+                local container = Settings.CreateControlTextContainer()
+
+                local ttsinfos = C_VoiceChat.GetTtsVoices();
+                for id, v in pairs(ttsinfos) do
+                    container:Add(v.voiceID, v.name);
+                end
+                return container:GetData()
+            end
+
+            if defaultValue < 0 then
+                local ttsinfos = C_VoiceChat.GetTtsVoices();
+                local locale = GetLocale();
+                local findLang = "Korean";
+
+                if not (locale == "koKR") then
+                    findLang = "English";
+                end
+
+                ADCA_Options[variable] = 0;
+                ns.options[variable] = 0;
+
+                for id, v in pairs(ttsinfos) do
+                    if strfind(v.name, findLang) then
+                        defaultValue = v.voiceID;
+                        ADCA_Options[variable] = defaultValue;
+                        ns.options[variable] = defaultValue;
+                    end
+                end
+            end
+
+            local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
+            Settings.CreateDropDown(category, setting, GetOptions, tooltip);
+            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+
+        elseif tonumber(defaultValue) ~= nil then
             local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
             local options = Settings.CreateSliderOptions(0, 100, 1);
             options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);

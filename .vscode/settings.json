@@ -100,6 +100,8 @@
         "LE_GAME_ERR_OUT_OF_RUNES",
         "LE_GAME_ERR_OUT_OF_FURY",
         "LE_GAME_ERR_OUT_OF_MAELSTROM",
-        "RED_FONT_COLOR"
+        "RED_FONT_COLOR",
+        "RAID_INFO_WORLD_BOSS",
+        "PLAYER_DIFFICULTY6"
     ]
 }

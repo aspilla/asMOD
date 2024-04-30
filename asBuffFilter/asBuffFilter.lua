@@ -775,7 +775,7 @@ local function CreatBuffFrames(parent, bright, bcenter)
 
 		frame.icon:SetTexCoord(.08, .92, .08, .92);
 		frame.icon:SetAlpha(ns.ABF_ALPHA);
-		frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
+		frame.border:SetTexture("Interface\\Addons\\asBuffFilter\\border.tga");
 		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 		frame.border:SetAlpha(ns.ABF_ALPHA);
 
