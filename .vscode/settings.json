@@ -102,6 +102,15 @@
         "LE_GAME_ERR_OUT_OF_MAELSTROM",
         "RED_FONT_COLOR",
         "RAID_INFO_WORLD_BOSS",
-        "PLAYER_DIFFICULTY6"
+        "PLAYER_DIFFICULTY6",
+        "InterfaceOptionsFrame_OpenToCategory",
+        "RaidNotice_AddMessage",
+        "RaidWarningFrame",
+        "CLOSE",
+        "STATICPOPUP_NUMDIALOGS",
+        "AddonCompartmentFrame",
+        "PanelTemplates_DeselectTab",
+        "PanelTemplates_TabResize",
+        "PanelTemplates_SelectTab"
     ]
 }

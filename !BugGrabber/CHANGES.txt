@@ -1,8 +1,9 @@
 ------------------------------------------------------------------------
-r303 | funkehdude | 2024-02-07 11:50:41 +0000 (Wed, 07 Feb 2024) | 1 line
+r305 | funkehdude | 2024-04-30 17:20:12 +0000 (Tue, 30 Apr 2024) | 1 line
 Changed paths:
+   M /trunk/!BugGrabber.toc
    M /trunk/!BugGrabber_Vanilla.toc
 
-bump toc
+Bump toc, add cata toc
 ------------------------------------------------------------------------
 
