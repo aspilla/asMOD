@@ -1,4 +1,4 @@
-﻿## Interface: 100206
+﻿## Interface: 100207
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rDBMTimer
 ## Notes: DBM Timer Bar 개선
