@@ -52,6 +52,7 @@ local function SearchEntryUpdate(entry, ...)
         local xOffset = -86;
 
         for i = 1, numMembers do
+            local order = 6 - i;
             local class = orderIndexes[i][2];
             local spec = orderIndexes[i][3]
             local role = orderIndexes[i][4]
@@ -61,9 +62,9 @@ local function SearchEntryUpdate(entry, ...)
             local texture = "astexture" .. i;
 
             if (not entry.DataDisplay.Enumerate[texture]) then
-                entry.DataDisplay.Enumerate[texture] = entry.DataDisplay.Enumerate:CreateTexture(nil, "ARTWORK");
+                entry.DataDisplay.Enumerate[texture] = entry.DataDisplay.Enumerate["Icon"..order]:CreateTexture(nil, "ARTWORK");
                 entry.DataDisplay.Enumerate[texture]:SetSize(16, 4);
-                entry.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", entry.DataDisplay.Enumerate, "RIGHT", xOffset, -10);
+                entry.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", entry.DataDisplay.Enumerate["Icon"..order], "RIGHT", -1, -10);
             end
 
             entry.DataDisplay.Enumerate[texture]:SetColorTexture(r, g, b, 0.75);
@@ -73,10 +74,10 @@ local function SearchEntryUpdate(entry, ...)
             texture = "asicontexture" .. i;
 
             if (not entry.DataDisplay.Enumerate[texture]) then
-                entry.DataDisplay.Enumerate[texture] = entry.DataDisplay.Enumerate:CreateTexture(nil, "ARTWORK");
+                entry.DataDisplay.Enumerate[texture] = entry.DataDisplay.Enumerate["Icon"..order]:CreateTexture(nil, "ARTWORK");
                 entry.DataDisplay.Enumerate[texture]:SetSize(16, 17);
-                entry.DataDisplay.Enumerate[texture]:SetPoint("BOTTOMRIGHT", entry.DataDisplay.Enumerate, "RIGHT",
-                    xOffset, -7);
+                entry.DataDisplay.Enumerate[texture]:SetPoint("BOTTOMRIGHT", entry.DataDisplay.Enumerate["Icon"..order], "RIGHT",
+                    -1, -7);
                 entry.DataDisplay.Enumerate[texture]:SetTexCoord(.08, .92, .08, .92);
                 entry.DataDisplay.Enumerate[texture]:SetDrawLayer("ARTWORK", 7);
             end
