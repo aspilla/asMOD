@@ -184,6 +184,7 @@
         "ChatFrame_RemoveMessageGroup",
         "TIME_PLAYED_LEVEL",
         "PLAYER_FACTION_GROUP",
-        "ChallengeModeCompleteBanner"
+        "ChallengeModeCompleteBanner",
+        "class"
     ]
 }

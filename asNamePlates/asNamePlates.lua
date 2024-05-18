@@ -392,7 +392,7 @@ local function updateAuras(self, unit)
                     if showlist_time and showlist_time >= 0 and alertcount == false then
                         local alert_time = aura.expirationTime - showlist_time;
 
-                        if (GetTime() >= alert_time) and aura.duration > 0 then
+                        if (GetTime() >= alert_time) and aura.duration > 0 and showlist_time > 0 then
                             alert = true;
                         else
                             if alertnameplate then
@@ -1093,7 +1093,7 @@ local function removeNamePlate(namePlateFrameBase)
         asframe.healer:Hide();
         asframe.BarTexture:Hide();
         asframe.BarColor:Hide();
-
+        
         asframe:Hide();
         asframe:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
         asframe:UnregisterEvent("PLAYER_TARGET_CHANGED");
