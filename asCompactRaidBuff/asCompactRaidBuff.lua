@@ -543,6 +543,17 @@ local function ACRB_disableDefault(frame)
     end
 end
 
+local frameBuffer = {};
+
+local function hookfunc(frame)
+    if frame and not frame:IsForbidden() and frame.GetName then
+        local name = frame:GetName();
+        if name then
+            frameBuffer[name] = frame;
+        end
+    end
+end
+
 local function ARCB_UpdateAll(frame)
     if frame and not frame:IsForbidden() and frame.GetName then
         local name = frame:GetName();
@@ -643,6 +654,12 @@ local function ACRB_OnUpdateAura()
 end
 
 local function ACRB_OnUpdate()
+    for _, newframe in pairs(frameBuffer) do
+        ARCB_UpdateAll(newframe);
+    end
+
+    frameBuffer = {};
+
     ACRB_updatePartyAllHealerMana();
     ns.ACRB_CheckCasting();
 end
@@ -735,5 +752,5 @@ ACRB_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 -- CPU 리소스
 -- ACRB_mainframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 
-hooksecurefunc("CompactUnitFrame_UpdateAll", ARCB_UpdateAll);
+hooksecurefunc("CompactUnitFrame_UpdateAll", hookfunc);
 hooksecurefunc("CompactUnitFrame_UpdateName", ns.UpdateNameColor);

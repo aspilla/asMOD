@@ -3,5 +3,7 @@
 ## Title: |cffff3399as|rPremadeGroupsFilter
 ## Notes: 파티찾기 직업 색상 추가
 ## Version : 240107
+## SavedVariablesPerCharacter: APMGF_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+asPremadeGroupsFilterOption.lua
 asPremadeGroupsFilter.lua

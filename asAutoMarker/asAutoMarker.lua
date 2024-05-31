@@ -17,7 +17,18 @@ local AAM_MaxMark = 7      -- 최대 징표 X까지 찍도록 설정
 
 local NPCTable = {
 
-	-- 용군단 시즌 3 (https://wago.io/3bViaBtT1)
+	-- 용군단 시즌 4 https://wago.io/3bViaBtT1
+
+	[196203] = 2,
+	[192796] = 2,
+	[194894] = 2,
+	[195878] = 2,
+	[195847] = 2,
+	[195119] = 2,
+
+	[185508] = 1, --발톱 싸움꾼
+	
+	-- 용군단 시즌 3 여명 (https://wago.io/3bViaBtT1)
 
 	[100486] = 2,
 	[100527] = 2,
@@ -44,7 +55,7 @@ local NPCTable = {
 	[131850] = 2,
 	[131858] = 0,
 	[132126] = 0,
-	[134024] = 1, -- 탐욕스러운 구더기, 징표 안찍음
+	[134024] = 0, -- 탐욕스러운 구더기, 징표 안찍음
 	[135365] = 2,
 	[135474] = 2,
 	[135552] = 0,
@@ -90,7 +101,6 @@ local NPCTable = {
 	[98813] = 2,
 	[99366] = 2,
 
-
 	-- 용군단 시즌 2 (https://wago.io/3bViaBtT1)
 	[102232] = 2,
 	[126919] = 2,
@@ -121,7 +131,7 @@ local NPCTable = {
 	[184580] = 0,
 	[185528] = 2,
 	[185656] = 2,
-	[186125] = 0,
+	[186125] = 1,
 	[186191] = 2,
 	[186208] = 2,
 	[186220] = 2,
@@ -253,20 +263,6 @@ asAutoMarkerF.IsAutoMarkerMob = function(unit)
 		npcID = tonumber(npcID);
 
 		if NPCTable[npcID] and NPCTable[npcID] > 0 then
-			return true;
-		end
-	end
-
-	return false;
-end
-
-local function checkMob(unit)
-	local guid = UnitGUID(unit);
-	if guid then
-		local npcID = select(6, strsplit("-", guid));
-		npcID = tonumber(npcID);
-
-		if NPCTable[npcID] and NPCTable[npcID] > 0 then
 			return NPCTable[npcID];
 		end
 	end
@@ -296,7 +292,7 @@ local function CheckPartyMarks()
 		abledMarks[mark] = false;
 	end
 
-	for i = 1, GetNumGroupMembers() do
+	for i = 0, GetNumGroupMembers() do
 		local unit = "party" .. i;
 		local mark = GetRaidTargetIndex(unit);
 
@@ -321,7 +317,7 @@ local function UpdateMarks(nameplate)
 
 	if (unit == "mouseover" or (unit and status and status > 0)) and isAttackable(unit) and not UnitIsDead(unit) then
 		local guid = UnitGUID(unit);
-		if checkMob(unit) > 1 then
+		if asAutoMarkerF.IsAutoMarkerMob(unit) > 1 then
 			while (curr_mark <= AAM_MaxMark) do
 				if abledMarks[curr_mark] then
 					break;

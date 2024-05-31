@@ -1,3 +1,5 @@
+local _, ns = ...;
+
 local function getIndex(values, val)
     local index = {};
 
@@ -67,9 +69,9 @@ local function SearchEntryUpdate(entry, ...)
         entry.DataDisplay.Enumerate[texture]:SetFont(STANDARD_TEXT_FONT, 10);
         entry.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", entry.DataDisplay.Enumerate["Icon5"], "LEFT", -1, 0);
 
-        if overallColor and resultInfo.leaderOverallDungeonScore then
+        if overallColor and resultInfo.leaderOverallDungeonScore and ns.options.ShowLeaderScore then
             entry.DataDisplay.Enumerate[texture]:SetText(overallColor:WrapTextInColorCode(resultInfo
-            .leaderOverallDungeonScore));
+                .leaderOverallDungeonScore));
             entry.DataDisplay.Enumerate[texture]:Show();
         else
             entry.DataDisplay.Enumerate[texture]:Hide();
@@ -94,11 +96,10 @@ local function SearchEntryUpdate(entry, ...)
                     "RIGHT", -1, -9);
             end
 
-            if role ~= "TANK" and role ~= "HEALER" then
+            if (role == "TANK" and ns.options.ShowTankerSpec) or (role == "HEALER" and ns.options.ShowHealerSpec) or role == "DAMAGER" then
                 entry.DataDisplay.Enumerate[texture]:SetColorTexture(r, g, b, 0.75);
                 entry.DataDisplay.Enumerate[texture]:Show();
             end
-
 
             texture = "asleadertexture" .. i;
 
@@ -129,9 +130,11 @@ local function SearchEntryUpdate(entry, ...)
                 entry.DataDisplay.Enumerate[texture]:SetDrawLayer("ARTWORK", 7);
             end
 
-            if specicons[class .. spec] and role ~= "TANK" and role ~= "HEALER" then
-                entry.DataDisplay.Enumerate[texture]:SetTexture(specicons[class .. spec]);
-                entry.DataDisplay.Enumerate[texture]:Show();
+            if (role == "TANK" and ns.options.ShowTankerSpec) or (role == "HEALER" and ns.options.ShowHealerSpec) or role == "DAMAGER" then
+                if specicons[class .. spec] then
+                    entry.DataDisplay.Enumerate[texture]:SetTexture(specicons[class .. spec]);
+                    entry.DataDisplay.Enumerate[texture]:Show();
+                end
             end
         end
     end
@@ -146,5 +149,22 @@ local function initSpec()
     end
 end
 
+ns.SetupOptionPanels();
 hooksecurefunc("LFGListSearchEntry_Update", SearchEntryUpdate);
 initSpec();
+
+--지원서 유지 기능 오류가 많아서 일단 끈다
+--[[
+function asLFGListApplicationDialog_Show(self, resultID)
+	local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID);
+	self.resultID = resultID;
+	self.activityID = searchResultInfo.activityID;
+	LFGListApplicationDialog_UpdateRoles(self);
+	StaticPopupSpecial_Show(self);
+end
+
+
+if ns.options.KeepingApplicationText then
+    LFGListApplicationDialog_Show = asLFGListApplicationDialog_Show;
+end
+]]

@@ -291,7 +291,8 @@ ANameP_Options_Default = {
     ANameP_DebuffColor3 = { r = 1, g = 0.5, b = 1 },          -- 디버프 걸렸을때 Color
     ANameP_QuestColor = { r = 1, g = 0.8, b = 0.5 },          -- Quest 몹 Color
     ANameP_AutoMarkerColor = { r = 0.5, g = 1, b = 0.5 },     -- AutoMarker 몹 Color
-
+    ANameP_AutoMarkerColor2 = { r = 1, g = 1, b = 0.2 },      -- AutoMarker 몹 Color2
+    
     nameplateOverlapV = 1.0,                                  -- 이름표 상하 정렬
 
 
@@ -1005,6 +1006,7 @@ local function panelOnShow()
     SetupColorOption("[이름표 색상] 디버프3", "ANameP_DebuffColor3");
     SetupColorOption("[이름표 색상] Quest", "ANameP_QuestColor");
     SetupColorOption("[이름표 색상] AutoMarker", "ANameP_AutoMarkerColor");
+    SetupColorOption("[이름표 색상] AutoMarker2", "ANameP_AutoMarkerColor2");
     SetupEditBoxOption();
 end
 local function panelOnHide()

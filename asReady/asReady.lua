@@ -271,53 +271,36 @@ local function showallframes(frames)
     end
 end
 
-local function AREADY_OnUpdate()
-    local idx = 1;
+local eventBuffer = {}
+local checkcoollist = {};
 
-    if IsInRaid() then
-        hide_bar_icon(idx);
+local function IsUnitInGroup(unit)
+    return UnitInParty(unit) or UnitInRaid(unit) ~= nil
+end
 
-        if ns.options.ShowRaidCool then
-            showallframes(raidframes);
-        end
-    else
-        if ns.options.ShowPartyInterrupt then
-            for i = 1, 5 do
-                local unit;
-                if i == 5 then
-                    unit = "player"
-                else
-                    unit = "party" .. (5 - i);
-                end
-                if interruptcools[unit] then
-                    local v = interruptcools[unit];
+local function OnSpellEvent(self, arg1, arg2, arg3)
+    if arg1 and arg3 then
+        local spellid = arg3;
+        local unit = arg1;
+        local time = GetTime();
+        local name = GetSpellInfo(spellid);
 
-                    if (v[2]) then
-                        local spellid = v[2];
-                        local time = v[3];
-                        local cool = v[4];
-                        local prev_idx = v[5];
+        if IsUnitInGroup(unit) then
+            if checkcoollist[unit] then
+                local coolspelllist = checkcoollist[unit];
 
-                        local currtime = GetTime();
-                        if currtime <= time + cool + 1 or prev_idx ~= idx then
-                            create_bar_icon(idx, unit, spellid, time, cool);
-                            v[5] = idx;
-                        end
-
-                        idx = idx + 1;
-
-                        if idx > AREADY_Max then
-                            break
-                        end
-                    end
+                if coolspelllist and coolspelllist[name] or coolspelllist[spellid] then
+                    local info = coolspelllist[name] or coolspelllist[spellid];
+                    local cool = info[1];
+                    local buffcool = info[2];
+                    offensivecools[unit] = { unit, spellid, time, cool, buffcool };
                 end
             end
-        end
 
-        hide_bar_icon(idx);
-
-        if ns.options.ShowPartyCool then
-            showallframes(partyframes);
+            if not IsInRaid() and (ns.trackedPartySpellNames[name] or ns.trackedPartySpellNames[spellid]) then
+                local cool = ns.trackedPartySpellNames[name] or ns.trackedPartySpellNames[spellid];
+                interruptcools[unit] = { unit, spellid, time, cool, 0 };
+            end
         end
     end
 end
@@ -387,31 +370,6 @@ local function scanUnitSpecID(unit)
     end
 end
 
-local checkcoollist = {};
-
-local function OnSpellEvent(self, event, arg1, arg2, arg3)
-    if arg1 and arg3 then
-        local spellid = arg3;
-        local unit = arg1;
-        local time = GetTime();
-        local name = GetSpellInfo(spellid);
-        if checkcoollist[unit] then
-            local coolspelllist = checkcoollist[unit];
-
-            if coolspelllist and coolspelllist[name] or coolspelllist[spellid] then
-                local info = coolspelllist[name] or coolspelllist[spellid];
-                local cool = info[1];
-                local buffcool = info[2];
-                offensivecools[unit] = { unit, spellid, time, cool, buffcool };
-            end
-        end
-
-        if not IsInRaid() and (ns.trackedPartySpellNames[name] or ns.trackedPartySpellNames[spellid]) then
-            local cool = ns.trackedPartySpellNames[name] or ns.trackedPartySpellNames[spellid];
-            interruptcools[unit] = { unit, spellid, time, cool, 0 };
-        end
-    end
-end
 
 local max_y = 0;
 
@@ -496,13 +454,24 @@ end
 
 local function checkallraid(frames)
     for _, raidframe in pairs(frames) do
-        ns.SetupPartyCool(raidframe);        
+        ns.SetupPartyCool(raidframe);
     end
 end
 
+local frameBuffer = {};
+
 local function hookfunc(frame)
-    if frame and not frame:IsForbidden() and frame:IsShown() and frame.GetName then
-        local name = frame:GetName();
+    if frame and not frame:IsForbidden() and frame.GetName and frame:IsShown() then
+        local framename = frame:GetName();
+        if framename then            
+            frameBuffer[framename] = frame;
+        end
+    end
+end
+
+local function setupframe(frame, framename)
+    if frame and not frame:IsForbidden() and frame:IsShown() then
+        local name = framename;
 
         if name and not (name == nil) then
             if not (frame.displayedUnit and UnitIsPlayer(frame.displayedUnit)) then
@@ -546,11 +515,70 @@ local function hookfunc(frame)
     end
 end
 
+
+local function AREADY_OnUpdate()
+    for newname, newframe in pairs(frameBuffer) do
+        setupframe(newframe, newname);
+    end
+
+    frameBuffer = {};
+
+    local idx = 1;
+
+    if IsInRaid() then
+        hide_bar_icon(idx);
+
+        if ns.options.ShowRaidCool then
+            showallframes(raidframes);
+        end
+    else
+        if ns.options.ShowPartyInterrupt then
+            for i = 1, 5 do
+                local unit;
+                if i == 5 then
+                    unit = "player"
+                else
+                    unit = "party" .. (5 - i);
+                end
+                if interruptcools[unit] then
+                    local v = interruptcools[unit];
+
+                    if (v[2]) then
+                        local spellid = v[2];
+                        local time = v[3];
+                        local cool = v[4];
+                        local prev_idx = v[5];
+
+                        local currtime = GetTime();
+                        if currtime <= time + cool + 1 or prev_idx ~= idx then
+                            create_bar_icon(idx, unit, spellid, time, cool);
+                            v[5] = idx;
+                        end
+
+                        idx = idx + 1;
+
+                        if idx > AREADY_Max then
+                            break
+                        end
+                    end
+                end
+            end
+        end
+
+        hide_bar_icon(idx);
+
+        if ns.options.ShowPartyCool then
+            showallframes(partyframes);
+        end
+    end
+end
+
+
 local bfirst = true;
 
 local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
     if event == "UNIT_SPELLCAST_SUCCEEDED" then
-        OnSpellEvent(self, event, arg1, arg2, arg3);
+        OnSpellEvent(self, arg1, arg2, arg3);
     else
         if bfirst then
             ns.SetupOptionPanels();

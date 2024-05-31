@@ -824,7 +824,6 @@ local function updateHealthbarColor(self)
                 return ns.options.ANameP_DebuffColor3;
             end
         end
-
         -- 정상 Tanking
         if ns.options.ANameP_AggroShow and incombat then
             if (isTargetPlayer) then
@@ -840,8 +839,13 @@ local function updateHealthbarColor(self)
             end
         end
 
-        if ns.options.ANameP_AutoMarker and bloadedAutoMarker and asAutoMarkerF and asAutoMarkerF.IsAutoMarkerMob(unit) then
-            return ns.options.ANameP_AutoMarkerColor;
+        if ns.options.ANameP_AutoMarker and bloadedAutoMarker and asAutoMarkerF then
+            local mobtype = asAutoMarkerF.IsAutoMarkerMob(unit);
+            if mobtype and mobtype >= 2 then
+                return ns.options.ANameP_AutoMarkerColor;
+            elseif mobtype and mobtype >= 1 then
+                return ns.options.ANameP_AutoMarkerColor2;
+            end
         end
 
         if ns.options.ANameP_QuestAlert and not IsInInstance() and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
@@ -1093,7 +1097,7 @@ local function removeNamePlate(namePlateFrameBase)
         asframe.healer:Hide();
         asframe.BarTexture:Hide();
         asframe.BarColor:Hide();
-        
+
         asframe:Hide();
         asframe:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
         asframe:UnregisterEvent("PLAYER_TARGET_CHANGED");
@@ -1226,7 +1230,7 @@ local function addNamePlate(namePlateFrameBase)
     asframe.aggro1:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
     asframe.aggro1:ClearAllPoints();
     asframe.aggro1:SetPoint("RIGHT", healthbar, "LEFT", -5, Aggro_Y)
- 
+
 
     asframe.aggro2:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
     asframe.aggro2:ClearAllPoints();
