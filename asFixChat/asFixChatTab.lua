@@ -1,3 +1,4 @@
+--Tab 기능
 local function asChatEdit_CustomTabPressed(this)
 	local bBattle = false;
 

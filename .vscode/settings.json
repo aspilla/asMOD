@@ -525,7 +525,8 @@
         "PVP_RATEDBG_NEED_LESS",
         "LIGHTBLUE_FONT_COLOR",
         "ORANGE_FONT_COLOR",
-        "BLUE_FONT_COLOR"
+        "BLUE_FONT_COLOR",
+        "ChatFrame1EditBox"
     ],
     "Lua.runtime.version": "LuaJIT",
     "Lua.workspace.library": [
