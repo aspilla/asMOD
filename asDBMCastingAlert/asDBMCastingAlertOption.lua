@@ -1,7 +1,8 @@
 local _, ns = ...;
 local Options_Default = {
+    Version = 240608,
     PlaySound = true,
-    SoundVolume = 100,    
+    SoundVolume = 50,
     TTS = false,
     HideTarget = true,
     TTS_ID = -1,
@@ -26,7 +27,7 @@ function ns.SetupOptionPanels()
 
     local category = Settings.RegisterVerticalLayoutCategory("asDBMCastingAlert")
 
-    if ADCA_Options == nil then
+    if ADCA_Options == nil or Options_Default.Version ~= ACDP_Options.Version then
         ADCA_Options = {};
         ADCA_Options = CopyTable(Options_Default);
     end
@@ -43,52 +44,53 @@ function ns.SetupOptionPanels()
         end
         local defaultValue = ADCA_Options[variable];
 
-        if name == "TTS_ID" then
-            local function GetOptions()
-                local container = Settings.CreateControlTextContainer()
+        if name ~= "Version" then
+            if name == "TTS_ID" then
+                local function GetOptions()
+                    local container = Settings.CreateControlTextContainer()
 
-                local ttsinfos = C_VoiceChat.GetTtsVoices();
-                for id, v in pairs(ttsinfos) do
-                    container:Add(v.voiceID, v.name);
-                end
-                return container:GetData()
-            end
-
-            if defaultValue < 0 then
-                local ttsinfos = C_VoiceChat.GetTtsVoices();
-                local locale = GetLocale();
-                local findLang = "Korean";
-
-                if not (locale == "koKR") then
-                    findLang = "English";
+                    local ttsinfos = C_VoiceChat.GetTtsVoices();
+                    for id, v in pairs(ttsinfos) do
+                        container:Add(v.voiceID, v.name);
+                    end
+                    return container:GetData()
                 end
 
-                ADCA_Options[variable] = 0;
-                ns.options[variable] = 0;
+                if defaultValue < 0 then
+                    local ttsinfos = C_VoiceChat.GetTtsVoices();
+                    local locale = GetLocale();
+                    local findLang = "Korean";
 
-                for id, v in pairs(ttsinfos) do
-                    if strfind(v.name, findLang) then
-                        defaultValue = v.voiceID;
-                        ADCA_Options[variable] = defaultValue;
-                        ns.options[variable] = defaultValue;
+                    if not (locale == "koKR") then
+                        findLang = "English";
+                    end
+
+                    ADCA_Options[variable] = 0;
+                    ns.options[variable] = 0;
+
+                    for id, v in pairs(ttsinfos) do
+                        if strfind(v.name, findLang) then
+                            defaultValue = v.voiceID;
+                            ADCA_Options[variable] = defaultValue;
+                            ns.options[variable] = defaultValue;
+                        end
                     end
                 end
+
+                local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
+                Settings.CreateDropDown(category, setting, GetOptions, tooltip);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            elseif tonumber(defaultValue) ~= nil then
+                local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
+                local options = Settings.CreateSliderOptions(0, 100, 1);
+                options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+                Settings.CreateSlider(category, setting, options, tooltip);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            else
+                local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
+                Settings.CreateCheckBox(category, setting, tooltip);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             end
-
-            local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
-            Settings.CreateDropDown(category, setting, GetOptions, tooltip);
-            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
-
-        elseif tonumber(defaultValue) ~= nil then
-            local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
-            local options = Settings.CreateSliderOptions(0, 100, 1);
-            options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
-            Settings.CreateSlider(category, setting, options, tooltip);
-            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
-        else
-            local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
-            Settings.CreateCheckBox(category, setting, tooltip);
-            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
         end
     end
 

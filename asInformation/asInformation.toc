@@ -1,0 +1,8 @@
+## Interface: 100207
+## Author: |cffff3399아스필라|r [아즈샤라]
+## Title: |cffff3399as|rInformation
+## Notes: 전투시간 및 가속 표시
+## Version : 240606
+## SavedVariablesPerCharacter: asInformationSaved
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+asInformation.lua
