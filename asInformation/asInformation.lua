@@ -1,7 +1,6 @@
 local asInformation = CreateFrame("Frame", "asInformationFrame", UIParent)
 asInformation:SetSize(100, 150)
 asInformation:SetPoint("BOTTOM", UIParent, "BOTTOM", -141, 109)
-asInformation:EnableMouse(true)
 asInformation:SetMovable(true)
 asInformation:RegisterForDrag("LeftButton")
 
@@ -99,6 +98,7 @@ if asInformationSaved.showVer then
     locationPoint = "BOTTOMLEFT";
 end
 
+local bMouseEnabled = true;
 
 local function UpdateStats()
     local haste = GetHaste()
@@ -128,6 +128,18 @@ local function UpdateStats()
 
     if asInformationSaved.showVer then
         versatilityText:SetText(string.format("V" .. ": %.2f%%", versatility))
+    end
+
+    if asInformationSaved.isLocked then
+        if bMouseEnabled then
+            asInformation:EnableMouse(false);
+            bMouseEnabled = false;
+        end
+    else
+        if not bMouseEnabled then
+            asInformation:EnableMouse(true);
+            bMouseEnabled = true;
+        end
     end
 end
 
