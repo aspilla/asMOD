@@ -257,6 +257,7 @@ local function OnEvent(self, event, ...)
             SetupOptions()
             LoadPosition()
             asInformation:SetUserPlaced(true)
+            bfirst = false;
         end
         UpdateStats()
     end
