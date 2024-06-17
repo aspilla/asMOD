@@ -587,7 +587,7 @@ local function SetupSliderOption(text, option)
     Slider:SetWidth(200)
     Slider:SetHeight(20)
     Slider.Text:SetText(format("%.1f", max(ANameP_Options[option], 0)));
-    Slider:SetMinMaxValues(0.3, 1.1);
+    Slider:SetMinMaxValues(0.3, 2);
     Slider:SetValue(ANameP_Options[option]);
 
     Slider:HookScript("OnValueChanged", function()

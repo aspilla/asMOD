@@ -176,21 +176,22 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	end
 
 	local width, height;
+
 	if (position == "CENTER") then
 		width, height = longSide, longSide;
 		overlay:SetPoint("CENTER", self, "CENTER", 0, 0);
 	elseif (position == "LEFT") then
 		width, height = shortSide, longSide;
-		overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", 0, 0);
+		overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", 0, (height * (1 - scale))/2);
 	elseif (position == "RIGHT") then
 		width, height = shortSide, longSide;
-		overlay:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 0, 0);
+		overlay:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 0,  (height * (1 - scale))/2);
 	elseif (position == "TOP") then
 		width, height = longSide, shortSide;
-		overlay:SetPoint("BOTTOMLEFT", self, "TOPLEFT");
+		overlay:SetPoint("BOTTOMLEFT", self, "TOPLEFT",(width * (1 - scale))/2, 0 );
 	elseif (position == "BOTTOM") then
 		width, height = longSide, shortSide;
-		overlay:SetPoint("TOPLEFT", self, "BOTTOMLEFT");
+		overlay:SetPoint("TOPLEFT", self, "BOTTOMLEFT", (width * (1 - scale))/2, 0 );
 	elseif (position == "TOPRIGHT") then
 		width, height = shortSide, shortSide;
 		overlay:SetPoint("BOTTOMLEFT", self, "TOPRIGHT", 0, 0);

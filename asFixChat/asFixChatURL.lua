@@ -15,19 +15,29 @@ end
 
 --AddMessage
 local function AddMessage(self, text, ...)
-	--url search
-	text = text:gsub('([wWhH][wWtT][wWtT][%.pP]%S+[^%p%s])', '|cffffdd00|Hurl:%1|h[%1]|h|r')
-	return self.DefaultAddMessage(self, text, ...)
+	-- URL pattern to find URLs in the text
+	local urlPattern = '([wWhH][wWtT][wWtT][%.pP]%S+[^%p%s])'
+
+	-- Check if the pattern exists in the text
+	if text:find(urlPattern) then
+		-- Highlight and hyperlink the URLs
+		text = text:gsub(urlPattern, '|cffffdd00|Hurl:%1|h[%1]|h|r')
+	end
+
+	-- Call the original message handler with the modified text
+	if self.DefaultAddMessage then
+		return self.DefaultAddMessage(self, text, ...)
+	else
+		return
+	end
 end
 
 --skin chat
-for i = 1, NUM_CHAT_WINDOWS do
-	local chatframe = _G["ChatFrame" .. i]
-	--adjust channel display
-	if (i ~= 2) then
-		chatframe.DefaultAddMessage = chatframe.AddMessage
-		chatframe.AddMessage = AddMessage
-	end
+local chatframe = _G["ChatFrame" .. 1]
+--adjust channel display
+if chatframe then
+	chatframe.DefaultAddMessage = chatframe.AddMessage
+	chatframe.AddMessage = AddMessage
 end
 
 hooksecurefunc("SetItemRef", asSetItemRef);

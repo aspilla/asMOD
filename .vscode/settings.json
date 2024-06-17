@@ -709,7 +709,8 @@
         "UnitHPPerStamina",
         "PREV",
         "C_EncounterJournal",
-        "C_MythicPlus"
+        "C_MythicPlus",
+        "C_UIWidgetManager"
     ],
     "Lua.runtime.version": "LuaJIT",
     "Lua.workspace.library": [
