@@ -14,7 +14,11 @@ local function asSetItemRef(link, ...)
 end
 
 --AddMessage
-local function AddMessage(self, text, ...)
+function asMOD_AddMessage(self, text, ...)
+
+	if self:IsForbidden() then
+		return
+	end
 	-- URL pattern to find URLs in the text
 	local urlPattern = '([wWhH][wWtT][wWtT][%.pP]%S+[^%p%s])'
 
@@ -37,7 +41,7 @@ local chatframe = _G["ChatFrame" .. 1]
 --adjust channel display
 if chatframe then
 	chatframe.DefaultAddMessage = chatframe.AddMessage
-	chatframe.AddMessage = AddMessage
+	chatframe.AddMessage = asMOD_AddMessage
 end
 
 hooksecurefunc("SetItemRef", asSetItemRef);

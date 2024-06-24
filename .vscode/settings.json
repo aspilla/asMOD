@@ -710,7 +710,19 @@
         "PREV",
         "C_EncounterJournal",
         "C_MythicPlus",
-        "C_UIWidgetManager"
+        "C_UIWidgetManager",
+        "SettingsTooltip",
+        "CUSTOM",
+        "SettingsPanel",
+        "IsOnGlueScreen",
+        "ALT_KEY",
+        "CTRL_KEY",
+        "SHIFT_KEY",
+        "NONE_KEY",
+        "VIDEO_OPTIONS_NEED_CLIENTRESTART",
+        "VIDEO_OPTIONS_RECOMMENDED",
+        "WARNING_FONT_COLOR",
+        "VERY_LIGHT_GRAY_COLOR"
     ],
     "Lua.runtime.version": "LuaJIT",
     "Lua.workspace.library": [

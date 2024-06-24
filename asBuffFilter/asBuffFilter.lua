@@ -262,6 +262,7 @@ local function IsShouldDisplayBuff(spellId, unitCaster, canApplyAura)
 	end
 end
 
+local bcheckOverlay = false;
 
 local function IsShown(name, spellId)
 	if ns.ABF_BlackList[name] then
@@ -281,6 +282,10 @@ local function IsShown(name, spellId)
 	end
 
 	if APB_BUFF_COMBO and APB_BUFF_COMBO == name then
+		return true;
+	end
+
+	if bcheckOverlay and overlayspell[spellId] then
 		return true;
 	end
 
@@ -375,10 +380,10 @@ local function ProcessAura(aura, unit)
 			aura.buffType = UnitFrameBuffType.ProcBuff;
 		elseif IsShouldDisplayBuff(aura.spellId, aura.sourceUnit, aura.isFromPlayerOrPlayerPet) then
 			aura.buffType = UnitFrameBuffType.Normal;
-		elseif ABF_TalentBuffList[aura.spellId] == true then
-			aura.buffType = UnitFrameBuffType.TalentBuff;
-		elseif ABF_TalentBuffList[aura.name] == true then
-			aura.buffType = UnitFrameBuffType.TalentBuff;
+		--elseif ABF_TalentBuffList[aura.spellId] == true then
+			--aura.buffType = UnitFrameBuffType.TalentBuff;
+		--elseif ABF_TalentBuffList[aura.name] == true then
+			--aura.buffType = UnitFrameBuffType.TalentBuff;
 		else
 			aura.buffType = UnitFrameBuffType.Normal;
 		end
@@ -690,19 +695,19 @@ local function ABF_OnEvent(self, event, arg1, ...)
 		DumpCaches();
 	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		asCheckTalent();
-	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
-		if Settings.GetValue("spellActivationOverlayOpacity") then
-			if Settings.GetValue("spellActivationOverlayOpacity") > 0 then
-				overlayspell[arg1] = true;
-			else
-				if overlayspell[arg1] then
-					overlayspell = {};
-				end
-			end
-		end
+	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") and arg1 then
+		overlayspell[arg1] = true;
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_HIDE") then
 	elseif (event == "PLAYER_LEAVING_WORLD") then
 		hasValidPlayer = false;
+	elseif (event == "CVAR_UPDATE") then
+		local cvar_ovelay = Settings.GetValue("spellActivationOverlayOpacity");
+
+		if cvar_ovelay and cvar_ovelay > 0 then
+			bcheckOverlay = true;
+		else
+			bcheckOverlay = false;
+		end
 	end
 end
 
@@ -872,6 +877,7 @@ local function ABF_Init()
 	ABF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 	ABF:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 	ABF:RegisterEvent("TRAIT_CONFIG_UPDATED");
+	ABF:RegisterEvent("CVAR_UPDATE");
 
 
 	bloaded = LoadAddOn("asOverlay")
