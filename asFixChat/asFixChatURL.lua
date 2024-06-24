@@ -15,6 +15,11 @@ end
 
 --AddMessage
 local function AddMessage(self, text, ...)
+
+	if self:IsForbidden() then
+		return
+	end
+
 	-- URL pattern to find URLs in the text
 	local urlPattern = '([wWhH][wWtT][wWtT][%.pP]%S+[^%p%s])'
 

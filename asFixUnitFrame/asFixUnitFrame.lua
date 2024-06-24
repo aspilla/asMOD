@@ -79,8 +79,8 @@ local function HideClassBar()
 end
 
 local frames = {
-    ["player"] = PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar,
-    ["target"] = TargetFrame.TargetFrameContent.TargetFrameContentMain.HealthBar,
+    ["player"] = PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarsContainer.HealthBar,
+    ["target"] = TargetFrame.TargetFrameContent.TargetFrameContentMain.HealthBarsContainer.HealthBar,
     ["targettarget"] = TargetFrameToT.HealthBar,
 }
 

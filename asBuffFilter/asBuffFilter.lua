@@ -57,6 +57,32 @@ local AuraFilters =
 	Maw = "MAW",
 };
 
+local asGetSpellInfo = function(spellID)
+	if not spellID then
+		return nil;
+	end
+
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
+local asGetSpellTabInfo = function(index)
+	local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
+	if skillLineInfo then
+		return	skillLineInfo.name, 
+				skillLineInfo.iconID, 
+				skillLineInfo.itemIndexOffset, 
+				skillLineInfo.numSpellBookItems, 
+				skillLineInfo.isGuild, 
+				skillLineInfo.offSpecID,
+				skillLineInfo.shouldHide,
+				skillLineInfo.specID;
+	end
+end
+
+
 local function CreateFilterString(...)
 	return table.concat({ ... }, '|');
 end
@@ -121,22 +147,23 @@ local filter = CreateFilterString(AuraFilters.Helpful, AuraFilters.IncludeNamepl
 
 
 local function scanSpells(tab)
-	local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
+	local tabName, tabTexture, tabOffset, numEntries = asGetSpellTabInfo(tab)
 
 	if not tabName then
 		return;
 	end
 
 	for i = tabOffset + 1, tabOffset + numEntries do
-		local spellName, _, spellID = GetSpellBookItemName(i, BOOKTYPE_SPELL)
-		local _, _, icon = GetSpellInfo(spellID);
+		local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player)
+		
 		if not spellName then
 			do break end
 		end
 
-		local slotType, actionID = GetSpellBookItemInfo(i, BOOKTYPE_SPELL);
+		local slotType, actionID, spellID= C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
+		local _, _, icon = asGetSpellInfo(spellID);
 
-		if (slotType == "FLYOUT") then
+		if (slotType == Enum.SpellBookItemType.Flyout) then
 			local _, _, numSlots = GetFlyoutInfo(actionID);
 			for j = 1, numSlots do
 				local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
@@ -165,6 +192,8 @@ local function asCheckTalent()
 
 	scanSpells(2)
 	scanSpells(3)
+	scanSpells(4)
+	scanSpells(5)
 
 	local specID = PlayerUtil.GetCurrentSpecID();
 	local configID = C_ClassTalents.GetActiveConfigID();
@@ -187,7 +216,7 @@ local function asCheckTalent()
 			if definitionInfo ~= nil then
 				local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
 				--print(string.format("%s/%d %s/%d", talentName, definitionInfo.spellID, definitionInfo.overrideName or "", definitionInfo.overriddenSpellID or 0));
-				local name, rank, icon = GetSpellInfo(definitionInfo.spellID);
+				local name, rank, icon = asGetSpellInfo(definitionInfo.spellID);
 				ABF_TalentBuffList[talentName or ""] = true;
 				ABF_TalentBuffIconList[icon or 0] = true;
 				ABF_TalentBuffList[definitionInfo.spellID] = true;

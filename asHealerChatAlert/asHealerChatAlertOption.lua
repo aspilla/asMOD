@@ -6,7 +6,6 @@ local Options_Default = {
 }
 
 function ns.SetupOptionPanels()
-
     local bslide = false;
 
     local function OnSettingChanged(_, setting, value)
@@ -42,11 +41,12 @@ function ns.SetupOptionPanels()
             local options = Settings.CreateSliderOptions(0, 100, 1);
             options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
             Settings.CreateSlider(category, setting, options, tooltip);
-            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);            
+            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
         else
             local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
-            Settings.CreateCheckBox(category, setting, tooltip);
-            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);            
+
+            Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
+            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
         end
     end
 

@@ -79,7 +79,8 @@ function ns.SetupOptionPanels()
                 end
 
                 local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue)
-                Settings.CreateDropDown(category, setting, GetOptions, tooltip)
+
+                Settings.CreateDropdown(category, setting, GetOptions, tooltip)
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)
             elseif tonumber(defaultValue) ~= nil then
                 local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
@@ -89,7 +90,8 @@ function ns.SetupOptionPanels()
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             else
                 local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
-                Settings.CreateCheckBox(category, setting, tooltip);
+
+                Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             end
         end

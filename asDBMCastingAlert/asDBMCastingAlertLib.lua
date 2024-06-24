@@ -24,20 +24,50 @@ ns.lib.startList = {}
 ns.lib.stopList = {}
 
 local GlowParent = UIParent
-
-local GlowMaskPool = CreateFromMixins(ObjectPoolMixin)
-ns.lib.GlowMaskPool = GlowMaskPool
-local function MaskPoolFactory(maskPool)
-	return maskPool.parent:CreateMaskTexture()
-end
-
-local MaskPoolResetter = function(maskPool, mask)
-	mask:Hide()
-	mask:ClearAllPoints()
-end
-
-ObjectPoolMixin.OnLoad(GlowMaskPool, MaskPoolFactory, MaskPoolResetter)
-GlowMaskPool.parent = GlowParent
+local GlowMaskPool = {
+    createFunc = function(self)
+        return self.parent:CreateMaskTexture()
+    end,
+    resetFunc = function(self, mask)
+        mask:Hide()
+        mask:ClearAllPoints()
+    end,
+    AddObject = function(self, object)
+        local dummy = true
+        self.activeObjects[object] = dummy
+        self.activeObjectCount = self.activeObjectCount + 1
+    end,
+    ReclaimObject = function(self, object)
+        tinsert(self.inactiveObjects, object)
+        self.activeObjects[object] = nil
+        self.activeObjectCount = self.activeObjectCount - 1
+    end,
+    Release = function(self, object)
+        local active = self.activeObjects[object] ~= nil
+        if active then
+            self:resetFunc(object)
+            self:ReclaimObject(object)
+        end
+        return active
+    end,
+    Acquire = function(self)
+        local object = tremove(self.inactiveObjects)
+        local new = object == nil
+        if new then
+            object = self:createFunc()
+            self:resetFunc(object, new)
+        end
+        self:AddObject(object)
+        return object, new
+    end,
+    Init = function(self, parent)
+        self.activeObjects = {}
+        self.inactiveObjects = {}
+        self.activeObjectCount = 0
+        self.parent = parent
+    end
+}
+GlowMaskPool:Init(GlowParent)
 
 local TexPoolResetter = function(pool, tex)
 	local maskNum = tex:GetNumMaskTextures()
@@ -607,4 +637,3 @@ end
 table.insert(ns.lib.glowList, "Action Button Glow")
 ns.lib.startList["Action Button Glow"] = ns.lib.ButtonGlow_Start
 ns.lib.stopList["Action Button Glow"] = ns.lib.ButtonGlow_Stop
-

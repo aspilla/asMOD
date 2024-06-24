@@ -106,6 +106,30 @@ local dispelNodeIDs = {
     -------------------------
 }
 
+local asGetSpellInfo = function(spellID)
+	if not spellID then
+		return nil;
+	end
+
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
+local asGetSpellTabInfo = function(index)
+	local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
+	if skillLineInfo then
+		return	skillLineInfo.name, 
+				skillLineInfo.iconID, 
+				skillLineInfo.itemIndexOffset, 
+				skillLineInfo.numSpellBookItems, 
+				skillLineInfo.isGuild, 
+				skillLineInfo.offSpecID,
+				skillLineInfo.shouldHide,
+				skillLineInfo.specID;
+	end
+end
 
 local function UpdateDispellable()
     -- update dispellable
@@ -292,7 +316,7 @@ local function asCheckTalent()
             if definitionInfo ~= nil then
                 local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
                 --print(string.format("%s/%d %s/%d", talentName, definitionInfo.spellID, definitionInfo.overrideName or "", definitionInfo.overriddenSpellID or 0));
-                local name, rank, icon = GetSpellInfo(definitionInfo.spellID);
+                local name, rank, icon = asGetSpellInfo(definitionInfo.spellID);
                 KnownSpellList[talentName or ""] = true;
                 KnownSpellList[icon or 0] = true;
                 if definitionInfo.overrideName then
@@ -306,14 +330,14 @@ local function asCheckTalent()
 end
 
 local function scanSpells(tab)
-    local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
+    local tabName, tabTexture, tabOffset, numEntries = asGetSpellTabInfo(tab)
 
     if not tabName then
         return;
     end
 
     for i = tabOffset + 1, tabOffset + numEntries do
-        local spellName, _, spellID = GetSpellBookItemName(i, BOOKTYPE_SPELL)
+        local spellName, _, spellID = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player)
         if not spellName then
             do break end
         end
@@ -326,8 +350,7 @@ end
 
 local function scanPetSpells()
     for i = 1, 20 do
-        local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
-        local spellName, _, spellID = GetSpellBookItemName(slot, BOOKTYPE_PET)
+        local spellName, _, spellID = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Pet)
 
         if not spellName then
             do break end
@@ -346,7 +369,9 @@ local function setupKnownSpell()
 
     scanSpells(1)
     scanSpells(2)
-    scanSpells(3)
+	scanSpells(3)
+	scanSpells(4)
+	scanSpells(5)
     scanPetSpells();
     asCheckTalent();
 end

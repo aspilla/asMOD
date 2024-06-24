@@ -59,6 +59,35 @@ PowerTypeComboString = {
     [Enum.PowerType.Essence] = "정수"
 };
 
+local asGetSpellInfo = function(spellID)
+    if not spellID then
+        return nil;
+    end
+
+    local spellInfo = C_Spell.GetSpellInfo(spellID);
+    if spellInfo then
+        return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+            spellInfo.spellID, spellInfo.originalIconID;
+    end
+end
+
+local asGetSpellCooldown = function(spellID)
+    local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
+    if spellCooldownInfo then
+        return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled,
+            spellCooldownInfo.modRate;
+    end
+end
+
+local asGetSpellCharges = function(spellID)
+    local spellChargeInfo = C_Spell.GetSpellCharges(spellID);
+    if spellChargeInfo then
+        return spellChargeInfo.currentCharges, spellChargeInfo.maxCharges, spellChargeInfo.cooldownStartTime,
+            spellChargeInfo.cooldownDuration, spellChargeInfo.chargeModRate;
+    end
+end
+
+
 local SpellGetCosts = {};
 local SpellGetPowerCosts = {};
 local FrozenOrbID = 84714;
@@ -519,7 +548,7 @@ local function APB_OnUpdateBuff(self, elapsed)
             end
 
             if not endTime then
-                local start, duration = GetSpellCooldown(61304);
+                local start, duration = asGetSpellCooldown(61304);
                 endTime = (start + duration) * 1000;
             end
 
@@ -884,7 +913,7 @@ local function APB_UpdatePower()
     local cast = nil;
 
     if spellID then
-        local costTable = GetSpellPowerCost(spellID);
+        local costTable = C_Spell.GetSpellPowerCost(spellID);
 
         for _, costInfo in pairs(costTable) do
             if (costInfo.type == APB_POWER_LEVEL) then
@@ -909,7 +938,7 @@ local function APB_GetActionSlot(arg1)
         local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
         if id and type and type == "spell" then
-            local name = GetSpellInfo(id);
+            local name = asGetSpellInfo(id);
             if name and name == arg1 then
                 ret[lActionSlot] = true;
             end
@@ -920,7 +949,7 @@ local function APB_GetActionSlot(arg1)
         local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
         if id and type and type == "macro" then
-            local name = GetSpellInfo(id);
+            local name = asGetSpellInfo(id);
             if name and name == arg1 then
                 ret[lActionSlot] = true;
             end
@@ -931,14 +960,14 @@ local function APB_GetActionSlot(arg1)
 end
 
 local function APB_SpellMax(spell, spell2)
-    local _, maxCharges = GetSpellCharges(spell);
+    local _, maxCharges = asGetSpellCharges(spell);
 
     if bupdate_druid then
         maxCharges = 2;
     end
 
     if spell2 then
-        local _, maxCharges2 = GetSpellCharges(spell2);
+        local _, maxCharges2 = asGetSpellCharges(spell2);
 
         if bupdate_druid then
             maxCharges2 = 2;
@@ -981,9 +1010,9 @@ end
 local inrange, inrange2 = true, true;
 
 local function APB_UpdateSpell(spell, spell2)
-    local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spell);
-    local spellid = select(7, GetSpellInfo(spell));
-    local isUsable, notEnoughMana = IsUsableSpell(spellid);
+    local charges, maxCharges, chargeStart, chargeDuration = asGetSpellCharges(spell);
+    local spellid = select(7, asGetSpellInfo(spell));
+    local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellid);
 
     if bupdate_druid then
         if APB_ACTION then
@@ -1063,9 +1092,9 @@ local function APB_UpdateSpell(spell, spell2)
     end
 
     if spell2 then
-        local charges, maxCharges2, chargeStart, chargeDuration = GetSpellCharges(spell2);
-        spellid = select(7, GetSpellInfo(spell2));
-        local isUsable, notEnoughMana = IsUsableSpell(spellid);
+        local charges, maxCharges2, chargeStart, chargeDuration = asGetSpellCharges(spell2);
+        spellid = select(7, asGetSpellInfo(spell2));
+        local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellid);
 
         if not maxCharges2 then
             if APB_ACTION2 then
@@ -2419,12 +2448,14 @@ local function asUnitFrameManaCostPredictionBars_Update(frame, isStarting, start
         frame.startTime = nil;
         frame.endTime = nil;
     else
-        local costTable = GetSpellPowerCost(spellID);
+        local costTable = C_Spell.GetSpellPowerCost(spellID);
 
-        for _, costInfo in pairs(costTable) do
-            if (costInfo.type == frame.powerType) then
-                cost = costInfo.cost;
-                break
+        if costTable then
+            for _, costInfo in pairs(costTable) do
+                if (costInfo.type == frame.powerType) then
+                    cost = costInfo.cost;
+                    break
+                end
             end
         end
 
@@ -2558,7 +2589,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             APB:SetAlpha(APB_ALPHA_NORMAL);
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
-        local name = GetSpellInfo(arg1);
+        local name = asGetSpellInfo(arg1);
         if APB_SPELL and APB_SPELL == name then
             balert = true;
         end
@@ -2567,7 +2598,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             balert2 = true;
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
-        local name = GetSpellInfo(arg1);
+        local name = asGetSpellInfo(arg1);
         if APB_SPELL and APB_SPELL == name then
             balert = false;
         end
@@ -2584,8 +2615,8 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             local type, id, subType, spellID = GetActionInfo(action);
 
             if id then
-                local name = GetSpellInfo(id);
-                local spellname = GetSpellInfo(APB_SPELL);
+                local name = asGetSpellInfo(id);
+                local spellname = asGetSpellInfo(APB_SPELL);
 
                 if name and spellname and name == spellname then
                     if (checksRange and not inRange) then
@@ -2603,8 +2634,8 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             local type, id, subType, spellID = GetActionInfo(action);
 
             if id then
-                local name = GetSpellInfo(id);
-                local spellname = GetSpellInfo(APB_SPELL2);
+                local name = asGetSpellInfo(id);
+                local spellname = asGetSpellInfo(APB_SPELL2);
 
                 if name and spellname and name == spellname then
                     if (checksRange and not inRange) then

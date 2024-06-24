@@ -40,6 +40,17 @@ local AuraFilters =
     Maw = "MAW",
 };
 
+local asGetSpellInfo = function(spellID)
+	if not spellID then
+		return nil;
+	end
+
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
 local function CreateFilterString(...)
     return table.concat({ ... }, '|');
 end
@@ -253,14 +264,14 @@ local function ABF_OnEvent(self, event, arg1, ...)
             button:update();
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
-        local spell = GetSpellInfo(arg1);
+        local spell = asGetSpellInfo(arg1);
         if eventfilter[spell] then
             local button = eventfilter[spell];
             button.alert = true;
             button:update();
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
-        local spell = GetSpellInfo(arg1);
+        local spell = asGetSpellInfo(arg1);
         if eventfilter[spell] then
             local button = eventfilter[spell];
             button.alert = false;
@@ -275,8 +286,8 @@ local function ABF_OnEvent(self, event, arg1, ...)
             local type, id, subType, spellID = GetActionInfo(action);
 
             if id then
-                local name = GetSpellInfo(id);
-                local buttonname = GetSpellInfo(button.realspell);
+                local name = asGetSpellInfo(id);
+                local buttonname = asGetSpellInfo(button.realspell);
 
                 if name and buttonname and name == buttonname then
                     if (checksRange and not inRange) then

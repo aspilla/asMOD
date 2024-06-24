@@ -513,7 +513,12 @@ local y_adder = -50;
 
 local panel = CreateFrame("Frame")
 panel.name = "asNamePlates"         -- see panel fields
-InterfaceOptions_AddCategory(panel) -- see InterfaceOptions API
+if InterfaceOptions_AddCategory then
+	InterfaceOptions_AddCategory(panel)
+else
+	local category, layout = Settings.RegisterCanvasLayoutCategory(panel, panel.name);
+	Settings.RegisterAddOnCategory(category);	
+end
 
 local scrollFrame = nil
 local scrollChild = nil;

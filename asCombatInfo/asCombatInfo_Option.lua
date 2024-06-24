@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240418,
+	version = 240624,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -120,16 +120,17 @@ ACI_Options_Default = {
 		{ "비전 보주", 1 },
 		{ "비전 쇄도", 2 },
 		{ 99, "빛나는 불꽃", { "빛나는 불꽃", 4, nil, nil, nil, "빛나는 불꽃 약화" },
-			{ 332769, 3 } },
+			{ 332769, 3 } }, --비전의 조화
 		{ "황천의 폭풍우", 4 },
 	},
 
 	--화염
+	--11.0 작업중
 	ACI_SpellList_MAGE_2 = {
-		{ 383883, 3, nil, 30, "태양왕의 축복" },
+		{ 99, "태양왕의 축복", { 383883, 3, nil, 30, "태양왕의 축복" }, {"이글거리는 방벽", 2}},
 		{ "불태우기", 1, nil, 30, "불태우기 연마" },
 		{ "발화", 2 },
-		{ "용의 숨결", 1 },
+		{ 99, "용의 숨결", { "용의 숨결", 1 }, { "초신성", 1 }},
 		{ 99, "유성", { "유성", 1 }, { "힘의 전환", 1 } },
 	},
 
@@ -419,7 +420,12 @@ local y_adder = -40;
 
 local panel = CreateFrame("Frame")
 panel.name = "asCombatInfo"         -- see panel fields
-InterfaceOptions_AddCategory(panel) -- see InterfaceOptions API
+if InterfaceOptions_AddCategory then
+	InterfaceOptions_AddCategory(panel)
+else
+	local category, layout = Settings.RegisterCanvasLayoutCategory(panel, panel.name);
+	Settings.RegisterAddOnCategory(category);	
+end
 
 local spelllist = {};
 local scrollFrame = nil;

@@ -1,4 +1,4 @@
-﻿## Interface: 100207
+﻿## Interface: 110000
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rPremadeGroupsFilter
 ## Notes: 파티찾기 직업 색상 추가

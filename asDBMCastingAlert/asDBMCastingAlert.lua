@@ -317,7 +317,7 @@ end
 
 local bfirst = true;
 local function ADCA_OnEvent(self, event, arg1, arg2, arg3, arg4)
-	if bfirst then
+	if bfirst and Settings.CreateDropdown then
 		ns.SetupOptionPanels();
 		bfirst = false;
 	end
