@@ -380,10 +380,10 @@ local function ProcessAura(aura, unit)
 			aura.buffType = UnitFrameBuffType.ProcBuff;
 		elseif IsShouldDisplayBuff(aura.spellId, aura.sourceUnit, aura.isFromPlayerOrPlayerPet) then
 			aura.buffType = UnitFrameBuffType.Normal;
-		--elseif ABF_TalentBuffList[aura.spellId] == true then
-			--aura.buffType = UnitFrameBuffType.TalentBuff;
-		--elseif ABF_TalentBuffList[aura.name] == true then
-			--aura.buffType = UnitFrameBuffType.TalentBuff;
+		elseif ABF_TalentBuffList[aura.spellId] == true then
+			aura.buffType = UnitFrameBuffType.TalentBuff;
+		elseif ABF_TalentBuffList[aura.name] == true then
+			aura.buffType = UnitFrameBuffType.TalentBuff;
 		else
 			aura.buffType = UnitFrameBuffType.Normal;
 		end
