@@ -722,15 +722,7 @@
         "VIDEO_OPTIONS_NEED_CLIENTRESTART",
         "VIDEO_OPTIONS_RECOMMENDED",
         "WARNING_FONT_COLOR",
-        "VERY_LIGHT_GRAY_COLOR",
-        "GetTimePreciseSec",
-        "string",
-        "type",
-        "C_SpellBook",
-        "C_Spell",
-        "AddFriendNameEditBox",
-        "WhoFrameColumnHeader2",
-        "FriendsFrame"
+        "VERY_LIGHT_GRAY_COLOR"
     ],
     "Lua.runtime.version": "LuaJIT",
     "Lua.workspace.library": [
