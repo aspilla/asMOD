@@ -543,7 +543,15 @@ local function updateTargetNameP(self)
         self.healthtext:Show();
     else
         height = orig_height;
-        self.healthtext:Hide();
+
+        local guid_mouseover = UnitGUID("mouseover")
+
+        if UnitGUID(unit) == guid_mouseover then
+            height = orig_height + ns.ANameP_TargetHealthBarHeight;
+            self.healthtext:Show();
+        else
+            self.healthtext:Hide();
+        end
 
         if casticon then
             casticon:SetWidth((height + cast_height + 2) * 1.2);
@@ -555,6 +563,9 @@ local function updateTargetNameP(self)
             base_y = base_y + 4;
         end
     end
+
+
+
 
     -- Healthbar 크기
     healthBar:SetHeight(height);
@@ -1069,6 +1080,7 @@ end
 
 local namePlateVerticalScale = nil;
 local g_orig_height = nil;
+local prev_mouseover = nil;
 
 local function removeNamePlate(namePlateFrameBase)
     if not namePlateFrameBase or not namePlateFrameBase.namePlateUnitToken then
@@ -1087,6 +1099,10 @@ local function removeNamePlate(namePlateFrameBase)
             end
         end
         ns.lib.PixelGlow_Stop(asframe.casticon);
+
+        if prev_mouseover == asframe then
+            prev_mouseover = nil;
+        end
 
         asframe.aggro1:Hide();
         asframe.aggro2:Hide();
@@ -1465,6 +1481,7 @@ local function ANameP_OnEvent(self, event, ...)
                 updateTargetNameP(namePlateFrameBase.asNamePlates);
                 updateUnitAuras(namePlateUnitToken);
                 updateUnitHealthText("target");
+                updateUnitHealthText("mouseover");
                 updateUnitHealthText("player");
                 checkSpellCasting(namePlateFrameBase.asNamePlates);
                 updateHealthbarColor(namePlateFrameBase.asNamePlates);
@@ -1481,9 +1498,38 @@ local function ANameP_OnEvent(self, event, ...)
         updateUnitAuras("target");
         updateUnitAuras("player");
         updateUnitHealthText("target");
+        updateUnitHealthText("mouseover");
     elseif event == "PLAYER_TARGET_CHANGED" then
-        updateUnitAuras("target");
-        updateUnitHealthText("target");
+        if UnitExists("target") then
+            local pframe = C_NamePlate.GetNamePlateForUnit("target", issecure())
+            if pframe and pframe.asNamePlates ~= nil then
+                updateTargetNameP(pframe.asNamePlates);
+            end
+            updateUnitAuras("target");
+            updateUnitHealthText("target");
+        end
+    elseif event == "UPDATE_MOUSEOVER_UNIT" then
+        local bupdate = false;
+        if UnitExists("mouseover") then
+            local pframe = C_NamePlate.GetNamePlateForUnit("mouseover", issecure())
+            if pframe and pframe.asNamePlates ~= nil then
+                bupdate = true;
+                updateTargetNameP(pframe.asNamePlates);
+                if prev_mouseover and prev_mouseover ~= pframe.asNamePlates then
+                    updateTargetNameP(prev_mouseover);
+                end
+                prev_mouseover = pframe.asNamePlates;
+            end
+        end
+
+        if bupdate == false then
+            if prev_mouseover then
+                updateTargetNameP(prev_mouseover);
+            end
+            prev_mouseover = nil;
+        end
+
+        updateUnitHealthText("mouseover");
     elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or
         (event == "ACTIVE_TALENT_GROUP_CHANGED") then
         setupKnownSpell();
@@ -1564,6 +1610,7 @@ end
 
 local function ANameP_OnUpdate()
     updateUnitHealthText("target");
+    updateUnitHealthText("mouseover");
     updateUnitHealthText("player");
     updateUnitResourceText();
 
@@ -1580,6 +1627,8 @@ local function ANameP_OnUpdate()
             if nameplate.asNamePlates.checkpvptarget or nameplate.asNamePlates.namecolor then
                 updatePVPAggro(nameplate.asNamePlates);
             end
+
+            updateTargetNameP(nameplate.asNamePlates);
             checkSpellCasting(nameplate.asNamePlates);
             updateHealthbarColor(nameplate.asNamePlates);
         end
@@ -1643,6 +1692,7 @@ local function initAddon()
     ANameP:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     ANameP:RegisterEvent("UNIT_FACTION");
     ANameP:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
+    ANameP:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
     ANameP:RegisterEvent("GROUP_JOINED");
     ANameP:RegisterEvent("GROUP_ROSTER_UPDATE");
     ANameP:RegisterEvent("PLAYER_ROLES_ASSIGNED");
@@ -1657,10 +1707,22 @@ local function initAddon()
             return;
         end
 
-        local pframe = C_NamePlate.GetNamePlateForUnit("target", issecure())
 
-        if pframe and pframe.asNamePlates ~= nil and frame.unit and UnitIsUnit(frame.unit, "target") then
-            updateTargetNameP(pframe.asNamePlates);
+        if frame.unit and UnitIsUnit(frame.unit, "target") then
+            local pframe = C_NamePlate.GetNamePlateForUnit("target", issecure())
+            if pframe and pframe.asNamePlates ~= nil then
+                updateTargetNameP(pframe.asNamePlates);
+            end
+        end
+
+        if frame.unit and UnitExists("mouseover") then
+            local guid_mouseover = UnitGUID("mouseover")
+            if UnitGUID(frame.unit) == guid_mouseover then
+                local pframe = C_NamePlate.GetNamePlateForUnit("mouseover", issecure())
+                if pframe and pframe.asNamePlates ~= nil then
+                    updateTargetNameP(pframe.asNamePlates);
+                end
+            end
         end
     end)
 
