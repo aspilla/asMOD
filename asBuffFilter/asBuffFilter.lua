@@ -314,7 +314,7 @@ local function IsShown(name, spellId)
 		return true;
 	end
 
-	if bcheckOverlay and overlayspell[spellId] then
+	if bcheckOverlay and (overlayspell[spellId] or overlayspell[name]) then
 		return true;
 	end
 
@@ -725,7 +725,9 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		asCheckTalent();
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") and arg1 then
+		local spell_name = GetSpellInfo(arg1);
 		overlayspell[arg1] = true;
+		overlayspell[spell_name] = true;
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_HIDE") then
 	elseif (event == "PLAYER_LEAVING_WORLD") then
 		hasValidPlayer = false;
