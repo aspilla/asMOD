@@ -2360,3 +2360,7 @@ DBM-Test-Dragonflight/DBM-Test-Dragonflight_Mainline.toc
 DBM-Test-Dragonflight/Raids-Dragonflight/VaultoftheIncarnates/BroodkeeperDiurna.lua
 DBM-Test-Dragonflight/Raids-Dragonflight/VaultoftheIncarnates/Reports/BroodkeeperDiurna.lua
 Details/Libs/LibOpenRaid/ThingsToMantain_WarWithin.lua
+idTip/idTip.lua
+idTip/idTip.test.js
+idTip/idTip.toc
+idTip/vitest.config.js

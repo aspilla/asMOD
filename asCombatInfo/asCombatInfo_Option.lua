@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240624,
+	version = 240625,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -116,12 +116,11 @@ ACI_Options_Default = {
 
 	--비전
 	ACI_SpellList_MAGE_1 = {
-		{ "비전의 여파", 4 },
+		{ 383783, 3 },
 		{ "비전 보주", 1 },
 		{ "비전 쇄도", 2 },
-		{ 99, "빛나는 불꽃", { "빛나는 불꽃", 4, nil, nil, nil, "빛나는 불꽃 약화" },
-			{ 332769, 3 } }, --비전의 조화
-		{ "황천의 폭풍우", 4 },
+		{ "환기", 2, nil, nil, nil, "폭풍 착취" },
+		{ "비전의 여파", 4 },
 	},
 
 	--화염
