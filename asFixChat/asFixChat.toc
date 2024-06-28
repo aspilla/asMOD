@@ -5,4 +5,4 @@
 ## Version : 240107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asFixChatTab.lua
-##asFixChatURL.lua
+asFixChatURL.lua
