@@ -525,7 +525,7 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             if (unit ~= "player" and aura.sourceUnit ~= nil and not PLAYER_UNITS[aura.sourceUnit]) then
                 color = { r = 0.3, g = 0.3, b = 0.3 };
             end
-            if aura.isRaid and (unit == "player" or UnitCanAssist(unit, "player")) and DispellableDebuffTypes[aura.dispelName] then
+            if (unit == "player" or UnitCanAssist(unit, "player")) and DispellableDebuffTypes[aura.dispelName] then
                 ns.lib.PixelGlow_Start(frame, { color.r, color.g, color.b, 1 });
             elseif alert then
                 ns.lib.PixelGlow_Start(frame);
