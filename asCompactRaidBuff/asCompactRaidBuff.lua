@@ -725,6 +725,8 @@ local function ACRB_OnEvent(self, event, arg1, arg2, arg3)
     elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED") then
         ns.SetupAll(true);
         ns.UpdateDispellable();
+    elseif (event == "UNIT_PET") then        
+        ns.UpdateDispellable();
     elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
         ns.updateTankerList();
         ns.SetupAll(false);
@@ -749,6 +751,7 @@ ACRB_mainframe:RegisterEvent("ROLE_CHANGED_INFORM");
 ACRB_mainframe:RegisterEvent("VARIABLES_LOADED");
 ACRB_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
 ACRB_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
+ACRB_mainframe:RegisterUnitEvent("UNIT_PET", "player")
 -- CPU 리소스
 -- ACRB_mainframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 
