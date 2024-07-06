@@ -78,7 +78,7 @@ function ns.UpdateDispellable()
             if spelltype == 1 and IsPlayerSpell(spellID) then
                 DispellableDebuffTypes[dispelType] = true;
             elseif spelltype == 2 and asIsPetSpell(spellID) then
-                DispellableDebuffTypes[dispelType] = true;                
+                DispellableDebuffTypes[dispelType] = true;
             end
         end
     end
@@ -414,15 +414,24 @@ local function ProcessAura(aura)
         return AuraUpdateChangedType.Debuff;
     elseif aura.isHarmful then
         if not aura.isRaid then
+            local bshow = false;
             if aura.nameplateShowAll then
                 aura.debuffType = UnitFrameDebuffType.namePlateShowAll;
-                return AuraUpdateChangedType.Debuff;
+                bshow = true;
             elseif IsPriorityDebuff(aura.spellId) then
                 aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
-                return AuraUpdateChangedType.Debuff;
+                bshow = true;
             elseif ShouldDisplayDebuff(aura) then
                 aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
-                return AuraUpdateChangedType.Debuff;
+                bshow = true;
+            end
+
+            if bshow then
+                if DispellableDebuffTypes[aura.dispelName] then
+                    return AuraUpdateChangedType.Dispel;
+                else
+                    return AuraUpdateChangedType.Debuff;
+                end
             end
         else -- aura.isRaid
             aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or

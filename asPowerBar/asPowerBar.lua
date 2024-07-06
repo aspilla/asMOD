@@ -934,16 +934,6 @@ local bupdate_druid = false;
 
 local function APB_GetActionSlot(arg1)
     local ret = {};
-    for lActionSlot = 1, 180 do
-        local type, id, subType, spellID = GetActionInfo(lActionSlot);
-
-        if id and type and type == "spell" then
-            local name = asGetSpellInfo(id);
-            if name and name == arg1 then
-                ret[lActionSlot] = true;
-            end
-        end
-    end
 
     for lActionSlot = 1, 180 do
         local type, id, subType, spellID = GetActionInfo(lActionSlot);
@@ -955,6 +945,19 @@ local function APB_GetActionSlot(arg1)
             end
         end
     end
+
+    for lActionSlot = 1, 180 do
+        local type, id, subType, spellID = GetActionInfo(lActionSlot);
+
+        if id and type and type == "spell" then
+            local name = asGetSpellInfo(id);
+            if name and name == arg1 then
+                ret[lActionSlot] = true;
+            end
+        end
+    end
+
+    
 
     return ret;
 end
@@ -1012,23 +1015,13 @@ local inrange, inrange2 = true, true;
 local function APB_UpdateSpell(spell, spell2)
     local charges, maxCharges, chargeStart, chargeDuration = asGetSpellCharges(spell);
     local spellid = select(7, asGetSpellInfo(spell));
-    local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellid);
+    local _, notEnoughMana = C_Spell.IsSpellUsable(spellid);
 
     if bupdate_druid then
-        if APB_ACTION then
-            local slot;
-            for k, v in pairs(APB_ACTION) do -- might need to use ipairs() instead?
-                slot = k
-                break
-            end
-
-            if slot then
-                charges = GetActionCount(slot);
-                maxCharges = 2;
-                chargeStart = 0;
-                chargeDuration = 0;
-            end
-        end
+        charges = GetSpellCount(spellid);
+        maxCharges = 2;
+        chargeStart = 0;
+        chargeDuration = 0;
     end
 
     if not charges or not maxCharges then
@@ -1096,24 +1089,11 @@ local function APB_UpdateSpell(spell, spell2)
         spellid = select(7, asGetSpellInfo(spell2));
         local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellid);
 
-        if not maxCharges2 then
-            if APB_ACTION2 then
-                local slot;
-                for k, v in pairs(APB_ACTION2) do -- might need to use ipairs() instead?
-                    slot = k
-                    break
-                end
-                if slot then
-                    charges = GetActionCount(slot);
-                    maxCharges2 = 2;
-                    chargeStart = 0;
-                    chargeDuration = 0;
-                end
-
-                if not maxCharges2 then
-                    return;
-                end
-            end
+        if bupdate_druid then
+            charges = GetSpellCount(spellid);
+            maxCharges2 = 2;
+            chargeStart = 0;
+            chargeDuration = 0;
         end
 
         if not charges or not maxCharges2 then

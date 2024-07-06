@@ -45,7 +45,7 @@
 	<Button name="asCompactDebuffTemplate" inherits="asCompactAuraTemplate" virtual="true">
 		<Layers>
 			<Layer level="OVERLAY">
-				<Texture name="$parentBorder" parentKey="border" file="Interface\AddOns\asCompactRaidBuff\overborder.tga">
+				<Texture name="$parentBorder" parentKey="border" file="Interface\AddOns\asCompactRaidBuff\border.tga">
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset x="0" y="0"/>
@@ -62,7 +62,7 @@
 	<Button name="asCompactBuffTemplate" inherits="asCompactAuraTemplate" virtual="true">
 		<Layers>
 			<Layer level="OVERLAY">
-				<Texture name="$parentBorder" parentKey="border" file="Interface\AddOns\asCompactRaidBuff\overborder.tga">
+				<Texture name="$parentBorder" parentKey="border" file="Interface\AddOns\asCompactRaidBuff\border.tga">
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset x="0" y="0"/>
