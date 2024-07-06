@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240418,
+	version = 240706,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -291,7 +291,7 @@ ACI_Options_Default = {
 	ACI_SpellList_DRUID_4 = {
 		{ "꽃피우기", 2 },
 		{ "신속한 치유", 1 },
-		{ 99, "영혼 소집", { "영혼 소집", 1 }, { "화신: 생명의 나무", 2, nil, nil, nil, "화신" } },
+		{ 99, "영혼 소집", { "영혼 소집", 1 }, { "화신: 생명의 나무", 2, nil, nil, "삼림 재생", "화신" } },
 		{ "급속 성장", 1 },
 		{ "달빛섬광", 4, nil, 1 },
 	},

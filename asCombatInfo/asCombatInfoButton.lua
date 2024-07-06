@@ -279,6 +279,21 @@ function ns.Button:checkSpellCoolInBuff()
     end
 end
 
+local function GetAction(actionlist, spell)
+
+    for _, action in pairs(actionlist) do
+        local type, id, subType, spellID = GetActionInfo(action);
+
+        if id and type and (type == "spell" or type == "macro") then
+            local name = GetSpellInfo(id);
+            if name and name == spell then
+                return action;
+            end
+        end        
+    end
+
+end
+
 function ns.Button:checkSpell()
     if self.icon ~= nil or self.spellid == nil then
         return;
@@ -286,7 +301,7 @@ function ns.Button:checkSpell()
 
 
     local spellid                                          = self.spellid;
-    local action                                           = self.action;
+    local action                                           = GetAction(self.actionlist, self.spell)
 
     local _, _, icon                                       = GetSpellInfo(spellid)
     local start, duration, enable                          = GetSpellCooldown(spellid);
@@ -299,11 +314,16 @@ function ns.Button:checkSpell()
         count = 0;
     end
 
+    if action then
+        isUsable = IsUsableAction(action);
+    end
+
     if not count or count == 0 then
-        if action then
-            count = GetActionCount(action);
-            charges, maxCharges, chargeStart, chargeDuration = GetActionCharges(action);
-        end
+        count = GetSpellCount(spellid);                
+    end
+
+    if (not charges or charges == 0) and action then
+        charges, maxCharges, chargeStart, chargeDuration = GetActionCharges(action);
     end
 
     if isUsable and duration > gcd then
@@ -397,7 +417,6 @@ function ns.Button:checkSpell()
 end
 
 function ns.Button:checkCount()
-
     if self.checkplatecount then
         local buff = self.spell;
 
@@ -413,7 +432,7 @@ function ns.Button:checkCount()
 
     local buff = self.countbuff;
     local unit = "player"
-    
+
     if self.countdebuff then
         buff = self.countdebuff;
         unit = "target"
@@ -563,16 +582,6 @@ end
 
 local function GetActionSlot(arg1)
     local ret = {};
-    for lActionSlot = 1, 180 do
-        local type, id, subType, spellID = GetActionInfo(lActionSlot);
-
-        if id and type and type == "spell" then
-            local name = GetSpellInfo(id);
-            if name and name == arg1 then
-                tinsert(ret, lActionSlot);
-            end
-        end
-    end
 
     for lActionSlot = 1, 180 do
         local type, id, subType, spellID = GetActionInfo(lActionSlot);
@@ -584,6 +593,19 @@ local function GetActionSlot(arg1)
             end
         end
     end
+
+    for lActionSlot = 1, 180 do
+        local type, id, subType, spellID = GetActionInfo(lActionSlot);
+
+        if id and type and type == "spell" then
+            local name = GetSpellInfo(id);
+            if name and name == arg1 then
+                tinsert(ret, lActionSlot);
+            end
+        end
+    end
+
+    
 
     return ret;
 end
@@ -614,9 +636,8 @@ function ns.Button:init(config, frame)
     self.frame = frame;
 
     local actionlist = GetActionSlot(self.spell);
-    if actionlist[1] then
-        self.action = actionlist[1];
-    end
+    self.actionlist = actionlist;
+
     self.inRange = true;
 
     if self.unit == nil then
