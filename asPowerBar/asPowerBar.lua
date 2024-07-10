@@ -915,10 +915,12 @@ local function APB_UpdatePower()
     if spellID then
         local costTable = C_Spell.GetSpellPowerCost(spellID);
 
-        for _, costInfo in pairs(costTable) do
-            if (costInfo.type == APB_POWER_LEVEL) then
-                cast = costInfo.cost;
-                break
+        if costTable then
+            for _, costInfo in pairs(costTable) do
+                if (costInfo.type == APB_POWER_LEVEL) then
+                    cast = costInfo.cost;
+                    break
+                end
             end
         end
 
@@ -957,7 +959,7 @@ local function APB_GetActionSlot(arg1)
         end
     end
 
-    
+
 
     return ret;
 end

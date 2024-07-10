@@ -755,7 +755,8 @@
         "PetJournalPetCardPetInfo",
         "PetBattlePrimaryAbilityTooltip",
         "SpellBookFrame",
-        "PetJournalPetCard"
+        "PetJournalPetCard",
+        "IsPlayerSpell"
     ],
     "Lua.runtime.version": "LuaJIT",
     "Lua.workspace.library": [

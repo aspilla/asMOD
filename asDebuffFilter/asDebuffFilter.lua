@@ -74,8 +74,8 @@ local typeCheck = {
 
 local function UpdateDispellable()
     local function asIsPetSpell(search)
-        if HasPetSpells() then
-            for i = 1, HasPetSpells() do
+        if C_SpellBook.HasPetSpells() then
+            for i = 1, C_SpellBook.HasPetSpells() do
                 local spellType, id = GetSpellBookItemInfo(i, BOOKTYPE_PET)
                 local spellID = bit.band(0xFFFFFF, id)
                 -- not sure what the non-spell IDs are
@@ -132,6 +132,31 @@ local AuraFilters =
     NotCancelable = "NOT_CANCELABLE",
     Maw = "MAW",
 };
+
+local asGetSpellInfo = function(spellID)
+	if not spellID then
+		return nil;
+	end
+
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
+local asGetSpellTabInfo = function(index)
+	local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
+	if skillLineInfo then
+		return	skillLineInfo.name, 
+				skillLineInfo.iconID, 
+				skillLineInfo.itemIndexOffset, 
+				skillLineInfo.numSpellBookItems, 
+				skillLineInfo.isGuild, 
+				skillLineInfo.offSpecID,
+				skillLineInfo.shouldHide,
+				skillLineInfo.specID;
+	end
+end
 
 local show_list = {};
 

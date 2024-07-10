@@ -60,8 +60,8 @@ local typeCheck = {
 
 function ns.UpdateDispellable()
     local function asIsPetSpell(search)
-        if HasPetSpells() then
-            for i = 1, HasPetSpells() do
+        if C_SpellBook.HasPetSpells() then
+            for i = 1, C_SpellBook.HasPetSpells() do
                 local spellType, id = GetSpellBookItemInfo(i, BOOKTYPE_PET)
                 local spellID = bit.band(0xFFFFFF, id)
                 -- not sure what the non-spell IDs are
