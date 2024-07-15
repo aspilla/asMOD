@@ -72,7 +72,7 @@ local function ASAA_UpdateCooldown()
 	for id, isAlert in pairs(ASAA_SpellList) do
 
 
-		if isAlert == true then
+		if isAlert == true and IsPlayerSpell(id) then
 			_, _, icon = GetSpellInfo(id);
 			start, duration, enable = GetSpellCooldown(id);
 			local isUsable, notEnoughMana = IsUsableSpell(id);
