@@ -34,27 +34,49 @@ ns.Button = {
 };
 
 local asGetSpellInfo = function(spellID)
-	if not spellID then
-		return nil;
-	end
+    if not spellID then
+        return nil;
+    end
 
-	local spellInfo = C_Spell.GetSpellInfo(spellID);
-	if spellInfo then
-		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
-	end
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+    local spellInfo = C_Spell.GetSpellInfo(spellID);
+
+
+    if spellInfo then
+        return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+            spellInfo.spellID, spellInfo.originalIconID;
+    end
 end
 
 local asGetSpellCooldown = function(spellID)
-	local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
-	if spellCooldownInfo then
-		return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
-	end
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+    local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
+    if spellCooldownInfo then
+        return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled,
+            spellCooldownInfo.modRate;
+    end
 end
 
 local asGetSpellCharges = function(spellID)
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
     local spellChargeInfo = C_Spell.GetSpellCharges(spellID);
     if spellChargeInfo then
-        return spellChargeInfo.currentCharges, spellChargeInfo.maxCharges, spellChargeInfo.cooldownStartTime, spellChargeInfo.cooldownDuration, spellChargeInfo.chargeModRate;
+        return spellChargeInfo.currentCharges, spellChargeInfo.maxCharges, spellChargeInfo.cooldownStartTime,
+            spellChargeInfo.cooldownDuration, spellChargeInfo.chargeModRate;
     end
 end
 
@@ -306,7 +328,6 @@ function ns.Button:checkSpellCoolInBuff()
 end
 
 local function GetAction(actionlist, spell)
-
     for _, action in pairs(actionlist) do
         local type, id, subType, spellID = GetActionInfo(action);
 
@@ -315,9 +336,8 @@ local function GetAction(actionlist, spell)
             if name and name == spell then
                 return action;
             end
-        end        
+        end
     end
-
 end
 
 function ns.Button:checkSpell()
@@ -345,7 +365,7 @@ function ns.Button:checkSpell()
     end
 
     if not count or count == 0 then
-        count = GetSpellCount(spellid);                
+        count = GetSpellCount(spellid);
     end
 
     if (not charges or charges == 0) and action then
@@ -615,8 +635,8 @@ local function GetActionSlot(arg1)
 
         if id and type and type == "macro" then
             local name = asGetSpellInfo(id);
-           
-            if name and name == arg1 then                
+
+            if name and name == arg1 then
                 tinsert(ret, lActionSlot);
             end
         end
@@ -627,14 +647,14 @@ local function GetActionSlot(arg1)
 
         if id and type and type == "spell" then
             local name = asGetSpellInfo(id);
-            
+
             if name and name == arg1 then
-                tinsert(ret, lActionSlot);                
+                tinsert(ret, lActionSlot);
             end
         end
     end
 
-    
+
 
     return ret;
 end

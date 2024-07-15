@@ -3,7 +3,7 @@ local _, ns = ...;
 ns.UpdateRate = 0.2; -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 
 local Options_Default = {
-	version = 240131,
+	version = 240716,
 	ShowBuffColor = true,       -- 버프가 Frame Color 를 변경 할지
 	ShowHealthColor = true,     -- 체력 낮은 사람 Color 변경 (사제 생명)
 	LeftAbsorbBar = true,       -- 보호막 바
@@ -33,7 +33,6 @@ ns.ACRB_ShowList_MONK_2 = {
 
 -- 신기
 ns.ACRB_ShowList_PALADIN_1 = {
-	["빛의 자락"] = { 0, 6 },
 	["빛의 봉화"] = { 0, 5 },
 	["고결의 봉화"] = { 0, 5 },
 	["신념의 봉화"] = { 0, 5 },

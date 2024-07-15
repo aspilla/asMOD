@@ -9,6 +9,12 @@ local asGetSpellInfo = function(spellID)
 		return nil;
 	end
 
+	local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
 	local spellInfo = C_Spell.GetSpellInfo(spellID);
 	if spellInfo then
 		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;

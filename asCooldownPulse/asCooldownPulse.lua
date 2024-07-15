@@ -103,6 +103,12 @@ local asGetSpellInfo = function(spellID)
 		return nil;
 	end
 
+	local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
 	local spellInfo = C_Spell.GetSpellInfo(spellID);
 	if spellInfo then
 		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
@@ -110,6 +116,13 @@ local asGetSpellInfo = function(spellID)
 end
 
 local asGetSpellCooldown = function(spellID)
+
+	local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
 	local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
 	if spellCooldownInfo then
 		return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
