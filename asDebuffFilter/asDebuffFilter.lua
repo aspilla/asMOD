@@ -59,6 +59,7 @@ local typeCheck = {
         [374251] = 1, --Evoker
         [365585] = 1, --Evoker
         [383013] = 1, --Shaman
+        [459517] = 3, --Hunter Player Only
     },
     ["Disease"] = {
         [388874] = 1, --Monk
@@ -68,6 +69,7 @@ local typeCheck = {
         [393024] = 1, --Paladin
         [213644] = 1, --Paladin
         [374251] = 1, --Evoker
+        [459517] = 3, --Hunter Player Only
     },
 
 }
@@ -76,8 +78,8 @@ local function UpdateDispellable()
     local function asIsPetSpell(search)
         if C_SpellBook.HasPetSpells() then
             for i = 1, C_SpellBook.HasPetSpells() do
-                local spellType, id = GetSpellBookItemInfo(i, BOOKTYPE_PET)
-                local spellID = bit.band(0xFFFFFF, id)
+                local sBookItemInfo =  C_SpellBook.GetSpellBookItemInfo(i, Enum.SpellBookSpellBank.Pet)
+                local spellID = sBookItemInfo.spellID;
                 -- not sure what the non-spell IDs are
                 if spellID == search then
                     return true;
@@ -92,6 +94,8 @@ local function UpdateDispellable()
             if spelltype == 1 and IsPlayerSpell(spellID) then
                 DispellableDebuffTypes[dispelType] = true;
             elseif spelltype == 2 and asIsPetSpell(spellID) then
+                DispellableDebuffTypes[dispelType] = true;
+            elseif spelltype == 3 and IsPlayerSpell(spellID) then
                 DispellableDebuffTypes[dispelType] = true;
             end
         end

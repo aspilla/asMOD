@@ -2396,3 +2396,15 @@ Details_RaidCheck/Details_RaidCheck_Cata.toc
 Details_Streamer/Details_Streamer_Cata.toc
 Details_TinyThreat/Details_TinyThreat_Cata.toc
 Details_Vanguard/Details_Vanguard_Cata.toc
+Details-bak/startup.lua
+Details-bak/frames/window_classcolor.lua
+Details-bak/frames/window_currentdps.lua
+Details-bak/functions/classes.lua
+Details-bak/functions/coach.lua
+Details-bak/Libs/AceComm-3.0/AceComm-3.0.lua
+Details-bak/Libs/AceComm-3.0/ChatThrottleLib.lua
+Details-bak/Libs/AceSerializer-3.0/AceSerializer-3.0.lua
+Details-bak/Libs/AceTimer-3.0/AceTimer-3.0.lua
+Details-bak/Libs/DF/help.lua
+Details-bak/Libs/DF/panel.lua
+Details-bak/locales/Details-deDE.lua

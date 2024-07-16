@@ -756,7 +756,16 @@
         "PetBattlePrimaryAbilityTooltip",
         "SpellBookFrame",
         "PetJournalPetCard",
-        "IsPlayerSpell"
+        "IsPlayerSpell",
+        "C_CVar",
+        "SplashFrame",
+        "TutorialPointerFrame_1",
+        "C_EventUtils",
+        "GetLooseMacroItemIcons",
+        "GetLooseMacroIcons",
+        "GetMacroIcons",
+        "GetMacroItemIcons",
+        "GetSpellBookItemTexture"
     ],
     "Lua.runtime.version": "LuaJIT",
     "Lua.workspace.library": [

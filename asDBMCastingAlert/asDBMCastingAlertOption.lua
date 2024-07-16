@@ -27,6 +27,10 @@ function ns.SetupOptionPanels()
 
     local category = Settings.RegisterVerticalLayoutCategory("asDBMCastingAlert")
 
+    if not category then
+        return;
+    end
+
     if ADCA_Options == nil or Options_Default.Version ~= ACDP_Options.Version then
         ADCA_Options = {};
         ADCA_Options = CopyTable(Options_Default);

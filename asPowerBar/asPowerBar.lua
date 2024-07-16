@@ -21,7 +21,6 @@ local bupdate_powerbar = false;
 local bupdate_healthbar = APB_SHOW_HEALTHBAR;
 local bupdate_stagger = false;
 local bupdate_fronzen = false;
-local bupdate_windrunner = false;
 local bupdate_partial_power = false;
 local bsmall_power_bar = false;
 local bupdate_buff_combo = false;
@@ -78,13 +77,12 @@ local asGetSpellInfo = function(spellID)
 end
 
 local asGetSpellCooldown = function(spellID)
-
     local ospellID = C_Spell.GetOverrideSpell(spellID)
 
     if ospellID then
         spellID = ospellID;
     end
-    
+
     local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
     if spellCooldownInfo then
         return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled,
@@ -93,7 +91,6 @@ local asGetSpellCooldown = function(spellID)
 end
 
 local asGetSpellCharges = function(spellID)
-
     local ospellID = C_Spell.GetOverrideSpell(spellID)
 
     if ospellID then
@@ -1455,7 +1452,6 @@ local function APB_CheckPower(self)
     bupdate_shadow_tech = false;
     bupdate_stagger = false;
     bupdate_fronzen = false;
-    bupdate_windrunner = false;
     bupdate_partial_power = false;
     bsmall_power_bar = false;
     bhalf_combo = false;
@@ -1887,10 +1883,8 @@ local function APB_CheckPower(self)
             APB:RegisterEvent("PLAYER_TARGET_CHANGED");
             APB_UpdateBuff(self.buffbar[0])
         elseif asCheckTalent("일발필중") then
-            APB_BUFF = "어둠의 춤";
-            APB_BUFF3 = "기만";
+            APB_BUFF = "기만";
             APB.buffbar[0].buff = APB_BUFF;
-            APB.buffbar[0].buff2 = APB_BUFF3;
             APB.buffbar[0].unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
             APB_UpdateBuff(self.buffbar[0])
@@ -2117,11 +2111,13 @@ local function APB_CheckPower(self)
             APB:RegisterUnitEvent("UNIT_AURA", "player");
             -- APB:SetScript("OnUpdate", APB_OnUpdate);
 
-            if asCheckTalent("광포한 무리") then
-                APB_MaxCombo(4);
+            if asCheckTalent("폭발성 맹독") then
+                APB_BUFF_COMBO = "폭발성 맹독";
+                APB_MaxCombo(5);
                 APB.combobar.unit = "player"
-                bupdate_direbeast_combo = true;
-                APB_UpdateDireBeastCombo(self.combobar);
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
+                APB_UpdateBuffCombo(self.combobar)
+                bupdate_buff_combo = true;
             end
 
             APB_UpdateBuff(self.buffbar[0])
@@ -2149,11 +2145,6 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].maxshow = 6;
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 APB_UpdateBuff(self.buffbar[0])
-            end
-
-            if asCheckTalent("윈드러너의 유산") then
-                bupdate_windrunner = true;
-                APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
             end
         end
 
@@ -2522,28 +2513,6 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
                     FrozenOrbTime = GetTime();
                 end
             end
-        elseif bupdate_windrunner then
-            local timestamp, subEvent, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType =
-                CombatLogGetCurrentEventInfo();
-
-            if sourceGUID == UnitGUID("player") and subEvent == "SPELL_DAMAGE" and spellID == 191043 then
-                windrunner_count = windrunner_count + 1
-            end
-
-            if sourceGUID == UnitGUID("player") and subEvent == "SPELL_ENERGIZE" and spellID == 406449 then
-                windrunner_count = 0
-            end
-
-            local textToShow = tostring(windrunner_count) .. "/24";
-
-            APB.text:SetText(textToShow);
-
-            if windrunner_count >= 20 then
-                APB.text:SetTextColor(0, 1, 0);
-            else
-                APB.text:SetTextColor(1, 1, 1);
-            end
-            APB.text:Show();
         end
     elseif event == "PLAYER_ENTERING_WORLD" then
         checkSpellCost();
