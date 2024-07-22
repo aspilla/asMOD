@@ -182,13 +182,13 @@ local function scanSpells(tab)
 			for j = 1, numSlots do
 				local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
 			
-				if flyoutSpellID and not black_list[flyoutSpellName] then					
+				if flyoutSpellID and not black_list[flyoutSpellName] and IsPlayerSpell(flyoutSpellID) then					
 					KnownSpellList[flyoutSpellID] = SPELL_TYPE_USER;
 				end
 			end
-		else
+		elseif IsPlayerSpell(spellID) then
 		
-			if spellID and not black_list[spellName] then
+			if spellID and not black_list[spellName] and IsPlayerSpell(spellID) then
 				KnownSpellList[spellID] = SPELL_TYPE_USER;				
 			end
 		end
@@ -198,7 +198,8 @@ end
 
 local function scanPetSpells()
 	for i = 1, 20 do
-		local spellName, _, spellID = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Pet)
+		local spellName, _ = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Pet)
+		local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Pet);
 
 		if not spellName then
 			do break end
@@ -632,8 +633,7 @@ local function setupKnownSpell(bwipe)
 	scanSpells(1);
 	scanSpells(2)
 	scanSpells(3)
-	scanSpells(4)
-	scanSpells(5)
+
 	scanPetSpells();
 	scanItemSlots();
 	scanActionSlots();

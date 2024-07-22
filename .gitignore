@@ -2408,3 +2408,6 @@ Details-bak/Libs/AceTimer-3.0/AceTimer-3.0.lua
 Details-bak/Libs/DF/help.lua
 Details-bak/Libs/DF/panel.lua
 Details-bak/locales/Details-deDE.lua
+DBM-Core/ValidUIDs.lua
+DBM-Raids-WarWithin/localization.tw.lua
+Details/luaserver.lua

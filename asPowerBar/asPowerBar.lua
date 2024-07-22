@@ -1875,6 +1875,13 @@ local function APB_CheckPower(self)
             APB.combobar[i].tooltip = "COMBO_POINTS";
         end
 
+        if IsPlayerSpell(382513) then
+            APB_SPELL = "소멸";
+            APB_SpellMax(APB_SPELL);
+            APB_UpdateSpell(APB_SPELL);
+            bupdate_spell = true;
+        end
+
         if asCheckTalent("부식성 분사") then
             APB_DEBUFF = "부식성 분사";
             APB.buffbar[0].debuff = APB_DEBUFF;
@@ -2183,15 +2190,16 @@ local function APB_CheckPower(self)
 
     if (englishClass == "SHAMAN") then
         if spec and spec == 1 then
-            if asCheckTalent("전기 충격") then
-                APB_DEBUFF = "전기 충격";
-                APB.buffbar[0].debuff = APB_DEBUFF
-                APB.buffbar[0].unit = "target";
-                APB:SetScript("OnUpdate", APB_OnUpdate);
+            if IsPlayerSpell(461816) then
+                APB_BUFF_COMBO = C_Spell.GetSpellName(210714);
+                APB_MaxCombo(2);
+                APB.combobar.unit = "player"
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
+                APB_UpdateBuffCombo(self.combobar)
+                bupdate_buff_combo = true;                    
+            end
 
-                APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-                APB_UpdateBuff(self.buffbar[0])
-            elseif asCheckTalent("깊이 뿌리내린 정기") then
+            if asCheckTalent("깊이 뿌리내린 정기") then
                 APB_BUFF = "승천";
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"

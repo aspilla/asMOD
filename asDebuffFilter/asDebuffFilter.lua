@@ -78,7 +78,7 @@ local function UpdateDispellable()
     local function asIsPetSpell(search)
         if C_SpellBook.HasPetSpells() then
             for i = 1, C_SpellBook.HasPetSpells() do
-                local sBookItemInfo =  C_SpellBook.GetSpellBookItemInfo(i, Enum.SpellBookSpellBank.Pet)
+                local sBookItemInfo = C_SpellBook.GetSpellBookItemInfo(i, Enum.SpellBookSpellBank.Pet)
                 local spellID = sBookItemInfo.spellID;
                 -- not sure what the non-spell IDs are
                 if spellID == search then
@@ -138,9 +138,9 @@ local AuraFilters =
 };
 
 local asGetSpellInfo = function(spellID)
-	if not spellID then
-		return nil;
-	end
+    if not spellID then
+        return nil;
+    end
 
     local ospellID = C_Spell.GetOverrideSpell(spellID)
 
@@ -148,24 +148,25 @@ local asGetSpellInfo = function(spellID)
         spellID = ospellID;
     end
 
-	local spellInfo = C_Spell.GetSpellInfo(spellID);
-	if spellInfo then
-		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
-	end
+    local spellInfo = C_Spell.GetSpellInfo(spellID);
+    if spellInfo then
+        return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+            spellInfo.spellID, spellInfo.originalIconID;
+    end
 end
 
 local asGetSpellTabInfo = function(index)
-	local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
-	if skillLineInfo then
-		return	skillLineInfo.name, 
-				skillLineInfo.iconID, 
-				skillLineInfo.itemIndexOffset, 
-				skillLineInfo.numSpellBookItems, 
-				skillLineInfo.isGuild, 
-				skillLineInfo.offSpecID,
-				skillLineInfo.shouldHide,
-				skillLineInfo.specID;
-	end
+    local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
+    if skillLineInfo then
+        return skillLineInfo.name,
+            skillLineInfo.iconID,
+            skillLineInfo.itemIndexOffset,
+            skillLineInfo.numSpellBookItems,
+            skillLineInfo.isGuild,
+            skillLineInfo.offSpecID,
+            skillLineInfo.shouldHide,
+            skillLineInfo.specID;
+    end
 end
 
 local show_list = {};
@@ -310,12 +311,13 @@ local function scanSpells(tab)
     end
 
     for i = tabOffset + 1, tabOffset + numEntries do
-        local spellName, _, spellID = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player)
+        local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player)
         if not spellName then
             do break end
         end
+        local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
 
-        if spellName then
+        if spellName and spellID and IsPlayerSpell(spellID) then
             KnownSpellList[spellName] = 1;
         end
     end
@@ -342,9 +344,8 @@ local function setupKnownSpell()
 
     scanSpells(1)
     scanSpells(2)
-	scanSpells(3)
-	scanSpells(4)
-	scanSpells(5)
+    scanSpells(3)
+
     scanPetSpells();
     asCheckTalent();
 end

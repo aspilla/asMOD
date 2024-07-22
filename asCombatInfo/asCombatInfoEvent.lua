@@ -239,9 +239,9 @@ local function UpdateTotem()
 
     for slot = 1, MAX_TOTEMS do
         local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
-
+        
         if haveTotem and totemfilter[name] then
-            tinsert(eventlib.totemlist, { name, start, duration, icon })
+            tinsert(eventlib.totemlist, { name, start, duration, icon })            
             trigger = true;
         end
     end
@@ -383,7 +383,8 @@ function ns.eventhandler.registerAction(action, button)
 end
 
 function ns.eventhandler.registerTotem(spell)
-    totemfilter[spell] = true;
+    totemfilter[spell] = true;   
+    print (spell) 
 end
 
 function ns.eventhandler.registerTotemTimer(spell, button)
@@ -424,7 +425,7 @@ function ns.aurafunctions.checkTotem(spell)
     local ret = nil;
 
     if totemlist then
-        for _, v in pairs(totemlist) do
+        for _, v in pairs(totemlist) do            
             if v[1] == spell then
                 ret = v;
             end

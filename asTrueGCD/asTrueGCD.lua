@@ -89,12 +89,12 @@ local function scanSpells(tab)
 			for j = 1, numSlots do
 				local flyoutSpellID = GetFlyoutSlotInfo(actionID, j);
 
-				if flyoutSpellID then
+				if flyoutSpellID  and IsPlayerSpell(flyoutSpellID) then
 					KnownSpellList[flyoutSpellID] = 1;
 				end
 			end
 		else
-			if spellID then
+			if spellID and IsPlayerSpell(spellID) then
 				KnownSpellList[spellID] = 1;
 			end
 		end
@@ -464,8 +464,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 		scanSpells(1);
 		scanSpells(2)
 		scanSpells(3)
-		scanSpells(4)
-		scanSpells(5)
+
 	elseif event == "UNIT_PET" then
 		scanPetSpells();
 	elseif event == "ACTIONBAR_SLOT_CHANGED" then

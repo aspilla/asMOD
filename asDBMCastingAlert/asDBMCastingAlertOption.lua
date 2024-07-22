@@ -10,6 +10,16 @@ local Options_Default = {
 
 ns.options = CopyTable(Options_Default);
 
+local function GetOptions()
+    local container = Settings.CreateControlTextContainer()
+
+    local ttsinfos = C_VoiceChat.GetTtsVoices();
+    for id, v in pairs(ttsinfos) do
+        container:Add(v.voiceID, v.name);
+    end
+    return container:GetData()
+end
+
 
 function ns.SetupOptionPanels()
     local function OnSettingChanged(_, setting, value)
@@ -50,16 +60,6 @@ function ns.SetupOptionPanels()
 
         if name ~= "Version" then
             if name == "TTS_ID" then
-                local function GetOptions()
-                    local container = Settings.CreateControlTextContainer()
-
-                    local ttsinfos = C_VoiceChat.GetTtsVoices();
-                    for id, v in pairs(ttsinfos) do
-                        container:Add(v.voiceID, v.name);
-                    end
-                    return container:GetData()
-                end
-
                 if defaultValue < 0 then
                     local ttsinfos = C_VoiceChat.GetTtsVoices();
                     local locale = GetLocale();
@@ -80,12 +80,10 @@ function ns.SetupOptionPanels()
                         end
                     end
                 end
-
-                --[[
+                
                 local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
                 Settings.CreateDropDown(category, setting, GetOptions, tooltip);
-                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
-                ]]
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);                
             elseif tonumber(defaultValue) ~= nil then
                 local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
                 local options = Settings.CreateSliderOptions(0, 100, 1);

@@ -132,7 +132,6 @@ function ns.Button:checkTotem()
         buff = self.realbuff;
     end
 
-
     local totem = ns.aurafunctions.checkTotem(buff);
     local aura = ns.aurafunctions.checkAura("player", buff);
 
@@ -695,6 +694,10 @@ function ns.Button:init(config, frame)
         else
             self.unit = "player"
         end
+    end
+
+    if self.realbuff and self.realbuff == "petname" and UnitExists("pet") then
+        self.realbuff = UnitName("pet");        
     end
 
     if self.type ~= ns.EnumButtonType.BuffOnly and self.type ~= ns.EnumButtonType.DebuffOnly then

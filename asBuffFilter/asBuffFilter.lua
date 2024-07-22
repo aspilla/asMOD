@@ -174,12 +174,12 @@ local function scanSpells(tab)
 			for j = 1, numSlots do
 				local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
 
-				if flyoutSpellName then
+				if flyoutSpellName and IsPlayerSpell(flyoutSpellID) then
 					ABF_TalentBuffList[flyoutSpellName] = true;
 					ABF_TalentBuffList[flyoutSpellID or 0] = true;
 				end
 			end
-		else
+		elseif IsPlayerSpell(spellID) then
 			ABF_TalentBuffList[spellName] = true;
 			ABF_TalentBuffIconList[icon or 0] = true;
 			ABF_TalentBuffList[spellID or 0] = true;
@@ -198,8 +198,6 @@ local function asCheckTalent()
 
 	scanSpells(2)
 	scanSpells(3)
-	scanSpells(4)
-	scanSpells(5)
 
 	local specID = PlayerUtil.GetCurrentSpecID();
 	local configID = C_ClassTalents.GetActiveConfigID();
