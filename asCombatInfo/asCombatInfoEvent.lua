@@ -270,7 +270,8 @@ local function ABF_OnEvent(self, event, arg1, ...)
             button:update();
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
-        local spell = asGetSpellInfo(arg1);
+        local spell = asGetSpellInfo(arg1);    
+        
         if eventfilter[spell] then
             local button = eventfilter[spell];
             button.alert = true;
@@ -373,7 +374,7 @@ function ns.eventhandler.registerAura(unit, spell, count)
 end
 
 function ns.eventhandler.registerEventFilter(spell, button)
-    eventfilter[spell] = button;
+    eventfilter[spell] = button;    
 end
 
 function ns.eventhandler.registerAction(action, button)
@@ -383,8 +384,7 @@ function ns.eventhandler.registerAction(action, button)
 end
 
 function ns.eventhandler.registerTotem(spell)
-    totemfilter[spell] = true;   
-    print (spell) 
+    totemfilter[spell] = true;        
 end
 
 function ns.eventhandler.registerTotemTimer(spell, button)

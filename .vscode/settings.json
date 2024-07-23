@@ -765,7 +765,8 @@
         "GetLooseMacroIcons",
         "GetMacroIcons",
         "GetMacroItemIcons",
-        "GetSpellBookItemTexture"
+        "GetSpellBookItemTexture",
+        "GetSpellCount"
     ],
     "Lua.runtime.version": "LuaJIT",
     "Lua.workspace.library": [

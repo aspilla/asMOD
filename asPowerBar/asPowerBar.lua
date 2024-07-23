@@ -34,6 +34,7 @@ APB_SPELL2 = nil;
 APB_BUFF = nil;
 APB_BUFF2 = nil;
 APB_BUFF3 = nil;
+APB_BUFF4 = nil;
 APB_BUFF_COMBO = nil;
 APB_DEBUFF_COMBO = nil
 
@@ -1034,6 +1035,11 @@ local inrange, inrange2 = true, true;
 local function APB_UpdateSpell(spell, spell2)
     local charges, maxCharges, chargeStart, chargeDuration = asGetSpellCharges(spell);
     local spellid = select(7, asGetSpellInfo(spell));
+
+    if not spellid then
+        return;
+    end
+
     local _, notEnoughMana = C_Spell.IsSpellUsable(spellid);
 
     if bupdate_druid then
@@ -1461,6 +1467,7 @@ local function APB_CheckPower(self)
     APB_BUFF = nil;
     APB_BUFF2 = nil;
     APB_BUFF3 = nil;
+    APB_BUFF4 = nil;
     APB_DEBUFF = nil;
     APB_DEBUFF2 = nil;
     APB_SPELL = nil;
@@ -1919,6 +1926,14 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 1) then
+
+            if IsPlayerSpell(194679) then
+                APB_SPELL = "룬 전환";
+                APB_SpellMax(APB_SPELL);
+                APB_UpdateSpell(APB_SPELL);
+                bupdate_spell = true;
+            end
+
             APB_BUFF = "뼈의 보호막";
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
@@ -2190,14 +2205,6 @@ local function APB_CheckPower(self)
 
     if (englishClass == "SHAMAN") then
         if spec and spec == 1 then
-            if IsPlayerSpell(461816) then
-                APB_BUFF_COMBO = C_Spell.GetSpellName(210714);
-                APB_MaxCombo(2);
-                APB.combobar.unit = "player"
-                APB:RegisterUnitEvent("UNIT_AURA", "player");
-                APB_UpdateBuffCombo(self.combobar)
-                bupdate_buff_combo = true;                    
-            end
 
             if asCheckTalent("깊이 뿌리내린 정기") then
                 APB_BUFF = "승천";
@@ -2210,6 +2217,7 @@ local function APB_CheckPower(self)
 
         if spec and spec == 2 then
             APB_BUFF_COMBO = "소용돌이치는 무기";
+            APB_BUFF4 = "소용돌이"; --asOverlay 삭제용
             APB_MaxCombo(10);
             APB.combobar.unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");

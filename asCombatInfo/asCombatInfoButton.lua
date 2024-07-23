@@ -348,7 +348,7 @@ function ns.Button:checkSpell()
     local spellid                                          = self.spellid;
     local action                                           = GetAction(self.actionlist, self.spell)
 
-    local _, _, icon                                       = asGetSpellInfo(spellid)
+    local spellname, _, icon                                       = asGetSpellInfo(spellid)
     local start, duration, enable                          = asGetSpellCooldown(spellid);
     local isUsable, notEnoughMana                          = C_Spell.IsSpellUsable(spellid);
     local charges, maxCharges, chargeStart, chargeDuration = asGetSpellCharges(spellid);
@@ -383,7 +383,7 @@ function ns.Button:checkSpell()
     --seting
     local t = self.type;
 
-    self.icon = icon;
+    self.icon = icon;    
 
     if t == ns.EnumButtonType.BuffOnly or t == ns.EnumButtonType.DebuffOnly then
         isUsable = false;
@@ -449,6 +449,7 @@ function ns.Button:checkSpell()
     if count and count > 0 then
         self.count = count;
     end
+
 
     if self.alertbufflist then
         for _, buff in pairs(self.alertbufflist) do
@@ -704,6 +705,10 @@ function ns.Button:init(config, frame)
         ACI_SpellID_list[self.spell] = true;
         ACI_SpellID_list[self.spellid] = true;
         ns.eventhandler.registerEventFilter(self.spell, self);
+
+        if self.countbuff then
+            ns.eventhandler.registerEventFilter(self.countbuff, self);
+        end
 
         for _, action in pairs(actionlist) do
             ns.eventhandler.registerAction(action, self);
