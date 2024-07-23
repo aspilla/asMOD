@@ -36,7 +36,8 @@ APB_BUFF = nil;
 APB_BUFF2 = nil;
 APB_BUFF3 = nil;
 APB_BUFF_COMBO = nil;
-APB_DEBUFF_COMBO = nil
+APB_DEBUFF_COMBO = nil;
+APB_ACTION_COMBO = nil;
 
 local APB = nil;
 local max_combo = nil;
@@ -355,7 +356,7 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
 end
 
 local function APB_UpdateBuffCombo(combobar)
-    if not (APB_BUFF_COMBO or APB_DEBUFF_COMBO) then
+    if not (APB_BUFF_COMBO or APB_DEBUFF_COMBO or APB_ACTION_COMBO) then
         return;
     end
 
@@ -384,6 +385,17 @@ local function APB_UpdateBuffCombo(combobar)
             APB_ShowComboBar(0);
         end
     end
+
+    if APB_ACTION_COMBO then
+        local count = GetActionCount(APB_ACTION_COMBO)
+
+        if count then
+            APB_ShowComboBar(count);
+        else
+            APB_ShowComboBar(0);
+        end
+    end
+
 end
 
 local prev_dire_beast_time = 0;
@@ -903,7 +915,7 @@ end
 
 local bupdate_druid = false;
 
-local function APB_GetActionSlot(arg1)
+local function APB_GetActionSlots(arg1)
     local ret = {};
 
     for lActionSlot = 1, 180 do
@@ -929,6 +941,34 @@ local function APB_GetActionSlot(arg1)
     end
 
     
+
+    return ret;
+end
+
+local function APB_GetActionSlot(arg1)
+    local ret;
+
+    for lActionSlot = 1, 180 do
+        local type, id, subType, spellID = GetActionInfo(lActionSlot);
+
+        if id and type and type == "macro" then
+            local name = GetSpellInfo(id);
+            if name and name == arg1 then
+               ret = lActionSlot;
+            end
+        end
+    end
+
+    for lActionSlot = 1, 180 do
+        local type, id, subType, spellID = GetActionInfo(lActionSlot);
+
+        if id and type and type == "spell" then
+            local name = GetSpellInfo(id);
+            if name and name == arg1 then
+                ret = lActionSlot;
+            end
+        end
+    end   
 
     return ret;
 end
@@ -1425,7 +1465,8 @@ local function APB_CheckPower(self)
     APB_UNIT_POWER = nil;
     APB_POWER_LEVEL = nil;
     APB_BUFF_COMBO = nil;
-    APB_DEBUFF_COMBO = nil
+    APB_DEBUFF_COMBO = nil;
+    APB_ACTION_COMBO = nil;
 
     APB.bar:Hide();
     APB.bar.text:SetText("");
@@ -1805,6 +1846,12 @@ local function APB_CheckPower(self)
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 APB_UpdateBuff(self.buffbar[0])
             end
+            if asCheckTalent("셰이룬의 선물") then
+                APB_ACTION_COMBO = APB_GetActionSlot("셰이룬의 선물");
+                APB_MaxCombo(10);
+                APB_UpdateBuffCombo(self.combobar)
+                bupdate_buff_combo = true;
+            end
         end
 
         if (spec and spec == 3) then
@@ -2160,6 +2207,7 @@ local function APB_CheckPower(self)
 
         if spec and spec == 2 then
             APB_BUFF_COMBO = "소용돌이치는 무기";
+            APB_BUFF3 = "소용돌이"; --asOverlay 삭제용
             APB_MaxCombo(10);
             APB.combobar.unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
@@ -2190,11 +2238,11 @@ local function APB_CheckPower(self)
     end
 
     if APB_SPELL then
-        APB_ACTION = APB_GetActionSlot(APB_SPELL);
+        APB_ACTION = APB_GetActionSlots(APB_SPELL);
     end
 
     if APB_SPELL2 then
-        APB_ACTION2 = APB_GetActionSlot(APB_SPELL2);
+        APB_ACTION2 = APB_GetActionSlots(APB_SPELL2);
     end
 
     if not bupdate_power and not bupdate_rune and not bupdate_buff_combo and not bupdate_direbeast_combo then
