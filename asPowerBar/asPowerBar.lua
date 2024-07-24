@@ -210,7 +210,41 @@ local bhalf_combo = false;
 local bdruid = false;
 local brogue = false;
 
-local function APB_ShowComboBar(combo, partial, cast, cooldown)
+local bshowspell = false;
+
+local function APB_MaxSpell(max)
+    max_spell = max;
+
+    if not max or max == 0 then
+        for i = 1, 10 do
+            APB.spellbar[i]:Hide();
+        end
+        bshowspell = false;
+        return;
+    end
+
+    local width = (APB_WIDTH - (3 * (max - 1))) / max;
+
+    for i = 1, 10 do
+        APB.spellbar[i]:SetWidth(width)
+        APB.spellbar[i].start = nil;
+        APB.spellbar[i]:SetMinMaxValues(0, 1)
+        APB.spellbar[i]:SetValue(1)
+        local _, Class = UnitClass("player")
+        local color = RAID_CLASS_COLORS[Class]
+        APB.spellbar[i]:SetStatusBarColor(color.r, color.g, color.b);
+        APB.spellbar[i]:SetScript("OnUpdate", nil)
+
+        if i > max then
+            APB.spellbar[i]:Hide()
+        else
+            APB.spellbar[i]:Show()
+        end
+    end
+    bshowspell = true;
+end
+
+local function APB_ShowComboBar(combo, partial, cast, cooldown, buffexpire)
     local bmax = false;
     local bmaxminus1 = false;
     local bhalf = false;
@@ -296,6 +330,14 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
         end
     end
 
+    if buffexpire and cooldown then
+        APB.combobar[1]:SetStatusBarColor(0.3, 0.3, 0.3);
+        APB.combobar[1].start = (buffexpire - cooldown);
+        APB.combobar[1].duration = cooldown 
+        APB.combobar[1]:SetScript("OnUpdate", APB_OnUpdateCombo)
+        return;
+    end
+
     for i = 1, max_combo do
         APB.combobar[i]:SetScript("OnUpdate", nil)
 
@@ -352,8 +394,52 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown)
         APB.combobar[1].text:ClearAllPoints();
         APB.combobar[1].text:SetPoint("CENTER", APB.combobar[math.ceil(max_combo / 2)], "CENTER", 0, 0);
         APB.combobar[1].text:Show();
-    end
+    end    
 end
+
+
+
+local bupdatecombo = false;
+
+local function APB_MaxCombo(max)
+    max_combo = max;
+
+    if not max or max == 0 then
+        for i = 1, 10 do
+            APB.combobar[i]:Hide();
+        end
+        bupdatecombo = false;
+        return;
+    end
+
+    local width = (APB_WIDTH - (3 * (max - 1))) / max;
+
+    for i = 1, 10 do
+        APB.combobar[i]:SetWidth(width)
+        APB.combobar[i].start = nil;
+        APB.combobar[i]:SetMinMaxValues(0, 1)
+        APB.combobar[i]:SetValue(1)
+        local _, Class = UnitClass("player")
+        local color = RAID_CLASS_COLORS[Class]
+        APB.combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
+        APB.combobar[i]:SetScript("OnUpdate", nil)
+
+        if i > max then
+            APB.combobar[i]:Hide()
+        else
+            APB.combobar[i]:Show()
+        end
+    end
+
+    if bshowspell then
+        APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPLEFT", 0, 1);
+    else
+        APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.buffbar[0], "TOPLEFT", 0, 1);
+    end
+
+    bupdatecombo = true;
+end
+
 
 local function APB_UpdateBuffCombo(combobar)
     if not (APB_BUFF_COMBO or APB_DEBUFF_COMBO or APB_ACTION_COMBO) then
@@ -365,6 +451,25 @@ local function APB_UpdateBuffCombo(combobar)
     end
 
     if APB_BUFF_COMBO then
+
+        if APB_BUFF_COMBO_MAX then
+            local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff(combobar.unit,
+            APB_BUFF_COMBO_MAX, "player");
+
+            if name and caster == "player" and duration > 0 then
+                if max_combo > 1 then
+                    APB_MaxCombo(1);
+                end
+                local remain = expirationTime - GetTime();
+
+                APB_ShowComboBar(0, nil, nil, duration ,expirationTime);
+                return;
+            else
+                APB_MaxCombo(7);
+            end           
+
+        end
+
         local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff(combobar.unit,
             APB_BUFF_COMBO, "player");
 
@@ -373,6 +478,8 @@ local function APB_UpdateBuffCombo(combobar)
         else
             APB_ShowComboBar(0);
         end
+
+        
     end
 
     if APB_DEBUFF_COMBO then
@@ -728,80 +835,6 @@ local function APB_UpdateFronzenOrb(self)
     end
 end
 
-local bshowspell = false;
-
-local function APB_MaxSpell(max)
-    max_spell = max;
-
-    if not max or max == 0 then
-        for i = 1, 10 do
-            APB.spellbar[i]:Hide();
-        end
-        bshowspell = false;
-        return;
-    end
-
-    local width = (APB_WIDTH - (3 * (max - 1))) / max;
-
-    for i = 1, 10 do
-        APB.spellbar[i]:SetWidth(width)
-        APB.spellbar[i].start = nil;
-        APB.spellbar[i]:SetMinMaxValues(0, 1)
-        APB.spellbar[i]:SetValue(1)
-        local _, Class = UnitClass("player")
-        local color = RAID_CLASS_COLORS[Class]
-        APB.spellbar[i]:SetStatusBarColor(color.r, color.g, color.b);
-        APB.spellbar[i]:SetScript("OnUpdate", nil)
-
-        if i > max then
-            APB.spellbar[i]:Hide()
-        else
-            APB.spellbar[i]:Show()
-        end
-    end
-    bshowspell = true;
-end
-
-local bupdatecombo = false;
-
-local function APB_MaxCombo(max)
-    max_combo = max;
-
-    if not max or max == 0 then
-        for i = 1, 10 do
-            APB.combobar[i]:Hide();
-        end
-        bupdatecombo = false;
-        return;
-    end
-
-    local width = (APB_WIDTH - (3 * (max - 1))) / max;
-
-    for i = 1, 10 do
-        APB.combobar[i]:SetWidth(width)
-        APB.combobar[i].start = nil;
-        APB.combobar[i]:SetMinMaxValues(0, 1)
-        APB.combobar[i]:SetValue(1)
-        local _, Class = UnitClass("player")
-        local color = RAID_CLASS_COLORS[Class]
-        APB.combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
-        APB.combobar[i]:SetScript("OnUpdate", nil)
-
-        if i > max then
-            APB.combobar[i]:Hide()
-        else
-            APB.combobar[i]:Show()
-        end
-    end
-
-    if bshowspell then
-        APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPLEFT", 0, 1);
-    else
-        APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.buffbar[0], "TOPLEFT", 0, 1);
-    end
-
-    bupdatecombo = true;
-end
 
 local function APB_MaxRune()
     local max = 6;
@@ -1621,6 +1654,21 @@ local function APB_CheckPower(self)
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 bupdate_buff_count = true;
                 APB_UpdateBuff(self.buffbar[0]);
+            end
+
+            if asCheckTalent("태양왕의 축복") then
+                APB_BUFF_COMBO = "태양왕의 축복";
+                APB_BUFF_COMBO_MAX = "태양왕의 격분";                
+                APB_MaxCombo(7);
+                APB.combobar.unit = "player"
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
+                APB_UpdateBuffCombo(self.combobar)
+                bupdate_buff_combo = true;
+                bsmall_power_bar = true;
+
+                for i = 1, 10 do
+                    APB.combobar[i].tooltip = "태양왕의 축복";
+                end
             end
 
             APB_SPELL = "화염 작렬";
@@ -2866,3 +2914,4 @@ do
         APB:SetAlpha(APB_ALPHA_NORMAL);
     end
 end
+
