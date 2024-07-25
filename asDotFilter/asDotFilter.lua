@@ -55,13 +55,12 @@ ADotF_ShowList_MONK_3 = {
 ADotF_ShowList_WARLOCK_1 = {
     { "고통", 1 },
     { "불안정한 고통", 1 },
-    { "부패", 1 },
-    { "생명력 착취", 1 },
+    { "부패", 1 },    
 }
 
 ADotF_ShowList_WARLOCK_2 = {
-    { "사냥개조련사의 책략", 0 },
-    { "파멸의 낙인", 0 },
+    { "악의 아귀", 0 },
+    { "파멸", 0 },
 }
 
 
@@ -118,7 +117,7 @@ ADotF_ShowList_DRUID_4 = {
 
 
 ADotF_ShowList_MAGE_1 = {
-    { "빛나는 불꽃 약화", 0 },
+    {"비전의 여파", 0}, 
 }
 
 ADotF_ShowList_MAGE_2 = {
@@ -155,8 +154,7 @@ ADotF_ShowList_EVOKER_3 = {
     { "시간의 상처", 0 },
 }
 
-ADotF_ShowList_PALADIN_1 = {
-    { "빛의 자락", 0 },
+ADotF_ShowList_PALADIN_1 = {    
     { "무가치한 존재", 0 },
 }
 

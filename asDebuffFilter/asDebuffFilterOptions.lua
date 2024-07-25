@@ -81,8 +81,8 @@ ns.ShowList_WARLOCK_1 = {
 }
 
 ns.ShowList_WARLOCK_2 = {
-    ["파멸의 낙인"] = { 0, 5 }, --시즌3
-    ["사냥개조련사의 책략"] = { 0, 4, true },
+    ["파멸"] = { 0, 5 }, --시즌3
+    ["악의 아귀"] = { 0, 4, true },
 }
 
 
@@ -143,12 +143,11 @@ ns.ShowList_DRUID_4 = {
 
 
 ns.ShowList_MAGE_1 = {
-    ["빛나는 불꽃 약화"] = { 0, 5, true },
+    ["비전의 여파"] = { 0, 5},
 }
 
 ns.ShowList_MAGE_2 = {
-    ["사르는 잿불"] = { 0, 5, true }, --시즌2
-    ["작열"] = { 0, 4 },
+    ["작열"] = { 0, 5 },
 }
 
 ns.ShowList_MAGE_3 = {
@@ -189,8 +188,7 @@ ns.ShowList_EVOKER_3 = {
 }
 
 
-ns.ShowList_PALADIN_1 = {
-    ["빛의 자락"] = { 0, 5, true },
+ns.ShowList_PALADIN_1 = {    
     ["무가치한 존재"] = { 0, 4 },
 }
 

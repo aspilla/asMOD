@@ -267,7 +267,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 240718,
+    version = 240728,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -320,7 +320,6 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_ROGUE_2 = {
-
         ["유령의 일격"] = { 0, 5, 1 },
     },
 
@@ -362,12 +361,11 @@ ANameP_Options_Default = {
     ANameP_ShowList_WARLOCK_1 = {
         ["고통"] = { 1, 5, 1 },
         ["불안정한 고통"] = { 1, 4 },
-        ["부패"] = { 1, 3, 2 },
-        ["생명력 착취"] = { 1, 2 },
+        ["부패"] = { 1, 3, 2 },        
     },
 
     ANameP_ShowList_WARLOCK_2 = {
-        ["파멸의 낙인"] = { 0, 5, 2 }, --시즌3
+        ["파멸"] = { 0, 5, 2 }, --시즌3
         ["악의 아귀"] = { 0, 4, 1 },
     },
 
@@ -433,9 +431,8 @@ ANameP_Options_Default = {
         ["비전의 여파"] = { 0, 5, 1 },
     },
 
-    ANameP_ShowList_MAGE_2 = {
-        ["사르는 잿불"] = { 0, 5, 1 }, --시즌2
-        ["작열"] = { 0, 4 },
+    ANameP_ShowList_MAGE_2 = {        
+        ["작열"] = { 0, 5 },
     },
 
     ANameP_ShowList_MAGE_3 = {
@@ -477,8 +474,7 @@ ANameP_Options_Default = {
     },
 
 
-    ANameP_ShowList_PALADIN_1 = {
-        ["빛의 자락"] = { 0, 5, 1 },
+    ANameP_ShowList_PALADIN_1 = {        
         ["무가치한 존재"] = { 0, 4 },
     },
 

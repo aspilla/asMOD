@@ -263,7 +263,7 @@ local function setupUI()
 end
 
 local function initAddon()
-	C_Timer.After(3, ns.SetupOptionPanels);
+	C_Timer.After(1, ns.SetupOptionPanels);
 
 	DBM:RegisterCallback("DBM_TimerStart", asDBMTimer_callback);
 	DBM:RegisterCallback("DBM_TimerStop", asDBMTimer_callback);
