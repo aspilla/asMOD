@@ -17,6 +17,36 @@ local ASAA_BackList = {
 
 local show_icons = {};
 
+local asGetSpellInfo = function(spellID)
+	if not spellID then
+		return nil;
+	end
+
+	local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
+local asGetSpellCooldown = function(spellID)
+
+	local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+	
+	local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
+	if spellCooldownInfo then
+		return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
+	end
+end
 
 local function asCooldownFrame_Clear(self)
 	self:Clear();
@@ -73,9 +103,9 @@ local function ASAA_UpdateCooldown()
 
 
 		if isAlert == true and IsPlayerSpell(id) then
-			_, _, icon = GetSpellInfo(id);
-			start, duration, enable = GetSpellCooldown(id);
-			local isUsable, notEnoughMana = IsUsableSpell(id);
+			_, _, icon = asGetSpellInfo(id);
+			start, duration, enable = asGetSpellCooldown(id);
+			local isUsable, notEnoughMana = C_Spell.IsSpellUsable(id);
 
 
 			--if (icon and enable > 0) then
@@ -145,7 +175,7 @@ local function ASAA_UpdateCooldown()
 end
 
 local function ASAA_Insert(id)
-	local name, _, icon = GetSpellInfo(id);
+	local name, _, icon = asGetSpellInfo(id);
 
 	if ASAA_BackList and ASAA_BackList[name] then
 		return;
@@ -163,7 +193,7 @@ local function ASAA_Insert(id)
 		return;
 	end
 
-	local isUsable = IsUsableSpell(id);
+	local isUsable = C_Spell.IsSpellUsable(id);
 
 	if not isUsable then
 		return;
@@ -181,7 +211,7 @@ end
 
 local function ASAA_Delete(id)
 	if id then
-		local _, _, icon = GetSpellInfo(id);
+		local _, _, icon = asGetSpellInfo(id);
 		ASAA_SpellList[id] = false;
 		show_icons[icon] = false;
 	else

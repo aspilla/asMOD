@@ -268,6 +268,30 @@ local function asOverlay_ShowAllOverlays(self, spellID, texturePath, positions, 
 	end
 end
 
+local function IsShown(spellId)
+
+	local name = C_Spell.GetSpellName(spellId)
+	
+	-- asPowerBar Check
+	if APB_BUFF4 and APB_BUFF4 == name then
+		return true;
+	end
+
+	if APB_BUFF_COMBO and APB_BUFF_COMBO == name then
+		return true;
+	end
+
+	if APB_BUFF_COMBO_MAX and APB_BUFF_COMBO_MAX == name then
+		return true;
+	end
+
+	if ACI_Buff_list and (ACI_Buff_list[name] or (spellId and ACI_Buff_list[spellId])) then
+		return true;
+	end
+
+	return false;
+end
+
 
 local bfirst = true;
 
@@ -284,9 +308,11 @@ local function asOverlay_OnEvent(self, event, ...)
 
 	if (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
 		local spellID, texture, positions, scale, r, g, b = ...;
-		--if ( GetCVarBool("displaySpellActivationOverlays") ) then
-		asOverlay_ShowAllOverlays(self, spellID, texture, positions, scale, r, g, b)
-		--end
+		
+		if not IsShown(spellID) then
+			asOverlay_ShowAllOverlays(self, spellID, texture, positions, scale, r, g, b)
+		end
+		
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_HIDE") then
 		local spellID = ...;
 		if (spellID) then

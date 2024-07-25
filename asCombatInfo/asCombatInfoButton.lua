@@ -33,6 +33,54 @@ ns.Button = {
 
 };
 
+local asGetSpellInfo = function(spellID)
+    if not spellID then
+        return nil;
+    end
+
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+    local spellInfo = C_Spell.GetSpellInfo(spellID);
+
+
+    if spellInfo then
+        return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+            spellInfo.spellID, spellInfo.originalIconID;
+    end
+end
+
+local asGetSpellCooldown = function(spellID)
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+    local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
+    if spellCooldownInfo then
+        return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled,
+            spellCooldownInfo.modRate;
+    end
+end
+
+local asGetSpellCharges = function(spellID)
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+    local spellChargeInfo = C_Spell.GetSpellCharges(spellID);
+    if spellChargeInfo then
+        return spellChargeInfo.currentCharges, spellChargeInfo.maxCharges, spellChargeInfo.cooldownStartTime,
+            spellChargeInfo.cooldownDuration, spellChargeInfo.chargeModRate;
+    end
+end
+
+
 function ns.Button:initButton()
     self.icon = nil;
     self.iconDes = false;
@@ -50,12 +98,12 @@ function ns.Button:initButton()
     self.alert2 = false;
     self.coolalert = false;
 
-    local spellid = select(7, GetSpellInfo(self.spell));
-    local name = select(1, GetSpellInfo(self.spell));
+    local spellid = select(7, asGetSpellInfo(self.spell));
+    local name = select(1, asGetSpellInfo(self.spell));
 
     if spellid == nil then
-        spellid = select(7, GetSpellInfo(self.realspell));
-        name = select(1, GetSpellInfo(self.realspell));
+        spellid = select(7, asGetSpellInfo(self.realspell));
+        name = select(1, asGetSpellInfo(self.realspell));
     end
 
     if spellid and spellid ~= self.spellid then
@@ -83,7 +131,6 @@ function ns.Button:checkTotem()
     if self.realbuff then
         buff = self.realbuff;
     end
-
 
     local totem = ns.aurafunctions.checkTotem(buff);
     local aura = ns.aurafunctions.checkAura("player", buff);
@@ -252,11 +299,11 @@ function ns.Button:checkSpellCoolInBuff()
 
 
     if (t ~= ns.EnumButtonType.DebuffOnly and t ~= ns.EnumButtonType.BuffOnly) and self.spellid then
-        local spellstart, spellduration = GetSpellCooldown(self.spellid);
-        local charges, maxCharges = GetSpellCharges(self.spellid);
+        local spellstart, spellduration = asGetSpellCooldown(self.spellid);
+        local charges, maxCharges = asGetSpellCharges(self.spellid);
 
         if spellduration and (charges == nil or charges == 0) then
-            local _, gcd = GetSpellCooldown(61304);
+            local _, gcd = asGetSpellCooldown(61304);
             local ex = spellduration + spellstart;
             local remain = ex - GetTime();
 
@@ -265,7 +312,7 @@ function ns.Button:checkSpellCoolInBuff()
             end
         end
 
-        local isUsable, notEnoughMana = IsUsableSpell(self.spellid);
+        local isUsable, notEnoughMana = C_Spell.IsSpellUsable(self.spellid);
 
         if self.spellcool == nil then
             if self.inRange == false and isUsable then
@@ -280,7 +327,6 @@ function ns.Button:checkSpellCoolInBuff()
 end
 
 local function GetAction(actionlist, spell)
-
     for _, action in pairs(actionlist) do
         local type, id, subType, spellID = GetActionInfo(action);
 
@@ -289,9 +335,8 @@ local function GetAction(actionlist, spell)
             if name and name == spell then
                 return action;
             end
-        end        
+        end
     end
-
 end
 
 function ns.Button:checkSpell()
@@ -303,12 +348,12 @@ function ns.Button:checkSpell()
     local spellid                                          = self.spellid;
     local action                                           = GetAction(self.actionlist, self.spell)
 
-    local _, _, icon                                       = GetSpellInfo(spellid)
-    local start, duration, enable                          = GetSpellCooldown(spellid);
-    local isUsable, notEnoughMana                          = IsUsableSpell(spellid);
-    local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellid);
+    local spellname, _, icon                                       = asGetSpellInfo(spellid)
+    local start, duration, enable                          = asGetSpellCooldown(spellid);
+    local isUsable, notEnoughMana                          = C_Spell.IsSpellUsable(spellid);
+    local charges, maxCharges, chargeStart, chargeDuration = asGetSpellCharges(spellid);
     local count                                            = charges;
-    local _, gcd                                           = GetSpellCooldown(61304);
+    local _, gcd                                           = asGetSpellCooldown(61304);
 
     if count == 1 and (not maxCharges or maxCharges <= 1) then
         count = 0;
@@ -319,7 +364,7 @@ function ns.Button:checkSpell()
     end
 
     if not count or count == 0 then
-        count = GetSpellCount(spellid);                
+        count = GetSpellCount(spellid);
     end
 
     if (not charges or charges == 0) and action then
@@ -338,7 +383,7 @@ function ns.Button:checkSpell()
     --seting
     local t = self.type;
 
-    self.icon = icon;
+    self.icon = icon;    
 
     if t == ns.EnumButtonType.BuffOnly or t == ns.EnumButtonType.DebuffOnly then
         isUsable = false;
@@ -404,6 +449,7 @@ function ns.Button:checkSpell()
     if count and count > 0 then
         self.count = count;
     end
+
 
     if self.alertbufflist then
         for _, buff in pairs(self.alertbufflist) do
@@ -476,7 +522,7 @@ function ns.Button:showButton()
     local frameCount;
     local frameBorder;
     local frameSpellCool;
-    local _, gcd = GetSpellCooldown(61304);
+    local _, gcd = asGetSpellCooldown(61304);
 
     local frame  = self.frame;
     if not frame then
@@ -583,11 +629,13 @@ end
 local function GetActionSlot(arg1)
     local ret = {};
 
+
     for lActionSlot = 1, 180 do
         local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
         if id and type and type == "macro" then
-            local name = GetSpellInfo(id);
+            local name = asGetSpellInfo(id);
+
             if name and name == arg1 then
                 tinsert(ret, lActionSlot);
             end
@@ -598,21 +646,22 @@ local function GetActionSlot(arg1)
         local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
         if id and type and type == "spell" then
-            local name = GetSpellInfo(id);
+            local name = asGetSpellInfo(id);
+
             if name and name == arg1 then
                 tinsert(ret, lActionSlot);
             end
         end
     end
 
-    
+
 
     return ret;
 end
 
 function ns.Button:init(config, frame)
     self.realspell = config[1];
-    self.spell = select(1, GetSpellInfo(config[1]));
+    self.spell = select(1, asGetSpellInfo(config[1]));
     self.type = config[2];
     self.unit = config[3];
     self.number = config[4];
@@ -623,9 +672,9 @@ function ns.Button:init(config, frame)
     self.alertbufflist = config[9];
     self.checkcool = config[10];
     self.checkplatecount = config[11];
-    self.spellid = select(7, GetSpellInfo(self.spell));
+    self.spellid = select(7, asGetSpellInfo(self.spell));
     if self.spellid == nil then
-        self.spellid = select(7, GetSpellInfo(self.realspell));
+        self.spellid = select(7, asGetSpellInfo(self.realspell));
     end
 
     ns.lib.PixelGlow_Stop(self.frame)
@@ -648,10 +697,18 @@ function ns.Button:init(config, frame)
         end
     end
 
+    if self.realbuff and self.realbuff == "petname" and UnitExists("pet") then
+        self.realbuff = UnitName("pet");        
+    end
+
     if self.type ~= ns.EnumButtonType.BuffOnly and self.type ~= ns.EnumButtonType.DebuffOnly then
         ACI_SpellID_list[self.spell] = true;
         ACI_SpellID_list[self.spellid] = true;
         ns.eventhandler.registerEventFilter(self.spell, self);
+
+        if self.countbuff then
+            ns.eventhandler.registerEventFilter(self.countbuff, self);
+        end
 
         for _, action in pairs(actionlist) do
             ns.eventhandler.registerAction(action, self);

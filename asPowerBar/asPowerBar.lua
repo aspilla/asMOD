@@ -21,7 +21,6 @@ local bupdate_powerbar = false;
 local bupdate_healthbar = APB_SHOW_HEALTHBAR;
 local bupdate_stagger = false;
 local bupdate_fronzen = false;
-local bupdate_windrunner = false;
 local bupdate_partial_power = false;
 local bsmall_power_bar = false;
 local bupdate_buff_combo = false;
@@ -35,7 +34,10 @@ APB_SPELL2 = nil;
 APB_BUFF = nil;
 APB_BUFF2 = nil;
 APB_BUFF3 = nil;
+APB_BUFF4 = nil;
 APB_BUFF_COMBO = nil;
+APB_BUFF_COMBO_MAX = nil;
+APB_BUFF_COMBO_MAX_COUNT = nil;
 APB_DEBUFF_COMBO = nil;
 APB_ACTION_COMBO = nil;
 
@@ -59,6 +61,53 @@ PowerTypeComboString = {
     [Enum.PowerType.ArcaneCharges] = "비전 충전물이",
     [Enum.PowerType.Essence] = "정수"
 };
+
+local asGetSpellInfo = function(spellID)
+    if not spellID then
+        return nil;
+    end
+
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+    local spellInfo = C_Spell.GetSpellInfo(spellID);
+    if spellInfo then
+        return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+            spellInfo.spellID, spellInfo.originalIconID;
+    end
+end
+
+local asGetSpellCooldown = function(spellID)
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+    local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
+    if spellCooldownInfo then
+        return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled,
+            spellCooldownInfo.modRate;
+    end
+end
+
+local asGetSpellCharges = function(spellID)
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+    local spellChargeInfo = C_Spell.GetSpellCharges(spellID);
+    if spellChargeInfo then
+        return spellChargeInfo.currentCharges, spellChargeInfo.maxCharges, spellChargeInfo.cooldownStartTime,
+            spellChargeInfo.cooldownDuration, spellChargeInfo.chargeModRate;
+    end
+end
+
 
 local SpellGetCosts = {};
 local SpellGetPowerCosts = {};
@@ -465,7 +514,7 @@ local function APB_UpdateBuffCombo(combobar)
                 APB_ShowComboBar(0, nil, nil, duration ,expirationTime);
                 return;
             else
-                APB_MaxCombo(7);
+                APB_MaxCombo(APB_BUFF_COMBO_MAX_COUNT);
             end           
 
         end
@@ -638,7 +687,7 @@ local function APB_OnUpdateBuff(self, elapsed)
             end
 
             if not endTime then
-                local start, duration = GetSpellCooldown(61304);
+                local start, duration = asGetSpellCooldown(61304);
                 endTime = (start + duration) * 1000;
             end
 
@@ -929,12 +978,14 @@ local function APB_UpdatePower()
     local cast = nil;
 
     if spellID then
-        local costTable = GetSpellPowerCost(spellID);
+        local costTable = C_Spell.GetSpellPowerCost(spellID);
 
-        for _, costInfo in pairs(costTable) do
-            if (costInfo.type == APB_POWER_LEVEL) then
-                cast = costInfo.cost;
-                break
+        if costTable then
+            for _, costInfo in pairs(costTable) do
+                if (costInfo.type == APB_POWER_LEVEL) then
+                    cast = costInfo.cost;
+                    break
+                end
             end
         end
 
@@ -955,7 +1006,7 @@ local function APB_GetActionSlots(arg1)
         local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
         if id and type and type == "macro" then
-            local name = GetSpellInfo(id);
+            local name = asGetSpellInfo(id);
             if name and name == arg1 then
                 ret[lActionSlot] = true;
             end
@@ -966,14 +1017,14 @@ local function APB_GetActionSlots(arg1)
         local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
         if id and type and type == "spell" then
-            local name = GetSpellInfo(id);
+            local name = asGetSpellInfo(id);
             if name and name == arg1 then
                 ret[lActionSlot] = true;
             end
         end
     end
 
-    
+
 
     return ret;
 end
@@ -1007,14 +1058,14 @@ local function APB_GetActionSlot(arg1)
 end
 
 local function APB_SpellMax(spell, spell2)
-    local _, maxCharges = GetSpellCharges(spell);
+    local _, maxCharges = asGetSpellCharges(spell);
 
     if bupdate_druid then
         maxCharges = 2;
     end
 
     if spell2 then
-        local _, maxCharges2 = GetSpellCharges(spell2);
+        local _, maxCharges2 = asGetSpellCharges(spell2);
 
         if bupdate_druid then
             maxCharges2 = 2;
@@ -1057,9 +1108,14 @@ end
 local inrange, inrange2 = true, true;
 
 local function APB_UpdateSpell(spell, spell2)
-    local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spell);
-    local spellid = select(7, GetSpellInfo(spell));
-    local _, notEnoughMana = IsUsableSpell(spellid);
+    local charges, maxCharges, chargeStart, chargeDuration = asGetSpellCharges(spell);
+    local spellid = select(7, asGetSpellInfo(spell));
+
+    if not spellid then
+        return;
+    end
+
+    local _, notEnoughMana = C_Spell.IsSpellUsable(spellid);
 
     if bupdate_druid then
         charges = GetSpellCount(spellid);
@@ -1129,9 +1185,9 @@ local function APB_UpdateSpell(spell, spell2)
     end
 
     if spell2 then
-        local charges, maxCharges2, chargeStart, chargeDuration = GetSpellCharges(spell2);
-        spellid = select(7, GetSpellInfo(spell2));
-        local isUsable, notEnoughMana = IsUsableSpell(spellid);
+        local charges, maxCharges2, chargeStart, chargeDuration = asGetSpellCharges(spell2);
+        spellid = select(7, asGetSpellInfo(spell2));
+        local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellid);
 
         if bupdate_druid then
             charges = GetSpellCount(spellid);
@@ -1477,7 +1533,6 @@ local function APB_CheckPower(self)
     bupdate_shadow_tech = false;
     bupdate_stagger = false;
     bupdate_fronzen = false;
-    bupdate_windrunner = false;
     bupdate_partial_power = false;
     bsmall_power_bar = false;
     bhalf_combo = false;
@@ -1487,6 +1542,7 @@ local function APB_CheckPower(self)
     APB_BUFF = nil;
     APB_BUFF2 = nil;
     APB_BUFF3 = nil;
+    APB_BUFF4 = nil;
     APB_DEBUFF = nil;
     APB_DEBUFF2 = nil;
     APB_SPELL = nil;
@@ -1498,6 +1554,8 @@ local function APB_CheckPower(self)
     APB_UNIT_POWER = nil;
     APB_POWER_LEVEL = nil;
     APB_BUFF_COMBO = nil;
+    APB_BUFF_COMBO_MAX = nil;
+    APB_BUFF_COMBO_MAX_COUNT = nil;
     APB_DEBUFF_COMBO = nil;
     APB_ACTION_COMBO = nil;
 
@@ -1658,8 +1716,9 @@ local function APB_CheckPower(self)
 
             if asCheckTalent("태양왕의 축복") then
                 APB_BUFF_COMBO = "태양왕의 축복";
-                APB_BUFF_COMBO_MAX = "태양왕의 격분";                
-                APB_MaxCombo(7);
+                APB_BUFF_COMBO_MAX = "태양왕의 격분";
+                APB_BUFF_COMBO_MAX_COUNT = 9;             
+                APB_MaxCombo(APB_BUFF_COMBO_MAX_COUNT);
                 APB.combobar.unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 APB_UpdateBuffCombo(self.combobar)
@@ -1923,6 +1982,13 @@ local function APB_CheckPower(self)
             APB.combobar[i].tooltip = "COMBO_POINTS";
         end
 
+        if IsPlayerSpell(382513) then
+            APB_SPELL = "소멸";
+            APB_SpellMax(APB_SPELL);
+            APB_UpdateSpell(APB_SPELL);
+            bupdate_spell = true;
+        end
+
         if asCheckTalent("부식성 분사") then
             APB_DEBUFF = "부식성 분사";
             APB.buffbar[0].debuff = APB_DEBUFF;
@@ -1931,10 +1997,8 @@ local function APB_CheckPower(self)
             APB:RegisterEvent("PLAYER_TARGET_CHANGED");
             APB_UpdateBuff(self.buffbar[0])
         elseif asCheckTalent("일발필중") then
-            APB_BUFF = "어둠의 춤";
-            APB_BUFF3 = "기만";
+            APB_BUFF = "기만";
             APB.buffbar[0].buff = APB_BUFF;
-            APB.buffbar[0].buff2 = APB_BUFF3;
             APB.buffbar[0].unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
             APB_UpdateBuff(self.buffbar[0])
@@ -1962,6 +2026,14 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 1) then
+
+            if IsPlayerSpell(194679) then
+                APB_SPELL = "룬 전환";
+                APB_SpellMax(APB_SPELL);
+                APB_UpdateSpell(APB_SPELL);
+                bupdate_spell = true;
+            end
+
             APB_BUFF = "뼈의 보호막";
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
@@ -2161,11 +2233,13 @@ local function APB_CheckPower(self)
             APB:RegisterUnitEvent("UNIT_AURA", "player");
             -- APB:SetScript("OnUpdate", APB_OnUpdate);
 
-            if asCheckTalent("광포한 무리") then
-                APB_MaxCombo(4);
+            if asCheckTalent("폭발성 맹독") then
+                APB_BUFF_COMBO = "폭발성 맹독";
+                APB_MaxCombo(5);
                 APB.combobar.unit = "player"
-                bupdate_direbeast_combo = true;
-                APB_UpdateDireBeastCombo(self.combobar);
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
+                APB_UpdateBuffCombo(self.combobar)
+                bupdate_buff_combo = true;
             end
 
             APB_UpdateBuff(self.buffbar[0])
@@ -2193,11 +2267,6 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].maxshow = 6;
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 APB_UpdateBuff(self.buffbar[0])
-            end
-
-            if asCheckTalent("윈드러너의 유산") then
-                bupdate_windrunner = true;
-                APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
             end
         end
 
@@ -2236,15 +2305,8 @@ local function APB_CheckPower(self)
 
     if (englishClass == "SHAMAN") then
         if spec and spec == 1 then
-            if asCheckTalent("전기 충격") then
-                APB_DEBUFF = "전기 충격";
-                APB.buffbar[0].debuff = APB_DEBUFF
-                APB.buffbar[0].unit = "target";
-                APB:SetScript("OnUpdate", APB_OnUpdate);
 
-                APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-                APB_UpdateBuff(self.buffbar[0])
-            elseif asCheckTalent("깊이 뿌리내린 정기") then
+            if asCheckTalent("깊이 뿌리내린 정기") then
                 APB_BUFF = "승천";
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
@@ -2255,7 +2317,7 @@ local function APB_CheckPower(self)
 
         if spec and spec == 2 then
             APB_BUFF_COMBO = "소용돌이치는 무기";
-            APB_BUFF3 = "소용돌이"; --asOverlay 삭제용
+            APB_BUFF4 = "소용돌이"; --asOverlay 삭제용
             APB_MaxCombo(10);
             APB.combobar.unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
@@ -2495,12 +2557,14 @@ local function asUnitFrameManaCostPredictionBars_Update(frame, isStarting, start
         frame.startTime = nil;
         frame.endTime = nil;
     else
-        local costTable = GetSpellPowerCost(spellID);
+        local costTable = C_Spell.GetSpellPowerCost(spellID);
 
-        for _, costInfo in pairs(costTable) do
-            if (costInfo.type == frame.powerType) then
-                cost = costInfo.cost;
-                break
+        if costTable then
+            for _, costInfo in pairs(costTable) do
+                if (costInfo.type == frame.powerType) then
+                    cost = costInfo.cost;
+                    break
+                end
             end
         end
 
@@ -2565,28 +2629,6 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
                     FrozenOrbTime = GetTime();
                 end
             end
-        elseif bupdate_windrunner then
-            local timestamp, subEvent, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType =
-                CombatLogGetCurrentEventInfo();
-
-            if sourceGUID == UnitGUID("player") and subEvent == "SPELL_DAMAGE" and spellID == 191043 then
-                windrunner_count = windrunner_count + 1
-            end
-
-            if sourceGUID == UnitGUID("player") and subEvent == "SPELL_ENERGIZE" and spellID == 406449 then
-                windrunner_count = 0
-            end
-
-            local textToShow = tostring(windrunner_count) .. "/24";
-
-            APB.text:SetText(textToShow);
-
-            if windrunner_count >= 20 then
-                APB.text:SetTextColor(0, 1, 0);
-            else
-                APB.text:SetTextColor(1, 1, 1);
-            end
-            APB.text:Show();
         end
     elseif event == "PLAYER_ENTERING_WORLD" then
         checkSpellCost();
@@ -2634,7 +2676,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             APB:SetAlpha(APB_ALPHA_NORMAL);
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
-        local name = GetSpellInfo(arg1);
+        local name = asGetSpellInfo(arg1);
         if APB_SPELL and APB_SPELL == name then
             balert = true;
         end
@@ -2643,7 +2685,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             balert2 = true;
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
-        local name = GetSpellInfo(arg1);
+        local name = asGetSpellInfo(arg1);
         if APB_SPELL and APB_SPELL == name then
             balert = false;
         end
@@ -2660,8 +2702,8 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             local type, id, subType, spellID = GetActionInfo(action);
 
             if id then
-                local name = GetSpellInfo(id);
-                local spellname = GetSpellInfo(APB_SPELL);
+                local name = asGetSpellInfo(id);
+                local spellname = asGetSpellInfo(APB_SPELL);
 
                 if name and spellname and name == spellname then
                     if (checksRange and not inRange) then
@@ -2679,8 +2721,8 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             local type, id, subType, spellID = GetActionInfo(action);
 
             if id then
-                local name = GetSpellInfo(id);
-                local spellname = GetSpellInfo(APB_SPELL2);
+                local name = asGetSpellInfo(id);
+                local spellname = asGetSpellInfo(APB_SPELL2);
 
                 if name and spellname and name == spellname then
                     if (checksRange and not inRange) then

@@ -40,6 +40,23 @@ local AuraFilters =
     Maw = "MAW",
 };
 
+local asGetSpellInfo = function(spellID)
+	if not spellID then
+		return nil;
+	end
+
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
 local function CreateFilterString(...)
     return table.concat({ ... }, '|');
 end
@@ -222,9 +239,9 @@ local function UpdateTotem()
 
     for slot = 1, MAX_TOTEMS do
         local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
-
+        
         if haveTotem and totemfilter[name] then
-            tinsert(eventlib.totemlist, { name, start, duration, icon })
+            tinsert(eventlib.totemlist, { name, start, duration, icon })            
             trigger = true;
         end
     end
@@ -253,14 +270,15 @@ local function ABF_OnEvent(self, event, arg1, ...)
             button:update();
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
-        local spell = GetSpellInfo(arg1);
+        local spell = asGetSpellInfo(arg1);    
+        
         if eventfilter[spell] then
             local button = eventfilter[spell];
             button.alert = true;
             button:update();
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
-        local spell = GetSpellInfo(arg1);
+        local spell = asGetSpellInfo(arg1);
         if eventfilter[spell] then
             local button = eventfilter[spell];
             button.alert = false;
@@ -275,8 +293,8 @@ local function ABF_OnEvent(self, event, arg1, ...)
             local type, id, subType, spellID = GetActionInfo(action);
 
             if id then
-                local name = GetSpellInfo(id);
-                local buttonname = GetSpellInfo(button.realspell);
+                local name = asGetSpellInfo(id);
+                local buttonname = asGetSpellInfo(button.realspell);
 
                 if name and buttonname and name == buttonname then
                     if (checksRange and not inRange) then
@@ -356,7 +374,7 @@ function ns.eventhandler.registerAura(unit, spell, count)
 end
 
 function ns.eventhandler.registerEventFilter(spell, button)
-    eventfilter[spell] = button;
+    eventfilter[spell] = button;    
 end
 
 function ns.eventhandler.registerAction(action, button)
@@ -366,7 +384,7 @@ function ns.eventhandler.registerAction(action, button)
 end
 
 function ns.eventhandler.registerTotem(spell)
-    totemfilter[spell] = true;
+    totemfilter[spell] = true;        
 end
 
 function ns.eventhandler.registerTotemTimer(spell, button)
@@ -407,7 +425,7 @@ function ns.aurafunctions.checkTotem(spell)
     local ret = nil;
 
     if totemlist then
-        for _, v in pairs(totemlist) do
+        for _, v in pairs(totemlist) do            
             if v[1] == spell then
                 ret = v;
             end

@@ -7,6 +7,23 @@ ns.asraid = {};
 ns.asparty = {};
 ns.lowhealth = 0;
 
+local asGetSpellInfo = function(spellID)
+	if not spellID then
+		return nil;
+	end
+
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
 local function asCheckTalent(name)
     local specID = PlayerUtil.GetCurrentSpecID();
 
@@ -64,7 +81,7 @@ local function ACRB_InitList()
     if ns.ACRBShowList then
         for key, value in pairs(ns.ACRBShowList) do
             if tonumber(key) > 0 then
-                local name = GetSpellInfo(key);
+                local name = asGetSpellInfo(key);
                 if name then
                     ns.ACRBShowList[name] = value;
                 end

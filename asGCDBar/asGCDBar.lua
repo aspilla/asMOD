@@ -5,6 +5,12 @@ local AGCDB_X = 0;
 local AGCDB_Y = -284;
 
 
+local asGetSpellCooldown = function(spellID)
+	local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
+	if spellCooldownInfo then
+		return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
+	end
+end
 
 
 local AGCDB = CreateFrame("FRAME", nil, UIParent)
@@ -40,7 +46,7 @@ if asMOD_setupFrame then
 	asMOD_setupFrame(AGCDB.gcdbar, "asGCDBar");
 end
 local function AGCDB_OnUpdate()
-	local start, gcd = GetSpellCooldown(61304);
+	local start, gcd = asGetSpellCooldown(61304);
 	local current    = GetTime();
 
 	if gcd > 0 then

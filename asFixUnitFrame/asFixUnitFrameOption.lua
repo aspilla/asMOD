@@ -34,12 +34,11 @@ function ns.SetupOptionPanels()
 
     if AFUF_Options == nil or AFUF_Options.version ~= Options_Default.version then
         AFUF_Options = {};
-        AFUF_Options = CopyTable(Options_Default);        
+        AFUF_Options = CopyTable(Options_Default);
     end
     ns.options = CopyTable(AFUF_Options);
 
     for variable, _ in pairs(Options_Default) do
-
         if variable ~= "version" then
             local name = variable;
             local cvar_name = "asFixUnitFrame_" .. variable;
@@ -51,8 +50,10 @@ function ns.SetupOptionPanels()
             local defaultValue = AFUF_Options[variable];
 
             local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue)
-            Settings.CreateCheckBox(category, setting, tooltip)
+            
+            Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip)
             Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)
+            
         end
     end
 

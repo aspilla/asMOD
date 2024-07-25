@@ -85,6 +85,37 @@ local mspells         = {
 
 }
 
+local asGetSpellInfo = function(spellID)
+	if not spellID then
+		return nil;
+	end
+
+	local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
+local asGetSpellTabInfo = function(index)
+	local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
+	if skillLineInfo then
+		return	skillLineInfo.name, 
+				skillLineInfo.iconID, 
+				skillLineInfo.itemIndexOffset, 
+				skillLineInfo.numSpellBookItems, 
+				skillLineInfo.isGuild, 
+				skillLineInfo.offSpecID,
+				skillLineInfo.shouldHide,
+				skillLineInfo.specID;
+	end
+end
+
 local GetItemInfo = C_Item and C_Item.GetItemInfo or GetItemInfo;
 local IsItemInRange = C_Item and C_Item.IsItemInRange or IsItemInRange;
 
@@ -160,16 +191,16 @@ local cache = {}
 
 local function scanSpells()
 	cache = {};
-	for tab = 1, 3 do
-		local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
+	for tab = 1, 5 do
+		local tabName, tabTexture, tabOffset, numEntries = asGetSpellTabInfo(tab)
 
 		if not tabName then
 			return;
 		end
 
 		for i = tabOffset + 1, tabOffset + numEntries do
-			local spellName, _, spellID = GetSpellBookItemName(i, BOOKTYPE_SPELL)
-			local name, rank, icon, castTime, minRange, maxRange, ID, originalIcon = GetSpellInfo(spellID);
+			local spellName, _, spellID = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player)
+			local name, rank, icon, castTime, minRange, maxRange, ID, originalIcon = asGetSpellInfo(spellID);
 			local mrange = mspells[name];
 
 			if maxRange and (maxRange > 0 or mrange) then
@@ -196,7 +227,7 @@ local function ARD_OnUpdate()
 			local grange = 100;
 
 			for _, v in pairs(cache) do
-				local able = IsSpellInRange(v[1], BOOKTYPE_SPELL, "target")
+				local able = C_Spell.IsSpellInRange(v[1])
 
 				if able == 1 and v[2] < grange then
 					grange = v[2];

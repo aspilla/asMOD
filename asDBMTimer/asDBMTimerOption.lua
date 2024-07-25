@@ -1,7 +1,7 @@
 local _, ns = ...;
 local Options_Default = {
     MinTimetoShow = 10,
-    HideNamePlatesCooldown = true,    
+    HideNamePlatesCooldown = true,
 };
 
 ns.options = CopyTable(Options_Default);
@@ -48,8 +48,9 @@ function ns.SetupOptionPanels()
             Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
         else
             local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
-            Settings.CreateCheckBox(category, setting, tooltip);
-            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);          
+
+            Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
+            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
         end
     end
 

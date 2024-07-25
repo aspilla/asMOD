@@ -173,7 +173,12 @@ local function SetupOptions()
     -- Create the options panel
     local optionsPanel = CreateFrame("Frame", "asInformationOptionsPanel", InterfaceOptionsFramePanelContainer)
     optionsPanel.name = "asInformation"
-    InterfaceOptions_AddCategory(optionsPanel)
+    if InterfaceOptions_AddCategory then
+        InterfaceOptions_AddCategory(optionsPanel)
+    else
+        local category, layout = Settings.RegisterCanvasLayoutCategory(optionsPanel, optionsPanel.name);
+        Settings.RegisterAddOnCategory(category);	
+    end
 
     local title = optionsPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     title:SetPoint("TOPLEFT", 16, -16)

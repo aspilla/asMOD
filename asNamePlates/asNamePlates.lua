@@ -25,6 +25,40 @@ local debuffs_per_line = ns.ANameP_DebuffsPerLine;
 local playerbuffposition = ns.ANameP_PlayerBuffY;
 ns.options = CopyTable(ANameP_Options_Default);
 
+
+local asGetSpellInfo = function(spellID)
+    if not spellID then
+        return nil;
+    end
+
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+    local spellInfo = C_Spell.GetSpellInfo(spellID);
+    if spellInfo then
+        return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+            spellInfo.spellID, spellInfo.originalIconID;
+    end
+end
+
+local asGetSpellTabInfo = function(index)
+    local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
+    if skillLineInfo then
+        return skillLineInfo.name,
+            skillLineInfo.iconID,
+            skillLineInfo.itemIndexOffset,
+            skillLineInfo.numSpellBookItems,
+            skillLineInfo.isGuild,
+            skillLineInfo.offSpecID,
+            skillLineInfo.shouldHide,
+            skillLineInfo.specID;
+    end
+end
+
+
 -- Cooldown
 local function asCooldownFrame_Clear(self)
     self:Clear();
@@ -71,7 +105,7 @@ local function asCheckTalent(findname)
             if definitionInfo ~= nil then
                 local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
                 -- print(string.format("%s/%d %s/%d", talentName, definitionInfo.spellID, definitionInfo.overrideName or "", definitionInfo.overriddenSpellID or 0));
-                local name, rank, icon = GetSpellInfo(definitionInfo.spellID);
+                local name, rank, icon = asGetSpellInfo(definitionInfo.spellID);
                 ns.KnownSpellList[talentName or ""] = true;
                 ns.KnownSpellList[icon or 0] = true;
 
@@ -90,21 +124,23 @@ local function asCheckTalent(findname)
 end
 
 local function scanSpells(tab)
-    local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
+    local tabName, tabTexture, tabOffset, numEntries = asGetSpellTabInfo(tab)
 
     if not tabName then
         return;
     end
 
     for i = tabOffset + 1, tabOffset + numEntries do
-        local spellName, _, spellID = GetSpellBookItemName(i, BOOKTYPE_SPELL)
+        local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player)
+        
         if not spellName then
             do
                 break
             end
         end
+        local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
 
-        if spellName then
+        if spellName and spellID and IsPlayerSpell(spellID) then            
             ns.KnownSpellList[spellName] = 1;
         end
     end
@@ -112,15 +148,14 @@ end
 
 local function scanPetSpells()
     for i = 1, 20 do
-        local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
-        local spellName, _, spellID = GetSpellBookItemName(slot, BOOKTYPE_PET)
+        local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Pet)
 
         if not spellName then
             do
                 break
             end
         end
-
+        
         if spellName then
             ns.KnownSpellList[spellName] = 1;
         end
@@ -499,9 +534,9 @@ local function updateTargetNameP(self)
     end
 
     local UnitFrame = parent.UnitFrame;
-    local healthBar = UnitFrame.healthBar;
+    local healthBarContainer = UnitFrame.HealthBarsContainer;
 
-    if not healthBar then
+    if not healthBarContainer then
         return;
     end
 
@@ -568,7 +603,7 @@ local function updateTargetNameP(self)
 
 
     -- Healthbar 크기
-    healthBar:SetHeight(height);
+    healthBarContainer:SetHeight(height);
 
     -- 버프 Position
     self:ClearAllPoints();
@@ -576,7 +611,7 @@ local function updateTargetNameP(self)
         if self.downbuff then
             self:SetPoint("TOPLEFT", ClassNameplateManaBarFrame, "BOTTOMLEFT", 0, playerbuffposition);
         else
-            self:SetPoint("BOTTOMLEFT", healthBar, "TOPLEFT", 0, base_y);
+            self:SetPoint("BOTTOMLEFT", healthBarContainer, "TOPLEFT", 0, base_y);
         end
         -- 크기 조정이 안된다.
         -- ClassNameplateManaBarFrame:SetHeight(height);
@@ -585,7 +620,7 @@ local function updateTargetNameP(self)
             UnitFrame.BuffFrame:Hide();
         end
     else
-        self:SetPoint("BOTTOMLEFT", healthBar, "TOPLEFT", 0, base_y);
+        self:SetPoint("BOTTOMLEFT", healthBarContainer, "TOPLEFT", 0, base_y);
         if UnitFrame.BuffFrame then
             UnitFrame.BuffFrame:Hide();
         end

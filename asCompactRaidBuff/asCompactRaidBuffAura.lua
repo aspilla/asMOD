@@ -10,10 +10,10 @@ local PLAYER_UNITS = {
 };
 
 local DispellableDebuffTypes = {
-    Magic = true,
-    Curse = true,
-    Disease = true,
-    Poison = true
+    Magic = 0,
+    Curse = 0,
+    Disease = 0,
+    Poison = 0
 };
 
 local typeCheck = {
@@ -45,6 +45,7 @@ local typeCheck = {
         [374251] = 1, --Evoker
         [365585] = 1, --Evoker
         [383013] = 1, --Shaman
+        [459517] = 3, --Hunter Player Only
     },
     ["Disease"] = {
         [388874] = 1, --Monk
@@ -54,16 +55,17 @@ local typeCheck = {
         [393024] = 1, --Paladin
         [213644] = 1, --Paladin
         [374251] = 1, --Evoker
+        [459517] = 3, --Hunter Player Only
     },
 
 }
 
 function ns.UpdateDispellable()
     local function asIsPetSpell(search)
-        if HasPetSpells() then
-            for i = 1, HasPetSpells() do
-                local spellType, id = GetSpellBookItemInfo(i, BOOKTYPE_PET)
-                local spellID = bit.band(0xFFFFFF, id)
+        if C_SpellBook.HasPetSpells() then
+            for i = 1, C_SpellBook.HasPetSpells() do
+                local sBookItemInfo = C_SpellBook.GetSpellBookItemInfo(i, Enum.SpellBookSpellBank.Pet)
+                local spellID = sBookItemInfo.spellID;
                 -- not sure what the non-spell IDs are
                 if spellID == search then
                     return true;
@@ -73,12 +75,14 @@ function ns.UpdateDispellable()
         return false;
     end
     for dispelType, _ in pairs(DispellableDebuffTypes) do
-        DispellableDebuffTypes[dispelType] = false;
+        DispellableDebuffTypes[dispelType] = 0;
         for spellID, spelltype in pairs(typeCheck[dispelType]) do
             if spelltype == 1 and IsPlayerSpell(spellID) then
-                DispellableDebuffTypes[dispelType] = true;
+                DispellableDebuffTypes[dispelType] = 1;
             elseif spelltype == 2 and asIsPetSpell(spellID) then
-                DispellableDebuffTypes[dispelType] = true;
+                DispellableDebuffTypes[dispelType] = 1;
+            elseif spelltype == 3 and IsPlayerSpell(spellID) then
+                DispellableDebuffTypes[dispelType] = 2;
             end
         end
     end
@@ -396,7 +400,7 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura)
     debuffFrame:Show();
 end
 
-local function ProcessAura(aura)
+local function ProcessAura(aura, unit)
     if aura == nil then
         return AuraUpdateChangedType.None;
     end
@@ -427,7 +431,9 @@ local function ProcessAura(aura)
             end
 
             if bshow then
-                if DispellableDebuffTypes[aura.dispelName] then
+                if DispellableDebuffTypes[aura.dispelName] == 1 then
+                    return AuraUpdateChangedType.Dispel;
+                elseif DispellableDebuffTypes[aura.dispelName] == 2 and UnitIsUnit(unit, "player") then
                     return AuraUpdateChangedType.Dispel;
                 else
                     return AuraUpdateChangedType.Debuff;
@@ -436,7 +442,9 @@ local function ProcessAura(aura)
         else -- aura.isRaid
             aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
                 UnitFrameDebuffType.NonBossRaidDebuff;
-            if DispellableDebuffTypes[aura.dispelName] then
+            if DispellableDebuffTypes[aura.dispelName] == 1 then
+                return AuraUpdateChangedType.Dispel;
+            elseif DispellableDebuffTypes[aura.dispelName] == 2 and UnitIsUnit(unit, "player") then
                 return AuraUpdateChangedType.Dispel;
             else
                 return AuraUpdateChangedType.Debuff;
@@ -492,7 +500,7 @@ local function ACRB_ParseAllAuras(asframe)
     local batchCount = nil;
     local usePackedAura = true;
     local function HandleAura(aura)
-        local type = ProcessAura(aura);
+        local type = ProcessAura(aura, asframe.displayedUnit);
 
         if type == AuraUpdateChangedType.Debuff then
             asframe.debuffs[aura.auraInstanceID] = aura;

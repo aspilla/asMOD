@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240706,
+	version = 240727,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -33,7 +33,7 @@ ACI_Options_Default = {
 		{ "휩쓸기 일격", 2 },
 		{ "필사의 일격", 1, nil, nil, "제압" },
 		{ "거인의 강타", 1 },
-		{ "마무리 일격", 1},
+		{ "마무리 일격", 1 },
 		{ "분쇄", 4, nil, 1 },
 
 	},
@@ -44,7 +44,7 @@ ACI_Options_Default = {
 		{ 99, "파멸자", { "격돌", 1 }, { "분노의 강타", 1 } },
 		{ "피의 갈증", 1, nil, nil, "끓어오르는 피의 갈증" },
 		{ "무모한 희생", 2 },
-		{ "마무리 일격", 1},
+		{ "마무리 일격", 1 },
 		{ 99, "맹공", { "맹공", 1 }, { "오딘의 격노", 1 } },
 
 
@@ -54,10 +54,9 @@ ACI_Options_Default = {
 	ACI_SpellList_WARRIOR_3 = {
 		{ "고통 감내", 2 },
 		{ "방패 밀쳐내기", 1 },
-		{ 99, "투신", { "투신", 2 }, { "천둥의 포효", 1 } },
-		{ "천둥벼락", 1 },
 		{ "사기의 외침", 4 },
-
+		{ "천둥벼락", 1 },
+		{ "주문 반사", 2 },
 	},
 
 	-- 암살
@@ -74,7 +73,7 @@ ACI_Options_Default = {
 		{ 195627, 3, nil, 20 },
 		{ "아드레날린 촉진", 2, nil, nil, nil, nil, nil, nil, nil, 1 },
 		{ "폭풍의 칼날", 2, nil, nil, nil, nil, nil, nil, nil, 1 },
-		{ "미간 적중", 1, nil, nil, nil, nil, nil, nil, { "기만", "어둠의 춤" } },
+		{ "미간 적중", 1, nil, nil, nil, nil, nil, nil, { "기만"} },
 	},
 
 	--잠행
@@ -101,8 +100,7 @@ ACI_Options_Default = {
 		{ "속사", 1 },
 		{ "정조준", 2, nil, nil, "윈드러너의 인도" },
 		{ "마무리 사격", 1 },
-		--{ 99, "독 주입", { 378015, 4, nil, 8, nil, nil, "잠재된 독" }, { "독사 쐐기", 4, nil, 1 }},
-		{ 99, "독 주입", { "독사 쐐기", 4, nil, 8, nil, nil, "잠재된 독" }, { "독사 쐐기", 4, nil, 1 }},
+		{ 259491, 5, nil, 1 },
 	},
 
 	--생존
@@ -110,27 +108,27 @@ ACI_Options_Default = {
 		{ "야생불 폭탄", 1 },
 		{ "살상 명령", 1, nil, nil, "창끝" },
 		{ 99, "협공", { "협공", 2 }, { "측방 강타", 1 } },
-		{ "마무리 사격", 1},
-		{ 99, "독 주입", { "독사 쐐기", 4, nil, 8, nil, nil, "잠재된 독" }, { "독사 쐐기", 4, nil, 1 }},
+		{ "마무리 사격", 1 },
+		{ 259491, 5, nil, 1 },
 	},
 
 	--비전
 	ACI_SpellList_MAGE_1 = {
-		{ "비전의 여파", 4 },
+		{ 383783, 3 },
 		{ "비전 보주", 1 },
 		{ "비전 쇄도", 2 },
-		{ 99, "빛나는 불꽃", { "빛나는 불꽃", 4, nil, nil, nil, "빛나는 불꽃 약화" },
-			{ 332769, 3 } },
-		{ "황천의 폭풍우", 4 },
+		{ "환기", 2, nil, nil, nil, "폭풍 착취" },
+		{ "비전의 여파", 4 },
 	},
 
 	--화염
+	--11.0 작업중
 	ACI_SpellList_MAGE_2 = {
-		{ 383883, 3, nil, 30, "태양왕의 축복" },
-		{ "불태우기", 1, nil, 30, "불태우기 연마" },
-		{ "발화", 2 },
-		{ "용의 숨결", 1 },
 		{ 99, "유성", { "유성", 1 }, { "힘의 전환", 1 } },
+		{"불태우기", 1, nil, 30, "불태우기 연마" },
+		{ "발화", 2 },
+		{ 99, "용의 숨결", { "용의 숨결", 1 }, { "초신성", 1 } },		
+		{ 12654, 5 },
 	},
 
 	--냉기
@@ -213,9 +211,9 @@ ACI_Options_Default = {
 	--냉기
 	ACI_SpellList_DEATHKNIGHT_2 = {
 		{ "죽음과 부패", 2, nil, nil, nil, "죽음과 부패" },
-		{ 99, "영혼 수확자", {"영혼 수확자", 1, nil, 35}, { "룬 무기 강화", 2}},
-		{ "얼음 기둥", 2 },
 		{ "냉혹한 겨울", 2 },
+		{ "얼음 기둥", 2 },
+		{ 99, "영혼 수확자", { "영혼 수확자", 1, nil, 35 }, { "룬 무기 강화", 2 } },
 		{ "울부짖는 한파", 4, nil, nil, nil, "서리 열병" },
 
 	},
@@ -223,10 +221,11 @@ ACI_Options_Default = {
 	--부정
 	ACI_SpellList_DEATHKNIGHT_3 = {
 		{ "죽음과 부패", 2, nil, nil, nil, "죽음과 부패" },
-		{ 99, "영혼 수확자", {"영혼 수확자", 1, nil, 35}, { "부정의 습격", 2 }},
-		{ "어둠의 변신", 2, "pet" },
-		{ "돌발 열병", 4, nil, 1, nil, "악성 역병" },
 		{ "고름 일격", 4, nil, 0, nil, "고름 상처" },
+		{ "어둠의 변신", 2, "pet" },
+		{ 99, "영혼 수확자", { "영혼 수확자", 1, nil, 35 }, { "부정의 습격", 2 } },
+		{ "돌발 열병", 4, nil, 1, nil, "악성 역병" },
+
 	},
 
 	--양조
@@ -240,13 +239,12 @@ ACI_Options_Default = {
 
 	--운무
 	ACI_SpellList_MONK_2 = {
-		{ 99, "셰이룬의 선물", { "셰이룬의 선물", 1 }, { "후려차기", 1, nil, nil, "수도원의 가르침" } },
-		{ 99, "셰이룬의 선물", { "해오름차기", 1, nil, nil, "수도원의 가르침" }, { "해오름차기", 1 } },
+		{ "후려차기", 1, nil, nil, "수도원의 가르침" },
+		{ "해오름차기", 1 },
 		{ 99, "주학 츠지의 원령", { "주학 츠지의 원령", 6, nil, nil, "주학 츠지의 원령", "츠지" },
-			{ "옥룡 위론의 원령",
-				6, nil, nil, nil, "위론" } },
-		{ 99, "비취불꽃 진각", { "비취불꽃 진각", 1 }, { "집중의 천둥 차", 2 } },
-		{ "정수의 샘", 1 },
+			{ "옥룡 위론의 원령", 6, nil, nil, nil, "위론" } },
+		{ 99, "비취불꽃 진각", { "비취불꽃 진각", 1 }, { "기의 고치", 1 } },
+		{ "집중의 천둥 차", 2 },
 	},
 
 	--풍운
@@ -299,10 +297,10 @@ ACI_Options_Default = {
 
 	--정기
 	ACI_SpellList_SHAMAN_1 = {
-		{ 99, "폭풍수호자", { "폭풍수호자", 2 }, { 16166, 3, "player" } },
+		{ 16166, 3, "player" },
 		{ "용암 폭발", 1 },
 		{ 99, "폭풍의 정령", { "폭풍의 정령", 6, nil, nil, nil, "상급 폭풍의 정령" }, { "불의 정령", 6, nil, nil, nil, "상급 불의 정령" } },
-		{ 99, "얼음격노", { "얼음격노", 2 }, { "태고의 파도", 2 } },
+		{ 99, "얼음격노", { "냉기 충격", 1, nil, nil, "얼음격노" }, { "태고의 파도", 2 } },
 		{ "화염 충격", 4, nil, 18 * 0.3, nil, nil, nil, nil, nil, nil, 6 },
 
 	},
@@ -318,7 +316,6 @@ ACI_Options_Default = {
 
 	--복원
 	ACI_SpellList_SHAMAN_3 = {
-
 		{ 53390, 3 },
 		{ "용암 폭발", 1 },
 		{ "치유의 해일 토템", 6 },
@@ -330,9 +327,9 @@ ACI_Options_Default = {
 	--고통
 	ACI_SpellList_WARLOCK_1 = {
 
-		{ 99, "생명력 착취", { "생명력 착취", 4, nil, 1 }, { "영혼 부식", 4 }, },
+		{ "유령 출몰", 4 },
 		{ "불안정한 고통", 4, nil, 1 },
-		{ 99, "유령 출몰", { "유령 출몰", 4 }, { "암흑시선 소환", 6, nil, nil, nil, "암흑시선" } },
+		{ "암흑시선 소환", 6, nil, nil, nil, "암흑시선" },
 		{ "부패", 4, nil, 1 },
 		{ "고통", 4, nil, 1 },
 
@@ -340,23 +337,21 @@ ACI_Options_Default = {
 
 	--악마
 	ACI_SpellList_WARLOCK_2 = {
-
 		{ "마력 착취", 1 },
-		{ 99, "흑마법서: 지옥수호병", { "흑마법서: 지옥수호병", 6, nil, nil, nil, "지옥수호병" }, { "지옥폭풍",
-			1 } },
+		{ "공포사냥개 부르기", 1 },
 		{ "악마 폭군 소환", 2, "pet", nil, nil, "악마의 힘" },
-		{ 99, "파열", { "파열", 1 }, { "악마의 기운", 2, "pet" } },
-		{ "공포사냥개 부르기", 4, nil, 0, nil, "사냥개조련사의 책략" },
+		{ "파열", 1 },
+		{ 267170, 5 },
 	},
 
 	--파괴
 	ACI_SpellList_WARLOCK_3 = {
 
 
-		{ 99, "악마불 집중", { "악마불 집중", 1 }, { "어둠의 연소", 1 } },
 		{ 196406, 3 },
+		{ 99, "악마불 집중", { "악마불 집중", 1 }, { "어둠의 연소", 1 } },
 		{ 99, "지옥불정령 소환", { "지옥불정령 소환", 6, nil, nil, nil, "지옥불정령" }, { "어둠의 연소", 1 } },
-		{99, "격동", {394087, 5, "nameplate", 5, nil, "대혼란" }, { "대혼란", 4, "nameplate" }},
+		{ 99, "격동", { 394087, 5, "nameplate", 5, nil, "대혼란" }, { "대혼란", 4, "nameplate" } },
 		{ "제물", 4, nil, 1 },
 
 	},
@@ -377,9 +372,9 @@ ACI_Options_Default = {
 	ACI_SpellList_DEMONHUNTER_2 = {
 
 		{ "제물의 오라", 2 },
-		{ "불타는 낙인", 4 },
-		{ "탈태", 2 },
 		{ "불꽃의 인장", 4 },
+		{ "불타는 낙인", 4 },
+		{ "지옥 황폐", 1 },
 		{ 224509, 5 },
 	},
 
@@ -418,8 +413,13 @@ local curr_y = 0;
 local y_adder = -40;
 
 local panel = CreateFrame("Frame")
-panel.name = "asCombatInfo"         -- see panel fields
-InterfaceOptions_AddCategory(panel) -- see InterfaceOptions API
+panel.name = "asCombatInfo" -- see panel fields
+if InterfaceOptions_AddCategory then
+	InterfaceOptions_AddCategory(panel)
+else
+	local category, layout = Settings.RegisterCanvasLayoutCategory(panel, panel.name);
+	Settings.RegisterAddOnCategory(category);
+end
 
 local spelllist = {};
 local scrollFrame = nil;
@@ -573,9 +573,9 @@ local function SetupEditBoxOption()
 		local dropdownOptions = {
 			{ text = "스펠", value = 1 },
 			{ text = "버프", value = 2 },
-			{ text = "버프(숫자)", disabled = true , value = 3 },						
+			{ text = "버프(숫자)", disabled = true, value = 3 },
 			{ text = "디버프", value = 4 },
-			{ text = "디버프(숫자)", disabled = true , value = 5 },						
+			{ text = "디버프(숫자)", disabled = true, value = 5 },
 			{ text = "기본 설정 사용", disabled = true, value = 6 },
 
 		}
@@ -589,16 +589,16 @@ local function SetupEditBoxOption()
 				ACI_Options[spec][configID][idx] = {};
 
 				local number = tonumber(data);
-				ACI_Options[spec][configID][idx][20] = true;				
+				ACI_Options[spec][configID][idx][20] = true;
 				if number then
 					ACI_Options[spec][configID][idx][1] = number;
 					ACI_Options[spec][configID][idx][2] = tonumber(type) + 1;
 				else
 					data = tostring(data);
 					ACI_Options[spec][configID][idx][1] = data;
-					ACI_Options[spec][configID][idx][2] = tonumber(type);				
+					ACI_Options[spec][configID][idx][2] = tonumber(type);
 				end
-				if update_callback then					
+				if update_callback then
 					update_callback();
 				end
 			end
@@ -661,7 +661,7 @@ local function InitOption()
 			end
 		end
 	end
-	
+
 	if spec and ACI_Options[spec] == nil then
 		ACI_Options[spec] = {};
 	end
@@ -674,7 +674,6 @@ local function InitOption()
 			listname = "ACI_SpellList_" .. englishClass .. "_" .. 1;
 			ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
 		end
-
 	end
 end
 

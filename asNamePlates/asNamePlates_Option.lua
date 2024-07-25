@@ -267,7 +267,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 240412,
+    version = 240718,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -332,20 +332,17 @@ ANameP_Options_Default = {
     ANameP_ShowList_HUNTER_1 = {
         ["사냥꾼의 징표"] = { 0, 5 },
         ["날카로운 사격"] = { 1, 4, 1 },
-        ["잠재된 독"] = { 8, 3, 0, true },
-        ["독사 쐐기"] = { 1, 2, 2 },
+        ["독사 쐐기"] = { 0, 3, 2 },
     },
 
     ANameP_ShowList_HUNTER_2 = {
-        ["사냥꾼의 징표"] = { 0, 5 },
-        ["잠재된 독"] = { 6, 4, 2, true },
+        ["사냥꾼의 징표"] = { 0, 5 },        
         ["독사 쐐기"] = { 1, 3, 1 },
 
     },
 
     ANameP_ShowList_HUNTER_3 = {
         ["사냥꾼의 징표"] = { 0, 5 },
-        ["잠재된 독"] = { 6, 4, 2, true },
         ["독사 쐐기"] = { 1, 3, 1 },
 
     },
@@ -371,7 +368,7 @@ ANameP_Options_Default = {
 
     ANameP_ShowList_WARLOCK_2 = {
         ["파멸의 낙인"] = { 0, 5, 2 }, --시즌3
-        ["사냥개조련사의 책략"] = { 0, 4, 1 },
+        ["악의 아귀"] = { 0, 4, 1 },
     },
 
 
@@ -433,7 +430,7 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_MAGE_1 = {
-        ["빛나는 불꽃 약화"] = { 0, 5, 1 },
+        ["비전의 여파"] = { 0, 5, 1 },
     },
 
     ANameP_ShowList_MAGE_2 = {
@@ -513,7 +510,12 @@ local y_adder = -50;
 
 local panel = CreateFrame("Frame")
 panel.name = "asNamePlates"         -- see panel fields
-InterfaceOptions_AddCategory(panel) -- see InterfaceOptions API
+if InterfaceOptions_AddCategory then
+	InterfaceOptions_AddCategory(panel)
+else
+	local category, layout = Settings.RegisterCanvasLayoutCategory(panel, panel.name);
+	Settings.RegisterAddOnCategory(category);	
+end
 
 local scrollFrame = nil
 local scrollChild = nil;

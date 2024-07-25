@@ -994,7 +994,9 @@
         "InGuildParty",
         "IsSpellKnownOrOverridesKnown",
         "IsPlayerSpell",
-        "C_ActionBar"
+        "C_ActionBar",
+        "C_SpellBook",
+        "GetSpellCount"
     ],
     "Lua.runtime.version": "LuaJIT",
     "Lua.workspace.library": [

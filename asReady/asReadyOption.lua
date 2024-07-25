@@ -244,7 +244,7 @@ function ns.SetupOptionPanels()
             local defaultValue = ARDY_Options[variable];
 
             local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue)
-            Settings.CreateCheckBox(category, setting, tooltip)
+            Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip)
             Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)
         end
     end

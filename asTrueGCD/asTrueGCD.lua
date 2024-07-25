@@ -35,34 +35,66 @@ local itemslots = {
 	"Trinket1Slot",
 }
 
+local asGetSpellInfo = function(spellID)
+	if not spellID then
+		return nil;
+	end
+
+	local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
+local asGetSpellTabInfo = function(index)
+	local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
+	if skillLineInfo then
+		return	skillLineInfo.name, 
+				skillLineInfo.iconID, 
+				skillLineInfo.itemIndexOffset, 
+				skillLineInfo.numSpellBookItems, 
+				skillLineInfo.isGuild, 
+				skillLineInfo.offSpecID,
+				skillLineInfo.shouldHide,
+				skillLineInfo.specID;
+	end
+end
+
+
 
 local function scanSpells(tab)
-	local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
+	local tabName, tabTexture, tabOffset, numEntries = asGetSpellTabInfo(tab)
 
 	if not tabName then
 		return;
 	end
 
 	for i = tabOffset + 1, tabOffset + numEntries do
-		local spellName, _, spellID = GetSpellBookItemName(i, BOOKTYPE_SPELL)
+		local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player)
 
 		if not spellName then
 			do break end
 		end
 
-		local slotType, actionID = GetSpellBookItemInfo(i, BOOKTYPE_SPELL);
+		local slotType, actionID, spellID  = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
 
-		if (slotType == "FLYOUT") then
+		if (slotType == Enum.SpellBookItemType.Flyout) then
 			local _, _, numSlots = GetFlyoutInfo(actionID);
 			for j = 1, numSlots do
 				local flyoutSpellID = GetFlyoutSlotInfo(actionID, j);
 
-				if flyoutSpellID then
+				if flyoutSpellID  and IsPlayerSpell(flyoutSpellID) then
 					KnownSpellList[flyoutSpellID] = 1;
 				end
 			end
 		else
-			if spellID then
+			if spellID and IsPlayerSpell(spellID) then
 				KnownSpellList[spellID] = 1;
 			end
 		end
@@ -72,12 +104,11 @@ end
 
 local function scanPetSpells()
 	for i = 1, 20 do
-		local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
-		local spellName, _, spellID = GetSpellBookItemName(slot, BOOKTYPE_PET);
+		local spellName, _, spellID = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Pet);
 
 		if not spellName then
 			do break end
-		end
+		end		
 
 		if spellID then
 			KnownSpellList[spellID] = 1;
@@ -203,7 +234,7 @@ local function ATGCD_Alert(spellid, bcancel, bitem)
 		seq_spell_count = 0;
 	end
 
-	local name, discard, icon = GetSpellInfo(spellid)
+	local name, discard, icon = asGetSpellInfo(spellid)
 
 	if bitem then
 		local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent =
@@ -431,8 +462,9 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 		end
 	elseif event == "SPELLS_CHANGED" then
 		scanSpells(1);
-		scanSpells(2);
-		scanSpells(3);
+		scanSpells(2)
+		scanSpells(3)
+
 	elseif event == "UNIT_PET" then
 		scanPetSpells();
 	elseif event == "ACTIONBAR_SLOT_CHANGED" then

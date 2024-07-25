@@ -2385,3 +2385,6 @@ Details_RaidCheck/Details_RaidCheck_Cata.toc
 Details_Streamer/Details_Streamer_Cata.toc
 Details_TinyThreat/Details_TinyThreat_Cata.toc
 Details_Vanguard/Details_Vanguard_Cata.toc
+DBM-Core/ValidUIDs.lua
+DBM-Raids-WarWithin/localization.tw.lua
+Details/luaserver.lua

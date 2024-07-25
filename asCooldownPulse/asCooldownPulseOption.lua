@@ -1,10 +1,10 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 240608,
+    Version = 240722,
     PlaySound = true,
     AlwaysShowButtons = false,
     SoundVolume = 50,
-    SoundCooldown = 15,
+    SoundCooldown = 8,
     EnableTTS = true,
     SlotNameTTS = true,
     TTS_ID = -1,
@@ -79,7 +79,8 @@ function ns.SetupOptionPanels()
                 end
 
                 local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue)
-                Settings.CreateDropDown(category, setting, GetOptions, tooltip)
+
+                Settings.CreateDropdown(category, setting, GetOptions, tooltip)
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)
             elseif tonumber(defaultValue) ~= nil then
                 local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
@@ -89,7 +90,8 @@ function ns.SetupOptionPanels()
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             else
                 local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
-                Settings.CreateCheckBox(category, setting, tooltip);
+
+                Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             end
         end

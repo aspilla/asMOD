@@ -98,6 +98,53 @@ local GetItemInfo = C_Item and C_Item.GetItemInfo or GetItemInfo;
 local GetItemSpell = C_Item and C_Item.GetItemSpell or GetItemSpell;
 local GetItemCooldown = C_Item and C_Item.GetItemCooldown or GetItemCooldown;
 
+local asGetSpellInfo = function(spellID)
+	if not spellID then
+		return nil;
+	end
+
+	local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
+local asGetSpellCooldown = function(spellID)
+
+	local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+	local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
+	if spellCooldownInfo then
+		return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
+	end
+end
+
+
+local asGetSpellTabInfo = function(index)
+	local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
+	if skillLineInfo then
+		return	skillLineInfo.name, 
+				skillLineInfo.iconID, 
+				skillLineInfo.itemIndexOffset, 
+				skillLineInfo.numSpellBookItems, 
+				skillLineInfo.isGuild, 
+				skillLineInfo.offSpecID,
+				skillLineInfo.shouldHide,
+				skillLineInfo.specID;
+	end
+end
+
+
 local ACDP = {};
 local ACDP_Icon = {};
 local ACDP_mainframe = CreateFrame("Frame", nil, UIParent);
@@ -115,33 +162,34 @@ local prev_cnt = 0;
 local bCombatInfoLoaded = false;
 
 local function scanSpells(tab)
-	local tabName, tabTexture, tabOffset, numEntries = GetSpellTabInfo(tab)
+	local tabName, tabTexture, tabOffset, numEntries = asGetSpellTabInfo(tab)
 
 	if not tabName then
 		return;
 	end
 
 	for i = tabOffset + 1, tabOffset + numEntries do
-		local spellName, _, spellID = GetSpellBookItemName(i, BOOKTYPE_SPELL);
+		local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player);
 
 		if not spellName then
 			do break end
 		end
 
-		local slotType, actionID = GetSpellBookItemInfo(i, BOOKTYPE_SPELL);
+		local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
 
-		if (slotType == "FLYOUT") then
+		if (slotType == Enum.SpellBookItemType.Flyout) then
 			local _, _, numSlots = GetFlyoutInfo(actionID);
 			for j = 1, numSlots do
 				local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
-
-				if flyoutSpellID and not black_list[flyoutSpellName] then					
+			
+				if flyoutSpellID and not black_list[flyoutSpellName] and IsPlayerSpell(flyoutSpellID) then					
 					KnownSpellList[flyoutSpellID] = SPELL_TYPE_USER;
 				end
 			end
-		else
-			if spellID and not black_list[spellName] then
-				KnownSpellList[spellID] = SPELL_TYPE_USER;
+		elseif IsPlayerSpell(spellID) then
+		
+			if spellID and not black_list[spellName] and IsPlayerSpell(spellID) then
+				KnownSpellList[spellID] = SPELL_TYPE_USER;				
 			end
 		end
 	end
@@ -150,8 +198,8 @@ end
 
 local function scanPetSpells()
 	for i = 1, 20 do
-		local slot = i + (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] - 1));
-		local spellName, _, spellID = GetSpellBookItemName(slot, BOOKTYPE_PET)
+		local spellName, _ = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Pet)
+		local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Pet);
 
 		if not spellName then
 			do break end
@@ -298,7 +346,7 @@ local function ACDP_UpdateCooldown()
 		end
 
 		if (type == SPELL_TYPE_USER or type == SPELL_TYPE_PET) then
-			name, _, icon = GetSpellInfo(spellid);
+			name, _, icon = asGetSpellInfo(spellid);
 			if APB_SPELL and APB_SPELL == name then
 				skip = true;
 			end
@@ -314,8 +362,8 @@ local function ACDP_UpdateCooldown()
 
 		if skip == false then
 			if (type == SPELL_TYPE_USER or type == SPELL_TYPE_PET) then
-				name, _, icon = GetSpellInfo(spellid);
-				start, duration = GetSpellCooldown(spellid);
+				name, _, icon = asGetSpellInfo(spellid);
+				start, duration = asGetSpellCooldown(spellid);
 			else
 				local itemid = type;
 				name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemid)
@@ -456,7 +504,7 @@ local function ACDP_Alert(spell, type)
 	alert_start[spell] = currtime + 1.6;
 
 	if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
-		name, _, icon, _, _, _, _, _, _ = GetSpellInfo(spell)
+		name, _, icon, _, _, _, _, _, _ = asGetSpellInfo(spell)
 
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
 
@@ -516,14 +564,14 @@ local function ACDP_Checkcooldown()
 	for spellid, type in pairs(KnownSpellList) do
 		local start, duration, enabled;
 		local check_duration = CONFIG_MINCOOL;
-		local _, gcd         = GetSpellCooldown(61304);
+		local _, gcd         = asGetSpellCooldown(61304);
 
 		if type == 2 then
 			check_duration = CONFIG_MINCOOL_PET;
 		end
 
 		if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
-			start, duration, enabled = GetSpellCooldown(spellid);
+			start, duration, enabled = asGetSpellCooldown(spellid);
 			if duration > gcd then
 				spell_cooldown[spellid] = duration;
 			end
@@ -556,7 +604,7 @@ local function ACDP_Checkcooldown()
 			if showlist_id[spellid] and showlist_id[spellid] == type then
 				showlist_id[spellid] = nil;
 				ACDP_Alert(spellid, type);
-				--print("해제2".. GetSpellInfo(spellid));
+				--print("해제2".. asGetSpellInfo(spellid));
 			end
 		end
 	end
@@ -583,8 +631,9 @@ local function setupKnownSpell(bwipe)
 		item_cooldown = {};
 	end
 	scanSpells(1);
-	scanSpells(2);
-	scanSpells(3);
+	scanSpells(2)
+	scanSpells(3)
+
 	scanPetSpells();
 	scanItemSlots();
 	scanActionSlots();

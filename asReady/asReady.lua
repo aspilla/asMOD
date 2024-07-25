@@ -17,6 +17,24 @@ local raidframes = {};
 local partyframes = {};
 
 
+local asGetSpellInfo = function(spellID)
+	if not spellID then
+		return nil;
+	end
+
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
+
 
 local AREADY = CreateFrame("FRAME", nil, UIParent)
 AREADY:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
@@ -82,7 +100,7 @@ for idx = 1, AREADY_Max do
 end
 
 local function create_bar_icon(idx, unit, spellid, time, cool)
-    local name, _, icon = GetSpellInfo(spellid)
+    local name, _, icon = asGetSpellInfo(spellid)
     local _, englishClass = UnitClass(unit);
     local color = RAID_CLASS_COLORS[englishClass]
     local curtime = GetTime();
@@ -176,7 +194,7 @@ local function UtilSetCooldown(offensivecool, unit, asframe)
     local buffcool = offensivecool[5];
     local buffFrame = asframe.asbuffFrame;
     local frame = asframe.frame;
-    local name, _, icon = GetSpellInfo(spellid);
+    local name, _, icon = asGetSpellInfo(spellid);
 
     local x, y = frame:GetSize();
 
@@ -283,7 +301,7 @@ local function OnSpellEvent(self, arg1, arg2, arg3)
         local spellid = arg3;
         local unit = arg1;
         local time = GetTime();
-        local name = GetSpellInfo(spellid);
+        local name = asGetSpellInfo(spellid);
 
         if IsUnitInGroup(unit) then
             if checkcoollist[unit] then

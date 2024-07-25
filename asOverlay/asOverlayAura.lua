@@ -11,6 +11,23 @@ local AuraFilters = {
     Maw = "MAW"
 };
 
+local asGetSpellInfo = function(spellID)
+	if not spellID then
+		return nil;
+	end
+
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
 local function CreateFilterString(...)
     return table.concat({ ... }, '|');
 end
@@ -72,7 +89,7 @@ local function ParseAllAuras(unit, id)
 
     local batchCount = nil;
     local usePackedAura = true;
-    local name = GetSpellInfo(id);
+    local name = asGetSpellInfo(id);
     local function HandleAura(aura)
         local type = ProcessAura(aura, id, name);
 
@@ -96,7 +113,7 @@ function ns.getExpirationTimeUnitAurabyID(unit, id)
     end);
 
     if ret == nil then
-        local name = GetSpellInfo(id);
+        local name = asGetSpellInfo(id);
 
         auraList:Iterate(function(auraInstanceID, aura)
             if aura.name == name then

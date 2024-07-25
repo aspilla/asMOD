@@ -4,6 +4,24 @@ local playerClass       = select(2, UnitClass("player"))
 local MisDirectionSpell = nil
 local MindInfusionSpell = nil;
 
+local asGetSpellInfo = function(spellID)
+	if not spellID then
+		return nil;
+	end
+
+	local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
+
 local function GetTargetPartyID()
 	if IsInGroup() then
 		if IsInRaid() then -- raid
@@ -263,7 +281,7 @@ local function IsLearndSpell(checkSpellName)
 	end
 
 	while true do
-		local spellName = GetSpellBookItemName(i, BOOKTYPE_SPELL)
+		local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player)
 		if not spellName then
 			do break end
 		end
@@ -313,7 +331,7 @@ local function AHM_OnEvent(self, event, ...)
 			return
 		end
 
-		local spellName = select(1, GetSpellInfo(spellId))
+		local spellName = select(1, asGetSpellInfo(spellId))
 		if not spellName then return end
 		if not IsLearndSpell(spellName) then
 			return
