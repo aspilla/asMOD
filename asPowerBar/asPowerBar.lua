@@ -2329,6 +2329,17 @@ local function APB_CheckPower(self)
             APB_SpellMax(APB_SPELL);
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
+
+            APB_BUFF_COMBO = "굽이치는 물결";
+            APB_MaxCombo(2);
+            APB.combobar.unit = "player"
+            APB:RegisterUnitEvent("UNIT_AURA", "player");
+            APB_UpdateBuffCombo(self.combobar)
+            bupdate_buff_combo = true;
+
+            for i = 1, 10 do
+                APB.combobar[i].tooltip = "굽이치는 물결";
+            end
         end
     end
 

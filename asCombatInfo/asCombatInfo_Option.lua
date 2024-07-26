@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240729,
+	version = 240730,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -316,7 +316,7 @@ ACI_Options_Default = {
 
 	--복원
 	ACI_SpellList_SHAMAN_3 = {
-		{ 53390, 3 },
+		{ "치유의 비", 1 },
 		{ "용암 폭발", 1 },
 		{ "치유의 해일 토템", 6 },
 		{ 99, "폭우의 토템", { "폭우의 토템", 6 }, { "치유의 토템", 6 } },

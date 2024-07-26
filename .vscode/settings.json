@@ -996,7 +996,8 @@
         "IsPlayerSpell",
         "C_ActionBar",
         "C_SpellBook",
-        "GetSpellCount"
+        "GetSpellCount",
+        "CompactRaidFrameManager"
     ],
     "Lua.runtime.version": "LuaJIT",
     "Lua.workspace.library": [
