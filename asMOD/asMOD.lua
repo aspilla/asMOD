@@ -1,6 +1,6 @@
 local asMOD;
 local asMOD_UIScale = 0.75;
-local asMOD_CurrVersion = 240726;
+local asMOD_CurrVersion = 240727;
 local bAction = false;
 asMOD_t_position = {};
 

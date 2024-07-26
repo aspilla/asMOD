@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240730,
+	version = 240732,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -298,9 +298,9 @@ ACI_Options_Default = {
 	--정기
 	ACI_SpellList_SHAMAN_1 = {
 		{ 16166, 3, "player" },
-		{ "용암 폭발", 1 },
+		{ 99, "태고의 파도", { "태고의 파도", 2 }, { "승천", 1 }},
 		{ 99, "폭풍의 정령", { "폭풍의 정령", 6, nil, nil, nil, "상급 폭풍의 정령" }, { "불의 정령", 6, nil, nil, nil, "상급 불의 정령" } },
-		{ 99, "얼음격노", { "냉기 충격", 1, nil, nil, "얼음격노" }, { "태고의 파도", 2 } },
+		{ 99, "얼음격노", { "냉기 충격", 1, nil, nil, "얼음격노" },  { "폭풍수호자", 2 }},
 		{ "화염 충격", 4, nil, 18 * 0.3, nil, nil, nil, nil, nil, nil, 6 },
 
 	},

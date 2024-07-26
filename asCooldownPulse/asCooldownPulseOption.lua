@@ -1,10 +1,10 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 240722,
+    Version = 240727,
     PlaySound = true,
     AlwaysShowButtons = false,
     SoundVolume = 50,
-    SoundCooldown = 8,
+    SoundCooldown = 10,
     EnableTTS = true,
     SlotNameTTS = true,
     TTS_ID = -1,

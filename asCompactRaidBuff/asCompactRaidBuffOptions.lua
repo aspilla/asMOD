@@ -224,6 +224,7 @@ ns.ACRB_DefensiveBuffList = {
 	[30884]  = 2, --SHAMAN
 	[383017] = 2, --SHAMAN
 	[108281] = 2, --SHAMAN
+	[462844] = 2, --SHAMAN
 	[198111] = 2, --MAGE
 	[110959] = 2, --MAGE
 	[342246] = 2, --MAGE

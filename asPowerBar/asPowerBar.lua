@@ -1694,7 +1694,7 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].unit = "player";
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 bupdate_buff_count = true;
-                APB_UpdateBuff(self.buffbar[0])            
+                APB_UpdateBuff(self.buffbar[0])
             end
 
             if asCheckTalent("태양왕의 축복") then
@@ -2245,7 +2245,7 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].unit = "player"
                 APB.buffbar[0].maxshow = 6;
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
-                APB_UpdateBuff(self.buffbar[0])            
+                APB_UpdateBuff(self.buffbar[0])
             end
         end
 
@@ -2291,6 +2291,13 @@ local function APB_CheckPower(self)
 
     if (englishClass == "SHAMAN") then
         if spec and spec == 1 then
+
+            
+            APB_SPELL = "용암 폭발";
+            APB_SpellMax(APB_SPELL);
+            APB_UpdateSpell(APB_SPELL);
+            bupdate_spell = true;            
+
             if asCheckTalent("깊이 뿌리내린 정기") then
                 APB_BUFF = "승천";
                 APB.buffbar[0].buff = APB_BUFF;
@@ -2301,6 +2308,14 @@ local function APB_CheckPower(self)
         end
 
         if spec and spec == 2 then
+
+            if asCheckTalent("정기 작렬") then
+                APB_SPELL = "정기 작렬";
+                APB_SpellMax(APB_SPELL);
+                APB_UpdateSpell(APB_SPELL);
+                bupdate_spell = true;
+            end
+
             APB_BUFF_COMBO = "소용돌이치는 무기";
             APB_BUFF4 = "소용돌이"; --asOverlay 삭제용
             APB_MaxCombo(10);
@@ -2313,7 +2328,7 @@ local function APB_CheckPower(self)
             for i = 1, 10 do
                 APB.combobar[i].tooltip = "소용돌이치는 무기";
             end
-            bhalf_combo = true;
+            bhalf_combo = true;            
 
             if asCheckTalent("낙뢰") then
                 APB_BUFF = "낙뢰";
