@@ -66,6 +66,7 @@ local function creatframe()
     object.BarTexture = object:CreateTexture(nil, "OVERLAY", "asColorTextureTemplate", 1);
     object.BarColor = object:CreateTexture(nil, "OVERLAY", "asColorTextureTemplate", 2);
     object.healthtext = object:CreateFontString(nil, "OVERLAY");
+    object.motext = object:CreateFontString(nil, "OVERLAY");
     object.resourcetext = object:CreateFontString(nil, "OVERLAY");
     object.buffList = {};
 
@@ -121,6 +122,7 @@ local function creatframe()
     frameBorder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 
     object.healthtext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
+    object.motext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
 
     return object;
 end

@@ -267,7 +267,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 240728,
+    version = 240729,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -329,20 +329,21 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_HUNTER_1 = {
-        ["사냥꾼의 징표"] = { 0, 5 },
-        ["날카로운 사격"] = { 1, 4, 1 },
-        ["독사 쐐기"] = { 0, 3, 2 },
+        ["날카로운 사격"] = { 1, 5, 1 },
+        ["독사 쐐기"] = { 0, 4, 0 },
+        ["저승까마귀"] = { 0, 3, 0 },
+        ["사냥꾼의 징표"] = { 0, 2 },
     },
 
-    ANameP_ShowList_HUNTER_2 = {
-        ["사냥꾼의 징표"] = { 0, 5 },        
-        ["독사 쐐기"] = { 1, 3, 1 },
+    ANameP_ShowList_HUNTER_2 = {        
+        ["독사 쐐기"] = { 1, 5, 1 },
+        ["사냥꾼의 징표"] = { 0, 4 },        
 
     },
 
     ANameP_ShowList_HUNTER_3 = {
-        ["사냥꾼의 징표"] = { 0, 5 },
-        ["독사 쐐기"] = { 1, 3, 1 },
+        ["독사 쐐기"] = { 1, 5, 1 },
+        ["사냥꾼의 징표"] = { 0, 4 },
 
     },
 

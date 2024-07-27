@@ -286,7 +286,6 @@ ns.ABF_PVPBuffList = {
     [414658] = true, -- MAGE
     [110960] = true, -- MAGE
     [125174] = true, -- MONK
-    [186265] = true, -- HUNTER
     [378441] = true, -- EVOKER
     [228049] = true, -- PALADIN
     [642] = true, -- PALADIN

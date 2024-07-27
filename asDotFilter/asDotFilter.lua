@@ -31,6 +31,7 @@ ADotF_ShowList_ROGUE_3 = {
 ADotF_ShowList_HUNTER_1 = {
     { "날카로운 사격", 1 },
     { "독사 쐐기", 0 },
+    { "저승까마귀", 0 },
 }
 
 ADotF_ShowList_HUNTER_2 = {

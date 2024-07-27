@@ -563,6 +563,14 @@ local function updateTargetNameP(self)
         height = orig_height + ns.ANameP_TargetHealthBarHeight;
         self.healthtext:Show();
 
+        local guid_mouseover = UnitGUID("mouseover")
+
+        if UnitGUID(unit) == guid_mouseover then
+            self.motext:Show();
+        else
+            self.motext:Hide();
+        end
+
         if casticon then
             casticon:SetWidth((height + cast_height + 2) * 1.2);
             casticon:SetHeight(height + cast_height + 2);
@@ -576,6 +584,7 @@ local function updateTargetNameP(self)
         self.alerthealthbar = false;
         height = orig_height + ns.ANameP_TargetHealthBarHeight;
         self.healthtext:Show();
+        self.motext:Hide();
     else
         height = orig_height;
 
@@ -584,8 +593,10 @@ local function updateTargetNameP(self)
         if UnitGUID(unit) == guid_mouseover then
             height = orig_height + ns.ANameP_TargetHealthBarHeight;
             self.healthtext:Show();
+            self.motext:Show();
         else
             self.healthtext:Hide();
+            self.motext:Hide();
         end
 
         if casticon then
@@ -1143,6 +1154,7 @@ local function removeNamePlate(namePlateFrameBase)
         asframe.aggro2:Hide();
         asframe.CCdebuff:Hide();
         asframe.healthtext:Hide();
+        asframe.motext:Hide();
         asframe.resourcetext:Hide();
         asframe.casticon:Hide();
         asframe.healer:Hide();
@@ -1339,9 +1351,17 @@ local function addNamePlate(namePlateFrameBase)
 
     asframe.healthtext:ClearAllPoints();
     asframe.healthtext:SetPoint("CENTER", healthbar, "CENTER", 0, 0)
+    asframe.healthtext:Hide();
+    
+    asframe.motext:ClearAllPoints();
+    asframe.motext:SetPoint("BOTTOM", asframe.healthtext, "TOP", 0, 1)
+    asframe.motext:SetText("▼")
+    asframe.motext:SetTextColor(0,1,0)
+    asframe.motext:Hide();
+
+
     asframe.checkaura = false;
     asframe.downbuff = false;
-    asframe.healthtext:Hide();
     asframe.checkpvptarget = false;
     asframe.checkcolor = false;
 

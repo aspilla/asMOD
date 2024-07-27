@@ -242,14 +242,27 @@ local function APB_OnUpdateCombo(self, elapsed)
 
         self.update = 0
 
-        if curr_duration < self.duration then
-            self:SetMinMaxValues(0, self.duration * 10)
-            self:SetValue((curr_time - self.start) * 10)
+        if self.reverse then
+            if curr_duration  < self.duration then
+                self:SetMinMaxValues(0, self.duration * 10)
+                self:SetValue((self.duration * 10) - (curr_time - self.start) * 10)
+            else
+                self:SetMinMaxValues(0, self.duration)
+                self:SetValue(0)
+                self.start = nil;
+            end
         else
-            self:SetMinMaxValues(0, self.duration)
-            self:SetValue(self.duration)
-            self.start = nil;
+            if curr_duration  < self.duration then
+                self:SetMinMaxValues(0, self.duration * 10)
+                self:SetValue((curr_time - self.start) * 10)
+            else
+                self:SetMinMaxValues(0, self.duration)
+                self:SetValue(self.duration)
+                self.start = nil;
+            end
         end
+
+        
     end
 end
 
@@ -380,15 +393,17 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown, buffexpire)
     end
 
     if buffexpire and cooldown then
-        APB.combobar[1]:SetStatusBarColor(0.3, 0.3, 0.3);
+        APB.combobar[1]:SetStatusBarColor(0.8, 0.5, 0.8);
         APB.combobar[1].start = (buffexpire - cooldown);
         APB.combobar[1].duration = cooldown
+        APB.combobar[1].reverse = true;
         APB.combobar[1]:SetScript("OnUpdate", APB_OnUpdateCombo)
         return;
     end
 
     for i = 1, max_combo do
         APB.combobar[i]:SetScript("OnUpdate", nil)
+        APB.combobar[1].reverse = nil;
 
         if i <= combo then
             APB.combobar[i]:Show();
@@ -504,16 +519,37 @@ local function APB_UpdateBuffCombo(combobar)
             local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff(combobar.unit,
                 APB_BUFF_COMBO_MAX, "player");
 
-            if name and caster == "player" and duration > 0 then
-                if max_combo > 1 then
-                    APB_MaxCombo(1);
-                end
-                local remain = expirationTime - GetTime();
+            if APB_BUFF_COMBO_MAX ~= APB_BUFF_COMBO then
+                if name and caster == "player" and duration > 0 then
+       
 
-                APB_ShowComboBar(0, nil, nil, duration, expirationTime);
-                return;
+                    if max_combo > 1 then
+                        APB_ShowComboBar(APB_BUFF_COMBO_MAX_COUNT);
+                        APB_MaxCombo(1);
+                    end
+                    local remain = expirationTime - GetTime();
+                          
+                    APB_ShowComboBar(0, nil, nil, duration, expirationTime);
+                    return;
+                else
+                    APB_MaxCombo(APB_BUFF_COMBO_MAX_COUNT);
+                end
             else
-                APB_MaxCombo(APB_BUFF_COMBO_MAX_COUNT);
+                if count and count == APB_BUFF_COMBO_MAX_COUNT and caster == "player" and duration > 0 then
+                    
+                    if max_combo > 1 then
+                        APB_ShowComboBar(APB_BUFF_COMBO_MAX_COUNT);
+                        APB_MaxCombo(1);
+                    end
+                    local remain = expirationTime - GetTime();
+
+                    
+
+                    APB_ShowComboBar(0, nil, nil, duration, expirationTime);
+                    return;
+                else
+                    APB_MaxCombo(APB_BUFF_COMBO_MAX_COUNT);
+                end
             end
         end
 
@@ -1700,7 +1736,7 @@ local function APB_CheckPower(self)
             if asCheckTalent("태양왕의 축복") then
                 APB_BUFF_COMBO = "태양왕의 축복";
                 APB_BUFF_COMBO_MAX = "태양왕의 격분";
-                APB_BUFF_COMBO_MAX_COUNT = 9;
+                APB_BUFF_COMBO_MAX_COUNT = 10;
                 APB_MaxCombo(APB_BUFF_COMBO_MAX_COUNT);
                 APB.combobar.unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
@@ -1709,7 +1745,7 @@ local function APB_CheckPower(self)
                 bsmall_power_bar = true;
 
                 for i = 1, 10 do
-                    APB.combobar[i].tooltip = "태양왕의 축복";
+                    APB.combobar[i].tooltip = APB_BUFF_COMBO;
                 end
             end
 
@@ -1941,6 +1977,10 @@ local function APB_CheckPower(self)
                 APB_MaxCombo(10);
                 APB_UpdateBuffCombo(self.combobar)
                 bupdate_buff_combo = true;
+
+                for i = 1, 10 do
+                    APB.combobar[i].tooltip = APB_ACTION_COMBO;
+                end
             end
         end
 
@@ -2194,7 +2234,7 @@ local function APB_CheckPower(self)
             bupdate_buff_combo = true;
 
             for i = 1, 10 do
-                APB.combobar[i].tooltip = "고영혼 파편";
+                APB.combobar[i].tooltip = APB_BUFF_COMBO;
             end
         end
     end
@@ -2216,18 +2256,29 @@ local function APB_CheckPower(self)
 
             if asCheckTalent("폭발성 맹독") then
                 APB_BUFF_COMBO = "폭발성 맹독";
-                APB_MaxCombo(5);
+                APB_BUFF_COMBO_MAX = APB_BUFF_COMBO;
+                APB_BUFF_COMBO_MAX_COUNT = 5;
+                APB_MaxCombo(APB_BUFF_COMBO_MAX_COUNT);
                 APB.combobar.unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 APB_UpdateBuffCombo(self.combobar)
                 bupdate_buff_combo = true;
+
+                for i = 1, 10 do
+                    APB.combobar[i].tooltip = APB_BUFF_COMBO;
+                end
             elseif asCheckTalent("저승까마귀") then
                 APB_BUFF_COMBO = "저승까마귀";
-                APB_MaxCombo(4);
+                APB_BUFF_COMBO_MAX = APB_BUFF_COMBO;
+                APB_BUFF_COMBO_MAX_COUNT = 4;
+                APB_MaxCombo(APB_BUFF_COMBO_MAX_COUNT);
                 APB.combobar.unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 APB_UpdateBuffCombo(self.combobar)
                 bupdate_buff_combo = true;
+                for i = 1, 10 do
+                    APB.combobar[i].tooltip = APB_BUFF_COMBO;
+                end
             end
         end
 
@@ -2291,12 +2342,10 @@ local function APB_CheckPower(self)
 
     if (englishClass == "SHAMAN") then
         if spec and spec == 1 then
-
-            
             APB_SPELL = "용암 폭발";
             APB_SpellMax(APB_SPELL);
             APB_UpdateSpell(APB_SPELL);
-            bupdate_spell = true;            
+            bupdate_spell = true;
 
             if asCheckTalent("깊이 뿌리내린 정기") then
                 APB_BUFF = "승천";
@@ -2308,7 +2357,6 @@ local function APB_CheckPower(self)
         end
 
         if spec and spec == 2 then
-
             if asCheckTalent("정기 작렬") then
                 APB_SPELL = "정기 작렬";
                 APB_SpellMax(APB_SPELL);
@@ -2328,7 +2376,7 @@ local function APB_CheckPower(self)
             for i = 1, 10 do
                 APB.combobar[i].tooltip = "소용돌이치는 무기";
             end
-            bhalf_combo = true;            
+            bhalf_combo = true;
 
             if asCheckTalent("낙뢰") then
                 APB_BUFF = "낙뢰";
