@@ -1051,6 +1051,20 @@ local function checkSpellCasting(self)
                 self.casticon.timetext:Hide();
                 self.castspellid = spellid;
                 self.casticon.castspellid = spellid;
+
+                local targettarget = unit.."target";
+
+                if UnitExists(targettarget) and UnitIsPlayer(targettarget) then
+                    local _, Class = UnitClass(targettarget)
+                    local color = RAID_CLASS_COLORS[Class]
+                    self.casticon.targetname:SetTextColor(color.r, color.g, color.b);
+                    self.casticon.targetname:SetText(UnitName(targettarget));
+                    self.casticon.targetname:Show();
+                else
+                    self.casticon.targetname:SetText("");
+                    self.casticon.targetname:Hide();
+                end
+
             else
                 local dbm_show = false;
                 local min_remain = 100;
@@ -1105,6 +1119,7 @@ local function checkSpellCasting(self)
                     self.casticon:Hide();
                 end
                 self.castspellid = nil;
+                self.casticon.targetname:Hide();
             end
         end
     end

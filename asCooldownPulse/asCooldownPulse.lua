@@ -105,27 +105,28 @@ local asGetSpellInfo = function(spellID)
 
 	local ospellID = C_Spell.GetOverrideSpell(spellID)
 
-    if ospellID then
-        spellID = ospellID;
-    end
+	if ospellID then
+		spellID = ospellID;
+	end
 
 	local spellInfo = C_Spell.GetSpellInfo(spellID);
 	if spellInfo then
-		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+			spellInfo.spellID, spellInfo.originalIconID;
 	end
 end
 
 local asGetSpellCooldown = function(spellID)
-
 	local ospellID = C_Spell.GetOverrideSpell(spellID)
 
-    if ospellID then
-        spellID = ospellID;
-    end
+	if ospellID then
+		spellID = ospellID;
+	end
 
 	local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
 	if spellCooldownInfo then
-		return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
+		return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled,
+			spellCooldownInfo.modRate;
 	end
 end
 
@@ -133,14 +134,14 @@ end
 local asGetSpellTabInfo = function(index)
 	local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
 	if skillLineInfo then
-		return	skillLineInfo.name, 
-				skillLineInfo.iconID, 
-				skillLineInfo.itemIndexOffset, 
-				skillLineInfo.numSpellBookItems, 
-				skillLineInfo.isGuild, 
-				skillLineInfo.offSpecID,
-				skillLineInfo.shouldHide,
-				skillLineInfo.specID;
+		return skillLineInfo.name,
+			skillLineInfo.iconID,
+			skillLineInfo.itemIndexOffset,
+			skillLineInfo.numSpellBookItems,
+			skillLineInfo.isGuild,
+			skillLineInfo.offSpecID,
+			skillLineInfo.shouldHide,
+			skillLineInfo.specID;
 	end
 end
 
@@ -181,15 +182,14 @@ local function scanSpells(tab)
 			local _, _, numSlots = GetFlyoutInfo(actionID);
 			for j = 1, numSlots do
 				local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
-			
-				if flyoutSpellID and not black_list[flyoutSpellName] and IsPlayerSpell(flyoutSpellID) then					
+
+				if flyoutSpellID and not black_list[flyoutSpellName] and IsPlayerSpell(flyoutSpellID) then
 					KnownSpellList[flyoutSpellID] = SPELL_TYPE_USER;
 				end
 			end
 		elseif IsPlayerSpell(spellID) then
-		
 			if spellID and not black_list[spellName] and IsPlayerSpell(spellID) then
-				KnownSpellList[spellID] = SPELL_TYPE_USER;				
+				KnownSpellList[spellID] = SPELL_TYPE_USER;
 			end
 		end
 	end
@@ -309,6 +309,27 @@ local function Comparison(AIndex, BIndex)
 	return false;
 end
 
+local function checkASMOD(spellid)
+	if ACI_SpellID_list and ACI_SpellID_list[spellid] then
+		return true;
+	end
+	local name, _, icon = asGetSpellInfo(spellid);
+	if APB_SPELL and APB_SPELL == name then
+		return true;
+	end
+
+	if APB_SPELL2 and APB_SPELL2 == name then
+		return true;
+	end
+
+	if ACI_SpellID_list and ACI_SpellID_list[name] then
+		return true;
+	end
+
+
+	return false;
+end
+
 
 local function ACDP_UpdateCooldown()
 	local numCools = 1;
@@ -338,27 +359,8 @@ local function ACDP_UpdateCooldown()
 
 
 	for spellid, type in pairs(showlist_id) do
-		local skip = false;
+		local skip = checkASMOD(spellid);
 		local name, icon, duration, start;
-
-		if ACI_SpellID_list and ACI_SpellID_list[spellid] then
-			skip = true;
-		end
-
-		if (type == SPELL_TYPE_USER or type == SPELL_TYPE_PET) then
-			name, _, icon = asGetSpellInfo(spellid);
-			if APB_SPELL and APB_SPELL == name then
-				skip = true;
-			end
-
-			if APB_SPELL2 and APB_SPELL2 == name then
-				skip = true;
-			end
-
-			if ACI_SpellID_list and ACI_SpellID_list[name] then
-				skip = true;
-			end
-		end
 
 		if skip == false then
 			if (type == SPELL_TYPE_USER or type == SPELL_TYPE_PET) then
@@ -514,8 +516,20 @@ local function ACDP_Alert(spell, type)
 		end
 		--print(name);
 		if ns.options.PlaySound and name then
-			if (spell_cooldown[spell] and spell_cooldown[spell] >= ns.options.SoundCooldown) then
-				bsound = true;
+			if ns.options.Aware_ASMOD_Cooldown and bCombatInfoLoaded then
+				if checkASMOD(spell) then
+					if (spell_cooldown[spell] and spell_cooldown[spell] >= ns.options.SoundCooldown) then
+						bsound = true;
+					end
+				else
+					if (spell_cooldown[spell] and spell_cooldown[spell] >= ns.options.Aware_ASMOD_Cooldown) then
+						bsound = true;
+					end
+				end
+			else
+				if (spell_cooldown[spell] and spell_cooldown[spell] >= ns.options.SoundCooldown) then
+					bsound = true;
+				end
 			end
 		end
 	else
@@ -539,7 +553,7 @@ local function ACDP_Alert(spell, type)
 			if ns.options.SlotNameTTS and itemslotNames[name] then
 				name = itemslotNames[name];
 			end
-			
+
 			C_VoiceChat.SpeakText(ns.options.TTS_ID, name, Enum.VoiceTtsDestination.LocalPlayback, CONFIG_SOUND_SPEED,
 				ns.options.SoundVolume);
 		else
@@ -560,9 +574,32 @@ local function ACDP_Alert(spell, type)
 end
 
 
+local function GetMinRuneCooldown()
+	local _, englishClass = UnitClass("player")
+
+	if englishClass == "DEATHKNIGHT" then
+		
+		for index = 1, 6 do
+			local start, duration = GetRuneCooldown(index);
+			if start > 0 then
+				return duration;
+			end
+		end
+	elseif englishClass == "EVOKER" then
+		local peace = GetPowerRegenForPowerType(Enum.PowerType.Essence)
+		if (peace == nil or peace == 0) then
+			peace = 0.2;
+		end
+		return 1 / peace;
+	end
+
+	return 0;	
+end
+
+
 local function ACDP_Checkcooldown()
 	for spellid, type in pairs(KnownSpellList) do
-		local start, duration, enabled;
+		local start, duration;
 		local check_duration = CONFIG_MINCOOL;
 		local _, gcd         = asGetSpellCooldown(61304);
 
@@ -571,15 +608,9 @@ local function ACDP_Checkcooldown()
 		end
 
 		if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
-			start, duration, enabled = asGetSpellCooldown(spellid);
-			if duration > gcd then
-				spell_cooldown[spellid] = duration;
-			end
+			start, duration = asGetSpellCooldown(spellid);
 		else
-			start, duration, enabled = GetItemCooldown(type);
-			if duration > gcd then
-				item_cooldown[type] = duration;
-			end
+			start, duration = GetItemCooldown(type);
 		end
 
 		local currtime = GetTime();
@@ -588,7 +619,20 @@ local function ACDP_Checkcooldown()
 			local remain = start + duration - currtime;
 			if duration > check_duration and duration <= CONFIG_MAXCOOL then
 				if showlist_id[spellid] == nil then
-					showlist_id[spellid] = type;
+					local runeduration = GetMinRuneCooldown()
+
+
+					if remain <= duration and (runeduration == 0 or (math.abs(runeduration - duration) > 0.1 and math.abs(duration % runeduration) > 0.1))then
+						showlist_id[spellid] = type;
+
+						if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
+							spell_cooldown[spellid] = duration;
+							--print (runeduration)
+							--print(duration)
+						else
+							item_cooldown[type] = duration;
+						end
+					end
 					--print("등록")
 				end
 			end

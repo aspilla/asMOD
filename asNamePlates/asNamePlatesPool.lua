@@ -62,6 +62,7 @@ local function creatframe()
     object.healer = object:CreateFontString(nil, "OVERLAY");
     object.casticon = CreateFrame("Frame", nil, object, "asNamePlatesBuffFrameTemplate");
     object.casticon.timetext = object.casticon:CreateFontString(nil, "OVERLAY");
+    object.casticon.targetname = object.casticon:CreateFontString(nil, "OVERLAY");
     object.CCdebuff = CreateFrame("Frame", nil, object, "asNamePlatesBuffFrameTemplate");
     object.BarTexture = object:CreateTexture(nil, "OVERLAY", "asColorTextureTemplate", 1);
     object.BarColor = object:CreateTexture(nil, "OVERLAY", "asColorTextureTemplate", 2);
@@ -100,7 +101,12 @@ local function creatframe()
 
     object.casticon.timetext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
     object.casticon.timetext:ClearAllPoints();
-    object.casticon.timetext:SetPoint("CENTER", object.casticon, "CENTER", 0, 0)
+    object.casticon.timetext:SetPoint("CENTER", object.casticon, "CENTER", 0, 0);
+
+    object.casticon.targetname:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize - 1, "OUTLINE");
+    object.casticon.targetname:ClearAllPoints();
+    object.casticon.targetname:SetPoint("TOPRIGHT", object.casticon, "BOTTOMRIGHT", 0, -1);
+    
 
     if not object.casticon:GetScript("OnEnter") then
         object.casticon:SetScript("OnEnter", function(s)

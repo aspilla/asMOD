@@ -2336,6 +2336,10 @@ local function APB_CheckPower(self)
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 APB_UpdateBuffCombo(self.combobar)
                 bupdate_buff_combo = true;
+
+                for i = 1, 10 do
+                    APB.combobar[i].tooltip = APB_BUFF_COMBO;
+                end
             end
         end
     end

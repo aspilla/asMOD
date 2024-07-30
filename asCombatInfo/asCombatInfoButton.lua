@@ -404,10 +404,10 @@ function ns.Button:checkSpell()
 
                 if health <= self.number then
                     self.alert2 = true;
-                else
+                elseif not (self.alert == true) then
                     isUsable = false;
                 end
-            else
+            elseif not (self.alert == true) then
                 isUsable = false;
             end
         end

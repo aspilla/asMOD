@@ -402,11 +402,15 @@ local function ProcessAura(aura, unit)
 				aura.buffType = UnitFrameBuffType.Normal;
 			end
 		elseif ns.ABF_ClassBuffList[aura.name] then
-			if ns.ABF_ClassBuffList[aura.name] == 1 then
+			local ClassBuffType = ns.ABF_ClassBuffList[aura.name];
+			if ns.ABF_ClassBuffCountList[aura.name] and aura.applications >= ns.ABF_ClassBuffCountList[aura.name] then
+				ClassBuffType = ClassBuffType + 1;
+			end
+			if ClassBuffType == 1 then
 				aura.buffType = UnitFrameBuffType.SelectedBuff;
-			elseif ns.ABF_ClassBuffList[aura.name] == 2 then
+			elseif ClassBuffType == 2 then
 				aura.buffType = UnitFrameBuffType.PriorityBuff;
-			elseif ns.ABF_ClassBuffList[aura.name] == 3 then
+			elseif ClassBuffType == 3 then
 				aura.buffType = UnitFrameBuffType.ImportantBuff;
 			else
 				aura.buffType = UnitFrameBuffType.TalentBuffLeft;

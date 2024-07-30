@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240732,
+	version = 240734,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -349,9 +349,9 @@ ACI_Options_Default = {
 
 
 		{ 196406, 3 },
-		{ 99, "악마불 집중", { "악마불 집중", 1 }, { "어둠의 연소", 1 } },
-		{ 99, "지옥불정령 소환", { "지옥불정령 소환", 6, nil, nil, nil, "지옥불정령" }, { "어둠의 연소", 1 } },
-		{ 99, "격동", { 394087, 5, "nameplate", 5, nil, "대혼란" }, { "대혼란", 4, "nameplate" } },
+		{ 99, "학살",{ "영혼의 불꽃", 1 }, { "악마불 집중", 1 } },
+		{ "지옥불정령 소환", 6, nil, nil, nil, "지옥불정령" }, 
+		{ 99, "격동", { 394087, 5, "nameplate", 5, nil, "대혼란" }, { "대혼란", 4, "nameplate" } },		
 		{ "제물", 4, nil, 1 },
 
 	},
