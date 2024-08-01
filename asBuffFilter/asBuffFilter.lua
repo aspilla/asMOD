@@ -64,27 +64,28 @@ local asGetSpellInfo = function(spellID)
 
 	local ospellID = C_Spell.GetOverrideSpell(spellID)
 
-    if ospellID then
-        spellID = ospellID;
-    end
+	if ospellID then
+		spellID = ospellID;
+	end
 
 	local spellInfo = C_Spell.GetSpellInfo(spellID);
 	if spellInfo then
-		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+			spellInfo.spellID, spellInfo.originalIconID;
 	end
 end
 
 local asGetSpellTabInfo = function(index)
 	local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
 	if skillLineInfo then
-		return	skillLineInfo.name, 
-				skillLineInfo.iconID, 
-				skillLineInfo.itemIndexOffset, 
-				skillLineInfo.numSpellBookItems, 
-				skillLineInfo.isGuild, 
-				skillLineInfo.offSpecID,
-				skillLineInfo.shouldHide,
-				skillLineInfo.specID;
+		return skillLineInfo.name,
+			skillLineInfo.iconID,
+			skillLineInfo.itemIndexOffset,
+			skillLineInfo.numSpellBookItems,
+			skillLineInfo.isGuild,
+			skillLineInfo.offSpecID,
+			skillLineInfo.shouldHide,
+			skillLineInfo.specID;
 	end
 end
 
@@ -161,12 +162,12 @@ local function scanSpells(tab)
 
 	for i = tabOffset + 1, tabOffset + numEntries do
 		local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player)
-		
+
 		if not spellName then
 			do break end
 		end
 
-		local slotType, actionID, spellID= C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
+		local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
 		local _, _, icon = asGetSpellInfo(spellID);
 
 		if (slotType == Enum.SpellBookItemType.Flyout) then
@@ -401,11 +402,15 @@ local function ProcessAura(aura, unit)
 			else
 				aura.buffType = UnitFrameBuffType.Normal;
 			end
-		elseif ns.ABF_ClassBuffList[aura.name] then
-			local ClassBuffType = ns.ABF_ClassBuffList[aura.name];
-			if ns.ABF_ClassBuffCountList[aura.name] and aura.applications >= ns.ABF_ClassBuffCountList[aura.name] then
-				ClassBuffType = ClassBuffType + 1;
+		elseif ns.ABF_ClassBuffList[aura.name] or ns.ABF_ClassBuffList[aura.spellId] then
+			local ClassBuffType = ns.ABF_ClassBuffList[aura.name] or ns.ABF_ClassBuffList[aura.spellId];			
+			if ns.ABF_ClassBuffCountList[aura.name] or ns.ABF_ClassBuffCountList[aura.spellId] then
+				local buffcheckcount = ns.ABF_ClassBuffCountList[aura.name] or ns.ABF_ClassBuffCountList[aura.spellId];
+				if aura.applications >= buffcheckcount then
+					ClassBuffType = ClassBuffType + 1;
+				end
 			end
+
 			if ClassBuffType == 1 then
 				aura.buffType = UnitFrameBuffType.SelectedBuff;
 			elseif ClassBuffType == 2 then

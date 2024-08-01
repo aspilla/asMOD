@@ -100,7 +100,7 @@ local function ParseAllAuras(unit, id)
     ForEachAura(unit, auraData.bufffilter, batchCount, HandleAura, usePackedAura);
 end
 
-function ns.getExpirationTimeUnitAurabyID(unit, id)
+function ns.getExpirationTimeUnitAurabyID(unit, id, idonly)
     ParseAllAuras(unit, id);
 
     local auraList = auraData.buffs;
@@ -112,7 +112,7 @@ function ns.getExpirationTimeUnitAurabyID(unit, id)
         end
     end);
 
-    if ret == nil then
+    if ret == nil and not idonly then
         local name = asGetSpellInfo(id);
 
         auraList:Iterate(function(auraInstanceID, aura)

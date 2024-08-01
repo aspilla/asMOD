@@ -123,6 +123,50 @@ local complexLocationTable = {
 
 
 local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale, r, g, b, vFlip, hFlip)
+
+	local aura = ns.getExpirationTimeUnitAurabyID("player", spellID);
+	local rate = 1;
+	local count = 0;
+	local remain = 0;
+
+	if aura then
+		local extime = aura.expirationTime;
+		local duration = aura.duration;
+		remain = extime - GetTime();
+		count = aura.applications;		
+
+		if ns.countaware[spellID] then
+			if count and count == 1 and position == "RIGHT" then
+				return;
+			end
+		end
+
+		if remain > 0 then
+			rate = remain / duration;
+		end
+
+		if ns.spelllists[spellID] and (position ~= "LEFT") then
+			for _, v in pairs(ns.spelllists[spellID]) do
+				local procid = v[1];
+				local proc_count = v[2];
+				local proc_r = v[3];
+				local proc_g = v[4];
+				local proc_b = v[5];
+
+				local procaura = ns.getExpirationTimeUnitAurabyID("player", procid, true);
+
+				if procaura then
+					if (proc_count > 0 and procaura.applications >= proc_count) or proc_count == 0  then
+						r = proc_r * 255;
+						g = proc_g * 255;
+						b = proc_b * 255;
+						break;
+					end
+				end
+			end
+		end
+	end
+
 	local overlay = asOverlay_GetOverlay(self, spellID, position);
 	overlay.spellID = spellID;
 	overlay.position = position;
@@ -141,40 +185,6 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		overlay.hflip = true;
 	end
 
-	local aura = ns.getExpirationTimeUnitAurabyID("player", spellID);
-	local rate = 1;
-	local count = 0;
-	local remain = 0;
-
-	if aura then
-		local extime = aura.expirationTime;
-		local duration = aura.duration;
-		remain = extime - GetTime();
-		count = aura.applications;
-
-		if remain > 0 then
-			rate = remain / duration;
-		end
-
-		if ns.spelllists[spellID] then
-			local procid = ns.spelllists[spellID][1];
-			local proc_count = ns.spelllists[spellID][2];
-			local proc_r = ns.spelllists[spellID][3];
-			local proc_g = ns.spelllists[spellID][4];
-			local proc_b = ns.spelllists[spellID][5];
-
-			local procaura = ns.getExpirationTimeUnitAurabyID("player", procid);
-
-			if procaura then
-				if (proc_count > 0 and procaura.applications >= proc_count) or proc_count == 0 then
-					r = proc_r * 255;
-					g = proc_g * 255;
-					b = proc_b * 255;
-				end
-			end
-		end
-	end
-
 	local width, height;
 
 	if (position == "CENTER") then
@@ -182,16 +192,16 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		overlay:SetPoint("CENTER", self, "CENTER", 0, 0);
 	elseif (position == "LEFT") then
 		width, height = shortSide, longSide;
-		overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", 0, (height * (1 - scale))/2);
+		overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", 0, (height * (1 - scale)) / 2);
 	elseif (position == "RIGHT") then
 		width, height = shortSide, longSide;
-		overlay:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 0,  (height * (1 - scale))/2);
+		overlay:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 0, (height * (1 - scale)) / 2);
 	elseif (position == "TOP") then
 		width, height = longSide, shortSide;
-		overlay:SetPoint("BOTTOMLEFT", self, "TOPLEFT",(width * (1 - scale))/2, 0 );
+		overlay:SetPoint("BOTTOMLEFT", self, "TOPLEFT", (width * (1 - scale)) / 2, 0);
 	elseif (position == "BOTTOM") then
 		width, height = longSide, shortSide;
-		overlay:SetPoint("TOPLEFT", self, "BOTTOMLEFT", (width * (1 - scale))/2, 0 );
+		overlay:SetPoint("TOPLEFT", self, "BOTTOMLEFT", (width * (1 - scale)) / 2, 0);
 	elseif (position == "TOPRIGHT") then
 		width, height = shortSide, shortSide;
 		overlay:SetPoint("BOTTOMLEFT", self, "TOPRIGHT", 0, 0);
@@ -269,9 +279,8 @@ local function asOverlay_ShowAllOverlays(self, spellID, texturePath, positions, 
 end
 
 local function IsShown(spellId)
-
 	local name = C_Spell.GetSpellName(spellId)
-	
+
 	-- asPowerBar Check
 	if APB_BUFF4 and APB_BUFF4 == name then
 		return true;
@@ -308,11 +317,10 @@ local function asOverlay_OnEvent(self, event, ...)
 
 	if (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
 		local spellID, texture, positions, scale, r, g, b = ...;
-		
+
 		if not IsShown(spellID) then
 			asOverlay_ShowAllOverlays(self, spellID, texture, positions, scale, r, g, b)
 		end
-		
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_HIDE") then
 		local spellID = ...;
 		if (spellID) then
@@ -413,3 +421,4 @@ frame:SetHeight(256)
 frame:SetScript("OnUpdate", asOverlay_OnUpdate);
 frame:SetScript("OnEvent", asOverlay_OnEvent);
 asOverlay_OnLoad(frame);
+

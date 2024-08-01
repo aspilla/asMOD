@@ -122,6 +122,7 @@ ADotF_ShowList_MAGE_1 = {
 }
 
 ADotF_ShowList_MAGE_2 = {
+    { "파괴 제어", 0 },
     { "작열", 0 },
 }
 

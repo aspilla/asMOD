@@ -243,7 +243,7 @@ local function APB_OnUpdateCombo(self, elapsed)
         self.update = 0
 
         if self.reverse then
-            if curr_duration  < self.duration then
+            if curr_duration < self.duration then
                 self:SetMinMaxValues(0, self.duration * 10)
                 self:SetValue((self.duration * 10) - (curr_time - self.start) * 10)
             else
@@ -252,7 +252,7 @@ local function APB_OnUpdateCombo(self, elapsed)
                 self.start = nil;
             end
         else
-            if curr_duration  < self.duration then
+            if curr_duration < self.duration then
                 self:SetMinMaxValues(0, self.duration * 10)
                 self:SetValue((curr_time - self.start) * 10)
             else
@@ -261,8 +261,6 @@ local function APB_OnUpdateCombo(self, elapsed)
                 self.start = nil;
             end
         end
-
-        
     end
 end
 
@@ -521,14 +519,12 @@ local function APB_UpdateBuffCombo(combobar)
 
             if APB_BUFF_COMBO_MAX ~= APB_BUFF_COMBO then
                 if name and caster == "player" and duration > 0 then
-       
-
                     if max_combo > 1 then
                         APB_ShowComboBar(APB_BUFF_COMBO_MAX_COUNT);
                         APB_MaxCombo(1);
                     end
                     local remain = expirationTime - GetTime();
-                          
+
                     APB_ShowComboBar(0, nil, nil, duration, expirationTime);
                     return;
                 else
@@ -536,14 +532,13 @@ local function APB_UpdateBuffCombo(combobar)
                 end
             else
                 if count and count == APB_BUFF_COMBO_MAX_COUNT and caster == "player" and duration > 0 then
-                    
                     if max_combo > 1 then
                         APB_ShowComboBar(APB_BUFF_COMBO_MAX_COUNT);
                         APB_MaxCombo(1);
                     end
                     local remain = expirationTime - GetTime();
 
-                    
+
 
                     APB_ShowComboBar(0, nil, nil, duration, expirationTime);
                     return;
@@ -1818,12 +1813,12 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 2) then
-            APB_BUFF = "악마의 핵";
-            APB.buffbar[0].buff = APB_BUFF;
-            APB.buffbar[0].unit = "player"
-            APB:RegisterUnitEvent("UNIT_AURA", "player");
+            APB_DEBUFF = "악의 아귀";
+            APB.buffbar[0].debuff = APB_DEBUFF;
+            APB.buffbar[0].unit = "target"
+            APB:SetScript("OnUpdate", APB_OnUpdate);
+            APB:RegisterEvent("PLAYER_TARGET_CHANGED");
             APB_UpdateBuff(self.buffbar[0])
-            bupdate_buff_count = true;
         end
 
         if (spec and spec == 3) then

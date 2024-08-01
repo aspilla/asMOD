@@ -149,7 +149,8 @@ ns.ShowList_MAGE_1 = {
 }
 
 ns.ShowList_MAGE_2 = {
-    ["작열"] = { 0, 5 },
+    ["파괴 제어"] = { 0, 5 },
+    ["작열"] = { 0, 4 },
 }
 
 ns.ShowList_MAGE_3 = {
