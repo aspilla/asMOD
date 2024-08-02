@@ -123,7 +123,6 @@ local complexLocationTable = {
 
 
 local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale, r, g, b, vFlip, hFlip)
-
 	local aura = ns.getExpirationTimeUnitAurabyID("player", spellID);
 	local rate = 1;
 	local count = 0;
@@ -133,7 +132,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		local extime = aura.expirationTime;
 		local duration = aura.duration;
 		remain = extime - GetTime();
-		count = aura.applications;		
+		count = aura.applications;
 
 		if ns.countaware[spellID] then
 			if count and count == 1 and position == "RIGHT" then
@@ -145,7 +144,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 			rate = remain / duration;
 		end
 
-		if ns.spelllists[spellID] and (position ~= "LEFT") then
+		if ns.spelllists[spellID] then
 			for _, v in pairs(ns.spelllists[spellID]) do
 				local procid = v[1];
 				local proc_count = v[2];
@@ -156,10 +155,12 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 				local procaura = ns.getExpirationTimeUnitAurabyID("player", procid, true);
 
 				if procaura then
-					if (proc_count > 0 and procaura.applications >= proc_count) or proc_count == 0  then
-						r = proc_r * 255;
-						g = proc_g * 255;
-						b = proc_b * 255;
+					if (proc_count > 0 and procaura.applications >= proc_count) or proc_count == 0 then
+						if proc_count <= 1 or (position ~= "LEFT") then
+							r = proc_r * 255;
+							g = proc_g * 255;
+							b = proc_b * 255;
+						end
 						break;
 					end
 				end
@@ -421,4 +422,3 @@ frame:SetHeight(256)
 frame:SetScript("OnUpdate", asOverlay_OnUpdate);
 frame:SetScript("OnEvent", asOverlay_OnEvent);
 asOverlay_OnLoad(frame);
-
