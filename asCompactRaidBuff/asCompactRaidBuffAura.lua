@@ -265,8 +265,8 @@ local function asCooldownFrame_Clear(self)
     self:Clear();
 end
 
-local function IsTank()
-    local assignedRole = UnitGroupRolesAssigned("player");
+local function IsTank(unit)
+    local assignedRole = UnitGroupRolesAssigned(unit);
     if assignedRole == "TANK" or assignedRole == "MAINTANK" then
         return true;
     end
@@ -468,7 +468,7 @@ local function ProcessAura(aura, unit)
             return AuraUpdateChangedType.Buff;
         elseif ns.ACRB_DefensiveBuffList[aura.spellId] then
             -- longer duration should have lower priority.
-            if not (ns.ACRB_DefensiveBuffList[aura.spellId] == 2 and IsTank()) then
+            if not (ns.ACRB_DefensiveBuffList[aura.spellId] == 2 and IsTank(unit)) then
                 aura.debuffType = UnitFrameBuffType.Normal + aura.duration;
                 return AuraUpdateChangedType.Defensive;
             end
