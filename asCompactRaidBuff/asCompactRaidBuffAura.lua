@@ -264,6 +264,14 @@ end
 local function asCooldownFrame_Clear(self)
     self:Clear();
 end
+
+local function IsTank()
+    local assignedRole = UnitGroupRolesAssigned("player");
+    if assignedRole == "TANK" or assignedRole == "MAINTANK" then
+        return true;
+    end
+    return false;
+end
 -- cooldown
 function ns.asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
     if enable and enable ~= 0 and start > 0 and duration > 0 then
@@ -460,8 +468,10 @@ local function ProcessAura(aura, unit)
             return AuraUpdateChangedType.Buff;
         elseif ns.ACRB_DefensiveBuffList[aura.spellId] then
             -- longer duration should have lower priority.
-            aura.debuffType = UnitFrameBuffType.Normal + aura.duration;
-            return AuraUpdateChangedType.Defensive;
+            if not (ns.ACRB_DefensiveBuffList[aura.spellId] == 2 and IsTank()) then
+                aura.debuffType = UnitFrameBuffType.Normal + aura.duration;
+                return AuraUpdateChangedType.Defensive;
+            end
         end
     end
 

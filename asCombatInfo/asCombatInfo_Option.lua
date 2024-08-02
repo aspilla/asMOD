@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240801,
+	version = 240802,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -182,7 +182,7 @@ ACI_Options_Default = {
 
 		{ "회복의 기원", 1 },
 		{ 99, "치유의 마법진", { "치유의 마법진", 1 }, { "수호 영혼", 2 } },
-		{ "천상의 찬가", 2 },
+		{ 99, "천상의 찬가", { "천상의 찬가", 2 }, { "희망의 상징", 1 }},
 		{ "빛의 권능: 응징", 1 },
 		{ "신성한 불꽃", 4 },
 	},

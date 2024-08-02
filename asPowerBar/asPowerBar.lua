@@ -1990,15 +1990,6 @@ local function APB_CheckPower(self)
 
     if (englishClass == "ROGUE") then
         brogue = true;
-        APB_UNIT_POWER = "COMBO_POINTS"
-        APB_POWER_LEVEL = Enum.PowerType.ComboPoints
-        APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-        APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
-        bupdate_power = true;
-
-        for i = 1, 10 do
-            APB.combobar[i].tooltip = "COMBO_POINTS";
-        end
 
         if IsPlayerSpell(382513) then
             APB_SPELL = "소멸";
@@ -2031,18 +2022,20 @@ local function APB_CheckPower(self)
         if (spec and spec == 3) then
             bupdate_shadow_tech = true;
         end
+
+        APB_UNIT_POWER = "COMBO_POINTS"
+        APB_POWER_LEVEL = Enum.PowerType.ComboPoints
+        APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+        APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
+        bupdate_power = true;
+
+        for i = 1, 10 do
+            APB.combobar[i].tooltip = "COMBO_POINTS";
+        end
     end
 
     if (englishClass == "DEATHKNIGHT") then
-        APB_MaxRune();
-        APB_UpdateRune()
-        APB:RegisterEvent("RUNE_POWER_UPDATE")
-        bupdate_rune = true;
-
-        for i = 1, 10 do
-            APB.combobar[i].tooltip = "RUNE_POWER";
-        end
-
+        
         if (spec and spec == 1) then
             if IsPlayerSpell(194679) then
                 APB_SPELL = "룬 전환";
@@ -2083,6 +2076,15 @@ local function APB_CheckPower(self)
             APB.buffbar[0].unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
             APB_UpdateBuff(self.buffbar[0]);
+        end
+
+        APB_MaxRune();
+        APB_UpdateRune()
+        APB:RegisterEvent("RUNE_POWER_UPDATE")
+        bupdate_rune = true;
+
+        for i = 1, 10 do
+            APB.combobar[i].tooltip = "RUNE_POWER";
         end
     end
 

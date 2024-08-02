@@ -2404,3 +2404,7 @@ DBM-Test-Dragonflight/Raids-Dragonflight/VaultoftheIncarnates/Reports/Broodkeepe
 DBM-Core/modules/AnnoyingPopup.lua
 DBM-Core/modules/objects/NilWarning.lua
 DBM-Party-Vanilla/Classic/UpperBlackrockSpire/LordValthalak.lua
+Details-bak/Libs/DF/keybind.lua
+Details-bak/Libs/DF/label.lua
+Details-bak/Libs/LibOpenRaid/ThingsToMantain_Cata.lua
+Details-bak/Libs/LibOpenRaid/ThingsToMantain_Dragonflight.lua
