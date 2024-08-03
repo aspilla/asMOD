@@ -277,7 +277,12 @@ local function APB_MaxSpell(max)
 
     if not max or max == 0 then
         for i = 1, 10 do
-            APB.spellbar[i]:Hide();
+            local spellbar = APB.spellbar[i];
+
+            if spellbar then
+                spellbar:Hide();
+                ns.lib.PixelGlow_Stop(spellbar);
+            end
         end
         bshowspell = false;
         return;
@@ -286,19 +291,23 @@ local function APB_MaxSpell(max)
     local width = (APB_WIDTH - (3 * (max - 1))) / max;
 
     for i = 1, 10 do
-        APB.spellbar[i]:SetWidth(width)
-        APB.spellbar[i].start = nil;
-        APB.spellbar[i]:SetMinMaxValues(0, 1)
-        APB.spellbar[i]:SetValue(1)
-        local _, Class = UnitClass("player")
-        local color = RAID_CLASS_COLORS[Class]
-        APB.spellbar[i]:SetStatusBarColor(color.r, color.g, color.b);
-        APB.spellbar[i]:SetScript("OnUpdate", nil)
+        local spellbar = APB.spellbar[i];
+        if spellbar then
+            spellbar:SetWidth(width)
+            spellbar.start = nil;
+            spellbar:SetMinMaxValues(0, 1)
+            spellbar:SetValue(1)
+            local _, Class = UnitClass("player")
+            local color = RAID_CLASS_COLORS[Class]
+            spellbar:SetStatusBarColor(color.r, color.g, color.b);
+            spellbar:SetScript("OnUpdate", nil)
+            ns.lib.PixelGlow_Stop(spellbar);
 
-        if i > max then
-            APB.spellbar[i]:Hide()
-        else
-            APB.spellbar[i]:Show()
+            if i > max then
+                spellbar:Hide()
+            else
+                spellbar:Show()
+            end
         end
     end
     bshowspell = true;
@@ -1172,7 +1181,9 @@ local function APB_UpdateSpell(spell, spell2)
         spellbar.spellid = spellid;
 
         if balert then
-            spellbar:SetStatusBarColor(0, 1, 0)
+            ns.lib.PixelGlow_Start(spellbar);
+        else
+            ns.lib.PixelGlow_Stop(spellbar);
         end
 
         if inrange == false then
@@ -1191,7 +1202,9 @@ local function APB_UpdateSpell(spell, spell2)
         spellbar.spellid = spellid;
 
         if balert then
-            spellbar:SetStatusBarColor(0, 1, 1)
+            ns.lib.PixelGlow_Start(spellbar);
+        else
+            ns.lib.PixelGlow_Stop(spellbar);
         end
 
         if inrange == false then
@@ -1207,6 +1220,7 @@ local function APB_UpdateSpell(spell, spell2)
             spellbar:SetValue(0)
             spellbar.start = nil;
             spellbar:SetScript("OnUpdate", nil)
+            ns.lib.PixelGlow_Stop(spellbar);
         end
     end
 
@@ -1241,7 +1255,9 @@ local function APB_UpdateSpell(spell, spell2)
             spellbar.spellid = spellid;
 
             if balert2 then
-                spellbar:SetStatusBarColor(0, 1, 1)
+                ns.lib.PixelGlow_Start(spellbar);
+            else
+                ns.lib.PixelGlow_Stop(spellbar);
             end
 
             if inrange2 == false then
@@ -1261,7 +1277,9 @@ local function APB_UpdateSpell(spell, spell2)
             spellbar.spellid = spellid;
 
             if balert2 then
-                spellbar:SetStatusBarColor(0, 1, 1)
+                ns.lib.PixelGlow_Start(spellbar);
+            else
+                ns.lib.PixelGlow_Stop(spellbar);
             end
 
             if inrange2 == false then
@@ -1277,6 +1295,7 @@ local function APB_UpdateSpell(spell, spell2)
                 spellbar:SetValue(0)
                 spellbar.start = nil;
                 spellbar:SetScript("OnUpdate", nil)
+                ns.lib.PixelGlow_Stop(spellbar);
             end
         end
     end
@@ -2035,7 +2054,6 @@ local function APB_CheckPower(self)
     end
 
     if (englishClass == "DEATHKNIGHT") then
-        
         if (spec and spec == 1) then
             if IsPlayerSpell(194679) then
                 APB_SPELL = "룬 전환";
