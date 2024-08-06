@@ -77,6 +77,7 @@ local function newButton(id, event)
 			button.cooltext:Show();
 			button.border:Show();
 			button.spellid = event.spellId;
+			button.defaulttext = ""
 			local msg = event.msg;
 
 			if event.colorId and BarColors[event.colorId] then
@@ -85,6 +86,7 @@ local function newButton(id, event)
 			end
 
 			button.text:SetText(msg);
+			button.defaulttext = msg;
 			button.text:Show();
 			button:Show();
 			return i;
@@ -110,6 +112,7 @@ function asDBMTimer_callback(event, id, ...)
 		if dbm_event_list[id] and dbm_event_list[id].button_id then
 			deleteButton(dbm_event_list[id].button_id);
 		end
+
 		local newmsg = msg;
 		local strFindStart, strFindEnd = string.find(msg, " 쿨타임")
 		if strFindStart ~= nil then
@@ -125,7 +128,9 @@ function asDBMTimer_callback(event, id, ...)
 				icon,
 			button_id = nil,
 			colorId = colorId,
-			spellId = spellId
+			spellId = spellId,
+			guid = guid,
+			unit = nil,
 		};
 	elseif event == "DBM_TimerStop" then
 		if dbm_event_list[id] then
@@ -143,11 +148,48 @@ function asDBMTimer_callback(event, id, ...)
 			dbm_event_list[id].button_id = nil;
 			dbm_event_list[id].duration = totalTime;
 			dbm_event_list[id].start = GetTime() - elapsed;
-			dbm_event_list[id].expirationTime = dbm_event_list[id].start + dbm_event_list[id].duration;
+			dbm_event_list[id].expirationTime = GetTime() - elapsed + totalTime;
 		end
 	else
 		--print (...);
 	end
+end
+
+local RaidIconList = {
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
+}
+
+
+local function DisplayRaidIcon(unit)
+	local icon = GetRaidTargetIndex(unit)
+	if icon and RaidIconList[icon] then
+		return RaidIconList[icon] .. "0|t"
+	else
+		return ""
+	end
+end
+
+local function checkNameplate(nameplate, guid)
+	if nameplate then
+		if not nameplate or nameplate:IsForbidden() then
+			return nil;
+		end
+
+		local nunit = nameplate.namePlateUnitToken;
+
+		local reaction = UnitReaction("player", nunit);
+		if reaction and reaction <= 4 and guid == UnitGUID(nunit) then
+			return nunit;
+		end
+	end
+	return nil;
 end
 
 local function checkList()
@@ -157,12 +199,39 @@ local function checkList()
 		local start_old = event.start;
 		local duration = event.duration;
 		local remain = start_old + duration - curtime;
+		local unitisdead = false;
+
+		if event.guid then
+			local nunit = nil;
+
+			for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
+				local nameplate = v;
+				if (nameplate) then
+					nunit = checkNameplate(nameplate, event.guid);
+				end
+				if nunit then
+					break;
+				end				
+			end
+			event.unit = nunit;
+			if event.unit then
+				unitisdead = UnitIsDead(event.unit);						
+			end
+		end
+		
 		if remain > 0 and remain <= ns.options.MinTimetoShow then
 			if event.button_id == nil then
 				local idx = newButton(id, event);
 				event.button_id = idx;
 			end
 		elseif remain <= 0 then
+			if event.button_id then
+				deleteButton(event.button_id);
+			end
+			dbm_event_list:Remove(id);
+		end
+
+		if unitisdead then
 			if event.button_id then
 				deleteButton(event.button_id);
 			end
@@ -177,6 +246,15 @@ local function checkList()
 		if event.button_id then
 			local button = asDBMTimer.buttons[event.button_id];
 			local remain = event.start + event.duration - curtime;
+
+			local icontext = ""
+
+			if event.unit then
+				icontext = DisplayRaidIcon(event.unit)
+			end
+
+			button.text:SetText(icontext .. button.defaulttext);
+
 			if remain > 0 then
 				button:ClearAllPoints();
 

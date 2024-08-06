@@ -1,7 +1,8 @@
 local _, ns = ...;
 local Options_Default = {
+    Version = 240806,
     MinTimetoShow = 10,
-    HideNamePlatesCooldown = true,
+    HideNamePlatesCooldown = false,
 };
 
 ns.options = CopyTable(Options_Default);
@@ -32,25 +33,28 @@ function ns.SetupOptionPanels()
 
     for variable, _ in pairs(Options_Default) do
         local name = variable;
-        local cvar_name = "asDBMTimer_" .. variable;
-        local tooltip = ""
-        if ADTI_Options[variable] == nil then
-            ADTI_Options[variable] = Options_Default[variable];
-            ns.options[variable] = Options_Default[variable];
-        end
-        local defaultValue = ADTI_Options[variable];
 
-        if tonumber(defaultValue) ~= nil then
-            local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
-            local options = Settings.CreateSliderOptions(0, 100, 1);
-            options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
-            Settings.CreateSlider(category, setting, options, tooltip);
-            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
-        else
-            local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
+        if name ~= "Version" then
+            local cvar_name = "asDBMTimer_" .. variable;
+            local tooltip = ""
+            if ADTI_Options[variable] == nil or Options_Default.Version ~= ADTI_Options.Version then
+                ADTI_Options[variable] = Options_Default[variable];
+                ns.options[variable] = Options_Default[variable];
+            end
+            local defaultValue = ADTI_Options[variable];
 
-            Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
-            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            if tonumber(defaultValue) ~= nil then
+                local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
+                local options = Settings.CreateSliderOptions(0, 100, 1);
+                options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+                Settings.CreateSlider(category, setting, options, tooltip);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            else
+                local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
+
+                Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            end
         end
     end
 

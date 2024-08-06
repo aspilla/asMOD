@@ -103,7 +103,7 @@ local function creatframe()
     object.casticon.timetext:ClearAllPoints();
     object.casticon.timetext:SetPoint("CENTER", object.casticon, "CENTER", 0, 0);
 
-    object.casticon.targetname:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize - 1, "OUTLINE");
+    object.casticon.targetname:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
     object.casticon.targetname:ClearAllPoints();
     object.casticon.targetname:SetPoint("TOPRIGHT", object.casticon, "BOTTOMRIGHT", 0, -1);
     
