@@ -1726,6 +1726,16 @@ local function APB_CheckPower(self)
 
     if (englishClass == "MAGE") then
         if (spec and spec == 1) then
+
+            if (asCheckTalent("비전의 박자")) then
+                APB_BUFF = "비전의 박자";
+                APB.buffbar[0].buff = APB_BUFF
+                APB.buffbar[0].unit = "player";
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
+                bupdate_buff_count = true;
+                APB_UpdateBuff(self.buffbar[0])
+            end
+
             APB_UNIT_POWER = "ARCANE_CHARGES"
             APB_POWER_LEVEL = Enum.PowerType.ArcaneCharges
             APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")

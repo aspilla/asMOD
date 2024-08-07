@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240802,
+	version = 240803,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -117,8 +117,9 @@ ACI_Options_Default = {
 		{ 383783, 3 },
 		{ "비전 보주", 1 },
 		{ "비전 쇄도", 2 },
-		{ "환기", 2, nil, nil, nil, "폭풍 착취" },
 		{ "비전의 여파", 4 },
+		{99, "비전 쇠약",{ 453599, 5 }, { "환기", 2, nil, nil, nil, "폭풍 착취" }},
+		
 	},
 
 	--화염

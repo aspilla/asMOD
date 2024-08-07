@@ -192,6 +192,18 @@ local function checkNameplate(nameplate, guid)
 	return nil;
 end
 
+local function UnitIsBoss(unit)
+	local classification = UnitClassification(unit)
+	local unitlevel = UnitLevel(unit)
+	local playerlevel = UnitLevel("player")
+
+	if (classification == "worldboss" or (unitlevel - playerlevel) > 1) then
+		return true;
+	else
+		return false;
+	end
+end
+
 local function checkList()
 	local curtime = GetTime();
 
@@ -211,14 +223,18 @@ local function checkList()
 				end
 				if nunit then
 					break;
-				end				
+				end
 			end
 			event.unit = nunit;
 			if event.unit then
-				unitisdead = UnitIsDead(event.unit);						
+				unitisdead = UnitIsDead(event.unit);
+
+				if ns.options.ShowInterruptOnlyforNormal and not UnitIsBoss(event.unit) and event.colorId ~= 4 then
+					unitisdead = true;
+				end
 			end
 		end
-		
+
 		if remain > 0 and remain <= ns.options.MinTimetoShow then
 			if event.button_id == nil then
 				local idx = newButton(id, event);

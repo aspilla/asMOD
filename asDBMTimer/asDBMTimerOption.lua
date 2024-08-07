@@ -3,6 +3,7 @@ local Options_Default = {
     Version = 240806,
     MinTimetoShow = 10,
     HideNamePlatesCooldown = false,
+    ShowInterruptOnlyforNormal = true,
 };
 
 ns.options = CopyTable(Options_Default);
