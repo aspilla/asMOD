@@ -131,6 +131,7 @@ function asDBMTimer_callback(event, id, ...)
 			spellId = spellId,
 			guid = guid,
 			unit = nil,
+			aoealerted = false,
 		};
 	elseif event == "DBM_TimerStop" then
 		if dbm_event_list[id] then
@@ -269,6 +270,13 @@ local function checkList()
 				icontext = DisplayRaidIcon(event.unit)
 			end
 
+			if ns.options.AOESound then
+				if event.colorId == 2 and remain <= ns.options.AOESound and event.aoealerted == false then
+					PlaySoundFile("Interface\\AddOns\\asDBMTimer\\aoe.mp3", "MASTER");
+					event.aoealerted = true;
+				end
+			end
+
 			button.text:SetText(icontext .. button.defaulttext);
 
 			if remain > 0 then
@@ -303,7 +311,7 @@ local function setupUI()
 	asDBMTimer:SetHeight(100)
 	asDBMTimer:Show();
 
-	local bloaded = LoadAddOn("asMOD")
+	local bloaded = C_AddOns.LoadAddOn("asMOD")
 
 	if bloaded and asMOD_setupFrame then
 		asMOD_setupFrame(asDBMTimer, "asDBMTimer");
@@ -369,7 +377,7 @@ local function initAddon()
 	C_Timer.NewTicker(0.05, checkList);
 end
 
-local bloaded = LoadAddOn("DBM-Core");
+local bloaded = C_AddOns.LoadAddOn("DBM-Core");
 if bloaded then
 	initAddon();
 	setupUI();

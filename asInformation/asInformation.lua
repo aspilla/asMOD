@@ -104,7 +104,7 @@ local function UpdateStats()
     local haste = GetHaste()
     local crit = GetCritChance()
     local mastery = GetMasteryEffect()
-    local versatility = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE)
+    local versatility =  GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
 
     if asInformationSaved.showHaste then
         hasteText:SetText(string.format("H" .. ": %.2f%%", haste))

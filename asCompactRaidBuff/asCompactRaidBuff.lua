@@ -734,7 +734,7 @@ local function ACRB_OnEvent(self, event, arg1, arg2, arg3)
         end
     elseif (event == "PLAYER_ENTERING_WORLD") then
         ns.hasValidPlayer = true;
-        local bloaded = LoadAddOn("DBM-Core");
+        local bloaded = C_AddOns.LoadAddOn("DBM-Core");
         if bloaded then
             hooksecurefunc(DBM, "NewMod", ns.NewMod)
         end

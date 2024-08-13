@@ -134,7 +134,7 @@ local function asMOD_Setup()
 
 	print("[asMOD] Details, Bigwigs, DBM 설정을 합니다.");
 
-	local bload = LoadAddOn("BugSack")
+	local bload = C_AddOns.LoadAddOn("BugSack")
 
 	if bload then
 		BugSackDB = {
@@ -151,7 +151,7 @@ local function asMOD_Setup()
 		}
 	end
 
-	bload = LoadAddOn("DBM-Core")
+	bload = C_AddOns.LoadAddOn("DBM-Core")
 	if bload then
 		DBM_AllSavedOptions = {
 			["Default"] = {
@@ -599,7 +599,7 @@ local function asMOD_Setup()
 	end
 
 
-	bload = LoadAddOn("Details")
+	bload = C_AddOns.LoadAddOn("Details")
 	if bload then
 		Details:EraseProfile("asMOD");
 		Details:ImportProfile(detailsprofile, "asMOD", true, true);

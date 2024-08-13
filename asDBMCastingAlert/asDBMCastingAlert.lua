@@ -470,7 +470,7 @@ local function NewMod(self, ...)
 end
 
 local function initAddon()
-	local bloaded = LoadAddOn("DBM-Core");
+	local bloaded = C_AddOns.LoadAddOn("DBM-Core");
 	if bloaded then
 		hooksecurefunc(DBM, "NewMod", NewMod)
 	end
@@ -481,7 +481,7 @@ local function initAddon()
 	ADVA:SetHeight(1)
 	ADVA:Show();
 
-	bloaded = LoadAddOn("asMOD")
+	bloaded = C_AddOns.LoadAddOn("asMOD")
 
 	CreateCastbars(ADVA);
 

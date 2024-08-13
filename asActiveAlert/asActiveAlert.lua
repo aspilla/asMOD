@@ -244,7 +244,7 @@ ASAA_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 
 
 function ASAA_mainframe:ASAA_Init()
-	LoadAddOn("asMOD");
+	C_AddOns.LoadAddOn("asMOD");
 	ASAA_CoolButtons = CreateFrame("Frame", nil, UIParent)
 	ASAA_CoolButtons:SetPoint("CENTER", ASAA_CoolButtons_X, ASAA_CoolButtons_Y)
 	ASAA_CoolButtons:SetWidth(1)

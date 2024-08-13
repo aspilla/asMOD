@@ -331,7 +331,7 @@ local function GetAction(actionlist, spell)
         local type, id, subType, spellID = GetActionInfo(action);
 
         if id and type and (type == "spell" or type == "macro") then
-            local name = GetSpellInfo(id);
+            local name = asGetSpellInfo(id);
             if name and name == spell then
                 return action;
             end
@@ -364,7 +364,7 @@ function ns.Button:checkSpell()
     end
 
     if not count or count == 0 then
-        count = GetSpellCount(spellid);
+        count = C_Spell.GetSpellCastCount(spellid);
     end
 
     if (not charges or charges == 0) and action then

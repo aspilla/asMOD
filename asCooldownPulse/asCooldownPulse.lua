@@ -753,13 +753,13 @@ local function ACDP_Init()
 	ACDP_CoolButtons:SetFrameStrata("LOW")
 	ACDP_CoolButtons:Show()
 
-	LoadAddOn("asMOD");
+	C_AddOns.LoadAddOn("asMOD");
 
 	if asMOD_setupFrame then
 		asMOD_setupFrame(ACDP_CoolButtons, "asCooldownPulselist");
 	end
 
-	bCombatInfoLoaded = LoadAddOn("asCombatInfo");
+	bCombatInfoLoaded = C_AddOns.LoadAddOn("asCombatInfo");
 
 	ACDP_mainframe:SetScript("OnEvent", ACDP_OnEvent)
 	ACDP_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD")

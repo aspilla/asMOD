@@ -203,7 +203,7 @@ local function DefaultAuraCompare(a, b)
 end
 
 local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuationToken, ...)
-    -- continuationToken is the first return value of UnitAuraSlots()
+    -- continuationToken is the first return value of C_UnitAuras.GetAuraSlots()
     local n = select('#', ...);
     for i = 1, n do
         local slot = select(i, ...);
@@ -229,7 +229,7 @@ local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
     repeat
         -- continuationToken is the first return value of UnitAuraSltos
         continuationToken = ForEachAuraHelper(unit, filter, func, usePackedAura,
-            UnitAuraSlots(unit, filter, maxCount, continuationToken));
+            C_UnitAuras.GetAuraSlots(unit, filter, maxCount, continuationToken));
     until continuationToken == nil;
 end
 

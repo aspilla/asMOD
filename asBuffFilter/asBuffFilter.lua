@@ -118,7 +118,7 @@ end
 
 
 local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuationToken, ...)
-	-- continuationToken is the first return value of UnitAuraSlots()
+	-- continuationToken is the first return value of C_UnitAuras.GetAuraSlots()
 	local n = select('#', ...);
 	for i = 1, n do
 		local slot = select(i, ...);
@@ -144,7 +144,7 @@ local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
 	repeat
 		-- continuationToken is the first return value of UnitAuraSltos
 		continuationToken = ForEachAuraHelper(unit, filter, func, usePackedAura,
-			UnitAuraSlots(unit, filter, maxCount, continuationToken));
+			C_UnitAuras.GetAuraSlots(unit, filter, maxCount, continuationToken));
 	until continuationToken == nil;
 end
 
@@ -742,7 +742,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		asCheckTalent();
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") and arg1 then
-		local spell_name = GetSpellInfo(arg1);
+		local spell_name = asGetSpellInfo(arg1);
 		overlayspell[arg1] = true;
 		overlayspell[spell_name] = true;
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_HIDE") then
@@ -869,7 +869,7 @@ local function ABF_Init()
 	ABF:Show()
 
 
-	local bloaded = LoadAddOn("asMOD")
+	local bloaded = C_AddOns.LoadAddOn("asMOD")
 
 	ABF_TARGET_BUFF = CreateFrame("Frame", nil, ABF)
 
@@ -928,7 +928,7 @@ local function ABF_Init()
 	ABF:RegisterEvent("CVAR_UPDATE");
 
 
-	bloaded = LoadAddOn("asOverlay")
+	bloaded = C_AddOns.LoadAddOn("asOverlay")
 	if bloaded then
 		ABF:RegisterEvent("SPELL_ACTIVATION_OVERLAY_SHOW");
 		ABF:RegisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE");

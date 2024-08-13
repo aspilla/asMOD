@@ -246,7 +246,7 @@ local function ARD_OnLoad()
 	ARD_RangeText = ARD_mainframe:CreateFontString(nil, "OVERLAY")
 	ARD_RangeText:SetFont(ARD_Font, ARD_FontSize, ARD_FontOutline)
 
-	local bloaded = LoadAddOn("asHealthText")
+	local bloaded = C_AddOns.LoadAddOn("asHealthText")
 
 	if bloaded and ARD_AHT then
 		ARD_RangeText:SetPoint("LEFT", "AHT_RaidIcon", "RIGHT", 2, 0);
@@ -257,7 +257,7 @@ local function ARD_OnLoad()
 	ARD_RangeText:SetText("");
 	ARD_RangeText:Show();
 
-	local bloaded = LoadAddOn("asMOD")
+	local bloaded = C_AddOns.LoadAddOn("asMOD")
 
 	if bloaded and asMOD_setupFrame then
 		asMOD_setupFrame(ARD_RangeText, "asRangeDisplay");

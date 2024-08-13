@@ -1071,7 +1071,7 @@ local function APB_GetActionSlot(arg1)
         local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
         if id and type and type == "macro" then
-            local name = GetSpellInfo(id);
+            local name = asGetSpellInfo(id);
             if name and name == arg1 then
                 ret = lActionSlot;
             end
@@ -1082,7 +1082,7 @@ local function APB_GetActionSlot(arg1)
         local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
         if id and type and type == "spell" then
-            local name = GetSpellInfo(id);
+            local name = asGetSpellInfo(id);
             if name and name == arg1 then
                 ret = lActionSlot;
             end
@@ -1153,7 +1153,7 @@ local function APB_UpdateSpell(spell, spell2)
     local _, notEnoughMana = C_Spell.IsSpellUsable(spellid);
 
     if bupdate_druid then
-        charges = GetSpellCount(spellid);
+        charges = C_Spell.GetSpellCastCount(spellid);
         maxCharges = 2;
         chargeStart = 0;
         chargeDuration = 0;
@@ -1234,7 +1234,7 @@ local function APB_UpdateSpell(spell, spell2)
         local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellid);
 
         if bupdate_druid then
-            charges = GetSpellCount(spellid);
+            charges = C_Spell.GetSpellCastCount(spellid);
             maxCharges2 = 2;
             chargeStart = 0;
             chargeDuration = 0;
@@ -3013,7 +3013,7 @@ do
     APB.text:SetTextColor(1, 1, 1, 1)
     APB.text:Hide();
 
-    LoadAddOn("asMOD");
+    C_AddOns.LoadAddOn("asMOD");
 
     if asMOD_setupFrame then
         asMOD_setupFrame(APB, "asPowerBar");

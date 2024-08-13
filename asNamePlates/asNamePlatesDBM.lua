@@ -35,7 +35,7 @@ local function initDBM()
 
 end
 
-local bloaded = LoadAddOn("DBM-Core");
+local bloaded = C_AddOns.LoadAddOn("DBM-Core");
 if bloaded then
     initDBM();
 end

@@ -17,12 +17,14 @@ ns.spelllists = {
 ns.countaware = {
     [263725] = true, -- 번뜩임
     [264173] = true, -- 악마의핵
+    [264571] = true, -- 일몰
     [81340] = true,  -- 부정, 불시의 파멸 2중
-    [16870] = true,                             -- 회드, 번뜩임 2중
+    [16870] = true,   -- 회드, 번뜩임 2중
     [270436] = true,    --정밀 사격    
 }
 
 ns.options = CopyTable(Options_Default);
+local tempoption = {};
 
 
 function ns.SetupOptionPanels()
@@ -58,7 +60,7 @@ function ns.SetupOptionPanels()
             end
             local defaultValue = ASO_Options[variable];
 
-            local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue)
+            local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
 
             Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip)
             Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)

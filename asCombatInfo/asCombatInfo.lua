@@ -24,6 +24,26 @@ local roguespell = {
 	[1] = "숨겨진 보물",
 }
 
+local asGetSpellInfo = function(spellID)
+    if not spellID then
+        return nil;
+    end
+
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+    local spellInfo = C_Spell.GetSpellInfo(spellID);
+
+
+    if spellInfo then
+        return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+            spellInfo.spellID, spellInfo.originalIconID;
+    end
+end
+
 local options = CopyTable(ACI_Options_Default);
 local _G = _G;
 local cast_spell = nil;
@@ -249,10 +269,10 @@ function ACI_Init()
 
 			ACI[i].obutton:init(ACI_SpellList[i], ACI[i]);
 			ACI[i].tooltip = (ACI_SpellList[i][1]);
-			ACI[i].spellid = select(7, GetSpellInfo(ACI_SpellList[i][1]));
+			ACI[i].spellid = select(7, asGetSpellInfo(ACI_SpellList[i][1]));
 		end
 
-		local bload = LoadAddOn("asCooldownPulse")
+		local bload = C_AddOns.LoadAddOn("asCooldownPulse")
 
 		if bload and #ACI_SpellList > 5 and ACDP_Show_CoolList == true then
 			ACDP_Show_CoolList = false;
@@ -367,7 +387,7 @@ for i = 1, ACI_MaxSpellCount do
 end
 
 
-LoadAddOn("asMOD");
+C_AddOns.LoadAddOn("asMOD");
 
 if asMOD_setupFrame then
 	asMOD_setupFrame(ACI[3], "asCombatInfo");

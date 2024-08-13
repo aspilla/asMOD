@@ -205,7 +205,7 @@ ATGCD.frame[0]:SetHeight(AGCICON * 1.3 * 0.9);
 ATGCD.frame[0].icon:Hide();
 ATGCD.frame[0]:Hide();
 
-local bloaded = LoadAddOn("asMOD")
+local bloaded = C_AddOns.LoadAddOn("asMOD")
 if bloaded and asMOD_setupFrame then
 	asMOD_setupFrame(ATGCD.frame[0], "asTrueGCD");	
 end

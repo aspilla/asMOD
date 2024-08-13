@@ -5,7 +5,7 @@ local ASF_Y = 160;
 asUIErrorsFrame:SetPoint("BOTTOM", ASF_X, ASF_Y);
 
 
-LoadAddOn("asMOD");
+C_AddOns.LoadAddOn("asMOD");
 if asMOD_setupFrame then
 	asMOD_setupFrame(asUIErrorsFrame, "asSpamFilter");
 end

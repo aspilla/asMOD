@@ -289,6 +289,8 @@ ns.ACRB_HealerManaBarHeight = 3 -- 힐러 마나바 크기 (안보이게 하려�
 
 ns.options = CopyTable(Options_Default);
 
+local tempoption = {};
+
 
 
 function ns.SetupOptionPanels()
@@ -337,10 +339,10 @@ function ns.SetupOptionPanels()
 			elseif tonumber(defaultValue) ~= nil then
 				local setting, options;
 				if tonumber(defaultValue) < 1 and tonumber(defaultValue) > 0 then
-					setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
+					setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
 					options = Settings.CreateSliderOptions(0.1, 0.9, 0.1);
 				else
-					setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
+					setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
 					options = Settings.CreateSliderOptions(0, 100, 1);
 				end
 
@@ -348,7 +350,7 @@ function ns.SetupOptionPanels()
 				Settings.CreateSlider(category, setting, options, tooltip);
 				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
 			else
-				local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
+				local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
 				Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
 				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
 			end

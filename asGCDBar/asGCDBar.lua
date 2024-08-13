@@ -40,7 +40,7 @@ AGCDB.gcdbar.bg:SetVertexColor(0, 0, 0, 0.8);
 AGCDB.gcdbar:SetPoint("CENTER", UIParent, "CENTER", AGCDB_X, AGCDB_Y)
 AGCDB.gcdbar:Show();
 
-LoadAddOn("asMOD");
+C_AddOns.LoadAddOn("asMOD");
 
 if asMOD_setupFrame then
 	asMOD_setupFrame(AGCDB.gcdbar, "asGCDBar");

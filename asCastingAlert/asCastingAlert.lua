@@ -185,7 +185,7 @@ local function initAddon()
     -- 주기적으로 Callback
     C_Timer.NewTicker(ACTA_UpdateRate, ACTA_OnUpdate);
 
-    local bloaded = LoadAddOn("DBM-Core");
+    local bloaded = C_AddOns.LoadAddOn("DBM-Core");
     if bloaded then
         hooksecurefunc(DBM, "NewMod", NewMod)
     end

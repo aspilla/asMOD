@@ -12,6 +12,7 @@ local Options_Default = {
 };
 
 ns.options = CopyTable(Options_Default);
+local tempoption = {};
 
 
 function ns.SetupOptionPanels()
@@ -79,18 +80,18 @@ function ns.SetupOptionPanels()
                     end
                 end
 
-                local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue)
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
 
                 Settings.CreateDropdown(category, setting, GetOptions, tooltip)
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)
             elseif tonumber(defaultValue) ~= nil then
-                local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
                 local options = Settings.CreateSliderOptions(0, 100, 1);
                 options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
                 Settings.CreateSlider(category, setting, options, tooltip);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             else
-                local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue);
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
 
                 Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);

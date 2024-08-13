@@ -18,7 +18,7 @@ end
 local function init_combattext()
 	local bShowHeal = ASCT_DEFAULT_SHOW_HEAL
 
-	LoadAddOn("Blizzard_CombatText")
+	C_AddOns.LoadAddOn("Blizzard_CombatText")
 	C_Timer.After(1, updateCVar)
 		
 	CombatTextFont:SetFont("Fonts\\2002.ttf", 18, "OUTLINE")

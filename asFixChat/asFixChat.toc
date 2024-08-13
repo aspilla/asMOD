@@ -1,4 +1,4 @@
-﻿## Interface: 110000
+﻿## Interface: 110002
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rFixChat
 ## Notes: 채팅창 강화, 1.Tab으로 파티/길드/공격대 챗 변경, 2.URL 클릭시 Link 복사 가능하도록 지원

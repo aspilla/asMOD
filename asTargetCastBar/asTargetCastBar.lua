@@ -92,7 +92,7 @@ ATCB.start = 0;
 ATCB.duration = 0;
 
 
-LoadAddOn("asMOD");
+C_AddOns.LoadAddOn("asMOD");
 
 if asMOD_setupFrame then
     asMOD_setupFrame(ATCB.castbar, "asTargetCastBar");
@@ -268,7 +268,7 @@ local function NewMod(self, ...)
     C_Timer.After(0.25, scanDBM);
 end
 
-local bloaded = LoadAddOn("DBM-Core");
+local bloaded = C_AddOns.LoadAddOn("DBM-Core");
 if bloaded then
     hooksecurefunc(DBM, "NewMod", NewMod)
 end

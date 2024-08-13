@@ -11,6 +11,7 @@ local Options_Default = {
 };
 
 ns.options = CopyTable(Options_Default);
+local tempoption = {};
 
 
 function ns.SetupOptionPanels()
@@ -49,7 +50,7 @@ function ns.SetupOptionPanels()
             end
             local defaultValue = AFUF_Options[variable];
 
-            local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue)
+            local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
             
             Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip)
             Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)

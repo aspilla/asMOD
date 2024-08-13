@@ -206,7 +206,7 @@ ns.trackedCoolSpellNames = {
     }
 }
 
-
+local tempoption = {};
 
 function ns.SetupOptionPanels()
     local function OnSettingChanged(_, setting, value)
@@ -244,7 +244,7 @@ function ns.SetupOptionPanels()
             end
             local defaultValue = ARDY_Options[variable];
 
-            local setting = Settings.RegisterAddOnSetting(category, name, cvar_name, type(defaultValue), defaultValue)
+            local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
             Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip)
             Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)
         end

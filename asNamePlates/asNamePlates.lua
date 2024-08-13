@@ -1798,12 +1798,12 @@ local function initAddon()
 
     ANameP_OptionM.RegisterCallback(flushoption);
 
-    local bloaded = LoadAddOn("DBM-Core");
+    local bloaded = C_AddOns.LoadAddOn("DBM-Core");
     if bloaded then
         hooksecurefunc(DBM, "NewMod", NewMod)
     end
 
-    bloadedAutoMarker = LoadAddOn("asAutoMarker");
+    bloadedAutoMarker = C_AddOns.LoadAddOn("asAutoMarker");
 end
 
 initAddon();

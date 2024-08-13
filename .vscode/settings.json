@@ -1021,13 +1021,32 @@
         "EJ_GetNumTiers",
         "EJ_SelectTier",
         "GetNumClasses",
-        "C_GuildInfo"
+        "C_GuildInfo",
+        "ipairs",
+        "string",
+        "math",
+        "type",
+        "_G",
+        "next",
+        "tostring",
+        "setmetatable",
+        "assert",
+        "error",
+        "getmetatable",
+        "pcall",
+        "xpcall",
+        "rawset",
+        "rawget",
+        "collectgarbage",
+        "C_CVar",
+        "SplashFrame",
+        "TutorialPointerFrame_1"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.workspace.library": [
         "d:/Develop/asMOD",
         "d:/Develop/wow-ui-source/",
-        "D:\\Utils\\VSCode\\data\\extensions\\ketho.wow-api-0.15.5\\Annotations"
+        "~\\D:\\Utils\\VSCode\\data\\extensions\\ketho.wow-api-0.16.6\\Annotations"
     ],
     "Lua.diagnostics.disable": [
         "missing-parameter"

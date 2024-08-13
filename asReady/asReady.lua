@@ -44,7 +44,7 @@ AREADY:Show();
 
 AREADY.bar = {};
 
-LoadAddOn("asMOD");
+C_AddOns.LoadAddOn("asMOD");
 
 for idx = 1, AREADY_Max do
     AREADY.bar[idx] = CreateFrame("StatusBar", nil, UIParent)
