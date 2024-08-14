@@ -1797,7 +1797,7 @@ local function APB_CheckPower(self)
             bupdate_buff_combo = true;
 
             for i = 1, 10 do
-                APB.combobar[i].tooltip = "고드름";
+                APB.combobar[i].tooltip = APB_BUFF_COMBO;
             end
 
             FrozenOrbDuration = 10;
@@ -1835,8 +1835,7 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].unit = "target";
                 APB:SetScript("OnUpdate", APB_OnUpdate);
 
-                APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-                APB_UpdateBuff(self.buffbar[0])
+                APB:RegisterEvent("PLAYER_TARGET_CHANGED");                
                 bupdate_buff_count = true;
             end
         end
@@ -1846,8 +1845,7 @@ local function APB_CheckPower(self)
             APB.buffbar[0].debuff = APB_DEBUFF;
             APB.buffbar[0].unit = "target"
             APB:SetScript("OnUpdate", APB_OnUpdate);
-            APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-            APB_UpdateBuff(self.buffbar[0])
+            APB:RegisterEvent("PLAYER_TARGET_CHANGED");            
         end
 
         if (spec and spec == 3) then
@@ -1873,24 +1871,20 @@ local function APB_CheckPower(self)
                 APB.buffbar[1].debuff = APB_DEBUFF2;
                 APB.buffbar[1].unit = "target"
                 APB:SetScript("OnUpdate", APB_OnUpdate);
-                APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-                APB_UpdateBuff(self.buffbar[0])
-                APB_UpdateBuff(self.buffbar[1])
+                APB:RegisterEvent("PLAYER_TARGET_CHANGED");                
             elseif IsPlayerSpell(205184) then
                 APB_DEBUFF = select(1, asGetSpellInfo(265931)); --점화 울부짖는 불길
                 APB.buffbar[0].debuff = APB_DEBUFF;
                 APB.buffbar[0].unit = "target"
 
                 APB:SetScript("OnUpdate", APB_OnUpdate);
-                APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-                APB_UpdateBuff(self.buffbar[0])
+                APB:RegisterEvent("PLAYER_TARGET_CHANGED");                
             elseif IsPlayerSpell(196412) then
                 APB_DEBUFF = select(1, asGetSpellInfo(196412)); --박멸
                 APB.buffbar[0].debuff = APB_DEBUFF;
                 APB.buffbar[0].unit = "target"
                 APB:SetScript("OnUpdate", APB_OnUpdate);
-                APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-                APB_UpdateBuff(self.buffbar[0])
+                APB:RegisterEvent("PLAYER_TARGET_CHANGED");                
             end
         end
 
@@ -1909,9 +1903,8 @@ local function APB_CheckPower(self)
             APB_BUFF2 = "일월식 (태양)";
             APB.buffbar[1].buff = APB_BUFF2
             APB.buffbar[1].unit = "player"
-            APB:RegisterUnitEvent("UNIT_AURA", "player");
-            APB_UpdateBuff(self.buffbar[0]);
-            APB_UpdateBuff(self.buffbar[1]);
+            APB:RegisterUnitEvent("UNIT_AURA", "player");            
+            
 
             APB_SPELL = "별빛섬광";
             APB_SPELL2 = "천벌"
@@ -1947,9 +1940,7 @@ local function APB_CheckPower(self)
             APB.buffbar[0].buff = APB_BUFF
             APB.buffbar[0].unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
-            bupdate_buff_count = true;
-
-            APB_UpdateBuff(self.buffbar[0]);
+            bupdate_buff_count = true;            
 
             APB_UNIT_POWER = "COMBO_POINTS"
             APB_POWER_LEVEL = Enum.PowerType.ComboPoints
@@ -1989,9 +1980,7 @@ local function APB_CheckPower(self)
                 APB_BUFF = "피어나는 생명";
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player"
-                APB:RegisterUnitEvent("UNIT_AURA", "player");
-
-                APB_UpdateBuff(self.buffbar[0]);
+                APB:RegisterUnitEvent("UNIT_AURA", "player");                
             end
 
             for i = 1, 10 do
@@ -2020,8 +2009,7 @@ local function APB_CheckPower(self)
                 APB_BUFF = "고대의 가르침";
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
-                APB:RegisterUnitEvent("UNIT_AURA", "player");
-                APB_UpdateBuff(self.buffbar[0])
+                APB:RegisterUnitEvent("UNIT_AURA", "player");                
             end
             if asCheckTalent("셰이룬의 선물") then
                 APB_ACTION_COMBO = APB_GetActionSlot("셰이룬의 선물");
@@ -2059,20 +2047,17 @@ local function APB_CheckPower(self)
             APB.buffbar[0].debuff = APB_DEBUFF;
             APB.buffbar[0].unit = "target"
             APB:SetScript("OnUpdate", APB_OnUpdate);
-            APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-            APB_UpdateBuff(self.buffbar[0])
+            APB:RegisterEvent("PLAYER_TARGET_CHANGED");            
         elseif asCheckTalent("일발필중") then
             APB_BUFF = "기만";
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
-            APB:RegisterUnitEvent("UNIT_AURA", "player");
-            APB_UpdateBuff(self.buffbar[0])
+            APB:RegisterUnitEvent("UNIT_AURA", "player");            
         else
             APB_BUFF = "난도질";
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
-            APB:RegisterUnitEvent("UNIT_AURA", "player");
-            APB_UpdateBuff(self.buffbar[0])
+            APB:RegisterUnitEvent("UNIT_AURA", "player");            
         end
 
         if (spec and spec == 3) then
@@ -2103,8 +2088,7 @@ local function APB_CheckPower(self)
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
-            bupdate_buff_count = true;
-            APB_UpdateBuff(self.buffbar[0]);
+            bupdate_buff_count = true;            
         end
 
         if (spec and spec == 2) then
@@ -2113,15 +2097,13 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
-                bupdate_buff_count = true;
-                APB_UpdateBuff(self.buffbar[0]);
+                bupdate_buff_count = true;                
             elseif asCheckTalent("얼음 발톱") then
                 APB_BUFF = "얼음 발톱";
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
-                bupdate_buff_count = true;
-                APB_UpdateBuff(self.buffbar[0]);
+                bupdate_buff_count = true;                
             end
         end
 
@@ -2129,8 +2111,7 @@ local function APB_CheckPower(self)
             APB_BUFF = "역병인도자";
             APB.buffbar[0].buff = APB_BUFF
             APB.buffbar[0].unit = "player"
-            APB:RegisterUnitEvent("UNIT_AURA", "player");
-            APB_UpdateBuff(self.buffbar[0]);
+            APB:RegisterUnitEvent("UNIT_AURA", "player");            
         end
 
         APB_MaxRune();
@@ -2156,8 +2137,7 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].debuff = APB_DEBUFF;
                 APB.buffbar[0].unit = "target"
                 APB:SetScript("OnUpdate", APB_OnUpdate);
-                APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-                APB_UpdateBuff(self.buffbar[0])
+                APB:RegisterEvent("PLAYER_TARGET_CHANGED");                
             end
         end
 
@@ -2188,8 +2168,7 @@ local function APB_CheckPower(self)
             APB.buffbar[0].unit = "target";
             APB:SetScript("OnUpdate", APB_OnUpdate);
 
-            APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-            APB_UpdateBuff(self.buffbar[0])
+            APB:RegisterEvent("PLAYER_TARGET_CHANGED");            
         end
 
         if (spec and spec == 2) then
@@ -2197,8 +2176,7 @@ local function APB_CheckPower(self)
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
-            -- APB:SetScript("OnUpdate", APB_OnUpdate);
-            APB_UpdateBuff(self.buffbar[0]);
+            -- APB:SetScript("OnUpdate", APB_OnUpdate);            
 
             if asCheckTalent("소용돌이 연마") then
                 APB_BUFF_COMBO = "소용돌이";
@@ -2223,9 +2201,7 @@ local function APB_CheckPower(self)
             APB.buffbar[0].buff = "방패 올리기"
             APB.buffbar[0].unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
-            -- APB:SetScript("OnUpdate", APB_OnUpdate);
-
-            APB_UpdateBuff(self.buffbar[0])
+            -- APB:SetScript("OnUpdate", APB_OnUpdate);            
         end
     end
 
@@ -2238,16 +2214,12 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].max = 20;
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 -- APB:SetScript("OnUpdate", APB_OnUpdate);
-
-                APB_UpdateBuff(self.buffbar[0])
             elseif asCheckTalent("타성") then
                 APB_BUFF = "타성";
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 -- APB:SetScript("OnUpdate", APB_OnUpdate);
-
-                APB_UpdateBuff(self.buffbar[0])
             end
 
             APB_SPELL = "지옥 돌진";
@@ -2276,8 +2248,6 @@ local function APB_CheckPower(self)
             APB:RegisterUnitEvent("UNIT_AURA", "player");
             -- APB:SetScript("OnUpdate", APB_OnUpdate);
 
-            APB_UpdateBuff(self.buffbar[0]);
-
             APB_BUFF_COMBO = "영혼 파편";
             APB_MaxCombo(5);
             APB.combobar.unit = "player"
@@ -2304,7 +2274,6 @@ local function APB_CheckPower(self)
             bupdate_buff_count = true;
             APB:RegisterUnitEvent("UNIT_AURA", "player");
             -- APB:SetScript("OnUpdate", APB_OnUpdate);
-            APB_UpdateBuff(self.buffbar[0])
 
             if asCheckTalent("폭발성 맹독") then
                 APB_BUFF_COMBO = "폭발성 맹독";
@@ -2348,7 +2317,6 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].unit = "player"
                 APB.buffbar[0].maxshow = 6;
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
-                APB_UpdateBuff(self.buffbar[0])
             end
         end
 
@@ -2391,7 +2359,6 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].unit = "player";
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 -- APB:SetScript("OnUpdate", APB_OnUpdate);
-                APB_UpdateBuff(self.buffbar[0])
             end
         end
     end
@@ -2408,7 +2375,6 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
-                APB_UpdateBuff(self.buffbar[0])
             end
         end
 
@@ -2439,7 +2405,6 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].buff = 187878;
                 APB.buffbar[0].unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
-                APB_UpdateBuff(self.buffbar[0])
             end
         end
 
@@ -2524,15 +2489,21 @@ local function APB_CheckPower(self)
             APB.buffbar[0]:SetHeight(APB_HEIGHT + 2);
         end
 
+        APB_UpdateBuff(self.buffbar[0]);
         if (APB_BUFF2 or APB_DEBUFF2) then
             APB.buffbar[1]:SetHeight(APB_HEIGHT);
             APB.buffbar[1]:SetWidth(APB_WIDTH / 2);
             APB.buffbar[0]:SetWidth(APB_WIDTH / 2);
+            APB_UpdateBuff(self.buffbar[1]);
             if bupdate_buff_count then
                 APB.buffbar[1]:SetHeight(APB_HEIGHT + 2);
             end
         else
             APB.buffbar[0]:SetWidth(APB_WIDTH);
+        end
+
+        if bupdate_fronzen then
+            APB_UpdateFronzenOrb(self.buffbar[0]);
         end
     end
 
