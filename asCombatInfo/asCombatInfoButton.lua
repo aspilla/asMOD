@@ -403,7 +403,8 @@ function ns.Button:checkSpell()
                 local health = UnitHealth("target") / UnitHealthMax("target") * 100
 
                 if health <= self.number then
-                    self.alert2 = true;
+                    -- 화법 마격 알림으로 끔
+                    --self.alert2 = true;                    
                 elseif not (self.alert == true) then
                     isUsable = false;
                 end
