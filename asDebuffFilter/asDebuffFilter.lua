@@ -403,6 +403,10 @@ local function ProcessAura(aura, unit)
             skip = true;
         end
 
+        if APB_DEBUFF2 and APB_DEBUFF2 == aura.name then
+            skip = true;
+        end
+
         -- ACI 에서 보이는 Debuff 는 숨기고
         if ACI_Debuff_list and ACI_Debuff_list[aura.name] then
             skip = true;

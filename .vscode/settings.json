@@ -1046,7 +1046,7 @@
     "Lua.workspace.library": [
         "d:/Develop/asMOD",
         "d:/Develop/wow-ui-source/",
-        "~\\D:\\Utils\\VSCode\\data\\extensions\\ketho.wow-api-0.16.6\\Annotations"
+        "~\\D:\\Utils\\VSCode\\data\\extensions\\ketho.wow-api-0.16.8\\Annotations"
     ],
     "Lua.diagnostics.disable": [
         "missing-parameter"

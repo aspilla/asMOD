@@ -1483,6 +1483,7 @@ local function APB_OnUpdate(self, elapsed)
     if update2 >= 0.2 then
         update2 = 0
         APB_UpdateBuff(self.buffbar[0]);
+        APB_UpdateBuff(self.buffbar[1]);
         APB_UpdateBuffCombo(self.combobar);
         APB_UpdateStagger(self.buffbar[0]);
         APB_UpdatePower();
@@ -1726,7 +1727,6 @@ local function APB_CheckPower(self)
 
     if (englishClass == "MAGE") then
         if (spec and spec == 1) then
-
             if (asCheckTalent("비전의 박자")) then
                 APB_BUFF = "비전의 박자";
                 APB.buffbar[0].buff = APB_BUFF
@@ -1851,14 +1851,41 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 3) then
-            APB_SPELL = "점화";
-            APB_SpellMax(APB_SPELL);
-            APB_UpdateSpell(APB_SPELL);
+            APB_SPELL = select(1, asGetSpellInfo(17962)); --점화
             bupdate_spell = true;
             bupdate_partial_power = true;
 
-            if asCheckTalent("박멸") then
-                APB_DEBUFF = "박멸";
+            if IsPlayerSpell(17877) then
+                APB_SPELL2 = select(1, asGetSpellInfo(17877)); --어둠의 연소
+                APB_SpellMax(APB_SPELL, APB_SPELL2);
+                APB_UpdateSpell(APB_SPELL, APB_SPELL2);
+            else
+                APB_SpellMax(APB_SPELL);
+                APB_UpdateSpell(APB_SPELL);
+            end
+
+            if IsPlayerSpell(205184) and IsPlayerSpell(196412) then
+                APB_DEBUFF = select(1, asGetSpellInfo(265931)); --점화 울부짖는 불길
+                APB.buffbar[0].debuff = APB_DEBUFF;
+                APB.buffbar[0].unit = "target"
+
+                APB_DEBUFF2 = select(1, asGetSpellInfo(196412)); --박멸
+                APB.buffbar[1].debuff = APB_DEBUFF2;
+                APB.buffbar[1].unit = "target"
+                APB:SetScript("OnUpdate", APB_OnUpdate);
+                APB:RegisterEvent("PLAYER_TARGET_CHANGED");
+                APB_UpdateBuff(self.buffbar[0])
+                APB_UpdateBuff(self.buffbar[1])
+            elseif IsPlayerSpell(205184) then
+                APB_DEBUFF = select(1, asGetSpellInfo(265931)); --점화 울부짖는 불길
+                APB.buffbar[0].debuff = APB_DEBUFF;
+                APB.buffbar[0].unit = "target"
+
+                APB:SetScript("OnUpdate", APB_OnUpdate);
+                APB:RegisterEvent("PLAYER_TARGET_CHANGED");
+                APB_UpdateBuff(self.buffbar[0])
+            elseif IsPlayerSpell(196412) then
+                APB_DEBUFF = select(1, asGetSpellInfo(196412)); --박멸
                 APB.buffbar[0].debuff = APB_DEBUFF;
                 APB.buffbar[0].unit = "target"
                 APB:SetScript("OnUpdate", APB_OnUpdate);
@@ -1877,13 +1904,13 @@ local function APB_CheckPower(self)
             APB_BUFF = "일월식 (달)";
             APB.buffbar[0].buff = APB_BUFF
             APB.buffbar[0].unit = "player"
-            APB:RegisterUnitEvent("UNIT_AURA", "player");
-            APB_UpdateBuff(self.buffbar[0]);
+
 
             APB_BUFF2 = "일월식 (태양)";
             APB.buffbar[1].buff = APB_BUFF2
             APB.buffbar[1].unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
+            APB_UpdateBuff(self.buffbar[0]);
             APB_UpdateBuff(self.buffbar[1]);
 
             APB_SPELL = "별빛섬광";
@@ -2336,7 +2363,18 @@ local function APB_CheckPower(self)
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
 
-            if asCheckTalent("살쾡이의 이빨") then
+            if asCheckTalent("창끝") then
+                APB_BUFF_COMBO = "창끝";
+                APB_MaxCombo(3);
+                APB.combobar.unit = "player"
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
+                APB_UpdateBuffCombo(self.combobar)
+                bupdate_buff_combo = true;
+
+                for i = 1, 10 do
+                    APB.combobar[i].tooltip = APB_BUFF_COMBO;
+                end
+            elseif asCheckTalent("살쾡이의 이빨") then
                 APB_BUFF_COMBO = "살쾡이의 격노";
                 APB_MaxCombo(5);
                 APB.combobar.unit = "player"
@@ -2354,17 +2392,6 @@ local function APB_CheckPower(self)
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 -- APB:SetScript("OnUpdate", APB_OnUpdate);
                 APB_UpdateBuff(self.buffbar[0])
-            elseif asCheckTalent("창끝") then
-                APB_BUFF_COMBO = "창끝";
-                APB_MaxCombo(3);
-                APB.combobar.unit = "player"
-                APB:RegisterUnitEvent("UNIT_AURA", "player");
-                APB_UpdateBuffCombo(self.combobar)
-                bupdate_buff_combo = true;
-
-                for i = 1, 10 do
-                    APB.combobar[i].tooltip = APB_BUFF_COMBO;
-                end
             end
         end
     end
