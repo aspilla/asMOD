@@ -197,21 +197,27 @@ ADotF_NameList = {};
 
 
 local function ADotF_UnitDebuff_Name(unit, buff, filter)
-    local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, value1, value2, value3;
+
     local i = 1;
-    repeat
-        name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, value1, value2, value3 =
-            UnitDebuff(unit, i, filter);
+    local ret = nil;
 
-        if name == buff then
-            return name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate,
-                spellId, canApplyAura, isBossDebuff, value1, value2, value3;
+    local auraList = ns.ParseAllDebuff(unit);
+
+    auraList:Iterate(function(auraInstanceID, aura)
+        if aura and aura.name == buff then
+            if aura.duration > 0 then
+                ret = aura;
+            elseif ret == nil then
+                ret = aura;
+            end
         end
-        i = i + 1;
-    until (name == nil)
+    end);
 
-    return name, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId,
-        canApplyAura, isBossDebuff, value1, value2, value3;
+    if ret then
+        return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit;
+    end
+
+    return nil;
 end
 
 local function asCooldownFrame_Clear(self)
