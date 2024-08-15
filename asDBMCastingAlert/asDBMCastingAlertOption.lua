@@ -42,7 +42,7 @@ function ns.SetupOptionPanels()
         return;
     end
 
-    if ADCA_Options == nil or Options_Default.Version ~= ACDP_Options.Version then
+    if ADCA_Options == nil or Options_Default.Version ~= ADCA_Options.Version then
         ADCA_Options = {};
         ADCA_Options = CopyTable(Options_Default);
     end
