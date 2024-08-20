@@ -2436,3 +2436,9 @@ Details-bak/Libs/AceLocale-3.0/AceLocale-3.0.lua
 Details-bak/Libs/DF/dropdown.lua
 Details-bak/Libs/DF/textentry.lua
 Details-bak/locales/Details-deDE.lua
+Details/frames/window_pro_file.lua
+Details/images/background83.png
+Details/images/gradient_black_transparent.png
+Details/images/shadow_square.png
+Details/images/bar_textures/bar_best.png
+Details/images/bar_textures/bar_hyanda_reverse.png

@@ -24,27 +24,28 @@ local asGetSpellInfo = function(spellID)
 
 	local ospellID = C_Spell.GetOverrideSpell(spellID)
 
-    if ospellID then
-        spellID = ospellID;
-    end
+	if ospellID then
+		spellID = ospellID;
+	end
 
 	local spellInfo = C_Spell.GetSpellInfo(spellID);
 	if spellInfo then
-		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+			spellInfo.spellID, spellInfo.originalIconID;
 	end
 end
 
 local asGetSpellCooldown = function(spellID)
-
 	local ospellID = C_Spell.GetOverrideSpell(spellID)
 
-    if ospellID then
-        spellID = ospellID;
-    end
-	
+	if ospellID then
+		spellID = ospellID;
+	end
+
 	local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
 	if spellCooldownInfo then
-		return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
+		return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled,
+			spellCooldownInfo.modRate;
 	end
 end
 
@@ -100,8 +101,6 @@ local function ASAA_UpdateCooldown()
 	end
 
 	for id, isAlert in pairs(ASAA_SpellList) do
-
-
 		if isAlert == true then
 			_, _, icon = asGetSpellInfo(id);
 			start, duration, enable = asGetSpellCooldown(id);
@@ -175,28 +174,44 @@ local function ASAA_UpdateCooldown()
 end
 
 local function ASAA_Insert(id)
+
+	if not id then
+		return;
+	end
+
 	local name, _, icon = asGetSpellInfo(id);
 
 	if ASAA_BackList and ASAA_BackList[name] then
 		return;
 	end
 
-	if ACI_SpellID_list and (ACI_SpellID_list[id] or ACI_SpellID_list[name]) then		
-		return;
-	end	
-
-	if APB_SPELL and APB_SPELL == name then
-		return;
+	if ACI_SpellID_list then
+		for spellorg, _ in pairs(ACI_SpellID_list) do
+			local newspell = asGetSpellInfo(spellorg);
+			if id == spellorg or name == spellorg or name == newspell then
+				return;
+			end
+		end
 	end
 
-	if APB_SPELL2 and APB_SPELL2 == name then
-		return;
+	if APB_SPELL then
+		local newspell = asGetSpellInfo(APB_SPELL)
+		if APB_SPELL == name or name == newspell then
+			return;
+		end
+	end
+
+	if APB_SPELL2 then
+		local newspell = asGetSpellInfo(APB_SPELL2)
+		if APB_SPELL2 == name or name == newspell then
+			return;
+		end
 	end
 
 	if not IsPlayerSpell(id) then
-		return;
+		--return;
 	end
-	
+
 	if show_icons[icon] == true then
 		return;
 	end
