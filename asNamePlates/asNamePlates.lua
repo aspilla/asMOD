@@ -1529,7 +1529,7 @@ local bfirst = true;
 
 local function setupFriendlyPlates()
     local isInstance, instanceType = IsInInstance();
-    if bfirst and not isInstance and not InCombatLockdown() then
+    if bfirst and not isInstance and not InCombatLockdown() and ns.options.ANameP_ShortFriendNP then
         C_NamePlate.SetNamePlateFriendlySize(60, 30);
         bfirst = false;
     end

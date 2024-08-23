@@ -108,9 +108,10 @@ ADotF_ShowList_DRUID_1 = {
 
 
 ADotF_ShowList_DRUID_2 = {
-    { "달빛섬광", 1 },
     { "갈퀴 발톱", 12 * 0.3 },
     { "도려내기", 19 * 0.3 },
+    { "피바라미 덩굴", 0 },
+    { "달빛섬광", 1 },
 }
 
 ADotF_ShowList_DRUID_3 = {
@@ -119,7 +120,10 @@ ADotF_ShowList_DRUID_3 = {
 
 ADotF_ShowList_DRUID_4 = {
     { "달빛섬광", 1 },
+    { "태양섬광", 1 },
     { "갈퀴 발톱", 12 * 0.3 },
+    { "도려내기", 19 * 0.3 },
+    { "피바라미 덩굴", 0 },
 }
 
 
@@ -137,16 +141,20 @@ ADotF_ShowList_MAGE_3 = {
 }
 
 ADotF_ShowList_DEATHKNIGHT_1 = {
+    { "사신의 징표", 0 },
+    { "공포 유발", 0 },
     { "피의 역병", 0 },
 }
 
 ADotF_ShowList_DEATHKNIGHT_2 = {
+    { "사신의 징표", 0 },
     { "서리 열병", 0 },
 }
 
 ADotF_ShowList_DEATHKNIGHT_3 = {
-    { "악성 역병", 1 },
+    { "공포 유발", 0 },
     { "고름 상처", 0 },
+    { "악성 역병", 1 },    
 }
 
 ADotF_ShowList_EVOKER_1 = {

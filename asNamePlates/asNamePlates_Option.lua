@@ -312,7 +312,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 240823,
+    version = 240824,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -324,6 +324,7 @@ ANameP_Options_Default = {
     ANameP_Tooltip = true,                                    -- Tooltip 표시
     ANameP_ShowDBM = true,                                    -- DBM Cooldown을 표시
     ANameP_ShowDBMCastingColor = true,                        -- DBM CastingColor을 표시
+    ANameP_ShortFriendNP = true,                              -- 아군 체력바 크기 조정
 
     ANameP_AggroTargetColor = { r = 0.4, g = 0.2, b = 0.8 },  -- PVE 대상이 player 였을때 Color
     ANameP_AggroColor = { r = 0.5, g = 1, b = 1 },            -- 어그로 대상일때 바 Color
@@ -469,8 +470,9 @@ ANameP_Options_Default = {
 
     ANameP_ShowList_DRUID_2 = {
         ["갈퀴 발톱"] = { 12 * 0.3, 5, 1 },
-        ["도려내기"] = { 19 * 0.3, 4 },
-        ["달빛섬광"] = { 1, 3 },
+        ["도려내기"] = { 19 * 0.3, 4, 2 },
+        ["피바라미 덩굴"] = { 0, 3 },
+        ["달빛섬광"] = { 1, 2 },
     },
 
     ANameP_ShowList_DRUID_3 = {
@@ -480,7 +482,10 @@ ANameP_Options_Default = {
 
     ANameP_ShowList_DRUID_4 = {
         ["달빛섬광"] = { 1, 5, 1 },
-        ["갈퀴 발톱"] = { 12 * 0.3, 4, 2 },
+        ["태양섬광"] = { 1, 4 },
+        ["갈퀴 발톱"] = { 12 * 0.3, 3, 2 },
+        ["도려내기"] = { 19 * 0.3, 2 },
+        ["피바라미 덩굴"] = { 0, 1 },
     },
 
 
@@ -501,19 +506,23 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_DEATHKNIGHT_1 = {
-        ["잿빛 부패"] = { 0, 5 }, --시즌3
-        ["피의 역병"] = { 0, 4 },
+        ["사신의 징표"] = { 0, 5}, --시즌2
+        ["공포 유발"] = { 0, 4 },
+        ["피의 역병"] = { 0, 3 },
 
     },
 
     ANameP_ShowList_DEATHKNIGHT_2 = {
-        ["잔존하는 한기"] = { 0, 5, 1 }, --시즌2
+        ["사신의 징표"] = { 0, 5, 1 }, --시즌2
         ["서리 열병"] = { 0, 4 },
     },
 
     ANameP_ShowList_DEATHKNIGHT_3 = {
-        ["악성 역병"] = { 1, 4, 1 },
-        ["고름 상처"] = { 0, 5 },
+        ["공포 유발"] = { 0, 5, 2 },        
+        ["고름 상처"] = { 0, 4 },
+        ["악성 역병"] = { 1, 3, 1 },
+        
+        
     },
 
 
@@ -1049,6 +1058,7 @@ local function panelOnShow()
     SetupCheckBoxOption("[색상] Quest 몹 색상 표시", "ANameP_QuestAlert");
     SetupCheckBoxOption("[색상] AutoMarker 몹 색상 표시", "ANameP_AutoMarker");
     SetupCheckBoxOption("[색상] DBM Casting 몹 색상 표시", "ANameP_ShowDBMCastingColor");
+    SetupCheckBoxOption("[크기] 아군 체력바 크기 조정", "ANameP_ShortFriendNP");
 
 
     SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");
