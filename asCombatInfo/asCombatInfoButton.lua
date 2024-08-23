@@ -97,20 +97,35 @@ function ns.Button:initButton()
     self.buffalert = false;
     self.alert2 = false;
     self.coolalert = false;
-
-    local spellid = select(7, asGetSpellInfo(self.spell));
-    local name = select(1, asGetSpellInfo(self.spell));
-
-    if spellid == nil then
-        spellid = select(7, asGetSpellInfo(self.realspell));
-        name = select(1, asGetSpellInfo(self.realspell));
-    end
-
+       
+    local name, _, _,_,_,_,spellid = asGetSpellInfo(self.realspell);
+    
     if spellid and spellid ~= self.spellid then
+        
         self.spellid = spellid;
+        self.spell = name;
         ACI_SpellID_list[self.spellid] = true;
         if name then
             ACI_SpellID_list[name] = true;
+        end
+        
+        if self.type ~= ns.EnumButtonType.BuffOnly and self.type ~= ns.EnumButtonType.DebuffOnly then            
+            ns.eventhandler.registerEventFilter(name, self);
+        end
+        if self.type == ns.EnumButtonType.Debuff or self.type == ns.EnumButtonType.DebuffOnly then
+            ACI_Debuff_list[name] = true;
+            ns.eventhandler.registerAura(self.unit, name);
+            if self.checkplatecount then
+                ns.eventhandler.registerAura("nameplate", name, self.checkplatecount);
+            end
+        elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then
+            ns.eventhandler.registerBuffTimer(self);
+            ns.eventhandler.registerAura(self.unit, name);
+            ACI_Buff_list[name] = true;
+        end
+
+        if self.type == ns.EnumButtonType.Totem then
+            ns.eventhandler.registerTotem(name, self);
         end
     end
 end
@@ -125,7 +140,6 @@ function ns.Button:checkTotem()
     if t ~= ns.EnumButtonType.Totem then
         return;
     end
-
     local buff = self.spell;
 
     if self.realbuff then
@@ -162,6 +176,42 @@ function ns.Button:checkTotem()
             color = { r = 1, g = 0, b = 0 };
         end
         self.borderColor = color;
+    else
+        local bufflist = self.bufflist;
+        for _, buff in pairs(bufflist) do
+            local totem = ns.aurafunctions.checkTotem(buff);
+            local aura = ns.aurafunctions.checkAura("player", buff);
+
+            if totem then
+                self.icon = totem[4];
+                self.iconDes = false;
+                self.iconColor = { r = 1.0, g = 1.0, b = 1.0 };
+                self.alpha = 1;
+                self.start = totem[2]
+                self.duration = totem[3];
+                self.enable = true;
+                self.reversecool = true;
+                local expirationTime = self.start + self.duration;
+
+                if self.number == 1 then
+                    self.number = self.duration * 0.3;
+                end
+
+                if self.number and (expirationTime - GetTime()) <= self.number and self.duration > 0 then
+                    self.buffalert = true;
+                end
+
+                local color;
+
+                if aura then
+                    color = { r = 0, g = 1, b = 0 };
+                else
+                    color = { r = 1, g = 0, b = 0 };
+                end
+                self.borderColor = color;
+                break;
+            end
+        end
     end
 end
 
@@ -176,13 +226,59 @@ function ns.Button:checkBuffList()
     local count = 0;
     local extemp = 0;
 
-    for _, buff in pairs(bufflist) do
-        local aura = ns.aurafunctions.checkAura(self.unit, buff);
+    if self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly then
+        for _, buff in pairs(bufflist) do
+            local aura = ns.aurafunctions.checkAura(self.unit, buff);
 
-        if aura then
-            count = count + 1;
-            -- 주사위 최대 버프 시간을 우선으로 보이자
-            if self.icon == nil or aura.expirationTime > (self.start + self.duration) then
+            if aura then
+                count = count + 1;
+                -- 주사위 최대 버프 시간을 우선으로 보이자
+                if self.icon == nil or aura.expirationTime > (self.start + self.duration) then
+                    self.icon = aura.icon;
+                    self.start = aura.expirationTime - aura.duration
+                    self.duration = aura.duration;
+                    extemp = aura.expirationTime;
+
+                    local color;
+                    local buff_miss = false;
+
+                    if aura.dispelName then
+                        color = DebuffTypeColor[aura.dispelName];
+                    elseif buff_miss then
+                        color = { r = 1.0, g = 0, b = 0 };
+                    else
+                        if t == 4 or t == 8 then
+                            color = DebuffTypeColor["none"];
+                        else
+                            color = DebuffTypeColor["Disease"];
+                        end
+                    end
+                    self.borderColor = color;
+
+                    if self.number == 1 then
+                        self.number = self.duration * 0.3;
+                    end
+
+                    if self.number and (aura.expirationTime - GetTime()) <= self.number and self.duration > 0 then
+                        self.buffalert = true;
+                    end
+                end
+            end
+        end
+
+
+        if count > 3 then
+            self.alert2 = true;
+        end
+
+        if count >= 1 then
+            self.count = count;
+        end
+    elseif self.type == ns.EnumButtonType.Debuff or self.type == ns.EnumButtonType.DebuffOnly then
+        for _, buff in pairs(bufflist) do
+            local aura = ns.aurafunctions.checkAura(self.unit, buff);
+
+            if aura then
                 self.icon = aura.icon;
                 self.start = aura.expirationTime - aura.duration
                 self.duration = aura.duration;
@@ -211,16 +307,9 @@ function ns.Button:checkBuffList()
                 if self.number and (aura.expirationTime - GetTime()) <= self.number and self.duration > 0 then
                     self.buffalert = true;
                 end
+                break;
             end
         end
-    end
-
-    if count > 3 then
-        self.alert2 = true;
-    end
-
-    if count >= 1 then
-        self.count = count;
     end
 end
 
@@ -348,7 +437,7 @@ function ns.Button:checkSpell()
     local spellid                                          = self.spellid;
     local action                                           = GetAction(self.actionlist, self.spell)
 
-    local spellname, _, icon                                       = asGetSpellInfo(spellid)
+    local spellname, _, icon                               = asGetSpellInfo(spellid)
     local start, duration, enable                          = asGetSpellCooldown(spellid);
     local isUsable, notEnoughMana                          = C_Spell.IsSpellUsable(spellid);
     local charges, maxCharges, chargeStart, chargeDuration = asGetSpellCharges(spellid);
@@ -383,7 +472,7 @@ function ns.Button:checkSpell()
     --seting
     local t = self.type;
 
-    self.icon = icon;    
+    self.icon = icon;
 
     if t == ns.EnumButtonType.BuffOnly or t == ns.EnumButtonType.DebuffOnly then
         isUsable = false;
@@ -404,7 +493,7 @@ function ns.Button:checkSpell()
 
                 if health <= self.number then
                     -- 화법 마격 알림으로 끔
-                    --self.alert2 = true;                    
+                    --self.alert2 = true;
                 elseif not (self.alert == true) then
                     isUsable = false;
                 end
@@ -679,6 +768,7 @@ function ns.Button:init(config, frame)
     end
 
     ns.lib.PixelGlow_Stop(self.frame)
+    
     if self.spell == nil then
         return;
     end
@@ -699,7 +789,7 @@ function ns.Button:init(config, frame)
     end
 
     if self.realbuff and self.realbuff == "petname" and UnitExists("pet") then
-        self.realbuff = UnitName("pet");        
+        self.realbuff = UnitName("pet");
     end
 
     if self.type ~= ns.EnumButtonType.BuffOnly and self.type ~= ns.EnumButtonType.DebuffOnly then
@@ -721,17 +811,38 @@ function ns.Button:init(config, frame)
         if self.checkplatecount then
             ns.eventhandler.registerAura("nameplate", self.spell, self.checkplatecount);
         end
+
+        if self.bufflist then
+            for _, debuff in pairs(self.bufflist) do
+                ns.eventhandler.registerAura(self.unit, debuff);
+            end
+        end
     elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then
         ACI_Buff_list[self.spell] = true;
         ns.eventhandler.registerBuffTimer(self);
         ns.eventhandler.registerAura(self.unit, self.spell);
+
+        if self.bufflist then
+            for _, buff in pairs(self.bufflist) do
+                ns.eventhandler.registerAura("player", buff);
+            end
+        end
     end
 
     if self.type == ns.EnumButtonType.Totem then
+        ACI_Buff_list[self.spell] = true;
         ns.eventhandler.registerTotem(self.spell, self);
         ns.eventhandler.registerTotemTimer(self);
         if self.realbuff then
+            ACI_Buff_list[self.realbuff] = true;
             ns.eventhandler.registerTotem(self.realbuff, self);
+        end
+
+        if self.bufflist then
+            for _, buff in pairs(self.bufflist) do
+                ACI_Buff_list[buff] = true;
+                ns.eventhandler.registerTotem(buff, self);
+            end
         end
     end
 
@@ -753,12 +864,6 @@ function ns.Button:init(config, frame)
     if self.countdebuff then
         ns.eventhandler.registerAura("target", self.countdebuff);
         ACI_Debuff_list[self.countdebuff] = true;
-    end
-
-    if self.bufflist then
-        for _, buff in pairs(self.bufflist) do
-            ns.eventhandler.registerAura("player", buff);
-        end
     end
 
     if self.alertbufflist then

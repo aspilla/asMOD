@@ -2442,3 +2442,9 @@ Details/images/gradient_black_transparent.png
 Details/images/shadow_square.png
 Details/images/bar_textures/bar_best.png
 Details/images/bar_textures/bar_hyanda_reverse.png
+DBM-Party-WarWithin/localization.tw.lua
+DBM-GUI/DBM-GUI_TestUI.lua
+DBM-Test/ReportFrame.lua
+DBM-Test/Public/Callbacks.lua
+DBM-Test/Public/Example.lua
+DBM-Test-WarWithin/DBM-Test-WarWithin_Mainline.toc

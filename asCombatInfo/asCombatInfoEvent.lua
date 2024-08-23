@@ -121,7 +121,7 @@ local function ProcessAura(unit, aura)
     if aura == nil then
         return AuraUpdateChangedType.None;
     end
-    if PLAYER_UNITS[aura.sourceUnit] and aurafilter[unit][aura.name] then
+    if PLAYER_UNITS[aura.sourceUnit] and (aurafilter[unit][aura.name] or aurafilter[unit][aura.spellId])then
         return AuraUpdateChangedType.Show;
     end
 
@@ -193,7 +193,7 @@ local function ACRB_ParseAllNameplateAuras(filter)
                 local batchCount = nil;
                 local usePackedAura = true;
                 local function HandleAura(aura)
-                    if aurafilter[unit][aura.name] then
+                    if aurafilter[unit][aura.name] or aurafilter[unit][aura.spellId] then
                         eventlib[unit].auralist[aura.spellId] = aura;
                         platedebuffcount = platedebuffcount + 1;
                         if platedebuffcount >= platemaxcount then

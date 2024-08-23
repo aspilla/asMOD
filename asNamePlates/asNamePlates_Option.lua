@@ -312,7 +312,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 240808,
+    version = 240823,
     ANameP_ShowKnownSpell = true,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -347,29 +347,36 @@ ANameP_Options_Default = {
     -- ["디법명"] = {알림 시간, 우선순위, 색상 변경 여부},
     -- 우선순위는 숫자가 큰 경우 우선적으로 보이고, 같을 경우 먼저 걸린 순서로 보임
     ANameP_ShowList_WARRIOR_1 = {
-        ["분쇄"] = { 1, 5, 1 },
+        ["사형 선고됨"] = { 0, 5, 2 },
+        ["만신창이"] = { 1, 4, 2 },
+        ["분쇄"] = { 1, 3, 1 },
     },
 
     ANameP_ShowList_WARRIOR_2 = {
+        ["사형 선고됨"] = { 0, 5, 1 },
     },
 
     ANameP_ShowList_WARRIOR_3 = {
-        ["분쇄"] = { 1, 5 },
+        ["만신창이"] = { 1, 5 },
+        ["분쇄"] = { 1, 4 },
     },
 
     ANameP_ShowList_ROGUE_1 = {
-        ["목조르기"] = { 1, 5, 2 },
-        ["파열"] = { 24 * 0.3, 4, 1 },
-        ["혈폭풍"] = { 12 * 0.3, 3 },
+        ["죽음추적자의 징표"] = { 0, 5 },
+        ["목조르기"] = { 1, 4, 2 },
+        ["파열"] = { 24 * 0.3, 3, 1 },
+        ["혈폭풍"] = { 12 * 0.3, 2 },
 
     },
 
     ANameP_ShowList_ROGUE_2 = {
         ["유령의 일격"] = { 0, 5, 1 },
+        ["당혹 상태"] = { 0, 4, 2 },
     },
 
     ANameP_ShowList_ROGUE_3 = {
         ["파열"] = { 24 * 0.3, 5, 1 },
+        ["당혹 상태"] = { 0, 4, 2 },
     },
 
 
@@ -381,14 +388,16 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_HUNTER_2 = {        
+        ["달의 폭풍"] = { 0, 5},
         ["독사 쐐기"] = { 1, 5, 1 },
-        ["사냥꾼의 징표"] = { 0, 4 },        
+        ["사냥꾼의 징표"] = { 0, 3 },        
 
     },
 
     ANameP_ShowList_HUNTER_3 = {
-        ["독사 쐐기"] = { 1, 5, 1 },
-        ["사냥꾼의 징표"] = { 0, 4 },
+        ["달의 폭풍"] = { 0, 5 },
+        ["독사 쐐기"] = { 1, 4, 1 },
+        ["사냥꾼의 징표"] = { 0, 3 },
 
     },
 
@@ -408,6 +417,7 @@ ANameP_Options_Default = {
         ["고통"] = { 1, 5, 1 },
         ["불안정한 고통"] = { 1, 4 },
         ["부패"] = { 1, 3, 2 },        
+        ["쇠퇴"] = { 1, 2, 2 },        
     },
 
     ANameP_ShowList_WARLOCK_2 = {
@@ -418,6 +428,7 @@ ANameP_Options_Default = {
 
     ANameP_ShowList_WARLOCK_3 = {
         ["제물"] = { 1, 5, 1 },
+        ["쇠퇴"] = { 1, 4, 1 },        
     },
 
 

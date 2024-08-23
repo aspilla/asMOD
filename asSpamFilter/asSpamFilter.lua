@@ -139,7 +139,7 @@ local function TryDisplayMessage(messageType, message, r, g, b)
 
 		local errorStringId, soundKitID, voiceID = GetGameMessageInfo(messageType);
 		if voiceID then
-			PlayVocalErrorSoundID(voiceID);
+			C_Sound.PlayVocalErrorSound(voiceID);
 		elseif soundKitID then
 			PlaySound(soundKitID);
 		end

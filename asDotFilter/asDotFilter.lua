@@ -6,25 +6,31 @@ local ADotF_CooldownFontSize = 12;
 local ADotF_CountFontSize = 12;
 
 ADotF_ShowList_WARRIOR_1 = {
+    { "사형 선고됨", 1 },
     { "분쇄", 1 },
 }
 
 ADotF_ShowList_WARRIOR_2 = {
+    { "사형 선고됨", 1 },
 }
 
 ADotF_ShowList_WARRIOR_3 = {
+    { "분쇄", 1 },
 }
 
 ADotF_ShowList_ROGUE_1 = {
+    { "죽음추적자의 징표", 0 },
     { "파열", 24 * 0.3 },
     { "목조르기", 1 },
 }
 
 ADotF_ShowList_ROGUE_2 = {
-
+    { "당혹 상태", 0 },
 }
 
 ADotF_ShowList_ROGUE_3 = {
+    { "죽음추적자의 징표", 0 },
+    { "당혹 상태", 0 },
     { "파열", 24 * 0.3 },
 }
 

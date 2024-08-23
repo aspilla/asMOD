@@ -314,12 +314,18 @@ local function checkASMOD(spellid)
 		return true;
 	end
 	local name, _, icon = asGetSpellInfo(spellid);
-	if APB_SPELL and APB_SPELL == name then
-		return true;
+	if APB_SPELL then
+		local newspell = asGetSpellInfo(APB_SPELL)
+		if APB_SPELL == name or name == newspell then
+			return;
+		end
 	end
 
-	if APB_SPELL2 and APB_SPELL2 == name then
-		return true;
+	if APB_SPELL2 then
+		local newspell = asGetSpellInfo(APB_SPELL2)
+		if APB_SPELL2 == name or name == newspell then
+			return;
+		end
 	end
 
 	if ACI_SpellID_list and ACI_SpellID_list[name] then

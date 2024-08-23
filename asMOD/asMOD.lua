@@ -1,6 +1,6 @@
 local asMOD;
 local asMOD_UIScale = 0.75;
-local asMOD_CurrVersion = 240820;
+local asMOD_CurrVersion = 240821;
 local bAction = false;
 asMOD_t_position = {};
 
@@ -91,7 +91,7 @@ local function asMOD_Setup()
 	SetCVar("countdownForCooldowns", "1");
 
 	print("[asMOD] 주문 경보 투명도 설정");
-	SetCVar("spellActivationOverlayOpacity", 0.5);
+	SetCVar("spellActivationOverlayOpacity", 0.65);
 
 	print("[asMOD] 힐량와 데미지를 보이게 합니다.");
 	SetCVar("floatingCombatTextCombatHealing", 1);

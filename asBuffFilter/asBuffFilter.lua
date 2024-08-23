@@ -32,6 +32,7 @@ local AuraUpdateChangedType = EnumUtil.MakeEnum(
 );
 
 local UnitFrameBuffType = EnumUtil.MakeEnum(
+	"CountBuff",
 	"BossBuff",
 	"ImportantBuff",
 	"PriorityBuff",
@@ -403,10 +404,10 @@ local function ProcessAura(aura, unit)
 				aura.buffType = UnitFrameBuffType.Normal;
 			end
 		elseif ns.ABF_ClassBuffList[aura.name] or ns.ABF_ClassBuffList[aura.spellId] then
-			local ClassBuffType = ns.ABF_ClassBuffList[aura.name] or ns.ABF_ClassBuffList[aura.spellId];			
+			local ClassBuffType = ns.ABF_ClassBuffList[aura.name] or ns.ABF_ClassBuffList[aura.spellId];
 			if ns.ABF_ClassBuffCountList[aura.name] or ns.ABF_ClassBuffCountList[aura.spellId] then
 				local buffcheckcount = ns.ABF_ClassBuffCountList[aura.name] or ns.ABF_ClassBuffCountList[aura.spellId];
-				if aura.applications >= buffcheckcount then
+				if aura.applications >= buffcheckcount and ClassBuffType < 3 then
 					ClassBuffType = ClassBuffType + 1;
 				end
 			end
@@ -417,6 +418,8 @@ local function ProcessAura(aura, unit)
 				aura.buffType = UnitFrameBuffType.PriorityBuff;
 			elseif ClassBuffType == 3 then
 				aura.buffType = UnitFrameBuffType.ImportantBuff;
+			elseif ClassBuffType == 4 then
+				aura.buffType = UnitFrameBuffType.CountBuff;
 			else
 				aura.buffType = UnitFrameBuffType.TalentBuffLeft;
 			end
@@ -492,10 +495,12 @@ local function updateTotemAura()
 
 				-- set the count
 				local frameCount = frame.count;
+				local frameBigCount = frame.bigcount;
 				-- Handle cooldowns
 				local frameCooldown = frame.cooldown;
 
 				frameCount:Hide();
+				frameBigCount:Hide();
 
 				if (duration > 0 and duration <= 120) then
 					frameCooldown:Show();
@@ -578,20 +583,41 @@ local function UpdateAuraFrames(unit, auraList)
 			frameIcon:SetTexture(aura.icon);
 			-- set the count
 			local frameCount = frame.count;
+			local frameBigCount = frame.bigcount;
 
 			-- Handle cooldowns
 			local frameCooldown = frame.cooldown;
+			local balertcount = false;
 
-			if (aura.applications and aura.applications > 1) then
-				frameCount:SetText(aura.applications);
-				frameCount:Show();
-				frameCooldown:SetDrawSwipe(false);
-			else
+			if aura.buffType == UnitFrameBuffType.CountBuff and aura.applications then
+				local buffcheckcount = ns.ABF_ClassBuffCountList[aura.name] or ns.ABF_ClassBuffCountList[aura.spellId];
+				if buffcheckcount and aura.applications >= buffcheckcount then
+					frameBigCount:SetTextColor(1, 0, 0, 1);
+					balertcount = true;
+				else
+					frameBigCount:SetTextColor(1, 1, 1,1 );
+				end
+				
+
+				frameBigCount:SetText(aura.applications);
+				frameBigCount:Show();
 				frameCount:Hide();
-				frameCooldown:SetDrawSwipe(true);
+			else
+				if (aura.applications and aura.applications > 1) then
+					frameCount:SetText(aura.applications);
+					frameCount:Show();
+					frameBigCount:Hide();
+					frameCooldown:SetDrawSwipe(false);
+				else
+					frameCount:Hide();
+					frameBigCount:Hide();
+					frameCooldown:SetDrawSwipe(true);
+				end
 			end
 
-			if (aura.duration > 0 and (aura.expirationTime - curr_time) <= 60) then
+			if aura.buffType == UnitFrameBuffType.CountBuff then
+				frameCooldown:Hide();
+			elseif (aura.duration > 0 and (aura.expirationTime - curr_time) <= 60) then
 				frameCooldown:Show();
 				asCooldownFrame_Set(frameCooldown, aura.expirationTime - aura.duration, aura.duration, aura.duration > 0,
 					true);
@@ -607,7 +633,10 @@ local function UpdateAuraFrames(unit, auraList)
 			if (aura.isStealable) or (ns.ABF_ProcBuffList and ns.ABF_ProcBuffList[aura.name] and ns.ABF_ProcBuffList[aura.name] == 1) then
 				ns.lib.ButtonGlow_Start(frame);
 			else
-				if aura.buffType == UnitFrameBuffType.PriorityBuff then
+				if balertcount then
+					ns.lib.PixelGlow_Stop(frame);
+					ns.lib.ButtonGlow_Start(frame);				
+				elseif aura.buffType == UnitFrameBuffType.PriorityBuff then
 					ns.lib.ButtonGlow_Stop(frame);
 					ns.lib.PixelGlow_Start(frame);
 				elseif aura.buffType == UnitFrameBuffType.ImportantBuff then
@@ -825,6 +854,10 @@ local function CreatBuffFrames(parent, bright, bcenter)
 		frame.count:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize, "OUTLINE")
 		frame.count:ClearAllPoints()
 		frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
+
+		frame.bigcount:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize + 3, "OUTLINE")
+		frame.bigcount:ClearAllPoints()
+		frame.bigcount:SetPoint("CENTER", 0, 0);		
 
 		frame.icon:SetTexCoord(.08, .92, .08, .92);
 		frame.icon:SetAlpha(ns.ABF_ALPHA);

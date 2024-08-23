@@ -387,8 +387,7 @@ local function updateAuras(self, unit)
                 return true;
             end
 
-            if ns.ANameP_ShowCCDebuff and bShowCC == false and aura.nameplateShowAll and aura.duration > 0 and
-                aura.duration <= 10 then
+            if ns.ANameP_ShowCCDebuff and bShowCC == false and aura.nameplateShowAll and aura.duration > 0 and  aura.duration <= 10 and not (ns.ANameP_ShowList and ns.ANameP_ShowList[aura.name]) then
                 show = false;
                 bShowCC = true;
 

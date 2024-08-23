@@ -33,6 +33,15 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
+				<FontString name="$parentBigCount" parentKey="bigcount" inherits="NumberFontNormal" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset>
+								<AbsDimension x="0" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>

@@ -24,8 +24,6 @@ local bupdate_fronzen = false;
 local bupdate_partial_power = false;
 local bsmall_power_bar = false;
 local bupdate_buff_combo = false;
-local bupdate_direbeast_combo = false;
-local bupdate_shadow_tech = false;
 local APB_UNIT_POWER;
 local APB_POWER_LEVEL;
 
@@ -386,19 +384,6 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown, buffexpire)
         end
     end
 
-    if bupdate_shadow_tech then
-        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff("player", "그림자 기술", "player");
-
-        if name and count > 0 then
-            APB.combobar[1].text:SetText(count);
-            APB.combobar[1].text:ClearAllPoints();
-            APB.combobar[1].text:SetPoint("CENTER", APB.combobar[math.ceil(max_combo / 2)], "CENTER", 0, 0);
-            APB.combobar[1].text:Show();
-        else
-            APB.combobar[1].text:Hide();
-        end
-    end
-
     if buffexpire and cooldown then
         APB.combobar[1]:SetStatusBarColor(0.8, 0.5, 0.8);
         APB.combobar[1].start = (buffexpire - cooldown);
@@ -589,38 +574,6 @@ local function APB_UpdateBuffCombo(combobar)
     end
 end
 
-local prev_dire_beast_time = 0;
-local prev_dire_pack_time = 0;
-local dire_beast_count = 0;
-local function checkDireBeast()
-    local auraList = ns.ParseAllBuff("player");
-
-    auraList:Iterate(function(auraInstanceID, aura)
-        if aura.name and aura.spellId == 281036 and aura.expirationTime > prev_dire_beast_time then
-            dire_beast_count = dire_beast_count + 1;
-            prev_dire_beast_time = aura.expirationTime;
-        elseif aura.name and aura.spellId == 378747 and aura.expirationTime > prev_dire_pack_time then
-            dire_beast_count = 0;
-            prev_dire_pack_time = aura.expirationTime;
-        end
-    end);
-
-    return dire_beast_count;
-end
-
-local function APB_UpdateDireBeastCombo(combobar)
-    if not bupdate_direbeast_combo then
-        return;
-    end
-
-    local count = checkDireBeast();
-
-    if count > 0 then
-        APB_ShowComboBar(count);
-    else
-        APB_ShowComboBar(0);
-    end
-end
 
 local function asUnitFrameUtil_UpdateFillBuffBarBase(realbar, bar, amount, alert)
     if not amount or (amount == 0) then
@@ -1281,9 +1234,9 @@ local function APB_UpdateSpell(spell, spell2)
             return;
         end
 
-        if spell ~= newspell then
+        if spell ~= newspell2 then
             boverided = true;
-        end
+        end        
 
         local _, notEnoughMana = C_Spell.IsSpellUsable(spellid);
 
@@ -1311,7 +1264,7 @@ local function APB_UpdateSpell(spell, spell2)
             local rate2 = 0;
 
             if boverided then
-                rate2 = 0.3;            
+                --rate2 = 0.3;            
             end
 
             spellbar.start = nil;
@@ -1550,7 +1503,7 @@ local function APB_OnUpdate(self, elapsed)
     end
 
     if update2 >= 0.2 then
-        update2 = 0
+        update2 = 0        
         APB_UpdateBuff(self.buffbar[0]);
         APB_UpdateBuff(self.buffbar[1]);
         APB_UpdateBuffCombo(self.combobar);
@@ -1605,11 +1558,11 @@ local function HowManyHasSet(setID)
     if not itemList then
         return 0
     end
-    local setName = GetItemSetInfo(setID)
+    local setName = C_Item.GetItemSetInfo(setID)
     local max = #itemList
     local equipped = 0
     for _, v in ipairs(itemList) do
-        if IsEquippedItem(v.itemID) then
+        if  C_Item.IsEquippedItem(v.itemID) then
             equipped = equipped + 1
         end
     end
@@ -1647,9 +1600,7 @@ local function APB_CheckPower(self)
     bupdate_spell = false;
     bupdate_buff_count = false;
     bupdate_powerbar = true;
-    bupdate_buff_combo = false;
-    bupdate_direbeast_combo = false;
-    bupdate_shadow_tech = false;
+    bupdate_buff_combo = false;    
     bupdate_stagger = false;
     bupdate_fronzen = false;
     bupdate_partial_power = false;
@@ -1685,9 +1636,6 @@ local function APB_CheckPower(self)
 
     APB.combobar[1].text:SetText("");
     APB.combobar[1].text:Hide();
-
-    APB.text:SetText("")
-    APB.text:Hide();
 
     for i = 1, 20 do
         ns.lib.PixelGlow_Stop(APB.combobar[i]);
@@ -2129,10 +2077,6 @@ local function APB_CheckPower(self)
             APB:RegisterUnitEvent("UNIT_AURA", "player");
         end
 
-        if (spec and spec == 3) then
-            bupdate_shadow_tech = true;
-        end
-
         APB_UNIT_POWER = "COMBO_POINTS"
         APB_POWER_LEVEL = Enum.PowerType.ComboPoints
         APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
@@ -2223,6 +2167,13 @@ local function APB_CheckPower(self)
             APB_SpellMax(APB_SPELL);
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
+
+            if HowManyHasSet(1688) == 4 then
+                APB_BUFF = "게걸스러운 합창";
+                APB.buffbar[0].buff = APB_BUFF
+                APB.buffbar[0].unit = "player"
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
+            end
         end
     end
 
@@ -2281,14 +2232,12 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
                 APB.buffbar[0].max = 20;
-                APB:RegisterUnitEvent("UNIT_AURA", "player");
-                -- APB:SetScript("OnUpdate", APB_OnUpdate);
+                APB:RegisterUnitEvent("UNIT_AURA", "player");                
             elseif asCheckTalent("타성") then
                 APB_BUFF = "타성";
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
-                APB:RegisterUnitEvent("UNIT_AURA", "player");
-                -- APB:SetScript("OnUpdate", APB_OnUpdate);
+                APB:RegisterUnitEvent("UNIT_AURA", "player");                
             end
 
             APB_SPELL = "지옥 돌진";
@@ -2314,8 +2263,7 @@ local function APB_CheckPower(self)
             APB_BUFF = "악마 쐐기";
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
-            APB:RegisterUnitEvent("UNIT_AURA", "player");
-            -- APB:SetScript("OnUpdate", APB_OnUpdate);
+            APB:RegisterUnitEvent("UNIT_AURA", "player");            
 
             APB_BUFF_COMBO = "영혼 파편";
             APB_MaxCombo(5);
@@ -2356,19 +2304,7 @@ local function APB_CheckPower(self)
 
                 for i = 1, 20 do
                     APB.combobar[i].tooltip = APB_BUFF_COMBO;
-                end
-            elseif asCheckTalent("저승까마귀") then
-                APB_BUFF_COMBO = "저승까마귀";
-                APB_BUFF_COMBO_MAX = APB_BUFF_COMBO;
-                APB_BUFF_COMBO_MAX_COUNT = 4;
-                APB_MaxCombo(APB_BUFF_COMBO_MAX_COUNT);
-                APB.combobar.unit = "player"
-                APB:RegisterUnitEvent("UNIT_AURA", "player");
-                APB_UpdateBuffCombo(self.combobar)
-                bupdate_buff_combo = true;
-                for i = 1, 20 do
-                    APB.combobar[i].tooltip = APB_BUFF_COMBO;
-                end
+                end            
             end
         end
 
@@ -2387,21 +2323,6 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].maxshow = 6;
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
             end
-
-            --[[
-            if asCheckTalent("울부짖는 화살") then
-                APB_BUFF_COMBO = "울부짖는 화살";                
-                APB_MaxCombo(20);
-                APB.combobar.unit = "player"
-                APB:RegisterUnitEvent("UNIT_AURA", "player");
-                APB_UpdateBuffCombo(self.combobar)
-                bupdate_buff_combo = true;
-
-                for i = 1, 20 do
-                    APB.combobar[i].tooltip = APB_BUFF_COMBO;
-                end
-            end
-            ]]
         end
 
         if (spec and spec == 3) then
@@ -2415,18 +2336,7 @@ local function APB_CheckPower(self)
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
 
-            if asCheckTalent("창끝") then
-                APB_BUFF_COMBO = "창끝";
-                APB_MaxCombo(3);
-                APB.combobar.unit = "player"
-                APB:RegisterUnitEvent("UNIT_AURA", "player");
-                APB_UpdateBuffCombo(self.combobar)
-                bupdate_buff_combo = true;
-
-                for i = 1, 20 do
-                    APB.combobar[i].tooltip = APB_BUFF_COMBO;
-                end
-            elseif asCheckTalent("살쾡이의 이빨") then
+            if asCheckTalent("살쾡이의 이빨") then
                 APB_BUFF_COMBO = "살쾡이의 격노";
                 APB_MaxCombo(5);
                 APB.combobar.unit = "player"
@@ -2443,6 +2353,17 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].unit = "player";
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 -- APB:SetScript("OnUpdate", APB_OnUpdate);
+            elseif asCheckTalent("창끝") then
+                APB_BUFF_COMBO = "창끝";
+                APB_MaxCombo(3);
+                APB.combobar.unit = "player"
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
+                APB_UpdateBuffCombo(self.combobar)
+                bupdate_buff_combo = true;
+
+                for i = 1, 20 do
+                    APB.combobar[i].tooltip = APB_BUFF_COMBO;
+                end
             end
         end
     end
@@ -2519,7 +2440,7 @@ local function APB_CheckPower(self)
         APB_ACTION2 = APB_GetActionSlots(APB_SPELL2);
     end
 
-    if not bupdate_power and not bupdate_rune and not bupdate_buff_combo and not bupdate_direbeast_combo then
+    if not bupdate_power and not bupdate_rune and not bupdate_buff_combo then
         APB_MaxCombo(0);
     end
 
@@ -2758,11 +2679,10 @@ end
 local windrunner_count = 0;
 
 local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
-    if event == "UNIT_AURA" then
+    if event == "UNIT_AURA" then        
         APB_UpdateBuff(self.buffbar[0]);
         APB_UpdateBuff(self.buffbar[1]);
-        APB_UpdateBuffCombo(self.combobar);
-        APB_UpdateDireBeastCombo(self.combobar);
+        APB_UpdateBuffCombo(self.combobar);        
         APB_UpdateStagger(self.buffbar[0]);
     elseif event == "ACTIONBAR_UPDATE_COOLDOWN" or event == "ACTIONBAR_UPDATE_USABLE" then
         if APB_SPELL then
@@ -3093,12 +3013,6 @@ do
         APB.spellbar[i]:Hide();
         APB.spellbar[i]:EnableMouse(false);
     end
-
-    APB.text = APB:CreateFontString(nil, "ARTWORK");
-    APB.text:SetFont(APB_Font, APB_HealthSize - 2, APB_FontOutline);
-    APB.text:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPRIGHT", -10, 2);
-    APB.text:SetTextColor(1, 1, 1, 1)
-    APB.text:Hide();
 
     C_AddOns.LoadAddOn("asMOD");
 
