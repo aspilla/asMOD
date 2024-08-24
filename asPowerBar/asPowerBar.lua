@@ -1672,6 +1672,13 @@ local function APB_CheckPower(self)
         bupdate_power = true;
         bsmall_power_bar = true;
 
+        if IsPlayerSpell(443328) then
+            APB_SPELL = "업화"
+            APB_SpellMax(APB_SPELL);
+            APB_UpdateSpell(APB_SPELL);
+            bupdate_spell = true;
+        end
+
         if (spec and spec == 1) then
             if HowManyHasSet(1543) >= 2 or HowManyHasSet(1594) >= 2 then
                 APB_DEBUFF = "흑요석 파편";
