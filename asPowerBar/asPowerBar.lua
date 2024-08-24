@@ -545,7 +545,7 @@ local function APB_UpdateBuffCombo(combobar)
         local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff(combobar.unit,
             APB_BUFF_COMBO, "player");
 
-        if name and caster == "player" then            
+        if name and caster == "player" then
             APB_ShowComboBar(count);
         else
             APB_ShowComboBar(0);
@@ -1169,9 +1169,9 @@ local function APB_UpdateSpell(spell, spell2)
         if bupdatecombo then
             rate = 0.2;
         end
-    
+
         if boverided then
-            rate2 = 0.3;            
+            rate2 = 0.3;
         end
         spellbar:SetStatusBarColor(color.r + rate, color.g + rate, color.b + rate + rate2);
 
@@ -1236,7 +1236,7 @@ local function APB_UpdateSpell(spell, spell2)
 
         if spell ~= newspell2 then
             boverided = true;
-        end        
+        end
 
         local _, notEnoughMana = C_Spell.IsSpellUsable(spellid);
 
@@ -1264,7 +1264,7 @@ local function APB_UpdateSpell(spell, spell2)
             local rate2 = 0;
 
             if boverided then
-                --rate2 = 0.3;            
+                --rate2 = 0.3;
             end
 
             spellbar.start = nil;
@@ -1503,7 +1503,7 @@ local function APB_OnUpdate(self, elapsed)
     end
 
     if update2 >= 0.2 then
-        update2 = 0        
+        update2 = 0
         APB_UpdateBuff(self.buffbar[0]);
         APB_UpdateBuff(self.buffbar[1]);
         APB_UpdateBuffCombo(self.combobar);
@@ -1562,7 +1562,7 @@ local function HowManyHasSet(setID)
     local max = #itemList
     local equipped = 0
     for _, v in ipairs(itemList) do
-        if  C_Item.IsEquippedItem(v.itemID) then
+        if C_Item.IsEquippedItem(v.itemID) then
             equipped = equipped + 1
         end
     end
@@ -1600,7 +1600,7 @@ local function APB_CheckPower(self)
     bupdate_spell = false;
     bupdate_buff_count = false;
     bupdate_powerbar = true;
-    bupdate_buff_combo = false;    
+    bupdate_buff_combo = false;
     bupdate_stagger = false;
     bupdate_fronzen = false;
     bupdate_partial_power = false;
@@ -2018,10 +2018,12 @@ local function APB_CheckPower(self)
             bupdate_stagger = true;
             APB_UpdateStagger(self.buffbar[0]);
 
-            APB_SPELL = "정화주";
-            APB_SpellMax(APB_SPELL);
-            APB_UpdateSpell(APB_SPELL);
-            bupdate_spell = true;
+            if IsPlayerSpell(119582) then
+                APB_SPELL = "정화주";
+                APB_SpellMax(APB_SPELL);
+                APB_UpdateSpell(APB_SPELL);
+                bupdate_spell = true;
+            end
         end
         if (spec and spec == 2) then
             APB_SPELL = "소생의 안개";
@@ -2029,13 +2031,13 @@ local function APB_CheckPower(self)
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
 
-            if asCheckTalent("고대의 가르침") then
+            if IsPlayerSpell(116645) then
                 APB_BUFF = "고대의 가르침";
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
             end
-            if asCheckTalent("셰이룬의 선물") then
+            if IsPlayerSpell(399491) then
                 APB_ACTION_COMBO = APB_GetActionSlot("셰이룬의 선물");
                 APB_MaxCombo(10);
                 APB_UpdateBuffCombo(self.combobar)
@@ -2239,12 +2241,12 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
                 APB.buffbar[0].max = 20;
-                APB:RegisterUnitEvent("UNIT_AURA", "player");                
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
             elseif asCheckTalent("타성") then
                 APB_BUFF = "타성";
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
-                APB:RegisterUnitEvent("UNIT_AURA", "player");                
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
             end
 
             APB_SPELL = "지옥 돌진";
@@ -2270,7 +2272,7 @@ local function APB_CheckPower(self)
             APB_BUFF = "악마 쐐기";
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
-            APB:RegisterUnitEvent("UNIT_AURA", "player");            
+            APB:RegisterUnitEvent("UNIT_AURA", "player");
 
             APB_BUFF_COMBO = "영혼 파편";
             APB_MaxCombo(5);
@@ -2311,7 +2313,7 @@ local function APB_CheckPower(self)
 
                 for i = 1, 20 do
                     APB.combobar[i].tooltip = APB_BUFF_COMBO;
-                end            
+                end
             end
         end
 
@@ -2686,10 +2688,10 @@ end
 local windrunner_count = 0;
 
 local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
-    if event == "UNIT_AURA" then        
+    if event == "UNIT_AURA" then
         APB_UpdateBuff(self.buffbar[0]);
         APB_UpdateBuff(self.buffbar[1]);
-        APB_UpdateBuffCombo(self.combobar);        
+        APB_UpdateBuffCombo(self.combobar);
         APB_UpdateStagger(self.buffbar[0]);
     elseif event == "ACTIONBAR_UPDATE_COOLDOWN" or event == "ACTIONBAR_UPDATE_USABLE" then
         if APB_SPELL then
@@ -2775,23 +2777,23 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
         local name = asGetSpellInfo(arg1);
         local newname = asGetSpellInfo(APB_SPELL);
-        if APB_SPELL and (APB_SPELL == name or name == newname)  then
+        if APB_SPELL and (APB_SPELL == name or name == newname) then
             balert = true;
         end
 
         local newname2 = asGetSpellInfo(APB_SPELL2);
-        if APB_SPELL2 and (APB_SPELL2 == name or name == newname2)  then
+        if APB_SPELL2 and (APB_SPELL2 == name or name == newname2) then
             balert2 = true;
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
         local name = asGetSpellInfo(arg1);
         local newname = asGetSpellInfo(APB_SPELL);
-        if APB_SPELL and (APB_SPELL == name or name == newname)  then
+        if APB_SPELL and (APB_SPELL == name or name == newname) then
             balert = false;
         end
 
         local newname2 = asGetSpellInfo(APB_SPELL2);
-        if APB_SPELL2 and (APB_SPELL2 == name or name == newname2)  then
+        if APB_SPELL2 and (APB_SPELL2 == name or name == newname2) then
             balert2 = false;
         end
     elseif event == "PLAYER_EQUIPMENT_CHANGED" then
