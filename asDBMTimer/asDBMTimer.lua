@@ -50,10 +50,10 @@ local function checkAllButton()
 	for idx = 1, ADBMT_MaxButtons do
 		local button = asDBMTimer.buttons[idx]
 
-		if button and button.id and button.start and button.duration then
+		if button and button.start and button.duration then
 			local ex = button.start + button.duration;
 
-			if ex < GetTime() then
+			if ex < GetTime() then				
 				deleteButton(idx);
 			end
 		end
