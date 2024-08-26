@@ -325,7 +325,13 @@ local function IsShown(name, spellId)
 	end
 
 	if bcheckOverlay and (overlayspell[spellId] or overlayspell[name]) then
-		return true;
+		if ns.ABF_ClassBuffList[spellId] and ns.ABF_ClassBuffList[spellId] > 1 then
+
+		elseif ns.ABF_ClassBuffList[name] and ns.ABF_ClassBuffList[name] > 1 then
+
+		else
+			return true;
+		end
 	end
 
 	if ACI_Buff_list and (ACI_Buff_list[name] or (spellId and ACI_Buff_list[spellId])) then

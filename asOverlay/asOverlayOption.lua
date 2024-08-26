@@ -8,11 +8,9 @@ local Options_Default = {
 
 -- 색상 변경
 ns.spelllists = {
-    [263725] = { { 453601, 0, 1, 0.5, 0.5 }, { 263725, 3, 0.5, 1, 0.5 } }, -- 비법, 에테르 조율(빨) 번뜩임3(초)
-    [187890] = { { 187890, 8, 1, 0.5, 0.5 } },                           -- 고술, 소용돌이 8중
-    [264173] = { { 264173, 4, 0, 0, 1 }, { 264173, 3, 0, 1, 0 } }, -- 악흑, 악마의핵 3/4중    
-    [135286] = { { 135286, 2, 0.2, 0.2, 0.2  } }, -- 수드, 맹위 2중    
-
+    [263725] = { { 263725, 3, 1, 0.5, 0.5, "RIGHT" }, { 449400, 5, 0.5, 1, 1, "LEFT" }, { 453601, 0, 0.5, 1, 0.5, "LEFT" } },   -- 비법, 번뜩임3(빨), 비전태양 5중(파),  에테르 조율(초)
+    [264173] = { { 264173, 4, 0, 1, 0, "RIGHT" }, { 264173, 3, 0, 1, 0, "LEFT" } },                                             -- 악흑, 악마의핵 3/4중
+    [135286] = { { 135286, 2, 0.2, 0.2, 0.2, "RIGHT" } },                                                                       -- 수드, 맹위 2중
 };
 
 ns.countaware = {
@@ -20,8 +18,8 @@ ns.countaware = {
     [264173] = true, -- 악마의핵
     [264571] = true, -- 일몰
     [81340] = true,  -- 부정, 불시의 파멸 2중
-    [16870] = true,   -- 회드, 번뜩임 2중
-    [270436] = true,    --정밀 사격    
+    [16870] = true,  -- 회드, 번뜩임 2중
+    [270436] = true, --정밀 사격
 }
 
 ns.options = CopyTable(Options_Default);
@@ -61,7 +59,8 @@ function ns.SetupOptionPanels()
             end
             local defaultValue = ASO_Options[variable];
 
-            local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
+            local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
+            name, defaultValue);
 
             Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip)
             Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)
