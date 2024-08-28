@@ -387,7 +387,7 @@ local function ProcessAura(aura, unit)
 			skip = false;
 		end
 
-		if PLAYER_UNITS[aura.sourceUnit] and (aura.nameplateShowPersonal or ns.ABF_ClassBuffList[aura.name]) then
+		if PLAYER_UNITS[aura.sourceUnit] and (aura.nameplateShowPersonal or ns.ABF_ClassBuffList[aura.name] or ns.ABF_ClassBuffList[aura.spellId]) then
 			skip = false;
 		end
 
