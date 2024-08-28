@@ -154,11 +154,11 @@ local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuation
     for i = 1, n do
         local slot = select(i, ...);
         local done;
-        if usePackedAura then
-            local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
+        local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
+        if usePackedAura then            
             done = func(auraInfo);
         else
-            done = func(UnitAuraBySlot(unit, slot));
+            done = func(AuraUtil.UnpackAuraData(auraInfo));
         end
         if done then
             -- if func returns true then no further slots are needed, so don't return continuationToken

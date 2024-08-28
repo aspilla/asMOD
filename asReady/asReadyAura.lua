@@ -12,7 +12,7 @@ local AuraFilters = {
 };
 
 local function CreateFilterString(...)
-    return table.concat({...}, '|');
+    return table.concat({ ... }, '|');
 end
 
 local function DefaultCompare(a, b)
@@ -25,11 +25,11 @@ local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuation
     for i = 1, n do
         local slot = select(i, ...);
         local done;
+        local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
         if usePackedAura then
-            local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
             done = func(auraInfo);
         else
-            done = func(UnitAuraBySlot(unit, slot));
+            done = func(AuraUtil.UnpackAuraData(auraInfo));
         end
         if done then
             -- if func returns true then no further slots are needed, so don't return continuationToken
@@ -54,7 +54,6 @@ local auraData = {};
 auraData.bufffilter = CreateFilterString(AuraFilters.Helpful, AuraFilters.IncludeNameplateOnly);
 
 function ns.ParseAllBuff(unit)
-
     if auraData.buffs == nil then
         auraData.buffs = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
     else
@@ -72,4 +71,3 @@ function ns.ParseAllBuff(unit)
 
     return auraData.buffs;
 end
-
