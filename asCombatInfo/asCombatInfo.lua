@@ -374,7 +374,6 @@ for i = 1, ACI_MaxSpellCount do
 	else
 		ACI[i].count:SetFont("Fonts\\2002.TTF", ACI_CountFontSize - 2, "OUTLINE")
 	end
-
 	ACI[i].count:SetPoint("BOTTOMRIGHT", -3, 3);
 	ACI[i].spellcoolframe.spellcool:SetFont("Fonts\\2002.TTF", ACI_CooldownFontSize - 2, "OUTLINE");
 	ACI[i].spellcoolframe.spellcool:SetTextColor(0.8, 0.8, 1);
@@ -384,6 +383,11 @@ for i = 1, ACI_MaxSpellCount do
 	ACI[i].border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 
 	ACI[i].border:Hide();
+
+	ACI[i].alerttext:SetFont("Fonts\\2002.TTF", ACI_CountFontSize+ 8, "OUTLINE")
+	ACI[i].alerttext:SetText("");
+	ACI[i].alerttext:SetTextColor(1, 0.5, 0.5);
+	ACI[i].alerttext:Hide();
 end
 
 

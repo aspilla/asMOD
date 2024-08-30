@@ -170,6 +170,7 @@ ns.ShowList_MAGE_2 = {
 
 ns.ShowList_MAGE_3 = {
     ["혹한의 추위"] = { 0, 5, true },
+    [C_Spell.GetSpellName(443740)] = { 0, 4 }, --박힌 냉기 파편
 
 }
 

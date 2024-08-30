@@ -21,6 +21,8 @@ local bupdate_powerbar = false;
 local bupdate_healthbar = APB_SHOW_HEALTHBAR;
 local bupdate_stagger = false;
 local bupdate_fronzen = false;
+local bupdate_enhaced_tempest = false;
+local bupdate_element_tempest = false;
 local bupdate_partial_power = false;
 local bsmall_power_bar = false;
 local bupdate_buff_combo = false;
@@ -34,6 +36,7 @@ APB_BUFF2 = nil;
 APB_BUFF3 = nil;
 APB_BUFF4 = nil;
 APB_BUFF_COMBO = nil;
+APB_BUFF_STACK = nil;
 APB_BUFF_COMBO_MAX = nil;
 APB_BUFF_COMBO_MAX_COUNT = nil;
 APB_DEBUFF_COMBO = nil;
@@ -59,6 +62,23 @@ PowerTypeComboString = {
     [Enum.PowerType.ArcaneCharges] = "비전 충전물이",
     [Enum.PowerType.Essence] = "정수"
 };
+
+
+local tempeststate = {
+    enhanced_maxStacks = 40,
+    elemental_maxStacks = 300,
+    nextTempestTime = 0,
+    lastCheckStacks = 0,
+    lastCast = 0,
+
+    show = true,
+    changed = true,
+
+    TempestInternalStacks = 40,
+    TempestStacks = 40,
+}
+
+local splinterstorm_time = GetTime();
 
 local asGetSpellInfo = function(spellID)
     if not spellID then
@@ -454,6 +474,99 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown, buffexpire)
 end
 
 
+local bshowstack = false;
+
+local function APB_MaxStack(max)
+    if not max or max == 0 then
+        APB.stackbar[0]:Hide();
+        bshowstack = false;
+        return;
+    end
+
+    APB.stackbar[0]:SetMinMaxValues(0, max);
+    APB.stackbar[0]:Show();
+    APB.stackbar[0].max = max;
+
+    bshowstack = true;
+
+    if bshowspell then
+        APB.spellbar[1]:SetPoint("BOTTOMLEFT", APB.stackbar[0], "TOPLEFT", 0, 1);
+    else
+        APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.stackbar[0], "TOPLEFT", 0, 1);
+    end
+end
+
+
+local function APB_UpdateBuffStack(stackbar)
+    if not (APB_BUFF_STACK or APB_DEBUFF_STACK or bupdate_enhaced_tempest or bupdate_element_tempest) then
+        return;
+    end
+
+    if not bshowstack then
+        return;
+    end
+
+    if APB_BUFF_STACK then
+        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff(stackbar.unit,
+            APB_BUFF_STACK, "player");
+
+        if name and caster == "player" then
+            if count >= APB.stackbar[0].max then
+                count = APB.stackbar[0].max
+                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(1, 1, 0);
+            else
+                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(0, 1, 0);
+            end
+
+            APB.stackbar[0]:SetValue(count);
+            APB.stackbar[0].prevcount = count;
+            APB.stackbar[0].count:SetText(count); 
+        else
+            APB.stackbar[0]:SetValue(0);
+            APB.stackbar[0].count:SetText(count); 
+        end
+        
+    end
+
+    if APB_DEBUFF_STACK then
+        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitDebuff(stackbar.unit,
+            APB_DEBUFF_STACK, "player");
+
+        if name and caster == "player" then
+            if count >= APB.stackbar[0].max then
+                count = APB.stackbar[0].max
+                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(1, 1, 0);
+            else
+                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(0, 1, 0);
+            end
+            APB.stackbar[0]:SetValue(count);
+            APB.stackbar[0].prevcount = count;
+            APB.stackbar[0].count:SetText(count); 
+        else
+            APB.stackbar[0]:SetValue(0);
+            APB.stackbar[0].count:SetText(count); 
+        end
+    end
+
+    if bupdate_enhaced_tempest or bupdate_element_tempest then
+        local count = tempeststate.TempestStacks
+        
+        if count >= APB.stackbar[0].max then
+            count = APB.stackbar[0].max
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(0, 1, 1);
+        elseif bupdate_enhaced_tempest and count <= 10 then
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(1, 0.8, 0.8);
+        elseif bupdate_element_tempest and count <= 50 then
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(1, 0.8, 0.8);
+        else
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(0, 1, 1);
+        end
+        APB.stackbar[0]:SetValue(count);
+        APB.stackbar[0].prevcount = count;
+        APB.stackbar[0].count:SetText(count);        
+    end
+end
+
 
 local bupdatecombo = false;
 
@@ -489,6 +602,8 @@ local function APB_MaxCombo(max)
 
     if bshowspell then
         APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPLEFT", 0, 1);
+    elseif bshowstack then
+        APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.stackbar[0], "TOPLEFT", 0, 1);
     else
         APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.buffbar[0], "TOPLEFT", 0, 1);
     end
@@ -888,6 +1003,8 @@ local function APB_MaxRune()
 
     if bshowspell then
         APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPLEFT", 0, 1);
+    elseif bshowstack then
+        APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.stackbar[0], "TOPLEFT", 0, 1);
     else
         APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.buffbar[0], "TOPLEFT", 0, 1);
     end
@@ -1098,6 +1215,13 @@ local function APB_SpellMax(spell, spell2)
     else
         APB_MaxSpell(0);
     end
+
+    if bshowstack then
+        APB.spellbar[1]:SetPoint("BOTTOMLEFT", APB.stackbar[0], "TOPLEFT", 0, 1);
+    else
+        APB.spellbar[1]:SetPoint("BOTTOMLEFT", APB.buffbar[0], "TOPLEFT", 0, 1);
+    end
+
 end
 
 local function setupMouseOver(frame)
@@ -1507,6 +1631,7 @@ local function APB_OnUpdate(self, elapsed)
         APB_UpdateBuff(self.buffbar[0]);
         APB_UpdateBuff(self.buffbar[1]);
         APB_UpdateBuffCombo(self.combobar);
+        APB_UpdateBuffStack(self.stackbar[0]);
         APB_UpdateStagger(self.buffbar[0]);
         APB_UpdatePower();
     end
@@ -1603,9 +1728,12 @@ local function APB_CheckPower(self)
     bupdate_buff_combo = false;
     bupdate_stagger = false;
     bupdate_fronzen = false;
+    bupdate_Splinterstorm = false;
     bupdate_partial_power = false;
     bsmall_power_bar = false;
     bhalf_combo = false;
+    bupdate_enhaced_tempest = false;
+    bupdate_element_tempest = false;
     bdruid = false;
     brogue = false;
 
@@ -1624,6 +1752,7 @@ local function APB_CheckPower(self)
     APB_UNIT_POWER = nil;
     APB_POWER_LEVEL = nil;
     APB_BUFF_COMBO = nil;
+    APB_BUFF_STACK = nil;
     APB_BUFF_COMBO_MAX = nil;
     APB_BUFF_COMBO_MAX_COUNT = nil;
     APB_DEBUFF_COMBO = nil;
@@ -1662,6 +1791,17 @@ local function APB_CheckPower(self)
 
         setupMouseOver(APB.buffbar[j]);
     end
+
+    for j = 0, 0 do
+        APB.stackbar[j]:Hide();
+        APB.stackbar[j].count:SetText("");        
+        APB.stackbar[j].castbar:Hide();
+        APB.stackbar[j].max = nil;
+        APB.stackbar[j].spellid = nil;     
+
+        setupMouseOver(APB.stackbar[j]);
+    end
+    bshowstack = false;
 
     if (englishClass == "EVOKER") then
         -- 기원사
@@ -1758,6 +1898,14 @@ local function APB_CheckPower(self)
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 bupdate_buff_count = true;
                 APB_UpdateBuff(self.buffbar[0])
+            end
+
+            if IsPlayerSpell(448601) then
+                APB_BUFF_STACK = 449400;
+                APB.stackbar[0].unit = "player"
+                APB.stackbar[0].spellid = 449400;
+                APB_MaxStack(5);
+                APB_UpdateBuffStack(self.stackbar[0]);
             end
 
             APB_UNIT_POWER = "ARCANE_CHARGES"
@@ -2390,6 +2538,16 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
             end
+
+            if IsPlayerSpell(454009) then
+                bupdate_element_tempest = true;
+                APB_MaxStack(300);
+                APB_UpdateBuffStack(self.stackbar[0]);
+
+                tempeststate.TempestInternalStacks = 300;
+                tempeststate.TempestStacks = 300;
+                APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+            end
         end
 
         if spec and spec == 2 then
@@ -2419,6 +2577,16 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].buff = 187878;
                 APB.buffbar[0].unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
+            end
+
+            if IsPlayerSpell(454009) then
+                bupdate_enhaced_tempest = true;
+                APB_MaxStack(40);
+                tempeststate.TempestInternalStacks = 40;
+                tempeststate.TempestStacks = 40;
+                APB_UpdateBuffStack(self.stackbar[0]);
+                
+                APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
             end
         end
 
@@ -2686,12 +2854,36 @@ local function asUnitFrameManaCostPredictionBars_Update(frame, isStarting, start
 end
 
 local windrunner_count = 0;
+local enhanced_listOfSpenders = {
+    [8004] = true,   -- Healing Surge
+    [1064] = true,   -- Chain Heal
+    [51505] = true,  -- Lava Burst
+    [188443] = true, -- Chain Lightning
+    [117014] = true, -- Elemental Blast
+    [188196] = true, -- Lightning Bolt
+    [452201] = true, -- Tempest
+
+    [320674] = true  -- Chain Harvest
+
+    
+}
+
+local elemental_listOfSpenders = {
+    [117014] = true, -- Elemental Blast
+    [8042] = true, -- Earth Shock
+    [61882] = true, -- Earthquake  
+    [462620] = true, -- Earthquake (@target)
+
+    
+}
+
 
 local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
     if event == "UNIT_AURA" then
         APB_UpdateBuff(self.buffbar[0]);
         APB_UpdateBuff(self.buffbar[1]);
         APB_UpdateBuffCombo(self.combobar);
+        APB_UpdateBuffStack(self.stackbar[0]);
         APB_UpdateStagger(self.buffbar[0]);
     elseif event == "ACTIONBAR_UPDATE_COOLDOWN" or event == "ACTIONBAR_UPDATE_USABLE" then
         if APB_SPELL then
@@ -2717,15 +2909,105 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
         APB_UpdateBuff(self.buffbar[0]);
         APB_UpdateBuff(self.buffbar[1]);
         APB_UpdateBuffCombo(self.combobar);
+        APB_UpdateBuffStack(self.stackbar[0]);
     elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        if bupdate_fronzen then
-            local timestamp, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType =
-                CombatLogGetCurrentEventInfo();
-            if sourceGUID and (sourceGUID == UnitGUID("player")) then
-                if (eventType == "SPELL_CAST_SUCCESS") and spellID == FrozenOrbID then
+        local timestamp, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellId, _, _, auraType, amount =
+            CombatLogGetCurrentEventInfo();
+
+        if sourceGUID and (sourceGUID == UnitGUID("player")) then
+            if bupdate_fronzen then
+                if eventType == "SPELL_CAST_SUCCESS" and spellId == FrozenOrbID then
                     FrozenOrbTime = nil;
-                elseif FrozenOrbTime == nil and (eventType == "SPELL_DAMAGE") and spellID == FrozenOrbDamageID then
+                elseif FrozenOrbTime == nil and (eventType == "SPELL_DAMAGE") and spellId == FrozenOrbDamageID then
                     FrozenOrbTime = GetTime();
+                end
+
+                if bupdate_Splinterstorm and destGUID == UnitGUID("target") then
+                    if spellId == 443934 then -- Splinterstorm (applied per hit)
+                        splinterstorm_time = GetTime()                        
+                    end
+                end
+            
+            elseif bupdate_enhaced_tempest then
+                if eventType == "SPELL_CAST_SUCCESS" and enhanced_listOfSpenders[spellId] then --Maelstrom Weapon Spenders
+                    local msw = C_UnitAuras.GetPlayerAuraBySpellID(344179)
+                    if (msw) then
+                        tempeststate.changed = true
+                        tempeststate.lastCast = GetTime()
+
+                        tempeststate.TempestInternalStacks = tempeststate.TempestInternalStacks -
+                            tempeststate.lastCheckStacks
+                        if (tempeststate.TempestInternalStacks < -9) then
+                            tempeststate.TempestInternalStacks = 1
+                        end
+
+                        tempeststate.TempestStacks = tempeststate.TempestInternalStacks
+                        if (tempeststate.TempestStacks < 1) then tempeststate.TempestStacks = 1 end
+                    end
+                elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_APPLIED_DOSE") and spellId == 344179) then --Maelstrom Weapon
+                    tempeststate.lastCheckStacks = amount or 1;
+                elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and (spellId == 454015)) then    --Tempest
+                    tempeststate.changed = true
+
+                    if (tempeststate.TempestProcs == 0 and ((GetTime() - tempeststate.nextTempestTime) <= 1)) then
+                        tempeststate.nextTempestTime = 0
+                    else
+                        tempeststate.TempestInternalStacks = tempeststate.TempestInternalStacks +
+                            tempeststate.enhanced_maxStacks;
+                        if (tempeststate.TempestInternalStacks > tempeststate.enhanced_maxStacks) then
+                            tempeststate.TempestInternalStacks = tempeststate.enhanced_maxStacks
+                        end
+
+                        tempeststate.TempestStacks = tempeststate.TempestInternalStacks
+                    end
+                elseif (eventType == "SPELL_AURA_REMOVED_DOSE" and spellId == 344179 and (GetTime() < tempeststate.lastCast + 0.5)) then -- If no talent for 10 MSW spend
+                    tempeststate.changed = true
+                    amount = amount or 0
+                    tempeststate.lastCheckStacks = tempeststate.lastCheckStacks + amount
+
+                    tempeststate.TempestInternalStacks = tempeststate.TempestInternalStacks + amount
+                    if (tempeststate.TempestInternalStacks > tempeststate.enhanced_maxStacks) then
+                        tempeststate.TempestInternalStacks = tempeststate.enhanced_maxStacks
+                    end
+
+                    tempeststate.TempestStacks = tempeststate.TempestInternalStacks
+                end
+            elseif bupdate_element_tempest then
+
+                if (eventType == "SPELL_CAST_SUCCESS" and elemental_listOfSpenders[spellId]) then --Maelstrom Spenders
+            
+                    tempeststate.changed = true
+                    
+                    local cost = C_Spell.GetSpellPowerCost(spellId)
+                    if cost[1].name == "MAELSTROM" then
+                        cost = cost[1].cost
+                    else 
+                        cost = cost[2].cost
+                    end
+                    
+                    tempeststate.TempestInternalStacks = tempeststate.TempestInternalStacks - cost
+                    if (tempeststate.TempestInternalStacks < -91) then
+                        tempeststate.TempestInternalStacks = 1  
+                    end
+                    
+                    tempeststate.TempestStacks = tempeststate.TempestInternalStacks
+                    if (tempeststate.TempestStacks < 1) then tempeststate.TempestStacks = 1 end                                   
+                    
+                   
+                elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and (spellId == 454015)) then --Tempest
+                    tempeststate.changed = true
+                    
+                    if (tempeststate.TempestProcs == 0 and ((GetTime() - tempeststate.nextTempestTime) <= 1)) then
+                        tempeststate.nextTempestTime = 0
+                    else
+                        tempeststate.TempestInternalStacks = tempeststate.TempestInternalStacks + tempeststate.elemental_maxStacks;
+                        if (tempeststate.TempestInternalStacks > tempeststate.elemental_maxStacks) then
+                            tempeststate.TempestInternalStacks = tempeststate.elemental_maxStacks
+                        end
+                        tempeststate.TempestStacks = tempeststate.TempestInternalStacks                        
+                    end
+
+                    
                 end
             end
         end
@@ -2743,8 +3025,8 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
         C_Timer.After(0.5, APB_UpdatePower);
     elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or event ==
         "ACTIVE_TALENT_GROUP_CHANGED" then
-            APB_SPELL = nil;
-            APB_SPELL2 = nil;
+        APB_SPELL = nil;
+        APB_SPELL2 = nil;
         C_Timer.After(0.5, APB_CheckPower);
         C_Timer.After(0.5, APB_UpdatePower);
     elseif event == "SPELLS_CHANGED" then
@@ -2960,6 +3242,48 @@ do
         APB.buffbar[j].count:SetTextColor(1, 1, 1, 1)
     end
 
+    APB.stackbar = {};
+
+    for j = 0, 0 do
+        APB.stackbar[j] = CreateFrame("StatusBar", nil, APB);
+        APB.stackbar[j]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER")
+        APB.stackbar[j]:GetStatusBarTexture():SetHorizTile(false);
+        APB.stackbar[j]:SetMinMaxValues(0, 100);
+        APB.stackbar[j]:SetValue(100);
+        APB.stackbar[j]:SetHeight(APB_HEIGHT / 2);
+        APB.stackbar[j]:SetWidth(APB_WIDTH);
+        APB.stackbar[j].bg = APB.stackbar[j]:CreateTexture(nil, "BACKGROUND");
+        APB.stackbar[j].bg:SetPoint("TOPLEFT", APB.stackbar[j], "TOPLEFT", -1, 1);
+        APB.stackbar[j].bg:SetPoint("BOTTOMRIGHT", APB.stackbar[j], "BOTTOMRIGHT", 1, -1);
+        APB.stackbar[j].bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
+        APB.stackbar[j].bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
+        APB.stackbar[j].bg:SetVertexColor(0, 0, 0, 0.8);
+
+        if j == 0 then
+            APB.stackbar[j]:SetPoint("BOTTOMLEFT", APB.buffbar[j], "TOPLEFT", 0, 1);
+        else
+            APB.stackbar[j]:SetPoint("BOTTOMLEFT", APB.buffbar[j], "TOPLEFT", 0, 1);
+        end
+        APB.stackbar[j]:Hide();
+
+        APB.stackbar[j].buff3bar = APB.stackbar[j]:CreateTexture(nil, "ARTWORK", "asPredictionBarTemplate", 2);
+        APB.stackbar[j].buff3bar:Hide();
+
+        APB.stackbar[j].castbar = APB.stackbar[j]:CreateTexture(nil, "ARTWORK", "asPredictionBarTemplate", 3);
+        APB.stackbar[j].castbar:Hide();
+
+        APB.stackbar[j].text = APB.stackbar[j]:CreateFontString(nil, "ARTWORK")
+        APB.stackbar[j].text:SetFont(APB_Font, APB_BuffSize, APB_FontOutline)
+        APB.stackbar[j].text:SetPoint("LEFT", APB.stackbar[j], "LEFT", 5, 0)
+        APB.stackbar[j].text:SetTextColor(1, 1, 1, 1)
+
+        APB.stackbar[j].count = APB.stackbar[j]:CreateFontString(nil, "ARTWORK")
+        APB.stackbar[j].count:SetFont(APB_Font, APB_BuffSize + 1, APB_FontOutline)
+        APB.stackbar[j].count:SetPoint("CENTER", APB.stackbar[j], "CENTER", 0, 0)
+        APB.stackbar[j].count:SetTextColor(1, 1, 1, 1)
+        --APB.stackbar[j]:Show()
+    end
+
     APB.combobar = {};
     APB.runeIndexes = { 1, 2, 3, 4, 5, 6 };
 
@@ -2981,7 +3305,7 @@ do
         APB.combobar[i].bg:SetVertexColor(0, 0, 0, 0.8);
 
         if i == 1 then
-            APB.combobar[i]:SetPoint("BOTTOMLEFT", APB.buffbar[0], "TOPLEFT", 0, 1);
+            APB.combobar[i]:SetPoint("BOTTOMLEFT", APB.stackbar[0], "TOPLEFT", 0, 1);
         else
             APB.combobar[i]:SetPoint("LEFT", APB.combobar[i - 1], "RIGHT", 3, 0);
         end
@@ -3016,7 +3340,7 @@ do
         APB.spellbar[i].bg:SetVertexColor(0, 0, 0, 0.8);
 
         if i == 1 then
-            APB.spellbar[i]:SetPoint("BOTTOMLEFT", APB.buffbar[0], "TOPLEFT", 0, 1);
+            APB.spellbar[i]:SetPoint("BOTTOMLEFT", APB.stackbar[0], "TOPLEFT", 0, 1);
         else
             APB.spellbar[i]:SetPoint("LEFT", APB.spellbar[i - 1], "RIGHT", 3, 0);
         end

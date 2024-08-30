@@ -9,7 +9,7 @@ local PLAYER_UNITS = {
 
 local AuraUpdateChangedType = EnumUtil.MakeEnum("None", "Debuff", "Buff");
 
-ns.UnitFrameDebuffType = EnumUtil.MakeEnum("Normal", "namePlateShowAll", "Player", "Priority");
+ns.UnitFrameDebuffType = EnumUtil.MakeEnum("Normal", "namePlateShowAll", "Player", "nameplateShowPersonal", "Priority");
 
 ns.UnitFrameBuffType = EnumUtil.MakeEnum("Normal", "PVP", "Stealable", "nameplateShowPersonal");
 
@@ -133,7 +133,11 @@ local function ProcessAura(aura, unit, type)
                 if ns.ANameP_ShowList and ns.ANameP_ShowList[aura.name] then
                     aura.debuffType = ns.UnitFrameDebuffType.Priority + ns.ANameP_ShowList[aura.name][2];
                 elseif PLAYER_UNITS[aura.sourceUnit] then
-                    aura.debuffType = ns.UnitFrameDebuffType.Player;
+                    if aura.nameplateShowPersonal then
+                        aura.debuffType = ns.UnitFrameDebuffType.nameplateShowPersonal;
+                    else
+                        aura.debuffType = ns.UnitFrameDebuffType.Player;
+                    end
                 elseif aura.nameplateShowAll then
                     aura.debuffType = ns.UnitFrameDebuffType.namePlateShowAll;
                 else

@@ -130,6 +130,14 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	local rate = 1;
 	local remain = 0;
 
+	if ns.positionaware[spellID] then
+		local v = ns.positionaware[spellID];
+
+		if v[1] and position == v[1] then
+			position = v[2];
+		end
+	end
+
 	if aura then
 		local extime = aura.expirationTime;
 		local duration = aura.duration;

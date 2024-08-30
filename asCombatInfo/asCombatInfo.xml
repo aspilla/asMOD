@@ -33,6 +33,16 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
+
+				<FontString name="$parentAlertText" parentKey="alerttext" inherits="NumberFontNormalLarge" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset>
+								<AbsDimension x="0" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
 				<FontString name="$parentSpellCool" parentKey="spellcool" inherits="NumberFontNormalLarge" justifyH="RIGHT">
 					<Anchors>
 						<Anchor point="BOTTOM">

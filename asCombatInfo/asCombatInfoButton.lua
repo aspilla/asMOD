@@ -691,6 +691,23 @@ function ns.Button:showButton()
         frameCount:Hide();
     end
 
+    if self.checkSplinter and ns.aurafunctions.checkSplinterTime() then
+        local splinterTime = ns.aurafunctions.checkSplinterTime()
+
+        if splinterTime > 0 and splinterTime > self.start then
+            frame.alerttext:SetText("+2")
+        else
+            ns.aurafunctions.clearSplinterTime()
+            frame.alerttext:SetText("")
+        end
+        frame.alerttext:Show();
+    else
+        frame.alerttext:Hide();
+    end
+
+
+
+    
 
     if self.buffalert then
         ns.lib.PixelGlow_Start(frame, { 0.5, 1, 0.5 });
@@ -877,6 +894,14 @@ function ns.Button:init(config, frame)
     end
 
     ns.eventhandler.registerTimer(self);
+
+    if self.realspell == 228358 then
+        if IsPlayerSpell(443739) then --쇄편
+            ns.eventhandler.registerSplinterstorm(self);            
+            self.checkSplinter = true;
+        end
+
+    end
 
     self:update();
 end

@@ -320,6 +320,10 @@ local function IsShown(name, spellId)
 		return true;
 	end
 
+	if APB_BUFF_STACK and APB_BUFF_STACK == spellId then
+		return true;
+	end
+
 	if APB_BUFF_COMBO_MAX and APB_BUFF_COMBO_MAX == name then
 		return true;
 	end

@@ -13,6 +13,7 @@ ns.spelllists = {
     [135286] = { { 135286, 2, 0.2, 0.2, 0.2, "RIGHT" } },                                                                       -- 수드, 맹위 2중
 };
 
+-- 1 중시 좌측만
 ns.countaware = {
     [263725] = true, -- 번뜩임
     [264173] = true, -- 악마의핵
@@ -20,6 +21,13 @@ ns.countaware = {
     [81340] = true,  -- 부정, 불시의 파멸 2중
     [16870] = true,  -- 회드, 번뜩임 2중
     [270436] = true, --정밀 사격
+}
+
+-- 아래를 위로
+ns.positionaware = {
+    [451038] = {"BOTTOM", "TOP"}, --비전
+    [201846] = {"BOTTOM", "TOP"}, --고술
+
 }
 
 ns.options = CopyTable(Options_Default);

@@ -139,6 +139,7 @@ ADotF_ShowList_MAGE_2 = {
 
 ADotF_ShowList_MAGE_3 = {
     { "혹한의 추위", 0 },
+    {C_Spell.GetSpellName(443740), 0}, --박힌 냉기 파편
 }
 
 ADotF_ShowList_DEATHKNIGHT_1 = {
