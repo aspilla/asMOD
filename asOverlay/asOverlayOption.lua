@@ -26,7 +26,7 @@ ns.countaware = {
 -- 아래를 위로
 ns.positionaware = {
     [451038] = {"BOTTOM", "TOP"}, --비전
-    [201846] = {"BOTTOM", "TOP"}, --고술
+    --[201846] = {"BOTTOM", "TOP"}, --고술
 
 }
 

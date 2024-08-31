@@ -12,6 +12,8 @@ local APB_HEIGHT = 10
 local APB_ALPHA_COMBAT = 1       -- 전투중 알파 값
 local APB_ALPHA_NORMAL = 0.5
 local APB_SHOW_HEALTHBAR = false -- 생명력바 표시
+local APB_STACKBAR_COLOR_NORMAL = {0.3, 1, 0.3};
+local APB_STACKBAR_COLOR_ALERT = {1, 0.5, 0.3};
 
 local bupdate_power = false;
 local bupdate_rune = false;
@@ -37,6 +39,7 @@ APB_BUFF3 = nil;
 APB_BUFF4 = nil;
 APB_BUFF_COMBO = nil;
 APB_BUFF_STACK = nil;
+APB_DEBUFF_STACK = nil;
 APB_BUFF_COMBO_MAX = nil;
 APB_BUFF_COMBO_MAX_COUNT = nil;
 APB_DEBUFF_COMBO = nil;
@@ -513,9 +516,9 @@ local function APB_UpdateBuffStack(stackbar)
         if name and caster == "player" then
             if count >= APB.stackbar[0].max then
                 count = APB.stackbar[0].max
-                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(1, 1, 0);
+                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
             else
-                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(0, 1, 0);
+                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1], APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
             end
 
             APB.stackbar[0]:SetValue(count);
@@ -535,9 +538,9 @@ local function APB_UpdateBuffStack(stackbar)
         if name and caster == "player" then
             if count >= APB.stackbar[0].max then
                 count = APB.stackbar[0].max
-                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(1, 1, 0);
+                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
             else
-                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(0, 1, 0);
+                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1], APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
             end
             APB.stackbar[0]:SetValue(count);
             APB.stackbar[0].prevcount = count;
@@ -553,13 +556,13 @@ local function APB_UpdateBuffStack(stackbar)
         
         if count >= APB.stackbar[0].max then
             count = APB.stackbar[0].max
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(0, 1, 1);
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1], APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
         elseif bupdate_enhaced_tempest and count <= 10 then
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(1, 0.8, 0.8);
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
         elseif bupdate_element_tempest and count <= 50 then
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(1, 0.8, 0.8);
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
         else
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(0, 1, 1);
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1], APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
         end
         APB.stackbar[0]:SetValue(count);
         APB.stackbar[0].prevcount = count;
@@ -1753,6 +1756,7 @@ local function APB_CheckPower(self)
     APB_POWER_LEVEL = nil;
     APB_BUFF_COMBO = nil;
     APB_BUFF_STACK = nil;
+    APB_DEBUFF_STACK = nil;
     APB_BUFF_COMBO_MAX = nil;
     APB_BUFF_COMBO_MAX_COUNT = nil;
     APB_DEBUFF_COMBO = nil;
@@ -1900,14 +1904,6 @@ local function APB_CheckPower(self)
                 APB_UpdateBuff(self.buffbar[0])
             end
 
-            if IsPlayerSpell(448601) then
-                APB_BUFF_STACK = 449400;
-                APB.stackbar[0].unit = "player"
-                APB.stackbar[0].spellid = 449400;
-                APB_MaxStack(5);
-                APB_UpdateBuffStack(self.stackbar[0]);
-            end
-
             APB_UNIT_POWER = "ARCANE_CHARGES"
             APB_POWER_LEVEL = Enum.PowerType.ArcaneCharges
             APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
@@ -1979,6 +1975,15 @@ local function APB_CheckPower(self)
 
             bupdate_fronzen = true;
             APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+            
+            if IsPlayerSpell(443739) then --쇄편
+                APB_DEBUFF_STACK = 443740;
+                APB.stackbar[0].unit = "target"
+                APB.stackbar[0].spellid = 443740;
+                APB_MaxStack(8);
+                APB_UpdateBuffStack(self.stackbar[0]);
+                bupdate_Splinterstorm = true;
+            end
 
             APB_SPELL = "진눈깨비";
             APB_SpellMax(APB_SPELL);

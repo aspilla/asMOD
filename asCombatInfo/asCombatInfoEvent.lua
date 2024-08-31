@@ -275,6 +275,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
     elseif (event == "PLAYER_TOTEM_UPDATE") then
         UpdateTotem();
     elseif (event == "PLAYER_TARGET_CHANGED") then
+        splinterstorm_time = 0;
         UpdateAuras("target");
     elseif (event == "ACTIONBAR_UPDATE_COOLDOWN" or event == "ACTIONBAR_UPDATE_USABLE") then
         -- call back
