@@ -126,7 +126,13 @@ local checkAuraList = {};
 local countAuraList = {};
 
 local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale, r, g, b, vFlip, hFlip)
-	local aura = ns.getExpirationTimeUnitAurabyID("player", spellID);
+
+	local auraid = spellID;
+	if ns.countaware[spellID] then
+		auraid = ns.countaware[spellID]
+	end
+
+	local aura = ns.getExpirationTimeUnitAurabyID("player", auraid);
 	local rate = 1;
 	local remain = 0;
 
@@ -297,7 +303,12 @@ end
 local function asOverlay_CheckAura(self)
 	for spellID, _ in pairs(countAuraList) do
 		if ns.countaware[spellID] then
-			local procaura = ns.getExpirationTimeUnitAurabyID("player", spellID, true);
+			local auraid = spellID;
+			if ns.countaware[spellID] then
+				auraid = ns.countaware[spellID]
+			end
+
+			local procaura = ns.getExpirationTimeUnitAurabyID("player", auraid, true);
 
 			if procaura then
 				local count = procaura.applications;
@@ -412,7 +423,7 @@ local function asOverlay_OnEvent(self, event, ...)
 	end
 
 	if (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
-		local spellID, texture, positions, scale, r, g, b = ...;
+		local spellID, texture, positions, scale, r, g, b = ...;		
 
 		if not IsShown(spellID) then
 			asOverlay_ShowAllOverlays(self, spellID, texture, positions, scale, r, g, b)
