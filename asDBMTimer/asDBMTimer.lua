@@ -34,15 +34,19 @@ local BarColors = {
 
 local asDBMTimer = {};
 
-local function deleteButton(idx)
+local function deleteButton(idx, btemp)
 	local button = asDBMTimer.buttons[idx]
 
 	if button then
-		button.id = nil;
-		button.cooltext:Hide();
-		button.text:Hide();
-		button:Hide();
-		button:SetScript("OnUpdate", nil)
+		if btemp then
+			button.bdelete = true;
+		else
+			button.id = nil;
+			button.cooltext:Hide();
+			button.text:Hide();
+			button:Hide();
+			button:SetScript("OnUpdate", nil)
+		end
 	end
 end
 
@@ -50,10 +54,12 @@ local function checkAllButton()
 	for idx = 1, ADBMT_MaxButtons do
 		local button = asDBMTimer.buttons[idx]
 
-		if button and button.start and button.duration then
+		if button and button.bdelete then			
+			deleteButton(idx);
+		elseif button and button.start and button.duration then
 			local ex = button.start + button.duration;
 
-			if ex < GetTime() then				
+			if ex < GetTime() then
 				deleteButton(idx);
 			end
 		end
@@ -72,6 +78,7 @@ local function newButton(id, event)
 		local button = asDBMTimer.buttons[i];
 		if button.id == nil then
 			button.id = id;
+			button.bdelete = false;
 			button.icon:SetTexture(event.icon);
 			button.icon:Show();
 			button.cooltext:Show();
@@ -110,7 +117,7 @@ function asDBMTimer_callback(event, id, ...)
 		end
 
 		if dbm_event_list[id] and dbm_event_list[id].button_id then
-			deleteButton(dbm_event_list[id].button_id);
+			deleteButton(dbm_event_list[id].button_id, true);
 		end
 
 		local newmsg = msg;
@@ -136,7 +143,7 @@ function asDBMTimer_callback(event, id, ...)
 	elseif event == "DBM_TimerStop" then
 		if dbm_event_list[id] then
 			if dbm_event_list[id].button_id then
-				deleteButton(dbm_event_list[id].button_id);
+				deleteButton(dbm_event_list[id].button_id, true);
 			end
 			dbm_event_list:Remove(id);
 		end
@@ -144,7 +151,7 @@ function asDBMTimer_callback(event, id, ...)
 		local elapsed, totalTime = ...;
 		if dbm_event_list[id] then
 			if dbm_event_list[id].button_id then
-				deleteButton(dbm_event_list[id].button_id);
+				deleteButton(dbm_event_list[id].button_id, true);
 			end
 			dbm_event_list[id].button_id = nil;
 			dbm_event_list[id].duration = totalTime;

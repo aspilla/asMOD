@@ -362,10 +362,11 @@ local function SpecIDfromSpecName(specname, unit)
     end
     return nil;
 end
+local asTooltip = CreateFrame("GameTooltip", "asTooltip", nil, "GameTooltipTemplate")
 
 local function scanUnitSpecID(unit)
-    GameTooltip:SetUnit(unit);
-    local tooltipdata = GameTooltip:GetTooltipData();
+    asTooltip:SetUnit(unit);
+    local tooltipdata = asTooltip:GetTooltipData();    
 
     if tooltipdata and tooltipdata.lines then
         for i = 1, #tooltipdata.lines do
