@@ -25,6 +25,7 @@ local bupdate_stagger = false;
 local bupdate_fronzen = false;
 local bupdate_enhaced_tempest = false;
 local bupdate_element_tempest = false;
+local bupdate_internalcool = false;
 local bupdate_partial_power = false;
 local bsmall_power_bar = false;
 local bupdate_buff_combo = false;
@@ -82,6 +83,13 @@ local tempeststate = {
 }
 
 local splinterstorm_time = GetTime();
+
+local internalcool_state = {
+    start = 0,
+    duration = 0,
+    spellid = 0,
+}
+
 
 local asGetSpellInfo = function(spellID)
     if not spellID then
@@ -279,6 +287,49 @@ local function APB_OnUpdateCombo(self, elapsed)
             else
                 self:SetMinMaxValues(0, self.duration)
                 self:SetValue(self.duration)
+                self.start = nil;
+            end
+        end
+    end
+end
+
+local function APB_OnUpdateInternalCool(self, elapsed)
+    if not self.start then
+        return;
+    end
+
+    if not self.update then
+        self.update = 0;
+    end
+
+    self.update = self.update + elapsed
+
+    if self.update >= 0.25 then
+        local curr_time = GetTime();
+        local curr_duration = curr_time - self.start;
+
+        self.update = 0
+
+        if self.reverse then
+            if curr_duration < self.duration then
+                self:SetMinMaxValues(0, self.duration * 10)
+                self:SetValue((self.duration * 10) - (curr_time - self.start) * 10)
+                self.count:SetText(math.ceil(self.duration) - (curr_time - self.start));
+            else
+                self:SetMinMaxValues(0, self.duration)
+                self:SetValue(0)
+                self.count:SetText(0);
+                self.start = nil;
+            end
+        else
+            if curr_duration < self.duration then
+                self:SetMinMaxValues(0, self.duration * 10)
+                self:SetValue((curr_time - self.start) * 10)
+                self.count:SetText(math.ceil(curr_time - self.start));
+            else
+                self:SetMinMaxValues(0, self.duration)
+                self:SetValue(self.duration)
+                self.count:SetText(self.duration);
                 self.start = nil;
             end
         end
@@ -490,6 +541,12 @@ local function APB_MaxStack(max)
     APB.stackbar[0]:Show();
     APB.stackbar[0].max = max;
 
+    APB.stackbar[0].count:Show();
+
+    if bupdate_internalcool then
+        APB.stackbar[0]:SetScript("OnUpdate", APB_OnUpdateInternalCool);
+    end
+
     bshowstack = true;
 
     if bshowspell then
@@ -501,7 +558,7 @@ end
 
 
 local function APB_UpdateBuffStack(stackbar)
-    if not (APB_BUFF_STACK or APB_DEBUFF_STACK or bupdate_enhaced_tempest or bupdate_element_tempest) then
+    if not (APB_BUFF_STACK or APB_DEBUFF_STACK or bupdate_enhaced_tempest or bupdate_element_tempest or bupdate_internalcool) then
         return;
     end
 
@@ -567,6 +624,17 @@ local function APB_UpdateBuffStack(stackbar)
         APB.stackbar[0]:SetValue(count);
         APB.stackbar[0].prevcount = count;
         APB.stackbar[0].count:SetText(count);        
+    elseif bupdate_internalcool then
+        APB.stackbar[0].start = internalcool_state.start;
+        APB.stackbar[0].duration = internalcool_state.duration;
+        local currtime = GetTime();
+        
+        if currtime >= APB.stackbar[0].start + APB.stackbar[0].duration then
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
+        else
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1], APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
+        end
+
     end
 end
 
@@ -1737,6 +1805,7 @@ local function APB_CheckPower(self)
     bhalf_combo = false;
     bupdate_enhaced_tempest = false;
     bupdate_element_tempest = false;
+    bupdate_internalcool = false;
     bdruid = false;
     brogue = false;
 
@@ -1801,7 +1870,8 @@ local function APB_CheckPower(self)
         APB.stackbar[j].count:SetText("");        
         APB.stackbar[j].castbar:Hide();
         APB.stackbar[j].max = nil;
-        APB.stackbar[j].spellid = nil;     
+        APB.stackbar[j].spellid = nil;
+        APB.stackbar[j]:SetScript("OnUpdate", nil);
 
         setupMouseOver(APB.stackbar[j]);
     end
@@ -2476,7 +2546,7 @@ local function APB_CheckPower(self)
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
 
-            if asCheckTalent("교묘한 사격") then
+            if IsPlayerSpell(257621) then
                 APB_BUFF = "교묘한 사격";
                 APB_BUFF3 = "연발 공격";
                 APB.buffbar[0].buff = APB_BUFF;
@@ -2484,6 +2554,17 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].unit = "player"
                 APB.buffbar[0].maxshow = 6;
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
+            end 
+            
+            if IsPlayerSpell(450385) then
+                bupdate_internalcool = true;
+                internalcool_state.start = 0;
+                internalcool_state.duration = 15;
+                internalcool_state.spellid = 450978;
+                self.stackbar[0].spellid = 450978;         
+                APB_MaxStack(internalcool_state.duration);
+                APB_UpdateBuffStack(self.stackbar[0]);                                
+                APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
             end
         end
 
@@ -2527,6 +2608,17 @@ local function APB_CheckPower(self)
                     APB.combobar[i].tooltip = APB_BUFF_COMBO;
                 end
             end
+
+            if IsPlayerSpell(450385) then
+                bupdate_internalcool = true;
+                internalcool_state.start = 0;
+                internalcool_state.duration = 15;
+                internalcool_state.spellid = 450978;
+                self.stackbar[0].spellid = 450978;
+                APB_MaxStack(internalcool_state.duration);
+                APB_UpdateBuffStack(self.stackbar[0]);
+                APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+            end
         end
     end
 
@@ -2548,6 +2640,7 @@ local function APB_CheckPower(self)
                 bupdate_element_tempest = true;
                 APB_MaxStack(300);
                 APB_UpdateBuffStack(self.stackbar[0]);
+                self.stackbar[0].spellid = 454009;
 
                 tempeststate.TempestInternalStacks = 300;
                 tempeststate.TempestStacks = 300;
@@ -2587,6 +2680,7 @@ local function APB_CheckPower(self)
             if IsPlayerSpell(454009) then
                 bupdate_enhaced_tempest = true;
                 APB_MaxStack(40);
+                self.stackbar[0].spellid = 454009;
                 tempeststate.TempestInternalStacks = 40;
                 tempeststate.TempestStacks = 40;
                 APB_UpdateBuffStack(self.stackbar[0]);
@@ -3010,9 +3104,11 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
                             tempeststate.TempestInternalStacks = tempeststate.elemental_maxStacks
                         end
                         tempeststate.TempestStacks = tempeststate.TempestInternalStacks                        
-                    end
-
-                    
+                    end                   
+                end
+            elseif bupdate_internalcool then
+                if ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and (spellId == internalcool_state.spellid)) then --lunarstorm
+                    internalcool_state.start = GetTime();
                 end
             end
         end

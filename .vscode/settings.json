@@ -816,11 +816,11 @@
     "Lua.workspace.library": [
         "d:/Develop/asMOD",
         "d:/Develop/wow-ui-source/",
-        "D:\\Utils\\VSCode\\data\\extensions\\ketho.wow-api-0.17.5\\Annotations\\Data",
-        "D:\\Utils\\VSCode\\data\\extensions\\ketho.wow-api-0.17.5\\Annotations\\Interface",
-        "D:\\Utils\\VSCode\\data\\extensions\\ketho.wow-api-0.17.5\\Annotations\\Libraries",
-        "D:\\Utils\\VSCode\\data\\extensions\\ketho.wow-api-0.17.5\\Annotations\\Type",
-        "D:\\Utils\\VSCode\\data\\extensions\\ketho.wow-api-0.17.5\\Annotations\\Widget"
+        "D:\\Utils\\VSCode\\data\\extensions\\ketho.wow-api-0.17.6\\Annotations\\Data",
+        "D:\\Utils\\VSCode\\data\\extensions\\ketho.wow-api-0.17.6\\Annotations\\Interface",
+        "D:\\Utils\\VSCode\\data\\extensions\\ketho.wow-api-0.17.6\\Annotations\\Libraries",
+        "D:\\Utils\\VSCode\\data\\extensions\\ketho.wow-api-0.17.6\\Annotations\\Type",
+        "D:\\Utils\\VSCode\\data\\extensions\\ketho.wow-api-0.17.6\\Annotations\\Widget"
     ],
     "Lua.diagnostics.disable": [
         "missing-parameter"

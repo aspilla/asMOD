@@ -240,7 +240,7 @@ function ACI_Init()
 			if check and check == 99 then
 				local bselected = false;
 				local spell_name = ACI_SpellList[i][2];
-				if asCheckTalent(spell_name) then
+				if (type(spell_name) == "string" and asCheckTalent(spell_name)) or (type(spell_name) == "number" and IsPlayerSpell(spell_name)) then
 					if ACI_SpellList[i][3] then
 						local array = ACI_SpellList[i][3];
 						if type(array) == "table" then

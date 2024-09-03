@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240825,
+	version = 240903,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -91,7 +91,7 @@ ACI_Options_Default = {
 		{ "살상 명령", 1 },
 		{ "야수의 격노", 2 },
 		{ "마무리 사격", 1 },
-		{ 217200, 5, nil, 1 },
+		{ 99, 430703, {430703, 4}, { 217200, 5, nil, 1 }},
 	},
 
 	--사격
@@ -100,7 +100,7 @@ ACI_Options_Default = {
 		{ "속사", 1 },
 		{ "정조준", 2},
 		{ "마무리 사격", 1 },
-		{ 259491, 5, nil, 1 },
+		{ 99, 430703, {430703, 4}, { 259491, 5, nil, 1 }},
 	},
 
 	--생존
