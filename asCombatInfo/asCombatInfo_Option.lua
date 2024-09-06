@@ -12,7 +12,8 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240903,
+	version = 240905
+	,
 
 
 	-- 	ACI_SpellList_직업명_특성숫자
@@ -338,11 +339,11 @@ ACI_Options_Default = {
 
 	--악마
 	ACI_SpellList_WARLOCK_2 = {
-		{ "마력 착취", 1 },
-		{ "공포사냥개 부르기", 1 },
-		{ "악마 폭군 소환", 2, "pet", nil, nil, "악마의 힘" },
-		{ "파열", 1 },
-		{ 460553, 5 },
+		{99, 264130, { 264130, 1 }, { 89751, 2, "pet", nil, nil, 89751}},
+		{ 104316, 1 },
+		{ 265187, 2, "pet", nil, nil, 265273 },
+		{ 264057, 1 }, 
+		{99, 460551, { 460553, 5 }, { 264119, 1}},
 	},
 
 	--파괴

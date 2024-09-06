@@ -41,6 +41,7 @@ APB_BUFF4 = nil;
 APB_BUFF_COMBO = nil;
 APB_BUFF_STACK = nil;
 APB_DEBUFF_STACK = nil;
+APB_ACTION_STACK = nil;
 APB_BUFF_COMBO_MAX = nil;
 APB_BUFF_COMBO_MAX_COUNT = nil;
 APB_DEBUFF_COMBO = nil;
@@ -558,7 +559,7 @@ end
 
 
 local function APB_UpdateBuffStack(stackbar)
-    if not (APB_BUFF_STACK or APB_DEBUFF_STACK or bupdate_enhaced_tempest or bupdate_element_tempest or bupdate_internalcool) then
+    if not (APB_BUFF_STACK or APB_DEBUFF_STACK or APB_ACTION_STACK or bupdate_enhaced_tempest or bupdate_element_tempest or bupdate_internalcool) then
         return;
     end
 
@@ -571,14 +572,13 @@ local function APB_UpdateBuffStack(stackbar)
             APB_BUFF_STACK, "player");
 
         if name and caster == "player" then
-            if count >= APB.stackbar[0].max then
-                count = APB.stackbar[0].max
+            if count >= APB.stackbar[0].max then                
+                APB.stackbar[0]:SetValue(APB.stackbar[0].max);
                 APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
             else
+                APB.stackbar[0]:SetValue(count);
                 APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1], APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
-            end
-
-            APB.stackbar[0]:SetValue(count);
+            end            
             APB.stackbar[0].prevcount = count;
             APB.stackbar[0].count:SetText(count); 
         else
@@ -593,19 +593,35 @@ local function APB_UpdateBuffStack(stackbar)
             APB_DEBUFF_STACK, "player");
 
         if name and caster == "player" then
-            if count >= APB.stackbar[0].max then
-                count = APB.stackbar[0].max
+            if count >= APB.stackbar[0].max then                
+                APB.stackbar[0]:SetValue(APB.stackbar[0].max);
                 APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
             else
+                APB.stackbar[0]:SetValue(count);
                 APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1], APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
             end
-            APB.stackbar[0]:SetValue(count);
+            
             APB.stackbar[0].prevcount = count;
             APB.stackbar[0].count:SetText(count); 
         else
             APB.stackbar[0]:SetValue(0);
             APB.stackbar[0].count:SetText(count); 
         end
+    end
+
+    if APB_ACTION_STACK then
+        
+        local count = GetActionCount(APB_ACTION_STACK)
+
+        if count >= APB.stackbar[0].max then
+            APB.stackbar[0]:SetValue(APB.stackbar[0].max);
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
+        else
+            APB.stackbar[0]:SetValue(count);
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1], APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
+        end        
+        APB.stackbar[0].prevcount = count;
+        APB.stackbar[0].count:SetText(count);
     end
 
     if bupdate_enhaced_tempest or bupdate_element_tempest then
@@ -1826,6 +1842,7 @@ local function APB_CheckPower(self)
     APB_BUFF_COMBO = nil;
     APB_BUFF_STACK = nil;
     APB_DEBUFF_STACK = nil;
+    APB_ACTION_STACK = nil;
     APB_BUFF_COMBO_MAX = nil;
     APB_BUFF_COMBO_MAX_COUNT = nil;
     APB_DEBUFF_COMBO = nil;
@@ -2093,6 +2110,14 @@ local function APB_CheckPower(self)
             APB.buffbar[0].unit = "target"
             APB:SetScript("OnUpdate", APB_OnUpdate);
             APB:RegisterEvent("PLAYER_TARGET_CHANGED");
+
+            if IsPlayerSpell(196277) then --임프
+                local name = asGetSpellInfo(196277);
+                APB_ACTION_STACK = APB_GetActionSlot(name);              
+                APB.stackbar[0].spellid = 196277;
+                APB_MaxStack(15);
+                APB_UpdateBuffStack(self.stackbar[0]);                
+            end
         end
 
         if (spec and spec == 3) then

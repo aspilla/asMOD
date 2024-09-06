@@ -773,8 +773,17 @@ function ns.Button:init(config, frame)
     self.unit = config[3];
     self.number = config[4];
     self.countbuff = config[5];
+    if type(self.countbuff) == "number" then
+        self.countbuff = select(1, asGetSpellInfo(self.countbuff));            
+    end  
     self.realbuff = config[6];
+    if type(self.realbuff) == "number" then
+        self.realbuff = select(1, asGetSpellInfo(self.realbuff));            
+    end   
     self.countdebuff = config[7];
+    if type(self.countdebuff) == "number" then
+        self.countdebuff = select(1, asGetSpellInfo(self.countdebuff));            
+    end  
     self.bufflist = config[8];
     self.alertbufflist = config[9];
     self.checkcool = config[10];
@@ -805,8 +814,10 @@ function ns.Button:init(config, frame)
         end
     end
 
-    if self.realbuff and self.realbuff == "petname" and UnitExists("pet") then
-        self.realbuff = UnitName("pet");
+    if self.realbuff then
+        if self.realbuff == "petname" and UnitExists("pet") then
+            self.realbuff = UnitName("pet");
+        end    
     end
 
     if self.type ~= ns.EnumButtonType.BuffOnly and self.type ~= ns.EnumButtonType.DebuffOnly then
