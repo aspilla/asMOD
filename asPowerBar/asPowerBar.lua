@@ -12,8 +12,8 @@ local APB_HEIGHT = 10
 local APB_ALPHA_COMBAT = 1       -- 전투중 알파 값
 local APB_ALPHA_NORMAL = 0.5
 local APB_SHOW_HEALTHBAR = false -- 생명력바 표시
-local APB_STACKBAR_COLOR_NORMAL = {0.3, 1, 0.3};
-local APB_STACKBAR_COLOR_ALERT = {1, 0.5, 0.3};
+local APB_STACKBAR_COLOR_NORMAL = { 0.3, 1, 0.3 };
+local APB_STACKBAR_COLOR_ALERT = { 1, 0.5, 0.3 };
 
 local bupdate_power = false;
 local bupdate_rune = false;
@@ -70,17 +70,15 @@ PowerTypeComboString = {
 
 
 local tempeststate = {
-    enhanced_maxStacks = 40,
-    elemental_maxStacks = 300,
-    nextTempestTime = 0,
-    lastCheckStacks = 0,
-    lastCast = 0,
+    TempestStacks = 0,
 
-    show = true,
-    changed = true,
-
-    TempestInternalStacks = 40,
-    TempestStacks = 40,
+    TStacks = 0,
+    currentStacks = 0,
+    tempestTime = 0,
+    mswFadeTime = 0,
+    mswRemovedDoseTime = 0,    
+    lastCastTime = 0,
+    awakeningStormRemovedTime = 0,
 }
 
 local splinterstorm_time = GetTime();
@@ -572,20 +570,21 @@ local function APB_UpdateBuffStack(stackbar)
             APB_BUFF_STACK, "player");
 
         if name and caster == "player" then
-            if count >= APB.stackbar[0].max then                
+            if count >= APB.stackbar[0].max then
                 APB.stackbar[0]:SetValue(APB.stackbar[0].max);
-                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
+                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1],
+                    APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
             else
                 APB.stackbar[0]:SetValue(count);
-                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1], APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
-            end            
+                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+                    APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
+            end
             APB.stackbar[0].prevcount = count;
-            APB.stackbar[0].count:SetText(count); 
+            APB.stackbar[0].count:SetText(count);
         else
             APB.stackbar[0]:SetValue(0);
-            APB.stackbar[0].count:SetText(count); 
+            APB.stackbar[0].count:SetText(count);
         end
-        
     end
 
     if APB_DEBUFF_STACK then
@@ -593,64 +592,72 @@ local function APB_UpdateBuffStack(stackbar)
             APB_DEBUFF_STACK, "player");
 
         if name and caster == "player" then
-            if count >= APB.stackbar[0].max then                
+            if count >= APB.stackbar[0].max then
                 APB.stackbar[0]:SetValue(APB.stackbar[0].max);
-                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
+                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1],
+                    APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
             else
                 APB.stackbar[0]:SetValue(count);
-                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1], APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
+                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+                    APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
             end
-            
+
             APB.stackbar[0].prevcount = count;
-            APB.stackbar[0].count:SetText(count); 
+            APB.stackbar[0].count:SetText(count);
         else
             APB.stackbar[0]:SetValue(0);
-            APB.stackbar[0].count:SetText(count); 
+            APB.stackbar[0].count:SetText(count);
         end
     end
 
     if APB_ACTION_STACK then
-        
         local count = GetActionCount(APB_ACTION_STACK)
 
         if count >= APB.stackbar[0].max then
             APB.stackbar[0]:SetValue(APB.stackbar[0].max);
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT
+                [2], APB_STACKBAR_COLOR_ALERT[3]);
         else
             APB.stackbar[0]:SetValue(count);
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1], APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
-        end        
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+                APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
+        end
         APB.stackbar[0].prevcount = count;
         APB.stackbar[0].count:SetText(count);
     end
 
     if bupdate_enhaced_tempest or bupdate_element_tempest then
         local count = tempeststate.TempestStacks
-        
+
         if count >= APB.stackbar[0].max then
             count = APB.stackbar[0].max
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1], APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+                APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
         elseif bupdate_enhaced_tempest and count <= 10 then
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT
+                [2], APB_STACKBAR_COLOR_ALERT[3]);
         elseif bupdate_element_tempest and count <= 50 then
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT
+                [2], APB_STACKBAR_COLOR_ALERT[3]);
         else
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1], APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+                APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
         end
         APB.stackbar[0]:SetValue(count);
         APB.stackbar[0].prevcount = count;
-        APB.stackbar[0].count:SetText(count);        
+        APB.stackbar[0].count:SetText(count);
     elseif bupdate_internalcool then
         APB.stackbar[0].start = internalcool_state.start;
         APB.stackbar[0].duration = internalcool_state.duration;
         local currtime = GetTime();
-        
-        if currtime >= APB.stackbar[0].start + APB.stackbar[0].duration then
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
-        else
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1], APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
-        end
 
+        if currtime >= APB.stackbar[0].start + APB.stackbar[0].duration then
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT
+                [2], APB_STACKBAR_COLOR_ALERT[3]);
+        else
+            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+                APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
+        end
     end
 end
 
@@ -1308,7 +1315,6 @@ local function APB_SpellMax(spell, spell2)
     else
         APB.spellbar[1]:SetPoint("BOTTOMLEFT", APB.buffbar[0], "TOPLEFT", 0, 1);
     end
-
 end
 
 local function setupMouseOver(frame)
@@ -1884,7 +1890,7 @@ local function APB_CheckPower(self)
 
     for j = 0, 0 do
         APB.stackbar[j]:Hide();
-        APB.stackbar[j].count:SetText("");        
+        APB.stackbar[j].count:SetText("");
         APB.stackbar[j].castbar:Hide();
         APB.stackbar[j].max = nil;
         APB.stackbar[j].spellid = nil;
@@ -2062,7 +2068,7 @@ local function APB_CheckPower(self)
 
             bupdate_fronzen = true;
             APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-            
+
             if IsPlayerSpell(443739) then --쇄편
                 APB_DEBUFF_STACK = 443740;
                 APB.stackbar[0].unit = "target"
@@ -2113,10 +2119,10 @@ local function APB_CheckPower(self)
 
             if IsPlayerSpell(196277) then --임프
                 local name = asGetSpellInfo(196277);
-                APB_ACTION_STACK = APB_GetActionSlot(name);              
+                APB_ACTION_STACK = APB_GetActionSlot(name);
                 APB.stackbar[0].spellid = 196277;
                 APB_MaxStack(15);
-                APB_UpdateBuffStack(self.stackbar[0]);                
+                APB_UpdateBuffStack(self.stackbar[0]);
             end
         end
 
@@ -2579,16 +2585,16 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].unit = "player"
                 APB.buffbar[0].maxshow = 6;
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
-            end 
-            
+            end
+
             if IsPlayerSpell(450385) then
                 bupdate_internalcool = true;
                 internalcool_state.start = 0;
                 internalcool_state.duration = 15;
                 internalcool_state.spellid = 450978;
-                self.stackbar[0].spellid = 450978;         
+                self.stackbar[0].spellid = 450978;
                 APB_MaxStack(internalcool_state.duration);
-                APB_UpdateBuffStack(self.stackbar[0]);                                
+                APB_UpdateBuffStack(self.stackbar[0]);
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
             end
         end
@@ -2663,12 +2669,11 @@ local function APB_CheckPower(self)
 
             if IsPlayerSpell(454009) then
                 bupdate_element_tempest = true;
-                APB_MaxStack(300);
+                tempeststate.TempestStacks = 300;
+                APB_MaxStack(tempeststate.TempestStacks);
                 APB_UpdateBuffStack(self.stackbar[0]);
                 self.stackbar[0].spellid = 454009;
 
-                tempeststate.TempestInternalStacks = 300;
-                tempeststate.TempestStacks = 300;
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
             end
         end
@@ -2704,12 +2709,12 @@ local function APB_CheckPower(self)
 
             if IsPlayerSpell(454009) then
                 bupdate_enhaced_tempest = true;
-                APB_MaxStack(40);
-                self.stackbar[0].spellid = 454009;
-                tempeststate.TempestInternalStacks = 40;
                 tempeststate.TempestStacks = 40;
+                APB_MaxStack(tempeststate.TempestStacks);
+                self.stackbar[0].spellid = 454009;
+
                 APB_UpdateBuffStack(self.stackbar[0]);
-                
+
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
             end
         end
@@ -2989,18 +2994,19 @@ local enhanced_listOfSpenders = {
 
     [320674] = true  -- Chain Harvest
 
-    
+
 }
 
 local elemental_listOfSpenders = {
     [117014] = true, -- Elemental Blast
-    [8042] = true, -- Earth Shock
-    [61882] = true, -- Earthquake  
+    [8042] = true,   -- Earth Shock
+    [61882] = true,  -- Earthquake
     [462620] = true, -- Earthquake (@target)
 
-    
+
 }
 
+local bfirstcheck = true;
 
 local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
     if event == "UNIT_AURA" then
@@ -3048,88 +3054,128 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
 
                 if bupdate_Splinterstorm and destGUID == UnitGUID("target") then
                     if spellId == 443934 then -- Splinterstorm (applied per hit)
-                        splinterstorm_time = GetTime()                        
+                        splinterstorm_time = GetTime()
                     end
                 end
-            
             elseif bupdate_enhaced_tempest then
-                if eventType == "SPELL_CAST_SUCCESS" and enhanced_listOfSpenders[spellId] then --Maelstrom Weapon Spenders
-                    local msw = C_UnitAuras.GetPlayerAuraBySpellID(344179)
-                    if (msw) then
-                        tempeststate.changed = true
-                        tempeststate.lastCast = GetTime()
+                -- Handle Awakened Storm buff removal
+                if (eventType == "SPELL_AURA_REMOVED" and spellId == 462131) then
+                    tempeststate.awakeningStormRemovedTime = GetTime()
+                    -- Handle Tempest buff application and refresh
+                elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and spellId == 454015) then
+                    local currentTime = GetTime()
+                    tempeststate.tempestTime = currentTime
+                    
+                    -- Calculate time differences
+                    local castTimeDiff = currentTime - tempeststate.lastCastTime
+                    local awakeningStormDiff = currentTime - tempeststate.awakeningStormRemovedTime
 
-                        tempeststate.TempestInternalStacks = tempeststate.TempestInternalStacks -
-                            tempeststate.lastCheckStacks
-                        if (tempeststate.TempestInternalStacks < -9) then
-                            tempeststate.TempestInternalStacks = 1
+                    -- Check conditions for TStacks reset based on MSW cast or Awakening Storm                    
+                    if math.abs(castTimeDiff) <= 0.2 then
+                        if bfirstcheck then
+                            bfirstcheck = false;
+                            tempeststate.TStacks = 0                            
+                        elseif tempeststate.TStacks >= 40 then
+                            -- Reset due to Tempest buff gained with >= 40 MSW consumed
+                            tempeststate.TStacks = tempeststate.TStacks - 40
+                        else
+                            -- Reset to 0 due to desync
+                            tempeststate.TStacks = 0
                         end
-
-                        tempeststate.TempestStacks = tempeststate.TempestInternalStacks
-                        if (tempeststate.TempestStacks < 1) then tempeststate.TempestStacks = 1 end
+                    elseif math.abs(awakeningStormDiff) <= 0.6 then
+                        -- Handle Tempest buff gained due to Awakening Storm reset
+                        -- No reset needed here, just handle the timing                        
                     end
-                elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_APPLIED_DOSE") and spellId == 344179) then --Maelstrom Weapon
-                    tempeststate.lastCheckStacks = amount or 1;
-                elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and (spellId == 454015)) then    --Tempest
-                    tempeststate.changed = true
-
-                    if (tempeststate.TempestProcs == 0 and ((GetTime() - tempeststate.nextTempestTime) <= 1)) then
-                        tempeststate.nextTempestTime = 0
-                    else
-                        tempeststate.TempestInternalStacks = tempeststate.TempestInternalStacks +
-                            tempeststate.enhanced_maxStacks;
-                        if (tempeststate.TempestInternalStacks > tempeststate.enhanced_maxStacks) then
-                            tempeststate.TempestInternalStacks = tempeststate.enhanced_maxStacks
-                        end
-
-                        tempeststate.TempestStacks = tempeststate.TempestInternalStacks
+                    -- Handle MSW aura applied and dose events
+                    -- Track successful spell casts that consume MSW stacks
+                elseif (eventType == "SPELL_CAST_SUCCESS" and enhanced_listOfSpenders[spellId]) then
+                    tempeststate.lastCastTime = GetTime()
+                    -- Track Maelstrom Weapon dose removals
+                elseif (eventType == "SPELL_AURA_REMOVED_DOSE" and spellId == 344179) then
+                    if (GetTime() - tempeststate.lastCastTime) <= 0.1 then
+                        local consumed = tempeststate.currentStacks - amount
+                        tempeststate.TStacks = tempeststate.TStacks + consumed
+                        tempeststate.currentStacks = amount
+                        tempeststate.mswRemovedDoseTime = GetTime()
                     end
-                elseif (eventType == "SPELL_AURA_REMOVED_DOSE" and spellId == 344179 and (GetTime() < tempeststate.lastCast + 0.5)) then -- If no talent for 10 MSW spend
-                    tempeststate.changed = true
-                    amount = amount or 0
-                    tempeststate.lastCheckStacks = tempeststate.lastCheckStacks + amount
-
-                    tempeststate.TempestInternalStacks = tempeststate.TempestInternalStacks + amount
-                    if (tempeststate.TempestInternalStacks > tempeststate.enhanced_maxStacks) then
-                        tempeststate.TempestInternalStacks = tempeststate.enhanced_maxStacks
+                    -- Track Maelstrom Weapon fade when all stacks are consumed
+                elseif (eventType == "SPELL_AURA_REMOVED" and spellId == 344179) then
+                    if (GetTime() - tempeststate.lastCastTime) <= 0.1 then
+                        local consumed = tempeststate.currentStacks
+                        tempeststate.TStacks = tempeststate.TStacks + consumed
+                        tempeststate.currentStacks = 0
+                        tempeststate.mswFadeTime = GetTime()
                     end
+                    -- Track Maelstrom Weapon applications and doses
+                elseif (eventType == "SPELL_AURA_APPLIED" and spellId == 344179) then
+                    tempeststate.currentStacks = 1
+                elseif (eventType == "SPELL_AURA_APPLIED_DOSE" and spellId == 344179) then
+                    tempeststate.currentStacks = amount
+                end
 
-                    tempeststate.TempestStacks = tempeststate.TempestInternalStacks
+                -- Fail-safe to reset stacks if they exceed 49
+                if tempeststate.TStacks > 49 then
+                    tempeststate.TStacks = 0
+                end
+
+                tempeststate.TempestStacks = 40 - tempeststate.TStacks;
+
+                if tempeststate.TempestStacks < 0 then
+                    tempeststate.TempestStacks = 0
                 end
             elseif bupdate_element_tempest then
+                -- Handle Awakened Storm buff removal
+                if (eventType == "SPELL_AURA_REMOVED" and spellId == 462131) then
+                    tempeststate.awakeningStormRemovedTime = GetTime()
+                    -- Handle Tempest buff application and refresh
+                elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and spellId == 454015) then
+                    local currentTime = GetTime()
+                    tempeststate.tempestTime = currentTime                    
 
-                if (eventType == "SPELL_CAST_SUCCESS" and elemental_listOfSpenders[spellId]) then --Maelstrom Spenders
-            
-                    tempeststate.changed = true
-                    
+                    -- Calculate time differences
+                    local castTimeDiff = currentTime - tempeststate.lastCastTime
+                    local awakeningStormDiff = currentTime - tempeststate.awakeningStormRemovedTime
+
+                     -- Check conditions for TStacks reset based on MSW cast or Awakening Storm                    
+                     if math.abs(castTimeDiff) <= 0.2 then
+                        if bfirstcheck then
+                            bfirstcheck = false;
+                            tempeststate.TStacks = 0                            
+                        elseif tempeststate.TStacks >= 300 then
+                            -- Reset due to Tempest buff gained with >= 40 MSW consumed
+                            tempeststate.TStacks = tempeststate.TStacks - 300
+                        else
+                            -- Reset to 0 due to desync
+                            tempeststate.TStacks = 0
+                        end
+                    elseif math.abs(awakeningStormDiff) <= 0.6 then
+                        -- Handle Tempest buff gained due to Awakening Storm reset
+                        -- No reset needed here, just handle the timing                        
+                    end
+                    -- Handle MSW aura applied and dose events
+                    -- Track successful spell casts that consume MSW stacks
+                elseif (eventType == "SPELL_CAST_SUCCESS" and elemental_listOfSpenders[spellId]) then
+                    tempeststate.lastCastTime = GetTime()
+
                     local cost = C_Spell.GetSpellPowerCost(spellId)
                     if cost[1].name == "MAELSTROM" then
                         cost = cost[1].cost
-                    else 
+                    else
                         cost = cost[2].cost
                     end
-                    
-                    tempeststate.TempestInternalStacks = tempeststate.TempestInternalStacks - cost
-                    if (tempeststate.TempestInternalStacks < -91) then
-                        tempeststate.TempestInternalStacks = 1  
-                    end
-                    
-                    tempeststate.TempestStacks = tempeststate.TempestInternalStacks
-                    if (tempeststate.TempestStacks < 1) then tempeststate.TempestStacks = 1 end                                   
-                    
-                   
-                elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and (spellId == 454015)) then --Tempest
-                    tempeststate.changed = true
-                    
-                    if (tempeststate.TempestProcs == 0 and ((GetTime() - tempeststate.nextTempestTime) <= 1)) then
-                        tempeststate.nextTempestTime = 0
-                    else
-                        tempeststate.TempestInternalStacks = tempeststate.TempestInternalStacks + tempeststate.elemental_maxStacks;
-                        if (tempeststate.TempestInternalStacks > tempeststate.elemental_maxStacks) then
-                            tempeststate.TempestInternalStacks = tempeststate.elemental_maxStacks
-                        end
-                        tempeststate.TempestStacks = tempeststate.TempestInternalStacks                        
-                    end                   
+
+                    tempeststate.TStacks = tempeststate.TStacks + cost;
+                end
+
+                -- Fail-safe to reset stacks if they exceed 49
+                if tempeststate.TStacks > 400 then
+                    tempeststate.TStacks = 0
+                end
+
+                tempeststate.TempestStacks = 300 - tempeststate.TStacks;
+
+                if tempeststate.TempestStacks < 0 then
+                    tempeststate.TempestStacks = 0
                 end
             elseif bupdate_internalcool then
                 if ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and (spellId == internalcool_state.spellid)) then --lunarstorm
