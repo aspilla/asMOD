@@ -71,12 +71,12 @@ PowerTypeComboString = {
 
 local tempeststate = {
     TempestStacks = 0,
-
+    bfirstcheck = true,
     TStacks = 0,
     currentStacks = 0,
     tempestTime = 0,
     mswFadeTime = 0,
-    mswRemovedDoseTime = 0,    
+    mswRemovedDoseTime = 0,
     lastCastTime = 0,
     awakeningStormRemovedTime = 0,
 }
@@ -109,6 +109,11 @@ local asGetSpellInfo = function(spellID)
 end
 
 local asGetSpellCooldown = function(spellID)
+
+    if not spellID then
+        return nil;
+    end
+
     local ospellID = C_Spell.GetOverrideSpell(spellID)
 
     if ospellID then
@@ -123,6 +128,10 @@ local asGetSpellCooldown = function(spellID)
 end
 
 local asGetSpellCharges = function(spellID)
+
+    if not spellID then
+        return nil;
+    end
     local ospellID = C_Spell.GetOverrideSpell(spellID)
 
     if ospellID then
@@ -2442,10 +2451,12 @@ local function APB_CheckPower(self)
 
     if (englishClass == "WARRIOR") then
         if (spec and spec == 1) then
-            APB_SPELL = "제압";
-            APB_SpellMax(APB_SPELL);
-            APB_UpdateSpell(APB_SPELL);
-            bupdate_spell = true;
+            if asCheckTalent("제압") then
+                APB_SPELL = "제압";
+                APB_SpellMax(APB_SPELL);
+                APB_UpdateSpell(APB_SPELL);
+                bupdate_spell = true;
+            end
             APB_DEBUFF = "거인의 강타";
             APB.buffbar[0].debuff = "거인의 강타"
             APB.buffbar[0].unit = "target";
@@ -2543,10 +2554,12 @@ local function APB_CheckPower(self)
 
     if (englishClass == "HUNTER") then
         if (spec and spec == 1) then
-            APB_SPELL = "날카로운 사격";
-            APB_SpellMax(APB_SPELL);
-            APB_UpdateSpell(APB_SPELL);
-            bupdate_spell = true;
+            if asCheckTalent("날카로운 사격") then
+                APB_SPELL = "날카로운 사격";
+                APB_SpellMax(APB_SPELL);
+                APB_UpdateSpell(APB_SPELL);
+                bupdate_spell = true;
+            end
 
             APB_BUFF = "광기";
             APB.buffbar[0].buff = APB_BUFF;
@@ -2572,10 +2585,12 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 2) then
-            APB_SPELL = "조준 사격";
-            APB_SpellMax(APB_SPELL);
-            APB_UpdateSpell(APB_SPELL);
-            bupdate_spell = true;
+            if asCheckTalent("조준 사격") then
+                APB_SPELL = "조준 사격";
+                APB_SpellMax(APB_SPELL);
+                APB_UpdateSpell(APB_SPELL);
+                bupdate_spell = true;
+            end
 
             if IsPlayerSpell(257621) then
                 APB_BUFF = "교묘한 사격";
@@ -2602,13 +2617,12 @@ local function APB_CheckPower(self)
         if (spec and spec == 3) then
             if asCheckTalent("도살") then
                 APB_SPELL = "도살";
-            else
-                APB_SPELL = "저미기"
+                APB_SpellMax(APB_SPELL);
+                APB_UpdateSpell(APB_SPELL);
+                bupdate_spell = true;
             end
 
-            APB_SpellMax(APB_SPELL);
-            APB_UpdateSpell(APB_SPELL);
-            bupdate_spell = true;
+
 
             if asCheckTalent("살쾡이의 이빨") then
                 APB_BUFF_COMBO = "살쾡이의 격노";
@@ -2670,6 +2684,8 @@ local function APB_CheckPower(self)
             if IsPlayerSpell(454009) then
                 bupdate_element_tempest = true;
                 tempeststate.TempestStacks = 300;
+                tempeststate.bfirstcheck = true;
+                tempeststate.TStacks = 0;
                 APB_MaxStack(tempeststate.TempestStacks);
                 APB_UpdateBuffStack(self.stackbar[0]);
                 self.stackbar[0].spellid = 454009;
@@ -2710,6 +2726,8 @@ local function APB_CheckPower(self)
             if IsPlayerSpell(454009) then
                 bupdate_enhaced_tempest = true;
                 tempeststate.TempestStacks = 40;
+                tempeststate.bfirstcheck = true;
+                tempeststate.TStacks = 0;
                 APB_MaxStack(tempeststate.TempestStacks);
                 self.stackbar[0].spellid = 454009;
 
@@ -3006,8 +3024,6 @@ local elemental_listOfSpenders = {
 
 }
 
-local bfirstcheck = true;
-
 local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
     if event == "UNIT_AURA" then
         APB_UpdateBuff(self.buffbar[0]);
@@ -3065,16 +3081,16 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
                 elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and spellId == 454015) then
                     local currentTime = GetTime()
                     tempeststate.tempestTime = currentTime
-                    
+
                     -- Calculate time differences
                     local castTimeDiff = currentTime - tempeststate.lastCastTime
                     local awakeningStormDiff = currentTime - tempeststate.awakeningStormRemovedTime
 
-                    -- Check conditions for TStacks reset based on MSW cast or Awakening Storm                    
+                    -- Check conditions for TStacks reset based on MSW cast or Awakening Storm
                     if math.abs(castTimeDiff) <= 0.2 then
-                        if bfirstcheck then
-                            bfirstcheck = false;
-                            tempeststate.TStacks = 0                            
+                        if tempeststate.bfirstcheck then
+                            tempeststate.bfirstcheck = false;
+                            tempeststate.TStacks = 0
                         elseif tempeststate.TStacks >= 40 then
                             -- Reset due to Tempest buff gained with >= 40 MSW consumed
                             tempeststate.TStacks = tempeststate.TStacks - 40
@@ -3084,7 +3100,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
                         end
                     elseif math.abs(awakeningStormDiff) <= 0.6 then
                         -- Handle Tempest buff gained due to Awakening Storm reset
-                        -- No reset needed here, just handle the timing                        
+                        -- No reset needed here, just handle the timing
                     end
                     -- Handle MSW aura applied and dose events
                     -- Track successful spell casts that consume MSW stacks
@@ -3130,17 +3146,17 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
                     -- Handle Tempest buff application and refresh
                 elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and spellId == 454015) then
                     local currentTime = GetTime()
-                    tempeststate.tempestTime = currentTime                    
+                    tempeststate.tempestTime = currentTime
 
                     -- Calculate time differences
                     local castTimeDiff = currentTime - tempeststate.lastCastTime
                     local awakeningStormDiff = currentTime - tempeststate.awakeningStormRemovedTime
 
-                     -- Check conditions for TStacks reset based on MSW cast or Awakening Storm                    
-                     if math.abs(castTimeDiff) <= 0.2 then
-                        if bfirstcheck then
-                            bfirstcheck = false;
-                            tempeststate.TStacks = 0                            
+                    -- Check conditions for TStacks reset based on MSW cast or Awakening Storm
+                    if math.abs(castTimeDiff) <= 0.2 then
+                        if tempeststate.bfirstcheck then
+                            tempeststate.bfirstcheck = false;
+                            tempeststate.TStacks = 0
                         elseif tempeststate.TStacks >= 300 then
                             -- Reset due to Tempest buff gained with >= 40 MSW consumed
                             tempeststate.TStacks = tempeststate.TStacks - 300
@@ -3150,7 +3166,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
                         end
                     elseif math.abs(awakeningStormDiff) <= 0.6 then
                         -- Handle Tempest buff gained due to Awakening Storm reset
-                        -- No reset needed here, just handle the timing                        
+                        -- No reset needed here, just handle the timing
                     end
                     -- Handle MSW aura applied and dose events
                     -- Track successful spell casts that consume MSW stacks

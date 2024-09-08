@@ -6,6 +6,11 @@ local AGCDB_Y = -284;
 
 
 local asGetSpellCooldown = function(spellID)
+
+	if not spellID then
+        return nil;
+    end
+
 	local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
 	if spellCooldownInfo then
 		return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;

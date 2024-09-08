@@ -59,9 +59,11 @@ local function checkAllButton()
 		elseif button and button.start and button.duration then
 			local ex = button.start + button.duration;
 
-			if ex < GetTime() then
+			if ex <= GetTime() then
 				deleteButton(idx);
 			end
+		elseif button and button:IsShown() then
+			deleteButton(idx);			
 		end
 	end
 end
@@ -94,6 +96,8 @@ local function newButton(id, event)
 
 			button.text:SetText(msg);
 			button.defaulttext = msg;
+			button.start = event.start;
+			button.duration = event.duration;
 			button.text:Show();
 			button:Show();
 			return i;
@@ -250,14 +254,14 @@ local function checkList()
 			end
 		elseif remain <= 0 then
 			if event.button_id then
-				deleteButton(event.button_id);
+				deleteButton(event.button_id, true);
 			end
 			dbm_event_list:Remove(id);
 		end
 
 		if unitisdead then
 			if event.button_id then
-				deleteButton(event.button_id);
+				deleteButton(event.button_id, true);
 			end
 			dbm_event_list:Remove(id);
 		end

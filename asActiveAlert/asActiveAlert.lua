@@ -36,6 +36,11 @@ local asGetSpellInfo = function(spellID)
 end
 
 local asGetSpellCooldown = function(spellID)
+
+	if not spellID then
+        return nil;
+    end
+	
 	local ospellID = C_Spell.GetOverrideSpell(spellID)
 
 	if ospellID then
