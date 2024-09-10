@@ -1,14 +1,15 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 240728,
+    Version = 240910,
     PlaySound = true,
     AlwaysShowButtons = false,
     SoundVolume = 50,
-    SoundCooldown = 10,
+    SoundCooldown = 15,
     EnableTTS = true,
     SlotNameTTS = true,
     TTS_ID = -1,
     Aware_ASMOD_Cooldown = 5,
+    Aware_PowerBar = true,
 };
 
 ns.options = CopyTable(Options_Default);

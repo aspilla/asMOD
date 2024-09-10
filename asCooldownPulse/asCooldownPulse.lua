@@ -316,29 +316,29 @@ end
 
 local function checkASMOD(spellid)
 	if ACI_SpellID_list and ACI_SpellID_list[spellid] then
-		return true;
+		return 1;
 	end
 	local name, _, icon = asGetSpellInfo(spellid);
 	if APB_SPELL then
 		local newspell = asGetSpellInfo(APB_SPELL)
 		if APB_SPELL == name or name == newspell then
-			return true;
+			return 2;
 		end
 	end
 
 	if APB_SPELL2 then
 		local newspell = asGetSpellInfo(APB_SPELL2)
 		if APB_SPELL2 == name or name == newspell then
-			return true;
+			return 2;
 		end
 	end
 
 	if ACI_SpellID_list and ACI_SpellID_list[name] then
-		return true;
+		return 1;
 	end
 
 
-	return false;
+	return 0;
 end
 
 
@@ -373,7 +373,7 @@ local function ACDP_UpdateCooldown()
 		local skip = checkASMOD(spellid);
 		local name, icon, duration, start;
 
-		if skip == false then
+		if skip == 0 then
 			if (type == SPELL_TYPE_USER or type == SPELL_TYPE_PET) then
 				name, _, icon = asGetSpellInfo(spellid);
 				start, duration = asGetSpellCooldown(spellid);
@@ -383,7 +383,7 @@ local function ACDP_UpdateCooldown()
 				start, duration = GetItemCooldown(itemid);
 			end
 
-			if (icon and duration > 0) and skip == false then
+			if (icon and duration > 0) and skip == 0 then
 				local currtime = GetTime();
 				tinsert(showlist, { start + duration - currtime, start, duration, icon, spellid, type });
 			end
@@ -528,7 +528,10 @@ local function ACDP_Alert(spell, type)
 		--print(name);
 		if ns.options.PlaySound and name then
 			if ns.options.Aware_ASMOD_Cooldown and bCombatInfoLoaded then
-				if checkASMOD(spell) then
+				local asmodtype = checkASMOD(spell)
+				if ns.options.Aware_PowerBar and asmodtype == 2 then --PowerBar Spell
+					bsound = false;
+				elseif asmodtype == 1 then
 					if (spell_cooldown[spell] and spell_cooldown[spell] >= ns.options.SoundCooldown) then
 						bsound = true;
 					end

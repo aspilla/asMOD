@@ -312,7 +312,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 240903,
+    version = 240910,
     ANameP_ShowKnownSpell = false,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -349,7 +349,7 @@ ANameP_Options_Default = {
     -- 우선순위는 숫자가 큰 경우 우선적으로 보이고, 같을 경우 먼저 걸린 순서로 보임
     ANameP_ShowList_WARRIOR_1 = {
         ["사형 선고됨"] = { 0, 5, 2 },
-        ["만신창이"] = { 1, 4, 2 },
+        ["만신창이"] = { 0, 4, 2 },
         ["분쇄"] = { 1, 3, 1 },
     },
 
@@ -358,7 +358,7 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_WARRIOR_3 = {
-        ["만신창이"] = { 1, 5 },
+        ["만신창이"] = { 0, 5 },
         ["분쇄"] = { 1, 4 },
     },
 
@@ -559,12 +559,15 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_DEMONHUNTER_1 = {
-        ["불타는 상처"] = { 0, 5, 1 },
+        ["파괴자의 징표"] = { 0, 5, 2 },
+        ["불타는 상처"] = { 0, 4, 1 },
+        
     },
 
     ANameP_ShowList_DEMONHUNTER_2 = {
-        ["불타는 낙인"] = { 0, 5 },
-        ["약화"] = { 0, 4 },
+        ["파괴자의 징표"] = { 0, 5 },
+        ["불타는 낙인"] = { 0, 4 },
+        ["약화"] = { 0, 3 },
     },
 
 

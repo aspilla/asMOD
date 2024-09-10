@@ -6,15 +6,17 @@ local ADotF_CooldownFontSize = 12;
 local ADotF_CountFontSize = 12;
 
 ADotF_ShowList_WARRIOR_1 = {
-    { "사형 선고됨", 1 },
+    { "사형 선고됨", 0 },
+    { "만신창이", 0 },
     { "분쇄", 1 },
 }
 
 ADotF_ShowList_WARRIOR_2 = {
-    { "사형 선고됨", 1 },
+    { "사형 선고됨", 0 },
 }
 
 ADotF_ShowList_WARRIOR_3 = {
+    { "만신창이", 0 },
     { "분쇄", 1 },
 }
 
@@ -186,10 +188,12 @@ ADotF_ShowList_PALADIN_3 = {
 }
 
 ADotF_ShowList_DEMONHUNTER_1 = {
+    {"파괴자의 징표", 0},
     {"불타는 상처", 0},
 }
 
 ADotF_ShowList_DEMONHUNTER_2 = {
+    {"파괴자의 징표", 0},
     { "불타는 낙인", 0 },
     { "약화", 0 },
 }

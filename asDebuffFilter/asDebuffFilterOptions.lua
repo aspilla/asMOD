@@ -19,7 +19,8 @@ ns.ADF_MAX_Cool = 120        -- 최대 120초까지의 Debuff를 보임
 -- 우선순위는 숫자가 큰 경우 우선적으로 보이고, 같을 경우 먼저 걸린 순서로 보임
 ns.ShowList_WARRIOR_1 = {
     ["사형 선고됨"] = { 0, 5, 0 },
-    ["분쇄"] = { 1, 4, true },
+    ["만신창이"] = { 0, 4, 0 },    
+    ["분쇄"] = { 1, 3, true },
 }
 
 ns.ShowList_WARRIOR_2 = {
@@ -27,7 +28,8 @@ ns.ShowList_WARRIOR_2 = {
 }
 
 ns.ShowList_WARRIOR_3 = {
-    ["분쇄"] = { 1, 5, true },
+    ["만신창이"] = { 0, 5, 0 },  
+    ["분쇄"] = { 1, 4, true },
 }
 
 ns.ShowList_ROGUE_1 = {
@@ -223,10 +225,12 @@ ns.ShowList_PALADIN_3 = {
 }
 
 ns.ShowList_DEMONHUNTER_1 = {
-    ["불타는 상처"] = { 0, 5, true },
+    ["파괴자의 징표"] = { 0, 5},
+    ["불타는 상처"] = { 0, 4, true },
 }
 
 ns.ShowList_DEMONHUNTER_2 = {
-    ["불타는 낙인"] = { 0, 5 },
-    ["약화"] = { 0, 4 },
+    ["파괴자의 징표"] = { 0, 5},
+    ["불타는 낙인"] = { 0, 4 },
+    ["약화"] = { 0, 3 },
 }
