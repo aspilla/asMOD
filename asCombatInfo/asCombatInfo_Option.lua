@@ -12,9 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240905
-	,
-
+	version = 240912,
 
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount} 순으로 편집
@@ -362,7 +360,7 @@ ACI_Options_Default = {
 	--악딜
 	ACI_SpellList_DEMONHUNTER_1 = {
 
-		{ "제물의 오라", 2 },
+		{ "제물의 오라", 2, nil, nil, nil, "제물의 오라" },
 		{ "칼춤", 1 },
 		{ "탈태", 2 },
 		{ "안광", 1 },
@@ -373,7 +371,7 @@ ACI_Options_Default = {
 	--복수
 	ACI_SpellList_DEMONHUNTER_2 = {
 
-		{ "제물의 오라", 2 },
+		{ "제물의 오라", 2, nil, nil, nil, "제물의 오라" },
 		{ "불꽃의 인장", 4 },
 		{ "불타는 낙인", 4 },
 		{ "지옥 황폐", 1 },

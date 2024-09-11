@@ -288,7 +288,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
 
         for spellorg, button in pairs(eventfilter) do
             local spellnow = asGetSpellInfo(spellorg);
-            if spell == spellnow then
+            if spell == spellnow or spell == spellorg then
                 button.alert = true;
                 button:update();
             end
@@ -297,7 +297,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
         local spell = asGetSpellInfo(arg1);
         for spellorg, button in pairs(eventfilter) do
             local spellnow = asGetSpellInfo(spellorg);
-            if spell == spellnow then
+            if spell == spellnow or spell == spellorg then
                 button.alert = false;
                 button:update();
             end

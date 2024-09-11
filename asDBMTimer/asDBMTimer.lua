@@ -54,7 +54,7 @@ local function checkAllButton()
 	for idx = 1, ADBMT_MaxButtons do
 		local button = asDBMTimer.buttons[idx]
 
-		if button and button.bdelete then			
+		if button and button.bdelete then
 			deleteButton(idx);
 		elseif button and button.start and button.duration then
 			local ex = button.start + button.duration;
@@ -63,7 +63,7 @@ local function checkAllButton()
 				deleteButton(idx);
 			end
 		elseif button and button:IsShown() then
-			deleteButton(idx);			
+			deleteButton(idx);
 		end
 	end
 end
@@ -188,6 +188,8 @@ local function DisplayRaidIcon(unit)
 	end
 end
 
+local unit_died_list = {};
+
 local function checkNameplate(nameplate, guid)
 	if nameplate then
 		if not nameplate or nameplate:IsForbidden() then
@@ -204,18 +206,6 @@ local function checkNameplate(nameplate, guid)
 	return nil;
 end
 
-local function UnitIsBoss(unit)
-	local classification = UnitClassification(unit)
-	local unitlevel = UnitLevel(unit)
-	local playerlevel = UnitLevel("player")
-
-	if (classification == "worldboss" or (unitlevel - playerlevel) > 1) then
-		return true;
-	else
-		return false;
-	end
-end
-
 local function checkList()
 	local curtime = GetTime();
 
@@ -226,23 +216,24 @@ local function checkList()
 		local unitisdead = false;
 
 		if event.guid then
-			local nunit = nil;
-
-			for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-				local nameplate = v;
-				if (nameplate) then
-					nunit = checkNameplate(nameplate, event.guid);
-				end
-				if nunit then
-					break;
+			for _, guid in pairs(unit_died_list) do
+				if guid == event.guid then
+					unitisdead = true;
 				end
 			end
-			event.unit = nunit;
-			if event.unit then
-				unitisdead = UnitIsDead(event.unit);
 
-				if ns.options.ShowInterruptOnlyforNormal and not UnitIsBoss(event.unit) and event.colorId ~= 4 then
-					unitisdead = true;
+			if unitisdead == false then
+				if event.unit == nil or (UnitExists(event.unit) and event.guid ~= UnitGUID(event.unit)) then
+					for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
+						local nameplate = v;
+						if (nameplate) then
+							nunit = checkNameplate(nameplate, event.guid);
+						end
+						if nunit then
+							break;
+						end
+					end
+					event.unit = nunit;
 				end
 			end
 		end
@@ -313,7 +304,21 @@ local function checkList()
 	end)
 
 	checkAllButton();
+	for k in pairs(unit_died_list) do
+		unit_died_list[k] = nil
+	end
 end
+
+local function asDBMTimer_OnEvent(self, event, arg1, arg2, arg3, ...)
+	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+		local timestamp, eventType, _, sourceGUID, _, _, _, destGUID = CombatLogGetCurrentEventInfo();
+		if (eventType == "UNIT_DIED") then
+			table.insert(unit_died_list, destGUID);
+		end
+	end
+	return;
+end
+
 
 local function setupUI()
 	asDBMTimer = CreateFrame("FRAME", nil, UIParent)
@@ -321,6 +326,9 @@ local function setupUI()
 	asDBMTimer:SetWidth(100)
 	asDBMTimer:SetHeight(100)
 	asDBMTimer:Show();
+	asDBMTimer:SetScript("OnEvent", asDBMTimer_OnEvent);
+	asDBMTimer:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+
 
 	local bloaded = C_AddOns.LoadAddOn("asMOD")
 
