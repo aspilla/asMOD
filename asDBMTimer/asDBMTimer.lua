@@ -238,7 +238,12 @@ local function checkList()
 			end
 		end
 
-		if remain > 0 and remain <= ns.options.MinTimetoShow then
+		if unitisdead then
+			if event.button_id then
+				deleteButton(event.button_id, true);
+			end
+			dbm_event_list:Remove(id);
+		elseif remain > 0 and remain <= ns.options.MinTimetoShow then
 			if event.button_id == nil then
 				local idx = newButton(id, event);
 				event.button_id = idx;
@@ -248,18 +253,16 @@ local function checkList()
 				deleteButton(event.button_id, true);
 			end
 			dbm_event_list:Remove(id);
-		end
-
-		if unitisdead then
-			if event.button_id then
-				deleteButton(event.button_id, true);
-			end
-			dbm_event_list:Remove(id);
-		end
+		end		
 	end)
 
+	table.wipe(unit_died_list);
+end
+
+local function checkButtons()
 	local prev_ex = 0;
 	local prev_button = nil;
+	local curtime = GetTime();
 
 	dbm_event_list:Iterate(function(id, event)
 		if event.button_id then
@@ -303,10 +306,7 @@ local function checkList()
 		end
 	end)
 
-	checkAllButton();
-	for k in pairs(unit_died_list) do
-		unit_died_list[k] = nil
-	end
+	checkAllButton();	
 end
 
 local function asDBMTimer_OnEvent(self, event, arg1, arg2, arg3, ...)
@@ -393,7 +393,8 @@ local function initAddon()
 	DBM:RegisterCallback("DBM_TimerPause", asDBMTimer_callback);
 	DBM:RegisterCallback("DBM_TimerResume", asDBMTimer_callback);
 
-	C_Timer.NewTicker(0.05, checkList);
+	C_Timer.NewTicker(0.2, checkList);
+	C_Timer.NewTicker(0.05, checkButtons);
 end
 
 local bloaded = C_AddOns.LoadAddOn("DBM-Core");
