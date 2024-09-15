@@ -1,6 +1,6 @@
 local asMOD;
 local asMOD_UIScale = 0.75;
-local asMOD_CurrVersion = 240821;
+local asMOD_CurrVersion = 240915;
 local bAction = false;
 asMOD_t_position = {};
 
@@ -182,6 +182,7 @@ local function asMOD_Setup()
 				["WarningFontStyle"] = "None",
 				["VPReplacesSA1"] = true,
 				["ChatFrame"] = "DEFAULT_CHAT_FRAME",
+				["CastNPIconGlowBehavior"] = 1,
 				["RangeFrameRadarX"] = -230.9038238525391,
 				["LogCurrentRaids"] = true,
 				["InfoFrameCols"] = 0,
@@ -200,9 +201,9 @@ local function asMOD_Setup()
 				["FilterBInterruptHealer"] = false,
 				["SpecialWarningFontSize2"] = 20.12609481811523,
 				["SpecialWarningFlashCol5"] = {
-					0.2, -- [1]
-					1, -- [2]
-					1, -- [3]
+					0.2,
+					1,
+					1,
 				},
 				["NewsMessageShown2"] = 1,
 				["NPIconTextFont"] = "standardFont",
@@ -221,9 +222,9 @@ local function asMOD_Setup()
 				["DisableSFX"] = false,
 				["SpecialWarningFlashDura4"] = 0.7,
 				["SpecialWarningFlashCol3"] = {
-					1, -- [1]
-					0, -- [2]
-					0, -- [3]
+					1,
+					0,
+					0,
 				},
 				["ModelSoundValue"] = "Short",
 				["SpecialWarningY"] = 75,
@@ -242,6 +243,7 @@ local function asMOD_Setup()
 				["SpamSpecRolegtfo"] = false,
 				["SpecialWarningFlashDura2"] = 0.4,
 				["LogTrivialRaids"] = false,
+				["FilterVoidFormSay2"] = false,
 				["GroupOptionsExcludeIcon"] = false,
 				["FilterBTargetFocus"] = true,
 				["RecordOnlyBosses"] = false,
@@ -278,7 +280,7 @@ local function asMOD_Setup()
 				["SpamSpecRoledefensive"] = false,
 				["RangeFrameRadarY"] = 0.9783453345298767,
 				["OverrideBossAnnounce"] = false,
-				["CoreSavedRevision"] = 20240402112844,
+				["CoreSavedRevision"] = 20240912083714,
 				["RangeFrameX"] = -229.7040557861328,
 				["NPIconGrowthDirection"] = "CENTER",
 				["RangeFrameY"] = 76.74076080322266,
@@ -287,9 +289,9 @@ local function asMOD_Setup()
 				["FakeBWVersion"] = false,
 				["NPIconXOffset"] = 0,
 				["SpecialWarningFlashCol2"] = {
-					1, -- [1]
-					0.5, -- [2]
-					0, -- [3]
+					1,
+					0.5,
+					0,
 				},
 				["WarningAlphabetical"] = true,
 				["SpecialWarningPoint"] = "CENTER",
@@ -298,19 +300,21 @@ local function asMOD_Setup()
 				["NPIconTextEnabled"] = true,
 				["SpecialWarningX"] = 0,
 				["DontShowPT2"] = false,
+				["MoviesSeen"] = {					
+				},
 				["ShowQueuePop"] = true,
 				["SpecialWarningFlashCol4"] = {
-					1, -- [1]
-					0, -- [2]
-					1, -- [3]
+					1,
+					0,
+					1,
 				},
 				["DebugMode"] = false,
 				["DisableGuildStatus"] = false,
 				["ShowReminders"] = true,
 				["SpecialWarningFontCol"] = {
-					1, -- [1]
-					0.7, -- [2]
-					0, -- [3]
+					1,
+					0.7,
+					0,
 				},
 				["NPIconTimerFont"] = "standardFont",
 				["AFKHealthWarning2"] = false,
@@ -335,13 +339,14 @@ local function asMOD_Setup()
 				["SpecialWarningFontShadow"] = false,
 				["EventMusicMythicFilter"] = false,
 				["SpecialWarningFlashCol1"] = {
-					1, -- [1]
-					1, -- [2]
-					0, -- [3]
+					1,
+					1,
+					0,
 				},
 				["SpecialWarningVibrate4"] = true,
 				["SWarnClassColor"] = true,
 				["UseNameplateHandoff"] = true,
+				["DontShowNameplateIconsCast"] = true,
 				["SpecialWarningFlashAlph4"] = 0.4,
 				["PTCountThreshold2"] = 5,
 				["VPReplacesAnnounce"] = true,
@@ -352,41 +357,46 @@ local function asMOD_Setup()
 				["AITimer"] = true,
 				["LogTWDungeons"] = false,
 				["SpecialWarningSound4"] = 552035,
+				["DontShowEventTimers"] = false,
 				["DontShowTrashTimers"] = false,
 				["GUIX"] = -92.32605743408203,
 				["LogCurrentHeroic"] = false,
+				["SendDungeonBossGUIDs"] = true,
 				["VPDontMuteSounds"] = false,
+				["InfoFrameLocked"] = true,
 				["WarningColors"] = {
 					{
 						["b"] = 0.9411765336990356,
 						["g"] = 0.8000000715255737,
 						["r"] = 0.4117647409439087,
-					}, -- [1]
+					},
 					{
 						["b"] = 0,
 						["g"] = 0.9490196704864502,
 						["r"] = 0.9490196704864502,
-					}, -- [2]
+					},
 					{
 						["b"] = 0,
 						["g"] = 0.501960813999176,
 						["r"] = 1,
-					}, -- [3]
+					},
 					{
 						["b"] = 0.1019607931375504,
 						["g"] = 0.1019607931375504,
 						["r"] = 1,
-					}, -- [4]
+					},
 				},
+				["CDNPIconGlowType"] = 1,
 				["SWarningAlphabetical"] = true,
-				["BlockNoteShare"] = false,
 				["WarningDuration2"] = 1.5,
+				["BlockNoteShare"] = false,
 				["NPIconAnchorPoint"] = "TOP",
+				["NPIconGlowBehavior"] = 1,
 				["DontPlaySpecialWarningSound"] = false,
-				["InfoFrameLocked"] = true,
 				["NPIconTextMaxLen"] = 7,
 				["NPIconSize"] = 30,
 				["DontShowNameplateIconsCD"] = true,
+				["GroupOptionsExcludePA"] = false,
 				["RangeFrameRadarPoint"] = "BOTTOMRIGHT",
 				["DontShowInfoFrame"] = true,
 				["NPIconTimerFontSize"] = 18,
@@ -402,7 +412,7 @@ local function asMOD_Setup()
 				["WhisperStats"] = false,
 				["SilentMode"] = false,
 				["SpecialWarningVibrate3"] = true,
-				["FilterTInterruptCooldown"] = true,
+				["AdvancedAutologBosses"] = false,
 				["SpecialWarningFlashAlph5"] = 0.5,
 				["SpecialWarningDuration2"] = 1.5,
 				["DontShowTimersWithNameplates"] = true,
@@ -417,7 +427,7 @@ local function asMOD_Setup()
 				["GUIPoint"] = "CENTER",
 				["SettingsMessageShown"] = true,
 				["WarningFont"] = "standardFont",
-				["AdvancedAutologBosses"] = false,
+				["FilterTInterruptCooldown"] = true,
 				["AutoAcceptGuildInvite"] = false,
 				["FilterTrashWarnings2"] = true,
 				["DontSetIcons"] = false,
@@ -425,7 +435,7 @@ local function asMOD_Setup()
 				["AutologBosses"] = false,
 				["CountdownVoice"] = "Corsica",
 				["SpamSpecRoleswitch"] = false,
-				["DontShowSpecialWarningText"] = false,
+				["DontSendBossGUIDs"] = true,
 				["CountdownVoice3"] = "Smooth",
 				["DisableStatusWhisper"] = false,
 				["NPIconSpacing"] = 0,
@@ -434,10 +444,10 @@ local function asMOD_Setup()
 				["GUIY"] = -30.34099960327148,
 				["RangeFrameFrames"] = "radar",
 				["WarningPoint"] = "CENTER",
-				["DontShowEventTimers"] = false,
+				["CastNPIconGlowType"] = 2,
 				["SpecialWarningIcon"] = true,
 				["InfoFrameFont"] = "standardFont",
-				["DontSendBossGUIDs"] = true,
+				["DontShowSpecialWarningText"] = false,
 				["GroupOptionsBySpell"] = true,
 				["FilterTankSpec"] = true,
 				["HideTooltips"] = false,
@@ -489,8 +499,6 @@ local function asMOD_Setup()
 			["showInCompartment"] = true,
 		}
 
-
-
 		DBT_AllPersistentOptions = {
 			["Default"] = {
 				["DBM"] = {
@@ -505,12 +513,16 @@ local function asMOD_Setup()
 					["TimerPoint"] = "BOTTOMRIGHT",
 					["EndColorDG"] = 0,
 					["Alpha"] = 0.8,
+					["EndColorI2G"] = 0.5058823823928833,
 					["HugeTimerPoint"] = "CENTER",
 					["StartColorIR"] = 0.47,
+					["DisableRightClick"] = false,
 					["StartColorUIR"] = 1,
 					["StartColorAG"] = 0.545,
 					["EndColorDR"] = 1,
 					["TDecimal"] = 11,
+					["StartColorI2G"] = 0.6745098233222961,
+					["EndColorI2R"] = 1,
 					["StartColorRR"] = 0.5,
 					["StartColorUIG"] = 1,
 					["FillUpLargeBars"] = true,
@@ -521,38 +533,41 @@ local function asMOD_Setup()
 					["TextColorR"] = 1,
 					["EndColorAER"] = 1,
 					["StartColorIB"] = 1,
+					["HugeBarXOffset"] = 0,
 					["IconRight"] = false,
+					["StartColorIG"] = 0.97,
+					["StartColorDB"] = 1,
 					["Font"] = "standardFont",
-					["EndColorDB"] = 1,
+					["EndColorB"] = 0,
 					["EndColorAEB"] = 0.247,
 					["Height"] = 20,
 					["HugeSort"] = "Sort",
 					["BarXOffset"] = 0,
-					["EndColorB"] = 0,
-					["EndColorAR"] = 0.15,
-					["EndColorG"] = 0,
-					["StartColorIG"] = 0.97,
-					["StartColorDB"] = 1,
 					["NoBarFade"] = false,
+					["EndColorDB"] = 1,
+					["EndColorG"] = 0,
+					["StartColorRB"] = 0.5,
+					["StartColorAEG"] = 0.466,
+					["StartColorI2R"] = 1,
 					["FadeBars"] = true,
 					["TextColorB"] = 1,
 					["EndColorIB"] = 1,
+					["EndColorI2B"] = 0,
 					["StartColorAER"] = 1,
-					["StartColorAEG"] = 0.466,
 					["EndColorRB"] = 0.3,
 					["TimerX"] = -106.855583190918,
 					["EndColorIR"] = 0.047,
-					["Width"] = 235,
+					["StartColorRG"] = 1,
 					["EndColorRR"] = 0.11,
-					["Bar7ForceLarge"] = false,
+					["DynamicColor"] = true,
 					["BarStyle"] = "NoAnim",
 					["EnlargeBarTime"] = 11,
 					["Spark"] = true,
 					["StartColorDR"] = 0.9,
-					["StartColorRG"] = 1,
+					["IconLocked"] = true,
 					["FontFlag"] = "None",
 					["EndColorAB"] = 1,
-					["IconLocked"] = true,
+					["Width"] = 235,
 					["EndColorPG"] = 0.41,
 					["HugeHeight"] = 20,
 					["EndColorIG"] = 0.88,
@@ -585,12 +600,12 @@ local function asMOD_Setup()
 					["EndColorPB"] = 0.285,
 					["EndColorR"] = 1,
 					["StartColorPB"] = 0.42,
-					["DynamicColor"] = true,
-					["StartColorRB"] = 0.5,
-					["EndColorAG"] = 0.385,
+					["Bar7ForceLarge"] = false,
 					["InlineIcons"] = true,
+					["EndColorAG"] = 0.385,
+					["EndColorAR"] = 0.15,
 					["StartColorB"] = 0,
-					["HugeBarXOffset"] = 0,
+					["StartColorI2B"] = 0,
 					["Skin"] = "",
 					["ClickThrough"] = false,
 				},
