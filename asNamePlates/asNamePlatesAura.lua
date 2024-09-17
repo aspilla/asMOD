@@ -65,7 +65,7 @@ local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuation
         local slot = select(i, ...);
         local done;
         local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
-        if usePackedAura then            
+        if usePackedAura then
             done = func(auraInfo);
         else
             done = func(AuraUtil.UnpackAuraData(auraInfo));
@@ -106,13 +106,13 @@ local function ProcessAura(aura, unit, type)
                 if (aura.nameplateShowPersonal or
                         (ns.options.ANameP_ShowKnownSpell and (ns.KnownSpellList[aura.name] or ns.KnownSpellList[aura.icon]))) then
                     show = true;
-                elseif (ns.ANameP_ShowList and ns.ANameP_ShowList[aura.name]) then
+                elseif (ns.ANameP_ShowList and (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId])) then
                     show = true;
                 end
             end
 
             if ns.options.ANameP_ShowListOnly then
-                if not (ns.ANameP_ShowList and ns.ANameP_ShowList[aura.name]) then
+                if not (ns.ANameP_ShowList and (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId])) then
                     show = false;
                 end
             end
@@ -121,7 +121,7 @@ local function ProcessAura(aura, unit, type)
                 show = false;
             end
 
-            if aura.nameplateShowAll then
+            if aura.nameplateShowAll and (PLAYER_UNITS[aura.sourceUnit] or not ns.ANameP_BlackList[aura.spellId]) then
                 show = true;
             end
 
@@ -130,8 +130,9 @@ local function ProcessAura(aura, unit, type)
             end
 
             if show then
-                if ns.ANameP_ShowList and ns.ANameP_ShowList[aura.name] then
-                    aura.debuffType = ns.UnitFrameDebuffType.Priority + ns.ANameP_ShowList[aura.name][2];
+                if ns.ANameP_ShowList and (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId]) then
+                    local showlist = (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId]);
+                    aura.debuffType = ns.UnitFrameDebuffType.Priority + showlist[2];
                 elseif PLAYER_UNITS[aura.sourceUnit] then
                     if aura.nameplateShowPersonal then
                         aura.debuffType = ns.UnitFrameDebuffType.nameplateShowPersonal;

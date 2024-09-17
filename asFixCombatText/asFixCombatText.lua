@@ -55,9 +55,16 @@ local function init_combattext()
 	return;
 end
 
+function asCombatText_StandardScroll(value)
+	-- Calculate x and y positions
+	local xPos = value.startX;
+	local yPos = value.startY+((value.endY - COMBAT_TEXT_LOCATIONS.startY)*value.scrollTime/COMBAT_TEXT_SCROLLSPEED);
+	return xPos, yPos;
+end
+
 function ASCT_UpdateDisplayedMessages()
 	-- Update scrolldirection
-	COMBAT_TEXT_SCROLL_FUNCTION = CombatText_StandardScroll;
+	COMBAT_TEXT_SCROLL_FUNCTION = asCombatText_StandardScroll;
 	COMBAT_TEXT_LOCATIONS = {
 		startX = ASCT_X_POSITION,
 		startY = ASCT_Y_POSITION,

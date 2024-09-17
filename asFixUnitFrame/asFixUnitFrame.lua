@@ -144,6 +144,11 @@ local function asCooldownFrame_Set(self, start, duration, enable, modRate)
 end
 
 --AuraUtil
+local PLAYER_UNITS = {
+    player = true,
+    vehicle = true,
+    pet = true
+};
 
 local DispellableDebuffTypes =
 {
@@ -209,7 +214,7 @@ local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuation
         local slot = select(i, ...);
         local done;
         local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
-        if usePackedAura then            
+        if usePackedAura then
             done = func(auraInfo);
         else
             done = func(AuraUtil.UnpackAuraData(auraInfo));
@@ -294,8 +299,10 @@ local function ProcessAura(aura)
     end
 
     if aura.isHarmful and aura.nameplateShowAll and aura.duration > 0 and aura.duration <= CONFIG_MAX_COOL then
-        activeDebuffs[aura.auraInstanceID] = aura;
-        return AuraUpdateChangedType.Debuff;
+        if not ns.ShowOnlyMine[aura.spellId] then
+            activeDebuffs[aura.auraInstanceID] = aura;
+            return AuraUpdateChangedType.Debuff;
+        end
     end
 
     return AuraUpdateChangedType.None;

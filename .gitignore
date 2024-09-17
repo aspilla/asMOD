@@ -3187,3 +3187,5 @@ DBM-Test-WarWithin/NerubarPalace/Reports/Rashanan-Mythic-Wipe.lua
 DBM-Test-WarWithin/NerubarPalace/Reports/Sikran-Mythic-Wipe.lua
 DBM-Test-WarWithin/NerubarPalace/Reports/SilkenCourt-Mythic-Wipe.lua
 DBM-Test-WarWithin/NerubarPalace/Reports/Ulgrax-Mythic-Wipe.lua
+DBM-Core/modules/objects/Sorting_Test.lua
+DBM-Core/modules/objects/Sorting.lua

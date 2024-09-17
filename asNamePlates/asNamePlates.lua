@@ -383,11 +383,12 @@ local function updateAuras(self, unit)
         self.debuffColor = 0;
 
         auraData.debuffs:Iterate(function(auraInstanceID, aura)
+            local isshowlist = false;
             if numDebuffs > ns.ANameP_MaxDebuff then
                 return true;
             end
 
-            if ns.ANameP_ShowCCDebuff and bShowCC == false and aura.nameplateShowAll and aura.duration > 0 and  aura.duration <= 10 and not (ns.ANameP_ShowList and ns.ANameP_ShowList[aura.name]) then
+            if ns.ANameP_ShowCCDebuff and bShowCC == false and aura.nameplateShowAll and aura.duration > 0 and  aura.duration <= 10 and not (ns.ANameP_ShowList and (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId])) then
                 show = false;
                 bShowCC = true;
 
@@ -413,14 +414,17 @@ local function updateAuras(self, unit)
             else
                 local alert = false;
                 local showlist_time = nil;
-                if ns.ANameP_ShowList and ns.ANameP_ShowList[aura.name] then
-                    showlist_time = ns.ANameP_ShowList[aura.name][1];
-                    local alertcount = ns.ANameP_ShowList[aura.name][4] or false;
-                    local alertnameplate = ns.ANameP_ShowList[aura.name][3] or 0;
+                if ns.ANameP_ShowList and (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId] ) then
+
+                    isshowlist = true
+                    local showlist = (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId]);
+                    showlist_time = showlist[1];
+                    local alertcount = showlist[4] or false;
+                    local alertnameplate = showlist[3] or 0;
 
                     if showlist_time == 1 then
                         showlist_time = aura.duration * 0.3;
-                        ns.ANameP_ShowList[aura.name][1] = showlist_time;
+                        showlist[1] = showlist_time;
                     end
 
                     if showlist_time and showlist_time >= 0 and alertcount == false then
@@ -448,7 +452,7 @@ local function updateAuras(self, unit)
 
                 local size = icon_size;
 
-                if aura.nameplateShowAll then
+                if aura.nameplateShowAll and not isshowlist then
                     size = icon_size + ns.ANameP_PVP_Debuff_Size_Rate;
                 end
 
@@ -973,6 +977,18 @@ local function initAlertList()
 
     if ns.options[listname] then
         ns.ANameP_ShowList = CopyTable(ns.options[listname]);
+
+        --[[
+        for index, value in pairs(ns.ANameP_ShowList) do
+        
+            if type(index) == "number" then
+                local ospellid = C_Spell.GetOverrideSpell(index);
+                print (index);
+                print (ospellid)
+            end        
+        end
+        ]]
+
     else
         ns.ANameP_ShowList = {};
     end

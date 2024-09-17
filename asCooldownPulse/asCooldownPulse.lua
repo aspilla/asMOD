@@ -182,19 +182,19 @@ local function scanSpells(tab)
 		end
 
 		local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
-
+		
 		if (slotType == Enum.SpellBookItemType.Flyout) then
 			local _, _, numSlots = GetFlyoutInfo(actionID);
 			for j = 1, numSlots do
 				local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
 
-				if flyoutSpellID and not black_list[flyoutSpellName] and IsPlayerSpell(flyoutSpellID) then
+				if flyoutSpellID and not black_list[flyoutSpellName]  then
 					KnownSpellList[flyoutSpellID] = SPELL_TYPE_USER;
 				end
 			end
-		elseif IsPlayerSpell(spellID) then
-			if spellID and not black_list[spellName] and IsPlayerSpell(spellID) then
-				KnownSpellList[spellID] = SPELL_TYPE_USER;
+		else			
+			if spellID and not black_list[spellName] then
+				KnownSpellList[spellID] = SPELL_TYPE_USER;				
 			end
 		end
 	end

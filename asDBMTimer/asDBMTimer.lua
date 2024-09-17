@@ -287,7 +287,7 @@ local function checkButtons()
 			if remain > 0 then
 				button:ClearAllPoints();
 
-				if prev_ex > 0 and event.expirationTime - prev_ex <= (ADBMT_IconSize / ADBMT_1sHeight) then
+				if prev_button and prev_ex > 0 and event.expirationTime - prev_ex <= (ADBMT_IconSize / ADBMT_1sHeight) then
 					button:SetPoint("BOTTOM", prev_button, "TOP", 0, 1);
 					prev_ex = prev_ex + (ADBMT_IconSize / ADBMT_1sHeight);
 				else

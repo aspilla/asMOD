@@ -57,6 +57,13 @@ ns.ANameP_BlackList = {
 
 }
 
+-- 안보이게 할 디법 (다른 케릭)
+ns.ANameP_ShowOnlyMine = {
+    [447513] = 1,       --만신창이 (전사)
+    [445584] = 1,       --사형선고 (전사)
+    [434473] = 1,       --폭격 (기원사)
+}
+
 ns.ANameP_PVPBuffList = {
 	-- 종특	
 	[65116]  = 1, --석화
@@ -312,7 +319,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 240910,
+    version = 240917,
     ANameP_ShowKnownSpell = false,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -431,8 +438,10 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_WARLOCK_3 = {
-        ["제물"] = { 1, 5, 1 },
-        ["쇠퇴"] = { 1, 4, 1 },        
+        [157736] = { 1, 5, 1 },     --제물
+        [445474] = { 1, 4, 1 },     --제물
+       -- ["제물"] = { 1, 5, 1 },
+       -- ["쇠퇴"] = { 1, 4, 1 },        
     },
 
 
@@ -533,6 +542,7 @@ ANameP_Options_Default = {
     ANameP_ShowList_EVOKER_1 = {
         ["불의 숨결"] = { 0, 5, 1 },
         ["흑요석 파편"] = { 0, 4, 2 }, --시즌1
+        [434473] = { 0, 3 }, --시즌1
     },
 
     ANameP_ShowList_EVOKER_2 = {
@@ -541,8 +551,9 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_EVOKER_3 = {
-
         ["시간의 상처"] = { 0, 5, 1 },
+        ["불의 숨결"] = { 0, 4, 2 },
+        [434473] = { 0, 3 }, --시즌1
     },
 
 
