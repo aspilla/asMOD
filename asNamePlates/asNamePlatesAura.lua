@@ -121,7 +121,7 @@ local function ProcessAura(aura, unit, type)
                 show = false;
             end
 
-            if aura.nameplateShowAll and (PLAYER_UNITS[aura.sourceUnit] or not ns.ANameP_BlackList[aura.spellId]) then
+            if aura.nameplateShowAll and (PLAYER_UNITS[aura.sourceUnit] or not ns.ANameP_ShowOnlyMine[aura.spellId]) then
                 show = true;
             end
 
