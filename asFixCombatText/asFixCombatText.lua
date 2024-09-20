@@ -57,7 +57,7 @@ end
 
 function asCombatText_StandardScroll(value)
 	-- Calculate x and y positions
-	local xPos = value.startX;
+	local xPos = ASCT_X_POSITION;
 	local yPos = value.startY+((value.endY - COMBAT_TEXT_LOCATIONS.startY)*value.scrollTime/COMBAT_TEXT_SCROLLSPEED);
 	return xPos, yPos;
 end
