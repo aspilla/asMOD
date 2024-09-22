@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240912,
+	version = 240923,
 
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount} 순으로 편집
@@ -125,7 +125,7 @@ ACI_Options_Default = {
 	--11.0 작업중
 	ACI_SpellList_MAGE_2 = {
 		{ 99, "얼음불꽃 화살", { "얼음불꽃 화살", 1, nil, nil, 431190 }, { "힘의 전환", 1 } },		
-		{"불태우기", 1, nil, 30, "불태우기 연마" },
+		{"불태우기", 1, nil, 30, nil, nil, "불태우기 연마" },
 		{ "발화", 2 },
 		{ 99, "유성", { "유성", 1 },{ "용의 숨결", 1 }  },				
 		{ 12654, 5 },
@@ -260,7 +260,7 @@ ACI_Options_Default = {
 	--조화
 	ACI_SpellList_DRUID_1 = {
 		{ "달빛섬광", 4, nil, 1 },
-		{ 99, "초승달", { "초승달", 1 }, { "엘룬의 분노", 1 }},
+		{ { "초승달", 1 }, { "엘룬의 분노", 1 }, { "자연의 군대", 1 }, { "엘룬의 전사", 1 }},
 		{ 99, "화신: 엘룬의 선택", { "화신: 엘룬의 선택", 2}, { "천체의 정렬", 2}},
 		{ 99, "항성의 섬광", { "항성의 섬광", 4, nil, 1 }, { 202345, 3 } },
 		{ "태양섬광", 4, nil, 1 },

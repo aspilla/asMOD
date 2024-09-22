@@ -48,7 +48,6 @@ APB_DEBUFF_COMBO = nil;
 APB_ACTION_COMBO = nil;
 
 local APB = nil;
-local max_combo = nil;
 local max_spell = nil;
 local balert = false;
 local balert2 = false;
@@ -109,7 +108,6 @@ local asGetSpellInfo = function(spellID)
 end
 
 local asGetSpellCooldown = function(spellID)
-
     if not spellID then
         return nil;
     end
@@ -128,7 +126,6 @@ local asGetSpellCooldown = function(spellID)
 end
 
 local asGetSpellCharges = function(spellID)
-
     if not spellID then
         return nil;
     end
@@ -185,6 +182,28 @@ local function asGetPowerCostTooltipInfo(spellID)
     end
 
     return 0;
+end
+
+local function APB_UnitBuffList(unit, list, casterid)
+    local ret = nil;
+    local auraList = ns.ParseAllBuff(unit);
+
+    auraList:Iterate(function(auraInstanceID, aura)
+        for index, id in pairs(list) do
+            if aura and aura.spellId == id and aura.sourceUnit == casterid then
+                if aura.duration > 0 then
+                    ret = aura;                    
+                elseif ret == nil then
+                    ret = aura;
+                end
+                break;
+            end
+        end
+    end);
+
+    if ret then
+        return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit;
+    end
 end
 
 local function APB_UnitBuff(unit, buff, casterid)
@@ -349,6 +368,8 @@ local p_start = nil;
 local bhalf_combo = false;
 local bdruid = false;
 local brogue = false;
+local combobuffalertlist = nil;
+local combobuffcoloralertlist = nil;
 
 local bshowspell = false;
 
@@ -393,10 +414,11 @@ local function APB_MaxSpell(max)
     bshowspell = true;
 end
 
-local function APB_ShowComboBar(combo, partial, cast, cooldown, buffexpire)
+local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffexpire)
     local bmax = false;
     local bmaxminus1 = false;
     local bhalf = false;
+    local balert = false;
 
     local _, Class = UnitClass("player")
     local color = RAID_CLASS_COLORS[Class]
@@ -416,11 +438,11 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown, buffexpire)
         partial = 0;
     end
 
-    if combo == max_combo and cast == 0 then
+    if combo == combobar.max_combo and cast == 0 then
         bmax = true;
-    elseif combo == max_combo - 1 and cast == 0 then
+    elseif combo == combobar.max_combo - 1 and cast == 0 then
         bmaxminus1 = true;
-    elseif combo >= (max_combo / 2) and cast == 0 then
+    elseif combo >= (combobar.max_combo / 2) and cast == 0 then
         bhalf = bhalf_combo;
     end
 
@@ -452,86 +474,117 @@ local function APB_ShowComboBar(combo, partial, cast, cooldown, buffexpire)
     -- 문책
     if brogue then
         local chargedPowerPoints = GetUnitChargedPowerPoints("player");
-        for i = 1, max_combo do
+        for i = 1, combobar.max_combo do
             local isCharged = chargedPowerPoints and tContains(chargedPowerPoints, i) or false;
 
             if isCharged then
-                ns.lib.PixelGlow_Start(APB.combobar[i], { 0.5, 0.5, 1 });
+                ns.lib.PixelGlow_Start(combobar[i], { 0.5, 0.5, 1 });
                 if combo == i then
                     bmax = true;
                 end
             else
-                ns.lib.PixelGlow_Stop(APB.combobar[i]);
+                ns.lib.PixelGlow_Stop(combobar[i]);
             end
         end
     end
 
+    if combobuffalertlist and combobar == APB.combobar then
+        local bBuffed = false;
+
+        local name = APB_UnitBuffList("player",combobuffalertlist, "player");
+
+        if name then
+            bBuffed = true;
+        end
+
+      
+        for i = 1, combobar.max_combo do
+            if bBuffed then
+                ns.lib.PixelGlow_Start(combobar[i], { 0.5, 0.5, 1 });
+            else
+                ns.lib.PixelGlow_Stop(combobar[i]);
+            end
+        end
+    end
+
+    if combobuffcoloralertlist and combobar == APB.combobar then
+        local name = APB_UnitBuffList("player",combobuffcoloralertlist, "player");
+
+        if name then
+            balert = true;
+        end      
+    end
+
     if buffexpire and cooldown then
-        APB.combobar[1]:SetStatusBarColor(0.8, 0.5, 0.8);
-        APB.combobar[1].start = (buffexpire - cooldown);
-        APB.combobar[1].duration = cooldown
-        APB.combobar[1].reverse = true;
-        APB.combobar[1]:SetScript("OnUpdate", APB_OnUpdateCombo)
+        combobar[1]:SetStatusBarColor(0.8, 0.5, 0.8);
+        combobar[1].start = (buffexpire - cooldown);
+        combobar[1].duration = cooldown
+        combobar[1].reverse = true;
+        combobar[1]:SetScript("OnUpdate", APB_OnUpdateCombo)
         return;
     end
 
-    for i = 1, max_combo do
-        APB.combobar[i]:SetScript("OnUpdate", nil)
-        APB.combobar[1].reverse = nil;
+    for i = 1, combobar.max_combo do
+        combobar[i]:SetScript("OnUpdate", nil)
+        combobar[1].reverse = nil;
 
         if i <= combo then
-            APB.combobar[i]:Show();
-            APB.combobar[i]:SetValue(1)
-            APB.combobar[i]:SetMinMaxValues(0, 1)
+            combobar[i]:Show();
+            combobar[i]:SetValue(1)
+            combobar[i]:SetMinMaxValues(0, 1)
 
-            if bmax then
-                APB.combobar[i]:SetStatusBarColor(1, 0, 0);
+            if balert then
+                combobar[i]:SetStatusBarColor(0, 1, 1);
+            elseif bmax then
+                combobar[i]:SetStatusBarColor(1, 0, 0);
             elseif bhalf or bmaxminus1 then
-                APB.combobar[i]:SetStatusBarColor(1, 0.8, 0);
+                combobar[i]:SetStatusBarColor(1, 0.8, 0);
             else
-                APB.combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
+                combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
             end
         elseif i <= (combo + cast) then
-            APB.combobar[i]:Show();
-            APB.combobar[i]:SetValue(1)
-            APB.combobar[i]:SetMinMaxValues(0, 1)
+            combobar[i]:Show();
+            combobar[i]:SetValue(1)
+            combobar[i]:SetMinMaxValues(0, 1)
 
             if gen == false then
-                APB.combobar[i]:SetStatusBarColor(0.5, 0.5, 0.5);
+                combobar[i]:SetStatusBarColor(0.5, 0.5, 0.5);
             else
-                APB.combobar[i]:SetStatusBarColor(1, 1, 1);
+                combobar[i]:SetStatusBarColor(1, 1, 1);
             end
         elseif i == (combo + cast) + 1 and value < 1 then
-            APB.combobar[i]:Show();
-            APB.combobar[i]:SetValue(value)
+            combobar[i]:Show();
+            combobar[i]:SetValue(value)
 
-            if bmax then
-                APB.combobar[i]:SetStatusBarColor(1, 0, 0);
+            if balert then
+                combobar[i]:SetStatusBarColor(0, 1, 1);
+            elseif bmax then
+                combobar[i]:SetStatusBarColor(1, 0, 0);
             elseif bhalf or bmaxminus1 then
-                APB.combobar[i]:SetStatusBarColor(1, 0.8, 0);
+                combobar[i]:SetStatusBarColor(1, 0.8, 0);
             else
-                APB.combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
+                combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
             end
         elseif i == (combo + cast) + 1 and cooldown then
-            APB.combobar[i]:SetStatusBarColor(0.3, 0.3, 0.3);
-            APB.combobar[i].start = p_start;
-            APB.combobar[i].duration = cooldown;
-            APB.combobar[i]:SetScript("OnUpdate", APB_OnUpdateCombo)
+            combobar[i]:SetStatusBarColor(0.3, 0.3, 0.3);
+            combobar[i].start = p_start;
+            combobar[i].duration = cooldown;
+            combobar[i]:SetScript("OnUpdate", APB_OnUpdateCombo)
         else
-            APB.combobar[i]:Show();
-            APB.combobar[i]:SetValue(0)
+            combobar[i]:Show();
+            combobar[i]:SetValue(0)
         end
     end
 
     if bupdate_partial_power then
         local power = combo + partial;
-        if power > max_combo then
-            power = max_combo;
+        if power > combobar.max_combo then
+            power = combobar.max_combo;
         end
-        APB.combobar[1].text:SetText(power);
-        APB.combobar[1].text:ClearAllPoints();
-        APB.combobar[1].text:SetPoint("CENTER", APB.combobar[math.ceil(max_combo / 2)], "CENTER", 0, 0);
-        APB.combobar[1].text:Show();
+        combobar[1].text:SetText(power);
+        combobar[1].text:ClearAllPoints();
+        combobar[1].text:SetPoint("CENTER", combobar[math.ceil(combobar.max_combo / 2)], "CENTER", 0, 0);
+        combobar[1].text:Show();
     end
 end
 
@@ -579,20 +632,20 @@ local function APB_UpdateBuffStack(stackbar)
             APB_BUFF_STACK, "player");
 
         if name and caster == "player" then
-            if count >= APB.stackbar[0].max then
-                APB.stackbar[0]:SetValue(APB.stackbar[0].max);
-                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1],
+            if count >= stackbar.max then
+                stackbar:SetValue(stackbar.max);
+                stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1],
                     APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
             else
-                APB.stackbar[0]:SetValue(count);
-                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+                stackbar:SetValue(count);
+                stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
                     APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
             end
-            APB.stackbar[0].prevcount = count;
-            APB.stackbar[0].count:SetText(count);
+            stackbar.prevcount = count;
+            stackbar.count:SetText(count);
         else
-            APB.stackbar[0]:SetValue(0);
-            APB.stackbar[0].count:SetText(count);
+            stackbar:SetValue(0);
+            stackbar.count:SetText(count);
         end
     end
 
@@ -601,70 +654,85 @@ local function APB_UpdateBuffStack(stackbar)
             APB_DEBUFF_STACK, "player");
 
         if name and caster == "player" then
-            if count >= APB.stackbar[0].max then
-                APB.stackbar[0]:SetValue(APB.stackbar[0].max);
-                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1],
+            if count >= stackbar.max then
+                stackbar:SetValue(stackbar.max);
+                stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1],
                     APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
             else
-                APB.stackbar[0]:SetValue(count);
-                APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+                stackbar:SetValue(count);
+                stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
                     APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
             end
 
-            APB.stackbar[0].prevcount = count;
-            APB.stackbar[0].count:SetText(count);
+            stackbar.prevcount = count;
+            stackbar.count:SetText(count);
         else
-            APB.stackbar[0]:SetValue(0);
-            APB.stackbar[0].count:SetText(count);
+            stackbar:SetValue(0);
+            stackbar.count:SetText(count);
         end
     end
 
     if APB_ACTION_STACK then
         local count = GetActionCount(APB_ACTION_STACK)
 
-        if count >= APB.stackbar[0].max then
-            APB.stackbar[0]:SetValue(APB.stackbar[0].max);
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT
+        if count >= stackbar.max then
+            stackbar:SetValue(stackbar.max);
+            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT
                 [2], APB_STACKBAR_COLOR_ALERT[3]);
         else
-            APB.stackbar[0]:SetValue(count);
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+            stackbar:SetValue(count);
+            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
                 APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
         end
-        APB.stackbar[0].prevcount = count;
-        APB.stackbar[0].count:SetText(count);
+        stackbar.prevcount = count;
+        stackbar.count:SetText(count);
     end
 
     if bupdate_enhaced_tempest or bupdate_element_tempest then
         local count = tempeststate.TempestStacks
 
-        if count >= APB.stackbar[0].max then
-            count = APB.stackbar[0].max
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+        if count >= stackbar.max then
+            count = stackbar.max
+            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
                 APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
         elseif bupdate_enhaced_tempest and count <= 10 then
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT
+            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT
                 [2], APB_STACKBAR_COLOR_ALERT[3]);
         elseif bupdate_element_tempest and count <= 50 then
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT
+            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT
                 [2], APB_STACKBAR_COLOR_ALERT[3]);
         else
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
                 APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
         end
-        APB.stackbar[0]:SetValue(count);
-        APB.stackbar[0].prevcount = count;
-        APB.stackbar[0].count:SetText(count);
+        stackbar:SetValue(count);
+        stackbar.prevcount = count;
+        stackbar.count:SetText(count);
+
+        local balert = false;
+
+        local name = APB_UnitBuffList("player", {454015}, "player");
+
+        if name then
+            balert = true;
+        end
+
+        if balert then
+            ns.lib.PixelGlow_Start(stackbar);
+        else
+            ns.lib.PixelGlow_Stop(stackbar);
+        end
+
     elseif bupdate_internalcool then
-        APB.stackbar[0].start = internalcool_state.start;
-        APB.stackbar[0].duration = internalcool_state.duration;
+        stackbar.start = internalcool_state.start;
+        stackbar.duration = internalcool_state.duration;
         local currtime = GetTime();
 
-        if currtime >= APB.stackbar[0].start + APB.stackbar[0].duration then
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT
+        if currtime >= stackbar.start + stackbar.duration then
+            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT
                 [2], APB_STACKBAR_COLOR_ALERT[3]);
         else
-            APB.stackbar[0]:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
                 APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
         end
     end
@@ -673,12 +741,12 @@ end
 
 local bupdatecombo = false;
 
-local function APB_MaxCombo(max)
-    max_combo = max;
+local function APB_MaxCombo(combobar, max)
+    combobar.max_combo = max;
 
     if not max or max == 0 then
         for i = 1, 20 do
-            APB.combobar[i]:Hide();
+            combobar[i]:Hide();
         end
         bupdatecombo = false;
         return;
@@ -687,28 +755,30 @@ local function APB_MaxCombo(max)
     local width = (APB_WIDTH - (3 * (max - 1))) / max;
 
     for i = 1, 20 do
-        APB.combobar[i]:SetWidth(width)
-        APB.combobar[i].start = nil;
-        APB.combobar[i]:SetMinMaxValues(0, 1)
-        APB.combobar[i]:SetValue(1)
+        combobar[i]:SetWidth(width)
+        combobar[i].start = nil;
+        combobar[i]:SetMinMaxValues(0, 1)
+        combobar[i]:SetValue(1)
         local _, Class = UnitClass("player")
         local color = RAID_CLASS_COLORS[Class]
-        APB.combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
-        APB.combobar[i]:SetScript("OnUpdate", nil)
+        combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
+        combobar[i]:SetScript("OnUpdate", nil)
 
         if i > max then
-            APB.combobar[i]:Hide()
+            combobar[i]:Hide()
         else
-            APB.combobar[i]:Show()
+            combobar[i]:Show()
         end
     end
 
-    if bshowspell then
-        APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPLEFT", 0, 1);
+    if combobar == APB.combobar2 then
+        combobar[1]:SetPoint("BOTTOMLEFT", APB.combobar[1], "TOPLEFT", 0, 1);
+    elseif bshowspell then
+        combobar[1]:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPLEFT", 0, 1);
     elseif bshowstack then
-        APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.stackbar[0], "TOPLEFT", 0, 1);
+        combobar[1]:SetPoint("BOTTOMLEFT", APB.stackbar[0], "TOPLEFT", 0, 1);
     else
-        APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.buffbar[0], "TOPLEFT", 0, 1);
+        combobar[1]:SetPoint("BOTTOMLEFT", APB.buffbar[0], "TOPLEFT", 0, 1);
     end
 
     bupdatecombo = true;
@@ -731,31 +801,31 @@ local function APB_UpdateBuffCombo(combobar)
 
             if APB_BUFF_COMBO_MAX ~= APB_BUFF_COMBO then
                 if name and caster == "player" and duration > 0 then
-                    if max_combo > 1 then
-                        APB_ShowComboBar(APB_BUFF_COMBO_MAX_COUNT);
-                        APB_MaxCombo(1);
+                    if combobar.max_combo > 1 then
+                        APB_ShowComboBar(combobar, APB_BUFF_COMBO_MAX_COUNT);
+                        APB_MaxCombo(combobar, 1);
                     end
                     local remain = expirationTime - GetTime();
 
-                    APB_ShowComboBar(0, nil, nil, duration, expirationTime);
+                    APB_ShowComboBar(combobar, 0, nil, nil, duration, expirationTime);
                     return;
                 else
-                    APB_MaxCombo(APB_BUFF_COMBO_MAX_COUNT);
+                    APB_MaxCombo(combobar, APB_BUFF_COMBO_MAX_COUNT);
                 end
             else
                 if count and count == APB_BUFF_COMBO_MAX_COUNT and caster == "player" and duration > 0 then
-                    if max_combo > 1 then
-                        APB_ShowComboBar(APB_BUFF_COMBO_MAX_COUNT);
-                        APB_MaxCombo(1);
+                    if combobar.max_combo > 1 then
+                        APB_ShowComboBar(combobar, APB_BUFF_COMBO_MAX_COUNT);
+                        APB_MaxCombo(combobar, 1);
                     end
                     local remain = expirationTime - GetTime();
 
 
 
-                    APB_ShowComboBar(0, nil, nil, duration, expirationTime);
+                    APB_ShowComboBar(combobar, 0, nil, nil, duration, expirationTime);
                     return;
                 else
-                    APB_MaxCombo(APB_BUFF_COMBO_MAX_COUNT);
+                    APB_MaxCombo(combobar, APB_BUFF_COMBO_MAX_COUNT);
                 end
             end
         end
@@ -764,9 +834,9 @@ local function APB_UpdateBuffCombo(combobar)
             APB_BUFF_COMBO, "player");
 
         if name and caster == "player" then
-            APB_ShowComboBar(count);
+            APB_ShowComboBar(combobar, count);
         else
-            APB_ShowComboBar(0);
+            APB_ShowComboBar(combobar, 0);
         end
     end
 
@@ -775,9 +845,9 @@ local function APB_UpdateBuffCombo(combobar)
             APB_DEBUFF_COMBO, "player");
 
         if name and caster == "player" then
-            APB_ShowComboBar(count);
+            APB_ShowComboBar(combobar, count);
         else
-            APB_ShowComboBar(0);
+            APB_ShowComboBar(combobar, 0);
         end
     end
 
@@ -785,9 +855,9 @@ local function APB_UpdateBuffCombo(combobar)
         local count = GetActionCount(APB_ACTION_COMBO)
 
         if count then
-            APB_ShowComboBar(count);
+            APB_ShowComboBar(combobar, count);
         else
-            APB_ShowComboBar(0);
+            APB_ShowComboBar(combobar, 0);
         end
     end
 end
@@ -1094,22 +1164,23 @@ end
 local function APB_MaxRune()
     local max = 6;
     local width = (APB_WIDTH - (3 * (max - 1))) / max;
+    local combobar = APB.combobar;
 
     for i = 1, 20 do
-        APB.combobar[i]:Hide();
+        combobar[i]:Hide();
     end
 
     for i = 1, 6 do
-        APB.combobar[i]:SetWidth(width)
-        APB.combobar[i]:Show();
+        combobar[i]:SetWidth(width)
+        combobar[i]:Show();
     end
 
     if bshowspell then
-        APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPLEFT", 0, 1);
+        combobar[1]:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPLEFT", 0, 1);
     elseif bshowstack then
-        APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.stackbar[0], "TOPLEFT", 0, 1);
+        combobar[1]:SetPoint("BOTTOMLEFT", APB.stackbar[0], "TOPLEFT", 0, 1);
     else
-        APB.combobar[1]:SetPoint("BOTTOMLEFT", APB.buffbar[0], "TOPLEFT", 0, 1);
+        combobar[1]:SetPoint("BOTTOMLEFT", APB.buffbar[0], "TOPLEFT", 0, 1);
     end
 end
 
@@ -1131,25 +1202,27 @@ end
 local function APB_UpdateRune()
     table.sort(APB.runeIndexes, RuneComparison);
 
+    local combobar = APB.combobar;
+
     for i, index in ipairs(APB.runeIndexes) do
         local start, duration, runeReady = GetRuneCooldown(index);
 
         if runeReady then
-            APB.combobar[i].start = nil;
-            -- APB.combobar[i2]:SetStatusBarColor(1,1,0)
+            combobar[i].start = nil;
+            -- combobar[i2]:SetStatusBarColor(1,1,0)
 
             local _, Class = UnitClass("player")
             local color = RAID_CLASS_COLORS[Class]
-            APB.combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
+            combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
 
-            APB.combobar[i]:SetMinMaxValues(0, 1)
-            APB.combobar[i]:SetValue(1)
-            APB.combobar[i]:SetScript("OnUpdate", nil)
+            combobar[i]:SetMinMaxValues(0, 1)
+            combobar[i]:SetValue(1)
+            combobar[i]:SetScript("OnUpdate", nil)
         else
-            APB.combobar[i]:SetStatusBarColor(1, 1, 1)
-            APB.combobar[i].start = start;
-            APB.combobar[i].duration = duration;
-            APB.combobar[i]:SetScript("OnUpdate", APB_OnUpdateCombo)
+            combobar[i]:SetStatusBarColor(1, 1, 1)
+            combobar[i].start = start;
+            combobar[i].duration = duration;
+            combobar[i]:SetScript("OnUpdate", APB_OnUpdateCombo)
         end
     end
 end
@@ -1158,6 +1231,8 @@ local function APB_UpdatePower()
     if bupdate_power == false then
         return;
     end
+
+    local combobar = APB.combobar;
 
     local power = UnitPower("player", APB_POWER_LEVEL);
     local max = UnitPowerMax("player", APB_POWER_LEVEL);
@@ -1178,7 +1253,7 @@ local function APB_UpdatePower()
     end
 
     if (APB.powermax and APB.powermax ~= max) or not APB.powermax then
-        APB_MaxCombo(max);
+        APB_MaxCombo(combobar, max);
         APB.powermax = max;
     end
 
@@ -1202,7 +1277,7 @@ local function APB_UpdatePower()
         end
     end
 
-    APB_ShowComboBar(power, partial, cast, cooldownDuration);
+    APB_ShowComboBar(combobar, power, partial, cast, cooldownDuration);
 end
 
 local bupdate_druid = false;
@@ -1612,6 +1687,7 @@ local function APB_Update(self)
     if not bupdate_powerbar then
         APB.bar:Hide();
     else
+        local balert = false;
         local powerType, powerTypeString = UnitPowerType("player");
 
         self.powerType = powerType
@@ -1636,7 +1712,7 @@ local function APB_Update(self)
             valuePct = value;
             valuePct_orig = value_orig
         end
-
+        
         if powerTypeString then
             local info = PowerBarColor[powerTypeString];
             APB.bar:SetStatusBarColor(info.r, info.g, info.b);
@@ -1732,7 +1808,7 @@ local function APB_OnUpdate(self, elapsed)
         update2 = 0
         APB_UpdateBuff(self.buffbar[0]);
         APB_UpdateBuff(self.buffbar[1]);
-        APB_UpdateBuffCombo(self.combobar);
+        APB_UpdateBuffCombo(self.buffcombobar);
         APB_UpdateBuffStack(self.stackbar[0]);
         APB_UpdateStagger(self.buffbar[0]);
         APB_UpdatePower();
@@ -1833,13 +1909,16 @@ local function APB_CheckPower(self)
     bupdate_Splinterstorm = false;
     bupdate_partial_power = false;
     bsmall_power_bar = false;
+    bsmall_buff_bar = false;
     bhalf_combo = false;
     bupdate_enhaced_tempest = false;
     bupdate_element_tempest = false;
     bupdate_internalcool = false;
     bdruid = false;
     brogue = false;
-
+    combobuffalertlist = nil;
+    combobuffcoloralertlist = nil;
+    
     APB_BUFF = nil;
     APB_BUFF2 = nil;
     APB_BUFF3 = nil;
@@ -1870,11 +1949,19 @@ local function APB_CheckPower(self)
 
     APB.combobar[1].text:SetText("");
     APB.combobar[1].text:Hide();
+    APB.combobar2[1].text:SetText("");
+    APB.combobar2[1].text:Hide();
+    APB.buffcombobar = APB.combobar;
 
     for i = 1, 20 do
         ns.lib.PixelGlow_Stop(APB.combobar[i]);
         setupMouseOver(APB.combobar[i]);
+
+        ns.lib.PixelGlow_Stop(APB.combobar2[i]);
+        setupMouseOver(APB.combobar2[i]);        
     end
+
+    APB_MaxCombo(self.combobar2, 0);
 
     for i = 1, 10 do
         setupMouseOver(APB.spellbar[i]);
@@ -2011,9 +2098,27 @@ local function APB_CheckPower(self)
             APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
             APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
             bupdate_power = true;
+            combobuffalertlist = {451073, 451038, 455681};
 
             for i = 1, 20 do
                 APB.combobar[i].tooltip = "ARCANE_CHARGES";
+            end
+
+            if IsPlayerSpell(448601) then
+                APB_BUFF_COMBO = 449400;
+                APB_BUFF_COMBO_MAX = 451049;
+                APB_BUFF_COMBO_MAX_COUNT = 6;
+                self.buffcombobar = self.combobar2;
+                APB_MaxCombo(self.combobar2, APB_BUFF_COMBO_MAX_COUNT, true);
+                APB.combobar2.unit = "player"
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
+                APB_UpdateBuffCombo(self.combobar2)
+                bupdate_buff_combo = true;
+                bsmall_buff_bar = true;
+
+                for i = 1, 20 do
+                    APB.combobar2[i].tooltip = APB_BUFF_COMBO;
+                end
             end
         end
 
@@ -2031,7 +2136,7 @@ local function APB_CheckPower(self)
                 APB_BUFF_COMBO = "태양왕의 축복";
                 APB_BUFF_COMBO_MAX = "태양왕의 격분";
                 APB_BUFF_COMBO_MAX_COUNT = 10;
-                APB_MaxCombo(APB_BUFF_COMBO_MAX_COUNT);
+                APB_MaxCombo(self.combobar, APB_BUFF_COMBO_MAX_COUNT);
                 APB.combobar.unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 APB_UpdateBuffCombo(self.combobar)
@@ -2060,7 +2165,7 @@ local function APB_CheckPower(self)
 
         if (spec and spec == 3) then
             APB_BUFF_COMBO = "고드름";
-            APB_MaxCombo(5);
+            APB_MaxCombo(self.combobar, 5);
             APB.combobar.unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
             APB_UpdateBuffCombo(self.combobar)
@@ -2182,24 +2287,37 @@ local function APB_CheckPower(self)
         bupdate_druid = false;
 
         if (spec and spec == 1) then
-            APB_BUFF = "일월식 (달)";
-            APB.buffbar[0].buff = APB_BUFF
-            APB.buffbar[0].unit = "player"
+            if IsPlayerSpell(429523) then
+                APB_BUFF = "일월식 (달)";
+                APB.buffbar[0].buff = APB_BUFF
+                APB.buffbar[0].unit = "player"
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
+
+                APB_SPELL = "천벌";
+                bupdate_druid = true;
+                APB_SpellMax(APB_SPELL, APB_SPELL2);
+                APB_UpdateSpell(APB_SPELL, APB_SPELL2);
+                bupdate_spell = true;
+            else
+                APB_BUFF = "일월식 (달)";
+                APB.buffbar[0].buff = APB_BUFF
+                APB.buffbar[0].unit = "player"
 
 
-            APB_BUFF2 = "일월식 (태양)";
-            APB.buffbar[1].buff = APB_BUFF2
-            APB.buffbar[1].unit = "player"
-            APB:RegisterUnitEvent("UNIT_AURA", "player");
+                APB_BUFF2 = "일월식 (태양)";
+                APB.buffbar[1].buff = APB_BUFF2
+                APB.buffbar[1].unit = "player"
+                APB:RegisterUnitEvent("UNIT_AURA", "player");
 
 
-            APB_SPELL = "별빛섬광";
-            APB_SPELL2 = "천벌"
-            bupdate_druid = true;
-            APB_SpellMax(APB_SPELL, APB_SPELL2);
-            APB_UpdateSpell(APB_SPELL, APB_SPELL2);
+                APB_SPELL = "별빛섬광";
+                APB_SPELL2 = "천벌"
+                bupdate_druid = true;
+                APB_SpellMax(APB_SPELL, APB_SPELL2);
+                APB_UpdateSpell(APB_SPELL, APB_SPELL2);
 
-            bupdate_spell = true;
+                bupdate_spell = true;
+            end
         end
 
         if (spec and spec == 2) then
@@ -2209,6 +2327,9 @@ local function APB_CheckPower(self)
             APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
             APB:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
             bupdate_power = true;
+
+            combobuffalertlist = {391882};          --최상위
+            combobuffcoloralertlist = {441585};     --찟어발기기
 
             if asCheckTalent("잔혹한 베기") then
                 APB_SPELL = "잔혹한 베기";
@@ -2302,7 +2423,7 @@ local function APB_CheckPower(self)
             end
             if IsPlayerSpell(399491) then
                 APB_ACTION_COMBO = APB_GetActionSlot("셰이룬의 선물");
-                APB_MaxCombo(10);
+                APB_MaxCombo(self.combobar, 10);
                 APB_UpdateBuffCombo(self.combobar)
                 bupdate_buff_combo = true;
 
@@ -2476,9 +2597,9 @@ local function APB_CheckPower(self)
                 APB_BUFF_COMBO = "소용돌이";
 
                 if asCheckTalent("고기칼") then
-                    APB_MaxCombo(4);
+                    APB_MaxCombo(self.combobar, 4);
                 else
-                    APB_MaxCombo(2);
+                    APB_MaxCombo(self.combobar, 2);
                 end
                 APB.combobar.unit = "player"
                 APB_UpdateBuffCombo(self.combobar)
@@ -2540,7 +2661,7 @@ local function APB_CheckPower(self)
             APB:RegisterUnitEvent("UNIT_AURA", "player");
 
             APB_BUFF_COMBO = "영혼 파편";
-            APB_MaxCombo(5);
+            APB_MaxCombo(self.combobar, 5);
             APB.combobar.unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
             APB_UpdateBuffCombo(self.combobar)
@@ -2572,7 +2693,7 @@ local function APB_CheckPower(self)
                 APB_BUFF_COMBO = "폭발성 맹독";
                 APB_BUFF_COMBO_MAX = APB_BUFF_COMBO;
                 APB_BUFF_COMBO_MAX_COUNT = 5;
-                APB_MaxCombo(APB_BUFF_COMBO_MAX_COUNT);
+                APB_MaxCombo(self.combobar, APB_BUFF_COMBO_MAX_COUNT);
                 APB.combobar.unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 APB_UpdateBuffCombo(self.combobar)
@@ -2626,7 +2747,7 @@ local function APB_CheckPower(self)
 
             if asCheckTalent("살쾡이의 이빨") then
                 APB_BUFF_COMBO = "살쾡이의 격노";
-                APB_MaxCombo(5);
+                APB_MaxCombo(self.combobar, 5);
                 APB.combobar.unit = "player"
                 APB_UpdateBuffCombo(self.combobar)
                 bupdate_buff_combo = true;
@@ -2643,7 +2764,7 @@ local function APB_CheckPower(self)
                 -- APB:SetScript("OnUpdate", APB_OnUpdate);
             elseif asCheckTalent("창끝") then
                 APB_BUFF_COMBO = "창끝";
-                APB_MaxCombo(3);
+                APB_MaxCombo(self.combobar, 3);
                 APB.combobar.unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 APB_UpdateBuffCombo(self.combobar)
@@ -2688,7 +2809,7 @@ local function APB_CheckPower(self)
                 tempeststate.TStacks = 0;
                 APB_MaxStack(tempeststate.TempestStacks);
                 APB_UpdateBuffStack(self.stackbar[0]);
-                self.stackbar[0].spellid = 454009;
+                self.stackbar[0].spellid = 454009;                
 
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
             end
@@ -2704,7 +2825,7 @@ local function APB_CheckPower(self)
 
             APB_BUFF_COMBO = "소용돌이치는 무기";
             APB_BUFF4 = "소용돌이"; --asOverlay 삭제용
-            APB_MaxCombo(10);
+            APB_MaxCombo(self.combobar, 10);
             APB.combobar.unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
             APB_UpdateBuffCombo(self.combobar)
@@ -2729,7 +2850,7 @@ local function APB_CheckPower(self)
                 tempeststate.bfirstcheck = true;
                 tempeststate.TStacks = 0;
                 APB_MaxStack(tempeststate.TempestStacks);
-                self.stackbar[0].spellid = 454009;
+                self.stackbar[0].spellid = 454009;                
 
                 APB_UpdateBuffStack(self.stackbar[0]);
 
@@ -2744,7 +2865,7 @@ local function APB_CheckPower(self)
             bupdate_spell = true;
 
             APB_BUFF_COMBO = "굽이치는 물결";
-            APB_MaxCombo(2);
+            APB_MaxCombo(self.combobar, 2);
             APB.combobar.unit = "player"
             APB:RegisterUnitEvent("UNIT_AURA", "player");
             APB_UpdateBuffCombo(self.combobar)
@@ -2765,7 +2886,7 @@ local function APB_CheckPower(self)
     end
 
     if not bupdate_power and not bupdate_rune and not bupdate_buff_combo then
-        APB_MaxCombo(0);
+        APB_MaxCombo(self.combobar, 0);        
     end
 
     if not bupdate_spell then
@@ -2814,8 +2935,8 @@ local function APB_CheckPower(self)
     else
         APB.buffbar[0]:SetHeight(APB_HEIGHT);
 
-        if bupdate_buff_count then
-            APB.buffbar[0]:SetHeight(APB_HEIGHT + 2);
+        if bsmall_buff_bar then
+            APB.buffbar[0]:SetHeight(APB_HEIGHT - 2);
         end
 
         APB_UpdateBuff(self.buffbar[0]);
@@ -2824,8 +2945,8 @@ local function APB_CheckPower(self)
             APB.buffbar[1]:SetWidth(APB_WIDTH / 2);
             APB.buffbar[0]:SetWidth(APB_WIDTH / 2);
             APB_UpdateBuff(self.buffbar[1]);
-            if bupdate_buff_count then
-                APB.buffbar[1]:SetHeight(APB_HEIGHT + 2);
+            if bsmall_buff_bar then
+                APB.buffbar[1]:SetHeight(APB_HEIGHT - 2);
             end
         else
             APB.buffbar[0]:SetWidth(APB_WIDTH);
@@ -3028,7 +3149,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
     if event == "UNIT_AURA" then
         APB_UpdateBuff(self.buffbar[0]);
         APB_UpdateBuff(self.buffbar[1]);
-        APB_UpdateBuffCombo(self.combobar);
+        APB_UpdateBuffCombo(self.buffcombobar);
         APB_UpdateBuffStack(self.stackbar[0]);
         APB_UpdateStagger(self.buffbar[0]);
     elseif event == "ACTIONBAR_UPDATE_COOLDOWN" or event == "ACTIONBAR_UPDATE_USABLE" then
@@ -3054,7 +3175,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
     elseif event == "PLAYER_TARGET_CHANGED" then
         APB_UpdateBuff(self.buffbar[0]);
         APB_UpdateBuff(self.buffbar[1]);
-        APB_UpdateBuffCombo(self.combobar);
+        APB_UpdateBuffCombo(self.buffcombobar);
         APB_UpdateBuffStack(self.stackbar[0]);
     elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
         local timestamp, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellId, _, _, auraType, amount =
@@ -3468,7 +3589,7 @@ do
         APB.stackbar[j].count = APB.stackbar[j]:CreateFontString(nil, "ARTWORK")
         APB.stackbar[j].count:SetFont(APB_Font, APB_BuffSize + 1, APB_FontOutline)
         APB.stackbar[j].count:SetPoint("CENTER", APB.stackbar[j], "CENTER", 0, 0)
-        APB.stackbar[j].count:SetTextColor(1, 1, 1, 1)
+        APB.stackbar[j].count:SetTextColor(1, 1, 1, 1);        
         --APB.stackbar[j]:Show()
     end
 
@@ -3507,6 +3628,44 @@ do
     APB.combobar[1].text:SetPoint("BOTTOMLEFT", APB.combobar[1], "TOPLEFT", 0, 2);
     APB.combobar[1].text:SetTextColor(1, 1, 1, 1)
     APB.combobar[1].text:Hide();
+    APB.buffcombobar = APB.combobar;
+
+
+    APB.combobar2 = {};
+
+    for i = 1, 20 do
+        APB.combobar2[i] = CreateFrame("StatusBar", nil, APB);
+        APB.combobar2[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER");
+        APB.combobar2[i]:GetStatusBarTexture():SetHorizTile(false);
+        APB.combobar2[i]:SetMinMaxValues(0, 100);
+        APB.combobar2[i]:SetValue(100);
+        APB.combobar2[i]:SetHeight(APB_HEIGHT / 2);
+        APB.combobar2[i]:SetWidth(20);
+
+        APB.combobar2[i].bg = APB.combobar2[i]:CreateTexture(nil, "BACKGROUND");
+        APB.combobar2[i].bg:SetPoint("TOPLEFT", APB.combobar2[i], "TOPLEFT", -1, 1);
+        APB.combobar2[i].bg:SetPoint("BOTTOMRIGHT", APB.combobar2[i], "BOTTOMRIGHT", 1, -1);
+
+        APB.combobar2[i].bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
+        APB.combobar2[i].bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
+        APB.combobar2[i].bg:SetVertexColor(0, 0, 0, 0.8);
+
+        if i == 1 then
+            APB.combobar2[i]:SetPoint("BOTTOMLEFT", APB.combobar[1], "TOPLEFT", 0, 1);
+        else
+            APB.combobar2[i]:SetPoint("LEFT", APB.combobar2[i - 1], "RIGHT", 3, 0);
+        end
+
+        APB.combobar2[i]:Hide();
+        APB.combobar2[i]:EnableMouse(false);
+    end
+
+    APB.combobar2[1].text = APB.combobar2[1]:CreateFontString(nil, "ARTWORK");
+    APB.combobar2[1].text:SetFont(APB_Font, APB_HealthSize - 2, APB_FontOutline);
+    APB.combobar2[1].text:SetPoint("BOTTOMLEFT", APB.combobar2[1], "TOPLEFT", 0, 2);
+    APB.combobar2[1].text:SetTextColor(1, 1, 1, 1)
+    APB.combobar2[1].text:Hide();
+
 
     APB.spellbar = {};
 

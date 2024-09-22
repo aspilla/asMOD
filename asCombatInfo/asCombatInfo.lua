@@ -25,23 +25,23 @@ local roguespell = {
 }
 
 local asGetSpellInfo = function(spellID)
-    if not spellID then
-        return nil;
-    end
+	if not spellID then
+		return nil;
+	end
 
-    local ospellID = C_Spell.GetOverrideSpell(spellID)
+	local ospellID = C_Spell.GetOverrideSpell(spellID)
 
-    if ospellID then
-        spellID = ospellID;
-    end
+	if ospellID then
+		spellID = ospellID;
+	end
 
-    local spellInfo = C_Spell.GetSpellInfo(spellID);
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
 
 
-    if spellInfo then
-        return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
-            spellInfo.spellID, spellInfo.originalIconID;
-    end
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+			spellInfo.spellID, spellInfo.originalIconID;
+	end
 end
 
 local options = CopyTable(ACI_Options_Default);
@@ -116,7 +116,7 @@ local function ACI_OnEvent(self, event, arg1, ...)
 				ACI[i]:SetAlpha(ACI_Alpha_Normal);
 			end
 		end
-	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED"   then
+	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		C_Timer.After(0.5, ACI_Init);
 	end
 end
@@ -171,7 +171,7 @@ function ACI_Init()
 	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
 		spec = 1;
 	end
-	
+
 	if ACI_timer then
 		ACI_timer:Cancel();
 	end
@@ -196,8 +196,8 @@ function ACI_Init()
 
 	ACI_Buff_list = {}
 	ACI_Debuff_list = {}
-	
-	ACI_SpellID_list = {};	
+
+	ACI_SpellID_list = {};
 
 
 	if ACI_SpellListtmp and #ACI_SpellListtmp then
@@ -214,7 +214,7 @@ function ACI_Init()
 	end
 
 	for i = 1, ACI_MaxSpellCount do
-		ACI[i]:Hide();		
+		ACI[i]:Hide();
 		setupMouseOver(ACI[i]);
 	end
 
@@ -235,37 +235,52 @@ function ACI_Init()
 		ACI_mainframe.maxIdx = maxIdx;
 
 		for i = 1, maxIdx do
-			local check = tonumber(ACI_SpellList[i][1]);
+			if type(ACI_SpellList[i][1]) == "table" then
+				for _, array in pairs(ACI_SpellList[i]) do       
+					local spell_name = array[1];
+					if (type(spell_name) == "string" and asCheckTalent(spell_name)) or (type(spell_name) == "number" and IsPlayerSpell(spell_name)) then
+						ACI_SpellList[i] = {};
+						for z, v in pairs(array) do
+							ACI_SpellList[i][z] = v;
+						end
+						break;
+					end					
+				end
+			else
+				local check = tonumber(ACI_SpellList[i][1]);
 
-			if check and check == 99 then
-				local bselected = false;
-				local spell_name = ACI_SpellList[i][2];
-				if (type(spell_name) == "string" and asCheckTalent(spell_name)) or (type(spell_name) == "number" and IsPlayerSpell(spell_name)) then
-					if ACI_SpellList[i][3] then
-						local array = ACI_SpellList[i][3];
-						if type(array) == "table" then
-							ACI_SpellList[i][3] = nil;
-							ACI_SpellList[i][4] = nil;
+				if check and check == 99 then
+					local bselected = false;
+					local spell_name = ACI_SpellList[i][2];
+					if (type(spell_name) == "string" and asCheckTalent(spell_name)) or (type(spell_name) == "number" and IsPlayerSpell(spell_name)) then
+						if ACI_SpellList[i][3] then
+							local array = ACI_SpellList[i][3];
+							if type(array) == "table" then
+								ACI_SpellList[i][3] = nil;
+								ACI_SpellList[i][4] = nil;
 
-							for z, v in pairs(array) do
-								ACI_SpellList[i][z] = v;
+								for z, v in pairs(array) do
+									ACI_SpellList[i][z] = v;
+								end
 							end
 						end
-					end
-				else
-					if ACI_SpellList[i][4] then
-						local array = ACI_SpellList[i][4];
-						if type(array) == "table" then
-							ACI_SpellList[i][3] = nil;
-							ACI_SpellList[i][4] = nil;
+					else
+						if ACI_SpellList[i][4] then
+							local array = ACI_SpellList[i][4];
+							if type(array) == "table" then
+								ACI_SpellList[i][3] = nil;
+								ACI_SpellList[i][4] = nil;
 
-							for z, v in pairs(array) do
-								ACI_SpellList[i][z] = v;
+								for z, v in pairs(array) do
+									ACI_SpellList[i][z] = v;
+								end
 							end
 						end
 					end
 				end
 			end
+
+
 
 			ACI[i].obutton:init(ACI_SpellList[i], ACI[i]);
 			ACI[i].tooltip = (ACI_SpellList[i][1]);
@@ -286,7 +301,7 @@ end
 
 local function flushoption()
 	if ACI_Options then
-		options = CopyTable(ACI_Options);		
+		options = CopyTable(ACI_Options);
 		ACI_Init();
 		ACI_OptionM.UpdateSpellList(ACI_SpellList);
 	end
@@ -384,7 +399,7 @@ for i = 1, ACI_MaxSpellCount do
 
 	ACI[i].border:Hide();
 
-	ACI[i].alerttext:SetFont("Fonts\\2002.TTF", ACI_CountFontSize+ 8, "OUTLINE")
+	ACI[i].alerttext:SetFont("Fonts\\2002.TTF", ACI_CountFontSize + 8, "OUTLINE")
 	ACI[i].alerttext:SetText("");
 	ACI[i].alerttext:SetTextColor(1, 0.5, 0.5);
 	ACI[i].alerttext:Hide();

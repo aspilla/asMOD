@@ -316,7 +316,7 @@ local function IsShown(name, spellId)
 		return true;
 	end
 
-	if APB_BUFF_COMBO and APB_BUFF_COMBO == name then
+	if APB_BUFF_COMBO and (APB_BUFF_COMBO == name or APB_BUFF_COMBO == spellId) then
 		return true;
 	end
 
@@ -324,7 +324,7 @@ local function IsShown(name, spellId)
 		return true;
 	end
 
-	if APB_BUFF_COMBO_MAX and APB_BUFF_COMBO_MAX == name then
+	if APB_BUFF_COMBO_MAX and (APB_BUFF_COMBO_MAX == name or APB_BUFF_COMBO_MAX == spellId) then
 		return true;
 	end
 
