@@ -19,7 +19,6 @@ local bupdate_power = false;
 local bupdate_rune = false;
 local bupdate_spell = false;
 local bupdate_buff_count = false;
-local bupdate_powerbar = false;
 local bupdate_healthbar = APB_SHOW_HEALTHBAR;
 local bupdate_stagger = false;
 local bupdate_fronzen = false;
@@ -192,7 +191,7 @@ local function APB_UnitBuffList(unit, list, casterid)
         for index, id in pairs(list) do
             if aura and aura.spellId == id and aura.sourceUnit == casterid then
                 if aura.duration > 0 then
-                    ret = aura;                    
+                    ret = aura;
                 elseif ret == nil then
                     ret = aura;
                 end
@@ -491,13 +490,13 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
     if combobuffalertlist and combobar == APB.combobar then
         local bBuffed = false;
 
-        local name = APB_UnitBuffList("player",combobuffalertlist, "player");
+        local name = APB_UnitBuffList("player", combobuffalertlist, "player");
 
         if name then
             bBuffed = true;
         end
 
-      
+
         for i = 1, combobar.max_combo do
             if bBuffed then
                 ns.lib.PixelGlow_Start(combobar[i], { 0.5, 0.5, 1 });
@@ -508,11 +507,11 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
     end
 
     if combobuffcoloralertlist and combobar == APB.combobar then
-        local name = APB_UnitBuffList("player",combobuffcoloralertlist, "player");
+        local name = APB_UnitBuffList("player", combobuffcoloralertlist, "player");
 
         if name then
             balert = true;
-        end      
+        end
     end
 
     if buffexpire and cooldown then
@@ -711,7 +710,7 @@ local function APB_UpdateBuffStack(stackbar)
 
         local balert = false;
 
-        local name = APB_UnitBuffList("player", {454015}, "player");
+        local name = APB_UnitBuffList("player", { 454015 }, "player");
 
         if name then
             balert = true;
@@ -722,7 +721,6 @@ local function APB_UpdateBuffStack(stackbar)
         else
             ns.lib.PixelGlow_Stop(stackbar);
         end
-
     elseif bupdate_internalcool then
         stackbar.start = internalcool_state.start;
         stackbar.duration = internalcool_state.duration;
@@ -1684,9 +1682,7 @@ local function APB_Update(self)
     local valuePct;
     local valuePct_orig;
 
-    if not bupdate_powerbar then
-        APB.bar:Hide();
-    else
+    do
         local balert = false;
         local powerType, powerTypeString = UnitPowerType("player");
 
@@ -1712,7 +1708,7 @@ local function APB_Update(self)
             valuePct = value;
             valuePct_orig = value_orig
         end
-        
+
         if powerTypeString then
             local info = PowerBarColor[powerTypeString];
             APB.bar:SetStatusBarColor(info.r, info.g, info.b);
@@ -1827,9 +1823,7 @@ local function asCheckTalent(name)
 
     if not (configID) then
         return false;
-    end
-
-    C_ClassTalents.LoadConfig(configID, true);
+    end    
     local configInfo = C_Traits.GetConfigInfo(configID);
     local treeID = configInfo.treeIDs[1];
 
@@ -1838,16 +1832,16 @@ local function asCheckTalent(name)
     for _, nodeID in ipairs(nodes) do
         local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
         if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
+
+            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID;
             local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
             local definitionInfo = entryInfo and entryInfo.definitionID and
                 C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
-            if definitionInfo ~= nil then
-                local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
-                -- print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));
+            if definitionInfo ~= nil and IsPlayerSpell(definitionInfo.spellID) then
+                local talentName = C_Spell.GetSpellName(definitionInfo.spellID);
                 if name == talentName then
-                    return true;
+					return true;
                 end
             end
         end
@@ -1902,14 +1896,12 @@ local function APB_CheckPower(self)
     bupdate_rune = false;
     bupdate_spell = false;
     bupdate_buff_count = false;
-    bupdate_powerbar = true;
     bupdate_buff_combo = false;
     bupdate_stagger = false;
     bupdate_fronzen = false;
     bupdate_Splinterstorm = false;
     bupdate_partial_power = false;
     bsmall_power_bar = false;
-    bsmall_buff_bar = false;
     bhalf_combo = false;
     bupdate_enhaced_tempest = false;
     bupdate_element_tempest = false;
@@ -1918,7 +1910,7 @@ local function APB_CheckPower(self)
     brogue = false;
     combobuffalertlist = nil;
     combobuffcoloralertlist = nil;
-    
+
     APB_BUFF = nil;
     APB_BUFF2 = nil;
     APB_BUFF3 = nil;
@@ -1958,7 +1950,7 @@ local function APB_CheckPower(self)
         setupMouseOver(APB.combobar[i]);
 
         ns.lib.PixelGlow_Stop(APB.combobar2[i]);
-        setupMouseOver(APB.combobar2[i]);        
+        setupMouseOver(APB.combobar2[i]);
     end
 
     APB_MaxCombo(self.combobar2, 0);
@@ -2068,8 +2060,6 @@ local function APB_CheckPower(self)
             -- APB:SetScript("OnUpdate", APB_OnUpdate);
 
             APB.buffbar[0].unit = "player"
-
-            bsmall_power_bar = true;
             APB_UpdateBuff(self.buffbar[0])
         end
 
@@ -2098,7 +2088,7 @@ local function APB_CheckPower(self)
             APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
             APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
             bupdate_power = true;
-            combobuffalertlist = {451073, 451038, 455681};
+            combobuffalertlist = { 451073, 451038, 455681 };
 
             for i = 1, 20 do
                 APB.combobar[i].tooltip = "ARCANE_CHARGES";
@@ -2114,7 +2104,6 @@ local function APB_CheckPower(self)
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
                 APB_UpdateBuffCombo(self.combobar2)
                 bupdate_buff_combo = true;
-                bsmall_buff_bar = true;
 
                 for i = 1, 20 do
                     APB.combobar2[i].tooltip = APB_BUFF_COMBO;
@@ -2328,8 +2317,8 @@ local function APB_CheckPower(self)
             APB:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
             bupdate_power = true;
 
-            combobuffalertlist = {391882};          --최상위
-            combobuffcoloralertlist = {441585};     --찟어발기기
+            combobuffalertlist = { 391882 };    --최상위
+            combobuffcoloralertlist = { 441585 }; --찟어발기기
 
             if asCheckTalent("잔혹한 베기") then
                 APB_SPELL = "잔혹한 베기";
@@ -2809,7 +2798,7 @@ local function APB_CheckPower(self)
                 tempeststate.TStacks = 0;
                 APB_MaxStack(tempeststate.TempestStacks);
                 APB_UpdateBuffStack(self.stackbar[0]);
-                self.stackbar[0].spellid = 454009;                
+                self.stackbar[0].spellid = 454009;
 
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
             end
@@ -2850,7 +2839,7 @@ local function APB_CheckPower(self)
                 tempeststate.bfirstcheck = true;
                 tempeststate.TStacks = 0;
                 APB_MaxStack(tempeststate.TempestStacks);
-                self.stackbar[0].spellid = 454009;                
+                self.stackbar[0].spellid = 454009;
 
                 APB_UpdateBuffStack(self.stackbar[0]);
 
@@ -2886,7 +2875,7 @@ local function APB_CheckPower(self)
     end
 
     if not bupdate_power and not bupdate_rune and not bupdate_buff_combo then
-        APB_MaxCombo(self.combobar, 0);        
+        APB_MaxCombo(self.combobar, 0);
     end
 
     if not bupdate_spell then
@@ -2906,25 +2895,20 @@ local function APB_CheckPower(self)
         APB.healthbar:Hide();
     end
 
-    if bupdate_powerbar then
-        for i = 1, 20 do
-            APB.combobar[i]:SetHeight(APB_HEIGHT * 0.7);
-        end
+    for i = 1, 20 do
+        APB.combobar[i]:SetHeight(APB_HEIGHT * 0.7);
+    end
 
-        APB_InitPowerBar(self);
-        APB.bar:SetHeight(APB_HEIGHT * 1.5);
-        APB:SetScript("OnUpdate", APB_OnUpdate);
-        APB.bar:Show();
-        APB.bar.text:Show();
-    else
-        for i = 1, 20 do
-            APB.combobar[i]:SetHeight(APB_HEIGHT);
-        end
+    APB_InitPowerBar(self);
+    APB.bar:SetHeight(APB_HEIGHT * 1.5);
+    APB:SetScript("OnUpdate", APB_OnUpdate);
+    APB.bar:Show();
+    APB.bar.text:Show();
 
-        APB.bar:SetHeight(0.01);
+    if bsmall_power_bar then
+        APB.bar:SetHeight(APB_HEIGHT * 0.5);
         APB.bar.text:Hide();
-        APB.bar.count:Hide();
-        APB.bar:Hide();
+        -- APB.bar.count:Hide();
     end
 
     if not (APB_BUFF or APB_DEBUFF or bupdate_stagger or bupdate_fronzen) then
@@ -2935,19 +2919,13 @@ local function APB_CheckPower(self)
     else
         APB.buffbar[0]:SetHeight(APB_HEIGHT);
 
-        if bsmall_buff_bar then
-            APB.buffbar[0]:SetHeight(APB_HEIGHT - 2);
-        end
-
         APB_UpdateBuff(self.buffbar[0]);
         if (APB_BUFF2 or APB_DEBUFF2) then
             APB.buffbar[1]:SetHeight(APB_HEIGHT);
             APB.buffbar[1]:SetWidth(APB_WIDTH / 2);
             APB.buffbar[0]:SetWidth(APB_WIDTH / 2);
             APB_UpdateBuff(self.buffbar[1]);
-            if bsmall_buff_bar then
-                APB.buffbar[1]:SetHeight(APB_HEIGHT - 2);
-            end
+            APB.buffbar[1]:SetHeight(APB_HEIGHT);
         else
             APB.buffbar[0]:SetWidth(APB_WIDTH);
         end
@@ -2955,16 +2933,6 @@ local function APB_CheckPower(self)
         if bupdate_fronzen then
             APB_UpdateFronzenOrb(self.buffbar[0]);
         end
-    end
-
-    if bsmall_power_bar then
-        for i = 1, 20 do
-            APB.combobar[i]:SetHeight(APB_HEIGHT);
-        end
-
-        APB.bar:SetHeight(APB_HEIGHT * 0.5);
-        APB.bar.text:Hide();
-        -- APB.bar.count:Hide();
     end
 end
 
@@ -3589,7 +3557,7 @@ do
         APB.stackbar[j].count = APB.stackbar[j]:CreateFontString(nil, "ARTWORK")
         APB.stackbar[j].count:SetFont(APB_Font, APB_BuffSize + 1, APB_FontOutline)
         APB.stackbar[j].count:SetPoint("CENTER", APB.stackbar[j], "CENTER", 0, 0)
-        APB.stackbar[j].count:SetTextColor(1, 1, 1, 1);        
+        APB.stackbar[j].count:SetTextColor(1, 1, 1, 1);
         --APB.stackbar[j]:Show()
     end
 

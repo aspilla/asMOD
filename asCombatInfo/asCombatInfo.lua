@@ -121,36 +121,36 @@ local function ACI_OnEvent(self, event, arg1, ...)
 	end
 end
 
--- 용군단 Talent Check 함수
 local function asCheckTalent(name)
-	local specID = PlayerUtil.GetCurrentSpecID();
-	local configID = C_ClassTalents.GetActiveConfigID();
-	if not (configID) then
-		return false;
-	end
-	local configInfo = C_Traits.GetConfigInfo(configID);
-	local treeID = configInfo.treeIDs[1];
+    local configID = C_ClassTalents.GetActiveConfigID();
 
-	local nodes = C_Traits.GetTreeNodes(treeID);
+    if not (configID) then
+        return false;
+    end    
+    local configInfo = C_Traits.GetConfigInfo(configID);
+    local treeID = configInfo.treeIDs[1];
 
-	for _, nodeID in ipairs(nodes) do
-		local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
-		if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-			local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
-			local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
-			local definitionInfo = entryInfo and entryInfo.definitionID and
-				C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+    local nodes = C_Traits.GetTreeNodes(treeID);
 
-			if definitionInfo ~= nil then
-				local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
-				--print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));;
-				if name == talentName then
+    for _, nodeID in ipairs(nodes) do
+        local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
+        if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
+
+            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID;
+            local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
+            local definitionInfo = entryInfo and entryInfo.definitionID and
+                C_Traits.GetDefinitionInfo(entryInfo.definitionID);
+
+            if definitionInfo and IsPlayerSpell(definitionInfo.spellID) then
+                local talentName = C_Spell.GetSpellName(definitionInfo.spellID);
+                if name == talentName then
 					return true;
-				end
-			end
-		end
-	end
-	return false;
+                end
+            end
+        end
+    end
+
+    return false;
 end
 
 
@@ -236,7 +236,7 @@ function ACI_Init()
 
 		for i = 1, maxIdx do
 			if type(ACI_SpellList[i][1]) == "table" then
-				for _, array in pairs(ACI_SpellList[i]) do       
+				for _, array in pairs(ACI_SpellList[i]) do
 					local spell_name = array[1];
 					if (type(spell_name) == "string" and asCheckTalent(spell_name)) or (type(spell_name) == "number" and IsPlayerSpell(spell_name)) then
 						ACI_SpellList[i] = {};
@@ -244,7 +244,7 @@ function ACI_Init()
 							ACI_SpellList[i][z] = v;
 						end
 						break;
-					end					
+					end
 				end
 			else
 				local check = tonumber(ACI_SpellList[i][1]);

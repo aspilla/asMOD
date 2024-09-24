@@ -319,7 +319,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 240917,
+    version = 240925,
     ANameP_ShowKnownSpell = false,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -477,6 +477,7 @@ ANameP_Options_Default = {
         ["달빛섬광"] = { 1, 5, 1 },
         ["태양섬광"] = { 1, 4, 2 },
         ["항성의 섬광"] = { 1, 3 },
+        [430589] = { 0, 2 },   --기후 노출
     },
 
 
@@ -490,6 +491,8 @@ ANameP_Options_Default = {
 
     ANameP_ShowList_DRUID_3 = {
         ["달빛섬광"] = { 1, 5 },
+        [192090] = { 0, 4 },    --난타
+        [430589] = { 0, 3 },    --기후 노출
     },
 
 
@@ -514,7 +517,7 @@ ANameP_Options_Default = {
 
     ANameP_ShowList_MAGE_3 = {
         ["혹한의 추위"] = { 0, 5, 1 },
-        [C_Spell.GetSpellName(443740)] = { 0, 4 }, --박힌 냉기 파편
+        [443740] = { 0, 4 }, --박힌 냉기 파편
 
     },
 

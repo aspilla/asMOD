@@ -89,12 +89,12 @@ local function scanSpells(tab)
 			for j = 1, numSlots do
 				local flyoutSpellID = GetFlyoutSlotInfo(actionID, j);
 
-				if flyoutSpellID  and IsPlayerSpell(flyoutSpellID) then
+				if flyoutSpellID  then
 					KnownSpellList[flyoutSpellID] = 1;
 				end
 			end
 		else
-			if spellID and IsPlayerSpell(spellID) then
+			if spellID  then
 				KnownSpellList[spellID] = 1;
 			end
 		end

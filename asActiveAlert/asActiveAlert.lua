@@ -213,10 +213,6 @@ local function ASAA_Insert(id)
 		end
 	end
 
-	if not IsPlayerSpell(id) then
-		--return;
-	end
-
 	if show_icons[icon] == true then
 		return;
 	end

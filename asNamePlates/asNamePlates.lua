@@ -83,45 +83,38 @@ end
 
 ns.KnownSpellList = {};
 
-local function asCheckTalent(findname)
-    local specID = PlayerUtil.GetCurrentSpecID();
+local function asCheckTalent(name)
     local configID = C_ClassTalents.GetActiveConfigID();
 
     if not (configID) then
-        return;
-    end
+        return false;
+    end    
     local configInfo = C_Traits.GetConfigInfo(configID);
     local treeID = configInfo.treeIDs[1];
+
     local nodes = C_Traits.GetTreeNodes(treeID);
 
     for _, nodeID in ipairs(nodes) do
         local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
         if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
+
+            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID;
             local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
             local definitionInfo = entryInfo and entryInfo.definitionID and
                 C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
-            if definitionInfo ~= nil then
-                local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
-                -- print(string.format("%s/%d %s/%d", talentName, definitionInfo.spellID, definitionInfo.overrideName or "", definitionInfo.overriddenSpellID or 0));
-                local name, rank, icon = asGetSpellInfo(definitionInfo.spellID);
-                ns.KnownSpellList[talentName or ""] = true;
-                ns.KnownSpellList[icon or 0] = true;
-
-                if definitionInfo.overrideName then
-                    -- print (definitionInfo.overrideName)
-                    ns.KnownSpellList[definitionInfo.overrideName] = true;
-                end
-
-                if findname and findname == talentName then
-                    return true;
+            if definitionInfo and IsPlayerSpell(definitionInfo.spellID) then
+                local talentName = C_Spell.GetSpellName(definitionInfo.spellID);
+                if name == talentName then
+					return true;
                 end
             end
         end
     end
-    return;
+
+    return false;
 end
+
 
 local function scanSpells(tab)
     local tabName, tabTexture, tabOffset, numEntries = asGetSpellTabInfo(tab)
@@ -140,7 +133,7 @@ local function scanSpells(tab)
         end
         local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
 
-        if spellName and spellID and IsPlayerSpell(spellID) then            
+        if spellName and spellID then            
             ns.KnownSpellList[spellName] = 1;
         end
     end
@@ -623,13 +616,11 @@ local function updateTargetNameP(self)
     self:ClearAllPoints();
     if UnitIsUnit(unit, "player") then
         if self.downbuff then
-            self:SetPoint("TOPLEFT", ClassNameplateManaBarFrame, "BOTTOMLEFT", 0, playerbuffposition);
+            self:SetPoint("TOPLEFT", healthBarContainer, "BOTTOMLEFT", 0, playerbuffposition - 5);
         else
             self:SetPoint("BOTTOMLEFT", healthBarContainer, "TOPLEFT", 0, base_y);
         end
-        -- 크기 조정이 안된다.
-        -- ClassNameplateManaBarFrame:SetHeight(height);
-
+        
         if UnitFrame.BuffFrame then
             UnitFrame.BuffFrame:Hide();
         end
@@ -1044,7 +1035,7 @@ local unit_guid_list = {};
 local Aggro_Y = -5;
 
 local function checkSpellCasting(self)
-    if not self.unit then
+    if not self.unit or UnitIsUnit(self.unit, "player") then
         return;
     end
 
@@ -1461,7 +1452,7 @@ local function addNamePlate(namePlateFrameBase)
             if ClassNameplateManaBarFrame then
                 asframe.resourcetext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize - 3, "OUTLINE");
                 asframe.resourcetext:ClearAllPoints();
-                asframe.resourcetext:SetPoint("CENTER", ClassNameplateManaBarFrame, "CENTER", 0, 0);
+                asframe.resourcetext:SetPoint("TOP", healthbar, "BOTTOM", 0, -1);
             end
 
             Buff_Y = ns.ANameP_PlayerBuffY;
@@ -1493,6 +1484,7 @@ local function addNamePlate(namePlateFrameBase)
         checkaura = true;
         unitFrame.BuffFrame:SetAlpha(0);
         unitFrame.BuffFrame:Hide();
+        asframe.resourcetext:Hide();
 
         unitFrame:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
         unitFrame:UnregisterEvent("UNIT_THREAT_LIST_UPDATE");

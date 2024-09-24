@@ -25,15 +25,11 @@ local asGetSpellInfo = function(spellID)
 end
 
 local function asCheckTalent(name)
-    local specID = PlayerUtil.GetCurrentSpecID();
-
     local configID = C_ClassTalents.GetActiveConfigID();
 
     if not (configID) then
         return false;
-    end
-
-    C_ClassTalents.LoadConfig(configID, true);
+    end    
     local configInfo = C_Traits.GetConfigInfo(configID);
     local treeID = configInfo.treeIDs[1];
 
@@ -42,16 +38,16 @@ local function asCheckTalent(name)
     for _, nodeID in ipairs(nodes) do
         local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
         if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
+
+            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID;
             local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
             local definitionInfo = entryInfo and entryInfo.definitionID and
                 C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
-            if definitionInfo ~= nil then
-                local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
-                -- print(string.format("%s %d/%d", talentName, nodeInfo.currentRank, nodeInfo.maxRanks));
+            if definitionInfo and IsPlayerSpell(definitionInfo.spellID) then
+                local talentName = C_Spell.GetSpellName(definitionInfo.spellID);
                 if name == talentName then
-                    return true;
+					return true;
                 end
             end
         end
