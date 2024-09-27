@@ -12,10 +12,10 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240927,
+	version = 240928,
 
 	-- 	ACI_SpellList_직업명_특성숫자
-	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount} 순으로 편집
+	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
 	-- 	Spell 기술명 혹은 ID (버프는 ID로 입력해야 Icon 나옴)
 	-- 	Type : 1 Spell Cool down
 	-- 	Type : 2 버프 & Spell Cool down, buff가 없으면 Cooldown check
@@ -64,11 +64,11 @@ ACI_Options_Default = {
 		{ "독칼", 4 },
 		{ "죽음표식", 4 },
 		{ "목조르기", 4, nil, 1 },
-		{ "파열", 4, nil, 24 * 0.3 },
+		{ "파열", 4, nil, 24 * 0.3, nil, nil, nil, nil, nil, nil, 6 },
 	},
 
 	ACI_SpellList_ROGUE_2 = {
-		{ "뼈주사위", 2, nil, nil, nil, nil, nil, { "집중 공격", "무자비한 정밀함", "해적 징표", "진방위", "대난투", "숨겨진 보물" } },
+		{ "뼈주사위", 2, nil, nil, nil, nil, nil, { "진방위", "집중 공격", "무자비한 정밀함", "해적 징표", "대난투", "숨겨진 보물" } },
 		{ 195627, 3, nil, 20 },
 		{ "아드레날린 촉진", 2, nil, nil, nil, nil, nil, nil, nil, 1 },
 		{ "폭풍의 칼날", 2, nil, nil, nil, nil, nil, nil, nil, 1 },
@@ -81,7 +81,7 @@ ACI_Options_Default = {
 		{ "어둠의 춤", 2 },
 		{ "어둠의 칼날", 2 },
 		{ 91021, 5, nil, 10 },
-		{ "파열", 4, nil, 24 * 0.3 },
+		{ "파열", 4, nil, 24 * 0.3, nil, nil, nil, nil, nil, nil, 6 },
 	},
 
 	--야수
@@ -299,7 +299,7 @@ ACI_Options_Default = {
 	ACI_SpellList_SHAMAN_1 = {
 		{ 16166, 3, "player" },
 		{ 99, "태고의 파도", { "태고의 파도", 2 }, { "승천", 1 }},
-		{ 99, "폭풍의 정령", { "폭풍의 정령", 6, nil, nil, nil, "상급 폭풍의 정령", nil, {"하급 원시 폭풍의 정령", "하급 폭풍의 정령"} }, { "불의 정령", 6, nil, nil, nil, "상급 불의 정령", nil, {"하급 원시 불의 정령", "하급 불의 정령"} } },
+		{ 99, "폭풍의 정령", { "폭풍의 정령", 6, nil, nil, nil, "상급 폭풍의 정령", nil, {"하급 원시 폭풍의 정령", "하급 폭풍의 정령"}, nil, nil, nil,  36 }, { "불의 정령", 6, nil, nil, nil, "상급 불의 정령", nil, {"하급 원시 불의 정령", "하급 불의 정령"}, nil, nil, nil, 36 } },
 		{ 99, "얼음격노", { "냉기 충격", 1, nil, nil, "얼음격노" },  { "폭풍수호자", 2 }},
 		{ "화염 충격", 4, nil, 18 * 0.3, nil, nil, nil, nil, nil, nil, 6 },
 

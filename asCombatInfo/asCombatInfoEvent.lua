@@ -11,6 +11,7 @@ local totemfilter = {};
 local timerfilter = {};
 local bufftimerfilter = {};
 local totemtimerfilter = {};
+local castfilter = {};
 ns.eventhandler = {};
 ns.aurafunctions = {};
 local platedebuffcount = 0;
@@ -272,6 +273,13 @@ local function ABF_OnEvent(self, event, arg1, ...)
         if unit and (unit == "player" or unit == "pet") then
             UpdateAuras(unit);
         end
+    elseif (event == "UNIT_SPELLCAST_SUCCEEDED") then
+        local arg2, spell = ...;
+            
+        if castfilter[spell] ~= nil then
+            castfilter[spell] = GetTime();
+        end
+
     elseif (event == "PLAYER_TOTEM_UPDATE") then
         UpdateTotem();
     elseif (event == "PLAYER_TARGET_CHANGED") then
@@ -367,6 +375,7 @@ function ns.eventhandler.init()
     timerfilter = {};
     bufftimerfilter = {};
     totemtimerfilter = {};
+    castfilter = {};
 
     eventframe:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 end
@@ -422,6 +431,15 @@ function ns.eventhandler.registerSplinterstorm(button)
     eventframe:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     bupdate_Splinterstorm = true;
     splinterstorm_time = 0;
+end
+
+function ns.eventhandler.registerCastTime(spell)
+    eventframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "pet");
+    castfilter[spell] = 0;
+end
+
+function ns.eventhandler.getCastTime(spell)    
+    return castfilter[spell];
 end
 
 function ns.aurafunctions.checkSplinterTime()

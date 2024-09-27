@@ -2038,6 +2038,7 @@ local function APB_CheckPower(self)
         APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
         APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
         bupdate_power = true;
+        combobuffalertlist = { 408458, 223819 };
 
         if (spec and spec == 1) then
             APB_SPELL = "신성 충격"

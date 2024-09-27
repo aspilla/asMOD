@@ -12,6 +12,8 @@ ns.Button = {
     alert = false,
     checkcool = nil,
     checkplatecount = nil,
+    buffshowtime = nil,
+    realstartime = nil,
 
 
     icon = nil,
@@ -54,7 +56,6 @@ local asGetSpellInfo = function(spellID)
 end
 
 local asGetSpellCooldown = function(spellID)
-
     if not spellID then
         return nil;
     end
@@ -73,7 +74,6 @@ local asGetSpellCooldown = function(spellID)
 end
 
 local asGetSpellCharges = function(spellID)
-
     if not spellID then
         return nil;
     end
@@ -107,19 +107,18 @@ function ns.Button:initButton()
     self.buffalert = false;
     self.alert2 = false;
     self.coolalert = false;
-       
-    local name, _, _,_,_,_,spellid = asGetSpellInfo(self.realspell);
-    
+
+    local name, _, _, _, _, _, spellid = asGetSpellInfo(self.realspell);
+
     if spellid and spellid ~= self.spellid then
-        
         self.spellid = spellid;
         self.spell = name;
         ACI_SpellID_list[self.spellid] = true;
         if name then
             ACI_SpellID_list[name] = true;
         end
-        
-        if self.type ~= ns.EnumButtonType.BuffOnly and self.type ~= ns.EnumButtonType.DebuffOnly then            
+
+        if self.type ~= ns.EnumButtonType.BuffOnly and self.type ~= ns.EnumButtonType.DebuffOnly then
             ns.eventhandler.registerEventFilter(name, self);
         end
         if self.type == ns.EnumButtonType.Debuff or self.type == ns.EnumButtonType.DebuffOnly then
@@ -479,6 +478,7 @@ function ns.Button:checkSpell()
         duration = chargeDuration;
     end
 
+
     --seting
     local t = self.type;
 
@@ -490,6 +490,7 @@ function ns.Button:checkSpell()
         duration = 0;
         count = 0;
     end
+
 
     if t == ns.EnumButtonType.Spell and self.number then
         if self.number == 1 then
@@ -557,6 +558,25 @@ function ns.Button:checkSpell()
             if aura and (aura.expirationTime - GetTime()) > gcd then
                 self.alert2 = true;
                 break;
+            end
+        end
+    end
+
+    if self.buffshowtime then
+        local currtime = GetTime();
+        local realcasttime = ns.eventhandler.getCastTime(self.spellid);
+
+        if realcasttime then
+            if currtime < realcasttime + self.buffshowtime then
+                self.start = realcasttime;
+                self.duration = self.buffshowtime;
+                self.iconDes = false;
+                self.iconColor = { r = 1.0, g = 1.0, b = 1.0 };
+                self.alpha = 1;
+                self.enable = true;
+                self.reversecool = true;
+                self.borderColor = DebuffTypeColor["none"];
+                self.count = nil;
             end
         end
     end
@@ -717,7 +737,7 @@ function ns.Button:showButton()
 
 
 
-    
+
 
     if self.buffalert then
         ns.lib.PixelGlow_Start(frame, { 0.5, 1, 0.5 });
@@ -784,27 +804,28 @@ function ns.Button:init(config, frame)
     self.number = config[4];
     self.countbuff = config[5];
     if type(self.countbuff) == "number" then
-        self.countbuff = select(1, asGetSpellInfo(self.countbuff));            
-    end  
+        self.countbuff = select(1, asGetSpellInfo(self.countbuff));
+    end
     self.realbuff = config[6];
     if type(self.realbuff) == "number" then
-        self.realbuff = select(1, asGetSpellInfo(self.realbuff));            
-    end   
+        self.realbuff = select(1, asGetSpellInfo(self.realbuff));
+    end
     self.countdebuff = config[7];
     if type(self.countdebuff) == "number" then
-        self.countdebuff = select(1, asGetSpellInfo(self.countdebuff));            
-    end  
+        self.countdebuff = select(1, asGetSpellInfo(self.countdebuff));
+    end
     self.bufflist = config[8];
     self.alertbufflist = config[9];
     self.checkcool = config[10];
     self.checkplatecount = config[11];
+    self.buffshowtime = config[12];
     self.spellid = select(7, asGetSpellInfo(self.spell));
     if self.spellid == nil then
         self.spellid = select(7, asGetSpellInfo(self.realspell));
     end
 
     ns.lib.PixelGlow_Stop(self.frame)
-    
+
     if self.spell == nil then
         return;
     end
@@ -827,7 +848,7 @@ function ns.Button:init(config, frame)
     if self.realbuff then
         if self.realbuff == "petname" and UnitExists("pet") then
             self.realbuff = UnitName("pet");
-        end    
+        end
     end
 
     if self.type ~= ns.EnumButtonType.BuffOnly and self.type ~= ns.EnumButtonType.DebuffOnly then
@@ -918,10 +939,13 @@ function ns.Button:init(config, frame)
 
     if self.realspell == 228358 then
         if IsPlayerSpell(443739) then --쇄편
-            ns.eventhandler.registerSplinterstorm(self);            
+            ns.eventhandler.registerSplinterstorm(self);
             self.checkSplinter = true;
         end
+    end
 
+    if self.buffshowtime then
+        ns.eventhandler.registerCastTime(self.spellid);
     end
 
     self:update();
