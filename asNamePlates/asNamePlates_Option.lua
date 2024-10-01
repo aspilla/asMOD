@@ -319,7 +319,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 240925,
+    version = 241002,
     ANameP_ShowKnownSpell = false,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -446,17 +446,21 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_PRIEST_1 = {
-        ["사악의 정화"] = { 1, 5, 1 },
-        ["어둠의 권능: 고통"] = { 1, 4, 1 },
+        [204213] = { 1, 5, 1 },         --사악의 정화
+        [589] = { 1, 4, 1 },            --고통
     },
 
     ANameP_ShowList_PRIEST_2 = {
-        ["어둠의 권능: 고통"] = { 1, 5, 1 },
+        [14914] = { 0, 5, 1 },             --신충
+        [589] = { 1, 4, 2 },             --고통
     },
 
 
     ANameP_ShowList_PRIEST_3 = {
-        ["어둠의 권능: 고통"] = { 1, 5, 1 },
+        [589] = { 1, 5, 1 },             --고통
+        [34914] = { 0, 4 },              --흡선
+        [335467] = { 0, 3, 2 },          --파멸
+        [453850] = { 0, 2 },             --공명
     },
 
     ANameP_ShowList_SHAMAN_1 = {

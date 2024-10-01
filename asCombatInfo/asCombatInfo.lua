@@ -65,8 +65,14 @@ local function setupMouseOver(frame)
 	if not frame:GetScript("OnEnter") then
 		frame:SetScript("OnEnter", function(s)
 			if s.spellid and s.spellid > 0 then
+				local spellid = s.spellid;
+				local ospellID = C_Spell.GetOverrideSpell(spellid)
+
+				if ospellID then
+					spellid = ospellID;
+				end
 				GameTooltip_SetDefaultAnchor(GameTooltip, s);
-				GameTooltip:SetSpellByID(s.spellid);
+				GameTooltip:SetSpellByID(spellid);
 			elseif s.tooltip then
 				GameTooltip_SetDefaultAnchor(GameTooltip, s);
 				GameTooltip:SetText(s.tooltip);
@@ -284,7 +290,12 @@ function ACI_Init()
 
 			ACI[i].obutton:init(ACI_SpellList[i], ACI[i]);
 			ACI[i].tooltip = (ACI_SpellList[i][1]);
-			ACI[i].spellid = select(7, asGetSpellInfo(ACI_SpellList[i][1]));
+			if type(ACI_SpellList[i][1]) == "number" then
+
+				ACI[i].spellid = ACI_SpellList[i][1];
+			else
+				ACI[i].spellid = select(7, asGetSpellInfo(ACI_SpellList[i][1]));
+			end
 		end
 
 		local bload = C_AddOns.LoadAddOn("asCooldownPulse")

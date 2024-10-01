@@ -78,16 +78,19 @@ ADotF_ShowList_WARLOCK_3 = {
 }
 
 ADotF_ShowList_PRIEST_1 = {
-    { "사악의 정화", 1 },
-    { "어둠의 권능: 고통", 1 },
+    {204213, 1 },           -- 사악
+    {589, 1 },              -- 고통
 }
 
 ADotF_ShowList_PRIEST_2 = {
-    { "어둠의 권능: 고통", 1 },
+    {14914, 0},              --신충
+    {589, 1 },              -- 고통
 }
 
 ADotF_ShowList_PRIEST_3 = {
-    { "어둠의 권능: 고통", 1 },
+    {589, 1 },              -- 고통
+    {34914, 1},              --흡선
+    {335467, 0 },           -- 파멸
 }
 
 ADotF_ShowList_SHAMAN_1 = {
@@ -217,7 +220,7 @@ ADotF_ShowList = nil;
 ADotF_NameList = {};
 
 
-local function ADotF_UnitDebuff_Name(unit, buff, filter)
+local function ADotF_UnitDebuff(unit, buff, filter)
 
     local i = 1;
     local ret = nil;
@@ -225,7 +228,7 @@ local function ADotF_UnitDebuff_Name(unit, buff, filter)
     local auraList = ns.ParseAllDebuff(unit);
 
     auraList:Iterate(function(auraInstanceID, aura)
-        if aura and aura.name == buff then
+        if aura and (aura.name == buff or aura.spellId == buff) then
             if aura.duration > 0 then
                 ret = aura;
             elseif ret == nil then
@@ -345,7 +348,7 @@ local function ADotF_UpdateDebuff(unit)
         end
 
         for i = 1, #ADotF_ShowList do
-            _, icon, count, debuffType, duration, expirationTime, caster = ADotF_UnitDebuff_Name(unit,
+            _, icon, count, debuffType, duration, expirationTime, caster = ADotF_UnitDebuff(unit,
                 ADotF_ShowList[i][1], "PLAYER");
 
             if icon and caster == "player" or caster == "pet" then

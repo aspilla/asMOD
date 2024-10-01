@@ -429,9 +429,10 @@ local function ProcessAura(aura, unit)
 
     if skip == false then
         if unit == "target" then
-            if show_list[aura.name] then
-                if show_list[aura.name][2] then
-                    aura.debuffType = UnitFrameDebuffType.BossDebuff + show_list[aura.name][2];
+            if show_list[aura.name] or show_list[aura.spellId]  then
+                local showlist = show_list[aura.name] or show_list[aura.spellId];
+                if showlist[2] then
+                    aura.debuffType = UnitFrameDebuffType.BossDebuff + showlist[2];
                 end
             elseif aura.nameplateShowPersonal then
                 aura.debuffType = UnitFrameDebuffType.nameplateShowPersonal;
@@ -527,14 +528,15 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
                 frameCooldown:SetDrawSwipe(true);
             end
 
-            if unit == "target" and show_list and show_list[aura.name] then
-                local showlist_time = show_list[aura.name][1];
-                local alertcount = show_list[aura.name][4] or false;
-                local alertnameplate = show_list[aura.name][3] or false;
+            if unit == "target" and show_list and (show_list[aura.name] or show_list[aura.spellId]) then
+                local showlist = show_list[aura.name] or show_list[aura.spellId];
+                local showlist_time = showlist[1];
+                local alertcount = showlist[4] or false;
+                local alertnameplate = showlist[3] or false;
 
                 if showlist_time == 1 then
                     showlist_time = aura.duration * 0.3;
-                    show_list[aura.name][1] = showlist_time;
+                    showlist[1] = showlist_time;
                 end
 
                 if showlist_time >= 0 and alertcount == false then

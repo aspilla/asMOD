@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 240928,
+	version = 241002,
 
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
@@ -172,7 +172,7 @@ ACI_Options_Default = {
 
 		{ "어둠의 마귀", 2, nil, nil, nil, "어둠의 서약" },
 		{ "회개", 1, nil, nil, "엄격한 규율" },
-		{ "환희", 2 },
+		{99, 428924, { 428924, 1 }, { "환희", 2 }},
 		{ "어둠의 권능: 죽음", 1 },
 		{ "어둠의 권능: 고통", 4, nil, 1 },
 	},
@@ -182,7 +182,7 @@ ACI_Options_Default = {
 
 		{ "회복의 기원", 1 },
 		{ 99, "치유의 마법진", { "치유의 마법진", 1 }, { "수호 영혼", 2 } },
-		{ 99, "천상의 찬가", { "천상의 찬가", 2 }, { "희망의 상징", 1 }},
+		{99, 428924, { 428924, 1 }, { "희망의 상징", 1 }},
 		{ "빛의 권능: 응징", 1 },
 		{ "신성한 불꽃", 4 },
 	},

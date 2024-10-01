@@ -3192,3 +3192,7 @@ DBM-Core/modules/objects/Sorting.lua
 DBM-Test/Tools/Shared/Parser_Test.lua
 DBM-Test/Tools/Shared/Parser.lua
 DBM-GUI/Polyfills.xml
+Details/functions/chat_embed.lua
+Details/functions/storage.lua
+Details/Libs/DF/timeline.exemples.lua
+Details/Libs/DF/timeline.lua

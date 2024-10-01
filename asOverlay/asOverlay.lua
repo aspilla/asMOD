@@ -28,7 +28,7 @@ local function asOverlay_CreateOverlay(self)
 	ret.count:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
 	ret.count:SetTextColor(0, 1, 0);
 	ret.remain:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
-	ret.remain:SetTextColor(1, 1, 1);	
+	ret.remain:SetTextColor(1, 1, 1);
 	return ret;
 end
 
@@ -100,7 +100,7 @@ function asOverlayTexture_OnFadeOutFinished(anim)
 	local overlay = anim:GetRegionParent();
 	local overlayParent = overlay:GetParent();
 	overlay.pulse:Stop();
-	overlay:Hide();	
+	overlay:Hide();
 	tDeleteItem(overlayParent.overlaysInUse[overlay.spellID], overlay)
 	tinsert(overlayParent.unusedOverlays, overlay);
 end
@@ -126,15 +126,8 @@ local checkAuraList = {};
 local countAuraList = {};
 
 local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale, r, g, b, vFlip, hFlip)
-
-	local auraid = spellID;
-	if ns.countaware[spellID] then
-		auraid = ns.countaware[spellID]
-	end
-
-	local aura = ns.getExpirationTimeUnitAurabyID("player", auraid);
 	local rate = 1;
-	local remain = 0;
+	local aura;
 
 	if ns.positionaware[spellID] then
 		local v = ns.positionaware[spellID];
@@ -144,47 +137,72 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		end
 	end
 
-	if aura then
-		local extime = aura.expirationTime;
-		local duration = aura.duration;
-		remain = extime - GetTime();
+	if ns.countaware[spellID] then
+		for _, auraid in pairs(ns.countaware[spellID]) do
+			aura = ns.getExpirationTimeUnitAurabyID("player", auraid);
 
-		if remain > 0 then
-			rate = remain / duration;
+			local remain = 0;
+
+			if aura then
+				local extime = aura.expirationTime;
+				local duration = aura.duration;
+				remain = extime - GetTime();
+
+				if remain > 0 then
+					rate = remain / duration;
+				end
+				break;
+			end
+		end
+	else
+		local auraid = spellID;
+		aura = ns.getExpirationTimeUnitAurabyID("player", auraid);
+		local remain = 0;
+
+		if aura then
+			local extime = aura.expirationTime;
+			local duration = aura.duration;
+			remain = extime - GetTime();
+
+			if remain > 0 then
+				rate = remain / duration;
+			end
+		end
+	end
+
+
+	if ns.spelllists[spellID] then
+		if checkAuraList[spellID] == nil then
+			checkAuraList[spellID] = {};
 		end
 
-		if ns.spelllists[spellID] then
-			if checkAuraList[spellID] == nil then
-				checkAuraList[spellID] = {};
-			end
+		local updated = {};
 
-			local updated = {};
+		checkAuraList[spellID][position] = true;
 
-			checkAuraList[spellID][position] = true;
+		for _, v in pairs(ns.spelllists[spellID]) do
+			local procid = v[1];
+			local proc_count = v[2];
+			local proc_r = v[3];
+			local proc_g = v[4];
+			local proc_b = v[5];
+			local proc_position = v[6];
 
-			for _, v in pairs(ns.spelllists[spellID]) do
-				local procid = v[1];
-				local proc_count = v[2];
-				local proc_r = v[3];
-				local proc_g = v[4];
-				local proc_b = v[5];
-				local proc_position = v[6];
+			local procaura = ns.getExpirationTimeUnitAurabyID("player", procid, true);
 
-				local procaura = ns.getExpirationTimeUnitAurabyID("player", procid, true);
-
-				if procaura then
-					if (proc_count > 0 and procaura.applications >= proc_count) or proc_count == 0 then
-						if position == proc_position and not updated[position] then
-							r = proc_r * 255;
-							g = proc_g * 255;
-							b = proc_b * 255;
-							updated[position] = true;
-						end
+			if procaura then
+				if (proc_count > 0 and procaura.applications >= proc_count) or proc_count == 0 then
+					if position == proc_position and not updated[position] then
+						r = proc_r * 255;
+						g = proc_g * 255;
+						b = proc_b * 255;
+						updated[position] = true;
 					end
 				end
 			end
 		end
 	end
+
 
 	local overlay = asOverlay_GetOverlay(self, spellID, position);
 	overlay.spellID = spellID;
@@ -281,7 +299,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	end
 
 	overlay.animOut:Stop(); --In case we're in the process of animating this out.
-	PlaySound(SOUNDKIT.UI_POWER_AURA_GENERIC);	
+	PlaySound(SOUNDKIT.UI_POWER_AURA_GENERIC);
 
 	if aura then
 		local count = aura.applications;
@@ -303,11 +321,26 @@ end
 local function asOverlay_CheckAura(self)
 	for spellID, _ in pairs(countAuraList) do
 		if ns.countaware[spellID] then
-			local auraid = spellID;
 			if ns.countaware[spellID] then
-				auraid = ns.countaware[spellID]
-			end
+				for _, auraid in pairs(ns.countaware[spellID]) do
+					local procaura = ns.getExpirationTimeUnitAurabyID("player", auraid, true);
 
+					if procaura then
+						local count = procaura.applications;
+						local overlay = asOverlay_GetOverlay(self, spellID, "RIGHT", true);
+
+						if overlay and count then
+							if count == 1 then
+								overlay:Hide();
+							elseif count >= 2 then
+								overlay:Show();
+							end
+						end
+					end
+				end
+			end
+		else
+			local auraid = spellID;
 			local procaura = ns.getExpirationTimeUnitAurabyID("player", auraid, true);
 
 			if procaura then
@@ -370,8 +403,6 @@ local function asOverlay_CheckAura(self)
 			end
 		end
 	end
-
-
 end
 
 local function asOverlay_ShowAllOverlays(self, spellID, texturePath, positions, scale, r, g, b)
@@ -423,8 +454,7 @@ local function asOverlay_OnEvent(self, event, ...)
 	end
 
 	if (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
-		local spellID, texture, positions, scale, r, g, b = ...;		
-
+		local spellID, texture, positions, scale, r, g, b = ...;
 		if not IsShown(spellID) then
 			asOverlay_ShowAllOverlays(self, spellID, texture, positions, scale, r, g, b)
 		end
