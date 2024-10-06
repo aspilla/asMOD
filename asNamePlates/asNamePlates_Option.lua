@@ -319,7 +319,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 241002,
+    version = 241006,
     ANameP_ShowKnownSpell = false,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -332,6 +332,7 @@ ANameP_Options_Default = {
     ANameP_ShowDBM = true,                                    -- DBM Cooldown을 표시
     ANameP_ShowDBMCastingColor = true,                        -- DBM CastingColor을 표시
     ANameP_ShortFriendNP = true,                              -- 아군 체력바 크기 조정
+    ANameP_RealHealth =  true,                                 -- 체력 수치 표시
 
     ANameP_AggroTargetColor = { r = 0.4, g = 0.2, b = 0.8 },  -- PVE 대상이 player 였을때 Color
     ANameP_AggroColor = { r = 0.5, g = 1, b = 1 },            -- 어그로 대상일때 바 Color
@@ -1084,6 +1085,7 @@ local function panelOnShow()
     SetupCheckBoxOption("[색상] AutoMarker 몹 색상 표시", "ANameP_AutoMarker");
     SetupCheckBoxOption("[색상] DBM Casting 몹 색상 표시", "ANameP_ShowDBMCastingColor");
     SetupCheckBoxOption("[크기] 아군 체력바 크기 조정", "ANameP_ShortFriendNP");
+    SetupCheckBoxOption("[체력] 체력 수치를 좌측에 표시", "ANameP_RealHealth");
 
 
     SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");

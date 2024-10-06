@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 241002,
+	version = 241005,
 
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
@@ -124,10 +124,10 @@ ACI_Options_Default = {
 	--화염
 	--11.0 작업중
 	ACI_SpellList_MAGE_2 = {
-		{{ "얼음불꽃 화살", 1, nil, nil, 431190 }, { "힘의 전환", 1 } },		
-		{{"불태우기", 1, nil, 30, nil, nil, "불태우기 연마" }, { "힘의 전환", 1 } },
-		{ "발화", 2 },
-		{{ "유성", 1 },{ "용의 숨결", 1 }, { "초신성", 1 }  },				
+		{{ "얼음불꽃 화살", 1, nil, nil, 431190 }, { 382440, 1 } },		
+		{{2948, 1, nil, 30, nil, nil, "불태우기 연마" }, { 382440, 1 } },
+		{ 190319, 2 },
+		{{ "유성", 1 },{ 31661, 1 }, { "초신성", 1 }  },				
 		{ 12654, 5 },
 	},
 
@@ -182,7 +182,7 @@ ACI_Options_Default = {
 
 		{ "회복의 기원", 1 },
 		{ 99, "치유의 마법진", { "치유의 마법진", 1 }, { "수호 영혼", 2 } },
-		{99, 428924, { 428924, 1 }, { "희망의 상징", 1 }},
+		{99, 428924, { 428924, 1 }, { 120517,  2, nil, nil, nil, 453846  }},
 		{ "빛의 권능: 응징", 1 },
 		{ "신성한 불꽃", 4 },
 	},

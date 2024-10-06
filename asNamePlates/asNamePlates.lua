@@ -632,6 +632,35 @@ local function updateTargetNameP(self)
     end
 end
 
+
+local function updateUnitRealHealthText(asframe)
+    local value;
+    local valueMax;
+    local valuePct;
+    local unit = asframe.unit;
+
+    if not ns.options.ANameP_RealHealth then
+        return;
+    end   
+    
+    if not unit or not UnitExists(unit) then
+        return;
+    end
+
+    value = UnitHealth(unit);
+    valueMax = UnitHealthMax(unit);
+
+    if value > 0 then
+        valueshow = AbbreviateLargeNumbers(value);
+        asframe.realhealthtext:SetText(valueshow);
+        asframe.realhealthtext:Show();
+    else
+        asframe.realhealthtext:SetText("");
+    end
+   
+
+end
+
 local function updateUnitHealthText(unit)
     local value;
     local valueMax;
@@ -1175,6 +1204,7 @@ local function removeNamePlate(namePlateFrameBase)
         asframe.aggro2:Hide();
         asframe.CCdebuff:Hide();
         asframe.healthtext:Hide();
+        asframe.realhealthtext:Hide();
         asframe.motext:Hide();
         asframe.resourcetext:Hide();
         asframe.casticon:Hide();
@@ -1374,6 +1404,13 @@ local function addNamePlate(namePlateFrameBase)
     asframe.healthtext:SetPoint("CENTER", healthbar, "CENTER", 0, 0)
     asframe.healthtext:Hide();
     
+    asframe.realhealthtext:ClearAllPoints();
+    asframe.realhealthtext:SetPoint("BOTTOMLEFT", healthbar, "BOTTOMLEFT", 1, 0);
+    asframe.realhealthtext:SetTextColor(1, 1, 1, 1);
+    asframe.realhealthtext:Hide();
+
+
+    
     asframe.motext:ClearAllPoints();
     asframe.motext:SetPoint("BOTTOM", asframe.healthtext, "TOP", 0, 1)
     asframe.motext:SetText("▼")
@@ -1560,6 +1597,7 @@ local function ANameP_OnEvent(self, event, ...)
                 updateUnitHealthText("target");
                 updateUnitHealthText("mouseover");
                 updateUnitHealthText("player");
+                updateUnitRealHealthText(namePlateFrameBase.asNamePlates);
                 checkSpellCasting(namePlateFrameBase.asNamePlates);
                 updateHealthbarColor(namePlateFrameBase.asNamePlates);
             end
@@ -1708,6 +1746,7 @@ local function ANameP_OnUpdate()
             updateTargetNameP(nameplate.asNamePlates);
             checkSpellCasting(nameplate.asNamePlates);
             updateHealthbarColor(nameplate.asNamePlates);
+            updateUnitRealHealthText(nameplate.asNamePlates);
         end
     end
 end
