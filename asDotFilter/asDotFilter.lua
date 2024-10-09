@@ -328,10 +328,21 @@ local function ADotF_UpdateDebuff(unit)
 
     if UnitExists(unit) then
         if (unit == "target") then
-            parent = _G["TargetFrame"];
+
+            if AUF_TargetFrame then
+                parent = AUF_TargetFrame;
+            else
+                parent = _G["TargetFrame"];
+            end
+            
+            
             isboss = false;
         elseif (unit == "focus") then
-            parent = _G["FocusFrame"];
+            if AUF_FocusFrame then
+                parent = AUF_FocusFrame;
+            else
+                parent = _G["FocusFrame"];
+            end
             isboss = false;
         elseif (unit == "boss1") then
             parent = _G["Boss1TargetFrame"];

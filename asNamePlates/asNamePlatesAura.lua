@@ -141,6 +141,10 @@ local function ProcessAura(aura, unit, type)
                     end
                 elseif aura.nameplateShowAll then
                     aura.debuffType = ns.UnitFrameDebuffType.namePlateShowAll;
+
+                    if aura.duration == 0 or aura.duration > 10 then
+                        return AuraUpdateChangedType.None;
+                    end
                 else
                     aura.debuffType = ns.UnitFrameDebuffType.Normal;
                 end
