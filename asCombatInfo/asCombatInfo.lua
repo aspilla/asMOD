@@ -301,6 +301,7 @@ function ACI_Init()
 				for _, array in pairs(ACI_SpellList[i]) do
 					local spell_name = array[1];
 					if (type(spell_name) == "string" and asCheckTalent(spell_name)) or (type(spell_name) == "number" and asIsPlayerSpell(spell_name)) then
+						ACI_SpellList[i] = {};
 						for z, v in pairs(array) do
 							ACI_SpellList[i][z] = v;
 						end
