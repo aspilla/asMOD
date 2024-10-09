@@ -104,14 +104,20 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar.name:SetFont(Font, fontsize - 1, FontOutline);
     frame.healthbar.name:SetTextColor(1, 1, 1, 1)
 
+    frame.healthbar.aggro = frame.healthbar:CreateFontString(nil, "ARTWORK");
+    frame.healthbar.aggro:SetFont(Font, fontsize, FontOutline);
+    frame.healthbar.aggro:SetTextColor(1, 1, 1, 1)
+
     if x < 0 then
         frame.healthbar.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 2, 0);
         frame.healthbar.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -2, 0);
         frame.healthbar.name:SetPoint("BOTTOMLEFT", frame.healthbar, "TOPLEFT", 2, 1);
+        frame.healthbar.aggro:SetPoint("BOTTOMRIGHT", frame.healthbar, "TOPRIGHT", -2, 1);
     else
         frame.healthbar.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -2, 0);
         frame.healthbar.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 2, 0);
         frame.healthbar.name:SetPoint("BOTTOMRIGHT", frame.healthbar, "TOPRIGHT", -2, 1);
+        frame.healthbar.aggro:SetPoint("BOTTOMLEFT", frame.healthbar, "TOPLEFT", 2, 1);
     end
 
     frame.healthbar.mark = frame.healthbar:CreateFontString(nil, "ARTWORK");
@@ -148,6 +154,19 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     SecureUnitButton_OnLoad(frame, frame.unit, OpenContextMenu);    
     Mixin(frame, PingableType_UnitFrameMixin);
     frame:SetAttribute("ping-receiver", true);
+
+    if not frame:GetScript("OnEnter") then
+        frame:SetScript("OnEnter", function(s)
+            if s.unit then
+                GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                GameTooltip:SetUnit(s.unit);            
+            end
+        end)
+        frame:SetScript("OnLeave", function()
+            GameTooltip:Hide();
+        end)
+    end 
+    
 
     frame:Show();
 end
@@ -357,6 +376,30 @@ local function updateUnit(frame)
             end
         end
     end
+
+
+    if frame == AUF_TargetFrame  then
+		local isTanking, status, percentage, rawPercentage = UnitDetailedThreatSituation("player", "target");
+
+		local display;
+
+		if ( isTanking ) then
+			display = UnitThreatPercentageOfLead("player", "target");
+		end
+
+		if not display then
+			display = percentage;
+		end
+
+		if ( display and display ~= 0 ) then
+			frame.healthbar.aggro:SetText(format("%1.0f", display).."%");
+			local r, g, b =	GetThreatStatusColor(status)
+			frame.healthbar.aggro:SetTextColor(r, g, b, 1);
+			frame.healthbar.aggro:Show();			
+		else
+			frame.healthbar.aggro:Hide();
+		end
+	end
 end
 
 local function UpdatePlayerUnit()
