@@ -1,5 +1,61 @@
 local _, ns = ...;
 
+local function asTargetFrame_OpenMenu(self, unit)
+    local which;
+    local name;
+    if (UnitIsUnit(unit, "player")) then
+        which = "SELF";
+    elseif (UnitIsUnit(unit, "vehicle")) then
+        -- NOTE: vehicle check must come before pet check for accuracy's sake because
+        -- a vehicle may also be considered your pet
+        which = "VEHICLE";
+    elseif (UnitIsUnit(unit, "pet")) then
+        which = "PET";
+    elseif (UnitIsOtherPlayersBattlePet(unit)) then
+        which = "OTHERBATTLEPET";
+    elseif (UnitIsBattlePet(unit)) then
+        which = "BATTLEPET";
+    elseif (UnitIsOtherPlayersPet(unit)) then
+        which = "OTHERPET";
+    elseif (UnitIsPlayer(unit)) then
+        if (UnitInRaid(unit)) then
+            which = "RAID_PLAYER";
+        elseif (UnitInParty(unit)) then
+            which = "PARTY";
+        else
+            if (not UnitIsMercenary("player")) then
+                if (UnitCanCooperate("player", unit)) then
+                    which = "PLAYER";
+                else
+                    which = "ENEMY_PLAYER"
+                end
+            else
+                if (UnitCanAttack("player", unit)) then
+                    which = "ENEMY_PLAYER"
+                else
+                    which = "PLAYER";
+                end
+            end
+        end
+    else
+        which = "TARGET";
+        name = RAID_TARGET_ICON;
+    end
+    if (which) then
+        local contextData = {
+            fromTargetFrame = true;
+            unit = unit,
+            name = name,
+        };
+
+        UnitPopup_OpenMenu(which, contextData);
+    end
+end
+
+local function OpenContextMenu(s, unit, button, isKeyPress)
+    return asTargetFrame_OpenMenu(s, s.unit);
+end
+
 local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight, fontsize)
     local Font = "Fonts\\2002.TTF";
     local FontOutline = "OUTLINE";
@@ -88,32 +144,10 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
 
     frame.unit = unit;
     -- 유닛 설정 (예시: 'player' 또는 'target' 등)
-    frame:SetAttribute("unit", unit)
-
-    local function OpenContextMenu(frame, unit, button, isKeyPress)
-        local which = nil;
-        local contextData = {
-            fromPlayerFrame = true,
-        };
-
-
-
-        if frame.unit == "vehicle" then
-            which = "VEHICLE";
-            contextData.unit = "vehicle";
-        elseif frame.unit == "player" then
-            which = "SELF";
-            contextData.unit = frame.unit;
-        else
-            which            = "SELF";
-            contextData      = {};
-            contextData.unit = frame.unit;
-        end
-        UnitPopup_OpenMenu(which, contextData);
-    end
-
-    SecureUnitButton_OnLoad(frame, frame.unit, OpenContextMenu);
-    --frame:RegisterForClicks("AnyUp")
+    frame:SetAttribute("unit", unit);
+    SecureUnitButton_OnLoad(frame, frame.unit, OpenContextMenu);    
+    Mixin(frame, PingableType_UnitFrameMixin);
+    frame:SetAttribute("ping-receiver", true);
 
     frame:Show();
 end
@@ -121,12 +155,11 @@ local xposition = 224;
 local yposition = -195;
 local healthheight = 35;
 local powerheight = 5;
-AUF_PlayerFrame = CreateFrame("Button", nil, UIParent, "SecureUnitButtonTemplate", "PingableUnitFrameTemplate");
-AUF_TargetFrame = CreateFrame("Button", nil, UIParent, "SecureUnitButtonTemplate", "PingableUnitFrameTemplate");
-AUF_FocusFrame = CreateFrame("Button", nil, UIParent, "SecureUnitButtonTemplate", "PingableUnitFrameTemplate");
-AUF_PetFrame = CreateFrame("Button", nil, UIParent, "SecureUnitButtonTemplate", "PingableUnitFrameTemplate");
-AUF_TargetTargetFrame = CreateFrame("Button", nil, UIParent, "SecureUnitButtonTemplate",
-    "PingableUnitFrameTemplate");
+AUF_PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+AUF_TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+AUF_FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+AUF_PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+AUF_TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, 200, healthheight, 0, 12);
 CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, 200, healthheight, powerheight, 12);
 CreateUnitFrame(AUF_FocusFrame, "focus", xposition + 200, yposition, 150, 20, 3, 11);
@@ -193,9 +226,11 @@ local unit_pet = "pet";
 
 local function updateUnit(frame)
     local unit = frame.unit;
+    local showplayermana = false;
 
     if unit == "player" then
         unit = unit_player;
+        showplayermana = (unit ~= "player");
     elseif unit == "pet" then
         unit = unit_pet;
     end
@@ -204,7 +239,11 @@ local function updateUnit(frame)
         frame:SetAlpha(0);
         return;
     else
-        frame:SetAlpha(1);
+        if not InCombatLockdown() then
+            frame:SetAlpha(0.5);
+        else
+            frame:SetAlpha(1);
+        end
     end
 
     local value = UnitHealth(unit);
@@ -266,10 +305,16 @@ local function updateUnit(frame)
     if icon and RaidIconList[icon] then
         mark = RaidIconList[icon] .. "0|t"
     end
+    
+    local isResting = ""
+
+    if IsResting() and frame ==  AUF_PlayerFrame then
+        isResting = "zzz"
+    end
 
     frame.healthbar.hvalue:SetText(AbbreviateLargeNumbers(value))
     frame.healthbar.name:SetText(unitlevel .. " " .. UnitName(unit));
-    frame.healthbar.mark:SetText(mark);
+    frame.healthbar.mark:SetText(mark .. " " .. isResting);
 
 
     local power = UnitPower(unit)
@@ -286,7 +331,7 @@ local function updateUnit(frame)
             frame.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b)
         end
 
-        if unit == "player" then
+        if frame == AUF_PlayerFrame then
             if powerType > 0 then
                 local manavalue = UnitPower(unit, 0);
                 local manaMax = UnitPowerMax(unit, 0);
@@ -299,6 +344,9 @@ local function updateUnit(frame)
                     frame.powerbar.value:SetText(manavalue)
                     local powerColor = PowerBarColor[0]
                     frame.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b)
+                elseif showplayermana then
+                    frame.healthbar:SetHeight(healthheight - powerheight);
+                    frame.powerbar:SetHeight(powerheight);
                 else
                     frame.healthbar:SetHeight(healthheight);
                     frame.powerbar:SetHeight(0);
