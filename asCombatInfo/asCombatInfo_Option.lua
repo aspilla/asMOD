@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 241005,
+	version = 241009,
 
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
@@ -352,7 +352,7 @@ ACI_Options_Default = {
 		{ 99, "학살",{ "영혼의 불꽃", 1 }, { "악마불 집중", 1 } },
 		{ "지옥불정령 소환", 6, nil, nil, nil, "지옥불정령" }, 
 		{ 99, "격동", { 394087, 5, "nameplate", 5, nil, "대혼란" }, { "대혼란", 4, "nameplate" } },		
-		{99, "쇠퇴", { "쇠퇴", 4, nil, 1 }, { "제물", 4, nil, 1 }},	
+		{ 99, 348, { 348, 4, nil, 1 }, { "쇠퇴", 4, nil, 1 }},
 		
 	},
 

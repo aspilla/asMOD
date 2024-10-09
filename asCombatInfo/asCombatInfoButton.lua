@@ -43,11 +43,10 @@ local asGetSpellInfo = function(spellID)
     local ospellID = C_Spell.GetOverrideSpell(spellID)
 
     if ospellID then
-        spellID = ospellID;
+        spellID = ospellID;        
     end
 
     local spellInfo = C_Spell.GetSpellInfo(spellID);
-
 
     if spellInfo then
         return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
@@ -823,6 +822,7 @@ function ns.Button:init(config, frame)
     if self.spellid == nil then
         self.spellid = select(7, asGetSpellInfo(self.realspell));
     end
+ 
 
     ns.lib.PixelGlow_Stop(self.frame)
 

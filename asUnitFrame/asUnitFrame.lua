@@ -119,14 +119,16 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
 end
 local xposition = 224;
 local yposition = -195;
+local healthheight = 35;
+local powerheight = 5;
 AUF_PlayerFrame = CreateFrame("Button", nil, UIParent, "SecureUnitButtonTemplate", "PingableUnitFrameTemplate");
 AUF_TargetFrame = CreateFrame("Button", nil, UIParent, "SecureUnitButtonTemplate", "PingableUnitFrameTemplate");
 AUF_FocusFrame = CreateFrame("Button", nil, UIParent, "SecureUnitButtonTemplate", "PingableUnitFrameTemplate");
 AUF_PetFrame = CreateFrame("Button", nil, UIParent, "SecureUnitButtonTemplate", "PingableUnitFrameTemplate");
 AUF_TargetTargetFrame = CreateFrame("Button", nil, UIParent, "SecureUnitButtonTemplate",
     "PingableUnitFrameTemplate");
-CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, 200, 35, 0, 12);
-CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, 200, 35, 5, 12);
+CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, 200, healthheight, 0, 12);
+CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, 200, healthheight, powerheight, 12);
 CreateUnitFrame(AUF_FocusFrame, "focus", xposition + 200, yposition, 150, 20, 3, 11);
 CreateUnitFrame(AUF_PetFrame, "pet", -xposition - 50, yposition - 40, 100, 15, 2, 9);
 CreateUnitFrame(AUF_TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, 100, 15, 2, 9);
@@ -278,33 +280,55 @@ local function updateUnit(frame)
 
     local powerType, powerToken = UnitPowerType(unit)
 
-    if (powerType) then
+    if powerType ~= nil then
         local powerColor = PowerBarColor[powerType]
         if powerColor then
             frame.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b)
+        end
+
+        if unit == "player" then
+            if powerType > 0 then
+                local manavalue = UnitPower(unit, 0);
+                local manaMax = UnitPowerMax(unit, 0);
+
+                if manavalue > 0 then
+                    frame.healthbar:SetHeight(healthheight - powerheight);
+                    frame.powerbar:SetHeight(powerheight);
+                    frame.powerbar:SetMinMaxValues(0, manaMax)
+                    frame.powerbar:SetValue(manavalue);
+                    frame.powerbar.value:SetText(manavalue)
+                    local powerColor = PowerBarColor[0]
+                    frame.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b)
+                else
+                    frame.healthbar:SetHeight(healthheight);
+                    frame.powerbar:SetHeight(0);
+                end
+            else
+                frame.healthbar:SetHeight(healthheight);
+                frame.powerbar:SetHeight(0);
+            end
         end
     end
 end
 
 local function UpdatePlayerUnit()
+    local hasValidVehicleUI = UnitHasVehicleUI("player");
+    local unitVehicleToken;
+    if (hasValidVehicleUI) then
+        local prefix, id, suffix = string.match("player", "([^%d]+)([%d]*)(.*)")
+        unitVehicleToken = prefix .. "pet" .. id .. suffix;
+        if (not UnitExists(unitVehicleToken)) then
+            hasValidVehicleUI = false;
+        end
+    end
 
-	local hasValidVehicleUI = UnitHasVehicleUI("player");
-	local unitVehicleToken;
-	if ( hasValidVehicleUI ) then
-		local prefix, id, suffix = string.match("player", "([^%d]+)([%d]*)(.*)")
-		unitVehicleToken = prefix.."pet"..id..suffix;
-		if ( not UnitExists(unitVehicleToken) ) then
-			hasValidVehicleUI = false;
-		end
-	end
-
-	if ( hasValidVehicleUI ) then
-		unit_player = unitVehicleToken
-		unit_pet = "player"
-	else
-		unit_player = "player"
-		unit_pet = "pet"
-	end
+    if (hasValidVehicleUI) then
+        unit_player = unitVehicleToken
+        unit_pet = "player"
+    else
+        unit_player = "player"
+        unit_pet = "pet"
+    end
 end
 
 local function OnUpdate()
@@ -329,3 +353,13 @@ end
 
 C_Timer.NewTicker(0.1, OnUpdate);
 HideDefaults();
+
+
+local function AUF_OnEvent(self, event, arg1, arg2, arg3)   
+    HideDefaults();
+    return;
+end
+
+local AUF = CreateFrame("Frame")
+AUF:SetScript("OnEvent", AUF_OnEvent)
+AUF:RegisterEvent("PLAYER_ENTERING_WORLD");

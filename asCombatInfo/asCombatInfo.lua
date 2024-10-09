@@ -44,6 +44,63 @@ local asGetSpellInfo = function(spellID)
 	end
 end
 
+local asGetSpellTabInfo = function(index)
+	local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
+	if skillLineInfo then
+		return skillLineInfo.name,
+			skillLineInfo.iconID,
+			skillLineInfo.itemIndexOffset,
+			skillLineInfo.numSpellBookItems,
+			skillLineInfo.isGuild,
+			skillLineInfo.offSpecID,
+			skillLineInfo.shouldHide,
+			skillLineInfo.specID;
+	end
+end
+
+
+local function asIsPlayerSpell(spell)
+
+	if IsPlayerSpell(spell) then
+		return true;
+	end
+
+	for tab = 1, 3 do
+		local tabName, tabTexture, tabOffset, numEntries = asGetSpellTabInfo(tab)
+
+		if not tabName then
+			return;
+		end
+
+		for i = tabOffset + 1, tabOffset + numEntries do
+			local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player)
+
+			if not spellName then
+				do break end
+			end
+
+			local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
+			local _, _, icon = asGetSpellInfo(spellID);
+
+			if (slotType == Enum.SpellBookItemType.Flyout) then
+				local _, _, numSlots = GetFlyoutInfo(actionID);
+				for j = 1, numSlots do
+					local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
+
+
+					if spell == flyoutSpellName or spell == flyoutSpellID then						
+						return true;
+					end
+				end
+			else
+				if spell == spellName or spell == spellID then					
+					return true;
+				end
+			end
+		end
+	end
+end
+
 local options = CopyTable(ACI_Options_Default);
 local _G = _G;
 local cast_spell = nil;
@@ -128,35 +185,34 @@ local function ACI_OnEvent(self, event, arg1, ...)
 end
 
 local function asCheckTalent(name)
-    local configID = C_ClassTalents.GetActiveConfigID();
+	local configID = C_ClassTalents.GetActiveConfigID();
 
-    if not (configID) then
-        return false;
-    end    
-    local configInfo = C_Traits.GetConfigInfo(configID);
-    local treeID = configInfo.treeIDs[1];
+	if not (configID) then
+		return false;
+	end
+	local configInfo = C_Traits.GetConfigInfo(configID);
+	local treeID = configInfo.treeIDs[1];
 
-    local nodes = C_Traits.GetTreeNodes(treeID);
+	local nodes = C_Traits.GetTreeNodes(treeID);
 
-    for _, nodeID in ipairs(nodes) do
-        local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
-        if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
+	for _, nodeID in ipairs(nodes) do
+		local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
+		if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
+			local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID;
+			local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
+			local definitionInfo = entryInfo and entryInfo.definitionID and
+				C_Traits.GetDefinitionInfo(entryInfo.definitionID);
 
-            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID;
-            local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
-            local definitionInfo = entryInfo and entryInfo.definitionID and
-                C_Traits.GetDefinitionInfo(entryInfo.definitionID);
-
-            if definitionInfo and IsPlayerSpell(definitionInfo.spellID) then
-                local talentName = C_Spell.GetSpellName(definitionInfo.spellID);
-                if name == talentName then
+			if definitionInfo and IsPlayerSpell(definitionInfo.spellID) then
+				local talentName = C_Spell.GetSpellName(definitionInfo.spellID);
+				if name == talentName then
 					return true;
-                end
-            end
-        end
-    end
+				end
+			end
+		end
+	end
 
-    return false;
+	return false;
 end
 
 
@@ -244,8 +300,7 @@ function ACI_Init()
 			if type(ACI_SpellList[i][1]) == "table" then
 				for _, array in pairs(ACI_SpellList[i]) do
 					local spell_name = array[1];
-					if (type(spell_name) == "string" and asCheckTalent(spell_name)) or (type(spell_name) == "number" and IsPlayerSpell(spell_name)) then
-						ACI_SpellList[i] = {};
+					if (type(spell_name) == "string" and asCheckTalent(spell_name)) or (type(spell_name) == "number" and asIsPlayerSpell(spell_name)) then
 						for z, v in pairs(array) do
 							ACI_SpellList[i][z] = v;
 						end
@@ -258,7 +313,7 @@ function ACI_Init()
 				if check and check == 99 then
 					local bselected = false;
 					local spell_name = ACI_SpellList[i][2];
-					if (type(spell_name) == "string" and asCheckTalent(spell_name)) or (type(spell_name) == "number" and IsPlayerSpell(spell_name)) then
+					if (type(spell_name) == "string" and asCheckTalent(spell_name)) or (type(spell_name) == "number" and asIsPlayerSpell(spell_name)) then
 						if ACI_SpellList[i][3] then
 							local array = ACI_SpellList[i][3];
 							if type(array) == "table" then
@@ -286,12 +341,9 @@ function ACI_Init()
 				end
 			end
 
-
-
 			ACI[i].obutton:init(ACI_SpellList[i], ACI[i]);
 			ACI[i].tooltip = (ACI_SpellList[i][1]);
 			if type(ACI_SpellList[i][1]) == "number" then
-
 				ACI[i].spellid = ACI_SpellList[i][1];
 			else
 				ACI[i].spellid = select(7, asGetSpellInfo(ACI_SpellList[i][1]));
