@@ -1,7 +1,7 @@
 ﻿-- X, Y 좌표 위치
-local ASCT_X_POSITION = -300        -- X 시작점
-local ASCT_Y_POSITION = 500        -- Y 시작점
-local ASCT_Y_POSITION_ADDER = 250  --표시위치 Y 높이
+local ASCT_X_POSITION = -250        -- X 시작점
+local ASCT_Y_POSITION = 550        -- Y 시작점
+local ASCT_Y_POSITION_ADDER = 200  --표시위치 Y 높이
 local ASCT_STAGGERED = false       -- 데미지 안내가 좌우로 퍼지게 하려면 true
 local ASCT_DEFAULT_SHOW_HEAL = nil --Heal 보이게 하려면 1
 local DAMAGE_COLOR = { 1, 0.1, 0.1 };
@@ -69,7 +69,7 @@ function ASCT_UpdateDisplayedMessages()
 		startX = ASCT_X_POSITION,
 		startY = ASCT_Y_POSITION,
 		endX = ASCT_X_POSITION,
-		endY = (ASCT_Y_POSITION + 225),
+		endY = (ASCT_Y_POSITION + ASCT_Y_POSITION_ADDER),
 	};
 end
 

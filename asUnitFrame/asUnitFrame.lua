@@ -1,5 +1,22 @@
 local _, ns = ...;
 
+------------------------------------------
+---설정부
+------------------------------------------
+
+local Update_Rate = 0.1 -- 0.1 초마다 Update
+local xposition = 225;
+local yposition = -195;
+local healthheight = 35;
+local powerheight = 5;
+
+local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };                 --차단 불가시 (내가 아닐때) 색상 (r, g, b)
+local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { 153 / 255, 0, 76 / 255 }; --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
+local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 };   --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
+local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };     --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
+---
+---
+
 local function asTargetFrame_OpenMenu(self, unit)
     local which;
     local name;
@@ -43,7 +60,7 @@ local function asTargetFrame_OpenMenu(self, unit)
     end
     if (which) then
         local contextData = {
-            fromTargetFrame = true;
+            fromTargetFrame = true,
             unit = unit,
             name = name,
         };
@@ -93,19 +110,19 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar.bg:SetVertexColor(0, 0, 0, 0.8);
 
     frame.healthbar.pvalue = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.healthbar.pvalue:SetFont(Font, fontsize + 1, FontOutline);
+    frame.healthbar.pvalue:SetFont(STANDARD_TEXT_FONT, fontsize + 1, FontOutline);
     frame.healthbar.pvalue:SetTextColor(1, 1, 1, 1)
 
     frame.healthbar.hvalue = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.healthbar.hvalue:SetFont(Font, fontsize - 1, FontOutline);
+    frame.healthbar.hvalue:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
     frame.healthbar.hvalue:SetTextColor(1, 1, 1, 1)
 
     frame.healthbar.name = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.healthbar.name:SetFont(Font, fontsize - 1, FontOutline);
+    frame.healthbar.name:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
     frame.healthbar.name:SetTextColor(1, 1, 1, 1)
 
     frame.healthbar.aggro = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.healthbar.aggro:SetFont(Font, fontsize, FontOutline);
+    frame.healthbar.aggro:SetFont(STANDARD_TEXT_FONT, fontsize, FontOutline);
     frame.healthbar.aggro:SetTextColor(1, 1, 1, 1)
 
     if x < 0 then
@@ -121,7 +138,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     end
 
     frame.healthbar.mark = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.healthbar.mark:SetFont(Font, fontsize, FontOutline);
+    frame.healthbar.mark:SetFont(STANDARD_TEXT_FONT, fontsize, FontOutline);
     frame.healthbar.mark:SetTextColor(1, 1, 1, 1)
     frame.healthbar.mark:SetPoint("CENTER", frame.healthbar, "CENTER", 0, 0);
 
@@ -144,14 +161,14 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.powerbar.bg:SetVertexColor(0, 0, 0, 0.8);
 
     frame.powerbar.value = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.powerbar.value:SetFont(Font, fontsize - 2, FontOutline);
+    frame.powerbar.value:SetFont(STANDARD_TEXT_FONT, fontsize - 2, FontOutline);
     frame.powerbar.value:SetTextColor(1, 1, 1, 1)
     frame.powerbar.value:SetPoint("CENTER", frame.powerbar, "CENTER", 0, 0);
 
     frame.unit = unit;
     -- 유닛 설정 (예시: 'player' 또는 'target' 등)
     frame:SetAttribute("unit", unit);
-    SecureUnitButton_OnLoad(frame, frame.unit, OpenContextMenu);    
+    SecureUnitButton_OnLoad(frame, frame.unit, OpenContextMenu);
     Mixin(frame, PingableType_UnitFrameMixin);
     frame:SetAttribute("ping-receiver", true);
 
@@ -159,21 +176,81 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
         frame:SetScript("OnEnter", function(s)
             if s.unit then
                 GameTooltip_SetDefaultAnchor(GameTooltip, s);
-                GameTooltip:SetUnit(s.unit);            
+                GameTooltip:SetUnit(s.unit);
             end
         end)
         frame:SetScript("OnLeave", function()
             GameTooltip:Hide();
         end)
-    end 
+    end
+
+    local castbarheight = height - 5;
+
+    frame.castbar = CreateFrame("StatusBar", nil, frame)
+    frame.castbar:SetPoint("TOPRIGHT", frame.powerbar, "BOTTOMRIGHT", 0, -2);
+    frame.castbar:SetStatusBarTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar", "BORDER")
+    frame.castbar:GetStatusBarTexture():SetHorizTile(false)
+    frame.castbar:SetMinMaxValues(0, 100)
+    frame.castbar:SetValue(100)
+    frame.castbar:SetHeight(castbarheight)
+    frame.castbar:SetWidth(width - ((castbarheight+1) * 1.2) -1)
+    frame.castbar:SetStatusBarColor(1, 0.9, 0.9);
+    frame.castbar:SetAlpha(1);
+
+    frame.castbar.bg = frame.castbar:CreateTexture(nil, "BACKGROUND")
+    frame.castbar.bg:SetPoint("TOPLEFT", frame.castbar, "TOPLEFT", -1, 1)
+    frame.castbar.bg:SetPoint("BOTTOMRIGHT", frame.castbar, "BOTTOMRIGHT", 1, -1)
+
+    frame.castbar.bg:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga")
+    frame.castbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    frame.castbar.bg:SetVertexColor(0, 0, 0, 0.8);
+    frame.castbar.bg:Show();
+
+    frame.castbar.name = frame.castbar:CreateFontString(nil, "OVERLAY");
+    frame.castbar.name:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
+    frame.castbar.name:SetPoint("LEFT", frame.castbar, "LEFT", 3, 0);
+
+    frame.castbar.time = frame.castbar:CreateFontString(nil, "OVERLAY");
+    frame.castbar.time:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
+    frame.castbar.time:SetPoint("RIGHT", frame.castbar, "RIGHT", -3, 0);
     
+    if not frame.castbar:GetScript("OnEnter") then
+        frame.castbar:SetScript("OnEnter", function(s)
+            if s.castspellid and s.castspellid > 0 then
+                GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                GameTooltip:SetSpellByID(s.castspellid);
+            end
+        end)
+        frame.castbar:SetScript("OnLeave", function()
+            GameTooltip:Hide();
+        end)
+    end
+
+    frame.castbar:EnableMouse(false);
+    frame.castbar:SetMouseMotionEnabled(true);
+    frame.castbar:Hide();
+
+    frame.castbar.button = CreateFrame("Button", nil, frame.castbar, "AUFFrameTemplate");
+    frame.castbar.button:SetPoint("RIGHT", frame.castbar, "LEFT", -2, 0)
+    frame.castbar.button:SetWidth((castbarheight+1) * 1.2);
+    frame.castbar.button:SetHeight(castbarheight+1);
+    frame.castbar.button:SetScale(1);
+    frame.castbar.button:SetAlpha(1);
+    frame.castbar.button:EnableMouse(false);
+    frame.castbar.button.icon:SetTexCoord(.08, .92, .08, .92);
+    frame.castbar.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+    frame.castbar.button.border:SetVertexColor(0, 0, 0);
+    frame.castbar.button.border:Show();
+    frame.castbar.button:Show();
+
+    frame.castbar.targetname = frame.castbar:CreateFontString(nil, "OVERLAY");
+    frame.castbar.targetname:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
+    frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);
+
 
     frame:Show();
 end
-local xposition = 224;
-local yposition = -195;
-local healthheight = 35;
-local powerheight = 5;
+
 AUF_PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 AUF_TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 AUF_FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
@@ -184,7 +261,6 @@ CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, 200, healthheig
 CreateUnitFrame(AUF_FocusFrame, "focus", xposition + 200, yposition, 150, 20, 3, 11);
 CreateUnitFrame(AUF_PetFrame, "pet", -xposition - 50, yposition - 40, 100, 15, 2, 9);
 CreateUnitFrame(AUF_TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, 100, 15, 2, 9);
-
 
 C_AddOns.LoadAddOn("asMOD");
 
@@ -206,6 +282,8 @@ local RaidIconList = {
     "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:",
     "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
 }
+
+local leaderIcon = CreateAtlasMarkup("groupfinder-icon-leader", 14, 9, 0, 0);
 
 local function UpdateFillBarBase(realbar, bar, amount)
     if not amount or (amount == 0) then
@@ -325,15 +403,27 @@ local function updateUnit(frame)
         mark = RaidIconList[icon] .. "0|t"
     end
     
-    local isResting = ""
-
-    if IsResting() and frame ==  AUF_PlayerFrame then
-        isResting = "zzz"
+    if IsResting() and frame == AUF_PlayerFrame then
+        mark = mark .. " " .. "zzz"
     end
 
+    local name = UnitName(unit);
+
+    if UnitIsGroupLeader(unit) then
+        name = leaderIcon .. " " .. name;
+    end
+
+    local classification = UnitClassification(unit)
+
+    if classification and classification ~= "minus" and classification ~= "normal" and classification ~= "trivial" then
+        name = classification .. " " .. name;
+    end
+
+    name = unitlevel .. " " .. name;
+
     frame.healthbar.hvalue:SetText(AbbreviateLargeNumbers(value))
-    frame.healthbar.name:SetText(unitlevel .. " " .. UnitName(unit));
-    frame.healthbar.mark:SetText(mark .. " " .. isResting);
+    frame.healthbar.name:SetText(name);
+    frame.healthbar.mark:SetText(mark);
 
 
     local power = UnitPower(unit)
@@ -378,28 +468,39 @@ local function updateUnit(frame)
     end
 
 
-    if frame == AUF_TargetFrame  then
-		local isTanking, status, percentage, rawPercentage = UnitDetailedThreatSituation("player", "target");
+    if frame == AUF_TargetFrame then
+        local isTanking, status, percentage, rawPercentage = UnitDetailedThreatSituation("player", "target");
 
-		local display;
+        local display;
 
-		if ( isTanking ) then
-			display = UnitThreatPercentageOfLead("player", "target");
-		end
+        if (isTanking) then
+            display = UnitThreatPercentageOfLead("player", "target");
+        end
 
-		if not display then
-			display = percentage;
-		end
+        if not display then
+            display = percentage;
+        end
 
-		if ( display and display ~= 0 ) then
-			frame.healthbar.aggro:SetText(format("%1.0f", display).."%");
-			local r, g, b =	GetThreatStatusColor(status)
-			frame.healthbar.aggro:SetTextColor(r, g, b, 1);
-			frame.healthbar.aggro:Show();			
-		else
-			frame.healthbar.aggro:Hide();
-		end
-	end
+        if (display and display ~= 0) then
+            frame.healthbar.aggro:SetText(format("%1.0f", display) .. "%");
+            local r, g, b = GetThreatStatusColor(status)
+            frame.healthbar.aggro:SetTextColor(r, g, b, 1);
+            frame.healthbar.aggro:Show();
+        else
+            frame.healthbar.aggro:Hide();
+        end
+    end
+
+    if frame.castbar.start and  frame.castbar.start > 0 then
+        local castBar = frame.castbar;
+        local start = castBar.start;
+        local duration = castBar.duration;
+        local current = GetTime();
+        local time = castBar.time;
+        castBar:SetValue((current - start));
+        time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
+    end
+
 end
 
 local function UpdatePlayerUnit()
@@ -493,15 +594,181 @@ local function HideDefaults()
     HideBlizzardUnitFrame("pet");
 end
 
-C_Timer.NewTicker(0.1, OnUpdate);
+C_Timer.NewTicker(Update_Rate, OnUpdate);
 HideDefaults();
+
+local DangerousSpellList = {};
+
+local function updateCastBar(frame)
+    local castbar    = frame.castbar;
+    local frameIcon  = castbar.button.icon;    
+    local text       = castbar.name;
+    local time       = castbar.time;
+    local targetname = castbar.targetname;
+    local unit = frame.unit;
+    local unittarget = unit.."target";
+
+    if UnitExists(unit) then
+        local name, _, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
+            unit);
+
+        if not name then
+            name, _, texture, start, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+        end
+
+        if name then
+            local current = GetTime();
+            frameIcon:SetTexture(texture);
+
+            castbar.start = start / 1000;
+            castbar.duration = (endTime - start) / 1000;
+            castbar:SetMinMaxValues(0, castbar.duration)
+            castbar:SetValue(current - castbar.start);
+
+            local color = {};
+
+            if UnitIsUnit(unittarget, "player") then
+                if notInterruptible then
+                    color = CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET;
+                else
+                    color = CONFIG_INTERRUPTIBLE_COLOR_TARGET;
+                end
+            else
+                if notInterruptible then
+                    color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
+                else
+                    color = CONFIG_INTERRUPTIBLE_COLOR;
+                end
+            end
+
+            castbar.castspellid = spellid;
+
+            castbar:SetStatusBarColor(color[1], color[2], color[3]);
+
+            text:SetText(name);
+            time:SetText(format("%.1f/%.1f", max((current - castbar.start), 0), max(castbar.duration, 0)));
+
+            frameIcon:Show();
+            castbar:Show();
+            if DangerousSpellList[spellid] and DangerousSpellList[spellid] == "interrupt" then
+                ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
+            end            
+
+            if UnitExists(unittarget) and UnitIsPlayer(unittarget) then
+                local _, Class = UnitClass(unittarget)
+                local color = RAID_CLASS_COLORS[Class]
+                targetname:SetTextColor(color.r, color.g, color.b);
+                targetname:SetText(UnitName(unittarget));
+                targetname:Show();
+            else
+                targetname:SetText("");
+                targetname:Hide();
+            end
+        else
+            castbar:SetValue(0);
+            frameIcon:Hide();
+            castbar:Hide();
+            ns.lib.PixelGlow_Stop(castbar);
+            castbar.start = 0;
+            targetname:SetText("");
+            targetname:Hide();
+        end
+    else
+        castbar:SetValue(0);
+        frameIcon:Hide();
+        castbar:Hide();
+        ns.lib.PixelGlow_Stop(castbar);
+        castbar.start = 0;
+        targetname:SetText("");
+        targetname:Hide();
+    end
+end
+
 
 
 local function AUF_OnEvent(self, event, arg1, arg2, arg3)
-    HideDefaults();
+
+    if event == "PLAYER_FOCUS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
+        if UnitExists("focus") then
+            self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "focus");
+            self:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", "focus");
+            self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "focus");
+            self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", "focus");
+            self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "focus");
+            self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "focus");
+            self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", "focus");
+            self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "focus");
+            self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", "focus");
+            self:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", "focus");
+            self:RegisterUnitEvent("UNIT_SPELLCAST_START", "focus");
+            self:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "focus");
+            self:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "focus");
+            self:RegisterUnitEvent("UNIT_TARGET", "focus");
+        else
+            self:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
+            self:UnregisterEvent("UNIT_SPELLCAST_DELAYED");
+            self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
+            self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE");
+            self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
+            self:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_START");
+            self:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE");
+            self:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_STOP");
+            self:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE");
+            self:UnregisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE");
+            self:UnregisterEvent("UNIT_SPELLCAST_START");
+            self:UnregisterEvent("UNIT_SPELLCAST_STOP");
+            self:UnregisterEvent("UNIT_SPELLCAST_FAILED");
+            self:UnregisterEvent("UNIT_TARGET");
+        end
+        if event == "PLAYER_ENTERING_WORLD" then
+            HideDefaults();
+        end
+    end
+    
+    updateCastBar(AUF_FocusFrame);
+
     return;
 end
 
 local AUF = CreateFrame("Frame")
 AUF:SetScript("OnEvent", AUF_OnEvent)
 AUF:RegisterEvent("PLAYER_ENTERING_WORLD");
+AUF:RegisterEvent("PLAYER_FOCUS_CHANGED");
+
+local DBMobj;
+
+local function scanDBM()
+    DangerousSpellList = {};
+    if DBMobj.Mods then
+        for i, mod in ipairs(DBMobj.Mods) do
+            if mod.announces then
+                for k, obj in pairs(mod.announces) do
+                    if obj.spellId and obj.announceType then
+                        if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        end
+                    end
+                end
+            end
+            if mod.specwarns then
+                for k, obj in pairs(mod.specwarns) do
+                    if obj.spellId and obj.announceType then
+                        if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+local function NewMod(self, ...)
+    DBMobj = self;
+    C_Timer.After(0.25, scanDBM);
+end
+
+local bloaded = C_AddOns.LoadAddOn("DBM-Core");
+if bloaded then
+    hooksecurefunc(DBM, "NewMod", NewMod)
+end

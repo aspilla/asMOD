@@ -377,6 +377,10 @@ local function ProcessAura(aura, unit)
 			if (ns.ABF_PVPBuffList and ns.ABF_PVPBuffList[aura.spellId]) then
 				skip = false;
 			end
+
+			if not InCombatLockdown() then
+				skip = false; --비전투중 모두 보임
+			end
 		else
 			skip = false;
 		end
