@@ -17,6 +17,282 @@ local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };     --ì°¨ë
 ---
 ---
 
+local RaidIconList = {
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
+}
+
+local leaderIcon = CreateAtlasMarkup("groupfinder-icon-leader", 14, 9, 0, 0);
+
+local function UpdateFillBarBase(realbar, bar, amount)
+    if not amount or (amount == 0) then
+        bar:Hide();
+        return
+    end
+
+    local previousTexture = realbar:GetStatusBarTexture();
+
+    local gen = false;
+
+    bar:ClearAllPoints();
+    bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", 0, 0);
+    bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", 0, 0);
+
+    if amount < 0 then
+        amount = 0 - amount;
+        gen = true;
+    end
+
+    local totalWidth, totalHeight = realbar:GetSize();
+
+    local _, totalMax = realbar:GetMinMaxValues();
+
+    local barSize = (amount / totalMax) * totalWidth;
+    bar:SetWidth(barSize);
+    if gen then
+        bar:SetVertexColor(1, 1, 1)
+    else
+        bar:SetVertexColor(0.5, 0.5, 0.5)
+    end
+    bar:Show();
+end
+
+local unit_player = "player";
+local unit_pet = "pet";
+
+local function UpdatePlayerUnit()
+    local hasValidVehicleUI = UnitHasVehicleUI("player");
+    local unitVehicleToken;
+    if (hasValidVehicleUI) then
+        local prefix, id, suffix = string.match("player", "([^%d]+)([%d]*)(.*)")
+        unitVehicleToken = prefix .. "pet" .. id .. suffix;
+        if (not UnitExists(unitVehicleToken)) then
+            hasValidVehicleUI = false;
+        end
+    end
+
+    if (hasValidVehicleUI) then
+        unit_player = unitVehicleToken
+        unit_pet = "player"
+    else
+        unit_player = "player"
+        unit_pet = "pet"
+    end
+end
+
+local function updateUnit(frame)
+    local unit = frame.unit;
+    local showplayermana = false;
+
+    if unit == "player" then
+        UpdatePlayerUnit()
+        unit = unit_player;
+        showplayermana = (unit ~= "player");
+    elseif unit == "pet" then
+        unit = unit_pet;
+    end
+
+    if not UnitExists(unit) then
+        frame:SetAlpha(0);
+        return;
+    else
+        if not InCombatLockdown() then
+            frame:SetAlpha(0.5);
+        else
+            frame:SetAlpha(1);
+        end
+    end
+
+    -- Healthbar
+    local value = UnitHealth(unit);
+    local valueMax = UnitHealthMax(unit);
+    local value_orig = value;
+
+    local allIncomingHeal = UnitGetIncomingHeals(unit) or 0;
+    local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0;
+    local total = allIncomingHeal + totalAbsorb;
+
+    valuePct = (math.ceil((value / valueMax) * 100));
+    valuePct_orig = (math.ceil((value_orig / valueMax) * 100));
+    local valuePctAbsorb = (math.ceil((total / valueMax) * 100));
+
+    frame.healthbar:SetMinMaxValues(0, valueMax)
+    frame.healthbar:SetValue(value)
+
+    if valuePctAbsorb > 0 then
+        frame.healthbar.pvalue:SetText(valuePct .. "(" .. valuePctAbsorb .. ")");
+    else
+        frame.healthbar.pvalue:SetText(valuePct);
+    end
+
+    local totalAbsorbremain = totalAbsorb;
+    local remainhealth = valueMax - value;
+
+    if totalAbsorbremain > remainhealth then
+        totalAbsorbremain = remainhealth;
+    end
+
+    UpdateFillBarBase(frame.healthbar, frame.healthbar.absorbBar, totalAbsorbremain);
+
+    --Castbar
+    local current = GetTime();
+
+    if frame.castbar.start and frame.castbar.start > 0 and frame.castbar.start + frame.castbar.duration >= current then
+        local castBar = frame.castbar;
+        local start = castBar.start;
+        local duration = castBar.duration;        
+        local time = castBar.time;
+
+        if castBar.bchanneling then
+            castBar:SetValue((start + duration - current));
+            time:SetText(format("%.1f/%.1f", max((start + duration - current), 0), max(duration, 0)));
+        else
+            castBar:SetValue((current - start));
+            time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
+        end
+        
+    end
+
+    if frame.updatecount == 1 then
+        frame.updatecount = 0;
+    else
+        frame.updatecount = frame.updatecount + 1;
+        return;
+    end
+
+    --ClassColor
+    if UnitIsPlayer(unit) then
+        local class = select(2, UnitClass(unit));
+        local classColor = class and RAID_CLASS_COLORS[class] or nil;
+        if classColor then
+            frame.healthbar:SetStatusBarColor(classColor.r, classColor.g, classColor.b);
+        end
+    else
+        local r = 0;
+        local g = 1.0;
+        local b = 0;
+        local reaction = UnitReaction("player", unit);
+        if (reaction) then
+            r = FACTION_BAR_COLORS[reaction].r;
+            g = FACTION_BAR_COLORS[reaction].g;
+            b = FACTION_BAR_COLORS[reaction].b;
+        end
+
+        frame.healthbar:SetStatusBarColor(r, g, b);
+    end
+
+    --Name
+    local unitlevel = UnitLevel(unit);
+    if unitlevel < 0 then
+        unitlevel = "??"
+    end
+
+    local mark = "";
+    local icon = GetRaidTargetIndex(unit)
+    if icon and RaidIconList[icon] then
+        mark = RaidIconList[icon] .. "0|t"
+    end
+
+    if IsResting() and frame == AUF_PlayerFrame then
+        mark = mark .. " " .. "zzz"
+    end
+
+    local name = UnitName(unit);
+
+    if UnitIsGroupLeader(unit) then
+        name = leaderIcon .. " " .. name;
+    end
+
+    local classification = UnitClassification(unit)
+
+    if classification and classification ~= "minus" and classification ~= "normal" and classification ~= "trivial" then
+        name = classification .. " " .. name;
+    end
+
+    name = unitlevel .. " " .. name;
+
+    --Power
+    frame.healthbar.hvalue:SetText(AbbreviateLargeNumbers(value))
+    frame.healthbar.name:SetText(name);
+    frame.healthbar.mark:SetText(mark);
+
+    local power = UnitPower(unit)
+    local maxPower = UnitPowerMax(unit)
+    frame.powerbar:SetMinMaxValues(0, maxPower)
+    frame.powerbar:SetValue(power)
+    frame.powerbar.value:SetText(power)
+
+    local powerType, powerToken = UnitPowerType(unit)
+
+    if powerType ~= nil then
+        local powerColor = PowerBarColor[powerType]
+        if powerColor then
+            frame.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b)
+        end
+
+        if frame == AUF_PlayerFrame then
+            if powerType > 0 then
+                local manavalue = UnitPower(unit, 0);
+                local manaMax = UnitPowerMax(unit, 0);
+
+                if manavalue > 0 then
+                    frame.healthbar:SetHeight(healthheight - powerheight);
+                    frame.powerbar:SetHeight(powerheight);
+                    frame.powerbar:SetMinMaxValues(0, manaMax)
+                    frame.powerbar:SetValue(manavalue);
+                    frame.powerbar.value:SetText(manavalue)
+                    local powerColor = PowerBarColor[0]
+                    frame.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b)
+                elseif showplayermana then
+                    frame.healthbar:SetHeight(healthheight - powerheight);
+                    frame.powerbar:SetHeight(powerheight);
+                else
+                    frame.healthbar:SetHeight(healthheight);
+                    frame.powerbar:SetHeight(0);
+                end
+            else
+                frame.healthbar:SetHeight(healthheight);
+                frame.powerbar:SetHeight(0);
+            end
+        end
+    end
+
+    --Threat
+    if frame ~= AUF_PlayerFrame and frame ~= AUF_PetFrame and frame ~= AUF_PetFrame and frame ~= AUF_TargetTargetFrame and not UnitIsPlayer(unit) then
+        local isTanking, status, percentage, rawPercentage = UnitDetailedThreatSituation("player", unit);
+
+        local display;
+
+        if (isTanking) then
+            display = UnitThreatPercentageOfLead("player", unit);
+        end
+
+        if not display then
+            display = percentage;
+        end
+
+        if (display and display ~= 0) then
+            frame.healthbar.aggro:SetText(format("%1.0f", display) .. "%");
+            local r, g, b = GetThreatStatusColor(status)
+            frame.healthbar.aggro:SetTextColor(r, g, b, 1);
+            frame.healthbar.aggro:Show();
+        else
+            frame.healthbar.aggro:Hide();
+        end
+    end
+
+    --Debuff
+    if frame.debuffupdate then
+        ns.UpdateAuras(frame);
+    end
+end
+
 local function asTargetFrame_OpenMenu(self, unit)
     local which;
     local name;
@@ -73,8 +349,73 @@ local function OpenContextMenu(s, unit, button, isKeyPress)
     return asTargetFrame_OpenMenu(s, s.unit);
 end
 
-local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight, fontsize)
-    local Font = "Fonts\\2002.TTF";
+local function UpdateDebuffAnchor(frames, index, offsetX, right, parent, width)
+    local buff = frames[index];
+
+    if (index == 1) then
+        buff:SetPoint("TOPLEFT", parent.powerbar, "BOTTOMLEFT", 0, -2);
+    else
+        buff:SetPoint("BOTTOMLEFT", frames[index - 1], "BOTTOMRIGHT", offsetX, 0);
+    end
+
+    -- Resize
+    buff:SetWidth(width - offsetX);
+    buff:SetHeight(width * 0.8);
+end
+
+
+local function CreatDebuffFrames(parent, bright, fontsize, width, count)
+    if parent.frames == nil then
+        parent.frames = {};
+    end
+
+    for idx = 1, count do
+        parent.frames[idx] = CreateFrame("Button", nil, parent, "AUFDebuffFrameTemplate");
+        local frame = parent.frames[idx];
+        for _, r in next, { frame.cooldown:GetRegions() } do
+            if r:GetObjectType() == "FontString" then
+                r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+                r:ClearAllPoints();
+                r:SetPoint("CENTER", 0, 0);
+                break
+            end
+        end
+
+        frame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+        frame.count:ClearAllPoints()
+        frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
+
+        frame.icon:SetTexCoord(.08, .92, .08, .92);
+        frame.icon:SetAlpha(1);
+        frame.border:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga");
+        frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+        frame.border:SetAlpha(1);
+
+        frame:ClearAllPoints();
+        UpdateDebuffAnchor(parent.frames, idx, 1, bright, parent, width/count);
+
+        if not frame:GetScript("OnEnter") then
+            frame:SetScript("OnEnter", function(s)
+                if s.auraInstanceID then
+                    GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                    GameTooltip:SetUnitDebuffByAuraInstanceID(s.unit, s.auraInstanceID, filter);
+                end
+            end)
+            frame:SetScript("OnLeave", function()
+                GameTooltip:Hide();
+            end)
+        end
+
+        frame:EnableMouse(false);
+        frame:SetMouseMotionEnabled(true);
+
+        frame:Hide();
+    end
+
+    return;
+end
+
+local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight, fontsize, debuffupdate)
     local FontOutline = "OUTLINE";
 
     frame:ClearAllPoints();
@@ -193,7 +534,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.castbar:SetMinMaxValues(0, 100)
     frame.castbar:SetValue(100)
     frame.castbar:SetHeight(castbarheight)
-    frame.castbar:SetWidth(width - ((castbarheight+1) * 1.2) -1)
+    frame.castbar:SetWidth(width - ((castbarheight + 1) * 1.2) - 1)
     frame.castbar:SetStatusBarColor(1, 0.9, 0.9);
     frame.castbar:SetAlpha(1);
 
@@ -213,7 +554,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.castbar.time = frame.castbar:CreateFontString(nil, "OVERLAY");
     frame.castbar.time:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
     frame.castbar.time:SetPoint("RIGHT", frame.castbar, "RIGHT", -3, 0);
-    
+
     if not frame.castbar:GetScript("OnEnter") then
         frame.castbar:SetScript("OnEnter", function(s)
             if s.castspellid and s.castspellid > 0 then
@@ -232,8 +573,8 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
 
     frame.castbar.button = CreateFrame("Button", nil, frame.castbar, "AUFFrameTemplate");
     frame.castbar.button:SetPoint("RIGHT", frame.castbar, "LEFT", -2, 0)
-    frame.castbar.button:SetWidth((castbarheight+1) * 1.2);
-    frame.castbar.button:SetHeight(castbarheight+1);
+    frame.castbar.button:SetWidth((castbarheight + 1) * 1.2);
+    frame.castbar.button:SetHeight(castbarheight + 1);
     frame.castbar.button:SetScale(1);
     frame.castbar.button:SetAlpha(1);
     frame.castbar.button:EnableMouse(false);
@@ -246,9 +587,23 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.castbar.targetname = frame.castbar:CreateFontString(nil, "OVERLAY");
     frame.castbar.targetname:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
     frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);
+    frame.debuffupdate = false;
 
+    if debuffupdate then        
+        CreatDebuffFrames(frame, true, fontsize, width, 4);
+        frame.debuffupdate = true;
+    end
+
+    frame.updatecount = 1;
 
     frame:Show();
+
+    frame.callback = function ()
+        updateUnit(frame);
+    end
+
+    C_Timer.NewTicker(Update_Rate, frame.callback);
+   
 end
 
 AUF_PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
@@ -256,11 +611,22 @@ AUF_TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 AUF_FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 AUF_PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 AUF_TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, 200, healthheight, 0, 12);
-CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, 200, healthheight, powerheight, 12);
-CreateUnitFrame(AUF_FocusFrame, "focus", xposition + 200, yposition, 150, 20, 3, 11);
-CreateUnitFrame(AUF_PetFrame, "pet", -xposition - 50, yposition - 40, 100, 15, 2, 9);
-CreateUnitFrame(AUF_TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, 100, 15, 2, 9);
+
+
+CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, 200, healthheight, 0, 12, false);
+CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, 200, healthheight, powerheight, 12, false);
+CreateUnitFrame(AUF_FocusFrame, "focus", xposition + 200, yposition, 150, 20, 3, 11, false);
+CreateUnitFrame(AUF_PetFrame, "pet", -xposition - 50, yposition - 40, 100, 15, 2, 9, true);
+CreateUnitFrame(AUF_TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, 100, 15, 2, 9, true);
+
+AUF_BossFrames = {};
+if (MAX_BOSS_FRAMES) then
+    for i = 1, MAX_BOSS_FRAMES do
+        AUF_BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+        CreateUnitFrame(AUF_BossFrames[i], "boss" .. i, xposition + 250, 200 - (i - 1) * 70, 150, 20, 3, 11);
+    end
+end
+
 
 C_AddOns.LoadAddOn("asMOD");
 
@@ -270,267 +636,14 @@ if asMOD_setupFrame then
     asMOD_setupFrame(AUF_FocusFrame, "AUF_FocusFrame");
     asMOD_setupFrame(AUF_PetFrame, "AUF_PetFrame");
     asMOD_setupFrame(AUF_TargetTargetFrame, "AUF_TargetTargetFrame");
-end
 
-local RaidIconList = {
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
-}
-
-local leaderIcon = CreateAtlasMarkup("groupfinder-icon-leader", 14, 9, 0, 0);
-
-local function UpdateFillBarBase(realbar, bar, amount)
-    if not amount or (amount == 0) then
-        bar:Hide();
-        return
-    end
-
-    local previousTexture = realbar:GetStatusBarTexture();
-
-    local gen = false;
-
-    bar:ClearAllPoints();
-    bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", 0, 0);
-    bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", 0, 0);
-
-    if amount < 0 then
-        amount = 0 - amount;
-        gen = true;
-    end
-
-    local totalWidth, totalHeight = realbar:GetSize();
-
-    local _, totalMax = realbar:GetMinMaxValues();
-
-    local barSize = (amount / totalMax) * totalWidth;
-    bar:SetWidth(barSize);
-    if gen then
-        bar:SetVertexColor(1, 1, 1)
-    else
-        bar:SetVertexColor(0.5, 0.5, 0.5)
-    end
-    bar:Show();
-end
-
-local unit_player = "player";
-local unit_pet = "pet";
-
-local function updateUnit(frame)
-    local unit = frame.unit;
-    local showplayermana = false;
-
-    if unit == "player" then
-        unit = unit_player;
-        showplayermana = (unit ~= "player");
-    elseif unit == "pet" then
-        unit = unit_pet;
-    end
-
-    if not UnitExists(unit) then
-        frame:SetAlpha(0);
-        return;
-    else
-        if not InCombatLockdown() then
-            frame:SetAlpha(0.5);
-        else
-            frame:SetAlpha(1);
+    if (MAX_BOSS_FRAMES) then
+        for i = 1, MAX_BOSS_FRAMES do            
+            asMOD_setupFrame(AUF_BossFrames[i], "AUF_BossFrame"..i);            
         end
-    end
-
-    local value = UnitHealth(unit);
-    local valueMax = UnitHealthMax(unit);
-    local value_orig = value;
-
-    local allIncomingHeal = UnitGetIncomingHeals(unit) or 0;
-    local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0;
-    local total = allIncomingHeal + totalAbsorb;
-
-    valuePct = (math.ceil((value / valueMax) * 100));
-    valuePct_orig = (math.ceil((value_orig / valueMax) * 100));
-    local valuePctAbsorb = (math.ceil((total / valueMax) * 100));
-
-    frame.healthbar:SetMinMaxValues(0, valueMax)
-    frame.healthbar:SetValue(value)
-
-    if UnitIsPlayer(unit) then
-        local class = select(2, UnitClass(unit));
-        local classColor = class and RAID_CLASS_COLORS[class] or nil;
-        if classColor then
-            frame.healthbar:SetStatusBarColor(classColor.r, classColor.g, classColor.b);
-        end
-    else
-        local r = 0;
-        local g = 1.0;
-        local b = 0;
-        local reaction = UnitReaction("player", unit);
-        if (reaction) then
-            r = FACTION_BAR_COLORS[reaction].r;
-            g = FACTION_BAR_COLORS[reaction].g;
-            b = FACTION_BAR_COLORS[reaction].b;
-        end
-
-        frame.healthbar:SetStatusBarColor(r, g, b);
-    end
-
-    if valuePctAbsorb > 0 then
-        frame.healthbar.pvalue:SetText(valuePct .. "(" .. valuePctAbsorb .. ")");
-    else
-        frame.healthbar.pvalue:SetText(valuePct);
-    end
-
-    local totalAbsorbremain = totalAbsorb;
-    local remainhealth = valueMax - value;
-
-    if totalAbsorbremain > remainhealth then
-        totalAbsorbremain = remainhealth;
-    end
-
-    UpdateFillBarBase(frame.healthbar, frame.healthbar.absorbBar, totalAbsorbremain);
-    local unitlevel = UnitLevel(unit);
-    if unitlevel < 0 then
-        unitlevel = "??"
-    end
-
-    local mark = "";
-    local icon = GetRaidTargetIndex(unit)
-    if icon and RaidIconList[icon] then
-        mark = RaidIconList[icon] .. "0|t"
-    end
-    
-    if IsResting() and frame == AUF_PlayerFrame then
-        mark = mark .. " " .. "zzz"
-    end
-
-    local name = UnitName(unit);
-
-    if UnitIsGroupLeader(unit) then
-        name = leaderIcon .. " " .. name;
-    end
-
-    local classification = UnitClassification(unit)
-
-    if classification and classification ~= "minus" and classification ~= "normal" and classification ~= "trivial" then
-        name = classification .. " " .. name;
-    end
-
-    name = unitlevel .. " " .. name;
-
-    frame.healthbar.hvalue:SetText(AbbreviateLargeNumbers(value))
-    frame.healthbar.name:SetText(name);
-    frame.healthbar.mark:SetText(mark);
-
-
-    local power = UnitPower(unit)
-    local maxPower = UnitPowerMax(unit)
-    frame.powerbar:SetMinMaxValues(0, maxPower)
-    frame.powerbar:SetValue(power)
-    frame.powerbar.value:SetText(power)
-
-    local powerType, powerToken = UnitPowerType(unit)
-
-    if powerType ~= nil then
-        local powerColor = PowerBarColor[powerType]
-        if powerColor then
-            frame.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b)
-        end
-
-        if frame == AUF_PlayerFrame then
-            if powerType > 0 then
-                local manavalue = UnitPower(unit, 0);
-                local manaMax = UnitPowerMax(unit, 0);
-
-                if manavalue > 0 then
-                    frame.healthbar:SetHeight(healthheight - powerheight);
-                    frame.powerbar:SetHeight(powerheight);
-                    frame.powerbar:SetMinMaxValues(0, manaMax)
-                    frame.powerbar:SetValue(manavalue);
-                    frame.powerbar.value:SetText(manavalue)
-                    local powerColor = PowerBarColor[0]
-                    frame.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b)
-                elseif showplayermana then
-                    frame.healthbar:SetHeight(healthheight - powerheight);
-                    frame.powerbar:SetHeight(powerheight);
-                else
-                    frame.healthbar:SetHeight(healthheight);
-                    frame.powerbar:SetHeight(0);
-                end
-            else
-                frame.healthbar:SetHeight(healthheight);
-                frame.powerbar:SetHeight(0);
-            end
-        end
-    end
-
-
-    if frame == AUF_TargetFrame then
-        local isTanking, status, percentage, rawPercentage = UnitDetailedThreatSituation("player", "target");
-
-        local display;
-
-        if (isTanking) then
-            display = UnitThreatPercentageOfLead("player", "target");
-        end
-
-        if not display then
-            display = percentage;
-        end
-
-        if (display and display ~= 0) then
-            frame.healthbar.aggro:SetText(format("%1.0f", display) .. "%");
-            local r, g, b = GetThreatStatusColor(status)
-            frame.healthbar.aggro:SetTextColor(r, g, b, 1);
-            frame.healthbar.aggro:Show();
-        else
-            frame.healthbar.aggro:Hide();
-        end
-    end
-
-    if frame.castbar.start and  frame.castbar.start > 0 then
-        local castBar = frame.castbar;
-        local start = castBar.start;
-        local duration = castBar.duration;
-        local current = GetTime();
-        local time = castBar.time;
-        castBar:SetValue((current - start));
-        time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
-    end
-
-end
-
-local function UpdatePlayerUnit()
-    local hasValidVehicleUI = UnitHasVehicleUI("player");
-    local unitVehicleToken;
-    if (hasValidVehicleUI) then
-        local prefix, id, suffix = string.match("player", "([^%d]+)([%d]*)(.*)")
-        unitVehicleToken = prefix .. "pet" .. id .. suffix;
-        if (not UnitExists(unitVehicleToken)) then
-            hasValidVehicleUI = false;
-        end
-    end
-
-    if (hasValidVehicleUI) then
-        unit_player = unitVehicleToken
-        unit_pet = "player"
-    else
-        unit_player = "player"
-        unit_pet = "pet"
     end
 end
 
-local function OnUpdate()
-    UpdatePlayerUnit();
-    updateUnit(AUF_PlayerFrame);
-    updateUnit(AUF_TargetFrame);
-    updateUnit(AUF_FocusFrame);
-    updateUnit(AUF_PetFrame);
-    updateUnit(AUF_TargetTargetFrame);
-end
 
 -- stolen from cell, which is stolen from elvui
 local hiddenParent = CreateFrame("Frame", nil, _G.UIParent)
@@ -592,27 +705,38 @@ local function HideDefaults()
     HideBlizzardUnitFrame("target");
     HideBlizzardUnitFrame("focus");
     HideBlizzardUnitFrame("pet");
+
+    if (MAX_BOSS_FRAMES) then
+        for i = 1, MAX_BOSS_FRAMES do
+            local bossframe = _G["Boss" .. i .. "TargetFrame"];
+
+            if bossframe then
+                HideFrame(bossframe);
+            end
+        end
+    end
 end
 
-C_Timer.NewTicker(Update_Rate, OnUpdate);
 HideDefaults();
 
 local DangerousSpellList = {};
 
 local function updateCastBar(frame)
     local castbar    = frame.castbar;
-    local frameIcon  = castbar.button.icon;    
+    local frameIcon  = castbar.button.icon;
     local text       = castbar.name;
     local time       = castbar.time;
     local targetname = castbar.targetname;
-    local unit = frame.unit;
-    local unittarget = unit.."target";
+    local unit       = frame.unit;
+    local unittarget = unit .. "target";
 
     if UnitExists(unit) then
+        local bchanneling = false;
         local name, _, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
             unit);
 
         if not name then
+            bchanneling = true;
             name, _, texture, start, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
         end
 
@@ -622,8 +746,16 @@ local function updateCastBar(frame)
 
             castbar.start = start / 1000;
             castbar.duration = (endTime - start) / 1000;
+            castbar.bchanneling = bchanneling;
+           
             castbar:SetMinMaxValues(0, castbar.duration)
-            castbar:SetValue(current - castbar.start);
+
+            if bchanneling then
+                castbar:SetValue(castbar.start + castbar.duration - current);
+            else
+                castbar:SetValue(current - castbar.start);
+            end
+            
 
             local color = {};
 
@@ -652,7 +784,7 @@ local function updateCastBar(frame)
             castbar:Show();
             if DangerousSpellList[spellid] and DangerousSpellList[spellid] == "interrupt" then
                 ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
-            end            
+            end
 
             if UnitExists(unittarget) and UnitIsPlayer(unittarget) then
                 local _, Class = UnitClass(unittarget)
@@ -684,48 +816,64 @@ local function updateCastBar(frame)
     end
 end
 
+local function AUF_OnEventSpell(self, event, arg1, arg2, arg3)
+    updateCastBar(self);
+end
 
+local function RegisterAll(frame, unit)
+    if UnitExists(unit) then
+        frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
+        frame:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
+        frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
+        frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit);
+        frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
+        frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
+        frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", unit);
+        frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
+        frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
+        frame:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit);
+        frame:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
+        frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
+        frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
+        frame:RegisterUnitEvent("UNIT_TARGET", unit);
+        frame:SetScript("OnEvent", AUF_OnEventSpell);
+    else
+        frame:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
+        frame:UnregisterEvent("UNIT_SPELLCAST_DELAYED");
+        frame:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
+        frame:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE");
+        frame:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
+        frame:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_START");
+        frame:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE");
+        frame:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_STOP");
+        frame:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE");
+        frame:UnregisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE");
+        frame:UnregisterEvent("UNIT_SPELLCAST_START");
+        frame:UnregisterEvent("UNIT_SPELLCAST_STOP");
+        frame:UnregisterEvent("UNIT_SPELLCAST_FAILED");
+        frame:UnregisterEvent("UNIT_TARGET");
+        frame:SetScript("OnEvent", nil);
+    end
+end
 
 local function AUF_OnEvent(self, event, arg1, arg2, arg3)
-
-    if event == "PLAYER_FOCUS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
-        if UnitExists("focus") then
-            self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "focus");
-            self:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", "focus");
-            self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "focus");
-            self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", "focus");
-            self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "focus");
-            self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "focus");
-            self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", "focus");
-            self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "focus");
-            self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", "focus");
-            self:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", "focus");
-            self:RegisterUnitEvent("UNIT_SPELLCAST_START", "focus");
-            self:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "focus");
-            self:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "focus");
-            self:RegisterUnitEvent("UNIT_TARGET", "focus");
-        else
-            self:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
-            self:UnregisterEvent("UNIT_SPELLCAST_DELAYED");
-            self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
-            self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE");
-            self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
-            self:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_START");
-            self:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE");
-            self:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_STOP");
-            self:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE");
-            self:UnregisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE");
-            self:UnregisterEvent("UNIT_SPELLCAST_START");
-            self:UnregisterEvent("UNIT_SPELLCAST_STOP");
-            self:UnregisterEvent("UNIT_SPELLCAST_FAILED");
-            self:UnregisterEvent("UNIT_TARGET");
+    if event == "PLAYER_FOCUS_CHANGED" then
+        RegisterAll(AUF_FocusFrame, "focus");
+    elseif event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" then
+        if (MAX_BOSS_FRAMES) then
+            for i = 1, MAX_BOSS_FRAMES do
+                RegisterAll(AUF_BossFrames[i], "boss"..i);
+            end
         end
-        if event == "PLAYER_ENTERING_WORLD" then
-            HideDefaults();
+    elseif event == "PLAYER_ENTERING_WORLD" then
+        RegisterAll(AUF_FocusFrame, "focus");
+        if (MAX_BOSS_FRAMES) then
+            for i = 1, MAX_BOSS_FRAMES do
+                RegisterAll(AUF_BossFrames[i], "boss"..i);
+            end
         end
+        HideDefaults();
     end
-    
-    updateCastBar(AUF_FocusFrame);
 
     return;
 end
@@ -734,6 +882,7 @@ local AUF = CreateFrame("Frame")
 AUF:SetScript("OnEvent", AUF_OnEvent)
 AUF:RegisterEvent("PLAYER_ENTERING_WORLD");
 AUF:RegisterEvent("PLAYER_FOCUS_CHANGED");
+AUF:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
 
 local DBMobj;
 

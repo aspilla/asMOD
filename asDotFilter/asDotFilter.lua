@@ -274,7 +274,7 @@ local function ADotF_UpdateDebuffAnchor(frames, index, size, offsetX, right, par
         if isboss then
             buff:SetPoint(point1, parent, point2, -50, 0);
         else
-            buff:SetPoint(point1, parent, point2, 0, 0);
+            buff:SetPoint(point1, parent, point2, 2, 0);
         end
     else
         buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
@@ -345,15 +345,40 @@ local function ADotF_UpdateDebuff(unit)
             end
             isboss = false;
         elseif (unit == "boss1") then
-            parent = _G["Boss1TargetFrame"];
+            if AUF_BossFrames[1] then
+                parent = AUF_BossFrames[1];
+                isboss = false;
+            else
+                parent = _G["Boss1TargetFrame"];
+            end            
         elseif (unit == "boss2") then
-            parent = _G["Boss2TargetFrame"];
+            if AUF_BossFrames[2] then
+                parent = AUF_BossFrames[2];
+                isboss = false;
+            else
+                parent = _G["Boss2TargetFrame"];
+            end
         elseif (unit == "boss3") then
-            parent = _G["Boss3TargetFrame"];
+            if AUF_BossFrames[3] then
+                parent = AUF_BossFrames[3];
+                isboss = false;
+            else
+                parent = _G["Boss3TargetFrame"];
+            end
         elseif (unit == "boss4") then
-            parent = _G["Boss4TargetFrame"];
+            if AUF_BossFrames[4] then
+                parent = AUF_BossFrames[4];
+                isboss = false;
+            else
+                parent = _G["Boss4TargetFrame"];
+            end
         elseif (unit == "boss5") then
-            parent = _G["Boss5TargetFrame"];
+            if AUF_BossFrames[5] then
+                parent = AUF_BossFrames[5];
+                isboss = false;
+            else
+                parent = _G["Boss5TargetFrame"];
+            end
         else
             return;
         end

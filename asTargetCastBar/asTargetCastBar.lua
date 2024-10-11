@@ -140,11 +140,13 @@ local function ATCB_OnEvent(self, event, ...)
     local targetname = self.targetname;
 
     if UnitExists("target") then
+        local bchannel = false;
         local name, _, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
             "target");
 
         if not name then
             name, _, texture, start, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo("target");
+            bchannel = true;
         end
 
         if name then
@@ -153,8 +155,14 @@ local function ATCB_OnEvent(self, event, ...)
 
             self.start = start / 1000;
             self.duration = (endTime - start) / 1000;
+            self.bchannel = bchannel;
             castBar:SetMinMaxValues(0, self.duration)
-            castBar:SetValue(current - self.start);
+
+            if bchannel then
+                castBar:SetValue(self.start + self.duration - current);
+            else
+                castBar:SetValue(current - self.start);
+            end
 
             local color = {};
 
@@ -218,14 +226,23 @@ end
 
 local function ATCB_OnUpdate()
     local start = ATCB.start;
+    local duration = ATCB.duration;
+    local current = GetTime();
 
-    if start > 0 then
-        local castBar = ATCB.castbar;
-        local duration = ATCB.duration;
-        local current = GetTime();
+    if start > 0 and start + duration >= current then
+        local castBar = ATCB.castbar;        
+        local bchannel = ATCB.bchannel;
+        
         local time = ATCB.castbar.time;
-        castBar:SetValue((current - start));
-        time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
+        if bchannel then
+            castBar:SetValue((start + duration - current));
+            time:SetText(format("%.1f/%.1f", max((start + duration - current), 0), max(duration, 0)));
+        else
+            castBar:SetValue((current - start));
+            time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
+        end
+        
+        
     end
 end
 

@@ -108,9 +108,11 @@ local function ADCA_OnUpdate()
 
 	for unit, needtosound in pairs(CastingUnits) do
 		if UnitExists(unit) then
+			local bchanneling = false;
 			local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, castID, notInterruptible, spellId =
 				UnitCastingInfo(unit);
 			if not name then
+				bchanneling = true;
 				name, text, texture, startTimeMS, endTimeMS, isTradeSkill, notInterruptible, spellId = UnitChannelInfo(
 					unit);
 			end
@@ -132,6 +134,7 @@ local function ADCA_OnUpdate()
 					focus = UnitExists("focus") and UnitIsUnit("focus", unit),
 					needtointerrupt = (DangerousSpellList[spellId] == "interrupt"),
 					target = UnitExists("target") and UnitIsUnit("target", unit),
+					bchanneling = bchanneling,
 				}
 			else
 				CastingUnits[unit] = nil;
@@ -195,6 +198,7 @@ local function ADCA_OnUpdate()
 
 			frame.start = castingInfo.start;
 			frame.duration = castingInfo.duration;
+			frame.bchanneling = castingInfo.bchanneling;
 
 			frame:SetMinMaxValues(0, frame.duration);
 
@@ -334,19 +338,26 @@ local function ADCA_OnEvent(self, event, arg1, arg2, arg3, arg4)
 end
 
 local function Bar_OnUpdate(self, ef)
-	local start = self.start;
 	self.ef = self.ef + ef;
 
-
-	if start > 0 and self.ef > CONFIG_UPDATE_RATE then
+	if self.ef > CONFIG_UPDATE_RATE then
 		self.ef = 0;
-
-		local castBar = self;
+		local start = self.start;
 		local duration = self.duration;
 		local current = GetTime();
-		local time = self.time;
-		castBar:SetValue((current - start));
-		time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
+
+		if start > 0 and start + duration >= current then
+			local castBar = self;		
+			local time = self.time;
+
+			if self.bchanneling then
+				castBar:SetValue((start + duration - current));
+				time:SetText(format("%.1f/%.1f", max((start + duration - current), 0), max(duration, 0)));
+			else
+				castBar:SetValue((current - start));
+				time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
+			end
+		end
 	end
 end
 
@@ -430,6 +441,7 @@ local function CreateCastbars(parent)
 		frame.start = 0;
 		frame.duration = 0;
 		frame.ef = 0;
+		frame.bchanneling = false;
 
 		frame:SetScript("OnUpdate", Bar_OnUpdate);
 	end
