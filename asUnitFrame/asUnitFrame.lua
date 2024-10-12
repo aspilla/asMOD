@@ -837,6 +837,7 @@ local function RegisterAll(frame, unit)
         frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
         frame:RegisterUnitEvent("UNIT_TARGET", unit);
         frame:SetScript("OnEvent", AUF_OnEventSpell);
+        updateCastBar(frame);
     else
         frame:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
         frame:UnregisterEvent("UNIT_SPELLCAST_DELAYED");

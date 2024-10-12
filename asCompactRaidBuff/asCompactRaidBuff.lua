@@ -8,9 +8,9 @@ ns.asparty = {};
 ns.lowhealth = 0;
 
 local asGetSpellInfo = function(spellID)
-	if not spellID then
-		return nil;
-	end
+    if not spellID then
+        return nil;
+    end
 
     local ospellID = C_Spell.GetOverrideSpell(spellID)
 
@@ -18,10 +18,11 @@ local asGetSpellInfo = function(spellID)
         spellID = ospellID;
     end
 
-	local spellInfo = C_Spell.GetSpellInfo(spellID);
-	if spellInfo then
-		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
-	end
+    local spellInfo = C_Spell.GetSpellInfo(spellID);
+    if spellInfo then
+        return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+            spellInfo.spellID, spellInfo.originalIconID;
+    end
 end
 
 local function asCheckTalent(name)
@@ -29,7 +30,7 @@ local function asCheckTalent(name)
 
     if not (configID) then
         return false;
-    end    
+    end
     local configInfo = C_Traits.GetConfigInfo(configID);
     local treeID = configInfo.treeIDs[1];
 
@@ -38,7 +39,6 @@ local function asCheckTalent(name)
     for _, nodeID in ipairs(nodes) do
         local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
         if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-
             local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID;
             local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
             local definitionInfo = entryInfo and entryInfo.definitionID and
@@ -47,7 +47,7 @@ local function asCheckTalent(name)
             if definitionInfo and IsPlayerSpell(definitionInfo.spellID) then
                 local talentName = C_Spell.GetSpellName(definitionInfo.spellID);
                 if name == talentName then
-					return true;
+                    return true;
                 end
             end
         end
@@ -135,8 +135,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
     local x, y = frame:GetSize();
 
     asframe.needtosetup = false;
-    asframe.updatecount = nil;
-
+    
     if frame.unit then
         asframe.unit = frame.unit;
     end
@@ -517,6 +516,18 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         ns.ACRB_UpdateRaidIconAborbColor(asframe);
         ns.ACRB_UpdateAuras(asframe);
     end
+
+    asframe.callback = function()
+        if asframe.frame:IsShown() then
+            ns.ACRB_UpdateAuras(asframe);
+        end
+    end
+
+    if asframe.timer then
+        asframe.timer:Cancel();
+    end
+
+    asframe.timer = C_Timer.NewTicker(ns.UpdateRate, asframe.callback);
 end
 
 local function ACRB_disableDefault(frame)
@@ -612,58 +623,20 @@ local function ARCB_UpdateAll(frame)
     end
 end
 
-local updatecount = 0;
-local NUM_MEMBERS = 5;
-
-local function ACRB_updatePartyAllAura(auraonly, update_all)
-    if auraonly then
-        local count = 0;
-        local newcount = (updatecount + 1) % 100;
-
-        if (IsInRaid()) then
-            for _, asframe in pairs(ns.asraid) do
-                if asframe and asframe.frame and (asframe.updatecount == nil or asframe.updatecount == updatecount) then
-                    if asframe.frame:IsShown() then
-                        ns.ACRB_UpdateAuras(asframe);
-                        count = count + 1;
-                    end
-                    asframe.updatecount = newcount;
-                    if count == NUM_MEMBERS and update_all == false then
-                        return;
-                    end
-                end
-            end
-            updatecount = newcount;
-        elseif (IsInGroup()) then
-            for _, asframe in pairs(ns.asparty) do
-                if asframe and asframe.frame and (asframe.updatecount == nil or asframe.updatecount == updatecount) then
-                    if asframe.frame:IsShown() then
-                        ns.ACRB_UpdateAuras(asframe);
-                    end
-                end
+local function ACRB_updateSetupAll()
+    if (IsInRaid()) then
+        for _, asframe in pairs(ns.asraid) do
+            if asframe and asframe.frame and asframe.frame:IsShown() then
+                ns.ACRB_setupFrame(asframe, true);
             end
         end
-    else
-        if (IsInRaid()) then
-            for _, asframe in pairs(ns.asraid) do
-                if asframe and asframe.frame and asframe.frame:IsShown() then
-                    ns.ACRB_setupFrame(asframe, true);
-                end
-            end
-        elseif (IsInGroup()) then
-            for _, asframe in pairs(ns.asparty) do
-                if asframe and asframe.frame and asframe.frame:IsShown() then
-                    ns.ACRB_setupFrame(asframe, true);
-                end
+    elseif (IsInGroup()) then
+        for _, asframe in pairs(ns.asparty) do
+            if asframe and asframe.frame and asframe.frame:IsShown() then
+                ns.ACRB_setupFrame(asframe, true);
             end
         end
     end
-end
-
-local numberofgroups = 1;
-
-local function ACRB_OnUpdateAura()
-    ACRB_updatePartyAllAura(true, false);
 end
 
 local function ACRB_OnUpdate()
@@ -686,29 +659,11 @@ function ns.SetupAll(init)
         timero:Cancel();
     end
 
-    if timeroAura then
-        timeroAura:Cancel();
-    end
-
-    local function get_party_count(member_count)
-        if member_count == 0 then
-            return 1;
-        end
-        if member_count % NUM_MEMBERS == 0 then
-            return member_count / NUM_MEMBERS
-        else
-            return math.floor(member_count / NUM_MEMBERS) + 1
-        end
-    end
-
-    numberofgroups = get_party_count(GetNumGroupMembers());
-
     if init then
         ACRB_InitList();
     end
-    ACRB_updatePartyAllAura(false, true);
+    ACRB_updateSetupAll();
     timero = C_Timer.NewTicker(ns.UpdateRate, ACRB_OnUpdate);
-    timeroAura = C_Timer.NewTicker(ns.UpdateRate / numberofgroups, ACRB_OnUpdateAura);
 end
 
 local bfirst = true;
@@ -720,9 +675,7 @@ local function ACRB_OnEvent(self, event, arg1, arg2, arg3)
         bfirst = false;
     end
 
-    if event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
-        ACRB_updatePartyAllAura(true, true);
-    elseif event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" then
+    if event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" then
         local unit = arg1;
         local spellid = arg3;
         if unit and spellid and ns.isAttackable(unit) and string.find(unit, "nameplate") then
@@ -738,7 +691,7 @@ local function ACRB_OnEvent(self, event, arg1, arg2, arg3)
     elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED") then
         ns.SetupAll(true);
         ns.UpdateDispellable();
-    elseif (event == "UNIT_PET") then        
+    elseif (event == "UNIT_PET") then
         ns.UpdateDispellable();
     elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
         ns.updateTankerList();
@@ -765,8 +718,6 @@ ACRB_mainframe:RegisterEvent("VARIABLES_LOADED");
 ACRB_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
 ACRB_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 ACRB_mainframe:RegisterUnitEvent("UNIT_PET", "player")
--- CPU 리소스
--- ACRB_mainframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 
 hooksecurefunc("CompactUnitFrame_UpdateAll", hookfunc);
 hooksecurefunc("CompactUnitFrame_UpdateName", ns.UpdateNameColor);
