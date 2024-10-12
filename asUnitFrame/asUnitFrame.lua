@@ -429,7 +429,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar:SetValue(100)
     frame.healthbar:SetWidth(width)
     frame.healthbar:SetHeight(height - powerbarheight)
-    frame.healthbar:SetPoint("CENTER", frame, "CENTER", 0, 0);
+    frame.healthbar:SetPoint("TOP", frame, "TOP", 0, 0);
     frame.healthbar:Show();
 
 
@@ -613,7 +613,7 @@ AUF_PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 AUF_TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 
 
-CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, 200, healthheight, 0, 12, false);
+CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, 200, healthheight, powerheight, 12, false);
 CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, 200, healthheight, powerheight, 12, false);
 CreateUnitFrame(AUF_FocusFrame, "focus", xposition + 200, yposition, 150, 20, 3, 11, false);
 CreateUnitFrame(AUF_PetFrame, "pet", -xposition - 50, yposition - 40, 100, 15, 2, 9, true);
