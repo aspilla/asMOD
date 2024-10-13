@@ -874,6 +874,8 @@ local function AUF_OnEvent(self, event, arg1, arg2, arg3)
             end
         end
         HideDefaults();
+    elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
+        ns.DumpCaches();
     end
 
     return;
@@ -883,6 +885,8 @@ local AUF = CreateFrame("Frame")
 AUF:SetScript("OnEvent", AUF_OnEvent)
 AUF:RegisterEvent("PLAYER_ENTERING_WORLD");
 AUF:RegisterEvent("PLAYER_FOCUS_CHANGED");
+AUF:RegisterEvent("PLAYER_REGEN_ENABLED");
+AUF:RegisterEvent("PLAYER_REGEN_DISABLED");
 AUF:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
 
 local DBMobj;

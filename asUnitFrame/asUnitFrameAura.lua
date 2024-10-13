@@ -69,7 +69,7 @@ local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuation
     for i = 1, n do
         local slot = select(i, ...);
         local done;
-        local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);        
+        local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
         if usePackedAura then
             done = func(auraInfo);
         else
@@ -96,6 +96,26 @@ end
 
 local activeDebuffs = {};
 
+local cachedVisualizationInfo = {};
+ns.hasValidPlayer = false;
+
+local function GetCachedVisibilityInfo(spellId)
+    if cachedVisualizationInfo[spellId] == nil then
+        local newInfo = { SpellGetVisibilityInfo(spellId,
+            UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT") };
+        if not ns.hasValidPlayer then
+            -- Don't cache the info if the player is not valid since we didn't get a valid result
+            return unpack(newInfo);
+        end
+        cachedVisualizationInfo[spellId] = newInfo;
+    end
+
+    local info = cachedVisualizationInfo[spellId];
+    return unpack(info);
+end
+
+
+
 local cachedPriorityChecks = {};
 local function CheckIsPriorityAura(spellId)
     if cachedPriorityChecks[spellId] == nil then
@@ -104,7 +124,6 @@ local function CheckIsPriorityAura(spellId)
 
     return cachedPriorityChecks[spellId];
 end
-
 
 local function IsPriorityDebuff(spellId)
     local _, classFilename = UnitClass("player");
@@ -116,35 +135,58 @@ local function IsPriorityDebuff(spellId)
     end
 end
 
+local function ShouldDisplayDebuff(aura)
+    local unitCaster = aura.sourceUnit;
+    local spellId = aura.spellId;
+
+    local hasCustom, alwaysShowMine, showForMySpec = GetCachedVisibilityInfo(spellId);
+    if (hasCustom) then
+        return showForMySpec or
+            (alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
+        -- Would only be "mine" in the case of something like forbearance.
+    else
+        return true;
+    end
+end
+
+function ns.DumpCaches()
+    cachedVisualizationInfo = {};
+    cachedPriorityChecks = {};
+end
+
+
 local function ProcessAura(aura, unit)
     if aura == nil or aura.icon == nil or unit == nil or not aura.isHarmful then
         return AuraUpdateChangedType.None;
     end
 
-
     if not aura.isRaid then
-        if aura.isBossAura then
-            aura.debuffType = UnitFrameDebuffType.BossDebuff
+        local bshow = false;
+        if aura.nameplateShowAll then
+            aura.debuffType = UnitFrameDebuffType.namePlateShowAll;
+            bshow = true;
         elseif IsPriorityDebuff(aura.spellId) then
             aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
-        else
+            bshow = true;
+        elseif ShouldDisplayDebuff(aura) then
             aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
+            bshow = true;
         end
-    elseif aura.isRaid then
+
+        if bshow then
+            return AuraUpdateChangedType.Debuff;
+        end
+    else -- aura.isRaid
         aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
             UnitFrameDebuffType.NonBossRaidDebuff;
-    else
-        aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
+        return AuraUpdateChangedType.Debuff;
     end
 
-    activeDebuffs[unit][aura.auraInstanceID] = aura;
-
-    return AuraUpdateChangedType.Debuff;
+    return AuraUpdateChangedType.None;    
 end
 
 local filter = CreateFilterString(AuraFilters.Harmful);
 local function ParseAllAuras(unit)
-    
     if activeDebuffs[unit] == nil then
         activeDebuffs[unit] = TableUtil.CreatePriorityTable(UnitFrameDebuffComparator,
             TableUtil.Constants.AssociativePriorityTable);
@@ -152,28 +194,33 @@ local function ParseAllAuras(unit)
         activeDebuffs[unit]:Clear();
     end
 
-    local function HandleAura(aura)        
-        ProcessAura(aura, unit);
+    local function HandleAura(aura)       
+
+        local type = ProcessAura(aura, unit);
+
+        if type == AuraUpdateChangedType.Debuff then
+            activeDebuffs[unit][aura.auraInstanceID] = aura;
+        end   
         return false;
     end
 
     local batchCount = nil;
     local usePackedAura = true;
-    
+
     ForEachAura(unit, filter, batchCount, HandleAura, usePackedAura);
 end
 
 local function asCooldownFrame_Clear(self)
-	self:Clear();
+    self:Clear();
 end
 
 local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
-	if enable and enable ~= 0 and start > 0 and duration > 0 then
-		self:SetDrawEdge(forceShowDrawEdge);
-		self:SetCooldown(start, duration, modRate);
-	else
-		asCooldownFrame_Clear(self);
-	end
+    if enable and enable ~= 0 and start > 0 and duration > 0 then
+        self:SetDrawEdge(forceShowDrawEdge);
+        self:SetCooldown(start, duration, modRate);
+    else
+        asCooldownFrame_Clear(self);
+    end
 end
 
 local function UpdateAuraFrames(frame, auraList)
