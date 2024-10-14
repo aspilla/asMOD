@@ -8,13 +8,13 @@ local Options_Default = {
 
 -- 색상 변경
 ns.spelllists = {
-    [263725] = { { 263725, 3, 1, 0.5, 0.5, "RIGHT" }, { 449400, 5, 0.5, 1, 1, "LEFT" }, { 453601, 0, 0.5, 1, 0.5, "LEFT" } }, -- 비법, 번뜩임3(빨), 비전태양 5중(파),  에테르 조율(초)
-    [264173] = { { 264173, 4, 0, 1, 0, "RIGHT" }, { 264173, 3, 0, 1, 0, "LEFT" } },                                           -- 악흑, 악마의핵 3/4중
-    [135286] = { { 135286, 2, 0.2, 0.2, 0.2, "RIGHT" } },                                                                     -- 수드, 맹위 2중
-    [44544] = { { 438624, 0, 1, 0.2, 0.2, "LEFT" } },                                                                         -- 냉법, 화염 촉진
-    [391401] = { { 391401, 3, 0, 1, 0, "LEFT" } },                                                                            -- 암사 광기 3중
-    [407468] = { { 407468, 3, 0, 1, 0, "LEFT" } },                                                                            -- 암사 광기 3중
-    [409129] = { { 407468, 4, 0, 1, 0, "RIGHT" }, { 391401, 4, 0, 1, 0, "RIGHT" } },                                          -- 암사 광기 4중
+    [263725] = { { 263725, 3, 1, 0.5, 0.5, Enum.ScreenLocationType.Right }, { 449400, 5, 0.5, 1, 1, Enum.ScreenLocationType.Left }, { 453601, 0, 0.5, 1, 0.5, Enum.ScreenLocationType.Left } }, -- 비법, 번뜩임3(빨), 비전태양 5중(파),  에테르 조율(초)
+    [264173] = { { 264173, 4, 0, 1, 0, Enum.ScreenLocationType.Right }, { 264173, 3, 0, 1, 0, Enum.ScreenLocationType.Left } },                                           -- 악흑, 악마의핵 3/4중
+    [135286] = { { 135286, 2, 0.2, 0.2, 0.2, Enum.ScreenLocationType.Right } },                                                                     -- 수드, 맹위 2중
+    [44544] = { { 438624, 0, 1, 0.2, 0.2, Enum.ScreenLocationType.Left } },                                                                         -- 냉법, 화염 촉진
+    [391401] = { { 391401, 3, 0, 1, 0, Enum.ScreenLocationType.Left } },                                                                            -- 암사 광기 3중
+    [407468] = { { 407468, 3, 0, 1, 0, Enum.ScreenLocationType.Left } },                                                                            -- 암사 광기 3중
+    [409129] = { { 407468, 4, 0, 1, 0, Enum.ScreenLocationType.Right }, { 391401, 4, 0, 1, 0, Enum.ScreenLocationType.Right } },                                          -- 암사 광기 4중
 };
 
 -- 1 중시 좌측만
@@ -33,7 +33,7 @@ ns.countaware = {
 
 -- 아래를 위로
 ns.positionaware = {
-    [451038] = { "BOTTOM", "TOP" }, --비전
+    --[451038] = { "BOTTOM", "TOP" }, --비전
     --[201846] = {"BOTTOM", "TOP"}, --고술
 
 }
