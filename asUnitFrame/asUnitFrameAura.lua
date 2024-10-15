@@ -97,7 +97,7 @@ end
 local activeDebuffs = {};
 
 local cachedVisualizationInfo = {};
-ns.hasValidPlayer = false;
+local hasValidPlayer = false;
 
 local function GetCachedVisibilityInfo(spellId)
     if cachedVisualizationInfo[spellId] == nil then
@@ -154,6 +154,29 @@ function ns.DumpCaches()
     cachedPriorityChecks = {};
 end
 
+local function ShouldShowDebuffs(unit, caster, nameplateShowAll, aura)
+    if (nameplateShowAll) then
+        return true;
+    end
+
+    if (caster and (UnitIsUnit("player", caster) or UnitIsOwnerOrControllerOfUnit("player", caster))) then
+        return true;
+    end
+
+    local IsFriendly = not UnitCanAttack("player", unit);
+    local IsAPlayer = UnitIsPlayer(unit);
+    local IsAPlayerPet = UnitIsOtherPlayersPet(unit);
+    if (not IsAPlayer and not IsAPlayerPet and not IsFriendly) then        
+        return false;
+    end
+
+    if IsAPlayer and ShouldDisplayDebuff(aura) then
+        return true;        
+    end
+
+    return false;
+end
+
 
 local function ProcessAura(aura, unit)
     if aura == nil or aura.icon == nil or unit == nil or not aura.isHarmful then
@@ -162,27 +185,29 @@ local function ProcessAura(aura, unit)
 
     if not aura.isRaid then
         local bshow = false;
+
         if aura.nameplateShowAll then
             aura.debuffType = UnitFrameDebuffType.namePlateShowAll;
             bshow = true;
         elseif IsPriorityDebuff(aura.spellId) then
             aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
             bshow = true;
-        elseif ShouldDisplayDebuff(aura) then
-            aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
+        elseif ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll, aura) then
+            aura.debuffType = UnitFrameDebuffType.NonBossDebuff;            
             bshow = true;
-        end
+        end       
 
         if bshow then
             return AuraUpdateChangedType.Debuff;
         end
-    else -- aura.isRaid
+    elseif UnitIsPlayer(unit) then -- aura.isRaid
         aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
             UnitFrameDebuffType.NonBossRaidDebuff;
+            
         return AuraUpdateChangedType.Debuff;
     end
 
-    return AuraUpdateChangedType.None;    
+    return AuraUpdateChangedType.None;
 end
 
 local filter = CreateFilterString(AuraFilters.Harmful);
@@ -194,13 +219,12 @@ local function ParseAllAuras(unit)
         activeDebuffs[unit]:Clear();
     end
 
-    local function HandleAura(aura)       
-
+    local function HandleAura(aura)
         local type = ProcessAura(aura, unit);
 
         if type == AuraUpdateChangedType.Debuff then
             activeDebuffs[unit][aura.auraInstanceID] = aura;
-        end   
+        end
         return false;
     end
 

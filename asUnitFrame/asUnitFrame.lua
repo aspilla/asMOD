@@ -6,7 +6,7 @@ local _, ns = ...;
 
 local Update_Rate = 0.1 -- 0.1 초마다 Update
 local xposition = 225;
-local yposition = -195;
+local yposition = -198;
 local healthheight = 35;
 local powerheight = 5;
 
@@ -28,7 +28,16 @@ local RaidIconList = {
     "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
 }
 
+
+
 local leaderIcon = CreateAtlasMarkup("groupfinder-icon-leader", 14, 9, 0, 0);
+local combatIcon = CreateAtlasMarkup("pvptalents-warmode-swords", 14, 14);
+local restingIcon = CreateAtlasMarkup("Innkeeper", 14, 14);
+local eliteIcon = CreateAtlasMarkup("nameplates-icon-elite-gold", 14, 14);
+local rareIcon = CreateAtlasMarkup("UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare-Star", 14, 14);
+local rareeliteIcon = CreateAtlasMarkup("nameplates-icon-elite-silver", 14, 14);
+
+
 
 local function UpdateFillBarBase(realbar, bar, amount)
     if not amount or (amount == 0) then
@@ -84,6 +93,10 @@ local function UpdatePlayerUnit()
         unit_player = "player"
         unit_pet = "pet"
     end
+end
+
+local function IsUnitInGroup(unit)
+    return UnitInParty(unit) or UnitInRaid(unit) ~= nil
 end
 
 local function updateUnit(frame)
@@ -146,7 +159,7 @@ local function updateUnit(frame)
     if frame.castbar.start and frame.castbar.start > 0 and frame.castbar.start + frame.castbar.duration >= current then
         local castBar = frame.castbar;
         local start = castBar.start;
-        local duration = castBar.duration;        
+        local duration = castBar.duration;
         local time = castBar.time;
 
         if castBar.bchanneling then
@@ -156,7 +169,6 @@ local function updateUnit(frame)
             castBar:SetValue((current - start));
             time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
         end
-        
     end
 
     if frame.updatecount == 1 then
@@ -166,8 +178,10 @@ local function updateUnit(frame)
         return;
     end
 
+    local role = UnitGroupRolesAssigned(unit);
+
     --ClassColor
-    if UnitIsPlayer(unit) then
+    if UnitIsPlayer(unit) or (role and role ~= "NONE") then
         local class = select(2, UnitClass(unit));
         local classColor = class and RAID_CLASS_COLORS[class] or nil;
         if classColor then
@@ -187,41 +201,77 @@ local function updateUnit(frame)
         frame.healthbar:SetStatusBarColor(r, g, b);
     end
 
+    local mark = "";
+    local icon = GetRaidTargetIndex(unit)
+    if icon and RaidIconList[icon] then
+        mark = RaidIconList[icon] .. "0|t";
+    end
+
     --Name
     local unitlevel = UnitLevel(unit);
     if unitlevel < 0 then
         unitlevel = "??"
     end
-
-    local mark = "";
-    local icon = GetRaidTargetIndex(unit)
-    if icon and RaidIconList[icon] then
-        mark = RaidIconList[icon] .. "0|t"
-    end
-
-    if IsResting() and frame == AUF_PlayerFrame then
-        mark = mark .. " " .. "zzz"
-    end
-
     local name = UnitName(unit);
+    name = unitlevel .. " " .. name;
 
-    if UnitIsGroupLeader(unit) then
-        name = leaderIcon .. " " .. name;
-    end
+    -- Type
+    local classtext = "";
 
     local classification = UnitClassification(unit)
 
-    if classification and classification ~= "minus" and classification ~= "normal" and classification ~= "trivial" then
-        name = classification .. " " .. name;
+    if (classification == "elite" or classification == "worldboss") then
+        classtext = eliteIcon;
+    elseif (classification == "rare") then
+        classtext = rareIcon;
+    elseif (classification == "rareelite") then
+        classtext = rareeliteIcon;
     end
 
-    name = unitlevel .. " " .. name;
+    if frame == AUF_PlayerFrame or frame == AUF_TargetFrame then
+        if UnitIsGroupLeader(unit) then
+            classtext = classtext .. leaderIcon;
+        end
 
-    --Power
+        if (role and role ~= "NONE") then
+            local texture = nil;
+            if (role == "TANK") then
+                texture = CreateAtlasMarkup("roleicon-tiny-tank");
+            elseif (role == "DAMAGER") then
+                texture = CreateAtlasMarkup("roleicon-tiny-dps");
+            elseif (role == "HEALER") then
+                texture = CreateAtlasMarkup("roleicon-tiny-healer");
+            end
+
+            if texture then
+                classtext = classtext .. texture;
+            end
+        end
+
+
+        if UnitAffectingCombat(unit) then
+            classtext = classtext .. combatIcon;
+        end
+
+        if IsResting() and frame == AUF_PlayerFrame then
+            classtext = classtext .. restingIcon;
+        end
+
+        --[[
+        local creatureType = UnitCreatureType(unit)
+
+        if creatureType and not UnitIsPlayer(unit) then
+            classtext = classtext .. " (" .. creatureType .. ")";
+        end
+        ]]
+    end
+   
     frame.healthbar.hvalue:SetText(AbbreviateLargeNumbers(value))
     frame.healthbar.name:SetText(name);
     frame.healthbar.mark:SetText(mark);
+    frame.healthbar.classtext:SetText(classtext);
 
+    --Power
     local power = UnitPower(unit)
     local maxPower = UnitPowerMax(unit)
     frame.powerbar:SetMinMaxValues(0, maxPower)
@@ -264,7 +314,7 @@ local function updateUnit(frame)
     end
 
     --Threat
-    if frame ~= AUF_PlayerFrame and frame ~= AUF_PetFrame and frame ~= AUF_PetFrame and frame ~= AUF_TargetTargetFrame and not UnitIsPlayer(unit) then
+    if frame == AUF_TargetFrame and not UnitIsPlayer(unit) then
         local isTanking, status, percentage, rawPercentage = UnitDetailedThreatSituation("player", unit);
 
         local display;
@@ -285,6 +335,8 @@ local function updateUnit(frame)
         else
             frame.healthbar.aggro:Hide();
         end
+    else
+        frame.healthbar.aggro:Hide();
     end
 
     --Debuff
@@ -392,7 +444,7 @@ local function CreatDebuffFrames(parent, bright, fontsize, width, count)
         frame.border:SetAlpha(1);
 
         frame:ClearAllPoints();
-        UpdateDebuffAnchor(parent.frames, idx, 1, bright, parent, width/count);
+        UpdateDebuffAnchor(parent.frames, idx, 1, bright, parent, width / count);
 
         if not frame:GetScript("OnEnter") then
             frame:SetScript("OnEnter", function(s)
@@ -466,20 +518,26 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar.aggro:SetFont(STANDARD_TEXT_FONT, fontsize, FontOutline);
     frame.healthbar.aggro:SetTextColor(1, 1, 1, 1)
 
+    frame.healthbar.classtext = frame.healthbar:CreateFontString(nil, "ARTWORK");
+    frame.healthbar.classtext:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
+    frame.healthbar.classtext:SetTextColor(1, 1, 1, 1)
+
     if x < 0 then
         frame.healthbar.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 2, 0);
         frame.healthbar.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -2, 0);
         frame.healthbar.name:SetPoint("BOTTOMLEFT", frame.healthbar, "TOPLEFT", 2, 1);
-        frame.healthbar.aggro:SetPoint("BOTTOMRIGHT", frame.healthbar, "TOPRIGHT", -2, 1);
+        frame.healthbar.classtext:SetPoint("BOTTOMRIGHT", frame.healthbar, "TOPRIGHT", -2, 1);
+        frame.healthbar.aggro:SetPoint("BOTTOMRIGHT", frame.healthbar.classtext, "BOTTOMLEFT", -1, 0);
     else
         frame.healthbar.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -2, 0);
         frame.healthbar.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 2, 0);
         frame.healthbar.name:SetPoint("BOTTOMRIGHT", frame.healthbar, "TOPRIGHT", -2, 1);
-        frame.healthbar.aggro:SetPoint("BOTTOMLEFT", frame.healthbar, "TOPLEFT", 2, 1);
+        frame.healthbar.classtext:SetPoint("BOTTOMLEFT", frame.healthbar, "TOPLEFT", 2, 1);
+        frame.healthbar.aggro:SetPoint("BOTTOMLEFT", frame.healthbar.classtext, "BOTTOMRIGHT", 1, 0);
     end
 
     frame.healthbar.mark = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.healthbar.mark:SetFont(STANDARD_TEXT_FONT, fontsize, FontOutline);
+    frame.healthbar.mark:SetFont(STANDARD_TEXT_FONT, fontsize + 2, FontOutline);
     frame.healthbar.mark:SetTextColor(1, 1, 1, 1)
     frame.healthbar.mark:SetPoint("CENTER", frame.healthbar, "CENTER", 0, 0);
 
@@ -589,7 +647,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);
     frame.debuffupdate = false;
 
-    if debuffupdate then        
+    if debuffupdate then
         CreatDebuffFrames(frame, true, fontsize, width, 4);
         frame.debuffupdate = true;
     end
@@ -598,12 +656,11 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
 
     frame:Show();
 
-    frame.callback = function ()
+    frame.callback = function()
         updateUnit(frame);
     end
 
     C_Timer.NewTicker(Update_Rate, frame.callback);
-   
 end
 
 AUF_PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
@@ -638,8 +695,8 @@ if asMOD_setupFrame then
     asMOD_setupFrame(AUF_TargetTargetFrame, "AUF_TargetTargetFrame");
 
     if (MAX_BOSS_FRAMES) then
-        for i = 1, MAX_BOSS_FRAMES do            
-            asMOD_setupFrame(AUF_BossFrames[i], "AUF_BossFrame"..i);            
+        for i = 1, MAX_BOSS_FRAMES do
+            asMOD_setupFrame(AUF_BossFrames[i], "AUF_BossFrame" .. i);
         end
     end
 end
@@ -747,7 +804,7 @@ local function updateCastBar(frame)
             castbar.start = start / 1000;
             castbar.duration = (endTime - start) / 1000;
             castbar.bchanneling = bchanneling;
-           
+
             castbar:SetMinMaxValues(0, castbar.duration)
 
             if bchanneling then
@@ -755,7 +812,7 @@ local function updateCastBar(frame)
             else
                 castbar:SetValue(current - castbar.start);
             end
-            
+
 
             local color = {};
 
@@ -858,19 +915,26 @@ local function RegisterAll(frame, unit)
 end
 
 local function AUF_OnEvent(self, event, arg1, arg2, arg3)
-    if event == "PLAYER_FOCUS_CHANGED" then
+    if event == "PLAYER_TARGET_CHANGED" then
+        updateUnit(AUF_TargetFrame);
+    elseif event == "PLAYER_FOCUS_CHANGED" then
+        updateUnit(AUF_FocusFrame);
         RegisterAll(AUF_FocusFrame, "focus");
     elseif event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" then
         if (MAX_BOSS_FRAMES) then
             for i = 1, MAX_BOSS_FRAMES do
-                RegisterAll(AUF_BossFrames[i], "boss"..i);
+                updateUnit(AUF_BossFrames[i]);
+                RegisterAll(AUF_BossFrames[i], "boss" .. i);
             end
         end
     elseif event == "PLAYER_ENTERING_WORLD" then
+        updateUnit(AUF_TargetFrame);
+        updateUnit(AUF_FocusFrame);
         RegisterAll(AUF_FocusFrame, "focus");
         if (MAX_BOSS_FRAMES) then
             for i = 1, MAX_BOSS_FRAMES do
-                RegisterAll(AUF_BossFrames[i], "boss"..i);
+                updateUnit(AUF_BossFrames[i]);
+                RegisterAll(AUF_BossFrames[i], "boss" .. i);
             end
         end
         HideDefaults();

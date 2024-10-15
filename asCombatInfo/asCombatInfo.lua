@@ -114,6 +114,7 @@ local ACI_SpellList = nil;
 ACI_Buff_list = {};
 ACI_Debuff_list = {};
 ACI_SpellID_list = {};
+ACI_Totem_list = {};
 
 local function setupMouseOver(frame)
 	frame.spellid = nil;
@@ -256,10 +257,11 @@ function ACI_Init()
 		ACI_SpellListtmp = {};
 	end
 
-	ACI_Buff_list = {}
-	ACI_Debuff_list = {}
+	ACI_Buff_list = {};
+	ACI_Debuff_list = {};
 
 	ACI_SpellID_list = {};
+	ACI_Totem_list = {};
 
 
 	if ACI_SpellListtmp and #ACI_SpellListtmp then

@@ -889,17 +889,17 @@ function ns.Button:init(config, frame)
     end
 
     if self.type == ns.EnumButtonType.Totem then
-        ACI_Buff_list[self.spell] = true;
+        ACI_Totem_list[self.spell] = true;
         ns.eventhandler.registerTotem(self.spell, self);
         ns.eventhandler.registerTotemTimer(self);
-        if self.realbuff then
-            ACI_Buff_list[self.realbuff] = true;
+        if self.realbuff then            
+            ACI_Totem_list[self.realbuff] = true;
             ns.eventhandler.registerTotem(self.realbuff, self);
         end
 
         if self.bufflist then
-            for _, buff in pairs(self.bufflist) do
-                ACI_Buff_list[buff] = true;
+            for _, buff in pairs(self.bufflist) do                
+                ACI_Totem_list[buff] = true;
                 ns.eventhandler.registerTotem(buff, self);
             end
         end

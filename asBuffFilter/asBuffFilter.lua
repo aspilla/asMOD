@@ -344,6 +344,18 @@ local function IsShown(name, spellId)
 	return false;
 end
 
+local function IsShownTotem(name)
+	if ns.ABF_BlackList[name] then
+		return true;
+	end
+
+	if ACI_Totem_list and ACI_Totem_list[name] then
+		return true;
+	end
+
+	return false;
+end
+
 local activeBuffs = {};
 
 
@@ -378,7 +390,7 @@ local function ProcessAura(aura, unit)
 				skip = false;
 			end
 
-			if not InCombatLockdown() then
+			if not UnitAffectingCombat(unit) then
 				skip = false; --비전투중 모두 보임
 			end
 		else
@@ -484,7 +496,7 @@ local function updateTotemAura()
 		local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
 
 		if haveTotem and icon then
-			if not (IsShown(name)) then
+			if not (IsShownTotem(name)) then
 				local frame = nil;
 				local alert = ns.ABF_ClassBuffList[name] or 0;
 

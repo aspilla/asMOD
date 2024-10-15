@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 241009,
+	version = 241016,
 
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
@@ -144,7 +144,7 @@ ACI_Options_Default = {
 	ACI_SpellList_PALADIN_1 = {
 		{ "신성화", 6, nil, nil, "신성화" },
 		{ "성전사의 일격", 1 },
-		{ "응징의 격노", 2 },
+		{ 99, 432459, {432459, 1},  { "응징의 격노", 2 }},
 		{ "천벌의 망치", 1 },
 		{ "심판", 4, nil, nil, nil, "무가치한 존재" },
 	},
@@ -153,7 +153,7 @@ ACI_Options_Default = {
 	ACI_SpellList_PALADIN_2 = {
 		{ "신성화", 6, nil, nil, "축성" },
 		{ "응징의 방패", 1 },
-		{ "응징의 격노", 2 },
+		{ 99, 427445, {387174, 1 },  {432459, 1}},
 		{ "천벌의 망치", 1 },
 		{ "심판", 4 },
 	},
