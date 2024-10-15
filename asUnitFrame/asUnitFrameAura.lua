@@ -166,12 +166,12 @@ local function ShouldShowDebuffs(unit, caster, nameplateShowAll, aura)
     local IsFriendly = not UnitCanAttack("player", unit);
     local IsAPlayer = UnitIsPlayer(unit);
     local IsAPlayerPet = UnitIsOtherPlayersPet(unit);
-    if (not IsAPlayer and not IsAPlayerPet and not IsFriendly) then        
+    if (not IsAPlayer and not IsAPlayerPet and not IsFriendly) then
         return false;
     end
 
     if IsAPlayer and ShouldDisplayDebuff(aura) then
-        return true;        
+        return true;
     end
 
     return false;
@@ -193,9 +193,9 @@ local function ProcessAura(aura, unit)
             aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
             bshow = true;
         elseif ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll, aura) then
-            aura.debuffType = UnitFrameDebuffType.NonBossDebuff;            
+            aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
             bshow = true;
-        end       
+        end
 
         if bshow then
             return AuraUpdateChangedType.Debuff;
@@ -203,8 +203,14 @@ local function ProcessAura(aura, unit)
     elseif UnitIsPlayer(unit) then -- aura.isRaid
         aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
             UnitFrameDebuffType.NonBossRaidDebuff;
-            
+
         return AuraUpdateChangedType.Debuff;
+    else
+        if ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll, aura) then
+            aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
+                UnitFrameDebuffType.NonBossRaidDebuff;
+            return AuraUpdateChangedType.Debuff;
+        end
     end
 
     return AuraUpdateChangedType.None;
