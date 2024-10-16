@@ -390,7 +390,7 @@ local function ProcessAura(aura, unit)
 				skip = false;
 			end
 
-			if not UnitAffectingCombat("target") then
+			if not UnitAffectingCombat(unit) then
 				skip = false; --비전투중 모두 보임
 			end
 		else

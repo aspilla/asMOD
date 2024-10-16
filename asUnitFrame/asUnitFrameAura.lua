@@ -97,7 +97,7 @@ end
 local activeDebuffs = {};
 
 local cachedVisualizationInfo = {};
-ns.hasValidPlayer = false;
+local hasValidPlayer = false;
 
 local function GetCachedVisibilityInfo(spellId)
     if cachedVisualizationInfo[spellId] == nil then
@@ -154,11 +154,7 @@ function ns.DumpCaches()
     cachedPriorityChecks = {};
 end
 
-local function ShouldShowDebuffs(unit, caster, nameplateShowAll)
-    if (GetCVarBool("noBuffDebuffFilterOnTarget")) then
-        return true;
-    end
-
+local function ShouldShowDebuffs(unit, caster, nameplateShowAll, aura)
     if (nameplateShowAll) then
         return true;
     end
@@ -167,18 +163,18 @@ local function ShouldShowDebuffs(unit, caster, nameplateShowAll)
         return true;
     end
 
-    if (UnitIsUnit("player", unit)) then
-        return true;
-    end
-
-    local targetIsFriendly = not UnitCanAttack("player", unit);
-    local targetIsAPlayer = UnitIsPlayer(unit);
-    local targetIsAPlayerPet = UnitIsOtherPlayersPet(unit);
-    if (not targetIsAPlayer and not targetIsAPlayerPet and not targetIsFriendly) then
+    local IsFriendly = not UnitCanAttack("player", unit);
+    local IsAPlayer = UnitIsPlayer(unit);
+    local IsAPlayerPet = UnitIsOtherPlayersPet(unit);
+    if (not IsAPlayer and not IsAPlayerPet and not IsFriendly) then
         return false;
     end
 
-    return true;
+    if IsAPlayer and ShouldDisplayDebuff(aura) then
+        return true;
+    end
+
+    return false;
 end
 
 
@@ -196,7 +192,7 @@ local function ProcessAura(aura, unit)
         elseif IsPriorityDebuff(aura.spellId) then
             aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
             bshow = true;
-        elseif UnitIsPlayer(unit) and ShouldDisplayDebuff(aura) then
+        elseif ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll, aura) then
             aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
             bshow = true;
         elseif not UnitIsPlayer(unit) then
@@ -208,10 +204,17 @@ local function ProcessAura(aura, unit)
         if bshow then
             return AuraUpdateChangedType.Debuff;
         end
-    else -- aura.isRaid
+    elseif UnitIsPlayer(unit) then -- aura.isRaid
         aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
             UnitFrameDebuffType.NonBossRaidDebuff;
+
         return AuraUpdateChangedType.Debuff;
+    else
+        if ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll, aura) then
+            aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
+                UnitFrameDebuffType.NonBossRaidDebuff;
+            return AuraUpdateChangedType.Debuff;
+        end
     end
 
     return AuraUpdateChangedType.None;
