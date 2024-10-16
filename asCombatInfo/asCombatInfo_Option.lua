@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 241016,
+	version = 241018,
 
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
@@ -44,7 +44,7 @@ ACI_Options_Default = {
 		{ "피의 갈증", 1, nil, nil, "끓어오르는 피의 갈증" },
 		{ "무모한 희생", 2 },
 		{ "마무리 일격", 1 },
-		{ 99, "맹공", { "맹공", 1 }, { "오딘의 격노", 1 } },
+		{ { "천둥벼락", 1 }, { "맹공", 1 }, { "오딘의 격노", 1 } },
 
 
 	},
@@ -382,9 +382,9 @@ ACI_Options_Default = {
 	ACI_SpellList_EVOKER_1 = {
 		{ 99, "불태움", { 375802, 3 }, { "깊은 숨결", 1 } },
 		{ 99, "산산이 부서지는 별", { "산산이 부서지는 별", 4 }, { "기염", 1 } },
-		{ "용의 분노", 2 },
-		{ "영원의 쇄도", 1 },
-		{ "불의 숨결", 1 },
+		{ 375087, 2 },
+		{ 359073, 1 },
+		{ 357208, 1 },
 	},
 
 	--기원
