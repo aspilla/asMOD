@@ -102,10 +102,10 @@ local function updateUnit(frame)
         frame:SetAlpha(0);
         return;
     else
-        if not InCombatLockdown() then
-            frame:SetAlpha(0.5);
-        else
+        if UnitAffectingCombat(unit) then
             frame:SetAlpha(1);
+        else
+            frame:SetAlpha(0.5);
         end
     end
 
@@ -146,7 +146,7 @@ local function updateUnit(frame)
     if frame.castbar.start and frame.castbar.start > 0 and frame.castbar.start + frame.castbar.duration >= current then
         local castBar = frame.castbar;
         local start = castBar.start;
-        local duration = castBar.duration;        
+        local duration = castBar.duration;
         local time = castBar.time;
 
         if castBar.bchanneling then
@@ -156,7 +156,6 @@ local function updateUnit(frame)
             castBar:SetValue((current - start));
             time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
         end
-        
     end
 
     if frame.updatecount == 1 then
@@ -205,6 +204,23 @@ local function updateUnit(frame)
 
     local name = UnitName(unit);
 
+    if UnitIsPlayer(unit) and IsInGroup() then
+        local role = UnitGroupRolesAssigned(unit);
+
+        local texture = nil;
+        if (role == "TANK") then
+            texture = CreateAtlasMarkup("roleicon-tiny-tank");
+        elseif (role == "DAMAGER") then
+            texture = CreateAtlasMarkup("roleicon-tiny-dps");
+        elseif (role == "HEALER") then
+            texture = CreateAtlasMarkup("roleicon-tiny-healer");
+        end
+
+        if texture then
+            name = texture .. " " .. name;
+        end
+    end  
+
     if UnitIsGroupLeader(unit) then
         name = leaderIcon .. " " .. name;
     end
@@ -213,7 +229,7 @@ local function updateUnit(frame)
 
     if classification and classification ~= "minus" and classification ~= "normal" and classification ~= "trivial" then
         name = classification .. " " .. name;
-    end
+    end      
 
     name = unitlevel .. " " .. name;
 
@@ -392,7 +408,7 @@ local function CreatDebuffFrames(parent, bright, fontsize, width, count)
         frame.border:SetAlpha(1);
 
         frame:ClearAllPoints();
-        UpdateDebuffAnchor(parent.frames, idx, 1, bright, parent, width/count);
+        UpdateDebuffAnchor(parent.frames, idx, 1, bright, parent, width / count);
 
         if not frame:GetScript("OnEnter") then
             frame:SetScript("OnEnter", function(s)
@@ -589,7 +605,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);
     frame.debuffupdate = false;
 
-    if debuffupdate then        
+    if debuffupdate then
         CreatDebuffFrames(frame, true, fontsize, width, 4);
         frame.debuffupdate = true;
     end
@@ -598,12 +614,11 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
 
     frame:Show();
 
-    frame.callback = function ()
+    frame.callback = function()
         updateUnit(frame);
     end
 
     C_Timer.NewTicker(Update_Rate, frame.callback);
-   
 end
 
 AUF_PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
@@ -638,8 +653,8 @@ if asMOD_setupFrame then
     asMOD_setupFrame(AUF_TargetTargetFrame, "AUF_TargetTargetFrame");
 
     if (MAX_BOSS_FRAMES) then
-        for i = 1, MAX_BOSS_FRAMES do            
-            asMOD_setupFrame(AUF_BossFrames[i], "AUF_BossFrame"..i);            
+        for i = 1, MAX_BOSS_FRAMES do
+            asMOD_setupFrame(AUF_BossFrames[i], "AUF_BossFrame" .. i);
         end
     end
 end
@@ -747,7 +762,7 @@ local function updateCastBar(frame)
             castbar.start = start / 1000;
             castbar.duration = (endTime - start) / 1000;
             castbar.bchanneling = bchanneling;
-           
+
             castbar:SetMinMaxValues(0, castbar.duration)
 
             if bchanneling then
@@ -755,7 +770,7 @@ local function updateCastBar(frame)
             else
                 castbar:SetValue(current - castbar.start);
             end
-            
+
 
             local color = {};
 
@@ -863,14 +878,14 @@ local function AUF_OnEvent(self, event, arg1, arg2, arg3)
     elseif event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" then
         if (MAX_BOSS_FRAMES) then
             for i = 1, MAX_BOSS_FRAMES do
-                RegisterAll(AUF_BossFrames[i], "boss"..i);
+                RegisterAll(AUF_BossFrames[i], "boss" .. i);
             end
         end
     elseif event == "PLAYER_ENTERING_WORLD" then
         RegisterAll(AUF_FocusFrame, "focus");
         if (MAX_BOSS_FRAMES) then
             for i = 1, MAX_BOSS_FRAMES do
-                RegisterAll(AUF_BossFrames[i], "boss"..i);
+                RegisterAll(AUF_BossFrames[i], "boss" .. i);
             end
         end
         HideDefaults();

@@ -312,7 +312,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	if aura then
 		local count = aura.applications;
 
-		if ns.countaware[spellID] then
+		if ns.countaware[spellID] then			
 			if count and count == 1 and position == Enum.ScreenLocationType.Right  then
 				countAuraList[spellID] = true;
 				overlay:Hide();
@@ -463,6 +463,7 @@ local function asOverlay_OnEvent(self, event, ...)
 
 	if (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
 		local spellID, texture, positions, scale, r, g, b = ...;
+
 		if not IsShown(spellID) then
 			asOverlay_ShowAllOverlays(self, spellID, texture, positions, scale, r, g, b)
 		end

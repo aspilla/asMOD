@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 241009,
+	version = 241015,
 
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
@@ -90,7 +90,7 @@ ACI_Options_Default = {
 		{ "살상 명령", 1 },
 		{ "야수의 격노", 2 },
 		{ "마무리 사격", 1 },
-		{ 99, 430703, {430703, 4}, { 217200, 5, nil, 1 }},
+		{ 217200, 5, nil, 1 },
 	},
 
 	--사격
@@ -99,7 +99,7 @@ ACI_Options_Default = {
 		{ "속사", 1 },
 		{ "정조준", 2},
 		{ "마무리 사격", 1 },
-		{ 99, 430703, {430703, 4}, { 259491, 5, nil, 1 }},
+		{ 259491, 5, nil, 1 },
 	},
 
 	--생존

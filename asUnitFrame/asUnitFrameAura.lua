@@ -154,6 +154,33 @@ function ns.DumpCaches()
     cachedPriorityChecks = {};
 end
 
+local function ShouldShowDebuffs(unit, caster, nameplateShowAll)
+    if (GetCVarBool("noBuffDebuffFilterOnTarget")) then
+        return true;
+    end
+
+    if (nameplateShowAll) then
+        return true;
+    end
+
+    if (caster and (UnitIsUnit("player", caster) or UnitIsOwnerOrControllerOfUnit("player", caster))) then
+        return true;
+    end
+
+    if (UnitIsUnit("player", unit)) then
+        return true;
+    end
+
+    local targetIsFriendly = not UnitCanAttack("player", unit);
+    local targetIsAPlayer = UnitIsPlayer(unit);
+    local targetIsAPlayerPet = UnitIsOtherPlayersPet(unit);
+    if (not targetIsAPlayer and not targetIsAPlayerPet and not targetIsFriendly) then
+        return false;
+    end
+
+    return true;
+end
+
 
 local function ProcessAura(aura, unit)
     if aura == nil or aura.icon == nil or unit == nil or not aura.isHarmful then
@@ -162,15 +189,20 @@ local function ProcessAura(aura, unit)
 
     if not aura.isRaid then
         local bshow = false;
+
         if aura.nameplateShowAll then
             aura.debuffType = UnitFrameDebuffType.namePlateShowAll;
             bshow = true;
         elseif IsPriorityDebuff(aura.spellId) then
             aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
             bshow = true;
-        elseif ShouldDisplayDebuff(aura) then
+        elseif UnitIsPlayer(unit) and ShouldDisplayDebuff(aura) then
             aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
             bshow = true;
+        elseif not UnitIsPlayer(unit) then
+            if ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll) then
+                bshow = true;
+            end        
         end
 
         if bshow then
@@ -182,7 +214,7 @@ local function ProcessAura(aura, unit)
         return AuraUpdateChangedType.Debuff;
     end
 
-    return AuraUpdateChangedType.None;    
+    return AuraUpdateChangedType.None;
 end
 
 local filter = CreateFilterString(AuraFilters.Harmful);
@@ -194,13 +226,12 @@ local function ParseAllAuras(unit)
         activeDebuffs[unit]:Clear();
     end
 
-    local function HandleAura(aura)       
-
+    local function HandleAura(aura)
         local type = ProcessAura(aura, unit);
 
         if type == AuraUpdateChangedType.Debuff then
             activeDebuffs[unit][aura.auraInstanceID] = aura;
-        end   
+        end
         return false;
     end
 
