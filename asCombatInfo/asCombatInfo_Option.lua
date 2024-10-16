@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 241018,
+	version = 241017,
 
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
@@ -393,7 +393,7 @@ ACI_Options_Default = {
 		{ "되감기", 1 },
 		{ "영혼 만개", 1 },
 		{ "꿈의 숨결", 1 },
-		{ 99, "시간 변칙", { "시간 변칙", 1 }, { "불의 숨결", 1 } },
+		{ 99, "시간 변칙", { "시간 변칙", 1 }, { 382266, 1 } },
 	},
 
 	--증강
@@ -402,7 +402,7 @@ ACI_Options_Default = {
 		{ "칠흑의 힘", 1 },
 		{ "깊은 숨결", 1 },
 		{ "지각 변동", 1 },
-		{ "불의 숨결", 1 },
+		{ 357208, 1 },
 	},
 
 };
