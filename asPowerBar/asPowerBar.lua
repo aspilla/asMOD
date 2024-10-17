@@ -2173,6 +2173,8 @@ local function APB_CheckPower(self)
             bupdate_fronzen = true;
             APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
+            combobuffalertlist = { 431177 }; -- 서리 불꽃
+            
             if IsPlayerSpell(443739) then --쇄편
                 APB_DEBUFF_STACK = 443740;
                 APB.stackbar[0].unit = "target"
@@ -2203,6 +2205,7 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 1) then
+            combobuffalertlist = { 387079 };
             if asCheckTalent("어둠의 선물") then
                 APB_DEBUFF = "어둠의 선물";
                 APB.buffbar[0].debuff = APB_DEBUFF
@@ -2234,6 +2237,8 @@ local function APB_CheckPower(self)
             APB_SPELL = select(1, asGetSpellInfo(17962)); --점화
             bupdate_spell = true;
             bupdate_partial_power = true;
+
+            combobuffalertlist = { 387157 };
 
             if IsPlayerSpell(17877) then
                 APB_SPELL2 = select(1, asGetSpellInfo(17877)); --어둠의 연소
