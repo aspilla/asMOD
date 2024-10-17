@@ -259,16 +259,7 @@ end
 
 local function ABF_OnEvent(self, event, arg1, ...)
     
-    if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        local timestamp, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellId, _, _, auraType, amount =
-        CombatLogGetCurrentEventInfo();        
-
-        if bupdate_Splinterstorm and sourceGUID and sourceGUID == UnitGUID("player") then
-            if spellId == 443934 then -- Splinterstorm (applied per hit)
-                splinterstorm_time = GetTime()                                 
-            end            
-        end
-    elseif (event == "UNIT_AURA") then
+    if (event == "UNIT_AURA") then
         local unit = arg1;
         if unit and (unit == "player" or unit == "pet") then
             UpdateAuras(unit);
@@ -375,9 +366,7 @@ function ns.eventhandler.init()
     timerfilter = {};
     bufftimerfilter = {};
     totemtimerfilter = {};
-    castfilter = {};
-
-    eventframe:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+    castfilter = {};   
 end
 
 function ns.eventhandler.registerAura(unit, spell, count)
@@ -427,11 +416,6 @@ function ns.eventhandler.registerBuffTimer(button)
     tinsert(bufftimerfilter, button);
 end
 
-function ns.eventhandler.registerSplinterstorm(button)
-    eventframe:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-    bupdate_Splinterstorm = true;
-    splinterstorm_time = 0;
-end
 
 function ns.eventhandler.registerCastTime(spell)
     eventframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "pet");
@@ -440,18 +424,6 @@ end
 
 function ns.eventhandler.getCastTime(spell)    
     return castfilter[spell];
-end
-
-function ns.aurafunctions.checkSplinterTime()
-    if bupdate_Splinterstorm then
-        return splinterstorm_time;
-    else
-        return nil
-    end
-end
-
-function ns.aurafunctions.clearSplinterTime()
-    splinterstorm_time = 0;
 end
 
 function ns.aurafunctions.checkAura(unit, spell)

@@ -1898,8 +1898,7 @@ local function APB_CheckPower(self)
     bupdate_buff_count = false;
     bupdate_buff_combo = false;
     bupdate_stagger = false;
-    bupdate_fronzen = false;
-    bupdate_Splinterstorm = false;
+    bupdate_fronzen = false;    
     bupdate_partial_power = false;
     bsmall_power_bar = false;
     bhalf_combo = false;
@@ -2172,16 +2171,6 @@ local function APB_CheckPower(self)
 
             bupdate_fronzen = true;
             APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-
-            if IsPlayerSpell(443739) then --쇄편
-                APB_DEBUFF_STACK = 443740;
-                APB.stackbar[0].unit = "target"
-                APB.stackbar[0].spellid = 443740;
-                APB_MaxStack(8);
-                APB_UpdateBuffStack(self.stackbar[0]);
-                bupdate_Splinterstorm = true;
-            end
-
             APB_SPELL = "진눈깨비";
             APB_SpellMax(APB_SPELL);
             APB_UpdateSpell(APB_SPELL);
@@ -3156,12 +3145,6 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
                     FrozenOrbTime = nil;
                 elseif FrozenOrbTime == nil and (eventType == "SPELL_DAMAGE") and spellId == FrozenOrbDamageID then
                     FrozenOrbTime = GetTime();
-                end
-
-                if bupdate_Splinterstorm and destGUID == UnitGUID("target") then
-                    if spellId == 443934 then -- Splinterstorm (applied per hit)
-                        splinterstorm_time = GetTime()
-                    end
                 end
             elseif bupdate_enhaced_tempest then
                 -- Handle Awakened Storm buff removal

@@ -8,26 +8,27 @@ local Options_Default = {
 
 -- 색상 변경
 ns.spelllists = {
-    [263725] = { { 263725, 3, 1, 0.5, 0.5, Enum.ScreenLocationType.Right }, { 449400, 5, 0.5, 1, 1, Enum.ScreenLocationType.Left }, { 453601, 0, 0.5, 1, 0.5, Enum.ScreenLocationType.Left } }, -- 비법, 번뜩임3(빨), 비전태양 5중(파),  에테르 조율(초)
-    [264173] = { { 264173, 4, 0, 1, 0, Enum.ScreenLocationType.Right }, { 264173, 3, 0, 1, 0, Enum.ScreenLocationType.Left } },                                           -- 악흑, 악마의핵 3/4중
-    [135286] = { { 135286, 2, 0.2, 0.2, 0.2, Enum.ScreenLocationType.Right } },                                                                     -- 수드, 맹위 2중
-    [44544] = { { 438624, 0, 1, 0.2, 0.2, Enum.ScreenLocationType.Left } },                                                                         -- 냉법, 화염 촉진
-    [391401] = { { 391401, 3, 0, 1, 0, Enum.ScreenLocationType.Left } },                                                                            -- 암사 광기 3중
-    [407468] = { { 407468, 3, 0, 1, 0, Enum.ScreenLocationType.Left } },                                                                            -- 암사 광기 3중
-    [409129] = { { 407468, 4, 0, 1, 0, Enum.ScreenLocationType.Right }, { 391401, 4, 0, 1, 0, Enum.ScreenLocationType.Right } },                                          -- 암사 광기 4중
+    [263725] = { { 263725, 3, 1, 0.5, 0.5, Enum.ScreenLocationType.Right }, { 453601, 0, 0.5, 1, 0.5, Enum.ScreenLocationType.Left } }, -- 비법, 번뜩임3(빨), 비전태양 5중(파),  에테르 조율(초)
+    [264173] = { { 264173, 4, 0, 1, 0, Enum.ScreenLocationType.Right }, { 264173, 3, 0, 1, 0, Enum.ScreenLocationType.Left } },         -- 악흑, 악마의핵 3/4중
+    [135286] = { { 135286, 2, 0.2, 0.2, 0.2, Enum.ScreenLocationType.Right } },                                                         -- 수드, 맹위 2중
+    [44544] = { { 438624, 0, 1, 0.2, 0.2, Enum.ScreenLocationType.Left } },                                                             -- 냉법, 화염 촉진
+    [391401] = { { 391401, 3, 0, 1, 0, Enum.ScreenLocationType.Left } },                                                                -- 암사 광기 3중
+    [407468] = { { 407468, 3, 0, 1, 0, Enum.ScreenLocationType.Left } },                                                                -- 암사 광기 3중
+    [409129] = { { 407468, 4, 0, 1, 0, Enum.ScreenLocationType.Right }, { 391401, 4, 0, 1, 0, Enum.ScreenLocationType.Right } },        -- 암사 광기 4중
+    [443176] = { { 443176, 2, 0, 1, 0, Enum.ScreenLocationType.Top } },                                                                 -- 보존 생명 블꽃 2중
 };
 
 -- 1 중시 좌측만
 ns.countaware = {
-    [263725] = { 263725 },        -- 번뜩임
-    [264173] = { 264173 },        -- 악마의핵
-    [264571] = { 264571 },        -- 일몰
-    [81340] = { 81340 },          -- 부정, 불시의 파멸 2중
-    [16870] = { 16870 },          -- 회드, 번뜩임 2중
-    [270436] = { 260242 },        --정밀 사격
-    [270437] = { 260242 },        --정밀 사격
+    [263725] = { 263725 },         -- 번뜩임
+    [264173] = { 264173 },         -- 악마의핵
+    [264571] = { 264571 },         -- 일몰
+    [81340] = { 81340 },           -- 부정, 불시의 파멸 2중
+    [16870] = { 16870 },           -- 회드, 번뜩임 2중
+    [270436] = { 260242 },         --정밀 사격
+    [270437] = { 260242 },         --정밀 사격
     [409129] = { 391401, 407468 }, -- 암사 광기 2중
-    [461135] = { 81340 },         -- 부죽 불시의 파멸
+    [461135] = { 81340 },          -- 부죽 불시의 파멸
 
 }
 
