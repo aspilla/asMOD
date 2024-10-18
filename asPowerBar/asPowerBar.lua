@@ -437,14 +437,6 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
         partial = 0;
     end
 
-    if combo == combobar.max_combo and cast == 0 then
-        bmax = true;
-    elseif combo == combobar.max_combo - 1 and cast == 0 then
-        bmaxminus1 = true;
-    elseif combo >= (combobar.max_combo / 2) and cast == 0 then
-        bhalf = bhalf_combo;
-    end
-
     if combo > 20 then
         return;
     end
@@ -464,6 +456,14 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
             partial = partial - 1;
         end
         cast = 0;
+    end
+
+    if combo == combobar.max_combo then
+        bmax = true;
+    elseif combo == combobar.max_combo - 1 then
+        bmaxminus1 = true;
+    elseif combo >= (combobar.max_combo / 2) then
+        bhalf = bhalf_combo;
     end
 
     if partial > 0 then
@@ -742,6 +742,8 @@ local bupdatecombo = false;
 local function APB_MaxCombo(combobar, max)
     combobar.max_combo = max;
 
+    local gap = 3;
+
     if not max or max == 0 then
         for i = 1, 20 do
             combobar[i]:Hide();
@@ -750,7 +752,14 @@ local function APB_MaxCombo(combobar, max)
         return;
     end
 
-    local width = (APB_WIDTH - (3 * (max - 1))) / max;
+    if combobar == APB.combobar2 then
+        gap = 0;
+    elseif max >= 10 then
+        gap = 1;
+    end
+
+    local width = (APB_WIDTH - (gap * (max - 1))) / max;
+
 
     for i = 1, 20 do
         combobar[i]:SetWidth(width)
@@ -761,6 +770,11 @@ local function APB_MaxCombo(combobar, max)
         local color = RAID_CLASS_COLORS[Class]
         combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
         combobar[i]:SetScript("OnUpdate", nil)
+
+
+        if i > 1 then
+            combobar[i]:SetPoint("LEFT", combobar[i - 1], "RIGHT", gap, 0);
+        end
 
         if i > max then
             combobar[i]:Hide()
@@ -1823,7 +1837,7 @@ local function asCheckTalent(name)
 
     if not (configID) then
         return false;
-    end    
+    end
     local configInfo = C_Traits.GetConfigInfo(configID);
     local treeID = configInfo.treeIDs[1];
 
@@ -1832,7 +1846,6 @@ local function asCheckTalent(name)
     for _, nodeID in ipairs(nodes) do
         local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
         if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-
             local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID;
             local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
             local definitionInfo = entryInfo and entryInfo.definitionID and
@@ -1841,7 +1854,7 @@ local function asCheckTalent(name)
             if definitionInfo ~= nil and IsPlayerSpell(definitionInfo.spellID) then
                 local talentName = C_Spell.GetSpellName(definitionInfo.spellID);
                 if name == talentName then
-					return true;
+                    return true;
                 end
             end
         end
@@ -2174,8 +2187,8 @@ local function APB_CheckPower(self)
             APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
             combobuffalertlist = { 431177 }; -- 서리 불꽃
-            
-            if IsPlayerSpell(443739) then --쇄편
+
+            if IsPlayerSpell(443739) then    --쇄편
                 APB_DEBUFF_STACK = 443740;
                 APB.stackbar[0].unit = "target"
                 APB.stackbar[0].spellid = 443740;
@@ -2323,7 +2336,7 @@ local function APB_CheckPower(self)
             APB:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
             bupdate_power = true;
 
-            combobuffalertlist = { 391882 };    --최상위
+            combobuffalertlist = { 391882 };      --최상위
             combobuffcoloralertlist = { 441585 }; --찟어발기기
 
             if asCheckTalent("잔혹한 베기") then
@@ -3627,7 +3640,7 @@ do
         if i == 1 then
             APB.combobar2[i]:SetPoint("BOTTOMLEFT", APB.combobar[1], "TOPLEFT", 0, 1);
         else
-            APB.combobar2[i]:SetPoint("LEFT", APB.combobar2[i - 1], "RIGHT", 3, 0);
+            APB.combobar2[i]:SetPoint("LEFT", APB.combobar2[i - 1], "RIGHT", 0, 0);
         end
 
         APB.combobar2[i]:Hide();

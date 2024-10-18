@@ -1,6 +1,6 @@
 ﻿local _, ns = ...;
 -----------------설정 ------------------------
-local ATCB_WIDTH = 150
+local ATCB_WIDTH = 180
 local ATCB_HEIGHT = 17
 local ATCB_X = 0;
 local ATCB_Y = -100;
@@ -32,7 +32,7 @@ ATCB.castbar:GetStatusBarTexture():SetHorizTile(false)
 ATCB.castbar:SetMinMaxValues(0, 100)
 ATCB.castbar:SetValue(100)
 ATCB.castbar:SetHeight(ATCB_HEIGHT)
-ATCB.castbar:SetWidth(ATCB_WIDTH - ATCB_HEIGHT / 2)
+ATCB.castbar:SetWidth(ATCB_WIDTH - (ATCB_HEIGHT + 2) * 1.2)
 ATCB.castbar:SetStatusBarColor(1, 0.9, 0.9);
 ATCB.castbar:SetAlpha(ATCB_ALPHA);
 
@@ -53,7 +53,7 @@ ATCB.castbar.time = ATCB.castbar:CreateFontString(nil, "OVERLAY");
 ATCB.castbar.time:SetFont(STANDARD_TEXT_FONT, ATCB_TIME_SIZE);
 ATCB.castbar.time:SetPoint("RIGHT", ATCB.castbar, "RIGHT", -3, 0);
 
-ATCB.castbar:SetPoint("CENTER", UIParent, "CENTER", ATCB_X + ATCB_HEIGHT / 2, ATCB_Y)
+ATCB.castbar:SetPoint("CENTER", UIParent, "CENTER", ATCB_X + ((ATCB_HEIGHT + 2) * 1.2) / 2, ATCB_Y)
 
 if not ATCB.castbar:GetScript("OnEnter") then
     ATCB.castbar:SetScript("OnEnter", function(s)
