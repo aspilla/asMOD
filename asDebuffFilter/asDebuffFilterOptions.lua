@@ -1,9 +1,9 @@
 local _, ns = ...;
 
 ns.ADF_SIZE = 28;
-ns.ADF_TARGET_DEBUFF_X = 73 + 30 + 20;
+ns.ADF_TARGET_DEBUFF_X = 75 + 30 + 20;
 ns.ADF_TARGET_DEBUFF_Y = -110 - 28;
-ns.ADF_PLAYER_DEBUFF_X = -73 - 30 - 20;
+ns.ADF_PLAYER_DEBUFF_X = -75 - 30 - 20;
 ns.ADF_PLAYER_DEBUFF_Y = -110 - 28;
 ns.ADF_MAX_DEBUFF_SHOW = 7;
 ns.ADF_ALPHA = 1

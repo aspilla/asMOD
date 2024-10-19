@@ -39,7 +39,7 @@ local function DefaultAuraCompare(a, b)
         return a.canApplyAura;
     end
 
-    return a.spellId < b.spellId
+    return a.auraInstanceID < b.auraInstanceID
 end
 
 local function UnitFrameDebuffComparator(a, b)

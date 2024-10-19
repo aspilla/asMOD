@@ -5,6 +5,7 @@ local _, ns = ...;
 ------------------------------------------
 
 local Update_Rate = 0.1 -- 0.1 초마다 Update
+local width = 200;
 local xposition = 225;
 local yposition = -198;
 local healthheight = 35;
@@ -670,17 +671,17 @@ AUF_PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 AUF_TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 
 
-CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, 200, healthheight, powerheight, 12, false);
-CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, 200, healthheight, powerheight, 12, false);
-CreateUnitFrame(AUF_FocusFrame, "focus", xposition + 200, yposition, 150, 20, 3, 11, false);
-CreateUnitFrame(AUF_PetFrame, "pet", -xposition - 50, yposition - 40, 100, 15, 2, 9, true);
-CreateUnitFrame(AUF_TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, 100, 15, 2, 9, true);
+CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, width, healthheight, powerheight, 12, false);
+CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, width, healthheight, powerheight, 12, false);
+CreateUnitFrame(AUF_FocusFrame, "focus", xposition + width, yposition, width - 50, healthheight - 15, powerheight - 2, 11, false);
+CreateUnitFrame(AUF_PetFrame, "pet", -xposition - 50, yposition - 40, width - 100, healthheight - 20, powerheight - 3, 9, true);
+CreateUnitFrame(AUF_TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, width - 100, healthheight - 20, powerheight - 3, 9, true);
 
 AUF_BossFrames = {};
 if (MAX_BOSS_FRAMES) then
     for i = 1, MAX_BOSS_FRAMES do
         AUF_BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-        CreateUnitFrame(AUF_BossFrames[i], "boss" .. i, xposition + 250, 200 - (i - 1) * 70, 150, 20, 3, 11);
+        CreateUnitFrame(AUF_BossFrames[i], "boss" .. i, xposition + 250, 200 - (i - 1) * 70, width - 50, healthheight - 15, powerheight - 2, 11);
     end
 end
 

@@ -106,7 +106,7 @@ local function DefaultAuraCompare(a, b)
 		return a.canApplyAura;
 	end
 
-	return a.spellId < b.spellId
+	return a.auraInstanceID < b.auraInstanceID
 end
 
 local function UnitFrameBuffComparator(a, b)
@@ -390,7 +390,7 @@ local function ProcessAura(aura, unit)
 				skip = false;
 			end
 
-			if not UnitAffectingCombat(unit) then
+			if not UnitAffectingCombat("player") then
 				skip = false; --비전투중 모두 보임
 			end
 		else
@@ -561,18 +561,32 @@ end
 
 local function UpdateAuraFrames(unit, auraList)
 	local i = 0;
+	local curr_time = GetTime();
 	local parent = ABF_TARGET_BUFF;
-	local numAuras = math.min(ns.ABF_MAX_BUFF_SHOW, auraList:Size());
+	local mparent = nil;
+	local toshow = ns.ABF_MAX_BUFF_SHOW;
+
+	if (unit == "player") then		
+		parent = ABF_PLAYER_BUFF;
+		mparent = ABF_TALENT_BUFF;		
+	else
+		if not UnitAffectingCombat(unit) then
+			toshow = ns.ABF_TARGET_MAX_BUFF_SHOW;
+		end
+	end
+
+	local max = #(parent.frames)
+	local numAuras = max;
 	local tcount = 1;
 	local lcount = 1;
-	local mparent = nil;
-	local curr_time = GetTime();
 
 	if (unit == "player") then
 		lcount, tcount = updateTotemAura();
-		parent = ABF_PLAYER_BUFF;
-		mparent = ABF_TALENT_BUFF;
-		numAuras = math.min(ns.ABF_MAX_BUFF_SHOW * 2, auraList:Size());
+		numAuras = math.min(max * 2, auraList:Size());
+	else
+		numAuras = math.min(max, auraList:Size(), toshow);
+		tcount = 1;
+		lcount = 1;
 	end
 
 
@@ -586,10 +600,10 @@ local function UpdateAuraFrames(unit, auraList)
 			local frame = nil;
 
 			if mparent then
-				if aura.buffType < UnitFrameBuffType.ProcBuff and tcount <= ns.ABF_MAX_BUFF_SHOW then
+				if aura.buffType < UnitFrameBuffType.ProcBuff and tcount <= max then
 					frame = mparent.frames[tcount];
 					tcount = tcount + 1;
-				elseif mparent and lcount <= ns.ABF_MAX_BUFF_SHOW then
+				elseif mparent and lcount <= max then
 					frame = parent.frames[lcount];
 					lcount = lcount + 1;
 				else
@@ -689,14 +703,14 @@ local function UpdateAuraFrames(unit, auraList)
 
 
 	if mparent then
-		for j = tcount, ns.ABF_MAX_BUFF_SHOW do
+		for j = tcount, max do
 			HideFrame(mparent, j);
 		end
-		for j = lcount, ns.ABF_MAX_BUFF_SHOW do
+		for j = lcount, max do
 			HideFrame(parent, j);
 		end
 	else
-		for j = i + 1, ns.ABF_MAX_BUFF_SHOW do
+		for j = i + 1, max do
 			HideFrame(parent, j);
 		end
 	end
@@ -751,8 +765,9 @@ end
 
 local function ABF_ClearFrame()
 	local parent = ABF_TARGET_BUFF;
+	local max = #(parent.frames);
 
-	for i = 1, ns.ABF_MAX_BUFF_SHOW do
+	for i = 1, max do
 		local frame = parent.frames[i];
 
 		if (frame) then
@@ -765,10 +780,32 @@ local function ABF_ClearFrame()
 	end
 end
 
+local function ABF_Resize()
+	local parent = ABF_TARGET_BUFF;
+	local max = #(parent.frames);
+	local size = ns.ABF_SIZE;
+
+	if not UnitAffectingCombat("player") then
+		size = ns.ABF_SIZE_NOCOMBAT;
+	end
+
+	for i = 1, max do
+		local frame = parent.frames[i];
+
+		if (frame) then
+			-- Resize
+			frame:SetWidth(size);
+			frame:SetHeight(size * 0.8);	
+		
+		end
+	end
+end
+
 
 local function ABF_OnEvent(self, event, arg1, ...)
 	if (event == "PLAYER_TARGET_CHANGED") then
 		ABF_ClearFrame();
+		ABF_Resize();
 		UpdateAuras(nil, "target");
 	elseif (event == "UNIT_AURA") then
 		local unitAuraUpdateInfo = ...;
@@ -785,13 +822,16 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		hasValidPlayer = true;
 		asCheckTalent();
+		ABF_Resize();
 		UpdateAuras(nil, "player");
 		UpdateAuras(nil, "target");
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		ABF:SetAlpha(ns.ABF_AlphaCombat);
+		ABF_Resize();
 		DumpCaches();
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ABF:SetAlpha(ns.ABF_AlphaNormal);
+		ABF_Resize();
 		DumpCaches();
 	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		asCheckTalent();
@@ -856,12 +896,12 @@ local function ABF_UpdateBuffAnchor(frames, index, offsetX, right, center, paren
 	buff:SetHeight(ns.ABF_SIZE * 0.8);
 end
 
-local function CreatBuffFrames(parent, bright, bcenter)
+local function CreatBuffFrames(parent, bright, bcenter, max)
 	if parent.frames == nil then
 		parent.frames = {};
 	end
 
-	for idx = 1, ns.ABF_MAX_BUFF_SHOW do
+	for idx = 1, max do
 		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
 		local frame = parent.frames[idx];
 		frame:SetFrameStrata("MEDIUM");
@@ -937,7 +977,7 @@ local function ABF_Init()
 	ABF_TARGET_BUFF:SetScale(1)
 	ABF_TARGET_BUFF:Show()
 
-	CreatBuffFrames(ABF_TARGET_BUFF, true, false);
+	CreatBuffFrames(ABF_TARGET_BUFF, true, false, ns.ABF_TARGET_MAX_BUFF_SHOW);
 
 	if bloaded and asMOD_setupFrame then
 		asMOD_setupFrame(ABF_TARGET_BUFF, "asBuffFilter(Target)");
@@ -951,7 +991,7 @@ local function ABF_Init()
 	ABF_PLAYER_BUFF:SetScale(1)
 	ABF_PLAYER_BUFF:Show()
 
-	CreatBuffFrames(ABF_PLAYER_BUFF, false, false);
+	CreatBuffFrames(ABF_PLAYER_BUFF, false, false, ns.ABF_MAX_BUFF_SHOW);
 
 	if bloaded and asMOD_setupFrame then
 		asMOD_setupFrame(ABF_PLAYER_BUFF, "asBuffFilter(Player)");
@@ -966,7 +1006,7 @@ local function ABF_Init()
 
 	ABF_TALENT_BUFF:Show()
 
-	CreatBuffFrames(ABF_TALENT_BUFF, false, true);
+	CreatBuffFrames(ABF_TALENT_BUFF, false, true, ns.ABF_MAX_BUFF_SHOW);
 
 	if bloaded and asMOD_setupFrame then
 		asMOD_setupFrame(ABF_TALENT_BUFF, "asBuffFilter(Talent)");
