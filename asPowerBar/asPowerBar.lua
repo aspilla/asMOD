@@ -87,6 +87,12 @@ local internalcool_state = {
     spellid = 0,
 }
 
+local special_cost_spells = {
+    [386997] = {449638, -3},
+    [265187] = {449638, -3},
+
+}
+
 
 local asGetSpellInfo = function(spellID)
     if not spellID then
@@ -176,8 +182,16 @@ local function asGetPowerCostTooltipInfo(spellID)
 
     -- 8.0 change need
     --
-    if cost then
+    if cost then        
         return 0 - cost;
+    end
+
+    if special_cost_spells[spellID] then
+        local v = special_cost_spells[spellID];
+       
+        if IsPlayerSpell(v[1]) then            
+            return v[2];
+        end
     end
 
     return 0;
@@ -577,6 +591,11 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
 
     if bupdate_partial_power then
         local power = combo + partial;
+        
+        if  gen == true then
+            power = power + cast;
+        end
+
         if power > combobar.max_combo then
             power = combobar.max_combo;
         end
@@ -1285,7 +1304,7 @@ local function APB_UpdatePower()
         end
 
         if cast == nil then
-            cast = asGetPowerCostTooltipInfo(spellID);
+            cast = asGetPowerCostTooltipInfo(spellID);            
         end
     end
 
@@ -2213,12 +2232,14 @@ local function APB_CheckPower(self)
         APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
         bupdate_power = true;
 
+        combobuffcoloralertlist = { 433891 }; --지옥불 화살
+        combobuffalertlist = { 387079, 387157, 433885 }; -- 코스트 안드는 스킬들
+
         for i = 1, 20 do
             APB.combobar[i].tooltip = "SOUL_SHARDS";
         end
 
-        if (spec and spec == 1) then
-            combobuffalertlist = { 387079 };
+        if (spec and spec == 1) then            
             if asCheckTalent("어둠의 선물") then
                 APB_DEBUFF = "어둠의 선물";
                 APB.buffbar[0].debuff = APB_DEBUFF
@@ -2237,6 +2258,8 @@ local function APB_CheckPower(self)
             APB:SetScript("OnUpdate", APB_OnUpdate);
             APB:RegisterEvent("PLAYER_TARGET_CHANGED");
 
+            
+
             if IsPlayerSpell(196277) then --임프
                 local name = asGetSpellInfo(196277);
                 APB_ACTION_STACK = APB_GetActionSlot(name);
@@ -2251,7 +2274,7 @@ local function APB_CheckPower(self)
             bupdate_spell = true;
             bupdate_partial_power = true;
 
-            combobuffalertlist = { 387157 };
+            
 
             if IsPlayerSpell(17877) then
                 APB_SPELL2 = select(1, asGetSpellInfo(17877)); --어둠의 연소
@@ -2991,30 +3014,7 @@ local function checkSpellCost(id)
     end
 end
 
-local function checkSpellPowerCost(id)
-    local i = 1
-
-    if not APB_POWER_LEVEL then
-        return;
-    end
-
-    local powerTypeString = PowerTypeComboString[APB_POWER_LEVEL];
-
-    local localizedClass, englishClass = UnitClass("player")
-    local spec = GetSpecialization();
-    local disWarlock = false;
-
-    if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
-        spec = 1;
-    end
-
-    if (englishClass == "WARLOCK") then
-        if (spec and spec == 3) then
-            powerTypeString = "영혼의 조각 파편";
-            disWarlock = true;
-        end
-    end
-
+local function scanSpellCost(id, powerTypeString, disWarlock)
     if id then
         local spell = Spell:CreateFromSpellID(id);
         spell:ContinueOnSpellLoad(function()
@@ -3066,8 +3066,35 @@ local function checkSpellPowerCost(id)
                 end
             end
         end)
+    end
+end
 
+local function checkSpellPowerCost(id)
+    local i = 1
+
+    if not APB_POWER_LEVEL then
         return;
+    end
+
+    local powerTypeString = PowerTypeComboString[APB_POWER_LEVEL];
+
+    local localizedClass, englishClass = UnitClass("player")
+    local spec = GetSpecialization();
+    local disWarlock = false;
+
+    if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
+        spec = 1;
+    end
+
+    
+
+    if (englishClass == "WARLOCK") and (spec and spec == 3) then
+               
+        scanSpellCost(id, powerTypeString, disWarlock);
+        disWarlock = true;
+        scanSpellCost(id, "영혼의 조각 파편", disWarlock);        
+    else
+        scanSpellCost(id, powerTypeString, disWarlock);
     end
 end
 

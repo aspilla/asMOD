@@ -916,13 +916,11 @@ function ns.Button:init(config, frame)
     end
 
     if self.countbuff then
-        ns.eventhandler.registerAura("player", self.countbuff);
-        ACI_Buff_list[self.countbuff] = true;
+        ns.eventhandler.registerAura("player", self.countbuff);        
     end
 
     if self.countdebuff then
-        ns.eventhandler.registerAura("target", self.countdebuff);
-        ACI_Debuff_list[self.countdebuff] = true;
+        ns.eventhandler.registerAura("target", self.countdebuff);        
     end
 
     if self.alertbufflist then
