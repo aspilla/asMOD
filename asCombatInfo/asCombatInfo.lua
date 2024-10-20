@@ -310,6 +310,13 @@ function ACI_Init()
 						break;
 					end
 				end
+
+				if type(ACI_SpellList[i][1]) == "table" then
+					local array = ACI_SpellList[i][1];
+					for z, v in pairs(array) do
+						ACI_SpellList[i][z] = v;
+					end
+				end
 			else
 				local check = tonumber(ACI_SpellList[i][1]);
 
