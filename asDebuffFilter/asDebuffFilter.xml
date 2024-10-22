@@ -46,5 +46,6 @@
 			</Cooldown>
 		</Frames>
 	</Frame>
+	<Frame name="asDebuffPrivateAuraAnchorTemplate" mixin="asDebuffPrivateAuraAnchorMixin" virtual="true"/>
 	<Script file="asDebuffFilter.lua"/>
 </Ui>

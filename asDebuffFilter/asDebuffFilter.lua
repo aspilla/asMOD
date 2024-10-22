@@ -102,6 +102,69 @@ local function UpdateDispellable()
     end
 end
 
+asDebuffPrivateAuraAnchorMixin = {};
+
+function asDebuffPrivateAuraAnchorMixin:SetUnit(unit)
+    if unit == self.unit then
+        return;
+    end
+    self.unit = unit;
+
+    if self.anchorID then
+        C_UnitAuras.RemovePrivateAuraAnchor(self.anchorID);
+        self.anchorID = nil;
+    end
+
+    if unit then
+        local iconAnchor =
+        {
+            point = "CENTER",
+            relativeTo = self,
+            relativePoint = "CENTER",
+            offsetX = 0,
+            offsetY = 0,
+        };
+
+        local privateAnchorArgs = {};
+        privateAnchorArgs.unitToken = unit;
+        privateAnchorArgs.auraIndex = self.auraIndex;
+        privateAnchorArgs.parent = self;
+        privateAnchorArgs.showCountdownFrame = true;
+        privateAnchorArgs.showCountdownNumbers = true;
+
+        privateAnchorArgs.iconInfo =
+        {
+            iconAnchor = iconAnchor,
+			iconWidth = self:GetWidth(),
+			iconHeight = self:GetHeight(),
+        };
+        privateAnchorArgs.durationAnchor = nil;
+
+        self.anchorID = C_UnitAuras.AddPrivateAuraAnchor(privateAnchorArgs);
+    end
+end
+
+local function CreatPrivateFrames(parent)
+    if parent.PrivateAuraAnchors == nil then
+        parent.PrivateAuraAnchors = {};
+    end
+
+    for idx = 1, 2 do
+        parent.PrivateAuraAnchors[idx] = CreateFrame("Frame", nil, parent, "asDebuffPrivateAuraAnchorTemplate");
+        parent.PrivateAuraAnchors[idx].auraIndex = idx;        
+        parent.PrivateAuraAnchors[idx]:SetSize(ns.ADF_SIZE + 5, (ns.ADF_SIZE + 5) * 0.8);
+        parent.PrivateAuraAnchors[idx]:SetUnit("player");
+
+        if idx == 2 then
+            parent.PrivateAuraAnchors[idx]:ClearAllPoints();
+            parent.PrivateAuraAnchors[idx]:SetPoint("RIGHT", parent.PrivateAuraAnchors[1], "LEFT");
+        end
+    end
+
+    return;
+end
+
+
 
 local AuraUpdateChangedType = EnumUtil.MakeEnum(
     "None",
@@ -205,7 +268,7 @@ local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuation
         local slot = select(i, ...);
         local done;
         local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
-        if usePackedAura then            
+        if usePackedAura then
             done = func(auraInfo);
         else
             done = func(AuraUtil.UnpackAuraData(auraInfo));
@@ -429,7 +492,7 @@ local function ProcessAura(aura, unit)
 
     if skip == false then
         if unit == "target" then
-            if show_list[aura.name] or show_list[aura.spellId]  then
+            if show_list[aura.name] or show_list[aura.spellId] then
                 local showlist = show_list[aura.name] or show_list[aura.spellId];
                 if showlist[2] then
                     aura.debuffType = UnitFrameDebuffType.BossDebuff + showlist[2];
@@ -614,6 +677,15 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             ns.lib.ButtonGlow_Stop(frame);
             ns.lib.PixelGlow_Stop(frame);
             frame:Hide();
+        end
+    end
+
+    if parent == ADF_PLAYER_DEBUFF then
+        parent.PrivateAuraAnchors[1]:ClearAllPoints();
+        if i == 0 then
+            parent.PrivateAuraAnchors[1]:SetPoint("BOTTOMRIGHT", ADF_PLAYER_DEBUFF, "BOTTOMLEFT", 0, 0);            
+        else
+            parent.PrivateAuraAnchors[1]:SetPoint("BOTTOMRIGHT", parent.frames[i], "BOTTOMLEFT", 0, 0);            
         end
     end
 end
@@ -813,6 +885,7 @@ local function CreatDebuffFrames(parent, bright)
     return;
 end
 
+
 local function ADF_Init()
     local bloaded = C_AddOns.LoadAddOn("asMOD")
 
@@ -848,6 +921,7 @@ local function ADF_Init()
     ADF_PLAYER_DEBUFF:Show()
 
     CreatDebuffFrames(ADF_PLAYER_DEBUFF, false);
+    CreatPrivateFrames(ADF_PLAYER_DEBUFF);
 
     if bloaded and asMOD_setupFrame then
         asMOD_setupFrame(ADF_PLAYER_DEBUFF, "asDebuffFilter(Player)");

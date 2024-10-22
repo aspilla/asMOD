@@ -87,6 +87,12 @@ local internalcool_state = {
     spellid = 0,
 }
 
+local special_cost_spells = {
+    [386997] = { 449638, -3 },
+    [265187] = { 449638, -3 },
+
+}
+
 
 local asGetSpellInfo = function(spellID)
     if not spellID then
@@ -178,6 +184,14 @@ local function asGetPowerCostTooltipInfo(spellID)
     --
     if cost then
         return 0 - cost;
+    end
+
+    if special_cost_spells[spellID] then
+        local v = special_cost_spells[spellID];
+
+        if IsPlayerSpell(v[1]) then
+            return v[2];
+        end
     end
 
     return 0;
@@ -477,7 +491,7 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
             local isCharged = chargedPowerPoints and tContains(chargedPowerPoints, i) or false;
 
             if isCharged then
-                ns.lib.PixelGlow_Start(combobar[i], { 0.5, 0.5, 1 });
+                ns.lib.PixelGlow_Start(combobar[i], { 0.5, 0.5, 1 }, nil, nil, nil, 0.5);
                 if combo == i then
                     bmax = true;
                 end
@@ -499,7 +513,7 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
 
         for i = 1, combobar.max_combo do
             if bBuffed then
-                ns.lib.PixelGlow_Start(combobar[i], { 0.5, 0.5, 1 });
+                ns.lib.PixelGlow_Start(combobar[i], { 0.5, 0.5, 1 }, nil, nil, nil, 0.5);
             else
                 ns.lib.PixelGlow_Stop(combobar[i]);
             end
@@ -577,13 +591,20 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
 
     if bupdate_partial_power then
         local power = combo + partial;
+
+        if gen == true then
+            power = power + cast;
+        end
+
         if power > combobar.max_combo then
             power = combobar.max_combo;
         end
-        combobar[1].text:SetText(power);
-        combobar[1].text:ClearAllPoints();
-        combobar[1].text:SetPoint("CENTER", combobar[math.ceil(combobar.max_combo / 2)], "CENTER", 0, 0);
-        combobar[1].text:Show();
+
+        local combotext = combobar[1]:GetParent().combotext
+        combotext:SetText(power);
+        combotext:ClearAllPoints();
+        combotext:SetPoint("CENTER", combobar[math.ceil(combobar.max_combo / 2)], "CENTER", 0, 0);        
+        combotext:Show();
     end
 end
 
@@ -1951,10 +1972,10 @@ local function APB_CheckPower(self)
     APB.bar.count:SetText("");
     setupMouseOver(APB.bar);
 
-    APB.combobar[1].text:SetText("");
-    APB.combobar[1].text:Hide();
-    APB.combobar2[1].text:SetText("");
-    APB.combobar2[1].text:Hide();
+    APB.combotext:SetText("");
+    APB.combotext:Hide();
+    APB.combotext2:SetText("");
+    APB.combotext2:Hide();
     APB.buffcombobar = APB.combobar;
 
     for i = 1, 20 do
@@ -1986,6 +2007,10 @@ local function APB_CheckPower(self)
 
 
         setupMouseOver(APB.buffbar[j]);
+
+        for i = 1, 10 do
+            APB.buffbar[j].square[i]:Hide();
+        end
     end
 
     for j = 0, 0 do
@@ -2203,12 +2228,14 @@ local function APB_CheckPower(self)
         APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
         bupdate_power = true;
 
+        combobuffcoloralertlist = { 433891 };            --지옥불 화살
+        combobuffalertlist = { 387079, 387157, 433885 }; -- 코스트 안드는 스킬들
+
         for i = 1, 20 do
             APB.combobar[i].tooltip = "SOUL_SHARDS";
         end
 
         if (spec and spec == 1) then
-            combobuffalertlist = { 387079 };
             if asCheckTalent("어둠의 선물") then
                 APB_DEBUFF = "어둠의 선물";
                 APB.buffbar[0].debuff = APB_DEBUFF
@@ -2227,6 +2254,8 @@ local function APB_CheckPower(self)
             APB:SetScript("OnUpdate", APB_OnUpdate);
             APB:RegisterEvent("PLAYER_TARGET_CHANGED");
 
+
+
             if IsPlayerSpell(196277) then --임프
                 local name = asGetSpellInfo(196277);
                 APB_ACTION_STACK = APB_GetActionSlot(name);
@@ -2241,7 +2270,7 @@ local function APB_CheckPower(self)
             bupdate_spell = true;
             bupdate_partial_power = true;
 
-            combobuffalertlist = { 387157 };
+
 
             if IsPlayerSpell(17877) then
                 APB_SPELL2 = select(1, asGetSpellInfo(17877)); --어둠의 연소
@@ -2941,6 +2970,17 @@ local function APB_CheckPower(self)
 
         if bupdate_fronzen then
             APB_UpdateFronzenOrb(self.buffbar[0]);
+
+            local width = self.buffbar[0]:GetWidth() / FrozenOrbDuration * 3;
+
+            for i = 1, 3 do
+                local square =  APB.buffbar[0].square[i]
+                square:SetWidth(2);
+                square:SetHeight(APB.buffbar[0]:GetHeight() - 1);
+                square:ClearAllPoints()
+                square:SetPoint("CENTER", APB.buffbar[0], "RIGHT", - (width * i), 0);
+                square:Show();                
+            end
         end
     end
 end
@@ -2981,30 +3021,7 @@ local function checkSpellCost(id)
     end
 end
 
-local function checkSpellPowerCost(id)
-    local i = 1
-
-    if not APB_POWER_LEVEL then
-        return;
-    end
-
-    local powerTypeString = PowerTypeComboString[APB_POWER_LEVEL];
-
-    local localizedClass, englishClass = UnitClass("player")
-    local spec = GetSpecialization();
-    local disWarlock = false;
-
-    if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
-        spec = 1;
-    end
-
-    if (englishClass == "WARLOCK") then
-        if (spec and spec == 3) then
-            powerTypeString = "영혼의 조각 파편";
-            disWarlock = true;
-        end
-    end
-
+local function scanSpellCost(id, powerTypeString, disWarlock)
     if id then
         local spell = Spell:CreateFromSpellID(id);
         spell:ContinueOnSpellLoad(function()
@@ -3056,8 +3073,34 @@ local function checkSpellPowerCost(id)
                 end
             end
         end)
+    end
+end
 
+local function checkSpellPowerCost(id)
+    local i = 1
+
+    if not APB_POWER_LEVEL then
         return;
+    end
+
+    local powerTypeString = PowerTypeComboString[APB_POWER_LEVEL];
+
+    local localizedClass, englishClass = UnitClass("player")
+    local spec = GetSpecialization();
+    local disWarlock = false;
+
+    if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
+        spec = 1;
+    end
+
+
+
+    if (englishClass == "WARLOCK") and (spec and spec == 3) then
+        scanSpellCost(id, powerTypeString, disWarlock);
+        disWarlock = true;
+        scanSpellCost(id, "영혼의 조각 파편", disWarlock);
+    else
+        scanSpellCost(id, powerTypeString, disWarlock);
     end
 end
 
@@ -3162,8 +3205,9 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             if bupdate_fronzen then
                 if eventType == "SPELL_CAST_SUCCESS" and spellId == FrozenOrbID then
                     FrozenOrbTime = nil;
-                elseif FrozenOrbTime == nil and (eventType == "SPELL_DAMAGE") and spellId == FrozenOrbDamageID then
                     FrozenOrbTime = GetTime();
+                --elseif FrozenOrbTime == nil and (eventType == "SPELL_DAMAGE") and spellId == FrozenOrbDamageID then
+                    --FrozenOrbTime = GetTime();
                 end
             elseif bupdate_enhaced_tempest then
                 -- Handle Awakened Storm buff removal
@@ -3415,6 +3459,7 @@ do
     APB:SetPoint("BOTTOM", UIParent, "CENTER", APB_X, APB_Y)
     APB:SetWidth(APB_WIDTH)
     APB:SetHeight(APB_HEIGHT)
+    APB:SetFrameLevel(9100);
     APB:Show();
 
     APB.bar = CreateFrame("StatusBar", nil, APB)
@@ -3520,7 +3565,21 @@ do
         APB.buffbar[j].count:SetFont(APB_Font, APB_BuffSize + 5, APB_FontOutline)
         APB.buffbar[j].count:SetPoint("RIGHT", APB.buffbar[j], "RIGHT", -4, 0)
         APB.buffbar[j].count:SetTextColor(1, 1, 1, 1)
+
+        APB.buffbar[j].square = {};
+        for i = 1, 10 do
+            APB.buffbar[j].square[i] = APB.buffbar[j]:CreateTexture(nil);
+            APB.buffbar[j].square[i]:SetDrawLayer("ARTWORK", 5);
+            APB.buffbar[j].square[i]:SetTexture("Interface\\Addons\\asPowerBar\\Square_White.tga")
+            APB.buffbar[j].square[i]:SetBlendMode("ALPHAKEY");
+            APB.buffbar[j].square[i]:SetVertexColor(0, 0, 0, 1)
+            APB.buffbar[j].square[i]:SetWidth(3);
+            APB.buffbar[j].square[i]:SetHeight(APB.buffbar[j]:GetHeight() - 1);
+            APB.buffbar[j].square[i]:Hide();
+        end
     end
+
+
 
     APB.stackbar = {};
 
@@ -3571,9 +3630,10 @@ do
         APB.combobar[i] = CreateFrame("StatusBar", nil, APB);
         APB.combobar[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER");
         APB.combobar[i]:GetStatusBarTexture():SetHorizTile(false);
+        APB.combobar[i]:SetFrameLevel(9000);
         APB.combobar[i]:SetMinMaxValues(0, 100);
         APB.combobar[i]:SetValue(100);
-        APB.combobar[i]:SetHeight(APB_HEIGHT);
+        APB.combobar[i]:SetHeight(APB_HEIGHT);        
         APB.combobar[i]:SetWidth(20);
 
         APB.combobar[i].bg = APB.combobar[i]:CreateTexture(nil, "BACKGROUND");
@@ -3594,11 +3654,11 @@ do
         APB.combobar[i]:EnableMouse(false);
     end
 
-    APB.combobar[1].text = APB.combobar[1]:CreateFontString(nil, "ARTWORK");
-    APB.combobar[1].text:SetFont(APB_Font, APB_HealthSize - 2, APB_FontOutline);
-    APB.combobar[1].text:SetPoint("BOTTOMLEFT", APB.combobar[1], "TOPLEFT", 0, 2);
-    APB.combobar[1].text:SetTextColor(1, 1, 1, 1)
-    APB.combobar[1].text:Hide();
+    APB.combotext = APB:CreateFontString(nil, "OVERLAY");     
+    APB.combotext:SetFont(APB_Font, APB_HealthSize - 2, APB_FontOutline);
+    APB.combotext:SetPoint("BOTTOMLEFT", APB.combobar[1], "TOPLEFT", 0, 2);
+    APB.combotext:SetTextColor(1, 1, 1, 1)    
+    APB.combotext:Hide();
     APB.buffcombobar = APB.combobar;
 
 
@@ -3631,11 +3691,11 @@ do
         APB.combobar2[i]:EnableMouse(false);
     end
 
-    APB.combobar2[1].text = APB.combobar2[1]:CreateFontString(nil, "ARTWORK");
-    APB.combobar2[1].text:SetFont(APB_Font, APB_HealthSize - 2, APB_FontOutline);
-    APB.combobar2[1].text:SetPoint("BOTTOMLEFT", APB.combobar2[1], "TOPLEFT", 0, 2);
-    APB.combobar2[1].text:SetTextColor(1, 1, 1, 1)
-    APB.combobar2[1].text:Hide();
+    APB.combotext2 = APB.combobar2[1]:CreateFontString(nil, "ARTWORK", nil, 3);
+    APB.combotext2:SetFont(APB_Font, APB_HealthSize - 2, APB_FontOutline);
+    APB.combotext2:SetPoint("BOTTOMLEFT", APB.combobar2[1], "TOPLEFT", 0, 2);
+    APB.combotext2:SetTextColor(1, 1, 1, 1)
+    APB.combotext2:Hide();
 
 
     APB.spellbar = {};

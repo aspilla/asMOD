@@ -3219,3 +3219,6 @@ DBM-Test-Dungeons/Vanilla/DemonFallCanyon/Reports/Grimroot.lua
 DBM-Test-Dungeons/Vanilla/DemonFallCanyon/Reports/HellscreamsPhantom.lua
 DBM-Test-Dungeons/Vanilla/DemonFallCanyon/Reports/Pyranis.lua
 DBM-Test-Dungeons/Vanilla/DemonFallCanyon/Reports/Zilbagob.lua
+Details/Libs/DF/ejournal.lua
+Details/Libs/DF/elapsedtime.lua
+Details/Libs/DF/line_indicator.lua
