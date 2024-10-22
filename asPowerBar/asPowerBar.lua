@@ -492,9 +492,6 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
 
             if isCharged then
                 ns.lib.PixelGlow_Start(combobar[i], { 0.5, 0.5, 1 }, nil, nil, nil, 0.5);
-                if combo == i then
-                    bmax = true;
-                end
             else
                 ns.lib.PixelGlow_Stop(combobar[i]);
             end

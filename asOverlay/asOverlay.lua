@@ -271,8 +271,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		overlay.remain:ClearAllPoints()
 		overlay.remain:SetPoint("BOTTOM", overlay, "BOTTOM", 20, 0);
 	else
-		overlay.side = false;
-		print (position);
+		overlay.side = false;		
 		overlay.count:ClearAllPoints()
 		overlay.count:SetPoint("LEFT", overlay, "LEFT", 0, 0);
 		overlay.remain:ClearAllPoints()
