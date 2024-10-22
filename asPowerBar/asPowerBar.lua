@@ -2204,8 +2204,7 @@ local function APB_CheckPower(self)
                 FrozenOrbDuration = 12;
             end
 
-            bupdate_fronzen = true;
-            APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+            bupdate_fronzen = true;           
 
             combobuffalertlist = { 431177 }; -- 서리 불꽃
 
@@ -3188,7 +3187,14 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
         asUnitFrameManaCostPredictionBars_Update(self, (event == "UNIT_SPELLCAST_START" or not (startTime == endTime)),
             startTime, endTime, spellID, bchanneling);
         APB_UpdatePower();
-        APB_UpdateFronzenOrb(self.buffbar[0]);
+
+        if bupdate_fronzen then
+            if event == "UNIT_SPELLCAST_SUCCEEDED" and arg3 == FrozenOrbID then                
+                FrozenOrbTime = GetTime();            
+            end
+            APB_UpdateFronzenOrb(self.buffbar[0]);
+        end
+        
     elseif event == "PLAYER_TARGET_CHANGED" then
         APB_UpdateBuff(self.buffbar[0]);
         APB_UpdateBuff(self.buffbar[1]);
@@ -3199,14 +3205,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             CombatLogGetCurrentEventInfo();
 
         if sourceGUID and (sourceGUID == UnitGUID("player")) then
-            if bupdate_fronzen then
-                if eventType == "SPELL_CAST_SUCCESS" and spellId == FrozenOrbID then
-                    FrozenOrbTime = nil;
-                    FrozenOrbTime = GetTime();
-                --elseif FrozenOrbTime == nil and (eventType == "SPELL_DAMAGE") and spellId == FrozenOrbDamageID then
-                    --FrozenOrbTime = GetTime();
-                end
-            elseif bupdate_enhaced_tempest then
+            if bupdate_enhaced_tempest then
                 -- Handle Awakened Storm buff removal
                 if (eventType == "SPELL_AURA_REMOVED" and spellId == 462131) then
                     tempeststate.awakeningStormRemovedTime = GetTime()
