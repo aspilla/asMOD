@@ -240,13 +240,13 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", 0, (height * (1 - scale)) / 2);
 	elseif position == Enum.ScreenLocationType.LeftOutside then
 		width, height = shortSide, longSide;
-		overlay:SetPoint("RIGHT", self, "LEFT", -shortSide, 0);
+		overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -shortSide, (height * (1 - scale)) / 2);
 	elseif position == Enum.ScreenLocationType.Right then
 		width, height = shortSide, longSide;
 		overlay:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 0, (height * (1 - scale)) / 2);
 	elseif position == Enum.ScreenLocationType.RightOutside then
 		width, height = shortSide, longSide;
-		overlay:SetPoint("LEFT", self, "RIGHT", shortSide, 0);
+		overlay:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", shortSide, (height * (1 - scale)) / 2);
 	elseif position == Enum.ScreenLocationType.Top then
 		width, height = longSide, shortSide;
 		overlay:SetPoint("BOTTOMLEFT", self, "TOPLEFT", (width * (1 - scale)) / 2, 0);
@@ -264,7 +264,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		return;
 	end
 
-	if position == Enum.ScreenLocationType.Left or position == Enum.ScreenLocationType.Right then
+	if position == Enum.ScreenLocationType.Left or position == Enum.ScreenLocationType.Right or position == Enum.ScreenLocationType.LeftOutside or position == Enum.ScreenLocationType.RightOutside then
 		overlay.side = true;
 		overlay.count:ClearAllPoints()
 		overlay.count:SetPoint("BOTTOM", overlay, "BOTTOM", 0, 0);
@@ -272,6 +272,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		overlay.remain:SetPoint("BOTTOM", overlay, "BOTTOM", 20, 0);
 	else
 		overlay.side = false;
+		print (position);
 		overlay.count:ClearAllPoints()
 		overlay.count:SetPoint("LEFT", overlay, "LEFT", 0, 0);
 		overlay.remain:ClearAllPoints()
@@ -569,3 +570,4 @@ frame:SetHeight(256)
 frame:SetScript("OnUpdate", asOverlay_OnUpdate);
 frame:SetScript("OnEvent", asOverlay_OnEvent);
 asOverlay_OnLoad(frame);
+
