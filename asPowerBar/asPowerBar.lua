@@ -14,6 +14,7 @@ local APB_ALPHA_NORMAL = 0.5
 local APB_SHOW_HEALTHBAR = false -- 생명력바 표시
 local APB_STACKBAR_COLOR_NORMAL = { 0.3, 1, 0.3 };
 local APB_STACKBAR_COLOR_ALERT = { 1, 0.5, 0.3 };
+local APB_STACKBAR_COLOR_ALERT2 = { 0.5, 1, 1 };
 
 local bupdate_power = false;
 local bupdate_rune = false;
@@ -737,10 +738,9 @@ local function APB_UpdateBuffStack(stackbar)
             balert = true;
         end
 
-        if balert then
-            ns.lib.PixelGlow_Start(stackbar);
-        else
-            ns.lib.PixelGlow_Stop(stackbar);
+        if balert then            
+            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT2[1], APB_STACKBAR_COLOR_ALERT2
+                [2], APB_STACKBAR_COLOR_ALERT2[3]);      
         end
     elseif bupdate_internalcool then
         stackbar.start = internalcool_state.start;
@@ -1515,7 +1515,7 @@ local function APB_UpdateSpell(spell, spell2)
         spellbar.spellid = spellid;
 
         if balert then
-            ns.lib.PixelGlow_Start(spellbar);
+            ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
         else
             ns.lib.PixelGlow_Stop(spellbar);
         end
@@ -1536,7 +1536,7 @@ local function APB_UpdateSpell(spell, spell2)
         spellbar.spellid = spellid;
 
         if balert then
-            ns.lib.PixelGlow_Start(spellbar);
+            ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
         else
             ns.lib.PixelGlow_Stop(spellbar);
         end
@@ -1611,7 +1611,7 @@ local function APB_UpdateSpell(spell, spell2)
             spellbar.spellid = spellid;
 
             if balert2 then
-                ns.lib.PixelGlow_Start(spellbar);
+                ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
             else
                 ns.lib.PixelGlow_Stop(spellbar);
             end
@@ -1633,7 +1633,7 @@ local function APB_UpdateSpell(spell, spell2)
             spellbar.spellid = spellid;
 
             if balert2 then
-                ns.lib.PixelGlow_Start(spellbar);
+                ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
             else
                 ns.lib.PixelGlow_Stop(spellbar);
             end
