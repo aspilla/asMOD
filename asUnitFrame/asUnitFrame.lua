@@ -112,15 +112,14 @@ local function updateUnit(frame)
         unit = unit_pet;
     end
 
-    if not UnitExists(unit) then
-        frame:SetAlpha(0);
+    if not UnitExists(unit) then        
         return;
     else
         if UnitAffectingCombat(unit) then
             frame:SetAlpha(1);
         else
             frame:SetAlpha(0.5);
-        end
+        end             
     end
 
     -- Healthbar
@@ -570,7 +569,8 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame:SetAttribute("unit", unit);
     SecureUnitButton_OnLoad(frame, frame.unit, OpenContextMenu);
     Mixin(frame, PingableType_UnitFrameMixin);
-    frame:SetAttribute("ping-receiver", true);
+    frame:SetAttribute("ping-receiver", true);    
+    RegisterStateDriver(frame, "visibility", "[@".. unit..",exists] show; hide");
 
     if not frame:GetScript("OnEnter") then
         frame:SetScript("OnEnter", function(s)
@@ -929,6 +929,7 @@ local function AUF_OnEvent(self, event, arg1, arg2, arg3)
             end
         end
     elseif event == "PLAYER_ENTERING_WORLD" then
+        updateUnit(AUF_PlayerFrame);
         updateUnit(AUF_TargetFrame);
         updateUnit(AUF_FocusFrame);
         RegisterAll(AUF_FocusFrame, "focus");
