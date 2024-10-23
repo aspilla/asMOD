@@ -115,11 +115,11 @@ local function updateUnit(frame)
     if not UnitExists(unit) then        
         return;
     else
-        if not InCombatLockdown() then
-            frame:SetAlpha(0.5);
-        else
+        if UnitAffectingCombat(unit) then
             frame:SetAlpha(1);
-        end        
+        else
+            frame:SetAlpha(0.5);
+        end             
     end
 
     -- Healthbar

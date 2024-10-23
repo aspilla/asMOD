@@ -873,6 +873,7 @@ function ns.Button:init(config, frame)
 
         if self.bufflist then
             for _, debuff in pairs(self.bufflist) do
+                ACI_Debuff_list[debuff] = true;
                 ns.eventhandler.registerAura(self.unit, debuff);
             end
         end
@@ -883,6 +884,7 @@ function ns.Button:init(config, frame)
 
         if self.bufflist then
             for _, buff in pairs(self.bufflist) do
+                ACI_Buff_list[buff] = true;
                 ns.eventhandler.registerAura("player", buff);
             end
         end

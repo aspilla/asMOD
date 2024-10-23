@@ -105,27 +105,34 @@ function asOverlayTexture_OnFadeOutFinished(anim)
 	tinsert(overlayParent.unusedOverlays, overlay);
 end
 
-local complexLocationTable = {
-	["RIGHT (FLIPPED)"] = {
-		RIGHT = { hFlip = true },
+local complexLocationTypes = {
+	[Enum.ScreenLocationType.LeftRight] = {
+		Enum.ScreenLocationType.Left,
+		Enum.ScreenLocationType.Right,
 	},
-	["BOTTOM (FLIPPED)"] = {
-		BOTTOM = { vFlip = true },
+	[Enum.ScreenLocationType.TopBottom] = {
+		Enum.ScreenLocationType.Top,
+		Enum.ScreenLocationType.Bottom,
 	},
-	["LEFT + RIGHT (FLIPPED)"] = {
-		LEFT = {},
-		RIGHT = { hFlip = true },
-	},
-	["TOP + BOTTOM (FLIPPED)"] = {
-		TOP = {},
-		BOTTOM = { vFlip = true },
+	[Enum.ScreenLocationType.LeftRightOutside] = {
+		Enum.ScreenLocationType.LeftOutside,
+		Enum.ScreenLocationType.RightOutside,
 	},
 }
+
+local hFlippedPositions = {
+	[Enum.ScreenLocationType.Right] = true,
+	[Enum.ScreenLocationType.RightOutside] = true,
+};
+
+local vFlippedPositions = {
+	[Enum.ScreenLocationType.Bottom] = true,
+};
 
 local checkAuraList = {};
 local countAuraList = {};
 
-local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale, r, g, b, vFlip, hFlip)
+local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale, r, g, b)
 	local rate = 1;
 	local aura;
 
@@ -213,57 +220,58 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	local texLeft, texRight, texTop, texBottom = 0, 1, 0, 1;
 	overlay.vflip = false;
 	overlay.hflip = false;
-	if (vFlip) then
+
+	if vFlippedPositions[position] then
 		texTop, texBottom = 1, 0;
 		overlay.vflip = true;
 	end
-	if (hFlip) then
+	if hFlippedPositions[position] then
 		texLeft, texRight = 1, 0;
 		overlay.hflip = true;
 	end
-
+	
 	local width, height;
 
-	if (position == "CENTER") then
+	if position == Enum.ScreenLocationType.Center then
 		width, height = longSide, longSide;
 		overlay:SetPoint("CENTER", self, "CENTER", 0, 0);
-	elseif (position == "LEFT") then
+	elseif position == Enum.ScreenLocationType.Left then
 		width, height = shortSide, longSide;
 		overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", 0, (height * (1 - scale)) / 2);
-	elseif (position == "RIGHT") then
+	elseif position == Enum.ScreenLocationType.LeftOutside then
+		width, height = shortSide, longSide;
+		overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -shortSide, (height * (1 - scale)) / 2);
+	elseif position == Enum.ScreenLocationType.Right then
 		width, height = shortSide, longSide;
 		overlay:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 0, (height * (1 - scale)) / 2);
-	elseif (position == "TOP") then
+	elseif position == Enum.ScreenLocationType.RightOutside then
+		width, height = shortSide, longSide;
+		overlay:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", shortSide, (height * (1 - scale)) / 2);
+	elseif position == Enum.ScreenLocationType.Top then
 		width, height = longSide, shortSide;
 		overlay:SetPoint("BOTTOMLEFT", self, "TOPLEFT", (width * (1 - scale)) / 2, 0);
-	elseif (position == "BOTTOM") then
+	elseif position == Enum.ScreenLocationType.Bottom then
 		width, height = longSide, shortSide;
 		overlay:SetPoint("TOPLEFT", self, "BOTTOMLEFT", (width * (1 - scale)) / 2, 0);
-	elseif (position == "TOPRIGHT") then
+	elseif position == Enum.ScreenLocationType.TopRight then
 		width, height = shortSide, shortSide;
 		overlay:SetPoint("BOTTOMLEFT", self, "TOPRIGHT", 0, 0);
-	elseif (position == "TOPLEFT") then
+	elseif position == Enum.ScreenLocationType.TopLeft then
 		width, height = shortSide, shortSide;
 		overlay:SetPoint("BOTTOMRIGHT", self, "TOPLEFT", 0, 0);
-	elseif (position == "BOTTOMRIGHT") then
-		width, height = shortSide, shortSide;
-		overlay:SetPoint("TOPLEFT", self, "BOTTOMRIGHT", 0, 0);
-	elseif (position == "BOTTOMLEFT") then
-		width, height = shortSide, shortSide;
-		overlay:SetPoint("TOPRIGHT", self, "BOTTOMLEFT", 0, 0);
 	else
 		--GMError("Unknown asOverlay position: "..tostring(position));
 		return;
 	end
 
-	if string.find(position, "LEFT") or string.find(position, "RIGHT") then
+	if position == Enum.ScreenLocationType.Left or position == Enum.ScreenLocationType.Right or position == Enum.ScreenLocationType.LeftOutside or position == Enum.ScreenLocationType.RightOutside then
 		overlay.side = true;
 		overlay.count:ClearAllPoints()
 		overlay.count:SetPoint("BOTTOM", overlay, "BOTTOM", 0, 0);
 		overlay.remain:ClearAllPoints()
 		overlay.remain:SetPoint("BOTTOM", overlay, "BOTTOM", 20, 0);
 	else
-		overlay.side = false;
+		overlay.side = false;		
 		overlay.count:ClearAllPoints()
 		overlay.count:SetPoint("LEFT", overlay, "LEFT", 0, 0);
 		overlay.remain:ClearAllPoints()
@@ -304,8 +312,8 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	if aura then
 		local count = aura.applications;
 
-		if ns.countaware[spellID] then
-			if count and count == 1 and position == "RIGHT" then
+		if ns.countaware[spellID] then			
+			if count and count == 1 and position == Enum.ScreenLocationType.Right  then
 				countAuraList[spellID] = true;
 				overlay:Hide();
 				return;
@@ -405,14 +413,14 @@ local function asOverlay_CheckAura(self)
 	end
 end
 
-local function asOverlay_ShowAllOverlays(self, spellID, texturePath, positions, scale, r, g, b)
-	positions = strupper(positions);
-	if (complexLocationTable[positions]) then
-		for location, info in pairs(complexLocationTable[positions]) do
-			asOverlay_ShowOverlay(self, spellID, texturePath, location, scale, r, g, b, info.vFlip, info.hFlip);
+local function asOverlay_ShowAllOverlays(self, spellID, texturePath, locationType, scale, r, g, b)
+	local locations = complexLocationTypes[locationType];
+	if locations then
+		for _, location in ipairs(locations) do
+			asOverlay_ShowOverlay(self, spellID, texturePath, location, scale, r, g, b);
 		end
 	else
-		asOverlay_ShowOverlay(self, spellID, texturePath, positions, scale, r, g, b, false, false);
+		asOverlay_ShowOverlay(self, spellID, texturePath, locationType, scale, r, g, b);
 	end
 end
 
@@ -455,6 +463,7 @@ local function asOverlay_OnEvent(self, event, ...)
 
 	if (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
 		local spellID, texture, positions, scale, r, g, b = ...;
+
 		if not IsShown(spellID) then
 			asOverlay_ShowAllOverlays(self, spellID, texture, positions, scale, r, g, b)
 		end
@@ -497,7 +506,7 @@ local function asOverlay_OnUpdate(self, elapsed)
 						local overlay = overlayList[i];
 						if ns.options.ShowAlpha == true then
 							overlay:SetAlpha(rate * settingalpha);
-						else
+						elseif overlay.width and overlay.height then
 							local texLeft, texRight, texTop, texBottom = 0, 1, 0, 1;
 
 							if (overlay.vflip) then
@@ -560,3 +569,4 @@ frame:SetHeight(256)
 frame:SetScript("OnUpdate", asOverlay_OnUpdate);
 frame:SetScript("OnEvent", asOverlay_OnEvent);
 asOverlay_OnLoad(frame);
+

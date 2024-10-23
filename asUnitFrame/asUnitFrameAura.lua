@@ -195,6 +195,10 @@ local function ProcessAura(aura, unit)
         elseif ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll, aura) then
             aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
             bshow = true;
+        elseif not UnitIsPlayer(unit) then
+            if ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll) then
+                bshow = true;
+            end        
         end
 
         if bshow then

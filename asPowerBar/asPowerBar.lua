@@ -493,9 +493,6 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
 
             if isCharged then
                 ns.lib.PixelGlow_Start(combobar[i], { 0.5, 0.5, 1 }, nil, nil, nil, 0.5);
-                if combo == i then
-                    bmax = true;
-                end
             else
                 ns.lib.PixelGlow_Stop(combobar[i]);
             end
@@ -1932,8 +1929,7 @@ local function APB_CheckPower(self)
     bupdate_buff_count = false;
     bupdate_buff_combo = false;
     bupdate_stagger = false;
-    bupdate_fronzen = false;
-    bupdate_Splinterstorm = false;
+    bupdate_fronzen = false;    
     bupdate_partial_power = false;
     bsmall_power_bar = false;
     bhalf_combo = false;
@@ -2208,19 +2204,9 @@ local function APB_CheckPower(self)
                 FrozenOrbDuration = 12;
             end
 
-            bupdate_fronzen = true;
-            APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+            bupdate_fronzen = true;           
 
             combobuffalertlist = { 431177 }; -- 서리 불꽃
-
-            if IsPlayerSpell(443739) then    --쇄편
-                APB_DEBUFF_STACK = 443740;
-                APB.stackbar[0].unit = "target"
-                APB.stackbar[0].spellid = 443740;
-                APB_MaxStack(8);
-                APB_UpdateBuffStack(self.stackbar[0]);
-                bupdate_Splinterstorm = true;
-            end
 
             APB_SPELL = "진눈깨비";
             APB_SpellMax(APB_SPELL);
@@ -3201,7 +3187,14 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
         asUnitFrameManaCostPredictionBars_Update(self, (event == "UNIT_SPELLCAST_START" or not (startTime == endTime)),
             startTime, endTime, spellID, bchanneling);
         APB_UpdatePower();
-        APB_UpdateFronzenOrb(self.buffbar[0]);
+
+        if bupdate_fronzen then
+            if event == "UNIT_SPELLCAST_SUCCEEDED" and arg3 == FrozenOrbID then                
+                FrozenOrbTime = GetTime();            
+            end
+            APB_UpdateFronzenOrb(self.buffbar[0]);
+        end
+        
     elseif event == "PLAYER_TARGET_CHANGED" then
         APB_UpdateBuff(self.buffbar[0]);
         APB_UpdateBuff(self.buffbar[1]);
@@ -3212,20 +3205,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             CombatLogGetCurrentEventInfo();
 
         if sourceGUID and (sourceGUID == UnitGUID("player")) then
-            if bupdate_fronzen then
-                if eventType == "SPELL_CAST_SUCCESS" and spellId == FrozenOrbID then
-                    FrozenOrbTime = nil;
-                    FrozenOrbTime = GetTime();
-                --elseif FrozenOrbTime == nil and (eventType == "SPELL_DAMAGE") and spellId == FrozenOrbDamageID then
-                    --FrozenOrbTime = GetTime();
-                end
-
-                if bupdate_Splinterstorm and destGUID == UnitGUID("target") then
-                    if spellId == 443934 then -- Splinterstorm (applied per hit)
-                        splinterstorm_time = GetTime()
-                    end
-                end
-            elseif bupdate_enhaced_tempest then
+            if bupdate_enhaced_tempest then
                 -- Handle Awakened Storm buff removal
                 if (eventType == "SPELL_AURA_REMOVED" and spellId == 462131) then
                     tempeststate.awakeningStormRemovedTime = GetTime()
