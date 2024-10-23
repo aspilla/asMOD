@@ -112,16 +112,14 @@ local function updateUnit(frame)
         unit = unit_pet;
     end
 
-    if not UnitExists(unit) then
-        --frame:Hide();
+    if not UnitExists(unit) then        
         return;
     else
         if not InCombatLockdown() then
             frame:SetAlpha(0.5);
         else
             frame:SetAlpha(1);
-        end
-        --frame:Show();
+        end        
     end
 
     -- Healthbar
@@ -571,9 +569,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame:SetAttribute("unit", unit);
     SecureUnitButton_OnLoad(frame, frame.unit, OpenContextMenu);
     Mixin(frame, PingableType_UnitFrameMixin);
-    frame:SetAttribute("ping-receiver", true);
-    --frame:SetAttribute("_onshow", [[ self:Show() ]])
-    --frame:SetAttribute("_onhide", [[ self:Hide() ]])
+    frame:SetAttribute("ping-receiver", true);    
     RegisterStateDriver(frame, "visibility", "[@".. unit..",exists] show; hide");
 
     if not frame:GetScript("OnEnter") then
