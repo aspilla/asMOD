@@ -2438,8 +2438,8 @@ local function APB_CheckPower(self)
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
 
-            if IsPlayerSpell(116645) then
-                APB_BUFF = "고대의 가르침";
+            if IsPlayerSpell(467293) then
+                APB_BUFF = 388026;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");

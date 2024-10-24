@@ -88,10 +88,10 @@ local function UpdatePlayerUnit()
     end
 
     if (hasValidVehicleUI) then
-        unit_player = unitVehicleToken
+        unit_player = unitVehicleToken        
         unit_pet = "player"
     else
-        unit_player = "player"
+        unit_player = "player"        
         unit_pet = "pet"
     end
 end
@@ -108,9 +108,13 @@ local function updateUnit(frame)
         UpdatePlayerUnit()
         unit = unit_player;
         showplayermana = (unit ~= "player");
-    elseif unit == "pet" then
+
+        if not InCombatLockdown() and unit ~= frame:GetAttribute("unit") then
+            frame:SetAttribute("unit", unit);            
+        end
+    elseif unit == "pet" then        
         unit = unit_pet;
-    end
+    end    
 
     if not UnitExists(unit) then        
         return;
@@ -120,7 +124,8 @@ local function updateUnit(frame)
         else
             frame:SetAlpha(0.5);
         end             
-    end
+    end   
+
 
     -- Healthbar
     local value = UnitHealth(unit);
@@ -564,14 +569,6 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.powerbar.value:SetTextColor(1, 1, 1, 1)
     frame.powerbar.value:SetPoint("CENTER", frame.powerbar, "CENTER", 0, 0);
 
-    frame.unit = unit;
-    -- 유닛 설정 (예시: 'player' 또는 'target' 등)
-    frame:SetAttribute("unit", unit);
-    SecureUnitButton_OnLoad(frame, frame.unit, OpenContextMenu);
-    Mixin(frame, PingableType_UnitFrameMixin);
-    frame:SetAttribute("ping-receiver", true);    
-    RegisterStateDriver(frame, "visibility", "[@".. unit..",exists] show; hide");
-
     if not frame:GetScript("OnEnter") then
         frame:SetScript("OnEnter", function(s)
             if s.unit then
@@ -655,7 +652,19 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
 
     frame.updatecount = 1;
 
-    frame:Show();
+    frame.unit = unit;
+    -- 유닛 설정 (예시: 'player' 또는 'target' 등)
+    frame:SetAttribute("unit", unit);
+    SecureUnitButton_OnLoad(frame, frame.unit, OpenContextMenu);
+    Mixin(frame, PingableType_UnitFrameMixin);
+    frame:SetAttribute("ping-receiver", true);    
+
+    if unit == "player" then
+        frame:Show();
+    else
+        RegisterStateDriver(frame, "visibility", "[@".. unit..",exists] show; hide");
+    end
+    
 
     frame.callback = function()
         updateUnit(frame);
