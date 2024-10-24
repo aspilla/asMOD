@@ -872,8 +872,7 @@ function ns.Button:init(config, frame)
         end
 
         if self.bufflist then
-            for _, debuff in pairs(self.bufflist) do
-                ACI_Debuff_list[debuff] = true;
+            for _, debuff in pairs(self.bufflist) do                
                 ns.eventhandler.registerAura(self.unit, debuff);
             end
         end
@@ -883,8 +882,7 @@ function ns.Button:init(config, frame)
         ns.eventhandler.registerAura(self.unit, self.spell);
 
         if self.bufflist then
-            for _, buff in pairs(self.bufflist) do
-                ACI_Buff_list[buff] = true;
+            for _, buff in pairs(self.bufflist) do                
                 ns.eventhandler.registerAura("player", buff);
             end
         end
@@ -936,13 +934,6 @@ function ns.Button:init(config, frame)
     end
 
     ns.eventhandler.registerTimer(self);
-
-    if self.realspell == 228358 then
-        if IsPlayerSpell(443739) then --쇄편
-            ns.eventhandler.registerSplinterstorm(self);
-            self.checkSplinter = true;
-        end
-    end
 
     if self.buffshowtime then
         ns.eventhandler.registerCastTime(self.spellid);

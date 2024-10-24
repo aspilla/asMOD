@@ -115,7 +115,7 @@ local function updateUnit(frame)
     if not UnitExists(unit) then        
         return;
     else
-        if UnitAffectingCombat(unit) then
+        if UnitAffectingCombat("player") then
             frame:SetAlpha(1);
         else
             frame:SetAlpha(0.5);
