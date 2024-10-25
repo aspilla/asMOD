@@ -1440,6 +1440,9 @@ local function setupMouseOver(frame)
             if s.spellid and s.spellid > 0 then
                 GameTooltip_SetDefaultAnchor(GameTooltip, s);
                 GameTooltip:SetSpellByID(s.spellid);
+            elseif s.tooltip and type(s.tooltip) == "number" then
+                GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                GameTooltip:SetSpellByID(s.tooltip);
             elseif s.tooltip then
                 GameTooltip_SetDefaultAnchor(GameTooltip, s);
                 GameTooltip:SetText(s.tooltip);
@@ -2819,7 +2822,7 @@ local function APB_CheckPower(self)
             bupdate_spell = true;
 
             if asCheckTalent("깊이 뿌리내린 정기") then
-                APB_BUFF = "승천";
+                APB_BUFF = 114050;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
                 APB:RegisterUnitEvent("UNIT_AURA", "player");
