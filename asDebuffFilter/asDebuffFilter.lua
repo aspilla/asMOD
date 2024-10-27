@@ -462,11 +462,11 @@ local function ProcessAura(aura, unit)
         end
 
         -- PowerBar에서 보이는 Debuff 는 숨기고
-        if APB_DEBUFF and APB_DEBUFF == aura.name then
+        if APB_DEBUFF and (APB_DEBUFF == aura.name or APB_DEBUFF == aura.spellId) then
             skip = true;
         end
 
-        if APB_DEBUFF2 and APB_DEBUFF2 == aura.name then
+        if APB_DEBUFF2 and (APB_DEBUFF2 == aura.name or APB_DEBUFF2 == aura.spellId) then
             skip = true;
         end
 
@@ -690,49 +690,9 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
     end
 end
 
-local function UpdateAuras(unitAuraUpdateInfo, unit)
-    local debuffsChanged = false;
-
-    if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate or activeDebuffs[unit] == nil then
-        ParseAllAuras(unit);
-        debuffsChanged = true;
-    else
-        if unitAuraUpdateInfo.addedAuras ~= nil then
-            for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
-                local type = ProcessAura(aura, unit);
-                if type == AuraUpdateChangedType.Debuff then
-                    debuffsChanged = true;
-                end
-            end
-        end
-
-        if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
-            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
-                local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
-                activeDebuffs[unit][auraInstanceID] = nil;
-                local type = ProcessAura(newAura, unit);
-                if type == AuraUpdateChangedType.Debuff then
-                    debuffsChanged = true;
-                end
-            end
-        end
-
-        if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
-            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
-                if activeDebuffs[unit][auraInstanceID] ~= nil then
-                    activeDebuffs[unit][auraInstanceID] = nil;
-                    debuffsChanged = true;
-                end
-            end
-        end
-    end
-
-    if not debuffsChanged then
-        return;
-    end
-
+local function UpdateAuras(unit)
+    ParseAllAuras(unit);    
     local numDebuffs = math.min(ns.ADF_MAX_DEBUFF_SHOW, activeDebuffs[unit]:Size());
-
     UpdateAuraFrames(unit, activeDebuffs[unit], numDebuffs);
 end
 
@@ -774,18 +734,14 @@ local function initList()
 end
 
 function ADF_OnEvent(self, event, arg1, ...)
-    if (event == "PLAYER_TARGET_CHANGED") then
+    if (event == "UNIT_AURA") then
+    UpdateAuras("player");  
+    elseif (event == "PLAYER_TARGET_CHANGED") then
         ADF_ClearFrame();
-        UpdateAuras(nil, "target");
-    elseif (event == "UNIT_AURA") then
-        local unitAuraUpdateInfo = ...;
-        local unit = arg1;
-        if unit and unit == "player" then
-            UpdateAuras(unitAuraUpdateInfo, arg1);
-        end
+        UpdateAuras("target");          
     elseif (event == "PLAYER_ENTERING_WORLD") then
-        UpdateAuras(nil, "target");
-        UpdateAuras(nil, "player");
+        UpdateAuras("target");
+        UpdateAuras("player");
     elseif event == "PLAYER_REGEN_DISABLED" then
         ADF:SetAlpha(ns.ADF_AlphaCombat);
         cachedPriorityChecks = {};
@@ -801,7 +757,7 @@ end
 
 local function OnUpdate()
     if (UnitExists("target")) then
-        UpdateAuras(nil, "target");
+        UpdateAuras("target");
     end
 end
 
@@ -928,7 +884,7 @@ local function ADF_Init()
     end
 
     ADF:RegisterEvent("PLAYER_TARGET_CHANGED")
-    ADF_PLAYER_DEBUFF:RegisterUnitEvent("UNIT_AURA", "player")
+    ADF:RegisterUnitEvent("UNIT_AURA", "player")
     ADF:RegisterEvent("PLAYER_ENTERING_WORLD");
     ADF:RegisterEvent("PLAYER_REGEN_DISABLED");
     ADF:RegisterEvent("PLAYER_REGEN_ENABLED");
@@ -938,11 +894,9 @@ local function ADF_Init()
     ADF:RegisterUnitEvent("UNIT_PET", "player")
 
     ADF:SetScript("OnEvent", ADF_OnEvent)
-    ADF_TARGET_DEBUFF:SetScript("OnEvent", ADF_OnEvent)
-    ADF_PLAYER_DEBUFF:SetScript("OnEvent", ADF_OnEvent)
 
     --주기적으로 Callback
-    C_Timer.NewTicker(0.2, OnUpdate);
+    C_Timer.NewTicker(0.25, OnUpdate);
 end
 
 ADF_Init();

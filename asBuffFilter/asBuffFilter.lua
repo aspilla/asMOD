@@ -304,14 +304,14 @@ local function IsShown(name, spellId)
 	end
 
 	-- asPowerBar Check
-	if APB_BUFF and APB_BUFF == name then
+	if APB_BUFF and (APB_BUFF == name or APB_BUFF == spellId) then
 		return true;
 	end
 
-	if APB_BUFF2 and APB_BUFF2 == name then
+	if APB_BUFF2 and (APB_BUFF2 == name  or APB_BUFF2 == spellId) then
 		return true;
 	end
-	if APB_BUFF3 and APB_BUFF3 == name then
+	if APB_BUFF3 and (APB_BUFF3 == name  or APB_BUFF3 == spellId) then
 		return true;
 	end
 
@@ -559,6 +559,16 @@ local function updateTotemAura()
 	return left, center;
 end
 
+local function HideFrame(p, idx)
+	local frame = p.frames[idx];
+
+	if (frame) then
+		ns.lib.ButtonGlow_Stop(frame);
+		ns.lib.PixelGlow_Stop(frame);
+		frame:Hide();
+	end
+end
+
 local function UpdateAuraFrames(unit, auraList)
 	local i = 0;
 	local curr_time = GetTime();
@@ -691,17 +701,6 @@ local function UpdateAuraFrames(unit, auraList)
 			return false;
 		end);
 
-	local function HideFrame(p, idx)
-		local frame = p.frames[idx];
-
-		if (frame) then
-			ns.lib.ButtonGlow_Stop(frame);
-			ns.lib.PixelGlow_Stop(frame);
-			frame:Hide();
-		end
-	end
-
-
 	if mparent then
 		for j = tcount, max do
 			HideFrame(mparent, j);
@@ -717,47 +716,8 @@ local function UpdateAuraFrames(unit, auraList)
 end
 
 
-local function UpdateAuras(unitAuraUpdateInfo, unit)
-	local buffsChanged = false;
-
-	if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate or activeBuffs[unit] == nil then
-		ParseAllAuras(unit);
-		buffsChanged = true;
-	else
-		if unitAuraUpdateInfo.addedAuras ~= nil then
-			for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
-				local type = ProcessAura(aura, unit);
-				if type == AuraUpdateChangedType.Buff then
-					buffsChanged = true;
-				end
-			end
-		end
-
-		if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
-			for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
-				local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
-				activeBuffs[unit][auraInstanceID] = nil;
-				local type = ProcessAura(newAura, unit);
-				if type == AuraUpdateChangedType.Buff then
-					buffsChanged = true;
-				end
-			end
-		end
-
-		if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
-			for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
-				if activeBuffs[unit][auraInstanceID] ~= nil then
-					activeBuffs[unit][auraInstanceID] = nil;
-					buffsChanged = true;
-				end
-			end
-		end
-	end
-
-	if not buffsChanged then
-		return;
-	end
-
+local function UpdateAuras(unit)
+	ParseAllAuras(unit);
 	UpdateAuraFrames(unit, activeBuffs[unit]);
 end
 
@@ -803,28 +763,20 @@ end
 
 
 local function ABF_OnEvent(self, event, arg1, ...)
-	if (event == "PLAYER_TARGET_CHANGED") then
+	if (event == "UNIT_AURA") then
+		UpdateAuras("player");
+	elseif (event == "PLAYER_TARGET_CHANGED") then
 		ABF_ClearFrame();
 		ABF_Resize();
-		UpdateAuras(nil, "target");
-	elseif (event == "UNIT_AURA") then
-		local unitAuraUpdateInfo = ...;
-		local unit = arg1;
-		if unit and unit == "player" then
-			UpdateAuras(nil, unit);
-		end
+		UpdateAuras("target");	
 	elseif (event == "PLAYER_TOTEM_UPDATE") then
-		if activeBuffs["player"] == nil then
-			UpdateAuras(nil, "player");
-		else
-			UpdateAuraFrames("player", activeBuffs["player"]);
-		end
+		UpdateAuras("player");		
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		hasValidPlayer = true;
 		asCheckTalent();
 		ABF_Resize();
-		UpdateAuras(nil, "player");
-		UpdateAuras(nil, "target");
+		UpdateAuras("player");
+		UpdateAuras("target");
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		ABF:SetAlpha(ns.ABF_AlphaCombat);
 		ABF_Resize();
@@ -855,7 +807,7 @@ end
 
 local function OnUpdate()
 	if (UnitExists("target")) then
-		UpdateAuras(nil, "target");
+		UpdateAuras("target");
 	end
 end
 
@@ -1014,7 +966,7 @@ local function ABF_Init()
 
 
 	ABF:RegisterEvent("PLAYER_TARGET_CHANGED")
-	ABF_PLAYER_BUFF:RegisterUnitEvent("UNIT_AURA", "player");
+	ABF:RegisterUnitEvent("UNIT_AURA", "player");
 	ABF:RegisterEvent("PLAYER_ENTERING_WORLD");
 	ABF:RegisterEvent("PLAYER_LEAVING_WORLD");
 	ABF:RegisterEvent("PLAYER_REGEN_DISABLED");
@@ -1034,11 +986,9 @@ local function ABF_Init()
 
 
 	ABF:SetScript("OnEvent", ABF_OnEvent)
-	ABF_TARGET_BUFF:SetScript("OnEvent", ABF_OnEvent)
-	ABF_PLAYER_BUFF:SetScript("OnEvent", ABF_OnEvent)
 
 	--주기적으로 Callback
-	C_Timer.NewTicker(0.2, OnUpdate);
+	C_Timer.NewTicker(0.25, OnUpdate);
 end
 
 ABF_Init();

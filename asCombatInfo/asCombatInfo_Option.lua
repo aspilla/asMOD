@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 241017,
+	version = 241026,
 
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
@@ -86,11 +86,11 @@ ACI_Options_Default = {
 
 	--야수
 	ACI_SpellList_HUNTER_1 = {
-		{ 99, "야수의 회전베기", { 118455, 3, "pet", 2 }, { "광포한 야수", 2 } },
+		{ 99, "야수의 회전베기", { 118455, 3, "pet", 2 }, { "폭발 사격", 1 } },
 		{ "살상 명령", 1 },
 		{ "야수의 격노", 2 },
 		{ "마무리 사격", 1 },
-		{ 217200, 5, nil, 1 },
+		{99, "광포한 야수", { "광포한 야수", 1 }, { 217200, 5, nil, 1 }},
 	},
 
 	--사격
@@ -99,16 +99,16 @@ ACI_Options_Default = {
 		{ "속사", 1 },
 		{ "정조준", 2},
 		{ "마무리 사격", 1 },
-		{ 259491, 5, nil, 1 },
+		{99, "연발 공격", { "연발 공격", 2 }, { 259491, 5, nil, 1 }},
 	},
 
 	--생존
 	ACI_SpellList_HUNTER_3 = {
-		{ "야생불 폭탄", 1 },
+		{ "도살", 1 },
 		{ "살상 명령", 1},
 		{ 99, "협공", { "협공", 2 }, { "측방 강타", 1 } },
 		{ "마무리 사격", 1 },
-		{ 259491, 5, nil, 1 },
+		{ 99, "측방 강타", { "측방 강타", 1 }, { 259491, 5, nil, 1 }},
 	},
 
 	--비전
@@ -117,7 +117,7 @@ ACI_Options_Default = {
 		{ "비전 보주", 1 },
 		{ "비전 쇄도", 2 },
 		{ "비전의 여파", 4 },
-		{99, "비전 쇠약",{ 453599, 5 }, { "환기", 2, nil, nil, nil, "폭풍 착취" }},
+		{99, "힘의 전환",{ "힘의 전환", 1 }, { "환기", 2, nil, nil, nil, "폭풍 착취" }},
 		
 	},
 

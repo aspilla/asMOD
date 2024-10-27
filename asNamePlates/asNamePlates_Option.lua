@@ -22,6 +22,7 @@ ns.ANameP_HealerSize = 14;           -- 힐러표시 Text Size
 ns.ANameP_TargetHealthBarHeight = 3; -- 대상 체력바 높이 증가치 (+3)
 ns.ANameP_HeathTextSize = 8;         -- 대상 체력숫자 크기
 ns.ANameP_UpdateRate = 0.5;          -- 버프 Check 반복 시간 (초)
+ns.ANameP_UpdateRateTarget = 0.3;    -- 대상의 버프 Check 반복 시간 (초)
 
 
 -- 아래 유닛명이면 강조

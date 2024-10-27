@@ -88,7 +88,7 @@ local function asCheckTalent(name)
 
     if not (configID) then
         return false;
-    end    
+    end
     local configInfo = C_Traits.GetConfigInfo(configID);
     local treeID = configInfo.treeIDs[1];
 
@@ -97,7 +97,6 @@ local function asCheckTalent(name)
     for _, nodeID in ipairs(nodes) do
         local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
         if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-
             local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID;
             local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
             local definitionInfo = entryInfo and entryInfo.definitionID and
@@ -106,7 +105,7 @@ local function asCheckTalent(name)
             if definitionInfo and IsPlayerSpell(definitionInfo.spellID) then
                 local talentName = C_Spell.GetSpellName(definitionInfo.spellID);
                 if name == talentName then
-					return true;
+                    return true;
                 end
             end
         end
@@ -125,7 +124,7 @@ local function scanSpells(tab)
 
     for i = tabOffset + 1, tabOffset + numEntries do
         local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player)
-        
+
         if not spellName then
             do
                 break
@@ -133,7 +132,7 @@ local function scanSpells(tab)
         end
         local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
 
-        if spellName and spellID then            
+        if spellName and spellID then
             ns.KnownSpellList[spellName] = 1;
         end
     end
@@ -148,7 +147,7 @@ local function scanPetSpells()
                 break
             end
         end
-        
+
         if spellName then
             ns.KnownSpellList[spellName] = 1;
         end
@@ -289,7 +288,7 @@ local function GetClassBarHeight()
     return classbar_height;
 end
 
-local function updateAuras(self, unit)
+local function updateAuras(self)
     local numDebuffs = 1;
     local size_list = {};
     local parent = self.nameplateBase;
@@ -297,6 +296,12 @@ local function updateAuras(self, unit)
     local bShowCC = false;
     local auraData;
     local icon_size = self.icon_size;
+    local unit = self.unit;
+
+    if not self.checkaura then
+        self:Hide();
+        return;
+    end
 
     if not unit then
         return
@@ -307,6 +312,8 @@ local function updateAuras(self, unit)
         parent.UnitFrame.BuffFrame:Hide();
         parent.UnitFrame:UnregisterEvent("UNIT_AURA");
     end
+
+
 
     auraData = ns.UpdateAuras(unit);
 
@@ -381,7 +388,7 @@ local function updateAuras(self, unit)
                 return true;
             end
 
-            if ns.ANameP_ShowCCDebuff and bShowCC == false and aura.nameplateShowAll and aura.duration > 0 and  aura.duration <= 10 and not (ns.ANameP_ShowList and (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId])) then
+            if ns.ANameP_ShowCCDebuff and bShowCC == false and aura.nameplateShowAll and aura.duration > 0 and aura.duration <= 10 and not (ns.ANameP_ShowList and (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId])) then
                 show = false;
                 bShowCC = true;
 
@@ -407,8 +414,7 @@ local function updateAuras(self, unit)
             else
                 local alert = false;
                 local showlist_time = nil;
-                if ns.ANameP_ShowList and (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId] ) then
-
+                if ns.ANameP_ShowList and (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId]) then
                     isshowlist = true
                     local showlist = (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId]);
                     showlist_time = showlist[1];
@@ -503,17 +509,6 @@ local function updateAuras(self, unit)
 
     if bShowCC == false then
         self.CCdebuff:Hide();
-    end
-end
-
-local function updateUnitAuras(unit)
-    local nameplate = C_NamePlate.GetNamePlateForUnit(unit, issecure());
-    if (nameplate and nameplate.asNamePlates ~= nil and not nameplate:IsForbidden()) then
-        if nameplate.asNamePlates.checkaura then
-            updateAuras(nameplate.asNamePlates, nameplate.namePlateUnitToken);
-        else
-            nameplate.asNamePlates:Hide();
-        end
     end
 end
 
@@ -620,7 +615,7 @@ local function updateTargetNameP(self)
         else
             self:SetPoint("BOTTOMLEFT", healthBarContainer, "TOPLEFT", 0, base_y);
         end
-        
+
         if UnitFrame.BuffFrame then
             UnitFrame.BuffFrame:Hide();
         end
@@ -641,8 +636,8 @@ local function updateUnitRealHealthText(asframe)
 
     if not ns.options.ANameP_RealHealth then
         return;
-    end   
-    
+    end
+
     if not unit or not UnitExists(unit) then
         return;
     end
@@ -657,19 +652,17 @@ local function updateUnitRealHealthText(asframe)
     else
         asframe.realhealthtext:SetText("");
     end
-   
-
 end
 
-local function updateUnitHealthText(unit)
+local function updateHealthText(asframe)
     local value;
     local valueMax;
     local valuePct;
-    local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(unit, issecure());
-    if not namePlateFrameBase or namePlateFrameBase.asNamePlates == nil then
+    local unit = asframe.unit;
+
+    if not asframe.healthtext:IsShown() then
         return;
     end
-    local frame = namePlateFrameBase.asNamePlates;
 
     value = UnitHealth(unit);
     valueMax = UnitHealthMax(unit);
@@ -679,15 +672,15 @@ local function updateUnitHealthText(unit)
     end
 
     if valuePct > 0 then
-        frame.healthtext:SetText(valuePct);
+        asframe.healthtext:SetText(valuePct);
     else
-        frame.healthtext:SetText("");
+        asframe.healthtext:SetText("");
     end
 
     if valuePct <= lowhealthpercent then
-        frame.healthtext:SetTextColor(1, 0.5, 0.5, 1);
+        asframe.healthtext:SetTextColor(1, 0.5, 0.5, 1);
     elseif valuePct > 0 then
-        frame.healthtext:SetTextColor(1, 1, 1, 1);
+        asframe.healthtext:SetTextColor(1, 1, 1, 1);
     end
 end
 
@@ -947,8 +940,8 @@ local function updateHealthbarColor(self)
 end
 
 local function updatePVPAggro(self)
-    if not ns.ANameP_PVPAggroShow or not self.namecolor then
-        return
+    if not ns.ANameP_PVPAggroShow or not self.namecolor or not self.checkpvptarget then
+        return;
     end
 
     if not self.unit then
@@ -997,18 +990,6 @@ local function initAlertList()
 
     if ns.options[listname] then
         ns.ANameP_ShowList = CopyTable(ns.options[listname]);
-
-        --[[
-        for index, value in pairs(ns.ANameP_ShowList) do
-        
-            if type(index) == "number" then
-                local ospellid = C_Spell.GetOverrideSpell(index);
-                print (index);
-                print (ospellid)
-            end        
-        end
-        ]]
-
     else
         ns.ANameP_ShowList = {};
     end
@@ -1087,7 +1068,7 @@ local function checkSpellCasting(self)
                 self.castspellid = spellid;
                 self.casticon.castspellid = spellid;
 
-                local targettarget = unit.."target";
+                local targettarget = unit .. "target";
 
                 if UnitExists(targettarget) and UnitIsPlayer(targettarget) then
                     local _, Class = UnitClass(targettarget)
@@ -1099,7 +1080,6 @@ local function checkSpellCasting(self)
                     self.casticon.targetname:SetText("");
                     self.casticon.targetname:Hide();
                 end
-
             else
                 local dbm_show = false;
                 local min_remain = 100;
@@ -1161,10 +1141,9 @@ local function checkSpellCasting(self)
 end
 
 local function asNamePlates_OnEvent(self, event, ...)
-    if (event == "UNIT_THREAT_SITUATION_UPDATE" or event == "UNIT_THREAT_LIST_UPDATE") then
-        updateHealthbarColor(self)
-    elseif (event == "PLAYER_TARGET_CHANGED") then
+    if (event == "PLAYER_TARGET_CHANGED") then
         updateTargetNameP(self);
+        updateHealthText(self);
     else
         checkSpellCasting(self);
         updateHealthbarColor(self);
@@ -1178,12 +1157,13 @@ local namePlateVerticalScale = nil;
 local g_orig_height = nil;
 local prev_mouseover = nil;
 
-local function removeNamePlate(namePlateFrameBase)
-    if not namePlateFrameBase or not namePlateFrameBase.namePlateUnitToken then
-        return;
-    end
+local function removeUnit(namePlateUnitToken)
 
-    local namePlateUnitToken = namePlateFrameBase.namePlateUnitToken;
+    local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
+
+    if not namePlateFrameBase then
+        return;
+    end 
 
     if namePlateFrameBase.asNamePlates ~= nil then
         local asframe = namePlateFrameBase.asNamePlates;
@@ -1213,7 +1193,6 @@ local function removeNamePlate(namePlateFrameBase)
         asframe.BarColor:Hide();
 
         asframe:Hide();
-        asframe:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
         asframe:UnregisterEvent("PLAYER_TARGET_CHANGED");
         asframe:UnregisterEvent("UNIT_SPELLCAST_START");
         asframe:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
@@ -1224,6 +1203,11 @@ local function removeNamePlate(namePlateFrameBase)
         asframe:UnregisterEvent("UNIT_SPELLCAST_STOP");
         asframe:UnregisterEvent("UNIT_SPELLCAST_FAILED");
         asframe:SetScript("OnEvent", nil);
+
+        if asframe.timer then
+            asframe.timer:Cancel();
+            asframe.timer = nil;
+        end
 
 
         if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
@@ -1247,6 +1231,18 @@ local function removeNamePlate(namePlateFrameBase)
     end
 end
 
+local function updateNamePlate(namePlateFrameBase)
+    if (namePlateFrameBase and namePlateFrameBase.asNamePlates ~= nil and not namePlateFrameBase:IsForbidden() and namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame:IsShown()) then
+        local asframe = namePlateFrameBase.asNamePlates;
+        updateAuras(asframe);
+        updateTargetNameP(asframe);
+        updateHealthText(asframe);
+        updateUnitRealHealthText(asframe);
+        updateHealthbarColor(asframe);
+        updatePVPAggro(asframe);
+    end
+end
+
 local function addNamePlate(namePlateFrameBase)
     if not namePlateFrameBase and not namePlateFrameBase.namePlateUnitToken then
         return;
@@ -1263,7 +1259,7 @@ local function addNamePlate(namePlateFrameBase)
     if UnitIsUnit("player", unit) then
         if not ns.ANameP_ShowPlayerBuff then
             if namePlateFrameBase.asNamePlates ~= nil then
-                removeNamePlate(namePlateFrameBase);
+                removeUnit(unit);
                 unitFrame.BuffFrame:SetAlpha(1);
                 unitFrame.BuffFrame:Show();
             end
@@ -1272,7 +1268,7 @@ local function addNamePlate(namePlateFrameBase)
     else
         if not isAttackable(unit) then
             if namePlateFrameBase.asNamePlates ~= nil then
-                removeNamePlate(namePlateFrameBase);
+                removeUnit(unit);
                 unitFrame.BuffFrame:SetAlpha(1);
                 unitFrame.BuffFrame:Show();
             end
@@ -1309,7 +1305,6 @@ local function addNamePlate(namePlateFrameBase)
     asframe.checkcolor = false;
     asframe.debuffColor = 0;
 
-    asframe:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
     asframe:UnregisterEvent("PLAYER_TARGET_CHANGED");
     asframe:UnregisterEvent("UNIT_SPELLCAST_START");
     asframe:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
@@ -1403,18 +1398,18 @@ local function addNamePlate(namePlateFrameBase)
     asframe.healthtext:ClearAllPoints();
     asframe.healthtext:SetPoint("CENTER", healthbar, "CENTER", 0, 0)
     asframe.healthtext:Hide();
-    
+
     asframe.realhealthtext:ClearAllPoints();
     asframe.realhealthtext:SetPoint("BOTTOMLEFT", healthbar, "BOTTOMLEFT", 1, 0);
     asframe.realhealthtext:SetTextColor(1, 1, 1, 1);
     asframe.realhealthtext:Hide();
 
 
-    
+
     asframe.motext:ClearAllPoints();
     asframe.motext:SetPoint("BOTTOM", asframe.healthtext, "TOP", 0, 1)
     asframe.motext:SetText("▼")
-    asframe.motext:SetTextColor(0,1,0)
+    asframe.motext:SetTextColor(0, 1, 0)
     asframe.motext:Hide();
 
 
@@ -1430,13 +1425,6 @@ local function addNamePlate(namePlateFrameBase)
     end
 
     if not UnitIsPlayer(unit) then
-        local bInstance, RTB_ZoneType = IsInInstance();
-        if not (RTB_ZoneType == "pvp" or RTB_ZoneType == "arena") then
-            -- PVP 에서는 어그로 Check 안함
-            asframe:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", "player", unit);
-            asframe:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", "player", unit);
-        end
-
         asframe:SetScript("OnEvent", asNamePlates_OnEvent);
         asframe:RegisterEvent("PLAYER_TARGET_CHANGED");
         asframe:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
@@ -1539,10 +1527,19 @@ local function addNamePlate(namePlateFrameBase)
         asframe.healer:Hide();
     end
 
-
     if UnitIsPlayer(unit) then
         unit_guid_list[UnitGUID(unit)] = unit;
     end
+
+    local function callback()
+        updateNamePlate(namePlateFrameBase);
+    end
+
+    if asframe.timer then
+        asframe.timer:Cancel();
+    end
+
+    asframe.timer = C_Timer.NewTicker(ns.ANameP_UpdateRate, callback);
 end
 
 
@@ -1558,142 +1555,30 @@ local function updateHealerMark(guid)
     end
 end
 
-local function asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken)
+local function addUnit(namePlateUnitToken)
     local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
-    if namePlateFrameBase and not namePlateFrameBase:IsForbidden() then
+
+    if namePlateFrameBase then
         addNamePlate(namePlateFrameBase);
         if namePlateFrameBase.asNamePlates ~= nil then
-            updateTargetNameP(namePlateFrameBase.asNamePlates);
-            updateUnitAuras(namePlateUnitToken);
-            updateHealthbarColor(namePlateFrameBase.asNamePlates);
+            local asframe = namePlateFrameBase.asNamePlates;
+            updateAuras(asframe);
+            updateTargetNameP(asframe);
+            updateHealthText(asframe);
+            updateUnitRealHealthText(asframe);
+            updateHealthbarColor(asframe);
+
+            checkSpellCasting(asframe);
         end
     end
 end
 
-local bfirst = true;
-
-local function setupFriendlyPlates()
-    local isInstance, instanceType = IsInInstance();
-    if bfirst and not isInstance and not InCombatLockdown() and ns.options.ANameP_ShortFriendNP then
-        C_NamePlate.SetNamePlateFriendlySize(60, 30);
-        bfirst = false;
-    end
-end
-
-local function ANameP_OnEvent(self, event, ...)
-    local arg1 = ...;
-    if event == "NAME_PLATE_CREATED" then
-        local namePlateFrameBase = ...;
-        createNamePlate(namePlateFrameBase);
-    elseif event == "NAME_PLATE_UNIT_ADDED" then
-        local namePlateUnitToken = ...;
-        local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
-
-        if namePlateFrameBase then
-            addNamePlate(namePlateFrameBase);
-            if namePlateFrameBase.asNamePlates ~= nil then
-                updateTargetNameP(namePlateFrameBase.asNamePlates);
-                updateUnitAuras(namePlateUnitToken);
-                updateUnitHealthText("target");
-                updateUnitHealthText("mouseover");
-                updateUnitHealthText("player");
-                updateUnitRealHealthText(namePlateFrameBase.asNamePlates);
-                checkSpellCasting(namePlateFrameBase.asNamePlates);
-                updateHealthbarColor(namePlateFrameBase.asNamePlates);
-            end
-        end
-    elseif event == "NAME_PLATE_UNIT_REMOVED" then
-        local namePlateUnitToken = ...;
-
-        local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
-        if namePlateFrameBase then
-            removeNamePlate(namePlateFrameBase);
-        end
-    elseif event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
-        updateUnitAuras("target");
-        updateUnitAuras("player");
-        updateUnitHealthText("target");
-        updateUnitHealthText("mouseover");
-    elseif event == "PLAYER_TARGET_CHANGED" then
-        if UnitExists("target") then
-            local pframe = C_NamePlate.GetNamePlateForUnit("target", issecure())
-            if pframe and pframe.asNamePlates ~= nil then
-                updateTargetNameP(pframe.asNamePlates);
-            end
-            updateUnitAuras("target");
-            updateUnitHealthText("target");
-        end
-    elseif event == "UPDATE_MOUSEOVER_UNIT" then
-        local bupdate = false;
-        if UnitExists("mouseover") then
-            local pframe = C_NamePlate.GetNamePlateForUnit("mouseover", issecure())
-            if pframe and pframe.asNamePlates ~= nil then
-                bupdate = true;
-                updateTargetNameP(pframe.asNamePlates);
-                if prev_mouseover and prev_mouseover ~= pframe.asNamePlates then
-                    updateTargetNameP(prev_mouseover);
-                end
-                prev_mouseover = pframe.asNamePlates;
-            end
-        end
-
-        if bupdate == false then
-            if prev_mouseover then
-                updateTargetNameP(prev_mouseover);
-            end
-            prev_mouseover = nil;
-        end
-
-        updateUnitHealthText("mouseover");
-    elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or
-        (event == "ACTIVE_TALENT_GROUP_CHANGED") then
-        setupKnownSpell();
-        C_Timer.After(0.5, initAlertList);
-    elseif (event == "PLAYER_ENTERING_WORLD") then
-        local isInstance, instanceType = IsInInstance();
-        if isInstance and (instanceType == "party" or instanceType == "raid" or instanceType == "scenario") then
-            self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-        else
-            self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-        end
-        updateTankerList();
-        setupKnownSpell();
-        -- 0.5 초 뒤에 Load
-        C_Timer.After(0.5, initAlertList);
-        C_Timer.After(0.5, setupFriendlyPlates);
-    elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        local _, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType =
-            CombatLogGetCurrentEventInfo();
-        if eventType == "SPELL_CAST_SUCCESS" and sourceGUID and not (sourceGUID == "") then
-            local className = GetPlayerInfoByGUID(sourceGUID);
-            if className and ns.ANameP_HealSpellList[className] and ns.ANameP_HealSpellList[className][spellID] then
-                ANameP_HealerGuid[sourceGUID] = true;
-                updateHealerMark(sourceGUID);
-            end
-        end
-    elseif (event == "UNIT_FACTION") then
-        local namePlateUnitToken = ...;
-        asCompactUnitFrame_UpdateNameFaction(namePlateUnitToken);
-    elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
-        updateTankerList();
-    elseif event == "PLAYER_REGEN_ENABLED" then
-        setupFriendlyPlates();
-    end
-end
-
-local function updateUnitResourceText()
+local function updateUnitResourceText(asframe)
     local value;
     local valueMax;
     local valuePct;
-    local unit = "player"
-    local frame;
-    local pframe = C_NamePlate.GetNamePlateForUnit("player", issecure())
-
-    if not pframe or pframe.asNamePlates == nil then
-        return;
-    else
-        frame = pframe.asNamePlates.resourcetext;
-    end
+    local unit = asframe.unit;
+    local frame = asframe.resourcetext;
 
     if frame == nil then
         return;
@@ -1723,32 +1608,112 @@ local function updateUnitResourceText()
     frame:Show();
 end
 
-local function ANameP_OnUpdate()
-    updateUnitHealthText("target");
-    updateUnitHealthText("mouseover");
-    updateUnitHealthText("player");
-    updateUnitResourceText();
+local function updateUnit(namePlateUnitToken, bquick)
+    local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
+    if namePlateFrameBase and not namePlateFrameBase:IsForbidden() then
+        if namePlateFrameBase.asNamePlates ~= nil then
+            local asframe = namePlateFrameBase.asNamePlates;
+            updateTargetNameP(asframe);
+            updateHealthText(asframe);
 
-    for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-        local nameplate = v;
+            if not bquick then
+                updateAuras(asframe);
+                updateUnitRealHealthText(asframe);
+                updateHealthbarColor(asframe);
 
-        if (nameplate and nameplate.asNamePlates ~= nil and not nameplate:IsForbidden()) then
-            if nameplate.asNamePlates.checkaura then
-                updateAuras(nameplate.asNamePlates, nameplate.namePlateUnitToken);
-            else
-                nameplate.asNamePlates:Hide();
+                if namePlateUnitToken == "player" then
+                    updateUnitResourceText(asframe);
+                end
             end
-
-            if nameplate.asNamePlates.checkpvptarget or nameplate.asNamePlates.namecolor then
-                updatePVPAggro(nameplate.asNamePlates);
-            end
-
-            updateTargetNameP(nameplate.asNamePlates);
-            checkSpellCasting(nameplate.asNamePlates);
-            updateHealthbarColor(nameplate.asNamePlates);
-            updateUnitRealHealthText(nameplate.asNamePlates);
         end
     end
+end
+
+local bfirst = true;
+
+local function setupFriendlyPlates()
+    local isInstance, instanceType = IsInInstance();
+    if bfirst and not isInstance and not InCombatLockdown() and ns.options.ANameP_ShortFriendNP then
+        C_NamePlate.SetNamePlateFriendlySize(60, 30);
+        bfirst = false;
+    end
+end
+
+local function ANameP_OnEvent(self, event, ...)
+    local arg1 = ...;
+
+    if event == "NAME_PLATE_CREATED" then
+        local namePlateFrameBase = ...;
+        createNamePlate(namePlateFrameBase);
+    elseif event == "NAME_PLATE_UNIT_ADDED" then
+        local namePlateUnitToken = ...;
+        addUnit(namePlateUnitToken);
+    elseif event == "NAME_PLATE_UNIT_REMOVED" then
+        local namePlateUnitToken = ...;
+        removeUnit(namePlateUnitToken);        
+    elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
+        local _, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType =
+            CombatLogGetCurrentEventInfo();
+        if eventType == "SPELL_CAST_SUCCESS" and sourceGUID and not (sourceGUID == "") then
+            local className = GetPlayerInfoByGUID(sourceGUID);
+            if className and ns.ANameP_HealSpellList[className] and ns.ANameP_HealSpellList[className][spellID] then
+                ANameP_HealerGuid[sourceGUID] = true;
+                updateHealerMark(sourceGUID);
+            end
+        end
+    elseif event == "UPDATE_MOUSEOVER_UNIT" then
+        local bupdate = false;
+        if UnitExists("mouseover") then
+            local pframe = C_NamePlate.GetNamePlateForUnit("mouseover", issecure())
+            if pframe and pframe.asNamePlates ~= nil then
+                bupdate = true;
+                if prev_mouseover and prev_mouseover ~= pframe.asNamePlates then
+                    updateTargetNameP(prev_mouseover);
+                end
+                prev_mouseover = pframe.asNamePlates;
+            end
+        end
+
+        if bupdate == false then
+            if prev_mouseover then
+                updateTargetNameP(prev_mouseover);
+            end
+            prev_mouseover = nil;
+        end
+
+        updateUnit("mouseover", true);
+    elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or
+        (event == "ACTIVE_TALENT_GROUP_CHANGED") then
+        setupKnownSpell();
+        C_Timer.After(0.5, initAlertList);
+    elseif (event == "PLAYER_ENTERING_WORLD") then
+        local isInstance, instanceType = IsInInstance();
+        if isInstance and (instanceType == "party" or instanceType == "raid" or instanceType == "scenario") then
+            self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+        else
+            self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+        end
+        updateTankerList();
+        setupKnownSpell();
+        -- 0.5 초 뒤에 Load
+        C_Timer.After(0.5, initAlertList);
+        C_Timer.After(0.5, setupFriendlyPlates);
+    elseif (event == "UNIT_FACTION") then
+        local namePlateUnitToken = ...;
+        addUnit(namePlateUnitToken);
+    elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
+        updateTankerList();
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        setupFriendlyPlates();
+    end
+end
+
+
+
+local function ANameP_OnUpdate()
+    updateUnit("target", false);
+    updateUnit("player", false);
+    updateUnit("mouseover", false);
 end
 
 local function flushoption()
@@ -1799,15 +1764,13 @@ local function initAddon()
     -- 나중에 추가 처리가 필요하면 하자.
     -- ANameP:RegisterEvent("FORBIDDEN_NAME_PLATE_UNIT_ADDED");
     -- ANameP:RegisterEvent("FORBIDDEN_NAME_PLATE_UNIT_REMOVED");
-    ANameP:RegisterEvent("PLAYER_TARGET_CHANGED");
+
     ANameP:RegisterEvent("PLAYER_ENTERING_WORLD");
     ANameP:RegisterEvent("ADDON_LOADED")
     ANameP:RegisterEvent("TRAIT_CONFIG_UPDATED");
     ANameP:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
     ANameP:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-    ANameP:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     ANameP:RegisterEvent("UNIT_FACTION");
-    ANameP:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
     ANameP:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
     ANameP:RegisterEvent("GROUP_JOINED");
     ANameP:RegisterEvent("GROUP_ROSTER_UPDATE");
@@ -1816,7 +1779,7 @@ local function initAddon()
 
     ANameP:SetScript("OnEvent", ANameP_OnEvent)
     -- 주기적으로 Callback
-    C_Timer.NewTicker(ns.ANameP_UpdateRate, ANameP_OnUpdate);
+    C_Timer.NewTicker(ns.ANameP_UpdateRateTarget, ANameP_OnUpdate);
 
     hooksecurefunc("DefaultCompactNamePlateFrameAnchorInternal", function(frame, setupOptions)
         if (frame:IsForbidden()) then

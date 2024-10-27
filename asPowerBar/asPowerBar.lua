@@ -220,6 +220,30 @@ local function APB_UnitBuffList(unit, list, casterid)
     end
 end
 
+local function APB_UnitBuffCountList(unit, list, casterid)
+    local ret = nil;
+    local auraList = ns.ParseAllBuff(unit);
+
+    auraList:Iterate(function(auraInstanceID, aura)
+        for index, v in pairs(list) do
+            local id = v[1];
+            local count = v[2];
+            if aura and aura.spellId == id and aura.sourceUnit == casterid and (count == 0 or aura.applications >= count) then                
+                if aura.duration > 0 then
+                    ret = aura;
+                elseif ret == nil then
+                    ret = aura;
+                end
+                break;
+            end
+        end
+    end);
+
+    if ret then
+        return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit;
+    end
+end
+
 local function APB_UnitBuff(unit, buff, casterid)
     local ret = nil;
     local auraList = ns.ParseAllBuff(unit);
@@ -383,6 +407,7 @@ local bhalf_combo = false;
 local bdruid = false;
 local brogue = false;
 local combobuffalertlist = nil;
+local combobuffcountalertlist = nil;
 local combobuffcoloralertlist = nil;
 
 local bshowspell = false;
@@ -499,10 +524,32 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
         end
     end
 
+    local comboalert = false;
+
     if combobuffalertlist and combobar == APB.combobar then
         local bBuffed = false;
 
         local name = APB_UnitBuffList("player", combobuffalertlist, "player");
+
+        if name then
+            bBuffed = true;
+            comboalert = true;
+        end
+
+
+        for i = 1, combobar.max_combo do
+            if bBuffed then
+                ns.lib.PixelGlow_Start(combobar[i], { 0.5, 0.5, 1 }, nil, nil, nil, 0.5);
+            else
+                ns.lib.PixelGlow_Stop(combobar[i]);
+            end
+        end
+    end
+
+    if combobuffcountalertlist and combobar == APB.combobar and not comboalert then
+        local bBuffed = false;
+
+        local name = APB_UnitBuffCountList("player", combobuffcountalertlist, "player");
 
         if name then
             bBuffed = true;
@@ -1942,6 +1989,7 @@ local function APB_CheckPower(self)
     bdruid = false;
     brogue = false;
     combobuffalertlist = nil;
+    combobuffcountalertlist = nil;
     combobuffcoloralertlist = nil;
 
     APB_BUFF = nil;
@@ -2126,7 +2174,8 @@ local function APB_CheckPower(self)
             APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
             APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
             bupdate_power = true;
-            combobuffalertlist = { 451073, 451038, 455681 };
+            combobuffalertlist = { 451073, 451038, 455681 };  
+            combobuffcountalertlist = { {467634, 2} };  
 
             for i = 1, 20 do
                 APB.combobar[i].tooltip = "ARCANE_CHARGES";
@@ -2762,8 +2811,8 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 3) then
-            if asCheckTalent("도살") then
-                APB_SPELL = "도살";
+            if asCheckTalent("야생불 폭탄") then
+                APB_SPELL = "야생불 폭탄";
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
                 bupdate_spell = true;
