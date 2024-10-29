@@ -51,45 +51,74 @@ local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
 end
 
 local auraData = {};
+auraData.buffs = {};
+auraData.debuffs = {};
 auraData.bufffilter = CreateFilterString(AuraFilters.Helpful, AuraFilters.Player, AuraFilters.IncludeNameplateOnly);
 auraData.debufffilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.Player);
+local bufftime = {};
+local debufftime = {};
+ns.needtocheckAura = true;
+
+function ns.GetAuraDataBySpellName(unit, spell, bdebuff)
+
+    if bdebuff then
+        return C_UnitAuras.GetAuraDataBySpellName(unit, spell, auraData.debufffilter);
+    else
+        return C_UnitAuras.GetAuraDataBySpellName(unit, spell, auraData.bufffilter);
+    end
+
+end
 
 function ns.ParseAllBuff(unit)
 
-    if auraData.buffs == nil then
-        auraData.buffs = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
+    if bufftime[unit] and GetTime() - bufftime[unit] < 0.1 and not((unit == "player" or unit == "pet") and ns.needtocheckAura) then        
+        return auraData.buffs[unit]
+    end
+
+    ns.needtocheckAura = false;
+
+    bufftime[unit] = GetTime();
+
+    if auraData.buffs[unit] == nil then
+        auraData.buffs[unit] = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
     else
-        auraData.buffs:Clear();
+        auraData.buffs[unit]:Clear();
     end
 
     local batchCount = nil;
     local usePackedAura = true;
     local function HandleAura(aura)
         if aura then
-            auraData.buffs[aura.auraInstanceID] = aura;
+            auraData.buffs[unit][aura.auraInstanceID] = aura;
         end
     end
     ForEachAura(unit, auraData.bufffilter, batchCount, HandleAura, usePackedAura);
 
-    return auraData.buffs;
+    return auraData.buffs[unit];
 end
 
 function ns.ParseAllDebuff(unit)
 
-    if auraData.debuffs == nil then
-        auraData.debuffs = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
+    if debufftime[unit] and GetTime() - debufftime[unit] < 0.1 then        
+        return auraData.debuffs[unit]
+    end
+
+    debufftime[unit] = GetTime();
+
+    if auraData.debuffs[unit] == nil then
+        auraData.debuffs[unit] = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
     else
-        auraData.debuffs:Clear();
+        auraData.debuffs[unit]:Clear();
     end
 
     local batchCount = nil;
     local usePackedAura = true;
     local function HandleAura(aura)
         if aura then
-            auraData.debuffs[aura.auraInstanceID] = aura;
+            auraData.debuffs[unit][aura.auraInstanceID] = aura;
         end
     end
     ForEachAura(unit, auraData.debufffilter, batchCount, HandleAura, usePackedAura);
 
-    return auraData.debuffs;
+    return auraData.debuffs[unit];
 end
