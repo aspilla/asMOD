@@ -89,6 +89,16 @@ end
 
 local function ACTA_OnUpdate()
     showlist = {};
+
+    if (MAX_BOSS_FRAMES) then
+        for i = 1, MAX_BOSS_FRAMES do
+            local unit = "boss" .. i;
+            if UnitExists(unit) then
+                CastingUnits[unit] = true;
+            end
+        end
+    end
+
     for unit, _ in pairs(CastingUnits) do
         local notcasting = CheckCasting(unit);
 
@@ -136,10 +146,22 @@ end
 
 local function ACTA_OnEvent(self, event, arg1, arg2, arg3, arg4)
     local unit = arg1;
-    local spellid = arg3;
 
-    if unit and spellid and isAttackable(unit) and string.find(unit, "nameplate") then
-        CastingUnits[unit] = true;
+    local unit = arg1;
+    if unit and isAttackable(unit) and UnitAffectingCombat(unit) and string.find(unit, "nameplate") then
+        local isboss = false;
+        if (MAX_BOSS_FRAMES) then
+            for i = 1, MAX_BOSS_FRAMES do
+                if UnitIsUnit(unit, "boss" .. i) then
+                    isboss = true;
+                    break;
+                end
+            end
+        end
+
+        if not isboss then
+            CastingUnits[unit] = true;
+        end
     end
 end
 
@@ -181,6 +203,7 @@ local function initAddon()
     ACTA:SetScript("OnEvent", ACTA_OnEvent);
     ACTA:RegisterEvent("UNIT_SPELLCAST_START");
     ACTA:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");
+    ACTA:RegisterEvent("NAME_PLATE_UNIT_ADDED");
 
     -- 주기적으로 Callback
     C_Timer.NewTicker(ACTA_UpdateRate, ACTA_OnUpdate);

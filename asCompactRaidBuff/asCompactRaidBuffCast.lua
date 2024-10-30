@@ -151,6 +151,15 @@ function ns.ACRB_CheckCasting()
     end
 
     if (IsInGroup()) then
+        if (MAX_BOSS_FRAMES) then
+            for i = 1, MAX_BOSS_FRAMES do
+                local unit = "boss" .. i;
+                if UnitExists(unit) then
+                    ns.CastingUnits[unit] = true;
+                end
+            end
+        end
+
         for unit, _ in pairs(ns.CastingUnits) do
             local notcasting = CheckCasting(unit);
 

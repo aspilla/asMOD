@@ -135,7 +135,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
     local x, y = frame:GetSize();
 
     asframe.needtosetup = false;
-    
+
     if frame.unit then
         asframe.unit = frame.unit;
     end
@@ -675,11 +675,22 @@ local function ACRB_OnEvent(self, event, arg1, arg2, arg3)
         bfirst = false;
     end
 
-    if event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" then
+    if event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" or event == "NAME_PLATE_UNIT_ADDED" then
         local unit = arg1;
-        local spellid = arg3;
-        if unit and spellid and ns.isAttackable(unit) and string.find(unit, "nameplate") then
-            ns.CastingUnits[unit] = true;
+        if unit and ns.isAttackable(unit) and UnitAffectingCombat(unit) and string.find(unit, "nameplate") then
+            local isboss = false;
+            if (MAX_BOSS_FRAMES) then
+                for i = 1, MAX_BOSS_FRAMES do
+                    if UnitIsUnit(unit, "boss" .. i) then
+                        isboss = true;
+                        break;
+                    end
+                end
+            end
+
+            if not isboss then
+                ns.CastingUnits[unit] = true;
+            end
         end
     elseif (event == "PLAYER_ENTERING_WORLD") then
         ns.hasValidPlayer = true;
@@ -717,6 +728,7 @@ ACRB_mainframe:RegisterEvent("ROLE_CHANGED_INFORM");
 ACRB_mainframe:RegisterEvent("VARIABLES_LOADED");
 ACRB_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
 ACRB_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
+ACRB_mainframe:RegisterEvent("NAME_PLATE_UNIT_ADDED");
 ACRB_mainframe:RegisterUnitEvent("UNIT_PET", "player")
 
 hooksecurefunc("CompactUnitFrame_UpdateAll", hookfunc);

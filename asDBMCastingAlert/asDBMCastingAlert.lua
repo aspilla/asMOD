@@ -106,6 +106,15 @@ local function ADCA_OnUpdate()
 	local alert_target = false;
 	local alert_target_noi = false;
 
+	if (MAX_BOSS_FRAMES) then
+		for i = 1, MAX_BOSS_FRAMES do
+			local unit = "boss" .. i;
+			if UnitExists(unit) then
+				CastingUnits[unit] = true;
+			end
+		end
+	end
+
 	for unit, needtosound in pairs(CastingUnits) do
 		if UnitExists(unit) then
 			local bchanneling = false;
@@ -330,9 +339,20 @@ local function ADCA_OnEvent(self, event, arg1, arg2, arg3, arg4)
 		VoiceAlertTime = {};
 	else
 		local unit = arg1;
-		local spellid = arg3;
-		if unit and spellid and isAttackable(unit) and UnitAffectingCombat(unit) and string.find(unit, "nameplate") then
-			CastingUnits[unit] = true;
+		if unit and isAttackable(unit) and UnitAffectingCombat(unit) and string.find(unit, "nameplate") then
+			local isboss = false;
+			if (MAX_BOSS_FRAMES) then
+				for i = 1, MAX_BOSS_FRAMES do
+					if UnitIsUnit(unit, "boss" .. i) then
+						isboss = true;
+						break;
+					end
+				end
+			end
+
+			if not isboss then
+				CastingUnits[unit] = true;
+			end
 		end
 	end
 end
@@ -347,7 +367,7 @@ local function Bar_OnUpdate(self, ef)
 		local current = GetTime();
 
 		if start > 0 and start + duration >= current then
-			local castBar = self;		
+			local castBar = self;
 			local time = self.time;
 
 			if self.bchanneling then
@@ -504,6 +524,7 @@ local function initAddon()
 	ADVA:SetScript("OnEvent", ADCA_OnEvent);
 	ADVA:RegisterEvent("UNIT_SPELLCAST_START");
 	ADVA:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");
+	ADVA:RegisterEvent("NAME_PLATE_UNIT_ADDED");
 	ADVA:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 	timer = C_Timer.NewTicker(0.2, ADCA_OnUpdate);
