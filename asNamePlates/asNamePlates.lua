@@ -563,8 +563,8 @@ local function updateTargetNameP(self)
         end
 
         if casticon then
-            casticon:SetWidth((height + cast_height + 2) * 1.2);
-            casticon:SetHeight(height + cast_height + 2);
+            casticon:SetWidth((height + cast_height + 3) * 1.2);
+            casticon:SetHeight(height + cast_height + 3);
             casticon.border:SetVertexColor(1, 1, 1);
         end
 
@@ -591,8 +591,8 @@ local function updateTargetNameP(self)
         end
 
         if casticon then
-            casticon:SetWidth((height + cast_height + 2) * 1.2);
-            casticon:SetHeight(height + cast_height + 2);
+            casticon:SetWidth((height + cast_height + 3) * 1.2);
+            casticon:SetHeight(height + cast_height + 3);
             casticon.border:SetVertexColor(0, 0, 0);
         end
 
@@ -1158,12 +1158,11 @@ local g_orig_height = nil;
 local prev_mouseover = nil;
 
 local function removeUnit(namePlateUnitToken)
-
     local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, issecure());
 
     if not namePlateFrameBase then
         return;
-    end 
+    end
 
     if namePlateFrameBase.asNamePlates ~= nil then
         local asframe = namePlateFrameBase.asNamePlates;
@@ -1231,15 +1230,20 @@ local function removeUnit(namePlateUnitToken)
     end
 end
 
+local function updateAll(asframe)
+    updateAuras(asframe);
+    updateTargetNameP(asframe);
+    updateHealthText(asframe);
+    updateUnitRealHealthText(asframe);
+    updateHealthbarColor(asframe);
+    updatePVPAggro(asframe);
+    checkSpellCasting(asframe);
+end
+
 local function updateNamePlate(namePlateFrameBase)
     if (namePlateFrameBase and namePlateFrameBase.asNamePlates ~= nil and not namePlateFrameBase:IsForbidden() and namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame:IsShown()) then
         local asframe = namePlateFrameBase.asNamePlates;
-        updateAuras(asframe);
-        updateTargetNameP(asframe);
-        updateHealthText(asframe);
-        updateUnitRealHealthText(asframe);
-        updateHealthbarColor(asframe);
-        updatePVPAggro(asframe);
+        updateAll(asframe);
     end
 end
 
@@ -1359,7 +1363,7 @@ local function addNamePlate(namePlateFrameBase)
     if unitFrame.castBar then
         asframe.casticon:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
         asframe.casticon:ClearAllPoints();
-        asframe.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0, 1);
+        asframe.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0, 0);
         asframe.casticon:SetWidth(13);
         asframe.casticon:SetHeight(13);
         asframe.casticon:Hide();
@@ -1562,13 +1566,7 @@ local function addUnit(namePlateUnitToken)
         addNamePlate(namePlateFrameBase);
         if namePlateFrameBase.asNamePlates ~= nil then
             local asframe = namePlateFrameBase.asNamePlates;
-            updateAuras(asframe);
-            updateTargetNameP(asframe);
-            updateHealthText(asframe);
-            updateUnitRealHealthText(asframe);
-            updateHealthbarColor(asframe);
-
-            checkSpellCasting(asframe);
+            updateAll(asframe);
         end
     end
 end
@@ -1650,7 +1648,7 @@ local function ANameP_OnEvent(self, event, ...)
         addUnit(namePlateUnitToken);
     elseif event == "NAME_PLATE_UNIT_REMOVED" then
         local namePlateUnitToken = ...;
-        removeUnit(namePlateUnitToken);        
+        removeUnit(namePlateUnitToken);
     elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
         local _, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType =
             CombatLogGetCurrentEventInfo();

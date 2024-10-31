@@ -22,17 +22,17 @@ function ns.SetupOptionPanels()
         local cvar_name = setting:GetVariable()
         local variable = get_variable_from_cvar_name(cvar_name)
         ADTI_Options[variable] = value;
-        ns.options[variable] = value;
+        ns.options[variable] = value;        
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asDBMTimer")
 
-    if ADTI_Options == nil then
+    if ADTI_Options == nil or Options_Default.Version ~= ADTI_Options.Version then
         ADTI_Options = {};
-        ADTI_Options = CopyTable(Options_Default);
+        ADTI_Options = CopyTable(Options_Default);        
     end
 
-    ns.options = CopyTable(ADTI_Options);
+    ns.options = CopyTable(ADTI_Options);    
 
     for variable, _ in pairs(Options_Default) do
         local name = variable;
@@ -40,9 +40,9 @@ function ns.SetupOptionPanels()
         if name ~= "Version" then
             local cvar_name = "asDBMTimer_" .. variable;
             local tooltip = ""
-            if ADTI_Options[variable] == nil or Options_Default.Version ~= ADTI_Options.Version then
+            if ADTI_Options[variable] == nil  then
                 ADTI_Options[variable] = Options_Default[variable];
-                ns.options[variable] = Options_Default[variable];
+                ns.options[variable] = Options_Default[variable];                
             end
             local defaultValue = ADTI_Options[variable];
 

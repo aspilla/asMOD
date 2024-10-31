@@ -113,12 +113,8 @@ end
 local dbm_event_list = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
 
 function asDBMTimer_callback(event, id, ...)
-	if event == "DBM_TimerStart" then
+	if event == "DBM_TimerStart" or event == "DBM_NameplateStart" then
 		local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
-
-		if ns.options.HideNamePlatesCooldown and type == "cd" and guid then
-			return;
-		end
 
 		if dbm_event_list[id] and dbm_event_list[id].button_id then
 			deleteButton(dbm_event_list[id].button_id, true);
@@ -144,14 +140,14 @@ function asDBMTimer_callback(event, id, ...)
 			unit = nil,
 			aoealerted = false,
 		};
-	elseif event == "DBM_TimerStop" then
+	elseif event == "DBM_TimerStop" or event == "DBM_NameplateStop" then
 		if dbm_event_list[id] then
 			if dbm_event_list[id].button_id then
 				deleteButton(dbm_event_list[id].button_id, true);
 			end
 			dbm_event_list:Remove(id);
 		end
-	elseif event == "DBM_TimerUpdate" then
+	elseif event == "DBM_TimerUpdate" or event == "DBM_NameplateUpdate" then
 		local elapsed, totalTime = ...;
 		if dbm_event_list[id] then
 			if dbm_event_list[id].button_id then
@@ -253,7 +249,7 @@ local function checkList()
 				deleteButton(event.button_id, true);
 			end
 			dbm_event_list:Remove(id);
-		end		
+		end
 	end)
 
 	table.wipe(unit_died_list);
@@ -306,7 +302,7 @@ local function checkButtons()
 		end
 	end)
 
-	checkAllButton();	
+	checkAllButton();
 end
 
 local function asDBMTimer_OnEvent(self, event, arg1, arg2, arg3, ...)
@@ -392,6 +388,15 @@ local function initAddon()
 	DBM:RegisterCallback("DBM_TimerUpdate", asDBMTimer_callback);
 	DBM:RegisterCallback("DBM_TimerPause", asDBMTimer_callback);
 	DBM:RegisterCallback("DBM_TimerResume", asDBMTimer_callback);
+
+
+	if not ns.options.HideNamePlatesCooldown then
+		DBM:RegisterCallback("DBM_NameplateStart", asDBMTimer_callback);
+		DBM:RegisterCallback("DBM_NameplateStop", asDBMTimer_callback);
+		DBM:RegisterCallback("DBM_NameplateUpdate", asDBMTimer_callback);
+		DBM:RegisterCallback("DBM_NameplatePause", asDBMTimer_callback);
+		DBM:RegisterCallback("DBM_NameplateResume", asDBMTimer_callback);
+	end
 
 	C_Timer.NewTicker(0.2, checkList);
 	C_Timer.NewTicker(0.05, checkButtons);
