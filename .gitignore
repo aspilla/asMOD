@@ -3243,3 +3243,14 @@ DBM-VPVEM/findclearvent.ogg
 DBM-VPVEM/movetoflamethrower.ogg
 DBM-VPVEM/runovermobs.ogg
 DBM-VPVEM/soakbeam.ogg
+Details/frames/window_nestspells.lua
+Details/frames/window_pro_file correct.lua
+Details/Libs/LibOpenRaid/classes.lua
+Details-bak/textures.lua
+Details-bak/classes/class_spelltable.lua
+Details-bak/classes/class_spellutility.lua
+Details-bak/frames/window_pro_file.lua
+Details-bak/Libs/AceAddon-3.0/AceAddon-3.0.lua
+Details-bak/Libs/AceComm-3.0/AceComm-3.0.lua
+Details-bak/Libs/AceSerializer-3.0/AceSerializer-3.0.lua
+Details-bak/Libs/LibGraph-2.0/LibGraph-2.0.lua

@@ -38,7 +38,7 @@ local eliteIcon = CreateAtlasMarkup("nameplates-icon-elite-gold", 14, 14);
 local rareIcon = CreateAtlasMarkup("UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare-Star", 14, 14);
 local rareeliteIcon = CreateAtlasMarkup("nameplates-icon-elite-silver", 14, 14);
 
-
+local DangerousSpellList = {};
 
 local function UpdateFillBarBase(realbar, bar, amount)
     if not amount or (amount == 0) then
@@ -98,6 +98,101 @@ end
 
 local function IsUnitInGroup(unit)
     return UnitInParty(unit) or UnitInRaid(unit) ~= nil
+end
+
+local function updateCastBar(frame)
+    local castbar    = frame.castbar;
+    local frameIcon  = castbar.button.icon;
+    local text       = castbar.name;
+    local time       = castbar.time;
+    local targetname = castbar.targetname;
+    local unit       = frame.unit;
+    local unittarget = unit .. "target";
+
+    if UnitExists(unit) then
+        local bchanneling = false;
+        local name, _, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
+            unit);
+
+        if not name then
+            bchanneling = true;
+            name, _, texture, start, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+        end
+
+        if name then
+            local current = GetTime();
+            frameIcon:SetTexture(texture);
+
+            castbar.start = start / 1000;
+            castbar.duration = (endTime - start) / 1000;
+            castbar.bchanneling = bchanneling;
+
+            castbar:SetMinMaxValues(0, castbar.duration)
+
+            if bchanneling then
+                castbar:SetValue(castbar.start + castbar.duration - current);
+            else
+                castbar:SetValue(current - castbar.start);
+            end
+
+
+            local color = {};
+
+            if UnitIsUnit(unittarget, "player") then
+                if notInterruptible then
+                    color = CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET;
+                else
+                    color = CONFIG_INTERRUPTIBLE_COLOR_TARGET;
+                end
+            else
+                if notInterruptible then
+                    color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
+                else
+                    color = CONFIG_INTERRUPTIBLE_COLOR;
+                end
+            end
+
+            castbar.castspellid = spellid;
+
+            castbar:SetStatusBarColor(color[1], color[2], color[3]);
+
+            text:SetText(name);
+            time:SetText(format("%.1f/%.1f", max((current - castbar.start), 0), max(castbar.duration, 0)));
+
+            frameIcon:Show();
+            castbar:Show();
+            if DangerousSpellList[spellid] and DangerousSpellList[spellid] == "interrupt" then
+                ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
+            end
+
+            if UnitExists(unittarget) and UnitIsPlayer(unittarget) then
+                local _, Class = UnitClass(unittarget)
+                local color = RAID_CLASS_COLORS[Class]
+                targetname:SetTextColor(color.r, color.g, color.b);
+                targetname:SetText(UnitName(unittarget));
+                targetname:Show();
+            else
+                targetname:SetText("");
+                targetname:Hide();
+            end
+        else
+            castbar:SetValue(0);
+            frameIcon:Hide();
+            castbar:Hide();
+            ns.lib.PixelGlow_Stop(castbar);
+            castbar.start = 0;
+            targetname:SetText("");
+            targetname:Hide();
+        end
+    else
+        castbar:SetValue(0);
+        frameIcon:Hide();
+        castbar:Hide();
+        ns.lib.PixelGlow_Stop(castbar);
+        castbar.start = 0;
+        targetname:SetText("");
+        targetname:Hide();
+    end
 end
 
 local function updateUnit(frame)
@@ -348,6 +443,11 @@ local function updateUnit(frame)
     if frame.debuffupdate then
         ns.UpdateAuras(frame);
     end
+
+    --CastBar
+    if frame.updateCastBar then
+        updateCastBar(frame);
+    end
 end
 
 local function asTargetFrame_OpenMenu(self, unit)
@@ -471,6 +571,8 @@ local function CreatDebuffFrames(parent, bright, fontsize, width, count)
 
     return;
 end
+
+
 
 local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight, fontsize, debuffupdate)
     local FontOutline = "OUTLINE";
@@ -651,6 +753,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     end
 
     frame.updatecount = 1;
+    frame.updateCastBar = false;
 
     frame.unit = unit;
     -- 유닛 설정 (예시: 'player' 또는 'target' 등)
@@ -786,103 +889,6 @@ end
 
 HideDefaults();
 
-local DangerousSpellList = {};
-
-local function updateCastBar(frame)
-    local castbar    = frame.castbar;
-    local frameIcon  = castbar.button.icon;
-    local text       = castbar.name;
-    local time       = castbar.time;
-    local targetname = castbar.targetname;
-    local unit       = frame.unit;
-    local unittarget = unit .. "target";
-
-    if UnitExists(unit) then
-        local bchanneling = false;
-        local name, _, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-            unit);
-
-        if not name then
-            bchanneling = true;
-            name, _, texture, start, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
-        end
-
-        if name then
-            local current = GetTime();
-            frameIcon:SetTexture(texture);
-
-            castbar.start = start / 1000;
-            castbar.duration = (endTime - start) / 1000;
-            castbar.bchanneling = bchanneling;
-
-            castbar:SetMinMaxValues(0, castbar.duration)
-
-            if bchanneling then
-                castbar:SetValue(castbar.start + castbar.duration - current);
-            else
-                castbar:SetValue(current - castbar.start);
-            end
-
-
-            local color = {};
-
-            if UnitIsUnit(unittarget, "player") then
-                if notInterruptible then
-                    color = CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET;
-                else
-                    color = CONFIG_INTERRUPTIBLE_COLOR_TARGET;
-                end
-            else
-                if notInterruptible then
-                    color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
-                else
-                    color = CONFIG_INTERRUPTIBLE_COLOR;
-                end
-            end
-
-            castbar.castspellid = spellid;
-
-            castbar:SetStatusBarColor(color[1], color[2], color[3]);
-
-            text:SetText(name);
-            time:SetText(format("%.1f/%.1f", max((current - castbar.start), 0), max(castbar.duration, 0)));
-
-            frameIcon:Show();
-            castbar:Show();
-            if DangerousSpellList[spellid] and DangerousSpellList[spellid] == "interrupt" then
-                ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
-            end
-
-            if UnitExists(unittarget) and UnitIsPlayer(unittarget) then
-                local _, Class = UnitClass(unittarget)
-                local color = RAID_CLASS_COLORS[Class]
-                targetname:SetTextColor(color.r, color.g, color.b);
-                targetname:SetText(UnitName(unittarget));
-                targetname:Show();
-            else
-                targetname:SetText("");
-                targetname:Hide();
-            end
-        else
-            castbar:SetValue(0);
-            frameIcon:Hide();
-            castbar:Hide();
-            ns.lib.PixelGlow_Stop(castbar);
-            castbar.start = 0;
-            targetname:SetText("");
-            targetname:Hide();
-        end
-    else
-        castbar:SetValue(0);
-        frameIcon:Hide();
-        castbar:Hide();
-        ns.lib.PixelGlow_Stop(castbar);
-        castbar.start = 0;
-        targetname:SetText("");
-        targetname:Hide();
-    end
-end
-
 local function AUF_OnEventSpell(self, event, arg1, arg2, arg3)
     updateCastBar(self);
 end
@@ -904,6 +910,7 @@ local function RegisterAll(frame, unit)
         frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
         frame:RegisterUnitEvent("UNIT_TARGET", unit);
         frame:SetScript("OnEvent", AUF_OnEventSpell);
+        frame.updateCastBar = true;
         updateCastBar(frame);
     else
         frame:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
@@ -921,6 +928,7 @@ local function RegisterAll(frame, unit)
         frame:UnregisterEvent("UNIT_SPELLCAST_FAILED");
         frame:UnregisterEvent("UNIT_TARGET");
         frame:SetScript("OnEvent", nil);
+        frame.updateCastBar = false;
     end
 end
 
