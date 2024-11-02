@@ -1,6 +1,6 @@
 ﻿local _, ns = ...;
 
-local ADBMT_Font = "Fonts\\2002.TTF";
+local ADBMT_Font = STANDARD_TEXT_FONT;
 local ADBMT_CoolFontSize = 15;
 local ADBMT_NameFontSize = 12;
 local ADBMT_FontOutline = "THICKOUTLINE";

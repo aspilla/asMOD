@@ -42,10 +42,9 @@ PlayerCastingBarFrame.casticon:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START",
 PlayerCastingBarFrame.casticon:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "player");
 
 
-if ACB_Casting_Time then
-	local font, size, flag = _G["NumberFontNormal"]:GetFont()
+if ACB_Casting_Time then	
 	PlayerCastingBarFrame.timer = PlayerCastingBarFrame:CreateFontString(nil)
-	PlayerCastingBarFrame.timer:SetFont(font, 11, "THINOUTLINE")
+	PlayerCastingBarFrame.timer:SetFont(STANDARD_TEXT_FONT, 11, "THINOUTLINE")
 	PlayerCastingBarFrame.timer:SetPoint("TOPRIGHT", PlayerCastingBarFrame, "BOTTOMRIGHT", 0, -2)
 	PlayerCastingBarFrame.update = 0.1
 

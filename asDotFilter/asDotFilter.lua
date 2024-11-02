@@ -400,7 +400,7 @@ local function ADotF_UpdateDebuff(unit)
                     frame:EnableMouse(false);
                     for _, r in next, { frame.cooldown:GetRegions() } do
                         if r:GetObjectType() == "FontString" then
-                            r:SetFont("Fonts\\2002.TTF", ADotF_CooldownFontSize, "OUTLINE");
+                            r:SetFont(STANDARD_TEXT_FONT, ADotF_CooldownFontSize, "OUTLINE");
                             r:ClearAllPoints();
                             r:SetPoint("TOP", 0, 5);
                             break;

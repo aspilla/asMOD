@@ -640,7 +640,7 @@ local function setupFrame(frame, Name, addonName, config)
 	frame = CreateFrame("Frame", Name, UIParent)
 	frame.addonName = addonName;
 	frame.text = frame:CreateFontString(nil, "OVERLAY")
-	frame.text:SetFont("Fonts\\2002.TTF", 10, "OUTLINE")
+	frame.text:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
 	frame.text:SetPoint("CENTER", frame, "CENTER", 0, 0)
 	frame.text:SetText(frame.addonName);
 	frame:SetMovable(true)

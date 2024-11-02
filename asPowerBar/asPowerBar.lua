@@ -1,6 +1,6 @@
 local _, ns = ...;
 
-local APB_Font = "Fonts\\2002.TTF";
+local APB_Font = STANDARD_TEXT_FONT;
 local APB_HealthSize = 12;
 local APB_BuffSize = 10;
 local APB_FontOutline = "OUTLINE";
@@ -2718,9 +2718,8 @@ local function APB_CheckPower(self)
             APB_BUFF = "광기";
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
-            bupdate_buff_count = true;
+            bupdate_buff_count = true;  
             
-            APB:RegisterUnitEvent("UNIT_AURA", "pet");
 
             if asCheckTalent("폭발성 맹독") then
                 APB_BUFF_COMBO = "폭발성 맹독";
@@ -3173,16 +3172,11 @@ local elemental_listOfSpenders = {
 local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
     if event == "UNIT_AURA" then
         ns.needtocheckAura = true;
-        APB_UpdateBuff(self.buffbar[0]);
-        APB_UpdateBuff(self.buffbar[1]);
-        APB_UpdateBuffCombo(self.buffcombobar);
-        APB_UpdateBuffStack(self.stackbar[0]);
-        APB_UpdateStagger(self.buffbar[0]);
+        updateBuffBar();
     elseif event == "ACTIONBAR_UPDATE_COOLDOWN" or event == "ACTIONBAR_UPDATE_USABLE" then
         if APB_SPELL then
             APB_UpdateSpell(APB_SPELL, APB_SPELL2);
-        end
-        APB_UpdateFronzenOrb(self.buffbar[0]);
+        end        
     elseif event == "UNIT_POWER_UPDATE" and arg1 == "player" then
         APB_UpdatePower();
     elseif event == "RUNE_POWER_UPDATE" then
@@ -3205,10 +3199,8 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             APB_UpdateFronzenOrb(self.buffbar[0]);
         end
     elseif event == "PLAYER_TARGET_CHANGED" then
-        APB_UpdateBuff(self.buffbar[0]);
-        APB_UpdateBuff(self.buffbar[1]);
-        APB_UpdateBuffCombo(self.buffcombobar);
-        APB_UpdateBuffStack(self.stackbar[0]);
+        ns.needtocheckAura = true;
+        updateBuffBar();
     elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
         local timestamp, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellId, _, _, auraType, amount =
             CombatLogGetCurrentEventInfo();

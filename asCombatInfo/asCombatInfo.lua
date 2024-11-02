@@ -445,25 +445,26 @@ end
 for i = 1, ACI_MaxSpellCount do
 	for _, r in next, { ACI[i].cooldown:GetRegions() } do
 		if r:GetObjectType() == "FontString" then
-			if i < 6 then
-				r:SetFont("Fonts\\2002.TTF", ACI_CooldownFontSize, "OUTLINE")
-			else
-				r:SetFont("Fonts\\2002.TTF", ACI_CooldownFontSize - 2, "OUTLINE")
-			end
-
 			ACI[i].cooldownfont = r;
+			if i < 6 then
+				r:SetFont(STANDARD_TEXT_FONT, ACI_CooldownFontSize, "OUTLINE")
+				ACI[i].cooldownfont.fontsize = ACI_CooldownFontSize;
+			else
+				r:SetFont(STANDARD_TEXT_FONT, ACI_CooldownFontSize - 2, "OUTLINE")
+				ACI[i].cooldownfont.fontsize = ACI_CooldownFontSize - 2;
+			end			
 			break
 		end
 	end
 
 
 	if i < 6 then
-		ACI[i].count:SetFont("Fonts\\2002.TTF", ACI_CountFontSize, "OUTLINE")
+		ACI[i].count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize, "OUTLINE")
 	else
-		ACI[i].count:SetFont("Fonts\\2002.TTF", ACI_CountFontSize - 2, "OUTLINE")
+		ACI[i].count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 2, "OUTLINE")
 	end
 	ACI[i].count:SetPoint("BOTTOMRIGHT", -3, 3);
-	ACI[i].spellcoolframe.spellcool:SetFont("Fonts\\2002.TTF", ACI_CooldownFontSize - 2, "OUTLINE");
+	ACI[i].spellcoolframe.spellcool:SetFont(STANDARD_TEXT_FONT, ACI_CooldownFontSize - 2, "OUTLINE");
 	ACI[i].spellcoolframe.spellcool:SetTextColor(0.8, 0.8, 1);
 
 	ACI[i].icon:SetTexCoord(.08, .92, .08, .92);
@@ -472,7 +473,7 @@ for i = 1, ACI_MaxSpellCount do
 
 	ACI[i].border:Hide();
 
-	ACI[i].alerttext:SetFont("Fonts\\2002.TTF", ACI_CountFontSize + 8, "OUTLINE")
+	ACI[i].alerttext:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize + 8, "OUTLINE")
 	ACI[i].alerttext:SetText("");
 	ACI[i].alerttext:SetTextColor(1, 0.5, 0.5);
 	ACI[i].alerttext:Hide();

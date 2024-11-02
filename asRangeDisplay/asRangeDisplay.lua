@@ -1,5 +1,5 @@
 -- 설정 (변경가능)
-local ARD_Font        = "Fonts\\2002.TTF";
+local ARD_Font        = STANDARD_TEXT_FONT;
 local ARD_FontSize    = 16;
 local ARD_FontOutline = "THICKOUTLINE";
 local ARD_X           = 0;

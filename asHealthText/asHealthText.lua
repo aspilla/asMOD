@@ -1,5 +1,5 @@
 -- 설정 (변경가능)
-local AHT_Font = "Fonts\\2002.TTF";
+local AHT_Font = STANDARD_TEXT_FONT;
 local AHT_HealthSize = 18;
 local AHT_ManaSize = 14;
 local AHT_PetHealthSize = 12;

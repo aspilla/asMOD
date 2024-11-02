@@ -123,7 +123,7 @@ local function ASAA_UpdateCooldown()
 
 					for _, r in next, { frame.cooldown:GetRegions() } do
 						if r:GetObjectType() == "FontString" then
-							r:SetFont("Fonts\\2002.TTF", ASAA_CooldownFontSize, "OUTLINE")
+							r:SetFont(STANDARD_TEXT_FONT, ASAA_CooldownFontSize, "OUTLINE")
 							break
 						end
 					end

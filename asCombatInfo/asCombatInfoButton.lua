@@ -26,7 +26,7 @@ ns.Button = {
     enable = false,
     reversecool = false,
     spellcool = nil,
-    spellcoolColor = { r = 0.8, g = 0.8, b = 1 },
+    spellcoolColor = { r = 0.8, g = 0.8, b = 1 },    
     count = nil,
     buffalert = false,
     coolalert = false,
@@ -43,7 +43,7 @@ local asGetSpellInfo = function(spellID)
     local ospellID = C_Spell.GetOverrideSpell(spellID)
 
     if ospellID then
-        spellID = ospellID;        
+        spellID = ospellID;
     end
 
     local spellInfo = C_Spell.GetSpellInfo(spellID);
@@ -675,6 +675,19 @@ function ns.Button:showButton()
         frameCooldown:SetHideCountdownNumbers(false);
         frameCooldown:Show();
         frameCooldown:SetReverse(self.reversecool);
+
+
+        local remain = self.start + self.duration - GetTime();
+        if remain < 5 then
+            frame.cooldownfont:SetTextColor(1, 0.3, 0.3);
+            frame.cooldownfont:SetFont(STANDARD_TEXT_FONT, frame.cooldownfont.fontsize + 3, "OUTLINE")
+        elseif remain < 10 then
+            frame.cooldownfont:SetTextColor(1, 1, 0.3);
+            frame.cooldownfont:SetFont(STANDARD_TEXT_FONT, frame.cooldownfont.fontsize + 1, "OUTLINE")
+        else
+            frame.cooldownfont:SetTextColor(0.8, 0.8, 1);
+            frame.cooldownfont:SetFont(STANDARD_TEXT_FONT, frame.cooldownfont.fontsize, "OUTLINE")
+        end
     else
         frameCooldown:Hide();
     end
@@ -733,10 +746,6 @@ function ns.Button:showButton()
     else
         frame.alerttext:Hide();
     end
-
-
-
-
 
     if self.buffalert then
         ns.lib.PixelGlow_Start(frame, { 0.5, 1, 0.5 });
@@ -822,7 +831,7 @@ function ns.Button:init(config, frame)
     if self.spellid == nil then
         self.spellid = select(7, asGetSpellInfo(self.realspell));
     end
- 
+
 
     ns.lib.PixelGlow_Stop(self.frame)
 
@@ -872,7 +881,7 @@ function ns.Button:init(config, frame)
         end
 
         if self.bufflist then
-            for _, debuff in pairs(self.bufflist) do                
+            for _, debuff in pairs(self.bufflist) do
                 ns.eventhandler.registerAura(self.unit, debuff);
             end
         end
@@ -882,7 +891,7 @@ function ns.Button:init(config, frame)
         ns.eventhandler.registerAura(self.unit, self.spell);
 
         if self.bufflist then
-            for _, buff in pairs(self.bufflist) do                
+            for _, buff in pairs(self.bufflist) do
                 ns.eventhandler.registerAura("player", buff);
             end
         end
@@ -892,13 +901,13 @@ function ns.Button:init(config, frame)
         ACI_Totem_list[self.spell] = true;
         ns.eventhandler.registerTotem(self.spell, self);
         ns.eventhandler.registerTotemTimer(self);
-        if self.realbuff then            
+        if self.realbuff then
             ACI_Totem_list[self.realbuff] = true;
             ns.eventhandler.registerTotem(self.realbuff, self);
         end
 
         if self.bufflist then
-            for _, buff in pairs(self.bufflist) do                
+            for _, buff in pairs(self.bufflist) do
                 ACI_Totem_list[buff] = true;
                 ns.eventhandler.registerTotem(buff, self);
             end
@@ -916,11 +925,11 @@ function ns.Button:init(config, frame)
     end
 
     if self.countbuff then
-        ns.eventhandler.registerAura("player", self.countbuff);        
+        ns.eventhandler.registerAura("player", self.countbuff);
     end
 
     if self.countdebuff then
-        ns.eventhandler.registerAura("target", self.countdebuff);        
+        ns.eventhandler.registerAura("target", self.countdebuff);
     end
 
     if self.alertbufflist then

@@ -21,7 +21,7 @@ local function init_combattext()
 	C_AddOns.LoadAddOn("Blizzard_CombatText")
 	C_Timer.After(1, updateCVar)
 		
-	CombatTextFont:SetFont("Fonts\\2002.ttf", 18, "OUTLINE")
+	CombatTextFont:SetFont(STANDARD_TEXT_FONT, 18, "OUTLINE")
 	COMBAT_TEXT_HEIGHT = 16;
 	COMBAT_TEXT_CRIT_MAXHEIGHT = 24;
 	COMBAT_TEXT_CRIT_MINHEIGHT = 18;

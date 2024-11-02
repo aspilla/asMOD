@@ -408,7 +408,6 @@ local function ACDP_UpdateCooldown()
 
 			frame = parent.frames[numCools];
 
-
 			if (not frame) then
 				parent.frames[numCools] = CreateFrame("Button", nil, parent, "asCooldownPulseFrameTemplate");
 				frame = parent.frames[numCools];
@@ -419,11 +418,12 @@ local function ACDP_UpdateCooldown()
 
 				for _, r in next, { frame.cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont("Fonts\\2002.TTF", ACDP_CooldownFontSize, "OUTLINE")
+						r:SetFont(STANDARD_TEXT_FONT, ACDP_CooldownFontSize, "OUTLINE")
+						frame.cooldowntext = r;
 						break
 					end
 				end
-
+				
 				frame.icon:SetTexCoord(.08, .92, .08, .92);
 				frame.border:SetTexture("Interface\\Addons\\asCooldownPulse\\border.tga");
 				frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
@@ -459,8 +459,21 @@ local function ACDP_UpdateCooldown()
 			-- set the count
 			frameCooldown = frame.cooldown;
 			frameCooldown:Show();
+			local remain = start + duration - GetTime();
 			asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, true);
 			frameCooldown:SetHideCountdownNumbers(false);
+
+			if remain < 5 then
+				frame.cooldowntext:SetTextColor(1, 0.3, 0.3);
+				frame.cooldowntext:SetFont(STANDARD_TEXT_FONT, ACDP_CooldownFontSize + 3, "OUTLINE")
+			elseif remain < 10 then
+				frame.cooldowntext:SetTextColor(1, 1, 0.3);
+				frame.cooldowntext:SetFont(STANDARD_TEXT_FONT, ACDP_CooldownFontSize + 1, "OUTLINE")
+			else
+				frame.cooldowntext:SetTextColor(0.8, 0.8, 1);
+				frame.cooldowntext:SetFont(STANDARD_TEXT_FONT, ACDP_CooldownFontSize, "OUTLINE")
+			end
+
 			frame:ClearAllPoints();
 
 			if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
@@ -746,8 +759,7 @@ local function ACDP_Init()
 		ACDP[i]:SetAlpha(0)
 		ACDP[i]:SetFrameStrata("LOW")
 		ACDP[i]:EnableMouse(false);
-		ACDP[i]:Show()
-
+		ACDP[i]:Show();
 
 		ACDP_Icon[i] = ACDP[i]:CreateTexture(nil, "BACKGROUND")
 		ACDP_Icon[i]:SetTexture("")

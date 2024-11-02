@@ -1,6 +1,6 @@
 {
     "Lua.diagnostics.globals": [
-        "STANDARD_TEXT_FONT",
+        STANDARD_TEXT_FONT,
         "PlayerUtil",
         "BOOKTYPE_SPELL",
         "SPELLS_PER_PAGE",

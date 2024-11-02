@@ -75,6 +75,7 @@ ns.ShowList_HUNTER_3 = {
 }
 
 ns.ShowList_MONK_1 = {
+    [387179] = { 0, 5},     --질서의 무기  
 }
 
 ns.ShowList_MONK_2 = {

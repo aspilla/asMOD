@@ -171,7 +171,7 @@ local function initAddon()
 
     for i = 1, ACTA_MaxShow do
         ACTA.cast[i] = ACTA:CreateFontString(nil, "OVERLAY");
-        ACTA.cast[i]:SetFont("Fonts\\2002.TTF", ACTA_FontSize, "THICKOUTLINE")
+        ACTA.cast[i]:SetFont(STANDARD_TEXT_FONT, ACTA_FontSize, "THICKOUTLINE")
 
         if i == 1 then
             ACTA.cast[i]:SetPoint("CENTER", UIParent, "CENTER", ACTA_X, ACTA_Y);

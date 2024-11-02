@@ -320,7 +320,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 241006,
+    version = 241101,
     ANameP_ShowKnownSpell = false,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -415,6 +415,7 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_MONK_1 = {
+        [387179] = { 0, 5},     --질서의 무기        
     },
 
     ANameP_ShowList_MONK_2 = {
