@@ -4,7 +4,7 @@ local AREADY_WIDTH = 100      -- 쿨 바의 넓이
 local AREADY_HEIGHT = 14      -- 쿨 바의 높이
 local AREADY_X = -501;        -- X 위치
 local AREADY_Y = 150;         -- Y 위치
-local AREADY_Font = "Fonts\\2002.TTF";
+local AREADY_Font = STANDARD_TEXT_FONT;
 local AREADY_Max = 10;        -- 최대 표시 List 수
 local AREADY_UpdateRate = 0.3 -- Refresh 시간 초
 
@@ -480,7 +480,7 @@ end
 local frameBuffer = {};
 
 local function hookfunc(frame)
-    if frame and not frame:IsForbidden() and frame.GetName and frame:IsShown() then
+    if frame and not frame:IsForbidden() and frame.GetName then
         local framename = frame:GetName();
         if framename then            
             frameBuffer[framename] = frame;
@@ -648,4 +648,4 @@ AREADY:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");
 AREADY:RegisterEvent("ENCOUNTER_END");
 
 
-hooksecurefunc("CompactUnitFrame_UpdateAll", hookfunc);
+hooksecurefunc("DefaultCompactUnitFrameSetup", hookfunc);

@@ -572,7 +572,7 @@ local frameBuffer = {};
 local function hookfunc(frame)
     if frame and not frame:IsForbidden() and frame.GetName then
         local name = frame:GetName();
-        if name then
+        if name then            
             frameBuffer[name] = frame;
         end
     end
@@ -731,5 +731,5 @@ ACRB_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 ACRB_mainframe:RegisterEvent("NAME_PLATE_UNIT_ADDED");
 ACRB_mainframe:RegisterUnitEvent("UNIT_PET", "player")
 
-hooksecurefunc("CompactUnitFrame_UpdateAll", hookfunc);
+hooksecurefunc("DefaultCompactUnitFrameSetup", hookfunc);
 hooksecurefunc("CompactUnitFrame_UpdateName", ns.UpdateNameColor);
