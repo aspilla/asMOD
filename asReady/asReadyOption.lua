@@ -161,7 +161,7 @@ ns.trackedCoolSpellNames = {
     },
 
     DEATHKNIGHT_2 = {
-        ["얼음 기둥"] = { 60, 12 }
+        ["룬 무기 강화"] = { 120, 20 }
     },
 
     DEATHKNIGHT_3 = {

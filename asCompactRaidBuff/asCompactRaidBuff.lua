@@ -520,6 +520,8 @@ function ns.ACRB_setupFrame(asframe, bupdate)
     asframe.callback = function()
         if asframe.frame:IsShown() then
             ns.ACRB_UpdateAuras(asframe);
+        elseif asframe.timer then            
+            asframe.timer:Cancel();
         end
     end
 
@@ -572,7 +574,7 @@ local frameBuffer = {};
 local function hookfunc(frame)
     if frame and not frame:IsForbidden() and frame.GetName then
         local name = frame:GetName();
-        if name then            
+        if name then
             frameBuffer[name] = frame;
         end
     end

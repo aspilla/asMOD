@@ -3254,3 +3254,9 @@ Details-bak/Libs/AceAddon-3.0/AceAddon-3.0.lua
 Details-bak/Libs/AceComm-3.0/AceComm-3.0.lua
 Details-bak/Libs/AceSerializer-3.0/AceSerializer-3.0.lua
 Details-bak/Libs/LibGraph-2.0/LibGraph-2.0.lua
+Details-bak/Libs/DF/containers.lua
+Details-bak/Libs/DF/cooltip.lua
+Details-bak/Libs/DF/loadconditions.lua
+Details-bak/Libs/DF/packtable.tests.lua
+Details-bak/locales/Details-enUS.lua
+Details-bak/locales/Details-esES.lua

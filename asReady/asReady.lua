@@ -18,9 +18,9 @@ local partyframes = {};
 
 
 local asGetSpellInfo = function(spellID)
-	if not spellID then
-		return nil;
-	end
+    if not spellID then
+        return nil;
+    end
 
     local ospellID = C_Spell.GetOverrideSpell(spellID)
 
@@ -28,10 +28,11 @@ local asGetSpellInfo = function(spellID)
         spellID = ospellID;
     end
 
-	local spellInfo = C_Spell.GetSpellInfo(spellID);
-	if spellInfo then
-		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
-	end
+    local spellInfo = C_Spell.GetSpellInfo(spellID);
+    if spellInfo then
+        return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+            spellInfo.spellID, spellInfo.originalIconID;
+    end
 end
 
 
@@ -303,6 +304,12 @@ local function OnSpellEvent(self, arg1, arg2, arg3)
         local time = GetTime();
         local name = asGetSpellInfo(spellid);
 
+        if UnitIsUnit(unit, "pet") then
+            unit = "player";
+        elseif string.match(unit, "partypet") then
+            unit = string.gsub(unit, "partypet", "party");                    
+        end
+
         if IsUnitInGroup(unit) then
             if checkcoollist[unit] then
                 local coolspelllist = checkcoollist[unit];
@@ -366,7 +373,7 @@ local asTooltip = CreateFrame("GameTooltip", "asTooltip", nil, "GameTooltipTempl
 
 local function scanUnitSpecID(unit)
     asTooltip:SetUnit(unit);
-    local tooltipdata = asTooltip:GetTooltipData();    
+    local tooltipdata = asTooltip:GetTooltipData();
 
     if tooltipdata and tooltipdata.lines then
         for i = 1, #tooltipdata.lines do
@@ -482,7 +489,7 @@ local frameBuffer = {};
 local function hookfunc(frame)
     if frame and not frame:IsForbidden() and frame.GetName then
         local framename = frame:GetName();
-        if framename then            
+        if framename then
             frameBuffer[framename] = frame;
         end
     end
