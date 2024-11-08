@@ -1037,6 +1037,12 @@ local function initAlertList()
                 lowhealthpercent = 35;
             end
         end
+
+        if (englishClass == "WARLOCK") then
+            if (IsPlayerSpell(17877)) then --어연
+                lowhealthpercent = 30;
+            end
+        end
     end
 end
 

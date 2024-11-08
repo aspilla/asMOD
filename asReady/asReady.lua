@@ -8,6 +8,9 @@ local AREADY_Font = STANDARD_TEXT_FONT;
 local AREADY_Max = 10;        -- 최대 표시 List 수
 local AREADY_UpdateRate = 0.3 -- Refresh 시간 초
 
+local black_list = {
+    [458525] = true; --승천 
+}
 
 -----------------설정 끝 ------------------------
 
@@ -15,6 +18,7 @@ local interruptcools = {};
 local offensivecools = {};
 local raidframes = {};
 local partyframes = {};
+
 
 
 local asGetSpellInfo = function(spellID)
@@ -171,12 +175,14 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
     end
 end
 
+
+
 local function GetUnitBuff(unit, buff)
     local ret = nil;
     local auraList = ns.ParseAllBuff(unit);
 
     auraList:Iterate(function(auraInstanceID, aura)
-        if aura and (aura.name == buff or aura.spellId == buff) and aura.sourceUnit == unit then
+        if aura and not black_list[aura.spellId] and (aura.name == buff or aura.spellId == buff) and aura.sourceUnit == unit  then
             if aura.duration > 0 then
                 ret = aura;
             elseif ret == nil then
