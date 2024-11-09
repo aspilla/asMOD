@@ -9,9 +9,11 @@ local AREADY_Max = 10;        -- 최대 표시 List 수
 local AREADY_UpdateRate = 0.3 -- Refresh 시간 초
 
 local black_list = {
-    [458525] = true; --승천 
+    [458525] = true, --승천
+    [458524] = true, --승천
+    [458503] = true, --승천
+    [458502] = true, --승천    
 }
-
 -----------------설정 끝 ------------------------
 
 local interruptcools = {};
@@ -182,7 +184,7 @@ local function GetUnitBuff(unit, buff)
     local auraList = ns.ParseAllBuff(unit);
 
     auraList:Iterate(function(auraInstanceID, aura)
-        if aura and not black_list[aura.spellId] and (aura.name == buff or aura.spellId == buff) and aura.sourceUnit == unit  then
+        if aura and not black_list[aura.spellId] and (aura.name == buff or aura.spellId == buff) and aura.sourceUnit == unit then
             if aura.duration > 0 then
                 ret = aura;
             elseif ret == nil then
@@ -303,34 +305,36 @@ local function IsUnitInGroup(unit)
     return UnitInParty(unit) or UnitInRaid(unit) ~= nil
 end
 
-local function OnSpellEvent(self, arg1, arg2, arg3)
-    if arg1 and arg3 then
-        local spellid = arg3;
-        local unit = arg1;
-        local time = GetTime();
-        local name = asGetSpellInfo(spellid);
-
-        if UnitIsUnit(unit, "pet") then
-            unit = "player";
-        elseif string.match(unit, "partypet") then
-            unit = string.gsub(unit, "partypet", "party");                    
+local function OnSpellEvent(unit, spellid)
+    if unit and spellid then
+        local isparty = not IsInRaid() and IsInGroup();
+        if isparty then
+            if UnitIsUnit(unit, "pet") then
+                unit = "player";
+            elseif string.match(unit, "partypet") then
+                unit = string.gsub(unit, "partypet", "party");
+            end
         end
 
         if IsUnitInGroup(unit) then
-            if checkcoollist[unit] then
-                local coolspelllist = checkcoollist[unit];
+            local time = GetTime();
+            local name = asGetSpellInfo(spellid);
+            local coolspelllist = checkcoollist[unit];
 
-                if coolspelllist and coolspelllist[name] or coolspelllist[spellid] then
-                    local info = coolspelllist[name] or coolspelllist[spellid];
+            if coolspelllist then
+                local info = coolspelllist[name] or coolspelllist[spellid];
+                if info then
                     local cool = info[1];
                     local buffcool = info[2];
                     offensivecools[unit] = { unit, spellid, time, cool, buffcool };
                 end
             end
 
-            if not IsInRaid() and (ns.trackedPartySpellNames[name] or ns.trackedPartySpellNames[spellid]) then
+            if isparty then
                 local cool = ns.trackedPartySpellNames[name] or ns.trackedPartySpellNames[spellid];
-                interruptcools[unit] = { unit, spellid, time, cool, 0 };
+                if cool then
+                    interruptcools[unit] = { unit, spellid, time, cool, 0 };
+                end
             end
         end
     end
@@ -610,7 +614,7 @@ local bfirst = true;
 
 local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
     if event == "UNIT_SPELLCAST_SUCCEEDED" then
-        OnSpellEvent(self, arg1, arg2, arg3);
+        OnSpellEvent(arg1, arg3);
     else
         if bfirst then
             ns.SetupOptionPanels();

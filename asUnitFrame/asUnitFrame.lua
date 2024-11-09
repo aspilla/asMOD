@@ -96,10 +96,6 @@ local function UpdatePlayerUnit()
     end
 end
 
-local function IsUnitInGroup(unit)
-    return UnitInParty(unit) or UnitInRaid(unit) ~= nil
-end
-
 local function updateCastBar(frame)
     local castbar    = frame.castbar;
     local frameIcon  = castbar.button.icon;
