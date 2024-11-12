@@ -69,28 +69,16 @@ local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
     until continuationToken == nil;
 end
 
-local function ProcessAura(aura, id, name)
-    if aura == nil then
-        return false;
-    end
-
-    if aura.spellId == id or aura.name == name then
-        return true;
-    end
-end
-
 local auraData = {};
 auraData.bufffilter = CreateFilterString(AuraFilters.Helpful, AuraFilters.Player, AuraFilters.IncludeNameplateOnly);
-local bufftime = nil;
 
 local function ParseAllAuras(unit, id)
 
-    if (bufftime and GetTime() - bufftime < 0.1) and not ns.needtocheckAura then        
+    if not ns.needtocheckAura then        
         return auraData.buffs;
     end
 
-    ns.needtocheckAura = false;
-    bufftime = GetTime();
+    ns.needtocheckAura = false;    
 
     if auraData.buffs == nil then
         auraData.buffs = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
@@ -100,11 +88,9 @@ local function ParseAllAuras(unit, id)
 
     local batchCount = nil;
     local usePackedAura = true;
-    local name = asGetSpellInfo(id);
+    
     local function HandleAura(aura)
-        local type = ProcessAura(aura, id, name);
-
-        if type then
+        if aura then
             auraData.buffs[aura.auraInstanceID] = aura;
         end
     end

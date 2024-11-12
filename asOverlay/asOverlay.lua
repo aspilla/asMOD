@@ -147,7 +147,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	if ns.countaware[spellID] then
 		countAuraList[spellID] = true;
 		for _, auraid in pairs(ns.countaware[spellID]) do
-			aura = ns.getExpirationTimeUnitAurabyID(auraid);
+			aura = ns.getExpirationTimeUnitAurabyID(auraid, true);
 
 			local remain = 0;
 
