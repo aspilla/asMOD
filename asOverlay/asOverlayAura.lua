@@ -85,7 +85,7 @@ local bufftime = nil;
 
 local function ParseAllAuras(unit, id)
 
-    if (bufftime and GetTime() - bufftime < 0.1) or not ns.needtocheckAura then        
+    if (bufftime and GetTime() - bufftime < 0.1) and not ns.needtocheckAura then        
         return auraData.buffs;
     end
 
