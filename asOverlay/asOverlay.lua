@@ -145,6 +145,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	end
 
 	if ns.countaware[spellID] then
+		countAuraList[spellID] = true;
 		for _, auraid in pairs(ns.countaware[spellID]) do
 			aura = ns.getExpirationTimeUnitAurabyID("player", auraid);
 
@@ -229,7 +230,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		texLeft, texRight = 1, 0;
 		overlay.hflip = true;
 	end
-	
+
 	local width, height;
 
 	if position == Enum.ScreenLocationType.Center then
@@ -271,7 +272,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		overlay.remain:ClearAllPoints()
 		overlay.remain:SetPoint("BOTTOM", overlay, "BOTTOM", 20, 0);
 	else
-		overlay.side = false;		
+		overlay.side = false;
 		overlay.count:ClearAllPoints()
 		overlay.count:SetPoint("LEFT", overlay, "LEFT", 0, 0);
 		overlay.remain:ClearAllPoints()
@@ -311,10 +312,8 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 
 	if aura then
 		local count = aura.applications;
-
-		if ns.countaware[spellID] then			
-			if count and count == 1 and position == Enum.ScreenLocationType.Right  then
-				countAuraList[spellID] = true;
+		if ns.countaware[spellID] then
+			if count and count == 1 and position == Enum.ScreenLocationType.Right then
 				overlay:Hide();
 				return;
 			end
@@ -329,37 +328,20 @@ end
 local function asOverlay_CheckAura(self)
 	for spellID, _ in pairs(countAuraList) do
 		if ns.countaware[spellID] then
-			if ns.countaware[spellID] then
-				for _, auraid in pairs(ns.countaware[spellID]) do
-					local procaura = ns.getExpirationTimeUnitAurabyID("player", auraid, true);
+			for _, auraid in pairs(ns.countaware[spellID]) do
+				local procaura = ns.getExpirationTimeUnitAurabyID("player", auraid, true);
 
-					if procaura then
-						local count = procaura.applications;
-						local overlay = asOverlay_GetOverlay(self, spellID, "RIGHT", true);
+				if procaura then
+					local count = procaura.applications;
+					local overlay = asOverlay_GetOverlay(self, spellID, Enum.ScreenLocationType.Right, true) or
+					asOverlay_GetOverlay(self, spellID, Enum.ScreenLocationType.RightOutside, true);
 
-						if overlay and count then
-							if count == 1 then
-								overlay:Hide();
-							elseif count >= 2 then
-								overlay:Show();
-							end
+					if overlay and count then
+						if count == 1 then
+							overlay:Hide();
+						elseif count >= 2 then
+							overlay:Show();
 						end
-					end
-				end
-			end
-		else
-			local auraid = spellID;
-			local procaura = ns.getExpirationTimeUnitAurabyID("player", auraid, true);
-
-			if procaura then
-				local count = procaura.applications;
-				local overlay = asOverlay_GetOverlay(self, spellID, "RIGHT", true);
-
-				if overlay and count then
-					if count == 1 then
-						overlay:Hide();
-					elseif count >= 2 then
-						overlay:Show();
 					end
 				end
 			end
@@ -569,4 +551,3 @@ frame:SetHeight(256)
 frame:SetScript("OnUpdate", asOverlay_OnUpdate);
 frame:SetScript("OnEvent", asOverlay_OnEvent);
 asOverlay_OnLoad(frame);
-

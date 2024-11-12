@@ -2718,7 +2718,7 @@ local function APB_CheckPower(self)
             if asCheckTalent("폭발성 맹독") then
                 APB_BUFF_COMBO = "폭발성 맹독";
                 APB_BUFF_COMBO_MAX = APB_BUFF_COMBO;
-                APB_BUFF_COMBO_MAX_COUNT = 5;
+                APB_BUFF_COMBO_MAX_COUNT = 3;
                 APB_MaxCombo(self.combobar, APB_BUFF_COMBO_MAX_COUNT);
                 APB.combobar.unit = "player"
 

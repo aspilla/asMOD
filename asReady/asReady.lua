@@ -305,9 +305,11 @@ local function IsUnitInGroup(unit)
     return UnitInParty(unit) or UnitInRaid(unit) ~= nil
 end
 
+local isparty = not IsInRaid() and IsInGroup();
+
 local function OnSpellEvent(unit, spellid)
     if unit and spellid then
-        local isparty = not IsInRaid() and IsInGroup();
+        
         if isparty then
             if UnitIsUnit(unit, "pet") then
                 unit = "player";
@@ -626,6 +628,8 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
         end
 
         AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+
+        isparty = not IsInRaid() and IsInGroup();
 
         if IsInRaid() then
             if ns.options.ShowRaidCool then
