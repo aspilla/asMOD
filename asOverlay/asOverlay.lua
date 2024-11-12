@@ -147,7 +147,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	if ns.countaware[spellID] then
 		countAuraList[spellID] = true;
 		for _, auraid in pairs(ns.countaware[spellID]) do
-			aura = ns.getExpirationTimeUnitAurabyID("player", auraid);
+			aura = ns.getExpirationTimeUnitAurabyID(auraid);
 
 			local remain = 0;
 
@@ -164,7 +164,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		end
 	else
 		local auraid = spellID;
-		aura = ns.getExpirationTimeUnitAurabyID("player", auraid);
+		aura = ns.getExpirationTimeUnitAurabyID(auraid);
 		local remain = 0;
 
 		if aura then
@@ -196,7 +196,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 			local proc_b = v[5];
 			local proc_position = v[6];
 
-			local procaura = ns.getExpirationTimeUnitAurabyID("player", procid, true);
+			local procaura = ns.getExpirationTimeUnitAurabyID(procid, true);
 
 			if procaura then
 				if (proc_count > 0 and procaura.applications >= proc_count) or proc_count == 0 then
@@ -329,7 +329,7 @@ local function asOverlay_CheckAura(self)
 	for spellID, _ in pairs(countAuraList) do
 		if ns.countaware[spellID] then
 			for _, auraid in pairs(ns.countaware[spellID]) do
-				local procaura = ns.getExpirationTimeUnitAurabyID("player", auraid, true);
+				local procaura = ns.getExpirationTimeUnitAurabyID(auraid, true);
 
 				if procaura then
 					local count = procaura.applications;
@@ -360,7 +360,7 @@ local function asOverlay_CheckAura(self)
 				local proc_b = v[5];
 				local proc_position = v[6];
 
-				local procaura = ns.getExpirationTimeUnitAurabyID("player", procid, true);
+				local procaura = ns.getExpirationTimeUnitAurabyID(procid, true);
 
 				if procaura then
 					if (proc_count > 0 and procaura.applications >= proc_count) or proc_count == 0 then
@@ -457,6 +457,7 @@ local function asOverlay_OnEvent(self, event, ...)
 			asOverlay_HideAllOverlays(self);
 		end
 	elseif (event == "UNIT_AURA") then
+		ns.needtocheckAura = true;
 		asOverlay_CheckAura(self);
 	end
 end
@@ -470,7 +471,7 @@ local function asOverlay_OnUpdate(self, elapsed)
 	if update >= 0.1 and self.overlaysInUse then
 		for spellID, overlayList in pairs(self.overlaysInUse) do
 			if (overlayList and #overlayList) then
-				local aura = ns.getExpirationTimeUnitAurabyID("player", spellID);
+				local aura = ns.getExpirationTimeUnitAurabyID(spellID);
 
 				if aura then
 					local extime = aura.expirationTime;

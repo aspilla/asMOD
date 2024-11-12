@@ -11,6 +11,8 @@ local AuraFilters = {
     Maw = "MAW"
 };
 
+ns.needtocheckAura = true;
+
 local asGetSpellInfo = function(spellID)
 	if not spellID then
 		return nil;
@@ -79,8 +81,17 @@ end
 
 local auraData = {};
 auraData.bufffilter = CreateFilterString(AuraFilters.Helpful, AuraFilters.Player, AuraFilters.IncludeNameplateOnly);
+local bufftime = nil;
 
 local function ParseAllAuras(unit, id)
+
+    if (bufftime and GetTime() - bufftime < 0.1) or not ns.needtocheckAura then        
+        return auraData.buffs;
+    end
+
+    ns.needtocheckAura = false;
+    bufftime = GetTime();
+
     if auraData.buffs == nil then
         auraData.buffs = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
     else
@@ -98,12 +109,13 @@ local function ParseAllAuras(unit, id)
         end
     end
     ForEachAura(unit, auraData.bufffilter, batchCount, HandleAura, usePackedAura);
+
+    return auraData.buffs;
 end
 
-function ns.getExpirationTimeUnitAurabyID(unit, id, idonly)
-    ParseAllAuras(unit, id);
+function ns.getExpirationTimeUnitAurabyID(id, idonly)    
 
-    local auraList = auraData.buffs;
+    local auraList = ParseAllAuras("player", id);
     local ret = nil;
 
     auraList:Iterate(function(auraInstanceID, aura)
