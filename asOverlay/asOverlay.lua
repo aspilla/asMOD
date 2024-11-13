@@ -463,13 +463,12 @@ local function asOverlay_OnEvent(self, event, ...)
 end
 
 
-local update = 0;
+local frame = CreateFrame("FRAME", nil, UIParent)
 
-local function asOverlay_OnUpdate(self, elapsed)
-	update = update + elapsed;
+local function asOverlay_OnUpdate()
 
-	if update >= 0.1 and self.overlaysInUse then
-		for spellID, overlayList in pairs(self.overlaysInUse) do
+	if frame.overlaysInUse then
+		for spellID, overlayList in pairs(frame.overlaysInUse) do
 			if (overlayList and #overlayList) then
 				local aura = ns.getExpirationTimeUnitAurabyID(spellID);
 
@@ -539,16 +538,13 @@ local function asOverlay_OnUpdate(self, elapsed)
 				end
 			end
 		end
-
-		update = 0;
 	end
 end
 
-local frame = CreateFrame("FRAME", nil, UIParent)
 frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 frame:SetWidth(256)
 frame:SetHeight(256)
 
-frame:SetScript("OnUpdate", asOverlay_OnUpdate);
 frame:SetScript("OnEvent", asOverlay_OnEvent);
+C_Timer.NewTicker(0.1, asOverlay_OnUpdate);
 asOverlay_OnLoad(frame);

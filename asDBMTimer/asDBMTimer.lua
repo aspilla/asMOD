@@ -376,6 +376,9 @@ local function setupUI()
 				GameTooltip:Hide();
 			end)
 		end
+
+		button:EnableMouse(false);
+		button:SetMouseMotionEnabled(true);
 	end
 end
 
