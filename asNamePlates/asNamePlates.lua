@@ -1715,8 +1715,14 @@ end
 
 
 local function ANameP_OnUpdate()
-    updateUnit("target", false);
-    updateUnit("player", false);
+    updateUnit("target", false);    
+end
+
+local function ANameP_OnUpdate2()
+    updateUnit("player", false);    
+end
+
+local function ANameP_OnUpdate3()
     updateUnit("mouseover", false);
 end
 
@@ -1784,6 +1790,8 @@ local function initAddon()
     ANameP:SetScript("OnEvent", ANameP_OnEvent)
     -- 주기적으로 Callback
     C_Timer.NewTicker(ns.ANameP_UpdateRateTarget, ANameP_OnUpdate);
+    C_Timer.NewTicker(ns.ANameP_UpdateRateTarget, ANameP_OnUpdate2);
+    C_Timer.NewTicker(ns.ANameP_UpdateRateTarget, ANameP_OnUpdate3);
 
     hooksecurefunc("DefaultCompactNamePlateFrameAnchorInternal", function(frame, setupOptions)
         if (frame:IsForbidden()) then

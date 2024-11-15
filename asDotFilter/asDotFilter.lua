@@ -530,8 +530,7 @@ local function ADotF_OnEvent(self, event, arg1)
         unit = "target";
         ADotF_UpdateDebuff(unit);
     elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
-        ADotF_UpdateAllFrames();
-    elseif (event == "ACTIONBAR_UPDATE_COOLDOWN") then
+        ADotF_UpdateAllFrames();    
     elseif (event == "PLAYER_ENTERING_WORLD") then
         ADotF_InitList();
         ADotF_UpdateAllFrames();
@@ -556,8 +555,7 @@ local function ADotF_Init()
     ADotF:RegisterEvent("PLAYER_TARGET_CHANGED")
     ADotF:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
     ADotF:RegisterEvent("PLAYER_ENTERING_WORLD")
-    ADotF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-    ADotF:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
+    ADotF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")    
     ADotF:SetScript("OnEvent", ADotF_OnEvent)
     C_Timer.NewTicker(0.2, ADotF_OnUpdate);
 end

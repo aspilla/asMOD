@@ -460,15 +460,13 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 				ATGCD_Alert(KnownSpellList[prev_spell], true, true);
 			end
 		end
-	elseif event == "SPELLS_CHANGED" then
+	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then		
 		scanSpells(1);
-		scanSpells(2)
-		scanSpells(3)
-
-	elseif event == "UNIT_PET" then
-		scanPetSpells();
-	elseif event == "ACTIONBAR_SLOT_CHANGED" then
+		scanSpells(2);
+		scanSpells(3);
 		scanActionSlots();
+	elseif event == "UNIT_PET" then
+		scanPetSpells();		
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
 		scanItemSlots();
 	end
@@ -487,8 +485,10 @@ ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_START", "player");
 ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player");
 ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player");
 ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player");
-ATGCD:RegisterEvent("SPELLS_CHANGED")
 ATGCD:RegisterUnitEvent("UNIT_PET", "player")
 ATGCD:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
 ATGCD:RegisterEvent("PLAYER_ENTERING_WORLD")
 ATGCD:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+ATGCD:RegisterEvent("TRAIT_CONFIG_UPDATED");
+ATGCD:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+ATGCD:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");

@@ -96,7 +96,11 @@ local function ARCB_HideCast(asframe)
     if asframe and asframe.castFrames then
         for i = asframe.ncasting + 1, #asframe.castFrames do
             asframe.castFrames[i]:Hide();
-        end
+        end        
+    end
+
+    if asframe then
+        asframe.ncasting = 0;
     end
 end
 
@@ -160,11 +164,13 @@ function ns.ACRB_CheckCasting()
             end
         end
 
-        for unit, _ in pairs(ns.CastingUnits) do
-            local notcasting = CheckCasting(unit);
-
-            if notcasting then
-                ns.CastingUnits[unit] = nil;
+        for unit, check in pairs(ns.CastingUnits) do
+            if check then
+                local notcasting = CheckCasting(unit);
+                
+                if notcasting then
+                    ns.CastingUnits[unit] = nil;
+                end
             end
         end
 

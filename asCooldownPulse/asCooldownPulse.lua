@@ -625,10 +625,10 @@ end
 
 
 local function ACDP_Checkcooldown()
+	local _, gcd         = asGetSpellCooldown(61304);
 	for spellid, type in pairs(KnownSpellList) do
 		local start, duration;
-		local check_duration = CONFIG_MINCOOL;
-		local _, gcd         = asGetSpellCooldown(61304);
+		local check_duration = CONFIG_MINCOOL;		
 
 		if type == 2 then
 			check_duration = CONFIG_MINCOOL_PET;
@@ -683,9 +683,10 @@ end
 
 
 local function ACDP_OnUpdate()
-	ACDP_Checkcooldown();
+	ACDP_Checkcooldown();	
 	ACDP_UpdateCooldown();
 end
+
 
 local timer;
 
@@ -708,6 +709,7 @@ local function setupKnownSpell(bwipe)
 	scanPetSpells();
 	scanItemSlots();
 	scanActionSlots();
+
 	--print("초기화")
 	timer = C_Timer.NewTicker(ACDP_UpdateRate, ACDP_OnUpdate);
 end
@@ -732,12 +734,10 @@ local function ACDP_OnEvent(self, event)
 		ACDP_CoolButtons:SetAlpha(ACDP_ALPHA);
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ACDP_CoolButtons:SetAlpha(0.5);
-	elseif event == "SPELLS_CHANGED" then
-		setupKnownSpell(true);
 	elseif event == "UNIT_PET" then
-		setupKnownSpell(true);
+		scanPetSpells();
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
-		setupKnownSpell(true);
+		scanItemSlots();
 	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		setupKnownSpell(true);
 	end
@@ -790,10 +790,8 @@ local function ACDP_Init()
 	ACDP_mainframe:SetScript("OnEvent", ACDP_OnEvent)
 	ACDP_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD")
 	ACDP_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED")
-	ACDP_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED")
-	ACDP_mainframe:RegisterEvent("SPELLS_CHANGED")
-	ACDP_mainframe:RegisterUnitEvent("UNIT_PET", "player")
-	ACDP_mainframe:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
+	ACDP_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED")		
+	ACDP_mainframe:RegisterUnitEvent("UNIT_PET", "player")	
 	ACDP_mainframe:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 	ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED")
 	ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")

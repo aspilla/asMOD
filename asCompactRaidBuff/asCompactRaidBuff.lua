@@ -100,7 +100,7 @@ local function ACRB_updatePartyAllHealerMana()
             if asframe and asframe.frame and asframe.frame:IsShown() then
                 ns.ACRB_UpdateHealerMana(asframe);
                 ns.ACRB_UpdateRaidIconAborbColor(asframe);
-                asframe.ncasting = 0;
+                
             end
         end
     else
@@ -108,7 +108,7 @@ local function ACRB_updatePartyAllHealerMana()
             if asframe and asframe.frame and asframe.frame:IsShown() then
                 ns.ACRB_UpdateHealerMana(asframe);
                 ns.ACRB_UpdateRaidIconAborbColor(asframe);
-                asframe.ncasting = 0;
+                
             end
         end
     end
@@ -647,13 +647,20 @@ local function ACRB_OnUpdate()
     end
 
     frameBuffer = {};
+end
 
-    ACRB_updatePartyAllHealerMana();
+local function ACRB_OnUpdate2()
+    ACRB_updatePartyAllHealerMana();    
+end
+
+local function ACRB_OnUpdate3()
     ns.ACRB_CheckCasting();
 end
 
+
 local timero;
-local timeroAura;
+local timero2;
+local timero3;
 
 function ns.SetupAll(init)
     ns.DumpCaches();
@@ -661,11 +668,21 @@ function ns.SetupAll(init)
         timero:Cancel();
     end
 
+    if timero2 then
+        timero2:Cancel();
+    end
+
+    if timero3 then
+        timero3:Cancel();
+    end
+
     if init then
         ACRB_InitList();
     end
     ACRB_updateSetupAll();
     timero = C_Timer.NewTicker(ns.UpdateRate, ACRB_OnUpdate);
+    timero2 = C_Timer.NewTicker(ns.UpdateRate, ACRB_OnUpdate2);
+    timero3 = C_Timer.NewTicker(ns.UpdateRate, ACRB_OnUpdate3);
 end
 
 local bfirst = true;
@@ -690,7 +707,7 @@ local function ACRB_OnEvent(self, event, arg1, arg2, arg3)
                 end
             end
 
-            if not isboss then
+            if not isboss then                
                 ns.CastingUnits[unit] = true;
             end
         end
