@@ -187,6 +187,11 @@ local function checkAddon(name)
 end
 
 local function onUpdate()
+
+    if not frame:IsShown() then
+        return;
+    end
+
     table.wipe(addonData);
     for i = 1, C_AddOns.GetNumAddOns() do
         local name, _, _, loadable, reason, _ = C_AddOns.GetAddOnInfo(i)

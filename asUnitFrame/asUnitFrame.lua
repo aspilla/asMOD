@@ -749,7 +749,13 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     end
 
     frame.updatecount = 1;
-    frame.updateCastBar = false;
+
+    if unit == "focus" or string.find(unit, "boss") then
+        frame.updateCastBar = true;
+    else
+        frame.updateCastBar = false;
+    end
+    
 
     frame.unit = unit;
     -- 유닛 설정 (예시: 'player' 또는 'target' 등)
@@ -905,26 +911,8 @@ local function RegisterAll(frame, unit)
         frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
         frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
         frame:RegisterUnitEvent("UNIT_TARGET", unit);
-        frame:SetScript("OnEvent", AUF_OnEventSpell);
-        frame.updateCastBar = true;
-        updateCastBar(frame);
-    else
-        frame:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
-        frame:UnregisterEvent("UNIT_SPELLCAST_DELAYED");
-        frame:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
-        frame:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE");
-        frame:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
-        frame:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_START");
-        frame:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE");
-        frame:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_STOP");
-        frame:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE");
-        frame:UnregisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE");
-        frame:UnregisterEvent("UNIT_SPELLCAST_START");
-        frame:UnregisterEvent("UNIT_SPELLCAST_STOP");
-        frame:UnregisterEvent("UNIT_SPELLCAST_FAILED");
-        frame:UnregisterEvent("UNIT_TARGET");
-        frame:SetScript("OnEvent", nil);
-        frame.updateCastBar = false;
+        frame:SetScript("OnEvent", AUF_OnEventSpell);        
+        updateCastBar(frame);      
     end
 end
 
