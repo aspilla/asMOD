@@ -3260,3 +3260,7 @@ Details-bak/Libs/DF/loadconditions.lua
 Details-bak/Libs/DF/packtable.tests.lua
 Details-bak/locales/Details-enUS.lua
 Details-bak/locales/Details-esES.lua
+DBM-VPVEM/movetotendrils.ogg
+DBM-VPVEM/rollincoming.ogg
+Details/frames/window_deathrecap.lua
+Details/functions/util.lua

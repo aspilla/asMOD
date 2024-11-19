@@ -107,7 +107,9 @@ function ns.getExpirationTimeUnitAurabyID(id, idonly)
     auraList:Iterate(function(auraInstanceID, aura)
         if aura.spellId == id then
             ret = aura;
+            return true;
         end
+        return false;
     end);
 
     if ret == nil and not idonly then
@@ -116,7 +118,9 @@ function ns.getExpirationTimeUnitAurabyID(id, idonly)
         auraList:Iterate(function(auraInstanceID, aura)
             if aura.name == name then
                 ret = aura;
+                return true;
             end
+            return false;
         end);
     end
 

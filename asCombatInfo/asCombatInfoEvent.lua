@@ -438,10 +438,10 @@ function ns.aurafunctions.checkAura(unit, spell)
         function(auraInstanceID, aura)
             if aura.name == spell or aura.spellId == spell then
                 ret = aura;
-                return;
+                return true;
             end
 
-            return;
+            return false;
         end);
 
     return ret;

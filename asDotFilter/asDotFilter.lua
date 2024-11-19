@@ -231,10 +231,13 @@ local function ADotF_UnitDebuff(unit, buff, filter)
         if aura and (aura.name == buff or aura.spellId == buff) then
             if aura.duration > 0 then
                 ret = aura;
+                return true;
             elseif ret == nil then
                 ret = aura;
+                return true;
             end
         end
+        return false;
     end);
 
     if ret then

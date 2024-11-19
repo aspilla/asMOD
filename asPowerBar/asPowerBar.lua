@@ -207,12 +207,16 @@ local function APB_UnitBuffList(unit, list)
             if aura and aura.spellId == id then
                 if aura.duration > 0 then
                     ret = aura;
+                    return true;
                 elseif ret == nil then
                     ret = aura;
+                    return true;
                 end
                 break;
             end
         end
+
+        return false;
     end);
 
     if ret then
@@ -231,12 +235,15 @@ local function APB_UnitBuffCountList(unit, list)
             if aura and aura.spellId == id and (count == 0 or aura.applications >= count) then
                 if aura.duration > 0 then
                     ret = aura;
+                    return true;
                 elseif ret == nil then
                     ret = aura;
+                    return true;
                 end
                 break;
             end
         end
+        return false;
     end);
 
     if ret then
@@ -254,10 +261,13 @@ local function APB_UnitBuff(unit, buff)
         if aura and (aura.spellId == buff or aura.name == buff) then
             if aura.duration > 0 then
                 ret = aura;
+                return true;
             elseif ret == nil then
                 ret = aura;
+                return true;
             end
         end
+        return false;
     end);
 
     if ret then
@@ -283,10 +293,13 @@ local function APB_UnitDebuff(unit, buff)
         if aura and (aura.spellId == buff or aura.name == buff) then
             if aura.duration > 0 then
                 ret = aura;
+                return true;
             elseif ret == nil then
                 ret = aura;
+                return true;
             end
         end
+        return false;
     end);
 
     if ret then
@@ -2712,23 +2725,7 @@ local function APB_CheckPower(self)
             APB_BUFF = "광기";
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
-            bupdate_buff_count = true;
-
-
-            if asCheckTalent("폭발성 맹독") then
-                APB_BUFF_COMBO = "폭발성 맹독";
-                APB_BUFF_COMBO_MAX = APB_BUFF_COMBO;
-                APB_BUFF_COMBO_MAX_COUNT = 3;
-                APB_MaxCombo(self.combobar, APB_BUFF_COMBO_MAX_COUNT);
-                APB.combobar.unit = "player"
-
-                APB_UpdateBuffCombo(self.combobar)
-                bupdate_buff_combo = true;
-
-                for i = 1, 20 do
-                    APB.combobar[i].tooltip = APB_BUFF_COMBO;
-                end
-            end
+            bupdate_buff_count = true;            
         end
 
         if (spec and spec == 2) then

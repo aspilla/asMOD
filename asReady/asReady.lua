@@ -187,10 +187,13 @@ local function GetUnitBuff(unit, buff)
         if aura and not black_list[aura.spellId] and (aura.name == buff or aura.spellId == buff) and aura.sourceUnit == unit then
             if aura.duration > 0 then
                 ret = aura;
+                return true;
             elseif ret == nil then
                 ret = aura;
+                return true;
             end
         end
+        return false;
     end);
 
     return ret;

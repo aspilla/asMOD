@@ -250,6 +250,8 @@ local function ADCA_OnUpdate()
 			frame:Show();
 
 			i = i + 1;
+
+			return false;
 		end)
 
 	for j = i, 3 do

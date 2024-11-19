@@ -204,6 +204,7 @@ end
 
 local function checkList()
 	local curtime = GetTime();
+	local removelist = {};
 
 	dbm_event_list:Iterate(function(id, event)
 		local start_old = event.start;
@@ -215,6 +216,7 @@ local function checkList()
 			for _, guid in pairs(unit_died_list) do
 				if guid == event.guid then
 					unitisdead = true;
+					break;
 				end
 			end
 
@@ -238,7 +240,7 @@ local function checkList()
 			if event.button_id then
 				deleteButton(event.button_id, true);
 			end
-			dbm_event_list:Remove(id);
+			removelist[id] = true;			
 		elseif remain > 0 and remain <= ns.options.MinTimetoShow then
 			if event.button_id == nil then
 				local idx = newButton(id, event);
@@ -248,9 +250,14 @@ local function checkList()
 			if event.button_id then
 				deleteButton(event.button_id, true);
 			end
-			dbm_event_list:Remove(id);
+			removelist[id] = true;			
 		end
+		return false;
 	end)
+
+	for id, _ in pairs(removelist) do
+		dbm_event_list:Remove(id);
+	end
 
 	table.wipe(unit_died_list);
 end
@@ -300,6 +307,8 @@ local function checkButtons()
 				prev_button = button;
 			end
 		end
+
+		return false;
 	end)
 
 	checkAllButton();
