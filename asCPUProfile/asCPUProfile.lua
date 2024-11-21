@@ -209,7 +209,7 @@ end
 
 if tocversion >= 110007 then
     onUpdate();
-    C_Timer.NewTicker(1, onUpdate);
+    C_Timer.NewTicker(5, onUpdate);
     
 end
 

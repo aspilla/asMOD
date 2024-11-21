@@ -83,57 +83,64 @@ local function SearchEntryUpdate(entry, ...)
             local spec = orderIndexes[i][3];
             local role = orderIndexes[i][4];
             local isLeader = orderIndexes[i][5];
-            local classColor = RAID_CLASS_COLORS[class];
-            local r, g, b, a = classColor:GetRGBA();
 
-            local texture = "astexture" .. i;
+            if class and spec and role then
+                
+                local classColor = RAID_CLASS_COLORS[class];
+                local r, g, b, a = classColor:GetRGBA();
 
-            if (not entry.DataDisplay.Enumerate[texture]) then
-                entry.DataDisplay.Enumerate[texture] = entry.DataDisplay.Enumerate["Icon" .. order]:CreateTexture(nil,
-                    "ARTWORK");
-                entry.DataDisplay.Enumerate[texture]:SetSize(16, 4);
-                entry.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", entry.DataDisplay.Enumerate["Icon" .. order],
-                    "RIGHT", -1, -9);
-            end
+                local texture = "astexture" .. i;
 
-            if (role == "TANK" and ns.options.ShowTankerSpec) or (role == "HEALER" and ns.options.ShowHealerSpec) or role == "DAMAGER" then
-                entry.DataDisplay.Enumerate[texture]:SetColorTexture(r, g, b, 0.75);
-                entry.DataDisplay.Enumerate[texture]:Show();
-            end
+                if (not entry.DataDisplay.Enumerate[texture]) then
+                    entry.DataDisplay.Enumerate[texture] = entry.DataDisplay.Enumerate["Icon" .. order]:CreateTexture(
+                        nil,
+                        "ARTWORK");
+                    entry.DataDisplay.Enumerate[texture]:SetSize(16, 4);
+                    entry.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", entry.DataDisplay.Enumerate["Icon" .. order],
+                        "RIGHT", -1, -9);
+                end
 
-            texture = "asleadertexture" .. i;
-
-            if (not entry.DataDisplay.Enumerate[texture]) then
-                entry.DataDisplay.Enumerate[texture] = entry.DataDisplay.Enumerate["Icon" .. order]:CreateFontString(nil,
-                    "ARTWORK");
-                entry.DataDisplay.Enumerate[texture]:SetFont(STANDARD_TEXT_FONT, 10);
-                entry.DataDisplay.Enumerate[texture]:SetPoint("CENTER", entry.DataDisplay.Enumerate["Icon" .. order],
-                    "CENTER", 0, 11);
-            end
-
-            if isLeader then
-                entry.DataDisplay.Enumerate[texture]:SetText(leaderIcon);
-                entry.DataDisplay.Enumerate[texture]:Show();
-            end
-
-            texture = "asicontexture" .. i;
-
-            if (not entry.DataDisplay.Enumerate[texture]) then
-                entry.DataDisplay.Enumerate[texture] = entry.DataDisplay.Enumerate["Icon" .. order]:CreateTexture(nil,
-                    "ARTWORK");
-                entry.DataDisplay.Enumerate[texture]:SetSize(16, 17);
-                entry.DataDisplay.Enumerate[texture]:SetPoint("BOTTOMRIGHT", entry.DataDisplay.Enumerate
-                    ["Icon" .. order],
-                    "RIGHT",
-                    -1, -7);
-                entry.DataDisplay.Enumerate[texture]:SetTexCoord(.08, .92, .08, .92);
-                entry.DataDisplay.Enumerate[texture]:SetDrawLayer("ARTWORK", 7);
-            end
-
-            if (role == "TANK" and ns.options.ShowTankerSpec) or (role == "HEALER" and ns.options.ShowHealerSpec) or role == "DAMAGER" then
-                if specicons[class .. spec] then
-                    entry.DataDisplay.Enumerate[texture]:SetTexture(specicons[class .. spec]);
+                if (role == "TANK" and ns.options.ShowTankerSpec) or (role == "HEALER" and ns.options.ShowHealerSpec) or role == "DAMAGER" then
+                    entry.DataDisplay.Enumerate[texture]:SetColorTexture(r, g, b, 0.75);
                     entry.DataDisplay.Enumerate[texture]:Show();
+                end
+
+                texture = "asleadertexture" .. i;
+
+                if (not entry.DataDisplay.Enumerate[texture]) then
+                    entry.DataDisplay.Enumerate[texture] = entry.DataDisplay.Enumerate["Icon" .. order]:CreateFontString(
+                        nil,
+                        "ARTWORK");
+                    entry.DataDisplay.Enumerate[texture]:SetFont(STANDARD_TEXT_FONT, 10);
+                    entry.DataDisplay.Enumerate[texture]:SetPoint("CENTER", entry.DataDisplay.Enumerate["Icon" .. order],
+                        "CENTER", 0, 11);
+                end
+
+                if isLeader then
+                    entry.DataDisplay.Enumerate[texture]:SetText(leaderIcon);
+                    entry.DataDisplay.Enumerate[texture]:Show();
+                end
+
+                texture = "asicontexture" .. i;
+
+                if (not entry.DataDisplay.Enumerate[texture]) then
+                    entry.DataDisplay.Enumerate[texture] = entry.DataDisplay.Enumerate["Icon" .. order]:CreateTexture(
+                        nil,
+                        "ARTWORK");
+                    entry.DataDisplay.Enumerate[texture]:SetSize(16, 17);
+                    entry.DataDisplay.Enumerate[texture]:SetPoint("BOTTOMRIGHT", entry.DataDisplay.Enumerate
+                        ["Icon" .. order],
+                        "RIGHT",
+                        -1, -7);
+                    entry.DataDisplay.Enumerate[texture]:SetTexCoord(.08, .92, .08, .92);
+                    entry.DataDisplay.Enumerate[texture]:SetDrawLayer("ARTWORK", 7);
+                end
+
+                if (role == "TANK" and ns.options.ShowTankerSpec) or (role == "HEALER" and ns.options.ShowHealerSpec) or role == "DAMAGER" then
+                    if specicons[class .. spec] then
+                        entry.DataDisplay.Enumerate[texture]:SetTexture(specicons[class .. spec]);
+                        entry.DataDisplay.Enumerate[texture]:Show();
+                    end
                 end
             end
         end

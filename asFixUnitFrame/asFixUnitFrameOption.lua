@@ -7,7 +7,7 @@ local Options_Default = {
     HideClassBar = true,
     ShowClassColor = true,
     ShowAggro = true,
-    ShowPotraitDebuff = true,
+    ShowPortraitDebuff = true,
 };
 
 ns.options = CopyTable(Options_Default);

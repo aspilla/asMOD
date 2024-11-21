@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 241026,
+	version = 241121,
 
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
@@ -212,7 +212,7 @@ ACI_Options_Default = {
 	ACI_SpellList_DEATHKNIGHT_2 = {
 		{ "죽음과 부패", 2, nil, nil, nil, "죽음과 부패" },
 		{ "냉혹한 겨울", 2 },
-		{ "얼음 기둥", 2 },
+		{ "얼음 기둥", 2, nil, nil, nil, nil, nil, { 51271, 377195} },
 		{ 99, "영혼 수확자", { "영혼 수확자", 1, nil, 35 }, { "룬 무기 강화", 2 } },
 		{ "울부짖는 한파", 4, nil, nil, nil, "서리 열병" },
 

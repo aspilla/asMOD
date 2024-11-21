@@ -194,7 +194,7 @@ local function ProcessAura(aura, unit)
             bshow = true;
         elseif ShouldShowDebuffs(unit, aura.sourceUnit, aura.nameplateShowAll, aura) then
             aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
-            bshow = true;     
+            bshow = true;
         end
 
         if bshow then
@@ -326,9 +326,89 @@ local function UpdateAuraFrames(frame, auraList)
     end
 end
 
+local CONFIG_MAX_COOL = 10;
+
+local function UpdatePortraitFrames(frame, auraList)
+    local parent = frame;
+    local unit = frame.unit;
+    local bshowdebuff = false;
+
+    auraList:Iterate(
+        function(auraInstanceID, aura)
+            if aura.nameplateShowAll and aura.duration > 0 and aura.duration <= CONFIG_MAX_COOL then
+                local frame = parent.portrait;
+
+                frame.unit = unit;
+                frame.auraInstanceID = aura.auraInstanceID;
+
+                -- set the icon
+                local frameIcon = frame.icon
+                frameIcon:SetTexture(aura.icon);
+                -- set the count
+                local frameCount = frame.count;
+                local alert = false;
+
+                -- Handle cooldowns
+                local frameCooldown = frame.cooldown;
+
+                if (aura.applications and aura.applications > 1) then
+                    frameCount:SetText(aura.applications);
+                    frameCount:Show();
+                    frameCooldown:SetDrawSwipe(false);
+                else
+                    frameCount:Hide();
+                    frameCooldown:SetDrawSwipe(true);
+                end
+
+                if (aura.duration > 0) then
+                    frameCooldown:Show();
+                    asCooldownFrame_Set(frameCooldown, aura.expirationTime - aura.duration, aura.duration,
+                        aura.duration > 0,
+                        true);
+                    frameCooldown:SetHideCountdownNumbers(false);
+                else
+                    frameCooldown:Hide();
+                end
+
+                local color = nil;
+                -- set debuff type color
+                if (aura.dispelName) then
+                    color = DebuffTypeColor[aura.dispelName];
+                else
+                    color = DebuffTypeColor["none"];
+                end
+
+                local frameBorder = frame.border;
+                if aura.nameplateShowAll then
+                    frameBorder:SetVertexColor(0.3, 0.3, 0.3);
+                else
+                    frameBorder:SetVertexColor(color.r, color.g, color.b);
+                end
+
+                bshowdebuff = true;
+                return true;
+            else
+                return false;
+            end
+        end);
+
+    if bshowdebuff == false then
+        SetPortraitTexture(frame.portrait.icon, unit, false);
+        frame.portrait.cooldown:Hide();
+        frame.portrait.count:Hide();
+        frame.portrait.border:SetVertexColor(0,0,0);
+    end
+end
+
 function ns.UpdateAuras(frame)
     local unit = frame.unit;
 
     ParseAllAuras(unit);
-    UpdateAuraFrames(frame, activeDebuffs[unit]);
+    if frame.debuffupdate then
+        UpdateAuraFrames(frame, activeDebuffs[unit]);
+    end
+
+    if frame.portraitdebuff then
+        UpdatePortraitFrames(frame, activeDebuffs[unit]);
+    end
 end

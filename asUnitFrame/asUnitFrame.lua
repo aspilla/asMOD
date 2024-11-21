@@ -88,10 +88,10 @@ local function UpdatePlayerUnit()
     end
 
     if (hasValidVehicleUI) then
-        unit_player = unitVehicleToken        
+        unit_player = unitVehicleToken
         unit_pet = "player"
     else
-        unit_player = "player"        
+        unit_player = "player"
         unit_pet = "pet"
     end
 end
@@ -201,22 +201,21 @@ local function updateUnit(frame)
         showplayermana = (unit ~= "player");
 
         if not InCombatLockdown() and unit ~= frame:GetAttribute("unit") then
-            frame:SetAttribute("unit", unit);            
+            frame:SetAttribute("unit", unit);
         end
-    elseif unit == "pet" then        
+    elseif unit == "pet" then
         unit = unit_pet;
-    end    
+    end
 
-    if not UnitExists(unit) then        
+    if not UnitExists(unit) then
         return;
     else
         if UnitAffectingCombat("player") then
             frame:SetAlpha(1);
         else
             frame:SetAlpha(0.5);
-        end             
+        end
     end   
-
 
     -- Healthbar
     local value = UnitHealth(unit);
@@ -234,7 +233,9 @@ local function updateUnit(frame)
     frame.healthbar:SetMinMaxValues(0, valueMax)
     frame.healthbar:SetValue(value)
 
-    if valuePctAbsorb > 0 then
+    if UnitIsDead(unit) then
+        frame.healthbar.pvalue:SetText("Dead");
+    elseif valuePctAbsorb > 0 then
         frame.healthbar.pvalue:SetText(valuePct .. "(" .. valuePctAbsorb .. ")");
     else
         frame.healthbar.pvalue:SetText(valuePct);
@@ -361,7 +362,7 @@ local function updateUnit(frame)
         end
         ]]
     end
-   
+
     frame.healthbar.hvalue:SetText(AbbreviateLargeNumbers(value))
     frame.healthbar.name:SetText(name);
     frame.healthbar.mark:SetText(mark);
@@ -435,11 +436,16 @@ local function updateUnit(frame)
         frame.healthbar.aggro:Hide();
     end
 
-    --Debuff
-    if frame.debuffupdate then
-        ns.UpdateAuras(frame);
+    --Portrait
+    if not frame.portraitdebuff then
+        SetPortraitTexture(frame.portrait.icon, unit, false);
     end
 
+    --Debuff 
+    if frame.portraitdebuff or frame.debuffupdate then  
+        ns.UpdateAuras(frame);
+    end    
+    
     --CastBar
     if frame.updateCastBar then
         updateCastBar(frame);
@@ -582,11 +588,58 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar:GetStatusBarTexture():SetHorizTile(false)
     frame.healthbar:SetMinMaxValues(0, 100)
     frame.healthbar:SetValue(100)
-    frame.healthbar:SetWidth(width)
     frame.healthbar:SetHeight(height - powerbarheight)
-    frame.healthbar:SetPoint("TOP", frame, "TOP", 0, 0);
     frame.healthbar:Show();
 
+    if x < 0 then
+        frame.healthbar:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0);
+    else
+        frame.healthbar:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
+    end
+
+    local hwidth = width;
+    frame.portraitdebuff = false;
+
+    if ns.options.ShowPortrait then
+        hwidth = width - height * 1.1;        
+
+        frame.portrait = CreateFrame("Button", nil, frame, "AUFDebuffFrameTemplate");
+        local pframe = frame.portrait;
+        for _, r in next, { pframe.cooldown:GetRegions() } do
+            if r:GetObjectType() == "FontString" then
+                r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+                r:ClearAllPoints();
+                r:SetPoint("CENTER", 0, 0);
+                break
+            end
+        end
+
+        pframe.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+        pframe.count:ClearAllPoints()
+        pframe.count:SetPoint("BOTTOMRIGHT", -2, 2);
+
+        pframe.icon:SetTexCoord(.08, .92, .08, .92);
+        pframe.icon:SetAlpha(1);
+        pframe.border:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga");
+        pframe.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+        pframe.border:SetVertexColor(0, 0, 0)
+        pframe.border:SetAlpha(1);
+
+        pframe:SetSize(height * 1.1, height + 2);
+
+        if x < 0 then
+            pframe:SetPoint("TOPRIGHT", frame.healthbar, "TOPLEFT", 0, 1);
+        else
+            pframe:SetPoint("TOPLEFT", frame.healthbar, "TOPRIGHT", 0, 1);
+        end
+        pframe:Show();
+
+        if unit == "target" or unit == "focus" then
+            frame.portraitdebuff = true;
+        end
+    end
+
+    frame.healthbar:SetWidth(hwidth);
 
     frame.healthbar.predictionBar = frame.healthbar:CreateTexture(nil, "BORDER");
     frame.healthbar.predictionBar:SetTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar", "BORDER");
@@ -628,14 +681,14 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     if x < 0 then
         frame.healthbar.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 2, 0);
         frame.healthbar.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -2, 0);
-        frame.healthbar.name:SetPoint("BOTTOMLEFT", frame.healthbar, "TOPLEFT", 2, 1);
-        frame.healthbar.classtext:SetPoint("BOTTOMRIGHT", frame.healthbar, "TOPRIGHT", -2, 1);
+        frame.healthbar.name:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
+        frame.healthbar.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
         frame.healthbar.aggro:SetPoint("BOTTOMRIGHT", frame.healthbar.classtext, "BOTTOMLEFT", -1, 0);
     else
         frame.healthbar.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -2, 0);
         frame.healthbar.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 2, 0);
-        frame.healthbar.name:SetPoint("BOTTOMRIGHT", frame.healthbar, "TOPRIGHT", -2, 1);
-        frame.healthbar.classtext:SetPoint("BOTTOMLEFT", frame.healthbar, "TOPLEFT", 2, 1);
+        frame.healthbar.name:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
+        frame.healthbar.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
         frame.healthbar.aggro:SetPoint("BOTTOMLEFT", frame.healthbar.classtext, "BOTTOMRIGHT", 1, 0);
     end
 
@@ -649,7 +702,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.powerbar:GetStatusBarTexture():SetHorizTile(false)
     frame.powerbar:SetMinMaxValues(0, 100)
     frame.powerbar:SetValue(100)
-    frame.powerbar:SetWidth(width)
+    frame.powerbar:SetWidth(hwidth)
     frame.powerbar:SetHeight(powerbarheight)
     frame.powerbar:SetPoint("TOPLEFT", frame.healthbar, "BOTTOMLEFT", 0, 0);
     frame.powerbar:Show();
@@ -682,7 +735,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     local castbarheight = height - 5;
 
     frame.castbar = CreateFrame("StatusBar", nil, frame)
-    frame.castbar:SetPoint("TOPRIGHT", frame.powerbar, "BOTTOMRIGHT", 0, -2);
+    frame.castbar:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -2);
     frame.castbar:SetStatusBarTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar", "BORDER")
     frame.castbar:GetStatusBarTexture():SetHorizTile(false)
     frame.castbar:SetMinMaxValues(0, 100)
@@ -755,21 +808,20 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     else
         frame.updateCastBar = false;
     end
-    
 
     frame.unit = unit;
     -- 유닛 설정 (예시: 'player' 또는 'target' 등)
     frame:SetAttribute("unit", unit);
     SecureUnitButton_OnLoad(frame, frame.unit, OpenContextMenu);
     Mixin(frame, PingableType_UnitFrameMixin);
-    frame:SetAttribute("ping-receiver", true);    
+    frame:SetAttribute("ping-receiver", true);
 
     if unit == "player" then
         frame:Show();
     else
-        RegisterStateDriver(frame, "visibility", "[@".. unit..",exists] show; hide");
+        RegisterStateDriver(frame, "visibility", "[@" .. unit .. ",exists] show; hide");
     end
-    
+
 
     frame.callback = function()
         updateUnit(frame);
@@ -778,44 +830,53 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     C_Timer.NewTicker(Update_Rate, frame.callback);
 end
 
-AUF_PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-AUF_TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-AUF_FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-AUF_PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-AUF_TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+local function Init()
+    ns.SetupOptionPanels();
+
+    AUF_PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    AUF_TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    AUF_FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    AUF_PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    AUF_TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 
 
-CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, width, healthheight, powerheight, 12, false);
-CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, width, healthheight, powerheight, 12, false);
-CreateUnitFrame(AUF_FocusFrame, "focus", xposition + width, yposition, width - 50, healthheight - 15, powerheight - 2, 11, false);
-CreateUnitFrame(AUF_PetFrame, "pet", -xposition - 50, yposition - 40, width - 100, healthheight - 20, powerheight - 3, 9, true);
-CreateUnitFrame(AUF_TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, width - 100, healthheight - 20, powerheight - 3, 9, true);
+    CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, width, healthheight, powerheight, 12, false);
+    CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, width, healthheight, powerheight, 12, false);
+    CreateUnitFrame(AUF_FocusFrame, "focus", xposition + width, yposition, width - 50, healthheight - 15, powerheight - 2,
+        11,
+        false);
+    CreateUnitFrame(AUF_PetFrame, "pet", -xposition - 50, yposition - 40, width - 100, healthheight - 20, powerheight - 3,
+        9,
+        true);
+    CreateUnitFrame(AUF_TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, width - 100, healthheight - 20,
+        powerheight - 3, 9, true);
 
-AUF_BossFrames = {};
-if (MAX_BOSS_FRAMES) then
-    for i = 1, MAX_BOSS_FRAMES do
-        AUF_BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-        CreateUnitFrame(AUF_BossFrames[i], "boss" .. i, xposition + 250, 200 - (i - 1) * 70, width - 50, healthheight - 15, powerheight - 2, 11);
-    end
-end
-
-
-C_AddOns.LoadAddOn("asMOD");
-
-if asMOD_setupFrame then
-    asMOD_setupFrame(AUF_PlayerFrame, "AUF_PlayerFrame");
-    asMOD_setupFrame(AUF_TargetFrame, "AUF_TargetFrame");
-    asMOD_setupFrame(AUF_FocusFrame, "AUF_FocusFrame");
-    asMOD_setupFrame(AUF_PetFrame, "AUF_PetFrame");
-    asMOD_setupFrame(AUF_TargetTargetFrame, "AUF_TargetTargetFrame");
-
+    AUF_BossFrames = {};
     if (MAX_BOSS_FRAMES) then
         for i = 1, MAX_BOSS_FRAMES do
-            asMOD_setupFrame(AUF_BossFrames[i], "AUF_BossFrame" .. i);
+            AUF_BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+            CreateUnitFrame(AUF_BossFrames[i], "boss" .. i, xposition + 250, 200 - (i - 1) * 70, width - 50,
+                healthheight - 15, powerheight - 2, 11);
+        end
+    end
+
+
+    C_AddOns.LoadAddOn("asMOD");
+
+    if asMOD_setupFrame then
+        asMOD_setupFrame(AUF_PlayerFrame, "AUF_PlayerFrame");
+        asMOD_setupFrame(AUF_TargetFrame, "AUF_TargetFrame");
+        asMOD_setupFrame(AUF_FocusFrame, "AUF_FocusFrame");
+        asMOD_setupFrame(AUF_PetFrame, "AUF_PetFrame");
+        asMOD_setupFrame(AUF_TargetTargetFrame, "AUF_TargetTargetFrame");
+
+        if (MAX_BOSS_FRAMES) then
+            for i = 1, MAX_BOSS_FRAMES do
+                asMOD_setupFrame(AUF_BossFrames[i], "AUF_BossFrame" .. i);
+            end
         end
     end
 end
-
 
 -- stolen from cell, which is stolen from elvui
 local hiddenParent = CreateFrame("Frame", nil, _G.UIParent)
@@ -911,12 +972,20 @@ local function RegisterAll(frame, unit)
         frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
         frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
         frame:RegisterUnitEvent("UNIT_TARGET", unit);
-        frame:SetScript("OnEvent", AUF_OnEventSpell);        
-        updateCastBar(frame);      
+        frame:SetScript("OnEvent", AUF_OnEventSpell);
+        updateCastBar(frame);
     end
 end
 
+local bfirst = true;
+
 local function AUF_OnEvent(self, event, arg1, arg2, arg3)
+
+    if bfirst then
+        Init();
+        bfirst = false;
+    end
+
     if event == "PLAYER_TARGET_CHANGED" then
         updateUnit(AUF_TargetFrame);
     elseif event == "PLAYER_FOCUS_CHANGED" then
