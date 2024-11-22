@@ -437,7 +437,7 @@ local function updateUnit(frame)
     end
 
     --Portrait
-    if not frame.portraitdebuff then
+    if not frame.portraitdebuff and frame.portrait then
         SetPortraitTexture(frame.portrait.icon, unit, false);
     end
 
