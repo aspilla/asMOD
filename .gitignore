@@ -3264,3 +3264,4 @@ DBM-VPVEM/movetotendrils.ogg
 DBM-VPVEM/rollincoming.ogg
 Details/frames/window_deathrecap.lua
 Details/functions/util.lua
+DBM-Core/modules/objects/BossModEventDispatcher.lua

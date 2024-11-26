@@ -19,6 +19,7 @@ local PLAYER_UNITS = {
 };
 
 local lowhealthpercent = 0;
+local highhealthpercent = 200;
 
 ns.ANameP_ShowList = nil;
 local debuffs_per_line = ns.ANameP_DebuffsPerLine;
@@ -677,7 +678,7 @@ local function updateHealthText(asframe)
         asframe.healthtext:SetText("");
     end
 
-    if valuePct <= lowhealthpercent then
+    if valuePct <= lowhealthpercent or valuePct >= highhealthpercent then
         asframe.healthtext:SetTextColor(1, 0.5, 0.5, 1);
     elseif valuePct > 0 then
         asframe.healthtext:SetTextColor(1, 1, 1, 1);
@@ -885,6 +886,10 @@ local function updateHealthbarColor(self)
             if valuePct <= lowhealthpercent then
                 return ns.options.ANameP_LowHealthColor;
             end
+
+            if valuePct >= highhealthpercent and UnitAffectingCombat(unit)  then
+                return ns.options.ANameP_LowHealthColor;
+            end
         end
 
         -- Debuff Color
@@ -997,22 +1002,27 @@ local function initAlertList()
     ANameP_HealerGuid = {};
 
     lowhealthpercent = 0;
+    highhealthpercent = 200;
 
 
     if ns.options.ANameP_LowHealthAlert then
         if (englishClass == "MAGE") then
-            if (asCheckTalent("불타는 손길")) then
+            if (IsPlayerSpell(2948)) then
                 lowhealthpercent = 30;
             end
 
-            if (asCheckTalent("비전 폭격")) then
+            if (IsPlayerSpell(384581)) then
                 lowhealthpercent = 35;
             end
         end
 
         if (englishClass == "HUNTER") then
-            if (asCheckTalent("마무리 사격")) then
+            if (IsPlayerSpell(53351)) then
                 lowhealthpercent = 20;
+            end
+
+            if (IsPlayerSpell(466932)) then
+                highhealthpercent = 80;
             end
         end
 

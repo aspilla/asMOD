@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 241121,
+	version = 241125,
 
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
@@ -60,7 +60,7 @@ ACI_Options_Default = {
 
 	-- 암살
 	ACI_SpellList_ROGUE_1 = {
-		{ 99, "혈폭풍", { "혈폭풍", 4, nil, 12 * 0.3 }, { "독살", 2, nil, 1, nil, nil, "증폭의 독" } },
+		{ 99, "혈폭풍", { "혈폭풍", 4, nil, 12 * 0.3 }, { "독살", 2} },
 		{ "독칼", 4 },
 		{ "죽음표식", 4 },
 		{ "목조르기", 4, nil, 1 },
@@ -249,12 +249,11 @@ ACI_Options_Default = {
 
 	--풍운
 	ACI_SpellList_MONK_3 = {
-		{ 99, "폭풍과 대지와 불", { "폭풍과 대지와 불", 2, nil, nil, nil, "폭풍과 대지와 불" },
-			{ "평안", 2 } },
-		{ "해오름차기", 1, nil, nil, "수도원의 가르침" },
-		{ "백호 쉬엔의 원령", 6, nil, nil, "쉬엔의 분노", "쉬엔" },
-		{ "분노의 주먹", 1, nil, nil, "힘 전달" },
-		{ 99, "츠지의 춤", { "회전 학다리차기", 1 }, { "해악 축출", 1 } },
+		{ 101546, 1 },
+		{ 107428, 1, nil, nil, 202090},
+		{ 137639, 2, nil, nil, nil, 137639 },
+		{ 113656, 1, nil, nil, 195321 },
+		{ 392983, 4, nil, nil, nil, 451582},
 	},
 
 	--조화

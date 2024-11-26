@@ -8,15 +8,11 @@ local aurafilter = {};
 local eventfilter = {};
 local actionfilter = {};
 local totemfilter = {};
-local timerfilter = {};
-local bufftimerfilter = {};
-local totemtimerfilter = {};
 local castfilter = {};
 ns.eventhandler = {};
 ns.aurafunctions = {};
 local platedebuffcount = 0;
 local platemaxcount = 0;
-local splinterstorm_time = GetTime();
 
 local PLAYER_UNITS = {
     player = true,
@@ -101,6 +97,7 @@ local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuation
     end
     return continuationToken;
 end
+
 local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
     if maxCount and maxCount <= 0 then
         return;
@@ -113,17 +110,14 @@ local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
     until continuationToken == nil;
 end
 
-
-
 local debufffilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.Player);
 local bufffilter = CreateFilterString(AuraFilters.Helpful);
 
-
-local function ProcessAura(unit, aura)
+local function ProcessAura(unit, aura, searchinfo)
     if aura == nil then
         return AuraUpdateChangedType.None;
     end
-    if PLAYER_UNITS[aura.sourceUnit] and (aurafilter[unit][aura.name] or aurafilter[unit][aura.spellId])then
+    if PLAYER_UNITS[aura.sourceUnit] and (searchinfo[aura.name] or searchinfo[aura.spellId])then
         return AuraUpdateChangedType.Show;
     end
 
@@ -153,7 +147,7 @@ local function ACRB_ParseAllAuras(unit, filter)
     local batchCount = nil;
     local usePackedAura = true;
     local function HandleAura(aura)
-        local type = ProcessAura(unit, aura);
+        local type = ProcessAura(unit, aura, aurafilter[unit]);
 
         if type == AuraUpdateChangedType.Show then
             eventlib[unit].auralist[aura.auraInstanceID] = aura;
@@ -169,8 +163,9 @@ local function ACRB_ParseAllNameplateAuras(filter)
     local ret = false;
     local unit = "nameplate"
     platedebuffcount = 0;
+    local aurainfo = aurafilter[unit];
 
-    if aurafilter[unit] == nil then
+    if aurainfo == nil then
         return ret;
     end
 
@@ -195,7 +190,7 @@ local function ACRB_ParseAllNameplateAuras(filter)
                 local batchCount = nil;
                 local usePackedAura = true;
                 local function HandleAura(aura)
-                    if aurafilter[unit][aura.name] or aurafilter[unit][aura.spellId] then
+                    if aurainfo[aura.name] or aurainfo[aura.spellId] then
                         eventlib[unit].auralist[aura.spellId] = aura;
                         platedebuffcount = platedebuffcount + 1;
                         if platedebuffcount >= platemaxcount then
@@ -228,11 +223,6 @@ local function UpdateAuras(unit)
         ACRB_ParseAllNameplateAuras(debufffilter);
     else
         ACRB_ParseAllAuras(unit, bufffilter);
-
-        -- call back
-        for _, button in pairs(bufftimerfilter) do
-            button:update();
-        end
     end
 end
 
@@ -248,14 +238,7 @@ local function UpdateTotem()
             trigger = true;
         end
     end
-
-    -- call back
-    for _, button in pairs(totemtimerfilter) do
-        button:update();
-    end
 end
-
-
 
 local function ABF_OnEvent(self, event, arg1, ...)
     
@@ -270,26 +253,17 @@ local function ABF_OnEvent(self, event, arg1, ...)
         if castfilter[spell] ~= nil then
             castfilter[spell] = GetTime();
         end
-
     elseif (event == "PLAYER_TOTEM_UPDATE") then
         UpdateTotem();
-    elseif (event == "PLAYER_TARGET_CHANGED") then
-        splinterstorm_time = 0;
+    elseif (event == "PLAYER_TARGET_CHANGED") then        
         UpdateAuras("target");
-    elseif (event == "ACTIONBAR_UPDATE_COOLDOWN" or event == "ACTIONBAR_UPDATE_USABLE") then
-        -- call back
-        for _, button in pairs(actionfilter) do
-            button:update();
-        end
-        
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
         local spell = asGetSpellInfo(arg1);
 
         for spellorg, button in pairs(eventfilter) do
             local spellnow = asGetSpellInfo(spellorg);
             if spell == spellnow or spell == spellorg then
-                button.alert = true;
-                button:update();
+                button.alert = true;                
             end
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
@@ -297,8 +271,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
         for spellorg, button in pairs(eventfilter) do
             local spellnow = asGetSpellInfo(spellorg);
             if spell == spellnow or spell == spellorg then
-                button.alert = false;
-                button:update();
+                button.alert = false;                
             end
         end
     elseif event == "ACTION_RANGE_CHECK_UPDATE" then
@@ -318,8 +291,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
                         button.inRange = false;
                     else
                         button.inRange = true
-                    end
-                    button:update();
+                    end                    
                 end
             end
         end
@@ -327,25 +299,23 @@ local function ABF_OnEvent(self, event, arg1, ...)
         UpdateTotem();
         UpdateAuras("target");
         UpdateAuras("player");
+        UpdateAuras("nameplate");
         UpdateAuras("pet");
     end
 end
 
 
 local function OnUpdate()
-    UpdateAuras("target");
-    UpdateAuras("nameplate");
+    UpdateAuras("target");    
+end
 
-    for _, button in pairs(timerfilter) do
-        button:update();
-    end
+local function OnUpdate2()    
+    UpdateAuras("nameplate"); 
 end
 
 do
     eventframe:RegisterUnitEvent("UNIT_AURA", "player", "pet");
     eventframe:RegisterEvent("PLAYER_TARGET_CHANGED");
-    eventframe:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
-    eventframe:RegisterEvent("ACTIONBAR_UPDATE_USABLE");
     eventframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
     eventframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
     eventframe:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");
@@ -356,6 +326,7 @@ do
 
     --주기적으로 Callback
     C_Timer.NewTicker(0.2, OnUpdate);
+    C_Timer.NewTicker(0.2, OnUpdate2);
 end
 
 function ns.eventhandler.init()
@@ -363,9 +334,6 @@ function ns.eventhandler.init()
     eventfilter = {};
     actionfilter = {};
     totemfilter = {};
-    timerfilter = {};
-    bufftimerfilter = {};
-    totemtimerfilter = {};
     castfilter = {};   
 end
 
@@ -403,19 +371,6 @@ end
 function ns.eventhandler.registerTotem(spell)
     totemfilter[spell] = true;
 end
-
-function ns.eventhandler.registerTotemTimer(spell, button)
-    tinsert(totemtimerfilter, button);
-end
-
-function ns.eventhandler.registerTimer(button)
-    tinsert(timerfilter, button);
-end
-
-function ns.eventhandler.registerBuffTimer(button)
-    tinsert(bufftimerfilter, button);
-end
-
 
 function ns.eventhandler.registerCastTime(spell)
     eventframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "pet");

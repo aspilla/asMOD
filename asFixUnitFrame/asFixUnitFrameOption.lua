@@ -1,7 +1,7 @@
 local _, ns = ...;
 local Options_Default = {
-    version = 231218,
-    HideDebuff = false,
+    version = 241126,
+    HideDebuff = true,
     HideCombatText = true,
     HideCastBar = true,
     HideClassBar = true,

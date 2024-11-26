@@ -470,6 +470,13 @@ local function OnUpdate()
 end
 
 local function OnInit()
+
+    local bloaded = C_AddOns.LoadAddOn("asUnitFrame");
+
+    if bloaded then
+        return;
+    end
+
     AFUF:SetScript("OnEvent", OnEvent);
     AFUF:RegisterEvent("PLAYER_TARGET_CHANGED");
     AFUF:RegisterEvent("PLAYER_ENTERING_WORLD");

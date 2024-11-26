@@ -344,6 +344,7 @@ local function UpdatePortraitFrames(frame, auraList)
                 -- set the icon
                 local frameIcon = frame.icon
                 frameIcon:SetTexture(aura.icon);
+                frameIcon:Show();
                 -- set the count
                 local frameCount = frame.count;
                 local alert = false;
@@ -392,8 +393,8 @@ local function UpdatePortraitFrames(frame, auraList)
             end
         end);
 
-    if bshowdebuff == false then
-        SetPortraitTexture(frame.portrait.icon, unit, false);
+    if bshowdebuff == false then        
+        frame.portrait.icon:Hide();
         frame.portrait.cooldown:Hide();
         frame.portrait.count:Hide();
         frame.portrait.border:SetVertexColor(0,0,0);

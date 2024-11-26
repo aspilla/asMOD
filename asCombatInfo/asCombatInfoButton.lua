@@ -126,8 +126,7 @@ function ns.Button:initButton()
             if self.checkplatecount then
                 ns.eventhandler.registerAura("nameplate", name, self.checkplatecount);
             end
-        elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then
-            ns.eventhandler.registerBuffTimer(self);
+        elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then            
             ns.eventhandler.registerAura(self.unit, name);
             ACI_Buff_list[name] = true;
         end
@@ -760,16 +759,6 @@ function ns.Button:showButton()
     end
 end
 
-function ns.Button:update()
-    self:initButton();
-    self:checkTotem();
-    self:checkBuffList();
-    self:checkBuff();
-    self:checkSpellCoolInBuff();
-    self:checkSpell();
-    self:checkCount();
-    self:showButton();
-end
 
 local function GetActionSlot(arg1)
     local ret = {};
@@ -805,6 +794,11 @@ local function GetActionSlot(arg1)
 end
 
 function ns.Button:init(config, frame)
+
+    if self.time then
+        self.time:Cancel();
+    end
+
     self.realspell = config[1];
     self.spell = select(1, asGetSpellInfo(config[1]));
     self.type = config[2];
@@ -886,8 +880,7 @@ function ns.Button:init(config, frame)
             end
         end
     elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then
-        ACI_Buff_list[self.spell] = true;
-        ns.eventhandler.registerBuffTimer(self);
+        ACI_Buff_list[self.spell] = true;        
         ns.eventhandler.registerAura(self.unit, self.spell);
 
         if self.bufflist then
@@ -899,8 +892,7 @@ function ns.Button:init(config, frame)
 
     if self.type == ns.EnumButtonType.Totem then
         ACI_Totem_list[self.spell] = true;
-        ns.eventhandler.registerTotem(self.spell, self);
-        ns.eventhandler.registerTotemTimer(self);
+        ns.eventhandler.registerTotem(self.spell, self);        
         if self.realbuff then
             ACI_Totem_list[self.realbuff] = true;
             ns.eventhandler.registerTotem(self.realbuff, self);
@@ -936,19 +928,25 @@ function ns.Button:init(config, frame)
         for _, buff in pairs(self.alertbufflist) do
             ns.eventhandler.registerAura("player", buff);
         end
-
-        if self.type == ns.EnumButtonType.Spell then
-            ns.eventhandler.registerBuffTimer(self);
-        end
-    end
-
-    ns.eventhandler.registerTimer(self);
+    end    
 
     if self.buffshowtime then
         ns.eventhandler.registerCastTime(self.spellid);
     end
 
-    self:update();
+    local function update()
+        self:initButton();
+        self:checkTotem();
+        self:checkBuffList();
+        self:checkBuff();
+        self:checkSpellCoolInBuff();
+        self:checkSpell();
+        self:checkCount();
+        self:showButton();
+    end
+
+    update();    
+    self.time = C_Timer.NewTicker(0.2, update)
 end
 
 function ns.Button:new(o)

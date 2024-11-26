@@ -215,7 +215,7 @@ local function updateUnit(frame)
         else
             frame:SetAlpha(0.5);
         end
-    end   
+    end
 
     -- Healthbar
     local value = UnitHealth(unit);
@@ -436,16 +436,15 @@ local function updateUnit(frame)
         frame.healthbar.aggro:Hide();
     end
 
-    --Portrait
-    if not frame.portraitdebuff and frame.portrait then
-        SetPortraitTexture(frame.portrait.icon, unit, false);
+    if frame.portrait and UnitGUID(unit) ~= frame.guid then
+        SetPortraitTexture(frame.portrait.portrait, unit, false);
+        frame.guid = UnitGUID(unit);
+    end
+    --Debuff
+    if frame.portraitdebuff or frame.debuffupdate then
+        ns.UpdateAuras(frame);
     end
 
-    --Debuff 
-    if frame.portraitdebuff or frame.debuffupdate then  
-        ns.UpdateAuras(frame);
-    end    
-    
     --CastBar
     if frame.updateCastBar then
         updateCastBar(frame);
@@ -574,7 +573,7 @@ local function CreatDebuffFrames(parent, bright, fontsize, width, count)
     return;
 end
 
-
+local unitframes = {};
 
 local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight, fontsize, debuffupdate)
     local FontOutline = "OUTLINE";
@@ -601,7 +600,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.portraitdebuff = false;
 
     if ns.options.ShowPortrait then
-        hwidth = width - height * 1.1;        
+        hwidth = width - height * 1.1;
 
         frame.portrait = CreateFrame("Button", nil, frame, "AUFDebuffFrameTemplate");
         local pframe = frame.portrait;
@@ -618,6 +617,8 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
         pframe.count:ClearAllPoints()
         pframe.count:SetPoint("BOTTOMRIGHT", -2, 2);
 
+        pframe.portrait:SetTexCoord(.08, .92, .08, .92);
+        pframe.portrait:SetAlpha(1);
         pframe.icon:SetTexCoord(.08, .92, .08, .92);
         pframe.icon:SetAlpha(1);
         pframe.border:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga");
@@ -632,6 +633,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
         else
             pframe:SetPoint("TOPLEFT", frame.healthbar, "TOPRIGHT", 0, 1);
         end
+        pframe.portrait:Show();
         pframe:Show();
 
         if unit == "target" or unit == "focus" then
@@ -812,6 +814,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.unit = unit;
     -- 유닛 설정 (예시: 'player' 또는 'target' 등)
     frame:SetAttribute("unit", unit);
+    unitframes[unit] = frame;
     SecureUnitButton_OnLoad(frame, frame.unit, OpenContextMenu);
     Mixin(frame, PingableType_UnitFrameMixin);
     frame:SetAttribute("ping-receiver", true);
@@ -952,78 +955,43 @@ end
 
 HideDefaults();
 
-local function AUF_OnEventSpell(self, event, arg1, arg2, arg3)
-    updateCastBar(self);
-end
-
-local function RegisterAll(frame, unit)
-    if UnitExists(unit) then
-        frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
-        frame:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
-        frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
-        frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit);
-        frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
-        frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
-        frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", unit);
-        frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
-        frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
-        frame:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit);
-        frame:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
-        frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
-        frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
-        frame:RegisterUnitEvent("UNIT_TARGET", unit);
-        frame:SetScript("OnEvent", AUF_OnEventSpell);
-        updateCastBar(frame);
-    end
-end
 
 local bfirst = true;
+local AUF = CreateFrame("Frame")
 
 local function AUF_OnEvent(self, event, arg1, arg2, arg3)
-
     if bfirst then
         Init();
         bfirst = false;
     end
 
-    if event == "PLAYER_TARGET_CHANGED" then
-        updateUnit(AUF_TargetFrame);
-    elseif event == "PLAYER_FOCUS_CHANGED" then
-        updateUnit(AUF_FocusFrame);
-        RegisterAll(AUF_FocusFrame, "focus");
-    elseif event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" then
-        if (MAX_BOSS_FRAMES) then
-            for i = 1, MAX_BOSS_FRAMES do
-                updateUnit(AUF_BossFrames[i]);
-                RegisterAll(AUF_BossFrames[i], "boss" .. i);
-            end
-        end
-    elseif event == "PLAYER_ENTERING_WORLD" then
-        updateUnit(AUF_PlayerFrame);
-        updateUnit(AUF_TargetFrame);
-        updateUnit(AUF_FocusFrame);
-        RegisterAll(AUF_FocusFrame, "focus");
-        if (MAX_BOSS_FRAMES) then
-            for i = 1, MAX_BOSS_FRAMES do
-                updateUnit(AUF_BossFrames[i]);
-                RegisterAll(AUF_BossFrames[i], "boss" .. i);
-            end
-        end
+    if event == "PLAYER_ENTERING_WORLD" then
         HideDefaults();
     elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
         ns.DumpCaches();
+    elseif event == "UNIT_PORTRAIT_UPDATE" then
+        local frame = unitframes[arg1];
+        if frame and frame.portrait then
+            SetPortraitTexture(frame.portrait.portrait, frame.unit, false);
+        end
+    elseif event == "PORTRAITS_UPDATED" then
+        for _, frame in pairs(unitframes) do
+            if frame.portrait then
+                SetPortraitTexture(frame.portrait.portrait, frame.unit, false);
+            end
+        end
     end
 
     return;
 end
 
-local AUF = CreateFrame("Frame")
 AUF:SetScript("OnEvent", AUF_OnEvent)
 AUF:RegisterEvent("PLAYER_ENTERING_WORLD");
-AUF:RegisterEvent("PLAYER_FOCUS_CHANGED");
 AUF:RegisterEvent("PLAYER_REGEN_ENABLED");
 AUF:RegisterEvent("PLAYER_REGEN_DISABLED");
-AUF:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
+AUF:RegisterEvent("UNIT_PORTRAIT_UPDATE");
+AUF:RegisterEvent("PORTRAITS_UPDATED");
+
 
 local DBMobj;
 

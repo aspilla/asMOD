@@ -35,6 +35,9 @@
 			<AbsDimension x="17" y="17"/>
 		</Size>
 		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentPortrait" parentKey="portrait" setAllPoints="true"/>
+			</Layer>
 			<Layer level="ARTWORK">
 				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
 			</Layer>
