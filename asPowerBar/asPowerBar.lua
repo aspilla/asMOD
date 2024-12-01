@@ -401,6 +401,8 @@ local brogue = false;
 local combobuffalertlist = nil;
 local combobuffcountalertlist = nil;
 local combobuffcoloralertlist = nil;
+local spellbuffcolorlist = nil;
+local spell2buffcolorlist = nil;
 
 local bshowspell = false;
 
@@ -1507,6 +1509,7 @@ local function APB_UpdateSpell(spell, spell2)
     local charges, maxCharges, chargeStart, chargeDuration = asGetSpellCharges(spellid);
     local _, notEnoughMana = C_Spell.IsSpellUsable(spellid);
     local boverided = false;
+    local colorbuffed = false;
     if spell ~= newspell then
         boverided = true;
     end
@@ -1528,6 +1531,14 @@ local function APB_UpdateSpell(spell, spell2)
 
     if not charges or not maxCharges then
         return;
+    end
+
+    if spellbuffcolorlist then
+        local name = APB_UnitBuffList("player", spellbuffcolorlist);
+
+        if name then
+            colorbuffed = true;
+        end
     end
 
     for i = 1, charges do
@@ -1563,6 +1574,8 @@ local function APB_UpdateSpell(spell, spell2)
             spellbar:SetStatusBarColor(0.6, 0, 0);
         elseif notEnoughMana then
             spellbar:SetStatusBarColor(0.3, 0.3, 0.3);
+        elseif colorbuffed then
+            spellbar:SetStatusBarColor(0, 0.5, 0);
         end
     end
 
@@ -1584,6 +1597,8 @@ local function APB_UpdateSpell(spell, spell2)
             spellbar:SetStatusBarColor(0.6, 0, 0);
         elseif notEnoughMana then
             spellbar:SetStatusBarColor(0.3, 0.3, 0.3);
+        elseif colorbuffed then
+            spellbar:SetStatusBarColor(0.8, 1, 0.8);
         end
     end
 
@@ -1602,6 +1617,7 @@ local function APB_UpdateSpell(spell, spell2)
         local newspell2 = asGetSpellInfo(spell2);
         local charges, maxCharges2, chargeStart, chargeDuration = asGetSpellCharges(spellid);
         local boverided = false
+        local colorbuffed = false
 
         if not spellid then
             return;
@@ -1632,6 +1648,15 @@ local function APB_UpdateSpell(spell, spell2)
             return;
         end
 
+        if spell2buffcolorlist then
+            local name = APB_UnitBuffList("player", spell2buffcolorlist);
+    
+            if name then
+                colorbuffed = true;
+            end
+        end
+    
+
         for i = maxCharges + 1, maxCharges + charges do
             local spellbar = APB.spellbar[i];
             local rate2 = 0;
@@ -1659,6 +1684,8 @@ local function APB_UpdateSpell(spell, spell2)
                 spellbar:SetStatusBarColor(0.3, 0, 0);
             elseif notEnoughMana then
                 spellbar:SetStatusBarColor(0.6, 0.6, 0.6);
+            elseif colorbuffed then
+                spellbar:SetStatusBarColor(0, 0.8, 0);
             end
         end
 
@@ -1681,6 +1708,8 @@ local function APB_UpdateSpell(spell, spell2)
                 spellbar:SetStatusBarColor(0.3, 0, 0);
             elseif notEnoughMana then
                 spellbar:SetStatusBarColor(0.6, 0.6, 0.6);
+            elseif colorbuffed then
+                spellbar:SetStatusBarColor(0.9, 1, 0.9);
             end
         end
 
@@ -1988,6 +2017,8 @@ local function APB_CheckPower(self)
     combobuffalertlist = nil;
     combobuffcountalertlist = nil;
     combobuffcoloralertlist = nil;
+    spellbuffcolorlist = nil;
+    spell2buffcolorlist = nil;
 
     APB_BUFF = nil;
     APB_BUFF2 = nil;
@@ -2217,10 +2248,15 @@ local function APB_CheckPower(self)
 
             APB_SPELL = "화염 작렬";
 
-            if asCheckTalent("불사조의 불길") then
+            --불붙는 도화선
+            spellbuffcolorlist = {453207};
+
+            if asCheckTalent("불사조의 불길") then                
                 APB_SPELL2 = "불사조의 불길"
                 APB_SpellMax(APB_SPELL, APB_SPELL2);
                 APB_UpdateSpell(APB_SPELL, APB_SPELL2);
+                -- 화염의 분노
+                spell2buffcolorlist = {409964};
             else
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);

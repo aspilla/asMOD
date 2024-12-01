@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 241125,
+	version = 241127,
 
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
@@ -124,7 +124,7 @@ ACI_Options_Default = {
 	--화염
 	--11.0 작업중
 	ACI_SpellList_MAGE_2 = {
-		{{ "얼음불꽃 화살", 1, nil, nil, 431190 }, { 382440, 1 } },		
+		{{ "얼음불꽃 화살", 1, nil, nil, 431177 }, { 382440, 1 } },		
 		{{2948, 1, nil, 30, nil, nil, "불태우기 연마" }, { 382440, 1 } },
 		{ 190319, 2 },
 		{{ "유성", 1 },{ 31661, 1 }, { "초신성", 1 }  },				

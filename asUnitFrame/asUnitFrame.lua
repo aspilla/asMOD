@@ -40,24 +40,26 @@ local rareeliteIcon = CreateAtlasMarkup("nameplates-icon-elite-silver", 14, 14);
 
 local DangerousSpellList = {};
 
-local function UpdateFillBarBase(realbar, bar, amount)
+local function UpdateFillBarBase(realbar, bar, amount, bleft, pointbar)
     if not amount or (amount == 0) then
         bar:Hide();
         return
     end
 
-    local previousTexture = realbar:GetStatusBarTexture();
+    local previousTexture = pointbar;
 
-    local gen = false;
+    if previousTexture == nil then
+        previousTexture = realbar:GetStatusBarTexture();
+    end
 
     bar:ClearAllPoints();
-    bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", 0, 0);
-    bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", 0, 0);
-
-    if amount < 0 then
-        amount = 0 - amount;
-        gen = true;
-    end
+    if bleft then
+        bar:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
+        bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMLEFT", 0, 0);
+    else
+        bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", 0, 0);
+        bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", 0, 0);
+    end    
 
     local totalWidth, totalHeight = realbar:GetSize();
 
@@ -65,11 +67,6 @@ local function UpdateFillBarBase(realbar, bar, amount)
 
     local barSize = (amount / totalMax) * totalWidth;
     bar:SetWidth(barSize);
-    if gen then
-        bar:SetVertexColor(1, 1, 1)
-    else
-        bar:SetVertexColor(0.5, 0.5, 0.5)
-    end
     bar:Show();
 end
 
@@ -243,12 +240,38 @@ local function updateUnit(frame)
 
     local totalAbsorbremain = totalAbsorb;
     local remainhealth = valueMax - value;
+    local remainhealthAfterHeal = remainhealth - allIncomingHeal;
+    local incominghealremain = allIncomingHeal;    
 
-    if totalAbsorbremain > remainhealth then
-        totalAbsorbremain = remainhealth;
+    if allIncomingHeal > remainhealth then
+        incominghealremain = remainhealth;
+    end    
+
+    if remainhealthAfterHeal < 0 then
+        remainhealthAfterHeal = 0 
     end
 
-    UpdateFillBarBase(frame.healthbar, frame.healthbar.absorbBar, totalAbsorbremain);
+    if totalAbsorbremain > remainhealthAfterHeal then
+        totalAbsorbremain = remainhealthAfterHeal;
+    end    
+    local pointbar = nil
+
+    UpdateFillBarBase(frame.healthbar, frame.healthbar.incominghealBar, incominghealremain, false, nil);
+    
+    if frame.healthbar.incominghealBar:IsShown() then
+        pointbar = frame.healthbar.incominghealBar;
+        
+    end
+
+    UpdateFillBarBase(frame.healthbar, frame.healthbar.absorbBar, totalAbsorbremain, false, pointbar);
+    
+    if frame.healthbar.absorbBar:IsShown() then
+        frame.healthbar.absorbBarO:Show()
+    else
+        frame.healthbar.absorbBarO:Hide()
+    end
+    
+    UpdateFillBarBase(frame.healthbar, frame.healthbar.shieldBar, totalAbsorb - totalAbsorbremain, true, nil);   
 
     --Castbar
     local current = GetTime();
@@ -648,8 +671,27 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar.predictionBar:Hide();
 
     frame.healthbar.absorbBar = frame.healthbar:CreateTexture(nil, "BORDER");
-    frame.healthbar.absorbBar:SetTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar", "BORDER");
+    frame.healthbar.absorbBar:SetTexture("Interface\\RaidFrame\\Shield-Fill", "BORDER");
+    frame.healthbar.absorbBar:SetAlpha(1);
     frame.healthbar.absorbBar:Hide();
+
+    frame.healthbar.absorbBarO = frame.healthbar:CreateTexture(nil, "ARTWORK");
+    frame.healthbar.absorbBarO:SetTexture("Interface\\RaidFrame\\Shield-Overlay", "BORDER");    
+    frame.healthbar.absorbBarO:SetAllPoints(frame.healthbar.absorbBar);
+    frame.healthbar.absorbBarO:SetAlpha(0.8);    
+    frame.healthbar.absorbBarO:Show();
+
+    frame.healthbar.shieldBar = frame.healthbar:CreateTexture(nil, "ARTWORK");
+    frame.healthbar.shieldBar:SetTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar", "ARTWORK");
+    frame.healthbar.shieldBar:SetVertexColor(0, 0, 0);
+    frame.healthbar.shieldBar:SetAlpha(0.5);
+    frame.healthbar.shieldBar:Hide();
+
+    frame.healthbar.incominghealBar = frame.healthbar:CreateTexture(nil, "ARTWORK");
+    frame.healthbar.incominghealBar:SetTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar", "ARTWORK");
+    frame.healthbar.incominghealBar:SetVertexColor(0, 1, 0);
+    frame.healthbar.incominghealBar:SetAlpha(0.6);
+    frame.healthbar.incominghealBar:Hide();
 
 
     frame.healthbar.bg = frame.healthbar:CreateTexture(nil, "BACKGROUND");

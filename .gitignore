@@ -3265,3 +3265,5 @@ DBM-VPVEM/rollincoming.ogg
 Details/frames/window_deathrecap.lua
 Details/functions/util.lua
 DBM-Core/modules/objects/BossModEventDispatcher.lua
+DBM-Core/Libs/ChatThrottleLib/ChatThrottleLib.lua
+DBM-Core/Libs/ChatThrottleLib/ChatThrottleStats.lua
