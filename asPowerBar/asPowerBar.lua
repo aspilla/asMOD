@@ -2273,6 +2273,9 @@ local function APB_CheckPower(self)
             APB_UpdateBuffCombo(self.combobar)
             bupdate_buff_combo = true;
 
+            --냉기 과잉
+            spellbuffcolorlist = {438611};
+
             for i = 1, 10 do
                 APB.combobar[i].tooltip = APB_BUFF_COMBO;
             end
