@@ -278,7 +278,7 @@ function ns.Button:checkBuffList()
             self.alert2 = true;
         end
 
-        if count >= 1 then
+        if count > 1 then
             self.count = count;
         end
     elseif self.type == ns.EnumButtonType.Debuff or self.type == ns.EnumButtonType.DebuffOnly then
