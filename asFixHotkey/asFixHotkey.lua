@@ -1,11 +1,19 @@
 ﻿local ASHK_ShowMacroName = false; -- Macro 이름을 보이려면 true로
 
 local function _CheckLongName(keyName)
+
+  keyName = string.gsub(keyName, "Num Pad ", "");
   keyName = string.gsub(keyName, "숫자패드 ", "");
+  keyName = string.gsub(keyName, "Num Pad", "");
   keyName = string.gsub(keyName, "숫자패드", "");
+  
+  keyName = string.gsub(keyName, "Middle Mouse", "M3");
   keyName = string.gsub(keyName, "마우스 가운데 버튼", "M3");
+  keyName = string.gsub(keyName, "Mouse Button (%d)", "M%1");
   keyName = string.gsub(keyName, "(%d)번 마우스 버튼", "M%1");
+  keyName = string.gsub(keyName, "Mouse Wheel Up", "MU");
   keyName = string.gsub(keyName, "마우스 휠 위로", "MU");
+  keyName = string.gsub(keyName, "Mouse Wheel Down", "MD");
   keyName = string.gsub(keyName, "마우스 휠 아래로", "MD");
   keyName = string.gsub(keyName, "^s%-", "S");
   keyName = string.gsub(keyName, "^a%-", "A");
@@ -20,11 +28,16 @@ local function _CheckLongName(keyName)
   keyName = string.gsub(keyName, "Num Lock", "Nk");
   keyName = string.gsub(keyName, "Scroll Lock", "Sk");
   keyName = string.gsub(keyName, "Backspace", "Bs");
+  keyName = string.gsub(keyName, "Spacebar", "Sb");
   keyName = string.gsub(keyName, "스페이스 바", "Sb");
   keyName = string.gsub(keyName, "End", "Ed");
+  keyName = string.gsub(keyName, "Up Arrow", "^");
   keyName = string.gsub(keyName, "위 화살표", "^");
+  keyName = string.gsub(keyName, "Down Arrow", "V");
   keyName = string.gsub(keyName, "아래 화살표", "V");
+  keyName = string.gsub(keyName, "Right Arrow", ">");
   keyName = string.gsub(keyName, "오른쪽 화살표", ">");
+  keyName = string.gsub(keyName, "Left Arrow", "<");
   keyName = string.gsub(keyName, "왼쪽 화살표", "<");
 
   return keyName;

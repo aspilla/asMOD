@@ -41,7 +41,6 @@ local itemslots = {
 }
 
 local itemslotNames = {
-
 	"투구",
 	"목걸이",
 	"어깨",
@@ -62,7 +61,7 @@ local itemslotNames = {
 }
 
 local black_list = {
-	["애완동물 되살리기"] = true,
+	[125439] = true,
 
 }
 
@@ -188,12 +187,12 @@ local function scanSpells(tab)
 			for j = 1, numSlots do
 				local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
 
-				if flyoutSpellID and not black_list[flyoutSpellName]  then
+				if flyoutSpellID and not black_list[flyoutSpellID]  then
 					KnownSpellList[flyoutSpellID] = SPELL_TYPE_USER;
 				end
 			end
 		else			
-			if spellID and not black_list[spellName] then
+			if spellID and not black_list[spellID] then
 				KnownSpellList[spellID] = SPELL_TYPE_USER;				
 			end
 		end
@@ -210,7 +209,7 @@ local function scanPetSpells()
 			do break end
 		end
 
-		if spellID and not black_list[spellName] then
+		if spellID and not black_list[spellID] then
 			KnownSpellList[spellID] = SPELL_TYPE_PET;
 		end
 	end

@@ -6,49 +6,50 @@ local ADotF_CooldownFontSize = 12;
 local ADotF_CountFontSize = 12;
 
 ADotF_ShowList_WARRIOR_1 = {
-    { "사형 선고됨", 0 },
-    { "만신창이", 0 },
-    { "분쇄", 1 },
+    { 445584, 0 },
+    { 447513, 0 },
+    { 388539, 1 },
 }
 
 ADotF_ShowList_WARRIOR_2 = {
-    { "사형 선고됨", 0 },
+    { 445584, 0 },
 }
 
 ADotF_ShowList_WARRIOR_3 = {
-    { "만신창이", 0 },
-    { "분쇄", 1 },
+    { 447513, 0 },
+    { 388539, 1 },
 }
 
 ADotF_ShowList_ROGUE_1 = {
-    { "죽음추적자의 징표", 0 },
-    { "파열", 24 * 0.3 },
-    { "목조르기", 1 },
+    { 457129, 0 },
+    { 703, 1 },
+    { 1943, 24 * 0.3 },    
 }
 
 ADotF_ShowList_ROGUE_2 = {
-    { "당혹 상태", 0 },
+    { 441224, 0 },
 }
 
 ADotF_ShowList_ROGUE_3 = {
-    { "죽음추적자의 징표", 0 },
-    { "당혹 상태", 0 },
-    { "파열", 24 * 0.3 },
+    { 457129, 0 },
+    { 1943, 24 * 0.3 },
+    { 441224, 0 },
+    
 }
 
 ADotF_ShowList_HUNTER_1 = {
-    { "날카로운 사격", 1 },
-    { "독사 쐐기", 0 },
-    { "저승까마귀", 0 },
+    { 217200, 1 },
+    { 271788, 0 },
+    { 131894, 0 },
 }
 
 ADotF_ShowList_HUNTER_2 = {
-    { "독사 쐐기", 1 },
+    { 271788, 1 },
     
 }
 
 ADotF_ShowList_HUNTER_3 = {
-    { "독사 쐐기", 1 },
+    { 259491, 1 },
 }
 
 ADotF_ShowList_MONK_1 = {
@@ -58,23 +59,25 @@ ADotF_ShowList_MONK_2 = {
 }
 
 ADotF_ShowList_MONK_3 = {
-    { "주학의 징표", 0 },
+    { 228287, 0 },
 }
 
 ADotF_ShowList_WARLOCK_1 = {
-    { "고통", 1 },
-    { "불안정한 고통", 1 },
-    { "부패", 1 },    
+    { 980, 1 },
+    { 316099, 1 },
+    { 146739, 1 },    
+    { 445474, 1 },
 }
 
 ADotF_ShowList_WARLOCK_2 = {
-    { "악의 아귀", 0 },
-    { "파멸", 0 },
+    { 460553, 0 },
+    { 270569, 0 },
 }
 
 
 ADotF_ShowList_WARLOCK_3 = {
-    { "제물", 1 },
+    { 157736, 1 },
+    { 445474, 1 },
 }
 
 ADotF_ShowList_PRIEST_1 = {
@@ -94,111 +97,110 @@ ADotF_ShowList_PRIEST_3 = {
 }
 
 ADotF_ShowList_SHAMAN_1 = {
-    { "화염 충격", 18 * 0.3 },
+    { 188389, 18 * 0.3 },
 }
 
 ADotF_ShowList_SHAMAN_2 = {
-    { "화염 충격", 18 * 0.3 },
+    { 188389, 18 * 0.3 },
 }
 
 ADotF_ShowList_SHAMAN_3 = {
-    { "화염 충격", 18 * 0.3 },
+    { 188389, 18 * 0.3 },
 }
 
 ADotF_ShowList_DRUID_1 = {
-    { "달빛섬광", 1 },
-    { "태양섬광", 1 },
-    { "항성의 섬광", 1 },
+    { 164812, 1 },
+    { 164815, 1 },
+    { 202347, 1 },
 }
 
 
 ADotF_ShowList_DRUID_2 = {
-    { "갈퀴 발톱", 12 * 0.3 },
-    { "달빛섬광", 1 },
-    { "적응의 무리", 0},
-    { "도려내기", 19 * 0.3 },
-    { "피바라미 덩굴", 0 },
+    { 155722, 12 * 0.3 },
+    { 164812, 1 },    
+    { 1079, 19 * 0.3 },    
     
 }
 
 ADotF_ShowList_DRUID_3 = {
-    { "달빛섬광", 1 },
+    { 164812, 1 },
 }
 
 ADotF_ShowList_DRUID_4 = {
-    { "달빛섬광", 1 },
-    { "갈퀴 발톱", 12 * 0.3 },
-    { "태양섬광", 1 },    
-    { "도려내기", 19 * 0.3 },
-    { "피바라미 덩굴", 0 },
+    { 164812, 1 },
+    { 155722, 12 * 0.3 },
+    { 164815, 1 },    
+    { 1079, 19 * 0.3 },    
 }
 
 
 ADotF_ShowList_MAGE_1 = {
-    {"비전의 여파", 0}, 
+    {210824, 0}, 
+    {444735, 0},
 }
 
 ADotF_ShowList_MAGE_2 = {
-    { "파괴 제어", 0 },
-    { "작열", 0 },
+    { 453268, 0 },
+    { 12654, 0 },
 }
 
 ADotF_ShowList_MAGE_3 = {
-    { "혹한의 추위", 0 },
-    {C_Spell.GetSpellName(443740), 0}, --박힌 냉기 파편
+    { 228358, 0 },
+    { 443740, 0}, 
 }
 
 ADotF_ShowList_DEATHKNIGHT_1 = {
-    { "사신의 징표", 0 },
-    { "공포 유발", 0 },
-    { "피의 역병", 0 },
+    { 434765, 0 },
+    { 458478, 0 },
+    { 55078, 0 },
 }
 
 ADotF_ShowList_DEATHKNIGHT_2 = {
-    { "사신의 징표", 0 },
-    { "서리 열병", 0 },
+    { 434765, 0 },
+    { 55095, 0 },
 }
 
 ADotF_ShowList_DEATHKNIGHT_3 = {
-    { "공포 유발", 0 },
-    { "고름 상처", 0 },
-    { "악성 역병", 1 },    
+    { 458478, 0 },
+    { 194310, 0 },
+    { 191587, 1 },    
 }
 
 ADotF_ShowList_EVOKER_1 = {
-    { "불의 숨결", 0 },
+    { 357209, 0 },
 
 }
 
 ADotF_ShowList_EVOKER_2 = {
-    { "불의 숨결", 0 },
+    { 357209, 0 },
 }
 
 ADotF_ShowList_EVOKER_3 = {
-    { "시간의 상처", 0 },
+    { 409560, 0 },
+    { 357209, 0 },
 }
 
 ADotF_ShowList_PALADIN_1 = {    
-    { "무가치한 존재", 0 },
+    { 414022, 0 },
 }
 
 ADotF_ShowList_PALADIN_2 = {
-    { "심판", 0 },
+    { 197277, 0 },
 }
 
 ADotF_ShowList_PALADIN_3 = {
-    { "심판", 0 },
+    { 197277, 0 },
 }
 
 ADotF_ShowList_DEMONHUNTER_1 = {
-    {"파괴자의 징표", 0},
-    {"불타는 상처", 0},
+    {442624, 0},
+    {391191, 0},
 }
 
 ADotF_ShowList_DEMONHUNTER_2 = {
-    {"파괴자의 징표", 0},
-    { "불타는 낙인", 0 },
-    { "약화", 0 },
+    {442624, 0},
+    { 207771, 0 },
+    { 247456, 0 },
 }
 
 
@@ -228,7 +230,7 @@ local function ADotF_UnitDebuff(unit, buff, filter)
     local auraList = ns.ParseAllDebuff(unit);
 
     auraList:Iterate(function(auraInstanceID, aura)
-        if aura and (aura.name == buff or aura.spellId == buff) then
+        if aura and aura.spellId == buff then
             if aura.duration > 0 then
                 ret = aura;
                 return true;

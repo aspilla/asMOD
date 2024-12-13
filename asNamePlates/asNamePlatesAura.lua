@@ -97,6 +97,7 @@ local function ProcessAura(aura, unit, type)
     if type == 1 then
         if aura.isHarmful then
             local show = false;
+            local showlist = ns.ANameP_ShowList and ns.ANameP_ShowList[aura.spellId];
 
             if ns.options.ANameP_ShowMyAll then
                 if aura.duration <= ns.ANameP_BuffMaxCool then
@@ -106,13 +107,13 @@ local function ProcessAura(aura, unit, type)
                 if (aura.nameplateShowPersonal or
                         (ns.options.ANameP_ShowKnownSpell and (ns.KnownSpellList[aura.name] or ns.KnownSpellList[aura.icon]))) then
                     show = true;
-                elseif (ns.ANameP_ShowList and (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId])) then
+                elseif showlist then
                     show = true;
                 end
             end
 
             if ns.options.ANameP_ShowListOnly then
-                if not (ns.ANameP_ShowList and (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId])) then
+                if not (showlist) then
                     show = false;
                 end
             end
@@ -125,13 +126,12 @@ local function ProcessAura(aura, unit, type)
                 show = true;
             end
 
-            if show and ns.ANameP_BlackList[aura.name] then
+            if show and ns.ANameP_BlackList[aura.spellId] then
                 show = false;
             end
 
             if show then
-                if ns.ANameP_ShowList and (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId]) then
-                    local showlist = (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId]);
+                if showlist then                    
                     aura.debuffType = ns.UnitFrameDebuffType.Priority + showlist[2];
                 elseif PLAYER_UNITS[aura.sourceUnit] then
                     if aura.nameplateShowPersonal then
@@ -158,7 +158,7 @@ local function ProcessAura(aura, unit, type)
                 show = true;
             end
 
-            if show and ns.ANameP_BlackList[aura.name] then
+            if show and ns.ANameP_BlackList[aura.spellId] then
                 show = false;
             end
 

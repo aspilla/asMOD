@@ -6,7 +6,7 @@ local ADF_TARGET_DEBUFF;
 
 local ADF_BlackList = {
 
-    ["도전자의 짐"] = 1,
+    [206151] = 1,        --도전자의 짐
     --	["상처 감염 독"] = 1,	
     --	["신경 마취 독"] = 1,
     --	["맹독"] = 1,
@@ -449,7 +449,7 @@ local function ProcessAura(aura, unit)
         return AuraUpdateChangedType.None;
     end
 
-    if ADF_BlackList[aura.name] then
+    if ADF_BlackList[aura.spellId] then
         return AuraUpdateChangedType.None;
     end
 
@@ -492,8 +492,8 @@ local function ProcessAura(aura, unit)
 
     if skip == false then
         if unit == "target" then
-            if show_list[aura.name] or show_list[aura.spellId] then
-                local showlist = show_list[aura.name] or show_list[aura.spellId];
+            local showlist = show_list and show_list[aura.spellId];
+            if showlist then                
                 if showlist[2] then
                     aura.debuffType = UnitFrameDebuffType.BossDebuff + showlist[2];
                 end
@@ -591,8 +591,9 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
                 frameCooldown:SetDrawSwipe(true);
             end
 
-            if unit == "target" and show_list and (show_list[aura.name] or show_list[aura.spellId]) then
-                local showlist = show_list[aura.name] or show_list[aura.spellId];
+            local showlist = show_list and show_list[aura.spellId];
+
+            if unit == "target" and showlist then                
                 local showlist_time = showlist[1];
                 local alertcount = showlist[4] or false;
                 local alertnameplate = showlist[3] or false;

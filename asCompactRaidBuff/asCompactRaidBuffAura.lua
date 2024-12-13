@@ -332,7 +332,7 @@ local function ARCB_UtilSetBuff(buffFrame, aura)
     if ns.ACRB_ShowList then
         local showlist_time = 0;
 
-        local showinfo = ns.ACRB_ShowList and (ns.ACRB_ShowList[aura.name] or ns.ACRB_ShowList[aura.spellId]);
+        local showinfo = ns.ACRB_ShowList and ns.ACRB_ShowList[aura.spellId];
 
         if showinfo and showinfo[1] then
             showlist_time = showinfo[1];
@@ -417,7 +417,7 @@ local function ProcessAura(aura, unit)
         return AuraUpdateChangedType.None;
     end
 
-    if ns.ACRB_BlackList and ns.ACRB_BlackList[aura.name] then
+    if ns.ACRB_BlackList and ns.ACRB_BlackList[aura.spellId] then
         return AuraUpdateChangedType.None;
     end
 
@@ -459,7 +459,7 @@ local function ProcessAura(aura, unit)
             end
         end
     elseif aura.isHelpful then
-        local showlist = ns.ACRB_ShowList and (ns.ACRB_ShowList[aura.name] or ns.ACRB_ShowList[aura.spellId]);
+        local showlist = ns.ACRB_ShowList and ns.ACRB_ShowList[aura.spellId];
         if showlist and PLAYER_UNITS[aura.sourceUnit] then
             aura.debuffType = UnitFrameBuffType.Normal + showlist[2];
             return AuraUpdateChangedType.Buff;
@@ -600,7 +600,7 @@ function ns.ACRB_UpdateAuras(asframe)
 
             local type = 1;
 
-            local showinfo = ns.ACRB_ShowList and (ns.ACRB_ShowList[aura.name] or ns.ACRB_ShowList[aura.spellId]);
+            local showinfo = ns.ACRB_ShowList and ns.ACRB_ShowList[aura.spellId];
 
             if showinfo and showinfo[2] then
                 type = showinfo[2];

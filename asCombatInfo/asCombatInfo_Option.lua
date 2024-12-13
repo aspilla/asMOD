@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 241207,
+	version = 241211,
 
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
@@ -136,7 +136,7 @@ ACI_Options_Default = {
 		{ 84714,  1 },
 		{ 12472,  2 },
 		{ 153595, 1 },
-		{ 228358, 5,nil, 6.3, nil, nil, nil, { 122, 136511, 33395, 157997 } },
+		{ 228358, 5,nil, 6.3, nil, nil, nil, { 122, 136511, 33395, 157997, 378760, 228600 } },
 	},
 
 	--신성

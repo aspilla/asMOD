@@ -2223,17 +2223,17 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 2) then
-            if (asCheckTalent("화상의 자극")) then
-                APB_BUFF = "화상의 자극";
+            if IsPlayerSpell(383391) then
+                APB_BUFF = 383395;
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player";
                 bupdate_buff_count = true;
                 APB_UpdateBuff(self.buffbar[0])
             end
 
-            if asCheckTalent("태양왕의 축복") then
-                APB_BUFF_COMBO = "태양왕의 축복";
-                APB_BUFF_COMBO_MAX = "태양왕의 격분";
+            if IsPlayerSpell(383886)then
+                APB_BUFF_COMBO = 383882;
+                APB_BUFF_COMBO_MAX = 383883;
                 APB_BUFF_COMBO_MAX_COUNT = 10;
                 APB_MaxCombo(self.combobar, APB_BUFF_COMBO_MAX_COUNT);
                 APB.combobar.unit = "player"
@@ -2246,13 +2246,13 @@ local function APB_CheckPower(self)
                 end
             end
 
-            APB_SPELL = "화염 작렬";
+            APB_SPELL = 108853;
 
             --불붙는 도화선
             spellbuffcolorlist = {453207};
 
-            if asCheckTalent("불사조의 불길") then                
-                APB_SPELL2 = "불사조의 불길"
+            if IsPlayerSpell(257541) then                
+                APB_SPELL2 = 257541
                 APB_SpellMax(APB_SPELL, APB_SPELL2);
                 APB_UpdateSpell(APB_SPELL, APB_SPELL2);
                 -- 화염의 분노

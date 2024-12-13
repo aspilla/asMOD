@@ -382,6 +382,8 @@ local function updateAuras(self)
         end);
 
         self.debuffColor = 0;
+        self.checkdebuffColor1 = false;
+        self.checkdebuffColor2 = false;
 
         auraData.debuffs:Iterate(function(auraInstanceID, aura)
             local isshowlist = false;
@@ -389,7 +391,9 @@ local function updateAuras(self)
                 return true;
             end
 
-            if ns.ANameP_ShowCCDebuff and bShowCC == false and aura.nameplateShowAll and aura.duration > 0 and aura.duration <= 10 and not (ns.ANameP_ShowList and (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId])) then
+            local showlist = ns.ANameP_ShowList and ns.ANameP_ShowList[aura.spellId];
+
+            if ns.ANameP_ShowCCDebuff and bShowCC == false and aura.nameplateShowAll and aura.duration > 0 and aura.duration <= 10 and not (showlist) then
                 show = false;
                 bShowCC = true;
 
@@ -415,9 +419,8 @@ local function updateAuras(self)
             else
                 local alert = false;
                 local showlist_time = nil;
-                if ns.ANameP_ShowList and (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId]) then
-                    isshowlist = true
-                    local showlist = (ns.ANameP_ShowList[aura.name] or ns.ANameP_ShowList[aura.spellId]);
+                if showlist then
+                    isshowlist = true                    
                     showlist_time = showlist[1];
                     local alertcount = showlist[4] or false;
                     local alertnameplate = showlist[3] or 0;
@@ -434,14 +437,26 @@ local function updateAuras(self)
                             alert = true;
                         else
                             if alertnameplate then
-                                self.debuffColor = self.debuffColor + alertnameplate;
+                                if alertnameplate == 1 and self.checkdebuffColor1 == false then
+                                    self.debuffColor = self.debuffColor + alertnameplate;
+                                    self.checkdebuffColor1 = true;
+                                elseif alertnameplate == 2 and self.checkdebuffColor2 == false then
+                                    self.debuffColor = self.debuffColor + alertnameplate;
+                                    self.checkdebuffColor2 = true;
+                                end
                             end
                         end
                     elseif showlist_time and showlist_time >= 0 and alertcount then
                         if (aura.applications >= showlist_time) then
                             alert = true;
                             if alertnameplate then
-                                self.debuffColor = self.debuffColor + alertnameplate;
+                                if alertnameplate == 1 and self.checkdebuffColor1 == false then
+                                    self.debuffColor = self.debuffColor + alertnameplate;
+                                    self.checkdebuffColor1 = true;
+                                elseif alertnameplate == 2 and self.checkdebuffColor2 == false then
+                                    self.debuffColor = self.debuffColor + alertnameplate;
+                                    self.checkdebuffColor2 = true;
+                                end
                             end
                         end
                     end
