@@ -3055,8 +3055,7 @@ local function scanSpellCost(id, powerTypeString, disWarlock)
     if id then
         local spell = Spell:CreateFromSpellID(id);
         spell:ContinueOnSpellLoad(function()
-            local costText = spell:GetSpellDescription();
-            print (costText)
+            local costText = spell:GetSpellDescription();            
             if costText and powerTypeString and string.match(costText, powerTypeString) and
                 string.match(costText, generateText) then
                 

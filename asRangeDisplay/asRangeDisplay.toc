@@ -2,6 +2,6 @@
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rRangeDisplay
 ## Notes: 간단한 RangeDisplay
-## Version : 240107
+## Version : 241215
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asRangeDisplay.lua

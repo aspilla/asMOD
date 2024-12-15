@@ -2,7 +2,7 @@
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rDotFilter
 ## Notes: Dot 필터 
-## Version : 240107
+## Version : 241215
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asDotFilterLib.lua
 asDotFilterAura.lua
