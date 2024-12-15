@@ -67,6 +67,22 @@ PowerTypeComboString = {
     [Enum.PowerType.Essence] = "정수"
 };
 
+if GetLocale() == "enUS" then
+
+    PowerTypeString = {
+        [Enum.PowerType.Focus] = "Focus",
+        [Enum.PowerType.Insanity] = "Insanity",
+        [Enum.PowerType.Maelstrom] = "Maelstrom",
+        [Enum.PowerType.LunarPower] = "LunarPower"
+    };
+
+    PowerTypeComboString = {
+        [Enum.PowerType.SoulShards] = "Soul Shard",
+        [Enum.PowerType.ArcaneCharges] = "Arcane Charge",
+        [Enum.PowerType.Essence] = "Essence"
+    };
+end
+
 
 local tempeststate = {
     TempestStacks = 0,
@@ -2997,6 +3013,15 @@ local function APB_CheckPower(self)
 end
 
 local gpredictedPowerCost = nil;
+local generateText = "생성";
+local generateText2 = "%d의 ";
+local generateText3 = " %d개";
+
+if GetLocale() == "enUS" then
+    generateText = "Generates";
+    generateText2 = "%d ";
+    generateText3 = " %d";
+end
 
 local function checkSpellCost(id)
     local i = 1
@@ -3005,22 +3030,16 @@ local function checkSpellCost(id)
         local spell = Spell:CreateFromSpellID(id);
         spell:ContinueOnSpellLoad(function()
             local costText = spell:GetSpellDescription();
-            local powerType = UnitPowerType("player");
+            local powerType = UnitPowerType("player");            
 
             if costText and PowerTypeString[powerType] and string.match(costText, PowerTypeString[powerType]) and
-                string.match(costText, "생성") then
-                local findstring = "%d의 " .. PowerTypeString[powerType];
-                local start = string.find(costText, findstring, 0);
-
+                string.match(costText, generateText) then
+                local findstring = generateText2 .. PowerTypeString[powerType];
+                local start, endpoint = string.find(costText, findstring, 0);                    
+                
                 if start and start > 5 then
-                    local costText2 = string.sub(costText, start - 5);
-                    local s2 = string.find(costText2, findstring, findstring:len() + 5);
-
-                    if (s2) and s2 > 5 then
-                        costText2 = string.sub(costText2, s2 - 5);
-                    end
-
-                    local cost = gsub(costText2, "[^0-9]", "")
+                    local costText2 = string.sub(costText, start -5, endpoint);                                 
+                    local cost = gsub(costText2, "[^0-9]", "")                    
                     if tonumber(cost) > 0 then
                         SpellGetCosts[id] = tonumber(cost);
                     end
@@ -3037,17 +3056,20 @@ local function scanSpellCost(id, powerTypeString, disWarlock)
         local spell = Spell:CreateFromSpellID(id);
         spell:ContinueOnSpellLoad(function()
             local costText = spell:GetSpellDescription();
-
+            print (costText)
             if costText and powerTypeString and string.match(costText, powerTypeString) and
-                string.match(costText, "생성") then
-                local findstring = "%d의 " .. powerTypeString;
-                local start = string.find(costText, findstring, 0);
-                if start and start > 10 then
-                    local costText2 = string.sub(costText, start - 5);
+                string.match(costText, generateText) then
+                
+                local findstring = generateText2 .. powerTypeString;
+                local start, endpoint = string.find(costText, findstring, 0);
+                
+                if start and start > 5 then
+                    local costText2 = string.sub(costText, start - 5, endpoint);
                     local cost = gsub(costText2, "[^0-9]", "")
+                    
                     if tonumber(cost) > 0 then
                         if disWarlock then
-                            SpellGetPowerCosts[id] = tonumber(cost) / 10;
+                            SpellGetPowerCosts[id] = tonumber(cost) / 10;                            
                         else
                             SpellGetPowerCosts[id] = tonumber(cost);
                         end
@@ -3055,27 +3077,26 @@ local function scanSpellCost(id, powerTypeString, disWarlock)
                     end
                 end
 
-                findstring = powerTypeString .. " %d개";
+                findstring = powerTypeString .. generateText3;
                 start = string.find(costText, findstring, 0);
 
                 local notfindstring = "죽으면 " .. findstring;
 
-                local start = string.find(costText, findstring, 0);
+                local start, endpoint = string.find(costText, findstring, 0);
                 local startno = string.find(costText, notfindstring, 0);
 
                 if startno and startno > 10 then
-                    SpellGetPowerCosts[id] = 0;
+                    SpellGetPowerCosts[id] = 0;                    
                     return;
                 end
 
-                if start and start > 10 and startno == nil then
-                    local costText2 = string.sub(costText, start);
-                    local start2 = string.find(costText2, "합니다.", 0);
-                    costText2 = string.sub(costText2, 0, start2);
+                if start and start > 5 and startno == nil then
+                    local costText2 = string.sub(costText, start - 5, endpoint);                    
+                    
                     local cost = gsub(costText2, "[^0-9]", "")
                     if tonumber(cost) > 0 then
                         if disWarlock then
-                            SpellGetPowerCosts[id] = tonumber(cost) / 10;
+                            SpellGetPowerCosts[id] = tonumber(cost) / 10;                            
                         else
                             SpellGetPowerCosts[id] = tonumber(cost);
                         end
@@ -3085,6 +3106,12 @@ local function scanSpellCost(id, powerTypeString, disWarlock)
             end
         end)
     end
+end
+
+local soulshardtext = "영혼의 조각 파편";
+
+if GetLocale() == "enUS" then
+    soulshardtext = "Soul Shard Fragments"
 end
 
 local function checkSpellPowerCost(id)
@@ -3104,13 +3131,11 @@ local function checkSpellPowerCost(id)
         spec = 1;
     end
 
-
-
     if (englishClass == "WARLOCK") and (spec and spec == 3) then
         scanSpellCost(id, powerTypeString, disWarlock);
         disWarlock = true;
-        scanSpellCost(id, "영혼의 조각 파편", disWarlock);
-    else
+        scanSpellCost(id, soulshardtext, disWarlock);
+    else        
         scanSpellCost(id, powerTypeString, disWarlock);
     end
 end
