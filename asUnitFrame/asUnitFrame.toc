@@ -1,8 +1,8 @@
-﻿## Interface: 110005
+﻿## Interface: 110007
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rUnitFrame
 ## Notes: 유닛프레임 
-## Version : 241009
+## Version : 241214
 ## SavedVariablesPerCharacter: AUF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asUnitFrame.xml

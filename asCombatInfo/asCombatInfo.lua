@@ -14,16 +14,6 @@ local ACI_BackGroundCoolDiff = 10; -- 버프/디버프시 Spell Cool이 보이�
 
 
 
--- 높은 수 일 수록 보이는 우선순위 높음 (조정 필요)
-local roguespell = {
-	[6] = "집중 공격",
-	[5] = "무자비한 정밀함",
-	[4] = "해적 징표",
-	[3] = "진방위",
-	[2] = "대난투",
-	[1] = "숨겨진 보물",
-}
-
 local asGetSpellInfo = function(spellID)
 	if not spellID then
 		return nil;

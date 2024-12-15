@@ -304,18 +304,18 @@ local function IsShown(name, spellId)
 	end
 
 	-- asPowerBar Check
-	if APB_BUFF and (APB_BUFF == name or APB_BUFF == spellId) then
+	if APB_BUFF and APB_BUFF == spellId then
 		return true;
 	end
 
-	if APB_BUFF2 and (APB_BUFF2 == name  or APB_BUFF2 == spellId) then
+	if APB_BUFF2 and APB_BUFF2 == spellId then
 		return true;
 	end
-	if APB_BUFF3 and (APB_BUFF3 == name  or APB_BUFF3 == spellId) then
+	if APB_BUFF3 and APB_BUFF3 == spellId then
 		return true;
 	end
 
-	if APB_BUFF_COMBO and (APB_BUFF_COMBO == name or APB_BUFF_COMBO == spellId) then
+	if APB_BUFF_COMBO and APB_BUFF_COMBO == spellId then
 		return true;
 	end
 
@@ -323,7 +323,7 @@ local function IsShown(name, spellId)
 		return true;
 	end
 
-	if APB_BUFF_COMBO_MAX and (APB_BUFF_COMBO_MAX == name or APB_BUFF_COMBO_MAX == spellId) then
+	if APB_BUFF_COMBO_MAX and APB_BUFF_COMBO_MAX == spellId then
 		return true;
 	end
 

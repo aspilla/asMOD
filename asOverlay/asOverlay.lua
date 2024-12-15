@@ -410,15 +410,15 @@ local function IsShown(spellId)
 	local name = C_Spell.GetSpellName(spellId)
 
 	-- asPowerBar Check
-	if APB_BUFF4 and APB_BUFF4 == name then
+	if APB_BUFF4 and APB_BUFF4 == spellId then
 		return true;
 	end
 
-	if APB_BUFF_COMBO and APB_BUFF_COMBO == name then
+	if APB_BUFF_COMBO and APB_BUFF_COMBO == spellId then
 		return true;
 	end
 
-	if APB_BUFF_COMBO_MAX and APB_BUFF_COMBO_MAX == name then
+	if APB_BUFF_COMBO_MAX and APB_BUFF_COMBO_MAX == spellId then
 		return true;
 	end
 
