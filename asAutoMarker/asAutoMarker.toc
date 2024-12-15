@@ -1,4 +1,4 @@
-﻿## Interface: 110005
+﻿## Interface: 110007
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rAutoMarker
 ## Notes: 던전 자동 징표

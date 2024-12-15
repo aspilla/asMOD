@@ -1,4 +1,4 @@
-﻿## Interface: 110005
+﻿## Interface: 110007
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rDebuffFilter
 ## Notes: 디버프 필터 
