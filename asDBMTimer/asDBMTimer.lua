@@ -10,8 +10,27 @@ local ADBMT_IconSize = 30;
 local ADBMT_X = 200;
 local ADBMT_Y = 50;
 
-
 local BarColors = {
+	--Type 0
+	[0] = { 1, 0.7, 0, "" },
+	--Type 1 (Add)
+	[1] = { 0.375, 0.545, 1, "[Add]" },
+	--Type 2 (AOE)
+	[2] = { 1, 0.466, 0.459, "[AOE]" },
+	--Type 3 (Targeted)
+	[3] = { 0.9, 0.3, 1, "[Targeted]" },
+	--Type 4 (Interrupt)
+	[4] = { 0.47, 0.97, 1, "[Interrupt]" },
+	--Type 5 (Role)
+	[5] = { 0.5, 1, 0.5, "[Role]" },
+	--Type 6 (Phase)
+	[6] = { 1, 0.776, 0.420, "[Phase]" },
+	--Type 7 (Important/User set only)
+	[7] = { 1, 1, 0.06, "" },
+}
+
+if GetLocale() == "koKR" then
+BarColors = {
 	--Type 0
 	[0] = { 1, 0.7, 0, "" },
 	--Type 1 (Add)
@@ -29,6 +48,7 @@ local BarColors = {
 	--Type 7 (Important/User set only)
 	[7] = { 1, 1, 0.06, "" },
 }
+end
 
 -- 설정 끝
 

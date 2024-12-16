@@ -2,7 +2,7 @@
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rFixUnitFrame
 ## Notes: 유닛프레임 
-## Version : 240107
+## Version : 241216
 ## SavedVariablesPerCharacter: AFUF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asFixUnitFrameOption.lua
