@@ -360,7 +360,7 @@ function ns.Button:checkBuff()
             self.buffalert = true;
         end
 
-        if aura.points and aura.points[1] then
+        if aura.points and aura.points[1] and not(aura.applications and aura.applications > 0) then
             if (aura.points[1] > 999999) then
                 self.count = math.ceil(aura.points[1] / 1000000) .. "m"
             elseif (aura.points[1] > 999) then

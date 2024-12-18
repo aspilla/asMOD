@@ -74,7 +74,7 @@ local function showInterruptCooldown(spellID, isDangerous, endRemain)
         end
 
         frame.icon:SetTexCoord(.08, .92, .08, .92);
-        frame.border:SetTexture("Interface\\Addons\\asCooldownPulse\\border.tga");
+        frame.border:SetTexture("Interface\\Addons\\asInterruptHelper\\border.tga");
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 
         if not frame:GetScript("OnEnter") then
