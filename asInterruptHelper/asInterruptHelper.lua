@@ -2,6 +2,8 @@
 local AIH_SIZE = 30;
 local AIH_X = 0;
 local AIH_Y = 50;
+local AIH_M_X = 50;
+local AIH_M_Y = -20;
 local AIH_CooldownFontSize = 9;
 local mainframe = CreateFrame("Frame");
 local cooldownframe;
@@ -62,8 +64,6 @@ local function showInterruptCooldown(spellID, isDangerous, endRemain)
         frame = mainframe.cooldownframe;
         frame:SetWidth(AIH_SIZE);
         frame:SetHeight(AIH_SIZE * 0.9);
-        frame:EnableMouse(false);
-        frame:SetMouseMotionEnabled();
 
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
@@ -263,9 +263,9 @@ local function AIH_OnUpdate(self, elapsed)
         frame:ClearAllPoints();
         if bmouseover then
             local x, y = GetCursorPosition() -- 마우스 좌표 가져오기
-            frame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x + 50, y)
+            frame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x + AIH_M_X, y + AIH_M_Y)
         else
-            frame:SetPoint("CENTER", UIParent, "CENTER", 0, 100);
+            frame:SetPoint("CENTER", UIParent, "CENTER", AIH_X, AIH_Y);
         end
     end
 end
