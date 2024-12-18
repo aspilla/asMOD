@@ -2,6 +2,6 @@
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rCPUProfile
 ## Notes: asMOD 성능 측정
-## Version : 241112
+## Version : 241216
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asCPUProfile.lua

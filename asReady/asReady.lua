@@ -327,7 +327,7 @@ local function OnSpellEvent(unit, spellid)
             local coolspelllist = checkcoollist[unit];
 
             if coolspelllist then
-                local info = coolspelllist[name] or coolspelllist[spellid];
+                local info = coolspelllist[spellid];
                 if info then
                     local cool = info[1];
                     local buffcool = info[2];
@@ -336,7 +336,7 @@ local function OnSpellEvent(unit, spellid)
             end
 
             if isparty then
-                local cool = ns.trackedPartySpellNames[name] or ns.trackedPartySpellNames[spellid];
+                local cool = ns.trackedPartySpellNames[spellid];
                 if cool then
                     interruptcools[unit] = { unit, spellid, time, cool, 0 };
                 end
