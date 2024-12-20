@@ -45,7 +45,7 @@ local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuation
         local slot = select(i, ...);
         local done;
         local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
-        if usePackedAura then            
+        if usePackedAura then
             done = func(auraInfo);
         else
             done = func(AuraUtil.UnpackAuraData(auraInfo));
@@ -72,26 +72,21 @@ end
 local auraData = {};
 auraData.bufffilter = CreateFilterString(AuraFilters.Helpful, AuraFilters.Player, AuraFilters.IncludeNameplateOnly);
 
-local function ParseAllAuras(unit, id)
-
-    if not ns.needtocheckAura then        
+local function ParseAllAuras(unit)
+    if not ns.needtocheckAura then
         return auraData.buffs;
     end
 
-    ns.needtocheckAura = false;    
+    ns.needtocheckAura = false;
 
-    if auraData.buffs == nil then
-        auraData.buffs = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
-    else
-        auraData.buffs:Clear();
-    end
+    auraData.buffs = {};
 
     local batchCount = nil;
     local usePackedAura = true;
-    
+
     local function HandleAura(aura)
-        if aura then
-            auraData.buffs[aura.auraInstanceID] = aura;
+        if aura and aura.spellId and aura.name then
+            auraData.buffs[aura.spellId] = aura;            
         end
     end
     ForEachAura(unit, auraData.bufffilter, batchCount, HandleAura, usePackedAura);
@@ -99,30 +94,22 @@ local function ParseAllAuras(unit, id)
     return auraData.buffs;
 end
 
-function ns.getExpirationTimeUnitAurabyID(id, idonly)    
+function ns.GetAura(id)
+    local auraList = ParseAllAuras("player");
+    local real = ns.aurachangelist[id];
 
-    local auraList = ParseAllAuras("player", id);
-    local ret = nil;
-
-    auraList:Iterate(function(auraInstanceID, aura)
-        if aura.spellId == id then
-            ret = aura;
-            return true;
-        end
-        return false;
-    end);
-
-    if ret == nil and not idonly then
-        local name = asGetSpellInfo(id);
-
-        auraList:Iterate(function(auraInstanceID, aura)
-            if aura.name == name then
-                ret = aura;
-                return true;
+    if real then
+        if type(real) == "table" then
+            for _, realid in pairs(real) do
+                if auraList[realid] then
+                    id = realid;
+                    break;
+                end
             end
-            return false;
-        end);
+        else
+            id = real;
+        end
     end
 
-    return ret;
+    return auraList[id];    
 end

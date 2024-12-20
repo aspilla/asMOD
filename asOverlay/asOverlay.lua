@@ -147,7 +147,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	if ns.countaware[spellID] then
 		countAuraList[spellID] = true;
 		for _, auraid in pairs(ns.countaware[spellID]) do
-			aura = ns.getExpirationTimeUnitAurabyID(auraid, true);
+			aura = ns.GetAura(auraid);
 
 			local remain = 0;
 
@@ -164,7 +164,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		end
 	else
 		local auraid = spellID;
-		aura = ns.getExpirationTimeUnitAurabyID(auraid);
+		aura = ns.GetAura(auraid, true);
 		local remain = 0;
 
 		if aura then
@@ -196,7 +196,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 			local proc_b = v[5];
 			local proc_position = v[6];
 
-			local procaura = ns.getExpirationTimeUnitAurabyID(procid, true);
+			local procaura = ns.GetAura(procid);
 
 			if procaura then
 				if (proc_count > 0 and procaura.applications >= proc_count) or proc_count == 0 then
@@ -333,7 +333,7 @@ local function asOverlay_CheckAura(self)
 
 			if overlay and overlay:IsShown() then
 				for _, auraid in pairs(ns.countaware[spellID]) do
-					local procaura = ns.getExpirationTimeUnitAurabyID(auraid, true);
+					local procaura = ns.GetAura(auraid);
 
 					if procaura then
 						local count = procaura.applications;
@@ -363,7 +363,7 @@ local function asOverlay_CheckAura(self)
 				local proc_b = v[5];
 				local proc_position = v[6];
 
-				local procaura = ns.getExpirationTimeUnitAurabyID(procid, true);
+				local procaura = ns.GetAura(procid);
 
 				if procaura then
 					if (proc_count > 0 and procaura.applications >= proc_count) or proc_count == 0 then
@@ -472,7 +472,7 @@ local function asOverlay_OnUpdate()
 	if frame.overlaysInUse then
 		for spellID, overlayList in pairs(frame.overlaysInUse) do
 			if (overlayList and #overlayList) then
-				local aura = ns.getExpirationTimeUnitAurabyID(spellID);
+				local aura = ns.GetAura(spellID, true);
 
 				if aura then
 					local extime = aura.expirationTime;
