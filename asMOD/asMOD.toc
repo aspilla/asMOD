@@ -2,7 +2,7 @@
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rMOD
 ## Notes: asMOD 기본 설정
-## Version : 241217
+## Version : 241220
 ##SavedVariablesPerCharacter: asMOD_config, asMOD_version, asMOD_position, asMOD_layout_version
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asMOD.lua
