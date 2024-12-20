@@ -328,19 +328,22 @@ end
 local function asOverlay_CheckAura(self)
 	for spellID, _ in pairs(countAuraList) do
 		if ns.countaware[spellID] then
-			for _, auraid in pairs(ns.countaware[spellID]) do
-				local procaura = ns.getExpirationTimeUnitAurabyID(auraid, true);
+			local overlay = asOverlay_GetOverlay(self, spellID, Enum.ScreenLocationType.Right, true) or
+				asOverlay_GetOverlay(self, spellID, Enum.ScreenLocationType.RightOutside, true);
 
-				if procaura then
-					local count = procaura.applications;
-					local overlay = asOverlay_GetOverlay(self, spellID, Enum.ScreenLocationType.Right, true) or
-					asOverlay_GetOverlay(self, spellID, Enum.ScreenLocationType.RightOutside, true);
+			if overlay and overlay:IsShown() then
+				for _, auraid in pairs(ns.countaware[spellID]) do
+					local procaura = ns.getExpirationTimeUnitAurabyID(auraid, true);
 
-					if overlay and count then
-						if count == 1 then
-							overlay:Hide();
-						elseif count >= 2 then
-							overlay:Show();
+					if procaura then
+						local count = procaura.applications;
+
+						if overlay and count then
+							if count == 1 then
+								overlay:Hide();
+							elseif count >= 2 then
+								overlay:Show();
+							end
 						end
 					end
 				end
@@ -466,7 +469,6 @@ end
 local frame = CreateFrame("FRAME", nil, UIParent)
 
 local function asOverlay_OnUpdate()
-
 	if frame.overlaysInUse then
 		for spellID, overlayList in pairs(frame.overlaysInUse) do
 			if (overlayList and #overlayList) then
@@ -486,47 +488,50 @@ local function asOverlay_OnUpdate()
 
 					for i = 1, #overlayList do
 						local overlay = overlayList[i];
-						if ns.options.ShowAlpha == true then
-							overlay:SetAlpha(rate * settingalpha);
-						elseif overlay.width and overlay.height then
-							local texLeft, texRight, texTop, texBottom = 0, 1, 0, 1;
 
-							if (overlay.vflip) then
-								texTop, texBottom = 1, 0;
-							end
-							if (overlay.hflip) then
-								texLeft, texRight = 1, 0;
-							end
+						if overlay:IsShown() then
+							if ns.options.ShowAlpha == true then
+								overlay:SetAlpha(rate * settingalpha);
+							elseif overlay.width and overlay.height then
+								local texLeft, texRight, texTop, texBottom = 0, 1, 0, 1;
 
-							if overlay.side then
 								if (overlay.vflip) then
-									overlay.texture:SetTexCoord(texLeft, texRight, texTop, 1 - rate);
-								else
-									overlay.texture:SetTexCoord(texLeft, texRight, 1 - rate, texBottom);
+									texTop, texBottom = 1, 0;
 								end
-								overlay:SetSize(overlay.width, overlay.height * rate);
-							else
 								if (overlay.hflip) then
-									overlay.texture:SetTexCoord(rate, texRight, texTop, texBottom);
-								else
-									overlay.texture:SetTexCoord(texLeft, rate, texTop, texBottom);
+									texLeft, texRight = 1, 0;
 								end
-								overlay:SetSize(overlay.width * rate, overlay.height);
+
+								if overlay.side then
+									if (overlay.vflip) then
+										overlay.texture:SetTexCoord(texLeft, texRight, texTop, 1 - rate);
+									else
+										overlay.texture:SetTexCoord(texLeft, texRight, 1 - rate, texBottom);
+									end
+									overlay:SetSize(overlay.width, overlay.height * rate);
+								else
+									if (overlay.hflip) then
+										overlay.texture:SetTexCoord(rate, texRight, texTop, texBottom);
+									else
+										overlay.texture:SetTexCoord(texLeft, rate, texTop, texBottom);
+									end
+									overlay:SetSize(overlay.width * rate, overlay.height);
+								end
 							end
-						end
 
-						if count > 1 and i == 1 and ns.options.ShowCount then
-							overlay.count:SetText(count);
-							overlay.count:Show();
-						else
-							overlay.count:Hide();
-						end
+							if count > 1 and i == 1 and ns.options.ShowCount then
+								overlay.count:SetText(count);
+								overlay.count:Show();
+							else
+								overlay.count:Hide();
+							end
 
-						if remain > 0 and i == 1 and ns.options.ShowRemainTime then
-							overlay.remain:SetText(math.ceil(remain));
-							overlay.remain:Show();
-						else
-							overlay.remain:Hide();
+							if remain > 0 and i == 1 and ns.options.ShowRemainTime then
+								overlay.remain:SetText(math.ceil(remain));
+								overlay.remain:Show();
+							else
+								overlay.remain:Hide();
+							end
 						end
 					end
 				else

@@ -3269,3 +3269,4 @@ DBM-Core/Libs/ChatThrottleLib/ChatThrottleLib.lua
 DBM-Core/Libs/ChatThrottleLib/ChatThrottleStats.lua
 DBM-VPVEM/enteringcombat.ogg
 DBM-VPVEM/leavingcombat.ogg
+Details/frames/window_transcriptor.lua
