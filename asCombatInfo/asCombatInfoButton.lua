@@ -1,5 +1,8 @@
 local _, ns = ...;
 
+local rangeIcon = CreateAtlasMarkup("PlayerPartyBlip", 32, 32, 0, 0, 255, 0, 0);
+local notuseIcon = CreateAtlasMarkup("PlayerPartyBlip", 32, 32, 0, 0, 100, 100, 100);
+
 ns.Button = {
     type = nil,
     realspell = nil,
@@ -412,11 +415,9 @@ function ns.Button:checkSpellCoolInBuff()
 
         if self.spellcool == nil then
             if self.inRange == false and isUsable then
-                self.spellcool = "●"
-                self.spellcoolColor = { r = 0.8, g = 0, b = 0 };
+                self.spellcool = rangeIcon;                
             elseif not isUsable then
-                self.spellcool = "●"
-                self.spellcoolColor = { r = 0.3, g = 0.3, b = 0.3 };
+                self.spellcool = notuseIcon;                
             end
         end
     end
@@ -533,8 +534,7 @@ function ns.Button:checkSpell()
 
         if not (t == ns.EnumButtonType.BuffOnly or t == ns.EnumButtonType.DebuffOnly) then
             if self.inRange == false then
-                self.spellcool = "●"
-                self.spellcoolColor = { r = 0.8, g = 0, b = 0 };
+                self.spellcool = rangeIcon;                
             end
         end
     end

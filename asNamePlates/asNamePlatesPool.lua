@@ -69,6 +69,7 @@ local function creatframe()
     object.healthtext = object:CreateFontString(nil, "OVERLAY");
     object.realhealthtext = object:CreateFontString(nil, "OVERLAY");
     object.motext = object:CreateFontString(nil, "OVERLAY");
+    object.tgtext = object:CreateFontString(nil, "OVERLAY");
     object.resourcetext = object:CreateFontString(nil, "OVERLAY");
     object.buffList = {};
 
@@ -131,6 +132,7 @@ local function creatframe()
     object.healthtext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
     object.realhealthtext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize - 2, "OUTLINE");
     object.motext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
+    object.tgtext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
 
     return object;
 end

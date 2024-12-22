@@ -5,6 +5,12 @@ local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { r = 153 / 255, g = 0, b = 76 / 2
 local CONFIG_INTERRUPTIBLE_COLOR = { r = 204 / 255, g = 255 / 255, b = 153 / 255 };   --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
 local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { r = 76 / 255, g = 153 / 255, b = 0 };     --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
 
+local targetIcon = CreateAtlasMarkup("poi-door-arrow-down", 16, 16, 0, 0, 255, 0, 0);
+local mouseoverIcon = CreateAtlasMarkup("poi-door-arrow-up", 12, 12, 0, 0, 0, 255, 0);
+local healerIcon = CreateAtlasMarkup("GreenCross", 12, 12, 0, 0);
+local aggroIconR = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0, 255, 0, 0);
+local aggroIcon = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0);
+
 local DangerousSpellList = {}
 
 local ANameP_HealerGuid = {}
@@ -20,6 +26,7 @@ local PLAYER_UNITS = {
 
 local lowhealthpercent = 0;
 local highhealthpercent = 200;
+local playerisdealer = false;
 
 ns.ANameP_ShowList = nil;
 local debuffs_per_line = ns.ANameP_DebuffsPerLine;
@@ -167,6 +174,7 @@ end
 
 -- 탱커 처리부
 local function updateTankerList()
+    playerisdealer = false;
     local bInstance, RTB_ZoneType = IsInInstance();
 
     if RTB_ZoneType == "pvp" or RTB_ZoneType == "arena" then
@@ -196,6 +204,12 @@ local function updateTankerList()
                     end
                 end
             end
+        end
+
+        local assignedRole = UnitGroupRolesAssigned("player");
+
+        if (assignedRole and assignedRole ~= "TANK") then            
+            playerisdealer = true;        
         end
     end
 end
@@ -420,7 +434,7 @@ local function updateAuras(self)
                 local alert = false;
                 local showlist_time = nil;
                 if showlist then
-                    isshowlist = true                    
+                    isshowlist = true
                     showlist_time = showlist[1];
                     local alertcount = showlist[4] or false;
                     local alertnameplate = showlist[3] or 0;
@@ -578,6 +592,8 @@ local function updateTargetNameP(self)
             self.motext:Hide();
         end
 
+        self.tgtext:Show();
+
         if casticon then
             casticon:SetWidth((height + cast_height + 3) * 1.2);
             casticon:SetHeight(height + cast_height + 3);
@@ -592,6 +608,7 @@ local function updateTargetNameP(self)
         height = orig_height + ns.ANameP_TargetHealthBarHeight;
         self.healthtext:Show();
         self.motext:Hide();
+        self.tgtext:Hide();
     else
         height = orig_height;
 
@@ -605,6 +622,8 @@ local function updateTargetNameP(self)
             self.healthtext:Hide();
             self.motext:Hide();
         end
+
+        self.tgtext:Hide();
 
         if casticon then
             casticon:SetWidth((height + cast_height + 3) * 1.2);
@@ -902,7 +921,7 @@ local function updateHealthbarColor(self)
                 return ns.options.ANameP_LowHealthColor;
             end
 
-            if valuePct >= highhealthpercent and UnitAffectingCombat(unit)  then
+            if valuePct >= highhealthpercent and UnitAffectingCombat(unit) then
                 return ns.options.ANameP_LowHealthColor;
             end
         end
@@ -959,8 +978,13 @@ local function updateHealthbarColor(self)
     end
 end
 
+
 local function updatePVPAggro(self)
-    if not ns.ANameP_PVPAggroShow or not self.namecolor or not self.checkpvptarget then
+    if not ns.ANameP_PVPAggroShow then        
+        return;
+    end
+
+    if not(self.namecolor or self.checkpvptarget or self.partydealer) then
         return;
     end
 
@@ -978,15 +1002,16 @@ local function updatePVPAggro(self)
     local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
 
     if (isTargetPlayer) then
-        self.aggro1:SetTextColor(1, 0, 0, 1);
 
-        self.aggro1:SetText("▶");
-        self.aggro1:Show();
-
-        self.aggro2:SetTextColor(1, 0, 0, 1);
-
-        self.aggro2:SetText("◀");
-        self.aggro2:Show();
+        if self.markcolor and self.markcolor == 1 then
+            self.aggro1:SetText(aggroIconR);        
+            self.aggro1:Show();
+            self.markcolor = 0;
+        else
+            self.aggro1:SetText(aggroIcon);        
+            self.aggro1:Show();
+            self.markcolor = 1;
+        end
     else
         self.aggro1:Hide();
         self.aggro2:Hide();
@@ -1216,6 +1241,7 @@ local function removeUnit(namePlateUnitToken)
         asframe.healthtext:Hide();
         asframe.realhealthtext:Hide();
         asframe.motext:Hide();
+        asframe.tgtext:Hide();
         asframe.resourcetext:Hide();
         asframe.casticon:Hide();
         asframe.healer:Hide();
@@ -1338,6 +1364,7 @@ local function addNamePlate(namePlateFrameBase)
         b = healthbar.b
     };
     asframe.checkcolor = false;
+    asframe.partydealer = false;
     asframe.debuffColor = 0;
 
     asframe:UnregisterEvent("PLAYER_TARGET_CHANGED");
@@ -1373,7 +1400,7 @@ local function addNamePlate(namePlateFrameBase)
 
     asframe.aggro1:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
     asframe.aggro1:ClearAllPoints();
-    asframe.aggro1:SetPoint("RIGHT", healthbar, "LEFT", -5, Aggro_Y)
+    asframe.aggro1:SetPoint("RIGHT", healthbar, "LEFT", 0, Aggro_Y)
 
 
     asframe.aggro2:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
@@ -1387,8 +1414,7 @@ local function addNamePlate(namePlateFrameBase)
     end
     asframe.healer:ClearAllPoints();
     asframe.healer:SetPoint("RIGHT", healthbar, "LEFT", -5, Aggro_Y)
-    asframe.healer:SetText("★");
-    asframe.healer:SetTextColor(0, 1, 0, 1);
+    asframe.healer:SetText(healerIcon);
     asframe.healer:Hide();
 
     if unitFrame.castBar then
@@ -1442,10 +1468,14 @@ local function addNamePlate(namePlateFrameBase)
 
 
     asframe.motext:ClearAllPoints();
-    asframe.motext:SetPoint("BOTTOM", asframe.healthtext, "TOP", 0, 1)
-    asframe.motext:SetText("▼")
-    asframe.motext:SetTextColor(0, 1, 0)
+    asframe.motext:SetPoint("TOP", healthbar, "BOTTOM", 0, -1)
+    asframe.motext:SetText(mouseoverIcon);
     asframe.motext:Hide();
+
+    asframe.tgtext:ClearAllPoints();
+    asframe.tgtext:SetPoint("BOTTOM", healthbar, "TOP", 0, -1)
+    asframe.tgtext:SetText(targetIcon);
+    asframe.tgtext:Hide();
 
 
     asframe.checkaura = false;
@@ -1484,7 +1514,7 @@ local function addNamePlate(namePlateFrameBase)
     asframe.aggro1:ClearAllPoints();
 
     if (class == "elite" or class == "worldboss" or class == "rare" or class == "rareelite") then
-        asframe.aggro1:SetPoint("RIGHT", healthbar, "LEFT", -12, Aggro_Y);
+        asframe.aggro1:SetPoint("RIGHT", healthbar, "LEFT", -8, Aggro_Y);
     else
         asframe.aggro1:SetPoint("RIGHT", healthbar, "LEFT", 0, Aggro_Y);
     end
@@ -1555,6 +1585,10 @@ local function addNamePlate(namePlateFrameBase)
     asframe.checkaura = checkaura;
     asframe.checkpvptarget = checkpvptarget;
     asframe.checkcolor = checkcolor;
+    if checkcolor and playerisdealer then        
+        asframe.partydealer = true;
+    end
+
 
     if showhealer and ns.ANameP_HealerSize > 0 then
         asframe.healer:Show();
@@ -1740,11 +1774,11 @@ end
 
 
 local function ANameP_OnUpdate()
-    updateUnit("target", false);    
+    updateUnit("target", false);
 end
 
 local function ANameP_OnUpdate2()
-    updateUnit("player", false);    
+    updateUnit("player", false);
 end
 
 local function ANameP_OnUpdate3()
