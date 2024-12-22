@@ -1084,6 +1084,7 @@ local function APB_UpdateBuff(buffbar)
     end
 
     local bbuff2 = false;
+    local balert = false;
 
     if buffbar.buff then
         local name, icon, count, debuffType, duration, expirationTime, caster;
@@ -1108,7 +1109,11 @@ local function APB_UpdateBuff(buffbar)
             buffbar.duration = duration;
             if bupdate_buff_count then
                 buffbar.count:SetText(count);
+                if buffbar.alertcount and count >= buffbar.alertcount then
+                    balert = true;
+                end
             end
+            
         else
             buffbar.start = nil;
             buffbar:SetMinMaxValues(0, 1)
@@ -1117,7 +1122,9 @@ local function APB_UpdateBuff(buffbar)
             buffbar.count:SetText("");
         end
 
-        if bbuff2 then
+        if balert then
+            buffbar:SetStatusBarColor(0.3, 1, 0.7);
+        elseif bbuff2 then
             buffbar:SetStatusBarColor(0.7, 0.9, 0.9);
         else
             buffbar:SetStatusBarColor(0.8, 0.8, 1);
@@ -2590,6 +2597,7 @@ local function APB_CheckPower(self)
             APB_BUFF = 195181;             --뼈의 보호막
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
+            APB.buffbar[0].alertcount = 5;
 
             bupdate_buff_count = true;
         end
