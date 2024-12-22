@@ -38,6 +38,13 @@ local AuraFilters =
     Maw = "MAW",
 };
 
+local black_list = {
+    [458525] = true, --승천
+    [458524] = true, --승천
+    [458503] = true, --승천
+    [458502] = true, --승천    
+}
+
 local asGetSpellInfo = function(spellID)
     if not spellID then
         return nil;
@@ -117,6 +124,11 @@ local function ProcessAura(unit, aura, searchinfo)
     if aura == nil then
         return AuraUpdateChangedType.None;
     end
+
+    if black_list[aura.spellId] then
+        return AuraUpdateChangedType.None;
+    end
+
     if PLAYER_UNITS[aura.sourceUnit] and (searchinfo[aura.name] or searchinfo[aura.spellId])then
         return AuraUpdateChangedType.Show;
     end
