@@ -125,7 +125,7 @@ local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuation
 		local slot = select(i, ...);
 		local done;
 		local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
-		if usePackedAura then			
+		if usePackedAura then
 			done = func(auraInfo);
 		else
 			done = func(AuraUtil.UnpackAuraData(auraInfo));
@@ -200,7 +200,7 @@ local function asCheckTalent()
 
 	scanSpells(2)
 	scanSpells(3)
-	
+
 	local configID = C_ClassTalents.GetActiveConfigID();
 
 	if not (configID) then
@@ -298,8 +298,11 @@ end
 
 local bcheckOverlay = false;
 
-local function IsShown(name, spellId)
-	if ns.ABF_BlackList[name] then
+local function IsShown(aura)
+
+	local name = aura.name;
+	local spellId = aura.spellId
+	if ns.ABF_BlackList[spellId] then
 		return true;
 	end
 
@@ -327,10 +330,10 @@ local function IsShown(name, spellId)
 		return true;
 	end
 
-	if bcheckOverlay and (overlayspell[spellId] or overlayspell[name]) then
-		if ns.ABF_ClassBuffList[spellId] and ns.ABF_ClassBuffList[spellId] > 1 then
+	aura.classbuff = ns.ABF_ClassBuffList[aura.spellId] or ns.ABF_ClassBuffList[aura.name];
 
-		elseif ns.ABF_ClassBuffList[name] and ns.ABF_ClassBuffList[name] > 1 then
+	if bcheckOverlay and (overlayspell[spellId] or overlayspell[name]) then
+		if aura.classbuff and aura.classbuff > 1 then	
 
 		else
 			return true;
@@ -345,7 +348,7 @@ local function IsShown(name, spellId)
 end
 
 local function IsShownTotem(name)
-	if ns.ABF_BlackList[name] then
+	if ns.ABF_BlackListTotem[name] then
 		return true;
 	end
 
@@ -359,24 +362,27 @@ end
 local activeBuffs = {};
 
 
-
-
 local function ProcessAura(aura, unit)
 	if aura == nil or aura.icon == nil or unit == nil or not aura.isHelpful then
 		return AuraUpdateChangedType.None;
 	end
 
-	if IsShown(aura.name, aura.spellId) then
+	if IsShown(aura) then
 		return AuraUpdateChangedType.None;
 	end
 
-	local skip = true;
+	local skip = true;	
+	local isPlayerUnit = PLAYER_UNITS[aura.sourceUnit];	
+	aura.procbuff = ns.ABF_ProcBuffList[aura.spellId] or ns.ABF_ProcBuffList[aura.name];
+	aura.pvpbuff = ns.ABF_PVPBuffList[aura.spellId];
+
+
 	if unit == "target" then
 		if UnitIsPlayer("target") then
 			skip = true;
 			if UnitCanAssist("target", "player") then
 				-- 우리편은 내가 시전한 Buff 보임
-				if PLAYER_UNITS[aura.sourceUnit] and aura.duration > 0 and aura.duration <= ns.ABF_MAX_Cool then
+				if isPlayerUnit and aura.duration > 0 and aura.duration <= ns.ABF_MAX_Cool then
 					skip = false;
 				end
 			end
@@ -386,7 +392,7 @@ local function ProcessAura(aura, unit)
 			end
 
 			-- PVP 주요 버프는 보임
-			if (ns.ABF_PVPBuffList and ns.ABF_PVPBuffList[aura.spellId]) then
+			if (aura.pvpbuff) then
 				skip = false;
 			end
 
@@ -398,23 +404,23 @@ local function ProcessAura(aura, unit)
 		end
 	elseif unit == "player" then
 		skip = true;
-		if PLAYER_UNITS[aura.sourceUnit] and ((aura.duration > 0 and aura.duration <= ns.ABF_MAX_Cool)) then
+		if isPlayerUnit and ((aura.duration > 0 and aura.duration <= ns.ABF_MAX_Cool)) then
 			skip = false;
 		end
 
-		if PLAYER_UNITS[aura.sourceUnit] and ((aura.applications and aura.applications > 1 and aura.duration <= ns.ABF_MAX_Cool)) then
+		if isPlayerUnit and ((aura.applications and aura.applications > 1 and aura.duration <= ns.ABF_MAX_Cool)) then
 			skip = false;
 		end
 
-		if PLAYER_UNITS[aura.sourceUnit] and (aura.nameplateShowPersonal or ns.ABF_ClassBuffList[aura.name] or ns.ABF_ClassBuffList[aura.spellId]) then
+		if isPlayerUnit and (aura.nameplateShowPersonal or aura.classbuff) then
 			skip = false;
 		end
 
-		if (ns.ABF_PVPBuffList and ns.ABF_PVPBuffList[aura.spellId]) then
+		if (aura.pvpbuff) then
 			skip = false;
 		end
 
-		if ns.ABF_ProcBuffList and ns.ABF_ProcBuffList[aura.name] then
+		if aura.procbuff then
 			skip = false;
 		end
 	end
@@ -422,16 +428,16 @@ local function ProcessAura(aura, unit)
 	if skip == false then
 		if aura.isBossAura and not aura.isRaid then
 			aura.buffType = UnitFrameBuffType.BossBuff;
-		elseif not PLAYER_UNITS[aura.sourceUnit] then
-			if ns.ABF_ProcBuffList and ns.ABF_ProcBuffList[aura.name] then
+		elseif not isPlayerUnit then
+			if aura.procbuff then
 				aura.buffType = UnitFrameBuffType.ProcBuff;
 			else
 				aura.buffType = UnitFrameBuffType.Normal;
 			end
-		elseif ns.ABF_ClassBuffList[aura.name] or ns.ABF_ClassBuffList[aura.spellId] then
-			local ClassBuffType = ns.ABF_ClassBuffList[aura.name] or ns.ABF_ClassBuffList[aura.spellId];
-			if ns.ABF_ClassBuffCountList[aura.name] or ns.ABF_ClassBuffCountList[aura.spellId] then
-				local buffcheckcount = ns.ABF_ClassBuffCountList[aura.name] or ns.ABF_ClassBuffCountList[aura.spellId];
+		elseif aura.classbuff then
+			local ClassBuffType = aura.classbuff;
+			local buffcheckcount = ns.ABF_ClassBuffCountList[aura.name] or ns.ABF_ClassBuffCountList[aura.spellId];
+			if buffcheckcount then				
 				if aura.applications >= buffcheckcount and ClassBuffType < 3 then
 					ClassBuffType = ClassBuffType + 1;
 				end
@@ -450,7 +456,7 @@ local function ProcessAura(aura, unit)
 			end
 		elseif aura.nameplateShowPersonal then
 			aura.buffType = UnitFrameBuffType.PriorityBuff;
-		elseif ns.ABF_ProcBuffList and ns.ABF_ProcBuffList[aura.name] then
+		elseif aura.procbuff then
 			aura.buffType = UnitFrameBuffType.ProcBuff;
 		elseif IsShouldDisplayBuff(aura.spellId, aura.sourceUnit, aura.isFromPlayerOrPlayerPet) then
 			aura.buffType = UnitFrameBuffType.Normal;
@@ -498,7 +504,7 @@ local function updateTotemAura()
 		if haveTotem and icon then
 			if not (IsShownTotem(name)) then
 				local frame = nil;
-				local alert = ns.ABF_ClassBuffList[name] or 0;
+				local alert = ns.ABF_ClassTotemList[name] or 0;
 
 				if alert > 0 then
 					frame = ABF_TALENT_BUFF.frames[center];
@@ -576,9 +582,9 @@ local function UpdateAuraFrames(unit, auraList)
 	local mparent = nil;
 	local toshow = ns.ABF_MAX_BUFF_SHOW;
 
-	if (unit == "player") then		
+	if (unit == "player") then
 		parent = ABF_PLAYER_BUFF;
-		mparent = ABF_TALENT_BUFF;		
+		mparent = ABF_TALENT_BUFF;
 	else
 		if not UnitAffectingCombat(unit) then
 			toshow = ns.ABF_TARGET_MAX_BUFF_SHOW;
@@ -644,9 +650,9 @@ local function UpdateAuraFrames(unit, auraList)
 					frameBigCount:SetTextColor(1, 0, 0, 1);
 					balertcount = true;
 				else
-					frameBigCount:SetTextColor(1, 1, 1,1 );
+					frameBigCount:SetTextColor(1, 1, 1, 1);
 				end
-				
+
 
 				frameBigCount:SetText(aura.applications);
 				frameBigCount:Show();
@@ -679,12 +685,12 @@ local function UpdateAuraFrames(unit, auraList)
 			local color = DebuffTypeColor["Disease"];
 			frameBorder:SetVertexColor(color.r, color.g, color.b);
 
-			if (aura.isStealable) or (ns.ABF_ProcBuffList and ns.ABF_ProcBuffList[aura.name] and ns.ABF_ProcBuffList[aura.name] == 1) then
+			if (aura.isStealable) or (aura.procbuff) then
 				ns.lib.ButtonGlow_Start(frame);
 			else
 				if balertcount then
 					ns.lib.PixelGlow_Stop(frame);
-					ns.lib.ButtonGlow_Start(frame);				
+					ns.lib.ButtonGlow_Start(frame);
 				elseif aura.buffType == UnitFrameBuffType.PriorityBuff then
 					ns.lib.ButtonGlow_Stop(frame);
 					ns.lib.PixelGlow_Start(frame);
@@ -755,8 +761,7 @@ local function ABF_Resize()
 		if (frame) then
 			-- Resize
 			frame:SetWidth(size);
-			frame:SetHeight(size * 0.8);	
-		
+			frame:SetHeight(size * 0.8);
 		end
 	end
 end
@@ -768,9 +773,9 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif (event == "PLAYER_TARGET_CHANGED") then
 		ABF_ClearFrame();
 		ABF_Resize();
-		UpdateAuras("target");	
+		UpdateAuras("target");
 	elseif (event == "PLAYER_TOTEM_UPDATE") then
-		UpdateAuras("player");		
+		UpdateAuras("player");
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		hasValidPlayer = true;
 		asCheckTalent();
@@ -874,7 +879,7 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 
 		frame.bigcount:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize + 3, "OUTLINE")
 		frame.bigcount:ClearAllPoints()
-		frame.bigcount:SetPoint("CENTER", 0, 0);		
+		frame.bigcount:SetPoint("CENTER", 0, 0);
 
 		frame.icon:SetTexCoord(.08, .92, .08, .92);
 		frame.icon:SetAlpha(ns.ABF_ALPHA);

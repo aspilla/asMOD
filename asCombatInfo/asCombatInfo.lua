@@ -175,38 +175,6 @@ local function ACI_OnEvent(self, event, arg1, ...)
 	end
 end
 
-local function asCheckTalent(name)
-	local configID = C_ClassTalents.GetActiveConfigID();
-
-	if not (configID) then
-		return false;
-	end
-	local configInfo = C_Traits.GetConfigInfo(configID);
-	local treeID = configInfo.treeIDs[1];
-
-	local nodes = C_Traits.GetTreeNodes(treeID);
-
-	for _, nodeID in ipairs(nodes) do
-		local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
-		if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-			local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID;
-			local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
-			local definitionInfo = entryInfo and entryInfo.definitionID and
-				C_Traits.GetDefinitionInfo(entryInfo.definitionID);
-
-			if definitionInfo and IsPlayerSpell(definitionInfo.spellID) then
-				local talentName = C_Spell.GetSpellName(definitionInfo.spellID);
-				if name == talentName then
-					return true;
-				end
-			end
-		end
-	end
-
-	return false;
-end
-
-
 local ACI_Spec = nil;
 local ACI_timer = nil;
 
@@ -292,7 +260,7 @@ function ACI_Init()
 			if type(ACI_SpellList[i][1]) == "table" then
 				for _, array in pairs(ACI_SpellList[i]) do
 					local spell_name = array[1];
-					if (type(spell_name) == "string" and asCheckTalent(spell_name)) or (type(spell_name) == "number" and asIsPlayerSpell(spell_name)) then
+					if asIsPlayerSpell(spell_name) then
 						ACI_SpellList[i] = {};
 						for z, v in pairs(array) do
 							ACI_SpellList[i][z] = v;
@@ -313,7 +281,7 @@ function ACI_Init()
 				if check and check == 99 then
 					local bselected = false;
 					local spell_name = ACI_SpellList[i][2];
-					if (type(spell_name) == "string" and asCheckTalent(spell_name)) or (type(spell_name) == "number" and asIsPlayerSpell(spell_name)) then
+					if asIsPlayerSpell(spell_name) then
 						if ACI_SpellList[i][3] then
 							local array = ACI_SpellList[i][3];
 							if type(array) == "table" then

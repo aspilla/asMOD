@@ -1937,36 +1937,6 @@ local function APB_InitPowerBar(self)
     self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 end
 
-local function asCheckTalent(name)
-    local configID = C_ClassTalents.GetActiveConfigID();
-
-    if not (configID) then
-        return false;
-    end
-    local configInfo = C_Traits.GetConfigInfo(configID);
-    local treeID = configInfo.treeIDs[1];
-
-    local nodes = C_Traits.GetTreeNodes(treeID);
-
-    for _, nodeID in ipairs(nodes) do
-        local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
-        if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID;
-            local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
-            local definitionInfo = entryInfo and entryInfo.definitionID and
-                C_Traits.GetDefinitionInfo(entryInfo.definitionID);
-
-            if definitionInfo ~= nil and IsPlayerSpell(definitionInfo.spellID) then
-                local talentName = C_Spell.GetSpellName(definitionInfo.spellID);
-                if name == talentName then
-                    return true;
-                end
-            end
-        end
-    end
-
-    return false;
-end
 
 local function HowManyHasSet(setID)
     local itemList = C_LootJournal.GetItemSetItems(setID)

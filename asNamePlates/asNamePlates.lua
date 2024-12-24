@@ -91,37 +91,6 @@ end
 
 ns.KnownSpellList = {};
 
-local function asCheckTalent(name)
-    local configID = C_ClassTalents.GetActiveConfigID();
-
-    if not (configID) then
-        return false;
-    end
-    local configInfo = C_Traits.GetConfigInfo(configID);
-    local treeID = configInfo.treeIDs[1];
-
-    local nodes = C_Traits.GetTreeNodes(treeID);
-
-    for _, nodeID in ipairs(nodes) do
-        local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
-        if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-            local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID;
-            local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
-            local definitionInfo = entryInfo and entryInfo.definitionID and
-                C_Traits.GetDefinitionInfo(entryInfo.definitionID);
-
-            if definitionInfo and IsPlayerSpell(definitionInfo.spellID) then
-                local talentName = C_Spell.GetSpellName(definitionInfo.spellID);
-                if name == talentName then
-                    return true;
-                end
-            end
-        end
-    end
-
-    return false;
-end
-
 
 local function scanSpells(tab)
     local tabName, tabTexture, tabOffset, numEntries = asGetSpellTabInfo(tab)
@@ -165,11 +134,10 @@ end
 local function setupKnownSpell()
     ns.KnownSpellList = {};
 
-    scanSpells(1)
-    scanSpells(2)
-    scanSpells(3)
-    scanPetSpells()
-    asCheckTalent();
+    scanSpells(1);
+    scanSpells(2);
+    scanSpells(3);
+    scanPetSpells();    
 end
 
 -- 탱커 처리부
@@ -405,7 +373,7 @@ local function updateAuras(self)
                 return true;
             end
 
-            local showlist = ns.ANameP_ShowList and ns.ANameP_ShowList[aura.spellId];
+            local showlist = aura.showlist;
 
             if ns.ANameP_ShowCCDebuff and bShowCC == false and aura.nameplateShowAll and aura.duration > 0 and aura.duration <= 10 and not (showlist) then
                 show = false;
@@ -1004,17 +972,16 @@ local function updatePVPAggro(self)
     if (isTargetPlayer) then
 
         if self.markcolor and self.markcolor == 1 then
-            self.aggro1:SetText(aggroIconR);        
-            self.aggro1:Show();
+            self.aggro:SetText(aggroIconR);        
+            self.aggro:Show();
             self.markcolor = 0;
         else
-            self.aggro1:SetText(aggroIcon);        
-            self.aggro1:Show();
+            self.aggro:SetText(aggroIcon);        
+            self.aggro:Show();
             self.markcolor = 1;
         end
     else
-        self.aggro1:Hide();
-        self.aggro2:Hide();
+        self.aggro:Hide();        
     end
 end
 
@@ -1067,7 +1034,7 @@ local function initAlertList()
         end
 
         if (englishClass == "WARRIOR") then
-            if (asCheckTalent("대학살")) then
+            if (IsPlayerSpell(281001)) then
                 lowhealthpercent = 35;
             else
                 lowhealthpercent = 20;
@@ -1083,7 +1050,7 @@ local function initAlertList()
         end
 
         if (englishClass == "DEATHKNIGHT") then
-            if (asCheckTalent("영혼 수확자")) then
+            if (IsPlayerSpell(343294)) then
                 lowhealthpercent = 35;
             end
         end
@@ -1235,8 +1202,7 @@ local function removeUnit(namePlateUnitToken)
             prev_mouseover = nil;
         end
 
-        asframe.aggro1:Hide();
-        asframe.aggro2:Hide();
+        asframe.aggro:Hide();
         asframe.CCdebuff:Hide();
         asframe.healthtext:Hide();
         asframe.realhealthtext:Hide();
@@ -1398,15 +1364,8 @@ local function addNamePlate(namePlateFrameBase)
 
     asframe.orig_height = g_orig_height;
 
-    asframe.aggro1:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
-    asframe.aggro1:ClearAllPoints();
-    asframe.aggro1:SetPoint("RIGHT", healthbar, "LEFT", 0, Aggro_Y)
-
-
-    asframe.aggro2:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
-    asframe.aggro2:ClearAllPoints();
-    asframe.aggro2:SetPoint("LEFT", healthbar, "RIGHT", 0, Aggro_Y)
-
+    asframe.aggro:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
+    
     if ns.ANameP_HealerSize > 0 then
         asframe.healer:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HealerSize, "THICKOUTLINE");
     else
@@ -1465,8 +1424,6 @@ local function addNamePlate(namePlateFrameBase)
     asframe.realhealthtext:SetTextColor(1, 1, 1, 1);
     asframe.realhealthtext:Hide();
 
-
-
     asframe.motext:ClearAllPoints();
     asframe.motext:SetPoint("TOP", healthbar, "BOTTOM", 0, -1)
     asframe.motext:SetText(mouseoverIcon);
@@ -1476,7 +1433,6 @@ local function addNamePlate(namePlateFrameBase)
     asframe.tgtext:SetPoint("BOTTOM", healthbar, "TOP", 0, -1)
     asframe.tgtext:SetText(targetIcon);
     asframe.tgtext:Hide();
-
 
     asframe.checkaura = false;
     asframe.downbuff = false;
@@ -1511,16 +1467,15 @@ local function addNamePlate(namePlateFrameBase)
 
     local class = UnitClassification(unit)
 
-    asframe.aggro1:ClearAllPoints();
+    asframe.aggro:ClearAllPoints();
 
     if (class == "elite" or class == "worldboss" or class == "rare" or class == "rareelite") then
-        asframe.aggro1:SetPoint("RIGHT", healthbar, "LEFT", -8, Aggro_Y);
+        asframe.aggro:SetPoint("RIGHT", healthbar, "LEFT", -8, Aggro_Y);
     else
-        asframe.aggro1:SetPoint("RIGHT", healthbar, "LEFT", 0, Aggro_Y);
+        asframe.aggro:SetPoint("RIGHT", healthbar, "LEFT", 0, Aggro_Y);
     end
 
-    asframe.aggro1:Hide();
-    asframe.aggro2:Hide();
+    asframe.aggro:Hide();    
     asframe:SetWidth(1);
     asframe:SetHeight(1);
     asframe:SetScale(1);

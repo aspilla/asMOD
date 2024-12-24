@@ -1,4 +1,3 @@
---무법
 local _, ns = ...;
 local version = select(4, GetBuildInfo());
 
@@ -12,7 +11,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 241215,
+	version = 241224,
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
 	-- 	Spell 기술명 혹은 ID (버프는 ID로 입력해야 Icon 나옴)
@@ -66,6 +65,7 @@ ACI_Options_Default = {
 		{ 1943, 4, nil, 24 * 0.3, nil, nil, nil, nil, nil, nil, 6 },
 	},
 
+	--무법
 	ACI_SpellList_ROGUE_2 = {
 		{ 315508, 2, nil, nil, nil, nil, nil, { 193359, 193356, 193357, 199603, 193358, 199600 } },
 		{ 195627, 3, nil, 20 },
@@ -119,14 +119,13 @@ ACI_Options_Default = {
 		{ 382440, 1 },
 	},
 
-	--화염
-	--11.0 작업중
+	--화염	
 	ACI_SpellList_MAGE_2 = {
-		{ { 431044, 1, nil, nil, 431177 },       { 382440, 1 } },
+		{ 382440, 1 },
 		{ { 2948, 1, nil, 30, nil, nil, 383608 }, { 382440, 1 } },
 		{ 190319, 2 },
 		{ { 153561, 1 },{ 31661, 1 }, { 157980, 1 } },
-		{ 12654, 5 },
+		{ 99, 431044, { 431177, 3 },{ 12654, 5 }},
 	},
 
 	--냉기

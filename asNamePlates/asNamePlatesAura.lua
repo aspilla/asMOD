@@ -94,10 +94,13 @@ local function ProcessAura(aura, unit, type)
         return AuraUpdateChangedType.None;
     end
 
+    local isPlayer = PLAYER_UNITS[aura.sourceUnit];
+
     if type == 1 then
         if aura.isHarmful then
             local show = false;
-            local showlist = ns.ANameP_ShowList and ns.ANameP_ShowList[aura.spellId];
+            aura.showlist = ns.ANameP_ShowList and ns.ANameP_ShowList[aura.spellId];
+            
 
             if ns.options.ANameP_ShowMyAll then
                 if aura.duration <= ns.ANameP_BuffMaxCool then
@@ -107,22 +110,22 @@ local function ProcessAura(aura, unit, type)
                 if (aura.nameplateShowPersonal or
                         (ns.options.ANameP_ShowKnownSpell and (ns.KnownSpellList[aura.name] or ns.KnownSpellList[aura.icon]))) then
                     show = true;
-                elseif showlist then
+                elseif aura.showlist then
                     show = true;
                 end
             end
 
             if ns.options.ANameP_ShowListOnly then
-                if not (showlist) then
+                if not (aura.showlist) then
                     show = false;
                 end
             end
 
-            if not PLAYER_UNITS[aura.sourceUnit] then
+            if not isPlayer then
                 show = false;
             end
 
-            if aura.nameplateShowAll and (PLAYER_UNITS[aura.sourceUnit] or not ns.ANameP_ShowOnlyMine[aura.spellId]) then
+            if aura.nameplateShowAll and (isPlayer or not ns.ANameP_ShowOnlyMine[aura.spellId]) then
                 show = true;
             end
 
@@ -131,9 +134,9 @@ local function ProcessAura(aura, unit, type)
             end
 
             if show then
-                if showlist then                    
-                    aura.debuffType = ns.UnitFrameDebuffType.Priority + showlist[2];
-                elseif PLAYER_UNITS[aura.sourceUnit] then
+                if aura.showlist then                    
+                    aura.debuffType = ns.UnitFrameDebuffType.Priority + aura.showlist[2];
+                elseif isPlayer then
                     if aura.nameplateShowPersonal then
                         aura.debuffType = ns.UnitFrameDebuffType.nameplateShowPersonal;
                     else
@@ -152,7 +155,8 @@ local function ProcessAura(aura, unit, type)
             end
         elseif aura.isHelpful then
             local show = false;
-            if ns.ANameP_PVPBuffList and ns.ANameP_PVPBuffList[aura.spellId] then
+            local isPVP = ns.ANameP_PVPBuffList and ns.ANameP_PVPBuffList[aura.spellId];
+            if isPVP then
                 show = true;
             elseif aura.isStealable then
                 show = true;
@@ -165,7 +169,7 @@ local function ProcessAura(aura, unit, type)
             if show then
                 if aura.isStealable then
                     aura.debuffType = ns.UnitFrameBuffType.Stealable;
-                elseif ns.ANameP_PVPBuffList and ns.ANameP_PVPBuffList[aura.spellId] then
+                elseif isPVP then
                     aura.debuffType = ns.UnitFrameBuffType.PVP;
                 else
                     aura.debuffType = ns.UnitFrameBuffType.Normal;
@@ -181,7 +185,7 @@ local function ProcessAura(aura, unit, type)
             if ns.options.ANameP_ShowPlayerBuffAll == false then
                 show = aura.nameplateShowPersonal;
             else
-                if ns.ANameP_ShowPlayerBuff and PLAYER_UNITS[aura.sourceUnit] and aura.duration > 0 and aura.duration <=
+                if ns.ANameP_ShowPlayerBuff and isPlayer and aura.duration > 0 and aura.duration <=
                     ns.ANameP_BuffMaxCool then
                     show = true;
                 end

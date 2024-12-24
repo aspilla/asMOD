@@ -29,7 +29,7 @@ ns.Button = {
     enable = false,
     reversecool = false,
     spellcool = nil,
-    spellcoolColor = { r = 0.8, g = 0.8, b = 1 },    
+    spellcoolColor = { r = 0.8, g = 0.8, b = 1 },
     count = nil,
     buffalert = false,
     coolalert = false,
@@ -109,6 +109,8 @@ function ns.Button:initButton()
     self.buffalert = false;
     self.alert2 = false;
     self.coolalert = false;
+    self.currtime = GetTime();
+    self.gcd = select(2, asGetSpellCooldown(61304));
 
     local name, _, _, _, _, _, spellid = asGetSpellInfo(self.realspell);
 
@@ -129,7 +131,7 @@ function ns.Button:initButton()
             if self.checkplatecount then
                 ns.eventhandler.registerAura("nameplate", name, self.checkplatecount);
             end
-        elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then            
+        elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then
             ns.eventhandler.registerAura(self.unit, name);
             ACI_Buff_list[name] = true;
         end
@@ -157,7 +159,7 @@ function ns.Button:checkTotem()
     end
 
     local totem = ns.aurafunctions.checkTotem(buff);
-    local aura = ns.aurafunctions.checkAura("player", buff);
+    local aura = ns.aurafunctions.checkAura("player", buff);    
 
     if totem then
         self.icon = totem[4];
@@ -174,7 +176,7 @@ function ns.Button:checkTotem()
             self.number = self.duration * 0.3;
         end
 
-        if self.number and (expirationTime - GetTime()) <= self.number and self.duration > 0 then
+        if self.number and (expirationTime - self.currtime) <= self.number and self.duration > 0 then
             self.buffalert = true;
         end
 
@@ -207,7 +209,7 @@ function ns.Button:checkTotem()
                     self.number = self.duration * 0.3;
                 end
 
-                if self.number and (expirationTime - GetTime()) <= self.number and self.duration > 0 then
+                if self.number and (expirationTime - self.currtime) <= self.number and self.duration > 0 then
                     self.buffalert = true;
                 end
 
@@ -234,7 +236,7 @@ function ns.Button:checkBuffList()
     local t = self.type;
 
     local count = 0;
-    local extemp = 0;
+    local extemp = 0;    
 
     if self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly then
         for _, buff in pairs(bufflist) do
@@ -269,7 +271,7 @@ function ns.Button:checkBuffList()
                         self.number = self.duration * 0.3;
                     end
 
-                    if self.number and (aura.expirationTime - GetTime()) <= self.number and self.duration > 0 then
+                    if self.number and (aura.expirationTime - self.currtime) <= self.number and self.duration > 0 then
                         self.buffalert = true;
                     end
                 end
@@ -314,7 +316,7 @@ function ns.Button:checkBuffList()
                     self.number = self.duration * 0.3;
                 end
 
-                if self.number and (aura.expirationTime - GetTime()) <= self.number and self.duration > 0 then
+                if self.number and (aura.expirationTime - self.currtime) <= self.number and self.duration > 0 then
                     self.buffalert = true;
                 end
                 break;
@@ -340,7 +342,7 @@ function ns.Button:checkBuff()
         buff = self.realbuff;
     end
 
-    local aura = ns.aurafunctions.checkAura(self.unit, buff);
+    local aura = ns.aurafunctions.checkAura(self.unit, buff);    
 
     if aura then
         self.icon = aura.icon;
@@ -359,11 +361,11 @@ function ns.Button:checkBuff()
             self.number = self.duration * 0.3;
         end
 
-        if self.number and (aura.expirationTime - GetTime()) <= self.number and self.duration > 0 then
+        if self.number and (aura.expirationTime - self.currtime) <= self.number and self.duration > 0 then
             self.buffalert = true;
         end
 
-        if aura.points and aura.points[1] and not(aura.applications and aura.applications > 0) then
+        if aura.points and aura.points[1] and not (aura.applications and aura.applications > 0) then
             if (aura.points[1] > 999999) then
                 self.count = math.ceil(aura.points[1] / 1000000) .. "m"
             elseif (aura.points[1] > 999) then
@@ -389,6 +391,18 @@ function ns.Button:checkBuff()
     end
 end
 
+function ns.Button:checkOthers()
+    if self.alertbufflist then        
+        for _, buff in pairs(self.alertbufflist) do
+            local aura = ns.aurafunctions.checkAura(self.unit, buff);
+            if aura and (aura.expirationTime - self.currtime) > self.gcd then
+                self.alert2 = true;
+                break;
+            end
+        end
+    end
+end
+
 function ns.Button:checkSpellCoolInBuff()
     if not self.icon and self.start and self.duration then
         return;
@@ -396,17 +410,15 @@ function ns.Button:checkSpellCoolInBuff()
 
     local t = self.type;
 
-
     if (t ~= ns.EnumButtonType.DebuffOnly and t ~= ns.EnumButtonType.BuffOnly) and self.spellid then
         local spellstart, spellduration = asGetSpellCooldown(self.spellid);
         local charges, maxCharges = asGetSpellCharges(self.spellid);
 
-        if spellduration and (charges == nil or charges == 0) then
-            local _, gcd = asGetSpellCooldown(61304);
+        if spellduration and (charges == nil or charges == 0) then            
             local ex = spellduration + spellstart;
             local remain = ex - GetTime();
 
-            if spellduration > gcd then
+            if spellduration > self.gcd then
                 self.spellcool = math.ceil(remain);
             end
         end
@@ -415,9 +427,9 @@ function ns.Button:checkSpellCoolInBuff()
 
         if self.spellcool == nil then
             if self.inRange == false and isUsable then
-                self.spellcool = rangeIcon;                
+                self.spellcool = rangeIcon;
             elseif not isUsable then
-                self.spellcool = notuseIcon;                
+                self.spellcool = notuseIcon;
             end
         end
     end
@@ -449,8 +461,7 @@ function ns.Button:checkSpell()
     local start, duration, enable                          = asGetSpellCooldown(spellid);
     local isUsable, notEnoughMana                          = C_Spell.IsSpellUsable(spellid);
     local charges, maxCharges, chargeStart, chargeDuration = asGetSpellCharges(spellid);
-    local count                                            = charges;
-    local _, gcd                                           = asGetSpellCooldown(61304);
+    local count                                            = charges;    
 
     if count == 1 and (not maxCharges or maxCharges <= 1) then
         count = 0;
@@ -468,7 +479,7 @@ function ns.Button:checkSpell()
         charges, maxCharges, chargeStart, chargeDuration = GetActionCharges(action);
     end
 
-    if isUsable and duration > gcd then
+    if isUsable and duration > self.gcd then
         isUsable = false
     end
 
@@ -534,7 +545,7 @@ function ns.Button:checkSpell()
 
         if not (t == ns.EnumButtonType.BuffOnly or t == ns.EnumButtonType.DebuffOnly) then
             if self.inRange == false then
-                self.spellcool = rangeIcon;                
+                self.spellcool = rangeIcon;
             end
         end
     end
@@ -549,23 +560,11 @@ function ns.Button:checkSpell()
         self.count = count;
     end
 
-
-    if self.alertbufflist then
-        for _, buff in pairs(self.alertbufflist) do
-            local aura = ns.aurafunctions.checkAura(self.unit, buff);
-            if aura and (aura.expirationTime - GetTime()) > gcd then
-                self.alert2 = true;
-                break;
-            end
-        end
-    end
-
-    if self.buffshowtime then
-        local currtime = GetTime();
+    if self.buffshowtime then        
         local realcasttime = ns.eventhandler.getCastTime(self.spellid);
 
         if realcasttime then
-            if currtime < realcasttime + self.buffshowtime then
+            if self.currtime < realcasttime + self.buffshowtime then
                 self.start = realcasttime;
                 self.duration = self.buffshowtime;
                 self.iconDes = false;
@@ -639,8 +638,7 @@ function ns.Button:showButton()
     local frameCooldown;
     local frameCount;
     local frameBorder;
-    local frameSpellCool;
-    local _, gcd = asGetSpellCooldown(61304);
+    local frameSpellCool;    
 
     local frame  = self.frame;
     if not frame then
@@ -703,7 +701,7 @@ function ns.Button:showButton()
     self.coolalert = false;
     if self.checkcool then
         if (self.reversecool == false) then
-            if self.duration == nil or self.duration <= gcd then
+            if self.duration == nil or self.duration <= self.gcd then
                 self.coolalert = true;
             end
         else
@@ -759,7 +757,6 @@ function ns.Button:showButton()
     end
 end
 
-
 local function GetActionSlot(arg1)
     local ret = {};
 
@@ -794,7 +791,6 @@ local function GetActionSlot(arg1)
 end
 
 function ns.Button:init(config, frame)
-
     if self.time then
         self.time:Cancel();
     end
@@ -825,7 +821,6 @@ function ns.Button:init(config, frame)
     if self.spellid == nil then
         self.spellid = select(7, asGetSpellInfo(self.realspell));
     end
-
 
     ns.lib.PixelGlow_Stop(self.frame)
 
@@ -880,7 +875,7 @@ function ns.Button:init(config, frame)
             end
         end
     elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then
-        ACI_Buff_list[self.spell] = true;        
+        ACI_Buff_list[self.spell] = true;
         ns.eventhandler.registerAura(self.unit, self.spell);
 
         if self.bufflist then
@@ -892,7 +887,7 @@ function ns.Button:init(config, frame)
 
     if self.type == ns.EnumButtonType.Totem then
         ACI_Totem_list[self.spell] = true;
-        ns.eventhandler.registerTotem(self.spell, self);        
+        ns.eventhandler.registerTotem(self.spell, self);
         if self.realbuff then
             ACI_Totem_list[self.realbuff] = true;
             ns.eventhandler.registerTotem(self.realbuff, self);
@@ -928,7 +923,7 @@ function ns.Button:init(config, frame)
         for _, buff in pairs(self.alertbufflist) do
             ns.eventhandler.registerAura("player", buff);
         end
-    end    
+    end
 
     if self.buffshowtime then
         ns.eventhandler.registerCastTime(self.spellid);
@@ -942,10 +937,11 @@ function ns.Button:init(config, frame)
         self:checkSpellCoolInBuff();
         self:checkSpell();
         self:checkCount();
+        self:checkOthers();
         self:showButton();
     end
 
-    update();    
+    update();
     self.time = C_Timer.NewTicker(0.2, update)
 end
 
