@@ -312,6 +312,9 @@ local isparty = not IsInRaid() and IsInGroup();
 
 local function OnSpellEvent(unit, spellid)
     if unit and spellid then
+        if UnitCanAttack("player", unit) then
+            return;
+        end
         
         if isparty then
             if UnitIsUnit(unit, "pet") then
@@ -322,8 +325,7 @@ local function OnSpellEvent(unit, spellid)
         end
 
         if IsUnitInGroup(unit) then
-            local time = GetTime();
-            local name = asGetSpellInfo(spellid);
+            local time = GetTime();            
             local coolspelllist = checkcoollist[unit];
 
             if coolspelllist then
