@@ -8,12 +8,6 @@ local AREADY_Font = STANDARD_TEXT_FONT;
 local AREADY_Max = 10;        -- 최대 표시 List 수
 local AREADY_UpdateRate = 0.3 -- Refresh 시간 초
 
-local black_list = {
-    [458525] = true, --승천
-    [458524] = true, --승천
-    [458503] = true, --승천
-    [458502] = true, --승천    
-}
 -----------------설정 끝 ------------------------
 
 local interruptcools = {};
@@ -21,7 +15,7 @@ local offensivecools = {};
 local raidframes = {};
 local partyframes = {};
 
-
+local cachedoffensive = {};
 
 local asGetSpellInfo = function(spellID)
     if not spellID then
@@ -177,28 +171,6 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
     end
 end
 
-
-
-local function GetUnitBuff(unit, buff)
-    local ret = nil;
-    local auraList = ns.ParseAllBuff(unit);
-
-    auraList:Iterate(function(auraInstanceID, aura)
-        if aura and not black_list[aura.spellId] and (aura.name == buff or aura.spellId == buff) and aura.sourceUnit == unit then
-            if aura.duration > 0 then
-                ret = aura;
-                return true;
-            elseif ret == nil then
-                ret = aura;
-                return true;
-            end
-        end
-        return false;
-    end);
-
-    return ret;
-end
-
 local function UtilSetCooldown(offensivecool, unit, asframe)
     local spellid = offensivecool[2];
     local time = offensivecool[3];
@@ -229,16 +201,9 @@ local function UtilSetCooldown(offensivecool, unit, asframe)
             buffFrame:SetSize(x / 6 - 1, y / 3 - 1);
         else
             buffFrame:SetSize(y / 2 * 1.2, y / 2);
-            aura = GetUnitBuff(unit, name);
         end
 
-        if aura then
-            buffcool = aura.duration;
-            time = aura.expirationTime - aura.duration;
-            buffFrame.icon:SetTexture(aura.icon);
-        else
-            buffFrame.icon:SetTexture(icon);
-        end
+        buffFrame.icon:SetTexture(icon);
 
         local currtime = GetTime();
         if currtime <= time + buffcool then
@@ -315,17 +280,30 @@ local function OnSpellEvent(unit, spellid)
         if UnitCanAttack("player", unit) then
             return;
         end
-        
+
+        local isinterruptspell = 0;
+
         if isparty then
-            if UnitIsUnit(unit, "pet") then
-                unit = "player";
-            elseif string.match(unit, "partypet") then
-                unit = string.gsub(unit, "partypet", "party");
+            isinterruptspell = ns.trackedPartySpellNames[spellid] or 0;
+            if not (isinterruptspell > 0 or cachedoffensive[spellid]) then
+                return;
+            end
+
+            if isinterruptspell then
+                if UnitIsUnit(unit, "pet") then
+                    unit = "player";
+                elseif string.match(unit, "partypet") then
+                    unit = string.gsub(unit, "partypet", "party");
+                end
+            end
+        else
+            if not (cachedoffensive[spellid]) then
+                return;
             end
         end
 
         if IsUnitInGroup(unit) then
-            local time = GetTime();            
+            local time = GetTime();
             local coolspelllist = checkcoollist[unit];
 
             if coolspelllist then
@@ -338,8 +316,8 @@ local function OnSpellEvent(unit, spellid)
             end
 
             if isparty then
-                local cool = ns.trackedPartySpellNames[spellid];
-                if cool then
+                local cool = isinterruptspell;
+                if cool > 0  then
                     interruptcools[unit] = { unit, spellid, time, cool, 0 };
                 end
             end
@@ -455,6 +433,10 @@ function ns.SetupPartyCool(raidframe)
 
             raidframe.coolspelllist = newcoollist;
             checkcoollist[frame.unit] = newcoollist;
+
+            for id, _ in pairs(newcoollist) do
+                cachedoffensive[id] = true;
+            end
         end
 
         if not raidframe.asbuffFrame then
@@ -658,6 +640,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
         else
             interruptcools = {};
             offensivecools = {};
+            cachedoffensive = {};
             AREADY_OnUpdate();
         end
     end
