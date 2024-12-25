@@ -116,11 +116,10 @@ local asGetSpellInfo = function(spellID)
 end
 
 local asGetSpellCooldown = function(spellID)
-
 	if not spellID then
-        return nil;
-    end
-	
+		return nil;
+	end
+
 	local ospellID = C_Spell.GetOverrideSpell(spellID)
 
 	if ospellID then
@@ -174,26 +173,28 @@ local function scanSpells(tab)
 	end
 
 	for i = tabOffset + 1, tabOffset + numEntries do
-		local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player);
+		local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
 
-		if not spellName then
-			do break end
+		if not spellID then
+			break;
 		end
 
-		local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
-		
-		if (slotType == Enum.SpellBookItemType.Flyout) then
-			local _, _, numSlots = GetFlyoutInfo(actionID);
-			for j = 1, numSlots do
-				local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
+		local isPassive = C_SpellBook.IsSpellBookItemPassive(i, Enum.SpellBookSpellBank.Player)
 
-				if flyoutSpellID and not black_list[flyoutSpellID]  then
-					KnownSpellList[flyoutSpellID] = SPELL_TYPE_USER;
+		if not isPassive then
+			if (slotType == Enum.SpellBookItemType.Flyout) then
+				local _, _, numSlots = GetFlyoutInfo(actionID);
+				for j = 1, numSlots do
+					local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
+
+					if flyoutSpellID and not black_list[flyoutSpellID] then
+						KnownSpellList[flyoutSpellID] = SPELL_TYPE_USER;
+					end
 				end
-			end
-		else			
-			if spellID and not black_list[spellID] then
-				KnownSpellList[spellID] = SPELL_TYPE_USER;				
+			else
+				if spellID and not black_list[spellID] then
+					KnownSpellList[spellID] = SPELL_TYPE_USER;
+				end
 			end
 		end
 	end
@@ -202,15 +203,18 @@ end
 
 local function scanPetSpells()
 	for i = 1, 20 do
-		local spellName, _ = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Pet)
 		local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Pet);
 
-		if not spellName then
-			do break end
+		if not spellID then
+			break;
 		end
 
-		if spellID and not black_list[spellID] then
-			KnownSpellList[spellID] = SPELL_TYPE_PET;
+		local isPassive = C_SpellBook.IsSpellBookItemPassive(i, Enum.SpellBookSpellBank.Pet)
+
+		if not isPassive then
+			if spellID and not black_list[spellID] then
+				KnownSpellList[spellID] = SPELL_TYPE_PET;
+			end
 		end
 	end
 end
@@ -223,10 +227,6 @@ local function scanActionSlots()
 		local spellID = id;
 
 		if id then
-			if type and type == "macro" then
-				spellID = id;
-			end
-
 			if type and type == "item" then
 				itemid = id;
 				_, spellID = GetItemSpell(id);
@@ -237,17 +237,8 @@ local function scanActionSlots()
 			if spellID then
 				if itemid then
 					KnownSpellList[spellID] = itemid;
-				elseif KnownSpellList[spellID] == nil then
-					KnownSpellList[spellID] = SPELL_TYPE_USER;
 				end
 			end
-		end
-	end
-
-	for i = 1, NUM_PET_ACTION_SLOTS, 1 do
-		local name, texture, isToken, isActive, autoCastAllowed, autoCastEnabled, spellID = GetPetActionInfo(i);
-		if spellID and KnownSpellList[spellID] == nil then
-			KnownSpellList[spellID] = SPELL_TYPE_PET;
 		end
 	end
 end
@@ -422,7 +413,7 @@ local function ACDP_UpdateCooldown()
 						break
 					end
 				end
-				
+
 				frame.icon:SetTexCoord(.08, .92, .08, .92);
 				frame.border:SetTexture("Interface\\Addons\\asCooldownPulse\\border.tga");
 				frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
@@ -604,7 +595,6 @@ local function GetMinRuneCooldown()
 	local _, englishClass = UnitClass("player")
 
 	if englishClass == "DEATHKNIGHT" then
-		
 		for index = 1, 6 do
 			local start, duration = GetRuneCooldown(index);
 			if start > 0 then
@@ -619,15 +609,15 @@ local function GetMinRuneCooldown()
 		return 1 / peace;
 	end
 
-	return 0;	
+	return 0;
 end
 
 
 local function ACDP_Checkcooldown()
-	local _, gcd         = asGetSpellCooldown(61304);
+	local _, gcd = asGetSpellCooldown(61304);
 	for spellid, type in pairs(KnownSpellList) do
 		local start, duration;
-		local check_duration = CONFIG_MINCOOL;		
+		local check_duration = CONFIG_MINCOOL;
 
 		if type == 2 then
 			check_duration = CONFIG_MINCOOL_PET;
@@ -648,7 +638,7 @@ local function ACDP_Checkcooldown()
 					local runeduration = GetMinRuneCooldown()
 
 
-					if remain <= duration and (runeduration == 0 or (math.abs(runeduration - duration) > 0.1 and math.abs(duration % runeduration) > 0.1))then
+					if remain <= duration and (runeduration == 0 or (math.abs(runeduration - duration) > 0.1 and math.abs(duration % runeduration) > 0.1)) then
 						showlist_id[spellid] = type;
 
 						if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
@@ -682,7 +672,7 @@ end
 
 
 local function ACDP_OnUpdate()
-	ACDP_Checkcooldown();	
+	ACDP_Checkcooldown();
 	ACDP_UpdateCooldown();
 end
 
@@ -789,8 +779,8 @@ local function ACDP_Init()
 	ACDP_mainframe:SetScript("OnEvent", ACDP_OnEvent)
 	ACDP_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD")
 	ACDP_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED")
-	ACDP_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED")		
-	ACDP_mainframe:RegisterUnitEvent("UNIT_PET", "player")	
+	ACDP_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED")
+	ACDP_mainframe:RegisterUnitEvent("UNIT_PET", "player")
 	ACDP_mainframe:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 	ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED")
 	ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")

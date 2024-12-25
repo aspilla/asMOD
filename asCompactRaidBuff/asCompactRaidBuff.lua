@@ -93,7 +93,17 @@ function ns.isParty(unit)
     return false;
 end
 
+
+local function IsTank(unit)
+    local assignedRole = UnitGroupRolesAssigned(unit);
+    if assignedRole == "TANK" or assignedRole == "MAINTANK" then
+        return true;
+    end
+    return false;
+end
+
 local max_y = 0;
+
 
 -- Setup
 function ns.ACRB_setupFrame(asframe, bupdate)
@@ -118,6 +128,9 @@ function ns.ACRB_setupFrame(asframe, bupdate)
     if (not UnitIsPlayer(asframe.unit)) and not ns.isParty(asframe.unit) then
         return;
     end
+
+    asframe.isTank = IsTank(asframe.unit);
+    asframe.isPlayer = UnitIsUnit(asframe.unit, "player");
 
     local CUF_AURA_BOTTOM_OFFSET = 2;
 

@@ -155,7 +155,7 @@ local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuation
         local slot = select(i, ...);
         local done;
         local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
-        if usePackedAura then            
+        if usePackedAura then
             done = func(auraInfo);
         else
             done = func(AuraUtil.UnpackAuraData(auraInfo));
@@ -265,13 +265,6 @@ local function asCooldownFrame_Clear(self)
     self:Clear();
 end
 
-local function IsTank(unit)
-    local assignedRole = UnitGroupRolesAssigned(unit);
-    if assignedRole == "TANK" or assignedRole == "MAINTANK" then
-        return true;
-    end
-    return false;
-end
 -- cooldown
 function ns.asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
     if enable and enable ~= 0 and start > 0 and duration > 0 then
@@ -295,7 +288,7 @@ local function ACRB_UtilSetDispelDebuff(dispellDebuffFrame, aura)
     dispellDebuffFrame.auraInstanceID = aura.auraInstanceID;
 end
 
-local function ARCB_UtilSetBuff(buffFrame, aura)
+local function ARCB_UtilSetBuff(buffFrame, aura, currtime)
     buffFrame.icon:SetTexture(aura.icon);
     if (aura.applications > 1) then
         local countText = aura.applications;
@@ -317,7 +310,7 @@ local function ARCB_UtilSetBuff(buffFrame, aura)
     end
 
     if ns.options.HideCooldown then
-        local remain = math.ceil(aura.expirationTime - GetTime());
+        local remain = math.ceil(aura.expirationTime - currtime);
 
         if remain > 0 and remain < 100 then
             buffFrame.remain:SetText(remain);
@@ -341,7 +334,7 @@ local function ARCB_UtilSetBuff(buffFrame, aura)
             end
         end
 
-        if showlist_time > 0 and aura.expirationTime - GetTime() < showlist_time then
+        if showlist_time > 0 and aura.expirationTime - currtime < showlist_time then
             buffFrame.border:SetVertexColor(1, 1, 1);
             buffFrame.remain:SetTextColor(1, 0, 0);
         else
@@ -354,7 +347,7 @@ local function ARCB_UtilSetBuff(buffFrame, aura)
 end
 
 -- Debuff 설정 부
-local function ACRB_UtilSetDebuff(debuffFrame, aura)
+local function ACRB_UtilSetDebuff(debuffFrame, aura, currtime)
     debuffFrame.filter = aura.isRaid and AuraFilters.Raid or nil;
     debuffFrame.icon:SetTexture(aura.icon);
     if (aura.applications > 1) then
@@ -377,7 +370,7 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura)
     end
 
     if ns.options.HideCooldown then
-        local remain = math.ceil(aura.expirationTime - GetTime());
+        local remain = math.ceil(aura.expirationTime - currtime);
 
         if remain > 0 and remain < 100 then
             debuffFrame.remain:SetText(remain);
@@ -408,7 +401,7 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura)
     debuffFrame:Show();
 end
 
-local function ProcessAura(aura, unit)
+local function ProcessAura(aura, asframe)
     if aura == nil then
         return AuraUpdateChangedType.None;
     end
@@ -441,7 +434,7 @@ local function ProcessAura(aura, unit)
             if bshow then
                 if DispellableDebuffTypes[aura.dispelName] == 1 then
                     return AuraUpdateChangedType.Dispel;
-                elseif DispellableDebuffTypes[aura.dispelName] == 2 and UnitIsUnit(unit, "player") then
+                elseif DispellableDebuffTypes[aura.dispelName] == 2 and asframe.isPlayer then
                     return AuraUpdateChangedType.Dispel;
                 else
                     return AuraUpdateChangedType.Debuff;
@@ -452,7 +445,7 @@ local function ProcessAura(aura, unit)
                 UnitFrameDebuffType.NonBossRaidDebuff;
             if DispellableDebuffTypes[aura.dispelName] == 1 then
                 return AuraUpdateChangedType.Dispel;
-            elseif DispellableDebuffTypes[aura.dispelName] == 2 and UnitIsUnit(unit, "player") then
+            elseif DispellableDebuffTypes[aura.dispelName] == 2 and asframe.isPlayer then
                 return AuraUpdateChangedType.Dispel;
             else
                 return AuraUpdateChangedType.Debuff;
@@ -466,11 +459,14 @@ local function ProcessAura(aura, unit)
         elseif ShouldDisplayBuff(aura) then
             aura.debuffType = UnitFrameBuffType.Normal;
             return AuraUpdateChangedType.Buff;
-        elseif ns.ACRB_DefensiveBuffList[aura.spellId] then
-            -- longer duration should have lower priority.
-            if not (ns.ACRB_DefensiveBuffList[aura.spellId] == 2 and IsTank(unit)) then
-                aura.debuffType = UnitFrameBuffType.Normal + aura.duration;
-                return AuraUpdateChangedType.Defensive;
+        else
+            local depensiveBuffType = ns.ACRB_DefensiveBuffList[aura.spellId];
+            if depensiveBuffType then
+                -- longer duration should have lower priority.
+                if not (depensiveBuffType == 2 and asframe.isTank) then
+                    aura.debuffType = UnitFrameBuffType.Normal + aura.duration;
+                    return AuraUpdateChangedType.Defensive;
+                end
             end
         end
     end
@@ -510,7 +506,7 @@ local function ACRB_ParseAllAuras(asframe)
     local batchCount = nil;
     local usePackedAura = true;
     local function HandleAura(aura)
-        local type = ProcessAura(aura, asframe.displayedUnit);
+        local type = ProcessAura(aura, asframe);
 
         if type == AuraUpdateChangedType.Debuff then
             asframe.debuffs[aura.auraInstanceID] = aura;
@@ -562,6 +558,7 @@ function ns.ACRB_UpdateAuras(asframe)
     end
 
     ACRB_ParseAllAuras(asframe);
+    local currtime = GetTime();
 
     do
         local frameNum = 1;
@@ -572,7 +569,7 @@ function ns.ACRB_UpdateAuras(asframe)
             end
 
             local debuffFrame = asframe.asdebuffFrames[frameNum];
-            ACRB_UtilSetDebuff(debuffFrame, aura);
+            ACRB_UtilSetDebuff(debuffFrame, aura, currtime);
             frameNum = frameNum + 1;
 
             if aura.isBossAura or (aura.nameplateShowAll and aura.duration > 0 and aura.duration < 10) then
@@ -609,16 +606,16 @@ function ns.ACRB_UpdateAuras(asframe)
             if type == 6 and not showframe[type] then
                 local buffFrame = asframe.asbuffFrames[type];
                 ns.UpdateNameColor(asframe.frame, true);
-                ARCB_UtilSetBuff(buffFrame, aura);
+                ARCB_UtilSetBuff(buffFrame, aura, currtime);
                 showframe[type] = true;
             elseif type > 3 and not showframe[frameIdx2] then
                 local buffFrame = asframe.asbuffFrames[frameIdx2];
-                ARCB_UtilSetBuff(buffFrame, aura);
+                ARCB_UtilSetBuff(buffFrame, aura, currtime);
                 showframe[frameIdx2] = true;
                 frameIdx2 = frameIdx2 + 1;
             else
                 local buffFrame = asframe.asbuffFrames[frameIdx];
-                ARCB_UtilSetBuff(buffFrame, aura);
+                ARCB_UtilSetBuff(buffFrame, aura, currtime);
                 frameIdx = frameIdx + 1;
             end
 
@@ -653,7 +650,7 @@ function ns.ACRB_UpdateAuras(asframe)
                 end
 
                 local buffFrame = asframe.defensivebuffFrames[frameNum];
-                ARCB_UtilSetBuff(buffFrame, aura);
+                ARCB_UtilSetBuff(buffFrame, aura, currtime);
                 frameNum = frameNum + 1;
 
                 return false;

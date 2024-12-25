@@ -11,7 +11,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 241224,
+	version = 241225,
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
 	-- 	Spell 기술명 혹은 ID (버프는 ID로 입력해야 Icon 나옴)
@@ -86,7 +86,7 @@ ACI_Options_Default = {
 	--야수
 	ACI_SpellList_HUNTER_1 = {
 		{ 99, 115939, { 118455, 3, "pet", 2 }, { 212431, 1 } },
-		{ 259489, 1 },
+		{ 34026, 1 },
 		{ 19574, 2 },
 		{ 53351, 1 },
 		{ { 120679, 1 }, { 217200, 5, nil, 1 } },
