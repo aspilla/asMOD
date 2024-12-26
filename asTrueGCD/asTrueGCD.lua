@@ -17,7 +17,6 @@ local GetItemSpell = C_Item and C_Item.GetItemSpell or GetItemSpell;
 local KnownSpellList = {};
 
 local itemslots = {
-
 	"HeadSlot",
 	"NeckSlot",
 	"ShoulderSlot",
@@ -41,16 +40,21 @@ local asGetSpellInfo = function(spellID)
 		return nil;
 	end
 
-	local ospellID = C_Spell.GetOverrideSpell(spellID)
-
-	if ospellID then
-		spellID = ospellID;
-	end
-
 	local spellInfo = C_Spell.GetSpellInfo(spellID);
 	if spellInfo then
 		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
 			spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
+local asGetSpellCooldown = function(spellID)
+	if not spellID then
+		return nil;
+	end
+	local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
+	if spellCooldownInfo then
+		return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled,
+			spellCooldownInfo.modRate;
 	end
 end
 
@@ -114,7 +118,6 @@ if bloaded and asMOD_setupFrame then
 end
 
 
-local prev_spell = nil;
 local prev_spell_time = nil;
 local prev_spell_id = nil;
 local seq_spell_count = 0;
@@ -191,13 +194,13 @@ local function ATGCD_OnUpdate()
 		end
 	end
 end
-local interruptprev = nil;
 local interrupttime = 0;
+local interruptprevicon = nil;
 
-
-local prev = nil;
+local previcon = nil;
 local prevtime = 0;
 local channel_spell = nil;
+local lastgcd = 1.5 / ((GetHaste() / 100) + 1);
 
 local function asCooldownFrame_Clear(self)
 	self:Clear();
@@ -282,44 +285,52 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			ATGCD.frame[0]:Hide();
 		end
 	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
-		prev_spell = arg3;
-		local GCDmax = 1.5 / ((GetHaste() / 100) + 1)
+		local spellid = arg3;
+
+		local name, discard, icon = asGetSpellInfo(spellid);
+		local gcd = select(2, asGetSpellCooldown(61304));
 		local curtime = GetTime();
 
-		if (prev and prev == prev_spell and (curtime - prevtime) < (GCDmax - 0.1)) then
+		if gcd > 0 then
+			lastgcd = gcd;
+		end
+
+		if (previcon and previcon == icon and (curtime - prevtime) < lastgcd) then
 
 		else
-			local itemid = KnownSpellList[prev_spell];
+			local itemid = KnownSpellList[spellid];
 
-			if itemid  then
-				ATGCD_Alert(itemid, nil, true);
-				prev = prev_spell;
-				prevtime = curtime;
+			if itemid then
+				ATGCD_Alert(itemid, nil, true);				
 			else
-				ATGCD_Alert(prev_spell, nil);
-				prev = prev_spell;
-				prevtime = curtime;
+				ATGCD_Alert(spellid, nil);				
 			end
+			previcon = icon;
+			prevtime = curtime;
 		end
 	elseif event == "UNIT_SPELLCAST_INTERRUPTED" and arg1 == "player" then
-		prev_spell = arg3;
-		local GCDmax = 1.5 / ((GetHaste() / 100) + 1)
+		local spellid = arg3;
+		local name, discard, icon = asGetSpellInfo(spellid);
+		local gcd = select(2, asGetSpellCooldown(61304));		
 		local curtime = GetTime();
 
-		if interruptprev and interruptprev == prev_spell and (curtime - interrupttime) < (GCDmax - 0.1) then
+		if gcd > 0 then
+			lastgcd = gcd;
+		end
 
+		if (interruptprevicon and interruptprevicon == icon and (curtime - interrupttime) < lastgcd) then
+			
 		else
-			local itemid = KnownSpellList[prev_spell];
+			local itemid = KnownSpellList[spellid];
 
 			if itemid then
 				ATGCD_Alert(itemid, true, true);
-				interruptprev = prev_spell;
-				interrupttime = curtime;
 			else
-				ATGCD_Alert(prev_spell, true);
-				interruptprev = prev_spell;
-				interrupttime = curtime;
+				ATGCD_Alert(spellid, true);		
+
 			end
+			interruptprevicon = icon;
+			interrupttime = curtime;
 		end
 	else
 		scanItemSlots();
@@ -337,5 +348,5 @@ ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_START", "player");
 ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player");
 ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player");
 ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player");
-ATGCD:RegisterEvent("PLAYER_ENTERING_WORLD")
-ATGCD:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+ATGCD:RegisterEvent("PLAYER_ENTERING_WORLD");
+ATGCD:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
