@@ -173,12 +173,14 @@ local function scanSpells(tab)
 	end
 
 	for i = tabOffset + 1, tabOffset + numEntries do
-		local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
 
-		if not spellID then
-			break;
+		local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player);
+
+		if not spellName then
+			do break end
 		end
 
+		local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
 		local isPassive = C_SpellBook.IsSpellBookItemPassive(i, Enum.SpellBookSpellBank.Player)
 
 		if not isPassive then
