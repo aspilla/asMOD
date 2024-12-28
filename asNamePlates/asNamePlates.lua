@@ -10,6 +10,8 @@ local mouseoverIcon = CreateAtlasMarkup("poi-door-arrow-up", 12, 12, 0, 0, 0, 25
 local healerIcon = CreateAtlasMarkup("GreenCross", 12, 12, 0, 0);
 local aggroIconR = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0, 255, 0, 0);
 local aggroIcon = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0);
+local petcleaveIcon = CreateAtlasMarkup("WildBattlePetCapturable", 10, 10, 0, 0);
+local pettargetIcon = CreateAtlasMarkup("WildBattlePetCapturable", 10, 10, 0, 0, 255, 0, 0);
 
 local DangerousSpellList = {}
 
@@ -32,6 +34,11 @@ ns.ANameP_ShowList = nil;
 local debuffs_per_line = ns.ANameP_DebuffsPerLine;
 local playerbuffposition = ns.ANameP_PlayerBuffY;
 ns.options = CopyTable(ANameP_Options_Default);
+
+local bcheckHealer = false;
+local bcheckBeastCleave = false;
+local cleavedunits = {};
+local lastcleavetime = 0;
 
 
 local asGetSpellInfo = function(spellID)
@@ -137,7 +144,7 @@ local function setupKnownSpell()
     scanSpells(1);
     scanSpells(2);
     scanSpells(3);
-    scanPetSpells();    
+    scanPetSpells();
 end
 
 -- 탱커 처리부
@@ -176,8 +183,8 @@ local function updateTankerList()
 
         local assignedRole = UnitGroupRolesAssigned("player");
 
-        if (assignedRole and assignedRole ~= "TANK") then            
-            playerisdealer = true;        
+        if (assignedRole and assignedRole ~= "TANK") then
+            playerisdealer = true;
         end
     end
 end
@@ -604,8 +611,13 @@ local function updateTargetNameP(self)
         end
     end
 
-
-
+    if ns.options.ANameP_ShowPetTarget then
+        if UnitIsUnit(unit, "pettarget") then
+            self.pettarget:Show();
+        else
+            self.pettarget:Hide();
+        end
+    end
 
     -- Healthbar 크기
     healthBarContainer:SetHeight(height);
@@ -935,6 +947,22 @@ local function updateHealthbarColor(self)
         return nil;
     end
 
+    if bcheckBeastCleave then
+        local currtime = GetTime();
+        local guid = UnitGUID(unit);
+        local cleavetime = cleavedunits[guid];
+        if cleavetime and currtime - cleavetime < 1.5 then
+            if self.debuffColor == 1 then
+                self.debuffColor = 3;
+            elseif self.debuffColor == 0 then
+                self.debuffColor = 2;
+            end
+            self.petcleave:Show();
+        else
+            self.petcleave:Hide();
+        end
+    end
+
     local color = getColor();
 
     if color then
@@ -948,11 +976,11 @@ end
 
 
 local function updatePVPAggro(self)
-    if not ns.ANameP_PVPAggroShow then        
+    if not ns.ANameP_PVPAggroShow then
         return;
     end
 
-    if not(self.namecolor or self.checkpvptarget or self.partydealer) then
+    if not (self.namecolor or self.checkpvptarget or self.partydealer) then
         return;
     end
 
@@ -970,18 +998,17 @@ local function updatePVPAggro(self)
     local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
 
     if (isTargetPlayer) then
-
         if self.markcolor and self.markcolor == 1 then
-            self.aggro:SetText(aggroIconR);        
+            self.aggro:SetText(aggroIconR);
             self.aggro:Show();
             self.markcolor = 0;
         else
-            self.aggro:SetText(aggroIcon);        
+            self.aggro:SetText(aggroIcon);
             self.aggro:Show();
             self.markcolor = 1;
         end
     else
-        self.aggro:Hide();        
+        self.aggro:Hide();
     end
 end
 
@@ -1030,6 +1057,16 @@ local function initAlertList()
 
             if (IsPlayerSpell(466932)) then
                 highhealthpercent = 80;
+            end
+
+            if (IsPlayerSpell(115939)) and ns.options.ANameP_ShowPetTarget then
+                bcheckBeastCleave = true;
+                ANameP:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+            else
+                bcheckBeastCleave = false;
+                if not bcheckHealer then
+                    ANameP:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+                end
             end
         end
 
@@ -1203,6 +1240,8 @@ local function removeUnit(namePlateUnitToken)
         end
 
         asframe.aggro:Hide();
+        asframe.petcleave:Hide();
+        asframe.pettarget:Hide();
         asframe.CCdebuff:Hide();
         asframe.healthtext:Hide();
         asframe.realhealthtext:Hide();
@@ -1365,7 +1404,9 @@ local function addNamePlate(namePlateFrameBase)
     asframe.orig_height = g_orig_height;
 
     asframe.aggro:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
-    
+    asframe.petcleave:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
+    asframe.pettarget:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
+
     if ns.ANameP_HealerSize > 0 then
         asframe.healer:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HealerSize, "THICKOUTLINE");
     else
@@ -1475,7 +1516,18 @@ local function addNamePlate(namePlateFrameBase)
         asframe.aggro:SetPoint("RIGHT", healthbar, "LEFT", 0, Aggro_Y);
     end
 
-    asframe.aggro:Hide();    
+    asframe.aggro:Hide();
+
+    asframe.petcleave:ClearAllPoints();
+    asframe.petcleave:SetPoint("TOPRIGHT", healthbar, "BOTTOMRIGHT", 0, -1);
+    asframe.petcleave:SetText(petcleaveIcon);
+    asframe.petcleave:Hide();
+
+    asframe.pettarget:ClearAllPoints();
+    asframe.pettarget:SetPoint("TOPRIGHT", healthbar, "BOTTOMRIGHT", 0, -1);
+    asframe.pettarget:SetText(pettargetIcon);
+    asframe.pettarget:Hide();
+
     asframe:SetWidth(1);
     asframe:SetHeight(1);
     asframe:SetScale(1);
@@ -1540,7 +1592,7 @@ local function addNamePlate(namePlateFrameBase)
     asframe.checkaura = checkaura;
     asframe.checkpvptarget = checkpvptarget;
     asframe.checkcolor = checkcolor;
-    if checkcolor and playerisdealer then        
+    if checkcolor and playerisdealer then
         asframe.partydealer = true;
     end
 
@@ -1672,11 +1724,28 @@ local function ANameP_OnEvent(self, event, ...)
     elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
         local _, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType =
             CombatLogGetCurrentEventInfo();
-        if eventType == "SPELL_CAST_SUCCESS" and sourceGUID and not (sourceGUID == "") then
-            local className = GetPlayerInfoByGUID(sourceGUID);
-            if className and ns.ANameP_HealSpellList[className] and ns.ANameP_HealSpellList[className][spellID] then
-                ANameP_HealerGuid[sourceGUID] = true;
-                updateHealerMark(sourceGUID);
+
+        if bcheckHealer then
+            if eventType == "SPELL_CAST_SUCCESS" and sourceGUID and not (sourceGUID == "") then
+                local className = GetPlayerInfoByGUID(sourceGUID);
+                if className and ns.ANameP_HealSpellList[className] and ns.ANameP_HealSpellList[className][spellID] then
+                    ANameP_HealerGuid[sourceGUID] = true;
+                    updateHealerMark(sourceGUID);
+                end
+            end
+        end
+
+        if bcheckBeastCleave and self.petGUID then
+            local currtime = GetTime();
+            if sourceGUID and sourceGUID == self.petGUID then
+                if (eventType == "SPELL_DAMAGE" or eventType == "SPELL_MISSED")
+                    and (spellID == 118459) then
+                    if currtime - lastcleavetime > 0.5 then
+                        cleavedunits = {};
+                    end
+                    cleavedunits[destGUID] = currtime;
+                    lastcleavetime = currtime;
+                end
             end
         end
     elseif event == "UPDATE_MOUSEOVER_UNIT" then
@@ -1706,11 +1775,17 @@ local function ANameP_OnEvent(self, event, ...)
         C_Timer.After(0.5, initAlertList);
     elseif (event == "PLAYER_ENTERING_WORLD") then
         local isInstance, instanceType = IsInInstance();
+
         if isInstance and (instanceType == "party" or instanceType == "raid" or instanceType == "scenario") then
-            self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+            if not bcheckBeastCleave then
+                self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+            end
+            bcheckHealer = false;
         else
             self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+            bcheckHealer = true;
         end
+
         updateTankerList();
         setupKnownSpell();
         -- 0.5 초 뒤에 Load
@@ -1723,6 +1798,8 @@ local function ANameP_OnEvent(self, event, ...)
         updateTankerList();
     elseif event == "PLAYER_REGEN_ENABLED" then
         setupFriendlyPlates();
+    elseif event == "UNIT_PET" then
+        self.petGUID = UnitGUID("pet");
     end
 end
 
@@ -1800,6 +1877,7 @@ local function initAddon()
     ANameP:RegisterEvent("GROUP_ROSTER_UPDATE");
     ANameP:RegisterEvent("PLAYER_ROLES_ASSIGNED");
     ANameP:RegisterEvent("PLAYER_REGEN_ENABLED");
+    ANameP:RegisterUnitEvent("UNIT_PET", "player");
 
     ANameP:SetScript("OnEvent", ANameP_OnEvent)
     -- 주기적으로 Callback

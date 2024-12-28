@@ -57,7 +57,9 @@ local function creatframe()
     local object = CreateFrame("Frame", nil);
 
     object:EnableMouse(false);
-    object.aggro = object:CreateFontString(nil, "OVERLAY");    
+    object.aggro = object:CreateFontString(nil, "OVERLAY");
+    object.petcleave = object:CreateFontString(nil, "OVERLAY");
+    object.pettarget = object:CreateFontString(nil, "OVERLAY");
     object.healer = object:CreateFontString(nil, "OVERLAY");
     object.casticon = CreateFrame("Frame", nil, object, "asNamePlatesBuffFrameTemplate");
     object.casticon.timetext = object.casticon:CreateFontString(nil, "OVERLAY");

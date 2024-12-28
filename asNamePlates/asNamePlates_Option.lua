@@ -53,197 +53,197 @@ ns.ANameP_BlackList = {
     --	["약자 고문"] = 1,
     --	["슬픔"] = 1,
     --	["순환하는 기원"] = 1,
-    [206151] = 1,      --"도전자의 짐"
-    [206150] = 1,      --"도전자의 힘"
+    [206151] = 1, --"도전자의 짐"
+    [206150] = 1, --"도전자의 힘"
 
 }
 
 -- 안보이게 할 디법 (다른 케릭)
 ns.ANameP_ShowOnlyMine = {
-    [447513] = 1,       --만신창이 (전사)
-    [445584] = 1,       --사형선고 (전사)
-    [434473] = 1,       --폭격 (기원사)
+    [447513] = 1, --만신창이 (전사)
+    [445584] = 1, --사형선고 (전사)
+    [434473] = 1, --폭격 (기원사)
 }
 
 ns.ANameP_PVPBuffList = {
-	-- 종특	
-	[65116]  = 1, --석화
+    -- 종특	
+    [65116]  = 1, --석화
 
-	[118038] = 1, --WARRIOR
-	[23920]  = 1, --WARRIOR
-	[12975]  = 1, --WARRIOR
-	[1160]   = 1, --WARRIOR
-	[18499]  = 1, --WARRIOR
-	[871]    = 1, --WARRIOR
-	[97463]  = 1, --WARRIOR
-	[184364] = 1, --WARRIOR
-	[386394] = 1, --WARRIOR
-	[392966] = 1, --WARRIOR
-	[213915] = 1, --WARRIOR
-	[147833] = 1, --WARRIOR
-	[386208] = 2, --WARRIOR 방어태세 딜러/힐러만
+    [118038] = 1, --WARRIOR
+    [23920]  = 1, --WARRIOR
+    [12975]  = 1, --WARRIOR
+    [1160]   = 1, --WARRIOR
+    [18499]  = 1, --WARRIOR
+    [871]    = 1, --WARRIOR
+    [97463]  = 1, --WARRIOR
+    [184364] = 1, --WARRIOR
+    [386394] = 1, --WARRIOR
+    [392966] = 1, --WARRIOR
+    [213915] = 1, --WARRIOR
+    [147833] = 1, --WARRIOR
+    [386208] = 2, --WARRIOR 방어태세 딜러/힐러만
 
-	[185311] = 1, --ROGUE
-	[11327]  = 1, --ROGUE
-	[1966]   = 1, --ROGUE
-	[31224]  = 1, --ROGUE
-	[31230]  = 1, --ROGUE
-	[5277]   = 1, --ROGUE
-	[199754] = 1, --ROGUE
-	[45182]  = 1, --ROGUE
+    [185311] = 1, --ROGUE
+    [11327]  = 1, --ROGUE
+    [1966]   = 1, --ROGUE
+    [31224]  = 1, --ROGUE
+    [31230]  = 1, --ROGUE
+    [5277]   = 1, --ROGUE
+    [199754] = 1, --ROGUE
+    [45182]  = 1, --ROGUE
 
-	[212800] = 1, --DEMONHUNTER
-	[187827] = 1, --DEMONHUNTER
-	[206803] = 1, --DEMONHUNTER
-	[196555] = 1, --DEMONHUNTER
-	[263648] = 1, --DEMONHUNTER
-	[209426] = 1, --DEMONHUNTER
-	[198589] = 1, --DEMONHUNTER
+    [212800] = 1, --DEMONHUNTER
+    [187827] = 1, --DEMONHUNTER
+    [206803] = 1, --DEMONHUNTER
+    [196555] = 1, --DEMONHUNTER
+    [263648] = 1, --DEMONHUNTER
+    [209426] = 1, --DEMONHUNTER
+    [198589] = 1, --DEMONHUNTER
 
-	[202162] = 1, --MONK
-	[388615] = 1, --MONK
-	[116849] = 1, --MONK
-	[322507] = 1, --MONK
-	[120954] = 1, --MONK
-	[122783] = 1, --MONK
-	[122278] = 1, --MONK
-	[132578] = 1, --MONK
-	[115176] = 1, --MONK
-	[122470] = 1, --MONK
-	[125174] = 1, --MONK
-	[198065] = 1, --MONK
-	[201318] = 1, --MONK
-	[353319] = 1, --MONK
-
-
-	[49039]  = 1, --DEATHKNIGHT
-	[48707]  = 1, --DEATHKNIGHT
-	[48743]  = 1, --DEATHKNIGHT
-	[48792]  = 1, --DEATHKNIGHT
-	[114556] = 1, --DEATHKNIGHT
-	[81256]  = 1, --DEATHKNIGHT
-	[219809] = 1, --DEATHKNIGHT
-	[206931] = 1, --DEATHKNIGHT
-	[194679] = 1, --DEATHKNIGHT
-	[55233]  = 1, --DEATHKNIGHT
-	[145629] = 1, --DEATHKNIGHT
-	[410358] = 1, --DEATHKNIGHT
-	[454863] = 1, --DEATHKNIGHT
-
-	-- 사냥꾼 내부전쟁
-	[392956] = 1, --HUNTER
-	[53480]  = 1, --HUNTER	
-	[264735] = 1, --HUNTER
-	[186265] = 1, --HUNTER
-	[459470] = 1, --HUNTER
-	[202748] = 1, --HUNTER
-
-	[355913] = 1, --EVOKER
-	[370960] = 1, --EVOKER
-	[363534] = 1, --EVOKER
-	[357170] = 1, --EVOKER
-	[374348] = 1, --EVOKER
-	[374227] = 1, --EVOKER
-	[363916] = 1, --EVOKER
-	[360827] = 1, --EVOKER
-	[404381] = 1, --EVOKER
-	[378441] = 1, --EVOKER
-	[378464] = 1, --EVOKER
-	[373267] = 1, --EVOKER
-
-	[305497] = 1, --DRUID
-	[354654] = 1, --DRUID
-	[201664] = 1, --DRUID
-	[157982] = 1, --DRUID
-	[102342] = 1, --DRUID
-	[61336]  = 1, --DRUID
-	[200851] = 1, --DRUID
-	[80313]  = 1, --DRUID
-	[108238] = 1, --DRUID
-	[124974] = 1, --DRUID
-	[22812]  = 1, --DRUID
-	[5487]  = 2, --DRUID 곰변신 (딜러/힐러만)
+    [202162] = 1, --MONK
+    [388615] = 1, --MONK
+    [116849] = 1, --MONK
+    [322507] = 1, --MONK
+    [120954] = 1, --MONK
+    [122783] = 1, --MONK
+    [122278] = 1, --MONK
+    [132578] = 1, --MONK
+    [115176] = 1, --MONK
+    [122470] = 1, --MONK
+    [125174] = 1, --MONK
+    [198065] = 1, --MONK
+    [201318] = 1, --MONK
+    [353319] = 1, --MONK
 
 
-	[104773] = 1, --WARLOCK
-	[108416] = 1, --WARLOCK
-	[212295] = 1, --WARLOCK
+    [49039]  = 1, --DEATHKNIGHT
+    [48707]  = 1, --DEATHKNIGHT
+    [48743]  = 1, --DEATHKNIGHT
+    [48792]  = 1, --DEATHKNIGHT
+    [114556] = 1, --DEATHKNIGHT
+    [81256]  = 1, --DEATHKNIGHT
+    [219809] = 1, --DEATHKNIGHT
+    [206931] = 1, --DEATHKNIGHT
+    [194679] = 1, --DEATHKNIGHT
+    [55233]  = 1, --DEATHKNIGHT
+    [145629] = 1, --DEATHKNIGHT
+    [410358] = 1, --DEATHKNIGHT
+    [454863] = 1, --DEATHKNIGHT
+
+    -- 사냥꾼 내부전쟁
+    [392956] = 1, --HUNTER
+    [53480]  = 1, --HUNTER	
+    [264735] = 1, --HUNTER
+    [186265] = 1, --HUNTER
+    [459470] = 1, --HUNTER
+    [202748] = 1, --HUNTER
+
+    [355913] = 1, --EVOKER
+    [370960] = 1, --EVOKER
+    [363534] = 1, --EVOKER
+    [357170] = 1, --EVOKER
+    [374348] = 1, --EVOKER
+    [374227] = 1, --EVOKER
+    [363916] = 1, --EVOKER
+    [360827] = 1, --EVOKER
+    [404381] = 1, --EVOKER
+    [378441] = 1, --EVOKER
+    [378464] = 1, --EVOKER
+    [373267] = 1, --EVOKER
+
+    [305497] = 1, --DRUID
+    [354654] = 1, --DRUID
+    [201664] = 1, --DRUID
+    [157982] = 1, --DRUID
+    [102342] = 1, --DRUID
+    [61336]  = 1, --DRUID
+    [200851] = 1, --DRUID
+    [80313]  = 1, --DRUID
+    [108238] = 1, --DRUID
+    [124974] = 1, --DRUID
+    [22812]  = 1, --DRUID
+    [5487]   = 2, --DRUID 곰변신 (딜러/힐러만)
 
 
-	[215769] = 1, --PRIEST
-	[328530] = 1, --PRIEST
-	[197268] = 1, --PRIEST
-	[19236]  = 1, --PRIEST
-	[81782]  = 1, --PRIEST
-	[33206]  = 1, --PRIEST
-	[372835] = 1, --PRIEST
-	[391124] = 1, --PRIEST
-	[265202] = 1, --PRIEST
-	[64843]  = 1, --PRIEST
-	[47788]  = 1, --PRIEST
-	[47585]  = 1, --PRIEST
-	[108968] = 1, --PRIEST
-	[15286]  = 1, --PRIEST
-	[271466] = 1, --PRIEST
-	[586]    = 1, --PRIEST
-	[27827]  = 1, --PRIEST
-	[232707] = 1, --PRIEST
-	[421453] = 1, --PRIEST
-	[232708] = 1, --PRIEST
+    [104773] = 1, --WARLOCK
+    [108416] = 1, --WARLOCK
+    [212295] = 1, --WARLOCK
 
-	[199452] = 1, --PALADIN
-	[403876] = 1, --PALADIN
-	[31850]  = 1, --PALADIN
-	[378279] = 1, --PALADIN
-	[378974] = 1, --PALADIN
-	[86659]  = 1, --PALADIN
-	[387174] = 1, --PALADIN
-	[327193] = 1, --PALADIN
-	[205191] = 1, --PALADIN
-	[184662] = 1, --PALADIN
-	[498]    = 1, --PALADIN
-	[148039] = 1, --PALADIN
-	[157047] = 1, --PALADIN
-	[31821]  = 1, --PALADIN
-	[633]    = 1, --PALADIN
-	[6940]   = 1, --PALADIN
-	[1022]   = 1, --PALADIN
-	[204018] = 1, --PALADIN
-	[228049] = 1, --PALADIN
-	[642]    = 1, --PALADIN
 
-	[204331] = 1, --SHAMAN
-	[108280] = 1, --SHAMAN
-	[98008]  = 1, --SHAMAN
-	[198838] = 1, --SHAMAN
-	[207399] = 1, --SHAMAN
-	[108271] = 1, --SHAMAN
-	[198103] = 1, --SHAMAN
-	[30884]  = 1, --SHAMAN
-	[383017] = 1, --SHAMAN
-	[108281] = 1, --SHAMAN
-	[462844] = 1, --SHAMAN
-	[409293] = 1, --SHAMAN
-	[98007]  = 1, --SHAMAN
-	[204288] = 1, --SHAMAN
-	[201633] = 1, --SHAMAN
-	[325174] = 1, --SHAMAN
-	[260881] = 1, --SHAMAN
+    [215769] = 1, --PRIEST
+    [328530] = 1, --PRIEST
+    [197268] = 1, --PRIEST
+    [19236]  = 1, --PRIEST
+    [81782]  = 1, --PRIEST
+    [33206]  = 1, --PRIEST
+    [372835] = 1, --PRIEST
+    [391124] = 1, --PRIEST
+    [265202] = 1, --PRIEST
+    [64843]  = 1, --PRIEST
+    [47788]  = 1, --PRIEST
+    [47585]  = 1, --PRIEST
+    [108968] = 1, --PRIEST
+    [15286]  = 1, --PRIEST
+    [271466] = 1, --PRIEST
+    [586]    = 1, --PRIEST
+    [27827]  = 1, --PRIEST
+    [232707] = 1, --PRIEST
+    [421453] = 1, --PRIEST
+    [232708] = 1, --PRIEST
 
-	-- 마법사 내부전쟁
-	[45438]  = 1, --MAGE 얼음 방패
-	[113862] = 1, --MAGE 상투
-	[414658] = 1, --MAGE 얼음장
-	[342246] = 1, --MAGE 시돌
-	[11426]  = 1, --MAGE 얼보
-	[235313] = 1, --MAGE 이글거리는 방벽
-	[235450] = 1, --MAGE 오색 방벽
-	[55342]  = 1, --MAGE 환영 복제
-	[414661] = 1, --MAGE 얼보 (대규모)
-	[414662] = 1, --MAGE 이글 (대규모)
-	[414663] = 1, --MAGE 오색 (대규모)
-	[414664] = 1, --MAGE 대규모 투명화
-	[86949]  = 1, --MAGE 소작
+    [199452] = 1, --PALADIN
+    [403876] = 1, --PALADIN
+    [31850]  = 1, --PALADIN
+    [378279] = 1, --PALADIN
+    [378974] = 1, --PALADIN
+    [86659]  = 1, --PALADIN
+    [387174] = 1, --PALADIN
+    [327193] = 1, --PALADIN
+    [205191] = 1, --PALADIN
+    [184662] = 1, --PALADIN
+    [498]    = 1, --PALADIN
+    [148039] = 1, --PALADIN
+    [157047] = 1, --PALADIN
+    [31821]  = 1, --PALADIN
+    [633]    = 1, --PALADIN
+    [6940]   = 1, --PALADIN
+    [1022]   = 1, --PALADIN
+    [204018] = 1, --PALADIN
+    [228049] = 1, --PALADIN
+    [642]    = 1, --PALADIN
+
+    [204331] = 1, --SHAMAN
+    [108280] = 1, --SHAMAN
+    [98008]  = 1, --SHAMAN
+    [198838] = 1, --SHAMAN
+    [207399] = 1, --SHAMAN
+    [108271] = 1, --SHAMAN
+    [198103] = 1, --SHAMAN
+    [30884]  = 1, --SHAMAN
+    [383017] = 1, --SHAMAN
+    [108281] = 1, --SHAMAN
+    [462844] = 1, --SHAMAN
+    [409293] = 1, --SHAMAN
+    [98007]  = 1, --SHAMAN
+    [204288] = 1, --SHAMAN
+    [201633] = 1, --SHAMAN
+    [325174] = 1, --SHAMAN
+    [260881] = 1, --SHAMAN
+
+    -- 마법사 내부전쟁
+    [45438]  = 1, --MAGE 얼음 방패
+    [113862] = 1, --MAGE 상투
+    [414658] = 1, --MAGE 얼음장
+    [342246] = 1, --MAGE 시돌
+    [11426]  = 1, --MAGE 얼보
+    [235313] = 1, --MAGE 이글거리는 방벽
+    [235450] = 1, --MAGE 오색 방벽
+    [55342]  = 1, --MAGE 환영 복제
+    [414661] = 1, --MAGE 얼보 (대규모)
+    [414662] = 1, --MAGE 이글 (대규모)
+    [414663] = 1, --MAGE 오색 (대규모)
+    [414664] = 1, --MAGE 대규모 투명화
+    [86949]  = 1, --MAGE 소작
 }
 
 ns.ANameP_HealSpellList = {};
@@ -320,8 +320,8 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 241212,
-    ANameP_ShowKnownSpell = false,                             -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
+    version = 241229,
+    ANameP_ShowKnownSpell = false,                            -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
     ANameP_ShowPlayerBuffAll = false,                         -- [버프] 전부 보이기
@@ -333,7 +333,8 @@ ANameP_Options_Default = {
     ANameP_ShowDBM = true,                                    -- DBM Cooldown을 표시
     ANameP_ShowDBMCastingColor = true,                        -- DBM CastingColor을 표시
     ANameP_ShortFriendNP = true,                              -- 아군 체력바 크기 조정
-    ANameP_RealHealth =  true,                                 -- 체력 수치 표시
+    ANameP_RealHealth = true,                                 -- 체력 수치 표시
+    ANameP_ShowPetTarget = true,                              --Pet 대상 표시
 
     ANameP_AggroTargetColor = { r = 0.4, g = 0.2, b = 0.8 },  -- PVE 대상이 player 였을때 Color
     ANameP_AggroColor = { r = 0.5, g = 1, b = 1 },            -- 어그로 대상일때 바 Color
@@ -347,7 +348,7 @@ ANameP_Options_Default = {
     ANameP_QuestColor = { r = 1, g = 0.8, b = 0.5 },          -- Quest 몹 Color
     ANameP_AutoMarkerColor = { r = 0.5, g = 1, b = 0.5 },     -- AutoMarker 몹 Color
     ANameP_AutoMarkerColor2 = { r = 1, g = 1, b = 0.2 },      -- AutoMarker 몹 Color2
-    
+
     nameplateOverlapV = 1.0,                                  -- 이름표 상하 정렬
 
 
@@ -357,242 +358,242 @@ ANameP_Options_Default = {
     -- ["디법명"] = {알림 시간, 우선순위, 색상 변경 여부},
     -- 우선순위는 숫자가 큰 경우 우선적으로 보이고, 같을 경우 먼저 걸린 순서로 보임
     ANameP_ShowList_WARRIOR_1 = {
-        [445584] = { 0, 5, 2 },         --사형 선고됨
-        [447513] = { 0, 4, 2 },         --만신창이
-        [388539] = { 1, 3, 1 },         --분쇄
+        [445584] = { 0, 5, 2 }, --사형 선고됨
+        [447513] = { 0, 4, 2 }, --만신창이
+        [388539] = { 1, 3, 1 }, --분쇄
     },
 
     ANameP_ShowList_WARRIOR_2 = {
-        [445584] = { 0, 5, 1 },         --사형 선고됨
+        [445584] = { 0, 5, 1 }, --사형 선고됨
     },
 
     ANameP_ShowList_WARRIOR_3 = {
-        [447513] = { 0, 5 },            --만신창이
-        [388539] = { 1, 4 },            --분쇄
+        [447513] = { 0, 5 }, --만신창이
+        [388539] = { 1, 4 }, --분쇄
     },
 
     ANameP_ShowList_ROGUE_1 = {
-        [457129] = { 0, 5 },            --죽음추적자의 징표
-        [703] = { 1, 4, 2 },            --목조르기
-        [1943] = { 24 * 0.3, 3, 1 },    --파열
-        [121411] = { 12 * 0.3, 2 },     --혈폭풍
+        [457129] = { 0, 5 },         --죽음추적자의 징표
+        [703] = { 1, 4, 2 },         --목조르기
+        [1943] = { 24 * 0.3, 3, 1 }, --파열
+        [121411] = { 12 * 0.3, 2 },  --혈폭풍
 
     },
 
     ANameP_ShowList_ROGUE_2 = {
-        [196937] = { 0, 5, 1 },         --유령의 일격
-        [441224] = { 0, 4, 2 },         --당혹 상태
+        [196937] = { 0, 5, 1 }, --유령의 일격
+        [441224] = { 0, 4, 2 }, --당혹 상태
     },
 
     ANameP_ShowList_ROGUE_3 = {
-        [457129] = { 0, 5, 2 },         --죽음추적자의 징표
-        [1943] = { 24 * 0.3, 4, 1 },    --파열
-        [441224] = { 0, 3, 2 },         --당혹 상태
+        [457129] = { 0, 5, 2 },      --죽음추적자의 징표
+        [1943] = { 24 * 0.3, 4, 1 }, --파열
+        [441224] = { 0, 3, 2 },      --당혹 상태
     },
 
 
     ANameP_ShowList_HUNTER_1 = {
-        [468572] = { 0, 5, 2},          --검은 화살
-        [217200] = { 1, 4, 1 },         --날카로운 사격     
-        [271788] = { 0, 3 },            --독사 쐐기
-        [131894] = { 0, 2 },            --저승까마귀
-        [257284] = { 0, 1 },            --사냥꾼의 징표
+        [468572] = { 0, 5 },    --검은 화살
+        [217200] = { 1, 4, 1 }, --날카로운 사격
+        [271788] = { 0, 3 },    --독사 쐐기
+        [131894] = { 0, 2 },    --저승까마귀
+        [257284] = { 0, 1 },    --사냥꾼의 징표
     },
 
-    ANameP_ShowList_HUNTER_2 = {        
-        [468572] = { 0, 5, 2},          --검은 화살
-        [271788] = { 1, 4, 1 },         --독사 쐐기     
-        [450387] = { 0, 3 },            --파수꾼
-        [257284] = { 0, 2 },            --사냥꾼의 징표
+    ANameP_ShowList_HUNTER_2 = {
+        [468572] = { 0, 5, 2 }, --검은 화살
+        [271788] = { 1, 4, 1 }, --독사 쐐기
+        [450387] = { 0, 3 },    --파수꾼
+        [257284] = { 0, 2 },    --사냥꾼의 징표
 
     },
 
     ANameP_ShowList_HUNTER_3 = {
-        [259491] = { 1, 5, 1 },         --독사 쐐기
-        [450387] = { 0, 4 },            --파수꾼
-        [257284] = { 0, 3 },            --사냥꾼의 징표
+        [259491] = { 1, 5, 1 }, --독사 쐐기
+        [450387] = { 0, 4 },    --파수꾼
+        [257284] = { 0, 3 },    --사냥꾼의 징표
 
     },
 
     ANameP_ShowList_MONK_1 = {
-        [387179] = { 0, 5},                 --질서의 무기        
+        [387179] = { 0, 5 }, --질서의 무기
     },
 
     ANameP_ShowList_MONK_2 = {
     },
 
     ANameP_ShowList_MONK_3 = {
-        [228287] = { 0, 5, 1 },             --주학의 징표     
+        [228287] = { 0, 5, 1 }, --주학의 징표
     },
 
     ANameP_ShowList_WARLOCK_1 = {
-        [980] = { 1, 5, 1 },                --고통
-        [316099] = { 1, 4 },                --불안정한 고통
-        [146739] = { 1, 3, 2 },             --부패
-        [445474] = { 1, 2, 2 },             --쇠퇴       
+        [980] = { 1, 5, 1 },    --고통
+        [316099] = { 1, 4 },    --불안정한 고통
+        [146739] = { 1, 3, 2 }, --부패
+        [445474] = { 1, 2, 2 }, --쇠퇴
     },
 
     ANameP_ShowList_WARLOCK_2 = {
-        [460553] = { 0, 5, 2 },             --파멸   
-        [270569] = { 0, 4, 1 },             --악의 아귀
+        [460553] = { 0, 5, 2 }, --파멸
+        [270569] = { 0, 4, 1 }, --악의 아귀
     },
 
 
     ANameP_ShowList_WARLOCK_3 = {
-        [157736] = { 1, 5, 1 },             --제물
-        [445474] = { 1, 4, 1 },             --쇠퇴
-      
+        [157736] = { 1, 5, 1 }, --제물
+        [445474] = { 1, 4, 1 }, --쇠퇴
+
     },
 
 
     ANameP_ShowList_PRIEST_1 = {
-        [204213] = { 1, 5, 1 },             --사악의 정화
-        [589] = { 1, 4, 1 },                --고통
+        [204213] = { 1, 5, 1 }, --사악의 정화
+        [589] = { 1, 4, 1 },    --고통
     },
 
     ANameP_ShowList_PRIEST_2 = {
-        [14914] = { 0, 5, 1 },              --신충
-        [589] = { 1, 4, 2 },                --고통
+        [14914] = { 0, 5, 1 }, --신충
+        [589] = { 1, 4, 2 },   --고통
     },
 
 
     ANameP_ShowList_PRIEST_3 = {
-        [589] = { 1, 5, 1 },                --고통
-        [34914] = { 0, 4 },                 --흡선
-        [335467] = { 0, 3, 2 },             --파멸
-        [453850] = { 0, 2 },                --공명
+        [589] = { 1, 5, 1 },    --고통
+        [34914] = { 0, 4 },     --흡선
+        [335467] = { 0, 3, 2 }, --파멸
+        [453850] = { 0, 2 },    --공명
     },
 
     ANameP_ShowList_SHAMAN_1 = {
-        [188389] = { 18 * 0.3, 5, 1 },      --화염 충격
-        [197209] = { 0, 4, 2 },             --피뢰침
+        [188389] = { 18 * 0.3, 5, 1 }, --화염 충격
+        [197209] = { 0, 4, 2 },        --피뢰침
     },
 
     ANameP_ShowList_SHAMAN_2 = {
-        [334168] = { 0, 5, 2 },             --채찍 화염
-        [188389] = { 18 * 0.3, 4, 1 },      --화염 충격
-        [197209] = { 0, 3, 2 },             --피뢰침
+        [334168] = { 0, 5, 2 },        --채찍 화염
+        [188389] = { 18 * 0.3, 4, 1 }, --화염 충격
+        [197209] = { 0, 3, 2 },        --피뢰침
     },
 
     ANameP_ShowList_SHAMAN_3 = {
-        [188389] = { 18 * 0.31, 5, 1 },     --화염 충격        
+        [188389] = { 18 * 0.31, 5, 1 }, --화염 충격
     },
 
 
     ANameP_ShowList_DRUID_1 = {
-        [164812] = { 1, 5, 1 },             --달빛섬광
-        [164815] = { 1, 4, 2 },             --태양섬광
-        [202347] = { 1, 3 },                --항성의 섬광
-        [430589] = { 0, 2 },                --기후 노출
+        [164812] = { 1, 5, 1 }, --달빛섬광
+        [164815] = { 1, 4, 2 }, --태양섬광
+        [202347] = { 1, 3 },    --항성의 섬광
+        [430589] = { 0, 2 },    --기후 노출
     },
 
 
     ANameP_ShowList_DRUID_2 = {
-        [155722] = { 12 * 0.3, 5, 1 },      --갈퀴 발톱
-        [164812] = { 1, 4, 2 },             --달빛섬광
-        [391889] = { 1, 3 },                --적응의 무리
-        [1079] = { 19 * 0.3, 2 },           --도려내기
-        [439531] = { 0, 1 },                --피바라미 덩굴      
+        [155722] = { 12 * 0.3, 5, 1 }, --갈퀴 발톱
+        [164812] = { 1, 4, 2 },        --달빛섬광
+        [391889] = { 1, 3 },           --적응의 무리
+        [1079] = { 19 * 0.3, 2 },      --도려내기
+        [439531] = { 0, 1 },           --피바라미 덩굴
     },
 
     ANameP_ShowList_DRUID_3 = {
-        [164812] = { 1, 5 },                --달빛섬광
-        [192090] = { 0, 4 },                --난타
-        [430589] = { 0, 3 },                --기후 노출
+        [164812] = { 1, 5 }, --달빛섬광
+        [192090] = { 0, 4 }, --난타
+        [430589] = { 0, 3 }, --기후 노출
     },
 
 
     ANameP_ShowList_DRUID_4 = {
-        [164812] = { 1, 5, 1 },             --달빛섬광
-        [155722] = { 12 * 0.3, 4, 2 },      --갈퀴 발톱
-        [164815] = { 1, 3 },                --태양섬광    
-        [1079] = { 19 * 0.3, 2 },           --도려내기
-        [439531] = { 0, 1 },                --피바라미 덩굴
+        [164812] = { 1, 5, 1 },        --달빛섬광
+        [155722] = { 12 * 0.3, 4, 2 }, --갈퀴 발톱
+        [164815] = { 1, 3 },           --태양섬광
+        [1079] = { 19 * 0.3, 2 },      --도려내기
+        [439531] = { 0, 1 },           --피바라미 덩굴
     },
 
 
     ANameP_ShowList_MAGE_1 = {
-        [210824] = { 0, 5, 1 },             --비전의 여파
-        [453599] = { 0, 4 },                --비전 쇠약
-        [444735] = { 0, 3 },                --박힌 쐐편 파편
+        [210824] = { 0, 5, 1 }, --비전의 여파
+        [453599] = { 0, 4 },    --비전 쇠약
+        [444735] = { 0, 3 },    --박힌 쐐편 파편
     },
 
-    ANameP_ShowList_MAGE_2 = {        
-        [453268] = { 0, 5, 1 },             --파괴 제어
-        [12654] = { 0, 4 },                 --작열
+    ANameP_ShowList_MAGE_2 = {
+        [453268] = { 0, 5, 1 }, --파괴 제어
+        [12654] = { 0, 4 },     --작열
     },
 
     ANameP_ShowList_MAGE_3 = {
-        [228358] = { 0, 5, 1 },             -- 혹한의 추위
-        [443740] = { 0, 4 },                --박힌 냉기 파편
-        [122] = {0, 3, 2},
-        [136511] = {0, 3, 2},
-        [33395] = {0, 3, 2},
-        [157997] = {0, 3, 2}, 
-        [378760] = {0, 3, 2},               --냉증
-        [228600] = {0, 3, 2},               --혹한의 쐐기
+        [228358] = { 0, 5, 1 }, -- 혹한의 추위
+        [443740] = { 0, 4 },    --박힌 냉기 파편
+        [122] = { 0, 3, 2 },
+        [136511] = { 0, 3, 2 },
+        [33395] = { 0, 3, 2 },
+        [157997] = { 0, 3, 2 },
+        [378760] = { 0, 3, 2 }, --냉증
+        [228600] = { 0, 3, 2 }, --혹한의 쐐기
     },
 
 
     ANameP_ShowList_DEATHKNIGHT_1 = {
-        [434765] = { 0, 5, 1 },             --사신의 징표
-        [458478] = { 0, 4 },                --공포 유발
-        [55078] = { 0, 3 },                 --피의 역병
+        [434765] = { 0, 5, 1 }, --사신의 징표
+        [458478] = { 0, 4 },    --공포 유발
+        [55078] = { 0, 3 },     --피의 역병
 
     },
 
     ANameP_ShowList_DEATHKNIGHT_2 = {
-        [434765] = { 0, 5, 1 },             --사신의 징표
-        [55095] = { 0, 4 },                 --서리 열병
+        [434765] = { 0, 5, 1 }, --사신의 징표
+        [55095] = { 0, 4 },     --서리 열병
     },
 
     ANameP_ShowList_DEATHKNIGHT_3 = {
-        [458478] = { 0, 5, 2 },             --공포 유발      
-        [194310] = { 0, 4 },                --고름 상처
-        [191587] = { 1, 3, 1 },             --악성 역병     
-        
+        [458478] = { 0, 5, 2 }, --공포 유발
+        [194310] = { 0, 4 },    --고름 상처
+        [191587] = { 1, 3, 1 }, --악성 역병
+
     },
 
 
     ANameP_ShowList_EVOKER_1 = {
-        [357209] = { 0, 5, 1 },             --불의 숨결       
-        [434473] = { 0, 4 },                --폭격
+        [357209] = { 0, 5, 1 }, --불의 숨결
+        [434473] = { 0, 4 },    --폭격
     },
 
     ANameP_ShowList_EVOKER_2 = {
-        [357209] = { 0, 5, 1 },             --불의 숨결
+        [357209] = { 0, 5, 1 }, --불의 숨결
 
     },
 
     ANameP_ShowList_EVOKER_3 = {
-        [409560] = { 0, 5, 1 },             --시간의 상처
-        [357209] = { 0, 4, 2 },             --불의 숨결
-        [434473] = { 0, 3 },                --폭격
+        [409560] = { 0, 5, 1 }, --시간의 상처
+        [357209] = { 0, 4, 2 }, --불의 숨결
+        [434473] = { 0, 3 },    --폭격
     },
 
 
-    ANameP_ShowList_PALADIN_1 = {        
-        [414022] = { 0, 5, 1 },                --무가치한 존재
+    ANameP_ShowList_PALADIN_1 = {
+        [414022] = { 0, 5, 1 }, --무가치한 존재
     },
 
     ANameP_ShowList_PALADIN_2 = {
-        [197277] = { 0, 5 },                    --심판
+        [197277] = { 0, 5 }, --심판
     },
 
     ANameP_ShowList_PALADIN_3 = {
-        [197277] = { 0, 5, 1 },                  --심판
+        [197277] = { 0, 5, 1 }, --심판
     },
 
     ANameP_ShowList_DEMONHUNTER_1 = {
-        [442624] = { 0, 5, 2 },                 --파괴자의 징표
-        [391191] = { 0, 4, 1 },                 --불타는 상처
-        
+        [442624] = { 0, 5, 2 }, --파괴자의 징표
+        [391191] = { 0, 4, 1 }, --불타는 상처
+
     },
 
     ANameP_ShowList_DEMONHUNTER_2 = {
-        [442624] = { 0, 5 },                    --파괴자의 징표
-        [207771] = { 0, 4 },                    --불타는 낙인
-        [247456] = { 0, 3 },                    --약화
+        [442624] = { 0, 5 }, --파괴자의 징표
+        [207771] = { 0, 4 }, --불타는 낙인
+        [247456] = { 0, 3 }, --약화
     },
 
 
@@ -605,12 +606,12 @@ local curr_y = 0;
 local y_adder = -50;
 
 local panel = CreateFrame("Frame")
-panel.name = "asNamePlates"         -- see panel fields
+panel.name = "asNamePlates" -- see panel fields
 if InterfaceOptions_AddCategory then
-	InterfaceOptions_AddCategory(panel)
+    InterfaceOptions_AddCategory(panel)
 else
-	local category, layout = Settings.RegisterCanvasLayoutCategory(panel, panel.name);
-	Settings.RegisterAddOnCategory(category);	
+    local category, layout = Settings.RegisterCanvasLayoutCategory(panel, panel.name);
+    Settings.RegisterAddOnCategory(category);
 end
 
 local scrollFrame = nil
@@ -642,7 +643,11 @@ local function SetupChildPanel()
 
     local btn = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
     btn:SetPoint("TOPRIGHT", -50, -10)
-    btn:SetText("설정 초기화")
+    if GetLocale() == "koKR" then
+        btn:SetText("설정 초기화")
+    else
+        btn:SetText("Reset settings")
+    end
     btn:SetWidth(100)
     btn:SetScript("OnClick", function()
         ANameP_Options = {};
@@ -723,7 +728,12 @@ local function SetupColorOption(text, option)
 
     local btn = CreateFrame("Button", nil, scrollChild, "UIPanelButtonTemplate")
     btn:SetPoint("LEFT", title, "RIGHT", 5, 0);
-    btn:SetText("색상 변경")
+
+    if GetLocale() == "koKR" then
+        btn:SetText("색상 변경")
+    else
+        btn:SetText("Change color")
+    end
     btn:SetWidth(100)
 
     local callback = function(restore)
@@ -776,36 +786,41 @@ local function SetupEditBoxOption()
 
     curr_y = curr_y + y_adder;
 
+    local localeTexts = {"Priority", "Debuff ID", "Remain/Count", "Nameplate color", "Alert count"};
+    if GetLocale() == "koKR" then
+        localeTexts = {"우선순위", "디버프 ID", "시간/중첩", "이름표 색상", "디법 중첩 알림"};
+    end
+
     local x = 10;
 
     local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
     title:SetPoint("TOPLEFT", x, curr_y);
-    title:SetText("우선순위");
+    title:SetText(localeTexts[1]);
 
     x = 60;
 
     title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
     title:SetPoint("TOPLEFT", x, curr_y);
-    title:SetText("디버프명");
+    title:SetText(localeTexts[2]);
 
     x = x + 150;
 
 
     title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
     title:SetPoint("TOPLEFT", x, curr_y);
-    title:SetText("시간/중첩");
+    title:SetText(localeTexts[3]);
 
     x = x + 150
 
     title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
     title:SetPoint("TOPLEFT", x, curr_y);
-    title:SetText("이름표 색상");
+    title:SetText(localeTexts[4]);
 
     x = x + 200
 
     title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
     title:SetPoint("TOPLEFT", x, curr_y);
-    title:SetText("디법 중첩 알림");
+    title:SetText(localeTexts[5]);
 
     local prioritytable = {};
 
@@ -933,13 +948,20 @@ local function SetupEditBoxOption()
         dropDown:SetPoint("LEFT", scrollChild, "TOPLEFT", x, curr_y)
         UIDropDownMenu_SetWidth(dropDown, 100) -- Use in place of dropDown:SetWidth
 
-
         local dropdownOptions = {
-            { text = "이름표색상없음", value = 0 },
-            { text = "이름표색상변경", value = 1 },
-            { text = "이름표색상변경2", value = 2 },
+            { text = "No nameplate color", value = 0 },
+            { text = "Nameplate color 1",  value = 1 },
+            { text = "Nameplate color 2",  value = 2 },
 
         }
+
+        if GetLocale() == "koKR" then
+            dropdownOptions = {
+                { text = "이름표색상없음", value = 0 },
+                { text = "이름표색상변경", value = 1 },
+                { text = "이름표색상변경2", value = 2 },
+            }
+        end
 
         x = x + 130;
 
@@ -947,11 +969,17 @@ local function SetupEditBoxOption()
         dropDown2:SetPoint("LEFT", scrollChild, "TOPLEFT", x, curr_y)
         UIDropDownMenu_SetWidth(dropDown2, 100) -- Use in place of dropDown:SetWidth
 
-
         local dropdownOptions2 = {
-            { text = "중첩으로 알림", value = 1 },
-            { text = "시간으로 알림", value = 2 },
+            { text = "Alert by count",  value = 1 },
+            { text = "Alert by remain", value = 2 },
         }
+
+        if GetLocale() == "koKR" then
+            dropdownOptions2 = {
+                { text = "중첩으로 알림", value = 1 },
+                { text = "시간으로 알림", value = 2 },
+            }
+        end
 
         local function updatedata()
             local newspell = editBox:GetText();
@@ -1020,7 +1048,11 @@ local function SetupEditBoxOption()
 
     local btn = CreateFrame("Button", nil, scrollChild, "UIPanelButtonTemplate")
     btn:SetPoint("TOPRIGHT", -50, curr_y)
-    btn:SetText("설정 반영")
+    if GetLocale() == "koKR" then
+        btn:SetText("설정 반영")
+    else
+        btn:SetText("Confirm")
+    end
     btn:SetWidth(100)
     btn:SetScript("OnClick", function()
         for idx, values in pairs(prioritytable) do
@@ -1079,34 +1111,71 @@ end
 
 local function panelOnShow()
     SetupChildPanel();
-    SetupCheckBoxOption("[디버프] 기본에 스팰북 스킬 디버프 추가", "ANameP_ShowKnownSpell");
-    SetupCheckBoxOption("[디버프] 내 디버프 모두 보임", "ANameP_ShowMyAll");
-    SetupCheckBoxOption("[디버프] List 등록 디버프만 보임", "ANameP_ShowListOnly");
-    SetupCheckBoxOption("[버프] 내 버프 모두 보임", "ANameP_ShowPlayerBuffAll");
-    SetupCheckBoxOption("[툴팁] 버프/디버프 툴팁 표시", "ANameP_Tooltip");
-    SetupCheckBoxOption("[쿨다운] DBM 쿨다운 표시", "ANameP_ShowDBM");
-    SetupCheckBoxOption("[색상] 어그로 색상 표시", "ANameP_AggroShow");
-    SetupCheckBoxOption("[색상] 낮은 생명력 색상 표시", "ANameP_LowHealthAlert");
-    SetupCheckBoxOption("[색상] Quest 몹 색상 표시", "ANameP_QuestAlert");
-    SetupCheckBoxOption("[색상] AutoMarker 몹 색상 표시", "ANameP_AutoMarker");
-    SetupCheckBoxOption("[색상] DBM Casting 몹 색상 표시", "ANameP_ShowDBMCastingColor");
-    SetupCheckBoxOption("[크기] 아군 체력바 크기 조정", "ANameP_ShortFriendNP");
-    SetupCheckBoxOption("[체력] 체력 수치를 좌측에 표시", "ANameP_RealHealth");
 
+    -- Check if the locale is Korean ("koKR")
+    if GetLocale() == "koKR" then
+        -- Set up checkbox options with Korean descriptions
+        SetupCheckBoxOption("[디버프] 기본에 스팰북 스킬 디버프 추가", "ANameP_ShowKnownSpell"); -- Add spellbook skill debuffs to default debuffs
+        SetupCheckBoxOption("[디버프] 내 디버프 모두 보임", "ANameP_ShowMyAll"); -- Show all my debuffs
+        SetupCheckBoxOption("[디버프] List 등록 디버프만 보임", "ANameP_ShowListOnly"); -- Show only debuffs registered in the list
+        SetupCheckBoxOption("[버프] 내 버프 모두 보임", "ANameP_ShowPlayerBuffAll"); -- Show all my buffs
+        SetupCheckBoxOption("[툴팁] 버프/디버프 툴팁 표시", "ANameP_Tooltip"); -- Show buff/debuff tooltips
+        SetupCheckBoxOption("[쿨다운] DBM 쿨다운 표시", "ANameP_ShowDBM"); -- Show DBM cooldowns
+        SetupCheckBoxOption("[색상] 어그로 색상 표시", "ANameP_AggroShow"); -- Show aggro colors
+        SetupCheckBoxOption("[색상] 낮은 생명력 색상 표시", "ANameP_LowHealthAlert"); -- Show low health colors
+        SetupCheckBoxOption("[색상] Quest 몹 색상 표시", "ANameP_QuestAlert"); -- Show quest mob colors
+        SetupCheckBoxOption("[색상] AutoMarker 몹 색상 표시", "ANameP_AutoMarker"); -- Show AutoMarker mob colors
+        SetupCheckBoxOption("[색상] DBM Casting 몹 색상 표시", "ANameP_ShowDBMCastingColor"); -- Show DBM casting mob colors
+        SetupCheckBoxOption("[크기] 아군 체력바 크기 조정", "ANameP_ShortFriendNP"); -- Adjust friendly health bar size
+        SetupCheckBoxOption("[체력] 체력 수치를 좌측에 표시", "ANameP_RealHealth"); -- Display health values on the left
+        SetupCheckBoxOption("[소환수] 소환수 대상 및 야수의 회전 베기 표시", "ANameP_ShowPetTarget"); -- Show pet's target and Beast Cleave
 
-    SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");
-    SetupColorOption("[이름표 색상] 어그로 대상", "ANameP_AggroTargetColor");
-    SetupColorOption("[이름표 색상] 어그로 상위", "ANameP_AggroColor");
-    SetupColorOption("[탱커 이름표 색상] 어그로 상실", "ANameP_TankAggroLoseColor");
-    SetupColorOption("[탱커 이름표 색상] 어그로 다른 탱커", "ANameP_TankAggroLoseColor2");
-    SetupColorOption("[이름표 색상] 어그로 소환수", "ANameP_TankAggroLoseColor3");
-    SetupColorOption("[이름표 색상] 낮은 체력", "ANameP_LowHealthColor");
-    SetupColorOption("[이름표 색상] 디버프", "ANameP_DebuffColor");
-    SetupColorOption("[이름표 색상] 디버프2", "ANameP_DebuffColor2");
-    SetupColorOption("[이름표 색상] 디버프3", "ANameP_DebuffColor3");
-    SetupColorOption("[이름표 색상] Quest", "ANameP_QuestColor");
-    SetupColorOption("[이름표 색상] AutoMarker", "ANameP_AutoMarkerColor");
-    SetupColorOption("[이름표 색상] AutoMarker2", "ANameP_AutoMarkerColor2");
+        -- Set up slider and color options with Korean descriptions
+        SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV"); -- Nameplate vertical alignment (nameplateOverlapV)
+        SetupColorOption("[이름표 색상] 어그로 대상", "ANameP_AggroTargetColor"); -- Nameplate color: Aggro target
+        SetupColorOption("[이름표 색상] 어그로 상위", "ANameP_AggroColor"); -- Nameplate color: Top aggro
+        SetupColorOption("[탱커 이름표 색상] 어그로 상실", "ANameP_TankAggroLoseColor"); -- Tank nameplate color: Aggro lost
+        SetupColorOption("[탱커 이름표 색상] 어그로 다른 탱커", "ANameP_TankAggroLoseColor2"); -- Tank nameplate color: Aggro on another tank
+        SetupColorOption("[이름표 색상] 어그로 소환수", "ANameP_TankAggroLoseColor3"); -- Nameplate Color: Aggro Pet
+        SetupColorOption("[이름표 색상] 낮은 체력", "ANameP_LowHealthColor"); -- Nameplate color: Low health
+        SetupColorOption("[이름표 색상] 디버프", "ANameP_DebuffColor"); -- Nameplate color: Debuff
+        SetupColorOption("[이름표 색상] 디버프2", "ANameP_DebuffColor2"); -- Nameplate color: Debuff 2
+        SetupColorOption("[이름표 색상] 디버프3", "ANameP_DebuffColor3"); -- Nameplate color: Debuff 3
+        SetupColorOption("[이름표 색상] Quest", "ANameP_QuestColor"); -- Nameplate color: Quest
+        SetupColorOption("[이름표 색상] AutoMarker", "ANameP_AutoMarkerColor"); -- Nameplate color: AutoMarker
+        SetupColorOption("[이름표 색상] AutoMarker2", "ANameP_AutoMarkerColor2"); -- Nameplate color: AutoMarker 2
+    else
+        -- Set up checkbox options with English descriptions
+        SetupCheckBoxOption("[Debuff] Add spellbook skill debuffs to default", "ANameP_ShowKnownSpell");
+        SetupCheckBoxOption("[Debuff] Show all my debuffs", "ANameP_ShowMyAll");
+        SetupCheckBoxOption("[Debuff] Show only debuffs in the list", "ANameP_ShowListOnly");
+        SetupCheckBoxOption("[Buff] Show all my buffs", "ANameP_ShowPlayerBuffAll");
+        SetupCheckBoxOption("[Tooltip] Show buff/debuff tooltips", "ANameP_Tooltip");
+        SetupCheckBoxOption("[Cooldown] Show DBM cooldowns", "ANameP_ShowDBM");
+        SetupCheckBoxOption("[Color] Show aggro colors", "ANameP_AggroShow");
+        SetupCheckBoxOption("[Color] Show low health colors", "ANameP_LowHealthAlert");
+        SetupCheckBoxOption("[Color] Show quest mob colors", "ANameP_QuestAlert");
+        SetupCheckBoxOption("[Color] Show AutoMarker mob colors", "ANameP_AutoMarker");
+        SetupCheckBoxOption("[Color] Show DBM casting mob colors", "ANameP_ShowDBMCastingColor");
+        SetupCheckBoxOption("[Size] Adjust friendly health bar size", "ANameP_ShortFriendNP");
+        SetupCheckBoxOption("[Health] Display health values on the left", "ANameP_RealHealth");
+        SetupCheckBoxOption("[Pet] Show pet's target and Beast Cleave", "ANameP_ShowPetTarget");
+
+        -- Set up slider and color options with English descriptions
+        SetupSliderOption("Nameplate vertical alignment (nameplateOverlapV)", "nameplateOverlapV");
+        SetupColorOption("[Nameplate Color] Aggro target", "ANameP_AggroTargetColor");
+        SetupColorOption("[Nameplate Color] Top aggro", "ANameP_AggroColor");
+        SetupColorOption("[Tank Nameplate Color] Aggro lost", "ANameP_TankAggroLoseColor");
+        SetupColorOption("[Tank Nameplate Color] Aggro on another tank", "ANameP_TankAggroLoseColor2");
+        SetupColorOption("[Nameplate Color] Aggro Pet", "ANameP_TankAggroLoseColor3");
+        SetupColorOption("[Nameplate Color] Low health", "ANameP_LowHealthColor");
+        SetupColorOption("[Nameplate Color] Debuff", "ANameP_DebuffColor");
+        SetupColorOption("[Nameplate Color] Debuff 2", "ANameP_DebuffColor2");
+        SetupColorOption("[Nameplate Color] Debuff 3", "ANameP_DebuffColor3");
+        SetupColorOption("[Nameplate Color] Quest", "ANameP_QuestColor");
+        SetupColorOption("[Nameplate Color] AutoMarker", "ANameP_AutoMarkerColor");
+        SetupColorOption("[Nameplate Color] AutoMarker 2", "ANameP_AutoMarkerColor2");
+    end
     SetupEditBoxOption();
 end
 local function panelOnHide()
