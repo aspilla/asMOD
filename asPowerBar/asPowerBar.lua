@@ -1990,6 +1990,8 @@ local function APB_CheckPower(self)
         APB.timerBuffBar:Cancel()
     end
 
+    bshowspell = false;
+    bshowstack = false;
     bupdate_power = false;
     bupdate_rune = false;
     bupdate_spell = false;
