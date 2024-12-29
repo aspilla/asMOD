@@ -1,11 +1,8 @@
 local _, ns = ...;
 local Options_Default = {
     Version = 240608,
-    PlaySound = true,
-    SoundVolume = 50,
-    TTS = false,
-    HideTarget = true,
-    TTS_ID = -1,
+    PlaySound = true,    
+    HideTarget = true,    
 };
 
 ns.options = CopyTable(Options_Default);
@@ -60,32 +57,7 @@ function ns.SetupOptionPanels()
         local defaultValue = ADCA_Options[variable];
 
         if name ~= "Version" then
-            if name == "TTS_ID" then
-                if defaultValue < 0 then
-                    local ttsinfos = C_VoiceChat.GetTtsVoices();
-                    local locale = GetLocale();
-                    local findLang = "Korean";
-
-                    if not (locale == "koKR") then
-                        findLang = "English";
-                    end
-
-                    ADCA_Options[variable] = 0;
-                    ns.options[variable] = 0;
-
-                    for id, v in pairs(ttsinfos) do
-                        if strfind(v.name, findLang) then
-                            defaultValue = v.voiceID;
-                            ADCA_Options[variable] = defaultValue;
-                            ns.options[variable] = defaultValue;
-                        end
-                    end
-                end
-                
-                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
-                Settings.CreateDropdown(category, setting, GetOptions, tooltip)
-                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)               
-            elseif tonumber(defaultValue) ~= nil then
+            if tonumber(defaultValue) ~= nil then
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
                 local options = Settings.CreateSliderOptions(0, 100, 1);
                 options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);

@@ -19,6 +19,23 @@ local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { 153 / 255, 0, 76 / 255 }; --차�
 local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 };   --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
 local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };     --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
 
+local CONFIG_VOICE_TARGET_KICK = "Interface\\AddOns\\asDBMCastingAlert\\Target_Kick_En.mp3"
+local CONFIG_VOICE_TARGET_STUN = "Interface\\AddOns\\asDBMCastingAlert\\Target_Stun_En.mp3"
+local CONFIG_VOICE_FOCUS_KICK = "Interface\\AddOns\\asDBMCastingAlert\\Focus_Kick_En.mp3"
+local CONFIG_VOICE_FOCUS_STUN = "Interface\\AddOns\\asDBMCastingAlert\\Focus_Stun_En.mp3"
+local CONFIG_VOICE_KICK = "Interface\\AddOns\\asDBMCastingAlert\\Kick_En.mp3"
+local CONFIG_VOICE_STUN = "Interface\\AddOns\\asDBMCastingAlert\\Stun_En.mp3"
+
+if GetLocale() == "koKR" then
+	CONFIG_VOICE_TARGET_KICK = "Interface\\AddOns\\asDBMCastingAlert\\Target_Kick.mp3"
+	CONFIG_VOICE_TARGET_STUN = "Interface\\AddOns\\asDBMCastingAlert\\Target_Stun.mp3"
+	CONFIG_VOICE_FOCUS_KICK = "Interface\\AddOns\\asDBMCastingAlert\\Focus_Kick.mp3"
+	CONFIG_VOICE_FOCUS_STUN = "Interface\\AddOns\\asDBMCastingAlert\\Focus_Stun.mp3"
+	CONFIG_VOICE_KICK = "Interface\\AddOns\\asDBMCastingAlert\\Kick.mp3"
+	CONFIG_VOICE_STUN = "Interface\\AddOns\\asDBMCastingAlert\\Stun.mp3"
+end
+
+
 local function isAttackable(unit)
 	local reaction = UnitReaction("player", unit);
 	if reaction and reaction <= 4 then
@@ -262,51 +279,26 @@ local function ADCA_OnUpdate()
 
 	if ns.options.PlaySound then
 		if alert_focus and prev_focus == 0 then
-			if not ns.options.TTS then
-				if alert_focus_noi then
-					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\focusstun.mp3", "MASTER");
-				else
-					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\focus.mp3", "MASTER");
-				end
+			if alert_focus_noi then
+				PlaySoundFile(CONFIG_VOICE_FOCUS_STUN, "MASTER");
 			else
-				if alert_focus_noi then
-					C_VoiceChat.SpeakText(ns.options.TTS_ID, "주시스턴", Enum.VoiceTtsDestination.LocalPlayback,
-						CONFIG_SOUND_SPEED, ns.options.SoundVolume);
-				else
-					C_VoiceChat.SpeakText(ns.options.TTS_ID, "주시짤", Enum.VoiceTtsDestination.LocalPlayback,
-						CONFIG_SOUND_SPEED, ns.options.SoundVolume);
-				end
+				PlaySoundFile(CONFIG_VOICE_FOCUS_KICK, "MASTER");
 			end
 		end
 
 		if alert_target and prev_target == 0 then
-			if not ns.options.TTS then
-				if alert_target_noi then
-					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\stun.mp3", "MASTER");
-				else
-					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\target.mp3", "MASTER");
-				end
+			if alert_target_noi then
+				PlaySoundFile(CONFIG_VOICE_TARGET_STUN, "MASTER");
 			else
-				if alert_target_noi then
-					C_VoiceChat.SpeakText(ns.options.TTS_ID, "스턴", Enum.VoiceTtsDestination.LocalPlayback,
-						CONFIG_SOUND_SPEED, ns.options.SoundVolume);
-				else
-					C_VoiceChat.SpeakText(ns.options.TTS_ID, "짤", Enum.VoiceTtsDestination.LocalPlayback,
-						CONFIG_SOUND_SPEED, ns.options.SoundVolume);
-				end
+				PlaySoundFile(CONFIG_VOICE_TARGET_KICK, "MASTER");
 			end
 		end
 
 		if alert_name and prev_count == 0 then
-			if not ns.options.TTS then
-				if alert_noi then
-					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\stun2.mp3", "MASTER");
-				else
-					PlaySoundFile("Interface\\AddOns\\asDBMCastingAlert\\alert.mp3", "MASTER");
-				end
+			if alert_noi then
+				PlaySoundFile(CONFIG_VOICE_STUN, "MASTER");
 			else
-				C_VoiceChat.SpeakText(ns.options.TTS_ID, alert_name, Enum.VoiceTtsDestination.LocalPlayback,
-					CONFIG_SOUND_SPEED, ns.options.SoundVolume);
+				PlaySoundFile(CONFIG_VOICE_KICK, "MASTER");
 			end
 		end
 	end

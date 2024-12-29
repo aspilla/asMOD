@@ -29,6 +29,8 @@ local BarColors = {
 	[7] = { 1, 1, 0.06, "" },
 }
 
+local AOEVoice = "Interface\\AddOns\\asDBMTimer\\AOE_En.mp3"
+
 if GetLocale() == "koKR" then
 BarColors = {
 	--Type 0
@@ -48,6 +50,8 @@ BarColors = {
 	--Type 7 (Important/User set only)
 	[7] = { 1, 1, 0.06, "" },
 }
+
+AOEVoice = "Interface\\AddOns\\asDBMTimer\\aoe.mp3"
 end
 
 -- 설정 끝
@@ -300,7 +304,7 @@ local function checkButtons()
 
 			if ns.options.AOESound then
 				if event.colorId == 2 and remain <= ns.options.AOESound and event.aoealerted == false then
-					PlaySoundFile("Interface\\AddOns\\asDBMTimer\\aoe.mp3", "MASTER");
+					PlaySoundFile(AOEVoice, "MASTER");
 					event.aoealerted = true;
 				end
 			end
