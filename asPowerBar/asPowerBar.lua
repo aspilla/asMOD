@@ -2256,6 +2256,12 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 3) then
+
+            APB_SPELL = 44614;               --진눈개비
+            APB_SpellMax(APB_SPELL);
+            APB_UpdateSpell(APB_SPELL);
+            bupdate_spell = true;
+
             APB_BUFF_COMBO = 205473; --고드름
             APB_MaxCombo(self.combobar, 5);
             APB.combobar.unit = "player"
@@ -2276,12 +2282,7 @@ local function APB_CheckPower(self)
 
             bupdate_fronzen = true;
 
-            combobuffalertlist = { 431177 }; -- 서리 불꽃
-
-            APB_SPELL = 44614;               --진눈개비
-            APB_SpellMax(APB_SPELL);
-            APB_UpdateSpell(APB_SPELL);
-            bupdate_spell = true;
+            combobuffalertlist = { 431177 }; -- 서리 불꽃            
 
             bsmall_power_bar = true;
         end
