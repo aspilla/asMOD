@@ -1,8 +1,8 @@
 ﻿## Interface: 110007
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara]
 ## Title: |cffff3399as|rMOD
-## Notes: asMOD 기본 설정
-## Version : 241220
+## Notes: asMOD Configuration and Positioning
+## Version : 250101
 ##SavedVariablesPerCharacter: asMOD_config, asMOD_version, asMOD_position, asMOD_layout_version
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asMOD.lua

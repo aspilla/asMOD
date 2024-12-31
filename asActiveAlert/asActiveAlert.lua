@@ -12,10 +12,11 @@ local ASAA_SpellList = {};
 
 -- 원치 않는 발동 알림은 안보이게
 local ASAA_BackList = {
-	--["천상의 폭풍"] = true,
+	[115356] = true,		--고술 바람의 일격
 };
 
 local show_icons = {};
+local show_names = {};
 
 local asGetSpellInfo = function(spellID)
 	if not spellID then
@@ -186,14 +187,14 @@ local function ASAA_Insert(id)
 
 	local name, _, icon = asGetSpellInfo(id);
 
-	if ASAA_BackList and ASAA_BackList[name] then
+	if ASAA_BackList and ASAA_BackList[id] then
 		return;
 	end
 
 	if ACI_SpellID_list then
 		for spellorg, _ in pairs(ACI_SpellID_list) do
 			local newspell = asGetSpellInfo(spellorg);
-			if id == spellorg or name == spellorg or name == newspell then
+			if id == spellorg or name == newspell then
 				return;
 			end
 		end
@@ -217,17 +218,23 @@ local function ASAA_Insert(id)
 		return;
 	end
 
+	if show_names[name] == true then
+		return;
+	end
+	
 	ASAA_SpellList[id] = true;
 	show_icons[icon] = true;
+	show_names[name] = true;
 
 	ASAA_UpdateCooldown();
 end
 
 local function ASAA_Delete(id)
 	if id then
-		local _, _, icon = asGetSpellInfo(id);
+		local name, _, icon = asGetSpellInfo(id);
 		ASAA_SpellList[id] = false;
 		show_icons[icon] = false;
+		show_names[name] = false;
 	else
 		ASAA_SpellList = {};
 		show_icons = {};
