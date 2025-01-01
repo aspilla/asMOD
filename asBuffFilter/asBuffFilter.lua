@@ -330,7 +330,7 @@ local function IsShown(aura)
 		return true;
 	end
 
-	aura.classbuff = ns.ABF_ClassBuffList[aura.spellId] or ns.ABF_ClassBuffList[aura.name];
+	aura.classbuff = ns.ABF_ClassBuffList[aura.spellId];
 
 	if bcheckOverlay and (overlayspell[spellId] or overlayspell[name]) then
 		if aura.classbuff and aura.classbuff > 1 then	
@@ -347,12 +347,12 @@ local function IsShown(aura)
 	return false;
 end
 
-local function IsShownTotem(name)
-	if ns.ABF_BlackListTotem[name] then
+local function IsShownTotem(name, icon)
+	if ns.ABF_BlackListTotem[name] or ns.ABF_BlackListTotem[icon] then
 		return true;
 	end
 
-	if ACI_Totem_list and ACI_Totem_list[name] then
+	if ACI_Totem_list and (ACI_Totem_list[name] or ACI_Totem_list[icon])then
 		return true;
 	end
 
@@ -373,7 +373,7 @@ local function ProcessAura(aura, unit)
 
 	local skip = true;	
 	local isPlayerUnit = PLAYER_UNITS[aura.sourceUnit];	
-	aura.procbuff = ns.ABF_ProcBuffList[aura.spellId] or ns.ABF_ProcBuffList[aura.name];
+	aura.procbuff = ns.ABF_ProcBuffList[aura.spellId];
 	aura.pvpbuff = ns.ABF_PVPBuffList[aura.spellId];
 
 
@@ -436,9 +436,9 @@ local function ProcessAura(aura, unit)
 			end
 		elseif aura.classbuff then
 			local ClassBuffType = aura.classbuff;
-			local buffcheckcount = ns.ABF_ClassBuffCountList[aura.name] or ns.ABF_ClassBuffCountList[aura.spellId];
-			if buffcheckcount then				
-				if aura.applications >= buffcheckcount and ClassBuffType < 3 then
+			aura.buffcheckcount = ns.ABF_ClassBuffCountList[aura.spellId];
+			if aura.buffcheckcount then				
+				if aura.applications >= aura.buffcheckcount and ClassBuffType < 3 then
 					ClassBuffType = ClassBuffType + 1;
 				end
 			end
@@ -502,9 +502,9 @@ local function updateTotemAura()
 		local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
 
 		if haveTotem and icon then
-			if not (IsShownTotem(name)) then
+			if not (IsShownTotem(name, icon)) then
 				local frame = nil;
-				local alert = ns.ABF_ClassTotemList[name] or 0;
+				local alert = ns.ABF_ClassTotemList[icon] or 0;
 
 				if alert > 0 then
 					frame = ABF_TALENT_BUFF.frames[center];
@@ -644,9 +644,8 @@ local function UpdateAuraFrames(unit, auraList)
 			local frameCooldown = frame.cooldown;
 			local balertcount = false;
 
-			if aura.buffType == UnitFrameBuffType.CountBuff and aura.applications then
-				local buffcheckcount = ns.ABF_ClassBuffCountList[aura.name] or ns.ABF_ClassBuffCountList[aura.spellId];
-				if buffcheckcount and aura.applications >= buffcheckcount then
+			if aura.buffType == UnitFrameBuffType.CountBuff and aura.applications then				
+				if aura.buffcheckcount and aura.applications >= aura.buffcheckcount then
 					frameBigCount:SetTextColor(1, 0, 0, 1);
 					balertcount = true;
 				else

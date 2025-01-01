@@ -2999,7 +2999,7 @@ local generateText2 = "%d의 ";
 local generateText3 = " %d개";
 
 if GetLocale() == "enUS" then
-    generateText = "Generates";
+    generateText = "[Gg]enerat";
     generateText2 = "%d ";
     generateText3 = " %d";
 end
@@ -3038,7 +3038,7 @@ local function scanSpellCost(id, powerTypeString, disWarlock)
         spell:ContinueOnSpellLoad(function()
             local costText = spell:GetSpellDescription();            
             if costText and powerTypeString and string.match(costText, powerTypeString) and
-                string.match(costText, generateText) then
+                string.match(costText, generateText) then                   
                 
                 local findstring = generateText2 .. powerTypeString;
                 local start, endpoint = string.find(costText, findstring, 0);

@@ -244,8 +244,9 @@ local function UpdateTotem()
 
     for slot = 1, MAX_TOTEMS do
         local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
-
-        if haveTotem and totemfilter[name] then
+        --print (icon);
+        --print (name);
+        if haveTotem and (totemfilter[name] or totemfilter[icon]) then            
             tinsert(eventlib.totemlist, { name, start, duration, icon })
             trigger = true;
         end
@@ -381,7 +382,7 @@ function ns.eventhandler.registerAction(action, button)
 end
 
 function ns.eventhandler.registerTotem(spell)
-    totemfilter[spell] = true;
+    totemfilter[spell] = true;    
 end
 
 function ns.eventhandler.registerCastTime(spell)
@@ -414,13 +415,40 @@ function ns.aurafunctions.checkAura(unit, spell)
     return ret;
 end
 
+function ns.aurafunctions.checkAuraList(unit, list)
+    if eventlib[unit] == nil then
+        return;
+    end
+
+    local auraids = {};
+
+    for _, v in pairs(list) do
+        auraids[v] = true;
+    end
+
+    local count = 0;
+
+    local auraList = eventlib[unit].auralist;
+    local ret = nil;
+
+    auraList:Iterate(
+        function(auraInstanceID, aura)
+            if auraids[aura.spellId] then
+                count = count + 1;
+            end
+            return false;
+        end);
+
+    return count;
+end
+
 function ns.aurafunctions.checkTotem(spell)
     local totemlist = eventlib.totemlist;
     local ret = nil;
 
     if totemlist then
         for _, v in pairs(totemlist) do
-            if v[1] == spell then
+            if v[1] == spell or v[4] == spell then
                 ret = v;
             end
         end

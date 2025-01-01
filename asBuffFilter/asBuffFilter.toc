@@ -1,8 +1,8 @@
 ﻿## Interface: 110007
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rBuffFilter
-## Notes: 버프필터
-## Version : 241224
+## Notes: Buff tracker (player, target)
+## Version : 250101
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asBuffFilterOptions.lua
 asBuffFilterLib.lua

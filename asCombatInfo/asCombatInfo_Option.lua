@@ -11,7 +11,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 241225,
+	version = 250104,
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
 	-- 	Spell 기술명 혹은 ID (버프는 ID로 입력해야 Icon 나옴)
@@ -238,7 +238,7 @@ ACI_Options_Default = {
 	ACI_SpellList_MONK_2 = {
 		{ 100784, 1, nil, nil, 202090 },
 		{ 107428, 1 },
-		{{ 325197, 6, nil, nil, 343820, "츠지" }, { 322118, 6, nil, nil, nil, "위론" } },
+		{{ 325197, 6, nil, nil, 343820, 877514 }, { 322118, 6, nil, nil, nil, 574571 } }, --츠지, 위론
 		{{ 388193, 1 }, { 116849, 1 } },
 		{ 116680, 2 },
 	},
@@ -293,7 +293,7 @@ ACI_Options_Default = {
 	ACI_SpellList_SHAMAN_1 = {
 		{ 16166, 3 },
 		{ {375982, 2 }, { 114050, 1 } },
-		{ { 192249, 6, nil, nil, nil, "상급 폭풍의 정령", nil, { "하급 원시 폭풍의 정령", "하급 폭풍의 정령" }, nil, nil, nil, 20 }, { 198067, 6, nil, nil, nil, "상급 불의 정령", nil, { "하급 원시 불의 정령", "하급 불의 정령" }, nil, nil, nil, 20 } },
+		{ { 192249, 6, nil, nil, nil, 2065626, nil, { 1020304 }, nil, nil, nil, 20 }, { 198067, 6, nil, nil, nil, 135790, nil, nil, nil, nil, nil, 20 } },
 		{ 99, 462816, { 196840, 1, nil, nil, 462818 }, { 191634, 2 } },
 		{ 470411, 4, nil, 18 * 0.3, nil, nil, nil, nil, nil, nil, 6 },
 
@@ -303,7 +303,7 @@ ACI_Options_Default = {
 	ACI_SpellList_SHAMAN_2 = {
 		{ 17364, 1 },
 		{ 60103, 1, nil, nil, 390371 },
-		{ 51533, 2, nil, nil, nil, nil, nil, nil, nil, 1 },
+		{ 51533, 2, nil, nil, nil, nil, nil, {1, 224125, 224126, 224127}, nil, 1},		-- 야수정령
 		{ 99, 334195, { 196840, 1, nil, nil, 334196 }, { 375982, 2 } },
 		{ 470411, 4, nil, 18 * 0.3, nil, nil, nil, nil, nil, nil, 6 },
 	},
@@ -313,7 +313,7 @@ ACI_Options_Default = {
 		{ 73920, 1 },
 		{ 51505, 1 },
 		{ 108280, 6 },
-		{{157153, 6,  nil, nil, nil, "폭우의 토템" }, {5394, 6 }},
+		{{157153, 6,  nil, nil, nil, 971076 }, {5394, 6 }},
 		{ 470411, 4, nil, 18 * 0.3},
 	},
 
@@ -323,7 +323,7 @@ ACI_Options_Default = {
 
 		{ 48181, 4 },
 		{ 316099, 4, nil, 1 },
-		{{ 442726, 2 },{ 205180, 6, nil, nil, nil, "암흑시선" }},
+		{{ 442726, 2 },{ 205180, 6, nil, nil, nil, 1416161 }},
 		{ 172, 4, nil, 1 },
 		{ 980, 4, nil, 1 },
 
@@ -344,7 +344,7 @@ ACI_Options_Default = {
 
 		{ 196406, 3 },
 		{ 99, 456985, { 6353, 1 }, { 196447, 1 } },
-		{{ 442726, 2 },{ 1122, 6, nil, nil, nil, "지옥불정령" }},
+		{{ 442726, 2 },{ 1122, 6, nil, nil, nil, 136219 }},
 		{ 99, 387506, { 394087, 5, "nameplate", 5, nil, 80240 }, { 80240, 4, "nameplate" } },
 		{ 99, 348, { 348, 4, nil, 1 }, { 445468, 4, nil, 1 } },
 

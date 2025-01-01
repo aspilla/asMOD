@@ -159,7 +159,7 @@ function ns.Button:checkTotem()
     end
 
     local totem = ns.aurafunctions.checkTotem(buff);
-    local aura = ns.aurafunctions.checkAura("player", buff);    
+    local aura = ns.aurafunctions.checkAura("player", buff);
 
     if totem then
         self.icon = totem[4];
@@ -236,53 +236,57 @@ function ns.Button:checkBuffList()
     local t = self.type;
 
     local count = 0;
-    local extemp = 0;    
+    local extemp = 0;
 
     if self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly then
-        for _, buff in pairs(bufflist) do
-            local aura = ns.aurafunctions.checkAura(self.unit, buff);
+        if bufflist[1] == 1 then
+            count = ns.aurafunctions.checkAuraList(self.unit, bufflist);
+        else
+            for _, buff in pairs(bufflist) do
+                local aura = ns.aurafunctions.checkAura(self.unit, buff);
 
-            if aura then
-                count = count + 1;
-                -- 주사위 최대 버프 시간을 우선으로 보이자
-                if self.icon == nil or aura.expirationTime > (self.start + self.duration) then
-                    self.icon = aura.icon;
-                    self.start = aura.expirationTime - aura.duration
-                    self.duration = aura.duration;
-                    extemp = aura.expirationTime;
+                if aura then
+                    count = count + 1;
+                    -- 주사위 최대 버프 시간을 우선으로 보이자
+                    if self.icon == nil or aura.expirationTime > (self.start + self.duration) then
+                        self.icon = aura.icon;
+                        self.start = aura.expirationTime - aura.duration
+                        self.duration = aura.duration;
+                        self.reversecool = true;
+                        extemp = aura.expirationTime;
 
-                    local color;
-                    local buff_miss = false;
+                        local color;
+                        local buff_miss = false;
 
-                    if aura.dispelName then
-                        color = DebuffTypeColor[aura.dispelName];
-                    elseif buff_miss then
-                        color = { r = 1.0, g = 0, b = 0 };
-                    else
-                        if t == 4 or t == 8 then
-                            color = DebuffTypeColor["none"];
+                        if aura.dispelName then
+                            color = DebuffTypeColor[aura.dispelName];
+                        elseif buff_miss then
+                            color = { r = 1.0, g = 0, b = 0 };
                         else
-                            color = DebuffTypeColor["Disease"];
+                            if t == 4 or t == 8 then
+                                color = DebuffTypeColor["none"];
+                            else
+                                color = DebuffTypeColor["Disease"];
+                            end
                         end
-                    end
-                    self.borderColor = color;
+                        self.borderColor = color;
 
-                    if self.number == 1 then
-                        self.number = self.duration * 0.3;
-                    end
+                        if self.number == 1 then
+                            self.number = self.duration * 0.3;
+                        end
 
-                    if self.number and (aura.expirationTime - self.currtime) <= self.number and self.duration > 0 then
-                        self.buffalert = true;
+                        if self.number and (aura.expirationTime - self.currtime) <= self.number and self.duration > 0 then
+                            self.buffalert = true;
+                        end
                     end
                 end
             end
+
+            if count > 3 then
+                self.alert2 = true;
+            end
         end
-
-
-        if count > 3 then
-            self.alert2 = true;
-        end
-
+        
         if count > 1 then
             self.count = count;
         end
@@ -294,6 +298,7 @@ function ns.Button:checkBuffList()
                 self.icon = aura.icon;
                 self.start = aura.expirationTime - aura.duration
                 self.duration = aura.duration;
+                self.reversecool = true;
                 extemp = aura.expirationTime;
 
                 local color;
@@ -342,7 +347,7 @@ function ns.Button:checkBuff()
         buff = self.realbuff;
     end
 
-    local aura = ns.aurafunctions.checkAura(self.unit, buff);    
+    local aura = ns.aurafunctions.checkAura(self.unit, buff);
 
     if aura then
         self.icon = aura.icon;
@@ -392,7 +397,7 @@ function ns.Button:checkBuff()
 end
 
 function ns.Button:checkOthers()
-    if self.alertbufflist then        
+    if self.alertbufflist then
         for _, buff in pairs(self.alertbufflist) do
             local aura = ns.aurafunctions.checkAura(self.unit, buff);
             if aura and (aura.expirationTime - self.currtime) > self.gcd then
@@ -414,7 +419,7 @@ function ns.Button:checkSpellCoolInBuff()
         local spellstart, spellduration = asGetSpellCooldown(self.spellid);
         local charges, maxCharges = asGetSpellCharges(self.spellid);
 
-        if spellduration and (charges == nil or charges == 0) then            
+        if spellduration and (charges == nil or charges == 0) then
             local ex = spellduration + spellstart;
             local remain = ex - GetTime();
 
@@ -461,7 +466,7 @@ function ns.Button:checkSpell()
     local start, duration, enable                          = asGetSpellCooldown(spellid);
     local isUsable, notEnoughMana                          = C_Spell.IsSpellUsable(spellid);
     local charges, maxCharges, chargeStart, chargeDuration = asGetSpellCharges(spellid);
-    local count                                            = charges;    
+    local count                                            = charges;
 
     if count == 1 and (not maxCharges or maxCharges <= 1) then
         count = 0;
@@ -560,7 +565,7 @@ function ns.Button:checkSpell()
         self.count = count;
     end
 
-    if self.buffshowtime then        
+    if self.buffshowtime then
         local realcasttime = ns.eventhandler.getCastTime(self.spellid);
 
         if realcasttime then
@@ -638,9 +643,9 @@ function ns.Button:showButton()
     local frameCooldown;
     local frameCount;
     local frameBorder;
-    local frameSpellCool;    
+    local frameSpellCool;
 
-    local frame  = self.frame;
+    local frame = self.frame;
     if not frame then
         return;
     end
@@ -805,13 +810,7 @@ function ns.Button:init(config, frame)
         self.countbuff = select(1, asGetSpellInfo(self.countbuff));
     end
     self.realbuff = config[6];
-    if type(self.realbuff) == "number" then
-        self.realbuff = select(1, asGetSpellInfo(self.realbuff));
-    end
     self.countdebuff = config[7];
-    if type(self.countdebuff) == "number" then
-        self.countdebuff = select(1, asGetSpellInfo(self.countdebuff));
-    end
     self.bufflist = config[8];
     self.alertbufflist = config[9];
     self.checkcool = config[10];
@@ -840,12 +839,6 @@ function ns.Button:init(config, frame)
             self.unit = "target"
         else
             self.unit = "player"
-        end
-    end
-
-    if self.realbuff then
-        if self.realbuff == "petname" and UnitExists("pet") then
-            self.realbuff = UnitName("pet");
         end
     end
 
