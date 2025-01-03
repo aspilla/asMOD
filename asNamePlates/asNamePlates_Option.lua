@@ -320,7 +320,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 241229,
+    version = 250105,
     ANameP_ShowKnownSpell = false,                            -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -374,7 +374,7 @@ ANameP_Options_Default = {
 
     ANameP_ShowList_ROGUE_1 = {
         [457129] = { 0, 5 },         --죽음추적자의 징표
-        [703] = { 1, 4, 2 },         --목조르기
+        [703] = { 1, 4, 2, false, true },         --목조르기
         [1943] = { 24 * 0.3, 3, 1 }, --파열
         [121411] = { 12 * 0.3, 2 },  --혈폭풍
 
@@ -489,11 +489,12 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_DRUID_2 = {
-        [155722] = { 12 * 0.3, 5, 1 }, --갈퀴 발톱
-        [164812] = { 1, 4, 2 },        --달빛섬광
+        [155722] = { 12 * 0.3, 5, 1, false, true }, --갈퀴 발톱
+        [155625] = { 1, 4, 2, false, true },        --달빛섬광
         [391889] = { 1, 3 },           --적응의 무리
-        [1079] = { 19 * 0.3, 2 },      --도려내기
-        [439531] = { 0, 1 },           --피바라미 덩굴
+        [1079] = { 19 * 0.3, 2, nil, false, true },      --도려내기
+        [405233] = { 0, 1, nil, false, true },           --Trash
+        
     },
 
     ANameP_ShowList_DRUID_3 = {

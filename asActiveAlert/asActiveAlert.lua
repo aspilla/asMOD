@@ -96,7 +96,7 @@ local function ASAA_UpdateCooldown()
 	local numCools = 1;
 	local frame;
 	local frameIcon, frameCooldown;
-	local icon, duration, start, enable;
+	local name, icon, duration, start, enable;
 	local frameBorder;
 	local parent;
 
@@ -108,7 +108,7 @@ local function ASAA_UpdateCooldown()
 
 	for id, isAlert in pairs(ASAA_SpellList) do
 		if isAlert == true then
-			_, _, icon = asGetSpellInfo(id);
+			name, _, icon = asGetSpellInfo(id);			
 			start, duration, enable = asGetSpellCooldown(id);
 			local isUsable, notEnoughMana = C_Spell.IsSpellUsable(id);
 
@@ -251,7 +251,7 @@ local function ASAA_OnEvent(self, event, arg1, arg2, arg3)
 		ASAA_UpdateCooldown();
 	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and (arg1 == "player" or arg1 == "pet") then
 		ASAA_UpdateCooldown();
-	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
+	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
 		ASAA_Delete()
 	end
 end
@@ -263,6 +263,7 @@ ASAA_mainframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
 ASAA_mainframe:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 ASAA_mainframe:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 ASAA_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+ASAA_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 
 

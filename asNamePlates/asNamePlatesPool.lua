@@ -7,6 +7,7 @@ local function createDebuffFrame(parent)
     local ret = CreateFrame("Frame", nil, parent, "asNamePlatesBuffFrameTemplate");
     local frameCooldown = ret.cooldown;
     local frameCount = ret.count;
+    local frameOther = ret.other;
 
     for _, r in next, { frameCooldown:GetRegions() } do
         if r:GetObjectType() == "FontString" then
@@ -22,6 +23,8 @@ local function createDebuffFrame(parent)
     frameCount:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CountFontSize, "OUTLINE")
     frameCount:ClearAllPoints();
     frameCount:SetPoint("BOTTOMRIGHT", -2, 2);
+
+    frameOther.snapshot:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CountFontSize - 2, "OUTLINE")
 
     local frameIcon = ret.icon;
     local frameBorder = ret.border;

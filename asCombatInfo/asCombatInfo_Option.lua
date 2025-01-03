@@ -11,9 +11,9 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 );
 
 ACI_Options_Default = {
-	version = 250104,
+	version = 250105,
 	-- 	ACI_SpellList_직업명_특성숫자
-	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime} 순으로 편집
+	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime, checksnapshot} 순으로 편집
 	-- 	Spell 기술명 혹은 ID (버프는 ID로 입력해야 Icon 나옴)
 	-- 	Type : 1 Spell Cool down
 	-- 	Type : 2 버프 & Spell Cool down, buff가 없으면 Cooldown check
@@ -61,7 +61,7 @@ ACI_Options_Default = {
 		{ { 121411, 4, nil, 12 * 0.3 }, { 32645, 2 } },
 		{ 5938, 4 },
 		{{ 385627, 2 }, {360194, 4 }},
-		{ 703, 4, nil, 1 },
+		{ 703, 4, nil, 1, nil, 703, nil, nil, nil, nil, nil, nil, true },
 		{ 1943, 4, nil, 24 * 0.3, nil, nil, nil, nil, nil, nil, 6 },
 	},
 
@@ -263,11 +263,11 @@ ACI_Options_Default = {
 
 	--야성
 	ACI_SpellList_DRUID_2 = {
-		{ 106830, 4 },
-		{ { 274837, 1 }, { 391888, 1 }, { 106951, 2 } },
+		{ 106830, 4, nil, nil, nil, 405233, nil, nil, nil, nil, nil, nil, true },
+		{ { 391888, 4,  nil, nil, nil, nil, nil, nil, nil, 1 }, { 274837, 1 }, { 106951, 2 } },
 		{ 5217, 2 },
-		{ 1079, 4, nil, 19 * 0.3 },
-		{ 1822, 4, nil, 1 },
+		{ 1079, 4, nil, 19 * 0.3, nil, 1079, nil, nil, nil, nil, nil, nil,  true  },
+		{ 1822, 4, nil, 1, nil, 155722, nil, nil, nil, nil, nil, nil,  true },
 	},
 
 	--수호

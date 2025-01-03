@@ -12,6 +12,8 @@ local aggroIconR = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0, 255, 0, 0);
 local aggroIcon = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0);
 local petcleaveIcon = CreateAtlasMarkup("WildBattlePetCapturable", 10, 10, 0, 0);
 local pettargetIcon = CreateAtlasMarkup("WildBattlePetCapturable", 10, 10, 0, 0, 255, 0, 0);
+local snapshotIconG = CreateAtlasMarkup("PlayerPartyBlip", 20, 20, 0, 0, 100, 255, 100);
+local snapshotIconR = CreateAtlasMarkup("PlayerPartyBlip", 20, 20, 0, 0, 255, 100, 100);
 
 local DangerousSpellList = {}
 
@@ -287,6 +289,7 @@ local function updateAuras(self)
     local auraData;
     local icon_size = self.icon_size;
     local unit = self.unit;
+    local guid = UnitGUID(unit);
 
     if not self.checkaura then
         self:Hide();
@@ -408,11 +411,14 @@ local function updateAuras(self)
             else
                 local alert = false;
                 local showlist_time = nil;
+                local frame = self.buffList[numDebuffs];
+
                 if showlist then
                     isshowlist = true
                     showlist_time = showlist[1];
-                    local alertcount = showlist[4] or false;
                     local alertnameplate = showlist[3] or 0;
+                    local alertcount = showlist[4] or false;
+                    local checksnapshot = showlist[5] or false;
 
                     if showlist_time == 1 then
                         showlist_time = aura.duration * 0.3;
@@ -449,9 +455,33 @@ local function updateAuras(self)
                             end
                         end
                     end
-                end
 
-                local frame = self.buffList[numDebuffs];
+                    if  checksnapshot and asDotSnapshot and asDotSnapshot.Relative then                
+                        local snapshots = asDotSnapshot.Relative(guid, aura.spellId);
+                
+                        if snapshots then               
+                            
+                            if snapshots > 1 then
+                                frame.other.snapshot:SetText(snapshotIconG);
+                                frame.other.snapshot:Show();
+                            elseif snapshots == 1 then                                            
+                                frame.other.snapshot:Hide();
+                            else
+                                frame.other.snapshot:SetText(snapshotIconR);
+                                frame.other.snapshot:Show();
+                            end                 
+                            
+                        else            
+                            frame.other.snapshot:Hide();
+                        end
+                        --print("working")
+                    else
+                        frame.other.snapshot:Hide();
+                    end
+                else
+                    frame.other.snapshot:Hide();
+                end               
+                
                 frame.alert = false;
 
                 local size = icon_size;
@@ -489,7 +519,7 @@ local function updateAuras(self)
                 self.buffList[numDebuffs]:SetID(auraInstanceID);
                 self.buffList[numDebuffs].unit = unit;
                 self.buffList[numDebuffs]:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
-
+                
                 numDebuffs = numDebuffs + 1;
             end
 

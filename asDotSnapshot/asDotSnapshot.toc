@@ -1,0 +1,7 @@
+## Interface: 110007
+## Author: |cffff3399Aspilla|r 
+## Title: |cffff3399as|rDotSnapshot
+## Notes: Dot snapshot addon for Feral and Assassination
+## Version : 250103
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+asDotSnapshot.lua

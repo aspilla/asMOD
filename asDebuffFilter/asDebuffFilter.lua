@@ -554,9 +554,10 @@ end
 local function UpdateAuraFrames(unit, auraList, numAuras)
     local i = 0;
     local parent = ADF_TARGET_DEBUFF;
+    local guid = UnitGUID("target");
 
     if (unit == "player") then
-        parent = ADF_PLAYER_DEBUFF;
+        parent = ADF_PLAYER_DEBUFF;    
     end
 
 
@@ -596,6 +597,7 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             if unit == "target" and showlist then                
                 local showlist_time = showlist[1];
                 local alertcount = showlist[4] or false;
+                local checksnapshot = showlist[5] or false;
                 local alertnameplate = showlist[3] or false;
 
                 if showlist_time == 1 then
@@ -614,6 +616,33 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
                         alert = true;
                     end
                 end
+
+                if  checksnapshot and asDotSnapshot and asDotSnapshot.Relative then                
+                    local snapshots = asDotSnapshot.Relative(guid, aura.spellId);
+            
+                    if snapshots then
+            
+                        frame.other.snapshot:SetText(math.floor(snapshots * 100));
+                        if snapshots > 1 then
+                            frame.other.snapshot:SetTextColor(0.5, 1, 0.5);                
+                            frame.other.snapshot:Show();
+                        elseif snapshots == 1 then                                         
+                            frame.other.snapshot:Hide();
+                        else
+                            frame.other.snapshot:SetTextColor(1, 0.5, 0.5);
+                            frame.other.snapshot:Show();
+                        end                 
+                        
+                    else            
+                        frame.other.snapshot:Hide();
+                    end
+                    --print("working")
+                else
+                    frame.other.snapshot:Hide();
+                end
+            else
+                frame.other.snapshot:Hide();
+    
             end
 
             if (aura.duration > 0) then
@@ -794,8 +823,7 @@ local function CreatDebuffFrames(parent, bright)
 
     for idx = 1, ns.ADF_MAX_DEBUFF_SHOW do
         parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetDebuffFrameTemplate");
-        local frame = parent.frames[idx];
-        frame:SetFrameStrata("MEDIUM");
+        local frame = parent.frames[idx];        
         frame:SetFrameLevel(9000);
 
         frame.cooldown:SetFrameLevel(9100);
@@ -810,13 +838,15 @@ local function CreatDebuffFrames(parent, bright)
 
         frame.count:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize, "OUTLINE")
         frame.count:ClearAllPoints()
-        frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
+        frame.count:SetPoint("BOTTOMRIGHT", -2, 2);        
 
         frame.icon:SetTexCoord(.08, .92, .08, .92);
         frame.icon:SetAlpha(ns.ADF_ALPHA);
         frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
         frame.border:SetAlpha(ns.ADF_ALPHA);
+
+        frame.other.snapshot:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize - 1, "OUTLINE")
 
         frame:ClearAllPoints();
         ADF_UpdateDebuffAnchor(parent.frames, idx, 1, bright, parent);

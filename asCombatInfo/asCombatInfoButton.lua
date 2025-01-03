@@ -109,6 +109,7 @@ function ns.Button:initButton()
     self.buffalert = false;
     self.alert2 = false;
     self.coolalert = false;
+    self.improvebuff = false;
     self.currtime = GetTime();
     self.gcd = select(2, asGetSpellCooldown(61304));
 
@@ -375,9 +376,9 @@ function ns.Button:checkBuff()
                 self.count = math.ceil(aura.points[1] / 1000000) .. "m"
             elseif (aura.points[1] > 999) then
                 self.count = math.ceil(aura.points[1] / 1000) .. "k"
-            end
+            end          
         end
-
+        
         local color;
         local buff_miss = false;
 
@@ -407,6 +408,35 @@ function ns.Button:checkOthers()
         end
     end
 end
+
+local function checkImprovedBuffList(self, aura, cachelist)
+    for i, v in pairs(cachelist) do
+        if v.expirationTime == aura.expirationTime then            
+            return;
+        end     
+    end
+
+    for i, v in pairs(cachelist) do
+        if self.currtime - v.expirationTime > 30 then
+            cachelist[i] = nil;            
+        end        
+    end
+
+    tinsert(cachelist, aura);
+end
+
+local function isImprovedBuff(start, cachelist)
+    for _, buffs in pairs(cachelist) do
+        for _, aura in pairs(buffs) do
+            if start < aura.expirationTime and start > aura.expirationTime - aura.duration then
+                return true;
+            end
+        end
+    end
+
+    return false;
+end
+
 
 function ns.Button:checkSpellCoolInBuff()
     if not self.icon and self.start and self.duration then
@@ -644,6 +674,7 @@ function ns.Button:showButton()
     local frameCount;
     local frameBorder;
     local frameSpellCool;
+    local guid = UnitGUID(self.unit);
 
     local frame = self.frame;
     if not frame then
@@ -669,6 +700,11 @@ function ns.Button:showButton()
     frameBorder:SetVertexColor(self.borderColor.r, self.borderColor.g, self.borderColor.b);
     frameBorder:Show();
 
+    if self.improvebuff then       
+        frameBorder:SetVertexColor(1,1,1);
+        self.buffalert = false;
+    end
+
 
     if (self.duration ~= nil and self.duration > 0 and self.duration < 500) then
         -- set the count
@@ -680,7 +716,10 @@ function ns.Button:showButton()
 
 
         local remain = self.start + self.duration - GetTime();
-        if remain < 5 then
+        if self.improvebuff then  
+            frame.cooldownfont:SetTextColor(0.7, 1, 0.7);
+            frame.cooldownfont:SetFont(STANDARD_TEXT_FONT, frame.cooldownfont.fontsize + 3, "OUTLINE")
+        elseif remain < 5 then
             frame.cooldownfont:SetTextColor(1, 0.3, 0.3);
             frame.cooldownfont:SetFont(STANDARD_TEXT_FONT, frame.cooldownfont.fontsize + 3, "OUTLINE")
         elseif remain < 10 then
@@ -698,9 +737,9 @@ function ns.Button:showButton()
         frameSpellCool.spellcool:SetText(self.spellcool);
         frameSpellCool.spellcool:SetVertexColor(self.spellcoolColor.r, self.spellcoolColor.g, self.spellcoolColor.b);
         frameSpellCool.spellcool:Show();
-        frameSpellCool:Show();
+        
     else
-        frameSpellCool:Hide();
+        frameSpellCool.spellcool:Hide();
     end
 
     self.coolalert = false;
@@ -735,18 +774,31 @@ function ns.Button:showButton()
         frameCount:Hide();
     end
 
-    if self.checkSplinter and ns.aurafunctions.checkSplinterTime() then
-        local splinterTime = ns.aurafunctions.checkSplinterTime()
+    if self.checksnapshot and asDotSnapshot and asDotSnapshot.Relative then
+        
+        local snapshots = asDotSnapshot.Relative(guid, self.realbuff);
 
-        if splinterTime > 0 and splinterTime > self.start then
-            frame.alerttext:SetText("+2")
-        else
-            ns.aurafunctions.clearSplinterTime()
-            frame.alerttext:SetText("")
+        if snapshots then
+
+            frameSpellCool.snapshot:SetText(math.floor(snapshots * 100));
+            if snapshots > 1 then
+                frameSpellCool.snapshot:SetTextColor(0.5, 1, 0.5);                
+                frameSpellCool.snapshot:Show();
+            elseif snapshots == 1 then
+                frameSpellCool.snapshot:SetTextColor(0.5, 0.5, 0.5);                
+                frameSpellCool.snapshot:Hide();
+            else
+                frameSpellCool.snapshot:SetTextColor(1, 0.5, 0.5);
+                frameSpellCool.snapshot:Show();
+            end
+            
+            
+        else            
+            frameSpellCool.snapshot:Hide();
         end
-        frame.alerttext:Show();
+        --print("working")
     else
-        frame.alerttext:Hide();
+        frameSpellCool.snapshot:Hide();
     end
 
     if self.buffalert then
@@ -815,7 +867,8 @@ function ns.Button:init(config, frame)
     self.alertbufflist = config[9];
     self.checkcool = config[10];
     self.checkplatecount = config[11];
-    self.buffshowtime = config[12];
+    self.buffshowtime = config[12];    
+    self.checksnapshot = config[13];
     self.spellid = select(7, asGetSpellInfo(self.spell));
     if self.spellid == nil then
         self.spellid = select(7, asGetSpellInfo(self.realspell));
@@ -926,11 +979,11 @@ function ns.Button:init(config, frame)
         self:initButton();
         self:checkTotem();
         self:checkBuffList();
-        self:checkBuff();
+        self:checkBuff();        
         self:checkSpellCoolInBuff();
         self:checkSpell();
         self:checkCount();
-        self:checkOthers();
+        self:checkOthers();        
         self:showButton();
     end
 

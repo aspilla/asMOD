@@ -417,6 +417,7 @@ local brogue = false;
 local combobuffalertlist = nil;
 local combobuffcountalertlist = nil;
 local combobuffcoloralertlist = nil;
+local druidcomboalertid = nil;
 local spellbuffcolorlist = nil;
 local spell2buffcolorlist = nil;
 
@@ -660,6 +661,16 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
         combotext:ClearAllPoints();
         combotext:SetPoint("CENTER", combobar[math.ceil(combobar.max_combo / 2)], "CENTER", 0, 0);
         combotext:Show();
+    end
+
+    if druidcomboalertid then
+        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff("player",druidcomboalertid);
+
+        if name and count and count < combobar.max_combo then
+            for i = 1, count do
+                combobar[i]:SetStatusBarColor(0, 0.5, 1);
+            end            
+        end   
     end
 end
 
@@ -2010,6 +2021,7 @@ local function APB_CheckPower(self)
     combobuffalertlist = nil;
     combobuffcountalertlist = nil;
     combobuffcoloralertlist = nil;
+    druidcomboalertid = nil;
     spellbuffcolorlist = nil;
     spell2buffcolorlist = nil;
 
@@ -2412,6 +2424,8 @@ local function APB_CheckPower(self)
 
             combobuffalertlist = { 391882 };      --최상위
             combobuffcoloralertlist = { 441585 }; --찟어발기기
+
+            druidcomboalertid = 405189;         --넘쳐 흐르는 힘
 
             if IsPlayerSpell(202028) then         --잔혹한 베기
                 APB_SPELL = 202028;

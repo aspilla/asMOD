@@ -117,9 +117,8 @@ ADotF_ShowList_DRUID_1 = {
 
 ADotF_ShowList_DRUID_2 = {
     { 155722, 12 * 0.3 },
-    { 164812, 1 },    
-    { 1079, 19 * 0.3 },    
-    
+    { 155625, 1 },    
+    { 1079, 19 * 0.3 },   
 }
 
 ADotF_ShowList_DRUID_3 = {
