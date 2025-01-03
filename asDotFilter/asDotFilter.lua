@@ -22,7 +22,7 @@ ADotF_ShowList_WARRIOR_3 = {
 
 ADotF_ShowList_ROGUE_1 = {
     { 457129, 0 },
-    { 703, 1 },
+    { 703, 1, true },
     { 1943, 24 * 0.3 },    
 }
 
@@ -116,9 +116,9 @@ ADotF_ShowList_DRUID_1 = {
 
 
 ADotF_ShowList_DRUID_2 = {
-    { 155722, 12 * 0.3 },
-    { 155625, 1 },    
-    { 1079, 19 * 0.3 },   
+    { 155722, 12 * 0.3, true },
+    { 155625, 1, true },    
+    { 1079, 19 * 0.3, true },   
 }
 
 ADotF_ShowList_DRUID_3 = {
@@ -242,7 +242,7 @@ local function ADotF_UnitDebuff(unit, buff, filter)
     end);
 
     if ret then
-        return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit;
+        return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit, ret.spellId;
     end
 
     return nil;
@@ -294,7 +294,7 @@ local function ADotF_UpdateDebuff(unit)
     local numDebuffs = 1;
     local frame;
     local frameIcon, frameCount, frameCooldown;
-    local icon, count, debuffType, duration, expirationTime, caster;
+    local icon, count, debuffType, duration, expirationTime, caster, spellId;
     local color;
     local frameBorder;
     local parent;
@@ -387,8 +387,10 @@ local function ADotF_UpdateDebuff(unit)
             return;
         end
 
+        local guid = UnitGUID(unit);
+
         for i = 1, #ADotF_ShowList do
-            _, icon, count, debuffType, duration, expirationTime, caster = ADotF_UnitDebuff(unit,
+            _, icon, count, debuffType, duration, expirationTime, caster, spellId = ADotF_UnitDebuff(unit,
                 ADotF_ShowList[i][1], "PLAYER");
 
             if icon and caster == "player" or caster == "pet" then
@@ -421,6 +423,8 @@ local function ADotF_UpdateDebuff(unit)
 
                     frame.count:SetFont(font, ADotF_CountFontSize, "OUTLINE")
                     frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
+
+                    frame.other.snapshot:SetFont(font, ADotF_CountFontSize - 1, "OUTLINE")
                 end
 
                 -- set the icon
@@ -464,10 +468,35 @@ local function ADotF_UpdateDebuff(unit)
                 frame:Show();
 
                 local alert_du = ADotF_ShowList[i][2];
-
+                local checksnapshot = ADotF_ShowList[i][3];
+                
                 if alert_du == 1 then
                     alert_du = duration * 0.3;
                     ADotF_ShowList[i][2] = alert_du;
+                end
+
+                if  checksnapshot and asDotSnapshot and asDotSnapshot.Relative then                
+                    local snapshots = asDotSnapshot.Relative(guid, spellId);
+            
+                    if snapshots then
+            
+                        frame.other.snapshot:SetText(math.floor(snapshots * 100));
+                        if snapshots > 1 then
+                            frame.other.snapshot:SetTextColor(0.5, 1, 0.5);                
+                            frame.other.snapshot:Show();
+                        elseif snapshots == 1 then                                         
+                            frame.other.snapshot:Hide();
+                        else
+                            frame.other.snapshot:SetTextColor(1, 0.5, 0.5);
+                            frame.other.snapshot:Show();
+                        end                 
+                        
+                    else            
+                        frame.other.snapshot:Hide();
+                    end
+                    --print("working")
+                else
+                    frame.other.snapshot:Hide();
                 end
 
                 if (((expirationTime - GetTime()) <= alert_du) and duration > 0) then

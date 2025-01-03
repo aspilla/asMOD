@@ -1,8 +1,8 @@
 ﻿## Interface: 110007
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDotFilter
-## Notes: Dot 필터 
-## Version : 241215
+## Notes: Dot filter addon for boss and focus frames 
+## Version : 250103
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asDotFilterLib.lua
 asDotFilterAura.lua
