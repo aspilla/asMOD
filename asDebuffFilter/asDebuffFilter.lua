@@ -577,7 +577,7 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             local frameIcon = frame.icon
             frameIcon:SetTexture(aura.icon);
             -- set the count
-            local frameCount = frame.count;
+            local frameCount = frame.other.count;
             local alert = false;
 
             -- Handle cooldowns
@@ -586,10 +586,8 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             if (aura.applications and aura.applications > 1) then
                 frameCount:SetText(aura.applications);
                 frameCount:Show();
-                frameCooldown:SetDrawSwipe(false);
             else
                 frameCount:Hide();
-                frameCooldown:SetDrawSwipe(true);
             end
 
             local showlist = show_list and show_list[aura.spellId];
@@ -825,8 +823,8 @@ local function CreatDebuffFrames(parent, bright)
         parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetDebuffFrameTemplate");
         local frame = parent.frames[idx];        
         frame:SetFrameLevel(9000);
-
         frame.cooldown:SetFrameLevel(9100);
+        frame.cooldown:SetDrawSwipe(true);
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, ns.ADF_CooldownFontSize, "OUTLINE");
@@ -834,17 +832,17 @@ local function CreatDebuffFrames(parent, bright)
                 r:SetPoint("TOP", 0, 5);
                 break
             end
-        end
-
-        frame.count:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize, "OUTLINE")
-        frame.count:ClearAllPoints()
-        frame.count:SetPoint("BOTTOMRIGHT", -2, 2);        
+        end       
 
         frame.icon:SetTexCoord(.08, .92, .08, .92);
         frame.icon:SetAlpha(ns.ADF_ALPHA);
         frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
         frame.border:SetAlpha(ns.ADF_ALPHA);
+
+        frame.other.count:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize, "OUTLINE")
+        frame.other.count:ClearAllPoints()
+        frame.other.count:SetPoint("BOTTOMRIGHT",frame.icon ,"BOTTOMRIGHT", -2, 2);        
 
         frame.other.snapshot:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize - 1, "OUTLINE")
 

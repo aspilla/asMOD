@@ -553,6 +553,8 @@ local function CreatDebuffFrames(parent, bright, fontsize, width, count)
     for idx = 1, count do
         parent.frames[idx] = CreateFrame("Button", nil, parent, "AUFDebuffFrameTemplate");
         local frame = parent.frames[idx];
+
+        frame.cooldown:SetDrawSwipe(true);
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
@@ -562,9 +564,9 @@ local function CreatDebuffFrames(parent, bright, fontsize, width, count)
             end
         end
 
-        frame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-        frame.count:ClearAllPoints()
-        frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
+        frame.other.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+        frame.other.count:ClearAllPoints()
+        frame.other.count:SetPoint("BOTTOMRIGHT", frame.icon ,"BOTTOMRIGHT", -2, 2);
 
         frame.icon:SetTexCoord(.08, .92, .08, .92);
         frame.icon:SetAlpha(1);
@@ -627,6 +629,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
 
         frame.portrait = CreateFrame("Button", nil, frame, "AUFDebuffFrameTemplate");
         local pframe = frame.portrait;
+        pframe.cooldown:SetDrawSwipe(true);
         for _, r in next, { pframe.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
@@ -636,9 +639,9 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
             end
         end
 
-        pframe.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-        pframe.count:ClearAllPoints()
-        pframe.count:SetPoint("BOTTOMRIGHT", -2, 2);
+        pframe.other.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+        pframe.other.count:ClearAllPoints()
+        pframe.other.count:SetPoint("BOTTOMRIGHT", pframe.icon, "BOTTOMRIGHT", -2, 2);
 
         pframe.portrait:SetTexCoord(.08, .92, .08, .92);
         pframe.portrait:SetAlpha(1);

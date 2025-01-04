@@ -1,8 +1,8 @@
 ﻿## Interface: 110007
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rOverlay
 ## Notes: 스킬 발동 알림
-## Version : 241221
+## Version : 250103
 ## SavedVariablesPerCharacter: ASO_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asOverlayOption.lua

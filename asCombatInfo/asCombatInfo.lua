@@ -414,30 +414,30 @@ for i = 1, ACI_MaxSpellCount do
 			break
 		end
 	end
-
-
-	if i < 6 then
-		ACI[i].count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize, "OUTLINE")
-	else
-		ACI[i].count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 2, "OUTLINE")
-	end
-	ACI[i].count:SetPoint("BOTTOMRIGHT", -3, 3);
-	ACI[i].spellcoolframe.spellcool:SetFont(STANDARD_TEXT_FONT, ACI_CooldownFontSize - 2, "OUTLINE");
-	ACI[i].spellcoolframe.spellcool:SetTextColor(0.8, 0.8, 1);
-	ACI[i].spellcoolframe.spellcool:Hide();
+	ACI[i].cooldown:SetDrawSwipe(true);
+	ACI[i].cooldown:SetHideCountdownNumbers(false);
 
 	ACI[i].icon:SetTexCoord(.08, .92, .08, .92);
 	ACI[i].border:SetTexture("Interface\\Addons\\asCombatInfo\\border.tga");
 	ACI[i].border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-
 	ACI[i].border:Hide();
 
-	ACI[i].spellcoolframe.snapshot:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 2, "OUTLINE")
-	ACI[i].spellcoolframe.snapshot:SetText("");
-	ACI[i].spellcoolframe.snapshot:SetTextColor(1, 0.5, 0.5);
-	--ACI[i].spellcoolframe.snapshot:SetPoint("TOP", 0, 2);	
-	ACI[i].spellcoolframe.snapshot:Hide();
-	ACI[i].spellcoolframe:Show();
+	if i < 6 then
+		ACI[i].others.count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize, "OUTLINE")
+	else
+		ACI[i].others.count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 2, "OUTLINE")
+	end
+	ACI[i].others.count:SetPoint("BOTTOMRIGHT", ACI[i].icon, "BOTTOMRIGHT", -3, 3);
+	ACI[i].others.spellcool:SetFont(STANDARD_TEXT_FONT, ACI_CooldownFontSize - 2, "OUTLINE");
+	ACI[i].others.spellcool:SetTextColor(0.8, 0.8, 1);
+	ACI[i].others.spellcool:Hide();
+
+	ACI[i].others.snapshot:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 2, "OUTLINE")
+	ACI[i].others.snapshot:SetText("");
+	ACI[i].others.snapshot:SetTextColor(1, 0.5, 0.5);
+	--ACI[i].others.snapshot:SetPoint("TOP", 0, 2);	
+	ACI[i].others.snapshot:Hide();
+	ACI[i].others:Show();
 end
 
 

@@ -76,9 +76,7 @@ local function ASBR_Update()
 	if spellChargeInfo and spellChargeInfo.cooldownStartTime then
 		ASBR_CoolButtons.cooldown:Show();
 		asCooldownFrame_Set(ASBR_CoolButtons.cooldown, spellChargeInfo.cooldownStartTime,
-			spellChargeInfo.cooldownDuration, spellChargeInfo.cooldownDuration > 0, true);
-		ASBR_CoolButtons.cooldown:SetHideCountdownNumbers(false);
-		ASBR_CoolButtons.cooldown:SetDrawSwipe(false);
+			spellChargeInfo.cooldownDuration, spellChargeInfo.cooldownDuration > 0, true);		
 	else
 		ASBR_CoolButtons.cooldown:Hide();
 	end
@@ -102,19 +100,24 @@ local function ASBR_Init()
 	ASBR_CoolButtons:RegisterForDrag("LeftButton");
 	ASBR_CoolButtons:SetMovable(true);
 
+	ASBR_CoolButtons.cooldown:SetHideCountdownNumbers(false);
+	ASBR_CoolButtons.cooldown:SetDrawSwipe(true);
+
 	for _, r in next, { ASBR_CoolButtons.cooldown:GetRegions() } do
 		if r:GetObjectType() == "FontString" then
 			r:SetFont(STANDARD_TEXT_FONT, ASBR_CooldownFontSize, "OUTLINE")
 			break
 		end
 	end
-
-	ASBR_CoolButtons.count:SetFont(STANDARD_TEXT_FONT, ASBR_CooldownFontSize, "OUTLINE")
+  
 
 	ASBR_CoolButtons.icon:SetTexCoord(.08, .92, .08, .92);
 	ASBR_CoolButtons.border:SetTexture("Interface\\Addons\\asBattleRes\\border.tga");
 	ASBR_CoolButtons.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 	ASBR_CoolButtons.border:SetVertexColor(0, 0, 0);
+
+	ASBR_CoolButtons.other.count:SetFont(STANDARD_TEXT_FONT, ASBR_CooldownFontSize, "OUTLINE")
+	ASBR_CoolButtons.other.count:SetPoint("BOTTOMRIGHT",ASBR_CoolButtons.icon ,"BOTTOMRIGHT", -2, 2);
 
 	ASBR_CoolButtons:SetPoint("CENTER", ASBR_CoolButtons_X, ASBR_CoolButtons_Y)
 	ASBR_CoolButtons:SetWidth(ASBR_SIZE);

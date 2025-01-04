@@ -274,7 +274,7 @@ local function UpdateAuraFrames(frame, auraList)
             local frameIcon = frame.icon
             frameIcon:SetTexture(aura.icon);
             -- set the count
-            local frameCount = frame.count;
+            local frameCount = frame.other.count;
             local alert = false;
 
             -- Handle cooldowns
@@ -282,11 +282,9 @@ local function UpdateAuraFrames(frame, auraList)
 
             if (aura.applications and aura.applications > 1) then
                 frameCount:SetText(aura.applications);
-                frameCount:Show();
-                frameCooldown:SetDrawSwipe(false);
+                frameCount:Show();                
             else
-                frameCount:Hide();
-                frameCooldown:SetDrawSwipe(true);
+                frameCount:Hide();                
             end
 
             if (aura.duration > 0) then
@@ -346,7 +344,7 @@ local function UpdatePortraitFrames(frame, auraList)
                 frameIcon:SetTexture(aura.icon);
                 frameIcon:Show();
                 -- set the count
-                local frameCount = frame.count;
+                local frameCount = frame.other.count;
                 local alert = false;
 
                 -- Handle cooldowns
@@ -354,11 +352,9 @@ local function UpdatePortraitFrames(frame, auraList)
 
                 if (aura.applications and aura.applications > 1) then
                     frameCount:SetText(aura.applications);
-                    frameCount:Show();
-                    frameCooldown:SetDrawSwipe(false);
+                    frameCount:Show();                    
                 else
-                    frameCount:Hide();
-                    frameCooldown:SetDrawSwipe(true);
+                    frameCount:Hide();                    
                 end
 
                 if (aura.duration > 0) then
@@ -396,7 +392,7 @@ local function UpdatePortraitFrames(frame, auraList)
     if bshowdebuff == false then        
         frame.portrait.icon:Hide();
         frame.portrait.cooldown:Hide();
-        frame.portrait.count:Hide();
+        frame.portrait.other.count:Hide();
         frame.portrait.border:SetVertexColor(0,0,0);
     end
 end

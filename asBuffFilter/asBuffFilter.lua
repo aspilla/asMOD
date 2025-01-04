@@ -525,8 +525,8 @@ local function updateTotemAura()
 				frame.auraInstanceID = nil;
 
 				-- set the count
-				local frameCount = frame.count;
-				local frameBigCount = frame.bigcount;
+				local frameCount = frame.other.count;
+				local frameBigCount = frame.other.bigcount;
 				-- Handle cooldowns
 				local frameCooldown = frame.cooldown;
 
@@ -637,8 +637,8 @@ local function UpdateAuraFrames(unit, auraList)
 			local frameIcon = frame.icon
 			frameIcon:SetTexture(aura.icon);
 			-- set the count
-			local frameCount = frame.count;
-			local frameBigCount = frame.bigcount;
+			local frameCount = frame.other.count;
+			local frameBigCount = frame.other.bigcount;
 
 			-- Handle cooldowns
 			local frameCooldown = frame.cooldown;
@@ -660,12 +660,10 @@ local function UpdateAuraFrames(unit, auraList)
 				if (aura.applications and aura.applications > 1) then
 					frameCount:SetText(aura.applications);
 					frameCount:Show();
-					frameBigCount:Hide();
-					frameCooldown:SetDrawSwipe(false);
+					frameBigCount:Hide();					
 				else
 					frameCount:Hide();
-					frameBigCount:Hide();
-					frameCooldown:SetDrawSwipe(true);
+					frameBigCount:Hide();					
 				end
 			end
 
@@ -859,10 +857,10 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 
 	for idx = 1, max do
 		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
-		local frame = parent.frames[idx];
-		frame:SetFrameStrata("MEDIUM");
+		local frame = parent.frames[idx];		
 		frame:SetFrameLevel(9000);
 		frame.cooldown:SetFrameLevel(9100);
+		frame.cooldown:SetDrawSwipe(true);
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
 				r:SetFont(STANDARD_TEXT_FONT, ns.ABF_CooldownFontSize, "OUTLINE");
@@ -871,14 +869,13 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 				break
 			end
 		end
+		frame.other.count:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize, "OUTLINE")
+		frame.other.count:ClearAllPoints()
+		frame.other.count:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", -2, 2);
 
-		frame.count:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize, "OUTLINE")
-		frame.count:ClearAllPoints()
-		frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
-
-		frame.bigcount:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize + 3, "OUTLINE")
-		frame.bigcount:ClearAllPoints()
-		frame.bigcount:SetPoint("CENTER", 0, 0);
+		frame.other.bigcount:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize + 3, "OUTLINE")
+		frame.other.bigcount:ClearAllPoints()
+		frame.other.bigcount:SetPoint("CENTER", frame.icon ,"CENTER", 0, 0);
 
 		frame.icon:SetTexCoord(.08, .92, .08, .92);
 		frame.icon:SetAlpha(ns.ABF_ALPHA);

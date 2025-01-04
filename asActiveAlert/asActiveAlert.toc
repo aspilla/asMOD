@@ -2,6 +2,6 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rActiveAlert 2.0
 ## Notes: 직업별 발동알림
-## Version : 250103
+## Version : 250105
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asActiveAlert.xml

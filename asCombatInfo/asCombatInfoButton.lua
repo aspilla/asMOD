@@ -673,7 +673,7 @@ function ns.Button:showButton()
     local frameCooldown;
     local frameCount;
     local frameBorder;
-    local frameSpellCool;
+    local frameOthers;
     local guid = UnitGUID(self.unit);
 
     local frame = self.frame;
@@ -681,10 +681,10 @@ function ns.Button:showButton()
         return;
     end
     frameIcon = frame.icon;
-    frameCooldown = frame.cooldown;
-    frameCount = frame.count;
+    frameCooldown = frame.cooldown;    
     frameBorder = frame.border;
-    frameSpellCool = frame.spellcoolframe;
+    frameOthers = frame.others;
+    frameCount = frameOthers.count;
 
     if self.icon == nil then
         frame:Hide();
@@ -708,9 +708,7 @@ function ns.Button:showButton()
 
     if (self.duration ~= nil and self.duration > 0 and self.duration < 500) then
         -- set the count
-        asCooldownFrame_Set(frameCooldown, self.start, self.duration, self.duration > 0, self.enable);
-        frameCooldown:SetDrawSwipe(false);
-        frameCooldown:SetHideCountdownNumbers(false);
+        asCooldownFrame_Set(frameCooldown, self.start, self.duration, self.duration > 0, self.enable);                
         frameCooldown:Show();
         frameCooldown:SetReverse(self.reversecool);
 
@@ -734,12 +732,12 @@ function ns.Button:showButton()
     end
 
     if self.spellcool then
-        frameSpellCool.spellcool:SetText(self.spellcool);
-        frameSpellCool.spellcool:SetVertexColor(self.spellcoolColor.r, self.spellcoolColor.g, self.spellcoolColor.b);
-        frameSpellCool.spellcool:Show();
+        frameOthers.spellcool:SetText(self.spellcool);
+        frameOthers.spellcool:SetVertexColor(self.spellcoolColor.r, self.spellcoolColor.g, self.spellcoolColor.b);
+        frameOthers.spellcool:Show();
         
     else
-        frameSpellCool.spellcool:Hide();
+        frameOthers.spellcool:Hide();
     end
 
     self.coolalert = false;
@@ -758,8 +756,7 @@ function ns.Button:showButton()
     if self.count then
         if frame.cooldownfont then
             frame.cooldownfont:ClearAllPoints();
-            frame.cooldownfont:SetPoint("TOPLEFT", 4, -4);
-            frameCooldown:SetDrawSwipe(false);
+            frame.cooldownfont:SetPoint("TOPLEFT", 4, -4);            
         end
 
         frameCount:SetText(self.count)
@@ -767,8 +764,7 @@ function ns.Button:showButton()
     else
         if frame.cooldownfont then
             frame.cooldownfont:ClearAllPoints();
-            frame.cooldownfont:SetPoint("CENTER", 0, 0);
-            frameCooldown:SetDrawSwipe(true);
+            frame.cooldownfont:SetPoint("CENTER", 0, 0);            
         end
 
         frameCount:Hide();
@@ -780,25 +776,25 @@ function ns.Button:showButton()
 
         if snapshots then
 
-            frameSpellCool.snapshot:SetText(math.floor(snapshots * 100));
+            frameOthers.snapshot:SetText(math.floor(snapshots * 100));
             if snapshots > 1 then
-                frameSpellCool.snapshot:SetTextColor(0.5, 1, 0.5);                
-                frameSpellCool.snapshot:Show();
+                frameOthers.snapshot:SetTextColor(0.5, 1, 0.5);                
+                frameOthers.snapshot:Show();
             elseif snapshots == 1 then
-                frameSpellCool.snapshot:SetTextColor(0.5, 0.5, 0.5);                
-                frameSpellCool.snapshot:Hide();
+                frameOthers.snapshot:SetTextColor(0.5, 0.5, 0.5);                
+                frameOthers.snapshot:Hide();
             else
-                frameSpellCool.snapshot:SetTextColor(1, 0.5, 0.5);
-                frameSpellCool.snapshot:Show();
+                frameOthers.snapshot:SetTextColor(1, 0.5, 0.5);
+                frameOthers.snapshot:Show();
             end
             
             
         else            
-            frameSpellCool.snapshot:Hide();
+            frameOthers.snapshot:Hide();
         end
         --print("working")
     else
-        frameSpellCool.snapshot:Hide();
+        frameOthers.snapshot:Hide();
     end
 
     if self.buffalert then

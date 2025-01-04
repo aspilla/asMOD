@@ -1,8 +1,8 @@
 ﻿## Interface: 110007
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDebuffFilter
 ## Notes: 디버프 필터 
-## Version : 241215
+## Version : 250105
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asDebuffFilterOptions.lua
 asDebuffFilterLib.lua

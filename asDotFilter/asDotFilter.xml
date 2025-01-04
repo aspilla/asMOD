@@ -1,6 +1,7 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Frame name="asTargetDotFrameTemplate" virtual="true" enableMouse="false">
+	<Frame name="asTargetDotFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW">
 		<Size>
 			<AbsDimension x="17" y="17"/>
 		</Size>
@@ -22,16 +23,7 @@
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
-				</Texture>	
-				<FontString name="$parentCount" parentKey="count" inherits="NumberFontNormalSmall" justifyH="RIGHT">
-					<Anchors>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset>
-								<AbsDimension x="5" y="0"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
+				</Texture>
 			</Layer>
 		</Layers>
 		<Frames>
@@ -52,7 +44,16 @@
 					<Anchor point="BOTTOM" x="0" y="-8"/>
 				</Anchors>
 				<Layers>
-					<Layer level="OVERLAY">						
+					<Layer level="OVERLAY">
+						<FontString name="$parentCount" parentKey="count" inherits="NumberFontNormalSmall" justifyH="RIGHT">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT">
+									<Offset>
+										<AbsDimension x="5" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
 						<FontString name="$parentSnapshot" parentKey="snapshot" inherits="NumberFontNormalLarge" justifyH="RIGHT">
 							<Anchors>
 								<Anchor point="CENTER">

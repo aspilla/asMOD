@@ -196,16 +196,14 @@ local function setFrame(frame, texture, count, expirationTime, duration, color)
     local frameIcon = frame.icon;
     frameIcon:SetTexture(texture);
 
-    local frameCount = frame.count;
+    local frameCount = frame.other.count;
     local frameCooldown = frame.cooldown;
 
     if count and (count > 1) then
         frameCount:SetText(count);
-        frameCount:Show();
-        frameCooldown:SetDrawSwipe(false);
+        frameCount:Show();        
     else
-        frameCount:Hide();
-        frameCooldown:SetDrawSwipe(true);
+        frameCount:Hide();        
     end
 
     asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0, true);

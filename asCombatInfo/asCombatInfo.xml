@@ -23,16 +23,7 @@
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
-				</Texture>
-				<FontString name="$parentCount" parentKey="count" inherits="NumberFontNormalLarge" justifyH="RIGHT">
-					<Anchors>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset>
-								<AbsDimension x="-3" y="3"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>				
+				</Texture>				
 			</Layer>
 		</Layers>
 		<Frames>
@@ -41,7 +32,7 @@
 					<Anchor point="CENTER" x="0" y="-1"/>
 				</Anchors>
 			</Cooldown>
-			<Frame name="$parentSpellCooldown" parentKey="spellcoolframe" virtual="true" enableMouse="false" frameStrata="MEDIUM">
+			<Frame name="$parentOthers" parentKey="others" virtual="true" enableMouse="false" frameStrata="MEDIUM">
 				<Size>
 					<AbsDimension x="17" y="17"/>
 				</Size>
@@ -50,6 +41,15 @@
 				</Anchors>
 				<Layers>
 					<Layer level="OVERLAY">
+					<FontString name="$parentCount" parentKey="count" inherits="NumberFontNormalLarge" justifyH="RIGHT">
+						<Anchors>
+							<Anchor point="BOTTOMRIGHT">
+								<Offset>
+									<AbsDimension x="-3" y="3"/>
+								</Offset>
+							</Anchor>
+							</Anchors>
+						</FontString>				
 						<FontString name="$parentSpellCool" parentKey="spellcool" inherits="NumberFontNormalLarge" justifyH="RIGHT">
 							<Anchors>
 								<Anchor point="CENTER">

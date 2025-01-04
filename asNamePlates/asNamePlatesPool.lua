@@ -5,9 +5,11 @@ local objects = {};
 -- 버프 디버프 처리부
 local function createDebuffFrame(parent)
     local ret = CreateFrame("Frame", nil, parent, "asNamePlatesBuffFrameTemplate");
-    local frameCooldown = ret.cooldown;
-    local frameCount = ret.count;
+    local frameCooldown = ret.cooldown;    
     local frameOther = ret.other;
+    local frameCount = frameOther.count;
+    local frameIcon = ret.icon;
+    local frameBorder = ret.border;
 
     for _, r in next, { frameCooldown:GetRegions() } do
         if r:GetObjectType() == "FontString" then
@@ -22,16 +24,12 @@ local function createDebuffFrame(parent)
 
     frameCount:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CountFontSize, "OUTLINE")
     frameCount:ClearAllPoints();
-    frameCount:SetPoint("BOTTOMRIGHT", -2, 2);
-
+    frameCount:SetPoint("BOTTOMRIGHT", frameIcon, "BOTTOMRIGHT", -2, 2);
     frameOther.snapshot:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CountFontSize - 2, "OUTLINE")
-
-    local frameIcon = ret.icon;
-    local frameBorder = ret.border;
-
     frameIcon:SetTexCoord(.08, .92, .08, .92)
     frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
     frameBorder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+    frameCooldown:SetDrawSwipe(true);
 
     ret.alert = false;
 

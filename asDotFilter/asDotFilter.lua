@@ -404,6 +404,7 @@ local function ADotF_UpdateDebuff(unit)
                     ADotF.units[unit].frames[numDebuffs] = CreateFrame("Button", nil, ADotF, "asTargetDotFrameTemplate");
                     frame = ADotF.units[unit].frames[numDebuffs];
                     frame:EnableMouse(false);
+                    frame.cooldown:SetDrawSwipe(true);
                     for _, r in next, { frame.cooldown:GetRegions() } do
                         if r:GetObjectType() == "FontString" then
                             r:SetFont(STANDARD_TEXT_FONT, ADotF_CooldownFontSize, "OUTLINE");
@@ -418,13 +419,11 @@ local function ADotF_UpdateDebuff(unit)
                     frame.border:SetTexture("Interface\\Addons\\asDotFilter\\border.tga");
                     frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
                     frame.border:SetAlpha(ADotF_ALPHA);
+                    
+                    frame.other.count:SetFont(STANDARD_TEXT_FONT, ADotF_CountFontSize, "OUTLINE")
+                    frame.other.count:SetPoint("BOTTOMRIGHT", frame.icon ,"BOTTOMRIGHT", -2, 2);
 
-                    local font = frame.count:GetFont()
-
-                    frame.count:SetFont(font, ADotF_CountFontSize, "OUTLINE")
-                    frame.count:SetPoint("BOTTOMRIGHT", -2, 2);
-
-                    frame.other.snapshot:SetFont(font, ADotF_CountFontSize - 1, "OUTLINE")
+                    frame.other.snapshot:SetFont(STANDARD_TEXT_FONT, ADotF_CountFontSize - 1, "OUTLINE")
                 end
 
                 -- set the icon
@@ -432,7 +431,7 @@ local function ADotF_UpdateDebuff(unit)
                 frameIcon:SetTexture(icon);                
 
                 -- set the count
-                frameCount = frame.count;
+                frameCount = frame.other.count;
 
                 -- Handle cooldowns
                 frameCooldown = frame.cooldown;
@@ -440,10 +439,9 @@ local function ADotF_UpdateDebuff(unit)
                 if (count > 1) then
                     frameCount:SetText(count);
                     frameCount:Show();
-                    frameCooldown:SetDrawSwipe(false);
+                    
                 else
-                    frameCount:Hide();
-                    frameCooldown:SetDrawSwipe(true);
+                    frameCount:Hide();                    
                 end
 
                 if (duration > 0) then
