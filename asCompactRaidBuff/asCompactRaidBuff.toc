@@ -1,8 +1,8 @@
 ﻿## Interface: 110007
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCompactRaidBuff
-## Notes: 공격대/파티 창 강화
-## Version : 241225
+## Notes: Enhanced raid buff, debuff tracker for default UI
+## Version : 250105
 ## SavedVariablesPerCharacter: ACRB_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asCompactRaidBuffLib.lua

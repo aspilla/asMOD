@@ -295,10 +295,10 @@ local function ARCB_UtilSetBuff(buffFrame, aura, currtime)
         if (aura.applications >= 100) then
             countText = BUFF_STACKS_OVERFLOW;
         end
-        buffFrame.count:Show();
-        buffFrame.count:SetText(countText);
+        buffFrame.other.count:Show();
+        buffFrame.other.count:SetText(countText);
     else
-        buffFrame.count:Hide();
+        buffFrame.other.count:Hide();
     end
     buffFrame.auraInstanceID = aura.auraInstanceID;
     local enabled = aura.expirationTime and aura.expirationTime ~= 0;
@@ -313,13 +313,13 @@ local function ARCB_UtilSetBuff(buffFrame, aura, currtime)
         local remain = math.ceil(aura.expirationTime - currtime);
 
         if remain > 0 and remain < 100 then
-            buffFrame.remain:SetText(remain);
-            buffFrame.remain:Show();
+            buffFrame.other.remain:SetText(remain);
+            buffFrame.other.remain:Show();
         else
-            buffFrame.remain:Hide();
+            buffFrame.other.remain:Hide();
         end
     else
-        buffFrame.remain:Hide();
+        buffFrame.other.remain:Hide();
     end
 
     if ns.ACRB_ShowList then
@@ -336,10 +336,10 @@ local function ARCB_UtilSetBuff(buffFrame, aura, currtime)
 
         if showlist_time > 0 and aura.expirationTime - currtime < showlist_time then
             buffFrame.border:SetVertexColor(1, 1, 1);
-            buffFrame.remain:SetTextColor(1, 0, 0);
+            buffFrame.other.remain:SetTextColor(1, 0, 0);
         else
             buffFrame.border:SetVertexColor(0, 0, 0);
-            buffFrame.remain:SetTextColor(1, 1, 1);
+            buffFrame.other.remain:SetTextColor(1, 1, 1);
         end
     end
 
@@ -355,10 +355,10 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura, currtime)
         if (aura.applications >= 100) then
             countText = BUFF_STACKS_OVERFLOW;
         end
-        debuffFrame.count:Show();
-        debuffFrame.count:SetText(countText);
+        debuffFrame.other.count:Show();
+        debuffFrame.other.count:SetText(countText);
     else
-        debuffFrame.count:Hide();
+        debuffFrame.other.count:Hide();
     end
     debuffFrame.auraInstanceID = aura.auraInstanceID;
     local enabled = aura.expirationTime and aura.expirationTime ~= 0;
@@ -373,13 +373,13 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura, currtime)
         local remain = math.ceil(aura.expirationTime - currtime);
 
         if remain > 0 and remain < 100 then
-            debuffFrame.remain:SetText(remain);
-            debuffFrame.remain:Show();
+            debuffFrame.other.remain:SetText(remain);
+            debuffFrame.other.remain:Show();
         else
-            debuffFrame.remain:Hide();
+            debuffFrame.other.remain:Hide();
         end
     else
-        debuffFrame.remain:Hide();
+        debuffFrame.other.remain:Hide();
     end
 
     local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];

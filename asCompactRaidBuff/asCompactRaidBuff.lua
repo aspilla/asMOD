@@ -179,8 +179,11 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         f.border:Show();
 
         f.cooldown:SetSwipeColor(0, 0, 0, 0.5);
-        f.count:ClearAllPoints();
-        f.count:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 1);
+        f.other.count:ClearAllPoints();
+        f.other.count:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 1);
+
+        f.other.remain:ClearAllPoints();
+        f.other.remain:SetPoint("TOPLEFT", f, "TOPLEFT", 1, -1);
 
         if not f:GetScript("OnEnter") then
             f:SetScript("OnEnter", function(s)
@@ -215,8 +218,8 @@ function ns.ACRB_setupFrame(asframe, bupdate)
     end
 
     local function layoutcooldown(f)
-        f.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-        f.remain:SetFont(STANDARD_TEXT_FONT, fontsize + 1, "OUTLINE")
+        f.other.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+        f.other.remain:SetFont(STANDARD_TEXT_FONT, fontsize + 1, "OUTLINE")
 
         for _, r in next, { f.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
