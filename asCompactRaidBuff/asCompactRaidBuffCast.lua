@@ -55,7 +55,7 @@ local function ACRB_updateCasting(asframe, unit)
 
             if name and index <= #(asframe.castFrames) then
                 castFrame.icon:SetTexture(texture);
-                castFrame.count:Hide();
+                castFrame.other.count:Hide();
 
                 local curr = GetTime();
                 local start = startTime / 1000;
