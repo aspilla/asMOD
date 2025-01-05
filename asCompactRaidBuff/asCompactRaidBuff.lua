@@ -173,12 +173,14 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         f:EnableMouse(false);
 
         f.icon:SetTexCoord(.08, .92, .08, .92);
-        f.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
-        f.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-        f.border:SetVertexColor(0, 0, 0);
-        f.border:Show();
+        f.other.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
+        f.other.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+        f.other.border:SetVertexColor(0, 0, 0);
+        f.other.border:ClearAllPoints();
+        f.other.border:SetAllPoints(f);
+        f.other.border:Show();
 
-        f.cooldown:SetSwipeColor(0, 0, 0, 0.5);
+        f.cooldown:SetSwipeColor(0, 0, 0, 0.5);         
         f.other.count:ClearAllPoints();
         f.other.count:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 1);
 
