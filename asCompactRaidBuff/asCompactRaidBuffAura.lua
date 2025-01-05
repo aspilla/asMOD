@@ -335,10 +335,10 @@ local function ARCB_UtilSetBuff(buffFrame, aura, currtime)
         end
 
         if showlist_time > 0 and aura.expirationTime - currtime < showlist_time then
-            buffFrame.other.border:SetVertexColor(1, 1, 1);
+            buffFrame.border:SetVertexColor(1, 1, 1);
             buffFrame.other.remain:SetTextColor(1, 0, 0);
         else
-            buffFrame.other.border:SetVertexColor(0, 0, 0);
+            buffFrame.border:SetVertexColor(0, 0, 0);
             buffFrame.other.remain:SetTextColor(1, 1, 1);
         end
     end
@@ -383,7 +383,7 @@ local function ACRB_UtilSetDebuff(debuffFrame, aura, currtime)
     end
 
     local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
-    debuffFrame.other.border:SetVertexColor(color.r, color.g, color.b);
+    debuffFrame.border:SetVertexColor(color.r, color.g, color.b);
 
     debuffFrame.isBossBuff = aura.isBossAura and aura.isHelpful;
     if (aura.isBossAura or (aura.nameplateShowAll and aura.duration > 0 and aura.duration < 10)) then
