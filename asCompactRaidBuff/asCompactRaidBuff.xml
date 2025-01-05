@@ -11,11 +11,11 @@
 			</Layer>			
 		</Layers>
 		<Frames>
-			<Cooldown name="$parentCooldown" parentKey="cooldown" hideCountdownNumbers="true" inherits="CooldownFrameTemplate" reverse="true" hidden="true">
+			<Cooldown name="$parentCooldown" parentKey="cooldown" hideCountdownNumbers="true" inherits="CooldownFrameTemplate" reverse="true" hidden="true" frameStrata="LOW">
 				<Anchors>
 					<Anchor point="CENTER">
 						<Offset>
-							<AbsDimension x="0" y="-1"/>
+							<AbsDimension x="0" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -47,15 +47,7 @@
 								</Anchor>
 							</Anchors>
 						</FontString>
-					</Layer>
-				</Layers>
-			</Frame>
-		</Frames>
-	</Button>
-	<Button name="asCompactDebuffTemplate" inherits="asCompactAuraTemplate" virtual="true">
-		<Layers>
-			<Layer level="OVERLAY">
-				<Texture name="$parentBorder" parentKey="border" file="Interface\AddOns\asCompactRaidBuff\border.tga">
+						<Texture name="$parentBorder" parentKey="border" file="Interface\AddOns\asCompactRaidBuff\border.tga">
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset x="0" y="0"/>
@@ -66,25 +58,14 @@
 					</Anchors>
 					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
 				</Texture>
-			</Layer>
-		</Layers>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+	</Button>
+	<Button name="asCompactDebuffTemplate" inherits="asCompactAuraTemplate" virtual="true">
 	</Button>
 	<Button name="asCompactBuffTemplate" inherits="asCompactAuraTemplate" virtual="true">
-		<Layers>
-			<Layer level="OVERLAY">
-				<Texture name="$parentBorder" parentKey="border" file="Interface\AddOns\asCompactRaidBuff\border.tga">
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="0" y="0"/>
-						</Anchor>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset x="0" y="0"/>
-						</Anchor>
-					</Anchors>
-					<TexCoords left="0" right="1" top="0" bottom="1"/>
-				</Texture>
-			</Layer>
-		</Layers>
 	</Button>
 	<Button name="asCompactDispelDebuffTemplate" virtual="true">
 		<Layers>
