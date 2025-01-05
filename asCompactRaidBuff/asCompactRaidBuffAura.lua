@@ -312,7 +312,13 @@ local function ARCB_UtilSetBuff(frame, aura, currtime)
                 frame.cooldown:SetHideCountdownNumbers(true);
             else
                 frame.cooldown:SetHideCountdownNumbers(false);
-            end        
+
+                if remain > 0 and remain < 10 then
+                    frame.cooldowntext:SetVertexColor(1, 1, 0.3);
+                else
+                    frame.cooldowntext:SetVertexColor(0.8, 0.8, 1);
+                end
+            end
         end
     else
         asCooldownFrame_Clear(frame.cooldown);
@@ -332,15 +338,11 @@ local function ARCB_UtilSetBuff(frame, aura, currtime)
 
         if showlist_time > 0 and aura.expirationTime - currtime < showlist_time then
             frame.other.border:SetVertexColor(1, 1, 1);
-            frame.cooldowntext:SetVertexColor(1, 0.3, 0.3);
+            if frame.hideCountdownNumbers == false then
+                frame.cooldowntext:SetVertexColor(1, 0.3, 0.3);
+            end
         else
             frame.other.border:SetVertexColor(0, 0, 0);
-
-            if remain > 0 and remain < 10 then
-                frame.cooldowntext:SetVertexColor(1, 1, 0.3);
-            else
-                frame.cooldowntext:SetVertexColor(0.8, 0.8, 1);
-            end
         end
     end
 
@@ -373,7 +375,13 @@ local function ACRB_UtilSetDebuff(frame, aura, currtime)
                 frame.cooldown:SetHideCountdownNumbers(true);
             else
                 frame.cooldown:SetHideCountdownNumbers(false);
-            end        
+
+                if remain > 0 and remain < 10 then
+                    frame.cooldowntext:SetVertexColor(1, 1, 0.3);
+                else
+                    frame.cooldowntext:SetVertexColor(0.8, 0.8, 1);
+                end
+            end
         end
     else
         asCooldownFrame_Clear(frame.cooldown);
@@ -387,12 +395,6 @@ local function ACRB_UtilSetDebuff(frame, aura, currtime)
         frame:SetSize((frame.size_x) * 1.3, frame.size_y * 1.3);
     else
         frame:SetSize(frame.size_x, frame.size_y);
-    end
-
-    if remain > 0 and remain < 10 then
-        frame.cooldowntext:SetVertexColor(1, 1, 0.3);
-    else
-        frame.cooldowntext:SetVertexColor(0.8, 0.8, 1);
     end
 
     frame:Show();

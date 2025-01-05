@@ -350,6 +350,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             local pvpbuffFrame = CreateFrame("Button", nil, frame, "asCompactBuffTemplate");
             asframe.defensivebuffFrames[i] = pvpbuffFrame;
             layoutbuff(pvpbuffFrame, 1);
+            pvpbuffFrame:Hide();
 
             pvpbuffFrame:SetFrameStrata(strata);
             pvpbuffFrame:SetFrameLevel(framelevel);
@@ -375,6 +376,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             asframe.castFrames[i] = castFrame;
             castFrame:SetFrameStrata(strata);
             castFrame:SetFrameLevel(framelevel);
+            castFrame:Hide();
             layoutbuff(castFrame, 3);
         end
     end
