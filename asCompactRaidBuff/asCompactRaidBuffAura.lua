@@ -302,7 +302,7 @@ local function ARCB_UtilSetBuff(buffFrame, aura, currtime)
     end
     buffFrame.auraInstanceID = aura.auraInstanceID;
     local enabled = aura.expirationTime and aura.expirationTime ~= 0;
-    if enabled and not ns.options.HideCooldown and aura.duration < 100 then
+    if enabled and not ns.options.HideCooldown then
         local startTime = aura.expirationTime - aura.duration;
         ns.asCooldownFrame_Set(buffFrame.cooldown, startTime, aura.duration, true);
     else
