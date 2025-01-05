@@ -3,57 +3,56 @@ local _, ns = ...;
 ns.UpdateRate = 0.25; -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 
 local Options_Default = {
-	version = 240723,
+	version = 250108,
 	ShowBuffColor = true,       -- 버프가 Frame Color 를 변경 할지
 	ShowHealthColor = true,     -- 체력 낮은 사람 Color 변경 (사제 생명)
 	LeftAbsorbBar = true,       -- 보호막 바
 	TopCastAlert = true,        -- 케스팅 알림 (상단)
-	MiddleDefensiveAlert = true, -- 생존기 Alert (중앙)
-	RightOffensiveAlert = true, -- 쿨기 Alert (우측
+	MiddleDefensiveAlert = true, -- 생존기 Alert (중앙)	
 	BorderDispelAlert = true,   -- Dispel Alert (태두리)
 	LeftTopRaidIcon = true,     -- Raid Icon
 	BottomHealerManaBar = true, -- 힐러 마나바
 	BuffSizeRate = 0.9,         -- 기존 Size 크기 배수
-	ShowBuffCooldown = true,    -- 버프 지속시간을 보이려면
-	MinCoolShowBuffSize = 20,   -- 이크기보다 Icon Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0 (기본 Buff Debuff만 보임)
-	MinShowBuffFontSizeRate = 0.6, -- 버프 Size 대비 쿨다운 폰트 사이즈	
+	ShowBuffCooldown = true,    -- 버프 지속시간을 보이려면	
+	MinCoolShowBuffSize = 10,   -- 이크기보다 Icon Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0 (기본 Buff Debuff만 보임)
+	BuffFontSizeRate = 0.7, 	-- 버프 Size 대비 쿨다운 폰트 사이즈	
 	ShowBuffTooltip = true,     -- Buff GameTooltip을 보이게 하려면 True
-	ShowDebuffTooltip = true,   -- Debuff GameTooltip을 보이게 하려면 True
-	HideCooldown = false,       -- CooldownSwipe를 숨기고 숫자만으로 Cooldown
+	ShowDebuffTooltip = true,   -- Debuff GameTooltip을 보이게 하려면 True	
+	MinSectoShowCooldown = 10,  -- 이 시간 미만으로 남으면 Cooldown이 보이게 한다. (초)
 };
 
 -- 첫 숫자 남은시간에 리필 알림 (1이면 자동으로 30% 남으면 알림)
 -- 두번째 숫자는 표시 위치, 6(우상) 5/4(우중) 1,2,3 은 우하에 보이는 우선 순위이다. (숫자가 클수록 우측에 보임)
 
 ns.ACRB_ShowList_MONK_2 = {
-	[119611] = { 0, 6 },			--소생의 안개
-	[124682] = { 0, 5 },			--포용의 안개	
+	[119611] = { 0, 6 }, --소생의 안개
+	[124682] = { 0, 5 }, --포용의 안개	
 }
 
 -- 신기
 ns.ACRB_ShowList_PALADIN_1 = {
-	[200025] = { 0, 6 },		-- 고결의 봉화
-	[53563] =  { 0, 5 },		-- 빛의 봉화
-	[156910] = { 0, 5 },		-- 신념의 봉화
-	[200654] = { 0, 3 }, 		-- 티르		
+	[200025] = { 0, 6 }, -- 고결의 봉화
+	[53563] = { 0, 5 }, -- 빛의 봉화
+	[156910] = { 0, 5 }, -- 신념의 봉화
+	[200654] = { 0, 3 }, -- 티르		
 }
 
 -- 수사
 ns.ACRB_ShowList_PRIEST_1 = {
-	[194384] = { 0, 6 },	-- 속죄
-	[17] = { 0, 5 },		-- 신의 권능 보호막
-	[139] = { 1, 4 }, 		-- 소생
-	[41635] = { 0, 2 },		-- 회복의 기원
-	[10060] = { 0, 1 },		-- 마력 주입
+	[194384] = { 0, 6 }, -- 속죄
+	[17] = { 0, 5 },  -- 신의 권능 보호막
+	[139] = { 1, 4 }, -- 소생
+	[41635] = { 0, 2 }, -- 회복의 기원
+	[10060] = { 0, 1 }, -- 마력 주입
 }
 
 
 -- 신사
 ns.ACRB_ShowList_PRIEST_2 = {
-	[139] = { 1, 6 },		-- 소생
-	[17] = { 0, 5 },		-- 신의 권능 보호막
-	[41635] = { 0, 2 },		-- 회복의 기원
-	[10060] = { 0, 1 },		-- 마력 주입
+	[139] = { 1, 6 }, -- 소생
+	[17] = { 0, 5 }, -- 신의 권능 보호막
+	[41635] = { 0, 2 }, -- 회복의 기원
+	[10060] = { 0, 1 }, -- 마력 주입
 }
 
 ns.ACRB_ShowList_PRIEST_3 = {
@@ -62,33 +61,33 @@ ns.ACRB_ShowList_PRIEST_3 = {
 
 
 ns.ACRB_ShowList_SHAMAN_3 = {
-	[61295] = { 1, 6 },		--성난 해일
-	[383648] = { 0, 5 },	--대지의 보호막
-	[974] = { 0, 4 },		--대지의 보호막
+	[61295] = { 1, 6 }, --성난 해일
+	[383648] = { 0, 5 }, --대지의 보호막
+	[974] = { 0, 4 }, --대지의 보호막
 }
 
 
 ns.ACRB_ShowList_DRUID_4 = {
-	[774] = { 1, 6 },		--회복
-	[188550] = { 1, 5 },	-- 피어나는 생명
-	[8936] = { 1, 4 },		-- 재생
-	[155777] = { 1, 3 }, 	-- 회복 (싹틔우기)
-	[102351] = { 0, 2 },    -- 세나리온 수호물
+	[774] = { 1, 6 }, --회복
+	[188550] = { 1, 5 }, -- 피어나는 생명
+	[8936] = { 1, 4 }, -- 재생
+	[155777] = { 1, 3 }, -- 회복 (싹틔우기)
+	[102351] = { 0, 2 }, -- 세나리온 수호물
 }
 
 ns.ACRB_ShowList_EVOKER_2 = {
-	[364343] = { 0, 6 },	--메아리
-	[366155] = { 1, 5 },	--되감기
+	[364343] = { 0, 6 }, --메아리
+	[366155] = { 1, 5 }, --되감기
 }
 
 ns.ACRB_ShowList_EVOKER_3 = {
-	[410089] = { 0, 6 },	--예지
-	[360827] = { 0, 5 },	--끓어오르는 비늘
+	[410089] = { 0, 6 }, --예지
+	[360827] = { 0, 5 }, --끓어오르는 비늘
 }
 
 -- 안보이게 할 디법
 ns.ACRB_BlackList = {
-	[206151] = 1,			--도전자의 짐
+	[206151] = 1, --도전자의 짐
 }
 
 
@@ -190,7 +189,7 @@ ns.ACRB_DefensiveBuffList = {
 	[108238] = 1, --DRUID
 	[124974] = 1, --DRUID
 	[22812]  = 1, --DRUID
-	[5487]  = 2, --DRUID 곰변신 (딜러/힐러만)
+	[5487]   = 2, --DRUID 곰변신 (딜러/힐러만)
 
 
 	[104773] = 1, --WARLOCK
@@ -330,27 +329,34 @@ function ns.SetupOptionPanels()
 					ns.options[variable] = Options_Default[variable];
 				end
 			end
-			local defaultValue = ACRB_Options[variable];
+			local defaultValue = Options_Default[variable];
+			local currentValue = ACRB_Options[variable];
 
 			if type(defaultValue) == "table" then
 				--do nothing
 			elseif tonumber(defaultValue) ~= nil then
 				local setting, options;
 				if tonumber(defaultValue) < 1 and tonumber(defaultValue) > 0 then
-					setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
+					setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
+						name, defaultValue);
 					options = Settings.CreateSliderOptions(0.1, 0.9, 0.1);
 				else
-					setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
+					setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
+						name, defaultValue);
 					options = Settings.CreateSliderOptions(0, 100, 1);
 				end
 
 				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
 				Settings.CreateSlider(category, setting, options, tooltip);
+				Settings.SetValue(cvar_name, currentValue);
 				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+				
 			else
-				local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
+				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+					type(defaultValue), name, defaultValue);
 				Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
-				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+				Settings.SetValue(cvar_name, currentValue);
+				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);				
 			end
 		end
 	end

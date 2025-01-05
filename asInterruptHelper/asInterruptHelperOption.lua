@@ -102,11 +102,13 @@ function ns.SetupOptionPanels()
                 AIH_Options[variable] = Options_Default[variable];
                 ns.options[variable] = Options_Default[variable];
             end
-            local defaultValue = AIH_Options[variable];
+            local defaultValue = Options_Default[variable];
+            local currentValue = AIH_Options[variable];
 
             local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
-            Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip)
-            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)
+            Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
+            Settings.SetValue(cvar_name, currentValue);
+            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
         end
     end
 

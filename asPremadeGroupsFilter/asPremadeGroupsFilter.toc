@@ -1,8 +1,8 @@
 ﻿## Interface: 110007
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rPremadeGroupsFilter
-## Notes: 파티찾기 직업 색상 추가
-## Version : 240107
+## Notes: Improving the default premade group finder by showing class icon and color.
+## Version : 250108
 ## SavedVariablesPerCharacter: APMGF_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asPremadeGroupsFilterOption.lua

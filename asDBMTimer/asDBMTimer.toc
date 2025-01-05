@@ -1,8 +1,8 @@
 ﻿## Interface: 110007
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDBMTimer
-## Notes: DBM Timer Bar 개선
-## Version : 241229
+## Notes: Veritical DBM Timer
+## Version : 250108
 ## SavedVariablesPerCharacter: ADTI_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asDBMTimerOption.lua

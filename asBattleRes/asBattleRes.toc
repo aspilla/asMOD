@@ -2,7 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rBattleRes
 ## Notes: Track the battle resurrection cooldown
-## Version : 250105
+## Version : 250108
 ## SavedVariablesPerCharacter: ASBR_Options, ASBR_Position 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asBattleResOption.lua

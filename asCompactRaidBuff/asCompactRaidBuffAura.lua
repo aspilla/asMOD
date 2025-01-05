@@ -288,38 +288,34 @@ local function ACRB_UtilSetDispelDebuff(dispellDebuffFrame, aura)
     dispellDebuffFrame.auraInstanceID = aura.auraInstanceID;
 end
 
-local function ARCB_UtilSetBuff(buffFrame, aura, currtime)
-    buffFrame.icon:SetTexture(aura.icon);
+local function ARCB_UtilSetBuff(frame, aura, currtime)
+    frame.icon:SetTexture(aura.icon);
     if (aura.applications > 1) then
         local countText = aura.applications;
         if (aura.applications >= 100) then
             countText = BUFF_STACKS_OVERFLOW;
         end
-        buffFrame.other.count:Show();
-        buffFrame.other.count:SetText(countText);
+        frame.other.count:Show();
+        frame.other.count:SetText(countText);
     else
-        buffFrame.other.count:Hide();
+        frame.other.count:Hide();
     end
-    buffFrame.auraInstanceID = aura.auraInstanceID;
+    frame.auraInstanceID = aura.auraInstanceID;
     local enabled = aura.expirationTime and aura.expirationTime ~= 0;
-    if enabled and not ns.options.HideCooldown then
+    local remain = math.ceil(aura.expirationTime - currtime);
+
+    if enabled then
         local startTime = aura.expirationTime - aura.duration;
-        ns.asCooldownFrame_Set(buffFrame.cooldown, startTime, aura.duration, true);
-    else
-        asCooldownFrame_Clear(buffFrame.cooldown);
-    end
-
-    if ns.options.HideCooldown then
-        local remain = math.ceil(aura.expirationTime - currtime);
-
-        if remain > 0 and remain < 100 then
-            buffFrame.other.remain:SetText(remain);
-            buffFrame.other.remain:Show();
-        else
-            buffFrame.other.remain:Hide();
+        ns.asCooldownFrame_Set(frame.cooldown, startTime, aura.duration, true);
+        if frame.hideCountdownNumbers == false then
+            if remain >= ns.options.MinSectoShowCooldown then
+                frame.cooldown:SetHideCountdownNumbers(true);
+            else
+                frame.cooldown:SetHideCountdownNumbers(false);
+            end        
         end
     else
-        buffFrame.other.remain:Hide();
+        asCooldownFrame_Clear(frame.cooldown);
     end
 
     if ns.ACRB_ShowList then
@@ -335,70 +331,71 @@ local function ARCB_UtilSetBuff(buffFrame, aura, currtime)
         end
 
         if showlist_time > 0 and aura.expirationTime - currtime < showlist_time then
-            buffFrame.other.border:SetVertexColor(1, 1, 1);
-            buffFrame.other.remain:SetTextColor(1, 0, 0);
+            frame.other.border:SetVertexColor(1, 1, 1);
+            frame.cooldowntext:SetVertexColor(1, 0.3, 0.3);
         else
-            buffFrame.other.border:SetVertexColor(0, 0, 0);
-            buffFrame.other.remain:SetTextColor(1, 1, 1);
+            frame.other.border:SetVertexColor(0, 0, 0);
+
+            if remain > 0 and remain < 10 then
+                frame.cooldowntext:SetVertexColor(1, 1, 0.3);
+            else
+                frame.cooldowntext:SetVertexColor(0.8, 0.8, 1);
+            end
         end
     end
 
-    buffFrame:Show();
+    frame:Show();
 end
 
 -- Debuff 설정 부
-local function ACRB_UtilSetDebuff(debuffFrame, aura, currtime)
-    debuffFrame.filter = aura.isRaid and AuraFilters.Raid or nil;
-    debuffFrame.icon:SetTexture(aura.icon);
+local function ACRB_UtilSetDebuff(frame, aura, currtime)
+    frame.filter = aura.isRaid and AuraFilters.Raid or nil;
+    frame.icon:SetTexture(aura.icon);
     if (aura.applications > 1) then
         local countText = aura.applications;
         if (aura.applications >= 100) then
             countText = BUFF_STACKS_OVERFLOW;
         end
-        debuffFrame.other.count:Show();
-        debuffFrame.other.count:SetText(countText);
+        frame.other.count:Show();
+        frame.other.count:SetText(countText);
     else
-        debuffFrame.other.count:Hide();
+        frame.other.count:Hide();
     end
-    debuffFrame.auraInstanceID = aura.auraInstanceID;
+    frame.auraInstanceID = aura.auraInstanceID;
     local enabled = aura.expirationTime and aura.expirationTime ~= 0;
-    if enabled and not ns.options.HideCooldown then
+    local remain = math.ceil(aura.expirationTime - currtime);
+
+    if enabled then
         local startTime = aura.expirationTime - aura.duration;
-        ns.asCooldownFrame_Set(debuffFrame.cooldown, startTime, aura.duration, true);
-    else
-        asCooldownFrame_Clear(debuffFrame.cooldown);
-    end
-
-    if ns.options.HideCooldown then
-        local remain = math.ceil(aura.expirationTime - currtime);
-
-        if remain > 0 and remain < 100 then
-            debuffFrame.other.remain:SetText(remain);
-            debuffFrame.other.remain:Show();
-        else
-            debuffFrame.other.remain:Hide();
+        ns.asCooldownFrame_Set(frame.cooldown, startTime, aura.duration, true);
+        if frame.hideCountdownNumbers == false then
+            if remain >= ns.options.MinSectoShowCooldown then
+                frame.cooldown:SetHideCountdownNumbers(true);
+            else
+                frame.cooldown:SetHideCountdownNumbers(false);
+            end        
         end
     else
-        debuffFrame.other.remain:Hide();
+        asCooldownFrame_Clear(frame.cooldown);
     end
 
     local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
-    debuffFrame.other.border:SetVertexColor(color.r, color.g, color.b);
+    frame.other.border:SetVertexColor(color.r, color.g, color.b);
 
-    debuffFrame.isBossBuff = aura.isBossAura and aura.isHelpful;
+    frame.isBossBuff = aura.isBossAura and aura.isHelpful;
     if (aura.isBossAura or (aura.nameplateShowAll and aura.duration > 0 and aura.duration < 10)) then
-        debuffFrame:SetSize((debuffFrame.size_x) * 1.3, debuffFrame.size_y * 1.3);
+        frame:SetSize((frame.size_x) * 1.3, frame.size_y * 1.3);
     else
-        debuffFrame:SetSize(debuffFrame.size_x, debuffFrame.size_y);
+        frame:SetSize(frame.size_x, frame.size_y);
     end
 
-    if not ns.options.ShowBuffCooldown or select(1, debuffFrame:GetSize()) < ns.options.MinCoolShowBuffSize then
-        debuffFrame.cooldown:SetHideCountdownNumbers(true);
+    if remain > 0 and remain < 10 then
+        frame.cooldowntext:SetVertexColor(1, 1, 0.3);
     else
-        debuffFrame.cooldown:SetHideCountdownNumbers(false);
+        frame.cooldowntext:SetVertexColor(0.8, 0.8, 1);
     end
 
-    debuffFrame:Show();
+    frame:Show();
 end
 
 local function ProcessAura(aura, asframe)

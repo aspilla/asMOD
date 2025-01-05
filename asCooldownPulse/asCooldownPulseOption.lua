@@ -46,7 +46,8 @@ function ns.SetupOptionPanels()
             ACDP_Options[variable] = Options_Default[variable];
             ns.options[variable] = Options_Default[variable];
         end
-        local defaultValue = ACDP_Options[variable];
+        local defaultValue = Options_Default[variable];
+        local currentValue = ACDP_Options[variable];
 
         if name ~= "Version" then
             if name == "TTS_ID" then
@@ -60,7 +61,7 @@ function ns.SetupOptionPanels()
                     return container:GetData()
                 end
 
-                if defaultValue < 0 then
+                if currentValue < 0 then
                     local ttsinfos = C_VoiceChat.GetTtsVoices();
                     local locale = GetLocale();
                     local findLang = "Korean";
@@ -74,27 +75,30 @@ function ns.SetupOptionPanels()
 
                     for id, v in pairs(ttsinfos) do
                         if strfind(v.name, findLang) then
-                            defaultValue = v.voiceID;
-                            ACDP_Options[variable] = defaultValue;
-                            ns.options[variable] = defaultValue;
+                            currentValue = v.voiceID;
+                            ACDP_Options[variable] = currentValue;
+                            ns.options[variable] = currentValue;
                         end
                     end
                 end
 
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
 
-                Settings.CreateDropdown(category, setting, GetOptions, tooltip)
-                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)
+                Settings.CreateDropdown(category, setting, GetOptions, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             elseif tonumber(defaultValue) ~= nil then
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
                 local options = Settings.CreateSliderOptions(0, 100, 1);
                 options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
                 Settings.CreateSlider(category, setting, options, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             else
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
 
                 Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             end
         end

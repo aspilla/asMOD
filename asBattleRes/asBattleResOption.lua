@@ -43,7 +43,8 @@ function ns.SetupOptionPanels()
             ASBR_Options[variable] = Options_Default[variable];
             ns.options[variable] = Options_Default[variable];
         end
-        local defaultValue = ASBR_Options[variable];
+        local defaultValue = Options_Default[variable];
+        local currentValue = ASBR_Options[variable];
 
         if name ~= "Version" then
             if tonumber(defaultValue) ~= nil then
@@ -51,10 +52,12 @@ function ns.SetupOptionPanels()
                 local options = Settings.CreateSliderOptions(0, 100, 1);
                 options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
                 Settings.CreateSlider(category, setting, options, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             else
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
                 Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip)
+                Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             end
         end

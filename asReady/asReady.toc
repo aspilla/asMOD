@@ -1,8 +1,8 @@
 ﻿## Interface: 110007
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rReady
-## Notes: 파티원차단기 확인
-## Version : 241231
+## Notes: Tracking interrupt/offensive cooldowns of party/raid members
+## Version : 250108
 ## SavedVariablesPerCharacter: ARDY_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asReadyOption.lua

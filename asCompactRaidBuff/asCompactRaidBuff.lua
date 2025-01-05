@@ -157,7 +157,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
 
     baseSize = baseSize * 0.9;
 
-    local fontsize = baseSize * ns.options.MinShowBuffFontSizeRate;
+    local fontsize = baseSize * ns.options.BuffFontSizeRate;
 
     if asframe.isDispellAlert == nil then
         asframe.isDispellAlert = false;
@@ -183,9 +183,6 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         f.cooldown:SetSwipeColor(0, 0, 0, 0.5);         
         f.other.count:ClearAllPoints();
         f.other.count:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 1);
-
-        f.other.remain:ClearAllPoints();
-        f.other.remain:SetPoint("TOPLEFT", f, "TOPLEFT", 1, -1);
 
         if not f:GetScript("OnEnter") then
             f:SetScript("OnEnter", function(s)
@@ -220,22 +217,24 @@ function ns.ACRB_setupFrame(asframe, bupdate)
     end
 
     local function layoutcooldown(f)
-        f.other.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-        f.other.remain:SetFont(STANDARD_TEXT_FONT, fontsize + 1, "OUTLINE")
+        f.other.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")        
 
         for _, r in next, { f.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                 r:ClearAllPoints();
                 r:SetPoint("TOPLEFT", 1, 0);
+                f.cooldowntext = r;
                 break
             end
         end
 
+        f.hideCountdownNumbers = true;
         if not ns.options.ShowBuffCooldown or select(1, f:GetSize()) < ns.options.MinCoolShowBuffSize then
             f.cooldown:SetHideCountdownNumbers(true);
         else
             f.cooldown:SetHideCountdownNumbers(false);
+            f.hideCountdownNumbers = false;
         end
     end
 
@@ -295,8 +294,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
                     buffFrame:ClearAllPoints();
                     buffFrame:SetPoint("RIGHT", frame, "RIGHT", -2, centeryoffset);
                 end
-
-                buffFrame.cooldown:SetSwipeColor(0, 0, 0, 1);
+         
             end
         end
     end

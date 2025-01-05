@@ -37,16 +37,7 @@
 									</Offset>
 								</Anchor>
 							</Anchors>
-						</FontString>
-						<FontString name="$parentRemain" parentKey="remain" inherits="NumberFontNormalSmall" justifyH="RIGHT">
-							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="2" y="0"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
+						</FontString>						
 						<Texture name="$parentBorder" parentKey="border" file="Interface\AddOns\asCompactRaidBuff\border.tga">
 					<Anchors>
 						<Anchor point="TOPLEFT">

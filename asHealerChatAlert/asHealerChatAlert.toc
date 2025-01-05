@@ -1,8 +1,8 @@
 ﻿## Interface: 110007
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rHealerChatAlert
-## Notes: 힐러 마나 알림
-## Version : 240107
+## Notes: Saying current mana remain in chat
+## Version : 250108
 ## SavedVariablesPerCharacter: AHCA_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asHealerChatAlertOption.lua
