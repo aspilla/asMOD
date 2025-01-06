@@ -201,9 +201,9 @@ local function setFrame(frame, texture, count, expirationTime, duration, color)
 
     if count and (count > 1) then
         frameCount:SetText(count);
-        frameCount:Show();        
+        frameCount:Show();
     else
-        frameCount:Hide();        
+        frameCount:Hide();
     end
 
     asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0, true);
@@ -454,22 +454,20 @@ local function updateAuras(self)
                         end
                     end
 
-                    if  checksnapshot and asDotSnapshot and asDotSnapshot.Relative then                
+                    if checksnapshot and asDotSnapshot and asDotSnapshot.Relative then
                         local snapshots = asDotSnapshot.Relative(guid, aura.spellId);
-                
-                        if snapshots then               
-                            
+
+                        if snapshots then
                             if snapshots > 1 then
                                 frame.other.snapshot:SetText(snapshotIconG);
                                 frame.other.snapshot:Show();
-                            elseif snapshots == 1 then                                            
+                            elseif snapshots == 1 then
                                 frame.other.snapshot:Hide();
                             else
                                 frame.other.snapshot:SetText(snapshotIconR);
                                 frame.other.snapshot:Show();
-                            end                 
-                            
-                        else            
+                            end
+                        else
                             frame.other.snapshot:Hide();
                         end
                         --print("working")
@@ -478,8 +476,8 @@ local function updateAuras(self)
                     end
                 else
                     frame.other.snapshot:Hide();
-                end               
-                
+                end
+
                 frame.alert = false;
 
                 local size = icon_size;
@@ -517,7 +515,7 @@ local function updateAuras(self)
                 self.buffList[numDebuffs]:SetID(auraInstanceID);
                 self.buffList[numDebuffs].unit = unit;
                 self.buffList[numDebuffs]:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
-                
+
                 numDebuffs = numDebuffs + 1;
             end
 
@@ -595,7 +593,9 @@ local function updateTargetNameP(self)
             self.motext:Hide();
         end
 
-        self.tgtext:Show();
+        if ns.options.ANameP_ShowTargetArrow then
+            self.tgtext:Show();
+        end
 
         if casticon then
             casticon:SetWidth((height + cast_height + 3) * 1.2);

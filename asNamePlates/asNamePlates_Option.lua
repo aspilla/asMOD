@@ -320,7 +320,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 250105,
+    version = 250106,
     ANameP_ShowKnownSpell = false,                            -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -334,7 +334,8 @@ ANameP_Options_Default = {
     ANameP_ShowDBMCastingColor = true,                        -- DBM CastingColor을 표시
     ANameP_ShortFriendNP = true,                              -- 아군 체력바 크기 조정
     ANameP_RealHealth = true,                                 -- 체력 수치 표시
-    ANameP_ShowPetTarget = true,                              --Pet 대상 표시
+    ANameP_ShowPetTarget = true,                              -- Pet 대상 표시
+    ANameP_ShowTargetArrow = false,                           -- 대상 빨간 화살표 표시
 
     ANameP_AggroTargetColor = { r = 0.4, g = 0.2, b = 0.8 },  -- PVE 대상이 player 였을때 Color
     ANameP_AggroColor = { r = 0.5, g = 1, b = 1 },            -- 어그로 대상일때 바 Color
@@ -1130,6 +1131,7 @@ local function panelOnShow()
         SetupCheckBoxOption("[크기] 아군 체력바 크기 조정", "ANameP_ShortFriendNP"); -- Adjust friendly health bar size
         SetupCheckBoxOption("[체력] 체력 수치를 좌측에 표시", "ANameP_RealHealth"); -- Display health values on the left
         SetupCheckBoxOption("[소환수] 소환수 대상 및 야수의 회전 베기 표시", "ANameP_ShowPetTarget"); -- Show pet's target and Beast Cleave
+        SetupCheckBoxOption("[대상] 대상에 빨간 화살표 표시", "ANameP_ShowTargetArrow"); -- Show pet's target and Beast Cleave
 
         -- Set up slider and color options with Korean descriptions
         SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV"); -- Nameplate vertical alignment (nameplateOverlapV)
@@ -1161,6 +1163,7 @@ local function panelOnShow()
         SetupCheckBoxOption("[Size] Adjust friendly health bar size", "ANameP_ShortFriendNP");
         SetupCheckBoxOption("[Health] Display health values on the left", "ANameP_RealHealth");
         SetupCheckBoxOption("[Pet] Show pet's target and Beast Cleave", "ANameP_ShowPetTarget");
+        SetupCheckBoxOption("[Target] Show arrow on target", "ANameP_ShowTargetArrow"); -- Show pet's target and Beast Cleave
 
         -- Set up slider and color options with English descriptions
         SetupSliderOption("Nameplate vertical alignment (nameplateOverlapV)", "nameplateOverlapV");

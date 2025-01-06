@@ -13,6 +13,7 @@ ns.Button = {
     frame = nil,
     inRange = true,
     alert = false,
+    snapshotalert = false,
     checkcool = nil,
     checkplatecount = nil,
     buffshowtime = nil,
@@ -109,6 +110,7 @@ function ns.Button:initButton()
     self.buffalert = false;
     self.alert2 = false;
     self.coolalert = false;
+    self.snapshotalert = false;
     self.improvebuff = false;
     self.currtime = GetTime();
     self.gcd = select(2, asGetSpellCooldown(61304));
@@ -786,8 +788,8 @@ function ns.Button:showButton()
             else
                 frameOthers.snapshot:SetTextColor(1, 0.5, 0.5);
                 frameOthers.snapshot:Show();
-            end
-            
+                self.snapshotalert = true;
+            end   
             
         else            
             frameOthers.snapshot:Hide();
@@ -797,7 +799,9 @@ function ns.Button:showButton()
         frameOthers.snapshot:Hide();
     end
 
-    if self.buffalert then
+    if self.snapshotalert then
+        ns.lib.PixelGlow_Start(frame, { 1, 0.5, 0.5 });
+    elseif self.buffalert then
         ns.lib.PixelGlow_Start(frame, { 0.5, 1, 0.5 });
     elseif self.alert2 then
         ns.lib.PixelGlow_Start(frame, { 0.7, 0.7, 1 });
