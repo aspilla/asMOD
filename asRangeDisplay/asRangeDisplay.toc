@@ -1,7 +1,7 @@
 ## Interface: 110007
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rRangeDisplay
-## Notes: 간단한 RangeDisplay
-## Version : 250105
+## Notes: Tracking target range
+## Version : 250108
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 asRangeDisplay.lua

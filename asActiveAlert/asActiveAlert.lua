@@ -12,22 +12,22 @@ local ASAA_SpellList = {};
 
 -- 원치 않는 발동 알림은 안보이게
 local ASAA_BackList = {
-	[115356] = true,		--고술 바람의 일격
+	[115356] = true, --고술 바람의 일격
 };
-
-local show_icons = {};
-local show_names = {};
 
 local asGetSpellInfo = function(spellID)
 	if not spellID then
 		return nil;
 	end
 
-	local ospellID = C_Spell.GetOverrideSpell(spellID)
+	if not skipCheck then
+		local ospellID = C_Spell.GetOverrideSpell(spellID)
 
-	if ospellID then
-		spellID = ospellID;
+		if ospellID then
+			spellID = ospellID;
+		end
 	end
+
 
 	local spellInfo = C_Spell.GetSpellInfo(spellID);
 	if spellInfo then
@@ -37,11 +37,10 @@ local asGetSpellInfo = function(spellID)
 end
 
 local asGetSpellCooldown = function(spellID)
-
 	if not spellID then
-        return nil;
-    end
-	
+		return nil;
+	end
+
 	local ospellID = C_Spell.GetOverrideSpell(spellID)
 
 	if ospellID then
@@ -106,59 +105,56 @@ local function ASAA_UpdateCooldown()
 		parent.frames = {};
 	end
 
-	for id, isAlert in pairs(ASAA_SpellList) do
-		if isAlert == true then
-			name, _, icon = asGetSpellInfo(id);			
-			start, duration, enable = asGetSpellCooldown(id);
-			local isUsable, notEnoughMana = C_Spell.IsSpellUsable(id);
+	for org, id in pairs(ASAA_SpellList) do
+		name, _, icon = asGetSpellInfo(id);
+		start, duration, enable = asGetSpellCooldown(id);
+		local isUsable, notEnoughMana = C_Spell.IsSpellUsable(id);
 
+		--if (icon and enable > 0) then
+		if (icon) then
+			frame = parent.frames[numCools];
 
-			--if (icon and enable > 0) then
-			if (icon) then
+			if (not frame) then
+				parent.frames[numCools] = CreateFrame("Button", nil, parent, "asActiveAlert2FrameTemplate");
 				frame = parent.frames[numCools];
+				frame:EnableMouse(false);
 
-				if (not frame) then
-					parent.frames[numCools] = CreateFrame("Button", nil, parent, "asActiveAlert2FrameTemplate");
-					frame = parent.frames[numCools];
-					frame:EnableMouse(false);
-
-					for _, r in next, { frame.cooldown:GetRegions() } do
-						if r:GetObjectType() == "FontString" then
-							r:SetFont(STANDARD_TEXT_FONT, ASAA_CooldownFontSize, "OUTLINE")
-							break
-						end
+				for _, r in next, { frame.cooldown:GetRegions() } do
+					if r:GetObjectType() == "FontString" then
+						r:SetFont(STANDARD_TEXT_FONT, ASAA_CooldownFontSize, "OUTLINE")
+						break
 					end
-
-					frame.icon:SetTexCoord(.08, .92, .08, .92)
-					frame.border:SetTexture("Interface\\Addons\\asActiveAlert\\border.tga")
-					frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92)
 				end
 
-				-- set the icon
-				frameIcon = frame.icon;
-				frameBorder = frame.border;
-				frameIcon:SetTexture(icon);
-				frameIcon:SetAlpha(ASAA_Alpha);
-				frame:ClearAllPoints();
-				frame:Show();
-
-				frameBorder:SetVertexColor(0, 0, 0);
-
-				if (isUsable) then
-					frameIcon:SetVertexColor(1.0, 1.0, 1.0);
-				elseif (notEnoughMana) then
-					frameIcon:SetVertexColor(0.5, 0.5, 1.0);
-				else
-					frameIcon:SetVertexColor(0.4, 0.4, 0.4);
-				end
-
-				frameCooldown = frame.cooldown;
-				frameCooldown:Show();
-				asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, enable);
-				frameCooldown:SetHideCountdownNumbers(false);
-
-				numCools = numCools + 1;
+				frame.icon:SetTexCoord(.08, .92, .08, .92)
+				frame.border:SetTexture("Interface\\Addons\\asActiveAlert\\border.tga")
+				frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92)
 			end
+
+			-- set the icon
+			frameIcon = frame.icon;
+			frameBorder = frame.border;
+			frameIcon:SetTexture(icon);
+			frameIcon:SetAlpha(ASAA_Alpha);
+			frame:ClearAllPoints();
+			frame:Show();
+
+			frameBorder:SetVertexColor(0, 0, 0);
+
+			if (isUsable) then
+				frameIcon:SetVertexColor(1.0, 1.0, 1.0);
+			elseif (notEnoughMana) then
+				frameIcon:SetVertexColor(0.5, 0.5, 1.0);
+			else
+				frameIcon:SetVertexColor(0.4, 0.4, 0.4);
+			end
+
+			frameCooldown = frame.cooldown;
+			frameCooldown:Show();
+			asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, enable);
+			frameCooldown:SetHideCountdownNumbers(false);
+
+			numCools = numCools + 1;
 		end
 	end
 
@@ -180,64 +176,59 @@ local function ASAA_UpdateCooldown()
 end
 
 local function ASAA_Insert(id)
-
 	if not id then
 		return;
 	end
-
-	local name, _, icon = asGetSpellInfo(id);
 
 	if ASAA_BackList and ASAA_BackList[id] then
 		return;
 	end
 
+	if not IsPlayerSpell(id) then
+		return;
+	end
+
+	local name, _, icon, _, _, _, _, orgicon = asGetSpellInfo(id);
+
 	if ACI_SpellID_list then
 		for spellorg, _ in pairs(ACI_SpellID_list) do
-			local newspell = asGetSpellInfo(spellorg);
-			if id == spellorg or name == newspell then
+			local checkname, _, checkIcon, _, _, _, _, checkorg = asGetSpellInfo(spellorg);
+			if orgicon == checkorg or spellorg == id or name == checkname or icon == checkicon then
 				return;
 			end
 		end
 	end
 
 	if APB_SPELL then
-		local newspell = asGetSpellInfo(APB_SPELL)
-		if name == newspell then
+		local checkname, _, checkIcon, _, _, _, _, checkorg = asGetSpellInfo(APB_SPELL);
+		if orgicon == checkorg or APB_SPELL == id or name == checkname or icon == checkicon then
 			return;
 		end
 	end
 
 	if APB_SPELL2 then
-		local newspell = asGetSpellInfo(APB_SPELL2)
-		if name == newspell then
+		local checkname, _, checkIcon, _, _, _, _, checkorg = asGetSpellInfo(APB_SPELL2);
+		if orgicon == checkorg or APB_SPELL2 == id or name == checkname or icon == checkicon then
 			return;
 		end
 	end
 
-	if show_icons[icon] == true then
+
+	if ASAA_SpellList[orgicon] then
 		return;
 	end
 
-	if show_names[name] == true then
-		return;
-	end
-	
-	ASAA_SpellList[id] = true;
-	show_icons[icon] = true;
-	show_names[name] = true;
+	ASAA_SpellList[orgicon] = id;
 
 	ASAA_UpdateCooldown();
 end
 
 local function ASAA_Delete(id)
 	if id then
-		local name, _, icon = asGetSpellInfo(id);
-		ASAA_SpellList[id] = false;
-		show_icons[icon] = false;
-		show_names[name] = false;
+		local name, _, icon, _, _, _, _, orgicon = asGetSpellInfo(id);
+		ASAA_SpellList[orgicon] = nil;
 	else
 		ASAA_SpellList = {};
-		show_icons = {};
 	end
 	ASAA_UpdateCooldown();
 end

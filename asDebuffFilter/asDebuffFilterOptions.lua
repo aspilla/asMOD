@@ -152,7 +152,7 @@ ns.ShowList_DRUID_2 = {
     [155625] = { 1, 4, 2, false, true },        --달빛섬광
     [391889] = { 1, 3 },           --적응의 무리
     [1079] = { 19 * 0.3, 2, nil, false, true },      --도려내기
-    [405233] = { 0, 1, nil, false, true },           --Trash
+    [405233] = { 1, 1, nil, false, true },           --Trash
     
 }
 

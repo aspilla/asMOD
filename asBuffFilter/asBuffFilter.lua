@@ -859,6 +859,7 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
 		local frame = parent.frames[idx];		
 		frame:SetFrameLevel(9000);
+		frame.other:SetFrameLevel(9050);
 		frame.cooldown:SetFrameLevel(9100);
 		frame.cooldown:SetDrawSwipe(true);
 		for _, r in next, { frame.cooldown:GetRegions() } do

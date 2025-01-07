@@ -462,11 +462,11 @@ local function ProcessAura(aura, unit)
         end
 
         -- PowerBar에서 보이는 Debuff 는 숨기고
-        if APB_DEBUFF and (APB_DEBUFF == aura.name or APB_DEBUFF == aura.spellId) then
+        if APB_DEBUFF and (APB_DEBUFF == aura.spellId) then
             skip = true;
         end
 
-        if APB_DEBUFF2 and (APB_DEBUFF2 == aura.name or APB_DEBUFF2 == aura.spellId) then
+        if APB_DEBUFF2 and (APB_DEBUFF2 == aura.spellId) then
             skip = true;
         end
 

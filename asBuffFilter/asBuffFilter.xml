@@ -1,7 +1,10 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Frame name="asTargetBuffFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW">
+	<!--
+	asOverlay 위에 뜨게 하기 위해 MEDIUM으로 설정
+	-->
+	<Frame name="asTargetBuffFrameTemplate" virtual="true" enableMouse="false" frameStrata="MEDIUM">
 		<Size>
 			<AbsDimension x="17" y="17"/>
 		</Size>

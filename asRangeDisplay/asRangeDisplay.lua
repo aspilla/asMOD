@@ -120,7 +120,8 @@ local GetItemInfo = C_Item and C_Item.GetItemInfo or GetItemInfo;
 local IsItemInRange = C_Item and C_Item.IsItemInRange or IsItemInRange;
 
 local ARD_mainframe   = CreateFrame("Frame", nil, UIParent);
-ARD_mainframe:SetFrameStrata("LOW");
+--asOverlay 위에 뜨게 하기 위해 MEDIUM으로 설정
+ARD_mainframe:SetFrameStrata("MEDIUM");
 ARD_mainframe:SetFrameLevel(9000);
 local ARD_RangeText;
 
