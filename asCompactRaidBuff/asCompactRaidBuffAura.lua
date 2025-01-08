@@ -289,24 +289,45 @@ local function ACRB_UtilSetDispelDebuff(dispellDebuffFrame, aura)
 end
 
 local function ARCB_UtilSetBuff(frame, aura, currtime)
-    frame.icon:SetTexture(aura.icon);
-    if (aura.applications > 1) then
-        local countText = aura.applications;
-        if (aura.applications >= 100) then
-            countText = BUFF_STACKS_OVERFLOW;
-        end
-        frame.other.count:Show();
-        frame.other.count:SetText(countText);
-    else
-        frame.other.count:Hide();
-    end
-    frame.auraInstanceID = aura.auraInstanceID;
     local enabled = aura.expirationTime and aura.expirationTime ~= 0;
     local remain = math.ceil(aura.expirationTime - currtime);
+    local data = frame.data;
+
+    if not (aura.icon == data.icon and
+            aura.applications == data.applications and
+            aura.expirationTime == data.expiration and
+            aura.duration == data.duration) then
+        frame.data = {
+            icon = aura.icon,
+            applications = aura.applications,
+            expiration = aura.expirationTime,
+            duration = aura.duration,
+        };
+
+        frame.icon:SetTexture(aura.icon);
+        if (aura.applications > 1) then
+            local countText = aura.applications;
+            if (aura.applications >= 100) then
+                countText = BUFF_STACKS_OVERFLOW;
+            end
+            frame.other.count:Show();
+            frame.other.count:SetText(countText);
+        else
+            frame.other.count:Hide();
+        end
+        frame.auraInstanceID = aura.auraInstanceID;
+
+        if enabled then
+            local startTime = aura.expirationTime - aura.duration;
+            ns.asCooldownFrame_Set(frame.cooldown, startTime, aura.duration, true);
+        else
+            asCooldownFrame_Clear(frame.cooldown);
+        end
+
+        frame:Show();
+    end
 
     if enabled then
-        local startTime = aura.expirationTime - aura.duration;
-        ns.asCooldownFrame_Set(frame.cooldown, startTime, aura.duration, true);
         if frame.hideCountdownNumbers == false then
             if remain >= ns.options.MinSectoShowCooldown then
                 frame.cooldown:SetHideCountdownNumbers(true);
@@ -320,56 +341,83 @@ local function ARCB_UtilSetBuff(frame, aura, currtime)
                 end
             end
         end
-    else
-        asCooldownFrame_Clear(frame.cooldown);
-    end
 
-    if ns.ACRB_ShowList then
-        local showlist_time = 0;
+        if ns.ACRB_ShowList then
+            local showlist_time = 0;
 
-        local showinfo = aura.showlist;
+            local showinfo = aura.showlist;
 
-        if showinfo and showinfo[1] then
-            showlist_time = showinfo[1];
-            if showlist_time == 1 then
-                showinfo[1] = aura.duration * 0.3;
+            if showinfo and showinfo[1] then
+                showlist_time = showinfo[1];
+                if showlist_time == 1 then
+                    showinfo[1] = aura.duration * 0.3;
+                end
+            end
+
+            if showlist_time > 0 and aura.expirationTime - currtime < showlist_time then
+                frame.other.border:SetVertexColor(1, 1, 1);
+                if frame.hideCountdownNumbers == false then
+                    frame.cooldowntext:SetVertexColor(1, 0.3, 0.3);
+                end
+            else
+                frame.other.border:SetVertexColor(0, 0, 0);
             end
         end
-
-        if showlist_time > 0 and aura.expirationTime - currtime < showlist_time then
-            frame.other.border:SetVertexColor(1, 1, 1);
-            if frame.hideCountdownNumbers == false then
-                frame.cooldowntext:SetVertexColor(1, 0.3, 0.3);
-            end
-        else
-            frame.other.border:SetVertexColor(0, 0, 0);
-        end
     end
-
-    frame:Show();
 end
 
 -- Debuff 설정 부
 local function ACRB_UtilSetDebuff(frame, aura, currtime)
-    frame.filter = aura.isRaid and AuraFilters.Raid or nil;
-    frame.icon:SetTexture(aura.icon);
-    if (aura.applications > 1) then
-        local countText = aura.applications;
-        if (aura.applications >= 100) then
-            countText = BUFF_STACKS_OVERFLOW;
-        end
-        frame.other.count:Show();
-        frame.other.count:SetText(countText);
-    else
-        frame.other.count:Hide();
-    end
-    frame.auraInstanceID = aura.auraInstanceID;
     local enabled = aura.expirationTime and aura.expirationTime ~= 0;
     local remain = math.ceil(aura.expirationTime - currtime);
+    local data = frame.data;
+
+    if not (aura.icon == data.icon and
+            aura.applications == data.applications and
+            aura.expirationTime == data.expiration and
+            aura.duration == data.duration) then
+        frame.data = {
+            icon = aura.icon,
+            applications = aura.applications,
+            expiration = aura.expirationTime,
+            duration = aura.duration,
+        };
+
+        frame.filter = aura.isRaid and AuraFilters.Raid or nil;
+        frame.icon:SetTexture(aura.icon);
+        if (aura.applications > 1) then
+            local countText = aura.applications;
+            if (aura.applications >= 100) then
+                countText = BUFF_STACKS_OVERFLOW;
+            end
+            frame.other.count:Show();
+            frame.other.count:SetText(countText);
+        else
+            frame.other.count:Hide();
+        end
+        frame.auraInstanceID = aura.auraInstanceID;
+
+        if enabled then
+            local startTime = aura.expirationTime - aura.duration;
+            ns.asCooldownFrame_Set(frame.cooldown, startTime, aura.duration, true);
+        else
+            asCooldownFrame_Clear(frame.cooldown);
+        end
+
+        local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
+        frame.other.border:SetVertexColor(color.r, color.g, color.b);
+
+        frame.isBossBuff = aura.isBossAura and aura.isHelpful;
+        if (aura.isBossAura or (aura.nameplateShowAll and aura.duration > 0 and aura.duration < 10)) then
+            frame:SetSize((frame.size_x) * 1.3, frame.size_y * 1.3);
+        else
+            frame:SetSize(frame.size_x, frame.size_y);
+        end
+
+        frame:Show();
+    end
 
     if enabled then
-        local startTime = aura.expirationTime - aura.duration;
-        ns.asCooldownFrame_Set(frame.cooldown, startTime, aura.duration, true);
         if frame.hideCountdownNumbers == false then
             if remain >= ns.options.MinSectoShowCooldown then
                 frame.cooldown:SetHideCountdownNumbers(true);
@@ -383,21 +431,7 @@ local function ACRB_UtilSetDebuff(frame, aura, currtime)
                 end
             end
         end
-    else
-        asCooldownFrame_Clear(frame.cooldown);
     end
-
-    local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
-    frame.other.border:SetVertexColor(color.r, color.g, color.b);
-
-    frame.isBossBuff = aura.isBossAura and aura.isHelpful;
-    if (aura.isBossAura or (aura.nameplateShowAll and aura.duration > 0 and aura.duration < 10)) then
-        frame:SetSize((frame.size_x) * 1.3, frame.size_y * 1.3);
-    else
-        frame:SetSize(frame.size_x, frame.size_y);
-    end
-
-    frame:Show();
 end
 
 local function ProcessAura(aura, asframe)
@@ -409,7 +443,7 @@ local function ProcessAura(aura, asframe)
         return AuraUpdateChangedType.None;
     end
 
-    if ns.ACRB_BlackList and ns.ACRB_BlackList[aura.spellId] then
+    if ns.ACRB_BlackList[aura.spellId] then
         return AuraUpdateChangedType.None;
     end
 
@@ -451,8 +485,8 @@ local function ProcessAura(aura, asframe)
             end
         end
     elseif aura.isHelpful then
-        aura.showlist = ns.ACRB_ShowList and ns.ACRB_ShowList[aura.spellId];
-        if aura.showlist and PLAYER_UNITS[aura.sourceUnit] then
+        aura.showlist = ns.ACRB_ShowList and PLAYER_UNITS[aura.sourceUnit] and ns.ACRB_ShowList[aura.spellId];
+        if aura.showlist then
             aura.debuffType = UnitFrameBuffType.Normal + aura.showlist[2];
             return AuraUpdateChangedType.Buff;
         elseif ShouldDisplayBuff(aura) then
@@ -530,7 +564,7 @@ function ns.ACRB_UpdateAuras(asframe)
     end
 
     do
-        if frame.buffFrames then
+        if frame.buffFrames and frame.buffFrames[1]:GetAlpha() > 0 then
             for i = 1, #frame.buffFrames do
                 frame.buffFrames[i]:SetAlpha(0);
                 frame.buffFrames[i]:Hide();
@@ -539,7 +573,7 @@ function ns.ACRB_UpdateAuras(asframe)
     end
 
     do
-        if frame.debuffFrames then
+        if frame.debuffFrames and frame.debuffFrames[1]:GetAlpha() > 0 then
             for i = 1, #frame.debuffFrames do
                 frame.debuffFrames[i]:SetAlpha(0);
                 frame.debuffFrames[i]:Hide();
@@ -548,7 +582,7 @@ function ns.ACRB_UpdateAuras(asframe)
     end
 
     do
-        if frame.dispelDebuffFrames then
+        if frame.dispelDebuffFrames and frame.dispelDebuffFrames[1]:GetAlpha() > 0 then
             for i = 1, #frame.dispelDebuffFrames do
                 frame.dispelDebuffFrames[i]:SetAlpha(0);
                 frame.dispelDebuffFrames[i]:Hide();
@@ -581,6 +615,7 @@ function ns.ACRB_UpdateAuras(asframe)
         for i = frameNum, ns.ACRB_MAX_DEBUFFS do
             local debuffFrame = asframe.asdebuffFrames[i];
             debuffFrame:Hide();
+            debuffFrame.data = {};
         end
     end
 
@@ -625,6 +660,7 @@ function ns.ACRB_UpdateAuras(asframe)
         for i = frameIdx, ns.ACRB_MAX_BUFFS - 3 do
             local buffFrame = asframe.asbuffFrames[i];
             buffFrame:Hide();
+            buffFrame.data = {};
         end
 
         for i = ns.ACRB_MAX_BUFFS - 2, ns.ACRB_MAX_BUFFS do
@@ -634,6 +670,7 @@ function ns.ACRB_UpdateAuras(asframe)
                     ns.UpdateNameColor(asframe.frame, false);
                 end
                 buffFrame:Hide();
+                buffFrame.data = {};
             end
         end
     end
@@ -660,6 +697,7 @@ function ns.ACRB_UpdateAuras(asframe)
             local buffFrame = asframe.defensivebuffFrames[i];
             if buffFrame then
                 buffFrame:Hide();
+                buffFrame.data = {};
             end
         end
     end

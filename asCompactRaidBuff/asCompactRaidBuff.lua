@@ -254,7 +254,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             layoutbuff(buffFrame, 1);
             asframe.asbuffFrames[i] = buffFrame;
             buffFrame:Hide();
-
+            buffFrame.data = {};
             buffFrame:SetFrameStrata(strata);
             buffFrame:SetFrameLevel(framelevel);
         end
@@ -312,9 +312,9 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             layoutbuff(debuffFrame, 2);
             asframe.asdebuffFrames[i] = debuffFrame;
             debuffFrame:Hide();
-
             debuffFrame:SetFrameStrata(strata);
             debuffFrame:SetFrameLevel(framelevel);
+            debuffFrame.data = {};
         end
     end
 
@@ -354,6 +354,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
 
             pvpbuffFrame:SetFrameStrata(strata);
             pvpbuffFrame:SetFrameLevel(framelevel);
+            pvpbuffFrame.data = {};
         end
     end
 
@@ -377,6 +378,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             castFrame:SetFrameStrata(strata);
             castFrame:SetFrameLevel(framelevel);
             castFrame:Hide();
+            castFrame.data = {};
             layoutbuff(castFrame, 3);
         end
     end
@@ -511,7 +513,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             asframe.timer:Cancel();
         end
     end
-
+    
     if asframe.timer then
         asframe.timer:Cancel();
     end

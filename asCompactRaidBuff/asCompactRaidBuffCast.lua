@@ -54,28 +54,39 @@ local function ACRB_updateCasting(asframe, unit)
             end
 
             if name and index <= #(asframe.castFrames) then
-                castFrame.icon:SetTexture(texture);
-                castFrame.other.count:Hide();
+                if not (texture == castFrame.data.texture and
+                        spellid == castFrame.data.spellid and
+                        endTime == castFrame.data.endTime and
+                        startTime == castFrame.data.startTime) then
+                    castFrame.data = {
+                        icon =texture,
+                        startTime = startTime,
+                        endTime = endTime,
+                        spellid = spellid,
+                    };
+                    castFrame.icon:SetTexture(texture);
+                    castFrame.other.count:Hide();
 
-                local curr = GetTime();
-                local start = startTime / 1000;
-                local duration = (endTime / 1000) - start;
+                    local curr = GetTime();
+                    local start = startTime / 1000;
+                    local duration = (endTime / 1000) - start;
 
-                ns.asCooldownFrame_Set(castFrame.cooldown, start, duration, true);
+                    ns.asCooldownFrame_Set(castFrame.cooldown, start, duration, true);
 
-                if DangerousSpellList[spellid] then
-                    if DangerousSpellList[spellid] == "interrupt" or not notInterruptible then
-                        ns.lib.PixelGlow_Start(castFrame, { 0, 1, 0.32, 1 });
+                    if DangerousSpellList[spellid] then
+                        if DangerousSpellList[spellid] == "interrupt" or not notInterruptible then
+                            ns.lib.PixelGlow_Start(castFrame, { 0, 1, 0.32, 1 });
+                        else
+                            ns.lib.PixelGlow_Start(castFrame, { 0.5, 0.5, 0.5, 1 });
+                        end
                     else
-                        ns.lib.PixelGlow_Start(castFrame, { 0.5, 0.5, 0.5, 1 });
+                        ns.lib.PixelGlow_Stop(castFrame);
                     end
-                else
-                    ns.lib.PixelGlow_Stop(castFrame);
+                    castFrame.castspellid = spellid;
+                    castFrame:Show();
                 end
-                castFrame.castspellid = spellid;
-                castFrame:Show();
-                asframe.ncasting = index;
 
+                asframe.ncasting = index;
                 return true;
             end
         end
@@ -96,7 +107,8 @@ local function ARCB_HideCast(asframe)
     if asframe and asframe.castFrames then
         for i = asframe.ncasting + 1, #asframe.castFrames do
             asframe.castFrames[i]:Hide();
-        end        
+            asframe.castFrames[i].data = {};
+        end
     end
 
     if asframe then
@@ -167,7 +179,7 @@ function ns.ACRB_CheckCasting()
         for unit, check in pairs(ns.CastingUnits) do
             if check then
                 local notcasting = CheckCasting(unit);
-                
+
                 if notcasting then
                     ns.CastingUnits[unit] = nil;
                 end
