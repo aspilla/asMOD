@@ -500,6 +500,67 @@ function ns.ACRB_setupFrame(asframe, bupdate)
 
     asframe.ncasting = 0;
 
+    --마나는 unit으로만
+	
+	local role = UnitGroupRolesAssigned(asframe.unit);
+	local powerBarUsedHeight = 0;
+
+	if asframe.frame.powerBar and asframe.frame.powerBar:IsShown() then
+		powerBarUsedHeight = 8;
+	end
+
+    asframe.checkMana = false;
+
+	if role and role == "HEALER" and powerBarUsedHeight == 0 and ns.options.BottomHealerManaBar then
+		asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(asframe.unit, Enum.PowerType.Mana));
+		--asframe.asManabar:SetValue(UnitPower(asframe.unit, Enum.PowerType.Mana));
+
+		local info = PowerBarColor["MANA"];
+		if (info) then
+			local r, g, b = info.r, info.g, info.b;
+			asframe.asManabar:SetStatusBarColor(r, g, b);
+		end
+
+        asframe.checkMana = true;
+
+		asframe.asManabar:Show();
+	else
+		asframe.asManabar:Hide();
+	end
+
+	local function layout(bottomoffset, centeroffset)
+		asframe.asbuffFrames[1]:ClearAllPoints();
+		asframe.asbuffFrames[1]:SetPoint("BOTTOMRIGHT", asframe.frame, "BOTTOMRIGHT", -2, bottomoffset);
+
+		asframe.asbuffFrames[4]:ClearAllPoints();
+		asframe.asbuffFrames[4]:SetPoint("RIGHT", asframe.frame, "RIGHT", -2, centeroffset);
+
+		asframe.defensivebuffFrames[1]:ClearAllPoints();
+		asframe.defensivebuffFrames[1]:SetPoint("CENTER", asframe.frame, "CENTER", 0, centeroffset);
+
+		asframe.asdebuffFrames[1]:ClearAllPoints();
+		asframe.asdebuffFrames[1]:SetPoint("BOTTOMLEFT", asframe.frame, "BOTTOMLEFT", 2, bottomoffset);
+	end
+
+	local CUF_AURA_BOTTOM_OFFSET = 2;
+	local centeryoffset = 0;
+	local layouttype = 1;
+
+	if powerBarUsedHeight > 0 then
+		CUF_AURA_BOTTOM_OFFSET = 1 + powerBarUsedHeight;
+		centeryoffset = 4;
+		layouttype = 3;
+	elseif asframe.asManabar:IsShown() then
+		CUF_AURA_BOTTOM_OFFSET = ns.ACRB_HealerManaBarHeight + 1;
+		centeryoffset = 1;
+		layouttype = 2;
+	end
+
+	if asframe.layout and asframe.layout ~= layouttype then
+		layout(CUF_AURA_BOTTOM_OFFSET, centeryoffset);
+		asframe.layout = layouttype;
+	end
+
     if bupdate then
         ns.ACRB_UpdateHealerMana(asframe);
         ns.ACRB_UpdateRaidIconAborbColor(asframe);
