@@ -12,6 +12,10 @@ end
 
 local specicons = {};
 
+local tankIcon = CreateAtlasMarkup("roleicon-tiny-tank", 16, 16, 0, 0);
+local dpsIcon = CreateAtlasMarkup("roleicon-tiny-dps", 16, 16, 0, 0);
+local healerIcon = CreateAtlasMarkup("roleicon-tiny-healer", 16, 16, 0, 0);
+
 local function SearchEntryUpdate(entry, ...)
     if (not LFGListFrame.SearchPanel:IsShown()) then
         return;
@@ -85,7 +89,6 @@ local function SearchEntryUpdate(entry, ...)
             local isLeader = orderIndexes[i][5];
 
             if class and spec and role then
-                
                 local classColor = RAID_CLASS_COLORS[class];
                 local r, g, b, a = classColor:GetRGBA();
 
@@ -143,6 +146,77 @@ local function SearchEntryUpdate(entry, ...)
                     end
                 end
             end
+        end
+    elseif (categoryID == 3) then
+        local numMembers = resultInfo.numMembers;
+        local classes = {};
+
+        for i = 1, numMembers do
+            local role, class, classLocalized, specLocalized, isLeader = C_LFGList.GetSearchResultMemberInfo(resultID, i);
+            if classes[role] == nil then
+                classes[role] = {};
+            end
+            if classes[role][class] == nil then
+                classes[role][class] = 1;
+            else
+                classes[role][class] = classes[role][class] + 1;
+            end
+        end
+
+        if not entry.DataDisplay.RoleCount.healerclasses then
+            entry.DataDisplay.RoleCount.healerclasses = entry.DataDisplay.RoleCount:CreateFontString(nil, "ARTWORK");
+            entry.DataDisplay.RoleCount.healerclasses:SetFont(STANDARD_TEXT_FONT, 12);
+            entry.DataDisplay.RoleCount.healerclasses:SetPoint("BOTTOMRIGHT", entry.DataDisplay.RoleCount.HealerIcon,
+                "BOTTOMRIGHT", 40, -10);  
+
+            entry.DataDisplay.RoleCount.dpsclasses = entry.DataDisplay.RoleCount:CreateFontString(nil, "ARTWORK");
+            entry.DataDisplay.RoleCount.dpsclasses:SetFont(STANDARD_TEXT_FONT, 12);
+            entry.DataDisplay.RoleCount.dpsclasses:SetPoint("RIGHT", entry.DataDisplay.RoleCount.healerclasses,
+                "LEFT", -5, 0);    
+                
+            entry.DataDisplay.RoleCount.tankclasses = entry.DataDisplay.RoleCount:CreateFontString(nil, "ARTWORK");
+            entry.DataDisplay.RoleCount.tankclasses:SetFont(STANDARD_TEXT_FONT, 12);
+            entry.DataDisplay.RoleCount.tankclasses:SetPoint("RIGHT", entry.DataDisplay.RoleCount.dpsclasses,
+            "LEFT", -5, 0);     
+        end
+
+        local function getClassCountText(class, count)
+            local classColor = RAID_CLASS_COLORS[class];
+            local r, g, b, a = classColor:GetRGBA();
+            return string.format("|cff%02x%02x%02x%d|r", r * 255, g * 255, b * 255, count);
+        end
+
+        local healerclasses = classes["HEALER"];
+
+        if healerclasses then
+            local text = healerIcon;
+            for class, count in pairs(healerclasses) do
+                text = text .. getClassCountText(class, count);
+            end
+            entry.DataDisplay.RoleCount.healerclasses:SetText(text);
+            entry.DataDisplay.RoleCount.healerclasses:Show();
+        end
+
+        local dpsclasses = classes["DAMAGER"];
+
+        if dpsclasses then        
+
+            local text = dpsIcon;
+            for class, count in pairs(dpsclasses) do
+                text = text .. getClassCountText(class, count);
+            end
+            entry.DataDisplay.RoleCount.dpsclasses:SetText(text);
+            entry.DataDisplay.RoleCount.dpsclasses:Show();
+        end
+
+        local tankclasses = classes["TANK"];
+        if tankclasses then                    
+            local text = tankIcon;
+            for class, count in pairs(tankclasses) do
+                text = text .. getClassCountText(class, count);
+            end
+            entry.DataDisplay.RoleCount.tankclasses:SetText(text);
+            entry.DataDisplay.RoleCount.tankclasses:Show();
         end
     end
 end
