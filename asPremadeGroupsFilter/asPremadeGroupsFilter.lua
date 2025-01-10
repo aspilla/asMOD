@@ -11,10 +11,11 @@ local function getIndex(values, val)
 end
 
 local specicons = {};
+local roleicons = {};
 
-local tankIcon = CreateAtlasMarkup("roleicon-tiny-tank", 16, 16, 0, 0);
-local dpsIcon = CreateAtlasMarkup("roleicon-tiny-dps", 16, 16, 0, 0);
-local healerIcon = CreateAtlasMarkup("roleicon-tiny-healer", 16, 16, 0, 0);
+roleicons["TANK"] = CreateAtlasMarkup("roleicon-tiny-tank", 16, 16, 0, 0);
+roleicons["DAMAGER"] = CreateAtlasMarkup("roleicon-tiny-dps", 16, 16, 0, 0);
+roleicons["HEALER"] = CreateAtlasMarkup("roleicon-tiny-healer", 16, 16, 0, 0);
 
 local function SearchEntryUpdate(entry, ...)
     if (not LFGListFrame.SearchPanel:IsShown()) then
@@ -150,74 +151,85 @@ local function SearchEntryUpdate(entry, ...)
     elseif (categoryID == 3) then
         local numMembers = resultInfo.numMembers;
         local classes = {};
+        local leader_role;
+        local leader_classe;
 
         for i = 1, numMembers do
             local role, class, classLocalized, specLocalized, isLeader = C_LFGList.GetSearchResultMemberInfo(resultID, i);
-            if classes[role] == nil then
-                classes[role] = {};
+
+            if role and class then
+                if classes[role] == nil then
+                    classes[role] = {};
+                end
+                if classes[role][class] == nil then
+                    classes[role][class] = 1;
+                else
+                    classes[role][class] = classes[role][class] + 1;
+                end                
+                if isLeader then
+                    leader_role = role;
+                    leader_class = class;
+                end
             end
-            if classes[role][class] == nil then
-                classes[role][class] = 1;
-            else
-                classes[role][class] = classes[role][class] + 1;
-            end
+
+            
         end
 
-        if not entry.DataDisplay.RoleCount.dpsclasses then
-            entry.DataDisplay.RoleCount.dpsclasses = entry.DataDisplay.RoleCount:CreateFontString(nil, "ARTWORK");
-            entry.DataDisplay.RoleCount.dpsclasses:SetFont(STANDARD_TEXT_FONT, 12);
-            entry.DataDisplay.RoleCount.dpsclasses:SetPoint("BOTTOMRIGHT", entry.DataDisplay.RoleCount.HealerIcon,
-                "BOTTOMRIGHT", 40, -10);  
+        if not entry.DataDisplay.RoleCount.infos then
+            entry.DataDisplay.RoleCount.infos = {};
+            entry.DataDisplay.RoleCount.infos.DAMAGER = entry.DataDisplay.RoleCount:CreateFontString(nil, "ARTWORK");
+            entry.DataDisplay.RoleCount.infos.DAMAGER:SetFont(STANDARD_TEXT_FONT, 12);
+            entry.DataDisplay.RoleCount.infos.DAMAGER:SetPoint("RIGHT", entry.DataDisplay.RoleCount.HealerIcon,
+                "BOTTOMRIGHT", 40, -10);
 
-            entry.DataDisplay.RoleCount.healerclasses = entry.DataDisplay.RoleCount:CreateFontString(nil, "ARTWORK");
-            entry.DataDisplay.RoleCount.healerclasses:SetFont(STANDARD_TEXT_FONT, 12);
-            entry.DataDisplay.RoleCount.healerclasses:SetPoint("RIGHT", entry.DataDisplay.RoleCount.dpsclasses,
+            entry.DataDisplay.RoleCount.infos.HEALER = entry.DataDisplay.RoleCount:CreateFontString(nil, "ARTWORK");
+            entry.DataDisplay.RoleCount.infos.HEALER:SetFont(STANDARD_TEXT_FONT, 12);
+            entry.DataDisplay.RoleCount.infos.HEALER:SetPoint("RIGHT", entry.DataDisplay.RoleCount.infos.DAMAGER,
                 "LEFT", -5, 0);
-                
-            entry.DataDisplay.RoleCount.tankclasses = entry.DataDisplay.RoleCount:CreateFontString(nil, "ARTWORK");
-            entry.DataDisplay.RoleCount.tankclasses:SetFont(STANDARD_TEXT_FONT, 12);
-            entry.DataDisplay.RoleCount.tankclasses:SetPoint("RIGHT", entry.DataDisplay.RoleCount.healerclasses,
-            "LEFT", -5, 0);     
+
+            entry.DataDisplay.RoleCount.infos.TANK = entry.DataDisplay.RoleCount:CreateFontString(nil, "ARTWORK");
+            entry.DataDisplay.RoleCount.infos.TANK:SetFont(STANDARD_TEXT_FONT, 12);
+            entry.DataDisplay.RoleCount.infos.TANK:SetPoint("RIGHT", entry.DataDisplay.RoleCount.infos.HEALER,
+                "LEFT", -5, 0);
+
+            entry.DataDisplay.RoleCount.infos.LEADER = entry.DataDisplay.RoleCount:CreateFontString(nil, "ARTWORK");
+            entry.DataDisplay.RoleCount.infos.LEADER:SetFont(STANDARD_TEXT_FONT, 12);
+            entry.DataDisplay.RoleCount.infos.LEADER:SetPoint("RIGHT", entry.DataDisplay.RoleCount.infos.TANK,
+                "LEFT", -5, 0);
         end
 
         local function getClassCountText(class, count)
             local classColor = RAID_CLASS_COLORS[class];
             local r, g, b, a = classColor:GetRGBA();
-            return string.format("|cff%02x%02x%02x%d|r", r * 255, g * 255, b * 255, count);
+            return string.format("|cff%02x%02x%02x%s|r", r * 255, g * 255, b * 255, count);
         end
 
-        local dpsclasses = classes["DAMAGER"];
-
-        if dpsclasses then        
-
-            local text = dpsIcon;
-            for class, count in pairs(dpsclasses) do
-                text = text .. getClassCountText(class, count);
+        local function setupText(role, infos, fontstring)
+            local text = ""
+            if role and infos then
+                text = roleicons[role];
+                for class, count in pairs(infos) do
+                    text = text .. getClassCountText(class, count);
+                end                
+                
             end
-            entry.DataDisplay.RoleCount.dpsclasses:SetText(text);
-            entry.DataDisplay.RoleCount.dpsclasses:Show();
+            
+            fontstring:SetText(text);
+            fontstring:Show();
         end
 
-        local healerclasses = classes["HEALER"];
-
-        if healerclasses then
-            local text = healerIcon;
-            for class, count in pairs(healerclasses) do
-                text = text .. getClassCountText(class, count);
-            end
-            entry.DataDisplay.RoleCount.healerclasses:SetText(text);
-            entry.DataDisplay.RoleCount.healerclasses:Show();
+        for role, _ in pairs(roleicons) do
+            local infos = classes[role];
+            setupText(role, infos, entry.DataDisplay.RoleCount.infos[role]);            
         end
 
-        local tankclasses = classes["TANK"];
-        if tankclasses then                    
-            local text = tankIcon;
-            for class, count in pairs(tankclasses) do
-                text = text .. getClassCountText(class, count);
-            end
-            entry.DataDisplay.RoleCount.tankclasses:SetText(text);
-            entry.DataDisplay.RoleCount.tankclasses:Show();
+        local text = "";
+
+        if leader_class then
+            text = leaderIcon..getClassCountText(leader_class, string.sub(leader_role, 1, 1))            
         end
+        entry.DataDisplay.RoleCount.infos.LEADER:SetText(text);
+        entry.DataDisplay.RoleCount.infos.LEADER:Show();            
     end
 end
 

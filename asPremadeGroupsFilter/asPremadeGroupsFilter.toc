@@ -2,8 +2,9 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rPremadeGroupsFilter
 ## Notes: Improving the default premade group finder by showing class icon and color.
-## Version : 250110
+## Version : 250112
 ## SavedVariablesPerCharacter: APMGF_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asPremadeGroupsFilterOption.lua
 asPremadeGroupsFilter.lua
