@@ -2,8 +2,10 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rBuffFilter
 ## Notes: Buff tracker (player, target)
-## Version : 250109
+## Version : 250111
+## SavedVariablesPerCharacter: ABF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asBuffFilterOptions.lua
 asBuffFilterLib.lua
 asBuffFilter.xml

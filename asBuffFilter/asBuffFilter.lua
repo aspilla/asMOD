@@ -23,14 +23,6 @@ local DispellableDebuffTypes =
 };
 
 
-local AuraUpdateChangedType = EnumUtil.MakeEnum(
-	"None",
-	"Debuff",
-	"Buff",
-	"PVP",
-	"Dispel"
-);
-
 local UnitFrameBuffType = EnumUtil.MakeEnum(
 	"CountBuff",
 	"BossBuff",
@@ -57,6 +49,10 @@ local AuraFilters =
 	NotCancelable = "NOT_CANCELABLE",
 	Maw = "MAW",
 };
+
+ns.show_list = {};
+ns.show_countlist = {};
+ns.show_totemlist = {};
 
 local asGetSpellInfo = function(spellID)
 	if not spellID then
@@ -154,89 +150,6 @@ end
 local filter = CreateFilterString(AuraFilters.Helpful, AuraFilters.IncludeNameplateOnly);
 
 
-local function scanSpells(tab)
-	local tabName, tabTexture, tabOffset, numEntries = asGetSpellTabInfo(tab)
-
-	if not tabName then
-		return;
-	end
-
-	for i = tabOffset + 1, tabOffset + numEntries do
-		local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player)
-
-		if not spellName then
-			do break end
-		end
-
-		local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
-		local _, _, icon = asGetSpellInfo(spellID);
-
-		if (slotType == Enum.SpellBookItemType.Flyout) then
-			local _, _, numSlots = GetFlyoutInfo(actionID);
-			for j = 1, numSlots do
-				local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
-
-				if flyoutSpellName then
-					ABF_TalentBuffList[flyoutSpellName] = true;
-					ABF_TalentBuffList[flyoutSpellID or 0] = true;
-				end
-			end
-		else
-			ABF_TalentBuffList[spellName] = true;
-			ABF_TalentBuffIconList[icon or 0] = true;
-			ABF_TalentBuffList[spellID or 0] = true;
-		end
-	end
-end
-
-local function asCheckTalent()
-	ABF_TalentBuffList = {};
-	ABF_TalentBuffIconList = {};
-	overlayspell = {};
-
-	if not ns.ABF_CheckTalentTree then
-		return;
-	end
-
-	scanSpells(2)
-	scanSpells(3)
-
-	local configID = C_ClassTalents.GetActiveConfigID();
-
-	if not (configID) then
-		return;
-	end
-	local configInfo = C_Traits.GetConfigInfo(configID);
-	local treeID = configInfo.treeIDs[1];
-	local nodes = C_Traits.GetTreeNodes(treeID);
-
-	for _, nodeID in ipairs(nodes) do
-		local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID);
-		if nodeInfo.currentRank and nodeInfo.currentRank > 0 then
-			local entryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID and nodeInfo.activeEntry.entryID;
-			local entryInfo = entryID and C_Traits.GetEntryInfo(configID, entryID);
-			local definitionInfo = entryInfo and entryInfo.definitionID and
-				C_Traits.GetDefinitionInfo(entryInfo.definitionID);
-
-			if definitionInfo ~= nil then
-				local talentName = TalentUtil.GetTalentName(definitionInfo.overrideName, definitionInfo.spellID);
-				--print(string.format("%s/%d %s/%d", talentName, definitionInfo.spellID, definitionInfo.overrideName or "", definitionInfo.overriddenSpellID or 0));
-				local name, rank, icon = asGetSpellInfo(definitionInfo.spellID);
-				ABF_TalentBuffList[talentName or ""] = true;
-				ABF_TalentBuffIconList[icon or 0] = true;
-				ABF_TalentBuffList[definitionInfo.spellID] = true;
-				if definitionInfo.overrideName then
-					--print (definitionInfo.overrideName)
-					ABF_TalentBuffList[definitionInfo.overrideName] = true;
-				end
-			end
-		end
-	end
-
-	return;
-end
-
-
 local function asCooldownFrame_Clear(self)
 	self:Clear();
 end
@@ -299,7 +212,6 @@ end
 local bcheckOverlay = false;
 
 local function IsShown(aura)
-
 	local name = aura.name;
 	local spellId = aura.spellId
 	if ns.ABF_BlackList[spellId] then
@@ -330,10 +242,10 @@ local function IsShown(aura)
 		return true;
 	end
 
-	aura.classbuff = ns.ABF_ClassBuffList[aura.spellId];
+	aura.classbuff = ns.show_list[aura.spellId];
 
 	if bcheckOverlay and (overlayspell[spellId] or overlayspell[name]) then
-		if aura.classbuff and aura.classbuff > 1 then	
+		if aura.classbuff and aura.classbuff > 1 then
 
 		else
 			return true;
@@ -352,7 +264,7 @@ local function IsShownTotem(name, icon)
 		return true;
 	end
 
-	if ACI_Totem_list and (ACI_Totem_list[name] or ACI_Totem_list[icon])then
+	if ACI_Totem_list and (ACI_Totem_list[name] or ACI_Totem_list[icon]) then
 		return true;
 	end
 
@@ -364,18 +276,18 @@ local activeBuffs = {};
 
 local function ProcessAura(aura, unit)
 	if aura == nil or aura.icon == nil or unit == nil or not aura.isHelpful then
-		return AuraUpdateChangedType.None;
+		return;
 	end
 
 	if IsShown(aura) then
-		return AuraUpdateChangedType.None;
+		return;
 	end
 
-	local skip = true;	
-	local isPlayerUnit = PLAYER_UNITS[aura.sourceUnit];	
+	local skip = true;
+	local isPlayerUnit = PLAYER_UNITS[aura.sourceUnit];
 	aura.procbuff = ns.ABF_ProcBuffList[aura.spellId];
 	aura.pvpbuff = ns.ABF_PVPBuffList[aura.spellId];
-
+	local minshowtype = 100;
 
 	if unit == "target" then
 		if UnitIsPlayer("target") then
@@ -423,6 +335,10 @@ local function ProcessAura(aura, unit)
 		if aura.procbuff then
 			skip = false;
 		end
+
+		if ns.options.ShowListOnly then
+			minshowtype = UnitFrameBuffType.ProcBuff;
+		end
 	end
 
 	if skip == false then
@@ -436,8 +352,8 @@ local function ProcessAura(aura, unit)
 			end
 		elseif aura.classbuff then
 			local ClassBuffType = aura.classbuff;
-			aura.buffcheckcount = ns.ABF_ClassBuffCountList[aura.spellId];
-			if aura.buffcheckcount then				
+			aura.buffcheckcount = ns.show_countlist[aura.spellId];
+			if aura.buffcheckcount then
 				if aura.applications >= aura.buffcheckcount and ClassBuffType < 3 then
 					ClassBuffType = ClassBuffType + 1;
 				end
@@ -460,20 +376,18 @@ local function ProcessAura(aura, unit)
 			aura.buffType = UnitFrameBuffType.ProcBuff;
 		elseif IsShouldDisplayBuff(aura.spellId, aura.sourceUnit, aura.isFromPlayerOrPlayerPet) then
 			aura.buffType = UnitFrameBuffType.Normal;
-		elseif ABF_TalentBuffList[aura.spellId] == true then
-			aura.buffType = UnitFrameBuffType.TalentBuff;
-		elseif ABF_TalentBuffList[aura.name] == true then
-			aura.buffType = UnitFrameBuffType.TalentBuff;
 		else
 			aura.buffType = UnitFrameBuffType.Normal;
 		end
 
-		activeBuffs[unit][aura.auraInstanceID] = aura;
-		return AuraUpdateChangedType.Buff;
+		if aura.buffType <= minshowtype then
+			activeBuffs[unit][aura.auraInstanceID] = aura;
+		end
+		return;
 	end
 
 
-	return AuraUpdateChangedType.None;
+	return;
 end
 
 local function ParseAllAuras(unit)
@@ -504,7 +418,7 @@ local function updateTotemAura()
 		if haveTotem and icon then
 			if not (IsShownTotem(name, icon)) then
 				local frame = nil;
-				local alert = ns.ABF_ClassTotemList[icon] or 0;
+				local alert = ns.show_totemlist[icon] or 0;
 
 				if alert > 0 then
 					frame = ABF_TALENT_BUFF.frames[center];
@@ -644,7 +558,7 @@ local function UpdateAuraFrames(unit, auraList)
 			local frameCooldown = frame.cooldown;
 			local balertcount = false;
 
-			if aura.buffType == UnitFrameBuffType.CountBuff and aura.applications then				
+			if aura.buffType == UnitFrameBuffType.CountBuff and aura.applications then
 				if aura.buffcheckcount and aura.applications >= aura.buffcheckcount then
 					frameBigCount:SetTextColor(1, 0, 0, 1);
 					balertcount = true;
@@ -660,10 +574,10 @@ local function UpdateAuraFrames(unit, auraList)
 				if (aura.applications and aura.applications > 1) then
 					frameCount:SetText(aura.applications);
 					frameCount:Show();
-					frameBigCount:Hide();					
+					frameBigCount:Hide();
 				else
 					frameCount:Hide();
-					frameBigCount:Hide();					
+					frameBigCount:Hide();
 				end
 			end
 
@@ -774,8 +688,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif (event == "PLAYER_TOTEM_UPDATE") then
 		UpdateAuras("player");
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		hasValidPlayer = true;
-		asCheckTalent();
+		hasValidPlayer = true;		
 		ABF_Resize();
 		UpdateAuras("player");
 		UpdateAuras("target");
@@ -786,9 +699,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ABF:SetAlpha(ns.ABF_AlphaNormal);
 		ABF_Resize();
-		DumpCaches();
-	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
-		asCheckTalent();
+		DumpCaches();	
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") and arg1 then
 		local spell_name = asGetSpellInfo(arg1);
 		overlayspell[arg1] = true;
@@ -857,7 +768,7 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 
 	for idx = 1, max do
 		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
-		local frame = parent.frames[idx];		
+		local frame = parent.frames[idx];
 		frame:SetFrameLevel(9000);
 		frame.other:SetFrameLevel(9150);
 		frame.cooldown:SetFrameLevel(9100);
@@ -876,7 +787,7 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 
 		frame.other.bigcount:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize + 3, "OUTLINE")
 		frame.other.bigcount:ClearAllPoints()
-		frame.other.bigcount:SetPoint("CENTER", frame.icon ,"CENTER", 0, 0);
+		frame.other.bigcount:SetPoint("CENTER", frame.icon, "CENTER", 0, 0);
 
 		frame.icon:SetTexCoord(.08, .92, .08, .92);
 		frame.icon:SetAlpha(ns.ABF_ALPHA);
@@ -907,6 +818,42 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 		frame:Hide();
 	end
 
+	return;
+end
+
+
+function ns.Loadoptions()
+	overlayspell = {};
+
+	local localizedClass, englishClass = UnitClass("player");
+
+	ns.listname = "ShowList_" .. englishClass;
+	local classlist = ns[ns.listname];
+	local savedlist = ABF_Options[ns.listname];
+
+	if savedlist and savedlist.classbuffs and savedlist.classcountbuffs and savedlist.classtotems and savedlist.version == classlist.version then
+		ns.show_list = CopyTable(savedlist.classbuffs);
+		ns.show_countlist = CopyTable(savedlist.classcountbuffs);
+		ns.show_totemlist = CopyTable(savedlist.classtotems);		
+	elseif classlist and classlist.classbuffs and classlist.classcountbuffs and classlist.classtotems then
+		ns.show_list = CopyTable(classlist.classbuffs);
+		ns.show_countlist = CopyTable(classlist.classcountbuffs);
+		ns.show_totemlist = CopyTable(classlist.classtotems);	
+		ABF_Options[ns.listname] = {};
+		ABF_Options[ns.listname] = CopyTable(classlist);
+	else
+		ns.show_list = {};
+		ns.show_countlist = {};
+		ns.show_totemlist = {};
+	end
+
+	for id, value in pairs(ns.ABF_OtherBuffList) do
+		ns.show_list[id] = value;
+	end	
+
+	ABF_Resize();
+	UpdateAuras("player");
+	UpdateAuras("target");
 	return;
 end
 
@@ -967,6 +914,8 @@ local function ABF_Init()
 	end
 
 
+
+
 	ABF:RegisterEvent("PLAYER_TARGET_CHANGED")
 	ABF:RegisterUnitEvent("UNIT_AURA", "player");
 	ABF:RegisterEvent("PLAYER_ENTERING_WORLD");
@@ -974,9 +923,6 @@ local function ABF_Init()
 	ABF:RegisterEvent("PLAYER_REGEN_DISABLED");
 	ABF:RegisterEvent("PLAYER_REGEN_ENABLED");
 	ABF:RegisterEvent("PLAYER_TOTEM_UPDATE");
-	ABF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-	ABF:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-	ABF:RegisterEvent("TRAIT_CONFIG_UPDATED");
 	ABF:RegisterEvent("CVAR_UPDATE");
 
 
@@ -986,6 +932,7 @@ local function ABF_Init()
 		ABF:RegisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE");
 	end
 
+	ns.SetupOptionPanels();	
 
 	ABF:SetScript("OnEvent", ABF_OnEvent)
 
@@ -993,4 +940,4 @@ local function ABF_Init()
 	C_Timer.NewTicker(0.25, OnUpdate);
 end
 
-ABF_Init();
+C_Timer.After(0.5, ABF_Init);
