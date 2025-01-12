@@ -25,10 +25,10 @@ local asGetSpellInfo = function(spellID)
     end
 end
 
-local function ACRB_InitList()
+function ns.ACRB_InitList()
     local spec = GetSpecialization();
     local localizedClass, englishClass = UnitClass("player");
-    local listname;
+    ns.listname = nil;
 
     ns.ACRB_ShowList = nil;
 
@@ -38,20 +38,27 @@ local function ACRB_InitList()
 
 
     if spec then
-        listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
+        ns.listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
     end
 
-    ns.ACRB_ShowList = ns[listname];
+    ns.ACRB_ShowList = CopyTable(ns[ns.listname]);
+    local savedlist = ACRB_Options[ns.listname];
 
-    if ns.ACRBShowList then
-        for key, value in pairs(ns.ACRBShowList) do
-            if tonumber(key) > 0 then
-                local name = asGetSpellInfo(key);
-                if name then
-                    ns.ACRBShowList[name] = value;
-                end
-            end
-        end
+    if savedlist and ns.ACRB_ShowList and savedlist.version ==  ns.ACRB_ShowList.version then
+		ns.ACRB_ShowList = CopyTable(savedlist);		
+	else
+		ACRB_Options[ns.listname] = {};
+		ACRB_Options[ns.listname] = CopyTable(ns.ACRB_ShowList);	
+	end
+
+    local saveddefensivelist = ACRB_Options.defensivelist;
+
+    if saveddefensivelist and ns.ACRB_DefensiveBuffListDefault and saveddefensivelist.version == ns.ACRB_DefensiveBuffListDefault.version then
+        ns.ACRB_DefensiveBuffList = CopyTable(saveddefensivelist);
+    else
+        ns.ACRB_DefensiveBuffList = CopyTable(ns.ACRB_DefensiveBuffListDefault);
+        ACRB_Options.defensivelist = {};
+        ACRB_Options.defensivelist = CopyTable(ns.ACRB_DefensiveBuffListDefault);
     end
 
     ns.lowhealth = 0;
@@ -61,6 +68,8 @@ local function ACRB_InitList()
             ns.lowhealth = 35;
         end
     end
+
+    ns.refreshList();
 end
 
 local function ACRB_updatePartyAllHealerMana()
@@ -513,7 +522,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
 
 	if role and role == "HEALER" and powerBarUsedHeight == 0 and ns.options.BottomHealerManaBar then
 		asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(asframe.unit, Enum.PowerType.Mana));
-		--asframe.asManabar:SetValue(UnitPower(asframe.unit, Enum.PowerType.Mana));
+		asframe.asManabar:SetValue(UnitPower(asframe.unit, Enum.PowerType.Mana));
 
 		local info = PowerBarColor["MANA"];
 		if (info) then
@@ -727,7 +736,7 @@ function ns.SetupAll(init)
     end
 
     if init then
-        ACRB_InitList();
+        ns.ACRB_InitList();
     end
     ACRB_updateSetupAll();
     timero = C_Timer.NewTicker(ns.UpdateRate, ACRB_OnUpdate);
@@ -738,8 +747,8 @@ end
 local bfirst = true;
 
 local function ACRB_OnEvent(self, event, arg1, arg2, arg3)
-    if bfirst then
-        ns.SetupOptionPanels();
+    if bfirst then        
+        ns.SetupOptionPanels();        
         ns.SetupAll(true);
         bfirst = false;
     end

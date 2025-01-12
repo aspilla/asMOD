@@ -854,19 +854,19 @@ local function SetupSubOption(panel, titlename, coption, soption)
 
 	local localeTexts = { "Buff ID", "Type" };
 
-	local x = 50;
+	local x = 10;
 
 	local title = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
 	title:SetPoint("TOPLEFT", x, curr_y);
 	title:SetText(localeTexts[1]);
 
-	x = 250;
+	x = 200;
 
 	title = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
 	title:SetPoint("TOPLEFT", x, curr_y);
 	title:SetText(localeTexts[2]);
 
-	x = 400;
+	x = 350;
 
 	local btn0 = CreateFrame("Button", nil, panel.scrollchild, "UIPanelButtonTemplate")
 	btn0:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
@@ -883,7 +883,7 @@ local function SetupSubOption(panel, titlename, coption, soption)
 
 
 
-	local x = 50;
+	local x = 10;
 
 	local editBox = CreateFrame("EditBox", nil, panel.scrollchild)
 	do
@@ -949,6 +949,7 @@ local function SetupSubOption(panel, titlename, coption, soption)
 			info.func = Dropdown_OnClick;
 			UIDropDownMenu_AddButton(info, level)
 		end
+		UIDropDownMenu_SetSelectedValue(dropDown, 0);
 	end);	
 
 	x = x + 150;
@@ -1074,6 +1075,6 @@ function ns.SetupOptionPanels()
 	Settings.RegisterAddOnCategory(category)
 
 	ns.Loadoptions();
-	SetupSubOption(ns.buffpanel, "Classe Buff List", ns.show_list , ABF_Options[ns.listname].classbuffs);
+	SetupSubOption(ns.buffpanel, "Class Buff List", ns.show_list , ABF_Options[ns.listname].classbuffs);
 	SetupSubOption(ns.totempanel, "Totem List", ns.show_totemlist , ABF_Options[ns.listname].classtotems);
 end

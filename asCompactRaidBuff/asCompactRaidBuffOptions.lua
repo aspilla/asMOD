@@ -24,9 +24,17 @@ local Options_Default = {
 -- 첫 숫자 남은시간에 리필 알림 (1이면 자동으로 30% 남으면 알림)
 -- 두번째 숫자는 표시 위치, 6(우상) 5/4(우중) 1,2,3 은 우하에 보이는 우선 순위이다. (숫자가 클수록 우측에 보임)
 
+ns.ACRB_ShowList_MONK_1 = {	
+	version = 250112,
+}
+
 ns.ACRB_ShowList_MONK_2 = {
 	[119611] = { 0, 6 }, --소생의 안개
 	[124682] = { 0, 5 }, --포용의 안개	
+	version = 250112,
+}
+ns.ACRB_ShowList_MONK_3 = {	
+	version = 250112,
 }
 
 -- 신기
@@ -35,6 +43,15 @@ ns.ACRB_ShowList_PALADIN_1 = {
 	[53563] = { 0, 5 }, -- 빛의 봉화
 	[156910] = { 0, 5 }, -- 신념의 봉화
 	[200654] = { 0, 3 }, -- 티르		
+	version = 250112,
+}
+
+ns.ACRB_ShowList_PALADIN_2 = {
+	version = 250112,
+}
+
+ns.ACRB_ShowList_PALADIN_3 = {
+	version = 250112,
 }
 
 -- 수사
@@ -44,6 +61,7 @@ ns.ACRB_ShowList_PRIEST_1 = {
 	[139] = { 1, 4 }, -- 소생
 	[41635] = { 0, 2 }, -- 회복의 기원
 	[10060] = { 0, 1 }, -- 마력 주입
+	version = 250112,
 }
 
 
@@ -53,37 +71,148 @@ ns.ACRB_ShowList_PRIEST_2 = {
 	[17] = { 0, 5 }, -- 신의 권능 보호막
 	[41635] = { 0, 2 }, -- 회복의 기원
 	[10060] = { 0, 1 }, -- 마력 주입
+	version = 250112,
 }
 
 ns.ACRB_ShowList_PRIEST_3 = {
 	[10060] = { 0, 1 },
+	version = 250112,
 }
 
+ns.ACRB_ShowList_SHAMAN_1 = {
+	version = 250112,
+}
+
+ns.ACRB_ShowList_SHAMAN_2 = {
+	version = 250112,
+}
 
 ns.ACRB_ShowList_SHAMAN_3 = {
 	[61295] = { 1, 6 }, --성난 해일
 	[383648] = { 0, 5 }, --대지의 보호막
 	[974] = { 0, 4 }, --대지의 보호막
+	version = 250112,
 }
 
+ns.ACRB_ShowList_DRUID_1 = {
+	version = 250113,
+}
+
+ns.ACRB_ShowList_DRUID_2 = {
+	version = 250113,
+}
+
+ns.ACRB_ShowList_DRUID_3 = {
+	version = 250113,
+}
 
 ns.ACRB_ShowList_DRUID_4 = {
-	[774] = { 1, 6 }, --회복
+	[774] = { 1, 6 }, --회복	
 	[188550] = { 1, 5 }, -- 피어나는 생명
 	[8936] = { 1, 4 }, -- 재생
 	[155777] = { 1, 3 }, -- 회복 (싹틔우기)
 	[102351] = { 0, 2 }, -- 세나리온 수호물
+	version = 250112,
+}
+
+ns.ACRB_ShowList_EVOKER_1 = {	
+	version = 250112,
 }
 
 ns.ACRB_ShowList_EVOKER_2 = {
 	[364343] = { 0, 6 }, --메아리
 	[366155] = { 1, 5 }, --되감기
+	version = 250112,
 }
 
 ns.ACRB_ShowList_EVOKER_3 = {
 	[410089] = { 0, 6 }, --예지
 	[360827] = { 0, 5 }, --끓어오르는 비늘
+	version = 250112,
 }
+
+ns.ACRB_ShowList_WARRIOR_1 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_WARRIOR_2 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_WARRIOR_3 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_ROGUE_1 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_ROGUE_2 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_ROGUE_3 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_HUNTER_1 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_HUNTER_2 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_HUNTER_3 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_MAGE_1 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_MAGE_2 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_MAGE_3 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_WARLOCK_1 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_WARLOCK_2 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_WARLOCK_3 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_DEATHKNIGHT_1 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_DEATHKNIGHT_2 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_DEATHKNIGHT_3 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_DEMONHUNTER_1 = {	
+	version = 250112,
+}
+
+ns.ACRB_ShowList_DEMONHUNTER_2 = {	
+	version = 250112,
+}
+
+
+
 
 -- 안보이게 할 디법
 ns.ACRB_BlackList = {
@@ -92,7 +221,10 @@ ns.ACRB_BlackList = {
 
 
 --직업별 생존기 등록 (10초 쿨다운), 내부전쟁 Version
-ns.ACRB_DefensiveBuffList = {
+ns.ACRB_DefensiveBuffListDefault = {
+
+	version = 250112,
+
 	-- 종특	
 	[65116]  = 1, --석화
 
@@ -290,6 +422,412 @@ local tempoption = {};
 
 
 
+ns.buffpanel = CreateFrame("Frame")
+ns.defensivepanel = CreateFrame("Frame")
+
+local asGetSpellInfo = function(spellID)
+	if not spellID then
+		return nil;
+	end
+
+	local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+	if ospellID then
+		spellID = ospellID;
+	end
+
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	if spellInfo then
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+			spellInfo.spellID, spellInfo.originalIconID;
+	end
+end
+
+function ns.refreshList()
+	if ns.buffpanel.bufflisttext and ns.ACRB_ShowList then
+		local text = "";
+		for id, value in pairs(ns.ACRB_ShowList) do
+		local name, _, icon = asGetSpellInfo(id)
+
+			if name then
+				text = text.. "position: ".. value[2] .. " Refresh alert: ".. value[1] .. " |T" .. icon .. ":0|t " .. name .. " " .. id .. "\n";
+			end
+		end
+
+		ns.buffpanel.bufflisttext:SetText(text);
+	end
+
+	if ns.defensivepanel.bufflisttext and ns.ACRB_DefensiveBuffList then
+		local text = "";
+		for id, value in pairs(ns.ACRB_DefensiveBuffList) do
+		local name, _, icon = asGetSpellInfo(id)
+
+			if name then
+				text = text.. "|T" .. icon .. ":0|t " .. name .. " " .. id .. "\n";
+			end
+		end
+
+		ns.defensivepanel.bufflisttext:SetText(text);
+	end
+end
+
+local function SetupSubOption(panel, titlename)
+
+	local curr_y = 0;
+	local y_adder = -40;	
+
+	if panel.scrollframe then
+		panel.scrollframe:Hide()
+		panel.scrollframe:UnregisterAllEvents()
+		panel.scrollframe = nil;
+	end
+
+	panel.scrollframe = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
+	panel.scrollframe:SetPoint("TOPLEFT", 3, -4)
+	panel.scrollframe:SetPoint("BOTTOMRIGHT", -27, 4)
+
+	-- Create the scrolling child frame, set its width to fit, and give it an arbitrary minimum height (such as 1)
+	panel.scrollchild = CreateFrame("Frame")
+	panel.scrollframe:SetScrollChild(panel.scrollchild)
+	panel.scrollchild:SetWidth(600)
+	panel.scrollchild:SetHeight(1)
+
+	-- add widgets to the panel as desired
+	local title = panel:CreateFontString("ARTWORK", nil, "GameFontNormalLarge")
+	title:SetPoint("TOP")
+	title:SetText(titlename)
+
+	curr_y = curr_y + y_adder;
+
+	local localeTexts = { "Buff ID", "Position", "Refresh Alert" };
+
+	local x = 10;
+
+	local title = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	title:SetPoint("TOPLEFT", x, curr_y);
+	title:SetText(localeTexts[1]);
+
+	x = 200;
+
+	title = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	title:SetPoint("TOPLEFT", x, curr_y);
+	title:SetText(localeTexts[2]);
+
+	x = 310;
+
+	title = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	title:SetPoint("TOPLEFT", x, curr_y);
+	title:SetText(localeTexts[3]);
+
+	x = 450;
+	local btn0 = CreateFrame("Button", nil, panel.scrollchild, "UIPanelButtonTemplate")
+	btn0:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
+	btn0:SetText("Load Default")
+	btn0:SetWidth(100)
+	btn0:SetScript("OnClick", function()
+		ACRB_Options[ns.listname] = CopyTable(ns[ns.listname])
+		ns.ACRB_ShowList = CopyTable(ns[ns.listname]);		
+		ns.refreshList();
+	end);
+
+
+	curr_y = curr_y + y_adder;
+
+
+
+	local x = 10;
+
+	local editBox = CreateFrame("EditBox", nil, panel.scrollchild)
+	do
+		local editBoxLeft = editBox:CreateTexture(nil, "BACKGROUND")
+		editBoxLeft:SetTexture(130959) --"Interface\\ChatFrame\\UI-ChatInputBorder-Left"
+		editBoxLeft:SetHeight(32)
+		editBoxLeft:SetWidth(32)
+		editBoxLeft:SetPoint("LEFT", -14, 0)
+		editBoxLeft:SetTexCoord(0, 0.125, 0, 1)
+		local editBoxRight = editBox:CreateTexture(nil, "BACKGROUND")
+		editBoxRight:SetTexture(130960) --"Interface\\ChatFrame\\UI-ChatInputBorder-Right"
+		editBoxRight:SetHeight(32)
+		editBoxRight:SetWidth(32)
+		editBoxRight:SetPoint("RIGHT", 6, 0)
+		editBoxRight:SetTexCoord(0.875, 1, 0, 1)
+		local editBoxMiddle = editBox:CreateTexture(nil, "BACKGROUND")
+		editBoxMiddle:SetTexture(130960) --"Interface\\ChatFrame\\UI-ChatInputBorder-Right"
+		editBoxMiddle:SetHeight(32)
+		editBoxMiddle:SetWidth(1)
+		editBoxMiddle:SetPoint("LEFT", editBoxLeft, "RIGHT")
+		editBoxMiddle:SetPoint("RIGHT", editBoxRight, "LEFT")
+		editBoxMiddle:SetTexCoord(0, 0.9375, 0, 1)
+	end
+
+	editBox:HookScript("OnTextChanged", function() end);
+	editBox:SetHeight(32)
+	editBox:SetWidth(150)
+	editBox:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
+	editBox:SetFontObject("GameFontHighlight")
+	editBox:SetMultiLine(false);
+	editBox:SetMaxLetters(20);
+	editBox:SetText("");
+	editBox:SetAutoFocus(false);
+	editBox:ClearFocus();
+	editBox:SetTextInsets(0, 0, 0, 1)
+	editBox:Show();
+	editBox:SetCursorPosition(0);
+	x = x + 150;
+
+
+	local dropDown = CreateFrame("Frame", nil, panel.scrollchild, "UIDropDownMenuTemplate")
+	dropDown:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
+	UIDropDownMenu_SetWidth(dropDown, 100) -- Use in place of dropDown:SetWidth
+
+	local dropdownOptions = {
+		{ text = "TOPRIGHT(Color)",           value = 6 },
+		{ text = "RIGHT1",         value = 5 },
+		{ text = "RIGHT2",   value = 4 },
+		{ text = "BOTTOMRIGHT1", value = 3 },
+		{ text = "BOTTOMRIGHT2",   value = 2 },
+		{ text = "BOTTOMRIGHT3",   value = 1 },
+	};
+
+
+	UIDropDownMenu_Initialize(dropDown, function(self, level)
+		for _, option in ipairs(dropdownOptions) do
+			local info = UIDropDownMenu_CreateInfo()
+			info.text = option.text
+			info.value = option.value
+			info.disabled = option.disabled
+			local function Dropdown_OnClick()
+				UIDropDownMenu_SetSelectedValue(dropDown, option.value);				
+			end
+			info.func = Dropdown_OnClick;
+			UIDropDownMenu_AddButton(info, level);			
+		end
+		UIDropDownMenu_SetSelectedValue(dropDown, 1);
+	end);
+	
+	x = x + 120;
+
+
+	local dropDown2 = CreateFrame("Frame", nil, panel.scrollchild, "UIDropDownMenuTemplate")
+	dropDown2:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
+	UIDropDownMenu_SetWidth(dropDown2, 100) -- Use in place of dropDown:SetWidth
+
+	local dropdownOptions2 = {
+		{ text = "Alert Refresh",           value = 1 },
+		{ text = "No Alert",         value = 0 },		
+	};
+
+
+	UIDropDownMenu_Initialize(dropDown2, function(self, level)
+		for _, option in ipairs(dropdownOptions2) do
+			local info = UIDropDownMenu_CreateInfo()
+			info.text = option.text
+			info.value = option.value
+			info.disabled = option.disabled
+			local function Dropdown_OnClick2()
+				UIDropDownMenu_SetSelectedValue(dropDown2, option.value);				
+			end
+			info.func = Dropdown_OnClick2;
+			UIDropDownMenu_AddButton(info, level)
+		end
+		UIDropDownMenu_SetSelectedValue(dropDown2, 0);
+	end);	
+
+	x = x + 140;
+
+	local btn = CreateFrame("Button", nil, panel.scrollchild, "UIPanelButtonTemplate")
+	btn:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
+	btn:SetText("Add")
+	btn:SetWidth(100)
+	btn:SetScript("OnClick", function()
+		local newspell = editBox:GetNumber();            
+        local newtype1 = tonumber(UIDropDownMenu_GetSelectedValue(dropDown));
+		local newtype2 = tonumber(UIDropDownMenu_GetSelectedValue(dropDown2));
+		if newspell > 0 then
+			ns.ACRB_ShowList[newspell] = {newtype2, newtype1};
+			if ACRB_Options[ns.listname] then
+				ACRB_Options[ns.listname][newspell] = {newtype2, newtype1};
+			end
+			ns.refreshList();
+		end
+
+	end);
+
+	x = x + 105;
+
+	local btn2 = CreateFrame("Button", nil, panel.scrollchild, "UIPanelButtonTemplate")
+	btn2:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
+	btn2:SetText("Delete")
+	btn2:SetWidth(100)
+	btn2:SetScript("OnClick", function()
+		local newspell = editBox:GetNumber();   
+		if newspell > 0 then
+			ns.ACRB_ShowList[newspell] = nil;
+			if ACRB_Options[ns.listname] then
+				ACRB_Options[ns.listname][newspell] = nil;
+			end
+			ns.refreshList();
+		end
+
+	end);
+
+	curr_y = curr_y + y_adder;
+
+	panel.explaintext = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	panel.explaintext:SetFont(STANDARD_TEXT_FONT, 12, "THICKOUTLINE");
+	panel.explaintext:SetPoint("TOPLEFT", 10, curr_y);
+	panel.explaintext:SetTextColor(1, 1, 1);
+	panel.explaintext:SetJustifyH("LEFT");
+	panel.explaintext:SetText("6-TOPRIGHT, 5~4-RIGHT, 3~1-BOTTOMRIGHT")
+	panel.explaintext:Show();
+
+
+	curr_y = curr_y + y_adder;
+
+	panel.bufflisttext = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	panel.bufflisttext:SetFont(STANDARD_TEXT_FONT, 20, "THICKOUTLINE");
+	panel.bufflisttext:SetPoint("TOPLEFT", 10, curr_y);
+	panel.bufflisttext:SetTextColor(1, 1, 1);
+	panel.bufflisttext:SetJustifyH("LEFT");
+	panel.bufflisttext:Show();
+
+	ns.refreshList();
+end
+
+local function SetupSubOptionDefensive(panel, titlename)
+
+	local curr_y = 0;
+	local y_adder = -40;	
+
+	if panel.scrollframe then
+		panel.scrollframe:Hide()
+		panel.scrollframe:UnregisterAllEvents()
+		panel.scrollframe = nil;
+	end
+
+	panel.scrollframe = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
+	panel.scrollframe:SetPoint("TOPLEFT", 3, -4)
+	panel.scrollframe:SetPoint("BOTTOMRIGHT", -27, 4)
+
+	-- Create the scrolling child frame, set its width to fit, and give it an arbitrary minimum height (such as 1)
+	panel.scrollchild = CreateFrame("Frame")
+	panel.scrollframe:SetScrollChild(panel.scrollchild)
+	panel.scrollchild:SetWidth(600)
+	panel.scrollchild:SetHeight(1)
+
+	-- add widgets to the panel as desired
+	local title = panel:CreateFontString("ARTWORK", nil, "GameFontNormalLarge")
+	title:SetPoint("TOP")
+	title:SetText(titlename)
+
+	curr_y = curr_y + y_adder;
+
+	local localeTexts = { "Buff ID" };
+
+	local x = 10;
+
+	local title = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	title:SetPoint("TOPLEFT", x, curr_y);
+	title:SetText(localeTexts[1]);
+
+	x = 450;
+	local btn0 = CreateFrame("Button", nil, panel.scrollchild, "UIPanelButtonTemplate")
+	btn0:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
+	btn0:SetText("Load Default")
+	btn0:SetWidth(100)
+	btn0:SetScript("OnClick", function()
+		ns.ACRB_DefensiveBuffList = CopyTable(ns.ACRB_DefensiveBuffListDefault);
+        ACRB_Options.defensivelist = {};
+        ACRB_Options.defensivelist = CopyTable(ns.ACRB_DefensiveBuffListDefault);	
+		ns.refreshList();
+	end);
+
+
+	curr_y = curr_y + y_adder;
+
+	local x = 10;
+
+	local editBox = CreateFrame("EditBox", nil, panel.scrollchild)
+	do
+		local editBoxLeft = editBox:CreateTexture(nil, "BACKGROUND")
+		editBoxLeft:SetTexture(130959) --"Interface\\ChatFrame\\UI-ChatInputBorder-Left"
+		editBoxLeft:SetHeight(32)
+		editBoxLeft:SetWidth(32)
+		editBoxLeft:SetPoint("LEFT", -14, 0)
+		editBoxLeft:SetTexCoord(0, 0.125, 0, 1)
+		local editBoxRight = editBox:CreateTexture(nil, "BACKGROUND")
+		editBoxRight:SetTexture(130960) --"Interface\\ChatFrame\\UI-ChatInputBorder-Right"
+		editBoxRight:SetHeight(32)
+		editBoxRight:SetWidth(32)
+		editBoxRight:SetPoint("RIGHT", 6, 0)
+		editBoxRight:SetTexCoord(0.875, 1, 0, 1)
+		local editBoxMiddle = editBox:CreateTexture(nil, "BACKGROUND")
+		editBoxMiddle:SetTexture(130960) --"Interface\\ChatFrame\\UI-ChatInputBorder-Right"
+		editBoxMiddle:SetHeight(32)
+		editBoxMiddle:SetWidth(1)
+		editBoxMiddle:SetPoint("LEFT", editBoxLeft, "RIGHT")
+		editBoxMiddle:SetPoint("RIGHT", editBoxRight, "LEFT")
+		editBoxMiddle:SetTexCoord(0, 0.9375, 0, 1)
+	end
+
+	editBox:HookScript("OnTextChanged", function() end);
+	editBox:SetHeight(32)
+	editBox:SetWidth(150)
+	editBox:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
+	editBox:SetFontObject("GameFontHighlight")
+	editBox:SetMultiLine(false);
+	editBox:SetMaxLetters(20);
+	editBox:SetText("");
+	editBox:SetAutoFocus(false);
+	editBox:ClearFocus();
+	editBox:SetTextInsets(0, 0, 0, 1)
+	editBox:Show();
+	editBox:SetCursorPosition(0);
+	x = x + 150;
+
+	local btn = CreateFrame("Button", nil, panel.scrollchild, "UIPanelButtonTemplate")
+	btn:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
+	btn:SetText("Add")
+	btn:SetWidth(100)
+	btn:SetScript("OnClick", function()
+		local newspell = editBox:GetNumber();            
+		if newspell > 0 then
+			ns.ACRB_DefensiveBuffList[newspell] = 1;
+			ACRB_Options.defensivelist[newspell] = 1;
+			ns.refreshList();
+		end
+
+	end);
+
+	x = x + 105;
+
+	local btn2 = CreateFrame("Button", nil, panel.scrollchild, "UIPanelButtonTemplate")
+	btn2:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
+	btn2:SetText("Delete")
+	btn2:SetWidth(100)
+	btn2:SetScript("OnClick", function()
+		local newspell = editBox:GetNumber();   
+		if newspell > 0 then
+			ns.ACRB_DefensiveBuffList[newspell] = nil;
+			ACRB_Options.defensivelist[newspell] = nil;
+			ns.refreshList();
+		end
+
+	end);
+
+	curr_y = curr_y + y_adder;
+
+	panel.bufflisttext = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	panel.bufflisttext:SetFont(STANDARD_TEXT_FONT, 20, "THICKOUTLINE");
+	panel.bufflisttext:SetPoint("TOPLEFT", 10, curr_y);
+	panel.bufflisttext:SetTextColor(1, 1, 1);
+	panel.bufflisttext:SetJustifyH("LEFT");
+	panel.bufflisttext:Show();
+
+	ns.refreshList();
+end
+
+
 function ns.SetupOptionPanels()
 	local function OnSettingChanged(_, setting, value)
 		local function get_variable_from_cvar_name(cvar_name)
@@ -305,14 +843,19 @@ function ns.SetupOptionPanels()
 		ns.SetupAll(true);
 	end
 
-	local category = Settings.RegisterVerticalLayoutCategory("asCompactRaidBuff")
+	local category = Settings.RegisterVerticalLayoutCategory("asCompactRaidBuff");
+	local subcategory, subcategoryLayout = Settings.RegisterCanvasLayoutSubcategory(category, ns.buffpanel, "Class Buff List");
+	local subcategory, subcategoryLayout = Settings.RegisterCanvasLayoutSubcategory(category, ns.defensivepanel, "Defensive Buff List");
+
 
 	if ACRB_Options == nil or ACRB_Options.version ~= Options_Default.version then
 		ACRB_Options = {};
 		ACRB_Options = CopyTable(Options_Default);
 	end
-
+	
 	ns.options = CopyTable(ACRB_Options);
+
+	ns.ACRB_InitList();
 
 	for variable, _ in pairs(Options_Default) do
 		local name = variable;
@@ -361,5 +904,7 @@ function ns.SetupOptionPanels()
 		end
 	end
 
-	Settings.RegisterAddOnCategory(category)
+	Settings.RegisterAddOnCategory(category);
+	SetupSubOption(ns.buffpanel, "Class Buff List");
+	SetupSubOptionDefensive(ns.defensivepanel, "Defensive Buff List");
 end
