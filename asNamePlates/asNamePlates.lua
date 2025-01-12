@@ -737,7 +737,7 @@ local function setColoronStatusBar(self, r, g, b)
 
     local oldR, oldG, oldB = self.BarColor:GetVertexColor();
 
-    if (r ~= oldR or g ~= oldG or b ~= oldB) then
+    if (r ~= oldR or g ~= oldG or b ~= oldB) and r and g and b then
         self.BarColor:SetVertexColor(r, g, b);
     end
 
