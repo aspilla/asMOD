@@ -225,13 +225,9 @@ end
 local function ASAA_Delete(id)
 	if id then
 		local name, _, icon, _, _, _, _, orgicon = asGetSpellInfo(id);
-		if ASAA_SpellList[orgicon] then
-			ASAA_SpellList[orgicon] = nil;
-		else
-			for spellorg, spellid in pairs(ASAA_SpellList) do
-				if spellid == id then
-					ASAA_SpellList[spellorg] = nil;
-				end
+		for spellorg, spellid in pairs(ASAA_SpellList) do
+			if spellid == id or spellorg == orgicon then
+				ASAA_SpellList[spellorg] = nil;
 			end
 		end
 	else

@@ -173,7 +173,6 @@ local function scanSpells(tab)
 	end
 
 	for i = tabOffset + 1, tabOffset + numEntries do
-
 		local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player);
 
 		if not spellName then
@@ -681,18 +680,18 @@ end
 
 local timer;
 
-local function setupKnownSpell(bwipe)
+local function setupKnownSpell()
 	if timer then
 		timer:Cancel();
 	end
 
-	if bwipe then
-		KnownSpellList = {};
-		ItemSlotList = {};
-		showlist_id = {};
-		spell_cooldown = {};
-		item_cooldown = {};
-	end
+	KnownSpellList = {};
+	ItemSlotList = {};
+	showlist_id = {};
+	spell_cooldown = {};
+	item_cooldown = {};
+
+
 	scanSpells(1);
 	scanSpells(2)
 	scanSpells(3)
@@ -714,7 +713,7 @@ local function ACDP_OnEvent(self, event)
 	end
 
 	if event == "PLAYER_ENTERING_WORLD" then
-		setupKnownSpell(true);
+		setupKnownSpell();
 
 		if UnitAffectingCombat("player") then
 			ACDP_CoolButtons:SetAlpha(ACDP_ALPHA);
@@ -730,7 +729,7 @@ local function ACDP_OnEvent(self, event)
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
 		scanItemSlots();
 	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
-		setupKnownSpell(true);
+		C_Timer.After(0.5, setupKnownSpell);
 	end
 
 	return;
