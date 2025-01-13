@@ -1799,7 +1799,7 @@ local function ANameP_OnEvent(self, event, ...)
         updateUnit("mouseover", true);
     elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or
         (event == "ACTIVE_TALENT_GROUP_CHANGED") then
-        setupKnownSpell();
+        C_Timer.After(0.5, setupKnownSpell);
         C_Timer.After(0.5, initAlertList);
     elseif (event == "PLAYER_ENTERING_WORLD") then
         local isInstance, instanceType = IsInInstance();
