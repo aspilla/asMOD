@@ -105,7 +105,7 @@ local function ASAA_UpdateCooldown()
 		parent.frames = {};
 	end
 
-	for org, id in pairs(ASAA_SpellList) do
+	for org, id in pairs(ASAA_SpellList) do	
 		name, _, icon = asGetSpellInfo(id);
 		start, duration, enable = asGetSpellCooldown(id);
 		local isUsable, notEnoughMana = C_Spell.IsSpellUsable(id);
@@ -213,7 +213,6 @@ local function ASAA_Insert(id)
 		end
 	end
 
-
 	if ASAA_SpellList[orgicon] then
 		return;
 	end
@@ -226,7 +225,15 @@ end
 local function ASAA_Delete(id)
 	if id then
 		local name, _, icon, _, _, _, _, orgicon = asGetSpellInfo(id);
-		ASAA_SpellList[orgicon] = nil;
+		if ASAA_SpellList[orgicon] then
+			ASAA_SpellList[orgicon] = nil;
+		else
+			for spellorg, spellid in pairs(ASAA_SpellList) do
+				if spellid == id then
+					ASAA_SpellList[spellorg] = nil;
+				end
+			end
+		end
 	else
 		ASAA_SpellList = {};
 	end
