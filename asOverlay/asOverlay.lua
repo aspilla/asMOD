@@ -11,7 +11,7 @@ local function asOverlay_OnLoad(self)
 	self.unusedOverlays = {};
 
 	self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_SHOW");
-	self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE");
+	self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE");	
 	self:RegisterUnitEvent("UNIT_AURA", "player");
 
 	self:RegisterEvent("SETTINGS_LOADED");
@@ -64,13 +64,9 @@ local function asOverlay_HideOverlays(self, spellID)
 	local overlayList = self.overlaysInUse[spellID];
 	if (overlayList) then
 		for i = 1, #overlayList do
-			local overlay = overlayList[i];
-			if overlay then
-				overlay:Hide();
-				tinsert(self.unusedOverlays, overlay);
-			end
+			local overlay = overlayList[i];			
+			overlay.animOut:Play();
 		end
-		tDeleteItem(self.overlaysInUse[spellID], overlayList)
 	end
 end
 
@@ -78,6 +74,14 @@ local function asOverlay_HideAllOverlays(self)
 	for spellID, overlayList in pairs(self.overlaysInUse) do
 		asOverlay_HideOverlays(self, spellID);
 	end
+end
+
+function asOverlayTexture_OnFadeOutFinished(anim)
+	local overlay = anim:GetRegionParent();
+	local overlayParent = overlay:GetParent();	
+	overlay:Hide();	
+	tDeleteItem(overlayParent.overlaysInUse[overlay.spellID], overlay)
+	tinsert(overlayParent.unusedOverlays, overlay);
 end
 
 local complexLocationTypes = {
@@ -111,6 +115,12 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	local rate = 1;
 	local aura;
 
+	local overlay = asOverlay_GetOverlay(self, spellID, position);
+	overlay.spellID = spellID;
+	overlay.position = position;
+
+	overlay.animOut:Stop();	--In case we're in the process of animating this out.
+
 	if ns.positionaware[spellID] then
 		local v = ns.positionaware[spellID];
 
@@ -121,6 +131,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 
 	if ns.countaware[spellID] then
 		countAuraList[spellID] = true;
+		local currtime = GetTime();
 		for _, auraid in pairs(ns.countaware[spellID]) do
 			aura = ns.GetAura(auraid);
 
@@ -129,7 +140,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 			if aura then
 				local extime = aura.expirationTime;
 				local duration = aura.duration;
-				remain = extime - GetTime();
+				remain = extime - currtime;
 
 				if remain > 0 then
 					rate = math.ceil(remain / duration * 100) / 100;
@@ -139,13 +150,14 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		end
 	else
 		local auraid = spellID;
+		local currtime = GetTime();
 		aura = ns.GetAura(auraid, true);
 		local remain = 0;
 
 		if aura then
 			local extime = aura.expirationTime;
 			local duration = aura.duration;
-			remain = extime - GetTime();
+			remain = extime - currtime;
 
 			if remain > 0 then
 				rate = math.ceil(remain / duration * 100) / 100;
@@ -186,12 +198,9 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		end
 	end
 
-
-	local overlay = asOverlay_GetOverlay(self, spellID, position);
-	overlay.spellID = spellID;
-	overlay.position = position;
-
 	overlay:ClearAllPoints();
+	overlay.back:ClearAllPoints();
+	overlay.cooldown:ClearAllPoints();
 
 	local texLeft, texRight, texTop, texBottom = 0, 1, 0, 1;
 	overlay.vflip = false;
@@ -207,10 +216,6 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	end
 
 	local width, height;
-
-	overlay:ClearAllPoints();
-	overlay.back:ClearAllPoints();
-	overlay.cooldown:ClearAllPoints();
 
 	if position == Enum.ScreenLocationType.Center then
 		width, height = longSide, longSide;
@@ -283,11 +288,12 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		overlay.back:SetAlpha(0.4);
 	end
 	overlay.back:Show();
+	overlay.cooldown:Show();
 
 	overlay.cooldown.texture:SetTexture(texturePath);
 	overlay.cooldown.texture:SetVertexColor(r / 255, g / 255, b / 255);
 	overlay.cooldown:SetAlpha(1);
-
+	
 	if overlay.side then
 		if (overlay.vflip) then
 			overlay.cooldown.texture:SetTexCoord(texLeft, texRight, texTop, 1 - rate);
@@ -316,6 +322,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 		end
 	end
 
+	overlay:SetAlpha(1);
 	overlay:Show();
 end
 
@@ -406,7 +413,11 @@ local function asOverlay_ShowAllOverlays(self, spellID, texturePath, locationTyp
 end
 
 local function IsShown(spellId)
-	local name = C_Spell.GetSpellName(spellId)
+	local Id = ns.aurachangelist[spellId];
+	if Id then
+		spellId = Id;
+	end
+	local name = C_Spell.GetSpellName(spellId);
 
 	-- asPowerBar Check
 	if APB_BUFF4 and APB_BUFF4 == spellId then
@@ -421,10 +432,9 @@ local function IsShown(spellId)
 		return true;
 	end
 
-	if ACI_Buff_list and (ACI_Buff_list[name] or (spellId and ACI_Buff_list[spellId])) then
+	if ACI_Buff_list and (ACI_Buff_list[name] or ACI_Buff_list[spellId]) then
 		return true;
 	end
-
 	return false;
 end
 
@@ -433,10 +443,6 @@ local bfirst = true;
 
 
 local function asOverlay_OnEvent(self, event, ...)
-	local cvaralpha = Settings.GetValue("spellActivationOverlayOpacity");
-	if cvaralpha then
-		self:SetAlpha(cvaralpha);
-	end
 	if bfirst then
 		ns.SetupOptionPanels();
 		bfirst = false;
@@ -445,13 +451,18 @@ local function asOverlay_OnEvent(self, event, ...)
 	if (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
 		local spellID, texture, positions, scale, r, g, b = ...;
 
-		if not IsShown(spellID) then
+		if not (ns.options.Check_asMOD and IsShown(spellID)) then
 			asOverlay_ShowAllOverlays(self, spellID, texture, positions, scale, r, g, b)
 		end
+
+		local cvaralpha = Settings.GetValue("spellActivationOverlayOpacity");
+		if cvaralpha then
+			self:SetAlpha(cvaralpha);
+		end
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_HIDE") then
-		local spellID = ...;
+		local spellID = ...;		
 		if (spellID) then
-			asOverlay_HideOverlays(self, spellID);
+			asOverlay_HideOverlays(self, spellID);			
 		else
 			asOverlay_HideAllOverlays(self);
 		end

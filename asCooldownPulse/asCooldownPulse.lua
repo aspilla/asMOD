@@ -411,12 +411,12 @@ local function ACDP_UpdateCooldown()
 					if r:GetObjectType() == "FontString" then
 						r:SetFont(STANDARD_TEXT_FONT, ACDP_CooldownFontSize, "OUTLINE")
 						frame.cooldowntext = r;
-						break
+						r:SetDrawLayer("OVERLAY");
+						break;
 					end
 				end
 
-				frame.icon:SetTexCoord(.08, .92, .08, .92);
-				frame.border:SetTexture("Interface\\Addons\\asCooldownPulse\\border.tga");
+				frame.icon:SetTexCoord(.08, .92, .08, .92);				
 				frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 
 				if not frame:GetScript("OnEnter") then

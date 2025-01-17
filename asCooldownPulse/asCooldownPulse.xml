@@ -1,15 +1,12 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\Blizzard_SharedXML\UI.xsd">
 	<Frame name="asCooldownPulseFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel="1000">
-		<Size>
-			<AbsDimension x="17" y="17"/>
-		</Size>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture name="$parentBorder" parentKey="border" setAllPoints="true"/>				
+				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asCooldownPulse\border.tga"/>				
 			</Layer>
 		</Layers>
 		<Frames>

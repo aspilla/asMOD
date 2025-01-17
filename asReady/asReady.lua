@@ -333,7 +333,8 @@ local function layoutbuff(f, unit)
     f.border:Show();
 
     f.cooldown:SetSwipeColor(0, 0, 0, 0.5);
-    f.remain:SetPoint("CENTER", 0, 0);
+    f.remain:ClearAllPoints();
+    f.remain:SetPoint("CENTER", f, "CENTER", 0, 0);
 end
 
 local function layoutcooldown(f)
@@ -447,7 +448,7 @@ function ns.SetupPartyCool(raidframe)
             --if true then
             local d = raidframe.asbuffFrame;
             d:SetSize(x / 6 - 1, y / 3 - 1);
-            d.remain:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE");
+            d.remain:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE");            
             layoutcooldown(d);
             d:ClearAllPoints();
             d:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2);
