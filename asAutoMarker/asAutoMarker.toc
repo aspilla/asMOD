@@ -4,4 +4,5 @@
 ## Notes: 던전 자동 징표
 ## Version : 240107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asAutoMarker.lua

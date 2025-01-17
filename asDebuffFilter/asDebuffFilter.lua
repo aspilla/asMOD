@@ -577,7 +577,7 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             local frameIcon = frame.icon
             frameIcon:SetTexture(aura.icon);
             -- set the count
-            local frameCount = frame.other.count;
+            local frameCount = frame.count;
             local alert = false;
 
             -- Handle cooldowns
@@ -620,26 +620,26 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             
                     if snapshots then
             
-                        frame.other.snapshot:SetText(math.floor(snapshots * 100));
+                        frame.snapshot:SetText(math.floor(snapshots * 100));
                         if snapshots > 1 then
-                            frame.other.snapshot:SetTextColor(0.5, 1, 0.5);                
-                            frame.other.snapshot:Show();
+                            frame.snapshot:SetTextColor(0.5, 1, 0.5);                
+                            frame.snapshot:Show();
                         elseif snapshots == 1 then                                         
-                            frame.other.snapshot:Hide();
+                            frame.snapshot:Hide();
                         else
-                            frame.other.snapshot:SetTextColor(1, 0.5, 0.5);
-                            frame.other.snapshot:Show();
+                            frame.snapshot:SetTextColor(1, 0.5, 0.5);
+                            frame.snapshot:Show();
                         end                 
                         
                     else            
-                        frame.other.snapshot:Hide();
+                        frame.snapshot:Hide();
                     end
                     --print("working")
                 else
-                    frame.other.snapshot:Hide();
+                    frame.snapshot:Hide();
                 end
             else
-                frame.other.snapshot:Hide();
+                frame.snapshot:Hide();
     
             end
 
@@ -660,9 +660,6 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
                 color = DebuffTypeColor["none"];
             end
 
-            if (unit ~= "player" and aura.sourceUnit ~= nil and not PLAYER_UNITS[aura.sourceUnit]) then
-                color = { r = 0.3, g = 0.3, b = 0.3 };
-            end
             if (unit == "player" or UnitCanAssist(unit, "player")) and DispellableDebuffTypes[aura.dispelName] then
                 ns.lib.PixelGlow_Start(frame, { color.r, color.g, color.b, 1 });
             elseif alert then
@@ -822,29 +819,30 @@ local function CreatDebuffFrames(parent, bright)
     for idx = 1, ns.ADF_MAX_DEBUFF_SHOW do
         parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetDebuffFrameTemplate");
         local frame = parent.frames[idx];        
-        frame:SetFrameLevel(9000);
-        frame.cooldown:SetFrameLevel(9100);
         frame.cooldown:SetDrawSwipe(true);
+        
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, ns.ADF_CooldownFontSize, "OUTLINE");
                 r:ClearAllPoints();
-                r:SetPoint("TOP", 0, 5);
-                break
-            end
+                r:SetPoint("TOP", 0, 5);                
+                r:SetDrawLayer("OVERLAY");
+                break;            
+            end            
         end       
-
-        frame.icon:SetTexCoord(.08, .92, .08, .92);
-        frame.icon:SetAlpha(ns.ADF_ALPHA);
-        frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga");
+        
+        frame.icon:SetTexCoord(.08, .92, .16, .84);
+        frame.icon:SetAlpha(ns.ADF_ALPHA);        
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
         frame.border:SetAlpha(ns.ADF_ALPHA);
 
-        frame.other.count:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize, "OUTLINE")
-        frame.other.count:ClearAllPoints()
-        frame.other.count:SetPoint("BOTTOMRIGHT",frame.icon ,"BOTTOMRIGHT", -2, 2);        
+        frame.count:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize, "OUTLINE")
+        frame.count:ClearAllPoints();
+        frame.count:SetPoint("BOTTOMRIGHT", frame ,"BOTTOMRIGHT", -2, 2);        
 
-        frame.other.snapshot:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize - 1, "OUTLINE")
+        frame.snapshot:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize - 1, "OUTLINE")
+        frame.snapshot:ClearAllPoints();
+        frame.snapshot:SetPoint("CENTER", frame ,"BOTTOM", 0, 1);        
 
         frame:ClearAllPoints();
         ADF_UpdateDebuffAnchor(parent.frames, idx, 1, bright, parent);

@@ -434,7 +434,7 @@ local function CreateCastbars(parent)
 
 		frame.button = CreateFrame("Button", nil, frame, "asDCATemplate");
 		frame.button:SetPoint("RIGHT", frame, "LEFT", -1, 0)
-		frame.button:SetWidth((CONFIG_HEIGHT + 2) * 1.2);
+		frame.button:SetWidth((CONFIG_HEIGHT + 2) * 1.1);
 		frame.button:SetHeight(CONFIG_HEIGHT + 2);
 		frame.button:SetScale(1);
 		frame.button:SetAlpha(1);
@@ -442,8 +442,7 @@ local function CreateCastbars(parent)
 		frame.button:Show();
 		frame.button.mark:ClearAllPoints();
 		frame.button.mark:SetPoint("RIGHT", frame.button, "LEFT", -1, 0)
-		frame.button.icon:SetTexCoord(.08, .92, .08, .92);
-		frame.button.border:SetTexture("Interface\\Addons\\asDBMCastingAlert\\border.tga");
+		frame.button.icon:SetTexCoord(.08, .92, .08, .92);		
 		frame.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 		frame.button.border:SetVertexColor(0, 0, 0);
 		frame.button.border:Show();

@@ -1,67 +1,23 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
-	<Frame name="asBattleResFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW">
-		<Size>
-			<AbsDimension x="17" y="17"/>
-		</Size>
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\Blizzard_SharedXML\UI.xsd">
+	<Frame name="asBattleResFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel="1000">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentIcon" parentKey="icon"/>
+				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
+			</Layer>
+			<Layer level="ARTWORK" textureSubLevel="7">
+				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asBattleRes\border.tga"/>
 			</Layer>
 			<Layer level="OVERLAY">
-				<Texture name="$parentBorder" parentKey="border" file="Interface\Buttons\UI-Debuff-Overlays">
-					<Size>
-						<AbsDimension x="17" y="17"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="0" y="0"/>
-						</Anchor>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset x="0" y="0"/>
-						</Anchor>
-					</Anchors>
-					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
-				</Texture>
-				<FontString name="$parentCount" parentKey="count" inherits="NumberFontNormalSmall" justifyH="RIGHT">
-					<Anchors>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset>
-								<AbsDimension x="-2" y="2"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
+				<FontString name="$parentCount" parentKey="count" justifyH="RIGHT"/>							
 			</Layer>
 		</Layers>
 		<Frames>
-			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="false" drawEdge="true" hidden="true">				
+			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="false" drawEdge="true" hidden="true" frameLevel="1000">				
 				<Anchors>
 					<Anchor point="CENTER" x="0" y="-1"/>
 				</Anchors>
 			</Cooldown>
-			<Frame name="$parentOther" parentKey="other" virtual="true" enableMouse="false" frameStrata="MEDIUM">
-				<Size>
-					<AbsDimension x="17" y="17"/>
-				</Size>
-				<Anchors>
-					<Anchor point="BOTTOM" x="0" y="-8"/>
-				</Anchors>
-				<Layers>
-					<Layer level="OVERLAY">
-						<FontString name="$parentCount" parentKey="count" inherits="NumberFontNormalSmall" justifyH="RIGHT">
-							<Anchors>
-								<Anchor point="BOTTOMRIGHT">
-									<Offset>
-										<AbsDimension x="-2" y="2"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
-			</Frame>
 		</Frames>
 	</Frame>
 	<Script file="asBattleRes.lua"/>

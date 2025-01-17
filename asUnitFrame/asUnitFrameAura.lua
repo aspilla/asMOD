@@ -274,7 +274,7 @@ local function UpdateAuraFrames(frame, auraList)
             local frameIcon = frame.icon
             frameIcon:SetTexture(aura.icon);
             -- set the count
-            local frameCount = frame.other.count;
+            local frameCount = frame.count;
             local alert = false;
 
             -- Handle cooldowns
@@ -344,7 +344,7 @@ local function UpdatePortraitFrames(frame, auraList)
                 frameIcon:SetTexture(aura.icon);
                 frameIcon:Show();
                 -- set the count
-                local frameCount = frame.other.count;
+                local frameCount = frame.count;
                 local alert = false;
 
                 -- Handle cooldowns
@@ -366,22 +366,7 @@ local function UpdatePortraitFrames(frame, auraList)
                 else
                     frameCooldown:Hide();
                 end
-
-                local color = nil;
-                -- set debuff type color
-                if (aura.dispelName) then
-                    color = DebuffTypeColor[aura.dispelName];
-                else
-                    color = DebuffTypeColor["none"];
-                end
-
-                local frameBorder = frame.border;
-                if aura.nameplateShowAll then
-                    frameBorder:SetVertexColor(0.3, 0.3, 0.3);
-                else
-                    frameBorder:SetVertexColor(color.r, color.g, color.b);
-                end
-
+               
                 bshowdebuff = true;
                 return true;
             else
@@ -392,7 +377,7 @@ local function UpdatePortraitFrames(frame, auraList)
     if bshowdebuff == false then        
         frame.portrait.icon:Hide();
         frame.portrait.cooldown:Hide();
-        frame.portrait.other.count:Hide();
+        frame.portrait.count:Hide();
         frame.portrait.border:SetVertexColor(0,0,0);
     end
 end

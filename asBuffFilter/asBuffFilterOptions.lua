@@ -47,6 +47,8 @@ ns.ABF_ProcBuffList = {
 ns.ShowList_WARRIOR = {
 	classbuffs = {
 
+		[1218163] = 2, -- 방어 시즌2
+
 		--전사
 		[435615] = 2, --우레 작렬
 		[437121] = 3, --우레 작렬
@@ -72,7 +74,7 @@ ns.ShowList_WARRIOR = {
 
 	},
 
-	version = 250111,
+	version = 250112,
 }
 
 ns.ShowList_ROGUE = {

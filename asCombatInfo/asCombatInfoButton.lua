@@ -674,8 +674,7 @@ function ns.Button:showButton()
     local frameIcon;
     local frameCooldown;
     local frameCount;
-    local frameBorder;
-    local frameOthers;
+    local frameBorder;    
     local guid = UnitGUID(self.unit);
 
     local frame = self.frame;
@@ -685,8 +684,7 @@ function ns.Button:showButton()
     frameIcon = frame.icon;
     frameCooldown = frame.cooldown;    
     frameBorder = frame.border;
-    frameOthers = frame.others;
-    frameCount = frameOthers.count;
+    frameCount = frame.count;
 
     if self.icon == nil then
         frame:Hide();
@@ -734,12 +732,12 @@ function ns.Button:showButton()
     end
 
     if self.spellcool then
-        frameOthers.spellcool:SetText(self.spellcool);
-        frameOthers.spellcool:SetVertexColor(self.spellcoolColor.r, self.spellcoolColor.g, self.spellcoolColor.b);
-        frameOthers.spellcool:Show();
+        frame.spellcool:SetText(self.spellcool);
+        frame.spellcool:SetVertexColor(self.spellcoolColor.r, self.spellcoolColor.g, self.spellcoolColor.b);
+        frame.spellcool:Show();
         
     else
-        frameOthers.spellcool:Hide();
+        frame.spellcool:Hide();
     end
 
     self.coolalert = false;
@@ -778,25 +776,25 @@ function ns.Button:showButton()
 
         if snapshots then
 
-            frameOthers.snapshot:SetText(math.floor(snapshots * 100));
+            frame.snapshot:SetText(math.floor(snapshots * 100));
             if snapshots > 1 then
-                frameOthers.snapshot:SetTextColor(0.5, 1, 0.5);                
-                frameOthers.snapshot:Show();
+                frame.snapshot:SetTextColor(0.5, 1, 0.5);                
+                frame.snapshot:Show();
             elseif snapshots == 1 then
-                frameOthers.snapshot:SetTextColor(0.5, 0.5, 0.5);                
-                frameOthers.snapshot:Hide();
+                frame.snapshot:SetTextColor(0.5, 0.5, 0.5);                
+                frame.snapshot:Hide();
             else
-                frameOthers.snapshot:SetTextColor(1, 0.5, 0.5);
-                frameOthers.snapshot:Show();
+                frame.snapshot:SetTextColor(1, 0.5, 0.5);
+                frame.snapshot:Show();
                 self.snapshotalert = true;
             end   
             
         else            
-            frameOthers.snapshot:Hide();
+            frame.snapshot:Hide();
         end
         --print("working")
     else
-        frameOthers.snapshot:Hide();
+        frame.snapshot:Hide();
     end
 
     if self.snapshotalert then

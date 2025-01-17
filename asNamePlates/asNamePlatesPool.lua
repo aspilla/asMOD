@@ -4,37 +4,37 @@ local objects = {};
 
 -- 버프 디버프 처리부
 local function createDebuffFrame(parent)
-    local ret = CreateFrame("Frame", nil, parent, "asNamePlatesBuffFrameTemplate");
-    local frameCooldown = ret.cooldown;    
-    local frameOther = ret.other;
-    local frameCount = frameOther.count;
-    local frameIcon = ret.icon;
-    local frameBorder = ret.border;
-
+    local frame = CreateFrame("Frame", nil, parent, "asNamePlatesBuffFrameTemplate");
+    local frameCooldown = frame.cooldown;        
+    local frameCount = frame.count;
+    local frameIcon = frame.icon;
+    local frameBorder = frame.border; 
+    
+    frameIcon:SetTexCoord(.08, .92, .24, .76);
+    frameBorder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+     
+    frameCooldown:SetDrawSwipe(true);
     for _, r in next, { frameCooldown:GetRegions() } do
         if r:GetObjectType() == "FontString" then
-            r:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CooldownFontSize, "OUTLINE")
+            r:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CooldownFontSize, "OUTLINE");
             r:ClearAllPoints();
             r:SetPoint("TOP", 0, 4);
-            break
+            r:SetDrawLayer("OVERLAY");
+            break;        
         end
-    end
+    end        
 
-    local font, size, flag = frameCount:GetFont()
-
-    frameCount:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CountFontSize, "OUTLINE")
+    frameCount:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CountFontSize, "OUTLINE");
     frameCount:ClearAllPoints();
-    frameCount:SetPoint("BOTTOMRIGHT", frameIcon, "BOTTOMRIGHT", -2, 2);
-    frameOther.snapshot:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CountFontSize - 2, "OUTLINE")
-    frameIcon:SetTexCoord(.08, .92, .08, .92)
-    frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
-    frameBorder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-    frameCooldown:SetDrawSwipe(true);
+    frameCount:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -1, 1);
+    frame.snapshot:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CountFontSize - 2, "OUTLINE");    
+    frame.snapshot:ClearAllPoints();
+    frame.snapshot:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
 
-    ret.alert = false;
+    frame.alert = false;
 
-    if not ret:GetScript("OnEnter") then
-        ret:SetScript("OnEnter", function(s)
+    if not frame:GetScript("OnEnter") then
+        frame:SetScript("OnEnter", function(s)
             if s:GetID() > 0 then
                 GameTooltip_SetDefaultAnchor(GameTooltip, s);
                 if s.type == 1 then
@@ -44,14 +44,50 @@ local function createDebuffFrame(parent)
                 end
             end
         end)
-        ret:SetScript("OnLeave", function()
+        frame:SetScript("OnLeave", function()
             GameTooltip:Hide();
         end)
     end
 
-    ret:EnableMouse(false);
+    frame:EnableMouse(false);
 
-    return ret;
+    return frame;
+end
+
+local function createCastIcon(parent)
+
+    local frame = CreateFrame("Frame", nil, parent, "asNamePlatesBuffFrameTemplate");
+    frame.timetext = frame:CreateFontString(nil, "OVERLAY");
+    frame.targetname = frame:CreateFontString(nil, "OVERLAY");
+
+    frame:EnableMouse(false);
+
+    frame.icon:SetTexCoord(.08, .92, .08, .92);    
+    frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+
+    frame.timetext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
+    frame.timetext:ClearAllPoints();
+    frame.timetext:SetPoint("CENTER", frame, "CENTER", 0, 0);
+
+    frame.targetname:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
+    frame.targetname:ClearAllPoints();
+    frame.targetname:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -1);
+    
+
+    if not frame:GetScript("OnEnter") then
+        frame:SetScript("OnEnter", function(s)
+            if s.castspellid and s.castspellid > 0 then
+                GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                GameTooltip:SetSpellByID(s.castspellid);
+            end
+        end)
+        frame:SetScript("OnLeave", function()
+            GameTooltip:Hide();
+        end)
+    end    
+
+    return frame;
+
 end
 
 local function creatframe()
@@ -62,10 +98,8 @@ local function creatframe()
     object.petcleave = object:CreateFontString(nil, "OVERLAY");
     object.pettarget = object:CreateFontString(nil, "OVERLAY");
     object.healer = object:CreateFontString(nil, "OVERLAY");
-    object.casticon = CreateFrame("Frame", nil, object, "asNamePlatesBuffFrameTemplate");
-    object.casticon.timetext = object.casticon:CreateFontString(nil, "OVERLAY");
-    object.casticon.targetname = object.casticon:CreateFontString(nil, "OVERLAY");
-    object.CCdebuff = CreateFrame("Frame", nil, object, "asNamePlatesBuffFrameTemplate");
+    object.casticon = createCastIcon(object);
+    object.CCdebuff = createDebuffFrame(object);
     object.BarTexture = object:CreateTexture(nil, "OVERLAY", "asColorTextureTemplate", 1);
     object.BarColor = object:CreateTexture(nil, "OVERLAY", "asColorTextureTemplate", 2);
     object.healthtext = object:CreateFontString(nil, "OVERLAY");
@@ -77,59 +111,7 @@ local function creatframe()
 
     for i = 1, ns.ANameP_MaxDebuff do
         object.buffList[i] = createDebuffFrame(object);
-    end
-
-    if not object.CCdebuff:GetScript("OnEnter") then
-        object.CCdebuff:SetScript("OnEnter", function(s)
-            if s:GetID() > 0 then
-                GameTooltip_SetDefaultAnchor(GameTooltip, s);
-                GameTooltip:SetUnitDebuffByAuraInstanceID(s.unit, s:GetID(), s.filter);
-            end
-        end)
-        object.CCdebuff:SetScript("OnLeave", function()
-            GameTooltip:Hide();
-        end)
-    end
-
-    object.CCdebuff:EnableMouse(false);
-
-    local frameIcon = object.CCdebuff.icon;
-    local frameBorder = object.CCdebuff.border;
-
-    frameIcon:SetTexCoord(.08, .92, .08, .92);
-    frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
-    frameBorder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-
-
-    object.casticon:EnableMouse(false);
-
-    object.casticon.timetext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
-    object.casticon.timetext:ClearAllPoints();
-    object.casticon.timetext:SetPoint("CENTER", object.casticon, "CENTER", 0, 0);
-
-    object.casticon.targetname:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
-    object.casticon.targetname:ClearAllPoints();
-    object.casticon.targetname:SetPoint("TOPRIGHT", object.casticon, "BOTTOMRIGHT", 0, -1);
-    
-
-    if not object.casticon:GetScript("OnEnter") then
-        object.casticon:SetScript("OnEnter", function(s)
-            if s.castspellid and s.castspellid > 0 then
-                GameTooltip_SetDefaultAnchor(GameTooltip, s);
-                GameTooltip:SetSpellByID(s.castspellid);
-            end
-        end)
-        object.casticon:SetScript("OnLeave", function()
-            GameTooltip:Hide();
-        end)
-    end
-
-    frameIcon = object.casticon.icon;
-    frameBorder = object.casticon.border;
-
-    frameIcon:SetTexCoord(.08, .92, .08, .92);
-    frameBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
-    frameBorder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+    end   
 
     object.healthtext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
     object.realhealthtext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize - 2, "OUTLINE");

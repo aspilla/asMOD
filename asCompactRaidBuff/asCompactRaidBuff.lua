@@ -181,17 +181,14 @@ function ns.ACRB_setupFrame(asframe, bupdate)
 
         f:EnableMouse(false);
 
-        f.icon:SetTexCoord(.08, .92, .08, .92);
-        f.other.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga");
-        f.other.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-        f.other.border:SetVertexColor(0, 0, 0);
-        f.other.border:ClearAllPoints();
-        f.other.border:SetAllPoints(f);
-        f.other.border:Show();
+        f.icon:SetTexCoord(.08, .92, .16, .84);        
+        f.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+        f.border:SetVertexColor(0, 0, 0);        
+        f.border:Show();
 
         f.cooldown:SetSwipeColor(0, 0, 0, 0.5);         
-        f.other.count:ClearAllPoints();
-        f.other.count:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 1);
+        f.count:ClearAllPoints();
+        f.count:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 1);
 
         if not f:GetScript("OnEnter") then
             f:SetScript("OnEnter", function(s)
@@ -226,14 +223,15 @@ function ns.ACRB_setupFrame(asframe, bupdate)
     end
 
     local function layoutcooldown(f)
-        f.other.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")        
+        f.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")        
 
         for _, r in next, { f.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                 r:ClearAllPoints();
                 r:SetPoint("TOPLEFT", 1, 0);
-                f.cooldowntext = r;
+                r:SetDrawLayer("OVERLAY");
+                f.cooldowntext = r;                
                 break
             end
         end
@@ -266,6 +264,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             buffFrame.data = {};
             buffFrame:SetFrameStrata(strata);
             buffFrame:SetFrameLevel(framelevel);
+            buffFrame.cooldown:SetFrameLevel(framelevel);
         end
     end
 
@@ -323,6 +322,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             debuffFrame:Hide();
             debuffFrame:SetFrameStrata(strata);
             debuffFrame:SetFrameLevel(framelevel);
+            debuffFrame.cooldown:SetFrameLevel(framelevel);
             debuffFrame.data = {};
         end
     end
@@ -363,6 +363,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
 
             pvpbuffFrame:SetFrameStrata(strata);
             pvpbuffFrame:SetFrameLevel(framelevel);
+            pvpbuffFrame.cooldown:SetFrameLevel(framelevel);
             pvpbuffFrame.data = {};
         end
     end
@@ -386,6 +387,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             asframe.castFrames[i] = castFrame;
             castFrame:SetFrameStrata(strata);
             castFrame:SetFrameLevel(framelevel);
+            castFrame.cooldown:SetFrameLevel(framelevel);
             castFrame:Hide();
             castFrame.data = {};
             layoutbuff(castFrame, 3);

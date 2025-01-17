@@ -4,4 +4,5 @@
 ## Notes: 글쿨바
 ## Version : 241217
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
-asGCDBar.xml
+## Category: asMOD
+asGCDBar.lua

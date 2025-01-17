@@ -439,8 +439,8 @@ local function updateTotemAura()
 				frame.auraInstanceID = nil;
 
 				-- set the count
-				local frameCount = frame.other.count;
-				local frameBigCount = frame.other.bigcount;
+				local frameCount = frame.count;
+				local frameBigCount = frame.bigcount;
 				-- Handle cooldowns
 				local frameCooldown = frame.cooldown;
 
@@ -457,7 +457,7 @@ local function updateTotemAura()
 
 				local frameBorder = frame.border;
 
-				local color = { r = 0, g = 1, b = 0 };
+				local color = { r = 0.5, g = 0.5, b = 0.5};
 
 				frameBorder:SetVertexColor(color.r, color.g, color.b);
 				frame:Show();
@@ -551,8 +551,8 @@ local function UpdateAuraFrames(unit, auraList)
 			local frameIcon = frame.icon
 			frameIcon:SetTexture(aura.icon);
 			-- set the count
-			local frameCount = frame.other.count;
-			local frameBigCount = frame.other.bigcount;
+			local frameCount = frame.count;
+			local frameBigCount = frame.bigcount;
 
 			-- Handle cooldowns
 			local frameCooldown = frame.cooldown;
@@ -593,7 +593,7 @@ local function UpdateAuraFrames(unit, auraList)
 			end
 
 			local frameBorder = frame.border;
-			local color = DebuffTypeColor["Disease"];
+			local color = { r = 0, g = 0, b = 0 };
 			frameBorder:SetVertexColor(color.r, color.g, color.b);
 
 			if (aura.isStealable) or (aura.procbuff) then
@@ -759,6 +759,7 @@ local function ABF_UpdateBuffAnchor(frames, index, offsetX, right, center, paren
 	-- Resize
 	buff:SetWidth(ns.ABF_SIZE);
 	buff:SetHeight(ns.ABF_SIZE * 0.8);
+
 end
 
 local function CreatBuffFrames(parent, bright, bcenter, max)
@@ -769,29 +770,28 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 	for idx = 1, max do
 		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
 		local frame = parent.frames[idx];
-		frame:SetFrameLevel(9000);
-		frame.other:SetFrameLevel(9150);
-		frame.cooldown:SetFrameLevel(9100);
 		frame.cooldown:SetDrawSwipe(true);
+
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
 				r:SetFont(STANDARD_TEXT_FONT, ns.ABF_CooldownFontSize, "OUTLINE");
 				r:ClearAllPoints();
 				r:SetPoint("TOP", 0, 5);
-				break
+				r:SetDrawLayer("OVERLAY");
+				break;		
 			end
-		end
-		frame.other.count:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize, "OUTLINE")
-		frame.other.count:ClearAllPoints()
-		frame.other.count:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", -2, 2);
+		end		
 
-		frame.other.bigcount:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize + 3, "OUTLINE")
-		frame.other.bigcount:ClearAllPoints()
-		frame.other.bigcount:SetPoint("CENTER", frame.icon, "CENTER", 0, 0);
+		frame.count:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize, "OUTLINE")
+		frame.count:ClearAllPoints()
+		frame.count:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", -2, 2);
 
-		frame.icon:SetTexCoord(.08, .92, .08, .92);
+		frame.bigcount:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize + 3, "OUTLINE")
+		frame.bigcount:ClearAllPoints()
+		frame.bigcount:SetPoint("CENTER", frame.icon, "CENTER", 0, 0);
+
+		frame.icon:SetTexCoord(.08, .92, .16, .84);
 		frame.icon:SetAlpha(ns.ABF_ALPHA);
-		frame.border:SetTexture("Interface\\Addons\\asBuffFilter\\border.tga");
 		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 		frame.border:SetAlpha(ns.ABF_ALPHA);
 

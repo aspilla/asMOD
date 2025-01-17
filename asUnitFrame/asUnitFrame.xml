@@ -1,65 +1,34 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI_shared.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\Blizzard_SharedXML\UI.xsd">
     <Button name="AUFUnitButtonTemplate" inherits="SecureUnitButtonTemplate" hidden="true" virtual="true">
     </Button>
-
     <Frame name="AUFFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW">
-		<Size>
-			<AbsDimension x="17" y="17"/>
-		</Size>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentIcon" parentKey="icon"/>
+				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
 			</Layer>
-			<Layer level="OVERLAY">
-				<Texture name="$parentBorder" file="Interface\asUnitFrame\border.tga" parentKey="border">
-					<Size>
-						<AbsDimension x="17" y="17"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="0" y="0"/>
-						</Anchor>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset x="0" y="0"/>
-						</Anchor>
-					</Anchors>
-					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
-				</Texture>	
+			<Layer level="BORDER">
+				<Texture name="$parentBorder" parentKey="border" file="Interface\asUnitFrame\border.tga" setAllPoints="true"/>				
 			</Layer>
 		</Layers>
 	</Frame>
-
-	<Frame name="AUFDebuffFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW">
-		<Size>
-			<AbsDimension x="17" y="17"/>
-		</Size>
+	<Frame name="AUFDebuffFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel = "1000">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentPortrait" parentKey="portrait" setAllPoints="true"/>
+				<Texture name="$parentPortrait" parentKey="portrait" setAllPoints="true" />
 			</Layer>
-			<Layer level="ARTWORK">
+			<Layer level="BORDER">
 				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
 			</Layer>
-			<Layer level="OVERLAY">
-				<Texture name="$parentBorder" parentKey="border" file="Interface\Buttons\UI-Debuff-Overlays">
-					<Size>
-						<AbsDimension x="17" y="17"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="0" y="0"/>
-						</Anchor>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset x="0" y="0"/>
-						</Anchor>
-					</Anchors>
-					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
-				</Texture>	
+			<Layer level="ARTWORK" textureSubLevel="7">
+				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asUnitFrame\border.tga"/>				
 			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentCount" parentKey="count" justifyH="RIGHT"/>				
+			</Layer>	
 		</Layers>
 		<Frames>
-			<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true">
+			<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" frameLevel = "1000">
 				<Anchors>
 					<Anchor point="CENTER">
 						<Offset>
@@ -68,27 +37,6 @@
 					</Anchor>
 				</Anchors>
 			</Cooldown>
-			<Frame name="$parentOther" parentKey="other" virtual="true" enableMouse="false" frameStrata="MEDIUM">
-				<Size>
-					<AbsDimension x="17" y="17"/>
-				</Size>
-				<Anchors>
-					<Anchor point="BOTTOM" x="0" y="-8"/>
-				</Anchors>
-				<Layers>
-					<Layer level="OVERLAY">
-						<FontString name="$parentCount" parentKey="count" inherits="NumberFontNormalSmall" justifyH="RIGHT">
-							<Anchors>
-								<Anchor point="BOTTOMRIGHT">
-									<Offset>
-										<AbsDimension x="5" y="0"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
-			</Frame>
 		</Frames>
 	</Frame>
 </Ui>

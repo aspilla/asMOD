@@ -84,7 +84,7 @@ end
 local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
     if enable and enable ~= 0 and start > 0 and duration > 0 then
         self:SetDrawEdge(forceShowDrawEdge);
-        self:SetCooldown(start, duration, modRate);
+        self:SetCooldown(start, duration, modRate);        
     else
         asCooldownFrame_Clear(self);
     end
@@ -196,7 +196,7 @@ local function setFrame(frame, texture, count, expirationTime, duration, color)
     local frameIcon = frame.icon;
     frameIcon:SetTexture(texture);
 
-    local frameCount = frame.other.count;
+    local frameCount = frame.count;
     local frameCooldown = frame.cooldown;
 
     if count and (count > 1) then
@@ -459,23 +459,23 @@ local function updateAuras(self)
 
                         if snapshots then
                             if snapshots > 1 then
-                                frame.other.snapshot:SetText(snapshotIconG);
-                                frame.other.snapshot:Show();
+                                frame.snapshot:SetText(snapshotIconG);
+                                frame.snapshot:Show();
                             elseif snapshots == 1 then
-                                frame.other.snapshot:Hide();
+                                frame.snapshot:Hide();
                             else
-                                frame.other.snapshot:SetText(snapshotIconR);
-                                frame.other.snapshot:Show();
+                                frame.snapshot:SetText(snapshotIconR);
+                                frame.snapshot:Show();
                             end
                         else
-                            frame.other.snapshot:Hide();
+                            frame.snapshot:Hide();
                         end
                         --print("working")
                     else
-                        frame.other.snapshot:Hide();
+                        frame.snapshot:Hide();
                     end
                 else
-                    frame.other.snapshot:Hide();
+                    frame.snapshot:Hide();
                 end
 
                 frame.alert = false;
@@ -598,7 +598,7 @@ local function updateTargetNameP(self)
         end
 
         if casticon then
-            casticon:SetWidth((height + cast_height + 3) * 1.2);
+            casticon:SetWidth((height + cast_height + 3) * 1.1);    --90%
             casticon:SetHeight(height + cast_height + 3);
             casticon.border:SetVertexColor(1, 1, 1);
         end
@@ -629,7 +629,7 @@ local function updateTargetNameP(self)
         self.tgtext:Hide();
 
         if casticon then
-            casticon:SetWidth((height + cast_height + 3) * 1.2);
+            casticon:SetWidth((height + cast_height + 3) * 1.1);
             casticon:SetHeight(height + cast_height + 3);
             casticon.border:SetVertexColor(0, 0, 0);
         end
@@ -1448,7 +1448,7 @@ local function addNamePlate(namePlateFrameBase)
     if unitFrame.castBar then
         asframe.casticon:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
         asframe.casticon:ClearAllPoints();
-        asframe.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0, 0);
+        asframe.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0, -0.3);
         asframe.casticon:SetWidth(13);
         asframe.casticon:SetHeight(13);
         asframe.casticon:Hide();
@@ -1458,17 +1458,8 @@ local function addNamePlate(namePlateFrameBase)
     asframe.CCdebuff:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
     asframe.CCdebuff:ClearAllPoints();
     asframe.CCdebuff:SetPoint("LEFT", asframe.casticon, "RIGHT", 1, 0);
-    asframe.CCdebuff:SetWidth(ns.ANameP_CCDebuffSize * 1.2);
-    asframe.CCdebuff:SetHeight(ns.ANameP_CCDebuffSize);
-
-    for _, r in next, { asframe.CCdebuff.cooldown:GetRegions() } do
-        if r:GetObjectType() == "FontString" then
-            r:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CooldownFontSize, "OUTLINE")
-            r:SetPoint("TOP", 0, 4);
-            break
-        end
-    end
-
+    asframe.CCdebuff:SetWidth(ns.ANameP_CCDebuffSize);
+    asframe.CCdebuff:SetHeight(ns.ANameP_CCDebuffSize * 0.6);
     asframe.CCdebuff:Hide();
 
     local previousTexture = healthbar:GetStatusBarTexture();

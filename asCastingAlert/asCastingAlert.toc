@@ -4,4 +4,5 @@
 ## Notes: 나를 대상으로 하는 Casting 알림
 ## Version : 241215
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asCastingAlert.lua

@@ -4,6 +4,7 @@
 ## Notes: Debuff tracker (player, target)
 ## Version : 250108
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asDebuffFilterOptions.lua
 asDebuffFilterLib.lua
 asDebuffFilter.xml

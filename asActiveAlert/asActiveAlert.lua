@@ -121,25 +121,23 @@ local function ASAA_UpdateCooldown()
 
 				for _, r in next, { frame.cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, ASAA_CooldownFontSize, "OUTLINE")
+						r:SetFont(STANDARD_TEXT_FONT, ASAA_CooldownFontSize, "OUTLINE");
+						r:SetDrawLayer("OVERLAY");
 						break
 					end
 				end
 
-				frame.icon:SetTexCoord(.08, .92, .08, .92)
-				frame.border:SetTexture("Interface\\Addons\\asActiveAlert\\border.tga")
+				frame.icon:SetTexCoord(.08, .92, .08, .92)				
 				frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92)
+				frame.border:SetVertexColor(0, 0, 0);
 			end
 
 			-- set the icon
-			frameIcon = frame.icon;
-			frameBorder = frame.border;
+			frameIcon = frame.icon;			
 			frameIcon:SetTexture(icon);
 			frameIcon:SetAlpha(ASAA_Alpha);
 			frame:ClearAllPoints();
-			frame:Show();
-
-			frameBorder:SetVertexColor(0, 0, 0);
+			frame:Show();			
 
 			if (isUsable) then
 				frameIcon:SetVertexColor(1.0, 1.0, 1.0);

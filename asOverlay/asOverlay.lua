@@ -25,10 +25,6 @@ end
 
 local function asOverlay_CreateOverlay(self)
 	local ret = CreateFrame("Frame", nil, self, "asOverlayTemplate");
-	ret.count:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
-	ret.count:SetTextColor(0, 1, 0);
-	ret.remain:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
-	ret.remain:SetTextColor(1, 1, 1);
 	return ret;
 end
 
@@ -69,9 +65,12 @@ local function asOverlay_HideOverlays(self, spellID)
 	if (overlayList) then
 		for i = 1, #overlayList do
 			local overlay = overlayList[i];
-			overlay.pulse:Pause();
-			overlay.animOut:Play();
+			if overlay then
+				overlay:Hide();
+				tinsert(self.unusedOverlays, overlay);
+			end
 		end
+		tDeleteItem(self.overlaysInUse[spellID], overlayList)
 	end
 end
 
@@ -79,30 +78,6 @@ local function asOverlay_HideAllOverlays(self)
 	for spellID, overlayList in pairs(self.overlaysInUse) do
 		asOverlay_HideOverlays(self, spellID);
 	end
-end
-
-
-function asOverlayTexture_OnShow(self)
-	self.animIn:Play();
-end
-
-function asOverlayTexture_OnFadeInPlay(animGroup)
-	animGroup:GetParent():SetAlpha(0);
-end
-
-function asOverlayTexture_OnFadeInFinished(animGroup)
-	local overlay = animGroup:GetParent();
-	overlay:SetAlpha(1);
-	overlay.pulse:Play();
-end
-
-function asOverlayTexture_OnFadeOutFinished(anim)
-	local overlay = anim:GetRegionParent();
-	local overlayParent = overlay:GetParent();
-	overlay.pulse:Stop();
-	overlay:Hide();
-	tDeleteItem(overlayParent.overlaysInUse[overlay.spellID], overlay)
-	tinsert(overlayParent.unusedOverlays, overlay);
 end
 
 local complexLocationTypes = {
@@ -157,7 +132,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 				remain = extime - GetTime();
 
 				if remain > 0 then
-					rate = remain / duration;
+					rate = math.ceil(remain / duration * 100) / 100;
 				end
 				break;
 			end
@@ -173,7 +148,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 			remain = extime - GetTime();
 
 			if remain > 0 then
-				rate = remain / duration;
+				rate = math.ceil(remain / duration * 100) / 100;
 			end
 		end
 	end
@@ -233,33 +208,55 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 
 	local width, height;
 
+	overlay:ClearAllPoints();
+	overlay.back:ClearAllPoints();
+	overlay.cooldown:ClearAllPoints();
+
 	if position == Enum.ScreenLocationType.Center then
 		width, height = longSide, longSide;
 		overlay:SetPoint("CENTER", self, "CENTER", 0, 0);
+		overlay.back:SetPoint("CENTER", self, "CENTER", 0, 0);
+		overlay.cooldown:SetPoint("CENTER", self, "CENTER", 0, 0);
 	elseif position == Enum.ScreenLocationType.Left then
 		width, height = shortSide, longSide;
 		overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", 0, (height * (1 - scale)) / 2);
+		overlay.back:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", 0, (height * (1 - scale)) / 2);
+		overlay.cooldown:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", 0, (height * (1 - scale)) / 2);
 	elseif position == Enum.ScreenLocationType.LeftOutside then
 		width, height = shortSide, longSide;
 		overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -shortSide, (height * (1 - scale)) / 2);
+		overlay.back:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -shortSide, (height * (1 - scale)) / 2);
+		overlay.cooldown:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -shortSide, (height * (1 - scale)) / 2);
 	elseif position == Enum.ScreenLocationType.Right then
 		width, height = shortSide, longSide;
 		overlay:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 0, (height * (1 - scale)) / 2);
+		overlay.back:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 0, (height * (1 - scale)) / 2);
+		overlay.cooldown:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 0, (height * (1 - scale)) / 2);
 	elseif position == Enum.ScreenLocationType.RightOutside then
 		width, height = shortSide, longSide;
 		overlay:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", shortSide, (height * (1 - scale)) / 2);
+		overlay.back:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", shortSide, (height * (1 - scale)) / 2);
+		overlay.cooldown:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", shortSide, (height * (1 - scale)) / 2);
 	elseif position == Enum.ScreenLocationType.Top then
 		width, height = longSide, shortSide;
 		overlay:SetPoint("BOTTOMLEFT", self, "TOPLEFT", (width * (1 - scale)) / 2, 0);
+		overlay.back:SetPoint("BOTTOMLEFT", self, "TOPLEFT", (width * (1 - scale)) / 2, 0);
+		overlay.cooldown:SetPoint("BOTTOMLEFT", self, "TOPLEFT", (width * (1 - scale)) / 2, 0);
 	elseif position == Enum.ScreenLocationType.Bottom then
 		width, height = longSide, shortSide;
 		overlay:SetPoint("TOPLEFT", self, "BOTTOMLEFT", (width * (1 - scale)) / 2, 0);
+		overlay.back:SetPoint("TOPLEFT", self, "BOTTOMLEFT", (width * (1 - scale)) / 2, 0);
+		overlay.cooldown:SetPoint("TOPLEFT", self, "BOTTOMLEFT", (width * (1 - scale)) / 2, 0);
 	elseif position == Enum.ScreenLocationType.TopRight then
 		width, height = shortSide, shortSide;
 		overlay:SetPoint("BOTTOMLEFT", self, "TOPRIGHT", 0, 0);
+		overlay.back:SetPoint("BOTTOMLEFT", self, "TOPRIGHT", 0, 0);
+		overlay.cooldown:SetPoint("BOTTOMLEFT", self, "TOPRIGHT", 0, 0);
 	elseif position == Enum.ScreenLocationType.TopLeft then
 		width, height = shortSide, shortSide;
 		overlay:SetPoint("BOTTOMRIGHT", self, "TOPLEFT", 0, 0);
+		overlay.back:SetPoint("BOTTOMRIGHT", self, "TOPLEFT", 0, 0);
+		overlay.cooldown:SetPoint("BOTTOMRIGHT", self, "TOPLEFT", 0, 0);
 	else
 		--GMError("Unknown asOverlay position: "..tostring(position));
 		return;
@@ -267,47 +264,46 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 
 	if position == Enum.ScreenLocationType.Left or position == Enum.ScreenLocationType.Right or position == Enum.ScreenLocationType.LeftOutside or position == Enum.ScreenLocationType.RightOutside then
 		overlay.side = true;
-		overlay.count:ClearAllPoints()
-		overlay.count:SetPoint("BOTTOM", overlay, "BOTTOM", 0, 0);
-		overlay.remain:ClearAllPoints()
-		overlay.remain:SetPoint("BOTTOM", overlay, "BOTTOM", 20, 0);
 	else
 		overlay.side = false;
-		overlay.count:ClearAllPoints()
-		overlay.count:SetPoint("LEFT", overlay, "LEFT", 0, 0);
-		overlay.remain:ClearAllPoints()
-		overlay.remain:SetPoint("LEFT", overlay, "LEFT", -20, 0);
 	end
 
 	overlay.width = width * scale;
 	overlay.height = height * scale;
+	overlay:SetSize(overlay.width, overlay.height);
 
-	overlay.texture:SetTexture(texturePath);
-	overlay.texture:SetVertexColor(r / 255, g / 255, b / 255);
 
-	if ns.options.ShowAlpha == false then
-		if overlay.side then
-			if (overlay.vflip) then
-				overlay.texture:SetTexCoord(texLeft, texRight, texTop, 1 - rate);
-			else
-				overlay.texture:SetTexCoord(texLeft, texRight, 1 - rate, texBottom);
-			end
-			overlay:SetSize(overlay.width, overlay.height * rate);
-		else
-			if (overlay.hflip) then
-				overlay.texture:SetTexCoord(rate, texRight, texTop, texBottom);
-			else
-				overlay.texture:SetTexCoord(texLeft, rate, texTop, texBottom);
-			end
-			overlay:SetSize(overlay.width * rate, overlay.height);
-		end
+	overlay.back.textureback:SetTexture(texturePath);
+	overlay.back.textureback:SetDesaturation(1)
+	overlay.back.textureback:SetTexCoord(texLeft, texRight, texTop, texBottom);
+	overlay.back:SetSize(overlay.width, overlay.height);
+	if ns.options.BackgroundAlpha then
+		overlay.back:SetAlpha(ns.options.BackgroundAlpha);
 	else
-		overlay:SetSize(overlay.width, overlay.height);
-		overlay.texture:SetTexCoord(texLeft, texRight, texTop, texBottom);
-		overlay:SetAlpha(rate * settingalpha);
+		overlay.back:SetAlpha(0.4);
+	end
+	overlay.back:Show();
+
+	overlay.cooldown.texture:SetTexture(texturePath);
+	overlay.cooldown.texture:SetVertexColor(r / 255, g / 255, b / 255);
+	overlay.cooldown:SetAlpha(1);
+
+	if overlay.side then
+		if (overlay.vflip) then
+			overlay.cooldown.texture:SetTexCoord(texLeft, texRight, texTop, 1 - rate);
+		else
+			overlay.cooldown.texture:SetTexCoord(texLeft, texRight, 1 - rate, texBottom);
+		end
+		overlay.cooldown:SetSize(overlay.width, overlay.height * rate);
+	else
+		if (overlay.hflip) then
+			overlay.cooldown.texture:SetTexCoord(rate, texRight, texTop, texBottom);
+		else
+			overlay.cooldown.texture:SetTexCoord(texLeft, rate, texTop, texBottom);
+		end
+		overlay.cooldown:SetSize(overlay.width * rate, overlay.height);
 	end
 
-	overlay.animOut:Stop(); --In case we're in the process of animating this out.
 	PlaySound(SOUNDKIT.UI_POWER_AURA_GENERIC);
 
 	if aura then
@@ -377,7 +373,7 @@ local function asOverlay_CheckAura(self)
 									local overlay = asOverlay_GetOverlay(self, spellID, position, true);
 
 									if overlay and overlay:IsShown() then
-										overlay.texture:SetVertexColor(r / 255, g / 255, b / 255);
+										overlay.cooldown.texture:SetVertexColor(r / 255, g / 255, b / 255);
 										updated[position] = true
 									end
 								end
@@ -392,7 +388,7 @@ local function asOverlay_CheckAura(self)
 			local overlay = asOverlay_GetOverlay(self, spellID, position, true);
 
 			if overlay and overlay:IsShown() and not updated[position] then
-				overlay.texture:SetVertexColor(1, 1, 1);
+				overlay.cooldown.texture:SetVertexColor(1, 1, 1);
 			end
 		end
 	end
@@ -482,7 +478,7 @@ local function asOverlay_OnUpdate()
 					local count = aura.applications;
 
 					if remain > 0 then
-						rate = remain / duration;
+						rate = math.ceil(remain / duration * 100) / 100;
 					end
 
 
@@ -490,9 +486,7 @@ local function asOverlay_OnUpdate()
 						local overlay = overlayList[i];
 
 						if overlay:IsShown() then
-							if ns.options.ShowAlpha == true then
-								overlay:SetAlpha(rate * settingalpha);
-							elseif overlay.width and overlay.height then
+							if overlay.width and overlay.height then
 								local texLeft, texRight, texTop, texBottom = 0, 1, 0, 1;
 
 								if (overlay.vflip) then
@@ -504,41 +498,21 @@ local function asOverlay_OnUpdate()
 
 								if overlay.side then
 									if (overlay.vflip) then
-										overlay.texture:SetTexCoord(texLeft, texRight, texTop, 1 - rate);
+										overlay.cooldown.texture:SetTexCoord(texLeft, texRight, texTop, 1 - rate);
 									else
-										overlay.texture:SetTexCoord(texLeft, texRight, 1 - rate, texBottom);
+										overlay.cooldown.texture:SetTexCoord(texLeft, texRight, 1 - rate, texBottom);
 									end
-									overlay:SetSize(overlay.width, overlay.height * rate);
+									overlay.cooldown:SetSize(overlay.width, overlay.height * rate);
 								else
 									if (overlay.hflip) then
-										overlay.texture:SetTexCoord(rate, texRight, texTop, texBottom);
+										overlay.cooldown.texture:SetTexCoord(rate, texRight, texTop, texBottom);
 									else
-										overlay.texture:SetTexCoord(texLeft, rate, texTop, texBottom);
+										overlay.cooldown.texture:SetTexCoord(texLeft, rate, texTop, texBottom);
 									end
-									overlay:SetSize(overlay.width * rate, overlay.height);
+									overlay.cooldown:SetSize(overlay.width * rate, overlay.height);
 								end
 							end
-
-							if count > 1 and i == 1 and ns.options.ShowCount then
-								overlay.count:SetText(count);
-								overlay.count:Show();
-							else
-								overlay.count:Hide();
-							end
-
-							if remain > 0 and i == 1 and ns.options.ShowRemainTime then
-								overlay.remain:SetText(math.ceil(remain));
-								overlay.remain:Show();
-							else
-								overlay.remain:Hide();
-							end
 						end
-					end
-				else
-					for i = 1, #overlayList do
-						local overlay = overlayList[i];
-						overlay.count:Hide();
-						overlay.remain:Hide();
 					end
 				end
 			end

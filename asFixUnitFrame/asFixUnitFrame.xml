@@ -1,21 +1,16 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\Blizzard_SharedXML\UI.xsd">
 	<Texture name="asFUFTextureTemplate" virtual="true" file="Interface\Addons\asFixUnitFrame\UI-StatusBar">
 		<Color r="0.0" g="0.447" b="1.0"/>
 	</Texture>
-	<Frame name="asFUFDebuffFrameTemplate" virtual="true" enableMouse="false">
-		<Size>
-			<AbsDimension x="36" y="36"/>
-		</Size>
+	<Frame name="asFUFDebuffFrameTemplate" virtual="true" enableMouse="false">		
 		<Layers>
-			<Layer level="BACKGROUND" textureSubLevel="2">
+			<Layer level="BACKGROUND">
 				<Texture name="$parentIcon" parentKey="icon"/>
 			</Layer>
 		</Layers>
 		<Frames>
-			<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawBling="false" drawEdge="false" hidden="true">
-				<Size x="36" y="36"/>
+			<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawBling="false" drawEdge="false" hidden="true">				
 				<Anchors>
 					<Anchor point="CENTER">
 						<Offset>

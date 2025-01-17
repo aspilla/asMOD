@@ -263,6 +263,7 @@ local function CreateDebuffFrame()
         frame:ClearAllPoints();
         frame:SetAllPoints(portrait);
         frame.icon:SetMask("Interface\\CHARACTERFRAME\\TempPortraitAlphaMask");
+        frame.cooldown:SetFrameLevel(parent:GetFrameLevel());
         frame.cooldown:SetSwipeTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMaskSmall")
         frame.cooldown:SetDrawEdge(false);
         frame.cooldown:SetSwipeColor(0, 0, 0, 0.5);
@@ -270,7 +271,7 @@ local function CreateDebuffFrame()
         frame.cooldown:SetHideCountdownNumbers(false);
         local l, s = parent.FrameTexture:GetDrawLayer();
         frame.icon:SetDrawLayer(l, s);
-        parent.FrameTexture:SetDrawLayer(l, s + 1);
+        parent.FrameTexture:SetDrawLayer("ARTWORK", 7);
 
         if not frame:GetScript("OnEnter") then
             frame:SetScript("OnEnter", function(s)

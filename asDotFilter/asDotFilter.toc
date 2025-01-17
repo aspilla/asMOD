@@ -4,6 +4,7 @@
 ## Notes: Dot filter addon for boss and focus frames 
 ## Version : 250105
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asDotFilterLib.lua
 asDotFilterAura.lua
 asDotFilter.xml

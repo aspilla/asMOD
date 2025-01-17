@@ -113,7 +113,7 @@ ns.lib.GlowFramePool = GlowFramePool
 
 local function addFrameAndTex(r, color, name, key, N, xOffset, yOffset, texture, texCoord, desaturated, frameLevel)
 	key = key or ""
-	frameLevel = frameLevel or 8
+	frameLevel = frameLevel or 0
 	if not r[name .. key] then
 		r[name .. key] = GlowFramePool:Acquire()
 		r[name .. key]:SetParent(r)
@@ -136,7 +136,7 @@ local function addFrameAndTex(r, color, name, key, N, xOffset, yOffset, texture,
 			f.textures[i]:SetTexCoord(texCoord[1], texCoord[2], texCoord[3], texCoord[4])
 			f.textures[i]:SetDesaturated(desaturated)
 			f.textures[i]:SetParent(f)
-			f.textures[i]:SetDrawLayer("BACKGROUND", 7)
+			f.textures[i]:SetDrawLayer("ARTWORK", 7)
 			if not isRetail and name == "_AutoCastGlow" then
 				f.textures[i]:SetBlendMode("ADD")
 			end
@@ -302,7 +302,7 @@ function ns.lib.PixelGlow_Start(r, color, N, frequency, length, th, xOffset, yOf
 			f.bg:SetColorTexture(0.1, 0.1, 0.1, 0.8)
 			f.bg:SetParent(f)
 			f.bg:SetAllPoints(f)
-			f.bg:SetDrawLayer("BACKGROUND", 6)
+			f.bg:SetDrawLayer("ARTWORK", 6)
 			f.bg:AddMaskTexture(f.masks[2])
 		end
 	else
@@ -548,7 +548,7 @@ function ns.lib.ButtonGlow_Start(r, color, frequency, frameLevel)
 	if not r then
 		return
 	end
-	frameLevel = frameLevel or 8;
+	frameLevel = frameLevel or 0;
 	local throttle
 	if frequency and frequency > 0 then
 		throttle = 0.25 / frequency * 0.01
@@ -573,7 +573,7 @@ function ns.lib.ButtonGlow_Start(r, color, frequency, frameLevel)
 			for texture in pairs(ButtonGlowTextures) do
 				f[texture]:SetDesaturated(nil)
 				f[texture]:SetVertexColor(1, 1, 1)
-				f[texture]:SetAlpha(f[texture]:GetAlpha() / (f.color and f.color[4] or 1))
+				f[texture]:SetAlpha(f[texture]:GetAlpha() / (f.color and f.color[4] or 1))				
 				updateAlphaAnim(f, 1)
 			end
 			f.color = false
@@ -581,7 +581,7 @@ function ns.lib.ButtonGlow_Start(r, color, frequency, frameLevel)
 			for texture in pairs(ButtonGlowTextures) do
 				f[texture]:SetDesaturated(1)
 				f[texture]:SetVertexColor(color[1], color[2], color[3])
-				f[texture]:SetAlpha(f[texture]:GetAlpha() / (f.color and f.color[4] or 1) * color[4])
+				f[texture]:SetAlpha(f[texture]:GetAlpha() / (f.color and f.color[4] or 1) * color[4])				
 				updateAlphaAnim(f, color and color[4] or 1)
 			end
 			f.color = color

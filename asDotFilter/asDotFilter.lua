@@ -410,20 +410,23 @@ local function ADotF_UpdateDebuff(unit)
                             r:SetFont(STANDARD_TEXT_FONT, ADotF_CooldownFontSize, "OUTLINE");
                             r:ClearAllPoints();
                             r:SetPoint("TOP", 0, 5);
-                            break;
+                            r:SetDrawLayer("OVERLAY");
+                            break;		            	
                         end
-                    end
+                    end                    
 
-                    frame.icon:SetTexCoord(.08, .92, .08, .92);
-                    frame.icon:SetAlpha(ADotF_ALPHA);
-                    frame.border:SetTexture("Interface\\Addons\\asDotFilter\\border.tga");
+                    frame.icon:SetTexCoord(.08, .92, .18, .82);
+                    frame.icon:SetAlpha(ADotF_ALPHA);                    
                     frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
                     frame.border:SetAlpha(ADotF_ALPHA);
                     
-                    frame.other.count:SetFont(STANDARD_TEXT_FONT, ADotF_CountFontSize, "OUTLINE")
-                    frame.other.count:SetPoint("BOTTOMRIGHT", frame.icon ,"BOTTOMRIGHT", -2, 2);
+                    frame.count:SetFont(STANDARD_TEXT_FONT, ADotF_CountFontSize, "OUTLINE");
+                    frame.count:ClearAllPoints();
+                    frame.count:SetPoint("BOTTOMRIGHT", frame ,"BOTTOMRIGHT", -2, 2);
 
-                    frame.other.snapshot:SetFont(STANDARD_TEXT_FONT, ADotF_CountFontSize - 1, "OUTLINE")
+                    frame.snapshot:SetFont(STANDARD_TEXT_FONT, ADotF_CountFontSize - 1, "OUTLINE")
+                    frame.snapshot:ClearAllPoints();
+                    frame.snapshot:SetPoint("CENTER", frame ,"BOTTOM", 0, 1);
                 end
 
                 -- set the icon
@@ -431,7 +434,7 @@ local function ADotF_UpdateDebuff(unit)
                 frameIcon:SetTexture(icon);                
 
                 -- set the count
-                frameCount = frame.other.count;
+                frameCount = frame.count;
 
                 -- Handle cooldowns
                 frameCooldown = frame.cooldown;
@@ -478,23 +481,23 @@ local function ADotF_UpdateDebuff(unit)
             
                     if snapshots then
             
-                        frame.other.snapshot:SetText(math.floor(snapshots * 100));
+                        frame.snapshot:SetText(math.floor(snapshots * 100));
                         if snapshots > 1 then
-                            frame.other.snapshot:SetTextColor(0.5, 1, 0.5);                
-                            frame.other.snapshot:Show();
+                            frame.snapshot:SetTextColor(0.5, 1, 0.5);                
+                            frame.snapshot:Show();
                         elseif snapshots == 1 then                                         
-                            frame.other.snapshot:Hide();
+                            frame.snapshot:Hide();
                         else
-                            frame.other.snapshot:SetTextColor(1, 0.5, 0.5);
-                            frame.other.snapshot:Show();
+                            frame.snapshot:SetTextColor(1, 0.5, 0.5);
+                            frame.snapshot:Show();
                         end                 
                         
                     else            
-                        frame.other.snapshot:Hide();
+                        frame.snapshot:Hide();
                     end
                     --print("working")
                 else
-                    frame.other.snapshot:Hide();
+                    frame.snapshot:Hide();
                 end
 
                 if (((expirationTime - GetTime()) <= alert_du) and duration > 0) then

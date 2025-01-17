@@ -5,6 +5,7 @@
 ## Version : 250106
 ## SavedVariablesPerCharacter: ACI_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asCombatInfoLib.lua
 asCombatInfo_Option.lua
 asCombatInfoEvent.lua

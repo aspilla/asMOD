@@ -4,4 +4,5 @@
 ## Notes: Error Message 필터 
 ## Version : 240107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asSpamFilter.xml

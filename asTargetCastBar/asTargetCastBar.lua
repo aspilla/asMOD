@@ -78,7 +78,7 @@ ATCB.button:SetHeight(ATCB_HEIGHT + 2);
 ATCB.button:SetScale(1);
 ATCB.button:SetAlpha(1);
 ATCB.button:EnableMouse(false);
-ATCB.button.icon:SetTexCoord(.08, .92, .08, .92);
+ATCB.button.icon:SetTexCoord(.08, .92, .16, .84);
 ATCB.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 ATCB.button.border:SetVertexColor(0, 0, 0);
 ATCB.button.border:Show();

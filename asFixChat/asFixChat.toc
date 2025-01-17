@@ -4,5 +4,6 @@
 ## Notes: 채팅창 강화, 1.Tab으로 파티/길드/공격대 챗 변경, 2.URL 클릭시 Link 복사 가능하도록 지원
 ## Version : 240107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asFixChatTab.lua
 asFixChatURL.lua

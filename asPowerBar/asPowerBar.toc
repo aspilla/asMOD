@@ -4,6 +4,7 @@
 ## Notes: Power Bar
 ## Version : 250101
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asPowerBarLib.lua
 asPowerBarAura.lua
 asPowerBar.xml

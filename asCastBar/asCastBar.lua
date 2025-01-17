@@ -8,7 +8,7 @@ PlayerCastingBarFrame.casticon:EnableMouse(false);
 PlayerCastingBarFrame.casticon:SetPoint("TOPRIGHT", PlayerCastingBarFrame, "TOPLEFT", -3, 0)
 
 PlayerCastingBarFrame.casticon:SetHeight(PlayerCastingBarFrame:GetHeight() + 10);
-PlayerCastingBarFrame.casticon:SetWidth((PlayerCastingBarFrame:GetHeight() + 10) * 1.2);
+PlayerCastingBarFrame.casticon:SetWidth((PlayerCastingBarFrame:GetHeight() + 10) * 1.1);
 PlayerCastingBarFrame.casticon.icon:SetTexCoord(.08, .92, .08, .92);
 --PlayerCastingBarFrame.casticon.border:SetTexture("Interface\\Addons\\asCastbar\\border.tga");
 PlayerCastingBarFrame.casticon.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);

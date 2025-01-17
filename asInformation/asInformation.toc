@@ -5,4 +5,5 @@
 ## Version : 240606
 ## SavedVariablesPerCharacter: asInformationSaved
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asInformation.lua

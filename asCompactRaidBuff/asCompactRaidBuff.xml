@@ -1,17 +1,19 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
-	<Button name="asCompactAuraTemplate" virtual="true" enableMouse="false" frameStrata="LOW">
-		<Size>
-			<AbsDimension x="17" y="17"/>
-		</Size>
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\Blizzard_SharedXML\UI.xsd">
+	<Button name="asCompactAuraTemplate" virtual="true" enableMouse="false">
 		<Layers>
-			<Layer level="ARTWORK">
+			<Layer level="BACKGROUND">
 				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
+			</Layer>
+			<Layer level="ARTWORK" textureSubLevel="7">				
+				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\AddOns\asCompactRaidBuff\border.tga"/>				
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentCount" parentKey="count" justifyH="RIGHT"/>													
 			</Layer>			
 		</Layers>
 		<Frames>
-			<Cooldown name="$parentCooldown" parentKey="cooldown" hideCountdownNumbers="true" inherits="CooldownFrameTemplate" reverse="true" hidden="true" frameStrata="LOW">
+			<Cooldown name="$parentCooldown" parentKey="cooldown" hideCountdownNumbers="true" inherits="CooldownFrameTemplate" reverse="true" hidden="true">
 				<Anchors>
 					<Anchor point="CENTER">
 						<Offset>
@@ -20,55 +22,19 @@
 					</Anchor>
 				</Anchors>
 			</Cooldown>
-			<Frame name="$parentOther" parentKey="other" virtual="true" enableMouse="false" frameStrata="MEDIUM">
-				<Size>
-					<AbsDimension x="17" y="17"/>
-				</Size>
-				<Anchors>
-					<Anchor point="BOTTOM" x="0" y="-8"/>
-				</Anchors>
-				<Layers>
-					<Layer level="OVERLAY">
-						<FontString name="$parentCount" parentKey="count" inherits="NumberFontNormalSmall" justifyH="RIGHT">
-							<Anchors>
-								<Anchor point="BOTTOMRIGHT">
-									<Offset>
-										<AbsDimension x="-2" y="0"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>						
-						<Texture name="$parentBorder" parentKey="border" file="Interface\AddOns\asCompactRaidBuff\border.tga">
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="0" y="0"/>
-						</Anchor>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset x="0" y="0"/>
-						</Anchor>
-					</Anchors>
-					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
-				</Texture>
-					</Layer>
-				</Layers>
-			</Frame>
 		</Frames>
 	</Button>
-	<Button name="asCompactDebuffTemplate" inherits="asCompactAuraTemplate" virtual="true">
-	</Button>
-	<Button name="asCompactBuffTemplate" inherits="asCompactAuraTemplate" virtual="true">
-	</Button>
+	<Button name="asCompactDebuffTemplate" inherits="asCompactAuraTemplate" virtual="true"/>	
+	<Button name="asCompactBuffTemplate" inherits="asCompactAuraTemplate" virtual="true"/>	
 	<Button name="asCompactDispelDebuffTemplate" virtual="true">
 		<Layers>
-			<Layer level="ARTWORK">
+			<Layer level="BACKGROUND">
 				<Texture name="$parentIcon" parentKey="icon">
 					<TexCoords left="0.125" right="0.875" top="0.125" bottom="0.875"/>
 				</Texture>
 			</Layer>
 		</Layers>
 	</Button>
-	<Texture name="asBuffTextureTemplate" virtual="true" file="Interface\addons\asCompactRaidBuff\UI-StatusBar">
-		<Color r="0.0" g="0.447" b="1.0"/>
-	</Texture>
+	<Texture name="asBuffTextureTemplate" virtual="true" file="Interface\addons\asCompactRaidBuff\UI-StatusBar"/>
 	<Script file="asCompactRaidBuff.lua"/>
 </Ui>

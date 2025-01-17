@@ -4,4 +4,5 @@
 ## Notes: Tracking target range
 ## Version : 250108
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asRangeDisplay.lua

@@ -5,6 +5,7 @@
 ## Version : 250108
 ## SavedVariablesPerCharacter: AIH_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asInterruptHelperLib.lua
 asInterruptHelperOption.lua
 asInterruptHelper.xml

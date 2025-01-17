@@ -1,13 +1,12 @@
 local _, ns = ...;
 local Options_Default = {
-    version = 240301,
-    ShowAlpha = false,
-    ShowCount = false,
-    ShowRemainTime = false,
+    version = 250117,
+    BackgroundAlpha = 0.4,
 };
 
 -- ID 변경
 ns.aurachangelist = {
+    [270437] = 260242;                              --격냥 조준
     [270436] = 260242;                              --격냥 조준
     [126084] = 44544;                               --냉법 서리 손가락
     [438833] = 51124;           --냉죽 도살기
@@ -87,12 +86,22 @@ function ns.SetupOptionPanels()
             local defaultValue = Options_Default[variable];
             local currentValue = ASO_Options[variable];
 
-            local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
-                name, defaultValue);
+            if tonumber(defaultValue) ~= nil then
+				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+					type(defaultValue), name, defaultValue);
+				local options = Settings.CreateSliderOptions(0, 1, 0.1);
+				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+				Settings.CreateSlider(category, setting, options, tooltip);
+				Settings.SetValue(cvar_name, currentValue);
+				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            else
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
+                    name, defaultValue);
 
-            Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
-            Settings.SetValue(cvar_name, currentValue);
-            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+                Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            end
         end
     end
 

@@ -369,19 +369,15 @@ local function setupUI()
 
 	for i = 1, ADBMT_MaxButtons do
 		asDBMTimer.buttons[i] = CreateFrame("Button", nil, asDBMTimer, "asDBMTimerFrameTemplate");
-		local button = asDBMTimer.buttons[i];
-		button.icon:SetDrawLayer("BACKGROUND", 2);
+		local button = asDBMTimer.buttons[i];		
 		button:SetWidth(ADBMT_IconSize);
 		button:SetHeight(ADBMT_IconSize * 0.9);
 		button:SetScale(1);
 		button:SetAlpha(1);
 		button:EnableMouse(false);
-		button:Hide();
+		button:Hide();		
 
-		button.count:SetPoint("BOTTOMRIGHT", -3, 3);
-
-		button.icon:SetTexCoord(.08, .92, .08, .92);
-		button.border:SetTexture("Interface\\Addons\\asDBMTimer\\border.tga");
+		button.icon:SetTexCoord(.08, .92, .08, .92);		
 		button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 		button.border:SetVertexColor(0, 0, 0);
 

@@ -78,16 +78,13 @@ for idx = 1, AREADY_Max do
     AREADY.bar[idx].cooltime:SetPoint("RIGHT", AREADY.bar[idx], "RIGHT", -2, 0)
 
     AREADY.bar[idx].button = CreateFrame("Button", nil, AREADY.bar[idx], "AREADYFrameTemplate");
-
     AREADY.bar[idx].button:SetPoint("RIGHT", AREADY.bar[idx], "LEFT", -1, 0);
-
     AREADY.bar[idx].button:SetWidth((AREADY_HEIGHT + 1) * 1.2);
     AREADY.bar[idx].button:SetHeight(AREADY_HEIGHT + 1);
     AREADY.bar[idx].button:SetScale(1);
     AREADY.bar[idx].button:SetAlpha(1);
     AREADY.bar[idx].button:EnableMouse(false);
-    AREADY.bar[idx].button.icon:SetTexCoord(.08, .92, .08, .92);
-    AREADY.bar[idx].button.border:SetTexture("Interface\\Addons\\asReady\\border.tga");
+    AREADY.bar[idx].button.icon:SetTexCoord(.08, .92, .16, .84);    
     AREADY.bar[idx].button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
     AREADY.bar[idx].button.border:SetVertexColor(0, 0, 0);
     AREADY.bar[idx].button:Hide();
@@ -456,7 +453,7 @@ function ns.SetupPartyCool(raidframe)
             d:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2);
         else
             local d = raidframe.asbuffFrame;
-            d:SetSize(y / 2 * 1.2, y / 2);
+            d:SetSize(y / 2 * 1.1, y / 2);
             d.remain:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
             layoutcooldown(d);
             d:ClearAllPoints();

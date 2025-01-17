@@ -65,7 +65,7 @@ local function ACRB_updateCasting(asframe, unit)
                         spellid = spellid,
                     };
                     castFrame.icon:SetTexture(texture);
-                    castFrame.other.count:Hide();
+                    castFrame.count:Hide();
 
                     local curr = GetTime();
                     local start = startTime / 1000;

@@ -4,4 +4,5 @@
 ## Notes: asMOD 성능 측정
 ## Version : 241216
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asCPUProfile.lua

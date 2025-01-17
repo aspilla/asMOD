@@ -4,4 +4,5 @@
 ## Notes: 시전바 이동 & Timer
 ## Version : 241216
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asCastBar.xml

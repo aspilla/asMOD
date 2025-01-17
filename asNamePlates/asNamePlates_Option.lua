@@ -2,7 +2,7 @@ local _, ns = ...;
 
 ---설정부
 ns.ANameP_SIZE = 0;                  -- Icon Size 0 이면 자동으로 설정
-ns.ANameP_Size_Rate = 0.7;           -- Icon 가로 세로 비중
+ns.ANameP_Size_Rate = 0.6;           -- Icon 가로 세로 비중
 ns.ANameP_PVP_Debuff_Size_Rate = 4   -- PVP Debuff Icon Size 작게 하려면 - 값으로
 
 ns.ANameP_PlayerBuffY = -5           -- Player 바 Buff 위치
@@ -16,7 +16,7 @@ ns.ANameP_ShowPlayerBuff = true;     --Player NamePlate에 Buff를 안보일려�
 ns.ANameP_BuffMaxCool = 60;          --buff의 최대 Cool
 ns.ANameP_PVPAggroShow = true;       -- PVP 어그로 여부를 표현할지 여부
 ns.ANameP_ShowCCDebuff = true        -- 오른쪽에 CC Debuff만 별도로 보이기
-ns.ANameP_CCDebuffSize = 16          -- CC Debuff Size;
+ns.ANameP_CCDebuffSize = 22          -- CC Debuff Size;
 ns.ANameP_AggroSize = 12;            -- 어그로 표시 Text Size
 ns.ANameP_HealerSize = 14;           -- 힐러표시 Text Size
 ns.ANameP_TargetHealthBarHeight = 3; -- 대상 체력바 높이 증가치 (+3)

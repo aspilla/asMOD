@@ -1,51 +1,20 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
-	<Frame name="ATGCDFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW">
-		<Size>
-			<AbsDimension x="17" y="17"/>
-		</Size>
+..\Blizzard_SharedXML\UI.xsd">
+	<Frame name="ATGCDFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel="1000">
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture name="$parentIcon" parentKey="icon"/>
 			</Layer>
+			<Layer level="ARTWORK" textureSubLevel="7">
+				<Texture name="$parentBorder" parentKey ="border" file="Interface\Addons\asTrueGCD\border.tga"/>						
+			</Layer>
 			<Layer level="OVERLAY">
-				<FontString name="$parentCount" inherits="NumberFontNormalLarge" justifyH="RIGHT" parentKey ="count">
-					<Anchors>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset>
-								<AbsDimension x="-3" y="3"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentCancel" inherits="NumberFontNormalLarge" justifyH="RIGHT" parentKey ="text">
-					<Anchors>
-						<Anchor point="CENTER">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<Texture name="$parentBorder" file="Interface\Addons\asTrueGCD\border.tga" parentKey ="border">
-					<Size>
-						<AbsDimension x="17" y="17"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="0" y="0"/>
-						</Anchor>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset x="0" y="0"/>
-						</Anchor>
-					</Anchors>
-					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
-				</Texture>	
+				<FontString name="$parentCount" justifyH="CENTER" parentKey ="count"/>				
+				<FontString name="$parentCancel" justifyH="CENTER" parentKey ="text"/>					
 			</Layer>
 		</Layers>
 		<Frames>
-			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="false" drawEdge="true" hidden="true">
+			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="false" drawEdge="true" hidden="true" frameLevel="1000">
 				<Size x="36" y="36"/>
 				<Anchors>
 					<Anchor point="CENTER" x="0" y="-1"/>

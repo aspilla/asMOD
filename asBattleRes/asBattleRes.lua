@@ -105,23 +105,22 @@ local function ASBR_Init()
 
 	for _, r in next, { ASBR_CoolButtons.cooldown:GetRegions() } do
 		if r:GetObjectType() == "FontString" then
-			r:SetFont(STANDARD_TEXT_FONT, ASBR_CooldownFontSize, "OUTLINE")
+			r:SetFont(STANDARD_TEXT_FONT, ASBR_CooldownFontSize, "OUTLINE");
+			r:SetDrawLayer("OVERLAY");
 			break
 		end
-	end
-  
+	end  
 
-	ASBR_CoolButtons.icon:SetTexCoord(.08, .92, .08, .92);
-	ASBR_CoolButtons.border:SetTexture("Interface\\Addons\\asBattleRes\\border.tga");
+	ASBR_CoolButtons.icon:SetTexCoord(.08, .92, .08, .92);	
 	ASBR_CoolButtons.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-	ASBR_CoolButtons.border:SetVertexColor(0, 0, 0);
+	ASBR_CoolButtons.border:SetVertexColor(0, 0, 0);	
 
-	ASBR_CoolButtons.other.count:SetFont(STANDARD_TEXT_FONT, ASBR_CooldownFontSize, "OUTLINE")
-	ASBR_CoolButtons.other.count:SetPoint("BOTTOMRIGHT",ASBR_CoolButtons.icon ,"BOTTOMRIGHT", -2, 2);
+	ASBR_CoolButtons.count:SetFont(STANDARD_TEXT_FONT, ASBR_CooldownFontSize, "OUTLINE")
+	ASBR_CoolButtons.count:SetPoint("BOTTOMRIGHT",ASBR_CoolButtons.icon ,"BOTTOMRIGHT", -2, 2);
 
 	ASBR_CoolButtons:SetPoint("CENTER", ASBR_CoolButtons_X, ASBR_CoolButtons_Y)
 	ASBR_CoolButtons:SetWidth(ASBR_SIZE);
-	ASBR_CoolButtons:SetHeight(ASBR_SIZE);
+	ASBR_CoolButtons:SetHeight(ASBR_SIZE * 0.9);
 	ASBR_CoolButtons:SetScale(1);
 
 	

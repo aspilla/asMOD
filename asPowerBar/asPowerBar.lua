@@ -1,5 +1,7 @@
 local _, ns = ...;
 
+local ver = select(4,GetBuildInfo());
+
 local APB_Font = STANDARD_TEXT_FONT;
 local APB_HealthSize = 12;
 local APB_BuffSize = 10;
@@ -2200,7 +2202,15 @@ local function APB_CheckPower(self)
             APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
             APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
             bupdate_power = true;
-            combobuffalertlist = { 451073, 451038, 455681 };
+
+            if ver >= 110100 then
+                -- 힘의 무개 451049로 변경
+                combobuffalertlist = { 451049, 451038, 455681 };
+            else
+                combobuffalertlist = { 451073, 451038, 455681 };
+            end
+
+            
             combobuffcountalertlist = { { 467634, 2 } };
 
             for i = 1, 20 do
@@ -2257,7 +2267,7 @@ local function APB_CheckPower(self)
                 APB_SpellMax(APB_SPELL, APB_SPELL2);
                 APB_UpdateSpell(APB_SPELL, APB_SPELL2);
                 -- 화염의 분노
-                spell2buffcolorlist = { 409964 };
+                spell2buffcolorlist = { 409964, 1219307 };
             else
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);

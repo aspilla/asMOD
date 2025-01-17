@@ -4,4 +4,5 @@
 ## notes: 눈속임/속거/마주/비늘 도우미
 ## version : 100721
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asMisdirection.lua

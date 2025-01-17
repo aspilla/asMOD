@@ -103,6 +103,15 @@ for i = 0, 3 do
 	ATGCD.frame[i].border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 	ATGCD.frame[i].border:SetVertexColor(0, 0, 0);
 	ATGCD.frame[i].border:Show();
+
+	ATGCD.frame[i].count:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE");
+    ATGCD.frame[i].count:ClearAllPoints();
+    ATGCD.frame[i].count:SetPoint("CENTER", ATGCD.frame[i], "CENTER", 0, 0);
+
+	ATGCD.frame[i].text:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE");
+    ATGCD.frame[i].text:ClearAllPoints();
+    ATGCD.frame[i].text:SetPoint("CENTER", ATGCD.frame[i], "CENTER", 0, 0);
+    
 	ATGCD.frame[i]:Hide();
 end
 

@@ -4,4 +4,5 @@
 ## Notes: 사용 스킬 History
 ## Version : 241226
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asTrueGCD.xml

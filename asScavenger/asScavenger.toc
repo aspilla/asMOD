@@ -4,4 +4,5 @@
 ## Notes: 잡탬 정리 
 ## Version : 240107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asScavenger.lua

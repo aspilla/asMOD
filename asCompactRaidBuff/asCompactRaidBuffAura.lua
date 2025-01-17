@@ -310,10 +310,10 @@ local function ARCB_UtilSetBuff(frame, aura, currtime)
             if (aura.applications >= 100) then
                 countText = BUFF_STACKS_OVERFLOW;
             end
-            frame.other.count:Show();
-            frame.other.count:SetText(countText);
+            frame.count:Show();
+            frame.count:SetText(countText);
         else
-            frame.other.count:Hide();
+            frame.count:Hide();
         end
         frame.auraInstanceID = aura.auraInstanceID;
 
@@ -355,12 +355,12 @@ local function ARCB_UtilSetBuff(frame, aura, currtime)
             end
 
             if showlist_time > 0 and aura.expirationTime - currtime < showlist_time then
-                frame.other.border:SetVertexColor(1, 1, 1);
+                frame.border:SetVertexColor(1, 1, 1);
                 if frame.hideCountdownNumbers == false then
                     frame.cooldowntext:SetVertexColor(1, 0.3, 0.3);
                 end
             else
-                frame.other.border:SetVertexColor(0, 0, 0);
+                frame.border:SetVertexColor(0, 0, 0);
             end
         end
     end
@@ -390,10 +390,10 @@ local function ACRB_UtilSetDebuff(frame, aura, currtime)
             if (aura.applications >= 100) then
                 countText = BUFF_STACKS_OVERFLOW;
             end
-            frame.other.count:Show();
-            frame.other.count:SetText(countText);
+            frame.count:Show();
+            frame.count:SetText(countText);
         else
-            frame.other.count:Hide();
+            frame.count:Hide();
         end
         frame.auraInstanceID = aura.auraInstanceID;
 
@@ -405,7 +405,7 @@ local function ACRB_UtilSetDebuff(frame, aura, currtime)
         end
 
         local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
-        frame.other.border:SetVertexColor(color.r, color.g, color.b);
+        frame.border:SetVertexColor(color.r, color.g, color.b);
 
         frame.isBossBuff = aura.isBossAura and aura.isHelpful;
         if (aura.isBossAura or (aura.nameplateShowAll and aura.duration > 0 and aura.duration < 10)) then

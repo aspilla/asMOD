@@ -5,5 +5,6 @@
 ## Version : 250108
 ## SavedVariablesPerCharacter: ADTI_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asDBMTimerOption.lua
 asDBMTimer.xml

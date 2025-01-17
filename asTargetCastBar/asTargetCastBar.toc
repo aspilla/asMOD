@@ -4,5 +4,6 @@
 ## Notes: 대상의 시전바
 ## Version : 240107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 asTargetCastBarLib.lua
 asTargetCastBar.xml

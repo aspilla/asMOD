@@ -560,18 +560,21 @@ local function CreatDebuffFrames(parent, bright, fontsize, width, count)
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
                 r:ClearAllPoints();
                 r:SetPoint("CENTER", 0, 0);
+                r:SetDrawLayer("OVERLAY");
                 break
             end
         end
 
-        frame.other.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-        frame.other.count:ClearAllPoints()
-        frame.other.count:SetPoint("BOTTOMRIGHT", frame.icon ,"BOTTOMRIGHT", -2, 2);
+        frame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+        frame.count:ClearAllPoints()
+        frame.count:SetPoint("BOTTOMRIGHT", frame.icon ,"BOTTOMRIGHT", -2, 2);
 
-        frame.icon:SetTexCoord(.08, .92, .08, .92);
+        frame.icon:SetTexCoord(.08, .92, .16, .84);
         frame.icon:SetAlpha(1);
-        frame.border:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga");
+
+        
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+        frame.border:SetVertexColor(0, 0, 0);
         frame.border:SetAlpha(1);
 
         frame:ClearAllPoints();
@@ -635,19 +638,19 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
                 r:ClearAllPoints();
                 r:SetPoint("CENTER", 0, 0);
+                r:SetDrawLayer("OVERLAY");
                 break
             end
         end
 
-        pframe.other.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-        pframe.other.count:ClearAllPoints()
-        pframe.other.count:SetPoint("BOTTOMRIGHT", pframe.icon, "BOTTOMRIGHT", -2, 2);
+        pframe.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+        pframe.count:ClearAllPoints()
+        pframe.count:SetPoint("BOTTOMRIGHT", pframe.icon, "BOTTOMRIGHT", -2, 2);
 
         pframe.portrait:SetTexCoord(.08, .92, .08, .92);
         pframe.portrait:SetAlpha(1);
         pframe.icon:SetTexCoord(.08, .92, .08, .92);
         pframe.icon:SetAlpha(1);
-        pframe.border:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga");
         pframe.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
         pframe.border:SetVertexColor(0, 0, 0)
         pframe.border:SetAlpha(1);
@@ -827,12 +830,12 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
 
     frame.castbar.button = CreateFrame("Button", nil, frame.castbar, "AUFFrameTemplate");
     frame.castbar.button:SetPoint("RIGHT", frame.castbar, "LEFT", -2, 0)
-    frame.castbar.button:SetWidth((castbarheight + 1) * 1.2);
+    frame.castbar.button:SetWidth((castbarheight + 1) * 1.1);
     frame.castbar.button:SetHeight(castbarheight + 1);
     frame.castbar.button:SetScale(1);
     frame.castbar.button:SetAlpha(1);
     frame.castbar.button:EnableMouse(false);
-    frame.castbar.button.icon:SetTexCoord(.08, .92, .08, .92);
+    frame.castbar.button.icon:SetTexCoord(.08, .92, .8, .92);
     frame.castbar.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
     frame.castbar.button.border:SetVertexColor(0, 0, 0);
     frame.castbar.button.border:Show();
