@@ -3345,3 +3345,6 @@ DBM-GUI/DBM-GUI_DropDownNEW.lua
 DBM-VPVEM/poolyou.ogg
 DBM-VPVEM/screwup.ogg
 DBM-VPVEM/sparktowater.ogg
+DBM-Core/tools/GenerateEncounterLocales.lua
+DBM-Test-WarWithin/Undermine/StixBunkjunker-Heroic-Wipe.lua
+.gitignore

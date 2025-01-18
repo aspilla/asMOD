@@ -326,8 +326,7 @@ local timer = nil;
 
 local function layoutbuff(f, unit)
     f:EnableMouse(false);
-    f.icon:SetTexCoord(.08, .92, .08, .92);
-    f.border:SetTexture("Interface\\Addons\\asReady\\border.tga");
+    f.icon:SetTexCoord(.08, .92, .08, .92);    
     f.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
     f.border:SetVertexColor(0, 0, 0);
     f.border:Show();

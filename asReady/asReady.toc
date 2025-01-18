@@ -2,7 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rReady
 ## Notes: Tracking interrupt/offensive cooldowns of party/raid members
-## Version : 250108
+## Version : 250118
 ## SavedVariablesPerCharacter: ARDY_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

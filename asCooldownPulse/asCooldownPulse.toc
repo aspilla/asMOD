@@ -2,7 +2,7 @@
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rCooldownPulse
 ## Notes: 쿨다운 알림
-## Version : 250114
+## Version : 250118
 ## SavedVariablesPerCharacter: ACDP_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
