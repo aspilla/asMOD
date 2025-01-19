@@ -427,8 +427,10 @@ for i = 1, ACI_MaxSpellCount do
 		ACI[i].count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 2, "OUTLINE")
 	end
 	
-	ACI[i].count:SetPoint("RIGHT", ACI[i], "BOTTOMRIGHT", -4, 10);
+	ACI[i].count:ClearAllPoints();
+	ACI[i].count:SetPoint("BOTTOMRIGHT", ACI[i], "BOTTOMRIGHT", -3, 3);
 	
+	ACI[i].spellcool:ClearAllPoints();
 	ACI[i].spellcool:SetPoint("CENTER", ACI[i], "BOTTOM", 0, 0);
 	ACI[i].spellcool:SetFont(STANDARD_TEXT_FONT, ACI_CooldownFontSize - 2, "OUTLINE");
 	ACI[i].spellcool:SetTextColor(0.8, 0.8, 1);
@@ -437,6 +439,7 @@ for i = 1, ACI_MaxSpellCount do
 	ACI[i].snapshot:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 2, "OUTLINE")
 	ACI[i].snapshot:SetText("");
 	ACI[i].snapshot:SetTextColor(1, 0.5, 0.5);
+	ACI[i].snapshot:ClearAllPoints();
 	ACI[i].snapshot:SetPoint("CENTER", ACI[i], "TOP", 0, -8);
 	ACI[i].snapshot:Hide();
 	
