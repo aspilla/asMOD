@@ -2327,6 +2327,10 @@ local function APB_CheckPower(self)
         if (spec and spec == 1) then
             if IsPlayerSpell(32388) then        --어둠의 선물
                 APB_DEBUFF = 32390;
+                if IsPlayerSpell(453080) then
+                    APB_DEBUFF = 453206;
+                end
+
                 APB.buffbar[0].debuff = APB_DEBUFF
                 APB.buffbar[0].unit = "target";
 

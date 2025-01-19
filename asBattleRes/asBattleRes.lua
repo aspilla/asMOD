@@ -116,7 +116,8 @@ local function ASBR_Init()
 	ASBR_CoolButtons.border:SetVertexColor(0, 0, 0);	
 
 	ASBR_CoolButtons.count:SetFont(STANDARD_TEXT_FONT, ASBR_CooldownFontSize, "OUTLINE")
-	ASBR_CoolButtons.count:SetPoint("BOTTOMRIGHT",ASBR_CoolButtons.icon ,"BOTTOMRIGHT", -2, 2);
+	ASBR_CoolButtons.count:ClearAllPoints();
+	ASBR_CoolButtons.count:SetPoint("BOTTOMRIGHT",ASBR_CoolButtons ,"BOTTOMRIGHT", -3, 3);
 
 	ASBR_CoolButtons:SetPoint("CENTER", ASBR_CoolButtons_X, ASBR_CoolButtons_Y)
 	ASBR_CoolButtons:SetWidth(ASBR_SIZE);
