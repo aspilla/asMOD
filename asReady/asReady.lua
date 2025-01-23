@@ -168,11 +168,14 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
     end
 end
 
+local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0", true);
+
 local function UtilSetCooldown(offensivecool, unit, asframe)
     local spellid = offensivecool[2];
     local time = offensivecool[3];
     local cool = offensivecool[4];
     local buffcool = offensivecool[5];
+    local realremain = offensivecool[6];
     local buffFrame = asframe.asbuffFrame;
     local frame = asframe.frame;
     local name, _, icon = asGetSpellInfo(spellid);
@@ -192,7 +195,9 @@ local function UtilSetCooldown(offensivecool, unit, asframe)
     end
 
     if name then
-        local aura;
+
+        local currtime = GetTime();
+              
         if IsInRaid() then
             --if true then
             buffFrame:SetSize(x / 6 - 1, y / 3 - 1);
@@ -201,8 +206,7 @@ local function UtilSetCooldown(offensivecool, unit, asframe)
         end
 
         buffFrame.icon:SetTexture(icon);
-
-        local currtime = GetTime();
+     
         if currtime <= time + buffcool then
             local expirationTime = time + buffcool;
             local remain = math.ceil(expirationTime - currtime);
@@ -216,31 +220,38 @@ local function UtilSetCooldown(offensivecool, unit, asframe)
                 buffFrame.remain:Show();
             else
                 buffFrame.remain:Hide();
-            end
-        elseif currtime <= time + cool - 0.5 then
+            end            
+        elseif time then
             local expirationTime = time + cool;
-
             local remain = math.ceil(expirationTime - currtime);
-            buffFrame.cooldown:Hide();
-            buffFrame.icon:SetDesaturated(true);
-            buffFrame.icon:SetVertexColor(1, 1, 1);
 
-            if remain > 0 and remain < 100 then
-                buffFrame.remain:SetText(remain);
-                if remain < 4 then
-                    buffFrame.remain:SetTextColor(1, 0, 0);
+            if realremain and realremain < remain then
+                remain = realremain;
+            end            
+            
+            if remain > 0 then
+
+                buffFrame.cooldown:Hide();
+                buffFrame.icon:SetDesaturated(true);
+                buffFrame.icon:SetVertexColor(1, 1, 1);
+
+                if remain > 0 and remain < 100 then
+                    buffFrame.remain:SetText(remain);
+                    if remain < 4 then
+                        buffFrame.remain:SetTextColor(1, 0, 0);
+                    else
+                        buffFrame.remain:SetTextColor(0, 1, 0);
+                    end
+                    buffFrame.remain:Show();
                 else
-                    buffFrame.remain:SetTextColor(0, 1, 0);
+                    buffFrame.remain:Hide();
                 end
-                buffFrame.remain:Show();
             else
+                buffFrame.icon:SetDesaturated(true);
+                buffFrame.icon:SetVertexColor(0, 1, 0);
                 buffFrame.remain:Hide();
-            end
-        else
-            buffFrame.icon:SetDesaturated(true);
-            buffFrame.icon:SetVertexColor(0, 1, 0);
-            buffFrame.remain:Hide();
-            buffFrame.cooldown:Hide();
+                buffFrame.cooldown:Hide();
+            end            
         end
         buffFrame:Show();
     else
@@ -249,6 +260,9 @@ local function UtilSetCooldown(offensivecool, unit, asframe)
 end
 
 local function showallframes(frames)
+
+    local currtime = GetTime();
+
     for _, raidframe in pairs(frames) do
         local unit = raidframe.frame.unit;
 
@@ -256,6 +270,34 @@ local function showallframes(frames)
             ns.SetupPartyCool(raidframe);
         end
         if raidframe.needtocheck and unit and offensivecools[unit] and offensivecools[unit][1] and raidframe.frame:IsShown() then
+            if raidframe.checktime == nil or currtime - raidframe.checktime > 1 then
+                raidframe.checktime = currtime;
+
+                local remain = nil;
+                local spellid = offensivecools[unit][2];
+
+                if UnitIsUnit(unit, "player") then
+                    local spellCooldownInfo = C_Spell.GetSpellCooldown(spellid);
+                    if spellCooldownInfo then
+                        local expirationTime = spellCooldownInfo.startTime + spellCooldownInfo.duration;
+                        remain = math.ceil(expirationTime - currtime); 		            
+                    end                
+                elseif openRaidLib and openRaidLib.GetUnitCooldownInfo then
+                    local cooldowninfo = openRaidLib.GetUnitCooldownInfo(unit, spellid);
+    
+                    if cooldowninfo then
+    
+                        local timeLeft = cooldowninfo[1];           
+                        if cooldowninfo[2] > 0 then
+                            timeLeft = 0;
+                        end                                
+                        remain = math.ceil(timeLeft);                           
+                    end        
+    
+                end
+
+                offensivecools[unit][6] = remain;
+            end
             UtilSetCooldown(offensivecools[unit], unit, raidframe);
         elseif raidframe.asbuffFrame then
             raidframe.asbuffFrame:Hide()
@@ -308,7 +350,7 @@ local function OnSpellEvent(unit, spellid)
                 if info then
                     local cool = info[1];
                     local buffcool = info[2];
-                    offensivecools[unit] = { unit, spellid, time, cool, buffcool };
+                    offensivecools[unit] = { unit, spellid, time, cool, buffcool, nil };
                 end
             end
 

@@ -1,6 +1,6 @@
 ﻿-----------------설정 ------------------------
 local ATGCD_X = 56;
-local ATGCD_Y = -350;
+local ATGCD_Y = -360;
 local AGCICON = 25;
 
 
