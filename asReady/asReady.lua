@@ -7,6 +7,7 @@ local AREADY_Y = 150;         -- Y 위치
 local AREADY_Font = STANDARD_TEXT_FONT;
 local AREADY_Max = 10;        -- 최대 표시 List 수
 local AREADY_UpdateRate = 0.3 -- Refresh 시간 초
+local AREADY_CDupdateRate = 2 -- Cooldown Check Rate 2초
 
 -----------------설정 끝 ------------------------
 
@@ -84,7 +85,7 @@ for idx = 1, AREADY_Max do
     AREADY.bar[idx].button:SetScale(1);
     AREADY.bar[idx].button:SetAlpha(1);
     AREADY.bar[idx].button:EnableMouse(false);
-    AREADY.bar[idx].button.icon:SetTexCoord(.08, .92, .16, .84);    
+    AREADY.bar[idx].button.icon:SetTexCoord(.08, .92, .16, .84);
     AREADY.bar[idx].button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
     AREADY.bar[idx].button.border:SetVertexColor(0, 0, 0);
     AREADY.bar[idx].button:Hide();
@@ -154,20 +155,6 @@ local function hide_bar_icon(max)
     end
 end
 
--- cooldown
-local function asCooldownFrame_Clear(self)
-    self:Clear();
-end
--- cooldown
-local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
-    if enable and enable ~= 0 and start > 0 and duration > 0 then
-        self:SetDrawEdge(forceShowDrawEdge);
-        self:SetCooldown(start, duration, modRate);
-    else
-        asCooldownFrame_Clear(self);
-    end
-end
-
 local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0", true);
 
 local function UtilSetCooldown(offensivecool, unit, asframe)
@@ -195,9 +182,8 @@ local function UtilSetCooldown(offensivecool, unit, asframe)
     end
 
     if name then
-
         local currtime = GetTime();
-              
+
         if IsInRaid() then
             --if true then
             buffFrame:SetSize(x / 6 - 1, y / 3 - 1);
@@ -206,7 +192,7 @@ local function UtilSetCooldown(offensivecool, unit, asframe)
         end
 
         buffFrame.icon:SetTexture(icon);
-     
+
         if currtime <= time + buffcool then
             local expirationTime = time + buffcool;
             local remain = math.ceil(expirationTime - currtime);
@@ -220,17 +206,16 @@ local function UtilSetCooldown(offensivecool, unit, asframe)
                 buffFrame.remain:Show();
             else
                 buffFrame.remain:Hide();
-            end            
+            end
         elseif time then
             local expirationTime = time + cool;
             local remain = math.ceil(expirationTime - currtime);
 
             if realremain and realremain < remain then
                 remain = realremain;
-            end            
-            
-            if remain > 0 then
+            end
 
+            if remain > 0 then
                 buffFrame.cooldown:Hide();
                 buffFrame.icon:SetDesaturated(true);
                 buffFrame.icon:SetVertexColor(1, 1, 1);
@@ -251,7 +236,7 @@ local function UtilSetCooldown(offensivecool, unit, asframe)
                 buffFrame.icon:SetVertexColor(0, 1, 0);
                 buffFrame.remain:Hide();
                 buffFrame.cooldown:Hide();
-            end            
+            end
         end
         buffFrame:Show();
     else
@@ -260,7 +245,6 @@ local function UtilSetCooldown(offensivecool, unit, asframe)
 end
 
 local function showallframes(frames)
-
     local currtime = GetTime();
 
     for _, raidframe in pairs(frames) do
@@ -270,7 +254,7 @@ local function showallframes(frames)
             ns.SetupPartyCool(raidframe);
         end
         if raidframe.needtocheck and unit and offensivecools[unit] and offensivecools[unit][1] and raidframe.frame:IsShown() then
-            if raidframe.checktime == nil or currtime - raidframe.checktime > 1 then
+            if raidframe.checktime == nil or currtime - raidframe.checktime > AREADY_CDupdateRate then
                 raidframe.checktime = currtime;
 
                 local remain = nil;
@@ -280,20 +264,18 @@ local function showallframes(frames)
                     local spellCooldownInfo = C_Spell.GetSpellCooldown(spellid);
                     if spellCooldownInfo then
                         local expirationTime = spellCooldownInfo.startTime + spellCooldownInfo.duration;
-                        remain = math.ceil(expirationTime - currtime); 		            
-                    end                
+                        remain = math.ceil(expirationTime - currtime);
+                    end
                 elseif openRaidLib and openRaidLib.GetUnitCooldownInfo then
                     local cooldowninfo = openRaidLib.GetUnitCooldownInfo(unit, spellid);
-    
+
                     if cooldowninfo then
-    
-                        local timeLeft = cooldowninfo[1];           
+                        local timeLeft = cooldowninfo[1];
                         if cooldowninfo[2] > 0 then
                             timeLeft = 0;
-                        end                                
-                        remain = math.ceil(timeLeft);                           
-                    end        
-    
+                        end
+                        remain = math.ceil(timeLeft);
+                    end
                 end
 
                 offensivecools[unit][6] = remain;
@@ -305,7 +287,6 @@ local function showallframes(frames)
     end
 end
 
-local eventBuffer = {}
 local checkcoollist = {};
 
 local function IsUnitInGroup(unit)
@@ -356,7 +337,7 @@ local function OnSpellEvent(unit, spellid)
 
             if isparty then
                 local cool = isinterruptspell;
-                if cool > 0  then
+                if cool > 0 then
                     interruptcools[unit] = { unit, spellid, time, cool, 0 };
                 end
             end
@@ -368,7 +349,7 @@ local timer = nil;
 
 local function layoutbuff(f, unit)
     f:EnableMouse(false);
-    f.icon:SetTexCoord(.08, .92, .08, .92);    
+    f.icon:SetTexCoord(.08, .92, .08, .92);
     f.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
     f.border:SetVertexColor(0, 0, 0);
     f.border:Show();
@@ -489,7 +470,7 @@ function ns.SetupPartyCool(raidframe)
             --if true then
             local d = raidframe.asbuffFrame;
             d:SetSize(x / 6 - 1, y / 3 - 1);
-            d.remain:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE");            
+            d.remain:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE");
             layoutcooldown(d);
             d:ClearAllPoints();
             d:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2);
