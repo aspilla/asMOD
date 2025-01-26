@@ -4,6 +4,8 @@ local playerClass       = select(2, UnitClass("player"))
 local MisDirectionSpell = nil
 local MindInfusionSpell = nil;
 
+local gameLanguage = GetLocale()
+
 local asGetSpellInfo = function(spellID)
 	if not spellID then
 		return nil;
@@ -130,7 +132,10 @@ local function AHM_SetAssist(unit, force)
 	prev_unit = unit;
 
 	local macroText = "/assist [@" .. unit .. " ,exists,nodead]";
-	local macroName = "탱커지원"
+	local macroName = "Assist Tanker"
+	if (gameLanguage == "koKR") then
+		macroName = "탱커지원"
+	end
 	local macroID = GetMacroIndexByName(macroName)
 
 	if (macroID == 0) then
@@ -140,10 +145,11 @@ local function AHM_SetAssist(unit, force)
 	end
 
 	if UnitExists(unit) then
-		if force then
-			print("[afm] 강제으로 " .. UnitName(unit) .. " 이 탱커로 지정");
+
+		if (gameLanguage == "koKR") then
+			print("|cff33ff99[afm]|r " .. UnitName(unit) .. " 이 탱커로 지정");		
 		else
-			print("[afm] 자동으로 " .. UnitName(unit) .. " 이 탱커로 지정");
+			print("|cff33ff99[afm]|r " .. UnitName(unit) .. " is setted as TANKER");		
 		end
 	end
 end
@@ -194,10 +200,10 @@ local function AHM_SetMisdirection(unit, force)
 		end
 
 		if UnitExists(unit) then
-			if force then
-				print("[afm] 강제으로 " .. UnitName(unit) .. " 이 " .. MisDirectionSpell .. " 대상으로 지정");
+			if (gameLanguage == "koKR") then
+				print("|cff33ff99[afm]|r " .. UnitName(unit) .. " 이 " .. MisDirectionSpell .. " 대상으로 지정");			
 			else
-				print("[afm] 자동으로 " .. UnitName(unit) .. " 이 " .. MisDirectionSpell .. " 대상으로 지정");
+				print("|cff33ff99[afm]|r " .. UnitName(unit) .. " is setted as the target of " .. MisDirectionSpell);			
 			end
 		end
 	end
@@ -249,10 +255,10 @@ local function AHM_SetMindInfusion(unit, force)
 		end
 
 		if UnitExists(unit) then
-			if force then
-				print("[afm] 강제으로 " .. UnitName(unit) .. " 이 " .. MindInfusionSpell .. " 대상으로 지정");
+			if (gameLanguage == "koKR") then
+				print("|cff33ff99[afm]|r " .. UnitName(unit) .. " 이 " .. MindInfusionSpell .. " 대상으로 지정");			
 			else
-				print("[afm] 자동으로 " .. UnitName(unit) .. " 이 " .. MindInfusionSpell .. " 대상으로 지정");
+				print("|cff33ff99[afm]|r " .. UnitName(unit) .. " is setted as the target of " .. MindInfusionSpell);			
 			end
 		end
 	end
@@ -260,7 +266,11 @@ end
 
 local function AHM_SetTargetName(...)
 	if InCombatLockdown() then
-		ChatFrame1:AddMessage("asMisdirection: 전투중엔 대상을 설정 할 수 없습니다.");
+		if (gameLanguage == "koKR") then
+			ChatFrame1:AddMessage("|cff33ff99[afm]|r 전투중엔 대상을 설정 할 수 없습니다.");
+		else
+			ChatFrame1:AddMessage("|cff33ff99[afm]|r Can't set during the combat");
+		end
 		return;
 	end
 
@@ -303,8 +313,13 @@ local function AHM_OnEvent(self, event, ...)
 		local maintarget = "pet";
 		local dealspell = false;
 
-		print("/afm : 대상을 탱커으로 지정")
-		print("[afm] 매크로 창에서 탱커지원 매크로를 이용하세요.")
+		if (gameLanguage == "koKR") then
+			print("|cff33ff99/afm|r : 대상을 탱커으로 지정")
+			print("|cff33ff99[afm]|r 매크로 창(|cff33ff99/m|r)에서 탱커지원 매크로를 이용하세요.")
+		else
+			print("|cff33ff99/afm|r : set the target player as a main tank to assist")
+			print("|cff33ff99[afm]|r use macros in the macro window, has created, using |cff33ff99/m|r")
+		end
 
 		AHM_Button:UnregisterEvent("PLAYER_LOGIN")
 		local spellId
@@ -351,7 +366,11 @@ local function AHM_OnEvent(self, event, ...)
 				tempDealer = maintarget
 			end
 
-			print("[afm] 매크로 창에서 " .. MindInfusionSpell .. " 매크로를 이용하세요.")
+			if (gameLanguage == "koKR") then
+				print("|cff33ff99[afm]|r 매크로 창에서 " .. MindInfusionSpell .. " 매크로를 이용하세요.")
+			else
+				print("|cff33ff99[afm]|r use " .. MindInfusionSpell .. " macro.")
+			end
 
 		else
 
@@ -364,7 +383,11 @@ local function AHM_OnEvent(self, event, ...)
 				tempTanker = maintarget
 			end
 
-			print("[afm] 매크로 창에서 " .. MisDirectionSpell .. " 매크로를 이용하세요.")
+			if (gameLanguage == "koKR") then
+				print("|cff33ff99[afm]|r 매크로 창에서 " .. MisDirectionSpell .. " 매크로를 이용하세요.")
+			else
+				print("|cff33ff99[afm]|r use " .. MisDirectionSpell .. " macro.")
+			end
 		end
 	elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
 		local tank = CheckPartyMember(true);
