@@ -1,7 +1,5 @@
 local _, ns = ...;
 
-local ver = select(4,GetBuildInfo());
-
 local APB_Font = STANDARD_TEXT_FONT;
 local APB_HealthSize = 12;
 local APB_BuffSize = 10;
@@ -70,7 +68,6 @@ PowerTypeComboString = {
 };
 
 if GetLocale() == "enUS" then
-
     PowerTypeString = {
         [Enum.PowerType.Focus] = "Focus",
         [Enum.PowerType.Insanity] = "Insanity",
@@ -666,13 +663,13 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
     end
 
     if druidcomboalertid then
-        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff("player",druidcomboalertid);
+        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff("player", druidcomboalertid);
 
         if name and count and count < combobar.max_combo then
             for i = 1, count do
                 combobar[i]:SetStatusBarColor(0, 0.5, 1);
-            end            
-        end   
+            end
+        end
     end
 end
 
@@ -1126,7 +1123,6 @@ local function APB_UpdateBuff(buffbar)
                     balert = true;
                 end
             end
-            
         else
             buffbar.start = nil;
             buffbar:SetMinMaxValues(0, 1)
@@ -2117,8 +2113,8 @@ local function APB_CheckPower(self)
         bupdate_power = true;
         bsmall_power_bar = true;
 
-        if IsPlayerSpell(443328) then       --업화
-            APB_SPELL = 443328;     
+        if IsPlayerSpell(443328) then --업화
+            APB_SPELL = 443328;
             APB_SpellMax(APB_SPELL);
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
@@ -2136,7 +2132,7 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 3) then
-            if IsPlayerSpell(395152) then      --칠흑의 힘
+            if IsPlayerSpell(395152) then --칠흑의 힘
                 APB_BUFF = 395296;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
@@ -2203,15 +2199,14 @@ local function APB_CheckPower(self)
             APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
             bupdate_power = true;
 
-            if ver >= 110100 then
-                -- 힘의 무개 451049로 변경
-                combobuffalertlist = { 451049, 451038, 455681 };
+            if version >= 110100 then
+                --시즌1 티어 Intuition 특성으로 변경
+                combobuffalertlist = { 451073, 451038, 1223797 };
             else
                 combobuffalertlist = { 451073, 451038, 455681 };
+                combobuffcountalertlist = { { 467634, 2 } };
             end
-
-            
-            combobuffcountalertlist = { { 467634, 2 } };
+          
 
             for i = 1, 20 do
                 APB.combobar[i].tooltip = "ARCANE_CHARGES";
@@ -2278,8 +2273,7 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 3) then
-
-            APB_SPELL = 44614;               --진눈개비
+            APB_SPELL = 44614; --진눈개비
             APB_SpellMax(APB_SPELL);
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
@@ -2304,7 +2298,7 @@ local function APB_CheckPower(self)
 
             bupdate_fronzen = true;
 
-            combobuffalertlist = { 431177 }; -- 서리 불꽃            
+            combobuffalertlist = { 431177 }; -- 서리 불꽃
 
             bsmall_power_bar = true;
         end
@@ -2325,7 +2319,7 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 1) then
-            if IsPlayerSpell(32388) then        --어둠의 선물
+            if IsPlayerSpell(32388) then --어둠의 선물
                 APB_DEBUFF = 32390;
                 if IsPlayerSpell(453080) then
                     APB_DEBUFF = 453206;
@@ -2347,7 +2341,7 @@ local function APB_CheckPower(self)
                 APB:RegisterEvent("PLAYER_TARGET_CHANGED");
             end
 
-            if IsPlayerSpell(196277) then --임프                
+            if IsPlayerSpell(196277) then --임프
                 APB_ACTION_STACK = APB_GetActionSlot(196277);
                 APB.stackbar[0].spellid = 196277;
                 APB_MaxStack(15);
@@ -2439,7 +2433,7 @@ local function APB_CheckPower(self)
             combobuffalertlist = { 391882 };      --최상위
             combobuffcoloralertlist = { 441585 }; --찟어발기기
 
-            druidcomboalertid = 405189;         --넘쳐 흐르는 힘
+            druidcomboalertid = 405189;           --넘쳐 흐르는 힘
 
             if IsPlayerSpell(202028) then         --잔혹한 베기
                 APB_SPELL = 202028;
@@ -2518,7 +2512,7 @@ local function APB_CheckPower(self)
             end
         end
         if (spec and spec == 2) then
-            APB_SPELL = 115151;         --소생의 안개
+            APB_SPELL = 115151; --소생의 안개
             APB_SpellMax(APB_SPELL);
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
@@ -2588,14 +2582,14 @@ local function APB_CheckPower(self)
 
     if (englishClass == "DEATHKNIGHT") then
         if (spec and spec == 1) then
-            if IsPlayerSpell(194679) then   --룬전환
+            if IsPlayerSpell(194679) then --룬전환
                 APB_SPELL = 194679;
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
                 bupdate_spell = true;
             end
 
-            APB_BUFF = 195181;             --뼈의 보호막
+            APB_BUFF = 195181; --뼈의 보호막
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
             APB.buffbar[0].alertcount = 5;
@@ -2604,14 +2598,14 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 2) then
-            if IsPlayerSpell(376905) then       --풀려난 광란
+            if IsPlayerSpell(376905) then --풀려난 광란
                 APB_BUFF = 376907;
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player"
 
                 bupdate_buff_count = true;
-            elseif IsPlayerSpell(194878) then      --얼음 발톱
-                APB_BUFF = 194879;           
+            elseif IsPlayerSpell(194878) then --얼음 발톱
+                APB_BUFF = 194879;
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player"
 
@@ -2818,7 +2812,7 @@ local function APB_CheckPower(self)
                 APB_SPELL = 259495;
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
-                bupdate_spell = true;
+                bupdate_spell = true;                
             end
 
             if IsPlayerSpell(259387) then --살쾡이의 이빨
@@ -2854,13 +2848,17 @@ local function APB_CheckPower(self)
 
     if (englishClass == "SHAMAN") then
         if spec and spec == 1 then
-            APB_SPELL = 51505;      --용암 폭발
+            APB_SPELL = 51505; --용암 폭발
             APB_SpellMax(APB_SPELL);
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
 
-            if IsPlayerSpell(378270) then       --깊이 뿌리내린 정기
-                APB_BUFF = 114050;
+            if IsPlayerSpell(378270) then --깊이 뿌리내린 정기
+                if version >= 110010 then
+                    APB_BUFF = 1219480;
+                else
+                    APB_BUFF = 114050;
+                end
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
             end
@@ -2880,13 +2878,13 @@ local function APB_CheckPower(self)
 
         if spec and spec == 2 then
             if IsPlayerSpell(117014) then
-                APB_SPELL = 117014;     --정기 작렬
+                APB_SPELL = 117014; --정기 작렬
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
                 bupdate_spell = true;
             end
 
-            APB_BUFF_COMBO = 344179;            
+            APB_BUFF_COMBO = 344179;
             APB_MaxCombo(self.combobar, 10);
             APB.combobar.unit = "player"
 
@@ -2899,7 +2897,7 @@ local function APB_CheckPower(self)
             end
             bhalf_combo = true;
 
-            if IsPlayerSpell(187874) then       --낙뢰
+            if IsPlayerSpell(187874) then --낙뢰
                 APB_BUFF = 187878;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
@@ -2915,17 +2913,18 @@ local function APB_CheckPower(self)
 
                 APB_UpdateBuffStack(self.stackbar[0]);
 
-                APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+                APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+                combobuffcoloralertlist = { 454015 }; --폭풍 색상 변경
             end
         end
 
         if (spec and spec == 3) then
-            APB_SPELL = 61295;          --성난 해일
+            APB_SPELL = 61295; --성난 해일
             APB_SpellMax(APB_SPELL);
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
 
-            APB_BUFF_COMBO = 53390;  --굽이치는 물결
+            APB_BUFF_COMBO = 53390; --굽이치는 물결
             APB_MaxCombo(self.combobar, 2);
             APB.combobar.unit = "player"
 
@@ -3039,16 +3038,16 @@ local function checkSpellCost(id)
         local spell = Spell:CreateFromSpellID(id);
         spell:ContinueOnSpellLoad(function()
             local costText = spell:GetSpellDescription();
-            local powerType = UnitPowerType("player");            
+            local powerType = UnitPowerType("player");
 
             if costText and PowerTypeString[powerType] and string.match(costText, PowerTypeString[powerType]) and
                 string.match(costText, generateText) then
                 local findstring = generateText2 .. PowerTypeString[powerType];
-                local start, endpoint = string.find(costText, findstring, 0);                    
-                
+                local start, endpoint = string.find(costText, findstring, 0);
+
                 if start and start > 5 then
-                    local costText2 = string.sub(costText, start -5, endpoint);                                 
-                    local cost = gsub(costText2, "[^0-9]", "")                    
+                    local costText2 = string.sub(costText, start - 5, endpoint);
+                    local cost = gsub(costText2, "[^0-9]", "")
                     if tonumber(cost) > 0 then
                         SpellGetCosts[id] = tonumber(cost);
                     end
@@ -3064,20 +3063,19 @@ local function scanSpellCost(id, powerTypeString, disWarlock)
     if id then
         local spell = Spell:CreateFromSpellID(id);
         spell:ContinueOnSpellLoad(function()
-            local costText = spell:GetSpellDescription();            
+            local costText = spell:GetSpellDescription();
             if costText and powerTypeString and string.match(costText, powerTypeString) and
-                string.match(costText, generateText) then                   
-                
+                string.match(costText, generateText) then
                 local findstring = generateText2 .. powerTypeString;
                 local start, endpoint = string.find(costText, findstring, 0);
-                
+
                 if start and start > 5 then
                     local costText2 = string.sub(costText, start - 5, endpoint);
                     local cost = gsub(costText2, "[^0-9]", "")
-                    
+
                     if tonumber(cost) > 0 then
                         if disWarlock then
-                            SpellGetPowerCosts[id] = tonumber(cost) / 10;                            
+                            SpellGetPowerCosts[id] = tonumber(cost) / 10;
                         else
                             SpellGetPowerCosts[id] = tonumber(cost);
                         end
@@ -3094,17 +3092,17 @@ local function scanSpellCost(id, powerTypeString, disWarlock)
                 local startno = string.find(costText, notfindstring, 0);
 
                 if startno and startno > 10 then
-                    SpellGetPowerCosts[id] = 0;                    
+                    SpellGetPowerCosts[id] = 0;
                     return;
                 end
 
                 if start and start > 5 and startno == nil then
-                    local costText2 = string.sub(costText, start - 5, endpoint);                    
-                    
+                    local costText2 = string.sub(costText, start - 5, endpoint);
+
                     local cost = gsub(costText2, "[^0-9]", "")
                     if tonumber(cost) > 0 then
                         if disWarlock then
-                            SpellGetPowerCosts[id] = tonumber(cost) / 10;                            
+                            SpellGetPowerCosts[id] = tonumber(cost) / 10;
                         else
                             SpellGetPowerCosts[id] = tonumber(cost);
                         end
@@ -3143,7 +3141,7 @@ local function checkSpellPowerCost(id)
         scanSpellCost(id, powerTypeString, disWarlock);
         disWarlock = true;
         scanSpellCost(id, soulshardtext, disWarlock);
-    else        
+    else
         scanSpellCost(id, powerTypeString, disWarlock);
     end
 end

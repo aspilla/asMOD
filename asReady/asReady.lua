@@ -245,44 +245,49 @@ local function UtilSetCooldown(offensivecool, unit, asframe)
 end
 
 local function showallframes(frames)
-    local currtime = GetTime();
-
     for _, raidframe in pairs(frames) do
         local unit = raidframe.frame.unit;
 
         if raidframe.needtosetup then
             ns.SetupPartyCool(raidframe);
         end
+
         if raidframe.needtocheck and unit and offensivecools[unit] and offensivecools[unit][1] and raidframe.frame:IsShown() then
-            if raidframe.checktime == nil or currtime - raidframe.checktime > AREADY_CDupdateRate then
-                raidframe.checktime = currtime;
-
-                local remain = nil;
-                local spellid = offensivecools[unit][2];
-
-                if UnitIsUnit(unit, "player") then
-                    local spellCooldownInfo = C_Spell.GetSpellCooldown(spellid);
-                    if spellCooldownInfo then
-                        local expirationTime = spellCooldownInfo.startTime + spellCooldownInfo.duration;
-                        remain = math.ceil(expirationTime - currtime);
-                    end
-                elseif openRaidLib and openRaidLib.GetUnitCooldownInfo then
-                    local cooldowninfo = openRaidLib.GetUnitCooldownInfo(unit, spellid);
-
-                    if cooldowninfo then
-                        local timeLeft = cooldowninfo[1];
-                        if cooldowninfo[2] > 0 then
-                            timeLeft = 0;
-                        end
-                        remain = math.ceil(timeLeft);
-                    end
-                end
-
-                offensivecools[unit][6] = remain;
-            end
             UtilSetCooldown(offensivecools[unit], unit, raidframe);
         elseif raidframe.asbuffFrame then
             raidframe.asbuffFrame:Hide()
+        end
+    end
+end
+
+local function checkallframes(frames)
+    local currtime = GetTime();
+    for _, raidframe in pairs(frames) do
+        local unit = raidframe.frame.unit;
+
+        if raidframe.needtocheck and unit and offensivecools[unit] and offensivecools[unit][1] and raidframe.frame:IsShown() then
+            local remain = nil;
+            local spellid = offensivecools[unit][2];
+
+            if UnitIsUnit(unit, "player") then
+                local spellCooldownInfo = C_Spell.GetSpellCooldown(spellid);
+                if spellCooldownInfo then
+                    local expirationTime = spellCooldownInfo.startTime + spellCooldownInfo.duration;
+                    remain = math.ceil(expirationTime - currtime);
+                end
+            elseif openRaidLib and openRaidLib.GetUnitCooldownInfo then
+                local cooldowninfo = openRaidLib.GetUnitCooldownInfo(unit, spellid);
+
+                if cooldowninfo then
+                    local timeLeft = cooldowninfo[1];
+                    if cooldowninfo[2] > 0 then
+                        timeLeft = 0;
+                    end
+                    remain = math.ceil(timeLeft);
+                end
+            end
+
+            offensivecools[unit][6] = remain;
         end
     end
 end
@@ -618,6 +623,21 @@ local function AREADY_OnUpdate()
     end
 end
 
+local function AREADY_OnUpdate2()
+    local idx = 1;
+
+    if IsInRaid() then
+        if ns.options.ShowRaidCool then
+            checkallframes(raidframes);
+        end
+    else
+        if ns.options.ShowPartyCool then
+            checkallframes(partyframes);
+        end
+    end
+end
+
+
 
 local bfirst = true;
 
@@ -634,6 +654,10 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
             timer:Cancel();
         end
 
+        if timer2 then
+            timer2:Cancel();
+        end
+
         AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
 
         isparty = not IsInRaid() and IsInGroup();
@@ -645,6 +669,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
                 end
                 checkallraid(raidframes);
                 timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
+                timer2 = C_Timer.NewTicker(AREADY_CDupdateRate, AREADY_OnUpdate2);
                 AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
             else
                 interruptcools = {};
@@ -656,6 +681,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
                 checkallraid(partyframes);
             end
             timer = C_Timer.NewTicker(AREADY_UpdateRate / 3, AREADY_OnUpdate);
+            timer2 = C_Timer.NewTicker(AREADY_CDupdateRate, AREADY_OnUpdate2);
             AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
         else
             interruptcools = {};
