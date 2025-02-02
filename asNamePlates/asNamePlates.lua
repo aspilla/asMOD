@@ -33,7 +33,6 @@ local highhealthpercent = 200;
 local playerisdealer = false;
 
 ns.ANameP_ShowList = nil;
-local debuffs_per_line = ns.ANameP_DebuffsPerLine;
 local playerbuffposition = ns.ANameP_PlayerBuffY;
 ns.options = CopyTable(ANameP_Options_Default);
 
@@ -42,24 +41,6 @@ local bcheckBeastCleave = false;
 local cleavedunits = {};
 local lastcleavetime = 0;
 
-
-local asGetSpellInfo = function(spellID)
-    if not spellID then
-        return nil;
-    end
-
-    local ospellID = C_Spell.GetOverrideSpell(spellID)
-
-    if ospellID then
-        spellID = ospellID;
-    end
-
-    local spellInfo = C_Spell.GetSpellInfo(spellID);
-    if spellInfo then
-        return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
-            spellInfo.spellID, spellInfo.originalIconID;
-    end
-end
 
 local asGetSpellTabInfo = function(index)
     local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
@@ -84,7 +65,7 @@ end
 local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
     if enable and enable ~= 0 and start > 0 and duration > 0 then
         self:SetDrawEdge(forceShowDrawEdge);
-        self:SetCooldown(start, duration, modRate);        
+        self:SetCooldown(start, duration, modRate);
     else
         asCooldownFrame_Clear(self);
     end
@@ -193,75 +174,46 @@ end
 
 
 local function setFrame(frame, texture, count, expirationTime, duration, color)
-    local frameIcon = frame.icon;
-    frameIcon:SetTexture(texture);
+    local data = frame.data;
 
-    local frameCount = frame.count;
-    local frameCooldown = frame.cooldown;
+    if (texture ~= data.icon) or
+        (count ~= data.applications) or
+        (expirationTime ~= data.expiration) or
+        (duration ~= data.duration) then
+        frame.data = {
+            icon = texture,
+            applications = count,
+            expiration = expirationTime,
+            duration = duration,
+        };
 
-    if count and (count > 1) then
-        frameCount:SetText(count);
-        frameCount:Show();
-    else
-        frameCount:Hide();
+        local frameIcon = frame.icon;
+        frameIcon:SetTexture(texture);
+
+        local frameCount = frame.count;
+        local frameCooldown = frame.cooldown;
+
+        if count and (count > 1) then
+            frameCount:SetText(count);
+            frameCount:Show();
+        else
+            frameCount:Hide();
+        end
+
+        asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0, true);
+        if ns.ANameP_CooldownFontSize > 0 then
+            frameCooldown:SetHideCountdownNumbers(false);
+        end
+
+        local frameBorder = frame.border;
+        frameBorder:SetVertexColor(color.r, color.g, color.b);
     end
-
-    asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0, true);
-    if ns.ANameP_CooldownFontSize > 0 then
-        frameCooldown:SetHideCountdownNumbers(false);
-    end
-
-    local frameBorder = frame.border;
-    frameBorder:SetVertexColor(color.r, color.g, color.b);
 end
 
 local function setSize(frame, size)
     frame:SetWidth(size + 2);
     frame:SetHeight((size + 2) * ns.ANameP_Size_Rate);
 end
-
-local function updateDebuffAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
-    local buff = frames[index];
-    local point1 = "BOTTOMLEFT";
-    local point2 = "BOTTOMLEFT";
-    local point3 = "BOTTOMRIGHT";
-
-    if (right == false) then
-        point1 = "BOTTOMRIGHT";
-        point2 = "BOTTOMRIGHT";
-        point3 = "BOTTOMLEFT";
-        offsetX = -offsetX;
-    end
-
-    buff:ClearAllPoints();
-
-    if parent.downbuff then
-        if (index == 1) then
-            buff:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, 0);
-        elseif (index == (debuffs_per_line + 1)) then
-            buff:SetPoint("TOPLEFT", frames[1], "BOTTOMLEFT", 0, -4);
-        else
-            buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
-        end
-    else
-        if (index == 1) then
-            buff:SetPoint("BOTTOMLEFT", parent, "TOPLEFT", 0, 0);
-        elseif (index == (debuffs_per_line + 1)) then
-            buff:SetPoint("BOTTOMLEFT", frames[1], "TOPLEFT", 0, 4);
-        else
-            buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
-        end
-    end
-
-    setSize(buff, size);
-    buff:Show();
-    if buff.alert then
-        ns.lib.ButtonGlow_Start(buff);
-    else
-        ns.lib.ButtonGlow_Stop(buff);
-    end
-end
-
 
 local classbar_height = nil;
 local function GetClassBarHeight()
@@ -280,7 +232,6 @@ end
 
 local function updateAuras(self)
     local numDebuffs = 1;
-    local size_list = {};
     local parent = self.nameplateBase;
     local healthBar = parent.UnitFrame.healthBar;
     local bShowCC = false;
@@ -298,7 +249,7 @@ local function updateAuras(self)
         return
     end
 
-    if (parent.UnitFrame.BuffFrame and parent.UnitFrame.BuffFrame.Hide) then
+    if (parent.UnitFrame.BuffFrame and parent.UnitFrame.BuffFrame:GetAlpha() > 0 and parent.UnitFrame.BuffFrame.Hide) then
         parent.UnitFrame.BuffFrame:SetAlpha(0);
         parent.UnitFrame.BuffFrame:Hide();
         parent.UnitFrame:UnregisterEvent("UNIT_AURA");
@@ -317,19 +268,18 @@ local function updateAuras(self)
 
             local frame = self.buffList[numDebuffs];
             frame.alert = false;
-            size_list[numDebuffs] = icon_size;
 
-            setSize(frame, size_list[numDebuffs]);
+            setSize(frame, icon_size);
 
             local color = DebuffTypeColor["Disease"];
-            setFrame(self.buffList[numDebuffs], aura.icon, aura.applications, aura.expirationTime, aura.duration, color);
+            setFrame(frame, aura.icon, aura.applications, aura.expirationTime, aura.duration, color);
 
-            self.buffList[numDebuffs].filter = auraData.bufffilter;
-            self.buffList[numDebuffs].type = 1;
-            self.buffList[numDebuffs]:SetID(auraInstanceID);
-            self.buffList[numDebuffs].unit = unit;
+            frame.filter = auraData.bufffilter;
+            frame.type = 1;
+            frame:SetID(auraInstanceID);
+            frame.unit = unit;
 
-            self.buffList[numDebuffs]:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
+            frame:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
 
             numDebuffs = numDebuffs + 1;
             return false;
@@ -342,30 +292,29 @@ local function updateAuras(self)
 
             local frame = self.buffList[numDebuffs];
             frame.alert = false;
+            local size = icon_size;
 
             if aura.debuffType == ns.UnitFrameBuffType.PVP then
-                size_list[numDebuffs] = icon_size + 2;
-            else
-                size_list[numDebuffs] = icon_size;
+                size = icon_size + 2;
             end
 
-            setSize(frame, size_list[numDebuffs]);
+            setSize(frame, size);
 
             local color = {
                 r = 1,
                 g = 1,
                 b = 1
             };
-            setFrame(self.buffList[numDebuffs], aura.icon, aura.applications, aura.expirationTime, aura.duration, color);
+            setFrame(frame, aura.icon, aura.applications, aura.expirationTime, aura.duration, color);
             if aura.isStealable then
                 frame.alert = true;
             end
 
-            self.buffList[numDebuffs].filter = auraData.bufffilter;
-            self.buffList[numDebuffs].type = 1;
-            self.buffList[numDebuffs]:SetID(auraInstanceID);
-            self.buffList[numDebuffs].unit = unit;
-            self.buffList[numDebuffs]:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
+            frame.filter = auraData.bufffilter;
+            frame.type = 1;
+            frame:SetID(auraInstanceID);
+            frame.unit = unit;
+            frame:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
 
             numDebuffs = numDebuffs + 1;
             return false;
@@ -384,7 +333,6 @@ local function updateAuras(self)
             local showlist = aura.showlist;
 
             if ns.ANameP_ShowCCDebuff and bShowCC == false and aura.nameplateShowAll and aura.duration > 0 and aura.duration <= 10 and not (showlist) then
-                show = false;
                 bShowCC = true;
 
                 local color = {
@@ -486,9 +434,7 @@ local function updateAuras(self)
                     size = icon_size + ns.ANameP_PVP_Debuff_Size_Rate;
                 end
 
-                size_list[numDebuffs] = size;
-
-                setSize(frame, size_list[numDebuffs]);
+                setSize(frame, size);
 
                 local color = DebuffTypeColor["none"];
 
@@ -504,17 +450,17 @@ local function updateAuras(self)
                     color = DebuffTypeColor[aura.dispelName];
                 end
 
-                setFrame(self.buffList[numDebuffs], aura.icon, aura.applications, aura.expirationTime, aura.duration,
+                setFrame(frame, aura.icon, aura.applications, aura.expirationTime, aura.duration,
                     color);
 
                 if alert and aura.duration > 0 then
                     frame.alert = true;
                 end
-                self.buffList[numDebuffs].filter = auraData.debufffilter;
-                self.buffList[numDebuffs].type = 2;
-                self.buffList[numDebuffs]:SetID(auraInstanceID);
-                self.buffList[numDebuffs].unit = unit;
-                self.buffList[numDebuffs]:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
+                frame.filter = auraData.debufffilter;
+                frame.type = 2;
+                frame:SetID(auraInstanceID);
+                frame.unit = unit;
+                frame:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
 
                 numDebuffs = numDebuffs + 1;
             end
@@ -524,13 +470,22 @@ local function updateAuras(self)
     end
 
     for i = 1, numDebuffs - 1 do
-        updateDebuffAnchor(self.buffList, i, i - 1, size_list[i], 1, true, self);
+        local frame = self.buffList[i];
+        if (frame) then
+            frame:Show();
+            if frame.alert then
+                ns.lib.ButtonGlow_Start(frame);
+            else
+                ns.lib.ButtonGlow_Stop(frame);
+            end
+        end
     end
 
     for i = numDebuffs, ns.ANameP_MaxDebuff do
-        if (self.buffList[i]) then
-            self.buffList[i]:Hide();
-            ns.lib.ButtonGlow_Stop(self.buffList[i]);
+        local frame = self.buffList[i];
+        if (frame) then
+            frame:Hide();
+            ns.lib.ButtonGlow_Stop(frame);
         end
     end
 
@@ -540,6 +495,45 @@ local function updateAuras(self)
 
     if bShowCC == false then
         self.CCdebuff:Hide();
+    end
+end
+
+
+local function updateDebuffAnchor(frames, index, parent, unitframe, xoffset)
+    local buff = frames[index];
+
+    buff:ClearAllPoints();
+
+    if parent.downbuff then
+        if (index == 1) then
+            buff:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, 0);
+        elseif (index == (ns.ANameP_DebuffsPerLine + 1)) then
+            buff:SetPoint("TOPLEFT", frames[1], "BOTTOMLEFT", 0, -4);
+        else
+            buff:SetPoint("BOTTOMLEFT", frames[index - 1], "BOTTOMRIGHT", 1, 0);
+        end
+    else
+        if ns.options.ANameP_DebuffAnchorPoint == 2 and unitframe then
+            if (index == 1) then
+                buff:SetPoint("RIGHT", unitframe, "LEFT", xoffset, 0);
+            else
+                buff:SetPoint("RIGHT", frames[index - 1], "LEFT", -1, 0);
+            end
+        elseif ns.options.ANameP_DebuffAnchorPoint == 3 then
+            if (index == 1) then
+                buff:SetPoint("RIGHT", UIParent, "LEFT", -100, 0);
+            else
+                buff:SetPoint("RIGHT", frames[index - 1], "LEFT", -1, 0);
+            end
+        else
+            if (index == 1) then
+                buff:SetPoint("BOTTOMLEFT", parent, "TOPLEFT", 0, 0);
+            elseif (index == (ns.ANameP_DebuffsPerLine + 1)) then
+                buff:SetPoint("BOTTOMLEFT", frames[1], "TOPLEFT", 0, 4);
+            else
+                buff:SetPoint("BOTTOMLEFT", frames[index - 1], "BOTTOMRIGHT", 1, 0);
+            end
+        end
     end
 end
 
@@ -598,7 +592,7 @@ local function updateTargetNameP(self)
         end
 
         if casticon then
-            casticon:SetWidth((height + cast_height + 3) * 1.1);    --90%
+            casticon:SetWidth((height + cast_height + 3) * 1.1); --90%
             casticon:SetHeight(height + cast_height + 3);
             casticon.border:SetVertexColor(1, 1, 1);
         end
@@ -639,6 +633,14 @@ local function updateTargetNameP(self)
         end
     end
 
+    if ns.options.ANameP_DebuffAnchorPoint == 2 then
+        local xoffset = -5;
+        if GetRaidTargetIndex(unit) then
+            xoffset = -5 - 22;
+        end
+        updateDebuffAnchor(self.buffList, 1, self, self.aggro, xoffset);
+    end
+
     if ns.options.ANameP_ShowPetTarget then
         if UnitIsUnit(unit, "pettarget") then
             self.pettarget:Show();
@@ -673,8 +675,6 @@ end
 
 local function updateUnitRealHealthText(asframe)
     local value;
-    local valueMax;
-    local valuePct;
     local unit = asframe.unit;
 
     if not ns.options.ANameP_RealHealth then
@@ -686,10 +686,9 @@ local function updateUnitRealHealthText(asframe)
     end
 
     value = UnitHealth(unit);
-    valueMax = UnitHealthMax(unit);
 
     if value > 0 then
-        valueshow = AbbreviateLargeNumbers(value);
+        local valueshow = AbbreviateLargeNumbers(value);
         asframe.realhealthtext:SetText(valueshow);
         asframe.realhealthtext:Show();
     else
@@ -1036,6 +1035,7 @@ local function updatePVPAggro(self)
             self.markcolor = 1;
         end
     else
+        self.aggro:SetText("");
         self.aggro:Hide();
     end
 end
@@ -1337,6 +1337,7 @@ local function updateNamePlate(namePlateFrameBase)
     end
 end
 
+
 local function addNamePlate(namePlateFrameBase)
     if not namePlateFrameBase and not namePlateFrameBase.namePlateUnitToken then
         return;
@@ -1376,11 +1377,8 @@ local function addNamePlate(namePlateFrameBase)
     end
 
     local asframe = namePlateFrameBase.asNamePlates;
-
-    asframe:ClearAllPoints();
     asframe:SetParent(healthbar);
     asframe:SetFrameLevel(healthbar:GetFrameLevel() + 20);
-    asframe:SetPoint("CENTER", healthbar, "CENTER", 0, 0);
     asframe.nameplateBase = namePlateFrameBase;
     asframe.unit = unit;
     asframe.update = 0;
@@ -1419,14 +1417,9 @@ local function addNamePlate(namePlateFrameBase)
     end
 
     if namePlateVerticalScale > 1.0 then
-        Aggro_Y = -1
-        Size = ns.ANameP_AggroSize + 2
-        debuffs_per_line = ns.ANameP_DebuffsPerLine + 1;
-    else
-        debuffs_per_line = ns.ANameP_DebuffsPerLine;
+        Size = ns.ANameP_AggroSize + 2;
     end
 
-    ns.ANameP_MaxDebuff = debuffs_per_line * 2;
     Aggro_Y = 0;
 
     asframe.orig_height = g_orig_height;
@@ -1522,7 +1515,7 @@ local function addNamePlate(namePlateFrameBase)
         asframe.icon_size = ns.ANameP_SIZE;
     else
         local orig_width = healthbar:GetWidth();
-        asframe.icon_size = (orig_width / debuffs_per_line) - (debuffs_per_line - 1);
+        asframe.icon_size = (orig_width / ns.ANameP_DebuffsPerLine) - (ns.ANameP_DebuffsPerLine - 1);
     end
 
     local class = UnitClassification(unit)
@@ -1606,6 +1599,10 @@ local function addNamePlate(namePlateFrameBase)
         unitFrame:UnregisterEvent("UNIT_THREAT_LIST_UPDATE");
         unitFrame:UnregisterEvent("UNIT_AURA");
         asframe:Show();
+    end
+
+    for i = 1, ns.ANameP_MaxDebuff do
+        updateDebuffAnchor(asframe.buffList, i, asframe, asframe.aggro, -5);
     end
 
     asframe.checkaura = checkaura;

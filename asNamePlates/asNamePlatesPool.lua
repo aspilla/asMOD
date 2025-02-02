@@ -32,6 +32,7 @@ local function createDebuffFrame(parent)
     frame.snapshot:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
 
     frame.alert = false;
+    frame.data = {};
 
     if not frame:GetScript("OnEnter") then
         frame:SetScript("OnEnter", function(s)
@@ -72,6 +73,7 @@ local function createCastIcon(parent)
     frame.targetname:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
     frame.targetname:ClearAllPoints();
     frame.targetname:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -1);
+    frame.data = {};
     
 
     if not frame:GetScript("OnEnter") then
@@ -111,7 +113,7 @@ local function creatframe()
 
     for i = 1, ns.ANameP_MaxDebuff do
         object.buffList[i] = createDebuffFrame(object);
-    end   
+    end
 
     object.healthtext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
     object.realhealthtext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize - 2, "OUTLINE");

@@ -320,7 +320,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 250106,
+    version = 250202,
     ANameP_ShowKnownSpell = false,                            -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -336,6 +336,7 @@ ANameP_Options_Default = {
     ANameP_RealHealth = true,                                 -- 체력 수치 표시
     ANameP_ShowPetTarget = true,                              -- Pet 대상 표시
     ANameP_ShowTargetArrow = false,                           -- 대상 빨간 화살표 표시
+    ANameP_DebuffAnchorPoint = 2,                             -- Debuff 표시 위치 1 Top, 2 Right, 3 Hide
 
     ANameP_AggroTargetColor = { r = 0.4, g = 0.2, b = 0.8 },  -- PVE 대상이 player 였을때 Color
     ANameP_AggroColor = { r = 0.5, g = 1, b = 1 },            -- 어그로 대상일때 바 Color
@@ -374,10 +375,10 @@ ANameP_Options_Default = {
     },
 
     ANameP_ShowList_ROGUE_1 = {
-        [457129] = { 0, 5 },         --죽음추적자의 징표
-        [703] = { 1, 4, 2, false, true },         --목조르기
-        [1943] = { 24 * 0.3, 3, 1 }, --파열
-        [121411] = { 12 * 0.3, 2 },  --혈폭풍
+        [457129] = { 0, 5 },              --죽음추적자의 징표
+        [703] = { 1, 4, 2, false, true }, --목조르기
+        [1943] = { 24 * 0.3, 3, 1 },      --파열
+        [121411] = { 12 * 0.3, 2 },       --혈폭풍
 
     },
 
@@ -492,10 +493,10 @@ ANameP_Options_Default = {
     ANameP_ShowList_DRUID_2 = {
         [155722] = { 12 * 0.3, 5, 1, false, true }, --갈퀴 발톱
         [155625] = { 1, 4, 2, false, true },        --달빛섬광
-        [391889] = { 1, 3 },           --적응의 무리
-        [1079] = { 19 * 0.3, 2, nil, false, true },      --도려내기
-        [405233] = { 0, 1, nil, false, true },           --Trash
-        
+        [391889] = { 1, 3 },                        --적응의 무리
+        [1079] = { 19 * 0.3, 2, nil, false, true }, --도려내기
+        [405233] = { 0, 1, nil, false, true },      --Trash
+
     },
 
     ANameP_ShowList_DRUID_3 = {
@@ -788,9 +789,9 @@ local function SetupEditBoxOption()
 
     curr_y = curr_y + y_adder;
 
-    local localeTexts = {"Priority", "Debuff ID", "Remain/Count", "Nameplate color", "Alert count"};
+    local localeTexts = { "Priority", "Debuff ID", "Remain/Count", "Nameplate color", "Alert count" };
     if GetLocale() == "koKR" then
-        localeTexts = {"우선순위", "디버프 ID", "시간/중첩", "이름표 색상", "디법 중첩 알림"};
+        localeTexts = { "우선순위", "디버프 ID", "시간/중첩", "이름표 색상", "디법 중첩 알림" };
     end
 
     local x = 10;
@@ -1073,6 +1074,59 @@ local function SetupEditBoxOption()
 end
 
 
+local function SetupDebuffPointOption()
+    curr_y = curr_y + y_adder;
+
+    local localeTexts = { "Debuff Point" };
+    if GetLocale() == "koKR" then
+        localeTexts = { "디버프 위치" };
+    end
+
+    local x = 10;
+
+    local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    title:SetPoint("TOPLEFT", x, curr_y);
+    title:SetText(localeTexts[1]);
+
+    x = 60;
+
+    local dropDown = CreateFrame("Frame", nil, scrollChild, "UIDropDownMenuTemplate")
+    dropDown:SetPoint("LEFT", scrollChild, "TOPLEFT", x, curr_y-5)
+    UIDropDownMenu_SetWidth(dropDown, 100)     -- Use in place of dropDown:SetWidth
+
+    local dropdownOptions = {
+        { text = "Top",  value = 1 },
+        { text = "Left", value = 2 },
+        { text = "Hide", value = 3 },
+
+    }
+
+    x = x + 130;
+
+    local function updatedata()
+        local newpoint = (UIDropDownMenu_GetSelectedValue(dropDown));
+        ns.options.ANameP_DebuffAnchorPoint = newpoint;
+        ANameP_Options.ANameP_DebuffAnchorPoint = newpoint;
+    end
+
+    UIDropDownMenu_Initialize(dropDown, function(self, level)
+        for _, option in ipairs(dropdownOptions) do
+            local info = UIDropDownMenu_CreateInfo()
+            info.text = option.text
+            info.value = option.value
+            info.disabled = option.disabled
+            local function Dropdown_OnClick()
+                UIDropDownMenu_SetSelectedValue(dropDown, option.value);
+                updatedata();
+            end
+            info.func = Dropdown_OnClick;
+            UIDropDownMenu_AddButton(info, level)
+        end
+    end);
+    UIDropDownMenu_SetSelectedValue(dropDown, ns.options.ANameP_DebuffAnchorPoint);
+end
+
+
 local bfirst = true;
 ANameP_OptionM.SetupAllOption = function()
     if bfirst and not InCombatLockdown() then
@@ -1180,6 +1234,7 @@ local function panelOnShow()
         SetupColorOption("[Nameplate Color] AutoMarker", "ANameP_AutoMarkerColor");
         SetupColorOption("[Nameplate Color] AutoMarker 2", "ANameP_AutoMarkerColor2");
     end
+    SetupDebuffPointOption();
     SetupEditBoxOption();
 end
 local function panelOnHide()
