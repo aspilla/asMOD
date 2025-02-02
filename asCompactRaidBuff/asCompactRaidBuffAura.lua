@@ -236,13 +236,16 @@ local function CheckIsPriorityAura(spellId)
     return cachedPriorityChecks[spellId];
 end
 
-local function IsPriorityDebuff(spellId)
-    local _, classFilename = UnitClass("player");
-    if (classFilename == "PALADIN") then
+
+local IsPriorityDebuff = function(spellId)
+    return CheckIsPriorityAura(spellId);
+end
+
+local _, classFilename = UnitClass("player");
+if (classFilename == "PALADIN") then
+    IsPriorityDebuff = function(spellId)
         local isForbearance = (spellId == 25771);
         return isForbearance or CheckIsPriorityAura(spellId);
-    else
-        return CheckIsPriorityAura(spellId);
     end
 end
 
@@ -289,14 +292,13 @@ local function ACRB_UtilSetDispelDebuff(dispellDebuffFrame, aura)
 end
 
 local function ARCB_UtilSetBuff(frame, aura, currtime)
-    local enabled = aura.expirationTime and aura.expirationTime ~= 0;
-    local remain = math.ceil(aura.expirationTime - currtime);
     local data = frame.data;
+    local enabled = aura.expirationTime and aura.expirationTime ~= 0;
 
-    if not (aura.icon == data.icon and
-            aura.applications == data.applications and
-            aura.expirationTime == data.expiration and
-            aura.duration == data.duration) then
+    if (aura.icon ~= data.icon) or
+        (aura.applications ~= data.applications) or
+        (aura.expirationTime ~= data.expiration) or
+        (aura.duration ~= data.duration) then
         frame.data = {
             icon = aura.icon,
             applications = aura.applications,
@@ -328,6 +330,7 @@ local function ARCB_UtilSetBuff(frame, aura, currtime)
     end
 
     if enabled then
+        local remain = math.ceil(aura.expirationTime - currtime);
         if frame.hideCountdownNumbers == false then
             if remain >= ns.options.MinSectoShowCooldown then
                 frame.cooldown:SetHideCountdownNumbers(true);
@@ -368,14 +371,13 @@ end
 
 -- Debuff 설정 부
 local function ACRB_UtilSetDebuff(frame, aura, currtime)
-    local enabled = aura.expirationTime and aura.expirationTime ~= 0;
-    local remain = math.ceil(aura.expirationTime - currtime);
     local data = frame.data;
+    local enabled = aura.expirationTime and aura.expirationTime ~= 0;
 
-    if not (aura.icon == data.icon and
-            aura.applications == data.applications and
-            aura.expirationTime == data.expiration and
-            aura.duration == data.duration) then
+    if (aura.icon ~= data.icon) or
+        (aura.applications ~= data.applications) or
+        (aura.expirationTime ~= data.expiration) or
+        (aura.duration ~= data.duration) then
         frame.data = {
             icon = aura.icon,
             applications = aura.applications,
@@ -418,6 +420,8 @@ local function ACRB_UtilSetDebuff(frame, aura, currtime)
     end
 
     if enabled then
+        local remain = math.ceil(aura.expirationTime - currtime);
+
         if frame.hideCountdownNumbers == false then
             if remain >= ns.options.MinSectoShowCooldown then
                 frame.cooldown:SetHideCountdownNumbers(true);
@@ -443,101 +447,115 @@ local function ProcessAura(aura, asframe)
         return AuraUpdateChangedType.None;
     end
 
-    if ns.ACRB_BlackList[aura.spellId] then
+    local spellId = aura.spellId;
+
+    if ns.ACRB_BlackList[spellId] then
         return AuraUpdateChangedType.None;
     end
 
     if aura.isBossAura and not aura.isRaid then
         aura.debuffType = aura.isHarmful and UnitFrameDebuffType.BossDebuff or UnitFrameDebuffType.BossBuff;
         return AuraUpdateChangedType.Debuff;
-    elseif aura.isHarmful then
-        if not aura.isRaid then
-            local bshow = false;
-            if aura.nameplateShowAll then
-                aura.debuffType = UnitFrameDebuffType.namePlateShowAll;
-                bshow = true;
-            elseif IsPriorityDebuff(aura.spellId) then
-                aura.debuffType = UnitFrameDebuffType.PriorityDebuff;
-                bshow = true;
-            elseif ShouldDisplayDebuff(aura) then
-                aura.debuffType = UnitFrameDebuffType.NonBossDebuff;
-                bshow = true;
+    end
+
+    if aura.isHarmful then
+        -- Determine debuff type and show logic
+        local function getDebuffType()
+            if aura.isRaid then
+                return (aura.isBossAura and UnitFrameDebuffType.BossDebuff) or UnitFrameDebuffType.NonBossRaidDebuff;
             end
 
-            if bshow then
-                if DispellableDebuffTypes[aura.dispelName] == 1 then
+            if aura.nameplateShowAll then
+                return UnitFrameDebuffType.namePlateShowAll;
+            elseif IsPriorityDebuff(spellId) then
+                return UnitFrameDebuffType.PriorityDebuff;
+            elseif ShouldDisplayDebuff(aura) then
+                return UnitFrameDebuffType.NonBossDebuff;
+            end
+
+            return nil;
+        end
+
+        local debuffType = getDebuffType();
+        if debuffType then
+            aura.debuffType = debuffType;
+
+            local dispellable = DispellableDebuffTypes[aura.dispelName];
+            if dispellable then
+                if dispellable == 1 or (dispellable == 2 and asframe.isPlayer) then
                     return AuraUpdateChangedType.Dispel;
-                elseif DispellableDebuffTypes[aura.dispelName] == 2 and asframe.isPlayer then
-                    return AuraUpdateChangedType.Dispel;
-                else
-                    return AuraUpdateChangedType.Debuff;
                 end
             end
-        else -- aura.isRaid
-            aura.debuffType = aura.isBossAura and UnitFrameDebuffType.BossDebuff or
-                UnitFrameDebuffType.NonBossRaidDebuff;
-            if DispellableDebuffTypes[aura.dispelName] == 1 then
-                return AuraUpdateChangedType.Dispel;
-            elseif DispellableDebuffTypes[aura.dispelName] == 2 and asframe.isPlayer then
-                return AuraUpdateChangedType.Dispel;
-            else
-                return AuraUpdateChangedType.Debuff;
-            end
+
+            return AuraUpdateChangedType.Debuff;
         end
-    elseif aura.isHelpful then
-        aura.showlist = ns.ACRB_ShowList and PLAYER_UNITS[aura.sourceUnit] and ns.ACRB_ShowList[aura.spellId];
+
+        -- If none of the above, do not show
+        return AuraUpdateChangedType.None;
+    end
+
+    if aura.isHelpful then
+        aura.showlist = ns.ACRB_ShowList and PLAYER_UNITS[aura.sourceUnit] and ns.ACRB_ShowList[spellId];
         if aura.showlist then
-            aura.debuffType = UnitFrameBuffType.Normal + aura.showlist[2];
+            aura.debuffType = UnitFrameBuffType.Normal + (aura.showlist[2] or 0);
             return AuraUpdateChangedType.Buff;
-        elseif ShouldDisplayBuff(aura) then
+        end
+
+        if ShouldDisplayBuff(aura) then
             aura.debuffType = UnitFrameBuffType.Normal;
             return AuraUpdateChangedType.Buff;
-        else
-            local depensiveBuffType = ns.ACRB_DefensiveBuffList[aura.spellId];
-            if depensiveBuffType then
-                -- longer duration should have lower priority.
-                if not (depensiveBuffType == 2 and asframe.isTank) then
-                    aura.debuffType = UnitFrameBuffType.Normal + aura.duration;
-                    return AuraUpdateChangedType.Defensive;
-                end
+        end
+
+        local depensiveBuffType = ns.ACRB_DefensiveBuffList[spellId];
+        if depensiveBuffType then
+            -- longer duration should have lower priority.
+            if not (depensiveBuffType == 2 and asframe.isTank) then
+                aura.debuffType = UnitFrameBuffType.Normal + aura.duration;
+                return AuraUpdateChangedType.Defensive;
             end
         end
+
+        -- If none of the above, do not show
+        return AuraUpdateChangedType.None;
     end
 
     return AuraUpdateChangedType.None;
 end
 
-local function ACRB_ParseAllAuras(asframe)
-    local DispellTypes = {
-        Magic = true,
-        Curse = true,
-        Disease = true,
-        Poison = true
-    };
+local DispellTypes = {
+    Magic = true,
+    Curse = true,
+    Disease = true,
+    Poison = true
+};
 
-    if asframe.debuffs == nil then
-        asframe.debuffs = TableUtil.CreatePriorityTable(UnitFrameDebuffComparator,
-            TableUtil.Constants.AssociativePriorityTable);
-        asframe.buffs = TableUtil.CreatePriorityTable(UnitFrameBuffComparator,
-            TableUtil.Constants.AssociativePriorityTable);
-        asframe.defensivebuffs = TableUtil.CreatePriorityTable(UnitFrameDefensiveComparator,
-            TableUtil.Constants.AssociativePriorityTable);
+local DEFAULT_PRIORITY = TableUtil.Constants.AssociativePriorityTable;
+
+local function ACRB_ParseAllAuras(asframe)
+    if not asframe.debuffs then
+        asframe.debuffs = TableUtil.CreatePriorityTable(UnitFrameDebuffComparator, DEFAULT_PRIORITY);
+        asframe.buffs = TableUtil.CreatePriorityTable(UnitFrameBuffComparator, DEFAULT_PRIORITY);
+        asframe.defensivebuffs = TableUtil.CreatePriorityTable(UnitFrameDefensiveComparator, DEFAULT_PRIORITY);
+
+        -- Initialize dispel tables
         asframe.dispels = {};
         for type, _ in pairs(DispellTypes) do
-            asframe.dispels[type] = TableUtil.CreatePriorityTable(DefaultAuraCompare,
-                TableUtil.Constants.AssociativePriorityTable);
-        end
+            asframe.dispels[type] = TableUtil.CreatePriorityTable(DefaultAuraCompare, DEFAULT_PRIORITY);
+        end;
     else
+        -- Clear existing auras efficiently
         asframe.debuffs:Clear();
         asframe.buffs:Clear();
         asframe.defensivebuffs:Clear();
-        for type, _ in pairs(DispellTypes) do
-            asframe.dispels[type]:Clear();
-        end
-    end
 
-    local batchCount = nil;
-    local usePackedAura = true;
+        -- Reset dispel tables while reusing existing structures
+        for type in pairs(DispellTypes) do
+            if asframe.dispels[type] then
+                asframe.dispels[type]:Clear();
+            end;
+        end;
+    end;
+
     local function HandleAura(aura)
         local type = ProcessAura(aura, asframe);
 
@@ -552,8 +570,31 @@ local function ACRB_ParseAllAuras(asframe)
             asframe.debuffs[aura.auraInstanceID] = aura;
         end
     end
-    ForEachAura(asframe.displayedUnit, ns.bufffilter, batchCount, HandleAura, usePackedAura);
-    ForEachAura(asframe.displayedUnit, ns.debufffilter, batchCount, HandleAura, usePackedAura);
+    ForEachAura(asframe.displayedUnit, ns.bufffilter, nil, HandleAura, true);
+    ForEachAura(asframe.displayedUnit, ns.debufffilter, nil, HandleAura, true);
+end
+
+local function resetframe(frame)
+    if frame.buffFrames and frame.buffFrames[1]:GetAlpha() > 0 then
+        for i = 1, #frame.buffFrames do
+            frame.buffFrames[i]:SetAlpha(0);
+            frame.buffFrames[i]:Hide();
+        end
+    end
+
+    if frame.debuffFrames and frame.debuffFrames[1]:GetAlpha() > 0 then
+        for i = 1, #frame.debuffFrames do
+            frame.debuffFrames[i]:SetAlpha(0);
+            frame.debuffFrames[i]:Hide();
+        end
+    end
+
+    if frame.dispelDebuffFrames and frame.dispelDebuffFrames[1]:GetAlpha() > 0 then
+        for i = 1, #frame.dispelDebuffFrames do
+            frame.dispelDebuffFrames[i]:SetAlpha(0);
+            frame.dispelDebuffFrames[i]:Hide();
+        end
+    end
 end
 
 function ns.ACRB_UpdateAuras(asframe)
@@ -563,32 +604,7 @@ function ns.ACRB_UpdateAuras(asframe)
         ns.ACRB_setupFrame(asframe);
     end
 
-    do
-        if frame.buffFrames and frame.buffFrames[1]:GetAlpha() > 0 then
-            for i = 1, #frame.buffFrames do
-                frame.buffFrames[i]:SetAlpha(0);
-                frame.buffFrames[i]:Hide();
-            end
-        end
-    end
-
-    do
-        if frame.debuffFrames and frame.debuffFrames[1]:GetAlpha() > 0 then
-            for i = 1, #frame.debuffFrames do
-                frame.debuffFrames[i]:SetAlpha(0);
-                frame.debuffFrames[i]:Hide();
-            end
-        end
-    end
-
-    do
-        if frame.dispelDebuffFrames and frame.dispelDebuffFrames[1]:GetAlpha() > 0 then
-            for i = 1, #frame.dispelDebuffFrames do
-                frame.dispelDebuffFrames[i]:SetAlpha(0);
-                frame.dispelDebuffFrames[i]:Hide();
-            end
-        end
-    end
+    resetframe(frame);
 
     ACRB_ParseAllAuras(asframe);
     local currtime = GetTime();

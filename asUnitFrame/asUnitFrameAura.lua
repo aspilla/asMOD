@@ -125,13 +125,15 @@ local function CheckIsPriorityAura(spellId)
     return cachedPriorityChecks[spellId];
 end
 
-local function IsPriorityDebuff(spellId)
-    local _, classFilename = UnitClass("player");
-    if (classFilename == "PALADIN") then
+local IsPriorityDebuff = function(spellId)
+    return CheckIsPriorityAura(spellId);
+end
+
+local _, classFilename = UnitClass("player");
+if (classFilename == "PALADIN") then
+    IsPriorityDebuff = function(spellId)
         local isForbearance = (spellId == 25771);
         return isForbearance or CheckIsPriorityAura(spellId);
-    else
-        return CheckIsPriorityAura(spellId);
     end
 end
 
