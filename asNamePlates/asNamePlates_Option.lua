@@ -320,7 +320,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 250202,
+    version = 250203,
     ANameP_ShowKnownSpell = false,                            -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -336,7 +336,7 @@ ANameP_Options_Default = {
     ANameP_RealHealth = true,                                 -- 체력 수치 표시
     ANameP_ShowPetTarget = true,                              -- Pet 대상 표시
     ANameP_ShowTargetArrow = false,                           -- 대상 빨간 화살표 표시
-    ANameP_DebuffAnchorPoint = 2,                             -- Debuff 표시 위치 1 Top, 2 Right, 3 Hide
+    ANameP_DebuffAnchorPoint = 1,                             -- Debuff 표시 위치 1 Top, 2 Right, 3 Hide
 
     ANameP_AggroTargetColor = { r = 0.4, g = 0.2, b = 0.8 },  -- PVE 대상이 player 였을때 Color
     ANameP_AggroColor = { r = 0.5, g = 1, b = 1 },            -- 어그로 대상일때 바 Color
