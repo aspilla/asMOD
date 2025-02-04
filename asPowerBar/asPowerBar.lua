@@ -93,6 +93,8 @@ local tempeststate = {
     mswRemovedDoseTime = 0,
     lastCastTime = 0,
     awakeningStormRemovedTime = 0,
+    tempestRemovedTime = 0,
+    buffstack = 0,
 }
 
 local splinterstorm_time = GetTime();
@@ -2206,7 +2208,7 @@ local function APB_CheckPower(self)
                 combobuffalertlist = { 451073, 451038, 455681 };
                 combobuffcountalertlist = { { 467634, 2 } };
             end
-          
+
 
             for i = 1, 20 do
                 APB.combobar[i].tooltip = "ARCANE_CHARGES";
@@ -2812,7 +2814,7 @@ local function APB_CheckPower(self)
                 APB_SPELL = 259495;
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
-                bupdate_spell = true;                
+                bupdate_spell = true;
             end
 
             if IsPlayerSpell(259387) then --살쾡이의 이빨
@@ -3196,7 +3198,7 @@ local enhanced_listOfSpenders = {
     [320674] = true  -- Chain Harvest
 
 
-}
+};
 
 local elemental_listOfSpenders = {
     [117014] = true, -- Elemental Blast
@@ -3205,28 +3207,60 @@ local elemental_listOfSpenders = {
     [462620] = true, -- Earthquake (@target)
 
 
-}
+};
+
+
+local playerGUID = UnitGUID("player");
 
 local function updateCombatLog()
     local timestamp, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellId, _, _, auraType, amount =
         CombatLogGetCurrentEventInfo();
 
-    if sourceGUID and (sourceGUID == UnitGUID("player")) then
+    if sourceGUID and (sourceGUID == playerGUID) then
         if bupdate_enhaced_tempest then
-            -- Handle Awakened Storm buff removal
             if (eventType == "SPELL_AURA_REMOVED" and spellId == 462131) then
-                tempeststate.awakeningStormRemovedTime = GetTime()
-                -- Handle Tempest buff application and refresh
-            elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and spellId == 454015) then
-                local currentTime = GetTime()
-                tempeststate.tempestTime = currentTime
+                tempeststate.awakeningStormRemovedTime = timestamp;
+                --print(timestamp .. eventType .. "Awakening");
+            elseif (eventType == "SPELL_AURA_REMOVED" and spellId == 454015) then
+                tempeststate.buffstack = 0;                
+                tempeststate.tempestRemovedTime = timestamp;
+                --print(timestamp .. eventType .. "Tempest");
+                
+            elseif (eventType == "SPELL_AURA_REMOVED_DOSE" and spellId == 454015) then
+                tempeststate.buffstack = amount;
+                tempeststate.tempestRemovedTime = timestamp;
+                --print(timestamp .. eventType .. "Tempest" .. amount);                
+            elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH" or eventType == "SPELL_AURA_APPLIED_DOSE") and spellId == 454015) then -- Tempest buff                
+                local needtoreset = false;
+                --print(timestamp .. eventType .. "Tempest");
+                if amount == nil then
+                    amount = 1;
+                end               
 
-                -- Calculate time differences
-                local castTimeDiff = currentTime - tempeststate.lastCastTime
-                local awakeningStormDiff = currentTime - tempeststate.awakeningStormRemovedTime
+                local buffcount = amount - tempeststate.buffstack;
+                local castTimeDiff = timestamp - tempeststate.lastCastTime;
+                local awakeningStormDiff = timestamp - tempeststate.awakeningStormRemovedTime;
+                local removedDiff = timestamp - tempeststate.tempestRemovedTime;
 
-                -- Check conditions for TStacks reset based on MSW cast or Awakening Storm
-                if math.abs(castTimeDiff) <= 0.2 then
+                --print (buffcount)
+
+                if removedDiff == 0 then
+                    --print("removed");
+                    buffcount = 0;
+                end
+                
+                if buffcount == 2 then
+                    needtoreset = true;
+                elseif buffcount == 1 then
+                    if awakeningStormDiff < 0.1 then
+                        --print("awakening");
+                    elseif castTimeDiff < 0.5 then
+                        needtoreset = true;
+                        --print("reset");
+                    end
+                end
+
+                if needtoreset then
                     if tempeststate.bfirstcheck then
                         tempeststate.bfirstcheck = false;
                         tempeststate.TStacks = 0
@@ -3237,31 +3271,24 @@ local function updateCombatLog()
                         -- Reset to 0 due to desync
                         tempeststate.TStacks = 0
                     end
-                elseif math.abs(awakeningStormDiff) <= 0.6 then
-                    -- Handle Tempest buff gained due to Awakening Storm reset
-                    -- No reset needed here, just handle the timing
                 end
-                -- Handle MSW aura applied and dose events
-                -- Track successful spell casts that consume MSW stacks
+                tempeststate.buffstack = amount;
+                --Maelstorm
             elseif (eventType == "SPELL_CAST_SUCCESS" and enhanced_listOfSpenders[spellId]) then
-                tempeststate.lastCastTime = GetTime()
-                -- Track Maelstrom Weapon dose removals
+                tempeststate.lastCastTime = timestamp;
+                --print(timestamp .. eventType .. spellId);
             elseif (eventType == "SPELL_AURA_REMOVED_DOSE" and spellId == 344179) then
-                if (GetTime() - tempeststate.lastCastTime) <= 0.1 then
-                    local consumed = tempeststate.currentStacks - amount
-                    tempeststate.TStacks = tempeststate.TStacks + consumed
-                    tempeststate.currentStacks = amount
-                    tempeststate.mswRemovedDoseTime = GetTime()
+                if (timestamp == tempeststate.lastCastTime) then
+                    local consumed = tempeststate.currentStacks - amount;
+                    tempeststate.TStacks = tempeststate.TStacks + consumed;
                 end
-                -- Track Maelstrom Weapon fade when all stacks are consumed
+                tempeststate.currentStacks = amount;
             elseif (eventType == "SPELL_AURA_REMOVED" and spellId == 344179) then
-                if (GetTime() - tempeststate.lastCastTime) <= 0.1 then
-                    local consumed = tempeststate.currentStacks
-                    tempeststate.TStacks = tempeststate.TStacks + consumed
-                    tempeststate.currentStacks = 0
-                    tempeststate.mswFadeTime = GetTime()
+                if (timestamp == tempeststate.lastCastTime) then
+                    local consumed = tempeststate.currentStacks;
+                    tempeststate.TStacks = tempeststate.TStacks + consumed;
                 end
-                -- Track Maelstrom Weapon applications and doses
+                tempeststate.currentStacks = 0;
             elseif (eventType == "SPELL_AURA_APPLIED" and spellId == 344179) then
                 tempeststate.currentStacks = 1
             elseif (eventType == "SPELL_AURA_APPLIED_DOSE" and spellId == 344179) then
@@ -3281,18 +3308,49 @@ local function updateCombatLog()
         elseif bupdate_element_tempest then
             -- Handle Awakened Storm buff removal
             if (eventType == "SPELL_AURA_REMOVED" and spellId == 462131) then
-                tempeststate.awakeningStormRemovedTime = GetTime()
-                -- Handle Tempest buff application and refresh
-            elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and spellId == 454015) then
-                local currentTime = GetTime()
-                tempeststate.tempestTime = currentTime
+                tempeststate.awakeningStormRemovedTime = timestamp;
+                --print(timestamp .. eventType .. "Awakening");
+            elseif (eventType == "SPELL_AURA_REMOVED" and spellId == 454015) then
+                tempeststate.buffstack = 0;                
+                tempeststate.tempestRemovedTime = timestamp;
+                --print(timestamp .. eventType .. "Tempest");
+                
+            elseif (eventType == "SPELL_AURA_REMOVED_DOSE" and spellId == 454015) then
+                tempeststate.buffstack = amount;
+                tempeststate.tempestRemovedTime = timestamp;
+                --print(timestamp .. eventType .. "Tempest" .. amount);      
+            elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH" or eventType == "SPELL_AURA_APPLIED_DOSE") and spellId == 454015) then -- Tempest buff                
+                local needtoreset = false;
+                --print(timestamp .. eventType .. "Tempest");
+                if amount == nil then
+                    amount = 1;
+                end               
 
-                -- Calculate time differences
-                local castTimeDiff = currentTime - tempeststate.lastCastTime
-                local awakeningStormDiff = currentTime - tempeststate.awakeningStormRemovedTime
+                local buffcount = amount - tempeststate.buffstack;
+                local castTimeDiff = timestamp - tempeststate.lastCastTime;
+                local awakeningStormDiff = timestamp - tempeststate.awakeningStormRemovedTime;
+                local removedDiff = timestamp - tempeststate.tempestRemovedTime;
 
-                -- Check conditions for TStacks reset based on MSW cast or Awakening Storm
-                if math.abs(castTimeDiff) <= 0.2 then
+                --print (buffcount)
+
+                if removedDiff == 0 then
+                    --print("removed");
+                    buffcount = 0;
+                end
+                
+                
+                if buffcount == 2 then
+                    needtoreset = true;
+                elseif buffcount == 1 then
+                    if awakeningStormDiff < 0.1 then
+                        --print("awakening");
+                    elseif castTimeDiff < 0.5 then
+                        needtoreset = true;
+                        --print("reset");
+                    end
+                end
+
+                if needtoreset then
                     if tempeststate.bfirstcheck then
                         tempeststate.bfirstcheck = false;
                         tempeststate.TStacks = 0
@@ -3303,14 +3361,10 @@ local function updateCombatLog()
                         -- Reset to 0 due to desync
                         tempeststate.TStacks = 0
                     end
-                elseif math.abs(awakeningStormDiff) <= 0.6 then
-                    -- Handle Tempest buff gained due to Awakening Storm reset
-                    -- No reset needed here, just handle the timing
                 end
-                -- Handle MSW aura applied and dose events
-                -- Track successful spell casts that consume MSW stacks
+                tempeststate.buffstack = amount;
             elseif (eventType == "SPELL_CAST_SUCCESS" and elemental_listOfSpenders[spellId]) then
-                tempeststate.lastCastTime = GetTime()
+                tempeststate.lastCastTime = timestamp;
 
                 local cost = C_Spell.GetSpellPowerCost(spellId)
                 if cost[1].name == "MAELSTROM" then
