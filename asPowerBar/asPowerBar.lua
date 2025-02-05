@@ -88,13 +88,10 @@ local tempeststate = {
     bfirstcheck = true,
     TStacks = 0,
     currentStacks = 0,
-    tempestTime = 0,
-    mswFadeTime = 0,
-    mswRemovedDoseTime = 0,
     lastCastTime = 0,
-    awakeningStormRemovedTime = 0,
-    tempestRemovedTime = 0,
     buffstack = 0,
+    lastspellId = 0,
+    lastaction = 0,
 }
 
 local splinterstorm_time = GetTime();
@@ -3185,17 +3182,16 @@ local function asUnitFrameManaCostPredictionBars_Update(frame, isStarting, start
     APB_Update(frame);
 end
 
-local windrunner_count = 0;
 local enhanced_listOfSpenders = {
-    [8004] = true,   -- Healing Surge
-    [1064] = true,   -- Chain Heal
-    [51505] = true,  -- Lava Burst
-    [188443] = true, -- Chain Lightning
-    [117014] = true, -- Elemental Blast
-    [188196] = true, -- Lightning Bolt
-    [452201] = true, -- Tempest
-
-    [320674] = true  -- Chain Harvest
+    [8004] = true,    -- Healing Surge
+    [1064] = true,    -- Chain Heal
+    [51505] = true,   -- Lava Burst
+    [188443] = true,  -- Chain Lightning
+    [117014] = true,  -- Elemental Blast
+    [188196] = true,  -- Lightning Bolt
+    [452201] = true,  -- Tempest
+    [320674] = true,  -- Chain Harvest
+    [1218090] = true, --Primordial Storm 11.1
 
 
 };
@@ -3219,44 +3215,45 @@ local function updateCombatLog()
     if sourceGUID and (sourceGUID == playerGUID) then
         if bupdate_enhaced_tempest then
             if (eventType == "SPELL_AURA_REMOVED" and spellId == 462131) then
-                tempeststate.awakeningStormRemovedTime = timestamp;
-                --print(timestamp .. eventType .. "Awakening");
+                tempeststate.lastaction = 4;
+                --print("Awaken");
             elseif (eventType == "SPELL_AURA_REMOVED" and spellId == 454015) then
-                tempeststate.buffstack = 0;                
-                tempeststate.tempestRemovedTime = timestamp;
-                --print(timestamp .. eventType .. "Tempest");
-                
+                tempeststate.buffstack = 0;
+
+                if tempeststate.lastaction == 1 and tempeststate.lastspellId == 452201 then
+                    tempeststate.lastaction = 5;
+                    --print("rTempestS");
+                else
+                    tempeststate.lastaction = 3;
+                    --print("rTempest");
+                end
             elseif (eventType == "SPELL_AURA_REMOVED_DOSE" and spellId == 454015) then
                 tempeststate.buffstack = amount;
-                tempeststate.tempestRemovedTime = timestamp;
-                --print(timestamp .. eventType .. "Tempest" .. amount);                
-            elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH" or eventType == "SPELL_AURA_APPLIED_DOSE") and spellId == 454015) then -- Tempest buff                
+                if tempeststate.lastaction == 1 and tempeststate.lastspellId == 452201 then
+                    tempeststate.lastaction = 5;
+                   -- print("rTempestS");
+                else
+                    tempeststate.lastaction = 3;
+                    --print("rTempest");
+                end
+            elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH" or eventType == "SPELL_AURA_APPLIED_DOSE") and spellId == 454015) then -- Tempest buff
                 local needtoreset = false;
-                --print(timestamp .. eventType .. "Tempest");
                 if amount == nil then
                     amount = 1;
-                end               
+                end
+
+                --print(eventType .. amount);
 
                 local buffcount = amount - tempeststate.buffstack;
                 local castTimeDiff = timestamp - tempeststate.lastCastTime;
-                local awakeningStormDiff = timestamp - tempeststate.awakeningStormRemovedTime;
-                local removedDiff = timestamp - tempeststate.tempestRemovedTime;
 
-                --print (buffcount)
-
-                if removedDiff == 0 then
-                    --print("removed");
-                    buffcount = 0;
-                end
-                
                 if buffcount == 2 then
                     needtoreset = true;
                 elseif buffcount == 1 then
-                    if awakeningStormDiff < 0.1 then
-                        --print("awakening");
-                    elseif castTimeDiff < 0.5 then
+                    if (tempeststate.lastaction == 1 or tempeststate.lastaction == 5) and castTimeDiff < 0.5 then
                         needtoreset = true;
-                        --print("reset");
+                    elseif tempeststate.lastaction == 2 and castTimeDiff < 1 then
+                        needtoreset = true;
                     end
                 end
 
@@ -3273,18 +3270,21 @@ local function updateCombatLog()
                     end
                 end
                 tempeststate.buffstack = amount;
+                tempeststate.lastaction = 2;
                 --Maelstorm
             elseif (eventType == "SPELL_CAST_SUCCESS" and enhanced_listOfSpenders[spellId]) then
                 tempeststate.lastCastTime = timestamp;
-                --print(timestamp .. eventType .. spellId);
+                tempeststate.lastspellId = spellId;
+                tempeststate.lastaction = 1;
+                --print("spell");
             elseif (eventType == "SPELL_AURA_REMOVED_DOSE" and spellId == 344179) then
-                if (timestamp == tempeststate.lastCastTime) then
+                if (timestamp - tempeststate.lastCastTime < 0.1) then
                     local consumed = tempeststate.currentStacks - amount;
                     tempeststate.TStacks = tempeststate.TStacks + consumed;
                 end
                 tempeststate.currentStacks = amount;
             elseif (eventType == "SPELL_AURA_REMOVED" and spellId == 344179) then
-                if (timestamp == tempeststate.lastCastTime) then
+                if (timestamp - tempeststate.lastCastTime < 0.1) then
                     local consumed = tempeststate.currentStacks;
                     tempeststate.TStacks = tempeststate.TStacks + consumed;
                 end
@@ -3306,47 +3306,30 @@ local function updateCombatLog()
                 tempeststate.TempestStacks = 0
             end
         elseif bupdate_element_tempest then
-            -- Handle Awakened Storm buff removal
             if (eventType == "SPELL_AURA_REMOVED" and spellId == 462131) then
-                tempeststate.awakeningStormRemovedTime = timestamp;
-                --print(timestamp .. eventType .. "Awakening");
+                tempeststate.lastaction = 4;
             elseif (eventType == "SPELL_AURA_REMOVED" and spellId == 454015) then
-                tempeststate.buffstack = 0;                
-                tempeststate.tempestRemovedTime = timestamp;
-                --print(timestamp .. eventType .. "Tempest");
-                
+                tempeststate.buffstack = 0;
+                tempeststate.lastaction = 3;
             elseif (eventType == "SPELL_AURA_REMOVED_DOSE" and spellId == 454015) then
                 tempeststate.buffstack = amount;
-                tempeststate.tempestRemovedTime = timestamp;
-                --print(timestamp .. eventType .. "Tempest" .. amount);      
-            elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH" or eventType == "SPELL_AURA_APPLIED_DOSE") and spellId == 454015) then -- Tempest buff                
+                tempeststate.lastaction = 3;
+            elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH" or eventType == "SPELL_AURA_APPLIED_DOSE") and spellId == 454015) then -- Tempest buff
                 local needtoreset = false;
-                --print(timestamp .. eventType .. "Tempest");
                 if amount == nil then
                     amount = 1;
-                end               
+                end
 
                 local buffcount = amount - tempeststate.buffstack;
                 local castTimeDiff = timestamp - tempeststate.lastCastTime;
-                local awakeningStormDiff = timestamp - tempeststate.awakeningStormRemovedTime;
-                local removedDiff = timestamp - tempeststate.tempestRemovedTime;
 
-                --print (buffcount)
-
-                if removedDiff == 0 then
-                    --print("removed");
-                    buffcount = 0;
-                end
-                
-                
                 if buffcount == 2 then
                     needtoreset = true;
                 elseif buffcount == 1 then
-                    if awakeningStormDiff < 0.1 then
-                        --print("awakening");
-                    elseif castTimeDiff < 0.5 then
+                    if tempeststate.lastaction == 1 and castTimeDiff < 0.5 then
                         needtoreset = true;
-                        --print("reset");
+                    elseif tempeststate.lastaction == 2 and castTimeDiff < 1 then
+                        needtoreset = true;
                     end
                 end
 
@@ -3363,6 +3346,7 @@ local function updateCombatLog()
                     end
                 end
                 tempeststate.buffstack = amount;
+                tempeststate.lastaction = 2;
             elseif (eventType == "SPELL_CAST_SUCCESS" and elemental_listOfSpenders[spellId]) then
                 tempeststate.lastCastTime = timestamp;
 
@@ -3374,6 +3358,7 @@ local function updateCombatLog()
                 end
 
                 tempeststate.TStacks = tempeststate.TStacks + cost;
+                tempeststate.lastaction = 1;
             end
 
             -- Fail-safe to reset stacks if they exceed 49
