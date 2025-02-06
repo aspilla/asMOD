@@ -12,7 +12,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 
 
 ACI_Options_Default = {
-	version = 250206,
+	version = 250207,
 	-- 	ACI_SpellList_직업명_특성숫자
 	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime, checksnapshot} 순으로 편집
 	-- 	Spell 기술명 혹은 ID (버프는 ID로 입력해야 Icon 나옴)
@@ -315,7 +315,7 @@ ACI_Options_Default = {
 
 	--정기
 	ACI_SpellList_SHAMAN_1 = {
-		version = 250209,
+		version = 250208,
 		{ 260734,        3 },
 		{ { 375982, 2 }, { 114050, 1 } },
 		{ 99,            462816,       { 191634, 2 },                   { 192249, 6, nil, nil, nil, 2065626, nil, { 1020304 }, nil, nil, nil, 20 }, { 198067, 6, nil, nil, nil, 135790, nil, nil, nil, nil, nil, 20 } },
@@ -326,11 +326,11 @@ ACI_Options_Default = {
 
 	--고양	
 	ACI_SpellList_SHAMAN_2 = {
-		version = 250209,
+		version = 250208,
 		{ { 60103, 1, nil, nil, 390371 }, { 470194, 1 }, { 333974, 1 },                   { 114051, 2 } },
 		{ 17364,                          1 },
 		{ 99,                             469314,        { 384352, 2 },                   { 51533, 2, nil, nil, nil, 333957, nil, { 1, 224125, 224126, 224127 }, nil, 1 } }, -- 야수정령
-		{ 99,                             334195,        { 196840, 1, nil, nil, 334196 }, { 375982, 1 },                                                                  { 444995, 6 }, { 187874, 1 } },
+		{ 99,                             334195,        { 196840, 1, nil, nil, 334196 }, { 375982, 2 },                                                                  { 444995, 6 }, { 187874, 1 } },
 		{ 470411,                         4,             nil,                             18 * 0.3,                                                                       nil,           nil,          nil, nil, nil, nil, 6 },
 	},
 
@@ -430,6 +430,18 @@ ACI_Options_Default = {
 	},
 
 };
+
+if version >= 110100 then
+	ACI_Options_Default.ACI_SpellList_SHAMAN_2 = {
+		version = 250211,
+		{ { 60103, 1, nil, nil, 390371 }, { 470194, 1 }, { 333974, 1 },                   { 114051, 2 } },
+		{ 17364,                          1 },
+		{ 99,                             469314,        { 384352, 2 },                   { 51533, 2, nil, nil, nil, 333957, nil, { 1, 224125, 224126, 224127 }, nil, 1 } }, -- 야수정령
+		{ 99,                             334195,        { 196840, 1, nil, nil, 334196 }, { 375982, 1 },                                                                  { 444995, 6 }, { 187874, 1 } },
+		{ 470411,                         4,             nil,                             18 * 0.3,                                                                       nil,           nil,          nil, nil, nil, nil, 6 },
+	};
+
+end
 
 
 ACI_OptionM = {};
