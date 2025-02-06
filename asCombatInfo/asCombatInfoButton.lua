@@ -845,6 +845,12 @@ local function GetActionSlot(arg1)
     return ret;
 end
 
+function ns.Button:clear()
+    if self.time then
+        self.time:Cancel();
+    end
+end
+
 function ns.Button:init(config, frame)
     if self.time then
         self.time:Cancel();

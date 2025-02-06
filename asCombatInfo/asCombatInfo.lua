@@ -50,7 +50,6 @@ end
 
 
 local function asIsPlayerSpell(spell)
-
 	if IsPlayerSpell(spell) then
 		return true;
 	end
@@ -78,12 +77,12 @@ local function asIsPlayerSpell(spell)
 					local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
 
 
-					if spell == flyoutSpellName or spell == flyoutSpellID then						
+					if spell == flyoutSpellName or spell == flyoutSpellID then
 						return true;
 					end
 				end
 			else
-				if spell == spellName or spell == spellID then					
+				if spell == spellName or spell == spellID then
 					return true;
 				end
 			end
@@ -170,8 +169,6 @@ local function ACI_OnEvent(self, event, arg1, ...)
 				ACI[i]:SetAlpha(ACI_Alpha_Normal);
 			end
 		end
-	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
-		C_Timer.After(0.5, ACI_Init);
 	end
 end
 
@@ -181,38 +178,31 @@ local ACI_timer = nil;
 ACI_HideCooldownPulse = false;
 
 function ACI_Init()
-	local localizedClass, englishClass = UnitClass("player")
+	local _, englishClass = UnitClass("player")
 	local spec = GetSpecialization();
-	local talentgroup = GetActiveSpecGroup();
 	local specID = PlayerUtil.GetCurrentSpecID();
-	local configID = ((specID and C_ClassTalents.GetLastSelectedSavedConfigID(specID) or 0) + 19)
-	local listname = "ACI_SpellList";
-
+	local configID = ((specID and C_ClassTalents.GetLastSelectedSavedConfigID(specID) or 0) + 19);
 
 	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
 		spec = 1;
 	end
+
+	local listname = "ACI_SpellList" .. "_" .. englishClass .. "_" .. spec;
 
 	if ACI_timer then
 		ACI_timer:Cancel();
 	end
 	--버튼
 	ACI_SpellList = {};
-
-
-	if spec and configID then
-		listname = "ACI_SpellList" .. "_" .. englishClass .. "_" .. spec;
-		if options[spec] and options[spec][configID] then
-			ACI_SpellListtmp = CopyTable(options[spec][configID]);
-		else
-			if ACI_Options_Default[listname] then
-				ACI_SpellListtmp = CopyTable(ACI_Options_Default[listname]);
-			else
-				ACI_SpellListtmp = {};
-			end
-		end
+	
+	if options[spec] and options[spec][configID] then
+		ACI_SpellList = CopyTable(options[spec][configID]);
 	else
-		ACI_SpellListtmp = {};
+		if ACI_Options_Default[listname] then
+			ACI_SpellList = CopyTable(ACI_Options_Default[listname]);
+		else
+			ACI_SpellList = {};
+		end
 	end
 
 	ACI_Buff_list = {};
@@ -222,22 +212,14 @@ function ACI_Init()
 	ACI_Totem_list = {};
 
 
-	if ACI_SpellListtmp and #ACI_SpellListtmp then
-		ACI_SpellList = {}
-
-		for i = 1, #ACI_SpellListtmp do
-			ACI_SpellList[i] = CopyTable(ACI_SpellListtmp[i]);
-		end
-	end
-
 	if #ACI_SpellList >= 6 then
 		-- asCooldownPulse 를 숨긴다.
 		ACI_HideCooldownPulse = true;
 	end
 
 	for i = 1, ACI_MaxSpellCount do
-		ACI[i]:Hide();
-		setupMouseOver(ACI[i]);
+		ACI[i].obutton:clear();
+		ACI[i]:Hide();		
 	end
 
 	ns.eventhandler.init();
@@ -268,13 +250,6 @@ function ACI_Init()
 						break;
 					end
 				end
-
-				if type(ACI_SpellList[i][1]) == "table" then
-					local array = ACI_SpellList[i][1];
-					for z, v in pairs(array) do
-						ACI_SpellList[i][z] = v;
-					end
-				end
 			else
 				local check = tonumber(ACI_SpellList[i][1]);
 
@@ -285,8 +260,7 @@ function ACI_Init()
 						if ACI_SpellList[i][3] then
 							local array = ACI_SpellList[i][3];
 							if type(array) == "table" then
-								ACI_SpellList[i][3] = nil;
-								ACI_SpellList[i][4] = nil;
+								ACI_SpellList[i] = {};
 
 								for z, v in pairs(array) do
 									ACI_SpellList[i][z] = v;
@@ -294,21 +268,25 @@ function ACI_Init()
 							end
 						end
 					else
-						if ACI_SpellList[i][4] then
-							local array = ACI_SpellList[i][4];
-							if type(array) == "table" then
-								ACI_SpellList[i][3] = nil;
-								ACI_SpellList[i][4] = nil;
-
-								for z, v in pairs(array) do
-									ACI_SpellList[i][z] = v;
+						for j = 4, #(ACI_SpellList[i]) do
+							if ACI_SpellList[i][j] then
+								local array = ACI_SpellList[i][j];
+								if type(array) == "table" then
+									local spell_name = array[1];
+									if asIsPlayerSpell(spell_name) or j == #(ACI_SpellList[i]) then
+										ACI_SpellList[i] = {};
+										for z, v in pairs(array) do
+											ACI_SpellList[i][z] = v;
+										end
+										break;
+									end
 								end
 							end
 						end
 					end
 				end
 			end
-
+			
 			ACI[i].obutton:init(ACI_SpellList[i], ACI[i]);
 			ACI[i].tooltip = (ACI_SpellList[i][1]);
 			if type(ACI_SpellList[i][1]) == "number" then
@@ -316,12 +294,6 @@ function ACI_Init()
 			else
 				ACI[i].spellid = select(7, asGetSpellInfo(ACI_SpellList[i][1]));
 			end
-		end
-
-		local bload = C_AddOns.LoadAddOn("asCooldownPulse")
-
-		if bload and #ACI_SpellList > 5 and ACDP_Show_CoolList == true then
-			ACDP_Show_CoolList = false;
 		end
 	end
 
@@ -342,9 +314,6 @@ end
 ACI_mainframe = CreateFrame("Frame", nil, UIParent);
 ACI_mainframe:SetScript("OnEvent", ACI_OnEvent);
 ACI_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
-ACI_mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED");
-ACI_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-ACI_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 ACI_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 ACI_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
 ACI_mainframe:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
@@ -410,7 +379,7 @@ for i = 1, ACI_MaxSpellCount do
 			else
 				r:SetFont(STANDARD_TEXT_FONT, ACI_CooldownFontSize - 2, "OUTLINE")
 				ACI[i].cooldownfont.fontsize = ACI_CooldownFontSize - 2;
-			end			
+			end
 			break
 		end
 	end
@@ -419,17 +388,17 @@ for i = 1, ACI_MaxSpellCount do
 
 	ACI[i].icon:SetTexCoord(.08, .92, .08, .92);
 	ACI[i].border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-	ACI[i].border:Hide();	
+	ACI[i].border:Hide();
 
 	if i < 6 then
 		ACI[i].count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize, "OUTLINE")
 	else
 		ACI[i].count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 2, "OUTLINE")
 	end
-	
+
 	ACI[i].count:ClearAllPoints();
 	ACI[i].count:SetPoint("BOTTOMRIGHT", ACI[i], "BOTTOMRIGHT", -3, 3);
-	
+
 	ACI[i].spellcool:ClearAllPoints();
 	ACI[i].spellcool:SetPoint("CENTER", ACI[i], "BOTTOM", 0, 0);
 	ACI[i].spellcool:SetFont(STANDARD_TEXT_FONT, ACI_CooldownFontSize - 2, "OUTLINE");
@@ -442,7 +411,6 @@ for i = 1, ACI_MaxSpellCount do
 	ACI[i].snapshot:ClearAllPoints();
 	ACI[i].snapshot:SetPoint("CENTER", ACI[i], "TOP", 0, -8);
 	ACI[i].snapshot:Hide();
-	
 end
 
 
