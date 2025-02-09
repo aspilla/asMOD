@@ -218,28 +218,12 @@ local ADotF_UnitList = {
 
 local ADotF = nil;
 ADotF_ShowList = nil;
-ADotF_NameList = {};
 
 
-local function ADotF_UnitDebuff(unit, buff, filter)
-
-    local i = 1;
-    local ret = nil;
+local function ADotF_UnitDebuff(unit, buff)    
 
     local auraList = ns.ParseAllDebuff(unit);
-
-    auraList:Iterate(function(auraInstanceID, aura)
-        if aura and aura.spellId == buff then
-            if aura.duration > 0 then
-                ret = aura;
-                return true;
-            elseif ret == nil then
-                ret = aura;
-                return true;
-            end
-        end
-        return false;
-    end);
+    local ret = auraList[buff];
 
     if ret then
         return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit, ret.spellId;
@@ -391,7 +375,7 @@ local function ADotF_UpdateDebuff(unit)
 
         for i = 1, #ADotF_ShowList do
             _, icon, count, debuffType, duration, expirationTime, caster, spellId = ADotF_UnitDebuff(unit,
-                ADotF_ShowList[i][1], "PLAYER");
+                ADotF_ShowList[i][1]);
 
             if icon and caster == "player" or caster == "pet" then
                 if numDebuffs > ADotF_MAX_DEBUFF_SHOW then
@@ -545,11 +529,11 @@ local function ADotF_InitList()
     end
 
     ADotF_ShowList = _G[listname];
-    ADotF_NameList = {};
-
+    ns.ClearLists();
+    
     if ADotF_ShowList then
-        for idx = 1, #ADotF_ShowList do
-            ADotF_NameList[ADotF_ShowList[idx][1]] = ADotF_ShowList[idx][2];
+        for idx = 1, #ADotF_ShowList do        
+            ns.AddDebuff(ADotF_ShowList[idx][1]);
         end
     end
 end

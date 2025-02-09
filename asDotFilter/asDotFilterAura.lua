@@ -53,25 +53,16 @@ end
 local auraData = {};
 auraData.bufffilter = CreateFilterString(AuraFilters.Helpful, AuraFilters.Player, AuraFilters.IncludeNameplateOnly);
 auraData.debufffilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.Player);
+local debufflist = {};
 
-function ns.ParseAllBuff(unit)
+function ns.ClearLists()
+    debufflist = {};
+end
 
-    if auraData.buffs == nil then
-        auraData.buffs = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
-    else
-        auraData.buffs:Clear();
+function ns.AddDebuff(auras)
+    if auras then
+        debufflist[auras] = true;            
     end
-
-    local batchCount = nil;
-    local usePackedAura = true;
-    local function HandleAura(aura)
-        if aura then
-            auraData.buffs[aura.auraInstanceID] = aura;
-        end
-    end
-    ForEachAura(unit, auraData.bufffilter, batchCount, HandleAura, usePackedAura);
-
-    return auraData.buffs;
 end
 
 function ns.ParseAllDebuff(unit)
@@ -85,8 +76,8 @@ function ns.ParseAllDebuff(unit)
     local batchCount = nil;
     local usePackedAura = true;
     local function HandleAura(aura)
-        if aura then
-            auraData.debuffs[aura.auraInstanceID] = aura;
+        if aura and debufflist[aura.spellId] then
+            auraData.debuffs[aura.spellId] = aura;
         end
     end
     ForEachAura(unit, auraData.debufffilter, batchCount, HandleAura, usePackedAura);

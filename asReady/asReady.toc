@@ -2,12 +2,11 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rReady
 ## Notes: Tracking interrupt/offensive cooldowns of party/raid members
-## Version : 250129
+## Version : 250209
 ## SavedVariablesPerCharacter: ARDY_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 Libs\LibStub\LibStub.lua
 Libs\LibOpenRaid\lib.xml
 asReadyOption.lua
-asReadyAura.lua
 asReady.xml

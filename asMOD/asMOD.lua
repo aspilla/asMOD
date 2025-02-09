@@ -13,7 +13,7 @@ local version = select(4, GetBuildInfo());
 local detailsprofile = ns.detailsEn;
 
 if GetLocale() == "koKR" then
-	detailsprofile = ns.detailsKr;	
+	detailsprofile = ns.detailsKr;
 end
 
 local function asMOD_Import_Layout(text, name)
@@ -282,7 +282,7 @@ local function asMOD_Setup()
 				["SpamSpecRoledefensive"] = false,
 				["RangeFrameRadarY"] = 0.9783453345298767,
 				["OverrideBossAnnounce"] = false,
-				["CoreSavedRevision"] = 20241214215312,
+				["CoreSavedRevision"] = 20250131061535,
 				["RangeFrameX"] = -229.7040557861328,
 				["NPIconGrowthDirection"] = "CENTER",
 				["RangeFrameY"] = 76.74076080322266,
@@ -353,14 +353,15 @@ local function asMOD_Setup()
 				["DontShowNameplateIconsCast"] = true,
 				["SpecialWarningFlashAlph4"] = 0.4,
 				["PTCountThreshold2"] = 5,
+				["ZoneCombatSyncing"] = false,
 				["VPReplacesAnnounce"] = true,
 				["DisableAmbiance"] = false,
 				["oRA3AnnounceConsumables"] = false,
 				["CountdownVoice2"] = "Kolt",
-				["ChosenVoicePack2"] = "None",
+				["AFKHealthWarning"] = false,
 				["EnableWBSharing"] = false,
 				["ArrowPosX"] = 0,
-				["AFKHealthWarning"] = false,
+				["ChosenVoicePack2"] = "None",
 				["AITimer"] = true,
 				["LogTWDungeons"] = false,
 				["HideMovieInstanceAnywhere"] = true,
@@ -410,8 +411,8 @@ local function asMOD_Setup()
 				["RangeFrameRadarPoint"] = "BOTTOMRIGHT",
 				["GroupOptionsExcludePA"] = false,
 				["DontShowInfoFrame"] = true,
-				["NPIconYOffset"] = 0,
 				["SpecialWarningFlash2"] = true,
+				["NPIconYOffset"] = 0,
 				["WarningX"] = 0,
 				["MovieFilter2"] = "Never",
 				["ArrowPoint"] = "TOP",
@@ -430,14 +431,14 @@ local function asMOD_Setup()
 				["SpecialWarningVibrate5"] = true,
 				["ShowEngageMessage"] = false,
 				["RangeFrameSound1"] = "none",
-				["OverrideBossTimer"] = false,
+				["WorldBossNearAlert"] = false,
 				["WarningFontSize"] = 16.47568893432617,
-				["EventSoundVictory2"] = "Interface\\AddOns\\DBM-Core\\sounds\\Victory\\SmoothMcGroove_Fanfare.ogg",
+				["EventSoundVictory2"] = "None",
 				["AutoExpandSpellGroups"] = false,
 				["LastRevision"] = 0,
 				["GUIPoint"] = "CENTER",
 				["SettingsMessageShown"] = true,
-				["WorldBossNearAlert"] = false,
+				["OverrideBossTimer"] = false,
 				["AutoReplySound"] = false,
 				["SpecialWarningFlashCount5"] = 3,
 				["SpecialWarningFont"] = "standardFont",
@@ -461,10 +462,10 @@ local function asMOD_Setup()
 				["HideTooltips"] = false,
 				["GroupOptionsBySpell"] = true,
 				["FilterTankSpec"] = true,
-				["DontShowSpecialWarningText"] = false,
 				["EnteringCombatAlert"] = false,
 				["EventDungMusicMythicFilter"] = false,
 				["AutoRespond"] = true,
+				["DontShowSpecialWarningText"] = false,
 				["WarningPoint"] = "CENTER",
 				["FilterTInterruptCooldown"] = true,
 				["SpamSpecRoleswitch"] = false,
@@ -516,6 +517,8 @@ local function asMOD_Setup()
 			["bossModsWithTests"] = {
 			},
 		}
+
+
 
 
 		DBT_AllPersistentOptions = {

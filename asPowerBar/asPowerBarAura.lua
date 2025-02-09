@@ -58,6 +58,50 @@ auraData.debufffilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.Play
 local bufftime = {};
 local debufftime = {};
 ns.needtocheckAura = true;
+local bufflist = {};
+local debufflist = {};
+
+function ns.ClearLists()
+    bufflist = {};
+    debufflist = {};
+end
+
+function ns.AddBuff(auras)
+
+    if auras then
+        if type(auras) == "table" then
+            for _, id in pairs(auras) do
+                bufflist[id] = true;    
+            end
+        else    
+            bufflist[auras] = true;
+        end
+    end
+end
+
+function ns.AddBuffC(auras)
+
+    if auras then
+        for _, list in pairs(auras) do
+            if type(list) == "table" and list[1] then
+                bufflist[list[1]] = true;                  
+            end            
+        end
+    end
+end
+
+function ns.AddDebuff(auras)
+
+    if auras then
+        if type(auras) == "table" then
+            for _, id in pairs(auras) do
+                debufflist[id] = true;                
+            end
+        else    
+            debufflist[auras] = true;            
+        end
+    end
+end
 
 function ns.GetAuraDataBySpellName(unit, spell, bdebuff)
 
@@ -88,8 +132,8 @@ function ns.ParseAllBuff(unit)
     local batchCount = nil;
     local usePackedAura = true;
     local function HandleAura(aura)
-        if aura then
-            auraData.buffs[unit][aura.auraInstanceID] = aura;
+        if aura and bufflist[aura.spellId] then
+            auraData.buffs[unit][aura.spellId] = aura;
         end
     end
     ForEachAura(unit, auraData.bufffilter, batchCount, HandleAura, usePackedAura);
@@ -114,8 +158,8 @@ function ns.ParseAllDebuff(unit)
     local batchCount = nil;
     local usePackedAura = true;
     local function HandleAura(aura)
-        if aura then
-            auraData.debuffs[unit][aura.auraInstanceID] = aura;
+        if aura and debufflist[aura.spellId] then
+            auraData.debuffs[unit][aura.spellId] = aura;            
         end
     end
     ForEachAura(unit, auraData.debufffilter, batchCount, HandleAura, usePackedAura);
