@@ -3388,3 +3388,4 @@ DBM-Test-WarWithin/Undermine/Vexieand-Mythic-Wipe.lua
 DBM-Test-WarWithin/Undermine/Vexieand-Normal-Kill.lua
 .continue/prompts/new-prompt-file.prompt
 .vscode/extensions.json
+.vscode/settings.json
