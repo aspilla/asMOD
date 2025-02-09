@@ -902,7 +902,8 @@ local function SetupEditBoxOption()
         editBox:SetText(spell);
         editBox:SetAutoFocus(false);
         editBox:ClearFocus();
-        editBox:SetTextInsets(0, 0, 0, 1)
+        editBox:SetTextInsets(0, 0, 0, 1);
+        editBox:SetNumeric(true);
         editBox:Show();
         editBox:SetCursorPosition(0);
         x = x + 180;
@@ -985,7 +986,7 @@ local function SetupEditBoxOption()
         end
 
         local function updatedata()
-            local newspell = editBox:GetText();
+            local newspell = editBox:GetNumber();
             local newtime = tonumber(editBox2:GetText());
             local newcolor = (UIDropDownMenu_GetSelectedValue(dropDown));
             local newbcount = (UIDropDownMenu_GetSelectedValue(dropDown2) == 1);
@@ -1059,15 +1060,16 @@ local function SetupEditBoxOption()
     btn:SetWidth(100)
     btn:SetScript("OnClick", function()
         for idx, values in pairs(prioritytable) do
-            local priority = 6 - idx;
+            local priority = 6 - idx;            
             local spell = values[1];
             local time = values[2];
             local bshowcolor = values[3];
             local bcount = values[4];
 
-            if spell and spell ~= "" then
+            if spell and spell > 0 then
                 ANameP_Options[listname][spell] = { time, priority, bshowcolor, bcount };
             end
+            
         end
         C_Timer.After(1.5, ReloadUI());
     end)
