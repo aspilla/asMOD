@@ -90,7 +90,8 @@ ns.ShowList_ROGUE = {
 		[452923] = 2, -- 도적 동전
 		[441786] = 4, -- 도적 무형검
 		[441326] = 2, -- 도적 무형검	
-
+		
+		[381623] = 2, -- 엉겅퀴 차
 		[193538] = 1, -- 기민함	
 
 		[455366] = 4, -- 암살 뼈가시
@@ -121,7 +122,7 @@ ns.ShowList_ROGUE = {
 
 
 	},
-	version = 250111,
+	version = 250209,
 }
 
 ns.ShowList_HUNTER = {
@@ -875,7 +876,7 @@ local function SetupSubOption(panel, titlename, coption, soption)
 	local localeTexts = { "Buff ID", "Type" };
 
 	local x = 10;
-
+	
 	local title = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
 	title:SetPoint("TOPLEFT", x, curr_y);
 	title:SetText(localeTexts[1]);
@@ -938,7 +939,8 @@ local function SetupSubOption(panel, titlename, coption, soption)
 	editBox:SetText("");
 	editBox:SetAutoFocus(false);
 	editBox:ClearFocus();
-	editBox:SetTextInsets(0, 0, 0, 1)
+	editBox:SetTextInsets(0, 0, 0, 1);
+	editBox:SetNumeric(true);
 	editBox:Show();
 	editBox:SetCursorPosition(0);
 	x = x + 150;
@@ -985,7 +987,7 @@ local function SetupSubOption(panel, titlename, coption, soption)
 			coption[newspell] = newtype;
 			if soption then
 				soption[newspell] = newtype;
-			end
+		end
 			ns.refreshList();
 		end
 
