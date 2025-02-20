@@ -408,9 +408,81 @@ local function ParseAllAuras(unit)
 	ForEachAura(unit, filter, batchCount, HandleAura, usePackedAura);
 end
 
+local function SetBuff(frame, icon, applications, expirationTime, duration, color, alert, bigcount, countcolor, currtime)
+	local data = frame.data;
+
+	if (applications ~= data.applications) then
+		local frameCount = frame.count;
+		if bigcount then
+			frameCount = frame.bigcount;
+			frame.count:Hide();
+		else
+			frame.bigcount:Hide();
+		end
+
+		if (applications > 1) then
+			frameCount:Show();
+			frameCount:SetText(applications);
+			if countcolor then
+				frameCount:SetTextColor(countcolor.r, countcolor.g, countcolor.b);
+			end
+		else
+			frameCount:Hide();
+		end
+		data.applications = applications;
+	end
+
+	local isshow = false;
+
+	if (duration > 0 and (expirationTime - currtime) <= 60) then
+		isshow = true;
+	end
+
+	if (expirationTime ~= data.expirationTime) or
+		(duration ~= data.duration) or
+ 		(isshow ~= data.isshow) then
+		if (isshow) then
+			local startTime = expirationTime - duration;
+			asCooldownFrame_Set(frame.cooldown, startTime, duration, duration > 0, true);
+		else
+			asCooldownFrame_Clear(frame.cooldown);
+		end
+
+		data.duration = duration;
+		data.expirationTime = expirationTime;
+		data.isshow = isshow;
+	end
+
+	if (color ~= data.color) then
+		frame.border:SetVertexColor(color.r, color.g, color.b);
+		data.color = color;
+	end
+
+	if (alert ~= data.alert) then
+		if alert == 2 then
+			ns.lib.ButtonGlow_Stop(frame);
+			ns.lib.PixelGlow_Start(frame);
+		elseif alert == 3 then
+			ns.lib.PixelGlow_Stop(frame);
+			ns.lib.ButtonGlow_Start(frame);
+		else
+			ns.lib.ButtonGlow_Stop(frame);
+			ns.lib.PixelGlow_Stop(frame);
+		end
+		data.alert = alert;
+	end
+
+	if (icon ~= data.icon) then
+		frame.icon:SetTexture(icon);
+		data.icon = icon;
+		frame:Show();
+	end
+end
+
 local function updateTotemAura()
 	local left = 1;
 	local center = 1;
+	local curr_time = GetTime();
 
 	for slot = 1, MAX_TOTEMS do
 		local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
@@ -430,48 +502,11 @@ local function updateTotemAura()
 
 				local expirationTime = start + duration;
 
-
-				-- set the icon
-				local frameIcon = frame.icon;
-				frameIcon:SetTexture(icon);
-
 				frame.totemslot = slot;
 				frame.auraInstanceID = nil;
+				local color = { r = 0.5, g = 0.5, b = 0.5 };
 
-				-- set the count
-				local frameCount = frame.count;
-				local frameBigCount = frame.bigcount;
-				-- Handle cooldowns
-				local frameCooldown = frame.cooldown;
-
-				frameCount:Hide();
-				frameBigCount:Hide();
-
-				if (duration > 0 and duration <= 120) then
-					frameCooldown:Show();
-					asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0, true);
-					frameCooldown:SetHideCountdownNumbers(false);
-				else
-					frameCooldown:Hide();
-				end
-
-				local frameBorder = frame.border;
-
-				local color = { r = 0.5, g = 0.5, b = 0.5};
-
-				frameBorder:SetVertexColor(color.r, color.g, color.b);
-				frame:Show();
-
-				if alert == 2 then
-					ns.lib.ButtonGlow_Stop(frame);
-					ns.lib.PixelGlow_Start(frame);
-				elseif alert == 3 then
-					ns.lib.PixelGlow_Stop(frame);
-					ns.lib.ButtonGlow_Start(frame);
-				else
-					ns.lib.ButtonGlow_Stop(frame);
-					ns.lib.PixelGlow_Stop(frame);
-				end
+				SetBuff(frame, icon, 0, expirationTime, duration, color, alert, false, nil, curr_time);
 			end
 		end
 	end
@@ -485,6 +520,7 @@ local function HideFrame(p, idx)
 	if (frame) then
 		ns.lib.ButtonGlow_Stop(frame);
 		ns.lib.PixelGlow_Stop(frame);
+		frame.data = {};
 		frame:Hide();
 	end
 end
@@ -544,75 +580,40 @@ local function UpdateAuraFrames(unit, auraList)
 			end
 
 			frame.unit = unit;
-			frame.auraInstanceID = aura.auraInstanceID;
+			frame.auraInstanceID = auraInstanceID;
 			frame.totemslot = nil;
+			local alert = 0;
+			local countcolor = nil;
 
-			-- set the icon
-			local frameIcon = frame.icon
-			frameIcon:SetTexture(aura.icon);
-			-- set the count
-			local frameCount = frame.count;
-			local frameBigCount = frame.bigcount;
+			local color = { r = 0, g = 0, b = 0 };
+			local bigcount = false;
 
-			-- Handle cooldowns
-			local frameCooldown = frame.cooldown;
-			local balertcount = false;
+			if (aura.isStealable) or (aura.procbuff) then
+				alert = 3;
+			else
+				if aura.buffType == UnitFrameBuffType.PriorityBuff then
+					alert = 2;
+				elseif aura.buffType == UnitFrameBuffType.ImportantBuff then
+					alert = 3;
+				end
+			end
 
 			if aura.buffType == UnitFrameBuffType.CountBuff and aura.applications then
 				if aura.buffcheckcount and aura.applications >= aura.buffcheckcount then
-					frameBigCount:SetTextColor(1, 0, 0, 1);
-					balertcount = true;
+					countcolor = { r = 1, g = 0, b = 0 };
+					alert = 3;
 				else
-					frameBigCount:SetTextColor(1, 1, 1, 1);
+					countcolor = { r = 1, g = 1, b = 1 };
 				end
-
-
-				frameBigCount:SetText(aura.applications);
-				frameBigCount:Show();
-				frameCount:Hide();
-			else
-				if (aura.applications and aura.applications > 1) then
-					frameCount:SetText(aura.applications);
-					frameCount:Show();
-					frameBigCount:Hide();
-				else
-					frameCount:Hide();
-					frameBigCount:Hide();
-				end
+				bigcount = true;
 			end
 
 			if aura.buffType == UnitFrameBuffType.CountBuff then
-				frameCooldown:Hide();
-			elseif (aura.duration > 0 and (aura.expirationTime - curr_time) <= 60) then
-				frameCooldown:Show();
-				asCooldownFrame_Set(frameCooldown, aura.expirationTime - aura.duration, aura.duration, aura.duration > 0,
-					true);
-				frameCooldown:SetHideCountdownNumbers(false);
-			else
-				frameCooldown:Hide();
+				aura.duration = 0;
 			end
 
-			local frameBorder = frame.border;
-			local color = { r = 0, g = 0, b = 0 };
-			frameBorder:SetVertexColor(color.r, color.g, color.b);
-
-			if (aura.isStealable) or (aura.procbuff) then
-				ns.lib.ButtonGlow_Start(frame);
-			else
-				if balertcount then
-					ns.lib.PixelGlow_Stop(frame);
-					ns.lib.ButtonGlow_Start(frame);
-				elseif aura.buffType == UnitFrameBuffType.PriorityBuff then
-					ns.lib.ButtonGlow_Stop(frame);
-					ns.lib.PixelGlow_Start(frame);
-				elseif aura.buffType == UnitFrameBuffType.ImportantBuff then
-					ns.lib.PixelGlow_Stop(frame);
-					ns.lib.ButtonGlow_Start(frame);
-				else
-					ns.lib.ButtonGlow_Stop(frame);
-					ns.lib.PixelGlow_Stop(frame);
-				end
-			end
+			SetBuff(frame, aura.icon, aura.applications, aura.expirationTime, aura.duration, color, alert, bigcount,
+				countcolor, curr_time);
 
 			frame:Show();
 			return false;
@@ -649,6 +650,7 @@ local function ABF_ClearFrame()
 
 		if (frame) then
 			frame:Hide();
+			frame.data = {};
 			ns.lib.ButtonGlow_Stop(frame);
 			ns.lib.PixelGlow_Stop(frame);
 		else
@@ -688,7 +690,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif (event == "PLAYER_TOTEM_UPDATE") then
 		UpdateAuras("player");
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		hasValidPlayer = true;		
+		hasValidPlayer = true;
 		ABF_Resize();
 		UpdateAuras("player");
 		UpdateAuras("target");
@@ -699,7 +701,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ABF:SetAlpha(ns.ABF_AlphaNormal);
 		ABF_Resize();
-		DumpCaches();	
+		DumpCaches();
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") and arg1 then
 		local spell_name = asGetSpellInfo(arg1);
 		overlayspell[arg1] = true;
@@ -759,7 +761,6 @@ local function ABF_UpdateBuffAnchor(frames, index, offsetX, right, center, paren
 	-- Resize
 	buff:SetWidth(ns.ABF_SIZE);
 	buff:SetHeight(ns.ABF_SIZE * 0.8);
-
 end
 
 local function CreatBuffFrames(parent, bright, bcenter, max)
@@ -771,6 +772,7 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
 		local frame = parent.frames[idx];
 		frame.cooldown:SetDrawSwipe(true);
+		frame.cooldown:SetHideCountdownNumbers(false);
 
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
@@ -778,9 +780,9 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 				r:ClearAllPoints();
 				r:SetPoint("TOP", 0, 5);
 				r:SetDrawLayer("OVERLAY");
-				break;		
+				break;
 			end
-		end		
+		end
 
 		frame.count:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize, "OUTLINE")
 		frame.count:ClearAllPoints()
@@ -815,6 +817,8 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 		frame:EnableMouse(false);
 		frame:SetMouseMotionEnabled(true);
 
+		frame.data = {};
+
 		frame:Hide();
 	end
 
@@ -834,11 +838,11 @@ function ns.Loadoptions()
 	if savedlist and savedlist.classbuffs and savedlist.classcountbuffs and savedlist.classtotems and savedlist.version == classlist.version then
 		ns.show_list = CopyTable(savedlist.classbuffs);
 		ns.show_countlist = CopyTable(savedlist.classcountbuffs);
-		ns.show_totemlist = CopyTable(savedlist.classtotems);		
+		ns.show_totemlist = CopyTable(savedlist.classtotems);
 	elseif classlist and classlist.classbuffs and classlist.classcountbuffs and classlist.classtotems then
 		ns.show_list = CopyTable(classlist.classbuffs);
 		ns.show_countlist = CopyTable(classlist.classcountbuffs);
-		ns.show_totemlist = CopyTable(classlist.classtotems);	
+		ns.show_totemlist = CopyTable(classlist.classtotems);
 		ABF_Options[ns.listname] = {};
 		ABF_Options[ns.listname] = CopyTable(classlist);
 	else
@@ -849,7 +853,7 @@ function ns.Loadoptions()
 
 	for id, value in pairs(ns.ABF_OtherBuffList) do
 		ns.show_list[id] = value;
-	end	
+	end
 
 	ABF_Resize();
 	UpdateAuras("player");
@@ -932,7 +936,7 @@ local function ABF_Init()
 		ABF:RegisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE");
 	end
 
-	ns.SetupOptionPanels();	
+	ns.SetupOptionPanels();
 
 	ABF:SetScript("OnEvent", ABF_OnEvent)
 

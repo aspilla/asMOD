@@ -6,7 +6,7 @@ local ADF_TARGET_DEBUFF;
 
 local ADF_BlackList = {
 
-    [206151] = 1,        --도전자의 짐
+    [206151] = 1, --도전자의 짐
     --	["상처 감염 독"] = 1,	
     --	["신경 마취 독"] = 1,
     --	["맹독"] = 1,
@@ -135,8 +135,8 @@ function asDebuffPrivateAuraAnchorMixin:SetUnit(unit)
         privateAnchorArgs.iconInfo =
         {
             iconAnchor = iconAnchor,
-			iconWidth = self:GetWidth(),
-			iconHeight = self:GetHeight(),
+            iconWidth = self:GetWidth(),
+            iconHeight = self:GetHeight(),
         };
         privateAnchorArgs.durationAnchor = nil;
 
@@ -151,7 +151,7 @@ local function CreatPrivateFrames(parent)
 
     for idx = 1, 2 do
         parent.PrivateAuraAnchors[idx] = CreateFrame("Frame", nil, parent, "asDebuffPrivateAuraAnchorTemplate");
-        parent.PrivateAuraAnchors[idx].auraIndex = idx;        
+        parent.PrivateAuraAnchors[idx].auraIndex = idx;
         parent.PrivateAuraAnchors[idx]:SetSize(ns.ADF_SIZE + 5, (ns.ADF_SIZE + 5) * 0.8);
         parent.PrivateAuraAnchors[idx]:SetUnit("player");
 
@@ -495,7 +495,7 @@ local function ProcessAura(aura, unit)
     if skip == false then
         if unit == "target" then
             local showlist = show_list and show_list[aura.spellId];
-            if showlist then                
+            if showlist then
                 if showlist[2] then
                     aura.debuffType = UnitFrameDebuffType.BossDebuff + showlist[2];
                 end
@@ -553,13 +553,98 @@ local function ParseAllAuras(unit)
     ForEachAura(unit, filter, batchCount, HandleAura, usePackedAura);
 end
 
+local function SetDebuff(frame, icon, applications, expirationTime, duration, color, snapshot, alert, currtime, size)
+    local data = frame.data;
+
+    if (applications ~= data.applications) then
+        local frameCount = frame.count;
+        if (applications > 1) then
+            frameCount:Show();
+            frameCount:SetText(applications);
+        else
+            frameCount:Hide();
+        end
+        data.applications = applications;
+    end
+
+    if snapshot ~= data.snapshot then
+        frame.snapshot:SetText(math.floor(snapshot * 100));
+        if snapshot > 1 then
+            frame.snapshot:SetTextColor(0.5, 1, 0.5);
+            frame.snapshot:Show();
+        elseif snapshot == 1 then
+            frame.snapshot:Hide();
+        else
+            frame.snapshot:SetTextColor(1, 0.5, 0.5);
+            frame.snapshot:Show();
+        end
+        data.snapshot = snapshot;
+    end
+
+    local isshow = false;
+
+    if (duration > 0 and (expirationTime - currtime) <= 60) then
+        isshow = true;
+    end
+
+    if (expirationTime ~= data.expirationTime) or
+        (duration ~= data.duration) or
+        (isshow ~= data.isshow) then
+        if (isshow) then
+            local startTime = expirationTime - duration;
+            asCooldownFrame_Set(frame.cooldown, startTime, duration, duration > 0, true);
+        else
+            asCooldownFrame_Clear(frame.cooldown);
+        end
+
+        data.duration = duration;
+        data.expirationTime = expirationTime;
+        data.isshow = isshow;
+    end
+
+    if color and (color ~= data.color) then
+        frame.border:SetVertexColor(color.r, color.g, color.b);
+        data.color = color;
+    end
+
+    if (alert ~= data.alert) then
+        if alert == 3 then
+            ns.lib.PixelGlow_Stop(frame);
+            ns.lib.ButtonGlow_Start(frame);
+        elseif alert == 2 then
+            ns.lib.ButtonGlow_Stop(frame);
+            ns.lib.PixelGlow_Start(frame);
+        elseif alert == 1 then
+            ns.lib.ButtonGlow_Stop(frame);
+            ns.lib.PixelGlow_Start(frame, { color.r, color.g, color.b, 1 });
+        else
+            ns.lib.ButtonGlow_Stop(frame);
+            ns.lib.PixelGlow_Stop(frame);
+        end
+        data.alert = alert;
+    end
+
+    if (size ~= data.size) then
+        frame:SetWidth(size);
+        frame:SetHeight(size * 0.8);
+        data.size = size;
+    end
+
+    if (icon ~= data.icon) then
+        frame.icon:SetTexture(icon);
+        data.icon = icon;
+        frame:Show();
+    end
+end
+
 local function UpdateAuraFrames(unit, auraList, numAuras)
     local i = 0;
     local parent = ADF_TARGET_DEBUFF;
     local guid = UnitGUID("target");
+    local curr_time = GetTime();
 
     if (unit == "player") then
-        parent = ADF_PLAYER_DEBUFF;    
+        parent = ADF_PLAYER_DEBUFF;
     end
 
 
@@ -575,26 +660,12 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             frame.unit = unit;
             frame.auraInstanceID = aura.auraInstanceID;
 
-            -- set the icon
-            local frameIcon = frame.icon
-            frameIcon:SetTexture(aura.icon);
-            -- set the count
-            local frameCount = frame.count;
-            local alert = false;
-
-            -- Handle cooldowns
-            local frameCooldown = frame.cooldown;
-
-            if (aura.applications and aura.applications > 1) then
-                frameCount:SetText(aura.applications);
-                frameCount:Show();
-            else
-                frameCount:Hide();
-            end
+            local alert = 0;
+            local snapshot = 1;
 
             local showlist = show_list and show_list[aura.spellId];
 
-            if unit == "target" and showlist then                
+            if unit == "target" and showlist then
                 local showlist_time = showlist[1];
                 local alertcount = showlist[4] or false;
                 local checksnapshot = showlist[5] or false;
@@ -608,50 +679,18 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
                 if showlist_time >= 0 and alertcount == false then
                     local alert_time = aura.expirationTime - showlist_time;
 
-                    if (GetTime() >= alert_time) and aura.duration > 0 then
-                        alert = true;
+                    if (curr_time >= alert_time) and aura.duration > 0 then
+                        alert = 2;
                     end
                 elseif showlist_time >= 0 and alertcount then
                     if (aura.applications >= showlist_time) then
-                        alert = true;
+                        alert = 2;
                     end
                 end
 
-                if  checksnapshot and asDotSnapshot and asDotSnapshot.Relative then                
-                    local snapshots = asDotSnapshot.Relative(guid, aura.spellId);
-            
-                    if snapshots then
-            
-                        frame.snapshot:SetText(math.floor(snapshots * 100));
-                        if snapshots > 1 then
-                            frame.snapshot:SetTextColor(0.5, 1, 0.5);                
-                            frame.snapshot:Show();
-                        elseif snapshots == 1 then                                         
-                            frame.snapshot:Hide();
-                        else
-                            frame.snapshot:SetTextColor(1, 0.5, 0.5);
-                            frame.snapshot:Show();
-                        end                 
-                        
-                    else            
-                        frame.snapshot:Hide();
-                    end
-                    --print("working")
-                else
-                    frame.snapshot:Hide();
+                if checksnapshot and asDotSnapshot and asDotSnapshot.Relative then
+                    snapshot = asDotSnapshot.Relative(guid, aura.spellId);
                 end
-            else
-                frame.snapshot:Hide();
-    
-            end
-
-            if (aura.duration > 0) then
-                frameCooldown:Show();
-                asCooldownFrame_Set(frameCooldown, aura.expirationTime - aura.duration, aura.duration, aura.duration > 0,
-                    true);
-                frameCooldown:SetHideCountdownNumbers(false);
-            else
-                frameCooldown:Hide();
             end
 
             local color = nil;
@@ -663,37 +702,25 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             end
 
             if (unit == "player" or UnitCanAssist(unit, "player")) and DispellableDebuffTypes[aura.dispelName] then
-                ns.lib.PixelGlow_Start(frame, { color.r, color.g, color.b, 1 });
-            elseif alert then
-                ns.lib.PixelGlow_Start(frame);
-            else
-                ns.lib.PixelGlow_Stop(frame);
+                alert = 1;
             end
+
+            local size = ns.ADF_SIZE + 4;
 
             if aura.debuffType == UnitFrameDebuffType.NonBossDebuff then
-                frame:SetWidth(ns.ADF_SIZE);
-                frame:SetHeight((ns.ADF_SIZE) * 0.8);
-            else
-                -- Resize
-                frame:SetWidth(ns.ADF_SIZE + 4);
-                frame:SetHeight((ns.ADF_SIZE + 4) * 0.8);
+                size = ns.ADF_SIZE;
             end
 
-            local frameBorder = frame.border;
             if aura.nameplateShowAll then
-                frameBorder:SetVertexColor(0.3, 0.3, 0.3);
-            else
-                frameBorder:SetVertexColor(color.r, color.g, color.b);
+                color = { r = 0.3, g = 0.3, b = 0.3 };
             end
-
-
-            frame:Show();
 
             if (aura.isBossDebuff) then
-                ns.lib.ButtonGlow_Start(frame);
-            else
-                ns.lib.ButtonGlow_Stop(frame);
+                alert = 3;
             end
+
+            SetDebuff(frame, aura.icon, aura.applications, aura.expirationTime, aura.duration, color, snapshot, alert, curr_time, size);
+
             return false;
         end);
 
@@ -704,21 +731,22 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
             ns.lib.ButtonGlow_Stop(frame);
             ns.lib.PixelGlow_Stop(frame);
             frame:Hide();
+            frame.data = {};
         end
     end
 
     if parent == ADF_PLAYER_DEBUFF then
         parent.PrivateAuraAnchors[1]:ClearAllPoints();
         if i == 0 then
-            parent.PrivateAuraAnchors[1]:SetPoint("BOTTOMRIGHT", ADF_PLAYER_DEBUFF, "BOTTOMLEFT", 0, 0);            
+            parent.PrivateAuraAnchors[1]:SetPoint("BOTTOMRIGHT", ADF_PLAYER_DEBUFF, "BOTTOMLEFT", 0, 0);
         else
-            parent.PrivateAuraAnchors[1]:SetPoint("BOTTOMRIGHT", parent.frames[i], "BOTTOMLEFT", 0, 0);            
+            parent.PrivateAuraAnchors[1]:SetPoint("BOTTOMRIGHT", parent.frames[i], "BOTTOMLEFT", 0, 0);
         end
     end
 end
 
 local function UpdateAuras(unit)
-    ParseAllAuras(unit);    
+    ParseAllAuras(unit);
     local numDebuffs = math.min(ns.ADF_MAX_DEBUFF_SHOW, activeDebuffs[unit]:Size());
     UpdateAuraFrames(unit, activeDebuffs[unit], numDebuffs);
 end
@@ -729,6 +757,7 @@ function ADF_ClearFrame()
 
         if (frame) then
             frame:Hide();
+            frame.data = {};
             ns.lib.ButtonGlow_Stop(frame);
             ns.lib.PixelGlow_Stop(frame);
         end
@@ -762,10 +791,10 @@ end
 
 function ADF_OnEvent(self, event, arg1, ...)
     if (event == "UNIT_AURA") then
-    UpdateAuras("player");  
+        UpdateAuras("player");
     elseif (event == "PLAYER_TARGET_CHANGED") then
         ADF_ClearFrame();
-        UpdateAuras("target");          
+        UpdateAuras("target");
     elseif (event == "PLAYER_ENTERING_WORLD") then
         UpdateAuras("target");
         UpdateAuras("player");
@@ -820,31 +849,31 @@ local function CreatDebuffFrames(parent, bright)
 
     for idx = 1, ns.ADF_MAX_DEBUFF_SHOW do
         parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetDebuffFrameTemplate");
-        local frame = parent.frames[idx];        
+        local frame = parent.frames[idx];
         frame.cooldown:SetDrawSwipe(true);
-        
+
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, ns.ADF_CooldownFontSize, "OUTLINE");
                 r:ClearAllPoints();
-                r:SetPoint("TOP", 0, 5);                
+                r:SetPoint("TOP", 0, 5);
                 r:SetDrawLayer("OVERLAY");
-                break;            
-            end            
-        end       
-        
+                break;
+            end
+        end
+
         frame.icon:SetTexCoord(.08, .92, .16, .84);
-        frame.icon:SetAlpha(ns.ADF_ALPHA);        
+        frame.icon:SetAlpha(ns.ADF_ALPHA);
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
         frame.border:SetAlpha(ns.ADF_ALPHA);
 
         frame.count:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize, "OUTLINE")
         frame.count:ClearAllPoints();
-        frame.count:SetPoint("BOTTOMRIGHT", frame ,"BOTTOMRIGHT", -2, 2);        
+        frame.count:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2);
 
         frame.snapshot:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize - 1, "OUTLINE")
         frame.snapshot:ClearAllPoints();
-        frame.snapshot:SetPoint("CENTER", frame ,"BOTTOM", 0, 1);        
+        frame.snapshot:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
 
         frame:ClearAllPoints();
         ADF_UpdateDebuffAnchor(parent.frames, idx, 1, bright, parent);
@@ -863,7 +892,7 @@ local function CreatDebuffFrames(parent, bright)
 
         frame:EnableMouse(false);
         frame:SetMouseMotionEnabled(true);
-
+        frame.data = {};
         frame:Hide();
     end
 

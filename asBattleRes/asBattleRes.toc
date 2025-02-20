@@ -1,4 +1,4 @@
-## Interface: 110007
+## Interface: 110100
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rBattleRes
 ## Notes: Track the battle resurrection cooldown

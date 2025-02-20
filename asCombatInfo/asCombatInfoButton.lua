@@ -12,8 +12,7 @@ ns.Button = {
     action = nil,
     frame = nil,
     inRange = true,
-    alert = false,
-    snapshotalert = false,
+    alert = false,    
     checkcool = nil,
     checkplatecount = nil,
     buffshowtime = nil,
@@ -109,8 +108,7 @@ function ns.Button:initButton()
     self.count = nil;
     self.buffalert = false;
     self.alert2 = false;
-    self.coolalert = false;
-    self.snapshotalert = false;
+    self.coolalert = false;    
     self.improvebuff = false;
     self.currtime = GetTime();
     self.gcd = select(2, asGetSpellCooldown(61304));
@@ -289,7 +287,7 @@ function ns.Button:checkBuffList()
                 self.alert2 = true;
             end
         end
-        
+
         if count > 1 then
             self.count = count;
         end
@@ -378,9 +376,9 @@ function ns.Button:checkBuff()
                 self.count = math.ceil(aura.points[1] / 1000000) .. "m"
             elseif (aura.points[1] > 999) then
                 self.count = math.ceil(aura.points[1] / 1000) .. "k"
-            end          
+            end
         end
-        
+
         local color;
         local buff_miss = false;
 
@@ -413,15 +411,15 @@ end
 
 local function checkImprovedBuffList(self, aura, cachelist)
     for i, v in pairs(cachelist) do
-        if v.expirationTime == aura.expirationTime then            
+        if v.expirationTime == aura.expirationTime then
             return;
-        end     
+        end
     end
 
     for i, v in pairs(cachelist) do
         if self.currtime - v.expirationTime > 30 then
-            cachelist[i] = nil;            
-        end        
+            cachelist[i] = nil;
+        end
     end
 
     tinsert(cachelist, aura);
@@ -674,15 +672,16 @@ function ns.Button:showButton()
     local frameIcon;
     local frameCooldown;
     local frameCount;
-    local frameBorder;    
+    local frameBorder;
     local guid = UnitGUID(self.unit);
 
     local frame = self.frame;
+    local data = self.data;
     if not frame then
         return;
     end
     frameIcon = frame.icon;
-    frameCooldown = frame.cooldown;    
+    frameCooldown = frame.cooldown;
     frameBorder = frame.border;
     frameCount = frame.count;
 
@@ -693,51 +692,90 @@ function ns.Button:showButton()
         frame:Show();
     end
 
-    frameIcon:SetTexture(self.icon);
-    frameIcon:SetDesaturated(self.iconDes);
-    frameIcon:SetVertexColor(self.iconColor.r, self.iconColor.g, self.iconColor.b);
-    frameIcon:SetAlpha(self.alpha);
-    frameBorder:SetVertexColor(self.borderColor.r, self.borderColor.g, self.borderColor.b);
-    frameBorder:Show();
+    if self.icon ~= data.icon then
+        frameIcon:SetTexture(self.icon);
+        data.icon = self.icon;
+    end
 
-    if self.improvebuff then       
-        frameBorder:SetVertexColor(1,1,1);
+    if self.iconDes ~= data.iconDes then
+        frameIcon:SetDesaturated(self.iconDes);
+        data.iconDes = self.iconDes;
+    end
+
+    if self.iconColor ~= data.iconColor then
+        frameIcon:SetVertexColor(self.iconColor.r, self.iconColor.g, self.iconColor.b);
+        data.iconColor = self.iconColor;
+    end
+
+    if self.alpha ~= data.alpha then
+        frameIcon:SetAlpha(self.alpha);
+        data.alpha = self.alpha;
+    end
+
+    if self.improvebuff then
+        self.borderColor = { r = 1, g = 1, b = 1 };
         self.buffalert = false;
     end
 
+    if self.borderColor ~= data.borderColor then
+        frameBorder:SetVertexColor(self.borderColor.r, self.borderColor.g, self.borderColor.b);
+        frameBorder:Show();
+        data.borderColor = self.borderColor;
+    end
 
-    if (self.duration ~= nil and self.duration > 0 and self.duration < 500) then
-        -- set the count
-        asCooldownFrame_Set(frameCooldown, self.start, self.duration, self.duration > 0, self.enable);                
-        frameCooldown:Show();
-        frameCooldown:SetReverse(self.reversecool);
+
+    if self.duration ~= data.duration or self.start ~= data.start or self.reversecool ~= data.reversecool then
+        if (self.duration ~= nil and self.duration > 0 and self.duration < 500) then
+            -- set the count
+            asCooldownFrame_Set(frameCooldown, self.start, self.duration, self.duration > 0, self.enable);
+            frameCooldown:Show();
+            frameCooldown:SetReverse(self.reversecool);
+        else
+            frameCooldown:Hide();
+        end
+        data.duration = self.duration;
+        data.start = self.start;
+        data.reversecool = self.reversecool;
+    end
 
 
-        local remain = self.start + self.duration - GetTime();
-        if self.improvebuff then  
+    local remain = self.start + self.duration - GetTime();
+    local cooltype = 0;
+    if self.improvebuff then
+        cooltype = 3;
+    elseif remain < 5 then
+        cooltype = 2;
+    elseif remain < 10 then
+        cooltype = 1;
+    end
+
+    if cooltype ~= data.cooltype then
+        if cooltype == 3 then
             frame.cooldownfont:SetTextColor(0.7, 1, 0.7);
             frame.cooldownfont:SetFont(STANDARD_TEXT_FONT, frame.cooldownfont.fontsize + 3, "OUTLINE")
-        elseif remain < 5 then
+        elseif cooltype == 2 then
             frame.cooldownfont:SetTextColor(1, 0.3, 0.3);
             frame.cooldownfont:SetFont(STANDARD_TEXT_FONT, frame.cooldownfont.fontsize + 3, "OUTLINE")
-        elseif remain < 10 then
+        elseif cooltype == 1 then
             frame.cooldownfont:SetTextColor(1, 1, 0.3);
             frame.cooldownfont:SetFont(STANDARD_TEXT_FONT, frame.cooldownfont.fontsize + 1, "OUTLINE")
         else
             frame.cooldownfont:SetTextColor(0.8, 0.8, 1);
             frame.cooldownfont:SetFont(STANDARD_TEXT_FONT, frame.cooldownfont.fontsize, "OUTLINE")
         end
-    else
-        frameCooldown:Hide();
+        data.cooltype = cooltype
     end
 
-    if self.spellcool then
-        frame.spellcool:SetText(self.spellcool);
-        frame.spellcool:SetVertexColor(self.spellcoolColor.r, self.spellcoolColor.g, self.spellcoolColor.b);
-        frame.spellcool:Show();
-        
-    else
-        frame.spellcool:Hide();
+    if self.spellcool ~= data.spellcool or self.spellcoolColor ~= data.spellcoolColor then
+        if self.spellcool then
+            frame.spellcool:SetText(self.spellcool);
+            frame.spellcool:SetVertexColor(self.spellcoolColor.r, self.spellcoolColor.g, self.spellcoolColor.b);
+            frame.spellcool:Show();
+        else
+            frame.spellcool:Hide();
+        end
+        data.spellcool = self.spellcool;
+        data.spellcoolColor = self.spellcoolColor;
     end
 
     self.coolalert = false;
@@ -753,62 +791,79 @@ function ns.Button:showButton()
         end
     end
 
-    if self.count then
-        if frame.cooldownfont then
-            frame.cooldownfont:ClearAllPoints();
-            frame.cooldownfont:SetPoint("TOPLEFT", 4, -4);            
-        end
+    if self.count ~= data.count then
+        if self.count then
+            if frame.cooldownfont then
+                frame.cooldownfont:ClearAllPoints();
+                frame.cooldownfont:SetPoint("TOPLEFT", 4, -4);
+            end
 
-        frameCount:SetText(self.count)
-        frameCount:Show();
-    else
-        if frame.cooldownfont then
-            frame.cooldownfont:ClearAllPoints();
-            frame.cooldownfont:SetPoint("CENTER", 0, 0);            
-        end
+            frameCount:SetText(self.count)
+            frameCount:Show();
+        else
+            if frame.cooldownfont then
+                frame.cooldownfont:ClearAllPoints();
+                frame.cooldownfont:SetPoint("CENTER", 0, 0);
+            end
 
-        frameCount:Hide();
+            frameCount:Hide();
+        end
+        data.count = self.count;
     end
 
+    local snapshot = 1;
     if self.checksnapshot and asDotSnapshot and asDotSnapshot.Relative then
-        
-        local snapshots = asDotSnapshot.Relative(guid, self.realbuff);
+        snapshot = asDotSnapshot.Relative(guid, self.realbuff);
+    end
 
-        if snapshots then
-
-            frame.snapshot:SetText(math.floor(snapshots * 100));
-            if snapshots > 1 then
-                frame.snapshot:SetTextColor(0.5, 1, 0.5);                
+    if snapshot ~= data.snapshot then
+        if snapshot then
+            frame.snapshot:SetText(math.floor(snapshot * 100));
+            if snapshot > 1 then
+                frame.snapshot:SetTextColor(0.5, 1, 0.5);
                 frame.snapshot:Show();
-            elseif snapshots == 1 then
-                frame.snapshot:SetTextColor(0.5, 0.5, 0.5);                
+            elseif snapshot == 1 then
+                frame.snapshot:SetTextColor(0.5, 0.5, 0.5);
                 frame.snapshot:Hide();
             else
                 frame.snapshot:SetTextColor(1, 0.5, 0.5);
-                frame.snapshot:Show();
-                self.snapshotalert = true;
-            end   
-            
-        else            
+                frame.snapshot:Show();                
+            end
+        else
             frame.snapshot:Hide();
         end
-        --print("working")
-    else
-        frame.snapshot:Hide();
+        data.snapshot = snapshot;
     end
 
-    if self.snapshotalert then
-        ns.lib.PixelGlow_Start(frame, { 1, 0.5, 0.5 });
+    local alerttype = 0;
+
+    if snapshot and snapshot < 1 then
+        alerttype = 5;
     elseif self.buffalert then
-        ns.lib.PixelGlow_Start(frame, { 0.5, 1, 0.5 });
+        alerttype = 4;
     elseif self.alert2 then
-        ns.lib.PixelGlow_Start(frame, { 0.7, 0.7, 1 });
+        alerttype = 3;
     elseif self.coolalert then
-        ns.lib.PixelGlow_Start(frame, { 1, 1, 1 });
+        alerttype = 2;
     elseif self.alert then
-        ns.lib.PixelGlow_Start(frame);
-    else
-        ns.lib.PixelGlow_Stop(frame)
+        alerttype = 1;
+    end
+
+    if alerttype ~= data.alerttype then
+        if alerttype == 5 then
+            ns.lib.PixelGlow_Start(frame, { 1, 0.5, 0.5 });
+        elseif alerttype == 4 then
+            ns.lib.PixelGlow_Start(frame, { 0.5, 1, 0.5 });
+        elseif alerttype == 3 then
+            ns.lib.PixelGlow_Start(frame, { 0.7, 0.7, 1 });
+        elseif alerttype == 2 then
+            ns.lib.PixelGlow_Start(frame, { 1, 1, 1 });
+        elseif alerttype == 1 then
+            ns.lib.PixelGlow_Start(frame);
+        else
+            ns.lib.PixelGlow_Stop(frame)
+        end
+        data.alerttype = alerttype;
     end
 end
 
@@ -871,7 +926,7 @@ function ns.Button:init(config, frame)
     self.alertbufflist = config[9];
     self.checkcool = config[10];
     self.checkplatecount = config[11];
-    self.buffshowtime = config[12];    
+    self.buffshowtime = config[12];
     self.checksnapshot = config[13];
     self.spellid = select(7, asGetSpellInfo(self.spell));
     if self.spellid == nil then
@@ -983,13 +1038,15 @@ function ns.Button:init(config, frame)
         self:initButton();
         self:checkTotem();
         self:checkBuffList();
-        self:checkBuff();        
+        self:checkBuff();
         self:checkSpellCoolInBuff();
         self:checkSpell();
         self:checkCount();
-        self:checkOthers();        
+        self:checkOthers();
         self:showButton();
     end
+
+    self.data = {};
 
     update();
     self.time = C_Timer.NewTicker(0.2, update)

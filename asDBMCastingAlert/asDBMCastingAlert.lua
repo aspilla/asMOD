@@ -243,11 +243,15 @@ local function ADCA_OnUpdate()
 			end
 
 			if castingInfo.needtointerrupt then
-				ns.lib.PixelGlow_Start(frame.button, { 1, 1, 0, 1 });
-				ns.lib.PixelGlow_Start(frame, { 1, 1, 0, 1 });
+				if not frame.isAlert then
+					ns.lib.PixelGlow_Start(frame.button, { 1, 1, 0, 1 });
+					ns.lib.PixelGlow_Start(frame, { 1, 1, 0, 1 });
+					frame.isAlert = true;
+				end
 			else
 				ns.lib.PixelGlow_Stop(frame.button);
 				ns.lib.PixelGlow_Stop(frame);
+				frame.isAlert = false
 			end
 
 			frame:SetStatusBarColor(color[1], color[2], color[3]);
@@ -450,6 +454,8 @@ local function CreateCastbars(parent)
 		frame.targetname = frame:CreateFontString(nil, "OVERLAY");
 		frame.targetname:SetFont(STANDARD_TEXT_FONT, CONFIG_TIME_SIZE);
 		frame.targetname:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2);
+
+		frame.isAlert = false;
 
 		frame.start = 0;
 		frame.duration = 0;

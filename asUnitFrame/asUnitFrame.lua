@@ -594,7 +594,7 @@ local function CreatDebuffFrames(parent, bright, fontsize, width, count)
 
         frame:EnableMouse(false);
         frame:SetMouseMotionEnabled(true);
-
+        frame.data = {};
         frame:Hide();
     end
 

@@ -803,6 +803,7 @@ local function updateHealthbarColor(self)
     local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
     local isTargetPet = UnitIsUnit(unit .. "target", "pet");
     local CastingAlertColor = nil;
+    local alerttype = 0;
 
 
     -- Cast Interrupt
@@ -819,9 +820,7 @@ local function updateHealthbarColor(self)
             self.castspellid = spellid;
             if isDanger then
                 if binterrupt then
-                    ns.lib.PixelGlow_Start(self.casticon, { 1, 1, 0, 1 });
-                    ns.lib.PixelGlow_Start(healthBar, { 1, 1, 0, 1 }, nil, nil, nil, nil, nil, nil, nil, nil,
-                        healthBar:GetFrameLevel() + 10);
+                    alerttype = 2;
                 end
 
                 if isTargetPlayer then
@@ -838,21 +837,24 @@ local function updateHealthbarColor(self)
                     end
                 end
             elseif notInterruptible == false then
-                ns.lib.PixelGlow_Start(self.casticon);
-                ns.lib.PixelGlow_Stop(healthBar);
-            else
-                ns.lib.PixelGlow_Stop(self.casticon);
-                ns.lib.PixelGlow_Stop(healthBar);
-            end
+                alerttype = 1;            
+            end        
+        end
+    end
+
+    if alerttype ~= self.castalerttype then        
+        if alerttype == 2 then
+            ns.lib.PixelGlow_Start(self.casticon, { 1, 1, 0, 1 });
+            ns.lib.PixelGlow_Start(healthBar, { 1, 1, 0, 1 }, nil, nil, nil, nil, nil, nil, nil, nil,
+                healthBar:GetFrameLevel() + 10);
+        elseif alerttype == 1 then
+            ns.lib.PixelGlow_Start(self.casticon);
+            ns.lib.PixelGlow_Stop(healthBar);
         else
             ns.lib.PixelGlow_Stop(self.casticon);
             ns.lib.PixelGlow_Stop(healthBar);
         end
-    else
-        if self.casticon then
-            ns.lib.PixelGlow_Stop(self.casticon);
-        end
-        ns.lib.PixelGlow_Stop(healthBar);
+        self.castalerttype = alerttype;
     end
 
     if ns.options.ANameP_ShowDBMCastingColor == false then
@@ -1383,6 +1385,7 @@ local function addNamePlate(namePlateFrameBase)
     asframe.unit = unit;
     asframe.update = 0;
     asframe.alerthealthbar = false;
+    asframe.castalerttype = 0;
     asframe.namecolor = false;
     asframe.checkaura = false;
     asframe.downbuff = false;

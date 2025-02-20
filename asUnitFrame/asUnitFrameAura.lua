@@ -255,10 +255,58 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
     end
 end
 
+local function SetDebuff(frame, icon, applications, expirationTime, duration, color, currtime)
+    local data = frame.data;
+
+    if (applications ~= data.applications) then
+        local frameCount = frame.count;
+        if (applications > 1) then
+            frameCount:Show();
+            frameCount:SetText(applications);
+        else
+            frameCount:Hide();
+        end
+        data.applications = applications;
+    end
+
+    local isshow = false;
+
+    if (duration > 0 and (expirationTime - currtime) <= 60) then
+        isshow = true;
+    end
+
+    if (expirationTime ~= data.expirationTime) or
+        (duration ~= data.duration) or
+        (isshow ~= data.isshow) then
+        if (isshow) then
+            local startTime = expirationTime - duration;
+            asCooldownFrame_Set(frame.cooldown, startTime, duration, duration > 0, true);
+        else
+            asCooldownFrame_Clear(frame.cooldown);
+        end
+
+        data.duration = duration;
+        data.expirationTime = expirationTime;
+        data.isshow = isshow;
+    end
+
+    if color and (color ~= data.color) then
+        frame.border:SetVertexColor(color.r, color.g, color.b);
+        data.color = color;
+    end
+
+    if (icon ~= data.icon) then
+        frame.icon:SetTexture(icon);
+        data.icon = icon;
+        frame:Show();
+    end
+end
+
 local function UpdateAuraFrames(frame, auraList)
     local i = 0;
     local parent = frame;
     local unit = frame.unit;
+    local curr_time = GetTime();
 
     auraList:Iterate(
         function(auraInstanceID, aura)
@@ -270,33 +318,7 @@ local function UpdateAuraFrames(frame, auraList)
             local frame = parent.frames[i];
 
             frame.unit = unit;
-            frame.auraInstanceID = aura.auraInstanceID;
-
-            -- set the icon
-            local frameIcon = frame.icon
-            frameIcon:SetTexture(aura.icon);
-            -- set the count
-            local frameCount = frame.count;
-            local alert = false;
-
-            -- Handle cooldowns
-            local frameCooldown = frame.cooldown;
-
-            if (aura.applications and aura.applications > 1) then
-                frameCount:SetText(aura.applications);
-                frameCount:Show();                
-            else
-                frameCount:Hide();                
-            end
-
-            if (aura.duration > 0) then
-                frameCooldown:Show();
-                asCooldownFrame_Set(frameCooldown, aura.expirationTime - aura.duration, aura.duration, aura.duration > 0,
-                    true);
-                frameCooldown:SetHideCountdownNumbers(false);
-            else
-                frameCooldown:Hide();
-            end
+            frame.auraInstanceID = auraInstanceID;
 
             local color = nil;
             -- set debuff type color
@@ -308,12 +330,10 @@ local function UpdateAuraFrames(frame, auraList)
 
             local frameBorder = frame.border;
             if aura.nameplateShowAll then
-                frameBorder:SetVertexColor(0.3, 0.3, 0.3);
-            else
-                frameBorder:SetVertexColor(color.r, color.g, color.b);
+                color = { r = 0.3, g = 0.3, b = 0.3 };
             end
+            SetDebuff(frame, aura.icon, aura.applications, aura.expirationTime, aura.duration, color, curr_time);
 
-            frame:Show();
             return false;
         end);
 
@@ -322,6 +342,7 @@ local function UpdateAuraFrames(frame, auraList)
 
         if (frame) then
             frame:Hide();
+            frame.data = {};
         end
     end
 end
@@ -332,6 +353,7 @@ local function UpdatePortraitFrames(frame, auraList)
     local parent = frame;
     local unit = frame.unit;
     local bshowdebuff = false;
+    local curr_time = GetTime();
 
     auraList:Iterate(
         function(auraInstanceID, aura)
@@ -368,7 +390,7 @@ local function UpdatePortraitFrames(frame, auraList)
                 else
                     frameCooldown:Hide();
                 end
-               
+
                 bshowdebuff = true;
                 return true;
             else
@@ -376,7 +398,7 @@ local function UpdatePortraitFrames(frame, auraList)
             end
         end);
 
-    if bshowdebuff == false then        
+    if bshowdebuff == false then
         frame.portrait.icon:Hide();
         frame.portrait.cooldown:Hide();
         frame.portrait.count:Hide();

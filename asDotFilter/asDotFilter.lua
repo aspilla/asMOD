@@ -22,8 +22,8 @@ ADotF_ShowList_WARRIOR_3 = {
 
 ADotF_ShowList_ROGUE_1 = {
     { 457129, 0 },
-    { 703, 1, true },
-    { 1943, 24 * 0.3 },    
+    { 703,    1,       true },
+    { 1943,   24 * 0.3 },
 }
 
 ADotF_ShowList_ROGUE_2 = {
@@ -32,9 +32,9 @@ ADotF_ShowList_ROGUE_2 = {
 
 ADotF_ShowList_ROGUE_3 = {
     { 457129, 0 },
-    { 1943, 24 * 0.3 },
+    { 1943,   24 * 0.3 },
     { 441224, 0 },
-    
+
 }
 
 ADotF_ShowList_HUNTER_1 = {
@@ -45,7 +45,7 @@ ADotF_ShowList_HUNTER_1 = {
 
 ADotF_ShowList_HUNTER_2 = {
     { 271788, 1 },
-    
+
 }
 
 ADotF_ShowList_HUNTER_3 = {
@@ -63,9 +63,9 @@ ADotF_ShowList_MONK_3 = {
 }
 
 ADotF_ShowList_WARLOCK_1 = {
-    { 980, 1 },
+    { 980,    1 },
     { 316099, 1 },
-    { 146739, 1 },    
+    { 146739, 1 },
     { 445474, 1 },
 }
 
@@ -81,19 +81,19 @@ ADotF_ShowList_WARLOCK_3 = {
 }
 
 ADotF_ShowList_PRIEST_1 = {
-    {204213, 1 },           -- 사악
-    {589, 1 },              -- 고통
+    { 204213, 1 }, -- 사악
+    { 589,    1 }, -- 고통
 }
 
 ADotF_ShowList_PRIEST_2 = {
-    {14914, 0},              --신충
-    {589, 1 },              -- 고통
+    { 14914, 0 }, --신충
+    { 589,   1 }, -- 고통
 }
 
 ADotF_ShowList_PRIEST_3 = {
-    {589, 1 },              -- 고통
-    {34914, 1},              --흡선
-    {335467, 0 },           -- 파멸
+    { 589,    1 }, -- 고통
+    { 34914,  1 }, --흡선
+    { 335467, 0 }, -- 파멸
 }
 
 ADotF_ShowList_SHAMAN_1 = {
@@ -117,8 +117,8 @@ ADotF_ShowList_DRUID_1 = {
 
 ADotF_ShowList_DRUID_2 = {
     { 155722, 12 * 0.3, true },
-    { 155625, 1, true },    
-    { 1079, 19 * 0.3, true },   
+    { 155625, 1,        true },
+    { 1079,   19 * 0.3, true },
 }
 
 ADotF_ShowList_DRUID_3 = {
@@ -128,41 +128,41 @@ ADotF_ShowList_DRUID_3 = {
 ADotF_ShowList_DRUID_4 = {
     { 164812, 1 },
     { 155722, 12 * 0.3 },
-    { 164815, 1 },    
-    { 1079, 19 * 0.3 },    
+    { 164815, 1 },
+    { 1079,   19 * 0.3 },
 }
 
 
 ADotF_ShowList_MAGE_1 = {
-    {210824, 0}, 
-    {444735, 0},
+    { 210824, 0 },
+    { 444735, 0 },
 }
 
 ADotF_ShowList_MAGE_2 = {
     { 453268, 0 },
-    { 12654, 0 },
+    { 12654,  0 },
 }
 
 ADotF_ShowList_MAGE_3 = {
     { 228358, 0 },
-    { 443740, 0}, 
+    { 443740, 0 },
 }
 
 ADotF_ShowList_DEATHKNIGHT_1 = {
     { 434765, 0 },
     { 458478, 0 },
-    { 55078, 0 },
+    { 55078,  0 },
 }
 
 ADotF_ShowList_DEATHKNIGHT_2 = {
     { 434765, 0 },
-    { 55095, 0 },
+    { 55095,  0 },
 }
 
 ADotF_ShowList_DEATHKNIGHT_3 = {
     { 458478, 0 },
     { 194310, 0 },
-    { 191587, 1 },    
+    { 191587, 1 },
 }
 
 ADotF_ShowList_EVOKER_1 = {
@@ -179,7 +179,7 @@ ADotF_ShowList_EVOKER_3 = {
     { 357209, 0 },
 }
 
-ADotF_ShowList_PALADIN_1 = {    
+ADotF_ShowList_PALADIN_1 = {
     { 414022, 0 },
 }
 
@@ -192,12 +192,12 @@ ADotF_ShowList_PALADIN_3 = {
 }
 
 ADotF_ShowList_DEMONHUNTER_1 = {
-    {442624, 0},
-    {391191, 0},
+    { 442624, 0 },
+    { 391191, 0 },
 }
 
 ADotF_ShowList_DEMONHUNTER_2 = {
-    {442624, 0},
+    { 442624, 0 },
     { 207771, 0 },
     { 247456, 0 },
 }
@@ -220,13 +220,13 @@ local ADotF = nil;
 ADotF_ShowList = nil;
 
 
-local function ADotF_UnitDebuff(unit, buff)    
-
+local function ADotF_UnitDebuff(unit, buff)
     local auraList = ns.ParseAllDebuff(unit);
     local ret = auraList[buff];
 
     if ret then
-        return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit, ret.spellId;
+        return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit,
+            ret.spellId;
     end
 
     return nil;
@@ -274,6 +274,77 @@ local function ADotF_UpdateDebuffAnchor(frames, index, size, offsetX, right, par
 end
 
 
+local function SetDebuff(frame, icon, applications, expirationTime, duration, color, snapshot, alert, currtime)
+    local data = frame.data;
+
+    if (applications ~= data.applications) then
+        local frameCount = frame.count;
+        if (applications > 1) then
+            frameCount:Show();
+            frameCount:SetText(applications);
+        else
+            frameCount:Hide();
+        end
+        data.applications = applications;
+    end
+
+    if snapshot ~= data.snapshot then
+        frame.snapshot:SetText(math.floor(snapshot * 100));
+        if snapshot > 1 then
+            frame.snapshot:SetTextColor(0.5, 1, 0.5);
+            frame.snapshot:Show();
+        elseif snapshot == 1 then
+            frame.snapshot:Hide();
+        else
+            frame.snapshot:SetTextColor(1, 0.5, 0.5);
+            frame.snapshot:Show();
+        end
+        data.snapshot = snapshot;
+    end
+
+    local isshow = false;
+
+    if (duration > 0 and (expirationTime - currtime) <= 60) then
+        isshow = true;
+    end
+
+    if (expirationTime ~= data.expirationTime) or
+        (duration ~= data.duration) or
+        (isshow ~= data.isshow) then
+        if (isshow) then
+            local startTime = expirationTime - duration;
+            asCooldownFrame_Set(frame.cooldown, startTime, duration, duration > 0, true);
+        else
+            asCooldownFrame_Clear(frame.cooldown);
+        end
+
+        data.duration = duration;
+        data.expirationTime = expirationTime;
+        data.isshow = isshow;
+    end
+
+    if color and (color ~= data.color) then
+        frame.border:SetVertexColor(color.r, color.g, color.b);
+        data.color = color;
+    end
+
+    if (alert ~= data.alert) then
+        if alert == 1 then
+            ns.lib.ButtonGlow_Start(frame);
+        else
+            ns.lib.ButtonGlow_Stop(frame);
+        end
+        data.alert = alert;
+    end
+
+    if (icon ~= data.icon) then
+        frame.icon:SetTexture(icon);
+        data.icon = icon;
+        frame:Show();
+    end
+end
+
+
 local function ADotF_UpdateDebuff(unit)
     local numDebuffs = 1;
     local frame;
@@ -316,14 +387,13 @@ local function ADotF_UpdateDebuff(unit)
 
     if UnitExists(unit) then
         if (unit == "target") then
-
             if AUF_TargetFrame then
                 parent = AUF_TargetFrame;
             else
                 parent = _G["TargetFrame"];
             end
-            
-            
+
+
             isboss = false;
         elseif (unit == "focus") then
             if AUF_FocusFrame then
@@ -338,7 +408,7 @@ local function ADotF_UpdateDebuff(unit)
                 isboss = false;
             else
                 parent = _G["Boss1TargetFrame"];
-            end            
+            end
         elseif (unit == "boss2") then
             if AUF_BossFrames and AUF_BossFrames[2] then
                 parent = AUF_BossFrames[2];
@@ -372,6 +442,7 @@ local function ADotF_UpdateDebuff(unit)
         end
 
         local guid = UnitGUID(unit);
+        local curr_time = GetTime();
 
         for i = 1, #ADotF_ShowList do
             _, icon, count, debuffType, duration, expirationTime, caster, spellId = ADotF_UnitDebuff(unit,
@@ -395,48 +466,23 @@ local function ADotF_UpdateDebuff(unit)
                             r:ClearAllPoints();
                             r:SetPoint("TOP", 0, 5);
                             r:SetDrawLayer("OVERLAY");
-                            break;		            	
+                            break;
                         end
-                    end                    
+                    end
 
                     frame.icon:SetTexCoord(.08, .92, .18, .82);
-                    frame.icon:SetAlpha(ADotF_ALPHA);                    
+                    frame.icon:SetAlpha(ADotF_ALPHA);
                     frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
                     frame.border:SetAlpha(ADotF_ALPHA);
-                    
+
                     frame.count:SetFont(STANDARD_TEXT_FONT, ADotF_CountFontSize, "OUTLINE");
                     frame.count:ClearAllPoints();
-                    frame.count:SetPoint("BOTTOMRIGHT", frame ,"BOTTOMRIGHT", -2, 2);
+                    frame.count:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2);
 
                     frame.snapshot:SetFont(STANDARD_TEXT_FONT, ADotF_CountFontSize - 1, "OUTLINE")
                     frame.snapshot:ClearAllPoints();
-                    frame.snapshot:SetPoint("CENTER", frame ,"BOTTOM", 0, 1);
-                end
-
-                -- set the icon
-                frameIcon = frame.icon;
-                frameIcon:SetTexture(icon);                
-
-                -- set the count
-                frameCount = frame.count;
-
-                -- Handle cooldowns
-                frameCooldown = frame.cooldown;
-
-                if (count > 1) then
-                    frameCount:SetText(count);
-                    frameCount:Show();
-                    
-                else
-                    frameCount:Hide();                    
-                end
-
-                if (duration > 0) then
-                    frameCooldown:Show();
-                    asCooldownFrame_Set(frameCooldown, expirationTime - duration, duration, duration > 0, true);
-                    frameCooldown:SetHideCountdownNumbers(false);
-                else
-                    frameCooldown:Hide();
+                    frame.snapshot:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
+                    frame.data = {};
                 end
 
                 -- set debuff type color
@@ -446,49 +492,27 @@ local function ADotF_UpdateDebuff(unit)
                     color = DebuffTypeColor["none"];
                 end
 
-                frameBorder = frame.border;
-                frameBorder:SetVertexColor(color.r, color.g, color.b);                
-
-                frame:ClearAllPoints();
-                frame:Show();
-
+                local alert = 0;
                 local alert_du = ADotF_ShowList[i][2];
                 local checksnapshot = ADotF_ShowList[i][3];
-                
+
                 if alert_du == 1 then
                     alert_du = duration * 0.3;
                     ADotF_ShowList[i][2] = alert_du;
                 end
 
-                if  checksnapshot and asDotSnapshot and asDotSnapshot.Relative then                
-                    local snapshots = asDotSnapshot.Relative(guid, spellId);
-            
-                    if snapshots then
-            
-                        frame.snapshot:SetText(math.floor(snapshots * 100));
-                        if snapshots > 1 then
-                            frame.snapshot:SetTextColor(0.5, 1, 0.5);                
-                            frame.snapshot:Show();
-                        elseif snapshots == 1 then                                         
-                            frame.snapshot:Hide();
-                        else
-                            frame.snapshot:SetTextColor(1, 0.5, 0.5);
-                            frame.snapshot:Show();
-                        end                 
-                        
-                    else            
-                        frame.snapshot:Hide();
-                    end
-                    --print("working")
-                else
-                    frame.snapshot:Hide();
+                local snapshot = 1;
+
+                if checksnapshot and asDotSnapshot and asDotSnapshot.Relative then
+                    snapshot = asDotSnapshot.Relative(guid, spellId);
                 end
 
                 if (((expirationTime - GetTime()) <= alert_du) and duration > 0) then
-                    ns.lib.ButtonGlow_Start(frame);
-                else
-                    ns.lib.ButtonGlow_Stop(frame);
+                    alert = 1;
                 end
+
+                SetDebuff(frame, icon, count, expirationTime, duration, color, snapshot, alert, curr_time);
+                frame:ClearAllPoints();
                 numDebuffs = numDebuffs + 1;
             end
         end
@@ -503,6 +527,7 @@ local function ADotF_UpdateDebuff(unit)
 
         if (frame) then
             frame:Hide();
+            frame.data = {};
             ns.lib.ButtonGlow_Stop(frame);
         end
     end
@@ -521,8 +546,8 @@ local function ADotF_InitList()
     local listname = "ADotF_ShowList_";
 
     if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
-		spec = 1;
-	end
+        spec = 1;
+    end
 
     if spec then
         listname = "ADotF_ShowList_" .. englishClass .. "_" .. spec;
@@ -530,9 +555,9 @@ local function ADotF_InitList()
 
     ADotF_ShowList = _G[listname];
     ns.ClearLists();
-    
+
     if ADotF_ShowList then
-        for idx = 1, #ADotF_ShowList do        
+        for idx = 1, #ADotF_ShowList do
             ns.AddDebuff(ADotF_ShowList[idx][1]);
         end
     end
@@ -548,7 +573,7 @@ local function ADotF_OnEvent(self, event, arg1)
         unit = "target";
         ADotF_UpdateDebuff(unit);
     elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
-        ADotF_UpdateAllFrames();    
+        ADotF_UpdateAllFrames();
     elseif (event == "PLAYER_ENTERING_WORLD") then
         ADotF_InitList();
         ADotF_UpdateAllFrames();
@@ -573,7 +598,7 @@ local function ADotF_Init()
     ADotF:RegisterEvent("PLAYER_TARGET_CHANGED")
     ADotF:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
     ADotF:RegisterEvent("PLAYER_ENTERING_WORLD")
-    ADotF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")    
+    ADotF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
     ADotF:SetScript("OnEvent", ADotF_OnEvent)
     C_Timer.NewTicker(0.2, ADotF_OnUpdate);
 end

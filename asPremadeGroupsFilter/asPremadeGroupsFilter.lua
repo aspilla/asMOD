@@ -225,7 +225,7 @@ local function SearchEntryUpdate(entry, ...)
 
         local text = "";
 
-        if leader_class then
+        if leader_class and leader_role then
             text = leaderIcon..getClassCountText(leader_class, string.sub(leader_role, 1, 1))            
         end
         entry.DataDisplay.RoleCount.infos.LEADER:SetText(text);

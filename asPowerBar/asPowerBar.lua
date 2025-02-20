@@ -216,7 +216,7 @@ local function APB_UnitBuffList(unit, list)
     local ret = nil;
     local auraList = ns.ParseAllBuff(unit);
 
-    
+
     for index, id in pairs(list) do
         local aura = auraList[id];
         if aura then
@@ -237,12 +237,11 @@ local function APB_UnitBuffList(unit, list)
 end
 
 local function APB_UnitBuffCountList(unit, list)
-    
     local auraList = ns.ParseAllBuff(unit);
     local ret = nil;
-    
 
-    
+
+
     for index, v in pairs(list) do
         local id = v[1];
         local count = v[2];
@@ -258,7 +257,7 @@ local function APB_UnitBuffCountList(unit, list)
             break;
         end
     end
-    
+
     if ret then
         return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit;
     end
@@ -268,7 +267,7 @@ end
 local function APB_UnitBuff(unit, buff)
     local auraList = ns.ParseAllBuff(unit);
     local ret = auraList[buff];
-    
+
 
     if ret then
         return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit;
@@ -286,10 +285,9 @@ local function APB_UnitBuff(unit, buff)
 end
 
 local function APB_UnitDebuff(unit, buff)
-        
     local auraList = ns.ParseAllDebuff(unit);
     local ret = auraList[buff];
-    
+
     if ret then
         return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit;
     end
@@ -404,6 +402,7 @@ local function APB_MaxSpell(max)
             if spellbar then
                 spellbar:Hide();
                 ns.lib.PixelGlow_Stop(spellbar);
+                spellbar.isAlert = false;
             end
         end
         bshowspell = false;
@@ -424,6 +423,7 @@ local function APB_MaxSpell(max)
             spellbar:SetStatusBarColor(color.r, color.g, color.b);
             spellbar:SetScript("OnUpdate", nil)
             ns.lib.PixelGlow_Stop(spellbar);
+            spellbar.isAlert = false;
 
             if i > max then
                 spellbar:Hide()
@@ -511,8 +511,8 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
         local name = APB_UnitBuffList("player", combobuffalertlist);
 
         if name then
-            for i = 1, combobar.max_combo do               
-                comboAlerts[i] = true;               
+            for i = 1, combobar.max_combo do
+                comboAlerts[i] = true;
             end
         end
     end
@@ -522,9 +522,9 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
 
         if name then
             for i = 1, combobar.max_combo do
-                comboAlerts[i] = true;            
+                comboAlerts[i] = true;
             end
-        end        
+        end
     end
 
     if combobuffcoloralertlist and combobar == APB.combobar then
@@ -534,8 +534,8 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
             balert = true;
         end
     end
-    
-    if bdeathstalker and combobar == APB.combobar then        
+
+    if bdeathstalker and combobar == APB.combobar then
         local name, _, count = APB_UnitDebuff("target", 457129);
 
         if name then
@@ -546,12 +546,12 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
             APB.combotext:SetText("");
             APB.combotext:Hide();
         end
-        
+
         name = APB_UnitBuff("player", 457280);
 
         if name then
-            comboAlerts[combobar.max_combo] = true;        
-        end        
+            comboAlerts[combobar.max_combo] = true;
+        end
     end
 
     if buffexpire and cooldown then
@@ -643,9 +643,13 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
 
     for i = 1, combobar.max_combo do
         if comboAlerts[i] then
-            ns.lib.PixelGlow_Start(combobar[i], { 0.5, 0.5, 1 }, nil, nil, nil, 0.5);
+            if not combobar[i].isAlert then
+                ns.lib.PixelGlow_Start(combobar[i], { 0.5, 0.5, 1 }, nil, nil, nil, 0.5);
+                combobar[i].isAlert = true;
+            end
         else
             ns.lib.PixelGlow_Stop(combobar[i]);
+            combobar[i].isAlert = false;
         end
     end
 end
@@ -1573,9 +1577,13 @@ local function APB_UpdateSpell(spell, spell2)
         spellbar.spellid = spellid;
 
         if balert then
-            ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
+            if not spellbar.isAlert then
+                ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
+                spellbar.isAlert = true;
+            end
         else
             ns.lib.PixelGlow_Stop(spellbar);
+            spellbar.isAlert = false;
         end
 
         if inrange == false then
@@ -1596,9 +1604,13 @@ local function APB_UpdateSpell(spell, spell2)
         spellbar.spellid = spellid;
 
         if balert then
-            ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
+            if not spellbar.isAlert then
+                ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
+                spellbar.isAlert = true;
+            end
         else
             ns.lib.PixelGlow_Stop(spellbar);
+            spellbar.isAlert = false;
         end
 
         if inrange == false then
@@ -1617,6 +1629,7 @@ local function APB_UpdateSpell(spell, spell2)
             spellbar.start = nil;
             spellbar:SetScript("OnUpdate", nil)
             ns.lib.PixelGlow_Stop(spellbar);
+            spellbar.isAlert = false;
         end
     end
 
@@ -1682,9 +1695,13 @@ local function APB_UpdateSpell(spell, spell2)
             spellbar.spellid = spellid;
 
             if balert2 then
-                ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
+                if not spellbar.isAlert then
+                    ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
+                    spellbar.isAlert = true;
+                end
             else
                 ns.lib.PixelGlow_Stop(spellbar);
+                spellbar.isAlert = false;
             end
 
             if inrange2 == false then
@@ -1706,9 +1723,13 @@ local function APB_UpdateSpell(spell, spell2)
             spellbar.spellid = spellid;
 
             if balert2 then
-                ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
+                if not spellbar.isAlert then
+                    ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
+                    spellbar.isAlert = true;
+                end
             else
                 ns.lib.PixelGlow_Stop(spellbar);
+                spellbar.isAlert = false;
             end
 
             if inrange2 == false then
@@ -1727,6 +1748,7 @@ local function APB_UpdateSpell(spell, spell2)
                 spellbar.start = nil;
                 spellbar:SetScript("OnUpdate", nil)
                 ns.lib.PixelGlow_Stop(spellbar);
+                spellbar.isAlert = false;
             end
         end
     end
@@ -2040,9 +2062,11 @@ local function APB_CheckPower(self)
 
     for i = 1, 20 do
         ns.lib.PixelGlow_Stop(APB.combobar[i]);
+        APB.combobar[i].isAlert = false;
         setupMouseOver(APB.combobar[i]);
 
         ns.lib.PixelGlow_Stop(APB.combobar2[i]);
+        APB.combobar2[i].isAlert =false;
         setupMouseOver(APB.combobar2[i]);
     end
 
@@ -2104,7 +2128,7 @@ local function APB_CheckPower(self)
         if IsPlayerSpell(357211) then --기염
             APB_ACTION_STACK = APB_GetActionSlot(357211);
             APB.stackbar[0].spellid = 357211;
-            APB_MaxStack(20);            
+            APB_MaxStack(20);
         end
 
         if (spec and spec == 2) then
@@ -2116,7 +2140,7 @@ local function APB_CheckPower(self)
                 APB_BUFF = 395296;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
-                APB.buffbar[0].max = 20;                
+                APB.buffbar[0].max = 20;
             end
         end
     end
@@ -2127,7 +2151,7 @@ local function APB_CheckPower(self)
         APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
         APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
         bupdate_power = true;
-        combobuffalertlist = { 408458, 223819, 326733 };
+        combobuffalertlist = { 408458, 223819, 326733, 1216837};
         combobuffcoloralertlist = { 326733 }; --창공의 힘
 
         if (spec and spec == 1) then
@@ -2147,7 +2171,7 @@ local function APB_CheckPower(self)
 
             APB_BUFF = 132403; --정의의 방패
             APB.buffbar[0].buff = APB_BUFF;
-            APB.buffbar[0].unit = "player";            
+            APB.buffbar[0].unit = "player";
         end
 
         if (spec and spec == 3) then
@@ -2165,7 +2189,7 @@ local function APB_CheckPower(self)
                 APB_BUFF = 383997;
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player";
-                bupdate_buff_count = true;                
+                bupdate_buff_count = true;
             end
 
             APB_UNIT_POWER = "ARCANE_CHARGES"
@@ -2193,7 +2217,7 @@ local function APB_CheckPower(self)
                 APB_BUFF_COMBO_MAX_COUNT = 6;
                 self.buffcombobar = self.combobar2;
                 APB_MaxCombo(self.combobar2, APB_BUFF_COMBO_MAX_COUNT, true);
-                APB.combobar2.unit = "player"                
+                APB.combobar2.unit = "player"
                 bupdate_buff_combo = true;
 
                 for i = 1, 20 do
@@ -2207,7 +2231,7 @@ local function APB_CheckPower(self)
                 APB_BUFF = 383395;
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player";
-                bupdate_buff_count = true;                
+                bupdate_buff_count = true;
             end
 
             if IsPlayerSpell(383886) then
@@ -2215,7 +2239,7 @@ local function APB_CheckPower(self)
                 APB_BUFF_COMBO_MAX = 383883;
                 APB_BUFF_COMBO_MAX_COUNT = 10;
                 APB_MaxCombo(self.combobar, APB_BUFF_COMBO_MAX_COUNT);
-                APB.combobar.unit = "player"                
+                APB.combobar.unit = "player"
                 bupdate_buff_combo = true;
                 bsmall_power_bar = true;
 
@@ -2252,7 +2276,7 @@ local function APB_CheckPower(self)
 
             APB_BUFF_COMBO = 205473; --고드름
             APB_MaxCombo(self.combobar, 5);
-            APB.combobar.unit = "player"            
+            APB.combobar.unit = "player"
             bupdate_buff_combo = true;
 
             --냉기 과잉
@@ -2315,7 +2339,7 @@ local function APB_CheckPower(self)
             if IsPlayerSpell(196277) then --임프
                 APB_ACTION_STACK = APB_GetActionSlot(196277);
                 APB.stackbar[0].spellid = 196277;
-                APB_MaxStack(15);                
+                APB_MaxStack(15);
             end
         end
 
@@ -2471,7 +2495,7 @@ local function APB_CheckPower(self)
 
     if (englishClass == "MONK") then
         if (spec and spec == 1) then
-            bupdate_stagger = true;            
+            bupdate_stagger = true;
 
             if IsPlayerSpell(119582) then
                 APB_SPELL = 119582;
@@ -2493,7 +2517,7 @@ local function APB_CheckPower(self)
             end
             if IsPlayerSpell(399491) then
                 APB_ACTION_COMBO = APB_GetActionSlot(399491);
-                APB_MaxCombo(self.combobar, 10);                
+                APB_MaxCombo(self.combobar, 10);
                 bupdate_buff_combo = true;
 
                 for i = 1, 20 do
@@ -2537,7 +2561,7 @@ local function APB_CheckPower(self)
             APB:RegisterEvent("PLAYER_TARGET_CHANGED");
         end
 
-        if IsPlayerSpell(457052) then          --죽음 추적자
+        if IsPlayerSpell(457052) then --죽음 추적자
             bdeathstalker = true;
         end
 
@@ -2667,7 +2691,7 @@ local function APB_CheckPower(self)
                 else
                     APB_MaxCombo(self.combobar, 2);
                 end
-                APB.combobar.unit = "player"                
+                APB.combobar.unit = "player"
                 bupdate_buff_combo = true;
             end
         end
@@ -2771,7 +2795,7 @@ local function APB_CheckPower(self)
                 internalcool_state.duration = 15;
                 internalcool_state.spellid = 450978;
                 self.stackbar[0].spellid = 450978;
-                APB_MaxStack(internalcool_state.duration);                
+                APB_MaxStack(internalcool_state.duration);
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
             end
         end
@@ -2793,7 +2817,7 @@ local function APB_CheckPower(self)
                 APB_BUFF_COMBO = 260286;
                 APB_MaxCombo(self.combobar, 3);
                 APB.combobar.unit = "player"
-                
+
                 bupdate_buff_combo = true;
 
                 for i = 1, 20 do
@@ -2807,7 +2831,7 @@ local function APB_CheckPower(self)
                 internalcool_state.duration = 15;
                 internalcool_state.spellid = 450978;
                 self.stackbar[0].spellid = 450978;
-                APB_MaxStack(internalcool_state.duration);                
+                APB_MaxStack(internalcool_state.duration);
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
             end
         end
@@ -2835,7 +2859,7 @@ local function APB_CheckPower(self)
                 tempeststate.TempestStacks = 300;
                 tempeststate.bfirstcheck = true;
                 tempeststate.TStacks = 0;
-                APB_MaxStack(tempeststate.TempestStacks);                
+                APB_MaxStack(tempeststate.TempestStacks);
                 self.stackbar[0].spellid = 454009;
 
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
@@ -2853,7 +2877,7 @@ local function APB_CheckPower(self)
             APB_BUFF_COMBO = 344179;
             APB_MaxCombo(self.combobar, 10);
             APB.combobar.unit = "player"
-            
+
             bupdate_buff_combo = true;
             bsmall_power_bar = true;
 
@@ -2874,7 +2898,7 @@ local function APB_CheckPower(self)
                 tempeststate.bfirstcheck = true;
                 tempeststate.TStacks = 0;
                 APB_MaxStack(tempeststate.TempestStacks);
-                self.stackbar[0].spellid = 454009;                
+                self.stackbar[0].spellid = 454009;
 
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
                 combobuffcoloralertlist = { 454015 }; --폭풍 색상 변경
@@ -2890,7 +2914,7 @@ local function APB_CheckPower(self)
             APB_BUFF_COMBO = 53390; --굽이치는 물결
             APB_MaxCombo(self.combobar, 2);
             APB.combobar.unit = "player"
-            
+
             bupdate_buff_combo = true;
 
             for i = 1, 20 do
@@ -2906,9 +2930,9 @@ local function APB_CheckPower(self)
     ns.AddBuff(APB_BUFF2);
     ns.AddBuff(APB_BUFF_STACK);
     ns.AddBuff(APB_BUFF_COMBO);
-    ns.AddBuff(APB_BUFF_COMBO_MAX);    
+    ns.AddBuff(APB_BUFF_COMBO_MAX);
     ns.AddBuff(combobuffalertlist);
-    ns.AddBuff(combobuffcoloralertlist);    
+    ns.AddBuff(combobuffcoloralertlist);
     ns.AddBuff(spellbuffcolorlist);
     ns.AddBuff(spell2buffcolorlist);
     ns.AddBuff(druidcomboalertid);
@@ -2928,8 +2952,8 @@ local function APB_CheckPower(self)
     ns.AddDebuff(APB_DEBUFF2);
     ns.AddDebuff(APB_DEBUFF_STACK);
     ns.AddDebuff(APB_DEBUFF_COMBO);
-    ns.AddDebuff(combodebuffalertlist);  
-    
+    ns.AddDebuff(combodebuffalertlist);
+
 
     if APB_SPELL then
         APB_ACTION = APB_GetActionSlots(APB_SPELL);
@@ -3016,7 +3040,7 @@ local function APB_CheckPower(self)
     if bupdate_partial_power then
         local combotext = APB.combotext;
 
-        combotext:ClearAllPoints();        
+        combotext:ClearAllPoints();
         combotext:SetPoint("CENTER", APB.combobar[3], "CENTER", 0, 0);
     end
 

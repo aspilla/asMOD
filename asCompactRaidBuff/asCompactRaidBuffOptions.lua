@@ -570,7 +570,8 @@ local function SetupSubOption(panel, titlename)
 	editBox:SetText("");
 	editBox:SetAutoFocus(false);
 	editBox:ClearFocus();
-	editBox:SetTextInsets(0, 0, 0, 1)
+	editBox:SetNumeric(true);
+	editBox:SetTextInsets(0, 0, 0, 1);
 	editBox:Show();
 	editBox:SetCursorPosition(0);
 	x = x + 150;

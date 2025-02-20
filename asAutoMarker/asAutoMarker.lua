@@ -17,6 +17,162 @@ local AAM_MaxMark = 7      -- 최대 징표 X까지 찍도록 설정
 
 local NPCTable = {
 
+
+		--내부전쟁 시즌2
+
+		-- Flesh Crafter
+		[165872] = 2,
+		-- Zolramus Sorcerer
+		[163128] = 2,
+
+		-- BOSS: Amarth
+		[163157] = 2,
+
+		-- BOSS: Nalthor the Rimebinder
+		[162693] = 2,
+
+		-- BOSS: Ingra Maloch
+		[164567] = 2,
+
+		-- BOSS: Mistcaller
+		[164501] = 2,
+
+		-- BOSS: Tred'ova
+		[164517] = 2,
+		-- Battlefield Ritualist
+		[174197] = 2,
+		-- Bone Magus
+		[170882] = 2,
+		-- Maniacal Soulbinder
+		[160495] = 2,
+		-- Blighted Sludge-Spewer
+		[174210] = 2,
+		-- BOSS: Paceran the Virulent
+		[164463] = 2,
+		-- Nefarious Darkspeaker
+		[169893] = 2,
+		-- BOSS: Kul'tharok
+		[162309] = 2,
+		-- BOSS: Sathel the Accursed
+		[164461] = 2,
+		-- Ancient Captain
+		[164506] = 2,
+		-- Diseased Horror
+		[170690] = 2,
+		-- Shackled Soul
+		[169875] = 2,
+		-- Cursed Thunderer
+		[207198] = 2,
+		-- Corrupted Oracle
+		[214439] = 2,
+		-- Unruly Stormrook
+		[207186] = 2,
+		-- Cursed Rooktender
+		[207199] = 2,
+		-- Void Ascendant
+		[212793] = 2,
+		-- Arathi Footman
+		[206705] = 2,
+		-- Elaena Emberlanz
+		[211290] = 2,
+		-- Risen Mage
+		[221760] = 2,
+		-- Fanatical Conjuror
+		[206698] = 2,
+		-- BOSS: Captain Dailcry
+		[207946] = 2,
+		-- BOSS: Prioress Murrpray
+		[207940] = 2,
+		-- Devout Priest
+		[206697] = 2,
+		-- BOSS: Baron Braunpyke
+		[207939] = 2,
+		-- Taener Duelmal
+		[211289] = 2,
+		-- Blazing Fiend
+		[223770] = 2,
+		-- Blazing Fiend
+		[223772] = 2,
+		-- Kobold Flametender
+		[213913] = 2,
+		-- Blazing Fiend
+		[223773] = 2,
+		-- Royal Wicklighter
+		[210812] = 2,
+		-- Sootsnout
+		[212412] = 2,
+		-- Blazing Fiend
+		[223775] = 2,
+		-- Blazing Fiend
+		[223776] = 2,
+		-- Blazing Fiend
+		[223777] = 2,
+		-- Lowly Moleherd
+		[210818] = 2,
+		-- Blazing Fiend
+		[220815] = 2,
+		-- Blazing Fiend
+		[223774] = 2,
+		-- Blazing Fiend
+		[211228] = 2,
+		-- BOSS ADD: Wriggling Darkspawn
+		[213008] = 2,
+
+		-- BOSS: Speaker Brokk
+		[213217] = 2,
+		-- Cursedheart Invader
+		[212403] = 2,
+		-- BOSS: Anubzekt
+		[215405] = 2,		
+		-- Black Blood
+		[215968] = 2,
+		-- Venture Co. Pyromaniac
+		[218671] = 2,
+		-- Bee Wrangler
+		[210264] = 2,
+		-- Flavor Scientist
+		[214673] = 2,
+		-- Flavor Scientist
+		[222964] = 2,
+		-- Royal Jelly Purveyor
+		[220141] = 2,
+
+		-- Sureki Militant
+		[213932] = 2,
+		-- Nightfall Dark Architect
+		[213885] = 2,
+		-- BOSS: Speaker Shadowcrown
+		[211087] = 2,
+		-- BOSS: Anubikkaj
+		[211089] = 2,
+		-- BOSS: Rashanan
+		[213937] = 2,
+		-- Animated Darkness
+		[213905] = 2,
+		-- Nightfall Darkcaster
+		[228539] = 2,
+
+		-- Xephitik
+		[219984] = 2,
+
+
+		-- Darkfuse Bloodwarper
+		[230748] = 2,
+		-- Venture Co. Surveyor
+		[229686] = 2,
+		-- Venture Co. Electrician
+		[231312] = 2,
+		-- Mechadrone Sniper
+		[229069] = 2,
+		-- Darkfuse Hyena
+		[229252] = 2,
+		-- Darkfuse Mechadrone
+		[228424] = 2,
+		-- Disturbed Kelp
+		[231223] = 2,
+
+	
+
 	-- 내부전쟁 시즌 1
 	[128969] = 2,
 	[129366] = 2,
@@ -305,6 +461,7 @@ local NPCTable = {
 	[190207] = 2,
 	[190206] = 2,
 	[198047] = 2,
+
 };
 
 asAutoMarkerF = {};

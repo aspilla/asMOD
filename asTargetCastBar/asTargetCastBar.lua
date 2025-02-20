@@ -69,6 +69,7 @@ end
 
 ATCB.castbar:EnableMouse(false);
 ATCB.castbar:SetMouseMotionEnabled(true);
+ATCB.castbar.isAlert = false;
 ATCB.castbar:Hide();
 
 ATCB.button = CreateFrame("Button", nil, ATCB.castbar, "ATCBFrameTemplate");
@@ -175,7 +176,10 @@ local function ATCB_OnEvent(self, event, ...)
             frameIcon:Show();
             castBar:Show();
             if DangerousSpellList[spellid] and DangerousSpellList[spellid] == "interrupt" then
-                ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
+                if not castBar.isAlert then
+                    ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
+                    castBar.isAlert = true;
+                end
             end
 
             if UnitExists("targettarget") and UnitIsPlayer("targettarget") then
@@ -193,6 +197,7 @@ local function ATCB_OnEvent(self, event, ...)
             frameIcon:Hide();
             castBar:Hide();
             ns.lib.PixelGlow_Stop(castBar);
+            castBar.isAlert = false;
             self.start = 0;
             targetname:SetText("");
             targetname:Hide();
@@ -202,6 +207,7 @@ local function ATCB_OnEvent(self, event, ...)
         frameIcon:Hide();
         castBar:Hide();
         ns.lib.PixelGlow_Stop(castBar);
+        castBar.isAlert = false;
         self.start = 0;
         targetname:SetText("");
         targetname:Hide();

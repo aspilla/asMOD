@@ -261,12 +261,12 @@ function ns.lib.PixelGlow_Start(r, color, N, frequency, length, th, xOffset, yOf
 	local period
 	if frequency then
 		if not (frequency > 0 or frequency < 0) then
-			period = 4
+			period = 8
 		else
 			period = 1 / frequency
 		end
 	else
-		period = 4
+		period = 8
 	end
 	local width, height = r:GetSize()
 	length = length or math.floor((width + height) * (2 / N - 0.1))
