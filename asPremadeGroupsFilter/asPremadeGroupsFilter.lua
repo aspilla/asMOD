@@ -152,7 +152,7 @@ local function SearchEntryUpdate(entry, ...)
         local numMembers = resultInfo.numMembers;
         local classes = {};
         local leader_role;
-        local leader_classe;
+        local leader_class;
 
         for i = 1, numMembers do
             local role, class, classLocalized, specLocalized, isLeader = C_LFGList.GetSearchResultMemberInfo(resultID, i);

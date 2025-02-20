@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch
 local _, ns = ...;
 local version = select(4, GetBuildInfo());
 
@@ -498,6 +499,7 @@ local function SetupEditBoxOption()
 		local configID = (C_ClassTalents.GetLastSelectedSavedConfigID(specID) or 0) + 19;
 		local _, englishClass = UnitClass("player");
 		local listname = "ACI_SpellList_" .. englishClass .. "_" .. spec;
+		local default = ACI_Options_Default[listname];
 
 		if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
 			spec = 1;
@@ -507,7 +509,13 @@ local function SetupEditBoxOption()
 			ACI_Options[spec] = {};
 		end
 
-		ACI_Options[spec][configID] = CopyTable(ACI_Options_Default[listname]);
+
+
+		if default then
+			if type(default) == "table" then
+				ACI_Options[spec][configID] = CopyTable(default);
+			end
+		end
 
 		ACI_OptionM.UpdateAllOption();
 		ReloadUI();
@@ -546,7 +554,7 @@ local function SetupEditBoxOption()
 
 		title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
 		title:SetPoint("LEFT", 10, curr_y);
-		title:SetText(idx);
+		title:SetText(tostring(idx));
 
 
 		local x = 50;

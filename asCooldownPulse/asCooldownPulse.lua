@@ -564,7 +564,7 @@ local function ACDP_Alert(spell, type)
 		end
 	end
 
-	if bsound and (voicealert_start[name] == nil or voicealert_start[name] < currtime) then
+	if bsound and name and (voicealert_start[name] == nil or voicealert_start[name] < currtime) then
 		--3초간 금지
 		voicealert_start[name] = currtime + 3;
 		if ns.options.EnableTTS then

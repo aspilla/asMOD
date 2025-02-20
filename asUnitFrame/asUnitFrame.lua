@@ -29,6 +29,22 @@ local RaidIconList = {
     "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
 }
 
+local AuraFilters =
+{
+    Helpful = "HELPFUL",
+    Harmful = "HARMFUL",
+    Raid = "RAID",
+    IncludeNameplateOnly = "INCLUDE_NAME_PLATE_ONLY",
+    Player = "PLAYER",
+    Cancelable = "CANCELABLE",
+    NotCancelable = "NOT_CANCELABLE",
+    Maw = "MAW",
+};
+
+local function CreateFilterString(...)
+    return table.concat({ ... }, '|');
+end
+
 
 
 local leaderIcon = CreateAtlasMarkup("groupfinder-icon-leader", 14, 9, 0, 0);
@@ -155,7 +171,7 @@ local function updateCastBar(frame)
             frameIcon:Show();
             castbar:Show();
             if DangerousSpellList[spellid] and DangerousSpellList[spellid] == "interrupt" then
-                ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
+                ns.lib.PixelGlow_Start(castbar, { 1, 1, 0, 1 });
             end
 
             if UnitExists(unittarget) and UnitIsPlayer(unittarget) then
@@ -223,8 +239,8 @@ local function updateUnit(frame)
     local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0;
     local total = allIncomingHeal + totalAbsorb;
 
-    valuePct = (math.ceil((value / valueMax) * 100));
-    valuePct_orig = (math.ceil((value_orig / valueMax) * 100));
+    local valuePct = (math.ceil((value / valueMax) * 100));
+    local valuePct_orig = (math.ceil((value_orig / valueMax) * 100));
     local valuePctAbsorb = (math.ceil((total / valueMax) * 100));
 
     frame.healthbar:SetMinMaxValues(0, valueMax)
@@ -544,6 +560,7 @@ local function UpdateDebuffAnchor(frames, index, offsetX, right, parent, width)
     buff:SetHeight(width * 0.8);
 end
 
+local filter = CreateFilterString(AuraFilters.Harmful, AuraFilters.IncludeNameplateOnly);
 
 local function CreatDebuffFrames(parent, bright, fontsize, width, count)
     if parent.frames == nil then

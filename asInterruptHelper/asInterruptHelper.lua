@@ -60,7 +60,7 @@ local function showInterruptCooldown(spellID, isDangerous, endRemain)
     local frame = mainframe.cooldownframe;
 
     if not (frame) then
-        mainframe.cooldownframe = CreateFrame("Button", nil, parent, "AIHFrameTemplate");
+        mainframe.cooldownframe = CreateFrame("Button", nil, mainframe, "AIHFrameTemplate");
         frame = mainframe.cooldownframe;
         frame:SetWidth(AIH_SIZE);
         frame:SetHeight(AIH_SIZE * 0.9);
@@ -91,17 +91,17 @@ local function showInterruptCooldown(spellID, isDangerous, endRemain)
         frame:SetMouseMotionEnabled(true);
     end
     -- set the icon
-    frameIcon = frame.icon;
+    local frameIcon = frame.icon;
     frameIcon:SetTexture(spellInfo.iconID);
     frameIcon:SetAlpha(1);
 
 
-    frameBorder = frame.border;
+    local frameBorder = frame.border;
     frameBorder:SetVertexColor(0, 0, 0);
     frameBorder:Show();
 
     -- set the count
-    frameCooldown = frame.cooldown;
+    local frameCooldown = frame.cooldown;
     frameCooldown:Show();
     local remain = spellCooldownInfo.startTime + spellCooldownInfo.duration - GetTime();
     asCooldownFrame_Set(frameCooldown, spellCooldownInfo.startTime, spellCooldownInfo.duration,

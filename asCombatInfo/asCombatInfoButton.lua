@@ -12,7 +12,7 @@ ns.Button = {
     action = nil,
     frame = nil,
     inRange = true,
-    alert = false,    
+    alert = false,
     checkcool = nil,
     checkplatecount = nil,
     buffshowtime = nil,
@@ -108,7 +108,7 @@ function ns.Button:initButton()
     self.count = nil;
     self.buffalert = false;
     self.alert2 = false;
-    self.coolalert = false;    
+    self.coolalert = false;
     self.improvebuff = false;
     self.currtime = GetTime();
     self.gcd = select(2, asGetSpellCooldown(61304));
@@ -121,24 +121,25 @@ function ns.Button:initButton()
         ACI_SpellID_list[self.spellid] = true;
         if name then
             ACI_SpellID_list[name] = true;
-        end
 
-        if self.type ~= ns.EnumButtonType.BuffOnly and self.type ~= ns.EnumButtonType.DebuffOnly then
-            ns.eventhandler.registerEventFilter(name, self);
-        end
-        if self.type == ns.EnumButtonType.Debuff or self.type == ns.EnumButtonType.DebuffOnly then
-            ACI_Debuff_list[name] = true;
-            ns.eventhandler.registerAura(self.unit, name);
-            if self.checkplatecount then
-                ns.eventhandler.registerAura("nameplate", name, self.checkplatecount);
+
+            if self.type ~= ns.EnumButtonType.BuffOnly and self.type ~= ns.EnumButtonType.DebuffOnly then
+                ns.eventhandler.registerEventFilter(name, self);
             end
-        elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then
-            ns.eventhandler.registerAura(self.unit, name);
-            ACI_Buff_list[name] = true;
-        end
+            if self.type == ns.EnumButtonType.Debuff or self.type == ns.EnumButtonType.DebuffOnly then
+                ACI_Debuff_list[name] = true;
+                ns.eventhandler.registerAura(self.unit, name);
+                if self.checkplatecount then
+                    ns.eventhandler.registerAura("nameplate", name, self.checkplatecount);
+                end
+            elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then
+                ns.eventhandler.registerAura(self.unit, name);
+                ACI_Buff_list[name] = true;
+            end
 
-        if self.type == ns.EnumButtonType.Totem then
-            ns.eventhandler.registerTotem(name, self);
+            if self.type == ns.EnumButtonType.Totem then
+                ns.eventhandler.registerTotem(name, self);
+            end
         end
     end
 end
@@ -813,7 +814,7 @@ function ns.Button:showButton()
 
     local snapshot = 1;
     if self.checksnapshot and asDotSnapshot and asDotSnapshot.Relative then
-        snapshot = asDotSnapshot.Relative(guid, self.realbuff);
+        snapshot = asDotSnapshot.Relative(guid, self.realbuff) or 1;
     end
 
     if snapshot ~= data.snapshot then
@@ -827,7 +828,7 @@ function ns.Button:showButton()
                 frame.snapshot:Hide();
             else
                 frame.snapshot:SetTextColor(1, 0.5, 0.5);
-                frame.snapshot:Show();                
+                frame.snapshot:Show();
             end
         else
             frame.snapshot:Hide();

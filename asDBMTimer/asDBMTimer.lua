@@ -246,6 +246,8 @@ local function checkList()
 
 			if unitisdead == false then
 				if event.unit == nil or (UnitExists(event.unit) and event.guid ~= UnitGUID(event.unit)) then
+
+					local nunit = nil;
 					for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
 						local nameplate = v;
 						if (nameplate) then

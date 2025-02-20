@@ -47,7 +47,7 @@ APB_BUFF_COMBO_MAX_COUNT = nil;
 APB_DEBUFF_COMBO = nil;
 APB_ACTION_COMBO = nil;
 
-local APB = nil;
+local APB = CreateFrame("FRAME", nil, UIParent);
 local max_spell = nil;
 local balert = false;
 local balert2 = false;
@@ -384,6 +384,7 @@ local bdruid = false;
 local brogue = false;
 local bdeathstalker = nil;
 local combobuffalertlist = nil;
+local combodebuffalertlist = nil;
 local combobuffcountalertlist = nil;
 local combobuffcoloralertlist = nil;
 local druidcomboalertid = nil;
@@ -507,7 +508,7 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
         end
     end
 
-    if combobuffalertlist and combobar == APB.combobar then
+    if combobuffalertlist and APB and combobar == APB.combobar then
         local name = APB_UnitBuffList("player", combobuffalertlist);
 
         if name then
@@ -517,7 +518,7 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
         end
     end
 
-    if combobuffcountalertlist and combobar == APB.combobar then
+    if combobuffcountalertlist and APB and combobar == APB.combobar then
         local name = APB_UnitBuffCountList("player", combobuffcountalertlist);
 
         if name then
@@ -527,7 +528,7 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
         end
     end
 
-    if combobuffcoloralertlist and combobar == APB.combobar then
+    if combobuffcoloralertlist and APB and combobar == APB.combobar then
         local name = APB_UnitBuffList("player", combobuffcoloralertlist);
 
         if name then
@@ -535,7 +536,7 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
         end
     end
 
-    if bdeathstalker and combobar == APB.combobar then
+    if bdeathstalker and APB and combobar == APB.combobar then
         local name, _, count = APB_UnitDebuff("target", 457129);
 
         if name then
@@ -626,9 +627,11 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
             power = combobar.max_combo;
         end
 
-        local combotext = APB.combotext
-        combotext:SetText(power);
-        combotext:Show();
+        if APB then
+            local combotext = APB.combotext
+            combotext:SetText(power);
+            combotext:Show();
+        end
     end
 
     if druidcomboalertid then
@@ -2066,7 +2069,7 @@ local function APB_CheckPower(self)
         setupMouseOver(APB.combobar[i]);
 
         ns.lib.PixelGlow_Stop(APB.combobar2[i]);
-        APB.combobar2[i].isAlert =false;
+        APB.combobar2[i].isAlert = false;
         setupMouseOver(APB.combobar2[i]);
     end
 
@@ -2151,7 +2154,7 @@ local function APB_CheckPower(self)
         APB:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
         APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
         bupdate_power = true;
-        combobuffalertlist = { 408458, 223819, 326733, 1216837};
+        combobuffalertlist = { 408458, 223819, 326733, 1216837 };
         combobuffcoloralertlist = { 326733 }; --창공의 힘
 
         if (spec and spec == 1) then
@@ -3559,8 +3562,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
     return;
 end
 
-do
-    APB = CreateFrame("FRAME", nil, UIParent)
+do    
     APB:SetPoint("BOTTOM", UIParent, "CENTER", APB_X, APB_Y)
     APB:SetWidth(APB_WIDTH)
     APB:SetHeight(APB_HEIGHT)

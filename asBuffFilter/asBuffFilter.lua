@@ -705,7 +705,9 @@ local function ABF_OnEvent(self, event, arg1, ...)
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") and arg1 then
 		local spell_name = asGetSpellInfo(arg1);
 		overlayspell[arg1] = true;
-		overlayspell[spell_name] = true;
+		if spell_name then
+			overlayspell[spell_name] = true;
+		end
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_HIDE") then
 	elseif (event == "PLAYER_LEAVING_WORLD") then
 		hasValidPlayer = false;

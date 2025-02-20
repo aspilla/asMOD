@@ -11,6 +11,7 @@ end
 
 local version = select(4, GetBuildInfo());
 local detailsprofile = ns.detailsEn;
+local layoutInfo;
 
 if GetLocale() == "koKR" then
 	detailsprofile = ns.detailsKr;
@@ -766,8 +767,6 @@ local function asMOD_Clear()
 	asMOD_position = {};
 	ReloadUI();
 end
-
-local layoutInfo;
 
 local function asMOD_OnEvent(self, event, arg1)
 	if event == "ADDON_LOADED" and arg1 == "asMOD" then

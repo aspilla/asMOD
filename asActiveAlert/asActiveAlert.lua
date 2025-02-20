@@ -20,13 +20,13 @@ local asGetSpellInfo = function(spellID)
 		return nil;
 	end
 
-	if not skipCheck then
-		local ospellID = C_Spell.GetOverrideSpell(spellID)
 
-		if ospellID then
-			spellID = ospellID;
-		end
+	local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+	if ospellID then
+		spellID = ospellID;
 	end
+
 
 
 	local spellInfo = C_Spell.GetSpellInfo(spellID);
@@ -105,7 +105,7 @@ local function ASAA_UpdateCooldown()
 		parent.frames = {};
 	end
 
-	for org, id in pairs(ASAA_SpellList) do	
+	for org, id in pairs(ASAA_SpellList) do
 		name, _, icon = asGetSpellInfo(id);
 		start, duration, enable = asGetSpellCooldown(id);
 		local isUsable, notEnoughMana = C_Spell.IsSpellUsable(id);
@@ -127,17 +127,17 @@ local function ASAA_UpdateCooldown()
 					end
 				end
 
-				frame.icon:SetTexCoord(.08, .92, .08, .92)				
+				frame.icon:SetTexCoord(.08, .92, .08, .92)
 				frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92)
 				frame.border:SetVertexColor(0, 0, 0);
 			end
 
 			-- set the icon
-			frameIcon = frame.icon;			
+			frameIcon = frame.icon;
 			frameIcon:SetTexture(icon);
 			frameIcon:SetAlpha(ASAA_Alpha);
 			frame:ClearAllPoints();
-			frame:Show();			
+			frame:Show();
 
 			if (isUsable) then
 				frameIcon:SetVertexColor(1.0, 1.0, 1.0);
@@ -188,36 +188,38 @@ local function ASAA_Insert(id)
 
 	local name, _, icon, _, _, _, _, orgicon = asGetSpellInfo(id);
 
-	if ACI_SpellID_list then
-		for spellorg, _ in pairs(ACI_SpellID_list) do
-			local checkname, _, checkIcon, _, _, _, _, checkorg = asGetSpellInfo(spellorg);
-			if orgicon == checkorg or spellorg == id or name == checkname or icon == checkicon then
+	if name and icon and orgicon then
+		if ACI_SpellID_list then
+			for spellorg, _ in pairs(ACI_SpellID_list) do
+				local checkname, _, checkIcon, _, _, _, _, checkorg = asGetSpellInfo(spellorg);
+				if orgicon == checkorg or spellorg == id or name == checkname or icon == checkIcon then
+					return;
+				end
+			end
+		end
+
+		if APB_SPELL then
+			local checkname, _, checkIcon, _, _, _, _, checkorg = asGetSpellInfo(APB_SPELL);
+			if orgicon == checkorg or APB_SPELL == id or name == checkname or icon == checkIcon then
 				return;
 			end
 		end
-	end
 
-	if APB_SPELL then
-		local checkname, _, checkIcon, _, _, _, _, checkorg = asGetSpellInfo(APB_SPELL);
-		if orgicon == checkorg or APB_SPELL == id or name == checkname or icon == checkicon then
+		if APB_SPELL2 then
+			local checkname, _, checkIcon, _, _, _, _, checkorg = asGetSpellInfo(APB_SPELL2);
+			if orgicon == checkorg or APB_SPELL2 == id or name == checkname or icon == checkIcon then
+				return;
+			end
+		end
+
+		if ASAA_SpellList[orgicon] then
 			return;
 		end
+
+		ASAA_SpellList[orgicon] = id;
+
+		ASAA_UpdateCooldown();
 	end
-
-	if APB_SPELL2 then
-		local checkname, _, checkIcon, _, _, _, _, checkorg = asGetSpellInfo(APB_SPELL2);
-		if orgicon == checkorg or APB_SPELL2 == id or name == checkname or icon == checkicon then
-			return;
-		end
-	end
-
-	if ASAA_SpellList[orgicon] then
-		return;
-	end
-
-	ASAA_SpellList[orgicon] = id;
-
-	ASAA_UpdateCooldown();
 end
 
 local function ASAA_Delete(id)

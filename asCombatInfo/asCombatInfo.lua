@@ -136,8 +136,7 @@ end
 
 local function ACI_OnEvent(self, event, arg1, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
-		C_Timer.After(0.5, ACI_Init);
-		bfirst = true;
+		C_Timer.After(0.5, ACI_Init);		
 		if UnitAffectingCombat("player") then
 			for i = 1, ACI_MaxSpellCount do
 				ACI[i]:SetAlpha(ACI_Alpha);
@@ -411,6 +410,9 @@ for i = 1, ACI_MaxSpellCount do
 	ACI[i].snapshot:ClearAllPoints();
 	ACI[i].snapshot:SetPoint("CENTER", ACI[i], "TOP", 0, -8);
 	ACI[i].snapshot:Hide();
+
+	ACI[i].tooltip = nil;
+	ACI[i].spellid = nil;
 end
 
 

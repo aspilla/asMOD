@@ -351,6 +351,7 @@ local function OnSpellEvent(unit, spellid)
 end
 
 local timer = nil;
+local timer2 = nil;
 
 local function layoutbuff(f, unit)
     f:EnableMouse(false);

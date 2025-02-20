@@ -995,7 +995,7 @@ local function SetupSubOption(panel, titlename, coption, soption)
 	btn:SetScript("OnClick", function()
 		local newspell = editBox:GetNumber();            
         local newtype = tonumber(UIDropDownMenu_GetSelectedValue(dropDown));
-		if newspell > 0 then
+		if newspell and newspell > 0 then
 			coption[newspell] = newtype;
 			if soption then
 				soption[newspell] = newtype;
@@ -1013,7 +1013,7 @@ local function SetupSubOption(panel, titlename, coption, soption)
 	btn2:SetWidth(100)
 	btn2:SetScript("OnClick", function()
 		local newspell = editBox:GetNumber();   
-		if newspell > 0 then
+		if newspell and newspell > 0 then
 			coption[newspell] = nil;
 			if soption then
 				soption[newspell] = nil;

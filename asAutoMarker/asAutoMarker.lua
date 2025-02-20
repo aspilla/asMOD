@@ -527,7 +527,7 @@ local function UpdateMarks(nameplate)
 
 	if (unit == "mouseover" or (unit and status and status > 0)) and isAttackable(unit) and not UnitIsDead(unit) then
 		local guid = UnitGUID(unit);
-		if asAutoMarkerF.IsAutoMarkerMob(unit) > 1 then
+		if asAutoMarkerF.IsAutoMarkerMob(unit) > 1 and guid then
 			while (curr_mark <= AAM_MaxMark) do
 				if abledMarks[curr_mark] then
 					break;

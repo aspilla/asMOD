@@ -231,7 +231,7 @@ local function load()
 		listname = "ADS_OPTION_" .. englishClass .. "_" .. spec;
 	end
 
-	option = _G[listname];
+	local option = _G[listname];
 
 	if not option then
 		frame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
