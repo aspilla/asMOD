@@ -239,9 +239,9 @@ function ACI_Init()
 
 		for i = 1, maxIdx do
 			if type(ACI_SpellList[i][1]) == "table" then
-				for _, array in pairs(ACI_SpellList[i]) do
+				for idx, array in pairs(ACI_SpellList[i]) do
 					local spell_name = array[1];
-					if asIsPlayerSpell(spell_name) then
+					if asIsPlayerSpell(spell_name) or idx == #(ACI_SpellList[i]) then						
 						ACI_SpellList[i] = {};
 						for z, v in pairs(array) do
 							ACI_SpellList[i][z] = v;

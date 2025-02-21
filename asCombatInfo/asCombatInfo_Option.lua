@@ -442,6 +442,16 @@ if version >= 110100 then
 		{ 470411,                         4,             nil,                             18 * 0.3,                                                                       nil,           nil,          nil, nil, nil, nil, 6 },
 	};
 
+	--사격
+	ACI_Options_Default.ACI_SpellList_HUNTER_2 = {
+		version = 250220,
+		{ 212431, 1 },
+		{ 257044, 1 },
+		{ 288613, 2 },
+		{ 53351,  1 },
+		{ { 260243, 2 }, { 466872, 5 } },
+
+	};
 end
 
 
@@ -524,7 +534,7 @@ local function SetupEditBoxOption()
 	local spec = GetSpecialization();
 	local specID = PlayerUtil.GetCurrentSpecID();
 	local configID = (C_ClassTalents.GetLastSelectedSavedConfigID(specID) or 0) + 19;
-	local _, englishClass = UnitClass("player");	
+	local _, englishClass = UnitClass("player");
 
 	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
 		spec = 1;
@@ -615,13 +625,13 @@ local function SetupEditBoxOption()
 
 
 		local dropdownOptions = {
-			{ text = "Spell (SpellId)", value = 1 },
-			{ text = "Spell + Buff (SpellId)", value = 2 },
-			{ text = "Buff Only (BuffId)", value = 3 },
-			{ text = "Spell + Debuff (SpellId)", value = 4 },			
-			{ text = "Debuff Only (DebuffId)", value = 5 },
-			{ text = "Spell + Totem (SpellId)", value = 6 },
-			{ text = "Default", disabled = true, value = 7 },
+			{ text = "Spell (SpellId)",          value = 1 },
+			{ text = "Spell + Buff (SpellId)",   value = 2 },
+			{ text = "Buff Only (BuffId)",       value = 3 },
+			{ text = "Spell + Debuff (SpellId)", value = 4 },
+			{ text = "Debuff Only (DebuffId)",   value = 5 },
+			{ text = "Spell + Totem (SpellId)",  value = 6 },
+			{ text = "Default",                  disabled = true, value = 7 },
 		}
 
 		local function updatedata()
@@ -629,11 +639,11 @@ local function SetupEditBoxOption()
 			local type = UIDropDownMenu_GetSelectedValue(dropDown);
 
 			if data ~= nil and type > 0 and type <= 6 then
-				ACI_Options[spec][configID][idx] = {};				
+				ACI_Options[spec][configID][idx] = {};
 				ACI_Options[spec][configID][idx].config = true;
 				ACI_Options[spec][configID][idx][1] = data;
 				ACI_Options[spec][configID][idx][2] = tonumber(type);
-				
+
 				if update_callback then
 					update_callback();
 				end
@@ -688,9 +698,9 @@ local function InitOption()
 		ACI_Options.version = (ACI_Options_Default.version);
 		ACI_Options[spec] = {};
 		ACI_Options[spec][configID] = CopyTable(default);
-	elseif ACI_Options[spec] and ACI_Options[spec][configID] then		
+	elseif ACI_Options[spec] and ACI_Options[spec][configID] then
 		if default.version ~= ACI_Options[spec][configID].version then
-			ACI_Options[spec][configID] = CopyTable(default);			
+			ACI_Options[spec][configID] = CopyTable(default);
 		end
 	elseif ACI_Options[spec] then
 		ACI_Options[spec][configID] = CopyTable(default);
