@@ -286,27 +286,32 @@ end
 
 -- 버프 설정 부
 local function ACRB_UtilSetDispelDebuff(dispellDebuffFrame, aura)
-    dispellDebuffFrame:Show();
-    dispellDebuffFrame.icon:SetTexture("Interface\\RaidFrame\\Raid-Icon-Debuff" .. aura.dispelName);
-    dispellDebuffFrame.auraInstanceID = aura.auraInstanceID;
+    local data = dispellDebuffFrame.data;
+
+    if aura.dispelName ~= data.dispelName then
+        dispellDebuffFrame.icon:SetTexture("Interface\\RaidFrame\\Raid-Icon-Debuff" .. aura.dispelName);
+        dispellDebuffFrame.auraInstanceID = aura.auraInstanceID;
+        dispellDebuffFrame:Show();
+        data.dispelName = aura.dispelName;
+    end
 end
 
 local function ARCB_UtilSetBuff(frame, aura, currtime)
     local data = frame.data;
     local enabled = aura.expirationTime and aura.expirationTime ~= 0;
+    local hidecool = true;
+    local coolcolor = { r = 0.8, g = 0.8, b = 1 };
+    local bordercolor = { r = 0, g = 0, b = 0 };
 
-    if (aura.icon ~= data.icon) or
-        (aura.applications ~= data.applications) or
-        (aura.expirationTime ~= data.expiration) or
-        (aura.duration ~= data.duration) then
-        frame.data = {
-            icon = aura.icon,
-            applications = aura.applications,
-            expiration = aura.expirationTime,
-            duration = aura.duration,
-        };
+    frame.auraInstanceID = aura.auraInstanceID;
 
+    if (aura.icon ~= data.icon) then
         frame.icon:SetTexture(aura.icon);
+        frame:Show();
+        data.icon = aura.icon;
+    end
+
+    if (aura.applications ~= data.applications) then
         if (aura.applications > 1) then
             local countText = aura.applications;
             if (aura.applications >= 100) then
@@ -317,30 +322,28 @@ local function ARCB_UtilSetBuff(frame, aura, currtime)
         else
             frame.count:Hide();
         end
-        frame.auraInstanceID = aura.auraInstanceID;
+        data.applications = aura.applications;
+    end
 
+    if (aura.expirationTime ~= data.expirationTime) or (aura.duration ~= data.duration) then
         if enabled then
             local startTime = aura.expirationTime - aura.duration;
             ns.asCooldownFrame_Set(frame.cooldown, startTime, aura.duration, true);
         else
             asCooldownFrame_Clear(frame.cooldown);
         end
-
-        frame:Show();
+        data.expirationTime = aura.expirationTime;
+        data.duration = aura.duration;
     end
 
     if enabled then
         local remain = math.ceil(aura.expirationTime - currtime);
         if frame.hideCountdownNumbers == false then
-            if remain >= ns.options.MinSectoShowCooldown then
-                frame.cooldown:SetHideCountdownNumbers(true);
-            else
-                frame.cooldown:SetHideCountdownNumbers(false);
+            if remain < ns.options.MinSectoShowCooldown then
+                hidecool = false;
 
                 if remain > 0 and remain < 10 then
-                    frame.cooldowntext:SetVertexColor(1, 1, 0.3);
-                else
-                    frame.cooldowntext:SetVertexColor(0.8, 0.8, 1);
+                    coolcolor = { r = 1, g = 1, b = 0.3 };
                 end
             end
         end
@@ -358,14 +361,27 @@ local function ARCB_UtilSetBuff(frame, aura, currtime)
             end
 
             if showlist_time > 0 and aura.expirationTime - currtime < showlist_time then
-                frame.border:SetVertexColor(1, 1, 1);
+                bordercolor = { r = 1, g = 1, b = 1 };
                 if frame.hideCountdownNumbers == false then
-                    frame.cooldowntext:SetVertexColor(1, 0.3, 0.3);
+                    coolcolor = { r = 1, g = 0.3, b = 0.3 };
                 end
-            else
-                frame.border:SetVertexColor(0, 0, 0);
             end
         end
+    end
+
+    if (hidecool ~= data.hidecool) then
+        frame.cooldown:SetHideCountdownNumbers(hidecool);
+        data.hidecool = hidecool;
+    end
+
+    if data.coolcolor == nil or coolcolor.g ~= data.coolcolor.g then
+        frame.cooldowntext:SetVertexColor(coolcolor.r, coolcolor.g, coolcolor.b);
+        data.coolcolor = coolcolor;
+    end
+
+    if data.bordercolor == nil or bordercolor.r ~= data.bordercolor.r then
+        frame.border:SetVertexColor(bordercolor.r, bordercolor.g, bordercolor.b);
+        data.bordercolor = bordercolor;
     end
 end
 
@@ -373,20 +389,20 @@ end
 local function ACRB_UtilSetDebuff(frame, aura, currtime)
     local data = frame.data;
     local enabled = aura.expirationTime and aura.expirationTime ~= 0;
+    local hidecool = true;
+    local coolcolor = { r = 0.8, g = 0.8, b = 1 };
+    local sizerate = 1;
 
-    if (aura.icon ~= data.icon) or
-        (aura.applications ~= data.applications) or
-        (aura.expirationTime ~= data.expiration) or
-        (aura.duration ~= data.duration) then
-        frame.data = {
-            icon = aura.icon,
-            applications = aura.applications,
-            expiration = aura.expirationTime,
-            duration = aura.duration,
-        };
+    frame.filter = aura.isRaid and AuraFilters.Raid or nil;
+    frame.auraInstanceID = aura.auraInstanceID;
 
-        frame.filter = aura.isRaid and AuraFilters.Raid or nil;
+    if (aura.icon ~= data.icon) then
         frame.icon:SetTexture(aura.icon);
+        frame:Show();
+        data.icon = aura.icon;
+    end
+
+    if (aura.applications ~= data.applications) then
         if (aura.applications > 1) then
             local countText = aura.applications;
             if (aura.applications >= 100) then
@@ -397,45 +413,61 @@ local function ACRB_UtilSetDebuff(frame, aura, currtime)
         else
             frame.count:Hide();
         end
-        frame.auraInstanceID = aura.auraInstanceID;
+        data.applications = aura.applications;
+    end
 
+    if (aura.expirationTime ~= data.expirationTime) or (aura.duration ~= data.duration) then
         if enabled then
             local startTime = aura.expirationTime - aura.duration;
             ns.asCooldownFrame_Set(frame.cooldown, startTime, aura.duration, true);
         else
             asCooldownFrame_Clear(frame.cooldown);
         end
+        data.expirationTime = aura.expirationTime;
+        data.duration = aura.duration;
+    end
 
-        local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
-        frame.border:SetVertexColor(color.r, color.g, color.b);
-
-        frame.isBossBuff = aura.isBossAura and aura.isHelpful;
-        if (aura.isBossAura or (aura.nameplateShowAll and aura.duration > 0 and aura.duration < 10)) then
-            frame:SetSize((frame.size_x) * 1.3, frame.size_y * 1.3);
-        else
-            frame:SetSize(frame.size_x, frame.size_y);
-        end
-
-        frame:Show();
+    local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
+   
+    frame.isBossBuff = aura.isBossAura and aura.isHelpful;
+    if (aura.isBossAura or (aura.nameplateShowAll and aura.duration > 0 and aura.duration < 10)) then
+        sizerate = 1.3;
     end
 
     if enabled then
         local remain = math.ceil(aura.expirationTime - currtime);
 
         if frame.hideCountdownNumbers == false then
-            if remain >= ns.options.MinSectoShowCooldown then
-                frame.cooldown:SetHideCountdownNumbers(true);
-            else
-                frame.cooldown:SetHideCountdownNumbers(false);
+            if remain < ns.options.MinSectoShowCooldown then
+                hidecool = false;
 
                 if remain > 0 and remain < 10 then
-                    frame.cooldowntext:SetVertexColor(1, 1, 0.3);
-                else
-                    frame.cooldowntext:SetVertexColor(0.8, 0.8, 1);
+                    coolcolor = { r = 1, g = 1, b = 0.3 };
                 end
             end
         end
     end
+
+    if (hidecool ~= data.hidecool) then
+        frame.cooldown:SetHideCountdownNumbers(hidecool);
+        data.hidecool = hidecool;
+    end
+
+    if data.coolcolor == nil or coolcolor.g ~= data.coolcolor.g then
+        frame.cooldowntext:SetVertexColor(coolcolor.r, coolcolor.g, coolcolor.b);
+        data.coolcolor = coolcolor;
+    end
+
+    if data.bordercolor == nil or color.r ~= data.bordercolor.r or color.g ~= data.bordercolor.g or color.b ~= data.bordercolor.b then
+        frame.border:SetVertexColor(color.r, color.g, color.b);
+        data.bordercolor = color;
+    end
+
+    if sizerate ~= data.sizerate then
+        frame:SetSize((frame.size_x) * sizerate, frame.size_y * sizerate);
+        data.sizerate = sizerate;
+    end
+
 end
 
 local function ProcessAura(aura, asframe)
@@ -745,6 +777,7 @@ function ns.ACRB_UpdateAuras(asframe)
         for i = frameNum, ns.ACRB_MAX_DISPEL_DEBUFFS do
             local dispellDebuffFrame = asframe.asdispelDebuffFrames[i];
             dispellDebuffFrame:Hide();
+            dispellDebuffFrame.data = {};
         end
 
         if showdispell == false then

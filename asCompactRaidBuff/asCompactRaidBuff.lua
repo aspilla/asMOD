@@ -242,8 +242,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             local buffFrame = CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
             layoutbuff(buffFrame, 1);
             asframe.asbuffFrames[i] = buffFrame;
-            buffFrame:Hide();
-            buffFrame.data = {};
+            buffFrame:Hide();            
             buffFrame:SetFrameStrata(strata);
             buffFrame:SetFrameLevel(framelevel);
             buffFrame.cooldown:SetFrameLevel(framelevel);
@@ -254,6 +253,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         for i = 1, ns.ACRB_MAX_BUFFS do
             local buffFrame = asframe.asbuffFrames[i];
             buffFrame:ClearAllPoints();
+            buffFrame.data = {};
 
             if i <= ns.ACRB_MAX_BUFFS - 3 then
                 if math.fmod(i - 1, 3) == 0 then
@@ -304,15 +304,15 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             debuffFrame:Hide();
             debuffFrame:SetFrameStrata(strata);
             debuffFrame:SetFrameLevel(framelevel);
-            debuffFrame.cooldown:SetFrameLevel(framelevel);
-            debuffFrame.data = {};
+            debuffFrame.cooldown:SetFrameLevel(framelevel);            
         end
     end
 
     if asframe.asdebuffFrames then
         for i = 1, ns.ACRB_MAX_DEBUFFS do
             local debuffFrame = asframe.asdebuffFrames[i];
-            debuffFrame:ClearAllPoints()
+            debuffFrame:ClearAllPoints();
+            debuffFrame.data = {};
 
             if math.fmod(i - 1, 3) == 0 then
                 if i == 1 then
@@ -345,8 +345,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
 
             pvpbuffFrame:SetFrameStrata(strata);
             pvpbuffFrame:SetFrameLevel(framelevel);
-            pvpbuffFrame.cooldown:SetFrameLevel(framelevel);
-            pvpbuffFrame.data = {};
+            pvpbuffFrame.cooldown:SetFrameLevel(framelevel);            
         end
     end
 
@@ -354,6 +353,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         d:SetSize(size_x, size_y);
         layoutcooldown(d);
         d:ClearAllPoints();
+        d.data = {};
         if i == 1 then
             d:SetPoint("CENTER", frame, "CENTER", 0, centeryoffset);
         else
@@ -370,8 +370,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             castFrame:SetFrameStrata(strata);
             castFrame:SetFrameLevel(framelevel);
             castFrame.cooldown:SetFrameLevel(framelevel);
-            castFrame:Hide();
-            castFrame.data = {};
+            castFrame:Hide();            
             layoutbuff(castFrame, 3);
         end
     end
@@ -380,6 +379,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         d:SetSize(size_x, size_y);
         layoutcooldown(d);
         d:ClearAllPoints();
+        d.data = {};
         if i == 1 then
             d:SetPoint("TOP", frame, "TOP", 0, -2);
         else
@@ -407,6 +407,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
                 asframe.asdispelDebuffFrames[i]:SetPoint("RIGHT", asframe.asdispelDebuffFrames[i - 1], "LEFT", 0, 0);
             end
             asframe.asdispelDebuffFrames[i]:SetSize(baseSize, baseSize);
+            asframe.asdispelDebuffFrames[i].data = {};
         end
     end
 

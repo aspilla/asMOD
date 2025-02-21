@@ -54,24 +54,11 @@ local function ACRB_updateCasting(asframe, unit)
             end
 
             if name and index <= #(asframe.castFrames) then
-                if not (texture == castFrame.data.texture and
-                        spellid == castFrame.data.spellid and
-                        endTime == castFrame.data.endTime and
-                        startTime == castFrame.data.startTime) then
-                    castFrame.data = {
-                        icon =texture,
-                        startTime = startTime,
-                        endTime = endTime,
-                        spellid = spellid,
-                    };
+                local data = castFrame.data;
+
+                if spellid ~= data.spellid then
                     castFrame.icon:SetTexture(texture);
-                    castFrame.count:Hide();
-
-                    local curr = GetTime();
-                    local start = startTime / 1000;
-                    local duration = (endTime / 1000) - start;
-
-                    ns.asCooldownFrame_Set(castFrame.cooldown, start, duration, true);
+                    castFrame.count:Hide();                   
 
                     if DangerousSpellList[spellid] then
                         if DangerousSpellList[spellid] == "interrupt" or not notInterruptible then
@@ -82,8 +69,21 @@ local function ACRB_updateCasting(asframe, unit)
                     else
                         ns.lib.PixelGlow_Stop(castFrame);
                     end
+
                     castFrame.castspellid = spellid;
                     castFrame:Show();
+
+                    data.spellid = spellid;
+                end
+
+                local curr = GetTime();
+                local start = startTime / 1000;
+                local duration = (endTime / 1000) - start;
+
+                if start ~= data.start or duration ~= data.duration then
+                    ns.asCooldownFrame_Set(castFrame.cooldown, start, duration, true);
+                    data.start = start;
+                    data.duration = duration;
                 end
 
                 asframe.ncasting = index;
