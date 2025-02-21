@@ -601,7 +601,6 @@ local function updateTargetNameP(self)
             base_y = base_y + GetClassBarHeight();
         end
     elseif UnitIsUnit(unit, "player") then
-        self.alerthealthbar = false;
         height = orig_height + ns.ANameP_TargetHealthBarHeight;
         self.healthtext:Show();
         self.motext:Hide();
@@ -837,12 +836,12 @@ local function updateHealthbarColor(self)
                     end
                 end
             elseif notInterruptible == false then
-                alerttype = 1;            
-            end        
+                alerttype = 1;
+            end
         end
     end
 
-    if alerttype ~= self.castalerttype then        
+    if alerttype ~= self.castalerttype then
         if alerttype == 2 then
             ns.lib.PixelGlow_Start(self.casticon, { 1, 1, 0, 1 });
             ns.lib.PixelGlow_Start(healthBar, { 1, 1, 0, 1 }, nil, nil, nil, nil, nil, nil, nil, nil,
@@ -878,7 +877,6 @@ local function updateHealthbarColor(self)
 
             if ns.ANameP_AlertList[unitname][4] == 1 then
                 ns.lib.PixelGlow_Start(healthBar);
-                self.alerthealthbar = true;
             end
 
             self.namecolor = true;
@@ -1302,10 +1300,8 @@ local function removeUnit(namePlateUnitToken)
 
 
         if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
-            if asframe.alerthealthbar then
-                ns.lib.PixelGlow_Stop(namePlateFrameBase.UnitFrame.healthBar);
-                asframe.alerthealthbar = false;
-            end
+            ns.lib.PixelGlow_Stop(namePlateFrameBase.UnitFrame.healthBar);
+            asframe.castalerttype = nil;
         end
 
         asframe:ClearAllPoints();
@@ -1384,8 +1380,7 @@ local function addNamePlate(namePlateFrameBase)
     asframe.nameplateBase = namePlateFrameBase;
     asframe.unit = unit;
     asframe.update = 0;
-    asframe.alerthealthbar = false;
-    asframe.castalerttype = 0;
+    asframe.castalerttype = nil;
     asframe.namecolor = false;
     asframe.checkaura = false;
     asframe.downbuff = false;
