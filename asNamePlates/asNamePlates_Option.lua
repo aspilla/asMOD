@@ -320,7 +320,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 250203,
+    version = 250222,
     ANameP_ShowKnownSpell = false,                            -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -486,7 +486,8 @@ ANameP_Options_Default = {
         [164812] = { 1, 5, 1 }, --달빛섬광
         [164815] = { 1, 4, 2 }, --태양섬광
         [202347] = { 1, 3 },    --항성의 섬광
-        [430589] = { 0, 2 },    --기후 노출
+        [81282] = { 0, 2 },    --진균 번식
+        [430589] = { 0, 1 },    --기후 노출
     },
 
 
@@ -683,6 +684,10 @@ local function SetupSliderOption(text, option)
 
     curr_y = curr_y + y_adder;
 
+    if scrollChild == nil then
+        return;
+    end
+
     local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
     title:SetPoint("TOPLEFT", 20, curr_y);
     title:SetText(text);
@@ -723,6 +728,10 @@ local function SetupColorOption(text, option)
     end
 
     curr_y = curr_y + y_adder;
+
+    if scrollChild == nil then
+        return;
+    end
 
     local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
     title:SetPoint("TOPLEFT", 20, curr_y);
@@ -795,6 +804,10 @@ local function SetupEditBoxOption()
     end
 
     local x = 10;
+
+    if scrollChild == nil then
+        return;
+    end
 
     local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
     title:SetPoint("TOPLEFT", x, curr_y);
@@ -1085,6 +1098,10 @@ local function SetupDebuffPointOption()
     end
 
     local x = 10;
+    
+    if scrollChild == nil then
+        return;
+    end
 
     local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
     title:SetPoint("TOPLEFT", x, curr_y);

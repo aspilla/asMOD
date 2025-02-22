@@ -305,10 +305,10 @@ local function ARCB_UtilSetBuff(frame, aura, currtime)
 
     frame.auraInstanceID = aura.auraInstanceID;
 
-    if (aura.icon ~= data.icon) then
+    if (aura.spellId ~= data.spellId) then
         frame.icon:SetTexture(aura.icon);
         frame:Show();
-        data.icon = aura.icon;
+        data.spellId = aura.spellId;
     end
 
     if (aura.applications ~= data.applications) then
@@ -374,7 +374,7 @@ local function ARCB_UtilSetBuff(frame, aura, currtime)
         data.hidecool = hidecool;
     end
 
-    if data.coolcolor == nil or coolcolor.g ~= data.coolcolor.g then
+    if hidecool == false and (data.coolcolor == nil or coolcolor.g ~= data.coolcolor.g) then
         frame.cooldowntext:SetVertexColor(coolcolor.r, coolcolor.g, coolcolor.b);
         data.coolcolor = coolcolor;
     end
@@ -391,15 +391,30 @@ local function ACRB_UtilSetDebuff(frame, aura, currtime)
     local enabled = aura.expirationTime and aura.expirationTime ~= 0;
     local hidecool = true;
     local coolcolor = { r = 0.8, g = 0.8, b = 1 };
-    local sizerate = 1;
 
     frame.filter = aura.isRaid and AuraFilters.Raid or nil;
     frame.auraInstanceID = aura.auraInstanceID;
 
-    if (aura.icon ~= data.icon) then
+    if (aura.spellId ~= data.spellId) then
+        local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
+        local sizerate = 1;
+
         frame.icon:SetTexture(aura.icon);
+        frame.border:SetVertexColor(color.r, color.g, color.b);
+
+        frame.isBossBuff = aura.isBossAura and aura.isHelpful;
+        if (aura.isBossAura or (aura.nameplateShowAll and aura.duration > 0 and aura.duration < 10)) then
+            sizerate = 1.3;
+        end
+
+        if sizerate ~= data.sizerate then
+            frame:SetSize((frame.size_x) * sizerate, frame.size_y * sizerate);
+            data.sizerate = sizerate;
+        end
+
+        data.spellId = aura.spellId;
+
         frame:Show();
-        data.icon = aura.icon;
     end
 
     if (aura.applications ~= data.applications) then
@@ -427,13 +442,6 @@ local function ACRB_UtilSetDebuff(frame, aura, currtime)
         data.duration = aura.duration;
     end
 
-    local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
-   
-    frame.isBossBuff = aura.isBossAura and aura.isHelpful;
-    if (aura.isBossAura or (aura.nameplateShowAll and aura.duration > 0 and aura.duration < 10)) then
-        sizerate = 1.3;
-    end
-
     if enabled then
         local remain = math.ceil(aura.expirationTime - currtime);
 
@@ -453,21 +461,10 @@ local function ACRB_UtilSetDebuff(frame, aura, currtime)
         data.hidecool = hidecool;
     end
 
-    if data.coolcolor == nil or coolcolor.g ~= data.coolcolor.g then
+    if hidecool == false and (data.coolcolor == nil or coolcolor.g ~= data.coolcolor.g) then
         frame.cooldowntext:SetVertexColor(coolcolor.r, coolcolor.g, coolcolor.b);
         data.coolcolor = coolcolor;
     end
-
-    if data.bordercolor == nil or color.r ~= data.bordercolor.r or color.g ~= data.bordercolor.g or color.b ~= data.bordercolor.b then
-        frame.border:SetVertexColor(color.r, color.g, color.b);
-        data.bordercolor = color;
-    end
-
-    if sizerate ~= data.sizerate then
-        frame:SetSize((frame.size_x) * sizerate, frame.size_y * sizerate);
-        data.sizerate = sizerate;
-    end
-
 end
 
 local function ProcessAura(aura, asframe)

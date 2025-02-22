@@ -157,115 +157,97 @@ end
 
 local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0", true);
 
-local function UtilSetCooldown(offensivecool, unit, asframe)
+local function UtilSetCooldown(offensivecool, asframe)
     local spellid = offensivecool[2];
     local time = offensivecool[3];
     local cool = offensivecool[4];
     local buffcool = offensivecool[5];
     local realremain = offensivecool[6];
-    local buffFrame = asframe.asbuffFrame;
-    local frame = asframe.frame;
+    local coolFrame = asframe.ascoolFrame;
     local name, _, icon = asGetSpellInfo(spellid);
-
-    local x, y = frame:GetSize();
-
-    if not UnitExists(unit) then
-        buffFrame:Hide();
-        return;
-    else
-        local assignedRole = UnitGroupRolesAssigned(unit);
-
-        if (IsInRaid() and assignedRole and assignedRole ~= "DAMAGER") then
-            buffFrame:Hide();
-            return;
-        end
-    end
 
     if name then
         local currtime = GetTime();
-
-        if IsInRaid() then
-            --if true then
-            buffFrame:SetSize(x / 6 - 1, y / 3 - 1);
-        else
-            buffFrame:SetSize(y / 2 * 1.2, y / 2);
-        end
-
-        buffFrame.icon:SetTexture(icon);
+        local desaturated = false;
+        local iconcolor = { r = 1, g = 1, b = 1 };
+        local textcolor = { r = 1, g = 1, b = 1 };
+        local remain = 0;
+        local data = coolFrame.data;
 
         if currtime <= time + buffcool then
             local expirationTime = time + buffcool;
-            local remain = math.ceil(expirationTime - currtime);
-            buffFrame.cooldown:Hide();
-            buffFrame.icon:SetDesaturated(false);
-            buffFrame.icon:SetVertexColor(1, 1, 1);
-
-            if remain > 0 and remain < 100 then
-                buffFrame.remain:SetText(remain);
-                buffFrame.remain:SetTextColor(1, 1, 1);
-                buffFrame.remain:Show();
-            else
-                buffFrame.remain:Hide();
-            end
+            remain = math.ceil(expirationTime - currtime);
         elseif time then
             local expirationTime = time + cool;
-            local remain = math.ceil(expirationTime - currtime);
+            remain = math.ceil(expirationTime - currtime);
 
             if realremain and realremain < remain then
                 remain = realremain;
             end
 
             if remain > 0 then
-                buffFrame.cooldown:Hide();
-                buffFrame.icon:SetDesaturated(true);
-                buffFrame.icon:SetVertexColor(1, 1, 1);
-
-                if remain > 0 and remain < 100 then
-                    buffFrame.remain:SetText(remain);
-                    if remain < 4 then
-                        buffFrame.remain:SetTextColor(1, 0, 0);
-                    else
-                        buffFrame.remain:SetTextColor(0, 1, 0);
-                    end
-                    buffFrame.remain:Show();
-                else
-                    buffFrame.remain:Hide();
+                desaturated = true;
+                if remain < 4 then
+                    textcolor = { r = 1, g = 0, b = 0 };
                 end
             else
-                buffFrame.icon:SetDesaturated(true);
-                buffFrame.icon:SetVertexColor(0, 1, 0);
-                buffFrame.remain:Hide();
-                buffFrame.cooldown:Hide();
+                desaturated = true;
+                iconcolor = { r = 0, g = 1, b = 0 };
             end
         end
-        buffFrame:Show();
-    else
-        buffFrame:Hide();
+
+        if icon ~= data.icon then
+            coolFrame.icon:SetTexture(icon);
+            data.icon = icon;
+        end
+        if desaturated ~= data.desaturated then
+            coolFrame.icon:SetDesaturated(desaturated);
+            data.desaturated = desaturated;
+        end
+
+        if data.iconcolor == nil or iconcolor.r ~= data.iconcolor.r then
+            coolFrame.icon:SetVertexColor(iconcolor.r, iconcolor.g, iconcolor.b);
+            data.iconcolor = iconcolor;
+        end
+
+        if remain > 0 and remain < 100 then
+            if remain ~= data.remain then
+                coolFrame.remain:SetText(remain);
+                coolFrame.remain:SetTextColor(textcolor.r, textcolor.g, textcolor.b);
+                coolFrame.remain:Show();
+                data.remain = remain;
+            end
+        else
+            data.remain = 0;
+            coolFrame.remain:Hide();
+        end
+        coolFrame:Show();
     end
 end
 
 local function showallframes(frames)
-    for _, raidframe in pairs(frames) do
-        local unit = raidframe.frame.unit;
+    for _, asframe in pairs(frames) do
+        local unit = asframe.frame.unit;
 
-        if raidframe.needtosetup then
-            ns.SetupPartyCool(raidframe);
+        if asframe.needtosetup then
+            ns.SetupPartyCool(asframe);
         end
 
-        if raidframe.needtocheck and unit and offensivecools[unit] and offensivecools[unit][1] and raidframe.frame:IsShown() then
-            UtilSetCooldown(offensivecools[unit], unit, raidframe);
-        elseif raidframe.asbuffFrame then
-            raidframe.asbuffFrame:Hide()
+        if asframe.needtocheck and unit and offensivecools[unit] and offensivecools[unit][1] and asframe.frame:IsShown() then
+            UtilSetCooldown(offensivecools[unit], asframe);
+        elseif asframe.ascoolFrame then
+            asframe.ascoolFrame.data = {};
+            asframe.ascoolFrame:Hide()
         end
     end
 end
 
 local function checkallframes(frames)
     local currtime = GetTime();
-    for _, raidframe in pairs(frames) do
-        local unit = raidframe.frame.unit;
+    for _, asframe in pairs(frames) do
+        local unit = asframe.frame.unit;
 
-        if raidframe.needtocheck and unit and offensivecools[unit] and offensivecools[unit][1] and raidframe.frame:IsShown() then
+        if asframe.needtocheck and unit and offensivecools[unit] and offensivecools[unit][1] and asframe.frame:IsShown() then
             local remain = nil;
             local spellid = offensivecools[unit][2];
 
@@ -350,32 +332,14 @@ local function OnSpellEvent(unit, spellid)
     end
 end
 
-local timer = nil;
-local timer2 = nil;
-
 local function layoutbuff(f, unit)
     f:EnableMouse(false);
     f.icon:SetTexCoord(.08, .92, .08, .92);
     f.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
     f.border:SetVertexColor(0, 0, 0);
     f.border:Show();
-
-    f.cooldown:SetSwipeColor(0, 0, 0, 0.5);
     f.remain:ClearAllPoints();
     f.remain:SetPoint("CENTER", f, "CENTER", 0, 0);
-end
-
-local function layoutcooldown(f)
-    for _, r in next, { f.cooldown:GetRegions() } do
-        if r:GetObjectType() == "FontString" then
-            r:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
-            r:ClearAllPoints();
-            r:SetPoint("CENTER", 0, 0);
-            break
-        end
-    end
-
-    f.cooldown:SetHideCountdownNumbers(false);
 end
 
 local function SpecIDfromSpecName(specname, unit)
@@ -420,9 +384,9 @@ end
 
 local max_y = 0;
 
-function ns.SetupPartyCool(raidframe)
-    local frame = raidframe.frame;
-    raidframe.needtosetup = false;
+function ns.SetupPartyCool(asframe)
+    local frame = asframe.frame;
+    asframe.needtosetup = false;
     if frame and not frame:IsForbidden() and frame:IsShown() then
         if not (frame.displayedUnit and UnitIsPlayer(frame.displayedUnit)) then
             return;
@@ -434,7 +398,6 @@ function ns.SetupPartyCool(raidframe)
         local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(
             CompactPartyFrame.groupType);
         local x, y = frame:GetSize();
-        raidframe.frame = frame;
 
         local localizedClass, englishClass, classID = UnitClass(frame.unit);
         local spec = scanUnitSpecID(frame.unit);
@@ -451,13 +414,13 @@ function ns.SetupPartyCool(raidframe)
             local newcoollist = ns.trackedCoolSpellNames[englishClass .. "_" .. spec];
             local newlistname = GetUnitName(frame.unit) .. englishClass .. "_" .. spec;
 
-            if raidframe.listname == nil or raidframe.listname ~= newlistname then
+            if asframe.listname == nil or asframe.listname ~= newlistname then
                 interruptcools[frame.unit] = {};
                 offensivecools[frame.unit] = {};
-                raidframe.listname = newlistname;
+                asframe.listname = newlistname;
             end
 
-            raidframe.coolspelllist = newcoollist;
+            asframe.coolspelllist = newcoollist;
             checkcoollist[frame.unit] = newcoollist;
 
             for id, _ in pairs(newcoollist) do
@@ -465,47 +428,47 @@ function ns.SetupPartyCool(raidframe)
             end
         end
 
-        if not raidframe.asbuffFrame then
-            local buffFrame = CreateFrame("Button", nil, frame, "AREADYFrameTemplate")
-            layoutbuff(buffFrame, frame.unit);
-            raidframe.asbuffFrame = buffFrame;
-            buffFrame:Hide();
+        if not asframe.ascoolFrame then
+            local coolFrame = CreateFrame("Button", nil, frame, "AREADYFrameTemplate")
+            layoutbuff(coolFrame, frame.unit);
+            asframe.ascoolFrame = coolFrame;
         end
 
         if IsInRaid() then
             --if true then
-            local d = raidframe.asbuffFrame;
-            d:SetSize(x / 6 - 1, y / 3 - 1);
-            d.remain:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE");
-            layoutcooldown(d);
-            d:ClearAllPoints();
-            d:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2);
+            local coolFrame = asframe.ascoolFrame;
+            coolFrame:SetSize(x / 6 - 1, y / 3 - 1);
+            coolFrame.remain:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE");
+            coolFrame:ClearAllPoints();
+            coolFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2);
         else
-            local d = raidframe.asbuffFrame;
-            d:SetSize(y / 2 * 1.1, y / 2);
-            d.remain:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
-            layoutcooldown(d);
-            d:ClearAllPoints();
+            local coolFrame = asframe.ascoolFrame;
+            coolFrame:SetSize(y / 2 * 1.1, y / 2);
+            coolFrame.remain:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
+            coolFrame:ClearAllPoints();
             if useHorizontalGroups then
-                d:SetPoint("TOP", frame, "BOTTOM", 0, -1);
+                coolFrame:SetPoint("TOP", frame, "BOTTOM", 0, -1);
             else
-                d:SetPoint("RIGHT", frame, "LEFT", -1, 0);
+                coolFrame:SetPoint("RIGHT", frame, "LEFT", -1, 0);
             end
         end
 
         local assignedRole = UnitGroupRolesAssigned(frame.unit);
 
         if (IsInRaid() and assignedRole and assignedRole ~= "DAMAGER") then
-            raidframe.needtocheck = false;
+            asframe.needtocheck = false;
         else
-            raidframe.needtocheck = true;
+            asframe.needtocheck = true;
         end
+
+        asframe.ascoolFrame.data = {};
+        asframe.ascoolFrame:Hide();
     end
 end
 
 local function checkallraid(frames)
-    for _, raidframe in pairs(frames) do
-        ns.SetupPartyCool(raidframe);
+    for _, asframe in pairs(frames) do
+        ns.SetupPartyCool(asframe);
     end
 end
 
@@ -532,7 +495,7 @@ local function setupframe(frame, framename)
                 return;
             end
 
-            local raidframe;
+            local asframe;
 
             if string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame") then
                 if not ns.options.ShowRaidCool then
@@ -550,18 +513,18 @@ local function setupframe(frame, framename)
                 if raidframes[name] == nil then
                     raidframes[name] = {};
                 end
-                raidframe = raidframes[name];
+                asframe = raidframes[name];
             elseif string.find(name, "CompactPartyFrameMember") then
                 if partyframes[name] == nil then
                     partyframes[name] = {};
                 end
-                raidframe = partyframes[name];
+                asframe = partyframes[name];
             else
                 return;
             end
 
-            raidframe.frame = frame;
-            raidframe.needtosetup = true;
+            asframe.frame = frame;
+            asframe.needtosetup = true;
         end
     end
 end
@@ -641,6 +604,8 @@ end
 
 
 local bfirst = true;
+local timer = nil;
+local timer2 = nil;
 
 local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
     if event == "UNIT_SPELLCAST_SUCCEEDED" then
