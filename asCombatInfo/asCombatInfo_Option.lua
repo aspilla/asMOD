@@ -381,8 +381,8 @@ ACI_Options_Default = {
 
 	--악딜
 	ACI_SpellList_DEMONHUNTER_1 = {
-		version = 250207,
-		{ 258920,        2,            nil, nil, nil, 258920 },
+		version = 250226,
+		{ 258920,        2,            nil, nil, nil, nil, nil, {258920, 427912 } },
 		{ 188499,        1 },
 		{ 191427,        2 },
 		{ 198013,        1 },

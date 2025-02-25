@@ -157,7 +157,7 @@ local function CreatPrivateFrames(parent)
 
         if idx == 2 then
             parent.PrivateAuraAnchors[idx]:ClearAllPoints();
-            parent.PrivateAuraAnchors[idx]:SetPoint("RIGHT", parent.PrivateAuraAnchors[1], "LEFT");
+            parent.PrivateAuraAnchors[idx]:SetPoint("RIGHT", parent.PrivateAuraAnchors[1], "LEFT", -1, 0);
         end
     end
 
@@ -740,7 +740,7 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
         if i == 0 then
             parent.PrivateAuraAnchors[1]:SetPoint("BOTTOMRIGHT", ADF_PLAYER_DEBUFF, "BOTTOMLEFT", 0, 0);
         else
-            parent.PrivateAuraAnchors[1]:SetPoint("BOTTOMRIGHT", parent.frames[i], "BOTTOMLEFT", 0, 0);
+            parent.PrivateAuraAnchors[1]:SetPoint("BOTTOMRIGHT", parent.frames[i], "BOTTOMLEFT", -1, 0);
         end
     end
 end

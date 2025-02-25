@@ -36,5 +36,6 @@
 		</Layers>
 	</Button>
 	<Texture name="asBuffTextureTemplate" virtual="true" file="Interface\addons\asCompactRaidBuff\UI-StatusBar"/>
+	<Frame name="asCompactPrivateAuraAnchorTemplate" mixin="asCompactPrivateAuraAnchorMixin" virtual="true"/>
 	<Script file="asCompactRaidBuff.lua"/>
 </Ui>

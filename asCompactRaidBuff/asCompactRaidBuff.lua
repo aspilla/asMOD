@@ -7,6 +7,49 @@ ns.asraid = {};
 ns.asparty = {};
 ns.lowhealth = 0;
 
+
+asCompactPrivateAuraAnchorMixin = {};
+
+function asCompactPrivateAuraAnchorMixin:SetUnit(unit)
+    if unit == self.unit then
+        return;
+    end
+    self.unit = unit;
+
+    if self.anchorID then
+        C_UnitAuras.RemovePrivateAuraAnchor(self.anchorID);
+        self.anchorID = nil;
+    end
+
+    if unit then
+        local iconAnchor =
+        {
+            point = "CENTER",
+            relativeTo = self,
+            relativePoint = "CENTER",
+            offsetX = 0,
+            offsetY = 0,
+        };
+
+        local privateAnchorArgs = {};
+        privateAnchorArgs.unitToken = unit;
+        privateAnchorArgs.auraIndex = self.auraIndex;
+        privateAnchorArgs.parent = self;
+        privateAnchorArgs.showCountdownFrame = true;
+        privateAnchorArgs.showCountdownNumbers = true;
+
+        privateAnchorArgs.iconInfo =
+        {
+            iconAnchor = iconAnchor,
+            iconWidth = self:GetWidth(),
+            iconHeight = self:GetHeight(),
+        };
+        privateAnchorArgs.durationAnchor = nil;
+
+        self.anchorID = C_UnitAuras.AddPrivateAuraAnchor(privateAnchorArgs);
+    end
+end
+
 function ns.ACRB_InitList()
     local spec = GetSpecialization();
     local localizedClass, englishClass = UnitClass("player");
@@ -26,12 +69,12 @@ function ns.ACRB_InitList()
     ns.ACRB_ShowList = CopyTable(ns[ns.listname]);
     local savedlist = ACRB_Options[ns.listname];
 
-    if savedlist and ns.ACRB_ShowList and savedlist.version ==  ns.ACRB_ShowList.version then
-		ns.ACRB_ShowList = CopyTable(savedlist);		
-	else
-		ACRB_Options[ns.listname] = {};
-		ACRB_Options[ns.listname] = CopyTable(ns.ACRB_ShowList);	
-	end
+    if savedlist and ns.ACRB_ShowList and savedlist.version == ns.ACRB_ShowList.version then
+        ns.ACRB_ShowList = CopyTable(savedlist);
+    else
+        ACRB_Options[ns.listname] = {};
+        ACRB_Options[ns.listname] = CopyTable(ns.ACRB_ShowList);
+    end
 
     local saveddefensivelist = ACRB_Options.defensivelist;
 
@@ -60,7 +103,6 @@ local function ACRB_updatePartyAllHealerMana()
             if asframe and asframe.frame and asframe.frame:IsShown() then
                 ns.ACRB_UpdateHealerMana(asframe);
                 ns.ACRB_UpdateRaidIconAborbColor(asframe);
-                
             end
         end
     else
@@ -68,7 +110,6 @@ local function ACRB_updatePartyAllHealerMana()
             if asframe and asframe.frame and asframe.frame:IsShown() then
                 ns.ACRB_UpdateHealerMana(asframe);
                 ns.ACRB_UpdateRaidIconAborbColor(asframe);
-                
             end
         end
     end
@@ -84,7 +125,6 @@ function ns.isParty(unit)
     return false;
 end
 
-
 local function IsTank(unit)
     local assignedRole = UnitGroupRolesAssigned(unit);
     if assignedRole == "TANK" or assignedRole == "MAINTANK" then
@@ -93,9 +133,8 @@ local function IsTank(unit)
     return false;
 end
 
+
 local max_y = 0;
-
-
 -- Setup
 function ns.ACRB_setupFrame(asframe, bupdate)
     if not asframe.frame or asframe.frame:IsForbidden() then
@@ -163,12 +202,12 @@ function ns.ACRB_setupFrame(asframe, bupdate)
 
         f:EnableMouse(false);
 
-        f.icon:SetTexCoord(.08, .92, .16, .84);        
+        f.icon:SetTexCoord(.08, .92, .16, .84);
         f.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-        f.border:SetVertexColor(0, 0, 0);        
+        f.border:SetVertexColor(0, 0, 0);
         f.border:Show();
 
-        f.cooldown:SetSwipeColor(0, 0, 0, 0.5);         
+        f.cooldown:SetSwipeColor(0, 0, 0, 0.5);
         f.count:ClearAllPoints();
         f.count:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 1);
 
@@ -205,7 +244,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
     end
 
     local function layoutcooldown(f)
-        f.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")        
+        f.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
 
         for _, r in next, { f.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
@@ -213,7 +252,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
                 r:ClearAllPoints();
                 r:SetPoint("TOPLEFT", 1, 0);
                 r:SetDrawLayer("OVERLAY");
-                f.cooldowntext = r;                
+                f.cooldowntext = r;
                 break
             end
         end
@@ -242,7 +281,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             local buffFrame = CreateFrame("Button", nil, frame, "asCompactBuffTemplate")
             layoutbuff(buffFrame, 1);
             asframe.asbuffFrames[i] = buffFrame;
-            buffFrame:Hide();            
+            buffFrame:Hide();
             buffFrame:SetFrameStrata(strata);
             buffFrame:SetFrameLevel(framelevel);
             buffFrame.cooldown:SetFrameLevel(framelevel);
@@ -284,15 +323,14 @@ function ns.ACRB_setupFrame(asframe, bupdate)
                     buffFrame:ClearAllPoints();
                     buffFrame:SetPoint("RIGHT", frame, "RIGHT", -2, centeryoffset);
                 end
-         
             end
         end
     end
 
     -- 크기 조정
-    for i, d in ipairs(asframe.asbuffFrames) do
-        d:SetSize(size_x, size_y);
-        layoutcooldown(d);
+    for _, buffFrame in ipairs(asframe.asbuffFrames) do
+        buffFrame:SetSize(size_x, size_y);
+        layoutcooldown(buffFrame);
     end
 
     if not asframe.asdebuffFrames then
@@ -304,7 +342,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             debuffFrame:Hide();
             debuffFrame:SetFrameStrata(strata);
             debuffFrame:SetFrameLevel(framelevel);
-            debuffFrame.cooldown:SetFrameLevel(framelevel);            
+            debuffFrame.cooldown:SetFrameLevel(framelevel);
         end
     end
 
@@ -328,11 +366,44 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         end
     end
 
-    for _, d in ipairs(asframe.asdebuffFrames) do
-        d.size_x, d.size_y = size_x, size_y; -- 디버프
-        d:SetSize(size_x, size_y);
-        layoutcooldown(d);
+    for _, debuffFrame in ipairs(asframe.asdebuffFrames) do
+        debuffFrame.size_x, debuffFrame.size_y = size_x, size_y; -- 디버프
+        debuffFrame:SetSize(size_x, size_y);
+        layoutcooldown(debuffFrame);
     end
+
+    --Private Aura setting
+    if frame.PrivateAuraAnchors then
+        for _, privateAuraAnchor in ipairs(frame.PrivateAuraAnchors) do
+            privateAuraAnchor:SetUnit(nil);
+        end
+    end
+
+    if not asframe.PrivateAuraAnchors then
+        asframe.PrivateAuraAnchors = {};
+    
+        for idx = 1, 2 do
+            asframe.PrivateAuraAnchors[idx] = CreateFrame("Frame", nil, frame, "asCompactPrivateAuraAnchorTemplate");
+            asframe.PrivateAuraAnchors[idx].auraIndex = idx;
+            asframe.PrivateAuraAnchors[idx]:SetFrameLevel(9000);
+    
+            if idx == 2 then
+                asframe.PrivateAuraAnchors[idx]:ClearAllPoints();
+                asframe.PrivateAuraAnchors[idx]:SetPoint("TOPLEFT", asframe.PrivateAuraAnchors[1], "TOPLEFT", 1, 0);
+            else
+                asframe.PrivateAuraAnchors[idx]:ClearAllPoints();
+                asframe.PrivateAuraAnchors[idx]:SetPoint("TOPLEFT", frame, "TOPLEFT", 1, -1);
+            end
+        end        
+    end
+
+    if asframe.PrivateAuraAnchors then
+        for _, privateAuraAnchor in ipairs(asframe.PrivateAuraAnchors) do
+            privateAuraAnchor:SetSize(size_x * 1.3, size_y * 1.3);
+            privateAuraAnchor:SetUnit(asframe.displayedUnit);
+        end
+    end
+
 
     if (not asframe.defensivebuffFrames) then
         asframe.defensivebuffFrames = {};
@@ -345,19 +416,19 @@ function ns.ACRB_setupFrame(asframe, bupdate)
 
             pvpbuffFrame:SetFrameStrata(strata);
             pvpbuffFrame:SetFrameLevel(framelevel);
-            pvpbuffFrame.cooldown:SetFrameLevel(framelevel);            
+            pvpbuffFrame.cooldown:SetFrameLevel(framelevel);
         end
     end
 
-    for i, d in ipairs(asframe.defensivebuffFrames) do
-        d:SetSize(size_x, size_y);
-        layoutcooldown(d);
-        d:ClearAllPoints();
-        d.data = {};
+    for i, pvpbuffFrame in ipairs(asframe.defensivebuffFrames) do
+        pvpbuffFrame:SetSize(size_x, size_y);
+        layoutcooldown(pvpbuffFrame);
+        pvpbuffFrame:ClearAllPoints();
+        pvpbuffFrame.data = {};
         if i == 1 then
-            d:SetPoint("CENTER", frame, "CENTER", 0, centeryoffset);
+            pvpbuffFrame:SetPoint("CENTER", frame, "CENTER", 0, centeryoffset);
         else
-            d:SetPoint("TOPRIGHT", asframe.defensivebuffFrames[i - 1], "TOPLEFT", 0, 0);
+            pvpbuffFrame:SetPoint("TOPRIGHT", asframe.defensivebuffFrames[i - 1], "TOPLEFT", 0, 0);
         end
     end
 
@@ -370,20 +441,20 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             castFrame:SetFrameStrata(strata);
             castFrame:SetFrameLevel(framelevel);
             castFrame.cooldown:SetFrameLevel(framelevel);
-            castFrame:Hide();            
+            castFrame:Hide();
             layoutbuff(castFrame, 3);
         end
     end
 
-    for i, d in ipairs(asframe.castFrames) do
-        d:SetSize(size_x, size_y);
-        layoutcooldown(d);
-        d:ClearAllPoints();
-        d.data = {};
+    for i, castFrame in ipairs(asframe.castFrames) do
+        castFrame:SetSize(size_x, size_y);
+        layoutcooldown(castFrame);
+        castFrame:ClearAllPoints();
+        castFrame.data = {};
         if i == 1 then
-            d:SetPoint("TOP", frame, "TOP", 0, -2);
+            castFrame:SetPoint("TOP", frame, "TOP", 0, -2);
         else
-            d:SetPoint("TOPRIGHT", asframe.castFrames[i - 1], "TOPLEFT", -1, 0);
+            castFrame:SetPoint("TOPRIGHT", asframe.castFrames[i - 1], "TOPLEFT", -1, 0);
         end
     end
 
@@ -495,65 +566,63 @@ function ns.ACRB_setupFrame(asframe, bupdate)
     asframe.ncasting = 0;
 
     --마나는 unit으로만
-	
-	local role = UnitGroupRolesAssigned(asframe.unit);
-	local powerBarUsedHeight = 0;
 
-	if asframe.frame.powerBar and asframe.frame.powerBar:IsShown() then
-		powerBarUsedHeight = 8;
-	end
+    local role = UnitGroupRolesAssigned(asframe.unit);
+    local manaBarUsedHeight = 0;
+
+    if asframe.frame.powerBar and asframe.frame.powerBar:IsShown() then
+        manaBarUsedHeight = 8;
+    end
 
     asframe.checkMana = false;
 
-	if role and role == "HEALER" and powerBarUsedHeight == 0 and ns.options.BottomHealerManaBar then
-		asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(asframe.unit, Enum.PowerType.Mana));
-		asframe.asManabar:SetValue(UnitPower(asframe.unit, Enum.PowerType.Mana));
+    if role and role == "HEALER" and manaBarUsedHeight == 0 and ns.options.BottomHealerManaBar then
+        asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(asframe.unit, Enum.PowerType.Mana));
+        asframe.asManabar:SetValue(UnitPower(asframe.unit, Enum.PowerType.Mana));
 
-		local info = PowerBarColor["MANA"];
-		if (info) then
-			local r, g, b = info.r, info.g, info.b;
-			asframe.asManabar:SetStatusBarColor(r, g, b);
-		end
+        local info = PowerBarColor["MANA"];
+        if (info) then
+            local r, g, b = info.r, info.g, info.b;
+            asframe.asManabar:SetStatusBarColor(r, g, b);
+        end
 
         asframe.checkMana = true;
 
-		asframe.asManabar:Show();
-	else
-		asframe.asManabar:Hide();
-	end
+        asframe.asManabar:Show();
+    else
+        asframe.asManabar:Hide();
+    end
 
-	local function layout(bottomoffset, centeroffset)
-		asframe.asbuffFrames[1]:ClearAllPoints();
-		asframe.asbuffFrames[1]:SetPoint("BOTTOMRIGHT", asframe.frame, "BOTTOMRIGHT", -2, bottomoffset);
+    local function layout(bottomoffset, centeroffset)
+        asframe.asbuffFrames[1]:ClearAllPoints();
+        asframe.asbuffFrames[1]:SetPoint("BOTTOMRIGHT", asframe.frame, "BOTTOMRIGHT", -2, bottomoffset);
 
-		asframe.asbuffFrames[4]:ClearAllPoints();
-		asframe.asbuffFrames[4]:SetPoint("RIGHT", asframe.frame, "RIGHT", -2, centeroffset);
+        asframe.asbuffFrames[4]:ClearAllPoints();
+        asframe.asbuffFrames[4]:SetPoint("RIGHT", asframe.frame, "RIGHT", -2, centeroffset);
 
-		asframe.defensivebuffFrames[1]:ClearAllPoints();
-		asframe.defensivebuffFrames[1]:SetPoint("CENTER", asframe.frame, "CENTER", 0, centeroffset);
+        asframe.defensivebuffFrames[1]:ClearAllPoints();
+        asframe.defensivebuffFrames[1]:SetPoint("CENTER", asframe.frame, "CENTER", 0, centeroffset);
 
-		asframe.asdebuffFrames[1]:ClearAllPoints();
-		asframe.asdebuffFrames[1]:SetPoint("BOTTOMLEFT", asframe.frame, "BOTTOMLEFT", 2, bottomoffset);
-	end
+        asframe.asdebuffFrames[1]:ClearAllPoints();
+        asframe.asdebuffFrames[1]:SetPoint("BOTTOMLEFT", asframe.frame, "BOTTOMLEFT", 2, bottomoffset);
+    end
 
-	local CUF_AURA_BOTTOM_OFFSET = 2;
-	local centeryoffset = 0;
-	local layouttype = 1;
+    local layouttype = 1;
 
-	if powerBarUsedHeight > 0 then
-		CUF_AURA_BOTTOM_OFFSET = 1 + powerBarUsedHeight;
-		centeryoffset = 4;
-		layouttype = 3;
-	elseif asframe.asManabar:IsShown() then
-		CUF_AURA_BOTTOM_OFFSET = ns.ACRB_HealerManaBarHeight + 1;
-		centeryoffset = 1;
-		layouttype = 2;
-	end
+    if manaBarUsedHeight > 0 then
+        CUF_AURA_BOTTOM_OFFSET = 1 + manaBarUsedHeight;
+        centeryoffset = 4;
+        layouttype = 3;
+    elseif asframe.asManabar:IsShown() then
+        CUF_AURA_BOTTOM_OFFSET = ns.ACRB_HealerManaBarHeight + 1;
+        centeryoffset = 1;
+        layouttype = 2;
+    end
 
-	if asframe.layout and asframe.layout ~= layouttype then
-		layout(CUF_AURA_BOTTOM_OFFSET, centeryoffset);
-		asframe.layout = layouttype;
-	end
+    if asframe.layout and asframe.layout ~= layouttype then
+        layout(CUF_AURA_BOTTOM_OFFSET, centeryoffset);
+        asframe.layout = layouttype;
+    end
 
     if bupdate then
         ns.ACRB_UpdateHealerMana(asframe);
@@ -564,11 +633,11 @@ function ns.ACRB_setupFrame(asframe, bupdate)
     asframe.callback = function()
         if asframe.frame:IsShown() then
             ns.ACRB_UpdateAuras(asframe);
-        elseif asframe.timer then            
+        elseif asframe.timer then
             asframe.timer:Cancel();
         end
     end
-    
+
     if asframe.timer then
         asframe.timer:Cancel();
     end
@@ -694,7 +763,7 @@ local function ACRB_OnUpdate()
 end
 
 local function ACRB_OnUpdate2()
-    ACRB_updatePartyAllHealerMana();    
+    ACRB_updatePartyAllHealerMana();
 end
 
 local function ACRB_OnUpdate3()
@@ -732,8 +801,8 @@ end
 local bfirst = true;
 
 local function ACRB_OnEvent(self, event, arg1, arg2, arg3)
-    if bfirst then        
-        ns.SetupOptionPanels();        
+    if bfirst then
+        ns.SetupOptionPanels();
         ns.SetupAll(true);
         bfirst = false;
     end
@@ -751,7 +820,7 @@ local function ACRB_OnEvent(self, event, arg1, arg2, arg3)
                 end
             end
 
-            if not isboss then                
+            if not isboss then
                 ns.CastingUnits[unit] = true;
             end
         end

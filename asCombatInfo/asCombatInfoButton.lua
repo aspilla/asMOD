@@ -410,35 +410,6 @@ function ns.Button:checkOthers()
     end
 end
 
-local function checkImprovedBuffList(self, aura, cachelist)
-    for i, v in pairs(cachelist) do
-        if v.expirationTime == aura.expirationTime then
-            return;
-        end
-    end
-
-    for i, v in pairs(cachelist) do
-        if self.currtime - v.expirationTime > 30 then
-            cachelist[i] = nil;
-        end
-    end
-
-    tinsert(cachelist, aura);
-end
-
-local function isImprovedBuff(start, cachelist)
-    for _, buffs in pairs(cachelist) do
-        for _, aura in pairs(buffs) do
-            if start < aura.expirationTime and start > aura.expirationTime - aura.duration then
-                return true;
-            end
-        end
-    end
-
-    return false;
-end
-
-
 function ns.Button:checkSpellCoolInBuff()
     if not self.icon and self.start and self.duration then
         return;

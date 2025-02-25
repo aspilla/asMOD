@@ -137,7 +137,8 @@
         "asCombatText_StandardScroll",
         "asNamePlatesDBM_callback",
         "asOverlayTexture_OnFadeOutFinished",
-        "asDebuffPrivateAuraAnchorMixin"
+        "asDebuffPrivateAuraAnchorMixin",
+        "asCompactPrivateAuraAnchorMixin"
     ],
     "Lua.workspace.library": [
         "d:/Develop/asMOD",

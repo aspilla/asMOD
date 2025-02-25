@@ -408,7 +408,7 @@ local function ACRB_UtilSetDebuff(frame, aura, currtime)
         end
 
         if sizerate ~= data.sizerate then
-            frame:SetSize((frame.size_x) * sizerate, frame.size_y * sizerate);
+            frame:SetSize(frame.size_x * sizerate, frame.size_y * sizerate);
             data.sizerate = sizerate;
         end
 
