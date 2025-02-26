@@ -852,7 +852,7 @@ local function APB_MaxCombo(combobar, max)
         end
     end
 
-    if combobar == APB.combobar2 then
+    if combobar == APB.combobar2 and APB.combobar[1]:IsShown() then
         combobar[1]:SetPoint("BOTTOMLEFT", APB.combobar[1], "TOPLEFT", 0, 1);
     elseif bshowspell then
         combobar[1]:SetPoint("BOTTOMLEFT", APB.spellbar[1], "TOPLEFT", 0, 1);
@@ -2073,7 +2073,8 @@ local function APB_CheckPower(self)
         setupMouseOver(APB.combobar2[i]);
     end
 
-    APB_MaxCombo(self.combobar2, 0);
+    APB_MaxCombo(self.combobar, 0);
+    APB_MaxCombo(self.combobar2, 0);    
 
     for i = 1, 10 do
         setupMouseOver(APB.spellbar[i]);
@@ -2249,6 +2250,18 @@ local function APB_CheckPower(self)
                 for i = 1, 20 do
                     APB.combobar[i].tooltip = APB_BUFF_COMBO;
                 end
+            elseif IsPlayerSpell(448601) then
+                APB_BUFF_COMBO = 449400;
+                APB_BUFF_COMBO_MAX = 451049;
+                APB_BUFF_COMBO_MAX_COUNT = 6;
+                self.buffcombobar = self.combobar2;
+                APB_MaxCombo(self.combobar2, APB_BUFF_COMBO_MAX_COUNT, true);
+                APB.combobar2.unit = "player"
+                bupdate_buff_combo = true;
+
+                for i = 1, 20 do
+                    APB.combobar2[i].tooltip = APB_BUFF_COMBO;
+                end            
             end
 
             APB_SPELL = 108853;
