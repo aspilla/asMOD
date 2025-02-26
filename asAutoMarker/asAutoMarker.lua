@@ -18,159 +18,231 @@ local AAM_MaxMark = 7      -- 최대 징표 X까지 찍도록 설정
 local NPCTable = {
 
 
-		--내부전쟁 시즌2
+	--내부전쟁 시즌2
+	--Cinderbrew Meadery
+	--[214920] = 0, -- Tasting Room Attendant
+    [218671] = 2, -- Venture Co. Pyromaniac
+    --[210269] = 0, -- Hired Muscle
+    --[220946] = 0, -- Venture Co. Honey Harvester
+    --[210271] = 0, -- BOSS: Brewmaster Aldryr
+    --[210267] = 0, -- BOSS: I'pa
+    [210264] = 2, -- Bee Wrangler
+    --[218002] = 0, -- BOSS: Benk Buzzbee
+    --[214697] = 0, -- Chef Chewie
+    --[218865] = 0, -- Bee-let
+    --[219667] = 0, -- Flamethrower
+    --[219415] = 0, -- Cooking Pot
+    [214673] = 2, -- Flavor Scientist
+    [222964] = 2, -- Flavor Scientist
+    --[214668] = 0, -- Venture Co. Patron
+    --[210265] = 0, -- Worker Bee
+    --[220060] = 0, -- Taste Tester
+    --[218016] = 0, -- Ravenous Cinderbee
+    --[223423] = 0, -- Careless Hopgoblin
+    [220141] = 2, -- Royal Jelly Purveyor
+    --[210270] = 0, -- Brew Drop
+    --[219301] = 0, -- Brew Drop
+    --[214661] = 0, -- Unknown NPC
 
-		-- Flesh Crafter
-		[165872] = 2,
-		-- Zolramus Sorcerer
-		[163128] = 2,
+	--Darkflame Cleft
+	--[210810] = 0, -- Menial Laborer
+    --[211121] = 0, -- Rank Overseer
+    --[211977] = 0, -- Pack Mole
+    --[208450] = 0, -- Wandering Candle
+    [223770] = 2, -- Blazing Fiend
+    [223772] = 2, -- Blazing Fiend
+    [213913] = 2, -- Kobold Flametender
+    [223773] = 2, -- Blazing Fiend
+    [210812] = 2, -- Royal Wicklighter
+    [212412] = 2, -- Sootsnout
+    [223775] = 2, -- Blazing Fiend
+    [223776] = 2, -- Blazing Fiend
+    --[212411] = 0, -- Torchsnarl
+    [223777] = 2, -- Blazing Fiend
+    [210818] = 2, -- Lowly Moleherd
+    --[212383] = 0, -- Kobold Taskworker
+    --[208457] = 0, -- Skittering Darkness
+    --[208743] = 0, -- BOSS: Blazikon
+    [208745] = 2, -- BOSS: The Candle King
+    [208456] = 2, -- Shuffling Horror
+    [208747] = 2, -- BOSS: The Darkness
+    [220815] = 2, -- Blazing Fiend
+    --[210539] = 0, -- Corridor Creeper
+    --[210153] = 0, -- BOSS: Ol' Waxbeard
+    [223774] = 2, -- Blazing Fiend
+    [211228] = 2, -- Blazing Fiend
+    [213008] = 2, -- BOSS ADD: Wriggling Darkspawn
 
-		-- BOSS: Amarth
-		[163157] = 2,
+	--Priory of the Sacred Flame
+	[206705] = 2, -- Arathi Footman
+    --[206696] = 0, -- Arathi Knight
+    --[212838] = 0, -- Arathi Neophyte
+    [211290] = 2, -- Elaena Emberlanz
+    [221760] = 2, -- Risen Mage
+    --[211291] = 0, -- Sergeant Shaynemail
+    [206698] = 2, -- Fanatical Conjuror
+    --[217658] = 0, -- Sir Braunpyke
+    --[209747] = 0, -- Arathi Neophyte
+    --[206694] = 0, -- Fervent Sharpshooter
+    --[206699] = 0, -- War Lynx
+    --[207949] = 0, -- Zealous Templar
+    --[212831] = 0, -- Forge Master Damian
+    [207946] = 2, -- BOSS: Captain Dailcry
+    --[207943] = 0, -- Arathi Neophyte
+    --[206704] = 0, -- Ardent Paladin
+    --[212826] = 0, -- Guard Captain Suleyman
+    [207940] = 2, -- BOSS: Prioress Murrpray
+    --[211140] = 0, -- Arathi Neophyte
+    --[212827] = 0, -- High Priest Aemya
+    --[555555] = 0, -- Priory of the Sacred Flame
+    [206697] = 2, -- Devout Priest
+    --[206710] = 0, -- Lightspawn
+    [207939] = 2, -- BOSS: Baron Braunpyke
+    [211289] = 2, -- Taener Duelmal
+    --[212835] = 0, -- Risen Footman
 
-		-- BOSS: Nalthor the Rimebinder
-		[162693] = 2,
+	--The Rookery
+	--[207207] = 0, -- BOSS: Skardyn Monstrosity
+    --[209230] = 0, -- BOSS: Kyrioss
+    --[214419] = 0, -- Void-Cursed Crusher
+    --[209801] = 0, -- Quartermaster Koratite
+    [207198] = 2, -- Cursed Thunderer
+    --[212786] = 0, -- Voidrider
+    [214439] = 2, -- Corrupted Oracle
+    --[211260] = 0, -- Stormrider Vokmar
+    --[214421] = 0, -- Coalescing Void Diffuser
+    [207186] = 2, -- Unruly Stormrook
+    --[219066] = 0, -- Afflicted Civilian
+    --[207205] = 0, -- BOSS: Stormguard Gorren
+    --[207197] = 0, -- Cursed Rookguard
+    [207199] = 2, -- Cursed Rooktender
+    --[212739] = 0, -- Radiating Voidstone
+    [212793] = 2, -- Void Ascendant
 
-		-- BOSS: Ingra Maloch
-		[164567] = 2,
+	--Operation: Floodgate
+	--[230740] = 0, -- Shreddinator 3000
+    --[228144] = 0, -- Darkfuse Soldier
+    --[231014] = 0, -- Loaderbot
+    [230748] = 2, -- Darkfuse Bloodwarper
+    --[231197] = 0, -- Bubbles
+    --[231325] = 0, -- Darkfuse Jumpstarter
+    --[231385] = 0, -- Darkfuse Inspector
+    --[226398] = 0, -- BOSS: Big M.O.M.M.A.
+    --[229250] = 0, -- Venture Co. Contractor
+    [229686] = 2, -- Venture Co. Surveyor
+    --[226403] = 0, -- BOSS: Keeza Quickfuse
+    --[226396] = 0, -- BOSS: Swampface
+    [231312] = 2, -- Venture Co. Electrician
+    --[226404] = 0, -- BOSS: Geezle Gigazap
+    [229069] = 2, -- Mechadrone Sniper
+    [229252] = 2, -- Darkfuse Hyena
+    --[231497] = 0, -- Bombshell Crab
+    --[231380] = 0, -- Undercrawler
+    --[227145] = 0, -- Waterworks Crocolisk
+    [231496] = 2, -- Venture Co. Diver
+    --[229212] = 0, -- Darkfuse Demolitionist
+    --[229251] = 0, -- Venture Co. Architect
+    [228424] = 2, -- Darkfuse Mechadrone
+    --[226402] = 0, -- BOSS: Bront
+    [231223] = 2, -- Disturbed Kelp
 
-		-- BOSS: Mistcaller
-		[164501] = 2,
+	--Theater of Pain
+	[174197] = 2, -- Battlefield Ritualist
+    --[170838] = 0, -- Unyielding Contender
+    --[164451] = 0, -- BOSS: Dessia the Decapitator
+    --[164510] = 0, -- Shambling Arbalest
+    --[167998] = 0, -- Portal Guardian
+    [170882] = 2, -- Bone Magus
+    --[167994] = 0, -- Ossified Conscript
+    [160495] = 2, -- Maniacal Soulbinder
+    [174210] = 2, -- Blighted Sludge-Spewer
+    [164463] = 2, -- BOSS: Paceran the Virulent
+    --[167538] = 0, -- Dokigg the Brutalizer
+    [169893] = 2, -- Nefarious Darkspeaker
+    --[167534] = 0, -- Rek the Hardened
+    [162309] = 2, -- BOSS: Kul'tharok
+    --[167536] = 0, -- Harugia the Bloodthirsty
+    --[163089] = 0, -- Disgusting Refuse
+    --[170850] = 0, -- Raging Bloodhorn
+    [164461] = 2, -- BOSS: Sathel the Accursed
+    [164506] = 2, -- Ancient Captain
+    --[169927] = 0, -- Putrid Butcher
+    --[162763] = 0, -- Soulforged Bonereaver
+    --[163086] = 0, -- Rancid Gasbag
+    --[167533] = 0, -- Advent Nevermore
+    --[162317] = 0, -- BOSS: Gorechop
+    --[165946] = 0, -- BOSS: Mordretha, the Endless Empress
+    --[164464] = 0, -- Xira the Underhanded
+    --[162329] = 0, -- BOSS: Xav the Unfallen
+    --[162744] = 0, -- Nekthara the Mangler
+    [170690] = 2, -- Diseased Horror
+    --[167532] = 0, -- Heavin the Breaker
+    [169875] = 2, -- Shackled Soul
 
-		-- BOSS: Tred'ova
-		[164517] = 2,
-		-- Battlefield Ritualist
-		[174197] = 2,
-		-- Bone Magus
-		[170882] = 2,
-		-- Maniacal Soulbinder
-		[160495] = 2,
-		-- Blighted Sludge-Spewer
-		[174210] = 2,
-		-- BOSS: Paceran the Virulent
-		[164463] = 2,
-		-- Nefarious Darkspeaker
-		[169893] = 2,
-		-- BOSS: Kul'tharok
-		[162309] = 2,
-		-- BOSS: Sathel the Accursed
-		[164461] = 2,
-		-- Ancient Captain
-		[164506] = 2,
-		-- Diseased Horror
-		[170690] = 2,
-		-- Shackled Soul
-		[169875] = 2,
-		-- Cursed Thunderer
-		[207198] = 2,
-		-- Corrupted Oracle
-		[214439] = 2,
-		-- Unruly Stormrook
-		[207186] = 2,
-		-- Cursed Rooktender
-		[207199] = 2,
-		-- Void Ascendant
-		[212793] = 2,
-		-- Arathi Footman
-		[206705] = 2,
-		-- Elaena Emberlanz
-		[211290] = 2,
-		-- Risen Mage
-		[221760] = 2,
-		-- Fanatical Conjuror
-		[206698] = 2,
-		-- BOSS: Captain Dailcry
-		[207946] = 2,
-		-- BOSS: Prioress Murrpray
-		[207940] = 2,
-		-- Devout Priest
-		[206697] = 2,
-		-- BOSS: Baron Braunpyke
-		[207939] = 2,
-		-- Taener Duelmal
-		[211289] = 2,
-		-- Blazing Fiend
-		[223770] = 2,
-		-- Blazing Fiend
-		[223772] = 2,
-		-- Kobold Flametender
-		[213913] = 2,
-		-- Blazing Fiend
-		[223773] = 2,
-		-- Royal Wicklighter
-		[210812] = 2,
-		-- Sootsnout
-		[212412] = 2,
-		-- Blazing Fiend
-		[223775] = 2,
-		-- Blazing Fiend
-		[223776] = 2,
-		-- Blazing Fiend
-		[223777] = 2,
-		-- Lowly Moleherd
-		[210818] = 2,
-		-- Blazing Fiend
-		[220815] = 2,
-		-- Blazing Fiend
-		[223774] = 2,
-		-- Blazing Fiend
-		[211228] = 2,
-		-- BOSS ADD: Wriggling Darkspawn
-		[213008] = 2,
+	--Mechagon
+	--[151476] = 0, -- Blastatron X-80
+    --[151649] = 0, -- Defense Bot Mk I
+    --[144299] = 0, -- Workshop Defender
+    --[144298] = 0, -- Defense Bot Mk III
+    --[151658] = 0, -- Strider Tonk
+    --[144244] = 0, -- BOSS: The Platinum Pummeler
+    --[150396] = 0, -- BOSS: Aerial Unit R-21/X
+    --[145185] = 0, -- BOSS: Gnomercy 4.U.
+    [144295] = 2, -- Mechagon Mechanic
+    --[151773] = 0, -- Junkyard D.0.G.
+    --[144303] = 0, -- G.U.A.R.D.
+    --[236033] = 0, -- Metal Gunk
+    --[144293] = 0, -- Waste Processing Unit
+    [144294] = 2, -- Mechagon Tinkerer
+    --[144248] = 0, -- BOSS: Head Machinist Sparkflux
+    --[144301] = 0, -- Living Waste
+    --[144249] = 0, -- BOSS: Omega Buster
+    --[144296] = 0, -- Spider Tank
+    [151657] = 2, -- Bomb Tonk
+    --[144246] = 0, -- BOSS: K.U.-J.0.
+    --[151659] = 0, -- Rocket Tonk
 
-		-- BOSS: Speaker Brokk
-		[213217] = 2,
-		-- Cursedheart Invader
-		[212403] = 2,
-		-- BOSS: Anubzekt
-		[215405] = 2,		
-		-- Black Blood
-		[215968] = 2,
-		-- Venture Co. Pyromaniac
-		[218671] = 2,
-		-- Bee Wrangler
-		[210264] = 2,
-		-- Flavor Scientist
-		[214673] = 2,
-		-- Flavor Scientist
-		[222964] = 2,
-		-- Royal Jelly Purveyor
-		[220141] = 2,
-
-		-- Sureki Militant
-		[213932] = 2,
-		-- Nightfall Dark Architect
-		[213885] = 2,
-		-- BOSS: Speaker Shadowcrown
-		[211087] = 2,
-		-- BOSS: Anubikkaj
-		[211089] = 2,
-		-- BOSS: Rashanan
-		[213937] = 2,
-		-- Animated Darkness
-		[213905] = 2,
-		-- Nightfall Darkcaster
-		[228539] = 2,
-
-		-- Xephitik
-		[219984] = 2,
-
-
-		-- Darkfuse Bloodwarper
-		[230748] = 2,
-		-- Venture Co. Surveyor
-		[229686] = 2,
-		-- Venture Co. Electrician
-		[231312] = 2,
-		-- Mechadrone Sniper
-		[229069] = 2,
-		-- Darkfuse Hyena
-		[229252] = 2,
-		-- Darkfuse Mechadrone
-		[228424] = 2,
-		-- Disturbed Kelp
-		[231223] = 2,
-
+	--The MOTHERLODE!!
+	[133432] = 2, -- Venture Co. Alchemist
+    --[137716] = 0, -- Bottom Feeder
+    --[132056] = 0, -- Venture Co. Skyscorcher
+    --[138061] = 0, -- Venture Co. Longshoreman
+    --[138064] = 0, -- Posh Vacationer
+    --[130436] = 0, -- Off-Duty Laborer
+    [136470] = 2, -- Refreshment Vendor
+    --[130488] = 0, -- Mech Jockey
+    --[130435] = 0, -- Addled Thug
+    --[136006] = 0, -- Rowdy Reveler
+    --[129214] = 0, -- BOSS: Coin-Operated Crowd Pummeler
+    --[130437] = 0, -- Mine Rat
+    --[136643] = 0, -- Azerite Extractor
+    --[134012] = 0, -- Taskmaster Askari
+    --[133430] = 0, -- Venture Co. Mastermind
+    --[133963] = 0, -- Test Subject
+    --[137029] = 0, -- Ordnance Specialist
+    --[129246] = 0, -- Azerite Footbomb
+    --[133436] = 0, -- Venture Co. Skyscorcher
+    --[137940] = 0, -- Safety Shark
+    --[129227] = 0, -- BOSS: Azerokk
+    --[133345] = 0, -- Feckless Assistant
+    --[129231] = 0, -- BOSS: Rixxa Fluxflame
+    --[129232] = 0, -- BOSS: Mogul Razdunk
+    [134232] = 2, -- Hired Assassin
+    --[136139] = 0, -- Mechanized Peacekeeper
+    [130661] = 2, -- Venture Co. Earthshaper
+    --[130653] = 0, -- Wanton Sapper
+    [134005] = 2, -- Shalebiter
+    --[129802] = 0, -- Earthrager
+    --[136934] = 0, -- Weapons Tester
+    --[133593] = 0, -- Expert Technician
+    --[130485] = 0, -- Mechanized Peacekeeper
+    --[144286] = 0, -- Asset Manager
+    --[141303] = 0, -- B.O.O.M.B.A.
+    --[133482] = 0, -- Crawler Mine
+    --[137713] = 0, -- Big Money Crab
+    [130635] = 2, -- Stonefury
+    --[138369] = 0, -- Footbomb Hooligan
+    --[133463] = 0, -- Venture Co. War Machine
 	
 
 	-- 내부전쟁 시즌 1
@@ -227,7 +299,7 @@ local NPCTable = {
 
 
 	-- 용군단 시즌 4 https://wago.io/3bViaBtT1
-
+--[[
 	[196203] = 2,
 	[192796] = 2,
 	[194894] = 2,
@@ -461,6 +533,7 @@ local NPCTable = {
 	[190207] = 2,
 	[190206] = 2,
 	[198047] = 2,
+	]]
 
 };
 
