@@ -97,15 +97,17 @@ local GetItemInfo = C_Item and C_Item.GetItemInfo or GetItemInfo;
 local GetItemSpell = C_Item and C_Item.GetItemSpell or GetItemSpell;
 local GetItemCooldown = C_Item and C_Item.GetItemCooldown or GetItemCooldown;
 
-local asGetSpellInfo = function(spellID)
+local asGetSpellInfo = function(spellID, skip)
 	if not spellID then
 		return nil;
 	end
 
-	local ospellID = C_Spell.GetOverrideSpell(spellID)
+	if not skip then
+		local ospellID = C_Spell.GetOverrideSpell(spellID)
 
-	if ospellID then
-		spellID = ospellID;
+		if ospellID then
+			spellID = ospellID;
+		end
 	end
 
 	local spellInfo = C_Spell.GetSpellInfo(spellID);
@@ -118,12 +120,6 @@ end
 local asGetSpellCooldown = function(spellID)
 	if not spellID then
 		return nil;
-	end
-
-	local ospellID = C_Spell.GetOverrideSpell(spellID)
-
-	if ospellID then
-		spellID = ospellID;
 	end
 
 	local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
@@ -155,6 +151,7 @@ local ACDP_mainframe = CreateFrame("Frame", nil, UIParent);
 local ACDP_CoolButtons = CreateFrame("Frame", nil, UIParent);
 
 local KnownSpellList = {};
+local SpellIconList = {};
 local ItemSlotList = {};
 local showlist_id = {};
 local spell_cooldown = {};
@@ -255,6 +252,16 @@ local function scanItemSlots()
 				KnownSpellList[id] = itemid;
 				ItemSlotList[itemid] = idx;
 			end
+		end
+	end
+end
+
+local function scanSpellIcons()
+	SpellIconList = {};
+	for id, ty in pairs(KnownSpellList) do
+		if ty <= 2 then
+			local name, _, icon = asGetSpellInfo(id, true);
+			SpellIconList[id] = { name, icon };
 		end
 	end
 end
@@ -366,7 +373,12 @@ local function ACDP_UpdateCooldown()
 
 		if skip == 0 then
 			if (type == SPELL_TYPE_USER or type == SPELL_TYPE_PET) then
-				name, _, icon = asGetSpellInfo(spellid);
+				local info = SpellIconList[spellid];
+				if info == nil then
+					name, _, icon = asGetSpellInfo(spellid, true);
+				else
+					name, icon = info[1], info[2];
+				end
 				start, duration = asGetSpellCooldown(spellid);
 			else
 				local itemid = type;
@@ -416,7 +428,7 @@ local function ACDP_UpdateCooldown()
 					end
 				end
 
-				frame.icon:SetTexCoord(.08, .92, .08, .92);				
+				frame.icon:SetTexCoord(.08, .92, .08, .92);
 				frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 
 				if not frame:GetScript("OnEnter") then
@@ -521,7 +533,12 @@ local function ACDP_Alert(spell, type)
 	alert_start[spell] = currtime + 1.6;
 
 	if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
-		name, _, icon, _, _, _, _, _, _ = asGetSpellInfo(spell)
+		local info = SpellIconList[spell];
+		if info == nil then
+			name, _, icon = asGetSpellInfo(spell, true);
+		else
+			name, icon = info[1], info[2];
+		end
 
 		ACDP_Icon[ACDP_Icon_Idx]:SetTexture(icon)
 
@@ -699,6 +716,7 @@ local function setupKnownSpell()
 	scanPetSpells();
 	scanItemSlots();
 	scanActionSlots();
+	scanSpellIcons();
 
 	--print("초기화")
 	timer = C_Timer.NewTicker(ACDP_UpdateRate, ACDP_OnUpdate);

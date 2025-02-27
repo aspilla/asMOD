@@ -1,8 +1,8 @@
 ﻿## Interface: 110100
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCooldownPulse
-## Notes: 쿨다운 알림
-## Version : 250118
+## Notes: Simple cooldown tracker
+## Version : 250227
 ## SavedVariablesPerCharacter: ACDP_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
