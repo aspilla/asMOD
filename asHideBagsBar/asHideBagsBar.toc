@@ -1,8 +1,8 @@
 ﻿## Interface: 110100
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rHideBagsBar
-## Notes: 가방 숨김
-## Version : 241216
+## Notes: Hide BagsBar
+## Version : 250227
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asHideBagsBar.lua
