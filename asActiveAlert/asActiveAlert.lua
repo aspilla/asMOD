@@ -13,6 +13,7 @@ local ASAA_SpellList = {};
 -- 원치 않는 발동 알림은 안보이게
 local ASAA_BackList = {
 	[115356] = true, --고술 바람의 일격
+	[455055] = true, --일거리 시작
 };
 
 local asGetSpellInfo = function(spellID)

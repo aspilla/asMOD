@@ -2,7 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rActiveAlert 2.0
 ## Notes: Showing alerted spells
-## Version : 250118
+## Version : 250227
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asActiveAlert.xml
