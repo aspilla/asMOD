@@ -2,7 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDebuffFilter
 ## Notes: Debuff tracker (player, target)
-## Version : 250227
+## Version : 250228
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asDebuffFilterOptions.lua
