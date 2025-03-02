@@ -91,7 +91,7 @@ local function UpdateDispellable()
     for dispelType, _ in pairs(DispellableDebuffTypes) do
         DispellableDebuffTypes[dispelType] = false;
         for spellID, spelltype in pairs(typeCheck[dispelType]) do
-            if spelltype == 1 and IsPlayerSpell(spellID) then
+            if spelltype == 1 and IsPlayerSpell(spellID) then                
                 DispellableDebuffTypes[dispelType] = true;
             elseif spelltype == 2 and asIsPetSpell(spellID) then
                 DispellableDebuffTypes[dispelType] = true;
@@ -616,7 +616,7 @@ local function SetDebuff(frame, icon, applications, expirationTime, duration, co
             ns.lib.PixelGlow_Start(frame);
         elseif alert == 1 then
             ns.lib.ButtonGlow_Stop(frame);
-            ns.lib.PixelGlow_Start(frame, { color.r, color.g, color.b, 1 });
+            ns.lib.PixelGlow_Start(frame);
         else
             ns.lib.ButtonGlow_Stop(frame);
             ns.lib.PixelGlow_Stop(frame);

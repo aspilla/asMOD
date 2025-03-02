@@ -64,6 +64,17 @@ local function asMOD_Import_Commit()
 	end
 end
 
+local function createMacro()
+	local macroText =
+	"/run SetCVar (\"nameplateGlobalScale\", 1.2)\n/run SetCVar (\"nameplateSelectedScale\", 1.4)\n/console WorldTextScale 0.5\n/console turnspeed 180\n/console set ResampleAlwaysSharpen 1";
+	local macroName = "asMOD Setup";
+	local macroID = GetMacroIndexByName(macroName);
+
+
+	if (macroID == 0) then
+		CreateMacro(macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText, false);
+	end
+end
 
 local function asMOD_Setup()
 	-- 모든 UI 위치를 Reset 한다.
@@ -130,6 +141,9 @@ local function asMOD_Setup()
 	ToggleChatColorNamesByClassGroup(true, "RAID_WARNING")
 	ToggleChatColorNamesByClassGroup(true, "INSTANCE_CHAT")
 	ToggleChatColorNamesByClassGroup(true, "INSTANCE_CHAT_LEADER")
+
+	-- 기본 Setup macro 생성
+	createMacro();
 
 	asMOD_Import_Layout(ns.layout, "asMOD_layout");
 	asMOD_Import_Commit();
@@ -539,7 +553,7 @@ local function asMOD_Setup()
 					["EndColorI2G"] = 0.5058823823928833,
 					["HugeTimerPoint"] = "CENTER",
 					["StartColorIR"] = 0.47,
-					["DisableRightClick"] = false,
+					["DisableRightClick"] = true,
 					["StartColorUIR"] = 1,
 					["StartColorAG"] = 0.545,
 					["EndColorDR"] = 1,
@@ -553,7 +567,7 @@ local function asMOD_Setup()
 					["BarYOffset"] = 0,
 					["StartColorDG"] = 0.3,
 					["StartColorAR"] = 0.375,
-					["ClickThrough"] = false,
+					["ClickThrough"] = true,
 					["VarianceAlpha"] = 0.5,
 					["Skin"] = "",
 					["TextColorR"] = 1,

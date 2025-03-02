@@ -764,8 +764,8 @@ function ns.ACRB_UpdateAuras(asframe)
 
                 local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
 
-                if not asframe.isDispellAlert and ns.options.BorderDispelAlert then
-                    ns.lib.PixelGlow_Start(asframe.frame, { color.r, color.g, color.b, 1 })
+                if not asframe.isDispellAlert and ns.options.BorderDispelAlert then                    
+                    ns.lib.PixelGlow_Start(asframe.frame, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1000);
                     asframe.isDispellAlert = true;
                 end
                 showdispell = true;
