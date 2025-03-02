@@ -2202,14 +2202,8 @@ local function APB_CheckPower(self)
             APB:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
             bupdate_power = true;
 
-            if version >= 110100 then
-                --시즌1 티어 Intuition 특성으로 변경
-                combobuffalertlist = { 451073, 451038, 1223797 };
-            else
-                combobuffalertlist = { 451073, 451038, 455681 };
-                combobuffcountalertlist = { { 467634, 2 } };
-            end
-
+            --시즌1 티어 Intuition 특성으로 변경
+            combobuffalertlist = { 451073, 451038, 1223797 };            
 
             for i = 1, 20 do
                 APB.combobar[i].tooltip = "ARCANE_CHARGES";
@@ -2861,11 +2855,7 @@ local function APB_CheckPower(self)
             bupdate_spell = true;
 
             if IsPlayerSpell(378270) then --깊이 뿌리내린 정기
-                if version >= 110010 then
-                    APB_BUFF = 1219480;
-                else
-                    APB_BUFF = 114050;
-                end
+                APB_BUFF = 1219480;                
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
             end

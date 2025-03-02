@@ -430,7 +430,7 @@ local function updateAuras(self)
 
                 local size = icon_size;
 
-                if aura.nameplateShowAll and not isshowlist then
+                if aura.nameplateShowAll and not isshowlist and aura.duration > 0 and aura.duration <= 10 then
                     size = icon_size + ns.ANameP_PVP_Debuff_Size_Rate;
                 end
 
