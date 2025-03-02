@@ -55,10 +55,12 @@ local function ACRB_updateCasting(asframe, unit)
 
             if name and index <= #(asframe.castFrames) then
                 local data = castFrame.data;
+                local hidecool = true;
+                local coolcolor = { r = 0.8, g = 0.8, b = 1 };
 
                 if spellid ~= data.spellid then
                     castFrame.icon:SetTexture(texture);
-                    castFrame.count:Hide();                   
+                    castFrame.count:Hide();
 
                     if DangerousSpellList[spellid] then
                         if DangerousSpellList[spellid] == "interrupt" or not notInterruptible then
@@ -76,14 +78,36 @@ local function ACRB_updateCasting(asframe, unit)
                     data.spellid = spellid;
                 end
 
-                local curr = GetTime();
                 local start = startTime / 1000;
                 local duration = (endTime / 1000) - start;
+                local expirationTime = start + duration;
 
                 if start ~= data.start or duration ~= data.duration then
                     ns.asCooldownFrame_Set(castFrame.cooldown, start, duration, true);
                     data.start = start;
                     data.duration = duration;
+                end
+
+                local currtime = GetTime();
+                local remain = math.ceil(expirationTime - currtime);
+                if castFrame.hideCountdownNumbers == false then                    
+                    if remain < ns.options.MinSectoShowCooldown then
+                        hidecool = false;
+
+                        if remain > 0 and remain < 10 then
+                            coolcolor = { r = 1, g = 1, b = 0.3 };
+                        end
+                    end
+                end
+
+                if (hidecool ~= data.hidecool) then
+                    castFrame.cooldown:SetHideCountdownNumbers(hidecool);
+                    data.hidecool = hidecool;
+                end
+
+                if hidecool == false and (data.coolcolor == nil or coolcolor.g ~= data.coolcolor.g) then
+                    castFrame.cooldowntext:SetVertexColor(coolcolor.r, coolcolor.g, coolcolor.b);
+                    data.coolcolor = coolcolor;
                 end
 
                 asframe.ncasting = index;
