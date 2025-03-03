@@ -780,11 +780,7 @@ function ns.Button:showButton()
 
             frameCount:Hide();
         end
-        data.count = self.count;        
-    end
-
-    if self.count == nil and frameCount:IsShown() then
-        frameCount:Hide();
+        data.count = self.count;
     end
 
     local snapshot = 1;
@@ -880,7 +876,6 @@ function ns.Button:clear()
     if self.time then
         self.time:Cancel();
     end
-    self.data = {};
 end
 
 function ns.Button:init(config, frame)
@@ -911,7 +906,7 @@ function ns.Button:init(config, frame)
     end
 
     ns.lib.PixelGlow_Stop(self.frame);
-    self.data = {};
+    self.data = { count = 999999 };
 
     if self.spell == nil then
         return;
@@ -1022,7 +1017,7 @@ function ns.Button:init(config, frame)
         self:checkCount();
         self:checkOthers();
         self:showButton();
-    end    
+    end
 
     update();
     self.time = C_Timer.NewTicker(0.2, update)
