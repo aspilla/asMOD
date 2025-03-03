@@ -1,8 +1,8 @@
 ﻿## Interface: 110100
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rHideBagsBar
-## Notes: Hide BagsBar
-## Version : 250227
+## Notes: Hide BagsBar/MicroMenu/CompactRaidFrameManager, considering the cursor position.
+## Version : 250303
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asHideBagsBar.lua
