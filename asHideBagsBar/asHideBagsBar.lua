@@ -1,7 +1,11 @@
 local AHBB_Offset = 100;
 local AHBB_UpdateRate = 0.5;
 
-local function CheckFramePosition(frame, cpoint, offset, show)
+local function CheckFrame(frame, cpoint, offset, show)
+	if not frame then
+		return;
+	end
+
 	local left, top = frame:GetLeft(), frame:GetTop();
 	local right, bottom = frame:GetRight(), frame:GetBottom();
 
@@ -13,19 +17,29 @@ local function CheckFramePosition(frame, cpoint, offset, show)
 end
 
 
+local function HideFrame(frame)
+	if not frame then
+		return;
+	end
+
+	frame:SetAlpha(0);
+end
+
+
 local function OnUpdate()
 	local uiScale, x, y = UIParent:GetEffectiveScale(), GetCursorPosition()
 	x = x / uiScale;
 	y = y / uiScale;
 	local cpoint = { x = x, y = y };
 
-	CheckFramePosition(MicroMenu, cpoint, AHBB_Offset,
+	CheckFrame(MicroMenu, cpoint, AHBB_Offset,
 		(UnitInVehicle("player") or (OverrideActionBar and OverrideActionBar:IsShown())));
-	CheckFramePosition(BagsBar, cpoint, AHBB_Offset, (UnitInVehicle("player")));
-	CheckFramePosition(CompactRaidFrameManager, cpoint, AHBB_Offset, (UnitInVehicle("player")));
+	CheckFrame(BagsBar, cpoint, AHBB_Offset, false);
+	CheckFrame(CompactRaidFrameManager, cpoint, AHBB_Offset, false);
 end
 
-MicroMenu:SetAlpha(0);
-BagsBar:SetAlpha(0);
-CompactRaidFrameManager:SetAlpha(0);
+HideFrame(MicroMenu);
+HideFrame(BagsBar);
+HideFrame(CompactRaidFrameManager);
+
 C_Timer.NewTicker(AHBB_UpdateRate, OnUpdate);

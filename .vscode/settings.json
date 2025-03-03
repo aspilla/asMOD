@@ -138,7 +138,8 @@
         "asNamePlatesDBM_callback",
         "asOverlayTexture_OnFadeOutFinished",
         "asDebuffPrivateAuraAnchorMixin",
-        "asCompactPrivateAuraAnchorMixin"
+        "asCompactPrivateAuraAnchorMixin",
+        "OverrideActionBar"
     ],
     "Lua.workspace.library": [
         "d:/Develop/asMOD",
