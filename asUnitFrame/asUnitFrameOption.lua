@@ -2,6 +2,7 @@ local _, ns = ...;
 local Options_Default = {
     Version = 241121,
     ShowPortrait = true,
+    ShowTotemBar = true,
 };
 
 ns.options = CopyTable(Options_Default);

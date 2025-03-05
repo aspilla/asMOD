@@ -139,7 +139,8 @@
         "asOverlayTexture_OnFadeOutFinished",
         "asDebuffPrivateAuraAnchorMixin",
         "asCompactPrivateAuraAnchorMixin",
-        "OverrideActionBar"
+        "OverrideActionBar",
+        "asTotemButtonMixin"
     ],
     "Lua.workspace.library": [
         "d:/Develop/asMOD",

@@ -39,4 +39,32 @@
 			</Cooldown>
 		</Frames>
 	</Frame>
+	<Button name="asTotemButtonTemplate" inherits="SecureUnitButtonTemplate" virtual="true" hidden="true">		
+		<Frames>
+			<Frame parentKey="Icon" useParentLevel="true">				
+				<Anchors>
+					<Anchor point="CENTER" />
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parentTexture" parentKey="icon" setAllPoints="true"/>
+					</Layer>
+					<Layer level="ARTWORK" textureSubLevel="7">
+						<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asUnitFrame\border.tga"/>				
+					</Layer>					
+				</Layers>
+				<Frames>
+					<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" frameLevel = "1000">
+						<Anchors>
+							<Anchor point="CENTER">
+								<Offset>
+									<AbsDimension x="0" y="-1"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Cooldown>
+				</Frames>
+			</Frame>
+		</Frames>
+	</Button>
 </Ui>

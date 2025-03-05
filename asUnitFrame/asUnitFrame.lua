@@ -5,7 +5,7 @@ local _, ns = ...;
 ------------------------------------------
 
 local Update_Rate = 0.1 -- 0.1 초마다 Update
-local width = 200;
+local config_width = 200;
 local xposition = 225;
 local yposition = -198;
 local healthheight = 35;
@@ -15,8 +15,8 @@ local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };                 --차�
 local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { 153 / 255, 0, 76 / 255 }; --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
 local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 };   --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
 local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };     --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
----
----
+
+AUF_ShowTotemBar = false;
 
 local RaidIconList = {
     "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
@@ -75,7 +75,7 @@ local function UpdateFillBarBase(realbar, bar, amount, bleft, pointbar)
     else
         bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", 0, 0);
         bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", 0, 0);
-    end    
+    end
 
     local totalWidth, totalHeight = realbar:GetSize();
 
@@ -257,37 +257,36 @@ local function updateUnit(frame)
     local totalAbsorbremain = totalAbsorb;
     local remainhealth = valueMax - value;
     local remainhealthAfterHeal = remainhealth - allIncomingHeal;
-    local incominghealremain = allIncomingHeal;    
+    local incominghealremain = allIncomingHeal;
 
     if allIncomingHeal > remainhealth then
         incominghealremain = remainhealth;
-    end    
+    end
 
     if remainhealthAfterHeal < 0 then
-        remainhealthAfterHeal = 0 
+        remainhealthAfterHeal = 0
     end
 
     if totalAbsorbremain > remainhealthAfterHeal then
         totalAbsorbremain = remainhealthAfterHeal;
-    end    
+    end
     local pointbar = nil
 
     UpdateFillBarBase(frame.healthbar, frame.healthbar.incominghealBar, incominghealremain, false, nil);
-    
+
     if frame.healthbar.incominghealBar:IsShown() then
         pointbar = frame.healthbar.incominghealBar;
-        
     end
 
     UpdateFillBarBase(frame.healthbar, frame.healthbar.absorbBar, totalAbsorbremain, false, pointbar);
-    
+
     if frame.healthbar.absorbBar:IsShown() then
         frame.healthbar.absorbBarO:Show()
     else
         frame.healthbar.absorbBarO:Hide()
     end
-    
-    UpdateFillBarBase(frame.healthbar, frame.healthbar.shieldBar, totalAbsorb - totalAbsorbremain, true, nil);   
+
+    UpdateFillBarBase(frame.healthbar, frame.healthbar.shieldBar, totalAbsorb - totalAbsorbremain, true, nil);
 
     --Castbar
     local current = GetTime();
@@ -484,6 +483,11 @@ local function updateUnit(frame)
         ns.UpdateAuras(frame);
     end
 
+    --Debuff
+    if frame.totemupdate then
+        ns.UpdateTotems(frame);
+    end
+
     --CastBar
     if frame.updateCastBar then
         updateCastBar(frame);
@@ -584,12 +588,12 @@ local function CreatDebuffFrames(parent, bright, fontsize, width, count)
 
         frame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
         frame.count:ClearAllPoints()
-        frame.count:SetPoint("BOTTOMRIGHT", frame.icon ,"BOTTOMRIGHT", -2, 2);
+        frame.count:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", -2, 2);
 
         frame.icon:SetTexCoord(.08, .92, .16, .84);
         frame.icon:SetAlpha(1);
 
-        
+
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
         frame.border:SetVertexColor(0, 0, 0);
         frame.border:SetAlpha(1);
@@ -613,6 +617,75 @@ local function CreatDebuffFrames(parent, bright, fontsize, width, count)
         frame:SetMouseMotionEnabled(true);
         frame.data = {};
         frame:Hide();
+    end
+
+    return;
+end
+
+local function UpdateTotemAnchor(frames, index, offsetX, right, parent, width)
+    local button = frames[index];
+
+    if (index == 1) then
+        button:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, -2);
+    else
+        button:SetPoint("BOTTOMRIGHT", frames[index - 1], "BOTTOMLEFT", -offsetX, 0);
+    end
+
+    -- Resize
+    button:SetWidth(width);
+    button:SetHeight(width * 0.8);
+    button.Icon:SetWidth(width);
+    button.Icon:SetHeight(width * 0.8);
+end
+
+local function CreatTotemFrames(parent, bright, fontsize, width, count)
+    if parent.totembuttons == nil then
+        parent.totembuttons = {};
+    end
+
+    for idx = 1, count do
+        parent.totembuttons[idx] = CreateFrame("Button", nil, parent, "asTotemButtonTemplate");
+        local button = parent.totembuttons[idx];
+        local frame = button.Icon;
+
+        frame.cooldown:SetDrawSwipe(true);
+        for _, r in next, { frame.cooldown:GetRegions() } do
+            if r:GetObjectType() == "FontString" then
+                r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+                r:ClearAllPoints();
+                r:SetPoint("BOTTOM", 0, -5);
+                r:SetDrawLayer("OVERLAY");
+                break
+            end
+        end
+
+        frame.icon:SetTexCoord(.08, .92, .16, .84);
+        frame.icon:SetAlpha(1);
+
+        frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+        frame.border:SetVertexColor(0, 0, 0);
+        frame.border:SetAlpha(1);
+
+        button:ClearAllPoints();
+        UpdateTotemAnchor(parent.totembuttons, idx, 1, bright, parent, (width / 2 - 3) / count );
+        button.data = {};
+        frame:Show();
+        button:SetAttribute("type", "destroytotem");
+        button:SetAttribute("totem-slot", idx);
+        button:SetAlpha(0);
+        button:Show();
+
+        if not button:GetScript("OnEnter") then
+            button:SetScript("OnEnter", function(s)
+                if s.totemslot then
+                    GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                    GameTooltip:SetTotem(s.totemslot)
+                end
+            end)
+            button:SetScript("OnLeave", function()
+                GameTooltip:Hide();
+            end)
+        end
     end
 
     return;
@@ -699,9 +772,9 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar.absorbBar:Hide();
 
     frame.healthbar.absorbBarO = frame.healthbar:CreateTexture(nil, "ARTWORK");
-    frame.healthbar.absorbBarO:SetTexture("Interface\\RaidFrame\\Shield-Overlay", "BORDER");    
+    frame.healthbar.absorbBarO:SetTexture("Interface\\RaidFrame\\Shield-Overlay", "BORDER");
     frame.healthbar.absorbBarO:SetAllPoints(frame.healthbar.absorbBar);
-    frame.healthbar.absorbBarO:SetAlpha(0.8);    
+    frame.healthbar.absorbBarO:SetAlpha(0.8);
     frame.healthbar.absorbBarO:Show();
 
     frame.healthbar.shieldBar = frame.healthbar:CreateTexture(nil, "ARTWORK");
@@ -862,10 +935,17 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.castbar.targetname:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
     frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);
     frame.debuffupdate = false;
+    frame.totemupdate = false;
 
     if debuffupdate then
         CreatDebuffFrames(frame, true, fontsize, width, 4);
         frame.debuffupdate = true;
+    end
+
+    if ns.options.ShowTotemBar and unit == "player" then
+        CreatTotemFrames(frame, true, fontsize, width, MAX_TOTEMS);
+        frame.totemupdate = true;
+        AUF_ShowTotemBar = true;
     end
 
     frame.updatecount = 1;
@@ -908,22 +988,25 @@ local function Init()
     AUF_TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 
 
-    CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, width, healthheight, powerheight, 12, false);
-    CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, width, healthheight, powerheight, 12, false);
-    CreateUnitFrame(AUF_FocusFrame, "focus", xposition + width, yposition, width - 50, healthheight - 15, powerheight - 2,
+    CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, config_width, healthheight, powerheight, 12, false);
+    CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, config_width, healthheight, powerheight, 12, false);
+    CreateUnitFrame(AUF_FocusFrame, "focus", xposition + config_width, yposition, config_width - 50, healthheight - 15,
+        powerheight - 2,
         11,
         false);
-    CreateUnitFrame(AUF_PetFrame, "pet", -xposition - 50, yposition - 40, width - 100, healthheight - 20, powerheight - 3,
+    CreateUnitFrame(AUF_PetFrame, "pet", -xposition - 50, yposition - 40, config_width - 100, healthheight - 20,
+        powerheight - 3,
         9,
         true);
-    CreateUnitFrame(AUF_TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, width - 100, healthheight - 20,
+    CreateUnitFrame(AUF_TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, config_width - 100,
+        healthheight - 20,
         powerheight - 3, 9, true);
 
     AUF_BossFrames = {};
     if (MAX_BOSS_FRAMES) then
         for i = 1, MAX_BOSS_FRAMES do
             AUF_BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-            CreateUnitFrame(AUF_BossFrames[i], "boss" .. i, xposition + 250, 200 - (i - 1) * 70, width - 50,
+            CreateUnitFrame(AUF_BossFrames[i], "boss" .. i, xposition + 250, 200 - (i - 1) * 70, config_width - 50,
                 healthheight - 15, powerheight - 2, 11);
         end
     end

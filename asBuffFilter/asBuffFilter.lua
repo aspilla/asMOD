@@ -440,7 +440,7 @@ local function SetBuff(frame, icon, applications, expirationTime, duration, colo
 
 	if (expirationTime ~= data.expirationTime) or
 		(duration ~= data.duration) or
- 		(isshow ~= data.isshow) then
+		(isshow ~= data.isshow) then
 		if (isshow) then
 			local startTime = expirationTime - duration;
 			asCooldownFrame_Set(frame.cooldown, startTime, duration, duration > 0, true);
@@ -491,22 +491,27 @@ local function updateTotemAura()
 			if not (IsShownTotem(name, icon)) then
 				local frame = nil;
 				local alert = ns.show_totemlist[icon] or 0;
+				local bshow = true;
 
 				if alert > 0 then
 					frame = ABF_TALENT_BUFF.frames[center];
 					center = center + 1;
+				elseif AUF_ShowTotemBar and AUF_ShowTotemBar == true then
+					bshow = false;
 				else
 					frame = ABF_PLAYER_BUFF.frames[left];
 					left = left + 1;
 				end
 
-				local expirationTime = start + duration;
+				if bshow then
+					local expirationTime = start + duration;
 
-				frame.totemslot = slot;
-				frame.auraInstanceID = nil;
-				local color = { r = 0.5, g = 0.5, b = 0.5 };
+					frame.totemslot = slot;
+					frame.auraInstanceID = nil;
+					local color = { r = 0.5, g = 0.5, b = 0.5 };
 
-				SetBuff(frame, icon, 0, expirationTime, duration, color, alert, false, nil, curr_time);
+					SetBuff(frame, icon, 0, expirationTime, duration, color, alert, false, nil, curr_time);
+				end
 			end
 		end
 	end
