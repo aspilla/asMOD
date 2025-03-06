@@ -2865,7 +2865,7 @@ local function APB_CheckPower(self)
             if IsPlayerSpell(450385) then
                 bupdate_internalcool = true;
                 internalcool_state.start = 0;
-                internalcool_state.duration = 15;
+                internalcool_state.duration = 30;
                 internalcool_state.spellid = 450978;
                 self.stackbar[0].spellid = 450978;
                 APB_MaxStack(internalcool_state.duration);
@@ -2901,7 +2901,7 @@ local function APB_CheckPower(self)
             if IsPlayerSpell(450385) then
                 bupdate_internalcool = true;
                 internalcool_state.start = 0;
-                internalcool_state.duration = 15;
+                internalcool_state.duration = 30;
                 internalcool_state.spellid = 450978;
                 self.stackbar[0].spellid = 450978;
                 APB_MaxStack(internalcool_state.duration);
