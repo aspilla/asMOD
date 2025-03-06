@@ -211,9 +211,9 @@ local bmouseover = false;
 local timeSinceLastUpdate = 0;
 
 
-local function AIH_OnUpdate(self, elapsed)
+local function AIH_OnUpdate()
 
-    timeSinceLastUpdate = timeSinceLastUpdate + elapsed
+    timeSinceLastUpdate = timeSinceLastUpdate + 0.1
     if timeSinceLastUpdate > 0.2 then
 
         timeSinceLastUpdate = 0;
@@ -329,7 +329,7 @@ local function initAddon()
     mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
     mainframe:RegisterUnitEvent("UNIT_PET", "player")
 
-    mainframe:SetScript("OnUpdate", AIH_OnUpdate)
+    C_Timer.NewTicker(0.1, AIH_OnUpdate);
 end
 
 initAddon();

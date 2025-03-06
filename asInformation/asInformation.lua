@@ -5,7 +5,6 @@ asInformation:SetMovable(true)
 asInformation:RegisterForDrag("LeftButton")
 
 local updateInterval = 0.2
-local timeSinceLastUpdate = 0
 local defaultHasteThreshold = 50
 
 -- Saved variables for position, lock state, and stat thresholds
@@ -145,11 +144,7 @@ end
 
 
 local function OnUpdate(self, elapsed)
-    timeSinceLastUpdate = timeSinceLastUpdate + elapsed
-    if timeSinceLastUpdate >= updateInterval then
-        UpdateStats()
-        timeSinceLastUpdate = 0
-    end
+    UpdateStats();
 end
 
 
@@ -272,4 +267,4 @@ asInformation:RegisterEvent("PLAYER_ENTERING_WORLD")
 asInformation:RegisterEvent("ENCOUNTER_START")
 asInformation:RegisterEvent("ENCOUNTER_END")
 asInformation:SetScript("OnEvent", OnEvent)
-asInformation:SetScript("OnUpdate", OnUpdate)
+C_Timer.NewTicker(updateInterval, OnUpdate);

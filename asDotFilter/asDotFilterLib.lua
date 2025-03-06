@@ -81,7 +81,9 @@ local GlowTexPool = CreateTexturePool(GlowParent, "BACKGROUND", 7, nil, TexPoolR
 ns.lib.GlowTexPool = GlowTexPool
 
 local FramePoolResetter = function(framePool, frame)
-	frame:SetScript("OnUpdate", nil)
+	if frame.ctimer then
+		frame.ctimer:Cancel();
+	end
 	local parent = frame:GetParent()
 	if parent[frame.name] then
 		parent[frame.name] = nil
@@ -330,7 +332,15 @@ function ns.lib.PixelGlow_Start(r, color, N, frequency, length, th, xOffset, yOf
 		f.info.length = length
 	end
 	pUpdate(f, 0)
-	f:SetScript("OnUpdate", pUpdate)
+	if f.ctimer then
+		f.ctimer:Cancel();
+	end
+
+	local cb = function()
+		pUpdate(f, 0.05);
+	end
+
+	f.ctimer = C_Timer.NewTicker(0.05, cb);
 end
 
 function ns.lib.PixelGlow_Stop(r, key)
@@ -351,7 +361,9 @@ ns.lib.stopList["Pixel Glow"] = ns.lib.PixelGlow_Stop
 
 --Action Button Glow--
 local function ButtonGlowResetter(framePool, frame)
-	frame:SetScript("OnUpdate", nil)
+	if frame.ctimer then
+		frame.ctimer:Cancel();
+	end
 	local parent = frame:GetParent()
 	if parent._ButtonGlow then
 		parent._ButtonGlow = nil
@@ -615,7 +627,15 @@ function ns.lib.ButtonGlow_Start(r, color, frequency, frameLevel)
 			end
 		end
 		f.throttle = throttle
-		f:SetScript("OnUpdate", bgUpdate)
+		if f.ctimer then
+			f.ctimer:Cancel();			
+		end
+
+		local cb = function()
+			bgUpdate(f, 0.05);
+		end
+
+		f.ctimer = C_Timer.NewTicker(0.05, cb);
 
 		f.animIn:Play()
 	end

@@ -12,6 +12,7 @@ end
 local originalOnEvent = UIErrorsFrame:GetScript("OnEvent")
 
 local flashingFontStrings = {};
+local timer = nil;
 
 local FLASH_DURATION_SEC = 0.2;
 local function asSpamOnUpdate()
@@ -36,7 +37,9 @@ local function asSpamOnUpdate()
 	end
 
 	if not needsMoreUpdates then
-		asUIErrorsFrame:SetScript("OnUpdate", nil);
+		if timer then
+			timer:Cancel();
+		end
 	end
 end
 
@@ -102,7 +105,11 @@ local function FlashFontString(fontString)
 			fontString.origMsg = fontString:GetText();
 			flashingFontStrings[fontString] = GetTime();
 		end
-		asUIErrorsFrame:SetScript("OnUpdate", asSpamOnUpdate);
+		if timer then
+			timer:Cancel();
+		end
+
+		timer = C_Timer.NewTicker(0.1, asSpamOnUpdate);
 	end
 end
 

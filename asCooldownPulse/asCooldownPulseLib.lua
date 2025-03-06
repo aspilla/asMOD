@@ -5,14 +5,16 @@ local asFADEFRAMES = {};
 
 
 local frameFadeManager = CreateFrame("FRAME");
+local timer = nil;
 
 local function asUIFrameFadeRemoveFrame(frame)
 	tDeleteItem(asFADEFRAMES, frame);
 end
 
-local function asUIFrameFade_OnUpdate(self, elapsed)
+local function asUIFrameFade_OnUpdate(self)
 	local index = 1;
 	local frame, fadeInfo;
+	local elapsed = 0.1;
 	while asFADEFRAMES[index] do
 		frame = asFADEFRAMES[index];
 		fadeInfo = asFADEFRAMES[index].fadeInfo;
@@ -51,7 +53,9 @@ local function asUIFrameFade_OnUpdate(self, elapsed)
 	end
 
 	if (#asFADEFRAMES == 0) then
-		self:SetScript("OnUpdate", nil);
+		if timer then
+			timer:Cancel();
+		end
 	end
 end
 
@@ -96,7 +100,10 @@ local function asUIFrameFade(frame, fadeInfo)
 		index = index + 1;
 	end
 	tinsert(asFADEFRAMES, frame);
-	frameFadeManager:SetScript("OnUpdate", asUIFrameFade_OnUpdate);
+	if timer then
+		timer:Cancel();
+	end
+	timer = C_Timer.NewTicker(0.1, asUIFrameFade_OnUpdate);	
 end
 
 -- Convenience function to do a simple fade in

@@ -295,84 +295,70 @@ local function APB_UnitDebuff(unit, buff)
     return nil;
 end
 
-local function APB_OnUpdateCombo(self, elapsed)
+local function APB_OnUpdateCombo(self)
     if not self.start then
         return;
     end
 
-    if not self.update then
-        self.update = 0;
-    end
 
-    self.update = self.update + elapsed
+    local curr_time = GetTime();
+    local curr_duration = curr_time - self.start;
 
-    if self.update >= 0.25 then
-        local curr_time = GetTime();
-        local curr_duration = curr_time - self.start;
+    self.update = 0
 
-        self.update = 0
-
-        if self.reverse then
-            if curr_duration < self.duration then
-                self:SetMinMaxValues(0, self.duration * 10)
-                self:SetValue((self.duration * 10) - (curr_time - self.start) * 10)
-            else
-                self:SetMinMaxValues(0, self.duration)
-                self:SetValue(0)
-                self.start = nil;
-            end
+    if self.reverse then
+        if curr_duration < self.duration then
+            self:SetMinMaxValues(0, self.duration * 10)
+            self:SetValue((self.duration * 10) - (curr_time - self.start) * 10)
         else
-            if curr_duration < self.duration then
-                self:SetMinMaxValues(0, self.duration * 10)
-                self:SetValue((curr_time - self.start) * 10)
-            else
-                self:SetMinMaxValues(0, self.duration)
-                self:SetValue(self.duration)
-                self.start = nil;
-            end
+            self:SetMinMaxValues(0, self.duration)
+            self:SetValue(0)
+            self.start = nil;
+        end
+    else
+        if curr_duration < self.duration then
+            self:SetMinMaxValues(0, self.duration * 10)
+            self:SetValue((curr_time - self.start) * 10)
+        else
+            self:SetMinMaxValues(0, self.duration)
+            self:SetValue(self.duration)
+            self.start = nil;
         end
     end
 end
 
-local function APB_OnUpdateInternalCool(self, elapsed)
+local function APB_OnUpdateInternalCool(self)
     if not self.start then
         return;
     end
 
-    if not self.update then
-        self.update = 0;
-    end
 
-    self.update = self.update + elapsed
+    local curr_time = GetTime();
+    local curr_duration = curr_time - self.start;
 
-    if self.update >= 0.25 then
-        local curr_time = GetTime();
-        local curr_duration = curr_time - self.start;
+    self.update = 0
 
-        self.update = 0
-
-        if self.reverse then
-            if curr_duration < self.duration then
-                self:SetMinMaxValues(0, self.duration * 10)
-                self:SetValue((self.duration * 10) - (curr_time - self.start) * 10)
-                self.count:SetText(math.ceil(self.duration) - (curr_time - self.start));
-            else
-                self:SetMinMaxValues(0, self.duration)
-                self:SetValue(0)
-                self.count:SetText(0);
-                self.start = nil;
-            end
+    if self.reverse then
+        if curr_duration < self.duration then
+            self:SetMinMaxValues(0, self.duration * 10)
+            self:SetValue((self.duration * 10) - (curr_time - self.start) * 10)
+            self.count:SetText(math.ceil(self.duration) - (curr_time - self.start));
         else
-            if curr_duration < self.duration then
-                self:SetMinMaxValues(0, self.duration * 10)
-                self:SetValue((curr_time - self.start) * 10)
-                self.count:SetText(math.ceil(curr_time - self.start));
-            else
-                self:SetMinMaxValues(0, self.duration)
-                self:SetValue(self.duration)
-                self.count:SetText(self.duration);
-                self.start = nil;
-            end
+            self:SetMinMaxValues(0, self.duration)
+            self:SetValue(0)
+            self.count:SetText(0);
+            self.start = nil;
+        end
+    else
+        if curr_duration < self.duration then
+            self:SetMinMaxValues(0, self.duration * 10)
+            self:SetValue((curr_time - self.start) * 10)
+            self.count:SetText(math.ceil(curr_time - self.start));
+        else
+            self:SetMinMaxValues(0, self.duration)
+            self:SetValue(self.duration)
+            self.count:SetText(self.duration);
+            self.start = nil;
         end
     end
 end
@@ -422,7 +408,9 @@ local function APB_MaxSpell(max)
             local _, Class = UnitClass("player")
             local color = RAID_CLASS_COLORS[Class]
             spellbar:SetStatusBarColor(color.r, color.g, color.b);
-            spellbar:SetScript("OnUpdate", nil)
+            if spellbar.ctimer then
+                spellbar.ctimer:Cancel();
+            end
             ns.lib.PixelGlow_Stop(spellbar);
             spellbar.isAlert = false;
 
@@ -560,12 +548,20 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
         combobar[1].start = (buffexpire - cooldown);
         combobar[1].duration = cooldown
         combobar[1].reverse = true;
-        combobar[1]:SetScript("OnUpdate", APB_OnUpdateCombo)
+        if combobar[1].ctimer then
+            combobar[1].ctimer:Cancel();
+        end
+        local cb = function()
+            APB_OnUpdateCombo(combobar[1]);
+        end
+        combobar[1].ctimer = C_Timer.NewTicker(0.25, cb);
         return;
     end
 
     for i = 1, combobar.max_combo do
-        combobar[i]:SetScript("OnUpdate", nil)
+        if combobar[1].ctimer then
+            combobar[1].ctimer:Cancel();
+        end
         combobar[1].reverse = nil;
 
         if i <= combo then
@@ -609,7 +605,15 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
             combobar[i]:SetStatusBarColor(0.3, 0.3, 0.3);
             combobar[i].start = p_start;
             combobar[i].duration = cooldown;
-            combobar[i]:SetScript("OnUpdate", APB_OnUpdateCombo)
+
+            local cb = function()
+                APB_OnUpdateCombo(combobar[i]);
+            end
+
+            if combobar[i].ctimer then
+                combobar[i].ctimer:Cancel();
+            end
+            combobar[i].ctimer = C_Timer.NewTicker(0.25, cb);
         else
             combobar[i]:Show();
             combobar[i]:SetValue(0)
@@ -674,7 +678,14 @@ local function APB_MaxStack(max)
     APB.stackbar[0].count:Show();
 
     if bupdate_internalcool then
-        APB.stackbar[0]:SetScript("OnUpdate", APB_OnUpdateInternalCool);
+        local cb = function()
+            APB_OnUpdateInternalCool(APB.stackbar[0]);
+        end
+
+        if APB.stackbar[0].ctimer then
+            APB.stackbar[0].ctimer:Cancel();
+        end
+        APB.stackbar[0].ctimer = C_Timer.NewTicker(0.25, cb);
     end
 
     bshowstack = true;
@@ -838,8 +849,10 @@ local function APB_MaxCombo(combobar, max)
         local _, Class = UnitClass("player")
         local color = RAID_CLASS_COLORS[Class]
         combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
-        combobar[i]:SetScript("OnUpdate", nil)
 
+        if combobar[i].ctimer then
+            combobar[i].ctimer:Cancel();
+        end
 
         if i > 1 then
             combobar[i]:SetPoint("LEFT", combobar[i - 1], "RIGHT", gap, 0);
@@ -993,81 +1006,74 @@ local function asUnitFrameUtil_UpdateFillBuffBarBaseforBuff(realbar, bar, amount
     bar:Show();
 end
 
-local function APB_OnUpdateBuff(self, elapsed)
+local function APB_OnUpdateBuff(self)
     if not self.start then
         self:SetValue(0);
         self.castbar:Hide();
         return;
     end
 
-    if not self.update then
-        self.update = 0;
-    end
 
-    self.update = self.update + elapsed
+    local curr_time = GetTime();
+    local curr_duration = curr_time - self.start;
+    local expertedendtime = self.duration + self.start;
 
-    if self.update >= 0.1 and self.start then
-        local curr_time = GetTime();
-        local curr_duration = curr_time - self.start;
-        local expertedendtime = self.duration + self.start;
+    self.update = 0
 
-        self.update = 0
+    if curr_duration < self.duration then
+        local remain_buff = (self.duration + self.start - curr_time)
 
-        if curr_duration < self.duration then
-            local remain_buff = (self.duration + self.start - curr_time)
+        if self.max and self.max >= remain_buff then
+            self:SetMinMaxValues(0, self.max * 1000)
+        else
+            self:SetMinMaxValues(0, self.duration * 1000)
+        end
 
-            if self.max and self.max >= remain_buff then
-                self:SetMinMaxValues(0, self.max * 1000)
-            else
-                self:SetMinMaxValues(0, self.duration * 1000)
+        self:SetValue(remain_buff * 1000)
+        self.text:SetText(("%02.1f"):format(remain_buff))
+
+        if self.maxshow then
+            self:SetMinMaxValues(0, self.maxshow * 1000)
+            if self.maxshow < remain_buff then
+                remain_buff = self.maxshow;
+                expertedendtime = self.start + remain_buff;
+                self:SetValue(remain_buff * 1000);
+            end
+        end
+
+        -- Check Casting And GCD
+        local timetoready = 0;
+        local _, _, _, _, endTime = UnitCastingInfo("player");
+        local alert = false;
+
+        if not endTime then
+            _, _, _, _, endTime = UnitChannelInfo("player");
+        end
+
+        if not endTime then
+            local start, duration = asGetSpellCooldown(61304);
+            endTime = (start + duration) * 1000;
+        end
+
+        if endTime then
+            if endTime > (expertedendtime * 1000) then
+                endTime = (expertedendtime * 1000);
+                alert = true;
             end
 
-            self:SetValue(remain_buff * 1000)
-            self.text:SetText(("%02.1f"):format(remain_buff))
+            timetoready = endTime - (curr_time * 1000);
+        end
 
-            if self.maxshow then
-                self:SetMinMaxValues(0, self.maxshow * 1000)
-                if self.maxshow < remain_buff then
-                    remain_buff = self.maxshow;
-                    expertedendtime = self.start + remain_buff;
-                    self:SetValue(remain_buff * 1000);
-                end
-            end
+        if timetoready < 0 then
+            timetoready = 0;
+        end
 
-            -- Check Casting And GCD
-            local timetoready = 0;
-            local _, _, _, _, endTime = UnitCastingInfo("player");
-            local alert = false;
-
-            if not endTime then
-                _, _, _, _, endTime = UnitChannelInfo("player");
-            end
-
-            if not endTime then
-                local start, duration = asGetSpellCooldown(61304);
-                endTime = (start + duration) * 1000;
-            end
-
-            if endTime then
-                if endTime > (expertedendtime * 1000) then
-                    endTime = (expertedendtime * 1000);
-                    alert = true;
-                end
-
-                timetoready = endTime - (curr_time * 1000);
-            end
-
-            if timetoready < 0 then
-                timetoready = 0;
-            end
-
-            asUnitFrameUtil_UpdateFillBuffBarBase(self, self.castbar, timetoready, alert);
-            if self.buff3barex then
-                local buff3remain = (self.buff3barex - curr_time) * 1000;
-                asUnitFrameUtil_UpdateFillBuffBarBaseforBuff(self, self.buff3bar, buff3remain, timetoready > buff3remain);
-            else
-                self.buff3bar:Hide();
-            end
+        asUnitFrameUtil_UpdateFillBuffBarBase(self, self.castbar, timetoready, alert);
+        if self.buff3barex then
+            local buff3remain = (self.buff3barex - curr_time) * 1000;
+            asUnitFrameUtil_UpdateFillBuffBarBaseforBuff(self, self.buff3bar, buff3remain, timetoready > buff3remain);
+        else
+            self.buff3bar:Hide();
         end
     end
 end
@@ -1165,9 +1171,18 @@ local function APB_UpdateBuff(buffbar)
     end
 
     if buffbar.start then
-        buffbar:SetScript("OnUpdate", APB_OnUpdateBuff)
+        local cb = function()
+            APB_OnUpdateBuff(buffbar);
+        end
+        if buffbar.ctimer then
+            buffbar.ctimer:Cancel();
+        end
+
+        buffbar.ctimer = C_Timer.NewTicker(0.1, cb);
     else
-        buffbar:SetScript("OnUpdate", nil)
+        if buffbar.ctimer then
+            buffbar.ctimer:Cancel();
+        end
         buffbar:SetValue(0);
         buffbar.castbar:Hide();
         buffbar.buff3bar:Hide();
@@ -1231,7 +1246,15 @@ local function APB_UpdateFronzenOrb(self)
         if duration > 0 then
             self.start = start;
             self.duration = duration;
-            self:SetScript("OnUpdate", APB_OnUpdateBuff)
+
+            local cb = function()
+                APB_OnUpdateBuff(self);
+            end
+            if self.ctimer then
+                self.ctimer:Cancel();
+            end
+
+            self.ctimer = C_Timer.NewTicker(0.1, cb);
         else
             self:SetMinMaxValues(0, 1)
             self:SetValue(0)
@@ -1239,7 +1262,9 @@ local function APB_UpdateFronzenOrb(self)
             self.start = 0;
             self.duraton = duration;
             self.castbar:Hide();
-            self:SetScript("OnUpdate", nil)
+            if self.ctimer then
+                self.ctimer:Cancel();
+            end
         end
         self.count:SetText("");
         self:Show();
@@ -1304,12 +1329,22 @@ local function APB_UpdateRune()
 
             combobar[i]:SetMinMaxValues(0, 1)
             combobar[i]:SetValue(1)
-            combobar[i]:SetScript("OnUpdate", nil)
+            if combobar[i].ctimer then
+                combobar[i].ctimer:Cancel();
+            end
         else
             combobar[i]:SetStatusBarColor(1, 1, 1)
             combobar[i].start = start;
             combobar[i].duration = duration;
-            combobar[i]:SetScript("OnUpdate", APB_OnUpdateCombo)
+
+            local cb = function()
+                APB_OnUpdateCombo(combobar[i]);
+            end
+            if combobar[i].ctimer then
+                combobar[i].ctimer:Cancel();
+            end
+
+            combobar[i].ctimer = C_Timer.NewTicker(0.25, cb);
         end
     end
 end
@@ -1575,8 +1610,11 @@ local function APB_UpdateSpell(spell, spell2)
         spellbar:SetStatusBarColor(color.r + rate, color.g + rate, color.b + rate + rate2);
 
         spellbar:SetMinMaxValues(0, 1)
-        spellbar:SetValue(1)
-        spellbar:SetScript("OnUpdate", nil)
+        spellbar:SetValue(1);
+
+        if spellbar.ctimer then
+            spellbar.ctimer:Cancel();
+        end
         spellbar.spellid = spellid;
 
         if balert then
@@ -1603,7 +1641,15 @@ local function APB_UpdateSpell(spell, spell2)
         spellbar:SetStatusBarColor(1, 1, 1)
         spellbar.start = chargeStart;
         spellbar.duration = chargeDuration;
-        spellbar:SetScript("OnUpdate", APB_OnUpdateCombo)
+
+        local cb = function()
+            APB_OnUpdateCombo(spellbar);
+        end
+        if spellbar.ctimer then
+            spellbar.ctimer:Cancel();
+        end
+
+        spellbar.ctimer = C_Timer.NewTicker(0.25, cb);
         spellbar.spellid = spellid;
 
         if balert then
@@ -1630,7 +1676,9 @@ local function APB_UpdateSpell(spell, spell2)
             local spellbar = APB.spellbar[i];
             spellbar:SetValue(0)
             spellbar.start = nil;
-            spellbar:SetScript("OnUpdate", nil)
+            if spellbar.ctimer then
+                spellbar.ctimer:Cancel();
+            end
             ns.lib.PixelGlow_Stop(spellbar);
             spellbar.isAlert = false;
         end
@@ -1694,7 +1742,9 @@ local function APB_UpdateSpell(spell, spell2)
 
             spellbar:SetMinMaxValues(0, 1)
             spellbar:SetValue(1)
-            spellbar:SetScript("OnUpdate", nil)
+            if spellbar.ctimer then
+                spellbar.ctimer:Cancel();
+            end
             spellbar.spellid = spellid;
 
             if balert2 then
@@ -1721,7 +1771,15 @@ local function APB_UpdateSpell(spell, spell2)
             spellbar:SetStatusBarColor(0.5, 0.5, 0.5)
             spellbar.start = chargeStart;
             spellbar.duration = chargeDuration;
-            spellbar:SetScript("OnUpdate", APB_OnUpdateCombo)
+
+            local cb = function()
+                APB_OnUpdateCombo(spellbar);
+            end
+            if spellbar.ctimer then
+                spellbar.ctimer:Cancel();
+            end
+
+            spellbar.ctimer = C_Timer.NewTicker(0.25, cb);
 
             spellbar.spellid = spellid;
 
@@ -1749,7 +1807,9 @@ local function APB_UpdateSpell(spell, spell2)
                 local spellbar = APB.spellbar[i];
                 spellbar:SetValue(0)
                 spellbar.start = nil;
-                spellbar:SetScript("OnUpdate", nil)
+                if spellbar.ctimer then
+                    spellbar.ctimer:Cancel();
+                end
                 ns.lib.PixelGlow_Stop(spellbar);
                 spellbar.isAlert = false;
             end
@@ -2074,7 +2134,7 @@ local function APB_CheckPower(self)
     end
 
     APB_MaxCombo(self.combobar, 0);
-    APB_MaxCombo(self.combobar2, 0);    
+    APB_MaxCombo(self.combobar2, 0);
 
     for i = 1, 10 do
         setupMouseOver(APB.spellbar[i]);
@@ -2107,7 +2167,10 @@ local function APB_CheckPower(self)
         APB.stackbar[j].castbar:Hide();
         APB.stackbar[j].max = nil;
         APB.stackbar[j].spellid = nil;
-        APB.stackbar[j]:SetScript("OnUpdate", nil);
+        if APB.stackbar[j].ctimer then
+            APB.stackbar[j].ctimer:Cancel();
+        end
+
 
         setupMouseOver(APB.stackbar[j]);
     end
@@ -2203,7 +2266,7 @@ local function APB_CheckPower(self)
             bupdate_power = true;
 
             --시즌1 티어 Intuition 특성으로 변경
-            combobuffalertlist = { 451073, 451038, 1223797 };            
+            combobuffalertlist = { 451073, 451038, 1223797 };
 
             for i = 1, 20 do
                 APB.combobar[i].tooltip = "ARCANE_CHARGES";
@@ -2255,7 +2318,7 @@ local function APB_CheckPower(self)
 
                 for i = 1, 20 do
                     APB.combobar2[i].tooltip = APB_BUFF_COMBO;
-                end            
+                end
             end
 
             APB_SPELL = 108853;
@@ -2855,7 +2918,7 @@ local function APB_CheckPower(self)
             bupdate_spell = true;
 
             if IsPlayerSpell(378270) then --깊이 뿌리내린 정기
-                APB_BUFF = 1219480;                
+                APB_BUFF = 1219480;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
             end
@@ -3565,7 +3628,7 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
     return;
 end
 
-do    
+do
     APB:SetPoint("BOTTOM", UIParent, "CENTER", APB_X, APB_Y)
     APB:SetWidth(APB_WIDTH)
     APB:SetHeight(APB_HEIGHT)

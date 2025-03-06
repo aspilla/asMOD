@@ -462,7 +462,15 @@ local function CreateCastbars(parent)
 		frame.ef = 0;
 		frame.bchanneling = false;
 
-		frame:SetScript("OnUpdate", Bar_OnUpdate);
+		local cb = function()
+			Bar_OnUpdate(frame, 0.1);
+		end
+
+		if frame.ctimer then
+			frame.ctimer:Cancel();
+		end
+
+		frame.ctimer = C_Timer.NewTicker(0.1, cb);
 	end
 end
 

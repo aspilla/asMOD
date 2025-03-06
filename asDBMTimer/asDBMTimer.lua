@@ -68,8 +68,7 @@ local function deleteButton(idx, btemp)
 			button.id = nil;
 			button.cooltext:Hide();
 			button.text:Hide();
-			button:Hide();
-			button:SetScript("OnUpdate", nil)
+			button:Hide();			
 		end
 	end
 end
