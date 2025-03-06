@@ -554,7 +554,7 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
         local cb = function()
             APB_OnUpdateCombo(combobar[1]);
         end
-        combobar[1].ctimer = C_Timer.NewTicker(0.25, cb);
+        combobar[1].ctimer = C_Timer.NewTicker(0.1, cb);
         return;
     end
 
@@ -613,7 +613,7 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
             if combobar[i].ctimer then
                 combobar[i].ctimer:Cancel();
             end
-            combobar[i].ctimer = C_Timer.NewTicker(0.25, cb);
+            combobar[i].ctimer = C_Timer.NewTicker(0.1, cb);
         else
             combobar[i]:Show();
             combobar[i]:SetValue(0)
@@ -685,7 +685,7 @@ local function APB_MaxStack(max)
         if APB.stackbar[0].ctimer then
             APB.stackbar[0].ctimer:Cancel();
         end
-        APB.stackbar[0].ctimer = C_Timer.NewTicker(0.25, cb);
+        APB.stackbar[0].ctimer = C_Timer.NewTicker(0.1, cb);
     end
 
     bshowstack = true;
@@ -1344,7 +1344,7 @@ local function APB_UpdateRune()
                 combobar[i].ctimer:Cancel();
             end
 
-            combobar[i].ctimer = C_Timer.NewTicker(0.25, cb);
+            combobar[i].ctimer = C_Timer.NewTicker(0.1, cb);
         end
     end
 end
@@ -1649,7 +1649,7 @@ local function APB_UpdateSpell(spell, spell2)
             spellbar.ctimer:Cancel();
         end
 
-        spellbar.ctimer = C_Timer.NewTicker(0.25, cb);
+        spellbar.ctimer = C_Timer.NewTicker(0.1, cb);
         spellbar.spellid = spellid;
 
         if balert then
@@ -1779,7 +1779,7 @@ local function APB_UpdateSpell(spell, spell2)
                 spellbar.ctimer:Cancel();
             end
 
-            spellbar.ctimer = C_Timer.NewTicker(0.25, cb);
+            spellbar.ctimer = C_Timer.NewTicker(0.1, cb);
 
             spellbar.spellid = spellid;
 
