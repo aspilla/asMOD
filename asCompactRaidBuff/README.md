@@ -37,7 +37,7 @@ This addon improves the default World of Warcraft raid and party frames, enhanci
 
 *   **HP Color Change on Healing Effects:**
     *   Changes the health bar color to gray when affected by specific healing spells, visually indicating the type of healing:
-        *   Flash of Light (Holy Paladin)
+        *   Beacon of Virtue (Holy Paladin)
         *   Atonement (Discipline Priest)
         *   Renew (Holy Priest)
         *   Lifebloom (Restoration Druid)
@@ -66,7 +66,8 @@ This addon improves the default World of Warcraft raid and party frames, enhanci
 2.  Extract the files to your World of Warcraft `Interface/AddOns` directory.
 3.  Enable the addon in the in-game AddOns menu.
 4.  Recommended wow interface configuration (esc > options)
-    ![configuration](https://media.forgecdn.net/attachments/1057/367/ascompactraidbuff_option.jpg)
+
+ * **Recommended interface configuration:** ![configuration](https://media.forgecdn.net/attachments/1057/367/ascompactraidbuff_option.jpg)
 
 
 **How to Use:**
@@ -126,7 +127,7 @@ If you have any questions, find a bug or want to suggest a feature, you can crea
 
 *   **치유 효과에 따른 체력바 색상 변경:**
     *   특정 치유 주문의 영향을 받으면, 체력바 색상을 회색으로 변경하여 치유 유형을 시각적으로 표시합니다.
-        *   빛의 섬광 (신성 기사)
+        *   고결의 봉화 (신성 기사)
         *   속죄 (수양 사제)
         *   소생 (신성 사제)
         *   피어나는 생명 (회복 드루이드)
