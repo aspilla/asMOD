@@ -20,10 +20,9 @@ The following errors may occur:
 
 ## Preview
 
-* **Party:** [Image Link Here]
-* **Raid:** [Image Link Here]
-* **asUnitFrame Disabled:** [Image Link Here]
-
+* **Party:** ![파티](https://upload3.inven.co.kr/upload/2025/03/09/bbs/i1301564971.jpg)
+* **Raid:** ![공격대](https://upload3.inven.co.kr/upload/2025/03/09/bbs/i1255227993.jpg)
+* **asUnitFrame Disabled:** ![asUnitFrame 미선택](https://upload3.inven.co.kr/upload/2024/11/17/bbs/i1592006461.jpg)
 
 ## Installation, Removal, Update, and Configuration Guide
 
@@ -101,14 +100,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입�
 2.  **편집 모드 오류:** 편집 모드 사용 시 오류가 발생하여 설정 변경이 불가능할 수 있습니다. asUnitFrame을 끈 상태에서 편집 모드를 진행하세요.
 3.  **DBM 일부 포함:** 용량 문제로 DBM의 일부 기능만 포함되어 있습니다. 던전 진입 시 업데이트 안내 메시지가 팝업되며, 안내 링크에서 추가 다운로드를 진행하시면 됩니다.
 
-## 미리보기
 
-*   **파티:**
-    ![파티](https://upload3.inven.co.kr/upload/2025/03/09/bbs/i1301564971.jpg)
-*   **공격대:**
-    ![공격대](https://upload3.inven.co.kr/upload/2025/03/09/bbs/i1255227993.jpg)
-*   **asUnitFrame 미선택:**
-    ![asUnitFrame 미선택](https://upload3.inven.co.kr/upload/2024/11/17/bbs/i1592006461.jpg)
 
 ## 설치, 제거, 업데이트 및 설정 안내
 
