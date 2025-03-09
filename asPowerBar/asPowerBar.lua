@@ -2720,6 +2720,14 @@ local function APB_CheckPower(self)
             APB_SpellMax(APB_SPELL, APB_SPELL2);
             APB_UpdateSpell(APB_SPELL, APB_SPELL2);
             bupdate_spell = true;
+
+            if IsPlayerSpell(392988) then --신성한 환영
+                APB_BUFF = 405963;
+                APB.buffbar[0].buff = APB_BUFF
+                APB.buffbar[0].unit = "player"
+
+                bupdate_buff_count = true;
+            end
         end
 
         if (spec and spec == 3) then
