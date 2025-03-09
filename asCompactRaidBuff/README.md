@@ -71,8 +71,7 @@ This addon improves the default World of Warcraft raid and party frames, enhanci
 **How to Use:**
 
 Once installed, the addon will automatically enhance your raid and party frames.  Customize the features you wish to use through the in-game options menu.
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Oi2s6_P0tb4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+![configuration](https://www.youtube.com/watch?v=Oi2s6_P0tb4)
 
 
 **Tips:**
