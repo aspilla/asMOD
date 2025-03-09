@@ -15,14 +15,13 @@ The following errors may occur:
 
 1. **Target Setting Error:** Errors may occur when setting the target through the right-click menu on the frame. It's recommended to use the `/focus` macro or assign a hotkey.
 2. **Edit Mode Error:**  Errors may prevent setting changes while in edit mode. Exit edit mode before using asUnitFrame.
-3. **Partial DBM Integration:** Due to size constraints, only partial DBM functionality is included.  An in-game update message will appear upon entering a dungeon, directing you to download additional components.
 
 
 ## Preview
 
-* **Party:** ![파티](https://upload3.inven.co.kr/upload/2025/03/09/bbs/i1301564971.jpg)
-* **Raid:** ![공격대](https://upload3.inven.co.kr/upload/2025/03/09/bbs/i1255227993.jpg)
-* **asUnitFrame Disabled:** ![asUnitFrame 미선택](https://upload3.inven.co.kr/upload/2024/11/17/bbs/i1592006461.jpg)
+* **Party:** ![Party](https://upload3.inven.co.kr/upload/2025/03/09/bbs/i1301564971.jpg)
+* **Raid:** ![Raid](https://upload3.inven.co.kr/upload/2025/03/09/bbs/i1255227993.jpg)
+* **asUnitFrame Disabled:** ![asUnitFrame disabled](https://upload3.inven.co.kr/upload/2024/11/17/bbs/i1592006461.jpg)
 
 ## Installation, Removal, Update, and Configuration Guide
 
@@ -98,7 +97,6 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입�
 
 1.  **주시 대상 설정 오류:** 프레임을 우클릭하여 메뉴를 통해 주시 대상을 설정할 경우 오류가 발생합니다. `/focus` 매크로 또는 단축키를 설정하여 사용하시길 권장합니다.
 2.  **편집 모드 오류:** 편집 모드 사용 시 오류가 발생하여 설정 변경이 불가능할 수 있습니다. asUnitFrame을 끈 상태에서 편집 모드를 진행하세요.
-3.  **DBM 일부 포함:** 용량 문제로 DBM의 일부 기능만 포함되어 있습니다. 던전 진입 시 업데이트 안내 메시지가 팝업되며, 안내 링크에서 추가 다운로드를 진행하시면 됩니다.
 
 
 
