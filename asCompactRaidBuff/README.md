@@ -64,10 +64,23 @@ This addon improves the default World of Warcraft raid and party frames, enhanci
 1.  Download the addon files.
 2.  Extract the files to your World of Warcraft `Interface/AddOns` directory.
 3.  Enable the addon in the in-game AddOns menu.
+4.  Recommended wow interface configuration (esc > options)
+    ![configuration](https://media.forgecdn.net/attachments/1057/367/ascompactraidbuff_option.jpg)
+
 
 **How to Use:**
 
 Once installed, the addon will automatically enhance your raid and party frames.  Customize the features you wish to use through the in-game options menu.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Oi2s6_P0tb4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+
+**Tips:**
+
+1. Mouse Click Heal (esc > options > keybinding)
+    ![mouseclick](https://media.forgecdn.net/attachments/1057/369/ascompactraidbuff_click.jpg)
+2. Mouse Over Heal (esc > macros)
+    ![mouseover](https://media.forgecdn.net/attachments/1057/368/ascompactraidbuff_macro.jpg)
 
 **Support:**
 If you have any questions, find a bug or want to suggest a feature, you can create an issue on GitHub.
