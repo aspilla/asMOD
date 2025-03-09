@@ -65,10 +65,7 @@ This addon improves the default World of Warcraft raid and party frames, enhanci
 1.  Download the addon files.
 2.  Extract the files to your World of Warcraft `Interface/AddOns` directory.
 3.  Enable the addon in the in-game AddOns menu.
-4.  Recommended wow interface configuration (esc > options)
-
- * **Recommended interface configuration:** ![configuration](https://media.forgecdn.net/attachments/1057/367/ascompactraidbuff_option.jpg)
-
+4.  Recommended wow interface configuration (esc > options)![configuration](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascompactraidbuff_option.jpg?raw=true)
 
 **How to Use:**
 
