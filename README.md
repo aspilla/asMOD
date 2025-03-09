@@ -1,7 +1,7 @@
+<b>=== asMOD 란? === </b>
+제가 만든 애드온들의 모음입니다. 
+    
 <b>=== asMOD 모음집 특징=== </b>
-
-asMOD 란? 제가 만든 애드온들의 모음입니다. 
-
 1. 설치 및 삭제가 쉽습니다. 아래 설치법 링크 확인해서 설치해 보세요. 
 2. DBM(던전 경보), Details(데미지미터기), Bugsack(애드온 오류 저장) 등 필수 애드온도 포함 되어 있습니다.
 3. 기본 UI 의 부족한 부분을 지원해 줍니다. 게임하면서 아쉬운 부분은 대부분 해결 됩니다.
@@ -10,23 +10,21 @@ asMOD 란? 제가 만든 애드온들의 모음입니다.
 6. 직접 개발한 애드온 입니다. 개발자와 직접 소통할 수 있습니다. asMOD 포럼 게시판 방문해 보세요.
 7. 본섭 (내부전쟁) 만 지원 합니다.
 
-주의) asUnitFrame 사용시 다음의 오류가 발생할 수 있습니다.
-
+<font color="#ff0000" size="4">
+주의) asUnitFrame 추가로 유닛 프레임이 변경되었습니다. 다음의 오류가 발생할 수 있습니다.
 1) 프레임을 우클릭하여 메뉴를 통해 주시 대상 설정시 오류가 발생 합니다. /focus 매크로 혹은 단축키 설정해서 사용하세요.
 2) 편집모드시 오류가 발생하여 설정 변경이 안됩니다. asUnitFrame을 끄고 편집모드 진행 하세요.
+3) 용량 문제로 DBM일부만 포함하였습니다. 던전 진입시 업뎃 안내 메시지가 팝업 됩니다. 안내 링크에서 추가 다운을 받으시면 됩니다.
+</font>
 
-<b>===asUnitFrame 선택, 기본)초상화 표시 (파티)===</b>
+<b>===asUnitFrame 선택 (파티)===</b>
+<img src="https://upload3.inven.co.kr/upload/2025/03/09/bbs/i1301564971.jpg">
 
-<img src="https://upload3.inven.co.kr/upload/2025/01/11/bbs/i1308720183.jpg">
-
-<b>===asUnitFrame 선택, 옵션)초상화 미표시 (공격대)===</b>
-esc &gt;&gt; 설정 &gt;&gt; 애드온 &gt;&gt; asUnitFrame 에서 ShowPortrait 옵션을 끄면 됩니다.
-
-<img src="https://upload3.inven.co.kr/upload/2024/11/17/bbs/i1537992849.jpg">
+<b>===asUnitFrame 선택 (공격대)===</b>
+<img src="https://upload3.inven.co.kr/upload/2025/03/09/bbs/i1255227993.jpg">
 
 
 <b>===asUnitFrame 미 선택 시===</b>
-
 <img src="https://upload3.inven.co.kr/upload/2024/11/17/bbs/i1592006461.jpg">
 
 <a href="https://www.inven.co.kr/board/wow/5288/1078" target="_BLANK"><b> 
