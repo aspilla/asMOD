@@ -44,6 +44,7 @@ This addon improves the default World of Warcraft raid and party frames, enhanci
         *   Echo (Preservation Evoker)
         *   Healing Surge (Restoration Shaman)
         *   Renewing Mist (Mistweaver Monk)
+        *   Prescience (Augmentation Evoker)
 
 *   **Buff Refresh Alert:**
     *   When a buff's remaining duration reaches 30% of its total duration (the typical refresh point), the unit frame border turns white, and the cooldown count turns red.
@@ -131,7 +132,8 @@ If you have any questions, find a bug or want to suggest a feature, you can crea
         *   피어나는 생명 (회복 드루이드)
         *   메아리 (보존 기원사)
         *   치유의 파도 (복원 주술사)
-        *   정수의 샘 (운무 수도사)
+        *   소생의 안개 (운무 수도사)
+        *   예지 (증강 기원사)
 
 *   **버프 갱신 경고:**
     *   버프의 남은 지속 시간이 전체 지속 시간의 30%에 도달하면 (일반적인 갱신 시점), 유닛 프레임 테두리가 흰색으로 변하고 재사용 대기시간 카운트가 빨간색으로 변합니다.
