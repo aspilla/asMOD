@@ -1,5 +1,3 @@
-# asNamePlates: 네임플레이트 개선 애드온
-
 # asNamePlates: Enhanced Nameplate Addon
 
 **asNamePlates** is an addon for World of Warcraft that enhances enemy nameplates (the name tags of attackable targets). It provides various visual feedback and convenience features to help you understand combat situations more clearly and react more effectively.
@@ -74,6 +72,7 @@
 
 *   All features can be configured in the in-game settings (Esc > Options).
 
+# asNamePlates: 네임플레이트 개선 애드온
 
 **asNamePlates**는 World of Warcraft의 적 네임플레이트(공격 가능한 대상의 이름표)를 개선하는 애드온입니다. 다양한 시각적 피드백과 편의 기능을 제공하여 전투 상황을 더욱 명확하게 인지하고 효율적으로 대처할 수 있도록 돕습니다.
 
