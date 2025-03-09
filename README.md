@@ -1,3 +1,87 @@
+# asMOD: A Collection of World of Warcraft Addons
+
+asMOD is a collection of custom World of Warcraft addons designed to enhance your gameplay experience.
+
+## asMOD Features
+
+* **Enhanced UI:** Addresses shortcomings in the default UI and improves various aspects of gameplay.
+* **All Classes and Specs Supported:**  All asMOD features work regardless of your class or specialization.
+* **Optimized Performance:** Designed for minimal performance impact, ensuring smooth gameplay without lag or FPS drops.
+* **Retail WoW Support (Internal Strife):** Currently supports only the retail version of World of Warcraft (Internal Strife).
+
+## Cautions (asUnitFrame Related)
+
+The following errors may occur:
+
+1. **Target Setting Error:** Errors may occur when setting the target through the right-click menu on the frame. It's recommended to use the `/focus` macro or assign a hotkey.
+2. **Edit Mode Error:**  Errors may prevent setting changes while in edit mode. Exit edit mode before using asUnitFrame.
+3. **Partial DBM Integration:** Due to size constraints, only partial DBM functionality is included.  An in-game update message will appear upon entering a dungeon, directing you to download additional components.
+
+
+## Preview
+
+* **Party:** [Image Link Here]
+* **Raid:** [Image Link Here]
+* **asUnitFrame Disabled:** [Image Link Here]
+
+
+## Installation, Removal, Update, and Configuration Guide
+
+[**Installation/Removal/Update/Configuration Guide**](https://www.youtube.com/watch?v=TGrs8p5x0DI)
+
+
+## asMOD Addon List
+
+| Addon Name             | Description                                                                     |
+| :---------------------- | :------------------------------------------------------------------------------ |
+| asActiveAlert          | Displays skill alerts with borders.                                             |
+| asBuffFilter           | Displays important buffs and totems centrally (Left/Center Player, Right Target) |
+| asCombatInfo           | Displays important skill status alerts (5 buttons below character)               |
+| asCooldownPulse        | Provides central screen and audio alerts when skills become available.           |
+| asCompactRaidBuff      | Enhanced raid/party frames.                                                    |
+| asDebuffFilter         | Displays debuffs centrally (Left Player, Right Target)                           |
+| asDotFilter            | Displays key debuff durations on boss frames.                                   |
+| asFixChat              | [Git Only] Changes chat channels with Tab key, enables URL link clicks.    |
+| asFixClearFont         | [Git Only] Improved number font.                                          |
+| asFixCombatText        | Improved combat text display (left of character).                              |
+| asFixHotkey            | Removes Korean hotkey display, simplifies display, hides macro names.             |
+| asFixUnitFrame         | Improved default Unitframe functionality.                                       |
+| asMisdirection         | Automatically generates macros for Hunter Misdirection, Rogue Tricks, and more.   |
+| asMOD                  | Addon collection manager, sets up DBM, Details, and BugSack addons.             |
+| asNamePlates           | Enhanced nameplates.                                                          |
+| asRangeDisplay         | Displays target distance.                                                      |
+| asSpamFilter           | Moves error messages (to bottom right).                                       |
+| asScavenger            | [Git Only] Automatically sells grey items.                              |
+| asGCDBar               | Displays Global Cooldown (GCD) as a bar.                                      |
+| asHideBagsBar          | Automatically hides the bottom right bag bar and left raid leader window.      |
+| asPowerBar             | Resource bar & rune/combo counter & skill/buff/debuff cooldowns.                 |
+| asTargetCastingBar     | Displays target casting.                                                       |
+| asTrueGCD              | Displays the 3 most recently used skills (bottom center).                       |
+| asReady                | Party member interrupt cooldown alerts, party/raid member cooldown display.    |
+| asDBMTimer             | DBM Timer Skin                                                                |
+| asCastBar              | Enhanced cast bar.                                                            |
+| asCastingAlert         | Alerts for spells being cast on you.                                            |
+| asAutoMarker           | Automatically marks important mobs in Mythic+ for interrupt (Tank).             |
+| asGearScoreLite        | [Git Only] Checks item level in the character/inspect window.            |
+| asDBMCastingAlert     | DBM registered skill cast alerts, interrupt sound support.                    |
+| asPremadeGroupsFilter | Displays class colors/spec icons/leaderboard Mythic+ scores in Group Finder.  |
+| asUnitFrame            | Player/Target/Focus/Boss unit frames.                                         |
+| asInterruptHelper      | Displays interrupt cooldown on mouseover.                                      |
+| asBattleRes            | Displays battle resurrection cooldown.                                          |
+| asDotSnapshot          | Displays the strength of dots for shadow and assassination rogues              |
+| BugSack, BugGrabber    | [External] Addon error saver                                                   |
+| Details                | [External] Damage meter.                                                       |
+| DBM                    | [External] Dungeon boss skill announcer.                                        |
+
+
+**Note:** Addons not marked as "Git Only" can be downloaded and updated through CurseForge.
+
+## asMOD Usage Videos
+
+*   [**Addon Usage Video (Dungeon)**](https://youtu.be/0jAxmp-mTZY?si=jLZptNcWFPc9amB9)
+*   [**Addon Usage Video (Raid)**](https://youtu.be/lll2kkC3BlA?si=TWIUz-rIgHe8K_pk)
+
+
 # asMOD
 
 asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입니다.
