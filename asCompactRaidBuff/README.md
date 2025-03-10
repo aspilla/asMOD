@@ -2,7 +2,7 @@
 
 이 애드온은 기본 월드 오브 워크래프트 공격대 및 파티 프레임을 개선하여, 힐러 및 다른 역할군에게 중요한 정보를 제공합니다. 또한, 간소화된 경험을 제공하여 상황 인지 능력을 향상시키고, 보다 효율적인 치유와 공격대 관리를 가능하게 합니다.
 
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascompactraidbuff.jpg?raw=true)   
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCompactraidbuff.jpg?raw=true)   
 
 **주요 기능:**
     
