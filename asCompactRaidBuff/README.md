@@ -1,3 +1,6 @@
+asCompactRaidBuff
+=============
+
 # asCompactRaidBuff: Enhanced Raid and Party Frames
 
 This addon improves the default World of Warcraft raid and party frames, enhancing their functionality and providing crucial information for healers and other roles.  It offers a streamlined experience, allowing for better situational awareness and more efficient healing and raid management.
