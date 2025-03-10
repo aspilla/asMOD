@@ -2,6 +2,8 @@
 
 이 애드온은 기본 월드 오브 워크래프트 공격대 및 파티 프레임을 개선하여, 힐러 및 다른 역할군에게 중요한 정보를 제공합니다. 또한, 간소화된 경험을 제공하여 상황 인지 능력을 향상시키고, 보다 효율적인 치유와 공격대 관리를 가능하게 합니다.
 
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascompactraidbuff.jpg?raw=true)   
+
 **주요 기능:**
     
 *   **유지해야 할 지속 치유 효과 (HoT) 추적 (우측 상단, 중앙 우측, 우측 하단):**
@@ -75,18 +77,108 @@
 2.  Esc >> 편집모드에서 공격대 모양 파티창을 선택하서야 파티창에 반영 됩니다.
 4.  와우 공격대 프레임 설정은 다음과 같이 하신는 것을 추천 합니다. (esc > options)
 
-![configuration](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascompactraidbuff_option.jpg&raw=true)   
+![configuration](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascompactraidbuff_option.jpg?raw=true)   
 
 **설정 예제:**
 
 다음 영상과 같은 방식으로 버프 위치/생존기 설정이 가능합니다.
-![configuration](https://www.youtube.com/watch?v=Oi2s6_P0tb4)
+https://www.youtube.com/watch?v=Oi2s6_P0tb4
 
 **Tips:**
 
 1. 마우스 클릭 힐 설정 (esc > 설정 > 단축키 > 클릭 시전)
-    ![mouseclick](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascompactraidbuff_click.jpg&raw=true)
+    ![mouseclick](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascompactraidbuff_click.jpg?raw=true)
 2. 마우스 오버(휠업/다운) 힐 설정 (esc > 메크로에서 설정 후 단축키를 마우스 휠업/다운 등으로 설정)
-    ![mouseover](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascompactraidbuff_macro.jpg&raw=true)
+    ![mouseover](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascompactraidbuff_macro.jpg?raw=true)
 
 ---------------------------------------
+
+# asCompactRaidBuff: Enhanced Raid and Party Frames
+
+This addon enhances the default World of Warcraft raid and party frames, providing crucial information for healers and other roles. It streamlines the experience, improves situational awareness, and facilitates more efficient healing and raid management.
+
+**Key Features:**
+
+*   **Tracking of Essential Heal-over-Time (HoT) Effects (Top Right, Center Right, Bottom Right):**
+    *   Monitors essential HoT buffs that healers need to maintain.
+    *   Displays HoTs in designated locations (top right, center right, bottom right) for quick and easy tracking.
+    *   HoT buff positions can be adjusted via `Esc >> Options >> AddOns >> asCompactRaidBuff`.
+
+*   **Color Change for Top Right HoT Health Bar:**
+    *   Buffs displayed in the top right corner will have their health bar color changed to gray, making it easy to identify whether a party member has the buff.
+    *   Buff color changes can be adjusted via `Esc >> Options >> AddOns >> asCompactRaidBuff`.
+    *   The default buff location/color change settings are as follows:
+
+        | Class            | Top Right (Color Change) | Right          |
+        | ---------------- | ------------------------ | -------------- |
+        | Restoration Druid | Lifebloom              | Rejuvenation, Regrowth |
+        | Holy Paladin     | Beacon of Virtue        | Beacon of Light, Beacon of Faith    |
+        | Discipline Priest | Atonement              | Renew, Power Word: Shield    |
+        | Holy Priest      | Renew                  | Power Word: Shield   |
+        | Preservation Evoker| Echo                  | Rewind         |
+        | Restoration Shaman | Riptide                | Earth Shield |
+        | Mistweaver Monk    | Renewing Mist           | Enveloping Mist      |
+        | Augmentation Evoker| Prescience              | Ebon Might         |
+
+*   **Buff Refresh Warning:**
+    *   When a buff's remaining duration reaches 30% of its total duration (typical refresh point), the unit frame border turns white, and the cooldown counter turns red.
+
+*   **Defensive Cooldown (CD) Display (Center):**
+    *   Clearly displays whether defensive cooldowns are active in the center of the unit frame.
+    *   Prioritizes cooldowns based on remaining time, ensuring the most critical defensive cooldowns are always visible.
+    *   Up to two defensive cooldowns can be displayed simultaneously.
+    *   Which defensive cooldowns are tracked can be adjusted via `Esc >> Options >> AddOns >> asCompactRaidBuff`.
+
+*   **Private Aura Display (Top Left):**
+    *   Private Auras are untrackable debuffs, often used for specific raid debuffs. Only the position/size can be adjusted.
+    *   Displays the assigned private aura debuff on the top left of the unit.
+
+*   **Healer-Only Mana Bar (Bottom):**
+    *   If the class resource display is disabled, a thin, healer-specific mana bar will be displayed.
+
+*   **Raid Marker Display (Left Center):**
+    *   Displays the raid marker assigned to each individual player on the left center of their unit frame.
+
+*   **Display of Enemy Casts (Top Center):**
+    *   Displays hostile spells being cast on a unit in the top center of the frame.
+    *   **Deadly Boss Mods (DBM) Integration:**
+        *   Interruptible casts are highlighted with a distinct green border.
+        *   Non-interruptible casts are displayed with a gray border.
+
+*   **Dispellable Debuff Warning (Border):**
+    *   Highlights the unit frame border for dispellable debuffs.
+    *   Fixes a bug in the default WoW raid/party frames related to dispellable debuffs: Detects all dispellable debuff types according to the player's specialization. (e.g., Holy Paladins will only receive warnings for magic and poison debuffs.)
+    *   For Hunters, if a poison is dispellable and they are affected by a poison, it will be highlighted.
+
+*   **Shield Display:**
+    *   If the shield's absorption amount exceeds the unit's missing health, the excess shield amount is faintly displayed on the left side of the frame.
+
+*   **Priest "Life" Talent Integration:**
+    * If a priest has selected the "Life" talent, it will display a red warning when a party member's health drops below 35%.
+
+*   **Cooldown Count Display:**
+    * Cooldown timers are hidden, but buff durations of 10 seconds or less are shown.
+    * When a buff is nearing its refresh point, the duration text turns red.
+
+*   **Customization and Options:**
+    *   All of these features can be individually toggled on or off via the in-game options menu (`Esc > Options > AddOns > asCompactRaidBuff`).
+
+**Installation:**
+
+1.  Copy the addon folder to your World of Warcraft `Interface/AddOns` directory.
+2.  In Edit Mode (`Esc >> Edit Mode`) you need to select the party or raid frame to enable the add-on on those frames.
+3.  It is recommended to set the WoW raid frame options as follows. (`esc > options`)
+
+![configuration](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascompactraidbuff_option.jpg?raw=true)
+
+**Configuration Example:**
+
+Buff locations and defensive CD settings can be configured as shown in the following video:
+https://www.youtube.com/watch?v=Oi2s6_P0tb4
+
+**Tips:**
+
+1. Mouse Click Healing Setup (`Esc > Options > Key Bindings > Click Casting`)
+    ![mouseclick](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascompactraidbuff_click.jpg?raw=true)
+2. Mouse Over (Wheel Up/Down) Healing Setup (Create a macro under `Esc > Macros`, then bind it to Mouse Wheel Up/Down, etc.)
+    ![mouseover](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascompactraidbuff_macro.jpg?raw=true)
