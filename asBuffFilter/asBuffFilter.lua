@@ -337,7 +337,7 @@ local function ProcessAura(aura, unit)
 		end
 
 		if ns.options.ShowListOnly then
-			minshowtype = UnitFrameBuffType.ProcBuff;
+			minshowtype = UnitFrameBuffType.TalentBuffLeft;
 		end
 	end
 
