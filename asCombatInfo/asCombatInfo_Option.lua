@@ -15,7 +15,7 @@ ns.EnumButtonType = EnumUtil.MakeEnum(
 ACI_Options_Default = {
 	version = 250207,
 	-- 	ACI_SpellList_직업명_특성숫자
-	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime, checksnapshot} 순으로 편집
+	-- 	{Spell, Type, unit, number, countbuff, realbuff, countdebuff, bufflist, alertbufflist, checkcool, checkplatecount, buffshowtime, checksnapshot, countauraremain} 순으로 편집
 	-- 	Spell 기술명 혹은 ID (버프는 ID로 입력해야 Icon 나옴)
 	-- 	Type : 1 Spell Cool down
 	-- 	Type : 2 버프 & Spell Cool down, buff가 없으면 Cooldown check
@@ -132,9 +132,9 @@ ACI_Options_Default = {
 
 	--화염	
 	ACI_SpellList_MAGE_2 = {
-		version = 250207,
+		version = 250315,
 		{ 382440,                                 1 },
-		{ { 2948, 1, nil, 30, nil, nil, 383608 }, { 382440, 1 } },
+		{ { 2948, 1, nil, 30, nil, nil, 383608, nil, nil, nil, nil, nil, nil, 4 }, { 382440, 1 } },
 		{ 190319,                                 2 },
 		{ { 153561, 1 },                          { 31661, 1 }, { 157980, 1 } },
 		{ 99,                                     431044,       { 431177, 3 }, { 12654, 5 } },

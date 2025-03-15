@@ -423,7 +423,7 @@ function ns.Button:checkSpellCoolInBuff()
 
         if spellduration and (charges == nil or charges == 0) then
             local ex = spellduration + spellstart;
-            local remain = ex - GetTime();
+            local remain = ex - self.currtime;
 
             if spellduration > self.gcd then
                 self.spellcool = math.ceil(remain);
@@ -623,6 +623,13 @@ function ns.Button:checkCount()
             else
                 self.buffalert = false;
             end
+
+            if self.countauraremain then
+                local remain = aura.expirationTime - self.currtime;
+                if remain > 0 and remain < self.countauraremain then
+                    self.buffalert = true;
+                end
+            end
         end
     end
 end
@@ -711,7 +718,7 @@ function ns.Button:showButton()
     end
 
 
-    local remain = self.start + self.duration - GetTime();
+    local remain = self.start + self.duration - self.currtime;
     local cooltype = 0;
     if self.improvebuff then
         cooltype = 3;
@@ -900,6 +907,8 @@ function ns.Button:init(config, frame)
     self.checkplatecount = config[11];
     self.buffshowtime = config[12];
     self.checksnapshot = config[13];
+    self.countauraremain = config[14];
+
     self.spellid = select(7, asGetSpellInfo(self.spell));
     if self.spellid == nil then
         self.spellid = select(7, asGetSpellInfo(self.realspell));
