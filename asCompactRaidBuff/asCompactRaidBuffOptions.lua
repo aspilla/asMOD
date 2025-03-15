@@ -645,7 +645,7 @@ local function SetupSubOption(panel, titlename)
 		local newspell = editBox:GetNumber();            
         local newtype1 = tonumber(UIDropDownMenu_GetSelectedValue(dropDown));
 		local newtype2 = tonumber(UIDropDownMenu_GetSelectedValue(dropDown2));
-		if newspell > 0 then
+		if newspell and newspell > 0 then
 			ns.ACRB_ShowList[newspell] = {newtype2, newtype1};
 			if ACRB_Options[ns.listname] then
 				ACRB_Options[ns.listname][newspell] = {newtype2, newtype1};
@@ -663,7 +663,7 @@ local function SetupSubOption(panel, titlename)
 	btn2:SetWidth(100)
 	btn2:SetScript("OnClick", function()
 		local newspell = editBox:GetNumber();   
-		if newspell > 0 then
+		if newspell and newspell > 0 then
 			ns.ACRB_ShowList[newspell] = nil;
 			if ACRB_Options[ns.listname] then
 				ACRB_Options[ns.listname][newspell] = nil;
@@ -793,7 +793,7 @@ local function SetupSubOptionDefensive(panel, titlename)
 	btn:SetWidth(100)
 	btn:SetScript("OnClick", function()
 		local newspell = editBox:GetNumber();            
-		if newspell > 0 then
+		if newspell and newspell > 0 then
 			ns.ACRB_DefensiveBuffList[newspell] = 1;
 			ACRB_Options.defensivelist[newspell] = 1;
 			ns.refreshList();
@@ -809,7 +809,7 @@ local function SetupSubOptionDefensive(panel, titlename)
 	btn2:SetWidth(100)
 	btn2:SetScript("OnClick", function()
 		local newspell = editBox:GetNumber();   
-		if newspell > 0 then
+		if newspell and newspell > 0 then
 			ns.ACRB_DefensiveBuffList[newspell] = nil;
 			ACRB_Options.defensivelist[newspell] = nil;
 			ns.refreshList();

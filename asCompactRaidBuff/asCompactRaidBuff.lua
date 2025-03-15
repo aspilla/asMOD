@@ -133,6 +133,21 @@ local function IsTank(unit)
     return false;
 end
 
+local function extractUnitIdSuffix(unitId)
+    if not unitId then
+        return nil
+    end
+
+    local suffix = string.match(unitId, "%d+") -- Matches one or more digits    
+    if suffix then
+        return tonumber(suffix)                -- Convert the matched string to a number
+    else
+        return nil                             -- No numeric suffix found
+    end
+end
+
+
+
 
 local max_y = 0;
 -- Setup
@@ -259,7 +274,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
 
         f.hideCountdownNumbers = true;
         if not ns.options.ShowBuffCooldown or select(1, f:GetSize()) < ns.options.MinCoolShowBuffSize then
-            f.cooldown:SetHideCountdownNumbers(true);            
+            f.cooldown:SetHideCountdownNumbers(true);
         else
             f.cooldown:SetHideCountdownNumbers(false);
             f.hideCountdownNumbers = false;
@@ -381,12 +396,12 @@ function ns.ACRB_setupFrame(asframe, bupdate)
 
     if not asframe.PrivateAuraAnchors then
         asframe.PrivateAuraAnchors = {};
-    
+
         for idx = 1, 2 do
             asframe.PrivateAuraAnchors[idx] = CreateFrame("Frame", nil, frame, "asCompactPrivateAuraAnchorTemplate");
             asframe.PrivateAuraAnchors[idx].auraIndex = idx;
             asframe.PrivateAuraAnchors[idx]:SetFrameLevel(9000);
-    
+
             if idx == 2 then
                 asframe.PrivateAuraAnchors[idx]:ClearAllPoints();
                 asframe.PrivateAuraAnchors[idx]:SetPoint("TOPLEFT", asframe.PrivateAuraAnchors[1], "TOPLEFT", 1, 0);
@@ -394,7 +409,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
                 asframe.PrivateAuraAnchors[idx]:ClearAllPoints();
                 asframe.PrivateAuraAnchors[idx]:SetPoint("TOPLEFT", frame, "TOPLEFT", 1, -1);
             end
-        end        
+        end
     end
 
     if asframe.PrivateAuraAnchors then
@@ -642,7 +657,18 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         asframe.timer:Cancel();
     end
 
-    asframe.timer = C_Timer.NewTicker(ns.UpdateRate, asframe.callback);
+    local suffix = extractUnitIdSuffix(asframe.unit);
+
+    local updateRate = ns.UpdateRate + GetNumGroupMembers() / 1000;
+
+    if suffix then
+        updateRate = updateRate + (suffix / 2000);
+    end
+
+    if asframe.frame:IsShown() then
+        asframe.timer = C_Timer.NewTicker(updateRate, asframe.callback);        
+    end
+    
 end
 
 local function ACRB_disableDefault(frame)
@@ -793,9 +819,9 @@ function ns.SetupAll(init)
         ns.ACRB_InitList();
     end
     ACRB_updateSetupAll();
-    timero = C_Timer.NewTicker(ns.UpdateRate, ACRB_OnUpdate);
-    timero2 = C_Timer.NewTicker(ns.UpdateRate, ACRB_OnUpdate2);
-    timero3 = C_Timer.NewTicker(ns.UpdateRate, ACRB_OnUpdate3);
+    timero = C_Timer.NewTicker(ns.UpdateRate + 0.01, ACRB_OnUpdate);
+    timero2 = C_Timer.NewTicker(ns.UpdateRate + 0.02, ACRB_OnUpdate2);
+    timero3 = C_Timer.NewTicker(ns.UpdateRate + 0.05, ACRB_OnUpdate3);
 end
 
 local bfirst = true;

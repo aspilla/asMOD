@@ -548,23 +548,25 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
         combobar[1].start = (buffexpire - cooldown);
         combobar[1].duration = cooldown
         combobar[1].reverse = true;
-        if combobar[1].ctimer then
-            combobar[1].ctimer:Cancel();
-        end
         local cb = function()
             APB_OnUpdateCombo(combobar[1]);
         end
-        combobar[1].ctimer = C_Timer.NewTicker(0.1, cb);
+
+        if combobar[1].ctimer == nil or combobar[1].ctimer:IsCancelled() then
+            combobar[1].ctimer = C_Timer.NewTicker(0.1, cb);
+        end
+
         return;
     end
 
     for i = 1, combobar.max_combo do
-        if combobar[1].ctimer then
-            combobar[1].ctimer:Cancel();
-        end
         combobar[1].reverse = nil;
 
         if i <= combo then
+
+            if combobar[i].ctimer then
+                combobar[i].ctimer:Cancel();
+            end
             combobar[i]:Show();
             combobar[i]:SetValue(1)
             combobar[i]:SetMinMaxValues(0, 1)
@@ -579,6 +581,11 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
                 combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
             end
         elseif i <= (combo + cast) then
+
+            if combobar[i].ctimer then
+                combobar[i].ctimer:Cancel();
+            end
+
             combobar[i]:Show();
             combobar[i]:SetValue(1)
             combobar[i]:SetMinMaxValues(0, 1)
@@ -589,6 +596,11 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
                 combobar[i]:SetStatusBarColor(1, 1, 1);
             end
         elseif i == (combo + cast) + 1 and value < 1 then
+
+            if combobar[i].ctimer then
+                combobar[i].ctimer:Cancel();
+            end
+
             combobar[i]:Show();
             combobar[i]:SetValue(value)
 
@@ -610,11 +622,15 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
                 APB_OnUpdateCombo(combobar[i]);
             end
 
+            if combobar[i].ctimer == nil or combobar[i].ctimer:IsCancelled() then
+                combobar[i].ctimer = C_Timer.NewTicker(0.1, cb);
+            end
+        else
+
             if combobar[i].ctimer then
                 combobar[i].ctimer:Cancel();
             end
-            combobar[i].ctimer = C_Timer.NewTicker(0.1, cb);
-        else
+
             combobar[i]:Show();
             combobar[i]:SetValue(0)
         end
@@ -682,10 +698,9 @@ local function APB_MaxStack(max)
             APB_OnUpdateInternalCool(APB.stackbar[0]);
         end
 
-        if APB.stackbar[0].ctimer then
-            APB.stackbar[0].ctimer:Cancel();
+        if APB.stackbar[0].ctimer == nil or APB.stackbar[0].ctimer:IsCancelled() then
+            APB.stackbar[0].ctimer = C_Timer.NewTicker(0.1, cb);
         end
-        APB.stackbar[0].ctimer = C_Timer.NewTicker(0.1, cb);
     end
 
     bshowstack = true;
@@ -1174,11 +1189,9 @@ local function APB_UpdateBuff(buffbar)
         local cb = function()
             APB_OnUpdateBuff(buffbar);
         end
-        if buffbar.ctimer then
-            buffbar.ctimer:Cancel();
+        if buffbar.ctimer == nil or buffbar.ctimer:IsCancelled() then
+            buffbar.ctimer = C_Timer.NewTicker(0.1, cb);
         end
-
-        buffbar.ctimer = C_Timer.NewTicker(0.1, cb);
     else
         if buffbar.ctimer then
             buffbar.ctimer:Cancel();
@@ -1250,11 +1263,9 @@ local function APB_UpdateFronzenOrb(self)
             local cb = function()
                 APB_OnUpdateBuff(self);
             end
-            if self.ctimer then
-                self.ctimer:Cancel();
+            if self.ctimer == nil or self.ctimer:IsCancelled() then
+                self.ctimer = C_Timer.NewTicker(0.1, cb);
             end
-
-            self.ctimer = C_Timer.NewTicker(0.1, cb);
         else
             self:SetMinMaxValues(0, 1)
             self:SetValue(0)
@@ -1340,11 +1351,9 @@ local function APB_UpdateRune()
             local cb = function()
                 APB_OnUpdateCombo(combobar[i]);
             end
-            if combobar[i].ctimer then
-                combobar[i].ctimer:Cancel();
+            if combobar[i].ctimer == nil or combobar[i].ctimer:IsCancelled() then
+                combobar[i].ctimer = C_Timer.NewTicker(0.1, cb);
             end
-
-            combobar[i].ctimer = C_Timer.NewTicker(0.1, cb);
         end
     end
 end
@@ -1645,12 +1654,10 @@ local function APB_UpdateSpell(spell, spell2)
         local cb = function()
             APB_OnUpdateCombo(spellbar);
         end
-        if spellbar.ctimer then
-            spellbar.ctimer:Cancel();
-        end
-
-        spellbar.ctimer = C_Timer.NewTicker(0.1, cb);
         spellbar.spellid = spellid;
+        if spellbar.ctimer == nil or spellbar.ctimer:IsCancelled() then
+            spellbar.ctimer = C_Timer.NewTicker(0.1, cb);
+        end
 
         if balert then
             if not spellbar.isAlert then
@@ -1775,13 +1782,10 @@ local function APB_UpdateSpell(spell, spell2)
             local cb = function()
                 APB_OnUpdateCombo(spellbar);
             end
-            if spellbar.ctimer then
-                spellbar.ctimer:Cancel();
-            end
-
-            spellbar.ctimer = C_Timer.NewTicker(0.1, cb);
-
             spellbar.spellid = spellid;
+            if spellbar.ctimer == nil or spellbar.ctimer:IsCancelled() then
+                spellbar.ctimer = C_Timer.NewTicker(0.1, cb);
+            end
 
             if balert2 then
                 if not spellbar.isAlert then
@@ -2989,7 +2993,12 @@ local function APB_CheckPower(self)
             bupdate_spell = true;
 
             APB_BUFF_COMBO = 53390; --굽이치는 물결
-            APB_MaxCombo(self.combobar, 2);
+
+            if IsPlayerSpell(443448) then
+                APB_MaxCombo(self.combobar, 4);
+            else
+                APB_MaxCombo(self.combobar, 2);
+            end
             APB.combobar.unit = "player"
 
             bupdate_buff_combo = true;

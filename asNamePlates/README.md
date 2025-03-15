@@ -1,102 +1,83 @@
-# asNamePlates: Enhanced Nameplate Addon
+# asNamePlates: 이름표(NamePlates) 개선 애드온
 
-**asNamePlates** is an addon for World of Warcraft that enhances enemy nameplates (the name tags of attackable targets). It provides various visual feedback and convenience features to help you understand combat situations more clearly and react more effectively.
+**asNamePlates**는 World of Warcraft의 공격 가능한 대상의 이름표(NamePlates)를 개선하는 애드온입니다. 다양한 시각적 피드백과 편의 기능을 제공하여 전투 상황을 더욱 명확하게 인지하고 효율적으로 대처할 수 있도록 돕습니다.
 
-**Note:** Due to in-game limitations, this addon does not modify friendly nameplates.
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asnameplates.jpg?raw=true)  
 
-## Key Features
-
-### 1. Nameplate Bar Texture Replacement
-
-*   Changes the texture of nameplates for attackable targets (enemies).
-
-### 2. Debuff Icon Functionality
-
-*   Replaces only the debuff display area of the default WoW nameplates.
-*   Displays both skill debuffs and default WoW debuffs (up to 8, displayed in 2 rows of 4).
-*   Displays one major crowd control (CC) debuff (interrupt, stun, root/immobilize) on the right side of the nameplate.
-*   Provides border notifications for debuffs based on set refresh timers and debuff types. (You can freely configure which debuffs to track and their notification settings.)
-*   Displays cooldown counts if the default WoW cooldown display is enabled.
-*   Allows filtering to display only specific debuffs through settings.
-*   Allows to change the position of debuffs to top(default) or left.
-
-### 3. Nameplate Color Change Functionality
-
-*   Changes the nameplate color to orange when a damage-over-time (DoT) effect is applied (e.g., Rupture for Assassination Rogues, Corruption for Affliction Warlocks, Rend for Warriors) (supports up to 2 DoTs).
-*   Dynamically changes nameplate colors based on threat level:
-    *   **Purple:** When the player is the target.
-    *   **Sky Blue:** High threat level, but not currently targeted.
-    *   **Blue:** When the player's pet is the target.
-    *   **Magenta:** When another tank (other than the player) is tanking.
-    *   **Pink:** When another DPS (other than the player) is the target.
-    *   **Light Green:** When casting a dangerous spell.
-*   Changes the nameplate color to ochre when a finishing move ability (Warrior, Hunter, etc.) is available.
-*   Highlights major interrupt elite mobs in Mythic+ Keystone dungeons. Light green before combat starts (when using asAutoMarker).
-*   Changes the color of quest mobs. (Ochre)
-*   Changes the color for incorporeal, spiteful and afflicted affix mobs.
-
-### 4. Buff Icon Functionality
-
-*   Displays one important defensive buff for hostile targets.
-*   Highlights dispellable or stealable enemy buffs with a border.
-*   Displays 8 personal buffs below the personal resource bar.
-
-### 5. DBM Features (DBM Required)
-
-*   **M+ Interrupt Highlight:** Changes the nameplate color and adds a border notification for important interrupt targets in M+ dungeons (requires DBM).
-*   **DBM Major Skill Highlight:** Changes nameplate colors for major boss abilities (requires DBM).
-    *   **Green (Dark Green if you are the target):** Interruptible.
-    *   **Gray (Red if you are the target):** Uninterruptible.
-*   Displays the cooldown of important DBM skills on the right side of the nameplate.
-    *   If there are multiple cooldowns, only the skill with the shortest cooldown is displayed.
-    *   Displayed in gray when not being cast.
-    * Changes the color 2 seconds before cooldown expires. It changes to green for interruptible skills and red for uninterruptible skills.
-
-### 6. Other Features
-
-*   Adds a healer icon to prioritize healers in PvP.
-*   Enlarges the nameplate of the player's current target and displays the player's health, the target's health, and the player's resources.
-* Displays a "!" icon on the left side when an enemy targets the player in PvP.
-*   Allows resizing of friendly nameplates.
-*   Allows setting vertical alignment of nameplates.
-*   Enlarges the nameplate of the mouseover target, displays health, and highlights it with a green triangle.
-*   Displays the name/class of the casting target.
-* The remaining health is displayed on the left. (Can be disabled in options)
-* If it is the "Target", a red arrow is displayed at the top.
-* If it is "Mouseover", a green arrow is displayed at the bottom.
-* In group play, if you are not a tank and an enemy targets you, a red/orange mark will appear on the left side of the nameplate.
-* Pet target indicator (red pet icon in the bottom right)
-* For Beast Mastery Hunters, displays Beast Cleave targets (green pet icon at the bottom and nameplate color change)
-
-## Configuration
-
-*   All features can be configured in the in-game settings (Esc > Options).
-
-# asNamePlates: 네임플레이트 개선 애드온
-
-**asNamePlates**는 World of Warcraft의 적 네임플레이트(공격 가능한 대상의 이름표)를 개선하는 애드온입니다. 다양한 시각적 피드백과 편의 기능을 제공하여 전투 상황을 더욱 명확하게 인지하고 효율적으로 대처할 수 있도록 돕습니다.
-
-**참고:** 게임 내 제약으로 인해 이 애드온은 우호적인 대상의 네임플레이트는 수정하지 않습니다.
+**참고:** 게임 내 제약으로 인해 이 애드온은 우호적인 대상의 네임플레이트는 크기 외 수정하지 않습니다.
 
 ## 주요 기능
 
-### 1. 네임플레이트 바 텍스처 변경
+### 1. 이름표 바 텍스처 변경
 
-*   공격 가능한 대상(적)의 네임플레이트 텍스처를 변경합니다.
+*   공격 가능한 대상(적)의 네임플레이트 텍스처를 밝고 보기 좋은 형태로 변경합니다.
 
 ### 2. 약화 효과(디버프) 아이콘 기능
 
-*   기본 WoW 네임플레이트의 약화 효과 표시 영역만 대체합니다.
-*   스킬 디버프와 기본 WoW 디버프를 모두 표시합니다 (최대 8개, 4개씩 2행으로 표시).
+*   기본 적대적 대상 이름표의 약화 효과 표시 영역을 대체 합니다.
+*   스킬 디버프와 기본 디버프를 모두 표시합니다 (최대 8개, 4개씩 2행으로 표시).
 *   주요 군중 제어(CC) 디버프 (차단, 기절, 속박/이동 불가)를 네임플레이트 오른쪽에 1개 표시합니다.
 *   설정된 갱신 타이머 및 디버프 유형에 따라 디버프에 대한 테두리 알림을 제공합니다. (추적할 디버프와 알림 설정을 자유롭게 설정할 수 있습니다.)
-*   WoW의 기본 쿨다운 표시가 활성화되어 있으면 쿨다운 카운트를 표시합니다.
-*   설정을 통해 특정 디버프만 표시하도록 필터링할 수 있습니다.
-*   디버프 위치를 조정할 수 있습니다. 기본 상단, 좌측 설정 가능.
+*   기본 **재사용 대기 시간** 표시가 활성화되어 있으면 쿨다운 카운트를 표시합니다. (esc > 설정 > 재사용 검색)
+*   설정을 통해 원하는 디버프만 표시하도록 필터링할 수 있습니다. (esc > 설정 > 애드온 > asNamePlates)
+*   디버프 위치를 조정할 수 있습니다. 기본 상단, 좌측 설정 가능. (esc > 설정 > 애드온 > asNamePlates)
+
+
+
+
+| 직업       | 특성         | 필수 디버프(표시 우선 순위 순)                                           |
+|-------------|---------------|-------------------------------------------------------|
+| 전사       | 무기           | 사형 선고됨, 만신창이, 분쇄                             |
+| 전사       | 분노           | 사형 선고됨                                           |
+| 전사       | 방어           | 만신창이, 분쇄                                           |
+| 도적       | 암살           | 죽음추적자의 징표, 목조르기, 파열, 혈폭풍                             |
+| 도적       | 무법           | 유령의 일격, 당혹 상태                                        |
+| 도적       | 잠행           | 죽음추적자의 징표, 파열, 당혹 상태                                         |
+| 사냥꾼     | 야수           | 검은 화살, 날카로운 사격, 독사 쐐기, 저승까마귀, 사냥꾼의 징표          |
+| 사냥꾼     | 사격           | 척후병의 징표, 검은 화살, 파수꾼, 사냥꾼의 징표                      |
+| 사냥꾼     | 생존           | 독사 쐐기, 파수꾼, 사냥꾼의 징표                             |
+| 수도사     | 양조           | 질서의 무기                                           |
+| 수도사     | 운무           |                                                       |
+| 수도사     | 풍운           |      주학의 징표                                                 |
+| 흑마법사   | 고통           | 고통, 불안정한 고통, 부패, 쇠퇴 쇠퇴                             |
+| 흑마법사   | 악마           |   파멸, 악의 아귀                                                                                |
+| 흑마법사   | 파괴           | 제물, 쇠퇴                                         |
+| 사제       | 수양           | 사악의 정화, 고통                                         |
+| 사제       | 신성           |      신충, 고통                                                 |
+| 사제       | 암흑           |          고통, 흡혈의 선물, 파멸, 공명                                             |
+| 주술사     | 정기           | 화염 충격, 피뢰침 |
+| 주술사     | 고양           | 화염 충격, 채찍 화염, 피뢰침                            |
+| 주술사     | 복원           |   화염 충격                                                    |
+| 드루이드   | 조화           | 달빛 섬광, 태양 섬광, 항성의 섬광, 진균 번식, 기후 노출 |
+| 드루이드   | 조화           | 갈퀴 발톱, 달빛 섬광, 적응의 무리, 도려내기, 난타                              |
+| 드루이드   | 수호           |  달빛 섬광, 난타, 기후 노출                                                     |
+| 드루이드   | 회복           | 달빛 섬광, 갈퀴 발톱, 태양 섬광, 도려내기, 피바라미 덩굴               |
+| 마법사     | 비전           | 비전의 여파, 비전 쇠약, 박힌 쐐편 파편                         |
+| 마법사     | 화염           | 파괴 제어, 작열                                        |
+| 마법사     | 냉기           | 혹한의 추위, 박힌 냉기 파편, (얼회등 얼리기 스킬들) , 냉증, 혹한의 쐐기                   |
+| 죽음의 기사 | 혈기           | 사신의 징표, 공포 유발, 피의 역병                            |
+| 죽음의 기사 | 냉기           | 사신의 징표, 서리 열병                                   |
+| 죽음의 기사 | 부정           | 사신의 징표, 고름 상처, 악성 역병                            |
+| 기원사     | 파괴           | 불의 숨결, 폭격                                           |
+| 기원사     | 보존           | 시간의 상처, 불의 숨결, 폭격                             |
+| 성기사     | 신성           |                                                       |
+| 성기사     | 수호           | 무가치한 존재                                       |
+| 성기사     | 징벌           | 심판, 신성 폭풍                                        |
+| 악마사냥꾼 | 징벌           | 파괴자의 징표, 불타는 상처, 불타는 낙인, 약화                     |
+
+
 
 ### 3. 네임플레이트 색상 변경 기능
 
 *   지속 피해(DoT) 효과 (예: 암살 도적의 파열, 고통 흑마법사의 고통, 전사의 찢기)가 적용되면 네임플레이트 색상을 주황색으로 변경합니다(최대 2개의 DoT 지원).
+
+   | 직업 (특성) | 디버프 색상 1 (주황색) | 디버프 색상 2 (파란색) | 
+   | ----- | ----------- | ------ |
+   |  전사 (무기)     | 사형 선고됨, 만신창이              |   분쇄      |
+   |  전사 (분노)     | 사형 선고됨              |    ---     |
+   |  전사 (방어)     | ---              |   ---      |
+
+
 *   위협 수준에 따라 네임플레이트 색상을 동적으로 변경합니다.
     *   **보라색:** 플레이어가 대상일 경우.
     *   **하늘색:** 높은 위협 수준이지만 현재 대상은 아닌 경우.
@@ -145,3 +126,5 @@
 ## 설정
 
 *   게임 내 설정 (Esc > 옵션)에서 모든 기능을 구성할 수 있습니다.
+
+-------------------------------------------------------------------
