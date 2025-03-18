@@ -1,0 +1,10 @@
+﻿## Interface: 110100
+## Author: |cffff3399Aspilla|r [Azshara - KR]
+## Title: |cffff3399as|rHideNamePlates
+## Notes: 폭탄 주요 Casting 외 이름표 숨김
+## Version : 250317
+## SavedVariablesPerCharacter: AHNP_Options
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
+asHideNamePlatesOption.lua
+asHideNamePlates.lua

@@ -1,0 +1,9 @@
+<Bindings>
+ <Binding name="AHNP_MODIFER_KEY" runOnUp="true">
+  if keystate == "down" then
+   AHNP_mouseButton4Pressed = true;
+  else
+   AHNP_mouseButton4Pressed = false;
+  end
+ </Binding>
+</Bindings>
