@@ -34,8 +34,16 @@ local function isFaction(unit)
 	end
 end
 
-local function isShow(unit)
+local function checkCasting(unit)
+	local name, _, _, _, _, _, _, _, spellid = UnitCastingInfo(unit);
+	if not name then
+		name, _, _, _, _, _, _, _, spellid = UnitChannelInfo(unit);
+	end
 
+	return name, spellid;
+end
+
+local function isShow(unit)
 	if not isFaction(unit) then
 		return false;
 	end
@@ -50,11 +58,7 @@ local function isShow(unit)
 		return false;
 	end
 
-	local name, _, _, _, _, _, _, _, spellid = UnitCastingInfo(unit);
-	if not name then
-		name, _, _, _, _, _, _, _, spellid = UnitChannelInfo(unit);
-	end
-
+	local name, spellid = checkCasting(unit);
 	local status = UnitThreatSituation("player", unit);
 
 	if ns.options.Check_DBM_Interrupt_Only then
@@ -99,7 +103,7 @@ local function checkNeedtoHide(nameplate)
 			return true;
 		else
 			return false;
-		end		
+		end
 	end
 
 	return isShow(unit);
@@ -112,11 +116,7 @@ local function mustShow(unit)
 		return true;
 	end
 
-	local name, _, _, _, _, _, _, _, spellid = UnitCastingInfo(unit);
-	if not name then
-		name, _, _, _, _, _, _, _, spellid = UnitChannelInfo(unit);
-	end
-
+	local name, spellid = checkCasting(unit);
 	local status = UnitThreatSituation("player", unit);
 
 	if ns.options.Show_DBM_Interrupt_Only then
@@ -166,48 +166,36 @@ local function hideNameplates(nameplate, bshow)
 	end
 end
 
-local needtowork = false;
+
 
 local function AHNameP_OnUpdate()
 	local needtohide = false;
 
-	if needtowork then
-		for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-			local nameplate = v;
+	for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
+		local nameplate = v;
 
-			if (nameplate) then
-				if checkNeedtoHide(nameplate) then
-					needtohide = true;
-					break;
-				end
+		if (nameplate) then
+			if checkNeedtoHide(nameplate) then
+				needtohide = true;
+				break;
 			end
 		end
+	end
+	for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
+		local nameplate = v;
 
-		for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-			local nameplate = v;
-
-			if (nameplate) then
-				hideNameplates(nameplate, (not needtohide));
-			end
+		if (nameplate) then
+			hideNameplates(nameplate, (not needtohide));
 		end
 	end
 end
 
 local function AHNameP_OnEvent(self, event, ...)
-	if event == "PLAYER_ENTERING_WORLD" then
-		needtowork = false;
-		local inInstance, instanceType = IsInInstance();
+	isTank = false;
+	local assignedRole = UnitGroupRolesAssigned("player");
 
-		if (inInstance and instanceType == "party") then
-			needtowork = true;
-		end
-
-		isTank = false;
-		local assignedRole = UnitGroupRolesAssigned("player");
-
-		if (assignedRole and assignedRole == "TANK") then
-			isTank = true;
-		end
+	if (assignedRole and assignedRole == "TANK") then
+		isTank = true;
 	end
 end
 
@@ -254,7 +242,10 @@ local function initAddon()
 	AHNameP:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 	AHNameP:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 
-	AHNameP:SetScript("OnEvent", AHNameP_OnEvent)
+	AHNameP:SetScript("OnEvent", AHNameP_OnEvent);
+
+	AHNameP_OnEvent();
+
 	--주기적으로 Callback
 	C_Timer.NewTicker(AHNameP_UpdateRate, AHNameP_OnUpdate);
 
@@ -265,4 +256,4 @@ local function initAddon()
 end
 
 BINDING_NAME_AHNP_MODIFER_KEY = "asHideNamePlates Key"
-initAddon();
+C_Timer.After(1, initAddon);

@@ -1,10 +1,10 @@
 local _, ns = ...;
 
 local Options_Default = {
-    version = 250319,
-    HideModifier = 6,
+    version = 250320,
+    HideModifier = 1,
     Check_DBM_Interrupt_Only = true,
-    Show_DBM_Interrupt_Only = true,
+    Show_DBM_Interrupt_Only = false,
 };
 
 ns.options = CopyTable(Options_Default);
@@ -65,7 +65,7 @@ function ns.SetupOptionPanels()
                     for id, v in pairs(modifier_options) do
                         container:Add(id, v);
                     end
-                    return container:GetData()
+                    return container:GetData();
                 end
 
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
