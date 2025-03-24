@@ -29,12 +29,13 @@ header:SetSize(820, 10)
 header:SetPoint("TOPLEFT", 0, 0)
 
 -- 필드 제목 텍스트 설정
-local headers = { "Addon Name", "PeakTime", "BossAvg", "Over1Ms", "Over5Ms", "Over10Ms", "Over50Ms", "Over100Ms", "OverSum" }
+local headers = { "Addon Name", "PeakTime", "BossAvg", "Over1Ms", "Over5Ms", "Over10Ms", "Over50Ms", "Over100Ms",
+    "OverSum" }
 local headerWidths = { 150, 80, 80, 80, 80, 80, 80, 80, 80 }
 
 for i, title in ipairs(headers) do
     local headerText = header:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    
+
     if i == 1 then
         headerText:SetPoint("LEFT", header, "LEFT", 0, 0)
     else
@@ -105,6 +106,26 @@ local function CreateOrUpdateRow(parent, index, datas)
     end
 end
 
+-- Checkbox 추가
+local checkBox = CreateFrame("CheckButton", "asCPUProfileCheckBox", frame, "UICheckButtonTemplate")
+checkBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 10, -25)
+checkBox:SetSize(20, 20)
+checkBox.label = checkBox:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+checkBox.label:SetPoint("LEFT", checkBox, "RIGHT", 5, 0)
+checkBox.label:SetText("Enable Profiler")
+checkBox:SetScript("OnClick", function(self)
+    if not self:GetChecked() then
+        C_CVar.RegisterCVar("addonProfilerEnabled", "1");
+        C_CVar.SetCVar("addonProfilerEnabled", "0");
+        asCPUOptions.enabled = false;
+        print("Addon Profiler Disabled")
+    else
+        C_CVar.SetCVar("addonProfilerEnabled", "1");
+        asCPUOptions.enabled = true;
+        print("Addon Profiler Enabled")
+    end
+end)
+
 -- 닫기 버튼 생성
 frame.closeButton = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 frame.closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT")
@@ -119,24 +140,15 @@ SlashCmdList["ASCPU"] = function()
     end
 end
 
-local sortField = "name"
-local sortDescending = false
 local addonData = {};
 
 -- 테이블 정렬 함수
 local function SortData(list, field)
-    
     table.sort(list, function(a, b)
-        return a[field] > b[field]    
+        return a[field] > b[field]
     end)
 end
 
-
-
-
-
-
-local version, build, date, tocversion, localizedVersion, buildType = GetBuildInfo();
 
 local beforecombat = {};
 
@@ -155,7 +167,6 @@ local function beforecombatAddon(name)
 end
 
 local function checkAddon(name)
-
     local Over1Ms = C_AddOnProfiler.GetAddOnMetric(name, Enum.AddOnProfilerMetric.CountTimeOver1Ms);
     local Over5Ms = C_AddOnProfiler.GetAddOnMetric(name, Enum.AddOnProfilerMetric.CountTimeOver5Ms);
     local Over10Ms = C_AddOnProfiler.GetAddOnMetric(name, Enum.AddOnProfilerMetric.CountTimeOver10Ms);
@@ -170,9 +181,9 @@ local function checkAddon(name)
         Over100Ms = Over100Ms - beforecombat[name][7];
     end
 
-    local sum = Over100Ms * 100 + Over50Ms * 50 +Over10Ms * 10 + Over5Ms * 5 + Over1Ms
+    local sum = Over100Ms * 100 + Over50Ms * 50 + Over10Ms * 10 + Over5Ms * 5 + Over1Ms
 
-    table.insert(addonData, {name, 
+    table.insert(addonData, { name,
         C_AddOnProfiler.GetAddOnMetric(name, Enum.AddOnProfilerMetric.PeakTime),
         C_AddOnProfiler.GetAddOnMetric(name, Enum.AddOnProfilerMetric.EncounterAverageTime),
         Over1Ms,
@@ -182,12 +193,9 @@ local function checkAddon(name)
         Over100Ms,
         sum
     })
-
-    
 end
 
 local function onUpdate()
-
     if not frame:IsShown() then
         return;
     end
@@ -206,11 +214,32 @@ local function onUpdate()
     end
 end
 
+if asCPUOptions == nil then
+    asCPUOptions = {};
+    asCPUOptions.enabled = false;
+end
 
-if tocversion >= 110007 then
+-- 초기화 시점에 프로파일러 비활성화 여부 확인 및 설정
+local function InitializeProfiler()
+    if asCPUOptions.enabled == false then
+        C_CVar.RegisterCVar("addonProfilerEnabled", "1");
+        C_CVar.SetCVar("addonProfilerEnabled", "0");
+        print("Addon Profiler Disabled on Init")
+        asCPUOptions.enabled = false;
+        checkBox:SetChecked(false);
+    else
+        C_CVar.SetCVar("addonProfilerEnabled", "1");
+        print("Addon Profiler Enabled on Init")
+        checkBox:SetChecked(true);
+    end
+end
+
+local function init()
+    -- 초기화 함수 호출
+    InitializeProfiler()
+
     onUpdate();
     C_Timer.NewTicker(5, onUpdate);
-    
 end
 
 local function OnEvent(self, event)
@@ -227,3 +256,4 @@ end
 
 frame:SetScript("OnEvent", OnEvent)
 frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+C_Timer.After(2, init);
