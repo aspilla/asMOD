@@ -3,10 +3,6 @@
 ---설정부
 local AHNameP_UpdateRate = 0.2 -- Check할 주기
 
-local AHNameP_AlertList = {
-	["폭발물"] = true,
-}
-
 local DangerousSpellList = {
 
 }
@@ -34,6 +30,20 @@ local function isFaction(unit)
 	end
 end
 
+local function isMustShowNPC(unit)
+	local guid = UnitGUID(unit);
+	if guid then
+		local npcID = select(6, strsplit("-", guid));
+		npcID = tonumber(npcID);
+
+		if ns.MustShow_IDs[npcID] then
+			return true;
+		end
+	end
+
+	return false;
+end
+
 local function checkCasting(unit)
 	local name, _, _, _, _, _, _, _, spellid = UnitCastingInfo(unit);
 	if not name then
@@ -43,15 +53,9 @@ local function checkCasting(unit)
 	return name, spellid;
 end
 
-local function isShow(unit)
+local function checkTrigger(unit)
 	if not isFaction(unit) then
 		return false;
-	end
-
-	local unitname = GetUnitName(unit);
-
-	if unitname and AHNameP_AlertList[unitname] then
-		return true;
 	end
 
 	if UnitIsUnit(unit, "target") then
@@ -106,13 +110,17 @@ local function checkNeedtoHide(nameplate)
 		end
 	end
 
-	return isShow(unit);
+	return checkTrigger(unit);
 end
 
 local isTank = false;
 
 local function mustShow(unit)
 	if UnitIsUnit(unit, "target") or UnitIsUnit(unit, "focus") then
+		return true;
+	end
+
+	if isMustShowNPC(unit) then
 		return true;
 	end
 
@@ -255,5 +263,6 @@ local function initAddon()
 	end
 end
 
+BINDING_HEADER_AHNP_MODIFER_KEY = "Custom Keybindings AddOn"
 BINDING_NAME_AHNP_MODIFER_KEY = "asHideNamePlates Key"
 C_Timer.After(1, initAddon);

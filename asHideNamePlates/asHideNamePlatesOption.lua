@@ -9,6 +9,13 @@ local Options_Default = {
 
 ns.options = CopyTable(Options_Default);
 
+
+ns.MustShow_IDs = {
+	[229537] = true,        --공허의 사절
+    [223724] = true,        --보충용 통
+}
+
+
 local modifier_options = {
     [1] = "Key Binding",
     [2] = "ALT + CTRL",
