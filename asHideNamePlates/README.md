@@ -1,46 +1,24 @@
 # asHideNamePlates (이름표 숨김 애드온)
 
-**asHideNamePlates**는 월드 오브 워크래프트(World of Warcraft, WoW)에서 화면에 표시되는 이름표를 동적으로 관리하여 시각적 혼잡도를 줄여주는 애드온입니다. 플레이어의 입력, 유닛의 상태, 전투 상황 등 다양한 조건을 고려하여 이름표를 숨기거나 표시함으로써, 게임 플레이에 집중할 수 있도록 돕습니다.
+**asHideNamePlates** 차단을 돕기 위해 케스팅중인 몹 외 이름표를 숨기는 기능의 애드온 입니다.
 
-## 주요 기능
+<iframe width="560" height="315" src="https://www.youtube.com/embed/aVWyNqrT2C4?si=6_xC-XOIqE8cXira" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-*   **동적 이름표 숨김:** 불필요한 유닛의 이름표를 자동으로 숨겨 화면을 깔끔하게 유지합니다.
-*   **단축키를 통한 이름표 숨김:** Alt, Ctrl, Shift 키 조합 또는 마우스 버튼 4를 눌러 모든 이름표를 일시적으로 숨길 수 있습니다.
-*   **대상 및 주시대상 우선 표시:** 플레이어의 대상(Target)과 주시대상(Focus)의 이름표는 항상 표시됩니다.
-*   **NPC 화이트리스트:** 특정 NPC의 ID를 등록하여 해당 NPC의 이름표는 항상 보이도록 설정할 수 있습니다.
-*   **위협 수준 및 주문 시전 기반 표시:** 플레이어에게 위협을 가하고 있거나 주문을 시전 중인 적대적 유닛의 이름표를 표시합니다.
-*   **DBM (Deadly Boss Mods) 연동:** DBM과 연동하여 차단 가능한 주문을 시전 중인 유닛의 이름표를 표시할 수 있습니다.
-*   **탱커 역할 인식:** 플레이어가 탱커일 경우, 탱커를 공격하지 않고 다른 파티원을 공격하는 유닛의 이름표를 표시합니다.
-*   **Plater 지원:** Plater 애드온을 사용 중인 경우, Plater의 유닛 프레임을 활용하여 이름표를 관리합니다.
-*   **사용자 지정 단축키:** 애드온의 기능을 활성화/비활성화 할 수 있는 사용자 지정 단축키를 설정할 수 있습니다.
+## 애드온 동작 조건 설정
 
-## 작동 원리
+1. 애드온 동작 조건은 esc >> 설정 >> 애드온 >> asHideNameplates 에서 조정 가능합니다.
+2. Key Binding (기본적 설정) : 단축키 누르고 있으면 이름표 숨김 기능이 동작합니다. 단축키는 esc >> 옵션 >> 단축키 설정 >> asMOD >> asHideNamePlates Key 에서 지정 가능합니다.
+3. Trigger from Casting : DBM 차단 필요 스킬 (Trigger_DBM_Interrupt_Only 설정시) 혹은 케스팅을 하면 자동으로 동작 합니다.
+4. "ALT + CTRL" : ALT키 CTRL키를 동시에 누르면 동작합니다.
+5. "ALT" : ALT키를 누르면 동작 합니다.
+6. "CTRL" : CTRL키를 누르면 동작 합니다.
+7. "SHIFT" : SHIFT키를 누르면 동작 합니다.
 
-1.  **주기적 검사:** 애드온은 설정된 주기(기본 0.2초)마다 화면에 표시된 모든 이름표를 검사합니다.
-2.  **숨김 조건 확인:** 각 이름표에 대해 다음과 같은 조건을 확인하여 숨겨야 하는지 여부를 결정합니다.
-    *   **단축키:** 설정된 단축키(Alt, Ctrl, Shift 조합 또는 마우스 버튼 4)가 눌려 있는지 확인합니다.
-    *   **진영:** 아군 유닛의 이름표는 숨깁니다.
-    *   **대상/주시대상:** 대상 또는 주시대상의 이름표는 항상 표시합니다.
-    *   **NPC 화이트리스트:** 화이트리스트에 등록된 NPC의 이름표는 항상 표시합니다.
-    *   **주문 시전 및 위협 수준:** 적대적 유닛이 주문을 시전 중이고 플레이어에게 위협을 가하고 있다면 이름표를 표시합니다.
-    *   **DBM 연동:** DBM과 연동된 경우, 차단 가능한 주문을 시전 중인 유닛의 이름표를 표시합니다.
-    *   **탱커 역할:** 플레이어가 탱커일 경우, 탱커가 아닌 다른 파티원을 공격하는 유닛의 이름표를 표시합니다.
-3.  **이름표 표시/숨김:** 위 조건에 따라 이름표를 표시하거나 숨깁니다.
+## 동작시 표시 되는 이름표
 
-## 설정 방법
-
-애드온의 설정은 게임 내 인터페이스 옵션에서 변경할 수 있습니다.
-
-*   **숨김 단축키 (Hide Modifier):** 이름표를 일시적으로 숨기기 위한 단축키를 설정합니다.
-    *   1: 마우스 버튼 4
-    *   2: Alt + Ctrl
-    *   3: Alt
-    *   4: Ctrl
-    *   5: Shift
-*   **DBM 차단 가능 스킬만 체크 (Check DBM Interrupt Only):** DBM에서 차단 가능한 주문만 검사할지 여부를 설정합니다.
-*   **DBM 차단 가능 스킬만 표시 (Show DBM Interrupt Only):** DBM에서 차단 가능한 주문을 시전 중인 유닛의 이름표만 표시할지 여부를 설정합니다.
-*   **항상 표시할 NPC ID (MustShow_IDs):** 항상 이름표를 표시할 NPC의 ID를 입력합니다. 여러 ID를 추가하려면 쉼표로 구분합니다.
-* **사용자 지정 단축키**: 게임 내 단축키 설정에서 `asHideNamePlates Key`를 검색하여 설정할 수 있습니다.
+1. 대상이나 주시 대상의 이름표는 표시 됩니다.
+2. 케스팅 중인 몹은 표시 됩니다. Show_DBM_Interrupt_Only으로 DBM 차단 필요 스킬 시전중인 몹의 이름표만 표시 가능합니다.
+3. 탱커의 경우 어그로를 놓친 몹의 이름표는 표시 됩니다.
 
 ## 설치 방법
 
@@ -48,15 +26,31 @@
 2.  `asHideNamePlates` 폴더를 월드 오브 워크래프트 설치 폴더의 `Interface/AddOns` 디렉토리에 복사합니다.
 3.  월드 오브 워크래프트를 재시작합니다.
 
-## 사용 방법
+------------------------------------
+# asHideNamePlates (Nameplate Hiding Addon)
 
-*   **자동 숨김:** 애드온은 설정된 조건에 따라 자동으로 이름표를 숨기거나 표시합니다.
-*   **단축키 숨김:** 설정된 단축키(Alt, Ctrl, Shift 조합 또는 마우스 버튼 4)를 누르면 모든 중요하지 않은 이름표가 일시적으로 숨겨집니다.
-* **사용자 지정 단축키**: 설정한 단축키를 누르면 이름표가 숨겨집니다.
-*   **설정 변경:** 게임 내 인터페이스 옵션에서 애드온 설정을 변경할 수 있습니다.
+**asHideNamePlates** is an addon that hides nameplates except for those of casting mobs to assist in interrupting casts.
 
-## 의존성
+<iframe width="560" height="315" src="https://www.youtube.com/embed/aVWyNqrT2C4?si=6_xC-XOIqE8cXira" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-*   **월드 오브 워크래프트:** 이 애드온은 월드 오브 워크래프트에서 작동합니다.
-*   **선택 사항: Deadly Boss Mods (DBM):** 차단 가능한 주문 감지를 위해 DBM을 설치할 수 있습니다.
-* **선택 사항: Plater**: Plater의 유닛 프레임을 사용하기 위해 Plater를 설치할 수 있습니다.
+## Addon Activation Settings
+
+1. Addon activation conditions can be adjusted via Esc >> Settings >> AddOns >> asHideNameplates.
+2. Key Binding (Default Setting): Holding down the hotkey activates the nameplate hiding function. The hotkey can be assigned via Esc >> Options >> Key Bindings >> asMOD >> asHideNamePlates Key.
+3. Trigger from Casting: Automatically activates when a mob begins casting, or when a DBM interrupt-required spell is cast (when Trigger_DBM_Interrupt_Only is enabled).
+4. "ALT + CTRL": Activates when both ALT and CTRL keys are pressed simultaneously.
+5. "ALT": Activates when the ALT key is pressed.
+6. "CTRL": Activates when the CTRL key is pressed.
+7. "SHIFT": Activates when the SHIFT key is pressed.
+
+## Nameplates Shown While Active
+
+1. The nameplates of the target and focus target will be displayed.
+2. Nameplates of casting mobs will be displayed. Only nameplates of mobs casting DBM interrupt-required spells can be displayed using the Show_DBM_Interrupt_Only setting.
+3. For tanks, the nameplates of mobs that have lost aggro will be displayed.
+
+## Installation
+
+1. Download the addon files.
+2. Copy the `asHideNamePlates` folder to the `Interface/AddOns` directory in your World of Warcraft installation folder.
+3. Restart World of Warcraft.

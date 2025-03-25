@@ -1,5 +1,5 @@
 <Bindings>
- <Binding name="AHNP_MODIFER_KEY" runOnUp="true">
+ <Binding name="AHNP_MODIFER_KEY" runOnUp="true" category="BINDING_HEADER_ASMOD">
   if keystate == "down" then
    AHNP_mouseButton4Pressed = true;
   else

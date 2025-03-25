@@ -3,7 +3,7 @@ local _, ns = ...;
 local Options_Default = {
     version = 250320,
     HideModifier = 1,
-    Check_DBM_Interrupt_Only = true,
+    Trigger_DBM_Interrupt_Only = true,
     Show_DBM_Interrupt_Only = false,
 };
 
@@ -22,7 +22,7 @@ local modifier_options = {
     [3] = "ALT",
     [4] = "CTRL",
     [5] = "SHIFT",
-    [6] = "Automactically work",
+    [6] = "Trigger from Casting",
 
 }
 

@@ -47,7 +47,7 @@ end
 local function checkCasting(unit)
 	local name, _, _, _, _, _, _, _, spellid = UnitCastingInfo(unit);
 	if not name then
-		name, _, _, _, _, _, _, _, spellid = UnitChannelInfo(unit);
+		name, _, _, _, _, _, _, spellid = UnitChannelInfo(unit);
 	end
 
 	return name, spellid;
@@ -65,13 +65,12 @@ local function checkTrigger(unit)
 	local name, spellid = checkCasting(unit);
 	local status = UnitThreatSituation("player", unit);
 
-	if ns.options.Check_DBM_Interrupt_Only then
-		-- 차단 가능 스킬 모두 발동
-		if name and spellid and status and DangerousSpellList[spellid] then
+	if ns.options.Trigger_DBM_Interrupt_Only then
+		if spellid and status and DangerousSpellList[spellid] then
 			return true;
 		end
 	else
-		if name and spellid and status then
+		if spellid and status then
 			return true;
 		end
 	end
@@ -128,12 +127,11 @@ local function mustShow(unit)
 	local status = UnitThreatSituation("player", unit);
 
 	if ns.options.Show_DBM_Interrupt_Only then
-		-- 차단 가능 스킬 모두 발동
-		if name and spellid and status and DangerousSpellList[spellid] then
+		if spellid and status and DangerousSpellList[spellid] then
 			return true;
 		end
 	else
-		if name and spellid and status then
+		if spellid and status then
 			return true;
 		end
 	end
@@ -203,7 +201,7 @@ local function AHNameP_OnEvent(self, event, ...)
 	local assignedRole = UnitGroupRolesAssigned("player");
 
 	if (assignedRole and assignedRole == "TANK") then
-		isTank = true;
+		isTank = true;		
 	end
 end
 
@@ -217,7 +215,7 @@ local function scanDBM()
 				for k, obj in pairs(mod.announces) do
 					if obj.spellId and obj.announceType then
 						if obj.announceType == "interrupt" then
-							DangerousSpellList[obj.spellId] = obj.announceType;
+							DangerousSpellList[obj.spellId] = true;
 						end
 					end
 				end
@@ -226,7 +224,7 @@ local function scanDBM()
 				for k, obj in pairs(mod.specwarns) do
 					if obj.spellId and obj.announceType then
 						if obj.announceType == "interrupt" then
-							DangerousSpellList[obj.spellId] = obj.announceType;
+							DangerousSpellList[obj.spellId] = true;
 						end
 					end
 				end
@@ -249,6 +247,8 @@ local function initAddon()
 	AHNameP:RegisterEvent("TRAIT_CONFIG_UPDATED");
 	AHNameP:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 	AHNameP:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+	AHNameP:RegisterEvent("GROUP_ROSTER_UPDATE");
+	AHNameP:RegisterEvent("ROLE_CHANGED_INFORM");
 
 	AHNameP:SetScript("OnEvent", AHNameP_OnEvent);
 
@@ -263,6 +263,6 @@ local function initAddon()
 	end
 end
 
-BINDING_HEADER_AHNP_MODIFER_KEY = "Custom Keybindings AddOn"
+BINDING_HEADER_ASMOD = "asMOD"
 BINDING_NAME_AHNP_MODIFER_KEY = "asHideNamePlates Key"
 C_Timer.After(1, initAddon);
