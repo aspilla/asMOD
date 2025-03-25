@@ -19,7 +19,7 @@ local DangerousSpellList = {}
 
 local ANameP_HealerGuid = {}
 
-local ANameP = nil;
+local ANameP = CreateFrame("Frame", nil, UIParent);
 local tanklist = {}
 
 local PLAYER_UNITS = {
@@ -238,7 +238,7 @@ local function updateAuras(self)
     local auraData;
     local icon_size = self.icon_size;
     local unit = self.unit;
-    local guid = UnitGUID(unit);
+    local guid = self.guid;
 
     if not self.checkaura then
         self:Hide();
@@ -581,7 +581,7 @@ local function updateTargetNameP(self)
 
         local guid_mouseover = UnitGUID("mouseover")
 
-        if UnitGUID(unit) == guid_mouseover then
+        if self.guid == guid_mouseover then
             self.motext:Show();
         else
             self.motext:Hide();
@@ -610,7 +610,7 @@ local function updateTargetNameP(self)
 
         local guid_mouseover = UnitGUID("mouseover")
 
-        if UnitGUID(unit) == guid_mouseover then
+        if self.guid == guid_mouseover then
             height = orig_height + ns.ANameP_TargetHealthBarHeight;
             self.healthtext:Show();
             self.motext:Show();
@@ -755,6 +755,16 @@ end
 
 local bloadedAutoMarker = false;
 
+local function getNPCID(guid)
+    if guid then
+        local npcID = select(6, strsplit("-", guid));
+        npcID = tonumber(npcID);
+        return npcID;
+    end
+
+    return nil;
+end
+
 local function updateHealthbarColor(self)
     -- unit name 부터
     if not self.unit or not self.checkcolor or not self.BarColor or not self.BarTexture then
@@ -794,7 +804,6 @@ local function updateHealthbarColor(self)
         return false;
     end
 
-    local unitname = GetUnitName(unit);
     local status = UnitThreatSituation("player", unit);
     local incombat = UnitAffectingCombat(unit);
     local tanker = IsPlayerEffectivelyTank();
@@ -867,23 +876,30 @@ local function updateHealthbarColor(self)
             return nil;
         end
         -- ColorLevel.Name;
-        if unitname and ns.ANameP_AlertList[unitname] then
-            color = {
-                r = ns.ANameP_AlertList[unitname][1],
-                g = ns.ANameP_AlertList[unitname][2],
-                b = ns
-                    .ANameP_AlertList[unitname][3]
-            };
 
-            if ns.ANameP_AlertList[unitname][4] == 1 then
-                ns.lib.PixelGlow_Start(healthBar);
+        
+        if self.namecolor == nil then
+            local npcid = getNPCID(self.guid);
+            local npccolor = ns.ANameP_AlertList[npcid];
+            if npccolor then
+                color = {
+                    r = npccolor[1],
+                    g = npccolor[2],
+                    b = npccolor[3]
+                };
+
+                if npccolor[4] == 1 then
+                    ns.lib.PixelGlow_Start(healthBar);
+                end
+
+                self.namecolor = true;
+
+                return color;
             end
-
-            self.namecolor = true;
-            return color;
+            self.namecolor = false;
         end
 
-        self.namecolor = false;
+        
         --Target and Aggro High Priority
         if IsInGroup() and ns.options.ANameP_AggroShow and incombat then
             if tanker then
@@ -976,7 +992,7 @@ local function updateHealthbarColor(self)
 
     if bcheckBeastCleave then
         local currtime = GetTime();
-        local guid = UnitGUID(unit);
+        local guid = self.guid;
         local cleavetime = cleavedunits[guid];
         if cleavetime and currtime - cleavetime < 1.5 then
             if self.debuffColor == 1 then
@@ -1181,7 +1197,7 @@ local function checkSpellCasting(self)
 
                         if remain < -1 then
                             ns.dbm_event_list[id] = nil;
-                        elseif guid and UnitGUID(unit) == guid and remain < min_remain then
+                        elseif guid and self.guid == guid and remain < min_remain then
                             frameIcon:SetTexture(icon);
                             self.casticon:Show();
                             self.casticon.castspellid = dbmspellid;
@@ -1381,7 +1397,7 @@ local function addNamePlate(namePlateFrameBase)
     asframe.unit = unit;
     asframe.update = 0;
     asframe.castalerttype = nil;
-    asframe.namecolor = false;
+    asframe.namecolor = nil;
     asframe.checkaura = false;
     asframe.downbuff = false;
     asframe.checkpvptarget = false;
@@ -1516,6 +1532,8 @@ local function addNamePlate(namePlateFrameBase)
         asframe.icon_size = (orig_width / ns.ANameP_DebuffsPerLine) - (ns.ANameP_DebuffsPerLine - 1);
     end
 
+    asframe.guid = UnitGUID(unit);    
+
     local class = UnitClassification(unit)
 
     asframe.aggro:ClearAllPoints();
@@ -1579,7 +1597,7 @@ local function addNamePlate(namePlateFrameBase)
             asframe:Hide();
         end
     else
-        if UnitIsPlayer(unit) and ANameP_HealerGuid[UnitGUID(unit)] then
+        if UnitIsPlayer(unit) and ANameP_HealerGuid[asframe.guid] then
             showhealer = true;
         end
 
@@ -1618,7 +1636,7 @@ local function addNamePlate(namePlateFrameBase)
     end
 
     if UnitIsPlayer(unit) then
-        unit_guid_list[UnitGUID(unit)] = unit;
+        unit_guid_list[asframe.guid] = unit;
     end
 
     local function callback()
@@ -1870,8 +1888,7 @@ local function NewMod(self, ...)
     C_Timer.After(0.25, scanDBM);
 end
 
-local function initAddon()
-    ANameP = CreateFrame("Frame", nil, UIParent)
+local function initAddon()    
 
     ANameP:RegisterEvent("NAME_PLATE_CREATED");
     ANameP:RegisterEvent("NAME_PLATE_UNIT_ADDED");

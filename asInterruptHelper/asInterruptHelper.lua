@@ -6,7 +6,6 @@ local AIH_M_X = 50;
 local AIH_M_Y = -20;
 local AIH_CooldownFontSize = 9;
 local mainframe = CreateFrame("Frame");
-local cooldownframe;
 
 local interruptSpells = {};
 local stunSpells = {};
@@ -27,7 +26,7 @@ local function initPlayer()
     for id, cooldown in pairs(ns.StunSpells) do
         if IsPlayerSpell(id) then
             id = C_Spell.GetOverrideSpell(id);
-            stunSpells[id] = cooldown;
+            stunSpells[id] = cooldown;            
         end
     end
 end
@@ -46,6 +45,8 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 end
 
 local function showInterruptCooldown(spellID, isDangerous, endRemain)
+
+    spellID = C_Spell.GetOverrideSpell(spellID);
     local spellInfo = C_Spell.GetSpellInfo(spellID);
 
     if not spellInfo then
@@ -162,6 +163,8 @@ end
 
 
 local function spellIntime(id, endRemain)
+
+    id = C_Spell.GetOverrideSpell(id);
     local spellCooldownInfo = C_Spell.GetSpellCooldown(id);
     if spellCooldownInfo then
         local remain = spellCooldownInfo.startTime + spellCooldownInfo.duration - GetTime();

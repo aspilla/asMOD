@@ -140,7 +140,8 @@
         "asDebuffPrivateAuraAnchorMixin",
         "asCompactPrivateAuraAnchorMixin",
         "OverrideActionBar",
-        "asTotemButtonMixin"
+        "asTotemButtonMixin",
+        "asCPUOptions"
     ],
     "Lua.workspace.library": [
         "d:/Develop/asMOD",
