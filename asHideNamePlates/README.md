@@ -58,8 +58,8 @@
 <pre>
 <code>
 ns.MustShow_IDs = {
-	[229537] = true,        --공허의 사절
- [223724] = true,        --보충용 통
+[229537] = true,        --공허의 사절
+[223724] = true,        --보충용 통
 }
 </code>
 </pre>
