@@ -66,13 +66,15 @@ end
 
 local function createMacro()
 	local macroText =
-	"/run SetCVar (\"nameplateGlobalScale\", 1.2)\n/run SetCVar (\"nameplateSelectedScale\", 1.4)\n/console WorldTextScale 0.5\n/console turnspeed 180\n/console set ResampleAlwaysSharpen 1";
+	"/run SetCVar (\"nameplateGlobalScale\", 1.2)\n/run SetCVar (\"nameplateSelectedScale\", 1.3)\n/console WorldTextScale 0.5\n/console turnspeed 180\n/console set ResampleAlwaysSharpen 1";
 	local macroName = "asMOD Setup";
 	local macroID = GetMacroIndexByName(macroName);
 
 
 	if (macroID == 0) then
 		CreateMacro(macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText, false);
+	else
+		EditMacro(macroID, macroName,"Inv_10_inscription3_darkmoondeckbox_black", macroText)
 	end
 end
 

@@ -850,21 +850,6 @@ local function updateHealthbarColor(self)
         end
     end
 
-    if alerttype ~= self.castalerttype then
-        if alerttype == 2 then
-            ns.lib.PixelGlow_Start(self.casticon, { 1, 1, 0, 1 });
-            ns.lib.PixelGlow_Start(healthBar, { 1, 1, 0, 1 }, nil, nil, nil, nil, nil, nil, nil, nil,
-                healthBar:GetFrameLevel() + 10);
-        elseif alerttype == 1 then
-            ns.lib.PixelGlow_Start(self.casticon);
-            ns.lib.PixelGlow_Stop(healthBar);
-        else
-            ns.lib.PixelGlow_Stop(self.casticon);
-            ns.lib.PixelGlow_Stop(healthBar);
-        end
-        self.castalerttype = alerttype;
-    end
-
     if ns.options.ANameP_ShowDBMCastingColor == false then
         CastingAlertColor = nil;
     end
@@ -875,31 +860,27 @@ local function updateHealthbarColor(self)
         if UnitIsPlayer(unit) then
             return nil;
         end
-        -- ColorLevel.Name;
 
-        
         if self.namecolor == nil then
             local npcid = getNPCID(self.guid);
             local npccolor = ns.ANameP_AlertList[npcid];
-            if npccolor then
-                color = {
-                    r = npccolor[1],
-                    g = npccolor[2],
-                    b = npccolor[3]
-                };
-
-                if npccolor[4] == 1 then
-                    ns.lib.PixelGlow_Start(healthBar);
-                end
-
-                self.namecolor = true;
-
-                return color;
-            end
-            self.namecolor = false;
+            self.namecolor = npccolor;
         end
 
-        
+        if self.namecolor then
+            color = {
+                r = self.namecolor[1],
+                g = self.namecolor[2],
+                b = self.namecolor[3]
+            };
+
+            if self.namecolor[4] == 1 then
+                alerttype = 3;
+            end
+
+            return color;
+        end
+
         --Target and Aggro High Priority
         if IsInGroup() and ns.options.ANameP_AggroShow and incombat then
             if tanker then
@@ -1013,7 +994,23 @@ local function updateHealthbarColor(self)
     else
         self.BarColor:Hide();
         self.BarTexture:Show();
-        --parent.UnitFrame.healthBar:SetStatusBarColor(self.BarTexture:GetVertexColor());
+    end
+
+    if alerttype ~= self.alerttype then
+        if alerttype == 3 then
+            ns.lib.PixelGlow_Start(healthBar, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1000);
+            ns.lib.PixelGlow_Stop(self.casticon);
+        elseif alerttype == 2 then
+            ns.lib.PixelGlow_Start(self.casticon, { 1, 1, 0, 1 });
+            ns.lib.PixelGlow_Start(healthBar, { 1, 1, 0, 1 }, nil, nil, nil, nil, nil, nil, nil, nil, 1000);
+        elseif alerttype == 1 then
+            ns.lib.PixelGlow_Start(self.casticon);
+            ns.lib.PixelGlow_Stop(healthBar);
+        else
+            ns.lib.PixelGlow_Stop(self.casticon);
+            ns.lib.PixelGlow_Stop(healthBar);
+        end
+        self.alerttype = alerttype;
     end
 end
 
@@ -1317,7 +1314,7 @@ local function removeUnit(namePlateUnitToken)
 
         if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
             ns.lib.PixelGlow_Stop(namePlateFrameBase.UnitFrame.healthBar);
-            asframe.castalerttype = nil;
+            asframe.alerttype = nil;
         end
 
         asframe:ClearAllPoints();
@@ -1396,7 +1393,7 @@ local function addNamePlate(namePlateFrameBase)
     asframe.nameplateBase = namePlateFrameBase;
     asframe.unit = unit;
     asframe.update = 0;
-    asframe.castalerttype = nil;
+    asframe.alerttype = nil;
     asframe.namecolor = nil;
     asframe.checkaura = false;
     asframe.downbuff = false;
@@ -1532,7 +1529,7 @@ local function addNamePlate(namePlateFrameBase)
         asframe.icon_size = (orig_width / ns.ANameP_DebuffsPerLine) - (ns.ANameP_DebuffsPerLine - 1);
     end
 
-    asframe.guid = UnitGUID(unit);    
+    asframe.guid = UnitGUID(unit);
 
     local class = UnitClassification(unit)
 
@@ -1888,8 +1885,7 @@ local function NewMod(self, ...)
     C_Timer.After(0.25, scanDBM);
 end
 
-local function initAddon()    
-
+local function initAddon()
     ANameP:RegisterEvent("NAME_PLATE_CREATED");
     ANameP:RegisterEvent("NAME_PLATE_UNIT_ADDED");
     ANameP:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
