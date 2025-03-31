@@ -20,6 +20,18 @@
 2. Nameplates of casting mobs will be displayed. Only nameplates of mobs casting DBM interrupt-required spells can be displayed using the Show_DBM_Interrupt_Only setting.
 3. For tanks, the nameplates of mobs that have lost aggro will be displayed.
 
+4. Mobs with specific NPC IDs (registered in MustShow_IDs) will be displayed. (Can be added by editing the asHideNamePlatesOption.lua file and are registered as follows:)
+
+<pre>
+<code>
+ns.MustShow_IDs = {
+[229537] = true,        -- Harbinger of the Void
+[223724] = true,        -- Reclaimed Supplies
+}
+</code>
+</pre>
+
+
 ## Supporting Nameplates
 1. Default nameplates
 2. asNamePlates
@@ -54,7 +66,7 @@
 1. 대상이나 주시 대상의 이름표는 표시 됩니다.
 2. 케스팅 중인 몹은 표시 됩니다. Show_DBM_Interrupt_Only으로 DBM 차단 필요 스킬 시전중인 몹의 이름표만 표시 가능합니다.
 3. 탱커의 경우 어그로를 놓친 몹의 이름표는 표시 됩니다.
-4. 특정 NPC ID인 몹은 표시 됩니다. (asHideNamePlatesOption.lua 파일 편집으로 추가 가능하며 다음과 같이 등록 되어 있습니다.)
+4. 특정 NPC ID(MustShow_IDs에 등록된)인 몹은 표시 됩니다. (asHideNamePlatesOption.lua 파일 편집으로 추가 가능하며 다음과 같이 등록 되어 있습니다.)
 <pre>
 <code>
 ns.MustShow_IDs = {
