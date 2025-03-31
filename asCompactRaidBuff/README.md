@@ -2,6 +2,9 @@
 
 This addon enhances the default World of Warcraft raid and party frames, providing crucial information for healers and other roles. It streamlines the experience, improves situational awareness, and facilitates more efficient healing and raid management.
 
+
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCompactraidbuff.jpg?raw=true)   
+
 **Key Features:**
 
 *   **Tracking of Essential Heal-over-Time (HoT) Effects (Top Right, Center Right, Bottom Right):**
