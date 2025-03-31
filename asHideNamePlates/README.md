@@ -25,8 +25,8 @@
 <pre>
 <code>
 ns.MustShow_IDs = {
-[229537] = true,        -- Harbinger of the Void
-[223724] = true,        -- Reclaimed Supplies
+[229537] = true,        -- Void Emissary
+[223724] = true,        -- Backfill Barrel
 }
 </code>
 </pre>
