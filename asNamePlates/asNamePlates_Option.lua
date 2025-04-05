@@ -312,7 +312,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 250228,
+    version = 250405,
     ANameP_ShowKnownSpell = false,                            -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -532,7 +532,7 @@ ANameP_Options_Default = {
 
 
     ANameP_ShowList_DEATHKNIGHT_1 = {
-        [434765] = { 0, 5, 1 }, --사신의 징표
+        [434765] = { 0, 5 }, --사신의 징표
         [458478] = { 0, 4 },    --공포 유발
         [55078] = { 0, 3 },     --피의 역병
 
