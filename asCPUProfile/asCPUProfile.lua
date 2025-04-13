@@ -1,5 +1,6 @@
 -- 기본 UI 프레임 생성
 local frame = CreateFrame("Frame", "asCPUUsageFrame", UIParent, "BasicFrameTemplateWithInset")
+frame:Hide();
 frame:SetSize(820, 300)
 frame:SetPoint("CENTER")
 frame:SetMovable(true)

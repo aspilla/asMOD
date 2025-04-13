@@ -17,7 +17,6 @@ local AHT_MAX_INCOMING_HEAL_OVERFLOW = 1.2;
 local bupdate_heal = true;			-- 예상힐을 안보이게 하려면 false
 local bupdate_power = false;
 local bupdate_stagger = false;
-local bupdate_action_count = false;
 local action_list = {};
 
 local AHT_mainframe = CreateFrame("Frame", nil, UIParent);
@@ -38,6 +37,25 @@ local AHT_Rune
 local AHT_Heal
 local AHT_RaidIcon
 local AHT_Power
+
+local asGetSpellInfo = function(spellID)
+    if not spellID then
+        return nil;
+    end
+
+    local ospellID = C_Spell.GetOverrideSpell(spellID)
+
+    if ospellID then
+        spellID = ospellID;
+    end
+
+    local spellInfo = C_Spell.GetSpellInfo(spellID);
+    if spellInfo then
+        return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+            spellInfo.spellID, spellInfo.originalIconID;
+    end
+end
+
 
 
 local function AHT_HealColor(value)
@@ -295,72 +313,6 @@ local function AHT_UpdateStagger()
 
 end
 
-local function AHT_GetActionSlot(arg1)
-
-	for lActionSlot = 1, 120 do
-		local type, id, subType, spellID = GetActionInfo(lActionSlot);
-
-		if type and type == "macro" then
-			id = GetMacroSpell(id);
-		end
-
-		if id then
-			local name = GetSpellInfo(id);
-
-
-			if name and name == arg1 then
-				return lActionSlot;
-			end
-		end
-	end
-
-	return nil;
-end
-
-
-local function AHT_UpdateActionCount()
-	if bupdate_action_count and action_list then
-
-		local text = "";
-
-		for i = 1, #action_list do
-
-			if action_list[i][1] then
-				if not action_list[i][2] then
-					local slot = AHT_GetActionSlot(action_list[i][1]);
-					action_list[i][2] = slot;
-				end
-
-
-				local count, max = GetSpellCharges(action_list[i][1]);
-
-				if (not count or (count and count == 0)) and 	action_list[i][2]  then
-					count = GetActionCount(	action_list[i][2] );
-
-					max = 1000;
-				end
-
-				if count then
-					if i == 1 then
-						text = count;
-					else
-						text = text .."/"..count;
-					end
-				end
-			end
-
-		end
-
-		if text then
-			AHT_Power:SetText(text);
-			AHT_Power:Show();
-		else
-			AHT_Power:Hide();
-		end
-	end
-
-end
-
 local function AHT_UpdatePlayerUnit()
 
 	local hasValidVehicleUI = UnitHasVehicleUI("player");
@@ -381,11 +333,7 @@ local function AHT_UpdatePlayerUnit()
 		unit_pet = "pet"
 	end
 
-
-
 end
-
-
 
 local function AHT_InitValue()
 	AHT_UpdatePlayerUnit()
@@ -434,7 +382,6 @@ local function AHT_CheckPower()
 
 	bupdate_power = false;
 	bupdate_stagger = false;
-	bupdate_action_count = false;
 
 	AHT_Power:SetText("");
 	AHT_Power:Hide();

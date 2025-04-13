@@ -1,4 +1,4 @@
-﻿## Interface: 110100
+﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rHealerChatAlert
 ## Notes: Saying current mana remain in chat

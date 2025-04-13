@@ -1,4 +1,4 @@
-﻿## Interface: 110100
+﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rPremadeGroupsFilter
 ## Notes: Improving the default premade group finder by showing class icon and color.

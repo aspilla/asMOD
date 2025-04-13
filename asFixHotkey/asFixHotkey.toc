@@ -1,4 +1,4 @@
-﻿## Interface: 110100
+﻿## Interface: 110105
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rFixHotKey
 ## Notes: 단축버픈 프레임 변경

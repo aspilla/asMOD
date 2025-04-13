@@ -127,6 +127,11 @@ local function asMOD_Setup()
 	--print("[asMOD] Unit Frame 설정 변경");
 	SetCVar("showTargetOfTarget", 1)
 
+	if version >= 110105 then
+	--쿨다운 Viewer 끄기
+		SetCVar("cooldownViewerEnabled", 0);
+	end
+
 	--print("[asMOD] 채팅창에 직업색상을 표시하게 합니다.");
 	ToggleChatColorNamesByClassGroup(true, "SAY")
 	ToggleChatColorNamesByClassGroup(true, "EMOTE")
