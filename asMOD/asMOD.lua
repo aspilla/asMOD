@@ -1,7 +1,13 @@
 local _, ns = ...;
+local version = select(4, GetBuildInfo());
 local asMOD;
 local asMOD_UIScale = 0.75;
 local asMOD_CurrVersion = 250122;
+
+if version >= 110105 then
+	asMOD_CurrVersion = 250413;
+end
+
 local bAction = false;
 asMOD_t_position = {};
 
@@ -9,7 +15,6 @@ if not asMOD_position then
 	asMOD_position = {}
 end
 
-local version = select(4, GetBuildInfo());
 local detailsprofile = ns.detailsEn;
 local layoutInfo;
 
