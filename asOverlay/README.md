@@ -30,6 +30,7 @@
     <iframe width="560" height="315" src="https://www.youtube.com/embed/pkqvSZPMBLw?si=kWnsbNLDbXC17Lgf" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 *   **Redundancy Hiding:** Automatically hides alerts for buffs already displayed by the `asPowerBar` or `asCombatInfo` addons to prevent screen clutter.
+    * Enhanced Shaman - Maelstrom
 
 ## Requirements
 
@@ -75,6 +76,8 @@
 
 
 *   **중복 숨김:** `asPowerBar` 또는 `asCombatInfo` 애드온에서 이미 표시 중인 버프의 알림은 자동으로 숨겨 화면이 복잡해지는 것을 방지합니다.
+    * 고술 - 소용돌이
+
 
 ## 요구 사항
 
