@@ -11,7 +11,7 @@ local function asOverlay_OnLoad(self)
 	self.unusedOverlays = {};
 
 	self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_SHOW");
-	self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE");	
+	self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE");
 	self:RegisterUnitEvent("UNIT_AURA", "player");
 
 	self:RegisterEvent("SETTINGS_LOADED");
@@ -64,7 +64,7 @@ local function asOverlay_HideOverlays(self, spellID)
 	local overlayList = self.overlaysInUse[spellID];
 	if (overlayList) then
 		for i = 1, #overlayList do
-			local overlay = overlayList[i];			
+			local overlay = overlayList[i];
 			overlay.animOut:Play();
 		end
 	end
@@ -78,8 +78,8 @@ end
 
 function asOverlayTexture_OnFadeOutFinished(anim)
 	local overlay = anim:GetRegionParent();
-	local overlayParent = overlay:GetParent();	
-	overlay:Hide();	
+	local overlayParent = overlay:GetParent();
+	overlay:Hide();
 	tDeleteItem(overlayParent.overlaysInUse[overlay.spellID], overlay)
 	tinsert(overlayParent.unusedOverlays, overlay);
 end
@@ -114,12 +114,11 @@ local countAuraList = {};
 local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale, r, g, b)
 	local rate = 1;
 	local aura;
-
 	local overlay = asOverlay_GetOverlay(self, spellID, position);
 	overlay.spellID = spellID;
 	overlay.position = position;
 
-	overlay.animOut:Stop();	--In case we're in the process of animating this out.
+	overlay.animOut:Stop(); --In case we're in the process of animating this out.
 
 	if ns.positionaware[spellID] then
 		local v = ns.positionaware[spellID];
@@ -293,7 +292,7 @@ local function asOverlay_ShowOverlay(self, spellID, texturePath, position, scale
 	overlay.cooldown.texture:SetTexture(texturePath);
 	overlay.cooldown.texture:SetVertexColor(r / 255, g / 255, b / 255);
 	overlay.cooldown:SetAlpha(1);
-	
+
 	if overlay.side then
 		if (overlay.vflip) then
 			overlay.cooldown.texture:SetTexCoord(texLeft, texRight, texTop, 1 - rate);
@@ -440,6 +439,51 @@ end
 
 
 local bfirst = true;
+local overlayshows = {};
+
+local function checkShowList(self)
+	if ns.ShowList then
+		for spellid, overlays in pairs(ns.ShowList) do
+			local aura = C_UnitAuras.GetPlayerAuraBySpellID(spellid);
+			local aurashow = overlayshows[spellid];
+
+			if aura then
+				local texture = overlays[1];
+				local positions = overlays[2];
+				local scale = overlays[3];
+				local r = overlays[4];
+				local g = overlays[5];
+				local b = overlays[6];
+				asOverlay_ShowAllOverlays(self, spellid, texture, positions, scale, r, g, b);
+				overlayshows[spellid] = true;
+			elseif aurashow then
+				overlayshows[spellid] = false;
+				asOverlay_HideOverlays(self, spellid);
+			end
+		end
+	end
+end
+
+local function initShowList()
+    local spec = GetSpecialization();
+    local localizedClass, englishClass = UnitClass("player");
+    local listname;
+
+    if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
+        spec = 1;
+    end
+
+    if spec then
+        listname = "ShowList_" .. englishClass .. "_" .. spec;
+    end
+
+    if ns[listname] then
+        ns.ShowList = CopyTable(ns[listname]);
+    else
+        ns.ShowList = nil;
+	end
+
+end
 
 
 local function asOverlay_OnEvent(self, event, ...)
@@ -460,15 +504,21 @@ local function asOverlay_OnEvent(self, event, ...)
 			self:SetAlpha(cvaralpha);
 		end
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_HIDE") then
-		local spellID = ...;		
+		local spellID = ...;
 		if (spellID) then
-			asOverlay_HideOverlays(self, spellID);			
+			asOverlay_HideOverlays(self, spellID);
 		else
 			asOverlay_HideAllOverlays(self);
 		end
+
+		checkShowList(self);
 	elseif (event == "UNIT_AURA") then
+		checkShowList(self);
 		ns.needtocheckAura = true;
 		asOverlay_CheckAura(self);
+	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or
+        (event == "ACTIVE_TALENT_GROUP_CHANGED") then
+        C_Timer.After(0.5, initShowList);
 	end
 end
 
@@ -536,5 +586,8 @@ frame:SetWidth(256)
 frame:SetHeight(256)
 
 frame:SetScript("OnEvent", asOverlay_OnEvent);
+frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 C_Timer.NewTicker(0.1, asOverlay_OnUpdate);
 asOverlay_OnLoad(frame);
