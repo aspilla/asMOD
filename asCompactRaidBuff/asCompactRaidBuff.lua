@@ -273,11 +273,9 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         end
 
 
-        f.hideCountdownNumbers = true;
         if not ns.options.ShowBuffCooldown or select(1, f:GetSize()) < ns.options.MinCoolShowBuffSize then
-            f.cooldown:SetHideCountdownNumbers(true);
+            f.hideCountdownNumbers = true;
         else
-            f.cooldown:SetHideCountdownNumbers(true);
             f.hideCountdownNumbers = false;
         end        
     end

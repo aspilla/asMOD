@@ -378,7 +378,6 @@ local function AHT_CheckPower()
 	AHT_mainframe:UnregisterEvent("UNIT_DISPLAYPOWER");
 	AHT_mainframe:UnregisterEvent("RUNE_POWER_UPDATE")
 	AHT_mainframe:UnregisterEvent("UNIT_AURA");
-	AHT_mainframe:UnregisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
 
 	bupdate_power = false;
 	bupdate_stagger = false;
@@ -711,8 +710,6 @@ function AHT_OnEvent(self, event, arg1, arg2, arg3, ...)
 		AHT_UpdatePower();
 	elseif event == "UNIT_AURA" and arg1 == "player" then
 		AHT_UpdateStagger();
-	elseif event == "ACTIONBAR_UPDATE_COOLDOWN" then
-		AHT_UpdateActionCount();
 	elseif event == "UNIT_DISPLAYPOWER" and arg1 == "player"  then
 		AHT_UpdatePower();
 	elseif event == "UNIT_HEAL_PREDICTION" and arg1 == "player" then

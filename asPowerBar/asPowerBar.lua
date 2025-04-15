@@ -25,7 +25,7 @@ local bupdate_stagger = false;
 local bupdate_fronzen = false;
 local bupdate_enhaced_tempest = false;
 local bupdate_element_tempest = false;
-local bupdate_internalcool = false;
+local bupdate_Howl_Pack = false;
 local bupdate_partial_power = false;
 local bsmall_power_bar = false;
 local bupdate_buff_combo = false;
@@ -40,7 +40,9 @@ APB_BUFF3 = nil;
 APB_BUFF4 = nil;
 APB_BUFF_COMBO = nil;
 APB_BUFF_STACK = nil;
+APB_BUFF_TIME_STACK = nil;
 APB_DEBUFF_STACK = nil;
+APB_DEBUFF_TIME_STACK = nil;
 APB_ACTION_STACK = nil;
 APB_BUFF_COMBO_MAX = nil;
 APB_BUFF_COMBO_MAX_COUNT = nil;
@@ -96,17 +98,13 @@ local tempeststate = {
 
 local splinterstorm_time = GetTime();
 
-local internalcool_state = {
-    start = 0,
-    duration = 0,
-    spellid = 0,
-}
 
 local special_cost_spells = {
     [386997] = { 449638, -3 },
     [265187] = { 449638, -3 },
 
 }
+local next_howl = nil;
 
 
 local asGetSpellInfo = function(spellID)
@@ -327,41 +325,6 @@ local function APB_OnUpdateCombo(self)
     end
 end
 
-local function APB_OnUpdateInternalCool(self)
-    if not self.start then
-        return;
-    end
-
-
-    local curr_time = GetTime();
-    local curr_duration = curr_time - self.start;
-
-    self.update = 0
-
-    if self.reverse then
-        if curr_duration < self.duration then
-            self:SetMinMaxValues(0, self.duration * 10)
-            self:SetValue((self.duration * 10) - (curr_time - self.start) * 10)
-            self.count:SetText(math.ceil(self.duration) - (curr_time - self.start));
-        else
-            self:SetMinMaxValues(0, self.duration)
-            self:SetValue(0)
-            self.count:SetText(0);
-            self.start = nil;
-        end
-    else
-        if curr_duration < self.duration then
-            self:SetMinMaxValues(0, self.duration * 10)
-            self:SetValue((curr_time - self.start) * 10)
-            self.count:SetText(math.ceil(curr_time - self.start));
-        else
-            self:SetMinMaxValues(0, self.duration)
-            self:SetValue(self.duration)
-            self.count:SetText(self.duration);
-            self.start = nil;
-        end
-    end
-end
 
 local prev_combo = nil;
 local p_start = nil;
@@ -693,15 +656,6 @@ local function APB_MaxStack(max)
 
     APB.stackbar[0].count:Show();
 
-    if bupdate_internalcool then
-        local cb = function()
-            APB_OnUpdateInternalCool(APB.stackbar[0]);
-        end
-
-        if APB.stackbar[0].ctimer == nil or APB.stackbar[0].ctimer:IsCancelled() then
-            APB.stackbar[0].ctimer = C_Timer.NewTicker(0.1, cb);
-        end
-    end
 
     bshowstack = true;
 
@@ -714,7 +668,7 @@ end
 
 
 local function APB_UpdateBuffStack(stackbar)
-    if not (APB_BUFF_STACK or APB_DEBUFF_STACK or APB_ACTION_STACK or bupdate_enhaced_tempest or bupdate_element_tempest or bupdate_internalcool) then
+    if not (APB_BUFF_STACK or APB_BUFF_TIME_STACK or APB_DEBUFF_STACK or APB_DEBUFF_TIME_STACK or APB_ACTION_STACK or bupdate_enhaced_tempest or bupdate_element_tempest) then
         return;
     end
 
@@ -744,6 +698,37 @@ local function APB_UpdateBuffStack(stackbar)
         end
     end
 
+    if APB_BUFF_TIME_STACK then
+        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff(stackbar.unit, APB_BUFF_TIME_STACK);
+
+        local text = 0;
+        if name then
+
+            local remain = expirationTime - GetTime();
+            stackbar:SetValue(stackbar.max - remain);
+            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+                    APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
+
+            text = math.ceil(remain);
+            if bupdate_Howl_Pack and next_howl then
+                text = next_howl .. " ".. text;
+            end
+            
+            stackbar.count:SetText(text);
+        else
+            stackbar:SetValue(stackbar.max);
+
+            if bupdate_Howl_Pack and next_howl then
+                text = next_howl .. " ".. text;
+            end
+
+            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1],
+                    APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
+                        
+            stackbar.count:SetText(text);
+        end
+    end
+
     if APB_DEBUFF_STACK then
         local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitDebuff(stackbar.unit,
             APB_DEBUFF_STACK);
@@ -766,6 +751,29 @@ local function APB_UpdateBuffStack(stackbar)
             stackbar.count:SetText(count);
         end
     end
+    
+    if APB_DEBUFF_TIME_STACK then
+        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitDebuff(stackbar.unit, APB_DEBUFF_TIME_STACK);
+
+        local text = 0;
+        if name then
+
+            local remain = expirationTime - GetTime();
+            stackbar:SetValue(stackbar.max - remain);
+            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+                    APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
+
+            text = math.ceil(remain);
+            stackbar.count:SetText(text);
+        else
+            stackbar:SetValue(stackbar.max);
+            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1],
+                    APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
+                        
+            stackbar.count:SetText(text);
+        end
+    end
+
 
     if APB_ACTION_STACK then
         local count = GetActionCount(APB_ACTION_STACK)
@@ -815,18 +823,6 @@ local function APB_UpdateBuffStack(stackbar)
         if balert then
             stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT2[1], APB_STACKBAR_COLOR_ALERT2
                 [2], APB_STACKBAR_COLOR_ALERT2[3]);
-        end
-    elseif bupdate_internalcool then
-        stackbar.start = internalcool_state.start;
-        stackbar.duration = internalcool_state.duration;
-        local currtime = GetTime();
-
-        if currtime >= stackbar.start + stackbar.duration then
-            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1], APB_STACKBAR_COLOR_ALERT
-                [2], APB_STACKBAR_COLOR_ALERT[3]);
-        else
-            stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
-                APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
         end
     end
 end
@@ -2079,7 +2075,7 @@ local function APB_CheckPower(self)
     bhalf_combo = false;
     bupdate_enhaced_tempest = false;
     bupdate_element_tempest = false;
-    bupdate_internalcool = false;
+    bupdate_Howl_Pack = false;
     bdruid = false;
     brogue = false;
     bdeathstalker = nil;
@@ -2107,7 +2103,9 @@ local function APB_CheckPower(self)
     APB_POWER_LEVEL = nil;
     APB_BUFF_COMBO = nil;
     APB_BUFF_STACK = nil;
+    APB_BUFF_TIME_STACK = nil;
     APB_DEBUFF_STACK = nil;
+    APB_DEBUFF_TIME_STACK = nil;
     APB_ACTION_STACK = nil;
     APB_BUFF_COMBO_MAX = nil;
     APB_BUFF_COMBO_MAX_COUNT = nil;
@@ -2855,6 +2853,15 @@ local function APB_CheckPower(self)
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
             bupdate_buff_count = true;
+
+            if IsPlayerSpell(471876) then --무리의 지도자의 포효
+                APB_BUFF_TIME_STACK = 471877;
+                APB.stackbar[0].unit = "player";
+                APB.stackbar[0].spellid = 471877;
+                APB_MaxStack(25);
+                bupdate_Howl_Pack = true;
+                APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+            end
         end
 
         if (spec and spec == 2) then
@@ -2875,13 +2882,10 @@ local function APB_CheckPower(self)
             end
 
             if IsPlayerSpell(450385) then
-                bupdate_internalcool = true;
-                internalcool_state.start = 0;
-                internalcool_state.duration = 30;
-                internalcool_state.spellid = 450978;
-                self.stackbar[0].spellid = 450978;
-                APB_MaxStack(internalcool_state.duration);
-                APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+                APB_DEBUFF_TIME_STACK = 451803;
+                APB.stackbar[0].unit = "player";
+                APB.stackbar[0].spellid = APB_DEBUFF_TIME_STACK;
+                APB_MaxStack(30);
             end
         end
 
@@ -2911,12 +2915,16 @@ local function APB_CheckPower(self)
             end
 
             if IsPlayerSpell(450385) then
-                bupdate_internalcool = true;
-                internalcool_state.start = 0;
-                internalcool_state.duration = 30;
-                internalcool_state.spellid = 450978;
-                self.stackbar[0].spellid = 450978;
-                APB_MaxStack(internalcool_state.duration);
+                APB_DEBUFF_TIME_STACK = 451803;
+                APB.stackbar[0].unit = "player";
+                APB.stackbar[0].spellid = APB_DEBUFF_TIME_STACK;
+                APB_MaxStack(30);
+            elseif IsPlayerSpell(471876) then --무리의 지도자의 포효
+                APB_BUFF_TIME_STACK = 471877;
+                APB.stackbar[0].unit = "player";
+                APB.stackbar[0].spellid = 471877;
+                APB_MaxStack(20);
+                bupdate_Howl_Pack = true;
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
             end
         end
@@ -3015,6 +3023,7 @@ local function APB_CheckPower(self)
     ns.AddBuff(self.buffbar[1].buff2);
     ns.AddBuff(APB_BUFF2);
     ns.AddBuff(APB_BUFF_STACK);
+    ns.AddBuff(APB_BUFF_TIME_STACK);
     ns.AddBuff(APB_BUFF_COMBO);
     ns.AddBuff(APB_BUFF_COMBO_MAX);
     ns.AddBuff(combobuffalertlist);
@@ -3037,6 +3046,7 @@ local function APB_CheckPower(self)
     ns.AddDebuff(APB_DEBUFF);
     ns.AddDebuff(APB_DEBUFF2);
     ns.AddDebuff(APB_DEBUFF_STACK);
+    ns.AddDebuff(APB_DEBUFF_TIME_STACK);
     ns.AddDebuff(APB_DEBUFF_COMBO);
     ns.AddDebuff(combodebuffalertlist);
 
@@ -3324,6 +3334,13 @@ local elemental_listOfSpenders = {
 
 };
 
+local howl_pack_auras = {
+    [472324] = "Bear", 
+    [472325] = "Wyvern",   
+    [471878] = "Boar",    
+}
+
+
 
 local playerGUID = UnitGUID("player");
 
@@ -3490,9 +3507,9 @@ local function updateCombatLog()
             if tempeststate.TempestStacks < 0 then
                 tempeststate.TempestStacks = 0
             end
-        elseif bupdate_internalcool then
-            if ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and (spellId == internalcool_state.spellid)) then --lunarstorm
-                internalcool_state.start = GetTime();
+        elseif bupdate_Howl_Pack then
+            if (eventType == "SPELL_AURA_REMOVED" and howl_pack_auras[spellId]) then
+                next_howl = howl_pack_auras[spellId];
             end
         end
     end

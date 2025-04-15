@@ -237,6 +237,8 @@ end
 
 local function init()
     -- 초기화 함수 호출
+	print("|cff33ff99/ascpu|r : Open the asCPUProfile window")
+
     InitializeProfiler()
 
     onUpdate();

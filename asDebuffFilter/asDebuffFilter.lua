@@ -476,12 +476,20 @@ local function ProcessAura(aura, unit)
             skip = true;
         end
 
+        if APB_DEBUFF_TIME_STACK and APB_DEBUFF_TIME_STACK == aura.spellId then
+            skip = true;
+        end
+
         -- ACI 에서 보이는 Debuff 는 숨기고
         if ACI_Debuff_list and ACI_Debuff_list[aura.name] then
             skip = true;
         end
     elseif unit == "player" then
         skip = false;
+
+        if APB_DEBUFF_TIME_STACK and APB_DEBUFF_TIME_STACK == aura.spellId then
+            skip = true;
+        end
 
         if aura.duration > ns.ADF_MAX_Cool then
             skip = true;
