@@ -2854,7 +2854,7 @@ local function APB_CheckPower(self)
             APB.buffbar[0].unit = "player"
             bupdate_buff_count = true;
 
-            if IsPlayerSpell(471876) then --무리의 지도자의 포효
+            if IsPlayerSpell(472357) then --무리의 지도자의 포효
                 APB_BUFF_TIME_STACK = 471877;
                 APB.stackbar[0].unit = "player";
                 APB.stackbar[0].spellid = 471877;
@@ -2919,7 +2919,7 @@ local function APB_CheckPower(self)
                 APB.stackbar[0].unit = "player";
                 APB.stackbar[0].spellid = APB_DEBUFF_TIME_STACK;
                 APB_MaxStack(30);
-            elseif IsPlayerSpell(471876) then --무리의 지도자의 포효
+            elseif IsPlayerSpell(472357) then --무리의 지도자의 포효
                 APB_BUFF_TIME_STACK = 471877;
                 APB.stackbar[0].unit = "player";
                 APB.stackbar[0].spellid = 471877;

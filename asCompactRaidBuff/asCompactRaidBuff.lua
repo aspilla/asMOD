@@ -307,7 +307,6 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             local buffFrame = asframe.asbuffFrames[i];
             buffFrame:ClearAllPoints();
             buffFrame.data = {};
-            buffFrame.data.hidecool = true;
 
             if i <= ns.ACRB_MAX_BUFFS - 3 then
                 if math.fmod(i - 1, 3) == 0 then
@@ -366,7 +365,6 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             local debuffFrame = asframe.asdebuffFrames[i];
             debuffFrame:ClearAllPoints();
             debuffFrame.data = {};
-            debuffFrame.data.hidecool = true;
 
             if math.fmod(i - 1, 3) == 0 then
                 if i == 1 then
@@ -441,7 +439,6 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         layoutcooldown(pvpbuffFrame);
         pvpbuffFrame:ClearAllPoints();
         pvpbuffFrame.data = {};
-        pvpbuffFrame.data.hidecool = true;
 
         if i == 1 then
             pvpbuffFrame:SetPoint("CENTER", frame, "CENTER", 0, centeryoffset);
@@ -469,7 +466,6 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         layoutcooldown(castFrame);
         castFrame:ClearAllPoints();
         castFrame.data = {};
-        castFrame.data.hidecool = true;
         if i == 1 then
             castFrame:SetPoint("TOP", frame, "TOP", 0, -2);
         else
