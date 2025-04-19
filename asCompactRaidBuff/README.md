@@ -9,6 +9,7 @@ This addon enhances the default World of Warcraft raid and party frames, providi
 
 *   **Tracking of Essential Heal-over-Time (HoT) Effects (Top Right, Center Right, Bottom Right):**
     *   Monitors essential HoT buffs that healers need to maintain.
+    *   For Restoration Druids, Rejuvenation also changes color, and even when Rejuvenation and Lifebloom are present together, they can be distinguished by color.
     *   Displays HoTs in designated locations (top right, center right, bottom right) for quick and easy tracking.
     *   HoT buff positions can be adjusted via `Esc >> Options >> AddOns >> asCompactRaidBuff`.
 
@@ -27,6 +28,8 @@ This addon enhances the default World of Warcraft raid and party frames, providi
         | Restoration Shaman | Riptide                | Earth Shield |
         | Mistweaver Monk    | Renewing Mist           | Enveloping Mist      |
         | Augmentation Evoker| Prescience              | Ebon Might         |
+
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/ELxjSUJ9BIw?si=Kmny1-7UlXZF04Iz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 *   **Buff Refresh Warning:**
     *   When a buff's remaining duration reaches 30% of its total duration (typical refresh point), the unit frame border turns white, and the cooldown counter turns red.
@@ -108,12 +111,13 @@ https://www.youtube.com/watch?v=Oi2s6_P0tb4
 
 *   **우상단 HoT 체력바 색상 변경:**
     *   우측 상단에 표시 되는 버프는 체력바 색상을 회색으로 변경하여 파티원의 버프 유무를 파악하기 쉽게 합니다.
+    *   회복 드루이드의 회복도 색상을 변경하며, 회복 및 피어나는 생명이 같이 있을경우도 색상으로 구분 가능합니다.
     *   버프 색상 변경은 esc >> 설정 >> 애드온 >> asCompactRaidBuff에서 조정 가능합니다.
     *   기본 설정된 버프 위치/생삭 변경 설정은 다음과 같습니다.
 
         | 직업 | 우측상단(색상 변경) | 우측 | 
         | ----- | ----------- | ------ | 
-        | 회복 드루이드 | 피어나는 생명 | 재생, 회복 | 
+        | 회복 드루이드 | 피어나는 생명 | 재생, 회복(색상 변경2) | 
         | 신성 기사 | 고결의 봉화 | 빛의 봉화, 신념의 봉화 | 
         | 수양 사제 | 속죄 | 소생, 보호막 | 
         | 신성 사제 | 소생 | 보호막 |
@@ -121,6 +125,8 @@ https://www.youtube.com/watch?v=Oi2s6_P0tb4
         | 복원 주술사 | 성난 해일 | 대지의 보호막 |
         | 운무 수도사 | 소생의 안개 | 포용의 안개 |
         | 증강 기원사 | 예지 | 끓어오르는 비늘 |
+
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/ELxjSUJ9BIw?si=Kmny1-7UlXZF04Iz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 *   **버프 갱신 경고:**
     *   버프의 남은 지속 시간이 전체 지속 시간의 30%에 도달하면 (일반적인 갱신 시점), 유닛 프레임 테두리가 흰색으로 변하고 재사용 대기시간 카운트가 빨간색으로 변합니다.

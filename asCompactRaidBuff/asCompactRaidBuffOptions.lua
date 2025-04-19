@@ -5,6 +5,7 @@ ns.UpdateRate = 0.25; -- 1회 Update 주기 (초) 작으면 작을 수록 Frame 
 local Options_Default = {
 	version = 250108,
 	ShowBuffColor = true,       -- 버프가 Frame Color 를 변경 할지
+	ShowBuffColor2 = true,       -- 버프가 Frame Color 를 변경 할지
 	ShowHealthColor = true,     -- 체력 낮은 사람 Color 변경 (사제 생명)
 	LeftAbsorbBar = true,       -- 보호막 바
 	TopCastAlert = true,        -- 케스팅 알림 (상단)
@@ -19,6 +20,7 @@ local Options_Default = {
 	ShowBuffTooltip = true,     -- Buff GameTooltip을 보이게 하려면 True
 	ShowDebuffTooltip = true,   -- Debuff GameTooltip을 보이게 하려면 True	
 	MinSectoShowCooldown = 10,  -- 이 시간 미만으로 남으면 Cooldown이 보이게 한다. (초)
+	
 };
 
 -- 첫 숫자 남은시간에 리필 알림 (1이면 자동으로 30% 남으면 알림)
@@ -219,6 +221,9 @@ ns.ACRB_ShowList_DEMONHUNTER_2 = {
 ns.ACRB_BlackList = {
 	[206151] = 1, --도전자의 짐
 }
+
+-- 회드일 경우
+ns.isRestro = false;
 
 
 --직업별 생존기 등록 (10초 쿨다운), 내부전쟁 Version

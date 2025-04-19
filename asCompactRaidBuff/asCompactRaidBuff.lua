@@ -61,9 +61,14 @@ function ns.ACRB_InitList()
         spec = 1;
     end
 
+    ns.isRestro = false;
 
     if spec then
         ns.listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
+
+        if (englishClass == "DRUID" and spec == 4) then
+            ns.isRestro = true;
+        end
     end
 
     ns.ACRB_ShowList = CopyTable(ns[ns.listname]);
@@ -547,6 +552,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         asframe.buffcolor:ClearAllPoints();
         asframe.buffcolor:SetAllPoints(previousTexture);
         asframe.buffcolor:SetVertexColor(0.5, 0.5, 0.5);
+        asframe.buffcolor.currcolor = 1;
     end
 
     if not asframe.healthcolor then

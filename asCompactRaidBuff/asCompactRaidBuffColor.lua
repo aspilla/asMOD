@@ -33,10 +33,28 @@ function ns.UpdateNameColor(frame, showbuffcolor, showhealthcolor)
 
 	if showbuffcolor ~= nil then
 		if ns.options.ShowBuffColor then
-			if showbuffcolor == true then
-				asframe.buffcolor:Show();
-			elseif showbuffcolor == false then
-				asframe.buffcolor:Hide();
+			if ns.options.ShowBuffColor2 then
+				if showbuffcolor > 0 then
+					if showbuffcolor ~= asframe.buffcolor.currcolor then
+						asframe.buffcolor.currcolor = showbuffcolor;
+						if showbuffcolor == 3 then
+							asframe.buffcolor:SetVertexColor(0.7, 0.7, 0.7);
+						elseif showbuffcolor == 2 then
+							asframe.buffcolor:SetVertexColor(0.3, 0.3, 0.3);
+						else
+							asframe.buffcolor:SetVertexColor(0.5, 0.5, 0.5);
+						end
+					end
+					asframe.buffcolor:Show();
+				else
+					asframe.buffcolor:Hide();
+				end
+			else
+				if showbuffcolor == 1 or showbuffcolor == 3 then
+					asframe.buffcolor:Show();
+				else
+					asframe.buffcolor:Hide();
+				end
 			end
 		else
 			asframe.buffcolor:Hide();
@@ -66,7 +84,7 @@ function ns.UpdateNameColor(frame, showbuffcolor, showhealthcolor)
 	end
 
 	local previousTexture = frame.healthBar:GetStatusBarTexture();
-    asframe.frametexture:SetVertexColor(previousTexture:GetVertexColor());
+	asframe.frametexture:SetVertexColor(previousTexture:GetVertexColor());
 end
 
 function ns.ACRB_UpdateRaidIconAborbColor(asframe)
@@ -125,7 +143,6 @@ function ns.ACRB_UpdateRaidIconAborbColor(asframe)
 end
 
 function ns.ACRB_UpdateHealerMana(asframe)
-
 	if asframe.needtosetup then
 		ns.ACRB_setupFrame(asframe);
 	end
@@ -135,6 +152,5 @@ function ns.ACRB_UpdateHealerMana(asframe)
 	end
 
 	asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(asframe.unit, Enum.PowerType.Mana));
-	asframe.asManabar:SetValue(UnitPower(asframe.unit, Enum.PowerType.Mana));	
+	asframe.asManabar:SetValue(UnitPower(asframe.unit, Enum.PowerType.Mana));
 end
-

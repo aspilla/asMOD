@@ -669,6 +669,7 @@ function ns.ACRB_UpdateAuras(asframe)
         local frameIdx = 1;
         local frameIdx2 = 4;
         local showframe = {};
+        local nupdateColor = 0;
         asframe.buffs:Iterate(function(auraInstanceID, aura)
             if frameNum > ns.ACRB_MAX_BUFFS + 1 then
                 return true;
@@ -682,16 +683,21 @@ function ns.ACRB_UpdateAuras(asframe)
                 type = showinfo[2];
             end
 
+
             if type == 6 and not showframe[type] then
                 local buffFrame = asframe.asbuffFrames[type];
-                ns.UpdateNameColor(asframe.frame, true);
                 ARCB_UtilSetBuff(buffFrame, aura, currtime);
                 showframe[type] = true;
+                nupdateColor = nupdateColor + 1;
             elseif type > 3 and not showframe[frameIdx2] then
                 local buffFrame = asframe.asbuffFrames[frameIdx2];
                 ARCB_UtilSetBuff(buffFrame, aura, currtime);
                 showframe[frameIdx2] = true;
                 frameIdx2 = frameIdx2 + 1;
+
+                if ns.isRestro and type == 5 then
+                    nupdateColor = nupdateColor + 2;
+                end
             else
                 local buffFrame = asframe.asbuffFrames[frameIdx];
                 ARCB_UtilSetBuff(buffFrame, aura, currtime);
@@ -711,13 +717,11 @@ function ns.ACRB_UpdateAuras(asframe)
         for i = ns.ACRB_MAX_BUFFS - 2, ns.ACRB_MAX_BUFFS do
             if not showframe[i] then
                 local buffFrame = asframe.asbuffFrames[i];
-                if i == 6 then
-                    ns.UpdateNameColor(asframe.frame, false);
-                end
                 buffFrame:Hide();
                 buffFrame.data = {};
             end
         end
+        ns.UpdateNameColor(asframe.frame, nupdateColor);
     end
 
     do
