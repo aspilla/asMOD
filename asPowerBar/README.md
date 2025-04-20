@@ -4,6 +4,8 @@
 
 **asPowerBar** is a World of Warcraft addon designed to visually track a player's primary resources, secondary resources (like Combo Points, Runes, Holy Power), major ability cooldowns/charges, and important buffs/debuffs. It presents this key information in a compact set of bars near the bottom center of the screen, facilitating easier information access during combat.
 
+![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar.jpg?raw=true)
+
 ## Features
 
 *   **Primary Resource Bar:** Displays main resources such as Mana, Rage, Energy, Runic Power, Focus, etc. (Includes prediction for resource cost on cast).
@@ -38,7 +40,7 @@ The following class and specialization features are included based on the `asPow
 
 ## Configuration
 
-*   **Position and Basic Settings:** If the `asMOD` addon is installed, you can adjust the position and other settings of asPowerBar using the `/asconfig` command (or through the asMOD interface). (`asMOD_setupFrame(APB, "asPowerBar");` code found).
+*   **Position and Basic Settings:** If the `asMOD` addon is installed, you can adjust the position and other settings of asPowerBar using the `/asconfig` command (or through the asMOD interface). 
 *   **Manual Configuration:** You can manually change the size or position by editing values like `APB_WIDTH`, `APB_X`, `APB_Y` at the top of the `asPowerBar.lua` file. (Recommended only for users comfortable with editing Lua code).
 
 ---
@@ -49,6 +51,9 @@ The following class and specialization features are included based on the `asPow
 ## 개요 (Overview)
 
 **asPowerBar**는 월드 오브 워크래프트(World of Warcraft) 플레이어의 주요 자원, 보조 자원(콤보 포인트, 룬, 신성한 힘 등), 주요 기술의 재사용 대기시간/충전 횟수, 그리고 중요한 강화/약화 효과를 시각적으로 추적하기 위한 애드온입니다. 플레이어에게 필요한 핵심 정보를 중앙 하단에 컴팩트한 바 형태로 표시하여 전투 중 정보 확인을 용이하게 합니다.
+
+
+![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar.jpg?raw=true)
 
 ## 주요 기능 (Features)
 
