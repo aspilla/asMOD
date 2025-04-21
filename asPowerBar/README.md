@@ -24,7 +24,7 @@
 The following class and specialization features are included based on the `asPowerBar.lua` code:
 
 *   **Evoker:** Essence, [Devastation] Upheaval charges (if talented), [Augmentation] Ebon Might duration (if talented), Essence Burst tracking.
-*   **Paladin:** Holy Power, [Holy] Holy Shock charges, [Protection] Shield of the Righteous duration, [Retribution] Blade of Justice charges, alerts for specific buffs (e.g., Empyrean Power).
+*   **Paladin:** Holy Power, [Holy] Holy Shock charges, [Protection] Shield of the Righteous duration, [Retribution] Blade of Justice charges, alerts for specific buffs (e.g., Empyrean Power), Shake the Heavens duration (Templar).
 *   **Mage:** [Arcane] Arcane Charges, Arcane Harmony stacks (if talented), [Fire] Fire Blast & Phoenix Flames charges, Sun King's Blessing stacks, alerts/coloring for Incendiary Ignition and Fury of the Sun King, [Frost] Flurry charges, Icicles, Frozen Orb active time, alerts for Frostfire Bolt (if talented).
 *   **Warlock:** Soul Shards, Soul Shard Fragments (Destruction), [Affliction] Shadow Embrace/Malevolent Rapture related debuff tracking, [Demonology] Demonic Core/Imp stacks, [Destruction] Conflagrate/Shadowburn charges, Immolate/Eradication debuff tracking.
 *   **Druid:** Combo Points (Feral/Guardian/Balance/Restoration), [Balance] Eclipse (Solar/Lunar), Starfall/Starsurge charges, [Feral] Brutal Slash charges (if talented), alerts for specific buffs (e.g., Apex Predator's Craving, Rip and Tear), [Guardian] Ironfur stacks, Frenzied Regeneration charges, [Restoration] Swiftmend charges, Grove Guardians charges (if talented), Lifebloom tracking (Photosynthesis).
@@ -73,7 +73,7 @@ The following class and specialization features are included based on the `asPow
 다음과 같은 직업 및 전문화별 기능이 포함되어 있습니다:
 
 *   **기원사 (Evoker):** 정수, [황폐] 파열 충전, [보존] 되감기, 특정 강화 효과 추적.
-*   **성기사 (Paladin):** 신성한 힘, [신성] 신성 충격 충전, [보호] 정의의 방패 지속시간, [징벌] 심판의 칼날 충전, 특정 강화 효과(창공의 힘 등) 알림.
+*   **성기사 (Paladin):** 신성한 힘, [신성] 신성 충격 충전, [보호] 정의의 방패 지속시간, [징벌] 심판의 칼날 충전, 특정 강화 효과(창공의 힘 등), 격동하는 천상 지속시간 (기사단 특성)
 *   **마법사 (Mage):** [비전] 비전 충전물, 비전 조화 중첩, [화염] 화염 작렬/불사조의 불길 충전, 발화 관련 강화 효과, [냉기] 진눈깨비 충전, 고드름, 얼어붙은 구슬 활성화 시간, 서리 불꽃 등 강화 효과 알림.
 *   **흑마법사 (Warlock):** 영혼의 조각, 영혼의 조각 파편(파괴), [고통] 어둠의 선물/사악한 환희 관련 약화 효과, [악마] 악마 핵/임프 중첩, [파괴] 점화/어둠의 연소 충전, 제물/박멸 등 약화 효과 추적.
 *   **드루이드 (Druid):** 연계 점수(표범/수호/조화/회복), [조화] 일월식, 별똥별/별빛쇄도 충전, [야성] 잔혹한 베기 충전, 특정 강화 효과(최상위 포식자, 찢어발기기 강화 등) 알림, [수호] 무쇠가죽 중첩, 광포한 재생력 충전, [회복] 신속한 치유, 숲의 수호자 충전, 피어나는 생명(광합성) 추적.

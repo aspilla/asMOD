@@ -2249,6 +2249,12 @@ local function APB_CheckPower(self)
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
             bsmall_power_bar = true;
+            if IsPlayerSpell(431533) then --격동하는 천상
+                APB_BUFF = 431536;
+                APB.buffbar[0].buff = APB_BUFF;
+                APB.buffbar[0].unit = "player"
+
+            end
         end
     end
 
