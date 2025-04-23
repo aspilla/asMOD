@@ -154,20 +154,6 @@ local function ACI_OnEvent(self, event, arg1, ...)
 		for i = 1, ACI_MaxSpellCount do
 			ACI[i]:SetAlpha(ACI_Alpha_Normal);
 		end
-	elseif event == "UNIT_ENTERING_VEHICLE" then
-		for i = 1, ACI_MaxSpellCount do
-			ACI[i]:SetAlpha(0);
-		end
-	elseif event == "UNIT_EXITING_VEHICLE" then
-		if UnitAffectingCombat("player") then
-			for i = 1, ACI_MaxSpellCount do
-				ACI[i]:SetAlpha(ACI_Alpha);
-			end
-		else
-			for i = 1, ACI_MaxSpellCount do
-				ACI[i]:SetAlpha(ACI_Alpha_Normal);
-			end
-		end
 	end
 end
 
@@ -315,8 +301,6 @@ ACI_mainframe:SetScript("OnEvent", ACI_OnEvent);
 ACI_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 ACI_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 ACI_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
-ACI_mainframe:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
-ACI_mainframe:RegisterUnitEvent("UNIT_EXITING_VEHICLE", "player")
 
 
 for i = 1, 5 do

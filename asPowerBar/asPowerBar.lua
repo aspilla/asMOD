@@ -3588,14 +3588,6 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
         APB:SetAlpha(APB_ALPHA_COMBAT);
     elseif event == "PLAYER_REGEN_ENABLED" then
         APB:SetAlpha(APB_ALPHA_NORMAL);
-    elseif event == "UNIT_ENTERING_VEHICLE" then
-        APB:SetAlpha(0);
-    elseif event == "UNIT_EXITING_VEHICLE" then
-        if UnitAffectingCombat("player") then
-            APB:SetAlpha(APB_ALPHA_COMBAT);
-        else
-            APB:SetAlpha(APB_ALPHA_NORMAL);
-        end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
         local name = asGetSpellInfo(arg1);
         local newname = asGetSpellInfo(APB_SPELL);
@@ -3960,8 +3952,6 @@ do
     APB:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
     APB:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
     APB:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");
-    APB:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player");
-    APB:RegisterUnitEvent("UNIT_EXITING_VEHICLE", "player");
     APB:RegisterUnitEvent("UNIT_AURA", "player");
 
     if UnitAffectingCombat("player") then
