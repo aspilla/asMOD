@@ -526,7 +526,6 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
         combobar[1].reverse = nil;
 
         if i <= combo then
-
             if combobar[i].ctimer then
                 combobar[i].ctimer:Cancel();
             end
@@ -544,7 +543,6 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
                 combobar[i]:SetStatusBarColor(color.r, color.g, color.b);
             end
         elseif i <= (combo + cast) then
-
             if combobar[i].ctimer then
                 combobar[i].ctimer:Cancel();
             end
@@ -559,7 +557,6 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
                 combobar[i]:SetStatusBarColor(1, 1, 1);
             end
         elseif i == (combo + cast) + 1 and value < 1 then
-
             if combobar[i].ctimer then
                 combobar[i].ctimer:Cancel();
             end
@@ -589,7 +586,6 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
                 combobar[i].ctimer = C_Timer.NewTicker(0.1, cb);
             end
         else
-
             if combobar[i].ctimer then
                 combobar[i].ctimer:Cancel();
             end
@@ -699,32 +695,32 @@ local function APB_UpdateBuffStack(stackbar)
     end
 
     if APB_BUFF_TIME_STACK then
-        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff(stackbar.unit, APB_BUFF_TIME_STACK);
+        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff(stackbar.unit,
+            APB_BUFF_TIME_STACK);
 
         local text = 0;
         if name then
-
             local remain = expirationTime - GetTime();
             stackbar:SetValue(stackbar.max - remain);
             stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
-                    APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
+                APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
 
             text = math.ceil(remain);
             if bupdate_Howl_Pack and next_howl then
-                text = next_howl .. " ".. text;
+                text = next_howl .. " " .. text;
             end
-            
+
             stackbar.count:SetText(text);
         else
             stackbar:SetValue(stackbar.max);
 
             if bupdate_Howl_Pack and next_howl then
-                text = next_howl .. " ".. text;
+                text = next_howl .. " " .. text;
             end
 
             stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1],
-                    APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
-                        
+                APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
+
             stackbar.count:SetText(text);
         end
     end
@@ -751,25 +747,25 @@ local function APB_UpdateBuffStack(stackbar)
             stackbar.count:SetText(count);
         end
     end
-    
+
     if APB_DEBUFF_TIME_STACK then
-        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitDebuff(stackbar.unit, APB_DEBUFF_TIME_STACK);
+        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitDebuff(stackbar.unit,
+            APB_DEBUFF_TIME_STACK);
 
         local text = 0;
         if name then
-
             local remain = expirationTime - GetTime();
             stackbar:SetValue(stackbar.max - remain);
             stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
-                    APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
+                APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
 
             text = math.ceil(remain);
             stackbar.count:SetText(text);
         else
             stackbar:SetValue(stackbar.max);
             stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1],
-                    APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
-                        
+                APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
+
             stackbar.count:SetText(text);
         end
     end
@@ -2253,7 +2249,6 @@ local function APB_CheckPower(self)
                 APB_BUFF = 431536;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
-
             end
         end
     end
@@ -3341,9 +3336,9 @@ local elemental_listOfSpenders = {
 };
 
 local howl_pack_auras = {
-    [472324] = "Bear", 
-    [472325] = "Wyvern",   
-    [471878] = "Boar",    
+    [472324] = "Bear",
+    [472325] = "Wyvern",
+    [471878] = "Boar",
 }
 
 
