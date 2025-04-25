@@ -20,7 +20,7 @@ The following errors may occur:
 ## Preview
 
 * **Party:** ![Party](https://upload3.inven.co.kr/upload/2025/03/09/bbs/i1301564971.jpg)
-* **Raid:** ![Raid](https://upload3.inven.co.kr/upload/2025/03/09/bbs/i1255227993.jpg)
+* **Raid:** ![Raid](https://upload3.inven.co.kr/upload/2025/04/25/bbs/i1390662207.jpg)
 * **asUnitFrame Disabled:** ![asUnitFrame disabled](https://upload3.inven.co.kr/upload/2024/11/17/bbs/i1592006461.jpg)
 
 ## Installation, Removal, Update, and Configuration Guide
@@ -78,9 +78,7 @@ The following errors may occur:
 
 ## asMOD Usage Videos
 
-*   [**Addon Usage Video (Dungeon)**](https://youtu.be/0jAxmp-mTZY?si=jLZptNcWFPc9amB9)
-*   [**Addon Usage Video (Raid)**](https://youtu.be/lll2kkC3BlA?si=TWIUz-rIgHe8K_pk)
-
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-B5-L-bLVbg?si=4MyzBslrjLEBggX9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 # asMOD
 
@@ -152,10 +150,6 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입�
 
 **참고:** 인벤 전용이 아닌 애드온은 커스포지를 통해 다운로드 및 업데이트가 가능합니다.
 
-## asMOD 사용 영상
-
-*   [**애드온 사용 영상 (던전)**](https://youtu.be/0jAxmp-mTZY?si=jLZptNcWFPc9amB9)
-*   [**애드온 사용 영상 (공격대)**](https://youtu.be/lll2kkC3BlA?si=TWIUz-rIgHe8K_pk)
 
 ## 추가 정보 및 지원
 
