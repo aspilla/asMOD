@@ -20,7 +20,7 @@ The following errors may occur:
 ## Preview
 
 * **Party:** ![Party](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_party.jpg?raw=true)
-* **Raid:** ![Raid](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_raid.jpg?raw=true)
+* **Raid(Disable portraits on asUnitFrame):** ![Raid](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_raid.jpg?raw=true)
 * **asUnitFrame Disabled:** ![asUnitFrame disabled](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod2.jpg?raw=true)
 
 ## Installation, Removal, Update, and Configuration Guide
