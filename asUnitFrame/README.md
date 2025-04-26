@@ -65,7 +65,7 @@ Assuming you are using other addons from the asMOD suite, it is recommended to u
 
 1.  **Position & Size:**
     *   **Requires the `asMOD` addon.**
-    *   Enter `/asmod` in the game chat to open the configuration window.
+    *   Enter `/asconfig` in the game chat to open the configuration window.
     *   In the `asUnitFrame` section, select each frame (`AUF_PlayerFrame`, `AUF_TargetFrame`, `AUF_FocusFrame`, `AUF_PetFrame`, `AUF_TargetTargetFrame`, `AUF_BossFrame1` ~ `5`) to freely adjust its position and size, then save.
 
 2.  **In-Code Settings (Top of `asUnitFrame.lua`):**
@@ -162,7 +162,7 @@ asMOD 대 다른 애드온을 사용하고 있다는 가정으로, 다음 애드
 
 1.  **위치 및 크기:**
     *   **`asMOD` 애드온이 설치되어 있어야 합니다.**
-    *   게임 내에서 `/asmod` 명령어를 입력하여 설정창을 엽니다.
+    *   게임 내에서 `/asconfig` 명령어를 입력하여 설정창을 엽니다.
     *   `asUnitFrame` 섹션에서 각 프레임(`AUF_PlayerFrame`, `AUF_TargetFrame`, `AUF_FocusFrame`, `AUF_PetFrame`, `AUF_TargetTargetFrame`, `AUF_BossFrame1` ~ `5`)을 선택하여 위치와 크기를 자유롭게 조절하고 저장할 수 있습니다.
 
 2.  **코드 내 설정 (`asUnitFrame.lua` 파일 상단):**
