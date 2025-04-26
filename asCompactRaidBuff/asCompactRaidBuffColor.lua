@@ -121,7 +121,11 @@ function ns.ACRB_UpdateRaidIconAborbColor(asframe)
 		local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0;
 		local remainAbsorb = totalAbsorb - (valueMax - value);
 
-		if remainAbsorb > 0 and remainAbsorb <= valueMax then
+		if remainAbsorb > valueMax then
+			remainAbsorb = valueMax;
+		end
+
+		if remainAbsorb > 0 then
 			local totalWidth, _ = asframe.frame.healthBar:GetSize();
 			local barSize = (remainAbsorb / valueMax) * totalWidth;
 
