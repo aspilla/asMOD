@@ -286,7 +286,13 @@ local function updateUnit(frame)
         frame.healthbar.absorbBarO:Hide()
     end
 
-    UpdateFillBarBase(frame.healthbar, frame.healthbar.shieldBar, totalAbsorb - totalAbsorbremain, true, nil);
+    local remainAbsorb = totalAbsorb - totalAbsorbremain;
+
+    if remainAbsorb > valueMax then
+        remainAbsorb = valueMax;
+    end
+
+    UpdateFillBarBase(frame.healthbar, frame.healthbar.shieldBar, remainAbsorb, true, nil);
 
     --Castbar
     local current = GetTime();

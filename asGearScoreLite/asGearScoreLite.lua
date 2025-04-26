@@ -40,9 +40,8 @@ local function OnEvent(self, event, arg1)
 		
 		if CanInspect("target") then
 			local Avg, Max, Min = GetAvgIvl("target");
-			local Red, Green, Blue = GetItemQualityColor(Avg);
 			TAvg:SetText(Avg .. " Lvl");
-			TAvg:SetTextColor(Red, Green, Blue);
+			TAvg:SetTextColor(1, 1, 1);
 		end
 	end
 end
