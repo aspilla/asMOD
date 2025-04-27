@@ -9,6 +9,7 @@ local AGCD_BlackList = {
 	[6603] = 1,
 	[240022] = 1,
 	[467718] = 1,
+	[1228085] = 1,
 }
 
 local GetItemInfo = C_Item and C_Item.GetItemInfo or GetItemInfo;
