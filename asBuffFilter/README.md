@@ -1,5 +1,34 @@
 # asBuffFilter
 
+asBuffFilter helps to efficiently display and manage important buffs for the player and target. When used as part of the asMOD integrated addon, it works with other asMOD addons (such as asCombatInfo, asPowerBar) to avoid redundant buff display and provide a clean UI.
+
+### Key Features
+
+* **Optimized Buff Placement:** Player buffs are displayed at the bottom-left and center of the screen, while target buffs are displayed at the bottom-right of the screen.
+* **Key Buff Highlight:** Highlights target buffs that can be dispelled or stolen to improve visibility.
+* **Specific Effect Display:** Specifically highlights effects like "Bloodlust" or "Heroism" cast on the player.
+* **PvP Buff Filtering:** In PvP situations, only key PvP buffs on enemy players are displayed to help focus on important information.
+* **Duration-Based Filtering:** Only displays buffs with a remaining duration of 60 seconds or less, helping you prepare for impending buff expiry.
+* **Totem and Area Effect Display:** Displays the duration of totems and certain area-of-effect spells with a gray border.
+* **Integration with Other asMOD Addons:** Buffs already displayed by asCombatInfo and asPowerBar addons are hidden by asBuffFilter to prevent redundant display of buff information.
+* **Specialization Key Buffs in Center:** Displays 7 important key buffs according to each specialization in the center of the screen.
+* **Exclusion of Screen Alert Buffs:** Buffs that are already displayed as skill activation alerts in the center of the screen are not displayed again by asBuffFilter.
+* **Custom Buff Addition:** You can configure the addon to add and display desired buffs in the center list.
+
+### How to Use
+
+After installing the addon, it works immediately without complex settings. You can see the buff information displayed in the configured locations on the game screen.
+
+* **Buff Cooldown Display:** To display the remaining duration of buffs as numbers, you need to enable the cooldown display feature in the default World of Warcraft interface settings.
+* **Custom Buff Settings:** To add custom buffs to be displayed in the center, you need to update the addon's option settings. (Refer to the video below.)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/l_0_vK4zlHI?si=qk7hpicPcUf-0h74" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+---
+
+
+# asBuffFilter
+
 asBuffFilter는 플레이어와 대상의 중요한 버프를 효율적으로 표시하고 관리하는 데 도움을 줍니다. asMOD 통합 애드온의 일부로 사용될 때 다른 asMOD 애드온(asCombatInfo, asPowerBar 등)과 연동하여 버프 표시의 중복을 피하고 깔끔한 UI를 제공합니다.
 
 ### 주요 기능
