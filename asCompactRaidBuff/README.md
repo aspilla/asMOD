@@ -32,7 +32,7 @@ This addon enhances the default World of Warcraft raid and party frames, providi
         <iframe width="560" height="315" src="https://www.youtube.com/embed/ELxjSUJ9BIw?si=Kmny1-7UlXZF04Iz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 *   **Buff Refresh Warning:**
-    *   When a buff's remaining duration reaches 30% of its total duration (typical refresh point), the unit frame border turns white, and the cooldown counter turns red.
+    *   When a buff's remaining duration reaches 30% of its total duration (typical refresh point), the buff frame border turns white, and the cooldown counter turns red.
 
 *   **Defensive Cooldown (CD) Display (Center):**
     *   Clearly displays whether defensive cooldowns are active in the center of the unit frame.
@@ -130,7 +130,7 @@ Buff locations and defensive CD settings can be configured as shown in the follo
         <iframe width="560" height="315" src="https://www.youtube.com/embed/ELxjSUJ9BIw?si=Kmny1-7UlXZF04Iz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 *   **버프 갱신 경고:**
-    *   버프의 남은 지속 시간이 전체 지속 시간의 30%에 도달하면 (일반적인 갱신 시점), 유닛 프레임 테두리가 흰색으로 변하고 재사용 대기시간 카운트가 빨간색으로 변합니다.
+    *   버프의 남은 지속 시간이 전체 지속 시간의 30%에 도달하면 (일반적인 갱신 시점), 버프 프레임 테두리가 흰색으로 변하고 재사용 대기시간 카운트가 빨간색으로 변합니다.
 
 
 *   **방어 생존기 표시 (중앙):**
