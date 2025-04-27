@@ -85,7 +85,8 @@ This addon enhances the default World of Warcraft raid and party frames, providi
 **Configuration Example:**
 
 Buff locations and defensive CD settings can be configured as shown in the following video:
-https://www.youtube.com/watch?v=Oi2s6_P0tb4
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Oi2s6_P0tb4?si=Z21OK6gyvEogNcoT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 **Tips:**
 
@@ -183,7 +184,8 @@ https://www.youtube.com/watch?v=Oi2s6_P0tb4
 **설정 예제:**
 
 다음 영상과 같은 방식으로 버프 위치/생존기 설정이 가능합니다.
-https://www.youtube.com/watch?v=Oi2s6_P0tb4
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Oi2s6_P0tb4?si=Z21OK6gyvEogNcoT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 **Tips:**
 
