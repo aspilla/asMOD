@@ -17,6 +17,9 @@
 ## Default Button Configuration Policy
 
 *   By default, 5 buttons are pre-configured per class according to the rules below. These can be changed via `esc >> Options >> AddOns >> asCombatInfo`.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/yR7rTQcQ5jU?si=unfmLnS8A5EbIfdQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 *   Up to 11 buttons can be registered (5 on the top row, 6 on the bottom). If you configure the bottom 6 buttons, the Cooldown list from the `asCooldownpulse` addon will be hidden.
 
 | Button 1          | Button 2              | Button 3         | Button 4          | Button 5             |
@@ -50,6 +53,9 @@
 ## 버튼 기본 설정 정책
 
 * 직업별로 5개의 버튼이 기본 설정 되어 있습니다. 아래와 같은 규칙으로 설정 되어 있으며, esc >> 설정 >> 애드온 >> asCombatInfo에서 설정 변경 가능합니다.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/yR7rTQcQ5jU?si=unfmLnS8A5EbIfdQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 * 최대 11개 버튼등록이 가능합니다. 상단 5개, 하단 6개가 표시 되며, 하단 6개를 추가 하시면 asCooldownpulse 의 Cooldown list 는 표시 되지 않습니다.
 
 | 버튼 1 | 버튼 2 | 버튼 3 | 버튼 4 | 버튼 5 |
