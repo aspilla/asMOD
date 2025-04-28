@@ -6,8 +6,8 @@ asMOD is a collection of custom World of Warcraft addons designed to enhance you
 
 * **Enhanced UI:** Addresses shortcomings in the default UI and improves various aspects of gameplay.
 * **All Classes and Specs Supported:**  All asMOD features work regardless of your class or specialization.
-* **Optimized Performance:** Designed for minimal performance impact, ensuring smooth gameplay without lag or FPS drops.
-* **Retail WoW Support (Internal Strife):** Currently supports only the retail version of World of Warcraft (Internal Strife).
+* **Optimized Performance:** Designed for minimal performance impact, ensuring smooth gameplay without lag or FPS drops, not using Weakaura or Elv.
+* **Retail WoW Support:** Currently supports only the retail version of World of Warcraft.
 
 ## Cautions (asUnitFrame Related)
 
@@ -25,8 +25,7 @@ The following errors may occur:
 
 ## Installation, Removal, Update, and Configuration Guide
 
-[**Installation/Removal/Update/Configuration Guide**](https://www.youtube.com/watch?v=TGrs8p5x0DI)
-
+<iframe width="560" height="315" src="https://www.youtube.com/embed/TGrs8p5x0DI?si=jdNVioeIFnl365eS" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## asMOD Addon List
 
@@ -89,7 +88,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입�
 
 *   **기본 UI 개선:** 기본 UI의 부족한 점을 보완하고, 게임 플레이 중 불편했던 부분을 대부분 해결해줍니다.
 *   **모든 직업 및 특성 지원:** 어떤 직업이나 특성을 플레이하더라도 asMOD의 모든 기능을 활용할 수 있습니다.
-*   **최적화된 성능:** 게임 성능에 영향을 주지 않도록 최적화되어 있어, 렉이나 프레임 저하 없이 쾌적하게 플레이할 수 있습니다.
+*   **최적화된 성능:** 게임 성능에 영향을 주지 않도록 최적화되어 있어, 렉이나 프레임 저하 없이 쾌적하게 플레이할 수 있습니다. Weakaura 나 Elv 를 사용하지 않습니다.
 *   **본섭(내부전쟁) 지원:** 현재는 본 서버(내부전쟁)만 지원합니다.
 
 ## 주의사항 (asUnitFrame 관련)
