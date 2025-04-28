@@ -69,6 +69,7 @@ The following errors may occur:
 | asDotSnapshot          | Displays the strength of dots for shadow and assassination rogues              | [Link](https://www.curseforge.com/wow/addons/asdotsnapshot)         |
 | asCPUProfile           | Checks addon CPU usage.                                                       | [Link](https://www.curseforge.com/wow/addons/ascpuprofile)          |
 | asHideNameplates       | Hides nameplates for interrupt assistance.                                      | [Link](https://www.curseforge.com/wow/addons/ashidenameplates)      |
+| asOverlay             | Enhancing spell alert                                                            | [링크](https://www.curseforge.com/wow/addons/asoverlay)             |
 | BugSack, BugGrabber    | [External] Addon error saver                                                   |                                                                   |
 | Details                | [External] Damage meter.                                                       |                                                                   |
 | DBM                    | [External] Dungeon boss skill announcer.                                        |                                                                   |
@@ -144,6 +145,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입�
 | asDotSnapshot         | 야드, 암살도적 도트 강함정도 표시 (asCombatInfo, asNameplates, asDebuffFilter 연동) | [링크](https://www.curseforge.com/wow/addons/asdotsnapshot)         |
 | asCPUProfile          | 애드온 CPU 사용률 확인                                                      | [링크](https://www.curseforge.com/wow/addons/ascpuprofile)          |
 | asHideNameplates      | 차단 도움 이름표 숨김                                                        | [링크](https://www.curseforge.com/wow/addons/ashidenameplates)      |
+| asOverlay             | 주문 알림 강화                                                            | [링크](https://www.curseforge.com/wow/addons/asoverlay)             |
 | BugSack, BugGrabber   | [외부] 애드온 오류 저장                                                      |                                                                   |
 | Details               | [외부] 데미지 미터기                                                        |                                                                   |
 | DBM                   | [외부] 던전 주요 스킬 알리미                                                   |                                                                   |
