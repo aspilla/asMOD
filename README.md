@@ -25,7 +25,11 @@ The following errors may occur:
 
 ## Installation, Removal, Update, and Configuration Guide
 
+* Installation Guide
 <iframe width="560" height="315" src="https://www.youtube.com/embed/TGrs8p5x0DI?si=jdNVioeIFnl365eS" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+* UI positioning guide
+<iframe width="560" height="315" src="https://www.youtube.com/embed/sqFLkn9vQ_8?si=OzcQBiZtTMffb2oT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## asMOD Addon List
 
