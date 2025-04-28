@@ -78,6 +78,8 @@ Note: Showing cooldowns on the left top corner is from asReady addon.
 *   **Customization and Options:**
     *   All of these features can be individually toggled on or off via the in-game options menu (`Esc > Options > AddOns > asCompactRaidBuff`).
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/rSiw0b1oELk?si=wJ4e5xhk8S1_tkTP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 **Installation:**
 
 1.  Copy the addon folder to your World of Warcraft `Interface/AddOns` directory.
@@ -180,7 +182,9 @@ Buff locations and defensive CD settings can be configured as shown in the follo
     * 버프가 갱신 시점에 가까워지면 지속시간 텍스트가 빨간색으로 변합니다.
 
 *   **사용자 지정 및 옵션:**
-    *   이러한 모든 기능은 게임 내 옵션 메뉴 (Esc > 옵션 > 애드온 > asCompactRaidBuff)를 통해 개별적으로 켜고 끌 수 있습니다. 
+    *   이러한 모든 기능은 게임 내 옵션 메뉴 (Esc > 옵션 > 애드온 > asCompactRaidBuff)를 통해 개별적으로 켜고 끌 수 있습니다.
+
+ <iframe width="560" height="315" src="https://www.youtube.com/embed/rSiw0b1oELk?si=wJ4e5xhk8S1_tkTP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 **설치 방법:**
 
