@@ -5,6 +5,8 @@ This addon enhances the default World of Warcraft raid and party frames, providi
 
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCompactraidbuff.jpg?raw=true)   
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DC8w21t_SLs?si=POLD4CPQuAhKO1Nv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 **Key Features:**
 
 *   **Tracking of Essential Heal-over-Time (HoT) Effects (Top Right, Center Right, Bottom Right):**
@@ -102,6 +104,9 @@ Buff locations and defensive CD settings can be configured as shown in the follo
 이 애드온은 기본 월드 오브 워크래프트 공격대 및 파티 프레임을 개선하여, 힐러 및 다른 역할군에게 중요한 정보를 제공합니다. 또한, 간소화된 경험을 제공하여 상황 인지 능력을 향상시키고, 보다 효율적인 치유와 공격대 관리를 가능하게 합니다.
 
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCompactraidbuff.jpg?raw=true)   
+
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DC8w21t_SLs?si=POLD4CPQuAhKO1Nv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 **주요 기능:**
     
