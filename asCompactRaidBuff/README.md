@@ -7,6 +7,8 @@ This addon enhances the default World of Warcraft raid and party frames, providi
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DC8w21t_SLs?si=POLD4CPQuAhKO1Nv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+Note: Showing cooldowns on the left top corner is from asReady addon.
+
 **Key Features:**
 
 *   **Tracking of Essential Heal-over-Time (HoT) Effects (Top Right, Center Right, Bottom Right):**
@@ -107,6 +109,8 @@ Buff locations and defensive CD settings can be configured as shown in the follo
 
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DC8w21t_SLs?si=POLD4CPQuAhKO1Nv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+참고: 좌상단 Cooldown 표시는 asReady 기능 입니다.
 
 **주요 기능:**
     
