@@ -82,6 +82,10 @@
 
 * All features can be configured in the in-game settings (Esc > Options).
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ebttCrIsHLU?si=4jLU7MtZhsAkndvp" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/mThzeV48t-A?si=IPRpMCloFFeurE0y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ---
 
 # asNamePlates: 이름표(NamePlates) 개선 애드온
@@ -211,4 +215,4 @@
 * 게임 내 설정 (Esc > 옵션)에서 모든 기능을 구성할 수 있습니다.
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ebttCrIsHLU?si=4jLU7MtZhsAkndvp" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
--------------------------------------------------------------------
+<iframe width="560" height="315" src="https://www.youtube.com/embed/mThzeV48t-A?si=IPRpMCloFFeurE0y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
