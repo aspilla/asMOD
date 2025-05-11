@@ -691,15 +691,22 @@ end
 
 local function ACDP_OnUpdate()
 	ACDP_Checkcooldown();
+end
+
+local function ACDP_OnUpdate2()
 	ACDP_UpdateCooldown();
 end
 
 
 local timer;
+local timer2;
 
 local function setupKnownSpell()
 	if timer then
 		timer:Cancel();
+	end
+	if timer2 then
+		timer2:Cancel();
 	end
 
 	KnownSpellList = {};
@@ -719,7 +726,9 @@ local function setupKnownSpell()
 	scanSpellIcons();
 
 	--print("초기화")
-	timer = C_Timer.NewTicker(ACDP_UpdateRate, ACDP_OnUpdate);
+	timer = C_Timer.NewTicker(ACDP_UpdateRate * 2, ACDP_OnUpdate);
+	timer2 = C_Timer.NewTicker(ACDP_UpdateRate, ACDP_OnUpdate2);
+	
 end
 
 local bfirst = true;
