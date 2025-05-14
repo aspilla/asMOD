@@ -3,7 +3,7 @@ local _, ns = ...;
 ns.UpdateRate = 0.25; -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
 
 local Options_Default = {
-	version = 250108,
+	version = 250513,
 	ShowBuffColor = true,       -- 버프가 Frame Color 를 변경 할지
 	ShowBuffColor2 = true,       -- 버프가 Frame Color 를 변경 할지
 	ShowHealthColor = true,     -- 체력 낮은 사람 Color 변경 (사제 생명)
@@ -13,6 +13,7 @@ local Options_Default = {
 	BorderDispelAlert = true,   -- Dispel Alert (태두리)
 	LeftTopRaidIcon = true,     -- Raid Icon
 	BottomHealerManaBar = true, -- 힐러 마나바
+	BottomTankPowerBar = true, 	-- 탱커 Power 바
 	BuffSizeRate = 0.9,         -- 기존 Size 크기 배수
 	ShowBuffCooldown = true,    -- 버프 지속시간을 보이려면	
 	MinCoolShowBuffSize = 10,   -- 이크기보다 Icon Size 가 작으면 안보이게 한다. 무조건 보이게 하려면 0 (기본 Buff Debuff만 보임)

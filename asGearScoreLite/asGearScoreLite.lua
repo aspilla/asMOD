@@ -26,23 +26,17 @@ local asGearScore = CreateFrame("Frame", nil, UIParent);
 local fontstrings = {};
 local inspectframe;
 local TAvg;
+local bfirst = true;
 
 local function OnEvent(self, event, arg1)
+
 	if (event == "PLAYER_EQUIPMENT_CHANGED") then
 		MyPaperDoll();
-	elseif (event == "INSPECT_READY") then
+	end
 
-		local guid = arg1;
-
-		if not (UnitGUID("target") == guid) then 
-			return; 
-		end
-		
-		if CanInspect("target") then
-			local Avg, Max, Min = GetAvgIvl("target");
-			TAvg:SetText(Avg .. " Lvl");
-			TAvg:SetTextColor(1, 1, 1);
-		end
+	if InspectPaperDollItemsFrame and bfirst then
+		InspectPaperDollItemsFrame:HookScript("OnShow", asHookInspect);
+		bfirst = false;
 	end
 end
 
@@ -144,11 +138,25 @@ function MyPaperDoll()
 	local Avg, Max, Min = GetAvgIvl("player");
 end
 
+local function InspectPaperDoll()
+	if (InCombatLockdown()) then return; end
+
+	if CanInspect("target") then
+		local Avg, Max, Min = GetAvgIvl("target");
+		TAvg:SetText(Avg .. " Lvl");
+		TAvg:SetTextColor(1, 1, 1);
+	end
+end
+
+function asHookInspect()
+	C_Timer.After(0.5, InspectPaperDoll);
+end
+
 local font, _, flags = NumberFontNormal:GetFont()
 
 asGearScore:SetScript("OnEvent", OnEvent);
 asGearScore:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
-asGearScore:RegisterEvent("INSPECT_READY")
+asGearScore:RegisterEvent("ADDON_LOADED");
 
 CharacterFrame:HookScript("OnShow", MyPaperDoll)
 

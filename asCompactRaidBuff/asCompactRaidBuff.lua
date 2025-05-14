@@ -595,19 +595,38 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         manaBarUsedHeight = 8;
     end
 
-    asframe.checkMana = false;
+    asframe.checkManaType = nil;
 
-    if role and role == "HEALER" and manaBarUsedHeight == 0 and ns.options.BottomHealerManaBar then
-        asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(asframe.unit, Enum.PowerType.Mana));
-        asframe.asManabar:SetValue(UnitPower(asframe.unit, Enum.PowerType.Mana));
 
-        local info = PowerBarColor["MANA"];
+    if manaBarUsedHeight == 0 then
+        if role then 
+            if (role == "HEALER") and ns.options.BottomHealerManaBar then
+                asframe.checkManaType = Enum.PowerType.Mana;
+            elseif (role == "TANK") and ns.options.BottomTankPowerBar then
+                local localizedClass, englishClass = UnitClass(asframe.unit);
+
+                if englishClass == "WARRIOR" or englishClass == "DRUID" then
+                    asframe.checkManaType = Enum.PowerType.Rage;
+                elseif englishClass == "DEATHKNIGHT" then
+                    asframe.checkManaType = Enum.PowerType.RunicPower;
+                elseif englishClass == "DEMONHUNTER" then
+                    asframe.checkManaType = Enum.PowerType.Fury;
+
+                end
+
+            end
+        end
+    end
+
+    if asframe.checkManaType then
+        asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(asframe.unit, asframe.checkManaType));
+        asframe.asManabar:SetValue(UnitPower(asframe.unit, asframe.checkManaType));
+
+        local info = PowerBarColor[asframe.checkManaType];
         if (info) then
             local r, g, b = info.r, info.g, info.b;
             asframe.asManabar:SetStatusBarColor(r, g, b);
         end
-
-        asframe.checkMana = true;
 
         asframe.asManabar:Show();
     else

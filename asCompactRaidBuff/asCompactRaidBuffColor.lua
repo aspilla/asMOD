@@ -151,10 +151,10 @@ function ns.ACRB_UpdateHealerMana(asframe)
 		ns.ACRB_setupFrame(asframe);
 	end
 
-	if (not asframe.asManabar) or (not asframe.checkMana) then
+	if (not asframe.asManabar) or (asframe.checkManaType == nil) then
 		return;
 	end
 
-	asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(asframe.unit, Enum.PowerType.Mana));
-	asframe.asManabar:SetValue(UnitPower(asframe.unit, Enum.PowerType.Mana));
+	asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(asframe.unit, asframe.checkManaType));
+	asframe.asManabar:SetValue(UnitPower(asframe.unit, asframe.checkManaType));
 end
