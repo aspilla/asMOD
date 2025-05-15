@@ -51,6 +51,9 @@ Note: Showing cooldowns on the left top corner is from asReady addon.
 *   **Healer-Only Mana Bar (Bottom):**
     *   If the class resource display is disabled, a thin, healer-specific mana bar will be displayed.
 
+*   **Tank-Only Power Bar (Bottom):**
+    *   If the class resource display is disabled, a thin, power bar will be displayed if tank's spec is deathknight, warrior, druid or demonhunter.
+
 *   **Raid Marker Display (Left Center):**
     *   Displays the raid marker assigned to each individual player on the left center of their unit frame.
 
@@ -156,6 +159,9 @@ Buff locations and defensive CD settings can be configured as shown in the follo
 
 *   **힐러 전용 마나 바 (하단):**
     *   직업 자원 표시를 비활성화하면, 힐러 전용 얇은 마나 바가 표시됩니다.
+
+*   **탱커 전용 파워 바 (하단):**
+    *   직업 자원 표시를 비활성화하면, 탱커 전용 얇은 파워 바가 표시됩니다. 탱커가 죽기, 전사, 드루이드 혹은 악사 일경우만 표시.
 
 *   **공격대 징표 표시 (좌중단):**
     *   개별 플레이어에게 할당된 공격대 징표를 유닛 프레임 좌중단에 표시합니다.
