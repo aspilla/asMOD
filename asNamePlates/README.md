@@ -70,6 +70,9 @@
 * If it is the "target", a red arrow is displayed above.
 * If it is "mouseover", a green arrow is displayed below.
 * In group play, if you are not a tank and an enemy targets you, a red/orange mark appears on the left side of the nameplate.
+* Shows the power of mob below healthbar (if not Mana and over than 0)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bsNd4YaCzrY?si=gvsDL_yhUtKmv1xa" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 
 * Pet's target indicator (red pet icon in the bottom right)
 * For Beast Mastery Hunters, displays the target of Beast Cleave (green pet icon at the bottom and nameplate color change)
@@ -160,6 +163,9 @@
 * 만약 "마우스오버"일 경우, 아래쪽에 녹색 화살표가 표시됩니다.
 * 그룹 플레이에서 탱커가 아니고 적이 당신을 타겟팅할 경우, 네임플레이트 왼쪽에 빨간색/주황색 표시가 나타납니다.
 * 펫의 타겟 표시 (오른쪽 하단에 빨간색 펫 아이콘)
+* 몹의 Power를 Healthbar 아래 표시 (마나가 아니고, 0보다 클경우)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bsNd4YaCzrY?si=gvsDL_yhUtKmv1xa" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 * 야수 사냥꾼의 경우, 짐승의 휩쓸기 대상 표시 (하단에 녹색 펫 아이콘과 네임플레이트 색상 변경)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/1YYCt5gbQGU?si=Sgv7zNxlc0gsQvbD" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>

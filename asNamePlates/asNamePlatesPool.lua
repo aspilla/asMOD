@@ -106,6 +106,28 @@ local function creatframe()
     object.BarColor = object:CreateTexture(nil, "OVERLAY", "asColorTextureTemplate", 2);
     object.healthtext = object:CreateFontString(nil, "OVERLAY");
     object.realhealthtext = object:CreateFontString(nil, "OVERLAY");
+   
+    object.powerbar = CreateFrame("StatusBar", nil, object);
+    object.powerbar:SetStatusBarTexture("Interface\\addons\\asNamePlates\\UI-StatusBar")
+    object.powerbar:GetStatusBarTexture():SetHorizTile(false)
+    object.powerbar:SetMinMaxValues(0, 100)
+    object.powerbar:SetValue(100)
+    object.powerbar:SetHeight(2)
+    object.powerbar:SetWidth(50);
+
+    object.powerbar.bg = object.powerbar:CreateTexture(nil, "BACKGROUND");
+    object.powerbar.bg:SetPoint("TOPLEFT", object.powerbar, "TOPLEFT", -1, 1);
+    object.powerbar.bg:SetPoint("BOTTOMRIGHT", object.powerbar, "BOTTOMRIGHT", 1, -1);
+
+    object.powerbar.bg:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga");
+    object.powerbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
+    object.powerbar.bg:SetVertexColor(0, 0, 0, 0.8);
+
+    object.powerbar.value = object.powerbar:CreateFontString(nil, "ARTWORK");
+    object.powerbar.value:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize - 3, "OUTLINE");
+    object.powerbar.value:SetTextColor(1, 1, 1, 1)
+    object.powerbar.value:SetPoint("CENTER", object.powerbar, "CENTER", 0, 0);
+    
     object.motext = object:CreateFontString(nil, "OVERLAY");
     object.tgtext = object:CreateFontString(nil, "OVERLAY");
     object.resourcetext = object:CreateFontString(nil, "OVERLAY");
@@ -119,6 +141,8 @@ local function creatframe()
     object.realhealthtext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize - 2, "OUTLINE");
     object.motext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
     object.tgtext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
+
+
 
     return object;
 end

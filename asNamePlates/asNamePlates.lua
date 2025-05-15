@@ -600,6 +600,9 @@ local function updateTargetNameP(self)
         if GetCVarBool("nameplateResourceOnTarget") then
             base_y = base_y + GetClassBarHeight();
         end
+
+        self.powerbar.value:Show();
+
     elseif UnitIsUnit(unit, "player") then
         height = orig_height + ns.ANameP_TargetHealthBarHeight;
         self.healthtext:Show();
@@ -614,9 +617,11 @@ local function updateTargetNameP(self)
             height = orig_height + ns.ANameP_TargetHealthBarHeight;
             self.healthtext:Show();
             self.motext:Show();
+            self.powerbar.value:Show();
         else
             self.healthtext:Hide();
             self.motext:Hide();
+            self.powerbar.value:Hide();
         end
 
         self.tgtext:Hide();
@@ -722,6 +727,28 @@ local function updateHealthText(asframe)
         asframe.healthtext:SetTextColor(1, 0.5, 0.5, 1);
     elseif valuePct > 0 then
         asframe.healthtext:SetTextColor(1, 1, 1, 1);
+    end
+end
+
+local function updatePower(asframe)
+    local power;
+    local maxPower;
+    local unit = asframe.unit;
+
+    if not asframe.bupdatePower then
+        return;        
+    end
+
+    power = UnitPower(unit);
+    maxPower = UnitPowerMax(unit);
+    asframe.powerbar:SetMinMaxValues(0, maxPower);
+    asframe.powerbar:SetValue(power);
+    asframe.powerbar.value:SetText(power);
+
+    if power > 0 then
+        asframe.powerbar:Show();
+    else
+        asframe.powerbar:Hide();
     end
 end
 
@@ -1245,6 +1272,7 @@ local function asNamePlates_OnEvent(self, event, ...)
     if (event == "PLAYER_TARGET_CHANGED") then
         updateTargetNameP(self);
         updateHealthText(self);
+        updatePower(self);
     else
         checkSpellCasting(self);
         updateHealthbarColor(self);
@@ -1335,6 +1363,7 @@ local function updateAll(asframe)
     updateAuras(asframe);
     updateTargetNameP(asframe);
     updateHealthText(asframe);
+    updatePower(asframe);
     updateUnitRealHealthText(asframe);
     updateHealthbarColor(asframe);
     updatePVPAggro(asframe);
@@ -1522,10 +1551,10 @@ local function addNamePlate(namePlateFrameBase)
         asframe:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
     end
 
+    local orig_width = healthbar:GetWidth();
     if ns.ANameP_SIZE > 0 then
         asframe.icon_size = ns.ANameP_SIZE;
     else
-        local orig_width = healthbar:GetWidth();
         asframe.icon_size = (orig_width / ns.ANameP_DebuffsPerLine) - (ns.ANameP_DebuffsPerLine - 1);
     end
 
@@ -1552,6 +1581,23 @@ local function addNamePlate(namePlateFrameBase)
     asframe.pettarget:SetPoint("TOPRIGHT", healthbar, "BOTTOMRIGHT", 0, -1);
     asframe.pettarget:SetText(pettargetIcon);
     asframe.pettarget:Hide();
+
+    asframe.powerbar:ClearAllPoints();
+    asframe.powerbar:SetPoint("TOP", healthbar, "BOTTOM", 0, -1);
+    asframe.powerbar:SetWidth(orig_width/2)
+    asframe.bupdatePower = false;
+
+    local powerType, powerToken = UnitPowerType(unit);
+
+    if ns.options.ANameP_ShowPower and powerType ~= nil and powerType ~= Enum.PowerType.Mana and not UnitIsUnit(unit, "player") then
+        local powerColor = PowerBarColor[powerType]
+        if powerColor then
+            asframe.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b)
+        end
+        asframe.bupdatePower = true;
+    else
+        asframe.powerbar:Hide();
+    end
 
     asframe:SetWidth(1);
     asframe:SetHeight(1);
@@ -1714,6 +1760,7 @@ local function updateUnit(namePlateUnitToken, bquick)
             local asframe = namePlateFrameBase.asNamePlates;
             updateTargetNameP(asframe);
             updateHealthText(asframe);
+            updatePower(asframe);
 
             if not bquick then
                 updateAuras(asframe);
