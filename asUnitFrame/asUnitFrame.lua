@@ -707,7 +707,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame:SetSize(width, height)
 
     frame.healthbar = CreateFrame("StatusBar", nil, frame);
-    frame.healthbar:SetStatusBarTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar", "BORDER")
+    frame.healthbar:SetStatusBarTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar")
     frame.healthbar:GetStatusBarTexture():SetHorizTile(false)
     frame.healthbar:SetMinMaxValues(0, 100)
     frame.healthbar:SetValue(100)
@@ -769,7 +769,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar:SetWidth(hwidth);
 
     frame.healthbar.predictionBar = frame.healthbar:CreateTexture(nil, "BORDER");
-    frame.healthbar.predictionBar:SetTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar", "BORDER");
+    frame.healthbar.predictionBar:SetTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar");
     frame.healthbar.predictionBar:Hide();
 
     frame.healthbar.absorbBar = frame.healthbar:CreateTexture(nil, "BORDER");
@@ -844,7 +844,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar.mark:SetPoint("CENTER", frame.healthbar, "CENTER", 0, 0);
 
     frame.powerbar = CreateFrame("StatusBar", nil, frame);
-    frame.powerbar:SetStatusBarTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar", "BORDER")
+    frame.powerbar:SetStatusBarTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar")
     frame.powerbar:GetStatusBarTexture():SetHorizTile(false)
     frame.powerbar:SetMinMaxValues(0, 100)
     frame.powerbar:SetValue(100)
@@ -882,7 +882,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
 
     frame.castbar = CreateFrame("StatusBar", nil, frame)
     frame.castbar:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -2);
-    frame.castbar:SetStatusBarTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar", "BORDER")
+    frame.castbar:SetStatusBarTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar")
     frame.castbar:GetStatusBarTexture():SetHorizTile(false)
     frame.castbar:SetMinMaxValues(0, 100)
     frame.castbar:SetValue(100)

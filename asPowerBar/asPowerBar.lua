@@ -3663,7 +3663,7 @@ do
     APB:Show();
 
     APB.bar = CreateFrame("StatusBar", nil, APB)
-    APB.bar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER")
+    APB.bar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar")
     APB.bar:GetStatusBarTexture():SetHorizTile(false)
     APB.bar:SetMinMaxValues(0, 100)
     APB.bar:SetValue(100)
@@ -3694,7 +3694,7 @@ do
     APB.bar.PredictionBar:Hide();
 
     APB.healthbar = CreateFrame("StatusBar", nil, APB);
-    APB.healthbar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER")
+    APB.healthbar:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar")
     APB.healthbar:GetStatusBarTexture():SetHorizTile(false)
     APB.healthbar:SetMinMaxValues(0, 100)
     APB.healthbar:SetValue(100)
@@ -3728,7 +3728,7 @@ do
 
     for j = 0, 1 do
         APB.buffbar[j] = CreateFrame("StatusBar", nil, APB);
-        APB.buffbar[j]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER")
+        APB.buffbar[j]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar")
         APB.buffbar[j]:GetStatusBarTexture():SetHorizTile(false);
         APB.buffbar[j]:SetMinMaxValues(0, 100);
         APB.buffbar[j]:SetValue(100);
@@ -3785,7 +3785,7 @@ do
 
     for j = 0, 0 do
         APB.stackbar[j] = CreateFrame("StatusBar", nil, APB);
-        APB.stackbar[j]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER")
+        APB.stackbar[j]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar")
         APB.stackbar[j]:GetStatusBarTexture():SetHorizTile(false);
         APB.stackbar[j]:SetMinMaxValues(0, 100);
         APB.stackbar[j]:SetValue(100);
@@ -3828,7 +3828,7 @@ do
 
     for i = 1, 20 do
         APB.combobar[i] = CreateFrame("StatusBar", nil, APB);
-        APB.combobar[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER");
+        APB.combobar[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar");
         APB.combobar[i]:GetStatusBarTexture():SetHorizTile(false);
         APB.combobar[i]:SetFrameLevel(9000);
         APB.combobar[i]:SetMinMaxValues(0, 100);
@@ -3866,7 +3866,7 @@ do
 
     for i = 1, 20 do
         APB.combobar2[i] = CreateFrame("StatusBar", nil, APB);
-        APB.combobar2[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER");
+        APB.combobar2[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar");
         APB.combobar2[i]:GetStatusBarTexture():SetHorizTile(false);
         APB.combobar2[i]:SetMinMaxValues(0, 100);
         APB.combobar2[i]:SetValue(100);
@@ -3902,7 +3902,7 @@ do
 
     for i = 1, 10 do
         APB.spellbar[i] = CreateFrame("StatusBar", nil, APB);
-        APB.spellbar[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar", "BORDER");
+        APB.spellbar[i]:SetStatusBarTexture("Interface\\addons\\aspowerbar\\UI-StatusBar");
         APB.spellbar[i]:GetStatusBarTexture():SetHorizTile(false);
         APB.spellbar[i]:SetMinMaxValues(0, 100);
         APB.spellbar[i]:SetValue(100);

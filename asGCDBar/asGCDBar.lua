@@ -26,7 +26,7 @@ AGCDB:Show();
 
 
 AGCDB.gcdbar = CreateFrame("StatusBar", nil, UIParent)
-AGCDB.gcdbar:SetStatusBarTexture("Interface\\addons\\asGCDBar\\UI-StatusBar", "BORDER")
+AGCDB.gcdbar:SetStatusBarTexture("Interface\\addons\\asGCDBar\\UI-StatusBar")
 AGCDB.gcdbar:GetStatusBarTexture():SetHorizTile(false)
 AGCDB.gcdbar:SetMinMaxValues(0, 100)
 AGCDB.gcdbar:SetValue(100)
