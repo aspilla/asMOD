@@ -1,8 +1,8 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 240608,
+    Version = 250527,
     PlaySound = true,    
-    HideTarget = true,    
+    HideTarget = false,    
 };
 
 ns.options = CopyTable(Options_Default);

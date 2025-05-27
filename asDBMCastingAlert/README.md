@@ -1,64 +1,64 @@
 # asDBMCastingAlert
 
-asDBMCastingAlert provides advanced, customizable visual and auditory alerts for important enemy spell casts, with a strong emphasis on integration with Deadly Boss Mods (DBM). It is designed to help players react quickly to critical mechanics.
+asDBMCastingAlert provides highly customizable visual and auditory alerts for important enemy spell casts that require interruption, with a strong focus on integration with Deadly Boss Mods (DBM).
+![asDBMCastingAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDBMCastingAlert.png?raw=true)
 
 ## Main Features
 
 1.  **Dedicated Alert Bars**:
-    *   Displays up to three dedicated bars for spells identified as important by DBM.
-    *   Prioritizes showing spells from your `focus` target, then your current `target`, then other relevant units.
-    *   Each bar shows the spell icon, spell name, remaining cast/channel time, and the target of the spell (if applicable).
+    *   Displays up to 3 dedicated bars for spells identified as important by DBM.
+    *   Prioritizes spells from your `Focus Target`, then your current `Target`, and then other relevant units.
+    *   Each bar shows the spell icon, spell name, remaining cast/channel time, and the spell's target (if applicable).
 
 2.  **DBM Integration**:
     *   Relies on DBM's data to determine which spells are "dangerous" and require an alert.
-    *   Alerts are typically for spells that DBM flags for interrupts, stuns, or other special attention.
+    *   Alerts are typically triggered for spells that DBM marks as needing an interrupt, stun, or other special attention.
 
 3.  **Visual Cues**:
-    *   **Color Coding**: Casting bars are color-coded based on whether the spell is interruptible and whether the player is the direct target.
-        *   Default colors distinguish between:
-            *   Interruptible (player is target)
-            *   Interruptible (player is not target)
-            *   Not Interruptible (player is target)
-            *   Not Interruptible (player is not target)
-    *   **Interrupt Glow**: Spells that DBM marks as needing an interrupt will have a glowing border around the bar and icon.
-    *   **Raid Target Icons**: Displays the assigned raid target icon (skull, cross, etc.) on the spell icon.
+    *   **Color Coding**: Cast bars are color-coded based on whether the spell is interruptible and whether the player is the direct target.
+        *   Default colors differentiate between:
+            *   Interruptible (Player is target)
+            *   Interruptible (Player is not target)
+            *   Not Interruptible (Player is target)
+            *   Not Interruptible (Player is not target)
+    *   **Interrupt Highlight**: Spells marked by DBM as needing an interrupt will have a glowing border around the bar and icon.
+    *   **Raid Target Icons**: Displays raid target icons (Skull, X, etc.) assigned to the spell icon.
 
-4.  **Auditory Alerts (Voice Notifications)**:
-    *   Provides voice callouts for critical spell casts.
-    *   Different sounds for:
+4.  **Auditory Alerts (Voice Cues)**:
+    *   Provides voice cues for important spell casts.
+    *   Different sounds play based on the situation:
         *   General interruptible spell ("Kick")
         *   General non-interruptible spell ("Stun")
-        *   Interruptible spell from **focus** target ("Focus Kick")
-        *   Non-interruptible spell from **focus** target ("Focus Stun")
-        *   Interruptible spell from current **target** ("Target Kick")
-        *   Non-interruptible spell from current **target** ("Target Stun")
-    *   Supports both English and Korean voice packs, selected based on client locale.
-    *   A delay prevents the same voice alert from playing too frequently.
+        *   **Focus Target's** interruptible spell ("Focus Kick")
+        *   **Focus Target's** non-interruptible spell ("Focus Stun")
+        *   Current **Target's** interruptible spell ("Target Kick")
+        *   Current **Target's** non-interruptible spell ("Target Stun")
+    *   Supports both English and Korean voice packs based on client locale.
+    *   Includes a delay feature to prevent the same voice alert from repeating too frequently.
 
-5.  **Customization**:
-    *   Many visual aspects (bar size, position, colors, transparency, font sizes) can be configured by editing variables at the top of `asDBMCastingAlert.lua`.
-    *   Sound settings (voice pack paths, playback speed, repeat delay) are also configurable in the Lua file.
-    *   If the `asMOD` addon is installed, some settings like the frame position can be configured through `asMOD`'s options panel.
+5.  **User Settings**:
+    *   The following settings can be configured via `ESC >> Settings >> AddOns >> asDBMCastingAlert`:
+    *   `PlaySound` (Default On): Allows disabling voice alerts.
+    *   `HideTarget` (Default Off): Allows disabling cast alerts for your current target.
+    *   If the `asMOD` addon is installed, some settings like frame position can be configured through `asMOD`'s options panel.
 
-6.  **Filtering**:
-    *   Includes an option (`ns.options.HideTarget`) to hide alerts for the current target if it is not also the focus target, reducing clutter.
-
-## Configuration Variables (in `asDBMCastingAlert.lua`)
+## Setting Variables (in `asDBMCastingAlert.lua`)
 
 *   `CONFIG_SOUND_SPEED`: Playback speed for voice alerts.
-*   `CONFIG_X`, `CONFIG_Y`: Default X and Y position of the alert frame anchor.
-*   `CONFIG_SIZE`: Base size for icon-related elements.
+*   `CONFIG_X`, `CONFIG_Y`: Default X and Y position for the alert frame anchor.
+*   `CONFIG_SIZE`: Default size for icon-related elements.
 *   `CONFIG_VOICE_DELAY`: Minimum delay (in seconds) before repeating the same voice alert.
-*   `CONFIG_WIDTH`, `CONFIG_HEIGHT`: Dimensions of the individual alert bars.
+*   `CONFIG_WIDTH`, `CONFIG_HEIGHT`: Size of individual alert bars.
 *   `CONFIG_ALPHA`: Transparency of the alert bars.
-*   Color variables (e.g., `CONFIG_NOT_INTERRUPTIBLE_COLOR`): Define the RGB colors for different bar states.
-*   Voice file paths (e.g., `CONFIG_VOICE_TARGET_KICK`): Paths to the sound files for alerts.
+*   Color Variables (e.g., `CONFIG_NOT_INTERRUPTIBLE_COLOR`): Define RGB colors for various bar states.
+*   Voice File Paths (e.g., `CONFIG_VOICE_TARGET_KICK`): Paths to sound files for alerts.
 
 ---
 
 # asDBMCastingAlert
 
-asDBMCastingAlert는 중요한 적 주문 시전에 대해 고급 사용자 정의가 가능한 시각 및 청각 알림을 제공하며, Deadly Boss Mods (DBM)와의 연동에 중점을 둡니다. 플레이어가 중요한 메커니즘에 빠르게 반응하도록 돕기 위해 설계되었습니다.
+asDBMCastingAlert는 차단이 필요한 중요한 적 주문 시전에 대해 고급 사용자 정의가 가능한 시각 및 청각 알림을 제공하며, Deadly Boss Mods (DBM)와의 연동에 중점을 둡니다. 
+![asDBMCastingAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDBMCastingAlert.png?raw=true)
 
 ## 주요 기능
 
@@ -94,12 +94,10 @@ asDBMCastingAlert는 중요한 적 주문 시전에 대해 고급 사용자 정�
     *   딜레이 기능이 있어 동일한 음성 알림이 너무 자주 반복되는 것을 방지합니다.
 
 5.  **사용자 설정**:
-    *   다양한 시각적 요소(바 크기, 위치, 색상, 투명도, 글꼴 크기)는 `asDBMCastingAlert.lua` 파일 상단의 변수를 편집하여 구성할 수 있습니다.
-    *   사운드 설정(음성 팩 경로, 재생 속도, 반복 지연) 또한 Lua 파일에서 구성할 수 있습니다.
+    *   esc >> 설정 >> 애드온 >> asDBMCastingAlert 에서 다음 설정이 가능합니다.
+    *   PlaySound (기본 On) : 음성 알림을 끌수 있습니다.
+    *   HideTarget (기본 Off) : 대상의 시전 알림을 끌 수 있습니다.
     *   `asMOD` 애드온이 설치된 경우, 프레임 위치와 같은 일부 설정은 `asMOD`의 옵션 패널을 통해 구성할 수 있습니다.
-
-6.  **필터링**:
-    *   현재 대상이 주시 대상이 아닌 경우 해당 대상에 대한 알림을 숨기는 옵션 (`ns.options.HideTarget`)을 포함하여 화면 혼잡을 줄입니다.
 
 ## 설정 변수 (in `asDBMCastingAlert.lua`)
 
