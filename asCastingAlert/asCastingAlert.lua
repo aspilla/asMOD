@@ -4,6 +4,7 @@ local ACTA_MaxShow = 3      -- 최대로 보여줄 개수
 local ACTA_FontSize = 18;
 local ACTA_X = 0;
 local ACTA_Y = -80;
+local ACTA_ExceptTarget = false; --대상의 Casting을 뺄지 여부
 
 local function isAttackable(unit)
     local reaction = UnitReaction("player", unit);
@@ -18,7 +19,7 @@ local showlist = {};
 local CastingUnits = {};
 
 local function CheckCasting(unit)
-    if isAttackable(unit) and UnitIsUnit(unit .. "target", "player") and not UnitIsUnit(unit, "target") then
+    if isAttackable(unit) and UnitIsUnit(unit .. "target", "player") and not (ACTA_ExceptTarget and UnitIsUnit(unit, "target")) then
         local name, _, texture, _, endTime, _, _, notInterruptible, spellid = UnitCastingInfo(unit);
         if not name then
             name, _, texture, _, endTime, _, notInterruptible, spellid = UnitChannelInfo(unit);

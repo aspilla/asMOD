@@ -1,43 +1,39 @@
 # asCastingAlert
 
-asCastingAlert provides on-screen alerts for spells being cast by hostile units, particularly those targeting the player or by boss units.
+asCastingAlert is an addon that provides on-screen alerts in the center of the screen for spells being cast by hostile units, especially those targeting the player or cast by boss units.
+![asCastingAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCastingAlert.jpg?raw=true)
+
 
 ## Main Features
 
-1.  **Enemy Casting Notifications**:
-    *   Displays a list of spells currently being cast or channeled by attackable enemies and boss units.
+1.  **Enemy Cast Notification**:
+    *   Displays a list of spells currently being cast or channeled by attackable enemy and boss units.
     *   Each entry shows the spell icon and the remaining cast time.
-    *   Helps players to be aware of incoming spells, especially in hectic encounters.
+    *   Helps players become aware of incoming spells, especially during hectic combat.
 
-2.  **Prioritization of Dangerous Spells**:
-    *   Highlights spells deemed "dangerous" in red for easier identification.
-    *   Integrates with DBM (Deadly Boss Mods): If DBM is installed, asCastingAlert can use DBM's information to identify and mark dangerous spells.
+2.  **Prioritize Dangerous Spells**:
+    *   Highlights spells considered "dangerous" in red for easy identification.
+    *   Integration with DBM (Deadly Boss Mods): If DBM is installed, asCastingAlert will use DBM's information to identify dangerous spells and highlight the remaining cast time in red.
 
-3.  **Customizable Display**:
-    *   Maximum number of spells to display (`ACTA_MaxShow`).
-    *   Font size for the alert text (`ACTA_FontSize`).
-    *   Screen position of the alert frame (`ACTA_X`, `ACTA_Y`).
-    *   These settings are configured by modifying variables at the top of `asCastingAlert.lua`.
+3.  **Tooltip Information**:
+    *   Mousing over a spell icon in the alert list will display the game's default tooltip for that spell.
 
-4.  **Tooltip Information**:
-    *   Hovering over a spell icon in the alert list will show the game's default tooltip for that spell.
+## Settings
 
-5.  **Dynamic List**:
-    *   Alerts are dynamically added and removed as enemies start and stop casting.
-
-## Configuration
-
-Customization requires editing Lua variables at the beginning of the `asCastingAlert.lua` file:
+A separate configuration window is not supported. If necessary, you need to edit the Lua variables at the beginning of the `asCastingAlert.lua` file:
 *   `ACTA_UpdateRate`: How often the addon checks for casting spells (in seconds).
-*   `ACTA_MaxShow`: The maximum number of spell alerts to show simultaneously.
-*   `ACTA_FontSize`: The font size for the spell name and timer.
+*   `ACTA_MaxShow`: The maximum number of spell alerts to display simultaneously.
+*   `ACTA_FontSize`: The font size for spell names and timers.
 *   `ACTA_X`, `ACTA_Y`: The X and Y coordinates for the center of the alert display.
+*   `ACTA_ExceptTarget`: Whether to exclude the target's casting. Default is False.
 
 ---
 
 # asCastingAlert
 
-asCastingAlert는 적대적 유닛, 특히 플레이어를 대상으로 하거나 보스 유닛이 시전하는 주문에 대해 화면에 알림을 제공하는 애드온입니다.
+asCastingAlert는 적대적 유닛, 특히 플레이어를 대상으로 하거나 보스 유닛이 시전하는 주문에 대해 화면 중앙에 알림을 제공하는 애드온입니다.
+![asCastingAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCastingAlert.jpg?raw=true)
+
 
 ## 주요 기능
 
@@ -48,24 +44,16 @@ asCastingAlert는 적대적 유닛, 특히 플레이어를 대상으로 하거�
 
 2.  **위험 주문 우선 표시**:
     *   "위험하다고" 간주되는 주문을 빨간색으로 강조하여 쉽게 식별할 수 있도록 합니다.
-    *   DBM (Deadly Boss Mods)과 연동: DBM이 설치된 경우, asCastingAlert는 DBM의 정보를 사용하여 위험 주문을 식별하고 표시할 수 있습니다.
+    *   DBM (Deadly Boss Mods)과 연동: DBM이 설치된 경우, asCastingAlert는 DBM의 정보를 사용하여 위험 주문을 식별 하도록 Casting의 남은 시간을 빨간색으로 강조 합니다.
 
-3.  **사용자 설정 가능한 표시**:
-    *   표시할 최대 주문 수 (`ACTA_MaxShow`).
-    *   알림 텍스트의 글꼴 크기 (`ACTA_FontSize`).
-    *   알림 프레임의 화면 위치 (`ACTA_X`, `ACTA_Y`).
-    *   이러한 설정은 `asCastingAlert.lua` 파일 상단의 변수를 수정하여 구성합니다.
-
-4.  **툴팁 정보**:
+3.  **툴팁 정보**:
     *   알림 목록의 주문 아이콘 위에 마우스를 올리면 해당 주문에 대한 게임 기본 툴팁이 표시됩니다.
-
-5.  **동적 목록**:
-    *   적이 주문 시전을 시작하거나 중지함에 따라 알림이 동적으로 추가되고 제거됩니다.
 
 ## 설정
 
-사용자 설정은 `asCastingAlert.lua` 파일 시작 부분의 Lua 변수를 편집해야 합니다:
+별도의 설정 창은 지원하지 않으며 필요시 `asCastingAlert.lua` 파일 시작 부분의 Lua 변수를 편집해야 합니다:
 *   `ACTA_UpdateRate`: 애드온이 시전 주문을 확인하는 빈도 (초 단위).
 *   `ACTA_MaxShow`: 동시에 표시할 최대 주문 알림 수.
 *   `ACTA_FontSize`: 주문 이름 및 타이머의 글꼴 크기.
 *   `ACTA_X`, `ACTA_Y`: 알림 표시 중앙의 X 및 Y 좌표.
+*   `ACTA_ExceptTarget` : 대상의 케스팅을 뺄지 여부. 기본 False
