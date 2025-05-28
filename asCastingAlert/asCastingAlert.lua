@@ -1,10 +1,11 @@
-﻿---설정부
+﻿local _, ns = ...;
+---설정부
 local ACTA_UpdateRate = 0.1 -- Check할 주기
 local ACTA_MaxShow = 3      -- 최대로 보여줄 개수
 local ACTA_FontSize = 18;
 local ACTA_X = 0;
 local ACTA_Y = -80;
-local ACTA_ExceptTarget = false; --대상의 Casting을 뺄지 여부
+local CONFIG_VOICE_TARGETED = "Interface\\AddOns\\asCastingAlert\\Targeted.mp3"
 
 local function isAttackable(unit)
     local reaction = UnitReaction("player", unit);
@@ -19,7 +20,7 @@ local showlist = {};
 local CastingUnits = {};
 
 local function CheckCasting(unit)
-    if isAttackable(unit) and UnitIsUnit(unit .. "target", "player") and not (ACTA_ExceptTarget and UnitIsUnit(unit, "target")) then
+    if isAttackable(unit) and UnitIsUnit(unit .. "target", "player") and not (not ns.options.ShowTarget and UnitIsUnit(unit, "target")) then
         local name, _, texture, _, endTime, _, _, notInterruptible, spellid = UnitCastingInfo(unit);
         if not name then
             name, _, texture, _, endTime, _, notInterruptible, spellid = UnitChannelInfo(unit);
@@ -55,8 +56,21 @@ local function Comparison(AIndex, BIndex)
     return false;
 end
 
+local prevcount = 0;
+local istank = false;
+
+local function checkTank()
+    local assignedRole = UnitGroupRolesAssigned("player");
+    if assignedRole == "TANK" or assignedRole == "MAINTANK" then
+        istank = true;
+    else
+        istank = false;
+    end
+end
+
 local function ShowCasting()
     local currshow = 1;
+    local soundcount = 0;
 
     table.sort(showlist, Comparison);
     for _, v in pairs(showlist) do
@@ -72,15 +86,40 @@ local function ShowCasting()
 
         if type == 1 then
             ACTA.cast[currshow]:SetTextColor(1, 0, 0);
+
+            if ns.options.PlaySoundDBMOnly then
+               soundcount = soundcount + 1; 
+            end
+
         else
             ACTA.cast[currshow]:SetTextColor(1, 1, 1);
+            if not ns.options.PlaySoundDBMOnly then
+               soundcount = soundcount + 1; 
+            end
         end
+
+
+
         ACTA.cast[currshow]:Show();
         currshow = currshow + 1;
 
         if currshow > ACTA_MaxShow then
             break
         end
+    end
+
+    if not ns.options.PlaySoundTank and istank then
+        soundcount = 0;
+        prevcount  = 0;
+    end
+
+    if prevcount ~= soundcount then
+
+        if prevcount == 0 and ns.options.PlaySound  then
+            PlaySoundFile(CONFIG_VOICE_TARGETED, "MASTER"); 
+        end
+
+        prevcount = soundcount;
     end
 
     for i = currshow, ACTA_MaxShow do
@@ -145,23 +184,31 @@ local function NewMod(self, ...)
     C_Timer.After(0.25, scanDBM);
 end
 
+local bfirst = true;
 local function ACTA_OnEvent(self, event, arg1, arg2, arg3, arg4)
-    local unit = arg1;
+    if bfirst then
+		ns.SetupOptionPanels();
+		bfirst = false;
+	end
 
-    local unit = arg1;
-    if unit and isAttackable(unit) and UnitAffectingCombat(unit) and string.find(unit, "nameplate") then
-        local isboss = false;
-        if (MAX_BOSS_FRAMES) then
-            for i = 1, MAX_BOSS_FRAMES do
-                if UnitIsUnit(unit, "boss" .. i) then
-                    isboss = true;
-                    break;
+    if (event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "PLAYER_ENTERING_WORLD" or event == "ROLE_CHANGED_INFORM") then
+        checkTank();
+    else
+        local unit = arg1;
+        if unit and isAttackable(unit) and UnitAffectingCombat(unit) and string.find(unit, "nameplate") then
+            local isboss = false;
+            if (MAX_BOSS_FRAMES) then
+                for i = 1, MAX_BOSS_FRAMES do
+                    if UnitIsUnit(unit, "boss" .. i) then
+                        isboss = true;
+                        break;
+                    end
                 end
             end
-        end
 
-        if not isboss then
-            CastingUnits[unit] = true;
+            if not isboss then
+                CastingUnits[unit] = true;
+            end
         end
     end
 end
@@ -205,6 +252,10 @@ local function initAddon()
     ACTA:RegisterEvent("UNIT_SPELLCAST_START");
     ACTA:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");
     ACTA:RegisterEvent("NAME_PLATE_UNIT_ADDED");
+    ACTA:RegisterEvent("PLAYER_ENTERING_WORLD");
+    ACTA:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+    ACTA:RegisterEvent("ROLE_CHANGED_INFORM");
+    
 
     -- 주기적으로 Callback
     C_Timer.NewTicker(ACTA_UpdateRate, ACTA_OnUpdate);
