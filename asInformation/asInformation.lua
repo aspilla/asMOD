@@ -5,14 +5,14 @@ asInformation:SetMovable(true)
 asInformation:RegisterForDrag("LeftButton")
 
 local updateInterval = 0.2
-local defaultHasteThreshold = 50
+local defaultHasteThreshold = 100
 
 -- Saved variables for position, lock state, and stat thresholds
 asInformationSaved = asInformationSaved or {
     point = "BOTTOM",
     relativePoint = "BOTTOM",
-    xOfs = -148,
-    yOfs = 100,
+    xOfs = -175,
+    yOfs = 124,
     isLocked = true,
     hasteThreshold = defaultHasteThreshold,
     showHaste = true,
@@ -28,9 +28,9 @@ local locale = GetLocale()
 -- Stat Configurations
 local statConfigs = {
     Crit = { abbr = "C", gemColor = { r = 1, g = 0, b = 0 } },
-    Haste = { abbr = "H", gemColor = { r = 1, g = 1, b = 0 } },
+    Haste = { abbr = "H", gemColor = { r = 0, g = 1, b = 0 } },
     Mastery = { abbr = "M", gemColor = { r = 0.5, g = 0, b = 1 } },
-    Versatility = { abbr = "V", gemColor = { r = 0, g = 1, b = 0 } }
+    Versatility = { abbr = "V", gemColor = { r = 0, g = 0, b = 1 } }
 }
 
 local defaultBarColor = { r = 0.5, g = 0.5, b = 0.5 }
@@ -87,66 +87,111 @@ local barHeight = 12
 local yOffset = -5 -- Offset between bars
 
 if asInformationSaved.showCrit then
-    critBar = CreateFrame("StatusBar", "asInformationCritBar", asInformation, "UIPanelStatusBarTemplate")
+    critBar = CreateFrame("StatusBar", "asInformationCritBar", asInformation);
     critBar:SetSize(barWidth, barHeight)
     critBar:SetPoint(locationPoint, prevframe, locationPoint, 0, yOffset)
-    critBar:SetStatusBarTexture("Interface/COMMON/WHITE8X8")
+    critBar:SetStatusBarTexture("Interface/Addons/asInformation/UI-StatusBar")
     critBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
+    critBar.bg = critBar:CreateTexture(nil, "BACKGROUND")
+    critBar.bg:SetPoint("TOPLEFT", critBar, "TOPLEFT", -1, 1)
+    critBar.bg:SetPoint("BOTTOMRIGHT", critBar, "BOTTOMRIGHT", 1, -1)
+
+    critBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
+    critBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    critBar.bg:SetVertexColor(0, 0, 0, 0.8);
+
     critBarText = critBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    critBarText:SetPoint("CENTER", critBar, "CENTER", 0, 0)
+    critBarText:SetPoint("RIGHT", critBar, "RIGHT", -1, 0)
     critBarText:SetTextColor(statConfigs.Crit.gemColor.r, statConfigs.Crit.gemColor.g, statConfigs.Crit.gemColor.b)
+
+    critBar.name = critBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    critBar.name:SetPoint("LEFT", critBar, "LEFT", 1, 0)
+    critBar.name:SetTextColor(1, 1, 1);
+    critBar.name:SetText("C");
     
     prevframe = critBar -- Next element anchors to this bar
-    locationPoint = "BOTTOMLEFT" -- Subsequent elements anchor to bottom-left of prevframe
     yOffset = -2 -- Smaller gap for subsequent bars
 end
 
 if asInformationSaved.showHaste then
-    hasteBar = CreateFrame("StatusBar", "asInformationHasteBar", asInformation, "UIPanelStatusBarTemplate")
+    hasteBar = CreateFrame("StatusBar", "asInformationHasteBar", asInformation );
     hasteBar:SetSize(barWidth, barHeight)
     hasteBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset)
-    hasteBar:SetStatusBarTexture("Interface/COMMON/WHITE8X8")
+    hasteBar:SetStatusBarTexture("Interface/Addons/asInformation/UI-StatusBar")
     hasteBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
+    hasteBar.bg = hasteBar:CreateTexture(nil, "BACKGROUND")
+    hasteBar.bg:SetPoint("TOPLEFT", hasteBar, "TOPLEFT", -1, 1)
+    hasteBar.bg:SetPoint("BOTTOMRIGHT", hasteBar, "BOTTOMRIGHT", 1, -1)
+
+    hasteBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
+    hasteBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    hasteBar.bg:SetVertexColor(0, 0, 0, 0.8);
+
     hasteBarText = hasteBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    hasteBarText:SetPoint("CENTER", hasteBar, "CENTER", 0, 0)
+    hasteBarText:SetPoint("RIGHT", hasteBar, "RIGHT", -1, 0)
     hasteBarText:SetTextColor(statConfigs.Haste.gemColor.r, statConfigs.Haste.gemColor.g, statConfigs.Haste.gemColor.b)
 
+    hasteBar.name = hasteBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    hasteBar.name:SetPoint("LEFT", hasteBar, "LEFT", 1, 0)
+    hasteBar.name:SetTextColor(1, 1, 1)
+    hasteBar.name:SetText("H");
+
     prevframe = hasteBar
-    locationPoint = "BOTTOMLEFT"
     yOffset = -2
 end
 
 if asInformationSaved.showMastery then
-    masteryBar = CreateFrame("StatusBar", "asInformationMasteryBar", asInformation, "UIPanelStatusBarTemplate")
+    masteryBar = CreateFrame("StatusBar", "asInformationMasteryBar", asInformation);
     masteryBar:SetSize(barWidth, barHeight)
     masteryBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset)
-    masteryBar:SetStatusBarTexture("Interface/COMMON/WHITE8X8")
+    masteryBar:SetStatusBarTexture("Interface/Addons/asInformation/UI-StatusBar")
     masteryBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
-    masteryBarText = masteryBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    masteryBarText:SetPoint("CENTER", masteryBar, "CENTER", 0, 0)
-    masteryBarText:SetTextColor(statConfigs.Mastery.gemColor.r, statConfigs.Mastery.gemColor.g, statConfigs.Mastery.gemColor.b)
+    masteryBar.bg = masteryBar:CreateTexture(nil, "BACKGROUND")
+    masteryBar.bg:SetPoint("TOPLEFT", masteryBar, "TOPLEFT", -1, 1)
+    masteryBar.bg:SetPoint("BOTTOMRIGHT", masteryBar, "BOTTOMRIGHT", 1, -1)
 
+    masteryBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
+    masteryBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    masteryBar.bg:SetVertexColor(0, 0, 0, 0.8);
+
+    masteryBarText = masteryBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    masteryBarText:SetPoint("RIGHT", masteryBar, "RIGHT", -1, 0)
+    masteryBarText:SetTextColor(statConfigs.Mastery.gemColor.r, statConfigs.Mastery.gemColor.g, statConfigs.Mastery.gemColor.b)
+    masteryBar.name = masteryBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    masteryBar.name:SetPoint("LEFT", masteryBar, "LEFT", 1, 0)
+    masteryBar.name:SetTextColor(1, 1, 1);
+    masteryBar.name:SetText("M");
     prevframe = masteryBar
-    locationPoint = "BOTTOMLEFT"
     yOffset = -2
 end
 
 if asInformationSaved.showVer then
-    versatilityBar = CreateFrame("StatusBar", "asInformationVersatilityBar", asInformation, "UIPanelStatusBarTemplate")
+    versatilityBar = CreateFrame("StatusBar", "asInformationVersatilityBar", asInformation);
     versatilityBar:SetSize(barWidth, barHeight)
     versatilityBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset)
-    versatilityBar:SetStatusBarTexture("Interface/COMMON/WHITE8X8")
+    versatilityBar:SetStatusBarTexture("Interface/Addons/asInformation/UI-StatusBar")
     versatilityBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
+    versatilityBar.bg = versatilityBar:CreateTexture(nil, "BACKGROUND")
+    versatilityBar.bg:SetPoint("TOPLEFT", versatilityBar, "TOPLEFT", -1, 1)
+    versatilityBar.bg:SetPoint("BOTTOMRIGHT", versatilityBar, "BOTTOMRIGHT", 1, -1)
+
+    versatilityBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
+    versatilityBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    versatilityBar.bg:SetVertexColor(0, 0, 0, 0.8);
+
     versatilityBarText = versatilityBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    versatilityBarText:SetPoint("CENTER", versatilityBar, "CENTER", 0, 0)
+    versatilityBarText:SetPoint("RIGHT", versatilityBar, "RIGHT", -1, 0)
     versatilityBarText:SetTextColor(statConfigs.Versatility.gemColor.r, statConfigs.Versatility.gemColor.g, statConfigs.Versatility.gemColor.b)
+    versatilityBar.name = versatilityBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    versatilityBar.name:SetPoint("LEFT", versatilityBar, "LEFT", 1, 0)
+    versatilityBar.name:SetTextColor(1, 1, 1);
+    versatilityBar.name:SetText("V");
     
     prevframe = versatilityBar
-    locationPoint = "BOTTOMLEFT"
     yOffset = -2
 end
 
@@ -227,7 +272,7 @@ local function UpdateStats()
             critBar:SetValue(crit)
             critBar:SetMinMaxValues(0, 100) -- Assuming stats are percentage based 0-100
             critBar:SetValue(crit)
-            critText:SetText(string.format("%s: %.2f%%", statConfigs.Crit.abbr, crit))
+            critText:SetText(string.format("%.2f%%", crit))
             
             local minCrit = recentMinimumStats.Crit
             if minCrit ~= nil and crit > minCrit then
@@ -244,7 +289,7 @@ local function UpdateStats()
         if hasteBar and hasteText then -- Check if bar and text elements exist
             hasteBar:SetMinMaxValues(0, 100)
             hasteBar:SetValue(haste)
-            hasteText:SetText(string.format("%s: %.2f%%", statConfigs.Haste.abbr, haste))
+            hasteText:SetText(string.format("%.2f%%", haste))
 
             local minHaste = recentMinimumStats.Haste
             if minHaste ~= nil and haste > minHaste then
@@ -261,7 +306,7 @@ local function UpdateStats()
         if masteryBar and masteryText then -- Check if bar and text elements exist
             masteryBar:SetMinMaxValues(0, 100)
             masteryBar:SetValue(mastery)
-            masteryText:SetText(string.format("%s: %.2f%%", statConfigs.Mastery.abbr, mastery))
+            masteryText:SetText(string.format("%.2f%%",  mastery))
 
             local minMastery = recentMinimumStats.Mastery
             if minMastery ~= nil and mastery > minMastery then
@@ -278,7 +323,7 @@ local function UpdateStats()
         if versatilityBar and versatilityText then -- Check if bar and text elements exist
             versatilityBar:SetMinMaxValues(0, 100)
             versatilityBar:SetValue(versatility)
-            versatilityText:SetText(string.format("%s: %.2f%%", statConfigs.Versatility.abbr, versatility))
+            versatilityText:SetText(string.format("%.2f%%", versatility))
 
             local minVersatility = recentMinimumStats.Versatility
             if minVersatility ~= nil and versatility > minVersatility then
@@ -307,15 +352,11 @@ end
 
 -- Variables for managing stat recording frequency
 local timeSinceLastRecord = 0
-local recordInterval = 1 -- seconds
 
-local function OnUpdate(self, elapsed)
-    timeSinceLastRecord = timeSinceLastRecord + elapsed
-    if timeSinceLastRecord >= recordInterval then
+local function OnUpdate()
         RecordCurrentStats()
         UpdateRecentMinimumStats()
-        timeSinceLastRecord = timeSinceLastRecord - recordInterval -- Subtract to carry over excess time
-    end
+        timeSinceLastRecord = timeSinceLastRecord - updateInterval -- Subtract to carry over excess time
     UpdateStats() -- This will use recentMinimumStats in the next plan step
 end
 
