@@ -42,8 +42,8 @@ The following errors may occur:
 | asCompactRaidBuff      | Enhanced raid/party frames.                                                    | [Link](https://www.curseforge.com/wow/addons/ascompactraidbuff)     |
 | asDebuffFilter         | Displays debuffs centrally (Left Player, Right Target)                           | [Link](https://www.curseforge.com/wow/addons/asdebufffilter)        |
 | asDotFilter            | Displays key debuff durations on boss frames.                                   | [Link](https://www.curseforge.com/wow/addons/asdotfilter)           |
-| asFixChat              | [Git Only] Changes chat channels with Tab key, enables URL link clicks.    |                                                                   |
-| asFixClearFont         | [Git Only] Improved number font.                                          |                                                                   |
+| asFixChat              | [Git Only] Changes chat channels with Tab key, enables URL link clicks.    |[Link](https://github.com/aspilla/asMOD/blob/main/asFixChat/README.md)                                                                   |
+| asFixClearFont         | [Git Only] Improved number font.                                          |[Link](https://github.com/aspilla/asMOD/blob/main/asFixClearFont/README.md)                                                                   |
 | asFixCombatText        | Improved combat text display (left of character).                              | [Link](https://www.curseforge.com/wow/addons/asfixcombattext)       |
 | asFixHotkey            | Removes Korean hotkey display, simplifies display, hides macro names.             | [Link](https://www.curseforge.com/wow/addons/asfixhotkey)           |
 | asFixUnitFrame         | Improved default Unitframe functionality.                                       | [Link](https://www.curseforge.com/wow/addons/asfixunitframe)        |
@@ -52,7 +52,7 @@ The following errors may occur:
 | asNamePlates           | Enhanced nameplates.                                                          | [Link](https://www.curseforge.com/wow/addons/asnameplates)          |
 | asRangeDisplay         | Displays target distance.                                                      | [Link](https://www.curseforge.com/wow/addons/asrangedisplay)        |
 | asSpamFilter           | Moves error messages (to bottom right).                                       | [Link](https://www.curseforge.com/wow/addons/asspamfilter)          |
-| asScavenger            | [Git Only] Automatically sells grey items.                              |                                                                   |
+| asScavenger            | [Git Only] Automatically sells grey items.                              |[Link](https://github.com/aspilla/asMOD/blob/main/asScavenger/README.md)                                                                   |
 | asGCDBar               | Displays Global Cooldown (GCD) as a bar.                                      | [Link](https://www.curseforge.com/wow/addons/asgcdbar)              |
 | asHideBagsBar          | Automatically hides the bottom right bag bar and left raid leader window.      | [Link](https://www.curseforge.com/wow/addons/ashidebagsbar)         |
 | asPowerBar             | Resource bar & rune/combo counter & skill/buff/debuff cooldowns.                 | [Link](https://www.curseforge.com/wow/addons/aspowerbar)            |
@@ -63,7 +63,7 @@ The following errors may occur:
 | asCastBar              | Enhanced cast bar.                                                            | [Link](https://www.curseforge.com/wow/addons/ascastbar)             |
 | asCastingAlert         | Alerts for spells being cast on you.                                            | [Link](https://www.curseforge.com/wow/addons/ascastingalert)        |
 | asAutoMarker           | Automatically marks important mobs in Mythic+ for interrupt (Tank).             | [Link](https://www.curseforge.com/wow/addons/asautomarker)          |
-| asGearScoreLite        | [Git Only] Checks item level in the character/inspect window.            |                                                                   |
+| asGearScoreLite        | [Git Only] Checks item level in the character/inspect window.            |[Link](https://github.com/aspilla/asMOD/blob/main/asGearScoreLite/README.md)                                                                   |
 | asDBMCastingAlert      | DBM registered skill cast alerts, interrupt sound support.                    | [Link](https://www.curseforge.com/wow/addons/asdbmcastingalert)     |
 | asPremadeGroupsFilter  | Displays class colors/spec icons/leaderboard Mythic+ scores in Group Finder.  | [Link](https://www.curseforge.com/wow/addons/aspremadegroupsfilter) |
 | asUnitFrame            | Player/Target/Focus/Boss unit frames.                                         | [Link](https://www.curseforge.com/wow/addons/asunitframe)           |
@@ -72,7 +72,8 @@ The following errors may occur:
 | asDotSnapshot          | Displays the strength of dots for shadow and assassination rogues              | [Link](https://www.curseforge.com/wow/addons/asdotsnapshot)         |
 | asCPUProfile           | Checks addon CPU usage.                                                       | [Link](https://www.curseforge.com/wow/addons/ascpuprofile)          |
 | asHideNameplates       | Hides nameplates for interrupt assistance.                                      | [Link](https://www.curseforge.com/wow/addons/ashidenameplates)      |
-| asOverlay             | Enhancing spell alert                                                            | [링크](https://www.curseforge.com/wow/addons/asoverlay)             |
+| asOverlay             | Enhancing spell alert                                                            | [Link](https://www.curseforge.com/wow/addons/asoverlay)             |
+| asInformation             | Show 2nd states                                                          | [Link](https://www.curseforge.com/wow/addons/asinformation)             |
 | BugSack, BugGrabber    | [External] Addon error saver                                                   |                                                                   |
 | Details                | [External] Damage meter.                                                       |                                                                   |
 | DBM                    | [External] Dungeon boss skill announcer.                                        |                                                                   |
@@ -118,8 +119,8 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입�
 | asCompactRaidBuff     | 공격대/파티 창 강화                                                         | [링크](https://www.curseforge.com/wow/addons/ascompactraidbuff)     |
 | asDebuffFilter        | 디버프를 중앙에 표시 (좌 Player, 우 대상)                                        | [링크](https://www.curseforge.com/wow/addons/asdebufffilter)        |
 | asDotFilter           | 보스 프레임 주요 디버프 지속시간 표시                                               | [링크](https://www.curseforge.com/wow/addons/asdotfilter)           |
-| asFixChat             | [인벤 전용] 텝키로 으로 체팅 채널 변경, URL링크 클릭 기능                                |                                                                   |
-| asFixClearFont        | [인벤 전용] 숫자 폰트 개선                                                    |                                                                   |
+| asFixChat             | [인벤 전용] 텝키로 으로 체팅 채널 변경, URL링크 클릭 기능                                | [링크](https://github.com/aspilla/asMOD/blob/main/asFixChat/README.md)                                                                  |
+| asFixClearFont        | [인벤 전용] 숫자 폰트 개선                                                    | [링크](https://github.com/aspilla/asMOD/blob/main/asFixClearFont/README.md) |
 | asFixCombatText       | 받은 피해량등 전투 메시지 표시 개선(케릭 좌측)                                         | [링크](https://www.curseforge.com/wow/addons/asfixcombattext)       |
 | asFixHotkey           | 단축키 한글 표시 삭제 및 간략하게, 메크로명 안보이게                                      | [링크](https://www.curseforge.com/wow/addons/asfixhotkey)           |
 | asFixUnitFrame        | 기본 Unitframe 기능 개선                                                  | [링크](https://www.curseforge.com/wow/addons/asfixunitframe)        |
@@ -128,7 +129,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입�
 | asNamePlates          | 이름표 강화                                                              | [링크](https://www.curseforge.com/wow/addons/asnameplates)          |
 | asRangeDisplay        | 대상 거리 표시                                                            | [링크](https://www.curseforge.com/wow/addons/asrangedisplay)        |
 | asSpamFilter          | 에러메시지 이동 (우측 하단)                                                    | [링크](https://www.curseforge.com/wow/addons/asspamfilter)          |
-| asScavenger           | [인벤 전용] 회색템 자동 판매                                                   |                                                                   |
+| asScavenger           | [인벤 전용] 회색템 자동 판매                                                   |[링크](https://github.com/aspilla/asMOD/blob/main/asScavenger/README.md)                                                                   |
 | asGCDBar              | 글로벌 쿨다운 시간을 바 형태로 표시                                                | [링크](https://www.curseforge.com/wow/addons/asgcdbar)              |
 | asHideBagsBar         | 우측 하단 가방바, 좌측 공격대장 창 자동 숨김                                          | [링크](https://www.curseforge.com/wow/addons/ashidebagsbar)         |
 | asPowerBar            | 자원바 & 룬/콤포 카운터 & 스킬/버프/디버프 쿨다운                                      | [링크](https://www.curseforge.com/wow/addons/aspowerbar)            |
@@ -139,7 +140,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입�
 | asCastBar             | 시전바 강화                                                              | [링크](https://www.curseforge.com/wow/addons/ascastbar)             |
 | asCastingAlert        | 자신에게 시전중인 마법 알림                                                     | [링크](https://www.curseforge.com/wow/addons/ascastingalert)        |
 | asAutoMarker          | 쐐기 차단 필요몹 자동징표(탱커) 이름표 색상 변경(asNameplates 필요)                       | [링크](https://www.curseforge.com/wow/addons/asautomarker)          |
-| asGearScoreLite       | [인벤 전용] 케릭터창/살펴보기창 아이텐 레벨 확인                                        |                                                                   |
+| asGearScoreLite       | [인벤 전용] 케릭터창/살펴보기창 아이텐 레벨 확인                                        |[링크](https://github.com/aspilla/asMOD/blob/main/asGearScoreLite/README.md)                                                                   |
 | asDBMCastingAlert     | DBM 등록 스킬 시전 알림, 차단 음성 지원                                           | [링크](https://www.curseforge.com/wow/addons/asdbmcastingalert)     |
 | asPremadeGroupsFilter | 파티찾기 직업 색상/특성 아이콘/파장 쐐기 점수 표시                                       | [링크](https://www.curseforge.com/wow/addons/aspremadegroupsfilter) |
 | asUnitFrame           | 플레이어/대상/주시/보스 유닛 프레임                                                | [링크](https://www.curseforge.com/wow/addons/asunitframe)           |
@@ -149,6 +150,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입�
 | asCPUProfile          | 애드온 CPU 사용률 확인                                                      | [링크](https://www.curseforge.com/wow/addons/ascpuprofile)          |
 | asHideNameplates      | 차단 도움 이름표 숨김                                                        | [링크](https://www.curseforge.com/wow/addons/ashidenameplates)      |
 | asOverlay             | 주문 알림 강화                                                            | [링크](https://www.curseforge.com/wow/addons/asoverlay)             |
+| asInformation             | 2차 스텟 표시                                                          | [링크](https://www.curseforge.com/wow/addons/asinformation)             |
 | BugSack, BugGrabber   | [외부] 애드온 오류 저장                                                      |                                                                   |
 | Details               | [외부] 데미지 미터기                                                        |                                                                   |
 | DBM                   | [외부] 던전 주요 스킬 알리미                                                   |                                                                   |

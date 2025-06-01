@@ -1,7 +1,7 @@
 ## Interface: 110105
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rInformation
-## Notes: 전투시간 및 가속 표시
+## Notes: Sample addon to show states, crit, haste, mastery and vers.
 ## Version : 250601
 ## SavedVariablesPerCharacter: ASInformationSaved
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
