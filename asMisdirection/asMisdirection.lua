@@ -186,7 +186,7 @@ local function AHM_SetMisdirection(unit, force)
 		local macroName = MisDirectionSpell
 
 		if (macroID == 0) then
-			CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText, 1)
+			CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText)
 		else
 			local oldtext = GetMacroBody(macroID);
 			local start = string.find(oldtext, "help] " .. MisDirectionSpell, 0);
@@ -196,7 +196,7 @@ local function AHM_SetMisdirection(unit, force)
 				macroText = macroText .. addedtext;
 			end
 
-			EditMacro(macroID, macroName, "INV_MISC_QUESTIONMARK", macroText, 1)
+			EditMacro(macroID, macroName, "INV_MISC_QUESTIONMARK", macroText)
 		end
 
 		if UnitExists(unit) then
