@@ -470,7 +470,7 @@ local function SetupEditBoxOption()
 	scrollChild:SetHeight(1)
 
 	-- add widgets to the panel as desired
-	local title = panel:CreateFontString("ARTWORK", nil, "GameFontNormalLarge")
+	local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	title:SetPoint("TOP")
 	title:SetText("asCombatInfo")
 
@@ -523,14 +523,14 @@ local function SetupEditBoxOption()
 
 	local x = 50;
 
-	local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	local title = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
 	title:SetPoint("TOPLEFT", x, curr_y);
 	title:SetText("Spell/Buff/Debuff name or ID");
 
 	x = x + 300
 
 
-	title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	title = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
 	title:SetPoint("TOPLEFT", x, curr_y);
 	title:SetText("Type");
 
@@ -539,7 +539,7 @@ local function SetupEditBoxOption()
 	for idx = 1, 11 do
 		curr_y = curr_y + y_adder;
 
-		title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+		title = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
 		title:SetPoint("LEFT", 10, curr_y);
 		title:SetText(tostring(idx));
 

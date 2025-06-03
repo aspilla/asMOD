@@ -74,7 +74,7 @@ local NPCTable = {
     [213008] = 2, -- BOSS ADD: Wriggling Darkspawn
 
 	--Priory of the Sacred Flame
-	[206705] = 2, -- Arathi Footman
+	[206705] = 1, -- Arathi Footman
     --[206696] = 0, -- Arathi Knight
     --[212838] = 0, -- Arathi Neophyte
     [211290] = 2, -- Elaena Emberlanz

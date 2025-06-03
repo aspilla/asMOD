@@ -1,8 +1,8 @@
 ﻿## Interface: 110105
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCastingAlert
-## Notes: 나를 대상으로 하는 Casting 알림
-## Version : 250601
+## Notes: Alerts in the center of your screen for spells being cast by hostile units
+## Version : 250603
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## SavedVariablesPerCharacter: ACTA_Options 
 ## Category: asMOD

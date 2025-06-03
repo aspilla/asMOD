@@ -229,10 +229,10 @@ local function scanActionSlots()
 				itemid = id;
 				_, spellID = GetItemSpell(id);
 			else
-				spellID = nil;
+				spellID = 0;
 			end
 
-			if spellID then
+			if spellID and spellID > 0 then
 				if itemid then
 					KnownSpellList[spellID] = itemid;
 				end
@@ -243,7 +243,7 @@ end
 
 local function scanItemSlots()
 	for _, v in pairs(itemslots) do
-		local idx = GetInventorySlotInfo(v);
+		local idx = GetInventorySlotInfo(string.upper(v));
 		local itemid = GetInventoryItemID("player", idx)
 
 		if itemid then
@@ -767,7 +767,11 @@ local function ACDP_Init()
 
 	while (i <= 10) do
 		ACDP[i] = CreateFrame("Frame", nil, UIParent)
-		ACDP[i]:SetPoint("CENTER", ACDP_AlertButtons_X, ACDP_AlertButtons_Y)
+		if i == 1 then
+			ACDP[i]:SetPoint("CENTER", ACDP_AlertButtons_X, ACDP_AlertButtons_Y);
+		else
+			ACDP[i]:SetPoint("CENTER", ACDP[i-1], "CENTER", 0, 0);
+		end
 
 
 		ACDP[i]:SetWidth(ACDP_AlertButtons_Size)
@@ -800,9 +804,10 @@ local function ACDP_Init()
 
 	if asMOD_setupFrame then
 		asMOD_setupFrame(ACDP_CoolButtons, "asCooldownPulselist");
+		asMOD_setupFrame(ACDP[1], "asCooldownAlertButton");
 	end
 
-	bCombatInfoLoaded = C_AddOns.LoadAddOn("asCombatInfo");
+	bCombatInfoLoaded = C_AddOns.LoadAddOn("asCombatInfo") or false;
 
 	ACDP_mainframe:SetScript("OnEvent", ACDP_OnEvent)
 	ACDP_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD")

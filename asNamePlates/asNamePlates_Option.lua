@@ -634,7 +634,7 @@ local function SetupChildPanel()
     scrollChild:SetHeight(1)
 
     -- add widgets to the panel as desired
-    local title = panel:CreateFontString("ARTWORK", nil, "GameFontNormalLarge")
+    local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
     title:SetPoint("TOP")
     title:SetText("asNamePlates")
 
@@ -681,7 +681,7 @@ local function SetupSliderOption(text, option)
         return;
     end
 
-    local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    local title = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
     title:SetPoint("TOPLEFT", 20, curr_y);
     title:SetText(text);
 
@@ -726,7 +726,7 @@ local function SetupColorOption(text, option)
         return;
     end
 
-    local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    local title = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
     title:SetPoint("TOPLEFT", 20, curr_y);
     title:SetText(text);
     title:SetTextColor(ANameP_Options[option].r, ANameP_Options[option].g, ANameP_Options[option].b, 1);
@@ -802,32 +802,32 @@ local function SetupEditBoxOption()
         return;
     end
 
-    local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    local title = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
     title:SetPoint("TOPLEFT", x, curr_y);
     title:SetText(localeTexts[1]);
 
     x = 60;
 
-    title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    title = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
     title:SetPoint("TOPLEFT", x, curr_y);
     title:SetText(localeTexts[2]);
 
     x = x + 150;
 
 
-    title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    title = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
     title:SetPoint("TOPLEFT", x, curr_y);
     title:SetText(localeTexts[3]);
 
     x = x + 150
 
-    title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    title = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
     title:SetPoint("TOPLEFT", x, curr_y);
     title:SetText(localeTexts[4]);
 
     x = x + 200
 
-    title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    title = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
     title:SetPoint("TOPLEFT", x, curr_y);
     title:SetText(localeTexts[5]);
 
@@ -847,7 +847,7 @@ local function SetupEditBoxOption()
     for idx = 1, 5 do
         curr_y = curr_y + y_adder;
 
-        title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+        title = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
         title:SetPoint("LEFT", 10, curr_y);
         title:SetText(idx);
 
@@ -1096,7 +1096,7 @@ local function SetupDebuffPointOption()
         return;
     end
 
-    local title = scrollChild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+    local title = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
     title:SetPoint("TOPLEFT", x, curr_y);
     title:SetText(localeTexts[1]);
 

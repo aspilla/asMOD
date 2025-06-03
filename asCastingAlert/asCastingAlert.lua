@@ -85,7 +85,7 @@ local function ShowCasting()
         ACTA.cast[currshow].castspellid = spellid;
 
         if type == 1 then
-            ACTA.cast[currshow]:SetTextColor(1, 0, 0);
+            ACTA.cast[currshow]:SetTextColor(1, 1, 0.5);
 
             if ns.options.PlaySoundDBMOnly then
                soundcount = soundcount + 1; 

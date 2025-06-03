@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rMisdirection
 ## Notes: Addon to create macro for midirection like spell
 ## Notes-koKR: 눈속임/속거/마주/비늘 도우미
-## Version : 250126
+## Version : 250603
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asMisdirection.lua

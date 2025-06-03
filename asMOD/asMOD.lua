@@ -87,13 +87,6 @@ local function asMOD_Setup()
 	-- 모든 UI 위치를 Reset 한다.
 	asMOD_position = {};
 
-	local curr = GetCVar("uiScale");
-
-	if curr then
-		curr = tonumber(curr);
-	else
-		curr = 1;
-	end
 
 	--print("[asMOD] UI Scale 을 조정합니다.");
 	SetCVar("useUiScale", "1");
@@ -718,7 +711,7 @@ local function setupFrame(frame, Name, addonName, config)
 
 	local tex = frame:CreateTexture(nil, "ARTWORK");
 	tex:SetAllPoints();
-	tex:SetTexture(1.0, 0.5, 0); tex:SetAlpha(0.5);
+	tex:SetColorTexture(1.0, 0.5, 0); tex:SetAlpha(0.5);
 	return frame
 end
 

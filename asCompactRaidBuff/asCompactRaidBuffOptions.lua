@@ -500,7 +500,7 @@ local function SetupSubOption(panel, titlename)
 	panel.scrollchild:SetHeight(1)
 
 	-- add widgets to the panel as desired
-	local title = panel:CreateFontString("ARTWORK", nil, "GameFontNormalLarge")
+	local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	title:SetPoint("TOP")
 	title:SetText(titlename)
 
@@ -510,19 +510,19 @@ local function SetupSubOption(panel, titlename)
 
 	local x = 10;
 
-	local title = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	local title = panel.scrollchild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
 	title:SetPoint("TOPLEFT", x, curr_y);
 	title:SetText(localeTexts[1]);
 
 	x = 200;
 
-	title = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	title = panel.scrollchild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
 	title:SetPoint("TOPLEFT", x, curr_y);
 	title:SetText(localeTexts[2]);
 
 	x = 310;
 
-	title = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	title = panel.scrollchild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
 	title:SetPoint("TOPLEFT", x, curr_y);
 	title:SetText(localeTexts[3]);
 
@@ -681,7 +681,7 @@ local function SetupSubOption(panel, titlename)
 
 	curr_y = curr_y + y_adder;
 
-	panel.explaintext = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	panel.explaintext = panel.scrollchild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
 	panel.explaintext:SetFont(STANDARD_TEXT_FONT, 12, "THICKOUTLINE");
 	panel.explaintext:SetPoint("TOPLEFT", 10, curr_y);
 	panel.explaintext:SetTextColor(1, 1, 1);
@@ -692,7 +692,7 @@ local function SetupSubOption(panel, titlename)
 
 	curr_y = curr_y + y_adder;
 
-	panel.bufflisttext = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	panel.bufflisttext = panel.scrollchild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
 	panel.bufflisttext:SetFont(STANDARD_TEXT_FONT, 20, "THICKOUTLINE");
 	panel.bufflisttext:SetPoint("TOPLEFT", 10, curr_y);
 	panel.bufflisttext:SetTextColor(1, 1, 1);
@@ -724,7 +724,7 @@ local function SetupSubOptionDefensive(panel, titlename)
 	panel.scrollchild:SetHeight(1)
 
 	-- add widgets to the panel as desired
-	local title = panel:CreateFontString("ARTWORK", nil, "GameFontNormalLarge")
+	local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	title:SetPoint("TOP")
 	title:SetText(titlename)
 
@@ -734,7 +734,7 @@ local function SetupSubOptionDefensive(panel, titlename)
 
 	local x = 10;
 
-	local title = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	local title = panel.scrollchild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
 	title:SetPoint("TOPLEFT", x, curr_y);
 	title:SetText(localeTexts[1]);
 
@@ -825,7 +825,7 @@ local function SetupSubOptionDefensive(panel, titlename)
 
 	curr_y = curr_y + y_adder;
 
-	panel.bufflisttext = panel.scrollchild:CreateFontString("ARTWORK", nil, "GameFontNormal");
+	panel.bufflisttext = panel.scrollchild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
 	panel.bufflisttext:SetFont(STANDARD_TEXT_FONT, 20, "THICKOUTLINE");
 	panel.bufflisttext:SetPoint("TOPLEFT", 10, curr_y);
 	panel.bufflisttext:SetTextColor(1, 1, 1);

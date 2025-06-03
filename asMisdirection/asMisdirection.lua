@@ -189,14 +189,16 @@ local function AHM_SetMisdirection(unit, force)
 			CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText)
 		else
 			local oldtext = GetMacroBody(macroID);
-			local start = string.find(oldtext, "help] " .. MisDirectionSpell, 0);
+			if oldtext then
+				local start = string.find(oldtext, "help] " .. MisDirectionSpell, 0);
 
-			if start and start > 0 then
-				local addedtext = string.sub(oldtext, start + string.len("help] " .. MisDirectionSpell), -1);
-				macroText = macroText .. addedtext;
+				if start and start > 0 then
+					local addedtext = string.sub(oldtext, start + string.len("help] " .. MisDirectionSpell), -1);
+					macroText = macroText .. addedtext;
+				end
+
+				EditMacro(macroID, macroName, "INV_MISC_QUESTIONMARK", macroText)
 			end
-
-			EditMacro(macroID, macroName, "INV_MISC_QUESTIONMARK", macroText)
 		end
 
 		if UnitExists(unit) then
@@ -241,17 +243,19 @@ local function AHM_SetMindInfusion(unit, force)
 		local macroName = MindInfusionSpell
 
 		if (macroID == 0) then
-			CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText, 1)
+			CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText)
 		else
 			local oldtext = GetMacroBody(macroID);
-			local start = string.find(oldtext, "help] " .. MindInfusionSpell, 0);
+			if oldtext then
+				local start = string.find(oldtext, "help] " .. MindInfusionSpell, 0);
 
-			if start and start > 0 then
-				local addedtext = string.sub(oldtext, start + string.len("help] " .. MindInfusionSpell), -1);
-				macroText = macroText .. addedtext;
+				if start and start > 0 then
+					local addedtext = string.sub(oldtext, start + string.len("help] " .. MindInfusionSpell), -1);
+					macroText = macroText .. addedtext;
+				end
+
+				EditMacro(macroID, macroName, "INV_MISC_QUESTIONMARK", macroText)
 			end
-
-			EditMacro(macroID, macroName, "INV_MISC_QUESTIONMARK", macroText, 1)
 		end
 
 		if UnitExists(unit) then

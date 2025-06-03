@@ -1490,24 +1490,26 @@ local function APB_SpellMax(spell, spell2)
     if spell2 then
         local newspell2, _, _, _, _, _, spellid2 = asGetSpellInfo(spell2);
         local Charges2, maxCharges2 = asGetSpellCharges(spell2);
-        local isUsable2 = C_Spell.IsSpellUsable(spellid2);
+        if spellid2 then
+            local isUsable2 = C_Spell.IsSpellUsable(spellid2);
 
-        if bupdate_druid then
-            maxCharges2 = 2;
-        end
+            if bupdate_druid then
+                maxCharges2 = 2;
+            end
 
-        local boverided = false;
-        if spell2 ~= spellid2 then
-            boverided = true;
-        end
+            local boverided = false;
+            if spell2 ~= spellid2 then
+                boverided = true;
+            end
 
-        if Charges2 == nil and maxCharges2 == nil and boverided then
-            maxCharges2, Charges2 = 1, 1;
-        end
+            if Charges2 == nil and maxCharges2 == nil and boverided then
+                maxCharges2, Charges2 = 1, 1;
+            end
 
-        if maxCharges2 then
-            maxCharges = maxCharges + maxCharges2
-            curr_maxspell2 = maxCharges2;
+            if maxCharges2 then
+                maxCharges = maxCharges + maxCharges2
+                curr_maxspell2 = maxCharges2;
+            end
         end
     end
 
@@ -1940,8 +1942,8 @@ local function APB_Update(self)
             else
                 APB.bar.text:SetText(valuePct_orig .. "(" .. valuePct .. ")");
             end
-        else
-            APB.bar.text:SetText(valuePct);
+        elseif valuePct then
+            APB.bar.text:SetText(tostring(valuePct));
         end
 
         UpdateFillBarBase(self.bar, self.bar.PredictionBar, predictedPowerCost);
@@ -1974,7 +1976,7 @@ local function APB_Update(self)
         if valuePctAbsorb > 0 then
             APB.healthbar.text:SetText(valuePct .. "(" .. valuePctAbsorb .. ")");
         else
-            APB.healthbar.text:SetText(valuePct);
+            APB.healthbar.text:SetText(tostring(valuePct));
         end
     end
 end
@@ -2280,7 +2282,7 @@ local function APB_CheckPower(self)
                 APB_BUFF_COMBO_MAX = 451049;
                 APB_BUFF_COMBO_MAX_COUNT = 6;
                 self.buffcombobar = self.combobar2;
-                APB_MaxCombo(self.combobar2, APB_BUFF_COMBO_MAX_COUNT, true);
+                APB_MaxCombo(self.combobar2, APB_BUFF_COMBO_MAX_COUNT);
                 APB.combobar2.unit = "player"
                 bupdate_buff_combo = true;
 
@@ -2315,7 +2317,7 @@ local function APB_CheckPower(self)
                 APB_BUFF_COMBO_MAX = 451049;
                 APB_BUFF_COMBO_MAX_COUNT = 6;
                 self.buffcombobar = self.combobar2;
-                APB_MaxCombo(self.combobar2, APB_BUFF_COMBO_MAX_COUNT, true);
+                APB_MaxCombo(self.combobar2, APB_BUFF_COMBO_MAX_COUNT);
                 APB.combobar2.unit = "player"
                 bupdate_buff_combo = true;
 
@@ -3296,7 +3298,7 @@ local function asUnitFrameManaCostPredictionBars_Update(frame, isStarting, start
         end
 
         if cost == 0 then
-            cost = asGetCostTooltipInfo(spellID);
+            cost = asGetCostTooltipInfo(spellID) or 0;
         end
 
         frame.predictedPowerCost = cost;
@@ -3487,11 +3489,12 @@ local function updateCombatLog()
             elseif (eventType == "SPELL_CAST_SUCCESS" and elemental_listOfSpenders[spellId]) then
                 tempeststate.lastCastTime = timestamp;
 
-                local cost = C_Spell.GetSpellPowerCost(spellId)
-                if cost[1].name == "MAELSTROM" then
-                    cost = cost[1].cost
+                local lcost = C_Spell.GetSpellPowerCost(spellId);
+                local cost = 0;
+                if lcost[1].name == "MAELSTROM" then
+                    cost = lcost[1].cost or 0;
                 else
-                    cost = cost[2].cost
+                    cost = lcost[2].cost or 0;
                 end
 
                 tempeststate.TStacks = tempeststate.TStacks + cost;
