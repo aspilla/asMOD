@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCastingAlert
-## Notes: Alerts in the center of your screen for spells being cast by hostile units
+## Notes: asCastingAlert is an addon that provides on-screen alerts in the center of your screen for spells being cast by hostile units, especially those targeting the player or cast by boss units.
+## Notes-kr: asCastingAlert는 적대적 유닛, 특히 플레이어를 대상으로 하거나 보스 유닛이 시전하는 주문에 대해 화면 중앙에 알림을 제공하는 애드온입니다.
 ## Version : 250603
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## SavedVariablesPerCharacter: ACTA_Options 

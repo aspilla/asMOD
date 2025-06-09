@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rFixCombatText
-## Notes: 전투 메시지 변경
+## Notes: asFixCombatText is a World of Warcraft addon that provides customization options for Blizzard's default Floating Combat Text (FCT).
+## Notes-kr: asFixCombatText는 블리자드의 기본 전투 상황 알림 텍스트(FCT)에 대한 사용자 설정 옵션을 제공하는 월드 오브 워크래프트 애드온입니다.
 ## Version : 241216
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

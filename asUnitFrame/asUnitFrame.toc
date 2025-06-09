@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rUnitFrame
-## Notes: Simple unit frams for player, target, focus, pet, party and boss
+## Notes: `asUnitFrame` is a World of Warcraft addon that replaces the default unit frames (Player, Target, etc.) with a customizable display.
+## Notes-kr: `asUnitFrame`은 월드 오브 워크래프트의 기본 유닛 프레임(플레이어, 대상 등)을 대체하여 사용자 정의 가능한 형태로 표시해주는 애드온입니다.
 ## Version : 250603
 ## SavedVariablesPerCharacter: AUF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

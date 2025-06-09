@@ -1,7 +1,8 @@
 ## Interface: 110105
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rScanvenger
-## Notes: 잡탬 정리 
+## Notes: asScavenger is a lightweight World of Warcraft addon that automatically sells all Poor quality (grey) items from your bags to a vendor when you open a merchant window.
+## Notes-kr: asScavenger는 월드 오브 워크래프트 애드온으로, 상인 창을 열 때 가방에 있는 모든 일반 등급(회색) 아이템을 자동으로 상인에게 판매합니다.
 ## Version : 240107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

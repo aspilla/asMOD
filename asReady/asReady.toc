@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rReady
-## Notes: Tracking interrupt/offensive cooldowns of party/raid members
+## Notes: asReady is a World of Warcraft addon designed to track and display important cooldowns for your party and raid members.
+## Notes-kr: asReady는 파티 및 공격대원의 중요 재사용 대기시간을 추적하고 표시하도록 설계된 월드 오브 워크래프트 애드온입니다.
 ## Version : 250603
 ## SavedVariablesPerCharacter: ARDY_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rFixClearFont
-## Notes: 폰트조정 
+## Notes: asFixClearFont is a small World of Warcraft addon that replaces certain default system number fonts with a custom font (ClearFont.ttf) included with the addon.
+## Notes-kr: asFixClearFont는 특정 기본 시스템 숫자 글꼴을 애드온에 포함된 사용자 지정 글꼴(ClearFont.ttf)로 대체하는 작은 월드 오브 워크래프트 애드온입니다.
 ## Version : 240107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

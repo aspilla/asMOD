@@ -1,7 +1,8 @@
 ## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDBMCastingAlert
-## Notes: DBM important spell casting alert
+## Notes: asDBMCastingAlert provides highly customizable visual and auditory alerts for important enemy spell casts that require interruption, with a strong focus on integration with Deadly Boss Mods (DBM).
+## Notes-kr: asDBMCastingAlert는 차단이 필요한 중요한 적 주문 시전에 대해 고급 사용자 정의가 가능한 시각 및 청각 알림을 제공하며, Deadly Boss Mods (DBM)와의 연동에 중점을 둡니다.
 ## Version : 250527
 ## SavedVariablesPerCharacter: ADCA_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

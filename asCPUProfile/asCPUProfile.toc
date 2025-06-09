@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rCPUProfile
-## Notes: asMOD 성능 측정
+## Notes: Blizzard has introduced a new API in Patch 11.0.7 that provides detailed information on addon CPU usage.
+## Notes-kr: 블리자드는 패치 11.0.7에서 애드온의 CPU 사용량에 대한 자세한 정보를 제공하는 새로운 API를 도입했습니다.
 ## Version : 250326
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## SavedVariablesPerCharacter: asCPUOptions

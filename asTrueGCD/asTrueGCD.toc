@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rTrueGCD
-## Notes: 사용 스킬 History
+## Notes: asTrueGCD is a World of Warcraft addon that provides a visual display of your character's current spell cast and a short history of recently used spells and items.
+## Notes-kr: asTrueGCD는 현재 시전 중인 주문과 최근 사용한 주문 및 아이템의 짧은 기록을 시각적으로 표시하는 월드 오브 워크래프트 애드온입니다.
 ## Version : 250427
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

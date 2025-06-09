@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rBuffFilter
-## Notes: Buff tracker (player, target)
+## Notes: asBuffFilter helps to efficiently display and manage important buffs for the player and target.
+## Notes-kr: asBuffFilter는 플레이어와 대상의 중요한 버프를 효율적으로 표시하고 관리하는 데 도움을 줍니다.
 ## Version : 250603
 ## SavedVariablesPerCharacter: ABF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

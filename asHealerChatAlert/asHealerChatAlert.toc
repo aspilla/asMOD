@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rHealerChatAlert
-## Notes: Saying current mana remain in chat
+## Notes: asHealerChatAlert is a World of Warcraft addon that automatically announces the party healer's mana percentage in chat if it falls below a configurable threshold when exiting combat inside an instance.
+## Notes-kr: asHealerChatAlert는 월드 오브 워크래프트 애드온으로, 인스턴스 내에서 전투가 종료될 때 파티 힐러의 마나가 설정된 임계값 아래로 떨어지면 자동으로 파티 채팅으로 알려줍니다.
 ## Version : 250108
 ## SavedVariablesPerCharacter: AHCA_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

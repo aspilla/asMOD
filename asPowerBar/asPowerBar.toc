@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rPowerBar
-## Notes: Power Bar
+## Notes: asPowerBar is a World of Warcraft addon designed to visually track a player's primary resources, secondary resources (like Combo Points, Runes, Holy Power), major ability cooldowns/charges, and important buffs/debuffs.
+## Notes-kr: asPowerBar는 월드 오브 워크래프트(World of Warcraft) 플레이어의 주요 자원, 보조 자원(콤보 포인트, 룬, 신성한 힘 등), 주요 기술의 재사용 대기시간/충전 횟수, 그리고 중요한 강화/약화 효과를 시각적으로 추적하기 위한 애드온입니다.
 ## Version : 250603
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

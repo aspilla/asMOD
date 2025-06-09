@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rFixHotKey
-## Notes: 단축버픈 프레임 변경
+## Notes: asFixHotkey is a World of Warcraft addon that customizes the display of hotkey text on action buttons.
+## Notes-kr: asFixHotkey는 액션 버튼에 표시되는 단축키 텍스트의 표시 방식을 사용자 정의하는 월드 오브 워크래프트 애드온입니다.
 ## Version : 241216
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

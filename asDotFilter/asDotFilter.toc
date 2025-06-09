@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDotFilter
-## Notes: Dot filter addon for boss and focus frames 
+## Notes: asDotFilter is a World of Warcraft addon designed to display player-cast Damage over Time (DoT) effects on specified unit frames, such as focus, boss frames, and the target frame.
+## Notes-kr: asDotFilter는 월드 오브 워크래프트 애드온으로, 플레이어가 시전한 지속적인 피해(DoT) 효과를 주시 대상, 보스 프레임, 대상 프레임 등 지정된 유닛 프레임에 표시하도록 설계되었습니다.
 ## Version : 250307
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

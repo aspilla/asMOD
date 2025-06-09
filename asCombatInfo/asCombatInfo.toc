@@ -1,7 +1,8 @@
 ## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCombatInfo
-## Notes: Class spell, buff, debuff tracker
+## Notes: asCombatInfo is designed to display cooldowns, charge counts, and the status of related buffs/debuffs for the player's key abilities.
+## Notes-kr: asCombatInfo는 플레이어의 중요 기술에 대한 재사용 대기시간, 충전 횟수, 관련 강화/약화 효과 상태를 표시하도록 설계되었습니다.
 ## Version : 250603
 ## SavedVariablesPerCharacter: ACI_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

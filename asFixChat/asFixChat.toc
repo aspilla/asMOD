@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rFixChat
-## Notes: 채팅창 강화, 1.Tab으로 파티/길드/공격대 챗 변경, 2.URL 클릭시 Link 복사 가능하도록 지원
+## Notes: asFixChat is a World of Warcraft addon that enhances chat usability through two main features: smarter chat channel cycling with the Tab key and improved handling of URLs shared in chat.
+## Notes-kr: asFixChat은 두 가지 주요 기능을 통해 채팅 사용성을 향상시키는 월드 오브 워크래프트 애드온입니다: Tab 키를 사용한 스마트한 채팅 채널 순환과 채팅에 공유된 URL 처리 개선입니다.
 ## Version : 240107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

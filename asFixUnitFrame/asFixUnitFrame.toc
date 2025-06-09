@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rFixUnitFrame
-## Notes: Improving the default unit frame 
+## Notes: asFixUnitFrame is a World of Warcraft addon that provides a collection of optional tweaks to the default Blizzard unit frames (Player, Target, TargetofTarget).
+## Notes-kr: asFixUnitFrame은 블리자드 기본 유닛 프레임(플레이어, 대상, 대상의 대상)에 대한 여러 선택적 조정을 제공하는 월드 오브 워크래프트 애드온입니다.
 ## Version : 250118
 ## SavedVariablesPerCharacter: AFUF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

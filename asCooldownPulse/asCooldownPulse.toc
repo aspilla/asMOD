@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCooldownPulse
-## Notes: Simple cooldown tracker
+## Notes: asCooldownPulse tracks spell and item cooldowns, providing visual cues and audio alerts when they become available.
+## Notes-kr: asCooldownPulse는 주문 및 아이템의 재사용 대기시간을 추적하고, 사용가능시 시각적 신호와 음성 알림을 수행 합니다.
 ## Version : 250603
 ## SavedVariablesPerCharacter: ACDP_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

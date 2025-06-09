@@ -1,7 +1,8 @@
 ## Interface: 110105
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rInformation
-## Notes: Sample addon to show states, crit, haste, mastery and vers.
+## Notes: A simple addon that displays the player's main combat stats: Haste, Critical Strike, Mastery, and Versatility.
+## Notes-kr: 플레이어의 주요 전투 능력치인 가속, 치명타 및 극대화, 특화, 유연성을 보여주는 간단한 애드온
 ## Version : 250601
 ## SavedVariablesPerCharacter: ASInformationSaved
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

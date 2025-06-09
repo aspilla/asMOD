@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rTargetCastBar
-## Notes: 대상의 시전바
+## Notes: asTargetCastBar is a World of Warcraft addon that displays a dedicated, movable cast bar for your current target.
+## Notes-kr: asTargetCastBar는 현재 대상의 시전 바를 전용으로 표시하며 이동 가능한 월드 오브 워크래프트 애드온입니다.
 ## Version : 250603
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

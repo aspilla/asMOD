@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rPremadeGroupsFilter
-## Notes: Improving the default premade group finder by showing class icon and color.
+## Notes: asPremadeGroupsFilter enhances Blizzard's Premade Groups Finder (LFG List) by providing more detailed visual information about group compositions, primarily for Mythic+ Dungeons and Raid listings.
+## Notes-kr: asPremadeGroupsFilter는 블리자드의 미리 구성된 그룹 찾기(LFG 목록)를 강화하여, 주로 신화 쐐기돌 던전 및 공격대 목록에 대한 그룹 구성에 대한 더 자세한 시각적 정보를 제공합니다.
 ## Version : 250214
 ## SavedVariablesPerCharacter: APMGF_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

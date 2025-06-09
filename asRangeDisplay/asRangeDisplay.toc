@@ -1,7 +1,8 @@
 ## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rRangeDisplay
-## Notes: Tracking target range
+## Notes: asRangeDisplay is a World of Warcraft addon that shows the approximate range to your current target as a text display on your screen.
+## Notes-kr: asRangeDisplay는 현재 대상까지의 대략적인 거리를 화면에 텍스트로 표시하는 월드 오브 워크래프트 애드온입니다.
 ## Version : 250108
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

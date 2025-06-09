@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rHideBagsBar
-## Notes: Hide BagsBar/MicroMenu/CompactRaidFrameManager, considering the cursor position.
+## Notes: asHideBagsBar is a World of Warcraft addon that automatically hides the main Micro Menu (character, spellbook, talents, etc.), the Bags Bar (backpack and other bags), and the Compact Raid Frame Manager (Blizzard's default raid frames toggle).
+## Notes-kr: asHideBagsBar는 월드 오브 워크래프트 애드온으로, 주 마이크로 메뉴(캐릭터, 주문책, 특성 등), 가방 바(배낭 및 기타 가방), 그리고 소규모 공격대 프레임 관리자(블리자드 기본 공격대 프레임 토글)를 자동으로 숨깁니다.
 ## Version : 250304
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

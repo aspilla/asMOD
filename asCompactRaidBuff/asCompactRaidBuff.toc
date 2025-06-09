@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCompactRaidBuff
-## Notes: Enhanced raid buff, debuff tracker for default UI
+## Notes: This addon enhances the default World of Warcraft raid and party frames, providing crucial information for healers and other roles.
+## Notes-kr: 이 애드온은 기본 월드 오브 워크래프트 공격대 및 파티 프레임을 개선하여, 힐러 및 다른 역할군에게 중요한 정보를 제공합니다.
 ## Version : 250603
 ## SavedVariablesPerCharacter: ACRB_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rAutoMarker
-## Notes: Simple automarker to detect dangerous mobs 
+## Notes: asAutoMarker is a World of Warcraft addon that automatically assigns raid target markers to predefined key monsters when you are playing as a tank in dungeons.
+## Notes-kr: asAutoMarker는 월드 오브 워크래프트의 던전 내에서 탱커 역할을 수행할 때, 사전에 지정된 주요 몬스터에게 자동으로 공격대 징표를 할당해주는 애드온입니다.
 ## Version : 250603
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

@@ -1,7 +1,8 @@
 ## Interface: 110105
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rSpamFilter
-## Notes: Error Message 필터 
+## Notes: asSpamFilter is a World of Warcraft addon designed to reduce the visual clutter from repetitive UI error messages.
+## Notes-kr: asSpamFilter는 반복적인 UI 오류 메시지로 인한 화면 혼잡을 줄이기 위해 설계된 월드 오브 워크래프트 애드온입니다.
 ## Version : 250307
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

@@ -1,7 +1,8 @@
 ## Interface: 110105
 ## Author: |cffff3399Aspilla|r 
 ## Title: |cffff3399as|rDotSnapshot
-## Notes: Dot snapshot addon for Feral and Assassination
+## Notes: asDotSnapshot is a World of Warcraft utility addon that calculates and stores the snapshot power of player-cast Damage over Time (DoT) effects.
+## Notes-kr: asDotSnapshot은 플레이어가 시전한 지속적인 피해(DoT) 효과의 스냅샷 위력을 계산하고 저장하는 월드 오브 워크래프트 유틸리티 애드온입니다.
 ## Version : 250103
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

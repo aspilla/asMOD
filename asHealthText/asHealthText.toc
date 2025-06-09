@@ -1,7 +1,8 @@
 ## Interface: 110105
 ## Author: |cffff3399아스필라|r [블랙무어]
 ## Title: |cffff3399as|rHealthText
-## Notes: 간단한 HUD
+## Notes: asHealthText is a World of Warcraft addon that displays a customizable, text-based Head-Up Display (HUD) for crucial combat information.
+## Notes-kr: asHealthText는 중요한 전투 정보를 위한 사용자 정의 가능한 텍스트 기반 HUD(Head-Up Display)를 표시하는 월드 오브 워크래프트 애드온입니다.
 ## Version : 100425
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

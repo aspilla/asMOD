@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rOverlay
-## Notes: Improving the default spell overlay alert
+## Notes: The appearance and transparency of spell alerts dynamically adjust based on the remaining duration of the associated buff.
+## Notes-kr: 관련 버프의 남은 지속 시간에 따라 주문 알림의 외형과 투명도가 동적으로 조절됩니다.
 ## Version : 250414
 ## SavedVariablesPerCharacter: ASO_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

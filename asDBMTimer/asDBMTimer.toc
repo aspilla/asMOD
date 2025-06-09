@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDBMTimer
-## Notes: Veritical DBM Timer
+## Notes: asDBMTimer provides a configurable visual display for Deadly Boss Mods (DBM) timers, arranging them as a dynamic vertical timeline on your screen.
+## Notes-kr: asDBMTimer는 Deadly Boss Mods (DBM) 타이머에 대한 설정 가능한 시각적 표시를 제공하며, 화면에 동적 수직 타임라인으로 배열합니다.
 ## Version : 250307
 ## SavedVariablesPerCharacter: ADTI_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

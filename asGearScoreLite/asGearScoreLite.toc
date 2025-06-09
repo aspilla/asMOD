@@ -1,7 +1,8 @@
 ## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rGearScoreLite
-## Notes: Displays item levels directly on your Character Frame and the Inspect Frame.
+## Notes: asGearScoreLite is a lightweight World of Warcraft addon that displays item levels directly on your Character Frame and the Inspect Frame.
+## Notes-kr: asGearScoreLite는 자신의 캐릭터 창 및 살펴보기 창에 아이템 레벨을 직접 표시하는 가벼운 월드 오브 워크래프트 애드온입니다.
 ## Version : 250603
 ## OptionalDeps: Blizzard_InspectUI
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

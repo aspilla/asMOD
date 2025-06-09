@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rNamePlates
-## Notes: Addon to enhance the default name plates
+## Notes: asNamePlates is an addon for World of Warcraft that enhances the nameplates of attackable targets.
+## Notes-kr: asNamePlates는 World of Warcraft의 공격 가능한 대상의 이름표(NamePlates)를 개선하는 애드온입니다.
 ## Version : 250603
 ## SavedVariablesPerCharacter: ANameP_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

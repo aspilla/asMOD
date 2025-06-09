@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDebuffFilter
-## Notes: Debuff tracker (player, target)
+## Notes: asDebuffFilter is an advanced World of Warcraft addon that provides highly customizable display and filtering for debuffs on both the player and target unit frames.
+## Notes-kr: asDebuffFilter는 플레이어 및 대상 유닛 프레임 모두에서 디버프에 대한 고도로 사용자 정의 가능한 표시 및 필터링을 제공하는 고급 월드 오브 워크래프트 애드온입니다.
 ## Version : 250419
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

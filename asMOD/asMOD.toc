@@ -1,7 +1,8 @@
 ﻿## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rMOD
-## Notes: asMOD Configuration and Positioning
+## Notes: asMOD is an addon that handles basic WoW settings, Edit Mode settings, and default configurations for external addons like DBM, Details!, and BugSack to optimize the usage of other asMOD addons.
+## Notes-kr: asMOD는 다른 asMOD 애드온들을 최적화 해서 사용할 수 있도록 와우 기본 설정 및 편집 모드 설정, DBM/Details/Bugsack 등 외부 애드온 기본 설정을 담당합니다.
 ## Version : 250603
 ##SavedVariablesPerCharacter: asMOD_config, asMOD_version, asMOD_position, asMOD_layout_version
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

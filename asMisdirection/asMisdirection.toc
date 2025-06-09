@@ -1,8 +1,8 @@
 ## Interface: 110105
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rMisdirection
-## Notes: Addon to create macro for midirection like spell
-## Notes-koKR: 눈속임/속거/마주/비늘 도우미
+## Notes: asMisdirection is a World of Warcraft addon that automates the creation and management of macros for threat redirection abilities (like Hunter's Misdirection, Rogue's Tricks of the Trade, Evoker's Cauterizing Flame), Priest's Power Infusion, and a general /assist macro.
+## Notes-kr: asMisdirection은 위협 수준 전가 능력(사냥꾼의 눈속임, 도적의 속임수 거래, 기원사의 소작의 불길), 사제의 마력 주입, 그리고 일반적인 /assist (지원) 매크로의 생성 및 관리를 자동화하는 월드 오브 워크래프트 애드온입니다.
 ## Version : 250603
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
