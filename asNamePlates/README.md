@@ -88,6 +88,8 @@
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/mThzeV48t-A?si=IPRpMCloFFeurE0y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+* Only spells and skills enabled in DBM's settings will be highlighted. (Refer to the video below)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Yn19ieQ6QRo?si=tfbzb3_7YUMwxUGc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 ---
 
 # asNamePlates: 이름표(NamePlates) 개선 애드온
@@ -220,3 +222,6 @@
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ebttCrIsHLU?si=4jLU7MtZhsAkndvp" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/mThzeV48t-A?si=IPRpMCloFFeurE0y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+* DBM 내 설정 활성화 주문 및 스킬만 강조 안내 합니다. (아래 영상 참고)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Yn19ieQ6QRo?si=tfbzb3_7YUMwxUGc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
