@@ -1,4 +1,5 @@
-﻿local _, ns = ...;
+﻿---@diagnostic disable: undefined-field
+local _, ns = ...;
 
 local CONFIG_NOT_INTERRUPTIBLE_COLOR = { r = 0.9, g = 0.9, b = 0.9 };                 --차단 불가시 (내가 아닐때) 색상 (r, g, b)
 local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { r = 153 / 255, g = 0, b = 76 / 255 }; --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
@@ -1340,7 +1341,9 @@ local function removeUnit(namePlateUnitToken)
         end
 
 
+---@diagnostic disable-next-line: undefined-field
         if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
+---@diagnostic disable-next-line: undefined-field
             ns.lib.PixelGlow_Stop(namePlateFrameBase.UnitFrame.healthBar);
             asframe.alerttype = nil;
         end
@@ -1351,6 +1354,7 @@ local function removeUnit(namePlateUnitToken)
     end
 
     if namePlateFrameBase and namePlateFrameBase.asNamePlates ~= nil then
+---@diagnostic disable-next-line: inject-field
         namePlateFrameBase.asNamePlates = nil;
     end
 
@@ -1701,6 +1705,7 @@ local function updateHealerMark(guid)
         local nameplate = C_NamePlate.GetNamePlateForUnit(unit, issecure());
         if (nameplate and nameplate.asNamePlates ~= nil and not nameplate:IsForbidden() and
                 nameplate.asNamePlates.checkpvptarget) then
+---@diagnostic disable-next-line: undefined-field
             nameplate.asNamePlates.healer:Show();
         end
     end
@@ -1904,20 +1909,20 @@ local function scanDBM()
     DangerousSpellList = {};
     if DBMobj.Mods then
         for i, mod in ipairs(DBMobj.Mods) do
-            if mod.announces then
+            if mod.Options and mod.announces then
                 for k, obj in pairs(mod.announces) do
-                    if obj.spellId and obj.announceType then
-                        if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+                    if obj.spellId and obj.announceType and obj.option then
+                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
                             DangerousSpellList[obj.spellId] = obj.announceType;
                         end
-                    end
+                    end 
                 end
             end
 
-            if mod.specwarns then
+            if mod.Options and mod.specwarns then
                 for k, obj in pairs(mod.specwarns) do
-                    if obj.spellId and obj.announceType then
-                        if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+                    if obj.spellId and obj.announceType and obj.option then
+                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
                             DangerousSpellList[obj.spellId] = obj.announceType;
                         end
                     end
@@ -1929,7 +1934,7 @@ end
 
 local function NewMod(self, ...)
     DBMobj = self;
-    C_Timer.After(0.25, scanDBM);
+    C_Timer.After(2, scanDBM);
 end
 
 local function initAddon()
@@ -1990,7 +1995,8 @@ local function initAddon()
         hooksecurefunc(DBM, "NewMod", NewMod)
     end
 
-    bloadedAutoMarker = C_AddOns.LoadAddOn("asAutoMarker");
+    bloadedAutoMarker = C_AddOns.LoadAddOn("asAutoMarker") or false;
+     
 end
 
 initAddon();

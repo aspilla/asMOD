@@ -1,8 +1,8 @@
-﻿## Interface: 110105
-## Author: |cffff3399아스필라|r [아즈샤라]
+﻿## Interface: 110107
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rTargetCastBar
-## Notes: 대상의 시전바
-## Version : 250603
+## Notes: Target Castingbar
+## Version : 250611
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asTargetCastBarLib.lua

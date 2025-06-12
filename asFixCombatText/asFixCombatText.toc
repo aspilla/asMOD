@@ -1,4 +1,4 @@
-﻿## Interface: 110105
+﻿## Interface: 110107
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rFixCombatText
 ## Notes: 전투 메시지 변경

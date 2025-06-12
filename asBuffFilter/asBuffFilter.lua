@@ -72,21 +72,6 @@ local asGetSpellInfo = function(spellID)
 	end
 end
 
-local asGetSpellTabInfo = function(index)
-	local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
-	if skillLineInfo then
-		return skillLineInfo.name,
-			skillLineInfo.iconID,
-			skillLineInfo.itemIndexOffset,
-			skillLineInfo.numSpellBookItems,
-			skillLineInfo.isGuild,
-			skillLineInfo.offSpecID,
-			skillLineInfo.shouldHide,
-			skillLineInfo.specID;
-	end
-end
-
-
 local function CreateFilterString(...)
 	return table.concat({ ... }, '|');
 end
@@ -507,11 +492,11 @@ local function updateTotemAura()
 					left = left + 1;
 				end
 
-				if bshow then
+				if bshow and frame then
 					local expirationTime = start + duration;
 
 					frame.totemslot = slot;
-					frame.auraInstanceID = nil;
+					frame.auraInstanceID = 0;
 					local color = { r = 0.5, g = 0.5, b = 0.5 };
 
 					SetBuff(frame, icon, 0, expirationTime, duration, color, alert, false, nil, curr_time);
@@ -590,7 +575,7 @@ local function UpdateAuraFrames(unit, auraList)
 
 			frame.unit = unit;
 			frame.auraInstanceID = auraInstanceID;
-			frame.totemslot = nil;
+			frame.totemslot = 0;
 			local alert = 0;
 			local countcolor = nil;
 
@@ -812,10 +797,10 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 
 		if not frame:GetScript("OnEnter") then
 			frame:SetScript("OnEnter", function(s)
-				if s.auraInstanceID then
+				if s.auraInstanceID and s.auraInstanceID  > 0 then
 					GameTooltip_SetDefaultAnchor(GameTooltip, s);
 					GameTooltip:SetUnitBuffByAuraInstanceID(s.unit, s.auraInstanceID, filter);
-				elseif s.totemslot then
+				elseif s.totemslot and s.totemslot > 0 then
 					GameTooltip_SetDefaultAnchor(GameTooltip, s);
 					GameTooltip:SetTotem(s.totemslot)
 				end
@@ -829,6 +814,8 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 		frame:SetMouseMotionEnabled(true);
 
 		frame.data = {};
+		frame.auraInstanceID = 0;
+		frame.totemslot = 0;
 
 		frame:Hide();
 	end

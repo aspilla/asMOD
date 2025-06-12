@@ -174,7 +174,7 @@ local function ADCA_OnUpdate()
 
 	castingInfos:Iterate(
 		function(unit, castingInfo)
-			if i > 3 then
+			if i > 3 or not ADVA then
 				return true;
 			end
 
@@ -205,7 +205,6 @@ local function ADCA_OnUpdate()
 			if ns.options.HideTarget and castingInfo.target and not castingInfo.focus then
 				return false;
 			end
-
 
 			local frame = ADVA.bars[i];
 			local color = CONFIG_INTERRUPTIBLE_COLOR;
@@ -276,9 +275,11 @@ local function ADCA_OnUpdate()
 		end)
 
 	for j = i, 3 do
-		local frame = ADVA.bars[j];
-		frame.start = 0;
-		frame:Hide();
+		if ADVA then
+			local frame = ADVA.bars[j];
+			frame.start = 0;
+			frame:Hide();
+		end
 	end
 
 	if ns.options.PlaySound then
@@ -477,35 +478,36 @@ end
 local DBMobj;
 
 local function scanDBM()
-	DangerousSpellList = {};
+    DangerousSpellList = {};
+    if DBMobj.Mods then
+        for i, mod in ipairs(DBMobj.Mods) do
+            if mod.Options and mod.announces then
+                for k, obj in pairs(mod.announces) do
+                    if obj.spellId and obj.announceType and obj.option then
+                        local option = mod.Options[optionkey];
+                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
+                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        end
+                    end 
+                end
+            end
 
-	if DBMobj.Mods then
-		for i, mod in ipairs(DBMobj.Mods) do
-			if mod.announces then
-				for k, obj in pairs(mod.announces) do
-					if obj.spellId and obj.announceType then
-						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
-							DangerousSpellList[obj.spellId] = obj.announceType;
-						end
-					end
-				end
-			end
-			if mod.specwarns then
-				for k, obj in pairs(mod.specwarns) do
-					if obj.spellId and obj.announceType then
-						if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
-							DangerousSpellList[obj.spellId] = obj.announceType;
-						end
-					end
-				end
-			end
-		end
-	end
+            if mod.Options and mod.specwarns then
+                for k, obj in pairs(mod.specwarns) do
+                    if obj.spellId and obj.announceType and obj.option then
+                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
+                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        end
+                    end
+                end
+            end
+        end
+    end
 end
 
 local function NewMod(self, ...)
 	DBMobj = self;
-	C_Timer.After(0.25, scanDBM);
+	C_Timer.After(2, scanDBM);
 end
 
 local function initAddon()

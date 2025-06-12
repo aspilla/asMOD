@@ -208,34 +208,36 @@ end
 local DBMobj;
 
 local function scanDBM()
-	DangerousSpellList = {};
-	if DBMobj.Mods then
-		for i, mod in ipairs(DBMobj.Mods) do
-			if mod.announces then
-				for k, obj in pairs(mod.announces) do
-					if obj.spellId and obj.announceType then
-						if obj.announceType == "interrupt" then
-							DangerousSpellList[obj.spellId] = true;
-						end
-					end
-				end
-			end
-			if mod.specwarns then
-				for k, obj in pairs(mod.specwarns) do
-					if obj.spellId and obj.announceType then
-						if obj.announceType == "interrupt" then
-							DangerousSpellList[obj.spellId] = true;
-						end
-					end
-				end
-			end
-		end
-	end
+    DangerousSpellList = {};
+    if DBMobj.Mods then
+        for i, mod in ipairs(DBMobj.Mods) do
+            if mod.Options and mod.announces then
+                for k, obj in pairs(mod.announces) do
+                    if obj.spellId and obj.announceType and obj.option then
+						if obj.announceType == "interrupt" and mod.Options[obj.option] then
+                            DangerousSpellList[obj.spellId] = true;
+                        end
+                    end 
+                end
+            end
+
+            if mod.Options and mod.specwarns then
+                for k, obj in pairs(mod.specwarns) do
+                    if obj.spellId and obj.announceType and obj.option then
+						if obj.announceType == "interrupt" and mod.Options[obj.option] then
+                            DangerousSpellList[obj.spellId] = true;
+                        end
+                    end
+                end
+            end
+        end
+    end
 end
+
 
 local function NewMod(self, ...)
 	DBMobj = self;
-	C_Timer.After(0.25, scanDBM);
+	C_Timer.After(2, scanDBM);
 end
 
 

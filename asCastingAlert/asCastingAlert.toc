@@ -1,8 +1,8 @@
-﻿## Interface: 110105
+﻿## Interface: 110107
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCastingAlert
 ## Notes: Alerts in the center of your screen for spells being cast by hostile units
-## Version : 250603
+## Version : 250611
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## SavedVariablesPerCharacter: ACTA_Options 
 ## Category: asMOD

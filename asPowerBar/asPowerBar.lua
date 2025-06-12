@@ -338,7 +338,9 @@ local combobuffcountalertlist = nil;
 local combobuffcoloralertlist = nil;
 local druidcomboalertid = nil;
 local spellbuffcolorlist = nil;
+local spellbuffalertlist = nil;
 local spell2buffcolorlist = nil;
+local spell2buffalertlist = nil;
 
 local bshowspell = false;
 
@@ -1563,6 +1565,7 @@ local function APB_UpdateSpell(spell, spell2)
     local _, notEnoughMana = C_Spell.IsSpellUsable(spellid);
     local boverided = false;
     local colorbuffed = false;
+    local buffedalert = false;
     if spell ~= spellid then
         boverided = true;
     end
@@ -1594,6 +1597,15 @@ local function APB_UpdateSpell(spell, spell2)
         end
     end
 
+    if spellbuffalertlist then
+        local name = APB_UnitBuffList("player", spellbuffalertlist);
+
+        if name then
+            buffedalert = true;
+        end
+    end
+
+
     for i = 1, charges do
         local spellbar = APB.spellbar[i];
         spellbar.start = nil;
@@ -1620,7 +1632,7 @@ local function APB_UpdateSpell(spell, spell2)
         end
         spellbar.spellid = spellid;
 
-        if balert then
+        if balert or buffedalert then
             if not spellbar.isAlert then
                 ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
                 spellbar.isAlert = true;
@@ -1653,7 +1665,7 @@ local function APB_UpdateSpell(spell, spell2)
             spellbar.ctimer = C_Timer.NewTicker(0.1, cb);
         end
 
-        if balert then
+        if balert or buffedalert then
             if not spellbar.isAlert then
                 ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
                 spellbar.isAlert = true;
@@ -1690,6 +1702,7 @@ local function APB_UpdateSpell(spell, spell2)
         local charges, maxCharges2, chargeStart, chargeDuration = asGetSpellCharges(spellid);
         local boverided = false
         local colorbuffed = false
+        local buffedalert = false;
 
         if not spellid then
             return;
@@ -1727,6 +1740,13 @@ local function APB_UpdateSpell(spell, spell2)
                 colorbuffed = true;
             end
         end
+        if spell2buffalertlist then
+            local name = APB_UnitBuffList("player", spell2buffalertlist);
+
+            if name then
+                buffedalert = true;
+            end
+        end
 
 
         for i = maxCharges + 1, maxCharges + charges do
@@ -1748,7 +1768,7 @@ local function APB_UpdateSpell(spell, spell2)
             end
             spellbar.spellid = spellid;
 
-            if balert2 then
+            if balert2 or buffedalert then
                 if not spellbar.isAlert then
                     ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
                     spellbar.isAlert = true;
@@ -1781,7 +1801,7 @@ local function APB_UpdateSpell(spell, spell2)
                 spellbar.ctimer = C_Timer.NewTicker(0.1, cb);
             end
 
-            if balert2 then
+            if balert2 or buffedalert then
                 if not spellbar.isAlert then
                     ns.lib.PixelGlow_Start(spellbar, nil, nil, nil, nil, 0.5);
                     spellbar.isAlert = true;
@@ -2083,7 +2103,9 @@ local function APB_CheckPower(self)
     combobuffcoloralertlist = nil;
     druidcomboalertid = nil;
     spellbuffcolorlist = nil;
+    spellbuffalertlist = nil;
     spell2buffcolorlist = nil;
+    spell2buffalertlist = nil;
 
     APB_BUFF = nil;
     APB_BUFF2 = nil;
@@ -2330,6 +2352,7 @@ local function APB_CheckPower(self)
 
             --불붙는 도화선
             spellbuffcolorlist = { 453207 };
+            spellbuffalertlist = { 438624 }; -- 화염 과잉
 
             if IsPlayerSpell(257541) then
                 APB_SPELL2 = 257541
@@ -2337,6 +2360,7 @@ local function APB_CheckPower(self)
                 APB_UpdateSpell(APB_SPELL, APB_SPELL2);
                 -- 화염의 분노
                 spell2buffcolorlist = { 409964, 1219307 };
+                spell2buffalertlist = { 438611 }; --냉기 과잉
             else
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
@@ -3032,7 +3056,9 @@ local function APB_CheckPower(self)
     ns.AddBuff(combobuffalertlist);
     ns.AddBuff(combobuffcoloralertlist);
     ns.AddBuff(spellbuffcolorlist);
+    ns.AddBuff(spellbuffalertlist);
     ns.AddBuff(spell2buffcolorlist);
+    ns.AddBuff(spell2buffalertlist);
     ns.AddBuff(druidcomboalertid);
 
     if bdeathstalker then

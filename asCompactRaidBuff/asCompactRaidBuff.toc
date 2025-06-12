@@ -1,8 +1,8 @@
-﻿## Interface: 110105
+﻿## Interface: 110107
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCompactRaidBuff
 ## Notes: Enhanced raid buff, debuff tracker for default UI
-## Version : 250603
+## Version : 250611
 ## SavedVariablesPerCharacter: ACRB_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

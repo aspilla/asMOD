@@ -16,7 +16,7 @@ asCastingAlert is an addon that provides on-screen alerts in the center of your 
     *   Integration with DBM (Deadly Boss Mods): If DBM is installed, asCastingAlert uses DBM's information to identify dangerous spells, highlighting the remaining cast time in red.
 
 3.  **Sound Alerts**
-    *   A "Targeted" sound alert will play if you are the target of a DBM major ability.
+    *   A "Targeted" sound alert will play if you are the target of enemy's casting.
     *   This can be turned off by adjusting the `PlaySound` option.
     *   For Tankers, sound alerts are off by default but can be enabled with the `PlaySoundTank` option.
     *   If the `PlaySoundDBMOnly` option is enabled, sound alerts will only play for DBM casts.
@@ -58,7 +58,7 @@ asCastingAlert는 적대적 유닛, 특히 플레이어를 대상으로 하거�
     *   DBM (Deadly Boss Mods)과 연동: DBM이 설치된 경우, asCastingAlert는 DBM의 정보를 사용하여 위험 주문을 식별 하도록 Casting의 남은 시간을 빨간색으로 강조 합니다.
 
 3.  **음성 알림**
-    * DBM 주요스킬의 대상이 될 경우 "Targeted" 라고 음성 알림 됩니다.
+    * 적대적 대상의 스킬의 대상이 될 경우 "Targeted" 라고 음성 알림 됩니다.
     * `PlaySound` 옵션조정으로 끌수 있습니다.
     * Tanker의 경우 음성알림이 Off되며, `PlaySoundTank` 옵션으로 킬수 있습니다.
     * `PlaySoundDBMOnly` 옵션을 키면 DBM 시전에 대해서만 음성 알림이 됩니다.

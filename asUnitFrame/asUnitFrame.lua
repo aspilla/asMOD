@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-field
 local _, ns = ...;
 
 ------------------------------------------
@@ -349,12 +350,15 @@ local function updateUnit(frame)
     end
 
     --Name
+    local leveltext = ""
     local unitlevel = UnitLevel(unit);
     if unitlevel < 0 then
-        unitlevel = "??"
+        leveltext = "??"
+    else
+        leveltext = tostring(unitlevel);
     end
     local name = UnitName(unit);
-    name = unitlevel .. " " .. name;
+    name = leveltext .. " " .. name;
 
     -- Type
     local classtext = "";
@@ -773,24 +777,24 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar.predictionBar:Hide();
 
     frame.healthbar.absorbBar = frame.healthbar:CreateTexture(nil, "BORDER");
-    frame.healthbar.absorbBar:SetTexture("Interface\\RaidFrame\\Shield-Fill", "BORDER");
+    frame.healthbar.absorbBar:SetTexture("Interface\\RaidFrame\\Shield-Fill");
     frame.healthbar.absorbBar:SetAlpha(1);
     frame.healthbar.absorbBar:Hide();
 
     frame.healthbar.absorbBarO = frame.healthbar:CreateTexture(nil, "ARTWORK");
-    frame.healthbar.absorbBarO:SetTexture("Interface\\RaidFrame\\Shield-Overlay", "BORDER");
+    frame.healthbar.absorbBarO:SetTexture("Interface\\RaidFrame\\Shield-Overlay");
     frame.healthbar.absorbBarO:SetAllPoints(frame.healthbar.absorbBar);
     frame.healthbar.absorbBarO:SetAlpha(0.8);
     frame.healthbar.absorbBarO:Show();
 
     frame.healthbar.shieldBar = frame.healthbar:CreateTexture(nil, "ARTWORK");
-    frame.healthbar.shieldBar:SetTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar", "ARTWORK");
+    frame.healthbar.shieldBar:SetTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar");
     frame.healthbar.shieldBar:SetVertexColor(0, 0, 0);
     frame.healthbar.shieldBar:SetAlpha(0.5);
     frame.healthbar.shieldBar:Hide();
 
     frame.healthbar.incominghealBar = frame.healthbar:CreateTexture(nil, "ARTWORK");
-    frame.healthbar.incominghealBar:SetTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar", "ARTWORK");
+    frame.healthbar.incominghealBar:SetTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar");
     frame.healthbar.incominghealBar:SetVertexColor(0, 1, 0);
     frame.healthbar.incominghealBar:SetAlpha(0.6);
     frame.healthbar.incominghealBar:Hide();
@@ -1148,24 +1152,24 @@ AUF:RegisterEvent("PORTRAITS_UPDATED");
 
 
 local DBMobj;
-
 local function scanDBM()
     DangerousSpellList = {};
     if DBMobj.Mods then
         for i, mod in ipairs(DBMobj.Mods) do
-            if mod.announces then
+            if mod.Options and mod.announces then
                 for k, obj in pairs(mod.announces) do
-                    if obj.spellId and obj.announceType then
-                        if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+                    if obj.spellId and obj.announceType and obj.option then
+                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
                             DangerousSpellList[obj.spellId] = obj.announceType;
                         end
-                    end
+                    end 
                 end
             end
-            if mod.specwarns then
+
+            if mod.Options and mod.specwarns then
                 for k, obj in pairs(mod.specwarns) do
-                    if obj.spellId and obj.announceType then
-                        if DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt" then
+                    if obj.spellId and obj.announceType and obj.option then
+                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
                             DangerousSpellList[obj.spellId] = obj.announceType;
                         end
                     end
@@ -1177,7 +1181,7 @@ end
 
 local function NewMod(self, ...)
     DBMobj = self;
-    C_Timer.After(0.25, scanDBM);
+    C_Timer.After(2, scanDBM);
 end
 
 local bloaded = C_AddOns.LoadAddOn("DBM-Core");
