@@ -30,11 +30,11 @@ ns.ANameP_UpdateRateTarget = 0.3;    -- 대상의 버프 Check 반복 시간 (�
 -- { r, g, b, 빤작임 여부}
 ns.ANameP_AlertList = {
     [229537] = { 1, 1, 0.2, 1 }, -- 노란색 빤짝이   공허의 사절
-    [223724] = { 1, 1, 1, 0 }, -- 흰색 빤짝이 없음 보충용 통
+    [223724] = { 1, 1, 1, 0 },   -- 흰색 빤짝이 없음 보충용 통
     [199368] = { 1, 1, 0.2, 1 }, -- 노란색 빤짝이 경화된 수정
-    [174773] = { 1, 1, 0.2, 0 }, -- 노란색 빤짝이 없음  원한의 망령  
+    [174773] = { 1, 1, 0.2, 0 }, -- 노란색 빤짝이 없음  원한의 망령
     --[225982] = { 1, 1, 0.2, 1 }, -- 노란색 빤짝이 없음  절단의 훈련용 허수아비
-    --[229069] = {0, 1, 0.5, 1}, -- Test    
+    --[229069] = {0, 1, 0.5, 1}, -- Test
 }
 
 
@@ -397,7 +397,7 @@ ANameP_Options_Default = {
 
     ANameP_ShowList_HUNTER_2 = {
         [466872] = { 0, 5, 1 }, --척후병의 징표
-        [468572] = { 0, 4, 2 }, --검은 화살        
+        [468572] = { 0, 4, 2 }, --검은 화살
         [450387] = { 0, 3 },    --파수꾼
         [257284] = { 0, 2 },    --사냥꾼의 징표
 
@@ -479,7 +479,7 @@ ANameP_Options_Default = {
         [164812] = { 1, 5, 1 }, --달빛섬광
         [164815] = { 1, 4, 2 }, --태양섬광
         [202347] = { 1, 3 },    --항성의 섬광
-        [81282] = { 0, 2 },    --진균 번식
+        [81282] = { 0, 2 },     --진균 번식
         [430589] = { 0, 1 },    --기후 노출
     },
 
@@ -534,8 +534,8 @@ ANameP_Options_Default = {
 
     ANameP_ShowList_DEATHKNIGHT_1 = {
         [434765] = { 0, 5 }, --사신의 징표
-        [458478] = { 0, 4 },    --공포 유발
-        [55078] = { 0, 3 },     --피의 역병
+        [458478] = { 0, 4 }, --공포 유발
+        [55078] = { 0, 3 },  --피의 역병
 
     },
 
@@ -756,6 +756,7 @@ local function SetupColorOption(text, option)
         ShowColorPicker(ANameP_Options[option].r, ANameP_Options[option].g, ANameP_Options[option].b, 1, callback);
     end)
 end
+
 
 local function SetupEditBoxOption()
     local spec = GetSpecialization();
@@ -1065,8 +1066,9 @@ local function SetupEditBoxOption()
     end
     btn:SetWidth(100)
     btn:SetScript("OnClick", function()
+        ANameP_Options[listname] = {};
         for idx, values in pairs(prioritytable) do
-            local priority = 6 - idx;            
+            local priority = 6 - idx;
             local spell = values[1];
             local time = values[2];
             local bshowcolor = values[3];
@@ -1075,7 +1077,6 @@ local function SetupEditBoxOption()
             if spell and spell > 0 then
                 ANameP_Options[listname][spell] = { time, priority, bshowcolor, bcount };
             end
-            
         end
         C_Timer.After(1.5, ReloadUI());
     end)
@@ -1091,7 +1092,7 @@ local function SetupDebuffPointOption()
     end
 
     local x = 10;
-    
+
     if scrollChild == nil then
         return;
     end
@@ -1103,8 +1104,8 @@ local function SetupDebuffPointOption()
     x = 60;
 
     local dropDown = CreateFrame("Frame", nil, scrollChild, "UIDropDownMenuTemplate")
-    dropDown:SetPoint("LEFT", scrollChild, "TOPLEFT", x, curr_y-5)
-    UIDropDownMenu_SetWidth(dropDown, 100)     -- Use in place of dropDown:SetWidth
+    dropDown:SetPoint("LEFT", scrollChild, "TOPLEFT", x, curr_y - 5)
+    UIDropDownMenu_SetWidth(dropDown, 100) -- Use in place of dropDown:SetWidth
 
     local dropdownOptions = {
         { text = "Top",  value = 1 },
@@ -1231,7 +1232,7 @@ local function panelOnShow()
         SetupCheckBoxOption("[Health] Display health values on the left", "ANameP_RealHealth");
         SetupCheckBoxOption("[Pet] Show pet's target and Beast Cleave", "ANameP_ShowPetTarget");
         SetupCheckBoxOption("[Target] Show arrow on target", "ANameP_ShowTargetArrow"); -- Show pet's target and Beast Cleave
-        SetupCheckBoxOption("[Power] Show Power below", "ANameP_ShowPower"); -- Show Power
+        SetupCheckBoxOption("[Power] Show Power below", "ANameP_ShowPower");            -- Show Power
 
         -- Set up slider and color options with English descriptions
         SetupSliderOption("Nameplate vertical alignment (nameplateOverlapV)", "nameplateOverlapV");

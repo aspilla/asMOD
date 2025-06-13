@@ -603,7 +603,6 @@ local function updateTargetNameP(self)
         end
 
         self.powerbar.value:Show();
-
     elseif UnitIsUnit(unit, "player") then
         height = orig_height + ns.ANameP_TargetHealthBarHeight;
         self.healthtext:Show();
@@ -737,7 +736,7 @@ local function updatePower(asframe)
     local unit = asframe.unit;
 
     if not asframe.bupdatePower then
-        return;        
+        return;
     end
 
     power = UnitPower(unit);
@@ -1341,9 +1340,9 @@ local function removeUnit(namePlateUnitToken)
         end
 
 
----@diagnostic disable-next-line: undefined-field
+        ---@diagnostic disable-next-line: undefined-field
         if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
----@diagnostic disable-next-line: undefined-field
+            ---@diagnostic disable-next-line: undefined-field
             ns.lib.PixelGlow_Stop(namePlateFrameBase.UnitFrame.healthBar);
             asframe.alerttype = nil;
         end
@@ -1354,7 +1353,7 @@ local function removeUnit(namePlateUnitToken)
     end
 
     if namePlateFrameBase and namePlateFrameBase.asNamePlates ~= nil then
----@diagnostic disable-next-line: inject-field
+        ---@diagnostic disable-next-line: inject-field
         namePlateFrameBase.asNamePlates = nil;
     end
 
@@ -1588,7 +1587,7 @@ local function addNamePlate(namePlateFrameBase)
 
     asframe.powerbar:ClearAllPoints();
     asframe.powerbar:SetPoint("TOP", healthbar, "BOTTOM", 0, -1);
-    asframe.powerbar:SetWidth(orig_width/2)
+    asframe.powerbar:SetWidth(orig_width / 2)
     asframe.bupdatePower = false;
 
     local powerType, powerToken = UnitPowerType(unit);
@@ -1705,7 +1704,7 @@ local function updateHealerMark(guid)
         local nameplate = C_NamePlate.GetNamePlateForUnit(unit, issecure());
         if (nameplate and nameplate.asNamePlates ~= nil and not nameplate:IsForbidden() and
                 nameplate.asNamePlates.checkpvptarget) then
----@diagnostic disable-next-line: undefined-field
+            ---@diagnostic disable-next-line: undefined-field
             nameplate.asNamePlates.healer:Show();
         end
     end
@@ -1884,8 +1883,6 @@ local function ANameP_OnEvent(self, event, ...)
     end
 end
 
-
-
 local function ANameP_OnUpdate()
     updateUnit("target", false);
 end
@@ -1915,7 +1912,7 @@ local function scanDBM()
                         if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
                             DangerousSpellList[obj.spellId] = obj.announceType;
                         end
-                    end 
+                    end
                 end
             end
 
@@ -1996,7 +1993,6 @@ local function initAddon()
     end
 
     bloadedAutoMarker = C_AddOns.LoadAddOn("asAutoMarker") or false;
-     
 end
 
 initAddon();

@@ -5,10 +5,10 @@ ns.dbm_event_list = {};
 function asNamePlatesDBM_callback(event, id, ...)
     if event == "DBM_TimerStart" or event == "DBM_NameplateStart" then
         local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
-        
+
         --if ns.options.ANameP_ShowDBM and type == "cd"  and string.find(id, "cdnp") or string.find(id, "nextnp") then
-        if ns.options.ANameP_ShowDBM and guid then            
-            ns.dbm_event_list[id] = {msg, timer, GetTime(), icon, 0, colorId, spellId, guid};
+        if ns.options.ANameP_ShowDBM and guid then
+            ns.dbm_event_list[id] = { msg, timer, GetTime(), icon, 0, colorId, spellId, guid };
         end
     elseif event == "DBM_TimerStop" or event == "DBM_NameplateStop" then
         ns.dbm_event_list[id] = nil;
@@ -25,7 +25,6 @@ function asNamePlatesDBM_callback(event, id, ...)
 end
 
 local function initDBM()
-
     DBM:RegisterCallback("DBM_TimerStart", asNamePlatesDBM_callback);
     DBM:RegisterCallback("DBM_TimerStop", asNamePlatesDBM_callback);
     DBM:RegisterCallback("DBM_TimerFadeUpdate", asNamePlatesDBM_callback);
@@ -39,7 +38,6 @@ local function initDBM()
     DBM:RegisterCallback("DBM_NameplateUpdate", asNamePlatesDBM_callback);
     DBM:RegisterCallback("DBM_NameplatePause", asNamePlatesDBM_callback);
     DBM:RegisterCallback("DBM_NameplateResume", asNamePlatesDBM_callback);
-
 end
 
 local bloaded = C_AddOns.LoadAddOn("DBM-Core");

@@ -100,7 +100,6 @@ local function ProcessAura(aura, unit, type)
         if aura.isHarmful then
             local show = false;
             aura.showlist = ns.ANameP_ShowList and ns.ANameP_ShowList[aura.spellId];
-            
 
             if ns.options.ANameP_ShowMyAll then
                 if aura.duration <= ns.ANameP_BuffMaxCool then
@@ -134,7 +133,7 @@ local function ProcessAura(aura, unit, type)
             end
 
             if show then
-                if aura.showlist then                    
+                if aura.showlist then
                     aura.debuffType = ns.UnitFrameDebuffType.Priority + aura.showlist[2];
                 elseif isPlayer then
                     if aura.nameplateShowPersonal then

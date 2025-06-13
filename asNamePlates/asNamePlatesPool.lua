@@ -5,14 +5,14 @@ local objects = {};
 -- 버프 디버프 처리부
 local function createDebuffFrame(parent)
     local frame = CreateFrame("Frame", nil, parent, "asNamePlatesBuffFrameTemplate");
-    local frameCooldown = frame.cooldown;        
+    local frameCooldown = frame.cooldown;
     local frameCount = frame.count;
     local frameIcon = frame.icon;
-    local frameBorder = frame.border; 
-    
+    local frameBorder = frame.border;
+
     frameIcon:SetTexCoord(.08, .92, .24, .76);
     frameBorder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-     
+
     frameCooldown:SetDrawSwipe(true);
     for _, r in next, { frameCooldown:GetRegions() } do
         if r:GetObjectType() == "FontString" then
@@ -20,14 +20,14 @@ local function createDebuffFrame(parent)
             r:ClearAllPoints();
             r:SetPoint("TOP", 0, 4);
             r:SetDrawLayer("OVERLAY");
-            break;        
+            break;
         end
-    end        
+    end
 
     frameCount:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CountFontSize, "OUTLINE");
     frameCount:ClearAllPoints();
     frameCount:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -1, 1);
-    frame.snapshot:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CountFontSize - 2, "OUTLINE");    
+    frame.snapshot:SetFont(STANDARD_TEXT_FONT, ns.ANameP_CountFontSize - 2, "OUTLINE");
     frame.snapshot:ClearAllPoints();
     frame.snapshot:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
 
@@ -56,14 +56,13 @@ local function createDebuffFrame(parent)
 end
 
 local function createCastIcon(parent)
-
     local frame = CreateFrame("Frame", nil, parent, "asNamePlatesBuffFrameTemplate");
     frame.timetext = frame:CreateFontString(nil, "OVERLAY");
     frame.targetname = frame:CreateFontString(nil, "OVERLAY");
 
     frame:EnableMouse(false);
 
-    frame.icon:SetTexCoord(.08, .92, .08, .92);    
+    frame.icon:SetTexCoord(.08, .92, .08, .92);
     frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 
     frame.timetext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
@@ -74,7 +73,7 @@ local function createCastIcon(parent)
     frame.targetname:ClearAllPoints();
     frame.targetname:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -1);
     frame.data = {};
-    
+
 
     if not frame:GetScript("OnEnter") then
         frame:SetScript("OnEnter", function(s)
@@ -86,10 +85,9 @@ local function createCastIcon(parent)
         frame:SetScript("OnLeave", function()
             GameTooltip:Hide();
         end)
-    end    
+    end
 
     return frame;
-
 end
 
 local function creatframe()
@@ -106,7 +104,7 @@ local function creatframe()
     object.BarColor = object:CreateTexture(nil, "OVERLAY", "asColorTextureTemplate", 2);
     object.healthtext = object:CreateFontString(nil, "OVERLAY");
     object.realhealthtext = object:CreateFontString(nil, "OVERLAY");
-   
+
     object.powerbar = CreateFrame("StatusBar", nil, object);
     object.powerbar:SetStatusBarTexture("Interface\\addons\\asNamePlates\\UI-StatusBar")
     object.powerbar:GetStatusBarTexture():SetHorizTile(false)
@@ -127,7 +125,7 @@ local function creatframe()
     object.powerbar.value:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize - 3, "OUTLINE");
     object.powerbar.value:SetTextColor(1, 1, 1, 1)
     object.powerbar.value:SetPoint("CENTER", object.powerbar, "CENTER", 0, 0);
-    
+
     object.motext = object:CreateFontString(nil, "OVERLAY");
     object.tgtext = object:CreateFontString(nil, "OVERLAY");
     object.resourcetext = object:CreateFontString(nil, "OVERLAY");
