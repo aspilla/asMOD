@@ -67,6 +67,7 @@ Note: Showing cooldowns on the left top corner is from asReady addon.
     *   Highlights the unit frame border for dispellable debuffs.
     *   Fixes a bug in the default WoW raid/party frames related to dispellable debuffs: Detects all dispellable debuff types according to the player's specialization. (e.g., Holy Paladins will only receive warnings for magic and poison debuffs.)
     *   For Hunters, if a poison is dispellable and they are affected by a poison, it will be highlighted.
+    ![dispel](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCompactraidbuff_dispel.jpg?raw=true)  
 
 *   **Shield Display:**
     *   If the shield's absorption amount exceeds the unit's missing health, the excess shield amount is faintly displayed on the left side of the frame.
@@ -176,6 +177,7 @@ Buff locations and defensive CD settings can be configured as shown in the follo
     *   해제 가능한 디버프에 대해 유닛 프레임 테두리를 강조 표시합니다.
     *   기본 WoW 공격대/파티 프레임의 해제 가능 디버프 관련 버그를 수정했습니다: 플레이어의 전문화에 따라 모든 해제 가능한 디버프 유형을 감지합니다. (예: 신성 기사는 마법과 독 디버프만 경고받습니다.)
     *   사냥꾼의 경우 독해제 가능시 자신에게 독이 걸렸을 경우 강조 합니다.
+    ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCompactraidbuff.jpg?raw=true)  
 
 *   **보호막 표시:**
     *   보호막의 흡수량이 유닛의 부족한 체력을 초과하면, 초과된 보호막 양을 프레임 왼쪽에 희미하게 표시합니다.      
