@@ -946,7 +946,7 @@ local function SetupEditBoxOption()
         editBox2:SetMultiLine(false);
         editBox2:SetMaxLetters(20);
         editBox2:SetNumeric(false);
-        editBox2:SetText(time);
+        editBox2:SetText(tostring(time));
         editBox2:SetAutoFocus(false);
         editBox2:ClearFocus();
         editBox2:SetTextInsets(0, 0, 0, 1)
@@ -1078,7 +1078,7 @@ local function SetupEditBoxOption()
                 ANameP_Options[listname][spell] = { time, priority, bshowcolor, bcount };
             end
         end
-        C_Timer.After(1.5, ReloadUI());
+        C_Timer.After(1.5, ReloadUI);
     end)
 end
 

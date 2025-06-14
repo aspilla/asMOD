@@ -198,13 +198,40 @@ end
 local bMouseEnabled = true;
 local needReposition = true;
 
+local function asGetCrit()
+    --PaperDollFrame_SetCritChance
+	local spellCrit, rangedCrit, meleeCrit;
+	local critChance;
+
+	-- Start at 2 to skip physical damage
+	local holySchool = 2;
+	local minCrit = GetSpellCritChance(holySchool);
+	for i=(holySchool+1), MAX_SPELL_SCHOOLS do
+		spellCrit = GetSpellCritChance(i);
+		minCrit = min(minCrit, spellCrit);
+	end
+	spellCrit = minCrit
+	rangedCrit = GetRangedCritChance();
+	meleeCrit = GetCritChance();
+
+	if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
+		critChance = spellCrit;
+	elseif (rangedCrit >= meleeCrit) then
+		critChance = rangedCrit;
+	else
+		critChance = meleeCrit;
+	end
+
+    return critChance;
+end
+
 -- Function to record current stat values into history
 local function RecordCurrentStats()
     local inCombat = UnitAffectingCombat("player");
 
     if not inCombat then
         local currentStats = {
-            Crit = GetCritChance(),
+            Crit = asGetCrit(),
             Haste = GetHaste(),
             Mastery = GetMasteryEffect(),
             Versatility = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) +
@@ -283,7 +310,7 @@ local function UpdateStats()
     end
 
     local haste = GetHaste()
-    local crit = GetCritChance()
+    local crit = asGetCrit()
     local mastery = GetMasteryEffect()
     local versatility = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) +
         GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
