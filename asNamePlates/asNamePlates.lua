@@ -982,18 +982,14 @@ local function updateHealthbarColor(self)
             end
         end        
         
-
-
-        -- 보스몹 강ㅈ
-        if ns.options.ANameP_BossHint then
-            local level = UnitLevel(unit);
+        if ns.options.ANameP_BossHint and self.level then
+            local level = self.level;
 
             if level < 0 or level > MaxLevel then
                 return ns.options.ANameP_BossColor;
             end
         end
 
-        -- 어그로 표ㅈ
         if ns.options.ANameP_AggroShow and incombat then
             if isTanking then
                 return ns.options.ANameP_TankAggroLoseColor2;
@@ -1704,6 +1700,8 @@ local function addNamePlate(namePlateFrameBase)
     if UnitIsPlayer(unit) then
         unit_guid_list[asframe.guid] = unit;
     end
+
+    asframe.level = UnitLevel(unit);
 
     local function callback()
         updateNamePlate(namePlateFrameBase);

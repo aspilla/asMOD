@@ -312,7 +312,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 250620,
+    version = 250621,
     ANameP_ShowKnownSpell = false,                            -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -344,7 +344,7 @@ ANameP_Options_Default = {
     ANameP_QuestColor = { r = 1, g = 0.8, b = 0.5 },          -- Quest 몹 Color
     ANameP_AutoMarkerColor = { r = 0.5, g = 1, b = 0.5 },     -- AutoMarker 몹 Color
     ANameP_AutoMarkerColor2 = { r = 1, g = 1, b = 0.2 },      -- AutoMarker 몹 Color2
-    ANameP_BossColor = { r = 0.3, g = 0.3, b = 1 },             -- Boss 몹 Color
+    ANameP_BossColor = { r = 0, g = 1, b = 0.2 },             -- Boss 몹 Color
 
     nameplateOverlapV = 1.0,                                  -- 이름표 상하 정렬
 
