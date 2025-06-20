@@ -57,6 +57,8 @@ local asGetSpellTabInfo = function(index)
     end
 end
 
+local MaxLevel = GetMaxLevelForExpansionLevel(10);
+
 
 -- Cooldown
 local function asCooldownFrame_Clear(self)
@@ -973,13 +975,35 @@ local function updateHealthbarColor(self)
                 return ns.options.ANameP_AggroTargetColor;
             elseif (isTargetPet) then
                 return ns.options.ANameP_TankAggroLoseColor3;
-            elseif isTanking then
+            elseif isTanking and tanker then
                 return ns.options.ANameP_TankAggroLoseColor2;
             elseif status and status > 0 then
                 return ns.options.ANameP_AggroColor;
+            end
+        end        
+        
+
+
+        -- 보스몹 강ㅈ
+        if ns.options.ANameP_BossHint then
+            local level = UnitLevel(unit);
+
+            if level < 0 or level > MaxLevel then
+                return ns.options.ANameP_BossColor;
+            end
+        end
+
+        -- 어그로 표ㅈ
+        if ns.options.ANameP_AggroShow and incombat then
+            if isTanking then
+                return ns.options.ANameP_TankAggroLoseColor2;
             elseif status then
                 return ns.options.ANameP_TankAggroLoseColor;
             end
+        end
+
+        if ns.options.ANameP_QuestAlert and not IsInInstance() and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
+            return ns.options.ANameP_QuestColor;
         end
 
         if ns.options.ANameP_AutoMarker and bloadedAutoMarker and asAutoMarkerF then
@@ -989,10 +1013,6 @@ local function updateHealthbarColor(self)
             elseif mobtype and mobtype >= 1 then
                 return ns.options.ANameP_AutoMarkerColor2;
             end
-        end
-
-        if ns.options.ANameP_QuestAlert and not IsInInstance() and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
-            return ns.options.ANameP_QuestColor;
         end
 
         return nil;

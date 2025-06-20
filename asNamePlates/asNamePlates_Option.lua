@@ -312,7 +312,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 250405,
+    version = 250620,
     ANameP_ShowKnownSpell = false,                            -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -321,6 +321,7 @@ ANameP_Options_Default = {
     ANameP_LowHealthAlert = true,                             -- 낮은 체력 색상 변경 사용
     ANameP_QuestAlert = true,                                 -- Quest 몹 색상 변경 사용
     ANameP_AutoMarker = true,                                 -- AutoMarker 몹 색상 변경 사용
+    ANameP_BossHint = true,                                   -- Boss Mob Color 변ㅈ
     ANameP_Tooltip = true,                                    -- Tooltip 표시
     ANameP_ShowDBM = true,                                    -- DBM Cooldown을 표시
     ANameP_ShowDBMCastingColor = true,                        -- DBM CastingColor을 표시
@@ -343,6 +344,7 @@ ANameP_Options_Default = {
     ANameP_QuestColor = { r = 1, g = 0.8, b = 0.5 },          -- Quest 몹 Color
     ANameP_AutoMarkerColor = { r = 0.5, g = 1, b = 0.5 },     -- AutoMarker 몹 Color
     ANameP_AutoMarkerColor2 = { r = 1, g = 1, b = 0.2 },      -- AutoMarker 몹 Color2
+    ANameP_BossColor = { r = 0.3, g = 0.3, b = 1 },             -- Boss 몹 Color
 
     nameplateOverlapV = 1.0,                                  -- 이름표 상하 정렬
 
@@ -749,6 +751,7 @@ local function SetupColorOption(text, option)
             newR, newG, newB, newA = ColorPickerFrame:GetColorRGB();
         end
         ANameP_Options[option].r, ANameP_Options[option].g, ANameP_Options[option].b = newR, newG, newB;
+        title:SetTextColor(ANameP_Options[option].r, ANameP_Options[option].g, ANameP_Options[option].b, 1);
         ANameP_OptionM.UpdateAllOption();
     end
 
@@ -1078,7 +1081,7 @@ local function SetupEditBoxOption()
                 ANameP_Options[listname][spell] = { time, priority, bshowcolor, bcount };
             end
         end
-        C_Timer.After(1.5, ReloadUI);
+        ReloadUI();
     end)
 end
 
@@ -1195,6 +1198,7 @@ local function panelOnShow()
         SetupCheckBoxOption("[색상] Quest 몹 색상 표시", "ANameP_QuestAlert"); -- Show quest mob colors
         SetupCheckBoxOption("[색상] AutoMarker 몹 색상 표시", "ANameP_AutoMarker"); -- Show AutoMarker mob colors
         SetupCheckBoxOption("[색상] DBM Casting 몹 색상 표시", "ANameP_ShowDBMCastingColor"); -- Show DBM casting mob colors
+        SetupCheckBoxOption("[색상] Boss 몹 색상 표시", "ANameP_BossHint"); -- Show DBM casting mob colors
         SetupCheckBoxOption("[크기] 아군 체력바 크기 조정", "ANameP_ShortFriendNP"); -- Adjust friendly health bar size
         SetupCheckBoxOption("[체력] 체력 수치를 좌측에 표시", "ANameP_RealHealth"); -- Display health values on the left
         SetupCheckBoxOption("[소환수] 소환수 대상 및 야수의 회전 베기 표시", "ANameP_ShowPetTarget"); -- Show pet's target and Beast Cleave
@@ -1215,6 +1219,7 @@ local function panelOnShow()
         SetupColorOption("[이름표 색상] Quest", "ANameP_QuestColor"); -- Nameplate color: Quest
         SetupColorOption("[이름표 색상] AutoMarker", "ANameP_AutoMarkerColor"); -- Nameplate color: AutoMarker
         SetupColorOption("[이름표 색상] AutoMarker2", "ANameP_AutoMarkerColor2"); -- Nameplate color: AutoMarker 2
+        SetupColorOption("[이름표 색상] Boss Mob", "ANameP_BossColor"); -- Nameplate color: BossColor
     else
         -- Set up checkbox options with English descriptions
         SetupCheckBoxOption("[Debuff] Add spellbook skill debuffs to default", "ANameP_ShowKnownSpell");
@@ -1228,6 +1233,7 @@ local function panelOnShow()
         SetupCheckBoxOption("[Color] Show quest mob colors", "ANameP_QuestAlert");
         SetupCheckBoxOption("[Color] Show AutoMarker mob colors", "ANameP_AutoMarker");
         SetupCheckBoxOption("[Color] Show DBM casting mob colors", "ANameP_ShowDBMCastingColor");
+        SetupCheckBoxOption("[Color] Show Boss mob colors", "ANameP_BossHint");
         SetupCheckBoxOption("[Size] Adjust friendly health bar size", "ANameP_ShortFriendNP");
         SetupCheckBoxOption("[Health] Display health values on the left", "ANameP_RealHealth");
         SetupCheckBoxOption("[Pet] Show pet's target and Beast Cleave", "ANameP_ShowPetTarget");
@@ -1247,7 +1253,7 @@ local function panelOnShow()
         SetupColorOption("[Nameplate Color] Debuff 3", "ANameP_DebuffColor3");
         SetupColorOption("[Nameplate Color] Quest", "ANameP_QuestColor");
         SetupColorOption("[Nameplate Color] AutoMarker", "ANameP_AutoMarkerColor");
-        SetupColorOption("[Nameplate Color] AutoMarker 2", "ANameP_AutoMarkerColor2");
+        SetupColorOption("[Nameplate Color] Boss Mobs", "ANameP_BossColor");
     end
     SetupDebuffPointOption();
     SetupEditBoxOption();
