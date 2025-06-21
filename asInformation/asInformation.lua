@@ -12,7 +12,7 @@ local defaultThreshold = 100
 local defaultOptions = {
     point = "BOTTOM",
     relativePoint = "BOTTOM",
-    xOfs = -175,
+    xOfs = -165,
     yOfs = 124,
     isLocked = true,
     stateThreshold = defaultThreshold,
@@ -21,7 +21,7 @@ local defaultOptions = {
     showMastery = true,
     showVer = true,
     showPrimary = true, -- Add new option for primary stat
-    version = 250532,
+    version = 250621,
 }
 
 
@@ -31,6 +31,7 @@ local locale = GetLocale()
 
 -- Stat Configurations
 local statConfigs = {
+    Stat = { abbr = "S", gemColor = { r = 1, g = 1, b = 0 } },
     Crit = { abbr = "C", gemColor = { r = 1, g = 0, b = 0 } },
     Haste = { abbr = "H", gemColor = { r = 0, g = 1, b = 0 } },
     Mastery = { abbr = "M", gemColor = { r = 0.5, g = 0, b = 1 } },
@@ -41,8 +42,8 @@ local defaultBarColor = { r = 0.5, g = 0.5, b = 0.5 }
 local activatedTextColor = { r = 1, g = 1, b = 1 }
 
 -- New data structures for tracking minimum stats over time
-local statHistory = { Crit = {}, Haste = {}, Mastery = {}, Versatility = {} }
-local recentMinimumStats = { Crit = nil, Haste = nil, Mastery = nil, Versatility = nil }
+local statHistory = { Stat = {}, Crit = {}, Haste = {}, Mastery = {}, Versatility = {} }
+local recentMinimumStats = { Stat = nil, Crit = nil, Haste = nil, Mastery = nil, Versatility = nil }
 
 if locale == "koKR" then
     L["Lock Frame"] = "프레임 잠금"
@@ -79,20 +80,49 @@ local function SavePosition()
 end
 
 
+local primaryStatBar, primaryStatBarText -- Add primary stat bar and text
 local critBar, critBarText
 local hasteBar, hasteBarText
 local masteryBar, masteryBarText
 local versatilityBar, versatilityBarText
-local primaryStatBar, primaryStatBarText -- Add primary stat bar and text
 
 local function initFrames()
     local prevframe = asInformation
     -- Declare variables for bars and their texts
     local locationPoint = "TOPLEFT"; -- Initial anchor point for the first element
 
-    local barWidth = 100
+    local barWidth = 90
     local barHeight = 12
     local yOffset = -5 -- Offset between bars
+    -- Primary Stat Bar
+    primaryStatBar = CreateFrame("StatusBar", "asInformationPrimaryStatBar", asInformation);
+    primaryStatBar:SetSize(barWidth, barHeight)
+    primaryStatBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset)
+    primaryStatBar:SetStatusBarTexture("Interface/Addons/asInformation/UI-StatusBar")
+    primaryStatBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
+
+    primaryStatBar.bg = primaryStatBar:CreateTexture(nil, "BACKGROUND")
+    primaryStatBar.bg:SetPoint("TOPLEFT", primaryStatBar, "TOPLEFT", -1, 1)
+    primaryStatBar.bg:SetPoint("BOTTOMRIGHT", primaryStatBar, "BOTTOMRIGHT", 1, -1)
+
+    primaryStatBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
+    primaryStatBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    primaryStatBar.bg:SetVertexColor(0, 0, 0, 0.8);
+
+    primaryStatBarText = primaryStatBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    primaryStatBarText:SetPoint("RIGHT", primaryStatBar, "RIGHT", -1, 0)
+    primaryStatBarText:SetTextColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g, statConfigs.Stat.gemColor.b)
+
+    -- Primary stat color will be set dynamically
+
+    primaryStatBar.name = primaryStatBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    primaryStatBar.name:SetPoint("LEFT", primaryStatBar, "LEFT", 1, 0)
+    primaryStatBar.name:SetTextColor(1, 1, 1);
+    primaryStatBar.name:SetText(statConfigs.Stat.abbr)
+    -- Primary stat name will be set dynamically
+
+    prevframe = primaryStatBar
+    yOffset = -2
 
     critBar = CreateFrame("StatusBar", "asInformationCritBar", asInformation);
     critBar:SetSize(barWidth, barHeight)
@@ -115,7 +145,7 @@ local function initFrames()
     critBar.name = critBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     critBar.name:SetPoint("LEFT", critBar, "LEFT", 1, 0)
     critBar.name:SetTextColor(1, 1, 1);
-    critBar.name:SetText("C");
+    critBar.name:SetText(statConfigs.Crit.abbr);
 
     prevframe = critBar -- Next element anchors to this bar
     yOffset = -2        -- Smaller gap for subsequent bars
@@ -141,7 +171,7 @@ local function initFrames()
     hasteBar.name = hasteBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     hasteBar.name:SetPoint("LEFT", hasteBar, "LEFT", 1, 0)
     hasteBar.name:SetTextColor(1, 1, 1)
-    hasteBar.name:SetText("H");
+    hasteBar.name:SetText(statConfigs.Haste.abbr);
 
     prevframe = hasteBar
     yOffset = -2
@@ -167,7 +197,7 @@ local function initFrames()
     masteryBar.name = masteryBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     masteryBar.name:SetPoint("LEFT", masteryBar, "LEFT", 1, 0)
     masteryBar.name:SetTextColor(1, 1, 1);
-    masteryBar.name:SetText("M");
+    masteryBar.name:SetText(statConfigs.Mastery.abbr);
     prevframe = masteryBar
     yOffset = -2
 
@@ -193,37 +223,11 @@ local function initFrames()
     versatilityBar.name = versatilityBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     versatilityBar.name:SetPoint("LEFT", versatilityBar, "LEFT", 1, 0)
     versatilityBar.name:SetTextColor(1, 1, 1);
-    versatilityBar.name:SetText("V");
+    versatilityBar.name:SetText(statConfigs.Versatility.abbr);
 
     prevframe = versatilityBar
     yOffset = -2
 
-    -- Primary Stat Bar
-    primaryStatBar = CreateFrame("StatusBar", "asInformationPrimaryStatBar", asInformation);
-    primaryStatBar:SetSize(barWidth, barHeight)
-    primaryStatBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset)
-    primaryStatBar:SetStatusBarTexture("Interface/Addons/asInformation/UI-StatusBar")
-    primaryStatBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
-
-    primaryStatBar.bg = primaryStatBar:CreateTexture(nil, "BACKGROUND")
-    primaryStatBar.bg:SetPoint("TOPLEFT", primaryStatBar, "TOPLEFT", -1, 1)
-    primaryStatBar.bg:SetPoint("BOTTOMRIGHT", primaryStatBar, "BOTTOMRIGHT", 1, -1)
-
-    primaryStatBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
-    primaryStatBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    primaryStatBar.bg:SetVertexColor(0, 0, 0, 0.8);
-
-    primaryStatBarText = primaryStatBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    primaryStatBarText:SetPoint("RIGHT", primaryStatBar, "RIGHT", -1, 0)
-    -- Primary stat color will be set dynamically
-
-    primaryStatBar.name = primaryStatBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    primaryStatBar.name:SetPoint("LEFT", primaryStatBar, "LEFT", 1, 0)
-    primaryStatBar.name:SetTextColor(1, 1, 1);
-    -- Primary stat name will be set dynamically
-
-    prevframe = primaryStatBar
-    yOffset = -2
 end
 
 local bMouseEnabled = true;
@@ -231,25 +235,11 @@ local needReposition = true;
 
 -- Function to get primary stat based on class, inspired by PaperDollFrame.lua
 local function GetPrimaryStat()
-    local primaryStatID = UnitPrimaryStat("player");
+    local currspec = GetSpecialization() or 1;
+    local primaryStatID = select(6, GetSpecializationInfo(currspec)) or 1;
     local primaryStatValue = UnitStat("player", primaryStatID);
-    local primaryStatName = "";
-    local primaryStatColor = { r = 1, g = 1, b = 1 }; -- Default white
 
-    if primaryStatID == Enum.Stat.Strength then
-        primaryStatName = "STR";
-        primaryStatColor = { r = 1, g = 0.5, b = 0.5 }; -- Light Red
-    elseif primaryStatID == Enum.Stat.Agility then
-        primaryStatName = "AGI";
-        primaryStatColor = { r = 0.5, g = 1, b = 0.5 }; -- Light Green
-    elseif primaryStatID == Enum.Stat.Intellect then
-        primaryStatName = "INT";
-        primaryStatColor = { r = 0.5, g = 0.5, b = 1 }; -- Light Blue
-    else -- Fallback for other cases, though UnitPrimaryStat should cover main ones
-        primaryStatName = "STAT";
-    end
-
-    return primaryStatValue, primaryStatName, primaryStatColor;
+    return primaryStatValue;
 end
 
 local function asGetCrit()
@@ -259,8 +249,10 @@ local function asGetCrit()
 
 	-- Start at 2 to skip physical damage
 	local holySchool = 2;
+---@diagnostic disable-next-line: redundant-parameter
 	local minCrit = GetSpellCritChance(holySchool);
 	for i=(holySchool+1), MAX_SPELL_SCHOOLS do
+---@diagnostic disable-next-line: redundant-parameter
 		spellCrit = GetSpellCritChance(i);
 		minCrit = min(minCrit, spellCrit);
 	end
@@ -285,6 +277,7 @@ local function RecordCurrentStats()
 
     if not inCombat then
         local currentStats = {
+            Stat = GetPrimaryStat(),
             Crit = asGetCrit(),
             Haste = GetHaste(),
             Mastery = GetMasteryEffect(),
@@ -322,6 +315,15 @@ local function UpdateStats()
 
         local prevframe = asInformation;
         local yOffset = -5;
+
+        if ASInformationSaved.showPrimary then
+            primaryStatBar:SetPoint("TOPLEFT", prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset);
+            primaryStatBar:Show();
+            prevframe = primaryStatBar;
+            yOffset = -2;
+        else
+            primaryStatBar:Hide();
+        end
 
         if ASInformationSaved.showCrit then
             critBar:SetPoint("TOPLEFT", prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset);
@@ -362,14 +364,6 @@ local function UpdateStats()
             versatilityBar:Hide();
         end
 
-        if ASInformationSaved.showPrimary then
-            primaryStatBar:SetPoint("TOPLEFT", prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset);
-            primaryStatBar:Show();
-            prevframe = primaryStatBar;
-            yOffset = -2;
-        else
-            primaryStatBar:Hide();
-        end
     end
 
     local haste = GetHaste()
@@ -377,7 +371,7 @@ local function UpdateStats()
     local mastery = GetMasteryEffect()
     local versatility = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) +
         GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
-    local primaryStatValue, primaryStatName, primaryStatColor = GetPrimaryStat()
+    local primaryStatValue = GetPrimaryStat()
 
     if ASInformationSaved.showCrit then
         if critBar and critBarText then     -- Check if bar and text elements exist
@@ -484,12 +478,20 @@ local function UpdateStats()
             -- we can set a reasonable max or just display the value. Here, we'll set a nominal max.
             -- Or, we could calculate a "max" based on typical gear levels if desired.
             -- For now, just showing the value.
-            primaryStatBar:SetMinMaxValues(0, primaryStatValue * 1.2) -- Dynamic max based on current value for visual effect
+            primaryStatBar:SetMinMaxValues(0, primaryStatValue * 1.5) -- Dynamic max based on current value for visual effect
             primaryStatBar:SetValue(primaryStatValue)
             primaryStatBarText:SetText(string.format("%d", primaryStatValue))
-            primaryStatBar.name:SetText(primaryStatName)
-            primaryStatBarText:SetTextColor(primaryStatColor.r, primaryStatColor.g, primaryStatColor.b)
-            primaryStatBar:SetStatusBarColor(primaryStatColor.r * 0.7, primaryStatColor.g * 0.7, primaryStatColor.b * 0.7) -- Slightly darker bar color
+            
+            local minStat = recentMinimumStats.Stat
+            if minStat ~= nil and primaryStatValue > minStat then
+                primaryStatBar:SetStatusBarColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g,
+                    statConfigs.Stat.gemColor.b)
+                primaryStatBarText:SetTextColor(activatedTextColor.r, activatedTextColor.g, activatedTextColor.b)
+            else
+                primaryStatBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
+                primaryStatBarText:SetTextColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g,
+                    statConfigs.Stat.gemColor.b)
+            end
 
             -- No threshold glow for primary stat for now, can be added if needed
         end
