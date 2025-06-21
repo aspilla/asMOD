@@ -6,7 +6,7 @@ A simple addon that displays the player's main combat stats: Haste, Critical Str
 
 ## Key Features
 
-*   **Secondary Stat Display**: Shows selected stats (Haste, Critical Strike, Mastery, Versatility) as bars in a frame.
+*   **Primary and Secondary Stat Display**: Shows selected stats (Primary Stat (Strength, Agility, or Intellect based on class), Haste, Critical Strike, Mastery, Versatility) as bars in a frame.
 *   **Increase Notification (Color Change)**: When a secondary stat increases above its minimum value out-of-combat, the bar color changes to the stat's color. The reference value is the lowest value observed during 20 seconds of non-combat.
 *   **Threshold Alert**:
     *   You can set a custom percentage threshold (default 100%).
@@ -15,7 +15,7 @@ A simple addon that displays the player's main combat stats: Haste, Critical Str
     *   Accessible via the `/asinformation` chat command or `ESC >> Settings >> AddOns >> asInformation`.
     *   Allows you to:
         *   Lock or unlock the frame's position.
-        *   Toggle the display of each stat (Haste, Critical Strike, Mastery, Versatility).
+        *   Toggle the display of each stat (Primary Stat, Haste, Critical Strike, Mastery, Versatility).
         *   Adjust the threshold percentage using a slider.
 *   **Localization**: The options panel is localized for Korean and English clients.
 
@@ -35,6 +35,7 @@ A simple addon that displays the player's main combat stats: Haste, Critical Str
     *   **Show Crit**: Toggles the display of Critical Strike percentage.
     *   **Show Mastery**: Toggles the display of Mastery percentage.
     *   **Show Versatility**: Toggles the display of Versatility percentage.
+    *   **Show Primary Stat**: Toggles the display of the player's primary stat (Strength, Agility, or Intellect).
     *   **Haste Threshold (Slider)**: Sets the Haste value (0-300%) at which the Haste text will be highlighted.
 
 Settings are saved per character.
@@ -43,13 +44,13 @@ Settings are saved per character.
 
 # asInformation
 
-플레이어의 주요 전투 능력치인 가속, 치명타 및 극대화, 특화, 유연성을 보여주는 간단한 애드온
+플레이어의 주요 전투 능력치인 주 능력치(직업별 힘, 민첩, 또는 지능), 가속, 치명타 및 극대화, 특화, 유연성을 보여주는 간단한 애드온
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/y6uPJMc3YzY?si=y2WZ5EZhIKL6ThOX" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 주요 기능
 
-*   **2차 능력치 표시**: 프레임에 표시할 능력치(가속, 치명타, 특화, 유연성)를 바 형태로 표시 합니다.
+*   **주요 및 2차 능력치 표시**: 프레임에 표시할 능력치(주 능력치(직업별 힘, 민첩 또는 지능), 가속, 치명타, 특화, 유연성)를 바 형태로 표시 합니다.
 *   **증가 알림(색상 변경)**: 2차 능력치가 비전투 중 최소값 보다 증가 할 경우 바 색상을 능력치 생상으로 변경 합니다. 기준값은 비전투 20초 중 가장 낮은 값을 참고 합니다.
 *   **임계값 알림**:
     *   사용자 지정 백분율 임계값을 설정할 수 있습니다. 기본 100%
@@ -58,7 +59,7 @@ Settings are saved per character.
     *   `/asinformation` 대화창 명령어 혹은 `esc >> 설정 >> 애드온 >> asInformation` 통해 접근할 수 있습니다.
     *   다음과 같은 작업을 수행할 수 있습니다:
         *   프레임 위치 잠금 또는 잠금 해제.
-        *   각 능력치(가속, 치명타, 특화, 유연성)의 표시 여부 토글.
+        *   각 능력치(주 능력치, 가속, 치명타, 특화, 유연성)의 표시 여부 토글.
         *   슬라이더를 사용하여 임계값 백분율 조정.
 *   **현지화**: 옵션 패널은 한국어 및 영어 클라이언트에 맞게 현지화되어 있습니다.
 
@@ -78,6 +79,7 @@ Settings are saved per character.
     *   **크리 표시**: 치명타 및 극대화 백분율 표시를 토글합니다.
     *   **특화 표시**: 특화 백분율 표시를 토글합니다.
     *   **유연 표시**: 유연성 백분율 표시를 토글합니다.
+    *   **주요 스탯 표시**: 플레이어의 주요 스탯(힘, 민첩 또는 지능) 표시를 토글합니다.
     *   **가속 임계값 (슬라이더)**: 가속 텍스트가 강조 표시될 가속 값(0-300%)을 설정합니다.
 
 설정은 각 캐릭터별로 저장됩니다.

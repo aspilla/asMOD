@@ -20,6 +20,7 @@ local defaultOptions = {
     showCrit = true,
     showMastery = true,
     showVer = true,
+    showPrimary = true, -- Add new option for primary stat
     version = 250532,
 }
 
@@ -50,6 +51,7 @@ if locale == "koKR" then
     L["Show Crit"] = "크리 표시"
     L["Show Mastery"] = "특화 표시"
     L["Show Ver"] = "유연 표시"
+    L["Show Primary"] = "주요 스탯 표시"
 else -- Default to English
     L["Lock Frame"] = "Lock Frame"
     L["State Threshold"] = "Alert Threshold"
@@ -57,6 +59,7 @@ else -- Default to English
     L["Show Crit"] = "Show Crit"
     L["Show Mastery"] = "Show Mastery"
     L["Show Ver"] = "Show Ver"
+    L["Show Primary"] = "Show Primary Stat"
 end
 
 -- Function to load saved position
@@ -80,6 +83,7 @@ local critBar, critBarText
 local hasteBar, hasteBarText
 local masteryBar, masteryBarText
 local versatilityBar, versatilityBarText
+local primaryStatBar, primaryStatBarText -- Add primary stat bar and text
 
 local function initFrames()
     local prevframe = asInformation
@@ -193,10 +197,60 @@ local function initFrames()
 
     prevframe = versatilityBar
     yOffset = -2
+
+    -- Primary Stat Bar
+    primaryStatBar = CreateFrame("StatusBar", "asInformationPrimaryStatBar", asInformation);
+    primaryStatBar:SetSize(barWidth, barHeight)
+    primaryStatBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset)
+    primaryStatBar:SetStatusBarTexture("Interface/Addons/asInformation/UI-StatusBar")
+    primaryStatBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
+
+    primaryStatBar.bg = primaryStatBar:CreateTexture(nil, "BACKGROUND")
+    primaryStatBar.bg:SetPoint("TOPLEFT", primaryStatBar, "TOPLEFT", -1, 1)
+    primaryStatBar.bg:SetPoint("BOTTOMRIGHT", primaryStatBar, "BOTTOMRIGHT", 1, -1)
+
+    primaryStatBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
+    primaryStatBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    primaryStatBar.bg:SetVertexColor(0, 0, 0, 0.8);
+
+    primaryStatBarText = primaryStatBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    primaryStatBarText:SetPoint("RIGHT", primaryStatBar, "RIGHT", -1, 0)
+    -- Primary stat color will be set dynamically
+
+    primaryStatBar.name = primaryStatBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    primaryStatBar.name:SetPoint("LEFT", primaryStatBar, "LEFT", 1, 0)
+    primaryStatBar.name:SetTextColor(1, 1, 1);
+    -- Primary stat name will be set dynamically
+
+    prevframe = primaryStatBar
+    yOffset = -2
 end
 
 local bMouseEnabled = true;
 local needReposition = true;
+
+-- Function to get primary stat based on class, inspired by PaperDollFrame.lua
+local function GetPrimaryStat()
+    local primaryStatID = UnitPrimaryStat("player");
+    local primaryStatValue = UnitStat("player", primaryStatID);
+    local primaryStatName = "";
+    local primaryStatColor = { r = 1, g = 1, b = 1 }; -- Default white
+
+    if primaryStatID == Enum.Stat.Strength then
+        primaryStatName = "STR";
+        primaryStatColor = { r = 1, g = 0.5, b = 0.5 }; -- Light Red
+    elseif primaryStatID == Enum.Stat.Agility then
+        primaryStatName = "AGI";
+        primaryStatColor = { r = 0.5, g = 1, b = 0.5 }; -- Light Green
+    elseif primaryStatID == Enum.Stat.Intellect then
+        primaryStatName = "INT";
+        primaryStatColor = { r = 0.5, g = 0.5, b = 1 }; -- Light Blue
+    else -- Fallback for other cases, though UnitPrimaryStat should cover main ones
+        primaryStatName = "STAT";
+    end
+
+    return primaryStatValue, primaryStatName, primaryStatColor;
+end
 
 local function asGetCrit()
     --PaperDollFrame_SetCritChance
@@ -307,6 +361,15 @@ local function UpdateStats()
         else
             versatilityBar:Hide();
         end
+
+        if ASInformationSaved.showPrimary then
+            primaryStatBar:SetPoint("TOPLEFT", prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset);
+            primaryStatBar:Show();
+            prevframe = primaryStatBar;
+            yOffset = -2;
+        else
+            primaryStatBar:Hide();
+        end
     end
 
     local haste = GetHaste()
@@ -314,6 +377,7 @@ local function UpdateStats()
     local mastery = GetMasteryEffect()
     local versatility = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) +
         GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
+    local primaryStatValue, primaryStatName, primaryStatColor = GetPrimaryStat()
 
     if ASInformationSaved.showCrit then
         if critBar and critBarText then     -- Check if bar and text elements exist
@@ -411,6 +475,23 @@ local function UpdateStats()
             else
                 ns.lib.PixelGlow_Stop(versatilityBar);
             end
+        end
+    end
+
+    if ASInformationSaved.showPrimary then
+        if primaryStatBar and primaryStatBarText then
+            -- Assuming primary stats don't have a typical "max" like secondary stats for bar display,
+            -- we can set a reasonable max or just display the value. Here, we'll set a nominal max.
+            -- Or, we could calculate a "max" based on typical gear levels if desired.
+            -- For now, just showing the value.
+            primaryStatBar:SetMinMaxValues(0, primaryStatValue * 1.2) -- Dynamic max based on current value for visual effect
+            primaryStatBar:SetValue(primaryStatValue)
+            primaryStatBarText:SetText(string.format("%d", primaryStatValue))
+            primaryStatBar.name:SetText(primaryStatName)
+            primaryStatBarText:SetTextColor(primaryStatColor.r, primaryStatColor.g, primaryStatColor.b)
+            primaryStatBar:SetStatusBarColor(primaryStatColor.r * 0.7, primaryStatColor.g * 0.7, primaryStatColor.b * 0.7) -- Slightly darker bar color
+
+            -- No threshold glow for primary stat for now, can be added if needed
         end
     end
 
@@ -520,9 +601,17 @@ local function SetupOptions()
         needReposition = true;
     end)
 
+    local primaryStatCheckbox = CreateFrame("CheckButton", nil, optionsPanel, "InterfaceOptionsCheckButtonTemplate")
+    primaryStatCheckbox:SetPoint("TOPLEFT", verCheckbox, "BOTTOMLEFT", 0, -30)
+    primaryStatCheckbox.Text:SetText(L["Show Primary"])
+    primaryStatCheckbox:SetChecked(ASInformationSaved.showPrimary)
+    primaryStatCheckbox:SetScript("OnClick", function(self)
+        ASInformationSaved.showPrimary = self:GetChecked()
+        needReposition = true;
+    end)
 
     local hasteThresholdSlider = CreateFrame("Slider", nil, optionsPanel, "OptionsSliderTemplate")
-    hasteThresholdSlider:SetPoint("TOPLEFT", verCheckbox, "BOTTOMLEFT", 0, -30)
+    hasteThresholdSlider:SetPoint("TOPLEFT", primaryStatCheckbox, "BOTTOMLEFT", 0, -30)
     hasteThresholdSlider:SetMinMaxValues(0, 300)
     hasteThresholdSlider:SetValue(ASInformationSaved.stateThreshold)
     hasteThresholdSlider:SetValueStep(0.5)
