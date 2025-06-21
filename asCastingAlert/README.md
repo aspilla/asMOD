@@ -20,6 +20,7 @@ asCastingAlert is an addon that provides on-screen alerts in the center of your 
     *   This can be turned off by adjusting the `PlaySound` option.
     *   For Tankers, sound alerts are off by default but can be enabled with the `PlaySoundTank` option.
     *   If the `PlaySoundDBMOnly` option is enabled, sound alerts will only play for DBM casts.
+    *   If the `PlaySoundGroupOnly` option is enabled, sound alerts will only play in party.
 
 4.  **Tooltip Information**:
     *   Mousing over a spell icon in the alert list will display the game's default tooltip for that spell.
@@ -30,6 +31,7 @@ The following settings can be configured via esc >> Settings >> AddOns >> asCast
 *   `PlaySound`: Whether to enable sound alerts.
 *   `PlaySoundDBMOnly`: Only play sound alerts for DBM major abilities.
 *   `PlaySoundTank`: Whether to enable sound alerts if you are a Tank.
+*   `PlaySoundGroupOnly`: Whether to enable sound alerts if you are in party.
 *   `ShowTarget`: Whether to display casts from your target.
 
 The following settings can be adjusted in the `asCastingAlert.lua` file:
@@ -62,6 +64,7 @@ asCastingAlert는 적대적 유닛, 특히 플레이어를 대상으로 하거�
     * `PlaySound` 옵션조정으로 끌수 있습니다.
     * Tanker의 경우 음성알림이 Off되며, `PlaySoundTank` 옵션으로 킬수 있습니다.
     * `PlaySoundDBMOnly` 옵션을 키면 DBM 시전에 대해서만 음성 알림이 됩니다.
+    * `PlaySoundGroupOnly` 옵션을 끄면 파티중이 아닐때도 음성 알림이 됩니다ㅉ
 
 3.  **툴팁 정보**:
     *   알림 목록의 주문 아이콘 위에 마우스를 올리면 해당 주문에 대한 게임 기본 툴팁이 표시됩니다.
@@ -72,6 +75,7 @@ esc >> 설정 >> 애드온 >> asCastingAlert 에서 다음 설정이 가능합�
 *   `PlaySound` : 음성 알림을 할지 여부
 *   `PlaySoundDBMOnly` : DBM 주요 음성만 음성 알림
 *   `PlaySoundTank` : Tank 일경우 음성 알림 여부
+*   `PlaySoundGroupOnly` : 파티 일경우 음성 알림 여부
 *   `ShowTarget`: 대상의 시전을 표시할 지 여부
 
 `asCastingAlert.lua` 파일에서 다음 설정을 조정할 수 있습니다.

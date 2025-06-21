@@ -113,6 +113,11 @@ local function ShowCasting()
         prevcount  = 0;
     end
 
+    if ns.options.PlaySoundGroupOnly and not IsInGroup() then
+        soundcount = 0;
+        prevcount = 0;
+    end
+
     if prevcount ~= soundcount then
 
         if prevcount == 0 and ns.options.PlaySound  then

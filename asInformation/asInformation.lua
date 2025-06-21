@@ -1,4 +1,9 @@
 local _, ns = ...;
+
+local AIF_Alpha = 1              -- 전투중 알파값
+local AIF_Alpha_Normal = 0.5     -- 비전투중 안보이게 하려면 0
+
+
 local asInformation = CreateFrame("Frame", "asInformationFrame", UIParent)
 asInformation:SetSize(100, 150)
 asInformation:SetPoint("BOTTOM", UIParent, "BOTTOM", -141, 109)
@@ -478,19 +483,29 @@ local function UpdateStats()
             -- we can set a reasonable max or just display the value. Here, we'll set a nominal max.
             -- Or, we could calculate a "max" based on typical gear levels if desired.
             -- For now, just showing the value.
-            primaryStatBar:SetMinMaxValues(0, primaryStatValue * 1.5) -- Dynamic max based on current value for visual effect
-            primaryStatBar:SetValue(primaryStatValue)
-            primaryStatBarText:SetText(string.format("%d", primaryStatValue))
+            local showvalue = 0;
+            local maxvalue = primaryStatValue * 0.2;
             
             local minStat = recentMinimumStats.Stat
             if minStat ~= nil and primaryStatValue > minStat then
                 primaryStatBar:SetStatusBarColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g,
                     statConfigs.Stat.gemColor.b)
                 primaryStatBarText:SetTextColor(activatedTextColor.r, activatedTextColor.g, activatedTextColor.b)
+                showvalue = primaryStatValue - minStat;
+                maxvlaue = minStat * 0.2;
             else
                 primaryStatBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
                 primaryStatBarText:SetTextColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g,
                     statConfigs.Stat.gemColor.b)
+            end
+            primaryStatBar:SetMinMaxValues(0, maxvalue) -- Dynamic max based on current value for visual effect
+            primaryStatBar:SetValue(showvalue)
+            primaryStatBarText:SetText(string.format("%d", showvalue))
+
+            if showvalue >= maxvalue then
+                ns.lib.PixelGlow_Start(primaryStatBar);
+            else
+                ns.lib.PixelGlow_Stop(primaryStatBar);
             end
 
             -- No threshold glow for primary stat for now, can be added if needed
@@ -655,6 +670,19 @@ local function OnEvent(self, event, ...)
     if bfirst then
         C_Timer.After(0.5, initAll);
     end
+	if event == "PLAYER_ENTERING_WORLD" then
+		if UnitAffectingCombat("player") then
+            asInformation:SetAlpha(AIF_Alpha);
+		else
+            asInformation:SetAlpha(AIF_Alpha_Normal);
+		end
+	elseif event == "PLAYER_REGEN_DISABLED" then
+        asInformation:SetAlpha(AIF_Alpha);
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		asInformation:SetAlpha(AIF_Alpha_Normal);
+    end
 end
 asInformation:RegisterEvent("PLAYER_ENTERING_WORLD")
+asInformation:RegisterEvent("PLAYER_REGEN_DISABLED");
+asInformation:RegisterEvent("PLAYER_REGEN_ENABLED");
 asInformation:SetScript("OnEvent", OnEvent)
