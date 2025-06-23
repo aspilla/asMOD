@@ -18,7 +18,7 @@ local defaultOptions = {
     point = "BOTTOM",
     relativePoint = "BOTTOM",
     xOfs = -165,
-    yOfs = 124,
+    yOfs = 115,
     isLocked = true,
     stateThreshold = defaultThreshold,
     showHaste = true,
@@ -26,7 +26,7 @@ local defaultOptions = {
     showMastery = true,
     showVer = true,
     showPrimary = true, -- Add new option for primary stat
-    version = 250621,
+    version = 250622,
 }
 
 
@@ -661,6 +661,12 @@ local function initAll()
     LoadPosition()
     initFrames();
     asInformation:SetUserPlaced(true)
+
+	C_AddOns.LoadAddOn("asMOD");
+
+	if asMOD_setupFrame then
+		asMOD_setupFrame(asInformation, "asInformation");
+	end
     -- No longer registering UNIT_AURA for stat activation
     bfirst = false;
     C_Timer.NewTicker(updateInterval, OnUpdate);     -- This ticker calls OnUpdate, which then calls UpdateStats
