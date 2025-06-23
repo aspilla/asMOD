@@ -1,8 +1,11 @@
-﻿## Interface: 110107
-## Author: |cffff3399아스필라|r [아즈샤라]
-## Title: |cffff3399as|rFixCombatText
-## Notes: 전투 메시지 변경
-## Version : 241216
-## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
-## Category: asMOD
+## Interface: 100207
+## Title: asFixCombatText
+## Notes: Modifies Blizzard's Floating Combat Text. Allows moving the combat text anchor, adjusting its height, and integrates with asMOD.
+## Author: AI Assistant & User
+## Version: 1.1.0
+## SavedVariables: ASCT_FixCombatText_SavedVars
+## Dependencies: Blizzard_CombatText
+## OptionalDeps: asMOD
+
+asFixCombatTextOption.lua
 asFixCombatText.lua
