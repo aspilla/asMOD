@@ -632,9 +632,9 @@ local function SetupOptions()
     hasteThresholdSlider:SetMinMaxValues(0, 300)
     hasteThresholdSlider:SetValue(ASInformationSaved.stateThreshold)
     hasteThresholdSlider:SetValueStep(0.5)
-    hasteThresholdSlider.Text = hasteThresholdSlider:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    hasteThresholdSlider.Text:SetPoint("TOP", hasteThresholdSlider, "BOTTOM", 0, -5)
-    hasteThresholdSlider.Text:SetText(string.format(L["State Threshold"] .. ": %d%%", ASInformationSaved.stateThreshold))
+    hasteThresholdSlider.text = hasteThresholdSlider:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    hasteThresholdSlider.text:SetPoint("TOP", hasteThresholdSlider, "BOTTOM", 0, -5)
+    hasteThresholdSlider.text:SetText(string.format(L["State Threshold"] .. ": %d%%", ASInformationSaved.stateThreshold))
     hasteThresholdSlider:SetScript("OnValueChanged", function(self, value)
         ASInformationSaved.stateThreshold = value
         self.Text:SetText(string.format(L["State Threshold"] .. ": %d%%", value))
@@ -673,9 +673,9 @@ local function initAll()
 end
 
 local function OnEvent(self, event, ...)
-    if bfirst then
-        C_Timer.After(0.5, initAll);
-    end
+
+    local arg = ...;
+
 	if event == "PLAYER_ENTERING_WORLD" then
 		if UnitAffectingCombat("player") then
             asInformation:SetAlpha(AIF_Alpha);
@@ -686,9 +686,12 @@ local function OnEvent(self, event, ...)
         asInformation:SetAlpha(AIF_Alpha);
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		asInformation:SetAlpha(AIF_Alpha_Normal);
+    elseif event == "ADDON_LOADED" and arg == "asInformation" and bfirst == true then
+       initAll();
     end
 end
 asInformation:RegisterEvent("PLAYER_ENTERING_WORLD")
 asInformation:RegisterEvent("PLAYER_REGEN_DISABLED");
 asInformation:RegisterEvent("PLAYER_REGEN_ENABLED");
+asInformation:RegisterEvent("ADDON_LOADED");
 asInformation:SetScript("OnEvent", OnEvent)

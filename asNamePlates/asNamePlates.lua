@@ -41,6 +41,10 @@ local bcheckHealer = false;
 local bcheckBeastCleave = false;
 local cleavedunits = {};
 local lastcleavetime = 0;
+local isparty = false;
+local israid = false;
+local ispvp = false;
+local isinstance = false;
 
 
 local asGetSpellTabInfo = function(index)
@@ -136,9 +140,8 @@ end
 -- 탱커 처리부
 local function updateTankerList()
     playerisdealer = false;
-    local bInstance, RTB_ZoneType = IsInInstance();
 
-    if RTB_ZoneType == "pvp" or RTB_ZoneType == "arena" then
+    if ispvp then
         return nil;
     end
 
@@ -910,6 +913,7 @@ local function updateHealthbarColor(self)
             return color;
         end
 
+
         --Target and Aggro High Priority
         if IsInGroup() and ns.options.ANameP_AggroShow and incombat then
             if tanker then
@@ -982,7 +986,7 @@ local function updateHealthbarColor(self)
             end
         end        
         
-        if ns.options.ANameP_BossHint and self.level then
+        if isparty and ns.options.ANameP_BossHint and self.level then
             local level = self.level;
 
             if level < 0 or level > MaxLevel then
@@ -998,11 +1002,11 @@ local function updateHealthbarColor(self)
             end
         end
 
-        if ns.options.ANameP_QuestAlert and not IsInInstance() and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
+        if ns.options.ANameP_QuestAlert and not(isparty or israid) and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
             return ns.options.ANameP_QuestColor;
         end
 
-        if ns.options.ANameP_AutoMarker and bloadedAutoMarker and asAutoMarkerF then
+        if ns.options.ANameP_AutoMarker and isinstance and bloadedAutoMarker and asAutoMarkerF then
             local mobtype = asAutoMarkerF.IsAutoMarkerMob(unit);
             if mobtype and mobtype >= 2 then
                 return ns.options.ANameP_AutoMarkerColor;
@@ -1800,8 +1804,7 @@ end
 local bfirst = true;
 
 local function setupFriendlyPlates()
-    local isInstance, instanceType = IsInInstance();
-    if bfirst and not isInstance and not InCombatLockdown() and ns.options.ANameP_ShortFriendNP then
+    if bfirst and not isinstance and not InCombatLockdown() and ns.options.ANameP_ShortFriendNP then
         C_NamePlate.SetNamePlateFriendlySize(60, 30);
         bfirst = false;
     end
@@ -1874,14 +1877,25 @@ local function ANameP_OnEvent(self, event, ...)
     elseif (event == "PLAYER_ENTERING_WORLD") then
         local isInstance, instanceType = IsInInstance();
 
+        isinstance = isInstance;
+        ispvp = false;
+        israid = false;
+        isparty = false;
         if isInstance and (instanceType == "party" or instanceType == "raid" or instanceType == "scenario") then
             if not bcheckBeastCleave then
                 self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
             end
             bcheckHealer = false;
+            if instanceType == "raid" then
+                israid = true;
+            else
+                isparty = true;            
+            end
         else
             self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
             bcheckHealer = true;
+
+            ispvp = true;
         end
 
         updateTankerList();
