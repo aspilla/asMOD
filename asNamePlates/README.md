@@ -39,7 +39,7 @@
 * Highlights key interruptible elite mobs in Mythic+ dungeons. Light green before combat starts (when using asAutoMarker).
 * Changes the color of quest mobs. (Ochre)
 * Changes the color of mobs with Incorporeal, Entangling, or Afflicted affixes.
-* Changes the color og mobs, higher level (ex 81) or ?? level. This has higher priority than regular aggro color.
+* Changes the color og mobs, higher level (ex 81) or ?? level. This has higher priority than regular aggro color.  (Party play only)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/E-LcoSpeYmA?si=YIZNgIi7H-fHmS5h" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
@@ -136,7 +136,7 @@
 * 신화+ 쐐기돌 던전에서 주요 차단 정예 몹을 강조 표시합니다. 전투 시작전 연녹색 (asAutoMarker 사용 시).
 * 퀘스트 몹의 색상을 변경 합니다. (황토색)
 * 무형, 원한, 휘장 속성의 몹에 대해 색상을 변경합니다.
-* 보스몹 (레벨에 높거(예 81렙)나 ?? 레벨몹) 색상을 변경 합니다. 이는 전투중에 보통 어그로 상태보다 우선순위를 가집니다ㅈ
+* 보스몹 (레벨에 높거(예 81렙)나 ?? 레벨몹) 색상을 변경 합니다. 이는 전투중에 보통 어그로 상태보다 우선순위를 가집니다. (파티 던전에서만 동작)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/E-LcoSpeYmA?si=YIZNgIi7H-fHmS5h" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ### 4. 강화 효과(버프) 아이콘 기능
