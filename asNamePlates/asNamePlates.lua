@@ -984,14 +984,10 @@ local function updateHealthbarColor(self)
             elseif status and status > 0 then
                 return ns.options.ANameP_AggroColor;
             end
-        end        
-        
-        if isparty and ns.options.ANameP_BossHint and self.level then
-            local level = self.level;
+        end
 
-            if level < 0 or level > MaxLevel then
-                return ns.options.ANameP_BossColor;
-            end
+        if self.isboss then
+            return ns.options.ANameP_BossColor;
         end
 
         if ns.options.ANameP_AggroShow and incombat then
@@ -1002,17 +998,12 @@ local function updateHealthbarColor(self)
             end
         end
 
-        if ns.options.ANameP_QuestAlert and not(isparty or israid) and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
+        if ns.options.ANameP_QuestAlert and not (isparty or israid) and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
             return ns.options.ANameP_QuestColor;
         end
 
-        if ns.options.ANameP_AutoMarker and isinstance and bloadedAutoMarker and asAutoMarkerF then
-            local mobtype = asAutoMarkerF.IsAutoMarkerMob(unit);
-            if mobtype and mobtype >= 2 then
-                return ns.options.ANameP_AutoMarkerColor;
-            elseif mobtype and mobtype >= 1 then
-                return ns.options.ANameP_AutoMarkerColor2;
-            end
+        if self.automarkcolor then
+            return self.automarkcolor;
         end
 
         return nil;
@@ -1705,7 +1696,25 @@ local function addNamePlate(namePlateFrameBase)
         unit_guid_list[asframe.guid] = unit;
     end
 
-    asframe.level = UnitLevel(unit);
+    local level = UnitLevel(unit);
+
+    asframe.isboss = false;
+    if isparty and ns.options.ANameP_BossHint and level then
+        if level < 0 or level > MaxLevel then
+            asframe.isboss = true;
+        end
+    end
+
+
+    asframe.automarkcolor = nil;
+    if ns.options.ANameP_AutoMarker and isinstance and bloadedAutoMarker and asAutoMarkerF then
+        local mobtype = asAutoMarkerF.IsAutoMarkerMob(unit);
+        if mobtype and mobtype >= 2 then
+            asframe.automarkcolor = ns.options.ANameP_AutoMarkerColor;
+        elseif mobtype and mobtype >= 1 then
+            asframe.automarkcolor = ns.options.ANameP_AutoMarkerColor2;
+        end
+    end
 
     local function callback()
         updateNamePlate(namePlateFrameBase);
@@ -1889,7 +1898,7 @@ local function ANameP_OnEvent(self, event, ...)
             if instanceType == "raid" then
                 israid = true;
             else
-                isparty = true;            
+                isparty = true;
             end
         else
             self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
