@@ -21,6 +21,7 @@ local DangerousSpellList = {}
 local ANameP_HealerGuid = {}
 
 local ANameP = CreateFrame("Frame", nil, UIParent);
+ns.active_asframes = {}; -- Initialize list for active nameplate frames
 local tanklist = {}
 
 local PLAYER_UNITS = {
@@ -480,9 +481,15 @@ local function updateAuras(self)
         if (frame) then
             frame:Show();
             if frame.alert then
-                ns.lib.ButtonGlow_Start(frame);
+                if not frame.isGlowing then
+                    ns.lib.ButtonGlow_Start(frame);
+                    frame.isGlowing = true;
+                end
             else
-                ns.lib.ButtonGlow_Stop(frame);
+                if frame.isGlowing then
+                    ns.lib.ButtonGlow_Stop(frame);
+                    frame.isGlowing = false;
+                end
             end
         end
     end
@@ -491,7 +498,10 @@ local function updateAuras(self)
         local frame = self.buffList[i];
         if (frame) then
             frame:Hide();
-            ns.lib.ButtonGlow_Stop(frame);
+            if frame.isGlowing then
+                ns.lib.ButtonGlow_Stop(frame);
+                frame.isGlowing = false;
+            end
         end
     end
 
@@ -562,6 +572,8 @@ local function updateTargetNameP(self)
         return;
     end
 
+    local current_mouseover_guid = ns.currentMouseoverGUID_this_tick or UnitGUID("mouseover");
+
     local orig_height = self.orig_height
     local cast_height = 8;
 
@@ -585,9 +597,7 @@ local function updateTargetNameP(self)
         height = orig_height + ns.ANameP_TargetHealthBarHeight;
         self.healthtext:Show();
 
-        local guid_mouseover = UnitGUID("mouseover")
-
-        if self.guid == guid_mouseover then
+        if current_mouseover_guid and self.guid == current_mouseover_guid then
             self.motext:Show();
         else
             self.motext:Hide();
@@ -616,9 +626,7 @@ local function updateTargetNameP(self)
     else
         height = orig_height;
 
-        local guid_mouseover = UnitGUID("mouseover")
-
-        if self.guid == guid_mouseover then
+        if current_mouseover_guid and self.guid == current_mouseover_guid then
             height = orig_height + ns.ANameP_TargetHealthBarHeight;
             self.healthtext:Show();
             self.motext:Show();
@@ -659,7 +667,9 @@ local function updateTargetNameP(self)
     end
 
     -- Healthbar 크기
-    healthBarContainer:SetHeight(height);
+    if healthBarContainer:GetHeight() ~= height then
+        healthBarContainer:SetHeight(height);
+    end
 
     -- 버프 Position
     self:ClearAllPoints();
@@ -687,21 +697,40 @@ local function updateUnitRealHealthText(asframe)
     local unit = asframe.unit;
 
     if not ns.options.ANameP_RealHealth then
-        return;
+        if asframe.realhealthtext:IsShown() then
+            asframe.realhealthtext:Hide()
+        end
+        asframe.lastRealHealthShow = nil
+        return
     end
 
     if not unit or not UnitExists(unit) then
-        return;
+        if asframe.realhealthtext:IsShown() then
+            asframe.realhealthtext:Hide()
+        end
+        asframe.lastRealHealthShow = nil
+        return
     end
 
-    value = UnitHealth(unit);
+    value = UnitHealth(unit)
 
     if value > 0 then
-        local valueshow = AbbreviateLargeNumbers(value);
-        asframe.realhealthtext:SetText(valueshow);
-        asframe.realhealthtext:Show();
+        local valueshow = AbbreviateLargeNumbers(value)
+        if asframe.lastRealHealthShow ~= valueshow then
+            asframe.realhealthtext:SetText(valueshow)
+            asframe.lastRealHealthShow = valueshow
+        end
+        if not asframe.realhealthtext:IsShown() then
+            asframe.realhealthtext:Show()
+        end
     else
-        asframe.realhealthtext:SetText("");
+        if asframe.lastRealHealthShow ~= nil or asframe.realhealthtext:GetText() ~= "" then
+            asframe.realhealthtext:SetText("")
+            asframe.lastRealHealthShow = nil
+        end
+        if asframe.realhealthtext:IsShown() then
+            asframe.realhealthtext:Hide()
+        end
     end
 end
 
@@ -716,22 +745,41 @@ local function updateHealthText(asframe)
     end
 
     value = UnitHealth(unit);
-    valueMax = UnitHealthMax(unit);
+    valueMax = UnitHealthMax(unit)
 
     if valueMax > 0 then
-        valuePct = (math.ceil((value / valueMax) * 100));
-    end
-
-    if valuePct > 0 then
-        asframe.healthtext:SetText(valuePct);
+        valuePct = math.ceil((value / valueMax) * 100)
     else
-        asframe.healthtext:SetText("");
+        valuePct = 0
     end
 
-    if valuePct <= lowhealthpercent or valuePct >= highhealthpercent then
-        asframe.healthtext:SetTextColor(1, 0.5, 0.5, 1);
-    elseif valuePct > 0 then
-        asframe.healthtext:SetTextColor(1, 1, 1, 1);
+    -- Update Text if changed
+    if asframe.lastHealthPct ~= valuePct then
+        if valuePct > 0 then
+            asframe.healthtext:SetText(valuePct)
+        else
+            asframe.healthtext:SetText("")
+        end
+        asframe.lastHealthPct = valuePct
+    end
+
+    -- Update Color if text is visible and color needs to change
+    local currentR, currentG, currentB = asframe.healthtext:GetTextColor()
+    local newR, newG, newB = 1, 1, 1 -- Default color: white
+
+    if valuePct <= 0 then
+        if currentR ~= newR or currentG ~= newG or currentB ~= newB then
+             asframe.healthtext:SetTextColor(newR, newG, newB, 1)
+        end
+    elseif valuePct <= lowhealthpercent or valuePct >= highhealthpercent then
+        newR, newG, newB = 1, 0.5, 0.5 -- Danger color: reddish
+        if currentR ~= newR or currentG ~= newG or currentB ~= newB then
+            asframe.healthtext:SetTextColor(newR, newG, newB, 1)
+        end
+    else -- Healthy percentage
+        if currentR ~= newR or currentG ~= newG or currentB ~= newB then
+            asframe.healthtext:SetTextColor(newR, newG, newB, 1)
+        end
     end
 end
 
@@ -741,19 +789,31 @@ local function updatePower(asframe)
     local unit = asframe.unit;
 
     if not asframe.bupdatePower then
-        return;
+        if asframe.powerbar:IsShown() then asframe.powerbar:Hide(); end
+        asframe.lastPower = nil
+        asframe.lastMaxPower = nil
+        return
     end
 
-    power = UnitPower(unit);
-    maxPower = UnitPowerMax(unit);
-    asframe.powerbar:SetMinMaxValues(0, maxPower);
-    asframe.powerbar:SetValue(power);
-    asframe.powerbar.value:SetText(power);
+    power = UnitPower(unit)
+    maxPower = UnitPowerMax(unit)
 
-    if power > 0 then
-        asframe.powerbar:Show();
+    if asframe.lastPower ~= power or asframe.lastMaxPower ~= maxPower then
+        asframe.powerbar:SetMinMaxValues(0, maxPower)
+        asframe.powerbar:SetValue(power)
+        asframe.powerbar.value:SetText(power)
+        asframe.lastPower = power
+        asframe.lastMaxPower = maxPower
+    end
+
+    if power > 0 and asframe.powerbar.value:IsShown() then
+        if not asframe.powerbar:IsShown() then
+            asframe.powerbar:Show()
+        end
     else
-        asframe.powerbar:Hide();
+        if asframe.powerbar:IsShown() then
+            asframe.powerbar:Hide()
+        end
     end
 end
 
@@ -843,8 +903,21 @@ local function updateHealthbarColor(self)
     local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
     local isTargetPet = UnitIsUnit(unit .. "target", "pet");
     local CastingAlertColor = nil;
-    local alerttype = 0;
+    local alerttype = 0; -- This will be the new alert type for the current pass
 
+    -- Early exit and cache clearing
+    if not self.unit or not self.checkcolor or not self.BarColor or not self.BarTexture then
+        self.lastHealthBarColorR = nil
+        self.lastHealthBarColorG = nil
+        self.lastHealthBarColorB = nil
+        self.lastAlertType = nil
+        if self.alerttype and self.alerttype ~= 0 then -- self.alerttype is previous state
+             ns.lib.PixelGlow_Stop(self.casticon);
+             if healthBar then ns.lib.PixelGlow_Stop(healthBar); end
+             self.alerttype = 0;
+        end
+        return;
+    end
 
     -- Cast Interrupt
     if self.castspellid and self.casticon and incombat then
@@ -1025,30 +1098,70 @@ local function updateHealthbarColor(self)
         end
     end
 
-    local color = getColor();
+    local newCalculatedColorStruct = getColor();
+    local newAlertType = alerttype; -- Capture the value of 'alerttype' as modified by getColor()
 
-    if color then
-        setColoronStatusBar(self, color.r, color.g, color.b);
-    else
-        self.BarColor:Hide();
-        self.BarTexture:Show();
+    local r, g, b;
+    if newCalculatedColorStruct then
+        r = newCalculatedColorStruct.r;
+        g = newCalculatedColorStruct.g;
+        b = newCalculatedColorStruct.b;
     end
 
-    if alerttype ~= self.alerttype then
-        if alerttype == 3 then
-            ns.lib.PixelGlow_Start(healthBar, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1000);
-            ns.lib.PixelGlow_Stop(self.casticon);
-        elseif alerttype == 2 then
-            ns.lib.PixelGlow_Start(self.casticon, { 1, 1, 0, 1 });
-            ns.lib.PixelGlow_Start(healthBar, { 1, 1, 0, 1 }, nil, nil, nil, nil, nil, nil, nil, nil, 1000);
-        elseif alerttype == 1 then
-            ns.lib.PixelGlow_Start(self.casticon);
-            ns.lib.PixelGlow_Stop(healthBar);
+    if self.lastHealthBarColorR ~= r or
+       self.lastHealthBarColorG ~= g or
+       self.lastHealthBarColorB ~= b or
+       self.lastAlertType ~= newAlertType then
+
+        if newCalculatedColorStruct then
+            setColoronStatusBar(self, r, g, b);
         else
-            ns.lib.PixelGlow_Stop(self.casticon);
-            ns.lib.PixelGlow_Stop(healthBar);
+            self.BarColor:Hide();
+            self.BarTexture:Show();
         end
-        self.alerttype = alerttype;
+
+        if newAlertType ~= self.alerttype then -- self.alerttype is the previous tick's actual state
+            if newAlertType == 3 then
+                ns.lib.PixelGlow_Start(healthBar, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1000);
+                ns.lib.PixelGlow_Stop(self.casticon);
+            elseif newAlertType == 2 then
+                ns.lib.PixelGlow_Start(self.casticon, { 1, 1, 0, 1 });
+                ns.lib.PixelGlow_Start(healthBar, { 1, 1, 0, 1 }, nil, nil, nil, nil, nil, nil, nil, nil, 1000);
+            elseif newAlertType == 1 then
+                ns.lib.PixelGlow_Start(self.casticon);
+                ns.lib.PixelGlow_Stop(healthBar);
+            else
+                ns.lib.PixelGlow_Stop(self.casticon);
+                ns.lib.PixelGlow_Stop(healthBar);
+            end
+            self.alerttype = newAlertType;
+        end
+
+        self.lastHealthBarColorR = r;
+        self.lastHealthBarColorG = g;
+        self.lastHealthBarColorB = b;
+        self.lastAlertType = newAlertType;
+    end
+
+    -- Beast cleave logic (mostly unchanged, but ensure Show/Hide is conditional if possible)
+    if bcheckBeastCleave then
+        local currtime = GetTime();
+        local guid = self.guid;
+        local cleavetime = cleavedunits[guid];
+        local shouldShowPetCleave = (cleavetime and currtime - cleavetime < 1.5);
+
+        if shouldShowPetCleave then
+            -- This debuffColor logic is complex as it's modified here AND in updateAuras.
+            -- This might need a more holistic review if it causes issues.
+            if self.debuffColor == 1 then
+                self.debuffColor = 3;
+            elseif self.debuffColor == 0 then
+                self.debuffColor = 2;
+            end
+            if not self.petcleave:IsShown() then self.petcleave:Show(); end
+        else
+            if self.petcleave:IsShown() then self.petcleave:Hide(); end
+        end
     end
 end
 
@@ -1185,12 +1298,18 @@ local Aggro_Y = -5;
 
 local function checkSpellCasting(self)
     if not self.unit or UnitIsUnit(self.unit, "player") then
+        if self.casticon and self.casticon:IsShown() then
+             self.casticon:Hide();
+             self.lastCastSpellID = nil;
+             self.lastCastTexture = nil;
+             self.lastDBMEventGuid = nil;
+             self.lastDBMRemainText = nil;
+        end
         return;
     end
 
     local unit = self.unit;
-    local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-        unit);
+    local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(unit);
     if not name then
         name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
     end
@@ -1198,82 +1317,111 @@ local function checkSpellCasting(self)
     if self.casticon then
         local frameIcon = self.casticon.icon;
         if frameIcon then
-            if name then
-                frameIcon:SetTexture(texture);
-                frameIcon:SetDesaturated(false);
-                frameIcon:SetVertexColor(1, 1, 1);
-                self.casticon:Show();
-                self.casticon.timetext:Hide();
+            if name then -- WoW Spell Casting/Channeling
+                if self.lastCastSpellID ~= spellid or self.lastCastTexture ~= texture or not self.casticon:IsShown() then
+                    frameIcon:SetTexture(texture);
+                    frameIcon:SetDesaturated(false);
+                    frameIcon:SetVertexColor(1, 1, 1);
+                    self.casticon.timetext:Hide();
+                    self.casticon:Show();
+                    self.lastCastTexture = texture;
+                    self.lastDBMEventGuid = nil;
+                    self.lastDBMRemainText = nil;
+                end
                 self.castspellid = spellid;
                 self.casticon.castspellid = spellid;
 
                 local targettarget = unit .. "target";
-
+                local currentTargetName = "";
+                local r,g,b = 1,1,1;
                 if UnitExists(targettarget) and UnitIsPlayer(targettarget) then
                     local _, Class = UnitClass(targettarget)
                     local color = RAID_CLASS_COLORS[Class]
-                    self.casticon.targetname:SetTextColor(color.r, color.g, color.b);
-                    self.casticon.targetname:SetText(UnitName(targettarget));
-                    self.casticon.targetname:Show();
-                else
-                    self.casticon.targetname:SetText("");
-                    self.casticon.targetname:Hide();
+                    r,g,b = color.r, color.g, color.b;
+                    currentTargetName = UnitName(targettarget);
                 end
-            else
+
+                if self.casticon.targetname:GetText() ~= currentTargetName then
+                    self.casticon.targetname:SetText(currentTargetName);
+                end
+                local oldR, oldG, oldB = self.casticon.targetname:GetTextColor();
+                if oldR~=r or oldG~=g or oldB~=b then
+                     self.casticon.targetname:SetTextColor(r,g,b);
+                end
+                if currentTargetName ~= "" then
+                    if not self.casticon.targetname:IsShown() then self.casticon.targetname:Show(); end
+                else
+                    if self.casticon.targetname:IsShown() then self.casticon.targetname:Hide(); end
+                end
+                self.lastCastSpellID = spellid;
+
+            else -- DBM Spell potentially
+                self.castspellid = nil;
                 local dbm_show = false;
                 local min_remain = 100;
+                local best_dbm_event_guid = nil;
+                local dbm_icon, dbm_remain_text, dbm_desat = nil, "", false;
+                local dbm_vr, dbm_vg, dbm_vb = 1,1,1;
+                local dbm_tr, dbm_tg, dbm_tb = 1,1,1;
+                local dbm_spellid_for_tooltip = nil;
+
                 if ns.dbm_event_list then
                     for id, v in pairs(ns.dbm_event_list) do
-                        local icon = v[4]
+                        local current_event_guid = v[8];
                         local remain = v[3] + v[2] - GetTime();
-                        local guid = v[8];
-                        local colorid = v[6];
-                        local dbmspellid = v[7];
-
                         if remain < -1 then
                             ns.dbm_event_list[id] = nil;
-                        elseif guid and self.guid == guid and remain < min_remain then
-                            frameIcon:SetTexture(icon);
-                            self.casticon:Show();
-                            self.casticon.castspellid = dbmspellid;
-                            frameIcon:SetDesaturated(true);
+                        elseif current_event_guid and self.guid == current_event_guid and remain < min_remain then
+                            dbm_icon = v[4];
+                            dbm_spellid_for_tooltip = v[7];
+                            dbm_desat = true;
+                            if remain > 0 then dbm_remain_text = math.ceil(remain); else dbm_remain_text = ""; end
+
                             if remain > 2 then
-                                if colorid ~= 4 then
-                                    frameIcon:SetVertexColor(1, 0.9, 0.9);
-                                    self.casticon.timetext:SetTextColor(1, 1, 1);
-                                else
-                                    frameIcon:SetVertexColor(0.9, 1, 0.9);
-                                    self.casticon.timetext:SetTextColor(1, 1, 1);
-                                end
+                                if v[6] ~= 4 then dbm_vr,dbm_vg,dbm_vb = 1,0.9,0.9; else dbm_vr,dbm_vg,dbm_vb = 0.9,1,0.9; end
+                                dbm_tr,dbm_tg,dbm_tb = 1,1,1;
                             else
-                                local color = frameIcon:GetVertexColor();
-                                if colorid ~= 4 then
-                                    frameIcon:SetVertexColor(1, 0.3, 0.3);
-                                    self.casticon.timetext:SetTextColor(0, 1, 0);
-                                else
-                                    frameIcon:SetVertexColor(0.3, 1, 0.3);
-                                    self.casticon.timetext:SetTextColor(1, 0, 0);
-                                end
+                                if v[6] ~= 4 then dbm_vr,dbm_vg,dbm_vb = 1,0.3,0.3; else dbm_vr,dbm_vg,dbm_vb = 0.3,1,0.3; end
+                                if v[6] ~= 4 then dbm_tr,dbm_tg,dbm_tb = 0,1,0; else dbm_tr,dbm_tg,dbm_tb = 1,0,0; end
                             end
-
-                            if remain > 0 then
-                                self.casticon.timetext:SetText(math.ceil(remain));
-                                self.casticon.timetext:Show();
-                            else
-                                self.casticon.timetext:Hide();
-                            end
-
-                            dbm_show = true;
                             min_remain = remain;
+                            best_dbm_event_guid = current_event_guid;
+                            dbm_show = true;
                         end
                     end
                 end
 
-                if dbm_show == false then
-                    self.casticon:Hide();
+                if dbm_show then
+                    local iconChanged = self.lastCastTexture ~= dbm_icon;
+                    local textChanged = self.casticon.timetext:GetText() ~= tostring(dbm_remain_text); -- GetText returns string
+                    local guidChanged = self.lastDBMEventGuid ~= best_dbm_event_guid;
+
+                    if guidChanged or iconChanged or textChanged or not self.casticon:IsShown() then
+                        frameIcon:SetTexture(dbm_icon);
+                        frameIcon:SetDesaturated(dbm_desat);
+                        frameIcon:SetVertexColor(dbm_vr, dbm_vg, dbm_vb);
+                        self.casticon.timetext:SetText(dbm_remain_text);
+                        self.casticon.timetext:SetTextColor(dbm_tr, dbm_tg, dbm_tb);
+                        if dbm_remain_text ~= "" then
+                            if not self.casticon.timetext:IsShown() then self.casticon.timetext:Show(); end
+                        else
+                            if self.casticon.timetext:IsShown() then self.casticon.timetext:Hide(); end
+                        end
+                        if not self.casticon:IsShown() then self.casticon:Show(); end
+
+                        self.lastCastTexture = dbm_icon;
+                        self.lastDBMEventGuid = best_dbm_event_guid;
+                        self.lastDBMRemainText = dbm_remain_text; -- Store the actual text set
+                    end
+                    self.casticon.castspellid = dbm_spellid_for_tooltip;
+                    self.lastCastSpellID = nil;
+                else
+                    if self.casticon:IsShown() then self.casticon:Hide(); end
+                    self.lastCastTexture = nil;
+                    self.lastDBMEventGuid = nil;
+                    self.lastDBMRemainText = nil;
                 end
-                self.castspellid = nil;
-                self.casticon.targetname:Hide();
+                if self.casticon.targetname:IsShown() then self.casticon.targetname:Hide(); end
             end
         end
     end
@@ -1345,11 +1493,18 @@ local function removeUnit(namePlateUnitToken)
         asframe:UnregisterEvent("UNIT_SPELLCAST_FAILED");
         asframe:SetScript("OnEvent", nil);
 
-        if asframe.timer then
+        if asframe.timer then -- This timer is now removed, but good to keep the nil check if other timers were added to asframe
             asframe.timer:Cancel();
             asframe.timer = nil;
         end
 
+        -- Remove from active frames list
+        for i, v in ipairs(ns.active_asframes) do
+            if v == asframe then
+                table.remove(ns.active_asframes, i);
+                break;
+            end
+        end
 
         ---@diagnostic disable-next-line: undefined-field
         if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
@@ -1716,15 +1871,9 @@ local function addNamePlate(namePlateFrameBase)
         end
     end
 
-    local function callback()
-        updateNamePlate(namePlateFrameBase);
-    end
-
-    if asframe.timer then
-        asframe.timer:Cancel();
-    end
-
-    asframe.timer = C_Timer.NewTicker(ns.ANameP_UpdateRate, callback);
+    -- Add to active frames list
+    table.insert(ns.active_asframes, asframe);
+    -- Per-nameplate timer removed, will be handled by a global timer
 end
 
 
@@ -1793,6 +1942,12 @@ local function updateUnit(namePlateUnitToken, bquick)
     if namePlateFrameBase and not namePlateFrameBase:IsForbidden() then
         if namePlateFrameBase.asNamePlates ~= nil then
             local asframe = namePlateFrameBase.asNamePlates;
+
+            -- If the global timer just updated this frame, skip this dedicated update to avoid redundancy
+            if asframe.lastGlobalUpdateTime and (GetTime() - asframe.lastGlobalUpdateTime < (ns.ANameP_UpdateRateTarget * 0.9)) then
+                return;
+            end
+
             updateTargetNameP(asframe);
             updateHealthText(asframe);
             updatePower(asframe);
@@ -2001,6 +2156,20 @@ local function initAddon()
     C_Timer.NewTicker(ns.ANameP_UpdateRateTarget, ANameP_OnUpdate);
     C_Timer.NewTicker(ns.ANameP_UpdateRateTarget, ANameP_OnUpdate2);
     C_Timer.NewTicker(ns.ANameP_UpdateRateTarget, ANameP_OnUpdate3);
+
+    -- New global timer for all active nameplates
+    C_Timer.NewTicker(ns.ANameP_UpdateRate, function()
+        local currentMouseoverGUID = UnitGUID("mouseover"); -- Cache it once per tick
+        ns.currentMouseoverGUID_this_tick = currentMouseoverGUID;
+
+        for _, asframe in ipairs(ns.active_asframes) do
+            if asframe and asframe.nameplateBase and not asframe.nameplateBase:IsForbidden() and asframe.nameplateBase.UnitFrame and asframe.nameplateBase.UnitFrame:IsShown() then
+                updateAll(asframe);
+                asframe.lastGlobalUpdateTime = GetTime(); -- Mark the time of this update
+            end
+        end
+        ns.currentMouseoverGUID_this_tick = nil; -- Clear after use
+    end);
 
     hooksecurefunc("DefaultCompactNamePlateFrameAnchorInternal", function(frame, setupOptions)
         if (frame:IsForbidden()) then
