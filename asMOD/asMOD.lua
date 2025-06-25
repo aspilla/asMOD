@@ -678,9 +678,6 @@ local function funcDragStop(self)
 	self.StopMovingOrSizing(self);
 end
 
-local asMOD_AFFL_frame;
-local asMOD_ACB_frame;
-local asMOD_ASQA_frame;
 
 local function setupFrame(frame, Name, addonName, config)
 	frame = CreateFrame("Frame", Name, UIParent)

@@ -8,17 +8,6 @@ local Options_Default = {
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
 
-local function GetOptions()
-    local container = Settings.CreateControlTextContainer()
-
-    local ttsinfos = C_VoiceChat.GetTtsVoices();
-    for id, v in pairs(ttsinfos) do
-        container:Add(v.voiceID, v.name);
-    end
-    return container:GetData()
-end
-
-
 function ns.SetupOptionPanels()
     local function OnSettingChanged(_, setting, value)
         local function get_variable_from_cvar_name(cvar_name)
