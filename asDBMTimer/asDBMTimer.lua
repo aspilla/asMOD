@@ -355,15 +355,35 @@ local function setupUI()
 	asDBMTimer:SetPoint("CENTER", UIParent, "CENTER", ADBMT_X, ADBMT_Y)
 	asDBMTimer:SetWidth(100)
 	asDBMTimer:SetHeight(100)
+	asDBMTimer:SetMovable(true);
+	asDBMTimer:EnableMouse(true);
+	asDBMTimer:RegisterForDrag("LeftButton");
+	asDBMTimer.text = asDBMTimer:CreateFontString(nil, "OVERLAY")
+	asDBMTimer.text:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
+	asDBMTimer.text:SetPoint("CENTER", asDBMTimer, "CENTER", 0, 0)
+	asDBMTimer.text:SetText("asDBMTimer(Position)");
+	local tex = asDBMTimer:CreateTexture(nil, "ARTWORK");
+	tex:SetAllPoints();
+	tex:SetColorTexture(0.0, 0.5, 1.0); -- Blue color for visibility
+	tex:SetAlpha(0.5);
 	asDBMTimer:Show();
 	asDBMTimer:SetScript("OnEvent", asDBMTimer_OnEvent);
 	asDBMTimer:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+
+	asDBMTimer:SetScript("OnDragStart", function(self)
+		self:StartMoving();
+	end)
+	asDBMTimer:SetScript("OnDragStop", function(self)
+		self:StopMovingOrSizing();
+		ns.SavePosition(self);
+	end);
 
 
 	local bloaded = C_AddOns.LoadAddOn("asMOD")
 
 	if bloaded and asMOD_setupFrame then
 		asMOD_setupFrame(asDBMTimer, "asDBMTimer");
+		ns.SavePosition(asDBMTimer); -- Save position after asMOD_setupFrame
 	end
 
 	asDBMTimer.buttons = {};
@@ -433,6 +453,14 @@ local function initAddon()
 
 	C_Timer.NewTicker(0.2, checkList);
 	C_Timer.NewTicker(0.05, checkButtons);
+end
+
+function ns.GetPosition()
+    local left = asDBMTimer:GetLeft();
+    local bottom = asDBMTimer:GetBottom();
+    local height = asDBMTimer:GetHeight();
+
+    return left, bottom, height;
 end
 
 local bloaded = C_AddOns.LoadAddOn("DBM-Core");
