@@ -1,8 +1,10 @@
 ﻿## Interface: 110107
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rFixCombatText
-## Notes: 전투 메시지 변경
-## Version : 241216
+## Notes: Enhancement for the default UI's Floating Combat Text
+## Version : 250627
+## SavedVariablesPerCharacter: AFCT_Options, AFCT_OtherOptions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+asFixCombatTextOption.lua
 asFixCombatText.lua
