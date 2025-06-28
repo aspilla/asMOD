@@ -9,13 +9,15 @@ asMOD is a collection of custom World of Warcraft addons designed to enhance you
 * **Optimized Performance:** Designed for minimal performance impact, ensuring smooth gameplay without lag or FPS drops, not using Weakaura or Elv.
 * **Retail WoW Support:** Currently supports only the retail version of World of Warcraft.
 
+* asMOD vs W/O asMOD FPS Comparison asMOD is providing very similar game performance, compare to default UI.
+<iframe width="560" height="315" src="https://www.youtube.com/embed/S--Ye0u9Rno?si=eT9WisYHsO24DUzH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Cautions (asUnitFrame Related)
 
 The following errors may occur:
 
 1. **Target Setting Error:** Errors may occur when setting the target through the right-click menu on the frame. It's recommended to use the `/focus` macro or assign a hotkey.
 2. **Edit Mode Error:**  Errors may prevent setting changes while in edit mode. Exit edit mode before using asUnitFrame.
-
 
 ## Preview
 
