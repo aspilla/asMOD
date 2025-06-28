@@ -1,6 +1,5 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 240807,
     MinTimetoShow = 10,
     HideNamePlatesCooldown = false,
     ShowInterruptOnlyforNormal = true,
@@ -9,11 +8,11 @@ local Options_Default = {
 };
 
 local OtherOptions_Default = {
+    Version = 250628,
     point = "CENTER",
     point2 = "CENTER",
     x = 200, -- 기본 X 위치 (asDBMTimer.lua의 ADBMT_X와 동일하게 설정)
     y = 50,  -- 기본 Y 위치 (asDBMTimer.lua의 ADBMT_Y와 동일하게 설정)
-    version = 240808, -- 버전 업데이트
 }
 
 ns.options = CopyTable(Options_Default);
@@ -31,17 +30,15 @@ function ns.SetupOptionPanels()
         local cvar_name = setting:GetVariable()
         local variable = get_variable_from_cvar_name(cvar_name)
         ADTI_Options[variable] = value;
-        ns.options[variable] = value;        
+        ns.options[variable] = value;
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asDBMTimer")
 
-    if ADTI_Options == nil or Options_Default.Version ~= ADTI_Options.Version then
-        ADTI_Options = {};
-        ADTI_Options = CopyTable(Options_Default);
-    end
 
-    if ADTI_OtherOptions == nil or OtherOptions_Default.version ~= ADTI_OtherOptions.version then
+    if ADTI_Options == nil or ADTI_OtherOptions == nil or OtherOptions_Default.Version ~= ADTI_OtherOptions.Version then
+        ADTI_Options = {}
+        ADTI_Options = CopyTable(Options_Default);
         ADTI_OtherOptions = {};
         ADTI_OtherOptions = CopyTable(OtherOptions_Default);
     end
@@ -51,74 +48,78 @@ function ns.SetupOptionPanels()
     for variable, _ in pairs(Options_Default) do
         local name = variable;
 
-        if name ~= "Version" then
-            local cvar_name = "asDBMTimer_" .. variable;
-            local tooltip = ""
-            if ADTI_Options[variable] == nil  then
-                ADTI_Options[variable] = Options_Default[variable];
-                ns.options[variable] = Options_Default[variable];
-            end
-            local defaultValue = Options_Default[variable]
-            local currentValue = ADTI_Options[variable];
+        local cvar_name = "asDBMTimer_" .. variable;
+        local tooltip = ""
+        if ADTI_Options[variable] == nil then
+            ADTI_Options[variable] = Options_Default[variable];
+            ns.options[variable] = Options_Default[variable];
+        end
+        local defaultValue = Options_Default[variable]
+        local currentValue = ADTI_Options[variable];
 
-            if variable == "LockPosition" then -- LockPosition 옵션 처리
-                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
-                Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
-                Settings.SetValue(cvar_name, currentValue);
-                Settings.SetOnValueChangedCallback(cvar_name, function(_, setting, value)
-                    OnSettingChanged(_, setting, value)
-                    if _G["asDBMTimer"] then
-                        if value == true then
-                            _G["asDBMTimer"]:EnableMouse(false);
-                            _G["asDBMTimer"].text:Hide();
-                            _G["asDBMTimer"]:GetChildren():SetAlpha(0); -- Hide texture
-                        else
-                            _G["asDBMTimer"]:EnableMouse(true);
-                            _G["asDBMTimer"].text:Show();
-                            _G["asDBMTimer"]:GetChildren():SetAlpha(0.5); -- Show texture
-                        end
+        if variable == "LockPosition" then     -- LockPosition 옵션 처리
+            local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
+                name, defaultValue);
+            Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
+            Settings.SetValue(cvar_name, currentValue);
+            Settings.SetOnValueChangedCallback(cvar_name, function(_, setting, value)
+                OnSettingChanged(_, setting, value)
+                if ns.asDBMTimer then
+                    if value == true then
+                        ns.asDBMTimer:EnableMouse(false);
+                        ns.asDBMTimer.text:Hide();
+                        ns.asDBMTimer.tex:Hide();     -- Hide texture
+                    else
+                        ns.asDBMTimer:EnableMouse(true);
+                        ns.asDBMTimer.text:Show();
+                        ns.asDBMTimer.tex:Show();     -- Show texture
                     end
-                end);
-            elseif tonumber(defaultValue) ~= nil then
-                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
-                local options = Settings.CreateSliderOptions(0, 100, 1);
-                options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
-                Settings.CreateSlider(category, setting, options, tooltip);
-                Settings.SetValue(cvar_name, currentValue);
-                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
-            else
-                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
-                Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
-                Settings.SetValue(cvar_name, currentValue);
-                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
-            end
+                end
+            end);
+        elseif tonumber(defaultValue) ~= nil then
+            local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
+                name, defaultValue);
+            local options = Settings.CreateSliderOptions(0, 100, 1);
+            options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+            Settings.CreateSlider(category, setting, options, tooltip);
+            Settings.SetValue(cvar_name, currentValue);
+            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+        else
+            local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
+                name, defaultValue);
+            Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
+            Settings.SetValue(cvar_name, currentValue);
+            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
         end
     end
 
     Settings.RegisterAddOnCategory(category)
+	local bloaded = C_AddOns.LoadAddOn("asMOD")
+
     ns.LoadPosition();
 
     C_AddOns.LoadAddOn("asMOD");
-    if _G["asMOD_setupFrame"] and _G["asDBMTimer"] then
-        _G["asMOD_setupFrame"](_G["asDBMTimer"], "asDBMTimer");
-        ns.SavePosition(_G["asDBMTimer"]); -- Save position after asMOD_setupFrame
+    if asMOD_setupFrame and ns.asDBMTimer then
+        asMOD_setupFrame(ns.asDBMTimer, "asDBMTimer");
+        ns.SavePosition(ns.asDBMTimer); -- Save position after asMOD_setupFrame
     end
 
-    if ns.options.LockPosition and _G["asDBMTimer"] then
-        _G["asDBMTimer"]:EnableMouse(false);
-        _G["asDBMTimer"].text:Hide();
-        _G["asDBMTimer"]:GetChildren():SetAlpha(0); -- Hide texture
-    elseif _G["asDBMTimer"] then
-        _G["asDBMTimer"]:EnableMouse(true);
-        _G["asDBMTimer"].text:Show();
-        _G["asDBMTimer"]:GetChildren():SetAlpha(0.5); -- Show texture
+    if ns.options.LockPosition and ns.asDBMTimer then
+        ns.asDBMTimer:EnableMouse(false);
+        ns.asDBMTimer.text:Hide();
+        ns.asDBMTimer.tex:Hide(); -- Hide texture
+    elseif ns.asDBMTimer then
+        ns.asDBMTimer:EnableMouse(true);
+        ns.asDBMTimer.text:Show();
+        ns.asDBMTimer.tex:Show(); -- Show texture
     end
 end
 
 function ns.LoadPosition()
-    if _G["asDBMTimer"] then
-        _G["asDBMTimer"]:ClearAllPoints()
-        _G["asDBMTimer"]:SetPoint(ADTI_OtherOptions.point, UIParent, ADTI_OtherOptions.point2, ADTI_OtherOptions.x, ADTI_OtherOptions.y);
+    if ns.asDBMTimer then
+        ns.asDBMTimer:ClearAllPoints()
+        ns.asDBMTimer:SetPoint(ADTI_OtherOptions.point, UIParent, ADTI_OtherOptions.point2, ADTI_OtherOptions.x,
+            ADTI_OtherOptions.y);
     end
 end
 

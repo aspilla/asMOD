@@ -56,10 +56,10 @@ end
 
 -- 설정 끝
 
-local asDBMTimer = {};
+ns.asDBMTimer = {};
 
 local function deleteButton(idx, btemp)
-	local button = asDBMTimer.buttons[idx]
+	local button = ns.asDBMTimer.buttons[idx]
 
 	if button then
 		if btemp then
@@ -75,7 +75,7 @@ end
 
 local function checkAllButton()
 	for idx = 1, ADBMT_MaxButtons do
-		local button = asDBMTimer.buttons[idx]
+		local button = ns.asDBMTimer.buttons[idx]
 
 		if button and button.bdelete then
 			deleteButton(idx);
@@ -100,7 +100,7 @@ end
 
 local function newButton(id, event)
 	for i = 1, ADBMT_MaxButtons do
-		local button = asDBMTimer.buttons[i];
+		local button = ns.asDBMTimer.buttons[i];
 		if button.id == nil then
 			button.id = id;
 			button.bdelete = false;
@@ -294,7 +294,7 @@ local function checkButtons()
 
 	dbm_event_list:Iterate(function(id, event)
 		if event.button_id then
-			local button = asDBMTimer.buttons[event.button_id];
+			local button = ns.asDBMTimer.buttons[event.button_id];
 			local remain = event.start + event.duration - curtime;
 
 			local icontext = ""
@@ -338,6 +338,9 @@ local function checkButtons()
 
 	checkAllButton();
 end
+local function initPosition()
+	C_Timer.After(2, ns.SetupOptionPanels);
+end
 
 local function asDBMTimer_OnEvent(self, event, arg1, arg2, arg3, ...)
 	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
@@ -345,52 +348,51 @@ local function asDBMTimer_OnEvent(self, event, arg1, arg2, arg3, ...)
 		if (eventType == "UNIT_DIED") then
 			table.insert(unit_died_list, destGUID);
 		end
+	elseif event == "ADDON_LOADED" and arg1 == "asDBMTimer" then
+		initPosition();
+
 	end
 	return;
 end
 
 
 local function setupUI()
-	asDBMTimer = CreateFrame("FRAME", nil, UIParent)
-	asDBMTimer:SetPoint("CENTER", UIParent, "CENTER", ADBMT_X, ADBMT_Y)
-	asDBMTimer:SetWidth(100)
-	asDBMTimer:SetHeight(100)
-	asDBMTimer:SetMovable(true);
-	asDBMTimer:EnableMouse(true);
-	asDBMTimer:RegisterForDrag("LeftButton");
-	asDBMTimer.text = asDBMTimer:CreateFontString(nil, "OVERLAY")
-	asDBMTimer.text:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
-	asDBMTimer.text:SetPoint("CENTER", asDBMTimer, "CENTER", 0, 0)
-	asDBMTimer.text:SetText("asDBMTimer(Position)");
-	local tex = asDBMTimer:CreateTexture(nil, "ARTWORK");
-	tex:SetAllPoints();
-	tex:SetColorTexture(0.0, 0.5, 1.0); -- Blue color for visibility
-	tex:SetAlpha(0.5);
-	asDBMTimer:Show();
-	asDBMTimer:SetScript("OnEvent", asDBMTimer_OnEvent);
-	asDBMTimer:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+	ns.asDBMTimer = CreateFrame("FRAME", nil, UIParent)
+	ns.asDBMTimer:SetPoint("CENTER", UIParent, "CENTER", ADBMT_X, ADBMT_Y)
+	ns.asDBMTimer:SetWidth(100)
+	ns.asDBMTimer:SetHeight(100)
+	ns.asDBMTimer:SetMovable(true);
+	ns.asDBMTimer:EnableMouse(true);
+	ns.asDBMTimer:RegisterForDrag("LeftButton");
+	ns.asDBMTimer.text = ns.asDBMTimer:CreateFontString(nil, "OVERLAY")
+	ns.asDBMTimer.text:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
+	ns.asDBMTimer.text:SetPoint("CENTER", ns.asDBMTimer, "CENTER", 0, 0)
+	ns.asDBMTimer.text:SetText("asDBMTimer(Position)");
+	ns.asDBMTimer.text:Hide();
+	ns.asDBMTimer.tex = ns.asDBMTimer:CreateTexture(nil, "ARTWORK");
+	ns.asDBMTimer.tex:SetAllPoints();
+	ns.asDBMTimer.tex:SetColorTexture(0.0, 0.5, 1.0); -- Blue color for visibility
+	ns.asDBMTimer.tex:SetAlpha(0.5);
+	ns.asDBMTimer.tex:Hide();
+	ns.asDBMTimer:Show();
+	ns.asDBMTimer:SetScript("OnEvent", asDBMTimer_OnEvent);
+	ns.asDBMTimer:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+	ns.asDBMTimer:RegisterEvent("ADDON_LOADED");
 
-	asDBMTimer:SetScript("OnDragStart", function(self)
+	ns.asDBMTimer:SetScript("OnDragStart", function(self)
 		self:StartMoving();
 	end)
-	asDBMTimer:SetScript("OnDragStop", function(self)
+	ns.asDBMTimer:SetScript("OnDragStop", function(self)
 		self:StopMovingOrSizing();
 		ns.SavePosition(self);
 	end);
 
 
-	local bloaded = C_AddOns.LoadAddOn("asMOD")
-
-	if bloaded and asMOD_setupFrame then
-		asMOD_setupFrame(asDBMTimer, "asDBMTimer");
-		ns.SavePosition(asDBMTimer); -- Save position after asMOD_setupFrame
-	end
-
-	asDBMTimer.buttons = {};
+	ns.asDBMTimer.buttons = {};
 
 	for i = 1, ADBMT_MaxButtons do
-		asDBMTimer.buttons[i] = CreateFrame("Button", nil, asDBMTimer, "asDBMTimerFrameTemplate");
-		local button = asDBMTimer.buttons[i];		
+		ns.asDBMTimer.buttons[i] = CreateFrame("Button", nil, ns.asDBMTimer, "asDBMTimerFrameTemplate");
+		local button = ns.asDBMTimer.buttons[i];		
 		button:SetWidth(ADBMT_IconSize);
 		button:SetHeight(ADBMT_IconSize * 0.9);
 		button:SetScale(1);
@@ -432,8 +434,8 @@ local function setupUI()
 	end
 end
 
+
 local function initAddon()
-	C_Timer.After(1, ns.SetupOptionPanels);
 
 	DBM:RegisterCallback("DBM_TimerStart", asDBMTimer_callback);
 	DBM:RegisterCallback("DBM_TimerStop", asDBMTimer_callback);
@@ -456,9 +458,9 @@ local function initAddon()
 end
 
 function ns.GetPosition()
-    local left = asDBMTimer:GetLeft();
-    local bottom = asDBMTimer:GetBottom();
-    local height = asDBMTimer:GetHeight();
+    local left = ns.asDBMTimer:GetLeft();
+    local bottom = ns.asDBMTimer:GetBottom();
+    local height = ns.asDBMTimer:GetHeight();
 
     return left, bottom, height;
 end
