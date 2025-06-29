@@ -1,8 +1,8 @@
-# asAutoMarker (Internal War Season 2)
+# asAutoMarker (WWI Season 2)
 
 This addon automatically assigns raid markers to designated key monsters when performing the tank role. 
 If you are a DPS or healer, it does not mark mobs but changes the nameplate color of key mobs (if using asNamePlates). 
-Key mobs from Internal War Season 1/2 dungeons are registered.
+Key mobs from WWI Season 1/2 dungeons are registered.
 
 ![asAutoMarker](https://github.com/aspilla/asMOD/blob/main/.Pictures/asAutoMarker.gif?raw=true)
 
@@ -39,12 +39,12 @@ Key mobs from Internal War Season 1/2 dungeons are registered.
     *   Does not work in other situations (e.g., raids, the field, or when not in the tank role).
 
 ## Settings
-    * Refer to the video below for how to configure settings.
-    * Turn the `TankHealerMark` tank/healer auto-marking feature on/off.
-    * Turn the `MouseOverMark` mouseover marking feature on/off.
-    * `NPC Table` allows editing of your own NPC marker table. 0 means no marker, 1 means only change the nameplate color when using asNameplates, and 2 means automatic marking is possible. Unregistered NPCs follow the default NPC Table criteria. (This option is shared with account)
+* Refer to the video below for how to configure settings.
+* Turn the `TankHealerMark` tank/healer auto-marking feature on/off.
+* Turn the `MouseOverMark` mouseover marking feature on/off.
+* `NPC Table` allows editing of your own NPC marker table. 0 means no marker, 1 means only change the nameplate color when using asNameplates, and 2 means automatic marking is possible. Unregistered NPCs follow the default NPC Table criteria.
 
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/aQGkIO-bjbI?si=nDRGb98zrA5CWGEk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/aQGkIO-bjbI?si=nDRGb98zrA5CWGEk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ---
 # asAutoMarker (내부전쟁 시즌 2)
@@ -89,9 +89,9 @@ Key mobs from Internal War Season 1/2 dungeons are registered.
 
 ## 설정
 
-    * 설정 방법은 아래 영상을 참고 하세요.
-    * `TankHealerMark` 탱커/힐러 자동 징표 기능을 키고/끕니다.
-    * `MouseOverMark` 마우스 오버 징표 기능을 키고/끕니다.
-    * `NPC Table` 자신만의 NPC 징표 Table 편집이 가능합니다. 0은 징표를 안보이게, 1은 asNameplates 사용시 이름표 색상 변경만, 2은 자동 징표 가능을 의미합니다. 등록되지 않은 NPC 는 기본 NPC Table 기준을 따릅니다. (이 설정은 계정 공유 입니다.)
+* 설정 방법은 아래 영상을 참고 하세요.
+* `TankHealerMark` 탱커/힐러 자동 징표 기능을 키고/끕니다.
+* `MouseOverMark` 마우스 오버 징표 기능을 키고/끕니다.
+* `NPC Table` 자신만의 NPC 징표 Table 편집이 가능합니다. 0은 징표를 안보이게, 1은 asNameplates 사용시 이름표 색상 변경만, 2은 자동 징표 가능을 의미합니다. 등록되지 않은 NPC 는 기본 NPC Table 기준을 따릅니다.
 
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/aQGkIO-bjbI?si=nDRGb98zrA5CWGEk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/aQGkIO-bjbI?si=nDRGb98zrA5CWGEk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
