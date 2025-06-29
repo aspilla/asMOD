@@ -26,8 +26,17 @@ asAutoMarkerF.IsAutoMarkerMob = function(unit)
 		local npcID = select(6, strsplit("-", guid));
 		npcID = tonumber(npcID);
 
-		if ns.NPCTable[npcID] and ns.NPCTable[npcID] > 0 then
-			return ns.NPCTable[npcID];
+		local customv = ns.CustomNPCTable[npcID];
+
+		if customv ~= nil then
+			return customv;
+		end
+
+
+		local tablev = ns.NPCTable[npcID];
+
+		if tablev and tablev > 0 then
+			return tablev;
 		end
 	end
 
