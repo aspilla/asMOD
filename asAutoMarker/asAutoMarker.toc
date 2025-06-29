@@ -1,8 +1,11 @@
 ﻿## Interface: 110107
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rAutoMarker
 ## Notes: Simple automarker to detect dangerous mobs 
-## Version : 250603
+## Version : 250629
+## SavedVariablesPerCharacter: AAM_Options, AAM_OtherOptions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+asAutoMarkerNPCTable.lua
+asAutoMarkerOption.lua
 asAutoMarker.lua
