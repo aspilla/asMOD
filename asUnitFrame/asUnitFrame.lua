@@ -437,23 +437,19 @@ local function updateUnit(frame)
                 local manaMax = UnitPowerMax(unit, 0);
 
                 if manavalue > 0 then
-                    frame.healthbar:SetHeight(healthheight - powerheight);
-                    frame.powerbar:SetHeight(powerheight);
                     frame.powerbar:SetMinMaxValues(0, manaMax)
                     frame.powerbar:SetValue(manavalue);
                     frame.powerbar.value:SetText(manavalue)
                     local powerColor = PowerBarColor[0]
                     frame.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b)
+                    frame.powerbar:Show();
                 elseif showplayermana then
-                    frame.healthbar:SetHeight(healthheight - powerheight);
-                    frame.powerbar:SetHeight(powerheight);
+                    frame.powerbar:Show();
                 else
-                    frame.healthbar:SetHeight(healthheight);
-                    frame.powerbar:SetHeight(0);
+                    frame.powerbar:Hide();
                 end
             else
-                frame.healthbar:SetHeight(healthheight);
-                frame.powerbar:SetHeight(0);
+                frame.powerbar:Hide();
             end
         end
     end
@@ -564,7 +560,7 @@ local function UpdateDebuffAnchor(frames, index, offsetX, right, parent, width)
     local buff = frames[index];
 
     if (index == 1) then
-        buff:SetPoint("TOPLEFT", parent.powerbar, "BOTTOMLEFT", 0, -2);
+        buff:SetPoint("TOPLEFT", parent.healthbar, "BOTTOMLEFT", 0, -(powerheight/2 + 2));
     else
         buff:SetPoint("BOTTOMLEFT", frames[index - 1], "BOTTOMRIGHT", offsetX, 0);
     end
@@ -715,7 +711,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar:GetStatusBarTexture():SetHorizTile(false)
     frame.healthbar:SetMinMaxValues(0, 100)
     frame.healthbar:SetValue(100)
-    frame.healthbar:SetHeight(height - powerbarheight)
+    frame.healthbar:SetHeight(height);
     frame.healthbar:Show();
 
     if x < 0 then
@@ -852,12 +848,13 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.powerbar:GetStatusBarTexture():SetHorizTile(false)
     frame.powerbar:SetMinMaxValues(0, 100)
     frame.powerbar:SetValue(100)
-    frame.powerbar:SetWidth(hwidth)
+    frame.powerbar:SetWidth(hwidth/2);
     frame.powerbar:SetHeight(powerbarheight)
-    frame.powerbar:SetPoint("TOPLEFT", frame.healthbar, "BOTTOMLEFT", 0, 0);
+    frame.powerbar:SetPoint("CENTER", frame.healthbar, "BOTTOM", 0, 0);
+    frame.powerbar:SetFrameLevel(frame.healthbar:GetFrameLevel() + 3);
     frame.powerbar:Show();
 
-    frame.powerbar.bg = frame.healthbar:CreateTexture(nil, "BACKGROUND");
+    frame.powerbar.bg = frame.powerbar:CreateTexture(nil, "BACKGROUND");
     frame.powerbar.bg:SetPoint("TOPLEFT", frame.powerbar, "TOPLEFT", -1, 1);
     frame.powerbar.bg:SetPoint("BOTTOMRIGHT", frame.powerbar, "BOTTOMRIGHT", 1, -1);
 
@@ -865,7 +862,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.powerbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
     frame.powerbar.bg:SetVertexColor(0, 0, 0, 0.8);
 
-    frame.powerbar.value = frame.healthbar:CreateFontString(nil, "ARTWORK");
+    frame.powerbar.value = frame.powerbar:CreateFontString(nil, "ARTWORK");
     frame.powerbar.value:SetFont(STANDARD_TEXT_FONT, fontsize - 2, FontOutline);
     frame.powerbar.value:SetTextColor(1, 1, 1, 1)
     frame.powerbar.value:SetPoint("CENTER", frame.powerbar, "CENTER", 0, 0);
