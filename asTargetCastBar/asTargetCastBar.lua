@@ -4,14 +4,14 @@ local ATCB_WIDTH = 180
 local ATCB_HEIGHT = 17
 local ATCB_X = 0;
 local ATCB_Y = -100;
-local ATCB_ALPHA = 0.8;                                                         --투명도 80%
-local ATCB_NAME_SIZE = ATCB_HEIGHT * 0.7;                                       --Spell 명 Font Size, 높이의 70%
-local ATCB_TIME_SIZE = ATCB_HEIGHT * 0.5;                                       --Spell 시전시간 Font Size, 높이의 50%
-local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };                       --차단 불가시 (내가 아닐때) 색상 (r, g, b)
-local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { 153 / 255, 0, 76 / 255 };       --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
-local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 };         --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
-local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };           --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
-local ATCB_UPDATE_RATE = 0.05 -- 20프레임
+local ATCB_ALPHA = 0.8;                                                   --투명도 80%
+local ATCB_NAME_SIZE = ATCB_HEIGHT * 0.7;                                 --Spell 명 Font Size, 높이의 70%
+local ATCB_TIME_SIZE = ATCB_HEIGHT * 0.5;                                 --Spell 시전시간 Font Size, 높이의 50%
+local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };                 --차단 불가시 (내가 아닐때) 색상 (r, g, b)
+local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { 153 / 255, 0, 76 / 255 }; --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
+local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 };   --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
+local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };     --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
+local ATCB_UPDATE_RATE = 0.05                                             -- 20프레임
 
 local DangerousSpellList = {
 
@@ -26,112 +26,100 @@ ATCB:SetWidth(0)
 ATCB:SetHeight(0)
 ATCB:Show();
 
-ATCB.castbar = CreateFrame("StatusBar", nil, UIParent)
-ATCB.castbar:SetStatusBarTexture("Interface\\addons\\asTargetCastBar\\UI-StatusBar")
-ATCB.castbar:GetStatusBarTexture():SetHorizTile(false)
-ATCB.castbar:SetMinMaxValues(0, 100)
-ATCB.castbar:SetValue(100)
-ATCB.castbar:SetHeight(ATCB_HEIGHT)
-ATCB.castbar:SetWidth(ATCB_WIDTH - (ATCB_HEIGHT + 2) * 1.2)
-ATCB.castbar:SetStatusBarColor(1, 0.9, 0.9);
-ATCB.castbar:SetAlpha(ATCB_ALPHA);
+local function setupCastBar()
+    local frame = CreateFrame("StatusBar", nil, UIParent)
+    frame:SetStatusBarTexture("Interface\\addons\\asTargetCastBar\\UI-StatusBar")
+    frame:GetStatusBarTexture():SetHorizTile(false)
+    frame:SetMinMaxValues(0, 100)
+    frame:SetValue(100)
+    frame:SetHeight(ATCB_HEIGHT)
+    frame:SetWidth(ATCB_WIDTH - (ATCB_HEIGHT + 2) * 1.2)
+    frame:SetStatusBarColor(1, 0.9, 0.9);
+    frame:SetAlpha(ATCB_ALPHA);
 
-ATCB.castbar.bg = ATCB.castbar:CreateTexture(nil, "BACKGROUND")
-ATCB.castbar.bg:SetPoint("TOPLEFT", ATCB.castbar, "TOPLEFT", -1, 1)
-ATCB.castbar.bg:SetPoint("BOTTOMRIGHT", ATCB.castbar, "BOTTOMRIGHT", 1, -1)
+    frame.bg = frame:CreateTexture(nil, "BACKGROUND")
+    frame.bg:SetPoint("TOPLEFT", frame, "TOPLEFT", -1, 1)
+    frame.bg:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 1, -1)
 
-ATCB.castbar.bg:SetTexture("Interface\\Addons\\asTargetCastBar\\border.tga")
-ATCB.castbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-ATCB.castbar.bg:SetVertexColor(0, 0, 0, 0.8);
-ATCB.castbar.bg:Show();
+    frame.bg:SetTexture("Interface\\Addons\\asTargetCastBar\\border.tga")
+    frame.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    frame.bg:SetVertexColor(0, 0, 0, 0.8);
+    frame.bg:Show();
 
-ATCB.castbar.name = ATCB.castbar:CreateFontString(nil, "OVERLAY");
-ATCB.castbar.name:SetFont(STANDARD_TEXT_FONT, ATCB_NAME_SIZE);
-ATCB.castbar.name:SetPoint("LEFT", ATCB.castbar, "LEFT", 3, 0);
+    frame.name = frame:CreateFontString(nil, "OVERLAY");
+    frame.name:SetFont(STANDARD_TEXT_FONT, ATCB_NAME_SIZE);
+    frame.name:SetPoint("LEFT", frame, "LEFT", 3, 0);
 
-ATCB.castbar.time = ATCB.castbar:CreateFontString(nil, "OVERLAY");
-ATCB.castbar.time:SetFont(STANDARD_TEXT_FONT, ATCB_TIME_SIZE);
-ATCB.castbar.time:SetPoint("RIGHT", ATCB.castbar, "RIGHT", -3, 0);
+    frame.time = frame:CreateFontString(nil, "OVERLAY");
+    frame.time:SetFont(STANDARD_TEXT_FONT, ATCB_TIME_SIZE);
+    frame.time:SetPoint("RIGHT", frame, "RIGHT", -3, 0);
 
-ATCB.castbar:SetPoint("CENTER", UIParent, "CENTER", ATCB_X + ((ATCB_HEIGHT + 2) * 1.2) / 2, ATCB_Y)
+    if not frame:GetScript("OnEnter") then
+        frame:SetScript("OnEnter", function(s)
+            if s.castspellid and s.castspellid > 0 then
+                GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                GameTooltip:SetSpellByID(s.castspellid);
+            end
+        end)
+        frame:SetScript("OnLeave", function()
+            GameTooltip:Hide();
+        end)
+    end
 
-if not ATCB.castbar:GetScript("OnEnter") then
-    ATCB.castbar:SetScript("OnEnter", function(s)
-        if s.castspellid and s.castspellid > 0 then
-            GameTooltip_SetDefaultAnchor(GameTooltip, s);
-            GameTooltip:SetSpellByID(s.castspellid);
-        end
-    end)
-    ATCB.castbar:SetScript("OnLeave", function()
-        GameTooltip:Hide();
-    end)
+    frame:EnableMouse(false);
+    frame:SetMouseMotionEnabled(true);
+    frame.isAlert = false;
+    frame:Hide();
+
+    frame.button = CreateFrame("Button", nil, frame, "ATCBFrameTemplate");
+    frame.button:SetPoint("RIGHT", frame, "LEFT", -1, 0)
+    frame.button:SetWidth((ATCB_HEIGHT + 2) * 1.2);
+    frame.button:SetHeight(ATCB_HEIGHT + 2);
+    frame.button:SetScale(1);
+    frame.button:SetAlpha(1);
+    frame.button:EnableMouse(false);
+    frame.button.icon:SetTexCoord(.08, .92, .16, .84);
+    frame.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+    frame.button.border:SetVertexColor(0, 0, 0);
+    frame.button.border:Show();
+    frame.button:Show();
+
+    frame.targetname = ATCB:CreateFontString(nil, "OVERLAY");
+    frame.targetname:SetFont(STANDARD_TEXT_FONT, ATCB_NAME_SIZE);
+    frame.targetname:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -2);
+
+    frame.start = 0;
+    frame.duration = 0;
+    return frame;
 end
-
-ATCB.castbar:EnableMouse(false);
-ATCB.castbar:SetMouseMotionEnabled(true);
-ATCB.castbar.isAlert = false;
-ATCB.castbar:Hide();
-
-ATCB.button = CreateFrame("Button", nil, ATCB.castbar, "ATCBFrameTemplate");
-ATCB.button:SetPoint("RIGHT", ATCB.castbar, "LEFT", -1, 0)
-ATCB.button:SetWidth((ATCB_HEIGHT + 2) * 1.2);
-ATCB.button:SetHeight(ATCB_HEIGHT + 2);
-ATCB.button:SetScale(1);
-ATCB.button:SetAlpha(1);
-ATCB.button:EnableMouse(false);
-ATCB.button.icon:SetTexCoord(.08, .92, .16, .84);
-ATCB.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-ATCB.button.border:SetVertexColor(0, 0, 0);
-ATCB.button.border:Show();
-ATCB.button:Show();
-
-ATCB.targetname = ATCB:CreateFontString(nil, "OVERLAY");
-ATCB.targetname:SetFont(STANDARD_TEXT_FONT, ATCB_NAME_SIZE);
-ATCB.targetname:SetPoint("TOPRIGHT", ATCB.castbar, "BOTTOMRIGHT", 0, -2);
-
-ATCB.start = 0;
-ATCB.duration = 0;
+ATCB.targetCastBar = setupCastBar();
+ATCB.targetCastBar:SetPoint("CENTER", UIParent, "CENTER", ATCB_X + ((ATCB_HEIGHT + 2) * 1.2) / 2, ATCB_Y)
+ATCB.focusCastBar = setupCastBar();
+ATCB.focusCastBar:SetPoint("CENTER", UIParent, "CENTER", ATCB_X + ((ATCB_HEIGHT + 2) * 1.2) / 2, ATCB_Y + 150)
+ns.focusCastBar = ATCB.focusCastBar;
 
 
 C_AddOns.LoadAddOn("asMOD");
 
 if asMOD_setupFrame then
-    asMOD_setupFrame(ATCB.castbar, "asTargetCastBar");
+    asMOD_setupFrame(ATCB.targetCastBar, "asTargetCastBar (Target)");
+    asMOD_setupFrame(ATCB.focusCastBar, "asTargetCastBar (Focus)");
 end
 
-local function ATCB_OnEvent(self, event, ...)
-    if event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
-        if UnitExists("target") then
-            ATCB:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "target");
-            ATCB:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", "target");
-            ATCB:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "target");
-            ATCB:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", "target");
-            ATCB:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "target");
-            ATCB:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "target");
-            ATCB:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", "target");
-            ATCB:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "target");
-            ATCB:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", "target");
-            ATCB:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", "target");
-            ATCB:RegisterUnitEvent("UNIT_SPELLCAST_START", "target");
-            ATCB:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "target");
-            ATCB:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "target");
-            ATCB:RegisterUnitEvent("UNIT_TARGET", "target");
-        end
-    end
+local function checkCasting(castBar, unit)
+    local frameIcon    = castBar.button.icon;
+    local text         = castBar.name;
+    local time         = castBar.time;
+    local targetname   = castBar.targetname;
+    local targettarget = unit .. "target";
 
-    local frameIcon  = self.button.icon;
-    local castBar    = self.castbar;
-    local text       = self.castbar.name;
-    local time       = self.castbar.time;
-    local targetname = self.targetname;
-
-    if UnitExists("target") then
+    if UnitExists(unit) then
         local bchannel = false;
         local name, _, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-            "target");
+            unit);
 
         if not name then
-            name, _, texture, start, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo("target");
+            name, _, texture, start, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
             bchannel = true;
         end
 
@@ -139,20 +127,20 @@ local function ATCB_OnEvent(self, event, ...)
             local current = GetTime();
             frameIcon:SetTexture(texture);
 
-            self.start = start / 1000;
-            self.duration = (endTime - start) / 1000;
-            self.bchannel = bchannel;
-            castBar:SetMinMaxValues(0, self.duration)
+            castBar.start = start / 1000;
+            castBar.duration = (endTime - start) / 1000;
+            castBar.bchannel = bchannel;
+            castBar:SetMinMaxValues(0, castBar.duration)
 
             if bchannel then
-                castBar:SetValue(self.start + self.duration - current);
+                castBar:SetValue(castBar.start + castBar.duration - current);
             else
-                castBar:SetValue(current - self.start);
+                castBar:SetValue(current - castBar.start);
             end
 
             local color = {};
 
-            if UnitIsUnit("targettarget", "player") then
+            if UnitIsUnit(targettarget, "player") then
                 if notInterruptible then
                     color = CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET;
                 else
@@ -171,7 +159,7 @@ local function ATCB_OnEvent(self, event, ...)
             castBar:SetStatusBarColor(color[1], color[2], color[3]);
 
             text:SetText(name);
-            time:SetText(format("%.1f/%.1f", max((current - self.start), 0), max(self.duration, 0)));
+            time:SetText(format("%.1f/%.1f", max((current - castBar.start), 0), max(castBar.duration, 0)));
 
             frameIcon:Show();
             castBar:Show();
@@ -182,7 +170,7 @@ local function ATCB_OnEvent(self, event, ...)
                 end
             end
 
-            if UnitExists("targettarget") and UnitIsPlayer("targettarget") then
+            if UnitExists(targettarget) and UnitIsPlayer(targettarget) then
                 local _, Class = UnitClass("targettarget")
                 local color = RAID_CLASS_COLORS[Class]
                 targetname:SetTextColor(color.r, color.g, color.b);
@@ -198,7 +186,7 @@ local function ATCB_OnEvent(self, event, ...)
             castBar:Hide();
             ns.lib.PixelGlow_Stop(castBar);
             castBar.isAlert = false;
-            self.start = 0;
+            castBar.start = 0;
             targetname:SetText("");
             targetname:Hide();
         end
@@ -208,23 +196,59 @@ local function ATCB_OnEvent(self, event, ...)
         castBar:Hide();
         ns.lib.PixelGlow_Stop(castBar);
         castBar.isAlert = false;
-        self.start = 0;
+        castBar.start = 0;
         targetname:SetText("");
         targetname:Hide();
     end
 end
 
+local function registerEvents(unit)
+    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
+    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
+    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
+    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit);
+    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
+    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
+    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", unit);
+    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
+    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
+    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit);
+    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
+    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
+    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
+    ATCB:RegisterUnitEvent("UNIT_TARGET", unit);
+end
 
-local function ATCB_OnUpdate()
-    local start = ATCB.start;
-    local duration = ATCB.duration;
+local function ATCB_OnEvent(self, event, ...)
+    if event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_FOCUS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
+        if UnitExists("target") then
+            registerEvents("target");
+        end
+        if UnitExists("focus") then
+            registerEvents("focus");
+        end
+    elseif  event == "ADDON_LOADED" then
+        local name = ...;
+
+        if name == "asTargetCastBar" then
+            ns.SetupOptionPanels();
+        end
+
+    end
+
+    checkCasting(ATCB.targetCastBar, "target");
+    checkCasting(ATCB.focusCastBar, "focus");
+end
+
+
+local function updateCastBar(castBar)
+    local start = castBar.start;
+    local duration = castBar.duration;
     local current = GetTime();
 
     if start > 0 and start + duration >= current then
-        local castBar = ATCB.castbar;        
-        local bchannel = ATCB.bchannel;
-        
-        local time = ATCB.castbar.time;
+        local bchannel = castBar.bchannel;
+        local time = castBar.time;
         if bchannel then
             castBar:SetValue((start + duration - current));
             time:SetText(format("%.1f/%.1f", max((start + duration - current), 0), max(duration, 0)));
@@ -232,13 +256,18 @@ local function ATCB_OnUpdate()
             castBar:SetValue((current - start));
             time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
         end
-        
-        
     end
+end
+
+local function ATCB_OnUpdate()
+    updateCastBar(ATCB.targetCastBar);
+    updateCastBar(ATCB.focusCastBar);
 end
 
 ATCB:SetScript("OnEvent", ATCB_OnEvent)
 ATCB:RegisterEvent("PLAYER_TARGET_CHANGED");
+ATCB:RegisterEvent("PLAYER_FOCUS_CHANGED");
+ATCB:RegisterEvent("ADDON_LOADED");
 ATCB:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 C_Timer.NewTicker(ATCB_UPDATE_RATE, ATCB_OnUpdate);
@@ -254,7 +283,7 @@ local function scanDBM()
                         if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
                             DangerousSpellList[obj.spellId] = obj.announceType;
                         end
-                    end 
+                    end
                 end
             end
 

@@ -93,9 +93,9 @@ local voice_remap = {
 	["자연의 치유력"] = "해제쿨다운",
 }
 
-local GetItemInfo = C_Item and C_Item.GetItemInfo or GetItemInfo;
-local GetItemSpell = C_Item and C_Item.GetItemSpell or GetItemSpell;
-local GetItemCooldown = C_Item and C_Item.GetItemCooldown or GetItemCooldown;
+local GetItemInfo = C_Item and C_Item.GetItemInfo;
+local GetItemSpell = C_Item and C_Item.GetItemSpell;
+local GetItemCooldown = C_Item and C_Item.GetItemCooldown;
 
 local asGetSpellInfo = function(spellID, skip)
 	if not spellID then
@@ -151,6 +151,7 @@ local ACDP_mainframe = CreateFrame("Frame", nil, UIParent);
 local ACDP_CoolButtons = CreateFrame("Frame", nil, UIParent);
 
 local KnownSpellList = {};
+local ItemSpellList = {};
 local SpellIconList = {};
 local ItemSlotList = {};
 local showlist_id = {};
@@ -218,6 +219,10 @@ local function scanPetSpells()
 end
 
 local function scanActionSlots()
+	
+	if not ns.options.ScanActionSlots then
+		return;
+	end
 	--등록된 item만
 	for lActionSlot = 1, 180 do
 		local type, id, subType = GetActionInfo(lActionSlot);
@@ -234,7 +239,7 @@ local function scanActionSlots()
 
 			if spellID and spellID > 0 then
 				if itemid then
-					KnownSpellList[spellID] = itemid;
+					ItemSpellList[spellID] = itemid;
 				end
 			end
 		end
@@ -710,6 +715,7 @@ local function setupKnownSpell()
 	end
 
 	KnownSpellList = {};
+	ItemSpellList = {};
 	ItemSlotList = {};
 	showlist_id = {};
 	spell_cooldown = {};
@@ -728,18 +734,26 @@ local function setupKnownSpell()
 	--print("초기화")
 	timer = C_Timer.NewTicker(ACDP_UpdateRate * 2, ACDP_OnUpdate);
 	timer2 = C_Timer.NewTicker(ACDP_UpdateRate, ACDP_OnUpdate2);
-	
 end
 
 local bfirst = true;
 
-local function ACDP_OnEvent(self, event)
+local function ACDP_OnEvent(self, event, ...)
 	if bfirst then
 		ns.SetupOptionPanels();
 		bfirst = false;
 	end
 
-	if event == "PLAYER_ENTERING_WORLD" then
+	if event == "UNIT_SPELLCAST_SUCCEEDED" then
+		local _, _, spellid = ...;
+		if spellid then
+			local itemid = ItemSpellList[spellid];
+
+			if itemid and itemid > 0 then
+				KnownSpellList[spellid] = itemid;
+			end
+		end
+	elseif event == "PLAYER_ENTERING_WORLD" then
 		setupKnownSpell();
 
 		if UnitAffectingCombat("player") then
@@ -754,7 +768,7 @@ local function ACDP_OnEvent(self, event)
 	elseif event == "UNIT_PET" then
 		scanPetSpells();
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
-		scanItemSlots();
+		setupKnownSpell();
 	elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		C_Timer.After(0.5, setupKnownSpell);
 	end
@@ -770,7 +784,7 @@ local function ACDP_Init()
 		if i == 1 then
 			ACDP[i]:SetPoint("CENTER", ACDP_AlertButtons_X, ACDP_AlertButtons_Y);
 		else
-			ACDP[i]:SetPoint("CENTER", ACDP[i-1], "CENTER", 0, 0);
+			ACDP[i]:SetPoint("CENTER", ACDP[i - 1], "CENTER", 0, 0);
 		end
 
 
@@ -818,6 +832,7 @@ local function ACDP_Init()
 	ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED")
 	ACDP_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")
 	ACDP_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+	ACDP_mainframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
 end
 
 

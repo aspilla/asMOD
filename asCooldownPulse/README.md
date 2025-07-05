@@ -7,6 +7,7 @@ asCooldownPulse tracks spell and item cooldowns, providing visual cues and audio
 ## Key Features
 
 *   **Skill Readiness Tracking:** Displays icons for spells and items currently on cooldown. Provides a skill icon notification in the center of the screen 0.5 seconds before a skill with a cooldown of 1.5 seconds or more becomes available again.
+*   **Selective Item Cooldowns:** To prevent unnecessary clutter, the addon now primarily tracks item cooldowns only after you use them. By enabling the `ScanActionSlots` option, you can have the addon scan your action bars to identify usable items, which will then be tracked upon use.
 *   **Audio Alerts:** Notifies you with a sound when important cooldowns (skills with 15+ second cooldowns and interrupt/dispell skills) are about to complete. Use the `SoundCooldown` option to set the minimum cooldown for alerts.
 *   **Text-to-Speech (TTS):** Announces the skill name via TTS 0.5 seconds before the skill is ready.
 *   **Cooldown Filtering:** Allows you to set minimum and maximum cooldowns to track (e.g., `CONFIG_MINCOOL`, `CONFIG_MAXCOOL` in `asCooldownPulse.lua`). The maximum cooldown tracking time is 5 minutes. For pet skills, only cooldowns of 20 seconds or more are tracked.
@@ -20,6 +21,7 @@ Available options include:
 
 *   **PlaySound**: Enables or disables audio alerts when cooldowns complete. (Default: true)
 *   **AlwaysShowButtons**: If true, the cooldown list will always be visible. Otherwise, it may be hidden under certain conditions (e.g., if set to hidden in asCombatInfo). (Default: false)
+*   **ScanActionSlots**: When enabled, the addon will scan your action bars to identify usable items. Cooldowns for these items will be tracked after their first use. (Default: true)
 *   **SoundVolume**: Sets the volume for audio alerts (0-100). (Default: 50)
 *   **SoundCooldown**: The minimum cooldown (in seconds) for a spell/item to trigger an audio alert. (Default: 15 seconds). (Includes interrupt/dispell skills)
 *   **EnableTTS**: Enables or disables TTS for cooldown announcements. (Default: true)
@@ -62,6 +64,7 @@ asCooldownPulse는 주문 및 아이템의 재사용 대기시간을 추적하�
 ## 주요 기능
 
 *   **스킬 준비 추적:** 현재 재사용 대기시간 중인 주문 및 아이템의 아이콘을 표시합니다. 1.5초 이상 재사용 대기시간을 가진 기술이 다시 사용 가능해지기 0.5초 전에 화면 중앙에 스킬 아이콘 알림을 제공합니다.
+*   **선택적 아이템 재사용 대기시간:** 불필요한 혼잡을 방지하기 위해, 이제 애드온은 주로 아이템을 사용한 후에만 재사용 대기시간을 추적합니다. `ScanActionSlots` 옵션을 활성화하면, 애드온이 행동 단축바를 스캔하여 사용 가능한 아이템을 식별하고, 해당 아이템을 사용하면 추적이 시작됩니다.
 *   **오디오 알림:** 중요한 재사용 대기시간(15초 이상 기술 및 차단/해제 기술)이 곧 완료될 때 소리로 알려줍니다. 알림이 되는 최소 대기시간 설정은 `SoundCooldown` 옵션을 사용하세요.
 *   **텍스트 음성 변환 (TTS):** 스킬 준비 0.5초전 TTS(Text-to-Speech)로 스킬명을 낭독 합니다.
 *   **재사용 대기시간 필터링:** 추적할 최소 및 최대 재사용 대기시간을 설정할 수 있습니다 (예: `asCooldownPulse.lua`의 `CONFIG_MINCOOL`, `CONFIG_MAXCOOL`). 최대 재사용 대기시간 추적 시간은 5분입니다. 소환수 기술의 경우, 20초 이상의 재사용 대기시간만 추적합니다.
@@ -75,6 +78,7 @@ asCooldownPulse의 주요 설정은 게임 내 애드온 설정 패널을 통해
 
 *   **PlaySound**: 재사용 대기시간 완료 시 음성 알림을 활성화하거나 비활성화합니다. (기본값: true)
 *   **AlwaysShowButtons**: true일 경우, 재사용 대기시간 목록이 항상 표시됩니다. 그렇지 않으면 특정 조건(예: asCombatInfo에서 숨김으로 설정된 경우)에서는 숨겨질 수 있습니다. (기본값: false)
+*   **ScanActionSlots**: 활성화 시, 애드온이 행동 단축바를 스캔하여 사용 가능한 아이템을 식별합니다. 이 아이템들의 재사용 대기시간은 처음 사용된 후부터 추적됩니다. (기본값: true)
 *   **SoundVolume**: 음성 알림 볼륨을 설정합니다 (0-100). (기본값: 50)
 *   **SoundCooldown**: 음성 알림을 발생시킬 주문/아이템의 최소 재사용 대기시간(초)입니다. (기본값: 15초). (차단/해제 기술 포함)
 *   **EnableTTS**: 재사용 대기시간 안내를 위한 TTS를 활성화하거나 비활성화합니다. (기본값: true)

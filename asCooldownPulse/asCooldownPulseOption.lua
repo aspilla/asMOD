@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 240910,
+    Version = 250705,
     PlaySound = true,
     AlwaysShowButtons = false,
     SoundVolume = 50,
@@ -10,6 +10,7 @@ local Options_Default = {
     TTS_ID = -1,
     Aware_ASMOD_Cooldown = 5,
     Aware_PowerBar = true,
+    ScanActionSlots = true,
 };
 
 ns.options = CopyTable(Options_Default);
