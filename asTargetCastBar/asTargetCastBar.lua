@@ -171,7 +171,7 @@ local function checkCasting(castBar, unit)
             end
 
             if UnitExists(targettarget) and UnitIsPlayer(targettarget) then
-                local _, Class = UnitClass("targettarget")
+                local _, Class = UnitClass(targettarget)
                 local color = RAID_CLASS_COLORS[Class]
                 targetname:SetTextColor(color.r, color.g, color.b);
                 targetname:SetText(UnitName("targettarget"));
