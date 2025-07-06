@@ -172,10 +172,14 @@ local function checkCasting(castBar, unit)
 
             if UnitExists(targettarget) and UnitIsPlayer(targettarget) then
                 local _, Class = UnitClass(targettarget)
-                local color = RAID_CLASS_COLORS[Class]
-                targetname:SetTextColor(color.r, color.g, color.b);
-                targetname:SetText(UnitName("targettarget"));
-                targetname:Show();
+                if Class then
+                    local clasecolor = RAID_CLASS_COLORS[Class]
+                    if classcolor then
+                        targetname:SetTextclasscolor(classcolor.r, classcolor.g, classcolor.b);
+                        targetname:SetText(UnitName("targettarget"));
+                        targetname:Show();
+                    end
+                end
             else
                 targetname:SetText("");
                 targetname:Hide();
@@ -227,13 +231,12 @@ local function ATCB_OnEvent(self, event, ...)
         if UnitExists("focus") then
             registerEvents("focus");
         end
-    elseif  event == "ADDON_LOADED" then
+    elseif event == "ADDON_LOADED" then
         local name = ...;
 
         if name == "asTargetCastBar" then
             ns.SetupOptionPanels();
         end
-
     end
 
     checkCasting(ATCB.targetCastBar, "target");
