@@ -105,7 +105,8 @@ local special_cost_spells = {
 
 }
 local next_howl = nil;
-
+local groupGUIDList = {};
+local restroQueue = {};
 
 local asGetSpellInfo = function(spellID)
     if not spellID then
@@ -332,6 +333,7 @@ local bhalf_combo = false;
 local bdruid = false;
 local brogue = false;
 local bdeathstalker = nil;
+local brestrobuff = false;
 local combobuffalertlist = nil;
 local combodebuffalertlist = nil;
 local combobuffcountalertlist = nil;
@@ -341,6 +343,44 @@ local spellbuffcolorlist = nil;
 local spellbuffalertlist = nil;
 local spell2buffcolorlist = nil;
 local spell2buffalertlist = nil;
+
+local function updateGroupGUIDList()
+    groupGUIDList = {};
+    restroQueue = {};
+
+    if brestrobuff == false then
+        return;
+    end
+    if IsInGroup() then
+        if IsInRaid() then -- raid
+            for i = 1, GetNumGroupMembers() do
+                local unitid = "raid" .. i
+                local notMe = not UnitIsUnit("player", unitid)
+                if UnitExists(unitid) and notMe then
+                    local guid = UnitGUID(unitid);
+                    if guid then
+                        groupGUIDList[guid] = unitid;
+                    end
+                end
+            end
+        else -- party
+            for i = 1, 4 do
+                local unitid = "party" .. i;
+                if UnitExists(unitid) then
+                    local guid = UnitGUID(unitid);
+                    if guid then
+                        groupGUIDList[guid] = unitid;
+                    end
+                end
+            end
+        end
+    end
+    local guid = UnitGUID("player");
+    if guid then
+        groupGUIDList[guid] = "player";
+    end
+end
+
 
 local bshowspell = false;
 
@@ -1097,10 +1137,28 @@ local function APB_UpdateBuff(buffbar)
 
     if buffbar.buff then
         local name, icon, count, debuffType, duration, expirationTime, caster;
+        local unit = buffbar.unit;
+
+        if unit == "auto1" then
+            unit = restroQueue[1];
+        elseif unit == "auto2" then
+            unit = restroQueue[2];
+        end
+
+        if unit == nil then
+            buffbar.start = nil;
+            buffbar:SetMinMaxValues(0, 1)
+            buffbar:SetValue(0)
+            buffbar.text:SetText("");
+            buffbar.count:SetText("");
+            buffbar:Show();
+            return;
+        end
+
 
         if buffbar.buff2 then
             name, icon, count, debuffType, duration, expirationTime, caster =
-                APB_UnitBuff(buffbar.unit, buffbar.buff2);
+                APB_UnitBuff(unit, buffbar.buff2);
             if name then
                 buffbar.tooltip = buffbar.buff2;
                 bbuff2 = true;
@@ -1110,7 +1168,7 @@ local function APB_UpdateBuff(buffbar)
         if not name then
             buffbar.tooltip = buffbar.buff;
             name, icon, count, debuffType, duration, expirationTime, caster =
-                APB_UnitBuff(buffbar.unit, buffbar.buff);
+                APB_UnitBuff(unit, buffbar.buff);
         end
 
         if name then
@@ -1130,7 +1188,19 @@ local function APB_UpdateBuff(buffbar)
             buffbar.count:SetText("");
         end
 
-        if balert then
+        if brestrobuff then
+            if unit then
+                local _, Class = UnitClass(unit)
+                if Class then
+                    local classcolor = RAID_CLASS_COLORS[Class]
+                    if classcolor then
+                        buffbar:SetStatusBarColor(classcolor.r, classcolor.g, classcolor.b);
+                    end
+                end
+            else
+                buffbar:SetStatusBarColor(0.8, 0.8, 1);
+            end
+        elseif balert then
             buffbar:SetStatusBarColor(0.3, 1, 0.7);
         elseif bbuff2 then
             buffbar:SetStatusBarColor(0.7, 0.9, 0.9);
@@ -1144,7 +1214,7 @@ local function APB_UpdateBuff(buffbar)
 
         if buffbar.buff3 then
             name, icon, count, debuffType, duration, expirationTime, caster =
-                APB_UnitBuff(buffbar.unit, buffbar.buff3);
+                APB_UnitBuff(unit, buffbar.buff3);
             if name then
                 buffbar.buff3barex = expirationTime;
             else
@@ -2095,6 +2165,7 @@ local function APB_CheckPower(self)
     bupdate_element_tempest = false;
     bupdate_Howl_Pack = false;
     bdruid = false;
+    brestrobuff = false;
     brogue = false;
     bdeathstalker = nil;
     combobuffalertlist = nil;
@@ -2575,6 +2646,9 @@ local function APB_CheckPower(self)
             APB:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
             bupdate_power = false;
             bdruid = true;
+            brestrobuff = true;
+            APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+            updateGroupGUIDList();
 
             if IsPlayerSpell(102693) then --숲 수호자
                 APB_SPELL = 102693;
@@ -2583,10 +2657,17 @@ local function APB_CheckPower(self)
                 bupdate_spell = true;
             end
 
-            if IsPlayerSpell(274902) then --광합성
+            if IsPlayerSpell(392301) then --광합성
                 APB_BUFF = 188550;        --피어나는 생명
+                APB_BUFF2 = 188550;
                 APB.buffbar[0].buff = APB_BUFF
-                APB.buffbar[0].unit = "player"
+                APB.buffbar[0].unit = "auto1"
+                APB.buffbar[1].buff = APB_BUFF;
+                APB.buffbar[1].unit = "auto2"
+            else
+                APB_BUFF = 33763; --피어나는 생명
+                APB.buffbar[0].buff = APB_BUFF
+                APB.buffbar[0].unit = "auto1"
             end
 
             for i = 1, 20 do
@@ -3541,6 +3622,17 @@ local function updateCombatLog()
             if (eventType == "SPELL_AURA_REMOVED" and howl_pack_auras[spellId]) then
                 next_howl = howl_pack_auras[spellId];
             end
+        elseif brestrobuff then
+            if (eventType == "SPELL_CAST_SUCCESS" and (spellId == APB_BUFF)) then
+                local unit = groupGUIDList[destGUID];
+                if unit then
+                    table.insert(restroQueue, 1, unit);
+                    if unit == restroQueue[2] then
+                        table.remove(restroQueue, 2);
+                    end
+                    table.remove(restroQueue, 3);
+                end
+            end
         end
     end
 end
@@ -3679,6 +3771,8 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
                 APB_UpdateSpell(APB_SPELL, APB_SPELL2);
             end
         end
+    elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE") then
+        updateGroupGUIDList();
     end
 
     return;
@@ -3976,6 +4070,8 @@ do
     APB:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
     APB:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
     APB:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");
+    APB:RegisterEvent("GROUP_JOINED");
+    APB:RegisterEvent("GROUP_ROSTER_UPDATE");
     APB:RegisterUnitEvent("UNIT_AURA", "player");
 
     if UnitAffectingCombat("player") then

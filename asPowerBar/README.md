@@ -27,7 +27,7 @@ The following class and specialization features are included based on the `asPow
 *   **Paladin:** Holy Power, [Holy] Holy Shock charges, [Protection] Shield of the Righteous duration, [Retribution] Blade of Justice charges, alerts for specific buffs (e.g., Empyrean Power), Shake the Heavens duration (Templar).
 *   **Mage:** [Arcane] Arcane Charges, Arcane Harmony stacks (if talented), [Fire] Fire Blast & Phoenix Flames charges, Sun King's Blessing stacks, alerts/coloring for Incendiary Ignition and Fury of the Sun King, [Frost] Flurry charges, Icicles, Frozen Orb active time, alerts for Frostfire Bolt (if talented).
 *   **Warlock:** Soul Shards, Soul Shard Fragments (Destruction), [Affliction] Shadow Embrace/Malevolent Rapture related debuff tracking, [Demonology] Demonic Core/Imp stacks, [Destruction] Conflagrate/Shadowburn charges, Immolate/Eradication debuff tracking.
-*   **Druid:** Combo Points (Feral/Guardian/Balance/Restoration), [Balance] Eclipse (Solar/Lunar), Starfall/Starsurge charges, [Feral] Brutal Slash charges (if talented), alerts for specific buffs (e.g., Apex Predator's Craving, Rip and Tear), [Guardian] Ironfur stacks, Frenzied Regeneration charges, [Restoration] Swiftmend charges, Grove Guardians charges (if talented), Lifebloom tracking (Photosynthesis).
+*   **Druid:** Combo Points (Feral/Guardian/Balance/Restoration), [Balance] Eclipse (Solar/Lunar), Starfall/Starsurge charges, [Feral] Brutal Slash charges (if talented), alerts for specific buffs (e.g., Apex Predator's Craving, Rip and Tear), [Guardian] Ironfur stacks, Frenzied Regeneration charges, [Restoration] Swiftmend charges, Grove Guardians charges (if talented), Lifebloom tracking (party buff time, class color).
 *   **Monk:** [Brewmaster] Stagger amount, Purifying Brew charges, [Mistweaver] Renewing Mist charges, Teachings of the Monastery stacks (if talented), [Windwalker] Chi.
 *   **Rogue:** Combo Points, Vanish charges, Tracking for Find Weakness/Caustic Spatter/Subterfuge buffs/debuffs, Deathstalker's Mark stacks (if talented).
 *   **Death Knight:** Runes, Runic Power, [Blood] Bone Shield stacks, Rune Tap charges (if talented), [Frost/Unholy] Tracking specific buffs (e.g., Unholy Frenzy, Icy Talons, Plaguebringer).
@@ -37,6 +37,7 @@ The following class and specialization features are included based on the `asPow
 *   **Hunter:** Focus, [Beast Mastery] Barbed Shot charges, Frenzy stacks, Howl of the Pack tracking (if talented), [Marksmanship] Aimed Shot charges, Trick Shots/Precise Shots buff tracking, Wind Arrow debuff tracking (if talented), [Survival] Wildfire Bomb charges, Mongoose Bite/Spearhead stacks (if talented).
 *   **Shaman:** Maelstrom (Elemental/Enhancement), [Elemental] Lava Burst charges, Deeply Rooted Elements buff tracking (if talented), Tempest stack tracking (if talented), [Enhancement] Elemental Blast charges (if talented), Maelstrom Weapon stacks, Crash Lightning buff tracking, Tempest stack tracking (if talented), [Restoration] Riptide charges, Tidal Waves stacks.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/zFCjyDOjhHU?si=bu-5qPmlTnfRF5Ya" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Configuration
 
@@ -76,7 +77,7 @@ The following class and specialization features are included based on the `asPow
 *   **성기사 (Paladin):** 신성한 힘, [신성] 신성 충격 충전, [보호] 정의의 방패 지속시간, [징벌] 심판의 칼날 충전, 특정 강화 효과(창공의 힘 등), 격동하는 천상 지속시간 (기사단 특성)
 *   **마법사 (Mage):** [비전] 비전 충전물, 비전 조화 중첩, [화염] 화염 작렬/불사조의 불길 충전, 발화 관련 강화 효과, [냉기] 진눈깨비 충전, 고드름, 얼어붙은 구슬 활성화 시간, 서리 불꽃 등 강화 효과 알림.
 *   **흑마법사 (Warlock):** 영혼의 조각, 영혼의 조각 파편(파괴), [고통] 어둠의 선물/사악한 환희 관련 약화 효과, [악마] 악마 핵/임프 중첩, [파괴] 점화/어둠의 연소 충전, 제물/박멸 등 약화 효과 추적.
-*   **드루이드 (Druid):** 연계 점수(표범/수호/조화/회복), [조화] 일월식, 별똥별/별빛쇄도 충전, [야성] 잔혹한 베기 충전, 특정 강화 효과(최상위 포식자, 찢어발기기 강화 등) 알림, [수호] 무쇠가죽 중첩, 광포한 재생력 충전, [회복] 신속한 치유, 숲의 수호자 충전, 피어나는 생명(광합성) 추적.
+*   **드루이드 (Druid):** 연계 점수(표범/수호/조화/회복), [조화] 일월식, 별똥별/별빛쇄도 충전, [야성] 잔혹한 베기 충전, 특정 강화 효과(최상위 포식자, 찢어발기기 강화 등) 알림, [수호] 무쇠가죽 중첩, 광포한 재생력 충전, [회복] 신속한 치유, 숲의 수호자 충전, 피어나는 생명(파티원 버프, 직업 색상) 추적.
 *   **수도사 (Monk):** [양조] 시간차, 정화주 충전, [운무] 소생의 안개 충전, 수도원의 가르침 중첩, [풍운] 기.
 *   **도적 (Rogue):** 연계 점수, 소멸 충전, 약점 포착/부식성 분사/기만 등 강화/약화 효과 추적, 죽음 추적자 중첩.
 *   **죽음의 기사 (Death Knight):** 룬, 룬 마력, [혈기] 뼈의 보호막 중첩, 룬 전환 충전, [냉기/부정] 특정 강화 효과(풀려난 광란, 얼음 발톱, 역병 인도자 등) 추적.
@@ -85,6 +86,8 @@ The following class and specialization features are included based on the `asPow
 *   **악마사냥꾼 (Demon Hunter):** 격노, [파멸] 지옥 돌진/글레이브 투척 충전, 탄력/타성 강화 효과, [복수] 영혼 파편, 악마 쐐기/균열 충전, 악마 쐐기 강화 효과.
 *   **사냥꾼 (Hunter):** 집중, [야수] 날카로운 사격 충전, 광기 중첩, 무리의 지도자의 포효 추적, [사격] 조준 사격 충전, 교묘한 사격/연발 공격 강화 효과, 바람 화살 약화 효과, [생존] 야생불 폭탄 충전, 살쾡이의 이빨/창끝 중첩.
 *   **주술사 (Shaman):** 소용돌이(정기/고양), [정기] 용암 폭발 충전, 깊이 뿌리내린 정기 강화 효과, 폭풍의 정령 중첩, [고양] 정기 작렬 충전, 소용돌이치는 무기 중첩, 낙뢰 강화 효과, 폭풍의 정령 중첩, [복원] 성난 해일 충전, 굽이치는 물결 중첩.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/zFCjyDOjhHU?si=bu-5qPmlTnfRF5Ya" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 설정 (Configuration)
 
