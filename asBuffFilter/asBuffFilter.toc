@@ -1,4 +1,4 @@
-﻿## Interface: 110107
+﻿## Interface: 110107, 110200
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rBuffFilter
 ## Notes: Buff tracker (player, target)

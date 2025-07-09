@@ -1209,12 +1209,16 @@ local function checkSpellCasting(self)
 
                 local targettarget = unit .. "target";
 
-                if UnitExists(targettarget) and UnitIsPlayer(targettarget) then
+                if UnitExists(targettarget) then
                     local _, Class = UnitClass(targettarget)
-                    local color = RAID_CLASS_COLORS[Class]
-                    self.casticon.targetname:SetTextColor(color.r, color.g, color.b);
-                    self.casticon.targetname:SetText(UnitName(targettarget));
-                    self.casticon.targetname:Show();
+                    if Class then
+                        local color = RAID_CLASS_COLORS[Class]
+                        if color then
+                            self.casticon.targetname:SetTextColor(color.r, color.g, color.b);
+                            self.casticon.targetname:SetText(UnitName(targettarget));
+                            self.casticon.targetname:Show();
+                        end
+                    end
                 else
                     self.casticon.targetname:SetText("");
                     self.casticon.targetname:Hide();

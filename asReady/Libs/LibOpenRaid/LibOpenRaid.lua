@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-field, cast-local-type, param-type-mismatch, inject-field, missing-fields
 
 --[=[
 search keys:

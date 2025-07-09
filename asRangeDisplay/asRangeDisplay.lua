@@ -116,8 +116,8 @@ local asGetSpellTabInfo = function(index)
 	end
 end
 
-local GetItemInfo = C_Item and C_Item.GetItemInfo or GetItemInfo;
-local IsItemInRange = C_Item and C_Item.IsItemInRange or IsItemInRange;
+local GetItemInfo = C_Item and C_Item.GetItemInfo;
+local IsItemInRange = C_Item and C_Item.IsItemInRange;
 
 local ARD_mainframe   = CreateFrame("Frame", nil, UIParent);
 --asOverlay 위에 뜨게 하기 위해 MEDIUM으로 설정

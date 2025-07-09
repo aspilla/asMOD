@@ -256,12 +256,16 @@ local function ADCA_OnUpdate()
 			frame:SetStatusBarColor(color[1], color[2], color[3]);
 			local targetname = frame.targetname;
 
-			if UnitExists(targetunit) and UnitIsPlayer(targetunit) then
+			if UnitExists(targetunit) then
 				local _, Class = UnitClass(targetunit)
-				local color = RAID_CLASS_COLORS[Class]
-				targetname:SetTextColor(color.r, color.g, color.b);
-				targetname:SetText(UnitName(targetunit));
-				targetname:Show();
+				if Class then
+					local classcolor = RAID_CLASS_COLORS[Class]
+					if classcolor then
+						targetname:SetTextColor(classcolor.r, classcolor.g, classcolor.b);
+						targetname:SetText(UnitName(targetunit));
+						targetname:Show();
+					end
+				end
 			else
 				targetname:SetText("");
 				targetname:Hide();
@@ -447,7 +451,7 @@ local function CreateCastbars(parent)
 		frame.button:Show();
 		frame.button.mark:ClearAllPoints();
 		frame.button.mark:SetPoint("RIGHT", frame.button, "LEFT", -1, 0)
-		frame.button.icon:SetTexCoord(.08, .92, .08, .92);		
+		frame.button.icon:SetTexCoord(.08, .92, .08, .92);
 		frame.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 		frame.button.border:SetVertexColor(0, 0, 0);
 		frame.button.border:Show();
@@ -478,31 +482,31 @@ end
 local DBMobj;
 
 local function scanDBM()
-    DangerousSpellList = {};
-    if DBMobj.Mods then
-        for i, mod in ipairs(DBMobj.Mods) do
-            if mod.Options and mod.announces then
-                for k, obj in pairs(mod.announces) do
-                    if obj.spellId and obj.announceType and obj.option then
-                        local option = mod.Options[optionkey];
-                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
-                            DangerousSpellList[obj.spellId] = obj.announceType;
-                        end
-                    end 
-                end
-            end
+	DangerousSpellList = {};
+	if DBMobj.Mods then
+		for i, mod in ipairs(DBMobj.Mods) do
+			if mod.Options and mod.announces then
+				for k, obj in pairs(mod.announces) do
+					if obj.spellId and obj.announceType and obj.option then
+						local option = mod.Options[optionkey];
+						if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
+							DangerousSpellList[obj.spellId] = obj.announceType;
+						end
+					end
+				end
+			end
 
-            if mod.Options and mod.specwarns then
-                for k, obj in pairs(mod.specwarns) do
-                    if obj.spellId and obj.announceType and obj.option then
-                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
-                            DangerousSpellList[obj.spellId] = obj.announceType;
-                        end
-                    end
-                end
-            end
-        end
-    end
+			if mod.Options and mod.specwarns then
+				for k, obj in pairs(mod.specwarns) do
+					if obj.spellId and obj.announceType and obj.option then
+						if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
+							DangerousSpellList[obj.spellId] = obj.announceType;
+						end
+					end
+				end
+			end
+		end
+	end
 end
 
 local function NewMod(self, ...)

@@ -2,7 +2,7 @@
 local function asChatEdit_CustomTabPressed(this)
 	local bBattle = false;
 
-	local RTB_PVPType = GetZonePVPInfo();
+	local RTB_PVPType = C_PvP.GetZonePVPInfo();
 	local bInstance, RTB_ZoneType = IsInInstance();
 	local bRaid = (GetNumGroupMembers() > 0 and IsInRaid());
 

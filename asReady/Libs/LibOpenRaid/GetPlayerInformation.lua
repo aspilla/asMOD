@@ -1,3 +1,4 @@
+---@diagnostic disable: deprecated, cast-local-type, return-type-mismatch, undefined-doc-name, param-type-mismatch
 --[=[
     This file has the functions to get player information
     Dumping them here, make the code of the main file smaller

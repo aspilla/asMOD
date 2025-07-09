@@ -1,4 +1,4 @@
-﻿## Interface: 110107
+﻿## Interface: 110107, 110200
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rCastBar
 ## Notes: 시전바 이동 & Timer

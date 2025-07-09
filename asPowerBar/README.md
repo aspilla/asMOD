@@ -37,7 +37,7 @@ The following class and specialization features are included based on the `asPow
 *   **Hunter:** Focus, [Beast Mastery] Barbed Shot charges, Frenzy stacks, Howl of the Pack tracking (if talented), [Marksmanship] Aimed Shot charges, Trick Shots/Precise Shots buff tracking, Wind Arrow debuff tracking (if talented), [Survival] Wildfire Bomb charges, Mongoose Bite/Spearhead stacks (if talented).
 *   **Shaman:** Maelstrom (Elemental/Enhancement), [Elemental] Lava Burst charges, Deeply Rooted Elements buff tracking (if talented), Tempest stack tracking (if talented), [Enhancement] Elemental Blast charges (if talented), Maelstrom Weapon stacks, Crash Lightning buff tracking, Tempest stack tracking (if talented), [Restoration] Riptide charges, Tidal Waves stacks.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/zFCjyDOjhHU?si=bu-5qPmlTnfRF5Ya" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/1FV46swMdD4?si=Eet92UYpfNo-w0yl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Configuration
 
@@ -86,8 +86,7 @@ The following class and specialization features are included based on the `asPow
 *   **악마사냥꾼 (Demon Hunter):** 격노, [파멸] 지옥 돌진/글레이브 투척 충전, 탄력/타성 강화 효과, [복수] 영혼 파편, 악마 쐐기/균열 충전, 악마 쐐기 강화 효과.
 *   **사냥꾼 (Hunter):** 집중, [야수] 날카로운 사격 충전, 광기 중첩, 무리의 지도자의 포효 추적, [사격] 조준 사격 충전, 교묘한 사격/연발 공격 강화 효과, 바람 화살 약화 효과, [생존] 야생불 폭탄 충전, 살쾡이의 이빨/창끝 중첩.
 *   **주술사 (Shaman):** 소용돌이(정기/고양), [정기] 용암 폭발 충전, 깊이 뿌리내린 정기 강화 효과, 폭풍의 정령 중첩, [고양] 정기 작렬 충전, 소용돌이치는 무기 중첩, 낙뢰 강화 효과, 폭풍의 정령 중첩, [복원] 성난 해일 충전, 굽이치는 물결 중첩.
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/zFCjyDOjhHU?si=bu-5qPmlTnfRF5Ya" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/1FV46swMdD4?si=Eet92UYpfNo-w0yl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 설정 (Configuration)
 

@@ -107,12 +107,11 @@ local function UpdateHealthBar(unit)
             return;
         end
 
-        local unit = frame.unit;
 
         local r, g, b;
 
-        if UnitIsPlayer(unit) then
-            local _, englishClass = UnitClass(unit);
+        local _, englishClass = UnitClass(unit);
+        if englishClass then
             local classColor = RAID_CLASS_COLORS[englishClass];
 
             if (classColor) then
@@ -428,9 +427,11 @@ local function UpdateAuras(unitAuraUpdateInfo)
         return;
     end
 
-    local numDebuffs = math.min(1, activeDebuffs:Size());
+    if activeDebuffs and activeDebuffs.Size then
+        local numDebuffs = math.min(1, activeDebuffs:Size());
 
-    UpdateAuraFrames(activeDebuffs, numDebuffs);
+        UpdateAuraFrames(activeDebuffs, numDebuffs);
+    end
 end
 
 
@@ -471,7 +472,6 @@ local function OnUpdate()
 end
 
 local function OnInit()
-
     local bloaded = C_AddOns.LoadAddOn("asUnitFrame");
 
     if bloaded then

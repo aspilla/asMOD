@@ -12,8 +12,8 @@ local AGCD_BlackList = {
 	[1228085] = 1,
 }
 
-local GetItemInfo = C_Item and C_Item.GetItemInfo or GetItemInfo;
-local GetItemSpell = C_Item and C_Item.GetItemSpell or GetItemSpell;
+local GetItemInfo = C_Item and C_Item.GetItemInfo;
+local GetItemSpell = C_Item and C_Item.GetItemSpell;
 
 local KnownSpellList = {};
 
@@ -62,7 +62,7 @@ end
 
 local function scanItemSlots()
 	for _, v in pairs(itemslots) do
-		local idx = GetInventorySlotInfo(v);
+		local idx = GetInventorySlotInfo(string.upper(v));
 
 		local itemid = GetInventoryItemID("player", idx)
 
