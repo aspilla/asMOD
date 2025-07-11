@@ -1,10 +1,9 @@
 local _, ns = ...;
 
 --AuraUtil
-
-
 local UnitFrameDebuffType = EnumUtil.MakeEnum(
 
+    "NonBossBuff",
     "NonBossDebuff",
     "NonBossRaidDebuff",
     "PriorityDebuff",
@@ -95,9 +94,9 @@ local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
 end
 
 local activeDebuffs = {};
+local activeBuffs = {};
 
 local cachedVisualizationInfo = {};
-local hasValidPlayer = false;
 
 local function GetCachedVisibilityInfo(spellId)
     if cachedVisualizationInfo[spellId] == nil then
@@ -179,8 +178,50 @@ local function ShouldShowDebuffs(unit, caster, nameplateShowAll, aura)
     return false;
 end
 
+local function ProcessBuffs(aura, unit)
+    if aura == nil or aura.icon == nil or unit == nil or not aura.isHelpful then
+        return AuraUpdateChangedType.None;
+    end
 
-local function ProcessAura(aura, unit)
+    if ns.Buff_BlackList[aura.spellId] then
+        return AuraUpdateChangedType.None;
+    end
+
+    if ns.DangerousSpellList[aura.spellId] then
+        aura.debuffType = UnitFrameDebuffType.BossBuff;
+        return AuraUpdateChangedType.Buff;
+    else
+        aura.debuffType = UnitFrameDebuffType.NonBossBuff;
+        return AuraUpdateChangedType.Buff;
+    end
+end
+
+local bufffilter = CreateFilterString(AuraFilters.Helpful);
+local function ParseBuffs(unit)
+    if activeBuffs[unit] == nil then
+        activeBuffs[unit] = TableUtil.CreatePriorityTable(UnitFrameDebuffComparator,
+            TableUtil.Constants.AssociativePriorityTable);
+    else
+        activeBuffs[unit]:Clear();
+    end
+
+    local function HandleAura(aura)
+        local type = ProcessBuffs(aura, unit);
+
+        if type == AuraUpdateChangedType.Buff then
+            activeBuffs[unit][aura.auraInstanceID] = aura;
+        end
+        return false;
+    end
+
+    local batchCount = nil;
+    local usePackedAura = true;
+
+    ForEachAura(unit, bufffilter, batchCount, HandleAura, usePackedAura);
+end
+
+
+local function ProcessDebuffs(aura, unit)
     if aura == nil or aura.icon == nil or unit == nil or not aura.isHarmful then
         return AuraUpdateChangedType.None;
     end
@@ -218,8 +259,8 @@ local function ProcessAura(aura, unit)
     return AuraUpdateChangedType.None;
 end
 
-local filter = CreateFilterString(AuraFilters.Harmful);
-local function ParseAllAuras(unit)
+local debufffilter = CreateFilterString(AuraFilters.Harmful);
+local function ParseDebuffs(unit)
     if activeDebuffs[unit] == nil then
         activeDebuffs[unit] = TableUtil.CreatePriorityTable(UnitFrameDebuffComparator,
             TableUtil.Constants.AssociativePriorityTable);
@@ -228,7 +269,7 @@ local function ParseAllAuras(unit)
     end
 
     local function HandleAura(aura)
-        local type = ProcessAura(aura, unit);
+        local type = ProcessDebuffs(aura, unit);
 
         if type == AuraUpdateChangedType.Debuff then
             activeDebuffs[unit][aura.auraInstanceID] = aura;
@@ -239,7 +280,7 @@ local function ParseAllAuras(unit)
     local batchCount = nil;
     local usePackedAura = true;
 
-    ForEachAura(unit, filter, batchCount, HandleAura, usePackedAura);
+    ForEachAura(unit, debufffilter, batchCount, HandleAura, usePackedAura);
 end
 
 local function asCooldownFrame_Clear(self)
@@ -255,6 +296,95 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
     end
 end
 
+local function SetBuff(frame, icon, applications, expirationTime, duration, alert, currtime)
+    local data = frame.data;
+
+    if (applications ~= data.applications) then
+        local frameCount = frame.count;
+        if (applications > 1) then
+            frameCount:Show();
+            frameCount:SetText(applications);
+        else
+            frameCount:Hide();
+        end
+        data.applications = applications;
+    end
+
+    local isshow = false;
+
+    if (duration > 0 and (expirationTime - currtime) <= 60) then
+        isshow = true;
+    end
+
+    if (expirationTime ~= data.expirationTime) or
+        (duration ~= data.duration) or
+        (isshow ~= data.isshow) then
+        if (isshow) then
+            local startTime = expirationTime - duration;
+            asCooldownFrame_Set(frame.cooldown, startTime, duration, duration > 0, true);
+        else
+            asCooldownFrame_Clear(frame.cooldown);
+        end
+
+        data.duration = duration;
+        data.expirationTime = expirationTime;
+        data.isshow = isshow;
+    end
+
+    if alert ~= data.alert then
+        data.alert = alert;
+        if alert then
+            ns.lib.PixelGlow_Start(frame);
+        else
+            ns.lib.PixelGlow_Stop(frame);
+        end
+    end
+
+    if (icon ~= data.icon) then
+        frame.icon:SetTexture(icon);
+        data.icon = icon;
+        frame:Show();
+    end
+end
+local function UpdateBuffFrames(frame, auraList)
+    local i = 0;
+    local parent = frame;
+    local unit = frame.unit;
+    local curr_time = GetTime();
+
+    auraList:Iterate(
+        function(auraInstanceID, aura)
+            i = i + 1;
+            if i > #(frame.buffframes) then
+                return true;
+            end
+
+            local buffframe = parent.buffframes[i];
+            local alert = false;
+
+            buffframe.unit = unit;
+            buffframe.auraInstanceID = auraInstanceID;
+
+            if aura.debuffType == UnitFrameDebuffType.BossBuff then
+                alert = true;
+            end
+
+            SetBuff(buffframe, aura.icon, aura.applications, aura.expirationTime, aura.duration, alert, curr_time);
+
+
+            return false;
+        end);
+
+    for j = i + 1, #frame.buffframes do
+        local buffframe = parent.buffframes[j];
+
+        if (buffframe) then
+            buffframe:Hide();
+            ns.lib.PixelGlow_Stop(buffframe);
+            buffframe.data = {};
+        end
+    end
+end
 local function SetDebuff(frame, icon, applications, expirationTime, duration, color, currtime)
     local data = frame.data;
 
@@ -302,7 +432,7 @@ local function SetDebuff(frame, icon, applications, expirationTime, duration, co
     end
 end
 
-local function UpdateAuraFrames(frame, auraList)
+local function UpdateDebuffFrames(frame, auraList)
     local i = 0;
     local parent = frame;
     local unit = frame.unit;
@@ -311,14 +441,14 @@ local function UpdateAuraFrames(frame, auraList)
     auraList:Iterate(
         function(auraInstanceID, aura)
             i = i + 1;
-            if i > #(frame.frames) then
+            if i > #(frame.debuffframes) then
                 return true;
             end
 
-            local frame = parent.frames[i];
+            local debuffframe = parent.debuffframes[i];
 
-            frame.unit = unit;
-            frame.auraInstanceID = auraInstanceID;
+            debuffframe.unit = unit;
+            debuffframe.auraInstanceID = auraInstanceID;
 
             local color = nil;
             -- set debuff type color
@@ -328,21 +458,21 @@ local function UpdateAuraFrames(frame, auraList)
                 color = DebuffTypeColor["none"];
             end
 
-            local frameBorder = frame.border;
+            local frameBorder = debuffframe.border;
             if aura.nameplateShowAll then
                 color = { r = 0.3, g = 0.3, b = 0.3 };
             end
-            SetDebuff(frame, aura.icon, aura.applications, aura.expirationTime, aura.duration, color, curr_time);
+            SetDebuff(debuffframe, aura.icon, aura.applications, aura.expirationTime, aura.duration, color, curr_time);
 
             return false;
         end);
 
-    for j = i + 1, #frame.frames do
-        local frame = parent.frames[j];
+    for j = i + 1, #frame.debuffframes do
+        local debuffframe = parent.debuffframes[j];
 
-        if (frame) then
-            frame:Hide();
-            frame.data = {};
+        if (debuffframe) then
+            debuffframe:Hide();
+            debuffframe.data = {};
         end
     end
 end
@@ -376,9 +506,9 @@ local function UpdatePortraitFrames(frame, auraList)
 
                 if (aura.applications and aura.applications > 1) then
                     frameCount:SetText(aura.applications);
-                    frameCount:Show();                    
+                    frameCount:Show();
                 else
-                    frameCount:Hide();                    
+                    frameCount:Hide();
                 end
 
                 if (aura.duration > 0) then
@@ -402,19 +532,26 @@ local function UpdatePortraitFrames(frame, auraList)
         frame.portrait.icon:Hide();
         frame.portrait.cooldown:Hide();
         frame.portrait.count:Hide();
-        frame.portrait.border:SetVertexColor(0,0,0);
+        frame.portrait.border:SetVertexColor(0, 0, 0);
     end
 end
 
 function ns.UpdateAuras(frame)
     local unit = frame.unit;
 
-    ParseAllAuras(unit);
+    if frame.debuffupdate or frame.portraitdebuff then
+        ParseDebuffs(unit);
+    end
     if frame.debuffupdate then
-        UpdateAuraFrames(frame, activeDebuffs[unit]);
+        UpdateDebuffFrames(frame, activeDebuffs[unit]);
     end
 
     if frame.portraitdebuff then
         UpdatePortraitFrames(frame, activeDebuffs[unit]);
+    end
+
+    if frame.buffupdate then
+        ParseBuffs(unit);
+        UpdateBuffFrames(frame, activeBuffs[unit]);
     end
 end

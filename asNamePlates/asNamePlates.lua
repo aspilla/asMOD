@@ -16,7 +16,7 @@ local pettargetIcon = CreateAtlasMarkup("WildBattlePetCapturable", 10, 10, 0, 0,
 local snapshotIconG = CreateAtlasMarkup("PlayerPartyBlip", 20, 20, 0, 0, 100, 255, 100);
 local snapshotIconR = CreateAtlasMarkup("PlayerPartyBlip", 20, 20, 0, 0, 255, 100, 100);
 
-local DangerousSpellList = {}
+ns.DangerousSpellList = {};
 
 local ANameP_HealerGuid = {}
 
@@ -409,7 +409,7 @@ local function updateAuras(self)
                     end
 
                     if checksnapshot and asDotSnapshot and asDotSnapshot.Relative then
-                        local snapshots = asDotSnapshot.Relative(guid, aura.spellId);
+                        local snapshots = asDotSnapshot.Relative(guid, aura.spellId) or 1;
 
                         if snapshots then
                             if snapshots > 1 then
@@ -776,8 +776,8 @@ local function setColoronStatusBar(self, r, g, b)
 end
 
 local function isDangerousSpell(spellId)
-    if spellId and DangerousSpellList[spellId] then
-        if DangerousSpellList[spellId] == "interrupt" then
+    if spellId and ns.DangerousSpellList[spellId] then
+        if ns.DangerousSpellList[spellId] == "interrupt" then
             return true, true;
         end
         return true, false;
@@ -1948,14 +1948,14 @@ end
 local DBMobj;
 
 local function scanDBM()
-    DangerousSpellList = {};
+    ns.DangerousSpellList = {};
     if DBMobj.Mods then
         for i, mod in ipairs(DBMobj.Mods) do
             if mod.Options and mod.announces then
                 for k, obj in pairs(mod.announces) do
                     if obj.spellId and obj.announceType and obj.option then
-                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
-                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        if (ns.DangerousSpellList[obj.spellId] == nil or ns.DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
+                            ns.DangerousSpellList[obj.spellId] = obj.announceType;
                         end
                     end
                 end
@@ -1964,8 +1964,8 @@ local function scanDBM()
             if mod.Options and mod.specwarns then
                 for k, obj in pairs(mod.specwarns) do
                     if obj.spellId and obj.announceType and obj.option then
-                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
-                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        if (ns.DangerousSpellList[obj.spellId] == nil or ns.DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
+                            ns.DangerousSpellList[obj.spellId] = obj.announceType;
                         end
                     end
                 end

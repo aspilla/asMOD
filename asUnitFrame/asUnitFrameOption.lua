@@ -3,7 +3,12 @@ local Options_Default = {
     Version = 241121,
     ShowPortrait = true,
     ShowTotemBar = true,
+    ShowBossBuff = true,
 };
+
+ns.Buff_BlackList = {
+	[206150] = 1 -- 도전자의 힘
+}
 
 ns.options = CopyTable(Options_Default);
 local tempoption = {};

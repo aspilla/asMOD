@@ -11,6 +11,8 @@ local xposition = 225;
 local yposition = -198;
 local healthheight = 35;
 local powerheight = 5;
+local buffcount = 4;
+local buffsize = 25;
 
 local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };                 --차단 불가시 (내가 아닐때) 색상 (r, g, b)
 local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { 153 / 255, 0, 76 / 255 }; --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
@@ -55,7 +57,7 @@ local eliteIcon = CreateAtlasMarkup("nameplates-icon-elite-gold", 14, 14);
 local rareIcon = CreateAtlasMarkup("UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare-Star", 14, 14);
 local rareeliteIcon = CreateAtlasMarkup("nameplates-icon-elite-silver", 14, 14);
 
-local DangerousSpellList = {};
+ns.DangerousSpellList = {};
 
 local function UpdateFillBarBase(realbar, bar, amount, bleft, pointbar)
     if not amount or (amount == 0) then
@@ -171,7 +173,7 @@ local function updateCastBar(frame)
 
             frameIcon:Show();
             castbar:Show();
-            if DangerousSpellList[spellid] and DangerousSpellList[spellid] == "interrupt" then
+            if ns.DangerousSpellList[spellid] and ns.DangerousSpellList[spellid] == "interrupt" then
                 ns.lib.PixelGlow_Start(castbar, { 1, 1, 0, 1 });
             end
 
@@ -485,7 +487,7 @@ local function updateUnit(frame)
         frame.guid = UnitGUID(unit);
     end
     --Debuff
-    if frame.portraitdebuff or frame.debuffupdate then
+    if frame.portraitdebuff or frame.debuffupdate or frame.buffupdate then
         ns.UpdateAuras(frame);
     end
 
@@ -556,11 +558,15 @@ local function OpenContextMenu(s, unit, button, isKeyPress)
     return asTargetFrame_OpenMenu(s, s.unit);
 end
 
+
+local debufffilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.IncludeNameplateOnly);
+local bufffilter = CreateFilterString(AuraFilters.Helpful);
+
 local function UpdateDebuffAnchor(frames, index, offsetX, right, parent, width)
     local buff = frames[index];
 
     if (index == 1) then
-        buff:SetPoint("TOPLEFT", parent.healthbar, "BOTTOMLEFT", 0, -(powerheight/2 + 2));
+        buff:SetPoint("TOPLEFT", parent.healthbar, "BOTTOMLEFT", 0, -(powerheight / 2 + 2));
     else
         buff:SetPoint("BOTTOMLEFT", frames[index - 1], "BOTTOMRIGHT", offsetX, 0);
     end
@@ -570,16 +576,14 @@ local function UpdateDebuffAnchor(frames, index, offsetX, right, parent, width)
     buff:SetHeight(width * 0.8);
 end
 
-local filter = CreateFilterString(AuraFilters.Harmful, AuraFilters.IncludeNameplateOnly);
-
-local function CreatDebuffFrames(parent, bright, fontsize, width, count)
-    if parent.frames == nil then
-        parent.frames = {};
+local function CreateDebuffFrames(parent, bright, fontsize, width, count)
+    if parent.debuffframes == nil then
+        parent.debuffframes = {};
     end
 
     for idx = 1, count do
-        parent.frames[idx] = CreateFrame("Button", nil, parent, "AUFDebuffFrameTemplate");
-        local frame = parent.frames[idx];
+        parent.debuffframes[idx] = CreateFrame("Button", nil, parent, "AUFDebuffFrameTemplate");
+        local frame = parent.debuffframes[idx];
 
         frame.cooldown:SetDrawSwipe(true);
         for _, r in next, { frame.cooldown:GetRegions() } do
@@ -605,13 +609,83 @@ local function CreatDebuffFrames(parent, bright, fontsize, width, count)
         frame.border:SetAlpha(1);
 
         frame:ClearAllPoints();
-        UpdateDebuffAnchor(parent.frames, idx, 1, bright, parent, width / count);
+        UpdateDebuffAnchor(parent.debuffframes, idx, 1, bright, parent, width / count);
 
         if not frame:GetScript("OnEnter") then
             frame:SetScript("OnEnter", function(s)
                 if s.auraInstanceID then
                     GameTooltip_SetDefaultAnchor(GameTooltip, s);
-                    GameTooltip:SetUnitDebuffByAuraInstanceID(s.unit, s.auraInstanceID, filter);
+                    GameTooltip:SetUnitDebuffByAuraInstanceID(s.unit, s.auraInstanceID, debufffilter);
+                end
+            end)
+            frame:SetScript("OnLeave", function()
+                GameTooltip:Hide();
+            end)
+        end
+
+        frame:EnableMouse(false);
+        frame:SetMouseMotionEnabled(true);
+        frame.data = {};
+        frame:Hide();
+    end
+
+    return;
+end
+
+local function UpdateBuffAnchor(frames, index, offsetX, right, parent, width)
+    local buff = frames[index];
+
+    if (index == 1) then
+        buff:SetPoint("RIGHT", parent.healthbar, "LEFT", -offsetX, 0);
+    else
+        buff:SetPoint("RIGHT", frames[index - 1], "LEFT", -offsetX, 0);
+    end
+
+    -- Resize
+    buff:SetWidth(width - offsetX);
+    buff:SetHeight(width * 0.8);
+end
+
+local function CreateBuffFrames(parent, bright, fontsize, width, count)
+    if parent.buffframes == nil then
+        parent.buffframes = {};
+    end
+
+    for idx = 1, count do
+        parent.buffframes[idx] = CreateFrame("Button", nil, parent, "AUFDebuffFrameTemplate");
+        local frame = parent.buffframes[idx];
+
+        frame.cooldown:SetDrawSwipe(true);
+        for _, r in next, { frame.cooldown:GetRegions() } do
+            if r:GetObjectType() == "FontString" then
+                r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+                r:ClearAllPoints();
+                r:SetPoint("CENTER", 0, 0);
+                r:SetDrawLayer("OVERLAY");
+                break
+            end
+        end
+
+        frame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+        frame.count:ClearAllPoints()
+        frame.count:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", -2, 2);
+
+        frame.icon:SetTexCoord(.08, .92, .16, .84);
+        frame.icon:SetAlpha(1);
+
+
+        frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+        frame.border:SetVertexColor(1, 1, 1);
+        frame.border:SetAlpha(1);
+
+        frame:ClearAllPoints();
+        UpdateBuffAnchor(parent.buffframes, idx, 1, bright, parent, width);
+
+        if not frame:GetScript("OnEnter") then
+            frame:SetScript("OnEnter", function(s)
+                if s.auraInstanceID then
+                    GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                    GameTooltip:SetUnitBuffByAuraInstanceID(s.unit, s.auraInstanceID, bufffilter);
                 end
             end)
             frame:SetScript("OnLeave", function()
@@ -673,7 +747,7 @@ local function CreatTotemFrames(parent, bright, fontsize, width, count)
         frame.border:SetAlpha(1);
 
         button:ClearAllPoints();
-        UpdateTotemAnchor(parent.totembuttons, idx, 1, bright, parent, (width / 2 - 3) / count );
+        UpdateTotemAnchor(parent.totembuttons, idx, 1, bright, parent, (width / 2 - 3) / count);
         button.data = {};
         frame:Show();
         button:SetAttribute("type", "destroytotem");
@@ -848,7 +922,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.powerbar:GetStatusBarTexture():SetHorizTile(false)
     frame.powerbar:SetMinMaxValues(0, 100)
     frame.powerbar:SetValue(100)
-    frame.powerbar:SetWidth(hwidth/2);
+    frame.powerbar:SetWidth(hwidth / 2);
     frame.powerbar:SetHeight(powerbarheight)
     frame.powerbar:SetPoint("CENTER", frame.healthbar, "BOTTOM", 0, 0);
     frame.powerbar:SetFrameLevel(frame.healthbar:GetFrameLevel() + 3);
@@ -945,7 +1019,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.totemupdate = false;
 
     if debuffupdate then
-        CreatDebuffFrames(frame, true, fontsize, width, 4);
+        CreateDebuffFrames(frame, true, fontsize, width, 4);
         frame.debuffupdate = true;
     end
 
@@ -958,9 +1032,16 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.updatecount = 1;
 
     if unit == "focus" or string.find(unit, "boss") then
-        frame.updateCastBar = true;
+        frame.updateCastBar = true;        
+        if ns.options.ShowBossBuff and unit ~= "focus" then
+            CreateBuffFrames(frame, true, fontsize, buffsize, buffcount);
+            frame.buffupdate = true;
+        else
+            frame.buffupdate = false;
+        end
     else
         frame.updateCastBar = false;
+        frame.buffupdate = false
     end
 
     frame.unit = unit;
@@ -1150,24 +1231,24 @@ AUF:RegisterEvent("PORTRAITS_UPDATED");
 
 local DBMobj;
 local function scanDBM()
-    DangerousSpellList = {};
+    ns.DangerousSpellList = {};
     if DBMobj.Mods then
         for i, mod in ipairs(DBMobj.Mods) do
             if mod.Options and mod.announces then
                 for k, obj in pairs(mod.announces) do
                     if obj.spellId and obj.announceType and obj.option then
-                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
-                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        if (ns.DangerousSpellList[obj.spellId] == nil or ns.DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
+                            ns.DangerousSpellList[obj.spellId] = obj.announceType;
                         end
-                    end 
+                    end
                 end
             end
 
             if mod.Options and mod.specwarns then
                 for k, obj in pairs(mod.specwarns) do
                     if obj.spellId and obj.announceType and obj.option then
-                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
-                            DangerousSpellList[obj.spellId] = obj.announceType;
+                        if (ns.DangerousSpellList[obj.spellId] == nil or ns.DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
+                            ns.DangerousSpellList[obj.spellId] = obj.announceType;
                         end
                     end
                 end

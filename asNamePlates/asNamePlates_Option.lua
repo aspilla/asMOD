@@ -325,6 +325,7 @@ ANameP_Options_Default = {
     ANameP_Tooltip = true,                                    -- Tooltip 표시
     ANameP_ShowDBM = true,                                    -- DBM Cooldown을 표시
     ANameP_ShowDBMCastingColor = true,                        -- DBM CastingColor을 표시
+    ANameP_ShowDBMBuff = true,                                -- DBM buff 
     ANameP_ShortFriendNP = true,                              -- 아군 체력바 크기 조정
     ANameP_RealHealth = true,                                 -- 체력 수치 표시
     ANameP_ShowPetTarget = true,                              -- Pet 대상 표시
@@ -720,6 +721,7 @@ end
 local function SetupColorOption(text, option)
     if ANameP_Options[option] == nil then
         ANameP_Options[option] = ANameP_Options_Default[option];
+        ns.options = CopyTable(ANameP_Options);
     end
 
     curr_y = curr_y + y_adder;
@@ -1193,6 +1195,7 @@ local function panelOnShow()
         SetupCheckBoxOption("[버프] 내 버프 모두 보임", "ANameP_ShowPlayerBuffAll"); -- Show all my buffs
         SetupCheckBoxOption("[툴팁] 버프/디버프 툴팁 표시", "ANameP_Tooltip"); -- Show buff/debuff tooltips
         SetupCheckBoxOption("[쿨다운] DBM 쿨다운 표시", "ANameP_ShowDBM"); -- Show DBM cooldowns
+        SetupCheckBoxOption("[버프] DBM 주요 버프 표시", "ANameP_ShowDBMBuff"); -- Show DBM buff
         SetupCheckBoxOption("[색상] 어그로 색상 표시", "ANameP_AggroShow"); -- Show aggro colors
         SetupCheckBoxOption("[색상] 낮은 생명력 색상 표시", "ANameP_LowHealthAlert"); -- Show low health colors
         SetupCheckBoxOption("[색상] Quest 몹 색상 표시", "ANameP_QuestAlert"); -- Show quest mob colors
@@ -1228,6 +1231,7 @@ local function panelOnShow()
         SetupCheckBoxOption("[Buff] Show all my buffs", "ANameP_ShowPlayerBuffAll");
         SetupCheckBoxOption("[Tooltip] Show buff/debuff tooltips", "ANameP_Tooltip");
         SetupCheckBoxOption("[Cooldown] Show DBM cooldowns", "ANameP_ShowDBM");
+        SetupCheckBoxOption("[Buff] Show DBM important buff", "ANameP_ShowDBMBuff"); -- Show DBM buff
         SetupCheckBoxOption("[Color] Show aggro colors", "ANameP_AggroShow");
         SetupCheckBoxOption("[Color] Show low health colors", "ANameP_LowHealthAlert");
         SetupCheckBoxOption("[Color] Show quest mob colors", "ANameP_QuestAlert");

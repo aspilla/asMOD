@@ -96,9 +96,6 @@ local tempeststate = {
     lastaction = 0,
 }
 
-local splinterstorm_time = GetTime();
-
-
 local special_cost_spells = {
     [386997] = { 449638, -3 },
     [265187] = { 449638, -3 },
@@ -650,7 +647,7 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
 
         if APB then
             local combotext = APB.combotext
-            combotext:SetText(power);
+            combotext:SetText(tostring(power));
             combotext:Show();
         end
     end
@@ -1071,13 +1068,6 @@ local function APB_OnUpdateBuff(self)
 
     if curr_duration < self.duration then
         local remain_buff = (self.duration + self.start - curr_time)
-
-        if self.max and self.max >= remain_buff then
-            self:SetMinMaxValues(0, self.max * 1000)
-        else
-            self:SetMinMaxValues(0, self.duration * 1000)
-        end
-
         self:SetValue(remain_buff * 1000)
         self.text:SetText(("%02.1f"):format(remain_buff))
 
@@ -1088,6 +1078,14 @@ local function APB_OnUpdateBuff(self)
                 expertedendtime = self.start + remain_buff;
                 self:SetValue(remain_buff * 1000);
             end
+        elseif self.minduration then
+            self:SetMinMaxValues(0, self.minduration * 1000)
+            if self.minduration < remain_buff then
+                remain_buff = self.minduration;
+                expertedendtime = self.start + remain_buff;
+                self:SetValue(remain_buff * 1000);
+            end
+
         end
 
         -- Check Casting And GCD
@@ -1174,6 +1172,11 @@ local function APB_UpdateBuff(buffbar)
         if name then
             buffbar.start = expirationTime - duration;
             buffbar.duration = duration;
+
+            if buffbar.minduration == nil or duration < buffbar.minduration then
+                buffbar.minduration = duration;
+            end
+
             if bupdate_buff_count then
                 buffbar.count:SetText(count);
                 if buffbar.alertcount and count >= buffbar.alertcount then
@@ -1195,7 +1198,11 @@ local function APB_UpdateBuff(buffbar)
                     local classcolor = RAID_CLASS_COLORS[Class]
                     if classcolor then
                         buffbar:SetStatusBarColor(classcolor.r, classcolor.g, classcolor.b);
+                    else
+                        buffbar:SetStatusBarColor(0.8, 0.8, 1);
                     end
+                else
+                    buffbar:SetStatusBarColor(0.8, 0.8, 1);
                 end
             else
                 buffbar:SetStatusBarColor(0.8, 0.8, 1);
@@ -1230,6 +1237,10 @@ local function APB_UpdateBuff(buffbar)
         if name then
             buffbar.start = expirationTime - duration;
             buffbar.duration = duration;
+
+            if buffbar.minduration == nil or duration < buffbar.minduration then
+                buffbar.minduration = duration;
+            end
             if bupdate_buff_count then
                 buffbar.count:SetText(count);
             end
@@ -2243,8 +2254,9 @@ local function APB_CheckPower(self)
         APB.buffbar[j].buff = nil;
         APB.buffbar[j].buff2 = nil;
         APB.buffbar[j].debuff = nil;
-        APB.buffbar[j].max = nil;
         APB.buffbar[j].maxshow = nil;
+        APB.buffbar[j].minduration = nil;
+
 
 
         setupMouseOver(APB.buffbar[j]);
@@ -2300,7 +2312,6 @@ local function APB_CheckPower(self)
                 APB_BUFF = 395296;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
-                APB.buffbar[0].max = 20;
             end
         end
     end
@@ -2904,7 +2915,6 @@ local function APB_CheckPower(self)
                 APB_BUFF = 208628;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
-                APB.buffbar[0].max = 20;
             elseif IsPlayerSpell(427640) then --타성
                 APB_BUFF = 427641;
                 APB.buffbar[0].buff = APB_BUFF;

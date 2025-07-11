@@ -159,6 +159,8 @@ local function ProcessAura(aura, unit, type)
                 show = true;
             elseif aura.isStealable then
                 show = true;
+            elseif ns.options.ANameP_ShowDBMBuff and ns.DangerousSpellList[aura.spellId] then
+                show = true;
             end
 
             if show and ns.ANameP_BlackList[aura.spellId] then
