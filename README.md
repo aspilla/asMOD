@@ -9,8 +9,10 @@ asMOD is a collection of custom World of Warcraft addons designed to enhance you
 * **Optimized Performance:** Designed for minimal performance impact, ensuring smooth gameplay without lag or FPS drops, not using Weakaura or Elv.
 * **Retail WoW Support:** Currently supports only the retail version of World of Warcraft.
 
-* asMOD vs W/O asMOD FPS Comparison asMOD is providing very similar game performance, compare to default UI.
+* asMOD vs W/O asMOD FPS Comparison : asMOD is providing very similar game performance, compare to default UI.
 <iframe width="560" height="315" src="https://www.youtube.com/embed/S--Ye0u9Rno?si=eT9WisYHsO24DUzH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+* asMOD M+ Large pull FPS performance : asMOD is providing +60 1% FPS when playing large pull fight.
+<iframe width="560" height="315" src="https://www.youtube.com/embed/H2Mr7yhzDnQ?si=K0HgCIi7tiuMz6j3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Cautions (asUnitFrame Related)
 
