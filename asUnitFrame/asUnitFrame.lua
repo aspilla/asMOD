@@ -660,7 +660,7 @@ local function CreateBuffFrames(parent, bright, fontsize, width, count)
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
                 r:ClearAllPoints();
-                r:SetPoint("CENTER", 0, 0);
+                r:SetPoint("TOP", 0, 5);
                 r:SetDrawLayer("OVERLAY");
                 break
             end
@@ -679,7 +679,7 @@ local function CreateBuffFrames(parent, bright, fontsize, width, count)
         frame.border:SetAlpha(1);
 
         frame:ClearAllPoints();
-        UpdateBuffAnchor(parent.buffframes, idx, 1, bright, parent, width);
+        UpdateBuffAnchor(parent.buffframes, idx, 2, bright, parent, width);
 
         if not frame:GetScript("OnEnter") then
             frame:SetScript("OnEnter", function(s)
