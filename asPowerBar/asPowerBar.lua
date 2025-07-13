@@ -1067,6 +1067,7 @@ local function APB_OnUpdateBuff(self)
 
     if curr_duration < self.duration then
         local remain_buff = (self.duration + self.start - curr_time)
+        local expertedendtime = self.duration + self.start;
 
         if self.maxshow then
             self:SetMinMaxValues(0, self.maxshow * 1000)
@@ -1078,10 +1079,11 @@ local function APB_OnUpdateBuff(self)
             if self.minduration < remain_buff then
                 remain_buff = self.minduration;
             end
+        else
+            self:SetMinMaxValues(0, self.duration * 1000)
         end
         self:SetValue(remain_buff * 1000)
         self.text:SetText(("%02.1f"):format(remain_buff))
-        local expertedendtime = self.start + remain_buff;
 
         -- Check Casting And GCD
         local timetoready = 0;
@@ -1117,6 +1119,10 @@ local function APB_OnUpdateBuff(self)
         else
             self.buff3bar:Hide();
         end
+    else
+        self:SetValue(0);
+        self.castbar:Hide();
+        self.text:SetText("");
     end
 end
 
