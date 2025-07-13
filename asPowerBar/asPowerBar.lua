@@ -1004,7 +1004,7 @@ end
 
 
 local function asUnitFrameUtil_UpdateFillBuffBarBase(realbar, bar, amount, alert)
-    if not amount or (amount == 0) then
+    if not amount or (amount == 0) or amount > realbar:GetValue() then
         bar:Hide();
         return
     end
@@ -1062,31 +1062,26 @@ local function APB_OnUpdateBuff(self)
 
     local curr_time = GetTime();
     local curr_duration = curr_time - self.start;
-    local expertedendtime = self.duration + self.start;
 
     self.update = 0
 
     if curr_duration < self.duration then
         local remain_buff = (self.duration + self.start - curr_time)
-        self:SetValue(remain_buff * 1000)
-        self.text:SetText(("%02.1f"):format(remain_buff))
 
         if self.maxshow then
             self:SetMinMaxValues(0, self.maxshow * 1000)
             if self.maxshow < remain_buff then
                 remain_buff = self.maxshow;
-                expertedendtime = self.start + remain_buff;
-                self:SetValue(remain_buff * 1000);
             end
         elseif self.minduration then
             self:SetMinMaxValues(0, self.minduration * 1000)
             if self.minduration < remain_buff then
                 remain_buff = self.minduration;
-                expertedendtime = self.start + remain_buff;
-                self:SetValue(remain_buff * 1000);
             end
-
         end
+        self:SetValue(remain_buff * 1000)
+        self.text:SetText(("%02.1f"):format(remain_buff))
+        local expertedendtime = self.start + remain_buff;
 
         -- Check Casting And GCD
         local timetoready = 0;
@@ -1173,7 +1168,7 @@ local function APB_UpdateBuff(buffbar)
             buffbar.start = expirationTime - duration;
             buffbar.duration = duration;
 
-            if buffbar.minduration == nil or duration < buffbar.minduration then
+            if buffbar.minduration == nil or (duration < buffbar.minduration and duration > 0) then
                 buffbar.minduration = duration;
             end
 
@@ -1238,7 +1233,7 @@ local function APB_UpdateBuff(buffbar)
             buffbar.start = expirationTime - duration;
             buffbar.duration = duration;
 
-            if buffbar.minduration == nil or duration < buffbar.minduration then
+            if buffbar.minduration == nil or (duration < buffbar.minduration and duration > 0) then
                 buffbar.minduration = duration;
             end
             if bupdate_buff_count then
@@ -2257,8 +2252,6 @@ local function APB_CheckPower(self)
         APB.buffbar[j].maxshow = nil;
         APB.buffbar[j].minduration = nil;
 
-
-
         setupMouseOver(APB.buffbar[j]);
 
         for i = 1, 10 do
@@ -2788,6 +2781,12 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 2) then
+            if version >= 110200 and IsPlayerSpell(47568) then --Rune Weapon
+                APB_SPELL = 47568;
+                APB_SpellMax(APB_SPELL);
+                APB_UpdateSpell(APB_SPELL);
+                bupdate_spell = true;
+            end
             if IsPlayerSpell(376905) then --풀려난 광란
                 APB_BUFF = 376907;
                 APB.buffbar[0].buff = APB_BUFF
