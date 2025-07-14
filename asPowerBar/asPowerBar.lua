@@ -1003,7 +1003,7 @@ local function APB_UpdateBuffCombo(combobar)
 end
 
 
-local function asUnitFrameUtil_UpdateFillBuffBarBase(realbar, bar, amount, alert)
+local function asUnitFrameUtil_UpdateFillBuffBarBase(realbar, bar, amount, type)
     if not amount or (amount == 0) or amount > realbar:GetValue() then
         bar:Hide();
         return
@@ -1019,36 +1019,13 @@ local function asUnitFrameUtil_UpdateFillBuffBarBase(realbar, bar, amount, alert
 
     local barSize = (amount / totalMax) * totalWidth;
     bar:SetWidth(barSize);
-    if alert == true then
+    if type == 2 then
         bar:SetVertexColor(1, 0.5, 0.5);
+    elseif type == 1 then
+        bar:SetVertexColor(0, 1, 0);
     else
         bar:SetVertexColor(0.5, 0.5, 1);
     end
-    bar:Show();
-end
-
-local function asUnitFrameUtil_UpdateFillBuffBarBaseforBuff(realbar, bar, amount, alert)
-    if not amount or (amount == 0) then
-        bar:Hide();
-        return
-    end
-
-    local previousTexture = realbar:GetStatusBarTexture();
-    bar:ClearAllPoints();
-    bar:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
-    bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMLEFT", 0, 0);
-    local totalWidth, totalHeight = realbar:GetSize();
-
-    local _, totalMax = realbar:GetMinMaxValues();
-
-    local barSize = (amount / totalMax) * totalWidth;
-    bar:SetWidth(barSize);
-    if alert == true then
-        bar:SetVertexColor(1, 0.5, 0.5);
-    else
-        bar:SetVertexColor(0.5, 1, 1);
-    end
-
     bar:Show();
 end
 
@@ -1068,17 +1045,20 @@ local function APB_OnUpdateBuff(self)
     if curr_duration < self.duration then
         local remain_buff = (self.duration + self.start - curr_time)
         local expertedendtime = self.duration + self.start;
+        local maxshowtime = curr_time * 1000;
         self.text:SetText(("%02.1f"):format(remain_buff))
 
         if self.maxshow then
             self:SetMinMaxValues(0, self.maxshow * 1000)
             if self.maxshow < remain_buff then
                 remain_buff = self.maxshow;
+                maxshowtime = (expertedendtime - remain_buff) * 1000;
             end
         elseif self.minduration then
             self:SetMinMaxValues(0, self.minduration * 1000)
             if self.minduration < remain_buff then
                 remain_buff = self.minduration;
+                maxshowtime = (expertedendtime - remain_buff) * 1000;
             end
         else
             self:SetMinMaxValues(0, self.duration * 1000)
@@ -1088,7 +1068,7 @@ local function APB_OnUpdateBuff(self)
         -- Check Casting And GCD
         local timetoready = 0;
         local _, _, _, _, endTime = UnitCastingInfo("player");
-        local alert = false;
+        local type = 0;
 
         if not endTime then
             _, _, _, _, endTime = UnitChannelInfo("player");
@@ -1100,25 +1080,24 @@ local function APB_OnUpdateBuff(self)
         end
 
         if endTime then
-            if endTime > (expertedendtime * 1000) then
-                endTime = (expertedendtime * 1000);
-                alert = true;
-            end
+            if endTime > maxshowtime then
+                if endTime > (expertedendtime * 1000) then
+                    endTime = (expertedendtime * 1000);
+                    type = 2;
+                end
 
-            timetoready = endTime - (curr_time * 1000);
+                timetoready = endTime - (curr_time * 1000);
+            elseif endTime > 0 then
+                timetoready = 50;
+                type = 1;
+            end
         end
 
         if timetoready < 0 then
             timetoready = 0;
         end
 
-        asUnitFrameUtil_UpdateFillBuffBarBase(self, self.castbar, timetoready, alert);
-        if self.buff3barex then
-            local buff3remain = (self.buff3barex - curr_time) * 1000;
-            asUnitFrameUtil_UpdateFillBuffBarBaseforBuff(self, self.buff3bar, buff3remain, timetoready > buff3remain);
-        else
-            self.buff3bar:Hide();
-        end
+        asUnitFrameUtil_UpdateFillBuffBarBase(self, self.castbar, timetoready, type);
     else
         self:SetValue(0);
         self.castbar:Hide();
@@ -1219,16 +1198,6 @@ local function APB_UpdateBuff(buffbar)
         buffbar:Show();
         buffbar.text:Show();
         buffbar.count:Show();
-
-        if buffbar.buff3 then
-            name, icon, count, debuffType, duration, expirationTime, caster =
-                APB_UnitBuff(unit, buffbar.buff3);
-            if name then
-                buffbar.buff3barex = expirationTime;
-            else
-                buffbar.buff3barex = nil;
-            end
-        end
     end
 
     if buffbar.debuff then
@@ -1274,7 +1243,6 @@ local function APB_UpdateBuff(buffbar)
         end
         buffbar:SetValue(0);
         buffbar.castbar:Hide();
-        buffbar.buff3bar:Hide();
     end
 end
 
@@ -2999,7 +2967,7 @@ local function APB_CheckPower(self)
                 APB_BUFF = 257622;
                 APB_BUFF3 = 260243;       --연발공격
                 APB.buffbar[0].buff = APB_BUFF;
-                APB.buffbar[0].buff3 = APB_BUFF3;
+                APB.buffbar[0].buff2 = APB_BUFF3;
                 APB.buffbar[0].unit = "player"
                 APB.buffbar[0].maxshow = 6;
             end
@@ -3888,8 +3856,6 @@ do
         end
         APB.buffbar[j]:Hide();
 
-        APB.buffbar[j].buff3bar = APB.buffbar[j]:CreateTexture(nil, "ARTWORK", "asPredictionBarTemplate", 2);
-        APB.buffbar[j].buff3bar:Hide();
 
         APB.buffbar[j].castbar = APB.buffbar[j]:CreateTexture(nil, "ARTWORK", "asPredictionBarTemplate", 3);
         APB.buffbar[j].castbar:Hide();
@@ -3943,8 +3909,6 @@ do
         end
         APB.stackbar[j]:Hide();
 
-        APB.stackbar[j].buff3bar = APB.stackbar[j]:CreateTexture(nil, "ARTWORK", "asPredictionBarTemplate", 2);
-        APB.stackbar[j].buff3bar:Hide();
 
         APB.stackbar[j].castbar = APB.stackbar[j]:CreateTexture(nil, "ARTWORK", "asPredictionBarTemplate", 3);
         APB.stackbar[j].castbar:Hide();
