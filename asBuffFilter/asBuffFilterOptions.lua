@@ -21,7 +21,8 @@ ns.ABF_AlphaNormal = 0.5;     -- 비 전투중 Alpha 값
 ns.ABF_MAX_Cool = 60;         -- 최대 60초의 버프를 보임
 
 ns.ABF_BlackList = {
-	[72221] = 1
+	[206150] = 1, -- 도전자의 힘
+	[72221] = 1, --lucky draw
 }
 
 ns.ABF_BlackListTotem = {
@@ -188,6 +189,13 @@ ns.ShowList_HUNTER = {
 		--시즌2사냥꾼
 		[474257] = 2, -- On Target
 
+		--TWW S3
+		[1232992] = 2, -- The Bell Tolls
+
+		--TWW S3 Tier
+		[1236644] = 2, --Boon of Elune
+
+
 
 	},
 
@@ -211,7 +219,7 @@ ns.ShowList_HUNTER = {
 
 	},
 
-	version = 250227,
+	version = 250709,
 }
 
 ns.ShowList_MAGE = {
@@ -265,6 +273,8 @@ ns.ShowList_MAGE = {
 	classcountbuffs = {
 		[382113] = 25, -- 냉법 특성 한랭전선
 		[454371] = 12, -- 냉법 특성
+
+		[384455] = 15, -- Arcane Harmony
 	},
 
 	classtotems = {
@@ -272,7 +282,7 @@ ns.ShowList_MAGE = {
 
 	},
 
-	version = 250309,
+	version = 250712,
 
 }
 

@@ -697,7 +697,7 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
                 end
 
                 if checksnapshot and asDotSnapshot and asDotSnapshot.Relative then
-                    snapshot = asDotSnapshot.Relative(guid, aura.spellId);
+                    snapshot = asDotSnapshot.Relative(guid, aura.spellId) or 1;
                 end
             end
 

@@ -215,8 +215,7 @@ local ADotF_UnitList = {
 }
 
 --설정 끝
-
-local ADotF = nil;
+local ADotF = CreateFrame("Frame", "ADotF", UIParent);
 ADotF_ShowList = nil;
 
 
@@ -504,7 +503,7 @@ local function ADotF_UpdateDebuff(unit)
                 local snapshot = 1;
 
                 if checksnapshot and asDotSnapshot and asDotSnapshot.Relative then
-                    snapshot = asDotSnapshot.Relative(guid, spellId);
+                    snapshot = asDotSnapshot.Relative(guid, spellId) or 1;
                 end
 
                 if (((expirationTime - GetTime()) <= alert_du) and duration > 0) then
@@ -587,8 +586,6 @@ local function ADotF_OnUpdate()
 end
 
 local function ADotF_Init()
-    ADotF = CreateFrame("Frame", "ADotF", UIParent)
-
     ADotF:SetPoint("CENTER", 0, 0)
     ADotF:SetWidth(1)
     ADotF:SetHeight(1)

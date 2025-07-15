@@ -432,6 +432,48 @@ ACI_Options_Default = {
 
 };
 
+if version >= 110200 then
+	ACI_Options_Default.ACI_SpellList_DEATHKNIGHT_2 = {
+		version = 250713,
+		{ 43265,                  2,           nil, nil, nil, 188290 },
+		{ 196770,                 2 },
+		{ 51271,                  2,           nil, nil, nil, nil,   nil, { 51271, 377195 } },
+		{ { 343294, 1, nil, 35 }, { 279302, 1 } },
+		{ 49184,                  4,           nil, nil, nil, 55095 },
+
+	};
+
+	--야수
+	ACI_Options_Default.ACI_SpellList_HUNTER_1 = {
+		version = 250710,
+		{ 99,            115939,               { 118455, 3, "pet", 2 }, { 212431, 1 }, {359844, 2}, {264735, 2}  },
+		{ 34026,         1 },
+		{ 19574,         2 },
+		{ 53351,         1 },
+		{ { 321530, 4 }, { 217200, 5, nil, 1 } },
+	};
+
+	--사격
+	ACI_Options_Default.ACI_SpellList_HUNTER_2 = {
+		version = 250227,
+		{ { 260243, 2 }, { 342076, 2, nil, 2, 342076 } },
+		{ 257044, 1 },
+		{ 288613, 2 },
+		{ 53351,  1 },
+		{ 212431, 1 },
+	};
+
+	--생존
+	ACI_Options_Default.ACI_SpellList_HUNTER_3 = {
+		version = 250303,
+		{ 212436,        1 },
+		{ 259489,        1 },
+		{ { 203415, 1 }, { 360966, 4 }, { 360952, 2} },
+		{ 53351,         1 },
+		{ { 269751, 1 }, { 259491, 5, nil, 1 } },
+	};
+end
+
 ACI_OptionM = {};
 local update_callback = nil;
 

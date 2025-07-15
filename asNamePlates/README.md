@@ -45,9 +45,10 @@
 
 ### 4. Buff Icon Functionality
 
-* Displays one important defensive buff on enemy targets.
+* Displays one important defensive buff on PVP targets.
 * Highlights dispellable or stealable enemy buffs with a border.
 * Displays 8 personal buffs below the personal resource bar.
+* Displays a DBM buff
 
 ### 5. DBM Functionality (Requires DBM)
 
@@ -85,7 +86,7 @@
 
 ## Configuration
 
-* All features can be configured in the in-game settings (Esc > Options).
+* Some features can be configured in the in-game settings (Esc > Options).
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ebttCrIsHLU?si=4jLU7MtZhsAkndvp" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
@@ -141,9 +142,10 @@
 
 ### 4. 강화 효과(버프) 아이콘 기능
 
-* 적대적 대상의 중요한 생존기 버프를 1개 표시합니다.
+* PVP 적대적 대상의 중요한 생존기 버프를 1개 표시합니다.
 * 해제 또는 훔치기 가능한 적 버프를 테두리로 강조 표시합니다.
 * 개인 자원바 하단에 개인 버프 8개를 표시합니다.
+* DBM 주요 버프 1개를 표시 합니다. (설정 가능)
 
 ### 5. DBM 기능 (DBM 설치 필요)
 
@@ -223,7 +225,7 @@
 
 ## 설정
 
-* 게임 내 설정 (Esc > 옵션)에서 모든 기능을 구성할 수 있습니다.
+* 게임 내 설정 (Esc > 옵션)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ebttCrIsHLU?si=4jLU7MtZhsAkndvp" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/mThzeV48t-A?si=IPRpMCloFFeurE0y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
