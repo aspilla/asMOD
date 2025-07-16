@@ -1086,7 +1086,7 @@ local function APB_OnUpdateBuff(self)
                     type = 2;
                 end
 
-                timetoready = endTime - (curr_time * 1000);
+                timetoready = endTime - maxshowtime;
             elseif endTime > 0 then
                 timetoready = 50;
                 type = 1;
