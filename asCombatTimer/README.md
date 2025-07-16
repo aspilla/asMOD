@@ -25,7 +25,7 @@ Displays the elapsed time after combat starts.
 
 ---
 
-# asCombatTimer (Korean)
+# asCombatTimer
 
 전투 시작 후 경과 시간을 표시
 

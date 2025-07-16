@@ -22,6 +22,7 @@ function ns.SetupOptionPanels()
         local variable = get_variable_from_cvar_name(cvar_name)
         ASTM_Options[variable] = value;
         ns.options[variable] = value;
+        ns.updateOptions();
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asCombatTimer")

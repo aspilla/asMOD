@@ -27,6 +27,9 @@ local function SavePosition(frame, option)
 	option.yOfs = yOfs
 end
 
+ns.updateOptions = function()
+	ASTM_Frame.timertext:SetFont(ASTM_Fonts[ns.options.Font], ns.options.FontSize, "OUTLINE");
+end
 
 local bMouseEnabled = true;
 local combat_start_time = nil;
@@ -56,8 +59,6 @@ local function ASTM_Update()
 			bMouseEnabled = true;
 		end
 	end
-
-    timertext:SetFont(ASTM_Fonts[ns.options.Font], ns.options.FontSize, "OUTLINE")
 
 	if combat_start_time then
 		local time_sec;
@@ -112,7 +113,6 @@ local function ASTM_Init()
 	ASTM_Frame.timertext:SetPoint("CENTER",ASTM_Frame ,"CENTER", 0, 0);
 	ASTM_Frame.timertext:SetTextColor(1,1,1);
 	ASTM_Frame.timertext:SetText("[00:00]");
-    ASTM_Frame.timertext:SetFont(ASTM_Fonts[ns.options.Font], ns.options.FontSize, "OUTLINE")
 	ASTM_Frame.timertext:Show();
 
 	ASTM_Frame:SetPoint("CENTER", ASTM_TimerFrame_X, ASTM_TimerFrame_Y)
@@ -137,6 +137,8 @@ local function ASTM_Init()
 			SavePosition(ASTM_Frame, ASTM_Position);
 		end
 	end)
+
+	ns.updateOptions();
 
 	LoadPosition(ASTM_Frame, ASTM_Position);
 
