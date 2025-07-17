@@ -87,6 +87,7 @@ The following errors may occur:
 | asHideNameplates      |Hides nameplates for interrupt assistance.                                       |<a href="https://www.curseforge.com/wow/addons/ashidenameplates" target="_blank" rel="nofollow">Link</a> |
 | asOverlay             |Enhancing spell alert                                                            |<a href="https://www.curseforge.com/wow/addons/asoverlay" target="_blank" rel="nofollow">Link</a> |
 | asInformation         |Show 2nd states                                                                  |<a href="https://www.curseforge.com/wow/addons/asinformation" target="_blank" rel="nofollow">Link</a> |
+| asCombatTimer         |Tracking combat time                                                             |<a href="https://www.curseforge.com/wow/addons/ascombattimer" target="_blank" rel="nofollow">Link</a> |
 | BugSack, BugGrabber   |[External] Addon error saver                                                     |     |
 | Details               |[External] Damage meter.                                                         |     |
 | DBM                   |[External] Dungeon boss skill announcer.                                         |     |
@@ -162,6 +163,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입�
 | asHideNameplates      |차단 도움 이름표 숨김                                                        |<a href="https://www.curseforge.com/wow/addons/ashidenameplates" target="_blank" rel="nofollow">링크</a> |
 | asOverlay             |주문 알림 강화                                                            |<a href="https://www.curseforge.com/wow/addons/asoverlay" target="_blank" rel="nofollow">링크</a> |
 | asInformation         |2차 스텟 표시                                                            |<a href="https://www.curseforge.com/wow/addons/asinformation" target="_blank" rel="nofollow">링크</a> |
+| asCombatTimer         |전투 시간 표시                                                             |<a href="https://www.curseforge.com/wow/addons/ascombattimer" target="_blank" rel="nofollow">Link</a> |
 | BugSack, BugGrabber   |[외부] 애드온 오류 저장                                                      |        |
 | Details               |[외부] 데미지 미터기                                                        |        |
 | DBM                   |[외부] 던전 주요 스킬 알리미                                                   |        |
