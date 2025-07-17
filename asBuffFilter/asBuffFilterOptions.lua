@@ -475,6 +475,17 @@ ns.ShowList_SHAMAN = {
 ns.ShowList_DRUID = {
 	classbuffs = {
 
+		--S3
+		--balance (done)
+		[1236556] = 2, --Dryad
+		[1236807] = 2, --Dyrad's Favor
+		[1236989] = 2, --Gathering of Moonlight
+		[1236990] = 2, --Moonlight Suffusion
+
+		--Feral (done)
+		[1236671] = 2, --Ravage Rampage
+
+
 		--시즌 2 완료
 		[455070] = 2, -- 회드 시즌1
 		[1217236] = 1, -- 야드 시즌2
@@ -516,7 +527,7 @@ ns.ShowList_DRUID = {
 
 	},
 
-	version = 250222,
+	version = 250715,
 }
 
 
