@@ -1,6 +1,7 @@
 # asBloodlustAlert
 
 Notifies you when the Bloodlust/Heroism debuff wears off and the ability is ready to be used again.
+![asBloodlustAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asBloodlustAlert.jpg?raw=true)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/d35btvURBmU?si=cPgOacVHCsvlE6jz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Features
@@ -21,9 +22,10 @@ Notifies you when the Bloodlust/Heroism debuff wears off and the ability is read
 
 ---
 
-# asBloodlustAlert (Korean)
+# asBloodlustAlert
 
 블러드 사용 불가 디버프가 사라저 준비 되면 알림니다.
+![asBloodlustAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asBloodlustAlert.jpg?raw=true)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/d35btvURBmU?si=cPgOacVHCsvlE6jz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 기능
