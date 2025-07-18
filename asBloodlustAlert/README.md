@@ -1,4 +1,4 @@
-# asBloodlustAlert (English)
+# asBloodlustAlert
 
 Notifies you when the Bloodlust/Heroism debuff wears off and the ability is ready to be used again.
 <iframe width="560" height="315" src="https://www.youtube.com/embed/d35btvURBmU?si=cPgOacVHCsvlE6jz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
