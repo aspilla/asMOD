@@ -4,12 +4,11 @@ local CONFIG_SOUND_SPEED = 1      -- 음성안내 읽기 속도
 local ABLA = CreateFrame("FRAME", nil, UIParent);
 
 local lust_debuffs = {
-    57723,
-    57724,
-    80354,
-    288293,
-    264689,
-    39043,
+    57723,  --shaman (alliance)
+    57724,  --shaman
+    80354,  --mage
+    264689, --hunter
+    390435, --evoker
 }
 
 local lust_classes = {
