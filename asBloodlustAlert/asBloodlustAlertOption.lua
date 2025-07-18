@@ -2,6 +2,7 @@ local _, ns = ...;
 
 local Options_Default = {
     ClassOnly = true,
+    VoiceAlert = true,
     InRaid = false,
 }
 
@@ -9,7 +10,6 @@ local tempoption = {};
 ns.options = CopyTable(Options_Default);
 
 function ns.SetupOptionPanels()
-
     local function OnSettingChanged(_, setting, value)
         local function get_variable_from_cvar_name(cvar_name)
             local variable_start_index = string.find(cvar_name, "_") + 1
@@ -41,7 +41,8 @@ function ns.SetupOptionPanels()
         local defaultValue = Options_Default[variable];
         local currentValue = ABLA_Options[variable];
 
-        local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue), name,
+        local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
+            name,
             defaultValue);
 
         Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);

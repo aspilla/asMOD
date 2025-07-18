@@ -1,5 +1,6 @@
 local _, ns = ...;
 
+local CONFIG_SOUND_SPEED = 1      -- 음성안내 읽기 속도
 local ABLA = CreateFrame("FRAME", nil, UIParent);
 
 local lust_debuffs = {
@@ -40,6 +41,9 @@ local function updateAuras()
     end
 
     if lust_debuff_time > 0 and lust_debuff_time < 1 then
+        if ns.options.VoiceAlert then
+			PlaySoundFile("Interface\\AddOns\\asBloodlustAlert\\Ready.mp3", "MASTER")
+        end
         SendChatMessage(ready_msg);
     end
 
