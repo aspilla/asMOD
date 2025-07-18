@@ -1,0 +1,10 @@
+﻿## Interface: 110107, 110200
+## Author: |cffff3399Aspilla|r [Azshara - KR]
+## Title: |cffff3399as|rBloodlustAlert
+## Notes: Saying current mana remain in chat
+## Version : 250108
+## SavedVariablesPerCharacter: ABLA_Options
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
+asBloodlustAlertOption.lua
+asBloodlustAlert.lua
