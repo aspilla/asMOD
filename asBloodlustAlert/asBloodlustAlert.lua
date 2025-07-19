@@ -1,6 +1,6 @@
 local _, ns        = ...;
 
-local refresh_rate = 0.5
+local refresh_rate = 0.5;
 local ABLA         = CreateFrame("FRAME", nil, UIParent);
 
 local lust_debuffs = {
@@ -9,6 +9,7 @@ local lust_debuffs = {
     80354,  --mage
     264689, --hunter
     390435, --evoker
+    --25771,  --test
 }
 
 local lust_classes = {
@@ -35,6 +36,8 @@ local function alertMsg()
     SendChatMessage(ready_msg);
 end
 
+local after_time = nil;
+
 local function updateAuras()
     if not IsInInstance() then
         return;
@@ -45,13 +48,15 @@ local function updateAuras()
         if aura then
             local lust_debuff_time = aura.expirationTime - GetTime();
 
-            if lust_debuff_time > refresh_rate then
-                return;
-            else
-                C_Timer.After(lust_debuff_time, alertMsg)
+            if lust_debuff_time < 1 and after_time == nil then              
+                C_Timer.After(lust_debuff_time, alertMsg);
+                after_time = lust_debuff_time;
             end
+            return;
         end
     end
+
+    after_time = nil;
 
 end
 
