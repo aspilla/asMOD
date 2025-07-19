@@ -75,8 +75,8 @@ local function SearchEntryUpdate(entry, ...)
         entry.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", entry.DataDisplay.Enumerate["Icon5"], "LEFT", -1, 0);
 
         if overallColor and resultInfo.leaderOverallDungeonScore and ns.options.ShowLeaderScore then
-            entry.DataDisplay.Enumerate[texture]:SetText(overallColor:WrapTextInColorCode(resultInfo
-                .leaderOverallDungeonScore));
+            entry.DataDisplay.Enumerate[texture]:SetText(overallColor:WrapTextInColorCode(tostring(resultInfo
+                .leaderOverallDungeonScore)));
             entry.DataDisplay.Enumerate[texture]:Show();
         else
             entry.DataDisplay.Enumerate[texture]:Hide();
@@ -137,13 +137,16 @@ local function SearchEntryUpdate(entry, ...)
                         "RIGHT",
                         -1, -7);
                     entry.DataDisplay.Enumerate[texture]:SetTexCoord(.08, .92, .08, .92);
-                    entry.DataDisplay.Enumerate[texture]:SetDrawLayer("ARTWORK", 7);
+                    entry.DataDisplay.Enumerate[texture]:SetDrawLayer("ARTWORK", 6);
                 end
 
                 if (role == "TANK" and ns.options.ShowTankerSpec) or (role == "HEALER" and ns.options.ShowHealerSpec) or role == "DAMAGER" then
                     if specicons[class .. spec] then
                         entry.DataDisplay.Enumerate[texture]:SetTexture(specicons[class .. spec]);
                         entry.DataDisplay.Enumerate[texture]:Show();
+                        if entry.DataDisplay.Enumerate["Icon" .. order].LeaverIcon then
+                            entry.DataDisplay.Enumerate["Icon" .. order].LeaverIcon:SetDrawLayer("ARTWORK", 7);
+                        end
                     end
                 end
             end
@@ -165,14 +168,12 @@ local function SearchEntryUpdate(entry, ...)
                     classes[role][class] = 1;
                 else
                     classes[role][class] = classes[role][class] + 1;
-                end                
+                end
                 if isLeader then
                     leader_role = role;
                     leader_class = class;
                 end
             end
-
-            
         end
 
         if not entry.DataDisplay.RoleCount.infos then
@@ -210,26 +211,25 @@ local function SearchEntryUpdate(entry, ...)
                 text = roleicons[role];
                 for class, count in pairs(infos) do
                     text = text .. getClassCountText(class, count);
-                end                
-                
+                end
             end
-            
+
             fontstring:SetText(text);
             fontstring:Show();
         end
 
         for role, _ in pairs(roleicons) do
             local infos = classes[role];
-            setupText(role, infos, entry.DataDisplay.RoleCount.infos[role]);            
+            setupText(role, infos, entry.DataDisplay.RoleCount.infos[role]);
         end
 
         local text = "";
 
         if leader_class and leader_role then
-            text = leaderIcon..getClassCountText(leader_class, string.sub(leader_role, 1, 1))            
+            text = leaderIcon .. getClassCountText(leader_class, string.sub(leader_role, 1, 1))
         end
         entry.DataDisplay.RoleCount.infos.LEADER:SetText(text);
-        entry.DataDisplay.RoleCount.infos.LEADER:Show();            
+        entry.DataDisplay.RoleCount.infos.LEADER:Show();
     end
 end
 
