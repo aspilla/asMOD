@@ -2,7 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rBloodlustAlert
 ## Notes: Notifies when the Bloodlust debuff off
-## Version : 250719
+## Version : 250719_2
 ## SavedVariablesPerCharacter: ABLA_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

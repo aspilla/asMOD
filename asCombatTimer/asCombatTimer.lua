@@ -45,6 +45,8 @@ local function FormatTime(seconds)
 	return string.format("[%02d:%02d]", minutes, secs);
 end
 
+local last_combat_end_time = nil;
+
 local function ASTM_Update()
 	
 	local timertext = ASTM_Frame.timertext;
@@ -64,7 +66,7 @@ local function ASTM_Update()
 		local time_sec;
 		local start_time = combat_start_time;
 
-		if encounter_start_time and combat_start_time - encounter_start_time < 1 then
+		if encounter_start_time and encounter_start_time > last_combat_end_time then
 			start_time = encounter_start_time;
 		end
 
@@ -85,6 +87,7 @@ local function ASTM_OnEvent(self, event, arg1, ...)
 		combat_end_time = nil;
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		combat_end_time = GetTime();
+		last_combat_end_time = combat_end_time;
 	elseif event == "ENCOUNTER_START" then
 		encounter_start_time = GetTime();
 	end
@@ -150,6 +153,10 @@ local function ASTM_Init()
 	ASTM_Frame:RegisterEvent("PLAYER_REGEN_ENABLED");
 	ASTM_Frame:RegisterEvent("ENCOUNTER_START");
 	ASTM_Frame:SetScript("OnEvent", ASTM_OnEvent)
+
+	if not UnitAffectingCombat("player") then
+		last_combat_end_time = GetTime();
+	end
 	
 	C_Timer.NewTicker(0.25, ASTM_Update);
 

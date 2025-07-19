@@ -1,7 +1,7 @@
-local _, ns = ...;
+local _, ns        = ...;
 
-local CONFIG_SOUND_SPEED = 1      -- 음성안내 읽기 속도
-local ABLA = CreateFrame("FRAME", nil, UIParent);
+local refresh_rate = 0.5
+local ABLA         = CreateFrame("FRAME", nil, UIParent);
 
 local lust_debuffs = {
     57723,  --shaman (alliance)
@@ -18,13 +18,22 @@ local lust_classes = {
     ["EVOKER"] = true,
 }
 
-local ready_msg = "Bloodlust ready";
+local ready_msg    = "Bloodlust ready";
 
 if GetLocale() == "koKR" then
     ready_msg = "블러드 준비";
 end
 
-local lust_debuff_time = 0;
+local function alertMsg()
+    if not IsInInstance() then
+        return;
+    end
+
+    if ns.options.VoiceAlert then
+        PlaySoundFile("Interface\\AddOns\\asBloodlustAlert\\Ready.mp3", "MASTER")
+    end
+    SendChatMessage(ready_msg);
+end
 
 local function updateAuras()
     if not IsInInstance() then
@@ -34,19 +43,16 @@ local function updateAuras()
     for _, spellId in pairs(lust_debuffs) do
         local aura = C_UnitAuras.GetPlayerAuraBySpellID(spellId)
         if aura then
-            lust_debuff_time = aura.expirationTime - GetTime();
-            return;
+            local lust_debuff_time = aura.expirationTime - GetTime();
+
+            if lust_debuff_time > refresh_rate then
+                return;
+            else
+                C_Timer.After(lust_debuff_time, alertMsg)
+            end
         end
     end
 
-    if lust_debuff_time > 0 and lust_debuff_time < 1 then
-        if ns.options.VoiceAlert then
-			PlaySoundFile("Interface\\AddOns\\asBloodlustAlert\\Ready.mp3", "MASTER")
-        end
-        SendChatMessage(ready_msg);
-    end
-
-    lust_debuff_time = 0;
 end
 
 local function isNeedtowork()
@@ -80,7 +86,7 @@ ns.checkStatus = function()
     end
 
     if isNeedtowork() then
-        timer = C_Timer.NewTicker(0.5, updateAuras);
+        timer = C_Timer.NewTicker(refresh_rate, updateAuras);
     end
 end
 
