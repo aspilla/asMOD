@@ -97,7 +97,7 @@
 
 * Optimal Setup Macro (Recommended for use with small nameplates)                                                                                                 │
 Automatically creates a macro named `asNamePlates Setup`. Using this macro as shown in the video below will apply the optimal settings. 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/eD3APgCnPuk?si=98yioCAKHGLR62XP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Y62-48k_wBk?si=9JmBMxXEHZn5lRTT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ---
 
@@ -240,4 +240,4 @@ Automatically creates a macro named `asNamePlates Setup`. Using this macro as sh
 
 * 최정설정 Macro(작은 이름표에서 사용 추천천)
 `asNamePlates Setup`이라는 메크로를 자동으로 만듭니다. 해당 매크로를 아래 영상과 같이 사용시 최적의 설정으로 사용 가능합니다.
-<iframe width="560" height="315" src="https://www.youtube.com/embed/eD3APgCnPuk?si=98yioCAKHGLR62XP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Y62-48k_wBk?si=9JmBMxXEHZn5lRTT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
