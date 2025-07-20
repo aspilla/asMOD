@@ -325,7 +325,7 @@ ANameP_Options_Default = {
     ANameP_Tooltip = true,                                    -- Tooltip 표시
     ANameP_ShowDBM = true,                                    -- DBM Cooldown을 표시
     ANameP_ShowDBMCastingColor = true,                        -- DBM CastingColor을 표시
-    ANameP_ShowDBMBuff = true,                                -- DBM buff 
+    ANameP_ShowDBMBuff = true,                                -- DBM buff
     ANameP_ShortFriendNP = true,                              -- 아군 체력바 크기 조정
     ANameP_RealHealth = true,                                 -- 체력 수치 표시
     ANameP_ShowPetTarget = true,                              -- Pet 대상 표시
@@ -599,6 +599,21 @@ ANameP_Options_Default = {
 
 };
 
+local function createMacro()
+    local macroText =
+    "/run SetCVar (\"nameplateGlobalScale\", 1.2)\n/run SetCVar (\"nameplateSelectedScale\", 1.3)\n/run SetCVar (\"nameplateOverlapV\", 0.1)\n/run ANameP_Options.ANameP_DebuffAnchorPoint=2\n/run ANameP_Options.ANameP_ShowListOnly=true\n/reload";
+    local macroName = "asNamePlates Setup";
+    local macroID = GetMacroIndexByName(macroName);
+
+
+    if (macroID == 0) then
+        CreateMacro(macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText, false);
+    else
+        EditMacro(macroID, macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText)
+    end
+end
+
+
 ANameP_OptionM = {};
 local update_callback = nil;
 
@@ -619,6 +634,7 @@ local scrollChild = nil;
 
 local function SetupChildPanel()
     curr_y = 0;
+
 
     if scrollFrame then
         scrollFrame:Hide()
@@ -1176,6 +1192,8 @@ function panel:OnEvent(event, addOnName)
         end
 
         ANameP_OptionM.SetupAllOption();
+
+        C_Timer.After(1, createMacro);
     elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
         ANameP_OptionM.SetupAllOption();
     elseif event == "PLAYER_REGEN_ENABLED" then

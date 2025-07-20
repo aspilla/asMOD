@@ -71,7 +71,7 @@ end
 
 local function createMacro()
 	local macroText =
-	"/run SetCVar (\"nameplateGlobalScale\", 1.2)\n/run SetCVar (\"nameplateSelectedScale\", 1.3)\n/console WorldTextScale 0.5\n/console turnspeed 180\n/console set ResampleAlwaysSharpen 1";
+	"/console WorldTextScale 0.5\n/console turnspeed 180\n/console set ResampleAlwaysSharpen 1";
 	local macroName = "asMOD Setup";
 	local macroID = GetMacroIndexByName(macroName);
 
@@ -79,7 +79,7 @@ local function createMacro()
 	if (macroID == 0) then
 		CreateMacro(macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText, false);
 	else
-		EditMacro(macroID, macroName,"Inv_10_inscription3_darkmoondeckbox_black", macroText)
+		EditMacro(macroID, macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText)
 	end
 end
 
@@ -126,7 +126,7 @@ local function asMOD_Setup()
 	SetCVar("showTargetOfTarget", 1)
 
 	if version >= 110105 then
-	--쿨다운 Viewer 끄기
+		--쿨다운 Viewer 끄기
 		SetCVar("cooldownViewerEnabled", 0);
 	end
 
@@ -147,8 +147,8 @@ local function asMOD_Setup()
 	ToggleChatColorNamesByClassGroup(true, "INSTANCE_CHAT")
 	ToggleChatColorNamesByClassGroup(true, "INSTANCE_CHAT_LEADER")
 
-	-- 기본 Setup macro 생성
-	createMacro();
+
+
 
 	asMOD_Import_Layout(ns.layout, "asMOD_layout");
 	asMOD_Import_Commit();
@@ -791,6 +791,8 @@ local function asMOD_OnEvent(self, event, arg1)
 			asMOD_config = true;
 			asMOD_version = asMOD_CurrVersion;
 		end
+
+		C_Timer.After(1, createMacro);
 
 		if GetLocale() == "koKR" then
 			DEFAULT_CHAT_FRAME:AddMessage("/asMOD : 최적화된 Interface 옵션 Setup")

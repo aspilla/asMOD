@@ -1,4 +1,4 @@
-# asNamePlates: Enhanced Nameplates Addon
+# asNamePlates: Enhanced Nameplates
 
 **asNamePlates** is an addon for World of Warcraft that enhances the nameplates of attackable targets. It provides various visual feedback and convenience features to help you better understand combat situations and react more efficiently.
 
@@ -94,9 +94,14 @@
 
 * Only spells and skills enabled in DBM's settings will be highlighted. (Refer to the video below)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Yn19ieQ6QRo?si=tfbzb3_7YUMwxUGc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+* Optimal Setup Macro (Recommended for use with small nameplates)                                                                                                 │
+Automatically creates a macro named `asNamePlates Setup`. Using this macro as shown in the video below will apply the optimal settings. 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/eD3APgCnPuk?si=98yioCAKHGLR62XP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ---
 
-# asNamePlates: 이름표(NamePlates) 개선 애드온
+# asNamePlates: 이름표(NamePlates) 개선
 
 **asNamePlates**는 World of Warcraft의 공격 가능한 대상의 이름표(NamePlates)를 개선하는 애드온입니다. 다양한 시각적 피드백과 편의 기능을 제공하여 전투 상황을 더욱 명확하게 인지하고 효율적으로 대처할 수 있도록 돕습니다.
 
@@ -232,3 +237,7 @@
 
 * DBM 내 설정 활성화 주문 및 스킬만 강조 안내 합니다. (아래 영상 참고)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Yn19ieQ6QRo?si=tfbzb3_7YUMwxUGc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+* 최정설정 Macro(작은 이름표에서 사용 추천천)
+`asNamePlates Setup`이라는 메크로를 자동으로 만듭니다. 해당 매크로를 아래 영상과 같이 사용시 최적의 설정으로 사용 가능합니다.
+<iframe width="560" height="315" src="https://www.youtube.com/embed/eD3APgCnPuk?si=98yioCAKHGLR62XP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
