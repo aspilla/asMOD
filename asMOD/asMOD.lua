@@ -70,6 +70,11 @@ local function asMOD_Import_Commit()
 end
 
 local function createMacro()
+
+	if InCombatLockdown() then
+		return;
+	end
+
 	local macroText =
 	"/console WorldTextScale 0.5\n/console turnspeed 180\n/console set ResampleAlwaysSharpen 1";
 	local macroName = "asMOD Setup";

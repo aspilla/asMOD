@@ -600,6 +600,9 @@ ANameP_Options_Default = {
 };
 
 local function createMacro()
+    if InCombatLockdown() then
+		return;
+	end
     local macroText =
     "/run SetCVar (\"nameplateGlobalScale\", 1.2)\n/run SetCVar (\"nameplateSelectedScale\", 1.3)\n/run ANameP_Options.nameplateOverlapV = 0.6\n/run ANameP_Options.ANameP_DebuffAnchorPoint=2\n/run ANameP_Options.ANameP_ShowListOnly=true\n/reload";
     local macroName = "asNamePlates Setup";
