@@ -1,7 +1,7 @@
 ﻿local _, ns = ...;
 
 -- 설정 최소 Cooldown (단위 초)
-local CONFIG_MINCOOL = 1.5 -- 최소안내 쿨타임
+local CONFIG_MINCOOL = 2 -- 최소안내 쿨타임
 local CONFIG_MAXCOOL = (60 * 5)
 local CONFIG_MINCOOL_PET = 20
 local CONFIG_SOUND_SPEED = 1      -- 음성안내 읽기 속도
@@ -638,6 +638,12 @@ end
 
 local function ACDP_Checkcooldown()
 	local _, gcd = asGetSpellCooldown(61304);
+
+	local lc_data = C_LossOfControl.GetActiveLossOfControlData(LOSS_OF_CONTROL_ACTIVE_INDEX);
+	local lc_duration = 0;
+	if lc_data then
+		lc_duration = lc_data.duration;
+	end
 	for spellid, type in pairs(KnownSpellList) do
 		local start, duration;
 		local check_duration = CONFIG_MINCOOL;
@@ -656,7 +662,8 @@ local function ACDP_Checkcooldown()
 
 		if start and start > 0 and duration then
 			local remain = start + duration - currtime;
-			if duration > check_duration and duration <= CONFIG_MAXCOOL then
+
+			if duration > check_duration and duration <= CONFIG_MAXCOOL and (lc_duration == 0 or duration ~= lc_duration) then
 				if showlist_id[spellid] == nil then
 					local runeduration = GetMinRuneCooldown()
 
