@@ -29,7 +29,9 @@ end
 local function ASCT_UpdateDisplayedMessages()
 
 	local left, bottom, height = ns.GetPosition();
-	leftpoint = left - 860;
+	local width = UIParent:GetWidth();
+
+	leftpoint = left - width/2 + 50;
 	-- Update scrolldirection
 	COMBAT_TEXT_SCROLL_FUNCTION = asCombatText_StandardScroll;
 	COMBAT_TEXT_LOCATIONS = {
