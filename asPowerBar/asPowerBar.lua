@@ -3480,6 +3480,8 @@ local function updateCombatLog()
                 end
                 tempeststate.awaken_remove_time = timestamp;
                 --print("Awaken");
+            elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and (spellId == 114051 or spellId == 1219480)) then -- TWW S3 Tier
+                tempeststate.lastaction = 6;
             elseif (eventType == "SPELL_AURA_REMOVED" and spellId == 454015) then
                 tempeststate.buffstack = 0;
 
@@ -3510,7 +3512,10 @@ local function updateCombatLog()
                 local buffcount = amount - tempeststate.buffstack;
                 local castTimeDiff = timestamp - tempeststate.lastCastTime;
 
-                if buffcount == 2 then
+
+                if tempeststate.lastaction == 6 and bupdate_storm_tww_s3 then
+
+                elseif buffcount == 2 then
                     needtoreset = true;
                 elseif buffcount == 1 then
                     if (tempeststate.lastaction == 1 or tempeststate.lastaction == 5) and castTimeDiff < 0.5 then
@@ -3575,18 +3580,10 @@ local function updateCombatLog()
                     tempeststate.awaken_stack = 0;
                 end
                 tempeststate.awaken_remove_time = timestamp;
-                tempeststate.lastaction = 4;
             elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH" or eventType == "SPELL_AURA_APPLIED_DOSE") and spellId == 454015) then -- Tempest buff
-                local needtoreset = false;
                 local castTimeDiff = timestamp - tempeststate.lastCastTime;
 
-                if tempeststate.lastaction == 1 then
-                    if castTimeDiff == 0 then
-                        needtoreset = true;
-                    end
-                end
-
-                if needtoreset then
+                if castTimeDiff == 0 then
                     if tempeststate.bfirstcheck then
                         tempeststate.bfirstcheck = false;
                         tempeststate.TStacks = 0
@@ -3598,10 +3595,7 @@ local function updateCombatLog()
                         tempeststate.TStacks = 0
                     end
                 end
-                tempeststate.lastaction = 2;
             elseif (eventType == "SPELL_CAST_SUCCESS" and elemental_listOfSpenders[spellId]) then
-                tempeststate.lastCastTime = timestamp;
-
                 local lcost = C_Spell.GetSpellPowerCost(spellId);
                 local cost = 0;
                 if lcost[1].name == "MAELSTROM" then
@@ -3610,8 +3604,10 @@ local function updateCombatLog()
                     cost = lcost[2].cost or 0;
                 end
 
-                tempeststate.TStacks = tempeststate.TStacks + cost;
-                tempeststate.lastaction = 1;
+                if cost > 0 then
+                    tempeststate.TStacks = tempeststate.TStacks + cost;
+                    tempeststate.lastCastTime = timestamp;
+                end
             end
 
             -- Fail-safe to reset stacks if they exceed 49
