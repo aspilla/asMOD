@@ -316,10 +316,10 @@ ACI_Options_Default = {
 
 	--정기
 	ACI_SpellList_SHAMAN_1 = {
-		version = 250303,
+		version = 250721,
 		{ 260734,        3 },
 		{ { 375982, 1 }, { 114050, 1 } },
-		{ 99,            462816,       { 191634, 2 },                   { 192249, 6, nil, nil, nil, 2065626, nil, { 1020304 }, nil, nil, nil, 20 }, { 198067, 6, nil, nil, nil, 135790, nil, nil, nil, nil, nil, 20 } },
+		{ 99,            462816,       { 191634, 2 },                   { 192249, 6, nil, nil, nil, 2065626, nil, { 1020304 }, nil, nil, nil, 24 }, { 198067, 6, nil, nil, nil, 135790, nil, nil, nil, nil, nil, 24 } },
 		{ 99,            462816,       { 196840, 1, nil, nil, 462818 }, { 191634, 2 } },
 		{ 470411,        4,            nil,                             18 * 0.3,                                                                   nil,                                                              nil, nil, nil, nil, nil, 6 },
 

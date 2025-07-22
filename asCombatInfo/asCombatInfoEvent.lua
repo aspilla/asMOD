@@ -118,7 +118,7 @@ local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
 end
 
 local debufffilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.Player);
-local bufffilter = CreateFilterString(AuraFilters.Helpful);
+local bufffilter = CreateFilterString(AuraFilters.Helpful, AuraFilters.IncludeNameplateOnly);
 
 local function ProcessAura(unit, aura, searchinfo)
     if aura == nil then

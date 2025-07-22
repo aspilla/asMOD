@@ -24,6 +24,7 @@ local bupdate_healthbar = APB_SHOW_HEALTHBAR;
 local bupdate_stagger = false;
 local bupdate_fronzen = false;
 local bupdate_enhaced_tempest = false;
+local bupdate_storm_tww_s3 = false;
 local bupdate_element_tempest = false;
 local bupdate_Howl_Pack = false;
 local bupdate_partial_power = false;
@@ -94,6 +95,9 @@ local tempeststate = {
     buffstack = 0,
     lastspellId = 0,
     lastaction = 0,
+    --tww s3
+    awaken_stack = 0,
+    awaken_remove_time = nil,
 }
 
 local special_cost_spells = {
@@ -845,7 +849,20 @@ local function APB_UpdateBuffStack(stackbar)
         end
         stackbar:SetValue(count);
         stackbar.prevcount = count;
-        stackbar.count:SetText(count);
+
+        if bupdate_storm_tww_s3 then
+            if tempeststate.awaken_stack then
+                local add_count = 0;
+                local aura = C_UnitAuras.GetPlayerAuraBySpellID(462131);
+                if aura and aura.applications then
+                    add_count = aura.applications;
+                end
+                stackbar.count:SetText(count .. " [" .. tempeststate.awaken_stack + add_count .. "]");
+            end
+        else
+            stackbar.count:SetText(count);
+        end
+
 
         local balert = false;
 
@@ -2142,6 +2159,7 @@ local function APB_CheckPower(self)
     bsmall_power_bar = false;
     bhalf_combo = false;
     bupdate_enhaced_tempest = false;
+    bupdate_storm_tww_s3 = false;
     bupdate_element_tempest = false;
     bupdate_Howl_Pack = false;
     bdruid = false;
@@ -3043,6 +3061,11 @@ local function APB_CheckPower(self)
                 self.stackbar[0].spellid = 454009;
 
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+
+                if HowManyHasSet(1929) >= 2 then
+                    bupdate_storm_tww_s3 = true;
+                    tempeststate.awaken_stack = 0;
+                end
             end
         end
 
@@ -3082,6 +3105,11 @@ local function APB_CheckPower(self)
 
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
                 combobuffcoloralertlist = { 454015 }; --폭풍 색상 변경
+
+                if HowManyHasSet(1929) >= 2 then
+                    bupdate_storm_tww_s3 = true;
+                    tempeststate.awaken_stack = 0;
+                end
             end
         end
 
@@ -3436,6 +3464,7 @@ local howl_pack_auras = {
 
 
 local playerGUID = UnitGUID("player");
+local storm_ascend_timer = nil;
 
 local function updateCombatLog()
     local timestamp, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellId, _, _, auraType, amount =
@@ -3445,6 +3474,11 @@ local function updateCombatLog()
         if bupdate_enhaced_tempest then
             if (eventType == "SPELL_AURA_REMOVED" and spellId == 462131) then
                 tempeststate.lastaction = 4;
+                tempeststate.awaken_stack = tempeststate.awaken_stack + 4;
+                if tempeststate.awaken_stack == 8 then
+                    tempeststate.awaken_stack = 0;
+                end
+                tempeststate.awaken_remove_time = timestamp;
                 --print("Awaken");
             elseif (eventType == "SPELL_AURA_REMOVED" and spellId == 454015) then
                 tempeststate.buffstack = 0;
@@ -3536,28 +3570,18 @@ local function updateCombatLog()
             end
         elseif bupdate_element_tempest then
             if (eventType == "SPELL_AURA_REMOVED" and spellId == 462131) then
+                tempeststate.awaken_stack = tempeststate.awaken_stack + 3;
+                if tempeststate.awaken_stack == 9 then
+                    tempeststate.awaken_stack = 0;
+                end
+                tempeststate.awaken_remove_time = timestamp;
                 tempeststate.lastaction = 4;
-            elseif (eventType == "SPELL_AURA_REMOVED" and spellId == 454015) then
-                tempeststate.buffstack = 0;
-                tempeststate.lastaction = 3;
-            elseif (eventType == "SPELL_AURA_REMOVED_DOSE" and spellId == 454015) then
-                tempeststate.buffstack = amount;
-                tempeststate.lastaction = 3;
             elseif ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH" or eventType == "SPELL_AURA_APPLIED_DOSE") and spellId == 454015) then -- Tempest buff
                 local needtoreset = false;
-                if amount == nil then
-                    amount = 1;
-                end
-
-                local buffcount = amount - tempeststate.buffstack;
                 local castTimeDiff = timestamp - tempeststate.lastCastTime;
 
-                if buffcount == 2 then
-                    needtoreset = true;
-                elseif buffcount == 1 then
-                    if tempeststate.lastaction == 1 and castTimeDiff < 0.5 then
-                        needtoreset = true;
-                    elseif tempeststate.lastaction == 2 and castTimeDiff < 1 then
+                if tempeststate.lastaction == 1 then
+                    if castTimeDiff == 0 then
                         needtoreset = true;
                     end
                 end
@@ -3574,7 +3598,6 @@ local function updateCombatLog()
                         tempeststate.TStacks = 0
                     end
                 end
-                tempeststate.buffstack = amount;
                 tempeststate.lastaction = 2;
             elseif (eventType == "SPELL_CAST_SUCCESS" and elemental_listOfSpenders[spellId]) then
                 tempeststate.lastCastTime = timestamp;
@@ -3614,6 +3637,17 @@ local function updateCombatLog()
                         table.remove(restroQueue, 2);
                     end
                     table.remove(restroQueue, 3);
+                end
+            end
+        end
+
+        if bupdate_storm_tww_s3 then
+            if ((eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH" or eventType == "SPELL_AURA_APPLIED_DOSE") and (spellId == 114051 or spellId == 1219480)) then -- TWW S3 Tier
+                if tempeststate.awaken_remove_time then
+                    if (timestamp - tempeststate.awaken_remove_time == 0) then
+                        tempeststate.awaken_stack = 0;
+                    end
+                    tempeststate.awaken_remove_time = nil;
                 end
             end
         end
