@@ -1,8 +1,8 @@
 ﻿## Interface: 110107, 110200
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rTrueGCD
-## Notes: 사용 스킬 History
-## Version : 250427
+## Notes: Short history of recently used spells
+## Version : 250723
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asTrueGCD.xml

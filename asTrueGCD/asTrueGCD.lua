@@ -10,6 +10,8 @@ local AGCD_BlackList = {
 	[240022] = 1,
 	[467718] = 1,
 	[1228085] = 1,
+	[463429] = 1,
+	[7268] = 1,
 }
 
 local GetItemInfo = C_Item and C_Item.GetItemInfo;
@@ -106,14 +108,31 @@ for i = 0, 3 do
 	ATGCD.frame[i].border:Show();
 
 	ATGCD.frame[i].count:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE");
-    ATGCD.frame[i].count:ClearAllPoints();
-    ATGCD.frame[i].count:SetPoint("CENTER", ATGCD.frame[i], "CENTER", 0, 0);
+	ATGCD.frame[i].count:ClearAllPoints();
+	ATGCD.frame[i].count:SetPoint("CENTER", ATGCD.frame[i], "CENTER", 0, 0);
 
 	ATGCD.frame[i].text:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE");
-    ATGCD.frame[i].text:ClearAllPoints();
-    ATGCD.frame[i].text:SetPoint("CENTER", ATGCD.frame[i], "CENTER", 0, 0);
-    
+	ATGCD.frame[i].text:ClearAllPoints();
+	ATGCD.frame[i].text:SetPoint("CENTER", ATGCD.frame[i], "CENTER", 0, 0);
+
 	ATGCD.frame[i]:Hide();
+
+	if not ATGCD.frame[i]:GetScript("OnEnter") then
+		ATGCD.frame[i]:SetScript("OnEnter", function(s)
+			if s.spellid and s.spellid > 0 then
+				GameTooltip_SetDefaultAnchor(GameTooltip, s);
+				GameTooltip:SetSpellByID(s.spellid);
+			elseif s.itemid and s.itemid > 0 then
+				GameTooltip_SetDefaultAnchor(GameTooltip, s);
+				GameTooltip:SetItemByID(s.itemid);
+			end
+		end)
+		ATGCD.frame[i]:SetScript("OnLeave", function()
+			GameTooltip:Hide();
+		end)
+	end
+	ATGCD.frame[i]:EnableMouse(false);
+	ATGCD.frame[i]:SetMouseMotionEnabled(true);
 end
 
 
@@ -128,11 +147,8 @@ if bloaded and asMOD_setupFrame then
 end
 
 
-local prev_spell_time = nil;
 local prev_spell_id = nil;
 local seq_spell_count = 0;
-local icons = {};
-local texts = {};
 local spells = {};
 
 local function ATGCD_Alert(spellid, bcancel, bitem)
@@ -171,7 +187,7 @@ local function ATGCD_Alert(spellid, bcancel, bitem)
 		table.remove(spells, 4);
 	end
 
-	table.insert(spells, 1, { icon, seq_spell_count, bcancel, current });
+	table.insert(spells, 1, { icon, seq_spell_count, bcancel, current, spellid });
 
 	return;
 end
@@ -189,6 +205,7 @@ local function ATGCD_OnUpdate()
 				frame:Hide();
 			else
 				frame.icon:SetTexture(spell[1]);
+				frame.spellid = spell[5];
 				frame:Show();
 
 				if spell[3] then
@@ -209,7 +226,6 @@ local interruptprevicon = nil;
 
 local previcon = nil;
 local prevtime = 0;
-local channel_spell = nil;
 local lastgcd = 1.5 / ((GetHaste() / 100) + 1);
 
 local function asCooldownFrame_Clear(self)
@@ -236,6 +252,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 		if name and frameIcon then
 			--if name and frameIcon and isTargetPlayer then
 			frameIcon:SetTexture(texture);
+			frame.spellid = spellid;
 
 			if spellid == prev_spell_id then
 				frame.text:SetText(seq_spell_count + 2);
@@ -262,9 +279,9 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 		local frameCooldown = frame.cooldown;
 
 		if name and frameIcon then
-			channel_spell = spellid;
 			--if name and frameIcon and isTargetPlayer then
 			frameIcon:SetTexture(texture);
+			frame.spellid = spellid;
 
 			if spellid == prev_spell_id then
 				frame.text:SetText(seq_spell_count + 2);
@@ -291,7 +308,6 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 	elseif event == "UNIT_SPELLCAST_CHANNEL_STOP" then
 		local name = UnitChannelInfo("player");
 		if not name then
-			channel_spell = nil;
 			ATGCD.frame[0]:Hide();
 		end
 	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
@@ -311,9 +327,9 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			local itemid = KnownSpellList[spellid];
 
 			if itemid then
-				ATGCD_Alert(itemid, nil, true);				
+				ATGCD_Alert(itemid, nil, true);
 			else
-				ATGCD_Alert(spellid, nil);				
+				ATGCD_Alert(spellid, nil);
 			end
 			previcon = icon;
 			prevtime = curtime;
@@ -321,7 +337,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 	elseif event == "UNIT_SPELLCAST_INTERRUPTED" and arg1 == "player" then
 		local spellid = arg3;
 		local name, discard, icon = asGetSpellInfo(spellid);
-		local gcd = select(2, asGetSpellCooldown(61304));		
+		local gcd = select(2, asGetSpellCooldown(61304));
 		local curtime = GetTime();
 
 		if gcd > 0 then
@@ -329,15 +345,14 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 		end
 
 		if (interruptprevicon and interruptprevicon == icon and (curtime - interrupttime) < lastgcd) then
-			
+
 		else
 			local itemid = KnownSpellList[spellid];
 
 			if itemid then
 				ATGCD_Alert(itemid, true, true);
 			else
-				ATGCD_Alert(spellid, true);		
-
+				ATGCD_Alert(spellid, true);
 			end
 			interruptprevicon = icon;
 			interrupttime = curtime;
