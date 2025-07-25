@@ -42,7 +42,7 @@ local black_list = {
     [458525] = true, --승천
     [458524] = true, --승천
     [458503] = true, --승천
-    [458502] = true, --승천    
+    [458502] = true, --승천
 }
 
 local asGetSpellInfo = function(spellID)
@@ -92,7 +92,7 @@ local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuation
         local slot = select(i, ...);
         local done;
         local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
-        if usePackedAura then            
+        if usePackedAura then
             done = func(auraInfo);
         else
             done = func(AuraUtil.UnpackAuraData(auraInfo));
@@ -129,7 +129,7 @@ local function ProcessAura(unit, aura, searchinfo)
         return AuraUpdateChangedType.None;
     end
 
-    if PLAYER_UNITS[aura.sourceUnit] and (searchinfo[aura.name] or searchinfo[aura.spellId])then
+    if PLAYER_UNITS[aura.sourceUnit] and (searchinfo[aura.name] or searchinfo[aura.spellId]) then
         return AuraUpdateChangedType.Show;
     end
 
@@ -246,7 +246,7 @@ local function UpdateTotem()
         local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
         --print (icon);
         --print (name);
-        if haveTotem and (totemfilter[name] or totemfilter[icon]) then            
+        if haveTotem and (totemfilter[name] or totemfilter[icon]) then
             tinsert(eventlib.totemlist, { name, start, duration, icon })
             trigger = true;
         end
@@ -254,7 +254,6 @@ local function UpdateTotem()
 end
 
 local function ABF_OnEvent(self, event, arg1, ...)
-    
     if (event == "UNIT_AURA") then
         local unit = arg1;
         if unit and (unit == "player" or unit == "pet") then
@@ -262,13 +261,13 @@ local function ABF_OnEvent(self, event, arg1, ...)
         end
     elseif (event == "UNIT_SPELLCAST_SUCCEEDED") then
         local arg2, spell = ...;
-            
+
         if castfilter[spell] ~= nil then
             castfilter[spell] = GetTime();
         end
     elseif (event == "PLAYER_TOTEM_UPDATE") then
         UpdateTotem();
-    elseif (event == "PLAYER_TARGET_CHANGED") then        
+    elseif (event == "PLAYER_TARGET_CHANGED") then
         UpdateAuras("target");
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
         local spell = asGetSpellInfo(arg1);
@@ -276,7 +275,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
         for spellorg, button in pairs(eventfilter) do
             local spellnow = asGetSpellInfo(spellorg);
             if spell == spellnow or spell == spellorg then
-                button.alert = true;                
+                button.alert = true;
             end
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
@@ -284,7 +283,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
         for spellorg, button in pairs(eventfilter) do
             local spellnow = asGetSpellInfo(spellorg);
             if spell == spellnow or spell == spellorg then
-                button.alert = false;                
+                button.alert = false;
             end
         end
     elseif event == "ACTION_RANGE_CHECK_UPDATE" then
@@ -293,18 +292,15 @@ local function ABF_OnEvent(self, event, arg1, ...)
         if actionfilter[action] then
             local button = actionfilter[action];
 
-            local type, id, subType, spellID = GetActionInfo(action);
+            local type, id, subType = GetActionInfo(action);
 
             if id then
-                local name = asGetSpellInfo(id);
-                local buttonname = asGetSpellInfo(button.realspell);
-
-                if name and buttonname and name == buttonname then
+                if id == button.spellid then
                     if (checksRange and not inRange) then
                         button.inRange = false;
                     else
                         button.inRange = true
-                    end                    
+                    end
                 end
             end
         end
@@ -319,11 +315,11 @@ end
 
 
 local function OnUpdate()
-    UpdateAuras("target");    
+    UpdateAuras("target");
 end
 
-local function OnUpdate2()    
-    UpdateAuras("nameplate"); 
+local function OnUpdate2()
+    UpdateAuras("nameplate");
 end
 
 do
@@ -347,7 +343,7 @@ function ns.eventhandler.init()
     eventfilter = {};
     actionfilter = {};
     totemfilter = {};
-    castfilter = {};   
+    castfilter = {};
 end
 
 function ns.eventhandler.registerAura(unit, spell, count)
@@ -382,7 +378,7 @@ function ns.eventhandler.registerAction(action, button)
 end
 
 function ns.eventhandler.registerTotem(spell)
-    totemfilter[spell] = true;    
+    totemfilter[spell] = true;
 end
 
 function ns.eventhandler.registerCastTime(spell)
@@ -390,7 +386,7 @@ function ns.eventhandler.registerCastTime(spell)
     castfilter[spell] = 0;
 end
 
-function ns.eventhandler.getCastTime(spell)    
+function ns.eventhandler.getCastTime(spell)
     return castfilter[spell];
 end
 

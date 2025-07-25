@@ -442,13 +442,12 @@ function ns.Button:checkSpellCoolInBuff()
     end
 end
 
-local function GetAction(actionlist, spell)
+local function GetAction(actionlist, spellid)
     for _, action in pairs(actionlist) do
         local type, id, subType, spellID = GetActionInfo(action);
 
         if id and type and (type == "spell" or type == "macro") then
-            local name = asGetSpellInfo(id);
-            if name and name == spell then
+            if id == spellid then
                 return action;
             end
         end
@@ -462,7 +461,7 @@ function ns.Button:checkSpell()
 
 
     local spellid                                          = self.spellid;
-    local action                                           = GetAction(self.actionlist, self.spell)
+    local action                                           = GetAction(self.actionlist, self.spellid)
 
     local spellname, _, icon                               = asGetSpellInfo(spellid)
     local start, duration, enable                          = asGetSpellCooldown(spellid);
@@ -851,24 +850,22 @@ local function GetActionSlot(arg1)
 
 
     for lActionSlot = 1, 180 do
-        local type, id, subType, spellID = GetActionInfo(lActionSlot);
+        local type, id, subType = GetActionInfo(lActionSlot);
 
         if id and type and type == "macro" then
-            local name = asGetSpellInfo(id);
 
-            if name and name == arg1 then
+            if id and id == arg1 then
                 tinsert(ret, lActionSlot);
             end
         end
     end
 
     for lActionSlot = 1, 180 do
-        local type, id, subType, spellID = GetActionInfo(lActionSlot);
+        local type, id, subType = GetActionInfo(lActionSlot);
 
         if id and type and type == "spell" then
-            local name = asGetSpellInfo(id);
 
-            if name and name == arg1 then
+            if id and id == arg1 then
                 tinsert(ret, lActionSlot);
             end
         end
@@ -923,7 +920,7 @@ function ns.Button:init(config, frame)
 
     self.frame = frame;
 
-    local actionlist = GetActionSlot(self.spell);
+    local actionlist = GetActionSlot(self.spellid);
     self.actionlist = actionlist;
 
     self.inRange = true;

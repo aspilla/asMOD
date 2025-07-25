@@ -231,7 +231,7 @@ local function IsShown(aura)
 		return true;
 	end
 
-	aura.classbuff = ns.show_list[aura.spellId];
+	aura.classbuff = ns.show_list[spellId];
 
 	if bcheckOverlay and (overlayspell[spellId] or overlayspell[name]) then
 		if aura.classbuff and aura.classbuff > 1 then

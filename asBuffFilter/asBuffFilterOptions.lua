@@ -125,6 +125,7 @@ ns.ShowList_ROGUE = {
 
 	classcountbuffs = {
 		[1218439] = 10, --암살 시즌2
+		[441786] = 4, -- 도적 무형검
 
 
 
@@ -134,7 +135,7 @@ ns.ShowList_ROGUE = {
 
 
 	},
-	version = 250223,
+	version = 250225,
 }
 
 ns.ShowList_HUNTER = {
@@ -535,6 +536,9 @@ ns.ShowList_DRUID = {
 ns.ShowList_DEATHKNIGHT = {
 	classbuffs = {
 
+		-- s3
+		[1236996] = 2, -- Frost 
+
 		-- 시즌2 완료		
 		[1216813] = 1, -- 부죽 시즌2
 		[1217897] = 1, -- 냉죽 시즌2
@@ -549,6 +553,7 @@ ns.ShowList_DEATHKNIGHT = {
 		[377101] = 2, -- 냉기 뼈 분쇄
 		[377103] = 3, -- 냉기 뼈 분쇄 (강화)	
 		[152279] = 3, -- 냉죽 특성 신드라고사의 숨결
+		[1249658] = 3, -- Frost Sind 11.2
 
 		[459238] = 4, -- 부정 부패의 낫
 		[458123] = 3, -- 부정 부패의 낫
@@ -573,7 +578,7 @@ ns.ShowList_DEATHKNIGHT = {
 
 	},
 
-	version = 250221,
+	version = 250726,
 
 }
 

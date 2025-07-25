@@ -1476,27 +1476,26 @@ end
 
 local bupdate_druid = false;
 
-local function APB_GetActionSlots(arg1)
+local function APB_GetActionSlots(spellid)
     local ret = {};
-    local spellname = asGetSpellInfo(arg1);
+    
+    spellid = C_Spell.GetOverrideSpell(spellid)
 
     for lActionSlot = 1, 180 do
-        local type, id, subType, spellID = GetActionInfo(lActionSlot);
+        local type, id, subType = GetActionInfo(lActionSlot);
 
         if id and type and type == "macro" then
-            local name = asGetSpellInfo(id);
-            if name and name == spellname then
+            if id == spellid then
                 ret[lActionSlot] = true;
             end
         end
     end
 
     for lActionSlot = 1, 180 do
-        local type, id, subType, spellID = GetActionInfo(lActionSlot);
+        local type, id, subType = GetActionInfo(lActionSlot);
 
         if id and type and type == "spell" then
-            local name = asGetSpellInfo(id);
-            if name and name == spellname then
+            if id == spellid then
                 ret[lActionSlot] = true;
             end
         end
@@ -1507,16 +1506,14 @@ local function APB_GetActionSlots(arg1)
     return ret;
 end
 
-local function APB_GetActionSlot(arg1)
+local function APB_GetActionSlot(spellid)
     local ret;
-    local spellname = asGetSpellInfo(arg1);
-
+    spellid = C_Spell.GetOverrideSpell(spellid)
     for lActionSlot = 1, 180 do
-        local type, id, subType, spellID = GetActionInfo(lActionSlot);
+        local type, id, subType = GetActionInfo(lActionSlot);
 
         if id and type and type == "macro" then
-            local name = asGetSpellInfo(id);
-            if name and name == spellname then
+            if id == spellid then
                 ret = lActionSlot;
             end
         end
@@ -1526,8 +1523,7 @@ local function APB_GetActionSlot(arg1)
         local type, id, subType, spellID = GetActionInfo(lActionSlot);
 
         if id and type and type == "spell" then
-            local name = asGetSpellInfo(id);
-            if name and name == spellname then
+            if id == spellid then
                 ret = lActionSlot;
             end
         end
@@ -3730,14 +3726,12 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
     elseif event == "ACTION_RANGE_CHECK_UPDATE" then
         local action, inRange, checksRange = arg1, arg2, arg3;
 
-        if APB_ACTION and APB_ACTION[action] then
-            local type, id, subType, spellID = GetActionInfo(action);
+        if APB_ACTION and APB_ACTION[action] and APB_SPELL then
+            local spellid = C_Spell.GetOverrideSpell(APB_SPELL)
+            local type, id, subType = GetActionInfo(action);
 
             if id then
-                local name = asGetSpellInfo(id);
-                local spellname = asGetSpellInfo(APB_SPELL);
-
-                if name and spellname and name == spellname then
+                if id == spellid then
                     if (checksRange and not inRange) then
                         inrange = false;
                     else
@@ -3749,14 +3743,12 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             if APB_SPELL then
                 APB_UpdateSpell(APB_SPELL, APB_SPELL2);
             end
-        elseif APB_ACTION2 and APB_ACTION2[action] then
-            local type, id, subType, spellID = GetActionInfo(action);
+        elseif APB_ACTION2 and APB_ACTION2[action] and APB_SPELL2 then
+            local type, id, subType = GetActionInfo(action);
+            local spellid = C_Spell.GetOverrideSpell(APB_SPELL2)
 
             if id then
-                local name = asGetSpellInfo(id);
-                local spellname = asGetSpellInfo(APB_SPELL2);
-
-                if name and spellname and name == spellname then
+                if id == spellid then
                     if (checksRange and not inRange) then
                         inrange2 = false;
                     else
