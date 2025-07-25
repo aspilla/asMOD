@@ -96,7 +96,7 @@ local tempeststate = {
     --enhanced only
     buffstack = 0,
     lastaction = 0,
-    last_remove_time = nil;
+    last_remove_time = nil,
     --tww s3
     awaken_stack = 0,
     awaken_remove_time = nil,
@@ -110,6 +110,13 @@ local special_cost_spells = {
 local next_howl = nil;
 local groupGUIDList = {};
 local restroQueue = {};
+local arcane_state = {
+    has_clearcasting = false,
+    stack_count = 0,
+    orb_barrage_timestamp = nil,
+    er_ae_last_timestamp = nil,
+
+}
 
 local asGetSpellInfo = function(spellID)
     if not spellID then
@@ -337,6 +344,7 @@ local bdruid = false;
 local brogue = false;
 local bdeathstalker = nil;
 local brestrobuff = false;
+local bupdate_intuition_count = false;
 local combobuffalertlist = nil;
 local combodebuffalertlist = nil;
 local combobuffcountalertlist = nil;
@@ -549,6 +557,11 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
         if name then
             comboAlerts[combobar.max_combo] = true;
         end
+    end
+
+    if bupdate_intuition_count then
+        APB.combotext:SetText(tostring(arcane_state.stack_count));
+        APB.combotext:Show();
     end
 
     if buffexpire and cooldown then
@@ -1478,7 +1491,7 @@ local bupdate_druid = false;
 
 local function APB_GetActionSlots(spellid)
     local ret = {};
-    
+
     spellid = C_Spell.GetOverrideSpell(spellid)
 
     for lActionSlot = 1, 180 do
@@ -2162,6 +2175,7 @@ local function APB_CheckPower(self)
     bupdate_Howl_Pack = false;
     bdruid = false;
     brestrobuff = false;
+    bupdate_intuition_count = false;
     brogue = false;
     bdeathstalker = nil;
     combobuffalertlist = nil;
@@ -2359,6 +2373,11 @@ local function APB_CheckPower(self)
 
             --시즌1 티어 Intuition 특성으로 변경
             combobuffalertlist = { 451073, 451038, 1223797 };
+
+            if IsPlayerSpell(1223798) then
+                bupdate_intuition_count = true;
+                APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+            end
 
             for i = 1, 20 do
                 APB.combobar[i].tooltip = "ARCANE_CHARGES";
@@ -3265,6 +3284,13 @@ local function APB_CheckPower(self)
         combotext:ClearAllPoints();
         combotext:SetPoint("CENTER", APB.combobar[5], "CENTER", 0, 0);
     end
+
+    if bupdate_intuition_count then
+        local combotext = APB.combotext;
+
+        combotext:ClearAllPoints();
+        combotext:SetPoint("CENTER", APB.combobar[2], "RIGHT", 1, 0);
+    end
 end
 
 local gpredictedPowerCost = nil;
@@ -3459,6 +3485,24 @@ local howl_pack_auras = {
     [471878] = "Boar",
 }
 
+local arcane_success_spells = {
+    [30451] = true,  -- Arcane blast
+    [1449] = true,   --Arcane Explosion
+    [5143] = true,   --Missiles
+    [44425] = true,  --Arcane Barrage
+    [153626] = true, --Arcane Orb Cast
+    [321507] = true, -- TOTM
+}
+
+local arcane_energize_spells = {
+    [463356] = true, --Arcane Orb
+}
+
+local arcane_damage_spells = {
+    [461508] = true, --ER talented arcane echo explosion
+}
+
+
 
 
 local playerGUID = UnitGUID("player");
@@ -3614,6 +3658,73 @@ local function updateCombatLog()
                         table.remove(restroQueue, 2);
                     end
                     table.remove(restroQueue, 3);
+                end
+            end
+        elseif bupdate_intuition_count then
+            if eventType == "SPELL_CAST_SUCCESS" then
+                local success_spell = false
+                if arcane_success_spells[spellId] then
+                    success_spell = true
+                end
+
+                -- tracks double arcane explosion from clearcasting regardless of if you hit a mob
+                if spellId == 1449 and arcane_state.has_clearcasting then
+                    arcane_state.stack_count = arcane_state.stack_count + 1
+                elseif spellId == 44425 then
+                    --elseif for arcane barrage
+                    if arcane_state.orb_barrage_timestamp then
+                        --if checks to see if an energized arcane orb came within 0.1 seconds of casting arcane barrage
+                        local difference = timestamp - arcane_state.orb_barrage_timestamp
+                        if difference <= 0.1 then
+                            arcane_state.stack_count = arcane_state.stack_count + 1
+                        end
+                    end
+                end
+
+                --increment count for valid spell cast spellIds
+                if success_spell then
+                    arcane_state.stack_count = arcane_state.stack_count + 1
+                end
+            elseif eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_APPLIED_DOSE" then
+                --adds clearcasting flag when the aura is added. used for arcane explosion's echo
+                if spellId == 263725 then
+                    arcane_state.has_clearcasting = true
+                end
+                if spellId == 1223797 then
+                    arcane_state.stack_count = 0;
+                end
+            elseif eventType == "SPELL_AURA_REMOVED" then
+                --removes clearcasting flag when the aura is removed completely. used for arcane explosion's echo
+                if spellId == 263725 then
+                    arcane_state.has_clearcasting = false
+                end
+            elseif eventType == "SPELL_ENERGIZE" then
+                local energize_spell = false
+                if arcane_energize_spells[spellId] then
+                    energize_spell = true
+                end
+
+                --store timestamp for last arcane orb energized
+                if spellId == 153626 then
+                    arcane_state.orb_barrage_timestamp = timestamp
+                end
+
+                --increment count for valid energized spellIds
+                if energize_spell then
+                    arcane_state.stack_count = arcane_state.stack_count + 1
+                end
+            elseif eventType == "SPELL_DAMAGE" then
+                local damage_spell = false
+                if arcane_damage_spells[spellId] then
+                    damage_spell = true
+                end
+
+                --increment count for valid damage spellIds
+                if damage_spell then
+                    if arcane_state.er_ae_last_timestamp ~= timestamp then
+                        arcane_state.stack_count = arcane_state.stack_count + 1
+                        arcane_state.er_ae_last_timestamp = timestamp
+                    end
                 end
             end
         end
