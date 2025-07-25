@@ -1,9 +1,11 @@
 local _, ns = ...;
+local version = select(4, GetBuildInfo());
 local Options_Default = {
     version = 240211,
     ShowPartyInterrupt = true, --파티 차단
     ShowPartyCool = true,      -- 파티 쿨다운
     ShowRaidCool = true,       -- 공격대 쿨다운
+    CheckRealTimeCooldown = true,        --check realtime cooldown
 };
 
 ns.options = CopyTable(Options_Default);
@@ -49,7 +51,7 @@ ns.trackedCoolSpellNames = {
     },
 
     ROGUE_2 = {
-        [196937] = { 90, 12 }           --유령의 일격
+        [381989] = { 360, 30 }           --Keep It Rolling
     },
 
     ROGUE_3 = {
@@ -206,6 +208,12 @@ ns.trackedCoolSpellNames = {
         [187827] = { 120, 15 }       --탈태
     }
 }
+
+if version >= 110200 then
+    ns.trackedCoolSpellNames.DEATHKNIGHT_2 = {
+        [279302] = { 90, 0 }       --FrostWymn
+    };
+end
 
 local tempoption = {};
 

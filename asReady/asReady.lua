@@ -11,6 +11,7 @@ local AREADY_CDupdateRate = 2 -- Cooldown Check Rate 2초
 
 -----------------설정 끝 ------------------------
 
+local openRaidLib = nil;
 local interruptcools = {};
 local offensivecools = {};
 local raidframes = {};
@@ -34,6 +35,37 @@ local asGetSpellInfo = function(spellID)
         return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
             spellInfo.spellID, spellInfo.originalIconID;
     end
+end
+local function getUpdatedRemain(unit, spellid)
+    local remain = nil;
+    local currtime = GetTime();
+    if UnitIsUnit(unit, "player") then
+        local spellCooldownInfo = C_Spell.GetSpellCooldown(spellid);
+        if spellCooldownInfo then
+            if spellCooldownInfo.startTime > 0 then
+                local expirationTime = spellCooldownInfo.startTime + spellCooldownInfo.duration;
+                remain = (expirationTime - currtime);
+            else
+                remain = 0;
+            end
+        end
+    elseif openRaidLib and openRaidLib.GetUnitCooldownInfo then
+        local cooldowninfo = openRaidLib.GetUnitCooldownInfo(unit, spellid);
+
+        if cooldowninfo then
+            local timeLeft = cooldowninfo[1];
+            if cooldowninfo[2] > 0 then
+                timeLeft = 0;
+            end
+            remain = (timeLeft);
+        end
+    end
+    if remain and remain >= 0 then
+        return remain
+    end
+
+
+    return nil;
 end
 
 
@@ -155,7 +187,6 @@ local function hide_bar_icon(max)
     end
 end
 
-local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0", true);
 
 local function UtilSetCooldown(offensivecool, asframe)
     local spellid = offensivecool[2];
@@ -176,10 +207,10 @@ local function UtilSetCooldown(offensivecool, asframe)
 
         if currtime <= time + buffcool then
             local expirationTime = time + buffcool;
-            remain = math.ceil(expirationTime - currtime);
+            remain = expirationTime - currtime;
         elseif time then
             local expirationTime = time + cool;
-            remain = math.ceil(expirationTime - currtime);
+            remain = expirationTime - currtime;
 
             if realremain and realremain < remain then
                 remain = realremain;
@@ -212,7 +243,7 @@ local function UtilSetCooldown(offensivecool, asframe)
 
         if remain > 0 and remain < 100 then
             if remain ~= data.remain then
-                coolFrame.remain:SetText(remain);
+                coolFrame.remain:SetText(math.ceil(remain));
                 coolFrame.remain:SetTextColor(textcolor.r, textcolor.g, textcolor.b);
                 coolFrame.remain:Show();
                 data.remain = remain;
@@ -242,34 +273,20 @@ local function showallframes(frames)
     end
 end
 
-local function checkallframes(frames)
-    local currtime = GetTime();
+
+local function checkrealcools(frames)
     for _, asframe in pairs(frames) do
         local unit = asframe.frame.unit;
 
         if asframe.needtocheck and unit and offensivecools[unit] and offensivecools[unit][1] and asframe.frame:IsShown() then
-            local remain = nil;
             local spellid = offensivecools[unit][2];
-
-            if UnitIsUnit(unit, "player") then
-                local spellCooldownInfo = C_Spell.GetSpellCooldown(spellid);
-                if spellCooldownInfo then
-                    local expirationTime = spellCooldownInfo.startTime + spellCooldownInfo.duration;
-                    remain = math.ceil(expirationTime - currtime);
-                end
-            elseif openRaidLib and openRaidLib.GetUnitCooldownInfo then
-                local cooldowninfo = openRaidLib.GetUnitCooldownInfo(unit, spellid);
-
-                if cooldowninfo then
-                    local timeLeft = cooldowninfo[1];
-                    if cooldowninfo[2] > 0 then
-                        timeLeft = 0;
-                    end
-                    remain = math.ceil(timeLeft);
-                end
-            end
-
+            local remain = getUpdatedRemain(unit, spellid);
             offensivecools[unit][6] = remain;
+        end
+        if unit and asframe.frame:IsShown() and interruptcools[unit] and interruptcools[unit][1] then
+            local spellid = interruptcools[unit][2];
+            local remain = getUpdatedRemain(unit, spellid);
+            interruptcools[unit][6] = remain;
         end
     end
 end
@@ -325,7 +342,7 @@ local function OnSpellEvent(unit, spellid)
             if isparty then
                 local cool = isinterruptspell;
                 if cool > 0 then
-                    interruptcools[unit] = { unit, spellid, time, cool, 0 };
+                    interruptcools[unit] = { unit, spellid, time, cool, 0, nil };
                 end
             end
         end
@@ -529,24 +546,13 @@ local function setupframe(frame, framename)
     end
 end
 
-
-local function AREADY_OnUpdate()
-    for newname, newframe in pairs(frameBuffer) do
-        setupframe(newframe, newname);
-    end
-
-    frameBuffer = {};
-
+local function AREADY_OnUpdate_Interrupt()
     local idx = 1;
 
     if IsInRaid() then
-        hide_bar_icon(idx);
-
-        if ns.options.ShowRaidCool then
-            showallframes(raidframes);
-        end
     else
         if ns.options.ShowPartyInterrupt then
+            local currtime = GetTime();
             for i = 1, 5 do
                 local unit;
                 if i == 5 then
@@ -562,8 +568,16 @@ local function AREADY_OnUpdate()
                         local time = v[3];
                         local cool = v[4];
                         local prev_idx = v[5];
+                        local realremain = v[6];
 
-                        local currtime = GetTime();
+                        if realremain then
+                            local expiretime = realremain + currtime;
+                            if (time > expiretime - cool) then
+                                time = expiretime - cool;
+                                interruptcools[unit][3] = time;
+                            end
+                        end
+
                         if currtime <= time + cool + 1 or prev_idx ~= idx then
                             create_bar_icon(idx, unit, spellid, time, cool);
                             v[5] = idx;
@@ -580,24 +594,38 @@ local function AREADY_OnUpdate()
         end
 
         hide_bar_icon(idx);
+    end
+end
 
+
+local function AREADY_OnUpdate()
+    for newname, newframe in pairs(frameBuffer) do
+        setupframe(newframe, newname);
+    end
+
+    frameBuffer = {};
+
+
+    if IsInRaid() then
+        local idx = 1;
+        hide_bar_icon(idx);
+        if ns.options.ShowRaidCool then
+            showallframes(raidframes);
+        end
+    else
         if ns.options.ShowPartyCool then
             showallframes(partyframes);
         end
     end
 end
 
-local function AREADY_OnUpdate2()
+local function AREADY_OnUpdate_RealCool()
     local idx = 1;
 
     if IsInRaid() then
-        if ns.options.ShowRaidCool then
-            checkallframes(raidframes);
-        end
+        checkrealcools(raidframes);
     else
-        if ns.options.ShowPartyCool then
-            checkallframes(partyframes);
-        end
+        checkrealcools(partyframes);
     end
 end
 
@@ -605,7 +633,8 @@ end
 
 local bfirst = true;
 local timer = nil;
-local timer2 = nil;
+local timer_interrupt = nil;
+local timer_realcool = nil;
 
 local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
     if event == "UNIT_SPELLCAST_SUCCEEDED" then
@@ -614,18 +643,23 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
         if bfirst then
             ns.SetupOptionPanels();
             bfirst = false;
+            if ns.options.CheckRealTimeCooldown then
+                openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0", true);
+            end
         end
 
         if timer then
             timer:Cancel();
         end
+        if timer_interrupt then
+            timer_interrupt:Cancel();
+        end
 
-        if timer2 then
-            timer2:Cancel();
+        if timer_realcool then
+            timer_realcool:Cancel();
         end
 
         AREADY:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-
         isparty = not IsInRaid() and IsInGroup();
 
         if IsInRaid() then
@@ -635,24 +669,31 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
                 end
                 checkallraid(raidframes);
                 timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
-                timer2 = C_Timer.NewTicker(AREADY_CDupdateRate, AREADY_OnUpdate2);
+                if ns.options.CheckRealTimeCooldown then
+                    timer_realcool = C_Timer.NewTicker(AREADY_CDupdateRate, AREADY_OnUpdate_RealCool);
+                end
                 AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
             else
                 interruptcools = {};
                 offensivecools = {};
+                AREADY_OnUpdate_Interrupt();
                 AREADY_OnUpdate();
             end
         elseif IsInGroup() then
             if not (event == "ENCOUNTER_END") then
                 checkallraid(partyframes);
             end
-            timer = C_Timer.NewTicker(AREADY_UpdateRate / 3, AREADY_OnUpdate);
-            timer2 = C_Timer.NewTicker(AREADY_CDupdateRate, AREADY_OnUpdate2);
+            timer = C_Timer.NewTicker(AREADY_UpdateRate, AREADY_OnUpdate);
+            timer_interrupt = C_Timer.NewTicker(AREADY_UpdateRate / 3, AREADY_OnUpdate_Interrupt);
+            if ns.options.CheckRealTimeCooldown then
+                timer_realcool = C_Timer.NewTicker(AREADY_CDupdateRate, AREADY_OnUpdate_RealCool);
+            end
             AREADY:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
         else
             interruptcools = {};
             offensivecools = {};
             cachedoffensive = {};
+            AREADY_OnUpdate_Interrupt();
             AREADY_OnUpdate();
         end
     end
