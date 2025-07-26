@@ -1,4 +1,4 @@
-# asInterruptHelper (English)
+# asInterruptHelper
 
 Displays the optimal interrupt or stun spell icon available when your focus, mouseover, or current target begins casting a spell.
 ![asInterruptHelper](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInterruptHelper.jpg?raw=true)
@@ -30,7 +30,7 @@ Advanced settings (editing spell lists, icon position, and size) require editing
 
 ---
 
-# asInterruptHelper (Korean)
+# asInterruptHelper
 
 주시 대상, 마우스오버 대상 또는 현재 대상이 주문 시전을 시작할 때 사용 가능한 최적의 차단 또는 기절 주문 아이콘을 표시
 ![asInterruptHelper](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInterruptHelper.jpg?raw=true)   
