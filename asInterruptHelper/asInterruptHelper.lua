@@ -1,7 +1,7 @@
 ﻿local _, ns = ...;
 local AIH_SIZE = 30;
 local AIH_X = 0;
-local AIH_Y = 50;
+local AIH_Y = 67;
 local AIH_M_X = 50;
 local AIH_M_Y = -20;
 local AIH_CooldownFontSize = 9;
@@ -60,35 +60,7 @@ local function showInterruptCooldown(spellID, isDangerous, endRemain)
     local frame = mainframe.cooldownframe;
 
     if not (frame) then
-        mainframe.cooldownframe = CreateFrame("Button", nil, mainframe, "AIHFrameTemplate");
-        frame = mainframe.cooldownframe;
-        frame:SetWidth(AIH_SIZE);
-        frame:SetHeight(AIH_SIZE * 0.9);
-
-        for _, r in next, { frame.cooldown:GetRegions() } do
-            if r:GetObjectType() == "FontString" then
-                r:SetFont(STANDARD_TEXT_FONT, AIH_CooldownFontSize, "OUTLINE")
-                frame.cooldowntext = r;
-                break
-            end
-        end
-
-        frame.icon:SetTexCoord(.08, .92, .08, .92);
-        frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-
-        if not frame:GetScript("OnEnter") then
-            frame:SetScript("OnEnter", function(s)
-                if s.spellID and s.spellID > 0 then
-                    GameTooltip_SetDefaultAnchor(GameTooltip, s);
-                    GameTooltip:SetSpellByID(s.spellID);
-                end
-            end)
-            frame:SetScript("OnLeave", function()
-                GameTooltip:Hide();
-            end)
-        end
-        frame:EnableMouse(false);
-        frame:SetMouseMotionEnabled(true);
+        return;
     end
     -- set the icon
     local frameIcon = frame.icon;
@@ -208,7 +180,9 @@ local function findInterruptSpell(notInterruptible, isDangerous, endRemain, isBo
     end
 end
 
+
 local bmouseover = false;
+local bmouseover_update = true;
 local MaxLevel = GetMaxLevelForExpansionLevel(10);
 
 local function AIH_OnUpdate()
@@ -267,12 +241,18 @@ local function onUpdateMouse()
     local frame = mainframe.cooldownframe;
 
     if frame then
-        frame:ClearAllPoints();
         if bmouseover then
+            frame:ClearAllPoints();
             local x, y = GetCursorPosition() -- 마우스 좌표 가져오기
             frame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x + AIH_M_X, y + AIH_M_Y)
-        else
+            bmouseover_update = true;
+        elseif bmouseover_update then
+            frame:ClearAllPoints();
             frame:SetPoint("CENTER", UIParent, "CENTER", AIH_X, AIH_Y);
+            if asMOD_setupFrame then
+                asMOD_setupFrame(frame, "asInterruptHelper");
+            end
+            bmouseover_update = false;
         end
     end
 end
@@ -328,6 +308,36 @@ local function initAddon()
     if bloaded then
         hooksecurefunc(DBM, "NewMod", NewMod)
     end
+
+    mainframe.cooldownframe = CreateFrame("Button", nil, mainframe, "AIHFrameTemplate");
+    local frame = mainframe.cooldownframe;
+    frame:SetWidth(AIH_SIZE);
+    frame:SetHeight(AIH_SIZE * 0.9);
+
+    for _, r in next, { frame.cooldown:GetRegions() } do
+        if r:GetObjectType() == "FontString" then
+            r:SetFont(STANDARD_TEXT_FONT, AIH_CooldownFontSize, "OUTLINE")
+            frame.cooldowntext = r;
+            break
+        end
+    end
+
+    frame.icon:SetTexCoord(.08, .92, .08, .92);
+    frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+
+    if not frame:GetScript("OnEnter") then
+        frame:SetScript("OnEnter", function(s)
+            if s.spellID and s.spellID > 0 then
+                GameTooltip_SetDefaultAnchor(GameTooltip, s);
+                GameTooltip:SetSpellByID(s.spellID);
+            end
+        end)
+        frame:SetScript("OnLeave", function()
+            GameTooltip:Hide();
+        end)
+    end
+    frame:EnableMouse(false);
+    frame:SetMouseMotionEnabled(true);
 
     mainframe:SetScript("OnEvent", AIH_OnEvent)
     mainframe:RegisterEvent("PLAYER_ENTERING_WORLD")

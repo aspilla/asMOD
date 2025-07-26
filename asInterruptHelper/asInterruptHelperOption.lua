@@ -1,7 +1,7 @@
 local _, ns = ...;
 local Options_Default = {
-    version = 240211,
-    AlwaysOnMouse = true;
+    version = 250727,
+    AlwaysOnMouse = false;
 };
 
 ns.options = CopyTable(Options_Default);
