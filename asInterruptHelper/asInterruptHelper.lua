@@ -26,7 +26,7 @@ local function initPlayer()
     for id, cooldown in pairs(ns.StunSpells) do
         if IsPlayerSpell(id) then
             id = C_Spell.GetOverrideSpell(id);
-            stunSpells[id] = cooldown;            
+            stunSpells[id] = cooldown;
         end
     end
 end
@@ -45,7 +45,6 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
 end
 
 local function showInterruptCooldown(spellID, isDangerous, endRemain)
-
     spellID = C_Spell.GetOverrideSpell(spellID);
     local spellInfo = C_Spell.GetSpellInfo(spellID);
 
@@ -74,7 +73,7 @@ local function showInterruptCooldown(spellID, isDangerous, endRemain)
             end
         end
 
-        frame.icon:SetTexCoord(.08, .92, .08, .92);        
+        frame.icon:SetTexCoord(.08, .92, .08, .92);
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 
         if not frame:GetScript("OnEnter") then
@@ -162,9 +161,8 @@ local function UnitNeedtoInterrupt(unit)
 end
 
 
-local function spellIntime(id, endRemain)
-
-    id = C_Spell.GetOverrideSpell(id);
+local function spellIntime(spellid, endRemain)
+    local id = C_Spell.GetOverrideSpell(spellid);
     local spellCooldownInfo = C_Spell.GetSpellCooldown(id);
     if spellCooldownInfo then
         local remain = spellCooldownInfo.startTime + spellCooldownInfo.duration - GetTime();
@@ -176,7 +174,7 @@ local function spellIntime(id, endRemain)
     return false;
 end
 
-local function findInterruptSpell(notInterruptible, isDangerous, endRemain)
+local function findInterruptSpell(notInterruptible, isDangerous, endRemain, isBoss)
     local list;
 
     if notInterruptible then
@@ -196,7 +194,7 @@ local function findInterruptSpell(notInterruptible, isDangerous, endRemain)
             end
         end
 
-        if isDangerous then
+        if not isBoss then
             for id, cooldown in pairs(stunSpells) do
                 if spellIntime(id, endRemain) then
                     return id;
@@ -211,57 +209,64 @@ local function findInterruptSpell(notInterruptible, isDangerous, endRemain)
 end
 
 local bmouseover = false;
-local timeSinceLastUpdate = 0;
-
+local MaxLevel = GetMaxLevelForExpansionLevel(10);
 
 local function AIH_OnUpdate()
+    local unit = "focus"
+    local mobspellID, notInterruptible, endRemain = UnitNeedtoInterrupt(unit)
 
-    timeSinceLastUpdate = timeSinceLastUpdate + 0.1
-    if timeSinceLastUpdate > 0.2 then
-
-        timeSinceLastUpdate = 0;
-        local mobspellID, notInterruptible, endRemain = UnitNeedtoInterrupt("focus")
+    if mobspellID == nil then
+        unit = "mouseover";
+        mobspellID, notInterruptible, endRemain = UnitNeedtoInterrupt(unit);
 
         if mobspellID == nil then
-            mobspellID, notInterruptible, endRemain = UnitNeedtoInterrupt("mouseover");
-
-            if mobspellID == nil then
-                mobspellID, notInterruptible, endRemain = UnitNeedtoInterrupt("target");
-                bmouseover = false;
-            else
-                bmouseover = true;
-            end
-        else
+            unit = "target"
+            mobspellID, notInterruptible, endRemain = UnitNeedtoInterrupt(unit);
             bmouseover = false;
+        else
+            bmouseover = true;
+        end
+    else
+        bmouseover = false;
+    end
+
+    if mobspellID and endRemain then
+        local isDangerous = ("interrupt" == DangerousSpellList[mobspellID]);
+        local isBoss = false;
+        local needtointerrupt = true;
+        local level = UnitLevel(unit);
+
+        if level < 0 or level > MaxLevel then
+            isBoss = true;
         end
 
-        if mobspellID and endRemain then
-            local isDangerous = ("interrupt" == DangerousSpellList[mobspellID]);
-            local needtointerrupt = true;
-
-            if notInterruptible and not isDangerous then
+        if notInterruptible then
+            if isBoss then
                 needtointerrupt = false;
             end
-
-            if needtointerrupt then
-                local spellID = findInterruptSpell(notInterruptible, isDangerous, endRemain);
-
-                if spellID then
-                    showInterruptCooldown(spellID, isDangerous, endRemain)
-                end
-            end
-        else
-            hideInterruptCooldown()
         end
+
+        if needtointerrupt then
+            local spellID = findInterruptSpell(notInterruptible, isDangerous, endRemain, isBoss);
+
+            if spellID then
+                showInterruptCooldown(spellID, isDangerous, endRemain)
+            end
+        end
+    else
+        hideInterruptCooldown()
     end
 
     if ns.options.AlwaysOnMouse then
         bmouseover = true;
     end
+end
 
+
+local function onUpdateMouse()
     local frame = mainframe.cooldownframe;
 
-    if frame and frame:IsShown() then
+    if frame then
         frame:ClearAllPoints();
         if bmouseover then
             local x, y = GetCursorPosition() -- 마우스 좌표 가져오기
@@ -284,7 +289,7 @@ local function scanDBM()
                         if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
                             DangerousSpellList[obj.spellId] = obj.announceType;
                         end
-                    end 
+                    end
                 end
             end
 
@@ -310,13 +315,12 @@ end
 local bfirst = true
 
 local function AIH_OnEvent(self)
-
     if bfirst then
         bfirst = false;
         ns.SetupOptionPanels();
     end
 
-    initPlayer();    
+    initPlayer();
 end
 
 local function initAddon()
@@ -332,7 +336,8 @@ local function initAddon()
     mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
     mainframe:RegisterUnitEvent("UNIT_PET", "player")
 
-    C_Timer.NewTicker(0.1, AIH_OnUpdate);
+    C_Timer.NewTicker(0.3, AIH_OnUpdate);
+    C_Timer.NewTicker(0.05, onUpdateMouse);
 end
 
 initAddon();
