@@ -856,6 +856,9 @@ local function updateHealthbarColor(self)
 
         if spellid then
             local isDanger, binterrupt = isDangerousSpell(spellid);
+            if notInterruptible and self.stunable == false  then
+                binterrupt = false;
+            end
 
             self.castspellid = spellid;
             if isDanger then
@@ -1708,6 +1711,12 @@ local function addNamePlate(namePlateFrameBase)
             asframe.isboss = true;
         end
     end
+
+    asframe.stunable = true;
+    if level < 0 or level > MaxLevel then
+        asframe.stunable = false;
+    end
+
 
 
     asframe.automarkcolor = nil;
