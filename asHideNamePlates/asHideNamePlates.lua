@@ -45,13 +45,14 @@ local function isMustShowNPC(unit)
 end
 
 local function checkCasting(unit)
-	local name, _, _, _, _, _, _, _, spellid = UnitCastingInfo(unit);
+	local name, _, _, _, _, _, _, notInterruptable, spellid = UnitCastingInfo(unit);
 	if not name then
-		name, _, _, _, _, _, _, spellid = UnitChannelInfo(unit);
+		name, _, _, _, _, _, notInterruptable, spellid = UnitChannelInfo(unit);
 	end
 
-	return name, spellid;
+	return name, spellid, notInterruptable;
 end
+local MaxLevel = GetMaxLevelForExpansionLevel(10);
 
 local function checkTrigger(unit)
 	if not isFaction(unit) then
@@ -62,11 +63,17 @@ local function checkTrigger(unit)
 		return false;
 	end
 
-	local name, spellid = checkCasting(unit);
+	local name, spellid, notInterruptable = checkCasting(unit);
 	local status = UnitThreatSituation("player", unit);
+	local level = UnitLevel(unit);
+	local isBoss = false;
+
+	if level < 0 or level > MaxLevel then
+		isBoss = true;
+	end
 
 	if ns.options.Trigger_DBM_Interrupt_Only then
-		if spellid and status and DangerousSpellList[spellid] then
+		if spellid and status and DangerousSpellList[spellid] and (notInterruptable == false or isBoss == false)then
 			return true;
 		end
 	else
