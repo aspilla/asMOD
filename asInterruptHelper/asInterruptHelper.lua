@@ -13,22 +13,34 @@ local DangerousSpellList = {};
 
 
 local function initPlayer()
+
+    local function compare(a, b)
+
+        if a.cooldown == b.cooldown then
+            return a.spellid < b.spellid;  
+        end        
+        return a.cooldown < b.cooldown;
+    end
+
     interruptSpells = {};
     stunSpells = {};
 
     for id, cooldown in pairs(ns.InterruptSpells) do
         if IsPlayerSpell(id) then
             id = C_Spell.GetOverrideSpell(id);
-            interruptSpells[id] = cooldown;
+            table.insert(interruptSpells, { spellid = id, cooldown = cooldown })
         end
     end
+    table.sort(interruptSpells, compare);
 
     for id, cooldown in pairs(ns.StunSpells) do
         if IsPlayerSpell(id) then
             id = C_Spell.GetOverrideSpell(id);
-            stunSpells[id] = cooldown;
+            table.insert(stunSpells, { spellid = id, cooldown = cooldown })
         end
     end
+
+    table.sort(stunSpells, compare);
 end
 
 local function asCooldownFrame_Clear(self)
@@ -152,31 +164,31 @@ local function findInterruptSpell(notInterruptible, isDangerous, endRemain, isBo
     if notInterruptible then
         list = stunSpells;
 
-        for id, cooldown in pairs(list) do
-            if spellIntime(id, endRemain) then
-                return id;
+        for _, v in pairs(list) do
+            if spellIntime(v.spellid, endRemain) then
+                return v.spellid;
             end
         end
     else
         list = interruptSpells;
 
-        for id, cooldown in pairs(list) do
-            if spellIntime(id, endRemain) then
-                return id;
+        for _, v in pairs(list) do
+            if spellIntime(v.spellid, endRemain) then
+                return v.spellid;
             end
         end
 
         if not isBoss then
-            for id, cooldown in pairs(stunSpells) do
-                if spellIntime(id, endRemain) then
-                    return id;
+            for _, v in pairs(stunSpells) do
+                if spellIntime(v.spellid, endRemain) then
+                    return v.spellid;
                 end
             end
         end
     end
 
-    for id, cooldown in pairs(list) do
-        return id;
+    for _, v in pairs(list) do
+        return v.spellid;
     end
 end
 
