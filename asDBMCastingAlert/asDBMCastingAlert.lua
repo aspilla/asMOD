@@ -35,6 +35,8 @@ if GetLocale() == "koKR" then
 	CONFIG_VOICE_STUN = "Interface\\AddOns\\asDBMCastingAlert\\Stun.mp3"
 end
 
+local MaxLevel = GetMaxLevelForExpansionLevel(10);
+
 
 local function isAttackable(unit)
 	local reaction = UnitReaction("player", unit);
@@ -49,18 +51,6 @@ local timer = nil;
 local DangerousSpellList = {};
 local CastingUnits = {};
 
-local function asCooldownFrame_Clear(self)
-	self:Clear();
-end
-
-local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
-	if enable and enable ~= 0 and start > 0 and duration > 0 then
-		self:SetDrawEdge(forceShowDrawEdge);
-		self:SetCooldown(start, duration, modRate);
-	else
-		asCooldownFrame_Clear(self);
-	end
-end
 
 local RaidIconList = {
 	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
@@ -180,6 +170,13 @@ local function ADCA_OnUpdate()
 
 			local targetunit = unit .. "target";
 			local btargeted = UnitExists(targetunit) and UnitIsUnit(targetunit, "player");
+			local level = UnitLevel(unit);
+
+			if level < 0 or level > MaxLevel then
+				if castingInfo.needtointerrupt and castingInfo.notInterruptible then
+					castingInfo.needtointerrupt = false;
+				end
+			end
 
 			if castingInfo.needtointerrupt then
 				if castingInfo.focus then
