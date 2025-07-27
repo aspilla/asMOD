@@ -88,13 +88,12 @@ local function ShowCasting()
             ACTA.cast[currshow]:SetTextColor(1, 1, 0.5);
 
             if ns.options.PlaySoundDBMOnly then
-               soundcount = soundcount + 1; 
+                soundcount = soundcount + 1;
             end
-
         else
             ACTA.cast[currshow]:SetTextColor(1, 1, 1);
             if not ns.options.PlaySoundDBMOnly then
-               soundcount = soundcount + 1; 
+                soundcount = soundcount + 1;
             end
         end
 
@@ -119,9 +118,8 @@ local function ShowCasting()
     end
 
     if prevcount ~= soundcount then
-
-        if prevcount == 0 and ns.options.PlaySound  then
-            PlaySoundFile(CONFIG_VOICE_TARGETED, "MASTER"); 
+        if prevcount == 0 and ns.options.PlaySound then
+            PlaySoundFile(CONFIG_VOICE_TARGETED, "MASTER");
         end
 
         prevcount = soundcount;
@@ -167,7 +165,7 @@ local function scanDBM()
                         if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
                             DangerousSpellList[obj.spellId] = obj.announceType;
                         end
-                    end 
+                    end
                 end
             end
 
@@ -193,9 +191,9 @@ end
 local bfirst = true;
 local function ACTA_OnEvent(self, event, arg1, arg2, arg3, arg4)
     if bfirst then
-		ns.SetupOptionPanels();
-		bfirst = false;
-	end
+        ns.SetupOptionPanels();
+        bfirst = false;
+    end
 
     if (event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "PLAYER_ENTERING_WORLD" or event == "ROLE_CHANGED_INFORM") then
         checkTank();
@@ -252,6 +250,11 @@ local function initAddon()
         ACTA.cast[i]:SetMouseMotionEnabled(true);
         ACTA.cast[i]:Hide();
     end
+    C_AddOns.LoadAddOn("asMOD");
+
+    if asMOD_setupFrame then
+        asMOD_setupFrame(ACTA.cast[1], "asCastingAlert");
+    end
 
 
     ACTA:SetScript("OnEvent", ACTA_OnEvent);
@@ -261,7 +264,7 @@ local function initAddon()
     ACTA:RegisterEvent("PLAYER_ENTERING_WORLD");
     ACTA:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
     ACTA:RegisterEvent("ROLE_CHANGED_INFORM");
-    
+
 
     -- 주기적으로 Callback
     C_Timer.NewTicker(ACTA_UpdateRate, ACTA_OnUpdate);

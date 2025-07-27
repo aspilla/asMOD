@@ -1,82 +1,76 @@
 # asCastingAlert
 
-asCastingAlert is an addon that provides on-screen alerts in the center of your screen for spells being cast by hostile units, especially those targeting the player or cast by boss units.
+Displays an alert in the center of the screen for casting spells targeted at the player by hostile units.
+
 ![asCastingAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCastingAlert.jpg?raw=true)
 
+## Key Features
 
-## Main Features
-
-1.  **Hostile Cast Alerts**:
-    *   Displays a list of spells currently being cast or channeled by attackable hostile and boss units.
+1.  **Enemy Cast Notification**:
+    *   Displays up to 3 spells being cast on the player by hostile units.
     *   Each entry shows the spell icon and the remaining cast time.
-    *   Helps players be aware of incoming spells, especially during hectic combat.
 
-2.  **Priority Display for Dangerous Spells**:
-    *   Spells considered "dangerous" are highlighted in red for easy identification.
-    *   Integration with DBM (Deadly Boss Mods): If DBM is installed, asCastingAlert uses DBM's information to identify dangerous spells, highlighting the remaining cast time in red.
+2.  **DBM Important Spell Highlight**:
+    *   When using DBM, spells highlighted by DBM are emphasized in red.
 
-3.  **Sound Alerts**
-    *   A "Targeted" sound alert will play if you are the target of enemy's casting.
+3.  **Sound Notification**
+    *   When you are the target of a hostile target's skill, a "Targeted" voice alert will sound.
     *   This can be turned off by adjusting the `PlaySound` option.
-    *   For Tankers, sound alerts are off by default but can be enabled with the `PlaySoundTank` option.
-    *   If the `PlaySoundDBMOnly` option is enabled, sound alerts will only play for DBM casts.
-    *   If the `PlaySoundGroupOnly` option is enabled, sound alerts will only play in party.
-
-4.  **Tooltip Information**:
-    *   Mousing over a spell icon in the alert list will display the game's default tooltip for that spell.
+    *   For Tankers, the sound alert is off by default but can be enabled with the `PlaySoundTank` option.
+    *   If `PlaySoundDBMOnly` is enabled, sound alerts will only play for DBM-tracked spells.
+    *   If `PlaySoundGroupOnly` is disabled, sound alerts will play even when not in a party.
 
 ## Settings
 
-The following settings can be configured via esc >> Settings >> AddOns >> asCastingAlert:
-*   `PlaySound`: Whether to enable sound alerts.
-*   `PlaySoundDBMOnly`: Only play sound alerts for DBM major abilities.
-*   `PlaySoundTank`: Whether to enable sound alerts if you are a Tank.
-*   `PlaySoundGroupOnly`: Whether to enable sound alerts if you are in party.
-*   `ShowTarget`: Whether to display casts from your target.
+The following settings can be configured under ESC >> Options >> AddOns >> asCastingAlert:
+*   `PlaySound` (Default: true): Whether to play sound alerts.
+*   `PlaySoundDBMOnly` (Default: false): Only play sound alerts for major DBM spells.
+*   `PlaySoundTank` (Default: false): Whether to play sound alerts if you are a Tank.
+*   `PlaySoundGroupOnly` (Default: true): Whether to play sound alerts only when in a party.
+
+If the `asMOD` addon is installed, you can save the position with the `/asconfig` command.
 
 The following settings can be adjusted in the `asCastingAlert.lua` file:
 *   `ACTA_UpdateRate`: How often the addon checks for casting spells (in seconds).
 *   `ACTA_MaxShow`: The maximum number of spell alerts to display simultaneously.
-*   `ACTA_FontSize`: The font size for spell names and timers.
+*   `ACTA_FontSize`: The font size for the spell name and timer.
 *   `ACTA_X`, `ACTA_Y`: The X and Y coordinates for the center of the alert display.
 
 ---
 
 # asCastingAlert
 
-asCastingAlert는 적대적 유닛, 특히 플레이어를 대상으로 하거나 보스 유닛이 시전하는 주문에 대해 화면 중앙에 알림을 제공하는 애드온입니다.
+적대적 유닛이 플레이어를 대상으로 시전 주문에 대해 화면 중앙에 알림
+
 ![asCastingAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCastingAlert.jpg?raw=true)
 
 
 ## 주요 기능
 
 1.  **적 시전 알림**:
-    *   공격 가능한 적 및 보스 유닛이 현재 시전 중이거나 채널링 중인 주문 목록을 표시합니다.
+    *   적대적 유닛이 플래이어에게 시전 중인 주문을 최대 3개 까지 표시  
     *   각 항목에는 주문 아이콘과 남은 시전 시간이 표시됩니다.
-    *   플레이어가 특히 정신없는 전투 중에 들어오는 주문을 인지하도록 도와줍니다.
 
-2.  **위험 주문 우선 표시**:
-    *   "위험하다고" 간주되는 주문을 빨간색으로 강조하여 쉽게 식별할 수 있도록 합니다.
-    *   DBM (Deadly Boss Mods)과 연동: DBM이 설치된 경우, asCastingAlert는 DBM의 정보를 사용하여 위험 주문을 식별 하도록 Casting의 남은 시간을 빨간색으로 강조 합니다.
+2.  **DBM 주요 주문 강조**:
+    *   DBM 사용 시 DBM이 강조하는 주문을 빨간색으로 강조
 
 3.  **음성 알림**
     * 적대적 대상의 스킬의 대상이 될 경우 "Targeted" 라고 음성 알림 됩니다.
     * `PlaySound` 옵션조정으로 끌수 있습니다.
     * Tanker의 경우 음성알림이 Off되며, `PlaySoundTank` 옵션으로 킬수 있습니다.
     * `PlaySoundDBMOnly` 옵션을 키면 DBM 시전에 대해서만 음성 알림이 됩니다.
-    * `PlaySoundGroupOnly` 옵션을 끄면 파티중이 아닐때도 음성 알림이 됩니다ㅉ
+    * `PlaySoundGroupOnly` 옵션을 끄면 파티중이 아닐때도 음성 알림이 됩니다.
 
-3.  **툴팁 정보**:
-    *   알림 목록의 주문 아이콘 위에 마우스를 올리면 해당 주문에 대한 게임 기본 툴팁이 표시됩니다.
 
 ## 설정
 
 esc >> 설정 >> 애드온 >> asCastingAlert 에서 다음 설정이 가능합니다.
-*   `PlaySound` : 음성 알림을 할지 여부
-*   `PlaySoundDBMOnly` : DBM 주요 음성만 음성 알림
-*   `PlaySoundTank` : Tank 일경우 음성 알림 여부
-*   `PlaySoundGroupOnly` : 파티 일경우 음성 알림 여부
-*   `ShowTarget`: 대상의 시전을 표시할 지 여부
+*   `PlaySound` (기본값: true) : 음성 알림을 할지 여부
+*   `PlaySoundDBMOnly` (기본값: false): DBM 주요 음성만 음성 알림
+*   `PlaySoundTank` (기본값: false): Tank 일경우 음성 알림 여부
+*   `PlaySoundGroupOnly` (기본값: true): 파티 일경우 음성 알림 여부
+
+ `asMOD` 애드온이 설치된 경우, `/asconfig` 명령어로 위치를 저장할 수 있습니다.
 
 `asCastingAlert.lua` 파일에서 다음 설정을 조정할 수 있습니다.
 *   `ACTA_UpdateRate`: 애드온이 시전 주문을 확인하는 빈도 (초 단위).
