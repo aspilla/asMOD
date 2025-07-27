@@ -138,6 +138,12 @@ local function ADCA_OnUpdate()
 				local start = startTimeMS / 1000;
 				local duration = (endTimeMS - startTimeMS) / 1000;
 				local expirationTime = endTimeMS / 1000;
+				local level = UnitLevel(unit);
+				local isBoss = false;
+
+				if level < 0 or level > MaxLevel then
+					isBoss = true;
+				end
 
 				castingInfos[unit] = {
 					icon = texture,
@@ -148,7 +154,7 @@ local function ADCA_OnUpdate()
 					spellId = spellId,
 					notInterruptible = notInterruptible,
 					focus = UnitExists("focus") and UnitIsUnit("focus", unit),
-					needtointerrupt = (DangerousSpellList[spellId] == "interrupt"),
+					needtointerrupt = (DangerousSpellList[spellId] == "interrupt" and (isBoss == false or notInterruptible == false)),
 					target = UnitExists("target") and UnitIsUnit("target", unit),
 					bchanneling = bchanneling,
 				}
@@ -170,13 +176,6 @@ local function ADCA_OnUpdate()
 
 			local targetunit = unit .. "target";
 			local btargeted = UnitExists(targetunit) and UnitIsUnit(targetunit, "player");
-			local level = UnitLevel(unit);
-
-			if level < 0 or level > MaxLevel then
-				if castingInfo.needtointerrupt and castingInfo.notInterruptible then
-					castingInfo.needtointerrupt = false;
-				end
-			end
 
 			if castingInfo.needtointerrupt then
 				if castingInfo.focus then

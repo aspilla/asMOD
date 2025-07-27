@@ -1,4 +1,4 @@
-# asDBMCastingAlert (English)
+# asDBMCastingAlert 
 
 Provides alerts for important DBM skills that need to be interrupted.
 ![asDBMCastingAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDBMCastingAlert.png?raw=true)

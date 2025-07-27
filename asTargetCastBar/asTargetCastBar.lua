@@ -105,6 +105,7 @@ if asMOD_setupFrame then
     asMOD_setupFrame(ATCB.targetCastBar, "asTargetCastBar (Target)");
     asMOD_setupFrame(ATCB.focusCastBar, "asTargetCastBar (Focus)");
 end
+local MaxLevel = GetMaxLevelForExpansionLevel(10);
 
 local function checkCasting(castBar, unit)
     local frameIcon    = castBar.button.icon;
@@ -163,7 +164,13 @@ local function checkCasting(castBar, unit)
 
             frameIcon:Show();
             castBar:Show();
-            if DangerousSpellList[spellid] and DangerousSpellList[spellid] == "interrupt" then
+            local level = UnitLevel(unit);
+            local isBoss = false;
+
+            if level < 0 or level > MaxLevel then
+                isBoss = true;
+            end
+            if DangerousSpellList[spellid] and DangerousSpellList[spellid] == "interrupt" and (isBoss == false or notInterruptible == false) then
                 if not castBar.isAlert then
                     ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
                     castBar.isAlert = true;
