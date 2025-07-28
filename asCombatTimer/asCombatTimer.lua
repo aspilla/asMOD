@@ -35,6 +35,7 @@ local bMouseEnabled = true;
 local combat_start_time = nil;
 local combat_end_time = nil;
 local encounter_start_time = nil;
+local encounter_end_time = nil;
 
 -- Function to format seconds into HH:MM:SS
 local function FormatTime(seconds)
@@ -45,10 +46,7 @@ local function FormatTime(seconds)
 	return string.format("[%02d:%02d]", minutes, secs);
 end
 
-local last_combat_end_time = nil;
-
 local function ASTM_Update()
-	
 	local timertext = ASTM_Frame.timertext;
 	if ns.options.LockWindow then
 		if bMouseEnabled then
@@ -62,22 +60,21 @@ local function ASTM_Update()
 		end
 	end
 
-	if combat_start_time then
-		local time_sec;
-		local start_time = combat_start_time;
+	local time_sec = 0;
 
-		if encounter_start_time and encounter_start_time > last_combat_end_time then
-			start_time = encounter_start_time;
-		end
-
-		if combat_end_time then
-			time_sec = combat_end_time - start_time;
-		else
-			time_sec = GetTime() - start_time;
-		end
-		timertext:SetText(FormatTime(time_sec));
+	if encounter_start_time and encounter_end_time == nil then
+		time_sec = GetTime() - encounter_start_time;
+	elseif encounter_start_time and encounter_end_time and combat_start_time and encounter_end_time > combat_start_time then
+		time_sec = encounter_end_time - encounter_start_time;
+	elseif combat_start_time and combat_end_time == nil then
+		time_sec = GetTime() - combat_start_time;
+	elseif combat_start_time and combat_end_time then
+		time_sec = combat_end_time - combat_start_time;
 	end
 
+	if time_sec >= 0 then
+		timertext:SetText(FormatTime(time_sec));
+	end
 end
 
 
@@ -87,14 +84,18 @@ local function ASTM_OnEvent(self, event, arg1, ...)
 		combat_end_time = nil;
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		combat_end_time = GetTime();
-		last_combat_end_time = combat_end_time;
 	elseif event == "ENCOUNTER_START" then
 		encounter_start_time = GetTime();
+		encounter_end_time = nil;
+	elseif event == "ENCOUNTER_END" then
+		encounter_end_time = GetTime();
+	else
+		encounter_end_time = GetTime();
+		combat_end_time = GetTime();
 	end
 end
 
 local function ASTM_Init()
-	
 	ASTM_Position = ASTM_Position or {
 		point = "CENTER",
 		relativePoint = "CENTER",
@@ -111,10 +112,10 @@ local function ASTM_Init()
 	ASTM_Frame:RegisterForDrag("LeftButton");
 	ASTM_Frame:SetMovable(true);
 
-    ASTM_Frame.timertext = ASTM_Frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	ASTM_Frame.timertext = ASTM_Frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	ASTM_Frame.timertext:ClearAllPoints();
-	ASTM_Frame.timertext:SetPoint("CENTER",ASTM_Frame ,"CENTER", 0, 0);
-	ASTM_Frame.timertext:SetTextColor(1,1,1);
+	ASTM_Frame.timertext:SetPoint("CENTER", ASTM_Frame, "CENTER", 0, 0);
+	ASTM_Frame.timertext:SetTextColor(1, 1, 1);
 	ASTM_Frame.timertext:SetText("[00:00]");
 	ASTM_Frame.timertext:Show();
 
@@ -125,7 +126,7 @@ local function ASTM_Init()
 	ASTM_Frame:Show();
 
 
-	
+
 	ASTM_Frame:SetScript("OnDragStart", function(self)
 		if not ns.options.LockWindow then
 			self:StartMoving()
@@ -152,14 +153,12 @@ local function ASTM_Init()
 	ASTM_Frame:RegisterEvent("PLAYER_REGEN_DISABLED");
 	ASTM_Frame:RegisterEvent("PLAYER_REGEN_ENABLED");
 	ASTM_Frame:RegisterEvent("ENCOUNTER_START");
+	ASTM_Frame:RegisterEvent("ENCOUNTER_END");
+	ASTM_Frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 	ASTM_Frame:SetScript("OnEvent", ASTM_OnEvent)
 
-	if not UnitAffectingCombat("player") then
-		last_combat_end_time = GetTime();
-	end
-	
-	C_Timer.NewTicker(0.25, ASTM_Update);
 
+	C_Timer.NewTicker(0.1, ASTM_Update);
 end
 
 C_Timer.After(0.5, ASTM_Init);
