@@ -222,6 +222,12 @@ local function registerEvents(frame, unit)
         frame:Hide()
         return;
     end
+    
+    if unit == "focus" then
+        if not ns.options.ShowFocus then
+            return;
+        end
+    end
 
     frame.unit = unit;
     frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
