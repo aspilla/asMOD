@@ -213,31 +213,52 @@ local function checkCasting(castBar, unit)
     end
 end
 
-local function registerEvents(unit)
-    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
-    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
-    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
-    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit);
-    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
-    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
-    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", unit);
-    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
-    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
-    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit);
-    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
-    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
-    ATCB:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
-    ATCB:RegisterUnitEvent("UNIT_TARGET", unit);
+local function registerEvents(frame, unit)
+    if not frame then
+        return;
+    end
+    frame.unit = unit;
+    frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
+    frame:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
+    frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
+    frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit);
+    frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
+    frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
+    frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", unit);
+    frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
+    frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
+    frame:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit);
+    frame:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
+    frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
+    frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
+    frame:RegisterUnitEvent("UNIT_TARGET", unit);
 end
 
+local function on_unit_event(self, event, ...)
+
+    checkCasting(self, self.unit);
+
+end
+
+ATCB.targetCastBar:SetScript("OnEvent", on_unit_event);
+ATCB.focusCastBar:SetScript("OnEvent", on_unit_event);
+
 local function ATCB_OnEvent(self, event, ...)
-    if event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_FOCUS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
+    if event == "PLAYER_TARGET_CHANGED" then
         if UnitExists("target") then
-            registerEvents("target");
+            registerEvents(ATCB.targetCastBar, "target");
+        end
+    elseif event == "PLAYER_FOCUS_CHANGED" then
+        if UnitExists("focus") then
+            registerEvents(ATCB.focusCastBar, "focus");
+        end 
+    elseif event == "PLAYER_ENTERING_WORLD" then
+        if UnitExists("target") then
+            registerEvents(ATCB.targetCastBar, "target");
         end
         if UnitExists("focus") then
-            registerEvents("focus");
-        end
+            registerEvents(ATCB.focusCastBar, "focus");
+        end 
     elseif event == "ADDON_LOADED" then
         local name = ...;
 
@@ -245,9 +266,6 @@ local function ATCB_OnEvent(self, event, ...)
             ns.SetupOptionPanels();
         end
     end
-
-    checkCasting(ATCB.targetCastBar, "target");
-    checkCasting(ATCB.focusCastBar, "focus");
 end
 
 
