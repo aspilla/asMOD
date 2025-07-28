@@ -1,4 +1,4 @@
-# asInterruptHelper (English)
+# asInterruptHelper
 
 Displays the optimal interrupt or stun spell icon available when a focus target, mouseover target, or current target begins casting a spell.
 
