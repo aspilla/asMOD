@@ -217,6 +217,12 @@ local function registerEvents(frame, unit)
     if not frame then
         return;
     end
+
+    if not UnitExists(unit) then
+        frame:Hide()
+        return;
+    end
+
     frame.unit = unit;
     frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
     frame:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
@@ -232,12 +238,12 @@ local function registerEvents(frame, unit)
     frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
     frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
     frame:RegisterUnitEvent("UNIT_TARGET", unit);
+
+    checkCasting(frame, frame.unit);
 end
 
 local function on_unit_event(self, event, ...)
-
     checkCasting(self, self.unit);
-
 end
 
 ATCB.targetCastBar:SetScript("OnEvent", on_unit_event);
@@ -245,20 +251,12 @@ ATCB.focusCastBar:SetScript("OnEvent", on_unit_event);
 
 local function ATCB_OnEvent(self, event, ...)
     if event == "PLAYER_TARGET_CHANGED" then
-        if UnitExists("target") then
-            registerEvents(ATCB.targetCastBar, "target");
-        end
+        registerEvents(ATCB.targetCastBar, "target");
     elseif event == "PLAYER_FOCUS_CHANGED" then
-        if UnitExists("focus") then
-            registerEvents(ATCB.focusCastBar, "focus");
-        end 
+        registerEvents(ATCB.focusCastBar, "focus");
     elseif event == "PLAYER_ENTERING_WORLD" then
-        if UnitExists("target") then
-            registerEvents(ATCB.targetCastBar, "target");
-        end
-        if UnitExists("focus") then
-            registerEvents(ATCB.focusCastBar, "focus");
-        end 
+        registerEvents(ATCB.targetCastBar, "target");
+        registerEvents(ATCB.focusCastBar, "focus");
     elseif event == "ADDON_LOADED" then
         local name = ...;
 
