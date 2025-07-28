@@ -84,7 +84,7 @@ local function setupCastBar()
     frame.button.border:Show();
     frame.button:Show();
 
-    frame.targetname = ATCB:CreateFontString(nil, "OVERLAY");
+    frame.targetname = frame:CreateFontString(nil, "OVERLAY");
     frame.targetname:SetFont(STANDARD_TEXT_FONT, ATCB_NAME_SIZE);
     frame.targetname:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -2);
 
