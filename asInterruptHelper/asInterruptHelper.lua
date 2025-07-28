@@ -1,7 +1,9 @@
 ﻿local _, ns = ...;
 local AIH_SIZE = 30;
-local AIH_X = 0;
-local AIH_Y = 67;
+local AIH_X = 53;
+local AIH_Y = -55;
+local AIH_F_X = 0;
+local AIH_F_Y = 67;
 local AIH_M_X = 50;
 local AIH_M_Y = -20;
 local AIH_CooldownFontSize = 9;
@@ -13,12 +15,10 @@ local DangerousSpellList = {};
 
 
 local function initPlayer()
-
     local function compare(a, b)
-
         if a.cooldown == b.cooldown then
-            return a.spellid < b.spellid;  
-        end        
+            return a.spellid < b.spellid;
+        end
         return a.cooldown < b.cooldown;
     end
 
@@ -56,7 +56,7 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
     end
 end
 
-local function showInterruptCooldown(spellID, isDangerous, endRemain)
+local function showInterruptCooldown(frame, spellID, isDangerous, endRemain)
     spellID = C_Spell.GetOverrideSpell(spellID);
     local spellInfo = C_Spell.GetSpellInfo(spellID);
 
@@ -68,8 +68,6 @@ local function showInterruptCooldown(spellID, isDangerous, endRemain)
     if not spellCooldownInfo then
         return;
     end
-
-    local frame = mainframe.cooldownframe;
 
     if not (frame) then
         return;
@@ -112,9 +110,7 @@ local function showInterruptCooldown(spellID, isDangerous, endRemain)
     frame:Show();
 end
 
-local function hideInterruptCooldown()
-    local frame = mainframe.cooldownframe;
-
+local function hideInterruptCooldown(frame)
     if frame then
         frame:Hide()
     end
@@ -193,28 +189,14 @@ local function findInterruptSpell(notInterruptible, isDangerous, endRemain, isBo
 end
 
 
-local bmouseover = false;
-local bmouseover_update = true;
 local MaxLevel = GetMaxLevelForExpansionLevel(10);
 
-local function AIH_OnUpdate()
-    local unit = "focus"
-    local mobspellID, notInterruptible, endRemain = UnitNeedtoInterrupt(unit)
-
-    if mobspellID == nil then
-        unit = "mouseover";
-        mobspellID, notInterruptible, endRemain = UnitNeedtoInterrupt(unit);
-
-        if mobspellID == nil then
-            unit = "target"
-            mobspellID, notInterruptible, endRemain = UnitNeedtoInterrupt(unit);
-            bmouseover = false;
-        else
-            bmouseover = true;
-        end
-    else
-        bmouseover = false;
+local function check_casting(frame, unit)
+    if not UnitExists(unit) then
+        return;
     end
+
+    local mobspellID, notInterruptible, endRemain = UnitNeedtoInterrupt(unit)
 
     if mobspellID and endRemain then
         local isDangerous = ("interrupt" == DangerousSpellList[mobspellID]);
@@ -232,40 +214,26 @@ local function AIH_OnUpdate()
             end
         end
 
+
         if needtointerrupt then
             local spellID = findInterruptSpell(notInterruptible, isDangerous, endRemain, isBoss);
 
             if spellID then
-                showInterruptCooldown(spellID, isDangerous, endRemain)
+                showInterruptCooldown(frame, spellID, isDangerous, endRemain)
             end
         end
     else
-        hideInterruptCooldown()
-    end
-
-    if ns.options.AlwaysOnMouse then
-        bmouseover = true;
+        hideInterruptCooldown(frame)
     end
 end
 
 
 local function onUpdateMouse()
-    local frame = mainframe.cooldownframe;
-
+    local frame = mainframe.mouseframe;
     if frame then
-        if bmouseover then
-            frame:ClearAllPoints();
-            local x, y = GetCursorPosition() -- 마우스 좌표 가져오기
-            frame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x + AIH_M_X, y + AIH_M_Y)
-            bmouseover_update = true;
-        elseif bmouseover_update then
-            frame:ClearAllPoints();
-            frame:SetPoint("CENTER", UIParent, "CENTER", AIH_X, AIH_Y);
-            if asMOD_setupFrame then
-                asMOD_setupFrame(frame, "asInterruptHelper");
-            end
-            bmouseover_update = false;
-        end
+        frame:ClearAllPoints();
+        local x, y = GetCursorPosition() -- 마우스 좌표 가져오기
+        frame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x + AIH_M_X, y + AIH_M_Y)
     end
 end
 
@@ -304,25 +272,8 @@ local function NewMod(self, ...)
     C_Timer.After(0.1, scanDBM);
 end
 
-local bfirst = true
-
-local function AIH_OnEvent(self)
-    if bfirst then
-        bfirst = false;
-        ns.SetupOptionPanels();
-    end
-
-    initPlayer();
-end
-
-local function initAddon()
-    local bloaded = C_AddOns.LoadAddOn("DBM-Core");
-    if bloaded then
-        hooksecurefunc(DBM, "NewMod", NewMod)
-    end
-
-    mainframe.cooldownframe = CreateFrame("Button", nil, mainframe, "AIHFrameTemplate");
-    local frame = mainframe.cooldownframe;
+local function createbutton(unit)
+    local frame = CreateFrame("Button", nil, mainframe, "AIHFrameTemplate");
     frame:SetWidth(AIH_SIZE);
     frame:SetHeight(AIH_SIZE * 0.9);
 
@@ -332,6 +283,9 @@ local function initAddon()
             frame.cooldowntext = r;
             break
         end
+    end
+    if unit == "mouseover" then
+        frame:SetFrameStrata("MEDIUM");
     end
 
     frame.icon:SetTexCoord(.08, .92, .08, .92);
@@ -350,6 +304,57 @@ local function initAddon()
     end
     frame:EnableMouse(false);
     frame:SetMouseMotionEnabled(true);
+    frame:Hide();
+
+    local function OnUpdate()
+        check_casting(frame, unit);
+    end
+
+
+    C_Timer.NewTicker(0.3, OnUpdate);
+
+    return frame;
+end
+
+local bfirst = true
+
+local function AIH_OnEvent(self, event)
+    if bfirst then
+        bfirst = false;
+        ns.SetupOptionPanels();
+
+        if ns.options.ShowTarget then
+            mainframe.targetframe = createbutton("target");
+            mainframe.targetframe:SetPoint("CENTER", UIParent, "CENTER", AIH_X, AIH_Y);
+            if asMOD_setupFrame then
+                asMOD_setupFrame(mainframe.targetframe, "asInterruptHelper (Target)");
+            end
+        end
+
+        if ns.options.ShowFocus then
+            mainframe.focusframe = createbutton("focus");
+            mainframe.focusframe:SetPoint("CENTER", UIParent, "CENTER", AIH_F_X, AIH_F_Y);
+            if asMOD_setupFrame then
+                asMOD_setupFrame(mainframe.focusframe, "asInterruptHelper (Focus)");
+            end
+        end
+
+
+        if ns.options.ShowMouseOver then
+            mainframe.mouseframe = createbutton("mouseover");
+            C_Timer.NewTicker(0.05, onUpdateMouse);
+        end
+    end
+
+    initPlayer();
+end
+
+local function initAddon()
+    local bloaded = C_AddOns.LoadAddOn("DBM-Core");
+    if bloaded then
+        hooksecurefunc(DBM, "NewMod", NewMod)
+    end
+
 
     mainframe:SetScript("OnEvent", AIH_OnEvent)
     mainframe:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -357,9 +362,6 @@ local function initAddon()
     mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")
     mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
     mainframe:RegisterUnitEvent("UNIT_PET", "player")
-
-    C_Timer.NewTicker(0.3, AIH_OnUpdate);
-    C_Timer.NewTicker(0.05, onUpdateMouse);
 end
 
 initAddon();

@@ -1,7 +1,9 @@
 local _, ns = ...;
 local Options_Default = {
     version = 250727,
-    AlwaysOnMouse = false;
+    ShowTarget = true,
+    ShowFocus = true,
+    ShowMouseOver = true,
 };
 
 ns.options = CopyTable(Options_Default);
