@@ -110,11 +110,6 @@ local function showInterruptCooldown(frame, spellID, isDangerous, endRemain)
     frame:Show();
 end
 
-local function hideInterruptCooldown(frame)
-    if frame then
-        frame:Hide()
-    end
-end
 
 local function isAttackable(unit)
     local reaction = UnitReaction("player", unit);
@@ -193,6 +188,7 @@ local MaxLevel = GetMaxLevelForExpansionLevel(10);
 
 local function check_casting(frame, unit)
     if not UnitExists(unit) then
+        frame:Hide();
         return;
     end
 
@@ -223,7 +219,7 @@ local function check_casting(frame, unit)
             end
         end
     else
-        hideInterruptCooldown(frame)
+        frame:Hide();
     end
 end
 
