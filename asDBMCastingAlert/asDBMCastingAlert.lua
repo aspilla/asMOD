@@ -484,7 +484,6 @@ local function scanDBM()
 			if mod.Options and mod.announces then
 				for k, obj in pairs(mod.announces) do
 					if obj.spellId and obj.announceType and obj.option then
-						local option = mod.Options[optionkey];
 						if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
 							DangerousSpellList[obj.spellId] = obj.announceType;
 						end
