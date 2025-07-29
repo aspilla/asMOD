@@ -53,7 +53,7 @@ local function _UpdateHotkeys(name, type, hide, total)
     ;
 
     local key = GetBindingKey(type .. i)
-    local text = GetBindingText(key, "KEY_", 1);
+    local text = GetBindingText(key, "KEY_", true);
     text = _CheckLongName(text);
     if (text == "") then
       hotkey:Hide();

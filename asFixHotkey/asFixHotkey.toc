@@ -1,8 +1,8 @@
 ﻿## Interface: 110107, 110200
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rFixHotKey
-## Notes: 단축버픈 프레임 변경
-## Version : 241216
+## Notes: Shortens the hotkey text displayed on the action bar and hides macro names on buttons.
+## Version : 250729
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asFixHotkey.lua
