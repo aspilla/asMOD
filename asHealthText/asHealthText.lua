@@ -122,7 +122,7 @@ local function AHT_Update(self)
 
 	local value;
 	local valueMax;
-	local valuePct = ""
+	local valuePct = 0;
 	local frame;
 	local health = false;
 	local target = false;
