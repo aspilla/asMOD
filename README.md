@@ -38,7 +38,7 @@ The following errors may occur:
 
 *   Installation Guide
 
-<span><iframe width="560" height="315" src="https://www.youtube.com/embed/TGrs8p5x0DI?si=jdNVioeIFnl365eS" frameborder="0" allowfullscreen="allowfullscreen"></iframe></span>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/LRK6h2hON2w?si=9lxeyGyR70UUpNdO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 *   UI positioning guide
 
@@ -69,7 +69,7 @@ The following errors may occur:
 | asGCDBar              |Displays Global Cooldown (GCD) as a bar.                                         |<a href="https://www.curseforge.com/wow/addons/asgcdbar" target="_blank" rel="nofollow">Link</a> |
 | asHideBagsBar         |Automatically hides the bottom right bag bar and left raid leader window.        |<a href="https://www.curseforge.com/wow/addons/ashidebagsbar" target="_blank" rel="nofollow">Link</a> |
 | asPowerBar            |Resource bar &amp; rune/combo counter &amp; skill/buff/debuff cooldowns.         |<a href="https://www.curseforge.com/wow/addons/aspowerbar" target="_blank" rel="nofollow">Link</a> |
-| asTargetCastingBar    |Displays target casting.                                                         |<a href="https://www.curseforge.com/wow/addons/astargetcastingbar" target="_blank" rel="nofollow">Link</a> |
+| asTargetCastBar       |Displays target casting.                                                         |<a href="https://www.curseforge.com/wow/addons/astargetcastingbar" target="_blank" rel="nofollow">Link</a> |
 | asTrueGCD             |Displays the 3 most recently used skills (bottom center).                        |<a href="https://www.curseforge.com/wow/addons/astruegcd" target="_blank" rel="nofollow">Link</a> |
 | asReady               |Party member interrupt cooldown alerts, party/raid member cooldown display.      |<a href="https://www.curseforge.com/wow/addons/asready" target="_blank" rel="nofollow">Link</a> |
 | asDBMTimer            |DBM Timer Skin                                                                   |<a href="https://www.curseforge.com/wow/addons/asdbmtimer" target="_blank" rel="nofollow">Link</a> |
@@ -146,7 +146,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입�
 | asGCDBar              |글로벌 쿨다운 시간을 바 형태로 표시                                                |<a href="https://www.curseforge.com/wow/addons/asgcdbar" target="_blank" rel="nofollow">링크</a> |
 | asHideBagsBar         |우측 하단 가방바, 좌측 공격대장 창 자동 숨김                                          |<a href="https://www.curseforge.com/wow/addons/ashidebagsbar" target="_blank" rel="nofollow">링크</a> |
 | asPowerBar            |자원바 &amp; 룬/콤포 카운터 &amp; 스킬/버프/디버프 쿨다운                              |<a href="https://www.curseforge.com/wow/addons/aspowerbar" target="_blank" rel="nofollow">링크</a> |
-| asTargetCastingBar    |대상 시전 표시                                                            |<a href="https://www.curseforge.com/wow/addons/astargetcastingbar" target="_blank" rel="nofollow">링크</a> |
+| asTargetCastBar       |대상 시전 표시                                                            |<a href="https://www.curseforge.com/wow/addons/astargetcastingbar" target="_blank" rel="nofollow">링크</a> |
 | asTrueGCD             |최근 사용 스킬 3개 표시(하단 중앙)                                               |<a href="https://www.curseforge.com/wow/addons/astruegcd" target="_blank" rel="nofollow">링크</a> |
 | asReady               |파티원 차단 쿨 알림, 파티원/공격대원 쿨기 표시 (프레임 좌측)                                |<a href="https://www.curseforge.com/wow/addons/asready" target="_blank" rel="nofollow">링크</a> |
 | asDBMTimer            |DBM 타이머 Skin                                                        |<a href="https://www.curseforge.com/wow/addons/asdbmtimer" target="_blank" rel="nofollow">링크</a> |
