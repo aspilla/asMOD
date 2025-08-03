@@ -10,6 +10,7 @@
 			</Layer>					
 			<Layer level="OVERLAY">				
 				<FontString name="$parentCount" parentKey="count" justifyH="RIGHT"/>
+				<FontString name="$parentPoint" parentKey="point" justifyH="RIGHT"/>
 				<FontString name="$parentSpellCool" parentKey="spellcool" justifyH="CENTER"/>
 				<FontString name="$parentSnapshot" parentKey="snapshot"  justifyH="CENTER"/>						
 			</Layer>

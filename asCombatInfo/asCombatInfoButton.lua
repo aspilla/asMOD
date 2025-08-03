@@ -31,6 +31,7 @@ ns.Button = {
     spellcool = nil,
     spellcoolColor = { r = 0.8, g = 0.8, b = 1 },
     count = nil,
+    point = nil,
     buffalert = false,
     coolalert = false,
     bufflist = {},
@@ -105,7 +106,8 @@ function ns.Button:initButton()
     self.reversecool = false;
     self.spellcool = nil;
     self.spellcoolColor = { r = 0.8, g = 0.8, b = 1 };
-    self.count = nil;
+    self.count = 0;
+    self.point = 0;
     self.buffalert = false;
     self.alert2 = false;
     self.coolalert = false;
@@ -360,8 +362,13 @@ function ns.Button:checkBuff()
         self.duration = aura.duration;
         self.enable = true;
         self.reversecool = true;
+
         if aura.applications and aura.applications > 0 then
             self.count = aura.applications;
+        end
+
+        if aura.points and aura.points[1] and aura.points[1] ~= 0 then
+            self.point = aura.points[1];
         end
 
         if self.number == 1 then
@@ -372,13 +379,6 @@ function ns.Button:checkBuff()
             self.buffalert = true;
         end
 
-        if aura.points and aura.points[1] and not (aura.applications and aura.applications > 0) then
-            if (aura.points[1] > 999999) then
-                self.count = math.ceil(aura.points[1] / 1000000) .. "m"
-            elseif (aura.points[1] > 999) then
-                self.count = math.ceil(aura.points[1] / 1000) .. "k"
-            end
-        end
 
         local color;
         local buff_miss = false;
@@ -579,7 +579,7 @@ function ns.Button:checkSpell()
                 self.enable = true;
                 self.reversecool = true;
                 self.borderColor = DebuffTypeColor["none"];
-                self.count = nil;
+                self.count = 0;
             end
         end
     end
@@ -646,6 +646,22 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
     end
 end
 
+local function format_count(n)
+    local sign = ""
+    if n < 0 then
+        sign = "-"
+        n = -n
+    end
+
+    if (n > 999999) then
+        n = (math.ceil(n / 1000000) .. "m");
+    elseif (n > 999) then
+        n = (math.ceil(n / 1000) .. "k");
+    end
+
+    return tostring(sign .. n)
+end
+
 function ns.Button:showButton()
     local frameIcon;
     local frameCooldown;
@@ -661,7 +677,6 @@ function ns.Button:showButton()
     frameIcon = frame.icon;
     frameCooldown = frame.cooldown;
     frameBorder = frame.border;
-    frameCount = frame.count;
 
     if self.icon == nil then
         frame:Hide();
@@ -672,6 +687,7 @@ function ns.Button:showButton()
 
     if self.icon ~= data.icon then
         frameIcon:SetTexture(self.icon);
+        data = {};
         data.icon = self.icon;
     end
 
@@ -769,26 +785,42 @@ function ns.Button:showButton()
         end
     end
 
+    local bshowcount = false;
+
     if self.count ~= data.count then
-        if self.count then
-            if frame.cooldownfont then
-                frame.cooldownfont:ClearAllPoints();
-                frame.cooldownfont:SetPoint("TOPLEFT", 4, -4);
-            end
-
-            frameCount:SetText(self.count)
-            frameCount:Show();
-        else
-            if frame.cooldownfont then
-                frame.cooldownfont:ClearAllPoints();
-                frame.cooldownfont:SetPoint("CENTER", 0, 0);
-            end
-
-            frameCount:Hide();
-        end
         data.count = self.count;
+        if self.count > 1 then
+            bshowcount = true;
+            frame.count:SetText(self.count)
+            frame.count:Show();
+        else
+            frame.count:Hide();
+        end
     end
 
+    if bshowcount or self.count > 0 then 
+        data.point = nil;
+        frame.point:Hide()
+    elseif self.point ~= data.point then
+        data.point = self.point;
+        if self.point and self.point > 100 then
+            bshowcount = true;
+            frame.point:SetText(format_count(self.point));
+            frame.point:Show();
+        else
+            frame.point:Hide();
+        end
+    end
+
+    if frame.cooldownfont then
+        if bshowcount then
+            frame.cooldownfont:ClearAllPoints();
+            frame.cooldownfont:SetPoint("TOPLEFT", 4, -4);
+        else
+            frame.cooldownfont:ClearAllPoints();
+            frame.cooldownfont:SetPoint("CENTER", 0, 0);
+        end
+    end
     local snapshot = 1;
     if self.checksnapshot and asDotSnapshot and asDotSnapshot.Relative then
         snapshot = asDotSnapshot.Relative(guid, self.realbuff) or 1;
@@ -853,7 +885,6 @@ local function GetActionSlot(arg1)
         local type, id, subType = GetActionInfo(lActionSlot);
 
         if id and type and type == "macro" then
-
             if id and id == arg1 then
                 tinsert(ret, lActionSlot);
             end
@@ -864,7 +895,6 @@ local function GetActionSlot(arg1)
         local type, id, subType = GetActionInfo(lActionSlot);
 
         if id and type and type == "spell" then
-
             if id and id == arg1 then
                 tinsert(ret, lActionSlot);
             end
@@ -912,7 +942,7 @@ function ns.Button:init(config, frame)
     end
 
     ns.lib.PixelGlow_Stop(self.frame);
-    self.data = { count = 999999 };
+    self.data = {};
 
     if self.spell == nil then
         return;

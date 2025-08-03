@@ -127,12 +127,18 @@ for i = 1, ACI_MaxSpellCount do
 
 	if i < 6 then
 		ACI[i].count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize, "OUTLINE")
+		ACI[i].point:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize -3, "OUTLINE")
 	else
 		ACI[i].count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 2, "OUTLINE")
+		ACI[i].point:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 5, "OUTLINE")
 	end
 
 	ACI[i].count:ClearAllPoints();
 	ACI[i].count:SetPoint("BOTTOMRIGHT", ACI[i], "BOTTOMRIGHT", -3, 3);
+	ACI[i].point:ClearAllPoints();
+	ACI[i].point:SetPoint("BOTTOMRIGHT", ACI[i], "BOTTOMRIGHT", -3, 3);
+	ACI[i].point:SetTextColor(0, 1, 0);
+
 
 	ACI[i].spellcool:ClearAllPoints();
 	ACI[i].spellcool:SetPoint("CENTER", ACI[i], "BOTTOM", 0, 0);

@@ -52,10 +52,10 @@ ACI_Options_Default = {
 
 	-- 방전
 	ACI_SpellList_WARRIOR_3 = {
-		version = 250207,
+		version = 250730,
 		{ 190456, 2 },
 		{ 23922,  1 },
-		{ 1160,   4 },
+		{{436358, 4, nil, nil, nil, 447513}, { 1160,   4 }},
 		{ 6343,   1 },
 		{ 23920,  2 },
 	},
@@ -202,9 +202,9 @@ ACI_Options_Default = {
 
 	--암흑
 	ACI_SpellList_PRIEST_3 = {
-		version = 250207,
+		version = 250802,
 		{ 335467,        4 },
-		{ { 263165, 1 }, { 589, 4, nil, 1 } },
+		{ { 263165, 1 },{ 120644, 1 },  { 589, 4, nil, 1 } },
 		{ { 228260, 1 }, { 391109, 2 } },
 		{ 32379,         1 },
 		{ 34914,         4,                 nil, 1 },
@@ -433,6 +433,16 @@ ACI_Options_Default = {
 };
 
 if version >= 110200 then
+	--부정
+	ACI_Options_Default.ACI_SpellList_DEATHKNIGHT_3 = {
+		version = 250803,
+		{ 43265,                  2,            nil,  nil, nil, 188290 },
+		{ 85948,                  4,            nil,  0,   nil, 194310 },
+		{{ 275699,                  2,     nil, nil, nil, 1235391 },{ 63560,                  2,            "pet" }},
+		{ { 343294, 1, nil, 35 }, { 207289, 2 } },
+		{ 77575,                  4,            nil,  1,   nil, 191587 },
+
+	};
 	ACI_Options_Default.ACI_SpellList_DEATHKNIGHT_2 = {
 		version = 250713,
 		{ 43265,                  2,           nil, nil, nil, 188290 },
