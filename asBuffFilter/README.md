@@ -31,7 +31,7 @@ Displays player buffs on the left/center (up to 7 each) and target buffs on the 
 
 ---
 
-# asBuffFilter (Korean)
+# asBuffFilter
 
 플레이어와 대상의 중요한 버프를 표시 
 ![asBuffFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asBuffFilter.JPG?raw=true)   
