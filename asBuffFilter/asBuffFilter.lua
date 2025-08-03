@@ -2,8 +2,6 @@
 local ABF;
 local ABF_PLAYER_BUFF;
 local ABF_TARGET_BUFF;
-local ABF_TalentBuffList = {};
-local ABF_TalentBuffIconList = {};
 local overlayspell = {};
 
 --AuraUtil
@@ -12,16 +10,6 @@ local PLAYER_UNITS = {
 	vehicle = true,
 	pet = true,
 };
-
-
-local DispellableDebuffTypes =
-{
-	Magic = true,
-	Curse = true,
-	Disease = true,
-	Poison = true
-};
-
 
 local UnitFrameBuffType = EnumUtil.MakeEnum(
 	"CountBuff",
@@ -35,8 +23,6 @@ local UnitFrameBuffType = EnumUtil.MakeEnum(
 	"ShouldShowBuff",
 	"Normal"
 );
-
-
 
 local AuraFilters =
 {
@@ -288,16 +274,15 @@ local function ProcessAura(aura, unit)
 				end
 			end
 
-			if aura.isStealable then
-				skip = false;
+			if skip then
+				if aura.isStealable then
+					skip = false;
+				elseif (aura.pvpbuff) then
+					skip = false;
+				end
 			end
 
-			-- PVP 주요 버프는 보임
-			if (aura.pvpbuff) then
-				skip = false;
-			end
-
-			if not UnitAffectingCombat("player") then
+			if skip and not UnitAffectingCombat("player") then
 				skip = false; --비전투중 모두 보임
 			end
 		else
@@ -307,21 +292,15 @@ local function ProcessAura(aura, unit)
 		skip = true;
 		if isPlayerUnit and ((aura.duration > 0 and aura.duration <= ns.ABF_MAX_Cool)) then
 			skip = false;
-		end
-
-		if isPlayerUnit and ((aura.applications and aura.applications > 1 and aura.duration <= ns.ABF_MAX_Cool)) then
+		elseif isPlayerUnit and ((aura.applications and aura.applications > 0 and aura.duration <= ns.ABF_MAX_Cool)) then
 			skip = false;
-		end
-
-		if isPlayerUnit and (aura.nameplateShowPersonal or aura.classbuff) then
+		elseif isPlayerUnit and ((aura.points and aura.points[1] and aura.points[1] > 100 and aura.duration <= ns.ABF_MAX_Cool)) then
 			skip = false;
-		end
-
-		if (aura.pvpbuff) then
+		elseif isPlayerUnit and (aura.nameplateShowPersonal or aura.classbuff) then
 			skip = false;
-		end
-
-		if aura.procbuff then
+		elseif (aura.pvpbuff) then
+			skip = false;
+		elseif aura.procbuff then
 			skip = false;
 		end
 
@@ -397,28 +376,78 @@ local function ParseAllAuras(unit)
 	ForEachAura(unit, filter, batchCount, HandleAura, usePackedAura);
 end
 
-local function SetBuff(frame, icon, applications, expirationTime, duration, color, alert, bigcount, countcolor, currtime)
+
+local function format_count(n)
+	local sign = ""
+	if n < 0 then
+		sign = "-"
+		n = -n
+	end
+
+	if (n > 999999) then
+		n = (math.ceil(n / 1000000) .. "m");
+	elseif (n > 999) then
+		n = (math.ceil(n / 1000) .. "k");
+	end
+
+	return tostring(sign .. n)
+end
+
+local function SetBuff(frame, icon, applications, expirationTime, duration, color, alert, bigcount, countcolor, currtime,
+					   points)
 	local data = frame.data;
+	local count = 0;
+	local point = 0;
+	local bshowcount = false;
+	if (icon ~= data.icon) then
+		frame.icon:SetTexture(icon);
+		data = {};
+		data.icon = icon;
+		frame:Show();
+	end
 
-	if (applications ~= data.applications) then
-		local frameCount = frame.count;
-		if bigcount then
-			frameCount = frame.bigcount;
-			frame.count:Hide();
-		else
-			frame.bigcount:Hide();
-		end
+	if applications and applications > 0 then
+		count = applications;
+	end
 
-		if (applications > 1) then
+	if points and points[1] and points[1] ~= 0 then
+		point = points[1];
+	end
+
+	if count ~= data.count then
+		data.count = count;
+		if count > 1 then
+			local frameCount = frame.count;
+			if bigcount then
+				frameCount = frame.bigcount;
+				frame.count:Hide();
+			else
+				frame.bigcount:Hide();
+			end
+
+			bshowcount = true;
 			frameCount:Show();
-			frameCount:SetText(applications);
+			frameCount:SetText(count);
 			if countcolor then
 				frameCount:SetTextColor(countcolor.r, countcolor.g, countcolor.b);
 			end
 		else
-			frameCount:Hide();
+			frame.count:Hide();
+			frame.bigcount:Hide();
 		end
-		data.applications = applications;
+	end
+
+	if bshowcount or count > 0 then
+		frame.point:Hide()
+	elseif point ~= data.point then
+		data.point = point;
+
+		if point > 100 and ns.options.ShowInternalPoint then
+			frame.point:SetText(format_count(point));
+			frame.point:Show();
+		else
+			frame.point:Hide();
+		end
 	end
 
 	local isshow = false;
@@ -461,11 +490,6 @@ local function SetBuff(frame, icon, applications, expirationTime, duration, colo
 		data.alert = alert;
 	end
 
-	if (icon ~= data.icon) then
-		frame.icon:SetTexture(icon);
-		data.icon = icon;
-		frame:Show();
-	end
 end
 
 local function updateTotemAura()
@@ -606,8 +630,9 @@ local function UpdateAuraFrames(unit, auraList)
 				aura.duration = 0;
 			end
 
+
 			SetBuff(frame, aura.icon, aura.applications, aura.expirationTime, aura.duration, color, alert, bigcount,
-				countcolor, curr_time);
+				countcolor, curr_time, aura.points);
 
 			frame:Show();
 			return false;
@@ -784,6 +809,11 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 		frame.count:ClearAllPoints()
 		frame.count:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", -2, 2);
 
+		frame.point:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize - 3, "OUTLINE")
+		frame.point:ClearAllPoints()
+		frame.point:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", -2, 2);
+		frame.point:SetTextColor(0, 1, 0);
+
 		frame.bigcount:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize + 3, "OUTLINE")
 		frame.bigcount:ClearAllPoints()
 		frame.bigcount:SetPoint("CENTER", frame.icon, "CENTER", 0, 0);
@@ -797,7 +827,7 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 
 		if not frame:GetScript("OnEnter") then
 			frame:SetScript("OnEnter", function(s)
-				if s.auraInstanceID and s.auraInstanceID  > 0 then
+				if s.auraInstanceID and s.auraInstanceID > 0 then
 					GameTooltip_SetDefaultAnchor(GameTooltip, s);
 					GameTooltip:SetUnitBuffByAuraInstanceID(s.unit, s.auraInstanceID, filter);
 				elseif s.totemslot and s.totemslot > 0 then

@@ -11,6 +11,7 @@
 			<Layer level="OVERLAY">
 				<FontString name="$parentCount" parentKey="count"  justifyH="RIGHT"/>				
 				<FontString name="$parentBigCount" parentKey="bigcount"  justifyH="RIGHT"/>				
+				<FontString name="$parentPoint" parentKey="point"  justifyH="RIGHT"/>				
 			</Layer>
 		</Layers>
 		<Frames>

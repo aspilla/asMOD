@@ -3,6 +3,7 @@ local _, ns = ...;
 local Options_Default = {
 	Version = 250111,
 	ShowListOnly = false,
+	ShowInternalPoint = true,
 };
 
 ns.ABF_SIZE = 28;
@@ -48,6 +49,13 @@ ns.ABF_ProcBuffList = {
 
 ns.ShowList_WARRIOR = {
 	classbuffs = {
+
+		--S3(Done)
+		[1252096] = 2, --Severe Thunder
+		[1239153] = 2, --Deeper Wound
+		[1239144] = 2, --Critical Colusion
+
+
 		--시즌2 완료
 		[1218163] = 2, -- 방어 시즌2
 		[1216556] = 2, -- 무기 시즌2
@@ -83,7 +91,7 @@ ns.ShowList_WARRIOR = {
 
 	},
 
-	version = 250222,
+	version = 250731,
 }
 
 ns.ShowList_ROGUE = {
@@ -235,6 +243,8 @@ ns.ShowList_MAGE = {
 
 
 		[342246] = 2, -- 시간돌리기
+		[384267] = 2, -- 폭풍 착취
+
 
 		[449400] = 4, --법사 영웅특성
 		[448604] = 4, -- 법사 영웅특성
@@ -260,6 +270,7 @@ ns.ShowList_MAGE = {
 		[384455] = 2, -- 비법 특성 비전의 조화
 		[467634] = 2, -- 비법 에테르 조화
 		[461531] = 2, -- 비법 big brained		
+		[453758] = 3, -- arcane Leydrinker
 
 		[458964] = 3, -- 화법 일렁이는 열기
 		[409964] = 2, -- 화법 화염의 분노
@@ -283,12 +294,16 @@ ns.ShowList_MAGE = {
 
 	},
 
-	version = 250712,
+	version = 250802,
 
 }
 
 ns.ShowList_MONK = {
 	classbuffs = {
+
+		-- S3
+		[1239483] = 2, --S3 Tier Potential Energy
+
 		
 		--시즌2 완료
 		[1216182] = 1, -- 풍운 시즌2
@@ -327,13 +342,22 @@ ns.ShowList_MONK = {
 
 	},
 
-	version = 250424,
+	version = 2500803,
 
 }
 
 
 ns.ShowList_WARLOCK = {
 	classbuffs = {
+
+
+		--S3
+
+		[1238810] = 4, -- s3 tier
+		[1239569] = 2, -- s3 tier
+		[1239689] = 2, -- s3 tier
+
+
 
 		--시즌2 완료
 		[1219034] = 2, -- 고흑 시즌2
@@ -358,6 +382,15 @@ ns.ShowList_WARLOCK = {
 		[449793] = 2, -- 지옥 소환사 적개심
 		[433885] = 3, -- 황폐
 		[433891] = 3, -- 지옥 소환사 적개심
+		
+		[428524] = 3, -- over lord
+		[432495] = 3, -- Pit lord
+		[432795] = 3, -- mother of chaos
+		
+		[431944] = 2, -- over lord
+		[432816] = 2, -- Pit lord
+		[432815] = 2, -- mother of chaos
+
 
 
 	},
@@ -378,11 +411,15 @@ ns.ShowList_WARLOCK = {
 
 	},
 
-	version = 250111,
+	version = 250730,
 }
 
 ns.ShowList_PRIEST = {
 	classbuffs = {
+
+		--S3
+
+		[1237615] = 1, -- s3 tier	
 
 
 		--2시즌 필요없음
@@ -395,6 +432,7 @@ ns.ShowList_PRIEST = {
 		[390636] = 1, -- 광시곡	
 		[390933] = 2, -- 수양 특성	독신자의 진언
 		[394289] = 4, -- 신성 특성	이루어진 기원
+		[453113] = 2, -- Power Surge
 
 
 	},
@@ -405,16 +443,23 @@ ns.ShowList_PRIEST = {
 	},
 
 	classtotems = {
+		[136199] = 2, -- shadow fiend
+		[136214] = 2, -- mindbender
+
 
 
 	},
 
-	version = 250308,
+	version = 250803,
 }
 
 
 ns.ShowList_SHAMAN = {
 	classbuffs = {
+
+		--S3
+		[1238279] = 2, -- s3 tier
+
 
 		--2시즌 완료
 		[1218616] = 1, -- 고술 시즌2
@@ -469,7 +514,7 @@ ns.ShowList_SHAMAN = {
 
 	},
 
-	version = 250303,
+	version = 250731,
 }
 
 
@@ -546,6 +591,9 @@ ns.ShowList_DEATHKNIGHT = {
 
 		[457189] = 2, -- 냉죽 시즌1
 		--죽기
+
+		[444763] = 2, -- Apocalyptic Conquest
+		[444505] = 2, -- Mogrine's Might
 		[433925] = 2, -- 피의 여왕의 정수
 		[47568] = 2, -- 룬무기 강화
 		[441416] = 3, -- 몰살
@@ -586,8 +634,12 @@ ns.ShowList_DEATHKNIGHT = {
 ns.ShowList_EVOKER = {
 	classbuffs = {
 
-		--시즌2 완료 필요없음		
+		--s3
 
+		[1236776] = 2, --s3 tier inner frame
+
+
+		--시즌2 완료 필요없음		
 
 		[1217769] = 2, --황패 시즌2
 		[456142] = 2, -- 증강 시즌1	
@@ -604,16 +656,21 @@ ns.ShowList_EVOKER = {
 	},
 
 	classtotems = {
+		[4696175] = 2, --s3 tier 
 
 
 	},
 
-	version = 250119,
+	version = 250803,
 }
 
 
 ns.ShowList_PALADIN = {
 	classbuffs = {
+
+		--s3
+		[1238903] = 2, -- Masterwork
+
 		--시즌2 완료
 		--신기 시즌2 없음
 		[1216837] = 3, -- 징기 시즌2
@@ -637,6 +694,8 @@ ns.ShowList_PALADIN = {
 		[433674] = 4, -- 징벌 특성
 		[326733] = 3, -- 징벌 (창공의 힘)
 		[408458] = 3, -- 특성 신성한 목적		
+		--[463073] = 2, -- Sun's Avatar
+		--[413907] = 2, -- Sun's Avatar
 
 	},
 
@@ -650,7 +709,7 @@ ns.ShowList_PALADIN = {
 
 	},
 
-	version = 250220,
+	version = 250803,
 }
 
 
