@@ -12,16 +12,6 @@ local ADF_BlackList = {
     --	["맹독"] = 1,
 }
 
--- 반짝이 처리부
-
---AuraUtil
-
-local PLAYER_UNITS = {
-    player = true,
-    vehicle = true,
-    pet = true,
-};
-
 local DispellableDebuffTypes =
 {
     Magic = true,
@@ -91,7 +81,7 @@ local function UpdateDispellable()
     for dispelType, _ in pairs(DispellableDebuffTypes) do
         DispellableDebuffTypes[dispelType] = false;
         for spellID, spelltype in pairs(typeCheck[dispelType]) do
-            if spelltype == 1 and IsPlayerSpell(spellID) then                
+            if spelltype == 1 and IsPlayerSpell(spellID) then
                 DispellableDebuffTypes[dispelType] = true;
             elseif spelltype == 2 and asIsPetSpell(spellID) then
                 DispellableDebuffTypes[dispelType] = true;
@@ -463,26 +453,18 @@ local function ProcessAura(aura, unit)
             skip = false;
         end
 
-        -- PowerBar에서 보이는 Debuff 는 숨기고
-        if APB_DEBUFF and (APB_DEBUFF == aura.spellId) then
-            skip = true;
-        end
-
-        if APB_DEBUFF2 and (APB_DEBUFF2 == aura.spellId) then
-            skip = true;
-        end
-
-        if APB_DEBUFF_STACK and APB_DEBUFF_STACK == aura.spellId then
-            skip = true;
-        end
-
-        if APB_DEBUFF_TIME_STACK and APB_DEBUFF_TIME_STACK == aura.spellId then
-            skip = true;
-        end
-
-        -- ACI 에서 보이는 Debuff 는 숨기고
-        if ACI_Debuff_list and ACI_Debuff_list[aura.name] then
-            skip = true;
+        if skip == false then
+            if APB_DEBUFF and (APB_DEBUFF == aura.spellId) then
+                skip = true;
+            elseif APB_DEBUFF2 and (APB_DEBUFF2 == aura.spellId) then
+                skip = true;
+            elseif APB_DEBUFF_STACK and APB_DEBUFF_STACK == aura.spellId then
+                skip = true;
+            elseif APB_DEBUFF_TIME_STACK and APB_DEBUFF_TIME_STACK == aura.spellId then
+                skip = true;
+            elseif ACI_Debuff_list and (ACI_Debuff_list[aura.spellId] or ACI_Debuff_list[aura.name]) then
+                skip = true;
+            end
         end
     elseif unit == "player" then
         skip = false;
@@ -561,19 +543,71 @@ local function ParseAllAuras(unit)
     ForEachAura(unit, filter, batchCount, HandleAura, usePackedAura);
 end
 
-local function SetDebuff(frame, icon, applications, expirationTime, duration, color, snapshot, alert, currtime, size)
+local function format_count(n)
+	local sign = ""
+	if n < 0 then
+		sign = "-"
+		n = -n
+	end
+
+	if (n > 999999) then
+		n = (math.ceil(n / 1000000) .. "m");
+	elseif (n > 999) then
+		n = (math.ceil(n / 1000) .. "k");
+	end
+
+	return tostring(sign .. n)
+end
+
+local function SetDebuff(frame, icon, applications, expirationTime, duration, color, snapshot, alert, currtime, size,
+                         points)
     local data = frame.data;
 
-    if (applications ~= data.applications) then
-        local frameCount = frame.count;
-        if (applications > 1) then
-            frameCount:Show();
-            frameCount:SetText(applications);
-        else
-            frameCount:Hide();
-        end
-        data.applications = applications;
-    end
+	local count = 0;
+	local point = 0;
+	local bshowcount = false;
+	
+    if (icon ~= data.icon) then
+		frame.icon:SetTexture(icon);
+		data = {};
+		data.icon = icon;
+		frame:Show();
+	end
+
+	if applications and applications > 0 then
+		count = applications;
+	end
+
+	if points and points[1] and points[1] ~= 0 then
+		point = points[1];
+	end
+
+	if count ~= data.count then
+		data.count = count;
+		if count > 1 then
+			bshowcount = true;
+			frame.count:Show();
+			frame.count:SetText(count);
+			if countcolor then
+				frame.count:SetTextColor(countcolor.r, countcolor.g, countcolor.b);
+			end
+		else
+			frame.count:Hide();
+		end
+	end
+	
+    if bshowcount or count > 0 then
+		frame.point:Hide()
+	elseif point ~= data.point then
+		data.point = point;
+
+		if point > 100 then
+			frame.point:SetText(format_count(point));
+			frame.point:Show();
+		else
+			frame.point:Hide();
+		end
+	end
 
     if snapshot ~= data.snapshot then
         frame.snapshot:SetText(math.floor(snapshot * 100));
@@ -638,11 +672,6 @@ local function SetDebuff(frame, icon, applications, expirationTime, duration, co
         data.size = size;
     end
 
-    if (icon ~= data.icon) then
-        frame.icon:SetTexture(icon);
-        data.icon = icon;
-        frame:Show();
-    end
 end
 
 local function UpdateAuraFrames(unit, auraList, numAuras)
@@ -727,7 +756,8 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
                 alert = 3;
             end
 
-            SetDebuff(frame, aura.icon, aura.applications, aura.expirationTime, aura.duration, color, snapshot, alert, curr_time, size);
+            SetDebuff(frame, aura.icon, aura.applications, aura.expirationTime, aura.duration, color, snapshot, alert,
+                curr_time, size, aura.points);
 
             return false;
         end);
@@ -878,6 +908,11 @@ local function CreatDebuffFrames(parent, bright)
         frame.count:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize, "OUTLINE")
         frame.count:ClearAllPoints();
         frame.count:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2);
+
+        frame.point:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize - 3, "OUTLINE")
+        frame.point:ClearAllPoints();
+        frame.point:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2);
+        frame.point:SetTextColor(0,1,0);
 
         frame.snapshot:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize - 1, "OUTLINE")
         frame.snapshot:ClearAllPoints();
