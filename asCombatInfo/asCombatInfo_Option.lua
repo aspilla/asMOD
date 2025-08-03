@@ -444,11 +444,11 @@ if version >= 110200 then
 
 	};
 	ACI_Options_Default.ACI_SpellList_DEATHKNIGHT_2 = {
-		version = 250713,
+		version = 250804,
 		{ 43265,                  2,           nil, nil, nil, 188290 },
 		{ 196770,                 2 },
 		{ 51271,                  2,           nil, nil, nil, nil,   nil, { 51271, 377195 } },
-		{ { 343294, 1, nil, 35 }, { 279302, 1 } },
+		{ { 343294, 1, nil, 35 }, { 1249658, 2 }, { 279302, 1 } },
 		{ 49184,                  4,           nil, nil, nil, 55095 },
 
 	};
