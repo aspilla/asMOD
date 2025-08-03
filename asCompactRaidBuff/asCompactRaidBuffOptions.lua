@@ -872,9 +872,9 @@ function ns.SetupOptionPanels()
 			local cvar_name = "asCompactRaidBuff_" .. variable;
 			local tooltip = ""
 			if ACRB_Options[variable] == nil then
-				if type(Options_Default[variable]) == "table" then
-					ACRB_Options[variable] = CopyTable(Options_Default[variable]);
-					ns.options[variable] = CopyTable(Options_Default[variable]);
+				if type(Options_Default.variable) == "table" then
+					ACRB_Options[variable] = CopyTable(Options_Default.variable);
+					ns.options[variable] = CopyTable(Options_Default.variable);
 				else
 					ACRB_Options[variable] = Options_Default[variable];
 					ns.options[variable] = Options_Default[variable];
