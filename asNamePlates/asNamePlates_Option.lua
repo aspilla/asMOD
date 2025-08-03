@@ -312,7 +312,7 @@ ns.ANameP_HealSpellList["기원사"] = {
 
 
 ANameP_Options_Default = {
-    version = 250621,
+    version = 250730,
     ANameP_ShowKnownSpell = false,                            -- [디버프] 기본 + 사용 가능 스킬 디버프 추가
     ANameP_ShowMyAll = false,                                 -- [디버프] 전부 보이기
     ANameP_ShowListOnly = false,                              -- [디버프] List 만 보이기
@@ -402,13 +402,15 @@ ANameP_Options_Default = {
         [466872] = { 0, 5, 1 }, --척후병의 징표
         [468572] = { 0, 4, 2 }, --검은 화살
         [450387] = { 0, 3 },    --파수꾼
-        [257284] = { 0, 2 },    --사냥꾼의 징표
+        [212431] = { 0, 2 },    --폭발 사격
+        [257284] = { 0, 1 },    --사냥꾼의 징표
 
     },
 
     ANameP_ShowList_HUNTER_3 = {
         [259491] = { 1, 5, 1 }, --독사 쐐기
         [450387] = { 0, 4 },    --파수꾼
+        [212431] = { 0, 3 },    --폭발 사격
         [257284] = { 0, 3 },    --사냥꾼의 징표
 
     },
