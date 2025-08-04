@@ -47,7 +47,7 @@ Key mobs from TWW Season 1/2 dungeons are registered.
 <iframe width="560" height="315" src="https://www.youtube.com/embed/aQGkIO-bjbI?si=nDRGb98zrA5CWGEk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ---
-# asAutoMarker (내부전쟁 시즌 2)
+# asAutoMarker (내부전쟁 시즌 3)
 
 탱커 역할을 수행 시, 사전에 지정된 주요 몬스터에게 자동으로 공격대 징표를 할당해주는 애드온입니다. 
 딜러나 힐러일 경우 몹에 징표를 찍진 않지만 주요몹의 이름표 색상을 변경(asNamePlates 사용시) 합니다. 
