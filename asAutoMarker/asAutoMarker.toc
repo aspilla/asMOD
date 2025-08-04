@@ -2,7 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rAutoMarker
 ## Notes: Simple automarker to detect dangerous mobs 
-## Version : 250630
+## Version : 250804
 ## SavedVariablesPerCharacter: AAM_Options, AAM_OtherOptions
 ## SavedVariables: AMM_NPCTable
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

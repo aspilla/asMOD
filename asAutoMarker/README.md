@@ -1,4 +1,4 @@
-# asAutoMarker (TWW Season 2)
+# asAutoMarker (TWW Season 3)
 
 This addon automatically assigns raid markers to designated key monsters when performing the tank role. 
 If you are a DPS or healer, it does not mark mobs but changes the nameplate color of key mobs (if using asNamePlates). 

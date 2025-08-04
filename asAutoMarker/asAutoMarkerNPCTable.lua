@@ -2,6 +2,44 @@ local _, ns = ...;
 
 ns.NPCTable = {
 
+	--TWW S3
+
+
+	
+	[217533] = 2, --Atik
+    [218324] = 2, --Nakt
+    [217531] = 2, --Ixin
+
+	--Ecodome Alani
+	[242209] = 2, -- Overgorged Mite
+	[234962] = 2, -- Wastelander Farstalker
+	[234957] = 2, -- Wastelander Ritualist
+	[234955] = 2, -- Wastelander Pactspeaker
+
+
+	-- Halls of Atonement
+	[164562] = 2, --Depraved Houndmaster
+	[165414] = 2, -- Depraved Obliterator
+
+	[164363] = 1, --Undying Stonefiend
+	[167876] = 2, --Inquisitor Sigar
+
+	--Tazh
+	[177817] = 2, --Support Officer
+	[180091] = 2, --Ancient Core Hound
+	[180336] = 2, -- Cartel Wiseguy
+	[176395] = 2, -- Overloaded Mailemental
+	[179841] = 2, --Veteran Sparkcaster
+
+	--Gambit
+	[178142] = 2, --Murkbrine Fishmancer
+	[178139] = 2, --Murkbrine Shellcrusher
+	[176551] = 2, --Vault Purifier
+	[179388] = 2, --Hourglass Tidesage
+	[180431] = 2, --Focused Ritualist
+	[177716] = 2, --So' Cartel Assassin
+
+
 
 	--내부전쟁 시즌2
 	--Cinderbrew Meadery
