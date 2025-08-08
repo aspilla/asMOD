@@ -92,12 +92,12 @@ ACI_Options_Default = {
 
 	--야수
 	ACI_SpellList_HUNTER_1 = {
-		version = 250207,
-		{ 99,            115939,               { 118455, 3, "pet", 2 }, { 212431, 1 } },
+		version = 250710,
+		{ 99,            115939,               { 118455, 3, "pet", 2 }, { 212431, 1 }, {359844, 2}, {264735, 2}  },
 		{ 34026,         1 },
 		{ 19574,         2 },
 		{ 53351,         1 },
-		{ { 120679, 1 }, { 217200, 5, nil, 1 } },
+		{ { 321530, 4 }, { 217200, 5, nil, 1 } },
 	},
 
 	--사격
@@ -223,21 +223,22 @@ ACI_Options_Default = {
 
 	--냉기
 	ACI_SpellList_DEATHKNIGHT_2 = {
-		version = 250207,
+		version = 250804,
 		{ 43265,                  2,           nil, nil, nil, 188290 },
 		{ 196770,                 2 },
 		{ 51271,                  2,           nil, nil, nil, nil,   nil, { 51271, 377195 } },
-		{ { 343294, 1, nil, 35 }, { 47568, 2 } },
+		{ { 343294, 1, nil, 35 }, { 1249658, 2 }, { 279302, 1 } },
 		{ 49184,                  4,           nil, nil, nil, 55095 },
 
 	},
 
+
 	--부정
 	ACI_SpellList_DEATHKNIGHT_3 = {
-		version = 250207,
+		version = 250803,
 		{ 43265,                  2,            nil,  nil, nil, 188290 },
 		{ 85948,                  4,            nil,  0,   nil, 194310 },
-		{ 63560,                  2,            "pet" },
+		{{ 275699,                  2,     nil, nil, nil, 1235391 },{ 63560,                  2,            "pet" }},
 		{ { 343294, 1, nil, 35 }, { 207289, 2 } },
 		{ 77575,                  4,            nil,  1,   nil, 191587 },
 
@@ -431,58 +432,6 @@ ACI_Options_Default = {
 	},
 
 };
-
-if version >= 110200 then
-	--부정
-	ACI_Options_Default.ACI_SpellList_DEATHKNIGHT_3 = {
-		version = 250803,
-		{ 43265,                  2,            nil,  nil, nil, 188290 },
-		{ 85948,                  4,            nil,  0,   nil, 194310 },
-		{{ 275699,                  2,     nil, nil, nil, 1235391 },{ 63560,                  2,            "pet" }},
-		{ { 343294, 1, nil, 35 }, { 207289, 2 } },
-		{ 77575,                  4,            nil,  1,   nil, 191587 },
-
-	};
-	ACI_Options_Default.ACI_SpellList_DEATHKNIGHT_2 = {
-		version = 250804,
-		{ 43265,                  2,           nil, nil, nil, 188290 },
-		{ 196770,                 2 },
-		{ 51271,                  2,           nil, nil, nil, nil,   nil, { 51271, 377195 } },
-		{ { 343294, 1, nil, 35 }, { 1249658, 2 }, { 279302, 1 } },
-		{ 49184,                  4,           nil, nil, nil, 55095 },
-
-	};
-
-	--야수
-	ACI_Options_Default.ACI_SpellList_HUNTER_1 = {
-		version = 250710,
-		{ 99,            115939,               { 118455, 3, "pet", 2 }, { 212431, 1 }, {359844, 2}, {264735, 2}  },
-		{ 34026,         1 },
-		{ 19574,         2 },
-		{ 53351,         1 },
-		{ { 321530, 4 }, { 217200, 5, nil, 1 } },
-	};
-
-	--사격
-	ACI_Options_Default.ACI_SpellList_HUNTER_2 = {
-		version = 250227,
-		{ { 260243, 2 }, { 342076, 2, nil, 2, 342076 } },
-		{ 257044, 1 },
-		{ 288613, 2 },
-		{ 53351,  1 },
-		{ 212431, 1 },
-	};
-
-	--생존
-	ACI_Options_Default.ACI_SpellList_HUNTER_3 = {
-		version = 250303,
-		{ 212436,        1 },
-		{ 259489,        1 },
-		{ { 203415, 1 }, { 360966, 4 }, { 360952, 2} },
-		{ 53351,         1 },
-		{ { 269751, 1 }, { 259491, 5, nil, 1 } },
-	};
-end
 
 ACI_OptionM = {};
 local update_callback = nil;

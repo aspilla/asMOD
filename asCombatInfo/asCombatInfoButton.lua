@@ -789,7 +789,7 @@ function ns.Button:showButton()
 
     if self.count ~= data.count then
         data.count = self.count;
-        if self.count > 1 then
+        if self.count > 0 then
             bshowcount = true;
             frame.count:SetText(self.count)
             frame.count:Show();
@@ -798,7 +798,7 @@ function ns.Button:showButton()
         end
     end
 
-    if bshowcount or self.count > 0 then 
+    if bshowcount then 
         data.point = nil;
         frame.point:Hide()
     elseif self.point ~= data.point then
