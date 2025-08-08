@@ -416,7 +416,7 @@ local function SetBuff(frame, icon, applications, expirationTime, duration, colo
 
 	if count ~= data.count then
 		data.count = count;
-		if count > 1 then
+		if count > 0 then
 			local frameCount = frame.count;
 			if bigcount then
 				frameCount = frame.bigcount;
