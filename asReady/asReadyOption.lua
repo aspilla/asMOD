@@ -165,7 +165,7 @@ ns.trackedCoolSpellNames = {
     },
 
     DEATHKNIGHT_2 = {
-        [47568] = { 120, 20 }       --"룬 무기 강화"
+        [1249658] = { 90, 8 }       --신드라고사
     },
 
     DEATHKNIGHT_3 = {
@@ -209,11 +209,6 @@ ns.trackedCoolSpellNames = {
     }
 }
 
-if version >= 110200 then
-    ns.trackedCoolSpellNames.DEATHKNIGHT_2 = {
-        [279302] = { 90, 0 }       --FrostWymn
-    };
-end
 
 local tempoption = {};
 
