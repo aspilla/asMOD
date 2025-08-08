@@ -584,7 +584,7 @@ local function SetDebuff(frame, icon, applications, expirationTime, duration, co
 
 	if count ~= data.count then
 		data.count = count;
-		if count > 1 then
+		if count > 0 then
 			bshowcount = true;
 			frame.count:Show();
 			frame.count:SetText(count);
