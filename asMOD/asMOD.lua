@@ -70,7 +70,6 @@ local function asMOD_Import_Commit()
 end
 
 local function createMacro()
-
 	if InCombatLockdown() then
 		return;
 	end
@@ -82,7 +81,13 @@ local function createMacro()
 
 
 	if (macroID == 0) then
-		CreateMacro(macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText, false);
+		local global, perChar = GetNumMacros();
+
+		if global < 120 then
+			CreateMacro(macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText, false);
+		else
+            print("asMOD error:too many macros, so need to delete some")
+		end
 	else
 		EditMacro(macroID, macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText)
 	end
