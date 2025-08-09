@@ -603,8 +603,8 @@ ANameP_Options_Default = {
 
 local function createMacro()
     if InCombatLockdown() then
-		return;
-	end
+        return;
+    end
     local macroText =
     "/run SetCVar (\"nameplateGlobalScale\", 1.2)\n/run SetCVar (\"nameplateSelectedScale\", 1.3)\n/run ANameP_Options.nameplateOverlapV = 0.6\n/run ANameP_Options.ANameP_DebuffAnchorPoint=2\n/run ANameP_Options.ANameP_ShowListOnly=true\n/reload";
     local macroName = "asNamePlates Setup";
@@ -612,7 +612,13 @@ local function createMacro()
 
 
     if (macroID == 0) then
-        CreateMacro(macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText, false);
+        local global, perChar = GetNumMacros();
+
+        if global < 120 then
+            CreateMacro(macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText, false);
+        else
+            print("asMOD error:too many macros, so need to delete some")
+        end
     else
         EditMacro(macroID, macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText)
     end
