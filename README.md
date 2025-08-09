@@ -1,5 +1,11 @@
 # asMOD: A Collection of World of Warcraft Addons
 
+<div align="center" style="margin: 20px 0;">
+
+  <a href="https://github.com/sponsors/aspilla"><img src="https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white" alt="Github Sponsor" style="margin-right: 10px;"></a>
+
+</div>
+
 asMOD is a collection of custom World of Warcraft addons designed to enhance your gameplay experience.
 
 ## asMOD Features
