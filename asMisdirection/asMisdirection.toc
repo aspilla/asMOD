@@ -1,9 +1,9 @@
 ## Interface: 110107, 110200
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rMisdirection
-## Notes: Addon to create macro for midirection like spell
+## Notes: Midirection/Tricks of the trade/Power Infusion helper
 ## Notes-koKR: 눈속임/속거/마주/비늘 도우미
-## Version : 250603
+## Version : 250808
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asMisdirection.lua

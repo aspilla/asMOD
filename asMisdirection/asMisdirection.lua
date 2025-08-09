@@ -4,22 +4,23 @@ local playerClass       = select(2, UnitClass("player"))
 local MisDirectionSpell = nil
 local MindInfusionSpell = nil;
 
-local gameLanguage = GetLocale()
+local gameLanguage      = GetLocale()
 
-local asGetSpellInfo = function(spellID)
+local asGetSpellInfo    = function(spellID)
 	if not spellID then
 		return nil;
 	end
 
 	local ospellID = C_Spell.GetOverrideSpell(spellID)
 
-    if ospellID then
-        spellID = ospellID;
-    end
+	if ospellID then
+		spellID = ospellID;
+	end
 
 	local spellInfo = C_Spell.GetSpellInfo(spellID);
 	if spellInfo then
-		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+			spellInfo.spellID, spellInfo.originalIconID;
 	end
 end
 
@@ -74,7 +75,6 @@ local function CheckPartyMember(btank)
 							return unitid;
 						end
 					end
-					
 				end
 			end
 		else -- party
@@ -132,24 +132,29 @@ local function AHM_SetAssist(unit, force)
 	prev_unit = unit;
 
 	local macroText = "/assist [@" .. unit .. " ,exists,nodead]";
-	local macroName = "Assist Tanker"
+	local macroName = "as_Assist Tanker"
 	if (gameLanguage == "koKR") then
-		macroName = "탱커지원"
+		macroName = "as_탱커지원"
 	end
 	local macroID = GetMacroIndexByName(macroName)
 
 	if (macroID == 0) then
-		CreateMacro(macroName, "ABILITY_ROGUE_FEIGNDEATH", macroText)
+		local global, perChar = GetNumMacros();
+
+		if global < 120 then
+			CreateMacro(macroName, "ABILITY_ROGUE_FEIGNDEATH", macroText, false)
+		else
+            print("asMOD error:too many macros, so need to delete some")
+		end
 	else
 		EditMacro(macroID, macroName, "ABILITY_ROGUE_FEIGNDEATH", macroText)
 	end
 
 	if UnitExists(unit) then
-
 		if (gameLanguage == "koKR") then
-			print("|cff33ff99[afm]|r " .. UnitName(unit) .. " 이 탱커로 지정");		
+			print("|cff33ff99[afm]|r " .. UnitName(unit) .. " 이 탱커로 지정");
 		else
-			print("|cff33ff99[afm]|r " .. UnitName(unit) .. " is setted as TANKER");		
+			print("|cff33ff99[afm]|r " .. UnitName(unit) .. " is setted as TANKER");
 		end
 	end
 end
@@ -182,11 +187,17 @@ local function AHM_SetMisdirection(unit, force)
 		--macroText = string.format("#showtooltip %s\n/cast [@mouseover, exists, help, nodead][target=" .. unit ..", exists, help, nodead][help] %s", MisDirectionSpell, MisDirectionSpell)
 		local macroText = string.format("#showtooltip %s\n/cast [target=" .. unit .. ", exists, help, nodead][help] %s",
 			MisDirectionSpell, MisDirectionSpell)
-		local macroID = GetMacroIndexByName(MisDirectionSpell)
-		local macroName = MisDirectionSpell
+		local macroName = "as_".. MisDirectionSpell
+		local macroID = GetMacroIndexByName(macroName)
 
 		if (macroID == 0) then
-			CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText)
+			local global, perChar = GetNumMacros();
+
+			if global < 120 then
+				CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText, false)
+			else
+				print("asMOD error:too many macros, so need to delete some")
+			end
 		else
 			local oldtext = GetMacroBody(macroID);
 			if oldtext then
@@ -203,9 +214,9 @@ local function AHM_SetMisdirection(unit, force)
 
 		if UnitExists(unit) then
 			if (gameLanguage == "koKR") then
-				print("|cff33ff99[afm]|r " .. UnitName(unit) .. " 이 " .. MisDirectionSpell .. " 대상으로 지정");			
+				print("|cff33ff99[afm]|r " .. UnitName(unit) .. " 이 " .. MisDirectionSpell .. " 대상으로 지정");
 			else
-				print("|cff33ff99[afm]|r " .. UnitName(unit) .. " is setted as the target of " .. MisDirectionSpell);			
+				print("|cff33ff99[afm]|r " .. UnitName(unit) .. " is setted as the target of " .. MisDirectionSpell);
 			end
 		end
 	end
@@ -239,11 +250,17 @@ local function AHM_SetMindInfusion(unit, force)
 		--macroText = string.format("#showtooltip %s\n/cast [@mouseover, exists, help, nodead][target=" .. unit ..", exists, help, nodead][help] %s", MindInfusionSpell, MindInfusionSpell)
 		local macroText = string.format("#showtooltip %s\n/cast [target=" .. unit .. ", exists, help, nodead][help] %s",
 			MindInfusionSpell, MindInfusionSpell)
-		local macroID = GetMacroIndexByName(MindInfusionSpell)
-		local macroName = MindInfusionSpell
+		local macroName = "as_".. MindInfusionSpell
+		local macroID = GetMacroIndexByName(macroName)
 
 		if (macroID == 0) then
-			CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText)
+			local global, perChar = GetNumMacros();
+
+			if global < 120 then
+				CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText, false)
+			else
+				print("asMOD error:too many macros, so need to delete some")
+			end
 		else
 			local oldtext = GetMacroBody(macroID);
 			if oldtext then
@@ -260,9 +277,9 @@ local function AHM_SetMindInfusion(unit, force)
 
 		if UnitExists(unit) then
 			if (gameLanguage == "koKR") then
-				print("|cff33ff99[afm]|r " .. UnitName(unit) .. " 이 " .. MindInfusionSpell .. " 대상으로 지정");			
+				print("|cff33ff99[afm]|r " .. UnitName(unit) .. " 이 " .. MindInfusionSpell .. " 대상으로 지정");
 			else
-				print("|cff33ff99[afm]|r " .. UnitName(unit) .. " is setted as the target of " .. MindInfusionSpell);			
+				print("|cff33ff99[afm]|r " .. UnitName(unit) .. " is setted as the target of " .. MindInfusionSpell);
 			end
 		end
 	end
@@ -335,7 +352,7 @@ local function AHM_OnEvent(self, event, ...)
 			spellId = 360827;
 			maintarget = "player"
 		elseif playerClass == "PRIEST" then
-			spellId = 122860;			
+			spellId = 122860;
 			maintarget = "player"
 			dealspell = true;
 		else
@@ -359,7 +376,6 @@ local function AHM_OnEvent(self, event, ...)
 		end
 
 		if dealspell then
-
 			MindInfusionSpell = spellName
 
 			if not InCombatLockdown() then
@@ -371,13 +387,11 @@ local function AHM_OnEvent(self, event, ...)
 			end
 
 			if (gameLanguage == "koKR") then
-				print("|cff33ff99[afm]|r 매크로 창에서 " .. MindInfusionSpell .. " 매크로를 이용하세요.")
+				print("|cff33ff99[afm]|r 매크로 창에서 as_" .. MindInfusionSpell .. " 매크로를 이용하세요.")
 			else
-				print("|cff33ff99[afm]|r use " .. MindInfusionSpell .. " macro.")
+				print("|cff33ff99[afm]|r use as_" .. MindInfusionSpell .. " macro.")
 			end
-
 		else
-
 			MisDirectionSpell = spellName
 
 			if not InCombatLockdown() then
@@ -388,19 +402,19 @@ local function AHM_OnEvent(self, event, ...)
 			end
 
 			if (gameLanguage == "koKR") then
-				print("|cff33ff99[afm]|r 매크로 창에서 " .. MisDirectionSpell .. " 매크로를 이용하세요.")
+				print("|cff33ff99[afm]|r 매크로 창에서 as_" .. MisDirectionSpell .. " 매크로를 이용하세요.")
 			else
-				print("|cff33ff99[afm]|r use " .. MisDirectionSpell .. " macro.")
+				print("|cff33ff99[afm]|r use as_" .. MisDirectionSpell .. " macro.")
 			end
 		end
 	elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
 		local tank = CheckPartyMember(true);
-		local dealer = CheckPartyMember(false); 
+		local dealer = CheckPartyMember(false);
 
 		if tank and not InCombatLockdown() then
 			if UnitExists(tank) then
 				AHM_SetAssist(tank);
-				AHM_SetMisdirection(tank);				
+				AHM_SetMisdirection(tank);
 			end
 		else
 			tempTanker = tank;
@@ -408,7 +422,7 @@ local function AHM_OnEvent(self, event, ...)
 
 		if dealer and not InCombatLockdown() then
 			if UnitExists(dealer) then
-				AHM_SetMindInfusion(dealer);						
+				AHM_SetMindInfusion(dealer);
 			end
 		else
 			tempDealer = dealer;
@@ -418,12 +432,12 @@ local function AHM_OnEvent(self, event, ...)
 		force_unit = nil;
 
 		local tank = CheckPartyMember(true);
-		local dealer = CheckPartyMember(false); 
+		local dealer = CheckPartyMember(false);
 
 		if tank and not InCombatLockdown() then
 			if UnitExists(tank) then
 				AHM_SetAssist(tank);
-				AHM_SetMisdirection(tank);				
+				AHM_SetMisdirection(tank);
 			end
 		else
 			tempTanker = tank;
@@ -431,7 +445,7 @@ local function AHM_OnEvent(self, event, ...)
 
 		if dealer and not InCombatLockdown() then
 			if UnitExists(dealer) then
-				AHM_SetMindInfusion(dealer);			
+				AHM_SetMindInfusion(dealer);
 			end
 		else
 			tempDealer = dealer;
@@ -439,12 +453,11 @@ local function AHM_OnEvent(self, event, ...)
 	elseif event == "PLAYER_REGEN_ENABLED" and tempTanker then
 		if tempTanker and UnitExists(tempTanker) then
 			AHM_SetAssist(tempTanker);
-			AHM_SetMisdirection(tempTanker);		
+			AHM_SetMisdirection(tempTanker);
 		end
 		tempTanker = nil;
 
 		if tempDealer and UnitExists(tempDealer) then
-		
 			AHM_SetMindInfusion(tempDealer);
 		end
 		tempDealer = nil;
