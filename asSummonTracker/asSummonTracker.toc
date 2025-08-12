@@ -1,0 +1,10 @@
+## Interface: 110000
+## Title: asSummonTracker
+## Version: 1.0.0
+## Author: asMOD
+## Notes: Tracks summons from combat log events.
+## DefaultState: enabled
+## LoadOnDemand: 0
+
+asSummonTracker.xml
+asSummonTracker.lua
