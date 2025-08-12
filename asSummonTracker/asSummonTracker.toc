@@ -1,10 +1,10 @@
-## Interface: 110000
-## Title: asSummonTracker
-## Version: 1.0.0
-## Author: asMOD
+## Interface: 110200
+## Author: |cffff3399Aspilla|r [Azshara - KR]
+## Title: |cffff3399as|rSummonTracker
 ## Notes: Tracks summons from combat log events.
-## DefaultState: enabled
-## LoadOnDemand: 0
+## Version: 250813
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
 
 asSummonTracker.xml
 asSummonTracker.lua

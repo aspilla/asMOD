@@ -106,16 +106,16 @@ local summon_colorlist = {
 local showtype = 2;
 
 local function asCooldownFrame_Clear(self)
-	self:Clear();
+    self:Clear();
 end
 
 local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
-	if enable and enable ~= 0 and start > 0 and duration > 0 then
-		self:SetDrawEdge(forceShowDrawEdge);
-		self:SetCooldown(start, duration, modRate);
-	else
-		asCooldownFrame_Clear(self);
-	end
+    if enable and enable ~= 0 and start > 0 and duration > 0 then
+        self:SetDrawEdge(forceShowDrawEdge);
+        self:SetCooldown(start, duration, modRate);
+    else
+        asCooldownFrame_Clear(self);
+    end
 end
 
 
@@ -175,8 +175,7 @@ local function onupdate()
 
                     local startTime = summons[i][1];
                     local duration = summons[i][5];
-			        asCooldownFrame_Set(button.cooldown, startTime, duration, duration > 0, true);
-
+                    asCooldownFrame_Set(button.cooldown, startTime, duration, duration > 0, true);
                 else
                     buttons[i]:Hide();
                 end
@@ -214,6 +213,11 @@ local function onupdate()
 end
 
 local callfunc = nil;
+local direbeast_duration = 8;
+local direbeast_spells = {
+    [132764] = true,
+    [122804] = true,
+}
 
 local function direbeast()
     local timestamp, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellId, _, _, auraType, amount =
@@ -221,13 +225,12 @@ local function direbeast()
 
 
     if sourceGUID and sourceGUID == playerGUID then
-        if eventType == "SPELL_CAST_SUCCESS" and spellId == 132764 then
+        if eventType == "SPELL_CAST_SUCCESS" and direbeast_spells[spellId] then
             local currentTime = GetTime();
-            table.insert(summons, 1, { currentTime, spellId, 1, timestamp, 10 });
+            table.insert(summons, 1, { currentTime, spellId, 1, timestamp, direbeast_duration });
             --elseif eventType == "SPELL_SUMMON" and spellId == 104317 then
         end
     end
-
 end
 
 local frost_time = nil;
@@ -244,7 +247,7 @@ local function four_knights()
             local currentTime = GetTime();
             local duration = summon_spelllist[spellId]
 
-            if frost_time and timestamp == frost_time  then
+            if frost_time and timestamp == frost_time then
                 duration = duration * 2;
             end
 
@@ -257,8 +260,15 @@ local function four_knights()
     end
 end
 
-local function checkspec()
+local timer = nil;
 
+local function checkspec()
+    frame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+    playerGUID = UnitGUID("player");
+
+    if timer then
+        timer:Cancel();
+    end
 
     local localizedClass, englishClass = UnitClass("player");
 
@@ -266,37 +276,39 @@ local function checkspec()
         if IsPlayerSpell(444005) then
             showtype = 2;
             callfunc = four_knights;
+            frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+            timer = C_Timer.NewTicker(0.1, onupdate);
         end
-
     elseif englishClass == "HUNTER" then
-
         if IsPlayerSpell(120679) then
-
             showtype = 1;
             callfunc = direbeast;
+
+
+            print("check")
+            if IsPlayerSpell(385810) then
+               direbeast_duration = 10;
+            end
+
+            frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+            timer = C_Timer.NewTicker(0.1, onupdate);
         end
-
     end
-
 end
 
 local function onevent(self, event, ...)
-
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
         if callfunc then
             callfunc();
         end
     else
         checkspec();
-    end    
+    end
 end
 
 -- Register for the combat log event
-frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
 frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 frame:SetScript("OnEvent", onevent);
-
-local timer = C_Timer.NewTicker(0.1, onupdate);
