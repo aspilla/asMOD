@@ -1,6 +1,13 @@
+local CONFIG_X = -138;
+local CONFIG_Y = -80;
+local CONFIG_SIZE = 28;
+local CONFIG_COUNT_SIZE = 14;
+
+
 local frame = CreateFrame("Frame", "AsTrackSummonsFrame", UIParent)
-frame:SetSize(20, 225)                                 -- Changed size to be more compact
-frame:SetPoint("CENTER", UIParent, "CENTER", -160, 20) -- Repositioned to the left
+
+frame:SetSize(CONFIG_SIZE, CONFIG_SIZE * 0.8)                              -- Changed size to be more compact
+frame:SetPoint("BOTTOM", UIParent, "CENTER", CONFIG_X, CONFIG_Y) -- Repositioned to the left
 
 -- Create 10 vertical bars
 local bars = {};
@@ -25,11 +32,11 @@ for i = 1, 10 do
     bar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
     bar.bg:SetVertexColor(0, 0, 0, 0.8);
     bar.count = bar:CreateFontString(nil, "OVERLAY");
-    bar.count:SetFont(STANDARD_TEXT_FONT, 13);
+    bar.count:SetFont(STANDARD_TEXT_FONT, CONFIG_COOLDOWN_SIZE);
     bar.count:SetPoint("BOTTOM", bar, "BOTTOM", 0, 1);
 
     bar.time = bar:CreateFontString(nil, "OVERLAY");
-    bar.time:SetFont(STANDARD_TEXT_FONT, 13);
+    bar.time:SetFont(STANDARD_TEXT_FONT, CONFIG_COOLDOWN_SIZE);
     bar.time:SetPoint("TOP", bar, "BOTTOM", 0, -1);
     bar:Hide();
 
@@ -40,7 +47,7 @@ for i = 1, 10 do
     button:SetAlpha(1);
     button:EnableMouse(false);
     button.icon:SetTexCoord(.08, .92, .16, .84);
-    button.count:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+    button.count:SetFont(STANDARD_TEXT_FONT, CONFIG_COUNT_SIZE, "OUTLINE")
     button.count:SetTextColor(1, 1, 1);
     button.count:ClearAllPoints()
     button.count:SetPoint("CENTER", button.icon, "CENTER", 0, 0);
@@ -51,7 +58,7 @@ for i = 1, 10 do
 
     for _, r in next, { button.cooldown:GetRegions() } do
         if r:GetObjectType() == "FontString" then
-            r:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
+            r:SetFont(STANDARD_TEXT_FONT, CONFIG_COOLDOWN_SIZE, "OUTLINE");
             r:ClearAllPoints();
             r:SetPoint("TOP", 0, 5);
             r:SetDrawLayer("OVERLAY");
@@ -83,6 +90,11 @@ for i = 1, 10 do
     tinsert(buttons, button);
 end
 
+C_AddOns.LoadAddOn("asMOD");
+
+if asMOD_setupFrame then
+    asMOD_setupFrame(frame, "asSummonTracker");
+end
 local playerGUID = UnitGUID("player");
 
 local summons = {};
@@ -103,7 +115,7 @@ local summon_colorlist = {
 
 }
 
-local showtype = 2;
+local showtype = 0;
 
 local function asCooldownFrame_Clear(self)
     self:Clear();
@@ -233,21 +245,40 @@ local function direbeast()
     end
 end
 
-local frost_time = nil;
+local apo_time = nil;
+local apo_spells =
+{
+    [279302] = true,
+    [42650] = true,
+    [383269] = true,
+    [455395] = true,
+}
 local function four_knights()
     local timestamp, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellId, _, _, auraType, amount =
         CombatLogGetCurrentEventInfo();
 
 
     if sourceGUID and sourceGUID == playerGUID then
-        if eventType == "SPELL_CAST_SUCCESS" and spellId == 279302 then
-            frost_time = timestamp;
+        if eventType == "SPELL_CAST_SUCCESS" and apo_spells[spellId] then
+
+            local currentTime = GetTime();
+            apo_time = timestamp;
             --elseif eventType == "SPELL_SUMMON" and spellId == 104317 then
+            for idx, v in pairs(summons) do
+                local start = v[1];
+                local duration = v[5];
+
+                if currentTime <= (start + duration) then                    
+                    summons[idx][1] = currentTime;
+                    summons[idx][4] = timestamp;
+                    summons[idx][5] = 20;
+                end
+            end
         elseif eventType == "SPELL_SUMMON" and summon_spelllist[spellId] then
             local currentTime = GetTime();
             local duration = summon_spelllist[spellId]
 
-            if frost_time and timestamp == frost_time then
+            if apo_time and timestamp == apo_time then
                 duration = duration * 2;
             end
 
@@ -264,7 +295,6 @@ local timer = nil;
 
 local function checkspec()
     frame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-    playerGUID = UnitGUID("player");
 
     if timer then
         timer:Cancel();
@@ -272,7 +302,7 @@ local function checkspec()
 
     local localizedClass, englishClass = UnitClass("player");
 
-    if englishClass == "DEATH_KNIGHT" then
+    if englishClass == "DEATHKNIGHT" then
         if IsPlayerSpell(444005) then
             showtype = 2;
             callfunc = four_knights;
@@ -284,10 +314,8 @@ local function checkspec()
             showtype = 1;
             callfunc = direbeast;
 
-
-            print("check")
             if IsPlayerSpell(385810) then
-               direbeast_duration = 10;
+                direbeast_duration = 10;
             end
 
             frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
