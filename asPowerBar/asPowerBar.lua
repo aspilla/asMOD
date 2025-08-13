@@ -3049,7 +3049,7 @@ local function APB_CheckPower(self)
                 APB_BUFF_TIME_STACK = 471877;
                 APB.stackbar[0].unit = "player";
                 APB.stackbar[0].spellid = 471877;
-                APB_MaxStack(20);
+                APB_MaxStack(30);
                 bupdate_Howl_Pack = true;
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
             end
