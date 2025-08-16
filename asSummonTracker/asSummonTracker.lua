@@ -2,18 +2,19 @@ local CONFIG_X = -138;
 local CONFIG_Y = -80;
 local CONFIG_SIZE = 28;
 local CONFIG_COUNT_SIZE = 14;
+local CONFIG_COOLDOWN_SIZE = 12;
 
 
-local frame = CreateFrame("Frame", "AsTrackSummonsFrame", UIParent)
+local ast_frame = CreateFrame("Frame", "AsTrackSummonsFrame", UIParent)
 
-frame:SetSize(CONFIG_SIZE, CONFIG_SIZE * 0.8)                              -- Changed size to be more compact
-frame:SetPoint("BOTTOM", UIParent, "CENTER", CONFIG_X, CONFIG_Y) -- Repositioned to the left
+ast_frame:SetSize(CONFIG_SIZE, CONFIG_SIZE * 0.8)                    -- Changed size to be more compact
+ast_frame:SetPoint("BOTTOM", UIParent, "CENTER", CONFIG_X, CONFIG_Y) -- Repositioned to the left
 
 -- Create 10 vertical bars
 local bars = {};
 local buttons = {};
 for i = 1, 10 do
-    local bar = CreateFrame("StatusBar", "AsTrackSummonsBar" .. i, frame)
+    local bar = CreateFrame("StatusBar", "AsTrackSummonsBar" .. i, ast_frame)
     bar:SetStatusBarTexture("Interface\\addons\\asTrackSummons\\UI-StatusBar");
     bar:GetStatusBarTexture():SetHorizTile(false)
     bar:SetMinMaxValues(0, 100)
@@ -39,8 +40,9 @@ for i = 1, 10 do
     bar.time:SetFont(STANDARD_TEXT_FONT, CONFIG_COOLDOWN_SIZE);
     bar.time:SetPoint("TOP", bar, "BOTTOM", 0, -1);
     bar:Hide();
+    tinsert(bars, bar);
 
-    local button = CreateFrame("Button", nil, frame, "asSUMMONTTemplate");
+    local button = CreateFrame("Button", nil, ast_frame, "asSUMMONTTemplate");
     button:SetWidth(28);
     button:SetHeight(28 * 0.8);
     button:SetScale(1);
@@ -77,23 +79,24 @@ for i = 1, 10 do
         end)
     end
     if i == 1 then
-        bar:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0)
-        button:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0)
+        bar:SetPoint("BOTTOM", ast_frame, "BOTTOM", 0, 0)
+        button:SetPoint("BOTTOM", ast_frame, "BOTTOM", 0, 0)
     else
         bar:SetPoint("BOTTOMRIGHT", bars[i - 1], "BOTTOMLEFT", -1, 0)       -- Spaced out vertically
         button:SetPoint("BOTTOMRIGHT", buttons[i - 1], "BOTTOMLEFT", -1, 0) -- Spaced out vertically
     end
 
+    button.data = {};
+
     button:Hide();
 
-    tinsert(bars, bar);
     tinsert(buttons, button);
 end
 
 C_AddOns.LoadAddOn("asMOD");
 
 if asMOD_setupFrame then
-    asMOD_setupFrame(frame, "asSummonTracker");
+    asMOD_setupFrame(ast_frame, "asSummonTracker");
 end
 local playerGUID = UnitGUID("player");
 
@@ -130,6 +133,39 @@ local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawE
     end
 end
 
+local function set_button(button, spellId, count, start, duration)
+    local data = button.data;
+
+    if spellId ~= data.spellId then
+        data.spellId = spellId;
+        local spellinfo = C_Spell.GetSpellInfo(spellId);
+
+
+        if spellinfo then
+            button.icon:SetTexture(spellinfo.iconID);
+            button.spellId = spellId;
+        end
+    end
+
+    if count and count ~= data.count then
+        data.count = count;
+        if count > 0 then
+            button.count:SetText(count);
+            button.count:Show();
+        else
+            button.count:Hide();
+        end
+    end
+
+    if start and duration and (start ~= data.start or duration ~= data.duration) then
+        data.start = start;
+        data.duration = duration;
+
+        asCooldownFrame_Set(button.cooldown, start, duration, duration > 0, true);
+    end
+end
+
+
 
 local function onupdate()
     local count = 0;
@@ -150,22 +186,12 @@ local function onupdate()
         --count only
         if count > 0 then
             local spellId = summons[1][2];
-            local spellinfo = C_Spell.GetSpellInfo(spellId);
 
-            if spellinfo then
-                local button = buttons[1];
-                button.icon:SetTexture(spellinfo.iconID);
-                button.count:SetText(count);
-                button.count:Show();
-                button.spellId = spellId;
-                button:Show();
-                for i = 2, 10 do
-                    buttons[i]:Hide();
-                end
-            else
-                for i = 1, 10 do
-                    buttons[i]:Hide();
-                end
+            local button = buttons[1];
+            set_button(button, spellId, count);
+            button:Show();
+            for i = 2, 10 do
+                buttons[i]:Hide();
             end
         else
             for i = 1, 10 do
@@ -176,21 +202,14 @@ local function onupdate()
         --icons
         for i = 1, 10 do
             if i <= count then
-                local spellId = summons[i][2];
-                local spellinfo = C_Spell.GetSpellInfo(spellId);
+                local button = buttons[i];
+                local idx = count - i + 1;
+                local spellId = summons[idx][2];
+                local start = summons[idx][1];
+                local duration = summons[idx][5];
 
-                if spellinfo then
-                    local button = buttons[i];
-                    button.icon:SetTexture(spellinfo.iconID);
-                    button.spellId = spellId;
-                    button:Show()
-
-                    local startTime = summons[i][1];
-                    local duration = summons[i][5];
-                    asCooldownFrame_Set(button.cooldown, startTime, duration, duration > 0, true);
-                else
-                    buttons[i]:Hide();
-                end
+                set_button(button, spellId, nil, start, duration);
+                button:Show();
             else
                 buttons[i]:Hide()
             end
@@ -260,7 +279,6 @@ local function four_knights()
 
     if sourceGUID and sourceGUID == playerGUID then
         if eventType == "SPELL_CAST_SUCCESS" and apo_spells[spellId] then
-
             local currentTime = GetTime();
             apo_time = timestamp;
             --elseif eventType == "SPELL_SUMMON" and spellId == 104317 then
@@ -268,7 +286,7 @@ local function four_knights()
                 local start = v[1];
                 local duration = v[5];
 
-                if currentTime <= (start + duration) then                    
+                if currentTime <= (start + duration) then
                     summons[idx][1] = currentTime;
                     summons[idx][4] = timestamp;
                     summons[idx][5] = 20;
@@ -294,7 +312,7 @@ end
 local timer = nil;
 
 local function checkspec()
-    frame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+    ast_frame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 
     if timer then
         timer:Cancel();
@@ -306,7 +324,7 @@ local function checkspec()
         if IsPlayerSpell(444005) then
             showtype = 2;
             callfunc = four_knights;
-            frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+            ast_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
             timer = C_Timer.NewTicker(0.1, onupdate);
         end
     elseif englishClass == "HUNTER" then
@@ -318,7 +336,7 @@ local function checkspec()
                 direbeast_duration = 10;
             end
 
-            frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+            ast_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
             timer = C_Timer.NewTicker(0.1, onupdate);
         end
     end
@@ -335,8 +353,8 @@ local function onevent(self, event, ...)
 end
 
 -- Register for the combat log event
-frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
-frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-frame:SetScript("OnEvent", onevent);
+ast_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+ast_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+ast_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+ast_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+ast_frame:SetScript("OnEvent", onevent);
