@@ -9,7 +9,7 @@
 				<Texture name="$parentIcon" parentKey="icon"/>
 			</Layer>
 			<Layer level="OVERLAY">
-				<Texture name="$parentBorder" file="Interface\asTargetCastBar\border.tga" parentKey="border">
+				<Texture name="$parentBorder" file="Interface\Addons\asTargetCastBar\border.tga" parentKey="border">
 					<Size>
 						<AbsDimension x="17" y="17"/>
 					</Size>
