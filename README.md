@@ -94,6 +94,7 @@ The following errors may occur:
 | asInformation         |Show 2nd states                                                                  |<a href="https://www.curseforge.com/wow/addons/asinformation" target="_blank" rel="nofollow">Link</a> |
 | asCombatTimer         |Tracking combat time                                                             |<a href="https://www.curseforge.com/wow/addons/ascombattimer" target="_blank" rel="nofollow">Link</a> |
 | asBloodlustAlert      |Notifies when the Bloodlust debuff off                                           |<a href="https://www.curseforge.com/wow/addons/asbloodlustalert" target="_blank" rel="nofollow">Link</a> |
+| asSummonTracker       |Tracks summons from combat log events                                            |<a href="https://www.curseforge.com/wow/addons/assummontracker" target="_blank" rel="nofollow">Link</a> |
 | BugSack, BugGrabber   |[External] Addon error saver                                                     |     |
 | Details               |[External] Damage meter.                                                         |     |
 | DBM                   |[External] Dungeon boss skill announcer.                                         |     |
@@ -170,6 +171,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입�
 | asInformation         |2차 스텟 표시                                                            |<a href="https://www.curseforge.com/wow/addons/asinformation" target="_blank" rel="nofollow">링크</a> |
 | asCombatTimer         |전투 시간 표시                                                             |<a href="https://www.curseforge.com/wow/addons/ascombattimer" target="_blank" rel="nofollow">링크</a> |
 | asBloodlustAlert      |블러드 준비 알림                                     |<a href="https://www.curseforge.com/wow/addons/asbloodlustalert" target="_blank" rel="nofollow">링크</a> |
+| asSummonTracker       |소환수 지속시간 알림                                            |<a href="https://www.curseforge.com/wow/addons/assummontracker" target="_blank" rel="nofollow">링크</a> |
 | BugSack, BugGrabber   |[외부] 애드온 오류 저장                                                      |        |
 | Details               |[외부] 데미지 미터기                                                        |        |
 | DBM                   |[외부] 던전 주요 스킬 알리미                                                   |        |
