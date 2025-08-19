@@ -98,6 +98,7 @@ local function creatframe()
     object.petcleave = object:CreateFontString(nil, "OVERLAY");
     object.pettarget = object:CreateFontString(nil, "OVERLAY");
     object.healer = object:CreateFontString(nil, "OVERLAY");
+    object.focus_indi = object:CreateFontString(nil, "OVERLAY");
     object.casticon = createCastIcon(object);
     object.CCdebuff = createDebuffFrame(object);
     object.BarTexture = object:CreateTexture(nil, "OVERLAY", "asColorTextureTemplate", 1);

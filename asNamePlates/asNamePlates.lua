@@ -650,6 +650,16 @@ local function updateTargetNameP(self)
         updateDebuffAnchor(self.buffList, 1, self, self.aggro, xoffset);
     end
 
+    if bcheckHealer == false then
+        if UnitIsUnit(unit, "focus") then
+            self.focus_indi:Show();
+        else
+            self.focus_indi:Hide();
+        end
+    else
+        self.focus_indi:Hide()
+    end
+
     if ns.options.ANameP_ShowPetTarget then
         if UnitIsUnit(unit, "pettarget") then
             self.pettarget:Show();
@@ -1337,6 +1347,7 @@ local function removeUnit(namePlateUnitToken)
         asframe.resourcetext:Hide();
         asframe.casticon:Hide();
         asframe.healer:Hide();
+        asframe.focus_indi:Hide();
         asframe.BarTexture:Hide();
         asframe.BarColor:Hide();
 
@@ -1491,13 +1502,19 @@ local function addNamePlate(namePlateFrameBase)
 
     if ns.ANameP_HealerSize > 0 then
         asframe.healer:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HealerSize, "THICKOUTLINE");
+        asframe.focus_indi:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HealerSize, "THICKOUTLINE");
     else
         asframe.healer:SetFont(STANDARD_TEXT_FONT, 1, "THICKOUTLINE");
+        asframe.focus_indi:SetFont(STANDARD_TEXT_FONT, 1, "THICKOUTLINE");
     end
     asframe.healer:ClearAllPoints();
     asframe.healer:SetPoint("RIGHT", healthbar, "LEFT", -5, Aggro_Y)
     asframe.healer:SetText(healerIcon);
     asframe.healer:Hide();
+    asframe.focus_indi:ClearAllPoints();
+    asframe.focus_indi:SetPoint("RIGHT", healthbar, "LEFT", -5, Aggro_Y)
+    asframe.focus_indi:SetText(healerIcon);
+    asframe.focus_indi:Hide();
 
     if unitFrame.castBar then
         asframe.casticon:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);

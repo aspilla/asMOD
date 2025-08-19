@@ -1,8 +1,8 @@
-﻿## Interface: 110107, 110200
+﻿## Interface: 110200
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rNamePlates
 ## Notes: Addon to enhance the default name plates
-## Version : 250809
+## Version : 250819
 ## SavedVariablesPerCharacter: ANameP_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
