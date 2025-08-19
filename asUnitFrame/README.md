@@ -60,6 +60,8 @@ Portraits are disabled
     *   **Totem Bar (Optional, Player):**
         *   Displays currently active totems with their icons and remaining time below the player frame.
         *   Clicking an icon instantly destroys the corresponding totem (optional).
+    *   **Target Selection Indicator (Optional, Focus, Boss):**
+        *   A white border is displayed on the Focus and Boss frames if they are your current target.
 
 3.  **Other Features:**
     *   **Hide Default UI:** Automatically hides the default Blizzard unit frames (Player, Target, Focus, Pet, Boss).
@@ -79,6 +81,7 @@ Portraits are disabled
     *   `ShowPortrait`: Toggles the display of portraits.
     *   `ShowTotemBar`: Toggles the totem bar below the player frame.
     *   `ShowBossBuff`: Toggles the display of 4 buffs on boss frames.
+    *   `ShowTargetBorder`: Toggles a white border on Focus/Boss frames when they are your target.
 
 3.  **In-Code Settings (top of `asUnitFrame.lua` file):**
     *   `Update_Rate`: Frame information update frequency (default: 0.1 seconds). A lower value updates more frequently but may increase CPU usage.
@@ -160,6 +163,8 @@ asMOD 대 다른 애드온을 사용하고 있다는 가정으로, 다음 애드
     *   **토템 바 (선택 사항, 플레이어):**
         *   플레이어 프레임 하단에 현재 활성화된 토템 아이콘 및 남은 시간을 표시합니다.
         *   아이콘 클릭으로 해당 토템을 즉시 파괴할 수 있습니다. (옵션)
+    *   **대상 선택 여부 (선택 사항, 주시대상, 보스):**
+        *   주시 대상 프레임, 보스 프레임의 경우 현재 대상인 경우 흰 테두리가 표시 됩니다.
 
 3.  **기타 기능:**
     *   **기본 UI 숨김:** 기본 블리자드 유닛 프레임(플레이어, 대상, 주시 대상, 소환수, 보스)을 자동으로 숨깁니다.
@@ -180,6 +185,7 @@ asMOD 대 다른 애드온을 사용하고 있다는 가정으로, 다음 애드
     *   `ShowPortrait` : 초상화 표시 여부
     *   `ShowTotemBar` : 플레이어 프레임 하단에 토템바 표시 여부
     *   `ShowBossBuff` : 보스 프레임에 버프 4개 표시 여부 
+    *   `ShowTargetBorder` : 주시/보스가 대상인 경우 하얀색 테두리 표시 
 
 3.  **코드 내 설정 (`asUnitFrame.lua` 파일 상단):**
     *   `Update_Rate`: 프레임 정보 갱신 주기 (기본값: 0.1초). 값이 작을수록 자주 갱신되지만 CPU 사용량이 늘어날 수 있습니다.

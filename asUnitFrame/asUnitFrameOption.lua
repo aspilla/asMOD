@@ -4,6 +4,7 @@ local Options_Default = {
     ShowPortrait = true,
     ShowTotemBar = true,
     ShowBossBuff = true,
+    ShowTargetBorder = true,
 };
 
 ns.Buff_BlackList = {

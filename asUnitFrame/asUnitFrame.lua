@@ -456,6 +456,15 @@ local function updateUnit(frame)
         end
     end
 
+    --Target
+    if ns.options.ShowTargetBorder and unit == "focus" or string.find(unit, "boss") then
+        if UnitIsUnit(unit, "target") then
+            frame.targetborder:Show();
+        else
+            frame.targetborder:Hide();
+        end
+    end
+
     --Threat
     if frame == AUF_TargetFrame and not UnitIsPlayer(unit) then
         local isTanking, status, percentage, rawPercentage = UnitDetailedThreatSituation("player", unit);
@@ -779,6 +788,16 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame:ClearAllPoints();
     frame:SetPoint("CENTER", UIParent, "CENTER", x, y);
     frame:SetSize(width, height)
+    frame:SetFrameStrata("LOW");
+    frame:SetFrameLevel(900);
+    frame.targetborder = frame:CreateTexture(nil, "BACKGROUND", nil, -8)
+    frame.targetborder:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga")
+    frame.targetborder:SetPoint("TOPLEFT", frame, "TOPLEFT", -2, 2);
+    frame.targetborder:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 2, -2);
+    frame.targetborder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+    frame.targetborder:SetVertexColor(1, 1, 1)
+    frame.targetborder:SetAlpha(1);
+    frame.targetborder:Hide();
 
     frame.healthbar = CreateFrame("StatusBar", nil, frame);
     frame.healthbar:SetStatusBarTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar")
@@ -876,7 +895,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
 
     frame.healthbar.bg:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga");
     frame.healthbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-    frame.healthbar.bg:SetVertexColor(0, 0, 0, 0.8);
+    frame.healthbar.bg:SetVertexColor(0, 0, 0, 1);
 
     frame.healthbar.pvalue = frame.healthbar:CreateFontString(nil, "ARTWORK");
     frame.healthbar.pvalue:SetFont(STANDARD_TEXT_FONT, fontsize + 1, FontOutline);
@@ -1032,7 +1051,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.updatecount = 1;
 
     if unit == "focus" or string.find(unit, "boss") then
-        frame.updateCastBar = true;        
+        frame.updateCastBar = true;
         if ns.options.ShowBossBuff and unit ~= "focus" then
             CreateBuffFrames(frame, true, fontsize, buffsize, buffcount);
             frame.buffupdate = true;
