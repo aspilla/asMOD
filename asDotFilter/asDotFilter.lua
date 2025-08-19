@@ -261,7 +261,7 @@ local function ADotF_UpdateDebuffAnchor(frames, index, size, offsetX, right, par
         if isboss then
             buff:SetPoint(point1, parent, point2, -50, 0);
         else
-            buff:SetPoint(point1, parent, point2, 2, 0);
+            buff:SetPoint(point1, parent, point2, 3, 0);
         end
     else
         buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);

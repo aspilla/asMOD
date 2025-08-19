@@ -1,8 +1,8 @@
-﻿## Interface: 110107, 110200
+﻿## Interface: 110200
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDotFilter
 ## Notes: Dot filter addon for boss and focus frames 
-## Version : 250307
+## Version : 250819
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asDotFilterLib.lua
