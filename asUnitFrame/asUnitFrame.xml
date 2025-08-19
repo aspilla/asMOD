@@ -8,7 +8,7 @@
 				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
 			</Layer>
 			<Layer level="BORDER">
-				<Texture name="$parentBorder" parentKey="border" file="Interface\asUnitFrame\border.tga" setAllPoints="true"/>				
+				<Texture name="$parentBorder" parentKey="border" file="Interface\Addons\asUnitFrame\border.tga" setAllPoints="true"/>				
 			</Layer>
 		</Layers>
 	</Frame>

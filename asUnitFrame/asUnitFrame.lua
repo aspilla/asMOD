@@ -981,7 +981,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.castbar:SetMinMaxValues(0, 100)
     frame.castbar:SetValue(100)
     frame.castbar:SetHeight(castbarheight)
-    frame.castbar:SetWidth(width - ((castbarheight + 1) * 1.2) - 1)
+    frame.castbar:SetWidth(width - ((castbarheight + 1) * 1.2));
     frame.castbar:SetStatusBarColor(1, 0.9, 0.9);
     frame.castbar:SetAlpha(1);
 
@@ -1025,7 +1025,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.castbar.button:SetScale(1);
     frame.castbar.button:SetAlpha(1);
     frame.castbar.button:EnableMouse(false);
-    frame.castbar.button.icon:SetTexCoord(.08, .92, .8, .92);
+    frame.castbar.button.icon:SetTexCoord(.08, .92, .08, .92);
     frame.castbar.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
     frame.castbar.button.border:SetVertexColor(0, 0, 0);
     frame.castbar.button.border:Show();
