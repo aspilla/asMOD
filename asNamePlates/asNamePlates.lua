@@ -8,6 +8,7 @@ local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { r = 76 / 255, g = 153 / 255, b = 0 }
 
 local targetIcon = CreateAtlasMarkup("poi-door-arrow-down", 16, 16, 0, 0, 255, 0, 0);
 local mouseoverIcon = CreateAtlasMarkup("poi-door-arrow-up", 12, 12, 0, 0, 0, 255, 0);
+local focusIcon = CreateAtlasMarkup("Vehicle-TempleofKotmogu-GreenBall", 12, 12, 0, 0);
 local healerIcon = CreateAtlasMarkup("GreenCross", 12, 12, 0, 0);
 local aggroIconR = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0, 255, 0, 0);
 local aggroIcon = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0);
@@ -650,14 +651,10 @@ local function updateTargetNameP(self)
         updateDebuffAnchor(self.buffList, 1, self, self.aggro, xoffset);
     end
 
-    if bcheckHealer == false then
-        if UnitIsUnit(unit, "focus") then
-            self.focus_indi:Show();
-        else
-            self.focus_indi:Hide();
-        end
+    if UnitIsUnit(unit, "focus") then
+        self.focus_indi:Show();
     else
-        self.focus_indi:Hide()
+        self.focus_indi:Hide();
     end
 
     if ns.options.ANameP_ShowPetTarget then
@@ -866,7 +863,7 @@ local function updateHealthbarColor(self)
 
         if spellid then
             local isDanger, binterrupt = isDangerousSpell(spellid);
-            if notInterruptible and self.stunable == false  then
+            if notInterruptible and self.stunable == false then
                 binterrupt = false;
             end
 
@@ -1499,22 +1496,17 @@ local function addNamePlate(namePlateFrameBase)
     asframe.aggro:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
     asframe.petcleave:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
     asframe.pettarget:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
+    asframe.focus_indi:SetFont(STANDARD_TEXT_FONT, Size, "THICKOUTLINE");
 
     if ns.ANameP_HealerSize > 0 then
         asframe.healer:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HealerSize, "THICKOUTLINE");
-        asframe.focus_indi:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HealerSize, "THICKOUTLINE");
     else
         asframe.healer:SetFont(STANDARD_TEXT_FONT, 1, "THICKOUTLINE");
-        asframe.focus_indi:SetFont(STANDARD_TEXT_FONT, 1, "THICKOUTLINE");
     end
     asframe.healer:ClearAllPoints();
     asframe.healer:SetPoint("RIGHT", healthbar, "LEFT", -5, Aggro_Y)
     asframe.healer:SetText(healerIcon);
     asframe.healer:Hide();
-    asframe.focus_indi:ClearAllPoints();
-    asframe.focus_indi:SetPoint("RIGHT", healthbar, "LEFT", -5, Aggro_Y)
-    asframe.focus_indi:SetText(healerIcon);
-    asframe.focus_indi:Hide();
 
     if unitFrame.castBar then
         asframe.casticon:SetMouseMotionEnabled(ns.options.ANameP_Tooltip);
@@ -1532,6 +1524,11 @@ local function addNamePlate(namePlateFrameBase)
     asframe.CCdebuff:SetWidth(ns.ANameP_CCDebuffSize);
     asframe.CCdebuff:SetHeight(ns.ANameP_CCDebuffSize * 0.6);
     asframe.CCdebuff:Hide();
+
+    asframe.focus_indi:ClearAllPoints();
+    asframe.focus_indi:SetPoint("BOTTOM", healthbar, "TOPLEFT", 3, -1);
+    asframe.focus_indi:SetText(focusIcon);
+    asframe.focus_indi:Hide();
 
     local previousTexture = healthbar:GetStatusBarTexture();
 
