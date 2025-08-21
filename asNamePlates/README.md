@@ -83,6 +83,7 @@
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/1YYCt5gbQGU?si=Sgv7zNxlc0gsQvbD" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+* Add a green mark on the left of nameplate of focus target
 
 ## Configuration
 
@@ -184,7 +185,7 @@ Automatically creates a macro named `asNamePlates Setup`. Using this macro as sh
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/1YYCt5gbQGU?si=Sgv7zNxlc0gsQvbD" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-* 던전/레이드에서 주시 대상 이름표에 녹색 십자가 마크를 좌측에 추가 합니다.
+* 주시 대상 이름표에 녹색 마크를 좌측에 추가 합니다.
 
 ### 7. 기본 등록 디버프 및 색상설정
 
