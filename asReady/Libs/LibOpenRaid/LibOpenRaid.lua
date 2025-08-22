@@ -183,7 +183,7 @@ end
 
     openRaidLib.DiagnosticError = function(msg, ...)
         if (CONST_DIAGNOSTIC_ERRORS) then
-            sendChatMessage("|cFFFF9922OpenRaidLib|r:", msg, ...)
+            C_ChatInfo.SendChatMessage("|cFFFF9922OpenRaidLib|r:", msg, ...)
         end
     end
 
@@ -193,11 +193,11 @@ end
             if (diagnosticFilter) then
                 local lowerMessage = msg:lower()
                 if (lowerMessage:find(diagnosticFilter)) then
-                    sendChatMessage("|cFFFF9922OpenRaidLib|r:", msg, ...)
+                    C_ChatInfo.SendChatMessage("|cFFFF9922OpenRaidLib|r:", msg, ...)
                     --dumpt(msg)
                 end
             else
-                sendChatMessage("|cFFFF9922OpenRaidLib|r:", msg, ...)
+                C_ChatInfo.SendChatMessage("|cFFFF9922OpenRaidLib|r:", msg, ...)
             end
         end
     end
@@ -207,16 +207,16 @@ end
         if (diagnosticCommReceivedFilter) then
             local lowerMessage = msg:lower()
             if (lowerMessage:find(diagnosticCommReceivedFilter)) then
-                sendChatMessage("|cFFFF9922OpenRaidLib|r:", msg, ...)
+                C_ChatInfo.SendChatMessage("|cFFFF9922OpenRaidLib|r:", msg, ...)
             end
         else
-            sendChatMessage("|cFFFF9922OpenRaidLib|r:", msg, ...)
+            C_ChatInfo.SendChatMessage("|cFFFF9922OpenRaidLib|r:", msg, ...)
         end
     end
 
 
     openRaidLib.DeprecatedMessage = function(msg)
-        sendChatMessage("|cFFFF9922OpenRaidLib|r:", "|cFFFF5555" .. msg .. "|r")
+        C_ChatInfo.SendChatMessage("|cFFFF9922OpenRaidLib|r:", "|cFFFF5555" .. msg .. "|r")
     end
 
     --set the ticker interval to check if the cooldown has changed
@@ -275,7 +275,7 @@ end
 --use debug cvar to find issues that occurred during the logoff process
 function openRaidLib.PrintTempCacheDebug()
     local debugMessage = C_CVar.GetCVar(CONST_CVAR_TEMPCACHE_DEBUG)
-    sendChatMessage("|cFFFF9922OpenRaidLib|r Temp CVar Result:\n", debugMessage)
+    C_ChatInfo.SendChatMessage("|cFFFF9922OpenRaidLib|r Temp CVar Result:\n", debugMessage)
 end
 
 function tempCache.SaveDebugText()
@@ -777,7 +777,7 @@ end
         local result, errortext = xpcall(callback, geterrorhandler(), unpack(payload))
         --local result, errortext = pcall(callback, unpack(payload))
         if (not result) then
-            sendChatMessage("openRaidLib: error on scheduler:", tickerObject.scheduleName, tickerObject.stack)
+            C_ChatInfo.SendChatMessage("openRaidLib: error on scheduler:", tickerObject.scheduleName, tickerObject.stack)
         end
 
         return result
@@ -940,7 +940,7 @@ end
                 --if this isn't a function, xpcall trigger an error
                 local okay, errorMessage = xpcall(functionToCallback, geterrorhandler(), ...)
                 if (not okay) then
-                    sendChatMessage("error on callback for event:", event)
+                    C_ChatInfo.SendChatMessage("error on callback for event:", event)
                 end
             else
                 --the registered function wasn't found

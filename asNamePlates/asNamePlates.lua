@@ -1130,25 +1130,25 @@ local function initAlertList()
 
     if ns.options.ANameP_LowHealthAlert then
         if (englishClass == "MAGE") then
-            if (IsPlayerSpell(2948)) then
+            if (C_SpellBook.IsSpellKnown(2948)) then
                 lowhealthpercent = 30;
             end
 
-            if (IsPlayerSpell(384581)) then
+            if (C_SpellBook.IsSpellKnown(384581)) then
                 lowhealthpercent = 35;
             end
         end
 
         if (englishClass == "HUNTER") then
-            if (IsPlayerSpell(53351)) then
+            if (C_SpellBook.IsSpellKnown(53351)) then
                 lowhealthpercent = 20;
             end
 
-            if (IsPlayerSpell(466932)) then
+            if (C_SpellBook.IsSpellKnown(466932)) then
                 highhealthpercent = 80;
             end
 
-            if (IsPlayerSpell(115939)) and ns.options.ANameP_ShowPetTarget then
+            if (C_SpellBook.IsSpellKnown(115939)) and ns.options.ANameP_ShowPetTarget then
                 bcheckBeastCleave = true;
                 ANameP:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
             else
@@ -1160,7 +1160,7 @@ local function initAlertList()
         end
 
         if (englishClass == "WARRIOR") then
-            if (IsPlayerSpell(281001)) then
+            if (C_SpellBook.IsSpellKnown(281001)) then
                 lowhealthpercent = 35;
             else
                 lowhealthpercent = 20;
@@ -1176,13 +1176,13 @@ local function initAlertList()
         end
 
         if (englishClass == "DEATHKNIGHT") then
-            if (IsPlayerSpell(343294)) then
+            if (C_SpellBook.IsSpellKnown(343294)) then
                 lowhealthpercent = 35;
             end
         end
 
         if (englishClass == "WARLOCK") then
-            if (IsPlayerSpell(17877)) then --어연
+            if (C_SpellBook.IsSpellKnown(17877)) then --어연
                 lowhealthpercent = 30;
             end
         end

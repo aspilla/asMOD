@@ -77,11 +77,11 @@ function ns.UpdateDispellable()
     for dispelType, _ in pairs(DispellableDebuffTypes) do
         DispellableDebuffTypes[dispelType] = 0;
         for spellID, spelltype in pairs(typeCheck[dispelType]) do
-            if spelltype == 1 and IsPlayerSpell(spellID) then
+            if spelltype == 1 and C_SpellBook.IsSpellKnown(spellID) then
                 DispellableDebuffTypes[dispelType] = 1;
             elseif spelltype == 2 and asIsPetSpell(spellID) then
                 DispellableDebuffTypes[dispelType] = 1;
-            elseif spelltype == 3 and IsPlayerSpell(spellID) then
+            elseif spelltype == 3 and C_SpellBook.IsSpellKnown(spellID) then
                 DispellableDebuffTypes[dispelType] = 2;
             end
         end

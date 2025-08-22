@@ -33,7 +33,7 @@ local function alertMsg()
     if ns.options.VoiceAlert then
         PlaySoundFile("Interface\\AddOns\\asBloodlustAlert\\Ready.mp3", "MASTER")
     end
-    SendChatMessage(ready_msg);
+    C_ChatInfo.SendChatMessage(ready_msg);
 end
 
 local after_time = nil;

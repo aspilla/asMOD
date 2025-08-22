@@ -213,7 +213,7 @@ local function asGetPowerCostTooltipInfo(spellID)
     if special_cost_spells[spellID] then
         local v = special_cost_spells[spellID];
 
-        if IsPlayerSpell(v[1]) then
+        if C_SpellBook.IsSpellKnown(v[1]) then
             return v[2];
         end
     end
@@ -2287,14 +2287,14 @@ local function APB_CheckPower(self)
         bupdate_power = true;
         bsmall_power_bar = true;
 
-        if IsPlayerSpell(443328) then --업화
+        if C_SpellBook.IsSpellKnown(443328) then --업화
             APB_SPELL = 443328;
             APB_SpellMax(APB_SPELL);
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
         end
 
-        if IsPlayerSpell(357211) then --기염
+        if C_SpellBook.IsSpellKnown(357211) then --기염
             APB_ACTION_STACK = APB_GetActionSlot(357211);
             APB.stackbar[0].spellid = 357211;
             APB_MaxStack(20);
@@ -2305,7 +2305,7 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 3) then
-            if IsPlayerSpell(395152) then --칠흑의 힘
+            if C_SpellBook.IsSpellKnown(395152) then --칠흑의 힘
                 APB_BUFF = 395296;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
@@ -2348,7 +2348,7 @@ local function APB_CheckPower(self)
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
             bsmall_power_bar = true;
-            if IsPlayerSpell(431533) then --격동하는 천상
+            if C_SpellBook.IsSpellKnown(431533) then --격동하는 천상
                 APB_BUFF = 431536;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
@@ -2358,7 +2358,7 @@ local function APB_CheckPower(self)
 
     if (englishClass == "MAGE") then
         if (spec and spec == 1) then
-            if (IsPlayerSpell(383980)) then
+            if (C_SpellBook.IsSpellKnown(383980)) then
                 APB_BUFF = 383997;
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player";
@@ -2374,7 +2374,7 @@ local function APB_CheckPower(self)
             --시즌1 티어 Intuition 특성으로 변경
             combobuffalertlist = { 451073, 451038, 1223797 };
 
-            if IsPlayerSpell(1223798) then
+            if C_SpellBook.IsSpellKnown(1223798) then
                 bupdate_intuition_count = true;
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
             end
@@ -2383,7 +2383,7 @@ local function APB_CheckPower(self)
                 APB.combobar[i].tooltip = "ARCANE_CHARGES";
             end
 
-            if IsPlayerSpell(448601) then
+            if C_SpellBook.IsSpellKnown(448601) then
                 APB_BUFF_COMBO = 449400;
                 APB_BUFF_COMBO_MAX = 451049;
                 APB_BUFF_COMBO_MAX_COUNT = 6;
@@ -2399,14 +2399,14 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 2) then
-            if IsPlayerSpell(383391) then
+            if C_SpellBook.IsSpellKnown(383391) then
                 APB_BUFF = 383395;
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player";
                 bupdate_buff_count = true;
             end
 
-            if IsPlayerSpell(383886) then
+            if C_SpellBook.IsSpellKnown(383886) then
                 APB_BUFF_COMBO = 383882;
                 APB_BUFF_COMBO_MAX = 383883;
                 APB_BUFF_COMBO_MAX_COUNT = 10;
@@ -2418,7 +2418,7 @@ local function APB_CheckPower(self)
                 for i = 1, 20 do
                     APB.combobar[i].tooltip = APB_BUFF_COMBO;
                 end
-            elseif IsPlayerSpell(448601) then
+            elseif C_SpellBook.IsSpellKnown(448601) then
                 APB_BUFF_COMBO = 449400;
                 APB_BUFF_COMBO_MAX = 451049;
                 APB_BUFF_COMBO_MAX_COUNT = 6;
@@ -2438,7 +2438,7 @@ local function APB_CheckPower(self)
             spellbuffcolorlist = { 453207 };
             spellbuffalertlist = { 438624 }; -- 화염 과잉
 
-            if IsPlayerSpell(257541) then
+            if C_SpellBook.IsSpellKnown(257541) then
                 APB_SPELL2 = 257541
                 APB_SpellMax(APB_SPELL, APB_SPELL2);
                 APB_UpdateSpell(APB_SPELL, APB_SPELL2);
@@ -2473,7 +2473,7 @@ local function APB_CheckPower(self)
             end
 
             FrozenOrbDuration = 10;
-            if IsPlayerSpell(385167) then --영원한 서리
+            if C_SpellBook.IsSpellKnown(385167) then --영원한 서리
                 FrozenOrbDuration = 12;
             end
 
@@ -2500,9 +2500,9 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 1) then
-            if IsPlayerSpell(32388) then --어둠의 선물
+            if C_SpellBook.IsSpellKnown(32388) then --어둠의 선물
                 APB_DEBUFF = 32390;
-                if IsPlayerSpell(453080) then
+                if C_SpellBook.IsSpellKnown(453080) then
                     APB_DEBUFF = 453206;
                 end
 
@@ -2515,14 +2515,14 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 2) then
-            if IsPlayerSpell(267170) then --악의 아귀
+            if C_SpellBook.IsSpellKnown(267170) then --악의 아귀
                 APB_DEBUFF = 270569;
                 APB.buffbar[0].debuff = APB_DEBUFF;
                 APB.buffbar[0].unit = "target"
                 APB:RegisterEvent("PLAYER_TARGET_CHANGED");
             end
 
-            if IsPlayerSpell(196277) then --임프
+            if C_SpellBook.IsSpellKnown(196277) then --임프
                 APB_ACTION_STACK = APB_GetActionSlot(196277);
                 APB.stackbar[0].spellid = 196277;
                 APB_MaxStack(15);
@@ -2534,7 +2534,7 @@ local function APB_CheckPower(self)
             bupdate_spell = true;
             bupdate_partial_power = true;
 
-            if IsPlayerSpell(17877) then
+            if C_SpellBook.IsSpellKnown(17877) then
                 APB_SPELL2 = 17877; --어둠의 연소
                 APB_SpellMax(APB_SPELL, APB_SPELL2);
                 APB_UpdateSpell(APB_SPELL, APB_SPELL2);
@@ -2543,7 +2543,7 @@ local function APB_CheckPower(self)
                 APB_UpdateSpell(APB_SPELL);
             end
 
-            if IsPlayerSpell(205184) and IsPlayerSpell(196412) then
+            if C_SpellBook.IsSpellKnown(205184) and C_SpellBook.IsSpellKnown(196412) then
                 APB_DEBUFF = 265931; --점화 울부짖는 불길
                 APB.buffbar[0].debuff = APB_DEBUFF;
                 APB.buffbar[0].unit = "target"
@@ -2552,12 +2552,12 @@ local function APB_CheckPower(self)
                 APB.buffbar[1].debuff = APB_DEBUFF2;
                 APB.buffbar[1].unit = "target"
                 APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-            elseif IsPlayerSpell(205184) then
+            elseif C_SpellBook.IsSpellKnown(205184) then
                 APB_DEBUFF = 265931; --점화 울부짖는 불길
                 APB.buffbar[0].debuff = APB_DEBUFF;
                 APB.buffbar[0].unit = "target"
                 APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-            elseif IsPlayerSpell(196412) then
+            elseif C_SpellBook.IsSpellKnown(196412) then
                 APB_DEBUFF = 196414; --박멸
                 APB.buffbar[0].debuff = APB_DEBUFF;
                 APB.buffbar[0].unit = "target"
@@ -2572,7 +2572,7 @@ local function APB_CheckPower(self)
         bupdate_druid = false;
 
         if (spec and spec == 1) then
-            if IsPlayerSpell(429523) then
+            if C_SpellBook.IsSpellKnown(429523) then
                 APB_BUFF = 48518; --일월식 (달)
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player"
@@ -2615,7 +2615,7 @@ local function APB_CheckPower(self)
 
             druidcomboalertid = 405189;           --넘쳐 흐르는 힘
 
-            if IsPlayerSpell(202028) then         --잔혹한 베기
+            if C_SpellBook.IsSpellKnown(202028) then         --잔혹한 베기
                 APB_SPELL = 202028;
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
@@ -2663,14 +2663,14 @@ local function APB_CheckPower(self)
             APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
             updateGroupGUIDList();
 
-            if IsPlayerSpell(102693) then --숲 수호자
+            if C_SpellBook.IsSpellKnown(102693) then --숲 수호자
                 APB_SPELL = 102693;
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
                 bupdate_spell = true;
             end
 
-            if IsPlayerSpell(392301) then --광합성
+            if C_SpellBook.IsSpellKnown(392301) then --광합성
                 APB_BUFF = 188550;        --피어나는 생명
                 APB_BUFF2 = 188550;
                 APB.buffbar[0].buff = APB_BUFF
@@ -2693,7 +2693,7 @@ local function APB_CheckPower(self)
         if (spec and spec == 1) then
             bupdate_stagger = true;
 
-            if IsPlayerSpell(119582) then
+            if C_SpellBook.IsSpellKnown(119582) then
                 APB_SPELL = 119582;
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
@@ -2706,12 +2706,12 @@ local function APB_CheckPower(self)
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
 
-            if IsPlayerSpell(467293) then
+            if C_SpellBook.IsSpellKnown(467293) then
                 APB_BUFF = 388026;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
             end
-            if IsPlayerSpell(399491) then
+            if C_SpellBook.IsSpellKnown(399491) then
                 APB_ACTION_COMBO = APB_GetActionSlot(399491);
                 APB_MaxCombo(self.combobar, 10);
                 bupdate_buff_combo = true;
@@ -2734,30 +2734,30 @@ local function APB_CheckPower(self)
     if (englishClass == "ROGUE") then
         brogue = true;
 
-        if IsPlayerSpell(382513) then
+        if C_SpellBook.IsSpellKnown(382513) then
             APB_SPELL = 1856; --소멸
             APB_SpellMax(APB_SPELL);
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
         end
 
-        if IsPlayerSpell(421975) then --"부식성 분사"
+        if C_SpellBook.IsSpellKnown(421975) then --"부식성 분사"
             APB_DEBUFF = 421976;
             APB.buffbar[0].debuff = APB_DEBUFF;
             APB.buffbar[0].unit = "target"
             APB:RegisterEvent("PLAYER_TARGET_CHANGED");
-        elseif IsPlayerSpell(423703) then --일발필중
+        elseif C_SpellBook.IsSpellKnown(423703) then --일발필중
             APB_BUFF = 115192;            --기만
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
-        elseif IsPlayerSpell(91023) then --약점포착
+        elseif C_SpellBook.IsSpellKnown(91023) then --약점포착
             APB_DEBUFF = 316220;
             APB.buffbar[0].debuff = APB_DEBUFF;
             APB.buffbar[0].unit = "target"
             APB:RegisterEvent("PLAYER_TARGET_CHANGED");
         end
 
-        if IsPlayerSpell(457052) then --죽음 추적자
+        if C_SpellBook.IsSpellKnown(457052) then --죽음 추적자
             bdeathstalker = true;
         end
 
@@ -2774,7 +2774,7 @@ local function APB_CheckPower(self)
 
     if (englishClass == "DEATHKNIGHT") then
         if (spec and spec == 1) then
-            if IsPlayerSpell(194679) then --룬전환
+            if C_SpellBook.IsSpellKnown(194679) then --룬전환
                 APB_SPELL = 194679;
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
@@ -2790,19 +2790,19 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 2) then
-            if version >= 110200 and IsPlayerSpell(47568) then --Rune Weapon
+            if version >= 110200 and C_SpellBook.IsSpellKnown(47568) then --Rune Weapon
                 APB_SPELL = 47568;
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
                 bupdate_spell = true;
             end
-            if IsPlayerSpell(376905) then --풀려난 광란
+            if C_SpellBook.IsSpellKnown(376905) then --풀려난 광란
                 APB_BUFF = 376907;
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player"
 
                 bupdate_buff_count = true;
-            elseif IsPlayerSpell(194878) then --얼음 발톱
+            elseif C_SpellBook.IsSpellKnown(194878) then --얼음 발톱
                 APB_BUFF = 194879;
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player"
@@ -2811,7 +2811,7 @@ local function APB_CheckPower(self)
             end
         end
 
-        if (spec and spec == 3 and IsPlayerSpell(390175)) then -- 역병인도자
+        if (spec and spec == 3 and C_SpellBook.IsSpellKnown(390175)) then -- 역병인도자
             APB_BUFF = 390178;
             APB.buffbar[0].buff = APB_BUFF
             APB.buffbar[0].unit = "player"
@@ -2835,7 +2835,7 @@ local function APB_CheckPower(self)
             APB_UpdateSpell(APB_SPELL, APB_SPELL2);
             bupdate_spell = true;
 
-            if IsPlayerSpell(424509) then --분파
+            if C_SpellBook.IsSpellKnown(424509) then --분파
                 APB_DEBUFF = 214621;
                 APB.buffbar[0].debuff = APB_DEBUFF;
                 APB.buffbar[0].unit = "target"
@@ -2850,7 +2850,7 @@ local function APB_CheckPower(self)
             APB_UpdateSpell(APB_SPELL, APB_SPELL2);
             bupdate_spell = true;
 
-            if IsPlayerSpell(392988) then --신성한 환영
+            if C_SpellBook.IsSpellKnown(392988) then --신성한 환영
                 APB_BUFF = 405963;
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "player"
@@ -2875,7 +2875,7 @@ local function APB_CheckPower(self)
 
     if (englishClass == "WARRIOR") then
         if (spec and spec == 1) then
-            if IsPlayerSpell(7384) then
+            if C_SpellBook.IsSpellKnown(7384) then
                 APB_SPELL = 7384; --제압
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
@@ -2893,10 +2893,10 @@ local function APB_CheckPower(self)
             APB.buffbar[0].unit = "player"
 
 
-            if IsPlayerSpell(12950) then -- 소용돌이 연마
+            if C_SpellBook.IsSpellKnown(12950) then -- 소용돌이 연마
                 APB_BUFF_COMBO = 85739;
 
-                if IsPlayerSpell(280392) then -- 고기칼
+                if C_SpellBook.IsSpellKnown(280392) then -- 고기칼
                     APB_MaxCombo(self.combobar, 4);
                 else
                     APB_MaxCombo(self.combobar, 2);
@@ -2919,11 +2919,11 @@ local function APB_CheckPower(self)
 
     if (englishClass == "DEMONHUNTER") then
         if (spec and spec == 1) then
-            if IsPlayerSpell(206476) then --탄력
+            if C_SpellBook.IsSpellKnown(206476) then --탄력
                 APB_BUFF = 208628;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
-            elseif IsPlayerSpell(427640) then --타성
+            elseif C_SpellBook.IsSpellKnown(427640) then --타성
                 APB_BUFF = 427641;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
@@ -2939,7 +2939,7 @@ local function APB_CheckPower(self)
         if (spec and spec == 2) then
             APB_SPELL = 203720; --악마쐐기
 
-            if IsPlayerSpell(263642) then
+            if C_SpellBook.IsSpellKnown(263642) then
                 APB_SPELL2 = 263642; --균열
                 APB_SpellMax(APB_SPELL, APB_SPELL2);
                 APB_UpdateSpell(APB_SPELL, APB_SPELL2);
@@ -2968,7 +2968,7 @@ local function APB_CheckPower(self)
 
     if (englishClass == "HUNTER") then
         if (spec and spec == 1) then
-            if IsPlayerSpell(217200) then --날카로운 사격
+            if C_SpellBook.IsSpellKnown(217200) then --날카로운 사격
                 APB_SPELL = 217200;
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
@@ -2980,7 +2980,7 @@ local function APB_CheckPower(self)
             APB.buffbar[0].unit = "player"
             bupdate_buff_count = true;
 
-            if IsPlayerSpell(472357) then --무리의 지도자의 포효
+            if C_SpellBook.IsSpellKnown(472357) then --무리의 지도자의 포효
                 APB_BUFF_TIME_STACK = 471877;
                 APB.stackbar[0].unit = "player";
                 APB.stackbar[0].spellid = 471877;
@@ -2991,14 +2991,14 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 2) then
-            if IsPlayerSpell(19434) then --조준 사격
+            if C_SpellBook.IsSpellKnown(19434) then --조준 사격
                 APB_SPELL = 19434;
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
                 bupdate_spell = true;
             end
 
-            if IsPlayerSpell(257621) then --교묘한사격
+            if C_SpellBook.IsSpellKnown(257621) then --교묘한사격
                 APB_BUFF = 257622;
                 APB_BUFF3 = 260243;       --연발공격
                 APB.buffbar[0].buff = APB_BUFF;
@@ -3007,7 +3007,7 @@ local function APB_CheckPower(self)
                 APB.buffbar[0].maxshow = 6;
             end
 
-            if IsPlayerSpell(450385) then
+            if C_SpellBook.IsSpellKnown(450385) then
                 APB_DEBUFF_TIME_STACK = 451803;
                 APB.stackbar[0].unit = "player";
                 APB.stackbar[0].spellid = APB_DEBUFF_TIME_STACK;
@@ -3016,19 +3016,19 @@ local function APB_CheckPower(self)
         end
 
         if (spec and spec == 3) then
-            if IsPlayerSpell(259495) then --야생불 폭탄
+            if C_SpellBook.IsSpellKnown(259495) then --야생불 폭탄
                 APB_SPELL = 259495;
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
                 bupdate_spell = true;
             end
 
-            if IsPlayerSpell(259387) then --살쾡이의 이빨
+            if C_SpellBook.IsSpellKnown(259387) then --살쾡이의 이빨
                 APB_BUFF = 259388;
                 APB.buffbar[0].buff = APB_BUFF;
                 bupdate_buff_count = true;
                 APB.buffbar[0].unit = "player";
-            elseif IsPlayerSpell(260285) then --창끝
+            elseif C_SpellBook.IsSpellKnown(260285) then --창끝
                 APB_BUFF_COMBO = 260286;
                 APB_MaxCombo(self.combobar, 3);
                 APB.combobar.unit = "player"
@@ -3040,12 +3040,12 @@ local function APB_CheckPower(self)
                 end
             end
 
-            if IsPlayerSpell(450385) then
+            if C_SpellBook.IsSpellKnown(450385) then
                 APB_DEBUFF_TIME_STACK = 451803;
                 APB.stackbar[0].unit = "player";
                 APB.stackbar[0].spellid = APB_DEBUFF_TIME_STACK;
                 APB_MaxStack(30);
-            elseif IsPlayerSpell(472357) then --무리의 지도자의 포효
+            elseif C_SpellBook.IsSpellKnown(472357) then --무리의 지도자의 포효
                 APB_BUFF_TIME_STACK = 471877;
                 APB.stackbar[0].unit = "player";
                 APB.stackbar[0].spellid = 471877;
@@ -3063,13 +3063,13 @@ local function APB_CheckPower(self)
             APB_UpdateSpell(APB_SPELL);
             bupdate_spell = true;
 
-            if IsPlayerSpell(378270) then --깊이 뿌리내린 정기
+            if C_SpellBook.IsSpellKnown(378270) then --깊이 뿌리내린 정기
                 APB_BUFF = 1219480;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
             end
 
-            if IsPlayerSpell(454009) then
+            if C_SpellBook.IsSpellKnown(454009) then
                 bupdate_element_tempest = true;
                 tempeststate.TempestStacks = 300;
                 tempeststate.bfirstcheck = true;
@@ -3087,7 +3087,7 @@ local function APB_CheckPower(self)
         end
 
         if spec and spec == 2 then
-            if IsPlayerSpell(117014) then
+            if C_SpellBook.IsSpellKnown(117014) then
                 APB_SPELL = 117014; --정기 작렬
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
@@ -3106,13 +3106,13 @@ local function APB_CheckPower(self)
             end
             bhalf_combo = true;
 
-            if IsPlayerSpell(187874) then --낙뢰
+            if C_SpellBook.IsSpellKnown(187874) then --낙뢰
                 APB_BUFF = 187878;
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].unit = "player"
             end
 
-            if IsPlayerSpell(454009) then
+            if C_SpellBook.IsSpellKnown(454009) then
                 bupdate_enhaced_tempest = true;
                 tempeststate.TempestStacks = 40;
                 tempeststate.bfirstcheck = true;
@@ -3138,7 +3138,7 @@ local function APB_CheckPower(self)
 
             APB_BUFF_COMBO = 53390; --굽이치는 물결
 
-            if IsPlayerSpell(443448) then
+            if C_SpellBook.IsSpellKnown(443448) then
                 APB_MaxCombo(self.combobar, 4);
             else
                 APB_MaxCombo(self.combobar, 2);

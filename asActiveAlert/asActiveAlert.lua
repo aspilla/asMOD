@@ -183,7 +183,7 @@ local function ASAA_Insert(id)
 		return;
 	end
 
-	if not IsPlayerSpell(id) then
+	if not C_SpellBook.IsSpellKnown(id) then
 		return;
 	end
 

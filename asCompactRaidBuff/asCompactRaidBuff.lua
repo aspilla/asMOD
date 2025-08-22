@@ -94,7 +94,7 @@ function ns.ACRB_InitList()
     ns.lowhealth = 0;
 
     if (englishClass == "PRIEST") then
-        if IsPlayerSpell(373481) then
+        if C_SpellBook.IsSpellKnown(373481) then
             ns.lowhealth = 35;
         end
     end

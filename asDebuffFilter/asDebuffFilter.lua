@@ -81,11 +81,11 @@ local function UpdateDispellable()
     for dispelType, _ in pairs(DispellableDebuffTypes) do
         DispellableDebuffTypes[dispelType] = false;
         for spellID, spelltype in pairs(typeCheck[dispelType]) do
-            if spelltype == 1 and IsPlayerSpell(spellID) then
+            if spelltype == 1 and C_SpellBook.IsSpellKnown(spellID) then
                 DispellableDebuffTypes[dispelType] = true;
             elseif spelltype == 2 and asIsPetSpell(spellID) then
                 DispellableDebuffTypes[dispelType] = true;
-            elseif spelltype == 3 and IsPlayerSpell(spellID) then
+            elseif spelltype == 3 and C_SpellBook.IsSpellKnown(spellID) then
                 DispellableDebuffTypes[dispelType] = true;
             end
         end
@@ -372,7 +372,7 @@ local function scanSpells(tab)
         end
         local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
 
-        if spellName and spellID and IsPlayerSpell(spellID) then
+        if spellName and spellID and C_SpellBook.IsSpellKnown(spellID) then
             KnownSpellList[spellName] = 1;
         end
     end

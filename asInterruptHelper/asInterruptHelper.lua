@@ -26,7 +26,7 @@ local function initPlayer()
     stunSpells = {};
 
     for id, cooldown in pairs(ns.InterruptSpells) do
-        if IsPlayerSpell(id) then
+        if C_SpellBook.IsSpellKnown(id) then
             id = C_Spell.GetOverrideSpell(id);
             table.insert(interruptSpells, { spellid = id, cooldown = cooldown })
         end
@@ -34,7 +34,7 @@ local function initPlayer()
     table.sort(interruptSpells, compare);
 
     for id, cooldown in pairs(ns.StunSpells) do
-        if IsPlayerSpell(id) then
+        if C_SpellBook.IsSpellKnown(id) then
             id = C_Spell.GetOverrideSpell(id);
             table.insert(stunSpells, { spellid = id, cooldown = cooldown })
         end

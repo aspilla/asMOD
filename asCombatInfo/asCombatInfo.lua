@@ -190,7 +190,7 @@ end
 
 
 local function asIsPlayerSpell(spell)
-	if IsPlayerSpell(spell) then
+	if C_SpellBook.IsSpellKnown(spell) then
 		return true;
 	end
 

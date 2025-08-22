@@ -50,7 +50,7 @@ local function UpdateAlert()
         if AHCA_Options.AnnounceMana and percent < tonumber(AHCA_Options.AnnounceMana) then
             local msg = "힐러마나 " .. percent .. "%";
             --print (msg);
-            SendChatMessage(msg);
+            C_ChatInfo.SendChatMessage(msg);
         end
     end
 end
