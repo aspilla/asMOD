@@ -2,6 +2,13 @@ local _, ns = ...;
 
 local objects = {};
 
+local CONFIG_FONT = STANDARD_TEXT_FONT;
+local region = GetCurrentRegion();
+
+if region == 2 and GetLocale() ~= "koKR" then
+	CONFIG_FONT = "Fonts\\2002.ttf";
+end
+
 -- 버프 디버프 처리부
 local function createDebuffFrame(parent)
     local frame = CreateFrame("Frame", nil, parent, "asNamePlatesBuffFrameTemplate");
@@ -69,7 +76,7 @@ local function createCastIcon(parent)
     frame.timetext:ClearAllPoints();
     frame.timetext:SetPoint("CENTER", frame, "CENTER", 0, 0);
 
-    frame.targetname:SetFont(STANDARD_TEXT_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
+    frame.targetname:SetFont(CONFIG_FONT, ns.ANameP_HeathTextSize, "OUTLINE");
     frame.targetname:ClearAllPoints();
     frame.targetname:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -1);
     frame.data = {};
