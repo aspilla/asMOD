@@ -122,10 +122,10 @@ ACI_Options_Default = {
 
 	--비전
 	ACI_SpellList_MAGE_1 = {
-		version = 250207,
+		version = 250823,
 		{ 383783, 3 },
 		{ 153626, 1 },
-		{ 365350, 2 },
+		{ 365350, 2, nil, nil, nil, nil, nil, {451038} },
 		{ 321507, 4 },
 		{ 382440, 1 },
 	},
