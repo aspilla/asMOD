@@ -4,7 +4,6 @@ local AREADY_WIDTH = 100      -- 쿨 바의 넓이
 local AREADY_HEIGHT = 14      -- 쿨 바의 높이
 local AREADY_X = -501;        -- X 위치
 local AREADY_Y = 150;         -- Y 위치
-local AREADY_Font = STANDARD_TEXT_FONT;
 local AREADY_Max = 10;        -- 최대 표시 List 수
 local AREADY_UpdateRate = 0.3 -- Refresh 시간 초
 local AREADY_CDupdateRate = 2 -- Cooldown Check Rate 2초
@@ -18,6 +17,14 @@ local raidframes = {};
 local partyframes = {};
 
 local cachedoffensive = {};
+
+local CONFIG_FONT = STANDARD_TEXT_FONT;
+local region = GetCurrentRegion();
+
+if region == 2 and GetLocale() ~= "koKR" then
+	CONFIG_FONT = "Fonts\\2002.ttf";
+end
+
 
 local asGetSpellInfo = function(spellID)
     if not spellID then
@@ -104,10 +111,10 @@ for idx = 1, AREADY_Max do
     end
 
     AREADY.bar[idx].playname = AREADY.bar[idx]:CreateFontString(nil, "OVERLAY")
-    AREADY.bar[idx].playname:SetFont(AREADY_Font, AREADY_HEIGHT - 2, "OUTLINE")
+    AREADY.bar[idx].playname:SetFont(CONFIG_FONT, AREADY_HEIGHT - 2, "OUTLINE")
     AREADY.bar[idx].playname:SetPoint("LEFT", AREADY.bar[idx], "LEFT", 2, 0)
     AREADY.bar[idx].cooltime = AREADY.bar[idx]:CreateFontString(nil, "OVERLAY")
-    AREADY.bar[idx].cooltime:SetFont(AREADY_Font, AREADY_HEIGHT - 3, "OUTLINE")
+    AREADY.bar[idx].cooltime:SetFont(STANDARD_TEXT_FONT, AREADY_HEIGHT - 3, "OUTLINE")
     AREADY.bar[idx].cooltime:SetPoint("RIGHT", AREADY.bar[idx], "RIGHT", -2, 0)
 
     AREADY.bar[idx].button = CreateFrame("Button", nil, AREADY.bar[idx], "AREADYFrameTemplate");
