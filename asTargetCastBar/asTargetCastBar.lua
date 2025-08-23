@@ -18,7 +18,12 @@ local DangerousSpellList = {
 }
 
 -----------------설정 끝------------------------
+local CONFIG_FONT = STANDARD_TEXT_FONT;
+local region = GetCurrentRegion();
 
+if region == 2 and GetLocale() ~= "koKR" then
+	CONFIG_FONT = "Fonts\\2002.ttf";
+end
 
 local ATCB = CreateFrame("FRAME", nil, UIParent)
 ATCB:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
@@ -85,7 +90,7 @@ local function setupCastBar()
     frame.button:Show();
 
     frame.targetname = frame:CreateFontString(nil, "OVERLAY");
-    frame.targetname:SetFont(STANDARD_TEXT_FONT, ATCB_NAME_SIZE);
+    frame.targetname:SetFont(CONFIG_FONT, ATCB_NAME_SIZE);
     frame.targetname:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -2);
 
     frame.start = 0;
