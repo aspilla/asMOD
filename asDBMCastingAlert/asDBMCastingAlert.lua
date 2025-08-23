@@ -35,6 +35,13 @@ if GetLocale() == "koKR" then
 	CONFIG_VOICE_STUN = "Interface\\AddOns\\asDBMCastingAlert\\Stun.mp3"
 end
 
+local CONFIG_FONT = STANDARD_TEXT_FONT;
+local region = GetCurrentRegion();
+
+if region == 2 and GetLocale() ~= "koKR" then
+	CONFIG_FONT = "Fonts\\2002.ttf";
+end
+
 local MaxLevel = GetMaxLevelForExpansionLevel(10);
 
 
@@ -453,7 +460,7 @@ local function CreateCastbars(parent)
 		frame.button.border:Show();
 
 		frame.targetname = frame:CreateFontString(nil, "OVERLAY");
-		frame.targetname:SetFont(STANDARD_TEXT_FONT, CONFIG_TIME_SIZE);
+		frame.targetname:SetFont(CONFIG_FONT, CONFIG_TIME_SIZE);
 		frame.targetname:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2);
 
 		frame.isAlert = false;
