@@ -59,6 +59,28 @@ local itemslotNames = {
 	"무기 1",
 	"무기 2",
 }
+if GetLocale() ~= "koKR" then
+itemslotNames = {
+	"Head",
+	"Neck",
+	"Shoulder",
+	"Out",
+	"Chest",
+	"Waist",
+	"Legs",
+	"Feet",
+	"Wrist",
+	"Hands",
+	"Finger 1",
+	"Finger 2",
+	"Trinket 1",
+	"Trinket 2",
+	"Back",
+	"MainHand",
+	"SecondaryHand",
+}
+
+end
 
 local black_list = {
 	[125439] = true,
