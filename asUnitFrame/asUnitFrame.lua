@@ -21,6 +21,13 @@ local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };     --ì°¨ë
 
 AUF_ShowTotemBar = false;
 
+local CONFIG_FONT = STANDARD_TEXT_FONT;
+local region = GetCurrentRegion();
+
+if region == 2 and GetLocale() ~= "koKR" then
+	CONFIG_FONT = "Fonts\\2002.ttf";
+end
+
 local RaidIconList = {
     "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
     "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:",
@@ -906,7 +913,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar.hvalue:SetTextColor(1, 1, 1, 1)
 
     frame.healthbar.name = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.healthbar.name:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
+    frame.healthbar.name:SetFont(CONFIG_FONT, fontsize - 1, FontOutline);
     frame.healthbar.name:SetTextColor(1, 1, 1, 1)
 
     frame.healthbar.aggro = frame.healthbar:CreateFontString(nil, "ARTWORK");
@@ -1032,7 +1039,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.castbar.button:Show();
 
     frame.castbar.targetname = frame.castbar:CreateFontString(nil, "OVERLAY");
-    frame.castbar.targetname:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
+    frame.castbar.targetname:SetFont(CONFIG_FONT, fontsize - 1);
     frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);
     frame.debuffupdate = false;
     frame.totemupdate = false;
