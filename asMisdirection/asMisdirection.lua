@@ -248,7 +248,7 @@ local function AHM_SetMindInfusion(unit, force)
 
 	if MindInfusionSpell then
 		--macroText = string.format("#showtooltip %s\n/cast [@mouseover, exists, help, nodead][target=" .. unit ..", exists, help, nodead][help] %s", MindInfusionSpell, MindInfusionSpell)
-		local macroText = string.format("#showtooltip %s\n/cast [target=" .. unit .. ", exists, help, nodead][help] %s",
+		local macroText = string.format("#showtooltip %s\n/cast [target=" .. unit .. ", exists, help, nodead][] %s",
 			MindInfusionSpell, MindInfusionSpell)
 		local macroName = "as_".. MindInfusionSpell
 		local macroID = GetMacroIndexByName(macroName)
