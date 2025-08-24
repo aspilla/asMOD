@@ -18,6 +18,7 @@ ns.aurachangelist = {
     [170588] = 344179,                   --고술 소용돌이
     [187890] = 344179,                   --고술 소용돌이
     [467442] = 344179,                   --고술 넘치는 소용돌이
+    [409129] = 391401,                   --암사 광기
     [361519] = { 392268, 369299, 359618 }, --기원사 정수 폭발
 
 }
@@ -28,9 +29,8 @@ ns.spelllists = {
     [264173] = { { 264173, 4, 0, 1, 0, Enum.ScreenLocationType.Right }, { 264173, 3, 0, 1, 0, Enum.ScreenLocationType.Left } },         -- 악흑, 악마의핵 3/4중
     [135286] = { { 135286, 2, 0.2, 0.2, 0.2, Enum.ScreenLocationType.Right } },                                                         -- 수드, 맹위 2중
     [44544] = { { 438624, 0, 1, 0.2, 0.2, Enum.ScreenLocationType.Left } },                                                             -- 냉법, 화염 촉진
-    [391401] = { { 391401, 3, 0, 1, 0, Enum.ScreenLocationType.Left } },                                                                -- 암사 광기 3중
-    [407468] = { { 407468, 3, 0, 1, 0, Enum.ScreenLocationType.Left } },                                                                -- 암사 광기 3중
-    [409129] = { { 407468, 4, 0, 1, 0, Enum.ScreenLocationType.Right }, { 391401, 4, 0, 1, 0, Enum.ScreenLocationType.Right } },        -- 암사 광기 4중
+    [391401] = { { 391401, 3, 0, 1, 0, Enum.ScreenLocationType.Left } },                                                                -- 암사 광기 3 중
+    [409129] = { { 391401, 4, 0, 1, 0, Enum.ScreenLocationType.Right } },                                                               -- 암사 광기 4 중
     [443176] = { { 443176, 2, 0, 1, 0, Enum.ScreenLocationType.Top } },                                                                 -- 보존 생명 블꽃 2중
 };
 
@@ -40,9 +40,7 @@ ns.countaware = {
     [264173] = { 264173 },         -- 악마의핵
     [264571] = { 264571 },         -- 일몰
     [16870] = { 16870 },           -- 회드, 번뜩임 2중
-    [409129] = { 391401, 407468 }, -- 암사 광기 2중
     [135700] = { 135700 },         -- 야드 번뜩임
-
 }
 
 -- 아래를 위로
