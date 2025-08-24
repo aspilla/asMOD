@@ -1,8 +1,8 @@
 ﻿## Interface: 110107, 110200
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rFixChat
-## Notes: 채팅창 강화, 1.Tab으로 파티/길드/공격대 챗 변경, 2.URL 클릭시 Link 복사 가능하도록 지원
-## Version : 240107
+## Notes: Switch chat channels with the Tab key, display a window for copying URLs when clicked.
+## Version : 250824
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asFixChatTab.lua
