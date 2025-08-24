@@ -11,6 +11,8 @@ local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };                 --차�
 local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { 153 / 255, 0, 76 / 255 }; --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
 local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 };   --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
 local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };     --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
+local CONFIG_FAILED_COLOR = { 1, 0, 0 };                                  --cast fail
+
 local ATCB_UPDATE_RATE = 0.05                                             -- 20프레임
 
 local DangerousSpellList = {
@@ -22,7 +24,7 @@ local CONFIG_FONT = STANDARD_TEXT_FONT;
 local region = GetCurrentRegion();
 
 if region == 2 and GetLocale() ~= "koKR" then
-	CONFIG_FONT = "Fonts\\2002.ttf";
+    CONFIG_FONT = "Fonts\\2002.ttf";
 end
 
 local ATCB = CreateFrame("FRAME", nil, UIParent)
@@ -112,12 +114,26 @@ if asMOD_setupFrame then
 end
 local MaxLevel = GetMaxLevelForExpansionLevel(10);
 
-local function checkCasting(castBar, unit)
+local function hideCastBar(castBar)
+    local targetname   = castBar.targetname;
+    castBar:SetValue(0);
+    castBar:Hide();
+    ns.lib.PixelGlow_Stop(castBar);
+    castBar.isAlert = false;
+    castBar.start = 0;
+    targetname:SetText("");
+    targetname:Hide();
+    castBar.failstart = nil;
+end
+
+local function checkCasting(castBar, event)
+    local unit         = castBar.unit;
     local frameIcon    = castBar.button.icon;
     local text         = castBar.name;
     local time         = castBar.time;
     local targetname   = castBar.targetname;
     local targettarget = unit .. "target";
+    local currtime     = GetTime();
 
     if UnitExists(unit) then
         local bchannel = false;
@@ -129,7 +145,21 @@ local function checkCasting(castBar, unit)
             bchannel = true;
         end
 
-        if name then
+        if event == "UNIT_SPELLCAST_INTERRUPTED" or event == "UNIT_SPELLCAST_FAILED" then
+            castBar:SetMinMaxValues(0, 100);
+            castBar:SetValue(100);
+            local failtext = "Interrupted"
+            local color = CONFIG_FAILED_COLOR;
+
+            if event == "UNIT_SPELLCAST_FAILED" then
+                failtext = "Failed"
+            end
+
+            time:SetText(failtext);
+            castBar:SetStatusBarColor(color[1], color[2], color[3]);
+            castBar.failstart = currtime;
+            castBar:Show();
+        elseif name then
             local current = GetTime();
             frameIcon:SetTexture(texture);
 
@@ -137,6 +167,7 @@ local function checkCasting(castBar, unit)
             castBar.duration = (endTime - start) / 1000;
             castBar.bchannel = bchannel;
             castBar:SetMinMaxValues(0, castBar.duration)
+            castBar.failstart = nil;
 
             if bchannel then
                 castBar:SetValue(castBar.start + castBar.duration - current);
@@ -197,24 +228,12 @@ local function checkCasting(castBar, unit)
                 targetname:Hide();
             end
         else
-            castBar:SetValue(0);
-            frameIcon:Hide();
-            castBar:Hide();
-            ns.lib.PixelGlow_Stop(castBar);
-            castBar.isAlert = false;
-            castBar.start = 0;
-            targetname:SetText("");
-            targetname:Hide();
+            if castBar.failstart == nil then
+                hideCastBar(castBar);
+            end
         end
     else
-        castBar:SetValue(0);
-        frameIcon:Hide();
-        castBar:Hide();
-        ns.lib.PixelGlow_Stop(castBar);
-        castBar.isAlert = false;
-        castBar.start = 0;
-        targetname:SetText("");
-        targetname:Hide();
+        hideCastBar(castBar);
     end
 end
 
@@ -227,7 +246,7 @@ local function registerEvents(frame, unit)
         frame:Hide()
         return;
     end
-    
+
     if unit == "focus" then
         if not ns.options.ShowFocus then
             return;
@@ -249,12 +268,14 @@ local function registerEvents(frame, unit)
     frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
     frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
     frame:RegisterUnitEvent("UNIT_TARGET", unit);
+    frame.failstart = nil;
 
-    checkCasting(frame, frame.unit);
+
+    checkCasting(frame, "NOTHING");
 end
 
 local function on_unit_event(self, event, ...)
-    checkCasting(self, self.unit);
+    checkCasting(self, event);
 end
 
 ATCB.targetCastBar:SetScript("OnEvent", on_unit_event);
@@ -281,9 +302,14 @@ end
 local function updateCastBar(castBar)
     local start = castBar.start;
     local duration = castBar.duration;
+    local failstart = castBar.failstart;
     local current = GetTime();
 
-    if start > 0 and start + duration >= current then
+    if failstart then
+        if current - failstart > 0.5 then
+            hideCastBar(castBar);
+        end
+    elseif start > 0 and start + duration >= current then
         local bchannel = castBar.bchannel;
         local time = castBar.time;
         if bchannel then
