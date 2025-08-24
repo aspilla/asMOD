@@ -118,7 +118,6 @@ local summon_colorlist = {
 
 }
 
-local showtype = 0;
 
 local function asCooldownFrame_Clear(self)
     self:Clear();
@@ -166,8 +165,9 @@ local function set_button(button, spellId, count, start, duration)
 end
 
 
+local updatefunc = nil;
 
-local function onupdate()
+local function direbeast_update()
     local count = 0;
     local currentTime = GetTime();
 
@@ -182,68 +182,131 @@ local function onupdate()
         end
     end
 
-    if showtype == 1 then
-        --count only
-        if count > 0 then
-            local spellId = summons[1][2];
+    --count only
+    if count > 0 then
+        local spellId = summons[1][2];
 
-            local button = buttons[1];
-            set_button(button, spellId, count);
-            button:Show();
-            for i = 2, 10 do
-                buttons[i]:Hide();
-            end
-        else
-            for i = 1, 10 do
-                buttons[i]:Hide();
-            end
+        local button = buttons[1];
+        set_button(button, spellId, count);
+        button:Show();
+        for i = 2, 10 do
+            buttons[i]:Hide();
         end
-    elseif showtype == 2 then
-        --icons
+    else
         for i = 1, 10 do
-            if i <= count then
-                local button = buttons[i];
-                local idx = count - i + 1;
-                local spellId = summons[idx][2];
-                local start = summons[idx][1];
-                local duration = summons[idx][5];
-
-                set_button(button, spellId, nil, start, duration);
-                button:Show();
-            else
-                buttons[i]:Hide()
-            end
-        end
-    elseif showtype == 3 then
-        --bars
-        for i = 1, 10 do
-            if i <= count then
-                bars[i]:Show()
-                local duration = summons[i][5];
-                local remaining = duration - (currentTime - summons[i][1])
-                local spellcolor = summon_colorlist[summons[i][2]];
-                bars[i]:SetMinMaxValues(0, duration * 100)
-                bars[i]:SetValue(remaining * 100)
-                bars[i].time:SetText(math.ceil(remaining));
-                if summons[i][3] > 1 then
-                    bars[i].count:SetText(summons[i][3]);
-                    bars[i].count:Show();
-                else
-                    bars[i].count:Hide();
-                end
-                if spellcolor then
-                    bars[i]:SetStatusBarColor(spellcolor[1], spellcolor[2], spellcolor[3]);
-                else
-                    bars[i]:SetStatusBarColor(1, 0.9, 0.9);
-                end
-            else
-                bars[i]:Hide()
-            end
+            buttons[i]:Hide();
         end
     end
 end
 
+local function fourknight_update()
+    local count = 0;
+    local currentTime = GetTime();
+
+    for idx, v in pairs(summons) do
+        local timestamp = v[1];
+        local duration = v[5];
+
+        if currentTime - timestamp >= duration then
+            table.remove(summons, idx);
+        else
+            count = count + 1;
+        end
+    end
+
+    --icons
+    for i = 1, 10 do
+        if i <= count then
+            local button = buttons[i];
+            local idx = count - i + 1;
+            local spellId = summons[idx][2];
+            local start = summons[idx][1];
+            local duration = summons[idx][5];
+
+            set_button(button, spellId, nil, start, duration);
+            button:Show();
+        else
+            buttons[i]:Hide()
+        end
+    end
+end
+
+local function imp_update()
+    local count = 0;
+    local currentTime = GetTime();
+
+    for idx, v in pairs(summons) do
+        local timestamp = v[1];
+        local duration = v[5];
+
+        if currentTime - timestamp >= duration then
+            table.remove(summons, idx);
+        else
+            count = count + 1;
+        end
+    end
+
+    --bars
+    for i = 1, 10 do
+        if i <= count then
+            bars[i]:Show()
+            local duration = summons[i][5];
+            local remaining = duration - (currentTime - summons[i][1])
+            local spellcolor = summon_colorlist[summons[i][2]];
+            bars[i]:SetMinMaxValues(0, duration * 100)
+            bars[i]:SetValue(remaining * 100)
+            bars[i].time:SetText(math.ceil(remaining));
+            if summons[i][3] > 1 then
+                bars[i].count:SetText(summons[i][3]);
+                bars[i].count:Show();
+            else
+                bars[i].count:Hide();
+            end
+            if spellcolor then
+                bars[i]:SetStatusBarColor(spellcolor[1], spellcolor[2], spellcolor[3]);
+            else
+                bars[i]:SetStatusBarColor(1, 0.9, 0.9);
+            end
+        else
+            bars[i]:Hide()
+        end
+    end
+end
+
+local function onupdate()
+    if updatefunc then
+        updatefunc();
+    end
+end
+
 local callfunc = nil;
+local imp_spells =
+{
+    [104317] = true,
+    [279910] = true,
+}
+local imp_guids = {};
+
+local function check_imp()
+    local timestamp, eventType, _, sourceGUID, _, _, _, destGUID, _, _, _, spellId, _, _, auraType, amount =
+        CombatLogGetCurrentEventInfo();
+    if sourceGUID and sourceGUID == playerGUID then
+        if eventType == "SPELL_SUMMON" and imp_spells[spellId] then
+            local currentTime = GetTime();
+            imp_guids[destGUID] = currentTime;
+        end
+    end
+    if eventType == "SPELL_AURA_REMOVED" and spellId == 387552 and destGUID and imp_guids[destGUID] then
+        imp_guids[destGUID] = nil;
+
+        local count = 0;
+        for guid, v in pairs(imp_guids) do
+            count = count + 1;
+        end
+        print(count);
+    end
+end
+
 local direbeast_duration = 8;
 local direbeast_spells = {
     [132764] = true,
@@ -320,19 +383,27 @@ local function checkspec()
 
     local localizedClass, englishClass = UnitClass("player");
 
-    if englishClass == "DEATHKNIGHT" then
-        if IsPlayerSpell(444005) then
-            showtype = 2;
+    if englishClass == "WARLOCK" then
+        --[[
+          callfunc = check_imp;
+          updatefunc = imp_update;
+
+        ast_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+        timer = C_Timer.NewTicker(0.1, onupdate);
+        ]]
+    elseif englishClass == "DEATHKNIGHT" then
+        if C_SpellBook.IsSpellKnown(444005) then
             callfunc = four_knights;
+            updatefunc = fourknight_update;
             ast_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
             timer = C_Timer.NewTicker(0.1, onupdate);
         end
     elseif englishClass == "HUNTER" then
-        if IsPlayerSpell(120679) then
-            showtype = 1;
+        if C_SpellBook.IsSpellKnown(120679) then
             callfunc = direbeast;
+            updatefunc = direbeast_update;
 
-            if IsPlayerSpell(385810) then
+            if C_SpellBook.IsSpellKnown(385810) then
                 direbeast_duration = 10;
             end
 
