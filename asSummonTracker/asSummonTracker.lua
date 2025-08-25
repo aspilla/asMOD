@@ -408,7 +408,6 @@ local function checkspec()
             if C_SpellBook.IsSpellKnown(385810) then
                 direbeast_duration = 10;
             end
-            print("check");
 
             ast_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
             timer = C_Timer.NewTicker(0.1, onupdate);
