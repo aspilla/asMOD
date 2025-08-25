@@ -309,6 +309,7 @@ end
 
 local direbeast_duration = 8;
 local direbeast_spells = {
+    [459562] = true,
     [132764] = true,
     [122804] = true,
 }
@@ -319,7 +320,7 @@ local function direbeast()
 
 
     if sourceGUID and sourceGUID == playerGUID then
-        if eventType == "SPELL_CAST_SUCCESS" and direbeast_spells[spellId] then
+        if eventType == "SPELL_SUMMON" and direbeast_spells[spellId] then
             local currentTime = GetTime();
             table.insert(summons, 1, { currentTime, spellId, 1, timestamp, direbeast_duration });
             --elseif eventType == "SPELL_SUMMON" and spellId == 104317 then
@@ -380,6 +381,7 @@ local function checkspec()
     if timer then
         timer:Cancel();
     end
+    playerGUID = UnitGUID("player");
 
     local localizedClass, englishClass = UnitClass("player");
 
@@ -406,6 +408,7 @@ local function checkspec()
             if C_SpellBook.IsSpellKnown(385810) then
                 direbeast_duration = 10;
             end
+            print("check");
 
             ast_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
             timer = C_Timer.NewTicker(0.1, onupdate);
