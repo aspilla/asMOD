@@ -14,10 +14,6 @@ local powerheight = 5;
 local buffcount = 4;
 local buffsize = 25;
 
-local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };                 --차단 불가시 (내가 아닐때) 색상 (r, g, b)
-local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { 153 / 255, 0, 76 / 255 }; --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
-local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 };   --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
-local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };     --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
 
 AUF_ShowTotemBar = false;
 
@@ -25,7 +21,7 @@ local CONFIG_FONT = STANDARD_TEXT_FONT;
 local region = GetCurrentRegion();
 
 if region == 2 and GetLocale() ~= "koKR" then
-	CONFIG_FONT = "Fonts\\2002.ttf";
+    CONFIG_FONT = "Fonts\\2002.ttf";
 end
 
 local RaidIconList = {
@@ -119,101 +115,6 @@ local function UpdatePlayerUnit()
     end
 end
 
-local function updateCastBar(frame)
-    local castbar    = frame.castbar;
-    local frameIcon  = castbar.button.icon;
-    local text       = castbar.name;
-    local time       = castbar.time;
-    local targetname = castbar.targetname;
-    local unit       = frame.unit;
-    local unittarget = unit .. "target";
-
-    if UnitExists(unit) then
-        local bchanneling = false;
-        local name, _, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-            unit);
-
-        if not name then
-            bchanneling = true;
-            name, _, texture, start, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
-        end
-
-        if name then
-            local current = GetTime();
-            frameIcon:SetTexture(texture);
-
-            castbar.start = start / 1000;
-            castbar.duration = (endTime - start) / 1000;
-            castbar.bchanneling = bchanneling;
-
-            castbar:SetMinMaxValues(0, castbar.duration)
-
-            if bchanneling then
-                castbar:SetValue(castbar.start + castbar.duration - current);
-            else
-                castbar:SetValue(current - castbar.start);
-            end
-
-
-            local color = {};
-
-            if UnitIsUnit(unittarget, "player") then
-                if notInterruptible then
-                    color = CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET;
-                else
-                    color = CONFIG_INTERRUPTIBLE_COLOR_TARGET;
-                end
-            else
-                if notInterruptible then
-                    color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
-                else
-                    color = CONFIG_INTERRUPTIBLE_COLOR;
-                end
-            end
-
-            castbar.castspellid = spellid;
-
-            castbar:SetStatusBarColor(color[1], color[2], color[3]);
-
-            text:SetText(name);
-            time:SetText(format("%.1f/%.1f", max((current - castbar.start), 0), max(castbar.duration, 0)));
-
-            frameIcon:Show();
-            castbar:Show();
-            if ns.DangerousSpellList[spellid] and ns.DangerousSpellList[spellid] == "interrupt" then
-                ns.lib.PixelGlow_Start(castbar, { 1, 1, 0, 1 });
-            end
-
-            if UnitExists(unittarget) and UnitIsPlayer(unittarget) then
-                local _, Class = UnitClass(unittarget)
-                local color = RAID_CLASS_COLORS[Class]
-                targetname:SetTextColor(color.r, color.g, color.b);
-                targetname:SetText(UnitName(unittarget));
-                targetname:Show();
-            else
-                targetname:SetText("");
-                targetname:Hide();
-            end
-        else
-            castbar:SetValue(0);
-            frameIcon:Hide();
-            castbar:Hide();
-            ns.lib.PixelGlow_Stop(castbar);
-            castbar.start = 0;
-            targetname:SetText("");
-            targetname:Hide();
-        end
-    else
-        castbar:SetValue(0);
-        frameIcon:Hide();
-        castbar:Hide();
-        ns.lib.PixelGlow_Stop(castbar);
-        castbar.start = 0;
-        targetname:SetText("");
-        targetname:Hide();
-    end
-end
-
 local function updateUnit(frame)
     local unit = frame.unit;
     local showplayermana = false;
@@ -303,23 +204,10 @@ local function updateUnit(frame)
     end
 
     UpdateFillBarBase(frame.healthbar, frame.healthbar.shieldBar, remainAbsorb, true, nil);
-
-    --Castbar
-    local current = GetTime();
-
-    if frame.castbar.start and frame.castbar.start > 0 and frame.castbar.start + frame.castbar.duration >= current then
-        local castBar = frame.castbar;
-        local start = castBar.start;
-        local duration = castBar.duration;
-        local time = castBar.time;
-
-        if castBar.bchanneling then
-            castBar:SetValue((start + duration - current));
-            time:SetText(format("%.1f/%.1f", max((start + duration - current), 0), max(duration, 0)));
-        else
-            castBar:SetValue((current - start));
-            time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
-        end
+    
+    --CastBar
+    if frame.updateCastBar then
+        ns.updateCastBar(frame.castbar);
     end
 
     if frame.updatecount == 1 then
@@ -512,10 +400,6 @@ local function updateUnit(frame)
         ns.UpdateTotems(frame);
     end
 
-    --CastBar
-    if frame.updateCastBar then
-        updateCastBar(frame);
-    end
 end
 
 local function asTargetFrame_OpenMenu(self, unit)
@@ -982,7 +866,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     local castbarheight = height - 5;
 
     frame.castbar = CreateFrame("StatusBar", nil, frame)
-    frame.castbar:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -2);
+    frame.castbar:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -3);
     frame.castbar:SetStatusBarTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar")
     frame.castbar:GetStatusBarTexture():SetHorizTile(false)
     frame.castbar:SetMinMaxValues(0, 100)
@@ -1059,6 +943,8 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
 
     if unit == "focus" or string.find(unit, "boss") then
         frame.updateCastBar = true;
+        ns.registerCastBarEvents(frame.castbar, unit);
+        frame.castbar:SetScript("OnEvent", ns.onCastBarEvent);
         if ns.options.ShowBossBuff and unit ~= "focus" then
             CreateBuffFrames(frame, true, fontsize, buffsize, buffcount);
             frame.buffupdate = true;
@@ -1088,6 +974,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.callback = function()
         updateUnit(frame);
     end
+
 
     C_Timer.NewTicker(Update_Rate, frame.callback);
 end
@@ -1242,6 +1129,15 @@ local function AUF_OnEvent(self, event, arg1, arg2, arg3)
                 SetPortraitTexture(frame.portrait.portrait, frame.unit, false);
             end
         end
+    elseif event == "PLAYER_FOCUS_CHANGED" then
+        local frame = unitframes["focus"];
+        ns.registerCastBarEvents(frame.castbar, "focus");
+    elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
+        for i = 1, MAX_BOSS_FRAMES do
+            local unit = "boss" .. i;
+            local frame = unitframes[unit];
+            ns.registerCastBarEvents(frame.castbar, unit);
+        end
     end
 
     return;
@@ -1253,6 +1149,8 @@ AUF:RegisterEvent("PLAYER_REGEN_ENABLED");
 AUF:RegisterEvent("PLAYER_REGEN_DISABLED");
 AUF:RegisterEvent("UNIT_PORTRAIT_UPDATE");
 AUF:RegisterEvent("PORTRAITS_UPDATED");
+AUF:RegisterEvent("PLAYER_FOCUS_CHANGED");
+AUF:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
 
 
 local DBMobj;
