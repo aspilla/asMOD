@@ -145,15 +145,11 @@ local function checkCasting(castBar, event)
             bchannel = true;
         end
 
-        if event == "UNIT_SPELLCAST_INTERRUPTED" or event == "UNIT_SPELLCAST_FAILED" then
+        if event == "UNIT_SPELLCAST_INTERRUPTED" then
             castBar:SetMinMaxValues(0, 100);
             castBar:SetValue(100);
             local failtext = "Interrupted"
             local color = CONFIG_FAILED_COLOR;
-
-            if event == "UNIT_SPELLCAST_FAILED" then
-                failtext = "Failed"
-            end
 
             time:SetText(failtext);
             castBar:SetStatusBarColor(color[1], color[2], color[3]);
