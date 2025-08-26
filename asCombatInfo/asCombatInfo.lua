@@ -271,7 +271,7 @@ ACI_HideCooldownPulse = false;
 
 function ACI_Init()
 	local _, englishClass = UnitClass("player")
-	local spec = GetSpecialization();
+	local spec = C_SpecializationInfo.GetSpecialization();
 	local specID = PlayerUtil.GetCurrentSpecID();
 	local configID = ((specID and C_ClassTalents.GetLastSelectedSavedConfigID(specID) or 0) + 19);
 

@@ -794,7 +794,7 @@ end
 
 
 local function SetupEditBoxOption()
-    local spec = GetSpecialization();
+    local spec = C_SpecializationInfo.GetSpecialization();
     local localizedClass, englishClass = UnitClass("player");
     local listname;
 

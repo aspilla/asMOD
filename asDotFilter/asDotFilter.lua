@@ -540,7 +540,7 @@ local function ADotF_UpdateAllFrames()
 end
 
 local function ADotF_InitList()
-    local spec = GetSpecialization();
+    local spec = C_SpecializationInfo.GetSpecialization();
     local _, englishClass = UnitClass("player");
     local listname = "ADotF_ShowList_";
 

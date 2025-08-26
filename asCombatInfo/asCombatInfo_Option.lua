@@ -482,7 +482,7 @@ local function SetupEditBoxOption()
 	btn:SetScript("OnClick", function()
 		ACI_Options = {};
 		ACI_Options.version = ACI_Options_Default.version;
-		local spec = GetSpecialization();
+		local spec = C_SpecializationInfo.GetSpecialization();
 		local specID = PlayerUtil.GetCurrentSpecID();
 		local configID = (C_ClassTalents.GetLastSelectedSavedConfigID(specID) or 0) + 19;
 		local _, englishClass = UnitClass("player");
@@ -509,7 +509,7 @@ local function SetupEditBoxOption()
 		ReloadUI();
 	end)
 
-	local spec = GetSpecialization();
+	local spec = C_SpecializationInfo.GetSpecialization();
 	local specID = PlayerUtil.GetCurrentSpecID();
 	local configID = (C_ClassTalents.GetLastSelectedSavedConfigID(specID) or 0) + 19;
 	local _, englishClass = UnitClass("player");
@@ -659,7 +659,7 @@ local function SetupEditBoxOption()
 end
 
 local function InitOption()
-	local spec = GetSpecialization();
+	local spec = C_SpecializationInfo.GetSpecialization();
 	local specID = PlayerUtil.GetCurrentSpecID();
 	local configID = (C_ClassTalents.GetLastSelectedSavedConfigID(specID) or 0) + 19;
 	local _, englishClass = UnitClass("player");

@@ -51,7 +51,7 @@ function asCompactPrivateAuraAnchorMixin:SetUnit(unit)
 end
 
 function ns.ACRB_InitList()
-    local spec = GetSpecialization();
+    local spec = C_SpecializationInfo.GetSpecialization();
     local localizedClass, englishClass = UnitClass("player");
     ns.listname = nil;
 

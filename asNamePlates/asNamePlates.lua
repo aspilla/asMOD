@@ -826,7 +826,7 @@ local function updateHealthbarColor(self)
     local function IsPlayerEffectivelyTank()
         local assignedRole = UnitGroupRolesAssigned("player");
         if (assignedRole == "NONE") then
-            local spec = GetSpecialization();
+            local spec = C_SpecializationInfo.GetSpecialization();
             return spec and GetSpecializationRole(spec) == "TANK";
         end
         return assignedRole == "TANK";
@@ -1102,7 +1102,7 @@ local function updatePVPAggro(self)
 end
 
 local function initAlertList()
-    local spec = GetSpecialization();
+    local spec = C_SpecializationInfo.GetSpecialization();
     local localizedClass, englishClass = UnitClass("player");
     local listname;
 

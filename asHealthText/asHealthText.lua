@@ -289,7 +289,7 @@ local function AHT_UpdatePower()
 		end
 
 		if AHT_UNIT_POWER == "SHADOW_ORBS" then
-			if GetSpecialization() < 3 then
+			if C_SpecializationInfo.GetSpecialization() < 3 then
 				AHT_Power:SetText("");
 				AHT_Power:Hide();
 			end
@@ -349,13 +349,13 @@ end
 
 local function AHT_CheckHeal()
 
-	local masteryIndex = GetSpecialization ();
+	local masteryIndex = C_SpecializationInfo.GetSpecialization ();
 	local name = nil;
 
 	local role = nil
 
-	if GetSpecialization() ~= nil then
-		role = GetSpecializationRole(GetSpecialization())
+	if C_SpecializationInfo.GetSpecialization() ~= nil then
+		role = C_SpecializationInfo.GetSpecializationRole(C_SpecializationInfo.GetSpecialization())
 	end
 
 	AHT_mainframe:RegisterUnitEvent("UNIT_HEAL_PREDICTION", "player");
@@ -372,7 +372,7 @@ end
 local function AHT_CheckPower()
 
 	local localizedClass, englishClass = UnitClass("player")
-	local spec = GetSpecialization();
+	local spec = C_SpecializationInfo.GetSpecialization();
 
 	AHT_mainframe:UnregisterEvent("UNIT_POWER_UPDATE")
 	AHT_mainframe:UnregisterEvent("UNIT_DISPLAYPOWER");

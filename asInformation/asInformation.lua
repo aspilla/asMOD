@@ -240,8 +240,8 @@ local needReposition = true;
 
 -- Function to get primary stat based on class, inspired by PaperDollFrame.lua
 local function GetPrimaryStat()
-    local currspec = GetSpecialization() or 1;
-    local primaryStatID = select(6, GetSpecializationInfo(currspec)) or 1;
+    local currspec = C_SpecializationInfo.GetSpecialization() or 1;
+    local primaryStatID = select(6, C_SpecializationInfo.GetSpecializationInfo(currspec)) or 1;
     local primaryStatValue = UnitStat("player", primaryStatID);
 
     return primaryStatValue;
@@ -492,7 +492,7 @@ local function UpdateStats()
                     statConfigs.Stat.gemColor.b)
                 primaryStatBarText:SetTextColor(activatedTextColor.r, activatedTextColor.g, activatedTextColor.b)
                 showvalue = primaryStatValue - minStat;
-                maxvlaue = minStat * 0.2;
+                maxvalue = minStat * 0.2;
             else
                 primaryStatBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
                 primaryStatBarText:SetTextColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g,

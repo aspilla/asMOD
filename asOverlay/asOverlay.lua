@@ -465,7 +465,7 @@ local function checkShowList(self)
 end
 
 local function initShowList()
-    local spec = GetSpecialization();
+    local spec = C_SpecializationInfo.GetSpecialization();
     local localizedClass, englishClass = UnitClass("player");
     local listname;
 

@@ -2124,8 +2124,8 @@ end
 local function APB_CheckPower(self)
     self = APB;
     local localizedClass, englishClass = UnitClass("player")
-    local spec = GetSpecialization();
-    local talentgroup = GetActiveSpecGroup();
+    local spec = C_SpecializationInfo.GetSpecialization();
+    local talentgroup = C_SpecializationInfo.GetActiveSpecGroup();
     local version = select(4, GetBuildInfo());
 
     if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
@@ -3403,7 +3403,7 @@ local function checkSpellPowerCost(id)
     local powerTypeString = PowerTypeComboString[APB_POWER_LEVEL];
 
     local localizedClass, englishClass = UnitClass("player")
-    local spec = GetSpecialization();
+    local spec = C_SpecializationInfo.GetSpecialization();
     local disWarlock = false;
 
     if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then

@@ -219,7 +219,7 @@ local frame = CreateFrame("Frame");
 local function load()
 	snapshots = {};
 
-	local spec = GetSpecialization();
+	local spec = C_SpecializationInfo.GetSpecialization();
 	local _, englishClass = UnitClass("player");
 	local listname = "ADS_OPTION_";
 
