@@ -588,9 +588,6 @@ local function SetDebuff(frame, icon, applications, expirationTime, duration, co
 			bshowcount = true;
 			frame.count:Show();
 			frame.count:SetText(count);
-			if countcolor then
-				frame.count:SetTextColor(countcolor.r, countcolor.g, countcolor.b);
-			end
 		else
 			frame.count:Hide();
 		end
@@ -803,7 +800,7 @@ function ADF_ClearFrame()
 end
 
 local function initList()
-    local spec = GetSpecialization();
+    local spec = C_SpecializationInfo.GetSpecialization();
     local localizedClass, englishClass = UnitClass("player");
     local listname;
 
