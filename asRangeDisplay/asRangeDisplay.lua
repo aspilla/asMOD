@@ -210,7 +210,7 @@ local function updateUnitRange(unit, frame)
 			if UnitIsUnit(unit, "target") then
 				for _, v in pairs(cache) do
 					if v[2] < grange then
-						able = C_Spell.IsSpellInRange(v[1])
+						local able = C_Spell.IsSpellInRange(v[1])
 
 						if able then
 							grange = v[2];
@@ -269,7 +269,7 @@ local function ARD_OnLoad()
 	ARD_FocusRangeText:SetPoint("CENTER", UIParent, "CENTER", ARD_Focus_X, ARD_Focus_Y);
 	ARD_FocusRangeText:SetText("");
 	ARD_FocusRangeText:Show();
-	bloaded = C_AddOns.LoadAddOn("asMOD")
+	local bloaded = C_AddOns.LoadAddOn("asMOD")
 
 	if bloaded and asMOD_setupFrame then
 		asMOD_setupFrame(ARD_TargetRangeText, "asRangeDisplay(Target)");
