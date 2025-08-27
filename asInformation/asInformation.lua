@@ -1,7 +1,8 @@
+---@diagnostic disable: redundant-parameter
 local _, ns = ...;
 
-local AIF_Alpha = 1              -- 전투중 알파값
-local AIF_Alpha_Normal = 0.5     -- 비전투중 안보이게 하려면 0
+local AIF_Alpha = 1          -- 전투중 알파값
+local AIF_Alpha_Normal = 0.5 -- 비전투중 안보이게 하려면 0
 
 
 local asInformation = CreateFrame("Frame", "asInformationFrame", UIParent)
@@ -102,7 +103,8 @@ local function initFrames()
     -- Primary Stat Bar
     primaryStatBar = CreateFrame("StatusBar", "asInformationPrimaryStatBar", asInformation);
     primaryStatBar:SetSize(barWidth, barHeight)
-    primaryStatBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset)
+    primaryStatBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0,
+        yOffset)
     primaryStatBar:SetStatusBarTexture("Interface/Addons/asInformation/UI-StatusBar")
     primaryStatBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
@@ -116,7 +118,8 @@ local function initFrames()
 
     primaryStatBarText = primaryStatBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     primaryStatBarText:SetPoint("RIGHT", primaryStatBar, "RIGHT", -1, 0)
-    primaryStatBarText:SetTextColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g, statConfigs.Stat.gemColor.b)
+    primaryStatBarText:SetTextColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g, statConfigs.Stat.gemColor
+    .b)
 
     -- Primary stat color will be set dynamically
 
@@ -232,7 +235,6 @@ local function initFrames()
 
     prevframe = versatilityBar
     yOffset = -2
-
 end
 
 local bMouseEnabled = true;
@@ -249,29 +251,27 @@ end
 
 local function asGetCrit()
     --PaperDollFrame_SetCritChance
-	local spellCrit, rangedCrit, meleeCrit;
-	local critChance;
+    local spellCrit, rangedCrit, meleeCrit;
+    local critChance;
 
-	-- Start at 2 to skip physical damage
-	local holySchool = 2;
----@diagnostic disable-next-line: redundant-parameter
-	local minCrit = GetSpellCritChance(holySchool);
-	for i=(holySchool+1), MAX_SPELL_SCHOOLS do
----@diagnostic disable-next-line: redundant-parameter
-		spellCrit = GetSpellCritChance(i);
-		minCrit = min(minCrit, spellCrit);
-	end
-	spellCrit = minCrit
-	rangedCrit = GetRangedCritChance();
-	meleeCrit = GetCritChance();
+    -- Start at 2 to skip physical damage
+    local holySchool = 2;
+    local minCrit = GetSpellCritChance(holySchool);
+    for i = (holySchool + 1), MAX_SPELL_SCHOOLS do
+        spellCrit = GetSpellCritChance(i);
+        minCrit = min(minCrit, spellCrit);
+    end
+    spellCrit = minCrit
+    rangedCrit = GetRangedCritChance();
+    meleeCrit = GetCritChance();
 
-	if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
-		critChance = spellCrit;
-	elseif (rangedCrit >= meleeCrit) then
-		critChance = rangedCrit;
-	else
-		critChance = meleeCrit;
-	end
+    if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
+        critChance = spellCrit;
+    elseif (rangedCrit >= meleeCrit) then
+        critChance = rangedCrit;
+    else
+        critChance = meleeCrit;
+    end
 
     return critChance;
 end
@@ -305,7 +305,7 @@ local function RecordCurrentStats()
             -- Calculate minimum from combat snapshots
             local minStat = nil
             for _, snapshot in ipairs(history) do
-                if minStat == nil or snapshot.value < minStat then
+                if minStat == nil or (snapshot.value < minStat and snapshot.value > 0) then
                     minStat = snapshot.value
                 end
             end
@@ -322,7 +322,8 @@ local function UpdateStats()
         local yOffset = -5;
 
         if ASInformationSaved.showPrimary then
-            primaryStatBar:SetPoint("TOPLEFT", prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset);
+            primaryStatBar:SetPoint("TOPLEFT", prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0,
+                yOffset);
             primaryStatBar:Show();
             prevframe = primaryStatBar;
             yOffset = -2;
@@ -368,7 +369,6 @@ local function UpdateStats()
         else
             versatilityBar:Hide();
         end
-
     end
 
     local haste = GetHaste()
@@ -485,7 +485,7 @@ local function UpdateStats()
             -- For now, just showing the value.
             local showvalue = 0;
             local maxvalue = primaryStatValue * 0.2;
-            
+
             local minStat = recentMinimumStats.Stat
             if minStat ~= nil and primaryStatValue > minStat then
                 primaryStatBar:SetStatusBarColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g,
@@ -662,32 +662,31 @@ local function initAll()
     initFrames();
     asInformation:SetUserPlaced(true)
 
-	C_AddOns.LoadAddOn("asMOD");
+    C_AddOns.LoadAddOn("asMOD");
 
-	if asMOD_setupFrame then
-		asMOD_setupFrame(asInformation, "asInformation");
-	end
+    if asMOD_setupFrame then
+        asMOD_setupFrame(asInformation, "asInformation");
+    end
     -- No longer registering UNIT_AURA for stat activation
     bfirst = false;
-    C_Timer.NewTicker(updateInterval, OnUpdate);     -- This ticker calls OnUpdate, which then calls UpdateStats
+    C_Timer.NewTicker(updateInterval, OnUpdate); -- This ticker calls OnUpdate, which then calls UpdateStats
 end
 
 local function OnEvent(self, event, ...)
-
     local arg = ...;
 
-	if event == "PLAYER_ENTERING_WORLD" then
-		if UnitAffectingCombat("player") then
+    if event == "PLAYER_ENTERING_WORLD" then
+        if UnitAffectingCombat("player") then
             asInformation:SetAlpha(AIF_Alpha);
-		else
+        else
             asInformation:SetAlpha(AIF_Alpha_Normal);
-		end
-	elseif event == "PLAYER_REGEN_DISABLED" then
+        end
+    elseif event == "PLAYER_REGEN_DISABLED" then
         asInformation:SetAlpha(AIF_Alpha);
-	elseif event == "PLAYER_REGEN_ENABLED" then
-		asInformation:SetAlpha(AIF_Alpha_Normal);
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        asInformation:SetAlpha(AIF_Alpha_Normal);
     elseif event == "ADDON_LOADED" and arg == "asInformation" and bfirst == true then
-       initAll();
+        initAll();
     end
 end
 asInformation:RegisterEvent("PLAYER_ENTERING_WORLD")
