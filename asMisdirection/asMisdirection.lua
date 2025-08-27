@@ -144,7 +144,7 @@ local function AHM_SetAssist(unit, force)
 		if global < 120 then
 			CreateMacro(macroName, "ABILITY_ROGUE_FEIGNDEATH", macroText, false)
 		else
-            print("asMOD error:too many macros, so need to delete some")
+			print("asMOD error:too many macros, so need to delete some")
 		end
 	else
 		EditMacro(macroID, macroName, "ABILITY_ROGUE_FEIGNDEATH", macroText)
@@ -187,7 +187,7 @@ local function AHM_SetMisdirection(unit, force)
 		--macroText = string.format("#showtooltip %s\n/cast [@mouseover, exists, help, nodead][target=" .. unit ..", exists, help, nodead][help] %s", MisDirectionSpell, MisDirectionSpell)
 		local macroText = string.format("#showtooltip %s\n/cast [target=" .. unit .. ", exists, help, nodead][help] %s",
 			MisDirectionSpell, MisDirectionSpell)
-		local macroName = "as_".. MisDirectionSpell
+		local macroName = "as_" .. MisDirectionSpell
 		local macroID = GetMacroIndexByName(macroName)
 
 		if (macroID == 0) then
@@ -250,7 +250,7 @@ local function AHM_SetMindInfusion(unit, force)
 		--macroText = string.format("#showtooltip %s\n/cast [@mouseover, exists, help, nodead][target=" .. unit ..", exists, help, nodead][help] %s", MindInfusionSpell, MindInfusionSpell)
 		local macroText = string.format("#showtooltip %s\n/cast [target=" .. unit .. ", exists, help, nodead][] %s",
 			MindInfusionSpell, MindInfusionSpell)
-		local macroName = "as_".. MindInfusionSpell
+		local macroName = "as_" .. MindInfusionSpell
 		local macroID = GetMacroIndexByName(macroName)
 
 		if (macroID == 0) then
@@ -264,10 +264,10 @@ local function AHM_SetMindInfusion(unit, force)
 		else
 			local oldtext = GetMacroBody(macroID);
 			if oldtext then
-				local start = string.find(oldtext, "help] " .. MindInfusionSpell, 0);
+				local start = string.find(oldtext, "] " .. MindInfusionSpell, 0);
 
 				if start and start > 0 then
-					local addedtext = string.sub(oldtext, start + string.len("help] " .. MindInfusionSpell), -1);
+					local addedtext = string.sub(oldtext, start + string.len("] " .. MindInfusionSpell), -1);
 					macroText = macroText .. addedtext;
 				end
 
