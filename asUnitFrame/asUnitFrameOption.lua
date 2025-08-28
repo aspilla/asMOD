@@ -5,6 +5,7 @@ local Options_Default = {
     ShowTotemBar = true,
     ShowBossBuff = true,
     ShowTargetBorder = true,
+    OffPortraitDebuffOnRaid = true,
 };
 
 ns.Buff_BlackList = {

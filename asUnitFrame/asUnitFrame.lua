@@ -61,6 +61,7 @@ local rareIcon = CreateAtlasMarkup("UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare
 local rareeliteIcon = CreateAtlasMarkup("nameplates-icon-elite-silver", 14, 14);
 
 ns.DangerousSpellList = {};
+local israid = false;
 
 local function UpdateFillBarBase(realbar, bar, amount, bleft, pointbar)
     if not amount or (amount == 0) then
@@ -390,12 +391,13 @@ local function updateUnit(frame)
         SetPortraitTexture(frame.portrait.portrait, unit, false);
         frame.guid = UnitGUID(unit);
     end
-    if frame.portraitdebuff or frame.debuffupdate or frame.buffupdate then
-        --ns.UpdateAuras(frame);
-    end
 
-    if frame.totemupdate then
-        --ns.UpdateTotems(frame);
+    if ns.options.OffPortraitDebuffOnRaid and (unit == "target" or unit == "focus") then
+        if israid then
+            frame.portraitdebuff = false;
+        else
+            frame.portraitdebuff = true;
+        end
     end
 end
 
@@ -1129,6 +1131,13 @@ local function AUF_OnEvent(self, event, arg1, arg2, arg3)
 
     if event == "PLAYER_ENTERING_WORLD" then
         HideDefaults();
+        local isInstance, instanceType = IsInInstance();
+
+        israid = false;
+
+        if isInstance and instanceType == "raid" then
+            israid = true;
+        end
     elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
         ns.DumpCaches();
     elseif event == "UNIT_TARGET" then
