@@ -14,7 +14,7 @@ local function asSetItemRef(link, ...)
 end
 
 --AddMessage
-function asMOD_AddMessage(self, text, ...)
+local function asMOD_AddMessage(self, text, ...)
 
 	if self:IsForbidden() then
 		return
