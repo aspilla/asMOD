@@ -204,7 +204,7 @@ local function updateUnit(frame)
     end
 
     UpdateFillBarBase(frame.healthbar, frame.healthbar.shieldBar, remainAbsorb, true, nil);
-    
+
     --CastBar
     if frame.updateCastBar then
         ns.updateCastBar(frame.castbar);
@@ -390,16 +390,13 @@ local function updateUnit(frame)
         SetPortraitTexture(frame.portrait.portrait, unit, false);
         frame.guid = UnitGUID(unit);
     end
-    --Debuff
     if frame.portraitdebuff or frame.debuffupdate or frame.buffupdate then
-        ns.UpdateAuras(frame);
+        --ns.UpdateAuras(frame);
     end
 
-    --Debuff
     if frame.totemupdate then
-        ns.UpdateTotems(frame);
+        --ns.UpdateTotems(frame);
     end
-
 end
 
 local function asTargetFrame_OpenMenu(self, unit)
@@ -673,6 +670,15 @@ end
 
 local unitframes = {};
 
+
+local function onUnitEvent(self, event, arg1, arg2)
+    if event == "UNIT_AURA" then
+        ns.UpdateAuras(self, arg2);
+    elseif event == "PLAYER_TOTEM_UPDATE" then
+        ns.UpdateTotems(self);
+    end
+end
+
 local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight, fontsize, debuffupdate)
     local FontOutline = "OUTLINE";
 
@@ -935,6 +941,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
 
     if ns.options.ShowTotemBar and unit == "player" then
         CreatTotemFrames(frame, true, fontsize, width, MAX_TOTEMS);
+        frame:RegisterEvent("PLAYER_TOTEM_UPDATE");
         frame.totemupdate = true;
         AUF_ShowTotemBar = true;
     end
@@ -969,6 +976,12 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     else
         RegisterStateDriver(frame, "visibility", "[@" .. unit .. ",exists] show; hide");
     end
+
+    if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
+        frame:RegisterUnitEvent("UNIT_AURA", unit);
+    end
+
+    frame:SetScript("OnEvent", onUnitEvent);
 
 
     frame.callback = function()
@@ -1118,6 +1131,27 @@ local function AUF_OnEvent(self, event, arg1, arg2, arg3)
         HideDefaults();
     elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
         ns.DumpCaches();
+    elseif event == "UNIT_TARGET" then
+        local unit = "targettarget";
+        local frame = unitframes[unit];
+        if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
+            frame:RegisterUnitEvent("UNIT_AURA", unit);
+            ns.UpdateAuras(frame);
+        end
+    elseif event == "PLAYER_TARGET_CHANGED" then
+        local unit = "target";
+        self:RegisterUnitEvent("UNIT_TARGET", unit);
+        local frame = unitframes[unit];
+        if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
+            frame:RegisterUnitEvent("UNIT_AURA", unit);
+            ns.UpdateAuras(frame);
+        end
+        local unit = "targettarget";
+        local frame = unitframes[unit];
+        if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
+            frame:RegisterUnitEvent("UNIT_AURA", unit);
+            ns.UpdateAuras(frame);
+        end
     elseif event == "UNIT_PORTRAIT_UPDATE" then
         local frame = unitframes[arg1];
         if frame and frame.portrait then
@@ -1130,13 +1164,22 @@ local function AUF_OnEvent(self, event, arg1, arg2, arg3)
             end
         end
     elseif event == "PLAYER_FOCUS_CHANGED" then
-        local frame = unitframes["focus"];
-        ns.registerCastBarEvents(frame.castbar, "focus");
+        local unit = "focus";
+        local frame = unitframes[unit];
+        ns.registerCastBarEvents(frame.castbar, unit);
+        if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
+            frame:RegisterUnitEvent("UNIT_AURA", unit);
+            ns.UpdateAuras(frame);
+        end
     elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
         for i = 1, MAX_BOSS_FRAMES do
             local unit = "boss" .. i;
             local frame = unitframes[unit];
             ns.registerCastBarEvents(frame.castbar, unit);
+            if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
+                frame:RegisterUnitEvent("UNIT_AURA", unit);
+                ns.UpdateAuras(frame);
+            end
         end
     end
 
@@ -1151,6 +1194,8 @@ AUF:RegisterEvent("UNIT_PORTRAIT_UPDATE");
 AUF:RegisterEvent("PORTRAITS_UPDATED");
 AUF:RegisterEvent("PLAYER_FOCUS_CHANGED");
 AUF:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
+AUF:RegisterUnitEvent("UNIT_TARGET", "target");
+AUF:RegisterEvent("PLAYER_TARGET_CHANGED");
 
 
 local DBMobj;

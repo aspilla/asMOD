@@ -357,10 +357,66 @@ local function ARCB_UtilSetBuff(frame, aura, currtime)
                 showlist_time = showinfo[1];
                 if showlist_time == 1 then
                     showinfo[1] = aura.duration * 0.3;
+                    showlist_time = showinfo[1];
                 end
             end
 
+            data.showlist_time = showlist_time;
+
             if showlist_time > 0 and aura.expirationTime - currtime < showlist_time then
+                bordercolor = { r = 1, g = 1, b = 1 };
+                if frame.hideCountdownNumbers == false then
+                    coolcolor = { r = 1, g = 0.3, b = 0.3 };
+                end
+            end
+        end
+    end
+
+    if (hidecool ~= data.hidecool) then
+        frame.cooldown:SetHideCountdownNumbers(hidecool);
+        data.hidecool = hidecool;
+    end
+
+    if hidecool == false and (data.coolcolor == nil or coolcolor.g ~= data.coolcolor.g) then
+        frame.cooldowntext:SetVertexColor(coolcolor.r, coolcolor.g, coolcolor.b);
+        data.coolcolor = coolcolor;
+    end
+
+    if data.bordercolor == nil or bordercolor.r ~= data.bordercolor.r then
+        frame.border:SetVertexColor(bordercolor.r, bordercolor.g, bordercolor.b);
+        data.bordercolor = bordercolor;
+    end
+end
+
+local function ACRB_CheckBuffButton(frame, currtime)
+    if not frame:IsShown() then
+        return;
+    end
+
+
+    local data = frame.data;
+    local enabled = data.expirationTime and data.expirationTime ~= 0;
+    local hidecool = true;
+    local coolcolor = { r = 0.8, g = 0.8, b = 1 };
+    local bordercolor = { r = 0, g = 0, b = 0 };
+
+
+    if enabled then
+        local remain = math.ceil(data.expirationTime - currtime);
+        if frame.hideCountdownNumbers == false then
+            if remain < ns.options.MinSectoShowCooldown then
+                hidecool = false;
+
+                if remain > 0 and remain < 10 then
+                    coolcolor = { r = 1, g = 1, b = 0.3 };
+                end
+            end
+        end
+
+        if ns.ACRB_ShowList then
+            local showlist_time = data.showlist_time;
+
+            if showlist_time and showlist_time > 0 and data.expirationTime - currtime < showlist_time then
                 bordercolor = { r = 1, g = 1, b = 1 };
                 if frame.hideCountdownNumbers == false then
                     coolcolor = { r = 1, g = 0.3, b = 0.3 };
@@ -464,6 +520,53 @@ local function ACRB_UtilSetDebuff(frame, aura, currtime)
     if hidecool == false and (data.coolcolor == nil or coolcolor.g ~= data.coolcolor.g) then
         frame.cooldowntext:SetVertexColor(coolcolor.r, coolcolor.g, coolcolor.b);
         data.coolcolor = coolcolor;
+    end
+end
+local function ACRB_CheckDebuffButton(frame, currtime)
+    local data = frame.data;
+    local enabled = data.expirationTime and data.expirationTime ~= 0;
+    local hidecool = true;
+    local coolcolor = { r = 0.8, g = 0.8, b = 1 };
+
+
+    if enabled then
+        local remain = math.ceil(data.expirationTime - currtime);
+
+        if frame.hideCountdownNumbers == false then
+            if remain < ns.options.MinSectoShowCooldown then
+                hidecool = false;
+
+                if remain > 0 and remain < 10 then
+                    coolcolor = { r = 1, g = 1, b = 0.3 };
+                end
+            end
+        end
+    end
+
+    if (hidecool ~= data.hidecool) then
+        frame.cooldown:SetHideCountdownNumbers(hidecool);
+        data.hidecool = hidecool;
+    end
+
+    if hidecool == false and (data.coolcolor == nil or coolcolor.g ~= data.coolcolor.g) then
+        frame.cooldowntext:SetVertexColor(coolcolor.r, coolcolor.g, coolcolor.b);
+        data.coolcolor = coolcolor;
+    end
+end
+
+ns.ACRB_CheckButtons = function(asframe)
+    local currtime = GetTime();
+    for i = 1, ns.ACRB_MAX_BUFFS do
+        local buffFrame = asframe.asbuffFrames[i];
+        ACRB_CheckBuffButton(buffFrame, currtime);
+    end
+    for i = 1, ns.ACRB_MAX_DEFENSIVE_BUFFS do
+        local buffFrame = asframe.defensivebuffFrames[i];
+        ACRB_CheckBuffButton(buffFrame, currtime);
+    end
+    for i = 1, ns.ACRB_MAX_DEBUFFS do
+        local debuffFrame = asframe.asdebuffFrames[i];
+        ACRB_CheckDebuffButton(debuffFrame, currtime);
     end
 end
 
@@ -603,42 +706,113 @@ local function ACRB_ParseAllAuras(asframe)
     ForEachAura(asframe.displayedUnit, ns.debufffilter, nil, HandleAura, true);
 end
 
-local function resetframe(frame)
-    if frame.buffFrames and frame.buffFrames[1]:GetAlpha() > 0 then
-        for i = 1, #frame.buffFrames do
-            frame.buffFrames[i]:SetAlpha(0);
-            frame.buffFrames[i]:Hide();
-        end
-    end
 
-    if frame.debuffFrames and frame.debuffFrames[1]:GetAlpha() > 0 then
-        for i = 1, #frame.debuffFrames do
-            frame.debuffFrames[i]:SetAlpha(0);
-            frame.debuffFrames[i]:Hide();
-        end
-    end
-
-    if frame.dispelDebuffFrames and frame.dispelDebuffFrames[1]:GetAlpha() > 0 then
-        for i = 1, #frame.dispelDebuffFrames do
-            frame.dispelDebuffFrames[i]:SetAlpha(0);
-            frame.dispelDebuffFrames[i]:Hide();
-        end
-    end
-end
-
-function ns.ACRB_UpdateAuras(asframe)
+function ns.ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
     local frame = asframe.frame;
 
-    if asframe.needtosetup then
-        ns.ACRB_setupFrame(asframe);
-    end
-
-    resetframe(frame);
-
-    ACRB_ParseAllAuras(asframe);
     local currtime = GetTime();
 
-    do
+    local debuffsChanged = false;
+    local buffsChanged = false;
+    local defensivesChanged = false;
+    local dispelsChanged = false;
+
+
+    if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate or asframe.buffs == nil then
+        ACRB_ParseAllAuras(asframe);
+
+        debuffsChanged = true;
+        buffsChanged = true;
+        defensivesChanged = true;
+        dispelsChanged = true;
+    else
+        if unitAuraUpdateInfo.addedAuras ~= nil then
+            for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
+                local type = ProcessAura(aura, asframe);
+                if type == AuraUpdateChangedType.Debuff then
+                    asframe.debuffs[aura.auraInstanceID] = aura;
+                    debuffsChanged = true;
+                elseif type == AuraUpdateChangedType.Buff then
+                    asframe.buffs[aura.auraInstanceID] = aura;
+                    buffsChanged = true;
+                elseif type == AuraUpdateChangedType.Defensive then
+                    asframe.defensivebuffs[aura.auraInstanceID] = aura;
+                    defensivesChanged = true;
+                elseif type == AuraUpdateChangedType.Dispel then
+                    asframe.debuffs[aura.auraInstanceID] = aura;
+                    debuffsChanged = true;
+                    asframe.dispels[aura.dispelName][aura.auraInstanceID] = aura;
+                    dispelsChanged = true;
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
+                if asframe.debuffs[auraInstanceID] ~= nil then
+                    local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(asframe.displayedUnit, auraInstanceID);
+                    local oldDebuffType = asframe.debuffs[auraInstanceID].debuffType;
+                    if newAura ~= nil then
+                        newAura.debuffType = oldDebuffType;
+                    end
+                    asframe.debuffs[auraInstanceID] = newAura;
+                    debuffsChanged = true;
+
+                    for _, tbl in pairs(asframe.dispels) do
+                        if tbl[auraInstanceID] ~= nil then
+                            tbl[auraInstanceID] = C_UnitAuras.GetAuraDataByAuraInstanceID(asframe.displayedUnit,
+                                auraInstanceID);
+                            dispelsChanged = true;
+                            break;
+                        end
+                    end
+                elseif asframe.buffs[auraInstanceID] ~= nil then
+                    local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(asframe.displayedUnit, auraInstanceID);
+                    local oldDebuffType = asframe.buffs[auraInstanceID].debuffType;
+                    local oldshowlist = asframe.buffs[auraInstanceID].showlist;
+                    if newAura ~= nil then
+                        newAura.debuffType = oldDebuffType;
+                        newAura.showlist = oldshowlist;
+                    end
+                    asframe.buffs[auraInstanceID] = newAura;
+                    buffsChanged = true;
+                elseif asframe.defensivebuffs[auraInstanceID] ~= nil then
+                    local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(asframe.displayedUnit, auraInstanceID);
+                    local oldDebuffType = asframe.defensivebuffs[auraInstanceID].debuffType;
+                    if newAura ~= nil then
+                        newAura.debuffType = oldDebuffType;
+                    end
+                    asframe.defensivebuffs[auraInstanceID] = newAura;
+                    defensivesChanged = true;
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
+                if asframe.debuffs[auraInstanceID] ~= nil then
+                    asframe.debuffs[auraInstanceID] = nil;
+                    debuffsChanged = true;
+
+                    for _, tbl in pairs(asframe.dispels) do
+                        if tbl[auraInstanceID] ~= nil then
+                            tbl[auraInstanceID] = nil;
+                            dispelsChanged = true;
+                            break;
+                        end
+                    end
+                elseif asframe.buffs[auraInstanceID] ~= nil then
+                    asframe.buffs[auraInstanceID] = nil;
+                    buffsChanged = true;
+                elseif asframe.defensivebuffs[auraInstanceID] ~= nil then
+                    asframe.defensivebuffs[auraInstanceID] = nil;
+                    defensivesChanged = true;
+                end
+            end
+        end
+    end
+
+    if debuffsChanged then
         local frameNum = 1;
         local maxDebuffs = ns.ACRB_MAX_DEBUFFS;
         asframe.debuffs:Iterate(function(auraInstanceID, aura)
@@ -664,7 +838,7 @@ function ns.ACRB_UpdateAuras(asframe)
         end
     end
 
-    do
+    if buffsChanged then
         local frameNum = 1;
         local frameIdx = 1;
         local frameIdx2 = 4;
@@ -724,7 +898,7 @@ function ns.ACRB_UpdateAuras(asframe)
         ns.UpdateNameColor(asframe.frame, nupdateColor);
     end
 
-    do
+    if defensivesChanged then
         local frameNum = 1;
         local maxBuffs = ns.ACRB_MAX_DEFENSIVE_BUFFS;
 
@@ -751,7 +925,7 @@ function ns.ACRB_UpdateAuras(asframe)
         end
     end
 
-    do
+    if dispelsChanged then
         local frameNum = 1;
         local showdispell = false;
 
@@ -768,7 +942,7 @@ function ns.ACRB_UpdateAuras(asframe)
 
                 local color = DebuffTypeColor[aura.dispelName] or DebuffTypeColor["none"];
 
-                if not asframe.isDispellAlert and ns.options.BorderDispelAlert then                    
+                if not asframe.isDispellAlert and ns.options.BorderDispelAlert then
                     ns.lib.PixelGlow_Start(asframe.frame, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1000);
                     asframe.isDispellAlert = true;
                 end

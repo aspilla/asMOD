@@ -536,22 +536,108 @@ local function UpdatePortraitFrames(frame, auraList)
     end
 end
 
-function ns.UpdateAuras(frame)
+function ns.UpdateAuras(frame, unitAuraUpdateInfo)
     local unit = frame.unit;
+    local debuffsChanged = false;
+    local buffsChanged = false;
+    local checkbuff = false;
+    local checkdebuff = false;
+
+
+    if not UnitExists(unit) then
+        return
+    end
+
 
     if frame.debuffupdate or frame.portraitdebuff then
-        ParseDebuffs(unit);
-    end
-    if frame.debuffupdate then
-        UpdateDebuffFrames(frame, activeDebuffs[unit]);
-    end
-
-    if frame.portraitdebuff then
-        UpdatePortraitFrames(frame, activeDebuffs[unit]);
+        if activeDebuffs[unit] == nil then
+            unitAuraUpdateInfo = nil;
+        end
+        checkdebuff = true;
     end
 
     if frame.buffupdate then
-        ParseBuffs(unit);
+        if activeBuffs[unit] == nil then
+            unitAuraUpdateInfo = nil;
+        end
+        checkbuff = true;
+    end
+
+
+    if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate then
+        if frame.debuffupdate or frame.portraitdebuff then
+            ParseDebuffs(unit);
+            debuffsChanged = true;
+        end
+        if frame.buffupdate then
+            ParseBuffs(unit);
+            buffsChanged = true;
+        end
+    else
+        if unitAuraUpdateInfo.addedAuras ~= nil then
+            for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
+                if aura.isHarmful and checkdebuff then
+                    local type = ProcessDebuffs(aura, unit);
+                    if type == AuraUpdateChangedType.Debuff then
+                        activeDebuffs[unit][aura.auraInstanceID] = aura;
+                        debuffsChanged = true;
+                    end
+                elseif aura.isHelpful and checkbuff then
+                    local type = ProcessBuffs(aura, unit);
+                    if type == AuraUpdateChangedType.Buff then
+                        activeBuffs[unit][aura.auraInstanceID] = aura;
+                        debuffsChanged = true;
+                    end
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
+                if checkdebuff and activeDebuffs[unit][auraInstanceID] ~= nil then
+                    local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
+                    local oldDebuffType = activeDebuffs[unit][auraInstanceID].debuffType;
+                    if newAura ~= nil then
+                        newAura.debuffType = oldDebuffType;
+                    end
+                    activeDebuffs[unit][auraInstanceID] = newAura;
+                    debuffsChanged = true;
+                elseif checkbuff and activeBuffs[unit][auraInstanceID] ~= nil then
+                    local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
+                    local oldDebuffType = activeBuffs[unit][auraInstanceID].debuffType;
+                    if newAura ~= nil then
+                        newAura.debuffType = oldDebuffType;
+                    end
+                    activeBuffs[unit][auraInstanceID] = newAura;
+                    buffsChanged = true;
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
+                if checkdebuff and activeDebuffs[unit][auraInstanceID] ~= nil then
+                    activeDebuffs[unit][auraInstanceID] = nil;
+                    debuffsChanged = true;
+                elseif checkbuff and activeBuffs[unit][auraInstanceID] ~= nil then
+                    activeBuffs[unit][auraInstanceID] = nil;
+                    buffsChanged = true;
+                end
+            end
+        end
+    end
+
+    if debuffsChanged then
+        if frame.debuffupdate then
+            UpdateDebuffFrames(frame, activeDebuffs[unit]);
+        end
+
+        if frame.portraitdebuff then
+            UpdatePortraitFrames(frame, activeDebuffs[unit]);
+        end
+    end
+
+    if buffsChanged then
         UpdateBuffFrames(frame, activeBuffs[unit]);
     end
 end

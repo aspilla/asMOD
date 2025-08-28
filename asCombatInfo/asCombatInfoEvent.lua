@@ -228,13 +228,46 @@ local function ACRB_ParseAllNameplateAuras(filter)
     return ret;
 end
 
-local function UpdateAuras(unit)
-    if unit == "target" then
-        ACRB_ParseAllAuras(unit, debufffilter);
-    elseif unit == "nameplate" then
+local function UpdateAuras(unit, auraUpdateInfo)
+    if unit == "nameplate" then
         ACRB_ParseAllNameplateAuras(debufffilter);
     else
-        ACRB_ParseAllAuras(unit, bufffilter);
+        local filter = bufffilter;
+        if unit == "target" then
+            filter = debufffilter;
+        end
+
+        if auraUpdateInfo == nil or auraUpdateInfo.isFullUpdate or aurafilter[unit] == nil then
+            ACRB_ParseAllAuras(unit, filter);
+        else
+            if auraUpdateInfo.addedAuras ~= nil then
+                for _, aura in ipairs(auraUpdateInfo.addedAuras) do
+                    if not C_UnitAuras.IsAuraFilteredOutByInstanceID(unit, aura.auraInstanceID, filter) then
+                        local type = ProcessAura(unit, aura, aurafilter[unit]);
+                        if type == AuraUpdateChangedType.Show then
+                            eventlib[unit].auralist[aura.auraInstanceID] = aura;
+                        end
+                    end
+                end
+            end
+
+            if auraUpdateInfo.updatedAuraInstanceIDs ~= nil then
+                for _, auraInstanceID in ipairs(auraUpdateInfo.updatedAuraInstanceIDs) do
+                    if eventlib[unit].auralist[auraInstanceID] ~= nil then
+                        local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
+                        eventlib[unit].auralist[auraInstanceID] = newAura;
+                    end
+                end
+            end
+
+            if auraUpdateInfo.removedAuraInstanceIDs ~= nil then
+                for _, auraInstanceID in ipairs(auraUpdateInfo.removedAuraInstanceIDs) do
+                    if eventlib[unit].auralist[auraInstanceID] ~= nil then
+                        eventlib[unit].auralist[auraInstanceID] = nil;
+                    end
+                end
+            end
+        end
     end
 end
 
@@ -256,9 +289,8 @@ end
 local function ABF_OnEvent(self, event, arg1, ...)
     if (event == "UNIT_AURA") then
         local unit = arg1;
-        if unit and (unit == "player" or unit == "pet") then
-            UpdateAuras(unit);
-        end
+        local auraUpdateInfo = ...;
+        UpdateAuras(unit, auraUpdateInfo);
     elseif (event == "UNIT_SPELLCAST_SUCCEEDED") then
         local arg2, spell = ...;
 
@@ -268,6 +300,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
     elseif (event == "PLAYER_TOTEM_UPDATE") then
         UpdateTotem();
     elseif (event == "PLAYER_TARGET_CHANGED") then
+        self:RegisterUnitEvent("UNIT_AURA", "player", "pet", "target");
         UpdateAuras("target");
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
         local spell = asGetSpellInfo(arg1);
@@ -305,6 +338,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
             end
         end
     elseif event == "PLAYER_ENTERING_WORLD" then
+        self:RegisterUnitEvent("UNIT_AURA", "player", "pet", "target");
         UpdateTotem();
         UpdateAuras("target");
         UpdateAuras("player");
@@ -323,7 +357,7 @@ local function OnUpdate2()
 end
 
 do
-    eventframe:RegisterUnitEvent("UNIT_AURA", "player", "pet");
+    eventframe:RegisterUnitEvent("UNIT_AURA", "player", "pet", "target");
     eventframe:RegisterEvent("PLAYER_TARGET_CHANGED");
     eventframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
     eventframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
@@ -334,7 +368,7 @@ do
     eventframe:SetScript("OnEvent", ABF_OnEvent)
 
     --주기적으로 Callback
-    C_Timer.NewTicker(0.2, OnUpdate);
+    -- C_Timer.NewTicker(0.2, OnUpdate);
     C_Timer.NewTicker(0.2, OnUpdate2);
 end
 

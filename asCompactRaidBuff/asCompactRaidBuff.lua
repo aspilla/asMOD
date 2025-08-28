@@ -138,20 +138,29 @@ local function IsTank(unit)
     return false;
 end
 
-local function extractUnitIdSuffix(unitId)
-    if not unitId then
-        return nil
+
+local function resetframe(frame)
+    if frame.buffFrames and frame.buffFrames[1]:GetAlpha() > 0 then
+        for i = 1, #frame.buffFrames do
+            frame.buffFrames[i]:SetAlpha(0);
+            frame.buffFrames[i]:Hide();
+        end
     end
 
-    local suffix = string.match(unitId, "%d+") -- Matches one or more digits    
-    if suffix then
-        return tonumber(suffix)                -- Convert the matched string to a number
-    else
-        return nil                             -- No numeric suffix found
+    if frame.debuffFrames and frame.debuffFrames[1]:GetAlpha() > 0 then
+        for i = 1, #frame.debuffFrames do
+            frame.debuffFrames[i]:SetAlpha(0);
+            frame.debuffFrames[i]:Hide();
+        end
+    end
+
+    if frame.dispelDebuffFrames and frame.dispelDebuffFrames[1]:GetAlpha() > 0 then
+        for i = 1, #frame.dispelDebuffFrames do
+            frame.dispelDebuffFrames[i]:SetAlpha(0);
+            frame.dispelDebuffFrames[i]:Hide();
+        end
     end
 end
-
-
 
 
 local max_y = 0;
@@ -282,7 +291,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
             f.hideCountdownNumbers = true;
         else
             f.hideCountdownNumbers = false;
-        end        
+        end
     end
 
     local strata = "LOW";
@@ -599,7 +608,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
 
 
     if manaBarUsedHeight == 0 then
-        if role then 
+        if role then
             if (role == "HEALER") and ns.options.BottomHealerManaBar then
                 asframe.checkManaType = Enum.PowerType.Mana;
             elseif (role == "TANK") and ns.options.BottomTankPowerBar then
@@ -611,9 +620,7 @@ function ns.ACRB_setupFrame(asframe, bupdate)
                     asframe.checkManaType = Enum.PowerType.RunicPower;
                 elseif englishClass == "DEMONHUNTER" then
                     asframe.checkManaType = Enum.PowerType.Fury;
-
                 end
-
             end
         end
     end
@@ -670,9 +677,23 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         ns.ACRB_UpdateAuras(asframe);
     end
 
+    asframe.onEvent = function(self, event, arg1, arg2)
+        ns.ACRB_UpdateAuras(self, arg2);
+    end
+
+    asframe:SetScript("OnEvent", asframe.onEvent);
+    asframe:RegisterUnitEvent("UNIT_AURA", asframe.unit);
+
     asframe.callback = function()
         if asframe.frame:IsShown() then
-            ns.ACRB_UpdateAuras(asframe);
+            if asframe.needtosetup then
+                ns.ACRB_setupFrame(asframe);
+            end
+
+            resetframe(frame);
+
+
+            ns.ACRB_CheckButtons(asframe);
         elseif asframe.timer then
             asframe.timer:Cancel();
         end
@@ -682,18 +703,13 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         asframe.timer:Cancel();
     end
 
-    local suffix = extractUnitIdSuffix(asframe.unit);
 
-    local updateRate = ns.UpdateRate + GetNumGroupMembers() / 1000;
+    local updateRate = ns.UpdateRate * 4;
 
-    if suffix then
-        updateRate = updateRate + (suffix / 2000);
-    end
 
     if asframe.frame:IsShown() then
-        asframe.timer = C_Timer.NewTicker(updateRate, asframe.callback);        
+        asframe.timer = C_Timer.NewTicker(updateRate, asframe.callback);
     end
-    
 end
 
 local function ACRB_disableDefault(frame)
@@ -767,7 +783,7 @@ local function ARCB_UpdateAll(frame)
                 end
 
                 if ns.asraid[name] == nil then
-                    ns.asraid[name] = {};
+                    ns.asraid[name] = CreateFrame("Frame");
                 end
 
                 ns.asraid[name].needtosetup = true;
@@ -779,7 +795,7 @@ local function ARCB_UpdateAll(frame)
                 ACRB_disableDefault(frame);
 
                 if ns.asparty[name] == nil then
-                    ns.asparty[name] = {};
+                    ns.asparty[name] = CreateFrame("Frame");
                 end
 
                 ns.asparty[name].needtosetup = true;
