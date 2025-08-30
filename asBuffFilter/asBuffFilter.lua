@@ -24,6 +24,14 @@ local UnitFrameBuffType = EnumUtil.MakeEnum(
 	"Normal"
 );
 
+local AuraUpdateChangedType = EnumUtil.MakeEnum(
+    "None",
+    "Debuff",
+    "Buff",
+    "PVP",
+    "Dispel"
+);
+
 local AuraFilters =
 {
 	Helpful = "HELPFUL",
@@ -349,13 +357,10 @@ local function ProcessAura(aura, unit)
 		end
 
 		if aura.buffType <= minshowtype then
-			activeBuffs[unit][aura.auraInstanceID] = aura;
-		end
-		return;
+			return AuraUpdateChangedType.Buff;
+		end		
 	end
-
-
-	return;
+	return AuraUpdateChangedType.None;
 end
 
 local function ParseAllAuras(unit)
@@ -367,7 +372,10 @@ local function ParseAllAuras(unit)
 	end
 
 	local function HandleAura(aura)
-		ProcessAura(aura, unit);
+		local type = ProcessAura(aura, unit);
+		if type == AuraUpdateChangedType.Buff then
+			activeBuffs[unit][aura.auraInstanceID] = aura;
+		end
 		return false;
 	end
 
@@ -653,9 +661,56 @@ local function UpdateAuraFrames(unit, auraList)
 end
 
 
-local function UpdateAuras(unit)
-	ParseAllAuras(unit);
-	UpdateAuraFrames(unit, activeBuffs[unit]);
+local function UpdateAuras(unit, unitAuraUpdateInfo)
+    local buffsChanged = false;
+
+    if activeBuffs[unit] == nil or unit == "player" then
+        unitAuraUpdateInfo = nil;
+    end
+
+    if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate then
+        ParseAllAuras(unit);
+        buffsChanged = true;
+    else
+        if unitAuraUpdateInfo.addedAuras ~= nil then
+            for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
+                if not C_UnitAuras.IsAuraFilteredOutByInstanceID(unit, aura.auraInstanceID, filter) then
+                    local type = ProcessAura(aura, unit);
+                    if type == AuraUpdateChangedType.Buff then
+                        activeBuffs[unit][aura.auraInstanceID] = aura;
+                        buffsChanged = true;
+                    end
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
+                if activeBuffs[unit][auraInstanceID] ~= nil then
+                    local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
+                    local oldBuffType = activeBuffs[unit][auraInstanceID].buffType;
+                    if newAura ~= nil then
+                        newAura.buffType = oldBuffType;
+                    end
+                    activeBuffs[unit][auraInstanceID] = newAura;
+                    buffsChanged = true;
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
+                if activeBuffs[unit][auraInstanceID] ~= nil then
+                    activeBuffs[unit][auraInstanceID] = nil;
+                    buffsChanged = true;
+                end
+            end
+        end
+    end
+
+    if buffsChanged then
+        UpdateAuraFrames(unit, activeBuffs[unit]);
+    end
 end
 
 
@@ -701,7 +756,8 @@ end
 
 local function ABF_OnEvent(self, event, arg1, ...)
 	if (event == "UNIT_AURA") then
-		UpdateAuras("player");
+		local info = ...;
+		UpdateAuras(arg1, info);
 	elseif (event == "PLAYER_TARGET_CHANGED") then
 		ABF_ClearFrame();
 		ABF_Resize();
@@ -714,13 +770,15 @@ local function ABF_OnEvent(self, event, arg1, ...)
 		UpdateAuras("player");
 		UpdateAuras("target");
 	elseif event == "PLAYER_REGEN_DISABLED" then
-		ABF:SetAlpha(ns.ABF_AlphaCombat);
+  		ABF:SetAlpha(ns.ABF_AlphaCombat);
 		ABF_Resize();
 		DumpCaches();
+		UpdateAuras("target");
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		ABF:SetAlpha(ns.ABF_AlphaNormal);
 		ABF_Resize();
 		DumpCaches();
+		UpdateAuras("target");
 	elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") and arg1 then
 		local spell_name = asGetSpellInfo(arg1);
 		overlayspell[arg1] = true;
@@ -743,7 +801,7 @@ end
 
 local function OnUpdate()
 	if (UnitExists("target")) then
-		UpdateAuras("target");
+		--UpdateAuras("target");
 	end
 end
 
@@ -949,7 +1007,7 @@ local function ABF_Init()
 
 
 	ABF:RegisterEvent("PLAYER_TARGET_CHANGED")
-	ABF:RegisterUnitEvent("UNIT_AURA", "player");
+	ABF:RegisterUnitEvent("UNIT_AURA", "player", "target");
 	ABF:RegisterEvent("PLAYER_ENTERING_WORLD");
 	ABF:RegisterEvent("PLAYER_LEAVING_WORLD");
 	ABF:RegisterEvent("PLAYER_REGEN_DISABLED");
