@@ -2,7 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rTargetCastBar
 ## Notes: Target Castingbar
-## Version : 250825
+## Version : 250830
 ## SavedVariablesPerCharacter: ATCB_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

@@ -115,7 +115,7 @@ end
 local MaxLevel = GetMaxLevelForExpansionLevel(10);
 
 local function hideCastBar(castBar)
-    local targetname   = castBar.targetname;
+    local targetname = castBar.targetname;
     castBar:SetValue(0);
     castBar:Hide();
     ns.lib.PixelGlow_Stop(castBar);
@@ -233,7 +233,7 @@ local function checkCasting(castBar, event)
     end
 end
 
-local function registerEvents(frame, unit)
+local function checkUnit(frame, unit)
     if not frame then
         return;
     end
@@ -249,6 +249,14 @@ local function registerEvents(frame, unit)
         end
     end
 
+    frame.failstart = nil;
+
+
+    checkCasting(frame, "NOTHING");
+end
+
+
+local function registerUnit(frame, unit)
     frame.unit = unit;
     frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
     frame:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
@@ -264,10 +272,6 @@ local function registerEvents(frame, unit)
     frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
     frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
     frame:RegisterUnitEvent("UNIT_TARGET", unit);
-    frame.failstart = nil;
-
-
-    checkCasting(frame, "NOTHING");
 end
 
 local function on_unit_event(self, event, ...)
@@ -275,16 +279,18 @@ local function on_unit_event(self, event, ...)
 end
 
 ATCB.targetCastBar:SetScript("OnEvent", on_unit_event);
+registerUnit(ATCB.targetCastBar, "target");
 ATCB.focusCastBar:SetScript("OnEvent", on_unit_event);
+registerUnit(ATCB.focusCastBar, "focus");
 
 local function ATCB_OnEvent(self, event, ...)
     if event == "PLAYER_TARGET_CHANGED" then
-        registerEvents(ATCB.targetCastBar, "target");
+        checkUnit(ATCB.targetCastBar, "target");
     elseif event == "PLAYER_FOCUS_CHANGED" then
-        registerEvents(ATCB.focusCastBar, "focus");
+        checkUnit(ATCB.focusCastBar, "focus");
     elseif event == "PLAYER_ENTERING_WORLD" then
-        registerEvents(ATCB.targetCastBar, "target");
-        registerEvents(ATCB.focusCastBar, "focus");
+        checkUnit(ATCB.targetCastBar, "target");
+        checkUnit(ATCB.focusCastBar, "focus");
     elseif event == "ADDON_LOADED" then
         local name = ...;
 
