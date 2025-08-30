@@ -544,67 +544,67 @@ local function ParseAllAuras(unit)
 end
 
 local function format_count(n)
-	local sign = ""
-	if n < 0 then
-		sign = "-"
-		n = -n
-	end
+    local sign = ""
+    if n < 0 then
+        sign = "-"
+        n = -n
+    end
 
-	if (n > 999999) then
-		n = (math.ceil(n / 1000000) .. "m");
-	elseif (n > 999) then
-		n = (math.ceil(n / 1000) .. "k");
-	end
+    if (n > 999999) then
+        n = (math.ceil(n / 1000000) .. "m");
+    elseif (n > 999) then
+        n = (math.ceil(n / 1000) .. "k");
+    end
 
-	return tostring(sign .. n)
+    return tostring(sign .. n)
 end
 
 local function SetDebuff(frame, icon, applications, expirationTime, duration, color, snapshot, alert, currtime, size,
                          points)
     local data = frame.data;
 
-	local count = 0;
-	local point = 0;
-	local bshowcount = false;
-	
+    local count = 0;
+    local point = 0;
+    local bshowcount = false;
+
     if (icon ~= data.icon) then
-		frame.icon:SetTexture(icon);
-		data = {};
-		data.icon = icon;
-		frame:Show();
-	end
+        frame.icon:SetTexture(icon);
+        data = {};
+        data.icon = icon;
+        frame:Show();
+    end
 
-	if applications and applications > 0 then
-		count = applications;
-	end
+    if applications and applications > 0 then
+        count = applications;
+    end
 
-	if points and points[1] and points[1] ~= 0 then
-		point = points[1];
-	end
+    if points and points[1] and points[1] ~= 0 then
+        point = points[1];
+    end
 
-	if count ~= data.count then
-		data.count = count;
-		if count > 0 then
-			bshowcount = true;
-			frame.count:Show();
-			frame.count:SetText(count);
-		else
-			frame.count:Hide();
-		end
-	end
-	
+    if count ~= data.count then
+        data.count = count;
+        if count > 0 then
+            bshowcount = true;
+            frame.count:Show();
+            frame.count:SetText(count);
+        else
+            frame.count:Hide();
+        end
+    end
+
     if bshowcount or count > 0 then
-		frame.point:Hide()
-	elseif point ~= data.point then
-		data.point = point;
+        frame.point:Hide()
+    elseif point ~= data.point then
+        data.point = point;
 
-		if point > 100 then
-			frame.point:SetText(format_count(point));
-			frame.point:Show();
-		else
-			frame.point:Hide();
-		end
-	end
+        if point > 100 then
+            frame.point:SetText(format_count(point));
+            frame.point:Show();
+        else
+            frame.point:Hide();
+        end
+    end
 
     if snapshot ~= data.snapshot then
         frame.snapshot:SetText(math.floor(snapshot * 100));
@@ -668,7 +668,6 @@ local function SetDebuff(frame, icon, applications, expirationTime, duration, co
         frame:SetHeight(size * 0.8);
         data.size = size;
     end
-
 end
 
 local function UpdateAuraFrames(unit, auraList, numAuras)
@@ -780,10 +779,57 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
     end
 end
 
-local function UpdateAuras(unit)
-    ParseAllAuras(unit);
-    local numDebuffs = math.min(ns.ADF_MAX_DEBUFF_SHOW, activeDebuffs[unit]:Size());
-    UpdateAuraFrames(unit, activeDebuffs[unit], numDebuffs);
+local function UpdateAuras(unit, unitAuraUpdateInfo)
+    local debuffsChanged = false;
+
+    if activeDebuffs[unit] == nil then
+        unitAuraUpdateInfo = nil;
+    end
+
+    if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate then
+        ParseAllAuras(unit);
+        debuffsChanged = true;
+    else
+        if unitAuraUpdateInfo.addedAuras ~= nil then
+            for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
+                if not C_UnitAuras.IsAuraFilteredOutByInstanceID(unit, aura.auraInstanceID, filter) then
+                    local type = ProcessAura(aura, unit);
+                    if type == AuraUpdateChangedType.Debuff then
+                        activeDebuffs[unit][aura.auraInstanceID] = aura;
+                        debuffsChanged = true;
+                    end
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
+                if activeDebuffs[unit][auraInstanceID] ~= nil then
+                    local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
+                    local oldDebuffType = activeDebuffs[unit][auraInstanceID].debuffType;
+                    if newAura ~= nil then
+                        newAura.debuffType = oldDebuffType;
+                    end
+                    activeDebuffs[unit][auraInstanceID] = newAura;
+                    debuffsChanged = true;
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
+                if activeDebuffs[unit][auraInstanceID] ~= nil then
+                    activeDebuffs[unit][auraInstanceID] = nil;
+                    debuffsChanged = true;
+                end
+            end
+        end
+    end
+
+    if debuffsChanged then
+        local numDebuffs = math.min(ns.ADF_MAX_DEBUFF_SHOW, activeDebuffs[unit]:Size());
+        UpdateAuraFrames(unit, activeDebuffs[unit], numDebuffs);
+    end
 end
 
 function ADF_ClearFrame()
@@ -826,7 +872,8 @@ end
 
 function ADF_OnEvent(self, event, arg1, ...)
     if (event == "UNIT_AURA") then
-        UpdateAuras("player");
+        local info = ...;
+        UpdateAuras(arg1, info);
     elseif (event == "PLAYER_TARGET_CHANGED") then
         ADF_ClearFrame();
         UpdateAuras("target");
@@ -909,7 +956,7 @@ local function CreatDebuffFrames(parent, bright)
         frame.point:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize - 3, "OUTLINE")
         frame.point:ClearAllPoints();
         frame.point:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2);
-        frame.point:SetTextColor(0,1,0);
+        frame.point:SetTextColor(0, 1, 0);
 
         frame.snapshot:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize - 1, "OUTLINE")
         frame.snapshot:ClearAllPoints();
@@ -982,7 +1029,7 @@ local function ADF_Init()
     end
 
     ADF:RegisterEvent("PLAYER_TARGET_CHANGED")
-    ADF:RegisterUnitEvent("UNIT_AURA", "player")
+    ADF:RegisterUnitEvent("UNIT_AURA", "player", "target")
     ADF:RegisterEvent("PLAYER_ENTERING_WORLD");
     ADF:RegisterEvent("PLAYER_REGEN_DISABLED");
     ADF:RegisterEvent("PLAYER_REGEN_ENABLED");
@@ -994,7 +1041,7 @@ local function ADF_Init()
     ADF:SetScript("OnEvent", ADF_OnEvent)
 
     --주기적으로 Callback
-    C_Timer.NewTicker(0.25, OnUpdate);
+    C_Timer.NewTicker(1, OnUpdate);
 end
 
 ADF_Init();
