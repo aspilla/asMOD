@@ -678,23 +678,23 @@ function ns.ACRB_setupFrame(asframe, bupdate)
     end
 
     asframe.onEvent = function(self, event, arg1, arg2)
-        ns.ACRB_UpdateAuras(self, arg2);
+        if UnitExists(arg1) and UnitIsUnit(self.displayedUnit, arg1) then
+            ns.ACRB_UpdateAuras(self, arg2);
+        end
     end
 
     asframe:SetScript("OnEvent", asframe.onEvent);
-    asframe:RegisterUnitEvent("UNIT_AURA", asframe.unit);
+    asframe:RegisterUnitEvent("UNIT_AURA", asframe.displayedUnit);
 
     asframe.callback = function()
         if asframe.frame:IsShown() then
             if asframe.needtosetup then
                 ns.ACRB_setupFrame(asframe);
             end
-
             resetframe(frame);
-
-
             ns.ACRB_CheckButtons(asframe);
         elseif asframe.timer then
+            asframe:UnregisterEvent("UNIT_AURA");
             asframe.timer:Cancel();
         end
     end

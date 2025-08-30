@@ -182,6 +182,7 @@ end
 
 ns.debufffilter = CreateFilterString(AuraFilters.Harmful);
 ns.bufffilter = CreateFilterString(AuraFilters.Helpful);
+ns.aurafilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.Helpful);
 
 local cachedVisualizationInfo = {};
 ns.hasValidPlayer = false;
@@ -728,22 +729,24 @@ function ns.ACRB_UpdateAuras(asframe, unitAuraUpdateInfo)
     else
         if unitAuraUpdateInfo.addedAuras ~= nil then
             for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
-                local type = ProcessAura(aura, asframe);
-                if type == AuraUpdateChangedType.Debuff then
-                    asframe.debuffs[aura.auraInstanceID] = aura;
-                    debuffsChanged = true;
-                elseif type == AuraUpdateChangedType.Buff then
-                    asframe.buffs[aura.auraInstanceID] = aura;
-                    buffsChanged = true;
-                elseif type == AuraUpdateChangedType.Defensive then
-                    asframe.defensivebuffs[aura.auraInstanceID] = aura;
-                    defensivesChanged = true;
-                elseif type == AuraUpdateChangedType.Dispel then
-                    asframe.debuffs[aura.auraInstanceID] = aura;
-                    debuffsChanged = true;
-                    asframe.dispels[aura.dispelName][aura.auraInstanceID] = aura;
-                    dispelsChanged = true;
-                end
+              --  if not C_UnitAuras.IsAuraFilteredOutByInstanceID(asframe.displayedUnit, aura.auraInstanceID, ns.aurafilter) then
+                    local type = ProcessAura(aura, asframe);
+                    if type == AuraUpdateChangedType.Debuff then
+                        asframe.debuffs[aura.auraInstanceID] = aura;
+                        debuffsChanged = true;
+                    elseif type == AuraUpdateChangedType.Buff then
+                        asframe.buffs[aura.auraInstanceID] = aura;
+                        buffsChanged = true;
+                    elseif type == AuraUpdateChangedType.Defensive then
+                        asframe.defensivebuffs[aura.auraInstanceID] = aura;
+                        defensivesChanged = true;
+                    elseif type == AuraUpdateChangedType.Dispel then
+                        asframe.debuffs[aura.auraInstanceID] = aura;
+                        debuffsChanged = true;
+                        asframe.dispels[aura.dispelName][aura.auraInstanceID] = aura;
+                        dispelsChanged = true;
+                    end
+              -- end
             end
         end
 
