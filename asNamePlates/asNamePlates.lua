@@ -16,6 +16,7 @@ local petcleaveIcon = CreateAtlasMarkup("WildBattlePetCapturable", 10, 10, 0, 0)
 local pettargetIcon = CreateAtlasMarkup("WildBattlePetCapturable", 10, 10, 0, 0, 255, 0, 0);
 local snapshotIconG = CreateAtlasMarkup("PlayerPartyBlip", 20, 20, 0, 0, 100, 255, 100);
 local snapshotIconR = CreateAtlasMarkup("PlayerPartyBlip", 20, 20, 0, 0, 255, 100, 100);
+local MAX_BOSS_QUERY = 5;
 
 ns.DangerousSpellList = {};
 
@@ -1300,7 +1301,8 @@ local function checkSpellCasting(self)
 end
 
 local function findQueryUnit(asframe)
-    for i = 1, MAX_BOSS_FRAMES do
+    asframe.query_unit = nil;
+    for i = 1, MAX_BOSS_QUERY do
         local unit = "boss" .. i;
         if UnitIsUnit(asframe.unit, unit) then
             asframe.query_unit = unit;
@@ -1960,7 +1962,7 @@ local function ANameP_OnEvent(self, event, ...)
     elseif event == "PLAYER_REGEN_ENABLED" then
         setupFriendlyPlates();
     elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
-        for i = 1, MAX_BOSS_FRAMES do
+        for i = 1, MAX_BOSS_QUERY do
             local unit = "boss" .. i;
             ns.UpdateEventAuras(unit);
         end
