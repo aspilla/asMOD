@@ -9,7 +9,7 @@
 asMOD is a collection of custom World of Warcraft addons designed to enhance your gameplay experience.
 
 ## asMOD Usage Videos (Raid/Healer)
-<iframe width="560" height="315" src="https://www.youtube.com/embed/I3w0knhvdNI?si=0YQp2vyCbzHj7ShW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/I3w0knhvdNI?si=316-CN0EnE5_cait" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## asMOD Usage Videos (M+)
 
