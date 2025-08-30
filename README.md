@@ -8,6 +8,14 @@
 
 asMOD is a collection of custom World of Warcraft addons designed to enhance your gameplay experience.
 
+## asMOD Usage Videos (Raid/Healer)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ZMfadTFqX0w?si=lSH2pVVUSq_X_fhW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## asMOD Usage Videos (M+)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/rKoBFTE6RRA?si=ruh-d-voWwQjDsE0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## asMOD Features
 
 *   **Enhanced UI:** Addresses shortcomings in the default UI and improves various aspects of gameplay.
@@ -18,15 +26,6 @@ asMOD is a collection of custom World of Warcraft addons designed to enhance you
     
 *   **Retail WoW Support:** Currently supports only the retail version of World of Warcraft.
     
-*   asMOD vs W/O asMOD FPS Comparison : asMOD is providing very similar game performance, compare to default UI.
-    
-
-<span><iframe width="560" height="315" src="https://www.youtube.com/embed/S--Ye0u9Rno?si=eT9WisYHsO24DUzH" frameborder="0" allowfullscreen="allowfullscreen"></iframe></span>
-
-*   asMOD M+ Large pull FPS performance : asMOD is providing +60 1% FPS when playing large pull fight.
-
-<span><iframe width="560" height="315" src="https://www.youtube.com/embed/H2Mr7yhzDnQ?si=K0HgCIi7tiuMz6j3" frameborder="0" allowfullscreen="allowfullscreen"></iframe></span>
-
 ## Cautions (asUnitFrame Related)
 
 The following errors may occur:
@@ -61,7 +60,7 @@ The following errors may occur:
 | asCompactRaidBuff     |Enhanced raid/party frames.                                                      |<a href="https://www.curseforge.com/wow/addons/ascompactraidbuff" target="_blank" rel="nofollow">Link</a> |
 | asDebuffFilter        |Displays debuffs centrally (Left Player, Right Target)                           |<a href="https://www.curseforge.com/wow/addons/asdebufffilter" target="_blank" rel="nofollow">Link</a> |
 | asDotFilter           |Displays key debuff durations on boss frames.                                    |<a href="https://www.curseforge.com/wow/addons/asdotfilter" target="_blank" rel="nofollow">Link</a> |
-| asFixChat             |[Git Only] Changes chat channels with Tab key, enables URL link clicks.          |<a href="https://github.com/aspilla/asMOD/blob/main/asFixChat/README.md" target="_blank" rel="nofollow">Link</a> |
+| asFixChat             |Changes chat channels with Tab key, enables URL link clicks.          |<a href="https://www.curseforge.com/wow/addons/asfixchat" target="_blank" rel="nofollow">Link</a> |
 | asFixCombatText       |Improved combat text display (left of character).                                |<a href="https://www.curseforge.com/wow/addons/asfixcombattext" target="_blank" rel="nofollow">Link</a> |
 | asFixHotkey           |Removes Korean hotkey display, simplifies display, hides macro names.            |<a href="https://www.curseforge.com/wow/addons/asfixhotkey" target="_blank" rel="nofollow">Link</a> |
 | asFixUnitFrame        |Improved default Unitframe functionality.                                        |<a href="https://www.curseforge.com/wow/addons/asfixunitframe" target="_blank" rel="nofollow">Link</a> |
@@ -101,11 +100,8 @@ The following errors may occur:
 
 **Note:** Addons not marked as "Git Only" can be downloaded and updated through CurseForge.
 
-## asMOD Usage Videos
 
-<span><iframe width="560" height="315" src="https://www.youtube.com/embed/-B5-L-bLVbg?si=4MyzBslrjLEBggX9" frameborder="0" allowfullscreen="allowfullscreen"></iframe></span>
-
-# asMOD
+# asMOD 
 
 asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입니다.
 
@@ -138,7 +134,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음입�
 | asCompactRaidBuff     |공격대/파티 창 강화                                                         |<a href="https://www.curseforge.com/wow/addons/ascompactraidbuff" target="_blank" rel="nofollow">링크</a> |
 | asDebuffFilter        |디버프를 중앙에 표시 (좌 Player, 우 대상)                                        |<a href="https://www.curseforge.com/wow/addons/asdebufffilter" target="_blank" rel="nofollow">링크</a> |
 | asDotFilter           |보스 프레임 주요 디버프 지속시간 표시                                               |<a href="https://www.curseforge.com/wow/addons/asdotfilter" target="_blank" rel="nofollow">링크</a> |
-| asFixChat             |[인벤 전용] 텝키로 으로 체팅 채널 변경, URL링크 클릭 기능                                |<a href="https://github.com/aspilla/asMOD/blob/main/asFixChat/README.md" target="_blank" rel="nofollow">링크</a> |
+| asFixChat             |텝키로 으로 체팅 채널 변경, URL링크 클릭 기능                                |<a href="https://www.curseforge.com/wow/addons/asfixchat" target="_blank" rel="nofollow">링크</a> |
 | asFixCombatText       |받은 피해량등 전투 메시지 표시 개선(케릭 좌측)                                         |<a href="https://www.curseforge.com/wow/addons/asfixcombattext" target="_blank" rel="nofollow">링크</a> |
 | asFixHotkey           |단축키 한글 표시 삭제 및 간략하게, 메크로명 안보이게                                      |<a href="https://www.curseforge.com/wow/addons/asfixhotkey" target="_blank" rel="nofollow">링크</a> |
 | asFixUnitFrame        |기본 Unitframe 기능 개선                                                  |<a href="https://www.curseforge.com/wow/addons/asfixunitframe" target="_blank" rel="nofollow">링크</a> |
