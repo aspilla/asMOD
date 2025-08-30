@@ -2,7 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rSummonTracker
 ## Notes: Tracks summons from combat log events.
-## Version: 250825_2
+## Version: 250830
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 

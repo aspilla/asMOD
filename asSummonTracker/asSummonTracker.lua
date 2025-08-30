@@ -310,6 +310,7 @@ end
 local direbeast_duration = 8;
 local direbeast_spells = {
     [459562] = true,
+    [459556] = true,
     [132764] = true,
     [122804] = true,
 }
