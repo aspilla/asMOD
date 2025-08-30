@@ -352,28 +352,30 @@ local function UpdateBuffFrames(frame, auraList)
     local unit = frame.unit;
     local curr_time = GetTime();
 
-    auraList:Iterate(
-        function(auraInstanceID, aura)
-            i = i + 1;
-            if i > #(frame.buffframes) then
-                return true;
-            end
+    if auraList then
+        auraList:Iterate(
+            function(auraInstanceID, aura)
+                i = i + 1;
+                if i > #(frame.buffframes) then
+                    return true;
+                end
 
-            local buffframe = parent.buffframes[i];
-            local alert = false;
+                local buffframe = parent.buffframes[i];
+                local alert = false;
 
-            buffframe.unit = unit;
-            buffframe.auraInstanceID = auraInstanceID;
+                buffframe.unit = unit;
+                buffframe.auraInstanceID = auraInstanceID;
 
-            if aura.debuffType == UnitFrameDebuffType.BossBuff then
-                alert = true;
-            end
+                if aura.debuffType == UnitFrameDebuffType.BossBuff then
+                    alert = true;
+                end
 
-            SetBuff(buffframe, aura.icon, aura.applications, aura.expirationTime, aura.duration, alert, curr_time);
+                SetBuff(buffframe, aura.icon, aura.applications, aura.expirationTime, aura.duration, alert, curr_time);
 
 
-            return false;
-        end);
+                return false;
+            end);
+    end
 
     for j = i + 1, #frame.buffframes do
         local buffframe = parent.buffframes[j];
@@ -438,34 +440,36 @@ local function UpdateDebuffFrames(frame, auraList)
     local unit = frame.unit;
     local curr_time = GetTime();
 
-    auraList:Iterate(
-        function(auraInstanceID, aura)
-            i = i + 1;
-            if i > #(frame.debuffframes) then
-                return true;
-            end
+    if auraList then
+        auraList:Iterate(
+            function(auraInstanceID, aura)
+                i = i + 1;
+                if i > #(frame.debuffframes) then
+                    return true;
+                end
 
-            local debuffframe = parent.debuffframes[i];
+                local debuffframe = parent.debuffframes[i];
 
-            debuffframe.unit = unit;
-            debuffframe.auraInstanceID = auraInstanceID;
+                debuffframe.unit = unit;
+                debuffframe.auraInstanceID = auraInstanceID;
 
-            local color = nil;
-            -- set debuff type color
-            if (aura.dispelName) then
-                color = DebuffTypeColor[aura.dispelName];
-            else
-                color = DebuffTypeColor["none"];
-            end
+                local color = nil;
+                -- set debuff type color
+                if (aura.dispelName) then
+                    color = DebuffTypeColor[aura.dispelName];
+                else
+                    color = DebuffTypeColor["none"];
+                end
 
-            local frameBorder = debuffframe.border;
-            if aura.nameplateShowAll then
-                color = { r = 0.3, g = 0.3, b = 0.3 };
-            end
-            SetDebuff(debuffframe, aura.icon, aura.applications, aura.expirationTime, aura.duration, color, curr_time);
+                local frameBorder = debuffframe.border;
+                if aura.nameplateShowAll then
+                    color = { r = 0.3, g = 0.3, b = 0.3 };
+                end
+                SetDebuff(debuffframe, aura.icon, aura.applications, aura.expirationTime, aura.duration, color, curr_time);
 
-            return false;
-        end);
+                return false;
+            end);
+    end
 
     for j = i + 1, #frame.debuffframes do
         local debuffframe = parent.debuffframes[j];
@@ -485,48 +489,51 @@ local function UpdatePortraitFrames(frame, auraList)
     local bshowdebuff = false;
     local curr_time = GetTime();
 
-    auraList:Iterate(
-        function(auraInstanceID, aura)
-            if aura.nameplateShowAll and aura.duration > 0 and aura.duration <= CONFIG_MAX_COOL then
-                local frame = parent.portrait;
 
-                frame.unit = unit;
-                frame.auraInstanceID = aura.auraInstanceID;
+    if auraList then
+        auraList:Iterate(
+            function(auraInstanceID, aura)
+                if aura.nameplateShowAll and aura.duration > 0 and aura.duration <= CONFIG_MAX_COOL then
+                    local frame = parent.portrait;
 
-                -- set the icon
-                local frameIcon = frame.icon
-                frameIcon:SetTexture(aura.icon);
-                frameIcon:Show();
-                -- set the count
-                local frameCount = frame.count;
-                local alert = false;
+                    frame.unit = unit;
+                    frame.auraInstanceID = aura.auraInstanceID;
 
-                -- Handle cooldowns
-                local frameCooldown = frame.cooldown;
+                    -- set the icon
+                    local frameIcon = frame.icon
+                    frameIcon:SetTexture(aura.icon);
+                    frameIcon:Show();
+                    -- set the count
+                    local frameCount = frame.count;
+                    local alert = false;
 
-                if (aura.applications and aura.applications > 1) then
-                    frameCount:SetText(aura.applications);
-                    frameCount:Show();
+                    -- Handle cooldowns
+                    local frameCooldown = frame.cooldown;
+
+                    if (aura.applications and aura.applications > 1) then
+                        frameCount:SetText(aura.applications);
+                        frameCount:Show();
+                    else
+                        frameCount:Hide();
+                    end
+
+                    if (aura.duration > 0) then
+                        frameCooldown:Show();
+                        asCooldownFrame_Set(frameCooldown, aura.expirationTime - aura.duration, aura.duration,
+                            aura.duration > 0,
+                            true);
+                        frameCooldown:SetHideCountdownNumbers(false);
+                    else
+                        frameCooldown:Hide();
+                    end
+
+                    bshowdebuff = true;
+                    return true;
                 else
-                    frameCount:Hide();
+                    return false;
                 end
-
-                if (aura.duration > 0) then
-                    frameCooldown:Show();
-                    asCooldownFrame_Set(frameCooldown, aura.expirationTime - aura.duration, aura.duration,
-                        aura.duration > 0,
-                        true);
-                    frameCooldown:SetHideCountdownNumbers(false);
-                else
-                    frameCooldown:Hide();
-                end
-
-                bshowdebuff = true;
-                return true;
-            else
-                return false;
-            end
-        end);
+            end);
+    end
 
     if bshowdebuff == false then
         frame.portrait.icon:Hide();
@@ -536,18 +543,15 @@ local function UpdatePortraitFrames(frame, auraList)
     end
 end
 
+
+local aurafilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.Helpful);
+
 function ns.UpdateAuras(frame, unitAuraUpdateInfo)
     local unit = frame.unit;
     local debuffsChanged = false;
     local buffsChanged = false;
     local checkbuff = false;
     local checkdebuff = false;
-
-
-    if not UnitExists(unit) then
-        return
-    end
-
 
     if frame.debuffupdate or frame.portraitdebuff then
         if activeDebuffs[unit] == nil then
@@ -563,30 +567,33 @@ function ns.UpdateAuras(frame, unitAuraUpdateInfo)
         checkbuff = true;
     end
 
-
     if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate then
-        if frame.debuffupdate or frame.portraitdebuff then
+        if checkdebuff then
             ParseDebuffs(unit);
             debuffsChanged = true;
         end
-        if frame.buffupdate then
+        if checkbuff then
             ParseBuffs(unit);
             buffsChanged = true;
         end
     else
         if unitAuraUpdateInfo.addedAuras ~= nil then
             for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
-                if aura.isHarmful and checkdebuff then
-                    local type = ProcessDebuffs(aura, unit);
-                    if type == AuraUpdateChangedType.Debuff then
-                        activeDebuffs[unit][aura.auraInstanceID] = aura;
-                        debuffsChanged = true;
+                if aura.isHarmful then
+                    if checkdebuff then
+                        local type = ProcessDebuffs(aura, unit);
+                        if type == AuraUpdateChangedType.Debuff then
+                            activeDebuffs[unit][aura.auraInstanceID] = aura;
+                            debuffsChanged = true;
+                        end
                     end
-                elseif aura.isHelpful and checkbuff then
-                    local type = ProcessBuffs(aura, unit);
-                    if type == AuraUpdateChangedType.Buff then
-                        activeBuffs[unit][aura.auraInstanceID] = aura;
-                        debuffsChanged = true;
+                elseif aura.isHelpful then
+                    if checkbuff then
+                        local type = ProcessBuffs(aura, unit);
+                        if type == AuraUpdateChangedType.Buff then
+                            activeBuffs[unit][aura.auraInstanceID] = aura;
+                            debuffsChanged = true;
+                        end
                     end
                 end
             end

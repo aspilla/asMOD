@@ -130,11 +130,6 @@ function ns.registerCastBarEvents(frame, unit)
     if not frame then
         return;
     end
-
-    if not UnitExists(unit) then
-        frame:Hide()
-        return;
-    end
     
     frame.unit = unit;
     frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
@@ -152,7 +147,6 @@ function ns.registerCastBarEvents(frame, unit)
     frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
     frame:RegisterUnitEvent("UNIT_TARGET", unit);
     frame.failstart = nil;
-
 
     checkCasting(frame, "NOTHING");
 end

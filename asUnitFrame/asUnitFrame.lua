@@ -392,11 +392,9 @@ local function updateUnit(frame)
         frame.guid = UnitGUID(unit);
     end
 
-    if ns.options.OffPortraitDebuffOnRaid and (unit == "target" or unit == "focus") then
-        if israid then
-            frame.portraitdebuff = false;
-        else
-            frame.portraitdebuff = true;
+    if unit == "targettarget" then
+        if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
+            ns.UpdateAuras(frame);
         end
     end
 end
@@ -980,7 +978,9 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     end
 
     if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
-        frame:RegisterUnitEvent("UNIT_AURA", unit);
+        if unit ~= "targettarget" then
+            frame:RegisterUnitEvent("UNIT_AURA", unit);
+        end
     end
 
     frame:SetScript("OnEvent", onUnitEvent);
@@ -1123,6 +1123,19 @@ HideDefaults();
 local bfirst = true;
 local AUF = CreateFrame("Frame")
 
+local function checkFrameAuras(unit)
+    local frame = unitframes[unit];
+    if frame and frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
+        ns.UpdateAuras(frame);
+    end
+end
+local function setPortraitDebuff(unit, value)
+    local frame = unitframes[unit];
+    if frame then
+        frame.portraitdebuff = value;
+    end
+end
+
 local function AUF_OnEvent(self, event, arg1, arg2, arg3)
     if bfirst then
         Init();
@@ -1138,29 +1151,25 @@ local function AUF_OnEvent(self, event, arg1, arg2, arg3)
         if isInstance and instanceType == "raid" then
             israid = true;
         end
+
+        if ns.options.OffPortraitDebuffOnRaid and ns.options.ShowPortrait then
+            if israid then
+                setPortraitDebuff("target", false);
+                setPortraitDebuff("focus", false);
+            else
+                setPortraitDebuff("target", true);
+                setPortraitDebuff("focus", true);
+            end
+        end
     elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
         ns.DumpCaches();
+        checkFrameAuras("target");
+        checkFrameAuras("targettarget");
     elseif event == "UNIT_TARGET" then
-        local unit = "targettarget";
-        local frame = unitframes[unit];
-        if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
-            frame:RegisterUnitEvent("UNIT_AURA", unit);
-            ns.UpdateAuras(frame);
-        end
+        checkFrameAuras("targettarget")
     elseif event == "PLAYER_TARGET_CHANGED" then
-        local unit = "target";
-        self:RegisterUnitEvent("UNIT_TARGET", unit);
-        local frame = unitframes[unit];
-        if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
-            frame:RegisterUnitEvent("UNIT_AURA", unit);
-            ns.UpdateAuras(frame);
-        end
-        local unit = "targettarget";
-        local frame = unitframes[unit];
-        if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
-            frame:RegisterUnitEvent("UNIT_AURA", unit);
-            ns.UpdateAuras(frame);
-        end
+        checkFrameAuras("target");
+        checkFrameAuras("targettarget");
     elseif event == "UNIT_PORTRAIT_UPDATE" then
         local frame = unitframes[arg1];
         if frame and frame.portrait then
@@ -1173,22 +1182,11 @@ local function AUF_OnEvent(self, event, arg1, arg2, arg3)
             end
         end
     elseif event == "PLAYER_FOCUS_CHANGED" then
-        local unit = "focus";
-        local frame = unitframes[unit];
-        ns.registerCastBarEvents(frame.castbar, unit);
-        if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
-            frame:RegisterUnitEvent("UNIT_AURA", unit);
-            ns.UpdateAuras(frame);
-        end
+        checkFrameAuras("focus");
     elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
         for i = 1, MAX_BOSS_FRAMES do
             local unit = "boss" .. i;
-            local frame = unitframes[unit];
-            ns.registerCastBarEvents(frame.castbar, unit);
-            if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
-                frame:RegisterUnitEvent("UNIT_AURA", unit);
-                ns.UpdateAuras(frame);
-            end
+            checkFrameAuras(unit);
         end
     end
 
