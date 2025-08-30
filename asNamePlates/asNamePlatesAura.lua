@@ -245,7 +245,8 @@ local function ParseAllAuras(unit)
     end
 end
 
-function ns.UpdateAuras(unit)
+function ns.getAuras(unit)
+    
     local reaction = UnitReaction("player", unit);
     if reaction and reaction <= 4 then
         if auraDatas[unit] == nil then
@@ -270,4 +271,89 @@ function ns.UpdateAuras(unit)
 
     ParseAllAuras(unit);
     return auraDatas[unit];
+end
+
+function ns.getAurasFromQ(unit)
+    
+    local reaction = UnitReaction("player", unit);
+    if reaction and reaction <= 4 then
+        if auraDatas[unit] == nil then
+            auraDatas[unit] = {};
+        end
+
+        auraDatas[unit].bufffilter = CreateFilterString(AuraFilters.Helpful);
+        auraDatas[unit].debufffilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.IncludeNameplateOnly);
+        auraDatas[unit].type = 1;
+    else
+        return nil;
+    end
+
+    return auraDatas[unit];
+end
+
+function ns.UpdateEventAuras(unit, unitAuraUpdateInfo)
+    if auraDatas[unit] == nil then
+        auraDatas[unit] = {};
+        unitAuraUpdateInfo = nil;
+    end
+
+    local auraData = auraDatas[unit];
+
+    if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate then
+        local reaction = UnitReaction("player", unit);
+        if reaction and reaction <= 4 then
+            auraDatas[unit].bufffilter = CreateFilterString(AuraFilters.Helpful);
+            auraDatas[unit].debufffilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.IncludeNameplateOnly);
+            auraDatas[unit].type = 1;
+        else
+            return nil;
+        end
+        ParseAllAuras(unit);
+    else
+        if unitAuraUpdateInfo.addedAuras ~= nil then
+            for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
+                if aura.isHarmful then
+                    local type = ProcessAura(aura, unit, auraData.type);
+                    if type == AuraUpdateChangedType.Debuff then
+                        auraData.debuffs[aura.auraInstanceID] = aura;
+                    end
+                elseif aura.isHelpful then
+                    local type = ProcessAura(aura, unit, auraData.type);
+                    if type == AuraUpdateChangedType.Buff then
+                        auraData.buffs[aura.auraInstanceID] = aura;
+                    end
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
+                if auraData.debuffs[auraInstanceID] ~= nil then
+                    local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
+                    local oldDebuffType = auraData.debuffs[auraInstanceID].debuffType;
+                    if newAura ~= nil then
+                        newAura.debuffType = oldDebuffType;
+                    end
+                    auraData.debuffs[auraInstanceID] = newAura;
+                elseif auraData.buffs[auraInstanceID] ~= nil then
+                    local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
+                    local oldDebuffType = auraData.buffs[auraInstanceID].debuffType;
+                    if newAura ~= nil then
+                        newAura.debuffType = oldDebuffType;
+                    end
+                    auraData.buffs[auraInstanceID] = newAura;
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
+                if auraData.debuffs[auraInstanceID] ~= nil then
+                    auraData.debuffs[auraInstanceID] = nil;
+                elseif auraData.buffs[auraInstanceID] ~= nil then
+                    auraData.buffs[auraInstanceID] = nil;
+                end
+            end
+        end
+    end
 end

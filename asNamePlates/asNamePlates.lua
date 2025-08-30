@@ -247,6 +247,7 @@ local function updateAuras(self)
     local unit = self.unit;
     local guid = self.guid;
 
+
     if not self.checkaura then
         self:Hide();
         return;
@@ -263,8 +264,13 @@ local function updateAuras(self)
     end
 
 
+    if self.query_unit then
+        auraData = ns.getAurasFromQ(self.query_unit);
+    else
 
-    auraData = ns.UpdateAuras(unit);
+        auraData = ns.getAuras(unit);
+    end
+
 
     if auraData and auraData.type == 2 then
         auraData.buffs:Iterate(function(auraInstanceID, aura)
@@ -1293,11 +1299,23 @@ local function checkSpellCasting(self)
     end
 end
 
+local function findQueryUnit(asframe)
+    for i = 1, MAX_BOSS_FRAMES do
+        local unit = "boss" .. i;
+        if UnitIsUnit(asframe.unit, unit) then
+            asframe.query_unit = unit;
+            break;
+        end
+    end
+end
+
 local function asNamePlates_OnEvent(self, event, ...)
     if (event == "PLAYER_TARGET_CHANGED") then
         updateTargetNameP(self);
         updateHealthText(self);
         updatePower(self);
+    elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
+        findQueryUnit(self);
     else
         checkSpellCasting(self);
         updateHealthbarColor(self);
@@ -1349,15 +1367,7 @@ local function removeUnit(namePlateUnitToken)
         asframe.BarColor:Hide();
 
         asframe:Hide();
-        asframe:UnregisterEvent("PLAYER_TARGET_CHANGED");
-        asframe:UnregisterEvent("UNIT_SPELLCAST_START");
-        asframe:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
-        asframe:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-        asframe:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
-        asframe:UnregisterEvent("UNIT_SPELLCAST_DELAYED");
-        asframe:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
-        asframe:UnregisterEvent("UNIT_SPELLCAST_STOP");
-        asframe:UnregisterEvent("UNIT_SPELLCAST_FAILED");
+        asframe:UnregisterAllEvents();
         asframe:SetScript("OnEvent", nil);
 
         if asframe.timer then
@@ -1467,15 +1477,7 @@ local function addNamePlate(namePlateFrameBase)
     asframe.partydealer = false;
     asframe.debuffColor = 0;
 
-    asframe:UnregisterEvent("PLAYER_TARGET_CHANGED");
-    asframe:UnregisterEvent("UNIT_SPELLCAST_START");
-    asframe:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START");
-    asframe:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-    asframe:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED");
-    asframe:UnregisterEvent("UNIT_SPELLCAST_DELAYED");
-    asframe:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
-    asframe:UnregisterEvent("UNIT_SPELLCAST_STOP");
-    asframe:UnregisterEvent("UNIT_SPELLCAST_FAILED");
+    asframe:UnregisterAllEvents();
     asframe:SetScript("OnEvent", nil);
 
     local Size = ns.ANameP_AggroSize;
@@ -1576,6 +1578,7 @@ local function addNamePlate(namePlateFrameBase)
     if not UnitIsPlayer(unit) then
         asframe:SetScript("OnEvent", asNamePlates_OnEvent);
         asframe:RegisterEvent("PLAYER_TARGET_CHANGED");
+        asframe:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
         asframe:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
         asframe:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
         asframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit);
@@ -1584,6 +1587,8 @@ local function addNamePlate(namePlateFrameBase)
         asframe:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
         asframe:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
         asframe:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
+
+        findQueryUnit(asframe);
     end
 
     local orig_width = healthbar:GetWidth();
@@ -1732,7 +1737,6 @@ local function addNamePlate(namePlateFrameBase)
     end
 
 
-
     asframe.automarkcolor = nil;
     if ns.options.ANameP_AutoMarker and isinstance and bloadedAutoMarker and asAutoMarkerF then
         local mobtype = asAutoMarkerF.IsAutoMarkerMob(unit);
@@ -1846,6 +1850,15 @@ local function setupFriendlyPlates()
     end
 end
 
+local auraframe = CreateFrame("Frame");
+
+local function onAuraEvent(self, event, ...)
+    local unit, info = ...;
+    ns.UpdateEventAuras(unit, info)
+end
+auraframe:RegisterUnitEvent("UNIT_AURA", "boss1", "boss2", "boss3", "boss4", "boss4");
+auraframe:SetScript("OnEvent", onAuraEvent)
+
 local function ANameP_OnEvent(self, event, ...)
     local arg1 = ...;
 
@@ -1946,6 +1959,11 @@ local function ANameP_OnEvent(self, event, ...)
         updateTankerList();
     elseif event == "PLAYER_REGEN_ENABLED" then
         setupFriendlyPlates();
+    elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
+        for i = 1, MAX_BOSS_FRAMES do
+            local unit = "boss" .. i;
+            ns.UpdateEventAuras(unit);
+        end
     elseif event == "UNIT_PET" then
         self.petGUID = UnitGUID("pet");
     end
@@ -2021,6 +2039,7 @@ local function initAddon()
     ANameP:RegisterEvent("GROUP_ROSTER_UPDATE");
     ANameP:RegisterEvent("PLAYER_ROLES_ASSIGNED");
     ANameP:RegisterEvent("PLAYER_REGEN_ENABLED");
+    ANameP:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
     ANameP:RegisterUnitEvent("UNIT_PET", "player");
 
     ANameP:SetScript("OnEvent", ANameP_OnEvent)
