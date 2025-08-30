@@ -1852,14 +1852,6 @@ local function setupFriendlyPlates()
     end
 end
 
-local auraframe = CreateFrame("Frame");
-
-local function onAuraEvent(self, event, ...)
-    local unit, info = ...;
-    ns.UpdateEventAuras(unit, info)
-end
-auraframe:RegisterUnitEvent("UNIT_AURA", "boss1", "boss2", "boss3", "boss4", "boss4");
-auraframe:SetScript("OnEvent", onAuraEvent)
 
 local function ANameP_OnEvent(self, event, ...)
     local arg1 = ...;

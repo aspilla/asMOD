@@ -357,3 +357,12 @@ function ns.UpdateEventAuras(unit, unitAuraUpdateInfo)
         end
     end
 end
+
+local auraframe = CreateFrame("Frame");
+
+local function onAuraEvent(self, event, ...)
+    local unit, info = ...;
+    ns.UpdateEventAuras(unit, info)
+end
+auraframe:RegisterUnitEvent("UNIT_AURA", "boss1", "boss2", "boss3", "boss4", "boss5");
+auraframe:SetScript("OnEvent", onAuraEvent)
