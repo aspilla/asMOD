@@ -5,6 +5,7 @@ eventframe:Hide();
 
 local eventlib = {};
 local aurafilter = {};
+local aurafilterbutton = {};
 local eventfilter = {};
 local actionfilter = {};
 local totemfilter = {};
@@ -237,8 +238,11 @@ local function UpdateAuras(unit, auraUpdateInfo)
             filter = debufffilter;
         end
 
+        local bupdate = false;
+
         if auraUpdateInfo == nil or auraUpdateInfo.isFullUpdate or aurafilter[unit] == nil then
             ACRB_ParseAllAuras(unit, filter);
+            bupdate = true;
         else
             if auraUpdateInfo.addedAuras ~= nil then
                 for _, aura in ipairs(auraUpdateInfo.addedAuras) do
@@ -246,6 +250,7 @@ local function UpdateAuras(unit, auraUpdateInfo)
                         local type = ProcessAura(unit, aura, aurafilter[unit]);
                         if type == AuraUpdateChangedType.Show then
                             eventlib[unit].auralist[aura.auraInstanceID] = aura;
+                            bupdate = true;
                         end
                     end
                 end
@@ -256,6 +261,7 @@ local function UpdateAuras(unit, auraUpdateInfo)
                     if eventlib[unit].auralist[auraInstanceID] ~= nil then
                         local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
                         eventlib[unit].auralist[auraInstanceID] = newAura;
+                        bupdate = true;
                     end
                 end
             end
@@ -264,7 +270,14 @@ local function UpdateAuras(unit, auraUpdateInfo)
                 for _, auraInstanceID in ipairs(auraUpdateInfo.removedAuraInstanceIDs) do
                     if eventlib[unit].auralist[auraInstanceID] ~= nil then
                         eventlib[unit].auralist[auraInstanceID] = nil;
+                        bupdate = true;
                     end
+                end
+            end
+
+            if bupdate and aurafilterbutton[unit] then
+                for _, button in pairs(aurafilterbutton[unit]) do
+                    button:updateAll();
                 end
             end
         end
@@ -277,8 +290,6 @@ local function UpdateTotem()
 
     for slot = 1, MAX_TOTEMS do
         local haveTotem, name, start, duration, icon = GetTotemInfo(slot);
-        --print (icon);
-        --print (name);
         if haveTotem and (totemfilter[name] or totemfilter[icon]) then
             tinsert(eventlib.totemlist, { name, start, duration, icon })
             trigger = true;
@@ -309,6 +320,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
             local spellnow = asGetSpellInfo(spellorg);
             if spell == spellnow or spell == spellorg then
                 button.alert = true;
+                button:updateAll();
             end
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
@@ -317,6 +329,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
             local spellnow = asGetSpellInfo(spellorg);
             if spell == spellnow or spell == spellorg then
                 button.alert = false;
+                button:updateAll();
             end
         end
     elseif event == "ACTION_RANGE_CHECK_UPDATE" then
@@ -334,6 +347,7 @@ local function ABF_OnEvent(self, event, arg1, ...)
                     else
                         button.inRange = true
                     end
+                    button:updateAll();
                 end
             end
         end
@@ -347,10 +361,6 @@ local function ABF_OnEvent(self, event, arg1, ...)
     end
 end
 
-
-local function OnUpdate()
-    UpdateAuras("target");
-end
 
 local function OnUpdate2()
     UpdateAuras("nameplate");
@@ -368,7 +378,6 @@ do
     eventframe:SetScript("OnEvent", ABF_OnEvent)
 
     --주기적으로 Callback
-    -- C_Timer.NewTicker(0.2, OnUpdate);
     C_Timer.NewTicker(0.2, OnUpdate2);
 end
 
@@ -378,17 +387,31 @@ function ns.eventhandler.init()
     actionfilter = {};
     totemfilter = {};
     castfilter = {};
+    aurafilterbutton = {};
 end
 
-function ns.eventhandler.registerAura(unit, spell, count)
+function ns.eventhandler.registerAura(unit, spell, button, count)
     if unit == nil then
         return;
     end
     if aurafilter[unit] == nil then
         aurafilter[unit] = {};
+        aurafilterbutton[unit] = {};
     end
 
     aurafilter[unit][spell] = true;
+    if aurafilterbutton[unit] and button then
+        local bfound = false;
+        for _, button_in in pairs(aurafilterbutton[unit]) do
+            if button_in == button then
+                bfound = true;
+                break;
+            end
+        end
+        if bfound == false then
+            table.insert(aurafilterbutton[unit], button);
+        end
+    end
 
     if unit == "nameplate" then
         if count then

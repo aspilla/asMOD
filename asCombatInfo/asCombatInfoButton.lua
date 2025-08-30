@@ -130,12 +130,12 @@ function ns.Button:initButton()
             end
             if self.type == ns.EnumButtonType.Debuff or self.type == ns.EnumButtonType.DebuffOnly then
                 ACI_Debuff_list[name] = true;
-                ns.eventhandler.registerAura(self.unit, name);
+                ns.eventhandler.registerAura(self.unit, name, self);
                 if self.checkplatecount then
-                    ns.eventhandler.registerAura("nameplate", name, self.checkplatecount);
+                    ns.eventhandler.registerAura("nameplate", name, self.checkplatecount, self);
                 end
             elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then
-                ns.eventhandler.registerAura(self.unit, name);
+                ns.eventhandler.registerAura(self.unit, name, self);
                 ACI_Buff_list[name] = true;
             end
 
@@ -798,7 +798,7 @@ function ns.Button:showButton()
         end
     end
 
-    if bshowcount then 
+    if bshowcount then
         data.point = nil;
         frame.point:Hide()
     elseif self.point ~= data.point then
@@ -978,23 +978,23 @@ function ns.Button:init(config, frame)
     end
     if self.type == ns.EnumButtonType.Debuff or self.type == ns.EnumButtonType.DebuffOnly then
         ACI_Debuff_list[self.spell] = true;
-        ns.eventhandler.registerAura(self.unit, self.spell);
+        ns.eventhandler.registerAura(self.unit, self.spell, self);
         if self.checkplatecount then
-            ns.eventhandler.registerAura("nameplate", self.spell, self.checkplatecount);
+            ns.eventhandler.registerAura("nameplate", self.spell, nil,  self.checkplatecount);
         end
 
         if self.bufflist then
             for _, debuff in pairs(self.bufflist) do
-                ns.eventhandler.registerAura(self.unit, debuff);
+                ns.eventhandler.registerAura(self.unit, debuff, self);
             end
         end
     elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then
         ACI_Buff_list[self.spell] = true;
-        ns.eventhandler.registerAura(self.unit, self.spell);
+        ns.eventhandler.registerAura(self.unit, self.spell, self);
 
         if self.bufflist then
             for _, buff in pairs(self.bufflist) do
-                ns.eventhandler.registerAura("player", buff);
+                ns.eventhandler.registerAura("player", buff, self);
             end
         end
     end
@@ -1016,7 +1016,7 @@ function ns.Button:init(config, frame)
     end
 
     if self.realbuff then
-        ns.eventhandler.registerAura(self.unit, self.realbuff);
+        ns.eventhandler.registerAura(self.unit, self.realbuff, self);
 
         if self.type == ns.EnumButtonType.Debuff or self.type == ns.EnumButtonType.DebuffOnly then
             ACI_Debuff_list[self.realbuff] = true;
@@ -1026,16 +1026,16 @@ function ns.Button:init(config, frame)
     end
 
     if self.countbuff then
-        ns.eventhandler.registerAura("player", self.countbuff);
+        ns.eventhandler.registerAura("player", self.countbuff, self);
     end
 
     if self.countdebuff then
-        ns.eventhandler.registerAura("target", self.countdebuff);
+        ns.eventhandler.registerAura("target", self.countdebuff, self);
     end
 
     if self.alertbufflist then
         for _, buff in pairs(self.alertbufflist) do
-            ns.eventhandler.registerAura("player", buff);
+            ns.eventhandler.registerAura("player", buff, self);
         end
     end
 
@@ -1044,19 +1044,23 @@ function ns.Button:init(config, frame)
     end
 
     local function update()
-        self:initButton();
-        self:checkTotem();
-        self:checkBuffList();
-        self:checkBuff();
-        self:checkSpellCoolInBuff();
-        self:checkSpell();
-        self:checkCount();
-        self:checkOthers();
-        self:showButton();
+        self:updateAll();
     end
 
     update();
     self.time = C_Timer.NewTicker(0.2, update)
+end
+
+function ns.Button:updateAll()
+    self:initButton();
+    self:checkTotem();
+    self:checkBuffList();
+    self:checkBuff();
+    self:checkSpellCoolInBuff();
+    self:checkSpell();
+    self:checkCount();
+    self:checkOthers();
+    self:showButton();
 end
 
 function ns.Button:new(o)
