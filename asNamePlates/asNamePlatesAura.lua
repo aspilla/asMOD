@@ -331,8 +331,10 @@ function ns.UpdateEventAuras(unit, unitAuraUpdateInfo)
                 if auraData.debuffs[auraInstanceID] ~= nil then
                     local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
                     local oldDebuffType = auraData.debuffs[auraInstanceID].debuffType;
+                    local oldshowlist = auraData.debuffs[auraInstanceID].showlist; 
                     if newAura ~= nil then
                         newAura.debuffType = oldDebuffType;
+                        newAura.showlist = oldshowlist;
                     end
                     auraData.debuffs[auraInstanceID] = newAura;
                 elseif auraData.buffs[auraInstanceID] ~= nil then
