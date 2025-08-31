@@ -16,7 +16,6 @@ local petcleaveIcon = CreateAtlasMarkup("WildBattlePetCapturable", 10, 10, 0, 0)
 local pettargetIcon = CreateAtlasMarkup("WildBattlePetCapturable", 10, 10, 0, 0, 255, 0, 0);
 local snapshotIconG = CreateAtlasMarkup("PlayerPartyBlip", 20, 20, 0, 0, 100, 255, 100);
 local snapshotIconR = CreateAtlasMarkup("PlayerPartyBlip", 20, 20, 0, 0, 255, 100, 100);
-local MAX_BOSS_QUERY = 5;
 
 ns.DangerousSpellList = {};
 
@@ -264,14 +263,7 @@ local function updateAuras(self)
         parent.UnitFrame:UnregisterEvent("UNIT_AURA");
     end
 
-
-    if self.query_unit then
-        auraData = ns.getAurasFromQ(self.query_unit);
-    else
-
-        auraData = ns.getAuras(unit);
-    end
-
+    auraData = ns.getAurasFromQ(unit);
 
     if auraData and auraData.type == 2 then
         auraData.buffs:Iterate(function(auraInstanceID, aura)
@@ -1300,24 +1292,15 @@ local function checkSpellCasting(self)
     end
 end
 
-local function findQueryUnit(asframe)
-    asframe.query_unit = nil;
-    for i = 1, MAX_BOSS_QUERY do
-        local unit = "boss" .. i;
-        if UnitIsUnit(asframe.unit, unit) then
-            asframe.query_unit = unit;
-            break;
-        end
-    end
-end
 
 local function asNamePlates_OnEvent(self, event, ...)
-    if (event == "PLAYER_TARGET_CHANGED") then
+    if (event == "UNIT_AURA") then
+        local unit, info = ...;
+        ns.UpdateEventAuras(unit, info);
+    elseif (event == "PLAYER_TARGET_CHANGED") then
         updateTargetNameP(self);
         updateHealthText(self);
         updatePower(self);
-    elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
-        findQueryUnit(self);
     else
         checkSpellCasting(self);
         updateHealthbarColor(self);
@@ -1576,11 +1559,11 @@ local function addNamePlate(namePlateFrameBase)
             asframe.buffList[i]:Hide();
         end
     end
+    asframe:SetScript("OnEvent", asNamePlates_OnEvent);
+    asframe:RegisterUnitEvent("UNIT_AURA", unit);
 
     if not UnitIsPlayer(unit) then
-        asframe:SetScript("OnEvent", asNamePlates_OnEvent);
         asframe:RegisterEvent("PLAYER_TARGET_CHANGED");
-        asframe:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
         asframe:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
         asframe:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
         asframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit);
@@ -1589,9 +1572,9 @@ local function addNamePlate(namePlateFrameBase)
         asframe:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
         asframe:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
         asframe:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
-
-        findQueryUnit(asframe);
     end
+
+    ns.UpdateEventAuras(unit);
 
     local orig_width = healthbar:GetWidth();
     if ns.ANameP_SIZE > 0 then
@@ -1953,11 +1936,6 @@ local function ANameP_OnEvent(self, event, ...)
         updateTankerList();
     elseif event == "PLAYER_REGEN_ENABLED" then
         setupFriendlyPlates();
-    elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
-        for i = 1, MAX_BOSS_QUERY do
-            local unit = "boss" .. i;
-            ns.UpdateEventAuras(unit);
-        end
     elseif event == "UNIT_PET" then
         self.petGUID = UnitGUID("pet");
     end
@@ -2033,7 +2011,6 @@ local function initAddon()
     ANameP:RegisterEvent("GROUP_ROSTER_UPDATE");
     ANameP:RegisterEvent("PLAYER_ROLES_ASSIGNED");
     ANameP:RegisterEvent("PLAYER_REGEN_ENABLED");
-    ANameP:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
     ANameP:RegisterUnitEvent("UNIT_PET", "player");
 
     ANameP:SetScript("OnEvent", ANameP_OnEvent)

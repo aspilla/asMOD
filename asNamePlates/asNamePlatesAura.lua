@@ -245,49 +245,7 @@ local function ParseAllAuras(unit)
     end
 end
 
-function ns.getAuras(unit)
-    
-    local reaction = UnitReaction("player", unit);
-    if reaction and reaction <= 4 then
-        if auraDatas[unit] == nil then
-            auraDatas[unit] = {};
-        end
-
-        auraDatas[unit].bufffilter = CreateFilterString(AuraFilters.Helpful);
-        auraDatas[unit].debufffilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.IncludeNameplateOnly);
-        auraDatas[unit].type = 1;
-    elseif UnitIsPlayer(unit) then
-        if auraDatas[unit] == nil then
-            auraDatas[unit] = {};
-        end
-
-        auraDatas[unit].bufffilter = CreateFilterString(AuraFilters.Helpful, AuraFilters.Player,
-            AuraFilters.IncludeNameplateOnly);
-        auraDatas[unit].debufffilter = nil
-        auraDatas[unit].type = 2;
-    else
-        return nil;
-    end
-
-    ParseAllAuras(unit);
-    return auraDatas[unit];
-end
-
 function ns.getAurasFromQ(unit)
-    
-    local reaction = UnitReaction("player", unit);
-    if reaction and reaction <= 4 then
-        if auraDatas[unit] == nil then
-            auraDatas[unit] = {};
-        end
-
-        auraDatas[unit].bufffilter = CreateFilterString(AuraFilters.Helpful);
-        auraDatas[unit].debufffilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.IncludeNameplateOnly);
-        auraDatas[unit].type = 1;
-    else
-        return nil;
-    end
-
     return auraDatas[unit];
 end
 
@@ -305,22 +263,34 @@ function ns.UpdateEventAuras(unit, unitAuraUpdateInfo)
             auraDatas[unit].bufffilter = CreateFilterString(AuraFilters.Helpful);
             auraDatas[unit].debufffilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.IncludeNameplateOnly);
             auraDatas[unit].type = 1;
+        elseif UnitIsPlayer(unit) then
+            auraDatas[unit].bufffilter = CreateFilterString(AuraFilters.Helpful, AuraFilters.Player,
+                AuraFilters.IncludeNameplateOnly);
+            auraDatas[unit].debufffilter = nil
+            auraDatas[unit].type = 2;
         else
             return nil;
         end
         ParseAllAuras(unit);
     else
+        local bufffilter = auraDatas[unit].bufffilter;
+        local debufffilter = auraDatas[unit].debufffilter;
+
         if unitAuraUpdateInfo.addedAuras ~= nil then
             for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
-                if aura.isHarmful then
-                    local type = ProcessAura(aura, unit, auraData.type);
-                    if type == AuraUpdateChangedType.Debuff then
-                        auraData.debuffs[aura.auraInstanceID] = aura;
+                if debufffilter and aura.isHarmful then
+                    if not C_UnitAuras.IsAuraFilteredOutByInstanceID(unit, aura.auraInstanceID, debufffilter) then
+                        local type = ProcessAura(aura, unit, auraData.type);
+                        if type == AuraUpdateChangedType.Debuff then
+                            auraData.debuffs[aura.auraInstanceID] = aura;
+                        end
                     end
-                elseif aura.isHelpful then
-                    local type = ProcessAura(aura, unit, auraData.type);
-                    if type == AuraUpdateChangedType.Buff then
-                        auraData.buffs[aura.auraInstanceID] = aura;
+                elseif bufffilter and aura.isHelpful then
+                    if not C_UnitAuras.IsAuraFilteredOutByInstanceID(unit, aura.auraInstanceID, bufffilter) then
+                        local type = ProcessAura(aura, unit, auraData.type);
+                        if type == AuraUpdateChangedType.Buff then
+                            auraData.buffs[aura.auraInstanceID] = aura;
+                        end
                     end
                 end
             end
@@ -331,7 +301,7 @@ function ns.UpdateEventAuras(unit, unitAuraUpdateInfo)
                 if auraData.debuffs[auraInstanceID] ~= nil then
                     local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
                     local oldDebuffType = auraData.debuffs[auraInstanceID].debuffType;
-                    local oldshowlist = auraData.debuffs[auraInstanceID].showlist; 
+                    local oldshowlist = auraData.debuffs[auraInstanceID].showlist;
                     if newAura ~= nil then
                         newAura.debuffType = oldDebuffType;
                         newAura.showlist = oldshowlist;
@@ -359,12 +329,3 @@ function ns.UpdateEventAuras(unit, unitAuraUpdateInfo)
         end
     end
 end
-
-local auraframe = CreateFrame("Frame");
-
-local function onAuraEvent(self, event, ...)
-    local unit, info = ...;
-    ns.UpdateEventAuras(unit, info)
-end
-auraframe:RegisterUnitEvent("UNIT_AURA", "boss1", "boss2", "boss3", "boss4", "boss5");
-auraframe:SetScript("OnEvent", onAuraEvent)
