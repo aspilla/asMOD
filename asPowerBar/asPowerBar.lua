@@ -223,11 +223,9 @@ end
 
 local function APB_UnitBuffList(unit, list)
     local ret = nil;
-    local auraList = ns.ParseAllBuff(unit);
-
 
     for index, id in pairs(list) do
-        local aura = auraList[id];
+        local aura = ns.getUnitBuffByID(unit, id);
         if aura then
             if aura.duration > 0 then
                 ret = aura;
@@ -246,7 +244,6 @@ local function APB_UnitBuffList(unit, list)
 end
 
 local function APB_UnitBuffCountList(unit, list)
-    local auraList = ns.ParseAllBuff(unit);
     local ret = nil;
 
 
@@ -254,7 +251,7 @@ local function APB_UnitBuffCountList(unit, list)
     for index, v in pairs(list) do
         local id = v[1];
         local count = v[2];
-        local aura = auraList[id];
+        local aura = ns.getUnitBuffByID(unit, id);
         if aura and aura.spellId == id and (count == 0 or aura.applications >= count) then
             if aura.duration > 0 then
                 ret = aura;
@@ -274,9 +271,7 @@ end
 
 
 local function APB_UnitBuff(unit, buff)
-    local auraList = ns.ParseAllBuff(unit);
-    local ret = auraList[buff];
-
+    local ret = ns.getUnitBuffByID(unit, buff);
 
     if ret then
         return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit;
@@ -294,8 +289,7 @@ local function APB_UnitBuff(unit, buff)
 end
 
 local function APB_UnitDebuff(unit, buff)
-    local auraList = ns.ParseAllDebuff(unit);
-    local ret = auraList[buff];
+    local ret = ns.getUnitDebuffByID(unit, buff);
 
     if ret then
         return ret.name, ret.icon, ret.applications, ret.debuffType, ret.duration, ret.expirationTime, ret.sourceUnit;
@@ -3743,10 +3737,7 @@ local function updateCombatLog()
 end
 
 local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
-    if event == "UNIT_AURA" then
-        ns.needtocheckAura = true;
-        updateBuffBar();
-    elseif event == "ACTIONBAR_UPDATE_COOLDOWN" or event == "ACTIONBAR_UPDATE_USABLE" then
+    if event == "ACTIONBAR_UPDATE_COOLDOWN" or event == "ACTIONBAR_UPDATE_USABLE" then
         if APB_SPELL then
             APB_UpdateSpell(APB_SPELL, APB_SPELL2);
         end
@@ -3772,7 +3763,6 @@ local function APB_OnEvent(self, event, arg1, arg2, arg3, ...)
             APB_UpdateFronzenOrb(self.buffbar[0]);
         end
     elseif event == "PLAYER_TARGET_CHANGED" then
-        ns.needtocheckAura = true;
         updateBuffBar();
     elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
         updateCombatLog();
@@ -4169,11 +4159,16 @@ do
     APB:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");
     APB:RegisterEvent("GROUP_JOINED");
     APB:RegisterEvent("GROUP_ROSTER_UPDATE");
-    APB:RegisterUnitEvent("UNIT_AURA", "player");
 
     if UnitAffectingCombat("player") then
         APB:SetAlpha(APB_ALPHA_COMBAT);
     else
         APB:SetAlpha(APB_ALPHA_NORMAL);
     end
+end
+
+
+function ns.update_callback()
+    updateBuffBar();
+
 end

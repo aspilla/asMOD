@@ -12,7 +12,7 @@ local AuraFilters = {
 };
 
 local function CreateFilterString(...)
-    return table.concat({...}, '|');
+    return table.concat({ ... }, '|');
 end
 
 local function DefaultCompare(a, b)
@@ -26,7 +26,7 @@ local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuation
         local slot = select(i, ...);
         local done;
         local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
-        if usePackedAura then            
+        if usePackedAura then
             done = func(auraInfo);
         else
             done = func(AuraUtil.UnpackAuraData(auraInfo));
@@ -55,11 +55,10 @@ auraData.buffs = {};
 auraData.debuffs = {};
 auraData.bufffilter = CreateFilterString(AuraFilters.Helpful, AuraFilters.Player, AuraFilters.IncludeNameplateOnly);
 auraData.debufffilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.Player);
-local bufftime = {};
-local debufftime = {};
-ns.needtocheckAura = true;
 local bufflist = {};
 local debufflist = {};
+local buffscanall = true;
+local debuffscanall = true;
 
 function ns.ClearLists()
     bufflist = {};
@@ -67,64 +66,56 @@ function ns.ClearLists()
 end
 
 function ns.AddBuff(auras)
-
     if auras then
         if type(auras) == "table" then
             for _, id in pairs(auras) do
-                bufflist[id] = true;    
+                bufflist[id] = true;
             end
-        else    
+        else
             bufflist[auras] = true;
         end
     end
+    buffscanall = true;
 end
 
 function ns.AddBuffC(auras)
-
     if auras then
         for _, list in pairs(auras) do
             if type(list) == "table" and list[1] then
-                bufflist[list[1]] = true;                  
-            end            
+                bufflist[list[1]] = true;
+            end
         end
     end
+    buffscanall = true;
 end
 
 function ns.AddDebuff(auras)
-
     if auras then
         if type(auras) == "table" then
             for _, id in pairs(auras) do
-                debufflist[id] = true;                
+                debufflist[id] = true;
             end
-        else    
-            debufflist[auras] = true;            
+        else
+            debufflist[auras] = true;
         end
     end
+
+    debuffscanall = true;
 end
 
 function ns.GetAuraDataBySpellName(unit, spell, bdebuff)
-
     if bdebuff then
         return C_UnitAuras.GetAuraDataBySpellName(unit, spell, auraData.debufffilter);
     else
         return C_UnitAuras.GetAuraDataBySpellName(unit, spell, auraData.bufffilter);
     end
-
 end
 
-function ns.ParseAllBuff(unit)
 
-    if bufftime[unit] and GetTime() - bufftime[unit] < 0.1 and not((unit == "player" or unit == "pet") and ns.needtocheckAura) then        
-        return auraData.buffs[unit]
-    end
-
-    ns.needtocheckAura = false;
-
-    bufftime[unit] = GetTime();
-
+local function parseAllBuff(unit)
     if auraData.buffs[unit] == nil then
-        auraData.buffs[unit] = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
+        auraData.buffs[unit] = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants
+            .AssociativePriorityTable);
     else
         auraData.buffs[unit]:Clear();
     end
@@ -133,24 +124,84 @@ function ns.ParseAllBuff(unit)
     local usePackedAura = true;
     local function HandleAura(aura)
         if aura and bufflist[aura.spellId] then
-            auraData.buffs[unit][aura.spellId] = aura;
+            auraData.buffs[unit][aura.auraInstanceID] = aura;
         end
     end
     ForEachAura(unit, auraData.bufffilter, batchCount, HandleAura, usePackedAura);
 
-    return auraData.buffs[unit];
+    return;
 end
 
-function ns.ParseAllDebuff(unit)
+local function updateBuffs(unit, unitAuraUpdateInfo, callback_func)
+    local buffupdated = false;
 
-    if debufftime[unit] and GetTime() - debufftime[unit] < 0.1 then        
-        return auraData.debuffs[unit]
+    if auraData.buffs[unit] == nil then
+        unitAuraUpdateInfo = nil;
     end
 
-    debufftime[unit] = GetTime();
 
+    if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate or buffscanall then
+        parseAllBuff(unit);
+        buffscanall = false;
+        buffupdated = true;
+    else
+        local bufffilter = auraData.bufffilter;
+        local buffData = auraData.buffs[unit];
+
+        if unitAuraUpdateInfo.addedAuras ~= nil then
+            for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
+                if not C_UnitAuras.IsAuraFilteredOutByInstanceID(unit, aura.auraInstanceID, bufffilter) then
+                    if aura and bufflist[aura.spellId] then
+                        buffData[aura.auraInstanceID] = aura;
+                        buffupdated = true;
+                    end
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
+                if buffData[auraInstanceID] ~= nil then
+                    local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
+                    buffData[auraInstanceID] = newAura;
+                    buffupdated = true;
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
+                if buffData[auraInstanceID] ~= nil then
+                    buffData[auraInstanceID] = nil;
+                    buffupdated = true;
+                end
+            end
+        end
+    end
+
+    if buffupdated and callback_func then
+        callback_func();
+    end
+end
+
+local function onBuffEvent(self, event, ...)
+    if (event == "UNIT_AURA") then
+        local unit, info = ...;
+        updateBuffs(unit, info, ns.update_callback);
+    else
+        updateBuffs("pet", nil, ns.update_callback);
+    end
+end
+
+local buffeventframe = CreateFrame("Frame");
+buffeventframe:RegisterUnitEvent("UNIT_AURA", "player", "pet");
+buffeventframe:RegisterUnitEvent("UNIT_PET", "player");
+buffeventframe:SetScript("OnEvent", onBuffEvent);
+
+local function parseAllDebuff(unit)
     if auraData.debuffs[unit] == nil then
-        auraData.debuffs[unit] = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
+        auraData.debuffs[unit] = TableUtil.CreatePriorityTable(DefaultCompare,
+            TableUtil.Constants.AssociativePriorityTable);
     else
         auraData.debuffs[unit]:Clear();
     end
@@ -159,10 +210,116 @@ function ns.ParseAllDebuff(unit)
     local usePackedAura = true;
     local function HandleAura(aura)
         if aura and debufflist[aura.spellId] then
-            auraData.debuffs[unit][aura.spellId] = aura;            
+            auraData.debuffs[unit][aura.auraInstanceID] = aura;
         end
     end
     ForEachAura(unit, auraData.debufffilter, batchCount, HandleAura, usePackedAura);
 
-    return auraData.debuffs[unit];
+    return;
+end
+
+local function updateDebuffs(unit, unitAuraUpdateInfo, callback_func)
+    local debuffupdated = false;
+    if auraData.debuffs[unit] == nil then
+        unitAuraUpdateInfo = nil;
+    end
+
+
+    if unitAuraUpdateInfo == nil or unitAuraUpdateInfo.isFullUpdate or debuffscanall then
+        parseAllDebuff(unit);
+        debuffscanall = false;
+        debuffupdated = true;
+    else
+        local debufffilter = auraData.debufffilter;
+        local debuffData = auraData.debuffs[unit];
+
+        if unitAuraUpdateInfo.addedAuras ~= nil then
+            for _, aura in ipairs(unitAuraUpdateInfo.addedAuras) do
+                if not C_UnitAuras.IsAuraFilteredOutByInstanceID(unit, aura.auraInstanceID, debufffilter) then
+                    if aura and debufflist[aura.spellId] then
+                        debuffData[aura.auraInstanceID] = aura;
+                        debuffupdated = true;
+                    end
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.updatedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
+                if debuffData[auraInstanceID] ~= nil then
+                    local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
+                    debuffData[auraInstanceID] = newAura;
+                    debuffupdated = true;
+                end
+            end
+        end
+
+        if unitAuraUpdateInfo.removedAuraInstanceIDs ~= nil then
+            for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
+                if debuffData[auraInstanceID] ~= nil then
+                    debuffData[auraInstanceID] = nil;
+                    debuffupdated = true;
+                end
+            end
+        end
+    end
+
+    if debuffupdated and callback_func then
+        callback_func();
+    end
+end
+
+local function onDebuffEvent(self, event, ...)
+    if (event == "UNIT_AURA") then
+        local unit, info = ...;
+        updateDebuffs(unit, info, ns.update_callback);
+    elseif (event == "PLAYER_TARGET_CHANGED") then
+        updateDebuffs("target", nil, ns.update_callback);
+    else  
+        auraData.buffs = {};
+        auraData.debuffs = {};
+    end
+end
+local debuffeventframe = CreateFrame("Frame");
+debuffeventframe:RegisterUnitEvent("UNIT_AURA", "player", "target");
+debuffeventframe:RegisterEvent("PLAYER_TARGET_CHANGED");
+debuffeventframe:RegisterEvent("PLAYER_ENTERING_WORLD");
+debuffeventframe:SetScript("OnEvent", onDebuffEvent);
+
+function ns.getUnitBuffByID(unit, spellId)
+    if not (unit == "player" or unit == "pet") then
+       updateBuffs(unit);
+    end
+    local ret = nil;
+    if auraData.buffs[unit] then
+        auraData.buffs[unit]:Iterate(
+            function(auraInstanceID, aura)
+                if aura.spellId == spellId then
+                    ret = aura;
+                    return true;
+                end
+                return false
+            end);
+    end
+
+    return ret;
+end
+
+function ns.getUnitDebuffByID(unit, spellId)
+    if not (unit == "player" or unit == "target") then
+       updateBuffs(unit);
+    end
+    local ret = nil;
+    if auraData.debuffs[unit] then
+        auraData.debuffs[unit]:Iterate(
+            function(auraInstanceID, aura)
+                if aura.spellId == spellId then
+                    ret = aura;
+                    return true;
+                end
+                return false
+            end);
+    end
+
+    return ret;
 end
