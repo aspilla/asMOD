@@ -391,12 +391,6 @@ local function updateUnit(frame)
         SetPortraitTexture(frame.portrait.portrait, unit, false);
         frame.guid = UnitGUID(unit);
     end
-
-    if unit == "targettarget" then
-        if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
-            ns.UpdateAuras(frame);
-        end
-    end
 end
 
 local function asTargetFrame_OpenMenu(self, unit)
@@ -673,7 +667,9 @@ local unitframes = {};
 
 local function onUnitEvent(self, event, arg1, arg2)
     if event == "UNIT_AURA" then
-        ns.UpdateAuras(self, arg2);
+        if arg1 == self.unit then
+            ns.UpdateAuras(self, arg2);
+        end
     elseif event == "PLAYER_TOTEM_UPDATE" then
         ns.UpdateTotems(self);
     end
@@ -978,9 +974,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     end
 
     if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
-        if unit ~= "targettarget" then
-            frame:RegisterUnitEvent("UNIT_AURA", unit);
-        end
+        frame:RegisterUnitEvent("UNIT_AURA", unit);
     end
 
     frame:SetScript("OnEvent", onUnitEvent);
