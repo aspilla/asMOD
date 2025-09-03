@@ -258,7 +258,7 @@ local function asMOD_Setup()
 					0,
 				},
 				["ModelSoundValue"] = "Short",
-				["SpecialWarningY"] = 75,
+				["SpecialWarningY"] = 120,
 				["VPReplacesSA2"] = true,
 				["ReplaceMyConfigOnOverride"] = false,
 				["LogTrivialDungeons"] = false,
