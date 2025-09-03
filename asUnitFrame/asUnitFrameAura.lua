@@ -592,7 +592,7 @@ function ns.UpdateAuras(frame, unitAuraUpdateInfo)
                         local type = ProcessBuffs(aura, unit);
                         if type == AuraUpdateChangedType.Buff then
                             activeBuffs[unit][aura.auraInstanceID] = aura;
-                            debuffsChanged = true;
+                            buffsChanged = true;
                         end
                     end
                 end
