@@ -13,7 +13,7 @@ local healthheight = 35;
 local powerheight = 5;
 local buffcount = 4;
 local buffsize = 25;
-
+local isevoker = false;
 
 AUF_ShowTotemBar = false;
 
@@ -135,11 +135,6 @@ local function updateUnit(frame)
     if not UnitExists(unit) then
         return;
     else
-        if UnitAffectingCombat("player") then
-            frame:SetAlpha(1);
-        else
-            frame:SetAlpha(0.5);
-        end
     end
 
     -- Healthbar
@@ -390,6 +385,25 @@ local function updateUnit(frame)
     if frame.portrait and UnitGUID(unit) ~= frame.guid then
         SetPortraitTexture(frame.portrait.portrait, unit, false);
         frame.guid = UnitGUID(unit);
+    end
+
+    if UnitAffectingCombat("player") then
+        if ns.options.CheckRange then
+            if unit == "player" then
+                frame:SetAlpha(1);
+            else
+                local inrange = ns.checkRange(unit, isevoker);
+                if inrange then
+                    frame:SetAlpha(1);
+                else
+                    frame:SetAlpha(0.55);
+                end
+            end
+        else
+            frame:SetAlpha(1);
+        end
+    else
+        frame:SetAlpha(0.5);
     end
 end
 
@@ -1037,6 +1051,12 @@ local function Init()
             end
         end
     end
+    local _, engclass = UnitClass("player");
+
+    if engclass == "EVOKER" then
+        isevoker = true;
+    end
+
 end
 
 -- stolen from cell, which is stolen from elvui

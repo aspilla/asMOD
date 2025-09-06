@@ -5,6 +5,7 @@ local Options_Default = {
     ShowTotemBar = true,
     ShowBossBuff = true,
     ShowTargetBorder = true,
+    CheckRange = true,
     OffPortraitDebuffOnRaid = true,
 };
 
