@@ -62,6 +62,8 @@ Portraits are disabled
         *   Clicking an icon instantly destroys the corresponding totem (optional).
     *   **Target Selection Indicator (Optional, Focus, Boss):**
         *   A white border is displayed on the Focus and Boss frames if they are your current target.
+    *   **Check Range(Optional, Target, Focus, Boss):**
+        *   Check the range with target/focus/boss which can attack, if more than 40ms, change frame with less alpha (Evoker, 25ms)
 
 3.  **Other Features:**
     *   **Hide Default UI:** Automatically hides the default Blizzard unit frames (Player, Target, Focus, Pet, Boss).
@@ -82,6 +84,8 @@ Portraits are disabled
     *   `ShowTotemBar`: Toggles the totem bar below the player frame.
     *   `ShowBossBuff`: Toggles the display of 4 buffs on boss frames.
     *   `ShowTargetBorder`: Toggles a white border on Focus/Boss frames when they are your target.
+    *   `CheckRange` : Toggles whether to check the range with target/focus/bosses
+    *   `OffPortraitDebuffOnRaid` : Toggles the display the stun debuff on portrait during raid play.
 
 3.  **In-Code Settings (top of `asUnitFrame.lua` file):**
     *   `Update_Rate`: Frame information update frequency (default: 0.1 seconds). A lower value updates more frequently but may increase CPU usage.
@@ -165,6 +169,8 @@ asMOD 대 다른 애드온을 사용하고 있다는 가정으로, 다음 애드
         *   아이콘 클릭으로 해당 토템을 즉시 파괴할 수 있습니다. (옵션)
     *   **대상 선택 여부 (선택 사항, 주시대상, 보스):**
         *   주시 대상 프레임, 보스 프레임의 경우 현재 대상인 경우 흰 테두리가 표시 됩니다.
+    *   **거리 파악(선택 사항, 대상, 주시대상, 보스):**
+        *   적대적 대상의 경우 대상과의 거리가 40m 이상인 경우 투명화 됩니다. (기원사 25ms)
 
 3.  **기타 기능:**
     *   **기본 UI 숨김:** 기본 블리자드 유닛 프레임(플레이어, 대상, 주시 대상, 소환수, 보스)을 자동으로 숨깁니다.
@@ -185,7 +191,10 @@ asMOD 대 다른 애드온을 사용하고 있다는 가정으로, 다음 애드
     *   `ShowPortrait` : 초상화 표시 여부
     *   `ShowTotemBar` : 플레이어 프레임 하단에 토템바 표시 여부
     *   `ShowBossBuff` : 보스 프레임에 버프 4개 표시 여부 
-    *   `ShowTargetBorder` : 주시/보스가 대상인 경우 하얀색 테두리 표시 
+    *   `ShowTargetBorder` : 주시/보스가 대상인 경우 하얀색 테두리 표시
+    *   `CheckRange` : 대상/주시/보스와의 거리를 체크
+    *   `OffPortraitDebuffOnRaid` : 레이드에서는 초상화에 스턴 디버프 표시 안함
+
 
 3.  **코드 내 설정 (`asUnitFrame.lua` 파일 상단):**
     *   `Update_Rate`: 프레임 정보 갱신 주기 (기본값: 0.1초). 값이 작을수록 자주 갱신되지만 CPU 사용량이 늘어날 수 있습니다.
