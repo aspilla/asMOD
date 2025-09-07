@@ -201,10 +201,12 @@ local function updateUnitRange(unit, frame)
 			frame:SetTextColor(ARD_GetRangeColor(range));
 		else
 			local grange = 80;
-			local inRange, checkedRange = UnitInRange(unit)
+			if UnitInParty(unit) or UnitInRaid(unit) then
+				local inRange, checkedRange = UnitInRange(unit)
 
-			if inRange and checkedRange then
-				grange = defaultrange;
+				if inRange and checkedRange then
+					grange = defaultrange;
+				end
 			end
 
 			if UnitIsUnit(unit, "target") then
