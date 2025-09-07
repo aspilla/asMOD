@@ -40,11 +40,11 @@ end
 
 function ns.checkRange(unit, is25m)
 	if UnitIsUnit("player", unit) then
-		return false;
+		return true;
 	end
 
 	if IsHelpful(unit) then
-		return false;
+		return true;
 	end
 
 	local item_id = item_for_40m;
