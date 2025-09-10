@@ -60,25 +60,25 @@ local itemslotNames = {
 	"무기 2",
 }
 if GetLocale() ~= "koKR" then
-itemslotNames = {
-	"Head",
-	"Neck",
-	"Shoulder",
-	"Out",
-	"Chest",
-	"Waist",
-	"Legs",
-	"Feet",
-	"Wrist",
-	"Hands",
-	"Finger 1",
-	"Finger 2",
-	"Trinket 1",
-	"Trinket 2",
-	"Back",
-	"MainHand",
-	"SecondaryHand",
-}
+	itemslotNames = {
+		"Head",
+		"Neck",
+		"Shoulder",
+		"Out",
+		"Chest",
+		"Waist",
+		"Legs",
+		"Feet",
+		"Wrist",
+		"Hands",
+		"Finger 1",
+		"Finger 2",
+		"Trinket 1",
+		"Trinket 2",
+		"Back",
+		"MainHand",
+		"SecondaryHand",
+	}
 
 end
 
@@ -308,6 +308,9 @@ local function ACDP_UpdateCoolAnchor(frames, index, anchorIndex, size, offsetX, 
 
 	local offsetY = -(size + offsetX) * math.floor(index / 6);
 
+
+	cool:ClearAllPoints();
+
 	if (index % ACDP_CooldownCount == 1) then
 		cool:SetPoint(point1, parent, point2, 0, offsetY);
 	else
@@ -392,6 +395,8 @@ local function ACDP_UpdateCooldown()
 
 		return;
 	end
+	
+	local currtime = GetTime();
 
 
 	for spellid, type in pairs(showlist_id) do
@@ -414,7 +419,6 @@ local function ACDP_UpdateCooldown()
 			end
 
 			if (icon and duration > 0) and skip == 0 then
-				local currtime = GetTime();
 				tinsert(showlist, { start + duration - currtime, start, duration, icon, spellid, type });
 			end
 		end
@@ -424,57 +428,59 @@ local function ACDP_UpdateCooldown()
 
 	numCools = 1;
 
-	local prev_icon;
-
 	for _, v in pairs(showlist) do
 		local start = v[2];
 		local duration = v[3];
 		local icon = v[4];
 		local spellid = v[5];
 		local type = v[6];
+		frame = parent.frames[numCools];
 
-		if not (icon == prev_icon) then
-			prev_icon = icon;
-
+		if (not frame) then
+			parent.frames[numCools] = CreateFrame("Button", nil, parent, "asCooldownPulseFrameTemplate");
 			frame = parent.frames[numCools];
+			frame:SetWidth(ACDP_SIZE);
+			frame:SetHeight(ACDP_SIZE * 0.9);
+			frame:EnableMouse(false);
+			frame:SetMouseMotionEnabled();
 
-			if (not frame) then
-				parent.frames[numCools] = CreateFrame("Button", nil, parent, "asCooldownPulseFrameTemplate");
-				frame = parent.frames[numCools];
-				frame:SetWidth(ACDP_SIZE);
-				frame:SetHeight(ACDP_SIZE * 0.9);
-				frame:EnableMouse(false);
-				frame:SetMouseMotionEnabled();
-
-				for _, r in next, { frame.cooldown:GetRegions() } do
-					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, ACDP_CooldownFontSize, "OUTLINE")
-						frame.cooldowntext = r;
-						r:SetDrawLayer("OVERLAY");
-						break;
-					end
+			for _, r in next, { frame.cooldown:GetRegions() } do
+				if r:GetObjectType() == "FontString" then
+					r:SetFont(STANDARD_TEXT_FONT, ACDP_CooldownFontSize, "OUTLINE")
+					frame.cooldowntext = r;
+					r:SetDrawLayer("OVERLAY");
+					break;
 				end
-
-				frame.icon:SetTexCoord(.08, .92, .08, .92);
-				frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-
-				if not frame:GetScript("OnEnter") then
-					frame:SetScript("OnEnter", function(s)
-						if s.spellid and s.spellid > 0 then
-							GameTooltip_SetDefaultAnchor(GameTooltip, s);
-							GameTooltip:SetSpellByID(s.spellid);
-						elseif s.itemid and s.itemid > 0 then
-							GameTooltip_SetDefaultAnchor(GameTooltip, s);
-							GameTooltip:SetItemByID(s.itemid);
-						end
-					end)
-					frame:SetScript("OnLeave", function()
-						GameTooltip:Hide();
-					end)
-				end
-				frame:EnableMouse(false);
-				frame:SetMouseMotionEnabled(true);
 			end
+
+			frame.icon:SetTexCoord(.08, .92, .08, .92);
+			frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+
+			if not frame:GetScript("OnEnter") then
+				frame:SetScript("OnEnter", function(s)
+					if s.spellid and s.spellid > 0 then
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
+						GameTooltip:SetSpellByID(s.spellid);
+					elseif s.itemid and s.itemid > 0 then
+						GameTooltip_SetDefaultAnchor(GameTooltip, s);
+						GameTooltip:SetItemByID(s.itemid);
+					end
+				end)
+				frame:SetScript("OnLeave", function()
+					GameTooltip:Hide();
+				end)
+			end
+			frame:EnableMouse(false);
+			frame:SetMouseMotionEnabled(true);
+			frame.data = {};
+			ACDP_UpdateCoolAnchor(parent.frames, numCools, numCools - 1, ACDP_SIZE, 1, true, parent);
+		end
+
+		if icon ~= frame.data.icon or start ~= frame.data.start or duration ~= frame.data.duration then
+			frame.data.icon = icon;
+			frame.data.start = start
+			frame.data.duration = duration
+
 			-- set the icon
 			frameIcon = frame.icon;
 			frameIcon:SetTexture(icon);
@@ -489,22 +495,8 @@ local function ACDP_UpdateCooldown()
 			-- set the count
 			frameCooldown = frame.cooldown;
 			frameCooldown:Show();
-			local remain = start + duration - GetTime();
 			asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, true);
 			frameCooldown:SetHideCountdownNumbers(false);
-
-			if remain < 5 then
-				frame.cooldowntext:SetTextColor(1, 0.3, 0.3);
-				frame.cooldowntext:SetFont(STANDARD_TEXT_FONT, ACDP_CooldownFontSize + 3, "OUTLINE")
-			elseif remain < 10 then
-				frame.cooldowntext:SetTextColor(1, 1, 0.3);
-				frame.cooldowntext:SetFont(STANDARD_TEXT_FONT, ACDP_CooldownFontSize + 1, "OUTLINE")
-			else
-				frame.cooldowntext:SetTextColor(0.8, 0.8, 1);
-				frame.cooldowntext:SetFont(STANDARD_TEXT_FONT, ACDP_CooldownFontSize, "OUTLINE")
-			end
-
-			frame:ClearAllPoints();
 
 			if type == SPELL_TYPE_USER or type == SPELL_TYPE_PET then
 				frame.spellid = spellid;
@@ -515,18 +507,35 @@ local function ACDP_UpdateCooldown()
 			end
 
 			frame:Show();
+		end
+		local remain = start + duration - currtime;
+		local cooltype = 1;
 
-			numCools = numCools + 1;
+		if remain < 5 then
+			cooltype = 3;
+		elseif remain < 10 then
+			cooltype = 2;
+		end
 
-			if numCools > ACDP_CooldownCount then
-				break;
+		if cooltype ~= frame.data.cooltype then
+			frame.data.cooltype = cooltype
+			if cooltype == 3 then
+				frame.cooldowntext:SetTextColor(1, 0.3, 0.3);
+				frame.cooldowntext:SetFont(STANDARD_TEXT_FONT, ACDP_CooldownFontSize + 3, "OUTLINE")
+			elseif cooltype == 2 then
+				frame.cooldowntext:SetTextColor(1, 1, 0.3);
+				frame.cooldowntext:SetFont(STANDARD_TEXT_FONT, ACDP_CooldownFontSize + 1, "OUTLINE")
+			else
+				frame.cooldowntext:SetTextColor(0.8, 0.8, 1);
+				frame.cooldowntext:SetFont(STANDARD_TEXT_FONT, ACDP_CooldownFontSize, "OUTLINE")
 			end
 		end
-	end
 
-	for i = 1, numCools - 1 do
-		-- anchor the current aura
-		ACDP_UpdateCoolAnchor(parent.frames, i, i - 1, ACDP_SIZE, 1, true, parent);
+		numCools = numCools + 1;
+
+		if numCools > ACDP_CooldownCount then
+			break;
+		end
 	end
 
 	-- 이후 전에 보였던 frame을 지운다.
@@ -535,6 +544,7 @@ local function ACDP_UpdateCooldown()
 
 		if (frame) then
 			frame:Hide();
+			frame.data = {};
 		end
 	end
 
