@@ -1,8 +1,8 @@
-﻿## Interface: 110200
+﻿## Interface: 110200, 110205
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rOverlay
 ## Notes: Improving the default spell overlay alert
-## Version : 250901
+## Version : 250910
 ## SavedVariablesPerCharacter: ASO_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
