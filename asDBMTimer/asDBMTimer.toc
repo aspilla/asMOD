@@ -1,4 +1,4 @@
-﻿## Interface: 110107, 110200
+﻿## Interface: 110200, 110205
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDBMTimer
 ## Notes: Veritical DBM Timer
