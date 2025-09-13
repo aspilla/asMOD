@@ -349,15 +349,6 @@ end
 
 local function AHT_CheckHeal()
 
-	local masteryIndex = C_SpecializationInfo.GetSpecialization ();
-	local name = nil;
-
-	local role = nil
-
-	if C_SpecializationInfo.GetSpecialization() ~= nil then
-		role = C_SpecializationInfo.GetSpecializationRole(C_SpecializationInfo.GetSpecialization())
-	end
-
 	AHT_mainframe:RegisterUnitEvent("UNIT_HEAL_PREDICTION", "player");
 	AHT_mainframe:RegisterUnitEvent("UNIT_ABSORB_AMOUNT_CHANGED", "player");
 	AHT_mainframe:RegisterUnitEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", "player");
