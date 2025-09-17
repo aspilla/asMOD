@@ -60,6 +60,7 @@ local function setupCastBar()
     frame.time = frame:CreateFontString(nil, "OVERLAY");
     frame.time:SetFont(STANDARD_TEXT_FONT, ATCB_TIME_SIZE);
     frame.time:SetPoint("RIGHT", frame, "RIGHT", -3, 0);
+    
 
     if not frame:GetScript("OnEnter") then
         frame:SetScript("OnEnter", function(s)
@@ -95,6 +96,10 @@ local function setupCastBar()
     frame.targetname:SetFont(CONFIG_FONT, ATCB_NAME_SIZE);
     frame.targetname:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -2);
 
+    frame.mark = frame:CreateFontString(nil, "OVERLAY");
+    frame.mark:SetFont(STANDARD_TEXT_FONT, ATCB_NAME_SIZE + 3);
+    frame.mark:SetPoint("RIGHT", frame.button, "LEFT", -1, 0);
+    frame.mark:Show();
     frame.start = 0;
     frame.duration = 0;
     return frame;
@@ -126,12 +131,34 @@ local function hideCastBar(castBar)
     castBar.failstart = nil;
 end
 
+local RaidIconList = {
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:",
+	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
+}
+
+
+local function DisplayRaidIcon(unit)
+	local icon = GetRaidTargetIndex(unit)
+	if icon and RaidIconList[icon] then
+		return RaidIconList[icon] .. "0|t"
+	else
+		return ""
+	end
+end
+
 local function checkCasting(castBar, event)
     local unit         = castBar.unit;
     local frameIcon    = castBar.button.icon;
     local text         = castBar.name;
     local time         = castBar.time;
     local targetname   = castBar.targetname;
+    local mark         = castBar.mark;
     local targettarget = unit .. "target";
     local currtime     = GetTime();
 
@@ -193,7 +220,7 @@ local function checkCasting(castBar, event)
 
             text:SetText(name);
             time:SetText(format("%.1f/%.1f", max((current - castBar.start), 0), max(castBar.duration, 0)));
-
+            mark:SetText(DisplayRaidIcon(unit));
             frameIcon:Show();
             castBar:Show();
             local level = UnitLevel(unit);
