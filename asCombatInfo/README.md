@@ -21,9 +21,8 @@
 <iframe width="560" height="315" src="https://www.youtube.com/embed/yR7rTQcQ5jU?si=unfmLnS8A5EbIfdQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 * To add the cooldowns of trinkets, you can use the slot number of the trinket or other equiped items.
-![asCombatInfo_slot](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascombatinfo_slot.jpg?raw=true)
+![asCombatInfo_slot](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascombatInfo_slot.jpg?raw=true)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/28H9pMVZJ0A?si=TKSkuQ3tBzaMBHMu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
 
 *   Up to 11 buttons can be registered (5 on the top row, 6 on the bottom). If you configure the bottom 6 buttons, the Cooldown list from the `asCooldownpulse` addon will be hidden.
 
@@ -63,7 +62,7 @@
 <iframe width="560" height="315" src="https://www.youtube.com/embed/yR7rTQcQ5jU?si=unfmLnS8A5EbIfdQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 * 장신구등 착용중인 아이템 슬롯 번호를 사용하면 해당 아이템 재 사용시간 확인이 가능합니다.
-![asCombatInfo_slot](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascombatinfo_slot.jpg?raw=true)
+![asCombatInfo_slot](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascombatInfo_slot.jpg?raw=true)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/28H9pMVZJ0A?si=TKSkuQ3tBzaMBHMu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
