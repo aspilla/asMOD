@@ -2,7 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDBMTimer
 ## Notes: Veritical DBM Timer
-## Version : 250628
+## Version : 250918
 ## SavedVariablesPerCharacter: ADTI_Options, ADTI_OtherOptions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

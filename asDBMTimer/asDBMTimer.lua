@@ -310,7 +310,7 @@ local function checkButtons()
 				end
 			end
 
-			button.text:SetText(icontext .. button.defaulttext);
+			button.text:SetText(button.defaulttext);
 
 			if remain > 0 then
 				button:ClearAllPoints();
@@ -323,7 +323,7 @@ local function checkButtons()
 					prev_ex = event.expirationTime;
 				end
 
-				button.cooltext:SetText(("%02.1f"):format(remain))
+				button.cooltext:SetText(icontext .. ("%02.1f"):format(remain))
 				if remain <= 3 then
 					button.cooltext:SetTextColor(1, 0, 0, 1);
 				else
