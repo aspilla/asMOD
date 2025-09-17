@@ -10,6 +10,7 @@ ns.Button = {
     unit = nil,
     spellid = nil,
     action = nil,
+    itemid = nil,
     frame = nil,
     inRange = true,
     alert = false,
@@ -461,13 +462,22 @@ function ns.Button:checkSpell()
 
 
     local spellid                                          = self.spellid;
-    local action                                           = GetAction(self.actionlist, self.spellid)
+    local action                                           = GetAction(self.actionlist, spellid)
 
     local spellname, _, icon                               = asGetSpellInfo(spellid)
     local start, duration, enable                          = asGetSpellCooldown(spellid);
     local isUsable, notEnoughMana                          = C_Spell.IsSpellUsable(spellid);
     local charges, maxCharges, chargeStart, chargeDuration = asGetSpellCharges(spellid);
     local count                                            = charges;
+
+
+    if self.itemid then
+        spellname, _, _, _, _, _, _, count, _, icon = C_Item.GetItemInfo(self.itemid)
+        start, duration = C_Item.GetItemCooldown(self.itemid);
+        action = nil;
+        isUsable = true;
+    end
+
 
     if count == 1 and (not maxCharges or maxCharges <= 1) then
         count = 0;
@@ -935,10 +945,24 @@ function ns.Button:init(config, frame)
     self.buffshowtime = config[12];
     self.checksnapshot = config[13];
     self.countauraremain = config[14];
+    self.itemid = nil;
+    frame.itemslot = 0;
 
     self.spellid = select(7, asGetSpellInfo(self.spell));
     if self.spellid == nil then
         self.spellid = select(7, asGetSpellInfo(self.realspell));
+    end
+
+    if self.realspell > 0 and self.realspell <= INVSLOT_LAST_EQUIPPED then
+        self.spellid = self.realspell;
+        local itemid = GetInventoryItemID("player", self.realspell);
+        if itemid then
+            self.spell = select(1, C_Item.GetItemInfo(itemid));
+            self.itemid = itemid;
+            frame.itemslot = self.realspell;
+        else
+            self.spell = self.realspell;
+        end
     end
 
     ns.lib.PixelGlow_Stop(self.frame);
@@ -980,7 +1004,7 @@ function ns.Button:init(config, frame)
         ACI_Debuff_list[self.spell] = true;
         ns.eventhandler.registerAura(self.unit, self.spell, self);
         if self.checkplatecount then
-            ns.eventhandler.registerAura("nameplate", self.spell, nil,  self.checkplatecount);
+            ns.eventhandler.registerAura("nameplate", self.spell, nil, self.checkplatecount);
         end
 
         if self.bufflist then

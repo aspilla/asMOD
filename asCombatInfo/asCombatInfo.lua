@@ -25,7 +25,10 @@ ACI_Totem_list = {};
 local function setupMouseOver(frame)
 	if not frame:GetScript("OnEnter") then
 		frame:SetScript("OnEnter", function(s)
-			if s.spellid and s.spellid > 0 then
+			if s.itemslot and s.itemslot > 0 then
+				GameTooltip_SetDefaultAnchor(GameTooltip, s);
+				GameTooltip:SetInventoryItem("player", s.itemslot);
+			elseif s.spellid and s.spellid > 0 then
 				local spellid = s.spellid;
 				local ospellID = C_Spell.GetOverrideSpell(spellid)
 
@@ -60,6 +63,8 @@ for i = 1, 5 do
 
 	ACI[i].spellid = 0;
 	ACI[i].tooltip = 0;
+	ACI[i].itemslot = 0;
+
 
 	ACI[i].obutton = ns.Button:new();
 
@@ -88,19 +93,20 @@ for i = 6, 11 do
 	ACI[i]:Hide();
 	ACI[i].spellid = 0;
 	ACI[i].tooltip = 0;
+	ACI[i].itemslot = 0;
 	ACI[i].obutton = ns.Button:new();
 	setupMouseOver(ACI[i])
 end
 
 for i = 6, 11 do
-	if i == 8 then
-		ACI[i]:SetPoint("TOPRIGHT", ACI[i - 5], "BOTTOM", -0.5, -1);
-	elseif i == 9 then
-		ACI[i]:SetPoint("TOPLEFT", ACI[i - 6], "BOTTOM", 0.5, -1);
-	elseif i < 8 then
-		ACI[i]:SetPoint("RIGHT", ACI[i + 1], "LEFT", -1, 0);
-	elseif i > 9 then
-		ACI[i]:SetPoint("LEFT", ACI[i - 1], "RIGHT", 1, 0);
+	if i == 6 then
+		ACI[i]:SetPoint("TOPRIGHT", ACI[3], "BOTTOM", -0.5, -1);
+	elseif i == 7 then
+		ACI[i]:SetPoint("TOPLEFT", ACI[3], "BOTTOM", 0.5, -1);
+	elseif i % 2 == 0 then
+		ACI[i]:SetPoint("RIGHT", ACI[i - 2], "LEFT", -1, 0);
+	else
+		ACI[i]:SetPoint("LEFT", ACI[i - 2], "RIGHT", 1, 0);
 	end
 end
 
@@ -127,7 +133,7 @@ for i = 1, ACI_MaxSpellCount do
 
 	if i < 6 then
 		ACI[i].count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize, "OUTLINE")
-		ACI[i].point:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize -3, "OUTLINE")
+		ACI[i].point:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 3, "OUTLINE")
 	else
 		ACI[i].count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 2, "OUTLINE")
 		ACI[i].point:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 5, "OUTLINE")
@@ -190,6 +196,10 @@ end
 
 
 local function asIsPlayerSpell(spell)
+	if spell > 0 and spell <= INVSLOT_LAST_EQUIPPED then
+		return true;
+	end
+
 	if C_SpellBook.IsSpellKnown(spell) then
 		return true;
 	end
@@ -234,7 +244,7 @@ end
 
 
 local function ACI_OnEvent(self, event, arg1, ...)
-	if event == "PLAYER_ENTERING_WORLD" then
+	if event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_EQUIPMENT_CHANGED" then
 		C_Timer.After(0.5, ACI_Init);
 		if UnitAffectingCombat("player") then
 			for i = 1, ACI_MaxSpellCount do
@@ -412,6 +422,7 @@ ACI_mainframe:SetScript("OnEvent", ACI_OnEvent);
 ACI_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
 ACI_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
 ACI_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
+ACI_mainframe:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 
 
 

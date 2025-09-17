@@ -17,8 +17,13 @@
 ## Default Button Configuration Policy
 
 *   By default, 5 buttons are pre-configured per class according to the rules below. These can be changed via `esc >> Options >> AddOns >> asCombatInfo`.
-
+* To add spells or buffs, you need to use `Idtip` addon to find out the spell id or buff id.
 <iframe width="560" height="315" src="https://www.youtube.com/embed/yR7rTQcQ5jU?si=unfmLnS8A5EbIfdQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+* To add the cooldowns of trinkets, you can use the slot number of the trinket or other equiped items.
+![asCombatInfo_slot](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascombatinfo_slot.jpg?raw=true)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/28H9pMVZJ0A?si=TKSkuQ3tBzaMBHMu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 
 *   Up to 11 buttons can be registered (5 on the top row, 6 on the bottom). If you configure the bottom 6 buttons, the Cooldown list from the `asCooldownpulse` addon will be hidden.
 
@@ -52,9 +57,18 @@
 
 ## 버튼 기본 설정 정책
 
-* 직업별로 5개의 버튼이 기본 설정 되어 있습니다. 아래와 같은 규칙으로 설정 되어 있으며, esc >> 설정 >> 애드온 >> asCombatInfo에서 설정 변경 가능합니다.
-
+* 직업별로 5개의 버튼이 기본 설정 되어 있습니다. 아래와 같은 규칙으로 설정 되어 있으며, esc >> 설정 >> 애드온 
+>> asCombatInfo에서 설정 변경 가능합니다.
+* 스킬/버프를 추가 하기 위해 스킬의 Id 확인이 필요 합니다. 이 경우 Idtip 애드온을 사용하시면 됩니다.
 <iframe width="560" height="315" src="https://www.youtube.com/embed/yR7rTQcQ5jU?si=unfmLnS8A5EbIfdQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+* 장신구등 착용중인 아이템 슬롯 번호를 사용하면 해당 아이템 재 사용시간 확인이 가능합니다.
+![asCombatInfo_slot](https://github.com/aspilla/asMOD/blob/main/.Pictures/ascombatinfo_slot.jpg?raw=true)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/28H9pMVZJ0A?si=TKSkuQ3tBzaMBHMu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+
+
 
 * 최대 11개 버튼등록이 가능합니다. 상단 5개, 하단 6개가 표시 되며, 하단 6개를 추가 하시면 asCooldownpulse 의 Cooldown list 는 표시 되지 않습니다.
 
