@@ -58,6 +58,7 @@ local function createDebuffFrame(parent)
     end
 
     frame:EnableMouse(false);
+	frame:SetMouseMotionEnabled(true);
 
     return frame;
 end
@@ -67,7 +68,6 @@ local function createCastIcon(parent)
     frame.timetext = frame:CreateFontString(nil, "OVERLAY");
     frame.targetname = frame:CreateFontString(nil, "OVERLAY");
 
-    frame:EnableMouse(false);
 
     frame.icon:SetTexCoord(.08, .92, .08, .92);
     frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
@@ -93,6 +93,9 @@ local function createCastIcon(parent)
             GameTooltip:Hide();
         end)
     end
+    
+    frame:EnableMouse(false);
+	frame:SetMouseMotionEnabled(true);
 
     return frame;
 end
