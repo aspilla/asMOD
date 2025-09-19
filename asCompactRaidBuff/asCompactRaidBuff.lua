@@ -165,7 +165,7 @@ end
 
 local max_y = 0;
 -- Setup
-function ns.ACRB_setupFrame(asframe, bupdate)
+function ns.ACRB_setupFrame(asframe)
     if not asframe.frame or asframe.frame:IsForbidden() then
         return
     end
@@ -671,11 +671,9 @@ function ns.ACRB_setupFrame(asframe, bupdate)
         asframe.layout = layouttype;
     end
 
-    if bupdate then
-        ns.ACRB_UpdateHealerMana(asframe);
-        ns.ACRB_UpdateRaidIconAborbColor(asframe);
-        ns.ACRB_UpdateAuras(asframe);
-    end
+    ns.ACRB_UpdateHealerMana(asframe);
+    ns.ACRB_UpdateRaidIconAborbColor(asframe);
+    ns.ACRB_UpdateAuras(asframe);
 
     asframe.onEvent = function(self, event, arg1, arg2)
         if UnitExists(arg1) and UnitIsUnit(self.displayedUnit, arg1) then
@@ -809,13 +807,13 @@ local function ACRB_updateSetupAll()
     if (IsInRaid()) then
         for _, asframe in pairs(ns.asraid) do
             if asframe and asframe.frame and asframe.frame:IsShown() then
-                ns.ACRB_setupFrame(asframe, true);
+                ns.ACRB_setupFrame(asframe);
             end
         end
     elseif (IsInGroup()) then
         for _, asframe in pairs(ns.asparty) do
             if asframe and asframe.frame and asframe.frame:IsShown() then
-                ns.ACRB_setupFrame(asframe, true);
+                ns.ACRB_setupFrame(asframe);
             end
         end
     end
