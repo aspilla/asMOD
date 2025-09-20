@@ -196,12 +196,14 @@ end
 
 
 local function asIsPlayerSpell(spell)
-	if spell > 0 and spell <= INVSLOT_LAST_EQUIPPED then
-		return true;
-	end
+	if type(spell) == "number" then
+		if spell > 0 and spell <= INVSLOT_LAST_EQUIPPED then
+			return true;
+		end
 
-	if C_SpellBook.IsSpellKnown(spell) then
-		return true;
+		if C_SpellBook.IsSpellKnown(spell) then
+			return true;
+		end
 	end
 
 	for tab = 1, 3 do
@@ -392,12 +394,20 @@ function ACI_Init()
 			end
 
 			if ACI[i] then
-				ACI[i].obutton:init(ACI_SpellList[i], ACI[i]);
-				ACI[i].tooltip = (ACI_SpellList[i][1]);
 				if type(ACI_SpellList[i][1]) == "number" then
 					ACI[i].spellid = ACI_SpellList[i][1];
 				else
-					ACI[i].spellid = select(7, asGetSpellInfo(ACI_SpellList[i][1]));
+					local spellid = select(7, asGetSpellInfo(ACI_SpellList[i][1]));
+					if spellid then
+						ACI[i].spellid = spellid;
+						ACI_SpellList[i][1] = spellid;
+					end
+				end
+
+
+				if type(ACI_SpellList[i][1]) == "number" then
+					ACI[i].obutton:init(ACI_SpellList[i], ACI[i]);
+					ACI[i].tooltip = (ACI_SpellList[i][1]);
 				end
 			end
 		end

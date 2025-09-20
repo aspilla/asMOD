@@ -82,10 +82,10 @@ ACI_Options_Default = {
 
 	--잠행
 	ACI_SpellList_ROGUE_3 = {
-		version = 250207,
+		version = 250920,
 		{ 212283, 2 },
 		{ 185313, 2 },
-		{ 121471, 2 },
+		{ 99, 384631, {384631, 2}, { 121471, 2 }},
 		{ 280719, 1 },
 		{ 1943,   4, nil, 24 * 0.3, nil, nil, nil, nil, nil, nil, 6 },
 	},
@@ -592,7 +592,7 @@ local function SetupEditBoxOption()
 		editBox:SetAutoFocus(false);
 		editBox:ClearFocus();
 		editBox:SetTextInsets(0, 0, 0, 1);
-		editBox:SetNumeric(true);
+		editBox:SetNumeric(false);
 		editBox:Show();
 		editBox:SetCursorPosition(0);
 		x = x + 210;
@@ -613,7 +613,7 @@ local function SetupEditBoxOption()
 		}
 
 		local function updatedata()
-			local data = editBox:GetNumber()
+			local data = editBox:GetText()
 			local type = UIDropDownMenu_GetSelectedValue(dropDown);
 
 			if data ~= nil and type > 0 and type <= 6 then
