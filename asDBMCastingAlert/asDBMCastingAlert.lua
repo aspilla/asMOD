@@ -246,12 +246,10 @@ local function ADCA_OnUpdate()
 
 			if castingInfo.needtointerrupt then
 				if not frame.isAlert then
-					ns.lib.PixelGlow_Start(frame.button, { 1, 1, 0, 1 });
 					ns.lib.PixelGlow_Start(frame, { 1, 1, 0, 1 });
 					frame.isAlert = true;
 				end
 			else
-				ns.lib.PixelGlow_Stop(frame.button);
 				ns.lib.PixelGlow_Stop(frame);
 				frame.isAlert = false
 			end
