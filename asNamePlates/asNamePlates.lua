@@ -66,16 +66,16 @@ local MaxLevel = GetMaxLevelForExpansionLevel(10);
 
 
 -- Cooldown
-local function asCooldownFrame_Clear(self)
-    self:Clear();
+local function asCooldownFrame_Clear(cooldown)
+    cooldown:Clear();
 end
 -- cooldown
-local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+local function asCooldownFrame_Set(cooldown, start, duration, enable, forceShowDrawEdge, modRate)
     if enable and enable ~= 0 and start > 0 and duration > 0 then
-        self:SetDrawEdge(forceShowDrawEdge);
-        self:SetCooldown(start, duration, modRate);
+        cooldown:SetDrawEdge(forceShowDrawEdge);
+        cooldown:SetCooldown(start, duration, modRate);
     else
-        asCooldownFrame_Clear(self);
+        asCooldownFrame_Clear(cooldown);
     end
 end
 
@@ -222,34 +222,20 @@ local function setSize(frame, size)
     frame:SetHeight((size + 2) * ns.ANameP_Size_Rate);
 end
 
-local classbar_height = nil;
-local function GetClassBarHeight()
-    if not classbar_height then
-        local class = NamePlateDriverFrame:GetClassNameplateBar();
 
-        if class then
-            classbar_height = class:GetHeight();
-        else
-            classbar_height = 0;
-        end
-    end
-
-    return classbar_height;
-end
-
-local function updateAuras(self)
+local function updateAuras(asframe)
     local numDebuffs = 1;
-    local parent = self.nameplateBase;
+    local parent = asframe.nameplateBase;
     local healthBar = parent.UnitFrame.healthBar;
     local bShowCC = false;
     local auraData;
-    local icon_size = self.icon_size;
-    local unit = self.unit;
-    local guid = self.guid;
+    local icon_size = asframe.icon_size;
+    local unit = asframe.unit;
+    local guid = asframe.guid;
 
 
-    if not self.checkaura then
-        self:Hide();
+    if not asframe.checkaura then
+        asframe:Hide();
         return;
     end
 
@@ -272,7 +258,7 @@ local function updateAuras(self)
             end
 
 
-            local frame = self.buffList[numDebuffs];
+            local frame = asframe.buffList[numDebuffs];
             frame.alert = false;
 
             setSize(frame, icon_size);
@@ -296,7 +282,7 @@ local function updateAuras(self)
                 return true;
             end
 
-            local frame = self.buffList[numDebuffs];
+            local frame = asframe.buffList[numDebuffs];
             frame.alert = false;
             local size = icon_size;
 
@@ -326,9 +312,9 @@ local function updateAuras(self)
             return false;
         end);
 
-        self.debuffColor = 0;
-        self.checkdebuffColor1 = false;
-        self.checkdebuffColor2 = false;
+        asframe.debuffColor = 0;
+        asframe.checkdebuffColor1 = false;
+        asframe.checkdebuffColor2 = false;
 
         auraData.debuffs:Iterate(function(auraInstanceID, aura)
             local isshowlist = false;
@@ -347,23 +333,23 @@ local function updateAuras(self)
                     b = 0.3
                 };
 
-                setFrame(self.CCdebuff, aura.icon, aura.applications, aura.expirationTime, aura.duration, color);
+                setFrame(asframe.CCdebuff, aura.icon, aura.applications, aura.expirationTime, aura.duration, color);
 
-                self.CCdebuff:ClearAllPoints();
-                if self.casticon:IsShown() then
-                    self.CCdebuff:SetPoint("LEFT", self.casticon, "RIGHT", 1, 0);
+                asframe.CCdebuff:ClearAllPoints();
+                if asframe.casticon:IsShown() then
+                    asframe.CCdebuff:SetPoint("LEFT", asframe.casticon, "RIGHT", 1, 0);
                 else
-                    self.CCdebuff:SetPoint("LEFT", healthBar, "RIGHT", 1, 0);
+                    asframe.CCdebuff:SetPoint("LEFT", healthBar, "RIGHT", 1, 0);
                 end
-                self.CCdebuff.filter = auraData.debufffilter;
-                self.CCdebuff:SetID(auraInstanceID);
-                self.CCdebuff.unit = unit;
+                asframe.CCdebuff.filter = auraData.debufffilter;
+                asframe.CCdebuff:SetID(auraInstanceID);
+                asframe.CCdebuff.unit = unit;
 
-                self.CCdebuff:Show();
+                asframe.CCdebuff:Show();
             else
                 local alert = false;
                 local showlist_time = nil;
-                local frame = self.buffList[numDebuffs];
+                local frame = asframe.buffList[numDebuffs];
 
                 if showlist then
                     isshowlist = true
@@ -384,12 +370,12 @@ local function updateAuras(self)
                             alert = true;
                         else
                             if alertnameplate then
-                                if alertnameplate == 1 and self.checkdebuffColor1 == false then
-                                    self.debuffColor = self.debuffColor + alertnameplate;
-                                    self.checkdebuffColor1 = true;
-                                elseif alertnameplate == 2 and self.checkdebuffColor2 == false then
-                                    self.debuffColor = self.debuffColor + alertnameplate;
-                                    self.checkdebuffColor2 = true;
+                                if alertnameplate == 1 and asframe.checkdebuffColor1 == false then
+                                    asframe.debuffColor = asframe.debuffColor + alertnameplate;
+                                    asframe.checkdebuffColor1 = true;
+                                elseif alertnameplate == 2 and asframe.checkdebuffColor2 == false then
+                                    asframe.debuffColor = asframe.debuffColor + alertnameplate;
+                                    asframe.checkdebuffColor2 = true;
                                 end
                             end
                         end
@@ -397,12 +383,12 @@ local function updateAuras(self)
                         if (aura.applications >= showlist_time) then
                             alert = true;
                             if alertnameplate then
-                                if alertnameplate == 1 and self.checkdebuffColor1 == false then
-                                    self.debuffColor = self.debuffColor + alertnameplate;
-                                    self.checkdebuffColor1 = true;
-                                elseif alertnameplate == 2 and self.checkdebuffColor2 == false then
-                                    self.debuffColor = self.debuffColor + alertnameplate;
-                                    self.checkdebuffColor2 = true;
+                                if alertnameplate == 1 and asframe.checkdebuffColor1 == false then
+                                    asframe.debuffColor = asframe.debuffColor + alertnameplate;
+                                    asframe.checkdebuffColor1 = true;
+                                elseif alertnameplate == 2 and asframe.checkdebuffColor2 == false then
+                                    asframe.debuffColor = asframe.debuffColor + alertnameplate;
+                                    asframe.checkdebuffColor2 = true;
                                 end
                             end
                         end
@@ -476,7 +462,7 @@ local function updateAuras(self)
     end
 
     for i = 1, numDebuffs - 1 do
-        local frame = self.buffList[i];
+        local frame = asframe.buffList[i];
         if (frame) then
             frame:Show();
             if frame.alert then
@@ -488,7 +474,7 @@ local function updateAuras(self)
     end
 
     for i = numDebuffs, ns.ANameP_MaxDebuff do
-        local frame = self.buffList[i];
+        local frame = asframe.buffList[i];
         if (frame) then
             frame:Hide();
             ns.lib.ButtonGlow_Stop(frame);
@@ -496,32 +482,32 @@ local function updateAuras(self)
     end
 
     if numDebuffs > 1 then
-        self:Show();
+        asframe:Show();
     end
 
     if bShowCC == false then
-        self.CCdebuff:Hide();
+        asframe.CCdebuff:Hide();
     end
 end
 
 
-local function updateDebuffAnchor(frames, index, parent, unitframe, xoffset)
+local function updateDebuffAnchor(frames, index, parent, anchor, offset)
     local buff = frames[index];
 
     buff:ClearAllPoints();
 
     if parent.downbuff then
         if (index == 1) then
-            buff:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, 0);
+            buff:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, offset);
         elseif (index == (ns.ANameP_DebuffsPerLine + 1)) then
             buff:SetPoint("TOPLEFT", frames[1], "BOTTOMLEFT", 0, -4);
         else
             buff:SetPoint("BOTTOMLEFT", frames[index - 1], "BOTTOMRIGHT", 1, 0);
         end
     else
-        if ns.options.ANameP_DebuffAnchorPoint == 2 and unitframe then
+        if ns.options.ANameP_DebuffAnchorPoint == 2 then
             if (index == 1) then
-                buff:SetPoint("RIGHT", unitframe, "LEFT", xoffset, 0);
+                buff:SetPoint("RIGHT", anchor, "LEFT", offset, 0);
             else
                 buff:SetPoint("RIGHT", frames[index - 1], "LEFT", -1, 0);
             end
@@ -533,7 +519,7 @@ local function updateDebuffAnchor(frames, index, parent, unitframe, xoffset)
             end
         else
             if (index == 1) then
-                buff:SetPoint("BOTTOMLEFT", parent, "TOPLEFT", 0, 0);
+                buff:SetPoint("BOTTOMLEFT", anchor, "TOPLEFT", 0, offset);
             elseif (index == (ns.ANameP_DebuffsPerLine + 1)) then
                 buff:SetPoint("BOTTOMLEFT", frames[1], "TOPLEFT", 0, 4);
             else
@@ -543,13 +529,13 @@ local function updateDebuffAnchor(frames, index, parent, unitframe, xoffset)
     end
 end
 
-local function updateTargetNameP(self)
-    if not self.unit or not self.checkaura then
+local function updateTargetNameP(asframe)
+    if not asframe.unit or not asframe.checkaura then
         return;
     end
 
-    local unit = self.unit;
-    local parent = self.nameplateBase;
+    local unit = asframe.unit;
+    local parent = asframe.nameplateBase;
 
     if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden() then
         return;
@@ -562,7 +548,7 @@ local function updateTargetNameP(self)
         return;
     end
 
-    local orig_height = self.orig_height
+    local orig_height = asframe.orig_height
     local cast_height = 8;
 
     if UnitFrame.castBar then
@@ -573,8 +559,9 @@ local function updateTargetNameP(self)
         return;
     end
 
-    local casticon = self.casticon;
+    local casticon = asframe.casticon;
     local height = orig_height;
+    local width = asframe.orig_width;
     local base_y = ns.ANameP_TargetBuffY;
 
     if UnitFrame.name:IsShown() then
@@ -583,18 +570,18 @@ local function updateTargetNameP(self)
 
     if UnitIsUnit(unit, "target") then
         height = orig_height + ns.ANameP_TargetHealthBarHeight;
-        self.healthtext:Show();
+        asframe.healthtext:Show();
 
         local guid_mouseover = UnitGUID("mouseover")
 
-        if self.guid == guid_mouseover then
-            self.motext:Show();
+        if asframe.guid == guid_mouseover then
+            asframe.motext:Show();
         else
-            self.motext:Hide();
+            asframe.motext:Hide();
         end
 
         if ns.options.ANameP_ShowTargetArrow then
-            self.tgtext:Show();
+            asframe.tgtext:Show();
         end
 
         if casticon then
@@ -603,33 +590,36 @@ local function updateTargetNameP(self)
             casticon.border:SetVertexColor(1, 1, 1);
         end
 
+        asframe:SetHeight(height + cast_height + 3);
+        asframe:SetWidth(width + ((height + cast_height + 3) * 1.1) + 7);
+
         if GetCVarBool("nameplateResourceOnTarget") then
-            base_y = base_y + GetClassBarHeight();
+            base_y = base_y + 10;
         end
 
-        self.powerbar.value:Show();
+        asframe.powerbar.value:Show();
     elseif UnitIsUnit(unit, "player") then
         height = orig_height + ns.ANameP_TargetHealthBarHeight;
-        self.healthtext:Show();
-        self.motext:Hide();
-        self.tgtext:Hide();
+        asframe.healthtext:Show();
+        asframe.motext:Hide();
+        asframe.tgtext:Hide();
     else
         height = orig_height;
 
         local guid_mouseover = UnitGUID("mouseover")
 
-        if self.guid == guid_mouseover then
+        if asframe.guid == guid_mouseover then
             height = orig_height + ns.ANameP_TargetHealthBarHeight;
-            self.healthtext:Show();
-            self.motext:Show();
-            self.powerbar.value:Show();
+            asframe.healthtext:Show();
+            asframe.motext:Show();
+            asframe.powerbar.value:Show();
         else
-            self.healthtext:Hide();
-            self.motext:Hide();
-            self.powerbar.value:Hide();
+            asframe.healthtext:Hide();
+            asframe.motext:Hide();
+            asframe.powerbar.value:Hide();
         end
 
-        self.tgtext:Hide();
+        asframe.tgtext:Hide();
 
         if casticon then
             casticon:SetWidth((height + cast_height + 3) * 1.1);
@@ -637,53 +627,48 @@ local function updateTargetNameP(self)
             casticon.border:SetVertexColor(0, 0, 0);
         end
 
+        asframe:SetHeight(height + cast_height + 3);
+        asframe:SetWidth(width + ((height + cast_height + 3) * 1.1) + 7);
+
         if UnitFrame.name:IsShown() then
             base_y = base_y + 4;
         end
     end
 
-    if ns.options.ANameP_DebuffAnchorPoint == 2 then
+    if ns.options.ANameP_DebuffAnchorPoint == 2 and not UnitIsUnit(unit, "player") then
         local xoffset = -5;
         if GetRaidTargetIndex(unit) then
             xoffset = -5 - 22;
         end
-        updateDebuffAnchor(self.buffList, 1, self, self.aggro, xoffset);
+        updateDebuffAnchor(asframe.buffList, 1, asframe, asframe.aggro, xoffset);
+    else
+        local yoffset = base_y;
+        if UnitIsUnit(unit, "player") and asframe.downbuff then
+            yoffset = playerbuffposition - 5;
+        end
+        updateDebuffAnchor(asframe.buffList, 1, asframe, healthBarContainer, yoffset);
     end
 
     if UnitIsUnit(unit, "focus") then
-        self.focus_indi:Show();
+        asframe.focus_indi:Show();
     else
-        self.focus_indi:Hide();
+        asframe.focus_indi:Hide();
     end
 
     if ns.options.ANameP_ShowPetTarget then
         if UnitIsUnit(unit, "pettarget") then
-            self.pettarget:Show();
+            asframe.pettarget:Show();
         else
-            self.pettarget:Hide();
+            asframe.pettarget:Hide();
         end
     end
 
     -- Healthbar 크기
     healthBarContainer:SetHeight(height);
 
-    -- 버프 Position
-    self:ClearAllPoints();
-    if UnitIsUnit(unit, "player") then
-        if self.downbuff then
-            self:SetPoint("TOPLEFT", healthBarContainer, "BOTTOMLEFT", 0, playerbuffposition - 5);
-        else
-            self:SetPoint("BOTTOMLEFT", healthBarContainer, "TOPLEFT", 0, base_y);
-        end
 
-        if UnitFrame.BuffFrame then
-            UnitFrame.BuffFrame:Hide();
-        end
-    else
-        self:SetPoint("BOTTOMLEFT", healthBarContainer, "TOPLEFT", 0, base_y);
-        if UnitFrame.BuffFrame then
-            UnitFrame.BuffFrame:Hide();
-        end
+    if UnitFrame.BuffFrame then
+        UnitFrame.BuffFrame:Hide();
     end
 end
 
@@ -764,21 +749,21 @@ local function updatePower(asframe)
 end
 
 -- Healthbar 색상 처리부
-local function setColoronStatusBar(self, r, g, b)
-    local parent = self.nameplateBase;
+local function setColoronStatusBar(asframe, r, g, b)
+    local parent = asframe.nameplateBase;
 
-    if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden() or not self.BarColor then
+    if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden() or not asframe.BarColor then
         return;
     end
 
-    local oldR, oldG, oldB = self.BarColor:GetVertexColor();
+    local oldR, oldG, oldB = asframe.BarColor:GetVertexColor();
 
     if r and g and b and (r ~= oldR or g ~= oldG or b ~= oldB) then
-        self.BarColor:SetVertexColor(r, g, b);
+        asframe.BarColor:SetVertexColor(r, g, b);
     end
 
-    self.BarTexture:Hide();
-    self.BarColor:Show();
+    asframe.BarTexture:Hide();
+    asframe.BarColor:Show();
 end
 
 local function isDangerousSpell(spellId)
@@ -803,14 +788,14 @@ local function getNPCID(guid)
     return nil;
 end
 
-local function updateHealthbarColor(self)
+local function updateHealthbarColor(asframe)
     -- unit name 부터
-    if not self.unit or not self.checkcolor or not self.BarColor or not self.BarTexture then
+    if not asframe.unit or not asframe.checkcolor or not asframe.BarColor or not asframe.BarTexture then
         return;
     end
 
-    local unit = self.unit;
-    local parent = self.nameplateBase;
+    local unit = asframe.unit;
+    local parent = asframe.nameplateBase;
 
     if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden() then
         return;
@@ -853,7 +838,7 @@ local function updateHealthbarColor(self)
 
 
     -- Cast Interrupt
-    if self.castspellid and self.casticon and incombat then
+    if asframe.castspellid and asframe.casticon and incombat then
         local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid =
             UnitCastingInfo(unit);
         if not name then
@@ -862,11 +847,11 @@ local function updateHealthbarColor(self)
 
         if spellid then
             local isDanger, binterrupt = isDangerousSpell(spellid);
-            if notInterruptible and self.stunable == false then
+            if notInterruptible and asframe.stunable == false then
                 binterrupt = false;
             end
 
-            self.castspellid = spellid;
+            asframe.castspellid = spellid;
             if isDanger then
                 if binterrupt then
                     alerttype = 2;
@@ -902,20 +887,20 @@ local function updateHealthbarColor(self)
             return nil;
         end
 
-        if self.namecolor == nil then
-            local npcid = getNPCID(self.guid);
+        if asframe.namecolor == nil then
+            local npcid = getNPCID(asframe.guid);
             local npccolor = ns.ANameP_AlertList[npcid];
-            self.namecolor = npccolor;
+            asframe.namecolor = npccolor;
         end
 
-        if self.namecolor then
+        if asframe.namecolor then
             color = {
-                r = self.namecolor[1],
-                g = self.namecolor[2],
-                b = self.namecolor[3]
+                r = asframe.namecolor[1],
+                g = asframe.namecolor[2],
+                b = asframe.namecolor[3]
             };
 
-            if self.namecolor[4] == 1 then
+            if asframe.namecolor[4] == 1 then
                 alerttype = 3;
             end
 
@@ -973,12 +958,12 @@ local function updateHealthbarColor(self)
         end
 
         -- Debuff Color
-        if self.debuffColor > 0 then
-            if self.debuffColor == 1 then
+        if asframe.debuffColor > 0 then
+            if asframe.debuffColor == 1 then
                 return ns.options.ANameP_DebuffColor;
-            elseif self.debuffColor == 2 then
+            elseif asframe.debuffColor == 2 then
                 return ns.options.ANameP_DebuffColor2;
-            elseif self.debuffColor > 2 then
+            elseif asframe.debuffColor > 2 then
                 return ns.options.ANameP_DebuffColor3;
             end
         end
@@ -995,7 +980,7 @@ local function updateHealthbarColor(self)
             end
         end
 
-        if self.isboss then
+        if asframe.isboss then
             return ns.options.ANameP_BossColor;
         end
 
@@ -1011,8 +996,8 @@ local function updateHealthbarColor(self)
             return ns.options.ANameP_QuestColor;
         end
 
-        if self.automarkcolor then
-            return self.automarkcolor;
+        if asframe.automarkcolor then
+            return asframe.automarkcolor;
         end
 
         return nil;
@@ -1020,63 +1005,67 @@ local function updateHealthbarColor(self)
 
     if bcheckBeastCleave then
         local currtime = GetTime();
-        local guid = self.guid;
+        local guid = asframe.guid;
         local cleavetime = cleavedunits[guid];
         if cleavetime and currtime - cleavetime < 1.5 then
-            if self.debuffColor == 1 then
-                self.debuffColor = 3;
-            elseif self.debuffColor == 0 then
-                self.debuffColor = 2;
+            if asframe.debuffColor == 1 then
+                asframe.debuffColor = 3;
+            elseif asframe.debuffColor == 0 then
+                asframe.debuffColor = 2;
             end
-            self.petcleave:Show();
+            asframe.petcleave:Show();
         else
-            self.petcleave:Hide();
+            asframe.petcleave:Hide();
         end
     end
 
     local color = getColor();
 
     if color then
-        setColoronStatusBar(self, color.r, color.g, color.b);
+        setColoronStatusBar(asframe, color.r, color.g, color.b);
     else
-        self.BarColor:Hide();
-        self.BarTexture:Show();
+        asframe.BarColor:Hide();
+        asframe.BarTexture:Show();
     end
 
-    if alerttype ~= self.alerttype then
+    if alerttype ~= asframe.alerttype then
         if alerttype == 3 then
-            ns.lib.PixelGlow_Start(healthBar, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1000);
-            ns.lib.PixelGlow_Stop(self.casticon);
+            ns.lib.PixelGlow_Start(healthBar, nil, nil, nil, nil, nil, 2, 2, nil, nil, 1000);
+            ns.lib.PixelGlow_Stop(asframe.casticon);
+            ns.lib.PixelGlow_Stop(asframe);
         elseif alerttype == 2 then
-            ns.lib.PixelGlow_Start(self.casticon, { 1, 1, 0, 1 });
-            ns.lib.PixelGlow_Start(healthBar, { 1, 1, 0, 1 }, nil, nil, nil, nil, nil, nil, nil, nil, 1000);
+            ns.lib.PixelGlow_Start(asframe, { 1, 1, 0, 1 }, 16, nil, 5, 2, nil, nil, nil, nil, 1000);
+            ns.lib.PixelGlow_Stop(asframe.casticon);
+            ns.lib.PixelGlow_Stop(healthBar);
         elseif alerttype == 1 then
-            ns.lib.PixelGlow_Start(self.casticon);
+            ns.lib.PixelGlow_Start(asframe.casticon);
+            ns.lib.PixelGlow_Stop(asframe);
             ns.lib.PixelGlow_Stop(healthBar);
         else
-            ns.lib.PixelGlow_Stop(self.casticon);
+            ns.lib.PixelGlow_Stop(asframe.casticon);
+            ns.lib.PixelGlow_Stop(asframe);
             ns.lib.PixelGlow_Stop(healthBar);
         end
-        self.alerttype = alerttype;
+        asframe.alerttype = alerttype;
     end
 end
 
 
-local function updatePVPAggro(self)
+local function updatePVPAggro(asframe)
     if not ns.ANameP_PVPAggroShow then
         return;
     end
 
-    if not (self.namecolor or self.checkpvptarget or self.partydealer) then
+    if not (asframe.namecolor or asframe.checkpvptarget or asframe.partydealer) then
         return;
     end
 
-    if not self.unit then
+    if not asframe.unit then
         return
     end
 
-    local unit = self.unit;
-    local parent = self.nameplateBase;
+    local unit = asframe.unit;
+    local parent = asframe.nameplateBase;
 
     if parent.UnitFrame:IsForbidden() then
         return;
@@ -1085,18 +1074,18 @@ local function updatePVPAggro(self)
     local isTargetPlayer = UnitIsUnit(unit .. "target", "player");
 
     if (isTargetPlayer) then
-        if self.markcolor and self.markcolor == 1 then
-            self.aggro:SetText(aggroIconR);
-            self.aggro:Show();
-            self.markcolor = 0;
+        if asframe.markcolor and asframe.markcolor == 1 then
+            asframe.aggro:SetText(aggroIconR);
+            asframe.aggro:Show();
+            asframe.markcolor = 0;
         else
-            self.aggro:SetText(aggroIcon);
-            self.aggro:Show();
-            self.markcolor = 1;
+            asframe.aggro:SetText(aggroIcon);
+            asframe.aggro:Show();
+            asframe.markcolor = 1;
         end
     else
-        self.aggro:SetText("");
-        self.aggro:Hide();
+        asframe.aggro:SetText("");
+        asframe.aggro:Hide();
     end
 end
 
@@ -1192,29 +1181,29 @@ local unit_guid_list = {};
 
 local Aggro_Y = -5;
 
-local function checkSpellCasting(self)
-    if not self.unit or UnitIsUnit(self.unit, "player") then
+local function checkSpellCasting(asframe)
+    if not asframe.unit or UnitIsUnit(asframe.unit, "player") then
         return;
     end
 
-    local unit = self.unit;
+    local unit = asframe.unit;
     local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
         unit);
     if not name then
         name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
     end
 
-    if self.casticon then
-        local frameIcon = self.casticon.icon;
+    if asframe.casticon then
+        local frameIcon = asframe.casticon.icon;
         if frameIcon then
             if name then
                 frameIcon:SetTexture(texture);
                 frameIcon:SetDesaturated(false);
                 frameIcon:SetVertexColor(1, 1, 1);
-                self.casticon:Show();
-                self.casticon.timetext:Hide();
-                self.castspellid = spellid;
-                self.casticon.castspellid = spellid;
+                asframe.casticon:Show();
+                asframe.casticon.timetext:Hide();
+                asframe.castspellid = spellid;
+                asframe.casticon.castspellid = spellid;
 
                 local targettarget = unit .. "target";
 
@@ -1223,14 +1212,14 @@ local function checkSpellCasting(self)
                     if Class then
                         local color = RAID_CLASS_COLORS[Class]
                         if color then
-                            self.casticon.targetname:SetTextColor(color.r, color.g, color.b);
-                            self.casticon.targetname:SetText(UnitName(targettarget));
-                            self.casticon.targetname:Show();
+                            asframe.casticon.targetname:SetTextColor(color.r, color.g, color.b);
+                            asframe.casticon.targetname:SetText(UnitName(targettarget));
+                            asframe.casticon.targetname:Show();
                         end
                     end
                 else
-                    self.casticon.targetname:SetText("");
-                    self.casticon.targetname:Hide();
+                    asframe.casticon.targetname:SetText("");
+                    asframe.casticon.targetname:Hide();
                 end
             else
                 local dbm_show = false;
@@ -1245,35 +1234,35 @@ local function checkSpellCasting(self)
 
                         if remain < -1 then
                             ns.dbm_event_list[id] = nil;
-                        elseif guid and self.guid == guid and remain < min_remain then
+                        elseif guid and asframe.guid == guid and remain < min_remain then
                             frameIcon:SetTexture(icon);
-                            self.casticon:Show();
-                            self.casticon.castspellid = dbmspellid;
+                            asframe.casticon:Show();
+                            asframe.casticon.castspellid = dbmspellid;
                             frameIcon:SetDesaturated(true);
                             if remain > 2 then
                                 if colorid ~= 4 then
                                     frameIcon:SetVertexColor(1, 0.9, 0.9);
-                                    self.casticon.timetext:SetTextColor(1, 1, 1);
+                                    asframe.casticon.timetext:SetTextColor(1, 1, 1);
                                 else
                                     frameIcon:SetVertexColor(0.9, 1, 0.9);
-                                    self.casticon.timetext:SetTextColor(1, 1, 1);
+                                    asframe.casticon.timetext:SetTextColor(1, 1, 1);
                                 end
                             else
                                 local color = frameIcon:GetVertexColor();
                                 if colorid ~= 4 then
                                     frameIcon:SetVertexColor(1, 0.3, 0.3);
-                                    self.casticon.timetext:SetTextColor(0, 1, 0);
+                                    asframe.casticon.timetext:SetTextColor(0, 1, 0);
                                 else
                                     frameIcon:SetVertexColor(0.3, 1, 0.3);
-                                    self.casticon.timetext:SetTextColor(1, 0, 0);
+                                    asframe.casticon.timetext:SetTextColor(1, 0, 0);
                                 end
                             end
 
                             if remain > 0 then
-                                self.casticon.timetext:SetText(math.ceil(remain));
-                                self.casticon.timetext:Show();
+                                asframe.casticon.timetext:SetText(math.ceil(remain));
+                                asframe.casticon.timetext:Show();
                             else
-                                self.casticon.timetext:Hide();
+                                asframe.casticon.timetext:Hide();
                             end
 
                             dbm_show = true;
@@ -1283,27 +1272,27 @@ local function checkSpellCasting(self)
                 end
 
                 if dbm_show == false then
-                    self.casticon:Hide();
+                    asframe.casticon:Hide();
                 end
-                self.castspellid = nil;
-                self.casticon.targetname:Hide();
+                asframe.castspellid = nil;
+                asframe.casticon.targetname:Hide();
             end
         end
     end
 end
 
 
-local function asNamePlates_OnEvent(self, event, ...)
+local function asNamePlates_OnEvent(asframe, event, ...)
     if (event == "UNIT_AURA") then
         local unit, info = ...;
         ns.UpdateEventAuras(unit, info);
     elseif (event == "PLAYER_TARGET_CHANGED") then
-        updateTargetNameP(self);
-        updateHealthText(self);
-        updatePower(self);
+        updateTargetNameP(asframe);
+        updateHealthText(asframe);
+        updatePower(asframe);
     else
-        checkSpellCasting(self);
-        updateHealthbarColor(self);
+        checkSpellCasting(asframe);
+        updateHealthbarColor(asframe);
     end
 end
 
@@ -1330,11 +1319,12 @@ local function removeUnit(namePlateUnitToken)
                 ns.lib.ButtonGlow_Stop(asframe.buffList[i]);
             end
         end
-        ns.lib.PixelGlow_Stop(asframe.casticon);
 
         if prev_mouseover == asframe then
             prev_mouseover = nil;
         end
+        ns.lib.PixelGlow_Stop(asframe.casticon);
+        ns.lib.PixelGlow_Stop(asframe);
 
         asframe.aggro:Hide();
         asframe.petcleave:Hide();
@@ -1365,8 +1355,8 @@ local function removeUnit(namePlateUnitToken)
         if namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame.healthBar then
             ---@diagnostic disable-next-line: undefined-field
             ns.lib.PixelGlow_Stop(namePlateFrameBase.UnitFrame.healthBar);
-            asframe.alerttype = nil;
         end
+        asframe.alerttype = nil;
 
         asframe:ClearAllPoints();
         ns.freeasframe(asframe);
@@ -1412,7 +1402,8 @@ local function addNamePlate(namePlateFrameBase)
     end
 
     local unitFrame = namePlateFrameBase.UnitFrame;
-    local healthbar = namePlateFrameBase.UnitFrame.healthBar;
+    local healthbar = unitFrame.healthBar;
+    local healthBarContainer = unitFrame.HealthBarsContainer;
     local unit = namePlateFrameBase.namePlateUnitToken;
 
     if UnitIsUnit("player", unit) then
@@ -1577,6 +1568,7 @@ local function addNamePlate(namePlateFrameBase)
     ns.UpdateEventAuras(unit);
 
     local orig_width = healthbar:GetWidth();
+    asframe.orig_width = orig_width;
     if ns.ANameP_SIZE > 0 then
         asframe.icon_size = ns.ANameP_SIZE;
     else
@@ -1624,9 +1616,11 @@ local function addNamePlate(namePlateFrameBase)
         asframe.powerbar:Hide();
     end
 
-    asframe:SetWidth(1);
-    asframe:SetHeight(1);
-    asframe:SetScale(1);
+    asframe:SetWidth(orig_width + 30);
+    asframe:SetHeight(g_orig_height);
+    asframe:ClearAllPoints();
+    asframe:SetPoint("TOPLEFT", healthBarContainer, "TOPLEFT", -5, 1);
+
 
     local showhealer = false;
     local checkaura = false;
@@ -1653,7 +1647,7 @@ local function addNamePlate(namePlateFrameBase)
             if Buff_Y < 0 then
                 asframe.downbuff = true;
                 if GetCVar("nameplateResourceOnTarget") == "0" then
-                    playerbuffposition = Buff_Y - GetClassBarHeight();
+                    playerbuffposition = Buff_Y - 23;
                 else
                     playerbuffposition = Buff_Y;
                 end
@@ -1686,7 +1680,7 @@ local function addNamePlate(namePlateFrameBase)
     end
 
     for i = 1, ns.ANameP_MaxDebuff do
-        updateDebuffAnchor(asframe.buffList, i, asframe, asframe.aggro, -5);
+        updateDebuffAnchor(asframe.buffList, i, asframe, asframe.aggro, 1);
     end
 
     asframe.checkaura = checkaura;
