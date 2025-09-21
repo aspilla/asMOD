@@ -1,7 +1,8 @@
 ﻿local _, ns = ...;
 local AIH_SIZE = 30;
-local AIH_X = 53;
-local AIH_Y = -55;
+local AIH_TARGET_SIZE = 25;
+local AIH_X = 55;
+local AIH_Y = -57;
 local AIH_F_X = 0;
 local AIH_F_Y = 67;
 local AIH_M_X = 50;
@@ -269,9 +270,15 @@ local function NewMod(self, ...)
 end
 
 local function createbutton(unit)
+    local size = AIH_SIZE;
+
+    if unit == "target" then
+        size = AIH_TARGET_SIZE;
+    end
+
     local frame = CreateFrame("Button", nil, mainframe, "AIHFrameTemplate");
-    frame:SetWidth(AIH_SIZE);
-    frame:SetHeight(AIH_SIZE * 0.9);
+    frame:SetWidth(size);
+    frame:SetHeight(size * 0.9);
 
     for _, r in next, { frame.cooldown:GetRegions() } do
         if r:GetObjectType() == "FontString" then
