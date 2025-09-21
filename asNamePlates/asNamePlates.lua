@@ -590,7 +590,7 @@ local function updateTargetNameP(asframe)
             casticon.border:SetVertexColor(1, 1, 1);
         end
 
-        asframe:SetHeight(height + cast_height + 3);
+        asframe:SetHeight(height + cast_height + 5);
         asframe:SetWidth(width + ((height + cast_height + 3) * 1.1) + 7);
 
         if GetCVarBool("nameplateResourceOnTarget") then
@@ -627,7 +627,7 @@ local function updateTargetNameP(asframe)
             casticon.border:SetVertexColor(0, 0, 0);
         end
 
-        asframe:SetHeight(height + cast_height + 3);
+        asframe:SetHeight(height + cast_height + 5);
         asframe:SetWidth(width + ((height + cast_height + 3) * 1.1) + 7);
 
         if UnitFrame.name:IsShown() then

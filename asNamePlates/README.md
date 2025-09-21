@@ -53,6 +53,7 @@
 ### 5. DBM Functionality (Requires DBM)
 
 * **M+ Interrupt Highlight:** Changes the nameplate color and adds a border alert for important interrupt targets in M+ dungeons (requires DBM).
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asnameplates_interrupt.jpg?raw=true)
 * **DBM Key Skill Highlight:** Changes the nameplate color for key boss abilities (requires DBM).
   * **Green (Dark Green if you are the target):** Interruptible.
   * **Gray (Red if you are the target):** Uninterruptible.
@@ -156,6 +157,7 @@ Automatically creates a macro named `asNamePlates Setup`. Using this macro as sh
 ### 5. DBM 기능 (DBM 설치 필요)
 
 * **M+ 차단 강조:** M+ 던전에서 중요한 차단 대상에 대해 네임플레이트 색상을 변경하고 테두리 알림을 추가합니다 (DBM 필요).
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asnameplates_interrupt.jpg?raw=true)
 * **DBM 주요 스킬 강조:** 주요 보스 기술에 대한 네임플레이트 색상을 변경합니다 (DBM 필요).
   * **녹색 (본인이 대상일 경우 진녹색):** 차단 가능.
   * **회색 (본인이 대상일 경우 빨간색):** 차단 불가능.
