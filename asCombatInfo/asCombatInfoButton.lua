@@ -104,8 +104,8 @@ function ns.Button:initButton()
     self.borderColor = { r = 0, g = 0, b = 0 };
     self.start = 0;
     self.duration = 0;
-    self.enable = false;
-    self.showedge = false;
+    self.enable = true;
+    self.showedge = true;
     self.reversecool = false;
     self.spellcool = nil;
     self.spellcoolColor = { r = 0.8, g = 0.8, b = 1 };
@@ -175,8 +175,6 @@ function ns.Button:checkTotem()
         self.alpha = 1;
         self.start = totem[2]
         self.duration = totem[3];
-        self.enable = true;
-        self.showedge = true;
         self.reversecool = true;
         local expirationTime = self.start + self.duration;
 
@@ -209,8 +207,6 @@ function ns.Button:checkTotem()
                 self.alpha = 1;
                 self.start = totem[2]
                 self.duration = totem[3];
-                self.enable = true;
-                self.showedge = true;
                 self.reversecool = true;
                 local expirationTime = self.start + self.duration;
 
@@ -365,8 +361,6 @@ function ns.Button:checkBuff()
         self.alpha = 1;
         self.start = aura.expirationTime - aura.duration
         self.duration = aura.duration;
-        self.enable = true;
-        self.showedge = true;
         self.reversecool = true;
 
         if aura.applications and aura.applications > 0 then
