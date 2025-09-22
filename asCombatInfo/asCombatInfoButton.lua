@@ -28,6 +28,7 @@ ns.Button = {
     start = 0,
     duration = 0,
     enable = false,
+    showedge = false,
     reversecool = false,
     spellcool = nil,
     spellcoolColor = { r = 0.8, g = 0.8, b = 1 },
@@ -104,6 +105,7 @@ function ns.Button:initButton()
     self.start = 0;
     self.duration = 0;
     self.enable = false;
+    self.showedge = false;
     self.reversecool = false;
     self.spellcool = nil;
     self.spellcoolColor = { r = 0.8, g = 0.8, b = 1 };
@@ -174,6 +176,7 @@ function ns.Button:checkTotem()
         self.start = totem[2]
         self.duration = totem[3];
         self.enable = true;
+        self.showedge = true;
         self.reversecool = true;
         local expirationTime = self.start + self.duration;
 
@@ -207,6 +210,7 @@ function ns.Button:checkTotem()
                 self.start = totem[2]
                 self.duration = totem[3];
                 self.enable = true;
+                self.showedge = true;
                 self.reversecool = true;
                 local expirationTime = self.start + self.duration;
 
@@ -362,6 +366,7 @@ function ns.Button:checkBuff()
         self.start = aura.expirationTime - aura.duration
         self.duration = aura.duration;
         self.enable = true;
+        self.showedge = true;
         self.reversecool = true;
 
         if aura.applications and aura.applications > 0 then
@@ -476,6 +481,7 @@ function ns.Button:checkSpell()
         start, duration = C_Item.GetItemCooldown(self.itemid);
         action = nil;
         isUsable = true;
+        enable = true;
     end
 
 
@@ -570,7 +576,8 @@ function ns.Button:checkSpell()
     self.alpha = 1;
     self.start = start;
     self.duration = duration;
-    self.enable = false;
+    self.enable = enable;
+    self.showedge = false;
 
     if count and count > 0 then
         self.count = count;
@@ -728,10 +735,10 @@ function ns.Button:showButton()
     end
 
 
-    if self.duration ~= data.duration or self.start ~= data.start or self.reversecool ~= data.reversecool then
+    if self.duration ~= data.duration or self.start ~= data.start or self.reversecool ~= data.reversecool or self.enable ~= data.enable or self.showedge ~= data.showedge then
         if (self.duration ~= nil and self.duration > 0 and self.duration < 500) then
             -- set the count
-            asCooldownFrame_Set(frameCooldown, self.start, self.duration, self.duration > 0, self.enable);
+            asCooldownFrame_Set(frameCooldown, self.start, self.duration, self.enable, self.showedge);
             frameCooldown:Show();
             frameCooldown:SetReverse(self.reversecool);
         else
@@ -740,6 +747,8 @@ function ns.Button:showButton()
         data.duration = self.duration;
         data.start = self.start;
         data.reversecool = self.reversecool;
+        data.enable = self.enable;
+        data.showedge = self.showedge;
     end
 
 
