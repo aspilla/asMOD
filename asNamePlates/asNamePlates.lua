@@ -590,8 +590,8 @@ local function updateTargetNameP(asframe)
             casticon.border:SetVertexColor(1, 1, 1);
         end
 
-        asframe:SetHeight(height + cast_height + 5);
-        asframe:SetWidth(width + ((height + cast_height + 3) * 1.1) + 7);
+        asframe:SetHeight(height + cast_height + 4);
+        asframe:SetWidth(width + ((height + cast_height + 3) * 1.1) + 6);
 
         if GetCVarBool("nameplateResourceOnTarget") then
             base_y = base_y + 10;
@@ -627,8 +627,8 @@ local function updateTargetNameP(asframe)
             casticon.border:SetVertexColor(0, 0, 0);
         end
 
-        asframe:SetHeight(height + cast_height + 5);
-        asframe:SetWidth(width + ((height + cast_height + 3) * 1.1) + 7);
+        asframe:SetHeight(height + cast_height + 4);
+        asframe:SetWidth(width + ((height + cast_height + 3) * 1.1) + 6);
 
         if UnitFrame.name:IsShown() then
             base_y = base_y + 4;
@@ -1030,7 +1030,7 @@ local function updateHealthbarColor(asframe)
 
     if alerttype ~= asframe.alerttype then
         if alerttype == 3 then
-            ns.lib.PixelGlow_Start(healthBar, nil, nil, nil, nil, nil, 2, 2, nil, nil, 1000);
+            ns.lib.PixelGlow_Start(healthBar, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1000);
             ns.lib.PixelGlow_Stop(asframe.casticon);
             ns.lib.PixelGlow_Stop(asframe);
         elseif alerttype == 2 then
