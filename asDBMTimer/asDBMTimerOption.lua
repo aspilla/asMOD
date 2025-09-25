@@ -2,8 +2,7 @@ local _, ns = ...;
 local Options_Default = {
     MinTimetoShow = 10,
     HideNamePlatesCooldown = false,
-    ShowInterruptOnlyforNormal = true,
-    AOESound = 2.5,
+    HideNamePlatesTargetedSpells = true,
     LockPosition = true, -- 위치 잠금 옵션 추가
 };
 

@@ -15,15 +15,12 @@ This is a new visual style timer for Deadly Boss Mods (DBM).
     *   Timer labels are color-coded based on DBM's timer classifications (e.g., Minion, AoE, Targeted, Interrupt, Role, Phase, Important).
     *   Specific color schemes are defined for both English and Korean client locales.
 
-3.  **Auditory Alert for AoE Abilities**:
-    *   Plays a sound alert (`AoE Soon`) shortly before DBM timers classified as AoE expire.
 
 ## Settings
 
 *   `MinTimetoShow`: Minimum display time (default: 10 seconds).
 *   `HideNamePlatesCooldown`: Whether to hide timers for regular mobs.
-*   `ShowInterruptOnlyforNormal`: Only show interrupt timers for regular mobs.
-*   `AOESound`: Time before an AoE alert expires (default: 2.5 seconds before expiration).
+*   `HideNamePlatesTargetedSpells`: Whether to hide timers for targeted spells on nameplates (default: true).
 *   `LockPosition`: Check to enable movement; `/asconfig` has higher priority.
 
 ---
@@ -45,14 +42,10 @@ Deadly Boss Mods (DBM) 새로 모양 Timer 입니다.
     *   타이머 레이블은 DBM의 타이머 분류(예: 쫄, 광역, 대상 지정, 차단, 역할, 단계, 중요)에 따라 색상이 지정됩니다.
     *   영어 및 한국어 클라이언트 로케일 모두에 대해 특정 색상 구성표가 정의되어 있습니다.
 
-3.  **광역 기술에 대한 청각 알림**:
-    *   광역으로 분류된 DBM 타이머가 만료되기 직전 사운드 알림(`곧 광역`)을 재생합니다.
-
 
 ## 설정
 
 * `MinTimetoShow` 최소 표시 시간 (기본 10초)
 * `HideNamePlatesCooldown` 일반몹 Timer 숨김 여부
-* `ShowInterruptOnlyforNormal` 일반몹 Timer는 차단만 표시
-* `AOESound` 곧 광역 알림 만료전 시간 (기본 2.5초 전 알림)
+* `HideNamePlatesTargetedSpells`: 이름표에 대상 지정 주문 타이머 숨김 여부 (기본: 사용).
 * `LockPosition` 채크하고 이동 가능, `/asconfig` 이 더 우선순위 높음

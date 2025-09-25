@@ -29,8 +29,6 @@ local BarColors = {
 	[7] = { 1, 1, 0.06, "" },
 }
 
-local AOEVoice = "Interface\\AddOns\\asDBMTimer\\AOE_En.mp3"
-
 if GetLocale() == "koKR" then
 BarColors = {
 	--Type 0
@@ -50,13 +48,12 @@ BarColors = {
 	--Type 7 (Important/User set only)
 	[7] = { 1, 1, 0.06, "" },
 }
-
-AOEVoice = "Interface\\AddOns\\asDBMTimer\\aoe.mp3"
 end
 
 -- 설정 끝
 
 ns.asDBMTimer = {};
+
 
 local function deleteButton(idx, btemp)
 	local button = ns.asDBMTimer.buttons[idx]
@@ -135,10 +132,14 @@ end
 
 local dbm_event_list = TableUtil.CreatePriorityTable(DefaultCompare, TableUtil.Constants.AssociativePriorityTable);
 
-function asDBMTimer_callback(event, id, ...)
+local function asDBMTimer_callback(event, id, ...)
 	if event == "DBM_TimerStart" or event == "DBM_NameplateStart" then
 		local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
 
+		if ns.options.HideNamePlatesTargetedSpells and event == "DBM_NameplateStart" and colorId == 3 then
+			return;	
+		end
+		
 		if dbm_event_list[id] and dbm_event_list[id].button_id then
 			deleteButton(dbm_event_list[id].button_id, true);
 		end
@@ -154,8 +155,7 @@ function asDBMTimer_callback(event, id, ...)
 			duration = timer,
 			start = curtime,
 			expirationTime = timer + curtime,
-			icon =
-				icon,
+			icon = icon,
 			button_id = nil,
 			colorId = colorId,
 			spellId = spellId,
@@ -301,13 +301,6 @@ local function checkButtons()
 
 			if event.unit then
 				icontext = DisplayRaidIcon(event.unit)
-			end
-
-			if ns.options.AOESound then
-				if event.colorId == 2 and remain <= ns.options.AOESound and event.aoealerted == false then
-					PlaySoundFile(AOEVoice, "MASTER");
-					event.aoealerted = true;
-				end
 			end
 
 			button.text:SetText(button.defaulttext);
@@ -464,6 +457,7 @@ function ns.GetPosition()
 
     return left, bottom, height;
 end
+
 
 local bloaded = C_AddOns.LoadAddOn("DBM-Core");
 if bloaded then
