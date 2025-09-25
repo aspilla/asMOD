@@ -59,6 +59,7 @@
   * **Gray (Red if you are the target):** Uninterruptible.
 * Displays the cooldown of important DBM skills on the right side of the nameplate.
   * If there are multiple cooldowns, only the shortest cooldown skill is displayed.
+  * As for normal mob, targeted spell cooldown is not displayed. (Option)
   * Displayed in gray when not being cast.
   * Changes color 2 seconds before the cooldown expires. Interruptible skills turn green, uninterruptible skills turn red.
 
@@ -163,6 +164,7 @@ Automatically creates a macro named `asNamePlates Setup`. Using this macro as sh
   * **회색 (본인이 대상일 경우 빨간색):** 차단 불가능.
 * 네임플레이트 오른쪽에 중요한 DBM 스킬의 쿨다운을 표시합니다.
   * 쿨다운이 여러개 있을 경우 가장 짧은 쿨다운의 스킬만 표시 합니다.
+  * 일반몹의 경우 대상 시전 스킬은 쿨을 안내하지 않습니다. (설정 가능)
   * 시전 중이 아닐 때는 회색으로 표시됩니다.
   * 쿨다운 만료 2초 전에 색상을 변경합니다. 차단 가능 스킬은 녹색, 불가능 스킬은 빨간색으로 변경됩니다.
 

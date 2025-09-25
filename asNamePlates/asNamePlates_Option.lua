@@ -335,6 +335,7 @@ ANameP_Options_Default = {
     ANameP_ShowPetTarget = true,                              -- Pet 대상 표시
     ANameP_ShowTargetArrow = false,                           -- 대상 빨간 화살표 표시
     ANameP_ShowPower = true,                                  -- Power 표시
+    ANameP_HideNamePlatesTargetedSpells = true,               -- 이름표 쿨중 Targeted는 숨김
     ANameP_DebuffAnchorPoint = 1,                             -- Debuff 표시 위치 1 Top, 2 Right, 3 Hide
 
     ANameP_AggroTargetColor = { r = 0.4, g = 0.2, b = 0.8 },  -- PVE 대상이 player 였을때 Color
@@ -1228,6 +1229,7 @@ local function panelOnShow()
         SetupCheckBoxOption("[버프] 내 버프 모두 보임", "ANameP_ShowPlayerBuffAll"); -- Show all my buffs
         SetupCheckBoxOption("[툴팁] 버프/디버프 툴팁 표시", "ANameP_Tooltip"); -- Show buff/debuff tooltips
         SetupCheckBoxOption("[쿨다운] DBM 쿨다운 표시", "ANameP_ShowDBM"); -- Show DBM cooldowns
+        SetupCheckBoxOption("[쿨다운] DBM 쿨다운 중 일반몹 대상 스킬은 숨김", "ANameP_HideNamePlatesTargetedSpells"); 
         SetupCheckBoxOption("[버프] DBM 주요 버프 표시", "ANameP_ShowDBMBuff"); -- Show DBM buff
         SetupCheckBoxOption("[색상] 어그로 색상 표시", "ANameP_AggroShow"); -- Show aggro colors
         SetupCheckBoxOption("[색상] 낮은 생명력 색상 표시", "ANameP_LowHealthAlert"); -- Show low health colors
@@ -1264,6 +1266,7 @@ local function panelOnShow()
         SetupCheckBoxOption("[Buff] Show all my buffs", "ANameP_ShowPlayerBuffAll");
         SetupCheckBoxOption("[Tooltip] Show buff/debuff tooltips", "ANameP_Tooltip");
         SetupCheckBoxOption("[Cooldown] Show DBM cooldowns", "ANameP_ShowDBM");
+        SetupCheckBoxOption("[Cooldown] Hide Nameplates tarageted spells' DBM cooldowns", "ANameP_HideNamePlatesTargetedSpells"); 
         SetupCheckBoxOption("[Buff] Show DBM important buff", "ANameP_ShowDBMBuff"); -- Show DBM buff
         SetupCheckBoxOption("[Color] Show aggro colors", "ANameP_AggroShow");
         SetupCheckBoxOption("[Color] Show low health colors", "ANameP_LowHealthAlert");

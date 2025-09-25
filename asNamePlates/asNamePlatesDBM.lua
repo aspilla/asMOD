@@ -6,6 +6,9 @@ function asNamePlatesDBM_callback(event, id, ...)
     if event == "DBM_TimerStart" or event == "DBM_NameplateStart" then
         local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
 
+        if ns.options.ANameP_HideNamePlatesTargetedSpells and event == "DBM_NameplateStart" and colorId == 3 then
+            return;
+        end
         --if ns.options.ANameP_ShowDBM and type == "cd"  and string.find(id, "cdnp") or string.find(id, "nextnp") then
         if ns.options.ANameP_ShowDBM and guid then
             ns.dbm_event_list[id] = { msg, timer, GetTime(), icon, 0, colorId, spellId, guid };
