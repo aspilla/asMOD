@@ -7,7 +7,7 @@ Provides alerts for important DBM skills that need to be interrupted.
 
 1.  **Casting Bar**:
     *   Displays up to 3 casting bars.
-    *   Priority: `Focus Target` > `Target` > Other mobs.
+    *   Priority: `Interrupt` > `AOE` > Other spells.
     *   Each bar shows the spell icon, spell name, raid marker, remaining cast/channeling time, and spell target (if applicable).
     *   Only announces spells registered in DBM.
     *   Spells marked by DBM as needing an interrupt will have a glowing border around the bar and icon.
@@ -28,10 +28,14 @@ Provides alerts for important DBM skills that need to be interrupted.
         *   **Focus Target's** non-interruptible spell ("Focus Stun", female)
         *   Current **Target's** interruptible spell ("Kick", female)
         *   Current **Target's** non-interruptible spell ("Stun", female)
+        *   AOE spell alert ("AOE", female)
     *   For DBM interrupt skill settings, please refer to the video below:
         <iframe width="560" height="315" src="https://www.youtube.com/embed/Yn19ieQ6QRo?si=t2k3SFIV2hycDGo2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-4.  **Settings**:
+4.  **AOE Spell Detection**: 
+    *   Automatically detects AOE spells by monitoring DBM timers with a specific color code (yellow), providing a sound alert.
+
+5.  **Settings**:
     *   Can be configured via `ESC >> Settings >> AddOns >> asDBMCastingAlert`:
     *   `PlaySound` (Default: On): Enable or disable sound alerts.
     *   `HideTarget` (Default: Off): Hide alerts for your current target.
@@ -59,7 +63,7 @@ Provides alerts for important DBM skills that need to be interrupted.
 
 1.  **시전 바**:
     *   최대 3개의 시전바를 표시
-    *   `주시대상` > `대상` > 그외 몹의 우선 순위
+    *   `차단` > `광역` > 그외 스킬
     *   각 바에는 주문 아이콘, 주문 이름, 징표, 남은 시전/채널링 시간 및 주문 대상(해당되는 경우)이 표시
     *   DBM에 등록된 스킬 시전만 알림
     *   DBM이 차단이 필요하다고 표시한 주문은 바와 아이콘 주위에 빛나는 테두리가 생김
@@ -81,10 +85,14 @@ Provides alerts for important DBM skills that need to be interrupted.
         *   **주시대상**의 차단 불가능 주문 ("주시 스턴" 여성)
         *   현재 **대상**의 차단 가능 주문 ("짤", 여성)
         *   현재 **대상**의 차단 불가능 주문 ("스턴", 여성)
+        *   광역 주문 알림 ("광역", 여성)
     *   DBM 차단 스킬 스킬 설정은 아래 영상을 참고        
         <iframe width="560" height="315" src="https://www.youtube.com/embed/Yn19ieQ6QRo?si=t2k3SFIV2hycDGo2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-4.  **설정**:
+4.  **광역 주문 탐지**:
+    *   특정 색상 코드(노란색)를 가진 DBM 타이머를 감시하여 광역 주문을 자동으로 탐지하고 음성 알림을 제공합니다.
+
+5.  **설정**:
     *   esc >> 설정 >> 애드온 >> asDBMCastingAlert 에서 설정 가능
     *   PlaySound (기본 On) : 음성 알림 여부
     *   HideTarget (기본 Off) : 대상의 시전 알림 여부

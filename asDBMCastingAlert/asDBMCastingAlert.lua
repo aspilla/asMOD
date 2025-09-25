@@ -25,6 +25,7 @@ local CONFIG_VOICE_FOCUS_KICK = "Interface\\AddOns\\asDBMCastingAlert\\Focus_Kic
 local CONFIG_VOICE_FOCUS_STUN = "Interface\\AddOns\\asDBMCastingAlert\\Focus_Stun_En.mp3"
 local CONFIG_VOICE_KICK = "Interface\\AddOns\\asDBMCastingAlert\\Kick_En.mp3"
 local CONFIG_VOICE_STUN = "Interface\\AddOns\\asDBMCastingAlert\\Stun_En.mp3"
+local CONFIG_VOICE_AOE = "Interface\\AddOns\\asDBMCastingAlert\\AOE_En.mp3"
 
 if GetLocale() == "koKR" then
 	CONFIG_VOICE_TARGET_KICK = "Interface\\AddOns\\asDBMCastingAlert\\Target_Kick.mp3"
@@ -33,6 +34,7 @@ if GetLocale() == "koKR" then
 	CONFIG_VOICE_FOCUS_STUN = "Interface\\AddOns\\asDBMCastingAlert\\Focus_Stun.mp3"
 	CONFIG_VOICE_KICK = "Interface\\AddOns\\asDBMCastingAlert\\Kick.mp3"
 	CONFIG_VOICE_STUN = "Interface\\AddOns\\asDBMCastingAlert\\Stun.mp3"
+	CONFIG_VOICE_AOE = "Interface\\AddOns\\asDBMCastingAlert\\AOE.mp3"
 end
 
 local CONFIG_FONT = STANDARD_TEXT_FONT;
@@ -56,6 +58,7 @@ end
 local ADVA = nil;
 local timer = nil;
 local DangerousSpellList = {};
+local AOESpellList = {};
 local CastingUnits = {};
 
 
@@ -81,20 +84,15 @@ local function ADCA_DisplayRaidIcon(unit)
 end
 
 local function Comparator(a, b)
-	if a.focus then
-		return true;
-	end
 
-	if b.focus then
-		return false;
-	end
-
-	if a.target then
-		return true;
-	end
-
-	if b.target then
-		return false;
+	if a.needtointerrupt then
+		if b.needtointerrupt == false then
+			return true;
+		end		
+	elseif a.aoe then
+		if b.aoe == false then
+			return true;
+		end
 	end
 
 	return a.expiration < b.expiration;
@@ -104,6 +102,7 @@ local castingInfos;
 local prev_count = 0;
 local prev_focus = 0;
 local prev_target = 0;
+local prev_aoe = 0;
 
 
 local function ADCA_OnUpdate()
@@ -119,6 +118,7 @@ local function ADCA_OnUpdate()
 	local alert_focus_noi = false;
 	local alert_target = false;
 	local alert_target_noi = false;
+	local alert_aoe = false;
 
 	if (MAX_BOSS_FRAMES) then
 		for i = 1, MAX_BOSS_FRAMES do
@@ -137,7 +137,7 @@ local function ADCA_OnUpdate()
 			if not name then
 				bchanneling = true;
 				name, text, texture, startTimeMS, endTimeMS, isTradeSkill, notInterruptible, spellId = UnitChannelInfo(
-					unit);
+					unit);								
 			end
 
 			if name and DangerousSpellList[spellId] then
@@ -162,6 +162,7 @@ local function ADCA_OnUpdate()
 					notInterruptible = notInterruptible,
 					focus = UnitExists("focus") and UnitIsUnit("focus", unit),
 					needtointerrupt = (DangerousSpellList[spellId] == "interrupt" and (isBoss == false or notInterruptible == false)),
+					aoe = (AOESpellList[spellId] and DangerousSpellList[spellId] ~= "interrupt"),
 					target = UnitExists("target") and UnitIsUnit("target", unit),
 					bchanneling = bchanneling,
 				}
@@ -177,10 +178,6 @@ local function ADCA_OnUpdate()
 
 	castingInfos:Iterate(
 		function(unit, castingInfo)
-			if i > 3 or not ADVA then
-				return true;
-			end
-
 			local targetunit = unit .. "target";
 			local btargeted = UnitExists(targetunit) and UnitIsUnit(targetunit, "player");
 
@@ -205,74 +202,80 @@ local function ADCA_OnUpdate()
 				end
 			end
 
+			if castingInfo.aoe then
+				alert_aoe = true;
+			end
+
 			if ns.options.HideTarget and castingInfo.target and not castingInfo.focus then
 				return false;
 			end
 
-			local frame = ADVA.bars[i];
-			local color = CONFIG_INTERRUPTIBLE_COLOR;
-			frame.castspellid = castingInfo.spellId;
+			if i <= 3 and ADVA then
+				local frame = ADVA.bars[i];
+				local color = CONFIG_INTERRUPTIBLE_COLOR;
+				frame.castspellid = castingInfo.spellId;
 
-			-- set the icon
-			local frameIcon = frame.button.icon
-			frameIcon:SetTexture(castingInfo.icon);
-			local frameName = frame.name;
-			frameName:SetText(castingInfo.name);
-			frameName:Show();
+				-- set the icon
+				local frameIcon = frame.button.icon
+				frameIcon:SetTexture(castingInfo.icon);
+				local frameName = frame.name;
+				frameName:SetText(castingInfo.name);
+				frameName:Show();
 
-			local frameMark = frame.button.mark;
-			frameMark:SetText(ADCA_DisplayRaidIcon(unit));
-			frameMark:Show();
+				local frameMark = frame.button.mark;
+				frameMark:SetText(ADCA_DisplayRaidIcon(unit));
+				frameMark:Show();
 
-			frame.start = castingInfo.start;
-			frame.duration = castingInfo.duration;
-			frame.bchanneling = castingInfo.bchanneling;
+				frame.start = castingInfo.start;
+				frame.duration = castingInfo.duration;
+				frame.bchanneling = castingInfo.bchanneling;
 
-			frame:SetMinMaxValues(0, frame.duration);
+				frame:SetMinMaxValues(0, frame.duration);
 
-			if castingInfo.notInterruptible then
-				if btargeted then
-					color = CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET;
+				if castingInfo.notInterruptible then
+					if btargeted then
+						color = CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET;
+					else
+						color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
+					end
 				else
-					color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
-				end
-			else
-				if btargeted then
-					color = CONFIG_INTERRUPTIBLE_COLOR_TARGET;
-				else
-					color = CONFIG_INTERRUPTIBLE_COLOR;
-				end
-			end
-
-			if castingInfo.needtointerrupt then
-				if not frame.isAlert then
-					ns.lib.PixelGlow_Start(frame, { 1, 1, 0, 1 });
-					frame.isAlert = true;
-				end
-			else
-				ns.lib.PixelGlow_Stop(frame);
-				frame.isAlert = false
-			end
-
-			frame:SetStatusBarColor(color[1], color[2], color[3]);
-			local targetname = frame.targetname;
-
-			if UnitExists(targetunit) then
-				local _, Class = UnitClass(targetunit)
-				if Class then
-					local classcolor = RAID_CLASS_COLORS[Class]
-					if classcolor then
-						targetname:SetTextColor(classcolor.r, classcolor.g, classcolor.b);
-						targetname:SetText(UnitName(targetunit));
-						targetname:Show();
+					if btargeted then
+						color = CONFIG_INTERRUPTIBLE_COLOR_TARGET;
+					else
+						color = CONFIG_INTERRUPTIBLE_COLOR;
 					end
 				end
-			else
-				targetname:SetText("");
-				targetname:Hide();
-			end
 
-			frame:Show();
+				if castingInfo.needtointerrupt then
+					if not frame.isAlert then
+						ns.lib.PixelGlow_Start(frame, { 1, 1, 0, 1 });
+						frame.isAlert = true;
+					end
+				else
+					ns.lib.PixelGlow_Stop(frame);
+					frame.isAlert = false
+				end
+
+				frame:SetStatusBarColor(color[1], color[2], color[3]);
+				local targetname = frame.targetname;
+
+				if UnitExists(targetunit) then
+					local _, Class = UnitClass(targetunit)
+					if Class then
+						local classcolor = RAID_CLASS_COLORS[Class]
+						if classcolor then
+							targetname:SetTextColor(classcolor.r, classcolor.g, classcolor.b);
+							targetname:SetText(UnitName(targetunit));
+							targetname:Show();
+						end
+					end
+				else
+					targetname:SetText("");
+					targetname:Hide();
+				end
+
+				frame:Show();
+			end
 
 			i = i + 1;
 
@@ -311,6 +314,10 @@ local function ADCA_OnUpdate()
 				PlaySoundFile(CONFIG_VOICE_KICK, "MASTER");
 			end
 		end
+
+		if alert_aoe and prev_aoe == 0 then
+			PlaySoundFile(CONFIG_VOICE_AOE, "MASTER");
+		end
 	end
 
 	if alert_focus then
@@ -329,6 +336,12 @@ local function ADCA_OnUpdate()
 		prev_count = 1;
 	else
 		prev_count = 0;
+	end
+
+	if alert_aoe then
+		prev_aoe = 1;
+	else
+		prev_aoe = 0;
 	end
 end
 
@@ -514,10 +527,21 @@ local function NewMod(self, ...)
 	C_Timer.After(2, scanDBM);
 end
 
+local function DBM_callback(event, id, ...)
+	if event == "DBM_TimerStart" or event == "DBM_NameplateStart" then
+		local msg, timer, icon, type, spellId, colorId, modid, keep, fade, name, guid = ...;
+		if colorId and colorId == 2 and spellId then
+			AOESpellList[spellId] = true;
+		end
+	end
+end
+
 local function initAddon()
 	local bloaded = C_AddOns.LoadAddOn("DBM-Core");
 	if bloaded then
 		hooksecurefunc(DBM, "NewMod", NewMod)
+		DBM:RegisterCallback("DBM_TimerStart", DBM_callback);
+		DBM:RegisterCallback("DBM_NameplateStart", DBM_callback);
 	end
 
 	ADVA = CreateFrame("FRAME", nil, UIParent)
