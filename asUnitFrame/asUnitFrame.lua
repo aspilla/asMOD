@@ -681,7 +681,7 @@ local unitframes = {};
 
 local function onUnitEvent(self, event, arg1, arg2)
     if event == "UNIT_AURA" then
-        if arg1 == self.unit then
+        if UnitIsUnit(arg1, self.unit) then
             ns.UpdateAuras(self, arg2);
         end
     elseif event == "PLAYER_TOTEM_UPDATE" then
