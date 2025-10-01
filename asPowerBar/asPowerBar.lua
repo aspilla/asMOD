@@ -27,6 +27,7 @@ local bupdate_enhaced_tempest = false;
 local bupdate_storm_tww_s3 = false;
 local bupdate_element_tempest = false;
 local bupdate_Howl_Pack = false;
+ns.update_withering_fire = false;
 local bupdate_partial_power = false;
 local bsmall_power_bar = false;
 local bupdate_buff_combo = false;
@@ -51,7 +52,6 @@ APB_DEBUFF_COMBO = nil;
 APB_ACTION_COMBO = nil;
 
 local APB = CreateFrame("FRAME", nil, UIParent);
-local max_spell = nil;
 local balert = false;
 local balert2 = false;
 
@@ -716,8 +716,8 @@ end
 
 
 local function APB_UpdateBuffStack(stackbar)
-    if not (APB_BUFF_STACK or APB_BUFF_TIME_STACK or APB_DEBUFF_STACK or APB_DEBUFF_TIME_STACK or APB_ACTION_STACK or bupdate_enhaced_tempest or bupdate_element_tempest) then
-        return;
+    if not (APB_BUFF_STACK or APB_BUFF_TIME_STACK or APB_DEBUFF_STACK or APB_DEBUFF_TIME_STACK or APB_ACTION_STACK or bupdate_enhaced_tempest or bupdate_element_tempest or ns.bupdate_withering_fire) then
+      return;
     end
 
     if not bshowstack then
@@ -884,6 +884,34 @@ local function APB_UpdateBuffStack(stackbar)
         if balert then
             stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT2[1], APB_STACKBAR_COLOR_ALERT2
                 [2], APB_STACKBAR_COLOR_ALERT2[3]);
+        end
+    end
+    if ns.bupdate_withering_fire then
+        local name, icon, count, debuffType, duration, expirationTime, caster = APB_UnitBuff("player", 359844);
+        if name then
+            local remain = expirationTime - GetTime();
+
+            if remain > 0 then
+                local gcd = select(2, asGetSpellCooldown(61304));
+                local timetoshow = remain % 4;
+
+                stackbar:SetValue(timetoshow);
+                stackbar.count:SetText(string.format("%.1f", timetoshow));
+
+                if timetoshow < gcd then
+                    stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_ALERT[1],
+                        APB_STACKBAR_COLOR_ALERT[2], APB_STACKBAR_COLOR_ALERT[3]);
+                else
+                    stackbar:GetStatusBarTexture():SetVertexColor(APB_STACKBAR_COLOR_NORMAL[1],
+                        APB_STACKBAR_COLOR_NORMAL[2], APB_STACKBAR_COLOR_NORMAL[3]);
+                end
+            else
+                stackbar:SetValue(0);
+                stackbar.count:SetText("");
+            end
+        else
+            stackbar:SetValue(0);
+            stackbar.count:SetText("");
         end
     end
 end
@@ -2167,6 +2195,7 @@ local function APB_CheckPower(self)
     bupdate_storm_tww_s3 = false;
     bupdate_element_tempest = false;
     bupdate_Howl_Pack = false;
+    ns.bupdate_withering_fire = false;
     bdruid = false;
     brestrobuff = false;
     bupdate_intuition_count = false;
@@ -2604,12 +2633,12 @@ local function APB_CheckPower(self)
             APB:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
             bupdate_power = true;
 
-            combobuffalertlist = { 391882 };      --최상위
-            combobuffcoloralertlist = { 441585 }; --찟어발기기
+            combobuffalertlist = { 391882 };         --최상위
+            combobuffcoloralertlist = { 441585 };    --찟어발기기
 
-            druidcomboalertid = 405189;           --넘쳐 흐르는 힘
+            druidcomboalertid = 405189;              --넘쳐 흐르는 힘
 
-            if C_SpellBook.IsSpellKnown(202028) then         --잔혹한 베기
+            if C_SpellBook.IsSpellKnown(202028) then --잔혹한 베기
                 APB_SPELL = 202028;
                 APB_SpellMax(APB_SPELL);
                 APB_UpdateSpell(APB_SPELL);
@@ -2665,7 +2694,7 @@ local function APB_CheckPower(self)
             end
 
             if C_SpellBook.IsSpellKnown(392301) then --광합성
-                APB_BUFF = 188550;        --피어나는 생명
+                APB_BUFF = 188550;                   --피어나는 생명
                 APB_BUFF2 = 188550;
                 APB.buffbar[0].buff = APB_BUFF
                 APB.buffbar[0].unit = "auto1"
@@ -2741,7 +2770,7 @@ local function APB_CheckPower(self)
             APB.buffbar[0].unit = "target"
             APB:RegisterEvent("PLAYER_TARGET_CHANGED");
         elseif C_SpellBook.IsSpellKnown(423703) then --일발필중
-            APB_BUFF = 115192;            --기만
+            APB_BUFF = 115192;                       --기만
             APB.buffbar[0].buff = APB_BUFF;
             APB.buffbar[0].unit = "player"
         elseif C_SpellBook.IsSpellKnown(91023) then --약점포착
@@ -2981,6 +3010,9 @@ local function APB_CheckPower(self)
                 APB_MaxStack(30);
                 bupdate_Howl_Pack = true;
                 APB:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+            elseif C_SpellBook.IsSpellKnown(466990) then --Withering Fire
+                APB_MaxStack(4);
+                ns.bupdate_withering_fire = true;
             end
         end
 
@@ -2994,7 +3026,7 @@ local function APB_CheckPower(self)
 
             if C_SpellBook.IsSpellKnown(257621) then --교묘한사격
                 APB_BUFF = 257622;
-                APB_BUFF3 = 260243;       --연발공격
+                APB_BUFF3 = 260243;                  --연발공격
                 APB.buffbar[0].buff = APB_BUFF;
                 APB.buffbar[0].buff2 = APB_BUFF3;
                 APB.buffbar[0].unit = "player"
@@ -3171,6 +3203,10 @@ local function APB_CheckPower(self)
 
     if bupdate_enhaced_tempest or bupdate_element_tempest then
         ns.AddBuff(454015);
+    end
+
+    if ns.bupdate_withering_fire then
+        ns.AddBuff(359844);
     end
 
     ns.AddBuffC(combobuffcountalertlist);
@@ -4170,5 +4206,4 @@ end
 
 function ns.update_callback()
     updateBuffBar();
-
 end
