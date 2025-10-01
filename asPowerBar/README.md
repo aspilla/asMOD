@@ -39,7 +39,8 @@ The following class and specialization features are included based on the `asPow
 *   **Priest:** [Discipline] Purge the Wicked/Shadow Word: Death charges, Schism debuff tracking, [Holy] Holy Word charges, Divine Image stacks (if talented), [Shadow] Shadow Word: Death charges, tracking specific buffs (e.g., Voracious Chorus - Tier Set).
 *   **Warrior:** Rage, [Arms] Overpower charges, Colossus Smash/Execute debuff tracking, [Fury] Enrage buff tracking, Whirlwind/Meat Cleaver stacks, [Protection] Shield Block charges, Defensive Stance/Ignore Pain duration.
 *   **Demon Hunter:** Fury, [Havoc] Fel Rush/Glaive Throw charges, Momentum/Inertia buff tracking (if talented), [Vengeance] Soul Fragments, Demon Spikes/Fracture charges, Demon Spikes buff duration.
-*   **Hunter:** Focus, [Beast Mastery] Barbed Shot charges, Frenzy stacks, Howl of the Pack tracking (if talented), [Marksmanship] Aimed Shot charges, Trick Shots/Precise Shots buff tracking, Wind Arrow debuff tracking (if talented), [Survival] Wildfire Bomb charges, Mongoose Bite/Spearhead stacks (if talented).
+*   **Hunter:** Focus, [Beast Mastery] Barbed Shot charges, Frenzy stacks, Howl of the Pack tracking (if talented), Black Arrow recharge time (if talented, Withering Fire) [Marksmanship] Aimed Shot charges, Trick Shots/Precise Shots buff tracking, Wind Arrow debuff tracking (if talented), [Survival] Wildfire Bomb charges, Mongoose Bite/Spearhead stacks (if talented).
+<iframe width="560" height="315" src="https://www.youtube.com/embed/zWXuyxsvetg?si=tINCmP7z0kNtUcKJ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 *   **Shaman:** Maelstrom (Elemental/Enhancement), [Elemental] Lava Burst charges, Deeply Rooted Elements buff tracking (if talented), Tempest stack tracking (if talented), [Enhancement] Elemental Blast charges (if talented), Maelstrom Weapon stacks, Crash Lightning buff tracking, Tempest stack tracking (if talented), [Restoration] Riptide charges, Tidal Waves stacks.
 
 
@@ -91,7 +92,8 @@ The following class and specialization features are included based on the `asPow
 *   **사제 (Priest):** [수양] 사악의 정화/어둠의 권능: 죽음 충전, 분파 약화 효과, [신성] 빛의 권능 충전, 신성한 환영 중첩, [암흑] 어둠의 권능: 죽음 충전, 특정 강화 효과(게걸스러운 합창 등) 추적.
 *   **전사 (Warrior):** 분노, [무기] 제압 충전, 거인의 강타/마무리 일격 약화 효과, [분노] 격노 강화 효과, 소용돌이/고기칼 중첩, [방어] 방패 막기 충전, 방어 태세/고통 감내 지속시간.
 *   **악마사냥꾼 (Demon Hunter):** 격노, [파멸] 지옥 돌진/글레이브 투척 충전, 탄력/타성 강화 효과, [복수] 영혼 파편, 악마 쐐기/균열 충전, 악마 쐐기 강화 효과.
-*   **사냥꾼 (Hunter):** 집중, [야수] 날카로운 사격 충전, 광기 중첩, 무리의 지도자의 포효 추적, [사격] 조준 사격 충전, 교묘한 사격/연발 공격 강화 효과, 바람 화살 약화 효과, [생존] 야생불 폭탄 충전, 살쾡이의 이빨/창끝 중첩.
+*   **사냥꾼 (Hunter):** 집중, [야수] 날카로운 사격 충전, 광기 중첩, 무리의 지도자의 포효 추적, 검은화살 재 충전시간 추적(어둠순찰자) [사격] 조준 사격 충전, 교묘한 사격/연발 공격 강화 효과, 바람 화살 약화 효과, [생존] 야생불 폭탄 충전, 살쾡이의 이빨/창끝 중첩.
+<iframe width="560" height="315" src="https://www.youtube.com/embed/zWXuyxsvetg?si=tINCmP7z0kNtUcKJ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 *   **주술사 (Shaman):** 소용돌이(정기/고양), [정기] 용암 폭발 충전, 깊이 뿌리내린 정기 강화 효과, 폭풍의 정령 중첩, [고양] 정기 작렬 충전, 소용돌이치는 무기 중첩, 낙뢰 강화 효과, 폭풍의 정령 중첩, [복원] 성난 해일 충전, 굽이치는 물결 중첩.
 
 ## 설정 (Configuration)

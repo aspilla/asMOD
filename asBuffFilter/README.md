@@ -27,7 +27,11 @@ Displays player buffs on the left/center (up to 7 each) and target buffs on the 
 ![asBuffFilter_setup](https://github.com/aspilla/asMOD/blob/main/.Pictures/asBuffFilter_setup.JPG?raw=true)
 *   **Custom Buff Settings:** You can add custom buffs to be displayed in the center (see the video below).
 
-<iframe width="560" height="315" src="https.www.youtube.com/embed/l_0_vK4zlHI?si=qk7hpicPcUf-0h74" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/l_0_vK4zlHI?si=lsZBEJnWPQSuKMeA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+*   **Default Buff Display Option(Left):**
+<iframe width="560" height="315" src="https://www.youtube.com/embed/IwkOkIub4JU?si=fN87zQDjBiu2Mnla" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 
 ---
 
@@ -61,4 +65,7 @@ Displays player buffs on the left/center (up to 7 each) and target buffs on the 
 ![asBuffFilter_setup](https://github.com/aspilla/asMOD/blob/main/.Pictures/asBuffFilter_setup.JPG?raw=true)   
 * **사용자 지정 버프 설정:** 중앙에 표시되는 사용자 지정 버프를 추가가능 (아래 영상 참고.)
 
-<iframe width="560" height="315" src="https.www.youtube.com/embed/l_0_vK4zlHI?si=qk7hpicPcUf-0h74" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/l_0_vK4zlHI?si=lsZBEJnWPQSuKMeA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+*   **기본 표시 버프 설정 (좌측):**
+<iframe width="560" height="315" src="https://www.youtube.com/embed/IwkOkIub4JU?si=fN87zQDjBiu2Mnla" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
