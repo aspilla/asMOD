@@ -139,10 +139,15 @@ local function CreatPrivateFrames(parent)
         parent.PrivateAuraAnchors = {};
     end
 
+
+    local size = ns.ADF_SIZE + 5;
+
+    size = size * ns.options.PlayerDebuffRate;
+
     for idx = 1, 2 do
         parent.PrivateAuraAnchors[idx] = CreateFrame("Frame", nil, parent, "asDebuffPrivateAuraAnchorTemplate");
         parent.PrivateAuraAnchors[idx].auraIndex = idx;
-        parent.PrivateAuraAnchors[idx]:SetSize(ns.ADF_SIZE + 5, (ns.ADF_SIZE + 5) * 0.8);
+        parent.PrivateAuraAnchors[idx]:SetSize(size, size * 0.8);
         parent.PrivateAuraAnchors[idx]:SetUnit("player");
 
         if idx == 2 then
@@ -740,8 +745,13 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
 
             local size = ns.ADF_SIZE + 4;
 
+
             if aura.debuffType == UnitFrameDebuffType.NonBossDebuff then
                 size = ns.ADF_SIZE;
+            end
+
+            if unit == "player" then
+                size = size * ns.options.PlayerDebuffRate;
             end
 
             if aura.nameplateShowAll then
@@ -924,7 +934,7 @@ local function ADF_UpdateDebuffAnchor(frames, index, offsetX, right, parent)
 end
 
 
-local function CreatDebuffFrames(parent, bright)
+local function CreatDebuffFrames(parent, bright, rate)
     if parent.frames == nil then
         parent.frames = {};
     end
@@ -936,14 +946,13 @@ local function CreatDebuffFrames(parent, bright)
 
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
-                r:SetFont(STANDARD_TEXT_FONT, ns.ADF_CooldownFontSize, "OUTLINE");
+                r:SetFont(STANDARD_TEXT_FONT, ns.ADF_CooldownFontSize * rate, "OUTLINE");
                 r:ClearAllPoints();
                 r:SetPoint("TOP", 0, 5);
                 r:SetDrawLayer("OVERLAY");
                 break;
             end
         end
-
         frame.icon:SetTexCoord(.08, .92, .16, .84);
         frame.icon:SetAlpha(ns.ADF_ALPHA);
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
@@ -988,6 +997,7 @@ end
 
 
 local function ADF_Init()
+    ns.SetupOptionPanels();
     local bloaded = C_AddOns.LoadAddOn("asMOD")
 
     ADF = CreateFrame("Frame", nil, UIParent)
@@ -1007,7 +1017,7 @@ local function ADF_Init()
     ADF_TARGET_DEBUFF:SetScale(1)
     ADF_TARGET_DEBUFF:Show()
 
-    CreatDebuffFrames(ADF_TARGET_DEBUFF, true);
+    CreatDebuffFrames(ADF_TARGET_DEBUFF, true, 1);
 
     if bloaded and asMOD_setupFrame then
         asMOD_setupFrame(ADF_TARGET_DEBUFF, "asDebuffFilter(Target)");
@@ -1021,7 +1031,7 @@ local function ADF_Init()
     ADF_PLAYER_DEBUFF:SetScale(1)
     ADF_PLAYER_DEBUFF:Show()
 
-    CreatDebuffFrames(ADF_PLAYER_DEBUFF, false);
+    CreatDebuffFrames(ADF_PLAYER_DEBUFF, false, ns.options.PlayerDebuffRate);
     CreatPrivateFrames(ADF_PLAYER_DEBUFF);
 
     if bloaded and asMOD_setupFrame then
@@ -1038,10 +1048,13 @@ local function ADF_Init()
     ADF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
     ADF:RegisterUnitEvent("UNIT_PET", "player")
 
+
     ADF:SetScript("OnEvent", ADF_OnEvent)
 
     --주기적으로 Callback
     C_Timer.NewTicker(1, OnUpdate);
+    UpdateAuras("target");
+    UpdateAuras("player");
 end
 
-ADF_Init();
+C_Timer.After(1, ADF_Init);
