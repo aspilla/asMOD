@@ -18,6 +18,7 @@ local UnitFrameBuffType = EnumUtil.MakeEnum(
 	"PriorityBuff",
 	"SelectedBuff",
 	"TalentBuff",
+	"PVPBuff",
 	"ProcBuff",
 	"TalentBuffLeft",
 	"ShouldShowBuff",
@@ -312,7 +313,7 @@ local function ProcessAura(aura, unit)
 			skip = false;
 		end
 
-		if ns.options.ShowListOnly then
+		if ns.options.ShowDefaultOnly then
 			minshowtype = UnitFrameBuffType.TalentBuffLeft;
 		end
 	end
@@ -350,6 +351,8 @@ local function ProcessAura(aura, unit)
 			aura.buffType = UnitFrameBuffType.PriorityBuff;
 		elseif aura.procbuff then
 			aura.buffType = UnitFrameBuffType.ProcBuff;
+		elseif aura.pvpbuff then
+			aura.buffType = UnitFrameBuffType.PVPBuff;
 		elseif IsShouldDisplayBuff(aura.spellId, aura.sourceUnit, aura.isFromPlayerOrPlayerPet) then
 			aura.buffType = UnitFrameBuffType.Normal;
 		else
@@ -592,7 +595,7 @@ local function UpdateAuraFrames(unit, auraList)
 			local frame = nil;
 
 			if mparent then
-				if aura.buffType < UnitFrameBuffType.ProcBuff and tcount <= max then
+				if aura.buffType < UnitFrameBuffType.PVPBuff and tcount <= max then
 					frame = mparent.frames[tcount];
 					tcount = tcount + 1;
 				elseif mparent and lcount <= max then
@@ -690,6 +693,7 @@ local function UpdateAuras(unit, unitAuraUpdateInfo)
                     local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
                     local oldBuffType = activeBuffs[unit][auraInstanceID].buffType;
                     if newAura ~= nil then
+---@diagnostic disable-next-line: inject-field
                         newAura.buffType = oldBuffType;
                     end
                     activeBuffs[unit][auraInstanceID] = newAura;
