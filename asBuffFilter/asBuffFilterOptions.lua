@@ -1,8 +1,8 @@
 local _, ns = ...;
 
 local Options_Default = {
-	Version = 250111,
-	ShowListOnly = false,
+	Version = 250920,
+	ShowDefaultOnly = true,
 	ShowInternalPoint = true,
 };
 
