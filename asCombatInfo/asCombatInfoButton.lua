@@ -135,7 +135,7 @@ function ns.Button:initButton()
                 ACI_Debuff_list[name] = true;
                 ns.eventhandler.registerAura(self.unit, name, self);
                 if self.checkplatecount then
-                    ns.eventhandler.registerAura("nameplate", name, self.checkplatecount, self);
+                    ns.eventhandler.registerAura("nameplate", name, self, self.checkplatecount);
                 end
             elseif self.type == ns.EnumButtonType.Buff or self.type == ns.EnumButtonType.BuffOnly or self.type == ns.EnumButtonType.Totem then
                 ns.eventhandler.registerAura(self.unit, name, self);
@@ -1007,7 +1007,7 @@ function ns.Button:init(config, frame)
         ACI_Debuff_list[self.spell] = true;
         ns.eventhandler.registerAura(self.unit, self.spell, self);
         if self.checkplatecount then
-            ns.eventhandler.registerAura("nameplate", self.spell, nil, self.checkplatecount);
+            ns.eventhandler.registerAura("nameplate", self.spell, self, self.checkplatecount);
         end
 
         if self.bufflist then
