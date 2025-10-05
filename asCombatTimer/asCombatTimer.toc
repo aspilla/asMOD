@@ -2,7 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCombatTimer
 ## Notes: Track combat time
-## Version : 250729
+## Version : 251005
 ## SavedVariablesPerCharacter: ASTM_Options, ASTM_Position
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
