@@ -175,7 +175,6 @@ end
 local SpellGetCosts = {};
 local SpellGetPowerCosts = {};
 local FrozenOrbID = 84714;
-local FrozenOrbDamageID = 84721;
 local function asGetCostTooltipInfo(spellID)
     if not spellID then
         return
@@ -390,7 +389,6 @@ end
 local bshowspell = false;
 
 local function APB_MaxSpell(max)
-    max_spell = max;
 
     if not max or max == 0 then
         for i = 1, 10 do
@@ -492,7 +490,6 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
     end
 
     local comboAlerts = {};
-    local comboalert = false;
 
     -- 문책
     if brogue then
