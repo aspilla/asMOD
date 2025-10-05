@@ -20,6 +20,7 @@ ns.NPCTable = {
 	-- Halls of Atonement
 	[164562] = 2, --Depraved Houndmaster
 	[165414] = 2, -- Depraved Obliterator
+	[165529] = 2, -- Depraved Collector
 
 	[164363] = 1, --Undying Stonefiend
 	[167876] = 2, --Inquisitor Sigar
