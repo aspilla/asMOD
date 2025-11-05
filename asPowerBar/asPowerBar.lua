@@ -342,6 +342,7 @@ local combobuffalertlist = nil;
 local combodebuffalertlist = nil;
 local combobuffcountalertlist = nil;
 local combobuffcoloralertlist = nil;
+ns.combobuffcountcoloralertlist = nil;
 local druidcomboalertid = nil;
 local spellbuffcolorlist = nil;
 local spellbuffalertlist = nil;
@@ -389,7 +390,6 @@ end
 local bshowspell = false;
 
 local function APB_MaxSpell(max)
-
     if not max or max == 0 then
         for i = 1, 10 do
             local spellbar = APB.spellbar[i];
@@ -531,6 +531,13 @@ local function APB_ShowComboBar(combobar, combo, partial, cast, cooldown, buffex
         end
     end
 
+    if ns.combobuffcountcoloralertlist and ns.combobuffcountcoloralertlist[0] and APB and combobar == APB.combobar then
+        local name, _, count = APB_UnitBuff("player", ns.combobuffcountcoloralertlist[0]);
+
+        if name and count >= ns.combobuffcountcoloralertlist[1] then
+            balert = true;
+        end
+    end
     if bdeathstalker and APB and combobar == APB.combobar then
         local name, _, count = APB_UnitDebuff("target", 457129);
 
@@ -714,7 +721,7 @@ end
 
 local function APB_UpdateBuffStack(stackbar)
     if not (APB_BUFF_STACK or APB_BUFF_TIME_STACK or APB_DEBUFF_STACK or APB_DEBUFF_TIME_STACK or APB_ACTION_STACK or bupdate_enhaced_tempest or bupdate_element_tempest or ns.bupdate_withering_fire) then
-      return;
+        return;
     end
 
     if not bshowstack then
@@ -2202,6 +2209,7 @@ local function APB_CheckPower(self)
     combodebuffalertlist = nil;
     combobuffcountalertlist = nil;
     combobuffcoloralertlist = nil;
+    ns.combobuffcountcoloralertlist = nil;
     druidcomboalertid = nil;
     spellbuffcolorlist = nil;
     spellbuffalertlist = nil;
@@ -2761,6 +2769,14 @@ local function APB_CheckPower(self)
             bupdate_spell = true;
         end
 
+        -- 최후의 일격
+        if C_SpellBook.IsSpellKnown(441423) then
+            ns.combobuffcountcoloralertlist = {}
+            ns.combobuffcountcoloralertlist[0] = 441786;
+            ns.combobuffcountcoloralertlist[1] = 4;
+        end
+
+
         if C_SpellBook.IsSpellKnown(421975) then --"부식성 분사"
             APB_DEBUFF = 421976;
             APB.buffbar[0].debuff = APB_DEBUFF;
@@ -2789,6 +2805,13 @@ local function APB_CheckPower(self)
 
         for i = 1, 20 do
             APB.combobar[i].tooltip = "COMBO_POINTS";
+        end
+        if C_SpellBook.IsSpellKnown(196912) then --그림자 기술
+            APB_BUFF_STACK = 196911;
+            APB.stackbar[0].unit = "player";
+            APB.stackbar[0].spellid = 196911;
+            local max = UnitPowerMax("player", APB_POWER_LEVEL);            
+            APB_MaxStack(max);
         end
     end
 
@@ -3187,6 +3210,7 @@ local function APB_CheckPower(self)
     ns.AddBuff(APB_BUFF_COMBO_MAX);
     ns.AddBuff(combobuffalertlist);
     ns.AddBuff(combobuffcoloralertlist);
+    ns.AddBuff(ns.combobuffcountcoloralertlist);
     ns.AddBuff(spellbuffcolorlist);
     ns.AddBuff(spellbuffalertlist);
     ns.AddBuff(spell2buffcolorlist);

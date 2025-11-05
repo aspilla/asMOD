@@ -1,8 +1,8 @@
-﻿## Interface: 110200, 110205
+﻿## Interface: 110205
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rPowerBar
 ## Notes: Power Bar
-## Version : 251005
+## Version : 251105
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asPowerBarLib.lua
