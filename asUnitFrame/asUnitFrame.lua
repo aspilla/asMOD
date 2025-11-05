@@ -251,7 +251,10 @@ local function updateUnit(frame)
         leveltext = tostring(unitlevel);
     end
     local name = UnitName(unit);
-    name = leveltext .. " " .. name;
+
+    if not frame.is_small then
+        name = leveltext .. " " .. name;
+    end
 
     -- Type
     local classtext = "";
@@ -689,7 +692,7 @@ local function onUnitEvent(self, event, arg1, arg2)
     end
 end
 
-local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight, fontsize, debuffupdate)
+local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight, fontsize, debuffupdate, is_small)
     local FontOutline = "OUTLINE";
 
     frame:ClearAllPoints();
@@ -813,7 +816,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar.hvalue:SetTextColor(1, 1, 1, 1)
 
     frame.healthbar.name = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.healthbar.name:SetFont(CONFIG_FONT, fontsize - 1, FontOutline);
+    frame.healthbar.name:SetFont(CONFIG_FONT, fontsize, FontOutline);
     frame.healthbar.name:SetTextColor(1, 1, 1, 1)
 
     frame.healthbar.aggro = frame.healthbar:CreateFontString(nil, "ARTWORK");
@@ -823,6 +826,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar.classtext = frame.healthbar:CreateFontString(nil, "ARTWORK");
     frame.healthbar.classtext:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
     frame.healthbar.classtext:SetTextColor(1, 1, 1, 1)
+
 
     if x < 0 then
         frame.healthbar.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 2, 0);
@@ -837,6 +841,14 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
         frame.healthbar.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
         frame.healthbar.aggro:SetPoint("BOTTOMLEFT", frame.healthbar.classtext, "BOTTOMRIGHT", 1, 0);
     end
+
+    if is_small then
+        frame.healthbar.classtext:Hide();
+        frame.healthbar.aggro:Hide();
+    end
+
+    frame.is_small = is_small;
+
 
     frame.healthbar.mark = frame.healthbar:CreateFontString(nil, "ARTWORK");
     frame.healthbar.mark:SetFont(STANDARD_TEXT_FONT, fontsize + 2, FontOutline);
@@ -1012,19 +1024,21 @@ local function Init()
     AUF_TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 
 
-    CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, config_width, healthheight, powerheight, 12, false);
-    CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, config_width, healthheight, powerheight, 12, false);
+    CreateUnitFrame(AUF_PlayerFrame, "player", -xposition, yposition, config_width, healthheight, powerheight, 12, false,
+        false);
+    CreateUnitFrame(AUF_TargetFrame, "target", xposition, yposition, config_width, healthheight, powerheight, 12, false,
+        false);
     CreateUnitFrame(AUF_FocusFrame, "focus", xposition + config_width, yposition, config_width - 50, healthheight - 15,
         powerheight - 2,
         11,
-        false);
+        false, true);
     CreateUnitFrame(AUF_PetFrame, "pet", -xposition - 50, yposition - 40, config_width - 100, healthheight - 20,
         powerheight - 3,
         9,
-        true);
+        true, true);
     CreateUnitFrame(AUF_TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, config_width - 100,
         healthheight - 20,
-        powerheight - 3, 9, true);
+        powerheight - 3, 9, true, true);
 
     AUF_BossFrames = {};
     if (MAX_BOSS_FRAMES) then
@@ -1056,7 +1070,6 @@ local function Init()
     if engclass == "EVOKER" then
         isevoker = true;
     end
-
 end
 
 -- stolen from cell, which is stolen from elvui
