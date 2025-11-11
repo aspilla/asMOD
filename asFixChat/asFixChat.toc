@@ -1,8 +1,8 @@
-﻿## Interface: 110200, 110205
+﻿## Interface: 110205, 110207
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rFixChat
 ## Notes: Switch chat channels with the Tab key, display a window for copying URLs when clicked.
-## Version : 250824
+## Version : 251107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asFixChatTab.lua
