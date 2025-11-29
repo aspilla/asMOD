@@ -34,9 +34,11 @@ local function OnUpdate()
 
 	CheckFrame(MainActionBar, cpoint, AHAB_Offset, false);
 	CheckFrame(StanceBar, cpoint, AHAB_Offset, false);
+	CheckFrame(PetActionBar, cpoint, AHAB_Offset, false);
 end
 
 HideFrame(MainActionBar);
 HideFrame(StanceBar);
+HideFrame(PetActionBar);
 
 C_Timer.NewTicker(AHAB_UpdateRate, OnUpdate);
