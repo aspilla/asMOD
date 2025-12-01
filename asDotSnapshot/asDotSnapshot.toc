@@ -1,4 +1,4 @@
-## Interface: 110200, 110205
+## Interface: 110205, 110207
 ## Author: |cffff3399Aspilla|r 
 ## Title: |cffff3399as|rDotSnapshot
 ## Notes: Dot snapshot addon for Feral and Assassination

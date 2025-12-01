@@ -1,4 +1,4 @@
-﻿## Interface: 110200, 110205
+﻿## Interface: 110205, 110207
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rFixHotKey
 ## Notes: Shortens the hotkey text displayed on the action bar and hides macro names on buttons.
