@@ -25,25 +25,18 @@ local function HideFrame(frame)
 	frame:SetAlpha(0);
 end
 
-local version = select(4, GetBuildInfo());
-local action1 = MainActionBar;
-
-if version < 120000 then
-	action1 = MainMenuBar;
-end
-
 local function OnUpdate()
 	local uiScale, x, y = UIParent:GetEffectiveScale(), GetCursorPosition()
 	x = x / uiScale;
 	y = y / uiScale;
 	local cpoint = { x = x, y = y };
 
-	CheckFrame(action1, cpoint, AHAB_Offset, false);
+	CheckFrame(MainActionBar, cpoint, AHAB_Offset, false);
 	CheckFrame(StanceBar, cpoint, AHAB_Offset, false);
 	CheckFrame(PetActionBar, cpoint, AHAB_Offset, false);
 end
 
-HideFrame(action1);
+HideFrame(MainActionBar);
 HideFrame(StanceBar);
 HideFrame(PetActionBar);
 
