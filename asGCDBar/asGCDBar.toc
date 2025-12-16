@@ -1,8 +1,8 @@
-﻿## Interface: 110205, 110207
+﻿## Interface: 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rGCDBar
 ## Notes: Simple status bar to visualize the player's Global Cooldown (GCD)
-## Version : 250603
+## Version : 251216
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asGCDBar.lua

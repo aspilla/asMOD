@@ -1,22 +1,8 @@
 ﻿-----------------설정 ------------------------
-local AGCDB_WIDTH = 196;
+local AGCDB_WIDTH = 238;
 local AGCDB_HEIGHT = 5;
 local AGCDB_X = 0;
-local AGCDB_Y = -284;
-
-
-local asGetSpellCooldown = function(spellID)
-
-	if not spellID then
-        return nil;
-    end
-
-	local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
-	if spellCooldownInfo then
-		return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
-	end
-end
-
+local AGCDB_Y = -219;
 
 local AGCDB = CreateFrame("FRAME", nil, UIParent)
 AGCDB:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
@@ -24,12 +10,11 @@ AGCDB:SetWidth(0)
 AGCDB:SetHeight(0)
 AGCDB:Show();
 
-
 AGCDB.gcdbar = CreateFrame("StatusBar", nil, UIParent)
 AGCDB.gcdbar:SetStatusBarTexture("Interface\\addons\\asGCDBar\\UI-StatusBar")
 AGCDB.gcdbar:GetStatusBarTexture():SetHorizTile(false)
 AGCDB.gcdbar:SetMinMaxValues(0, 100)
-AGCDB.gcdbar:SetValue(100)
+AGCDB.gcdbar:SetValue(0)
 AGCDB.gcdbar:SetHeight(AGCDB_HEIGHT)
 AGCDB.gcdbar:SetWidth(AGCDB_WIDTH)
 AGCDB.gcdbar:SetStatusBarColor(1, 0.9, 0.9);
@@ -50,20 +35,15 @@ C_AddOns.LoadAddOn("asMOD");
 if asMOD_setupFrame then
 	asMOD_setupFrame(AGCDB.gcdbar, "asGCDBar");
 end
-local function AGCDB_OnUpdate()
-	local start, gcd = asGetSpellCooldown(61304);
-	local current    = GetTime();
 
-	if gcd > 0 then
-		AGCDB.gcdbar:SetMinMaxValues(0, gcd * 1000)
-		AGCDB.gcdbar:SetValue((current - start) * 1000);
-		AGCDB.gcdbar.start = start;
-		AGCDB.gcdbar.duration = gcd;
-		AGCDB.gcdbar:Show();
-	else
-		AGCDB.gcdbar:SetValue(0);
-		AGCDB.gcdbar:Hide();
-	end
+local curve = C_CurveUtil.CreateCurve();
+curve:SetType(Enum.LuaCurveType.Linear);
+curve:AddPoint(0, 0);
+curve:AddPoint(1, 100);
+
+local function AGCDB_OnUpdate()
+	local remain_percent = C_Spell.GetSpellCooldownRemainingPercent(61304, curve);
+	AGCDB.gcdbar:SetValue(remain_percent);	
 end
 
 C_Timer.NewTicker(0.1, AGCDB_OnUpdate);
