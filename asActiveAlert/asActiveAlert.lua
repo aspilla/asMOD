@@ -96,8 +96,7 @@ local function ASAA_UpdateCooldown()
 	local numCools = 1;
 	local frame;
 	local frameIcon, frameCooldown;
-	local name, icon, duration, start, enable;
-	local frameBorder;
+	local name, icon, duration, start, enable;	
 	local parent;
 
 	parent = ASAA_CoolButtons;

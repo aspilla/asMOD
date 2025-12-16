@@ -51,8 +51,6 @@ local function HideFrame(p, idx)
 	local frame = p.frames[idx];
 
 	if (frame) then
-		ns.lib.ButtonGlow_Stop(frame);
-		ns.lib.PixelGlow_Stop(frame);
 		frame.data = {};
 		frame:Hide();
 	end
@@ -115,8 +113,6 @@ local function ABF_ClearFrame()
 		if (frame) then
 			frame:Hide();
 			frame.data = {};
-			ns.lib.ButtonGlow_Stop(frame);
-			ns.lib.PixelGlow_Stop(frame);
 		else
 			break;
 		end
