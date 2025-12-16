@@ -48,20 +48,28 @@ local function updateTankerList()
 end
 
 local function updatePower(asframe)
-    if not ns.options.ANameP_ShowPower or not asframe.powerbar:IsShown() then
+    if not ns.options.ANameP_ShowPower then
         return;
     end
 
-    local power;
-    local maxPower;
+
+
     local unit = asframe.unit;
 
-    power = UnitPower(unit);
-    maxPower = UnitPowerMax(unit);
+    local powerType, powerTypeString = UnitPowerType(unit);
 
-    asframe.powerbar:SetMinMaxValues(0, maxPower);
-    asframe.powerbar:SetValue(power);
-    asframe.powerbar.value:SetText(power);
+    if powerType > 0 and UnitIsUnit(unit, "target") then
+        local power = UnitPower(unit);
+        local maxPower = UnitPowerMax(unit);
+
+
+        asframe.powerbar:SetMinMaxValues(0, maxPower);
+        asframe.powerbar:SetValue(power);
+        asframe.powerbar.value:SetText(power);
+        asframe.powerbar:Show();
+    else
+        asframe.powerbar:Hide();
+    end
 end
 
 -- Healthbar 색상 처리부
@@ -72,7 +80,7 @@ local function setColoronStatusBar(asframe, color)
         return;
     end
 
- 
+
 
     asframe.BarColor:SetVertexColor(color.r, color.g, color.b);
     --healthbar:SetStatusBarTexture(asframe.BarColor);
@@ -196,7 +204,7 @@ local function updateHealthbarColor(asframe)
 
         if status then
             --return UnitHealthPercent(unit, colorcurve);
-            return {r = 0.5, g = 1, b = 1}
+            return { r = 0.5, g = 1, b = 1 }
         end
 
         if asframe.isboss and ns.options.ANameP_BossHint then
@@ -270,12 +278,9 @@ end
 
 local function updatetarget(asframe)
     if asframe.unit and UnitIsUnit(asframe.unit, "target") then
-        asframe.powerbar:Show();
         updatePower(asframe);
         return;
     end
-
-    asframe.powerbar:Hide();
 end
 
 local function updatemouseover(asframe)
@@ -441,7 +446,7 @@ local function addNamePlate(namePlateFrameBase)
     if powerColor then
         asframe.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b)
     end
-    asframe.powerbar:Hide();
+
     asframe:ClearAllPoints();
     asframe:SetPoint("TOPLEFT", healthBarContainer, "TOPLEFT", -5, 1);
 
