@@ -8,10 +8,6 @@ Displays debuffs on both player and target unit frames.
 It is recommended to use this with `asBuffFilter`. Most features are the same, except that it displays Debuffs.
 
 Displays Player (left 6ea) and Target (right 6ea).
-
-*   **Displays boss debuffs larger**
-*   **Highlights dispellable debuffs with a border**
-*   **Displays internal values:** For debuffs with internal values (e.g., accumulated damage), the value is displayed in green.
     ![asDebuffFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDebuffFilter_damage.JPG?raw=true)
 
 ## Configuration
@@ -33,13 +29,7 @@ Displays Player (left 6ea) and Target (right 6ea).
 
 ## 주요 기능
 
-`asBuffFilter` 와 같이 사용하는 것을 추천, Debuff를 표시 한다는 점 외 대부분의 기능은 동일
-
 플레이어(좌측 6개), 대상 (우측 6개) 표시
-
-*  **보스 디버프를 크게 표시** 
-*  **해제 가능 디버프를 테두리 강조** 
-*  **내부 수치 표시 :** 내부 수치(예: 데미지 누적)를 갖는 디버프의 경우 녹색으로 수치를 표시
 ![asDebuffFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDebuffFilter_damage.JPG?raw=true)   
 
 ## 설정 
