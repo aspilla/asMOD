@@ -172,8 +172,6 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
         local frame = parent.frames[j];
 
         if (frame) then
-            ns.lib.ButtonGlow_Stop(frame);
-            ns.lib.PixelGlow_Stop(frame);
             frame:Hide();
             frame.data = {};
         end
