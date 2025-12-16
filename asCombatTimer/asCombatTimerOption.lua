@@ -1,9 +1,10 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 250715,
+    Version = 251216,
     LockWindow = false,
     FontSize = 20,
     Font = 1,
+    ShowWhenCombat = true,
 };
 
 ns.options = CopyTable(Options_Default);

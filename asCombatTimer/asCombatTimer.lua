@@ -60,6 +60,16 @@ local function ASTM_Update()
 		end
 	end
 
+	if ns.options.ShowWhenCombat and not ns.options.LockWindow then
+		if InCombatLockdown() then
+			ASTM_Frame:Show();
+		else
+			ASTM_Frame:Hide();
+		end
+	else
+		ASTM_Frame:Show();
+	end
+
 	local time_sec = 0;
 
 	if encounter_start_time and encounter_end_time == nil then
