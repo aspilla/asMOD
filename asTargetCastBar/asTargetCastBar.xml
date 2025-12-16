@@ -26,5 +26,8 @@
 			</Layer>
 		</Layers>
 	</Frame>
+	<Texture name="asTCColorTextureTemplate" virtual="true" file="Interface\Addons\asTargetCastBar\UI-StatusBar">
+		<Color r="0.0" g="0.447" b="1.0"/>
+	</Texture>
 	<Script file="asTargetCastBar.lua"/>
 </Ui>

@@ -18,43 +18,37 @@ local function getUnitFrame(nameplate)
 end
 
 local function isFaction(unit)
-	if UnitIsUnit("player", unit) then
+	local reaction = UnitReaction("player", unit);
+	if reaction and reaction <= 4 then
+		return true;
+	elseif UnitIsPlayer(unit) then
 		return false;
-	else
-		local reaction = UnitReaction("player", unit);
-		if reaction and reaction <= 4 then
-			return true;
-		elseif UnitIsPlayer(unit) then
-			return false;
-		end
 	end
-end
-
-local function isMustShowNPC(unit)
-	local guid = UnitGUID(unit);
-	if guid then
-		local npcID = select(6, strsplit("-", guid));
-		npcID = tonumber(npcID);
-
-		if ns.MustShow_IDs[npcID] then
-			return true;
-		end
-	end
-
-	return false;
 end
 
 local function checkCasting(unit)
-	local name, _, _, _, _, _, _, notInterruptable, spellid = UnitCastingInfo(unit);
+	local name = UnitCastingInfo(unit);
 	if not name then
-		name, _, _, _, _, _, notInterruptable, spellid = UnitChannelInfo(unit);
+		name = UnitChannelInfo(unit);
 	end
 
-	return name, spellid, notInterruptable;
+	if name then
+		return true;
+	else
+		return false;
+	end
 end
-local MaxLevel = GetMaxLevelForExpansionLevel(10);
 
-local function checkTrigger(unit)
+local function get_typeofcast(nameplate)
+	if nameplate and nameplate.UnitFrame and nameplate.UnitFrame.castBar then
+		return nameplate.UnitFrame.castBar.barType;
+	end
+	return nil;
+end
+
+local function checkTrigger(nameplate)
+	local unit = nameplate.unitToken;
+
 	if not isFaction(unit) then
 		return false;
 	end
@@ -63,21 +57,22 @@ local function checkTrigger(unit)
 		return false;
 	end
 
-	local name, spellid, notInterruptable = checkCasting(unit);
+	local bcasting = checkCasting(unit);
+	local type = get_typeofcast(nameplate);
 	local status = UnitThreatSituation("player", unit);
 	local level = UnitLevel(unit);
 	local isBoss = false;
 
-	if level < 0 or level > MaxLevel then
+	if level < 0 or level > UnitLevel("player") then
 		isBoss = true;
 	end
 
-	if ns.options.Trigger_DBM_Interrupt_Only then
-		if spellid and status and DangerousSpellList[spellid] and (notInterruptable == false or isBoss == false)then
+	if ns.options.Trigger_Important_Interrupt_Only then
+		if status and bcasting and (type == "empowered" or isBoss == false) then
 			return true;
 		end
 	else
-		if spellid and status then
+		if status and bcasting and (type == "standard" or type == "channel") then
 			return true;
 		end
 	end
@@ -97,8 +92,6 @@ local function checkNeedtoHide(nameplate)
 		return false;
 	end
 
-	local unit = nameplate.namePlateUnitToken;
-
 	if ns.options.HideModifier == 1 then
 		if AHNP_mouseButton4Pressed then
 			return true;
@@ -116,7 +109,7 @@ local function checkNeedtoHide(nameplate)
 		end
 	end
 
-	return checkTrigger(unit);
+	return checkTrigger(nameplate);
 end
 
 local isTank = false;
@@ -126,22 +119,13 @@ local function mustShow(unit)
 		return true;
 	end
 
-	if isMustShowNPC(unit) then
+	local bcasting = checkCasting(unit);
+	local status = UnitThreatSituation("player", unit);
+
+	if bcasting and status then
 		return true;
 	end
 
-	local name, spellid = checkCasting(unit);
-	local status = UnitThreatSituation("player", unit);
-
-	if ns.options.Show_DBM_Interrupt_Only then
-		if spellid and status and DangerousSpellList[spellid] then
-			return true;
-		end
-	else
-		if spellid and status then
-			return true;
-		end
-	end
 
 	if isTank and status and status < 2 then
 		return true;
@@ -159,7 +143,7 @@ local function hideNameplates(nameplate, bshow)
 		return false;
 	end
 
-	local unit = nameplate.namePlateUnitToken;
+	local unit = nameplate.unitToken;
 
 	if isFaction(unit) == false then
 		return;
@@ -184,9 +168,7 @@ end
 local function AHNameP_OnUpdate()
 	local needtohide = false;
 
-	for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-		local nameplate = v;
-
+	for _, nameplate in pairs(C_NamePlate.GetNamePlates(issecure())) do
 		if (nameplate) then
 			if checkNeedtoHide(nameplate) then
 				needtohide = true;
@@ -194,9 +176,7 @@ local function AHNameP_OnUpdate()
 			end
 		end
 	end
-	for _, v in pairs(C_NamePlate.GetNamePlates(issecure())) do
-		local nameplate = v;
-
+	for _, nameplate in pairs(C_NamePlate.GetNamePlates(issecure())) do
 		if (nameplate) then
 			hideNameplates(nameplate, (not needtohide));
 		end
@@ -208,45 +188,9 @@ local function AHNameP_OnEvent(self, event, ...)
 	local assignedRole = UnitGroupRolesAssigned("player");
 
 	if (assignedRole and assignedRole == "TANK") then
-		isTank = true;		
+		isTank = true;
 	end
 end
-
-local DBMobj;
-
-local function scanDBM()
-    DangerousSpellList = {};
-    if DBMobj.Mods then
-        for i, mod in ipairs(DBMobj.Mods) do
-            if mod.Options and mod.announces then
-                for k, obj in pairs(mod.announces) do
-                    if obj.spellId and obj.announceType and obj.option then
-						if obj.announceType == "interrupt" and mod.Options[obj.option] then
-                            DangerousSpellList[obj.spellId] = true;
-                        end
-                    end 
-                end
-            end
-
-            if mod.Options and mod.specwarns then
-                for k, obj in pairs(mod.specwarns) do
-                    if obj.spellId and obj.announceType and obj.option then
-						if obj.announceType == "interrupt" and mod.Options[obj.option] then
-                            DangerousSpellList[obj.spellId] = true;
-                        end
-                    end
-                end
-            end
-        end
-    end
-end
-
-
-local function NewMod(self, ...)
-	DBMobj = self;
-	C_Timer.After(2, scanDBM);
-end
-
 
 local function initAddon()
 	ns.SetupOptionPanels();
@@ -265,11 +209,6 @@ local function initAddon()
 
 	--주기적으로 Callback
 	C_Timer.NewTicker(AHNameP_UpdateRate, AHNameP_OnUpdate);
-
-	local bloaded = C_AddOns.LoadAddOn("DBM-Core");
-	if bloaded then
-		hooksecurefunc(DBM, "NewMod", NewMod)
-	end
 end
 
 BINDING_HEADER_ASMOD = "asMOD"

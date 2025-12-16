@@ -53,9 +53,9 @@ if ACB_Casting_Time then
 	local function CastingBarFrame_OnUpdate_Hook(self, elapsed)
 		if not self.timer then return end
 		if update >= 0.1 then
-			if self.casting then				
+			if self.casting and not issecretvalue(self.maxValue) then				
 				self.timer:SetText(format("%.1f/%.1f", max(self.maxValue - self.value, 0), max(self.maxValue, 0)))
-			elseif self.channeling then
+			elseif self.channeling and not issecretvalue(self.maxValue) then
 				self.timer:SetText(format("%.1f/%.1f", max(self.value, 0), max(self.maxValue, 0)))
 			else
 				self.timer:SetText("")

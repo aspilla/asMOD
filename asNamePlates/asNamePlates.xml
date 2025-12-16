@@ -25,7 +25,7 @@
 			</Cooldown>
 		</Frames>
 	</Frame>
-	<Texture name="asColorTextureTemplate" virtual="true" file="Interface\Addons\asNamePlates\UI-StatusBar">
+	<Texture name="asNameplateTemplate" virtual="true" atlas="UI-HUD-CoolDownManager-Bar">
 		<Color r="0.0" g="0.447" b="1.0"/>
 	</Texture>
 	<Script file="asNamePlatesPool.lua"/>

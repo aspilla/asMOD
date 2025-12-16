@@ -19,9 +19,6 @@ local itemslots = {
 	"Trinket1Slot",
 };
 
-local GetItemInfo = C_Item and C_Item.GetItemInfo;
-local GetItemQualityColor = C_Item and C_Item.GetItemQualityColor;
-
 local asGearScore = CreateFrame("Frame", nil, UIParent);
 local fontstrings = {};
 local inspectframe;
@@ -39,15 +36,14 @@ local function GetAvgIvl(unit)
 
 	for i = 1, #itemslots do
 		local idx = GetInventorySlotInfo(string.upper(itemslots[i]));
-
-		local k = GetInventoryItemLink(unit, idx)
+		local k = GetInventoryItemLink(unit, idx);
 
 		if k then
-			local _, _, quality, lvl = GetItemInfo(k)
+			local _, _, quality, lvl = C_Item.GetItemInfo(k);
 
 			if lvl and lvl > 0 and quality then
 				fontstrings[unit][i]:SetText(lvl);
-				local r, g, b = GetItemQualityColor(quality);
+				local r, g, b = C_Item.GetItemQualityColor(quality);
 				fontstrings[unit][i]:SetTextColor(r, g, b);
 			end
 

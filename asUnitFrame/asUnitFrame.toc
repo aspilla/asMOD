@@ -1,4 +1,4 @@
-﻿## Interface: 110205, 110207
+﻿## Interface: 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rUnitFrame
 ## Notes: Simple unit frams for player, target, focus, pet, party and boss
@@ -6,11 +6,11 @@
 ## SavedVariablesPerCharacter: AUF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+asUnitFrameHide.lua
 asUnitFrame.xml
-asUnitFrameOption.lua
 asUnitFrameLib.lua
+asUnitFrameOption.lua
 asUnitFrameAura.lua
 asUnitFrameTotem.lua
 asUnitFrameCastBar.lua
-asUnitFrameRange.lua
 asUnitFrame.lua

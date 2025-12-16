@@ -1,4 +1,4 @@
-## Interface: 110205, 110207
+## Interface: 110207, 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rGearScoreLite
 ## Notes: Displays item levels directly on your Character Frame and the Inspect Frame.

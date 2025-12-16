@@ -1,4 +1,4 @@
-## Interface: 110205, 110207
+## Interface: 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCombatInfo
 ## Notes: Class spell, buff, debuff tracker
@@ -6,8 +6,4 @@
 ## SavedVariablesPerCharacter: ACI_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
-asCombatInfoLib.lua
-asCombatInfo_Option.lua
-asCombatInfoEvent.lua
-asCombatInfoButton.lua
-asCombatInfo.xml
+asCombatInfo.lua

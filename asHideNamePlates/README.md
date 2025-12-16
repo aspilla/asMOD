@@ -8,7 +8,7 @@ This is an addon that hides the nameplates of mobs that are not casting, to help
 
 1.  Addon activation conditions can be adjusted in `esc` >> `Settings` >> `Addons` >> `asHideNameplates`.
 2.  **Key Binding (Default setting):** The nameplate hiding feature is activated while the hotkey is pressed. The hotkey can be assigned in `esc` >> `Options` >> `Key Bindings` >> `asMOD` >> `asHideNamePlates Key`.
-3.  **Trigger from Casting:** Automatically activates when a non-target mob casts a DBM interrupt-required skill (if `Trigger_DBM_Interrupt_Only` is enabled) or any spell.
+3.  **Trigger from Casting:** Automatically activates when a non-target mob casts a DBM interrupt-required skill (if `Trigger_Important_Interrupt_Only` is enabled) or any spell.
 4.  **"ALT + CTRL":** Activates when ALT and CTRL keys are pressed simultaneously.
 5.  **"ALT":** Activates when the ALT key is pressed.
 6.  **"CTRL":** Activates when the CTRL key is pressed.
@@ -47,7 +47,7 @@ This is an addon that hides the nameplates of mobs that are not casting, to help
 
 1. 애드온 동작 조건은 esc >> 설정 >> 애드온 >> asHideNameplates 에서 조정 가능
 2. Key Binding (기본적 설정) : 단축키 누르고 있으면 이름표 숨김 기능이 동작. 단축키는 esc >> 옵션 >> 단축키 설정 >> asMOD >> asHideNamePlates Key 에서 지정 가능.
-3. Trigger from Casting : 대상이 아닌 몹이 DBM 차단 필요 스킬 (Trigger_DBM_Interrupt_Only 설정시) 혹은 케스팅을 하면 자동으로 동작.
+3. Trigger from Casting : 대상이 아닌 몹이 DBM 차단 필요 스킬 (Trigger_Important_Interrupt_Only 설정시) 혹은 케스팅을 하면 자동으로 동작.
 4. "ALT + CTRL" : ALT키 CTRL키를 동시에 누르면 동작.
 5. "ALT" : ALT키를 누르면 동작.
 6. "CTRL" : CTRL키를 누르면 동작.

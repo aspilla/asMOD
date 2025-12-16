@@ -12,8 +12,8 @@ local ASAA_SpellList = {};
 
 -- 원치 않는 발동 알림은 안보이게
 local ASAA_BackList = {
-	[115356] = true, --고술 바람의 일격
-	[455055] = true, --일거리 시작
+	--[115356] = true, --고술 바람의 일격
+	--[455055] = true, --일거리 시작
 };
 
 local asGetSpellInfo = function(spellID)
@@ -60,7 +60,7 @@ local function asCooldownFrame_Clear(self)
 end
 
 local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
-	if enable and enable ~= 0 and start > 0 and duration > 0 then
+	if enable  then
 		self:SetDrawEdge(forceShowDrawEdge);
 		self:SetCooldown(start, duration, modRate);
 	else
@@ -150,7 +150,7 @@ local function ASAA_UpdateCooldown()
 
 			frameCooldown = frame.cooldown;
 			frameCooldown:Show();
-			asCooldownFrame_Set(frameCooldown, start, duration, duration > 0, enable);
+			asCooldownFrame_Set(frameCooldown, start, duration, true);
 			frameCooldown:SetHideCountdownNumbers(false);
 
 			numCools = numCools + 1;
@@ -190,29 +190,6 @@ local function ASAA_Insert(id)
 	local name, _, icon, _, _, _, _, orgicon = asGetSpellInfo(id);
 
 	if name and icon and orgicon then
-		if ACI_SpellID_list then
-			for spellorg, _ in pairs(ACI_SpellID_list) do
-				local checkname, _, checkIcon, _, _, _, _, checkorg = asGetSpellInfo(spellorg);
-				if orgicon == checkorg or spellorg == id or name == checkname or icon == checkIcon then
-					return;
-				end
-			end
-		end
-
-		if APB_SPELL then
-			local checkname, _, checkIcon, _, _, _, _, checkorg = asGetSpellInfo(APB_SPELL);
-			if orgicon == checkorg or APB_SPELL == id or name == checkname or icon == checkIcon then
-				return;
-			end
-		end
-
-		if APB_SPELL2 then
-			local checkname, _, checkIcon, _, _, _, _, checkorg = asGetSpellInfo(APB_SPELL2);
-			if orgicon == checkorg or APB_SPELL2 == id or name == checkname or icon == checkIcon then
-				return;
-			end
-		end
-
 		if ASAA_SpellList[orgicon] then
 			return;
 		end

@@ -1,25 +1,17 @@
 local _, ns = ...;
 local Options_Default = {
-    version = 241126,
+    version = 251212,
     HideDebuff = true,
     HideCombatText = true,
     HideCastBar = true,
     HideClassBar = true,
+    HideTotemBar = false,
     ShowClassColor = true,
     ShowAggro = true,
-    ShowPortraitDebuff = true,
 };
 
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
-
--- 안보이게 할 디법 (다른 케릭)
-ns.ShowOnlyMine = {
-    [447513] = 1,       --만신창이 (전사)
-    [445584] = 1,       --사형선고 (전사)
-    [434473] = 1,       --폭격 (기원사)
-}
-
 
 function ns.SetupOptionPanels()
     local function OnSettingChanged(_, setting, value)
@@ -58,12 +50,12 @@ function ns.SetupOptionPanels()
             local defaultValue = Options_Default[variable];
             local currentValue = AFUF_Options[variable];
 
-            local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
-            
+            local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
+                name, defaultValue);
+
             Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
             Settings.SetValue(cvar_name, currentValue);
             Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
-            
         end
     end
 

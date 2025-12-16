@@ -27,6 +27,18 @@ if region == 2 and GetLocale() ~= "koKR" then
     CONFIG_FONT = "Fonts\\2002.ttf";
 end
 
+local CONFIG_VOICE_TARGET_KICK = "Interface\\AddOns\\asTargetCastBar\\Target_Kick_En.mp3"
+local CONFIG_VOICE_TARGET_STUN = "Interface\\AddOns\\asTargetCastBar\\Target_Stun_En.mp3"
+local CONFIG_VOICE_FOCUS_KICK = "Interface\\AddOns\\asTargetCastBar\\Focus_Kick_En.mp3"
+local CONFIG_VOICE_FOCUS_STUN = "Interface\\AddOns\\asTargetCastBar\\Focus_Stun_En.mp3"
+
+if GetLocale() == "koKR" then
+    CONFIG_VOICE_TARGET_KICK = "Interface\\AddOns\\asTargetCastBar\\Target_Kick.mp3"
+    CONFIG_VOICE_TARGET_STUN = "Interface\\AddOns\\asTargetCastBar\\Target_Stun.mp3"
+    CONFIG_VOICE_FOCUS_KICK = "Interface\\AddOns\\asTargetCastBar\\Focus_Kick.mp3"
+    CONFIG_VOICE_FOCUS_STUN = "Interface\\AddOns\\asTargetCastBar\\Focus_Stun.mp3"
+end
+
 local ATCB = CreateFrame("FRAME", nil, UIParent)
 ATCB:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
 ATCB:SetWidth(0)
@@ -60,22 +72,18 @@ local function setupCastBar()
     frame.time = frame:CreateFontString(nil, "OVERLAY");
     frame.time:SetFont(STANDARD_TEXT_FONT, ATCB_TIME_SIZE);
     frame.time:SetPoint("RIGHT", frame, "RIGHT", -3, 0);
-    
 
-    if not frame:GetScript("OnEnter") then
-        frame:SetScript("OnEnter", function(s)
-            if s.castspellid and s.castspellid > 0 then
-                GameTooltip_SetDefaultAnchor(GameTooltip, s);
-                GameTooltip:SetSpellByID(s.castspellid);
-            end
-        end)
-        frame:SetScript("OnLeave", function()
-            GameTooltip:Hide();
-        end)
-    end
+    frame.ni_texture = frame:CreateTexture(nil, "OVERLAY", "asTCColorTextureTemplate", 1);
+    local previousTexture = frame:GetStatusBarTexture();
+
+
+    frame.ni_texture:ClearAllPoints();
+    frame.ni_texture:SetAllPoints(previousTexture);
+    frame.ni_texture:SetVertexColor(CONFIG_NOT_INTERRUPTIBLE_COLOR[1], CONFIG_NOT_INTERRUPTIBLE_COLOR[2],
+        CONFIG_NOT_INTERRUPTIBLE_COLOR[3]);
+    frame.ni_texture:Hide();
 
     frame:EnableMouse(false);
-    frame:SetMouseMotionEnabled(true);
     frame.isAlert = false;
     frame:Hide();
 
@@ -102,6 +110,7 @@ local function setupCastBar()
     frame.mark:Show();
     frame.start = 0;
     frame.duration = 0;
+    frame.soundalerted = false;
     return frame;
 end
 ATCB.targetCastBar = setupCastBar();
@@ -117,7 +126,6 @@ if asMOD_setupFrame then
     asMOD_setupFrame(ATCB.targetCastBar, "asTargetCastBar (Target)");
     asMOD_setupFrame(ATCB.focusCastBar, "asTargetCastBar (Focus)");
 end
-local MaxLevel = GetMaxLevelForExpansionLevel(10);
 
 local function hideCastBar(castBar)
     local targetname = castBar.targetname;
@@ -129,27 +137,38 @@ local function hideCastBar(castBar)
     targetname:SetText("");
     targetname:Hide();
     castBar.failstart = nil;
+    castBar.soundalerted = false;
 end
 
 local RaidIconList = {
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:",
+    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
 }
 
 
 local function DisplayRaidIcon(unit)
-	local icon = GetRaidTargetIndex(unit)
-	if icon and RaidIconList[icon] then
-		return RaidIconList[icon] .. "0|t"
-	else
-		return ""
-	end
+    local icon = GetRaidTargetIndex(unit);
+    --[[
+    if icon and RaidIconList[icon] then
+        return RaidIconList[icon] .. "0|t"
+    else
+        return ""
+    end
+    ]]
+end
+
+local function get_typeofcast(unit)
+    local nameplate = C_NamePlate.GetNamePlateForUnit(unit, issecure())
+    if nameplate and nameplate.UnitFrame and nameplate.UnitFrame.castBar then
+        return nameplate.UnitFrame.castBar.barType;
+    end
+    return nil;
 end
 
 local function checkCasting(castBar, event)
@@ -181,60 +200,38 @@ local function checkCasting(castBar, event)
             time:SetText(failtext);
             castBar:SetStatusBarColor(color[1], color[2], color[3]);
             castBar.failstart = currtime;
+            castBar.ni_texture:Hide();
+            castBar:SetStatusBarDesaturated(false);
             castBar:Show();
         elseif name then
             local current = GetTime();
             frameIcon:SetTexture(texture);
+            castBar:SetReverseFill(bchannel);
 
-            castBar.start = start / 1000;
-            castBar.duration = (endTime - start) / 1000;
-            castBar.bchannel = bchannel;
-            castBar:SetMinMaxValues(0, castBar.duration)
+            castBar:SetMinMaxValues(start, endTime)
             castBar.failstart = nil;
-
-            if bchannel then
-                castBar:SetValue(castBar.start + castBar.duration - current);
-            else
-                castBar:SetValue(current - castBar.start);
-            end
 
             local color = {};
 
-            if UnitIsUnit(targettarget, "player") then
-                if notInterruptible then
-                    color = CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET;
-                else
-                    color = CONFIG_INTERRUPTIBLE_COLOR_TARGET;
-                end
-            else
-                if notInterruptible then
+
+            color = CONFIG_INTERRUPTIBLE_COLOR;
+            local type = get_typeofcast(unit);
+
+            if type then
+                if type == "uninterruptable" then
                     color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
-                else
-                    color = CONFIG_INTERRUPTIBLE_COLOR;
+                elseif type == "empowered" then
+                    if not castBar.isAlert then
+                        ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
+                        castBar.isAlert = true;
+                    end
                 end
             end
-
-            castBar.castspellid = spellid;
-
             castBar:SetStatusBarColor(color[1], color[2], color[3]);
-
             text:SetText(name);
-            time:SetText(format("%.1f/%.1f", max((current - castBar.start), 0), max(castBar.duration, 0)));
             mark:SetText(DisplayRaidIcon(unit));
             frameIcon:Show();
             castBar:Show();
-            local level = UnitLevel(unit);
-            local isBoss = false;
-
-            if level < 0 or level > MaxLevel then
-                isBoss = true;
-            end
-            if DangerousSpellList[spellid] and DangerousSpellList[spellid] == "interrupt" and (isBoss == false or notInterruptible == false) then
-                if not castBar.isAlert then
-                    ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
-                    castBar.isAlert = true;
-                end
-            end
 
             if UnitExists(targettarget) then
                 local _, Class = UnitClass(targettarget)
@@ -249,6 +246,38 @@ local function checkCasting(castBar, event)
             else
                 targetname:SetText("");
                 targetname:Hide();
+            end
+
+
+            if name and castBar.soundalerted == false then
+                local isfocus = UnitIsUnit(unit, "focus");
+                local soundfile = nil;
+
+                if type == "uninterruptable" then
+                    if ns.options.PlaySoundStun then
+                        local stunable = UnitLevel(unit) <= UnitLevel("player");
+                        if stunable then
+                            if isfocus then
+                                soundfile = CONFIG_VOICE_FOCUS_STUN
+                            else
+                                soundfile = CONFIG_VOICE_TARGET_STUN;
+                            end
+                        end
+                    end
+                else
+                    if ns.options.PlaySoundKick then
+                        if isfocus then
+                            soundfile = CONFIG_VOICE_FOCUS_KICK
+                        else
+                            soundfile = CONFIG_VOICE_TARGET_KICK;
+                        end
+                    end
+                end
+
+                if soundfile then
+                    castBar.soundalerted = true;
+                    PlaySoundFile(soundfile, "MASTER");
+                end
             end
         else
             if castBar.failstart == nil then
@@ -312,8 +341,10 @@ registerUnit(ATCB.focusCastBar, "focus");
 
 local function ATCB_OnEvent(self, event, ...)
     if event == "PLAYER_TARGET_CHANGED" then
+        ATCB.targetCastBar.soundalerted = nil;
         checkUnit(ATCB.targetCastBar, "target");
     elseif event == "PLAYER_FOCUS_CHANGED" then
+        ATCB.focusCastBar.soundalerted = nil;
         checkUnit(ATCB.focusCastBar, "focus");
     elseif event == "PLAYER_ENTERING_WORLD" then
         checkUnit(ATCB.targetCastBar, "target");
@@ -329,8 +360,6 @@ end
 
 
 local function updateCastBar(castBar)
-    local start = castBar.start;
-    local duration = castBar.duration;
     local failstart = castBar.failstart;
     local current = GetTime();
 
@@ -338,16 +367,9 @@ local function updateCastBar(castBar)
         if current - failstart > 0.5 then
             hideCastBar(castBar);
         end
-    elseif start > 0 and start + duration >= current then
-        local bchannel = castBar.bchannel;
-        local time = castBar.time;
-        if bchannel then
-            castBar:SetValue((start + duration - current));
-            time:SetText(format("%.1f/%.1f", max((start + duration - current), 0), max(duration, 0)));
-        else
-            castBar:SetValue((current - start));
-            time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
-        end
+    else
+        castBar.time:SetText("");
+        castBar:SetValue(current * 1000);
     end
 end
 
@@ -363,41 +385,3 @@ ATCB:RegisterEvent("ADDON_LOADED");
 ATCB:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 C_Timer.NewTicker(ATCB_UPDATE_RATE, ATCB_OnUpdate);
-
-local DBMobj;
-local function scanDBM()
-    DangerousSpellList = {};
-    if DBMobj.Mods then
-        for i, mod in ipairs(DBMobj.Mods) do
-            if mod.Options and mod.announces then
-                for k, obj in pairs(mod.announces) do
-                    if obj.spellId and obj.announceType and obj.option then
-                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
-                            DangerousSpellList[obj.spellId] = obj.announceType;
-                        end
-                    end
-                end
-            end
-
-            if mod.Options and mod.specwarns then
-                for k, obj in pairs(mod.specwarns) do
-                    if obj.spellId and obj.announceType and obj.option then
-                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
-                            DangerousSpellList[obj.spellId] = obj.announceType;
-                        end
-                    end
-                end
-            end
-        end
-    end
-end
-
-local function NewMod(self, ...)
-    DBMobj = self;
-    C_Timer.After(2, scanDBM);
-end
-
-local bloaded = C_AddOns.LoadAddOn("DBM-Core");
-if bloaded then
-    hooksecurefunc(DBM, "NewMod", NewMod)
-end

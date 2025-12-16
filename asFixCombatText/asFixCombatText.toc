@@ -1,4 +1,4 @@
-﻿## Interface: 110205, 110207
+﻿## Interface: 110001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rFixCombatText
 ## Notes: Enhancement for the default UI's Floating Combat Text

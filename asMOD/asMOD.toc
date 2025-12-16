@@ -1,4 +1,4 @@
-﻿## Interface: 110205, 110207
+﻿## Interface: 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rMOD
 ## Notes: asMOD Configuration and Positioning

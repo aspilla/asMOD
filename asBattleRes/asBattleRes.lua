@@ -31,7 +31,7 @@ local function SavePosition(frame, option)
 end
 
 local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
-	if enable and enable ~= 0 and start > 0 and duration > 0 then
+	if enable then
 		self:SetDrawEdge(forceShowDrawEdge);
 		self:SetCooldown(start, duration, modRate);
 	else
@@ -61,29 +61,27 @@ local function ASBR_Update()
 		return;
 	end
 
+	local count = C_Spell.GetSpellDisplayCount(ASBR_Spell);
 	local spellChargeInfo = C_Spell.GetSpellCharges(ASBR_Spell);
 
-	if spellChargeInfo and spellChargeInfo.currentCharges and spellChargeInfo.currentCharges > 0 then
-		ASBR_CoolButtons.count:SetText(spellChargeInfo.currentCharges);
-		ASBR_CoolButtons.count:Show();
-		ASBR_CoolButtons.icon:SetDesaturated(false);
-	else
-		ASBR_CoolButtons.count:Hide();
-		ASBR_CoolButtons.icon:SetDesaturated(true);
-	end
+
+	ASBR_CoolButtons.count:SetText(count);
+	ASBR_CoolButtons.count:Show();
+	ASBR_CoolButtons.icon:SetDesaturated(false);
 
 
-	if spellChargeInfo and spellChargeInfo.cooldownStartTime then
+
+
+	if spellChargeInfo then
 		ASBR_CoolButtons.cooldown:Show();
 		asCooldownFrame_Set(ASBR_CoolButtons.cooldown, spellChargeInfo.cooldownStartTime,
-			spellChargeInfo.cooldownDuration, spellChargeInfo.cooldownDuration > 0, true);		
+			spellChargeInfo.cooldownDuration, true, true);
 	else
 		ASBR_CoolButtons.cooldown:Hide();
 	end
 end
 
 local function ASBR_Init()
-	
 	ASBR_Position = ASBR_Position or {
 		point = "CENTER",
 		relativePoint = "CENTER",
@@ -109,22 +107,22 @@ local function ASBR_Init()
 			r:SetDrawLayer("OVERLAY");
 			break
 		end
-	end  
+	end
 
-	ASBR_CoolButtons.icon:SetTexCoord(.08, .92, .08, .92);	
+	ASBR_CoolButtons.icon:SetTexCoord(.08, .92, .08, .92);
 	ASBR_CoolButtons.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-	ASBR_CoolButtons.border:SetVertexColor(0, 0, 0);	
+	ASBR_CoolButtons.border:SetVertexColor(0, 0, 0);
 
 	ASBR_CoolButtons.count:SetFont(STANDARD_TEXT_FONT, ASBR_CooldownFontSize, "OUTLINE")
 	ASBR_CoolButtons.count:ClearAllPoints();
-	ASBR_CoolButtons.count:SetPoint("BOTTOMRIGHT",ASBR_CoolButtons ,"BOTTOMRIGHT", -3, 3);
+	ASBR_CoolButtons.count:SetPoint("BOTTOMRIGHT", ASBR_CoolButtons, "BOTTOMRIGHT", -3, 3);
 
 	ASBR_CoolButtons:SetPoint("CENTER", ASBR_CoolButtons_X, ASBR_CoolButtons_Y)
 	ASBR_CoolButtons:SetWidth(ASBR_SIZE);
 	ASBR_CoolButtons:SetHeight(ASBR_SIZE * 0.9);
 	ASBR_CoolButtons:SetScale(1);
 
-	
+
 	ASBR_CoolButtons:SetScript("OnDragStart", function(self)
 		if not ns.options.LockWindow then
 			self:StartMoving()

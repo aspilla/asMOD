@@ -4,7 +4,7 @@ local ARD_Font        = STANDARD_TEXT_FONT;
 local ARD_FontSize    = 16;
 local ARD_FontOutline = "THICKOUTLINE";
 local ARD_X           = 0;
-local ARD_Y           = -130;
+local ARD_Y           = -120;
 local ARD_Focus_X     = 365;
 local ARD_Focus_Y     = -165;
 local ARD_Mouse_X     = 50;
@@ -201,6 +201,8 @@ local function updateUnitRange(unit, frame)
 			frame:SetTextColor(ARD_GetRangeColor(range));
 		else
 			local grange = 80;
+
+			--[[
 			if UnitInParty(unit) or UnitInRaid(unit) then
 				local inRange, checkedRange = UnitInRange(unit)
 
@@ -208,6 +210,7 @@ local function updateUnitRange(unit, frame)
 					grange = defaultrange;
 				end
 			end
+			]]
 
 			if UnitIsUnit(unit, "target") then
 				for _, v in pairs(cache) do

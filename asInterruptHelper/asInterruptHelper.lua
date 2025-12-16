@@ -49,13 +49,14 @@ local function asCooldownFrame_Clear(self)
 end
 
 local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
-    if enable and enable ~= 0 and start > 0 and duration > 0 then
+    if enable then
         self:SetDrawEdge(forceShowDrawEdge);
         self:SetCooldown(start, duration, modRate);
     else
         asCooldownFrame_Clear(self);
     end
 end
+
 
 local function showInterruptCooldown(frame, spellID, isDangerous, endRemain)
     spellID = C_Spell.GetOverrideSpell(spellID);
@@ -73,10 +74,20 @@ local function showInterruptCooldown(frame, spellID, isDangerous, endRemain)
     if not (frame) then
         return;
     end
+
+    local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellID);
     -- set the icon
     local frameIcon = frame.icon;
     frameIcon:SetTexture(spellInfo.iconID);
     frameIcon:SetAlpha(1);
+
+    if (isUsable) then
+        frameIcon:SetVertexColor(1.0, 1.0, 1.0);
+    elseif (notEnoughMana) then
+        frameIcon:SetVertexColor(0.5, 0.5, 1.0);
+    else
+        frameIcon:SetVertexColor(0.4, 0.4, 0.4);
+    end
 
 
     local frameBorder = frame.border;
@@ -86,20 +97,8 @@ local function showInterruptCooldown(frame, spellID, isDangerous, endRemain)
     -- set the count
     local frameCooldown = frame.cooldown;
     frameCooldown:Show();
-    local remain = spellCooldownInfo.startTime + spellCooldownInfo.duration - GetTime();
-    asCooldownFrame_Set(frameCooldown, spellCooldownInfo.startTime, spellCooldownInfo.duration,
-        spellCooldownInfo.duration > 0, true);
+    asCooldownFrame_Set(frameCooldown, spellCooldownInfo.startTime, spellCooldownInfo.duration, true);
     frameCooldown:SetHideCountdownNumbers(false);
-
-    if remain <= endRemain then
-        frame.cooldowntext:SetTextColor(1, 0.3, 0.3);
-        frame.cooldowntext:SetFont(STANDARD_TEXT_FONT, AIH_CooldownFontSize + 3, "OUTLINE")
-        frameIcon:SetDesaturated(false);
-    else
-        frame.cooldowntext:SetTextColor(0.8, 0.8, 1);
-        frame.cooldowntext:SetFont(STANDARD_TEXT_FONT, AIH_CooldownFontSize, "OUTLINE")
-        frameIcon:SetDesaturated(true);
-    end
 
     if isDangerous then
         ns.lib.PixelGlow_Start(frame);
@@ -120,6 +119,14 @@ local function isAttackable(unit)
     return false;
 end
 
+local function get_typeofcast(unit)
+    local nameplate = C_NamePlate.GetNamePlateForUnit(unit, issecure())
+    if nameplate and nameplate.UnitFrame and nameplate.UnitFrame.castBar then
+        return nameplate.UnitFrame.castBar.barType;
+    end
+    return nil;
+end
+
 local function UnitNeedtoInterrupt(unit)
     if UnitExists(unit) and isAttackable(unit) then
         local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
@@ -128,8 +135,10 @@ local function UnitNeedtoInterrupt(unit)
             name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
         end
 
+
         if name then
-            return spellid, notInterruptible, (endTime / 1000 - GetTime());
+            local casttype = get_typeofcast(unit);
+            return spellid, casttype == "uninterruptable", 1000;
         end
     end
 
@@ -141,10 +150,10 @@ local function spellIntime(spellid, endRemain)
     local id = C_Spell.GetOverrideSpell(spellid);
     local spellCooldownInfo = C_Spell.GetSpellCooldown(id);
     if spellCooldownInfo then
-        local remain = spellCooldownInfo.startTime + spellCooldownInfo.duration - GetTime();
-        if remain < endRemain then
-            return true;
-        end
+        --local remain = spellCooldownInfo.startTime + spellCooldownInfo.duration - GetTime();
+        --if remain < endRemain then
+        return true;
+        --end
     end
 
     return false;
@@ -185,8 +194,6 @@ local function findInterruptSpell(notInterruptible, isDangerous, endRemain, isBo
 end
 
 
-local MaxLevel = GetMaxLevelForExpansionLevel(10);
-
 local function check_casting(frame, unit)
     if not UnitExists(unit) then
         frame:Hide();
@@ -196,12 +203,12 @@ local function check_casting(frame, unit)
     local mobspellID, notInterruptible, endRemain = UnitNeedtoInterrupt(unit)
 
     if mobspellID and endRemain then
-        local isDangerous = ("interrupt" == DangerousSpellList[mobspellID]);
+        local isDangerous = false;
         local isBoss = false;
         local needtointerrupt = true;
         local level = UnitLevel(unit);
 
-        if level < 0 or level > MaxLevel then
+        if level < 0 or level > UnitLevel("player") then
             isBoss = true;
         end
 
@@ -234,40 +241,6 @@ local function onUpdateMouse()
     end
 end
 
-
-local DBMobj;
-local function scanDBM()
-    DangerousSpellList = {};
-    if DBMobj.Mods then
-        for i, mod in ipairs(DBMobj.Mods) do
-            if mod.Options and mod.announces then
-                for k, obj in pairs(mod.announces) do
-                    if obj.spellId and obj.announceType and obj.option then
-                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
-                            DangerousSpellList[obj.spellId] = obj.announceType;
-                        end
-                    end
-                end
-            end
-
-            if mod.Options and mod.specwarns then
-                for k, obj in pairs(mod.specwarns) do
-                    if obj.spellId and obj.announceType and obj.option then
-                        if (DangerousSpellList[obj.spellId] == nil or DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
-                            DangerousSpellList[obj.spellId] = obj.announceType;
-                        end
-                    end
-                end
-            end
-        end
-    end
-end
-
-
-local function NewMod(self, ...)
-    DBMobj = self;
-    C_Timer.After(0.1, scanDBM);
-end
 
 local function createbutton(unit)
     local size = AIH_SIZE;
@@ -313,7 +286,6 @@ local function createbutton(unit)
         check_casting(frame, unit);
     end
 
-
     C_Timer.NewTicker(0.3, OnUpdate);
 
     return frame;
@@ -353,12 +325,6 @@ local function AIH_OnEvent(self, event)
 end
 
 local function initAddon()
-    local bloaded = C_AddOns.LoadAddOn("DBM-Core");
-    if bloaded then
-        hooksecurefunc(DBM, "NewMod", NewMod)
-    end
-
-
     mainframe:SetScript("OnEvent", AIH_OnEvent)
     mainframe:RegisterEvent("PLAYER_ENTERING_WORLD")
     mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED")

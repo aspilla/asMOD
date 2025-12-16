@@ -47,7 +47,7 @@ The following class and specialization features are included based on the `asPow
 ## Configuration
 
 *   **Position and Basic Settings:** If the `asMOD` addon is installed, you can adjust the position and other settings of asPowerBar using the `/asconfig` command (or through the asMOD interface). 
-*   **Manual Configuration:** You can manually change the size or position by editing values like `APB_WIDTH`, `APB_X`, `APB_Y` at the top of the `asPowerBar.lua` file. (Recommended only for users comfortable with editing Lua code).
+*   **Manual Configuration:** You can manually change the size or position by editing values like `width`, `xpoint`, `ypoint` at the top of the `asPowerBar.lua` file. (Recommended only for users comfortable with editing Lua code).
 
 ---
 
@@ -99,4 +99,4 @@ The following class and specialization features are included based on the `asPow
 ## 설정 (Configuration)
 
 *   **위치 및 기본 설정:** `asMOD` 애드온이 설치되어 있다면, /asconfig 명령어를 통해 asPowerBar의 위치 등을 조절할 수 있습니다.
-*   **수동 설정:** `asPowerBar.lua` 파일 상단의 `APB_WIDTH`, `APB_X`, `APB_Y` 등의 값을 직접 수정하여 바의 크기나 위치를 변경할 수 있습니다. (Lua 코드 수정에 익숙한 사용자에게 권장)
+*   **수동 설정:** `asPowerBar.lua` 파일 상단의 `width`, `xpoint`, `ypoint` 등의 값을 직접 수정하여 바의 크기나 위치를 변경할 수 있습니다. (Lua 코드 수정에 익숙한 사용자에게 권장)

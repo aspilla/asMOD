@@ -1,4 +1,3 @@
-
 local _, ns = ...;
 local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };                 --차단 불가시 (내가 아닐때) 색상 (r, g, b)
 local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { 153 / 255, 0, 76 / 255 }; --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
@@ -6,10 +5,9 @@ local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 };   --차�
 local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };     --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
 local CONFIG_FAILED_COLOR = { 1, 0, 0 };                                  --cast fail
 
-local MaxLevel = GetMaxLevelForExpansionLevel(10);
 
 local function hideCastBar(castBar)
-    local targetname   = castBar.targetname;
+    local targetname = castBar.targetname;
     castBar:SetValue(0);
     castBar:Hide();
     ns.lib.PixelGlow_Stop(castBar);
@@ -19,6 +17,15 @@ local function hideCastBar(castBar)
     targetname:Hide();
     castBar.failstart = nil;
 end
+
+local function get_typeofcast(unit)
+    local nameplate = C_NamePlate.GetNamePlateForUnit(unit, issecure())
+    if nameplate and nameplate.UnitFrame and nameplate.UnitFrame.castBar then
+        return nameplate.UnitFrame.castBar.barType;
+    end
+    return nil;
+end
+
 
 local function checkCasting(castBar, event)
     local unit         = castBar.unit;
@@ -51,56 +58,34 @@ local function checkCasting(castBar, event)
         elseif name then
             local current = GetTime();
             frameIcon:SetTexture(texture);
-
-            castBar.start = start / 1000;
-            castBar.duration = (endTime - start) / 1000;
-            castBar.bchannel = bchannel;
-            castBar:SetMinMaxValues(0, castBar.duration)
+            castBar:SetReverseFill(bchannel);
+            castBar:SetMinMaxValues(start, endTime)
             castBar.failstart = nil;
-
-            if bchannel then
-                castBar:SetValue(castBar.start + castBar.duration - current);
-            else
-                castBar:SetValue(current - castBar.start);
-            end
 
             local color = {};
 
-            if UnitIsUnit(targettarget, "player") then
-                if notInterruptible then
-                    color = CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET;
-                else
-                    color = CONFIG_INTERRUPTIBLE_COLOR_TARGET;
-                end
-            else
-                if notInterruptible then
+            color = CONFIG_INTERRUPTIBLE_COLOR;
+
+            color = CONFIG_INTERRUPTIBLE_COLOR;
+            local type = get_typeofcast(unit);
+
+            if type then
+                if type == "uninterruptable" then
                     color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
-                else
-                    color = CONFIG_INTERRUPTIBLE_COLOR;
+                elseif type == "empowered" then
+                    if not castBar.isAlert then
+                        ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
+                        castBar.isAlert = true;
+                    end
                 end
             end
-
-            castBar.castspellid = spellid;
 
             castBar:SetStatusBarColor(color[1], color[2], color[3]);
 
             text:SetText(name);
-            time:SetText(format("%.1f/%.1f", max((current - castBar.start), 0), max(castBar.duration, 0)));
 
             frameIcon:Show();
             castBar:Show();
-            local level = UnitLevel(unit);
-            local isBoss = false;
-
-            if level < 0 or level > MaxLevel then
-                isBoss = true;
-            end
-            if ns.DangerousSpellList[spellid] and ns.DangerousSpellList[spellid] == "interrupt" and (isBoss == false or notInterruptible == false) then
-                if not castBar.isAlert then
-                    ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
-                    castBar.isAlert = true;
-                end
-            end
 
             if UnitExists(targettarget) then
                 local _, Class = UnitClass(targettarget)
@@ -130,7 +115,7 @@ function ns.registerCastBarEvents(frame, unit)
     if not frame then
         return;
     end
-    
+
     frame.unit = unit;
     frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
     frame:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
@@ -165,7 +150,8 @@ function ns.updateCastBar(castBar)
         if current - failstart > 0.5 then
             hideCastBar(castBar);
         end
-    elseif start and start > 0 and start + duration >= current then
+        --[[
+    elseif start > 0 and start + duration >= current then
         local bchannel = castBar.bchannel;
         local time = castBar.time;
         if bchannel then
@@ -175,5 +161,9 @@ function ns.updateCastBar(castBar)
             castBar:SetValue((current - start));
             time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
         end
+        ]]
+    else
+        castBar.time:SetText("");
+        castBar:SetValue(current * 1000);
     end
 end

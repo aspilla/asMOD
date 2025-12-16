@@ -6,20 +6,18 @@
 				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asCooldownPulse\border.tga"/>				
+				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asCooldownPulse\border.tga"/>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentCount" parentKey="count" justifyH="RIGHT"/>							
 			</Layer>
 		</Layers>
 		<Frames>
-			<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="false" drawEdge="true" hidden="true" frameLevel="1000">
+			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="false" drawEdge="true" hidden="true" frameLevel="1000">				
 				<Anchors>
-					<Anchor point="CENTER">
-						<Offset>
-							<AbsDimension x="0" y="-1"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="CENTER" x="0" y="-1"/>
 				</Anchors>
 			</Cooldown>
 		</Frames>
-	</Frame>
-	<Script file="asCooldownPulse.lua"/>
+	</Frame>	
 </Ui>

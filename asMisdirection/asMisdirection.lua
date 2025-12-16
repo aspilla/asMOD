@@ -356,7 +356,7 @@ local function AHM_OnEvent(self, event, ...)
 			maintarget = "player"
 			dealspell = true;
 		else
-			AHM_Button:UnregisterEvent("LEARNED_SPELL_IN_TAB");
+			--AHM_Button:UnregisterEvent("LEARNED_SPELL_IN_TAB");
 
 			if not InCombatLockdown() then
 				AHM_SetAssist(maintarget);
@@ -372,7 +372,7 @@ local function AHM_OnEvent(self, event, ...)
 		if not IsLearndSpell(spellName) then
 			return
 		else
-			AHM_Button:UnregisterEvent("LEARNED_SPELL_IN_TAB")
+			--AHM_Button:UnregisterEvent("LEARNED_SPELL_IN_TAB")
 		end
 
 		if dealspell then
@@ -468,7 +468,7 @@ SlashCmdList["AFM_SLASHCMD"] = AHM_SetTargetName
 SLASH_AFM_SLASHCMD1 = "/afm"
 
 AHM_Button:RegisterEvent("PLAYER_LOGIN")
-AHM_Button:RegisterEvent("LEARNED_SPELL_IN_TAB")
+--AHM_Button:RegisterEvent("LEARNED_SPELL_IN_TAB")
 AHM_Button:RegisterEvent("GROUP_LEFT")
 AHM_Button:RegisterEvent("GROUP_JOINED")
 AHM_Button:RegisterEvent("GROUP_ROSTER_UPDATE")

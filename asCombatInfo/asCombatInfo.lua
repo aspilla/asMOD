@@ -1,445 +1,317 @@
-﻿local _, ns = ...;
--- 설정
-local ACI_SIZE = 40;             -- Button Size
+﻿-- CleanCooldownManager.lua
 
-local ACI_CoolButtons_X = 0      -- 쿨 List 위치 X
-local ACI_CoolButtons_Y = -232   -- Y 위치
-local ACI_Alpha = 1              -- 전투중 알파값
-local ACI_Alpha_Normal = 0.5     -- 비전투중 안보이게 하려면 0
-local ACI_CooldownFontSize = 12; -- Cooldown Font Size
-local ACI_CountFontSize = 11;    -- Count Font Size
-local ACI_MaxSpellCount = 11;    -- 최대 Spell Count
+-- SavedVariables
+CleanCooldownManagerDB = CleanCooldownManagerDB or {}
 
-local options = CopyTable(ACI_Options_Default);
+local addon = CreateFrame("Frame")
+addon:RegisterEvent("ADDON_LOADED")
+addon:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-local ACI = {};
-local ACI_mainframe;
-local ACI_SpellList = nil;
+local updateBucket = {}
 
---globals
-ACI_Buff_list = {};
-ACI_Debuff_list = {};
-ACI_SpellID_list = {};
-ACI_Totem_list = {};
+-- Core function to remove padding and apply modifications. Doing Blizzard's work for them.
+local function RemovePadding(viewer)
+	-- Don't apply modifications in edit mode
+	if EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() then
+		return
+	end
 
-local function setupMouseOver(frame)
-	if not frame:GetScript("OnEnter") then
-		frame:SetScript("OnEnter", function(s)
-			if s.itemslot and s.itemslot > 0 then
-				GameTooltip_SetDefaultAnchor(GameTooltip, s);
-				GameTooltip:SetInventoryItem("player", s.itemslot);
-			elseif s.spellid and s.spellid > 0 then
-				local spellid = s.spellid;
-				local ospellID = C_Spell.GetOverrideSpell(spellid)
+	local children = { viewer:GetChildren() };
+	local isbuff = (viewer == _G.BuffIconCooldownViewer);
 
-				if ospellID then
-					spellid = ospellID;
-				end
-				GameTooltip_SetDefaultAnchor(GameTooltip, s);
-				GameTooltip:SetSpellByID(spellid);
-			elseif s.tooltip and s.tooltip > 0 then
-				GameTooltip_SetDefaultAnchor(GameTooltip, s);
-				GameTooltip:SetText(s.tooltip);
+
+	-- Get the visible icons (because they're fully dynamic)
+	local visibleChildren = {}
+	for _, child in ipairs(children) do
+		if child:IsShown() then
+			-- Store original position for sorting
+			local point, relativeTo, relativePoint, x, y = child:GetPoint(1)
+			child.originalX = x or 0
+			child.originalY = y or 0
+			table.insert(visibleChildren, child)
+		end
+	end
+
+	if #visibleChildren == 0 then return end
+	local isHorizontal = viewer.isHorizontal
+
+	-- Sort by original position for all viewers
+	if isHorizontal then
+		table.sort(visibleChildren, function(a, b)
+			if math.abs(a.originalY - b.originalY) < 1 then
+				return a.originalX < b.originalX
 			end
+			return a.originalY > b.originalY
 		end)
-		frame:SetScript("OnLeave", function()
-			GameTooltip:Hide();
+	else
+		table.sort(visibleChildren, function(a, b)
+			if math.abs(a.originalX - b.originalX) < 1 then
+				return a.originalY > b.originalY
+			end
+			return a.originalX < b.originalX
 		end)
 	end
-	frame:EnableMouse(false);
-	frame:SetMouseMotionEnabled(true);
-end
+
+	local stride = viewer.stride or #visibleChildren
+	local overlap = 0;
 
 
+	for _, button in ipairs(visibleChildren) do
+		local rate = 0.9;
 
-for i = 1, 5 do
-	ACI[i] = CreateFrame("Button", nil, UIParent, "asCombatInfoFrameTemplate");
-	ACI[i]:SetWidth(ACI_SIZE);
-	ACI[i]:SetHeight(ACI_SIZE * 0.9);
-	ACI[i]:SetScale(1);
-	ACI[i]:SetAlpha(ACI_Alpha);
-	ACI[i]:EnableMouse(false);
-	ACI[i]:Hide();
+		if isbuff then
+			rate = 0.8;
+		end
 
-	ACI[i].spellid = 0;
-	ACI[i].tooltip = 0;
-	ACI[i].itemslot = 0;
+		button:SetSize(button:GetWidth(), button:GetWidth() * rate);
 
 
-	ACI[i].obutton = ns.Button:new();
-
-	setupMouseOver(ACI[i])
-end
-
-for i = 1, 5 do
-	if i == 3 then
-		ACI[i]:SetPoint("CENTER", ACI_CoolButtons_X, ACI_CoolButtons_Y)
-	elseif i < 3 then
-		ACI[i]:SetPoint("RIGHT", ACI[i + 1], "LEFT", -1, 0);
-	elseif i > 3 then
-		ACI[i]:SetPoint("LEFT", ACI[i - 1], "RIGHT", 1, 0);
-	end
-end
-
-
-for i = 6, 11 do
-	ACI[i] = CreateFrame("Button", nil, UIParent, "asCombatInfoFrameTemplate");
-
-	ACI[i]:SetWidth(ACI_SIZE - 8);
-	ACI[i]:SetHeight((ACI_SIZE - 8) * 0.9);
-	ACI[i]:SetScale(1);
-	ACI[i]:SetAlpha(ACI_Alpha);
-	ACI[i]:EnableMouse(false);
-	ACI[i]:Hide();
-	ACI[i].spellid = 0;
-	ACI[i].tooltip = 0;
-	ACI[i].itemslot = 0;
-	ACI[i].obutton = ns.Button:new();
-	setupMouseOver(ACI[i])
-end
-
-for i = 6, 11 do
-	if i == 6 then
-		ACI[i]:SetPoint("TOPRIGHT", ACI[3], "BOTTOM", -0.5, -1);
-	elseif i == 7 then
-		ACI[i]:SetPoint("TOPLEFT", ACI[3], "BOTTOM", 0.5, -1);
-	elseif i % 2 == 0 then
-		ACI[i]:SetPoint("RIGHT", ACI[i - 2], "LEFT", -1, 0);
-	else
-		ACI[i]:SetPoint("LEFT", ACI[i - 2], "RIGHT", 1, 0);
-	end
-end
-
-for i = 1, ACI_MaxSpellCount do
-	for _, r in next, { ACI[i].cooldown:GetRegions() } do
-		if r:GetObjectType() == "FontString" then
-			ACI[i].cooldownfont = r;
-			if i < 6 then
-				r:SetFont(STANDARD_TEXT_FONT, ACI_CooldownFontSize, "OUTLINE")
-				ACI[i].cooldownfont.fontsize = ACI_CooldownFontSize;
-			else
-				r:SetFont(STANDARD_TEXT_FONT, ACI_CooldownFontSize - 2, "OUTLINE")
-				ACI[i].cooldownfont.fontsize = ACI_CooldownFontSize - 2;
+		if button.Icon then
+			local mask = button.Icon:GetMaskTexture(1)
+			if mask then
+				button.Icon:RemoveMaskTexture(mask);
 			end
-			break
-		end
-	end
-	ACI[i].cooldown:SetDrawSwipe(true);
-	ACI[i].cooldown:SetHideCountdownNumbers(false);
-
-	ACI[i].icon:SetTexCoord(.08, .92, .08, .92);
-	ACI[i].border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-	ACI[i].border:Hide();
-
-	if i < 6 then
-		ACI[i].count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize, "OUTLINE")
-		ACI[i].point:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 3, "OUTLINE")
-	else
-		ACI[i].count:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 2, "OUTLINE")
-		ACI[i].point:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 5, "OUTLINE")
-	end
-
-	ACI[i].count:ClearAllPoints();
-	ACI[i].count:SetPoint("BOTTOMRIGHT", ACI[i], "BOTTOMRIGHT", -3, 3);
-	ACI[i].point:ClearAllPoints();
-	ACI[i].point:SetPoint("BOTTOMRIGHT", ACI[i], "BOTTOMRIGHT", -3, 3);
-	ACI[i].point:SetTextColor(0, 1, 0);
-
-
-	ACI[i].spellcool:ClearAllPoints();
-	ACI[i].spellcool:SetPoint("CENTER", ACI[i], "BOTTOM", 0, 0);
-	ACI[i].spellcool:SetFont(STANDARD_TEXT_FONT, ACI_CooldownFontSize - 2, "OUTLINE");
-	ACI[i].spellcool:SetTextColor(0.8, 0.8, 1);
-	ACI[i].spellcool:Hide();
-
-	ACI[i].snapshot:SetFont(STANDARD_TEXT_FONT, ACI_CountFontSize - 2, "OUTLINE")
-	ACI[i].snapshot:SetText("");
-	ACI[i].snapshot:SetTextColor(1, 0.5, 0.5);
-	ACI[i].snapshot:ClearAllPoints();
-	ACI[i].snapshot:SetPoint("CENTER", ACI[i], "TOP", 0, -8);
-	ACI[i].snapshot:Hide();
-end
-
-local asGetSpellInfo = function(spellID)
-	if not spellID then
-		return nil;
-	end
-
-	local ospellID = C_Spell.GetOverrideSpell(spellID)
-
-	if ospellID then
-		spellID = ospellID;
-	end
-
-	local spellInfo = C_Spell.GetSpellInfo(spellID);
-
-
-	if spellInfo then
-		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
-			spellInfo.spellID, spellInfo.originalIconID;
-	end
-end
-
-local asGetSpellTabInfo = function(index)
-	local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
-	if skillLineInfo then
-		return skillLineInfo.name,
-			skillLineInfo.iconID,
-			skillLineInfo.itemIndexOffset,
-			skillLineInfo.numSpellBookItems,
-			skillLineInfo.isGuild,
-			skillLineInfo.offSpecID,
-			skillLineInfo.shouldHide,
-			skillLineInfo.specID;
-	end
-end
-
-
-local function asIsPlayerSpell(spell)
-	if type(spell) == "number" then
-		if spell > 0 and spell <= INVSLOT_LAST_EQUIPPED then
-			return true;
+			button.Icon:ClearAllPoints();
+			button.Icon:SetPoint("CENTER", 0, 0);
+			button.Icon:SetSize(button:GetWidth() - 4, button:GetWidth() * rate - 4);
+			button.Icon:SetTexCoord(.08, .92, .08, .92);
 		end
 
-		if C_SpellBook.IsSpellKnown(spell) then
-			return true;
-		end
-	end
 
-	for tab = 1, 3 do
-		local tabName, tabTexture, tabOffset, numEntries = asGetSpellTabInfo(tab)
-
-		if not tabName then
-			return;
-		end
-
-		for i = tabOffset + 1, tabOffset + numEntries do
-			local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player)
-
-			if not spellName then
-				do break end
-			end
-
-			local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
-			local _, _, icon = asGetSpellInfo(spellID);
-
-			if (slotType == Enum.SpellBookItemType.Flyout) then
-				local _, _, numSlots = GetFlyoutInfo(actionID);
-				for j = 1, numSlots do
-					local flyoutSpellID, _, _, flyoutSpellName, _ = GetFlyoutSlotInfo(actionID, j);
-
-
-					if spell == flyoutSpellName or spell == flyoutSpellID then
-						return true;
-					end
-				end
-			else
-				if spell == spellName or spell == spellID then
-					return true;
+		if button.ChargeCount then
+			for _, r in next, { button.ChargeCount:GetRegions() } do
+				if r:GetObjectType() == "FontString" then
+					r:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
+					r:ClearAllPoints();
+					r:SetPoint("BOTTOM", 0, -5);
+					r:SetTextColor(0, 1, 0);
+					r:SetDrawLayer("OVERLAY");
+					break;
 				end
 			end
 		end
-	end
-end
 
-
-
-
-local function ACI_OnEvent(self, event, arg1, ...)
-	if event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_EQUIPMENT_CHANGED" then
-		C_Timer.After(0.5, ACI_Init);
-		if UnitAffectingCombat("player") then
-			for i = 1, ACI_MaxSpellCount do
-				if ACI[i] then
-					ACI[i]:SetAlpha(ACI_Alpha);
+		if button.Applications then
+			for _, r in next, { button.Applications:GetRegions() } do
+				if r:GetObjectType() == "FontString" then
+					r:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
+					r:ClearAllPoints();
+					r:SetPoint("Center", 0, 0);
+					r:SetDrawLayer("OVERLAY");
+					break;
 				end
 			end
+		end
+
+
+		if not button.border then
+			button.border = button:CreateTexture(nil, "BACKGROUND")
+			button.border:SetTexture("Interface\\Addons\\asCombatInfo\\border.tga")
+			button.border:SetAllPoints(button);
+			button.border:SetColorTexture(0, 0, 0);
+			button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 		else
-			for i = 1, ACI_MaxSpellCount do
-				if ACI[i] then
-					ACI[i]:SetAlpha(ACI_Alpha_Normal);
-				end
-			end
+			button.border:SetAlpha(1)
 		end
-	elseif event == "PLAYER_REGEN_DISABLED" then
-		for i = 1, ACI_MaxSpellCount do
-			if ACI[i] then
-				ACI[i]:SetAlpha(ACI_Alpha);
-			end
-		end
-	elseif event == "PLAYER_REGEN_ENABLED" then
-		for i = 1, ACI_MaxSpellCount do
-			if ACI[i] then
-				ACI[i]:SetAlpha(ACI_Alpha_Normal);
-			end
-		end
-	end
-end
+		button.border:Show()
 
-local ACI_Spec = nil;
-local ACI_timer = nil;
-
-ACI_HideCooldownPulse = false;
-
-function ACI_Init()
-	local _, englishClass = UnitClass("player")
-	local spec = C_SpecializationInfo.GetSpecialization();
-	local specID = PlayerUtil.GetCurrentSpecID();
-	local configID = ((specID and C_ClassTalents.GetLastSelectedSavedConfigID(specID) or 0) + 19);
-
-	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
-		spec = 1;
-	end
-
-	local listname = "ACI_SpellList" .. "_" .. englishClass .. "_" .. spec;
-
-	if ACI_timer then
-		ACI_timer:Cancel();
-	end
-	--버튼
-	ACI_SpellList = {};
-
-	if options[spec] and options[spec][configID] then
-		ACI_SpellList = CopyTable(options[spec][configID]);
-	else
-		if ACI_Options_Default[listname] then
-			ACI_SpellList = CopyTable(ACI_Options_Default[listname]);
-		else
-			ACI_SpellList = {};
-		end
-	end
-
-	ACI_Buff_list = {};
-	ACI_Debuff_list = {};
-
-	ACI_SpellID_list = {};
-	ACI_Totem_list = {};
-
-
-	if #ACI_SpellList >= 6 then
-		-- asCooldownPulse 를 숨긴다.
-		ACI_HideCooldownPulse = true;
-	end
-
-	for i = 1, ACI_MaxSpellCount do
-		if ACI[i] then
-			ACI[i].obutton:clear();
-			ACI[i]:Hide();
-		end
-	end
-
-	ns.eventhandler.init();
-
-	if (ACI_SpellList and #ACI_SpellList) then
-		if ACI_Spec == nil and ACI_Spec ~= spec then
-			--	ChatFrame1:AddMessage("[ACI] ".. listname .. "을 Load 합니다.");
-			ACI_Spec = spec;
-		end
-
-		local maxIdx = #ACI_SpellList;
-
-		if maxIdx > ACI_MaxSpellCount then
-			maxIdx = ACI_MaxSpellCount;
-		end
-
-		ACI_mainframe.maxIdx = maxIdx;
-
-		for i = 1, maxIdx do
-			if type(ACI_SpellList[i][1]) == "table" then
-				for idx, array in pairs(ACI_SpellList[i]) do
-					local spell_name = array[1];
-					if asIsPlayerSpell(spell_name) or idx == #(ACI_SpellList[i]) then
-						ACI_SpellList[i] = {};
-						for z, v in pairs(array) do
-							ACI_SpellList[i][z] = v;
-						end
-						break;
-					end
-				end
-			else
-				local check = tonumber(ACI_SpellList[i][1]);
-
-				if check and check == 99 then
-					local bselected = false;
-					local spell_name = ACI_SpellList[i][2];
-					if asIsPlayerSpell(spell_name) then
-						if ACI_SpellList[i][3] then
-							local array = ACI_SpellList[i][3];
-							if type(array) == "table" then
-								ACI_SpellList[i] = {};
-
-								for z, v in pairs(array) do
-									ACI_SpellList[i][z] = v;
-								end
-							end
-						end
+		if button.Cooldown then
+			for _, r in next, { button.Cooldown:GetRegions() } do
+				if r:GetObjectType() == "FontString" then
+					r:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
+					r:ClearAllPoints();
+					if isbuff then
+						r:SetPoint("TOP", 0, 5);
 					else
-						for j = 4, #(ACI_SpellList[i]) do
-							if ACI_SpellList[i][j] then
-								local array = ACI_SpellList[i][j];
-								if type(array) == "table" then
-									local spell_name = array[1];
-									if asIsPlayerSpell(spell_name) or j == #(ACI_SpellList[i]) then
-										ACI_SpellList[i] = {};
-										for z, v in pairs(array) do
-											ACI_SpellList[i][z] = v;
-										end
-										break;
-									end
-								end
-							end
-						end
+						r:SetPoint("CENTER", 0, 0);
 					end
+					r:SetDrawLayer("OVERLAY");
+					break;
 				end
 			end
 
-			if ACI[i] then
-				if type(ACI_SpellList[i][1]) == "number" then
-					ACI[i].spellid = ACI_SpellList[i][1];
+			button.asupdate = function()
+				if button.cooldownUseAuraDisplayTime == true then
+					button.border:SetColorTexture(1, 1, 0);
 				else
-					local spellid = select(7, asGetSpellInfo(ACI_SpellList[i][1]));
-					if spellid then
-						ACI[i].spellid = spellid;
-						ACI_SpellList[i][1] = spellid;
-					end
-				end
-
-
-				if type(ACI_SpellList[i][1]) == "number" then
-					ACI[i].obutton:init(ACI_SpellList[i], ACI[i]);
-					ACI[i].tooltip = (ACI_SpellList[i][1]);
+					button.border:SetColorTexture(0, 0, 0);
 				end
 			end
+
+			if button.astimer then
+				button.astimer:Cancel();
+			end
+
+			button.astimer = C_Timer.NewTicker(0.2, button.asupdate);
 		end
 	end
 
-	ACI_OptionM.UpdateSpellList(ACI_SpellList);
+	-- Reposition buttons respecting orientation and stride
+	local buttonWidth = visibleChildren[1]:GetWidth()
+	local buttonHeight = visibleChildren[1]:GetHeight()
 
-	return;
-end
+	-- Calculate grid dimensions
+	local numIcons = #visibleChildren
+	local totalWidth, totalHeight
 
-local function flushoption()
-	if ACI_Options then
-		options = CopyTable(ACI_Options);
-		ACI_Init();
-		ACI_OptionM.UpdateSpellList(ACI_SpellList);
+	if isHorizontal then
+		local cols = math.min(stride, numIcons)
+		local rows = math.ceil(numIcons / stride)
+		totalWidth = cols * buttonWidth + (cols - 1) * overlap
+		totalHeight = rows * buttonHeight + (rows - 1) * overlap
+	else
+		local rows = math.min(stride, numIcons)
+		local cols = math.ceil(numIcons / stride)
+		totalWidth = cols * buttonWidth + (cols - 1) * overlap
+		totalHeight = rows * buttonHeight + (rows - 1) * overlap
+	end
+
+	-- Calculate offsets to center the grid
+	local startX = -totalWidth / 2
+	local startY = totalHeight / 2
+
+	if isHorizontal then
+		-- Horizontal layout with wrapping
+		for i, child in ipairs(visibleChildren) do
+			local index = i - 1
+			local row = math.floor(index / stride)
+			local col = index % stride
+
+			-- Determine number of icons in this row
+			local rowStart = row * stride + 1
+			local rowEnd = math.min(rowStart + stride - 1, numIcons)
+			local iconsInRow = rowEnd - rowStart + 1
+
+			-- Compute the actual width of this row
+			local rowWidth = iconsInRow * buttonWidth + (iconsInRow - 1) * overlap
+
+			-- Center this row
+			local rowStartX = -rowWidth / 2
+
+			-- Column offset inside centered row
+			local xOffset = rowStartX + col * (buttonWidth + overlap)
+			local yOffset = startY - row * (buttonHeight + overlap)
+
+			child:ClearAllPoints()
+			child:SetPoint("TOP", viewer, "TOP", xOffset + buttonWidth / 2, yOffset - buttonHeight / 2);
+		end
+	else
+		-- Vertical layout with wrapping
+		for i, child in ipairs(visibleChildren) do
+			local row = (i - 1) % stride
+			local col = math.floor((i - 1) / stride)
+
+			local xOffset = startX + col * (buttonWidth + overlap)
+			local yOffset = startY - row * (buttonHeight + overlap)
+
+			child:ClearAllPoints()
+			child:SetPoint("CENTER", viewer, "CENTER", xOffset + buttonWidth / 2, yOffset - buttonHeight / 2)
+		end
 	end
 end
 
 
-ACI_mainframe = CreateFrame("Frame", nil, UIParent);
-ACI_mainframe:SetScript("OnEvent", ACI_OnEvent);
-ACI_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
-ACI_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED");
-ACI_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
-ACI_mainframe:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+local updaterFrame = CreateFrame("Frame")
+updaterFrame:Hide()
 
+updaterFrame:SetScript("OnUpdate", function()
+	updaterFrame:Hide()
 
+	for viewer in pairs(updateBucket) do
+		updateBucket[viewer] = nil
+		RemovePadding(viewer)
+	end
+end)
 
-C_AddOns.LoadAddOn("asMOD");
-
-if asMOD_setupFrame then
-	asMOD_setupFrame(ACI[3], "asCombatInfo");
+-- Schedule an update to apply the modifications during the same frame, but after Blizzard is done mucking with things
+local function ScheduleUpdate(viewer)
+	updateBucket[viewer] = true
+	updaterFrame:Show()
 end
 
-ACI_OptionM.RegisterCallback(flushoption);
+-- Do the work
+local function ApplyModifications()
+	local viewers = {
+		---@diagnostic disable-next-line: undefined-field
+		_G.UtilityCooldownViewer,
+		---@diagnostic disable-next-line: undefined-field
+		_G.EssentialCooldownViewer,
+		---@diagnostic disable-next-line: undefined-field
+		_G.BuffIconCooldownViewer
+
+	}
+
+	for _, viewer in ipairs(viewers) do
+		if viewer then
+			RemovePadding(viewer)
+
+			-- Hook Layout to reapply when Blizzard updates
+			if viewer.Layout then
+				hooksecurefunc(viewer, "Layout", function()
+					ScheduleUpdate(viewer)
+				end)
+			end
+
+			-- Hook Show/Hide to reapply when icons appear/disappear
+			local children = { viewer:GetChildren() }
+			for _, child in ipairs(children) do
+				child:HookScript("OnShow", function()
+					ScheduleUpdate(viewer)
+				end)
+				child:HookScript("OnHide", function()
+					ScheduleUpdate(viewer)
+				end)
+			end
+		end
+	end
+	-- BuffIconCooldownViewer loads later, hook it separately
+	C_Timer.After(0.1, function()
+		if _G.BuffIconCooldownViewer then
+			RemovePadding(_G.BuffIconCooldownViewer)
+
+			-- Hook Layout to reapply when icons change
+			if _G.BuffIconCooldownViewer.Layout then
+				hooksecurefunc(_G.BuffIconCooldownViewer, "Layout", function()
+					ScheduleUpdate(_G.BuffIconCooldownViewer)
+				end)
+			end
+
+			-- Hook Show/Hide on existing and future children
+			local function HookChild(child)
+				child:HookScript("OnShow", function()
+					ScheduleUpdate(_G.BuffIconCooldownViewer)
+				end)
+				child:HookScript("OnHide", function()
+					ScheduleUpdate(_G.BuffIconCooldownViewer)
+				end)
+			end
+
+			local children = { _G.BuffIconCooldownViewer:GetChildren() }
+			for _, child in ipairs(children) do
+				HookChild(child)
+			end
+
+			-- Monitor for new children
+			_G.BuffIconCooldownViewer:HookScript("OnUpdate", function(self)
+				local currentChildren = { self:GetChildren() }
+				for _, child in ipairs(currentChildren) do
+					if not child.cleanCooldownHooked then
+						child.cleanCooldownHooked = true
+						HookChild(child)
+						ScheduleUpdate(self)
+					end
+				end
+			end)
+		end
+
+		--CooldownViewerConstants.ITEM_AURA_COLOR = CreateColor(0, 0, 0, 0.5);
+	end)
+end
+-- Event handler
+addon:SetScript("OnEvent", function(self, event, arg)
+	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then
+		C_Timer.After(0.5, ApplyModifications)
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		C_Timer.After(0.5, ApplyModifications)
+	end
+end)

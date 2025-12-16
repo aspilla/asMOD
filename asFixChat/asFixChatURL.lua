@@ -19,6 +19,10 @@ local function asMOD_AddMessage(self, text, ...)
 	if self:IsForbidden() then
 		return
 	end
+
+	if issecretvalue(text) then
+		return;
+	end
 	-- URL pattern to find URLs in the text
 	local urlPattern = '([wWhH][wWtT][wWtT][%.pP]%S+[^%p%s])'
 

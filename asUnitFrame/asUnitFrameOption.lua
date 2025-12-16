@@ -1,17 +1,12 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 241121,
+    Version = 251125,
     ShowPortrait = true,
     ShowTotemBar = true,
     ShowBossBuff = true,
     ShowTargetBorder = true,
-    CheckRange = true,
-    OffPortraitDebuffOnRaid = true,
+    ShowDebuff = true,
 };
-
-ns.Buff_BlackList = {
-	[206150] = 1 -- 도전자의 힘
-}
 
 ns.options = CopyTable(Options_Default);
 local tempoption = {};

@@ -1,8 +1,8 @@
-## Interface: 110205, 110207
+## Interface: 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rHealthText
 ## Notes: Simple Health HUD
-## Version : 250913
+## Version : 251214
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asHealthText.lua

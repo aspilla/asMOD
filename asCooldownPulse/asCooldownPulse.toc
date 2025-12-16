@@ -1,11 +1,10 @@
-﻿## Interface: 110205, 110207
+﻿## Interface: 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCooldownPulse
 ## Notes: Simple cooldown tracker
-## Version : 250910
+## Version : 251207
 ## SavedVariablesPerCharacter: ACDP_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
-asCooldownPulseLib.lua
-asCooldownPulseOption.lua
 asCooldownPulse.xml
+asCooldownPulse.lua

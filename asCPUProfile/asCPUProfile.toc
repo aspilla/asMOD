@@ -1,4 +1,4 @@
-﻿## Interface: 110205, 110207
+﻿## Interface: 120001
 ## Author: |cffff3399아스필라|r [아즈샤라]
 ## Title: |cffff3399as|rCPUProfile
 ## Notes: asMOD 성능 측정

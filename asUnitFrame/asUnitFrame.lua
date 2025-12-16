@@ -2,10 +2,10 @@
 local _, ns = ...;
 
 ------------------------------------------
----설정부
+---Config
 ------------------------------------------
 
-local Update_Rate = 0.1 -- 0.1 초마다 Update
+local Update_Rate = 0.1
 local config_width = 200;
 local xposition = 225;
 local yposition = -198;
@@ -13,9 +13,6 @@ local healthheight = 35;
 local powerheight = 5;
 local buffcount = 4;
 local buffsize = 25;
-local isevoker = false;
-
-AUF_ShowTotemBar = false;
 
 local CONFIG_FONT = STANDARD_TEXT_FONT;
 local region = GetCurrentRegion();
@@ -24,35 +21,6 @@ if region == 2 and GetLocale() ~= "koKR" then
     CONFIG_FONT = "Fonts\\2002.ttf";
 end
 
-local RaidIconList = {
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
-}
-
-local AuraFilters =
-{
-    Helpful = "HELPFUL",
-    Harmful = "HARMFUL",
-    Raid = "RAID",
-    IncludeNameplateOnly = "INCLUDE_NAME_PLATE_ONLY",
-    Player = "PLAYER",
-    Cancelable = "CANCELABLE",
-    NotCancelable = "NOT_CANCELABLE",
-    Maw = "MAW",
-};
-
-local function CreateFilterString(...)
-    return table.concat({ ... }, '|');
-end
-
-
-
 local leaderIcon = CreateAtlasMarkup("groupfinder-icon-leader", 14, 9, 0, 0);
 local combatIcon = CreateAtlasMarkup("pvptalents-warmode-swords", 14, 14);
 local restingIcon = CreateAtlasMarkup("Innkeeper", 14, 14);
@@ -60,10 +28,7 @@ local eliteIcon = CreateAtlasMarkup("nameplates-icon-elite-gold", 14, 14);
 local rareIcon = CreateAtlasMarkup("UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare-Star", 14, 14);
 local rareeliteIcon = CreateAtlasMarkup("nameplates-icon-elite-silver", 14, 14);
 
-ns.DangerousSpellList = {};
-local israid = false;
-
-local function UpdateFillBarBase(realbar, bar, amount, bleft, pointbar)
+local function UpdateFillBarBase(realbar, bar, amount, bleft, pointbar, totalMax)
     if not amount or (amount == 0) then
         bar:Hide();
         return
@@ -84,9 +49,7 @@ local function UpdateFillBarBase(realbar, bar, amount, bleft, pointbar)
         bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", 0, 0);
     end
 
-    local totalWidth, totalHeight = realbar:GetSize();
-
-    local _, totalMax = realbar:GetMinMaxValues();
+    local totalWidth, totalHeight = realbar:GetSize();    
 
     local barSize = (amount / totalMax) * totalWidth;
     bar:SetWidth(barSize);
@@ -116,6 +79,11 @@ local function UpdatePlayerUnit()
     end
 end
 
+local curve = C_CurveUtil.CreateCurve();
+curve:SetType(Enum.LuaCurveType.Linear);
+curve:AddPoint(0, 0);
+curve:AddPoint(1, 100);
+
 local function updateUnit(frame)
     local unit = frame.unit;
     local showplayermana = false;
@@ -140,27 +108,25 @@ local function updateUnit(frame)
     -- Healthbar
     local value = UnitHealth(unit);
     local valueMax = UnitHealthMax(unit);
-    local value_orig = value;
-
-    local allIncomingHeal = UnitGetIncomingHeals(unit) or 0;
-    local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0;
-    local total = allIncomingHeal + totalAbsorb;
-
-    local valuePct = (math.ceil((value / valueMax) * 100));
-    local valuePct_orig = (math.ceil((value_orig / valueMax) * 100));
-    local valuePctAbsorb = (math.ceil((total / valueMax) * 100));
+    --local value_orig = value;
+    --local allIncomingHeal = UnitGetIncomingHeals(unit) or 0;
+    --local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0;
+    local valuePct = UnitHealthPercent(unit, false, curve);
+    --    local valuePct_orig = (math.ceil((value_orig / valueMax) * 100));
+    -- local valuePctAbsorb = (math.ceil((total / valueMax) * 100));
 
     frame.healthbar:SetMinMaxValues(0, valueMax)
-    frame.healthbar:SetValue(value)
+    frame.healthbar:SetValue(value, Enum.StatusBarInterpolation.ExponentialEaseOut)
 
     if UnitIsDead(unit) then
         frame.healthbar.pvalue:SetText("Dead");
-    elseif valuePctAbsorb > 0 then
-        frame.healthbar.pvalue:SetText(valuePct .. "(" .. valuePctAbsorb .. ")");
+        --elseif valuePctAbsorb > 0 then
+        --  frame.healthbar.pvalue:SetText(valuePct .. "(" .. valuePctAbsorb .. ")");
     else
-        frame.healthbar.pvalue:SetText(valuePct);
+        frame.healthbar.pvalue:SetText(string.format("%d", valuePct));        
     end
 
+    --[[
     local totalAbsorbremain = totalAbsorb;
     local remainhealth = valueMax - value;
     local remainhealthAfterHeal = remainhealth - allIncomingHeal;
@@ -200,6 +166,7 @@ local function updateUnit(frame)
     end
 
     UpdateFillBarBase(frame.healthbar, frame.healthbar.shieldBar, remainAbsorb, true, nil);
+    ]]
 
     --CastBar
     if frame.updateCastBar then
@@ -236,11 +203,8 @@ local function updateUnit(frame)
         frame.healthbar:SetStatusBarColor(r, g, b);
     end
 
-    local mark = "";
-    local icon = GetRaidTargetIndex(unit)
-    if icon and RaidIconList[icon] then
-        mark = RaidIconList[icon] .. "0|t";
-    end
+
+    local raidicon = GetRaidTargetIndex(unit)
 
     --Name
     local leveltext = ""
@@ -309,7 +273,7 @@ local function updateUnit(frame)
 
     frame.healthbar.hvalue:SetText(AbbreviateLargeNumbers(value))
     frame.healthbar.name:SetText(name);
-    frame.healthbar.mark:SetText(mark);
+    frame.healthbar.mark:SetText(raidicon);
     frame.healthbar.classtext:SetText(classtext);
 
     --Power
@@ -332,7 +296,7 @@ local function updateUnit(frame)
                 local manavalue = UnitPower(unit, 0);
                 local manaMax = UnitPowerMax(unit, 0);
 
-                if manavalue > 0 then
+                if manaMax > 0 then
                     frame.powerbar:SetMinMaxValues(0, manaMax)
                     frame.powerbar:SetValue(manavalue);
                     frame.powerbar.value:SetText(manavalue)
@@ -351,7 +315,8 @@ local function updateUnit(frame)
     end
 
     --Target
-    if ns.options.ShowTargetBorder and unit == "focus" or string.find(unit, "boss") then
+
+    if ns.options.ShowTargetBorder and frame.bchecktarget then
         if UnitIsUnit(unit, "target") then
             frame.targetborder:Show();
         else
@@ -385,26 +350,12 @@ local function updateUnit(frame)
         frame.healthbar.aggro:Hide();
     end
 
-    if frame.portrait and UnitGUID(unit) ~= frame.guid then
+    if frame.portrait then
         SetPortraitTexture(frame.portrait.portrait, unit, false);
-        frame.guid = UnitGUID(unit);
     end
 
     if UnitAffectingCombat("player") then
-        if ns.options.CheckRange then
-            if unit == "player" then
-                frame:SetAlpha(1);
-            else
-                local inrange = ns.checkRange(unit, isevoker);
-                if inrange then
-                    frame:SetAlpha(1);
-                else
-                    frame:SetAlpha(0.55);
-                end
-            end
-        else
-            frame:SetAlpha(1);
-        end
+        frame:SetAlpha(1);
     else
         frame:SetAlpha(0.5);
     end
@@ -413,6 +364,11 @@ end
 local function asTargetFrame_OpenMenu(self, unit)
     local which;
     local name;
+
+    if issecretvalue(unit) then
+        return;
+    end
+
     if (UnitIsUnit(unit, "player")) then
         which = "SELF";
     elseif (UnitIsUnit(unit, "vehicle")) then
@@ -466,10 +422,6 @@ local function OpenContextMenu(s, unit, button, isKeyPress)
     return asTargetFrame_OpenMenu(s, s.unit);
 end
 
-
-local debufffilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.IncludeNameplateOnly);
-local bufffilter = CreateFilterString(AuraFilters.Helpful);
-
 local function UpdateDebuffAnchor(frames, index, offsetX, right, parent, width)
     local buff = frames[index];
 
@@ -519,21 +471,7 @@ local function CreateDebuffFrames(parent, bright, fontsize, width, count)
         frame:ClearAllPoints();
         UpdateDebuffAnchor(parent.debuffframes, idx, 1, bright, parent, width / count);
 
-        if not frame:GetScript("OnEnter") then
-            frame:SetScript("OnEnter", function(s)
-                if s.auraInstanceID then
-                    GameTooltip_SetDefaultAnchor(GameTooltip, s);
-                    GameTooltip:SetUnitDebuffByAuraInstanceID(s.unit, s.auraInstanceID, debufffilter);
-                end
-            end)
-            frame:SetScript("OnLeave", function()
-                GameTooltip:Hide();
-            end)
-        end
-
         frame:EnableMouse(false);
-        frame:SetMouseMotionEnabled(true);
-        frame.data = {};
         frame:Hide();
     end
 
@@ -589,21 +527,7 @@ local function CreateBuffFrames(parent, bright, fontsize, width, count)
         frame:ClearAllPoints();
         UpdateBuffAnchor(parent.buffframes, idx, 2, bright, parent, width);
 
-        if not frame:GetScript("OnEnter") then
-            frame:SetScript("OnEnter", function(s)
-                if s.auraInstanceID then
-                    GameTooltip_SetDefaultAnchor(GameTooltip, s);
-                    GameTooltip:SetUnitBuffByAuraInstanceID(s.unit, s.auraInstanceID, bufffilter);
-                end
-            end)
-            frame:SetScript("OnLeave", function()
-                GameTooltip:Hide();
-            end)
-        end
-
         frame:EnableMouse(false);
-        frame:SetMouseMotionEnabled(true);
-        frame.data = {};
         frame:Hide();
     end
 
@@ -656,44 +580,27 @@ local function CreatTotemFrames(parent, bright, fontsize, width, count)
 
         button:ClearAllPoints();
         UpdateTotemAnchor(parent.totembuttons, idx, 1, bright, parent, (width / 2 - 3) / count);
-        button.data = {};
         frame:Show();
         button:SetAttribute("type", "destroytotem");
         button:SetAttribute("totem-slot", idx);
         button:SetAlpha(0);
         button:Show();
-
-        if not button:GetScript("OnEnter") then
-            button:SetScript("OnEnter", function(s)
-                if s.totemslot then
-                    GameTooltip_SetDefaultAnchor(GameTooltip, s);
-                    GameTooltip:SetTotem(s.totemslot)
-                end
-            end)
-            button:SetScript("OnLeave", function()
-                GameTooltip:Hide();
-            end)
-        end
     end
 
     return;
 end
 
-local unitframes = {};
-
+ns.unitframes = {};
 
 local function onUnitEvent(self, event, arg1, arg2)
-    if event == "UNIT_AURA" then
-        if UnitIsUnit(arg1, self.unit) then
-            ns.UpdateAuras(self, arg2);
-        end
-    elseif event == "PLAYER_TOTEM_UPDATE" then
+    if event == "PLAYER_TOTEM_UPDATE" then
         ns.UpdateTotems(self);
     end
 end
 
 local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight, fontsize, debuffupdate, is_small)
     local FontOutline = "OUTLINE";
+
 
     frame:ClearAllPoints();
     frame:SetPoint("CENTER", UIParent, "CENTER", x, y);
@@ -724,7 +631,6 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     end
 
     local hwidth = width;
-    frame.portraitdebuff = false;
 
     if ns.options.ShowPortrait then
         hwidth = width - height * 1.1;
@@ -763,10 +669,6 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
         end
         pframe.portrait:Show();
         pframe:Show();
-
-        if unit == "target" or unit == "focus" then
-            frame.portraitdebuff = true;
-        end
     end
 
     frame.healthbar:SetWidth(hwidth);
@@ -879,18 +781,6 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.powerbar.value:SetTextColor(1, 1, 1, 1)
     frame.powerbar.value:SetPoint("CENTER", frame.powerbar, "CENTER", 0, 0);
 
-    if not frame:GetScript("OnEnter") then
-        frame:SetScript("OnEnter", function(s)
-            if s.unit then
-                GameTooltip_SetDefaultAnchor(GameTooltip, s);
-                GameTooltip:SetUnit(s.unit);
-            end
-        end)
-        frame:SetScript("OnLeave", function()
-            GameTooltip:Hide();
-        end)
-    end
-
     local castbarheight = height - 5;
 
     frame.castbar = CreateFrame("StatusBar", nil, frame)
@@ -921,20 +811,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.castbar.time:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
     frame.castbar.time:SetPoint("RIGHT", frame.castbar, "RIGHT", -3, 0);
 
-    if not frame.castbar:GetScript("OnEnter") then
-        frame.castbar:SetScript("OnEnter", function(s)
-            if s.castspellid and s.castspellid > 0 then
-                GameTooltip_SetDefaultAnchor(GameTooltip, s);
-                GameTooltip:SetSpellByID(s.castspellid);
-            end
-        end)
-        frame.castbar:SetScript("OnLeave", function()
-            GameTooltip:Hide();
-        end)
-    end
-
     frame.castbar:EnableMouse(false);
-    frame.castbar:SetMouseMotionEnabled(true);
     frame.castbar:Hide();
 
     frame.castbar.button = CreateFrame("Button", nil, frame.castbar, "AUFFrameTemplate");
@@ -956,7 +833,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.debuffupdate = false;
     frame.totemupdate = false;
 
-    if debuffupdate then
+    if debuffupdate and ns.options.ShowDebuff then
         CreateDebuffFrames(frame, true, fontsize, width, 4);
         frame.debuffupdate = true;
     end
@@ -965,7 +842,6 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
         CreatTotemFrames(frame, true, fontsize, width, MAX_TOTEMS);
         frame:RegisterEvent("PLAYER_TOTEM_UPDATE");
         frame.totemupdate = true;
-        AUF_ShowTotemBar = true;
     end
 
     frame.updatecount = 1;
@@ -988,7 +864,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.unit = unit;
     -- 유닛 설정 (예시: 'player' 또는 'target' 등)
     frame:SetAttribute("unit", unit);
-    unitframes[unit] = frame;
+    ns.unitframes[unit] = frame;
     SecureUnitButton_OnLoad(frame, frame.unit, OpenContextMenu);
     Mixin(frame, PingableType_UnitFrameMixin);
     frame:SetAttribute("ping-receiver", true);
@@ -999,8 +875,10 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
         RegisterStateDriver(frame, "visibility", "[@" .. unit .. ",exists] show; hide");
     end
 
-    if frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
-        frame:RegisterUnitEvent("UNIT_AURA", unit);
+    if unit == "focus" or string.find(unit, "boss") then
+        frame.bchecktarget = true;
+    else
+        frame.bchecktarget = false;
     end
 
     frame:SetScript("OnEvent", onUnitEvent);
@@ -1065,104 +943,19 @@ local function Init()
             end
         end
     end
-    local _, engclass = UnitClass("player");
-
-    if engclass == "EVOKER" then
-        isevoker = true;
-    end
 end
 
--- stolen from cell, which is stolen from elvui
-local hiddenParent = CreateFrame("Frame", nil, _G.UIParent)
-hiddenParent:SetAllPoints()
-hiddenParent:Hide()
 
-local function HideFrame(frame)
-    if not frame then return end
-
-    frame:UnregisterAllEvents()
-    frame:Hide()
-    frame:SetParent(hiddenParent)
-
-    local health = frame.healthBar or frame.healthbar
-    if health then
-        health:UnregisterAllEvents()
-    end
-
-    local power = frame.manabar
-    if power then
-        power:UnregisterAllEvents()
-    end
-
-    local spell = frame.castBar or frame.spellbar
-    if spell then
-        spell:UnregisterAllEvents()
-    end
-
-    local altpowerbar = frame.powerBarAlt
-    if altpowerbar then
-        altpowerbar:UnregisterAllEvents()
-    end
-
-    local buffFrame = frame.BuffFrame
-    if buffFrame then
-        buffFrame:UnregisterAllEvents()
-    end
-
-    local petFrame = frame.PetFrame
-    if petFrame then
-        petFrame:UnregisterAllEvents()
-    end
-end
-
-local function HideBlizzardUnitFrame(unit)
-    if unit == "player" and _G.PlayerFrame then
-        HideFrame(_G.PlayerFrame)
-    elseif unit == "target" and _G.TargetFrame then
-        HideFrame(_G.TargetFrame)
-    elseif unit == "focus" and _G.FocusFrame then
-        HideFrame(_G.FocusFrame)
-    elseif unit == "pet" and _G.PetFrame then
-        HideFrame(_G.PetFrame)
-    end
-end
-
-local function HideDefaults()
-    HideBlizzardUnitFrame("player");
-    HideBlizzardUnitFrame("target");
-    HideBlizzardUnitFrame("focus");
-    HideBlizzardUnitFrame("pet");
-
-    if (MAX_BOSS_FRAMES) then
-        for i = 1, MAX_BOSS_FRAMES do
-            local bossframe = _G["Boss" .. i .. "TargetFrame"];
-
-            if bossframe then
-                HideFrame(bossframe);
-            end
-        end
-    end
-end
-
-HideDefaults();
-
-
-local bfirst = true;
-local AUF = CreateFrame("Frame")
+local AUF = CreateFrame("Frame");
 
 local function checkFrameAuras(unit)
-    local frame = unitframes[unit];
-    if frame and frame.buffupdate or frame.debuffupdate or frame.portraitdebuff then
+    local frame = ns.unitframes[unit];
+    if frame and frame.buffupdate or frame.debuffupdate then
         ns.UpdateAuras(frame);
     end
 end
-local function setPortraitDebuff(unit, value)
-    local frame = unitframes[unit];
-    if frame then
-        frame.portraitdebuff = value;
-    end
-end
 
+local bfirst = true;
 local function AUF_OnEvent(self, event, arg1, arg2, arg3)
     if bfirst then
         Init();
@@ -1170,26 +963,8 @@ local function AUF_OnEvent(self, event, arg1, arg2, arg3)
     end
 
     if event == "PLAYER_ENTERING_WORLD" then
-        HideDefaults();
-        local isInstance, instanceType = IsInInstance();
-
-        israid = false;
-
-        if isInstance and instanceType == "raid" then
-            israid = true;
-        end
-
-        if ns.options.OffPortraitDebuffOnRaid and ns.options.ShowPortrait then
-            if israid then
-                setPortraitDebuff("target", false);
-                setPortraitDebuff("focus", false);
-            else
-                setPortraitDebuff("target", true);
-                setPortraitDebuff("focus", true);
-            end
-        end
+        ns.HideDefaults();
     elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
-        ns.DumpCaches();
         checkFrameAuras("target");
         checkFrameAuras("targettarget");
     elseif event == "UNIT_TARGET" then
@@ -1198,12 +973,12 @@ local function AUF_OnEvent(self, event, arg1, arg2, arg3)
         checkFrameAuras("target");
         checkFrameAuras("targettarget");
     elseif event == "UNIT_PORTRAIT_UPDATE" then
-        local frame = unitframes[arg1];
+        local frame = ns.unitframes[arg1];
         if frame and frame.portrait then
             SetPortraitTexture(frame.portrait.portrait, frame.unit, false);
         end
     elseif event == "PORTRAITS_UPDATED" then
-        for _, frame in pairs(unitframes) do
+        for _, frame in pairs(ns.unitframes) do
             if frame.portrait then
                 SetPortraitTexture(frame.portrait.portrait, frame.unit, false);
             end
@@ -1230,42 +1005,3 @@ AUF:RegisterEvent("PLAYER_FOCUS_CHANGED");
 AUF:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
 AUF:RegisterUnitEvent("UNIT_TARGET", "target");
 AUF:RegisterEvent("PLAYER_TARGET_CHANGED");
-
-
-local DBMobj;
-local function scanDBM()
-    ns.DangerousSpellList = {};
-    if DBMobj.Mods then
-        for i, mod in ipairs(DBMobj.Mods) do
-            if mod.Options and mod.announces then
-                for k, obj in pairs(mod.announces) do
-                    if obj.spellId and obj.announceType and obj.option then
-                        if (ns.DangerousSpellList[obj.spellId] == nil or ns.DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
-                            ns.DangerousSpellList[obj.spellId] = obj.announceType;
-                        end
-                    end
-                end
-            end
-
-            if mod.Options and mod.specwarns then
-                for k, obj in pairs(mod.specwarns) do
-                    if obj.spellId and obj.announceType and obj.option then
-                        if (ns.DangerousSpellList[obj.spellId] == nil or ns.DangerousSpellList[obj.spellId] ~= "interrupt") and mod.Options[obj.option] then
-                            ns.DangerousSpellList[obj.spellId] = obj.announceType;
-                        end
-                    end
-                end
-            end
-        end
-    end
-end
-
-local function NewMod(self, ...)
-    DBMobj = self;
-    C_Timer.After(2, scanDBM);
-end
-
-local bloaded = C_AddOns.LoadAddOn("DBM-Core");
-if bloaded then
-    hooksecurefunc(DBM, "NewMod", NewMod)
-end

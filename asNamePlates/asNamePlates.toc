@@ -1,4 +1,4 @@
-﻿## Interface: 110205, 110207
+﻿## Interface: 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rNamePlates
 ## Notes: Addon to enhance the default name plates
@@ -8,6 +8,4 @@
 ## Category: asMOD
 asNamePlatesLib.lua
 asNamePlates_Option.lua
-asNamePlatesDBM.lua
-asNamePlatesAura.lua
 asNamePlates.xml
