@@ -1,6 +1,7 @@
 # asDotFilter
 
 Displays debuffs cast by the player on boss frames and focus frames.
+
 ![asDotFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDotFilter.jpg?raw=true)
 
 ## Main Features
@@ -18,6 +19,7 @@ No settings available.
 # asDotFilter
 
 보스 프레임, 주시 프레임에 플레이어가 시전한 디버프를 표시
+
 ![asDotFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDotFilter.jpg?raw=true)
 
 ## 주요 기능
