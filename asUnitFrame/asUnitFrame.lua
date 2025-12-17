@@ -13,6 +13,7 @@ local healthheight = 35;
 local powerheight = 5;
 local buffcount = 4;
 local buffsize = 25;
+local isevoker = false;
 
 local CONFIG_FONT = STANDARD_TEXT_FONT;
 local region = GetCurrentRegion();
@@ -355,7 +356,20 @@ local function updateUnit(frame)
     end
 
     if UnitAffectingCombat("player") then
-        frame:SetAlpha(1);
+        if ns.options.CheckRange then
+            if unit == "player" then
+                frame:SetAlpha(1);
+            else
+                local inrange = ns.checkRange(unit, isevoker);
+                if inrange then
+                    frame:SetAlpha(1);
+                else
+                    frame:SetAlpha(0.55);
+                end
+            end
+        else
+            frame:SetAlpha(1);
+        end
     else
         frame:SetAlpha(0.5);
     end
@@ -942,6 +956,11 @@ local function Init()
                 asMOD_setupFrame(AUF_BossFrames[i], "AUF_BossFrame" .. i);
             end
         end
+    end
+    local _, engclass = UnitClass("player");
+
+    if engclass == "EVOKER" or engclass == "DEMONHUNTER" then
+        isevoker = true;
     end
 end
 

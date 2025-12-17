@@ -6,6 +6,7 @@ local Options_Default = {
     ShowBossBuff = true,
     ShowTargetBorder = true,
     ShowDebuff = true,
+    CheckRange = true,
 };
 
 ns.options = CopyTable(Options_Default);
