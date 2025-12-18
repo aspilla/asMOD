@@ -111,7 +111,7 @@ local function updateUnit(frame)
     local valueMax = UnitHealthMax(unit);
     --local value_orig = value;
     --local allIncomingHeal = UnitGetIncomingHeals(unit) or 0;
-    --local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0;
+    local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0;
     local valuePct = UnitHealthPercent(unit, false, curve);
     --    local valuePct_orig = (math.ceil((value_orig / valueMax) * 100));
     -- local valuePctAbsorb = (math.ceil((total / valueMax) * 100));
@@ -126,6 +126,14 @@ local function updateUnit(frame)
     else
         frame.healthbar.pvalue:SetText(string.format("%d", valuePct));        
     end
+
+
+    --[[
+    local calculator = CreateUnitHealPredictionCalculator();
+    UnitGetDetailedHealPrediction(unit, unitDoingTheHealing, calculator);  -- 'calculator' is updated with new data after this call.
+    local incomingHeals, incomingHealsFromHealer, incomingHealsFromOthers, incomingHealsClamped = calculator:GetIncomingHeals();
+    myStatusBar:SetValue(incomingHealsFromHealer);
+    ]]
 
     --[[
     local totalAbsorbremain = totalAbsorb;

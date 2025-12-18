@@ -1,9 +1,4 @@
-﻿-- CleanCooldownManager.lua
-
--- SavedVariables
-CleanCooldownManagerDB = CleanCooldownManagerDB or {}
-
-local addon = CreateFrame("Frame")
+﻿local addon = CreateFrame("Frame")
 addon:RegisterEvent("ADDON_LOADED")
 addon:RegisterEvent("PLAYER_ENTERING_WORLD")
 
@@ -132,7 +127,7 @@ local function RemovePadding(viewer)
 
 			button.asupdate = function()
 				if button.cooldownUseAuraDisplayTime == true then
-					button.border:SetColorTexture(1, 1, 0);
+					button.border:SetColorTexture(0, 1, 1);
 				else
 					button.border:SetColorTexture(0, 0, 0);
 				end

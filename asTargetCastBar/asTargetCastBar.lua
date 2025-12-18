@@ -8,16 +8,9 @@ local ATCB_ALPHA = 0.8;                                                   --투�
 local ATCB_NAME_SIZE = ATCB_HEIGHT * 0.7;                                 --Spell 명 Font Size, 높이의 70%
 local ATCB_TIME_SIZE = ATCB_HEIGHT * 0.5;                                 --Spell 시전시간 Font Size, 높이의 50%
 local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };                 --차단 불가시 (내가 아닐때) 색상 (r, g, b)
-local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { 153 / 255, 0, 76 / 255 }; --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
 local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 };   --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
-local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };     --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
 local CONFIG_FAILED_COLOR = { 1, 0, 0 };                                  --cast fail
-
 local ATCB_UPDATE_RATE = 0.05                                             -- 20프레임
-
-local DangerousSpellList = {
-
-}
 
 -----------------설정 끝------------------------
 local CONFIG_FONT = STANDARD_TEXT_FONT;
@@ -295,7 +288,7 @@ local function checkUnit(frame, unit)
     end
 
     if not UnitExists(unit) then
-        frame:Hide()
+        hideCastBar(frame);
         return;
     end
 
@@ -369,7 +362,7 @@ local function updateCastBar(castBar)
         end
     else
         castBar.time:SetText("");
-        castBar:SetValue(current * 1000);
+        castBar:SetValue(current * 1000, Enum.StatusBarInterpolation.ExponentialEaseOut);
     end
 end
 

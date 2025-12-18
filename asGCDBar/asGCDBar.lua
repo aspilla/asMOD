@@ -43,7 +43,7 @@ curve:AddPoint(1, 100);
 
 local function AGCDB_OnUpdate()
 	local remain_percent = C_Spell.GetSpellCooldownRemainingPercent(61304, curve);
-	AGCDB.gcdbar:SetValue(remain_percent);	
+	AGCDB.gcdbar:SetValue(remain_percent, Enum.StatusBarInterpolation.ExponentialEaseOut);	
 end
 
 C_Timer.NewTicker(0.1, AGCDB_OnUpdate);
