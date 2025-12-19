@@ -6,8 +6,6 @@ Displays health and resource percentages for the player, target, and pet, along 
 
 ![asHealthText](https://github.com/aspilla/asMOD/blob/main/.Pictures/asHealthText.jpg?raw=true)
 
----
-
 ## Key Features
 
 * **Text-Based Information Hub**:
@@ -28,8 +26,6 @@ Displays health and resource percentages for the player, target, and pet, along 
     * **Monk (Windwalker/Mistweaver)**: Chi.
     * **Mage (Arcane)**: Arcane Charges.
     * **Evoker**: Essence.
-
----
 
 ## Configuration
 
