@@ -114,8 +114,7 @@ local function checkList()
 	end
 
 	for i = idx, ADBMT_MaxButtons do
-		local button = ns.asDBMTimer.buttons[i];
-		ns.lib.PixelGlow_Stop(button);
+		local button = ns.asDBMTimer.buttons[i];		
 		button:Hide();
 	end
 end
