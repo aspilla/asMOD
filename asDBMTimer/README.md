@@ -2,6 +2,7 @@
 
 **Enhanced Boss Timeline**
 ![asDBMTimer](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDBMTimer.jpg?raw=true)
+**Note**: This addon is no longer associated with DBM (Deadly Boss Mods).
 
 ## Key Features
 
@@ -20,10 +21,11 @@ Settings can be modified at:
 * `LockPosition`: Uncheck to move the frame; note that `/asconfig` settings take priority.
 
 ---
-# asDBMTimer
+# asDBMTimer (한밤)
 
 **보스 타임라인 강화**
 ![asDBMTimer](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDBMTimer.jpg?raw=true)
+**Note**: 이 애드온은 DBM (Deadly Boss Mods)과 연관없음.
 
 
 ## 주요 기능
