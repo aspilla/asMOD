@@ -97,7 +97,7 @@ local function checkList()
 				local button = ns.asDBMTimer.buttons[idx];
 				button.icon:SetTexture(eventinfo.iconFileID);
 				button.cooltext:SetText(string.format("%.1f", timeRemaining));
-				if eventinfo.spellID then
+				if ns.options.ShowName and eventinfo.spellID then
 					button.text:SetText(string.format("%5s", C_Spell.GetSpellName(eventinfo.spellID)));
 				else
 					button.text:SetText("");

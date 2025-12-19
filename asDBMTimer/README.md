@@ -1,51 +1,43 @@
-# asDBMTimer
+# asDBMTimer (Mid Night)
 
-This is a new visual style timer for Deadly Boss Mods (DBM).
+**Enhanced Boss Timeline**
 ![asDBMTimer](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDBMTimer.jpg?raw=true)
 
 ## Key Features
 
-1.  **Detailed Timer Elements**:
-    *   **Icon**: Displays the spell or event icon provided by DBM.
-    *   **Cooldown Text**: Shows a numerical countdown (e.g., "3.1"). The text turns red when the remaining time is 3 seconds or less.
-    *   **Description Label**: Displays the DBM timer message (e.g., "Boss Ability Name"). This label may be prefixed with a type (e.g., "[AoE]", "[Interrupt]") and color-coded based on DBM's timer category.
-    *   **Raid Target Icon**: If the timer is associated with a specific unit (often from nameplate timers) and that unit has a raid target icon (skull, X, etc.), the icon is displayed next to the timer label.
+1. **Large Icon Display**: Fully adjustable icon size.
+2. **Skill Names**: Option to show or hide the name of the ability.
+3. **Countdown Alert**: Displays a warning before the skill activates (adjustable duration).
 
-2.  **Color-Coded Timer Types**:
-    *   Timer labels are color-coded based on DBM's timer classifications (e.g., Minion, AoE, Targeted, Interrupt, Role, Phase, Important).
-    *   Specific color schemes are defined for both English and Korean client locales.
+## Configuration
 
+Settings can be modified at:
+**ESC >> Options >> Addons >> asDBMTimer**
 
-## Settings
-
-*   `MinTimetoShow`: Minimum display time (default: 10 seconds).
-*   `HideNamePlatesCooldown`: Whether to hide timers for regular mobs.
-*   `HideNamePlatesTargetedSpells`: Whether to hide timers for targeted spells on nameplates (default: true).
-*   `LockPosition`: Check to enable movement; `/asconfig` has higher priority.
+* `MinTimetoShow`: Minimum time remaining to display the timer (Default: 3s).
+* `Size`: Adjusts the size of the icon (Default: 50).
+* `ShowName`: Toggle whether to display the skill name.
+* `LockPosition`: Uncheck to move the frame; note that `/asconfig` settings take priority.
 
 ---
 # asDBMTimer
 
-Deadly Boss Mods (DBM) 새로 모양 Timer 입니다.
+**보스 타임라인 강화**
 ![asDBMTimer](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDBMTimer.jpg?raw=true)
 
 
 ## 주요 기능
 
-1.  **상세 타이머 요소**:
-    *   **아이콘**: DBM에서 제공하는 주문 또는 이벤트 아이콘을 표시합니다.
-    *   **재사용 대기시간 텍스트**: 숫자 카운트다운(예: "3.1")을 표시합니다. 남은 시간이 3초 이하일 때 텍스트가 빨간색으로 바뀝니다.
-    *   **설명 레이블**: DBM 타이머 메시지(예: "보스 기술 이름")를 표시합니다. 이 레이블에는 유형(예: "[광역]", "[차단]")이 접두사로 붙을 수 있으며 DBM의 타이머 범주에 따라 색상으로 구분될 수 있습니다.
-    *   **공격대 대상 아이콘**: 타이머가 특정 유닛(종종 이름표 타이머에서 유래)과 연관되어 있고 해당 유닛에 공격대 대상 아이콘(해골, X자 등)이 있는 경우, 이 아이콘이 타이머 레이블 옆에 표시됩니다.
-
-2.  **색상으로 구분된 타이머 유형**:
-    *   타이머 레이블은 DBM의 타이머 분류(예: 쫄, 광역, 대상 지정, 차단, 역할, 단계, 중요)에 따라 색상이 지정됩니다.
-    *   영어 및 한국어 클라이언트 로케일 모두에 대해 특정 색상 구성표가 정의되어 있습니다.
+1.  **큰 아이콘 표시**: 크기 조정 가능
+2.  **스킬 명 표시**: 숨기기 가능
+3.  **3초전 표시**: 시간 조정 가능
 
 
 ## 설정
 
-* `MinTimetoShow` 최소 표시 시간 (기본 10초)
-* `HideNamePlatesCooldown` 일반몹 Timer 숨김 여부
-* `HideNamePlatesTargetedSpells`: 이름표에 대상 지정 주문 타이머 숨김 여부 (기본: 사용).
+**esc >> 설정 >> 애드온 >> asDBMTimer** 에서 설정 가능
+
+* `MinTimetoShow` 최소 표시 시간 (기본 3초)
+* `Size` 아이콘 크기 (기본 50)
+* `ShowName`: 스킬명 표시 여부.
 * `LockPosition` 채크하고 이동 가능, `/asconfig` 이 더 우선순위 높음

@@ -151,7 +151,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 | asTargetCastBar       |대상 시전 표시                                                            |<a href="https://www.curseforge.com/wow/addons/astargetcastingbar" target="_blank" rel="nofollow">링크</a> | 일부 지원 | |
 | asTrueGCD             |최근 사용 스킬 3개 표시(하단 중앙)                                               |<a href="https://www.curseforge.com/wow/addons/astruegcd" target="_blank" rel="nofollow">링크</a> | 미지원 | |
 | asReady               |파티원 차단 쿨 알림, 파티원/공격대원 쿨기 표시 (프레임 좌측)                                |<a href="https://www.curseforge.com/wow/addons/asready" target="_blank" rel="nofollow">링크</a> | 미지원 | |
-| asDBMTimer            |DBM 타이머 Skin                                                        |<a href="https://www.curseforge.com/wow/addons/asdbmtimer" target="_blank" rel="nofollow">링크</a> | 미지원 | |
+| asDBMTimer            |보스 전투 Timer 기능 추가                                                        |<a href="https://www.curseforge.com/wow/addons/asdbmtimer" target="_blank" rel="nofollow">링크</a> | 일부 지원 | |
 | asCastBar             |시전바 강화                                                              |<a href="https://www.curseforge.com/wow/addons/ascastbar" target="_blank" rel="nofollow">링크</a> | 지원 | |
 | asCastingAlert        |자신에게 시전중인 마법 알림                                                     |<a href="https://www.curseforge.com/wow/addons/ascastingalert" target="_blank" rel="nofollow">링크</a> | 미지원 | |
 | asAutoMarker          |쐐기 차단 필요몹 자동징표(탱커) 이름표 색상 변경(asNameplates 필요)                       |<a href="https://www.curseforge.com/wow/addons/asautomarker" target="_blank" rel="nofollow">링크</a> | 미지원 | |

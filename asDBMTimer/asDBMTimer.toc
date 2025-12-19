@@ -1,7 +1,7 @@
 ﻿## Interface: 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDBMTimer
-## Notes: Enhancing Encounter info
+## Notes: Enhanced Boss Timeline
 ## Version : 251219
 ## SavedVariablesPerCharacter: ADTI_Options, ADTI_OtherOptions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
