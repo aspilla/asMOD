@@ -112,7 +112,7 @@ local function update_power(frame, unit)
 	if UnitExists(unit) then
 		local powerType = UnitPowerType(unit);
 
-		local value     = UnitPower("player", powerType, true);		
+		local value     = UnitPower(unit, powerType, true);		
 		frame:SetText(string.format("%d", value));
 
 		local powerColor = PowerBarColor[powerType]
@@ -191,9 +191,16 @@ end
 
 local function AHT_UpdatePower()
 	if AHT_POWER_LEVEL then
-		local power = UnitPower("player", AHT_POWER_LEVEL, bupdate_partial);		
+		
+		local power = UnitPower("player", AHT_POWER_LEVEL, bupdate_partial);
+		local showstr = string.format("%d", power);
+		
+		if bupdate_partial then            
+            local maxpartial = UnitPowerDisplayMod(AHT_POWER_LEVEL);			
+			showstr = string.format("%.1f", power/maxpartial);
+        end
 
-		AHT_Power:SetText(power);
+		AHT_Power:SetText(showstr);
 		AHT_Power:Show();
 		if max == power then
 			AHT_Power:SetTextColor(1, 0, 0)
