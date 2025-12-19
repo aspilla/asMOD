@@ -1,17 +1,17 @@
 local _, ns = ...;
 local Options_Default = {
-    MinTimetoShow = 10,
-    HideNamePlatesCooldown = false,
-    HideNamePlatesTargetedSpells = true,
+    MinTimetoShow = 3,
+    Size = 50,
+    ShowName = true, 
     LockPosition = true, -- 위치 잠금 옵션 추가
 };
 
 local OtherOptions_Default = {
-    Version = 250628,
+    Version = 251219,
     point = "CENTER",
     point2 = "CENTER",
-    x = 200, -- 기본 X 위치 (asDBMTimer.lua의 ADBMT_X와 동일하게 설정)
-    y = 50,  -- 기본 Y 위치 (asDBMTimer.lua의 ADBMT_Y와 동일하게 설정)
+    x = 250, -- 기본 X 위치 (asDBMTimer.lua의 ADBMT_X와 동일하게 설정)
+    y = 0,  -- 기본 Y 위치 (asDBMTimer.lua의 ADBMT_Y와 동일하게 설정)
 }
 
 ns.options = CopyTable(Options_Default);
