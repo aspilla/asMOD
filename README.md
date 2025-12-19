@@ -8,6 +8,12 @@
 
 asMOD is a collection of custom World of Warcraft addons designed to enhance your gameplay experience.
 
+## Preview
+
+*   **Party:** ![Party](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_party.jpg?raw=true)
+*   **Raid(Disable portraits on asUnitFrame):** ![Raid](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_raid.jpg?raw=true)
+*   **asUnitFrame Disabled:** ![asUnitFrame disabled](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod2.jpg?raw=true)
+
 ## asMOD Usage Videos (Raid/Healer) --> Old TWW Example
 <iframe width="560" height="315" src="https://www.youtube.com/embed/I3w0knhvdNI?si=316-CN0EnE5_cait" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -31,12 +37,6 @@ The following errors may occur:
 
 1.  **Target Setting Error:** Errors may occur when setting the target through the right-click menu on the frame. It's recommended to use the `/focus` macro or assign a hotkey.
 2.  **Edit Mode Error:** Errors may prevent setting changes while in edit mode. Exit edit mode before using asUnitFrame.
-
-## Preview
-
-*   **Party:** ![Party](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_party.jpg?raw=true)
-*   **Raid(Disable portraits on asUnitFrame):** ![Raid](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_raid.jpg?raw=true)
-*   **asUnitFrame Disabled:** ![asUnitFrame disabled](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod2.jpg?raw=true)
 
 ## Installation, Removal, Update, and Configuration Guide
 
