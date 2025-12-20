@@ -11,7 +11,7 @@ AGCDB:SetHeight(0)
 AGCDB:Show();
 
 AGCDB.gcdbar = CreateFrame("StatusBar", nil, UIParent)
-AGCDB.gcdbar:SetStatusBarTexture("Interface\\addons\\asGCDBar\\UI-StatusBar")
+AGCDB.gcdbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
 AGCDB.gcdbar:GetStatusBarTexture():SetHorizTile(false)
 AGCDB.gcdbar:SetMinMaxValues(0, 100)
 AGCDB.gcdbar:SetValue(0)

@@ -7,7 +7,7 @@ ns.ANameP_UpdateRate = 0.5;          -- 버프 Check 반복 시간 (초)
 ns.ANameP_UpdateRateTarget = 0.3;    -- 대상의 버프 Check 반복 시간 (초)
 
 ANameP_Options_Default = {
-    version = 251203,
+    version = 251220,
 
     ANameP_AggroShow = true,       -- 어그로 여부를 표현할지 여부
     ANameP_ShowDebuffColor = true, -- 디버프 색상를 표현할지 여부
@@ -23,6 +23,8 @@ ANameP_Options_Default = {
     ANameP_DebuffColor = { r = 1, g = 0.5, b = 1 },          -- 디버프 걸렸을때 Color
     ANameP_QuestColor = { r = 1, g = 0.8, b = 0.5 },         -- Quest 몹 Color
     ANameP_BossColor = { r = 0, g = 1, b = 0.2 },            -- Boss 몹 Color
+
+    nameplateOverlapV = 1.1,                                  -- 이름표 상하 정렬
 };
 
 ANameP_OptionM = {};
@@ -98,6 +100,43 @@ local function SetupCheckBoxOption(text, option)
         ANameP_OptionM.UpdateAllOption();
     end)
     cb:SetChecked(ANameP_Options[option]);
+end
+
+local function SetupSliderOption(text, option)
+    if ANameP_Options[option] == nil then
+        ANameP_Options[option] = ANameP_Options_Default[option];
+    end
+
+    curr_y = curr_y + y_adder;
+
+    if scrollChild == nil then
+        return;
+    end
+
+    local title = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
+    title:SetPoint("TOPLEFT", 20, curr_y);
+    title:SetText(text);
+
+    local Slider = CreateFrame("Slider", nil, scrollChild, "OptionsSliderTemplate");
+    Slider:SetOrientation('HORIZONTAL');
+    Slider:SetPoint("LEFT", title, "RIGHT", 5, 0);
+    Slider:SetWidth(200)
+    Slider:SetHeight(20)
+    Slider.Text:SetText(format("%.1f", max(ANameP_Options[option], 0)));
+    Slider:SetMinMaxValues(0.3, 2);
+    Slider:SetValue(ANameP_Options[option]);
+
+    Slider:HookScript("OnValueChanged", function()
+        ANameP_Options[option] = Slider:GetValue();
+        Slider.Text:SetText(format("%.1f", max(ANameP_Options[option], 0)));
+        if not InCombatLockdown() then
+            SetCVar("nameplateOverlapV", ANameP_Options[option]);
+        end
+    end)
+    Slider:Show();
+    if not InCombatLockdown() then
+        SetCVar("nameplateOverlapV", ANameP_Options[option]);
+    end
 end
 
 local function ShowColorPicker(r, g, b, a, changedCallback)
@@ -212,6 +251,8 @@ local function panelOnShow()
         SetupColorOption("[색상] Boss Mob", "ANameP_BossColor"); -- Nameplate color: BossColor
         SetupCheckBoxOption("[기능] 하단에 기력 표시", "ANameP_ShowPower"); -- Show Power
         SetupCheckBoxOption("[기능] 좌측에 시전 Icon 표시", "ANameP_ShowCastIcon"); 
+
+         SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV"); -- Nameplate vertical alignment (nameplateOverlapV)
     else
         -- Set up checkbox options with English descriptions
 
@@ -227,6 +268,8 @@ local function panelOnShow()
         SetupColorOption("[Color] Boss Mobs", "ANameP_BossColor");
         SetupCheckBoxOption("[Feature] Show Power below", "ANameP_ShowPower");            -- Show Power
         SetupCheckBoxOption("[Feature] Show cast icon on right", "ANameP_ShowCastIcon"); 
+
+        SetupSliderOption("Nameplate vertical alignment (nameplateOverlapV)", "nameplateOverlapV");
      
     end    
 end

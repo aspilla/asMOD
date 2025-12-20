@@ -639,7 +639,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.targetborder:Hide();
 
     frame.healthbar = CreateFrame("StatusBar", nil, frame);
-    frame.healthbar:SetStatusBarTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar")
+    frame.healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     frame.healthbar:GetStatusBarTexture():SetHorizTile(false)
     frame.healthbar:SetMinMaxValues(0, 100)
     frame.healthbar:SetValue(100)
@@ -696,7 +696,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar:SetWidth(hwidth);
 
     frame.healthbar.predictionBar = frame.healthbar:CreateTexture(nil, "BORDER");
-    frame.healthbar.predictionBar:SetTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar");
+    frame.healthbar.predictionBar:SetTexture("RaidFrame-Hp-Fill");
     frame.healthbar.predictionBar:Hide();
 
     frame.healthbar.absorbBar = frame.healthbar:CreateTexture(nil, "BORDER");
@@ -711,13 +711,13 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar.absorbBarO:Show();
 
     frame.healthbar.shieldBar = frame.healthbar:CreateTexture(nil, "ARTWORK");
-    frame.healthbar.shieldBar:SetTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar");
+    frame.healthbar.shieldBar:SetTexture("RaidFrame-Hp-Fill");
     frame.healthbar.shieldBar:SetVertexColor(0, 0, 0);
     frame.healthbar.shieldBar:SetAlpha(0.5);
     frame.healthbar.shieldBar:Hide();
 
     frame.healthbar.incominghealBar = frame.healthbar:CreateTexture(nil, "ARTWORK");
-    frame.healthbar.incominghealBar:SetTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar");
+    frame.healthbar.incominghealBar:SetTexture("RaidFrame-Hp-Fill");
     frame.healthbar.incominghealBar:SetVertexColor(0, 1, 0);
     frame.healthbar.incominghealBar:SetAlpha(0.6);
     frame.healthbar.incominghealBar:Hide();
@@ -780,7 +780,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
     frame.healthbar.mark:SetPoint("CENTER", frame.healthbar, "CENTER", 0, 0);
 
     frame.powerbar = CreateFrame("StatusBar", nil, frame);
-    frame.powerbar:SetStatusBarTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar")
+    frame.powerbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     frame.powerbar:GetStatusBarTexture():SetHorizTile(false)
     frame.powerbar:SetMinMaxValues(0, 100)
     frame.powerbar:SetValue(100)
@@ -807,7 +807,7 @@ local function CreateUnitFrame(frame, unit, x, y, width, height, powerbarheight,
 
     frame.castbar = CreateFrame("StatusBar", nil, frame)
     frame.castbar:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -3);
-    frame.castbar:SetStatusBarTexture("Interface\\addons\\asUnitFrame\\UI-StatusBar")
+    frame.castbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     frame.castbar:GetStatusBarTexture():SetHorizTile(false)
     frame.castbar:SetMinMaxValues(0, 100)
     frame.castbar:SetValue(100)

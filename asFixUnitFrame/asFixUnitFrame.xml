@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\Blizzard_SharedXML\UI.xsd">
-	<Texture name="asFUFTextureTemplate" virtual="true" file="Interface\Addons\asFixUnitFrame\UI-StatusBar">
+	<Texture name="asFUFTextureTemplate" virtual="true" atlas="RaidFrame-Hp-Fill">
 		<Color r="0.0" g="0.447" b="1.0"/>
 	</Texture>
 	<Frame name="asFUFDebuffFrameTemplate" virtual="true" enableMouse="false">		

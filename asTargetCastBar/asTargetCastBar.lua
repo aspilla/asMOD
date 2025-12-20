@@ -40,7 +40,7 @@ ATCB:Show();
 
 local function setupCastBar()
     local frame = CreateFrame("StatusBar", nil, UIParent)
-    frame:SetStatusBarTexture("Interface\\addons\\asTargetCastBar\\UI-StatusBar")
+    frame:SetStatusBarTexture("RaidFrame-Hp-Fill")
     frame:GetStatusBarTexture():SetHorizTile(false)
     frame:SetMinMaxValues(0, 100)
     frame:SetValue(100)
@@ -65,16 +65,6 @@ local function setupCastBar()
     frame.time = frame:CreateFontString(nil, "OVERLAY");
     frame.time:SetFont(STANDARD_TEXT_FONT, ATCB_TIME_SIZE);
     frame.time:SetPoint("RIGHT", frame, "RIGHT", -3, 0);
-
-    frame.ni_texture = frame:CreateTexture(nil, "OVERLAY", "asTCColorTextureTemplate", 1);
-    local previousTexture = frame:GetStatusBarTexture();
-
-
-    frame.ni_texture:ClearAllPoints();
-    frame.ni_texture:SetAllPoints(previousTexture);
-    frame.ni_texture:SetVertexColor(CONFIG_NOT_INTERRUPTIBLE_COLOR[1], CONFIG_NOT_INTERRUPTIBLE_COLOR[2],
-        CONFIG_NOT_INTERRUPTIBLE_COLOR[3]);
-    frame.ni_texture:Hide();
 
     frame:EnableMouse(false);
     frame.isAlert = false;
@@ -192,8 +182,7 @@ local function checkCasting(castBar, event)
 
             time:SetText(failtext);
             castBar:SetStatusBarColor(color[1], color[2], color[3]);
-            castBar.failstart = currtime;
-            castBar.ni_texture:Hide();
+            castBar.failstart = currtime;            
             castBar:SetStatusBarDesaturated(false);
             castBar:Show();
         elseif name then

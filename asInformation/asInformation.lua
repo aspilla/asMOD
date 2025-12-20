@@ -105,7 +105,7 @@ local function initFrames()
     primaryStatBar:SetSize(barWidth, barHeight)
     primaryStatBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0,
         yOffset)
-    primaryStatBar:SetStatusBarTexture("Interface/Addons/asInformation/UI-StatusBar")
+    primaryStatBar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     primaryStatBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
     primaryStatBar.bg = primaryStatBar:CreateTexture(nil, "BACKGROUND")
@@ -135,7 +135,7 @@ local function initFrames()
     critBar = CreateFrame("StatusBar", "asInformationCritBar", asInformation);
     critBar:SetSize(barWidth, barHeight)
     critBar:SetPoint(locationPoint, prevframe, locationPoint, 0, yOffset)
-    critBar:SetStatusBarTexture("Interface/Addons/asInformation/UI-StatusBar")
+    critBar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     critBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
     critBar.bg = critBar:CreateTexture(nil, "BACKGROUND")
@@ -161,7 +161,7 @@ local function initFrames()
     hasteBar = CreateFrame("StatusBar", "asInformationHasteBar", asInformation);
     hasteBar:SetSize(barWidth, barHeight)
     hasteBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset)
-    hasteBar:SetStatusBarTexture("Interface/Addons/asInformation/UI-StatusBar")
+    hasteBar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     hasteBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
     hasteBar.bg = hasteBar:CreateTexture(nil, "BACKGROUND")
@@ -187,7 +187,7 @@ local function initFrames()
     masteryBar = CreateFrame("StatusBar", "asInformationMasteryBar", asInformation);
     masteryBar:SetSize(barWidth, barHeight)
     masteryBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset)
-    masteryBar:SetStatusBarTexture("Interface/Addons/asInformation/UI-StatusBar")
+    masteryBar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     masteryBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
     masteryBar.bg = masteryBar:CreateTexture(nil, "BACKGROUND")
@@ -213,7 +213,7 @@ local function initFrames()
     versatilityBar:SetSize(barWidth, barHeight)
     versatilityBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0,
         yOffset)
-    versatilityBar:SetStatusBarTexture("Interface/Addons/asInformation/UI-StatusBar")
+    versatilityBar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     versatilityBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
     versatilityBar.bg = versatilityBar:CreateTexture(nil, "BACKGROUND")

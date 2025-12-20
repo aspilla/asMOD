@@ -32,7 +32,7 @@ local function creatframe()
     object.BarColor = object:CreateTexture(nil, "ARTWORK", "asNameplateTemplate", 1);    
 
     object.powerbar = CreateFrame("StatusBar", nil, object);
-    object.powerbar:SetStatusBarTexture("Interface\\addons\\asNamePlates\\UI-StatusBar")
+    object.powerbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     object.powerbar:GetStatusBarTexture():SetHorizTile(false)
     object.powerbar:SetMinMaxValues(0, 100)
     object.powerbar:SetValue(100)

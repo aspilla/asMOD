@@ -191,7 +191,7 @@ local function initaddon()
     ns.frame:Show();
 
     ns.bar = CreateFrame("StatusBar", nil, ns.frame)
-    ns.bar:SetStatusBarTexture("Interface\\Addons\\asPowerBar\\UI-StatusBar")
+    ns.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     ns.bar:GetStatusBarTexture():SetHorizTile(false)
     ns.bar:SetMinMaxValues(0, 100)
     ns.bar:SetValue(100)
@@ -223,7 +223,7 @@ local function initaddon()
     ns.bar.predictbar:Hide();
 
     ns.combocountbar = CreateFrame("StatusBar", nil, ns.frame);
-    ns.combocountbar:SetStatusBarTexture("Interface\\Addons\\asPowerBar\\UI-StatusBar");
+    ns.combocountbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
     ns.combocountbar:GetStatusBarTexture():SetHorizTile(false);
     ns.combocountbar:SetFrameLevel(9000);
     ns.combocountbar:SetMinMaxValues(0, 100);
@@ -253,7 +253,7 @@ local function initaddon()
 
     for i = 1, 20 do
         ns.combobars[i] = CreateFrame("StatusBar", nil, ns.frame);
-        ns.combobars[i]:SetStatusBarTexture("Interface\\Addons\\asPowerBar\\UI-StatusBar");
+        ns.combobars[i]:SetStatusBarTexture("RaidFrame-Hp-Fill");
         ns.combobars[i]:GetStatusBarTexture():SetHorizTile(false);
         ns.combobars[i]:SetFrameLevel(9100);
         ns.combobars[i]:SetMinMaxValues(0, 100);
