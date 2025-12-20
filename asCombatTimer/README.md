@@ -1,4 +1,4 @@
-# asCombatTimer
+# asCombatTimer (Mid Night)
 
 Displays the elapsed time after combat starts.
 
@@ -19,11 +19,9 @@ Displays the elapsed time after combat starts.
 4.  **ShowWhenCombat**:
     *   Determines to show only combat. (Default: Checked)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/WYAnYfkfkcE?si=zNLOQ2_tpL_QaF1n" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
 ---
 
-# asCombatTimer
+# asCombatTimer (한밤)
 
 전투 시작 후 경과 시간을 표시
 
@@ -43,5 +41,3 @@ Displays the elapsed time after combat starts.
     *   폰트 종류를 결정 합니다. (기본값 : STANDARD_TEXT_FONT)
 4.  **ShowWhenCombat**:
     *   전투 중 표시 (비전투시 숨김). (기본값 : 설정 )
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/WYAnYfkfkcE?si=zNLOQ2_tpL_QaF1n" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
