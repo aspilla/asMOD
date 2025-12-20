@@ -29,6 +29,7 @@ local function HideTargetCastBar()
     if ns.options.HideCastBar then
         --TargetCastBar 를 숨긴다.
         TargetFrame.spellbar.showCastbar = false;
+        TargetFrame.spellbar:UnregisterAllEvents();
     end
 end
 
