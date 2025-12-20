@@ -43,8 +43,6 @@ You can modify the following settings via `ESC` > `Options` > `Addons` > `asInte
 마우스 오버 대상의 경우
 ![asInterruptHelper(Mouseover)](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInterruptHelper.jpg?raw=true)   
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/VZoYTQTJ4Jo?si=F-3UhNv6_tcTXxOP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
 ## 주요 기능
 
 *   **asTargetCastBar 와 같이 사용 추천**:
