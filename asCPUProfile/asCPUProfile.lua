@@ -107,26 +107,6 @@ local function CreateOrUpdateRow(parent, index, datas)
     end
 end
 
--- Checkbox 추가
-local checkBox = CreateFrame("CheckButton", "asCPUProfileCheckBox", frame, "UICheckButtonTemplate")
-checkBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 10, -25)
-checkBox:SetSize(20, 20)
-checkBox.label = checkBox:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-checkBox.label:SetPoint("LEFT", checkBox, "RIGHT", 5, 0)
-checkBox.label:SetText("Enable Profiler")
-checkBox:SetScript("OnClick", function(self)
-    if not self:GetChecked() then
-        C_CVar.RegisterCVar("addonProfilerEnabled", "1");
-        C_CVar.SetCVar("addonProfilerEnabled", "0");
-        asCPUOptions.enabled = false;
-        print("Addon Profiler Disabled")
-    else
-        C_CVar.SetCVar("addonProfilerEnabled", "1");
-        asCPUOptions.enabled = true;
-        print("Addon Profiler Enabled")
-    end
-end)
-
 -- 닫기 버튼 생성
 frame.closeButton = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 frame.closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT")
@@ -220,26 +200,9 @@ if asCPUOptions == nil then
     asCPUOptions.enabled = false;
 end
 
--- 초기화 시점에 프로파일러 비활성화 여부 확인 및 설정
-local function InitializeProfiler()
-    if asCPUOptions.enabled == false then
-        C_CVar.RegisterCVar("addonProfilerEnabled", "1");
-        C_CVar.SetCVar("addonProfilerEnabled", "0");
-        print("Addon Profiler Disabled on Init")
-        asCPUOptions.enabled = false;
-        checkBox:SetChecked(false);
-    else
-        C_CVar.SetCVar("addonProfilerEnabled", "1");
-        print("Addon Profiler Enabled on Init")
-        checkBox:SetChecked(true);
-    end
-end
-
 local function init()
     -- 초기화 함수 호출
 	print("|cff33ff99/ascpu|r : Open the asCPUProfile window")
-
-    InitializeProfiler()
 
     onUpdate();
     C_Timer.NewTicker(5, onUpdate);

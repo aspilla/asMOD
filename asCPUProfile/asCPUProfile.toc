@@ -1,8 +1,8 @@
 ﻿## Interface: 120000, 120001
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCPUProfile
-## Notes: asMOD 성능 측정
-## Version : 250326
+## Notes: Check addon latency and performance (/asCPU)
+## Version : 251220
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## SavedVariablesPerCharacter: asCPUOptions
 ## Category: asMOD

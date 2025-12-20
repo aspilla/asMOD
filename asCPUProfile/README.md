@@ -1,4 +1,4 @@
-#   asCPUProfile
+#   asCPUProfile (Mid Night)
 
 ## Introduction
 An addon to check addon latency and performance.
@@ -20,7 +20,7 @@ An addon to check addon latency and performance.
 
 ---
 
-#   asCPUProfile
+#   asCPUProfile (한밤)
 
 ##  소개
 애드온 Latency 성능 확인 
@@ -36,6 +36,6 @@ An addon to check addon latency and performance.
 
 ##  사용법
 
-*   **활성화:** 창이 닫혀 있으면 애드온이 비활성화됩니다. 전투 후 `/asCPU` 명령어를 사용하여 다시 열 수 있음
+*   **활성화:** 창이 닫혀 있으면 애드온이 비활성화 됨. 전투 후 `/asCPU` 명령어를 사용하여 다시 열 수 있음
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/f-_wZDT4Ik8?si=mfP1Sw42-r7atIsj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>

@@ -1,4 +1,4 @@
-# asBattleRes
+# asBattleRes (Mid Night)
 
 Displays the number of available charges and cooldown of the battle resurrection spell.
 
@@ -28,7 +28,7 @@ Displays the number of available charges and cooldown of the battle resurrection
 
 ---
 
-# asBattleRes 
+# asBattleRes (한밤)
 
 전투 부활 주문의 사용 가능 횟수와 재사용 대기시간을 화면에 표시해주는 기능을 제공
 
@@ -52,4 +52,4 @@ Displays the number of available charges and cooldown of the battle resurrection
     *   마우스 버튼에서 손을 떼면 해당 위치가 자동으로 저장됨
     *   `asMOD` 애드온이 설치되어 있는 경우, `/asconfig` 명령을 통해 위치 이동 가능
 3.  **프레임 위치 고정**:
-    *   설정 메뉴에서 'LockWindow' 옵션을 체크합니다.
+    *   설정 메뉴에서 'LockWindow' 옵션을 체크.

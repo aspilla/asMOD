@@ -1,4 +1,4 @@
-# asActiveAlert
+# asActiveAlert (Mid Night)
 
 This addon provides visual alerts by displaying spell icons to the left of your character when they become active or meet special conditions (e.g., procs), indicated by the glowing border on your action bar.
 
@@ -20,7 +20,7 @@ There are no in-game configuration options.
 
 ---
 
-# asActiveAlert
+# asActiveAlert (한밤)
 
 주문이 활성화되거나 특별한 조건(예: 발동 효과)을 만족했을 때 (스킬바에 빤찍이는 테두리가 표시 될 경우) 해당 주문의 아이콘을 케릭 좌측 표시하여 시각적으로 알려주는 애드온
 

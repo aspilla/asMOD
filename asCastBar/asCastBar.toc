@@ -1,7 +1,7 @@
 ﻿## Interface: 120000, 120001
-## Author: |cffff3399아스필라|r [아즈샤라]
+## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCastBar
-## Notes: 시전바 이동 & Timer
+## Notes: Enhance the default player casting bar
 ## Version : 250118
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

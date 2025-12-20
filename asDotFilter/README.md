@@ -1,4 +1,4 @@
-# asDotFilter
+# asDotFilter (Mid Night)
 
 Displays debuffs cast by the player on boss frames and focus frames.
 
@@ -16,7 +16,7 @@ No settings available.
 
 ---
 
-# asDotFilter
+# asDotFilter (한밤)
 
 보스 프레임, 주시 프레임에 플레이어가 시전한 디버프를 표시
 

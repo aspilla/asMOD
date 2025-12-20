@@ -1,4 +1,4 @@
-# asCastBar
+# asCastBar (Mid Night)
 
 asCastBar enhances the default player casting bar
 ![asCastBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCastBar.jpg?raw=true)
@@ -14,7 +14,7 @@ asCastBar enhances the default player casting bar
 
 ---
 
-# asCastBar
+# asCastBar (한밤)
 
 asCastBar는 기본 플레이어 시전 바를 강화하는 애드온입니다.
 ![asCastBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCastBar.jpg?raw=true)
