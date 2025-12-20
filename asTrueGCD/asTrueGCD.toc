@@ -1,8 +1,8 @@
-﻿## Interface: 110205, 110207
+﻿## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rTrueGCD
 ## Notes: Short history of recently used spells
-## Version : 251005
+## Version : 251220
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asTrueGCD.xml

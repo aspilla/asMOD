@@ -314,14 +314,15 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 		local spellid = arg3;
 
 		local name, discard, icon = asGetSpellInfo(spellid);
-		local gcd = select(2, asGetSpellCooldown(61304));
+		--local gcd = select(2, asGetSpellCooldown(61304));
 		local curtime = GetTime();
 
-		if gcd > 0 then
-			lastgcd = gcd;
-		end
+		--if gcd > 0 then
+		--	lastgcd = gcd;
+		--end
 
-		if (previcon and previcon == icon and (curtime - prevtime) < lastgcd) then
+		--if (previcon and previcon == icon and (curtime - prevtime) < lastgcd) then
+		if (previcon and previcon == icon and (curtime - prevtime) < 0.5) then
 
 		else
 			local itemid = KnownSpellList[spellid];
@@ -337,14 +338,14 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 	elseif event == "UNIT_SPELLCAST_INTERRUPTED" and arg1 == "player" then
 		local spellid = arg3;
 		local name, discard, icon = asGetSpellInfo(spellid);
-		local gcd = select(2, asGetSpellCooldown(61304));
+		--local gcd = select(2, asGetSpellCooldown(61304));
 		local curtime = GetTime();
 
-		if gcd > 0 then
-			lastgcd = gcd;
-		end
+		--if gcd > 0 then
+		--	lastgcd = gcd;
+		--end
 
-		if (interruptprevicon and interruptprevicon == icon and (curtime - interrupttime) < lastgcd) then
+		if (interruptprevicon and interruptprevicon == icon and (curtime - interrupttime) < 0.5) then
 
 		else
 			local itemid = KnownSpellList[spellid];
