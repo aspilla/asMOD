@@ -1,4 +1,4 @@
-# asGCDBar
+# asGCDBar (Mid Night)
 
 Simple status bar to visualize the player's Global Cooldown (GCD)
 ![asGCDBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asGCDBar.jpg?raw=true)
@@ -8,7 +8,7 @@ If `asMOD` is installed, the position of the bar can be more easily adjusted and
 
 ---
 
-# asGCDBar
+# asGCDBar (한밤)
 
 전역 재사용 대기시간(GCD) 표시 바
 ![asGCDBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asGCDBar.jpg?raw=true)

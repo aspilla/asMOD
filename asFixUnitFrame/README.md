@@ -1,27 +1,34 @@
-# asFixUnitFrame
+# asFixUnitFrame (Mid Night)
 
-Adds features to the default Blizzard unit frames (Player, Target, Target of Target).
+Enhances the default Blizzard Unit Frames (Player, Target, Target of Target).
 ![asFixUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixUnitFrame.png?raw=true)
 ![asFixUnitFrame2](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixUnitFrame2.png?raw=true)
 
-## Main Features
+## Key Features
 
-*   **Selective Unit Frame Modifications (Configurable via addon settings)**:
-    *   **Hide Combat Text on Frame**: Prevents Blizzard's default combat status text from appearing directly on the Player, Target, and Pet unit frames.
-    *   **Hide Target's Buffs/Debuffs**: Removes the standard buff and debuff icons from the Target unit frame.
-    *   **Hide Target's Castbar**: Hides the castbar on the Target unit frame.
-    *   **Hide Player Class Bar**: Hides special class resource displays (e.g., Rogue Combo Points, Death Knight Runes, Evoker Essence).
-    *   **Hide Player Totem Bar (Default: Off)**: Hides the Shaman Totem Bar and Warlock Infernal Bar.
-    *   **Show Numeric Threat Level**: Activates the numeric threat display on targets (sets `threatShowNumeric` CVar).
-    *   **Class-Colored Health Bars**: Changes the health bars of the Player, Target, and Target of Target frames to the unit's class color (for players).
+* **Optional Unit Frame Modifications (Configurable via Addon Settings)**:
+    * **Hide Combat Text on Frames**: Prevents default Blizzard combat status text from appearing directly on Player, Target, and Pet unit frames.
+    * **Hide Target Buffs/Debuffs**: Removes the standard buff and debuff icons from the Target unit frame.
+    * **Hide Target Cast Bar**: Hides the cast bar attached to the Target unit frame.
+    * **Hide Player Class Bar**: Hides special class resource displays (e.g., Rogue Combo Points, Death Knight Runes, Evoker Essence).
+    * **Hide Player Totem Bar (Default: Disabled)**: Hides the Shaman Totem bar and Warlock Infernal bar.
+    * **Numeric Threat Display**: Enables the numeric threat level display on the Target (`threatShowNumeric` CVar setting).
+    * **Class-Colored Health Bars**: Changes the health bar colors of Player, Target, and Target of Target frames to their respective class colors (if the unit is a player).
 
-## Settings
+## Configuration
 
-*   Options can be changed via `ESC` > `Settings` > `AddOns` > `asFixUnitFrame`.
+* Options can be modified via `ESC` > `Options` > `Addons` > `asFixUnitFrame`.
+* `HideDebuff`: Hide debuffs on the Target (Default: Enabled).
+* `HideCombatText`: Hide combat text on the Player frame (Default: Enabled).
+* `HideCastBar`: Hide the Target's cast bar (Default: Enabled).
+* `HideClassBar`: Hide the Player's class bar (Default: Enabled).
+* `HideTotemBar`: Hide the Player's totem bar (Default: Disabled).
+* `ShowClassColor`: Change health bar colors to class colors (Default: Enabled).
+* `ShowAggro`: Display numeric threat level on the Target (Default: Enabled).
 
 ---
 
-# asFixUnitFrame
+# asFixUnitFrame (한밤)
 
 블리자드 기본 유닛 프레임(플레이어, 대상, 대상의 대상) 기능 추가
 ![asFixUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixUnitFrame.png?raw=true)
@@ -41,3 +48,10 @@ Adds features to the default Blizzard unit frames (Player, Target, Target of Tar
 ## 설정
 
 *   `ESC` > `설정` > `애드온` > `asFixUnitFrame`  옵션을 변경 가능.
+*   `HideDebuff` : 대상의 디버프 숨김 (기본: 활성).
+*   `HideCombatText` : 플레이어 전투 텍스트 숨김 (기본: 활성).
+*   `HideCastBar` : 대상의 사진바 숨김 (기본: 활성).
+*   `HideClassBar` : 플에이어 직업바 숨김 (기본: 활성).
+*   `HideTotemBar` : 플레이어 토템바 숨김 (기본: 비활성).
+*   `ShowClassColor` : 생명력 색상을 직업 색상으로 (기본: 활성).
+*   `ShowAggro` : 대상위 위협수준 표시 (기본: 활성).

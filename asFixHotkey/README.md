@@ -1,27 +1,30 @@
-# asFixHotkey
+# asFixHotkey (Mid Night)
 
-Shortens the hotkey text displayed on the action bar and hides macro names on buttons.
+Abbreviates hotkey text displayed on action bars and hides macro names on buttons.
 ![asFixHotkey](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixHotKey.png?raw=true)
 
 ## Key Features
 
-*   **Abbreviate Hotkey Text**:
-    *   Automatically shortens the keybinding text displayed on action buttons.
-    *   Examples of abbreviations:
-        *   `Num Pad 1` is changed to `1`.
-        *   `Middle Mouse` is changed to `M3`.
-        *   `Mouse Button 4` is changed to `M4`.
-        *   `Shift-R` is changed to `SR`.
-        *   `Ctrl-Alt-Delete` is changed to approximately `CADt` (based on logic).
-        *   Arrow keys are displayed with symbols like `^`, `v`, `<`, `>`.
-    *   Supports abbreviations for key names in both English and Korean clients.
+* **Hotkey Text Abbreviation**:
+    * Automatically shortens the keybinding text displayed on action buttons.
+    * Abbreviation Examples:
+        * `Num Pad 1` becomes `1`
+        * `Middle Mouse` becomes `M3`
+        * `Mouse Button 4` becomes `M4`
+        * `Shift-R` becomes `SR`
+        * `Ctrl-Alt-Delete` becomes approximately `CADt` (logic-based)
+        * Arrow keys are displayed as symbols such as `^`, `V`, `<`, `>`.
+    * Supports abbreviations for both English and Korean client key names.
 
-*   **Hide Macro Names**:
-    *   Control the display of macro names on action buttons via the setting (`ASHK_ShowMacroName`) in the Lua file.
+* **Hide Macro Names**:
+    * Removes the macro name text from action buttons for a cleaner UI.
+
+## Configuration
+No configuration options.
 
 ---
 
-# asFixHotkey 
+# asFixHotkey (Mid Night)
 
 액션바에 표시되는 단축키 텍스트를 축약, 버튼의 매크로 이름 숨김
 ![asFixHotkey](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixHotKey.png?raw=true)
@@ -40,4 +43,6 @@ Shortens the hotkey text displayed on the action bar and hides macro names on bu
     *   영어 및 한국어 클라이언트의 키 이름 모두에 대한 축약을 지원합니다.
 
 *   **매크로 이름 숨기기**:
-    *   Lua 파일 내의 설정 (`ASHK_ShowMacroName`)을 통해 액션 버튼의 매크로 이름 표시 여부를 제어합니다.
+
+## 설정
+설정 없음
