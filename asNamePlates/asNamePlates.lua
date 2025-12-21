@@ -432,11 +432,11 @@ local function addNamePlate(namePlateFrameBase)
     end
 
     asframe.powerbar:ClearAllPoints();
-    asframe.powerbar:SetPoint("TOP", healthbar, "BOTTOM", 0, -1);
+    asframe.powerbar:SetPoint("TOP", healthbar, "BOTTOM", 0, -1);    
     asframe.powerbar:Hide();
 
     asframe.motext:ClearAllPoints();
-    asframe.motext:SetPoint("TOP", healthbar, "BOTTOM", 0, -1)
+    asframe.motext:SetPoint("TOP", healthbar, "BOTTOM", 0, -1);    
     asframe.motext:Hide();
 
 

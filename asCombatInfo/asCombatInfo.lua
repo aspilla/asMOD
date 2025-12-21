@@ -103,7 +103,7 @@ local function RemovePadding(viewer)
 			button.border = button:CreateTexture(nil, "BACKGROUND")
 			button.border:SetTexture("Interface\\Addons\\asCombatInfo\\border.tga")
 			button.border:SetAllPoints(button);
-			button.border:SetColorTexture(0, 0, 0);
+			button.border:SetColorTexture(0, 0, 0, 1);
 			button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 		else
 			button.border:SetAlpha(1)

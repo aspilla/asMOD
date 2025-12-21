@@ -381,9 +381,7 @@ local function UpdateStats()
     if ASInformationSaved.showCrit then
         if critBar and critBarText then     -- Check if bar and text elements exist
             critBar:SetMinMaxValues(0, 100) -- Assuming stats are percentage based 0-100
-            critBar:SetValue(crit)
-            critBar:SetMinMaxValues(0, 100) -- Assuming stats are percentage based 0-100
-            critBar:SetValue(crit)
+            critBar:SetValue(crit, Enum.StatusBarInterpolation.ExponentialEaseOut)
             critBarText:SetText(string.format("%.2f%%", crit))
 
             local minCrit = recentMinimumStats.Crit
@@ -408,7 +406,7 @@ local function UpdateStats()
     if ASInformationSaved.showHaste then
         if hasteBar and hasteBarText then -- Check if bar and text elements exist
             hasteBar:SetMinMaxValues(0, 100)
-            hasteBar:SetValue(haste)
+            hasteBar:SetValue(haste, Enum.StatusBarInterpolation.ExponentialEaseOut)
             hasteBarText:SetText(string.format("%.2f%%", haste))
 
             local minHaste = recentMinimumStats.Haste
@@ -432,7 +430,7 @@ local function UpdateStats()
     if ASInformationSaved.showMastery then
         if masteryBar and masteryBarText then -- Check if bar and text elements exist
             masteryBar:SetMinMaxValues(0, 100)
-            masteryBar:SetValue(mastery)
+            masteryBar:SetValue(mastery, Enum.StatusBarInterpolation.ExponentialEaseOut)
             masteryBarText:SetText(string.format("%.2f%%", mastery))
 
             local minMastery = recentMinimumStats.Mastery
@@ -456,7 +454,7 @@ local function UpdateStats()
     if ASInformationSaved.showVer then
         if versatilityBar and versatilityBarText then -- Check if bar and text elements exist
             versatilityBar:SetMinMaxValues(0, 100)
-            versatilityBar:SetValue(versatility)
+            versatilityBar:SetValue(versatility, Enum.StatusBarInterpolation.ExponentialEaseOut)
             versatilityBarText:SetText(string.format("%.2f%%", versatility))
 
             local minVersatility = recentMinimumStats.Versatility
@@ -499,7 +497,7 @@ local function UpdateStats()
                     statConfigs.Stat.gemColor.b)
             end
             primaryStatBar:SetMinMaxValues(0, maxvalue) -- Dynamic max based on current value for visual effect
-            primaryStatBar:SetValue(showvalue)
+            primaryStatBar:SetValue(showvalue, Enum.StatusBarInterpolation.ExponentialEaseOut)
             primaryStatBarText:SetText(string.format("%d", showvalue))
 
             if showvalue >= maxvalue then

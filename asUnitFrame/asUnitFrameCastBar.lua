@@ -164,6 +164,6 @@ function ns.updateCastBar(castBar)
         ]]
     else
         castBar.time:SetText("");
-        castBar:SetValue(current * 1000);
+        castBar:SetValue(current * 1000, Enum.StatusBarInterpolation.ExponentialEaseOut);
     end
 end

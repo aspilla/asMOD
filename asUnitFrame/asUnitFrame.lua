@@ -289,7 +289,7 @@ local function updateUnit(frame)
     local power = UnitPower(unit)
     local maxPower = UnitPowerMax(unit)
     frame.powerbar:SetMinMaxValues(0, maxPower)
-    frame.powerbar:SetValue(power)
+    frame.powerbar:SetValue(power, Enum.StatusBarInterpolation.ExponentialEaseOut)
     frame.powerbar.value:SetText(power)
 
     local powerType, powerToken = UnitPowerType(unit)
@@ -307,7 +307,7 @@ local function updateUnit(frame)
 
                 if manaMax > 0 then
                     frame.powerbar:SetMinMaxValues(0, manaMax)
-                    frame.powerbar:SetValue(manavalue);
+                    frame.powerbar:SetValue(manavalue, Enum.StatusBarInterpolation.ExponentialEaseOut);
                     frame.powerbar.value:SetText(manavalue)
                     local powerColor = PowerBarColor[0]
                     frame.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b)
