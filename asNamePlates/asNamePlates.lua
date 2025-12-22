@@ -202,9 +202,9 @@ local function updateHealthbarColor(asframe)
             end
         end
 
-        if status then
+        if status and ns.options.ANameP_AggroShow then
             --return UnitHealthPercent(unit, colorcurve);
-            return { r = 0.5, g = 1, b = 1 }
+            return ns.options.ANameP_CombatColor;
         end
 
         if asframe.isboss and ns.options.ANameP_BossHint then
