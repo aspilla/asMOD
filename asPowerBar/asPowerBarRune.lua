@@ -1,4 +1,4 @@
-local _, ns              = ...;
+local _, ns = ...;
 
 local function compare_rune(runeAIndex, runeBIndex)
     local runeAStart, runeADuration, runeARuneReady = GetRuneCooldown(runeAIndex);
@@ -15,66 +15,55 @@ local function compare_rune(runeAIndex, runeBIndex)
     return runeAIndex < runeBIndex;
 end
 
-local function on_update_rune(self)
-    if not self.start then
+local function on_update_rune(runebar)
+    if not runebar.start then
         return;
     end
 
-
     local curr_time = GetTime();
-    local curr_duration = curr_time - self.start;
+    local curr_duration = curr_time - runebar.start;
 
-    self.update = 0
-
-    if self.reverse then
-        if curr_duration < self.duration then
-            self:SetMinMaxValues(0, self.duration * 10)
-            self:SetValue((self.duration * 10) - (curr_time - self.start) * 10)
-        else
-            self:SetMinMaxValues(0, self.duration)
-            self:SetValue(0)
-            self.start = nil;
-        end
+    if curr_duration < runebar.duration then
+        runebar:SetMinMaxValues(0, runebar.duration)
+        runebar:SetValue((curr_time - runebar.start), Enum.StatusBarInterpolation.ExponentialEaseOut)
     else
-        if curr_duration < self.duration then
-            self:SetMinMaxValues(0, self.duration * 10)
-            self:SetValue((curr_time - self.start) * 10)
-        else
-            self:SetMinMaxValues(0, self.duration)
-            self:SetValue(self.duration)
-            self.start = nil;
-        end
+        runebar:SetMinMaxValues(0, runebar.duration)
+        runebar:SetValue(runebar.duration, Enum.StatusBarInterpolation.ExponentialEaseOut)
+        runebar.start = nil;
     end
 end
+
 local _, Class = UnitClass("player")
 local color = RAID_CLASS_COLORS[Class];
 local runeIndexes = { 1, 2, 3, 4, 5, 6 };
+
 function ns.update_rune()
     table.sort(runeIndexes, compare_rune);
 
-    local combobars = ns.combobars;
+    local runebars = ns.combobars;
     for i, index in ipairs(runeIndexes) do
         local start, duration, runeReady = GetRuneCooldown(index);
+        local runebar = runebars[i];
 
         if runeReady then
-            combobars[i].start = nil;
+            runebar.start = nil;
 
-            combobars[i]:SetStatusBarColor(color.r, color.g, color.b);
-            combobars[i]:SetMinMaxValues(0, 1)
-            combobars[i]:SetValue(1)
-            if combobars[i].ctimer then
-                combobars[i].ctimer:Cancel();
+            runebar:SetStatusBarColor(color.r, color.g, color.b);
+            runebar:SetMinMaxValues(0, 1)
+            runebar:SetValue(1)
+            if runebar.ctimer then
+                runebar.ctimer:Cancel();
             end
         else
-            combobars[i]:SetStatusBarColor(1, 1, 1)
-            combobars[i].start = start;
-            combobars[i].duration = duration;
+            runebar:SetStatusBarColor(1, 1, 1)
+            runebar.start = start;
+            runebar.duration = duration;
 
             local cb = function()
-                on_update_rune(combobars[i]);
+                on_update_rune(runebar);
             end
-            if combobars[i].ctimer == nil or combobars[i].ctimer:IsCancelled() then
-                combobars[i].ctimer = C_Timer.NewTicker(0.1, cb);
+            if runebar.ctimer == nil or runebar.ctimer:IsCancelled() then
+                runebar.ctimer = C_Timer.NewTicker(0.1, cb);
             end
         end
     end

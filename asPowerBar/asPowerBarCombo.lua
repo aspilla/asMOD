@@ -67,7 +67,7 @@ function ns.show_combo(combo, max, partial)
 
         for i = 1, max do
             if pvalue > 0 and i == (combo + 1) then
-                combobars[i]:SetValue(pvalue);
+                combobars[i]:SetValue(pvalue, Enum.StatusBarInterpolation.ExponentialEaseOut);
                 combobars[i]:SetStatusBarColor(1, 1, 1);
             elseif i <= combo then
                 combobars[i]:SetValue(pmax);
