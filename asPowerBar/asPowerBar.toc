@@ -9,6 +9,6 @@ asPowerBarLib.lua
 asPowerBarRune.lua
 asPowerBarCombo.lua
 asPowerBarSpecial.lua
-asPowerBarStorm.lua
+asPowerBarAura.lua
 asPowerBarPower.lua
 asPowerBar.xml

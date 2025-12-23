@@ -4,6 +4,8 @@ local AGCDB_HEIGHT = 5;
 local AGCDB_X = 0;
 local AGCDB_Y = -219;
 
+local version = select(4, GetBuildInfo());
+
 local AGCDB = CreateFrame("FRAME", nil, UIParent)
 AGCDB:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
 AGCDB:SetWidth(0)
@@ -42,8 +44,16 @@ curve:AddPoint(0, 0);
 curve:AddPoint(1, 100);
 
 local function AGCDB_OnUpdate()
-	local remain_percent = C_Spell.GetSpellCooldownRemainingPercent(61304, curve);
-	AGCDB.gcdbar:SetValue(remain_percent, Enum.StatusBarInterpolation.ExponentialEaseOut);	
+	local remain_percent = nil;
+	if version > 120000 then
+		local remain_percent = C_Spell.GetSpellCooldownRemainingPercent(61304, curve);
+		AGCDB.gcdbar:SetValue(remain_percent, Enum.StatusBarInterpolation.ExponentialEaseOut);
+	else
+		local spellCooldownInfo = C_Spell.GetSpellCooldown(61304);
+		AGCDB.gcdbar:SetMinMaxValues(0, spellCooldownInfo.duration);
+		local remain = spellCooldownInfo.startTime + spellCooldownInfo.duration - GetTime();
+		AGCDB.gcdbar:SetValue(remain, Enum.StatusBarInterpolation.ExponentialEaseOut);
+	end
 end
 
 C_Timer.NewTicker(0.1, AGCDB_OnUpdate);

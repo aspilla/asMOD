@@ -18,6 +18,7 @@ ns.bupdate_partial_power = false;
 ns.brogue                = false;
 ns.power_level           = nil;
 ns.special_func          = nil;
+ns.aura_func             = nil;
 
 ns.frame                 = CreateFrame("FRAME", nil, UIParent);
 
@@ -33,9 +34,8 @@ local function initclass()
     ns.frame:UnregisterEvent("UNIT_DISPLAYPOWER");
     ns.frame:UnregisterEvent("UPDATE_SHAPESHIFT_FORM");
     ns.frame:UnregisterEvent("RUNE_POWER_UPDATE");
-    ns.frame:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_SHOW");
-    ns.frame:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE");
-
+    ns.frame:UnregisterEvent("UNIT_AURA");
+    
     if ns.frame.timerPowerBar then
         ns.frame.timerPowerBar:Cancel()
     end
@@ -52,7 +52,8 @@ local function initclass()
     ns.power_level = nil;
     ns.brogue = false;
     ns.special_func = nil;
-    
+    ns.aura_func = nil;
+
     ns.combotext:SetText("");
     ns.combotext:Hide();
     ns.combocountbar:Hide();
@@ -71,12 +72,12 @@ local function initclass()
 
     if (englishClass == "MAGE") then
         if (spec and spec == 1) then
-            ns.power_level = Enum.PowerType.ArcaneCharges          
-        end        
+            ns.power_level = Enum.PowerType.ArcaneCharges
+        end
     end
 
     if (englishClass == "WARLOCK") then
-        ns.power_level = Enum.PowerType.SoulShards        
+        ns.power_level = Enum.PowerType.SoulShards
 
         if (spec and spec == 3) then
             ns.bupdate_partial_power = true;
@@ -117,7 +118,10 @@ local function initclass()
 
     if (englishClass == "DEMONHUNTER") then
         if spec and spec == 3 then
-            ns.special_func = ns.update_dh_frag;
+            ns.combocountbar:SetMinMaxValues(0, 50);
+            ns.aura_func = ns.checkvoid;
+            ns.frame:RegisterUnitEvent("UNIT_AURA", "player");
+            ns.aura_func();
         end
     end
 
@@ -127,17 +131,16 @@ local function initclass()
     if (englishClass == "SHAMAN") then
         if spec and spec == 2 then
             ns.setup_max_combo(10);
-            ns.frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_SHOW");
-            ns.frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE");            
+            ns.aura_func  = ns.checkstorm;
+            ns.frame:RegisterUnitEvent("UNIT_AURA", "player");
+            ns.aura_func();
         end
     end
 
-    if ns.power_level then
-        ns.combocountbar:Show();
-        --ns.combotext:Show();
+    if ns.power_level then        
         local max = UnitPowerMax("player", ns.power_level);
         local maxpartial = nil;
-        if ns.bupdate_partial_power then            
+        if ns.bupdate_partial_power then
             maxpartial = UnitPowerDisplayMod(ns.power_level)
         end
         ns.setup_max_combo(max, maxpartial);
@@ -158,6 +161,10 @@ local function on_event(self, event, ...)
         ns.update_combo();
     elseif event == "RUNE_POWER_UPDATE" then
         ns.update_rune();
+    elseif (event == "UNIT_AURA") then
+        if ns.aura_func then
+            ns.aura_func();
+        end
     elseif event == "PLAYER_ENTERING_WORLD" then
         if UnitAffectingCombat("player") then
             ns.frame:SetAlpha(ns.config.combatalpha);
@@ -172,12 +179,6 @@ local function on_event(self, event, ...)
         ns.frame:SetAlpha(ns.config.combatalpha);
     elseif event == "PLAYER_REGEN_ENABLED" then
         ns.frame:SetAlpha(ns.config.normalalpha);
-    elseif (event == "SPELL_ACTIVATION_OVERLAY_SHOW") then
-        local spellid = ...;
-        ns.checkstorm(false, spellid);
-    elseif (event == "SPELL_ACTIVATION_OVERLAY_HIDE") then
-        local spellid = ...;
-        ns.checkstorm(true, spellid);
     end
 
     return;
@@ -215,7 +216,7 @@ local function initaddon()
     ns.bar.text:SetTextColor(1, 1, 1, 1);
 
     ns.bar.predictbar = ns.bar:CreateTexture(nil, "ARTWORK", "asPredictionBarTemplate");
-    local parenttexture =  ns.bar:GetStatusBarTexture();
+    local parenttexture = ns.bar:GetStatusBarTexture();
     ns.bar.predictbar:ClearAllPoints();
     ns.bar.predictbar:SetPoint("TOPRIGHT", parenttexture, "TOPRIGHT", 0, 0);
     ns.bar.predictbar:SetPoint("BOTTOMRIGHT", parenttexture, "BOTTOMRIGHT", 0, 0);

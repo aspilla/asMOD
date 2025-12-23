@@ -17,8 +17,6 @@ function ns.setup_max_combo(max, maxpartial)
 
     local width = (ns.config.width - (1 * (max - 1))) / max;
     local combobars = ns.combobars;
-    ns.combocountbar:Hide();
-    ns.combotext:Hide();
 
     for i = 1, 20 do
         combobars[i]:Hide();
