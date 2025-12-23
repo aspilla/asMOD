@@ -3,7 +3,6 @@ local _, ns = ...;
 local Options_Default = {
     version = 251209,
     HideModifier = 1,
-    Trigger_Important_Interrupt_Only = true,    
 };
 
 ns.options = CopyTable(Options_Default);

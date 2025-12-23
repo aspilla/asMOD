@@ -185,8 +185,6 @@ local function updateHealthbarColor(asframe)
             local bartype = castbar.barType;
             if bartype == "uninterruptable" then
                 return CONFIG_NOT_INTERRUPTIBLE_COLOR;
-            elseif bartype == "empowered" then
-                alerttype = 2;
             end
 
             return CONFIG_INTERRUPTIBLE_COLOR;
@@ -257,22 +255,16 @@ local function checkSpellCasting(asframe)
     end
 
     local unit = asframe.unit;
-    local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-        unit);
+    local name, _, texture = UnitCastingInfo(unit);
     if not name then
-        name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+        name, _, texture = UnitChannelInfo(unit);
     end
 
-    if asframe.casticon then
-        local frameIcon = asframe.casticon.icon;
-        if frameIcon then
-            if name then
-                frameIcon:SetTexture(texture);
-                asframe.casticon:Show();
-            else
-                asframe.casticon:Hide();
-            end
-        end
+    if name then
+        asframe.casticon.icon:SetTexture(texture);
+        asframe.casticon:Show();
+    else
+        asframe.casticon:Hide();
     end
 end
 
@@ -432,11 +424,11 @@ local function addNamePlate(namePlateFrameBase)
     end
 
     asframe.powerbar:ClearAllPoints();
-    asframe.powerbar:SetPoint("TOP", healthbar, "BOTTOM", 0, 2);    
+    asframe.powerbar:SetPoint("TOP", healthbar, "BOTTOM", 0, 2);
     asframe.powerbar:Hide();
 
     asframe.motext:ClearAllPoints();
-    asframe.motext:SetPoint("TOP", healthbar, "BOTTOM", 0, -1);    
+    asframe.motext:SetPoint("TOP", healthbar, "BOTTOM", 0, -1);
     asframe.motext:Hide();
 
 

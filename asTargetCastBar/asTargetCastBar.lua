@@ -4,13 +4,13 @@ local ATCB_WIDTH = 180
 local ATCB_HEIGHT = 17
 local ATCB_X = 0;
 local ATCB_Y = -100;
-local ATCB_ALPHA = 0.8;                                                   --투명도 80%
-local ATCB_NAME_SIZE = ATCB_HEIGHT * 0.7;                                 --Spell 명 Font Size, 높이의 70%
-local ATCB_TIME_SIZE = ATCB_HEIGHT * 0.5;                                 --Spell 시전시간 Font Size, 높이의 50%
-local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };                 --차단 불가시 (내가 아닐때) 색상 (r, g, b)
-local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 };   --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
-local CONFIG_FAILED_COLOR = { 1, 0, 0 };                                  --cast fail
-local ATCB_UPDATE_RATE = 0.05                                             -- 20프레임
+local ATCB_ALPHA = 0.8;                                                 --투명도 80%
+local ATCB_NAME_SIZE = ATCB_HEIGHT * 0.7;                               --Spell 명 Font Size, 높이의 70%
+local ATCB_TIME_SIZE = ATCB_HEIGHT * 0.5;                               --Spell 시전시간 Font Size, 높이의 50%
+local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };               --차단 불가시 (내가 아닐때) 색상 (r, g, b)
+local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 }; --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
+local CONFIG_FAILED_COLOR = { 1, 0, 0 };                                --cast fail
+local ATCB_UPDATE_RATE = 0.05                                           -- 20프레임
 
 -----------------설정 끝------------------------
 local CONFIG_FONT = STANDARD_TEXT_FONT;
@@ -182,7 +182,7 @@ local function checkCasting(castBar, event)
 
             time:SetText(failtext);
             castBar:SetStatusBarColor(color[1], color[2], color[3]);
-            castBar.failstart = currtime;            
+            castBar.failstart = currtime;
             castBar:SetStatusBarDesaturated(false);
             castBar:Show();
         elseif name then
@@ -199,15 +199,8 @@ local function checkCasting(castBar, event)
             color = CONFIG_INTERRUPTIBLE_COLOR;
             local type = get_typeofcast(unit);
 
-            if type then
-                if type == "uninterruptable" then
-                    color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
-                elseif type == "empowered" then
-                    if not castBar.isAlert then
-                        ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
-                        castBar.isAlert = true;
-                    end
-                end
+            if type and type == "uninterruptable" then
+                color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
             end
             castBar:SetStatusBarColor(color[1], color[2], color[3]);
             text:SetText(name);

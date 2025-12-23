@@ -3,10 +3,6 @@
 ---설정부
 local AHNameP_UpdateRate = 0.2 -- Check할 주기
 
-local DangerousSpellList = {
-
-}
-
 local usePlater = C_AddOns.LoadAddOn("Plater");
 
 local function getUnitFrame(nameplate)
@@ -57,23 +53,15 @@ local function checkTrigger(nameplate)
 		return false;
 	end
 
-	local bcasting = checkCasting(unit);
-	local type = get_typeofcast(nameplate);
 	local status = UnitThreatSituation("player", unit);
-	local level = UnitLevel(unit);
-	local isBoss = false;
 
-	if level < 0 or level > UnitLevel("player") then
-		isBoss = true;
-	end
-
-	if ns.options.Trigger_Important_Interrupt_Only then
-		if status and bcasting and (type == "empowered" or isBoss == false) then
-			return true;
-		end
-	else
-		if status and bcasting and (type == "standard" or type == "channel") then
-			return true;
+	if status then
+		local bcasting = checkCasting(unit);
+		if bcasting then
+			local type = get_typeofcast(nameplate);
+			if type ~= "uninterruptable" then
+				return true;
+			end
 		end
 	end
 

@@ -69,15 +69,8 @@ local function checkCasting(castBar, event)
             color = CONFIG_INTERRUPTIBLE_COLOR;
             local type = get_typeofcast(unit);
 
-            if type then
-                if type == "uninterruptable" then
-                    color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
-                elseif type == "empowered" then
-                    if not castBar.isAlert then
-                        ns.lib.PixelGlow_Start(castBar, { 1, 1, 0, 1 });
-                        castBar.isAlert = true;
-                    end
-                end
+            if type and type == "uninterruptable" then
+                color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
             end
 
             castBar:SetStatusBarColor(color[1], color[2], color[3]);
