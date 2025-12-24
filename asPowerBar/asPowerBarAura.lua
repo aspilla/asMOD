@@ -20,7 +20,7 @@ end
 function ns.checkvoid()
     local stack = 0;
 
-    if C_Secrets.GetSpellAuraSecrecy(1225789) == 0 then
+    if C_Secrets.GetSpellAuraSecrecy(1225789) == 0  then
         local auravoid = C_UnitAuras.GetUnitAuraBySpellID("player", 1225789);
 
         if auravoid then

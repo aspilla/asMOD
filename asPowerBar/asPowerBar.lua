@@ -35,7 +35,7 @@ local function initclass()
     ns.frame:UnregisterEvent("UPDATE_SHAPESHIFT_FORM");
     ns.frame:UnregisterEvent("RUNE_POWER_UPDATE");
     ns.frame:UnregisterEvent("UNIT_AURA");
-    
+
     if ns.frame.timerPowerBar then
         ns.frame.timerPowerBar:Cancel()
     end
@@ -53,6 +53,7 @@ local function initclass()
     ns.brogue = false;
     ns.special_func = nil;
     ns.aura_func = nil;
+    ns.spellid = nil;
 
     ns.combotext:SetText("");
     ns.combotext:Hide();
@@ -73,6 +74,11 @@ local function initclass()
     if (englishClass == "MAGE") then
         if (spec and spec == 1) then
             ns.power_level = Enum.PowerType.ArcaneCharges
+        end
+
+        if (spec and spec == 2) then
+            --ns.combocountbar:SetMinMaxValues(0, 3);
+            --ns.spellid = 108853;
         end
     end
 
@@ -118,10 +124,10 @@ local function initclass()
 
     if (englishClass == "DEMONHUNTER") then
         if spec and spec == 3 then
-            ns.combocountbar:SetMinMaxValues(0, 50);
-            ns.aura_func = ns.checkvoid;
-            ns.frame:RegisterUnitEvent("UNIT_AURA", "player");
-            ns.aura_func();
+            --ns.combocountbar:SetMinMaxValues(0, 50);
+            --ns.aura_func = ns.checkvoid;
+            --ns.frame:RegisterUnitEvent("UNIT_AURA", "player");
+            --ns.aura_func();
         end
     end
 
@@ -131,13 +137,13 @@ local function initclass()
     if (englishClass == "SHAMAN") then
         if spec and spec == 2 then
             ns.setup_max_combo(10);
-            ns.aura_func  = ns.checkstorm;
+            ns.aura_func = ns.checkstorm;
             ns.frame:RegisterUnitEvent("UNIT_AURA", "player");
             ns.aura_func();
         end
     end
 
-    if ns.power_level then        
+    if ns.power_level then
         local max = UnitPowerMax("player", ns.power_level);
         local maxpartial = nil;
         if ns.bupdate_partial_power then
@@ -249,6 +255,8 @@ local function initaddon()
     ns.combotext:SetPoint("CENTER", ns.combocountbar, "CENTER", 0, 0);
     ns.combotext:SetTextColor(1, 1, 1, 1)
     ns.combotext:Hide();
+
+
 
     ns.combobars = {};
 

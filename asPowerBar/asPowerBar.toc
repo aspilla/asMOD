@@ -10,5 +10,6 @@ asPowerBarRune.lua
 asPowerBarCombo.lua
 asPowerBarSpecial.lua
 asPowerBarAura.lua
+asPowerBarSpell.lua
 asPowerBarPower.lua
 asPowerBar.xml
