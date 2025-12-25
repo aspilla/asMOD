@@ -1,10 +1,7 @@
 local _, ns = ...;
 
-local CONFIG_NOT_INTERRUPTIBLE_COLOR = { r = 0.9, g = 0.9, b = 0.9 };               --차단 불가시 (내가 아닐때) 색상 (r, g, b)
-local CONFIG_INTERRUPTIBLE_COLOR = { r = 204 / 255, g = 255 / 255, b = 153 / 255 }; --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
-
 function ns.update_power(asframe)
-    if not ns.options.ANameP_ShowPower then
+    if not ns.options.ShowPower then
         return;
     end
 
@@ -85,48 +82,48 @@ function ns.update_color(asframe)
         end
 
         --Target and Aggro High Priority
-        if IsInGroup() and ns.options.ANameP_AggroShow and incombat then
+        if IsInGroup() and ns.options.ShowAggro and incombat then
             if ns.istanker then
                 if status == nil or status == 0 then
-                    return ns.options.ANameP_TankAggroLoseColor;
+                    return ns.options.TankAggroLoseColor;
                 end
             end
             if status and status > 0 then
-                return ns.options.ANameP_AggroColor;
+                return ns.options.AggroColor;
             end
         end
 
         --Cast Color
-        if asframe.casticon:IsShown() and ns.options.ANameP_ShowCastColor then
+        if asframe.casticon:IsShown() and ns.options.ShowCastColor then
             local bartype = castbar.barType;
             if bartype == "uninterruptable" then
-                return CONFIG_NOT_INTERRUPTIBLE_COLOR;
+                return ns.options.UninterruptableColor;
             end
 
-            return CONFIG_INTERRUPTIBLE_COLOR;
+            return ns.options.InterruptableColor;
         end
 
 
         --Debuff Color
-        if ns.options.ANameP_ShowDebuffColor then
+        if ns.options.ShowDebuffColor then
             local activeDebuffs = get_auracount(debufflist);
 
             if activeDebuffs > 0 then
-                return ns.options.ANameP_DebuffColor;
+                return ns.options.DebuffColor;
             end
         end
 
-        if status and ns.options.ANameP_AggroShow then
+        if status and ns.options.ShowAggro then
             --return UnitHealthPercent(unit, ns.colorcurve);
-            return ns.options.ANameP_CombatColor;
+            return ns.options.CombatColor;
         end
 
-        if asframe.isboss and ns.options.ANameP_BossHint then
-            return ns.options.ANameP_BossColor;
+        if asframe.isboss and ns.options.ShowBossColor then
+            return ns.options.BossColor;
         end
 
-        if not (ns.isparty or ns.israid) and ns.options.ANameP_QuestAlert and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
-            return ns.options.ANameP_QuestColor;
+        if not (ns.isparty or ns.israid) and ns.options.ShowQuestColor and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
+            return ns.options.QuestColor;
         end
 
         return nil;
@@ -163,7 +160,7 @@ function ns.update_color(asframe)
 end
 
 function ns.update_cast(asframe)
-    if not ns.options.ANameP_ShowCastIcon then
+    if not ns.options.ShowCastIcon then
         return;
     end
 

@@ -1,35 +1,37 @@
 local _, ns = ...;
 
 ---설정부
-ns.ANameP_PowerTextSize = 6;
-ns.ANameP_MouseTextSize = 12;
-ns.ANameP_UpdateRate = 0.2;       -- 버프 Check 반복 시간 (초)
+ns.configs = {
+    powerfontsize = 6,
+    mousefontsize = 12,
+    updaterate = 0.2,
+};
 
-ANameP_Options_Default = {
+ns.option_default = {
     version = 251220,
 
-    ANameP_AggroShow = true,       -- 어그로 여부를 표현할지 여부
-    ANameP_ShowDebuffColor = true, -- 디버프 색상를 표현할지 여부
-    ANameP_QuestAlert = true,      -- Quest 몹 색상 변경 사용
-    ANameP_BossHint = true,        -- Boss Mob Color 변ㅈ
-    ANameP_ShowCastColor = true,
-    ANameP_ShowPower = true,       -- Power 표시
-    ANameP_ShowCastIcon = true,    -- CastIcon 표시
+    ShowAggro = true,
+    ShowDebuffColor = true,
+    ShowQuestColor = true,
+    ShowBossColor = true,
+    ShowCastColor = true,
+    ShowPower = true,
+    ShowCastIcon = true,
 
 
-    ANameP_AggroColor = { r = 0.4, g = 0.2, b = 0.8 },       -- 어그로 대상일때 바 Color
-    ANameP_TankAggroLoseColor = { r = 1, g = 0.5, b = 0.5 }, -- 탱커일때 어그로가 다른 탱커가 아닌사람일때
-    ANameP_CombatColor = { r = 0.5, g = 1, b = 1 },          -- 전투중 Color
-    ANameP_DebuffColor = { r = 1, g = 0.5, b = 1 },          -- 디버프 걸렸을때 Color
-    ANameP_QuestColor = { r = 1, g = 0.8, b = 0.5 },         -- Quest 몹 Color
-    ANameP_BossColor = { r = 0, g = 1, b = 0.2 },            -- Boss 몹 Color
-
+    AggroColor = { r = 0.4, g = 0.2, b = 0.8 },
+    TankAggroLoseColor = { r = 1, g = 0.5, b = 0.5 },
+    UninterruptableColor = { r = 0.9, g = 0.9, b = 0.9 },
+    InterruptableColor = { r = 204 / 255, g = 255 / 255, b = 153 / 255 },
+    DebuffColor = { r = 1, g = 0.5, b = 1 },
+    CombatColor = { r = 0.5, g = 1, b = 1 },
+    QuestColor = { r = 1, g = 0.8, b = 0.5 },
+    BossColor = { r = 0, g = 1, b = 0.2 },
 
     nameplateOverlapV = 1.1, -- 이름표 상하 정렬
 };
 
-ANameP_OptionM = {};
-local update_callback = nil;
+ns.options = CopyTable(ns.option_default);
 
 local curr_y = 0;
 local y_adder = -50;
@@ -46,9 +48,8 @@ end
 local scrollFrame = nil
 local scrollChild = nil;
 
-local function SetupChildPanel()
+local function setup_childpanel()
     curr_y = 0;
-
 
     if scrollFrame then
         scrollFrame:Hide()
@@ -81,14 +82,14 @@ local function SetupChildPanel()
     btn:SetWidth(100)
     btn:SetScript("OnClick", function()
         ANameP_Options = {};
-        ANameP_Options = CopyTable(ANameP_Options_Default);
+        ANameP_Options = CopyTable(ns.option_default);
         ReloadUI();
     end)
 end
 
-local function SetupCheckBoxOption(text, option)
+local function setup_checkboxoption(text, option)
     if ANameP_Options[option] == nil then
-        ANameP_Options[option] = ANameP_Options_Default[option];
+        ANameP_Options[option] = ns.option_default[option];
     end
 
     curr_y = curr_y + y_adder;
@@ -98,14 +99,14 @@ local function SetupCheckBoxOption(text, option)
     cb.Text:SetText(text)
     cb:HookScript("OnClick", function()
         ANameP_Options[option] = cb:GetChecked();
-        ANameP_OptionM.UpdateAllOption();
+        ns.setup_alloptions();
     end)
     cb:SetChecked(ANameP_Options[option]);
 end
 
-local function SetupSliderOption(text, option)
+local function setup_slideoption(text, option)
     if ANameP_Options[option] == nil then
-        ANameP_Options[option] = ANameP_Options_Default[option];
+        ANameP_Options[option] = ns.option_default[option];
     end
 
     curr_y = curr_y + y_adder;
@@ -140,7 +141,7 @@ local function SetupSliderOption(text, option)
     end
 end
 
-local function ShowColorPicker(r, g, b, a, changedCallback)
+local function show_colorpicker(r, g, b, a, changedCallback)
     local info = {};
     info.r, info.g, info.b = r, g, b;
     info.swatchFunc = changedCallback;
@@ -148,9 +149,9 @@ local function ShowColorPicker(r, g, b, a, changedCallback)
     ColorPickerFrame:SetupColorPickerAndShow(info);
 end
 
-local function SetupColorOption(text, option)
+local function setup_coloroption(text, option)
     if ANameP_Options[option] == nil then
-        ANameP_Options[option] = ANameP_Options_Default[option];
+        ANameP_Options[option] = ns.option_default[option];
         ns.options = CopyTable(ANameP_Options);
     end
 
@@ -184,105 +185,93 @@ local function SetupColorOption(text, option)
         end
         ANameP_Options[option].r, ANameP_Options[option].g, ANameP_Options[option].b = newR, newG, newB;
         title:SetTextColor(ANameP_Options[option].r, ANameP_Options[option].g, ANameP_Options[option].b, 1);
-        ANameP_OptionM.UpdateAllOption();
+        ns.setup_alloptions();
     end
 
     btn:SetScript("OnClick", function()
-        ShowColorPicker(ANameP_Options[option].r, ANameP_Options[option].g, ANameP_Options[option].b, 1, callback);
+        show_colorpicker(ANameP_Options[option].r, ANameP_Options[option].g, ANameP_Options[option].b, 1, callback);
     end)
 end
 
-
-
-
 local bfirst = true;
-ANameP_OptionM.SetupAllOption = function()
+ns.setup_alloptions = function()
     if bfirst and not InCombatLockdown() then
         SetCVar("nameplateOverlapV", ANameP_Options["nameplateOverlapV"]);
-        if update_callback then
-            update_callback();
-        end
         bfirst = false;
     end
 end
 
-ANameP_OptionM.UpdateAllOption = function()
-    ANameP_OptionM.SetupAllOption()
-end
 
-ANameP_OptionM.RegisterCallback = function(callback_func)
-    update_callback = callback_func;
-end
-
-function panel:OnEvent(event, addOnName)
+local function on_event(self, event, addOnName)
     if addOnName == "asNamePlates" then
         if ANameP_Options == nil then
             ANameP_Options = {};
-            ANameP_Options = CopyTable(ANameP_Options_Default);
+            ANameP_Options = CopyTable(ns.option_default);
         end
 
-        if ANameP_Options.version ~= ANameP_Options_Default.version then
-            ANameP_Options = CopyTable(ANameP_Options_Default);
+        if ANameP_Options.version ~= ns.option_default.version then
+            ANameP_Options = CopyTable(ns.option_default);
         end
 
-        ANameP_OptionM.SetupAllOption();
-    elseif event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
-        ANameP_OptionM.SetupAllOption();
+        ns.setup_alloptions();
     elseif event == "PLAYER_REGEN_ENABLED" then
-        ANameP_OptionM.SetupAllOption();
+        ns.setup_alloptions();
     end
 end
 
-local function panelOnShow()
-    SetupChildPanel();
+local function on_panelshow()
+    setup_childpanel();
 
     -- Check if the locale is Korean ("koKR")
     if GetLocale() == "koKR" then
-        -- Set up checkbox options with Korean descriptions
-        SetupCheckBoxOption("[기능] 어그로 색상 표시", "ANameP_AggroShow"); -- Show aggro colors
-        SetupColorOption("[색상] 어그로 상위", "ANameP_AggroColor"); -- Nameplate color: Top aggro
-        SetupColorOption("[색상] 어그로 상실", "ANameP_TankAggroLoseColor"); -- Tank nameplate color: Aggro lost
-        SetupColorOption("[색상] 어그로 전투중 색상", "ANameP_CombatColor"); -- Nameplate color: Normal Aggro
-        
-        SetupCheckBoxOption("[기능] 디버프 색상 표시", "ANameP_ShowDebuffColor"); -- Show aggro colors
-        SetupColorOption("[색상] 디버프", "ANameP_DebuffColor"); -- Nameplate color: Debuff
-        
-        SetupCheckBoxOption("[기능] 시전 색상 표시", "ANameP_ShowCastColor");
-        
-        SetupCheckBoxOption("[기능] Quest 몹 색상 표시", "ANameP_QuestAlert"); -- Show quest mob colors
-        SetupColorOption("[색상] Quest", "ANameP_QuestColor"); -- Nameplate color: Quest
+        setup_checkboxoption("[기능] 하단에 기력 표시", "ShowPower"); -- Show Power
+        setup_checkboxoption("[기능] 시전 Icon 표시", "ShowCastIcon");
 
-        SetupCheckBoxOption("[기능] Boss 몹 색상 표시", "ANameP_BossHint"); -- Show DBM casting mob colors
-        SetupColorOption("[색상] Boss Mob", "ANameP_BossColor"); -- Nameplate color: BossColor
-        SetupCheckBoxOption("[기능] 하단에 기력 표시", "ANameP_ShowPower"); -- Show Power
-        SetupCheckBoxOption("[기능] 시전 Icon 표시", "ANameP_ShowCastIcon");
+        setup_slideoption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV"); -- Nameplate vertical alignment (nameplateOverlapV)
 
-        SetupSliderOption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV"); -- Nameplate vertical alignment (nameplateOverlapV)
+        setup_checkboxoption("[기능] 어그로 색상 표시", "ShowAggro"); -- Show aggro colors
+        setup_coloroption("[색상] 어그로 상위", "AggroColor"); -- Nameplate color: Top aggro
+        setup_coloroption("[색상] 어그로 상실", "TankAggroLoseColor"); -- Tank nameplate color: Aggro lost
+        setup_coloroption("[색상] 어그로 전투중 색상", "CombatColor"); -- Nameplate color: Normal Aggro
+
+        setup_checkboxoption("[기능] 디버프 색상 표시", "ShowDebuffColor"); -- Show aggro colors
+        setup_coloroption("[색상] 디버프", "DebuffColor"); -- Nameplate color: Debuff
+
+        setup_checkboxoption("[기능] 시전 색상 표시", "ShowCastColor");
+        setup_coloroption("[색상] 차단가능", "InterruptableColor");
+        setup_coloroption("[색상] 차단불가", "UninterruptableColor");
+
+        setup_checkboxoption("[기능] Boss 몹 색상 표시", "ShowBossColor"); -- Show DBM casting mob colors
+        setup_coloroption("[색상] Boss Mob", "BossColor"); -- Nameplate color: BossColor
+
+        setup_checkboxoption("[기능] Quest 몹 색상 표시", "ShowQuestColor"); -- Show quest mob colors
+        setup_coloroption("[색상] Quest", "QuestColor"); -- Nameplate color: Quest
     else
-        -- Set up checkbox options with English descriptions
+        setup_checkboxoption("[Feature] Show Power below", "ShowPower"); -- Show Power
+        setup_checkboxoption("[Feature] Show cast icon", "ShowCastIcon");
 
-        SetupCheckBoxOption("[Feature] Show aggro colors", "ANameP_AggroShow");
-        SetupColorOption("[Color] Top aggro", "ANameP_AggroColor");
-        SetupColorOption("[Color] Aggro lost", "ANameP_TankAggroLoseColor");
-        SetupColorOption("[Color] Aggro combat normal", "ANameP_CombatColor");        -- Nameplate color: Normal Aggro
-        
-        SetupCheckBoxOption("[Feature] Show debuff color", "ANameP_ShowDebuffColor"); -- Show aggro colors
-        SetupColorOption("[Color] Debuff", "ANameP_DebuffColor");
-        
-        SetupCheckBoxOption("[Feature] Show cast color", "ANameP_ShowCastColor");
-        
-        SetupCheckBoxOption("[Feature] Show quest mob colors", "ANameP_QuestAlert");
-        SetupColorOption("[Color] Quest", "ANameP_QuestColor");
-        
-        SetupCheckBoxOption("[Feature] Show boss hint", "ANameP_BossHint");    -- Show DBM casting mob colors
-        SetupColorOption("[Color] Boss Mobs", "ANameP_BossColor");
-        SetupCheckBoxOption("[Feature] Show Power below", "ANameP_ShowPower"); -- Show Power
-        SetupCheckBoxOption("[Feature] Show cast icon", "ANameP_ShowCastIcon");
+        setup_slideoption("Nameplate vertical alignment (nameplateOverlapV)", "nameplateOverlapV");
 
-        SetupSliderOption("Nameplate vertical alignment (nameplateOverlapV)", "nameplateOverlapV");
+        setup_checkboxoption("[Feature] Show aggro colors", "ShowAggro");
+        setup_coloroption("[Color] Top aggro", "AggroColor");
+        setup_coloroption("[Color] Aggro lost", "TankAggroLoseColor");
+        setup_coloroption("[Color] Aggro combat normal", "CombatColor"); -- Nameplate color: Normal Aggro
+
+        setup_checkboxoption("[Feature] Show cast color", "ShowCastColor");
+        setup_coloroption("[Color] Interrutable", "InterruptableColor");
+        setup_coloroption("[Color] Uninterruptable", "UninterruptableColor");
+
+        setup_checkboxoption("[Feature] Show debuff color", "ShowDebuffColor"); -- Show aggro colors
+        setup_coloroption("[Color] Debuff", "DebuffColor");
+
+        setup_checkboxoption("[Feature] Show boss hint", "ShowBossColor"); -- Show DBM casting mob colors
+        setup_coloroption("[Color] Boss Mobs", "BossColor");
+
+        setup_checkboxoption("[Feature] Show quest mob colors", "ShowQuestColor");
+        setup_coloroption("[Color] Quest", "QuestColor");
     end
 end
-local function panelOnHide()
+local function on_panelhide()
     if scrollFrame then
         scrollFrame:Hide()
         scrollFrame:UnregisterAllEvents()
@@ -290,11 +279,8 @@ local function panelOnHide()
     end
 end
 
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("TRAIT_CONFIG_UPDATED");
-panel:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-panel:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+panel:RegisterEvent("ADDON_LOADED");
 panel:RegisterEvent("PLAYER_REGEN_ENABLED");
-panel:SetScript("OnEvent", panel.OnEvent)
-panel:SetScript("OnShow", panelOnShow)
-panel:SetScript("OnHide", panelOnHide);
+panel:SetScript("OnEvent", on_event);
+panel:SetScript("OnShow", on_panelshow);
+panel:SetScript("OnHide", on_panelhide);

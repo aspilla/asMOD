@@ -1,7 +1,7 @@
 ﻿## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rNamePlates
-## Notes: Addon to enhance the default name plates
+## Notes: Nameplate Enhancement Addon
 ## Version : 251225 
 ## SavedVariablesPerCharacter: ANameP_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

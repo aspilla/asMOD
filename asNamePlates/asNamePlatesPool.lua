@@ -38,12 +38,12 @@ local function create_frame()
     object.powerbar.bg:SetVertexColor(0, 0, 0, 0.8);
 
     object.powerbar.value = object.powerbar:CreateFontString(nil, "ARTWORK");
-    object.powerbar.value:SetFont(STANDARD_TEXT_FONT, ns.ANameP_PowerTextSize, "OUTLINE");
+    object.powerbar.value:SetFont(STANDARD_TEXT_FONT, ns.configs.powerfontsize, "OUTLINE");
     object.powerbar.value:SetTextColor(1, 1, 1, 1)
     object.powerbar.value:SetPoint("CENTER", object.powerbar, "CENTER", 0, 0);
 
     object.motext = object:CreateFontString(nil, "OVERLAY");
-    object.motext:SetFont(STANDARD_TEXT_FONT, ns.ANameP_MouseTextSize, "OUTLINE");
+    object.motext:SetFont(STANDARD_TEXT_FONT, ns.configs.mousefontsize, "OUTLINE");
     object.motext:SetText(mouseoverIcon);
 
     return object;

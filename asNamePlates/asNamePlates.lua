@@ -1,16 +1,12 @@
 ﻿local _, ns = ...;
 local main_frame = CreateFrame("Frame", nil, UIParent);
 
-
-ns.options = CopyTable(ANameP_Options_Default);
 ns.tanklist = {};
 ns.isparty = false;
 ns.israid = false;
 ns.ispvp = false;
 ns.istanker = false;
-ns.colorcurve = C_CurveUtil.CreateColorCurve();
-ns.colorcurve:SetType(Enum.LuaCurveType.Step);
-ns.colorcurve:AddPoint(0.0, CreateColor(0.5, 1, 1, 1));
+ns.colorcurve = nil;
 
 local function update_tanklist()
     if ns.ispvp then
@@ -220,7 +216,7 @@ local function add_unit(unit)
         asframe.timer:Cancel();
     end
 
-    asframe.timer = C_Timer.NewTicker(ns.ANameP_UpdateRate, callback);
+    asframe.timer = C_Timer.NewTicker(ns.configs.updaterate, callback);
 end
 
 
@@ -326,6 +322,7 @@ local function on_main_event(self, event, ...)
         check_playertankrole();
     elseif event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED" then
         update_tanklist();
+        check_playertankrole();
     elseif event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" then
         init_class();
         check_playertankrole();
