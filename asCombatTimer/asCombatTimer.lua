@@ -1,25 +1,27 @@
 ﻿local _, ns = ...;
-local ASTM_SIZE = 40;
-local ASTM_TimerFrame_X = -365
-local ASTM_TimerFrame_Y = -197
-
--- 옵션끝
-local ASTM_Frame;
-local ASTM_Fonts = {
+local configs = {};
+configs.size = 40;
+configs.xpoint = -365
+configs.ypoint = -197
+configs.fonts = {
 	[1] = STANDARD_TEXT_FONT,
 	[2] = UNIT_NAME_FONT,
 	[3] = DAMAGE_TEXT_FONT,
 }
 
+
+-- 옵션끝
+local main_frame = CreateFrame("Frame", nil, UIParent);;
+
 -- Function to load saved position
-local function LoadPosition(frame, option)
+local function load_position(frame, option)
 	frame:ClearAllPoints()
 	frame:SetPoint(option.point, UIParent, option.relativePoint, option.xOfs,
 		option.yOfs)
 end
 
 -- Function to save position
-local function SavePosition(frame, option)
+local function save_position(frame, option)
 	local point, _, relativePoint, xOfs, yOfs = frame:GetPoint()
 	option.point = point
 	option.relativePoint = relativePoint
@@ -28,7 +30,7 @@ local function SavePosition(frame, option)
 end
 
 ns.updateOptions = function()
-	ASTM_Frame.timertext:SetFont(ASTM_Fonts[ns.options.Font], ns.options.FontSize, "OUTLINE");
+	main_frame.timertext:SetFont(configs.fonts[ns.options.Font], ns.options.FontSize, "OUTLINE");
 end
 
 local bMouseEnabled = true;
@@ -38,36 +40,35 @@ local encounter_start_time = nil;
 local encounter_end_time = nil;
 
 -- Function to format seconds into HH:MM:SS
-local function FormatTime(seconds)
+local function format_time(seconds)
 	seconds = math.floor(seconds);
-	local hours = math.floor(seconds / 3600);
 	local minutes = math.floor((seconds % 3600) / 60);
 	local secs = seconds % 60;
 	return string.format("[%02d:%02d]", minutes, secs);
 end
 
-local function ASTM_Update()
-	local timertext = ASTM_Frame.timertext;
+local function on_update()
+	local timertext = main_frame.timertext;
 	if ns.options.LockWindow then
 		if bMouseEnabled then
-			ASTM_Frame:EnableMouse(false);
+			main_frame:EnableMouse(false);
 			bMouseEnabled = false;
 		end
 	else
 		if not bMouseEnabled then
-			ASTM_Frame:EnableMouse(true);
+			main_frame:EnableMouse(true);
 			bMouseEnabled = true;
 		end
 	end
 
 	if ns.options.ShowWhenCombat and not ns.options.LockWindow then
 		if InCombatLockdown() then
-			ASTM_Frame:Show();
+			main_frame:Show();
 		else
-			ASTM_Frame:Hide();
+			main_frame:Hide();
 		end
 	else
-		ASTM_Frame:Show();
+		main_frame:Show();
 	end
 
 	local time_sec = 0;
@@ -83,12 +84,12 @@ local function ASTM_Update()
 	end
 
 	if time_sec >= 0 then
-		timertext:SetText(FormatTime(time_sec));
+		timertext:SetText(format_time(time_sec));
 	end
 end
 
 
-local function ASTM_OnEvent(self, event, arg1, ...)
+local function on_event(self, event)
 	if event == "PLAYER_REGEN_DISABLED" then
 		combat_start_time = GetTime();
 		combat_end_time = nil;
@@ -105,70 +106,68 @@ local function ASTM_OnEvent(self, event, arg1, ...)
 	end
 end
 
-local function ASTM_Init()
+local function init()
 	ASTM_Position = ASTM_Position or {
 		point = "CENTER",
 		relativePoint = "CENTER",
-		xOfs = ASTM_TimerFrame_X,
-		yOfs = ASTM_TimerFrame_Y,
+		xOfs = configs.xpoint,
+		yOfs = configs.ypoint,
 	}
 
 	ns.SetupOptionPanels();
 	C_AddOns.LoadAddOn("asMOD");
+	
+	main_frame:EnableMouse(true);
+	main_frame:RegisterForDrag("LeftButton");
+	main_frame:SetMovable(true);
 
+	main_frame.timertext = main_frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	main_frame.timertext:ClearAllPoints();
+	main_frame.timertext:SetPoint("CENTER", main_frame, "CENTER", 0, 0);
+	main_frame.timertext:SetTextColor(1, 1, 1);
+	main_frame.timertext:SetText("[00:00]");
+	main_frame.timertext:Show();
 
-	ASTM_Frame = CreateFrame("Frame", nil, UIParent);
-	ASTM_Frame:EnableMouse(true);
-	ASTM_Frame:RegisterForDrag("LeftButton");
-	ASTM_Frame:SetMovable(true);
-
-	ASTM_Frame.timertext = ASTM_Frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-	ASTM_Frame.timertext:ClearAllPoints();
-	ASTM_Frame.timertext:SetPoint("CENTER", ASTM_Frame, "CENTER", 0, 0);
-	ASTM_Frame.timertext:SetTextColor(1, 1, 1);
-	ASTM_Frame.timertext:SetText("[00:00]");
-	ASTM_Frame.timertext:Show();
-
-	ASTM_Frame:SetPoint("CENTER", ASTM_TimerFrame_X, ASTM_TimerFrame_Y)
-	ASTM_Frame:SetWidth(ASTM_SIZE);
-	ASTM_Frame:SetHeight(ASTM_SIZE * 0.9);
-	ASTM_Frame:SetScale(1);
-	ASTM_Frame:Show();
+	main_frame:SetPoint("CENTER", configs.xpoint, configs.ypoint)
+	main_frame:SetWidth(configs.size);
+	main_frame:SetHeight(configs.size * 0.9);
+	main_frame:SetScale(1);
+	main_frame:Show();
 
 
 
-	ASTM_Frame:SetScript("OnDragStart", function(self)
+	main_frame:SetScript("OnDragStart", function(self)
 		if not ns.options.LockWindow then
 			self:StartMoving()
 			self.isMoving = true
 		end
 	end)
 
-	ASTM_Frame:SetScript("OnDragStop", function(self)
+	main_frame:SetScript("OnDragStop", function(self)
 		if self.isMoving then
 			self:StopMovingOrSizing()
 			self.isMoving = false
-			SavePosition(ASTM_Frame, ASTM_Position);
+			save_position(main_frame, ASTM_Position);
 		end
 	end)
 
 	ns.updateOptions();
 
-	LoadPosition(ASTM_Frame, ASTM_Position);
+	load_position(main_frame, ASTM_Position);
 
 	if asMOD_setupFrame then
-		asMOD_setupFrame(ASTM_Frame, "asCombatTimer");
+		asMOD_setupFrame(main_frame, "asCombatTimer");
 	end
 
-	ASTM_Frame:RegisterEvent("PLAYER_REGEN_DISABLED");
-	ASTM_Frame:RegisterEvent("PLAYER_REGEN_ENABLED");
-	ASTM_Frame:RegisterEvent("ENCOUNTER_START");
-	ASTM_Frame:RegisterEvent("ENCOUNTER_END");
-	ASTM_Frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-	ASTM_Frame:SetScript("OnEvent", ASTM_OnEvent)
+	main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+	main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+	main_frame:RegisterEvent("ENCOUNTER_START");
+	main_frame:RegisterEvent("ENCOUNTER_END");
+	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+	main_frame:SetScript("OnEvent", on_event)
 
 
-	C_Timer.NewTicker(0.1, ASTM_Update);
+	C_Timer.NewTicker(0.1, on_update);
 end
 
-C_Timer.After(0.5, ASTM_Init);
+C_Timer.After(0.5, init);
