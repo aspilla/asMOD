@@ -2,21 +2,21 @@ local _, ns = ...;
 
 local Options_Default = {
 	Version = 250920,
-	PlayerDebuffRate = 1.3,	
+	PlayerDebuffRate = 1.3,
 };
 
-ns.ADF_SIZE = 28;
-ns.ADF_TARGET_DEBUFF_X = 75 + 30 + 20;
-ns.ADF_TARGET_DEBUFF_Y = -160;
-ns.ADF_PLAYER_DEBUFF_X = -75 - 30 - 20;
-ns.ADF_PLAYER_DEBUFF_Y = -130;
-ns.ADF_MAX_DEBUFF_SHOW = 7;
-ns.ADF_ALPHA = 1
-ns.ADF_CooldownFontSize = 12 -- Cooldown Font Size
-ns.ADF_CountFontSize = 11;   -- Count Font Size
-ns.ADF_AlphaCombat = 1;      -- 전투중 Alpha 값
-ns.ADF_AlphaNormal = 0.5;    -- 비 전투중 Alpha 값
-ns.ADF_MAX_Cool = 120        -- 최대 120초까지의 Debuff를 보임
+ns.configs = {
+	SIZE = 28,
+	TARGET_DEBUFF_X = 75 + 30 + 20,
+	TARGET_DEBUFF_Y = -160,
+	PLAYER_DEBUFF_X = -75 - 30 - 20,
+	PLAYER_DEBUFF_Y = -130,
+	MAX_DEBUFF_SHOW = 7,
+	CooldownFontSize = 12, -- Cooldown Font Size
+	CountFontSize = 11, -- Count Font Size
+	AlphaCombat = 1,   -- 전투중 Alpha 값
+	AlphaNormal = 0.5, -- 비 전투중 Alpha 값
+};
 
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
@@ -33,7 +33,7 @@ function ns.SetupOptionPanels()
 		local variable = get_variable_from_cvar_name(cvar_name)
 		ADF_Options[variable] = value;
 		ns.options[variable] = value;
-    end
+	end
 
 	local category = Settings.RegisterVerticalLayoutCategory("asDebuffFilter")
 

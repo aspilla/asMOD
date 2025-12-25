@@ -1,8 +1,8 @@
 ﻿## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDotFilter
-## Notes: Dot filter addon for boss and focus frames 
-## Version : 250819
+## Notes: Displays debuffs cast by the player on boss frames and focus frames.
+## Version : 251225
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asDotFilter.xml

@@ -1,23 +1,25 @@
 ﻿local _, ns = ...;
-local ADotF_SIZE = 30;
-local ADotF_MAX_DEBUFF_SHOW = 2;
-local ADotF_ALPHA = 0.9;
-local ADotF_CooldownFontSize = 12;
-local ADotF_CountFontSize = 12;
 
+local configs = {
+    size = 30,
+    maxshow = 2,
+    alpha = 0.9,
+    cooldownfontsize = 12,
+    countfontsize = 12,
 
---설정 표시할 Unit
-local ADotF_UnitList = {
-    "focus", -- 주시대상 표시 안하길 원하면 이 줄 삭제
-    "boss1",
-    "boss2",
-    "boss3",
-    "boss4",
-    "boss5",
-}
+    --설정 표시할 Unit
+    unitlist = {
+        "focus", -- 주시대상 표시 안하길 원하면 이 줄 삭제
+        "boss1",
+        "boss2",
+        "boss3",
+        "boss4",
+        "boss5",
+    },
+};
 
 --설정 끝
-local ADotF = CreateFrame("Frame", "ADotF", UIParent);
+local main_frame = CreateFrame("Frame", "ADotF", UIParent);
 
 local function clear_cooldownframe(self)
     self:Clear();
@@ -32,7 +34,7 @@ local function set_cooldownframe(self, extime, duration, enable)
     end
 end
 
-local function ADotF_UpdateDebuffAnchor(frames, index, size, offsetX, right, parent, isboss)
+local function update_anchor(frames, index, size, offsetX, right, parent, isboss)
     local buff = frames[index];
     local point1 = "LEFT";
     local point2 = "RIGHT";
@@ -61,13 +63,12 @@ local function ADotF_UpdateDebuffAnchor(frames, index, size, offsetX, right, par
 end
 
 
-local function SetDebuff(frame, unit, aura, color)
+local function set_debuff(frame, unit, aura, color)
     frame.icon:SetTexture(aura.icon);
-    frame:Show();
 
     frame.count:Show();
     frame.count:SetText(C_UnitAuras.GetAuraApplicationDisplayCount(unit, aura.auraInstanceID, 1, 100));
-    
+
     set_cooldownframe(frame.cooldown, aura.expirationTime, aura.duration, true);
 
 
@@ -76,12 +77,12 @@ end
 
 local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
 local debuffinfo = {
-	[1] = DEBUFF_TYPE_MAGIC_COLOR,
-	[2] = DEBUFF_TYPE_CURSE_COLOR,
-	[3] = DEBUFF_TYPE_DISEASE_COLOR,
-	[4] = DEBUFF_TYPE_POISON_COLOR, 
-	[5] = DEBUFF_TYPE_BLEED_COLOR, 
-	[0] = DEBUFF_TYPE_NONE_COLOR,
+    [1] = DEBUFF_TYPE_MAGIC_COLOR,
+    [2] = DEBUFF_TYPE_CURSE_COLOR,
+    [3] = DEBUFF_TYPE_DISEASE_COLOR,
+    [4] = DEBUFF_TYPE_POISON_COLOR,
+    [5] = DEBUFF_TYPE_BLEED_COLOR,
+    [0] = DEBUFF_TYPE_NONE_COLOR,
 };
 local colorcurve = C_CurveUtil.CreateColorCurve();
 colorcurve:SetType(Enum.LuaCurveType.Step);
@@ -90,19 +91,16 @@ for dispeltype, v in pairs(debuffinfo) do
 end
 
 
-local function ADotF_UpdateDebuff(unit)
+local function update_debuffs(unit)
     local numDebuffs = 1;
     local frame;
-    local frameIcon, frameCount, frameCooldown;
-    local icon, count, debuffType, duration, expirationTime, caster, spellId;
     local color;
-    local frameBorder;
     local parent;
     local find = false;
     local isboss = true;
 
-    for i = 1, #ADotF_UnitList do
-        if unit == ADotF_UnitList[i] then
+    for i = 1, #configs.unitlist do
+        if unit == configs.unitlist[i] then
             find = true;
             break;
         end
@@ -112,16 +110,16 @@ local function ADotF_UpdateDebuff(unit)
         return;
     end
 
-    if not ADotF.units then
-        ADotF.units = {};
+    if not main_frame.units then
+        main_frame.units = {};
     end
 
-    if not ADotF.units[unit] then
-        ADotF.units[unit] = {};
+    if not main_frame.units[unit] then
+        main_frame.units[unit] = {};
     end
 
-    if not ADotF.units[unit].frames then
-        ADotF.units[unit].frames = {};
+    if not main_frame.units[unit].frames then
+        main_frame.units[unit].frames = {};
     end
 
     if UnitExists(unit) then
@@ -180,23 +178,24 @@ local function ADotF_UpdateDebuff(unit)
             return;
         end
 
-        local aura_list = C_UnitAuras.GetUnitAuras(unit, filter, ADotF_MAX_DEBUFF_SHOW);
+        local aura_list = C_UnitAuras.GetUnitAuras(unit, filter, configs.maxshow);
 
-        for _index, aura in ipairs(aura_list) do
-            if numDebuffs > ADotF_MAX_DEBUFF_SHOW then
+        for _, aura in ipairs(aura_list) do
+            if numDebuffs > configs.maxshow then
                 break;
             end
 
-            frame = ADotF.units[unit].frames[numDebuffs];
+            frame = main_frame.units[unit].frames[numDebuffs];
 
             if (not frame) then
-                ADotF.units[unit].frames[numDebuffs] = CreateFrame("Button", nil, ADotF, "asTargetDotFrameTemplate");
-                frame = ADotF.units[unit].frames[numDebuffs];
+                main_frame.units[unit].frames[numDebuffs] = CreateFrame("Button", nil, main_frame,
+                    "asTargetDotFrameTemplate");
+                frame = main_frame.units[unit].frames[numDebuffs];
                 frame:EnableMouse(false);
                 frame.cooldown:SetDrawSwipe(true);
                 for _, r in next, { frame.cooldown:GetRegions() } do
                     if r:GetObjectType() == "FontString" then
-                        r:SetFont(STANDARD_TEXT_FONT, ADotF_CooldownFontSize, "OUTLINE");
+                        r:SetFont(STANDARD_TEXT_FONT, configs.cooldownfontsize, "OUTLINE");
                         r:ClearAllPoints();
                         r:SetPoint("TOP", 0, 5);
                         r:SetDrawLayer("OVERLAY");
@@ -205,82 +204,77 @@ local function ADotF_UpdateDebuff(unit)
                 end
 
                 frame.icon:SetTexCoord(.08, .92, .18, .82);
-                frame.icon:SetAlpha(ADotF_ALPHA);
+                frame.icon:SetAlpha(configs.alpha);
                 frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-                frame.border:SetAlpha(ADotF_ALPHA);
+                frame.border:SetAlpha(configs.alpha);
 
-                frame.count:SetFont(STANDARD_TEXT_FONT, ADotF_CountFontSize, "OUTLINE");
+                frame.count:SetFont(STANDARD_TEXT_FONT, configs.countfontsize, "OUTLINE");
                 frame.count:ClearAllPoints();
                 frame.count:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2);
 
-                frame.snapshot:SetFont(STANDARD_TEXT_FONT, ADotF_CountFontSize - 1, "OUTLINE")
+                frame.snapshot:SetFont(STANDARD_TEXT_FONT, configs.countfontsize - 1, "OUTLINE")
                 frame.snapshot:ClearAllPoints();
                 frame.snapshot:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
-                frame.data = {};
+                frame:ClearAllPoints();
+                update_anchor(main_frame.units[unit].frames, numDebuffs, configs.size, 2, true, parent, isboss);
             end
 
             color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);
+            set_debuff(frame, unit, aura, color);
+            frame:Show();
 
-
-            SetDebuff(frame, unit, aura, color);
-            frame:ClearAllPoints();
             numDebuffs = numDebuffs + 1;
-        end
-
-        for i = 1, numDebuffs - 1 do
-            ADotF_UpdateDebuffAnchor(ADotF.units[unit].frames, i, ADotF_SIZE, 2, true, parent, isboss);
         end
     end
 
-    for i = numDebuffs, ADotF_MAX_DEBUFF_SHOW do
-        frame = ADotF.units[unit].frames[i];
+    for i = numDebuffs, configs.maxshow do
+        frame = main_frame.units[unit].frames[i];
 
         if (frame) then
             frame:Hide();
-            frame.data = {};            
         end
     end
 end
 
 
-local function ADotF_UpdateAllFrames()
-    for i = 1, #ADotF_UnitList do
-        ADotF_UpdateDebuff(ADotF_UnitList[i]);
+local function update_allframes()
+    for i = 1, #configs.unitlist do
+        update_debuffs(configs.unitlist[i]);
     end
 end
 
-local function ADotF_OnEvent(self, event, arg1)
+local function on_event(self, event)
     local unit;
 
     if (event == "PLAYER_FOCUS_CHANGED") then
         unit = "focus"
-        ADotF_UpdateDebuff(unit);
+        update_debuffs(unit);
     elseif (event == "PLAYER_TARGET_CHANGED") then
         unit = "target";
-        ADotF_UpdateDebuff(unit);
+        update_debuffs(unit);
     elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
-        ADotF_UpdateAllFrames();
-    elseif (event == "PLAYER_ENTERING_WORLD") then        
-        ADotF_UpdateAllFrames();    
+        update_allframes();
+    elseif (event == "PLAYER_ENTERING_WORLD") then
+        update_allframes();
     end
 end
 
-local function ADotF_OnUpdate()
-    ADotF_UpdateAllFrames();
+local function on_update()
+    update_allframes();
 end
 
-local function ADotF_Init()
-    ADotF:SetPoint("CENTER", 0, 0)
-    ADotF:SetWidth(1)
-    ADotF:SetHeight(1)
-    ADotF:SetScale(1)
-    ADotF:Show()
-    ADotF:RegisterEvent("PLAYER_FOCUS_CHANGED")
-    ADotF:RegisterEvent("PLAYER_TARGET_CHANGED")
-    ADotF:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
-    ADotF:RegisterEvent("PLAYER_ENTERING_WORLD")    
-    ADotF:SetScript("OnEvent", ADotF_OnEvent)
-    C_Timer.NewTicker(0.2, ADotF_OnUpdate);
+local function init()
+    main_frame:SetPoint("CENTER", 0, 0)
+    main_frame:SetWidth(1)
+    main_frame:SetHeight(1)
+    main_frame:SetScale(1)
+    main_frame:Show()
+    main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+    main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
+    main_frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
+    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+    main_frame:SetScript("OnEvent", on_event)
+    C_Timer.NewTicker(0.2, on_update);
 end
 
-ADotF_Init();
+init();

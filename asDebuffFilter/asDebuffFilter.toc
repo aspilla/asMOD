@@ -1,7 +1,7 @@
 ﻿## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDebuffFilter
-## Notes: Debuff tracker (player, target)
+## Notes: Displays debuffs on both player and target unit frames.
 ## Version : 251001
 ## SavedVariablesPerCharacter: ADF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

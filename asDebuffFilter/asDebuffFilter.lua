@@ -1,8 +1,5 @@
 ﻿local _, ns = ...;
-local ADF;
-local ADF_PLAYER_DEBUFF;
-local ADF_TARGET_DEBUFF;
-
+local main_frame = CreateFrame("Frame", nil, UIParent);
 
 local function clear_cooldownframe(self)
     self:Clear();
@@ -59,13 +56,13 @@ function asDebuffPrivateAuraAnchorMixin:SetUnit(unit)
     end
 end
 
-local function CreatPrivateFrames(parent)
+local function create_privateframes(parent)
     if parent.PrivateAuraAnchors == nil then
         parent.PrivateAuraAnchors = {};
     end
 
 
-    local size = ns.ADF_SIZE + 5;
+    local size = ns.configs.SIZE + 5;
 
     size = size * ns.options.PlayerDebuffRate;
 
@@ -90,18 +87,11 @@ filters["player"] = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
 
 local activeDebuffs = {};
 
-local function SetDebuff(frame, unit, aura, color, size)
-    frame.icon:SetTexture(aura.icon);
-    frame:Show();
-
-    frame.count:Show();
+local function set_debuff(frame, unit, aura, color, size)
+    frame.icon:SetTexture(aura.icon);       
     frame.count:SetText(C_UnitAuras.GetAuraApplicationDisplayCount(unit, aura.auraInstanceID, 1, 100));
-
     set_cooldownframe(frame.cooldown, aura.expirationTime, aura.duration, true);
-
     frame.border:SetVertexColor(color.r, color.g, color.b);
-
-
     frame:SetWidth(size);
     frame:SetHeight(size * 0.8);
 end
@@ -121,12 +111,12 @@ for dispeltype, v in pairs(debuffinfo) do
 end
 
 
-local function UpdateAuraFrames(unit, auraList, numAuras)
+local function update_frames(unit, auraList, numAuras)
     local i = 0;
-    local parent = ADF_TARGET_DEBUFF;
+    local parent = main_frame.target_frame;
 
     if (unit == "player") then
-        parent = ADF_PLAYER_DEBUFF;
+        parent = main_frame.player_frame;
     end
 
 
@@ -142,16 +132,17 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
         frame.auraInstanceID = aura.auraInstanceID;
 
         local color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);
-        local size = ns.ADF_SIZE + 4;
+        local size = ns.configs.SIZE + 4;
 
         if unit == "player" then
             size = size * ns.options.PlayerDebuffRate;
         end
 
-        SetDebuff(frame, unit, aura, color, size);
+        set_debuff(frame, unit, aura, color, size);
+        frame:Show();
     end
 
-    for j = i + 1, ns.ADF_MAX_DEBUFF_SHOW do
+    for j = i + 1, ns.configs.MAX_DEBUFF_SHOW do
         local frame = parent.frames[j];
 
         if (frame) then
@@ -160,24 +151,24 @@ local function UpdateAuraFrames(unit, auraList, numAuras)
         end
     end
 
-    if parent == ADF_PLAYER_DEBUFF then
+    if parent == main_frame.player_frame then
         parent.PrivateAuraAnchors[1]:ClearAllPoints();
         if i == 0 then
-            parent.PrivateAuraAnchors[1]:SetPoint("BOTTOMRIGHT", ADF_PLAYER_DEBUFF, "BOTTOMLEFT", 0, 0);
+            parent.PrivateAuraAnchors[1]:SetPoint("BOTTOMRIGHT", main_frame.player_frame, "BOTTOMLEFT", 0, 0);
         else
             parent.PrivateAuraAnchors[1]:SetPoint("BOTTOMRIGHT", parent.frames[i], "BOTTOMLEFT", -1, 0);
         end
     end
 end
 
-local function UpdateAuras(unit)
-    activeDebuffs[unit] = C_UnitAuras.GetUnitAuras(unit, filters[unit], ns.ADF_MAX_DEBUFF_SHOW);
-    UpdateAuraFrames(unit, activeDebuffs[unit], ns.ADF_MAX_DEBUFF_SHOW);
+local function update_auras(unit)
+    activeDebuffs[unit] = C_UnitAuras.GetUnitAuras(unit, filters[unit], ns.configs.MAX_DEBUFF_SHOW);
+    update_frames(unit, activeDebuffs[unit], ns.configs.MAX_DEBUFF_SHOW);
 end
 
-function ADF_ClearFrame()
-    for i = 1, ns.ADF_MAX_DEBUFF_SHOW do
-        local frame = ADF_TARGET_DEBUFF.frames[i];
+local function clear_frames()
+    for i = 1, ns.configs.MAX_DEBUFF_SHOW do
+        local frame = main_frame.target_frame.frames[i];
 
         if (frame) then
             frame:Hide();
@@ -186,30 +177,29 @@ function ADF_ClearFrame()
     end
 end
 
-function ADF_OnEvent(self, event, arg1, ...)
+local function on_event(self, event, arg1, ...)
     if (event == "UNIT_AURA") then
-        local info = ...;
-        UpdateAuras(arg1, info);
+        update_auras(arg1);
     elseif (event == "PLAYER_TARGET_CHANGED") then
-        ADF_ClearFrame();
-        UpdateAuras("target");
+        clear_frames();
+        update_auras("target");
     elseif (event == "PLAYER_ENTERING_WORLD") then
-        UpdateAuras("target");
-        UpdateAuras("player");
+        update_auras("target");
+        update_auras("player");
     elseif event == "PLAYER_REGEN_DISABLED" then
-        ADF:SetAlpha(ns.ADF_AlphaCombat);
+        main_frame:SetAlpha(ns.configs.AlphaCombat);
     elseif event == "PLAYER_REGEN_ENABLED" then
-        ADF:SetAlpha(ns.ADF_AlphaNormal);
+        main_frame:SetAlpha(ns.configs.AlphaNormal);
     end
 end
 
-local function OnUpdate()
+local function on_update()
     if (UnitExists("target")) then
-        UpdateAuras("target");
+        update_auras("target");
     end
 end
 
-local function ADF_UpdateDebuffAnchor(frames, index, offsetX, right, parent)
+local function update_anchor(frames, index, offsetX, right, parent)
     local buff = frames[index];
     local point1 = "BOTTOMLEFT";
     local point2 = "BOTTOMLEFT";
@@ -229,24 +219,24 @@ local function ADF_UpdateDebuffAnchor(frames, index, offsetX, right, parent)
     end
 
     -- Resize
-    buff:SetWidth(ns.ADF_SIZE);
-    buff:SetHeight(ns.ADF_SIZE * 0.8);
+    buff:SetWidth(ns.configs.SIZE);
+    buff:SetHeight(ns.configs.SIZE * 0.8);
 end
 
 
-local function CreatDebuffFrames(parent, bright, rate)
+local function create_frames(parent, bright, rate)
     if parent.frames == nil then
         parent.frames = {};
     end
 
-    for idx = 1, ns.ADF_MAX_DEBUFF_SHOW do
+    for idx = 1, ns.configs.MAX_DEBUFF_SHOW do
         parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetDebuffFrameTemplate");
         local frame = parent.frames[idx];
         frame.cooldown:SetDrawSwipe(true);
 
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
-                r:SetFont(STANDARD_TEXT_FONT, ns.ADF_CooldownFontSize * rate, "OUTLINE");
+                r:SetFont(STANDARD_TEXT_FONT, ns.configs.CooldownFontSize * rate, "OUTLINE");
                 r:ClearAllPoints();
                 r:SetPoint("TOP", 0, 5);
                 r:SetDrawLayer("OVERLAY");
@@ -254,25 +244,23 @@ local function CreatDebuffFrames(parent, bright, rate)
             end
         end
         frame.icon:SetTexCoord(.08, .92, .16, .84);
-        frame.icon:SetAlpha(ns.ADF_ALPHA);
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-        frame.border:SetAlpha(ns.ADF_ALPHA);
-
-        frame.count:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize, "OUTLINE")
+        
+        frame.count:SetFont(STANDARD_TEXT_FONT, ns.configs.CountFontSize, "OUTLINE")
         frame.count:ClearAllPoints();
         frame.count:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2);
 
-        frame.point:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize - 3, "OUTLINE")
+        frame.point:SetFont(STANDARD_TEXT_FONT, ns.configs.CountFontSize - 3, "OUTLINE")
         frame.point:ClearAllPoints();
         frame.point:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2);
         frame.point:SetTextColor(0, 1, 0);
 
-        frame.snapshot:SetFont(STANDARD_TEXT_FONT, ns.ADF_CountFontSize - 1, "OUTLINE")
+        frame.snapshot:SetFont(STANDARD_TEXT_FONT, ns.configs.CountFontSize - 1, "OUTLINE")
         frame.snapshot:ClearAllPoints();
         frame.snapshot:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
 
         frame:ClearAllPoints();
-        ADF_UpdateDebuffAnchor(parent.frames, idx, 1, bright, parent);
+        update_anchor(parent.frames, idx, 1, bright, parent);
         frame:EnableMouse(false);
         frame.data = {};
         frame:Hide();
@@ -282,65 +270,63 @@ local function CreatDebuffFrames(parent, bright, rate)
 end
 
 
-local function ADF_Init()
+local function init()
     ns.SetupOptionPanels();
     local bloaded = C_AddOns.LoadAddOn("asMOD")
+   
+    main_frame:SetPoint("CENTER", 0, 0)
+    main_frame:SetWidth(1)
+    main_frame:SetHeight(1)
+    main_frame:SetScale(1)
+    main_frame:SetAlpha(ns.configs.AlphaNormal);
+    main_frame:Show()
 
-    ADF = CreateFrame("Frame", nil, UIParent)
+    main_frame.target_frame = CreateFrame("Frame", nil, main_frame)
 
-    ADF:SetPoint("CENTER", 0, 0)
-    ADF:SetWidth(1)
-    ADF:SetHeight(1)
-    ADF:SetScale(1)
-    ADF:SetAlpha(ns.ADF_AlphaNormal);
-    ADF:Show()
+    main_frame.target_frame:SetPoint("CENTER", ns.configs.TARGET_DEBUFF_X, ns.configs.TARGET_DEBUFF_Y)
+    main_frame.target_frame:SetWidth(1)
+    main_frame.target_frame:SetHeight(1)
+    main_frame.target_frame:SetScale(1)
+    main_frame.target_frame:Show()
 
-    ADF_TARGET_DEBUFF = CreateFrame("Frame", nil, ADF)
-
-    ADF_TARGET_DEBUFF:SetPoint("CENTER", ns.ADF_TARGET_DEBUFF_X, ns.ADF_TARGET_DEBUFF_Y)
-    ADF_TARGET_DEBUFF:SetWidth(1)
-    ADF_TARGET_DEBUFF:SetHeight(1)
-    ADF_TARGET_DEBUFF:SetScale(1)
-    ADF_TARGET_DEBUFF:Show()
-
-    CreatDebuffFrames(ADF_TARGET_DEBUFF, true, 1);
+    create_frames(main_frame.target_frame, true, 1);
 
     if bloaded and asMOD_setupFrame then
-        asMOD_setupFrame(ADF_TARGET_DEBUFF, "asDebuffFilter(Target)");
+        asMOD_setupFrame(main_frame.target_frame, "asDebuffFilter(Target)");
     end
 
-    ADF_PLAYER_DEBUFF = CreateFrame("Frame", nil, ADF)
+    main_frame.player_frame = CreateFrame("Frame", nil, main_frame)
 
-    ADF_PLAYER_DEBUFF:SetPoint("CENTER", ns.ADF_PLAYER_DEBUFF_X, ns.ADF_PLAYER_DEBUFF_Y)
-    ADF_PLAYER_DEBUFF:SetWidth(1)
-    ADF_PLAYER_DEBUFF:SetHeight(1)
-    ADF_PLAYER_DEBUFF:SetScale(1)
-    ADF_PLAYER_DEBUFF:Show()
+    main_frame.player_frame:SetPoint("CENTER", ns.configs.PLAYER_DEBUFF_X, ns.configs.PLAYER_DEBUFF_Y)
+    main_frame.player_frame:SetWidth(1)
+    main_frame.player_frame:SetHeight(1)
+    main_frame.player_frame:SetScale(1)
+    main_frame.player_frame:Show()
 
-    CreatDebuffFrames(ADF_PLAYER_DEBUFF, false, ns.options.PlayerDebuffRate);
-    CreatPrivateFrames(ADF_PLAYER_DEBUFF);
+    create_frames(main_frame.player_frame, false, ns.options.PlayerDebuffRate);
+    create_privateframes(main_frame.player_frame);
 
     if bloaded and asMOD_setupFrame then
-        asMOD_setupFrame(ADF_PLAYER_DEBUFF, "asDebuffFilter(Player)");
+        asMOD_setupFrame(main_frame.player_frame, "asDebuffFilter(Player)");
     end
 
-    ADF:RegisterEvent("PLAYER_TARGET_CHANGED")
-    ADF:RegisterUnitEvent("UNIT_AURA", "player");
-    ADF:RegisterEvent("PLAYER_ENTERING_WORLD");
-    ADF:RegisterEvent("PLAYER_REGEN_DISABLED");
-    ADF:RegisterEvent("PLAYER_REGEN_ENABLED");
-    ADF:RegisterEvent("TRAIT_CONFIG_UPDATED");
-    ADF:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-    ADF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-    ADF:RegisterUnitEvent("UNIT_PET", "player")
+    main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
+    main_frame:RegisterUnitEvent("UNIT_AURA", "player");
+    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+    main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+    main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+    main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+    main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+    main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+    main_frame:RegisterUnitEvent("UNIT_PET", "player")
 
 
-    ADF:SetScript("OnEvent", ADF_OnEvent)
+    main_frame:SetScript("OnEvent", on_event)
 
     --주기적으로 Callback
-    C_Timer.NewTicker(0.2, OnUpdate);
-    UpdateAuras("target");
-    UpdateAuras("player");
+    C_Timer.NewTicker(0.2, on_update);
+    update_auras("target");
+    update_auras("player");
 end
 
-C_Timer.After(1, ADF_Init);
+C_Timer.After(1, init);
