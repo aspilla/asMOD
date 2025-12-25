@@ -1,28 +1,30 @@
 ﻿local _, ns = ...;
 
-local ADBMT_Font = STANDARD_TEXT_FONT;
-local ADBMT_CoolFontSize = 15;
-local ADBMT_NameFontSize = 12;
-local ADBMT_FontOutline = "THICKOUTLINE";
-local ADBMT_MaxButtons = 3;
-local ADBMT_X = 200;
-local ADBMT_Y = 50;
+local configs = {
+	font = STANDARD_TEXT_FONT,
+	coolfontsize = 15,
+	namefontsize = 12,
+	fontoutline = "THICKOUTLINE",
+	maxshow = 3,
+	xpoint = 200,
+	ypoint = 50,
+}
 -- 설정 끝
 
-local function initPosition()
+local function init_position()
 	C_Timer.After(2, ns.SetupOptionPanels);
 end
 
-local function asDBMTimer_OnEvent(self, event, arg1, ...)
+local function on_event(self, event, arg1, ...)
 	if event == "ADDON_LOADED" and arg1 == "asDBMTimer" then
-		initPosition();
+		init_position();
 	end
 end
 
 
 local function setupUI()
 	ns.asDBMTimer = CreateFrame("FRAME", nil, UIParent)
-	ns.asDBMTimer:SetPoint("CENTER", UIParent, "CENTER", ADBMT_X, ADBMT_Y)
+	ns.asDBMTimer:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
 	ns.asDBMTimer:SetWidth(100)
 	ns.asDBMTimer:SetHeight(100)
 	ns.asDBMTimer:SetMovable(true);
@@ -39,7 +41,7 @@ local function setupUI()
 	ns.asDBMTimer.tex:SetAlpha(0.5);
 	ns.asDBMTimer.tex:Hide();
 	ns.asDBMTimer:Show();
-	ns.asDBMTimer:SetScript("OnEvent", asDBMTimer_OnEvent);
+	ns.asDBMTimer:SetScript("OnEvent", on_event);
 	ns.asDBMTimer:RegisterEvent("ADDON_LOADED");
 
 	ns.asDBMTimer:SetScript("OnDragStart", function(self)
@@ -53,7 +55,7 @@ local function setupUI()
 
 	ns.asDBMTimer.buttons = {};
 
-	for i = 1, ADBMT_MaxButtons do
+	for i = 1, configs.maxshow do
 		ns.asDBMTimer.buttons[i] = CreateFrame("Button", nil, ns.asDBMTimer, "asDBMTimerFrameTemplate");
 		local button = ns.asDBMTimer.buttons[i];
 		button:SetWidth(ns.options.Size);
@@ -72,11 +74,11 @@ local function setupUI()
 			button:SetPoint("RIGHT", ns.asDBMTimer.buttons[i - 1], "LEFT", -1, 0);
 		end
 		button.cooltext = button:CreateFontString(nil, "OVERLAY");
-		button.cooltext:SetFont(ADBMT_Font, ADBMT_CoolFontSize, ADBMT_FontOutline)
+		button.cooltext:SetFont(configs.font, configs.coolfontsize, configs.fontoutline)
 		button.cooltext:SetPoint("CENTER", button, "CENTER", 0, 0);
 
 		button.text = button:CreateFontString(nil, "OVERLAY");
-		button.text:SetFont(ADBMT_Font, ADBMT_NameFontSize, ADBMT_FontOutline)
+		button.text:SetFont(configs.font, configs.namefontsize, configs.fontoutline)
 		button.text:SetPoint("TOP", button, "BOTTOM", 0, -1);
 		button.text:SetWidth(ns.options.Size);
 		button:EnableMouse(false);
@@ -106,15 +108,15 @@ local function checkList()
 				button:Show();
 				idx = idx + 1;
 
-				if idx > ADBMT_MaxButtons then
+				if idx > configs.maxshow then
 					break;
 				end
 			end
 		end
 	end
 
-	for i = idx, ADBMT_MaxButtons do
-		local button = ns.asDBMTimer.buttons[i];		
+	for i = idx, configs.maxshow do
+		local button = ns.asDBMTimer.buttons[i];
 		button:Hide();
 	end
 end
