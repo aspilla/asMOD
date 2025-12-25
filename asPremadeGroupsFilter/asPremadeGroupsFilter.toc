@@ -1,8 +1,8 @@
 ﻿## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rPremadeGroupsFilter
-## Notes: Improving premade group finder by showing class icon and color.
-## Version : 250719
+## Notes: Displays additional information in the Mythic+/Raid search window, such as specialization, party leader, and the leader's Mythic+ score.
+## Version : 251225
 ## SavedVariablesPerCharacter: APMGF_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

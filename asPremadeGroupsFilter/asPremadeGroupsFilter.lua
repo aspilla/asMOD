@@ -1,6 +1,6 @@
 local _, ns = ...;
 
-local function getIndex(values, val)
+local function get_index(values, val)
     local index = {};
 
     for k, v in pairs(values) do
@@ -17,7 +17,7 @@ roleicons["TANK"] = CreateAtlasMarkup("roleicon-tiny-tank", 16, 16, 0, 0);
 roleicons["DAMAGER"] = CreateAtlasMarkup("roleicon-tiny-dps", 16, 16, 0, 0);
 roleicons["HEALER"] = CreateAtlasMarkup("roleicon-tiny-healer", 16, 16, 0, 0);
 
-local function SearchEntryUpdate(entry, ...)
+local function update_searchentry(entry, ...)
     if (not LFGListFrame.SearchPanel:IsShown()) then
         return;
     end
@@ -61,7 +61,7 @@ local function SearchEntryUpdate(entry, ...)
 
         for i = 1, numMembers do
             local role, class, classLocalized, specLocalized, isLeader = C_LFGList.GetSearchResultMemberInfo(resultID, i);
-            local orderIndex = getIndex(LFG_LIST_GROUP_DATA_ROLE_ORDER, role);
+            local orderIndex = get_index(LFG_LIST_GROUP_DATA_ROLE_ORDER, role);
             table.insert(orderIndexes, { orderIndex, class, specLocalized, role, isLeader });
         end
 
@@ -233,7 +233,7 @@ local function SearchEntryUpdate(entry, ...)
     end
 end
 
-local function initSpec()
+local function inin_specs()
     for i = 1, 2000 do
         local id, name, description, icon, _, class = GetSpecializationInfoByID(i)
         if name and class and icon then
@@ -243,21 +243,5 @@ local function initSpec()
 end
 
 ns.SetupOptionPanels();
-hooksecurefunc("LFGListSearchEntry_Update", SearchEntryUpdate);
-initSpec();
-
---지원서 유지 기능 오류가 많아서 일단 끈다
---[[
-function asLFGListApplicationDialog_Show(self, resultID)
-	local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID);
-	self.resultID = resultID;
-	self.activityID = searchResultInfo.activityID;
-	LFGListApplicationDialog_UpdateRoles(self);
-	StaticPopupSpecial_Show(self);
-end
-
-
-if ns.options.KeepingApplicationText then
-    LFGListApplicationDialog_Show = asLFGListApplicationDialog_Show;
-end
-]]
+hooksecurefunc("LFGListSearchEntry_Update", update_searchentry);
+inin_specs();
