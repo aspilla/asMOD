@@ -1,15 +1,12 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\Blizzard_SharedXML\UI.xsd">
-	<Frame name="asActiveAlert2FrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel="1000">
+	<Frame name="asActiveAlertFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel="1000">
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
 				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asActiveAlert\border.tga"/>								
-			</Layer>
-			<Layer level="OVERLAY">				
-				<FontString name="$parentCount" parentKey="count" justifyH="RIGHT"/>					
 			</Layer>
 		</Layers>
 		<Frames>

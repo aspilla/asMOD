@@ -84,26 +84,9 @@ local function CreatPrivateFrames(parent)
     return;
 end
 
-local AuraFilters =
-{
-    Helpful = "HELPFUL",
-    Harmful = "HARMFUL",
-    Raid = "RAID",
-    IncludeNameplateOnly = "INCLUDE_NAME_PLATE_ONLY",
-    Player = "PLAYER",
-    Cancelable = "CANCELABLE",
-    NotCancelable = "NOT_CANCELABLE",
-    Maw = "MAW",
-};
-
-local function CreateFilterString(...)
-    return table.concat({ ... }, '|');
-end
-
-
 local filters = {}
-filters["target"] = CreateFilterString(AuraFilters.Harmful, AuraFilters.Player);
-filters["player"] = CreateFilterString(AuraFilters.Harmful);
+filters["target"] = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
+filters["player"] = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
 
 local activeDebuffs = {};
 

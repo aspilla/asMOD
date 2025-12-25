@@ -69,9 +69,6 @@ local function ASBR_Update()
 	ASBR_CoolButtons.count:Show();
 	ASBR_CoolButtons.icon:SetDesaturated(false);
 
-
-
-
 	if spellChargeInfo then
 		ASBR_CoolButtons.cooldown:Show();
 		asCooldownFrame_Set(ASBR_CoolButtons.cooldown, spellChargeInfo.cooldownStartTime,

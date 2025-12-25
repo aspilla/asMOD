@@ -80,30 +80,9 @@ local function setColoronStatusBar(asframe, color)
         return;
     end
 
-
-
-    asframe.BarColor:SetVertexColor(color.r, color.g, color.b);
-    --healthbar:SetStatusBarTexture(asframe.BarColor);
+    asframe.BarColor:SetVertexColor(color.r, color.g, color.b);    
     asframe.BarColor:Show();
 end
-
-local AuraFilters =
-{
-    Helpful = "HELPFUL",
-    Harmful = "HARMFUL",
-    Raid = "RAID",
-    IncludeNameplateOnly = "INCLUDE_NAME_PLATE_ONLY",
-    Player = "PLAYER",
-    Cancelable = "CANCELABLE",
-    NotCancelable = "NOT_CANCELABLE",
-    Maw = "MAW",
-};
-
-local function CreateFilterString(...)
-    return table.concat({ ... }, '|');
-end
-
-local filter = CreateFilterString(AuraFilters.Harmful, AuraFilters.Player);
 
 local function scanauralist(list)
     local count = 0;
@@ -220,8 +199,7 @@ local function updateHealthbarColor(asframe)
 
     if color then
         setColoronStatusBar(asframe, color);
-    else
-        --healthBar:SetStatusBarTexture(asframe.orginaltexture);
+    else        
         asframe.BarColor:Hide();
     end
 
@@ -404,7 +382,8 @@ local function addNamePlate(namePlateFrameBase)
     local previousTexture = healthbar:GetStatusBarTexture();
     asframe.BarColor:SetParent(healthbar);
     asframe.BarColor:ClearAllPoints();
-    asframe.BarColor:SetAllPoints(previousTexture);
+    asframe.BarColor:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
+    asframe.BarColor:SetPoint("BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
     asframe.BarColor:SetVertexColor(previousTexture:GetVertexColor());
     asframe.BarColor:Hide();
 

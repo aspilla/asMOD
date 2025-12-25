@@ -2,12 +2,6 @@
 local ABF;
 local ABF_TARGET_BUFF;
 
-local function CreateFilterString(...)
-	return table.concat({ ... }, '|');
-end
-
---local filter = CreateFilterString(AuraUtil.AuraFilters.Helpful);
-
 local function asCooldownFrame_Clear(self)
 	self:Clear();
 end
@@ -69,19 +63,23 @@ local function UpdateAuraFrames(unit, auraList)
 	end
 end
 
+local filters = {
+	default = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player),
+	helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful),
+}
+
 local function UpdateAuras(unit)
 	local maxscancount = ns.ABF_MAX_BUFF_SHOW;
-	local filter = CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player);
+	local filter = filters.default;
 
 	if not UnitAffectingCombat("player") then
 		maxscancount = ns.ABF_TARGET_MAX_BUFF_SHOW;
-		filter = CreateFilterString(AuraUtil.AuraFilters.Helpful);
+		filter = filters.helpful;
 	end	
 
 	if UnitCanAttack("player", unit) then
-		filter = CreateFilterString(AuraUtil.AuraFilters.Helpful);
+		filter = filters.helpful;
 	end
-
 
 	local activeBuff = C_UnitAuras.GetUnitAuras(unit, filter, maxscancount);
 	UpdateAuraFrames(unit, activeBuff);

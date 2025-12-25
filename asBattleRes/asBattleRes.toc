@@ -1,7 +1,7 @@
 ## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rBattleRes
-## Notes: Track the battle resurrection cooldown
+## Notes: Displays the number of available charges and cooldown of the battle resurrection spell
 ## Version : 251214
 ## SavedVariablesPerCharacter: ASBR_Options, ASBR_Position 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

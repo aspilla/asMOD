@@ -95,21 +95,6 @@ local UnitFrameDebuffType = EnumUtil.MakeEnum("NonBossDebuff", "NonBossRaidDebuf
 
 local UnitFrameBuffType = EnumUtil.MakeEnum("Normal");
 
-local AuraFilters = {
-    Helpful = "HELPFUL",
-    Harmful = "HARMFUL",
-    Raid = "RAID",
-    IncludeNameplateOnly = "INCLUDE_NAME_PLATE_ONLY",
-    Player = "PLAYER",
-    Cancelable = "CANCELABLE",
-    NotCancelable = "NOT_CANCELABLE",
-    Maw = "MAW"
-};
-
-local function CreateFilterString(...)
-    return table.concat({ ... }, '|');
-end
-
 local function DefaultAuraCompare(a, b)
     local aFromPlayer = (a.sourceUnit ~= nil) and UnitIsUnit("player", a.sourceUnit) or false;
     local bFromPlayer = (b.sourceUnit ~= nil) and UnitIsUnit("player", b.sourceUnit) or false;
@@ -180,9 +165,9 @@ local function ForEachAura(unit, filter, maxCount, func, usePackedAura)
 end
 
 
-ns.debufffilter = CreateFilterString(AuraFilters.Harmful);
-ns.bufffilter = CreateFilterString(AuraFilters.Helpful);
-ns.aurafilter = CreateFilterString(AuraFilters.Harmful, AuraFilters.Helpful);
+ns.debufffilter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
+ns.bufffilter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful);
+ns.aurafilter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Helpful);
 
 local cachedVisualizationInfo = {};
 ns.hasValidPlayer = false;
@@ -449,7 +434,7 @@ local function ACRB_UtilSetDebuff(frame, aura, currtime)
     local hidecool = true;
     local coolcolor = { r = 0.8, g = 0.8, b = 1 };
 
-    frame.filter = aura.isRaid and AuraFilters.Raid or nil;
+    frame.filter = aura.isRaid and AuraUtil.AuraFilters.Raid or nil;
     frame.auraInstanceID = aura.auraInstanceID;
 
     if (aura.spellId ~= data.spellId) then

@@ -1,23 +1,5 @@
 local _, ns = ...;
 
-local AuraFilters =
-{
-    Helpful = "HELPFUL",
-    Harmful = "HARMFUL",
-    Raid = "RAID",
-    IncludeNameplateOnly = "INCLUDE_NAME_PLATE_ONLY",
-    Player = "PLAYER",
-    Cancelable = "CANCELABLE",
-    NotCancelable = "NOT_CANCELABLE",
-    Maw = "MAW",
-};
-
-
-local function CreateFilterString(...)
-    return table.concat({ ... }, '|');
-end
-
-
 local function asCooldownFrame_Clear(self)
     self:Clear();
 end
@@ -119,9 +101,9 @@ local function UpdateDebuffFrames(frame, auraList)
     end
 end
 
-local bufffilter = CreateFilterString(AuraFilters.Helpful);
-local debufffilter_attack = CreateFilterString(AuraFilters.Harmful, AuraFilters.Player);
-local debufffilter_helpful = CreateFilterString(AuraFilters.Harmful);
+local bufffilter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful);
+local debufffilter_attack = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
+local debufffilter_helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
 
 function ns.UpdateAuras(frame)
     local unit = frame.unit; 

@@ -74,24 +74,7 @@ local function SetDebuff(frame, unit, aura, color)
     frame.border:SetVertexColor(color.r, color.g, color.b);
 end
 
-local AuraFilters =
-{
-    Helpful = "HELPFUL",
-    Harmful = "HARMFUL",
-    Raid = "RAID",
-    IncludeNameplateOnly = "INCLUDE_NAME_PLATE_ONLY",
-    Player = "PLAYER",
-    Cancelable = "CANCELABLE",
-    NotCancelable = "NOT_CANCELABLE",
-    Maw = "MAW",
-};
-
-
-local function CreateFilterString(...)
-    return table.concat({ ... }, '|');
-end
-
-local filter = CreateFilterString(AuraFilters.Harmful, AuraFilters.Player);
+local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
 local debuffinfo = {
 	[1] = DEBUFF_TYPE_MAGIC_COLOR,
 	[2] = DEBUFF_TYPE_CURSE_COLOR,

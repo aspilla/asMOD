@@ -1,75 +1,67 @@
-﻿local ASAA_SIZE = 26;
+﻿local configs = {
+	size = 26,
+	xpoint = -100,
+	ypoint = 0,
+	alpha = 0.9,
+	fontsize = 10,
+	blacklist = {
+		--[115356] = true, --고술 바람의 일격
+		--[455055] = true, --일거리 시작
+	},
+}
 
-local ASAA_CoolButtons_X = -100 -- 쿨 List 위치
-local ASAA_CoolButtons_Y = 0
-local ASAA_Alpha = 0.9
-local ASAA_CooldownFontSize = 10
+local main_frame = CreateFrame("Frame", nil, UIParent);
+local spell_list = {};
 
--- 옵션끝
-
-local ASAA_CoolButtons;
-local ASAA_SpellList = {};
-
--- 원치 않는 발동 알림은 안보이게
-local ASAA_BackList = {
-	--[115356] = true, --고술 바람의 일격
-	--[455055] = true, --일거리 시작
-};
-
-local asGetSpellInfo = function(spellID)
-	if not spellID then
+local function get_spellicons(spellid)
+	if not spellid then
 		return nil;
 	end
 
+	local or_spellid = C_Spell.GetOverrideSpell(spellid)
 
-	local ospellID = C_Spell.GetOverrideSpell(spellID)
-
-	if ospellID then
-		spellID = ospellID;
+	if or_spellid then
+		spellid = or_spellid;
 	end
 
-
-
-	local spellInfo = C_Spell.GetSpellInfo(spellID);
-	if spellInfo then
-		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
-			spellInfo.spellID, spellInfo.originalIconID;
+	local info = C_Spell.GetSpellInfo(spellid);
+	if info then
+		return info.iconID, info.originalIconID;
 	end
 end
 
-local asGetSpellCooldown = function(spellID)
-	if not spellID then
+local function get_spellcooldown(spellid)
+	if not spellid then
 		return nil;
 	end
 
-	local ospellID = C_Spell.GetOverrideSpell(spellID)
+	local or_spellid = C_Spell.GetOverrideSpell(spellid)
 
-	if ospellID then
-		spellID = ospellID;
+	if or_spellid then
+		spellid = or_spellid;
 	end
 
-	local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
-	if spellCooldownInfo then
-		return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled,
-			spellCooldownInfo.modRate;
+	local info = C_Spell.GetSpellCooldown(spellid);
+	if info then
+		return info.startTime, info.duration
 	end
 end
 
-local function asCooldownFrame_Clear(self)
+local function clear_cooldownframe(self)
 	self:Clear();
 end
 
-local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
-	if enable  then
+local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
+	if enable then
 		self:SetDrawEdge(forceShowDrawEdge);
 		self:SetCooldown(start, duration, modRate);
 	else
-		asCooldownFrame_Clear(self);
+		clear_cooldownframe(self);
 	end
 end
 
-local function ASAA_UpdateCoolAnchor(frames, index, anchorIndex, size, offsetX, right, parent)
-	local cool = frames[index];
+local function update_anchor(frames, index, size, offsetX, right, parent)
+	local frame = frames[index];
 	local point1 = "TOPLEFT";
 	local point2 = "BOTTOMLEFT";
 	local point3 = "TOPRIGHT";
@@ -82,103 +74,82 @@ local function ASAA_UpdateCoolAnchor(frames, index, anchorIndex, size, offsetX, 
 	end
 
 	if (index == 1) then
-		cool:SetPoint(point1, parent, point2, 0, 0);
+		frame:SetPoint(point1, parent, point2, 0, 0);
 	else
-		cool:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
+		frame:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
 	end
 
-	-- Resize
-	cool:SetWidth(size);
-	cool:SetHeight(size * 0.9);
+	frame:SetWidth(size);
+	frame:SetHeight(size * 0.9);
 end
 
-local function ASAA_UpdateCooldown()
-	local numCools = 1;
-	local frame;
-	local frameIcon, frameCooldown;
-	local name, icon, duration, start, enable;	
-	local parent;
+local function update_spells()
+	local frame_idx = 1;
+	local parent = main_frame;
 
-	parent = ASAA_CoolButtons;
+	for _, id in pairs(spell_list) do
+		local icon = get_spellicons(id);
+		local start, duration, _ = get_spellcooldown(id);
+		local isusable, notenoughmana = C_Spell.IsSpellUsable(id);
 
-	if parent.frames == nil then
-		parent.frames = {};
-	end
-
-	for org, id in pairs(ASAA_SpellList) do
-		name, _, icon = asGetSpellInfo(id);
-		start, duration, enable = asGetSpellCooldown(id);
-		local isUsable, notEnoughMana = C_Spell.IsSpellUsable(id);
-
-		--if (icon and enable > 0) then
 		if (icon) then
-			frame = parent.frames[numCools];
+			local frame = parent.frames[frame_idx];
 
 			if (not frame) then
-				parent.frames[numCools] = CreateFrame("Button", nil, parent, "asActiveAlert2FrameTemplate");
-				frame = parent.frames[numCools];
+				parent.frames[frame_idx] = CreateFrame("Button", nil, parent, "asActiveAlertFrameTemplate");
+				frame = parent.frames[frame_idx];
 				frame:EnableMouse(false);
 
 				for _, r in next, { frame.cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, ASAA_CooldownFontSize, "OUTLINE");
+						r:SetFont(STANDARD_TEXT_FONT, configs.fontsize, "OUTLINE");
 						r:SetDrawLayer("OVERLAY");
 						break
 					end
 				end
 
 				frame.icon:SetTexCoord(.08, .92, .08, .92)
+				frame.icon:SetAlpha(configs.alpha);
 				frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92)
 				frame.border:SetVertexColor(0, 0, 0);
+				frame.cooldown:Show();
+
+				frame:ClearAllPoints();
+				update_anchor(parent.frames, frame_idx, configs.size, 2, false, parent);
 			end
 
-			-- set the icon
-			frameIcon = frame.icon;
-			frameIcon:SetTexture(icon);
-			frameIcon:SetAlpha(ASAA_Alpha);
-			frame:ClearAllPoints();
+			frame.icon:SetTexture(icon);
+
+			if (isusable) then
+				frame.icon:SetVertexColor(1.0, 1.0, 1.0);
+			elseif (notenoughmana) then
+				frame.icon:SetVertexColor(0.5, 0.5, 1.0);
+			else
+				frame.icon:SetVertexColor(0.4, 0.4, 0.4);
+			end
+
+			set_cooldownframe(frame.cooldown, start, duration, true);
 			frame:Show();
 
-			if (isUsable) then
-				frameIcon:SetVertexColor(1.0, 1.0, 1.0);
-			elseif (notEnoughMana) then
-				frameIcon:SetVertexColor(0.5, 0.5, 1.0);
-			else
-				frameIcon:SetVertexColor(0.4, 0.4, 0.4);
-			end
-
-			frameCooldown = frame.cooldown;
-			frameCooldown:Show();
-			asCooldownFrame_Set(frameCooldown, start, duration, true);
-			frameCooldown:SetHideCountdownNumbers(false);
-
-			numCools = numCools + 1;
+			frame_idx = frame_idx + 1;
 		end
 	end
 
-	for i = 1, numCools - 1 do
-		-- anchor the current aura
-		ASAA_UpdateCoolAnchor(parent.frames, i, i - 1, ASAA_SIZE, 2, false, parent);
-	end
-
-	-- 이후 전에 보였던 frame을 지운다.
-	for i = numCools, #parent.frames do
-		frame = parent.frames[i];
+	for i = frame_idx, #parent.frames do
+		local frame = parent.frames[i];
 
 		if (frame) then
 			frame:Hide();
 		end
 	end
-
-	--prev_cnt = numCools;
 end
 
-local function ASAA_Insert(id)
+local function insert_spell(id)
 	if not id then
 		return;
 	end
 
-	if ASAA_BackList and ASAA_BackList[id] then
+	if configs.blacklist and configs.blacklist[id] then
 		return;
 	end
 
@@ -186,72 +157,65 @@ local function ASAA_Insert(id)
 		return;
 	end
 
-	local name, _, icon, _, _, _, _, orgicon = asGetSpellInfo(id);
+	local _, org_icon = get_spellicons(id);
 
-	if name and icon and orgicon then
-		if ASAA_SpellList[orgicon] then
+	if org_icon then
+		if spell_list[org_icon] then
 			return;
 		end
 
-		ASAA_SpellList[orgicon] = id;
+		spell_list[org_icon] = id;
 
-		ASAA_UpdateCooldown();
+		update_spells();
 	end
 end
 
-local function ASAA_Delete(id)
+local function delete_spell(id)
 	if id then
-		local name, _, icon, _, _, _, _, orgicon = asGetSpellInfo(id);
-		for spellorg, spellid in pairs(ASAA_SpellList) do
-			if spellid == id or spellorg == orgicon then
-				ASAA_SpellList[spellorg] = nil;
+		local _, org_icon = get_spellicons(id);
+		for previcon, spellid in pairs(spell_list) do
+			if spellid == id or previcon == org_icon then
+				spell_list[previcon] = nil;
 			end
 		end
 	else
-		ASAA_SpellList = {};
+		spell_list = {};
 	end
-	ASAA_UpdateCooldown();
+	update_spells();
 end
 
-local function ASAA_OnEvent(self, event, arg1, arg2, arg3)
+local function on_event(self, event, arg1)
 	if event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
-		ASAA_Insert(arg1)
+		insert_spell(arg1)
 	elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
-		ASAA_Delete(arg1)
+		delete_spell(arg1)
 	elseif event == "SPELL_UPDATE_COOLDOWN" then
-		ASAA_UpdateCooldown();
+		update_spells();
 	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and (arg1 == "player" or arg1 == "pet") then
-		ASAA_UpdateCooldown();
+		update_spells();
 	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
-		ASAA_Delete()
+		delete_spell()
 	end
 end
 
-local ASAA_mainframe = CreateFrame("Frame")
 
-ASAA_mainframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
-ASAA_mainframe:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
-ASAA_mainframe:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-ASAA_mainframe:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-ASAA_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-ASAA_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
-
-
-
-function ASAA_mainframe:ASAA_Init()
+do
+	main_frame:SetPoint("CENTER", configs.xpoint, configs.ypoint);
+	main_frame:SetWidth(1);
+	main_frame:SetHeight(1);
+	main_frame:SetScale(1);
+	main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
+	main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
+	main_frame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+	main_frame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+	main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+	main_frame:SetScript("OnEvent", on_event);
+	main_frame:Show();
+	main_frame.frames = {};
 	C_AddOns.LoadAddOn("asMOD");
-	ASAA_CoolButtons = CreateFrame("Frame", nil, UIParent)
-	ASAA_CoolButtons:SetPoint("CENTER", ASAA_CoolButtons_X, ASAA_CoolButtons_Y)
-	ASAA_CoolButtons:SetWidth(1)
-	ASAA_CoolButtons:SetHeight(1)
-	ASAA_CoolButtons:SetScale(1)
 
 	if asMOD_setupFrame then
-		asMOD_setupFrame(ASAA_CoolButtons, "asActiveAlert");
+		asMOD_setupFrame(main_frame, "asActiveAlert");
 	end
-
-	ASAA_CoolButtons:Show()
 end
-
-ASAA_mainframe:ASAA_Init()
-ASAA_mainframe:SetScript("OnEvent", ASAA_OnEvent)

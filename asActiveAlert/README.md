@@ -1,28 +1,28 @@
 # asActiveAlert (Mid Night)
 
-This addon provides visual alerts by displaying spell icons to the left of your character when they become active or meet special conditions (e.g., procs), indicated by the glowing border on your action bar.
+Displays the icon of a spell to the left of the character when the spell has a glowing border.
 
 ![asActiveAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asActiveAlert.png?raw=true)
 
 ## Key Features
 
-*  **Spell Activation Alerts**:
-    *   Displays the icon of a spell to the left of your character when it becomes usable or is highlighted by an effect (when the glowing border appears on the action bar icon).
-    *   The spell list is not editable.
-    *   Displays cooldown text on the icon.    
+*  **Spell Activation Alert**:
+    *   Displays the spell icon to the left of the character when a spell becomes available or is highlighted by a specific effect (when a glowing effect appears on the icon border in-game).
+    *   Spell list cannot be edited.
+    *   Displays cooldowns.
 
-## Configuration
+## Settings
 
-There are no in-game configuration options.
+There are no separate settings.
 
 *  **Positioning**:
-    *   If the `asMOD` addon is installed, you can configure the position using the `/asConfig` command provided by `asMOD`.
+    *   If the `asMOD` addon is installed, configuration is possible via the `/asConfig` command of `asMOD`.
 
 ---
 
 # asActiveAlert (한밤)
 
-주문이 활성화되거나 특별한 조건(예: 발동 효과)을 만족했을 때 (스킬바에 빤찍이는 테두리가 표시 될 경우) 해당 주문의 아이콘을 케릭 좌측 표시하여 시각적으로 알려주는 애드온
+주문에 빤찍이는 테두리가 표시 될 경우, 해당 주문의 아이콘을 케릭 좌측 표시
 
 ![asActiveAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asActiveAlert.png?raw=true)
 
@@ -31,7 +31,7 @@ There are no in-game configuration options.
 *  **주문 발동 알림**:
     *   주문이 사용 가능해지거나 특정 효과로 인해 강조될 때 (게임 내에서 아이콘 테두리에 빛나는 효과가 나타나는 경우) 해당 주문의 아이콘을 케릭 좌측에 표시
     *   주문 목록 편집은 불가
-    *   재사용 대기시간 표시   
+    *   재사용 대기시간 표시  
 
 ## 설정
 

@@ -27,8 +27,10 @@ Displays the player's primary resources (Energy, Mana, Rage, etc.) and class res
 * **Priest / Warrior / Demon Hunter / Hunter**: 
 
 ## Configuration
+There are no separate settings.
 
-If the **asMOD** addon is installed, you can adjust the position and settings of **asPowerBar** using the following command:`/asConfig`
+*  **Positioning**:
+    *   If the `asMOD` addon is installed, configuration is possible via the `/asConfig` command of `asMOD`.
 
 ---
 
@@ -61,4 +63,7 @@ If the **asMOD** addon is installed, you can adjust the position and settings of
 
 
 ## 설정 (Configuration)
-*   **위치 및 기본 설정:** `asMOD` 애드온이 설치되어 있다면, /asconfig 명령어를 통해 asPowerBar의 위치 등을 조절할 수 있습니다.
+별도의 설정은 없음
+
+*  **위치 이동**:
+    *   `asMOD` 애드온이 설치되어 있는 경우, `asMOD`의 `/asConfig` 명령어를 통해 설정 가능
