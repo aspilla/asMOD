@@ -10,14 +10,14 @@ Nameplate Enhancement Addon
 ## Nameplate Color Change Features
 Displayed in the following priority:
 
-  * **Blue:** High threat level (DPS/Healer)
-  * **Light Red:** Low threat level (Tank)
-  * **Light Green:** Casting interruptible spell
-  * **Gray:** Casting uninterruptible spell
-  * **Light Purple:** Has my debuff
-  * **Light Blue:** Normal threat level
-  * **Green:** Boss mob (Higher level (e.g. 91) or ?? level mob)
-  * **Ocher:** Quest mob (if not in party).
+  * 🔵 **Blue:** High threat level (DPS/Healer)
+  * 🔴 **Light Red:** Low threat level (Tank)
+  * 🟢 **Light Green:** Casting interruptible spell
+  * 🩶 **Gray:** Casting uninterruptible spell
+  * 🟣 **Light Purple:** Has my debuff
+  * 💠 **Light Blue:** Normal threat level
+  * 🟢 **Green:** Boss mob (Higher level (e.g. 91) or ?? level mob)
+  * 🟤 **Ocher:** Quest mob (if not in party).
   
 ## Other Features
 
@@ -42,14 +42,14 @@ Displayed in the following priority:
 ## 이름표 색상 변경 기능
 다음의 우선 순위로 표시 됨
 
-  * **파란색:** 높은 위협 수준 (딜러/힐러)  
-  * **밝은빨간색:** 낮은 위협 수준 (탱커)
-  * **연녹색:** 차단 가능한 주문을 시전
-  * **회색:** 차단 불가 주문을 시전  
-  * **밝은보라색:** 내 디버프가 있음
-  * **하늘색:** 일반 위협 수준
-  * **녹색:** 보스몹 (레벨에 높거(예 91렙)나 ?? 레벨몹)
-  * **황토색:** 퀘스트 몹 (파티가 아닌경우).
+  * 🔵 **파란색:** 높은 위협 수준 (딜러/힐러)  
+  * 🔴 **밝은빨간색:** 낮은 위협 수준 (탱커)
+  * 🟢 **연녹색:** 차단 가능한 주문을 시전
+  * 🩶 **회색:** 차단 불가 주문을 시전  
+  * 🟣 **밝은보라색:** 내 디버프가 있음
+  * 💠 **하늘색:** 일반 위협 수준
+  * 🟢 **녹색:** 보스몹 (레벨에 높거(예 91렙)나 ?? 레벨몹)
+  * 🟤 **황토색:** 퀘스트 몹 (파티가 아닌경우).
   
 ## 기타 기능
 
