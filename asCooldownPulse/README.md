@@ -1,3 +1,26 @@
+# asCooldownPulse (Mid Night)
+
+Displays cooldowns for trinkets, racial traits, healthstones, and potions.
+
+![asCooldownPulse](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCooldownPulse_MN.jpg?raw=true)
+
+## Main Features
+
+*   **Trinket Cooldown Display (Right)**: Displays trinket cooldown when a usable trinket is equipped.
+*   **Racial Trait Cooldown Display (Right)**:
+*   **Healthstone Cooldown Display (Left)**:
+*   **Combat Potion Cooldown Display (Left)**:
+*   **Survival Potion Cooldown Display (Left)**:
+
+## Settings
+
+There are no separate settings.
+
+*  **Positioning**:
+    *   If the `asMOD` addon is installed, configuration is possible via the `/asConfig` command of `asMOD`.
+
+---
+
 # asCooldownPulse (한밤)
 
 장신구, 종특, 생석, 물약 쿨 표시

@@ -1,9 +1,8 @@
 ﻿## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCooldownPulse
-## Notes: Simple cooldown tracker
-## Version : 251207
-## SavedVariablesPerCharacter: ACDP_Options 
+## Notes: Displays cooldowns for trinkets, racial traits, healthstones, and potions.
+## Version : 251225
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asCooldownPulse.xml
