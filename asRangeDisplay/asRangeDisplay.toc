@@ -1,8 +1,9 @@
 ## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rRangeDisplay
-## Notes: Displays Target/Focus/Mouseover distance.
-## Version : 251212
+## Notes: Displays the distance to your Target, Focus, and Mouseover units.
+## Notes-koKR: 대상/주시/마우스오버 거리를 표시
+## Version : 251225
 ## SavedVariablesPerCharacter: ARD_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

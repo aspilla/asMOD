@@ -1,7 +1,5 @@
 
-local GetItemInfo = C_Item and C_Item.GetItemInfo;
-
-local onEvent = function(self)
+local function on_event(self)
 	local c = C_Container;
 
 	for bag = 0, 4 do
@@ -10,7 +8,7 @@ local onEvent = function(self)
 				local link = c.GetContainerItemLink(bag, slot)
 
 				if link then
-					local itemName, itemLink, itemRarity = GetItemInfo(link)
+					local itemName, itemLink, itemRarity = C_Item.GetItemInfo(link)
 
 					if itemRarity == 0 then
 						c.UseContainerItem(bag, slot)
@@ -21,6 +19,6 @@ local onEvent = function(self)
 	end
 end
 
-local asScavenger = CreateFrame("Frame", nil, UIParent);
-asScavenger:SetScript("OnEvent", onEvent);
-asScavenger:RegisterEvent("MERCHANT_SHOW");
+local main_frame = CreateFrame("Frame", nil, UIParent);
+main_frame:SetScript("OnEvent", on_event);
+main_frame:RegisterEvent("MERCHANT_SHOW");

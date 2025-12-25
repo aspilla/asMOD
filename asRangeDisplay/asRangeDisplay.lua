@@ -1,20 +1,19 @@
-local _, ns           = ...;
--- 설정 (변경가능)
-local ARD_Font        = STANDARD_TEXT_FONT;
-local ARD_FontSize    = 16;
-local ARD_FontOutline = "THICKOUTLINE";
-local ARD_X           = 0;
-local ARD_Y           = -120;
-local ARD_Focus_X     = 365;
-local ARD_Focus_Y     = -165;
-local ARD_Mouse_X     = 50;
-local ARD_Mouse_Y     = 0;
-local ARD_UpdateRate  = 0.25 -- Update 주기
--- 설정끝
+local _, ns   = ...;
 
+local configs = {
+	font        = STANDARD_TEXT_FONT,
+	fontsize    = 16,
+	fontoutline = "THICKOUTLINE",
+	xpoint      = 0,
+	ypoint      = -120,
+	focusxpoint = 365,
+	focusypoint = -165,
+	mousexpoint = 50,
+	mouseypoint = 0,
+	updaterate  = 0.25,
+};
 
-
-local FriendItems       = {
+local friend_items = {
 	{ 37727,  5 }, -- Ruby Acorn
 	{ 63427,  6 }, -- Worgsaw
 	{ 34368,  8 }, -- Attuned Crystal Cores
@@ -32,7 +31,7 @@ local FriendItems       = {
 	{ 35278,  80 }, -- Reinforced Net
 }
 
-local HarmItems         = {
+local harm_items   = {
 	{ 37727,  5 }, -- Ruby Acorn
 	{ 63427,  6 }, -- Worgsaw
 	{ 34368,  8 }, -- Attuned Crystal Cores
@@ -51,25 +50,25 @@ local HarmItems         = {
 	{ 33119,  100 }, -- Malister's Frost Wand
 }
 
-local asGetSpellInfo    = function(spellID)
-	if not spellID then
+local function get_spellinfo(spellid)
+	if not spellid then
 		return nil;
 	end
 
-	local ospellID = C_Spell.GetOverrideSpell(spellID)
+	local or_spellid = C_Spell.GetOverrideSpell(spellid)
 
-	if ospellID then
-		spellID = ospellID;
+	if or_spellid then
+		spellid = or_spellid;
 	end
 
-	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	local spellInfo = C_Spell.GetSpellInfo(spellid);
 	if spellInfo then
 		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
 			spellInfo.spellID, spellInfo.originalIconID;
 	end
 end
 
-local asGetSpellTabInfo = function(index)
+local function get_spelltabinfo(index)
 	local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
 	if skillLineInfo then
 		return skillLineInfo.name,
@@ -83,18 +82,9 @@ local asGetSpellTabInfo = function(index)
 	end
 end
 
-local GetItemInfo       = C_Item and C_Item.GetItemInfo;
-local IsItemInRange     = C_Item and C_Item.IsItemInRange;
+local main_frame = CreateFrame("Frame", nil, UIParent);
 
-local ARD_mainframe     = CreateFrame("Frame", nil, UIParent);
---asOverlay 위에 뜨게 하기 위해 MEDIUM으로 설정
-ARD_mainframe:SetFrameStrata("MEDIUM");
-ARD_mainframe:SetFrameLevel(9000);
-local ARD_TargetRangeText;
-local ARD_MouseRangeText;
-local ARD_FocusRangeText;
-
-local function IsHelpful(unit)
+local function is_helpful(unit)
 	if UnitIsUnit("player", unit) then
 		return false;
 	else
@@ -108,28 +98,28 @@ local function IsHelpful(unit)
 	end
 end
 
-local function ARD_CheckRange(unit)
-	local itemlist = HarmItems;
+local function check_range(unit)
+	local itemlist = harm_items;
 
 	if UnitIsUnit("player", unit) then
 		return 0;
 	end
 
-	local isHelpful = IsHelpful(unit);
+	local isHelpful = is_helpful(unit);
 
 	if isHelpful then
-		itemlist = FriendItems;
+		itemlist = friend_items;
 	end
 
 	for _, v in pairs(itemlist) do
-		if GetItemInfo(v[1]) and IsItemInRange(v[1], unit) then
+		if C_Item.GetItemInfo(v[1]) and C_Item.IsItemInRange(v[1], unit) then
 			return v[2];
 		end
 	end
 	return 0;
 end
 
-local function ARD_GetRangeColor(range)
+local function get_rangecolor(range)
 	if not range then
 		return 0.9, 0.9, 0.9;
 	end
@@ -150,7 +140,7 @@ end
 local cache = {}
 local defaultrange = 40;
 
-local function scanSpells()
+local function scan_spells()
 	local localizedClass, englishClass = UnitClass("player");
 
 
@@ -164,7 +154,7 @@ local function scanSpells()
 
 
 	for tab = 1, 5 do
-		local tabName, tabTexture, tabOffset, numEntries = asGetSpellTabInfo(tab)
+		local tabName, tabTexture, tabOffset, numEntries = get_spelltabinfo(tab)
 
 		if not tabName then
 			return;
@@ -180,7 +170,7 @@ local function scanSpells()
 			local slotType, actionID, spellID = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
 			local isPassive = C_SpellBook.IsSpellBookItemPassive(i, Enum.SpellBookSpellBank.Player)
 			if not isPassive and spellID then
-				local name, rank, icon, castTime, minRange, maxRange, ID, originalIcon = asGetSpellInfo(spellID);
+				local name, rank, icon, castTime, minRange, maxRange, ID, originalIcon = get_spellinfo(spellID);
 				if maxRange and maxRange > 0 and maxRange < defaultrange then
 					tinsert(cache, { spellID, maxRange });
 				end
@@ -189,16 +179,16 @@ local function scanSpells()
 	end
 end
 
-local function updateUnitRange(unit, frame)
+local function update_unitrange(unit, frame)
 	if UnitExists(unit) then
-		if not InCombatLockdown() or not IsHelpful(unit) then
-			local range = ARD_CheckRange(unit);
+		if not InCombatLockdown() or not is_helpful(unit) then
+			local range = check_range(unit);
 			if range == 0 then
 				frame:SetText("");
 			else
 				frame:SetText(range);
 			end
-			frame:SetTextColor(ARD_GetRangeColor(range));
+			frame:SetTextColor(get_rangecolor(range));
 		else
 			local grange = 80;
 
@@ -225,87 +215,93 @@ local function updateUnitRange(unit, frame)
 			end
 
 			frame:SetText(math.floor(grange + 0.5));
-			frame:SetTextColor(ARD_GetRangeColor(grange));
+			frame:SetTextColor(get_rangecolor(grange));
 		end
 	else
 		frame:SetText("");
 	end
 end
 
-local function ARD_OnUpdateTarget()
+local function on_targetupdate()
 	if ns.options.ShowTarget then
-		updateUnitRange("target", ARD_TargetRangeText);
+		update_unitrange("target", main_frame.targettext);
 	end
 end
 
-local function ARD_OnUpdateMouse()
+local function on_mouseupdate()
 	if ns.options.ShowMouseOver then
-		updateUnitRange("mouseover", ARD_MouseRangeText);
+		update_unitrange("mouseover", main_frame.mousetext);
 	end
 end
 
-local function ARD_OnUpdateFocus()
+local function on_focusupdate()
 	if ns.options.ShowFocus then
-		updateUnitRange("focus", ARD_FocusRangeText);
+		update_unitrange("focus", main_frame.focustext);
 	end
 end
 
-local function ARD_OnMouseUpdate()
-	ARD_MouseRangeText:ClearAllPoints();
+local function on_update()
+	main_frame.mousetext:ClearAllPoints();
 	local uiScale, x, y = UIParent:GetEffectiveScale(), GetCursorPosition()
-	ARD_MouseRangeText:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x / uiScale + ARD_Mouse_X, y / uiScale + ARD_Mouse_Y);
+	main_frame.mousetext:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x / uiScale + configs.mousexpoint,
+	y / uiScale + configs.mouseypoint);
 end
 
-local function ARD_OnLoad()
-	ARD_TargetRangeText = ARD_mainframe:CreateFontString(nil, "OVERLAY")
-	ARD_TargetRangeText:SetFont(ARD_Font, ARD_FontSize, ARD_FontOutline)
-	ARD_TargetRangeText:SetPoint("CENTER", UIParent, "CENTER", ARD_X, ARD_Y);
-	ARD_TargetRangeText:SetText("");
-	ARD_TargetRangeText:Show();
+local function on_load()
 
-	ARD_MouseRangeText = ARD_mainframe:CreateFontString(nil, "OVERLAY")
-	ARD_MouseRangeText:SetFont(ARD_Font, ARD_FontSize, ARD_FontOutline)
-	ARD_MouseRangeText:SetPoint("CENTER", UIParent, "CENTER", ARD_X, ARD_Y);
-	ARD_MouseRangeText:SetText("");
-	ARD_MouseRangeText:Show();
+	--asOverlay 위에 뜨게 하기 위해 MEDIUM으로 설정
+	main_frame:SetFrameStrata("MEDIUM");
+	main_frame:SetFrameLevel(9000);
+	
+	main_frame.targettext = main_frame:CreateFontString(nil, "OVERLAY")
+	main_frame.targettext:SetFont(configs.font, configs.fontsize, configs.fontoutline)
+	main_frame.targettext:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint);
+	main_frame.targettext:SetText("");
+	main_frame.targettext:Show();
 
-	ARD_FocusRangeText = ARD_mainframe:CreateFontString(nil, "OVERLAY")
-	ARD_FocusRangeText:SetFont(ARD_Font, ARD_FontSize, ARD_FontOutline)
-	ARD_FocusRangeText:SetPoint("CENTER", UIParent, "CENTER", ARD_Focus_X, ARD_Focus_Y);
-	ARD_FocusRangeText:SetText("");
-	ARD_FocusRangeText:Show();
+	main_frame.mousetext = main_frame:CreateFontString(nil, "OVERLAY")
+	main_frame.mousetext:SetFont(configs.font, configs.fontsize, configs.fontoutline)
+	main_frame.mousetext:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint);
+	main_frame.mousetext:SetText("");
+	main_frame.mousetext:Show();
+
+	main_frame.focustext = main_frame:CreateFontString(nil, "OVERLAY")
+	main_frame.focustext:SetFont(configs.font, configs.fontsize, configs.fontoutline)
+	main_frame.focustext:SetPoint("CENTER", UIParent, "CENTER", configs.focusxpoint, configs.focusypoint);
+	main_frame.focustext:SetText("");
+	main_frame.focustext:Show();
 	local bloaded = C_AddOns.LoadAddOn("asMOD")
 
 	if bloaded and asMOD_setupFrame then
-		asMOD_setupFrame(ARD_TargetRangeText, "asRangeDisplay(Target)");
-		asMOD_setupFrame(ARD_FocusRangeText, "asRangeDisplay(Focus)");
+		asMOD_setupFrame(main_frame.targettext, "asRangeDisplay(Target)");
+		asMOD_setupFrame(main_frame.focustext, "asRangeDisplay(Focus)");
 	end
 
-	ARD_mainframe:RegisterEvent("PLAYER_TARGET_CHANGED");
-	ARD_mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED");
-	ARD_mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-	ARD_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-	ARD_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD");
-	ARD_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED");
+	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
+	main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+	main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+	main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+	main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
 end
 
 local bfirst = true;
 
-local function ARD_OnEvent(self, event, ...)
+local function on_event(self, event, ...)
 	if event == "PLAYER_TARGET_CHANGED" then
-		ARD_OnUpdateTarget();
+		on_targetupdate();
 	else
 		if bfirst then
 			bfirst = false;
 			ns.SetupOptionPanels();
 		end
-		scanSpells();
+		scan_spells();
 	end
 end
 
-ARD_mainframe:SetScript("OnEvent", ARD_OnEvent);
-ARD_OnLoad();
-C_Timer.NewTicker(ARD_UpdateRate, ARD_OnUpdateTarget);
-C_Timer.NewTicker(ARD_UpdateRate, ARD_OnUpdateMouse);
-C_Timer.NewTicker(ARD_UpdateRate, ARD_OnUpdateFocus);
-C_Timer.NewTicker(0.05, ARD_OnMouseUpdate);
+main_frame:SetScript("OnEvent", on_event);
+on_load();
+C_Timer.NewTicker(configs.updaterate, on_targetupdate);
+C_Timer.NewTicker(configs.updaterate, on_mouseupdate);
+C_Timer.NewTicker(configs.updaterate, on_focusupdate);
+C_Timer.NewTicker(0.05, on_update);
