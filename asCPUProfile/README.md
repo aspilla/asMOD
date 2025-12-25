@@ -1,7 +1,7 @@
 #   asCPUProfile (Mid Night)
 
 ## Introduction
-An addon to check addon latency and performance.
+Check addon latency and performance.
 
 ## Displayed Information
 
