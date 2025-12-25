@@ -2,6 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCombatTimer
 ## Notes: Displays the elapsed time after combat starts.
+## Notes-koKR:전투 시작 후 경과 시간을 표시
 ## Version : 251225
 ## SavedVariablesPerCharacter: ASTM_Options, ASTM_Position
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

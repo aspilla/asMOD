@@ -2,6 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rFixChat
 ## Notes: Switch chat channels with the Tab key, display a window for copying URLs when clicked.
+## Notes-koKR:Tab 키로 채팅 채널 전환, URL 클릭시 복사 가능 창 표시
 ## Version : 251107
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

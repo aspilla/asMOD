@@ -2,6 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rMisdirection
 ## Notes: Automatically creates macros for Misdirection, Tricks of the Trade, Cauterizing Flame, Power Infusion, and Assist to support appropriate party members.
+## Notes-koKR:눈속임, 속임수 거래, 소작의 불길, 마력 주입, 지원 매크로를 적정 파티원 대상을 지원하도록 자동 생성
 ## Version : 251225
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

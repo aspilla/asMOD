@@ -2,6 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDotFilter
 ## Notes: Displays debuffs cast by the player on boss frames and focus frames.
+## Notes-koKR:보스 프레임, 주시 프레임에 플레이어가 시전한 디버프를 표시
 ## Version : 251225
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

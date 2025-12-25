@@ -1,7 +1,8 @@
 ﻿## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rUnitFrame
-## Notes: Simple unit frams for player, target, focus, pet, party and boss
+## Notes: Simple unit frames
+## Notes-koKR: 간단한 유닛 프레임
 ## Version : 251105
 ## SavedVariablesPerCharacter: AUF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

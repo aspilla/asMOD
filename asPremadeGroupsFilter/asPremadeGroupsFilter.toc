@@ -2,6 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rPremadeGroupsFilter
 ## Notes: Displays additional information in the Mythic+/Raid search window, such as specialization, party leader, and the leader's Mythic+ score.
+## Notes-koKR:쐐기돌/공격대 검색 창에 전문화/파티장/파티장의 쐐기 점수 등 추가 정보 표시
 ## Version : 251225
 ## SavedVariablesPerCharacter: APMGF_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

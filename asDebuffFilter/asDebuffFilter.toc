@@ -2,6 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rDebuffFilter
 ## Notes: Displays debuffs on both player and target unit frames.
+## Notes-koKR:플레이어 및 대상 유닛 프레임 모두에서 디버프 표시
 ## Version : 251001
 ## SavedVariablesPerCharacter: ADF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

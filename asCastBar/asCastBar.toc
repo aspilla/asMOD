@@ -2,6 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCastBar
 ## Notes: Displays an icon and cast time on the default player cast bar.
+## Notes-koKR:기본 플레이어 시전 바에 아이콘과 시전시간 표시
 ## Version : 250118
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

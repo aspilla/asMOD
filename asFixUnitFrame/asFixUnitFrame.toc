@@ -2,6 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rFixUnitFrame
 ## Notes: Enhances the default Blizzard Unit Frames (Player, Target, Target of Target).
+## Notes-koKR:블리자드 기본 유닛 프레임(플레이어, 대상, 대상의 대상) 기능 추가
 ## Version : 251214
 ## SavedVariablesPerCharacter: AFUF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

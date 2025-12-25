@@ -1,7 +1,8 @@
 ﻿## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rMOD
-## Notes: asMOD Configuration and Positioning
+## Notes: asMOD optimizes default WoW settings and Edit Mode layouts to provide an ideal environment for using other asMOD addons. It also provides a centralized configuration tool to manage the positions of various UI elements.
+## Notes-koKR: asMOD는 다른 asMOD 애드온들을 최적화 해서 사용할 수 있도록 와우 기본 설정 및 편집 모드 설정. 추가로 다른 asMOD 애드온의 위치를 설정할 수 있는 기능을 지원.
 ## Version : 251006
 ##SavedVariablesPerCharacter: asMOD_config, asMOD_version, asMOD_position, asMOD_layout_version
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

@@ -1,7 +1,8 @@
 ## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rHealthText
-## Notes: Simple Health HUD
+## Notes: Displays health and resource percentages for the player, target, and pet, along with threat levels, incoming heals, and class-specific resources.
+## Notes-koKR:플레이어, 대상 및 소환수의 생명력 및 자원 백분율을 위협 수준, 받는 치유량, 직업별 자원 표시
 ## Version : 251214
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

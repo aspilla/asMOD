@@ -2,6 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rBattleRes
 ## Notes: Displays the number of available charges and cooldown of the battle resurrection spell
+## Notes-koKR: 전투 부활 주문의 사용 가능 횟수와 재사용 대기시간을 화면에 표시해주는 기능을 제공
 ## Version : 251214
 ## SavedVariablesPerCharacter: ASBR_Options, ASBR_Position 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
