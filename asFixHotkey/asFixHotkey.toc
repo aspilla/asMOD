@@ -1,8 +1,8 @@
 ﻿## Interface: 110207, 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rFixHotKey
-## Notes: Shortens the hotkey text displayed on the action bar and hides macro names on buttons.
-## Version : 250729
+## Notes: Abbreviates hotkey text displayed on action bars and hides macro names on buttons.
+## Version : 251225
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asFixHotkey.lua

@@ -1,8 +1,8 @@
 local _, ns = ...;
 
-local AFUF = CreateFrame("FRAME", nil, UIParent);
+local main_frame = CreateFrame("FRAME", nil, UIParent);
 
-local function HideCombatText()
+local function hide_combattext()
     if ns.options.HideCombatText then
         -- 데미지 숫자 숨기기
         PlayerFrame:UnregisterEvent("UNIT_COMBAT");
@@ -11,7 +11,7 @@ local function HideCombatText()
     end
 end
 
-local function HideTargetBuffs()
+local function hide_targetbuffs()
     -- TargetFrame의 Buff Debuff를 숨긴다.
     if ns.options.HideDebuff then
         TargetFrame:UnregisterEvent("UNIT_AURA");
@@ -25,7 +25,7 @@ local function HideTargetBuffs()
     end
 end
 
-local function HideTargetCastBar()
+local function hide_targetcastbar()
     if ns.options.HideCastBar then
         --TargetCastBar 를 숨긴다.
         TargetFrame.spellbar.showCastbar = false;
@@ -33,7 +33,7 @@ local function HideTargetCastBar()
     end
 end
 
-local function ShowAggro()
+local function show_aggro()
     if not InCombatLockdown() then
         if ns.options.ShowAggro then
             --TargetCastBar 를 숨긴다.
@@ -44,12 +44,12 @@ local function ShowAggro()
     end
 end
 
-local function HideClassBar()
+local function hide_classbar()
     if not ns.options.HideClassBar then
         return;
     end
     --주요 자원바 숨기기
-    local ClassBarOnShow = function(frame)
+    local on_show = function(frame)
         frame:Hide()
     end
 
@@ -76,16 +76,16 @@ local function HideClassBar()
 
     if (frame) then
         frame:Hide();
-        frame:HookScript("OnShow", ClassBarOnShow);
+        frame:HookScript("OnShow", on_show);
     end
 end
 
-local function HideTotemBar()
+local function hide_totembar()
     if not ns.options.HideTotemBar then
         return;
     end
     --주요 자원바 숨기기
-    local ClassBarOnShow = function(frame)
+    local on_show = function(frame)
         frame:Hide()
     end
 
@@ -95,7 +95,7 @@ local function HideTotemBar()
 
     if (frame) then
         frame:Hide();
-        frame:HookScript("OnShow", ClassBarOnShow);
+        frame:HookScript("OnShow", on_show);
     end
 end
 
@@ -105,7 +105,7 @@ local frames = {
     ["targettarget"] = TargetFrameToT.HealthBar,
 }
 
-local function UpdateHealthBar(unit)
+local function update_healthbar(unit)
     if not ns.options.ShowClassColor then
         return;
     end
@@ -119,7 +119,7 @@ local function UpdateHealthBar(unit)
     end
 
     --Healthbar 직업 색상
-    local function updateHealthColor(frame)
+    local function update_color(frame)
         if not (frame) then
             return;
         end
@@ -148,52 +148,52 @@ local function UpdateHealthBar(unit)
     end
 
     local statusbar = frames[unit];
-    updateHealthColor(statusbar);
+    update_color(statusbar);
 end
 
 local bfirst = true;
 
-local function OnEvent(self, event, ...)
+local function on_event(self, event, ...)
     if bfirst then
         ns.SetupOptionPanels();
         bfirst = false;
     end
 
     if event == "PLAYER_ENTERING_WORLD" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
-        HideClassBar();
-        HideTotemBar();
-        HideCombatText();
-        HideTargetBuffs();
-        ShowAggro();
-        HideTargetCastBar();
-        UpdateHealthBar("player");
-        UpdateHealthBar("target");
-        UpdateHealthBar("targettarget");
+        hide_classbar();
+        hide_totembar();
+        hide_combattext();
+        hide_targetbuffs();
+        show_aggro();
+        hide_targetcastbar();
+        update_healthbar("player");
+        update_healthbar("target");
+        update_healthbar("targettarget");
     elseif event == "PLAYER_TARGET_CHANGED" then
-        AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
-        UpdateHealthBar("target");
-        UpdateHealthBar("targettarget");
+        main_frame:RegisterUnitEvent("UNIT_TARGET", "target");
+        update_healthbar("target");
+        update_healthbar("targettarget");
     elseif event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" then
-        UpdateHealthBar("player");
+        update_healthbar("player");
     elseif event == "UNIT_TARGET" then
-        UpdateHealthBar("targettarget");
+        update_healthbar("targettarget");
     end
 end
 
-local function OnInit()
+local function init()
     local bloaded = C_AddOns.LoadAddOn("asUnitFrame");
 
     if bloaded then
         return;
     end
 
-    AFUF:SetScript("OnEvent", OnEvent);
-    AFUF:RegisterEvent("PLAYER_TARGET_CHANGED");
-    AFUF:RegisterEvent("PLAYER_ENTERING_WORLD");
-    AFUF:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-    AFUF:RegisterUnitEvent("UNIT_TARGET", "target");
-    AFUF:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
-    AFUF:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
+    main_frame:SetScript("OnEvent", on_event);
+    main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
+    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+    main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+    main_frame:RegisterUnitEvent("UNIT_TARGET", "target");
+    main_frame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
+    main_frame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
 end
 
-OnInit();
+init();

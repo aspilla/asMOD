@@ -1,60 +1,65 @@
-﻿local ASHK_ShowMacroName = false; -- Macro 이름을 보이려면 true로
+﻿local configs = {
+  ShowMacro = false, -- Macro 이름을 보이려면 true로
+};
 
-local function _CheckLongName(keyName)
+local function check_name(name)
+  name = string.gsub(name, "Num Pad ", "");
+  name = string.gsub(name, "숫자패드 ", "");
+  name = string.gsub(name, "Num Pad", "");
+  name = string.gsub(name, "숫자패드", "");
 
-  keyName = string.gsub(keyName, "Num Pad ", "");
-  keyName = string.gsub(keyName, "숫자패드 ", "");
-  keyName = string.gsub(keyName, "Num Pad", "");
-  keyName = string.gsub(keyName, "숫자패드", "");
-  
-  keyName = string.gsub(keyName, "Middle Mouse", "M3");
-  keyName = string.gsub(keyName, "마우스 가운데 버튼", "M3");
-  keyName = string.gsub(keyName, "Mouse Button (%d)", "M%1");
-  keyName = string.gsub(keyName, "(%d)번 마우스 버튼", "M%1");
-  keyName = string.gsub(keyName, "Mouse Wheel Up", "MU");
-  keyName = string.gsub(keyName, "마우스 휠 위로", "MU");
-  keyName = string.gsub(keyName, "Mouse Wheel Down", "MD");
-  keyName = string.gsub(keyName, "마우스 휠 아래로", "MD");
-  keyName = string.gsub(keyName, "^s%-", "S");
-  keyName = string.gsub(keyName, "^a%-", "A");
-  keyName = string.gsub(keyName, "^c%-", "C");
-  keyName = string.gsub(keyName, "Delete", "Dt");
-  keyName = string.gsub(keyName, "Page Down", "Pd");
-  keyName = string.gsub(keyName, "Page Up", "Pu");
-  keyName = string.gsub(keyName, "Insert", "In");
-  keyName = string.gsub(keyName, "Del", "Dt");
-  keyName = string.gsub(keyName, "Home", "Hm");
-  keyName = string.gsub(keyName, "Capslock", "Ck");
-  keyName = string.gsub(keyName, "Num Lock", "Nk");
-  keyName = string.gsub(keyName, "Scroll Lock", "Sk");
-  keyName = string.gsub(keyName, "Backspace", "Bs");
-  keyName = string.gsub(keyName, "Spacebar", "Sb");
-  keyName = string.gsub(keyName, "스페이스 바", "Sb");
-  keyName = string.gsub(keyName, "End", "Ed");
-  keyName = string.gsub(keyName, "Up Arrow", "^");
-  keyName = string.gsub(keyName, "위 화살표", "^");
-  keyName = string.gsub(keyName, "Down Arrow", "V");
-  keyName = string.gsub(keyName, "아래 화살표", "V");
-  keyName = string.gsub(keyName, "Right Arrow", ">");
-  keyName = string.gsub(keyName, "오른쪽 화살표", ">");
-  keyName = string.gsub(keyName, "Left Arrow", "<");
-  keyName = string.gsub(keyName, "왼쪽 화살표", "<");
+  name = string.gsub(name, "Middle Mouse", "M3");
+  name = string.gsub(name, "마우스 가운데 버튼", "M3");
+  name = string.gsub(name, "Mouse Button (%d)", "M%1");
+  name = string.gsub(name, "(%d)번 마우스 버튼", "M%1");
+  name = string.gsub(name, "Mouse Wheel Up", "MU");
+  name = string.gsub(name, "마우스 휠 위로", "MU");
+  name = string.gsub(name, "Mouse Wheel Down", "MD");
+  name = string.gsub(name, "마우스 휠 아래로", "MD");
+  name = string.gsub(name, "^s%-", "S");
+  name = string.gsub(name, "^a%-", "A");
+  name = string.gsub(name, "^c%-", "C");
+  name = string.gsub(name, "Delete", "Dt");
+  name = string.gsub(name, "Page Down", "Pd");
+  name = string.gsub(name, "Page Up", "Pu");
+  name = string.gsub(name, "Insert", "In");
+  name = string.gsub(name, "Del", "Dt");
+  name = string.gsub(name, "Home", "Hm");
+  name = string.gsub(name, "Capslock", "Ck");
+  name = string.gsub(name, "Num Lock", "Nk");
+  name = string.gsub(name, "Scroll Lock", "Sk");
+  name = string.gsub(name, "Backspace", "Bs");
+  name = string.gsub(name, "Spacebar", "Sb");
+  name = string.gsub(name, "스페이스 바", "Sb");
+  name = string.gsub(name, "End", "Ed");
+  name = string.gsub(name, "Up Arrow", "^");
+  name = string.gsub(name, "위 화살표", "^");
+  name = string.gsub(name, "Down Arrow", "V");
+  name = string.gsub(name, "아래 화살표", "V");
+  name = string.gsub(name, "Right Arrow", ">");
+  name = string.gsub(name, "오른쪽 화살표", ">");
+  name = string.gsub(name, "Left Arrow", "<");
+  name = string.gsub(name, "왼쪽 화살표", "<");
 
-  return keyName;
+  return name;
 end
 
-local function _UpdateHotkeys(name, type, hide, total)
+local function update_hotkeys(name, type, hide, total)
   for i = 1, total do
     local f = getglobal(name .. i);
-    if not f then break end
+    if not f then
+      break
+    end
     ;
     local hotkey = getglobal(f:GetName() .. "HotKey");
-    if not hotkey then break end
+    if not hotkey then
+      break
+    end
     ;
 
     local key = GetBindingKey(type .. i)
     local text = GetBindingText(key, "KEY_", true);
-    text = _CheckLongName(text);
+    text = check_name(text);
     if (text == "") then
       hotkey:Hide();
     else
@@ -63,7 +68,7 @@ local function _UpdateHotkeys(name, type, hide, total)
     end
 
     if getglobal(f:GetName() .. "Name") then
-      if (not ASHK_ShowMacroName) and (hide == 1) then
+      if (not configs.ShowMacro) and (hide == 1) then
         getglobal(f:GetName() .. "Name"):Hide();
       else
         getglobal(f:GetName() .. "Name"):Show();
@@ -72,26 +77,26 @@ local function _UpdateHotkeys(name, type, hide, total)
   end
 end
 
-local function onEvent(self, event, arg1)
+local function on_event(self, event, arg1)
   if event == "PLAYER_ENTERING_WORLD" or "UPDATE_BINDINGS" then
-    _UpdateHotkeys("ActionButton", "ACTIONBUTTON", 1, 12);
-    _UpdateHotkeys("MultiBarBottomLeftButton", "MULTIACTIONBAR1BUTTON", 1, 12);
-    _UpdateHotkeys("MultiBarBottomRightButton", "MULTIACTIONBAR2BUTTON", 1, 12);
-    _UpdateHotkeys("MultiBarRightButton", "MULTIACTIONBAR3BUTTON", 1, 12);
-    _UpdateHotkeys("MultiBarLeftButton", "MULTIACTIONBAR4BUTTON", 1, 12);
-    _UpdateHotkeys("BonusActionButton", "ACTIONBUTTON", 1, 12);
-    _UpdateHotkeys("ExtraActionButton", "EXTRAACTIONBUTTON", 1, 12);
-    _UpdateHotkeys("VehicleMenuBarActionButton", "ACTIONBUTTON", 1, 12);
-    _UpdateHotkeys("OverrideActionBarButton", "ACTIONBUTTON", 1, 12);
-    _UpdateHotkeys("PetActionButton", "BONUSACTIONBUTTON", 1, 10);
-    _UpdateHotkeys("MultiBar5Button", "MULTIACTIONBAR5BUTTON", 1, 12);
-    _UpdateHotkeys("MultiBar6Button", "MULTIACTIONBAR6BUTTON", 1, 12);
-    _UpdateHotkeys("MultiBar7Button", "MULTIACTIONBAR7BUTTON", 1, 12);
+    update_hotkeys("ActionButton", "ACTIONBUTTON", 1, 12);
+    update_hotkeys("MultiBarBottomLeftButton", "MULTIACTIONBAR1BUTTON", 1, 12);
+    update_hotkeys("MultiBarBottomRightButton", "MULTIACTIONBAR2BUTTON", 1, 12);
+    update_hotkeys("MultiBarRightButton", "MULTIACTIONBAR3BUTTON", 1, 12);
+    update_hotkeys("MultiBarLeftButton", "MULTIACTIONBAR4BUTTON", 1, 12);
+    update_hotkeys("BonusActionButton", "ACTIONBUTTON", 1, 12);
+    update_hotkeys("ExtraActionButton", "EXTRAACTIONBUTTON", 1, 12);
+    update_hotkeys("VehicleMenuBarActionButton", "ACTIONBUTTON", 1, 12);
+    update_hotkeys("OverrideActionBarButton", "ACTIONBUTTON", 1, 12);
+    update_hotkeys("PetActionButton", "BONUSACTIONBUTTON", 1, 10);
+    update_hotkeys("MultiBar5Button", "MULTIACTIONBAR5BUTTON", 1, 12);
+    update_hotkeys("MultiBar6Button", "MULTIACTIONBAR6BUTTON", 1, 12);
+    update_hotkeys("MultiBar7Button", "MULTIACTIONBAR7BUTTON", 1, 12);
     return;
   end
 end
 
-local frame = CreateFrame("Frame")
-frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-frame:RegisterEvent("UPDATE_BINDINGS")
-frame:SetScript("OnEvent", onEvent)
+local main_frame = CreateFrame("Frame")
+main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+main_frame:RegisterEvent("UPDATE_BINDINGS")
+main_frame:SetScript("OnEvent", on_event)

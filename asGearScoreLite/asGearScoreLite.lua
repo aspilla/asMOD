@@ -1,4 +1,6 @@
-local AGS_FontSize = 11;
+local configs = {
+	fontsize = 11,
+};
 
 local itemslots = {
 	"HeadSlot",
@@ -19,23 +21,20 @@ local itemslots = {
 	"Trinket1Slot",
 };
 
-local asGearScore = CreateFrame("Frame", nil, UIParent);
+local main_frame = CreateFrame("Frame", nil, UIParent);
 local fontstrings = {};
-local inspectframe;
-local TAvg;
+local inspectframe = _G["InspectFrame"];
+local avg_text;
 local bfirst = true;
 
-local function GetAvgIvl(unit)
-	local t, c = 0, 0
-	local min = 0xFFFFFFFF;
-	local max = 0
+local function get_avglevel(unit)
+	local t, c = 0, 0	
 	local weapon_lvl;
 	local weapon_count = 0;
 	local two_head = nil;
-
-
+	
 	for i = 1, #itemslots do
-		local idx = GetInventorySlotInfo(string.upper(itemslots[i]));
+		local idx = GetInventorySlotInfo(itemslots[i]);
 		local k = GetInventoryItemLink(unit, idx);
 
 		if k then
@@ -55,13 +54,6 @@ local function GetAvgIvl(unit)
 			if lvl and lvl > 0 then
 				t = t + lvl
 				c = c + 1
-				if quality < min then
-					min = quality
-				end
-
-				if quality > max then
-					max = quality
-				end
 			end
 		else
 			fontstrings[unit][i]:SetText("");
@@ -78,81 +70,79 @@ local function GetAvgIvl(unit)
 		c = c + 1;
 	end
 
-	if min == 0xFFFFFFFF then
-		min = 0;
-	end
-
 	if c > 0 then
-		return floor(t / c), max, min
+		return floor(t / c);
 	else
-		return 0, max, min
+		return 0;
 	end
 end
 
-local function MyPaperDoll()
+local function check_player()
 	if (InCombatLockdown()) then return; end
 
-	local Avg, Max, Min = GetAvgIvl("player");
+	local Avg = get_avglevel("player");
 end
 
-local function InspectPaperDoll()
+local function check_inspect()
 	if (InCombatLockdown()) then return; end
 
 	if CanInspect("target") then
-		local Avg, Max, Min = GetAvgIvl("target");
-		TAvg:SetText(Avg .. " Lvl");
+		local Avg = get_avglevel("target");
+		avg_text:SetText(Avg .. " Lvl");
 	end
 end
 
-local function asHookInspect()
-	C_Timer.After(0.5, InspectPaperDoll);
+local function on_show()
+	C_Timer.After(0.5, check_inspect);
 end
 
-local function OnEvent(self, event, arg1)
+local function on_event(self, event)
 
 
 	if (event == "PLAYER_EQUIPMENT_CHANGED") then
-		MyPaperDoll();
+		check_player();
 	end
 
 	if InspectPaperDollItemsFrame and bfirst then
-		InspectPaperDollItemsFrame:HookScript("OnShow", asHookInspect);
+		InspectPaperDollItemsFrame:HookScript("OnShow", on_show);
 		bfirst = false;
 	end
 end
 
 
-asGearScore:SetScript("OnEvent", OnEvent);
-asGearScore:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
-asGearScore:RegisterEvent("ADDON_LOADED");
+main_frame:SetScript("OnEvent", on_event);
+main_frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+main_frame:RegisterEvent("ADDON_LOADED");
 
-CharacterFrame:HookScript("OnShow", MyPaperDoll)
+CharacterFrame:HookScript("OnShow", check_player);
 
-inspectframe = _G["InspectFrame"]
-
-TAvg = inspectframe:CreateFontString(nil, "OVERLAY")
-TAvg:SetFont(STANDARD_TEXT_FONT, AGS_FontSize, "THICKOUTLINE");
-TAvg:SetText("Avg: 0")
-TAvg:SetPoint("TOPRIGHT", inspectframe, "TOPRIGHT", -10, -30)
-TAvg:SetTextColor(1, 1, 1);
-TAvg:Show()
+avg_text = inspectframe:CreateFontString(nil, "OVERLAY");
+avg_text:SetFont(STANDARD_TEXT_FONT, configs.fontsize, "THICKOUTLINE");
+avg_text:SetText("Avg: 0")
+avg_text:SetPoint("TOPRIGHT", inspectframe, "TOPRIGHT", -10, -30)
+avg_text:SetTextColor(1, 1, 1);
+avg_text:Show()
 
 fontstrings["player"] = {};
 fontstrings["target"] = {};
 
 for slot, n in pairs(itemslots) do
-	local gslot = _G["Character" .. n]
-	fontstrings["player"][slot] = gslot:CreateFontString(nil, "OVERLAY");
-	fontstrings["player"][slot]:SetFont(STANDARD_TEXT_FONT, AGS_FontSize, "THICKOUTLINE");
-	fontstrings["player"][slot]:SetPoint("TOP", gslot, "TOP", 0, -3)
-	fontstrings["player"][slot]:SetTextColor(1, 1, 1)
+	local button = _G["Character" .. n]
+	local lvltext = main_frame:CreateFontString(nil, "OVERLAY");
+	lvltext:SetParent(button);
+	lvltext:SetFont(STANDARD_TEXT_FONT, configs.fontsize, "THICKOUTLINE");
+	lvltext:SetPoint("TOP", button, "TOP", 0, -3);
+	lvltext:SetTextColor(1, 1, 1);
+	fontstrings["player"][slot] = lvltext;
 end
 
 
 for slot, n in pairs(itemslots) do
-	local gslot = _G["Inspect" .. n]
-	fontstrings["target"][slot] = gslot:CreateFontString(nil, "OVERLAY");
-	fontstrings["target"][slot]:SetFont(STANDARD_TEXT_FONT, AGS_FontSize, "THICKOUTLINE");
-	fontstrings["target"][slot]:SetPoint("TOP", gslot, "TOP", 0, -3)
-	fontstrings["target"][slot]:SetTextColor(1, 1, 1)
+	local button = _G["Inspect" .. n]
+	local lvltext = main_frame:CreateFontString(nil, "OVERLAY");
+	lvltext:SetParent(button);
+	lvltext:SetFont(STANDARD_TEXT_FONT, configs.fontsize, "THICKOUTLINE");
+	lvltext:SetPoint("TOP", button, "TOP", 0, -3);
+	lvltext:SetTextColor(1, 1, 1);
+	fontstrings["target"][slot] = lvltext;
 end

@@ -3,23 +3,5 @@
 	<Texture name="asFUFTextureTemplate" virtual="true" atlas="RaidFrame-Hp-Fill">
 		<Color r="0.0" g="0.447" b="1.0"/>
 	</Texture>
-	<Frame name="asFUFDebuffFrameTemplate" virtual="true" enableMouse="false">		
-		<Layers>
-			<Layer level="BACKGROUND">
-				<Texture name="$parentIcon" parentKey="icon"/>
-			</Layer>
-		</Layers>
-		<Frames>
-			<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawBling="false" drawEdge="false" hidden="true">				
-				<Anchors>
-					<Anchor point="CENTER">
-						<Offset>
-							<AbsDimension x="0" y="-1"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Cooldown>
-		</Frames>
-	</Frame>
 	<Script file="asFixUnitFrame.lua" />
 </Ui>

@@ -1,7 +1,7 @@
 ﻿## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rFixUnitFrame
-## Notes: Improving the default unit frame 
+## Notes: Enhances the default Blizzard Unit Frames (Player, Target, Target of Target).
 ## Version : 251214
 ## SavedVariablesPerCharacter: AFUF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

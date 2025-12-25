@@ -1,41 +1,40 @@
-﻿-----------------설정 ------------------------
-local AGCDB_WIDTH = 238;
-local AGCDB_HEIGHT = 5;
-local AGCDB_X = 0;
-local AGCDB_Y = -219;
+﻿local configs = {
+	width = 238,
+	height = 5,
+	xpoint = 0,
+	ypoint = -219,
+};
 
-local version = select(4, GetBuildInfo());
+local main_frame = CreateFrame("FRAME", nil, UIParent)
+main_frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
+main_frame:SetWidth(0)
+main_frame:SetHeight(0)
+main_frame:Show();
 
-local AGCDB = CreateFrame("FRAME", nil, UIParent)
-AGCDB:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
-AGCDB:SetWidth(0)
-AGCDB:SetHeight(0)
-AGCDB:Show();
+main_frame.gcdbar = CreateFrame("StatusBar", nil, UIParent)
+main_frame.gcdbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+main_frame.gcdbar:GetStatusBarTexture():SetHorizTile(false)
+main_frame.gcdbar:SetMinMaxValues(0, 100)
+main_frame.gcdbar:SetValue(0)
+main_frame.gcdbar:SetHeight(configs.height)
+main_frame.gcdbar:SetWidth(configs.width)
+main_frame.gcdbar:SetStatusBarColor(1, 0.9, 0.9);
 
-AGCDB.gcdbar = CreateFrame("StatusBar", nil, UIParent)
-AGCDB.gcdbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-AGCDB.gcdbar:GetStatusBarTexture():SetHorizTile(false)
-AGCDB.gcdbar:SetMinMaxValues(0, 100)
-AGCDB.gcdbar:SetValue(0)
-AGCDB.gcdbar:SetHeight(AGCDB_HEIGHT)
-AGCDB.gcdbar:SetWidth(AGCDB_WIDTH)
-AGCDB.gcdbar:SetStatusBarColor(1, 0.9, 0.9);
+main_frame.gcdbar.bg = main_frame.gcdbar:CreateTexture(nil, "BACKGROUND")
+main_frame.gcdbar.bg:SetPoint("TOPLEFT", main_frame.gcdbar, "TOPLEFT", -1, 1)
+main_frame.gcdbar.bg:SetPoint("BOTTOMRIGHT", main_frame.gcdbar, "BOTTOMRIGHT", 1, -1)
 
-AGCDB.gcdbar.bg = AGCDB.gcdbar:CreateTexture(nil, "BACKGROUND")
-AGCDB.gcdbar.bg:SetPoint("TOPLEFT", AGCDB.gcdbar, "TOPLEFT", -1, 1)
-AGCDB.gcdbar.bg:SetPoint("BOTTOMRIGHT", AGCDB.gcdbar, "BOTTOMRIGHT", 1, -1)
+main_frame.gcdbar.bg:SetTexture("Interface\\Addons\\asGCDBar\\border.tga")
+main_frame.gcdbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+main_frame.gcdbar.bg:SetVertexColor(0, 0, 0, 0.8);
 
-AGCDB.gcdbar.bg:SetTexture("Interface\\Addons\\asGCDBar\\border.tga")
-AGCDB.gcdbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-AGCDB.gcdbar.bg:SetVertexColor(0, 0, 0, 0.8);
-
-AGCDB.gcdbar:SetPoint("CENTER", UIParent, "CENTER", AGCDB_X, AGCDB_Y)
-AGCDB.gcdbar:Show();
+main_frame.gcdbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
+main_frame.gcdbar:Show();
 
 C_AddOns.LoadAddOn("asMOD");
 
 if asMOD_setupFrame then
-	asMOD_setupFrame(AGCDB.gcdbar, "asGCDBar");
+	asMOD_setupFrame(main_frame.gcdbar, "asGCDBar");
 end
 
 local curve = C_CurveUtil.CreateCurve();
@@ -43,17 +42,11 @@ curve:SetType(Enum.LuaCurveType.Linear);
 curve:AddPoint(0, 0);
 curve:AddPoint(1, 100);
 
-local function AGCDB_OnUpdate()
-	local remain_percent = nil;
-	if version > 120000 then
-		local remain_percent = C_Spell.GetSpellCooldownRemainingPercent(61304, curve);
-		AGCDB.gcdbar:SetValue(remain_percent, Enum.StatusBarInterpolation.ExponentialEaseOut);
-	else
-		local spellCooldownInfo = C_Spell.GetSpellCooldown(61304);
-		AGCDB.gcdbar:SetMinMaxValues(0, spellCooldownInfo.duration);
-		local remain = spellCooldownInfo.startTime + spellCooldownInfo.duration - GetTime();
-		AGCDB.gcdbar:SetValue(remain, Enum.StatusBarInterpolation.ExponentialEaseOut);
-	end
+local function on_update()
+	local spellCooldownInfo = C_Spell.GetSpellCooldown(61304);
+	main_frame.gcdbar:SetMinMaxValues(0, spellCooldownInfo.duration);
+	local remain = spellCooldownInfo.startTime + spellCooldownInfo.duration - GetTime();
+	main_frame.gcdbar:SetValue(remain, Enum.StatusBarInterpolation.ExponentialEaseOut);
 end
 
-C_Timer.NewTicker(0.1, AGCDB_OnUpdate);
+C_Timer.NewTicker(0.1, on_update);
