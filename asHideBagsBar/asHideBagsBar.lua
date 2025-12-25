@@ -1,7 +1,9 @@
-local AHBB_Offset = 100;
-local AHBB_UpdateRate = 0.5;
+local configs = {
+	offset = 100,
+	updaterate = 0.5,
+};
 
-local function CheckFrame(frame, cpoint, offset, show)
+local function check_frame(frame, cpoint, offset, show)
 	if not frame then
 		return;
 	end
@@ -17,7 +19,7 @@ local function CheckFrame(frame, cpoint, offset, show)
 end
 
 
-local function HideFrame(frame)
+local function hide_frame(frame)
 	if not frame then
 		return;
 	end
@@ -26,20 +28,20 @@ local function HideFrame(frame)
 end
 
 
-local function OnUpdate()
+local function on_update()
 	local uiScale, x, y = UIParent:GetEffectiveScale(), GetCursorPosition()
 	x = x / uiScale;
 	y = y / uiScale;
 	local cpoint = { x = x, y = y };
 
-	CheckFrame(MicroMenu, cpoint, AHBB_Offset,
+	check_frame(MicroMenu, cpoint, configs.offset,
 		(UnitInVehicle("player") or (OverrideActionBar and OverrideActionBar:IsShown())));
-	CheckFrame(BagsBar, cpoint, AHBB_Offset, false);
-	CheckFrame(CompactRaidFrameManager, cpoint, AHBB_Offset, false);
+	check_frame(BagsBar, cpoint, configs.offset, false);
+	check_frame(CompactRaidFrameManager, cpoint, configs.offset, false);
 end
 
-HideFrame(MicroMenu);
-HideFrame(BagsBar);
-HideFrame(CompactRaidFrameManager);
+hide_frame(MicroMenu);
+hide_frame(BagsBar);
+hide_frame(CompactRaidFrameManager);
 
-C_Timer.NewTicker(AHBB_UpdateRate, OnUpdate);
+C_Timer.NewTicker(configs.updaterate, on_update);

@@ -1,7 +1,9 @@
-local AHAB_Offset = 100;
-local AHAB_UpdateRate = 0.5;
+local configs = {
+	offset = 100,
+	updaterate = 0.5,
+};
 
-local function CheckFrame(frame, cpoint, offset, show)
+local function check_frame(frame, cpoint, offset, show)
 	if not frame then
 		return;
 	end
@@ -17,7 +19,7 @@ local function CheckFrame(frame, cpoint, offset, show)
 end
 
 
-local function HideFrame(frame)
+local function hide_frame(frame)
 	if not frame then
 		return;
 	end
@@ -25,22 +27,19 @@ local function HideFrame(frame)
 	frame:SetAlpha(0);
 end
 
-local version = select(4, GetBuildInfo());
-local action1 = MainActionBar;
-
-local function OnUpdate()
+local function on_update()
 	local uiScale, x, y = UIParent:GetEffectiveScale(), GetCursorPosition()
 	x = x / uiScale;
 	y = y / uiScale;
 	local cpoint = { x = x, y = y };
 
-	CheckFrame(action1, cpoint, AHAB_Offset, false);
-	CheckFrame(StanceBar, cpoint, AHAB_Offset, false);
-	CheckFrame(PetActionBar, cpoint, AHAB_Offset, false);
+	check_frame(MainActionBar, cpoint, configs.offset, false);
+	check_frame(StanceBar, cpoint, configs.offset, false);
+	check_frame(PetActionBar, cpoint, configs.offset, false);
 end
 
-HideFrame(action1);
-HideFrame(StanceBar);
-HideFrame(PetActionBar);
+hide_frame(MainActionBar);
+hide_frame(StanceBar);
+hide_frame(PetActionBar);
 
-C_Timer.NewTicker(AHAB_UpdateRate, OnUpdate);
+C_Timer.NewTicker(configs.updaterate, on_update);

@@ -2,7 +2,7 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rHideNamePlates
 ## Notes: Hide nameplates, not casting
-## Version : 251209
+## Version : 251225
 ## SavedVariablesPerCharacter: AHNP_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

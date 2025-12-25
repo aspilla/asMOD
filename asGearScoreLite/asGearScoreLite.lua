@@ -28,17 +28,18 @@ local avg_text;
 local bfirst = true;
 
 local function get_avglevel(unit)
-	local t, c = 0, 0	
+	local t, c = 0, 0
 	local weapon_lvl;
 	local weapon_count = 0;
 	local two_head = nil;
-	
+
 	for i = 1, #itemslots do
 		local idx = GetInventorySlotInfo(itemslots[i]);
 		local k = GetInventoryItemLink(unit, idx);
 
 		if k then
-			local _, _, quality, lvl = C_Item.GetItemInfo(k);
+			local _, _, quality = C_Item.GetItemInfo(k);
+			local lvl = C_Item.GetDetailedItemLevelInfo(k);
 
 			if lvl and lvl > 0 and quality then
 				fontstrings[unit][i]:SetText(lvl);
@@ -97,8 +98,6 @@ local function on_show()
 end
 
 local function on_event(self, event)
-
-
 	if (event == "PLAYER_EQUIPMENT_CHANGED") then
 		check_player();
 	end

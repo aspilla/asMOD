@@ -37,7 +37,7 @@ ns.MustShow_IDs = {
 ---
 # asHideNamePlates (한밤)
 
-차단을 돕기 위해 케스팅중인 몹 외 이름표를 숨기는 기능의 애드온.
+차단을 돕기 위해 케스팅중인 몹 외 이름표를 숨김
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/aVWyNqrT2C4?si=6_xC-XOIqE8cXira" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
