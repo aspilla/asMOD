@@ -3,8 +3,7 @@ local _, ns = ...;
 ---설정부
 ns.ANameP_PowerTextSize = 6;
 ns.ANameP_MouseTextSize = 12;
-ns.ANameP_UpdateRate = 0.5;       -- 버프 Check 반복 시간 (초)
-ns.ANameP_UpdateRateTarget = 0.3; -- 대상의 버프 Check 반복 시간 (초)
+ns.ANameP_UpdateRate = 0.2;       -- 버프 Check 반복 시간 (초)
 
 ANameP_Options_Default = {
     version = 251220,

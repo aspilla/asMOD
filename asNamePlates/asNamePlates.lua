@@ -1,26 +1,23 @@
 ﻿local _, ns = ...;
-local ANameP = CreateFrame("Frame", nil, UIParent);
-local tanklist = {}
+local main_frame = CreateFrame("Frame", nil, UIParent);
 
-local CONFIG_NOT_INTERRUPTIBLE_COLOR = { r = 0.9, g = 0.9, b = 0.9 };               --차단 불가시 (내가 아닐때) 색상 (r, g, b)
-local CONFIG_INTERRUPTIBLE_COLOR = { r = 204 / 255, g = 255 / 255, b = 153 / 255 }; --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
-
-
-ns.ANameP_ShowList = nil;
 
 ns.options = CopyTable(ANameP_Options_Default);
+ns.tanklist = {};
+ns.isparty = false;
+ns.israid = false;
+ns.ispvp = false;
+ns.istanker = false;
+ns.colorcurve = C_CurveUtil.CreateColorCurve();
+ns.colorcurve:SetType(Enum.LuaCurveType.Step);
+ns.colorcurve:AddPoint(0.0, CreateColor(0.5, 1, 1, 1));
 
-local isparty = false;
-local israid = false;
-local ispvp = false;
-
--- 탱커 처리부
-local function updateTankerList()
-    if ispvp then
+local function update_tanklist()
+    if ns.ispvp then
         return nil;
     end
 
-    tanklist = {}
+    ns.tanklist = {}
     if IsInGroup() then
         if IsInRaid() then -- raid
             for i = 1, GetNumGroupMembers() do
@@ -29,7 +26,7 @@ local function updateTankerList()
                 if UnitExists(unitid) and notMe then
                     local _, _, _, _, _, _, _, _, _, role, _, assignedRole = GetRaidRosterInfo(i);
                     if assignedRole == "TANK" then
-                        table.insert(tanklist, unitid);
+                        table.insert(ns.tanklist, unitid);
                     end
                 end
             end
@@ -39,7 +36,7 @@ local function updateTankerList()
                 if UnitExists(unitid) then
                     local assignedRole = UnitGroupRolesAssigned(unitid);
                     if assignedRole == "TANK" then
-                        table.insert(tanklist, unitid);
+                        table.insert(ns.tanklist, unitid);
                     end
                 end
             end
@@ -47,239 +44,29 @@ local function updateTankerList()
     end
 end
 
-local function updatePower(asframe)
-    if not ns.options.ANameP_ShowPower then
-        return;
+local function check_playertankrole()
+    local assignedRole = UnitGroupRolesAssigned("player");
+    if (assignedRole == "NONE") then
+        local spec = C_SpecializationInfo.GetSpecialization();
+        return spec and GetSpecializationRole(spec) == "TANK";
     end
-
-
-
-    local unit = asframe.unit;
-
-    local powerType, powerTypeString = UnitPowerType(unit);
-
-    if powerType > 0 and UnitIsUnit(unit, "target") then
-        local power = UnitPower(unit);
-        local maxPower = UnitPowerMax(unit);
-
-
-        asframe.powerbar:SetMinMaxValues(0, maxPower);
-        asframe.powerbar:SetValue(power);
-        asframe.powerbar.value:SetText(power);
-        asframe.powerbar:Show();
-    else
-        asframe.powerbar:Hide();
-    end
-end
-
--- Healthbar 색상 처리부
-local function setColoronStatusBar(asframe, color)
-    local parent = asframe.nameplateBase;
-
-    if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden() or not asframe.BarColor then
-        return;
-    end
-
-    asframe.BarColor:SetVertexColor(color.r, color.g, color.b);    
-    asframe.BarColor:Show();
-end
-
-local function scanauralist(list)
-    local count = 0;
-    if list:IsForbidden() then
-        return count
-    end
-    local children = list:GetLayoutChildren()
-    if #children == 0 then
-        return count;
-    end
-    for _, child in ipairs(children) do
-        if child.auraInstanceID then
-            count = count + 1;
-        end
-    end
-
-    return count;
-end
-
-local colorcurve = C_CurveUtil.CreateColorCurve();
-colorcurve:SetType(Enum.LuaCurveType.Step);
-colorcurve:AddPoint(0.0, CreateColor(0.5, 1, 1, 1));
-
-local function updateHealthbarColor(asframe)
-    -- unit name 부터
-    if not asframe.unit or not asframe.checkcolor or not asframe.BarColor then
-        return;
-    end
-
-    local unit = asframe.unit;
-    local parent = asframe.nameplateBase;
-
-    if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden() then
-        return;
-    end
-    local UnitFrame = parent.UnitFrame;
-    local healthBar = UnitFrame.healthBar;
-    local castbar = UnitFrame.castBar;
-    local debufflist = UnitFrame.AurasFrame.DebuffListFrame
-
-    if not healthBar and healthBar:IsForbidden() then
-        return;
-    end
-
-    local function IsPlayerEffectivelyTank()
-        local assignedRole = UnitGroupRolesAssigned("player");
-        if (assignedRole == "NONE") then
-            local spec = C_SpecializationInfo.GetSpecialization();
-            return spec and GetSpecializationRole(spec) == "TANK";
-        end
-        return assignedRole == "TANK";
-    end
-
-
-    local status = UnitThreatSituation("player", unit);
-    local incombat = UnitAffectingCombat(unit);
-    local tanker = IsPlayerEffectivelyTank();
-    local alerttype = 0;
-
-    local function getColor()
-        if UnitIsPlayer(unit) then
-            return nil;
-        end
-
-        --Target and Aggro High Priority
-        if IsInGroup() and ns.options.ANameP_AggroShow and incombat then
-            if tanker then
-                if status == nil or status == 0 then
-                    return ns.options.ANameP_TankAggroLoseColor;
-                end
-            end
-            if status and status > 0 then
-                return ns.options.ANameP_AggroColor;
-            end
-        end
-
-        --Cast Color
-        if asframe.casticon:IsShown() and ns.options.ANameP_ShowCastColor then
-            local bartype = castbar.barType;
-            if bartype == "uninterruptable" then
-                return CONFIG_NOT_INTERRUPTIBLE_COLOR;
-            end
-
-            return CONFIG_INTERRUPTIBLE_COLOR;
-        end
-
-
-        --Debuff Color
-        if ns.options.ANameP_ShowDebuffColor then
-            local activeDebuffs = scanauralist(debufflist);
-
-            if activeDebuffs > 0 then
-                return ns.options.ANameP_DebuffColor;
-            end
-        end
-
-        if status and ns.options.ANameP_AggroShow then
-            --return UnitHealthPercent(unit, colorcurve);
-            return ns.options.ANameP_CombatColor;
-        end
-
-        if asframe.isboss and ns.options.ANameP_BossHint then
-            return ns.options.ANameP_BossColor;
-        end
-
-        if not (isparty or israid) and ns.options.ANameP_QuestAlert and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
-            return ns.options.ANameP_QuestColor;
-        end
-
-        return nil;
-    end
-
-    local color = getColor();
-
-    if color then
-        setColoronStatusBar(asframe, color);
-    else        
-        asframe.BarColor:Hide();
-    end
-
-    if alerttype ~= asframe.alerttype then
-        if alerttype == 3 then
-            ns.lib.PixelGlow_Start(healthBar, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1000);
-            ns.lib.PixelGlow_Stop(asframe.casticon);
-            ns.lib.PixelGlow_Stop(asframe);
-        elseif alerttype == 2 then
-            ns.lib.PixelGlow_Start(asframe, { 1, 1, 0, 1 }, 16, nil, 5, 2, nil, nil, nil, nil, 1000);
-            ns.lib.PixelGlow_Stop(asframe.casticon);
-            ns.lib.PixelGlow_Stop(healthBar);
-        elseif alerttype == 1 then
-            ns.lib.PixelGlow_Start(asframe.casticon);
-            ns.lib.PixelGlow_Stop(asframe);
-            ns.lib.PixelGlow_Stop(healthBar);
-        else
-            ns.lib.PixelGlow_Stop(asframe.casticon);
-            ns.lib.PixelGlow_Stop(asframe);
-            ns.lib.PixelGlow_Stop(healthBar);
-        end
-        asframe.alerttype = alerttype;
-    end
+    ns.istanker = (assignedRole == "TANK");
 end
 
 
-
-local function checkSpellCasting(asframe)
-    if not ns.options.ANameP_ShowCastIcon then
-        return;
-    end
-
-    local unit = asframe.unit;
-    local name, _, texture = UnitCastingInfo(unit);
-    if not name then
-        name, _, texture = UnitChannelInfo(unit);
-    end
-
-    if name then
-        asframe.casticon.icon:SetTexture(texture);
-        asframe.casticon:Show();
-    else
-        asframe.casticon:Hide();
-    end
-end
-
-local function updatetarget(asframe)
-    if asframe.unit and UnitIsUnit(asframe.unit, "target") then
-        updatePower(asframe);
-        return;
-    end
-end
-
-local function updatemouseover(asframe)
-    if UnitExists("mouseover") then
-        if asframe.unit and UnitIsUnit(asframe.unit, "mouseover") then
-            asframe.motext:Show();
-            return;
-        end
-    end
-    asframe.motext:Hide();
-end
-
-local function asNamePlates_OnEvent(asframe, event, ...)
+local function on_asframe_event(asframe, event, ...)
     if (event == "PLAYER_TARGET_CHANGED") then
-        updatetarget(asframe);
+        ns.update_target(asframe);
     elseif event == "UPDATE_MOUSEOVER_UNIT" then
-        updatemouseover(asframe);
+        ns.update_mouseover(asframe);
     else
-        checkSpellCasting(asframe);
-        updateHealthbarColor(asframe);
+        ns.update_cast(asframe);
+        ns.update_color(asframe);
     end
 end
 
-local function createNamePlate(namePlateFrameBase)
-end
-
-
-local function removeUnit(unitToken)
-    local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(unitToken, issecure());
+local function remove_unit(unit)
+    local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(unit, issecure());
 
     if not namePlateFrameBase then
         return;
@@ -305,7 +92,7 @@ local function removeUnit(unitToken)
 
         asframe.alerttype = nil;
         asframe:ClearAllPoints();
-        ns.freeasframe(asframe);
+        ns.free_asframe(asframe);
         asframe = nil;
     end
 
@@ -314,23 +101,10 @@ local function removeUnit(unitToken)
     end
 end
 
-local function updateAll(asframe)
-    updatemouseover(asframe);
-    updatePower(asframe);
-    updateHealthbarColor(asframe);
-    checkSpellCasting(asframe);
-end
+local function add_unit(unit)
+    local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(unit, issecure());
 
-local function updateNamePlate(namePlateFrameBase)
-    if (namePlateFrameBase and namePlateFrameBase.asNamePlates ~= nil and not namePlateFrameBase:IsForbidden() and namePlateFrameBase.UnitFrame and namePlateFrameBase.UnitFrame:IsShown()) then
-        local asframe = namePlateFrameBase.asNamePlates;
-        updateAll(asframe);
-    end
-end
-
-
-local function addNamePlate(namePlateFrameBase)
-    if not namePlateFrameBase and not namePlateFrameBase.unitToken then
+    if not namePlateFrameBase then
         return;
     end
 
@@ -338,22 +112,18 @@ local function addNamePlate(namePlateFrameBase)
         return;
     end
 
-
-
     local unitFrame = namePlateFrameBase.UnitFrame;
     local healthbar = unitFrame.healthBar;
-    local healthBarContainer = unitFrame.HealthBarsContainer;
-    local unit = namePlateFrameBase.unitToken;
 
     if not UnitCanAttack("player", unit) then
         if namePlateFrameBase.asNamePlates then
-            removeUnit(unit);
+            remove_unit(unit);
         end
         return;
     end
 
     if namePlateFrameBase.asNamePlates == nil then
-        namePlateFrameBase.asNamePlates = ns.getasframe();
+        namePlateFrameBase.asNamePlates = ns.get_asframe();
     end
 
     local asframe = namePlateFrameBase.asNamePlates;
@@ -387,7 +157,7 @@ local function addNamePlate(namePlateFrameBase)
     asframe.BarColor:SetVertexColor(previousTexture:GetVertexColor());
     asframe.BarColor:Hide();
 
-    asframe:SetScript("OnEvent", asNamePlates_OnEvent);
+    asframe:SetScript("OnEvent", on_asframe_event);
 
     if not UnitIsPlayer(unit) then
         asframe:RegisterEvent("PLAYER_TARGET_CHANGED");
@@ -419,7 +189,7 @@ local function addNamePlate(namePlateFrameBase)
     end
 
     asframe:ClearAllPoints();
-    asframe:SetPoint("TOPLEFT", healthBarContainer, "TOPLEFT", -5, 1);
+    asframe:SetPoint("TOPLEFT", healthbar, "TOPLEFT", -5, 1);
 
     local checkcolor = false;
 
@@ -428,8 +198,6 @@ local function addNamePlate(namePlateFrameBase)
         checkcolor = true;
     end
 
-    unitFrame:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE");
-    unitFrame:UnregisterEvent("UNIT_THREAT_LIST_UPDATE");
     asframe:Show();
 
     asframe.checkcolor = checkcolor;
@@ -437,17 +205,15 @@ local function addNamePlate(namePlateFrameBase)
     local level = UnitLevel(unit);
 
     asframe.isboss = false;
-    if isparty and level then
+    if ns.isparty and level then
         if level < 0 or level > UnitLevel("player") then
             asframe.isboss = true;
         end
     end
 
-    updatetarget(asframe);
-    updatemouseover(asframe);
-
     local function callback()
-        updateNamePlate(namePlateFrameBase);
+        ns.update_power(asframe);
+        ns.update_color(asframe);
     end
 
     if asframe.timer then
@@ -457,31 +223,8 @@ local function addNamePlate(namePlateFrameBase)
     asframe.timer = C_Timer.NewTicker(ns.ANameP_UpdateRate, callback);
 end
 
-local function addUnit(unitToken)
-    local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(unitToken, issecure());
 
-    if namePlateFrameBase then
-        addNamePlate(namePlateFrameBase);
-        if namePlateFrameBase.asNamePlates ~= nil then
-            local asframe = namePlateFrameBase.asNamePlates;
-            updateAll(asframe);
-        end
-    end
-end
-
-local function updateUnit(unitToken)
-    local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(unitToken, issecure());
-    if namePlateFrameBase and not namePlateFrameBase:IsForbidden() then
-        if namePlateFrameBase.asNamePlates ~= nil then
-            local asframe = namePlateFrameBase.asNamePlates;
-            updatePower(asframe);
-            updateHealthbarColor(asframe);
-        end
-    end
-end
-
-
-local function initclass()
+local function init_class()
     local localizedClass, englishClass = UnitClass("player");
 
     local lowhealthpercent = 0;
@@ -536,89 +279,79 @@ local function initclass()
     end
 
     if highhealthpercent > 0 and lowhealthpercent > 0 then
-        colorcurve = C_CurveUtil.CreateColorCurve();
-        colorcurve:SetType(Enum.LuaCurveType.Step);
-        colorcurve:AddPoint(highhealthpercent / 100, CreateColor(1, 0.2, 0.2, 1));
-        colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0.5, 1, 1, 1));
-        colorcurve:AddPoint(0, CreateColor(1, 0, 0, 1));
+        ns.colorcurve = C_CurveUtil.CreateColorCurve();
+        ns.colorcurve:SetType(Enum.LuaCurveType.Step);
+        ns.colorcurve:AddPoint(highhealthpercent / 100, CreateColor(1, 0.2, 0.2, 1));
+        ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0.5, 1, 1, 1));
+        ns.colorcurve:AddPoint(0, CreateColor(1, 0, 0, 1));
     elseif lowhealthpercent > 0 then
-        colorcurve = C_CurveUtil.CreateColorCurve();
-        colorcurve:SetType(Enum.LuaCurveType.Step);
-        colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0.5, 1, 1, 1));
-        colorcurve:AddPoint(0, CreateColor(1, 0, 0, 1));
+        ns.colorcurve = C_CurveUtil.CreateColorCurve();
+        ns.colorcurve:SetType(Enum.LuaCurveType.Step);
+        ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0.5, 1, 1, 1));
+        ns.colorcurve:AddPoint(0, CreateColor(1, 0, 0, 1));
     else
-        colorcurve = C_CurveUtil.CreateColorCurve();
-        colorcurve:SetType(Enum.LuaCurveType.Step);
-        colorcurve:AddPoint(0, CreateColor(0.5, 1, 1, 1));
+        ns.colorcurve = C_CurveUtil.CreateColorCurve();
+        ns.colorcurve:SetType(Enum.LuaCurveType.Step);
+        ns.colorcurve:AddPoint(0, CreateColor(0.5, 1, 1, 1));
     end
 end
 
 
-local function ANameP_OnEvent(self, event, ...)
-    local arg1 = ...;
-
-    if event == "NAME_PLATE_CREATED" then
-        local namePlateFrameBase = ...;
-        createNamePlate(namePlateFrameBase);
-    elseif event == "NAME_PLATE_UNIT_ADDED" then
-        local unitToken = ...;
-        addUnit(unitToken);
+local function on_main_event(self, event, ...)
+    if event == "NAME_PLATE_UNIT_ADDED" then
+        local unit = ...;
+        add_unit(unit);
     elseif event == "NAME_PLATE_UNIT_REMOVED" then
-        local unitToken = ...;
-        removeUnit(unitToken);
+        local unit = ...;
+        remove_unit(unit);
+    elseif event == "UNIT_FACTION" then
+        local unit = ...;
+        add_unit(unit);
     elseif event == "PLAYER_ENTERING_WORLD" then
         local isInstance, instanceType = IsInInstance();
-        ispvp = false;
-        israid = false;
-        isparty = false;
+        ns.ispvp = false;
+        ns.israid = false;
+        ns.isparty = false;
         if isInstance and (instanceType == "party" or instanceType == "raid" or instanceType == "scenario") then
             if instanceType == "raid" then
-                israid = true;
+                ns.israid = true;
             else
-                isparty = true;
+                ns.isparty = true;
             end
         else
-            ispvp = true;
+            ns.ispvp = true;
         end
-        updateTankerList();
-        initclass();
-    elseif event == "UNIT_FACTION" then
-        local unitToken = ...;
-        addUnit(unitToken);
+        update_tanklist();
+        init_class();
+        check_playertankrole();
     elseif event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED" then
-        updateTankerList();
+        update_tanklist();
     elseif event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" then
-        initclass();
+        init_class();
+        check_playertankrole();
     end
 end
 
-local function ANameP_OnUpdate()
-    updateUnit("target");
-end
 
-
-local function initAddon()
-    ANameP:RegisterEvent("NAME_PLATE_CREATED");
-    ANameP:RegisterEvent("NAME_PLATE_UNIT_ADDED");
-    ANameP:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
+local function init()
+    main_frame:RegisterEvent("NAME_PLATE_UNIT_ADDED");
+    main_frame:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
     -- 나중에 추가 처리가 필요하면 하자.
     -- ANameP:RegisterEvent("FORBIDDEN_NAME_PLATE_UNIT_ADDED");
     -- ANameP:RegisterEvent("FORBIDDEN_NAME_PLATE_UNIT_REMOVED");
 
-    ANameP:RegisterEvent("PLAYER_ENTERING_WORLD");
-    ANameP:RegisterEvent("ADDON_LOADED")
-    ANameP:RegisterEvent("UNIT_FACTION");
-    ANameP:RegisterEvent("GROUP_JOINED");
-    ANameP:RegisterEvent("GROUP_ROSTER_UPDATE");
-    ANameP:RegisterEvent("PLAYER_ROLES_ASSIGNED");
-    ANameP:RegisterEvent("PLAYER_REGEN_ENABLED");
-    ANameP:RegisterEvent("TRAIT_CONFIG_UPDATED");
-    ANameP:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-    ANameP:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+    main_frame:RegisterEvent("ADDON_LOADED")
+    main_frame:RegisterEvent("UNIT_FACTION");
+    main_frame:RegisterEvent("GROUP_JOINED");
+    main_frame:RegisterEvent("GROUP_ROSTER_UPDATE");
+    main_frame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
+    main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+    main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+    main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+    main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 
-    ANameP:SetScript("OnEvent", ANameP_OnEvent)
-    -- 주기적으로 Callback
-    C_Timer.NewTicker(ns.ANameP_UpdateRateTarget, ANameP_OnUpdate);
+    main_frame:SetScript("OnEvent", on_main_event)
 end
 
-initAddon();
+init();

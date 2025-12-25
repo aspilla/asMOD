@@ -26,7 +26,5 @@
 		</Frames>
 	</Frame>
 	<Texture name="asNameplateTemplate" virtual="true" atlas="UI-HUD-CoolDownManager-Bar">		
-	</Texture>
-	<Script file="asNamePlatesPool.lua"/>
-	<Script file="asNamePlates.lua"/>
+	</Texture>	
 </Ui>
