@@ -22,7 +22,7 @@ ns.aura_func             = nil;
 
 ns.frame                 = CreateFrame("FRAME", nil, UIParent);
 
-local function initclass()
+local function init_class()
     local localizedClass, englishClass = UnitClass("player")
     local spec = C_SpecializationInfo.GetSpecialization();
 
@@ -125,7 +125,7 @@ local function initclass()
     if (englishClass == "DEMONHUNTER") then
         if spec and spec == 3 then
             --ns.combocountbar:SetMinMaxValues(0, 50);
-            --ns.aura_func = ns.checkvoid;
+            --ns.aura_func = ns.check_void;
             --ns.frame:RegisterUnitEvent("UNIT_AURA", "player");
             --ns.aura_func();
         end
@@ -137,7 +137,7 @@ local function initclass()
     if (englishClass == "SHAMAN") then
         if spec and spec == 2 then
             ns.setup_max_combo(10);
-            ns.aura_func = ns.checkstorm;
+            ns.aura_func = ns.check_storm;
             ns.frame:RegisterUnitEvent("UNIT_AURA", "player");
             ns.aura_func();
         end
@@ -148,6 +148,8 @@ local function initclass()
         local maxpartial = nil;
         if ns.bupdate_partial_power then
             maxpartial = UnitPowerDisplayMod(ns.power_level)
+        elseif ns.power_level == Enum.PowerType.Essence then
+            maxpartial = 10;
         end
         ns.setup_max_combo(max, maxpartial);
         ns.frame:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
@@ -177,10 +179,10 @@ local function on_event(self, event, ...)
         else
             ns.frame:SetAlpha(ns.config.normalalpha);
         end
-        C_Timer.After(0.5, initclass);
+        C_Timer.After(0.5, init_class);
     elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or event ==
         "ACTIVE_TALENT_GROUP_CHANGED" then
-        C_Timer.After(0.5, initclass);
+        C_Timer.After(0.5, init_class);
     elseif event == "PLAYER_REGEN_DISABLED" then
         ns.frame:SetAlpha(ns.config.combatalpha);
     elseif event == "PLAYER_REGEN_ENABLED" then
@@ -190,7 +192,7 @@ local function on_event(self, event, ...)
     return;
 end
 
-local function initaddon()
+local function init_addon()
     ns.frame:SetPoint("BOTTOM", UIParent, "CENTER", ns.config.xpoint, ns.config.ypoint)
     ns.frame:SetWidth(ns.config.width)
     ns.frame:SetHeight(ns.config.height)
@@ -310,4 +312,4 @@ local function initaddon()
     end
 end
 
-initaddon();
+init_addon();

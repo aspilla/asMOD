@@ -1,8 +1,8 @@
 local _, ns = ...;
 
-ns.powermax = 100;
+ns.maxpower= 100;
 
-local function getspellcost(powerType)
+local function get_spellcost(powerType)
     local cost = 0;
     local spellID = select(9, UnitCastingInfo("player"));
     if spellID then
@@ -17,13 +17,13 @@ local function getspellcost(powerType)
     return cost
 end
 
-local function updatepowercost(bar, amount)
+local function update_powercost(bar, amount)
     if not amount or (amount == 0) then
         bar:Hide();
         return
     end
 
-    local barSize = (amount / ns.powermax) * ns.config.width;
+    local barSize = (amount / ns.maxpower) * ns.config.width;
     bar:SetWidth(barSize);
     bar:Show();
 end
@@ -39,15 +39,15 @@ function ns.update_power()
     local value = UnitPower("player", powerType);
     local valueMax = UnitPowerMax("player", powerType);
 
-    if not issecretvalue(valueMax) and ns.powermax ~= valueMax then
-        ns.powermax = valueMax;
+    if not issecretvalue(valueMax) and ns.maxpower~= valueMax then
+        ns.maxpower= valueMax;
     end
 
-    local cost = getspellcost(powerType);
+    local cost = get_spellcost(powerType);
 
     ns.bar:SetMinMaxValues(0, valueMax)
     ns.bar:SetValue(value, Enum.StatusBarInterpolation.ExponentialEaseOut);
     ns.bar.text:SetText(tostring(value));
 
-    updatepowercost(ns.bar.predictbar, cost);
+    update_powercost(ns.bar.predictbar, cost);
 end

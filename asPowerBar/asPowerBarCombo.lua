@@ -2,7 +2,8 @@ local _, ns      = ...;
 
 local _, Class   = UnitClass("player")
 local classcolor = RAID_CLASS_COLORS[Class];
-local prevmax    = nil;
+ns.maxcombo           = nil;
+ns.maxcombopartial    = nil;
 
 function ns.setup_max_combo(max, maxpartial)
     if issecretvalue(max) then
@@ -13,7 +14,8 @@ function ns.setup_max_combo(max, maxpartial)
         return;
     end
 
-    prevmax = max;
+    ns.maxcombo = max;
+    ns.maxcombopartial = maxpartial;
 
     local width = (ns.config.width - (1 * (max - 1))) / max;
     local combobars = ns.combobars;
@@ -36,7 +38,7 @@ function ns.setup_max_combo(max, maxpartial)
         else
             if max > 5 and i == max then
                 combobars[i]:SetStatusBarColor(1, 0, 0);
-            elseif max > 5 and i > 5 then
+            elseif max > 5 and i >= 5 then
                 combobars[i]:SetStatusBarColor(0, 1, 0);
             else
                 combobars[i]:SetStatusBarColor(classcolor.r, classcolor.g, classcolor.b);
@@ -54,12 +56,13 @@ function ns.setup_max_combo(max, maxpartial)
     end
 end
 
-function ns.show_combo(combo, max, partial)
+function ns.show_combo(combo, partial)
     local combobars = ns.combobars;
+    local max = ns.maxcombo;
     if partial then
         ns.combotext:SetText(partial);
 
-        local _, pmax = combobars[1]:GetMinMaxValues();
+        local pmax = ns.maxcombopartial;
         combo = math.floor(partial / pmax);
         local pvalue = partial % pmax;
 
@@ -109,19 +112,10 @@ function ns.update_combo()
     end
 
     local power = UnitPower("player", ns.power_level);
-    local max = UnitPowerMax("player", ns.power_level);
-
-    local maxupdate = false;
-    if max ~= prevmax then
-        maxupdate = true;
-    end
-
     local partial = nil;
-    local maxpartial = nil;
 
     if ns.bupdate_partial_power then
         partial = UnitPower("player", ns.power_level, true);
-        maxpartial = UnitPowerDisplayMod(ns.power_level)
     end
 
     if ns.power_level == Enum.PowerType.Essence then
@@ -131,7 +125,8 @@ function ns.update_combo()
         end
         local cooldownDuration = 1 / peace;
         local currtime = GetTime();
-        maxpartial = 10;
+        local maxpartial = ns.maxcombopartial;
+        local max = ns.maxcombo;
 
         if power ~= prevpower then
             prevpower = power;
@@ -149,9 +144,5 @@ function ns.update_combo()
 
         partial = prevpower * maxpartial + remain;
     end
-
-    if maxupdate then
-        ns.setup_max_combo(max, maxpartial);
-    end
-    ns.show_combo(power, max, partial);
+    ns.show_combo(power, partial);
 end

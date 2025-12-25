@@ -1,7 +1,7 @@
 local _, ns = ...;
 
 
-function ns.checkstorm()
+function ns.check_storm()
     local combo = 0;
 
     if C_Secrets.GetSpellAuraSecrecy(344179) == 0 then
@@ -13,11 +13,11 @@ function ns.checkstorm()
     end
 
     if combo then
-        ns.show_combo(combo, 10);
+        ns.show_combo(combo);
     end
 end
 
-function ns.checkvoid()
+function ns.check_void()
     local stack = 0;
 
     if C_Secrets.GetSpellAuraSecrecy(1225789) == 0  then
