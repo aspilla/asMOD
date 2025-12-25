@@ -14,7 +14,7 @@ local modifier_options = {
     [3] = "ALT",
     [4] = "CTRL",
     [5] = "SHIFT",
-    [6] = "Trigger from Casting",
+    [6] = "Auto Trigger",
 
 }
 

@@ -1,21 +1,22 @@
 ﻿local _, ns = ...;
-local AIH_SIZE = 30;
-local AIH_TARGET_SIZE = 25;
-local AIH_X = 55;
-local AIH_Y = -57;
-local AIH_F_X = 0;
-local AIH_F_Y = 67;
-local AIH_M_X = 50;
-local AIH_M_Y = -20;
-local AIH_CooldownFontSize = 9;
-local mainframe = CreateFrame("Frame");
+local configs = {
+    size = 30,
+    targetsize = 25,
+    xpoint = 55,
+    ypoint = -57,
+    focusxpoint = 0,
+    focusypoint = 67,
+    mousexpoint = 50,
+    mouseypoint = -20,
+    fontsize = 9,
+};
 
+
+local main_frame = CreateFrame("Frame");
 local interruptSpells = {};
 local stunSpells = {};
-local DangerousSpellList = {};
 
-
-local function initPlayer()
+local function init_player()
     local function compare(a, b)
         if a.cooldown == b.cooldown then
             return a.spellid < b.spellid;
@@ -58,15 +59,15 @@ local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdg
 end
 
 
-local function showInterruptCooldown(frame, spellID, isDangerous, endRemain)
-    spellID = C_Spell.GetOverrideSpell(spellID);
-    local spellInfo = C_Spell.GetSpellInfo(spellID);
+local function show_interruptspell(frame, spellid)
+    spellid = C_Spell.GetOverrideSpell(spellid);
+    local spellInfo = C_Spell.GetSpellInfo(spellid);
 
     if not spellInfo then
         return;
     end
 
-    local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
+    local spellCooldownInfo = C_Spell.GetSpellCooldown(spellid);
     if not spellCooldownInfo then
         return;
     end
@@ -75,43 +76,25 @@ local function showInterruptCooldown(frame, spellID, isDangerous, endRemain)
         return;
     end
 
-    local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellID);
-    -- set the icon
-    local frameIcon = frame.icon;
-    frameIcon:SetTexture(spellInfo.iconID);
-    frameIcon:SetAlpha(1);
+    local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellid);
+
+    frame.icon:SetTexture(spellInfo.iconID);
 
     if (isUsable) then
-        frameIcon:SetVertexColor(1.0, 1.0, 1.0);
+        frame.icon:SetVertexColor(1.0, 1.0, 1.0);
     elseif (notEnoughMana) then
-        frameIcon:SetVertexColor(0.5, 0.5, 1.0);
+        frame.icon:SetVertexColor(0.5, 0.5, 1.0);
     else
-        frameIcon:SetVertexColor(0.4, 0.4, 0.4);
+        frame.icon:SetVertexColor(0.4, 0.4, 0.4);
     end
 
+    set_cooldownframe(frame.cooldown, spellCooldownInfo.startTime, spellCooldownInfo.duration, true);
 
-    local frameBorder = frame.border;
-    frameBorder:SetVertexColor(0, 0, 0);
-    frameBorder:Show();
-
-    -- set the count
-    local frameCooldown = frame.cooldown;
-    frameCooldown:Show();
-    set_cooldownframe(frameCooldown, spellCooldownInfo.startTime, spellCooldownInfo.duration, true);
-    frameCooldown:SetHideCountdownNumbers(false);
-
-    if isDangerous then
-        ns.lib.PixelGlow_Start(frame);
-    else
-        ns.lib.PixelGlow_Stop(frame);
-    end
-
-    frame.spellID = spellID;
     frame:Show();
 end
 
 
-local function isAttackable(unit)
+local function is_attackable(unit)
     local reaction = UnitReaction("player", unit);
     if reaction and reaction <= 4 then
         return true;
@@ -127,18 +110,16 @@ local function get_typeofcast(unit)
     return nil;
 end
 
-local function UnitNeedtoInterrupt(unit)
-    if UnitExists(unit) and isAttackable(unit) then
-        local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-            unit);
+local function check_needtointerrupt(unit)
+    if UnitExists(unit) and is_attackable(unit) then
+        local name = UnitCastingInfo(unit);
         if not name then
-            name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+            name = UnitChannelInfo(unit);
         end
-
 
         if name then
             local casttype = get_typeofcast(unit);
-            return spellid, casttype == "uninterruptable", 1000;
+            return name, casttype == "uninterruptable";
         end
     end
 
@@ -146,50 +127,27 @@ local function UnitNeedtoInterrupt(unit)
 end
 
 
-local function spellIntime(spellid, endRemain)
-    local id = C_Spell.GetOverrideSpell(spellid);
-    local spellCooldownInfo = C_Spell.GetSpellCooldown(id);
-    if spellCooldownInfo then
-        --local remain = spellCooldownInfo.startTime + spellCooldownInfo.duration - GetTime();
-        --if remain < endRemain then
-        return true;
-        --end
-    end
-
-    return false;
-end
-
-local function findInterruptSpell(notInterruptible, isDangerous, endRemain, isBoss)
+local function find_spell(notInterruptible, isBoss)
     local list;
 
     if notInterruptible then
         list = stunSpells;
 
         for _, v in pairs(list) do
-            if spellIntime(v.spellid, endRemain) then
-                return v.spellid;
-            end
+            return v.spellid;
         end
     else
         list = interruptSpells;
 
         for _, v in pairs(list) do
-            if spellIntime(v.spellid, endRemain) then
-                return v.spellid;
-            end
+            return v.spellid;
         end
 
         if not isBoss then
             for _, v in pairs(stunSpells) do
-                if spellIntime(v.spellid, endRemain) then
-                    return v.spellid;
-                end
+                return v.spellid;
             end
         end
-    end
-
-    for _, v in pairs(list) do
-        return v.spellid;
     end
 end
 
@@ -200,10 +158,9 @@ local function check_casting(frame, unit)
         return;
     end
 
-    local mobspellID, notInterruptible, endRemain = UnitNeedtoInterrupt(unit)
+    local name, notInterruptible = check_needtointerrupt(unit)
 
-    if mobspellID and endRemain then
-        local isDangerous = false;
+    if name then
         local isBoss = false;
         local needtointerrupt = true;
         local level = UnitLevel(unit);
@@ -218,12 +175,11 @@ local function check_casting(frame, unit)
             end
         end
 
-
         if needtointerrupt then
-            local spellID = findInterruptSpell(notInterruptible, isDangerous, endRemain, isBoss);
+            local spellID = find_spell(notInterruptible, isBoss);
 
             if spellID then
-                showInterruptCooldown(frame, spellID, isDangerous, endRemain)
+                show_interruptspell(frame, spellID);
             end
         end
     else
@@ -232,30 +188,30 @@ local function check_casting(frame, unit)
 end
 
 
-local function onUpdateMouse()
-    local frame = mainframe.mouseframe;
+local function on_mouseupdate()
+    local frame = main_frame.mouseframe;
     if frame then
         frame:ClearAllPoints();
         local x, y = GetCursorPosition() -- 마우스 좌표 가져오기
-        frame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x + AIH_M_X, y + AIH_M_Y)
+        frame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x + configs.mousexpoint, y + configs.mouseypoint)
     end
 end
 
 
-local function createbutton(unit)
-    local size = AIH_SIZE;
+local function create_button(unit)
+    local size = configs.size;
 
     if unit == "target" then
-        size = AIH_TARGET_SIZE;
+        size = configs.targetsize;
     end
 
-    local frame = CreateFrame("Button", nil, mainframe, "AIHFrameTemplate");
+    local frame = CreateFrame("Button", nil, main_frame, "AIHFrameTemplate");
     frame:SetWidth(size);
     frame:SetHeight(size * 0.9);
 
     for _, r in next, { frame.cooldown:GetRegions() } do
         if r:GetObjectType() == "FontString" then
-            r:SetFont(STANDARD_TEXT_FONT, AIH_CooldownFontSize, "OUTLINE")
+            r:SetFont(STANDARD_TEXT_FONT, configs.fontsize, "OUTLINE")
             frame.cooldowntext = r;
             break
         end
@@ -266,71 +222,60 @@ local function createbutton(unit)
 
     frame.icon:SetTexCoord(.08, .92, .08, .92);
     frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+    frame.border:SetVertexColor(0, 0, 0);
 
-    if not frame:GetScript("OnEnter") then
-        frame:SetScript("OnEnter", function(s)
-            if s.spellID and s.spellID > 0 then
-                GameTooltip_SetDefaultAnchor(GameTooltip, s);
-                GameTooltip:SetSpellByID(s.spellID);
-            end
-        end)
-        frame:SetScript("OnLeave", function()
-            GameTooltip:Hide();
-        end)
-    end
     frame:EnableMouse(false);
-    frame:SetMouseMotionEnabled(true);
     frame:Hide();
 
-    local function OnUpdate()
+    local function on_update()
         check_casting(frame, unit);
     end
 
-    C_Timer.NewTicker(0.3, OnUpdate);
+    C_Timer.NewTicker(0.3, on_update);
 
     return frame;
 end
 
 local bfirst = true
 
-local function AIH_OnEvent(self, event)
+local function on_event(self, event)
     if bfirst then
         bfirst = false;
         ns.SetupOptionPanels();
 
         if ns.options.ShowTarget then
-            mainframe.targetframe = createbutton("target");
-            mainframe.targetframe:SetPoint("CENTER", UIParent, "CENTER", AIH_X, AIH_Y);
+            main_frame.targetframe = create_button("target");
+            main_frame.targetframe:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint);
             if asMOD_setupFrame then
-                asMOD_setupFrame(mainframe.targetframe, "asInterruptHelper (Target)");
+                asMOD_setupFrame(main_frame.targetframe, "asInterruptHelper (Target)");
             end
         end
 
         if ns.options.ShowFocus then
-            mainframe.focusframe = createbutton("focus");
-            mainframe.focusframe:SetPoint("CENTER", UIParent, "CENTER", AIH_F_X, AIH_F_Y);
+            main_frame.focusframe = create_button("focus");
+            main_frame.focusframe:SetPoint("CENTER", UIParent, "CENTER", configs.focusxpoint, configs.focusypoint);
             if asMOD_setupFrame then
-                asMOD_setupFrame(mainframe.focusframe, "asInterruptHelper (Focus)");
+                asMOD_setupFrame(main_frame.focusframe, "asInterruptHelper (Focus)");
             end
         end
 
 
         if ns.options.ShowMouseOver then
-            mainframe.mouseframe = createbutton("mouseover");
-            C_Timer.NewTicker(0.05, onUpdateMouse);
+            main_frame.mouseframe = create_button("mouseover");
+            C_Timer.NewTicker(0.05, on_mouseupdate);
         end
     end
 
-    initPlayer();
+    init_player();
 end
 
-local function initAddon()
-    mainframe:SetScript("OnEvent", AIH_OnEvent)
-    mainframe:RegisterEvent("PLAYER_ENTERING_WORLD")
-    mainframe:RegisterEvent("TRAIT_CONFIG_UPDATED")
-    mainframe:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")
-    mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-    mainframe:RegisterUnitEvent("UNIT_PET", "player")
+local function init()
+    main_frame:SetScript("OnEvent", on_event)
+    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+    main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED")
+    main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")
+    main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+    main_frame:RegisterUnitEvent("UNIT_PET", "player")
 end
 
-initAddon();
+init();

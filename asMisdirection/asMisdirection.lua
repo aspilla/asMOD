@@ -1,4 +1,4 @@
-local AHM_Button        = CreateFrame("Frame", nil, UIParent)
+local main_frame        = CreateFrame("Frame", nil, UIParent)
 
 local playerClass       = select(2, UnitClass("player"))
 local MisDirectionSpell = nil
@@ -6,18 +6,18 @@ local MindInfusionSpell = nil;
 
 local gameLanguage      = GetLocale()
 
-local asGetSpellInfo    = function(spellID)
-	if not spellID then
+local function get_spellinfo(spellid)
+	if not spellid then
 		return nil;
 	end
 
-	local ospellID = C_Spell.GetOverrideSpell(spellID)
+	local or_spellid = C_Spell.GetOverrideSpell(spellid)
 
-	if ospellID then
-		spellID = ospellID;
+	if or_spellid then
+		spellid = or_spellid;
 	end
 
-	local spellInfo = C_Spell.GetSpellInfo(spellID);
+	local spellInfo = C_Spell.GetSpellInfo(spellid);
 	if spellInfo then
 		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
 			spellInfo.spellID, spellInfo.originalIconID;
@@ -25,7 +25,7 @@ local asGetSpellInfo    = function(spellID)
 end
 
 
-local function GetTargetPartyID()
+local function get_partyid()
 	if IsInGroup() then
 		if IsInRaid() then -- raid
 			for i = 1, GetNumGroupMembers() do
@@ -50,7 +50,7 @@ local function GetTargetPartyID()
 	return "pet";
 end
 
-local function CheckPartyMember(btank)
+local function check_party(btank)
 	local _, RTB_ZoneType = IsInInstance();
 
 	if RTB_ZoneType == "pvp" then
@@ -110,7 +110,7 @@ end
 local prev_unit = nil;
 local force_unit = nil;
 
-local function AHM_SetAssist(unit, force)
+local function setup_assistmacro(unit, force)
 	if not force and force_unit then
 		return;
 	end
@@ -119,7 +119,7 @@ local function AHM_SetAssist(unit, force)
 		if unit == force_unit then
 			force_unit = nil;
 			force = nil;
-			unit = CheckPartyMember(true);
+			unit = check_party(true);
 		else
 			force_unit = unit;
 		end
@@ -142,7 +142,7 @@ local function AHM_SetAssist(unit, force)
 		local global, perChar = GetNumMacros();
 
 		if global < 120 then
-			CreateMacro(macroName, "ABILITY_ROGUE_FEIGNDEATH", macroText, false)
+			CreateMacro(macroName, "ABILITY_ROGUE_FEIGNDEATH", macroText, true)
 		else
 			print("asMOD error:too many macros, so need to delete some")
 		end
@@ -162,7 +162,7 @@ end
 local prev_md_unit = nil;
 local force_md_unit = nil;
 
-local function AHM_SetMisdirection(unit, force)
+local function setup_misdirection(unit, force)
 	if not force and force_md_unit then
 		return;
 	end
@@ -171,7 +171,7 @@ local function AHM_SetMisdirection(unit, force)
 		if unit == force_md_unit then
 			force_md_unit = nil;
 			force = nil;
-			unit = CheckPartyMember(true);
+			unit = check_party(true);
 		else
 			force_md_unit = unit;
 		end
@@ -193,7 +193,9 @@ local function AHM_SetMisdirection(unit, force)
 		if (macroID == 0) then
 			local global, perChar = GetNumMacros();
 
-			if global < 120 then
+			if perChar < 30 then
+				CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText, true)
+			elseif global < 120 then
 				CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText, false)
 			else
 				print("asMOD error:too many macros, so need to delete some")
@@ -225,7 +227,7 @@ end
 local prev_mi_unit = nil;
 local force_mi_unit = nil;
 
-local function AHM_SetMindInfusion(unit, force)
+local function setup_mindinfustion(unit, force)
 	if not force and force_mi_unit then
 		return;
 	end
@@ -234,7 +236,7 @@ local function AHM_SetMindInfusion(unit, force)
 		if unit == force_mi_unit then
 			force_mi_unit = nil;
 			force = nil;
-			unit = CheckPartyMember(false);
+			unit = check_party(false);
 		else
 			force_mi_unit = unit;
 		end
@@ -256,7 +258,9 @@ local function AHM_SetMindInfusion(unit, force)
 		if (macroID == 0) then
 			local global, perChar = GetNumMacros();
 
-			if global < 120 then
+			if perChar < 30 then
+				CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText, true)
+			elseif global < 120 then
 				CreateMacro(macroName, "INV_MISC_QUESTIONMARK", macroText, false)
 			else
 				print("asMOD error:too many macros, so need to delete some")
@@ -285,7 +289,7 @@ local function AHM_SetMindInfusion(unit, force)
 	end
 end
 
-local function AHM_SetTargetName(...)
+local function setup_target(...)
 	if InCombatLockdown() then
 		if (gameLanguage == "koKR") then
 			ChatFrame1:AddMessage("|cff33ff99[afm]|r 전투중엔 대상을 설정 할 수 없습니다.");
@@ -295,40 +299,26 @@ local function AHM_SetTargetName(...)
 		return;
 	end
 
-	local unit = GetTargetPartyID();
+	local unit = get_partyid();
 
 	if unit then
-		AHM_SetAssist(unit, true);
-		AHM_SetMisdirection(unit, true);
-		AHM_SetMindInfusion(unit, true);
+		setup_assistmacro(unit, true);
+		setup_misdirection(unit, true);
+		setup_mindinfustion(unit, true);
 	end
-end
-
-local function IsLearndSpell(checkSpellName)
-	local i = 1
-
-	if playerClass == "HUNTER" or playerClass == "ROGUE" then
-		return true;
-	end
-
-	while true do
-		local spellName = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player)
-		if not spellName then
-			do break end
-		end
-		if spellName == checkSpellName then
-			return true
-		end
-		i = i + 1
-	end
-	return false
 end
 
 local tempTanker = nil;
 local tempDealer = nil;
+local check_spells = {
+	[34477] = true,
+	[57934] = true,
+	[360827] = true,
+	[10060] = true,
+}
 
-local function AHM_OnEvent(self, event, ...)
-	if (event == "PLAYER_LOGIN" or event == "LEARNED_SPELL_IN_TAB") then
+local function on_event(self, event, arg1)
+	if (event == "PLAYER_LOGIN" or (event == "LEARNED_SPELL_IN_SKILL_LINE" and arg1 and  check_spells[arg1])) then
 		MisDirectionSpell = nil;
 		MindInfusionSpell = nil;
 		local maintarget = "pet";
@@ -342,7 +332,7 @@ local function AHM_OnEvent(self, event, ...)
 			print("|cff33ff99[afm]|r use macros in the macro window, has created, using |cff33ff99/m|r")
 		end
 
-		AHM_Button:UnregisterEvent("PLAYER_LOGIN")
+		main_frame:UnregisterEvent("PLAYER_LOGIN")
 		local spellId
 		if playerClass == "HUNTER" then
 			spellId = 34477;
@@ -352,14 +342,14 @@ local function AHM_OnEvent(self, event, ...)
 			spellId = 360827;
 			maintarget = "player"
 		elseif playerClass == "PRIEST" then
-			spellId = 122860;
+			spellId = 10060;
 			maintarget = "player"
 			dealspell = true;
 		else
 			--AHM_Button:UnregisterEvent("LEARNED_SPELL_IN_TAB");
 
 			if not InCombatLockdown() then
-				AHM_SetAssist(maintarget);
+				setup_assistmacro(maintarget);
 			else
 				tempTanker = maintarget;
 				tempDealer = maintarget;
@@ -367,9 +357,9 @@ local function AHM_OnEvent(self, event, ...)
 			return
 		end
 
-		local spellName = select(1, asGetSpellInfo(spellId))
+		local spellName = select(1, get_spellinfo(spellId))
 		if not spellName then return end
-		if not IsLearndSpell(spellName) then
+		if not C_SpellBook.IsSpellKnown(spellId) then
 			return
 		else
 			--AHM_Button:UnregisterEvent("LEARNED_SPELL_IN_TAB")
@@ -379,8 +369,8 @@ local function AHM_OnEvent(self, event, ...)
 			MindInfusionSpell = spellName
 
 			if not InCombatLockdown() then
-				AHM_SetAssist(maintarget);
-				AHM_SetMindInfusion(maintarget);
+				setup_assistmacro(maintarget);
+				setup_mindinfustion(maintarget);
 			else
 				tempTanker = maintarget
 				tempDealer = maintarget
@@ -395,8 +385,8 @@ local function AHM_OnEvent(self, event, ...)
 			MisDirectionSpell = spellName
 
 			if not InCombatLockdown() then
-				AHM_SetAssist(maintarget);
-				AHM_SetMisdirection(maintarget);
+				setup_assistmacro(maintarget);
+				setup_misdirection(maintarget);
 			else
 				tempTanker = maintarget
 			end
@@ -408,13 +398,13 @@ local function AHM_OnEvent(self, event, ...)
 			end
 		end
 	elseif (event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED") then
-		local tank = CheckPartyMember(true);
-		local dealer = CheckPartyMember(false);
+		local tank = check_party(true);
+		local dealer = check_party(false);
 
 		if tank and not InCombatLockdown() then
 			if UnitExists(tank) then
-				AHM_SetAssist(tank);
-				AHM_SetMisdirection(tank);
+				setup_assistmacro(tank);
+				setup_misdirection(tank);
 			end
 		else
 			tempTanker = tank;
@@ -422,7 +412,7 @@ local function AHM_OnEvent(self, event, ...)
 
 		if dealer and not InCombatLockdown() then
 			if UnitExists(dealer) then
-				AHM_SetMindInfusion(dealer);
+				setup_mindinfustion(dealer);
 			end
 		else
 			tempDealer = dealer;
@@ -431,13 +421,13 @@ local function AHM_OnEvent(self, event, ...)
 		force_md_unit = nil;
 		force_unit = nil;
 
-		local tank = CheckPartyMember(true);
-		local dealer = CheckPartyMember(false);
+		local tank = check_party(true);
+		local dealer = check_party(false);
 
 		if tank and not InCombatLockdown() then
 			if UnitExists(tank) then
-				AHM_SetAssist(tank);
-				AHM_SetMisdirection(tank);
+				setup_assistmacro(tank);
+				setup_misdirection(tank);
 			end
 		else
 			tempTanker = tank;
@@ -445,36 +435,35 @@ local function AHM_OnEvent(self, event, ...)
 
 		if dealer and not InCombatLockdown() then
 			if UnitExists(dealer) then
-				AHM_SetMindInfusion(dealer);
+				setup_mindinfustion(dealer);
 			end
 		else
 			tempDealer = dealer;
 		end
 	elseif event == "PLAYER_REGEN_ENABLED" and tempTanker then
 		if tempTanker and UnitExists(tempTanker) then
-			AHM_SetAssist(tempTanker);
-			AHM_SetMisdirection(tempTanker);
+			setup_assistmacro(tempTanker);
+			setup_misdirection(tempTanker);
 		end
 		tempTanker = nil;
 
 		if tempDealer and UnitExists(tempDealer) then
-			AHM_SetMindInfusion(tempDealer);
+			setup_mindinfustion(tempDealer);
 		end
 		tempDealer = nil;
 	end
 end
 
-SlashCmdList["AFM_SLASHCMD"] = AHM_SetTargetName
+SlashCmdList["AFM_SLASHCMD"] = setup_target
 SLASH_AFM_SLASHCMD1 = "/afm"
 
-AHM_Button:RegisterEvent("PLAYER_LOGIN")
---AHM_Button:RegisterEvent("LEARNED_SPELL_IN_TAB")
-AHM_Button:RegisterEvent("GROUP_LEFT")
-AHM_Button:RegisterEvent("GROUP_JOINED")
-AHM_Button:RegisterEvent("GROUP_ROSTER_UPDATE")
-AHM_Button:RegisterEvent("PLAYER_ROLES_ASSIGNED")
+main_frame:RegisterEvent("PLAYER_LOGIN")
+main_frame:RegisterEvent("LEARNED_SPELL_IN_SKILL_LINE")
+main_frame:RegisterEvent("GROUP_LEFT")
+main_frame:RegisterEvent("GROUP_JOINED")
+main_frame:RegisterEvent("GROUP_ROSTER_UPDATE")
+main_frame:RegisterEvent("PLAYER_ROLES_ASSIGNED")
+main_frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 
-AHM_Button:RegisterEvent("PLAYER_REGEN_ENABLED")
 
-
-AHM_Button:SetScript("OnEvent", function(self, event, ...) AHM_OnEvent(self, event, ...) end)
+main_frame:SetScript("OnEvent", on_event);

@@ -1,9 +1,8 @@
 ## Interface: 110207, 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rMisdirection
-## Notes: Midirection/Tricks of the trade/Power Infusion helper
-## Notes-koKR: 눈속임/속거/마주/비늘 도우미
-## Version : 250827
+## Notes: Automatically creates macros for Misdirection, Tricks of the Trade, Cauterizing Flame, Power Infusion, and Assist to support appropriate party members.
+## Version : 251225
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asMisdirection.lua

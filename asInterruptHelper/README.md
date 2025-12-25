@@ -20,8 +20,7 @@ Tracks and displays the cooldown of your interrupt or stun spells when your Focu
     * If a spell is non-interruptible but the target is stunnable (e.g., same level mobs), it displays your stun spells.
 * **Smart Priority System**:
     * Spells with shorter cooldowns take priority. (If cooldowns are equal, the spell with the lower ID is prioritized).
-    * Priorities are managed via `ns.InterruptSpells` and `ns.StunSpells`.
-    * Actual cooldown status is tracked in real-time via the in-game API.
+    * Priorities are managed via `ns.InterruptSpells` and `ns.StunSpells`.    
 
 ## Configuration
 
@@ -54,8 +53,7 @@ You can modify the following settings via `ESC` > `Options` > `Addons` > `asInte
     * 스턴이 가능한 몹 (Level이 동등한 몹) 인 경우 스턴 스킬을 표시.
 *   **스킬 우선 순위**:
     * 쿨이 짧은 스킬이 우선순위를 가짐. (쿨이 같은경우 ID 가 작은수 인 경우) 
-    * `ns.InterruptSpells`, `ns.StunSpells` 내에 등록되어 있는 쿨 기준이며, 이 값을 조정하여 우선순위 조정이 가능합니다.
-    * 실제 스킬의 쿨은 해당 값이 아닌 API를 통해 확인합니다. 
+    * `ns.InterruptSpells`, `ns.StunSpells` 내에 등록되어 있는 쿨 기준이며, 이 값을 조정하여 우선순위 조정이 가능합니다.    
 
 ## 설정
 
