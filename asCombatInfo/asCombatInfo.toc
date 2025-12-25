@@ -2,8 +2,8 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCombatInfo
 ## Notes: Enhances the Cooldown Manager.
-## Version : 251220
-## SavedVariablesPerCharacter: ACI_Options
+## Version : 251225
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+asCombatInfo.xml
 asCombatInfo.lua

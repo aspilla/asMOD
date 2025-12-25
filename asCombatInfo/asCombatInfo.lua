@@ -1,19 +1,18 @@
-﻿local addon = CreateFrame("Frame")
-addon:RegisterEvent("ADDON_LOADED")
-addon:RegisterEvent("PLAYER_ENTERING_WORLD")
+﻿local main_frame = CreateFrame("Frame")
+main_frame:RegisterEvent("ADDON_LOADED")
+main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 local updateBucket = {}
 
 -- Core function to remove padding and apply modifications. Doing Blizzard's work for them.
-local function RemovePadding(viewer)
+local function update_buttons(viewer)
 	-- Don't apply modifications in edit mode
 	if EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() then
 		return
 	end
 
 	local children = { viewer:GetChildren() };
-	local isbuff = (viewer == _G.BuffIconCooldownViewer);
-
+	local isbuff = (viewer == BuffIconCooldownViewer);
 
 	-- Get the visible icons (because they're fully dynamic)
 	local visibleChildren = {}
@@ -100,8 +99,7 @@ local function RemovePadding(viewer)
 
 
 		if not button.border then
-			button.border = button:CreateTexture(nil, "BACKGROUND")
-			button.border:SetTexture("Interface\\Addons\\asCombatInfo\\border.tga")
+			button.border = button:CreateTexture(nil, "BACKGROUND", "asCombatInfoBorderTemplate");
 			button.border:SetAllPoints(button);
 			button.border:SetColorTexture(0, 0, 0, 1);
 			button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
@@ -214,7 +212,7 @@ updaterFrame:SetScript("OnUpdate", function()
 
 	for viewer in pairs(updateBucket) do
 		updateBucket[viewer] = nil
-		RemovePadding(viewer)
+		update_buttons(viewer)
 	end
 end)
 
@@ -225,20 +223,16 @@ local function ScheduleUpdate(viewer)
 end
 
 -- Do the work
-local function ApplyModifications()
+local function init()
 	local viewers = {
-		---@diagnostic disable-next-line: undefined-field
-		_G.UtilityCooldownViewer,
-		---@diagnostic disable-next-line: undefined-field
-		_G.EssentialCooldownViewer,
-		---@diagnostic disable-next-line: undefined-field
-		_G.BuffIconCooldownViewer
-
+		UtilityCooldownViewer,
+		EssentialCooldownViewer,
+		BuffIconCooldownViewer,
 	}
 
 	for _, viewer in ipairs(viewers) do
 		if viewer then
-			RemovePadding(viewer)
+			update_buttons(viewer)
 
 			-- Hook Layout to reapply when Blizzard updates
 			if viewer.Layout then
@@ -261,33 +255,33 @@ local function ApplyModifications()
 	end
 	-- BuffIconCooldownViewer loads later, hook it separately
 	C_Timer.After(0.1, function()
-		if _G.BuffIconCooldownViewer then
-			RemovePadding(_G.BuffIconCooldownViewer)
+		if BuffIconCooldownViewer then
+			update_buttons(BuffIconCooldownViewer)
 
 			-- Hook Layout to reapply when icons change
-			if _G.BuffIconCooldownViewer.Layout then
-				hooksecurefunc(_G.BuffIconCooldownViewer, "Layout", function()
-					ScheduleUpdate(_G.BuffIconCooldownViewer)
+			if BuffIconCooldownViewer.Layout then
+				hooksecurefunc(BuffIconCooldownViewer, "Layout", function()
+					ScheduleUpdate(BuffIconCooldownViewer)
 				end)
 			end
 
 			-- Hook Show/Hide on existing and future children
 			local function HookChild(child)
 				child:HookScript("OnShow", function()
-					ScheduleUpdate(_G.BuffIconCooldownViewer)
+					ScheduleUpdate(BuffIconCooldownViewer)
 				end)
 				child:HookScript("OnHide", function()
-					ScheduleUpdate(_G.BuffIconCooldownViewer)
+					ScheduleUpdate(BuffIconCooldownViewer)
 				end)
 			end
 
-			local children = { _G.BuffIconCooldownViewer:GetChildren() }
+			local children = { BuffIconCooldownViewer:GetChildren() }
 			for _, child in ipairs(children) do
 				HookChild(child)
 			end
 
 			-- Monitor for new children
-			_G.BuffIconCooldownViewer:HookScript("OnUpdate", function(self)
+			BuffIconCooldownViewer:HookScript("OnUpdate", function(self)
 				local currentChildren = { self:GetChildren() }
 				for _, child in ipairs(currentChildren) do
 					if not child.cleanCooldownHooked then
@@ -298,15 +292,13 @@ local function ApplyModifications()
 				end
 			end)
 		end
-
-		--CooldownViewerConstants.ITEM_AURA_COLOR = CreateColor(0, 0, 0, 0.5);
 	end)
 end
 -- Event handler
-addon:SetScript("OnEvent", function(self, event, arg)
+main_frame:SetScript("OnEvent", function(self, event, arg)
 	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then
-		C_Timer.After(0.5, ApplyModifications)
+		C_Timer.After(0.5, init)
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		C_Timer.After(0.5, ApplyModifications)
+		C_Timer.After(0.5, init)
 	end
 end)
