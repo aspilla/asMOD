@@ -13,41 +13,128 @@ local configs = {
     i_ypoint = -140,
 }
 
-local asGetSpellInfo = function(spellID)
-    if not spellID then
+local function get_spellinfo(spellid)
+    if not spellid then
         return nil;
     end
 
-    local ospellID = C_Spell.GetOverrideSpell(spellID)
+    local or_spellid = C_Spell.GetOverrideSpell(spellid)
 
-    if ospellID then
-        spellID = ospellID;
+    if or_spellid then
+        spellid = or_spellid;
     end
 
-    local spellInfo = C_Spell.GetSpellInfo(spellID);
+    local spellInfo = C_Spell.GetSpellInfo(spellid);
     if spellInfo then
         return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
             spellInfo.spellID, spellInfo.originalIconID;
     end
 end
 
-local asGetSpellCooldown = function(spellID)
-    if not spellID then
+local function get_spellcooldown(spellid)
+    if not spellid then
         return nil;
     end
 
-    local ospellID = C_Spell.GetOverrideSpell(spellID)
+    local or_spellid = C_Spell.GetOverrideSpell(spellid)
 
-    if ospellID then
-        spellID = ospellID;
+    if or_spellid then
+        spellid = or_spellid;
     end
 
-    local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
+    local spellCooldownInfo = C_Spell.GetSpellCooldown(spellid);
     if spellCooldownInfo then
         return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled,
             spellCooldownInfo.modRate;
     end
 end
+
+local function clear_cooldownframe(self)
+    self:Clear();
+end
+
+local function set_cooldownframe(self, start, duration, enable)
+    if enable then
+        self:SetDrawEdge(nil);
+        self:SetCooldown(start, duration, nil);
+    else
+        clear_cooldownframe(self);
+    end
+end
+
+
+local isdemonstone = false;
+
+local function updateitems(list, buttons, spellid)
+    local i = 1;
+
+    for _, itemid in pairs(list) do
+        local isusable = true
+        if itemid < 20 then
+            itemid = GetInventoryItemID("player", itemid);
+            if itemid then
+                isusable = C_Item.IsUsableItem(itemid);
+            end
+        elseif itemid == 5512 and isdemonstone then
+            itemid = 224464;
+        end
+        if itemid then
+            local _, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemid)
+            local start, duration = C_Item.GetItemCooldown(itemid);
+            local count = 0;
+
+            if isusable then
+                local frame = buttons[i];
+                frame.icon:SetTexture(icon);
+                set_cooldownframe(frame.cooldown, start, duration, true);
+                if duration > 10 then
+                    frame.icon:SetDesaturated(true);
+                else
+                    frame.icon:SetDesaturated(false);
+                end
+                if count > 0 then
+                    frame.count:SetText(count);
+                    frame.count:Show();
+                else
+                    frame.count:Hide();
+                end
+                frame:Show()
+                i = i + 1;
+            end
+        end
+    end
+
+    if spellid then
+        local _, _, icon = get_spellinfo(spellid);
+        local start, duration, enable = get_spellcooldown(spellid);
+        local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellid);
+
+        local frame = buttons[i];
+        frame.icon:SetTexture(icon);
+        set_cooldownframe(frame.cooldown, start, duration, true);
+        if (isUsable) then
+            frame.icon:SetVertexColor(1.0, 1.0, 1.0);
+        elseif (notEnoughMana) then
+            frame.icon:SetVertexColor(0.5, 0.5, 1.0);
+        else
+            frame.icon:SetVertexColor(0.4, 0.4, 0.4);
+        end
+        frame.count:Hide();
+        frame:Show()
+        i = i + 1;
+
+        for j = i, #list + 1 do
+            local frame = buttons[j];
+            frame:Hide();
+        end
+    else
+        for j = i, #list do
+            local frame = buttons[j];
+            frame:Hide();
+        end
+    end
+end
+
 
 local function createitembuttons()
     local bloaded = C_AddOns.LoadAddOn("asMOD")
@@ -121,92 +208,6 @@ local function createitembuttons()
         frame:SetScale(1);
         frame:Hide();
         ibuttons[i] = frame;
-    end
-end
-
-local function clear_cooldownframe(self)
-    self:Clear();
-end
-
-local function set_cooldownframe(self, start, duration, enable)
-    if enable then
-        self:SetDrawEdge(nil);
-        self:SetCooldown(start, duration, nil);
-    else
-        clear_cooldownframe(self);
-    end
-end
-
-
-local isdemonstone = false;
-
-local function updateitems(list, buttons, spellid)
-    local i = 1;
-
-    for _, itemid in pairs(list) do
-        local isusable = true
-        if itemid < 20 then
-            itemid = GetInventoryItemID("player", itemid);
-            if itemid then
-                isusable = C_Item.IsUsableItem(itemid);
-            end
-        elseif itemid == 5512 and isdemonstone then
-            itemid = 224464;
-        end
-        if itemid then
-            local _, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemid)
-            local start, duration = C_Item.GetItemCooldown(itemid);
-            local count = 0;
-
-            if isusable then
-                local frame = buttons[i];
-                frame.icon:SetTexture(icon);
-                set_cooldownframe(frame.cooldown, start, duration, true);
-                if duration > 10 then
-                    frame.icon:SetDesaturated(true);
-                else
-                    frame.icon:SetDesaturated(false);
-                end
-                if count > 0 then
-                    frame.count:SetText(count);
-                    frame.count:Show();
-                else
-                    frame.count:Hide();
-                end
-                frame:Show()
-                i = i + 1;
-            end
-        end
-    end
-
-    if spellid then
-        local _, _, icon = asGetSpellInfo(spellid);
-        local start, duration, enable = asGetSpellCooldown(spellid);
-        local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellid);
-
-        local frame = buttons[i];
-        frame.icon:SetTexture(icon);
-        set_cooldownframe(frame.cooldown, start, duration, true);
-        if (isUsable) then
-            frame.icon:SetVertexColor(1.0, 1.0, 1.0);
-        elseif (notEnoughMana) then
-            frame.icon:SetVertexColor(0.5, 0.5, 1.0);
-        else
-            frame.icon:SetVertexColor(0.4, 0.4, 0.4);
-        end
-        frame.count:Hide();
-        frame:Show()
-        i = i + 1;
-
-        for j = i, #list + 1 do
-            local frame = buttons[j];
-            frame:Hide();
-        end
-    else
-        for j = i, #list do
-            local frame = buttons[j];
-            frame:Hide();
-        end
     end
 end
 
