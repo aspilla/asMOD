@@ -1,15 +1,15 @@
 local _, ns = ...;
 
-local function asCooldownFrame_Clear(self)
+local function clear_cooldownframe(self)
     self:Clear();
 end
 
-local function asCooldownFrame_Set(self, extime, duration, enable)
+local function set_cooldownframe(self, extime, duration, enable)
     if enable then
         self:SetDrawEdge(nil);
         self:SetCooldownFromExpirationTime(extime, duration, nil);
     else
-        asCooldownFrame_Clear(self);
+        clear_cooldownframe(self);
     end
 end
 
@@ -20,7 +20,7 @@ local function SetAura(frame, unit, aura, color)
     frame.count:Show();
     frame.count:SetText(C_UnitAuras.GetAuraApplicationDisplayCount(unit, aura.auraInstanceID, 1, 100));
 
-    asCooldownFrame_Set(frame.cooldown, aura.expirationTime, aura.duration, true);
+    set_cooldownframe(frame.cooldown, aura.expirationTime, aura.duration, true);
 
     frame.border:SetVertexColor(color.r, color.g, color.b);    
 end

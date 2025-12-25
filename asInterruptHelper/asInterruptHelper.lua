@@ -44,16 +44,16 @@ local function initPlayer()
     table.sort(stunSpells, compare);
 end
 
-local function asCooldownFrame_Clear(self)
+local function clear_cooldownframe(self)
     self:Clear();
 end
 
-local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
     if enable then
         self:SetDrawEdge(forceShowDrawEdge);
         self:SetCooldown(start, duration, modRate);
     else
-        asCooldownFrame_Clear(self);
+        clear_cooldownframe(self);
     end
 end
 
@@ -97,7 +97,7 @@ local function showInterruptCooldown(frame, spellID, isDangerous, endRemain)
     -- set the count
     local frameCooldown = frame.cooldown;
     frameCooldown:Show();
-    asCooldownFrame_Set(frameCooldown, spellCooldownInfo.startTime, spellCooldownInfo.duration, true);
+    set_cooldownframe(frameCooldown, spellCooldownInfo.startTime, spellCooldownInfo.duration, true);
     frameCooldown:SetHideCountdownNumbers(false);
 
     if isDangerous then

@@ -83,7 +83,7 @@ local function ACRB_updateCasting(asframe, unit)
                 local expirationTime = start + duration;
 
                 if start ~= data.start or duration ~= data.duration then
-                    ns.asCooldownFrame_Set(castFrame.cooldown, start, duration, true);
+                    ns.set_cooldownframe(castFrame.cooldown, start, duration, true);
                     data.start = start;
                     data.duration = duration;
                 end

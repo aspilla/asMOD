@@ -1,15 +1,15 @@
 local _, ns = ...;
 
-local function asCooldownFrame_Clear(self)
+local function clear_cooldownframe(self)
 	self:Clear();
 end
 
-local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
 	if enable then
 		self:SetDrawEdge(forceShowDrawEdge);
 		self:SetCooldown(start, duration, modRate);
 	else
-		asCooldownFrame_Clear(self);
+		clear_cooldownframe(self);
 	end
 end
 
@@ -24,7 +24,7 @@ local function Update(frame, startTime, duration, icon)
 		buttonIcon:Show();
 		buttonBorder:Show();
 		frame:SetAlpha(1);
-		asCooldownFrame_Set(buttonCooldown, startTime, duration, true);
+		set_cooldownframe(buttonCooldown, startTime, duration, true);
 		buttonCooldown:Show();
 	else
 		buttonIcon:Hide();

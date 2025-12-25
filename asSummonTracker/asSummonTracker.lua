@@ -119,16 +119,16 @@ local summon_colorlist = {
 }
 
 
-local function asCooldownFrame_Clear(self)
+local function clear_cooldownframe(self)
     self:Clear();
 end
 
-local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
     if enable and enable ~= 0 and start > 0 and duration > 0 then
         self:SetDrawEdge(forceShowDrawEdge);
         self:SetCooldown(start, duration, modRate);
     else
-        asCooldownFrame_Clear(self);
+        clear_cooldownframe(self);
     end
 end
 
@@ -160,7 +160,7 @@ local function set_button(button, spellId, count, start, duration)
         data.start = start;
         data.duration = duration;
 
-        asCooldownFrame_Set(button.cooldown, start, duration, duration > 0, true);
+        set_cooldownframe(button.cooldown, start, duration, duration > 0, true);
     end
 end
 

@@ -4,7 +4,7 @@ Displays the icon of a spell to the left of the character when the spell has a g
 
 ![asActiveAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asActiveAlert.png?raw=true)
 
-## Key Features
+## Main Features
 
 *  **Spell Activation Alert**:
     *   Displays the spell icon to the left of the character when a spell becomes available or is highlighted by a specific effect (when a glowing effect appears on the icon border in-game).

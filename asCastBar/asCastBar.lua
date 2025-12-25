@@ -1,58 +1,57 @@
-﻿-----------------Casting Bar 설정 ------------------------
-local ACB_Casting_Time = true --Casting 창 시간 표시
+﻿local configs = {
+	ShowTime = true,
+	ShowIcon = true,
+}
 
+local castframe = PlayerCastingBarFrame;
 
+if configs.ShowIcon then
+	castframe.casticon = CreateFrame("Frame", nil, castframe, "asCastIconFrameTemplate");
+	castframe.casticon:EnableMouse(false);
+	castframe.casticon:SetPoint("TOPRIGHT", castframe, "TOPLEFT", -3, 0)
 
-PlayerCastingBarFrame.casticon = CreateFrame("Frame", nil, PlayerCastingBarFrame, "asCastIconFrameTemplate");
-PlayerCastingBarFrame.casticon:EnableMouse(false);
-PlayerCastingBarFrame.casticon:SetPoint("TOPRIGHT", PlayerCastingBarFrame, "TOPLEFT", -3, 0)
+	castframe.casticon:SetHeight(castframe:GetHeight() + 10);
+	castframe.casticon:SetWidth((castframe:GetHeight() + 10) * 1.1);
+	castframe.casticon.icon:SetTexCoord(.08, .92, .08, .92);
+	castframe.casticon.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+	castframe.casticon.border:SetVertexColor(0, 0, 0);
+	castframe.casticon:Hide();
 
-PlayerCastingBarFrame.casticon:SetHeight(PlayerCastingBarFrame:GetHeight() + 10);
-PlayerCastingBarFrame.casticon:SetWidth((PlayerCastingBarFrame:GetHeight() + 10) * 1.1);
-PlayerCastingBarFrame.casticon.icon:SetTexCoord(.08, .92, .08, .92);
-PlayerCastingBarFrame.casticon.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-PlayerCastingBarFrame.casticon.border:SetVertexColor(0, 0, 0);
-PlayerCastingBarFrame.casticon.border:Show();
-PlayerCastingBarFrame.casticon:Hide();
+	local function on_event(self)
+		local name, _, texture = UnitCastingInfo("player");
 
-local function casticon_OnEvent(self, event)
-	
-	local name, _, texture = UnitCastingInfo("player");
+		if not name then
+			name, _, texture = UnitChannelInfo("player")
+		end
 
-	if not name then
-		name, _, texture = UnitChannelInfo("player")
+		if name and self.icon then
+			self.icon:SetTexture(texture);
+			self:Show();
+		else
+			self:Hide();
+		end
 	end
 
-	local frameIcon = self.icon
-	if name and frameIcon then
-		frameIcon:SetTexture(texture);
-		frameIcon:Show();
-		self:Show();
-	else
-		frameIcon:Hide();
-		self:Hide();
-	end
+
+	castframe.casticon:SetScript("OnEvent", on_event)
+	castframe.casticon:RegisterUnitEvent("UNIT_SPELLCAST_START", "player");
+	castframe.casticon:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player");
+	castframe.casticon:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "player");
 end
 
 
-PlayerCastingBarFrame.casticon:SetScript("OnEvent", casticon_OnEvent)
-PlayerCastingBarFrame.casticon:RegisterUnitEvent("UNIT_SPELLCAST_START", "player");
-PlayerCastingBarFrame.casticon:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player");
-PlayerCastingBarFrame.casticon:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "player");
-
-
-if ACB_Casting_Time then	
-	PlayerCastingBarFrame.timer = PlayerCastingBarFrame:CreateFontString(nil)
-	PlayerCastingBarFrame.timer:SetFont(STANDARD_TEXT_FONT, 11, "THINOUTLINE")
-	PlayerCastingBarFrame.timer:SetPoint("TOPRIGHT", PlayerCastingBarFrame, "BOTTOMRIGHT", 0, -2)
-	PlayerCastingBarFrame.update = 0.1
+if configs.ShowTime then
+	castframe.timer = castframe:CreateFontString(nil)
+	castframe.timer:SetFont(STANDARD_TEXT_FONT, 11, "THINOUTLINE")
+	castframe.timer:SetPoint("TOPRIGHT", castframe, "BOTTOMRIGHT", 0, -2)
+	castframe.update = 0.1
 
 	local update = 0;
 
-	local function CastingBarFrame_OnUpdate_Hook(self, elapsed)
+	local function update_hook(self, elapsed)
 		if not self.timer then return end
 		if update >= 0.1 then
-			if self.casting and not issecretvalue(self.maxValue) then				
+			if self.casting and not issecretvalue(self.maxValue) then
 				self.timer:SetText(format("%.1f/%.1f", max(self.maxValue - self.value, 0), max(self.maxValue, 0)))
 			elseif self.channeling and not issecretvalue(self.maxValue) then
 				self.timer:SetText(format("%.1f/%.1f", max(self.value, 0), max(self.maxValue, 0)))
@@ -65,5 +64,5 @@ if ACB_Casting_Time then
 		end
 	end
 
-	PlayerCastingBarFrame:HookScript('OnUpdate', CastingBarFrame_OnUpdate_Hook)
+	castframe:HookScript('OnUpdate', update_hook)
 end

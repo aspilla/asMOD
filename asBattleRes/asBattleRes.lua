@@ -9,7 +9,7 @@ local ASBR_Spell = 20484;
 -- 옵션끝
 local ASBR_CoolButtons;
 
-local function asCooldownFrame_Clear(self)
+local function clear_cooldownframe(self)
 	self:Clear();
 end
 
@@ -30,12 +30,12 @@ local function SavePosition(frame, option)
 	option.yOfs = yOfs
 end
 
-local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
 	if enable then
 		self:SetDrawEdge(forceShowDrawEdge);
 		self:SetCooldown(start, duration, modRate);
 	else
-		asCooldownFrame_Clear(self);
+		clear_cooldownframe(self);
 	end
 end
 
@@ -71,7 +71,7 @@ local function ASBR_Update()
 
 	if spellChargeInfo then
 		ASBR_CoolButtons.cooldown:Show();
-		asCooldownFrame_Set(ASBR_CoolButtons.cooldown, spellChargeInfo.cooldownStartTime,
+		set_cooldownframe(ASBR_CoolButtons.cooldown, spellChargeInfo.cooldownStartTime,
 			spellChargeInfo.cooldownDuration, true, true);
 	else
 		ASBR_CoolButtons.cooldown:Hide();

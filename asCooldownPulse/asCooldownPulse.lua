@@ -124,16 +124,16 @@ local function createitembuttons()
     end
 end
 
-local function asCooldownFrame_Clear(self)
+local function clear_cooldownframe(self)
     self:Clear();
 end
 
-local function asCooldownFrame_Set(self, start, duration, enable)
+local function set_cooldownframe(self, start, duration, enable)
     if enable then
         self:SetDrawEdge(nil);
         self:SetCooldown(start, duration, nil);
     else
-        asCooldownFrame_Clear(self);
+        clear_cooldownframe(self);
     end
 end
 
@@ -161,7 +161,7 @@ local function updateitems(list, buttons, spellid)
             if isusable then
                 local frame = buttons[i];
                 frame.icon:SetTexture(icon);
-                asCooldownFrame_Set(frame.cooldown, start, duration, true);
+                set_cooldownframe(frame.cooldown, start, duration, true);
                 if duration > 10 then
                     frame.icon:SetDesaturated(true);
                 else
@@ -186,7 +186,7 @@ local function updateitems(list, buttons, spellid)
 
         local frame = buttons[i];
         frame.icon:SetTexture(icon);
-        asCooldownFrame_Set(frame.cooldown, start, duration, true);
+        set_cooldownframe(frame.cooldown, start, duration, true);
         if (isUsable) then
             frame.icon:SetVertexColor(1.0, 1.0, 1.0);
         elseif (notEnoughMana) then

@@ -1,49 +1,33 @@
 ﻿local _, ns = ...;
-local ABF;
-local ABF_TARGET_BUFF;
+local main_frame = CreateFrame("Frame", nil, UIParent);
 
-local function asCooldownFrame_Clear(self)
+local function clear_cooldownframe(self)
 	self:Clear();
 end
 
-local function asCooldownFrame_Set(self, extime, duration, enable)
-    if enable then
-        self:SetDrawEdge(nil);
-        self:SetCooldownFromExpirationTime(extime, duration, nil);
-    else
-        asCooldownFrame_Clear(self);
-    end
-end
-
-local function SetBuff(frame, unit, aura, color)
-	frame.icon:SetTexture(aura.icon);
-	frame:Show();
-
-	frame.count:Show();
-	frame.count:SetText(C_UnitAuras.GetAuraApplicationDisplayCount(unit, aura.auraInstanceID, 1, 100));
-	
-	asCooldownFrame_Set(frame.cooldown, aura.expirationTime, aura.duration, true);
-
-	frame.border:SetVertexColor(color.r, color.g, color.b);
-end
-
-
-local function HideFrame(p, idx)
-	local frame = p.frames[idx];
-
-	if (frame) then
-		frame.data = {};
-		frame:Hide();
+local function set_cooldownframe(self, extime, duration, enable)
+	if enable then
+		self:SetDrawEdge(nil);
+		self:SetCooldownFromExpirationTime(extime, duration, nil);
+	else
+		clear_cooldownframe(self);
 	end
 end
 
-local function UpdateAuraFrames(unit, auraList)
+local function set_buff(frame, unit, aura, color)
+	frame.icon:SetTexture(aura.icon);
+	frame.count:SetText(C_UnitAuras.GetAuraApplicationDisplayCount(unit, aura.auraInstanceID, 1, 100));
+	set_cooldownframe(frame.cooldown, aura.expirationTime, aura.duration, true);
+	frame.border:SetVertexColor(color.r, color.g, color.b);
+end
+
+local function update_auraframes(unit, auraList)
 	local i = 0;
-	local parent = ABF_TARGET_BUFF;
+	local parent = main_frame.targetframe;
 
 	local max = #(parent.frames)
-	
-	for _index, aura in ipairs(auraList) do
+
+	for _, aura in ipairs(auraList) do
 		i = i + 1;
 		if i > max then
 			break;
@@ -55,11 +39,16 @@ local function UpdateAuraFrames(unit, auraList)
 		frame.auraInstanceID = aura.auraInstanceID;
 		local color = { r = 0, g = 0, b = 0 };
 
-		SetBuff(frame, unit, aura, color);
+		set_buff(frame, unit, aura, color);
+		frame:Show();
 	end
 
 	for j = i + 1, max do
-		HideFrame(parent, j);
+		local frame = parent.frames[j];
+
+		if (frame) then
+			frame:Hide();
+		end
 	end
 end
 
@@ -68,27 +57,25 @@ local filters = {
 	helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful),
 }
 
-local function UpdateAuras(unit)
-	local maxscancount = ns.ABF_MAX_BUFF_SHOW;
+local function update_auras(unit)
+	local maxscancount = ns.configs.MAX_BUFF_SHOW;
 	local filter = filters.default;
 
 	if not UnitAffectingCombat("player") then
-		maxscancount = ns.ABF_TARGET_MAX_BUFF_SHOW;
+		maxscancount = ns.configs.TARGET_MAX_BUFF_SHOW;
 		filter = filters.helpful;
-	end	
+	end
 
 	if UnitCanAttack("player", unit) then
 		filter = filters.helpful;
 	end
 
 	local activeBuff = C_UnitAuras.GetUnitAuras(unit, filter, maxscancount);
-	UpdateAuraFrames(unit, activeBuff);
+	update_auraframes(unit, activeBuff);
 end
 
-
-
-local function ABF_ClearFrame()
-	local parent = ABF_TARGET_BUFF;
+local function clear_frames()
+	local parent = main_frame.targetframe;
 	local max = #(parent.frames);
 
 	for i = 1, max do
@@ -96,20 +83,19 @@ local function ABF_ClearFrame()
 
 		if (frame) then
 			frame:Hide();
-			frame.data = {};
 		else
 			break;
 		end
 	end
 end
 
-local function ABF_Resize()
-	local parent = ABF_TARGET_BUFF;
+local function resize_frames()
+	local parent = main_frame.targetframe;
 	local max = #(parent.frames);
-	local size = ns.ABF_SIZE;
+	local size = ns.configs.SIZE;
 
 	if not UnitAffectingCombat("player") then
-		size = ns.ABF_SIZE_NOCOMBAT;
+		size = ns.configs.SIZE_NOCOMBAT;
 	end
 
 	for i = 1, max do
@@ -124,26 +110,26 @@ local function ABF_Resize()
 end
 
 
-local function ABF_OnEvent(self, event, arg1, ...)
+local function on_event(self, event, arg1, ...)
 	if (event == "PLAYER_TARGET_CHANGED") then
-		ABF_ClearFrame();
-		ABF_Resize();
-		UpdateAuras("target");
+		clear_frames();
+		resize_frames();
+		update_auras("target");
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		ABF_Resize();
-		UpdateAuras("target");
+		resize_frames();
+		update_auras("target");
 	elseif event == "PLAYER_REGEN_DISABLED" then
-		ABF:SetAlpha(ns.ABF_AlphaCombat);
-		ABF_Resize();
-		UpdateAuras("target");
+		main_frame:SetAlpha(ns.configs.AlphaCombat);
+		resize_frames();
+		update_auras("target");
 	elseif event == "PLAYER_REGEN_ENABLED" then
-		ABF:SetAlpha(ns.ABF_AlphaNormal);
-		ABF_Resize();
-		UpdateAuras("target");
+		main_frame:SetAlpha(ns.configs.AlphaNormal);
+		resize_frames();
+		update_auras("target");
 	end
 end
 
-local function ABF_UpdateBuffAnchor(frames, index, offsetX, right, center, parent)
+local function update_anchor(frames, index, offsetX, right, center, parent)
 	local buff = frames[index];
 	buff:ClearAllPoints();
 
@@ -175,12 +161,12 @@ local function ABF_UpdateBuffAnchor(frames, index, offsetX, right, center, paren
 			buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
 		end
 	end
-	-- Resize
-	buff:SetWidth(ns.ABF_SIZE);
-	buff:SetHeight(ns.ABF_SIZE * 0.8);
+	
+	buff:SetWidth(ns.configs.SIZE);
+	buff:SetHeight(ns.configs.SIZE * 0.8);
 end
 
-local function CreatBuffFrames(parent, bright, bcenter, max)
+local function create_frames(parent, bright, bcenter, max)
 	if parent.frames == nil then
 		parent.frames = {};
 	end
@@ -189,11 +175,10 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
 		local frame = parent.frames[idx];
 		frame.cooldown:SetDrawSwipe(true);
-		frame.cooldown:SetHideCountdownNumbers(false);
-
+		
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
-				r:SetFont(STANDARD_TEXT_FONT, ns.ABF_CooldownFontSize, "OUTLINE");
+				r:SetFont(STANDARD_TEXT_FONT, ns.configs.CooldownFontSize, "OUTLINE");
 				r:ClearAllPoints();
 				r:SetPoint("TOP", 0, 5);
 				r:SetDrawLayer("OVERLAY");
@@ -201,79 +186,62 @@ local function CreatBuffFrames(parent, bright, bcenter, max)
 			end
 		end
 
-		frame.count:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize, "OUTLINE")
+		frame.count:SetFont(STANDARD_TEXT_FONT, ns.configs.CountFontSize, "OUTLINE")
 		frame.count:ClearAllPoints()
 		frame.count:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", -2, 2);
 
-		frame.point:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize - 3, "OUTLINE")
-		frame.point:ClearAllPoints()
-		frame.point:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", -2, 2);
-		frame.point:SetTextColor(0, 1, 0);
-
-		frame.bigcount:SetFont(STANDARD_TEXT_FONT, ns.ABF_CountFontSize + 3, "OUTLINE")
-		frame.bigcount:ClearAllPoints()
-		frame.bigcount:SetPoint("CENTER", frame.icon, "CENTER", 0, 0);
-
 		frame.icon:SetTexCoord(.08, .92, .16, .84);
-		frame.icon:SetAlpha(ns.ABF_ALPHA);
+		
 		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-		frame.border:SetAlpha(ns.ABF_ALPHA);
-
-		ABF_UpdateBuffAnchor(parent.frames, idx, 1, bright, bcenter, parent);
+		
+		update_anchor(parent.frames, idx, 1, bright, bcenter, parent);
 
 		frame:EnableMouse(false);
 		frame:Hide();
 	end
-
-	return;
 end
 
-local function OnUpdate()
+local function on_update()
 	if (UnitExists("target")) then
-		UpdateAuras("target");
+		update_auras("target");
 	end
 end
 
 
-local function ABF_Init()
-	ABF = CreateFrame("Frame", nil, UIParent)
-
-	ABF:SetPoint("CENTER", 0, 0)
-	ABF:SetWidth(1)
-	ABF:SetHeight(1)
-	ABF:SetScale(1)
-	ABF:SetAlpha(ns.ABF_AlphaNormal);
-	ABF:Show()
+local function init()
+	main_frame:SetPoint("CENTER", 0, 0)
+	main_frame:SetWidth(1)
+	main_frame:SetHeight(1)
+	main_frame:SetScale(1)
+	main_frame:SetAlpha(ns.configs.AlphaNormal);
+	main_frame:Show()
 
 
 	local bloaded = C_AddOns.LoadAddOn("asMOD")
 
-	ABF_TARGET_BUFF = CreateFrame("Frame", nil, ABF)
+	main_frame.targetframe = CreateFrame("Frame", nil, main_frame)
 
-	ABF_TARGET_BUFF:SetPoint("CENTER", ns.ABF_TARGET_BUFF_X, ns.ABF_TARGET_BUFF_Y)
-	ABF_TARGET_BUFF:SetWidth(1)
-	ABF_TARGET_BUFF:SetHeight(1)
-	ABF_TARGET_BUFF:SetScale(1)
-	ABF_TARGET_BUFF:Show()
+	main_frame.targetframe:SetPoint("CENTER", ns.configs.TARGET_BUFF_X, ns.configs.TARGET_BUFF_Y)
+	main_frame.targetframe:SetWidth(1)
+	main_frame.targetframe:SetHeight(1)
+	main_frame.targetframe:SetScale(1)
+	main_frame.targetframe:Show()
 
-	CreatBuffFrames(ABF_TARGET_BUFF, true, false, ns.ABF_TARGET_MAX_BUFF_SHOW);
+	create_frames(main_frame.targetframe, true, false, ns.configs.TARGET_MAX_BUFF_SHOW);
 
 	if bloaded and asMOD_setupFrame then
-		asMOD_setupFrame(ABF_TARGET_BUFF, "asBuffFilter(Target)");
+		asMOD_setupFrame(main_frame.targetframe, "asBuffFilter(Target)");
 	end
 
-	ABF:RegisterEvent("PLAYER_TARGET_CHANGED")
-	ABF:RegisterEvent("PLAYER_ENTERING_WORLD");
-	ABF:RegisterEvent("PLAYER_LEAVING_WORLD");
-	ABF:RegisterEvent("PLAYER_REGEN_DISABLED");
-	ABF:RegisterEvent("PLAYER_REGEN_ENABLED");
-	ABF:RegisterEvent("CVAR_UPDATE");
-
-	ABF:SetScript("OnEvent", ABF_OnEvent);
+	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
+	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+	main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+	main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+	main_frame:SetScript("OnEvent", on_event);
 
 	--주기적으로 Callback
-	C_Timer.NewTicker(0.2, OnUpdate);
-	UpdateAuras("target");
+	C_Timer.NewTicker(0.2, on_update);
+	update_auras("target");
 end
 
-C_Timer.After(0.5, ABF_Init);
+C_Timer.After(0.5, init);

@@ -9,20 +9,11 @@
 				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asBuffFilter\border.tga"/>	
 			</Layer>
 			<Layer level="OVERLAY">
-				<FontString name="$parentCount" parentKey="count"  justifyH="RIGHT"/>				
-				<FontString name="$parentBigCount" parentKey="bigcount"  justifyH="RIGHT"/>				
-				<FontString name="$parentPoint" parentKey="point"  justifyH="RIGHT"/>				
+				<FontString name="$parentCount" parentKey="count"  justifyH="RIGHT"/>		
 			</Layer>
 		</Layers>
 		<Frames>
 			<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" enableMouse="false" frameLevel="1000">
-				<Anchors>
-					<Anchor point="CENTER">
-						<Offset>
-							<AbsDimension x="0" y="-1"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
 			</Cooldown>
 		</Frames>
 	</Frame>

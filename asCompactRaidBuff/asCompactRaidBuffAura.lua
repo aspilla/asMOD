@@ -250,17 +250,17 @@ local function ShouldDisplayDebuff(aura)
 end
 
 -- cooldown
-local function asCooldownFrame_Clear(self)
+local function clear_cooldownframe(self)
     self:Clear();
 end
 
 -- cooldown
-function ns.asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+function ns.set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
     if enable and enable ~= 0 and start > 0 and duration > 0 then
         self:SetDrawEdge(forceShowDrawEdge);
         self:SetCooldown(start, duration, modRate);
     else
-        asCooldownFrame_Clear(self);
+        clear_cooldownframe(self);
     end
 end
 
@@ -314,9 +314,9 @@ local function ARCB_UtilSetBuff(frame, aura, currtime)
     if (aura.expirationTime ~= data.expirationTime) or (aura.duration ~= data.duration) then
         if enabled then
             local startTime = aura.expirationTime - aura.duration;
-            ns.asCooldownFrame_Set(frame.cooldown, startTime, aura.duration, true);
+            ns.set_cooldownframe(frame.cooldown, startTime, aura.duration, true);
         else
-            asCooldownFrame_Clear(frame.cooldown);
+            clear_cooldownframe(frame.cooldown);
         end
         data.expirationTime = aura.expirationTime;
         data.duration = aura.duration;
@@ -476,9 +476,9 @@ local function ACRB_UtilSetDebuff(frame, aura, currtime)
     if (aura.expirationTime ~= data.expirationTime) or (aura.duration ~= data.duration) then
         if enabled then
             local startTime = aura.expirationTime - aura.duration;
-            ns.asCooldownFrame_Set(frame.cooldown, startTime, aura.duration, true);
+            ns.set_cooldownframe(frame.cooldown, startTime, aura.duration, true);
         else
-            asCooldownFrame_Clear(frame.cooldown);
+            clear_cooldownframe(frame.cooldown);
         end
         data.expirationTime = aura.expirationTime;
         data.duration = aura.duration;

@@ -228,16 +228,16 @@ local previcon = nil;
 local prevtime = 0;
 local lastgcd = 1.5 / ((GetHaste() / 100) + 1);
 
-local function asCooldownFrame_Clear(self)
+local function clear_cooldownframe(self)
 	self:Clear();
 end
 
-local function asCooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
+local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
 	if enable and enable ~= 0 and start > 0 and duration > 0 then
 		self:SetDrawEdge(forceShowDrawEdge);
 		self:SetCooldown(start, duration, modRate);
 	else
-		asCooldownFrame_Clear(self);
+		clear_cooldownframe(self);
 	end
 end
 
@@ -264,7 +264,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			frameIcon:Show();
 			local duration = (endTime - startTime) / 1000;
 			endTime = endTime / 1000;
-			asCooldownFrame_Set(frameCooldown, endTime - duration, duration, duration > 0, true);
+			set_cooldownframe(frameCooldown, endTime - duration, duration, duration > 0, true);
 			frameCooldown:SetHideCountdownNumbers(true);
 			frame:Show();
 		else
@@ -293,7 +293,7 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			frameIcon:Show();
 			local duration = (endTime - startTime) / 1000;
 			endTime = endTime / 1000;
-			asCooldownFrame_Set(frameCooldown, endTime - duration, duration, duration > 0, true);
+			set_cooldownframe(frameCooldown, endTime - duration, duration, duration > 0, true);
 			frameCooldown:SetHideCountdownNumbers(true);
 			frame:Show();
 		else
