@@ -1,17 +1,18 @@
 ﻿local _, ns = ...;
-local configs = {};
-configs.size = 40;
-configs.xpoint = -365
-configs.ypoint = -197
-configs.fonts = {
-	[1] = STANDARD_TEXT_FONT,
-	[2] = UNIT_NAME_FONT,
-	[3] = DAMAGE_TEXT_FONT,
-}
+local configs = {
+	size = 40,
+	xpoint = -365,
+	ypoint = -197,
+	fonts = {
+		[1] = STANDARD_TEXT_FONT,
+		[2] = UNIT_NAME_FONT,
+		[3] = DAMAGE_TEXT_FONT,
+	},
+};
 
 
 -- 옵션끝
-local main_frame = CreateFrame("Frame", nil, UIParent);;
+local main_frame = CreateFrame("Frame", nil, UIParent);
 
 -- Function to load saved position
 local function load_position(frame, option)
@@ -116,7 +117,7 @@ local function init()
 
 	ns.SetupOptionPanels();
 	C_AddOns.LoadAddOn("asMOD");
-	
+
 	main_frame:EnableMouse(true);
 	main_frame:RegisterForDrag("LeftButton");
 	main_frame:SetMovable(true);
