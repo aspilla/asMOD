@@ -2,7 +2,7 @@
 
 Displays the player's primary resources (Energy, Mana, Rage, etc.) and class resources (Combo Points, Runes, Holy Power, etc.).
 
-![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar.jpg?raw=true)
+![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_MN.jpg?raw=true)
 
 ## Key Features
 
@@ -39,7 +39,7 @@ There are no separate settings.
 
 플레이어의 주 자원 (기력/마나/분노), 직업 자원(연계 점수, 룬, 신성한 힘 등) 표시.
 
-![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar.jpg?raw=true)
+![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_MN.jpg?raw=true)
 
 ## 주요 기능 (Features)
 
