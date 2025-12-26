@@ -83,14 +83,14 @@ local function setupCastBar()
     frame.button.border:Show();
     frame.button:Show();
 
-    frame.targetname = frame:CreateFontString(nil, "OVERLAY");
+    frame.targetname = frame:CreateFontString(nil, "ARTWORK");
     frame.targetname:SetFont(CONFIG_FONT, ATCB_NAME_SIZE);
     frame.targetname:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -2);
 
-    frame.mark = frame:CreateFontString(nil, "OVERLAY");
-    frame.mark:SetFont(STANDARD_TEXT_FONT, ATCB_NAME_SIZE + 3);
-    frame.mark:SetPoint("RIGHT", frame.button, "LEFT", -1, 0);
-    frame.mark:Show();
+    frame.mark = frame:CreateTexture(nil, "ARTWORK");
+    frame.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
+    frame.mark:SetSize(ATCB_NAME_SIZE + 3, ATCB_NAME_SIZE + 3);
+    frame.mark:SetPoint("RIGHT", frame.button, "LEFT", -1, 0);    
     frame.start = 0;
     frame.duration = 0;
     frame.soundalerted = false;
@@ -123,27 +123,15 @@ local function hideCastBar(castBar)
     castBar.soundalerted = false;
 end
 
-local RaidIconList = {
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
-}
 
-
-local function DisplayRaidIcon(unit)
-    local icon = GetRaidTargetIndex(unit);
-    --[[
-    if icon and RaidIconList[icon] then
-        return RaidIconList[icon] .. "0|t"
+local function DisplayRaidIcon(unit, markframe)
+    local raidicon = GetRaidTargetIndex(unit);
+    if raidicon then
+        SetRaidTargetIconTexture(markframe, raidicon);    
+        markframe:Show();
     else
-        return ""
+        markframe:Hide();
     end
-    ]]
 end
 
 local function get_typeofcast(unit)
@@ -186,6 +174,15 @@ local function checkCasting(castBar, event)
             castBar:SetStatusBarDesaturated(false);
             castBar:Show();
         elseif name then
+
+            local duration;
+
+            if bchannel then
+                duration = UnitChannelDuration(unit);
+            else
+                duration = UnitCastingDuration(unit);
+            end
+
             local current = GetTime();
             frameIcon:SetTexture(texture);
             castBar:SetReverseFill(bchannel);
@@ -194,8 +191,6 @@ local function checkCasting(castBar, event)
             castBar.failstart = nil;
 
             local color = {};
-
-
             color = CONFIG_INTERRUPTIBLE_COLOR;
             local type = get_typeofcast(unit);
 
@@ -204,7 +199,7 @@ local function checkCasting(castBar, event)
             end
             castBar:SetStatusBarColor(color[1], color[2], color[3]);
             text:SetText(name);
-            mark:SetText(DisplayRaidIcon(unit));
+            DisplayRaidIcon(unit, mark);
             frameIcon:Show();
             castBar:Show();
 

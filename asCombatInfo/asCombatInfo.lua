@@ -1,4 +1,6 @@
-﻿local main_frame = CreateFrame("Frame")
+﻿local _, ns = ...;
+
+local main_frame = CreateFrame("Frame")
 main_frame:RegisterEvent("ADDON_LOADED")
 main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
@@ -139,6 +141,10 @@ local function update_buttons(viewer)
 		end
 	end
 
+	if isbuff and not ns.options.AlignedBuff then
+		return;
+	end
+
 	-- Reposition buttons respecting orientation and stride
 	local buttonWidth = visibleChildren[1]:GetWidth()
 	local buttonHeight = visibleChildren[1]:GetHeight()
@@ -162,6 +168,8 @@ local function update_buttons(viewer)
 	-- Calculate offsets to center the grid
 	local startX = -totalWidth / 2
 	local startY = totalHeight / 2
+
+
 
 	if isHorizontal then
 		-- Horizontal layout with wrapping
@@ -295,10 +303,19 @@ local function init()
 	end)
 end
 -- Event handler
-main_frame:SetScript("OnEvent", function(self, event, arg)
-	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then
-		C_Timer.After(0.5, init)
+local bfirst = true;
+local function on_event(self, event, arg)
+	if bfirst then
+		bfirst = false;
+		ns.SetupOptionPanels();
+	end
+
+	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then		
+		C_Timer.After(0.5, init);		
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		C_Timer.After(0.5, init)
 	end
-end)
+
+end
+
+main_frame:SetScript("OnEvent",on_event );
