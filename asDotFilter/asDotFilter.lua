@@ -234,11 +234,11 @@ local function init()
         parentframes = {
             ["target"] = { frame = ASMOD_asUnitFrame.TargetFrame, isboss = false },
             ["focus"] = { frame = ASMOD_asUnitFrame.FocusFrame, isboss = false },
-            ["boss1"] = { frame = ASMOD_asUnitFrame.BossFrames[1], isboss = true },
-            ["boss2"] = { frame = ASMOD_asUnitFrame.BossFrames[2], isboss = true },
-            ["boss3"] = { frame = ASMOD_asUnitFrame.BossFrames[3], isboss = true },
-            ["boss4"] = { frame = ASMOD_asUnitFrame.BossFrames[4], isboss = true },
-            ["boss5"] = { frame = ASMOD_asUnitFrame.BossFrames[5], isboss = true },
+            ["boss1"] = { frame = ASMOD_asUnitFrame.BossFrames[1], isboss = false },
+            ["boss2"] = { frame = ASMOD_asUnitFrame.BossFrames[2], isboss = false },
+            ["boss3"] = { frame = ASMOD_asUnitFrame.BossFrames[3], isboss = false },
+            ["boss4"] = { frame = ASMOD_asUnitFrame.BossFrames[4], isboss = false },
+            ["boss5"] = { frame = ASMOD_asUnitFrame.BossFrames[5], isboss = false },
         };
     end
 end
