@@ -1,15 +1,15 @@
 local _, ns = ...;
 
-local hiddenParent = CreateFrame("Frame", nil, _G.UIParent)
-hiddenParent:SetAllPoints()
-hiddenParent:Hide()
+local main_frame = CreateFrame("Frame", nil, UIParent)
+main_frame:SetAllPoints()
+main_frame:Hide()
 
-local function HideFrame(frame)
+local function hide_frame(frame)
     if not frame then return end
 
     frame:UnregisterAllEvents()
     frame:Hide()
-    frame:SetParent(hiddenParent)
+    frame:SetParent(main_frame)
 
     local health = frame.healthBar or frame.healthbar
     if health then
@@ -42,30 +42,30 @@ local function HideFrame(frame)
     end
 end
 
-local function HideBlizzardUnitFrame(unit)
-    if unit == "player" and _G.PlayerFrame then
-        HideFrame(_G.PlayerFrame)
-    elseif unit == "target" and _G.TargetFrame then
-        HideFrame(_G.TargetFrame)
-    elseif unit == "focus" and _G.FocusFrame then
-        HideFrame(_G.FocusFrame)
-    elseif unit == "pet" and _G.PetFrame then
-        HideFrame(_G.PetFrame)
+local function hide_unitframe(unit)
+    if unit == "player" and PlayerFrame then
+        hide_frame(PlayerFrame)
+    elseif unit == "target" and TargetFrame then
+        hide_frame(TargetFrame)
+    elseif unit == "focus" and FocusFrame then
+        hide_frame(FocusFrame)
+    elseif unit == "pet" and PetFrame then
+        hide_frame(PetFrame)
     end
 end
 
 function ns.HideDefaults()
-    HideBlizzardUnitFrame("player");
-    HideBlizzardUnitFrame("target");
-    HideBlizzardUnitFrame("focus");
-    HideBlizzardUnitFrame("pet");
+    hide_unitframe("player");
+    hide_unitframe("target");
+    hide_unitframe("focus");
+    hide_unitframe("pet");
 
     if (MAX_BOSS_FRAMES) then
         for i = 1, MAX_BOSS_FRAMES do
             local bossframe = _G["Boss" .. i .. "TargetFrame"];
 
             if bossframe then
-                HideFrame(bossframe);
+                hide_frame(bossframe);
             end
         end
     end

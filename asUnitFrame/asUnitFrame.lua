@@ -1,5 +1,5 @@
----@diagnostic disable: undefined-field
 local _, ns = ...;
+ASMOD_asUnitFrame = {};
 
 ------------------------------------------
 ---Config
@@ -13,7 +13,7 @@ local healthheight = 35;
 local powerheight = 5;
 local buffcount = 4;
 local buffsize = 25;
-local isevoker = false;
+ns.isevoker = false;
 
 local CONFIG_FONT = STANDARD_TEXT_FONT;
 local region = GetCurrentRegion();
@@ -179,7 +179,7 @@ local function update_unitframe(frame)
 
     --CastBar
     if frame.updateCastBar then
-        ns.updateCastBar(frame.castbar);
+        ns.update_castbar(frame.castbar);
     end
 
     if frame.updatecount == 1 then
@@ -373,7 +373,7 @@ local function update_unitframe(frame)
             if unit == "player" then
                 frame:SetAlpha(1);
             else
-                local inrange = ns.checkRange(unit, isevoker);
+                local inrange = ns.checkRange(unit, ns.isevoker);
                 if inrange then
                     frame:SetAlpha(1);
                 else
@@ -875,8 +875,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
 
     if unit == "focus" or string.find(unit, "boss") then
         frame.updateCastBar = true;
-        ns.registerCastBarEvents(frame.castbar, unit);
-        frame.castbar:SetScript("OnEvent", ns.onCastBarEvent);
+        ns.register_castevents(frame.castbar, unit);       
         if ns.options.ShowBossBuff and unit ~= "focus" then
             create_buffframes(frame, true, fontsize, buffsize, buffcount);
             frame.buffupdate = true;
@@ -919,37 +918,37 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     C_Timer.NewTicker(Update_Rate, frame.callback);
 end
 
-local function init()
+local function init(parent)
     ns.SetupOptionPanels();
 
-    AUF_PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    AUF_TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    AUF_FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    AUF_PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    AUF_TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    parent.PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    parent.TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    parent.FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    parent.PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    parent.TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 
 
-    create_unitframe(AUF_PlayerFrame, "player", -xposition, yposition, config_width, healthheight, powerheight, 12, false,
+    create_unitframe(parent.PlayerFrame, "player", -xposition, yposition, config_width, healthheight, powerheight, 12, false,
         false);
-    create_unitframe(AUF_TargetFrame, "target", xposition, yposition, config_width, healthheight, powerheight, 12, false,
+    create_unitframe(parent.TargetFrame, "target", xposition, yposition, config_width, healthheight, powerheight, 12, false,
         false);
-    create_unitframe(AUF_FocusFrame, "focus", xposition + config_width, yposition, config_width - 50, healthheight - 15,
+    create_unitframe(parent.FocusFrame, "focus", xposition + config_width, yposition, config_width - 50, healthheight - 15,
         powerheight - 2,
         11,
         false, true);
-    create_unitframe(AUF_PetFrame, "pet", -xposition - 50, yposition - 40, config_width - 100, healthheight - 20,
+    create_unitframe(parent.PetFrame, "pet", -xposition - 50, yposition - 40, config_width - 100, healthheight - 20,
         powerheight - 3,
         9,
         true, true);
-    create_unitframe(AUF_TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, config_width - 100,
+    create_unitframe(parent.TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, config_width - 100,
         healthheight - 20,
         powerheight - 3, 9, true, true);
 
-    AUF_BossFrames = {};
+    parent.BossFrames = {};
     if (MAX_BOSS_FRAMES) then
         for i = 1, MAX_BOSS_FRAMES do
-            AUF_BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-            create_unitframe(AUF_BossFrames[i], "boss" .. i, xposition + 250, 200 - (i - 1) * 70, config_width - 50,
+            parent.BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+            create_unitframe(parent.BossFrames[i], "boss" .. i, xposition + 250, 200 - (i - 1) * 70, config_width - 50,
                 healthheight - 15, powerheight - 2, 11);
         end
     end
@@ -958,22 +957,22 @@ local function init()
     C_AddOns.LoadAddOn("asMOD");
 
     if asMOD_setupFrame then
-        asMOD_setupFrame(AUF_PlayerFrame, "AUF_PlayerFrame");
-        asMOD_setupFrame(AUF_TargetFrame, "AUF_TargetFrame");
-        asMOD_setupFrame(AUF_FocusFrame, "AUF_FocusFrame");
-        asMOD_setupFrame(AUF_PetFrame, "AUF_PetFrame");
-        asMOD_setupFrame(AUF_TargetTargetFrame, "AUF_TargetTargetFrame");
+        asMOD_setupFrame(parent.PlayerFrame, "PlayerFrame");
+        asMOD_setupFrame(parent.TargetFrame, "TargetFrame");
+        asMOD_setupFrame(parent.FocusFrame, "FocusFrame");
+        asMOD_setupFrame(parent.PetFrame, "PetFrame");
+        asMOD_setupFrame(parent.TargetTargetFrame, "TargetTargetFrame");
 
         if (MAX_BOSS_FRAMES) then
             for i = 1, MAX_BOSS_FRAMES do
-                asMOD_setupFrame(AUF_BossFrames[i], "AUF_BossFrame" .. i);
+                asMOD_setupFrame(parent.BossFrames[i], "BossFrame" .. i);
             end
         end
     end
     local _, engclass = UnitClass("player");
 
     if engclass == "EVOKER" or engclass == "DEMONHUNTER" then
-        isevoker = true;
+        ns.isevoker = true;
     end
 end
 
@@ -983,14 +982,14 @@ local main_frame = CreateFrame("Frame");
 local function check_unitauras(unit)
     local frame = ns.unitframes[unit];
     if frame and frame.buffupdate or frame.debuffupdate then
-        ns.UpdateAuras(frame);
+        ns.update_auras(frame);
     end
 end
 
 local bfirst = true;
 local function on_mainevent(self, event, arg1, arg2, arg3)
     if bfirst then
-        init();
+        init(ASMOD_asUnitFrame);
         bfirst = false;
     end
 

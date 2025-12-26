@@ -6,16 +6,16 @@ local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };     --ì°¨ë
 local CONFIG_FAILED_COLOR = { 1, 0, 0 };                                  --cast fail
 
 
-local function hideCastBar(castBar)
-    local targetname = castBar.targetname;
-    castBar:SetValue(0);
-    castBar:Hide();
-    ns.lib.PixelGlow_Stop(castBar);
-    castBar.isAlert = false;    
+local function hide_castbar(castbar)
+    local targetname = castbar.targetname;
+    castbar:SetValue(0);
+    castbar:Hide();
+    ns.lib.PixelGlow_Stop(castbar);
+    castbar.isAlert = false;    
     targetname:SetText("");
     targetname:Hide();
-    castBar.failstart = nil;
-    castBar.duration_obj = nil;
+    castbar.failstart = nil;
+    castbar.duration_obj = nil;
 end
 
 local function get_typeofcast(unit)
@@ -27,12 +27,12 @@ local function get_typeofcast(unit)
 end
 
 
-local function checkCasting(castBar, event)
-    local unit         = castBar.unit;
-    local frameIcon    = castBar.button.icon;
-    local text         = castBar.name;
-    local time         = castBar.time;
-    local targetname   = castBar.targetname;
+local function check_casting(castbar, event)
+    local unit         = castbar.unit;
+    local frameIcon    = castbar.button.icon;
+    local text         = castbar.name;
+    local time         = castbar.time;
+    local targetname   = castbar.targetname;
     local targettarget = unit .. "target";
     local currtime     = GetTime();
 
@@ -47,15 +47,15 @@ local function checkCasting(castBar, event)
         end
 
         if event == "UNIT_SPELLCAST_INTERRUPTED" then
-            castBar:SetMinMaxValues(0, 100);
-            castBar:SetValue(100);
+            castbar:SetMinMaxValues(0, 100);
+            castbar:SetValue(100);
             local failtext = "Interrupted"
             local color = CONFIG_FAILED_COLOR;
             time:SetText(failtext);
-            castBar:SetStatusBarColor(color[1], color[2], color[3]);
-            castBar.failstart = currtime;
-            castBar.duration_obj = nil;
-            castBar:Show();
+            castbar:SetStatusBarColor(color[1], color[2], color[3]);
+            castbar.failstart = currtime;
+            castbar.duration_obj = nil;
+            castbar:Show();
         elseif name then
             local duration;
 
@@ -64,11 +64,11 @@ local function checkCasting(castBar, event)
             else
                 duration = UnitCastingDuration(unit);
             end
-            castBar.duration_obj = duration;
+            castbar.duration_obj = duration;
             frameIcon:SetTexture(texture);
-            castBar:SetReverseFill(bchannel);
-            castBar:SetMinMaxValues(start, endTime)
-            castBar.failstart = nil;
+            castbar:SetReverseFill(bchannel);
+            castbar:SetMinMaxValues(start, endTime)
+            castbar.failstart = nil;
 
             local color = {};
             color = CONFIG_INTERRUPTIBLE_COLOR;
@@ -78,12 +78,12 @@ local function checkCasting(castBar, event)
                 color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
             end
 
-            castBar:SetStatusBarColor(color[1], color[2], color[3]);
+            castbar:SetStatusBarColor(color[1], color[2], color[3]);
 
             text:SetText(name);
 
             frameIcon:Show();
-            castBar:Show();
+            castbar:Show();
 
             if UnitExists(targettarget) then
                 local _, Class = UnitClass(targettarget)
@@ -100,51 +100,54 @@ local function checkCasting(castBar, event)
                 targetname:Hide();
             end
         else
-            if castBar.failstart == nil then
-                hideCastBar(castBar);
+            if castbar.failstart == nil then
+                hide_castbar(castbar);
             end
         end
     else
-        hideCastBar(castBar);
+        hide_castbar(castbar);
     end
 end
 
-function ns.registerCastBarEvents(frame, unit)
-    if not frame then
+local function on_castevent(self, event, ...)
+    check_casting(self, event);
+end
+
+function ns.register_castevents(castbar, unit)
+    if not castbar then
         return;
     end
 
-    frame.unit = unit;
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
-    frame:RegisterUnitEvent("UNIT_TARGET", unit);
-    frame.failstart = nil;
+    castbar.unit = unit;
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
+    castbar:RegisterUnitEvent("UNIT_TARGET", unit);
+    castbar.failstart = nil;
+    castbar:SetScript("OnEvent", on_castevent);
 
-    checkCasting(frame, "NOTHING");
+    check_casting(castbar, "NOTHING");
 end
 
-function ns.onCastBarEvent(self, event, ...)
-    checkCasting(self, event);
-end
 
-function ns.updateCastBar(castbar)
+
+function ns.update_castbar(castbar)
     local failstart = castbar.failstart;
     local current = GetTime();
 
     if failstart then
         if current - failstart > 0.5 then
-            hideCastBar(castbar);
+            hide_castbar(castbar);
         end
     else
         if castbar.duration_obj then

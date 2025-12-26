@@ -13,23 +13,20 @@ local function set_cooldownframe(self, extime, duration, enable)
     end
 end
 
-local function SetAura(frame, unit, aura, color)
+local function set_aura(frame, unit, aura, color)
     frame.icon:SetTexture(aura.icon);
-    frame:Show();
-
-    frame.count:Show();
     frame.count:SetText(C_UnitAuras.GetAuraApplicationDisplayCount(unit, aura.auraInstanceID, 1, 100));
 
     set_cooldownframe(frame.cooldown, aura.expirationTime, aura.duration, true);
 
-    frame.border:SetVertexColor(color.r, color.g, color.b);    
+    frame.border:SetVertexColor(color.r, color.g, color.b);
 end
-local function UpdateBuffFrames(frame, auraList)
+local function update_buffs(frame, auralist)
     local i = 0;
     local parent = frame;
     local unit = frame.unit;
 
-    for _index, aura in ipairs(auraList) do
+    for _, aura in ipairs(auralist) do
         i = i + 1;
         if i > #(frame.buffframes) then
             break;
@@ -42,27 +39,26 @@ local function UpdateBuffFrames(frame, auraList)
         buffframe.auraInstanceID = aura.auraInstanceID;
         local color = { r = 0, g = 0, b = 0 };
 
-        SetAura(buffframe, unit, aura, color);
+        set_aura(buffframe, unit, aura, color);
+        buffframe:Show();
     end
 
     for j = i + 1, #frame.buffframes do
         local buffframe = parent.buffframes[j];
 
         if (buffframe) then
-            buffframe:Hide();
-            ns.lib.PixelGlow_Stop(buffframe);
-            buffframe.data = {};
+            buffframe:Hide();            
         end
     end
 end
 
 local debuffinfo = {
-	[1] = DEBUFF_TYPE_MAGIC_COLOR,
-	[2] = DEBUFF_TYPE_CURSE_COLOR,
-	[3] = DEBUFF_TYPE_DISEASE_COLOR,
-	[4] = DEBUFF_TYPE_POISON_COLOR, 
-	[5] = DEBUFF_TYPE_BLEED_COLOR, 
-	[0] = DEBUFF_TYPE_NONE_COLOR,
+    [1] = DEBUFF_TYPE_MAGIC_COLOR,
+    [2] = DEBUFF_TYPE_CURSE_COLOR,
+    [3] = DEBUFF_TYPE_DISEASE_COLOR,
+    [4] = DEBUFF_TYPE_POISON_COLOR,
+    [5] = DEBUFF_TYPE_BLEED_COLOR,
+    [0] = DEBUFF_TYPE_NONE_COLOR,
 };
 local colorcurve = C_CurveUtil.CreateColorCurve();
 colorcurve:SetType(Enum.LuaCurveType.Step);
@@ -70,14 +66,14 @@ for dispeltype, v in pairs(debuffinfo) do
     colorcurve:AddPoint(dispeltype, v);
 end
 
-local function UpdateDebuffFrames(frame, auraList)
+local function update_debuffs(frame, auraList)
     local i = 0;
     local parent = frame;
     local unit = frame.unit;
 
-    for _index, aura in ipairs(auraList) do
+    for _, aura in ipairs(auraList) do
         i = i + 1;
-        if i > #(frame.debuffframes)  then
+        if i > #(frame.debuffframes) then
             break;
         end
 
@@ -88,7 +84,8 @@ local function UpdateDebuffFrames(frame, auraList)
 
         local color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);
 
-         SetAura(debuffframe, unit, aura, color);
+        set_aura(debuffframe, unit, aura, color);
+        debuffframe:Show();
     end
 
     for j = i + 1, #frame.debuffframes do
@@ -96,7 +93,6 @@ local function UpdateDebuffFrames(frame, auraList)
 
         if (debuffframe) then
             debuffframe:Hide();
-            debuffframe.data = {};
         end
     end
 end
@@ -105,9 +101,9 @@ local bufffilter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful);
 local debufffilter_attack = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
 local debufffilter_helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
 
-function ns.UpdateAuras(frame)
-    local unit = frame.unit; 
-    if frame.debuffupdate  then
+function ns.update_auras(frame)
+    local unit = frame.unit;
+    if frame.debuffupdate then
         local filter = debufffilter_helpful;
 
         if UnitCanAttack("player", unit) then
@@ -115,11 +111,11 @@ function ns.UpdateAuras(frame)
         end
 
         local activeDebuffs = C_UnitAuras.GetUnitAuras(unit, filter, #(frame.debuffframes));
-        UpdateDebuffFrames(frame, activeDebuffs);
+        update_debuffs(frame, activeDebuffs);
     end
 
     if frame.buffupdate then
         local activeBuffs = C_UnitAuras.GetUnitAuras(unit, bufffilter, #(frame.buffframes));
-        UpdateBuffFrames(frame, activeBuffs);
+        update_buffs(frame, activeBuffs);
     end
 end

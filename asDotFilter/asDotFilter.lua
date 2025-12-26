@@ -9,14 +9,39 @@ local configs = {
 
     --설정 표시할 Unit
     unitlist = {
-        "focus", -- 주시대상 표시 안하길 원하면 이 줄 삭제
-        "boss1",
-        "boss2",
-        "boss3",
-        "boss4",
-        "boss5",
+        ["focus"] = true, -- 주시대상 표시 안하길 원하면 이 줄 삭제
+        ["boss1"] = true,
+        ["boss2"] = true,
+        ["boss3"] = true,
+        ["boss4"] = true,
+        ["boss5"] = true,
     },
 };
+
+local parentframes = {
+    ["target"] = { frame = _G["TargetFrame"], isboss = false },
+    ["focus"] = { frame = _G["FocusFrame"], isboss = false },
+    ["boss1"] = { frame = _G["Boss1TargetFrame"], isboss = true },
+    ["boss2"] = { frame = _G["Boss2TargetFrame"], isboss = true },
+    ["boss3"] = { frame = _G["Boss3TargetFrame"], isboss = true },
+    ["boss4"] = { frame = _G["Boss4TargetFrame"], isboss = true },
+    ["boss5"] = { frame = _G["Boss5TargetFrame"], isboss = true },
+};
+
+local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
+local debuffinfo = {
+    [1] = DEBUFF_TYPE_MAGIC_COLOR,
+    [2] = DEBUFF_TYPE_CURSE_COLOR,
+    [3] = DEBUFF_TYPE_DISEASE_COLOR,
+    [4] = DEBUFF_TYPE_POISON_COLOR,
+    [5] = DEBUFF_TYPE_BLEED_COLOR,
+    [0] = DEBUFF_TYPE_NONE_COLOR,
+};
+local colorcurve = C_CurveUtil.CreateColorCurve();
+colorcurve:SetType(Enum.LuaCurveType.Step);
+for dispeltype, v in pairs(debuffinfo) do
+    colorcurve:AddPoint(dispeltype, v);
+end
 
 --설정 끝
 local main_frame = CreateFrame("Frame", "ADotF", UIParent);
@@ -75,38 +100,15 @@ local function set_debuff(frame, unit, aura, color)
     frame.border:SetVertexColor(color.r, color.g, color.b);
 end
 
-local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
-local debuffinfo = {
-    [1] = DEBUFF_TYPE_MAGIC_COLOR,
-    [2] = DEBUFF_TYPE_CURSE_COLOR,
-    [3] = DEBUFF_TYPE_DISEASE_COLOR,
-    [4] = DEBUFF_TYPE_POISON_COLOR,
-    [5] = DEBUFF_TYPE_BLEED_COLOR,
-    [0] = DEBUFF_TYPE_NONE_COLOR,
-};
-local colorcurve = C_CurveUtil.CreateColorCurve();
-colorcurve:SetType(Enum.LuaCurveType.Step);
-for dispeltype, v in pairs(debuffinfo) do
-    colorcurve:AddPoint(dispeltype, v);
-end
 
 
 local function update_debuffs(unit)
     local numDebuffs = 1;
-    local frame;
-    local color;
     local parent;
-    local find = false;
-    local isboss = true;
+    local isboss;
 
-    for i = 1, #configs.unitlist do
-        if unit == configs.unitlist[i] then
-            find = true;
-            break;
-        end
-    end
 
-    if not find then
+    if not configs.unitlist[unit] then
         return;
     end
 
@@ -116,64 +118,14 @@ local function update_debuffs(unit)
 
     if not main_frame.units[unit] then
         main_frame.units[unit] = {};
-    end
-
-    if not main_frame.units[unit].frames then
         main_frame.units[unit].frames = {};
     end
 
     if UnitExists(unit) then
-        if (unit == "target") then
-            if AUF_TargetFrame then
-                parent = AUF_TargetFrame;
-            else
-                parent = _G["TargetFrame"];
-            end
-
-
-            isboss = false;
-        elseif (unit == "focus") then
-            if AUF_FocusFrame then
-                parent = AUF_FocusFrame;
-            else
-                parent = _G["FocusFrame"];
-            end
-            isboss = false;
-        elseif (unit == "boss1") then
-            if AUF_BossFrames and AUF_BossFrames[1] then
-                parent = AUF_BossFrames[1];
-                isboss = false;
-            else
-                parent = _G["Boss1TargetFrame"];
-            end
-        elseif (unit == "boss2") then
-            if AUF_BossFrames and AUF_BossFrames[2] then
-                parent = AUF_BossFrames[2];
-                isboss = false;
-            else
-                parent = _G["Boss2TargetFrame"];
-            end
-        elseif (unit == "boss3") then
-            if AUF_BossFrames and AUF_BossFrames[3] then
-                parent = AUF_BossFrames[3];
-                isboss = false;
-            else
-                parent = _G["Boss3TargetFrame"];
-            end
-        elseif (unit == "boss4") then
-            if AUF_BossFrames and AUF_BossFrames[4] then
-                parent = AUF_BossFrames[4];
-                isboss = false;
-            else
-                parent = _G["Boss4TargetFrame"];
-            end
-        elseif (unit == "boss5") then
-            if AUF_BossFrames and AUF_BossFrames[5] then
-                parent = AUF_BossFrames[5];
-                isboss = false;
-            else
-                parent = _G["Boss5TargetFrame"];
-            end
+        local parentinfo = parentframes[unit];
+        if parentinfo then
+            parent = parentinfo.frame;
+            isboss = parentinfo.isboss;
         else
             return;
         end
@@ -185,7 +137,7 @@ local function update_debuffs(unit)
                 break;
             end
 
-            frame = main_frame.units[unit].frames[numDebuffs];
+            local frame = main_frame.units[unit].frames[numDebuffs];
 
             if (not frame) then
                 main_frame.units[unit].frames[numDebuffs] = CreateFrame("Button", nil, main_frame,
@@ -219,7 +171,7 @@ local function update_debuffs(unit)
                 update_anchor(main_frame.units[unit].frames, numDebuffs, configs.size, 2, true, parent, isboss);
             end
 
-            color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);
+            local color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);
             set_debuff(frame, unit, aura, color);
             frame:Show();
 
@@ -228,7 +180,7 @@ local function update_debuffs(unit)
     end
 
     for i = numDebuffs, configs.maxshow do
-        frame = main_frame.units[unit].frames[i];
+        local frame = main_frame.units[unit].frames[i];
 
         if (frame) then
             frame:Hide();
@@ -238,8 +190,8 @@ end
 
 
 local function update_allframes()
-    for i = 1, #configs.unitlist do
-        update_debuffs(configs.unitlist[i]);
+    for unit, _ in pairs(configs.unitlist) do
+        update_debuffs(unit);
     end
 end
 
@@ -275,6 +227,20 @@ local function init()
     main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
     main_frame:SetScript("OnEvent", on_event)
     C_Timer.NewTicker(0.2, on_update);
+
+    local bloaded = C_AddOns.LoadAddOn("asUnitFrame");
+
+    if bloaded then
+        parentframes = {
+            ["target"] = { frame = ASMOD_asUnitFrame.TargetFrame, isboss = false },
+            ["focus"] = { frame = ASMOD_asUnitFrame.FocusFrame, isboss = false },
+            ["boss1"] = { frame = ASMOD_asUnitFrame.BossFrames[1], isboss = true },
+            ["boss2"] = { frame = ASMOD_asUnitFrame.BossFrames[2], isboss = true },
+            ["boss3"] = { frame = ASMOD_asUnitFrame.BossFrames[3], isboss = true },
+            ["boss4"] = { frame = ASMOD_asUnitFrame.BossFrames[4], isboss = true },
+            ["boss5"] = { frame = ASMOD_asUnitFrame.BossFrames[5], isboss = true },
+        };
+    end
 end
 
-init();
+C_Timer.After(1, init);
