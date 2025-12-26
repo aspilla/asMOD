@@ -11,11 +11,11 @@ local function hideCastBar(castBar)
     castBar:SetValue(0);
     castBar:Hide();
     ns.lib.PixelGlow_Stop(castBar);
-    castBar.isAlert = false;
-    castBar.start = 0;
+    castBar.isAlert = false;    
     targetname:SetText("");
     targetname:Hide();
     castBar.failstart = nil;
+    castBar.duration_obj = nil;
 end
 
 local function get_typeofcast(unit)
@@ -54,18 +54,23 @@ local function checkCasting(castBar, event)
             time:SetText(failtext);
             castBar:SetStatusBarColor(color[1], color[2], color[3]);
             castBar.failstart = currtime;
+            castBar.duration_obj = nil;
             castBar:Show();
         elseif name then
-            local current = GetTime();
+            local duration;
+
+            if bchannel then
+                duration = UnitChannelDuration(unit);
+            else
+                duration = UnitCastingDuration(unit);
+            end
+            castBar.duration_obj = duration;
             frameIcon:SetTexture(texture);
             castBar:SetReverseFill(bchannel);
             castBar:SetMinMaxValues(start, endTime)
             castBar.failstart = nil;
 
             local color = {};
-
-            color = CONFIG_INTERRUPTIBLE_COLOR;
-
             color = CONFIG_INTERRUPTIBLE_COLOR;
             local type = get_typeofcast(unit);
 
@@ -133,30 +138,19 @@ function ns.onCastBarEvent(self, event, ...)
     checkCasting(self, event);
 end
 
-function ns.updateCastBar(castBar)
-    local start = castBar.start;
-    local duration = castBar.duration;
-    local failstart = castBar.failstart;
+function ns.updateCastBar(castbar)
+    local failstart = castbar.failstart;
     local current = GetTime();
 
     if failstart then
         if current - failstart > 0.5 then
-            hideCastBar(castBar);
+            hideCastBar(castbar);
         end
-        --[[
-    elseif start > 0 and start + duration >= current then
-        local bchannel = castBar.bchannel;
-        local time = castBar.time;
-        if bchannel then
-            castBar:SetValue((start + duration - current));
-            time:SetText(format("%.1f/%.1f", max((start + duration - current), 0), max(duration, 0)));
-        else
-            castBar:SetValue((current - start));
-            time:SetText(format("%.1f/%.1f", max((current - start), 0), max(duration, 0)));
-        end
-        ]]
     else
-        castBar.time:SetText("");
-        castBar:SetValue(current * 1000, Enum.StatusBarInterpolation.ExponentialEaseOut);
+        if castbar.duration_obj then
+            castbar.time:SetText(string.format("%.1f/%.1f", castbar.duration_obj:GetRemainingDuration(0),
+                castbar.duration_obj:GetTotalDuration(0)));
+        end
+        castbar:SetValue(current * 1000, Enum.StatusBarInterpolation.ExponentialEaseOut);
     end
 end

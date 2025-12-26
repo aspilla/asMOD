@@ -919,37 +919,37 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     C_Timer.NewTicker(Update_Rate, frame.callback);
 end
 
-local function init(frame)
+local function init()
     ns.SetupOptionPanels();
 
-    frame.AUF_PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    frame.AUF_TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    frame.AUF_FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    frame.AUF_PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    frame.AUF_TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    AUF_PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    AUF_TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    AUF_FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    AUF_PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    AUF_TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 
 
-    create_unitframe(frame.AUF_PlayerFrame, "player", -xposition, yposition, config_width, healthheight, powerheight, 12, false,
+    create_unitframe(AUF_PlayerFrame, "player", -xposition, yposition, config_width, healthheight, powerheight, 12, false,
         false);
-    create_unitframe(frame.AUF_TargetFrame, "target", xposition, yposition, config_width, healthheight, powerheight, 12, false,
+    create_unitframe(AUF_TargetFrame, "target", xposition, yposition, config_width, healthheight, powerheight, 12, false,
         false);
-    create_unitframe(frame.AUF_FocusFrame, "focus", xposition + config_width, yposition, config_width - 50, healthheight - 15,
+    create_unitframe(AUF_FocusFrame, "focus", xposition + config_width, yposition, config_width - 50, healthheight - 15,
         powerheight - 2,
         11,
         false, true);
-    create_unitframe(frame.AUF_PetFrame, "pet", -xposition - 50, yposition - 40, config_width - 100, healthheight - 20,
+    create_unitframe(AUF_PetFrame, "pet", -xposition - 50, yposition - 40, config_width - 100, healthheight - 20,
         powerheight - 3,
         9,
         true, true);
-    create_unitframe(frame.AUF_TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, config_width - 100,
+    create_unitframe(AUF_TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, config_width - 100,
         healthheight - 20,
         powerheight - 3, 9, true, true);
 
-    frame.AUF_BossFrames = {};
+    AUF_BossFrames = {};
     if (MAX_BOSS_FRAMES) then
         for i = 1, MAX_BOSS_FRAMES do
-            frame.AUF_BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-            create_unitframe(frame.AUF_BossFrames[i], "boss" .. i, xposition + 250, 200 - (i - 1) * 70, config_width - 50,
+            AUF_BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+            create_unitframe(AUF_BossFrames[i], "boss" .. i, xposition + 250, 200 - (i - 1) * 70, config_width - 50,
                 healthheight - 15, powerheight - 2, 11);
         end
     end
@@ -958,15 +958,15 @@ local function init(frame)
     C_AddOns.LoadAddOn("asMOD");
 
     if asMOD_setupFrame then
-        asMOD_setupFrame(frame.AUF_PlayerFrame, "AUF_PlayerFrame");
-        asMOD_setupFrame(frame.AUF_TargetFrame, "AUF_TargetFrame");
-        asMOD_setupFrame(frame.AUF_FocusFrame, "AUF_FocusFrame");
-        asMOD_setupFrame(frame.AUF_PetFrame, "AUF_PetFrame");
-        asMOD_setupFrame(frame.AUF_TargetTargetFrame, "AUF_TargetTargetFrame");
+        asMOD_setupFrame(AUF_PlayerFrame, "AUF_PlayerFrame");
+        asMOD_setupFrame(AUF_TargetFrame, "AUF_TargetFrame");
+        asMOD_setupFrame(AUF_FocusFrame, "AUF_FocusFrame");
+        asMOD_setupFrame(AUF_PetFrame, "AUF_PetFrame");
+        asMOD_setupFrame(AUF_TargetTargetFrame, "AUF_TargetTargetFrame");
 
         if (MAX_BOSS_FRAMES) then
             for i = 1, MAX_BOSS_FRAMES do
-                asMOD_setupFrame(frame.AUF_BossFrames[i], "AUF_BossFrame" .. i);
+                asMOD_setupFrame(AUF_BossFrames[i], "AUF_BossFrame" .. i);
             end
         end
     end
@@ -990,7 +990,7 @@ end
 local bfirst = true;
 local function on_mainevent(self, event, arg1, arg2, arg3)
     if bfirst then
-        init(main_frame);
+        init();
         bfirst = false;
     end
 

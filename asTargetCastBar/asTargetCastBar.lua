@@ -90,7 +90,7 @@ local function setupCastBar()
     frame.mark = frame:CreateTexture(nil, "ARTWORK");
     frame.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
     frame.mark:SetSize(ATCB_NAME_SIZE + 3, ATCB_NAME_SIZE + 3);
-    frame.mark:SetPoint("RIGHT", frame.button, "LEFT", -1, 0);    
+    frame.mark:SetPoint("RIGHT", frame.button, "LEFT", -1, 0);
     frame.start = 0;
     frame.duration = 0;
     frame.soundalerted = false;
@@ -115,19 +115,19 @@ local function hideCastBar(castBar)
     castBar:SetValue(0);
     castBar:Hide();
     ns.lib.PixelGlow_Stop(castBar);
-    castBar.isAlert = false;
-    castBar.start = 0;
+    castBar.isAlert = false;    
     targetname:SetText("");
     targetname:Hide();
     castBar.failstart = nil;
     castBar.soundalerted = false;
+    castBar.duration_obj = nil;
 end
 
 
 local function DisplayRaidIcon(unit, markframe)
     local raidicon = GetRaidTargetIndex(unit);
     if raidicon then
-        SetRaidTargetIconTexture(markframe, raidicon);    
+        SetRaidTargetIconTexture(markframe, raidicon);
         markframe:Show();
     else
         markframe:Hide();
@@ -172,9 +172,9 @@ local function checkCasting(castBar, event)
             castBar:SetStatusBarColor(color[1], color[2], color[3]);
             castBar.failstart = currtime;
             castBar:SetStatusBarDesaturated(false);
+            castBar.duration_obj = nil;
             castBar:Show();
         elseif name then
-
             local duration;
 
             if bchannel then
@@ -182,8 +182,7 @@ local function checkCasting(castBar, event)
             else
                 duration = UnitCastingDuration(unit);
             end
-
-            local current = GetTime();
+            castBar.duration_obj = duration;
             frameIcon:SetTexture(texture);
             castBar:SetReverseFill(bchannel);
 
@@ -329,23 +328,26 @@ local function ATCB_OnEvent(self, event, ...)
 end
 
 
-local function updateCastBar(castBar)
-    local failstart = castBar.failstart;
+local function udpate_castbar(castbar)
+    local failstart = castbar.failstart;
     local current = GetTime();
 
     if failstart then
         if current - failstart > 0.5 then
-            hideCastBar(castBar);
+            hideCastBar(castbar);
         end
     else
-        castBar.time:SetText("");
-        castBar:SetValue(current * 1000, Enum.StatusBarInterpolation.ExponentialEaseOut);
+        if castbar.duration_obj then
+            castbar.time:SetText(string.format("%.1f/%.1f", castbar.duration_obj:GetRemainingDuration(0),
+                castbar.duration_obj:GetTotalDuration(0)));
+        end
+        castbar:SetValue(current * 1000, Enum.StatusBarInterpolation.ExponentialEaseOut);
     end
 end
 
 local function ATCB_OnUpdate()
-    updateCastBar(ATCB.targetCastBar);
-    updateCastBar(ATCB.focusCastBar);
+    udpate_castbar(ATCB.targetCastBar);
+    udpate_castbar(ATCB.focusCastBar);
 end
 
 ATCB:SetScript("OnEvent", ATCB_OnEvent)
