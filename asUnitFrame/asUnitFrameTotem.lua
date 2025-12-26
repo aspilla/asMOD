@@ -14,7 +14,7 @@ local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdg
 end
 
 
-local function Update(frame, startTime, duration, icon)
+local function set_totem(frame, startTime, duration, icon)
 	local buttonIcon = frame.Icon.icon;
 	local buttonBorder = frame.Icon.border;
 	local buttonCooldown = frame.Icon.cooldown;
@@ -34,13 +34,13 @@ local function Update(frame, startTime, duration, icon)
 	end
 end
 
-function ns.UpdateTotems(frame)
+function ns.update_totems(frame)
 	local haveTotem, name, startTime, duration, icon;
 	local button;
 	for i = 1, MAX_TOTEMS do
 		haveTotem, name, startTime, duration, icon = GetTotemInfo(i);
 		button = frame.totembuttons[i];
 		button.totemslot = i;
-		Update(button, startTime, duration, icon);
+		set_totem(button, startTime, duration, icon);
 	end
 end

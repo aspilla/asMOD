@@ -24,7 +24,7 @@ local HarmItems         = {
 local item_for_40m = 28767;
 local item_for_30m = 835;
 
-local function IsHelpful(unit)
+local function is_helpful(unit)
 	local reaction = UnitReaction("player", unit);
 
 	if reaction and reaction <= 4 then
@@ -34,8 +34,8 @@ local function IsHelpful(unit)
 	end
 end
 
-function ns.checkRange(unit, is30m)
-	if IsHelpful(unit) then
+function ns.check_range(unit, is30m)
+	if is_helpful(unit) then
 		return true;
 	end
 

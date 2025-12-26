@@ -373,7 +373,7 @@ local function update_unitframe(frame)
             if unit == "player" then
                 frame:SetAlpha(1);
             else
-                local inrange = ns.checkRange(unit, ns.isevoker);
+                local inrange = ns.check_range(unit, ns.isevoker);
                 if inrange then
                     frame:SetAlpha(1);
                 else
@@ -617,7 +617,7 @@ ns.unitframes = {};
 
 local function on_unitevent(self, event, arg1, arg2)
     if event == "PLAYER_TOTEM_UPDATE" then
-        ns.UpdateTotems(self);
+        ns.update_totems(self);
     end
 end
 

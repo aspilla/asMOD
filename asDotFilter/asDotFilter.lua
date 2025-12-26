@@ -103,7 +103,7 @@ end
 
 
 local function update_debuffs(unit)
-    local numDebuffs = 1;
+    local numdebuffs = 1;
     local parent;
     local isboss;
 
@@ -133,16 +133,16 @@ local function update_debuffs(unit)
         local aura_list = C_UnitAuras.GetUnitAuras(unit, filter, configs.maxshow);
 
         for _, aura in ipairs(aura_list) do
-            if numDebuffs > configs.maxshow then
+            if numdebuffs > configs.maxshow then
                 break;
             end
 
-            local frame = main_frame.units[unit].frames[numDebuffs];
+            local frame = main_frame.units[unit].frames[numdebuffs];
 
             if (not frame) then
-                main_frame.units[unit].frames[numDebuffs] = CreateFrame("Button", nil, main_frame,
+                main_frame.units[unit].frames[numdebuffs] = CreateFrame("Button", nil, main_frame,
                     "asTargetDotFrameTemplate");
-                frame = main_frame.units[unit].frames[numDebuffs];
+                frame = main_frame.units[unit].frames[numdebuffs];
                 frame:EnableMouse(false);
                 frame.cooldown:SetDrawSwipe(true);
                 for _, r in next, { frame.cooldown:GetRegions() } do
@@ -168,18 +168,18 @@ local function update_debuffs(unit)
                 frame.snapshot:ClearAllPoints();
                 frame.snapshot:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
                 frame:ClearAllPoints();
-                update_anchor(main_frame.units[unit].frames, numDebuffs, configs.size, 2, true, parent, isboss);
+                update_anchor(main_frame.units[unit].frames, numdebuffs, configs.size, 2, true, parent, isboss);
             end
 
             local color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);
             set_debuff(frame, unit, aura, color);
             frame:Show();
 
-            numDebuffs = numDebuffs + 1;
+            numdebuffs = numdebuffs + 1;
         end
     end
 
-    for i = numDebuffs, configs.maxshow do
+    for i = numdebuffs, configs.maxshow do
         local frame = main_frame.units[unit].frames[i];
 
         if (frame) then

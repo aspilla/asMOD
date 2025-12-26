@@ -194,6 +194,7 @@ local function checkCasting(castBar, event)
             local type = get_typeofcast(unit);
 
             if type and type == "uninterruptable" then
+            --if notInterruptible then
                 color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
             end
             castBar:SetStatusBarColor(color[1], color[2], color[3]);
