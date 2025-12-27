@@ -1,25 +1,27 @@
 local _, ns = ...;
 ASMOD_asUnitFrame = {};
 
-------------------------------------------
----Config
-------------------------------------------
+local configs = {
+    updaterate = 0.1,
+    width = 200,
+    xpoint = 225,
+    ypoint = -198,
+    healthheight = 35,
+    powerheight = 5,
+    buffcount = 4,
+    buffsize = 25,
+    font = STANDARD_TEXT_FONT,
+};
 
-local Update_Rate = 0.1
-local config_width = 200;
-local xposition = 225;
-local yposition = -198;
-local healthheight = 35;
-local powerheight = 5;
-local buffcount = 4;
-local buffsize = 25;
 ns.isevoker = false;
+ns.unit_player = "player";
+ns.unit_pet = "pet";
+ns.unitframes = {};
 
-local CONFIG_FONT = STANDARD_TEXT_FONT;
 local region = GetCurrentRegion();
 
 if region == 2 and GetLocale() ~= "koKR" then
-    CONFIG_FONT = "Fonts\\2002.ttf";
+    configs.font = "Fonts\\2002.ttf";
 end
 
 local leaderIcon = CreateAtlasMarkup("groupfinder-icon-leader", 14, 9, 0, 0);
@@ -28,6 +30,10 @@ local restingIcon = CreateAtlasMarkup("Innkeeper", 14, 14);
 local eliteIcon = CreateAtlasMarkup("nameplates-icon-elite-gold", 14, 14);
 local rareIcon = CreateAtlasMarkup("UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare-Star", 14, 14);
 local rareeliteIcon = CreateAtlasMarkup("nameplates-icon-elite-silver", 14, 14);
+local curve = C_CurveUtil.CreateCurve();
+curve:SetType(Enum.LuaCurveType.Linear);
+curve:AddPoint(0, 0);
+curve:AddPoint(1, 100);
 
 local function UpdateFillBarBase(realbar, bar, amount, bleft, pointbar, totalMax)
     if not amount or (amount == 0) then
@@ -50,15 +56,13 @@ local function UpdateFillBarBase(realbar, bar, amount, bleft, pointbar, totalMax
         bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", 0, 0);
     end
 
-    local totalWidth, totalHeight = realbar:GetSize();    
+    local totalWidth, totalHeight = realbar:GetSize();
 
     local barSize = (amount / totalMax) * totalWidth;
     bar:SetWidth(barSize);
     bar:Show();
 end
 
-local unit_player = "player";
-local unit_pet = "pet";
 
 local function update_playerunit()
     local hasValidVehicleUI = UnitHasVehicleUI("player");
@@ -72,18 +76,13 @@ local function update_playerunit()
     end
 
     if (hasValidVehicleUI) then
-        unit_player = unitVehicleToken
-        unit_pet = "player"
+        ns.unit_player = unitVehicleToken
+        ns.unit_pet = "player"
     else
-        unit_player = "player"
-        unit_pet = "pet"
+        ns.unit_player = "player"
+        ns.unit_pet = "pet"
     end
 end
-
-local curve = C_CurveUtil.CreateCurve();
-curve:SetType(Enum.LuaCurveType.Linear);
-curve:AddPoint(0, 0);
-curve:AddPoint(1, 100);
 
 local function update_unitframe(frame)
     local unit = frame.unit;
@@ -91,14 +90,14 @@ local function update_unitframe(frame)
 
     if unit == "player" then
         update_playerunit()
-        unit = unit_player;
+        unit = ns.unit_player;
         showplayermana = (unit ~= "player");
 
         if not InCombatLockdown() and unit ~= frame:GetAttribute("unit") then
             frame:SetAttribute("unit", unit);
         end
     elseif unit == "pet" then
-        unit = unit_pet;
+        unit = ns.unit_pet;
     end
 
     if not UnitExists(unit) then
@@ -124,7 +123,7 @@ local function update_unitframe(frame)
         --elseif valuePctAbsorb > 0 then
         --  frame.healthbar.pvalue:SetText(valuePct .. "(" .. valuePctAbsorb .. ")");
     else
-        frame.healthbar.pvalue:SetText(string.format("%d", valuePct));        
+        frame.healthbar.pvalue:SetText(string.format("%d", valuePct));
     end
 
 
@@ -283,7 +282,7 @@ local function update_unitframe(frame)
     frame.healthbar.hvalue:SetText(AbbreviateLargeNumbers(value))
     frame.healthbar.name:SetText(name);
     if raidicon then
-        SetRaidTargetIconTexture(frame.healthbar.mark, raidicon);    
+        SetRaidTargetIconTexture(frame.healthbar.mark, raidicon);
         frame.healthbar.mark:Show();
     else
         frame.healthbar.mark:Hide();
@@ -449,12 +448,11 @@ local function update_debuffanchor(frames, index, offsetX, right, parent, width)
     local buff = frames[index];
 
     if (index == 1) then
-        buff:SetPoint("TOPLEFT", parent.healthbar, "BOTTOMLEFT", 0, -(powerheight / 2 + 2));
+        buff:SetPoint("TOPLEFT", parent.healthbar, "BOTTOMLEFT", 0, -(configs.powerheight / 2 + 2));
     else
         buff:SetPoint("BOTTOMLEFT", frames[index - 1], "BOTTOMRIGHT", offsetX, 0);
     end
-
-    -- Resize
+    
     buff:SetWidth(width - offsetX);
     buff:SetHeight(width * 0.8);
 end
@@ -497,8 +495,6 @@ local function createdebuffframes(parent, bright, fontsize, width, count)
         frame:EnableMouse(false);
         frame:Hide();
     end
-
-    return;
 end
 
 local function update_buffanchor(frames, index, offsetX, right, parent, width)
@@ -509,8 +505,7 @@ local function update_buffanchor(frames, index, offsetX, right, parent, width)
     else
         buff:SetPoint("RIGHT", frames[index - 1], "LEFT", -offsetX, 0);
     end
-
-    -- Resize
+    
     buff:SetWidth(width - offsetX);
     buff:SetHeight(width * 0.8);
 end
@@ -553,8 +548,6 @@ local function create_buffframes(parent, bright, fontsize, width, count)
         frame:EnableMouse(false);
         frame:Hide();
     end
-
-    return;
 end
 
 local function update_totemanchor(frames, index, offsetX, right, parent, width)
@@ -612,8 +605,6 @@ local function create_totemframes(parent, bright, fontsize, width, count)
 
     return;
 end
-
-ns.unitframes = {};
 
 local function on_unitevent(self, event, arg1, arg2)
     if event == "PLAYER_TOTEM_UPDATE" then
@@ -741,7 +732,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame.healthbar.hvalue:SetTextColor(1, 1, 1, 1)
 
     frame.healthbar.name = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.healthbar.name:SetFont(CONFIG_FONT, fontsize, FontOutline);
+    frame.healthbar.name:SetFont(configs.font, fontsize, FontOutline);
     frame.healthbar.name:SetTextColor(1, 1, 1, 1)
 
     frame.healthbar.aggro = frame.healthbar:CreateFontString(nil, "ARTWORK");
@@ -774,13 +765,11 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
 
     frame.is_small = is_small;
 
-    
-
     frame.healthbar.mark = frame.healthbar:CreateTexture(nil, "ARTWORK");
     frame.healthbar.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
     frame.healthbar.mark:SetWidth(fontsize + 2);
     frame.healthbar.mark:SetHeight(fontsize + 2);
-    frame.healthbar.mark:SetPoint("CENTER", frame.healthbar, "CENTER", 0, 0);    
+    frame.healthbar.mark:SetPoint("CENTER", frame.healthbar, "CENTER", 0, 0);
 
     frame.powerbar = CreateFrame("StatusBar", nil, frame);
     frame.powerbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
@@ -853,7 +842,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame.castbar.button:Show();
 
     frame.castbar.targetname = frame.castbar:CreateFontString(nil, "OVERLAY");
-    frame.castbar.targetname:SetFont(CONFIG_FONT, fontsize - 1);
+    frame.castbar.targetname:SetFont(configs.font, fontsize - 1);
     frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);
     frame.debuffupdate = false;
     frame.totemupdate = false;
@@ -875,9 +864,9 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
 
     if unit == "focus" or string.find(unit, "boss") then
         frame.updateCastBar = true;
-        ns.register_castevents(frame.castbar, unit);       
+        ns.register_castevents(frame.castbar, unit);
         if ns.options.ShowBossBuff and unit ~= "focus" then
-            create_buffframes(frame, true, fontsize, buffsize, buffcount);
+            create_buffframes(frame, true, fontsize, configs.buffsize, configs.buffcount);
             frame.buffupdate = true;
         else
             frame.buffupdate = false;
@@ -909,13 +898,12 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
 
     frame:SetScript("OnEvent", on_unitevent);
 
-
     frame.callback = function()
         update_unitframe(frame);
     end
 
 
-    C_Timer.NewTicker(Update_Rate, frame.callback);
+    C_Timer.NewTicker(configs.updaterate, frame.callback);
 end
 
 local function init(parent)
@@ -928,31 +916,36 @@ local function init(parent)
     parent.TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 
 
-    create_unitframe(parent.PlayerFrame, "player", -xposition, yposition, config_width, healthheight, powerheight, 12, false,
+    create_unitframe(parent.PlayerFrame, "player", -configs.xpoint, configs.ypoint, configs.width, configs.healthheight,
+        configs.powerheight, 12, false,
         false);
-    create_unitframe(parent.TargetFrame, "target", xposition, yposition, config_width, healthheight, powerheight, 12, false,
+    create_unitframe(parent.TargetFrame, "target", configs.xpoint, configs.ypoint, configs.width, configs.healthheight,
+        configs.powerheight, 12, false,
         false);
-    create_unitframe(parent.FocusFrame, "focus", xposition + config_width, yposition, config_width - 50, healthheight - 15,
-        powerheight - 2,
+    create_unitframe(parent.FocusFrame, "focus", configs.xpoint + configs.width, configs.ypoint, configs.width - 50,
+        configs.healthheight - 15,
+        configs.powerheight - 2,
         11,
         false, true);
-    create_unitframe(parent.PetFrame, "pet", -xposition - 50, yposition - 40, config_width - 100, healthheight - 20,
-        powerheight - 3,
+    create_unitframe(parent.PetFrame, "pet", -configs.xpoint - 50, configs.ypoint - 40, configs.width - 100,
+        configs.healthheight - 20,
+        configs.powerheight - 3,
         9,
         true, true);
-    create_unitframe(parent.TargetTargetFrame, "targettarget", xposition + 50, yposition - 40, config_width - 100,
-        healthheight - 20,
-        powerheight - 3, 9, true, true);
+    create_unitframe(parent.TargetTargetFrame, "targettarget", configs.xpoint + 50, configs.ypoint - 40,
+        configs.width - 100,
+        configs.healthheight - 20,
+        configs.powerheight - 3, 9, true, true);
 
     parent.BossFrames = {};
     if (MAX_BOSS_FRAMES) then
         for i = 1, MAX_BOSS_FRAMES do
             parent.BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-            create_unitframe(parent.BossFrames[i], "boss" .. i, xposition + 250, 200 - (i - 1) * 70, config_width - 50,
-                healthheight - 15, powerheight - 2, 11);
+            create_unitframe(parent.BossFrames[i], "boss" .. i, configs.xpoint + 250, 200 - (i - 1) * 70,
+                configs.width - 50,
+                configs.healthheight - 15, configs.powerheight - 2, 11);
         end
     end
-
 
     C_AddOns.LoadAddOn("asMOD");
 
@@ -975,9 +968,6 @@ local function init(parent)
         ns.isevoker = true;
     end
 end
-
-
-local main_frame = CreateFrame("Frame");
 
 local function check_unitauras(unit)
     local frame = ns.unitframes[unit];
@@ -1022,10 +1012,8 @@ local function on_mainevent(self, event, arg1, arg2, arg3)
             check_unitauras(unit);
         end
     end
-
-    return;
 end
-
+local main_frame = CreateFrame("Frame");
 main_frame:SetScript("OnEvent", on_mainevent)
 main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
