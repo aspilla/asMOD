@@ -1,0 +1,11 @@
+﻿## Interface: 120000, 120001
+## Author: |cffff3399Aspilla|r [Azshara - KR]
+## Title: |cffff3399as|rSkyRide
+## Notes: 
+## Notes-koKR: 
+## Version : 251228
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
+asSkyRideSpell.lua
+asSkyRideSpeed.lua
+asSkyRide.lua
