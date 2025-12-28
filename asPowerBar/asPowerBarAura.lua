@@ -4,7 +4,7 @@ local _, ns = ...;
 function ns.check_storm()
     local combo = 0;
 
-    if C_Secrets.GetSpellAuraSecrecy(344179) == 0 then
+    if C_Secrets.GetSpellAuraSecrecy and C_Secrets.GetSpellAuraSecrecy(344179) == 0 then
         local aurastorm = C_UnitAuras.GetUnitAuraBySpellID("player", 344179);
 
         if aurastorm then
@@ -20,7 +20,7 @@ end
 function ns.check_void()
     local stack = 0;
 
-    if C_Secrets.GetSpellAuraSecrecy(1225789) == 0  then
+    if C_Secrets.GetSpellAuraSecrecy and C_Secrets.GetSpellAuraSecrecy(1225789) == 0  then
         local auravoid = C_UnitAuras.GetUnitAuraBySpellID("player", 1225789);
 
         if auravoid then

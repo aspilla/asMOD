@@ -77,8 +77,7 @@ local function init_class()
         end
 
         if (spec and spec == 2) then
-            --ns.combocountbar:SetMinMaxValues(0, 3);
-            --ns.spellid = 108853;
+            ns.spellid = 108853;
         end
     end
 
@@ -132,6 +131,13 @@ local function init_class()
     end
 
     if (englishClass == "HUNTER") then
+        if (spec and spec == 1) then
+            ns.spellid = 217200;
+        end
+
+        if (spec and spec == 2) then
+            ns.spellid = 19434;
+        end
     end
 
     if (englishClass == "SHAMAN") then
@@ -246,7 +252,7 @@ local function init_addon()
 
     ns.combocountbar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
     ns.combocountbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-    ns.combocountbar.bg:SetVertexColor(0, 0, 0, 0.8);
+    ns.combocountbar.bg:SetVertexColor(0, 0, 0, 0.5);
     ns.combocountbar:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", 0, 1);
     ns.combocountbar:SetWidth(ns.config.width);
     ns.combocountbar:SetStatusBarColor(1, 1, 1);
@@ -289,6 +295,32 @@ local function init_addon()
         ns.combobars[i]:Hide();
         ns.combobars[i]:EnableMouse(false);
     end
+
+    ns.chargebar = CreateFrame("StatusBar", nil, ns.frame);
+    ns.chargebar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+    ns.chargebar:GetStatusBarTexture():SetHorizTile(false);
+    ns.chargebar:SetFrameLevel(9200);
+    ns.chargebar:SetMinMaxValues(0, 100);
+    ns.chargebar:SetValue(0);
+    ns.chargebar:SetHeight(ns.config.height);
+    ns.chargebar:SetWidth(20);
+    local texturepoint = ns.combocountbar:GetStatusBarTexture();
+    ns.chargebar:SetPoint("LEFT", texturepoint, "RIGHT", 0, 0);
+
+    --[[
+    ns.chargebar.bg = ns.chargebar:CreateTexture(nil, "BACKGROUND");
+    ns.chargebar.bg:SetPoint("TOPLEFT", ns.chargebar, "TOPLEFT", -1, 1);
+    ns.chargebar.bg:SetPoint("BOTTOMRIGHT", ns.chargebar, "BOTTOMRIGHT", 1, -1);
+
+    ns.chargebar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
+    ns.chargebar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
+    ns.chargebar.bg:SetVertexColor(1, 1, 1, 1);
+    ns.chargebar:SetStatusBarColor(0,0,0);
+    ]]
+
+    ns.chargebar:Hide();
+    ns.chargebar:EnableMouse(false);
+
 
     C_AddOns.LoadAddOn("asMOD");
 

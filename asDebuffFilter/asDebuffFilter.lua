@@ -97,12 +97,13 @@ local function set_debuff(frame, unit, aura, color, size)
 end
 
 local debuffinfo = {
-	[1] = DEBUFF_TYPE_MAGIC_COLOR,
-	[2] = DEBUFF_TYPE_CURSE_COLOR,
-	[3] = DEBUFF_TYPE_DISEASE_COLOR,
-	[4] = DEBUFF_TYPE_POISON_COLOR, 
-	[5] = DEBUFF_TYPE_BLEED_COLOR, 
-	[0] = DEBUFF_TYPE_NONE_COLOR,
+    [0] = DEBUFF_TYPE_NONE_COLOR,
+    [1] = DEBUFF_TYPE_MAGIC_COLOR,
+    [2] = DEBUFF_TYPE_CURSE_COLOR,
+    [3] = DEBUFF_TYPE_DISEASE_COLOR,
+    [4] = DEBUFF_TYPE_POISON_COLOR,
+    [9] = DEBUFF_TYPE_BLEED_COLOR, -- enrage
+    [11] = DEBUFF_TYPE_BLEED_COLOR,
 };
 local colorcurve = C_CurveUtil.CreateColorCurve();
 colorcurve:SetType(Enum.LuaCurveType.Step);

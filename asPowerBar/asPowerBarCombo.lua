@@ -1,11 +1,11 @@
-local _, ns      = ...;
+local _, ns        = ...;
 
-local _, Class   = UnitClass("player")
-local classcolor = RAID_CLASS_COLORS[Class];
-ns.maxcombo           = nil;
-ns.maxcombopartial    = nil;
+local _, Class     = UnitClass("player")
+ns.classcolor      = RAID_CLASS_COLORS[Class];
+ns.maxcombo        = nil;
+ns.maxcombopartial = nil;
 
-function ns.setup_max_combo(max, maxpartial)
+function ns.setup_max_combo(max, maxpartial, frameonly)
     if issecretvalue(max) then
         return;
     end
@@ -20,39 +20,49 @@ function ns.setup_max_combo(max, maxpartial)
     local width = (ns.config.width - (1 * (max - 1))) / max;
     local combobars = ns.combobars;
 
+    ns.chargebar:SetWidth(width)
+
     for i = 1, 20 do
         combobars[i]:Hide();
     end
 
     for i = 1, max do
-        combobars[i]:SetWidth(width)
+        local combobar = combobars[i];
+        combobar:SetWidth(width)
+
 
         if max == 10 then
             if i == max then
-                combobars[i]:SetStatusBarColor(1, 0, 0);
+                combobar:SetStatusBarColor(1, 0, 0);
             elseif i >= 5 then
-                combobars[i]:SetStatusBarColor(0, 1, 0);
+                combobar:SetStatusBarColor(0, 1, 0);
             else
-                combobars[i]:SetStatusBarColor(classcolor.r, classcolor.g, classcolor.b);
+                combobar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
             end
         else
             if max > 5 and i == max then
-                combobars[i]:SetStatusBarColor(1, 0, 0);
+                combobar:SetStatusBarColor(1, 0, 0);
             elseif max > 5 and i >= 5 then
-                combobars[i]:SetStatusBarColor(0, 1, 0);
+                combobar:SetStatusBarColor(0, 1, 0);
             else
-                combobars[i]:SetStatusBarColor(classcolor.r, classcolor.g, classcolor.b);
+                combobar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
             end
         end
 
 
         if maxpartial then
-            combobars[i]:SetMinMaxValues(0, maxpartial);
+            combobar:SetMinMaxValues(0, maxpartial);
         else
-            combobars[i]:SetMinMaxValues(0, 1);
+            combobar:SetMinMaxValues(0, 1);
         end
-        combobars[i]:SetValue(0);
-        combobars[i]:Show();
+        combobar:SetValue(0);
+        combobar:Show();
+
+        if frameonly then
+            combobar.bg:SetAlpha(0.5);
+        else
+            combobar.bg:SetAlpha(1);
+        end
     end
 end
 
@@ -67,24 +77,26 @@ function ns.show_combo(combo, partial)
         local pvalue = partial % pmax;
 
         for i = 1, max do
+            local combobar = combobars[i];
             if pvalue > 0 and i == (combo + 1) then
-                combobars[i]:SetValue(pvalue, Enum.StatusBarInterpolation.ExponentialEaseOut);
-                combobars[i]:SetStatusBarColor(1, 1, 1);
+                combobar:SetValue(pvalue, Enum.StatusBarInterpolation.ExponentialEaseOut);
+                combobar:SetStatusBarColor(1, 1, 1);
             elseif i <= combo then
-                combobars[i]:SetValue(pmax);
-                combobars[i]:SetStatusBarColor(classcolor.r, classcolor.g, classcolor.b);
+                combobar:SetValue(pmax);
+                combobar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
             else
-                combobars[i]:SetValue(0);
-                combobars[i]:SetStatusBarColor(classcolor.r, classcolor.g, classcolor.b);
+                combobar:SetValue(0);
+                combobar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
             end
         end
     else
         ns.combotext:SetText(combo);
         for i = 1, max do
+            local combobar = combobars[i];
             if i <= combo then
-                combobars[i]:SetValue(1);
+                combobar:SetValue(1);
             else
-                combobars[i]:SetValue(0);
+                combobar:SetValue(0);
             end
         end
     end
@@ -93,11 +105,12 @@ function ns.show_combo(combo, partial)
     if ns.brogue then
         local chargedPowerPoints = GetUnitChargedPowerPoints("player");
         for i = 1, max do
+            local combobar = combobars[i];
             local isCharged = chargedPowerPoints and tContains(chargedPowerPoints, i) or false;
             if isCharged then
-                ns.lib.PixelGlow_Start(combobars[i]);
+                ns.lib.PixelGlow_Start(combobar);
             else
-                ns.lib.PixelGlow_Stop(combobars[i]);
+                ns.lib.PixelGlow_Stop(combobar);
             end
         end
     end
