@@ -1,4 +1,4 @@
-# asScavenger (Mid Night)
+# asScavenger (Midnight)
 
 Automatically sells all "Poor" quality (gray) items in your bags whenever you interact with a merchant.
 

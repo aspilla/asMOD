@@ -1,4 +1,4 @@
-# asRangeDisplay (Mid Night)
+# asRangeDisplay (Midnight)
 
 Displays the distance to your Target, Focus, and Mouseover units.
 ![asRangeDisplay](https://github.com/aspilla/asMOD/blob/main/.Pictures/asRangeDisplay.JPG?raw=true)

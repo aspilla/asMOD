@@ -1,4 +1,4 @@
-# asMOD: A Collection of World of Warcraft Addons (Mid Night)
+# asMOD: A Collection of World of Warcraft Addons (Midnight)
 
 ## Preview
 

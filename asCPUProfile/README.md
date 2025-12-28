@@ -1,4 +1,4 @@
-#   asCPUProfile (Mid Night)
+#   asCPUProfile (Midnight)
 
 ## Introduction
 Check addon latency and performance.

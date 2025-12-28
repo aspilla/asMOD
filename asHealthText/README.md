@@ -1,4 +1,4 @@
-# asHealthText (Mid Night)
+# asHealthText (Midnight)
 
 **Text-based HUD** 
 

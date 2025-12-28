@@ -1,4 +1,4 @@
-# asHideActionBar (Mid Night)
+# asHideActionBar (Midnight)
 
 Automatically hides action bars, which are not able to hide. Those are visible when you move mouse cursor near their original position.
 

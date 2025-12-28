@@ -1,4 +1,4 @@
-# asHideBagsBar (Mid Night)
+# asHideBagsBar (Midnight)
 
 Automatically hides the menu bar (Character, Spellbook, Talents, etc.), bag bar (Backpack and other bags) in the bottom right, and the Raid/Party Manager on the left. They reappear when the mouse cursor is moved near their original positions.
 ![asHideBagsBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asHideBagsBar.gif?raw=true)

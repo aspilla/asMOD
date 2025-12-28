@@ -1,4 +1,4 @@
-# asTrueGCD (Mid Night)
+# asTrueGCD (Midnight)
 
 Displays a record of recently used spells and items.
 ![asTrueGCD](https://github.com/aspilla/asMOD/blob/main/.Pictures/asTrueGCD.jpg?raw=true)

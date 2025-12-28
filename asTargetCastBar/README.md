@@ -1,4 +1,4 @@
-# asTargetCastBar (Mid Night)
+# asTargetCastBar (Midnight)
 
 Displays the casting bars for your current Target and Focus.
 ![asTargetCastBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asTargetCastBar.jpg?raw=true)

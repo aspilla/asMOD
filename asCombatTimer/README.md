@@ -1,4 +1,4 @@
-# asCombatTimer (Mid Night)
+# asCombatTimer (Midnight)
 
 Displays the elapsed time after combat starts.
 

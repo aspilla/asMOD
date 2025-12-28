@@ -1,4 +1,4 @@
-# asInterruptHelper (Mid Night)
+# asInterruptHelper (Midnight)
 
 Tracks and displays the cooldown of your interrupt or stun spells when your Focus, Mouseover, or Current Target starts casting.
 

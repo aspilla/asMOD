@@ -1,4 +1,4 @@
-# asActiveAlert (Mid Night)
+# asActiveAlert (Midnight)
 
 Displays the icon of a spell to the left of the character when the spell has a glowing border.
 

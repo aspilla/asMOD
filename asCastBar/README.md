@@ -1,4 +1,4 @@
-# asCastBar (Mid Night)
+# asCastBar (Midnight)
 
 Displays an icon and cast time on the default player cast bar.
 ![asCastBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCastBar.jpg?raw=true)

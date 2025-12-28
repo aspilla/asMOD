@@ -1,4 +1,4 @@
-# asHideNamePlates (Mid Night)
+# asHideNamePlates (Midnight)
 
 Hides nameplates except for mobs that are casting.
 

@@ -1,4 +1,4 @@
-# asFixChat (Mid Night)
+# asFixChat (Midnight)
 
 Switch chat channels using the Tab key and display a copyable window when clicking a URL.
 

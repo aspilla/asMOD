@@ -1,4 +1,4 @@
-# asCombatInfo (Mid Night)
+# asCombatInfo (Midnight)
 
 Enhances the Cooldown Manager.
 ![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN.jpg?raw=true)

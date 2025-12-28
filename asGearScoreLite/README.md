@@ -1,4 +1,4 @@
-# asGearScoreLite (Mid Night)
+# asGearScoreLite (Midnight)
 
 Displays item levels in the Character and Inspect windows.
 ![asGearScoreLite](https://github.com/aspilla/asMOD/blob/main/.Pictures/asGearScoreLite.jpg?raw=true)

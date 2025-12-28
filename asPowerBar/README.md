@@ -1,4 +1,4 @@
-# asPowerBar (Mid Night)
+# asPowerBar (Midnight)
 
 Displays the player's primary resources (Energy, Mana, Rage, etc.) and class resources (Combo Points, Runes, Holy Power, etc.).
 

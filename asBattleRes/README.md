@@ -1,4 +1,4 @@
-# asBattleRes (Mid Night)
+# asBattleRes (Midnight)
 
 Displays the number of available charges and cooldown of the battle resurrection spell.
 

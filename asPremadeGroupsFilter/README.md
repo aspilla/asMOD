@@ -1,4 +1,4 @@
-# asPremadeGroupsFilter (Mid Night)
+# asPremadeGroupsFilter (Midnight)
 
 Displays additional information in the Mythic+/Raid search window, such as specialization, party leader, and the leader's Mythic+ score.
 

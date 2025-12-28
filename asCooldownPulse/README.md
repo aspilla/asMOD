@@ -1,4 +1,4 @@
-# asCooldownPulse (Mid Night)
+# asCooldownPulse (Midnight)
 
 Displays cooldowns for trinkets, racial traits, healthstones, and potions.
 

@@ -1,4 +1,4 @@
-# asMOD Addon (Mid Night)
+# asMOD Addon (Midnight)
 
 asMOD optimizes default WoW settings and Edit Mode layouts to provide an ideal environment for using other asMOD addons. It also provides a centralized configuration tool to manage the positions of various UI elements.
 

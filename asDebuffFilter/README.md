@@ -1,4 +1,4 @@
-# asDebuffFilter (Mid Night)
+# asDebuffFilter (Midnight)
 
 Displays debuffs on both player and target unit frames.
 ![asDebuffFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDebuffFilter.JPG?raw=true)

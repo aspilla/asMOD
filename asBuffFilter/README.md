@@ -1,4 +1,4 @@
-# asBuffFilter (Mid Night)
+# asBuffFilter (Midnight)
 
 Displays the target's buffs.
 ![asBuffFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asBuffFilter.JPG?raw=true)

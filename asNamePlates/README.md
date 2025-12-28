@@ -1,5 +1,5 @@
 
-# asNamePlates (Mid Night)
+# asNamePlates (Midnight)
 
 Nameplate Enhancement Addon
 

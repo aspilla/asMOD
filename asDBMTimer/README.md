@@ -1,4 +1,4 @@
-# asDBMTimer (Mid Night)
+# asDBMTimer (Midnight)
 
 **Enhanced Boss Timeline**
 ![asDBMTimer](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDBMTimer.jpg?raw=true)

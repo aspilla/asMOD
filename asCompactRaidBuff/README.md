@@ -1,4 +1,4 @@
-# asCompactRaidBuff (Mid Night)
+# asCompactRaidBuff (Midnight)
 
 Raid and Party Frame Enhancement
 

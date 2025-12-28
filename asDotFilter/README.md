@@ -1,4 +1,4 @@
-# asDotFilter (Mid Night)
+# asDotFilter (Midnight)
 
 Displays debuffs cast by the player on boss frames and focus frames.
 

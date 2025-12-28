@@ -1,4 +1,4 @@
-# asInformation (Mid Night)
+# asInformation (Midnight)
 
 Displays primary stats (Strength, Agility, or Intelligence based on class) and secondary stats (Haste, Critical Strike, Mastery, Versatility), highlighting them when they increase.
 

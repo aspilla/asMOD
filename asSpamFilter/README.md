@@ -1,4 +1,4 @@
-# asSpamFilter (Mid Night)
+# asSpamFilter (Midnight)
 
 Relocates the default UI Error Message display.
 ![asSpamFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asSpamFilter.jpg?raw=true)
