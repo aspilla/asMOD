@@ -1,8 +1,8 @@
 ﻿## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rSkyRide
-## Notes: 
-## Notes-koKR: 
+## Notes: Displays `Skyriding` resources/speed/cooldowns.
+## Notes-koKR: `하늘 비행` 자원/속도/쿨 표시.
 ## Version : 251228
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
