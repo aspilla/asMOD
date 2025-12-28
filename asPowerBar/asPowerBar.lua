@@ -8,7 +8,8 @@ ns.config                = {
     width       = 238,
     xpoint      = 0,
     ypoint      = -180,
-    height      = 10,
+    height      = 8,
+    comboheight = 5,
     combatalpha = 1,
     normalalpha = 0.5,
 };
@@ -243,7 +244,7 @@ local function init_addon()
     ns.combocountbar:SetFrameLevel(9000);
     ns.combocountbar:SetMinMaxValues(0, 100);
     ns.combocountbar:SetValue(100);
-    ns.combocountbar:SetHeight(ns.config.height);
+    ns.combocountbar:SetHeight(ns.config.comboheight);
     ns.combocountbar:SetWidth(20);
 
     ns.combocountbar.bg = ns.combocountbar:CreateTexture(nil, "BACKGROUND");
@@ -275,7 +276,7 @@ local function init_addon()
         ns.combobars[i]:SetFrameLevel(9100);
         ns.combobars[i]:SetMinMaxValues(0, 100);
         ns.combobars[i]:SetValue(100);
-        ns.combobars[i]:SetHeight(ns.config.height);
+        ns.combobars[i]:SetHeight(ns.config.comboheight);
         ns.combobars[i]:SetWidth(20);
 
         ns.combobars[i].bg = ns.combobars[i]:CreateTexture(nil, "BACKGROUND");
@@ -302,7 +303,7 @@ local function init_addon()
     ns.chargebar:SetFrameLevel(9200);
     ns.chargebar:SetMinMaxValues(0, 100);
     ns.chargebar:SetValue(0);
-    ns.chargebar:SetHeight(ns.config.height);
+    ns.chargebar:SetHeight(ns.config.comboheight);
     ns.chargebar:SetWidth(20);
     local texturepoint = ns.combocountbar:GetStatusBarTexture();
     ns.chargebar:SetPoint("LEFT", texturepoint, "RIGHT", 0, 0);
