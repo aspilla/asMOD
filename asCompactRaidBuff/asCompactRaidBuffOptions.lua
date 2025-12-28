@@ -1,7 +1,7 @@
 local _, ns = ...;
 
 ns.UpdateRate = 0.25; -- 1회 Update 주기 (초) 작으면 작을 수록 Frame Rate 감소 가능, 크면 Update 가 느림
-ns.ACRB_HealerManaBarHeight = 5;
+ns.ACRB_HealerManaBarHeight = 4;
 
 local Options_Default = {
 	version = 251228,

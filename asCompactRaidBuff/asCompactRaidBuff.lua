@@ -5,24 +5,6 @@ local main_frame = CreateFrame("Frame", nil, UIParent);
 ns.asraid = {};
 ns.asparty = {};
 
-local function update_power_raidicon()
-    if IsInRaid() then
-        for _, asframe in pairs(ns.asraid) do
-            if asframe and asframe.frame and asframe.frame:IsShown() then
-                ns.update_power(asframe);
-                ns.update_raidicon(asframe);
-            end
-        end
-    else
-        for _, asframe in pairs(ns.asparty) do
-            if asframe and asframe.frame and asframe.frame:IsShown() then
-                ns.update_power(asframe);
-                ns.update_raidicon(asframe);
-            end
-        end
-    end
-end
-
 local function is_party(unit)
     for i = 1, 4 do
         if unit and UnitIsUnit(unit, "party" .. i) then
@@ -41,9 +23,16 @@ local function is_tank(unit)
     return false;
 end
 
+local function is_healer(unit)
+    local assignedRole = UnitGroupRolesAssigned(unit);
+    if assignedRole == "HEALER" then
+        return true;
+    end
+    return false;
+end
 
-local max_y = 0;
--- Setup
+
+
 function ns.setup_frame(asframe)
     if not asframe.frame or asframe.frame:IsForbidden() then
         return
@@ -67,90 +56,64 @@ function ns.setup_frame(asframe)
         return;
     end
 
-    asframe.isTank = is_tank(asframe.unit);
-    asframe.isPlayer = UnitIsUnit(asframe.unit, "player");
-
-
+    local istanker = is_tank(asframe.unit);
+    local ishealer = is_healer(asframe.unit);
 
     local strata = "LOW";
     local framelevel = 4;
-    local fontsize = 10;
 
-
-    if (not asframe.asManabar) then
-        asframe.asManabar = CreateFrame("StatusBar", nil, frame.healthBar);
-        asframe.asManabar:SetStatusBarTexture("Interface\\Addons\\asCompactRaidBuff\\UI-StatusBar");
-        asframe.asManabar:GetStatusBarTexture():SetHorizTile(false);
-        asframe.asManabar:SetMinMaxValues(0, 100);
-        asframe.asManabar:SetValue(100);
-        asframe.asManabar:SetPoint("BOTTOM", frame.healthBar, "BOTTOM", 0, 0);
-        asframe.asManabar:SetFrameStrata(strata);
-        asframe.asManabar:SetFrameLevel(framelevel);
-        asframe.asManabar:Hide();
+    if (not asframe.powerbar) then
+        asframe.powerbar = CreateFrame("StatusBar", nil, frame.healthBar);
+        asframe.powerbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+        asframe.powerbar:GetStatusBarTexture():SetHorizTile(false);
+        asframe.powerbar:SetMinMaxValues(0, 100);
+        asframe.powerbar:SetValue(100);
+        asframe.powerbar:SetPoint("BOTTOM", frame.healthBar, "BOTTOM", 0, 0);
+        asframe.powerbar:SetFrameStrata(strata);
+        asframe.powerbar:SetFrameLevel(framelevel);
+        asframe.powerbar:Hide();
     end
 
-    if asframe.asManabar then
-        asframe.asManabar:SetWidth(x - 2);
-        asframe.asManabar:SetHeight(ns.ACRB_HealerManaBarHeight);
+    if asframe.powerbar then
+        asframe.powerbar:SetWidth(x - 2);
+        asframe.powerbar:SetHeight(ns.ACRB_HealerManaBarHeight);
+
+        local powertype = UnitPowerType(asframe.unit);
+        local powercolor = PowerBarColor[powertype]
+        if powercolor then
+            asframe.powerbar:SetStatusBarColor(powercolor.r, powercolor.g, powercolor.b)
+        end
+
+        asframe.ispowerupdate = false;
+        if ishealer then
+            if ns.options.BottomHealerManaBar then
+                asframe.ispowerupdate = true;
+            end
+        elseif istanker then
+            if ns.options.BottomTankPowerBar and powertype > 0 then
+                asframe.ispowerupdate = true;
+            end
+        end
+
+        if asframe.ispowerupdate then
+            asframe.powerbar:Show();
+        else
+            asframe.powerbar:Hide();
+        end
     end
 
     if (not asframe.raidicon) then
         asframe.raidicon = frame:CreateTexture(nil, "ARTWORK");
         asframe.raidicon:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
-        asframe.raidicon:SetSize(fontsize, fontsize);
         asframe.raidicon:SetPoint("LEFT", frame.healthBar, "LEFT", 2, 0);
         asframe.raidicon:Hide();
     end
 
-    --마나는 unit으로만
-
-    local role = UnitGroupRolesAssigned(asframe.unit);
-    local manaBarUsedHeight = 0;
-
-    if asframe.frame.powerBar and asframe.frame.powerBar:IsShown() then
-        manaBarUsedHeight = 8;
+    if asframe.raidicon then
+        asframe.raidicon:SetSize(y / 3 - 3, y / 3 - 3);
     end
 
-    asframe.checkManaType = nil;
-
-
-    if manaBarUsedHeight == 0 then
-        if role then
-            if (role == "HEALER") and ns.options.BottomHealerManaBar then
-                asframe.checkManaType = Enum.PowerType.Mana;
-            elseif (role == "TANK") and ns.options.BottomTankPowerBar then
-                local localizedClass, englishClass = UnitClass(asframe.unit);
-
-                if englishClass == "WARRIOR" or englishClass == "DRUID" then
-                    asframe.checkManaType = Enum.PowerType.Rage;
-                elseif englishClass == "DEATHKNIGHT" then
-                    asframe.checkManaType = Enum.PowerType.RunicPower;
-                elseif englishClass == "DEMONHUNTER" then
-                    asframe.checkManaType = Enum.PowerType.Fury;
-                end
-            end
-        end
-    end
-
-    if asframe.checkManaType then
-        asframe.asManabar:SetMinMaxValues(0, UnitPowerMax(asframe.unit, asframe.checkManaType));
-        asframe.asManabar:SetValue(UnitPower(asframe.unit, asframe.checkManaType));
-
-        local info = PowerBarColor[asframe.checkManaType];
-        if (info) then
-            local r, g, b = info.r, info.g, info.b;
-            asframe.asManabar:SetStatusBarColor(r, g, b);
-        end
-
-        asframe.asManabar:Show();
-    else
-        asframe.asManabar:Hide();
-    end
-
-    ns.update_power(asframe);
-    ns.update_raidicon(asframe);
-
-
+    ns.update_features(asframe);
 
     asframe.callback = function()
         if asframe.frame:IsShown() then
@@ -158,7 +121,6 @@ function ns.setup_frame(asframe)
                 ns.setup_frame(asframe);
             end
         elseif asframe.timer then
-            asframe:UnregisterEvent("UNIT_AURA");
             asframe.timer:Cancel();
         end
     end
@@ -185,6 +147,7 @@ local function hook_func(frame)
     end
 end
 
+local max_y = 0;
 local function update_all(frame)
     if frame and not frame:IsForbidden() and frame.GetName then
         local name = frame:GetName();
@@ -252,10 +215,6 @@ local function on_update()
     framebuffer = {};
 end
 
-local function on_update_feature()
-    update_power_raidicon();
-end
-
 
 local timero;
 local timero2;
@@ -271,7 +230,7 @@ local function init()
 
     setup_frames();
     timero = C_Timer.NewTicker(ns.UpdateRate + 0.01, on_update);
-    timero2 = C_Timer.NewTicker(ns.UpdateRate + 0.02, on_update_feature);
+    timero2 = C_Timer.NewTicker(ns.UpdateRate + 0.02, ns.update_featuresforall);
 end
 
 local bfirst = true;
