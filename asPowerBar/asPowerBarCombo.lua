@@ -59,7 +59,7 @@ function ns.setup_max_combo(max, maxpartial, frameonly)
         combobar:Show();
 
         if frameonly then
-            combobar.bg:SetAlpha(0.5);
+            combobar.bg:SetAlpha(0.3);
         else
             combobar.bg:SetAlpha(1);
         end

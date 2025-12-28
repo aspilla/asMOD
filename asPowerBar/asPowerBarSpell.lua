@@ -12,7 +12,7 @@ local function check_spellcooldown(spellid)
     ns.combocountbar:Show();
     ns.combocountbar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
 
-    ns.chargebar:SetTimerDuration(durationinfo, 0, 1);
+    ns.chargebar:SetTimerDuration(durationinfo, 0, 1);    
     ns.chargebar:SetReverseFill(true);
     ns.chargebar:Show();
 end

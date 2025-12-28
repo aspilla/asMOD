@@ -307,6 +307,7 @@ local function init_addon()
     ns.chargebar:SetWidth(20);
     local texturepoint = ns.combocountbar:GetStatusBarTexture();
     ns.chargebar:SetPoint("LEFT", texturepoint, "RIGHT", 0, 0);
+    ns.chargebar:SetStatusBarColor(0.5, 0.5, 0.5);
 
     --[[
     ns.chargebar.bg = ns.chargebar:CreateTexture(nil, "BACKGROUND");

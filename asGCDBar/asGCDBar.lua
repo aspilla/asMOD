@@ -37,16 +37,9 @@ if asMOD_setupFrame then
 	asMOD_setupFrame(main_frame.gcdbar, "asGCDBar");
 end
 
-local curve = C_CurveUtil.CreateCurve();
-curve:SetType(Enum.LuaCurveType.Linear);
-curve:AddPoint(0, 0);
-curve:AddPoint(1, 100);
-
 local function on_update()
-	local spellCooldownInfo = C_Spell.GetSpellCooldown(61304);
-	main_frame.gcdbar:SetMinMaxValues(0, spellCooldownInfo.duration);
-	local remain = spellCooldownInfo.startTime + spellCooldownInfo.duration - GetTime();
-	main_frame.gcdbar:SetValue(remain, Enum.StatusBarInterpolation.ExponentialEaseOut);
+	local durationinfo = C_Spell.GetSpellCooldownDuration(61304);
+	main_frame.gcdbar:SetTimerDuration(durationinfo, Enum.StatusBarInterpolation.ExponentialEaseOut);
 end
 
 C_Timer.NewTicker(0.1, on_update);
