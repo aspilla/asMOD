@@ -23,22 +23,6 @@ function ns.check_auracount()
     end
 end
 
-function ns.check_storm()
-    local combo = 0;
-
-    if C_Secrets.GetSpellAuraSecrecy and C_Secrets.GetSpellAuraSecrecy(344179) == 0 then
-        local aurastorm = C_UnitAuras.GetUnitAuraBySpellID("player", 344179);
-
-        if aurastorm then
-            combo = aurastorm.applications;
-        end
-    end
-
-    if combo then
-        ns.show_combo(combo);
-    end
-end
-
 function ns.check_void()
     local stack = 0;
 
