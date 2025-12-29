@@ -11,6 +11,7 @@ local configs = {
     buffcount = 4,
     buffsize = 25,
     font = STANDARD_TEXT_FONT,
+    framelevel = 900,
 };
 
 ns.isevoker = false;
@@ -108,73 +109,33 @@ local function update_unitframe(frame)
     -- Healthbar
     local value = UnitHealth(unit);
     local valueMax = UnitHealthMax(unit);
-    --local value_orig = value;
-    --local allIncomingHeal = UnitGetIncomingHeals(unit) or 0;
-    local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0;
     local valuePct = UnitHealthPercent(unit, false, curve);
-    --    local valuePct_orig = (math.ceil((value_orig / valueMax) * 100));
-    -- local valuePctAbsorb = (math.ceil((total / valueMax) * 100));
+
+    local allIncomingHeal = UnitGetIncomingHeals(unit) or 0;
+    local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0;
+    local totalHealAbsorb = UnitGetTotalHealAbsorbs(unit) or 0;
+
 
     frame.healthbar:SetMinMaxValues(0, valueMax)
-    frame.healthbar:SetValue(value, Enum.StatusBarInterpolation.ExponentialEaseOut)
+    frame.healthbar:SetValue(value, Enum.StatusBarInterpolation.ExponentialEaseOut);
+
+    frame.healthbar.absorbBar:SetMinMaxValues(0, valueMax);
+    frame.healthbar.absorbBar:SetValue(totalAbsorb, Enum.StatusBarInterpolation.ExponentialEaseOut);
+    
+    frame.healthbar.healabsorbBar:SetMinMaxValues(0, valueMax);
+    frame.healthbar.healabsorbBar:SetValue(totalHealAbsorb, Enum.StatusBarInterpolation.ExponentialEaseOut);
+
+
+    frame.healthbar.incominghealBar:SetMinMaxValues(0, valueMax);
+    frame.healthbar.incominghealBar:SetValue(allIncomingHeal, Enum.StatusBarInterpolation.ExponentialEaseOut);
 
     if UnitIsDead(unit) then
-        frame.healthbar.pvalue:SetText("Dead");
+        frame.pvalue:SetText("Dead");
         --elseif valuePctAbsorb > 0 then
-        --  frame.healthbar.pvalue:SetText(valuePct .. "(" .. valuePctAbsorb .. ")");
+        --  frame.pvalue:SetText(valuePct .. "(" .. valuePctAbsorb .. ")");
     else
-        frame.healthbar.pvalue:SetText(string.format("%d", valuePct));
+        frame.pvalue:SetText(string.format("%d", valuePct));
     end
-
-
-    --[[
-    local calculator = CreateUnitHealPredictionCalculator();
-    UnitGetDetailedHealPrediction(unit, unitDoingTheHealing, calculator);  -- 'calculator' is updated with new data after this call.
-    local incomingHeals, incomingHealsFromHealer, incomingHealsFromOthers, incomingHealsClamped = calculator:GetIncomingHeals();
-    myStatusBar:SetValue(incomingHealsFromHealer);
-    ]]
-
-    --[[
-    local totalAbsorbremain = totalAbsorb;
-    local remainhealth = valueMax - value;
-    local remainhealthAfterHeal = remainhealth - allIncomingHeal;
-    local incominghealremain = allIncomingHeal;
-
-    if allIncomingHeal > remainhealth then
-        incominghealremain = remainhealth;
-    end
-
-    if remainhealthAfterHeal < 0 then
-        remainhealthAfterHeal = 0
-    end
-
-    if totalAbsorbremain > remainhealthAfterHeal then
-        totalAbsorbremain = remainhealthAfterHeal;
-    end
-    local pointbar = nil
-
-    UpdateFillBarBase(frame.healthbar, frame.healthbar.incominghealBar, incominghealremain, false, nil);
-
-    if frame.healthbar.incominghealBar:IsShown() then
-        pointbar = frame.healthbar.incominghealBar;
-    end
-
-    UpdateFillBarBase(frame.healthbar, frame.healthbar.absorbBar, totalAbsorbremain, false, pointbar);
-
-    if frame.healthbar.absorbBar:IsShown() then
-        frame.healthbar.absorbBarO:Show()
-    else
-        frame.healthbar.absorbBarO:Hide()
-    end
-
-    local remainAbsorb = totalAbsorb - totalAbsorbremain;
-
-    if remainAbsorb > valueMax then
-        remainAbsorb = valueMax;
-    end
-
-    UpdateFillBarBase(frame.healthbar, frame.healthbar.shieldBar, remainAbsorb, true, nil);
-    ]]
 
     --CastBar
     if frame.updateCastBar then
@@ -279,15 +240,15 @@ local function update_unitframe(frame)
         ]]
     end
 
-    frame.healthbar.hvalue:SetText(AbbreviateLargeNumbers(value))
-    frame.healthbar.name:SetText(name);
+    frame.hvalue:SetText(AbbreviateLargeNumbers(value))
+    frame.name:SetText(name);
     if raidicon then
-        SetRaidTargetIconTexture(frame.healthbar.mark, raidicon);
-        frame.healthbar.mark:Show();
+        SetRaidTargetIconTexture(frame.mark, raidicon);
+        frame.mark:Show();
     else
-        frame.healthbar.mark:Hide();
+        frame.mark:Hide();
     end
-    frame.healthbar.classtext:SetText(classtext);
+    frame.classtext:SetText(classtext);
 
     --Power
     local power = UnitPower(unit)
@@ -352,15 +313,15 @@ local function update_unitframe(frame)
         end
 
         if (display and display ~= 0) then
-            frame.healthbar.aggro:SetText(format("%1.0f", display) .. "%");
+            frame.aggro:SetText(format("%1.0f", display) .. "%");
             local r, g, b = GetThreatStatusColor(status)
-            frame.healthbar.aggro:SetTextColor(r, g, b, 1);
-            frame.healthbar.aggro:Show();
+            frame.aggro:SetTextColor(r, g, b, 1);
+            frame.aggro:Show();
         else
-            frame.healthbar.aggro:Hide();
+            frame.aggro:Hide();
         end
     else
-        frame.healthbar.aggro:Hide();
+        frame.aggro:Hide();
     end
 
     if frame.portrait then
@@ -452,7 +413,7 @@ local function update_debuffanchor(frames, index, offsetX, right, parent, width)
     else
         buff:SetPoint("BOTTOMLEFT", frames[index - 1], "BOTTOMRIGHT", offsetX, 0);
     end
-    
+
     buff:SetWidth(width - offsetX);
     buff:SetHeight(width * 0.8);
 end
@@ -505,7 +466,7 @@ local function update_buffanchor(frames, index, offsetX, right, parent, width)
     else
         buff:SetPoint("RIGHT", frames[index - 1], "LEFT", -offsetX, 0);
     end
-    
+
     buff:SetWidth(width - offsetX);
     buff:SetHeight(width * 0.8);
 end
@@ -620,18 +581,11 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame:SetPoint("CENTER", UIParent, "CENTER", x, y);
     frame:SetSize(width, height)
     frame:SetFrameStrata("LOW");
-    frame:SetFrameLevel(900);
-    frame.targetborder = frame:CreateTexture(nil, "BACKGROUND", nil, -8)
-    frame.targetborder:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga")
-    frame.targetborder:SetPoint("TOPLEFT", frame, "TOPLEFT", -2, 2);
-    frame.targetborder:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 2, -2);
-    frame.targetborder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-    frame.targetborder:SetVertexColor(1, 1, 1)
-    frame.targetborder:SetAlpha(1);
-    frame.targetborder:Hide();
+    frame:SetFrameLevel(configs.framelevel);
 
     frame.healthbar = CreateFrame("StatusBar", nil, frame);
-    frame.healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+    frame.healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+    frame.healthbar:SetFrameLevel(configs.framelevel - 20);
     frame.healthbar:GetStatusBarTexture():SetHorizTile(false)
     frame.healthbar:SetMinMaxValues(0, 100)
     frame.healthbar:SetValue(100)
@@ -644,12 +598,22 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
         frame.healthbar:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
     end
 
+    frame.targetborder = frame.healthbar:CreateTexture(nil, "BACKGROUND", nil, -8)
+    frame.targetborder:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga")
+    frame.targetborder:SetPoint("TOPLEFT", frame, "TOPLEFT", -2, 2);
+    frame.targetborder:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 2, -2);
+    frame.targetborder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+    frame.targetborder:SetVertexColor(1, 1, 1)
+    frame.targetborder:SetAlpha(1);
+    frame.targetborder:Hide();
+
     local hwidth = width;
 
     if ns.options.ShowPortrait then
         hwidth = width - height * 1.1;
 
         frame.portrait = CreateFrame("Button", nil, frame, "AUFDebuffFrameTemplate");
+        frame.portrait:SetFrameLevel(configs.framelevel - 20);
         local pframe = frame.portrait;
         pframe.cooldown:SetDrawSwipe(true);
         for _, r in next, { pframe.cooldown:GetRegions() } do
@@ -687,32 +651,35 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
 
     frame.healthbar:SetWidth(hwidth);
 
-    frame.healthbar.predictionBar = frame.healthbar:CreateTexture(nil, "BORDER");
-    frame.healthbar.predictionBar:SetTexture("RaidFrame-Hp-Fill");
-    frame.healthbar.predictionBar:Hide();
+    frame.healthbar.absorbBar = CreateFrame("StatusBar", nil, frame);
+    frame.healthbar.absorbBar:SetFrameLevel(configs.framelevel - 15);
+    frame.healthbar.absorbBar:SetStatusBarTexture("RaidFrame-Hp-Fill");    
+    frame.healthbar.absorbBar:SetMinMaxValues(0, 100)
+    frame.healthbar.absorbBar:SetStatusBarColor(0.5, 0.5, 0.5, 0.5);    
+    frame.healthbar.absorbBar:SetValue(0)
+    frame.healthbar.absorbBar:SetHeight(height);
+    frame.healthbar.absorbBar:SetAllPoints(frame.healthbar);
+    frame.healthbar.absorbBar:Show();
 
-    frame.healthbar.absorbBar = frame.healthbar:CreateTexture(nil, "BORDER");
-    frame.healthbar.absorbBar:SetTexture("Interface\\RaidFrame\\Shield-Fill");
-    frame.healthbar.absorbBar:SetAlpha(1);
-    frame.healthbar.absorbBar:Hide();
+    frame.healthbar.healabsorbBar = CreateFrame("StatusBar", nil, frame);
+    frame.healthbar.healabsorbBar:SetFrameLevel(configs.framelevel - 10);
+    frame.healthbar.healabsorbBar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+    frame.healthbar.healabsorbBar:SetMinMaxValues(0, 100)
+    frame.healthbar.healabsorbBar:SetStatusBarColor(0.7, 0.47, 0.05, 0.5);
+    frame.healthbar.healabsorbBar:SetValue(0)
+    frame.healthbar.healabsorbBar:SetHeight(height);
+    frame.healthbar.healabsorbBar:SetAllPoints(frame.healthbar);
+    frame.healthbar.healabsorbBar:Show();
 
-    frame.healthbar.absorbBarO = frame.healthbar:CreateTexture(nil, "ARTWORK");
-    frame.healthbar.absorbBarO:SetTexture("Interface\\RaidFrame\\Shield-Overlay");
-    frame.healthbar.absorbBarO:SetAllPoints(frame.healthbar.absorbBar);
-    frame.healthbar.absorbBarO:SetAlpha(0.8);
-    frame.healthbar.absorbBarO:Show();
-
-    frame.healthbar.shieldBar = frame.healthbar:CreateTexture(nil, "ARTWORK");
-    frame.healthbar.shieldBar:SetTexture("RaidFrame-Hp-Fill");
-    frame.healthbar.shieldBar:SetVertexColor(0, 0, 0);
-    frame.healthbar.shieldBar:SetAlpha(0.5);
-    frame.healthbar.shieldBar:Hide();
-
-    frame.healthbar.incominghealBar = frame.healthbar:CreateTexture(nil, "ARTWORK");
-    frame.healthbar.incominghealBar:SetTexture("RaidFrame-Hp-Fill");
-    frame.healthbar.incominghealBar:SetVertexColor(0, 1, 0);
-    frame.healthbar.incominghealBar:SetAlpha(0.6);
-    frame.healthbar.incominghealBar:Hide();
+    frame.healthbar.incominghealBar = CreateFrame("StatusBar", nil, frame);
+    frame.healthbar.incominghealBar:SetFrameLevel(configs.framelevel - 5);
+    frame.healthbar.incominghealBar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+    frame.healthbar.incominghealBar:SetMinMaxValues(0, 100)
+    frame.healthbar.incominghealBar:SetStatusBarColor(0.3, 0.8, 0.3, 0.5);
+    frame.healthbar.incominghealBar:SetValue(0)
+    frame.healthbar.incominghealBar:SetHeight(height);
+    frame.healthbar.incominghealBar:SetAllPoints(frame.healthbar);
+    frame.healthbar.incominghealBar:Show();
 
 
     frame.healthbar.bg = frame.healthbar:CreateTexture(nil, "BACKGROUND");
@@ -723,53 +690,53 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame.healthbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
     frame.healthbar.bg:SetVertexColor(0, 0, 0, 1);
 
-    frame.healthbar.pvalue = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.healthbar.pvalue:SetFont(STANDARD_TEXT_FONT, fontsize + 1, FontOutline);
-    frame.healthbar.pvalue:SetTextColor(1, 1, 1, 1)
+    frame.pvalue = frame:CreateFontString(nil, "ARTWORK");
+    frame.pvalue:SetFont(STANDARD_TEXT_FONT, fontsize + 1, FontOutline);
+    frame.pvalue:SetTextColor(1, 1, 1, 1)
 
-    frame.healthbar.hvalue = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.healthbar.hvalue:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
-    frame.healthbar.hvalue:SetTextColor(1, 1, 1, 1)
+    frame.hvalue = frame:CreateFontString(nil, "ARTWORK");
+    frame.hvalue:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
+    frame.hvalue:SetTextColor(1, 1, 1, 1)
 
-    frame.healthbar.name = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.healthbar.name:SetFont(configs.font, fontsize, FontOutline);
-    frame.healthbar.name:SetTextColor(1, 1, 1, 1)
+    frame.name = frame:CreateFontString(nil, "ARTWORK");
+    frame.name:SetFont(configs.font, fontsize, FontOutline);
+    frame.name:SetTextColor(1, 1, 1, 1)
 
-    frame.healthbar.aggro = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.healthbar.aggro:SetFont(STANDARD_TEXT_FONT, fontsize, FontOutline);
-    frame.healthbar.aggro:SetTextColor(1, 1, 1, 1)
+    frame.aggro = frame.healthbar:CreateFontString(nil, "ARTWORK");
+    frame.aggro:SetFont(STANDARD_TEXT_FONT, fontsize, FontOutline);
+    frame.aggro:SetTextColor(1, 1, 1, 1)
 
-    frame.healthbar.classtext = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.healthbar.classtext:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
-    frame.healthbar.classtext:SetTextColor(1, 1, 1, 1)
+    frame.classtext = frame.healthbar:CreateFontString(nil, "ARTWORK");
+    frame.classtext:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
+    frame.classtext:SetTextColor(1, 1, 1, 1)
 
 
     if x < 0 then
-        frame.healthbar.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 2, 0);
-        frame.healthbar.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -2, 0);
-        frame.healthbar.name:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
-        frame.healthbar.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
-        frame.healthbar.aggro:SetPoint("BOTTOMRIGHT", frame.healthbar.classtext, "BOTTOMLEFT", -1, 0);
+        frame.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 2, 0);
+        frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -2, 0);
+        frame.name:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
+        frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
+        frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
     else
-        frame.healthbar.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -2, 0);
-        frame.healthbar.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 2, 0);
-        frame.healthbar.name:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
-        frame.healthbar.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
-        frame.healthbar.aggro:SetPoint("BOTTOMLEFT", frame.healthbar.classtext, "BOTTOMRIGHT", 1, 0);
+        frame.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -2, 0);
+        frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 2, 0);
+        frame.name:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
+        frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
+        frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
     end
 
     if is_small then
-        frame.healthbar.classtext:Hide();
-        frame.healthbar.aggro:Hide();
+        frame.classtext:Hide();
+        frame.aggro:Hide();
     end
 
     frame.is_small = is_small;
 
-    frame.healthbar.mark = frame.healthbar:CreateTexture(nil, "ARTWORK");
-    frame.healthbar.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
-    frame.healthbar.mark:SetWidth(fontsize + 2);
-    frame.healthbar.mark:SetHeight(fontsize + 2);
-    frame.healthbar.mark:SetPoint("CENTER", frame.healthbar, "CENTER", 0, 0);
+    frame.mark = frame.healthbar:CreateTexture(nil, "ARTWORK");
+    frame.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
+    frame.mark:SetWidth(fontsize + 2);
+    frame.mark:SetHeight(fontsize + 2);
+    frame.mark:SetPoint("CENTER", frame.healthbar, "CENTER", 0, 0);
 
     frame.powerbar = CreateFrame("StatusBar", nil, frame);
     frame.powerbar:SetStatusBarTexture("RaidFrame-Hp-Fill")

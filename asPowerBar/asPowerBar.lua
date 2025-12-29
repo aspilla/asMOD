@@ -117,6 +117,17 @@ local function init_class()
     end
 
     if (englishClass == "PRIEST") then
+        if (spec and spec == 1) then
+            ns.spellid = 194509;
+        end
+
+        if (spec and spec == 2) then
+            ns.spellid = 2050;
+        end
+
+        if (spec and spec == 3) then
+            ns.spellid = 8092;
+        end
     end
 
     if (englishClass == "WARRIOR") then
