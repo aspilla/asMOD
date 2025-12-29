@@ -1,5 +1,27 @@
 local _, ns = ...;
 
+ns.auraid = nil;
+
+
+function ns.check_auracount()
+    local combo = 0;
+
+    if not ns.auraid then
+        return;
+    end
+
+    if C_Secrets.GetSpellAuraSecrecy and C_Secrets.GetSpellAuraSecrecy(ns.auraid) == 0 then
+        local aura = C_UnitAuras.GetUnitAuraBySpellID("player", ns.auraid);
+
+        if aura then
+            combo = aura.applications;
+        end
+    end
+
+    if combo then
+        ns.show_combo(combo);
+    end
+end
 
 function ns.check_storm()
     local combo = 0;

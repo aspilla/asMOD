@@ -12,6 +12,7 @@ ns.config                = {
     comboheight = 5,
     combatalpha = 1,
     normalalpha = 0.5,
+    framelevel = 9000,
 };
 
 ns.bupdate_rune          = false;
@@ -55,6 +56,7 @@ local function init_class()
     ns.special_func = nil;
     ns.aura_func = nil;
     ns.spellid = nil;
+    ns.auraid = nil;
 
     ns.combotext:SetText("");
     ns.combotext:Hide();
@@ -62,6 +64,10 @@ local function init_class()
 
     for i = 1, 20 do
         ns.combobars[i]:Hide();
+    end
+
+    for i = 1, 20 do
+        ns.spellframes[i]:Hide();
     end
 
     if (englishClass == "EVOKER") then
@@ -134,6 +140,7 @@ local function init_class()
     end
 
     if (englishClass == "DEMONHUNTER") then
+
         if spec and spec == 3 then
             --ns.combocountbar:SetMinMaxValues(0, 50);
             --ns.aura_func = ns.check_void;
@@ -155,7 +162,8 @@ local function init_class()
     if (englishClass == "SHAMAN") then
         if spec and spec == 2 then
             ns.setup_max_combo(10);
-            ns.aura_func = ns.check_storm;
+            ns.aura_func = ns.check_auracount;
+            ns.auraid = 344179;
             ns.frame:RegisterUnitEvent("UNIT_AURA", "player");
             ns.aura_func();
         end
@@ -210,14 +218,22 @@ local function on_event(self, event, ...)
     return;
 end
 
+local backdropConfig = {
+    edgeFile = "Interface\\Buttons\\WHITE8X8",
+    edgeSize = 1,
+    bgFile = "Interface\\Buttons\\WHITE8X8",
+    tile = false,    
+}
+
 local function init_addon()
     ns.frame:SetPoint("BOTTOM", UIParent, "CENTER", ns.config.xpoint, ns.config.ypoint)
     ns.frame:SetWidth(ns.config.width)
     ns.frame:SetHeight(ns.config.height)
-    ns.frame:SetFrameLevel(9100);
+    ns.frame:SetFrameLevel(ns.config.framelevel + 400);
     ns.frame:Show();
 
     ns.bar = CreateFrame("StatusBar", nil, ns.frame)
+    ns.bar:SetFrameLevel(ns.config.framelevel);
     ns.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     ns.bar:GetStatusBarTexture():SetHorizTile(false)
     ns.bar:SetMinMaxValues(0, 100)
@@ -236,7 +252,7 @@ local function init_addon()
     ns.bar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
     ns.bar.bg:SetVertexColor(0, 0, 0, 0.8);
 
-    ns.bar.text = ns.bar:CreateFontString(nil, "ARTWORK");
+    ns.bar.text = ns.frame:CreateFontString(nil, "ARTWORK");
     ns.bar.text:SetFont(ns.config.font, ns.config.fontSize, ns.config.fontOutline);
     ns.bar.text:SetPoint("CENTER", ns.bar, "CENTER", 0, 0);
     ns.bar.text:SetTextColor(1, 1, 1, 1);
@@ -252,7 +268,7 @@ local function init_addon()
     ns.combocountbar = CreateFrame("StatusBar", nil, ns.frame);
     ns.combocountbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
     ns.combocountbar:GetStatusBarTexture():SetHorizTile(false);
-    ns.combocountbar:SetFrameLevel(9000);
+    ns.combocountbar:SetFrameLevel(ns.config.framelevel);
     ns.combocountbar:SetMinMaxValues(0, 100);
     ns.combocountbar:SetValue(100);
     ns.combocountbar:SetHeight(ns.config.comboheight);
@@ -264,7 +280,7 @@ local function init_addon()
 
     ns.combocountbar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
     ns.combocountbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-    ns.combocountbar.bg:SetVertexColor(0, 0, 0, 0.5);
+    ns.combocountbar.bg:SetVertexColor(0.3, 0.3, 0.3, 1);
     ns.combocountbar:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", 0, 1);
     ns.combocountbar:SetWidth(ns.config.width);
     ns.combocountbar:SetStatusBarColor(1, 1, 1);
@@ -276,15 +292,13 @@ local function init_addon()
     ns.combotext:SetTextColor(1, 1, 1, 1)
     ns.combotext:Hide();
 
-
-
     ns.combobars = {};
 
     for i = 1, 20 do
         ns.combobars[i] = CreateFrame("StatusBar", nil, ns.frame);
         ns.combobars[i]:SetStatusBarTexture("RaidFrame-Hp-Fill");
         ns.combobars[i]:GetStatusBarTexture():SetHorizTile(false);
-        ns.combobars[i]:SetFrameLevel(9100);
+        ns.combobars[i]:SetFrameLevel(ns.config.framelevel + 100);
         ns.combobars[i]:SetMinMaxValues(0, 100);
         ns.combobars[i]:SetValue(100);
         ns.combobars[i]:SetHeight(ns.config.comboheight);
@@ -308,29 +322,40 @@ local function init_addon()
         ns.combobars[i]:EnableMouse(false);
     end
 
+    ns.spellframes = {};
+
+    for i = 1, 20 do
+        ns.spellframes[i] = CreateFrame("Frame", nil, ns.frame, "BackdropTemplate");
+        ns.spellframes[i]:SetFrameLevel(ns.config.framelevel + 200);
+        ns.spellframes[i]:SetHeight(ns.config.comboheight + 2);
+        ns.spellframes[i]:SetWidth(20);
+
+        if i == 1 then
+            ns.spellframes[i]:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", -1, 0);
+        else
+            ns.spellframes[i]:SetPoint("LEFT", ns.spellframes[i - 1], "RIGHT", 0, 0);
+        end
+
+        ns.spellframes[i]:SetBackdrop(backdropConfig)
+        ns.spellframes[i]:SetBackdropBorderColor(0, 0, 0, 1);
+        ns.spellframes[i]:SetBackdropColor(0, 0, 0, 0);
+
+        ns.spellframes[i]:Hide();
+        ns.spellframes[i]:EnableMouse(false);
+    end
+
+
     ns.chargebar = CreateFrame("StatusBar", nil, ns.frame);
     ns.chargebar:SetStatusBarTexture("RaidFrame-Hp-Fill");
     ns.chargebar:GetStatusBarTexture():SetHorizTile(false);
-    ns.chargebar:SetFrameLevel(9200);
+    ns.chargebar:SetFrameLevel(ns.config.framelevel + 100);
     ns.chargebar:SetMinMaxValues(0, 100);
     ns.chargebar:SetValue(0);
     ns.chargebar:SetHeight(ns.config.comboheight);
     ns.chargebar:SetWidth(20);
     local texturepoint = ns.combocountbar:GetStatusBarTexture();
     ns.chargebar:SetPoint("LEFT", texturepoint, "RIGHT", 0, 0);
-    ns.chargebar:SetStatusBarColor(0.5, 0.5, 0.5);
-
-    --[[
-    ns.chargebar.bg = ns.chargebar:CreateTexture(nil, "BACKGROUND");
-    ns.chargebar.bg:SetPoint("TOPLEFT", ns.chargebar, "TOPLEFT", -1, 1);
-    ns.chargebar.bg:SetPoint("BOTTOMRIGHT", ns.chargebar, "BOTTOMRIGHT", 1, -1);
-
-    ns.chargebar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
-    ns.chargebar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-    ns.chargebar.bg:SetVertexColor(1, 1, 1, 1);
-    ns.chargebar:SetStatusBarColor(0,0,0);
-    ]]
-
+    ns.chargebar:SetStatusBarColor(0, 0, 0);
     ns.chargebar:Hide();
     ns.chargebar:EnableMouse(false);
 
