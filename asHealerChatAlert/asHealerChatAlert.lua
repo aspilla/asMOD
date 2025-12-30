@@ -57,7 +57,7 @@ end
 
 local function OnEvent(self, event, ...)
     if bfirst then
-        ns.SetupOptionPanels();
+        ns.setup_option();
         bfirst = false;
     end
 

@@ -157,7 +157,7 @@ local bfirst = true;
 local function AAM_OnEvent(self, event, ...)
 	if bfirst then
 		bfirst = false;
-		ns.SetupOptionPanels();
+		ns.setup_option();
 	end
 
 	if event == "PLAYER_ENTERING_WORLD" or event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED" then

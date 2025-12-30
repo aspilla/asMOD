@@ -323,7 +323,7 @@ local function ATCB_OnEvent(self, event, ...)
         local name = ...;
 
         if name == "asTargetCastBar" then
-            ns.SetupOptionPanels();
+            ns.setup_option();
         end
     end
 end

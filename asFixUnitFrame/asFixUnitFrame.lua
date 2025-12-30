@@ -155,7 +155,7 @@ local bfirst = true;
 
 local function on_event(self, event, ...)
     if bfirst then
-        ns.SetupOptionPanels();
+        ns.setup_option();
         bfirst = false;
     end
 

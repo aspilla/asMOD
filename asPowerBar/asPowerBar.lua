@@ -1,7 +1,7 @@
-local _, ns              = ...;
+local _, ns     = ...;
 
 --configurations
-ns.config                = {
+ns.config       = {
     font        = STANDARD_TEXT_FONT,
     fontSize    = 12,
     fontOutline = "OUTLINE",
@@ -12,17 +12,13 @@ ns.config                = {
     comboheight = 5,
     combatalpha = 1,
     normalalpha = 0.5,
-    framelevel = 9000,
+    framelevel  = 9000,
 };
 
-ns.bupdate_rune          = false;
-ns.bupdate_partial_power = false;
-ns.brogue                = false;
-ns.power_level           = nil;
-ns.special_func          = nil;
-ns.aura_func             = nil;
+local _, Class  = UnitClass("player")
+ns.classcolor   = RAID_CLASS_COLORS[Class];
 
-ns.frame                 = CreateFrame("FRAME", nil, UIParent);
+local main_frame        = CreateFrame("FRAME", nil, UIParent);
 
 local function init_class()
     local localizedClass, englishClass = UnitClass("player")
@@ -32,31 +28,14 @@ local function init_class()
         spec = 1;
     end
 
-    ns.frame:UnregisterEvent("UNIT_POWER_UPDATE")
-    ns.frame:UnregisterEvent("UNIT_DISPLAYPOWER");
-    ns.frame:UnregisterEvent("UPDATE_SHAPESHIFT_FORM");
-    ns.frame:UnregisterEvent("RUNE_POWER_UPDATE");
-    ns.frame:UnregisterEvent("UNIT_AURA");
-
-    if ns.frame.timerPowerBar then
-        ns.frame.timerPowerBar:Cancel()
-    end
-
-    if ns.frame.timerPower then
-        ns.frame.timerPower:Cancel()
-    end
-
-    if ns.frame.timerStagger then
-        ns.frame.timerStagger:Cancel()
-    end
-
-    ns.bupdate_rune = false;
-    ns.power_level = nil;
-    ns.brogue = false;
-    ns.special_func = nil;
-    ns.aura_func = nil;
-    ns.spellid = nil;
-    ns.auraid = nil;
+    local bupdaterune = false;
+    local powerlevel = nil;
+    local bpartial = false;
+    local brogue = false;
+    local spellid = nil;
+    local auraid = nil;
+    local max_aura = nil;
+    local bstagger = false;
 
     ns.combotext:SetText("");
     ns.combotext:Hide();
@@ -71,68 +50,69 @@ local function init_class()
     end
 
     if (englishClass == "EVOKER") then
-        ns.power_level = Enum.PowerType.Essence;
+        powerlevel = Enum.PowerType.Essence;
     end
 
     if (englishClass == "PALADIN") then
-        ns.power_level = Enum.PowerType.HolyPower;
+        powerlevel = Enum.PowerType.HolyPower;
     end
 
     if (englishClass == "MAGE") then
         if (spec and spec == 1) then
-            ns.power_level = Enum.PowerType.ArcaneCharges
+            powerlevel = Enum.PowerType.ArcaneCharges
         end
 
         if (spec and spec == 2) then
-            ns.spellid = 108853;
+            spellid = 108853;
+        end
+
+        if (spec and spec == 3) then
+            spellid = 44614;
         end
     end
 
     if (englishClass == "WARLOCK") then
-        ns.power_level = Enum.PowerType.SoulShards
+        powerlevel = Enum.PowerType.SoulShards
 
         if (spec and spec == 3) then
-            ns.bupdate_partial_power = true;
+            bpartial = true;
         end
     end
 
     if (englishClass == "DRUID") then
-        ns.power_level = Enum.PowerType.ComboPoints
+        powerlevel = Enum.PowerType.ComboPoints
     end
 
     if (englishClass == "MONK") then
         if (spec and spec == 1) then
-            ns.special_func = ns.update_stagger;
+            bstagger = true;
         end
 
         if (spec and spec == 3) then
-            ns.power_level = Enum.PowerType.Chi
+            powerlevel = Enum.PowerType.Chi
         end
     end
 
     if (englishClass == "ROGUE") then
-        ns.power_level = Enum.PowerType.ComboPoints
-        ns.brogue = true;
+        powerlevel = Enum.PowerType.ComboPoints
+        brogue = true;
     end
 
     if (englishClass == "DEATHKNIGHT") then
-        ns.setup_max_combo(6);
-        ns.update_rune()
-        ns.frame:RegisterEvent("RUNE_POWER_UPDATE");
-        ns.bupdate_rune = true;
+        bupdaterune = true;
     end
 
     if (englishClass == "PRIEST") then
         if (spec and spec == 1) then
-            ns.spellid = 194509;
+            spellid = 194509;
         end
 
         if (spec and spec == 2) then
-            ns.spellid = 2050;
+            spellid = 2050;
         end
 
         if (spec and spec == 3) then
-            ns.spellid = 8092;
+            spellid = 8092;
         end
     end
 
@@ -140,79 +120,54 @@ local function init_class()
     end
 
     if (englishClass == "DEMONHUNTER") then
-
         if spec and spec == 3 then
             --ns.combocountbar:SetMinMaxValues(0, 50);
             --ns.aura_func = ns.check_void;
-            --ns.frame:RegisterUnitEvent("UNIT_AURA", "player");
+            --main_frame:RegisterUnitEvent("UNIT_AURA", "player");
             --ns.aura_func();
         end
     end
 
     if (englishClass == "HUNTER") then
         if (spec and spec == 1) then
-            ns.spellid = 217200;
+            spellid = 217200;
         end
 
         if (spec and spec == 2) then
-            ns.spellid = 19434;
+            spellid = 19434;
         end
     end
 
     if (englishClass == "SHAMAN") then
         if spec and spec == 2 then
-            ns.setup_max_combo(10);
-            ns.aura_func = ns.check_auracount;
-            ns.auraid = 344179;
-            ns.frame:RegisterUnitEvent("UNIT_AURA", "player");
-            ns.aura_func();
+            auraid = 344179;
+            max_aura = 10;
         end
     end
 
-    if ns.power_level then
-        local max = UnitPowerMax("player", ns.power_level);
-        local maxpartial = nil;
-        if ns.bupdate_partial_power then
-            maxpartial = UnitPowerDisplayMod(ns.power_level)
-        elseif ns.power_level == Enum.PowerType.Essence then
-            maxpartial = 10;
-        end
-        ns.setup_max_combo(max, maxpartial);
-        ns.frame:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
-        ns.frame:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
-    end
-
-    ns.bar:Show();
-    ns.bar.text:Show();
-
-    ns.frame.timerPowerBar = C_Timer.NewTicker(0.1, ns.update_power);
-    ns.frame.timerPower = C_Timer.NewTicker(0.2, ns.update_combo);
-    ns.frame.timerStagger = C_Timer.NewTicker(0.2, ns.update_special);
+    ns.setup_power();
+    ns.setup_auracombo(auraid, max_aura);
+    ns.setup_combo(powerlevel, bpartial, brogue);
+    ns.setup_rune(bupdaterune);
+    ns.setup_spell(spellid);
+    ns.setup_stagger(bstagger);
 end
 
 local function on_event(self, event, ...)
-    if event == "UNIT_POWER_UPDATE" then
-        ns.update_combo();
-    elseif event == "RUNE_POWER_UPDATE" then
-        ns.update_rune();
-    elseif (event == "UNIT_AURA") then
-        if ns.aura_func then
-            ns.aura_func();
-        end
-    elseif event == "PLAYER_ENTERING_WORLD" then
+    if event == "PLAYER_ENTERING_WORLD" then
         if UnitAffectingCombat("player") then
-            ns.frame:SetAlpha(ns.config.combatalpha);
+            main_frame:SetAlpha(ns.config.combatalpha);
         else
-            ns.frame:SetAlpha(ns.config.normalalpha);
+            main_frame:SetAlpha(ns.config.normalalpha);
         end
         C_Timer.After(0.5, init_class);
     elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or event ==
         "ACTIVE_TALENT_GROUP_CHANGED" then
         C_Timer.After(0.5, init_class);
     elseif event == "PLAYER_REGEN_DISABLED" then
-        ns.frame:SetAlpha(ns.config.combatalpha);
+        main_frame:SetAlpha(ns.config.combatalpha);
     elseif event == "PLAYER_REGEN_ENABLED" then
-        ns.frame:SetAlpha(ns.config.normalalpha);
+        main_frame:SetAlpha(ns.config.normalalpha);
     end
 
     return;
@@ -222,17 +177,17 @@ local backdropConfig = {
     edgeFile = "Interface\\Buttons\\WHITE8X8",
     edgeSize = 1,
     bgFile = "Interface\\Buttons\\WHITE8X8",
-    tile = false,    
+    tile = false,
 }
 
 local function init_addon()
-    ns.frame:SetPoint("BOTTOM", UIParent, "CENTER", ns.config.xpoint, ns.config.ypoint)
-    ns.frame:SetWidth(ns.config.width)
-    ns.frame:SetHeight(ns.config.height)
-    ns.frame:SetFrameLevel(ns.config.framelevel + 400);
-    ns.frame:Show();
+    main_frame:SetPoint("BOTTOM", UIParent, "CENTER", ns.config.xpoint, ns.config.ypoint)
+    main_frame:SetWidth(ns.config.width)
+    main_frame:SetHeight(ns.config.height)
+    main_frame:SetFrameLevel(ns.config.framelevel + 400);
+    main_frame:Show();
 
-    ns.bar = CreateFrame("StatusBar", nil, ns.frame)
+    ns.bar = CreateFrame("StatusBar", nil, main_frame)
     ns.bar:SetFrameLevel(ns.config.framelevel);
     ns.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     ns.bar:GetStatusBarTexture():SetHorizTile(false)
@@ -240,7 +195,7 @@ local function init_addon()
     ns.bar:SetValue(100)
     ns.bar:SetWidth(ns.config.width)
     ns.bar:SetHeight(ns.config.height)
-    ns.bar:SetPoint("BOTTOM", ns.frame, "BOTTOM", 0, 0)
+    ns.bar:SetPoint("BOTTOM", main_frame, "BOTTOM", 0, 0)
     ns.bar:Hide();
     ns.bar:EnableMouse(false);
 
@@ -252,7 +207,7 @@ local function init_addon()
     ns.bar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
     ns.bar.bg:SetVertexColor(0, 0, 0, 0.8);
 
-    ns.bar.text = ns.frame:CreateFontString(nil, "ARTWORK");
+    ns.bar.text = main_frame:CreateFontString(nil, "ARTWORK");
     ns.bar.text:SetFont(ns.config.font, ns.config.fontSize, ns.config.fontOutline);
     ns.bar.text:SetPoint("CENTER", ns.bar, "CENTER", 0, 0);
     ns.bar.text:SetTextColor(1, 1, 1, 1);
@@ -265,7 +220,7 @@ local function init_addon()
     ns.bar.predictbar:SetVertexColor(0.5, 0.5, 0.5)
     ns.bar.predictbar:Hide();
 
-    ns.combocountbar = CreateFrame("StatusBar", nil, ns.frame);
+    ns.combocountbar = CreateFrame("StatusBar", nil, main_frame);
     ns.combocountbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
     ns.combocountbar:GetStatusBarTexture():SetHorizTile(false);
     ns.combocountbar:SetFrameLevel(ns.config.framelevel);
@@ -286,7 +241,7 @@ local function init_addon()
     ns.combocountbar:SetStatusBarColor(1, 1, 1);
     ns.combocountbar:Hide();
 
-    ns.combotext = ns.frame:CreateFontString(nil, "OVERLAY");
+    ns.combotext = main_frame:CreateFontString(nil, "OVERLAY");
     ns.combotext:SetFont(ns.config.font, ns.config.fontSize - 2, ns.config.fontOutline);
     ns.combotext:SetPoint("CENTER", ns.combocountbar, "CENTER", 0, 0);
     ns.combotext:SetTextColor(1, 1, 1, 1)
@@ -295,7 +250,7 @@ local function init_addon()
     ns.combobars = {};
 
     for i = 1, 20 do
-        ns.combobars[i] = CreateFrame("StatusBar", nil, ns.frame);
+        ns.combobars[i] = CreateFrame("StatusBar", nil, main_frame);
         ns.combobars[i]:SetStatusBarTexture("RaidFrame-Hp-Fill");
         ns.combobars[i]:GetStatusBarTexture():SetHorizTile(false);
         ns.combobars[i]:SetFrameLevel(ns.config.framelevel + 100);
@@ -325,7 +280,7 @@ local function init_addon()
     ns.spellframes = {};
 
     for i = 1, 20 do
-        ns.spellframes[i] = CreateFrame("Frame", nil, ns.frame, "BackdropTemplate");
+        ns.spellframes[i] = CreateFrame("Frame", nil, main_frame, "BackdropTemplate");
         ns.spellframes[i]:SetFrameLevel(ns.config.framelevel + 200);
         ns.spellframes[i]:SetHeight(ns.config.comboheight + 2);
         ns.spellframes[i]:SetWidth(20);
@@ -345,7 +300,7 @@ local function init_addon()
     end
 
 
-    ns.chargebar = CreateFrame("StatusBar", nil, ns.frame);
+    ns.chargebar = CreateFrame("StatusBar", nil, main_frame);
     ns.chargebar:SetStatusBarTexture("RaidFrame-Hp-Fill");
     ns.chargebar:GetStatusBarTexture():SetHorizTile(false);
     ns.chargebar:SetFrameLevel(ns.config.framelevel + 100);
@@ -363,23 +318,26 @@ local function init_addon()
     C_AddOns.LoadAddOn("asMOD");
 
     if asMOD_setupFrame then
-        asMOD_setupFrame(ns.frame, "asPowerBar");
+        asMOD_setupFrame(main_frame, "asPowerBar");
     end
 
-    ns.frame:SetScript("OnEvent", on_event)
+    main_frame:SetScript("OnEvent", on_event)
 
-    ns.frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-    ns.frame:RegisterEvent("PLAYER_REGEN_DISABLED");
-    ns.frame:RegisterEvent("PLAYER_REGEN_ENABLED");
-    ns.frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
-    ns.frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-    ns.frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+    main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+    main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+    main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+    main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+    main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 
     if UnitAffectingCombat("player") then
-        ns.frame:SetAlpha(ns.config.combatalpha);
+        main_frame:SetAlpha(ns.config.combatalpha);
     else
-        ns.frame:SetAlpha(ns.config.normalalpha);
+        main_frame:SetAlpha(ns.config.normalalpha);
     end
+
+    ns.setup_option();
+    init_class();
 end
 
-init_addon();
+C_Timer.After(0.5, init_addon);

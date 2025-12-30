@@ -101,6 +101,6 @@ frame:RegisterEvent("ADDON_LOADED");
 
 frame:SetScript("OnEvent", function(self, event, arg1)
 	if event == "ADDON_LOADED" and arg1 == "asFixCombatText" then
-		C_Timer.After(1, ns.SetupOptionPanels);
+		C_Timer.After(1, ns.setup_option);
 	end
 end);

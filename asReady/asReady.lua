@@ -648,7 +648,7 @@ local function AREADY_OnEvent(self, event, arg1, arg2, arg3)
         OnSpellEvent(arg1, arg3);
     else
         if bfirst then
-            ns.SetupOptionPanels();
+            ns.setup_option();
             bfirst = false;
             if ns.options.CheckRealTimeCooldown then
                 openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0", true);

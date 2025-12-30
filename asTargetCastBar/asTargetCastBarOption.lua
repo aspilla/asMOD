@@ -10,7 +10,7 @@ local Options_Default = {
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
 
-function ns.SetupOptionPanels()
+function ns.setup_option()
     local function OnSettingChanged(_, setting, value)
         local function get_variable_from_cvar_name(cvar_name)
             local variable_start_index = string.find(cvar_name, "_") + 1

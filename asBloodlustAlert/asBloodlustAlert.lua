@@ -100,7 +100,7 @@ local bfirst = true;
 
 local function OnEvent(self, event, ...)
     if bfirst then
-        ns.SetupOptionPanels();
+        ns.setup_option();
         bfirst = false;
     end
     ns.checkStatus();

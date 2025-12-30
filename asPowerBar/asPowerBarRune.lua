@@ -37,7 +37,7 @@ local _, Class = UnitClass("player")
 local color = RAID_CLASS_COLORS[Class];
 local runeIndexes = { 1, 2, 3, 4, 5, 6 };
 
-function ns.update_rune()
+local function update_rune()
     table.sort(runeIndexes, compare_rune);
 
     local runebars = ns.combobars;
@@ -66,5 +66,25 @@ function ns.update_rune()
                 runebar.ctimer = C_Timer.NewTicker(0.1, cb);
             end
         end
+    end
+end
+
+
+
+local function on_event()
+    update_rune();
+end
+
+local main_frame = CreateFrame("Frame");
+main_frame:SetScript("OnEvent", on_event);
+
+
+function ns.setup_rune(bupdate_rune)
+
+    main_frame:UnregisterEvent("RUNE_POWER_UPDATE");
+    if bupdate_rune and ns.options.ShowCombo then
+        ns.setup_max_combo(6);
+        update_rune()        
+        main_frame:RegisterEvent("RUNE_POWER_UPDATE");
     end
 end

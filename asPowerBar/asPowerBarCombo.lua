@@ -1,11 +1,14 @@
-local _, ns        = ...;
+local _, ns  = ...;
 
-local _, Class     = UnitClass("player")
-ns.classcolor      = RAID_CLASS_COLORS[Class];
-ns.maxcombo        = nil;
-ns.maxcombopartial = nil;
+local gvalue = {
+    maxcombo   = nil,
+    maxpartial = nil,
+    bpartial   = false,
+    powerlevel = nil,
+    brogue     = false,
+}
 
-function ns.setup_max_combo(max, maxpartial, frameonly)
+function ns.setup_max_combo(max, maxpartial)
     if issecretvalue(max) then
         return;
     end
@@ -14,8 +17,8 @@ function ns.setup_max_combo(max, maxpartial, frameonly)
         return;
     end
 
-    ns.maxcombo = max;
-    ns.maxcombopartial = maxpartial;
+    gvalue.maxcombo = max;
+    gvalue.maxpartial = maxpartial;
 
     local width = (ns.config.width - (1 * (max - 1))) / max;
     local combobars = ns.combobars;
@@ -57,22 +60,16 @@ function ns.setup_max_combo(max, maxpartial, frameonly)
         end
         combobar:SetValue(0);
         combobar:Show();
-
-        if frameonly then
-            combobar.bg:SetAlpha(0.3);
-        else
-            combobar.bg:SetAlpha(1);
-        end
     end
 end
 
 function ns.show_combo(combo, partial)
     local combobars = ns.combobars;
-    local max = ns.maxcombo;
+    local max = gvalue.maxcombo;
     if partial then
         ns.combotext:SetText(partial);
 
-        local pmax = ns.maxcombopartial;
+        local pmax = gvalue.maxpartial;
         combo = math.floor(partial / pmax);
         local pvalue = partial % pmax;
 
@@ -102,7 +99,7 @@ function ns.show_combo(combo, partial)
     end
 
 
-    if ns.brogue then
+    if gvalue.brogue then
         local chargedPowerPoints = GetUnitChargedPowerPoints("player");
         for i = 1, max do
             local combobar = combobars[i];
@@ -119,27 +116,27 @@ end
 local prevpower = nil;
 local prevstart = nil;
 
-function ns.update_combo()
-    if ns.power_level == nil then
+local function update_combo()
+    if gvalue.powerlevel == nil then
         return;
     end
 
-    local power = UnitPower("player", ns.power_level);
+    local power = UnitPower("player", gvalue.powerlevel);
     local partial = nil;
 
-    if ns.bupdate_partial_power then
-        partial = UnitPower("player", ns.power_level, true);
+    if gvalue.bpartial then
+        partial = UnitPower("player", gvalue.powerlevel, true);
     end
 
-    if ns.power_level == Enum.PowerType.Essence then
+    if gvalue.powerlevel == Enum.PowerType.Essence then
         local peace, interrupted = GetPowerRegenForPowerType(Enum.PowerType.Essence)
         if (peace == nil or peace == 0) then
             peace = 0.2;
         end
         local cooldownDuration = 1 / peace;
         local currtime = GetTime();
-        local maxpartial = ns.maxcombopartial;
-        local max = ns.maxcombo;
+        local maxpartial = gvalue.maxpartial;
+        local max = gvalue.maxcombo;
 
         if power ~= prevpower then
             prevpower = power;
@@ -158,4 +155,40 @@ function ns.update_combo()
         partial = prevpower * maxpartial + remain;
     end
     ns.show_combo(power, partial);
+end
+
+local function on_event(self, event, arg1)
+    update_combo();
+end
+
+local main_frame = CreateFrame("Frame");
+local timer = nil;
+
+main_frame:SetScript("OnEvent", on_event);
+
+function ns.setup_combo(powerlevel, bpartial, brogue)
+    main_frame:UnregisterEvent("UNIT_POWER_UPDATE")
+    main_frame:UnregisterEvent("UNIT_DISPLAYPOWER");
+
+    if timer then
+        timer:Cancel();
+    end
+
+    if powerlevel and ns.options.ShowCombo then
+        gvalue.bpartial = bpartial;
+        gvalue.powerlevel = powerlevel;
+        gvalue.brogue = brogue;
+        local max = UnitPowerMax("player", gvalue.powerlevel);
+        local maxpartial = nil;
+        if gvalue.bpartial then
+            maxpartial = UnitPowerDisplayMod(gvalue.powerlevel)
+        elseif gvalue.powerlevel == Enum.PowerType.Essence then
+            maxpartial = 10;
+        end
+
+        ns.setup_max_combo(max, maxpartial);
+        main_frame:RegisterEvent("UNIT_POWER_UPDATE");
+        main_frame:RegisterEvent("UNIT_DISPLAYPOWER");
+        timer = C_Timer.NewTicker(0.2, update_combo);
+    end
 end

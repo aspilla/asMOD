@@ -4,8 +4,10 @@
 ## Notes: Displays the player's primary resources (Energy, Mana, Rage, etc.) and class resources (Combo Points, Runes, Holy Power, etc.).
 ## Notes-koKR: 플레이어의 주 자원 (기력/마나/분노), 직업 자원(연계 점수, 룬, 신성한 힘 등) 표시.
 ## Version : 251220
+## SavedVariablesPerCharacter: ASPB_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+asPowerBarOption.lua
 asPowerBarLib.lua
 asPowerBarRune.lua
 asPowerBarCombo.lua

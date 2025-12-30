@@ -1,6 +1,8 @@
 local _, ns = ...;
 
-ns.maxpower= 100;
+local gvalue = {
+    maxpower = 0,
+};
 
 local function get_spellcost(powerType)
     local cost = 0;
@@ -23,12 +25,12 @@ local function update_powercost(bar, amount)
         return
     end
 
-    local barSize = (amount / ns.maxpower) * ns.config.width;
+    local barSize = (amount / gvalue.maxpower) * ns.config.width;
     bar:SetWidth(barSize);
     bar:Show();
 end
 
-function ns.update_power()
+local function update_power()
     local powerType, powerTypeString = UnitPowerType("player");
 
     if powerTypeString then
@@ -39,8 +41,8 @@ function ns.update_power()
     local value = UnitPower("player", powerType);
     local valueMax = UnitPowerMax("player", powerType);
 
-    if not issecretvalue(valueMax) and ns.maxpower~= valueMax then
-        ns.maxpower= valueMax;
+    if not issecretvalue(valueMax) and gvalue.maxpower ~= valueMax then
+        gvalue.maxpower = valueMax;
     end
 
     local cost = get_spellcost(powerType);
@@ -50,4 +52,17 @@ function ns.update_power()
     ns.bar.text:SetText(tostring(value));
 
     update_powercost(ns.bar.predictbar, cost);
+end
+
+local timer = nil;
+
+function ns.setup_power()
+    if timer then
+        timer:Cancel();
+    end
+
+    ns.bar:Show();
+    ns.bar.text:Show();
+
+    timer = C_Timer.NewTicker(0.1, update_power);
 end

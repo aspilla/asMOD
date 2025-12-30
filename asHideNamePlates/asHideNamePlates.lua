@@ -183,7 +183,7 @@ local function on_event(self, event, ...)
 end
 
 local function init()
-	ns.SetupOptionPanels();
+	ns.setup_option();
 	AHNameP = CreateFrame("Frame", nil, UIParent)
 
 	AHNameP:RegisterEvent("PLAYER_ENTERING_WORLD");

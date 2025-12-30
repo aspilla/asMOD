@@ -191,7 +191,7 @@ end
 local bfirst = true;
 local function ACTA_OnEvent(self, event, arg1, arg2, arg3, arg4)
     if bfirst then
-        ns.SetupOptionPanels();
+        ns.setup_option();
         bfirst = false;
     end
 

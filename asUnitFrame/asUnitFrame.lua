@@ -874,7 +874,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
 end
 
 local function init(parent)
-    ns.SetupOptionPanels();
+    ns.setup_option();
 
     parent.PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
     parent.TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");

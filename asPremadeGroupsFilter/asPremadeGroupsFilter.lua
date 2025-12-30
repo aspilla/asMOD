@@ -242,6 +242,6 @@ local function inin_specs()
     end
 end
 
-ns.SetupOptionPanels();
+ns.setup_option();
 hooksecurefunc("LFGListSearchEntry_Update", update_searchentry);
 inin_specs();

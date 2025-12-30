@@ -86,7 +86,7 @@ local function ASBR_Init()
 		yOfs = ASBR_CoolButtons_Y,
 	}
 
-	ns.SetupOptionPanels();
+	ns.setup_option();
 	C_AddOns.LoadAddOn("asMOD");
 
 

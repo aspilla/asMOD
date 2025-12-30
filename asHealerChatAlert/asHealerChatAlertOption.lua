@@ -7,7 +7,7 @@ local Options_Default = {
 
 local tempoption = {};
 
-function ns.SetupOptionPanels()
+function ns.setup_option()
     local bslide = false;
 
     local function OnSettingChanged(_, setting, value)

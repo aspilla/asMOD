@@ -115,7 +115,7 @@ local function init()
 		yOfs = configs.ypoint,
 	}
 
-	ns.SetupOptionPanels();
+	ns.setup_option();
 	C_AddOns.LoadAddOn("asMOD");
 
 	main_frame:EnableMouse(true);

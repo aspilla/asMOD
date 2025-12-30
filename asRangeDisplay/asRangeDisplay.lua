@@ -293,7 +293,7 @@ local function on_event(self, event, ...)
 	else
 		if bfirst then
 			bfirst = false;
-			ns.SetupOptionPanels();
+			ns.setup_option();
 		end
 		scan_spells();
 	end

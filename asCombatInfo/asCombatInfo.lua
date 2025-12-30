@@ -307,7 +307,7 @@ local bfirst = true;
 local function on_event(self, event, arg)
 	if bfirst then
 		bfirst = false;
-		ns.SetupOptionPanels();
+		ns.setup_option();
 	end
 
 	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then		

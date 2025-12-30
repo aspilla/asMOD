@@ -272,7 +272,7 @@ end
 
 
 local function init()
-    ns.SetupOptionPanels();
+    ns.setup_option();
     local bloaded = C_AddOns.LoadAddOn("asMOD")
    
     main_frame:SetPoint("CENTER", 0, 0)

@@ -12,7 +12,7 @@ local configs = {
 -- 설정 끝
 
 local function init_position()
-	C_Timer.After(2, ns.SetupOptionPanels);
+	C_Timer.After(2, ns.setup_option);
 end
 
 local function on_event(self, event, arg1, ...)
