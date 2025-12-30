@@ -82,7 +82,7 @@ function ns.setup_spell(spellid)
         timer:Cancel();
     end
 
-    if spellid and ns.options.ShowSpellCooldown then
+    if spellid and ns.options.ShowClassResource then
         gvalue.spellid = spellid
         ns.combocountbar.bg:SetVertexColor(0.3, 0.3, 0.3, 1);
         ns.combocountbar:Show();

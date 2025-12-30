@@ -21,7 +21,7 @@ main_frame:SetScript("OnEvent", on_event);
 function ns.setup_stagger(bstagger)
 
     main_frame:UnregisterEvent("UNIT_AURA");
-    if bstagger and ns.options.ShowCombo then
+    if bstagger and ns.options.ShowClassResource then
         main_frame:RegisterUnitEvent("UNIT_AURA", "player");
         update_stagger();
         ns.combocountbar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);

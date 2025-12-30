@@ -58,7 +58,7 @@ function ns.setup_auracombo(auraid, maxcombo)
     gvalue.check_func = nil;
     main_frame:UnregisterEvent("UNIT_AURA");
 
-    if auraid and maxcombo and ns.options.ShowCombo then
+    if auraid and maxcombo and ns.options.ShowClassResource then
         ns.setup_max_combo(maxcombo);
         gvalue.check_func = check_auracount;
         gvalue.auraid = auraid;

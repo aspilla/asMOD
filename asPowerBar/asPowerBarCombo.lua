@@ -174,7 +174,7 @@ function ns.setup_combo(powerlevel, bpartial, brogue)
         timer:Cancel();
     end
 
-    if powerlevel and ns.options.ShowCombo then
+    if powerlevel and ns.options.ShowClassResource then
         gvalue.bpartial = bpartial;
         gvalue.powerlevel = powerlevel;
         gvalue.brogue = brogue;
