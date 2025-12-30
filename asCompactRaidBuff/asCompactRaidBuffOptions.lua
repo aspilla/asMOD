@@ -4,9 +4,13 @@ ns.UpdateRate = 0.25; -- 1회 Update 주기 (초) 작으면 작을 수록 Frame 
 ns.ACRB_HealerManaBarHeight = 4;
 
 local Options_Default = {
-	version = 251228,
-	BottomHealerManaBar = true, -- 힐러 마나바
-	BottomTankPowerBar = true, 	-- 탱커 Power 바	
+    version = 251228,
+    BottomHealerManaBar = true, -- 힐러 마나바
+    BottomTankPowerBar = true, -- 탱커 Power 바
+    ChangeIcon = true,
+    ShowCooldown = true,
+    CenterDefensiveSizeRate = 0.5,
+    CooldownSizeRate = 1,
 };
 
 ns.options = CopyTable(Options_Default);
@@ -25,7 +29,7 @@ function ns.setup_option()
         local variable = get_variable_from_cvar_name(cvar_name)
         ACRB_Options[variable] = value;
         ns.options[variable] = value;
-        ReloadUI();
+        --ReloadUI();
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asCompactRaidBuff")
@@ -48,11 +52,23 @@ function ns.setup_option()
             local defaultValue = Options_Default[variable];
             local currentValue = ACRB_Options[variable];
 
-            local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
-            name, defaultValue);
-            Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
-            Settings.SetValue(cvar_name, currentValue);
-            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            if tonumber(defaultValue) ~= nil then
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue),
+                    name, defaultValue);
+                local options = Settings.CreateSliderOptions(0, 3, 0.1);
+                options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+                Settings.CreateSlider(category, setting, options, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            else
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue),
+                    name, defaultValue);
+                Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            end
         end
     end
 

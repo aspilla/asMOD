@@ -2,6 +2,10 @@ local _, ns = ...;
 
 local main_frame = CreateFrame("Frame", nil, UIParent);
 
+local configs = {
+    iconrate = 0.9,
+}
+
 ns.asraid = {};
 ns.asparty = {};
 
@@ -147,6 +151,72 @@ local function hook_func(frame)
     end
 end
 
+local function change_button(button, changeicon, changesize)
+
+    local width = button:GetWidth();
+
+    if changesize then
+        width = width * ns.options.CenterDefensiveSizeRate;
+    end
+
+    if changeicon and ns.options.ChangeIcon then
+
+        button:SetSize(width, width * configs.iconrate);
+
+
+        if button.icon then
+            button.icon:ClearAllPoints();
+            button.icon:SetPoint("CENTER", 0, 0);
+            button.icon:SetSize(width - 2, width * configs.iconrate - 2);
+            button.icon:SetTexCoord(.08, .92, .08, .92);
+        end
+
+        if not button.border then
+            button.border = button:CreateTexture(nil, "BACKGROUND", "asCompactRaidBuffBorderTemplate");
+        end
+        button.border:SetAllPoints(button);
+        button.border:SetDrawLayer("BACKGROUND");
+        button.border:SetColorTexture(0, 0, 0, 1);
+        button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+        button.border:SetAlpha(1)
+        button.border:Show()
+    end
+
+    if button.cooldown and ns.options.ShowCooldown then
+        button.cooldown:SetHideCountdownNumbers(false);
+
+        for _, r in next, { button.cooldown:GetRegions() } do
+            if r:GetObjectType() == "FontString" then
+                r:SetFont(STANDARD_TEXT_FONT, (width / 2) * ns.options.CooldownSizeRate, "OUTLINE");
+                r:ClearAllPoints();
+                r:SetPoint("CENTER", button, "TOP", 0, 0);
+                r:SetDrawLayer("OVERLAY");
+                break;
+            end
+        end
+    end
+end
+
+local function change_defaults(frame)
+    if frame and not frame:IsForbidden() then
+        if frame.buffFrames then
+            for i = 1, #frame.buffFrames do
+                change_button(frame.buffFrames[i], true);
+            end
+        end
+        if frame.debuffFrames then
+            for i = 1, #frame.debuffFrames do
+                change_button(frame.debuffFrames[i]);
+            end
+        end
+        if frame.CenterDefensiveBuff then
+            change_button(frame.CenterDefensiveBuff, true, true);
+        end
+    end
+end
+
+
+
 local max_y = 0;
 local function update_all(frame)
     if frame and not frame:IsForbidden() and frame.GetName then
@@ -157,6 +227,7 @@ local function update_all(frame)
                 if not (frame.unit and UnitIsPlayer(frame.unit)) and not is_party(frame.unit) then
                     return
                 end
+                change_defaults(frame);
 
                 local x, y = frame:GetSize();
 
@@ -179,6 +250,7 @@ local function update_all(frame)
                 if not (frame.unit and UnitIsPlayer(frame.unit)) and not is_party(frame.unit) then
                     return
                 end
+                change_defaults(frame);
 
                 if ns.asparty[name] == nil then
                     ns.asparty[name] = CreateFrame("Frame");

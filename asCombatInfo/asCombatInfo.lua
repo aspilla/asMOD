@@ -1,8 +1,6 @@
 ﻿local _, ns = ...;
 
-local main_frame = CreateFrame("Frame")
-main_frame:RegisterEvent("ADDON_LOADED")
-main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+local main_frame = CreateFrame("Frame");
 
 local updateBucket = {}
 
@@ -318,4 +316,6 @@ local function on_event(self, event, arg)
 
 end
 
+main_frame:RegisterEvent("ADDON_LOADED");
+main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 main_frame:SetScript("OnEvent",on_event );

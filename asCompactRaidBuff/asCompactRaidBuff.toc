@@ -6,6 +6,7 @@
 ## SavedVariablesPerCharacter: ACRB_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+asCompactRaidBuff.xml
 asCompactRaidBuffOptions.lua
 asCompactRaidBuffFeatures.lua
 asCompactRaidBuff.lua
