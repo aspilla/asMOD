@@ -1,18 +1,32 @@
 # asGearScoreLite (Midnight)
 
-Displays item levels in the Character and Inspect windows.
+Displays item levels in the Character Info window and the Inspect window.
 ![asGearScoreLite](https://github.com/aspilla/asMOD/blob/main/.Pictures/asGearScoreLite.jpg?raw=true)
 
 ## Key Features
 
-*   **Individual Item Level Display**:
-    *   **Character Window**: 
-    *   **Inspect Window**: 
+* **Individual Item Level Display**:
+    * **Character Window**: 
+    * **Inspect Window**: 
 
-*   **Target's Average Item Level (Top right of Inspect Window)**:
+* **Target's Average Item Level (Top right of Inspect window)**:
 
 ## Configuration
-No configuration options.
+None
+
+
+
+## Known Issues
+* Conflict with other addons (ex. TinyTip etc.)
+
+```lua
+Blizzard_InspectUI/InspectPVPFrame.lua:71: bad argument #1 to 'UnitFactionGroup' (Usage: local factionGroupTag, localized = UnitFactionGroup(unitName [, checkDisplayRace]))
+[string "=[C]"]: in function `UnitFactionGroup'
+[string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:71: in function `InspectPVPFrame_Update'
+[string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:60: in function <Blizzard_InspectUI/InspectPVPFrame.lua:58>
+```
+
+*Quest reward item levels may display as base levels during Midnight leveling
 
 ---
 
@@ -31,3 +45,16 @@ No configuration options.
 
 ## 설정
 없음
+
+
+
+## 알고 있는 이슈
+*   다른 애드온과 충돌시 아래 메시지 (ex. TinyTip 등)
+
+```lua
+Blizzard_InspectUI/InspectPVPFrame.lua:71: bad argument #1 to 'UnitFactionGroup' (Usage: local factionGroupTag, localized = UnitFactionGroup(unitName [, checkDisplayRace]))
+[string "=[C]"]: in function `UnitFactionGroup'
+[string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:71: in function `InspectPVPFrame_Update'
+[string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:60: in function <Blizzard_InspectUI/InspectPVPFrame.lua:58>
+```
+* 한밤 레벨업시 퀘스트 보상 아이템 레벨이 기본 레벨로 표시
