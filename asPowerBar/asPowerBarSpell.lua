@@ -60,7 +60,7 @@ local function on_event(self, event, arg1)
             end
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
-        if arg1 == gvalue.spellid and gvalue.maxspell then
+        if (arg1 == nil or arg1 == gvalue.spellid) and gvalue.maxspell then
             for i = 1, gvalue.maxspell do
                 ns.lib.PixelGlow_Stop(ns.spellframes[i]);
             end
@@ -91,7 +91,7 @@ function ns.setup_spell(spellid)
         ns.chargebar:Show();
 
         main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
-        main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
+        main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
         timer = C_Timer.NewTicker(0.2, update_spell);
     end
 end
