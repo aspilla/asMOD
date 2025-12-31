@@ -9,7 +9,7 @@ local Options_Default = {
     BottomTankPowerBar = true, -- 탱커 Power 바
     ChangeIcon = true,
     ShowCooldown = true,
-    CenterDefensiveSizeRate = 0.5,
+    CenterDefensiveSizeRate = 0.6,
     CooldownSizeRate = 1,
 };
 
@@ -29,7 +29,9 @@ function ns.setup_option()
         local variable = get_variable_from_cvar_name(cvar_name)
         ACRB_Options[variable] = value;
         ns.options[variable] = value;
-        --ReloadUI();
+        if type(value) ~= "number" then
+            ReloadUI();
+        end
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asCompactRaidBuff")

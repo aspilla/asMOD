@@ -2,7 +2,7 @@ local _, ns = ...;
 local version = select(4, GetBuildInfo());
 local asMOD;
 local asMOD_UIScale = 0.75;
-local asMOD_CurrVersion = 251212;
+local asMOD_CurrVersion = 251231;
 
 asMOD_t_position = {};
 
