@@ -9,7 +9,7 @@ function ns.update_power(asframe)
 
     local powerType, powerTypeString = UnitPowerType(unit);
 
-    if powerType > 0 and UnitIsUnit(unit, "target") then
+    if powerType and powerType > 0 and UnitIsUnit(unit, "target") then
         local power = UnitPower(unit);
         local maxPower = UnitPowerMax(unit);
 

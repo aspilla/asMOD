@@ -57,85 +57,89 @@ local function update_buttons(viewer)
 			rate = 0.8;
 		end
 
-		button:SetSize(button:GetWidth(), button:GetWidth() * rate);
+		if not button.bconfiged then
+
+			button.bconfiged = true;
+			button:SetSize(button:GetWidth(), button:GetWidth() * rate);
 
 
-		if button.Icon then
-			local mask = button.Icon:GetMaskTexture(1)
-			if mask then
-				button.Icon:RemoveMaskTexture(mask);
-			end
-			button.Icon:ClearAllPoints();
-			button.Icon:SetPoint("CENTER", 0, 0);
-			button.Icon:SetSize(button:GetWidth() - 4, button:GetWidth() * rate - 4);
-			button.Icon:SetTexCoord(.08, .92, .08, .92);
-		end
-
-
-		if button.ChargeCount then
-			for _, r in next, { button.ChargeCount:GetRegions() } do
-				if r:GetObjectType() == "FontString" then
-					r:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
-					r:ClearAllPoints();
-					r:SetPoint("BOTTOM", 0, -5);
-					r:SetTextColor(0, 1, 0);
-					r:SetDrawLayer("OVERLAY");
-					break;
+			if button.Icon then
+				local mask = button.Icon:GetMaskTexture(1)
+				if mask then
+					button.Icon:RemoveMaskTexture(mask);
 				end
+				button.Icon:ClearAllPoints();
+				button.Icon:SetPoint("CENTER", 0, 0);
+				button.Icon:SetSize(button:GetWidth() - 4, button:GetWidth() * rate - 4);
+				button.Icon:SetTexCoord(.08, .92, .08, .92);
 			end
-		end
-
-		if button.Applications then
-			for _, r in next, { button.Applications:GetRegions() } do
-				if r:GetObjectType() == "FontString" then
-					r:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
-					r:ClearAllPoints();
-					r:SetPoint("Center", 0, 0);
-					r:SetDrawLayer("OVERLAY");
-					break;
-				end
-			end
-		end
 
 
-		if not button.border then
-			button.border = button:CreateTexture(nil, "BACKGROUND", "asCombatInfoBorderTemplate");
-			button.border:SetAllPoints(button);
-			button.border:SetColorTexture(0, 0, 0, 1);
-			button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-		else
-			button.border:SetAlpha(1)
-		end
-		button.border:Show()
-
-		if button.Cooldown then
-			for _, r in next, { button.Cooldown:GetRegions() } do
-				if r:GetObjectType() == "FontString" then
-					r:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
-					r:ClearAllPoints();
-					if isbuff then
-						r:SetPoint("TOP", 0, 5);
-					else
-						r:SetPoint("CENTER", 0, 0);
+			if button.ChargeCount then
+				for _, r in next, { button.ChargeCount:GetRegions() } do
+					if r:GetObjectType() == "FontString" then
+						r:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
+						r:ClearAllPoints();
+						r:SetPoint("BOTTOM", 0, -5);
+						r:SetTextColor(0, 1, 0);
+						r:SetDrawLayer("OVERLAY");
+						break;
 					end
-					r:SetDrawLayer("OVERLAY");
-					break;
 				end
 			end
 
-			button.asupdate = function()
-				if button.cooldownUseAuraDisplayTime == true then
-					button.border:SetColorTexture(0, 1, 1);
-				else
-					button.border:SetColorTexture(0, 0, 0);
+			if button.Applications then
+				for _, r in next, { button.Applications:GetRegions() } do
+					if r:GetObjectType() == "FontString" then
+						r:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
+						r:ClearAllPoints();
+						r:SetPoint("Center", 0, 0);
+						r:SetDrawLayer("OVERLAY");
+						break;
+					end
 				end
 			end
 
-			if button.astimer then
-				button.astimer:Cancel();
-			end
 
-			button.astimer = C_Timer.NewTicker(0.2, button.asupdate);
+			if not button.border then
+				button.border = button:CreateTexture(nil, "BACKGROUND", "asCombatInfoBorderTemplate");
+				button.border:SetAllPoints(button);
+				button.border:SetColorTexture(0, 0, 0, 1);
+				button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+			else
+				button.border:SetAlpha(1)
+			end
+			button.border:Show()
+
+			if button.Cooldown then
+				for _, r in next, { button.Cooldown:GetRegions() } do
+					if r:GetObjectType() == "FontString" then
+						r:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
+						r:ClearAllPoints();
+						if isbuff then
+							r:SetPoint("TOP", 0, 5);
+						else
+							r:SetPoint("CENTER", 0, 0);
+						end
+						r:SetDrawLayer("OVERLAY");
+						break;
+					end
+				end
+
+				button.asupdate = function()
+					if button.cooldownUseAuraDisplayTime == true then
+						button.border:SetColorTexture(0, 1, 1);
+					else
+						button.border:SetColorTexture(0, 0, 0);
+					end
+				end
+
+				if button.astimer then
+					button.astimer:Cancel();
+				end
+
+				button.astimer = C_Timer.NewTicker(0.2, button.asupdate);
+			end
 		end
 	end
 
@@ -308,14 +312,13 @@ local function on_event(self, event, arg)
 		ns.setup_option();
 	end
 
-	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then		
-		C_Timer.After(0.5, init);		
+	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then
+		C_Timer.After(1, init);
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		C_Timer.After(0.5, init)
+		C_Timer.After(1, init)
 	end
-
 end
 
 main_frame:RegisterEvent("ADDON_LOADED");
 main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-main_frame:SetScript("OnEvent",on_event );
+main_frame:SetScript("OnEvent", on_event);
