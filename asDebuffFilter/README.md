@@ -1,6 +1,6 @@
 # asDebuffFilter (Midnight)
 
-Displays debuffs on both player and target unit frames.
+Displays debuffs of player and target
 ![asDebuffFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDebuffFilter.JPG?raw=true)
 
 ## Key Features
@@ -18,7 +18,7 @@ Displays Player (left 6ea) and Target (right 6ea).
 
 # asDebuffFilter (한밤)
 
-플레이어 및 대상 유닛 프레임 모두에서 디버프 표시
+플레이어 및 대상 디버프 표시
 ![asDebuffFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDebuffFilter.JPG?raw=true)   
 
 ## 주요 기능

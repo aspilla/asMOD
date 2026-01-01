@@ -2,6 +2,7 @@ local _, ns = ...;
 
 local gvalue = {
     maxpower = 0,
+    powertype = nil,
 };
 
 local function get_spellcost(powerType)
@@ -33,9 +34,17 @@ end
 local function update_power()
     local powerType, powerTypeString = UnitPowerType("player");
 
-    if powerTypeString then
-        local info = PowerBarColor[powerTypeString];
-        ns.bar:SetStatusBarColor(info.r, info.g, info.b);
+    if powerType ~= gvalue.powertype then
+        if powerTypeString then
+            local info = PowerBarColor[powerTypeString];
+            ns.bar:SetStatusBarColor(info.r, info.g, info.b);
+        end
+
+        if powerType == 0 then
+            ns.bar.text:Hide();
+        else
+            ns.bar.text:Show();
+        end
     end
 
     local value = UnitPower("player", powerType);
@@ -61,8 +70,7 @@ function ns.setup_power()
         timer:Cancel();
     end
 
-    ns.bar:Show();
-    ns.bar.text:Show();
+    ns.bar:Show();    
 
     timer = C_Timer.NewTicker(0.1, update_power);
 end

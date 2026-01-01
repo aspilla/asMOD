@@ -209,6 +209,7 @@ local function create_button(unit)
     frame:SetWidth(size);
     frame:SetHeight(size * 0.9);
 
+    frame.cooldown:SetHideCountdownNumbers(false);
     for _, r in next, { frame.cooldown:GetRegions() } do
         if r:GetObjectType() == "FontString" then
             r:SetFont(STANDARD_TEXT_FONT, configs.fontsize, "OUTLINE")

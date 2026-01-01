@@ -58,7 +58,6 @@ local function update_buttons(viewer)
 		end
 
 		if not button.bconfiged then
-
 			button.bconfiged = true;
 			button:SetSize(button:GetWidth(), button:GetWidth() * rate);
 
@@ -143,7 +142,7 @@ local function update_buttons(viewer)
 		end
 	end
 
-	if isbuff and not ns.options.AlignedBuff then
+	if isbuff then
 		return;
 	end
 
@@ -170,8 +169,6 @@ local function update_buttons(viewer)
 	-- Calculate offsets to center the grid
 	local startX = -totalWidth / 2
 	local startY = totalHeight / 2
-
-
 
 	if isHorizontal then
 		-- Horizontal layout with wrapping
@@ -263,46 +260,6 @@ local function init()
 			end
 		end
 	end
-	-- BuffIconCooldownViewer loads later, hook it separately
-	C_Timer.After(0.1, function()
-		if BuffIconCooldownViewer then
-			update_buttons(BuffIconCooldownViewer)
-
-			-- Hook Layout to reapply when icons change
-			if BuffIconCooldownViewer.Layout then
-				hooksecurefunc(BuffIconCooldownViewer, "Layout", function()
-					ScheduleUpdate(BuffIconCooldownViewer)
-				end)
-			end
-
-			-- Hook Show/Hide on existing and future children
-			local function HookChild(child)
-				child:HookScript("OnShow", function()
-					ScheduleUpdate(BuffIconCooldownViewer)
-				end)
-				child:HookScript("OnHide", function()
-					ScheduleUpdate(BuffIconCooldownViewer)
-				end)
-			end
-
-			local children = { BuffIconCooldownViewer:GetChildren() }
-			for _, child in ipairs(children) do
-				HookChild(child)
-			end
-
-			-- Monitor for new children
-			BuffIconCooldownViewer:HookScript("OnUpdate", function(self)
-				local currentChildren = { self:GetChildren() }
-				for _, child in ipairs(currentChildren) do
-					if not child.cleanCooldownHooked then
-						child.cleanCooldownHooked = true
-						HookChild(child)
-						ScheduleUpdate(self)
-					end
-				end
-			end)
-		end
-	end)
 end
 -- Event handler
 local bfirst = true;

@@ -1,10 +1,12 @@
-﻿-----------------설정 ------------------------
-local ATGCD_X = 56;
-local ATGCD_Y = -360;
-local AGCICON = 25;
+﻿local _, ns     = ...;
+local configs = {
+	xpoint = 56,
+	ypoint = -360,
+	iconsize = 25,
+};
 
 
-local AGCD_BlackList = {
+ns.blacklist = {
 	[75] = 1,
 	[6603] = 1,
 	[240022] = 1,
@@ -14,10 +16,7 @@ local AGCD_BlackList = {
 	[7268] = 1,
 }
 
-local GetItemInfo = C_Item and C_Item.GetItemInfo;
-local GetItemSpell = C_Item and C_Item.GetItemSpell;
-
-local KnownSpellList = {};
+ns.knownspelllist = {};
 
 local itemslots = {
 	"HeadSlot",
@@ -50,128 +49,98 @@ local asGetSpellInfo = function(spellID)
 	end
 end
 
-local asGetSpellCooldown = function(spellID)
-	if not spellID then
-		return nil;
-	end
-	local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
-	if spellCooldownInfo then
-		return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled,
-			spellCooldownInfo.modRate;
-	end
-end
-
-
-local function scanItemSlots()
+local function scan_itemslots()
 	for _, v in pairs(itemslots) do
 		local idx = GetInventorySlotInfo(string.upper(v));
 
 		local itemid = GetInventoryItemID("player", idx)
 
 		if itemid then
-			local _, id = GetItemSpell(itemid);
+			local _, id = C_Item.GetItemSpell(itemid);
 			if id then
-				KnownSpellList[id] = itemid;
+				ns.knownspelllist[id] = itemid;
 			end
 		end
 	end
 end
 
 
-local ATGCD = CreateFrame("FRAME", nil, UIParent)
-ATGCD:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
-ATGCD:SetWidth(0)
-ATGCD:SetHeight(0)
-ATGCD:Show();
+local main_frame = CreateFrame("FRAME", nil, UIParent)
+main_frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
+main_frame:SetWidth(0)
+main_frame:SetHeight(0)
+main_frame:Show();
 
 
-ATGCD.frame = {};
-ATGCD.icontime = {};
+main_frame.frames = {};
 for i = 0, 3 do
-	ATGCD.frame[i] = CreateFrame("Button", nil, UIParent, "ATGCDFrameTemplate");
+	local frame = CreateFrame("Button", nil, UIParent, "ATGCDFrameTemplate");
 
 	if i == 0 then
-		ATGCD.frame[i]:SetPoint("CENTER", UIParent, "CENTER", ATGCD_X, ATGCD_Y)
+		frame:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
 	else
-		ATGCD.frame[i]:SetPoint("BOTTOMRIGHT", ATGCD.frame[i - 1], "BOTTOMLEFT", -1, 0);
+		frame:SetPoint("BOTTOMRIGHT", main_frame.frames[i - 1], "BOTTOMLEFT", -1, 0);
 	end
 
+	frame:SetWidth(configs.iconsize);
+	frame:SetHeight(configs.iconsize * 0.9);
+	frame:SetScale(1);
+	frame:SetAlpha(1);
+	frame:EnableMouse(false);
+	frame.icon:SetTexCoord(.08, .92, .08, .92);
+	frame.icon:Show();
+	frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+	frame.border:SetVertexColor(0, 0, 0);
+	frame.border:Show();
 
-	ATGCD.frame[i]:SetWidth(AGCICON);
-	ATGCD.frame[i]:SetHeight(AGCICON * 0.9);
-	ATGCD.frame[i]:SetScale(1);
-	ATGCD.frame[i]:SetAlpha(1);
-	ATGCD.frame[i]:EnableMouse(false);
-	ATGCD.frame[i].icon:SetTexCoord(.08, .92, .08, .92);
-	ATGCD.frame[i].border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-	ATGCD.frame[i].border:SetVertexColor(0, 0, 0);
-	ATGCD.frame[i].border:Show();
+	frame.cooldown:SetHideCountdownNumbers(true);
+	
+	frame.text:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE");
+	frame.text:ClearAllPoints();
+	frame.text:SetPoint("CENTER", frame, "CENTER", 0, 0);
 
-	ATGCD.frame[i].count:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE");
-	ATGCD.frame[i].count:ClearAllPoints();
-	ATGCD.frame[i].count:SetPoint("CENTER", ATGCD.frame[i], "CENTER", 0, 0);
+	frame:Hide();
+	frame:EnableMouse(false);
 
-	ATGCD.frame[i].text:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE");
-	ATGCD.frame[i].text:ClearAllPoints();
-	ATGCD.frame[i].text:SetPoint("CENTER", ATGCD.frame[i], "CENTER", 0, 0);
-
-	ATGCD.frame[i]:Hide();
-
-	if not ATGCD.frame[i]:GetScript("OnEnter") then
-		ATGCD.frame[i]:SetScript("OnEnter", function(s)
-			if s.spellid and s.spellid > 0 then
-				GameTooltip_SetDefaultAnchor(GameTooltip, s);
-				GameTooltip:SetSpellByID(s.spellid);
-			elseif s.itemid and s.itemid > 0 then
-				GameTooltip_SetDefaultAnchor(GameTooltip, s);
-				GameTooltip:SetItemByID(s.itemid);
-			end
-		end)
-		ATGCD.frame[i]:SetScript("OnLeave", function()
-			GameTooltip:Hide();
-		end)
-	end
-	ATGCD.frame[i]:EnableMouse(false);
-	ATGCD.frame[i]:SetMouseMotionEnabled(true);
+	main_frame.frames[i] = frame;
 end
 
+local castframe = main_frame.frames[0];
 
-ATGCD.frame[0]:SetWidth(AGCICON * 1.3);
-ATGCD.frame[0]:SetHeight(AGCICON * 1.3 * 0.9);
-ATGCD.frame[0].icon:Hide();
-ATGCD.frame[0]:Hide();
+castframe:SetWidth(configs.iconsize * 1.3);
+castframe:SetHeight(configs.iconsize * 1.3 * 0.9);
+castframe:Hide();
 
 local bloaded = C_AddOns.LoadAddOn("asMOD")
 if bloaded and asMOD_setupFrame then
-	asMOD_setupFrame(ATGCD.frame[0], "asTrueGCD");
+	asMOD_setupFrame(castframe, "asTrueGCD");
 end
 
 
-local prev_spell_id = nil;
-local seq_spell_count = 0;
-local spells = {};
+local prevspellid = nil;
+local spellseqcount = 0;
+ns.spelllist = {};
 
-local function ATGCD_Alert(spellid, bcancel, bitem)
-	if spellid == nil then
-		--ATGCD.icon:Hide();
+local function insert_spell(spellid, bcancel, bitem)
+	if spellid == nil then		
 		return
 	end
 
-	if AGCD_BlackList[spellid] then
+	if ns.blacklist[spellid] then
 		return;
 	end
 
-	if spellid == prev_spell_id and not bcancel then
-		seq_spell_count = seq_spell_count + 1;
+	if spellid == prevspellid and not bcancel then
+		spellseqcount = spellseqcount + 1;
 	elseif not bcancel then
-		prev_spell_id = spellid;
-		seq_spell_count = 0;
+		prevspellid = spellid;
+		spellseqcount = 0;
 	end
 
 	local name, discard, icon = asGetSpellInfo(spellid)
 
 	if bitem then
-		icon = select(10, GetItemInfo(spellid));
+		icon = select(10, C_Item.GetItemInfo(spellid));
 	end
 
 
@@ -183,30 +152,29 @@ local function ATGCD_Alert(spellid, bcancel, bitem)
 
 	local current = GetTime();
 
-	if #spells > 3 then
-		table.remove(spells, 4);
+	if #ns.spelllist > 3 then
+		table.remove(ns.spelllist, 4);
 	end
 
-	table.insert(spells, 1, { icon, seq_spell_count, bcancel, current, spellid });
+	table.insert(ns.spelllist, 1, { icon, spellseqcount, bcancel, current, spellid });
 
 	return;
 end
 
 
-local function ATGCD_OnUpdate()
+local function on_update()
 	local current = GetTime();
 
 	for i = 1, 3 do
-		local spell = spells[4 - i];
-		local frame = ATGCD.frame[4 - i];
+		local spell = ns.spelllist[4 - i];
+		local frame = main_frame.frames[4 - i];
 
 		if spell then
 			if spell[4] and current - spell[4] > 5 then
 				frame:Hide();
 			else
 				frame.icon:SetTexture(spell[1]);
-				frame.spellid = spell[5];
-				frame:Show();
+				frame.spellid = spell[5];				
 
 				if spell[3] then
 					frame.text:SetText("X");
@@ -217,6 +185,7 @@ local function ATGCD_OnUpdate()
 				else
 					frame.text:SetText("");
 				end
+				frame:Show();
 			end
 		end
 	end
@@ -226,7 +195,6 @@ local interruptprevicon = nil;
 
 local previcon = nil;
 local prevtime = 0;
-local lastgcd = 1.5 / ((GetHaste() / 100) + 1);
 
 local function clear_cooldownframe(self)
 	self:Clear();
@@ -241,11 +209,11 @@ local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdg
 	end
 end
 
-local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
+local function on_event(self, event, arg1, arg2, arg3, arg4, arg5)
 	if (event == "UNIT_SPELLCAST_START") then
 		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
 			"player");
-		local frame = ATGCD.frame[0];
+		local frame = castframe;
 		local frameIcon = frame.icon;
 		local frameCooldown = frame.cooldown;
 
@@ -254,27 +222,25 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			frameIcon:SetTexture(texture);
 			frame.spellid = spellid;
 
-			if spellid == prev_spell_id then
-				frame.text:SetText(seq_spell_count + 2);
+			if spellid == prevspellid then
+				frame.text:SetText(spellseqcount + 2);
 				frame.text:SetTextColor(1, 1, 1);
 				frame.text:Show();
 			else
 				frame.text:Hide();
 			end
-			frameIcon:Show();
+
 			local duration = (endTime - startTime) / 1000;
 			endTime = endTime / 1000;
 			set_cooldownframe(frameCooldown, endTime - duration, duration, duration > 0, true);
-			frameCooldown:SetHideCountdownNumbers(true);
 			frame:Show();
 		else
-			frameIcon:Hide();
 			frame:Hide();
 		end
 	elseif (event == "UNIT_SPELLCAST_CHANNEL_START") then
 		local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(
 			"player");
-		local frame = ATGCD.frame[0];
+		local frame = castframe;
 		local frameIcon = frame.icon;
 		local frameCooldown = frame.cooldown;
 
@@ -283,54 +249,45 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 			frameIcon:SetTexture(texture);
 			frame.spellid = spellid;
 
-			if spellid == prev_spell_id then
-				frame.text:SetText(seq_spell_count + 2);
+			if spellid == prevspellid then
+				frame.text:SetText(spellseqcount + 2);
 				frame.text:SetTextColor(1, 1, 1);
 				frame.text:Show();
 			else
 				frame.text:Hide();
 			end
-			frameIcon:Show();
+
 			local duration = (endTime - startTime) / 1000;
 			endTime = endTime / 1000;
 			set_cooldownframe(frameCooldown, endTime - duration, duration, duration > 0, true);
-			frameCooldown:SetHideCountdownNumbers(true);
 			frame:Show();
 		else
-			frameIcon:Hide();
 			frame:Hide();
 		end
 	elseif event == "UNIT_SPELLCAST_STOP" then
 		local name = UnitCastingInfo("player");
 		if not name then
-			ATGCD.frame[0]:Hide();
+			castframe:Hide();
 		end
 	elseif event == "UNIT_SPELLCAST_CHANNEL_STOP" then
 		local name = UnitChannelInfo("player");
 		if not name then
-			ATGCD.frame[0]:Hide();
+			castframe:Hide();
 		end
 	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
 		local spellid = arg3;
-
 		local name, discard, icon = asGetSpellInfo(spellid);
-		--local gcd = select(2, asGetSpellCooldown(61304));
 		local curtime = GetTime();
 
-		--if gcd > 0 then
-		--	lastgcd = gcd;
-		--end
-
-		--if (previcon and previcon == icon and (curtime - prevtime) < lastgcd) then
 		if (previcon and previcon == icon and (curtime - prevtime) < 0.5) then
 
 		else
-			local itemid = KnownSpellList[spellid];
+			local itemid = ns.knownspelllist[spellid];
 
 			if itemid then
-				ATGCD_Alert(itemid, nil, true);
+				insert_spell(itemid, nil, true);
 			else
-				ATGCD_Alert(spellid, nil);
+				insert_spell(spellid, nil);
 			end
 			previcon = icon;
 			prevtime = curtime;
@@ -338,41 +295,36 @@ local function ATGCD_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5)
 	elseif event == "UNIT_SPELLCAST_INTERRUPTED" and arg1 == "player" then
 		local spellid = arg3;
 		local name, discard, icon = asGetSpellInfo(spellid);
-		--local gcd = select(2, asGetSpellCooldown(61304));
+
 		local curtime = GetTime();
-
-		--if gcd > 0 then
-		--	lastgcd = gcd;
-		--end
-
 		if (interruptprevicon and interruptprevicon == icon and (curtime - interrupttime) < 0.5) then
 
 		else
-			local itemid = KnownSpellList[spellid];
+			local itemid = ns.knownspelllist[spellid];
 
 			if itemid then
-				ATGCD_Alert(itemid, true, true);
+				insert_spell(itemid, true, true);
 			else
-				ATGCD_Alert(spellid, true);
+				insert_spell(spellid, true);
 			end
 			interruptprevicon = icon;
 			interrupttime = curtime;
 		end
 	else
-		scanItemSlots();
+		scan_itemslots();
 	end
 
 	return;
 end
 
-C_Timer.NewTicker(0.25, ATGCD_OnUpdate);
-ATGCD:SetScript("OnEvent", ATGCD_OnEvent)
+C_Timer.NewTicker(0.25, on_update);
+main_frame:SetScript("OnEvent", on_event)
 
-ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
-ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player");
-ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_START", "player");
-ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player");
-ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player");
-ATGCD:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player");
-ATGCD:RegisterEvent("PLAYER_ENTERING_WORLD");
-ATGCD:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+main_frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
+main_frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player");
+main_frame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player");
+main_frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player");
+main_frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player");
+main_frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player");
+main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+main_frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");

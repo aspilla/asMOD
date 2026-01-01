@@ -1,7 +1,8 @@
 ﻿## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCompactRaidBuff
-## Notes: Enhanced raid buff, debuff tracker for default UI
+## Notes: Enhances Raid and Party Frames
+## Notes-koKR:공격대 및 파티 프레임 강화
 ## Version : 251228
 ## SavedVariablesPerCharacter: ACRB_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp

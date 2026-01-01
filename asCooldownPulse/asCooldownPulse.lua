@@ -1,9 +1,12 @@
-local tbuttons = {};
-local ibuttons = {};
-local trinkets = { 13, 14 };
-local items = { 5512, 241308, 241304 };
-local racials = { 26297, 265221, 357214, 20594, 58984, 202719, 20572, 20549, 274738, 59752, 256948, 312411, 7744, 255647, 287712, 312924, 68992, 69070, 291944, 1237885, 255654, 107079, 20589, 59542, 436344 };
-local racial_spell = nil;
+local _, ns  = ...;
+
+ns.tbuttons = {};
+ns.ibuttons = {};
+ns.trinkets = { 13, 14 };
+ns.items = { 5512, 241308, 241304 };
+ns.racials = { 26297, 265221, 357214, 20594, 58984, 202719, 20572, 20549, 274738, 59752, 256948, 312411, 7744, 255647, 287712, 312924, 68992, 69070, 291944, 1237885, 255654, 107079, 20589, 59542, 436344 };
+ns.racial_spell = nil;
+ns.isdemonstone = false;
 local configs = {
     size = 28,
     font_size = 12,
@@ -62,26 +65,29 @@ local function set_cooldownframe(self, start, duration, enable)
     end
 end
 
-
-local isdemonstone = false;
-
-local function updateitems(list, buttons, spellid)
+local function update_buttons(list, buttons, spellid)
     local i = 1;
 
     for _, itemid in pairs(list) do
-        local isusable = true
+        local isusable = true;
+        local istrinket = false;
         if itemid < 20 then
             itemid = GetInventoryItemID("player", itemid);
             if itemid then
                 isusable = C_Item.IsUsableItem(itemid);
             end
-        elseif itemid == 5512 and isdemonstone then
+            istrinket = true;
+        elseif itemid == 5512 and ns.isdemonstone then
             itemid = 224464;
         end
         if itemid then
             local _, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemid)
             local start, duration = C_Item.GetItemCooldown(itemid);
-            local count = 0;
+            local count = C_Item.GetItemCount(itemid, false, true, false, false);
+
+            if istrinket then
+                count = 0;
+            end
 
             if isusable then
                 local frame = buttons[i];
@@ -136,9 +142,9 @@ local function updateitems(list, buttons, spellid)
 end
 
 
-local function createitembuttons()
+local function create_buttons()
     local bloaded = C_AddOns.LoadAddOn("asMOD")
-    for i = 1, #trinkets + 1 do
+    for i = 1, #ns.trinkets + 1 do
         local frame = CreateFrame("Button", nil, UIParent, "asCooldownPulseFrameTemplate");
         frame.cooldown:SetHideCountdownNumbers(false);
         frame.cooldown:SetDrawSwipe(true);
@@ -165,16 +171,16 @@ local function createitembuttons()
                 asMOD_setupFrame(frame, "asCooldownPulse(Trinkets)");
             end
         else
-            frame:SetPoint("RIGHT", tbuttons[i - 1], "LEFT", -0.5, 0);
+            frame:SetPoint("RIGHT", ns.tbuttons[i - 1], "LEFT", -0.5, 0);
         end
         frame:SetWidth(configs.size);
         frame:SetHeight(configs.size * 0.9);
         frame:SetScale(1);
         frame:Hide();
-        tbuttons[i] = frame;
+        ns.tbuttons[i] = frame;
     end
 
-    for i = 1, #items do
+    for i = 1, #ns.items do
         local frame = CreateFrame("Button", nil, UIParent, "asCooldownPulseFrameTemplate");
         frame.cooldown:SetHideCountdownNumbers(false);
         frame.cooldown:SetDrawSwipe(true);
@@ -191,9 +197,10 @@ local function createitembuttons()
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
         frame.border:SetVertexColor(0, 0, 0);
 
-        frame.count:SetFont(STANDARD_TEXT_FONT, configs.font_size, "OUTLINE")
+        frame.count:SetFont(STANDARD_TEXT_FONT, configs.font_size - 1, "OUTLINE")
         frame.count:ClearAllPoints();
-        frame.count:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -3, 3);
+        frame.count:SetTextColor(0, 1, 0);
+        frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
 
         if i == 1 then
             frame:SetPoint("TOPRIGHT", UIParent, "CENTER", configs.i_xpoint, configs.i_ypoint)
@@ -201,34 +208,34 @@ local function createitembuttons()
                 asMOD_setupFrame(frame, "asCooldownPulse(Item)");
             end
         else
-            frame:SetPoint("LEFT", ibuttons[i - 1], "RIGHT", -0.5, 0);
+            frame:SetPoint("LEFT", ns.ibuttons[i - 1], "RIGHT", -0.5, 0);
         end
         frame:SetWidth(configs.size);
         frame:SetHeight(configs.size * 0.9);
         frame:SetScale(1);
         frame:Hide();
-        ibuttons[i] = frame;
+        ns.ibuttons[i] = frame;
     end
 end
 
-createitembuttons();
-local function update()
-    updateitems(trinkets, tbuttons, racial_spell);
-    updateitems(items, ibuttons);
+create_buttons();
+local function on_update()
+    update_buttons(ns.trinkets, ns.tbuttons, ns.racial_spell);
+    update_buttons(ns.items, ns.ibuttons);
 end
-C_Timer.NewTicker(0.2, update);
+C_Timer.NewTicker(0.2, on_update);
 
-local function onevent()
+local function on_event()
     if C_SpellBook.IsSpellKnown(386689) then
-        isdemonstone = true;
+        ns.isdemonstone = true;
     else
-        isdemonstone = false;
+        ns.isdemonstone = false;
     end
 
-    racial_spell = nil;
-    for _, spellid in pairs(racials) do
+    ns.racial_spell = nil;
+    for _, spellid in pairs(ns.racials) do
         if C_SpellBook.IsSpellKnown(spellid) then
-            racial_spell = spellid;
+            ns.racial_spell = spellid;
             return;
         end
     end
@@ -240,4 +247,4 @@ frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
 frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 
-frame:SetScript("OnEvent", onevent)
+frame:SetScript("OnEvent", on_event)

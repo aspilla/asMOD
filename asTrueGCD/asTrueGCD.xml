@@ -8,8 +8,7 @@
 			<Layer level="ARTWORK" textureSubLevel="7">
 				<Texture name="$parentBorder" parentKey ="border" file="Interface\Addons\asTrueGCD\border.tga"/>						
 			</Layer>
-			<Layer level="OVERLAY">
-				<FontString name="$parentCount" justifyH="CENTER" parentKey ="count"/>				
+			<Layer level="OVERLAY">							
 				<FontString name="$parentCancel" justifyH="CENTER" parentKey ="text"/>					
 			</Layer>
 		</Layers>
