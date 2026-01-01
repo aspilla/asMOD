@@ -39,6 +39,10 @@ end
 local function update_power()
     local powertype, powerstring = UnitPowerType("player");
 
+    if not powertype then
+        return;
+    end
+
     if powertype ~= gvalue.powertype then
         if powerstring then
             local info = PowerBarColor[powerstring];
