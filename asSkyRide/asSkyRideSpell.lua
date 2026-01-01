@@ -36,7 +36,7 @@ local function check_spellcooldown(spellid, index)
     local chargeinfo = C_Spell.GetSpellCharges(spellid);
     local durationinfo = C_Spell.GetSpellChargeDuration(spellid);
 
-    if chargeinfo and durationinfo then
+    if chargeinfo and durationinfo and not issecretvalue(chargeinfo.currentCharges) then
         setup_max_combo(chargeinfo.maxCharges, index);
 
         local combobars = ns.combobars[index];
