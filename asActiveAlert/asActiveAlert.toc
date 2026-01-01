@@ -1,8 +1,8 @@
 ## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rActiveAlert
-## Notes: Displays the icon of a spell to the left of the character when the spell has a glowing border.
-## Notes-koKR: 주문에 빤찍이는 테두리가 표시 될 경우, 해당 주문의 아이콘을 케릭 좌측 표시
+## Notes:Displays highlighted spells on the left side of the character.
+## Notes-koKR: 테두리 강조 주문 케릭 좌측 표시
 ## Version : 251224
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

@@ -2,7 +2,7 @@ local _, ns = ...;
 local version = select(4, GetBuildInfo());
 local asMOD;
 local asMOD_UIScale = 0.75;
-local asMOD_CurrVersion = 251231;
+local asMOD_CurrVersion = 260101;
 
 asMOD_t_position = {};
 
@@ -10,12 +10,7 @@ if not asMOD_position then
 	asMOD_position = {}
 end
 
-local detailsprofile = ns.detailsEn;
 local layoutInfo;
-
-if GetLocale() == "koKR" then
-	detailsprofile = ns.detailsKr;
-end
 
 local function asMOD_Import_Layout(text, name)
 	local importLayoutInfo = C_EditMode.ConvertStringToLayoutInfo(text);

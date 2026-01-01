@@ -1,6 +1,6 @@
 # asCastBar (Midnight)
 
-Displays an icon and cast time on the default player cast bar.
+Displays an icon and cast time on the cast bar.
 ![asCastBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCastBar.jpg?raw=true)
 
 ## Main Features
@@ -13,7 +13,7 @@ Displays an icon and cast time on the default player cast bar.
 
 # asCastBar (한밤)
 
-기본 플레이어 시전 바에 아이콘과 시전시간 표시
+시전 바에 아이콘과 시전시간 표시
 ![asCastBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCastBar.jpg?raw=true)
 
 

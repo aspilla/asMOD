@@ -2,8 +2,6 @@
 
 local main_frame = CreateFrame("Frame");
 
-local updateBucket = {}
-
 -- Core function to remove padding and apply modifications. Doing Blizzard's work for them.
 local function update_buttons(viewer)
 	-- Don't apply modifications in edit mode
@@ -11,46 +9,26 @@ local function update_buttons(viewer)
 		return
 	end
 
-	local children = { viewer:GetChildren() };
+	local childs = { viewer:GetChildren() };
 	local isbuff = (viewer == BuffIconCooldownViewer);
 
 	-- Get the visible icons (because they're fully dynamic)
-	local visibleChildren = {}
-	for _, child in ipairs(children) do
+	local visiblechilds = {}
+	for _, child in ipairs(childs) do
 		if child:IsShown() then
 			-- Store original position for sorting
 			local point, relativeTo, relativePoint, x, y = child:GetPoint(1)
 			child.originalX = x or 0
 			child.originalY = y or 0
-			table.insert(visibleChildren, child)
+			table.insert(visiblechilds, child)
 		end
 	end
 
-	if #visibleChildren == 0 then return end
-	local isHorizontal = viewer.isHorizontal
-
-	-- Sort by original position for all viewers
-	if isHorizontal then
-		table.sort(visibleChildren, function(a, b)
-			if math.abs(a.originalY - b.originalY) < 1 then
-				return a.originalX < b.originalX
-			end
-			return a.originalY > b.originalY
-		end)
-	else
-		table.sort(visibleChildren, function(a, b)
-			if math.abs(a.originalX - b.originalX) < 1 then
-				return a.originalY > b.originalY
-			end
-			return a.originalX < b.originalX
-		end)
+	if #visiblechilds == 0 then
+		return
 	end
 
-	local stride = viewer.stride or #visibleChildren
-	local overlap = 0;
-
-
-	for _, button in ipairs(visibleChildren) do
+	for _, button in ipairs(visiblechilds) do
 		local rate = 0.9;
 
 		if isbuff then
@@ -58,8 +36,9 @@ local function update_buttons(viewer)
 		end
 
 		if not button.bconfiged then
+			local width = button:GetWidth();
 			button.bconfiged = true;
-			button:SetSize(button:GetWidth(), button:GetWidth() * rate);
+			button:SetSize(width, width * rate);
 
 
 			if button.Icon then
@@ -69,7 +48,7 @@ local function update_buttons(viewer)
 				end
 				button.Icon:ClearAllPoints();
 				button.Icon:SetPoint("CENTER", 0, 0);
-				button.Icon:SetSize(button:GetWidth() - 4, button:GetWidth() * rate - 4);
+				button.Icon:SetSize(width - 4, width * rate - 4);
 				button.Icon:SetTexCoord(.08, .92, .08, .92);
 			end
 
@@ -77,7 +56,7 @@ local function update_buttons(viewer)
 			if button.ChargeCount then
 				for _, r in next, { button.ChargeCount:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
+						r:SetFont(STANDARD_TEXT_FONT, width / 3, "OUTLINE");
 						r:ClearAllPoints();
 						r:SetPoint("BOTTOM", 0, -5);
 						r:SetTextColor(0, 1, 0);
@@ -90,7 +69,7 @@ local function update_buttons(viewer)
 			if button.Applications then
 				for _, r in next, { button.Applications:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
+						r:SetFont(STANDARD_TEXT_FONT, width / 3 + 2, "OUTLINE");
 						r:ClearAllPoints();
 						r:SetPoint("Center", 0, 0);
 						r:SetDrawLayer("OVERLAY");
@@ -113,7 +92,7 @@ local function update_buttons(viewer)
 			if button.Cooldown then
 				for _, r in next, { button.Cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE");
+						r:SetFont(STANDARD_TEXT_FONT, width / 3, "OUTLINE");
 						r:ClearAllPoints();
 						if isbuff then
 							r:SetPoint("TOP", 0, 5);
@@ -142,37 +121,37 @@ local function update_buttons(viewer)
 		end
 	end
 
-	if isbuff then
+	local isHorizontal = viewer.isHorizontal;
+
+	if not isHorizontal then
 		return;
 	end
 
-	-- Reposition buttons respecting orientation and stride
-	local buttonWidth = visibleChildren[1]:GetWidth()
-	local buttonHeight = visibleChildren[1]:GetHeight()
+	local bcentered = true;
 
-	-- Calculate grid dimensions
-	local numIcons = #visibleChildren
-	local totalWidth, totalHeight
-
-	if isHorizontal then
-		local cols = math.min(stride, numIcons)
-		local rows = math.ceil(numIcons / stride)
-		totalWidth = cols * buttonWidth + (cols - 1) * overlap
-		totalHeight = rows * buttonHeight + (rows - 1) * overlap
-	else
-		local rows = math.min(stride, numIcons)
-		local cols = math.ceil(numIcons / stride)
-		totalWidth = cols * buttonWidth + (cols - 1) * overlap
-		totalHeight = rows * buttonHeight + (rows - 1) * overlap
+	if isbuff and not ns.options.AlignedBuff then
+		bcentered = false;
 	end
 
-	-- Calculate offsets to center the grid
-	local startX = -totalWidth / 2
-	local startY = totalHeight / 2
+	local stride = viewer.stride or #visiblechilds
+	local overlap = viewer.childXPadding;
 
-	if isHorizontal then
-		-- Horizontal layout with wrapping
-		for i, child in ipairs(visibleChildren) do
+	table.sort(visiblechilds, function(a, b)
+		if math.abs(a.originalY - b.originalY) < 1 then
+			return a.originalX < b.originalX
+		end
+		return a.originalY > b.originalY
+	end)
+
+	-- Reposition buttons respecting orientation and stride
+	local buttonWidth = visiblechilds[1]:GetWidth()
+	local buttonHeight = visiblechilds[1]:GetHeight()
+
+	-- Calculate grid dimensions
+	local numIcons = #visiblechilds
+
+	for i, child in ipairs(visiblechilds) do
+		if bcentered then
 			local index = i - 1
 			local row = math.floor(index / stride)
 			local col = index % stride
@@ -190,43 +169,36 @@ local function update_buttons(viewer)
 
 			-- Column offset inside centered row
 			local xOffset = rowStartX + col * (buttonWidth + overlap)
-			local yOffset = startY - row * (buttonHeight + overlap)
-
-			child:ClearAllPoints()
-			child:SetPoint("TOP", viewer, "TOP", xOffset + buttonWidth / 2, yOffset - buttonHeight / 2);
-		end
-	else
-		-- Vertical layout with wrapping
-		for i, child in ipairs(visibleChildren) do
-			local row = (i - 1) % stride
-			local col = math.floor((i - 1) / stride)
-
-			local xOffset = startX + col * (buttonWidth + overlap)
-			local yOffset = startY - row * (buttonHeight + overlap)
-
-			child:ClearAllPoints()
-			child:SetPoint("CENTER", viewer, "CENTER", xOffset + buttonWidth / 2, yOffset - buttonHeight / 2)
+			local yOffset = row * (buttonHeight + overlap)
+			child:ClearAllPoints();
+			child:SetPoint("TOP", viewer, "TOP", xOffset + buttonWidth / 2, -yOffset);
+		else
+			local point, relativeTo, relativePoint, x, y = child:GetPoint(1);
+			child:ClearAllPoints();
+			child:SetPoint(point, relativeTo, relativePoint, x, 0);
 		end
 	end
 end
 
 
-local updaterFrame = CreateFrame("Frame")
-updaterFrame:Hide()
+local updateframe = CreateFrame("Frame");
+local todolist = {};
+updateframe:Hide()
 
-updaterFrame:SetScript("OnUpdate", function()
-	updaterFrame:Hide()
 
-	for viewer in pairs(updateBucket) do
-		updateBucket[viewer] = nil
+updateframe:SetScript("OnUpdate", function()
+	updateframe:Hide()
+
+	for viewer in pairs(todolist) do
+		todolist[viewer] = nil
 		update_buttons(viewer)
 	end
 end)
 
 -- Schedule an update to apply the modifications during the same frame, but after Blizzard is done mucking with things
-local function ScheduleUpdate(viewer)
-	updateBucket[viewer] = true
-	updaterFrame:Show()
+local function add_todolist(viewer)
+	todolist[viewer] = true
+	updateframe:Show()
 end
 
 -- Do the work
@@ -244,7 +216,7 @@ local function init()
 			-- Hook Layout to reapply when Blizzard updates
 			if viewer.Layout then
 				hooksecurefunc(viewer, "Layout", function()
-					ScheduleUpdate(viewer)
+					add_todolist(viewer)
 				end)
 			end
 
@@ -252,10 +224,10 @@ local function init()
 			local children = { viewer:GetChildren() }
 			for _, child in ipairs(children) do
 				child:HookScript("OnShow", function()
-					ScheduleUpdate(viewer)
+					add_todolist(viewer)
 				end)
 				child:HookScript("OnHide", function()
-					ScheduleUpdate(viewer)
+					add_todolist(viewer)
 				end)
 			end
 		end

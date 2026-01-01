@@ -1,36 +1,34 @@
 # asBattleRes (Midnight)
 
-Displays the number of available charges and cooldown of the battle resurrection spell.
+Displays Combat Resurrection charges and cooldown.
 
 ![asBattleRes](https://github.com/aspilla/asMOD/blob/main/.Pictures/asbattleres.jpg?raw=true)
 
-## Main Features
+## Key Features
 
-*   **Battle Resurrection Spell Tracking**: Displays the icon, current available charges, and remaining cooldown time for the battle resurrection spell.
-*   **Contextual Auto Show/Hide**:
-    *   Always shown when in a party or raid.
-    *   Shown for position adjustment even when not in a group, if the frame is unlocked.
-    *   Automatically hidden when not in a group and the frame is locked.
+* **Combat Resurrection Tracking**: Displays the combat resurrection icon, the current number of available charges, and the remaining time if the spell is on cooldown.
+* **Contextual Auto Show/Hide**:
+    * Always displayed when in a party or raid.
+    * Displayed even when not in a group if the frame is unlocked for positioning.
+    * Automatically hidden when not in a group and the frame is locked.
 
 ## How to Use
 
-1.  **Changing Settings**:
-    *   `ESC` > `Settings` > `AddOns` > `asBattleRes`, to change options
-
-2.  **Changing Frame Position**:
-    *   In the settings menu, uncheck the 'LockWindow' option to allow movement. (The frame is locked by default).
-    *   If the `asMOD` addon is installed, you can also use the `/asconfig` command to unlock all `asMOD` frames at once for repositioning.
-    *   Click and drag the frame with the left mouse button to the desired position.
-    *   The position is saved automatically once you release the mouse button.
-
-3.  **Locking Frame Position**:
-    *   Check the 'LockWindow' option in the settings menu to lock the frame in place.
+1. **Configuration**:
+    * Settings can be adjusted via `ESC` > `Options` > `Addons` > `asBattleRes`.
+2. **Repositioning**:
+    * Ensure the 'LockWindow' option is unchecked in the settings menu (Default: Checked).
+    * Left-click and drag the frame to move it to your desired location.
+    * Releasing the mouse button will automatically save the position.
+    * If the `asMOD` addon is installed, you can also reposition the frame using the `/asconfig` command.
+3. **Locking the Frame**:
+    * Check the 'LockWindow' option in the settings menu.
 
 ---
 
 # asBattleRes (한밤)
 
-전투 부활 주문의 사용 가능 횟수와 재사용 대기시간을 화면에 표시해주는 기능을 제공
+전투 부활 횟수/대기시간 표시
 
 ![asBattleRes](https://github.com/aspilla/asMOD/blob/main/.Pictures/asbattleres.jpg?raw=true)
 

@@ -125,10 +125,10 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 | 애드온                   |설명                         |설명 Link | 
 | --------------------- |------------------------------------------------------------------- |------- |
-| asActiveAlert         |주문에 빤찍이는 테두리가 표시 될 경우, 해당 주문의 아이콘을 케릭 좌측 표시|<a href="https://www.curseforge.com/wow/addons/asactivealert" target="_blank" rel="nofollow">링크</a> |
-| asBattleRes           |전투 부활 주문의 사용 가능 횟수와 재사용 대기시간을 화면에 표시|<a href="https://www.curseforge.com/wow/addons/asbattleres" target="_blank" rel="nofollow">링크</a> |
+| asActiveAlert         |테두리 강조 주문 케릭 좌측 표시|<a href="https://www.curseforge.com/wow/addons/asactivealert" target="_blank" rel="nofollow">링크</a> |
+| asBattleRes           |전투 부활 횟수/대기시간 표시|<a href="https://www.curseforge.com/wow/addons/asbattleres" target="_blank" rel="nofollow">링크</a> |
 | asBuffFilter          |대상의 버프를 표시 |<a href="https://www.curseforge.com/wow/addons/asbufffilter" target="_blank" rel="nofollow">링크</a> |
-| asCastBar             |기본 플레이어 시전 바에 아이콘과 시전시간 표시|<a href="https://www.curseforge.com/wow/addons/ascastbar" target="_blank" rel="nofollow">링크</a> |
+| asCastBar             |시전 바에 아이콘과 시전시간 표시|<a href="https://www.curseforge.com/wow/addons/ascastbar" target="_blank" rel="nofollow">링크</a> |
 | asCombatInfo          |쿨다운 메니저 강화|<a href="https://www.curseforge.com/wow/addons/ascombatinfo" target="_blank" rel="nofollow">링크</a> | 
 | asCombatTimer         |전투 시작 후 경과 시간을 표시|<a href="https://www.curseforge.com/wow/addons/ascombattimer" target="_blank" rel="nofollow">링크</a> |
 | asCooldownPulse       |장신구, 종특, 생석, 물약 쿨 표시|<a href="https://www.curseforge.com/wow/addons/ascooldownpulse" target="_blank" rel="nofollow">링크</a> |
