@@ -1,76 +1,23 @@
--- 설정 (변경가능)
-local AHT_Font = STANDARD_TEXT_FONT;
-local AHT_HealthSize = 18;
-local AHT_ManaSize = 14;
-local AHT_PetHealthSize = 12;
-local AHT_PetManaSize = 10;
-local AHT_FontOutline = "THICKOUTLINE";
-local AHT_X = 150;
-local AHT_Y = -55;
-local AHT_COMBAT_OFF_SHOW = false; -- 비전투중에도 보이려면 true
-local AHT_RIGHT_COMBO = false;     -- 오른편에 Combo를 보이려면 true
--- 설정끝
-local AHT_POWER_LEVEL = nil;
-local AHT_MAX_INCOMING_HEAL_OVERFLOW = 1.2;
-local bupdate_heal = true;
-local bupdate_stagger = false;
-local bupdate_partial = false;
+local _, ns = ...;
 
-local AHT_mainframe = CreateFrame("Frame", nil, UIParent);
-local unit_player = "player"
-local unit_pet = "pet"
+local configs = {
+	font = STANDARD_TEXT_FONT,
+	healthsize = 18,
+	manasize = 14,
+	petsize = 12,
+	petmanasize = 10,
+	fontoutline = "THICKOUTLINE",
+	xpoint = 150,
+	ypoint = -55,
+	offcombatshow = false,
+};
 
-local AHT_PlayerHPT
-local AHT_PlayerMPT
-local AHT_TargetHPT
-local AHT_TargetMPT
-local AHT_PetHPT
-local AHT_PetMPT
-local AHT_Threat
-local AHT_ThreatPVP
-local AHT_Rune
-local AHT_Heal
-local AHT_RaidIcon
-local AHT_Power
-
-local function AHT_UpdateHeal()
-	if bupdate_heal == false then
-		return;
-	end
-
-	local allIncomingHeal = UnitGetIncomingHeals("player") or 0;
-	local totalAbsorb = UnitGetTotalAbsorbs("player") or 0;
-
-
-	--[[
-	local health = UnitHealth(unit_player);
-	local maxHealth = UnitHealthMax(unit_player);
-
-	if (health + allIncomingHeal > maxHealth * AHT_MAX_INCOMING_HEAL_OVERFLOW) then
-		allIncomingHeal = maxHealth * AHT_MAX_INCOMING_HEAL_OVERFLOW - health;
-	end
-
-	health = health + allIncomingHeal;
-
-	local valuePct = (math.ceil((health / maxHealth) * 100));
-	local valuePctAbsorb = (math.ceil((totalAbsorb / maxHealth) * 100));
-
-	if (allIncomingHeal > 0 and totalAbsorb > 0) then
-		AHT_Heal:SetText("|cffffffff" .. valuePct .. " |r |cffff3399" .. valuePctAbsorb);
-	elseif (allIncomingHeal > 0) then
-		AHT_Heal:SetText("|cffffffff" .. valuePct);
-	elseif (totalAbsorb > 0) then
-		AHT_Heal:SetText("|cffff3399" .. valuePctAbsorb);
-	end
-
-	if (allIncomingHeal > 0 or totalAbsorb > 0) then
-		AHT_Heal:Show();
-	else
-		AHT_Heal:Hide();
-	end
-
-	]]
-end
+local main_frame = CreateFrame("Frame", nil, UIParent);
+ns.unit_player = "player";
+ns.unit_pet = "pet";
+ns.powerlevel = nil;
+ns.bupdate_stagger = false;
+ns.bupdate_partial = false;
 
 local curve = C_CurveUtil.CreateCurve();
 curve:SetType(Enum.LuaCurveType.Linear);
@@ -110,12 +57,16 @@ end
 
 local function update_power(frame, unit)
 	if UnitExists(unit) then
-		local powerType = UnitPowerType(unit);
+		local powertype = UnitPowerType(unit);
 
-		local value     = UnitPower(unit, powerType, true);		
+		local value     = UnitPower(unit, powertype, true);
+		if powertype == 0 then
+			value = UnitPowerPercent("player", powertype, false, curve);
+		end
+
 		frame:SetText(string.format("%d", value));
 
-		local powerColor = PowerBarColor[powerType]
+		local powerColor = PowerBarColor[powertype]
 		if powerColor then
 			frame:SetTextColor(powerColor.r, powerColor.g, powerColor.b)
 		end
@@ -125,31 +76,31 @@ local function update_power(frame, unit)
 	end
 end
 
-local function AHT_Update(update_type)
+local function update_frame(update_type)
 	local frame;
 
 	if update_type == 1 then
-		frame = AHT_PlayerHPT;
-		update_health(frame, unit_player);
+		frame = ns.playerhealth;
+		update_health(frame, ns.unit_player);
 	elseif update_type == 2 then
-		frame = AHT_PlayerMPT;
-		update_power(frame, unit_player);
+		frame = ns.player_mana;
+		update_power(frame, ns.unit_player);
 	elseif update_type == 3 then
-		frame = AHT_TargetHPT;
+		frame = ns.target_health;
 		update_health(frame, "target");
 	elseif update_type == 4 then
-		frame = AHT_TargetMPT;
+		frame = ns.target_mana;
 		update_power(frame, "target");
 	elseif update_type == 5 then
-		frame = AHT_PetHPT;
-		update_health(frame, unit_pet);
+		frame = ns.pet_health;
+		update_health(frame, ns.unit_pet);
 	elseif update_type == 6 then
-		frame = AHT_PetMPT;
-		update_power(frame, unit_pet);
+		frame = ns.pet_mana;
+		update_power(frame, ns.unit_pet);
 	end
 end
 
-local function AHT_UpdateThreat()
+local function update_threat()
 	if not (UnitClassification("target") == "minus") then
 		local isTanking, status, percentage, rawPercentage = UnitDetailedThreatSituation("player", "target");
 
@@ -164,17 +115,17 @@ local function AHT_UpdateThreat()
 		end
 
 		if (display and display ~= 0) then
-			AHT_Threat:SetText(format("%1.0f", display) .. "%");
+			ns.threat_value:SetText(format("%1.0f", display) .. "%");
 			local r, g, b = GetThreatStatusColor(status)
-			AHT_Threat:SetTextColor(r, g, b, 1);
-			AHT_Threat:Show();
+			ns.threat_value:SetTextColor(r, g, b, 1);
+			ns.threat_value:Show();
 		else
-			AHT_Threat:Hide();
+			ns.threat_value:Hide();
 		end
 	end
 end
 
-local function AHT_UpdateRune()
+local function update_rune()
 	local runeReady;
 	local runeCount = 0;
 
@@ -185,46 +136,45 @@ local function AHT_UpdateRune()
 		end
 	end
 
-	AHT_Rune:SetText(runeCount);
+	ns.rune_power:SetText(runeCount);
 end
 
 
-local function AHT_UpdatePower()
-	if AHT_POWER_LEVEL then
-		
-		local power = UnitPower("player", AHT_POWER_LEVEL, bupdate_partial);
+local function update_combo()
+	if ns.powerlevel then
+		local power = UnitPower("player", ns.powerlevel, ns.bupdate_partial);
 		local showstr = string.format("%d", power);
-		
-		if bupdate_partial then            
-            local maxpartial = UnitPowerDisplayMod(AHT_POWER_LEVEL);			
-			showstr = string.format("%.1f", power/maxpartial);
-        end
 
-		AHT_Power:SetText(showstr);
-		AHT_Power:Show();
+		if ns.bupdate_partial then
+			local maxpartial = UnitPowerDisplayMod(ns.powerlevel);
+			showstr = string.format("%.1f", power / maxpartial);
+		end
+
+		ns.combo_power:SetText(showstr);
+		ns.combo_power:Show();
 		if max == power then
-			AHT_Power:SetTextColor(1, 0, 0)
+			ns.combo_power:SetTextColor(1, 0, 0)
 		else
-			AHT_Power:SetTextColor(1, 1, 0)
+			ns.combo_power:SetTextColor(1, 1, 0)
 		end
 	end
 end
 
-local function AHT_UpdateStagger()
-	if bupdate_stagger then
+local function update_stagger()
+	if ns.bupdate_stagger then
 		local stagger = math.ceil(UnitStagger("player") / UnitHealthMax("player") * 100);
 
 		if stagger > 0 then
-			AHT_Power:SetText(stagger);
-			AHT_Power:Show();
+			ns.combo_power:SetText(stagger);
+			ns.combo_power:Show();
 		else
-			AHT_Power:SetText("");
-			AHT_Power:Hide();
+			ns.combo_power:SetText("");
+			ns.combo_power:Hide();
 		end
 	end
 end
 
-local function AHT_UpdatePlayerUnit()
+local function check_playerunit()
 	local hasValidVehicleUI = UnitHasVehicleUI("player");
 	local unitVehicleToken;
 	if (hasValidVehicleUI) then
@@ -236,65 +186,53 @@ local function AHT_UpdatePlayerUnit()
 	end
 
 	if (hasValidVehicleUI) then
-		unit_player = unitVehicleToken
-		unit_pet = "player"
+		ns.unit_player = unitVehicleToken
+		ns.unit_pet = "player"
 	else
-		unit_player = "player"
-		unit_pet = "pet"
+		ns.unit_player = "player"
+		ns.unit_pet = "pet"
 	end
 end
 
-local function AHT_InitValue()
-	AHT_UpdatePlayerUnit()
-	AHT_Update(1)
-	AHT_Update(2)
-	AHT_Update(3)
-	AHT_Update(4)
-	AHT_Update(5)
-	AHT_Update(6)
-	AHT_UpdatePower()
+local function init_frames()
+	check_playerunit()
+	update_frame(1)
+	update_frame(2)
+	update_frame(3)
+	update_frame(4)
+	update_frame(5)
+	update_frame(6)
+	update_combo()
 end
 
-
-local function AHT_CheckHeal()
-	AHT_mainframe:RegisterUnitEvent("UNIT_HEAL_PREDICTION", "player");
-	AHT_mainframe:RegisterUnitEvent("UNIT_ABSORB_AMOUNT_CHANGED", "player");
-	AHT_mainframe:RegisterUnitEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", "player");
-
-
-	if (bupdate_heal == false) then
-		AHT_Heal:Hide();
-	end
-end
-
-local function AHT_CheckPower()
+local function init_powertype()
 	local localizedClass, englishClass = UnitClass("player")
 	local spec = C_SpecializationInfo.GetSpecialization();
 
-	AHT_mainframe:UnregisterEvent("UNIT_POWER_UPDATE")
-	AHT_mainframe:UnregisterEvent("UNIT_DISPLAYPOWER");
-	AHT_mainframe:UnregisterEvent("RUNE_POWER_UPDATE")
-	AHT_mainframe:UnregisterEvent("UNIT_AURA");
+	main_frame:UnregisterEvent("UNIT_POWER_UPDATE")
+	main_frame:UnregisterEvent("UNIT_DISPLAYPOWER");
+	main_frame:UnregisterEvent("RUNE_POWER_UPDATE")
+	main_frame:UnregisterEvent("UNIT_AURA");
 
-	bupdate_stagger = false;
-	bupdate_partial = false;
+	ns.bupdate_stagger = false;
+	ns.bupdate_partial = false;
 
-	AHT_Power:SetText("");
-	AHT_Power:Hide();
-	AHT_POWER_LEVEL = nil;
+	ns.combo_power:SetText("");
+	ns.combo_power:Hide();
+	ns.powerlevel = nil;
 
 	if (englishClass == "EVOKER") then
-		AHT_POWER_LEVEL = Enum.PowerType.Essence;
+		ns.powerlevel = Enum.PowerType.Essence;
 	end
 
 	if (englishClass == "DEATHKNIGHT") then
-		AHT_UpdateRune();
-		AHT_Rune:Show();
-		AHT_mainframe:RegisterEvent("RUNE_POWER_UPDATE");
+		update_rune();
+		ns.rune_power:Show();
+		main_frame:RegisterEvent("RUNE_POWER_UPDATE");
 	end
 
 	if (englishClass == "PALADIN") then
-		AHT_POWER_LEVEL = Enum.PowerType.HolyPower;
+		ns.powerlevel = Enum.PowerType.HolyPower;
 	end
 
 	if (englishClass == "WARRIOR") then
@@ -308,34 +246,34 @@ local function AHT_CheckPower()
 
 	if (englishClass == "MAGE") then
 		if (spec and spec == 1) then
-			AHT_POWER_LEVEL = Enum.PowerType.ArcaneCharges;
+			ns.powerlevel = Enum.PowerType.ArcaneCharges;
 		end
 	end
 
 
 	if (englishClass == "WARLOCK") then
-		AHT_POWER_LEVEL = Enum.PowerType.SoulShards;
+		ns.powerlevel = Enum.PowerType.SoulShards;
 		if (spec and spec == 3) then
-			bupdate_partial = true;
+			ns.bupdate_partial = true;
 		end
 	end
 
 	if (englishClass == "DRUID") then
-		AHT_POWER_LEVEL = Enum.PowerType.ComboPoints;
-		AHT_mainframe:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
+		ns.powerlevel = Enum.PowerType.ComboPoints;
+		main_frame:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
 	end
 
 	if (englishClass == "MONK") then
 		if (spec and spec == 3) then
-			AHT_POWER_LEVEL = Enum.PowerType.Chi;
+			ns.powerlevel = Enum.PowerType.Chi;
 		elseif (spec and spec == 1) then
-			bupdate_stagger = true;
-			AHT_mainframe:RegisterUnitEvent("UNIT_AURA", "player");
+			ns.bupdate_stagger = true;
+			main_frame:RegisterUnitEvent("UNIT_AURA", "player");
 		end
 	end
 
 	if (englishClass == "ROGUE") then
-		AHT_POWER_LEVEL = Enum.PowerType.ComboPoints;
+		ns.powerlevel = Enum.PowerType.ComboPoints;
 	end
 
 	if (englishClass == "SHAMAN") then
@@ -350,144 +288,116 @@ local function AHT_CheckPower()
 	end
 
 
-	if AHT_POWER_LEVEL then
-		AHT_mainframe:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
-		AHT_mainframe:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
+	if ns.powerlevel then
+		main_frame:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
+		main_frame:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 	end
 end
 
-local RaidIconList = {
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:",
-	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:",
-}
 
-local function AHT_DisplayRaidIcon(unit)
-	--[[
-	local icon = GetRaidTargetIndex(unit)
-	if icon and RaidIconList[icon] then
-		return RaidIconList[icon] .. "0|t"
+local function update_raidicon()
+	local raidicon = GetRaidTargetIndex("target");
+	if raidicon then
+		SetRaidTargetIconTexture(ns.raidicon, raidicon);
+		ns.raidicon:Show();
 	else
-		return ""
+		ns.raidicon:Hide();
 	end
-	]]
-end
-
-local function AHT_UpdateRaidIcon()
-	local text = AHT_DisplayRaidIcon("target");
-
-	AHT_RaidIcon:SetText(text);
 end
 
 
-local function AHT_OnUpdate()
-	AHT_Update(1)
-	AHT_Update(2)
-	AHT_Update(3)
-	AHT_Update(4)
-	AHT_Update(5)
-	AHT_Update(6)
-	AHT_UpdateThreat();
+local function on_update()
+	update_frame(1)
+	update_frame(2)
+	update_frame(3)
+	update_frame(4)
+	update_frame(5)
+	update_frame(6)
+	update_threat();
 end
 
 
-local function AHT_OnLoad()
-	AHT_PlayerHPT = AHT_mainframe:CreateFontString(nil, "OVERLAY");
-	AHT_PlayerMPT = AHT_mainframe:CreateFontString(nil, "OVERLAY");
-	AHT_TargetHPT = AHT_mainframe:CreateFontString(nil, "OVERLAY");
-	AHT_TargetMPT = AHT_mainframe:CreateFontString(nil, "OVERLAY");
-	AHT_PetHPT = AHT_mainframe:CreateFontString(nil, "OVERLAY");
-	AHT_PetMPT = AHT_mainframe:CreateFontString(nil, "OVERLAY");
-	AHT_Threat = AHT_mainframe:CreateFontString(nil, "OVERLAY");
-	AHT_ThreatPVP = AHT_mainframe:CreateFontString(nil, "OVERLAY");
-	AHT_Rune = AHT_mainframe:CreateFontString(nil, "OVERLAY");
-	AHT_Heal = AHT_mainframe:CreateFontString(nil, "OVERLAY");
-	AHT_RaidIcon = AHT_mainframe:CreateFontString(nil, "OVERLAY");
-	AHT_Power = AHT_mainframe:CreateFontString(nil, "OVERLAY");
+local function on_load()
+	ns.playerhealth = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.player_mana = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.target_health = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.target_mana = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.pet_health = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.pet_mana = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.threat_value = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.targettarget = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.rune_power = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.raidicon = main_frame:CreateTexture(nil, "ARTWORK");
+	ns.combo_power = main_frame:CreateFontString(nil, "OVERLAY");
+
+	ns.playerhealth:SetFont(configs.font, configs.healthsize, configs.fontoutline)
+	ns.player_mana:SetFont(configs.font, configs.manasize, configs.fontoutline)
+	ns.target_health:SetFont(configs.font, configs.healthsize, configs.fontoutline)
+	ns.target_mana:SetFont(configs.font, configs.manasize, configs.fontoutline)
+	ns.pet_health:SetFont(configs.font, configs.petsize, configs.fontoutline)
+	ns.pet_mana:SetFont(configs.font, configs.petmanasize, configs.fontoutline)
+	ns.threat_value:SetFont(configs.font, configs.manasize, configs.fontoutline)
+	ns.targettarget:SetFont(configs.font, configs.manasize, configs.fontoutline)
+	ns.rune_power:SetFont(configs.font, configs.healthsize, configs.fontoutline)
+	ns.raidicon:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
+	ns.raidicon:SetSize(configs.healthsize, configs.healthsize);
+	ns.combo_power:SetFont(configs.font, configs.healthsize, configs.fontoutline)
+
+	ns.playerhealth:SetPoint("CENTER", UIParent, "CENTER", 0 - configs.xpoint, configs.ypoint)
+	ns.player_mana:SetPoint("TOP", ns.playerhealth, "BOTTOM", 0, -2)
+	ns.target_health:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
+	ns.target_mana:SetPoint("TOP", ns.target_health, "BOTTOM", 0, -2)
+	ns.targettarget:SetPoint("BOTTOM", ns.target_health, "TOP", 0, 2)
+	ns.threat_value:SetPoint("BOTTOM", ns.targettarget, "TOP", 0, 2)
+
+	ns.rune_power:SetPoint("RIGHT", ns.playerhealth, "LEFT", -2, 0)
+	ns.combo_power:SetPoint("RIGHT", ns.rune_power, "LEFT", 0, 0)
+	ns.raidicon:SetPoint("LEFT", ns.target_health, "RIGHT", 2, 0)
+	ns.pet_health:SetPoint("RIGHT", ns.combo_power, "LEFT", -2, 0)
+	ns.pet_mana:SetPoint("TOP", ns.pet_health, "BOTTOM", 0, -2)
 
 
-	AHT_PlayerHPT:SetFont(AHT_Font, AHT_HealthSize, AHT_FontOutline)
-	AHT_PlayerMPT:SetFont(AHT_Font, AHT_ManaSize, AHT_FontOutline)
-	AHT_TargetHPT:SetFont(AHT_Font, AHT_HealthSize, AHT_FontOutline)
-	AHT_TargetMPT:SetFont(AHT_Font, AHT_ManaSize, AHT_FontOutline)
-	AHT_PetHPT:SetFont(AHT_Font, AHT_PetHealthSize, AHT_FontOutline)
-	AHT_PetMPT:SetFont(AHT_Font, AHT_PetManaSize, AHT_FontOutline)
-	AHT_Threat:SetFont(AHT_Font, AHT_ManaSize, AHT_FontOutline)
-	AHT_ThreatPVP:SetFont(AHT_Font, AHT_ManaSize, AHT_FontOutline)
-	AHT_Rune:SetFont(AHT_Font, AHT_HealthSize, AHT_FontOutline)
-	AHT_Heal:SetFont(AHT_Font, AHT_ManaSize, AHT_FontOutline)
-	AHT_RaidIcon:SetFont(AHT_Font, AHT_HealthSize, AHT_FontOutline)
-	AHT_Power:SetFont(AHT_Font, AHT_HealthSize, AHT_FontOutline)
-
-	AHT_PlayerHPT:SetPoint("CENTER", UIParent, "CENTER", 0 - AHT_X, AHT_Y)
-	AHT_PlayerMPT:SetPoint("TOP", AHT_PlayerHPT, "BOTTOM", 0, -2)
-	AHT_TargetHPT:SetPoint("CENTER", UIParent, "CENTER", AHT_X, AHT_Y)
-	AHT_TargetMPT:SetPoint("TOP", AHT_TargetHPT, "BOTTOM", 0, -2)
-	AHT_ThreatPVP:SetPoint("BOTTOM", AHT_TargetHPT, "TOP", 0, 2)
-	AHT_Threat:SetPoint("BOTTOM", AHT_ThreatPVP, "TOP", 0, 2)
-	AHT_Heal:SetPoint("BOTTOM", AHT_PlayerHPT, "TOP", 0, 2)
-
-	if AHT_RIGHT_COMBO then
-		AHT_Rune:SetPoint("LEFT", AHT_TargetHPT, "RIGHT", 2, 0)
-		AHT_Power:SetPoint("LEFT", AHT_Rune, "RIGHT", 0, 0)
-		AHT_RaidIcon:SetPoint("LEFT", AHT_Power, "RIGHT", 2, 0)
-		AHT_PetHPT:SetPoint("RIGHT", AHT_PlayerHPT, "LEFT", -4, 0)
-		AHT_PetMPT:SetPoint("TOP", AHT_PetHPT, "BOTTOM", 0, -2)
-	else
-		AHT_Rune:SetPoint("RIGHT", AHT_PlayerHPT, "LEFT", -2, 0)
-		AHT_Power:SetPoint("RIGHT", AHT_Rune, "LEFT", 0, 0)
-		AHT_RaidIcon:SetPoint("LEFT", AHT_TargetHPT, "RIGHT", 2, 0)
-		AHT_PetHPT:SetPoint("RIGHT", AHT_Power, "LEFT", -2, 0)
-		AHT_PetMPT:SetPoint("TOP", AHT_PetHPT, "BOTTOM", 0, -2)
-	end
-
-	AHT_Power:SetTextColor(1, 1, 0, 1)
+	ns.combo_power:SetTextColor(1, 1, 0, 1)
 
 
-	AHT_CheckPower();
+	init_powertype();
 
-	AHT_mainframe:RegisterEvent("PLAYER_ENTERING_WORLD")
-	AHT_mainframe:RegisterEvent("PLAYER_TARGET_CHANGED")
-	AHT_mainframe:RegisterEvent("PLAYER_REGEN_DISABLED")
-	AHT_mainframe:RegisterEvent("PLAYER_REGEN_ENABLED")
-	AHT_mainframe:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
-	AHT_mainframe:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
-	AHT_mainframe:RegisterEvent("VARIABLES_LOADED")
-	AHT_mainframe:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-	AHT_mainframe:RegisterEvent("PLAYER_TALENT_UPDATE")
-	AHT_mainframe:RegisterUnitEvent("UNIT_TARGET", "target")
-	AHT_mainframe:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", "player", "target");
-	AHT_mainframe:RegisterEvent("RAID_TARGET_UPDATE");
+	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
+	main_frame:RegisterEvent("PLAYER_REGEN_DISABLED")
+	main_frame:RegisterEvent("PLAYER_REGEN_ENABLED")
+	main_frame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+	main_frame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
+	main_frame:RegisterEvent("VARIABLES_LOADED")
+	main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+	main_frame:RegisterEvent("PLAYER_TALENT_UPDATE")
+	main_frame:RegisterUnitEvent("UNIT_TARGET", "target")
+	main_frame:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", "player", "target");
+	main_frame:RegisterEvent("RAID_TARGET_UPDATE");
 end
 
 
-function AHT_OnEvent(self, event, arg1, arg2, arg3, ...)
+local function on_event(self, event, arg1, arg2, arg3, ...)
 	if event == "PLAYER_ENTERING_WORLD" or event == "VARIABLES_LOADED" then
-		AHT_InitValue();
+		init_frames();
 		if event == "PLAYER_ENTERING_WORLD" then
-			AHT_CheckHeal();
-			AHT_CheckPower();
+			init_powertype();
 		end
 
 		if UnitIsConnected("target") then
 			--do nothing
 		else
-			AHT_TargetHPT:SetText("");
-			AHT_TargetMPT:SetText("");
+			ns.target_health:SetText("");
+			ns.target_mana:SetText("");
 		end
 
 		if UnitAffectingCombat("player") then
-			AHT_mainframe:Show();
+			main_frame:Show();
 		else
-			if AHT_COMBAT_OFF_SHOW then
-				AHT_mainframe:Show();
+			if configs.offcombatshow then
+				main_frame:Show();
 			else
-				AHT_mainframe:Hide();
+				main_frame:Hide();
 			end
 		end
 	elseif event == "PLAYER_TARGET_CHANGED" then
@@ -506,30 +416,27 @@ function AHT_OnEvent(self, event, arg1, arg2, arg3, ...)
 				end
 
 				if color then
-					AHT_ThreatPVP:SetTextColor(color.r, color.g, color.b, 1);
+					ns.targettarget:SetTextColor(color.r, color.g, color.b, 1);
 				end
 
-				AHT_ThreatPVP:SetText(UnitName("targettarget"));
-				AHT_ThreatPVP:Show();
+				ns.targettarget:SetText(UnitName("targettarget"));
+				ns.targettarget:Show();
 			else
-				AHT_ThreatPVP:SetText("");
-				AHT_ThreatPVP:Hide();
+				ns.targettarget:SetText("");
+				ns.targettarget:Hide();
 			end
-			--else
-			--	AHT_ThreatPVP:Hide();
-			--end
-			AHT_InitValue();
+			init_frames();
 		else
-			AHT_ThreatPVP:SetText("");
-			AHT_ThreatPVP:Hide();
+			ns.targettarget:SetText("");
+			ns.targettarget:Hide();
 
-			AHT_TargetHPT:SetText("");
-			AHT_TargetMPT:SetText("");
+			ns.target_health:SetText("");
+			ns.target_mana:SetText("");
 		end
 
-		AHT_UpdateThreat();
+		update_threat();
 
-		AHT_UpdateRaidIcon();
+		update_raidicon();
 	elseif event == "UNIT_TARGET" and arg1 == "target" then
 		if UnitIsPlayer("targettarget") then
 			local _, class = UnitClass("targettarget");
@@ -540,57 +447,50 @@ function AHT_OnEvent(self, event, arg1, arg2, arg3, ...)
 			end
 
 			if color then
-				AHT_ThreatPVP:SetTextColor(color.r, color.g, color.b, 1);
+				ns.targettarget:SetTextColor(color.r, color.g, color.b, 1);
 			end
 
-			AHT_ThreatPVP:SetText(UnitName("targettarget"));
-			AHT_ThreatPVP:Show();
+			ns.targettarget:SetText(UnitName("targettarget"));
+			ns.targettarget:Show();
 		else
-			AHT_ThreatPVP:SetText("");
-			AHT_ThreatPVP:Hide();
+			ns.targettarget:SetText("");
+			ns.targettarget:Hide();
 		end
 	elseif event == "UNIT_ENTERED_VEHICLE" and arg1 == "player" then
-		AHT_InitValue();
+		init_frames();
 	elseif event == "UNIT_EXITED_VEHICLE" and arg1 == "player" then
-		AHT_InitValue();
+		init_frames();
 	elseif event == "PLAYER_REGEN_DISABLED" then
-		AHT_mainframe:Show();
+		main_frame:Show();
 	elseif event == "PLAYER_REGEN_ENABLED" then
-		if AHT_COMBAT_OFF_SHOW then
-			AHT_mainframe:Show();
+		if configs.offcombatshow then
+			main_frame:Show();
 		else
-			AHT_mainframe:Hide();
+			main_frame:Hide();
 		end
 	elseif event == "RUNE_POWER_UPDATE" then
-		AHT_UpdateRune();
+		update_rune();
 	elseif event == "UNIT_POWER_UPDATE" and arg1 == "player" then
-		AHT_UpdatePower();
+		update_combo();
 	elseif event == "UNIT_AURA" and arg1 == "player" then
-		AHT_UpdateStagger();
+		update_stagger();
 	elseif event == "UNIT_DISPLAYPOWER" and arg1 == "player" then
-		AHT_UpdatePower();
-	elseif event == "UNIT_HEAL_PREDICTION" and arg1 == "player" then
-		AHT_UpdateHeal();
-	elseif event == "UNIT_ABSORB_AMOUNT_CHANGED" and arg1 == "player" then
-		AHT_UpdateHeal();
-	elseif event == "UNIT_HEAL_ABSORB_AMOUNT_CHANGED" and arg1 == "player" then
-		AHT_UpdateHeal();
+		update_combo();
 	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "PLAYER_TALENT_UPDATE" then
-		AHT_CheckPower();
-		AHT_UpdatePower();
-		AHT_CheckHeal();
-		AHT_InitValue();
+		init_powertype();
+		update_combo();
+		init_frames();
 	elseif event == "UPDATE_SHAPESHIFT_FORM" then
-		AHT_UpdatePower();
+		update_combo();
 	elseif event == "RAID_TARGET_UPDATE" then
-		AHT_UpdateRaidIcon();
+		update_raidicon();
 	elseif (event == "UNIT_THREAT_SITUATION_UPDATE") then
-		AHT_UpdateThreat();
+		update_threat();
 	end
 
 	return;
 end
 
-AHT_mainframe:SetScript("OnEvent", AHT_OnEvent)
-C_Timer.NewTicker(0.1, AHT_OnUpdate);
-AHT_OnLoad()
+main_frame:SetScript("OnEvent", on_event)
+C_Timer.NewTicker(0.1, on_update);
+on_load()

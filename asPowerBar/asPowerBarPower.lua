@@ -5,6 +5,11 @@ local gvalue = {
     powertype = nil,
 };
 
+local curve = C_CurveUtil.CreateCurve();
+curve:SetType(Enum.LuaCurveType.Linear);
+curve:AddPoint(0, 0);
+curve:AddPoint(1, 100);
+
 local function get_spellcost(powerType)
     local cost = 0;
     local spellID = select(9, UnitCastingInfo("player"));
@@ -32,33 +37,34 @@ local function update_powercost(bar, amount)
 end
 
 local function update_power()
-    local powerType, powerTypeString = UnitPowerType("player");
+    local powertype, powerstring = UnitPowerType("player");
 
-    if powerType ~= gvalue.powertype then
-        if powerTypeString then
-            local info = PowerBarColor[powerTypeString];
+    if powertype ~= gvalue.powertype then
+        if powerstring then
+            local info = PowerBarColor[powerstring];
             ns.bar:SetStatusBarColor(info.r, info.g, info.b);
-        end
-
-        if powerType == 0 then
-            ns.bar.text:Hide();
-        else
-            ns.bar.text:Show();
         end
     end
 
-    local value = UnitPower("player", powerType);
-    local valueMax = UnitPowerMax("player", powerType);
+    local value = UnitPower("player", powertype);
+    local valueMax = UnitPowerMax("player", powertype);
+
 
     if not issecretvalue(valueMax) and gvalue.maxpower ~= valueMax then
         gvalue.maxpower = valueMax;
     end
 
-    local cost = get_spellcost(powerType);
+    local cost = get_spellcost(powertype);
 
     ns.bar:SetMinMaxValues(0, valueMax)
     ns.bar:SetValue(value, Enum.StatusBarInterpolation.ExponentialEaseOut);
-    ns.bar.text:SetText(tostring(value));
+
+    if powertype > 0 then
+        ns.bar.text:SetText(tostring(value));
+    else
+        local valueper = UnitPowerPercent("player", powertype, false, curve);
+        ns.bar.text:SetText(string.format("%d", valueper));
+    end
 
     update_powercost(ns.bar.predictbar, cost);
 end
@@ -70,7 +76,8 @@ function ns.setup_power()
         timer:Cancel();
     end
 
-    ns.bar:Show();    
+    ns.bar:Show();
+    ns.bar.text:Show();
 
     timer = C_Timer.NewTicker(0.1, update_power);
 end

@@ -1,6 +1,6 @@
 local _, ns = ...;
 
-local function DisplayRaidIcon(unit, markframe)
+local function show_raidicon(unit, markframe)
 	local raidicon = GetRaidTargetIndex(unit);
 	if raidicon then
 		SetRaidTargetIconTexture(markframe, raidicon);
@@ -14,7 +14,7 @@ local function update_raidicon(asframe)
 	if asframe.needtosetup then
 		ns.setup_frame(asframe);
 	end
-	DisplayRaidIcon(asframe.displayedUnit, asframe.raidicon);
+	show_raidicon(asframe.displayedUnit, asframe.raidicon);
 end
 
 local function update_power(asframe)
