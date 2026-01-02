@@ -1,6 +1,7 @@
 # asFixHotkey (Midnight)
 
-Abbreviates hotkey text displayed on action bars and hides macro names on buttons.
+Abbreviates action bars' hotkey text
+
 ![asFixHotkey](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixHotKey.png?raw=true)
 
 ## Key Features
@@ -26,7 +27,8 @@ No configuration options.
 
 # asFixHotkey (Midnight)
 
-액션바에 표시되는 단축키 텍스트를 축약, 버튼의 매크로 이름 숨김
+액션바 단축키 텍스트를 축약
+
 ![asFixHotkey](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixHotKey.png?raw=true)
 
 ## 주요 기능

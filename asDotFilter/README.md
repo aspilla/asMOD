@@ -1,6 +1,6 @@
 # asDotFilter (Midnight)
 
-Displays debuffs cast by the player on boss frames and focus frames.
+Debuff tracker for boss and focus
 
 ![asDotFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDotFilter.jpg?raw=true)
 
@@ -18,7 +18,7 @@ No settings available.
 
 # asDotFilter (한밤)
 
-보스 프레임, 주시 프레임에 플레이어가 시전한 디버프를 표시
+보스/주시 디버프를 추적
 
 ![asDotFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDotFilter.jpg?raw=true)
 

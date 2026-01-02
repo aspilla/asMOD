@@ -1,36 +1,33 @@
 # asPremadeGroupsFilter (Midnight)
 
-Displays additional information in the Mythic+/Raid search window, such as specialization, party leader, and the leader's Mythic+ score.
+Enhancements for Mythic+ and Raid Finder.
 
-
-## Mythic Keystone Dungeons
+## Mythic+ Dungeons  
 ![asPremadeGroupsFilter_Party](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPremadeGroupsFilter_party.jpg?raw=true)
 
-*   Displays specialization icons for each member of the group.
-*   Displays a small color bar indicating each member's class.
-*   Optionally displays specialization icon/class color bar for tanks (`ShowTankerSpec` option, default: false).
-*   Optionally displays specialization icon/class color bar for healers (`ShowHealerSpec` option, default: false).
-*   Indicates the group leader with a crown icon.
-*   Displays the party leader's Mythic Keystone score (`ShowLeaderScore` option, default: true)
+* Displays specialization icons for each group member.
+* Displays small color bars representing the class of each member.
+* Optionally displays specialization icons/class color bars for tanks (`ShowTankerSpec` option, default: false).
+* Optionally displays specialization icons/class color bars for healers (`ShowHealerSpec` option, default: false).
+* Highlights the group leader with a crown icon.
+* Displays the group leader's Mythic+ score (`ShowLeaderScore` option, default: true).
 
-## Raids
+## Raid 
 ![asPremadeGroupsFilter_raid](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPremadeGroupsFilter_Raid.jpg?raw=true)
 
-*   Displays the number of each class within each role (Tank, Healer, DPS) in the group.
-*   Displays the party leader's role icon and role (T/D/H) in their class color.
+* Displays the count of each class within each role (Tank, Healer, Damage) in the group.
+* Displays the party leader's role icon and role (T/D/H) in their class color.
 
-## Settings
+## Configuration
 
-*   Adjustable in `ESC` > `Settings` > `AddOns` > asPremadeGroupsFilter.
-* `ShowHealerSpec`: If checked, displays the healer's specialization icon/bar in the Mythic Keystone list. (default: false)
-* `ShowTankerSpec`: If checked, displays the tanker's specialization icon/bar in the Mythic Keystone list. (default: false)
-* `ShowLeaderScore`: If checked, displays the group leader's Mythic Keystone score in the Mythic Keystone list. (default: true)
+* Adjustments can be made via `ESC` > `Options` > `Addons` > `asPremadeGroupsFilter`.
+* `ShowHealerSpec`: If enabled, displays the healer's specialization icon/bar in the Mythic+ list. (Default: false)
 
 ---
 
 # asPremadeGroupsFilter (한밤)
 
-쐐기돌/공격대 검색 창에 전문화/파티장/파티장의 쐐기 점수 등 추가 정보 표시 
+쐐기돌/공격대 검색 창 강화
 
 ## 신화 쐐기돌 던전  
 ![asPremadeGroupsFilter_Party](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPremadeGroupsFilter_party.jpg?raw=true)

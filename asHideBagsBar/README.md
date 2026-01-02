@@ -1,6 +1,7 @@
 # asHideBagsBar (Midnight)
 
-Automatically hides the menu bar (Character, Spellbook, Talents, etc.), bag bar (Backpack and other bags) in the bottom right, and the Raid/Party Manager on the left. They reappear when the mouse cursor is moved near their original positions.
+Automatically hides the botton right menu bar.
+
 ![asHideBagsBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asHideBagsBar.gif?raw=true)
 
 ## Key Features
@@ -18,7 +19,8 @@ No configuration options.
 
 # asHideBagsBar (한밤)
 
-우측 하단의 메뉴 바(캐릭터, 주문책, 특성 등), 가방 바(배낭 및 기타 가방), 좌측의 공격대/파티 관리자를 자동으로 숨김, 마우스 커서를 원래 위치 근처로 이동하면 다시 나타남
+우측 하단의 메뉴 자동 숨김
+
 ![asHideBagsBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asHideBagsBar.gif?raw=true)
 
 ## 주요 기능

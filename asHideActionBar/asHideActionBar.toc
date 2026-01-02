@@ -1,8 +1,8 @@
 ## Interface: 110207, 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rHideActionBar
-## Notes: Automatically hides action bars, which are not able to hide. Those are visible when you move mouse cursor near their original position.
-## Notes-koKR:숨길 수 없는 액션 바를 자동으로 숨김, 마우스 커서를 원래 위치 근처로 이동하면 다시 나타남.
+## Notes: Automatically hides 1st action bar
+## Notes-koKR: 1번 액션 바를 자동 숨김
 ## Version : 251129
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

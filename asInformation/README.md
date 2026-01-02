@@ -1,6 +1,6 @@
 # asInformation (Midnight)
 
-Displays primary stats (Strength, Agility, or Intelligence based on class) and secondary stats (Haste, Critical Strike, Mastery, Versatility), highlighting them when they increase.
+Displays primary/secondary stats increase.
 
 ![asInformation](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInformation.jpg?raw=true)
 
@@ -29,7 +29,7 @@ Displays primary stats (Strength, Agility, or Intelligence based on class) and s
 
 # asInformation (한밤)
 
-1차 능력치(직업별 힘, 민첩, 또는 지능), 2차 능력치 (가속, 치명타, 특화, 유연성) 표시 및 증가 시 강조
+1차/2차 능력치 증가량 표시
 
 ![asInformation](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInformation.jpg?raw=true)   
 

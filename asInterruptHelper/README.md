@@ -1,6 +1,6 @@
 # asInterruptHelper (Midnight)
 
-Tracks and displays the cooldown of your interrupt or stun spells when your Focus, Mouseover, or Current Target starts casting.
+Interrupt/Stun Cooldown Tracker
 
 ### Target / Focus View
 ![asInterruptHelper(Target/Focus)](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInterruptHelper_target.jpg?raw=true)
@@ -34,7 +34,7 @@ You can modify the following settings via `ESC` > `Options` > `Addons` > `asInte
 
 # asInterruptHelper (한밤)
 
-주시 대상, 마우스오버 대상 또는 현재 대상이 주문 시전시 차단 또는 기절 주문의 쿨을 표시
+차단/스턴 스킬 쿨다운 표시
 
 주시/대상의 경우
 ![asInterruptHelper(Target/Focus)](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInterruptHelper_target.jpg?raw=true)   

@@ -1,8 +1,8 @@
 ﻿## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rTrueGCD
-## Notes: Displays a record of recently used spells and items.
-## Notes-koKR:최근 사용한 주문 및 아이템 사용 기록 표시
+## Notes: Displays records of recent spells/items usages.
+## Notes-koKR:최근 주문/아이템 기록 표시
 ## Version : 251220
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

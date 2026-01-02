@@ -12,16 +12,16 @@ asMOD is a collection of custom-made World of Warcraft addons.
 * **Support for All Classes and Specializations**
 * **Retail (Midnight) Support**
 
-## Changes for Midnight
-* **Combat API Secret Transition:** Tracking buffs/debuffs and other calculations have been restricted. Consequently, many asMOD combat-related addons have been modified or had features reduced.
+## Changes Starting from Midnight
+* **Combat API Secret Transition:** Due to the transition to a "Secret" Combat API, tracking for buffs/debuffs and other calculations has been restricted. Consequently, many asMOD combat-related addons have been modified or had features reduced.
 * **Blizzard Announcement:** https://warcraft.wiki.gg/wiki/Patch_12.0.0/Planned_API_changes
 
 ## Important Notes (Regarding asUnitFrame)
 
 The following errors may occur:
 
-1. **Focus Target Setting Error:** Setting a focus target via the right-click menu on a frame may cause an error. It is recommended to use a `/focus` macro or a keybinding.
-2. **Raid Marker Setting Error:** Setting raid markers via the right-click menu on a frame may cause an error.
+1. **Focus Target Setting Error:** Setting a focus target via the right-click menu on a frame will cause an error. It is recommended to use a `/focus` macro or a keybinding.
+2. **Raid Marker Setting Error:** Setting raid markers via the right-click menu on a frame will cause an error.
 3. **Edit Mode Error:** Errors may occur when using Edit Mode, making it impossible to change settings. Please perform Edit Mode adjustments while asUnitFrame is disabled.
 
 ## Installation
@@ -42,10 +42,10 @@ The following errors may occur:
 
 | Addon | Description | Link |
 | --------------------- |------------------------------------------------------------------- |------- |
-| asActiveAlert | Displays the icon of a spell on the left of the character when it has a glowing border | [Link](https://www.curseforge.com/wow/addons/asactivealert) |
-| asBattleRes | Displays available charges and cooldown of combat resurrection spells | [Link](https://www.curseforge.com/wow/addons/asbattleres) |
+| asActiveAlert | Displays highlighted spells on the left side of the character | [Link](https://www.curseforge.com/wow/addons/asactivealert) |
+| asBattleRes | Displays Combat Resurrection charges and cooldown | [Link](https://www.curseforge.com/wow/addons/asbattleres) |
 | asBuffFilter | Displays target's buffs | [Link](https://www.curseforge.com/wow/addons/asbufffilter) |
-| asCastBar | Displays icon and cast time on the default player cast bar | [Link](https://www.curseforge.com/wow/addons/ascastbar) |
+| asCastBar | Displays icon and cast time on the cast bar | [Link](https://www.curseforge.com/wow/addons/ascastbar) |
 | asCombatInfo | Enhances Cooldown Manager | [Link](https://www.curseforge.com/wow/addons/ascombatinfo) |
 | asCombatTimer | Displays elapsed time since the start of combat | [Link](https://www.curseforge.com/wow/addons/ascombattimer) |
 | asCooldownPulse | Displays cooldowns for trinkets, racial traits, healthstones, and potions | [Link](https://www.curseforge.com/wow/addons/ascooldownpulse) |
@@ -53,28 +53,28 @@ The following errors may occur:
 | asCPUProfile | Check addon latency performance (/asCPU) | [Link](https://www.curseforge.com/wow/addons/ascpuprofile) |
 | asDBMTimer | Enhances Boss Timeline | [Link](https://www.curseforge.com/wow/addons/asdbmtimer) |
 | asDebuffFilter | Displays player and target debuffs | [Link](https://www.curseforge.com/wow/addons/asdebufffilter) |
-| asDotFilter | Displays player-cast debuffs on Boss and Focus frames | [Link](https://www.curseforge.com/wow/addons/asdotfilter) |
-| asFixChat | Switch chat channels with Tab key; copyable URL window | [Link](https://www.curseforge.com/wow/addons/asfixchat) |
-| asFixHotkey | Abbreviates hotkey text and hides macro names on buttons | [Link](https://www.curseforge.com/wow/addons/asfixhotkey) |
-| asFixUnitFrame | Enhances default Blizzard unit frames (Player, Target, ToT) | [Link](https://www.curseforge.com/wow/addons/asfixunitframe) |
+| asDotFilter | Tracks debuffs on Boss and Focus frames | [Link](https://www.curseforge.com/wow/addons/asdotfilter) |
+| asFixChat | `Tab` to switch chat channels; supports `URL Copy` | [Link](https://www.curseforge.com/wow/addons/asfixchat) |
+| asFixHotkey | Abbreviates hotkey text on action bars | [Link](https://www.curseforge.com/wow/addons/asfixhotkey) |
+| asFixUnitFrame | Hides certain default Blizzard unit frame features | [Link](https://www.curseforge.com/wow/addons/asfixunitframe) |
 | asGCDBar | Global Cooldown (GCD) display bar | [Link](https://www.curseforge.com/wow/addons/asgcdbar) |
 | asGearScoreLite | Displays item level in Character and Inspect windows | [Link](https://www.curseforge.com/wow/addons/asgearscorelite) |
-| asHealthText | Displays HP/Resource %, threat, incoming heals, and class resources | [Link](https://www.curseforge.com/wow/addons/ashealthtext) |
-| asHideActionBar | Automatically hides certain action bars; reappears on mouseover | [Link](https://www.curseforge.com/wow/addons/ashideactionbar) |
-| asHideBagsBar | Automatically hides menu, bag, and raid manager bars; reappears on mouseover | [Link](https://www.curseforge.com/wow/addons/ashidebagsbar) |
+| asHealthText | Text-based HUD | [Link](https://www.curseforge.com/wow/addons/ashealthtext) |
+| asHideActionBar | Automatically hides Action Bar 1 | [Link](https://www.curseforge.com/wow/addons/ashideactionbar) |
+| asHideBagsBar | Automatically hides the bottom-right menu | [Link](https://www.curseforge.com/wow/addons/ashidebagsbar) |
 | asHideNameplates | Hides nameplates of mobs except those currently casting | [Link](https://www.curseforge.com/wow/addons/ashidenameplates) |
-| asInformation | Displays primary/secondary stats and highlights increases | [Link](https://www.curseforge.com/wow/addons/asinformation) |
-| asInterruptHelper | Displays interrupt/stun cooldowns for Focus, Mouseover, or Target | [Link](https://www.curseforge.com/wow/addons/asinterrupthelper) |
-| asMisdirection | Auto-generates macros for Misdirection, Tricks, etc., for appropriate party members | [Link](https://www.curseforge.com/wow/addons/asmisdirection) |
-| asMOD | Optimizes WoW settings and Edit Mode for asMOD addons | [Link](https://www.curseforge.com/wow/addons/asmod) |
+| asInformation | Displays primary/secondary stat increases | [Link](https://www.curseforge.com/wow/addons/asinformation) |
+| asInterruptHelper | Displays interrupt/stun skill cooldowns | [Link](https://www.curseforge.com/wow/addons/asinterrupthelper) |
+| asMisdirection | Automatic macro for Misdirection and Tricks of the Trade | [Link](https://www.curseforge.com/wow/addons/asmisdirection) |
+| asMOD | Configuration for the asMOD collection | [Link](https://www.curseforge.com/wow/addons/asmod) |
 | asNamePlates | Nameplate enhancement addon | [Link](https://www.curseforge.com/wow/addons/asnameplates) |
 | asPowerBar | Displays primary and class resources | [Link](https://www.curseforge.com/wow/addons/aspowerbar) |
-| asPremadeGroupsFilter | Group finder class colors, spec icons, and leader score display | [Link](https://www.curseforge.com/wow/addons/aspremadegroupsfilter) |
+| asPremadeGroupsFilter | Enhancements for Mythic+ and Raid Finder windows | [Link](https://www.curseforge.com/wow/addons/aspremadegroupsfilter) |
 | asRangeDisplay | Displays distance to Target, Focus, or Mouseover | [Link](https://www.curseforge.com/wow/addons/asrangedisplay) |
-| asScavenger | Automatically sells "Poor" quality (grey) items when visiting a merchant | [Link](https://github.com/aspilla/asMOD/blob/main/asScavenger/README.md) |
+| asScavenger | Automatically sells junk items | [Link](https://github.com/aspilla/asMOD/blob/main/asScavenger/README.md) |
 | asSkyRide | Displays Skyriding resources, speed, and cooldowns | [Link](https://www.curseforge.com/wow/addons/asskyride) |
 | asSpamFilter | Relocates default UI error message display | [Link](https://www.curseforge.com/wow/addons/asspamfilter) |
-| asTargetCastBar | Displays cast bars for current Target and Focus | [Link](https://www.curseforge.com/wow/addons/astargetcastingbar) |
+| asTargetCastBar | Cast bar for Target and Focus targets | [Link](https://www.curseforge.com/wow/addons/astargetcastingbar) |
 | asTrueGCD | Displays history of recently used spells and items | [Link](https://www.curseforge.com/wow/addons/astruegcd) |
 | asUnitFrame | Simple unit frames | [Link](https://www.curseforge.com/wow/addons/asunitframe) |
 
@@ -136,27 +136,27 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 | asCPUProfile          |애드온 Latency 성능 확인 (/asCPU)|<a href="https://www.curseforge.com/wow/addons/ascpuprofile" target="_blank" rel="nofollow">링크</a> |
 | asDBMTimer            |보스 타임라인 강화|<a href="https://www.curseforge.com/wow/addons/asdbmtimer" target="_blank" rel="nofollow">링크</a> | 
 | asDebuffFilter        |플레이어 및 대상 디버프 표시|<a href="https://www.curseforge.com/wow/addons/asdebufffilter" target="_blank" rel="nofollow">링크</a> | 
-| asDotFilter           |보스 프레임, 주시 프레임에 플레이어가 시전한 디버프를 표시|<a href="https://www.curseforge.com/wow/addons/asdotfilter" target="_blank" rel="nofollow">링크</a> | 
-| asFixChat             |Tab 키로 채팅 채널 전환, URL 클릭시 복사 가능 창 표시|<a href="https://www.curseforge.com/wow/addons/asfixchat" target="_blank" rel="nofollow">링크</a> | 
-| asFixHotkey           |액션바에 표시되는 단축키 텍스트를 축약, 버튼의 매크로 이름 숨김|<a href="https://www.curseforge.com/wow/addons/asfixhotkey" target="_blank" rel="nofollow">링크</a> |
-| asFixUnitFrame        |블리자드 기본 유닛 프레임(플레이어, 대상, 대상의 대상) 기능 추가|<a href="https://www.curseforge.com/wow/addons/asfixunitframe" target="_blank" rel="nofollow">링크</a> |
+| asDotFilter           |보스/주시 디버프를 추적|<a href="https://www.curseforge.com/wow/addons/asdotfilter" target="_blank" rel="nofollow">링크</a> | 
+| asFixChat             |`Tab` 채팅 채널 전환, `URL 복사` 지원|<a href="https://www.curseforge.com/wow/addons/asfixchat" target="_blank" rel="nofollow">링크</a> | 
+| asFixHotkey           |액션바 단축키 텍스트를 축약|<a href="https://www.curseforge.com/wow/addons/asfixhotkey" target="_blank" rel="nofollow">링크</a> |
+| asFixUnitFrame        |블리자드 기본 유닛 프레임 기능 숨김|<a href="https://www.curseforge.com/wow/addons/asfixunitframe" target="_blank" rel="nofollow">링크</a> |
 | asGCDBar              |전역 재사용 대기시간(GCD) 표시 바|<a href="https://www.curseforge.com/wow/addons/asgcdbar" target="_blank" rel="nofollow">링크</a> |
 | asGearScoreLite       |자신의 캐릭터 창 및 살펴보기 창에 아이템 레벨을 표시|<a href="https://www.curseforge.com/wow/addons/asgearscorelite" target="_blank" rel="nofollow">링크</a> |
-| asHealthText          |플레이어, 대상 및 소환수의 생명력 및 자원 백분율을 위협 수준, 받는 치유량, 직업별 자원 표시|<a href="https://www.curseforge.com/wow/addons/ashealthtext" target="_blank" rel="nofollow">링크</a> |
-| asHideActionBar       |숨길 수 없는 액션 바를 자동으로 숨김, 마우스 커서를 원래 위치 근처로 이동하면 다시 나타남|<a href="https://www.curseforge.com/wow/addons/ashideactionbar" target="_blank" rel="nofollow">링크</a> |
-| asHideBagsBar         |우측 하단의 메뉴 바(캐릭터, 주문책, 특성 등), 가방 바(배낭 및 기타 가방), 좌측의 공격대/파티 관리자를 자동으로 숨김, 마우스 커서를 원래 위치 근처로 이동하면 다시 나타남|<a href="https://www.curseforge.com/wow/addons/ashidebagsbar" target="_blank" rel="nofollow">링크</a> |
+| asHealthText          |텍스트 기반 HUD|<a href="https://www.curseforge.com/wow/addons/ashealthtext" target="_blank" rel="nofollow">링크</a> |
+| asHideActionBar       |1번 액션 바를 자동 숨김|<a href="https://www.curseforge.com/wow/addons/ashideactionbar" target="_blank" rel="nofollow">링크</a> |
+| asHideBagsBar         |우측 하단의 메뉴 자동 숨김|<a href="https://www.curseforge.com/wow/addons/ashidebagsbar" target="_blank" rel="nofollow">링크</a> |
 | asHideNameplates      |케스팅중인 몹 외 이름표를 숨김|<a href="https://www.curseforge.com/wow/addons/ashidenameplates" target="_blank" rel="nofollow">링크</a> |
-| asInformation         |1차 능력치(직업별 힘, 민첩, 또는 지능), 2차 능력치 (가속, 치명타, 특화, 유연성) 표시 및 증가 시 강조|<a href="https://www.curseforge.com/wow/addons/asinformation" target="_blank" rel="nofollow">링크</a> |
-| asInterruptHelper     |주시 대상, 마우스오버 대상 또는 현재 대상이 주문 시전시 차단 또는 기절 주문의 쿨을 표시|<a href="https://www.curseforge.com/wow/addons/asinterrupthelper" target="_blank" rel="nofollow">링크</a> |
-| asMisdirection        |눈속임, 속임수 거래, 소작의 불길, 마력 주입, 지원 매크로를 적정 파티원 대상을 지원하도록 자동 생성|<a href="https://www.curseforge.com/wow/addons/asmisdirection" target="_blank" rel="nofollow">링크</a> |
-| asMOD                 |asMOD는 다른 asMOD 애드온들을 최적화 해서 사용할 수 있도록 와우 기본 설정 및 편집 모드 설정. 추가로 다른 asMOD 애드온의 위치를 설정할 수 있는 기능을 지원|<a href="https://www.curseforge.com/wow/addons/asmod" target="_blank" rel="nofollow">링크</a> |
+| asInformation         |1차/2차 능력치 증가량 표시|<a href="https://www.curseforge.com/wow/addons/asinformation" target="_blank" rel="nofollow">링크</a> |
+| asInterruptHelper     |차단/스턴 스킬 쿨다운 표시|<a href="https://www.curseforge.com/wow/addons/asinterrupthelper" target="_blank" rel="nofollow">링크</a> |
+| asMisdirection        |눈속임, 속임수 거래 자동 매크로|<a href="https://www.curseforge.com/wow/addons/asmisdirection" target="_blank" rel="nofollow">링크</a> |
+| asMOD                 | asMOD 모음집 설정|<a href="https://www.curseforge.com/wow/addons/asmod" target="_blank" rel="nofollow">링크</a> |
 | asNamePlates          |이름표 강화 애드온|<a href="https://www.curseforge.com/wow/addons/asnameplates" target="_blank" rel="nofollow">링크</a> | 
-| asPowerBar            |플레이어의 주 자원 (기력/마나/분노), 직업 자원(연계 점수, 룬, 신성한 힘 등) 표시|<a href="https://www.curseforge.com/wow/addons/aspowerbar" target="_blank" rel="nofollow">링크</a> | 
-| asPremadeGroupsFilter |파티찾기 직업 색상/특성 아이콘/파장 쐐기 점수 표시  |<a href="https://www.curseforge.com/wow/addons/aspremadegroupsfilter" target="_blank" rel="nofollow">링크</a> |
+| asPowerBar            |주 자원/직업 자원 표시|<a href="https://www.curseforge.com/wow/addons/aspowerbar" target="_blank" rel="nofollow">링크</a> | 
+| asPremadeGroupsFilter |쐐기돌/공격대 검색 창 강화|<a href="https://www.curseforge.com/wow/addons/aspremadegroupsfilter" target="_blank" rel="nofollow">링크</a> |
 | asRangeDisplay        |대상/주시/마우스오버 거리를 표시|<a href="https://www.curseforge.com/wow/addons/asrangedisplay" target="_blank" rel="nofollow">링크</a> |
-| asScavenger           |상인 창을 열 때 가방에 있는 모든 "일반" 등급(회색) 아이템을 자동으로 상인에게 판매|<a href="https://github.com/aspilla/asMOD/blob/main/asScavenger/README.md" target="_blank" rel="nofollow">링크</a> |
+| asScavenger           |자동 잡템 판매|<a href="https://github.com/aspilla/asMOD/blob/main/asScavenger/README.md" target="_blank" rel="nofollow">링크</a> |
 | asSkyRide             |`하늘 비행` 자원/속도/쿨 표시|<a href="https://www.curseforge.com/wow/addons/asskyride" target="_blank" rel="nofollow">링크</a> |
 | asSpamFilter          |기본 UI 오류 메시지 표시 위치를 이동|<a href="https://www.curseforge.com/wow/addons/asspamfilter" target="_blank" rel="nofollow">링크</a> |
-| asTargetCastBar       |현재 대상 및 주시 대상의 시전 바를 표시 |<a href="https://www.curseforge.com/wow/addons/astargetcastingbar" target="_blank" rel="nofollow">링크</a> | 
-| asTrueGCD             |최근 사용한 주문 및 아이템 사용 기록 표시|<a href="https://www.curseforge.com/wow/addons/astruegcd" target="_blank" rel="nofollow">링크</a> | 
+| asTargetCastBar       |대상/주시대상 시전 바|<a href="https://www.curseforge.com/wow/addons/astargetcastingbar" target="_blank" rel="nofollow">링크</a> | 
+| asTrueGCD             |최근 주문/아이템 기록 표시|<a href="https://www.curseforge.com/wow/addons/astruegcd" target="_blank" rel="nofollow">링크</a> | 
 | asUnitFrame           |간단한 유닛 프레임|<a href="https://www.curseforge.com/wow/addons/asunitframe" target="_blank" rel="nofollow">링크</a> | 

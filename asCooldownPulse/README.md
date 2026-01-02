@@ -8,7 +8,7 @@ Displays cooldowns for trinkets, racial traits, healthstones, and potions.
 
 *   **Trinket Cooldown Display (Right)**: Displays trinket cooldown when a usable trinket is equipped.
 *   **Racial Trait Cooldown Display (Right)**
-*   **Healthstone Cooldown Display (Left)**
+*   **Healthstone Cooldown & Usable Count Display (Left)**
 *   **Combat Potion Cooldown Display (Left)**
 *   **Survival Potion Cooldown Display (Left)**
 
@@ -31,7 +31,7 @@ There are no separate settings.
 
 *   **장신구 쿨 표시(우측)**: 사용가능 장신구 착용시 장신구 쿨 표시.
 *   **종특 쿨 표시(우측)** 
-*   **생석 쿨 표시(좌측)** 
+*   **생석 쿨/사용 가능 개수 표시(좌측)** 
 *   **전투 물약 쿨 표시(좌측)** 
 *   **생존 물약 쿨 표시(좌측)** 
 

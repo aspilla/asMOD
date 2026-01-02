@@ -1,7 +1,9 @@
 # asFixUnitFrame (Midnight)
 
-Enhances the default Blizzard Unit Frames (Player, Target, Target of Target).
+Turn off features of Unit Frames.
+
 ![asFixUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixUnitFrame.png?raw=true)
+
 ![asFixUnitFrame2](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixUnitFrame2.png?raw=true)
 
 ## Key Features
@@ -30,8 +32,10 @@ Enhances the default Blizzard Unit Frames (Player, Target, Target of Target).
 
 # asFixUnitFrame (한밤)
 
-블리자드 기본 유닛 프레임(플레이어, 대상, 대상의 대상) 기능 추가
+블리자드 기본 유닛 프레임 기능 숨김
+
 ![asFixUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixUnitFrame.png?raw=true)
+
 ![asFixUnitFrame2](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixUnitFrame2.png?raw=true)
 
 ## 주요 기능

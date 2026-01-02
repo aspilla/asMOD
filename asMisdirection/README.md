@@ -1,7 +1,9 @@
 # asMisdirection
 
-Automatically creates macros for Misdirection, Tricks of the Trade, Cauterizing Flame, Power Infusion, and Assist to support appropriate party members.
+Auto Macros for Misdirection, Tricks of the Trade.
+
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asMisdirection_2.JPG?raw=true)
+
 <iframe width="560" height="315" src="https://www.youtube.com/embed/E8RZsSN4Cvw?si=B844A-nqeUjtroNt" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Key Features
@@ -43,8 +45,10 @@ Automatically creates macros for Misdirection, Tricks of the Trade, Cauterizing 
 
 # asMisdirection 
 
-눈속임, 속임수 거래, 소작의 불길, 마력 주입, 지원 매크로를 적정 파티원 대상을 지원하도록 자동 생성
+눈속임, 속임수 거래 자동 매크로
+
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asMisdirection_2.JPG?raw=true)
+
 <iframe width="560" height="315" src="https://www.youtube.com/embed/E8RZsSN4Cvw?si=B844A-nqeUjtroNt" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 주요 기능

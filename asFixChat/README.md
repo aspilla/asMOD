@@ -1,6 +1,6 @@
 # asFixChat (Midnight)
 
-Switch chat channels using the Tab key and display a copyable window when clicking a URL.
+Switch chat channels using `Tab`, support `URL copy`.
 
 ## Key Features
 
@@ -31,7 +31,7 @@ No configuration options.
 
 # asFixChat (한밤)
 
-Tab 키로 채팅 채널 전환, URL 클릭시 복사 가능 창 표시
+`Tab` 채팅 채널 전환, `URL 복사` 지원
 
 ## 주요 기능
 

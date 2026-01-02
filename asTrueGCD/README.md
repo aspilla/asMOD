@@ -1,6 +1,6 @@
 # asTrueGCD (Midnight)
 
-Displays a record of recently used spells and items.
+Displays records of recent spells/items usages.
 ![asTrueGCD](https://github.com/aspilla/asMOD/blob/main/.Pictures/asTrueGCD.jpg?raw=true)
 
 ## Key Features
@@ -24,7 +24,7 @@ If **asMOD** is installed, you can unlock and move the frame's position using th
 
 # asTrueGCD (한밤)
 
-최근 사용한 주문 및 아이템 사용 기록 표시
+최근 주문/아이템 기록 표시
 ![asTrueGCD](https://github.com/aspilla/asMOD/blob/main/.Pictures/asTrueGCD.jpg?raw=true)
 
 ## 주요 기능
