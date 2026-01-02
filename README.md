@@ -123,7 +123,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 ## asMOD 애드온 목록 (한밤)
 
-| 애드온                   |설명                         |설명 Link | 
+| 애드온                   |설명                         |설명 | 
 | --------------------- |------------------------------------------------------------------- |------- |
 | asActiveAlert         |테두리 강조 주문 케릭 좌측 표시|<a href="https://www.curseforge.com/wow/addons/asactivealert" target="_blank" rel="nofollow">링크</a> |
 | asBattleRes           |전투 부활 횟수/대기시간 표시|<a href="https://www.curseforge.com/wow/addons/asbattleres" target="_blank" rel="nofollow">링크</a> |
@@ -141,7 +141,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 | asFixHotkey           |액션바 단축키 텍스트를 축약|<a href="https://www.curseforge.com/wow/addons/asfixhotkey" target="_blank" rel="nofollow">링크</a> |
 | asFixUnitFrame        |블리자드 기본 유닛 프레임 기능 숨김|<a href="https://www.curseforge.com/wow/addons/asfixunitframe" target="_blank" rel="nofollow">링크</a> |
 | asGCDBar              |전역 재사용 대기시간(GCD) 표시 바|<a href="https://www.curseforge.com/wow/addons/asgcdbar" target="_blank" rel="nofollow">링크</a> |
-| asGearScoreLite       |자신의 캐릭터 창 및 살펴보기 창에 아이템 레벨을 표시|<a href="https://www.curseforge.com/wow/addons/asgearscorelite" target="_blank" rel="nofollow">링크</a> |
+| asGearScoreLite       |캐릭터 창/살펴보기 창에 아이템 레벨 표시|<a href="https://www.curseforge.com/wow/addons/asgearscorelite" target="_blank" rel="nofollow">링크</a> |
 | asHealthText          |텍스트 기반 HUD|<a href="https://www.curseforge.com/wow/addons/ashealthtext" target="_blank" rel="nofollow">링크</a> |
 | asHideActionBar       |1번 액션 바를 자동 숨김|<a href="https://www.curseforge.com/wow/addons/ashideactionbar" target="_blank" rel="nofollow">링크</a> |
 | asHideBagsBar         |우측 하단의 메뉴 자동 숨김|<a href="https://www.curseforge.com/wow/addons/ashidebagsbar" target="_blank" rel="nofollow">링크</a> |

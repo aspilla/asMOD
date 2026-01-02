@@ -79,8 +79,18 @@ local function init_class()
         end
     end
 
-    if (englishClass == "DRUID") then
-        powerlevel = Enum.PowerType.ComboPoints
+    if (englishClass == "DRUID") then      
+        if (spec and spec == 2) then
+            powerlevel = Enum.PowerType.ComboPoints;
+        end
+
+        if (spec and spec == 3) and C_SpellBook.IsSpellKnown(377811) then
+            spellid = 22842;
+        end
+
+        if (spec and spec == 4) then
+            powerlevel = Enum.PowerType.ComboPoints;
+        end
     end
 
     if (englishClass == "MONK") then
