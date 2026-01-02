@@ -114,7 +114,7 @@ local function initFrames()
 
     primaryStatBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
     primaryStatBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    primaryStatBar.bg:SetVertexColor(0, 0, 0, 0.8);
+    primaryStatBar.bg:SetVertexColor(0, 0, 0, 1);
 
     primaryStatBarText = primaryStatBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     primaryStatBarText:SetPoint("RIGHT", primaryStatBar, "RIGHT", -1, 0)
@@ -144,7 +144,7 @@ local function initFrames()
 
     critBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
     critBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    critBar.bg:SetVertexColor(0, 0, 0, 0.8);
+    critBar.bg:SetVertexColor(0, 0, 0, 1);
 
     critBarText = critBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     critBarText:SetPoint("RIGHT", critBar, "RIGHT", -1, 0)
@@ -170,7 +170,7 @@ local function initFrames()
 
     hasteBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
     hasteBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    hasteBar.bg:SetVertexColor(0, 0, 0, 0.8);
+    hasteBar.bg:SetVertexColor(0, 0, 0, 1);
 
     hasteBarText = hasteBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     hasteBarText:SetPoint("RIGHT", hasteBar, "RIGHT", -1, 0)
@@ -196,7 +196,7 @@ local function initFrames()
 
     masteryBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
     masteryBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    masteryBar.bg:SetVertexColor(0, 0, 0, 0.8);
+    masteryBar.bg:SetVertexColor(0, 0, 0, 1);
 
     masteryBarText = masteryBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     masteryBarText:SetPoint("RIGHT", masteryBar, "RIGHT", -1, 0)
@@ -222,7 +222,7 @@ local function initFrames()
 
     versatilityBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
     versatilityBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    versatilityBar.bg:SetVertexColor(0, 0, 0, 0.8);
+    versatilityBar.bg:SetVertexColor(0, 0, 0, 1);
 
     versatilityBarText = versatilityBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     versatilityBarText:SetPoint("RIGHT", versatilityBar, "RIGHT", -1, 0)

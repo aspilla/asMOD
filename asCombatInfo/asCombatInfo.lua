@@ -1,5 +1,11 @@
 ﻿local _, ns = ...;
 
+local configs = {
+	combatalpha = 1,
+	normalalpha = 0.5,
+
+}
+
 local main_frame = CreateFrame("Frame");
 
 -- Core function to remove padding and apply modifications. Doing Blizzard's work for them.
@@ -69,9 +75,10 @@ local function update_buttons(viewer)
 			if button.Applications then
 				for _, r in next, { button.Applications:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, width / 3 + 2, "OUTLINE");
+						r:SetFont(STANDARD_TEXT_FONT, width / 3 + 1, "OUTLINE");
 						r:ClearAllPoints();
-						r:SetPoint("Center", 0, 0);
+						r:SetPoint("BOTTOM", 0, -5);
+						r:SetTextColor(0, 1, 0);
 						r:SetDrawLayer("OVERLAY");
 						break;
 					end
@@ -92,7 +99,7 @@ local function update_buttons(viewer)
 			if button.Cooldown then
 				for _, r in next, { button.Cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, width / 3, "OUTLINE");
+						r:SetFont(STANDARD_TEXT_FONT, width / 3 + 1, "OUTLINE");
 						r:ClearAllPoints();
 						if isbuff then
 							r:SetPoint("TOP", 0, 5);
@@ -201,14 +208,14 @@ local function add_todolist(viewer)
 	updateframe:Show()
 end
 
+local viewers = {
+	UtilityCooldownViewer,
+	EssentialCooldownViewer,
+	BuffIconCooldownViewer,
+}
+
 -- Do the work
 local function init()
-	local viewers = {
-		UtilityCooldownViewer,
-		EssentialCooldownViewer,
-		BuffIconCooldownViewer,
-	}
-
 	for _, viewer in ipairs(viewers) do
 		if viewer then
 			update_buttons(viewer)
@@ -233,7 +240,13 @@ local function init()
 		end
 	end
 end
--- Event handler
+
+local function set_viewersalpha(alpha)
+	for _, viewer in ipairs(viewers) do
+		viewer:SetAlpha(alpha);
+	end
+end
+
 local bfirst = true;
 local function on_event(self, event, arg)
 	if bfirst then
@@ -244,10 +257,21 @@ local function on_event(self, event, arg)
 	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then
 		C_Timer.After(1, init);
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		C_Timer.After(1, init)
+		C_Timer.After(1, init);
+		if UnitAffectingCombat("player") then
+			set_viewersalpha(configs.combatalpha);
+		else
+			set_viewersalpha(configs.normalalpha);
+		end
+	elseif event == "PLAYER_REGEN_DISABLED" then
+		set_viewersalpha(configs.combatalpha);
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		set_viewersalpha(configs.normalalpha);
 	end
 end
 
 main_frame:RegisterEvent("ADDON_LOADED");
 main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
 main_frame:SetScript("OnEvent", on_event);

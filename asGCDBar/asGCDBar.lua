@@ -26,7 +26,7 @@ main_frame.gcdbar.bg:SetPoint("BOTTOMRIGHT", main_frame.gcdbar, "BOTTOMRIGHT", 1
 
 main_frame.gcdbar.bg:SetTexture("Interface\\Addons\\asGCDBar\\border.tga")
 main_frame.gcdbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-main_frame.gcdbar.bg:SetVertexColor(0, 0, 0, 0.8);
+main_frame.gcdbar.bg:SetVertexColor(0, 0, 0, 1);
 
 main_frame.gcdbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
 main_frame.gcdbar:Show();

@@ -55,7 +55,7 @@ local function setupCastBar()
 
     frame.bg:SetTexture("Interface\\Addons\\asTargetCastBar\\border.tga")
     frame.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    frame.bg:SetVertexColor(0, 0, 0, 0.8);
+    frame.bg:SetVertexColor(0, 0, 0, 1);
     frame.bg:Show();
 
     frame.name = frame:CreateFontString(nil, "OVERLAY");

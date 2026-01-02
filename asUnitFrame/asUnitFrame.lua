@@ -36,35 +36,6 @@ curve:SetType(Enum.LuaCurveType.Linear);
 curve:AddPoint(0, 0);
 curve:AddPoint(1, 100);
 
-local function UpdateFillBarBase(realbar, bar, amount, bleft, pointbar, totalMax)
-    if not amount or (amount == 0) then
-        bar:Hide();
-        return
-    end
-
-    local previousTexture = pointbar;
-
-    if previousTexture == nil then
-        previousTexture = realbar:GetStatusBarTexture();
-    end
-
-    bar:ClearAllPoints();
-    if bleft then
-        bar:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
-        bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMLEFT", 0, 0);
-    else
-        bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", 0, 0);
-        bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", 0, 0);
-    end
-
-    local totalWidth, totalHeight = realbar:GetSize();
-
-    local barSize = (amount / totalMax) * totalWidth;
-    bar:SetWidth(barSize);
-    bar:Show();
-end
-
-
 local function update_playerunit()
     local hasValidVehicleUI = UnitHasVehicleUI("player");
     local unitVehicleToken;
@@ -755,7 +726,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
 
     frame.powerbar.bg:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga");
     frame.powerbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-    frame.powerbar.bg:SetVertexColor(0, 0, 0, 0.8);
+    frame.powerbar.bg:SetVertexColor(0, 0, 0, 1);
 
     frame.powerbar.value = frame.powerbar:CreateFontString(nil, "ARTWORK");
     frame.powerbar.value:SetFont(STANDARD_TEXT_FONT, fontsize - 2, FontOutline);
@@ -781,7 +752,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
 
     frame.castbar.bg:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga")
     frame.castbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    frame.castbar.bg:SetVertexColor(0, 0, 0, 0.8);
+    frame.castbar.bg:SetVertexColor(0, 0, 0, 1);
     frame.castbar.bg:Show();
 
     frame.castbar.name = frame.castbar:CreateFontString(nil, "OVERLAY");

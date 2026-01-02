@@ -84,10 +84,6 @@ local function init_class()
             powerlevel = Enum.PowerType.ComboPoints;
         end
 
-        if (spec and spec == 3) and C_SpellBook.IsSpellKnown(377811) then
-            spellid = 22842;
-        end
-
         if (spec and spec == 4) then
             powerlevel = Enum.PowerType.ComboPoints;
         end
@@ -215,7 +211,7 @@ local function init_addon()
 
     ns.bar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
     ns.bar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-    ns.bar.bg:SetVertexColor(0, 0, 0, 0.8);
+    ns.bar.bg:SetVertexColor(0, 0, 0, 1);
 
     ns.bar.text = main_frame:CreateFontString(nil, "ARTWORK");
     ns.bar.text:SetFont(ns.config.font, ns.config.fontSize, ns.config.fontOutline);
@@ -275,7 +271,7 @@ local function init_addon()
 
         ns.combobars[i].bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
         ns.combobars[i].bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-        ns.combobars[i].bg:SetVertexColor(0, 0, 0, 0.8);
+        ns.combobars[i].bg:SetVertexColor(0, 0, 0, 1);
 
         if i == 1 then
             ns.combobars[i]:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", 0, 1);
