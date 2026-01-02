@@ -1,7 +1,7 @@
-local _, ns     = ...;
+local _, ns      = ...;
 
 --configurations
-ns.config       = {
+ns.config        = {
     font        = STANDARD_TEXT_FONT,
     fontSize    = 12,
     fontOutline = "OUTLINE",
@@ -15,10 +15,10 @@ ns.config       = {
     framelevel  = 9000,
 };
 
-local _, Class  = UnitClass("player")
-ns.classcolor   = RAID_CLASS_COLORS[Class];
+local _, Class   = UnitClass("player")
+ns.classcolor    = RAID_CLASS_COLORS[Class];
 
-local main_frame        = CreateFrame("FRAME", nil, UIParent);
+local main_frame = CreateFrame("FRAME", nil, UIParent);
 
 local function init_class()
     local localizedClass, englishClass = UnitClass("player")
@@ -79,7 +79,7 @@ local function init_class()
         end
     end
 
-    if (englishClass == "DRUID") then      
+    if (englishClass == "DRUID") then
         if (spec and spec == 2) then
             powerlevel = Enum.PowerType.ComboPoints;
         end
@@ -161,19 +161,25 @@ end
 
 local function on_event(self, event, ...)
     if event == "PLAYER_ENTERING_WORLD" then
-        if UnitAffectingCombat("player") then
-            main_frame:SetAlpha(ns.config.combatalpha);
-        else
-            main_frame:SetAlpha(ns.config.normalalpha);
+        if ns.options.CombatAlphaChange then
+            if UnitAffectingCombat("player") then
+                main_frame:SetAlpha(ns.config.combatalpha);
+            else
+                main_frame:SetAlpha(ns.config.normalalpha);
+            end
         end
         C_Timer.After(0.5, init_class);
     elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or event ==
         "ACTIVE_TALENT_GROUP_CHANGED" then
         C_Timer.After(0.5, init_class);
     elseif event == "PLAYER_REGEN_DISABLED" then
-        main_frame:SetAlpha(ns.config.combatalpha);
+        if ns.options.CombatAlphaChange then
+            main_frame:SetAlpha(ns.config.combatalpha);
+        end
     elseif event == "PLAYER_REGEN_ENABLED" then
-        main_frame:SetAlpha(ns.config.normalalpha);
+        if ns.options.CombatAlphaChange then
+            main_frame:SetAlpha(ns.config.normalalpha);
+        end
     end
 
     return;
@@ -336,13 +342,14 @@ local function init_addon()
     main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
     main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 
-    if UnitAffectingCombat("player") then
-        main_frame:SetAlpha(ns.config.combatalpha);
-    else
-        main_frame:SetAlpha(ns.config.normalalpha);
-    end
-
     ns.setup_option();
+    if ns.options.CombatAlphaChange then
+        if UnitAffectingCombat("player") then
+            main_frame:SetAlpha(ns.config.combatalpha);
+        else
+            main_frame:SetAlpha(ns.config.normalalpha);
+        end
+    end
     init_class();
 end
 

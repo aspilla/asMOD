@@ -29,7 +29,7 @@ This addon replaces the default Blizzard unit frames. It is highly recommended t
 * **Health Bar:**
     * Displays current health, maximum health, and percentage (%).
     * Indicates "Dead" status and class colors.
-    * *(Note: Incoming heals and absorption shields are currently unsupported).*
+    * Incoming heals and absorption shields.
 * **Resource Bar:**
     * Hidden if the primary resource is already shown by `asPowerBar`.
     * Displays an additional mana bar for hybrid classes (Player).
@@ -39,7 +39,7 @@ This addon replaces the default Blizzard unit frames. It is highly recommended t
     * Elite/Rare/World Boss markers.
     * Combat and Resting (Player) indicators.
     * Party/Raid Leader and Role (Tank/Healer/DPS) icons.
-* **Raid Markers:** Displays assigned raid icons (currently shown as numbers).
+* **Raid Markers:** Displays assigned raid icons.
 * **Aggro (Threat Level):** Shows player's threat % and status via color changes on the Target frame.
 * **Portraits (Optional):** Displays unit portraits.
 * **Debuff Display (Pet, Target of Target):** Shows up to 4 debuffs at the bottom of the frame.
@@ -72,6 +72,7 @@ This addon replaces the default Blizzard unit frames. It is highly recommended t
     * `ShowTargetBorder`: White border on Focus/Boss when they are your current target.
     * `CheckRange`: Enable distance-based transparency.
     * `OffPortraitDebuffOnRaid`: Disable stun debuff overlays on portraits during raids.
+    * `CombatAlphaChange` : Change alpha when outofcombat
 
 ## Troubleshooting (Known Issues)
 
@@ -112,7 +113,7 @@ The following issues may occur due to Blizzard's security restrictions:
 *   **체력 바:**
        *   현재 체력, 최대 체력, 백분율(%) 표시.
        *   죽음 상태 표시.
-       *   받는 치유량 및 보호막(흡수량) 표시. (현재 미지원)
+       *   받는 치유량 및 보호막(흡수량) 표시.
        *   직업 색상 표시        
 *   **자원 바:**
     *   플레이어의 주 자원은 asPowerBar에 표시 되면 미표시
@@ -125,7 +126,7 @@ The following issues may occur due to Blizzard's security restrictions:
     *   휴식 중 아이콘 표시 (플레이어).
     *   파티장/공격대장 아이콘 표시.
     *   역할(방어/공격/치유) 아이콘 표시.
-*   **공격대 징표:** 설정된 공격대 징표(별, 동그라미 등)를 표시. (현재 숫자로 표시)
+*   **공격대 징표:** 설정된 공격대 징표(별, 동그라미 등)를 표시.
 *   **어그로(위협 수준):** 대상 프레임에서 플레이어의 위협 수준(%) 및 상태를 색상으로 표시. 
 *   **초상화 (선택 사항):**
     *   유닛 초상화를 표시
@@ -154,13 +155,14 @@ The following issues may occur due to Blizzard's security restrictions:
     *   게임 내에서 `/asconfig` 명령어를 입력하여 이동 가능
     *   크기 조정 불가
     
-2.  **esc >> 설정 >> 애드온 >> asUnitFrame 설정:**
+2.  **esc >> 설정 >> 애드온 >> asUnitFrame 설정 (기본 On)**
     *   `ShowPortrait` : 초상화 표시 여부
     *   `ShowTotemBar` : 플레이어 프레임 하단에 토템바 표시 여부
     *   `ShowBossBuff` : 보스 프레임에 버프 4개 표시 여부 
     *   `ShowTargetBorder` : 주시/보스가 대상인 경우 하얀색 테두리 표시
     *   `CheckRange` : 대상/주시/보스와의 거리를 체크
     *   `OffPortraitDebuffOnRaid` : 레이드에서는 초상화에 스턴 디버프 표시 안함
+    *   `CombatAlphaChange` : 비전투시 투명도 변경
 
 ## 주의사항 (오류 관련)
 

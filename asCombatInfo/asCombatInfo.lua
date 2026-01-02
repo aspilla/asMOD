@@ -36,9 +36,11 @@ local function update_buttons(viewer)
 
 	for _, button in ipairs(visiblechilds) do
 		local rate = 0.9;
+		local iconrate = .088;
 
 		if isbuff then
 			rate = 0.8;
+			iconrate = .16;
 		end
 
 		if not button.bconfiged then
@@ -55,16 +57,16 @@ local function update_buttons(viewer)
 				button.Icon:ClearAllPoints();
 				button.Icon:SetPoint("CENTER", 0, 0);
 				button.Icon:SetSize(width - 4, width * rate - 4);
-				button.Icon:SetTexCoord(.08, .92, .08, .92);
+				button.Icon:SetTexCoord(.08, .92, iconrate, 1 - iconrate);
 			end
 
 
 			if button.ChargeCount then
 				for _, r in next, { button.ChargeCount:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, width / 3, "OUTLINE");
+						r:SetFont(STANDARD_TEXT_FONT, width / 3 + 1, "OUTLINE");
 						r:ClearAllPoints();
-						r:SetPoint("BOTTOM", 0, -5);
+						r:SetPoint("CENTER", button, "BOTTOM", 0, 1);
 						r:SetTextColor(0, 1, 0);
 						r:SetDrawLayer("OVERLAY");
 						break;
@@ -75,9 +77,9 @@ local function update_buttons(viewer)
 			if button.Applications then
 				for _, r in next, { button.Applications:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, width / 3 + 1, "OUTLINE");
+						r:SetFont(STANDARD_TEXT_FONT, width / 3 + 2, "OUTLINE");
 						r:ClearAllPoints();
-						r:SetPoint("BOTTOM", 0, -5);
+						r:SetPoint("CENTER", button, "BOTTOM", 0, 1);
 						r:SetTextColor(0, 1, 0);
 						r:SetDrawLayer("OVERLAY");
 						break;
@@ -102,7 +104,7 @@ local function update_buttons(viewer)
 						r:SetFont(STANDARD_TEXT_FONT, width / 3 + 1, "OUTLINE");
 						r:ClearAllPoints();
 						if isbuff then
-							r:SetPoint("TOP", 0, 5);
+							r:SetPoint("CENTER", button, "TOP", 0, 0);
 						else
 							r:SetPoint("CENTER", 0, 0);
 						end
@@ -255,18 +257,25 @@ local function on_event(self, event, arg)
 	end
 
 	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then
-		C_Timer.After(1, init);
+		C_Timer.After(0.5, init);
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		C_Timer.After(1, init);
-		if UnitAffectingCombat("player") then
-			set_viewersalpha(configs.combatalpha);
-		else
-			set_viewersalpha(configs.normalalpha);
+		C_Timer.After(0.5, init);
+
+		if ns.options.CombatAlphaChange then
+			if UnitAffectingCombat("player") then
+				set_viewersalpha(configs.combatalpha);
+			else
+				set_viewersalpha(configs.normalalpha);
+			end
 		end
 	elseif event == "PLAYER_REGEN_DISABLED" then
-		set_viewersalpha(configs.combatalpha);
+		if ns.options.CombatAlphaChange then
+			set_viewersalpha(configs.combatalpha);
+		end
 	elseif event == "PLAYER_REGEN_ENABLED" then
-		set_viewersalpha(configs.normalalpha);
+		if ns.options.CombatAlphaChange then
+			set_viewersalpha(configs.normalalpha);
+		end
 	end
 end
 

@@ -151,18 +151,15 @@ local function hook_func(frame)
     end
 end
 
-local function change_button(button, changeicon, changesize)
-
+local function change_button(button, changesize)
     local width = button:GetWidth();
 
     if changesize then
         width = width * ns.options.CenterDefensiveSizeRate;
     end
 
-    if changeicon and ns.options.ChangeIcon then
-
+    if ns.options.ChangeIcon then
         button:SetSize(width, width * configs.iconrate);
-
 
         if button.icon then
             button.icon:ClearAllPoints();
@@ -173,13 +170,20 @@ local function change_button(button, changeicon, changesize)
 
         if not button.border then
             button.border = button:CreateTexture(nil, "BACKGROUND", "asCompactRaidBuffBorderTemplate");
+            button.border:SetDrawLayer("BACKGROUND");
+            button.border:SetColorTexture(0, 0, 0, 1);
+            button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+            button.border:Show();
         end
+        button.border:ClearAllPoints();
         button.border:SetAllPoints(button);
-        button.border:SetDrawLayer("BACKGROUND");
-        button.border:SetColorTexture(0, 0, 0, 1);
-        button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-        button.border:SetAlpha(1)
-        button.border:Show()
+    end
+
+    if button.count then
+        button.count:SetFont(STANDARD_TEXT_FONT, (width / 2) * ns.options.CooldownSizeRate, "OUTLINE");
+        button.count:ClearAllPoints();
+        button.count:SetPoint("CENTER", button, "BOTTOM", 0, 1);
+        button.count:SetTextColor(0, 1, 0);
     end
 
     if button.cooldown and ns.options.ShowCooldown then
@@ -201,7 +205,7 @@ local function change_defaults(frame)
     if frame and not frame:IsForbidden() then
         if frame.buffFrames then
             for i = 1, #frame.buffFrames do
-                change_button(frame.buffFrames[i], true);
+                change_button(frame.buffFrames[i]);
             end
         end
         if frame.debuffFrames then
@@ -210,7 +214,7 @@ local function change_defaults(frame)
             end
         end
         if frame.CenterDefensiveBuff then
-            change_button(frame.CenterDefensiveBuff, true, true);
+            change_button(frame.CenterDefensiveBuff, true);
         end
     end
 end

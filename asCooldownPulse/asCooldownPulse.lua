@@ -1,20 +1,26 @@
-local _, ns  = ...;
+local _, ns     = ...;
 
-ns.tbuttons = {};
-ns.ibuttons = {};
-ns.trinkets = { 13, 14 };
-ns.items = { 5512, 241308, 241304 };
-ns.racials = { 26297, 265221, 357214, 20594, 58984, 202719, 20572, 20549, 274738, 59752, 256948, 312411, 7744, 255647, 287712, 312924, 68992, 69070, 291944, 1237885, 255654, 107079, 20589, 59542, 436344 };
+ns.tbuttons     = {};
+ns.ibuttons     = {};
+ns.trinkets     = { 13, 14 };
+ns.items        = { 5512, 241308, 241304 };
+ns.racials      = { 26297, 265221, 357214, 20594, 58984, 202719, 20572, 20549, 274738, 59752, 256948, 312411, 7744, 255647, 287712, 312924, 68992, 69070, 291944, 1237885, 255654, 107079, 20589, 59542, 436344 };
 ns.racial_spell = nil;
 ns.isdemonstone = false;
-local configs = {
+local configs   = {
     size = 28,
     font_size = 12,
     t_xpoint = -125,
     t_ypoint = -140,
     i_xpoint = -298,
     i_ypoint = -140,
+    combatalpha = 1,
+    normalalpha = 0.5,
 }
+
+
+
+local main_frame = CreateFrame("Frame", nil, UIParent);
 
 local function get_spellinfo(spellid)
     if not spellid then
@@ -145,7 +151,7 @@ end
 local function create_buttons()
     local bloaded = C_AddOns.LoadAddOn("asMOD")
     for i = 1, #ns.trinkets + 1 do
-        local frame = CreateFrame("Button", nil, UIParent, "asCooldownPulseFrameTemplate");
+        local frame = CreateFrame("Button", nil, main_frame, "asCooldownPulseFrameTemplate");
         frame.cooldown:SetHideCountdownNumbers(false);
         frame.cooldown:SetDrawSwipe(true);
 
@@ -181,7 +187,7 @@ local function create_buttons()
     end
 
     for i = 1, #ns.items do
-        local frame = CreateFrame("Button", nil, UIParent, "asCooldownPulseFrameTemplate");
+        local frame = CreateFrame("Button", nil, main_frame, "asCooldownPulseFrameTemplate");
         frame.cooldown:SetHideCountdownNumbers(false);
         frame.cooldown:SetDrawSwipe(true);
 
@@ -225,26 +231,53 @@ local function on_update()
 end
 C_Timer.NewTicker(0.2, on_update);
 
-local function on_event()
-    if C_SpellBook.IsSpellKnown(386689) then
-        ns.isdemonstone = true;
-    else
-        ns.isdemonstone = false;
+local bfirst = true;
+
+local function on_event(self, event)
+    if bfirst then
+        bfirst = false;
+        ns.setup_option();
     end
 
-    ns.racial_spell = nil;
-    for _, spellid in pairs(ns.racials) do
-        if C_SpellBook.IsSpellKnown(spellid) then
-            ns.racial_spell = spellid;
-            return;
+    if event == "PLAYER_REGEN_DISABLED" then
+        if ns.options.CombatAlphaChange then
+            main_frame:SetAlpha(configs.combatalpha);
+        end
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        if ns.options.CombatAlphaChange then
+            main_frame:SetAlpha(configs.normalalpha);
+        end
+    elseif event == "PLAYER_ENTERING_WORLD" then
+        if ns.options.CombatAlphaChange then
+            if UnitAffectingCombat("player") then
+                main_frame:SetAlpha(configs.combatalpha);
+            else
+                main_frame:SetAlpha(configs.normalalpha);
+            end
+        end
+    else
+        if C_SpellBook.IsSpellKnown(386689) then
+            ns.isdemonstone = true;
+        else
+            ns.isdemonstone = false;
+        end
+
+        ns.racial_spell = nil;
+        for _, spellid in pairs(ns.racials) do
+            if C_SpellBook.IsSpellKnown(spellid) then
+                ns.racial_spell = spellid;
+                return;
+            end
         end
     end
 end
 
+main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
-local frame = CreateFrame("Frame", nil);
-frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
-frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-
-frame:SetScript("OnEvent", on_event)
+main_frame:SetScript("OnEvent", on_event)
+main_frame:Show();

@@ -184,6 +184,11 @@ local function on_event(self, event, arg1, ...)
     elseif (event == "PLAYER_TARGET_CHANGED") then
         clear_frames();
         update_auras("target");
+        if UnitAffectingCombat("player") then
+			main_frame:SetAlpha(ns.configs.AlphaCombat);
+		else
+			main_frame:SetAlpha(ns.configs.AlphaNormal);
+		end
     elseif (event == "PLAYER_ENTERING_WORLD") then
         update_auras("target");
         update_auras("player");
@@ -249,7 +254,8 @@ local function create_frames(parent, bright, rate)
         
         frame.count:SetFont(STANDARD_TEXT_FONT, ns.configs.CountFontSize, "OUTLINE")
         frame.count:ClearAllPoints();
-        frame.count:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2);
+        frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
+		frame.count:SetTextColor(0, 1, 0);
 
         frame.point:SetFont(STANDARD_TEXT_FONT, ns.configs.CountFontSize - 3, "OUTLINE")
         frame.point:ClearAllPoints();

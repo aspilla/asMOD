@@ -7,6 +7,7 @@ local Options_Default = {
     ShowTargetBorder = true,
     ShowDebuff = true,
     CheckRange = true,
+    CombatAlphaChange = true,
 };
 
 ns.options = CopyTable(Options_Default);

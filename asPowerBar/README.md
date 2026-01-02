@@ -26,7 +26,8 @@ Displays Primary and Class Resources.
 
 ## Configuration
 * Settings can be adjusted via `ESC` > `Options` > `Addons` > `asPowerBar`.
-* `ShowClassResource`: Toggle the display of class-specific resources (Default: Enabled).
+* `ShowClassResource`: Toggle the display of class-specific resources (Default: On).
+* `CombatAlphaChange` : Change alpha when outofcombat (Default: On).
 
 * **Repositioning**:
     * If the `asMOD` addon is installed, you can adjust the position using the `/asConfig` command.
@@ -61,7 +62,8 @@ Displays Primary and Class Resources.
 
 ## 설정 (Configuration)
 *   `ESC` > `설정` > `애드온` > `asPowerBar` 에서 설정 가능
-*   `ShowClassResource`: 직업 전문화 특성 표시 여부 (기본 : 표시)
+*   `ShowClassResource`: 직업 전문화 특성 표시 여부 (Default On)
+*   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
 
 *  **위치 이동**:
     *   `asMOD` 애드온이 설치되어 있는 경우, `asMOD`의 `/asConfig` 명령어를 통해 설정 가능

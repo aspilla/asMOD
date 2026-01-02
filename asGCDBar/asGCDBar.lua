@@ -3,6 +3,8 @@
 	height = 5,
 	xpoint = 0,
 	ypoint = -219,
+	combatalpha = 1,
+    normalalpha = 0.5,
 };
 
 local main_frame = CreateFrame("FRAME", nil, UIParent)
@@ -11,7 +13,7 @@ main_frame:SetWidth(0)
 main_frame:SetHeight(0)
 main_frame:Show();
 
-main_frame.gcdbar = CreateFrame("StatusBar", nil, UIParent)
+main_frame.gcdbar = CreateFrame("StatusBar", nil, main_frame)
 main_frame.gcdbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
 main_frame.gcdbar:GetStatusBarTexture():SetHorizTile(false)
 main_frame.gcdbar:SetMinMaxValues(0, 100)
@@ -43,3 +45,25 @@ local function on_update()
 end
 
 C_Timer.NewTicker(0.1, on_update);
+
+local function on_event(self, event)
+    if event == "PLAYER_REGEN_DISABLED" then
+        main_frame:SetAlpha(configs.combatalpha);
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        main_frame:SetAlpha(configs.normalalpha);
+    elseif event == "PLAYER_ENTERING_WORLD" then
+        if UnitAffectingCombat("player") then
+			main_frame:SetAlpha(configs.combatalpha);
+		else
+			main_frame:SetAlpha(configs.normalalpha);
+		end
+    end
+end
+
+main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+main_frame:SetScript("OnEvent", on_event);

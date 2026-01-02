@@ -13,8 +13,8 @@ Displays cooldowns for trinkets, racial traits, healthstones, and potions.
 *   **Survival Potion Cooldown Display (Left)**
 
 ## Settings
-
-There are no separate settings.
+* Settings can be adjusted via `ESC` > `Options` > `Addons` > `asCooldownPulse`.
+* `CombatAlphaChange` : Change alpha when outofcombat (Default: On).
 
 *  **Positioning**:
     *   If the `asMOD` addon is installed, configuration is possible via the `/asConfig` command of `asMOD`.
@@ -37,8 +37,8 @@ There are no separate settings.
 
 
 ## 설정
-
-별도의 설정은 없음
+*   `ESC` > `설정` > `애드온` > `asCooldownPulse` 에서 설정 가능
+*   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
 
 *  **위치 이동**
     *   `asMOD` 애드온이 설치되어 있는 경우, `asMOD`의 `/asConfig` 명령어를 통해 설정 가능

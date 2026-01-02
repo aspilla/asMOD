@@ -118,6 +118,11 @@ local function on_event(self, event, arg1, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		resize_frames();
 		update_auras("target");
+		if UnitAffectingCombat("player") then
+			main_frame:SetAlpha(ns.configs.AlphaCombat);
+		else
+			main_frame:SetAlpha(ns.configs.AlphaNormal);
+		end
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		main_frame:SetAlpha(ns.configs.AlphaCombat);
 		resize_frames();
@@ -161,7 +166,7 @@ local function update_anchor(frames, index, offsetX, right, center, parent)
 			buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
 		end
 	end
-	
+
 	buff:SetWidth(ns.configs.SIZE);
 	buff:SetHeight(ns.configs.SIZE * 0.8);
 end
@@ -175,7 +180,7 @@ local function create_frames(parent, bright, bcenter, max)
 		parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetBuffFrameTemplate");
 		local frame = parent.frames[idx];
 		frame.cooldown:SetDrawSwipe(true);
-		
+
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
 				r:SetFont(STANDARD_TEXT_FONT, ns.configs.CooldownFontSize, "OUTLINE");
@@ -188,12 +193,13 @@ local function create_frames(parent, bright, bcenter, max)
 
 		frame.count:SetFont(STANDARD_TEXT_FONT, ns.configs.CountFontSize, "OUTLINE")
 		frame.count:ClearAllPoints()
-		frame.count:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", -2, 2);
+		frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
+		frame.count:SetTextColor(0, 1, 0);
 
 		frame.icon:SetTexCoord(.08, .92, .16, .84);
-		
+
 		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-		
+
 		update_anchor(parent.frames, idx, 1, bright, bcenter, parent);
 
 		frame:EnableMouse(false);

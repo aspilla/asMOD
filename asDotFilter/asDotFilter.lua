@@ -156,14 +156,15 @@ local function update_debuffs(unit)
                     end
                 end
 
-                frame.icon:SetTexCoord(.08, .92, .18, .82);
+                frame.icon:SetTexCoord(.08, .92, .16, .84);
                 frame.icon:SetAlpha(configs.alpha);
                 frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
                 frame.border:SetAlpha(configs.alpha);
 
                 frame.count:SetFont(STANDARD_TEXT_FONT, configs.countfontsize, "OUTLINE");
                 frame.count:ClearAllPoints();
-                frame.count:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2);
+                frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
+		        frame.count:SetTextColor(0, 1, 0);
 
                 frame.snapshot:SetFont(STANDARD_TEXT_FONT, configs.countfontsize - 1, "OUTLINE")
                 frame.snapshot:ClearAllPoints();

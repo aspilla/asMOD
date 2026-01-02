@@ -2,6 +2,7 @@ local _, ns = ...;
 local Options_Default = {
     Version = 251216,
     ShowClassResource = true,
+    CombatAlphaChange = true,
 };
 
 ns.options = CopyTable(Options_Default);

@@ -314,7 +314,7 @@ local function update_unitframe(frame)
         else
             frame:SetAlpha(1);
         end
-    else
+    elseif ns.options.CombatAlphaChange then
         frame:SetAlpha(0.5);
     end
 end

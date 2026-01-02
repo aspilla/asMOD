@@ -1,7 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-    version = 251225,
-    AlignedBuff = false,
+    version = 251225,    
     CombatAlphaChange = true,
 };
 
@@ -19,30 +18,30 @@ function ns.setup_option()
 
         local cvar_name = setting:GetVariable()
         local variable = get_variable_from_cvar_name(cvar_name)
-        ACI_Options[variable] = value;
+        ACDP_Options[variable] = value;
         ns.options[variable] = value;
         ReloadUI();
     end
 
-    local category = Settings.RegisterVerticalLayoutCategory("asCombatInfo")
+    local category = Settings.RegisterVerticalLayoutCategory("asCooldownPulse")
 
-    if ACI_Options == nil or ACI_Options.version ~= Options_Default.version then
-        ACI_Options = {};
-        ACI_Options = CopyTable(Options_Default);
+    if ACDP_Options == nil or ACDP_Options.version ~= Options_Default.version then
+        ACDP_Options = {};
+        ACDP_Options = CopyTable(Options_Default);
     end
-    ns.options = CopyTable(ACI_Options);
+    ns.options = CopyTable(ACDP_Options);
 
     for variable, _ in pairs(Options_Default) do
         if variable ~= "version" then
             local name = variable;
-            local cvar_name = "asCombatInfo_" .. variable;
+            local cvar_name = "asCooldownPulse_" .. variable;
             local tooltip = ""
-            if ACI_Options[variable] == nil then
-                ACI_Options[variable] = Options_Default[variable];
+            if ACDP_Options[variable] == nil then
+                ACDP_Options[variable] = Options_Default[variable];
                 ns.options[variable] = Options_Default[variable];
             end
             local defaultValue = Options_Default[variable];
-            local currentValue = ACI_Options[variable];
+            local currentValue = ACDP_Options[variable];
 
             local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
             name, defaultValue);
