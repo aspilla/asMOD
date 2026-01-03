@@ -1,33 +1,33 @@
----@diagnostic disable: redundant-parameter
 local _, ns = ...;
 
-local AIF_Alpha = 1          -- 전투중 알파값
-local AIF_Alpha_Normal = 0.5 -- 비전투중 안보이게 하려면 0
+local configs = {
+    combatalpha = 1,
+    normalalpha = 0.5,
+    updaterate = 0.2,
+    threshold = 100,
+};
 
+local main_frame = CreateFrame("Frame", "asInformationFrame", UIParent)
+main_frame:SetSize(100, 150)
+main_frame:SetPoint("CENTER", UIParent, "CENTER", -165, -300)
+main_frame:SetMovable(true)
+main_frame:RegisterForDrag("LeftButton")
 
-local asInformation = CreateFrame("Frame", "asInformationFrame", UIParent)
-asInformation:SetSize(100, 150)
-asInformation:SetPoint("BOTTOM", UIParent, "BOTTOM", -141, 109)
-asInformation:SetMovable(true)
-asInformation:RegisterForDrag("LeftButton")
-
-local updateInterval = 0.2
-local defaultThreshold = 100
 
 -- Saved variables for position, lock state, and stat thresholds
 local defaultOptions = {
-    point = "BOTTOM",
-    relativePoint = "BOTTOM",
+    point = "TOP",
+    relativePoint = "CENTER",
     xOfs = -165,
-    yOfs = 115,
+    yOfs = -250,
     isLocked = true,
-    stateThreshold = defaultThreshold,
+    stateThreshold = configs.threshold,
     showHaste = true,
     showCrit = true,
     showMastery = true,
     showVer = true,
     showPrimary = true, -- Add new option for primary stat
-    version = 250622,
+    version = 260103,
 }
 
 
@@ -70,15 +70,15 @@ else -- Default to English
 end
 
 -- Function to load saved position
-local function LoadPosition()
-    asInformation:ClearAllPoints()
-    asInformation:SetPoint(ASInformationSaved.point, UIParent, ASInformationSaved.relativePoint, ASInformationSaved.xOfs,
+local function load_position()    
+    main_frame:ClearAllPoints()
+    main_frame:SetPoint(ASInformationSaved.point, UIParent, ASInformationSaved.relativePoint, ASInformationSaved.xOfs,
         ASInformationSaved.yOfs)
 end
 
 -- Function to save position
-local function SavePosition()
-    local point, _, relativePoint, xOfs, yOfs = asInformation:GetPoint()
+local function save_position()
+    local point, _, relativePoint, xOfs, yOfs = main_frame:GetPoint()
     ASInformationSaved.point = point
     ASInformationSaved.relativePoint = relativePoint
     ASInformationSaved.xOfs = xOfs
@@ -86,14 +86,8 @@ local function SavePosition()
 end
 
 
-local primaryStatBar, primaryStatBarText -- Add primary stat bar and text
-local critBar, critBarText
-local hasteBar, hasteBarText
-local masteryBar, masteryBarText
-local versatilityBar, versatilityBarText
-
-local function initFrames()
-    local prevframe = asInformation
+local function init_frames()
+    local prevframe = main_frame
     -- Declare variables for bars and their texts
     local locationPoint = "TOPLEFT"; -- Initial anchor point for the first element
 
@@ -101,139 +95,139 @@ local function initFrames()
     local barHeight = 12
     local yOffset = -5 -- Offset between bars
     -- Primary Stat Bar
-    primaryStatBar = CreateFrame("StatusBar", "asInformationPrimaryStatBar", asInformation);
-    primaryStatBar:SetSize(barWidth, barHeight)
-    primaryStatBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0,
+    ns.primarybar = CreateFrame("StatusBar", "asInformationPrimaryStatBar", main_frame);
+    ns.primarybar:SetSize(barWidth, barHeight)
+    ns.primarybar:SetPoint(locationPoint, prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0,
         yOffset)
-    primaryStatBar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-    primaryStatBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
+    ns.primarybar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+    ns.primarybar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
-    primaryStatBar.bg = primaryStatBar:CreateTexture(nil, "BACKGROUND")
-    primaryStatBar.bg:SetPoint("TOPLEFT", primaryStatBar, "TOPLEFT", -1, 1)
-    primaryStatBar.bg:SetPoint("BOTTOMRIGHT", primaryStatBar, "BOTTOMRIGHT", 1, -1)
+    ns.primarybar.bg = ns.primarybar:CreateTexture(nil, "BACKGROUND")
+    ns.primarybar.bg:SetPoint("TOPLEFT", ns.primarybar, "TOPLEFT", -1, 1)
+    ns.primarybar.bg:SetPoint("BOTTOMRIGHT", ns.primarybar, "BOTTOMRIGHT", 1, -1)
 
-    primaryStatBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
-    primaryStatBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    primaryStatBar.bg:SetVertexColor(0, 0, 0, 1);
+    ns.primarybar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
+    ns.primarybar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    ns.primarybar.bg:SetVertexColor(0, 0, 0, 1);
 
-    primaryStatBarText = primaryStatBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    primaryStatBarText:SetPoint("RIGHT", primaryStatBar, "RIGHT", -1, 0)
-    primaryStatBarText:SetTextColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g, statConfigs.Stat.gemColor
-    .b)
+    ns.primarytext = ns.primarybar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    ns.primarytext:SetPoint("RIGHT", ns.primarybar, "RIGHT", -1, 0)
+    ns.primarytext:SetTextColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g, statConfigs.Stat.gemColor
+        .b)
 
     -- Primary stat color will be set dynamically
 
-    primaryStatBar.name = primaryStatBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    primaryStatBar.name:SetPoint("LEFT", primaryStatBar, "LEFT", 1, 0)
-    primaryStatBar.name:SetTextColor(1, 1, 1);
-    primaryStatBar.name:SetText(statConfigs.Stat.abbr)
+    ns.primarybar.name = ns.primarybar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    ns.primarybar.name:SetPoint("LEFT", ns.primarybar, "LEFT", 1, 0)
+    ns.primarybar.name:SetTextColor(1, 1, 1);
+    ns.primarybar.name:SetText(statConfigs.Stat.abbr)
     -- Primary stat name will be set dynamically
 
-    prevframe = primaryStatBar
+    prevframe = ns.primarybar
     yOffset = -2
 
-    critBar = CreateFrame("StatusBar", "asInformationCritBar", asInformation);
-    critBar:SetSize(barWidth, barHeight)
-    critBar:SetPoint(locationPoint, prevframe, locationPoint, 0, yOffset)
-    critBar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-    critBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
+    ns.critbar = CreateFrame("StatusBar", "asInformationCritBar", main_frame);
+    ns.critbar:SetSize(barWidth, barHeight)
+    ns.critbar:SetPoint(locationPoint, prevframe, locationPoint, 0, yOffset)
+    ns.critbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+    ns.critbar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
-    critBar.bg = critBar:CreateTexture(nil, "BACKGROUND")
-    critBar.bg:SetPoint("TOPLEFT", critBar, "TOPLEFT", -1, 1)
-    critBar.bg:SetPoint("BOTTOMRIGHT", critBar, "BOTTOMRIGHT", 1, -1)
+    ns.critbar.bg = ns.critbar:CreateTexture(nil, "BACKGROUND")
+    ns.critbar.bg:SetPoint("TOPLEFT", ns.critbar, "TOPLEFT", -1, 1)
+    ns.critbar.bg:SetPoint("BOTTOMRIGHT", ns.critbar, "BOTTOMRIGHT", 1, -1)
 
-    critBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
-    critBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    critBar.bg:SetVertexColor(0, 0, 0, 1);
+    ns.critbar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
+    ns.critbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    ns.critbar.bg:SetVertexColor(0, 0, 0, 1);
 
-    critBarText = critBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    critBarText:SetPoint("RIGHT", critBar, "RIGHT", -1, 0)
-    critBarText:SetTextColor(statConfigs.Crit.gemColor.r, statConfigs.Crit.gemColor.g, statConfigs.Crit.gemColor.b)
+    ns.crittext = ns.critbar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    ns.crittext:SetPoint("RIGHT", ns.critbar, "RIGHT", -1, 0)
+    ns.crittext:SetTextColor(statConfigs.Crit.gemColor.r, statConfigs.Crit.gemColor.g, statConfigs.Crit.gemColor.b)
 
-    critBar.name = critBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    critBar.name:SetPoint("LEFT", critBar, "LEFT", 1, 0)
-    critBar.name:SetTextColor(1, 1, 1);
-    critBar.name:SetText(statConfigs.Crit.abbr);
+    ns.critbar.name = ns.critbar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    ns.critbar.name:SetPoint("LEFT", ns.critbar, "LEFT", 1, 0)
+    ns.critbar.name:SetTextColor(1, 1, 1);
+    ns.critbar.name:SetText(statConfigs.Crit.abbr);
 
-    prevframe = critBar -- Next element anchors to this bar
-    yOffset = -2        -- Smaller gap for subsequent bars
+    prevframe = ns.critbar -- Next element anchors to this bar
+    yOffset = -2           -- Smaller gap for subsequent bars
 
-    hasteBar = CreateFrame("StatusBar", "asInformationHasteBar", asInformation);
-    hasteBar:SetSize(barWidth, barHeight)
-    hasteBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset)
-    hasteBar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-    hasteBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
+    ns.hastebar = CreateFrame("StatusBar", "asInformationHasteBar", main_frame);
+    ns.hastebar:SetSize(barWidth, barHeight)
+    ns.hastebar:SetPoint(locationPoint, prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset)
+    ns.hastebar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+    ns.hastebar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
-    hasteBar.bg = hasteBar:CreateTexture(nil, "BACKGROUND")
-    hasteBar.bg:SetPoint("TOPLEFT", hasteBar, "TOPLEFT", -1, 1)
-    hasteBar.bg:SetPoint("BOTTOMRIGHT", hasteBar, "BOTTOMRIGHT", 1, -1)
+    ns.hastebar.bg = ns.hastebar:CreateTexture(nil, "BACKGROUND")
+    ns.hastebar.bg:SetPoint("TOPLEFT", ns.hastebar, "TOPLEFT", -1, 1)
+    ns.hastebar.bg:SetPoint("BOTTOMRIGHT", ns.hastebar, "BOTTOMRIGHT", 1, -1)
 
-    hasteBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
-    hasteBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    hasteBar.bg:SetVertexColor(0, 0, 0, 1);
+    ns.hastebar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
+    ns.hastebar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    ns.hastebar.bg:SetVertexColor(0, 0, 0, 1);
 
-    hasteBarText = hasteBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    hasteBarText:SetPoint("RIGHT", hasteBar, "RIGHT", -1, 0)
-    hasteBarText:SetTextColor(statConfigs.Haste.gemColor.r, statConfigs.Haste.gemColor.g, statConfigs.Haste.gemColor.b)
+    ns.hastetext = ns.hastebar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    ns.hastetext:SetPoint("RIGHT", ns.hastebar, "RIGHT", -1, 0)
+    ns.hastetext:SetTextColor(statConfigs.Haste.gemColor.r, statConfigs.Haste.gemColor.g, statConfigs.Haste.gemColor.b)
 
-    hasteBar.name = hasteBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    hasteBar.name:SetPoint("LEFT", hasteBar, "LEFT", 1, 0)
-    hasteBar.name:SetTextColor(1, 1, 1)
-    hasteBar.name:SetText(statConfigs.Haste.abbr);
+    ns.hastebar.name = ns.hastebar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    ns.hastebar.name:SetPoint("LEFT", ns.hastebar, "LEFT", 1, 0)
+    ns.hastebar.name:SetTextColor(1, 1, 1)
+    ns.hastebar.name:SetText(statConfigs.Haste.abbr);
 
-    prevframe = hasteBar
+    prevframe = ns.hastebar
     yOffset = -2
 
-    masteryBar = CreateFrame("StatusBar", "asInformationMasteryBar", asInformation);
-    masteryBar:SetSize(barWidth, barHeight)
-    masteryBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset)
-    masteryBar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-    masteryBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
+    ns.masterybar = CreateFrame("StatusBar", "asInformationMasteryBar", main_frame);
+    ns.masterybar:SetSize(barWidth, barHeight)
+    ns.masterybar:SetPoint(locationPoint, prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset)
+    ns.masterybar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+    ns.masterybar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
-    masteryBar.bg = masteryBar:CreateTexture(nil, "BACKGROUND")
-    masteryBar.bg:SetPoint("TOPLEFT", masteryBar, "TOPLEFT", -1, 1)
-    masteryBar.bg:SetPoint("BOTTOMRIGHT", masteryBar, "BOTTOMRIGHT", 1, -1)
+    ns.masterybar.bg = ns.masterybar:CreateTexture(nil, "BACKGROUND")
+    ns.masterybar.bg:SetPoint("TOPLEFT", ns.masterybar, "TOPLEFT", -1, 1)
+    ns.masterybar.bg:SetPoint("BOTTOMRIGHT", ns.masterybar, "BOTTOMRIGHT", 1, -1)
 
-    masteryBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
-    masteryBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    masteryBar.bg:SetVertexColor(0, 0, 0, 1);
+    ns.masterybar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
+    ns.masterybar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    ns.masterybar.bg:SetVertexColor(0, 0, 0, 1);
 
-    masteryBarText = masteryBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    masteryBarText:SetPoint("RIGHT", masteryBar, "RIGHT", -1, 0)
-    masteryBarText:SetTextColor(statConfigs.Mastery.gemColor.r, statConfigs.Mastery.gemColor.g,
+    ns.masterytext = ns.masterybar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    ns.masterytext:SetPoint("RIGHT", ns.masterybar, "RIGHT", -1, 0)
+    ns.masterytext:SetTextColor(statConfigs.Mastery.gemColor.r, statConfigs.Mastery.gemColor.g,
         statConfigs.Mastery.gemColor.b)
-    masteryBar.name = masteryBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    masteryBar.name:SetPoint("LEFT", masteryBar, "LEFT", 1, 0)
-    masteryBar.name:SetTextColor(1, 1, 1);
-    masteryBar.name:SetText(statConfigs.Mastery.abbr);
-    prevframe = masteryBar
+    ns.masterybar.name = ns.masterybar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    ns.masterybar.name:SetPoint("LEFT", ns.masterybar, "LEFT", 1, 0)
+    ns.masterybar.name:SetTextColor(1, 1, 1);
+    ns.masterybar.name:SetText(statConfigs.Mastery.abbr);
+    prevframe = ns.masterybar
     yOffset = -2
 
-    versatilityBar = CreateFrame("StatusBar", "asInformationVersatilityBar", asInformation);
-    versatilityBar:SetSize(barWidth, barHeight)
-    versatilityBar:SetPoint(locationPoint, prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0,
+    ns.versbar = CreateFrame("StatusBar", "asInformationVersatilityBar", main_frame);
+    ns.versbar:SetSize(barWidth, barHeight)
+    ns.versbar:SetPoint(locationPoint, prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0,
         yOffset)
-    versatilityBar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-    versatilityBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
+    ns.versbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+    ns.versbar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
 
-    versatilityBar.bg = versatilityBar:CreateTexture(nil, "BACKGROUND")
-    versatilityBar.bg:SetPoint("TOPLEFT", versatilityBar, "TOPLEFT", -1, 1)
-    versatilityBar.bg:SetPoint("BOTTOMRIGHT", versatilityBar, "BOTTOMRIGHT", 1, -1)
+    ns.versbar.bg = ns.versbar:CreateTexture(nil, "BACKGROUND")
+    ns.versbar.bg:SetPoint("TOPLEFT", ns.versbar, "TOPLEFT", -1, 1)
+    ns.versbar.bg:SetPoint("BOTTOMRIGHT", ns.versbar, "BOTTOMRIGHT", 1, -1)
 
-    versatilityBar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
-    versatilityBar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    versatilityBar.bg:SetVertexColor(0, 0, 0, 1);
+    ns.versbar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
+    ns.versbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    ns.versbar.bg:SetVertexColor(0, 0, 0, 1);
 
-    versatilityBarText = versatilityBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    versatilityBarText:SetPoint("RIGHT", versatilityBar, "RIGHT", -1, 0)
-    versatilityBarText:SetTextColor(statConfigs.Versatility.gemColor.r, statConfigs.Versatility.gemColor.g,
+    ns.verstext = ns.versbar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    ns.verstext:SetPoint("RIGHT", ns.versbar, "RIGHT", -1, 0)
+    ns.verstext:SetTextColor(statConfigs.Versatility.gemColor.r, statConfigs.Versatility.gemColor.g,
         statConfigs.Versatility.gemColor.b)
-    versatilityBar.name = versatilityBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    versatilityBar.name:SetPoint("LEFT", versatilityBar, "LEFT", 1, 0)
-    versatilityBar.name:SetTextColor(1, 1, 1);
-    versatilityBar.name:SetText(statConfigs.Versatility.abbr);
+    ns.versbar.name = ns.versbar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    ns.versbar.name:SetPoint("LEFT", ns.versbar, "LEFT", 1, 0)
+    ns.versbar.name:SetTextColor(1, 1, 1);
+    ns.versbar.name:SetText(statConfigs.Versatility.abbr);
 
-    prevframe = versatilityBar
+    prevframe = ns.versbar
     yOffset = -2
 end
 
@@ -241,7 +235,7 @@ local bMouseEnabled = true;
 local needReposition = true;
 
 -- Function to get primary stat based on class, inspired by PaperDollFrame.lua
-local function GetPrimaryStat()
+local function get_primarystat()
     local currspec = C_SpecializationInfo.GetSpecialization() or 1;
     local primaryStatID = select(6, C_SpecializationInfo.GetSpecializationInfo(currspec)) or 1;
     local primaryStatValue = UnitStat("player", primaryStatID);
@@ -249,7 +243,7 @@ local function GetPrimaryStat()
     return primaryStatValue;
 end
 
-local function asGetCrit()
+local function get_crit()
     --PaperDollFrame_SetCritChance
     local spellCrit, rangedCrit, meleeCrit;
     local critChance;
@@ -277,13 +271,13 @@ local function asGetCrit()
 end
 
 -- Function to record current stat values into history
-local function RecordCurrentStats()
+local function recode_stats()
     local inCombat = UnitAffectingCombat("player");
 
     if not inCombat then
         local currentStats = {
-            Stat = GetPrimaryStat(),
-            Crit = asGetCrit(),
+            Stat = get_primarystat(),
+            Crit = get_crit(),
             Haste = GetHaste(),
             Mastery = GetMasteryEffect(),
             Versatility = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) +
@@ -314,169 +308,169 @@ local function RecordCurrentStats()
     end
 end
 
-local function UpdateStats()
+local function update_stats()
     if needReposition then
         needReposition = false;
 
-        local prevframe = asInformation;
+        local prevframe = main_frame;
         local yOffset = -5;
 
         if ASInformationSaved.showPrimary then
-            primaryStatBar:SetPoint("TOPLEFT", prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0,
+            ns.primarybar:SetPoint("TOPLEFT", prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0,
                 yOffset);
-            primaryStatBar:Show();
-            prevframe = primaryStatBar;
+            ns.primarybar:Show();
+            prevframe = ns.primarybar;
             yOffset = -2;
         else
-            primaryStatBar:Hide();
+            ns.primarybar:Hide();
         end
 
         if ASInformationSaved.showCrit then
-            critBar:SetPoint("TOPLEFT", prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset);
-            critBar:Show();
-            prevframe = critBar;
+            ns.critbar:SetPoint("TOPLEFT", prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset);
+            ns.critbar:Show();
+            prevframe = ns.critbar;
             yOffset = -2;
         else
-            critBar:Hide();
+            ns.critbar:Hide();
         end
 
         if ASInformationSaved.showHaste then
-            hasteBar:SetPoint("TOPLEFT", prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0,
+            ns.hastebar:SetPoint("TOPLEFT", prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0,
                 yOffset);
-            hasteBar:Show();
-            prevframe = hasteBar;
+            ns.hastebar:Show();
+            prevframe = ns.hastebar;
             yOffset = -2;
         else
-            hasteBar:Hide();
+            ns.hastebar:Hide();
         end
 
         if ASInformationSaved.showMastery then
-            masteryBar:SetPoint("TOPLEFT", prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0,
+            ns.masterybar:SetPoint("TOPLEFT", prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0,
                 yOffset);
-            masteryBar:Show();
-            prevframe = masteryBar;
+            ns.masterybar:Show();
+            prevframe = ns.masterybar;
             yOffset = -2;
         else
-            masteryBar:Hide();
+            ns.masterybar:Hide();
         end
 
         if ASInformationSaved.showVer then
-            versatilityBar:SetPoint("TOPLEFT", prevframe, (prevframe == asInformation and "TOPLEFT" or "BOTTOMLEFT"), 0,
+            ns.versbar:SetPoint("TOPLEFT", prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0,
                 yOffset);
-            versatilityBar:Show();
-            prevframe = versatilityBar;
+            ns.versbar:Show();
+            prevframe = ns.versbar;
             yOffset = -2;
         else
-            versatilityBar:Hide();
+            ns.versbar:Hide();
         end
     end
 
     local haste = GetHaste()
-    local crit = asGetCrit()
+    local crit = get_crit()
     local mastery = GetMasteryEffect()
     local versatility = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) +
         GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
-    local primaryStatValue = GetPrimaryStat()
+    local primaryStatValue = get_primarystat()
 
     if ASInformationSaved.showCrit then
-        if critBar and critBarText then     -- Check if bar and text elements exist
-            critBar:SetMinMaxValues(0, 100) -- Assuming stats are percentage based 0-100
-            critBar:SetValue(crit, Enum.StatusBarInterpolation.ExponentialEaseOut)
-            critBarText:SetText(string.format("%.2f%%", crit))
+        if ns.critbar and ns.crittext then     -- Check if bar and text elements exist
+            ns.critbar:SetMinMaxValues(0, 100) -- Assuming stats are percentage based 0-100
+            ns.critbar:SetValue(crit, Enum.StatusBarInterpolation.ExponentialEaseOut)
+            ns.crittext:SetText(string.format("%.2f%%", crit))
 
             local minCrit = recentMinimumStats.Crit
             if minCrit ~= nil and crit > minCrit then
-                critBar:SetStatusBarColor(statConfigs.Crit.gemColor.r, statConfigs.Crit.gemColor.g,
+                ns.critbar:SetStatusBarColor(statConfigs.Crit.gemColor.r, statConfigs.Crit.gemColor.g,
                     statConfigs.Crit.gemColor.b)
-                critBarText:SetTextColor(activatedTextColor.r, activatedTextColor.g, activatedTextColor.b)
+                ns.crittext:SetTextColor(activatedTextColor.r, activatedTextColor.g, activatedTextColor.b)
             else
-                critBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
-                critBarText:SetTextColor(statConfigs.Crit.gemColor.r, statConfigs.Crit.gemColor.g,
+                ns.critbar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
+                ns.crittext:SetTextColor(statConfigs.Crit.gemColor.r, statConfigs.Crit.gemColor.g,
                     statConfigs.Crit.gemColor.b)
             end
 
             if crit >= ASInformationSaved.stateThreshold then
-                ns.lib.PixelGlow_Start(critBar);
+                ns.lib.PixelGlow_Start(ns.critbar);
             else
-                ns.lib.PixelGlow_Stop(critBar);
+                ns.lib.PixelGlow_Stop(ns.critbar);
             end
         end
     end
 
     if ASInformationSaved.showHaste then
-        if hasteBar and hasteBarText then -- Check if bar and text elements exist
-            hasteBar:SetMinMaxValues(0, 100)
-            hasteBar:SetValue(haste, Enum.StatusBarInterpolation.ExponentialEaseOut)
-            hasteBarText:SetText(string.format("%.2f%%", haste))
+        if ns.hastebar and ns.hastetext then -- Check if bar and text elements exist
+            ns.hastebar:SetMinMaxValues(0, 100)
+            ns.hastebar:SetValue(haste, Enum.StatusBarInterpolation.ExponentialEaseOut)
+            ns.hastetext:SetText(string.format("%.2f%%", haste))
 
             local minHaste = recentMinimumStats.Haste
             if minHaste ~= nil and haste > minHaste then
-                hasteBar:SetStatusBarColor(statConfigs.Haste.gemColor.r, statConfigs.Haste.gemColor.g,
+                ns.hastebar:SetStatusBarColor(statConfigs.Haste.gemColor.r, statConfigs.Haste.gemColor.g,
                     statConfigs.Haste.gemColor.b)
-                hasteBarText:SetTextColor(activatedTextColor.r, activatedTextColor.g, activatedTextColor.b)
+                ns.hastetext:SetTextColor(activatedTextColor.r, activatedTextColor.g, activatedTextColor.b)
             else
-                hasteBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
-                hasteBarText:SetTextColor(statConfigs.Haste.gemColor.r, statConfigs.Haste.gemColor.g,
+                ns.hastebar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
+                ns.hastetext:SetTextColor(statConfigs.Haste.gemColor.r, statConfigs.Haste.gemColor.g,
                     statConfigs.Haste.gemColor.b)
             end
             if haste >= ASInformationSaved.stateThreshold then
-                ns.lib.PixelGlow_Start(hasteBar);
+                ns.lib.PixelGlow_Start(ns.hastebar);
             else
-                ns.lib.PixelGlow_Stop(hasteBar);
+                ns.lib.PixelGlow_Stop(ns.hastebar);
             end
         end
     end
 
     if ASInformationSaved.showMastery then
-        if masteryBar and masteryBarText then -- Check if bar and text elements exist
-            masteryBar:SetMinMaxValues(0, 100)
-            masteryBar:SetValue(mastery, Enum.StatusBarInterpolation.ExponentialEaseOut)
-            masteryBarText:SetText(string.format("%.2f%%", mastery))
+        if ns.masterybar and ns.masterytext then -- Check if bar and text elements exist
+            ns.masterybar:SetMinMaxValues(0, 100)
+            ns.masterybar:SetValue(mastery, Enum.StatusBarInterpolation.ExponentialEaseOut)
+            ns.masterytext:SetText(string.format("%.2f%%", mastery))
 
             local minMastery = recentMinimumStats.Mastery
             if minMastery ~= nil and mastery > minMastery then
-                masteryBar:SetStatusBarColor(statConfigs.Mastery.gemColor.r, statConfigs.Mastery.gemColor.g,
+                ns.masterybar:SetStatusBarColor(statConfigs.Mastery.gemColor.r, statConfigs.Mastery.gemColor.g,
                     statConfigs.Mastery.gemColor.b)
-                masteryBarText:SetTextColor(activatedTextColor.r, activatedTextColor.g, activatedTextColor.b)
+                ns.masterytext:SetTextColor(activatedTextColor.r, activatedTextColor.g, activatedTextColor.b)
             else
-                masteryBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
-                masteryBarText:SetTextColor(statConfigs.Mastery.gemColor.r, statConfigs.Mastery.gemColor.g,
+                ns.masterybar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
+                ns.masterytext:SetTextColor(statConfigs.Mastery.gemColor.r, statConfigs.Mastery.gemColor.g,
                     statConfigs.Mastery.gemColor.b)
             end
             if mastery >= ASInformationSaved.stateThreshold then
-                ns.lib.PixelGlow_Start(masteryBar);
+                ns.lib.PixelGlow_Start(ns.masterybar);
             else
-                ns.lib.PixelGlow_Stop(masteryBar);
+                ns.lib.PixelGlow_Stop(ns.masterybar);
             end
         end
     end
 
     if ASInformationSaved.showVer then
-        if versatilityBar and versatilityBarText then -- Check if bar and text elements exist
-            versatilityBar:SetMinMaxValues(0, 100)
-            versatilityBar:SetValue(versatility, Enum.StatusBarInterpolation.ExponentialEaseOut)
-            versatilityBarText:SetText(string.format("%.2f%%", versatility))
+        if ns.versbar and ns.verstext then -- Check if bar and text elements exist
+            ns.versbar:SetMinMaxValues(0, 100)
+            ns.versbar:SetValue(versatility, Enum.StatusBarInterpolation.ExponentialEaseOut)
+            ns.verstext:SetText(string.format("%.2f%%", versatility))
 
             local minVersatility = recentMinimumStats.Versatility
             if minVersatility ~= nil and versatility > minVersatility then
-                versatilityBar:SetStatusBarColor(statConfigs.Versatility.gemColor.r, statConfigs.Versatility.gemColor.g,
+                ns.versbar:SetStatusBarColor(statConfigs.Versatility.gemColor.r, statConfigs.Versatility.gemColor.g,
                     statConfigs.Versatility.gemColor.b)
-                versatilityBarText:SetTextColor(activatedTextColor.r, activatedTextColor.g, activatedTextColor.b)
+                ns.verstext:SetTextColor(activatedTextColor.r, activatedTextColor.g, activatedTextColor.b)
             else
-                versatilityBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
-                versatilityBarText:SetTextColor(statConfigs.Versatility.gemColor.r, statConfigs.Versatility.gemColor.g,
+                ns.versbar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
+                ns.verstext:SetTextColor(statConfigs.Versatility.gemColor.r, statConfigs.Versatility.gemColor.g,
                     statConfigs.Versatility.gemColor.b)
             end
             if versatility >= ASInformationSaved.stateThreshold then
-                ns.lib.PixelGlow_Start(versatilityBar);
+                ns.lib.PixelGlow_Start(ns.versbar);
             else
-                ns.lib.PixelGlow_Stop(versatilityBar);
+                ns.lib.PixelGlow_Stop(ns.versbar);
             end
         end
     end
 
     if ASInformationSaved.showPrimary then
-        if primaryStatBar and primaryStatBarText then
+        if ns.primarybar and ns.primarytext then
             -- Assuming primary stats don't have a typical "max" like secondary stats for bar display,
             -- we can set a reasonable max or just display the value. Here, we'll set a nominal max.
             -- Or, we could calculate a "max" based on typical gear levels if desired.
@@ -486,24 +480,24 @@ local function UpdateStats()
 
             local minStat = recentMinimumStats.Stat
             if minStat ~= nil and primaryStatValue > minStat then
-                primaryStatBar:SetStatusBarColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g,
+                ns.primarybar:SetStatusBarColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g,
                     statConfigs.Stat.gemColor.b)
-                primaryStatBarText:SetTextColor(activatedTextColor.r, activatedTextColor.g, activatedTextColor.b)
+                ns.primarytext:SetTextColor(activatedTextColor.r, activatedTextColor.g, activatedTextColor.b)
                 showvalue = primaryStatValue - minStat;
                 maxvalue = minStat * 0.2;
             else
-                primaryStatBar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
-                primaryStatBarText:SetTextColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g,
+                ns.primarybar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b)
+                ns.primarytext:SetTextColor(statConfigs.Stat.gemColor.r, statConfigs.Stat.gemColor.g,
                     statConfigs.Stat.gemColor.b)
             end
-            primaryStatBar:SetMinMaxValues(0, maxvalue) -- Dynamic max based on current value for visual effect
-            primaryStatBar:SetValue(showvalue, Enum.StatusBarInterpolation.ExponentialEaseOut)
-            primaryStatBarText:SetText(string.format("%d", showvalue))
+            ns.primarybar:SetMinMaxValues(0, maxvalue) -- Dynamic max based on current value for visual effect
+            ns.primarybar:SetValue(showvalue, Enum.StatusBarInterpolation.ExponentialEaseOut)
+            ns.primarytext:SetText(string.format("%d", showvalue))
 
             if showvalue >= maxvalue then
-                ns.lib.PixelGlow_Start(primaryStatBar);
+                ns.lib.PixelGlow_Start(ns.primarybar);
             else
-                ns.lib.PixelGlow_Stop(primaryStatBar);
+                ns.lib.PixelGlow_Stop(ns.primarybar);
             end
 
             -- No threshold glow for primary stat for now, can be added if needed
@@ -512,12 +506,12 @@ local function UpdateStats()
 
     if ASInformationSaved.isLocked then
         if bMouseEnabled then
-            asInformation:EnableMouse(false);
+            main_frame:EnableMouse(false);
             bMouseEnabled = false;
         end
     else
         if not bMouseEnabled then
-            asInformation:EnableMouse(true);
+            main_frame:EnableMouse(true);
             bMouseEnabled = true;
         end
     end
@@ -526,35 +520,35 @@ end
 
 -- Variables for managing stat recording frequency
 
-local function OnUpdate()
-    RecordCurrentStats()
-    UpdateStats() -- This will use recentMinimumStats in the next plan step
+local function on_update()
+    recode_stats()
+    update_stats() -- This will use recentMinimumStats in the next plan step
 end
 
 
 -- Make the addon frame movable
-asInformation:SetScript("OnMouseDown", function(self, button)
+main_frame:SetScript("OnMouseDown", function(self, button)
     if button == "LeftButton" and not ASInformationSaved.isLocked then
         self:StartMoving()
         self.isMoving = true
     end
 end)
 
-asInformation:SetScript("OnMouseUp", function(self, button)
+main_frame:SetScript("OnMouseUp", function(self, button)
     if button == "LeftButton" and self.isMoving then
         self:StopMovingOrSizing()
         self.isMoving = false
-        SavePosition()
+        save_position()
     end
 end)
 
-local function SetupOptions()
+local function setup_option()
     -- Create the options panel
 
     if ASInformationSaved and ASInformationSaved.version == defaultOptions.version then
         -- do nothing
     else
-        ASInformationSaved = defaultOptions;
+        ASInformationSaved = CopyTable(defaultOptions);
     end
 
     local optionsPanel = CreateFrame("Frame", "asInformationOptionsPanel", InterfaceOptionsFramePanelContainer)
@@ -654,41 +648,41 @@ end
 
 local bfirst = true;
 
-local function initAll()
-    SetupOptions()
-    LoadPosition()
-    initFrames();
-    asInformation:SetUserPlaced(true)
+local function init()
+    setup_option()
+    load_position()
+    init_frames();
+    main_frame:SetUserPlaced(true)
 
     C_AddOns.LoadAddOn("asMOD");
 
     if asMOD_setupFrame then
-        asMOD_setupFrame(asInformation, "asInformation");
+        asMOD_setupFrame(main_frame, "asInformation");
     end
     -- No longer registering UNIT_AURA for stat activation
     bfirst = false;
-    C_Timer.NewTicker(updateInterval, OnUpdate); -- This ticker calls OnUpdate, which then calls UpdateStats
+    C_Timer.NewTicker(configs.updaterate, on_update); -- This ticker calls OnUpdate, which then calls UpdateStats
 end
 
-local function OnEvent(self, event, ...)
+local function on_event(self, event, ...)
     local arg = ...;
 
     if event == "PLAYER_ENTERING_WORLD" then
         if UnitAffectingCombat("player") then
-            asInformation:SetAlpha(AIF_Alpha);
+            main_frame:SetAlpha(configs.combatalpha);
         else
-            asInformation:SetAlpha(AIF_Alpha_Normal);
+            main_frame:SetAlpha(configs.normalalpha);
         end
     elseif event == "PLAYER_REGEN_DISABLED" then
-        asInformation:SetAlpha(AIF_Alpha);
+        main_frame:SetAlpha(configs.combatalpha);
     elseif event == "PLAYER_REGEN_ENABLED" then
-        asInformation:SetAlpha(AIF_Alpha_Normal);
+        main_frame:SetAlpha(configs.normalalpha);
     elseif event == "ADDON_LOADED" and arg == "asInformation" and bfirst == true then
-        initAll();
+        C_Timer.After(0.5, init);
     end
 end
-asInformation:RegisterEvent("PLAYER_ENTERING_WORLD")
-asInformation:RegisterEvent("PLAYER_REGEN_DISABLED");
-asInformation:RegisterEvent("PLAYER_REGEN_ENABLED");
-asInformation:RegisterEvent("ADDON_LOADED");
-asInformation:SetScript("OnEvent", OnEvent)
+main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+main_frame:RegisterEvent("ADDON_LOADED");
+main_frame:SetScript("OnEvent", on_event)

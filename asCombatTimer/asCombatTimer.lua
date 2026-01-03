@@ -30,15 +30,17 @@ local function save_position(frame, option)
 	option.yOfs = yOfs
 end
 
-ns.updateOptions = function()
+ns.update_options = function()
 	main_frame.timertext:SetFont(configs.fonts[ns.options.Font], ns.options.FontSize, "OUTLINE");
 end
 
-local bMouseEnabled = true;
-local combat_start_time = nil;
-local combat_end_time = nil;
-local encounter_start_time = nil;
-local encounter_end_time = nil;
+local gvalues = {
+	bmouseenabled = true,
+	combatstart = nil,
+	combatend = nil,
+	encounterstart = nil,
+	encounterend = nil,
+}
 
 -- Function to format seconds into HH:MM:SS
 local function format_time(seconds)
@@ -51,14 +53,14 @@ end
 local function on_update()
 	local timertext = main_frame.timertext;
 	if ns.options.LockWindow then
-		if bMouseEnabled then
+		if gvalues.bmouseenabled then
 			main_frame:EnableMouse(false);
-			bMouseEnabled = false;
+			gvalues.bmouseenabled = false;
 		end
 	else
-		if not bMouseEnabled then
+		if not gvalues.bmouseenabled then
 			main_frame:EnableMouse(true);
-			bMouseEnabled = true;
+			gvalues.bmouseenabled = true;
 		end
 	end
 
@@ -74,14 +76,14 @@ local function on_update()
 
 	local time_sec = 0;
 
-	if encounter_start_time and encounter_end_time == nil then
-		time_sec = GetTime() - encounter_start_time;
-	elseif encounter_start_time and encounter_end_time and combat_start_time and encounter_end_time > combat_start_time then
-		time_sec = encounter_end_time - encounter_start_time;
-	elseif combat_start_time and combat_end_time == nil then
-		time_sec = GetTime() - combat_start_time;
-	elseif combat_start_time and combat_end_time then
-		time_sec = combat_end_time - combat_start_time;
+	if gvalues.encounterstart and gvalues.encounterend == nil then
+		time_sec = GetTime() - gvalues.encounterstart;
+	elseif gvalues.encounterstart and gvalues.encounterend and gvalues.combatstart and gvalues.encounterend > gvalues.combatstart then
+		time_sec = gvalues.encounterend - gvalues.encounterstart;
+	elseif gvalues.combatstart and gvalues.combatend == nil then
+		time_sec = GetTime() - gvalues.combatstart;
+	elseif gvalues.combatstart and gvalues.combatend then
+		time_sec = gvalues.combatend - gvalues.combatstart;
 	end
 
 	if time_sec >= 0 then
@@ -92,18 +94,18 @@ end
 
 local function on_event(self, event)
 	if event == "PLAYER_REGEN_DISABLED" then
-		combat_start_time = GetTime();
-		combat_end_time = nil;
+		gvalues.combatstart = GetTime();
+		gvalues.combatend = nil;
 	elseif event == "PLAYER_REGEN_ENABLED" then
-		combat_end_time = GetTime();
+		gvalues.combatend = GetTime();
 	elseif event == "ENCOUNTER_START" then
-		encounter_start_time = GetTime();
-		encounter_end_time = nil;
+		gvalues.encounterstart = GetTime();
+		gvalues.encounterend = nil;
 	elseif event == "ENCOUNTER_END" then
-		encounter_end_time = GetTime();
+		gvalues.encounterend = GetTime();
 	else
-		encounter_end_time = GetTime();
-		combat_end_time = GetTime();
+		gvalues.encounterend = GetTime();
+		gvalues.combatend = GetTime();
 	end
 end
 
@@ -152,7 +154,7 @@ local function init()
 		end
 	end)
 
-	ns.updateOptions();
+	ns.update_options();
 
 	load_position(main_frame, ASTM_Position);
 
