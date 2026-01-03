@@ -1,28 +1,28 @@
 ﻿local _, ns = ...;
-local ASBR_SIZE = 40;
-local ASBR_CoolButtons_X = 350
-local ASBR_CoolButtons_Y = -400
-local ASBR_Alpha = 0.9
-local ASBR_CooldownFontSize = 11
-local ASBR_Spell = 20484;
+local configs = {
+	size = 40,
+	xpoint = 350,
+	ypoint = -400,
+	alpha = 1,
+	cooldownfontsize = 12,
+	spellid = 20484,
+}
 
--- 옵션끝
-local ASBR_CoolButtons;
+local main_button = CreateFrame("Button", nil, UIParent, "asBattleResFrameTemplate");
 
 local function clear_cooldownframe(self)
 	self:Clear();
 end
 
-
 -- Function to load saved position
-local function LoadPosition(frame, option)
+local function load_position(frame, option)
 	frame:ClearAllPoints()
 	frame:SetPoint(option.point, UIParent, option.relativePoint, option.xOfs,
 		option.yOfs)
 end
 
 -- Function to save position
-local function SavePosition(frame, option)
+local function save_position(frame, option)
 	local point, _, relativePoint, xOfs, yOfs = frame:GetPoint()
 	option.point = point
 	option.relativePoint = relativePoint
@@ -41,114 +41,112 @@ end
 
 local bMouseEnabled = true;
 
-local function ASBR_Update()
+local function on_update()
 	if ns.options.LockWindow then
 		if bMouseEnabled then
-			ASBR_CoolButtons:EnableMouse(false);
+			main_button:EnableMouse(false);
 			bMouseEnabled = false;
 		end
 	else
 		if not bMouseEnabled then
-			ASBR_CoolButtons:EnableMouse(true);
+			main_button:EnableMouse(true);
 			bMouseEnabled = true;
 		end
 	end
 
 	if IsInGroup() or not ns.options.LockWindow then
-		ASBR_CoolButtons:Show();
+		main_button:Show();
 	else
-		ASBR_CoolButtons:Hide();
+		main_button:Hide();
 		return;
 	end
 
-	local count = C_Spell.GetSpellDisplayCount(ASBR_Spell);
-	local spellChargeInfo = C_Spell.GetSpellCharges(ASBR_Spell);
+	local count = C_Spell.GetSpellDisplayCount(configs.spellid);
+	local chargeinfo = C_Spell.GetSpellCharges(configs.spellid);
 
 
-	ASBR_CoolButtons.count:SetText(count);
-	ASBR_CoolButtons.count:Show();
-	ASBR_CoolButtons.icon:SetDesaturated(false);
+	main_button.count:SetText(count);
+	main_button.count:Show();
+	main_button.icon:SetDesaturated(false);
 
-	if spellChargeInfo then
-		ASBR_CoolButtons.cooldown:Show();
-		set_cooldownframe(ASBR_CoolButtons.cooldown, spellChargeInfo.cooldownStartTime,
-			spellChargeInfo.cooldownDuration, true, true);
+	if chargeinfo then
+		main_button.cooldown:Show();
+		set_cooldownframe(main_button.cooldown, chargeinfo.cooldownStartTime,
+			chargeinfo.cooldownDuration, true, true);
 	else
-		ASBR_CoolButtons.cooldown:Hide();
+		main_button.cooldown:Hide();
 	end
 end
 
-local function ASBR_Init()
+local function init()
 	ASBR_Position = ASBR_Position or {
 		point = "CENTER",
 		relativePoint = "CENTER",
-		xOfs = ASBR_CoolButtons_X,
-		yOfs = ASBR_CoolButtons_Y,
+		xOfs = configs.xpoint,
+		yOfs = configs.ypoint,
 	}
 
 	ns.setup_option();
 	C_AddOns.LoadAddOn("asMOD");
 
 
-	ASBR_CoolButtons = CreateFrame("Button", nil, UIParent, "asBattleResFrameTemplate");
-	ASBR_CoolButtons:EnableMouse(true);
-	ASBR_CoolButtons:RegisterForDrag("LeftButton");
-	ASBR_CoolButtons:SetMovable(true);
+	main_button:EnableMouse(true);
+	main_button:RegisterForDrag("LeftButton");
+	main_button:SetMovable(true);
 
-	ASBR_CoolButtons.cooldown:SetHideCountdownNumbers(false);
-	ASBR_CoolButtons.cooldown:SetDrawSwipe(true);
+	main_button.cooldown:SetHideCountdownNumbers(false);
+	main_button.cooldown:SetDrawSwipe(true);
 
-	for _, r in next, { ASBR_CoolButtons.cooldown:GetRegions() } do
+	for _, r in next, { main_button.cooldown:GetRegions() } do
 		if r:GetObjectType() == "FontString" then
-			r:SetFont(STANDARD_TEXT_FONT, ASBR_CooldownFontSize, "OUTLINE");
+			r:SetFont(STANDARD_TEXT_FONT, configs.cooldownfontsize, "OUTLINE");
 			r:SetDrawLayer("OVERLAY");
 			break
 		end
 	end
 
-	ASBR_CoolButtons.icon:SetTexCoord(.08, .92, .08, .92);
-	ASBR_CoolButtons.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-	ASBR_CoolButtons.border:SetVertexColor(0, 0, 0);
+	main_button.icon:SetTexCoord(.08, .92, .08, .92);
+	main_button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+	main_button.border:SetVertexColor(0, 0, 0);
 
-	ASBR_CoolButtons.count:SetFont(STANDARD_TEXT_FONT, ASBR_CooldownFontSize, "OUTLINE")
-	ASBR_CoolButtons.count:ClearAllPoints();
-	ASBR_CoolButtons.count:SetPoint("BOTTOMRIGHT", ASBR_CoolButtons, "BOTTOMRIGHT", -3, 3);
+	main_button.count:SetFont(STANDARD_TEXT_FONT, configs.cooldownfontsize, "OUTLINE")
+	main_button.count:ClearAllPoints();
+	main_button.count:SetPoint("BOTTOMRIGHT", main_button, "BOTTOMRIGHT", -3, 3);
 
-	ASBR_CoolButtons:SetPoint("CENTER", ASBR_CoolButtons_X, ASBR_CoolButtons_Y)
-	ASBR_CoolButtons:SetWidth(ASBR_SIZE);
-	ASBR_CoolButtons:SetHeight(ASBR_SIZE * 0.9);
-	ASBR_CoolButtons:SetScale(1);
+	main_button:SetPoint("CENTER", configs.xpoint, configs.ypoint)
+	main_button:SetWidth(configs.size);
+	main_button:SetHeight(configs.size * 0.9);
+	main_button:SetAlpha(configs.alpha);
+	main_button:SetScale(1);
 
 
-	ASBR_CoolButtons:SetScript("OnDragStart", function(self)
+	main_button:SetScript("OnDragStart", function(self)
 		if not ns.options.LockWindow then
 			self:StartMoving()
 			self.isMoving = true
 		end
 	end)
 
-	ASBR_CoolButtons:SetScript("OnDragStop", function(self)
+	main_button:SetScript("OnDragStop", function(self)
 		if self.isMoving then
 			self:StopMovingOrSizing()
 			self.isMoving = false
-			SavePosition(ASBR_CoolButtons, ASBR_Position);
+			save_position(main_button, ASBR_Position);
 		end
 	end)
 
-	LoadPosition(ASBR_CoolButtons, ASBR_Position);
+	load_position(main_button, ASBR_Position);
 
 	if asMOD_setupFrame then
-		asMOD_setupFrame(ASBR_CoolButtons, "asBattleRes");
+		asMOD_setupFrame(main_button, "asBattleRes");
 	end
 
-	local spellInfo = C_Spell.GetSpellInfo(ASBR_Spell);
+	local spellInfo = C_Spell.GetSpellInfo(configs.spellid);
 
 	if spellInfo then
-		ASBR_CoolButtons.icon:SetTexture(spellInfo.iconID);
-		ASBR_CoolButtons.icon:SetAlpha(ASBR_Alpha);
-		--주기적으로 Callback
-		C_Timer.NewTicker(0.25, ASBR_Update);
+		main_button.icon:SetTexture(spellInfo.iconID);				
+		C_Timer.NewTicker(0.25, on_update);
 	end
 end
 
-C_Timer.After(0.5, ASBR_Init);
+C_Timer.After(0.5, init);
