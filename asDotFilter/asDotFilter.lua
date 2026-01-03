@@ -5,7 +5,7 @@ local configs = {
     maxshow = 2,
     alpha = 0.9,
     cooldownfontsize = 12,
-    countfontsize = 12,
+    countfontsize = 13,
 
     --설정 표시할 Unit
     unitlist = {

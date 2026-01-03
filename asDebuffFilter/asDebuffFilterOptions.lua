@@ -3,6 +3,7 @@ local _, ns = ...;
 local Options_Default = {
 	Version = 250920,
 	PlayerDebuffRate = 1.3,
+	CombatAlphaChange = true,
 };
 
 ns.configs = {
@@ -13,7 +14,7 @@ ns.configs = {
 	PLAYER_DEBUFF_Y = -130,
 	MAX_DEBUFF_SHOW = 7,
 	CooldownFontSize = 12, -- Cooldown Font Size
-	CountFontSize = 11, -- Count Font Size
+	CountFontSize = 13, -- Count Font Size
 	AlphaCombat = 1,   -- 전투중 Alpha 값
 	AlphaNormal = 0.5, -- 비 전투중 Alpha 값
 };

@@ -1,18 +1,17 @@
 # asDebuffFilter (Midnight)
 
-Displays debuffs of player and target
-![asDebuffFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDebuffFilter.JPG?raw=true)
+Displays player and target debuffs.
+![asDebuffFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDebuffFilter.JPG?raw=true)   
 
 ## Key Features
 
-Displays Player (left 6ea) and Target (right 6ea).
+Displays debuffs for the Player (up to 6 on the left) and the Target (up to 6 on the right).
 
-## Configuration
 
-*   **Player Debuff Size:** 
-*   **Move position:** Can be moved with the `/asConfig` command when using the asMOD addon.
-*   **Display buff cooldown:** To display the remaining duration of buffs as a number, you need to enable the cooldown display feature in the default World of Warcraft interface settings.
-![asBuffFilter_setup](https://github.com/aspilla/asMOD/blob/main/.Pictures/asBuffFilter_setup.JPG?raw=true)
+## Configuration 
+* `PlayerDebuffRate`: Set the size scale of player debuffs (Default: 1.3x).
+* `CombatAlphaChange`: Change transparency when out of combat (Default: On).
+* **Repositioning:** If the `asMOD` addon is installed, you can adjust the position using the `/asConfig` command.
     
 ---
 
@@ -27,8 +26,6 @@ Displays Player (left 6ea) and Target (right 6ea).
 
 
 ## 설정 
-
-* **플레이어 디버프 크기 설정 :**
+*   `PlayerDebuffRate` : 플레이어 디버프 크기 설정 (Default 1.3배)
+*   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
 * **위치 이동 :** asMOD 애드온 사용시 `/asConfig` 명령어로 이동 가능
-* **버프 쿨다운 표시 :** 버프의 남은 지속 시간이 숫자로 표시되도록 하려면 월드 오브 워크래프트 기본 인터페이스 설정에서 쿨다운 표시 기능을 활성화 필요
-![asBuffFilter_setup](https://github.com/aspilla/asMOD/blob/main/.Pictures/asBuffFilter_setup.JPG?raw=true)

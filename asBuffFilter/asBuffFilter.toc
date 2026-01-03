@@ -4,6 +4,7 @@
 ## Notes: Displays the target's buffs.
 ## Notes-koKR:대상의 버프를 표시
 ## Version : 251225
+## SavedVariablesPerCharacter: ABF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asBuffFilterOptions.lua

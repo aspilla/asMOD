@@ -184,18 +184,24 @@ local function on_event(self, event, arg1, ...)
     elseif (event == "PLAYER_TARGET_CHANGED") then
         clear_frames();
         update_auras("target");
-        if UnitAffectingCombat("player") then
-			main_frame:SetAlpha(ns.configs.AlphaCombat);
-		else
-			main_frame:SetAlpha(ns.configs.AlphaNormal);
-		end
+        if ns.options.CombatAlphaChange then
+            if UnitAffectingCombat("player") then
+			    main_frame:SetAlpha(ns.configs.AlphaCombat);
+		    else
+    			main_frame:SetAlpha(ns.configs.AlphaNormal);
+		    end
+        end
     elseif (event == "PLAYER_ENTERING_WORLD") then
         update_auras("target");
         update_auras("player");
     elseif event == "PLAYER_REGEN_DISABLED" then
-        main_frame:SetAlpha(ns.configs.AlphaCombat);
+        if ns.options.CombatAlphaChange then
+            main_frame:SetAlpha(ns.configs.AlphaCombat);
+        end
     elseif event == "PLAYER_REGEN_ENABLED" then
-        main_frame:SetAlpha(ns.configs.AlphaNormal);
+        if ns.options.CombatAlphaChange then
+            main_frame:SetAlpha(ns.configs.AlphaNormal);
+        end
     end
 end
 
@@ -223,10 +229,6 @@ local function update_anchor(frames, index, offsetX, right, parent)
     else
         buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
     end
-
-    -- Resize
-    buff:SetWidth(ns.configs.SIZE);
-    buff:SetHeight(ns.configs.SIZE * 0.8);
 end
 
 
@@ -268,6 +270,9 @@ local function create_frames(parent, bright, rate)
 
         frame:ClearAllPoints();
         update_anchor(parent.frames, idx, 1, bright, parent);
+            -- Resize
+        frame:SetWidth(ns.configs.SIZE);
+        frame:SetHeight(ns.configs.SIZE * 0.8);
         frame:EnableMouse(false);
         frame.data = {};
         frame:Hide();
@@ -284,8 +289,7 @@ local function init()
     main_frame:SetPoint("CENTER", 0, 0)
     main_frame:SetWidth(1)
     main_frame:SetHeight(1)
-    main_frame:SetScale(1)
-    main_frame:SetAlpha(ns.configs.AlphaNormal);
+    main_frame:SetScale(1)    
     main_frame:Show()
 
     main_frame.target_frame = CreateFrame("Frame", nil, main_frame)

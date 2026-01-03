@@ -118,17 +118,23 @@ local function on_event(self, event, arg1, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		resize_frames();
 		update_auras("target");
-		if UnitAffectingCombat("player") then
-			main_frame:SetAlpha(ns.configs.AlphaCombat);
-		else
-			main_frame:SetAlpha(ns.configs.AlphaNormal);
+		if ns.options.CombatAlphaChange then
+			if UnitAffectingCombat("player") then
+				main_frame:SetAlpha(ns.configs.AlphaCombat);
+			else
+				main_frame:SetAlpha(ns.configs.AlphaNormal);
+			end
 		end
 	elseif event == "PLAYER_REGEN_DISABLED" then
-		main_frame:SetAlpha(ns.configs.AlphaCombat);
+		if ns.options.CombatAlphaChange then
+			main_frame:SetAlpha(ns.configs.AlphaCombat);
+		end
 		resize_frames();
 		update_auras("target");
 	elseif event == "PLAYER_REGEN_ENABLED" then
-		main_frame:SetAlpha(ns.configs.AlphaNormal);
+		if ns.options.CombatAlphaChange then
+			main_frame:SetAlpha(ns.configs.AlphaNormal);
+		end
 		resize_frames();
 		update_auras("target");
 	end
@@ -166,9 +172,6 @@ local function update_anchor(frames, index, offsetX, right, center, parent)
 			buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
 		end
 	end
-
-	buff:SetWidth(ns.configs.SIZE);
-	buff:SetHeight(ns.configs.SIZE * 0.8);
 end
 
 local function create_frames(parent, bright, bcenter, max)
@@ -202,6 +205,9 @@ local function create_frames(parent, bright, bcenter, max)
 
 		update_anchor(parent.frames, idx, 1, bright, bcenter, parent);
 
+		frame:SetWidth(ns.configs.SIZE);
+		frame:SetHeight(ns.configs.SIZE * 0.8);
+
 		frame:EnableMouse(false);
 		frame:Hide();
 	end
@@ -215,11 +221,11 @@ end
 
 
 local function init()
+	ns.setup_option();
 	main_frame:SetPoint("CENTER", 0, 0)
 	main_frame:SetWidth(1)
 	main_frame:SetHeight(1)
-	main_frame:SetScale(1)
-	main_frame:SetAlpha(ns.configs.AlphaNormal);
+	main_frame:SetScale(1)	
 	main_frame:Show()
 
 
@@ -250,4 +256,4 @@ local function init()
 	update_auras("target");
 end
 
-C_Timer.After(0.5, init);
+C_Timer.After(1, init);
