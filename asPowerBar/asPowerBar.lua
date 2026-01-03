@@ -123,6 +123,9 @@ local function init_class()
     end
 
     if (englishClass == "WARRIOR") then
+        if (spec and spec == 3) then
+            spellid = 2565;
+        end
     end
 
     if (englishClass == "DEMONHUNTER") then
@@ -145,6 +148,10 @@ local function init_class()
     end
 
     if (englishClass == "SHAMAN") then
+
+        if (spec and spec == 1) then
+            spellid = 51505;
+        end
         if spec and spec == 2 then
             auraid = 344179;
             max_aura = 10;
@@ -296,6 +303,18 @@ local function init_addon()
         ns.spellframes[i]:SetFrameLevel(ns.config.framelevel + 200);
         ns.spellframes[i]:SetHeight(ns.config.comboheight + 2);
         ns.spellframes[i]:SetWidth(20);
+
+        ns.spellframes[i].range = ns.spellframes[i]:CreateTexture(nil, "ARTWORK");
+        ns.spellframes[i].range:SetColorTexture(0.6, 0, 0);
+        ns.spellframes[i].range:SetAlpha(0.5);
+        ns.spellframes[i].range:SetAllPoints(ns.spellframes[i]);
+        ns.spellframes[i].range:Hide();
+
+        ns.spellframes[i].notenough = ns.spellframes[i]:CreateTexture(nil, "ARTWORK");
+        ns.spellframes[i].notenough:SetColorTexture(0.3, 0.3, 0.3);
+        ns.spellframes[i].notenough:SetAlpha(0.5);
+        ns.spellframes[i].notenough:SetAllPoints(ns.spellframes[i]);
+        ns.spellframes[i].notenough:Hide();
 
         if i == 1 then
             ns.spellframes[i]:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", -1, 0);
