@@ -1,22 +1,20 @@
 local _, ns = ...;
 local version = select(4, GetBuildInfo());
-local asMOD;
-local asMOD_UIScale = 0.75;
-local asMOD_CurrVersion = 260104;
 
-asMOD_t_position = {};
+local configs = {
+	uiscale = 0.75,
+	version = 260104,
+};
+
+local positions = {};
 
 if not asMOD_position then
-	asMOD_position = {}
+	asMOD_position = {};
 end
 
-local layoutInfo;
-
-local function asMOD_Import_Layout(text, name)
-	local importLayoutInfo = C_EditMode.ConvertStringToLayoutInfo(text);
-	if not layoutInfo then
-		layoutInfo = C_EditMode.GetLayouts();
-	end
+local function import_layout(layout_text, name)
+	local importLayoutInfo = C_EditMode.ConvertStringToLayoutInfo(layout_text);
+	local layoutInfo = C_EditMode.GetLayouts();
 
 	if importLayoutInfo and layoutInfo then
 		local layoutType = Enum.EditModeLayoutType.Account;
@@ -39,16 +37,16 @@ local function asMOD_Import_Layout(text, name)
 			table.insert(layoutInfo.layouts, newLayoutIndex, importLayoutInfo);
 		end
 	end
+
+	C_EditMode.SaveLayouts(layoutInfo);
 end
 
-local function asMOD_Import_Commit()
-	C_EditMode.SaveLayouts(layoutInfo);
-
+local function select_layout(name)
 	local layoutinfo = C_EditMode.GetLayouts()
 	local index = nil;
 
 	for i, element in ipairs(layoutinfo.layouts) do
-		if element.layoutName == "asMOD_layout" then
+		if element.layoutName == name then
 			index = i;
 			break;
 		end
@@ -59,7 +57,7 @@ local function asMOD_Import_Commit()
 	end
 end
 
-local function createMacro()
+local function create_macro()
 	if InCombatLockdown() then
 		return;
 	end
@@ -76,14 +74,14 @@ local function createMacro()
 		if global < 120 then
 			CreateMacro(macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText, false);
 		else
-            print("asMOD error:too many macros, so need to delete some")
+			print("asMOD error:too many macros, so need to delete some")
 		end
 	else
 		EditMacro(macroID, macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText)
 	end
 end
 
-local function asMOD_Setup()
+local function setup_wowoptions()
 	-- 모든 UI 위치를 Reset 한다.
 	asMOD_position = {};
 
@@ -91,11 +89,11 @@ local function asMOD_Setup()
 	--UI Scale 을 조정합니다.
 	SetCVar("useUiScale", "1");
 
-	if asMOD_UIScale then
-		if (asMOD_UIScale < 0.64) then
-			UIParent:SetScale(asMOD_UIScale)
+	if configs.uiscale then
+		if (configs.uiscale < 0.64) then
+			UIParent:SetScale(configs.uiscale)
 		else
-			SetCVar("uiScale", asMOD_UIScale)
+			SetCVar("uiScale", configs.uiscale)
 		end
 	end
 
@@ -120,24 +118,25 @@ local function asMOD_Setup()
 	--개인 자원바
 	SetCVar("nameplateShowSelf", "0");
 
-	--공격대창 
+	--공격대창
 	SetCVar("raidFramesDisplayClassColor", 1);
 	SetCVar("raidFramesDisplayDebuffs", 1);
 	SetCVar("raidFramesDispelIndicatorType", 1);
+	SetCVar("raidFramesDisplayPowerBars", 0);
 
 	--Unit Frame 설정 변경
 	SetCVar("showTargetOfTarget", 1);
-	
+
 	-- 쿨다운 뷰어
 	SetCVar("cooldownViewerEnabled", 1);
 
 	-- 전투 상황 알림
-	SetCVar("enableFloatingCombatText", 0);	
+	SetCVar("enableFloatingCombatText", 0);
 
 	--데미지 미터
 	SetCVar("damageMeterEnabled", 1);
-	
-	
+
+
 	--채팅창에 직업색상을 표시하게 합니다.
 	ToggleChatColorNamesByClassGroup(true, "SAY")
 	ToggleChatColorNamesByClassGroup(true, "EMOTE")
@@ -155,8 +154,8 @@ local function asMOD_Setup()
 	ToggleChatColorNamesByClassGroup(true, "INSTANCE_CHAT")
 	ToggleChatColorNamesByClassGroup(true, "INSTANCE_CHAT_LEADER")
 
-	asMOD_Import_Layout(ns.layout, "asMOD_layout");
-	asMOD_Import_Commit();	
+	import_layout(ns.layout, "asMOD_layout");
+	select_layout("asMOD_layout");
 
 	local bload = C_AddOns.LoadAddOn("BugSack")
 
@@ -178,19 +177,19 @@ local function asMOD_Setup()
 	ReloadUI();
 end
 
-local function asMOD_Popup()
+local function show_asMODpopup()
 	StaticPopup_Show("asMOD")
 end
 
 
-local function funcDragStop(self)
+local function on_stopdrag(self)
 	local _, _, _, x, y = self:GetPoint();
 	self.text:SetText(self.addonName .. "\n" .. string.format("%5.1f", x) .. "\n" .. string.format("%5.1f", y));
 	self.StopMovingOrSizing(self);
 end
 
 
-local function setupFrame(frame, Name, addonName, config)
+local function setup_frame(frame, Name, addonName, config)
 	frame = CreateFrame("Frame", Name, UIParent)
 	frame.addonName = addonName;
 	frame.text = frame:CreateFontString(nil, "OVERLAY")
@@ -202,7 +201,7 @@ local function setupFrame(frame, Name, addonName, config)
 	frame:RegisterForDrag("LeftButton")
 	frame:SetFrameStrata("HIGH");
 	frame:SetScript("OnDragStart", frame.StartMoving)
-	frame:SetScript("OnDragStop", funcDragStop);
+	frame:SetScript("OnDragStop", on_stopdrag);
 	-- The code below makes the frame visible, and is not necessary to enable dragging.
 	frame:SetPoint(config["anchor1"], config["parent"], config["anchor2"], config["x"], config["y"]);
 	if config["width"] and config["width"] > 5 then
@@ -225,8 +224,7 @@ end
 
 
 function asMOD_setupFrame(frame, addonName)
-	local parent;
-	asMOD_t_position[addonName] = {
+	positions[addonName] = {
 		["name"] = addonName,
 		["parent"] = "UIParent",
 		["anchor1"] = "CENTER",
@@ -236,10 +234,10 @@ function asMOD_setupFrame(frame, addonName)
 		["width"] = 0,
 		["height"] = 0
 	};
-	asMOD_t_position[addonName]["anchor1"], _, asMOD_t_position[addonName]["anchor2"], asMOD_t_position[addonName]["x"], asMOD_t_position[addonName]["y"] =
+	positions[addonName]["anchor1"], _, positions[addonName]["anchor2"], positions[addonName]["x"], positions[addonName]["y"] =
 		frame:GetPoint();
-	asMOD_t_position[addonName]["width"] = frame:GetWidth();
-	asMOD_t_position[addonName]["height"] = frame:GetHeight();
+	positions[addonName]["width"] = frame:GetWidth();
+	positions[addonName]["height"] = frame:GetHeight();
 
 	if asMOD_position[addonName] then
 		frame:ClearAllPoints();
@@ -250,74 +248,74 @@ end
 
 local framelist = {};
 
-local function asMOD_Popup_Config()
-	for i, value in pairs(asMOD_t_position) do
+local function show_configpopup()
+	for i, value in pairs(positions) do
 		local index = value["name"]
 
 		if not asMOD_position[index] then
-			asMOD_position[index] = asMOD_t_position[index]
+			asMOD_position[index] = positions[index]
 		end
 		framelist[index] = nil
 
 
-		framelist[index] = setupFrame(framelist[index], "asMOD_frame" .. index, index, asMOD_position[index]);
+		framelist[index] = setup_frame(framelist[index], "asMOD_frame" .. index, index, asMOD_position[index]);
 	end
 
 	StaticPopup_Show("asConfig")
 end
 
-local function asMOD_Cancel_Position()
-	for i, value in pairs(asMOD_t_position) do
+local function cancel_position()
+	for i, value in pairs(positions) do
 		local index = value["name"]
 		framelist[index]:Hide()
 	end
 end
 
 
-local function asMOD_Setup_Position()
-	for i, value in pairs(asMOD_t_position) do
+local function save_positions()
+	for i, value in pairs(positions) do
 		local index = value["name"]
 		asMOD_position[index]["anchor1"], _, asMOD_position[index]["anchor2"], asMOD_position[index]["x"], asMOD_position[index]["y"] =
 			framelist[index]:GetPoint();
 	end
-	asMOD_Cancel_Position();
+	cancel_position();
 
 	ReloadUI();
 end
 
 
-local function asMOD_Popup_Clear()
+local function show_clearpopup()
 	StaticPopup_Show("asClear")
 end
 
-local function asMOD_Clear()
+local function reset_positions()
 	asMOD_position = {};
 	ReloadUI();
 end
 
-local function asMOD_OnEvent(self, event, arg1)
+local function on_event(self, event, arg1)
 	if event == "ADDON_LOADED" and arg1 == "asMOD" then
-		if not asMOD_version or asMOD_version ~= asMOD_CurrVersion then
-			asMOD_Popup()
+		if not asMOD_version or asMOD_version ~= configs.version then
+			show_asMODpopup()
 			asMOD_config = true;
-			asMOD_version = asMOD_CurrVersion;
+			asMOD_version = configs.version;
 		end
 
-		C_Timer.After(1, createMacro);
+		C_Timer.After(1, create_macro);
 
 		if GetLocale() == "koKR" then
 			DEFAULT_CHAT_FRAME:AddMessage("/asMOD : 최적화된 Interface 옵션 Setup")
 			DEFAULT_CHAT_FRAME:AddMessage("/asConfig : asMOD 의 위치 조정")
 			DEFAULT_CHAT_FRAME:AddMessage("/asClear : asMOD 기본 위치로 설정 초기화")
 		else
-			DEFAULT_CHAT_FRAME:AddMessage("/asMOD : Setup asMOD")
+			DEFAULT_CHAT_FRAME:AddMessage("/asMOD : Setup optimized interface options")
 			DEFAULT_CHAT_FRAME:AddMessage("/asConfig : Config positions of asMOD addons")
 			DEFAULT_CHAT_FRAME:AddMessage("/asClear : Reset positions as default configuration")
 		end
 
-		SlashCmdList['asMOD'] = asMOD_Popup
-		SlashCmdList['asConfig'] = asMOD_Popup_Config
-		SlashCmdList['asClear'] = asMOD_Popup_Clear
+		SlashCmdList['asMOD'] = show_asMODpopup
+		SlashCmdList['asConfig'] = show_configpopup
+		SlashCmdList['asClear'] = show_clearpopup
 		SLASH_asMOD1 = '/asMOD'
 		SLASH_asConfig1 = '/asConfig'
 		SLASH_asClear1 = '/asClear'
@@ -326,10 +324,10 @@ local function asMOD_OnEvent(self, event, arg1)
 	return;
 end
 
-asMOD = CreateFrame("Frame")
-asMOD:SetScript("OnEvent", asMOD_OnEvent)
-asMOD:RegisterEvent("ADDON_LOADED")
-asMOD:RegisterEvent("PLAYER_ENTERING_WORLD")
+local main_frame = CreateFrame("Frame")
+main_frame:SetScript("OnEvent", on_event)
+main_frame:RegisterEvent("ADDON_LOADED")
+main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 if GetLocale() == "koKR" then
 	StaticPopupDialogs["asMOD"] = {
@@ -337,7 +335,7 @@ if GetLocale() == "koKR" then
 		button1 = "변경",
 		button2 = "다음에",
 		OnAccept = function()
-			asMOD_Setup()
+			setup_wowoptions()
 		end,
 		timeout = 0,
 		whileDead = true,
@@ -350,11 +348,11 @@ if GetLocale() == "koKR" then
 		button1 = "완료",
 		button2 = "취소",
 		OnAccept = function()
-			asMOD_Setup_Position()
+			save_positions()
 		end,
 
 		OnCancel = function(_, reason)
-			asMOD_Cancel_Position();
+			cancel_position();
 		end,
 		timeout = 0,
 		whileDead = true,
@@ -368,7 +366,7 @@ if GetLocale() == "koKR" then
 		button1 = "변경",
 		button2 = "다음에",
 		OnAccept = function()
-			asMOD_Clear()
+			reset_positions()
 		end,
 		timeout = 0,
 		whileDead = true,
@@ -377,11 +375,12 @@ if GetLocale() == "koKR" then
 	}
 else
 	StaticPopupDialogs["asMOD"] = {
-		text = "Setup default configurations for asMOD",
+		text =
+		"asMOD will change the 'Default Interface Settings'. \nYou can reload the features using the '/asMOD' command in the chat.",
 		button1 = "Confirm",
 		button2 = "Cancel",
 		OnAccept = function()
-			asMOD_Setup()
+			setup_wowoptions()
 		end,
 		timeout = 0,
 		whileDead = true,
@@ -394,11 +393,11 @@ else
 		button1 = "Save",
 		button2 = "Cancel",
 		OnAccept = function()
-			asMOD_Setup_Position()
+			save_positions()
 		end,
 
 		OnCancel = function(_, reason)
-			asMOD_Cancel_Position();
+			cancel_position();
 		end,
 		timeout = 0,
 		whileDead = true,
@@ -412,7 +411,7 @@ else
 		button1 = "Confirm",
 		button2 = "Cancel",
 		OnAccept = function()
-			asMOD_Clear()
+			reset_positions()
 		end,
 		timeout = 0,
 		whileDead = true,
