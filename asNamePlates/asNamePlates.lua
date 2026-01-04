@@ -1,13 +1,17 @@
 ﻿local _, ns = ...;
 local main_frame = CreateFrame("Frame", nil, UIParent);
 
+local configs = {
+    fontsize = 12,
+
+}
+
 ns.tanklist = {};
 ns.isparty = false;
 ns.israid = false;
 ns.ispvp = false;
 ns.istanker = false;
 ns.colorcurve = nil;
-ns.aurascale = 1;
 
 local function update_tanklist()
     if ns.ispvp then
@@ -101,14 +105,14 @@ end
 
 local function change_item(button)
     button.isasmod = true;
-    
-    local width = 20 * ns.aurascale;
-    
+
+    local fontsize = configs.fontsize;
+
 
     if button.Cooldown then
         for _, r in next, { button.Cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
-                r:SetFont(STANDARD_TEXT_FONT, width / 3 + 1, "OUTLINE");
+                r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
                 r:ClearAllPoints();
                 r:SetPoint("CENTER", button, "TOP", 0, 0);
                 r:SetDrawLayer("OVERLAY");
@@ -130,7 +134,7 @@ local function change_item(button)
     if button.CountFrame and button.CountFrame.Count then
         local r = button.CountFrame.Count;
 
-        r:SetFont(STANDARD_TEXT_FONT, width / 3 + 1, "OUTLINE");
+        r:SetFont(STANDARD_TEXT_FONT, fontsize + 1, "OUTLINE");
         r:ClearAllPoints();
         r:SetPoint("CENTER", button, "BOTTOM", 0, 0);
         r:SetTextColor(0, 1, 0);
@@ -348,8 +352,6 @@ local function init_class()
         ns.colorcurve:SetType(Enum.LuaCurveType.Step);
         ns.colorcurve:AddPoint(0, CreateColor(0.5, 1, 1, 1));
     end
-
-    ns.aurascale = CVarCallbackRegistry:GetCVarNumberOrDefault(NamePlateConstants.AURA_SCALE_CVAR);
 end
 
 

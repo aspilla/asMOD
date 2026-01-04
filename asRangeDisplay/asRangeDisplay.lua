@@ -1,6 +1,6 @@
-local _, ns   = ...;
+local _, ns        = ...;
 
-local configs = {
+local configs      = {
 	font        = STANDARD_TEXT_FONT,
 	fontsize    = 16,
 	fontoutline = "THICKOUTLINE",
@@ -190,7 +190,7 @@ local function update_unitrange(unit, frame)
 			end
 			frame:SetTextColor(get_rangecolor(range));
 		else
-			local grange = 80;
+			local grange = 100;
 
 			--[[
 			if UnitInParty(unit) or UnitInRaid(unit) then
@@ -214,8 +214,12 @@ local function update_unitrange(unit, frame)
 				end
 			end
 
-			frame:SetText(math.floor(grange + 0.5));
-			frame:SetTextColor(get_rangecolor(grange));
+			if grange < 100 then
+				frame:SetText(math.floor(grange + 0.5));
+				frame:SetTextColor(get_rangecolor(grange));
+			else
+				frame:SetText("");
+			end
 		end
 	else
 		frame:SetText("");
@@ -244,15 +248,14 @@ local function on_update()
 	main_frame.mousetext:ClearAllPoints();
 	local uiScale, x, y = UIParent:GetEffectiveScale(), GetCursorPosition()
 	main_frame.mousetext:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x / uiScale + configs.mousexpoint,
-	y / uiScale + configs.mouseypoint);
+		y / uiScale + configs.mouseypoint);
 end
 
 local function on_load()
-
 	--asOverlay 위에 뜨게 하기 위해 MEDIUM으로 설정
 	main_frame:SetFrameStrata("MEDIUM");
 	main_frame:SetFrameLevel(9000);
-	
+
 	main_frame.targettext = main_frame:CreateFontString(nil, "OVERLAY")
 	main_frame.targettext:SetFont(configs.font, configs.fontsize, configs.fontoutline)
 	main_frame.targettext:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint);

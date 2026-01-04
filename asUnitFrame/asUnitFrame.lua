@@ -92,7 +92,7 @@ local function update_unitframe(frame)
 
     frame.healthbar.absorbBar:SetMinMaxValues(0, valueMax);
     frame.healthbar.absorbBar:SetValue(totalAbsorb, Enum.StatusBarInterpolation.ExponentialEaseOut);
-    
+
     frame.healthbar.healabsorbBar:SetMinMaxValues(0, valueMax);
     frame.healthbar.healabsorbBar:SetValue(totalHealAbsorb, Enum.StatusBarInterpolation.ExponentialEaseOut);
 
@@ -300,24 +300,28 @@ local function update_unitframe(frame)
     end
 
     if UnitAffectingCombat("player") then
-        if ns.options.CheckRange then
-            if unit == "player" then
-                frame:SetAlpha(1);
-            else
-                local inrange = ns.check_range(unit, ns.isevoker);
-                if inrange then
-                    frame:SetAlpha(1);
-                else
-                    frame:SetAlpha(0.55);
-                end
-            end
-        else
-            frame:SetAlpha(1);
-        end
+        frame:SetAlpha(1);
     elseif ns.options.CombatAlphaChange then
         frame:SetAlpha(0.5);
     end
+
+    local needtohide = true;
+
+    if ns.options.CheckRange then
+        if UnitCanAttack("player", unit) then
+            local outofrange = ns.check_range(unit, ns.isevoker);
+            if outofrange then
+                frame.range:Show();
+                needtohide = false;
+            end
+        end 
+    end
+    if needtohide then
+        frame.range:Hide();
+    end
+
 end
+
 
 local function open_menu(self, unit, button)
     local which;
@@ -554,6 +558,12 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame:SetFrameStrata("LOW");
     frame:SetFrameLevel(configs.framelevel);
 
+    frame.range = frame:CreateTexture(nil, "ARTWORK");
+    frame.range:SetColorTexture(0.8, 0, 0);
+    frame.range:SetAlpha(0.3);
+    frame.range:SetAllPoints(frame);
+    frame.range:Hide();
+
     frame.healthbar = CreateFrame("StatusBar", nil, frame);
     frame.healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
     frame.healthbar:SetFrameLevel(configs.framelevel - 20);
@@ -624,9 +634,9 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
 
     frame.healthbar.absorbBar = CreateFrame("StatusBar", nil, frame);
     frame.healthbar.absorbBar:SetFrameLevel(configs.framelevel - 15);
-    frame.healthbar.absorbBar:SetStatusBarTexture("RaidFrame-Hp-Fill");    
+    frame.healthbar.absorbBar:SetStatusBarTexture("RaidFrame-Hp-Fill");
     frame.healthbar.absorbBar:SetMinMaxValues(0, 100)
-    frame.healthbar.absorbBar:SetStatusBarColor(0.5, 0.5, 0.5, 0.5);    
+    frame.healthbar.absorbBar:SetStatusBarColor(0.5, 0.5, 0.5, 0.5);
     frame.healthbar.absorbBar:SetValue(0)
     frame.healthbar.absorbBar:SetHeight(height);
     frame.healthbar.absorbBar:SetAllPoints(frame.healthbar);

@@ -24,21 +24,7 @@ local HarmItems         = {
 local item_for_40m = 28767;
 local item_for_30m = 835;
 
-local function is_helpful(unit)
-	local reaction = UnitReaction("player", unit);
-
-	if reaction and reaction <= 4 then
-		return false;
-	else
-		return true;	
-	end
-end
-
 function ns.check_range(unit, is30m)
-	if is_helpful(unit) then
-		return true;
-	end
-
 	local item_id = item_for_40m;
 
 	if is30m then
@@ -46,7 +32,7 @@ function ns.check_range(unit, is30m)
 	end
 
 	if C_Item.IsItemInRange(item_id, unit) then
-		return true;
+		return false;
 	end
-	return false;
+	return true;
 end
