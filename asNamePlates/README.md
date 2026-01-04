@@ -1,32 +1,32 @@
-
 # asNamePlates (Midnight)
 
 Nameplate Enhancement Addon
 
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_MN.jpg?raw=true)
 
-**Note:** Friendly target nameplates are not modified.
+**Note:** Does not modify friendly nameplates.
 
-## Nameplate Color Change Features
-Displayed in the following priority:
+## Nameplate Color Customization
+Colors are displayed based on the following priority:
 
-  * 🔵 **Blue:** High threat level (DPS/Healer)
-  * 🔴 **Light Red:** Low threat level (Tank)
-  * 🟢 **Light Green:** Casting interruptible spell
-  * 🩶 **Gray:** Casting uninterruptible spell
-  * 🟣 **Light Purple:** Has my debuff
-  * 💠 **Light Blue:** Normal threat level
-  * 🟢 **Green:** Boss mob (Higher level (e.g. 91) or ?? level mob)
-  * 🟤 **Ocher:** Quest mob (if not in party).
-  
-## Other Features
+* 🔵 **Blue:** High threat level (DPS/Healer)
+* 🔴 **Bright Red:** Low threat level (Tank)
+* 🟢 **Light Green:** Casting an interruptible spell
+* 🩶 **Gray:** Casting an uninterruptible spell
+* 🟣 **Bright Purple:** Affected by your debuff
+* 💠 **Sky Blue:** Normal threat level
+* 🟢 **Green:** Boss mobs (High level (e.g., 91+) or ?? level mobs)
+* 🟤 **Ochre:** Quest mobs (When not in a party)
 
-* Set nameplate vertical overlap (`nameplateOverlapV`)
-* Display green arrow at the bottom of mouseover target
-* Display mob's energy below health bar for targets (if not mana)
-* Display skill icon when casting (if not mana)
+## Additional Features
 
-## Settings
+* Adjust nameplate vertical overlap (`nameplateOverlapV`) settings.
+* Display a green arrow below the mouseover target.
+* Display the mob's energy below the health bar for the current target (if not using mana).
+* Display spell icons during casting (if not using mana).
+* Adjust the position of buff/debuff duration/stacks and add borders.
+
+## Configuration
 * `Esc > Options > Addons > asNamePlates`
 
 ---
@@ -57,6 +57,7 @@ Displayed in the following priority:
 * 마우스오버 대상 녹색 화살표 하단 표시
 * 대상의 경우 몹의 기력을 체력바 아래 표시 (마나가 아닐 경우)
 * 시전중일 경우 스킬 아이콘 표시 (마나가 아닐 경우)
+* 버프/디버프 시간/중첩 위치 조정 및 테두리 추가
 
 ## 설정
 * `Esc > 옵션 > 애드온 > asNamePlates`
