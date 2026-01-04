@@ -9,15 +9,15 @@ Nameplate Enhancement Addon
 ## Nameplate Color Customization
 Colors are displayed based on the following priority:
 
-* 🔵 **Blue:** High threat level (DPS/Healer)
-* 🔴 **Bright Red:** Low threat level (Tank)
-* 🟢 **Light Green:** Casting an interruptible spell
-* 🩶 **Gray:** Casting an uninterruptible spell
-* 🟣 **Bright Purple:** Affected by your debuff
-* 💠 **Sky Blue:** Normal threat level
-* 🟢 **Green:** Boss mobs (High level (e.g., 91+) or ?? level mobs)
-* 🟤 **Ochre:** Quest mobs (When not in a party)
-
+  * <span style = "background-color:#0000ff">**Blue:**</span> High threat level (DPS/Healer)  
+  * <span style = "background-color:#ff0000">**Bright Red:**</span> Low threat level (Tank)
+  * <span style = "background-color:#90ee90">**Light Green:**</span> Casting an interruptible spell
+  * <span style = "background-color:#808080">**Gray:**</span> Casting an uninterruptible spell  
+  * <span style = "background-color:#ff00ff">**Bright Purple:**</span> Affected by your debuff
+  * <span style = "background-color:#87ceeb">**Sky Blue:**</span> Normal threat level
+  * <span style = "background-color:#008000">**Green:**</span> Boss mobs (High level (e.g., 91+) or ?? level mobs)
+  * <span style = "background-color:#b8860b">**Ochre:**</span> Quest mobs (When not in a party)
+  
 ## Additional Features
 
 * Adjust nameplate vertical overlap (`nameplateOverlapV`) settings.
@@ -42,14 +42,14 @@ Colors are displayed based on the following priority:
 ## 이름표 색상 변경 기능
 다음의 우선 순위로 표시 됨
 
-  * 🔵 **파란색:** 높은 위협 수준 (딜러/힐러)  
-  * 🔴 **밝은빨간색:** 낮은 위협 수준 (탱커)
-  * 🟢 **연녹색:** 차단 가능한 주문을 시전
-  * 🩶 **회색:** 차단 불가 주문을 시전  
-  * 🟣 **밝은보라색:** 내 디버프가 있음
-  * 💠 **하늘색:** 일반 위협 수준
-  * 🟢 **녹색:** 보스몹 (레벨에 높거(예 91렙)나 ?? 레벨몹)
-  * 🟤 **황토색:** 퀘스트 몹 (파티가 아닌경우).
+  * <span style = "background-color:#0000ff">**파란색:**</span> 높은 위협 수준 (딜러/힐러)  
+  * <span style = "background-color:#ff0000">**밝은빨간색:**</span> 낮은 위협 수준 (탱커)
+  * <span style = "background-color:#90ee90">**연녹색:**</span> 차단 가능한 주문을 시전
+  * <span style = "background-color:#808080">**회색:**</span> 차단 불가 주문을 시전  
+  * <span style = "background-color:#ff00ff">**밝은보라색:**</span> 내 디버프가 있음
+  * <span style = "background-color:#87ceeb">**하늘색:**</span> 일반 위협 수준
+  * <span style = "background-color:#008000">**녹색:**</span> 보스몹 (레벨에 높거(예 91렙)나 ?? 레벨몹)
+  * <span style = "background-color:#b8860b">**황토색:**</span> 퀘스트 몹 (파티가 아닌경우).
   
 ## 기타 기능
 
