@@ -17,11 +17,11 @@ Displays Primary and Class Resources.
 * **Druid:** Combo Points
 * **Monk:** [Brewmaster] Stagger, [Windwalker] Chi
 * **Rogue:** Combo Points, Supercharged points
-* **Shaman:** [Enhancement] Maelstrom Weapon
+* **Shaman:** [Enhancement] Maelstrom Weapon [Elemental] Lava Burst
 * **Death Knight:** Runes
 * **Priest:** [Discipline] Power Word: Radiance, [Holy] Holy Word: Serenity, [Shadow] Mind Blast
-* **Warrior:** Primary resource tracking
-* **Demon Hunter:** Primary resource tracking
+* **Warrior:** 
+* **Demon Hunter:** 
 * **Hunter:** [Beast Mastery] Barbed Shot cooldown, [Marksmanship] Aimed Shot cooldown
 
 ## Configuration
@@ -52,7 +52,7 @@ Displays Primary and Class Resources.
 *   **드루이드 :** 연계 점수
 *   **수도사 :** [양조] 시간차, [풍운] 기
 *   **도적 :** 연계 점수, 초자력 충전 
-*   **주술사 :** [고양]소용돌이치는 무기
+*   **주술사 :** [고양]소용돌이치는 무기, [정기]용암 폭발
 *   **죽음의 기사 :** 룬
 *   **사제 :** [수양] 광휘, [신성] 평온, [암흑] 정신분열
 *   **전사 :** 
