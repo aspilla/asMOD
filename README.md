@@ -24,12 +24,20 @@ The following errors may occur:
 2. **Raid Marker Setting Error:** Setting raid markers via the right-click menu on a frame will cause an error.
 3. **Edit Mode Error:** Errors may occur when using Edit Mode, making it impossible to change settings. Please perform Edit Mode adjustments while asUnitFrame is disabled.
 
-## Installation
-1. Extract the addon into the `Interface/Addons/` folder.
+## Installation Method (CurseForge)
+1. Search for `asMOD_Kr` on CurseForge and install the addons.
 2. When using the `asMOD` addon, a window will appear stating: `asMOD will change the 'Default Interface Settings'. You can reload the features using the '/asMOD' command in the chat.` Click `Change`.
 3. Adjust `ESC >> Options >> Gameplay >> Advanced Cooldown Settings`.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/OmPQiPSNwDc?si=aIF5QY0EffP5TJX1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/LRK6h2hON2w?si=zfWyWH9Xcwhe3msg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## Installation Method (Inven)
+
+1. The Inven version includes Korean fonts, so the installation method differs. Please refer to the video below.
+<iframe width="560" height="315" src="https://www.youtube.com/embed/6F7Amrvdda8?si=rKcZRo5ctJHyI0Zq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+2. Adjust `ESC >> Options >> Gameplay >> Advanced Cooldown Settings`.
+3. After installation, updates are possible via CurseForge.
 
 ## How to Set Position
 1. Adjust positions using the `/asconfig` command.
@@ -37,6 +45,7 @@ The following errors may occur:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/sqFLkn9vQ_8?si=ZqZ5d-RYENt5tnhQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 2. When using `Edit Mode`, disable asUnitFrame before proceeding.
+
 
 ## asMOD Addon List (Midnight)
 
@@ -80,6 +89,7 @@ The following errors may occur:
 
 
 ---
+
 # asMOD (한밤)
 
 asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
@@ -106,12 +116,22 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 2.  **징표 설정 오류:** 프레임을 우클릭하여 메뉴를 통해 징표 설정시 오류 발생. 
 3.  **편집 모드 오류:** 편집 모드 사용 시 오류가 발생하여 설정 변경이 불가능할 수 있음. asUnitFrame을 끈 상태에서 편집 모드를 진행 필요.
 
-## 설치 방법
-1. `Interface/Addons/` 폴더에 애드온 압축을 해제
+## 설치 방법 (CurseForge)
+1. CurseForge 에서 asMOD_Kr을 검색하여 애드온들 설치
 2. `asMOD` 애드온 사용시 `asMOD가 '기본 인터페이스 설정'을 변경합니다. 채팅창에 '/asMOD'명령어로 기능을 다시 불러 올 수 있습니다.` 창에서 `변경`을 클릭
 3. `esc >> 옵션 >> 게임플레이 개선 >> 고급 재사용시간 설정` 조정
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/OmPQiPSNwDc?si=aIF5QY0EffP5TJX1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/LRK6h2hON2w?si=zfWyWH9Xcwhe3msg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## 설치 방법 (인벤)
+
+1. 인벤 버전은 한글 폰트를 포함하고 있어 설치법에 차이가 있음, 아래 영상을 참고
+<iframe width="560" height="315" src="https://www.youtube.com/embed/6F7Amrvdda8?si=rKcZRo5ctJHyI0Zq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+2. `esc >> 옵션 >> 게임플레이 개선 >> 고급 재사용시간 설정` 조정
+3. 설치 후 CurseForge로 업데이트 가능
+
+
 
 ## 위치 설정 방법
 1. `/asconfig` 명령으로 위치 조정 가능
