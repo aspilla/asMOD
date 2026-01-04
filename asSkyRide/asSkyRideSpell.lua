@@ -16,7 +16,7 @@ local function setup_max_combo(max, index)
     
     ns.maxcombos[index] = max;
 
-    local width = (ns.config.width - (1 * (max - 1))) / max;
+    local width = (ns.configs.width - (1 * (max - 1))) / max;
     local combobars = ns.combobars[index];
 
     for i = 1, 10 do

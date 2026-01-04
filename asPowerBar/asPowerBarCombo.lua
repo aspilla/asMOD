@@ -20,7 +20,7 @@ function ns.setup_max_combo(max, maxpartial)
     gvalue.maxcombo = max;
     gvalue.maxpartial = maxpartial;
 
-    local width = (ns.config.width - (1 * (max - 1))) / max;
+    local width = (ns.configs.width - (1 * (max - 1))) / max;
     local combobars = ns.combobars;
 
     ns.chargebar:SetWidth(width)

@@ -18,7 +18,7 @@ local function setup_max_spell(max)
 
     gvalue.maxspell = max;
 
-    local width = ((ns.config.width + 2) / max);
+    local width = ((ns.configs.width + 2) / max);
     local spellframes = ns.spellframes;
 
     ns.chargebar:SetWidth(width)

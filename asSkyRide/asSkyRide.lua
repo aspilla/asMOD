@@ -1,7 +1,7 @@
 local _, ns = ...;
 
 --configurations
-ns.config   = {
+ns.configs   = {
     font        = STANDARD_TEXT_FONT,
     fontSize    = 12,
     fontOutline = "OUTLINE",
@@ -17,9 +17,9 @@ ns.config   = {
 ns.frame    = CreateFrame("FRAME", nil, UIParent);
 
 local function init_addon()
-    ns.frame:SetPoint("BOTTOM", UIParent, "CENTER", ns.config.xpoint, ns.config.ypoint)
-    ns.frame:SetWidth(ns.config.width)
-    ns.frame:SetHeight(ns.config.height)
+    ns.frame:SetPoint("BOTTOM", UIParent, "CENTER", ns.configs.xpoint, ns.configs.ypoint)
+    ns.frame:SetWidth(ns.configs.width)
+    ns.frame:SetHeight(ns.configs.height)
     ns.frame:SetFrameLevel(9600);
     ns.frame:Show();
 
@@ -28,8 +28,8 @@ local function init_addon()
     ns.bar:GetStatusBarTexture():SetHorizTile(false)
     ns.bar:SetMinMaxValues(0, 100)
     ns.bar:SetValue(100)
-    ns.bar:SetWidth(ns.config.width)
-    ns.bar:SetHeight(ns.config.height)
+    ns.bar:SetWidth(ns.configs.width)
+    ns.bar:SetHeight(ns.configs.height)
     ns.bar:SetPoint("BOTTOM", ns.frame, "BOTTOM", 0, 0)
     ns.bar:Show();
     ns.bar:EnableMouse(false);
@@ -43,7 +43,7 @@ local function init_addon()
     ns.bar.bg:SetVertexColor(0, 0, 0, 1);
 
     ns.bar.text = ns.bar:CreateFontString(nil, "ARTWORK");
-    ns.bar.text:SetFont(ns.config.font, ns.config.fontSize, ns.config.fontOutline);
+    ns.bar.text:SetFont(ns.configs.font, ns.configs.fontSize, ns.configs.fontOutline);
     ns.bar.text:SetPoint("CENTER", ns.bar, "CENTER", 0, 0);
     ns.bar.text:SetTextColor(1, 1, 1, 1);
 
@@ -60,7 +60,7 @@ local function init_addon()
         combobars[i]:SetFrameLevel(9600);
         combobars[i]:SetMinMaxValues(0, 100);
         combobars[i]:SetValue(100);
-        combobars[i]:SetHeight(ns.config.comboheight);
+        combobars[i]:SetHeight(ns.configs.comboheight);
         combobars[i]:SetWidth(20);
 
         combobars[i].bg = combobars[i]:CreateTexture(nil, "BACKGROUND");
@@ -92,7 +92,7 @@ local function init_addon()
         combobars[i]:SetFrameLevel(9600);
         combobars[i]:SetMinMaxValues(0, 100);
         combobars[i]:SetValue(100);
-        combobars[i]:SetHeight(ns.config.comboheight);
+        combobars[i]:SetHeight(ns.configs.comboheight);
         combobars[i]:SetWidth(20);
 
         combobars[i].bg = combobars[i]:CreateTexture(nil, "BACKGROUND");

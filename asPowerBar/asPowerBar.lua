@@ -1,7 +1,7 @@
 local _, ns      = ...;
 
 --configurations
-ns.config        = {
+ns.configs        = {
     font        = STANDARD_TEXT_FONT,
     fontSize    = 12,
     fontOutline = "OUTLINE",
@@ -170,9 +170,9 @@ local function on_event(self, event, ...)
     if event == "PLAYER_ENTERING_WORLD" then
         if ns.options.CombatAlphaChange then
             if UnitAffectingCombat("player") then
-                main_frame:SetAlpha(ns.config.combatalpha);
+                main_frame:SetAlpha(ns.configs.combatalpha);
             else
-                main_frame:SetAlpha(ns.config.normalalpha);
+                main_frame:SetAlpha(ns.configs.normalalpha);
             end
         end
         C_Timer.After(0.5, init_class);
@@ -181,11 +181,11 @@ local function on_event(self, event, ...)
         C_Timer.After(0.5, init_class);
     elseif event == "PLAYER_REGEN_DISABLED" then
         if ns.options.CombatAlphaChange then
-            main_frame:SetAlpha(ns.config.combatalpha);
+            main_frame:SetAlpha(ns.configs.combatalpha);
         end
     elseif event == "PLAYER_REGEN_ENABLED" then
         if ns.options.CombatAlphaChange then
-            main_frame:SetAlpha(ns.config.normalalpha);
+            main_frame:SetAlpha(ns.configs.normalalpha);
         end
     end
 
@@ -200,20 +200,20 @@ local backdropConfig = {
 }
 
 local function init_addon()
-    main_frame:SetPoint("BOTTOM", UIParent, "CENTER", ns.config.xpoint, ns.config.ypoint)
-    main_frame:SetWidth(ns.config.width)
-    main_frame:SetHeight(ns.config.height)
-    main_frame:SetFrameLevel(ns.config.framelevel + 400);
+    main_frame:SetPoint("BOTTOM", UIParent, "CENTER", ns.configs.xpoint, ns.configs.ypoint)
+    main_frame:SetWidth(ns.configs.width)
+    main_frame:SetHeight(ns.configs.height)
+    main_frame:SetFrameLevel(ns.configs.framelevel + 400);
     main_frame:Show();
 
     ns.bar = CreateFrame("StatusBar", nil, main_frame)
-    ns.bar:SetFrameLevel(ns.config.framelevel);
+    ns.bar:SetFrameLevel(ns.configs.framelevel);
     ns.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     ns.bar:GetStatusBarTexture():SetHorizTile(false)
     ns.bar:SetMinMaxValues(0, 100)
     ns.bar:SetValue(100)
-    ns.bar:SetWidth(ns.config.width)
-    ns.bar:SetHeight(ns.config.height)
+    ns.bar:SetWidth(ns.configs.width)
+    ns.bar:SetHeight(ns.configs.height)
     ns.bar:SetPoint("BOTTOM", main_frame, "BOTTOM", 0, 0)
     ns.bar:Hide();
     ns.bar:EnableMouse(false);
@@ -227,7 +227,7 @@ local function init_addon()
     ns.bar.bg:SetVertexColor(0, 0, 0, 1);
 
     ns.bar.text = main_frame:CreateFontString(nil, "ARTWORK");
-    ns.bar.text:SetFont(ns.config.font, ns.config.fontSize, ns.config.fontOutline);
+    ns.bar.text:SetFont(ns.configs.font, ns.configs.fontSize, ns.configs.fontOutline);
     ns.bar.text:SetPoint("CENTER", ns.bar, "CENTER", 0, 0);
     ns.bar.text:SetTextColor(1, 1, 1, 1);
 
@@ -242,10 +242,10 @@ local function init_addon()
     ns.combocountbar = CreateFrame("StatusBar", nil, main_frame);
     ns.combocountbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
     ns.combocountbar:GetStatusBarTexture():SetHorizTile(false);
-    ns.combocountbar:SetFrameLevel(ns.config.framelevel);
+    ns.combocountbar:SetFrameLevel(ns.configs.framelevel);
     ns.combocountbar:SetMinMaxValues(0, 100);
     ns.combocountbar:SetValue(100);
-    ns.combocountbar:SetHeight(ns.config.comboheight);
+    ns.combocountbar:SetHeight(ns.configs.comboheight);
     ns.combocountbar:SetWidth(20);
 
     ns.combocountbar.bg = ns.combocountbar:CreateTexture(nil, "BACKGROUND");
@@ -256,12 +256,12 @@ local function init_addon()
     ns.combocountbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
     ns.combocountbar.bg:SetVertexColor(0.3, 0.3, 0.3, 1);
     ns.combocountbar:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", 0, 1);
-    ns.combocountbar:SetWidth(ns.config.width);
+    ns.combocountbar:SetWidth(ns.configs.width);
     ns.combocountbar:SetStatusBarColor(1, 1, 1);
     ns.combocountbar:Hide();
 
     ns.combotext = main_frame:CreateFontString(nil, "OVERLAY");
-    ns.combotext:SetFont(ns.config.font, ns.config.fontSize - 2, ns.config.fontOutline);
+    ns.combotext:SetFont(ns.configs.font, ns.configs.fontSize - 2, ns.configs.fontOutline);
     ns.combotext:SetPoint("CENTER", ns.combocountbar, "CENTER", 0, 0);
     ns.combotext:SetTextColor(1, 1, 1, 1)
     ns.combotext:Hide();
@@ -272,10 +272,10 @@ local function init_addon()
         ns.combobars[i] = CreateFrame("StatusBar", nil, main_frame);
         ns.combobars[i]:SetStatusBarTexture("RaidFrame-Hp-Fill");
         ns.combobars[i]:GetStatusBarTexture():SetHorizTile(false);
-        ns.combobars[i]:SetFrameLevel(ns.config.framelevel + 100);
+        ns.combobars[i]:SetFrameLevel(ns.configs.framelevel + 100);
         ns.combobars[i]:SetMinMaxValues(0, 100);
         ns.combobars[i]:SetValue(100);
-        ns.combobars[i]:SetHeight(ns.config.comboheight);
+        ns.combobars[i]:SetHeight(ns.configs.comboheight);
         ns.combobars[i]:SetWidth(20);
 
         ns.combobars[i].bg = ns.combobars[i]:CreateTexture(nil, "BACKGROUND");
@@ -300,8 +300,8 @@ local function init_addon()
 
     for i = 1, 20 do
         ns.spellframes[i] = CreateFrame("Frame", nil, main_frame, "BackdropTemplate");
-        ns.spellframes[i]:SetFrameLevel(ns.config.framelevel + 200);
-        ns.spellframes[i]:SetHeight(ns.config.comboheight + 2);
+        ns.spellframes[i]:SetFrameLevel(ns.configs.framelevel + 200);
+        ns.spellframes[i]:SetHeight(ns.configs.comboheight + 2);
         ns.spellframes[i]:SetWidth(20);
 
         ns.spellframes[i].range = ns.spellframes[i]:CreateTexture(nil, "ARTWORK");
@@ -334,10 +334,10 @@ local function init_addon()
     ns.chargebar = CreateFrame("StatusBar", nil, main_frame);
     ns.chargebar:SetStatusBarTexture("RaidFrame-Hp-Fill");
     ns.chargebar:GetStatusBarTexture():SetHorizTile(false);
-    ns.chargebar:SetFrameLevel(ns.config.framelevel + 100);
+    ns.chargebar:SetFrameLevel(ns.configs.framelevel + 100);
     ns.chargebar:SetMinMaxValues(0, 100);
     ns.chargebar:SetValue(0);
-    ns.chargebar:SetHeight(ns.config.comboheight);
+    ns.chargebar:SetHeight(ns.configs.comboheight);
     ns.chargebar:SetWidth(20);
     local texturepoint = ns.combocountbar:GetStatusBarTexture();
     ns.chargebar:SetPoint("LEFT", texturepoint, "RIGHT", 0, 0);
@@ -364,9 +364,9 @@ local function init_addon()
     ns.setup_option();
     if ns.options.CombatAlphaChange then
         if UnitAffectingCombat("player") then
-            main_frame:SetAlpha(ns.config.combatalpha);
+            main_frame:SetAlpha(ns.configs.combatalpha);
         else
-            main_frame:SetAlpha(ns.config.normalalpha);
+            main_frame:SetAlpha(ns.configs.normalalpha);
         end
     end
     init_class();
