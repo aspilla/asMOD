@@ -2,7 +2,7 @@ local _, ns = ...;
 local version = select(4, GetBuildInfo());
 local asMOD;
 local asMOD_UIScale = 0.75;
-local asMOD_CurrVersion = 260101;
+local asMOD_CurrVersion = 260104;
 
 asMOD_t_position = {};
 
@@ -88,7 +88,7 @@ local function asMOD_Setup()
 	asMOD_position = {};
 
 
-	--print("[asMOD] UI Scale 을 조정합니다.");
+	--UI Scale 을 조정합니다.
 	SetCVar("useUiScale", "1");
 
 	if asMOD_UIScale then
@@ -100,40 +100,45 @@ local function asMOD_Setup()
 	end
 
 
-	--print("[asMOD] 재사용 대기시간을 보이게 합니다.");
+	--재사용 대기시간
 	SetCVar("countdownForCooldowns", "1");
 
-	--print("[asMOD] 주문 경보 투명도 설정");
+	--주문 경보 투명도 설정
 	SetCVar("spellActivationOverlayOpacity", 0.65);
 
-	--print("[asMOD] 힐량와 데미지를 보이게 합니다.");
+	--힐량 데미지
 	SetCVar("floatingCombatTextCombatHealing", 1);
 	SetCVar("floatingCombatTextCombatDamage", 1);
 
-	--print("[asMOD] 이름표 항상 표시");
+	--이름표
 	SetCVar("nameplateShowAll", 1)
 	SetCVar("nameplateShowEnemies", 1)
 	SetCVar("nameplateShowFriends", 0)
 	SetCVar("nameplateShowFriendlyNPCs", 0)
+	SetCVar("namePlateStyle", Enum.NamePlateStyle.Modern);
 
-	--print("[asMOD] 개인 자원바를 끕니다.");
+	--개인 자원바
 	SetCVar("nameplateShowSelf", "0");
 
-	--print("[asMOD] 공격대창 직업 색상 표시");
-	SetCVar("raidFramesDisplayClassColor", 1)
+	--공격대창 
+	SetCVar("raidFramesDisplayClassColor", 1);
+	SetCVar("raidFramesDisplayDebuffs", 1);
+	SetCVar("raidFramesDispelIndicatorType", 1);
 
-	--print("[asMOD] Unit Frame 설정 변경");
-	SetCVar("showTargetOfTarget", 1)
-
-	SetCVar("damageMeterEnabled", 1)
-
+	--Unit Frame 설정 변경
+	SetCVar("showTargetOfTarget", 1);
+	
+	-- 쿨다운 뷰어
 	SetCVar("cooldownViewerEnabled", 1);
 
-	SetCVar("enableFloatingCombatText", 0);
+	-- 전투 상황 알림
+	SetCVar("enableFloatingCombatText", 0);	
 
-	SetCVar("namePlateStyle", Enum.NamePlateStyle.Modern);
+	--데미지 미터
+	SetCVar("damageMeterEnabled", 1);
 	
-	--print("[asMOD] 채팅창에 직업색상을 표시하게 합니다.");
+	
+	--채팅창에 직업색상을 표시하게 합니다.
 	ToggleChatColorNamesByClassGroup(true, "SAY")
 	ToggleChatColorNamesByClassGroup(true, "EMOTE")
 	ToggleChatColorNamesByClassGroup(true, "YELL")
