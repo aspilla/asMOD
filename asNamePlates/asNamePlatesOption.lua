@@ -1,6 +1,6 @@
 local _, ns = ...;
 
----설정부
+
 ns.configs = {
     powerfontsize = 6,
     mousefontsize = 12,
@@ -17,7 +17,7 @@ ns.option_default = {
     ShowCastColor = true,
     ShowPower = true,
     ShowCastIcon = true,
-
+    ChangeDebuffIcon = true,
 
     AggroColor = { r = 0.4, g = 0.2, b = 0.8 },
     TankAggroLoseColor = { r = 1, g = 0.5, b = 0.5 },
@@ -28,7 +28,7 @@ ns.option_default = {
     QuestColor = { r = 1, g = 0.8, b = 0.5 },
     BossColor = { r = 0, g = 1, b = 0.2 },
 
-    nameplateOverlapV = 1.1, -- 이름표 상하 정렬
+    nameplateOverlapV = 1.1,
 };
 
 ns.options = CopyTable(ns.option_default);
@@ -37,7 +37,7 @@ local curr_y = 0;
 local y_adder = -50;
 
 local panel = CreateFrame("Frame")
-panel.name = "asNamePlates" -- see panel fields
+panel.name = "asNamePlates"
 if InterfaceOptions_AddCategory then
     InterfaceOptions_AddCategory(panel)
 else
@@ -61,13 +61,13 @@ local function setup_childpanel()
     scrollFrame:SetPoint("TOPLEFT", 3, -4)
     scrollFrame:SetPoint("BOTTOMRIGHT", -27, 4)
 
-    -- Create the scrolling child frame, set its width to fit, and give it an arbitrary minimum height (such as 1)
+
     scrollChild = CreateFrame("Frame")
     scrollFrame:SetScrollChild(scrollChild)
     scrollChild:SetWidth(600)
     scrollChild:SetHeight(1)
 
-    -- add widgets to the panel as desired
+
     local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
     title:SetPoint("TOP")
     title:SetText("asNamePlates")
@@ -222,49 +222,51 @@ end
 local function on_panelshow()
     setup_childpanel();
 
-    -- Check if the locale is Korean ("koKR")
+
     if GetLocale() == "koKR" then
-        setup_checkboxoption("[기능] 하단에 기력 표시", "ShowPower"); -- Show Power
+        setup_checkboxoption("[기능] 하단에 기력 표시", "ShowPower");
         setup_checkboxoption("[기능] 시전 Icon 표시", "ShowCastIcon");
+        setup_checkboxoption("[기능] Debuff Icon 변경", "ChangeDebuffIcon");
 
-        setup_slideoption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV"); -- Nameplate vertical alignment (nameplateOverlapV)
+        setup_slideoption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");
 
-        setup_checkboxoption("[기능] 어그로 색상 표시", "ShowAggro"); -- Show aggro colors
-        setup_coloroption("[색상] 어그로 상위", "AggroColor"); -- Nameplate color: Top aggro
-        setup_coloroption("[색상] 어그로 상실", "TankAggroLoseColor"); -- Tank nameplate color: Aggro lost
-        setup_coloroption("[색상] 어그로 전투중 색상", "CombatColor"); -- Nameplate color: Normal Aggro
+        setup_checkboxoption("[기능] 어그로 색상 표시", "ShowAggro");
+        setup_coloroption("[색상] 어그로 상위", "AggroColor");
+        setup_coloroption("[색상] 어그로 상실", "TankAggroLoseColor");
+        setup_coloroption("[색상] 어그로 전투중 색상", "CombatColor");
 
-        setup_checkboxoption("[기능] 디버프 색상 표시", "ShowDebuffColor"); -- Show aggro colors
-        setup_coloroption("[색상] 디버프", "DebuffColor"); -- Nameplate color: Debuff
+        setup_checkboxoption("[기능] 디버프 색상 표시", "ShowDebuffColor");
+        setup_coloroption("[색상] 디버프", "DebuffColor");
 
         setup_checkboxoption("[기능] 시전 색상 표시", "ShowCastColor");
         setup_coloroption("[색상] 차단가능", "InterruptableColor");
         setup_coloroption("[색상] 차단불가", "UninterruptableColor");
 
-        setup_checkboxoption("[기능] Boss 몹 색상 표시", "ShowBossColor"); -- Show DBM casting mob colors
-        setup_coloroption("[색상] Boss Mob", "BossColor"); -- Nameplate color: BossColor
+        setup_checkboxoption("[기능] Boss 몹 색상 표시", "ShowBossColor");
+        setup_coloroption("[색상] Boss Mob", "BossColor");
 
-        setup_checkboxoption("[기능] Quest 몹 색상 표시", "ShowQuestColor"); -- Show quest mob colors
-        setup_coloroption("[색상] Quest", "QuestColor"); -- Nameplate color: Quest
+        setup_checkboxoption("[기능] Quest 몹 색상 표시", "ShowQuestColor");
+        setup_coloroption("[색상] Quest", "QuestColor");
     else
-        setup_checkboxoption("[Feature] Show Power below", "ShowPower"); -- Show Power
+        setup_checkboxoption("[Feature] Show Power below", "ShowPower");
         setup_checkboxoption("[Feature] Show cast icon", "ShowCastIcon");
+        setup_checkboxoption("[Feature] Change Debuff Icon", "ChangeDebuffIcon");
 
         setup_slideoption("Nameplate vertical alignment (nameplateOverlapV)", "nameplateOverlapV");
 
         setup_checkboxoption("[Feature] Show aggro colors", "ShowAggro");
         setup_coloroption("[Color] Top aggro", "AggroColor");
         setup_coloroption("[Color] Aggro lost", "TankAggroLoseColor");
-        setup_coloroption("[Color] Aggro combat normal", "CombatColor"); -- Nameplate color: Normal Aggro
+        setup_coloroption("[Color] Aggro combat normal", "CombatColor");
 
         setup_checkboxoption("[Feature] Show cast color", "ShowCastColor");
         setup_coloroption("[Color] Interrutable", "InterruptableColor");
         setup_coloroption("[Color] Uninterruptable", "UninterruptableColor");
 
-        setup_checkboxoption("[Feature] Show debuff color", "ShowDebuffColor"); -- Show aggro colors
+        setup_checkboxoption("[Feature] Show debuff color", "ShowDebuffColor");
         setup_coloroption("[Color] Debuff", "DebuffColor");
 
-        setup_checkboxoption("[Feature] Show boss hint", "ShowBossColor"); -- Show DBM casting mob colors
+        setup_checkboxoption("[Feature] Show boss hint", "ShowBossColor");
         setup_coloroption("[Color] Boss Mobs", "BossColor");
 
         setup_checkboxoption("[Feature] Show quest mob colors", "ShowQuestColor");

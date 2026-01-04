@@ -25,6 +25,8 @@
 			</Cooldown>
 		</Frames>
 	</Frame>
-	<Texture name="asNameplateTemplate" virtual="true" atlas="UI-HUD-CoolDownManager-Bar">		
+	<Texture name="asNamePlatesTemplate" virtual="true" atlas="UI-HUD-CoolDownManager-Bar">		
+	</Texture>
+	<Texture name="asNamePlatesBorderTemplate" virtual="true" file="Interface\Addons\asNamePlates\border.tga">		
 	</Texture>	
 </Ui>

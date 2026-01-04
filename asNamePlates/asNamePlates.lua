@@ -7,6 +7,7 @@ ns.israid = false;
 ns.ispvp = false;
 ns.istanker = false;
 ns.colorcurve = nil;
+ns.aurascale = 1;
 
 local function update_tanklist()
     if ns.ispvp then
@@ -94,6 +95,57 @@ local function remove_unit(unit)
 
     if namePlateFrameBase and namePlateFrameBase.asNamePlates ~= nil then
         namePlateFrameBase.asNamePlates = nil;
+    end
+end
+
+
+local function change_item(button)
+    button.isasmod = true;
+    
+    local width = 20 * ns.aurascale;
+    
+
+    if button.Cooldown then
+        for _, r in next, { button.Cooldown:GetRegions() } do
+            if r:GetObjectType() == "FontString" then
+                r:SetFont(STANDARD_TEXT_FONT, width / 3 + 1, "OUTLINE");
+                r:ClearAllPoints();
+                r:SetPoint("CENTER", button, "TOP", 0, 0);
+                r:SetDrawLayer("OVERLAY");
+                break;
+            end
+        end
+    end
+
+    if not button.border then
+        button.border = button:CreateTexture(nil, "BACKGROUND", "asNamePlatesBorderTemplate");
+        button.border:SetAllPoints(button);
+        button.border:SetColorTexture(0, 0, 0, 1);
+        button.border:SetTexCoord(0.04, 0.04, 0.04, 0.96, 0.96, 0.04, 0.96, 0.96);
+    else
+        button.border:SetAlpha(1)
+    end
+    button.border:Show()
+
+    if button.CountFrame and button.CountFrame.Count then
+        local r = button.CountFrame.Count;
+
+        r:SetFont(STANDARD_TEXT_FONT, width / 3 + 1, "OUTLINE");
+        r:ClearAllPoints();
+        r:SetPoint("CENTER", button, "BOTTOM", 0, 0);
+        r:SetTextColor(0, 1, 0);
+        r:SetDrawLayer("OVERLAY");
+    end
+end
+
+local function hook_refresh(auraframe)
+    if auraframe.auraItemFramePool then
+        local pool = auraframe.auraItemFramePool;
+        for button in pool:EnumerateActive() do
+            if button.isasmod == nil then
+                change_item(button);
+            end
+        end
     end
 end
 
@@ -217,6 +269,12 @@ local function add_unit(unit)
     end
 
     asframe.timer = C_Timer.NewTicker(ns.configs.updaterate, callback);
+
+    if ns.options.ChangeDebuffIcon and unitFrame.AurasFrame.RefreshList then
+        hooksecurefunc(unitFrame.AurasFrame, "RefreshList", function()
+            hook_refresh(unitFrame.AurasFrame)
+        end)
+    end
 end
 
 
@@ -290,6 +348,8 @@ local function init_class()
         ns.colorcurve:SetType(Enum.LuaCurveType.Step);
         ns.colorcurve:AddPoint(0, CreateColor(0.5, 1, 1, 1));
     end
+
+    ns.aurascale = CVarCallbackRegistry:GetCVarNumberOrDefault(NamePlateConstants.AURA_SCALE_CVAR);
 end
 
 
