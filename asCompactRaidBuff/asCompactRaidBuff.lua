@@ -176,7 +176,8 @@ local function change_button(button, changesize)
             button.border:Show();
         end
         button.border:ClearAllPoints();
-        button.border:SetAllPoints(button);
+        button.border:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0);
+        button.border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0);
     end
 
     if button.count then

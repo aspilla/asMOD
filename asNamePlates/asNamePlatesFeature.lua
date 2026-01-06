@@ -4,21 +4,18 @@ function ns.update_power(asframe)
     if not ns.options.ShowPower then
         return;
     end
-
     local unit = asframe.unit;
-
     local powerType, powerTypeString = UnitPowerType(unit);
 
     if powerType and powerType > 0 and UnitIsUnit(unit, "target") then
         local power = UnitPower(unit);
         local maxPower = UnitPowerMax(unit);
 
-
         asframe.powerbar:SetMinMaxValues(0, maxPower);
         asframe.powerbar:SetValue(power);
         asframe.powerbar.value:SetText(power);
         asframe.powerbar:Show();
-    else
+    else        
         asframe.powerbar:Hide();
     end
 end
@@ -180,8 +177,12 @@ end
 
 function ns.update_target(asframe)
     if asframe.unit and UnitIsUnit(asframe.unit, "target") then
+        asframe.casticon.border:SetVertexColor(1, 1, 1);
+        asframe.casticon:SetAlpha(1);
         ns.update_power(asframe);
-        return;
+    else
+        asframe.casticon.border:SetVertexColor(0, 0, 0);
+        asframe.casticon:SetAlpha(0.7);
     end
 end
 

@@ -222,7 +222,7 @@ local function init_addon()
     ns.bar.bg:SetPoint("TOPLEFT", ns.bar, "TOPLEFT", -1, 1);
     ns.bar.bg:SetPoint("BOTTOMRIGHT", ns.bar, "BOTTOMRIGHT", 1, -1);
 
-    ns.bar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");
+    ns.bar.bg:SetTexture("Interface\\Addons\\asPowerBar\\border.tga");    
     ns.bar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
     ns.bar.bg:SetVertexColor(0, 0, 0, 1);
 

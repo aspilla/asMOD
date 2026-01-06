@@ -19,7 +19,14 @@ local function create_frame()
 
     object:EnableMouse(false);
     object.casticon = create_casticon(object);
-    object.BarColor = object:CreateTexture(nil, "ARTWORK", "asNamePlatesTemplate", 1);
+
+    local template = "asNamePlates2Template";
+
+    if not ns.options.ChangeTexture then
+        template  = "asNamePlates1Template";
+    end
+
+    object.BarColor = object:CreateTexture(nil, "ARTWORK", template, 1);
 
     object.powerbar = CreateFrame("StatusBar", nil, object);
     object.powerbar:SetStatusBarTexture("RaidFrame-Hp-Fill")

@@ -1,23 +1,24 @@
 # asCooldownPulse (Midnight)
 
-Displays cooldowns for trinkets, racial traits, healthstones, and potions.
+Displays cooldowns for Trinkets, Racials, Healthstones, and Potions.
 
 ![asCooldownPulse](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCooldownPulse_MN.jpg?raw=true)
 
-## Main Features
+## Key Features
 
-*   **Trinket Cooldown Display (Right)**: Displays trinket cooldown when a usable trinket is equipped.
-*   **Racial Trait Cooldown Display (Right)**
-*   **Healthstone Cooldown & Usable Count Display (Left)**
-*   **Combat Potion Cooldown Display (Left)**
-*   **Survival Potion Cooldown Display (Left)**
+* **Trinket Cooldowns (Right)**: Displays the cooldown for equipped "Use" effect trinkets.
+* **Racial Ability Cooldowns (Right)**: 
+* **Combat Potion Cooldowns (Left)**: Displays cooldowns for representative combat-enhancing potions.
+* **Survival Potion Cooldowns (Left)**: Displays cooldowns for representative healing/survival potions.
+* **Healthstone Cooldown & Count (Left)**: Displays the cooldown and remaining charges only when a Healthstone is in your inventory.
 
-## Settings
+
+## Configuration
 * Settings can be adjusted via `ESC` > `Options` > `Addons` > `asCooldownPulse`.
-* `CombatAlphaChange` : Change alpha when outofcombat (Default: On).
+* `CombatAlphaChange`: Changes transparency when out of combat (Default: On).
 
-*  **Positioning**:
-    *   If the `asMOD` addon is installed, configuration is possible via the `/asConfig` command of `asMOD`.
+* **Positioning**
+    * If the `asMOD` addon is installed, you can reposition the elements by using the `/asConfig` command.
 
 ---
 
@@ -31,9 +32,9 @@ Displays cooldowns for trinkets, racial traits, healthstones, and potions.
 
 *   **장신구 쿨 표시(우측)**: 사용가능 장신구 착용시 장신구 쿨 표시.
 *   **종특 쿨 표시(우측)** 
-*   **생석 쿨/사용 가능 개수 표시(좌측)** 
-*   **전투 물약 쿨 표시(좌측)** 
-*   **생존 물약 쿨 표시(좌측)** 
+*   **전투 물약 쿨 표시(좌측)** : 대표 물약 쿨만 표시
+*   **생존 물약 쿨 표시(좌측)** : 대표 물약 쿨만 표시
+*   **생석 쿨/사용 가능 개수 표시(좌측)** : 생석을 지니고 있을때만 표시
 
 
 ## 설정

@@ -1,130 +1,137 @@
 ﻿local _, ns = ...;
------------------설정 ------------------------
-local ATCB_WIDTH = 180
-local ATCB_HEIGHT = 17
-local ATCB_X = 0;
-local ATCB_Y = -100;
-local ATCB_ALPHA = 0.8;                                                 --투명도 80%
-local ATCB_NAME_SIZE = ATCB_HEIGHT * 0.7;                               --Spell 명 Font Size, 높이의 70%
-local ATCB_TIME_SIZE = ATCB_HEIGHT * 0.5;                               --Spell 시전시간 Font Size, 높이의 50%
-local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };               --차단 불가시 (내가 아닐때) 색상 (r, g, b)
-local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 }; --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
-local CONFIG_FAILED_COLOR = { 1, 0, 0 };                                --cast fail
-local ATCB_UPDATE_RATE = 0.05                                           -- 20프레임
 
------------------설정 끝------------------------
-local CONFIG_FONT = STANDARD_TEXT_FONT;
+local configs = {
+    width = 180,
+    height = 17,
+    xpoint = 0,
+    ypoint = -100,
+    alpha = 1,
+    notinterruptcolor = { 0.9, 0.9, 0.9 },
+    interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
+    notinterruptcolor_target = { 153 / 255, 0, 76 / 255 },
+    interruptcolor_target = { 76 / 255, 153 / 255, 0 },
+    failedcolor = { 1, 0, 0 },
+    updaterate = 0.05,
+    font = STANDARD_TEXT_FONT,
+    kickvoice = "Interface\\AddOns\\asTargetCastBar\\Target_Kick_En.mp3",
+    stunvoice = "Interface\\AddOns\\asTargetCastBar\\Target_Stun_En.mp3",
+    focuskickvoice = "Interface\\AddOns\\asTargetCastBar\\Focus_Kick_En.mp3",
+    focusstunvoice = "Interface\\AddOns\\asTargetCastBar\\Focus_Stun_En.mp3",
+
+}
+
+configs.namesize = configs.height * 0.7;
+configs.timesize = configs.height * 0.5;
+
 local region = GetCurrentRegion();
 
 if region == 2 and GetLocale() ~= "koKR" then
-    CONFIG_FONT = "Fonts\\2002.ttf";
+    configs.font = "Fonts\\2002.ttf";
 end
-
-local CONFIG_VOICE_TARGET_KICK = "Interface\\AddOns\\asTargetCastBar\\Target_Kick_En.mp3"
-local CONFIG_VOICE_TARGET_STUN = "Interface\\AddOns\\asTargetCastBar\\Target_Stun_En.mp3"
-local CONFIG_VOICE_FOCUS_KICK = "Interface\\AddOns\\asTargetCastBar\\Focus_Kick_En.mp3"
-local CONFIG_VOICE_FOCUS_STUN = "Interface\\AddOns\\asTargetCastBar\\Focus_Stun_En.mp3"
 
 if GetLocale() == "koKR" then
-    CONFIG_VOICE_TARGET_KICK = "Interface\\AddOns\\asTargetCastBar\\Target_Kick.mp3"
-    CONFIG_VOICE_TARGET_STUN = "Interface\\AddOns\\asTargetCastBar\\Target_Stun.mp3"
-    CONFIG_VOICE_FOCUS_KICK = "Interface\\AddOns\\asTargetCastBar\\Focus_Kick.mp3"
-    CONFIG_VOICE_FOCUS_STUN = "Interface\\AddOns\\asTargetCastBar\\Focus_Stun.mp3"
+    configs.kickvoice = "Interface\\AddOns\\asTargetCastBar\\Target_Kick.mp3"
+    configs.stunvoice = "Interface\\AddOns\\asTargetCastBar\\Target_Stun.mp3"
+    configs.focuskickvoice = "Interface\\AddOns\\asTargetCastBar\\Focus_Kick.mp3"
+    configs.focusstunvoice = "Interface\\AddOns\\asTargetCastBar\\Focus_Stun.mp3"
 end
 
-local ATCB = CreateFrame("FRAME", nil, UIParent)
-ATCB:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
-ATCB:SetWidth(0)
-ATCB:SetHeight(0)
-ATCB:Show();
+local main_frame = CreateFrame("FRAME", nil, UIParent)
+main_frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
+main_frame:SetWidth(0)
+main_frame:SetHeight(0)
+main_frame:Show();
 
-local function setupCastBar()
-    local frame = CreateFrame("StatusBar", nil, UIParent)
-    frame:SetStatusBarTexture("RaidFrame-Hp-Fill")
-    frame:GetStatusBarTexture():SetHorizTile(false)
-    frame:SetMinMaxValues(0, 100)
-    frame:SetValue(100)
-    frame:SetHeight(ATCB_HEIGHT)
-    frame:SetWidth(ATCB_WIDTH - (ATCB_HEIGHT + 2) * 1.2)
-    frame:SetStatusBarColor(1, 0.9, 0.9);
-    frame:SetAlpha(ATCB_ALPHA);
+local function setup_castbar()
+    local castbar = CreateFrame("StatusBar", nil, UIParent)
+    castbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+    castbar:GetStatusBarTexture():SetHorizTile(false)
+    castbar:SetMinMaxValues(0, 100)
+    castbar:SetValue(100)
+    castbar:SetHeight(configs.height)
+    castbar:SetWidth(configs.width - (configs.height + 2) * 1.2)
+    castbar:SetStatusBarColor(1, 0.9, 0.9);
+    castbar:SetAlpha(configs.alpha);
 
-    frame.bg = frame:CreateTexture(nil, "BACKGROUND")
-    frame.bg:SetPoint("TOPLEFT", frame, "TOPLEFT", -1, 1)
-    frame.bg:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 1, -1)
+    castbar.bg = castbar:CreateTexture(nil, "BACKGROUND")
+    castbar.bg:SetPoint("TOPLEFT", castbar, "TOPLEFT", -1, 1)
+    castbar.bg:SetPoint("BOTTOMRIGHT", castbar, "BOTTOMRIGHT", 1, -1)
 
-    frame.bg:SetTexture("Interface\\Addons\\asTargetCastBar\\border.tga")
-    frame.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    frame.bg:SetVertexColor(0, 0, 0, 1);
-    frame.bg:Show();
+    castbar.bg:SetTexture("Interface\\Addons\\asTargetCastBar\\border.tga")
+    castbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    castbar.bg:SetVertexColor(0, 0, 0, 1);
+    castbar.bg:Show();
 
-    frame.name = frame:CreateFontString(nil, "OVERLAY");
-    frame.name:SetFont(STANDARD_TEXT_FONT, ATCB_NAME_SIZE);
-    frame.name:SetPoint("LEFT", frame, "LEFT", 3, 0);
+    castbar.name = castbar:CreateFontString(nil, "OVERLAY");
+    castbar.name:SetFont(STANDARD_TEXT_FONT, configs.namesize);
+    castbar.name:SetPoint("LEFT", castbar, "LEFT", 3, 0);
 
-    frame.time = frame:CreateFontString(nil, "OVERLAY");
-    frame.time:SetFont(STANDARD_TEXT_FONT, ATCB_TIME_SIZE);
-    frame.time:SetPoint("RIGHT", frame, "RIGHT", -3, 0);
+    castbar.time = castbar:CreateFontString(nil, "OVERLAY");
+    castbar.time:SetFont(STANDARD_TEXT_FONT, configs.timesize);
+    castbar.time:SetPoint("RIGHT", castbar, "RIGHT", -3, 0);
 
-    frame:EnableMouse(false);
-    frame.isAlert = false;
-    frame:Hide();
+    castbar:EnableMouse(false);
+    castbar.isAlert = false;
+    castbar:Hide();
 
-    frame.button = CreateFrame("Button", nil, frame, "ATCBFrameTemplate");
-    frame.button:SetPoint("RIGHT", frame, "LEFT", -1, 0)
-    frame.button:SetWidth((ATCB_HEIGHT + 2) * 1.2);
-    frame.button:SetHeight(ATCB_HEIGHT + 2);
-    frame.button:SetScale(1);
-    frame.button:SetAlpha(1);
-    frame.button:EnableMouse(false);
-    frame.button.icon:SetTexCoord(.08, .92, .16, .84);
-    frame.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-    frame.button.border:SetVertexColor(0, 0, 0);
-    frame.button.border:Show();
-    frame.button:Show();
+    castbar.button = CreateFrame("Button", nil, castbar, "ATCBFrameTemplate");
+    castbar.button:SetPoint("RIGHT", castbar, "LEFT", -1, 0)
+    castbar.button:SetWidth((configs.height + 2) * 1.2);
+    castbar.button:SetHeight(configs.height + 2);
+    castbar.button:SetScale(1);
+    castbar.button:SetAlpha(1);
+    castbar.button:EnableMouse(false);
+    castbar.button.icon:SetTexCoord(.08, .92, .16, .84);
+    castbar.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+    castbar.button.border:SetVertexColor(0, 0, 0);
+    castbar.button.border:Show();
+    castbar.button:Show();
 
-    frame.targetname = frame:CreateFontString(nil, "ARTWORK");
-    frame.targetname:SetFont(CONFIG_FONT, ATCB_NAME_SIZE);
-    frame.targetname:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -2);
+    castbar.targetname = castbar:CreateFontString(nil, "ARTWORK");
+    castbar.targetname:SetFont(configs.font, configs.namesize);
+    castbar.targetname:SetPoint("TOPRIGHT", castbar, "BOTTOMRIGHT", 0, -2);
 
-    frame.mark = frame:CreateTexture(nil, "ARTWORK");
-    frame.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
-    frame.mark:SetSize(ATCB_NAME_SIZE + 3, ATCB_NAME_SIZE + 3);
-    frame.mark:SetPoint("RIGHT", frame.button, "LEFT", -1, 0);
-    frame.start = 0;
-    frame.duration = 0;
-    frame.soundalerted = false;
-    return frame;
+    castbar.mark = castbar:CreateTexture(nil, "ARTWORK");
+    castbar.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
+    castbar.mark:SetSize(configs.namesize + 3, configs.namesize + 3);
+    castbar.mark:SetPoint("RIGHT", castbar.button, "LEFT", -1, 0);
+    castbar.start = 0;
+    castbar.duration = 0;
+    castbar.soundalerted = false;
+    castbar.istargetplayer = false;
+    return castbar;
 end
-ATCB.targetCastBar = setupCastBar();
-ATCB.targetCastBar:SetPoint("CENTER", UIParent, "CENTER", ATCB_X + ((ATCB_HEIGHT + 2) * 1.2) / 2, ATCB_Y)
-ATCB.focusCastBar = setupCastBar();
-ATCB.focusCastBar:SetPoint("CENTER", UIParent, "CENTER", ATCB_X + ((ATCB_HEIGHT + 2) * 1.2) / 2, ATCB_Y + 150)
-ns.focusCastBar = ATCB.focusCastBar;
+ns.targetcastbar = setup_castbar();
+ns.targetcastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height + 2) * 1.2) / 2, configs
+    .ypoint)
+ns.focuscastbar = setup_castbar();
+ns.focuscastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height + 2) * 1.2) / 2,
+    configs.ypoint + 150)
+
 
 
 C_AddOns.LoadAddOn("asMOD");
 
 if asMOD_setupFrame then
-    asMOD_setupFrame(ATCB.targetCastBar, "asTargetCastBar (Target)");
-    asMOD_setupFrame(ATCB.focusCastBar, "asTargetCastBar (Focus)");
+    asMOD_setupFrame(ns.targetcastbar, "asTargetCastBar (Target)");
+    asMOD_setupFrame(ns.focuscastbar, "asTargetCastBar (Focus)");
 end
 
-local function hideCastBar(castBar)
-    local targetname = castBar.targetname;
-    castBar:SetValue(0);
-    castBar:Hide();
-    ns.lib.PixelGlow_Stop(castBar);
-    castBar.isAlert = false;    
+local function hide_castbar(castbar)
+    local targetname = castbar.targetname;
+    castbar:SetValue(0);
+    castbar:Hide();
+    ns.lib.PixelGlow_Stop(castbar);
+    castbar.isAlert = false;
     targetname:SetText("");
     targetname:Hide();
-    castBar.failstart = nil;
-    castBar.soundalerted = false;
-    castBar.duration_obj = nil;
+    castbar.failstart = nil;
+    castbar.soundalerted = false;
+    castbar.duration_obj = nil;
 end
 
 
-local function DisplayRaidIcon(unit, markframe)
+local function show_raidicon(unit, markframe)
     local raidicon = GetRaidTargetIndex(unit);
     if raidicon then
         SetRaidTargetIconTexture(markframe, raidicon);
@@ -142,13 +149,13 @@ local function get_typeofcast(unit)
     return nil;
 end
 
-local function checkCasting(castBar, event)
-    local unit         = castBar.unit;
-    local frameIcon    = castBar.button.icon;
-    local text         = castBar.name;
-    local time         = castBar.time;
-    local targetname   = castBar.targetname;
-    local mark         = castBar.mark;
+local function check_casting(castbar, event)
+    local unit         = castbar.unit;
+    local frameicon    = castbar.button.icon;
+    local text         = castbar.name;
+    local time         = castbar.time;
+    local targetname   = castbar.targetname;
+    local mark         = castbar.mark;
     local targettarget = unit .. "target";
     local currtime     = GetTime();
 
@@ -163,17 +170,17 @@ local function checkCasting(castBar, event)
         end
 
         if event == "UNIT_SPELLCAST_INTERRUPTED" then
-            castBar:SetMinMaxValues(0, 100);
-            castBar:SetValue(100);
+            castbar:SetMinMaxValues(0, 100);
+            castbar:SetValue(100);
             local failtext = "Interrupted"
-            local color = CONFIG_FAILED_COLOR;
+            local color = configs.failedcolor;
 
             time:SetText(failtext);
-            castBar:SetStatusBarColor(color[1], color[2], color[3]);
-            castBar.failstart = currtime;
-            castBar:SetStatusBarDesaturated(false);
-            castBar.duration_obj = nil;
-            castBar:Show();
+            castbar:SetStatusBarColor(color[1], color[2], color[3]);
+            castbar.failstart = currtime;
+            castbar:SetStatusBarDesaturated(false);
+            castbar.duration_obj = nil;
+            castbar:Show();
         elseif name then
             local duration;
 
@@ -182,26 +189,41 @@ local function checkCasting(castBar, event)
             else
                 duration = UnitCastingDuration(unit);
             end
-            castBar.duration_obj = duration;
-            frameIcon:SetTexture(texture);
-            castBar:SetReverseFill(bchannel);
+            castbar.duration_obj = duration;
+            frameicon:SetTexture(texture);
+            castbar:SetReverseFill(bchannel);
 
-            castBar:SetMinMaxValues(start, endTime)
-            castBar.failstart = nil;
+            castbar:SetMinMaxValues(start, endTime)
+            castbar.failstart = nil;
 
-            local color = {};
-            color = CONFIG_INTERRUPTIBLE_COLOR;
+            local color = configs.interruptcolor;
             local type = get_typeofcast(unit);
 
             if type and type == "uninterruptable" then
-            --if notInterruptible then
-                color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
+                if castbar.istargetplayer then
+                    color = configs.notinterruptcolor_target;
+                else
+                    color = configs.notinterruptcolor;
+                end
+            else
+                if castbar.istargetplayer then
+                    color = configs.interruptcolor_target;
+                end
             end
-            castBar:SetStatusBarColor(color[1], color[2], color[3]);
+
+            --[[
+            local isimportant = C_Spell.IsSpellImportant(spellid);
+
+            if isimportant then
+                print("text");
+            end
+            ]]
+
+            castbar:SetStatusBarColor(color[1], color[2], color[3]);
             text:SetText(name);
-            DisplayRaidIcon(unit, mark);
-            frameIcon:Show();
-            castBar:Show();
+            show_raidicon(unit, mark);
+            frameicon:Show();
+            castbar:Show();
 
             if UnitExists(targettarget) then
                 local _, Class = UnitClass(targettarget)
@@ -219,7 +241,7 @@ local function checkCasting(castBar, event)
             end
 
 
-            if name and castBar.soundalerted == false then
+            if name and castbar.soundalerted == false then
                 local isfocus = UnitIsUnit(unit, "focus");
                 local soundfile = nil;
 
@@ -228,44 +250,44 @@ local function checkCasting(castBar, event)
                         local stunable = UnitLevel(unit) <= UnitLevel("player");
                         if stunable then
                             if isfocus then
-                                soundfile = CONFIG_VOICE_FOCUS_STUN
+                                soundfile = configs.focusstunvoice
                             else
-                                soundfile = CONFIG_VOICE_TARGET_STUN;
+                                soundfile = configs.stunvoice;
                             end
                         end
                     end
                 else
                     if ns.options.PlaySoundKick then
                         if isfocus then
-                            soundfile = CONFIG_VOICE_FOCUS_KICK
+                            soundfile = configs.focuskickvoice
                         else
-                            soundfile = CONFIG_VOICE_TARGET_KICK;
+                            soundfile = configs.kickvoice;
                         end
                     end
                 end
 
                 if soundfile then
-                    castBar.soundalerted = true;
+                    castbar.soundalerted = true;
                     PlaySoundFile(soundfile, "MASTER");
                 end
             end
         else
-            if castBar.failstart == nil then
-                hideCastBar(castBar);
+            if castbar.failstart == nil then
+                hide_castbar(castbar);
             end
         end
     else
-        hideCastBar(castBar);
+        hide_castbar(castbar);
     end
 end
 
-local function checkUnit(frame, unit)
-    if not frame then
+local function check_unit(castbar, unit)
+    if not castbar then
         return;
     end
 
     if not UnitExists(unit) then
-        hideCastBar(frame);
+        hide_castbar(castbar);
         return;
     end
 
@@ -275,50 +297,61 @@ local function checkUnit(frame, unit)
         end
     end
 
-    frame.failstart = nil;
+    castbar.failstart = nil;
 
 
-    checkCasting(frame, "NOTHING");
+    check_casting(castbar, "NOTHING");
 end
 
 
-local function registerUnit(frame, unit)
-    frame.unit = unit;
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
-    frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
-    frame:RegisterUnitEvent("UNIT_TARGET", unit);
+local function register_unit(castbar, unit)
+    castbar.unit = unit;
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
+    castbar:RegisterUnitEvent("UNIT_TARGET", unit);
 end
 
-local function on_unit_event(self, event, ...)
-    checkCasting(self, event);
+local function on_unit_event(castbar, event, ...)
+    --[[
+    if event == "UNIT_TARGET" then
+        local unit = ...;        
+
+        if UnitIsUnit("player", unit .. "target") then
+            castbar.istargetplayer = true;
+        else
+            castbar.istargetplayer = false;
+        end
+    end
+    ]]
+    check_casting(castbar, event);
 end
 
-ATCB.targetCastBar:SetScript("OnEvent", on_unit_event);
-registerUnit(ATCB.targetCastBar, "target");
-ATCB.focusCastBar:SetScript("OnEvent", on_unit_event);
-registerUnit(ATCB.focusCastBar, "focus");
+ns.targetcastbar:SetScript("OnEvent", on_unit_event);
+register_unit(ns.targetcastbar, "target");
+ns.focuscastbar:SetScript("OnEvent", on_unit_event);
+register_unit(ns.focuscastbar, "focus");
 
-local function ATCB_OnEvent(self, event, ...)
+local function on_event(self, event, ...)
     if event == "PLAYER_TARGET_CHANGED" then
-        ATCB.targetCastBar.soundalerted = nil;
-        checkUnit(ATCB.targetCastBar, "target");
+        ns.targetcastbar.soundalerted = nil;
+        check_unit(ns.targetcastbar, "target");
     elseif event == "PLAYER_FOCUS_CHANGED" then
-        ATCB.focusCastBar.soundalerted = nil;
-        checkUnit(ATCB.focusCastBar, "focus");
+        ns.focuscastbar.soundalerted = nil;
+        check_unit(ns.focuscastbar, "focus");
     elseif event == "PLAYER_ENTERING_WORLD" then
-        checkUnit(ATCB.targetCastBar, "target");
-        checkUnit(ATCB.focusCastBar, "focus");
+        check_unit(ns.targetcastbar, "target");
+        check_unit(ns.focuscastbar, "focus");
     elseif event == "ADDON_LOADED" then
         local name = ...;
 
@@ -329,13 +362,13 @@ local function ATCB_OnEvent(self, event, ...)
 end
 
 
-local function udpate_castbar(castbar)
+local function update_castbar(castbar)
     local failstart = castbar.failstart;
     local current = GetTime();
 
     if failstart then
         if current - failstart > 0.5 then
-            hideCastBar(castbar);
+            hide_castbar(castbar);
         end
     else
         if castbar.duration_obj then
@@ -346,15 +379,15 @@ local function udpate_castbar(castbar)
     end
 end
 
-local function ATCB_OnUpdate()
-    udpate_castbar(ATCB.targetCastBar);
-    udpate_castbar(ATCB.focusCastBar);
+local function on_update()
+    update_castbar(ns.targetcastbar);
+    update_castbar(ns.focuscastbar);
 end
 
-ATCB:SetScript("OnEvent", ATCB_OnEvent)
-ATCB:RegisterEvent("PLAYER_TARGET_CHANGED");
-ATCB:RegisterEvent("PLAYER_FOCUS_CHANGED");
-ATCB:RegisterEvent("ADDON_LOADED");
-ATCB:RegisterEvent("PLAYER_ENTERING_WORLD");
+main_frame:SetScript("OnEvent", on_event)
+main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
+main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+main_frame:RegisterEvent("ADDON_LOADED");
+main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
-C_Timer.NewTicker(ATCB_UPDATE_RATE, ATCB_OnUpdate);
+C_Timer.NewTicker(configs.updaterate, on_update);

@@ -4,7 +4,7 @@ Nameplate Enhancement Addon
 
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_MN.jpg?raw=true)
 
-**Note:** Does not modify friendly nameplates.
+**Note:** Friendly nameplates are not modified.
 
 ## Nameplate Color Customization
 Colors are displayed based on the following priority:
@@ -17,14 +17,15 @@ Colors are displayed based on the following priority:
   * <span style = "background-color:#87ceeb">**Sky Blue:**</span> Normal threat level
   * <span style = "background-color:#008000">**Green:**</span> Boss mobs (High level (e.g., 91+) or ?? level mobs)
   * <span style = "background-color:#b8860b">**Ochre:**</span> Quest mobs (When not in a party)
-  
+
 ## Additional Features
 
-* Adjust nameplate vertical overlap (`nameplateOverlapV`) settings.
-* Display a green arrow below the mouseover target.
-* Display the mob's energy below the health bar for the current target (if not using mana).
-* Display spell icons during casting (if not using mana).
-* Adjust the position of buff/debuff duration/stacks and add borders.
+* **Vertical Overlap Adjustment**: Configure the vertical spacing between nameplates (`nameplateOverlapV`).
+* **Mouseover Indicator**: Displays a green arrow at the bottom of the mouseover target.
+* **Target Power Display**: For your current target, displays the mob's energy below the health bar (if not using mana, `ShowPower`).
+* **Cast Icons**: Displays the skill icon while a mob is casting (if not using mana, `ShowCastIcon`).
+* **Aura Enhancements**: Adjusts the position of buff/debuff duration and stacks, and adds borders (`ChangeDebuffIcon`).
+* **Visual Overhaul**: Changes the nameplate texture and borders (`ChangeTexture`).
 
 ## Configuration
 * `Esc > Options > Addons > asNamePlates`
@@ -53,11 +54,12 @@ Colors are displayed based on the following priority:
   
 ## 기타 기능
 
-* 이름표 세로 정렬 정도(`nameplateOverlapV`) 설정
+* 이름표 세로 정렬 간격 설정(`nameplateOverlapV`) 
 * 마우스오버 대상 녹색 화살표 하단 표시
-* 대상의 경우 몹의 기력을 체력바 아래 표시 (마나가 아닐 경우)
-* 시전중일 경우 스킬 아이콘 표시 (마나가 아닐 경우)
-* 버프/디버프 시간/중첩 위치 조정 및 테두리 추가
+* 대상의 경우 몹의 기력을 체력바 아래 표시 (마나가 아닐 경우, `ShowPower`)
+* 시전중일 경우 스킬 아이콘 표시 (마나가 아닐 경우, `ShowCastIcon`)
+* 버프/디버프 시간/중첩 위치 조정 및 테두리 추가 (`ChangeDebuffIcon`)
+* 이름표 Texture 및 테두리 변경 (`ChangeTexture`)
 
 ## 설정
 * `Esc > 옵션 > 애드온 > asNamePlates`

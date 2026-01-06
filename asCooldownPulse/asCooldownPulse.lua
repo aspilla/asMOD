@@ -3,7 +3,7 @@ local _, ns     = ...;
 ns.tbuttons     = {};
 ns.ibuttons     = {};
 ns.trinkets     = { 13, 14 };
-ns.items        = { 5512, 241308, 241304 };
+ns.items        = { 241308, 241304, 5512 };
 ns.racials      = { 26297, 265221, 357214, 20594, 58984, 202719, 20572, 20549, 274738, 59752, 256948, 312411, 7744, 255647, 287712, 312924, 68992, 69070, 291944, 1237885, 255654, 107079, 20589, 59542, 436344 };
 ns.racial_spell = nil;
 ns.isdemonstone = false;
@@ -77,14 +77,18 @@ local function update_buttons(list, buttons, spellid)
     for _, itemid in pairs(list) do
         local isusable = true;
         local istrinket = false;
+        local ishealthstone = false;
         if itemid < 20 then
             itemid = GetInventoryItemID("player", itemid);
             if itemid then
                 isusable = C_Item.IsUsableItem(itemid);
             end
             istrinket = true;
-        elseif itemid == 5512 and ns.isdemonstone then
-            itemid = 224464;
+        elseif itemid == 5512  then
+            if ns.isdemonstone then
+                itemid = 224464;                
+            end
+            ishealthstone = true;
         end
         if itemid then
             local _, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemid)
@@ -110,7 +114,15 @@ local function update_buttons(list, buttons, spellid)
                 else
                     frame.count:Hide();
                 end
-                frame:Show()
+                if ishealthstone then
+                    if count > 0 then
+                        frame:Show();
+                    else
+                        frame:Hide();
+                    end
+                else
+                    frame:Show()
+                end
                 i = i + 1;
             end
         end

@@ -23,8 +23,8 @@ function ns.setup_option()
         ATCB_Options[variable] = value;
         ns.options[variable] = value;
         
-        if variable == "FocusCastScale" and ns.focusCastBar then
-            ns.focusCastBar:SetScale(value);
+        if variable == "FocusCastScale" and ns.focuscastbar then
+            ns.focuscastbar:SetScale(value);
         end
 
     end
@@ -62,8 +62,8 @@ function ns.setup_option()
                 Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
 
-                if name == "FocusCastScale" and ns.focusCastBar then
-                    ns.focusCastBar:SetScale(currentValue);
+                if name == "FocusCastScale" and ns.focuscastbar then
+                    ns.focuscastbar:SetScale(currentValue);
                 end
             else
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);

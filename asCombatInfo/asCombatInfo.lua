@@ -74,6 +74,12 @@ local function update_buttons(viewer)
 				end
 			end
 
+			if button.DebuffBorder then
+				button.DebuffBorder:ClearAllPoints();
+				button.DebuffBorder:SetPoint("TOPLEFT", button, "TOPLEFT", -4, 4);
+        		button.DebuffBorder:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 4, -4);
+			end
+
 			if button.Applications then
 				for _, r in next, { button.Applications:GetRegions() } do
 					if r:GetObjectType() == "FontString" then

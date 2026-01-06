@@ -153,6 +153,7 @@ local function hook_refresh(auraframe)
     end
 end
 
+
 local function add_unit(unit)
     local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(unit, issecure());
 
@@ -166,6 +167,7 @@ local function add_unit(unit)
 
     local unitFrame = namePlateFrameBase.UnitFrame;
     local healthbar = unitFrame.healthBar;
+    local container = unitFrame.HealthBarsContainer;
 
     if not UnitCanAttack("player", unit) then
         if namePlateFrameBase.asNamePlates then
@@ -192,13 +194,33 @@ local function add_unit(unit)
 
     if unitFrame.castBar then
         asframe.casticon:ClearAllPoints();
-        asframe.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0.5, -0.3);
+        asframe.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0.5, -1);
         local scale = NamePlateDriverMixin:GetNamePlateScale();
         local height = 22 * scale.vertical + 10
         asframe.casticon:SetWidth(height * 1.2);
         asframe.casticon:SetHeight(height);
         asframe.casticon:Hide();
         asframe.iscast = false;
+    end
+
+    if ns.options.ChangeTexture and not healthbar.border then
+        healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+        healthbar.bgTexture:Hide();
+
+
+
+        healthbar.border = healthbar:CreateTexture(nil, "BACKGROUND", "asNamePlatesBorderTemplate");
+        healthbar.border:SetPoint("TOPLEFT", healthbar, "TOPLEFT", -1, 1);
+        healthbar.border:SetPoint("BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 1, -1);
+        healthbar.border:SetColorTexture(0, 0, 0, 0.5);
+
+        healthbar.border:Show();
+
+
+
+        healthbar.selectedBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
+        healthbar.selectedBorder:SetPoint("TOPLEFT", healthbar, "TOPLEFT", -2, 2);
+        healthbar.selectedBorder:SetPoint("BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 2, -2);
     end
 
     local previousTexture = healthbar:GetStatusBarTexture();
