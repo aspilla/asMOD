@@ -158,8 +158,8 @@ local function init()
 
 	load_position(main_frame, ASTM_Position);
 
-	if asMOD_setupFrame then
-		asMOD_setupFrame(main_frame, "asCombatTimer");
+	if ASMODOBJ.load_position then
+		ASMODOBJ.load_position(main_frame, "asCombatTimer");
 	end
 
 	main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");

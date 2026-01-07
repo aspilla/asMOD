@@ -1,9 +1,10 @@
 local _, ns = ...;
-local CONFIG_NOT_INTERRUPTIBLE_COLOR = { 0.9, 0.9, 0.9 };                 --차단 불가시 (내가 아닐때) 색상 (r, g, b)
-local CONFIG_NOT_INTERRUPTIBLE_COLOR_TARGET = { 153 / 255, 0, 76 / 255 }; --차단 불가시 (내가 타겟일때) 색상 (r, g, b)
-local CONFIG_INTERRUPTIBLE_COLOR = { 204 / 255, 255 / 255, 153 / 255 };   --차단 가능(내가 타겟이 아닐때)시 색상 (r, g, b)
-local CONFIG_INTERRUPTIBLE_COLOR_TARGET = { 76 / 255, 153 / 255, 0 };     --차단 가능(내가 타겟일 때)시 색상 (r, g, b)
-local CONFIG_FAILED_COLOR = { 1, 0, 0 };                                  --cast fail
+
+local configs = {
+    nointerruptcolor = { 0.9, 0.9, 0.9 },
+    interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
+    failcolor = { 1, 0, 0 },
+};
 
 
 local function hide_castbar(castbar)
@@ -11,7 +12,7 @@ local function hide_castbar(castbar)
     castbar:SetValue(0);
     castbar:Hide();
     ns.lib.PixelGlow_Stop(castbar);
-    castbar.isAlert = false;    
+    castbar.isAlert = false;
     targetname:SetText("");
     targetname:Hide();
     castbar.failstart = nil;
@@ -50,7 +51,7 @@ local function check_casting(castbar, event)
             castbar:SetMinMaxValues(0, 100);
             castbar:SetValue(100);
             local failtext = "Interrupted"
-            local color = CONFIG_FAILED_COLOR;
+            local color = configs.failcolor;
             time:SetText(failtext);
             castbar:SetStatusBarColor(color[1], color[2], color[3]);
             castbar.failstart = currtime;
@@ -71,11 +72,11 @@ local function check_casting(castbar, event)
             castbar.failstart = nil;
 
             local color = {};
-            color = CONFIG_INTERRUPTIBLE_COLOR;
+            color = configs.interruptcolor;
             local type = get_typeofcast(unit);
 
             if type and type == "uninterruptable" then
-                color = CONFIG_NOT_INTERRUPTIBLE_COLOR;
+                color = configs.nointerruptcolor;
             end
 
             castbar:SetStatusBarColor(color[1], color[2], color[3]);
@@ -138,8 +139,6 @@ function ns.register_castevents(castbar, unit)
 
     check_casting(castbar, "NOTHING");
 end
-
-
 
 function ns.update_castbar(castbar)
     local failstart = castbar.failstart;

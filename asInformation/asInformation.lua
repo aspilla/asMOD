@@ -656,8 +656,8 @@ local function init()
 
     C_AddOns.LoadAddOn("asMOD");
 
-    if asMOD_setupFrame then
-        asMOD_setupFrame(main_frame, "asInformation");
+    if ASMODOBJ.load_position then
+        ASMODOBJ.load_position(main_frame, "asInformation");
     end
     -- No longer registering UNIT_AURA for stat activation
     bfirst = false;

@@ -37,15 +37,15 @@ local itemslots = {
 	"Trinket1Slot",
 }
 
-local asGetSpellInfo = function(spellID)
-	if not spellID then
+local function get_spellinfo(spellid)
+	if not spellid then
 		return nil;
 	end
 
-	local spellInfo = C_Spell.GetSpellInfo(spellID);
-	if spellInfo then
-		return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
-			spellInfo.spellID, spellInfo.originalIconID;
+	local spellinfo = C_Spell.GetSpellInfo(spellid);
+	if spellinfo then
+		return spellinfo.name, nil, spellinfo.iconID, spellinfo.castTime, spellinfo.minRange, spellinfo.maxRange,
+			spellinfo.spellID, spellinfo.originalIconID;
 	end
 end
 
@@ -112,8 +112,8 @@ castframe:SetHeight(configs.iconsize * 1.3 * 0.9);
 castframe:Hide();
 
 local bloaded = C_AddOns.LoadAddOn("asMOD")
-if bloaded and asMOD_setupFrame then
-	asMOD_setupFrame(castframe, "asTrueGCD");
+if bloaded and ASMODOBJ.load_position then
+	ASMODOBJ.load_position(castframe, "asTrueGCD");
 end
 
 
@@ -137,7 +137,7 @@ local function insert_spell(spellid, bcancel, bitem)
 		spellseqcount = 0;
 	end
 
-	local name, discard, icon = asGetSpellInfo(spellid)
+	local name, discard, icon = get_spellinfo(spellid)
 
 	if bitem then
 		icon = select(10, C_Item.GetItemInfo(spellid));
@@ -209,7 +209,7 @@ local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdg
 	end
 end
 
-local function on_event(self, event, arg1, arg2, arg3, arg4, arg5)
+local function on_event(self, event, arg1, arg2, arg3)
 	if (event == "UNIT_SPELLCAST_START") then
 		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
 			"player");
@@ -276,7 +276,7 @@ local function on_event(self, event, arg1, arg2, arg3, arg4, arg5)
 		end
 	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
 		local spellid = arg3;
-		local name, discard, icon = asGetSpellInfo(spellid);
+		local name, discard, icon = get_spellinfo(spellid);
 		local curtime = GetTime();
 
 		if (previcon and previcon == icon and (curtime - prevtime) < 0.5) then
@@ -294,7 +294,7 @@ local function on_event(self, event, arg1, arg2, arg3, arg4, arg5)
 		end
 	elseif event == "UNIT_SPELLCAST_INTERRUPTED" and arg1 == "player" then
 		local spellid = arg3;
-		local name, discard, icon = asGetSpellInfo(spellid);
+		local name, discard, icon = get_spellinfo(spellid);
 
 		local curtime = GetTime();
 		if (interruptprevicon and interruptprevicon == icon and (curtime - interrupttime) < 0.5) then

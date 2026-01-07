@@ -247,16 +247,16 @@ local function on_event(self, event)
         if ns.options.ShowTarget then
             main_frame.targetframe = create_button("target");
             main_frame.targetframe:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint);
-            if asMOD_setupFrame then
-                asMOD_setupFrame(main_frame.targetframe, "asInterruptHelper (Target)");
+            if ASMODOBJ.load_position then
+                ASMODOBJ.load_position(main_frame.targetframe, "asInterruptHelper (Target)");
             end
         end
 
         if ns.options.ShowFocus then
             main_frame.focusframe = create_button("focus");
             main_frame.focusframe:SetPoint("CENTER", UIParent, "CENTER", configs.focusxpoint, configs.focusypoint);
-            if asMOD_setupFrame then
-                asMOD_setupFrame(main_frame.focusframe, "asInterruptHelper (Focus)");
+            if ASMODOBJ.load_position then
+                ASMODOBJ.load_position(main_frame.focusframe, "asInterruptHelper (Focus)");
             end
         end
 

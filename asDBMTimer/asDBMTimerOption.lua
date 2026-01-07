@@ -98,9 +98,9 @@ function ns.setup_option()
     ns.LoadPosition();
 
     C_AddOns.LoadAddOn("asMOD");
-    if asMOD_setupFrame and ns.asDBMTimer then
-        asMOD_setupFrame(ns.asDBMTimer, "asDBMTimer");
-        ns.SavePosition(ns.asDBMTimer); -- Save position after asMOD_setupFrame
+    if ASMODOBJ.load_position and ns.asDBMTimer then
+        ASMODOBJ.load_position(ns.asDBMTimer, "asDBMTimer");
+        ns.SavePosition(ns.asDBMTimer); -- Save position after ASMODOBJ.load_position
     end
 
     if ns.options.LockPosition and ns.asDBMTimer then

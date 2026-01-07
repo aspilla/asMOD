@@ -95,8 +95,8 @@ end
 
 C_AddOns.LoadAddOn("asMOD");
 
-if asMOD_setupFrame then
-    asMOD_setupFrame(ast_frame, "asSummonTracker");
+if ASMODOBJ.load_position then
+    ASMODOBJ.load_position(ast_frame, "asSummonTracker");
 end
 local playerGUID = UnitGUID("player");
 

@@ -215,7 +215,7 @@ do
 	main_frame.frames = {};
 	C_AddOns.LoadAddOn("asMOD");
 
-	if asMOD_setupFrame then
-		asMOD_setupFrame(main_frame, "asActiveAlert");
+	if ASMODOBJ.load_position then
+		ASMODOBJ.load_position(main_frame, "asActiveAlert");
 	end
 end

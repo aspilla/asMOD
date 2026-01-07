@@ -131,8 +131,8 @@ for idx = 1, AREADY_Max do
     AREADY.bar[idx]:Hide();
 
     if idx == 1 then
-        if asMOD_setupFrame then
-            asMOD_setupFrame(AREADY.bar[idx], "asReady");
+        if ASMODOBJ.load_position then
+            ASMODOBJ.load_position(AREADY.bar[idx], "asReady");
         end
     end
 end

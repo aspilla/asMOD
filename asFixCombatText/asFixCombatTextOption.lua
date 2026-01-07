@@ -131,8 +131,8 @@ function ns.setup_option()
 
     C_AddOns.LoadAddOn("asMOD");
 
-    if asMOD_setupFrame then
-        asMOD_setupFrame(asFixCombatText, "asFixCombatText");
+    if ASMODOBJ.load_position then
+        ASMODOBJ.load_position(asFixCombatText, "asFixCombatText");
         AFCT_OtherOptions.point, _, AFCT_OtherOptions.point2, AFCT_OtherOptions.x, AFCT_OtherOptions.y = asFixCombatText
             :GetPoint();
     end

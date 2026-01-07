@@ -35,8 +35,8 @@ main_frame.gcdbar:Show();
 
 C_AddOns.LoadAddOn("asMOD");
 
-if asMOD_setupFrame then
-	asMOD_setupFrame(main_frame.gcdbar, "asGCDBar");
+if ASMODOBJ.load_position then
+	ASMODOBJ.load_position(main_frame.gcdbar, "asGCDBar");
 end
 
 local function on_update()

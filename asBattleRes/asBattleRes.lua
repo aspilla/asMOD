@@ -137,8 +137,8 @@ local function init()
 
 	load_position(main_button, ASBR_Position);
 
-	if asMOD_setupFrame then
-		asMOD_setupFrame(main_button, "asBattleRes");
+	if ASMODOBJ.load_position then
+		ASMODOBJ.load_position(main_button, "asBattleRes");
 	end
 
 	local spellInfo = C_Spell.GetSpellInfo(configs.spellid);

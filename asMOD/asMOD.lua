@@ -7,6 +7,7 @@ local configs = {
 };
 
 local positions = {};
+ASMODOBJ = {};
 
 if not asMOD_position then
 	asMOD_position = {};
@@ -223,7 +224,7 @@ local function setup_frame(frame, Name, addonName, config)
 end
 
 
-function asMOD_setupFrame(frame, addonName)
+function ASMODOBJ.load_position(frame, addonName)
 	positions[addonName] = {
 		["name"] = addonName,
 		["parent"] = "UIParent",

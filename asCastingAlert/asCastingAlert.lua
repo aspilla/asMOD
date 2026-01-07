@@ -252,8 +252,8 @@ local function initAddon()
     end
     C_AddOns.LoadAddOn("asMOD");
 
-    if asMOD_setupFrame then
-        asMOD_setupFrame(ACTA.cast[1], "asCastingAlert");
+    if ASMODOBJ.load_position then
+        ASMODOBJ.load_position(ACTA.cast[1], "asCastingAlert");
     end
 
 

@@ -185,8 +185,8 @@ local function create_buttons()
 
         if i == 1 then
             frame:SetPoint("TOPRIGHT", UIParent, "CENTER", configs.t_xpoint, configs.t_ypoint)
-            if bloaded and asMOD_setupFrame then
-                asMOD_setupFrame(frame, "asCooldownPulse(Trinkets)");
+            if bloaded and ASMODOBJ.load_position then
+                ASMODOBJ.load_position(frame, "asCooldownPulse(Trinkets)");
             end
         else
             frame:SetPoint("RIGHT", ns.tbuttons[i - 1], "LEFT", -0.5, 0);
@@ -222,8 +222,8 @@ local function create_buttons()
 
         if i == 1 then
             frame:SetPoint("TOPRIGHT", UIParent, "CENTER", configs.i_xpoint, configs.i_ypoint)
-            if bloaded and asMOD_setupFrame then
-                asMOD_setupFrame(frame, "asCooldownPulse(Item)");
+            if bloaded and ASMODOBJ.load_position then
+                ASMODOBJ.load_position(frame, "asCooldownPulse(Item)");
             end
         else
             frame:SetPoint("LEFT", ns.ibuttons[i - 1], "RIGHT", -0.5, 0);

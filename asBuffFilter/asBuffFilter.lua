@@ -241,8 +241,8 @@ local function init()
 
 	create_frames(main_frame.targetframe, true, false, ns.configs.TARGET_MAX_BUFF_SHOW);
 
-	if bloaded and asMOD_setupFrame then
-		asMOD_setupFrame(main_frame.targetframe, "asBuffFilter(Target)");
+	if bloaded and ASMODOBJ.load_position then
+		ASMODOBJ.load_position(main_frame.targetframe, "asBuffFilter(Target)");
 	end
 
 	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")

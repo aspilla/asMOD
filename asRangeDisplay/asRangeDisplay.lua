@@ -275,9 +275,9 @@ local function on_load()
 	main_frame.focustext:Show();
 	local bloaded = C_AddOns.LoadAddOn("asMOD")
 
-	if bloaded and asMOD_setupFrame then
-		asMOD_setupFrame(main_frame.targettext, "asRangeDisplay(Target)");
-		asMOD_setupFrame(main_frame.focustext, "asRangeDisplay(Focus)");
+	if bloaded and ASMODOBJ.load_position then
+		ASMODOBJ.load_position(main_frame.targettext, "asRangeDisplay(Target)");
+		ASMODOBJ.load_position(main_frame.focustext, "asRangeDisplay(Focus)");
 	end
 
 	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");

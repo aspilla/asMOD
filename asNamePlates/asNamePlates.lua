@@ -3,7 +3,6 @@ local main_frame = CreateFrame("Frame", nil, UIParent);
 
 local configs = {
     fontsize = 12,
-
 }
 
 ns.tanklist = {};

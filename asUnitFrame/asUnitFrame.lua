@@ -897,16 +897,16 @@ local function init(parent)
 
     C_AddOns.LoadAddOn("asMOD");
 
-    if asMOD_setupFrame then
-        asMOD_setupFrame(parent.PlayerFrame, "PlayerFrame");
-        asMOD_setupFrame(parent.TargetFrame, "TargetFrame");
-        asMOD_setupFrame(parent.FocusFrame, "FocusFrame");
-        asMOD_setupFrame(parent.PetFrame, "PetFrame");
-        asMOD_setupFrame(parent.TargetTargetFrame, "TargetTargetFrame");
+    if ASMODOBJ.load_position then
+        ASMODOBJ.load_position(parent.PlayerFrame, "PlayerFrame");
+        ASMODOBJ.load_position(parent.TargetFrame, "TargetFrame");
+        ASMODOBJ.load_position(parent.FocusFrame, "FocusFrame");
+        ASMODOBJ.load_position(parent.PetFrame, "PetFrame");
+        ASMODOBJ.load_position(parent.TargetTargetFrame, "TargetTargetFrame");
 
         if (MAX_BOSS_FRAMES) then
             for i = 1, MAX_BOSS_FRAMES do
-                asMOD_setupFrame(parent.BossFrames[i], "BossFrame" .. i);
+                ASMODOBJ.load_position(parent.BossFrames[i], "BossFrame" .. i);
             end
         end
     end

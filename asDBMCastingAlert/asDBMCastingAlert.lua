@@ -554,8 +554,8 @@ local function initAddon()
 
 	CreateCastbars(ADVA);
 
-	if bloaded and asMOD_setupFrame then
-		asMOD_setupFrame(ADVA, "asDBMCastingAlert");
+	if bloaded and ASMODOBJ.load_position then
+		ASMODOBJ.load_position(ADVA, "asDBMCastingAlert");
 	end
 
 	ADVA:SetScript("OnEvent", ADCA_OnEvent);

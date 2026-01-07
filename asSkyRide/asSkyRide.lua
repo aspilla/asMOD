@@ -116,8 +116,8 @@ local function init_addon()
 
     C_AddOns.LoadAddOn("asMOD");
 
-    if asMOD_setupFrame then
-        asMOD_setupFrame(ns.frame, "asSkyRide");
+    if ASMODOBJ.load_position then
+        ASMODOBJ.load_position(ns.frame, "asSkyRide");
     end
 end
 
