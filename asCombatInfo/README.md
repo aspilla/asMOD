@@ -20,6 +20,7 @@ Enhances the Cooldown Manager.
 * Settings can be adjusted via `ESC` > `Options` > `Addons` > `asCombatInfo`.
 * `AlignedBuff`: Center-align buffs (Default: Off).
 * `CombatAlphaChange` : Change alpha when outofcombat (Default: On).
+* `BuffBarUpdate`: Modifies the visual appearance of the buff bar.
 
 ---
 
@@ -45,3 +46,4 @@ Enhances the Cooldown Manager.
 *   `ESC` > `설정` > `애드온` > `asCombatInfo` 에서 설정 가능
 *   `AlignedBuff` : 버프 가운데 정렬 (Default Off)
 *   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
+*   `BuffBarUpdate` : 버프 바 외형을 변경

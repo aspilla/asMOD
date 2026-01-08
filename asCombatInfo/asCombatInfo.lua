@@ -1,12 +1,86 @@
-﻿local _, ns = ...;
+﻿local _, ns      = ...;
 
-local configs = {
+local configs    = {
 	combatalpha = 1,
 	normalalpha = 0.5,
-
 }
 
+local _, Class   = UnitClass("player")
+ns.classcolor    = RAID_CLASS_COLORS[Class];
+
 local main_frame = CreateFrame("Frame");
+local function update_bars(viewer)
+	if not ns.options.BuffBarUpdate then
+		return;
+	end
+
+	local childs = { viewer:GetChildren() };
+	local visiblechilds = {}
+	for _, child in ipairs(childs) do
+		if child:IsShown() then
+			table.insert(visiblechilds, child)
+		end
+	end
+
+	if #visiblechilds == 0 then
+		return
+	end
+
+	for _, item in ipairs(visiblechilds) do
+		if not item.bconfiged then
+			item.bconfiged = true;
+
+			if item.Bar then
+				local bar = item.Bar
+				bar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+				if ns.options.BuffBarClassColor then
+					bar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
+				end
+				bar.BarBG:Hide();
+
+
+				bar.bg = bar:CreateTexture(nil, "BACKGROUND");
+				bar.bg:SetPoint("TOPLEFT", bar, "TOPLEFT", -1, 1);
+				bar.bg:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 1, -1);
+
+				bar.bg:SetTexture("Interface\\Addons\\asCombatInfo\\border.tga");
+				bar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
+				bar.bg:SetVertexColor(0, 0, 0, 1);
+			end
+
+			if item.Icon then
+				local button = item.Icon
+				local height = item.Bar:GetHeight();
+
+				local rate = 1.2;
+				local iconrate = .16;
+				button:SetSize(height * rate, height);
+				button.Icon:ClearAllPoints();
+				button.Icon:SetPoint("CENTER", 0, 0);
+				button.Icon:SetSize(height * rate - 2, height - 2);
+				button.Icon:SetTexCoord(.08, .92, iconrate, 1 - iconrate);
+
+				if not button.border then
+					button.border = button:CreateTexture(nil, "BACKGROUND", "asCombatInfoBorderTemplate");
+					button.border:SetAllPoints(button);
+					button.border:SetColorTexture(0, 0, 0, 1);
+					button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+				else
+					button.border:SetAlpha(1)
+				end
+				button.border:Show()
+
+				if button.Applications then
+					local r = button.Applications;
+					if r:GetObjectType() == "FontString" then
+						r:SetFont(STANDARD_TEXT_FONT, height / 2 + 3, "OUTLINE");
+						r:SetTextColor(0, 1, 0);
+					end
+				end
+			end
+		end
+	end
+end
 
 -- Core function to remove padding and apply modifications. Doing Blizzard's work for them.
 local function update_buttons(viewer)
@@ -14,6 +88,12 @@ local function update_buttons(viewer)
 	if EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() then
 		return
 	end
+	local isbar = (viewer == BuffBarCooldownViewer);
+	if isbar then
+		update_bars(viewer);
+		return;
+	end
+
 
 	local childs = { viewer:GetChildren() };
 	local isbuff = (viewer == BuffIconCooldownViewer);
@@ -77,7 +157,7 @@ local function update_buttons(viewer)
 			if button.DebuffBorder then
 				button.DebuffBorder:ClearAllPoints();
 				button.DebuffBorder:SetPoint("TOPLEFT", button, "TOPLEFT", -4, 4);
-        		button.DebuffBorder:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 4, -4);
+				button.DebuffBorder:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 4, -4);
 			end
 
 			if button.Applications then
@@ -220,7 +300,10 @@ local viewers = {
 	UtilityCooldownViewer,
 	EssentialCooldownViewer,
 	BuffIconCooldownViewer,
+	BuffBarCooldownViewer
 }
+
+
 
 -- Do the work
 local function init()

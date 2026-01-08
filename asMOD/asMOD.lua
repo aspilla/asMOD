@@ -3,7 +3,7 @@ local version = select(4, GetBuildInfo());
 
 local configs = {
 	uiscale = 0.75,
-	version = 260104,
+	version = 260108,
 };
 
 local positions = {};
