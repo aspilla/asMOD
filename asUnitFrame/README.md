@@ -82,9 +82,7 @@ This addon replaces the default unit frames. It is highly recommended to use it 
 ## Important Notes (Known Issues)
 
 The following issues may occur:
-1. **Focus Setting Error:** Setting a focus target via the right-click menu may cause an error. Please use a `/focus` macro or keybinding instead.
-2. **Raid Marker Error:** Setting raid markers via the right-click menu may cause an error.
-3. **Edit Mode Error:** Errors may occur when using the default Edit Mode, preventing settings from being changed. Please disable `asUnitFrame` before using Edit Mode.
+1. **Edit Mode Error:** Errors may occur when using the default Edit Mode, preventing settings from being changed. Please disable `asUnitFrame` before using Edit Mode.
 
 ---
 # asUnitFrame (한밤)
@@ -171,6 +169,4 @@ The following issues may occur:
 ## 주의사항 (오류 관련)
 
 다음과 같은 오류가 발생 할 수 있습니다.
-1.  **주시 대상 설정 오류:** 프레임을 우클릭하여 메뉴를 통해 주시 대상을 설정할 경우 오류 발생. `/focus` 매크로 또는 단축키를 설정하여 사용하시길 권장.
-2.  **징표 설정 오류:** 프레임을 우클릭하여 메뉴를 통해 징표 설정시 오류가 발생. 
-3.  **편집 모드 오류:** 편집 모드 사용 시 오류가 발생하여 설정 변경 불가 가능. asUnitFrame을 끄고 편집 모드 진행 필요.
+1.  **편집 모드 오류:** 편집 모드 사용 시 오류가 발생하여 설정 변경 불가 가능. asUnitFrame을 끄고 편집 모드 진행 필요.

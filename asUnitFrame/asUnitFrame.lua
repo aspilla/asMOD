@@ -314,69 +314,10 @@ local function update_unitframe(frame)
                 frame.range:Show();
                 needtohide = false;
             end
-        end 
+        end
     end
     if needtohide then
         frame.range:Hide();
-    end
-
-end
-
-
-local function open_menu(self, unit, button)
-    local which;
-    local name;
-
-    if issecretvalue(unit) then
-        return;
-    end
-
-    if (UnitIsUnit(unit, "player")) then
-        which = "SELF";
-    elseif (UnitIsUnit(unit, "vehicle")) then
-        -- NOTE: vehicle check must come before pet check for accuracy's sake because
-        -- a vehicle may also be considered your pet
-        which = "VEHICLE";
-    elseif (UnitIsUnit(unit, "pet")) then
-        which = "PET";
-    elseif (UnitIsOtherPlayersBattlePet(unit)) then
-        which = "OTHERBATTLEPET";
-    elseif (UnitIsBattlePet(unit)) then
-        which = "BATTLEPET";
-    elseif (UnitIsOtherPlayersPet(unit)) then
-        which = "OTHERPET";
-    elseif (UnitIsPlayer(unit)) then
-        if (UnitInRaid(unit)) then
-            which = "RAID_PLAYER";
-        elseif (UnitInParty(unit)) then
-            which = "PARTY";
-        else
-            if (not UnitIsMercenary("player")) then
-                if (UnitCanCooperate("player", unit)) then
-                    which = "PLAYER";
-                else
-                    which = "ENEMY_PLAYER"
-                end
-            else
-                if (UnitCanAttack("player", unit)) then
-                    which = "ENEMY_PLAYER"
-                else
-                    which = "PLAYER";
-                end
-            end
-        end
-    else
-        which = "TARGET";
-        name = RAID_TARGET_ICON;
-    end
-    if (which) then
-        local contextData = {
-            fromTargetFrame = self.istargetframe,
-            unit = unit,
-            name = name,
-        };
-
-        UnitPopup_OpenMenu(which, contextData);
     end
 end
 
@@ -825,10 +766,11 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     end
 
     frame.unit = unit;
-    -- 유닛 설정 (예시: 'player' 또는 'target' 등)
-    frame:SetAttribute("unit", unit);
     ns.unitframes[unit] = frame;
-    SecureUnitButton_OnLoad(frame, frame.unit, open_menu);
+    
+    SecureUnitButton_OnLoad(frame, unit);
+    frame:SetAttribute("*type2", "togglemenu");
+    frame:RegisterForClicks("AnyUp")
     Mixin(frame, PingableType_UnitFrameMixin);
     frame:SetAttribute("ping-receiver", true);
 
