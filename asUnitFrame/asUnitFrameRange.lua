@@ -31,7 +31,7 @@ function ns.check_range(unit, is30m)
 		item_id = item_for_30m;
 	end
 
-	if C_Item.IsItemInRange(item_id, unit) then
+	if UnitIsDead(unit) or C_Item.IsItemInRange(item_id, unit) then
 		return false;
 	end
 	return true;
