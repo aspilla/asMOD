@@ -79,7 +79,7 @@ local function remove_unit(unit)
         ns.lib.PixelGlow_Stop(asframe);
 
         asframe.casticon:Hide();
-        asframe.BarColor:Hide();
+        asframe.coloroverlay:Hide();
 
         asframe:Hide();
         asframe:UnregisterAllEvents();
@@ -223,12 +223,12 @@ local function add_unit(unit)
     end
 
     local previousTexture = healthbar:GetStatusBarTexture();
-    asframe.BarColor:SetParent(healthbar);
-    asframe.BarColor:ClearAllPoints();
-    asframe.BarColor:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
-    asframe.BarColor:SetPoint("BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
-    asframe.BarColor:SetVertexColor(previousTexture:GetVertexColor());
-    asframe.BarColor:Hide();
+    asframe.coloroverlay:SetParent(healthbar);
+    asframe.coloroverlay:ClearAllPoints();
+    asframe.coloroverlay:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
+    asframe.coloroverlay:SetPoint("BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
+    asframe.coloroverlay:SetVertexColor(previousTexture:GetVertexColor());
+    asframe.coloroverlay:Hide();
 
     asframe:SetScript("OnEvent", on_asframe_event);
 
@@ -253,8 +253,13 @@ local function add_unit(unit)
     asframe.motext:SetPoint("TOP", healthbar, "BOTTOM", 0, -1);
     asframe.motext:Hide();
 
-
-    local powertype, powerToken = UnitPowerType(unit);
+    asframe.targetedindi:ClearAllPoints();
+    asframe.targetedindi:SetPoint("RIGHT", healthbar, "LEFT", 5, 0);
+    asframe.targetedindi:SetAlpha(0);
+    asframe.targetedindi:Show();
+    asframe.targetedinditype = 1;
+    
+    local powertype = UnitPowerType(unit);
 
     local powerColor = PowerBarColor[powertype]
     if powerColor then
@@ -288,6 +293,7 @@ local function add_unit(unit)
     local function callback()
         ns.update_power(asframe);
         ns.update_color(asframe);
+        ns.update_targeted(asframe);
     end
 
     if asframe.timer then

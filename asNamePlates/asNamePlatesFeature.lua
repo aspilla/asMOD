@@ -23,12 +23,12 @@ end
 local function update_barcolor(asframe, color)
     local parent = asframe.nameplateBase;
 
-    if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden() or not asframe.BarColor then
+    if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden() or not asframe.coloroverlay then
         return;
     end
 
-    asframe.BarColor:SetVertexColor(color.r, color.g, color.b);
-    asframe.BarColor:Show();
+    asframe.coloroverlay:SetVertexColor(color.r, color.g, color.b);
+    asframe.coloroverlay:Show();
 end
 
 local function get_auracount(list)
@@ -50,7 +50,7 @@ local function get_auracount(list)
 end
 
 function ns.update_color(asframe)
-    if not asframe.unit or not asframe.checkcolor or not asframe.BarColor then
+    if not asframe.unit or not asframe.checkcolor or not asframe.coloroverlay then
         return;
     end
 
@@ -86,7 +86,7 @@ function ns.update_color(asframe)
                 end
             end
             if status and status > 0 then
-                return ns.options.AggroColor;
+                return ns.options.targetedindiColor;
             end
         end
 
@@ -137,7 +137,7 @@ function ns.update_color(asframe)
     if color then
         update_barcolor(asframe, color);
     else
-        asframe.BarColor:Hide();
+        asframe.coloroverlay:Hide();
     end
 
     if alerttype ~= asframe.alerttype then
@@ -200,4 +200,33 @@ function ns.update_mouseover(asframe)
         end
     end
     asframe.motext:Hide();
+end
+
+local targetedtexts = {};
+
+targetedtexts[1] = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0, 255, 0, 0);
+targetedtexts[2] = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0);
+function ns.update_targeted(asframe)
+    asframe.targetedindi:SetText(targetedtexts[asframe.targetedinditype]);
+    asframe.targetedinditype = (asframe.targetedinditype + 1);
+
+    if asframe.targetedinditype == 3 then
+        asframe.targetedinditype = 1;
+    end
+
+    if not ns.istanker then
+        if C_CurveUtil and C_CurveUtil.EvaluateColorValueFromBoolean then
+            local istargeted = UnitIsUnit(asframe.unit .. "target", "player");
+            local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(istargeted, 1, 0);
+            asframe.targetedindi:SetAlpha(alpha);
+        end
+    elseif asframe.casticon:IsShown() then
+        if C_CurveUtil and C_CurveUtil.EvaluateColorValueFromBoolean then
+            local istargeted = UnitIsUnit(asframe.unit .. "target", "player");
+            local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(istargeted, 1, 0);
+            asframe.targetedindi:SetAlpha(alpha);
+        end
+    else
+        asframe.targetedindi:SetAlpha(0);
+    end
 end

@@ -23,10 +23,10 @@ local function create_frame()
     local template = "asNamePlates2Template";
 
     if not ns.options.ChangeTexture then
-        template  = "asNamePlates1Template";
+        template = "asNamePlates1Template";
     end
 
-    object.BarColor = object:CreateTexture(nil, "ARTWORK", template, 1);
+    object.coloroverlay = object:CreateTexture(nil, "ARTWORK", template, 1);
 
     object.powerbar = CreateFrame("StatusBar", nil, object);
     object.powerbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
@@ -52,6 +52,9 @@ local function create_frame()
     object.motext = object:CreateFontString(nil, "OVERLAY");
     object.motext:SetFont(STANDARD_TEXT_FONT, ns.configs.mousefontsize, "OUTLINE");
     object.motext:SetText(mouseoverIcon);
+
+    object.targetedindi = object:CreateFontString(nil, "OVERLAY");
+    object.targetedindi:SetFont(STANDARD_TEXT_FONT, ns.configs.mousefontsize + 1, "OUTLINE");
 
     return object;
 end

@@ -9,7 +9,7 @@ local configs = {
     notinterruptcolor = { 0.9, 0.9, 0.9 },
     interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
     failedcolor = { 1, 0, 0 },
-    updaterate = 0.05,
+    updaterate = 0.1,
     font = STANDARD_TEXT_FONT,
     kickvoice = "Interface\\AddOns\\asTargetCastBar\\Target_Kick_En.mp3",
     stunvoice = "Interface\\AddOns\\asTargetCastBar\\Target_Stun_En.mp3",
@@ -104,10 +104,16 @@ local function setup_castbar()
     castbar.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
     castbar.mark:SetSize(configs.namesize + 3, configs.namesize + 3);
     castbar.mark:SetPoint("RIGHT", castbar.button, "LEFT", -1, 0);
+
+    castbar.targetedindi = castbar:CreateFontString(nil, "ARTWORK");
+    castbar.targetedindi:SetFont(configs.font, configs.namesize + 1, "OUTLINE");
+    castbar.targetedindi:SetPoint("LEFT", castbar, "RIGHT", 0, 1);
+    castbar.targetedindi:Show();
+
     castbar.start = 0;
     castbar.duration = 0;
     castbar.soundalerted = false;
-    castbar.istargetplayer = false;
+    castbar.targetedinditype = 1;
     return castbar;
 end
 ns.targetcastbar = setup_castbar();
@@ -224,6 +230,10 @@ local function check_casting(castbar, event)
                 local isimportant = C_Spell.IsSpellImportant(spellid);
                 local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
                 castbar.important:SetAlpha(alpha);
+
+                local istargeted = UnitIsUnit(unit .. "target", "player");
+                local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(istargeted, 1, 0);
+                castbar.targetedindi:SetAlpha(alpha);
             end
 
             if UnitExists(targettarget) then
@@ -324,17 +334,6 @@ local function register_unit(castbar, unit)
 end
 
 local function on_unit_event(castbar, event, ...)
-    --[[
-    if event == "UNIT_TARGET" then
-        local unit = ...;
-
-        if UnitIsUnit("player", unit .. "target") then
-            castbar.istargetplayer = true;
-        else
-            castbar.istargetplayer = false;
-        end
-    end
-    ]]
     check_casting(castbar, event);
 end
 
@@ -362,6 +361,12 @@ local function on_event(self, event, ...)
     end
 end
 
+local targetedtexts = {};
+
+targetedtexts[1] = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0, 255, 0, 0);
+targetedtexts[2] = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0);
+
+local updatecount = 1;
 
 local function update_castbar(castbar)
     local failstart = castbar.failstart;
@@ -377,6 +382,18 @@ local function update_castbar(castbar)
                 castbar.duration_obj:GetTotalDuration(0)));
         end
         castbar:SetValue(current * 1000, Enum.StatusBarInterpolation.ExponentialEaseOut);
+    end
+
+    updatecount = updatecount + 1;
+
+    if updatecount > 3 then
+        castbar.targetedindi:SetText(targetedtexts[castbar.targetedinditype]);
+        castbar.targetedinditype = (castbar.targetedinditype + 1);
+
+        if castbar.targetedinditype == 3 then
+            castbar.targetedinditype = 1;
+        end
+        updatecount = 1;
     end
 end
 
