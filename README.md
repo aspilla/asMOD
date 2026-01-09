@@ -29,7 +29,7 @@ The following errors may occur:
 2. When using the `asMOD` addon, a window will appear stating: `asMOD will change the 'Default Interface Settings'. You can reload the features using the '/asMOD' command in the chat.` Click `Change`.
 3. Adjust `ESC >> Options >> Gameplay >> Advanced Cooldown Settings`.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/LRK6h2hON2w?si=zfWyWH9Xcwhe3msg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-7xsxpKTS7U?si=Rj7atkBM71u8X6mM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Installation Method (Inven)
 
@@ -121,7 +121,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 2. `asMOD` 애드온 사용시 `asMOD가 '기본 인터페이스 설정'을 변경합니다. 채팅창에 '/asMOD'명령어로 기능을 다시 불러 올 수 있습니다.` 창에서 `변경`을 클릭
 3. `esc >> 옵션 >> 게임플레이 개선 >> 고급 재사용시간 설정` 조정
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/LRK6h2hON2w?si=zfWyWH9Xcwhe3msg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-7xsxpKTS7U?si=Rj7atkBM71u8X6mM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 설치 방법 (인벤)
 
