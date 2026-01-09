@@ -8,8 +8,6 @@ local configs = {
     alpha = 1,
     notinterruptcolor = { 0.9, 0.9, 0.9 },
     interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
-    notinterruptcolor_target = { 153 / 255, 0, 76 / 255 },
-    interruptcolor_target = { 76 / 255, 153 / 255, 0 },
     failedcolor = { 1, 0, 0 },
     updaterate = 0.05,
     font = STANDARD_TEXT_FONT,
@@ -52,6 +50,17 @@ local function setup_castbar()
     castbar:SetWidth(configs.width - (configs.height + 2) * 1.2)
     castbar:SetStatusBarColor(1, 0.9, 0.9);
     castbar:SetAlpha(configs.alpha);
+
+    castbar.important = castbar:CreateTexture(nil, "BACKGROUND")
+    castbar.important:SetPoint("TOPLEFT", castbar, "TOPLEFT", -2, 2)
+    castbar.important:SetPoint("BOTTOMRIGHT", castbar, "BOTTOMRIGHT", 2, -2)
+
+    castbar.important:SetTexture("Interface\\Addons\\asTargetCastBar\\border.tga")
+    castbar.important:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    castbar.important:SetVertexColor(1, 0, 0, 1);
+    castbar.important:SetAlpha(0);
+    castbar.important:Show();
+    
 
     castbar.bg = castbar:CreateTexture(nil, "BACKGROUND")
     castbar.bg:SetPoint("TOPLEFT", castbar, "TOPLEFT", -1, 1)
@@ -199,26 +208,18 @@ local function check_casting(castbar, event)
             local color = configs.interruptcolor;
             local type = get_typeofcast(unit);
 
+            if C_CurveUtil.EvaluateColorValueFromBoolean then
+                local isimportant = C_Spell.IsSpellImportant(spellid);
+                local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
+                castbar.important:SetAlpha(alpha);
+            end
+
             if type and type == "uninterruptable" then
-                if castbar.istargetplayer then
-                    color = configs.notinterruptcolor_target;
-                else
-                    color = configs.notinterruptcolor;
-                end
+                color = configs.notinterruptcolor;
             else
-                if castbar.istargetplayer then
-                    color = configs.interruptcolor_target;
-                end
-            end
-
-            --[[
-            local isimportant = C_Spell.IsSpellImportant(spellid);
-
-            if isimportant then
-                print("text");
-            end
-            ]]
-
+                color = configs.interruptcolor;
+            end           
+            
             castbar:SetStatusBarColor(color[1], color[2], color[3]);
             text:SetText(name);
             show_raidicon(unit, mark);
@@ -325,7 +326,7 @@ end
 local function on_unit_event(castbar, event, ...)
     --[[
     if event == "UNIT_TARGET" then
-        local unit = ...;        
+        local unit = ...;
 
         if UnitIsUnit("player", unit .. "target") then
             castbar.istargetplayer = true;

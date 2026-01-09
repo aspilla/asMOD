@@ -15,6 +15,7 @@ Cast bar for Target and Focus targets.
     * The cast bar color changes based on whether the spell can be interrupted and who it is targeting.
     * **Uninterruptible**: Gray
     * **Interruptible**: Bright Green
+* **Highlight Important Spells**: Displays a red border for critical skills.
 
 ## Configuration
 * `ShowFocus`: Toggle display of the Focus target cast bar (Default: true).
@@ -38,10 +39,11 @@ Cast bar for Target and Focus targets.
 *   **대상의 대상**: 주문 대상 플레이어의 이름을 직업 색상 표시.
 *   **징표**: 케스팅 몹의 징표 표시
 *   **음성 알림**: 차단 필요/스턴 필요시 음성 알림 
-*   **차단 가능 여부 색상 구분**:
+*   **차단 가능 여부 색상 구분**
     *   주문의 차단 가능 여부와 자신을 대상으로 하는지에 따라 시전 바의 색상이 변경.
     *   **차단 불가능**: 회색
     *   **차단 가능**: 밝은 녹색
+*   **중요 스킬 강조**: 중요 시킬 시 빨간색 태두리 표시
 
 ## 설정
 *   `ShowFocus`: 주시 대상 시전 바 표시 여부 (기본 true)
