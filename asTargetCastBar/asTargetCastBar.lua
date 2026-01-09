@@ -60,7 +60,7 @@ local function setup_castbar()
     castbar.important:SetVertexColor(1, 0, 0, 1);
     castbar.important:SetAlpha(0);
     castbar.important:Show();
-    
+
 
     castbar.bg = castbar:CreateTexture(nil, "BACKGROUND")
     castbar.bg:SetPoint("TOPLEFT", castbar, "TOPLEFT", -1, 1)
@@ -208,23 +208,23 @@ local function check_casting(castbar, event)
             local color = configs.interruptcolor;
             local type = get_typeofcast(unit);
 
-            if C_CurveUtil.EvaluateColorValueFromBoolean then
-                local isimportant = C_Spell.IsSpellImportant(spellid);
-                local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
-                castbar.important:SetAlpha(alpha);
-            end
-
             if type and type == "uninterruptable" then
                 color = configs.notinterruptcolor;
             else
                 color = configs.interruptcolor;
-            end           
-            
+            end
+
             castbar:SetStatusBarColor(color[1], color[2], color[3]);
             text:SetText(name);
             show_raidicon(unit, mark);
             frameicon:Show();
             castbar:Show();
+
+            if C_CurveUtil and C_CurveUtil.EvaluateColorValueFromBoolean then
+                local isimportant = C_Spell.IsSpellImportant(spellid);
+                local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
+                castbar.important:SetAlpha(alpha);
+            end
 
             if UnitExists(targettarget) then
                 local _, Class = UnitClass(targettarget)
