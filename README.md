@@ -20,9 +20,7 @@ asMOD is a collection of custom-made World of Warcraft addons.
 
 The following errors may occur:
 
-1. **Focus Target Setting Error:** Setting a focus target via the right-click menu on a frame will cause an error. It is recommended to use a `/focus` macro or a keybinding.
-2. **Raid Marker Setting Error:** Setting raid markers via the right-click menu on a frame will cause an error.
-3. **Edit Mode Error:** Errors may occur when using Edit Mode, making it impossible to change settings. Please perform Edit Mode adjustments while asUnitFrame is disabled.
+1. **Edit Mode Error:** Errors may occur when using Edit Mode, making it impossible to change settings. Please perform Edit Mode adjustments while asUnitFrame is disabled.
 
 ## Installation Method (CurseForge)
 1. Search for `asMOD_Kr` on CurseForge and install the addons.
@@ -112,9 +110,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 다음과 같은 오류가 발생 할 수 있음.
 
-1.  **주시 대상 설정 오류:** 프레임을 우클릭하여 메뉴를 통해 주시 대상을 설정할 경우 오류 발생. `/focus` 매크로 또는 단축키를 설정하여 사용하시길 권장.
-2.  **징표 설정 오류:** 프레임을 우클릭하여 메뉴를 통해 징표 설정시 오류 발생. 
-3.  **편집 모드 오류:** 편집 모드 사용 시 오류가 발생하여 설정 변경이 불가능할 수 있음. asUnitFrame을 끈 상태에서 편집 모드를 진행 필요.
+1.  **편집 모드 오류:** 편집 모드 사용 시 오류가 발생하여 설정 변경이 불가능할 수 있음. asUnitFrame을 끈 상태에서 편집 모드를 진행 필요.
 
 ## 설치 방법 (CurseForge)
 1. CurseForge 에서 asMOD_Kr을 검색하여 애드온들 설치
@@ -130,7 +126,6 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 2. `esc >> 옵션 >> 게임플레이 개선 >> 고급 재사용시간 설정` 조정
 3. 설치 후 CurseForge로 업데이트 가능
-
 
 
 ## 위치 설정 방법
