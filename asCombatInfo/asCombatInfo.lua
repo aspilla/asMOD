@@ -7,10 +7,11 @@ local configs    = {
 
 local _, Class   = UnitClass("player")
 ns.classcolor    = RAID_CLASS_COLORS[Class];
+ns.hotkeys       = {};
 
 local main_frame = CreateFrame("Frame");
 local function update_bars(viewer)
-	if not ns.options.BuffBarUpdate then
+	if not ns.options.ChangeBuffBar then
 		return;
 	end
 
@@ -213,6 +214,26 @@ local function update_buttons(viewer)
 
 				button.astimer = C_Timer.NewTicker(0.2, button.asupdate);
 			end
+
+			if not isbuff then
+				if not button.hotkey then
+					button.hotkey = button:CreateFontString(nil, "ARTWORK");
+					button.hotkey:SetFont(STANDARD_TEXT_FONT, width / 3 - 3, "OUTLINE");
+					button.hotkey:SetPoint("TOPRIGHT", button, "TOPRIGHT", -2, -2);
+					button.hotkey:SetTextColor(1, 1, 1, 1);
+				end
+			end
+		end
+
+		if not isbuff then
+			local keytext = ns.hotkeys[button:GetSpellID()];
+
+			if keytext then
+				button.hotkey:SetText(keytext);
+				button.hotkey:Show();
+			else
+				button.hotkey:Hide();
+			end
 		end
 	end
 
@@ -303,10 +324,55 @@ local viewers = {
 	BuffBarCooldownViewer
 }
 
+local function scan_keys(name, type, hide, total)
+	for i = 1, total do
+		local f = getglobal(name .. i);
+		if not f then
+			break
+		end
+		;
+		local hotkey = getglobal(f:GetName() .. "HotKey");
+		if not hotkey then
+			break
+		end
+		;
 
+		local text = hotkey:GetText();
+		if f.action then
+			local actionType, id = GetActionInfo(f.action)
+
+			if (actionType == "spell" or actionType == "macro") and id and text ~= "●" then
+				if ns.hotkeys[id] == nil then
+					ns.hotkeys[id] = text;
+				end
+			end
+		end
+	end
+end
+
+local function check_hotkeys()
+	if not ns.options.ShowHotKey then
+		return;
+	end
+	wipe(ns.hotkeys);
+	scan_keys("ActionButton", "ACTIONBUTTON", 1, 12);
+	scan_keys("MultiBarBottomLeftButton", "MULTIACTIONBAR1BUTTON", 1, 12);
+	scan_keys("MultiBarBottomRightButton", "MULTIACTIONBAR2BUTTON", 1, 12);
+	scan_keys("MultiBarRightButton", "MULTIACTIONBAR3BUTTON", 1, 12);
+	scan_keys("MultiBarLeftButton", "MULTIACTIONBAR4BUTTON", 1, 12);
+	scan_keys("MultiBar5Button", "MULTIACTIONBAR5BUTTON", 1, 12);
+	scan_keys("MultiBar6Button", "MULTIACTIONBAR6BUTTON", 1, 12);
+	scan_keys("MultiBar7Button", "MULTIACTIONBAR7BUTTON", 1, 12);
+	scan_keys("BonusActionButton", "ACTIONBUTTON", 1, 12);
+	scan_keys("ExtraActionButton", "EXTRAACTIONBUTTON", 1, 12);
+	scan_keys("VehicleMenuBarActionButton", "ACTIONBUTTON", 1, 12);
+	scan_keys("OverrideActionBarButton", "ACTIONBUTTON", 1, 12);
+	scan_keys("PetActionButton", "BONUSACTIONBUTTON", 1, 10);
+end
 
 -- Do the work
 local function init()
+	check_hotkeys();
 	for _, viewer in ipairs(viewers) do
 		if viewer then
 			update_buttons(viewer)
@@ -338,6 +404,7 @@ local function set_viewersalpha(alpha)
 	end
 end
 
+
 local bfirst = true;
 local function on_event(self, event, arg)
 	if bfirst then
@@ -347,7 +414,15 @@ local function on_event(self, event, arg)
 
 	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then
 		C_Timer.After(0.5, init);
-	elseif event == "PLAYER_ENTERING_WORLD" then
+	elseif event == "PLAYER_REGEN_DISABLED" then
+		if ns.options.CombatAlphaChange then
+			set_viewersalpha(configs.combatalpha);
+		end
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		if ns.options.CombatAlphaChange then
+			set_viewersalpha(configs.normalalpha);
+		end
+	else
 		C_Timer.After(0.5, init);
 
 		if ns.options.CombatAlphaChange then
@@ -357,14 +432,6 @@ local function on_event(self, event, arg)
 				set_viewersalpha(configs.normalalpha);
 			end
 		end
-	elseif event == "PLAYER_REGEN_DISABLED" then
-		if ns.options.CombatAlphaChange then
-			set_viewersalpha(configs.combatalpha);
-		end
-	elseif event == "PLAYER_REGEN_ENABLED" then
-		if ns.options.CombatAlphaChange then
-			set_viewersalpha(configs.normalalpha);
-		end
 	end
 end
 
@@ -372,4 +439,8 @@ main_frame:RegisterEvent("ADDON_LOADED");
 main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
 main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+main_frame:RegisterEvent("UPDATE_BINDINGS");
+main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 main_frame:SetScript("OnEvent", on_event);

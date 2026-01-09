@@ -9,18 +9,21 @@ Enhances the Cooldown Manager.
 
 ## Key Features 
 
-* **Icon and Border Styling**: Modifies the appearance of icons and borders.
-* **Charge Count Positioning**: Moves the charge count to the bottom and changes its color to green.
-* **Font Customization**: Changes the font to the default WoW font.
-* **Aura Buff/Debuff Indicators**: Adds a blue border when an empowerment or debuff is active.
-* **Icon Alignment**: Centers the icons in the second row.
-* **Recommended Use**: Highly recommended to be used alongside `asPowerBar`.
+* **Icon/Border Style**: Modifies the shape and appearance of icons and borders.
+* **Charge Count**: Moves the charge count to the bottom and changes the color to green.
+* **Hotkeys**: Displays hotkey text on the icons.
+* **Alignment**: Centers icons when they span two rows.
+* **Font**: Changes the font to the default Blizzard font.
+* **Buff Indicators**: Adds a blue border during enhancement or debuff status.
+* **Buff Bar Visuals**: Changes the appearance of the buff bar and applies class colors.
+* Recommended to use alongside `asPowerBar`.
 
 ## Configuration 
 * Settings can be adjusted via `ESC` > `Options` > `Addons` > `asCombatInfo`.
-* `AlignedBuff`: Center-align buffs (Default: Off).
-* `CombatAlphaChange` : Change alpha when outofcombat (Default: On).
-* `BuffBarUpdate`: Modifies the visual appearance of the buff bar.
+* `AlignedBuff`: Centers the buff icons (Default: Off).
+* `CombatAlphaChange`: Changes transparency when out of combat (Default: On).
+* `ChangeBuffBar`: Modifies the visual style of the buff bars.
+* `BuffBarClassColor`: Applies class colors to the buff bars.
 
 ---
 
@@ -37,13 +40,17 @@ Enhances the Cooldown Manager.
 
 *   **아이콘/테두리 모양 변경** 
 *   **충전 횟수 하단 이동 및 녹색 변경** 
+*   **단축키 표시** 
+*   **2열 아이콘 가운데 정렬**
 *   **폰트를 와우 기본 폰트로 변경** 
 *   **강화/약화 버프시 파란색 테두리 추가**
-*   **2열 아이콘 가운데 정렬**
+*   **버프바 외형을 변경하고 직업 색상으로 표시**
 *   `asPowerBar`와 같이 사용하는 것을 추천
 
 ## 설정 
 *   `ESC` > `설정` > `애드온` > `asCombatInfo` 에서 설정 가능
 *   `AlignedBuff` : 버프 가운데 정렬 (Default Off)
 *   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
-*   `BuffBarUpdate` : 버프 바 외형을 변경
+*   `ChangeBuffBar` : 버프 바 외형을 변경
+*   `BuffBarClassColor` : 버프 바 색상을 직업 색상으로 변경
+*   `ShowHotKey` : 단축키 표시

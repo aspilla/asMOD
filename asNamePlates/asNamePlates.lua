@@ -254,12 +254,13 @@ local function add_unit(unit)
     asframe.motext:Hide();
 
 
-    local powerType, powerToken = UnitPowerType(unit);
+    local powertype, powerToken = UnitPowerType(unit);
 
-    local powerColor = PowerBarColor[powerType]
+    local powerColor = PowerBarColor[powertype]
     if powerColor then
-        asframe.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b)
+        asframe.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b);        
     end
+    asframe.powertype = powertype;
 
     asframe:ClearAllPoints();
     asframe:SetPoint("TOPLEFT", healthbar, "TOPLEFT", -5, 1);

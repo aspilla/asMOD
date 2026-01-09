@@ -9,14 +9,14 @@ Nameplate Enhancement Addon
 ## Nameplate Color Customization
 Colors are displayed based on the following priority:
 
-  * <span style = "background-color:#0000ff">**Blue:**</span> High threat level (DPS/Healer)  
-  * <span style = "background-color:#ff0000">**Bright Red:**</span> Low threat level (Tank)
-  * <span style = "background-color:#90ee90">**Light Green:**</span> Casting an interruptible spell
-  * <span style = "background-color:#808080">**Gray:**</span> Casting an uninterruptible spell  
-  * <span style = "background-color:#ff00ff">**Bright Purple:**</span> Affected by your debuff
-  * <span style = "background-color:#87ceeb">**Sky Blue:**</span> Normal threat level
-  * <span style = "background-color:#008000">**Green:**</span> Boss mobs (High level (e.g., 91+) or ?? level mobs)
-  * <span style = "background-color:#b8860b">**Ochre:**</span> Quest mobs (When not in a party)
+  * <span style = "background-color:#6633cc">**Purple:**</span> High threat level (DPS/Healer)  
+  * <span style = "background-color:#ff8080">**Bright Red:**</span> Low threat level (Tank)
+  * <span style = "background-color:#ccff99">**Light Green:**</span> Casting an interruptible spell
+  * <span style = "background-color:#e6e6e6">**Gray:**</span> Casting an uninterruptible spell  
+  * <span style = "background-color:#ff80ff">**Pink:**</span> Affected by your debuff
+  * <span style = "background-color:#80ffff">**Sky Blue:**</span> Normal threat level
+  * <span style = "background-color:#00ff33">**Green:**</span> Boss mobs (dungeons, high-level (e.g., 91+), or ?? level mobs)
+  * <span style = "background-color:#ffcc80">**Ochre:**</span> Caster mobs (dungeons) or Quest mobs (field)
 
 ## Additional Features
 
@@ -29,6 +29,7 @@ Colors are displayed based on the following priority:
 
 ## Configuration
 * `Esc > Options > Addons > asNamePlates`
+* You can toggle the color customization features on/off and adjust specific colors.
 
 ---
 
@@ -43,14 +44,14 @@ Colors are displayed based on the following priority:
 ## 이름표 색상 변경 기능
 다음의 우선 순위로 표시 됨
 
-  * <span style = "background-color:#0000ff">**파란색:**</span> 높은 위협 수준 (딜러/힐러)  
-  * <span style = "background-color:#ff0000">**밝은빨간색:**</span> 낮은 위협 수준 (탱커)
-  * <span style = "background-color:#90ee90">**연녹색:**</span> 차단 가능한 주문을 시전
-  * <span style = "background-color:#808080">**회색:**</span> 차단 불가 주문을 시전  
-  * <span style = "background-color:#ff00ff">**밝은보라색:**</span> 내 디버프가 있음
-  * <span style = "background-color:#87ceeb">**하늘색:**</span> 일반 위협 수준
-  * <span style = "background-color:#008000">**녹색:**</span> 보스몹 (레벨에 높거(예 91렙)나 ?? 레벨몹)
-  * <span style = "background-color:#b8860b">**황토색:**</span> 퀘스트 몹 (파티가 아닌경우).
+  * <span style = "background-color:#6633cc">**보라색:**</span> 높은 위협 수준 (딜러/힐러)  
+  * <span style = "background-color:#ff8080">**밝은빨간색:**</span> 낮은 위협 수준 (탱커)
+  * <span style = "background-color:#ccff99">**연녹색:**</span> 차단 가능한 주문을 시전
+  * <span style = "background-color:#e6e6e6">**회색:**</span> 차단 불가 주문을 시전  
+  * <span style = "background-color:#ff80ff">**핑크:**</span> 내 디버프가 있음
+  * <span style = "background-color:#80ffff">**하늘색:**</span> 일반 위협 수준
+  * <span style = "background-color:#00ff33">**녹색:**</span> 보스몹 (던전인 경우, 레벨에 높거(예 91렙)나 ?? 레벨몹)
+  * <span style = "background-color:#ffcc80">**황토색:**</span> 케스터 몹 (던전인 경우), 퀘스트 몹 (필드).
   
 ## 기타 기능
 
@@ -63,3 +64,4 @@ Colors are displayed based on the following priority:
 
 ## 설정
 * `Esc > 옵션 > 애드온 > asNamePlates`
+* 색상 변경 및 색상 변경 기능 On/Off 가능

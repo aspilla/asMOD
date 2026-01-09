@@ -3,8 +3,9 @@ local Options_Default = {
     version = 251225,
     AlignedBuff = false,
     CombatAlphaChange = true,
-    BuffBarUpdate = true,
+    ChangeBuffBar = true,
     BuffBarClassColor = true,
+    ShowHotKey = true,
 };
 
 ns.options = CopyTable(Options_Default);

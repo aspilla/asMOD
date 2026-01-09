@@ -15,7 +15,7 @@ function ns.update_power(asframe)
         asframe.powerbar:SetValue(power);
         asframe.powerbar.value:SetText(power);
         asframe.powerbar:Show();
-    else        
+    else
         asframe.powerbar:Hide();
     end
 end
@@ -115,8 +115,14 @@ function ns.update_color(asframe)
             return ns.options.CombatColor;
         end
 
-        if asframe.isboss and ns.options.ShowBossColor then
-            return ns.options.BossColor;
+        if ns.isparty then
+            if asframe.isboss and ns.options.ShowBossColor then
+                return ns.options.BossColor;
+            end
+
+            if asframe.powertype ~= nil and asframe.powertype == 0 and ns.options.ShowCasterColor then
+                return ns.options.QuestColor;
+            end
         end
 
         if not (ns.isparty or ns.israid) and ns.options.ShowQuestColor and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then

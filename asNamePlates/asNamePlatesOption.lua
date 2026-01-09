@@ -14,6 +14,7 @@ ns.option_default = {
     ShowDebuffColor = true,
     ShowQuestColor = true,
     ShowBossColor = true,
+    ShowCasterColor = true,
     ShowCastColor = true,
     ShowPower = true,
     ShowCastIcon = true,
@@ -243,11 +244,12 @@ local function on_panelshow()
         setup_coloroption("[색상] 차단가능", "InterruptableColor");
         setup_coloroption("[색상] 차단불가", "UninterruptableColor");
 
-        setup_checkboxoption("[기능] Boss 몹 색상 표시", "ShowBossColor");
+        setup_checkboxoption("[기능] 던전, Boss 몹 색상 표시", "ShowBossColor");
         setup_coloroption("[색상] Boss Mob", "BossColor");
 
-        setup_checkboxoption("[기능] Quest 몹 색상 표시", "ShowQuestColor");
-        setup_coloroption("[색상] Quest", "QuestColor");
+        setup_checkboxoption("[기능] 던전, Caster 몹 색상 표시", "ShowCasterColor");
+        setup_checkboxoption("[기능] 필드, Quest 몹 색상 표시", "ShowQuestColor");
+        setup_coloroption("[색상] Quest, Caster", "QuestColor");
     else
         setup_checkboxoption("[Feature] Show Power below", "ShowPower");
         setup_checkboxoption("[Feature] Show cast icon", "ShowCastIcon");
@@ -267,11 +269,12 @@ local function on_panelshow()
         setup_checkboxoption("[Feature] Show debuff color", "ShowDebuffColor");
         setup_coloroption("[Color] Debuff", "DebuffColor");
 
-        setup_checkboxoption("[Feature] Show boss hint", "ShowBossColor");
+        setup_checkboxoption("[Feature] Dungoen, Show boss hint", "ShowBossColor");
         setup_coloroption("[Color] Boss Mobs", "BossColor");
 
-        setup_checkboxoption("[Feature] Show quest mob colors", "ShowQuestColor");
-        setup_coloroption("[Color] Quest", "QuestColor");
+        setup_checkboxoption("[Feature] Dungeon, Show Caster hint", "ShowCasterColor");
+        setup_checkboxoption("[Feature] Field, Show quest mob colors", "ShowQuestColor");
+        setup_coloroption("[Color] Quest/Caster", "QuestColor");
     end
 end
 local function on_panelhide()
