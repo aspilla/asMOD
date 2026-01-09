@@ -87,7 +87,7 @@ local function init()
 	}
 
 	ns.setup_option();
-	C_AddOns.LoadAddOn("asMOD");
+	local bloaded = C_AddOns.LoadAddOn("asMOD");
 
 
 	main_button:EnableMouse(true);
@@ -137,7 +137,7 @@ local function init()
 
 	load_position(main_button, ASBR_Position);
 
-	if ASMODOBJ.load_position then
+	if bloaded and ASMODOBJ.load_position then
 		ASMODOBJ.load_position(main_button, "asBattleRes");
 	end
 

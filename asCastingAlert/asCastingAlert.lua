@@ -250,9 +250,9 @@ local function initAddon()
         ACTA.cast[i]:SetMouseMotionEnabled(true);
         ACTA.cast[i]:Hide();
     end
-    C_AddOns.LoadAddOn("asMOD");
+    local bloaded = C_AddOns.LoadAddOn("asMOD");
 
-    if ASMODOBJ.load_position then
+    if bloaded and ASMODOBJ.load_position then
         ASMODOBJ.load_position(ACTA.cast[1], "asCastingAlert");
     end
 

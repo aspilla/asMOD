@@ -129,9 +129,9 @@ function ns.setup_option()
     Settings.RegisterAddOnCategory(category)
     LoadPosition();
 
-    C_AddOns.LoadAddOn("asMOD");
+    local bloaded = C_AddOns.LoadAddOn("asMOD");
 
-    if ASMODOBJ.load_position then
+    if bloaded and ASMODOBJ.load_position then
         ASMODOBJ.load_position(asFixCombatText, "asFixCombatText");
         AFCT_OtherOptions.point, _, AFCT_OtherOptions.point2, AFCT_OtherOptions.x, AFCT_OtherOptions.y = asFixCombatText
             :GetPoint();

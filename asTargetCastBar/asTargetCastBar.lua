@@ -110,9 +110,9 @@ ns.focuscastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((config
 
 
 
-C_AddOns.LoadAddOn("asMOD");
+local bloaded = C_AddOns.LoadAddOn("asMOD");
 
-if ASMODOBJ.load_position then
+if bloaded and ASMODOBJ.load_position then
     ASMODOBJ.load_position(ns.targetcastbar, "asTargetCastBar (Target)");
     ASMODOBJ.load_position(ns.focuscastbar, "asTargetCastBar (Focus)");
 end

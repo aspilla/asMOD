@@ -118,7 +118,7 @@ local function init()
 	}
 
 	ns.setup_option();
-	C_AddOns.LoadAddOn("asMOD");
+	local bloaded = C_AddOns.LoadAddOn("asMOD");
 
 	main_frame:EnableMouse(true);
 	main_frame:RegisterForDrag("LeftButton");
@@ -158,7 +158,7 @@ local function init()
 
 	load_position(main_frame, ASTM_Position);
 
-	if ASMODOBJ.load_position then
+	if bloaded and ASMODOBJ.load_position then
 		ASMODOBJ.load_position(main_frame, "asCombatTimer");
 	end
 

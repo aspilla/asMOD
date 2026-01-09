@@ -2,9 +2,7 @@
 
 Enhances the Cooldown Manager.
 
-![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN.jpg?raw=true)
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/ZRcjbO_-QDE?si=38jK1JHdlFz81Wre" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN2.jpg?raw=true)
 
 
 ## Key Features 
@@ -13,6 +11,8 @@ Enhances the Cooldown Manager.
 * **Charge Count**: Moves the charge count to the bottom and changes the color to green.
 * **Hotkeys**: Displays hotkey text on the icons.
 * **Alignment**: Centers icons when they span two rows.
+![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN.jpg?raw=true)
+
 * **Font**: Changes the font to the default Blizzard font.
 * **Buff Indicators**: Adds a blue border during enhancement or debuff status.
 * **Buff Bar Visuals**: Changes the appearance of the buff bar and applies class colors.
@@ -31,10 +31,7 @@ Enhances the Cooldown Manager.
 
 쿨다운 메니저를 강화
 
-![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN.jpg?raw=true)
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/ZRcjbO_-QDE?si=38jK1JHdlFz81Wre" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
+![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN2.jpg?raw=true)
 
 ## 주요 기능 
 
@@ -42,6 +39,8 @@ Enhances the Cooldown Manager.
 *   **충전 횟수 하단 이동 및 녹색 변경** 
 *   **단축키 표시** 
 *   **2열 아이콘 가운데 정렬**
+![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN.jpg?raw=true)
+
 *   **폰트를 와우 기본 폰트로 변경** 
 *   **강화/약화 버프시 파란색 테두리 추가**
 *   **버프바 외형을 변경하고 직업 색상으로 표시**

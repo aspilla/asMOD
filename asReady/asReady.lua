@@ -85,7 +85,7 @@ AREADY:Show();
 
 AREADY.bar = {};
 
-C_AddOns.LoadAddOn("asMOD");
+local bloaded = C_AddOns.LoadAddOn("asMOD");
 
 for idx = 1, AREADY_Max do
     AREADY.bar[idx] = CreateFrame("StatusBar", nil, UIParent)
@@ -131,7 +131,7 @@ for idx = 1, AREADY_Max do
     AREADY.bar[idx]:Hide();
 
     if idx == 1 then
-        if ASMODOBJ.load_position then
+        if bloaded and ASMODOBJ.load_position then
             ASMODOBJ.load_position(AREADY.bar[idx], "asReady");
         end
     end

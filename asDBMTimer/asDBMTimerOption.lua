@@ -93,12 +93,10 @@ function ns.setup_option()
     end
 
     Settings.RegisterAddOnCategory(category)
-	local bloaded = C_AddOns.LoadAddOn("asMOD")
+	ns.LoadPosition();
 
-    ns.LoadPosition();
-
-    C_AddOns.LoadAddOn("asMOD");
-    if ASMODOBJ.load_position and ns.asDBMTimer then
+    local bloaded = C_AddOns.LoadAddOn("asMOD");
+    if bloaded and ASMODOBJ.load_position and ns.asDBMTimer then
         ASMODOBJ.load_position(ns.asDBMTimer, "asDBMTimer");
         ns.SavePosition(ns.asDBMTimer); -- Save position after ASMODOBJ.load_position
     end

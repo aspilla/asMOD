@@ -33,9 +33,9 @@ main_frame.gcdbar.bg:SetVertexColor(0, 0, 0, 1);
 main_frame.gcdbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
 main_frame.gcdbar:Show();
 
-C_AddOns.LoadAddOn("asMOD");
+local bloaded = C_AddOns.LoadAddOn("asMOD");
 
-if ASMODOBJ.load_position then
+if bloaded and ASMODOBJ.load_position then
 	ASMODOBJ.load_position(main_frame.gcdbar, "asGCDBar");
 end
 

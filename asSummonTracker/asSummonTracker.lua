@@ -93,9 +93,9 @@ for i = 1, 10 do
     tinsert(buttons, button);
 end
 
-C_AddOns.LoadAddOn("asMOD");
+local bloaded = C_AddOns.LoadAddOn("asMOD");
 
-if ASMODOBJ.load_position then
+if bloaded and ASMODOBJ.load_position then
     ASMODOBJ.load_position(ast_frame, "asSummonTracker");
 end
 local playerGUID = UnitGUID("player");

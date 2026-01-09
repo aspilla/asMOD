@@ -114,9 +114,9 @@ local function init_addon()
         combobars[i]:EnableMouse(false);
     end
 
-    C_AddOns.LoadAddOn("asMOD");
+    local bloaded = C_AddOns.LoadAddOn("asMOD");
 
-    if ASMODOBJ.load_position then
+    if bloaded and ASMODOBJ.load_position then
         ASMODOBJ.load_position(ns.frame, "asSkyRide");
     end
 end

@@ -895,9 +895,9 @@ local function init(parent)
         end
     end
 
-    C_AddOns.LoadAddOn("asMOD");
+    local bloaded = C_AddOns.LoadAddOn("asMOD");
 
-    if ASMODOBJ.load_position then
+    if bloaded and ASMODOBJ.load_position then
         ASMODOBJ.load_position(parent.PlayerFrame, "PlayerFrame");
         ASMODOBJ.load_position(parent.TargetFrame, "TargetFrame");
         ASMODOBJ.load_position(parent.FocusFrame, "FocusFrame");

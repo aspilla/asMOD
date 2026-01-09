@@ -4,8 +4,8 @@ local ASF_Y = 160;
 asUIErrorsFrame:SetPoint("BOTTOM", ASF_X, ASF_Y);
 
 
-C_AddOns.LoadAddOn("asMOD");
-if ASMODOBJ.load_position then
+local bloaded = C_AddOns.LoadAddOn("asMOD");
+if bloaded and ASMODOBJ.load_position then
 	ASMODOBJ.load_position(asUIErrorsFrame, "asSpamFilter");
 end
 local originalOnEvent = UIErrorsFrame:GetScript("OnEvent")

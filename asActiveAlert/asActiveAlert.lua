@@ -213,9 +213,9 @@ do
 	main_frame:SetScript("OnEvent", on_event);
 	main_frame:Show();
 	main_frame.frames = {};
-	C_AddOns.LoadAddOn("asMOD");
+	local bloaded = C_AddOns.LoadAddOn("asMOD");
 
-	if ASMODOBJ.load_position then
+	if bloaded and ASMODOBJ.load_position then
 		ASMODOBJ.load_position(main_frame, "asActiveAlert");
 	end
 end
