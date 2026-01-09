@@ -26,6 +26,7 @@ Colors are displayed based on the following priority:
 * **Cast Icons**: Displays the skill icon while a mob is casting (if not using mana, `ShowCastIcon`).
 * **Aura Enhancements**: Adjusts the position of buff/debuff duration and stacks, and adds borders (`ChangeDebuffIcon`).
 * **Visual Overhaul**: Changes the nameplate texture and borders (`ChangeTexture`).
+* **Targeted Highlight (`ShowTargeted`)**: Flashes red/yellow exclamation marks on the right side when you are the target of a spell or mob.
 
 ## Configuration
 * `Esc > Options > Addons > asNamePlates`
@@ -61,6 +62,7 @@ Colors are displayed based on the following priority:
 * 시전중일 경우 스킬 아이콘 표시 (마나가 아닐 경우, `ShowCastIcon`)
 * 버프/디버프 시간/중첩 위치 조정 및 테두리 추가 (`ChangeDebuffIcon`)
 * 이름표 Texture 및 테두리 변경 (`ChangeTexture`)
+* Targeted 강조 (`ShowTargeted`)
 
 ## 설정
 * `Esc > 옵션 > 애드온 > asNamePlates`

@@ -5,15 +5,20 @@ local configs = {
     fontsize = 12,
 }
 
+ns.enums = {
+    none = 0,
+    party = 1,
+    raid = 2,
+}
+
 ns.tanklist = {};
-ns.isparty = false;
-ns.israid = false;
-ns.ispvp = false;
+ns.instype = ns.enums.none;
+
 ns.istanker = false;
 ns.colorcurve = nil;
 
 local function update_tanklist()
-    if ns.ispvp then
+    if ns.instype == ns.enums.none then
         return nil;
     end
 
@@ -166,7 +171,6 @@ local function add_unit(unit)
 
     local unitFrame = namePlateFrameBase.UnitFrame;
     local healthbar = unitFrame.healthBar;
-    local container = unitFrame.HealthBarsContainer;
 
     if not UnitCanAttack("player", unit) then
         if namePlateFrameBase.asNamePlates then
@@ -258,12 +262,12 @@ local function add_unit(unit)
     asframe.targetedindi:SetAlpha(0);
     asframe.targetedindi:Show();
     asframe.targetedinditype = 1;
-    
+
     local powertype = UnitPowerType(unit);
 
     local powerColor = PowerBarColor[powertype]
     if powerColor then
-        asframe.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b);        
+        asframe.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b);
     end
     asframe.powertype = powertype;
 
@@ -284,7 +288,7 @@ local function add_unit(unit)
     local level = UnitLevel(unit);
 
     asframe.isboss = false;
-    if ns.isparty and level then
+    if ns.instype == ns.enums.party and level then
         if level < 0 or level > UnitLevel("player") then
             asframe.isboss = true;
         end
@@ -395,17 +399,13 @@ local function on_main_event(self, event, ...)
         add_unit(unit);
     elseif event == "PLAYER_ENTERING_WORLD" then
         local isInstance, instanceType = IsInInstance();
-        ns.ispvp = false;
-        ns.israid = false;
-        ns.isparty = false;
+        ns.instype = ns.enums.none;
         if isInstance and (instanceType == "party" or instanceType == "raid" or instanceType == "scenario") then
             if instanceType == "raid" then
-                ns.israid = true;
+                ns.instype = ns.enums.raid;
             else
-                ns.isparty = true;
+                ns.instype = ns.enums.party;
             end
-        else
-            ns.ispvp = true;
         end
         update_tanklist();
         init_class();

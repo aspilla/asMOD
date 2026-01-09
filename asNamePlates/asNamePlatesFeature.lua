@@ -115,7 +115,7 @@ function ns.update_color(asframe)
             return ns.options.CombatColor;
         end
 
-        if ns.isparty then
+        if ns.instype == ns.enums.party then
             if asframe.isboss and ns.options.ShowBossColor then
                 return ns.options.BossColor;
             end
@@ -125,7 +125,7 @@ function ns.update_color(asframe)
             end
         end
 
-        if not (ns.isparty or ns.israid) and ns.options.ShowQuestColor and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
+        if not (ns.instype == ns.enums.none) and ns.options.ShowQuestColor and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
             return ns.options.QuestColor;
         end
 
@@ -207,6 +207,10 @@ local targetedtexts = {};
 targetedtexts[1] = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0, 255, 0, 0);
 targetedtexts[2] = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0);
 function ns.update_targeted(asframe)
+    if not ns.options.ShowTargeted then
+        return;
+    end
+
     asframe.targetedindi:SetText(targetedtexts[asframe.targetedinditype]);
     asframe.targetedinditype = (asframe.targetedinditype + 1);
 

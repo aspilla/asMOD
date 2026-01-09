@@ -20,6 +20,7 @@ ns.option_default = {
     ShowCastIcon = true,
     ChangeDebuffIcon = true,
     ChangeTexture = true,
+    ShowTargeted = true,
 
     AggroColor = { r = 0.4, g = 0.2, b = 0.8 },
     TankAggroLoseColor = { r = 1, g = 0.5, b = 0.5 },
@@ -229,6 +230,7 @@ local function on_panelshow()
         setup_checkboxoption("[기능] 하단에 기력 표시", "ShowPower");
         setup_checkboxoption("[기능] 시전 Icon 표시", "ShowCastIcon");
         setup_checkboxoption("[기능] Debuff Icon 변경", "ChangeDebuffIcon");
+        setup_checkboxoption("[기능] Targeted 강조", "ShowTargeted");
 
         setup_slideoption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");
 
@@ -254,6 +256,7 @@ local function on_panelshow()
         setup_checkboxoption("[Feature] Show Power below", "ShowPower");
         setup_checkboxoption("[Feature] Show cast icon", "ShowCastIcon");
         setup_checkboxoption("[Feature] Change Debuff Icon", "ChangeDebuffIcon");
+        setup_checkboxoption("[Feature] Alert Targeted", "ShowTargeted");
 
         setup_slideoption("Nameplate vertical alignment (nameplateOverlapV)", "nameplateOverlapV");
 
