@@ -229,7 +229,7 @@ local function update_buttons(viewer)
 			local spellid = button:GetSpellID();
 
 			if not issecretvalue(spellid) then
-				local keytext = ns.hotkeys[button:GetSpellID()];
+				local keytext = ns.hotkeys[spellid];
 
 				if keytext then
 					button.hotkey:SetText(keytext);
