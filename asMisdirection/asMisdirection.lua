@@ -142,7 +142,7 @@ local function setup_assistmacro(unit, force)
 		local global, perChar = GetNumMacros();
 
 		if global < 120 then
-			CreateMacro(macroName, "ABILITY_ROGUE_FEIGNDEATH", macroText, true)
+			CreateMacro(macroName, "ABILITY_ROGUE_FEIGNDEATH", macroText, false)
 		else
 			print("asMOD error:too many macros, so need to delete some")
 		end
