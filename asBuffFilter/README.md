@@ -9,6 +9,7 @@ Displays the target's buffs on the right side of the screen (up to 7 in combat, 
 *   **Friendly (Out of Combat)**: Displays all buffs (up to 21).
 *   **Friendly (In Combat)**: Displays buffs cast by you.
 *   **Enemy (Combat/Out of Combat)**: Displays all buffs.
+*   **Purgeable Buffs**: Displays a white border when a buff can be dispelled or stolen (e.g., Spellsteal).
 
 ### Settings
 * `CombatAlphaChange`: Change transparency when out of combat (Default: On).
@@ -27,6 +28,7 @@ Displays the target's buffs on the right side of the screen (up to 7 in combat, 
 * 아군 비전투 : 최대 21개 모든 버프를 표시
 * 아군 전투 : 내가 시전한 버프
 * 적군 전투/비전투 : 모든 버프
+* 버프 무효화(훔치기)가 가능하면 테두리를 흰색으로 표시
 
 ### 설정
 
