@@ -3,17 +3,20 @@
 	<Frame name="asTargetBuffFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel="1000">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true" />
+				<Texture parentKey="icon" setAllPoints="true" />
+			</Layer>
+			<Layer level="ARTWORK" textureSubLevel="6">
+				<Texture parentKey="border" setAllPoints="true" file="Interface\Addons\asBuffFilter\border.tga"/>	
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asBuffFilter\border.tga"/>	
+				<Texture parentKey="stealable" setAllPoints="true" file="Interface\Addons\asBuffFilter\border.tga"/>	
 			</Layer>
 			<Layer level="OVERLAY">
-				<FontString name="$parentCount" parentKey="count"  justifyH="RIGHT"/>		
+				<FontString  parentKey="count"  justifyH="RIGHT"/>		
 			</Layer>
 		</Layers>
 		<Frames>
-			<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" enableMouse="false" frameLevel="1000">
+			<Cooldown parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" enableMouse="false" frameLevel="1000">
 			</Cooldown>
 		</Frames>
 	</Frame>

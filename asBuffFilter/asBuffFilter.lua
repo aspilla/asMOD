@@ -14,11 +14,15 @@ local function set_cooldownframe(self, extime, duration, enable)
 	end
 end
 
-local function set_buff(frame, unit, aura, color)
+local function set_buff(frame, unit, aura)
 	frame.icon:SetTexture(aura.icon);
 	frame.count:SetText(C_UnitAuras.GetAuraApplicationDisplayCount(unit, aura.auraInstanceID, 1, 100));
 	set_cooldownframe(frame.cooldown, aura.expirationTime, aura.duration, true);
-	frame.border:SetVertexColor(color.r, color.g, color.b);
+
+	if C_CurveUtil and C_CurveUtil.EvaluateColorValueFromBoolean then
+		local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(aura.isStealable, 1, 0);
+		frame.stealable:SetAlpha(alpha)
+	end
 end
 
 local function update_auraframes(unit, auraList)
@@ -35,11 +39,7 @@ local function update_auraframes(unit, auraList)
 
 		local frame = parent.frames[i];
 
-		frame.unit = unit;
-		frame.auraInstanceID = aura.auraInstanceID;
-		local color = { r = 0, g = 0, b = 0 };
-
-		set_buff(frame, unit, aura, color);
+		set_buff(frame, unit, aura);
 		frame:Show();
 	end
 
@@ -202,6 +202,11 @@ local function create_frames(parent, bright, bcenter, max)
 		frame.icon:SetTexCoord(.08, .92, .16, .84);
 
 		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+		frame.border:SetVertexColor(0, 0, 0);
+		frame.stealable:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+		frame.stealable:SetVertexColor(1, 1, 1);
+		frame.stealable:SetAlpha(0);
+		frame.stealable:Show();
 
 		update_anchor(parent.frames, idx, 1, bright, bcenter, parent);
 
@@ -225,7 +230,7 @@ local function init()
 	main_frame:SetPoint("CENTER", 0, 0)
 	main_frame:SetWidth(1)
 	main_frame:SetHeight(1)
-	main_frame:SetScale(1)	
+	main_frame:SetScale(1)
 	main_frame:Show()
 
 
