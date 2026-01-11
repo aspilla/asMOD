@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rCastingAlert
 ## Notes: Targeted Spell Cast Alert
 ## Notes-koKR:대상된 시전 주문 알림
-## Version : 250727
+## Version : 260111
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## SavedVariablesPerCharacter: ACTA_Options 
 ## Category: asMOD

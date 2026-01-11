@@ -1,27 +1,23 @@
 ﻿local _, ns = ...;
 
 local configs = {
-    updaterate = 0.1,
+    updaterate = 0.2,
     maxshow = 10,
     fontsize = 18,
     size = 35,
     xpoint = 0,
     ypoint = -30,
-    targetedvoice = "Interface\\AddOns\\asCastingAlert\\Targeted.mp3",
     baseframelevel = 1000,
     alpha = 1,
 };
 
 local function comparator(a, b)
-    if a.level ~= b.level then
-        return a.level > b.level;
-    end
+    return a.level > b.level;
 end
 
 local main_frame = CreateFrame("Frame", nil, UIParent);
 local showtable = TableUtil.CreatePriorityTable(comparator, TableUtil.Constants.AssociativePriorityTable);
 local castingunits = {};
-ns.istank = false;
 ns.casts = {};
 
 local function check_casting(unit)
@@ -94,7 +90,6 @@ local function show_castings()
 end
 
 local function on_update()
-
     if not C_CurveUtil.EvaluateColorValueFromBoolean then
         return;
     end
@@ -112,29 +107,14 @@ local function on_update()
     show_castings();
 end
 
-
-local function check_tank()
-    local assignedRole = UnitGroupRolesAssigned("player");
-    if assignedRole == "TANK" or assignedRole == "MAINTANK" then
-        ns.istank = true;
-    else
-        ns.istank = false;
-    end
-end
-
 local bfirst = true;
 local function on_event(self, event, unit)
     if bfirst then
         ns.setup_option();
         bfirst = false;
     end
-
-    if (event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "PLAYER_ENTERING_WORLD" or event == "ROLE_CHANGED_INFORM") then
-        check_tank();
-    else
-        if unit and UnitCanAttack("player", unit) and UnitAffectingCombat(unit) and UnitClassification(unit) ~= "minus" and string.find(unit, "nameplate") then
-            castingunits[unit] = true;
-        end
+    if unit and UnitCanAttack("player", unit) and UnitAffectingCombat(unit) and UnitClassification(unit) ~= "minus" and string.find(unit, "nameplate") then
+        castingunits[unit] = true;
     end
 end
 
@@ -174,9 +154,6 @@ local function init()
     main_frame:RegisterEvent("UNIT_SPELLCAST_START");
     main_frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");
     main_frame:RegisterEvent("NAME_PLATE_UNIT_ADDED");
-    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-    main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-    main_frame:RegisterEvent("ROLE_CHANGED_INFORM");
     main_frame:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint);
     main_frame:SetAlpha(configs.alpha);
     main_frame:SetSize(1, 1);
