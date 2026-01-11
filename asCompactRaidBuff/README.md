@@ -14,7 +14,6 @@ Raid and Party Frame Enhancements
 * **Defensive Cooldown Icon Resizing**
 * **Cast Target Notification (Top)**
 
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCompactRaidBuffCast.jpg?raw=true)   
 
 ## Configuration
 * `BottomHealerManaBar`: Display healer mana bar (Default: On)
@@ -43,9 +42,6 @@ Raid and Party Frame Enhancements
 *   **버프 아이콘 테두리 추가**
 *   **생존기 아이콘 크기 조정**
 *   **시전 대상 알림(상단)**
-
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCompactRaidBuffCast.jpg?raw=true)   
-
 
 ## 설정
 *   `BottomHealerManaBar` : 힐러 마나바 표시 (기본: On)
