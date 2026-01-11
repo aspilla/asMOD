@@ -42,7 +42,7 @@ function ns.setup_frame(asframe)
         return
     end
     local frame = asframe.frame;
-    local x, y = frame:GetSize();
+    local width, height = frame:GetSize();
 
     asframe.needtosetup = false;
 
@@ -79,7 +79,7 @@ function ns.setup_frame(asframe)
     end
 
     if asframe.powerbar then
-        asframe.powerbar:SetWidth(x - 2);
+        asframe.powerbar:SetWidth(width - 2);
         asframe.powerbar:SetHeight(ns.ACRB_HealerManaBarHeight);
 
         local powertype = UnitPowerType(asframe.unit);
@@ -114,16 +114,18 @@ function ns.setup_frame(asframe)
     end
 
     if asframe.raidicon then
-        asframe.raidicon:SetSize(y / 3 - 3, y / 3 - 3);
+        asframe.raidicon:SetSize(height / 3 - 3, height / 3 - 3);
     end
 
+    ns.init_cast(asframe, (height / 3 - 3));
     ns.update_features(asframe);
-
+    
     asframe.callback = function()
         if asframe.frame:IsShown() then
             if asframe.needtosetup then
-                ns.setup_frame(asframe);
+                ns.setup_frame(asframe);                
             end
+            ns.update_cast(asframe);
         elseif asframe.timer then
             asframe.timer:Cancel();
         end
@@ -133,10 +135,8 @@ function ns.setup_frame(asframe)
         asframe.timer:Cancel();
     end
 
-    local updateRate = ns.UpdateRate * 4;
-
     if asframe.frame:IsShown() then
-        asframe.timer = C_Timer.NewTicker(updateRate, asframe.callback);
+        asframe.timer = C_Timer.NewTicker(ns.UpdateRate, asframe.callback);
     end
 end
 
@@ -250,6 +250,7 @@ local function update_all(frame)
                 end
 
                 ns.asraid[name].needtosetup = true;
+                ns.asraid[name].israid = true;
                 ns.asraid[name].frame = frame;
             elseif string.find(name, "CompactPartyFrameMember") then
                 if not (frame.unit and UnitIsPlayer(frame.unit)) and not is_party(frame.unit) then
@@ -261,7 +262,8 @@ local function update_all(frame)
                     ns.asparty[name] = CreateFrame("Frame");
                 end
 
-                ns.asparty[name].needtosetup = true;
+                ns.asparty[name].needtosetup = true;                
+                ns.asparty[name].israid = false;
                 ns.asparty[name].frame = frame;
             end
         end

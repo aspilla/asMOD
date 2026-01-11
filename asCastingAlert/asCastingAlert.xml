@@ -6,10 +6,10 @@
 				<Texture parentKey="icon" setAllPoints="true" />
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="6">
-				<Texture parentKey="border" setAllPoints="true" file="Interface\Addons\asBuffFilter\border.tga"/>	
+				<Texture parentKey="border" setAllPoints="true" file="Interface\Addons\asCastingAlert\border.tga"/>	
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture parentKey="important" setAllPoints="true" file="Interface\Addons\asBuffFilter\border.tga"/>	
+				<Texture parentKey="important" setAllPoints="true" file="Interface\Addons\asCastingAlert\border.tga"/>	
 			</Layer>			
 		</Layers>
 		<Frames>

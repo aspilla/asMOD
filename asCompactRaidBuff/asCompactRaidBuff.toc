@@ -10,4 +10,5 @@
 asCompactRaidBuff.xml
 asCompactRaidBuffOptions.lua
 asCompactRaidBuffFeatures.lua
+asCompactRaidBuffCast.lua
 asCompactRaidBuff.lua
