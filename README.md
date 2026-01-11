@@ -53,7 +53,7 @@ The following errors may occur:
 | asBattleRes | Displays Combat Resurrection charges and cooldown | [Link](https://www.curseforge.com/wow/addons/asbattleres) |
 | asBuffFilter | Displays target's buffs | [Link](https://www.curseforge.com/wow/addons/asbufffilter) |
 | asCastBar | Displays icon and cast time on the cast bar | [Link](https://www.curseforge.com/wow/addons/ascastbar) |
-| asCastAlert             |Targeted Spell Cast Alert|<a href="https://www.curseforge.com/wow/addons/ascastalert" target="_blank" rel="nofollow">Link</a> |
+| asCastingAlert             |Targeted Spell Cast Alert|<a href="https://www.curseforge.com/wow/addons/ascastingalert" target="_blank" rel="nofollow">Link</a> |
 | asCombatInfo | Enhances Cooldown Manager | [Link](https://www.curseforge.com/wow/addons/ascombatinfo) |
 | asCombatTimer | Displays elapsed time since the start of combat | [Link](https://www.curseforge.com/wow/addons/ascombattimer) |
 | asCooldownPulse | Displays cooldowns for trinkets, racial traits, healthstones, and potions | [Link](https://www.curseforge.com/wow/addons/ascooldownpulse) |
@@ -145,7 +145,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 | asBattleRes           |전투 부활 횟수/대기시간 표시|<a href="https://www.curseforge.com/wow/addons/asbattleres" target="_blank" rel="nofollow">링크</a> |
 | asBuffFilter          |대상의 버프를 표시 |<a href="https://www.curseforge.com/wow/addons/asbufffilter" target="_blank" rel="nofollow">링크</a> |
 | asCastBar             |시전 바에 아이콘과 시전시간 표시|<a href="https://www.curseforge.com/wow/addons/ascastbar" target="_blank" rel="nofollow">링크</a> |
-| asCastAlert             |대상 시전 주문 알림|<a href="https://www.curseforge.com/wow/addons/ascastalert" target="_blank" rel="nofollow">링크</a> |
+| asCastingAlert             |대상 시전 주문 알림|<a href="https://www.curseforge.com/wow/addons/ascastingalert" target="_blank" rel="nofollow">링크</a> |
 | asCombatInfo          |쿨다운 메니저 강화|<a href="https://www.curseforge.com/wow/addons/ascombatinfo" target="_blank" rel="nofollow">링크</a> | 
 | asCombatTimer         |전투 시작 후 경과 시간을 표시|<a href="https://www.curseforge.com/wow/addons/ascombattimer" target="_blank" rel="nofollow">링크</a> |
 | asCooldownPulse       |장신구, 종특, 생석, 물약 쿨 표시|<a href="https://www.curseforge.com/wow/addons/ascooldownpulse" target="_blank" rel="nofollow">링크</a> |
