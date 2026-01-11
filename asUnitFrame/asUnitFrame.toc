@@ -15,4 +15,5 @@ asUnitFrameAura.lua
 asUnitFrameTotem.lua
 asUnitFrameCastBar.lua
 asUnitFrameRange.lua
+asUnitFrameUpdate.lua
 asUnitFrame.lua
