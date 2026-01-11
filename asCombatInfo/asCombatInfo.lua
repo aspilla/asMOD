@@ -28,20 +28,21 @@ local function update_bars(viewer)
 	end
 
 	for _, item in ipairs(visiblechilds) do
+		if ns.options.HideBarName then
+			local bar = item.Bar;
+			bar.Name:Hide();
+		end
+
 		if not item.bconfiged then
 			item.bconfiged = true;
 
 			if item.Bar then
-				local bar = item.Bar
+				local bar = item.Bar;
 				bar:SetStatusBarTexture("RaidFrame-Hp-Fill");
 				if ns.options.BuffBarClassColor then
 					bar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
 				end
 				bar.BarBG:Hide();
-				if ns.options.HideBarName then
-					bar.Name:Hide();
-				end
-
 
 				bar.bg = bar:CreateTexture(nil, "BACKGROUND");
 				bar.bg:SetPoint("TOPLEFT", bar, "TOPLEFT", -1, 1);
@@ -373,7 +374,7 @@ local function check_name(name)
 	return name;
 end
 
-local function scan_keys(name, type, hide, total)
+local function scan_keys(name, total, bforce)
 	for i = 1, total do
 		local f = getglobal(name .. i);
 		if not f then
@@ -391,7 +392,7 @@ local function scan_keys(name, type, hide, total)
 			local actionType, id = GetActionInfo(f.action)
 
 			if (actionType == "spell" or actionType == "macro") and id and text ~= "●" then
-				if ns.hotkeys[id] == nil then
+				if ns.hotkeys[id] == nil or bforce then
 					ns.hotkeys[id] = check_name(text);
 				end
 			end
@@ -399,29 +400,34 @@ local function scan_keys(name, type, hide, total)
 	end
 end
 
-local function check_hotkeys()
+local function check_hotkeys(ball)
 	if not ns.options.ShowHotKey then
 		return;
 	end
-	wipe(ns.hotkeys);
-	scan_keys("ActionButton", "ACTIONBUTTON", 1, 12);
-	scan_keys("MultiBarBottomLeftButton", "MULTIACTIONBAR1BUTTON", 1, 12);
-	scan_keys("MultiBarBottomRightButton", "MULTIACTIONBAR2BUTTON", 1, 12);
-	scan_keys("MultiBarRightButton", "MULTIACTIONBAR3BUTTON", 1, 12);
-	scan_keys("MultiBarLeftButton", "MULTIACTIONBAR4BUTTON", 1, 12);
-	scan_keys("MultiBar5Button", "MULTIACTIONBAR5BUTTON", 1, 12);
-	scan_keys("MultiBar6Button", "MULTIACTIONBAR6BUTTON", 1, 12);
-	scan_keys("MultiBar7Button", "MULTIACTIONBAR7BUTTON", 1, 12);
-	scan_keys("BonusActionButton", "ACTIONBUTTON", 1, 12);
-	scan_keys("ExtraActionButton", "EXTRAACTIONBUTTON", 1, 12);
-	scan_keys("VehicleMenuBarActionButton", "ACTIONBUTTON", 1, 12);
-	scan_keys("OverrideActionBarButton", "ACTIONBUTTON", 1, 12);
-	scan_keys("PetActionButton", "BONUSACTIONBUTTON", 1, 10);
+
+	if ball then
+		wipe(ns.hotkeys);
+		scan_keys("ActionButton", 12);
+		scan_keys("MultiBarBottomLeftButton", 12);
+		scan_keys("MultiBarBottomRightButton", 12);
+		scan_keys("MultiBarRightButton", 12);
+		scan_keys("MultiBarLeftButton", 12);
+		scan_keys("MultiBar5Button", 12);
+		scan_keys("MultiBar6Button", 12);
+		scan_keys("MultiBar7Button", 12);
+		scan_keys("BonusActionButton", 12);
+		scan_keys("ExtraActionButton", 12);
+		scan_keys("VehicleMenuBarActionButton", 12);
+		scan_keys("OverrideActionBarButton", 12);
+		scan_keys("PetActionButton", 10);
+	else
+		scan_keys("ActionButton", 12, true);
+	end
 end
 
 -- Do the work
 local function init()
-	check_hotkeys();
+	check_hotkeys(true);
 	for _, viewer in ipairs(viewers) do
 		if viewer then
 			update_buttons(viewer)
@@ -471,6 +477,8 @@ local function on_event(self, event, arg)
 		if ns.options.CombatAlphaChange then
 			set_viewersalpha(configs.normalalpha);
 		end
+	elseif event == "UPDATE_SHAPESHIFT_COOLDOWN" then
+		check_hotkeys(false);
 	else
 		C_Timer.After(0.5, init);
 
@@ -492,4 +500,6 @@ main_frame:RegisterEvent("UPDATE_BINDINGS");
 main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
 main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+main_frame:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN");
+
 main_frame:SetScript("OnEvent", on_event);
