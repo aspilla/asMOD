@@ -316,6 +316,9 @@ local function update_unitframe(frame)
             end
         end
     end
+
+    ns.update_auras(frame);
+
     if needtohide then
         frame.range:Hide();
     end
@@ -767,7 +770,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
 
     frame.unit = unit;
     ns.unitframes[unit] = frame;
-    
+
     SecureUnitButton_OnLoad(frame, unit);
     frame:SetAttribute("*type2", "togglemenu");
     frame:RegisterForClicks("AnyUp")
@@ -861,9 +864,7 @@ end
 
 local function check_unitauras(unit)
     local frame = ns.unitframes[unit];
-    if frame and frame.buffupdate or frame.debuffupdate then
-        ns.update_auras(frame);
-    end
+    ns.update_auras(frame);
 end
 
 local bfirst = true;
