@@ -351,7 +351,7 @@ local function createdebuffframes(parent, bright, fontsize, width, count)
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
                 r:ClearAllPoints();
-                r:SetPoint("CENTER", 0, 0);
+                r:SetPoint("CENTER", frame, "TOP", 0, -1);
                 r:SetDrawLayer("OVERLAY");
                 break
             end
@@ -359,7 +359,8 @@ local function createdebuffframes(parent, bright, fontsize, width, count)
 
         frame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
         frame.count:ClearAllPoints()
-        frame.count:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", -2, 2);
+        frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
+        frame.count:SetTextColor(0,1,0);
 
         frame.icon:SetTexCoord(.08, .92, .16, .84);
         frame.icon:SetAlpha(1);
@@ -404,7 +405,7 @@ local function create_buffframes(parent, bright, fontsize, width, count)
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
                 r:ClearAllPoints();
-                r:SetPoint("TOP", 0, 5);
+                r:SetPoint("CENTER", frame, "TOP", 0, -1);
                 r:SetDrawLayer("OVERLAY");
                 break
             end
@@ -412,7 +413,8 @@ local function create_buffframes(parent, bright, fontsize, width, count)
 
         frame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
         frame.count:ClearAllPoints()
-        frame.count:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", -2, 2);
+        frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
+        frame.count:SetTextColor(0,1,0);
 
         frame.icon:SetTexCoord(.08, .92, .16, .84);
         frame.icon:SetAlpha(1);
