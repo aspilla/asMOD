@@ -298,6 +298,7 @@ local function add_unit(unit)
         ns.update_power(asframe);
         ns.update_color(asframe);
         ns.update_targeted(asframe);
+        ns.update_mouseover(asframe);
     end
 
     if asframe.timer then
