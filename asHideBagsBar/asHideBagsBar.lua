@@ -24,6 +24,7 @@ local function hide_frame(frame)
 		return;
 	end
 
+	frame:SetFrameLevel(1000);
 	frame:SetAlpha(0);
 end
 

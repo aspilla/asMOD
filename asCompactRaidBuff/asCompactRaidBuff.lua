@@ -119,11 +119,11 @@ function ns.setup_frame(asframe)
 
     ns.init_cast(asframe, (height / 3 - 3));
     ns.update_features(asframe);
-    
+
     asframe.callback = function()
         if asframe.frame:IsShown() then
             if asframe.needtosetup then
-                ns.setup_frame(asframe);                
+                ns.setup_frame(asframe);
             end
             ns.update_cast(asframe);
         elseif asframe.timer then
@@ -151,20 +151,26 @@ local function hook_func(frame)
     end
 end
 
-local function change_button(button, changesize)
+local function change_button(button, notchangerate, changesize)
     local width = button:GetWidth();
 
     if changesize then
         width = width * ns.options.CenterDefensiveSizeRate;
     end
 
+    local rate = configs.iconrate;
+    
+    if notchangerate then
+        rate = 1;
+    end
+
     if ns.options.ChangeIcon then
-        button:SetSize(width, width * configs.iconrate);
+        button:SetSize(width, width * rate);
 
         if button.icon then
             button.icon:ClearAllPoints();
             button.icon:SetPoint("CENTER", 0, 0);
-            button.icon:SetSize(width - 2, width * configs.iconrate - 2);
+            button.icon:SetSize(width - 2, width * rate - 2);
             button.icon:SetTexCoord(.08, .92, .08, .92);
         end
 
@@ -211,11 +217,11 @@ local function change_defaults(frame)
         end
         if frame.debuffFrames then
             for i = 1, #frame.debuffFrames do
-                change_button(frame.debuffFrames[i]);
+                change_button(frame.debuffFrames[i], true);
             end
         end
         if frame.CenterDefensiveBuff then
-            change_button(frame.CenterDefensiveBuff, true);
+            change_button(frame.CenterDefensiveBuff, false ,true);
         end
     end
 end
@@ -262,7 +268,7 @@ local function update_all(frame)
                     ns.asparty[name] = CreateFrame("Frame");
                 end
 
-                ns.asparty[name].needtosetup = true;                
+                ns.asparty[name].needtosetup = true;
                 ns.asparty[name].israid = false;
                 ns.asparty[name].frame = frame;
             end
