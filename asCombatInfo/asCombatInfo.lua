@@ -38,6 +38,9 @@ local function update_bars(viewer)
 					bar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
 				end
 				bar.BarBG:Hide();
+				if ns.options.HideBarName then
+					bar.Name:Hide();
+				end
 
 
 				bar.bg = bar:CreateTexture(nil, "BACKGROUND");

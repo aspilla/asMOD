@@ -1,0 +1,20 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\Blizzard_SharedXML\UI.xsd">
+	<Frame name="asCastingAlertTemplate" virtual="true" enableMouse="false" frameStrata="LOW">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="icon" setAllPoints="true" />
+			</Layer>
+			<Layer level="ARTWORK" textureSubLevel="6">
+				<Texture parentKey="border" setAllPoints="true" file="Interface\Addons\asBuffFilter\border.tga"/>	
+			</Layer>
+			<Layer level="ARTWORK" textureSubLevel="7">
+				<Texture parentKey="important" setAllPoints="true" file="Interface\Addons\asBuffFilter\border.tga"/>	
+			</Layer>			
+		</Layers>
+		<Frames>
+			<Cooldown parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" enableMouse="false">
+			</Cooldown>
+		</Frames>
+	</Frame>	
+</Ui>

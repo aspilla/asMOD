@@ -2,9 +2,6 @@
 local _, ns = ...;
 local Options_Default = {
     Version = 250622,
-    PlaySound = true,        
-    PlaySoundTank = false,
-    PlaySoundGroupOnly = true,
     ShowTarget = true,
 };
 

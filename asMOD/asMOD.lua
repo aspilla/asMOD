@@ -252,14 +252,13 @@ local framelist = {};
 local function show_configpopup()
 	for i, value in pairs(positions) do
 		local index = value["name"]
+		local position = positions[index];
 
-		if not asMOD_position[index] then
-			asMOD_position[index] = positions[index]
+		if asMOD_position[index] then
+			position = asMOD_position[index];
 		end
-		framelist[index] = nil
-
-
-		framelist[index] = setup_frame(framelist[index], "asMOD_frame" .. index, index, asMOD_position[index]);
+		framelist[index] = nil;
+		framelist[index] = setup_frame(framelist[index], "asMOD_frame" .. index, index, position);
 	end
 
 	StaticPopup_Show("asConfig")
@@ -280,6 +279,8 @@ local function save_positions()
 			framelist[index]:GetPoint();
 	end
 	cancel_position();
+
+	print("test");
 
 	ReloadUI();
 end

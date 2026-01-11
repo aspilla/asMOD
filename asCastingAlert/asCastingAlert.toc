@@ -1,10 +1,12 @@
-﻿## Interface: 110205, 110207
+﻿## Interface: 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCastingAlert
-## Notes: Alert for casting spells targeted at the player by hostile units.
+## Notes: Targeted Spell Cast Alert
+## Notes-koKR:대상된 시전 주문 알림
 ## Version : 250727
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## SavedVariablesPerCharacter: ACTA_Options 
 ## Category: asMOD
 asCastingAlertOption.lua
+asCastingAlert.xml
 asCastingAlert.lua

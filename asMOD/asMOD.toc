@@ -4,7 +4,7 @@
 ## Notes: asMOD collection setup.
 ## Notes-koKR: asMOD 모음집 설정.
 ## Version : 251006
-##SavedVariablesPerCharacter: asMOD_config, asMOD_version, asMOD_position
+## SavedVariablesPerCharacter: asMOD_config, asMOD_version, asMOD_position
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asMODSettings.lua
