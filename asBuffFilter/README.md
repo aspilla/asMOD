@@ -1,6 +1,7 @@
 # asBuffFilter (Midnight)
 
 Displays the target's buffs.
+
 ![asBuffFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asBuffFilter.JPG?raw=true)
 
 ### Main Features
@@ -19,7 +20,8 @@ Displays the target's buffs on the right side of the screen (up to 7 in combat, 
 
 # asBuffFilter (한밤)
 
-대상의 버프를 표시
+대상의 버프를 표시.
+
 ![asBuffFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asBuffFilter.JPG?raw=true)   
 
 ### 주요 기능
