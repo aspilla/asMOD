@@ -2,7 +2,7 @@
 
 Displays highlighted spells on the left side of the character.
 
-![asActiveAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asActiveAlert.png?raw=true)
+![asActiveAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asActiveAlert.jpg?raw=true)
 
 ## Key Features
 
@@ -24,7 +24,7 @@ No separate configuration options.
 
 테두리 강조 주문 케릭 좌측 표시
 
-![asActiveAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asActiveAlert.png?raw=true)
+![asActiveAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asActiveAlert.jpg?raw=true)
 
 ## 주요 기능
 
