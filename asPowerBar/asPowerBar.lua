@@ -346,10 +346,11 @@ local function init_addon()
     ns.chargebar:EnableMouse(false);
 
 
-    local bloaded = C_AddOns.LoadAddOn("asMOD");
+    ns.setup_option();    
+    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
-    if bloaded and ASMODOBJ.load_position then
-        ASMODOBJ.load_position(main_frame, "asPowerBar");
+    if libasConfig then
+        libasConfig.load_position(main_frame, "asPowerBar", ASPB_Positions);
     end
 
     main_frame:SetScript("OnEvent", on_event)
@@ -361,7 +362,6 @@ local function init_addon()
     main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
     main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 
-    ns.setup_option();
     if ns.options.CombatAlphaChange then
         if UnitAffectingCombat("player") then
             main_frame:SetAlpha(ns.configs.combatalpha);

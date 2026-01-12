@@ -42,6 +42,10 @@ function ns.setup_option()
         ADTI_OtherOptions = CopyTable(OtherOptions_Default);
     end
 
+    if ADTI_Positions == nil then
+        ADTI_Positions = {};
+    end
+
     ns.options = CopyTable(ADTI_Options);
 
     for variable, _ in pairs(Options_Default) do
@@ -95,11 +99,11 @@ function ns.setup_option()
     Settings.RegisterAddOnCategory(category)
 	ns.LoadPosition();
 
-    local bloaded = C_AddOns.LoadAddOn("asMOD");
-    if bloaded and ASMODOBJ.load_position and ns.asDBMTimer then
-        ASMODOBJ.load_position(ns.asDBMTimer, "asDBMTimer");
-        ns.SavePosition(ns.asDBMTimer); -- Save position after ASMODOBJ.load_position
-    end
+    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
+	if libasConfig then
+		libasConfig.load_position(ns.asDBMTimer, "asDBMTimer", ADTI_Positions);
+	end
 
     if ns.options.LockPosition and ns.asDBMTimer then
         ns.asDBMTimer:EnableMouse(false);

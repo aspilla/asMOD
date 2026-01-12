@@ -41,6 +41,10 @@ function ns.setup_option()
 		ABF_Options = CopyTable(Options_Default);
 	end
 
+	if ABF_Positions == nil then
+		ABF_Positions = {};
+	end
+
 	ns.options = CopyTable(ABF_Options);
 
 	for variable, _ in pairs(Options_Default) do

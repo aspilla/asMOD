@@ -84,9 +84,9 @@ local function update_buttons(list, buttons, spellid)
                 isusable = C_Item.IsUsableItem(itemid);
             end
             istrinket = true;
-        elseif itemid == 5512  then
+        elseif itemid == 5512 then
             if ns.isdemonstone then
-                itemid = 224464;                
+                itemid = 224464;
             end
             ishealthstone = true;
         end
@@ -161,7 +161,8 @@ end
 
 
 local function create_buttons()
-    local bloaded = C_AddOns.LoadAddOn("asMOD")
+    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
     for i = 1, #ns.trinkets + 1 do
         local frame = CreateFrame("Button", nil, main_frame, "asCooldownPulseFrameTemplate");
         frame.cooldown:SetHideCountdownNumbers(false);
@@ -185,15 +186,15 @@ local function create_buttons()
 
         if i == 1 then
             frame:SetPoint("TOPRIGHT", UIParent, "CENTER", configs.t_xpoint, configs.t_ypoint)
-            if bloaded and ASMODOBJ.load_position then
-                ASMODOBJ.load_position(frame, "asCooldownPulse(Trinkets)");
+
+            if libasConfig then
+                libasConfig.load_position(frame, "asCooldownPulse(Trinkets)", ACDP_Positions_1);
             end
         else
             frame:SetPoint("RIGHT", ns.tbuttons[i - 1], "LEFT", -0.5, 0);
         end
         frame:SetWidth(configs.size);
         frame:SetHeight(configs.size * 0.9);
-        frame:SetScale(1);
         frame:Hide();
         ns.tbuttons[i] = frame;
     end
@@ -222,35 +223,26 @@ local function create_buttons()
 
         if i == 1 then
             frame:SetPoint("TOPRIGHT", UIParent, "CENTER", configs.i_xpoint, configs.i_ypoint)
-            if bloaded and ASMODOBJ.load_position then
-                ASMODOBJ.load_position(frame, "asCooldownPulse(Item)");
+            if libasConfig then
+                libasConfig.load_position(frame, "asCooldownPulse(Item)", ACDP_Positions_2);
             end
         else
             frame:SetPoint("LEFT", ns.ibuttons[i - 1], "RIGHT", -0.5, 0);
         end
         frame:SetWidth(configs.size);
         frame:SetHeight(configs.size * 0.9);
-        frame:SetScale(1);
         frame:Hide();
         ns.ibuttons[i] = frame;
     end
 end
 
-create_buttons();
+
 local function on_update()
     update_buttons(ns.trinkets, ns.tbuttons, ns.racial_spell);
     update_buttons(ns.items, ns.ibuttons);
 end
-C_Timer.NewTicker(0.2, on_update);
-
-local bfirst = true;
 
 local function on_event(self, event)
-    if bfirst then
-        bfirst = false;
-        ns.setup_option();
-    end
-
     if event == "PLAYER_REGEN_DISABLED" then
         if ns.options.CombatAlphaChange then
             main_frame:SetAlpha(configs.combatalpha);
@@ -284,12 +276,20 @@ local function on_event(self, event)
     end
 end
 
-main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
-main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
-main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
-main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+local function init()
+    ns.setup_option();
+    main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+    main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+    main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+    main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+    main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
-main_frame:SetScript("OnEvent", on_event)
-main_frame:Show();
+    main_frame:SetScript("OnEvent", on_event)
+    main_frame:Show();
+
+    create_buttons();
+    C_Timer.NewTicker(0.2, on_update);
+end
+
+C_Timer.After(0.5, init);

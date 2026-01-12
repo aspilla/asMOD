@@ -3,9 +3,11 @@
 ## Title: |cffff3399as|rInformation
 ## Notes: Displays primary/secondary stats increase.
 ## Notes-koKR: 1차/2차 능력치 증가량 표시
-## Version : 250827
-## SavedVariablesPerCharacter: ASInformationSaved
+## Version : 250112
+## SavedVariablesPerCharacter: ASInformationSaved, ASInformation_Positions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
 asInformationLib.lua
 asInformation.lua

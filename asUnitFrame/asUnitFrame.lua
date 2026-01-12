@@ -427,7 +427,6 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame.castbar.button:SetPoint("RIGHT", frame.castbar, "LEFT", -2, 0)
     frame.castbar.button:SetWidth((castbarheight + 1) * 1.1);
     frame.castbar.button:SetHeight(castbarheight + 1);
-    frame.castbar.button:SetScale(1);
     frame.castbar.button:SetAlpha(1);
     frame.castbar.button:EnableMouse(false);
     frame.castbar.button.icon:SetTexCoord(.08, .92, .08, .92);
@@ -543,21 +542,23 @@ local function init(parent)
         end
     end
 
-    local bloaded = C_AddOns.LoadAddOn("asMOD");
+ 
+    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
-    if bloaded and ASMODOBJ.load_position then
-        ASMODOBJ.load_position(parent.PlayerFrame, "PlayerFrame");
-        ASMODOBJ.load_position(parent.TargetFrame, "TargetFrame");
-        ASMODOBJ.load_position(parent.FocusFrame, "FocusFrame");
-        ASMODOBJ.load_position(parent.PetFrame, "PetFrame");
-        ASMODOBJ.load_position(parent.TargetTargetFrame, "TargetTargetFrame");
+	if libasConfig then		
+        libasConfig.load_position(parent.PlayerFrame, "PlayerFrame", AUF_Positions.PlayerFrame);
+        libasConfig.load_position(parent.TargetFrame, "TargetFrame", AUF_Positions.TargetFrame);
+        libasConfig.load_position(parent.FocusFrame, "FocusFrame", AUF_Positions.FocusFrame);
+        libasConfig.load_position(parent.PetFrame, "PetFrame", AUF_Positions.PetFrame);
+        libasConfig.load_position(parent.TargetTargetFrame, "TargetTargetFrame", AUF_Positions.TargetTargetFrame);
 
         if (MAX_BOSS_FRAMES) then
             for i = 1, MAX_BOSS_FRAMES do
-                ASMODOBJ.load_position(parent.BossFrames[i], "BossFrame" .. i);
+                libasConfig.load_position(parent.BossFrames[i], "BossFrame" .. i, AUF_Positions.BossFrames[i]);
             end
         end
-    end
+	end
+
     local _, engclass = UnitClass("player");
 
     if engclass == "EVOKER" or engclass == "DEMONHUNTER" then

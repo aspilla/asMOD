@@ -4,9 +4,11 @@
 ## Notes: Interrupt/Stun Cooldown Tracker
 ## Notes-koKR: 차단/스턴 스킬 쿨다운 표시
 ## Version : 251225
-## SavedVariablesPerCharacter: AIH_Options
+## SavedVariablesPerCharacter: AIH_Options, AIH_Positions_1, AIH_Positions_2
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
 asInterruptHelperLib.lua
 asInterruptHelperOption.lua
 asInterruptHelper.xml

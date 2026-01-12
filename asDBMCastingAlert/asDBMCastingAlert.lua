@@ -458,8 +458,7 @@ local function CreateCastbars(parent)
 		frame.button = CreateFrame("Button", nil, frame, "asDCATemplate");
 		frame.button:SetPoint("RIGHT", frame, "LEFT", -1, 0)
 		frame.button:SetWidth((CONFIG_HEIGHT + 2) * 1.1);
-		frame.button:SetHeight(CONFIG_HEIGHT + 2);
-		frame.button:SetScale(1);
+		frame.button:SetHeight(CONFIG_HEIGHT + 2);		
 		frame.button:SetAlpha(1);
 		frame.button:EnableMouse(false);
 		frame.button:Show();
@@ -554,7 +553,7 @@ local function initAddon()
 
 	CreateCastbars(ADVA);
 
-	if bloaded and ASMODOBJ.load_position then
+	if bloaded and ASMODOBJ and ASMODOBJ.load_position then
 		ASMODOBJ.load_position(ADVA, "asDBMCastingAlert");
 	end
 

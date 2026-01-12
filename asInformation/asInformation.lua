@@ -8,7 +8,7 @@ local configs = {
 };
 
 local main_frame = CreateFrame("Frame", "asInformationFrame", UIParent)
-main_frame:SetSize(100, 150)
+main_frame:SetSize(100, 100)
 main_frame:SetPoint("CENTER", UIParent, "CENTER", -165, -300)
 main_frame:SetMovable(true)
 main_frame:RegisterForDrag("LeftButton")
@@ -551,6 +551,10 @@ local function setup_option()
         ASInformationSaved = CopyTable(defaultOptions);
     end
 
+    if ASInformation_Positions == nil then
+        ASInformation_Positions = {};
+    end
+
     local optionsPanel = CreateFrame("Frame", "asInformationOptionsPanel", InterfaceOptionsFramePanelContainer)
     optionsPanel.name = "asInformation"
     if InterfaceOptions_AddCategory then
@@ -654,11 +658,12 @@ local function init()
     init_frames();
     main_frame:SetUserPlaced(true)
 
-    local bloaded = C_AddOns.LoadAddOn("asMOD");
+    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
-    if bloaded and ASMODOBJ.load_position then
-        ASMODOBJ.load_position(main_frame, "asInformation");
-    end
+	if libasConfig then
+		libasConfig.load_position(main_frame, "asInformation", ASInformation_Positions);
+	end
+
     -- No longer registering UNIT_AURA for stat activation
     bfirst = false;
     C_Timer.NewTicker(configs.updaterate, on_update); -- This ticker calls OnUpdate, which then calls UpdateStats

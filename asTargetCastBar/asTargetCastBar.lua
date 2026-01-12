@@ -87,7 +87,6 @@ local function setup_castbar()
     castbar.button:SetPoint("RIGHT", castbar, "LEFT", -1, 0)
     castbar.button:SetWidth((configs.height + 2) * 1.2);
     castbar.button:SetHeight(configs.height + 2);
-    castbar.button:SetScale(1);
     castbar.button:SetAlpha(1);
     castbar.button:EnableMouse(false);
     castbar.button.icon:SetTexCoord(.08, .92, .16, .84);
@@ -116,21 +115,7 @@ local function setup_castbar()
     castbar.targetedinditype = 1;
     return castbar;
 end
-ns.targetcastbar = setup_castbar();
-ns.targetcastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height + 2) * 1.2) / 2, configs
-    .ypoint)
-ns.focuscastbar = setup_castbar();
-ns.focuscastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height + 2) * 1.2) / 2,
-    configs.ypoint + 150)
 
-
-
-local bloaded = C_AddOns.LoadAddOn("asMOD");
-
-if bloaded and ASMODOBJ.load_position then
-    ASMODOBJ.load_position(ns.targetcastbar, "asTargetCastBar (Target)");
-    ASMODOBJ.load_position(ns.focuscastbar, "asTargetCastBar (Focus)");
-end
 
 local function hide_castbar(castbar)
     local targetname = castbar.targetname;
@@ -337,11 +322,6 @@ local function on_unit_event(castbar, event, ...)
     check_casting(castbar, event);
 end
 
-ns.targetcastbar:SetScript("OnEvent", on_unit_event);
-register_unit(ns.targetcastbar, "target");
-ns.focuscastbar:SetScript("OnEvent", on_unit_event);
-register_unit(ns.focuscastbar, "focus");
-
 local function on_event(self, event, ...)
     if event == "PLAYER_TARGET_CHANGED" then
         ns.targetcastbar.soundalerted = nil;
@@ -352,12 +332,6 @@ local function on_event(self, event, ...)
     elseif event == "PLAYER_ENTERING_WORLD" then
         check_unit(ns.targetcastbar, "target");
         check_unit(ns.focuscastbar, "focus");
-    elseif event == "ADDON_LOADED" then
-        local name = ...;
-
-        if name == "asTargetCastBar" then
-            ns.setup_option();
-        end
     end
 end
 
@@ -402,10 +376,35 @@ local function on_update()
     update_castbar(ns.focuscastbar);
 end
 
-main_frame:SetScript("OnEvent", on_event)
-main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
-main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
-main_frame:RegisterEvent("ADDON_LOADED");
-main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+local function init()
+    ns.setup_option();
+   
 
-C_Timer.NewTicker(configs.updaterate, on_update);
+    ns.targetcastbar = setup_castbar();
+    ns.targetcastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height + 2) * 1.2) / 2, configs
+        .ypoint)
+    ns.focuscastbar = setup_castbar();
+    ns.focuscastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height + 2) * 1.2) / 2,
+        configs.ypoint + 150);
+
+    ns.targetcastbar:SetScript("OnEvent", on_unit_event);
+    register_unit(ns.targetcastbar, "target");
+    ns.focuscastbar:SetScript("OnEvent", on_unit_event);
+    register_unit(ns.focuscastbar, "focus");
+
+    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
+    if libasConfig then
+        libasConfig.load_position(ns.targetcastbar, "asTargetCastBar (Target)", ATCB_Positions_1);
+        libasConfig.load_position(ns.focuscastbar, "asTargetCastBar (Focus)", ATCB_Positions_2);
+    end
+
+    main_frame:SetScript("OnEvent", on_event)
+    main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
+    main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+
+    C_Timer.NewTicker(configs.updaterate, on_update);
+end
+
+C_Timer.After(0.5, init);

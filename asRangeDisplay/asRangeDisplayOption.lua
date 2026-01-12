@@ -33,6 +33,16 @@ function ns.setup_option()
         ARD_Options = {};
         ARD_Options = CopyTable(Options_Default);
     end
+
+    if ARD_Positions_1 == nil then
+        ARD_Positions_1 = {};
+    end
+
+    if ARD_Positions_2 == nil then
+        ARD_Positions_2 = {};
+    end
+
+
     ns.options = CopyTable(ARD_Options);
 
     for variable, _ in pairs(Options_Default) do

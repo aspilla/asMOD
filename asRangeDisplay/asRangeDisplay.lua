@@ -251,7 +251,17 @@ local function on_update()
 		y / uiScale + configs.mouseypoint);
 end
 
-local function on_load()
+
+local function on_event(self, event, ...)
+	if event == "PLAYER_TARGET_CHANGED" then
+		on_targetupdate();
+	else
+		scan_spells();
+	end
+end
+
+local function init()
+	ns.setup_option();
 	--asOverlay 위에 뜨게 하기 위해 MEDIUM으로 설정
 	main_frame:SetFrameStrata("MEDIUM");
 	main_frame:SetFrameLevel(9000);
@@ -273,11 +283,12 @@ local function on_load()
 	main_frame.focustext:SetPoint("CENTER", UIParent, "CENTER", configs.focusxpoint, configs.focusypoint);
 	main_frame.focustext:SetText("");
 	main_frame.focustext:Show();
-	local bloaded = C_AddOns.LoadAddOn("asMOD")
+	
+	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
-	if bloaded and ASMODOBJ.load_position then
-		ASMODOBJ.load_position(main_frame.targettext, "asRangeDisplay(Target)");
-		ASMODOBJ.load_position(main_frame.focustext, "asRangeDisplay(Focus)");
+	if libasConfig then
+		libasConfig.load_position(main_frame.targettext, "asRangeDisplay(Target)", ARD_Positions_1);
+		libasConfig.load_position(main_frame.focustext, "asRangeDisplay(Focus)", ARD_Positions_2);
 	end
 
 	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
@@ -286,25 +297,14 @@ local function on_load()
 	main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 	main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+
+	main_frame:SetScript("OnEvent", on_event);
+
+	C_Timer.NewTicker(configs.updaterate, on_targetupdate);
+	C_Timer.NewTicker(configs.updaterate, on_mouseupdate);
+	C_Timer.NewTicker(configs.updaterate, on_focusupdate);
+	C_Timer.NewTicker(0.05, on_update);
 end
 
-local bfirst = true;
 
-local function on_event(self, event, ...)
-	if event == "PLAYER_TARGET_CHANGED" then
-		on_targetupdate();
-	else
-		if bfirst then
-			bfirst = false;
-			ns.setup_option();
-		end
-		scan_spells();
-	end
-end
-
-main_frame:SetScript("OnEvent", on_event);
-on_load();
-C_Timer.NewTicker(configs.updaterate, on_targetupdate);
-C_Timer.NewTicker(configs.updaterate, on_mouseupdate);
-C_Timer.NewTicker(configs.updaterate, on_focusupdate);
-C_Timer.NewTicker(0.05, on_update);
+C_Timer.After(0.5, init);

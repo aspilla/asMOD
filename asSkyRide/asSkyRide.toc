@@ -5,7 +5,10 @@
 ## Notes-koKR: `하늘 비행` 자원/속도/쿨 표시.
 ## Version : 251228
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## SavedVariablesPerCharacter: ASKYR_Positions
 ## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
 asSkyRideSpell.lua
 asSkyRideSpeed.lua
 asSkyRide.lua

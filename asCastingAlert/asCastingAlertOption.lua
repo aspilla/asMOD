@@ -33,6 +33,10 @@ function ns.setup_option()
         ACTA_Options = CopyTable(Options_Default);
     end
 
+    if ACTA_Positions == nil then
+        ACTA_Positions = {};
+    end
+
     ns.options = CopyTable(ACTA_Options);
 
     for variable, _ in pairs(Options_Default) do

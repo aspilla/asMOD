@@ -5,5 +5,8 @@
 ## Notes-koKR: 기본 UI 오류 메시지 표시 위치를 이동
 ## Version : 251220
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## SavedVariablesPerCharacter: ASPF_Positions
 ## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
 asSpamFilter.xml

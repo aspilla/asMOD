@@ -107,12 +107,8 @@ local function on_update()
     show_castings();
 end
 
-local bfirst = true;
 local function on_event(self, event, unit)
-    if bfirst then
-        ns.setup_option();
-        bfirst = false;
-    end
+
     if unit and UnitCanAttack("player", unit) and UnitAffectingCombat(unit) and UnitClassification(unit) ~= "minus" and string.find(unit, "nameplate") then
         castingunits[unit] = true;
     end
@@ -160,12 +156,15 @@ local function init()
     main_frame:EnableMouse(false);
     main_frame:Show();
 
-    local bloaded = C_AddOns.LoadAddOn("asMOD");
+    ns.setup_option();
 
-    if bloaded and ASMODOBJ.load_position then
-        ASMODOBJ.load_position(main_frame, "asCastingAlert");
-    end
+    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
+	if libasConfig then
+		libasConfig.load_position(main_frame, "asCastingAlert", ACTA_Positions);
+	end
 
     C_Timer.NewTicker(configs.updaterate, on_update);
 end
-init();
+
+C_Timer.After(0.5, init);

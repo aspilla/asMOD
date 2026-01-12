@@ -37,6 +37,22 @@ function ns.setup_option()
         AUF_Options = CopyTable(Options_Default);        
     end
 
+    if AUF_Positions == nil then
+        AUF_Positions = {};
+        AUF_Positions.PlayerFrame = {};
+        AUF_Positions.TargetFrame = {};
+        AUF_Positions.FocusFrame = {};
+        AUF_Positions.PetFrame = {};
+        AUF_Positions.TargetTargetFrame = {};
+
+        AUF_Positions.BossFrames = {};
+        if (MAX_BOSS_FRAMES) then
+            for i = 1, MAX_BOSS_FRAMES do
+                AUF_Positions.BossFrames[i] = {};
+            end
+        end
+    end
+
     ns.options = CopyTable(AUF_Options);    
 
     for variable, _ in pairs(Options_Default) do

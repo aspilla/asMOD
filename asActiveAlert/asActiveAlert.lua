@@ -199,11 +199,10 @@ local function on_event(self, event, arg1)
 end
 
 
-do
+local function init ()
 	main_frame:SetPoint("CENTER", configs.xpoint, configs.ypoint);
-	main_frame:SetWidth(1);
-	main_frame:SetHeight(1);
-	main_frame:SetScale(1);
+	main_frame:SetWidth(configs.size);
+	main_frame:SetHeight(configs.size);	
 	main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
 	main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
 	main_frame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
@@ -213,9 +212,16 @@ do
 	main_frame:SetScript("OnEvent", on_event);
 	main_frame:Show();
 	main_frame.frames = {};
-	local bloaded = C_AddOns.LoadAddOn("asMOD");
 
-	if bloaded and ASMODOBJ.load_position then
-		ASMODOBJ.load_position(main_frame, "asActiveAlert");
+	if ASAA_Positions == nil then
+		ASAA_Positions = {};
 	end
+
+	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
+    if libasConfig then
+        libasConfig.load_position(main_frame, "asActiveAlert", ASAA_Positions);
+    end
 end
+
+C_Timer.After(0.5, init);

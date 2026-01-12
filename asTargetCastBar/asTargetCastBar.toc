@@ -4,9 +4,11 @@
 ## Notes:Cast bar for Target and Focus..
 ## Notes-koKR:대상/주시대상 시전 바
 ## Version : 251220
-## SavedVariablesPerCharacter: ATCB_Options 
+## SavedVariablesPerCharacter: ATCB_Options, ATCB_Positions_1, ATCB_Positions_2
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
 asTargetCastBarLib.lua
 asTargetCastBarOption.lua
 asTargetCastBar.xml

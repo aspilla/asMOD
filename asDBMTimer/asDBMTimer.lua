@@ -59,8 +59,7 @@ local function setupUI()
 		ns.asDBMTimer.buttons[i] = CreateFrame("Button", nil, ns.asDBMTimer, "asDBMTimerFrameTemplate");
 		local button = ns.asDBMTimer.buttons[i];
 		button:SetWidth(ns.options.Size);
-		button:SetHeight(ns.options.Size * 0.9);
-		button:SetScale(1);
+		button:SetHeight(ns.options.Size * 0.9);		
 		button:SetAlpha(1);
 		button:EnableMouse(false);
 		button:Hide();

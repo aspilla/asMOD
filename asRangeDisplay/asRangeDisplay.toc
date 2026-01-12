@@ -4,8 +4,10 @@
 ## Notes: Displays the distance to your Target, Focus, and Mouseover units.
 ## Notes-koKR: 대상/주시/마우스오버 거리를 표시
 ## Version : 251225
-## SavedVariablesPerCharacter: ARD_Options
+## SavedVariablesPerCharacter: ARD_Options, ARD_Positions_1, ARD_Positions_2
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
 asRangeDisplayOption.lua
 asRangeDisplay.lua

@@ -120,8 +120,7 @@ for idx = 1, AREADY_Max do
     AREADY.bar[idx].button = CreateFrame("Button", nil, AREADY.bar[idx], "AREADYFrameTemplate");
     AREADY.bar[idx].button:SetPoint("RIGHT", AREADY.bar[idx], "LEFT", -1, 0);
     AREADY.bar[idx].button:SetWidth((AREADY_HEIGHT + 1) * 1.2);
-    AREADY.bar[idx].button:SetHeight(AREADY_HEIGHT + 1);
-    AREADY.bar[idx].button:SetScale(1);
+    AREADY.bar[idx].button:SetHeight(AREADY_HEIGHT + 1);    
     AREADY.bar[idx].button:SetAlpha(1);
     AREADY.bar[idx].button:EnableMouse(false);
     AREADY.bar[idx].button.icon:SetTexCoord(.08, .92, .16, .84);
@@ -131,7 +130,7 @@ for idx = 1, AREADY_Max do
     AREADY.bar[idx]:Hide();
 
     if idx == 1 then
-        if bloaded and ASMODOBJ.load_position then
+        if bloaded and ASMODOBJ and ASMODOBJ.load_position then
             ASMODOBJ.load_position(AREADY.bar[idx], "asReady");
         end
     end

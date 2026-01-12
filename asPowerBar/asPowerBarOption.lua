@@ -35,6 +35,10 @@ function ns.setup_option()
         ASPB_Options = CopyTable(Options_Default);
     end
 
+    if ASPB_Positions == nil then
+        ASPB_Positions = {};
+    end
+
     ns.options = CopyTable(ASPB_Options);
 
     for variable, _ in pairs(Options_Default) do

@@ -284,42 +284,41 @@ end
 
 local function init()
     ns.setup_option();
-    local bloaded = C_AddOns.LoadAddOn("asMOD")
-   
+    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+       
     main_frame:SetPoint("CENTER", 0, 0)
     main_frame:SetWidth(1)
-    main_frame:SetHeight(1)
-    main_frame:SetScale(1)    
+    main_frame:SetHeight(1)    
     main_frame:Show()
 
     main_frame.target_frame = CreateFrame("Frame", nil, main_frame)
 
     main_frame.target_frame:SetPoint("CENTER", ns.configs.TARGET_DEBUFF_X, ns.configs.TARGET_DEBUFF_Y)
     main_frame.target_frame:SetWidth(1)
-    main_frame.target_frame:SetHeight(1)
-    main_frame.target_frame:SetScale(1)
+    main_frame.target_frame:SetHeight(1)    
     main_frame.target_frame:Show()
 
     create_frames(main_frame.target_frame, true, 1);
 
-    if bloaded and ASMODOBJ.load_position then
-        ASMODOBJ.load_position(main_frame.target_frame, "asDebuffFilter(Target)");
-    end
+    if libasConfig then
+		libasConfig.load_position(main_frame.target_frame, "asDebuffFilter(Target)", ADF_Positions_1);
+	end
+
+
 
     main_frame.player_frame = CreateFrame("Frame", nil, main_frame)
 
     main_frame.player_frame:SetPoint("CENTER", ns.configs.PLAYER_DEBUFF_X, ns.configs.PLAYER_DEBUFF_Y)
     main_frame.player_frame:SetWidth(1)
-    main_frame.player_frame:SetHeight(1)
-    main_frame.player_frame:SetScale(1)
+    main_frame.player_frame:SetHeight(1)    
     main_frame.player_frame:Show()
 
     create_frames(main_frame.player_frame, false, ns.options.PlayerDebuffRate);
     create_privateframes(main_frame.player_frame);
 
-    if bloaded and ASMODOBJ.load_position then
-        ASMODOBJ.load_position(main_frame.player_frame, "asDebuffFilter(Player)");
-    end
+    if libasConfig then
+		libasConfig.load_position(main_frame.player_frame, "asDebuffFilter(Player)", ADF_Positions_2);
+	end
 
     main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
     main_frame:RegisterUnitEvent("UNIT_AURA", "player");

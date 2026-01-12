@@ -114,11 +114,15 @@ local function init_addon()
         combobars[i]:EnableMouse(false);
     end
 
-    local bloaded = C_AddOns.LoadAddOn("asMOD");
-
-    if bloaded and ASMODOBJ.load_position then
-        ASMODOBJ.load_position(ns.frame, "asSkyRide");
+    if ASKYR_Positions == nil then
+        ASKYR_Positions = {};
     end
+
+    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
+	if libasConfig then
+		libasConfig.load_position(ns.frame, "asSkyRide", ASKYR_Positions);
+	end
 end
 
-init_addon();
+C_Timer.After(0.5, init_addon);

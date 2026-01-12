@@ -131,7 +131,7 @@ function ns.setup_option()
 
     local bloaded = C_AddOns.LoadAddOn("asMOD");
 
-    if bloaded and ASMODOBJ.load_position then
+    if bloaded and ASMODOBJ and ASMODOBJ.load_position then
         ASMODOBJ.load_position(asFixCombatText, "asFixCombatText");
         AFCT_OtherOptions.point, _, AFCT_OtherOptions.point2, AFCT_OtherOptions.x, AFCT_OtherOptions.y = asFixCombatText
             :GetPoint();

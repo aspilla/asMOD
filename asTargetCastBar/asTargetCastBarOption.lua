@@ -39,6 +39,15 @@ function ns.setup_option()
         ATCB_Options = {};
         ATCB_Options = CopyTable(Options_Default);
     end
+    
+    if ATCB_Positions_1 == nil then
+        ATCB_Positions_1 = {};
+    end
+
+    if ATCB_Positions_2 == nil then
+        ATCB_Positions_2 = {};
+    end
+
 
     ns.options = CopyTable(ATCB_Options);
 

@@ -7,5 +7,7 @@
 ## SavedVariablesPerCharacter: ASTM_Options, ASTM_Position
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
 asCombatTimerOption.lua
 asCombatTimer.lua

@@ -87,8 +87,6 @@ local function init()
 	}
 
 	ns.setup_option();
-	local bloaded = C_AddOns.LoadAddOn("asMOD");
-
 
 	main_button:EnableMouse(true);
 	main_button:RegisterForDrag("LeftButton");
@@ -117,7 +115,6 @@ local function init()
 	main_button:SetWidth(configs.size);
 	main_button:SetHeight(configs.size * 0.9);
 	main_button:SetAlpha(configs.alpha);
-	main_button:SetScale(1);
 
 
 	main_button:SetScript("OnDragStart", function(self)
@@ -137,14 +134,16 @@ local function init()
 
 	load_position(main_button, ASBR_Position);
 
-	if bloaded and ASMODOBJ.load_position then
-		ASMODOBJ.load_position(main_button, "asBattleRes");
+	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
+	if libasConfig then
+		libasConfig.load_position(main_button, "asBattleRes", ASBR_Position);
 	end
 
 	local spellInfo = C_Spell.GetSpellInfo(configs.spellid);
 
 	if spellInfo then
-		main_button.icon:SetTexture(spellInfo.iconID);				
+		main_button.icon:SetTexture(spellInfo.iconID);
 		C_Timer.NewTicker(0.25, on_update);
 	end
 end

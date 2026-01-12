@@ -4,9 +4,11 @@
 ## Notes: Simple unit frames
 ## Notes-koKR: 간단한 유닛 프레임
 ## Version : 251105
-## SavedVariablesPerCharacter: AUF_Options
+## SavedVariablesPerCharacter: AUF_Options, AUF_Positions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
 asUnitFrameHide.lua
 asUnitFrame.xml
 asUnitFrameLib.lua

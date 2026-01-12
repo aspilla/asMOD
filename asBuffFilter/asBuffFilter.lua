@@ -229,25 +229,23 @@ local function init()
 	ns.setup_option();
 	main_frame:SetPoint("CENTER", 0, 0)
 	main_frame:SetWidth(1)
-	main_frame:SetHeight(1)
-	main_frame:SetScale(1)
+	main_frame:SetHeight(1)	
 	main_frame:Show()
 
-
-	local bloaded = C_AddOns.LoadAddOn("asMOD")
 
 	main_frame.targetframe = CreateFrame("Frame", nil, main_frame)
 
 	main_frame.targetframe:SetPoint("CENTER", ns.configs.TARGET_BUFF_X, ns.configs.TARGET_BUFF_Y)
 	main_frame.targetframe:SetWidth(1)
-	main_frame.targetframe:SetHeight(1)
-	main_frame.targetframe:SetScale(1)
+	main_frame.targetframe:SetHeight(1)	
 	main_frame.targetframe:Show()
 
 	create_frames(main_frame.targetframe, true, false, ns.configs.TARGET_MAX_BUFF_SHOW);
 
-	if bloaded and ASMODOBJ.load_position then
-		ASMODOBJ.load_position(main_frame.targetframe, "asBuffFilter(Target)");
+	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
+	if libasConfig then
+		libasConfig.load_position(main_frame.targetframe, "asBuffFilter(Target)", ABF_Positions);
 	end
 
 	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")

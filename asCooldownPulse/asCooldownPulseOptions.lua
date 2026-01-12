@@ -29,6 +29,15 @@ function ns.setup_option()
         ACDP_Options = {};
         ACDP_Options = CopyTable(Options_Default);
     end
+
+    if ACDP_Positions_1 == nil then
+        ACDP_Positions_1 = {};
+    end
+
+    if ACDP_Positions_2 == nil then
+        ACDP_Positions_2 = {};
+    end
+
     ns.options = CopyTable(ACDP_Options);
 
     for variable, _ in pairs(Options_Default) do

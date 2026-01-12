@@ -117,8 +117,7 @@ local function init()
 		yOfs = configs.ypoint,
 	}
 
-	ns.setup_option();
-	local bloaded = C_AddOns.LoadAddOn("asMOD");
+	ns.setup_option();	
 
 	main_frame:EnableMouse(true);
 	main_frame:RegisterForDrag("LeftButton");
@@ -133,8 +132,7 @@ local function init()
 
 	main_frame:SetPoint("CENTER", configs.xpoint, configs.ypoint)
 	main_frame:SetWidth(configs.size);
-	main_frame:SetHeight(configs.size * 0.9);
-	main_frame:SetScale(1);
+	main_frame:SetHeight(configs.size * 0.9);	
 	main_frame:Show();
 
 
@@ -158,8 +156,10 @@ local function init()
 
 	load_position(main_frame, ASTM_Position);
 
-	if bloaded and ASMODOBJ.load_position then
-		ASMODOBJ.load_position(main_frame, "asCombatTimer");
+	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
+	if libasConfig then
+		libasConfig.load_position(main_frame, "asCombatTimer", ASTM_Position);
 	end
 
 	main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");

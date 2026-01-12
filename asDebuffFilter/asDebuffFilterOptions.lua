@@ -43,6 +43,14 @@ function ns.setup_option()
 		ADF_Options = CopyTable(Options_Default);
 	end
 
+	if ADF_Positions_1 == nil then
+		ADF_Positions_1 = {};
+	end
+
+	if ADF_Positions_2 == nil then
+		ADF_Positions_2 = {};
+	end
+
 	ns.options = CopyTable(ADF_Options);
 
 	for variable, _ in pairs(Options_Default) do

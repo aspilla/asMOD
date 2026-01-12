@@ -4,8 +4,10 @@
 ## Notes: Enhanced Boss Timeline
 ## Notes-koKR:보스 타임라인 강화
 ## Version : 251219
-## SavedVariablesPerCharacter: ADTI_Options, ADTI_OtherOptions
+## SavedVariablesPerCharacter: ADTI_Options, ADTI_OtherOptions, ADTI_Positions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
 asDBMTimerOption.lua
 asDBMTimer.xml

@@ -1,4 +1,4 @@
-﻿local _, ns     = ...;
+﻿local _, ns   = ...;
 local configs = {
 	xpoint = 56,
 	ypoint = -360,
@@ -84,7 +84,6 @@ for i = 0, 3 do
 
 	frame:SetWidth(configs.iconsize);
 	frame:SetHeight(configs.iconsize * 0.9);
-	frame:SetScale(1);
 	frame:SetAlpha(1);
 	frame:EnableMouse(false);
 	frame.icon:SetTexCoord(.08, .92, .08, .92);
@@ -94,7 +93,7 @@ for i = 0, 3 do
 	frame.border:Show();
 
 	frame.cooldown:SetHideCountdownNumbers(true);
-	
+
 	frame.text:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE");
 	frame.text:ClearAllPoints();
 	frame.text:SetPoint("CENTER", frame, "CENTER", 0, 0);
@@ -104,17 +103,10 @@ for i = 0, 3 do
 
 	main_frame.frames[i] = frame;
 end
-
 local castframe = main_frame.frames[0];
-
 castframe:SetWidth(configs.iconsize * 1.3);
 castframe:SetHeight(configs.iconsize * 1.3 * 0.9);
 castframe:Hide();
-
-local bloaded = C_AddOns.LoadAddOn("asMOD")
-if bloaded and ASMODOBJ.load_position then
-	ASMODOBJ.load_position(castframe, "asTrueGCD");
-end
 
 
 local prevspellid = nil;
@@ -122,7 +114,7 @@ local spellseqcount = 0;
 ns.spelllist = {};
 
 local function insert_spell(spellid, bcancel, bitem)
-	if spellid == nil then		
+	if spellid == nil then
 		return
 	end
 
@@ -174,7 +166,7 @@ local function on_update()
 				frame:Hide();
 			else
 				frame.icon:SetTexture(spell[1]);
-				frame.spellid = spell[5];				
+				frame.spellid = spell[5];
 
 				if spell[3] then
 					frame.text:SetText("X");
@@ -317,14 +309,28 @@ local function on_event(self, event, arg1, arg2, arg3)
 	return;
 end
 
-C_Timer.NewTicker(0.25, on_update);
-main_frame:SetScript("OnEvent", on_event)
+local function init()
+	if ATGCD_Positions == nil then
+		ATGCD_Positions = {};
+	end
 
-main_frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
-main_frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player");
-main_frame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player");
-main_frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player");
-main_frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player");
-main_frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player");
-main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-main_frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
+	if libasConfig then
+		libasConfig.load_position(castframe, "asTrueGCD", ATGCD_Positions);
+	end
+
+	C_Timer.NewTicker(0.25, on_update);
+	main_frame:SetScript("OnEvent", on_event)
+
+	main_frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
+	main_frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player");
+	main_frame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player");
+	main_frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player");
+	main_frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player");
+	main_frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player");
+	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+	main_frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+end
+
+C_Timer.After(0.5, init);

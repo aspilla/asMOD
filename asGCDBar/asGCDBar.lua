@@ -4,66 +4,80 @@
 	xpoint = 0,
 	ypoint = -219,
 	combatalpha = 1,
-    normalalpha = 0.5,
+	normalalpha = 0.5,
 };
 
 local main_frame = CreateFrame("FRAME", nil, UIParent)
-main_frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
-main_frame:SetWidth(0)
-main_frame:SetHeight(0)
-main_frame:Show();
-
-main_frame.gcdbar = CreateFrame("StatusBar", nil, main_frame)
-main_frame.gcdbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-main_frame.gcdbar:GetStatusBarTexture():SetHorizTile(false)
-main_frame.gcdbar:SetMinMaxValues(0, 100)
-main_frame.gcdbar:SetValue(0)
-main_frame.gcdbar:SetHeight(configs.height)
-main_frame.gcdbar:SetWidth(configs.width)
-main_frame.gcdbar:SetStatusBarColor(1, 0.9, 0.9);
-
-main_frame.gcdbar.bg = main_frame.gcdbar:CreateTexture(nil, "BACKGROUND")
-main_frame.gcdbar.bg:SetPoint("TOPLEFT", main_frame.gcdbar, "TOPLEFT", -1, 1)
-main_frame.gcdbar.bg:SetPoint("BOTTOMRIGHT", main_frame.gcdbar, "BOTTOMRIGHT", 1, -1)
-
-main_frame.gcdbar.bg:SetTexture("Interface\\Addons\\asGCDBar\\border.tga")
-main_frame.gcdbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-main_frame.gcdbar.bg:SetVertexColor(0, 0, 0, 1);
-
-main_frame.gcdbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
-main_frame.gcdbar:Show();
-
-local bloaded = C_AddOns.LoadAddOn("asMOD");
-
-if bloaded and ASMODOBJ.load_position then
-	ASMODOBJ.load_position(main_frame.gcdbar, "asGCDBar");
-end
 
 local function on_update()
 	local durationinfo = C_Spell.GetSpellCooldownDuration(61304);
 	main_frame.gcdbar:SetTimerDuration(durationinfo, Enum.StatusBarInterpolation.ExponentialEaseOut);
 end
 
-C_Timer.NewTicker(0.1, on_update);
-
 local function on_event(self, event)
-    if event == "PLAYER_REGEN_DISABLED" then
-        main_frame:SetAlpha(configs.combatalpha);
-    elseif event == "PLAYER_REGEN_ENABLED" then
-        main_frame:SetAlpha(configs.normalalpha);
-    elseif event == "PLAYER_ENTERING_WORLD" then
-        if UnitAffectingCombat("player") then
+	if event == "PLAYER_REGEN_DISABLED" then
+		main_frame:SetAlpha(configs.combatalpha);
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		main_frame:SetAlpha(configs.normalalpha);
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		if UnitAffectingCombat("player") then
 			main_frame:SetAlpha(configs.combatalpha);
 		else
 			main_frame:SetAlpha(configs.normalalpha);
 		end
-    end
+	end
 end
 
-main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
-main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
-main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
-main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-main_frame:SetScript("OnEvent", on_event);
+local function init()
+	main_frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
+	main_frame:SetWidth(0)
+	main_frame:SetHeight(0)
+	main_frame:Show();
+
+	main_frame.gcdbar = CreateFrame("StatusBar", nil, main_frame)
+	main_frame.gcdbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+	main_frame.gcdbar:GetStatusBarTexture():SetHorizTile(false)
+	main_frame.gcdbar:SetMinMaxValues(0, 100)
+	main_frame.gcdbar:SetValue(0)
+	main_frame.gcdbar:SetHeight(configs.height)
+	main_frame.gcdbar:SetWidth(configs.width)
+	main_frame.gcdbar:SetStatusBarColor(1, 0.9, 0.9);
+
+	main_frame.gcdbar.bg = main_frame.gcdbar:CreateTexture(nil, "BACKGROUND")
+	main_frame.gcdbar.bg:SetPoint("TOPLEFT", main_frame.gcdbar, "TOPLEFT", -1, 1)
+	main_frame.gcdbar.bg:SetPoint("BOTTOMRIGHT", main_frame.gcdbar, "BOTTOMRIGHT", 1, -1)
+
+	main_frame.gcdbar.bg:SetTexture("Interface\\Addons\\asGCDBar\\border.tga")
+	main_frame.gcdbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+	main_frame.gcdbar.bg:SetVertexColor(0, 0, 0, 1);
+
+	main_frame.gcdbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
+	main_frame.gcdbar:Show();
+
+	if AGCDB_Positions == nil then
+		AGCDB_Positions = {};
+	end
+
+	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
+	if libasConfig then
+		libasConfig.load_position(main_frame.gcdbar, "asGCDBar", AGCDB_Positions);
+	end
+
+	main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+	main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+	main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+	main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+	main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+	main_frame:SetScript("OnEvent", on_event);
+	C_Timer.NewTicker(0.1, on_update);
+
+	if UnitAffectingCombat("player") then
+		main_frame:SetAlpha(configs.combatalpha);
+	else
+		main_frame:SetAlpha(configs.normalalpha);
+	end
+end
+
+C_Timer.After(0.5, init);

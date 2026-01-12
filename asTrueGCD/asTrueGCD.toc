@@ -5,5 +5,8 @@
 ## Notes-koKR:최근 주문/아이템 기록 표시
 ## Version : 251220
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## SavedVariablesPerCharacter: ATGCD_Positions
 ## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
 asTrueGCD.xml

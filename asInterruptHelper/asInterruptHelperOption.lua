@@ -96,6 +96,15 @@ function ns.setup_option()
         AIH_Options = {};
         AIH_Options = CopyTable(Options_Default);
     end
+
+    if AIH_Positions_1 == nil then
+        AIH_Positions_1 = {};
+    end
+
+    if AIH_Positions_2 == nil then
+        AIH_Positions_2 = {};
+    end
+
     ns.options = CopyTable(AIH_Options);
 
     for variable, _ in pairs(Options_Default) do

@@ -44,8 +44,7 @@ for i = 1, 10 do
 
     local button = CreateFrame("Button", nil, ast_frame, "asSUMMONTTemplate");
     button:SetWidth(28);
-    button:SetHeight(28 * 0.8);
-    button:SetScale(1);
+    button:SetHeight(28 * 0.8);    
     button:SetAlpha(1);
     button:EnableMouse(false);
     button.icon:SetTexCoord(.08, .92, .16, .84);
@@ -95,7 +94,7 @@ end
 
 local bloaded = C_AddOns.LoadAddOn("asMOD");
 
-if bloaded and ASMODOBJ.load_position then
+if bloaded and ASMODOBJ and ASMODOBJ.load_position then
     ASMODOBJ.load_position(ast_frame, "asSummonTracker");
 end
 local playerGUID = UnitGUID("player");

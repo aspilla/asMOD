@@ -5,8 +5,10 @@
 ## Notes-koKR:대상된 시전 주문 알림
 ## Version : 260111
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
-## SavedVariablesPerCharacter: ACTA_Options 
+## SavedVariablesPerCharacter: ACTA_Options, ACTA_Positions
 ## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
 asCastingAlertOption.lua
 asCastingAlert.xml
 asCastingAlert.lua

@@ -3,11 +3,20 @@ local ASF_Y = 160;
 
 asUIErrorsFrame:SetPoint("BOTTOM", ASF_X, ASF_Y);
 
+local function init_position()
+	if ASPF_Positions == nil then
+		ASPF_Positions = {};
+	end
 
-local bloaded = C_AddOns.LoadAddOn("asMOD");
-if bloaded and ASMODOBJ.load_position then
-	ASMODOBJ.load_position(asUIErrorsFrame, "asSpamFilter");
+	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
+	if libasConfig then
+		libasConfig.load_position(asUIErrorsFrame, "asSpamFilter", ASPF_Positions);
+	end
 end
+
+C_Timer.After(0.5, init_position);
+
 local originalOnEvent = UIErrorsFrame:GetScript("OnEvent")
 
 local flashingFontStrings = {};

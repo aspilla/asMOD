@@ -244,19 +244,23 @@ local function on_event(self, event)
         bfirst = false;
         ns.setup_option();
 
+        local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
         if ns.options.ShowTarget then
             main_frame.targetframe = create_button("target");
             main_frame.targetframe:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint);
-            if bloaded and ASMODOBJ.load_position then
-                ASMODOBJ.load_position(main_frame.targetframe, "asInterruptHelper (Target)");
+           
+            if libasConfig then
+                libasConfig.load_position(main_frame.targetframe, "asInterruptHelper (Target)", AIH_Positions_1);
             end
         end
 
         if ns.options.ShowFocus then
             main_frame.focusframe = create_button("focus");
             main_frame.focusframe:SetPoint("CENTER", UIParent, "CENTER", configs.focusxpoint, configs.focusypoint);
-            if bloaded and ASMODOBJ.load_position then
-                ASMODOBJ.load_position(main_frame.focusframe, "asInterruptHelper (Focus)");
+
+            if libasConfig then
+                libasConfig.load_position(main_frame.focusframe, "asInterruptHelper (Focus)", AIH_Positions_2);
             end
         end
 
