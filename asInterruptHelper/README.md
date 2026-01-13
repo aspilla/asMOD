@@ -28,7 +28,8 @@ You can modify the following settings via `ESC` > `Options` > `Addons` > `asInte
 * `ShowTarget`: Toggle display for Target's interrupt/stun.
 * `ShowFocus`: Toggle display for Focus unit's interrupt/stun.
 * `ShowMouseOver`: Toggle display for Mouseover unit's interrupt/stun.
-* If you are using **asMOD**, use the `/asConfig` command to adjust the display positions for Target and Focus frames.
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ---
 
@@ -62,5 +63,5 @@ You can modify the following settings via `ESC` > `Options` > `Addons` > `asInte
 *   `ShowTarget`: 대상 차단 스킬 표시 여부
 *   `ShowFocus` : 주시 대상의 차단 스킬 표시 여부
 *   `ShowMouseOver` : 마우스 오버 대상의 차단 스킬 표시 여부
-
-`asMOD` 사용시 `/asConfig` 명령어로 대상/주시와의 거리 표시 위치 변경 가능
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

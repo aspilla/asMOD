@@ -24,7 +24,8 @@ You can modify the following settings via `ESC` > `Options` > `Addons` > `asRang
 * `ShowTarget`: Toggle distance display for Target (Default: true)
 * `ShowFocus`: Toggle distance display for Focus (Default: true)
 * `ShowMouseOver`: Toggle distance display for Mouseover (Default: true)
-If you are using **asMOD**, use the `/asConfig` command to unlock and move the display positions for Target and Focus frames.
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ---
 
@@ -51,5 +52,5 @@ If you are using **asMOD**, use the `/asConfig` command to unlock and move the d
 *   `ShowTarget`: 대상과의 거리 표시 여부 (기본값: true)
 *   `ShowFocus` : 주시 대상과의 거리 표시 여부 (기본값: true)
 *   `ShowMouseOver` : 마우스 오버 대상과의 거리 표시 여부 (기본값: true)
-
-`asMOD` 사용시 `/asConfig` 명령어로 대상/주시와의 거리 표시 위치 변경 가능
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

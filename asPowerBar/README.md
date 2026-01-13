@@ -29,8 +29,8 @@ Displays Primary and Class Resources.
 * `ShowClassResource`: Toggle the display of class-specific resources (Default: On).
 * `CombatAlphaChange` : Change alpha when outofcombat (Default: On).
 
-* **Repositioning**:
-    * If the `asMOD` addon is installed, you can adjust the position using the `/asConfig` command.
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ---
 # asPowerBar (한밤)
@@ -65,5 +65,5 @@ Displays Primary and Class Resources.
 *   `ShowClassResource`: 직업 전문화 특성 표시 여부 (Default On)
 *   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
 
-*  **위치 이동**:
-    *   `asMOD` 애드온이 설치되어 있는 경우, `asMOD`의 `/asConfig` 명령어를 통해 설정 가능
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

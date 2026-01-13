@@ -17,8 +17,8 @@ Displays records of recent spells/items usages.
     * Displays a counter on the icon when the same spell or item is used multiple times in a row.
 
 ## Configuration
-
-If **asMOD** is installed, you can unlock and move the frame's position using the following slash command: `/asConfig`
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ---
 
@@ -39,4 +39,5 @@ If **asMOD** is installed, you can unlock and move the frame's position using th
 
 
 ## 설정
-`asMOD`가 설치된 경우, `/asConfig` 명령어로 위치 이동이 가능.
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

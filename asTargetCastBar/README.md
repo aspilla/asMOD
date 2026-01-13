@@ -23,7 +23,8 @@ Cast bar for Target and Focus targets.
 * `FocusCastScale`: Adjust the size scale of the Focus target cast bar (Default: 1.2).
 * `PlaySoundKick`: Voice alert when an interrupt (Kick) is needed (Default: On).
 * `PlaySoundStun`: Voice alert when a stun is needed (Default: Off).
-* If the `asMOD` addon is installed, you can save the position of the bars using the `/asconfig` command.
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ---
 
@@ -52,4 +53,5 @@ Cast bar for Target and Focus targets.
 *   `FocusCastScale`: 주시 대상 시전 바 크기 배율 (기본 1.2)
 *   `PlaySoundKick` : 차단 필요시 음성 알림 (기본 On)
 *   `PlaySoundStun` : 스턴 필요시 음성 알림 (기본 Off)
-*   `asMOD` 애드온이 설치된 경우, `/asconfig` 명령어로 위치를 저장할 수 있습니다.
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

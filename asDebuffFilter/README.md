@@ -11,7 +11,8 @@ Displays debuffs for the Player (up to 6 on the left) and the Target (up to 6 on
 ## Configuration 
 * `PlayerDebuffRate`: Set the size scale of player debuffs (Default: 1.3x).
 * `CombatAlphaChange`: Change transparency when out of combat (Default: On).
-* **Repositioning:** If the `asMOD` addon is installed, you can adjust the position using the `/asConfig` command.
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
     
 ---
 
@@ -28,4 +29,5 @@ Displays debuffs for the Player (up to 6 on the left) and the Target (up to 6 on
 ## 설정 
 *   `PlayerDebuffRate` : 플레이어 디버프 크기 설정 (Default 1.3배)
 *   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
-* **위치 이동 :** asMOD 애드온 사용시 `/asConfig` 명령어로 이동 가능
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

@@ -17,8 +17,8 @@ Displays cooldowns for Trinkets, Racials, Healthstones, and Potions.
 * Settings can be adjusted via `ESC` > `Options` > `Addons` > `asCooldownPulse`.
 * `CombatAlphaChange`: Changes transparency when out of combat (Default: On).
 
-* **Positioning**
-    * If the `asMOD` addon is installed, you can reposition the elements by using the `/asConfig` command.
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ---
 
@@ -41,5 +41,5 @@ Displays cooldowns for Trinkets, Racials, Healthstones, and Potions.
 *   `ESC` > `설정` > `애드온` > `asCooldownPulse` 에서 설정 가능
 *   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
 
-*  **위치 이동**
-    *   `asMOD` 애드온이 설치되어 있는 경우, `asMOD`의 `/asConfig` 명령어를 통해 설정 가능
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

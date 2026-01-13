@@ -18,8 +18,8 @@ Displays `Skyriding` resources/speed/cooldowns.
 ## Configuration
 No separate configuration.
 
-*  **Positioning**:
-    *   If `asMOD` addon is installed, it can be configured via `/asConfig` command.
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ---
 
@@ -43,5 +43,5 @@ No separate configuration.
 ## 설정 (Configuration)
 별도의 설정은 없음
 
-*  **위치 이동**:
-    *   `asMOD` 애드온이 설치되어 있는 경우, `asMOD`의 `/asConfig` 명령어를 통해 설정 가능
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

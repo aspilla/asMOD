@@ -24,7 +24,8 @@ Displays primary/secondary stats increase.
 * **Show Versatility**: Toggles the display of Versatility percentage.
 * **Show Main Stat**: Toggles the display of the player's primary stat (Strength, Agility, or Intelligence).
 * **Haste Threshold (Slider)**: Sets the Haste value (0-300%) at which the Haste text will be highlighted.
-
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 ---
 
 # asInformation (한밤)
@@ -52,3 +53,6 @@ Displays primary/secondary stats increase.
 *   **유연 표시**: 유연성 백분율 표시를 토글합니다.
 *   **주요 스탯 표시**: 플레이어의 주요 스탯(힘, 민첩 또는 지능) 표시를 토글합니다.
 *   **가속 임계값 (슬라이더)**: 가속 텍스트가 강조 표시될 가속 값(0-300%)을 설정합니다.
+
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

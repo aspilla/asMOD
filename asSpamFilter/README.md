@@ -9,8 +9,8 @@ Relocates the default UI Error Message display.
     * Allows you to move the display position of default game error messages (e.g., "Out of range," "Not enough energy").
 
 ## Configuration
-
-If you are using **asMOD**, you can unlock and move the error message display position using the following slash command: `/asConfig`
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ---
 
@@ -24,5 +24,5 @@ If you are using **asMOD**, you can unlock and move the error message display po
 *   **오류 프레임 위치 이동**: 기본 UI 오류 메시지 표시 위치를 이동
 
 ## 설정
-
-`asMOD` 사용시 `/asConfig` 명령어로 대상/주시와의 거리 표시 위치 변경 가능
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

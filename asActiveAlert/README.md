@@ -1,22 +1,19 @@
 # asActiveAlert (Midnight)
 
-Displays highlighted spells on the left side of the character.
+
 
 ![asActiveAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asActiveAlert.jpg?raw=true)
 
 ## Key Features
 
-* **Spell Activation Alert**:
-    * When a spell becomes available or is highlighted due to specific procs (when the in-game icon border shows a glowing effect), the icon of that spell is displayed on the left side of the character.
-    * The spell list is not editable.
-    * Displays cooldown progress.
+* **Spell Activation Alerts**:
+    * When a spell becomes available or is highlighted by a specific effect (the glowing border effect in the default UI), the spell icon is displayed to the left of the character.
+    * The list of spells cannot be edited manually.
+    * Displays cooldown progress on the icons.
 
 ## Configuration
-
-No separate configuration options.
-
-* **Repositioning**:
-    * If the `asMOD` addon is installed, you can adjust the position using the `/asConfig` command.
+* **Positioning**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore the default position.
 
 ---
 
@@ -34,8 +31,5 @@ No separate configuration options.
     *   재사용 대기시간 표시  
 
 ## 설정
-
-별도의 설정은 없음
-
-*  **위치 이동**:
-    *   `asMOD` 애드온이 설치되어 있는 경우, `asMOD`의 `/asConfig` 명령어를 통해 설정 가능
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

@@ -28,11 +28,19 @@ local function init_player()
     stunSpells = {};
 
     for id, cooldown in pairs(ns.InterruptSpells) do
-        if C_SpellBook.IsSpellKnown(id) then
-            id = C_Spell.GetOverrideSpell(id);
+        if C_SpellBook.IsSpellKnown(id) then            
+            id = C_Spell.GetOverrideSpell(id);            
             table.insert(interruptSpells, { spellid = id, cooldown = cooldown })
+        end        
+    end
+
+    if C_SpellBook.IsSpellKnown(119898) then  --warlock
+        local id = C_Spell.GetOverrideSpell(119898);
+        if ns.InterruptSpells[id] then
+            table.insert(interruptSpells, { spellid = id, cooldown = ns.InterruptSpells[id] })
         end
     end
+
     table.sort(interruptSpells, compare);
 
     for id, cooldown in pairs(ns.StunSpells) do
@@ -237,50 +245,46 @@ local function create_button(unit)
     return frame;
 end
 
-local bfirst = true
-
 local function on_event(self, event)
-    if bfirst then
-        bfirst = false;
-        ns.setup_option();
-
-        local libasConfig = LibStub:GetLibrary("LibasConfig", true);
-
-        if ns.options.ShowTarget then
-            main_frame.targetframe = create_button("target");
-            main_frame.targetframe:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint);
-           
-            if libasConfig then
-                libasConfig.load_position(main_frame.targetframe, "asInterruptHelper (Target)", AIH_Positions_1);
-            end
-        end
-
-        if ns.options.ShowFocus then
-            main_frame.focusframe = create_button("focus");
-            main_frame.focusframe:SetPoint("CENTER", UIParent, "CENTER", configs.focusxpoint, configs.focusypoint);
-
-            if libasConfig then
-                libasConfig.load_position(main_frame.focusframe, "asInterruptHelper (Focus)", AIH_Positions_2);
-            end
-        end
-
-
-        if ns.options.ShowMouseOver then
-            main_frame.mouseframe = create_button("mouseover");
-            C_Timer.NewTicker(0.05, on_mouseupdate);
-        end
-    end
-
     init_player();
 end
 
 local function init()
+    ns.setup_option();
+
+    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
+    if ns.options.ShowTarget then
+        main_frame.targetframe = create_button("target");
+        main_frame.targetframe:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint);
+
+        if libasConfig then
+            libasConfig.load_position(main_frame.targetframe, "asInterruptHelper (Target)", AIH_Positions_1);
+        end
+    end
+
+    if ns.options.ShowFocus then
+        main_frame.focusframe = create_button("focus");
+        main_frame.focusframe:SetPoint("CENTER", UIParent, "CENTER", configs.focusxpoint, configs.focusypoint);
+
+        if libasConfig then
+            libasConfig.load_position(main_frame.focusframe, "asInterruptHelper (Focus)", AIH_Positions_2);
+        end
+    end
+
+
+    if ns.options.ShowMouseOver then
+        main_frame.mouseframe = create_button("mouseover");
+        C_Timer.NewTicker(0.05, on_mouseupdate);
+    end
     main_frame:SetScript("OnEvent", on_event)
     main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
     main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED")
     main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")
     main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
     main_frame:RegisterUnitEvent("UNIT_PET", "player")
+
+    init_player();
 end
 
-init();
+C_Timer.After(0.5, init);

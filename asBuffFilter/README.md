@@ -1,20 +1,22 @@
 # asBuffFilter (Midnight)
 
-Displays the target's buffs.
+Displays target buffs.
 
-![asBuffFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asBuffFilter.JPG?raw=true)
+![asBuffFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asBuffFilter.JPG?raw=true)   
 
-### Main Features
+### Key Features
 
-Displays the target's buffs on the right side of the screen (up to 7 in combat, 21 out of combat).
-*   **Friendly (Out of Combat)**: Displays all buffs (up to 21).
-*   **Friendly (In Combat)**: Displays buffs cast by you.
-*   **Enemy (Combat/Out of Combat)**: Displays all buffs.
-*   **Purgeable Buffs**: Displays a white border when a buff can be dispelled or stolen (e.g., Spellsteal).
+Displays target buffs on the right side (Up to 7 during combat, up to 21 out of combat).
+* Friendly (Out of Combat): Displays all buffs up to 21.
+* Friendly (In Combat): Displays only buffs cast by you.
+* Enemy (In/Out of Combat): Displays all buffs.
+* Purgeable Buffs: Displays a white border when a buff can be dispelled or stolen.
 
-### Settings
-* `CombatAlphaChange`: Change transparency when out of combat (Default: On).
-* **Repositioning:** If the `asMOD` addon is installed, you can adjust the position using the `/asConfig` command.
+### Configuration
+
+* `CombatAlphaChange`: Changes transparency when out of combat (Default: On).
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ---
 
@@ -35,4 +37,5 @@ Displays the target's buffs on the right side of the screen (up to 7 in combat, 
 ### 설정
 
 *   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
-* **위치 이동 :** asMOD 애드온 사용시 `/asConfig` 명령어로 이동 가능
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

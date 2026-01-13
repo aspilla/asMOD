@@ -19,6 +19,9 @@ Displays the elapsed time after combat starts.
 4.  **ShowWhenCombat**:
     *   Determines to show only combat. (Default: Checked)
 
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
+
 ---
 
 # asCombatTimer (한밤)
@@ -41,3 +44,6 @@ Displays the elapsed time after combat starts.
     *   폰트 종류를 결정 합니다. (기본값 : STANDARD_TEXT_FONT)
 4.  **ShowWhenCombat**:
     *   전투 중 표시 (비전투시 숨김). (기본값 : 설정 )
+
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

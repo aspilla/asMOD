@@ -4,7 +4,8 @@ Simple status bar to visualize the player's Global Cooldown (GCD)
 ![asGCDBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asGCDBar.jpg?raw=true)
 
 ## Configuration
-If `asMOD` is installed, the position of the bar can be more easily adjusted and saved using `asMOD`'s `/asConfig` command or similar interface.
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ---
 
@@ -14,4 +15,5 @@ If `asMOD` is installed, the position of the bar can be more easily adjusted and
 ![asGCDBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asGCDBar.jpg?raw=true)
 
 ## 설정
-`asMOD`가 설치된 경우, `asMOD`의 `/asConfig` 명령 또는 유사한 인터페이스를 사용하여 바의 위치 지정 가능
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

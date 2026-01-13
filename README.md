@@ -6,83 +6,93 @@ asMOD is a collection of custom-made World of Warcraft addons.
 
 ## Features of asMOD
 
-* **Simple:** Each addon provides simple functions to enhance the default UI and operates independently.
-* **Optimized Performance:** Optimized to not impact game performance, allowing for smooth gameplay without lag or frame drops.
+* **Simple:** Each addon functions independently and focuses on enhancing the default UI with lightweight features.
+* **Optimized Performance:** Optimized to minimize impact on game performance, ensuring smooth gameplay without lag or frame drops.
 * **Easy Installation:** Can be installed with a single click.
-* **Support for All Classes and Specializations**
-* **Retail (Midnight) Support**
+* **All Classes & Specs:** Supports every class and specialization.
+* **Retail (Midnight) Support:** Fully compatible with the latest expansion.
 
-## Changes Starting from Midnight
-* **Combat API Secret Transition:** Due to the transition to a "Secret" Combat API, tracking for buffs/debuffs and other calculations has been restricted. Consequently, many asMOD combat-related addons have been modified or had features reduced.
+## Changes in Midnight
+* **Combat API Secret Transition:** Tracking for buffs/debuffs and additional calculations has been restricted. Consequently, many asMOD combat-related addons have been modified or had features reduced.
 * **Blizzard Announcement:** https://warcraft.wiki.gg/wiki/Patch_12.0.0/Planned_API_changes
+* **Enhanced Standalone Use:** The `/asconfig` and `/asclear` commands for repositioning can now be used even if you only install individual addons without the main `asMOD` package.
 
-## Important Notes (Regarding asUnitFrame)
+## Unsupported Addons (from Midnight)
+* asAutoMarker: Unsupported due to inability to track mob GUIDs.
+* asBooldlustAlert: Unsupported due to debuff tracking restrictions.
+* asDBMCastingAlert: Unsupported due to the removal of DBM integration.
+* asDotSnapshot: Unsupported due to debuff tracking restrictions.
+* asFixCombatText: Unsupported as combat text values are now secret.
+* asHealerChatAlert: Unsupported as mana values are now secret.
+* asReady: Unsupported due to restrictions on tracking skill usage.
+* asSummonTracker: Unsupported due to restrictions on tracking skill usage.
 
-The following errors may occur:
+## Important Note (Regarding asUnitFrame)
 
-1. **Edit Mode Error:** Errors may occur when using Edit Mode, making it impossible to change settings. Please perform Edit Mode adjustments while asUnitFrame is disabled.
+The following issue may occur:
 
-## Installation Method (CurseForge)
+1. **Edit Mode Error:** Errors may occur when using Edit Mode, preventing settings from being saved. Please disable asUnitFrame before making changes in Edit Mode.
+
+## Installation (CurseForge)
 1. Search for `asMOD_Kr` on CurseForge and install the addons.
-2. When using the `asMOD` addon, a window will appear stating: `asMOD will change the 'Default Interface Settings'. You can reload the features using the '/asMOD' command in the chat.` Click `Change`.
-3. Adjust `ESC >> Options >> Gameplay >> Advanced Cooldown Settings`.
+2. When the asMOD popup appears stating "asMOD will change the default interface settings," click **Change**.
+3. Adjust `ESC > Options > Gameplay > Advanced Cooldown Settings`.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/-7xsxpKTS7U?si=Rj7atkBM71u8X6mM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Installation Method (Inven)
+## Installation (Inven)
 
-1. The Inven version includes Korean fonts, so the installation method differs. Please refer to the video below.
+1. The Inven version includes Korean fonts and has a different installation process. Please refer to the video below:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/6F7Amrvdda8?si=rKcZRo5ctJHyI0Zq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-2. Adjust `ESC >> Options >> Gameplay >> Advanced Cooldown Settings`.
-3. After installation, updates are possible via CurseForge.
+2. Adjust `ESC > Options > Gameplay > Advanced Cooldown Settings`.
+3. After installation, updates can be managed via CurseForge.
 
-## How to Set Position
-1. Adjust positions using the `/asconfig` command.
+## Positioning Guide
+1. Use the `/asconfig` command to adjust frame positions.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/sqFLkn9vQ_8?si=ZqZ5d-RYENt5tnhQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-2. When using `Edit Mode`, disable asUnitFrame before proceeding.
-
+2. Disable `asUnitFrame` before using `Edit Mode`.
 
 ## asMOD Addon List (Midnight)
 
 | Addon | Description | Link |
-| --------------------- |------------------------------------------------------------------- |------- |
-| asActiveAlert | Displays highlighted spells on the left side of the character | [Link](https://www.curseforge.com/wow/addons/asactivealert) |
-| asBattleRes | Displays Combat Resurrection charges and cooldown | [Link](https://www.curseforge.com/wow/addons/asbattleres) |
-| asBuffFilter | Displays target's buffs | [Link](https://www.curseforge.com/wow/addons/asbufffilter) |
-| asCastBar | Displays icon and cast time on the cast bar | [Link](https://www.curseforge.com/wow/addons/ascastbar) |
-| asCastingAlert             |Targeted Spell Cast Alert|<a href="https://www.curseforge.com/wow/addons/ascastingalert" target="_blank" rel="nofollow">Link</a> |
-| asCombatInfo | Enhances Cooldown Manager | [Link](https://www.curseforge.com/wow/addons/ascombatinfo) |
-| asCombatTimer | Displays elapsed time since the start of combat | [Link](https://www.curseforge.com/wow/addons/ascombattimer) |
-| asCooldownPulse | Displays cooldowns for trinkets, racial traits, healthstones, and potions | [Link](https://www.curseforge.com/wow/addons/ascooldownpulse) |
-| asCompactRaidBuff | Enhances Raid and Party Frames | [Link](https://www.curseforge.com/wow/addons/ascompactraidbuff) |
-| asCPUProfile | Check addon latency performance (/asCPU) | [Link](https://www.curseforge.com/wow/addons/ascpuprofile) |
-| asDBMTimer | Enhances Boss Timeline | [Link](https://www.curseforge.com/wow/addons/asdbmtimer) |
+| :--- | :--- | :--- |
+| asActiveAlert | Displays highlighted spells to the left of the character | [Link](https://www.curseforge.com/wow/addons/asactivealert) |
+| asBattleRes | Displays Battle Resurrection charges and cooldown | [Link](https://www.curseforge.com/wow/addons/asbattleres) |
+| asBuffFilter | Displays target buffs | [Link](https://www.curseforge.com/wow/addons/asbufffilter) |
+| asCastBar | Shows icons and cast time on the cast bar | [Link](https://www.curseforge.com/wow/addons/ascastbar) |
+| asCastingAlert | Target spell cast notifications | [Link](https://www.curseforge.com/wow/addons/ascastingalert) |
+| asCombatInfo | Enhances the Cooldown Manager | [Link](https://www.curseforge.com/wow/addons/ascombatinfo) |
+| asCombatTimer | Displays time elapsed since combat started | [Link](https://www.curseforge.com/wow/addons/ascombattimer) |
+| asCooldownPulse | Shows cooldowns for trinkets, racials, healthstones, and potions | [Link](https://www.curseforge.com/wow/addons/ascooldownpulse) |
+| asCompactRaidBuff | Enhancements for Raid and Party frames | [Link](https://www.curseforge.com/wow/addons/ascompactraidbuff) |
+| asCPUProfile | Monitor addon latency performance (/asCPU) | [Link](https://www.curseforge.com/wow/addons/ascpuprofile) |
+| asDBMTimer | Enhances the Boss Timeline | [Link](https://www.curseforge.com/wow/addons/asdbmtimer) |
 | asDebuffFilter | Displays player and target debuffs | [Link](https://www.curseforge.com/wow/addons/asdebufffilter) |
-| asDotFilter | Tracks debuffs on Boss and Focus frames | [Link](https://www.curseforge.com/wow/addons/asdotfilter) |
-| asFixChat | `Tab` to switch chat channels; supports `URL Copy` | [Link](https://www.curseforge.com/wow/addons/asfixchat) |
-| asFixHotkey | Abbreviates hotkey text on action bars | [Link](https://www.curseforge.com/wow/addons/asfixhotkey) |
-| asFixUnitFrame | Hides certain default Blizzard unit frame features | [Link](https://www.curseforge.com/wow/addons/asfixunitframe) |
-| asGCDBar | Global Cooldown (GCD) display bar | [Link](https://www.curseforge.com/wow/addons/asgcdbar) |
-| asGearScoreLite | Displays item level in Character and Inspect windows | [Link](https://www.curseforge.com/wow/addons/asgearscorelite) |
+| asDotFilter | Tracks Boss/Focus debuffs | [Link](https://www.curseforge.com/wow/addons/asdotfilter) |
+| asFixChat | Supports `Tab` channel switching and `Copy URL` | [Link](https://www.curseforge.com/wow/addons/asfixchat) |
+| asFixHotkey | Abbreviates action bar hotkey text | [Link](https://www.curseforge.com/wow/addons/asfixhotkey) |
+| asFixUnitFrame | Hides specific default Blizzard unit frame elements | [Link](https://www.curseforge.com/wow/addons/asfixunitframe) |
+| asGCDBar | Global Cooldown (GCD) progress bar | [Link](https://www.curseforge.com/wow/addons/asgcdbar) |
+| asGearScoreLite | Shows item levels in Character and Inspect windows | [Link](https://www.curseforge.com/wow/addons/asgearscorelite) |
 | asHealthText | Text-based HUD | [Link](https://www.curseforge.com/wow/addons/ashealthtext) |
 | asHideActionBar | Automatically hides Action Bar 1 | [Link](https://www.curseforge.com/wow/addons/ashideactionbar) |
-| asHideBagsBar | Automatically hides the bottom-right menu | [Link](https://www.curseforge.com/wow/addons/ashidebagsbar) |
-| asHideNameplates | Hides nameplates of mobs except those currently casting | [Link](https://www.curseforge.com/wow/addons/ashidenameplates) |
-| asInformation | Displays primary/secondary stat increases | [Link](https://www.curseforge.com/wow/addons/asinformation) |
-| asInterruptHelper | Displays interrupt/stun skill cooldowns | [Link](https://www.curseforge.com/wow/addons/asinterrupthelper) |
+| asHideBagsBar | Automatically hides the bottom-right menu/bags bar | [Link](https://www.curseforge.com/wow/addons/ashidebagsbar) |
+| asHideNameplates | Hides nameplates except for casting mobs | [Link](https://www.curseforge.com/wow/addons/ashidenameplates) |
+| asInformation | Displays primary and secondary stat gains | [Link](https://www.curseforge.com/wow/addons/asinformation) |
+| asInterruptHelper | Displays cooldowns for interrupt and stun skills | [Link](https://www.curseforge.com/wow/addons/asinterrupthelper) |
 | asMisdirection | Automatic macro for Misdirection and Tricks of the Trade | [Link](https://www.curseforge.com/wow/addons/asmisdirection) |
-| asMOD | Configuration for the asMOD collection | [Link](https://www.curseforge.com/wow/addons/asmod) |
+| asMOD | Settings suite for the asMOD collection | [Link](https://www.curseforge.com/wow/addons/asmod) |
 | asNamePlates | Nameplate enhancement addon | [Link](https://www.curseforge.com/wow/addons/asnameplates) |
-| asPowerBar | Displays primary and class resources | [Link](https://www.curseforge.com/wow/addons/aspowerbar) |
-| asPremadeGroupsFilter | Enhancements for Mythic+ and Raid Finder windows | [Link](https://www.curseforge.com/wow/addons/aspremadegroupsfilter) |
-| asRangeDisplay | Displays distance to Target, Focus, or Mouseover | [Link](https://www.curseforge.com/wow/addons/asrangedisplay) |
+| asPowerBar | Displays Primary and Class resources | [Link](https://www.curseforge.com/wow/addons/aspowerbar) |
+| asPremadeGroupsFilter | Enhances Premade Group Finder (Dungeons/Raids) | [Link](https://www.curseforge.com/wow/addons/aspremadegroupsfilter) |
+| asRangeDisplay | Displays distance to Target/Focus/Mouseover | [Link](https://www.curseforge.com/wow/addons/asrangedisplay) |
 | asScavenger | Automatically sells junk items | [Link](https://github.com/aspilla/asMOD/blob/main/asScavenger/README.md) |
-| asSkyRide | Displays Skyriding resources, speed, and cooldowns | [Link](https://www.curseforge.com/wow/addons/asskyride) |
-| asSpamFilter | Relocates default UI error message display | [Link](https://www.curseforge.com/wow/addons/asspamfilter) |
-| asTargetCastBar | Cast bar for Target and Focus targets | [Link](https://www.curseforge.com/wow/addons/astargetcastingbar) |
+| asSkyRide | Displays `Skyriding` resources, speed, and cooldowns | [Link](https://www.curseforge.com/wow/addons/asskyride) |
+| asSpamFilter | Moves the display location of default UI error messages | [Link](https://www.curseforge.com/wow/addons/asspamfilter) |
+| asTargetCastBar | Cast bars for Target and Focus | [Link](https://www.curseforge.com/wow/addons/astargetcastingbar) |
 | asTrueGCD | Displays history of recently used spells and items | [Link](https://www.curseforge.com/wow/addons/astruegcd) |
 | asUnitFrame | Simple unit frames | [Link](https://www.curseforge.com/wow/addons/asunitframe) |
 
@@ -106,6 +116,18 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 ## 한밤 부터 변경이 되는 것
 *   **전투 API Secret 전환**으로 버프/디버프 등 추적이 막힘, 다른 정보도 추가 연산이 막혀 전투 애드온인 asMOD도 많은 애드온이 수정되고 기능이 축소 되었음.
 *   **블리자드 공지** https://warcraft.wiki.gg/wiki/Patch_12.0.0/Planned_API_changes
+*   위치 이동을 위한 `/asconfig`, `/asclear` 명령어를 `asMOD`를 굳이 설치 안하고 개별 애드온을 사용하는 경우에도 사용할 수 있어, 개별 애드온 사용 편의성을 강화
+
+## 한밤 부터 미지원 애드온
+*   asAutoMarker : 몹 GUID 파악이 불가하여 미지원
+*   asBooldlustAlert : 디버프 추적 불가로 미지원
+*   asDBMCastingAlert : DBM 삭제로 미지원
+*   asDotSnapshot : 디버프 추적 불가로 미지원
+*   asFixCombatText : 비밀 값으로 변경되어 미지원
+*   asHealerChatAlert : 마나 남은 값이 비밀 값으로 미지원
+*   asReady : 스킬 사용 여부 파악이 막혀 미지원
+*   asSummonTracker : 시킬 사용 여부 파악이 막혀 미지원
+
 
 ## 주의사항 (asUnitFrame 관련)
 

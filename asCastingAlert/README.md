@@ -16,7 +16,8 @@ Targeted Spell Cast Alert
 
 The following options are available via `ESC` > `Options` > `Addons` > `asCastingAlert`:
 * `ShowTarget` (Default: true): Toggle whether to display the current target's casting progress.
-* **Positioning**: If using the `asMOD` addon, you can move the alert frame using the `/asConfig` command.
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ---
 
@@ -39,4 +40,5 @@ The following options are available via `ESC` > `Options` > `Addons` > `asCastin
 
 esc >> 설정 >> 애드온 >> asCastingAlert 에서 다음 설정이 가능합니다.
 *   `ShowTarget` (기본값: true) : 대상의 시전을 표시할지 여부
-* **위치 이동 :** asMOD 애드온 사용시 `/asConfig` 명령어로 이동 가능
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

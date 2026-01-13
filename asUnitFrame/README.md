@@ -65,12 +65,10 @@ This addon replaces the default unit frames. It is highly recommended to use it 
 
 ## Configuration
 
-1. **Positioning:**
-    * **Requires the `asMOD` addon to be installed.**
-    * Use the `/asconfig` command in-game to move frames.
-    * Frame resizing is not supported.
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
     
-2. **Settings (ESC > Options > Addons > asUnitFrame):**
+* **Settings (ESC > Options > Addons > asUnitFrame):**
     * `ShowPortrait`: Toggle unit portraits.
     * `ShowTotemBar`: Toggle totem bar below the player frame.
     * `ShowBossBuff`: Toggle display of 4 buffs on boss frames.
@@ -152,12 +150,10 @@ The following issues may occur:
 
 ## 설정
 
-1.  **위치 지정:**
-    *   **`asMOD` 애드온이 설치되어 있어야 합니다.**
-    *   게임 내에서 `/asconfig` 명령어를 입력하여 이동 가능
-    *   크기 조정 불가
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
     
-2.  **esc >> 설정 >> 애드온 >> asUnitFrame 설정 (기본 On)**
+*   **esc >> 설정 >> 애드온 >> asUnitFrame 설정 (기본 On)**
     *   `ShowPortrait` : 초상화 표시 여부
     *   `ShowTotemBar` : 플레이어 프레임 하단에 토템바 표시 여부
     *   `ShowBossBuff` : 보스 프레임에 버프 4개 표시 여부 

@@ -20,6 +20,9 @@ Settings can be modified at:
 * `ShowName`: Toggle whether to display the skill name.
 * `LockPosition`: Uncheck to move the frame; note that `/asconfig` settings take priority.
 
+* **Move Position**: Enter the `/asConfig` command in the chat.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
+
 ---
 # asDBMTimer (한밤)
 
@@ -43,3 +46,6 @@ Settings can be modified at:
 * `Size` 아이콘 크기 (기본 50)
 * `ShowName`: 스킬명 표시 여부.
 * `LockPosition` 채크하고 이동 가능, `/asconfig` 이 더 우선순위 높음
+
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

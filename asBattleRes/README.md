@@ -1,28 +1,29 @@
 # asBattleRes (Midnight)
 
-Displays Combat Resurrection charges and cooldown.
+Displays Battle Resurrection charges and cooldown.
 
 ![asBattleRes](https://github.com/aspilla/asMOD/blob/main/.Pictures/asbattleres.jpg?raw=true)
 
 ## Key Features
 
-* **Combat Resurrection Tracking**: Displays the combat resurrection icon, the current number of available charges, and the remaining time if the spell is on cooldown.
-* **Contextual Auto Show/Hide**:
+* **Battle Resurrection Tracking**: Displays the battle resurrection icon, the number of available charges, and the remaining cooldown time.
+* **Automatic Visibility**:
     * Always displayed when in a party or raid.
-    * Displayed even when not in a group if the frame is unlocked for positioning.
+    * Displayed when the frame is unlocked (for positioning), even if not in a group.
     * Automatically hidden when not in a group and the frame is locked.
 
 ## How to Use
 
 1. **Configuration**:
-    * Settings can be adjusted via `ESC` > `Options` > `Addons` > `asBattleRes`.
+    * Adjust settings via `ESC` > `Options` > `Addons` > `asBattleRes`.
 2. **Repositioning**:
-    * Ensure the 'LockWindow' option is unchecked in the settings menu (Default: Checked).
-    * Left-click and drag the frame to move it to your desired location.
-    * Releasing the mouse button will automatically save the position.
-    * If the `asMOD` addon is installed, you can also reposition the frame using the `/asconfig` command.
+    * Ensure the 'LockWindow' option in the settings menu is unchecked (Default: Checked).
+    * Left-click and drag the frame to the desired location.
+    * The position is automatically saved when the mouse button is released.
 3. **Locking the Frame**:
     * Check the 'LockWindow' option in the settings menu.
+* **Move Position**: Enter `/asConfig` in the chat.
+* **Reset Position**: Enter `/asClear` in the chat to restore default settings.
 
 ---
 
@@ -47,7 +48,8 @@ Displays Combat Resurrection charges and cooldown.
 2.  **프레임 위치 변경**:
     *   설정 메뉴에서 'LockWindow' 옵션이 체크 해제되어 있는지 확인합니다. (기본값: 체크)
     *   프레임을 마우스 왼쪽 버튼으로 클릭한 상태로 드래그하여 원하는 위치로 이동
-    *   마우스 버튼에서 손을 떼면 해당 위치가 자동으로 저장됨
-    *   `asMOD` 애드온이 설치되어 있는 경우, `/asconfig` 명령을 통해 위치 이동 가능
+    *   마우스 버튼에서 손을 떼면 해당 위치가 자동으로 저장됨    
 3.  **프레임 위치 고정**:
     *   설정 메뉴에서 'LockWindow' 옵션을 체크.
+*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
