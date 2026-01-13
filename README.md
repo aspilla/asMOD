@@ -15,6 +15,7 @@ asMOD is a collection of custom-made World of Warcraft addons.
 ## Changes in Midnight
 * **Combat API Secret Transition:** Tracking for buffs/debuffs and additional calculations has been restricted. Consequently, many asMOD combat-related addons have been modified or had features reduced.
 * **Blizzard Announcement:** https://warcraft.wiki.gg/wiki/Patch_12.0.0/Planned_API_changes
+* DBM/Details features have been integrated into the default WoW UI; asMOD has been updated to utilize the default UI as well.
 * **Enhanced Standalone Use:** The `/asconfig` and `/asclear` commands for repositioning can now be used even if you only install individual addons without the main `asMOD` package.
 
 ## Unsupported Addons (from Midnight)
@@ -116,6 +117,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 ## 한밤 부터 변경이 되는 것
 *   **전투 API Secret 전환**으로 버프/디버프 등 추적이 막힘, 다른 정보도 추가 연산이 막혀 전투 애드온인 asMOD도 많은 애드온이 수정되고 기능이 축소 되었음.
 *   **블리자드 공지** https://warcraft.wiki.gg/wiki/Patch_12.0.0/Planned_API_changes
+*   DBM/Details 기능이 와우 기본 UI로 흡수 되었음, asMOD도 와우 기본 UI를 사용하도록 변경
 *   위치 이동을 위한 `/asconfig`, `/asclear` 명령어를 `asMOD`를 굳이 설치 안하고 개별 애드온을 사용하는 경우에도 사용할 수 있어, 개별 애드온 사용 편의성을 강화
 
 ## 한밤 부터 미지원 애드온
