@@ -260,7 +260,7 @@ local function on_event(self, event)
             end
         end
     else
-        if C_SpellBook.IsSpellKnown(386689) then
+        if C_SpellBook.IsSpellKnown(386689, 0) then
             ns.isdemonstone = true;
         else
             ns.isdemonstone = false;
@@ -278,18 +278,18 @@ end
 
 local function init()
     ns.setup_option();
-    main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
-    main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-    main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-    main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
-    main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
-    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-
-    main_frame:SetScript("OnEvent", on_event)
-    main_frame:Show();
-
     create_buttons();
     C_Timer.NewTicker(0.2, on_update);
 end
+
+main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+
+main_frame:SetScript("OnEvent", on_event);
+main_frame:Show();
 
 C_Timer.After(0.5, init);
