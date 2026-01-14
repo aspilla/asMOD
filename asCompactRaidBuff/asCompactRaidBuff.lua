@@ -89,9 +89,11 @@ function ns.setup_frame(asframe)
         end
 
         asframe.ispowerupdate = false;
+        asframe.ishealer = false
         if ishealer then
             if ns.options.BottomHealerManaBar then
                 asframe.ispowerupdate = true;
+                asframe.ishealer = true;
             end
         elseif istanker then
             if ns.options.BottomTankPowerBar and powertype > 0 then

@@ -10,7 +10,7 @@ Cast bar for Target and Focus targets.
 * **Spell Information**: Displays the spell icon, spell name, and cast time (`Current/Total`).
 * **Target of Target**: Shows the name of the player being targeted by the spell in their respective class color.
 * **Raid Markers**: Displays the raid marker of the casting unit.
-* **Voice Alerts**: Provides voice notifications when an interrupt or stun is required.
+* **Voice Alerts**: Provides voice notifications when an interrupt or stun is required. (Enemy Target Only)
 * **Interruptibility Color Coding**:
     * The cast bar color changes based on whether the spell can be interrupted and who it is targeting.
     * **Uninterruptible**: Gray
@@ -40,7 +40,7 @@ Cast bar for Target and Focus targets.
 *   **주문 정보**: 주문 아이콘, 주문 이름, 시전 시간 (`현재/전체`)을 표시.
 *   **대상의 대상**: 주문 대상 플레이어의 이름을 직업 색상 표시.
 *   **징표**: 케스팅 몹의 징표 표시
-*   **음성 알림**: 차단 필요/스턴 필요시 음성 알림 
+*   **음성 알림**: 차단 필요/스턴 필요시 음성 알림 (적대적 대상만) 
 *   **차단 가능 여부 색상 구분**
     *   주문의 차단 가능 여부와 자신을 대상으로 하는지에 따라 시전 바의 색상이 변경.
     *   **차단 불가능**: 회색

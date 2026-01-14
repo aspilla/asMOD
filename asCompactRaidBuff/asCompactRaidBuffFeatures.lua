@@ -26,9 +26,15 @@ local function update_power(asframe)
 		return;
 	end
 
+	local powertype = nil;
+
+	if asframe.ishealer then
+		powertype = 0;
+	end
+
 	local unit = asframe.unit;
-	local power = UnitPower(unit);
-	local maxPower = UnitPowerMax(unit);
+	local power = UnitPower(unit, powertype);
+	local maxPower = UnitPowerMax(unit, powertype);
 	asframe.powerbar:SetMinMaxValues(0, maxPower);
 	asframe.powerbar:SetValue(power);
 end

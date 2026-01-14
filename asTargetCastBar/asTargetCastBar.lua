@@ -237,7 +237,7 @@ local function check_casting(castbar, event)
             end
 
 
-            if name and castbar.soundalerted == false then
+            if name and castbar.soundalerted == false and UnitCanAttack("player", unit) then
                 local isfocus = UnitIsUnit(unit, "focus");
                 local soundfile = nil;
 
