@@ -84,7 +84,7 @@ Note: Midnight addons are not yet registered on CurseForge. Please refer to GitH
 | asHealthText | Text-based HUD | [Link](https://www.curseforge.com/wow/addons/ashealthtext) | [Link](https://github.com/aspilla/asMOD/tree/main/asHealthText) |
 | asHideActionBar | Automatically hides Action Bar 1 | [Link](https://www.curseforge.com/wow/addons/ashideactionbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideActionBar) |
 | asHideBagsBar | Automatically hides the bottom-right menu/bags bar | [Link](https://www.curseforge.com/wow/addons/ashidebagsbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideBagsBar) |
-| asHideNameplates | Hides nameplates except for casting mobs | [Link](https://www.curseforge.com/wow/addons/ashidenameplates) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideNameplates) |
+| asHideNamePlates | Hides nameplates except for casting mobs | [Link](https://www.curseforge.com/wow/addons/ashidenameplates) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideNamePlates) |
 | asInformation | Displays primary and secondary stat gains | [Link](https://www.curseforge.com/wow/addons/asinformation) | [Link](https://github.com/aspilla/asMOD/tree/main/asInformation) |
 | asInterruptHelper | Displays cooldowns for interrupt and stun skills | [Link](https://www.curseforge.com/wow/addons/asinterrupthelper) | [Link](https://github.com/aspilla/asMOD/tree/main/asInterruptHelper) |
 | asMisdirection | Automatic macro for Misdirection and Tricks of the Trade | [Link](https://www.curseforge.com/wow/addons/asmisdirection) | [Link](https://github.com/aspilla/asMOD/tree/main/asMisdirection) |
@@ -192,7 +192,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 | asHealthText | 텍스트 기반 HUD | [링크](https://www.curseforge.com/wow/addons/ashealthtext) | [링크](https://github.com/aspilla/asMOD/tree/main/asHealthText) |
 | asHideActionBar | 1번 액션 바를 자동 숨김 | [링크](https://www.curseforge.com/wow/addons/ashideactionbar) | [링크](https://github.com/aspilla/asMOD/tree/main/asHideActionBar) |
 | asHideBagsBar | 우측 하단의 메뉴 자동 숨김 | [링크](https://www.curseforge.com/wow/addons/ashidebagsbar) | [링크](https://github.com/aspilla/asMOD/tree/main/asHideBagsBar) |
-| asHideNameplates | 케스팅중인 몹 외 이름표를 숨김 | [링크](https://www.curseforge.com/wow/addons/ashidenameplates) | [링크](https://github.com/aspilla/asMOD/tree/main/asHideNameplates) |
+| asHideNamePlates | 케스팅중인 몹 외 이름표를 숨김 | [링크](https://www.curseforge.com/wow/addons/ashidenameplates) | [링크](https://github.com/aspilla/asMOD/tree/main/asHideNamePlates) |
 | asInformation | 1차/2차 능력치 증가량 표시 | [링크](https://www.curseforge.com/wow/addons/asinformation) | [링크](https://github.com/aspilla/asMOD/tree/main/asInformation) |
 | asInterruptHelper | 차단/스턴 스킬 쿨다운 표시 | [링크](https://www.curseforge.com/wow/addons/asinterrupthelper) | [링크](https://github.com/aspilla/asMOD/tree/main/asInterruptHelper) |
 | asMisdirection | 눈속임, 속임수 거래 자동 매크로 | [링크](https://www.curseforge.com/wow/addons/asmisdirection) | [링크](https://github.com/aspilla/asMOD/tree/main/asMisdirection) |
