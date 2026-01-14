@@ -7,16 +7,17 @@ local Options_Default = {
 };
 
 ns.configs = {
-	SIZE = 28,
-	TARGET_DEBUFF_X = 75 + 30 + 20,
-	TARGET_DEBUFF_Y = -160,
-	PLAYER_DEBUFF_X = -75 - 30 - 20,
-	PLAYER_DEBUFF_Y = -130,
-	MAX_DEBUFF_SHOW = 7,
-	CooldownFontSize = 12, -- Cooldown Font Size
-	CountFontSize = 13, -- Count Font Size
-	AlphaCombat = 1,   -- 전투중 Alpha 값
-	AlphaNormal = 0.5, -- 비 전투중 Alpha 값
+	size = 28,
+	sizerate = 0.8,
+	target_xpoint = 125,
+	target_ypoint = -150,
+	player_xpoint = -125,
+	player_ypoint = -115,
+	max_debuffs = 7,
+	cool_fontsize = 12, -- Cooldown Font Size
+	count_fontsize = 13, -- Count Font Size
+	combat_alpha = 1,   -- 전투중 Alpha 값
+	normal_alpha = 0.5, -- 비 전투중 Alpha 값
 };
 
 ns.options = CopyTable(Options_Default);

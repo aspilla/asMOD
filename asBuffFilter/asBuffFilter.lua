@@ -58,11 +58,11 @@ local filters = {
 }
 
 local function update_auras(unit)
-	local maxscancount = ns.configs.MAX_BUFF_SHOW;
+	local maxscancount = ns.configs.combat_max_buffs;
 	local filter = filters.default;
 
 	if not UnitAffectingCombat("player") then
-		maxscancount = ns.configs.TARGET_MAX_BUFF_SHOW;
+		maxscancount = ns.configs.nocombat_max_buffs;
 		filter = filters.helpful;
 	end
 
@@ -92,10 +92,10 @@ end
 local function resize_frames()
 	local parent = main_frame.targetframe;
 	local max = #(parent.frames);
-	local size = ns.configs.SIZE;
+	local size = ns.configs.size;
 
 	if not UnitAffectingCombat("player") then
-		size = ns.configs.SIZE_NOCOMBAT;
+		size = ns.configs.nocombat_size;
 	end
 
 	for i = 1, max do
@@ -104,11 +104,20 @@ local function resize_frames()
 		if (frame) then
 			-- Resize
 			frame:SetWidth(size);
-			frame:SetHeight(size * 0.8);
+			frame:SetHeight(size * ns.configs.sizerate);
 		end
 	end
 end
 
+local function set_combatalpha()
+	if ns.options.CombatAlphaChange then
+		if UnitAffectingCombat("player") then
+			main_frame:SetAlpha(ns.configs.combat_alpha);
+		else
+			main_frame:SetAlpha(ns.configs.normal_alpha);
+		end
+	end
+end
 
 local function on_event(self, event, arg1, ...)
 	if (event == "PLAYER_TARGET_CHANGED") then
@@ -118,63 +127,41 @@ local function on_event(self, event, arg1, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		resize_frames();
 		update_auras("target");
-		if ns.options.CombatAlphaChange then
-			if UnitAffectingCombat("player") then
-				main_frame:SetAlpha(ns.configs.AlphaCombat);
-			else
-				main_frame:SetAlpha(ns.configs.AlphaNormal);
-			end
-		end
+		set_combatalpha();
 	elseif event == "PLAYER_REGEN_DISABLED" then
-		if ns.options.CombatAlphaChange then
-			main_frame:SetAlpha(ns.configs.AlphaCombat);
-		end
+		set_combatalpha();
 		resize_frames();
 		update_auras("target");
 	elseif event == "PLAYER_REGEN_ENABLED" then
-		if ns.options.CombatAlphaChange then
-			main_frame:SetAlpha(ns.configs.AlphaNormal);
-		end
+		set_combatalpha();
 		resize_frames();
 		update_auras("target");
 	end
 end
 
-local function update_anchor(frames, index, offsetX, right, center, parent)
+local function update_anchor(frames, index, offsetX, right, parent)
 	local buff = frames[index];
 	buff:ClearAllPoints();
 
-	if center then
-		if (index == 1) then
-			buff:SetPoint("TOP", parent, "CENTER", 0, 0);
-		elseif (index == 2) then
-			buff:SetPoint("RIGHT", frames[index - 1], "LEFT", -offsetX, 0);
-		elseif (math.fmod(index, 2) == 1) then
-			buff:SetPoint("LEFT", frames[index - 2], "RIGHT", offsetX, 0);
-		else
-			buff:SetPoint("RIGHT", frames[index - 2], "LEFT", -offsetX, 0);
-		end
+	local point1 = "LEFT";
+	local point2 = "LEFT";
+	local point3 = "RIGHT";
+
+	if (right == false) then
+		point1 = "RIGHT";
+		point2 = "RIGHT";
+		point3 = "LEFT";
+		offsetX = -offsetX;
+	end
+
+	if (index == 1) then
+		buff:SetPoint(point1, parent, point2, 0, 0);
 	else
-		local point1 = "TOPLEFT";
-		local point2 = "CENTER";
-		local point3 = "TOPRIGHT";
-
-		if (right == false) then
-			point1 = "TOPRIGHT";
-			point2 = "CENTER";
-			point3 = "TOPLEFT";
-			offsetX = -offsetX;
-		end
-
-		if (index == 1) then
-			buff:SetPoint(point1, parent, point2, 0, 0);
-		else
-			buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
-		end
+		buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
 	end
 end
 
-local function create_frames(parent, bright, bcenter, max)
+local function create_frames(parent, bright, max)
 	if parent.frames == nil then
 		parent.frames = {};
 	end
@@ -186,7 +173,7 @@ local function create_frames(parent, bright, bcenter, max)
 
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
-				r:SetFont(STANDARD_TEXT_FONT, ns.configs.CooldownFontSize, "OUTLINE");
+				r:SetFont(STANDARD_TEXT_FONT, ns.configs.cool_fontsize, "OUTLINE");
 				r:ClearAllPoints();
 				r:SetPoint("TOP", 0, 5);
 				r:SetDrawLayer("OVERLAY");
@@ -194,7 +181,7 @@ local function create_frames(parent, bright, bcenter, max)
 			end
 		end
 
-		frame.count:SetFont(STANDARD_TEXT_FONT, ns.configs.CountFontSize, "OUTLINE")
+		frame.count:SetFont(STANDARD_TEXT_FONT, ns.configs.count_fontsize, "OUTLINE")
 		frame.count:ClearAllPoints()
 		frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
 		frame.count:SetTextColor(0, 1, 0);
@@ -208,10 +195,10 @@ local function create_frames(parent, bright, bcenter, max)
 		frame.stealable:SetAlpha(0);
 		frame.stealable:Show();
 
-		update_anchor(parent.frames, idx, 1, bright, bcenter, parent);
+		update_anchor(parent.frames, idx, 1, bright, parent);
 
-		frame:SetWidth(ns.configs.SIZE);
-		frame:SetHeight(ns.configs.SIZE * 0.8);
+		frame:SetWidth(ns.configs.size);
+		frame:SetHeight(ns.configs.size * ns.configs.sizerate);
 
 		frame:EnableMouse(false);
 		frame:Hide();
@@ -229,18 +216,18 @@ local function init()
 	ns.setup_option();
 	main_frame:SetPoint("CENTER", 0, 0)
 	main_frame:SetWidth(1)
-	main_frame:SetHeight(1)	
+	main_frame:SetHeight(1)
 	main_frame:Show()
 
 
 	main_frame.targetframe = CreateFrame("Frame", nil, main_frame)
 
-	main_frame.targetframe:SetPoint("CENTER", ns.configs.TARGET_BUFF_X, ns.configs.TARGET_BUFF_Y)
+	main_frame.targetframe:SetPoint("CENTER", ns.configs.target_xpoint, ns.configs.target_ypoint)
 	main_frame.targetframe:SetWidth(1)
-	main_frame.targetframe:SetHeight(1)	
+	main_frame.targetframe:SetHeight(1)
 	main_frame.targetframe:Show()
 
-	create_frames(main_frame.targetframe, true, false, ns.configs.TARGET_MAX_BUFF_SHOW);
+	create_frames(main_frame.targetframe, true, ns.configs.nocombat_max_buffs);
 
 	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
@@ -257,6 +244,7 @@ local function init()
 	--주기적으로 Callback
 	C_Timer.NewTicker(0.2, on_update);
 	update_auras("target");
+	set_combatalpha();
 end
 
 C_Timer.After(1, init);

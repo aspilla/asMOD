@@ -4,7 +4,7 @@ local configs = {
 	xpoint = 350,
 	ypoint = -400,
 	alpha = 1,
-	cooldownfontsize = 12,
+	cool_fontsize = 12,
 	spellid = 20484,
 }
 
@@ -97,7 +97,7 @@ local function init()
 
 	for _, r in next, { main_button.cooldown:GetRegions() } do
 		if r:GetObjectType() == "FontString" then
-			r:SetFont(STANDARD_TEXT_FONT, configs.cooldownfontsize, "OUTLINE");
+			r:SetFont(STANDARD_TEXT_FONT, configs.cool_fontsize, "OUTLINE");
 			r:SetDrawLayer("OVERLAY");
 			break
 		end
@@ -107,7 +107,7 @@ local function init()
 	main_button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 	main_button.border:SetVertexColor(0, 0, 0);
 
-	main_button.count:SetFont(STANDARD_TEXT_FONT, configs.cooldownfontsize, "OUTLINE")
+	main_button.count:SetFont(STANDARD_TEXT_FONT, configs.cool_fontsize, "OUTLINE")
 	main_button.count:ClearAllPoints();
 	main_button.count:SetPoint("BOTTOMRIGHT", main_button, "BOTTOMRIGHT", -3, 3);
 

@@ -74,7 +74,7 @@ local function update_anchor(frames, index, size, offsetX, right, parent)
 	end
 
 	if (index == 1) then
-		frame:SetPoint(point1, parent, point2, 0, 0);
+		frame:SetPoint("CENTER", parent, "CENTER", 0, 0);
 	else
 		frame:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
 	end
@@ -199,29 +199,28 @@ local function on_event(self, event, arg1)
 end
 
 
-local function init ()
-	main_frame:SetPoint("CENTER", configs.xpoint, configs.ypoint);
-	main_frame:SetWidth(configs.size);
-	main_frame:SetHeight(configs.size);	
-	main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
-	main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
-	main_frame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-	main_frame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-	main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-	main_frame:SetScript("OnEvent", on_event);
-	main_frame:Show();
-	main_frame.frames = {};
-
+local function init()
 	if ASAA_Positions == nil then
 		ASAA_Positions = {};
 	end
 
 	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
-    if libasConfig then
-        libasConfig.load_position(main_frame, "asActiveAlert", ASAA_Positions);
-    end
+	if libasConfig then
+		libasConfig.load_position(main_frame, "asActiveAlert", ASAA_Positions);
+	end
 end
+
+main_frame:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint);
+main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
+main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
+main_frame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+main_frame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+main_frame:SetScript("OnEvent", on_event);
+main_frame:SetSize(1, 1);
+main_frame:Show();
+main_frame.frames = {};
 
 C_Timer.After(0.5, init);

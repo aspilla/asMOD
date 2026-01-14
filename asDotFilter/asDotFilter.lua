@@ -2,10 +2,11 @@
 
 local configs = {
     size = 30,
+    sizerate = 0.8,
     maxshow = 2,
     alpha = 0.9,
-    cooldownfontsize = 12,
-    countfontsize = 13,
+    cool_fontsize = 12,
+    count_fontsize = 13,
 
     --설정 표시할 Unit
     unitlist = {
@@ -85,7 +86,7 @@ local function update_anchor(frames, index, size, offsetX, right, parent, isboss
 
     -- Resize
     buff:SetWidth(size);
-    buff:SetHeight(size * 0.8);
+    buff:SetHeight(size * configs.sizerate);
 end
 
 
@@ -148,7 +149,7 @@ local function update_debuffs(unit)
                 frame.cooldown:SetDrawSwipe(true);
                 for _, r in next, { frame.cooldown:GetRegions() } do
                     if r:GetObjectType() == "FontString" then
-                        r:SetFont(STANDARD_TEXT_FONT, configs.cooldownfontsize, "OUTLINE");
+                        r:SetFont(STANDARD_TEXT_FONT, configs.cool_fontsize, "OUTLINE");
                         r:ClearAllPoints();
                         r:SetPoint("TOP", 0, 5);
                         r:SetDrawLayer("OVERLAY");
@@ -161,12 +162,12 @@ local function update_debuffs(unit)
                 frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
                 frame.border:SetAlpha(configs.alpha);
 
-                frame.count:SetFont(STANDARD_TEXT_FONT, configs.countfontsize, "OUTLINE");
+                frame.count:SetFont(STANDARD_TEXT_FONT, configs.count_fontsize, "OUTLINE");
                 frame.count:ClearAllPoints();
                 frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
 		        frame.count:SetTextColor(0, 1, 0);
 
-                frame.snapshot:SetFont(STANDARD_TEXT_FONT, configs.countfontsize - 1, "OUTLINE")
+                frame.snapshot:SetFont(STANDARD_TEXT_FONT, configs.count_fontsize - 1, "OUTLINE")
                 frame.snapshot:ClearAllPoints();
                 frame.snapshot:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
                 frame:ClearAllPoints();

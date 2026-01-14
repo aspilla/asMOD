@@ -28,13 +28,13 @@ local function init_player()
     stunSpells = {};
 
     for id, cooldown in pairs(ns.InterruptSpells) do
-        if C_SpellBook.IsSpellKnown(id) then            
-            id = C_Spell.GetOverrideSpell(id);            
+        if C_SpellBook.IsSpellKnown(id) then
+            id = C_Spell.GetOverrideSpell(id);
             table.insert(interruptSpells, { spellid = id, cooldown = cooldown })
-        end        
+        end
     end
 
-    if C_SpellBook.IsSpellKnown(119898) then  --warlock
+    if C_SpellBook.IsSpellKnown(119898) then --warlock
         local id = C_Spell.GetOverrideSpell(119898);
         if ns.InterruptSpells[id] then
             table.insert(interruptSpells, { spellid = id, cooldown = ns.InterruptSpells[id] })
@@ -277,14 +277,13 @@ local function init()
         main_frame.mouseframe = create_button("mouseover");
         C_Timer.NewTicker(0.05, on_mouseupdate);
     end
-    main_frame:SetScript("OnEvent", on_event)
-    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-    main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED")
-    main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")
-    main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-    main_frame:RegisterUnitEvent("UNIT_PET", "player")
-
-    init_player();
 end
 
 C_Timer.After(0.5, init);
+
+main_frame:SetScript("OnEvent", on_event)
+main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED")
+main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")
+main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+main_frame:RegisterUnitEvent("UNIT_PET", "player")

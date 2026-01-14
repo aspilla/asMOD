@@ -10,6 +10,7 @@ local configs = {
     powerheight = 5,
     buffcount = 4,
     buffsize = 25,
+    buffsizerate = 0.8,
     font = STANDARD_TEXT_FONT,
     framelevel = 900,
 };
@@ -35,7 +36,7 @@ local function update_debuffanchor(frames, index, offsetX, right, parent, width)
     end
 
     buff:SetWidth(width - offsetX);
-    buff:SetHeight(width * 0.8);
+    buff:SetHeight(width * configs.buffsizerate);
 end
 
 local function createdebuffframes(parent, bright, fontsize, width, count)
@@ -89,7 +90,7 @@ local function update_buffanchor(frames, index, offsetX, right, parent, width)
     end
 
     buff:SetWidth(width - offsetX);
-    buff:SetHeight(width * 0.8);
+    buff:SetHeight(width * configs.buffsizerate);
 end
 
 local function create_buffframes(parent, bright, fontsize, width, count)
@@ -144,9 +145,9 @@ local function update_totemanchor(frames, index, offsetX, right, parent, width)
 
     -- Resize
     button:SetWidth(width);
-    button:SetHeight(width * 0.8);
+    button:SetHeight(width * configs.buffsizerate);
     button.Icon:SetWidth(width);
-    button.Icon:SetHeight(width * 0.8);
+    button.Icon:SetHeight(width * configs.buffsizerate);
 end
 
 local function create_totemframes(parent, bright, fontsize, width, count)

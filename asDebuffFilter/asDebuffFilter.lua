@@ -62,14 +62,14 @@ local function create_privateframes(parent)
     end
 
 
-    local size = ns.configs.SIZE + 5;
+    local size = ns.configs.size + 5;
 
     size = size * ns.options.PlayerDebuffRate;
 
     for idx = 1, 2 do
         parent.PrivateAuraAnchors[idx] = CreateFrame("Frame", nil, parent, "asDebuffPrivateAuraAnchorTemplate");
         parent.PrivateAuraAnchors[idx].auraIndex = idx;
-        parent.PrivateAuraAnchors[idx]:SetSize(size, size * 0.8);
+        parent.PrivateAuraAnchors[idx]:SetSize(size, size * ns.configs.sizerate);
         parent.PrivateAuraAnchors[idx]:SetUnit("player");
 
         if idx == 2 then
@@ -87,13 +87,11 @@ filters["player"] = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
 
 local activeDebuffs = {};
 
-local function set_debuff(frame, unit, aura, color, size)
-    frame.icon:SetTexture(aura.icon);       
+local function set_debuff(frame, unit, aura, color)
+    frame.icon:SetTexture(aura.icon);
     frame.count:SetText(C_UnitAuras.GetAuraApplicationDisplayCount(unit, aura.auraInstanceID, 1, 100));
     set_cooldownframe(frame.cooldown, aura.expirationTime, aura.duration, true);
     frame.border:SetVertexColor(color.r, color.g, color.b);
-    frame:SetWidth(size);
-    frame:SetHeight(size * 0.8);
 end
 
 local debuffinfo = {
@@ -132,18 +130,13 @@ local function update_frames(unit, auraList, numAuras)
         frame.unit = unit;
         frame.auraInstanceID = aura.auraInstanceID;
 
-        local color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);
-        local size = ns.configs.SIZE + 4;
+        local color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);        
 
-        if unit == "player" then
-            size = size * ns.options.PlayerDebuffRate;
-        end
-
-        set_debuff(frame, unit, aura, color, size);
+        set_debuff(frame, unit, aura, color);
         frame:Show();
     end
 
-    for j = i + 1, ns.configs.MAX_DEBUFF_SHOW do
+    for j = i + 1, ns.configs.max_debuffs do
         local frame = parent.frames[j];
 
         if (frame) then
@@ -163,12 +156,12 @@ local function update_frames(unit, auraList, numAuras)
 end
 
 local function update_auras(unit)
-    activeDebuffs[unit] = C_UnitAuras.GetUnitAuras(unit, filters[unit], ns.configs.MAX_DEBUFF_SHOW);
-    update_frames(unit, activeDebuffs[unit], ns.configs.MAX_DEBUFF_SHOW);
+    activeDebuffs[unit] = C_UnitAuras.GetUnitAuras(unit, filters[unit], ns.configs.max_debuffs);
+    update_frames(unit, activeDebuffs[unit], ns.configs.max_debuffs);
 end
 
 local function clear_frames()
-    for i = 1, ns.configs.MAX_DEBUFF_SHOW do
+    for i = 1, ns.configs.max_debuffs do
         local frame = main_frame.target_frame.frames[i];
 
         if (frame) then
@@ -178,30 +171,30 @@ local function clear_frames()
     end
 end
 
+local function set_combatalpha()
+    if ns.options.CombatAlphaChange then
+        if UnitAffectingCombat("player") then
+            main_frame:SetAlpha(ns.configs.combat_alpha);
+        else
+            main_frame:SetAlpha(ns.configs.normal_alpha);
+        end
+    end
+end
+
 local function on_event(self, event, arg1, ...)
     if (event == "UNIT_AURA") then
         update_auras(arg1);
     elseif (event == "PLAYER_TARGET_CHANGED") then
         clear_frames();
-        update_auras("target");
-        if ns.options.CombatAlphaChange then
-            if UnitAffectingCombat("player") then
-			    main_frame:SetAlpha(ns.configs.AlphaCombat);
-		    else
-    			main_frame:SetAlpha(ns.configs.AlphaNormal);
-		    end
-        end
+        update_auras("target");        
     elseif (event == "PLAYER_ENTERING_WORLD") then
         update_auras("target");
         update_auras("player");
+        set_combatalpha();
     elseif event == "PLAYER_REGEN_DISABLED" then
-        if ns.options.CombatAlphaChange then
-            main_frame:SetAlpha(ns.configs.AlphaCombat);
-        end
+        set_combatalpha();
     elseif event == "PLAYER_REGEN_ENABLED" then
-        if ns.options.CombatAlphaChange then
-            main_frame:SetAlpha(ns.configs.AlphaNormal);
-        end
+        set_combatalpha();
     end
 end
 
@@ -213,14 +206,14 @@ end
 
 local function update_anchor(frames, index, offsetX, right, parent)
     local buff = frames[index];
-    local point1 = "BOTTOMLEFT";
-    local point2 = "BOTTOMLEFT";
-    local point3 = "BOTTOMRIGHT";
+    local point1 = "LEFT";
+    local point2 = "LEFT";
+    local point3 = "RIGHT";
 
     if (right == false) then
-        point1 = "BOTTOMRIGHT";
-        point2 = "BOTTOMRIGHT";
-        point3 = "BOTTOMLEFT";
+        point1 = "RIGHT";
+        point2 = "RIGHT";
+        point3 = "LEFT";
         offsetX = -offsetX;
     end
 
@@ -237,14 +230,14 @@ local function create_frames(parent, bright, rate)
         parent.frames = {};
     end
 
-    for idx = 1, ns.configs.MAX_DEBUFF_SHOW do
+    for idx = 1, ns.configs.max_debuffs do
         parent.frames[idx] = CreateFrame("Button", nil, parent, "asTargetDebuffFrameTemplate");
         local frame = parent.frames[idx];
         frame.cooldown:SetDrawSwipe(true);
 
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
-                r:SetFont(STANDARD_TEXT_FONT, ns.configs.CooldownFontSize * rate, "OUTLINE");
+                r:SetFont(STANDARD_TEXT_FONT, ns.configs.cool_fontsize * rate, "OUTLINE");
                 r:ClearAllPoints();
                 r:SetPoint("TOP", 0, 5);
                 r:SetDrawLayer("OVERLAY");
@@ -253,26 +246,26 @@ local function create_frames(parent, bright, rate)
         end
         frame.icon:SetTexCoord(.08, .92, .16, .84);
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-        
-        frame.count:SetFont(STANDARD_TEXT_FONT, ns.configs.CountFontSize, "OUTLINE")
+
+        frame.count:SetFont(STANDARD_TEXT_FONT, ns.configs.count_fontsize, "OUTLINE")
         frame.count:ClearAllPoints();
         frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
-		frame.count:SetTextColor(0, 1, 0);
+        frame.count:SetTextColor(0, 1, 0);
 
-        frame.point:SetFont(STANDARD_TEXT_FONT, ns.configs.CountFontSize - 3, "OUTLINE")
+        frame.point:SetFont(STANDARD_TEXT_FONT, ns.configs.count_fontsize - 3, "OUTLINE")
         frame.point:ClearAllPoints();
         frame.point:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2);
         frame.point:SetTextColor(0, 1, 0);
 
-        frame.snapshot:SetFont(STANDARD_TEXT_FONT, ns.configs.CountFontSize - 1, "OUTLINE")
+        frame.snapshot:SetFont(STANDARD_TEXT_FONT, ns.configs.count_fontsize - 1, "OUTLINE")
         frame.snapshot:ClearAllPoints();
         frame.snapshot:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
 
         frame:ClearAllPoints();
         update_anchor(parent.frames, idx, 1, bright, parent);
-            -- Resize
-        frame:SetWidth(ns.configs.SIZE);
-        frame:SetHeight(ns.configs.SIZE * 0.8);
+        -- Resize
+        frame:SetWidth(ns.configs.size * rate);
+        frame:SetHeight(ns.configs.size * ns.configs.sizerate * rate);
         frame:EnableMouse(false);
         frame.data = {};
         frame:Hide();
@@ -285,40 +278,40 @@ end
 local function init()
     ns.setup_option();
     local libasConfig = LibStub:GetLibrary("LibasConfig", true);
-       
+
     main_frame:SetPoint("CENTER", 0, 0)
     main_frame:SetWidth(1)
-    main_frame:SetHeight(1)    
+    main_frame:SetHeight(1)
     main_frame:Show()
 
     main_frame.target_frame = CreateFrame("Frame", nil, main_frame)
 
-    main_frame.target_frame:SetPoint("CENTER", ns.configs.TARGET_DEBUFF_X, ns.configs.TARGET_DEBUFF_Y)
+    main_frame.target_frame:SetPoint("CENTER", ns.configs.target_xpoint, ns.configs.target_ypoint)
     main_frame.target_frame:SetWidth(1)
-    main_frame.target_frame:SetHeight(1)    
+    main_frame.target_frame:SetHeight(1)
     main_frame.target_frame:Show()
 
     create_frames(main_frame.target_frame, true, 1);
 
     if libasConfig then
-		libasConfig.load_position(main_frame.target_frame, "asDebuffFilter(Target)", ADF_Positions_1);
-	end
+        libasConfig.load_position(main_frame.target_frame, "asDebuffFilter(Target)", ADF_Positions_1);
+    end
 
 
 
     main_frame.player_frame = CreateFrame("Frame", nil, main_frame)
 
-    main_frame.player_frame:SetPoint("CENTER", ns.configs.PLAYER_DEBUFF_X, ns.configs.PLAYER_DEBUFF_Y)
+    main_frame.player_frame:SetPoint("CENTER", ns.configs.player_xpoint, ns.configs.player_ypoint)
     main_frame.player_frame:SetWidth(1)
-    main_frame.player_frame:SetHeight(1)    
+    main_frame.player_frame:SetHeight(1)
     main_frame.player_frame:Show()
 
     create_frames(main_frame.player_frame, false, ns.options.PlayerDebuffRate);
     create_privateframes(main_frame.player_frame);
 
     if libasConfig then
-		libasConfig.load_position(main_frame.player_frame, "asDebuffFilter(Player)", ADF_Positions_2);
-	end
+        libasConfig.load_position(main_frame.player_frame, "asDebuffFilter(Player)", ADF_Positions_2);
+    end
 
     main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
     main_frame:RegisterUnitEvent("UNIT_AURA", "player");
@@ -337,6 +330,7 @@ local function init()
     C_Timer.NewTicker(0.2, on_update);
     update_auras("target");
     update_auras("player");
+    set_combatalpha();
 end
 
 C_Timer.After(1, init);

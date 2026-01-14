@@ -290,6 +290,8 @@ main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
 main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 main_frame:SetScript("OnEvent", on_event);
+main_frame:EnableMouse(false);
 main_frame:Show();
+main_frame:SetSize(0,0);
 
 C_Timer.After(0.5, init);
