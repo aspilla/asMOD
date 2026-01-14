@@ -2,8 +2,6 @@ local _, ns = ...;
 local Options_Default = {
     Version = 250706,
     ShowFocus = true,
-    PlaySoundKick = true,
-    PlaySoundStun = false,
     FocusCastScale = 1.2;
 };
 

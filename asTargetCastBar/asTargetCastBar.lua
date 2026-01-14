@@ -11,11 +11,6 @@ local configs = {
     failedcolor = { 1, 0, 0 },
     updaterate = 0.1,
     font = STANDARD_TEXT_FONT,
-    kickvoice = "Interface\\AddOns\\asTargetCastBar\\Target_Kick_En.mp3",
-    stunvoice = "Interface\\AddOns\\asTargetCastBar\\Target_Stun_En.mp3",
-    focuskickvoice = "Interface\\AddOns\\asTargetCastBar\\Focus_Kick_En.mp3",
-    focusstunvoice = "Interface\\AddOns\\asTargetCastBar\\Focus_Stun_En.mp3",
-
 }
 
 configs.namesize = configs.height * 0.7;
@@ -25,13 +20,6 @@ local region = GetCurrentRegion();
 
 if region == 2 and GetLocale() ~= "koKR" then
     configs.font = "Fonts\\2002.ttf";
-end
-
-if GetLocale() == "koKR" then
-    configs.kickvoice = "Interface\\AddOns\\asTargetCastBar\\Target_Kick.mp3"
-    configs.stunvoice = "Interface\\AddOns\\asTargetCastBar\\Target_Stun.mp3"
-    configs.focuskickvoice = "Interface\\AddOns\\asTargetCastBar\\Focus_Kick.mp3"
-    configs.focusstunvoice = "Interface\\AddOns\\asTargetCastBar\\Focus_Stun.mp3"
 end
 
 local main_frame = CreateFrame("FRAME", nil, UIParent)
@@ -121,8 +109,7 @@ local function setup_castbar()
     castbar.targetedindi:Show();
 
     castbar.start = 0;
-    castbar.duration = 0;
-    castbar.soundalerted = false;
+    castbar.duration = 0;    
     castbar.targetedinditype = 1;
     return castbar;
 end
@@ -136,8 +123,7 @@ local function hide_castbar(castbar)
     castbar.isAlert = false;
     targetname:SetText("");
     targetname:Hide();
-    castbar.failstart = nil;
-    castbar.soundalerted = false;
+    castbar.failstart = nil;    
     castbar.duration_obj = nil;
     castbar.notinterruptable:SetAlpha(0);
     castbar.important:SetAlpha(0);
@@ -152,14 +138,6 @@ local function show_raidicon(unit, markframe)
     else
         markframe:Hide();
     end
-end
-
-local function get_typeofcast(unit)
-    local nameplate = C_NamePlate.GetNamePlateForUnit(unit, issecure())
-    if nameplate and nameplate.UnitFrame and nameplate.UnitFrame.castBar then
-        return nameplate.UnitFrame.castBar.barType;
-    end
-    return nil;
 end
 
 local function check_casting(castbar, event)
@@ -209,9 +187,7 @@ local function check_casting(castbar, event)
             castbar:SetMinMaxValues(start, endTime)
             castbar.failstart = nil;
 
-            local color = configs.interruptcolor;
-            local type = get_typeofcast(unit);
-
+            local color = configs.interruptcolor;            
             castbar:SetStatusBarColor(color[1], color[2], color[3]);
             text:SetText(name);
             show_raidicon(unit, mark);
@@ -244,38 +220,6 @@ local function check_casting(castbar, event)
             else
                 targetname:SetText("");
                 targetname:Hide();
-            end
-
-
-            if name and type and castbar.soundalerted == false and UnitCanAttack("player", unit) then
-                local isfocus = UnitIsUnit(unit, "focus");
-                local soundfile = nil;
-
-                if type == "uninterruptable" then
-                    if ns.options.PlaySoundStun then
-                        local stunable = UnitLevel(unit) <= UnitLevel("player");
-                        if stunable then
-                            if isfocus then
-                                soundfile = configs.focusstunvoice
-                            else
-                                soundfile = configs.stunvoice;
-                            end
-                        end
-                    end
-                else
-                    if ns.options.PlaySoundKick then
-                        if isfocus then
-                            soundfile = configs.focuskickvoice
-                        else
-                            soundfile = configs.kickvoice;
-                        end
-                    end
-                end
-
-                if soundfile then
-                    castbar.soundalerted = true;
-                    PlaySoundFile(soundfile, "MASTER");
-                end
             end
         else
             if castbar.failstart == nil then
@@ -333,11 +277,9 @@ local function on_unit_event(castbar, event, ...)
 end
 
 local function on_event(self, event, ...)
-    if event == "PLAYER_TARGET_CHANGED" then
-        ns.targetcastbar.soundalerted = nil;
+    if event == "PLAYER_TARGET_CHANGED" then        
         check_unit(ns.targetcastbar, "target");
     elseif event == "PLAYER_FOCUS_CHANGED" then
-        ns.focuscastbar.soundalerted = nil;
         check_unit(ns.focuscastbar, "focus");
     elseif event == "PLAYER_ENTERING_WORLD" then
         check_unit(ns.targetcastbar, "target");

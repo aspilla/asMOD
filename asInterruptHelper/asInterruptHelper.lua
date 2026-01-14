@@ -9,7 +9,18 @@ local configs = {
     mousexpoint = 50,
     mouseypoint = -20,
     fontsize = 9,
+    kickvoice = "Interface\\AddOns\\asInterruptHelper\\Sound\\Target_Kick_En.mp3",
+    stunvoice = "Interface\\AddOns\\asInterruptHelper\\Sound\\Target_Stun_En.mp3",
+    focuskickvoice = "Interface\\AddOns\\asInterruptHelper\\Sound\\Focus_Kick_En.mp3",
+    focusstunvoice = "Interface\\AddOns\\asInterruptHelper\\Sound\\Focus_Stun_En.mp3",
 };
+
+if GetLocale() == "koKR" then
+    configs.kickvoice = "Interface\\AddOns\\asInterruptHelper\\Sound\\Target_Kick.mp3"
+    configs.stunvoice = "Interface\\AddOns\\asInterruptHelper\\Sound\\Target_Stun.mp3"
+    configs.focuskickvoice = "Interface\\AddOns\\asInterruptHelper\\Sound\\Focus_Kick.mp3"
+    configs.focusstunvoice = "Interface\\AddOns\\asInterruptHelper\\Sound\\Focus_Stun.mp3"
+end
 
 
 local main_frame = CreateFrame("Frame");
@@ -159,14 +170,53 @@ local function find_spell(notInterruptible, isBoss)
     end
 end
 
+local function check_sound(frame, unit, notInterruptible)
+    if frame.soundalerted == false and unit ~= "mouseover" then
+        local isfocus = false;
+        if unit == "focus" then
+            if UnitIsUnit(unit, "target") then
+                return;
+            end
+            isfocus = UnitIsUnit(unit, "focus") and unit ~= "target";
+        end
+
+        local soundfile = nil;
+
+        if notInterruptible then
+            if ns.options.PlaySoundStun then
+                if isfocus then
+                    soundfile = configs.focusstunvoice
+                else
+                    soundfile = configs.stunvoice;
+                end
+            end
+        else
+            if ns.options.PlaySoundKick then
+                if isfocus then
+                    soundfile = configs.focuskickvoice
+                else
+                    soundfile = configs.kickvoice;
+                end
+            end
+        end
+
+        if soundfile then
+            frame.soundalerted = true;
+            PlaySoundFile(soundfile, "MASTER");
+        end
+    end
+end
+
+
 
 local function check_casting(frame, unit)
     if not UnitExists(unit) then
+        frame.soundalerted = false;
         frame:Hide();
         return;
     end
 
-    local name, notInterruptible = check_needtointerrupt(unit)
+    local name, not_interruptible = check_needtointerrupt(unit)
 
     if name then
         local isBoss = false;
@@ -177,20 +227,22 @@ local function check_casting(frame, unit)
             isBoss = true;
         end
 
-        if notInterruptible then
+        if not_interruptible then
             if isBoss then
                 needtointerrupt = false;
             end
         end
 
         if needtointerrupt then
-            local spellID = find_spell(notInterruptible, isBoss);
+            local spellID = find_spell(not_interruptible, isBoss);
 
             if spellID then
                 show_interruptspell(frame, spellID);
+                check_sound(frame, unit, not_interruptible);
             end
         end
     else
+        frame.soundalerted = false;
         frame:Hide();
     end
 end
@@ -235,6 +287,7 @@ local function create_button(unit)
 
     frame:EnableMouse(false);
     frame:Hide();
+    frame.soundalerted = false;
 
     local function on_update()
         check_casting(frame, unit);
@@ -246,7 +299,13 @@ local function create_button(unit)
 end
 
 local function on_event(self, event)
-    init_player();
+    if event == "PLAYER_TARGET_CHANGED" then
+        main_frame.targetframe.soundalerted = false;
+    elseif event == "PLAYER_FOCUS_CHANGED" then
+        main_frame.focusframe.soundalerted = false;
+    else
+        init_player();
+    end
 end
 
 local function init()
@@ -277,13 +336,17 @@ local function init()
         main_frame.mouseframe = create_button("mouseover");
         C_Timer.NewTicker(0.05, on_mouseupdate);
     end
+
+    main_frame:SetScript("OnEvent", on_event)
+    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+    main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+    main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+    main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+    main_frame:RegisterUnitEvent("UNIT_PET", "player");
+    main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
+    main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+
+    init_player();
 end
 
 C_Timer.After(0.5, init);
-
-main_frame:SetScript("OnEvent", on_event)
-main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED")
-main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED")
-main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-main_frame:RegisterUnitEvent("UNIT_PET", "player")

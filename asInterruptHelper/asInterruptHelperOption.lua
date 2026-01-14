@@ -4,6 +4,8 @@ local Options_Default = {
     ShowTarget = true,
     ShowFocus = true,
     ShowMouseOver = true,
+    PlaySoundKick = true,
+    PlaySoundStun = false,
 };
 
 ns.options = CopyTable(Options_Default);

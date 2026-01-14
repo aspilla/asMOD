@@ -1,34 +1,36 @@
 # asInterruptHelper (Midnight)
 
-Interrupt/Stun Cooldown Tracker
+Displays cooldowns for interrupt and stun skills.
 
-### Target / Focus View
-![asInterruptHelper(Target/Focus)](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInterruptHelper_target.jpg?raw=true)
+For Focus/Target:
+![asInterruptHelper(Target/Focus)](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInterruptHelper_target.jpg?raw=true)   
 
-### Mouseover View
-![asInterruptHelper(Mouseover)](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInterruptHelper.jpg?raw=true)
+For Mouseover targets:
+![asInterruptHelper(Mouseover)](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInterruptHelper.jpg?raw=true)   
 
 ## Key Features
 
-* **Visual Integration** (Recommended with `asTargetCastBar`):
-    * Overlays available interrupt/stun spells directly on the Target and Focus cast bars.
-    * Displays the icon near the mouse cursor for Mouseover targets.
-* **Interrupt Logic**:
-    * Displays your primary interrupt spell when an interruptible spell is being cast.
-    * If your interrupt is on cooldown, it suggests a stun spell (only if the target's level allows it).
-* **Stun Logic for Non-interruptible Spells**:
-    * If a spell is non-interruptible but the target is stunnable (e.g., same level mobs), it displays your stun spells.
-* **Smart Priority System**:
-    * Spells with shorter cooldowns take priority. (If cooldowns are equal, the spell with the lower ID is prioritized).
-    * Priorities are managed via `ns.InterruptSpells` and `ns.StunSpells`.    
+* **Recommended for use with `asTargetCastBar`**:
+    * Displays interruptible skills above the cast bars of your Focus and Target.
+    * Displays skills above the mouse cursor when hovering over a target.
+* **When an interruptible spell is cast**:
+    * Displays the primary interrupt skill. If the interrupt skill is on cooldown, it displays stun skills (for mobs of equal level).
+* **When an uninterruptible spell is cast**:
+    * Displays stun skills for eligible mobs (mobs of equal level).
+* **Skill Priority**:
+    * Skills with shorter cooldowns have higher priority. (If cooldowns are equal, the skill with the lower ID is prioritized).
+* **Voice Alerts**: Provides voice notifications when an interrupt or stun is required.
 
 ## Configuration
 
-You can modify the following settings via `ESC` > `Options` > `Addons` > `asInterruptHelper`:
-* `ShowTarget`: Toggle display for Target's interrupt/stun.
-* `ShowFocus`: Toggle display for Focus unit's interrupt/stun.
-* `ShowMouseOver`: Toggle display for Mouseover unit's interrupt/stun.
-* **Move Position**: Enter the `/asConfig` command in the chat.
+The following settings can be adjusted via `ESC` > `Options` > `Addons` > `asInterruptHelper`:
+
+* `ShowTarget`: Toggle display for the current target.
+* `ShowFocus`: Toggle display for the focus target.
+* `ShowMouseOver`: Toggle display for the mouseover target.
+* `PlaySoundKick`: Voice alert when an interrupt is needed (Default: On).
+* `PlaySoundStun`: Voice alert when a stun is needed (Default: Off).
+* **Positioning**: Enter the `/asConfig` command in the chat.
 * **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ---
@@ -52,9 +54,9 @@ You can modify the following settings via `ESC` > `Options` > `Addons` > `asInte
     * 주 차단 스킬을 표시, 차단 스킬이 없는 경우 쿨일 경우 스턴이 가능한 몹 (Level이 동등한 몹) 인 경우 스턴 스킬을 표시.
 *   **차단 불가 스킬 시전 시**:
     * 스턴이 가능한 몹 (Level이 동등한 몹) 인 경우 스턴 스킬을 표시.
-*   **스킬 우선 순위**:
+*   **스킬 표시 우선 순위**:
     * 쿨이 짧은 스킬이 우선순위를 가짐. (쿨이 같은경우 ID 가 작은수 인 경우) 
-    * `ns.InterruptSpells`, `ns.StunSpells` 내에 등록되어 있는 쿨 기준이며, 이 값을 조정하여 우선순위 조정이 가능합니다.    
+*   **음성 알림**: 차단 필요/스턴 필요시 음성 알림     
 
 ## 설정
 
@@ -63,5 +65,7 @@ You can modify the following settings via `ESC` > `Options` > `Addons` > `asInte
 *   `ShowTarget`: 대상 차단 스킬 표시 여부
 *   `ShowFocus` : 주시 대상의 차단 스킬 표시 여부
 *   `ShowMouseOver` : 마우스 오버 대상의 차단 스킬 표시 여부
+*   `PlaySoundKick` : 차단 필요시 음성 알림 (기본 On)
+*   `PlaySoundStun` : 스턴 필요시 음성 알림 (기본 Off)
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
