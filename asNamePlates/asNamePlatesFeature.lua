@@ -86,7 +86,7 @@ function ns.update_color(asframe)
                 end
             end
             if status and status > 0 then
-                return ns.options.targetedindiColor;
+                return ns.options.AggroColor;
             end
         end
 

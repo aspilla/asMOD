@@ -25,6 +25,7 @@ asMOD is a collection of custom-made World of Warcraft addons.
 * asDotSnapshot: Unsupported due to debuff tracking restrictions.
 * asFixCombatText: Unsupported as combat text values are now secret.
 * asHealerChatAlert: Unsupported as mana values are now secret.
+* asOverlay : Unsupported due to buff tracking restrictions.
 * asReady: Unsupported due to restrictions on tracking skill usage.
 * asSummonTracker: Unsupported due to restrictions on tracking skill usage.
 
@@ -129,6 +130,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 *   asDotSnapshot : 디버프 추적 불가로 미지원
 *   asFixCombatText : 비밀 값으로 변경되어 미지원
 *   asHealerChatAlert : 마나 남은 값이 비밀 값으로 미지원
+*   asOverlay : 버프 추적 불가로 미지원
 *   asReady : 스킬 사용 여부 파악이 막혀 미지원
 *   asSummonTracker : 시킬 사용 여부 파악이 막혀 미지원
 
