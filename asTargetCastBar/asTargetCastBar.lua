@@ -401,13 +401,16 @@ local function init()
     register_unit(ns.focuscastbar, "focus");
 
     ns.focuscastbar:SetScale(ns.options.FocusCastScale);
-    
+
     local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
     if libasConfig then
         libasConfig.load_position(ns.targetcastbar, "asTargetCastBar (Target)", ATCB_Positions_1);
         libasConfig.load_position(ns.focuscastbar, "asTargetCastBar (Focus)", ATCB_Positions_2);
     end
+
+    check_unit(ns.targetcastbar, "target");
+    check_unit(ns.focuscastbar, "focus");
 
     main_frame:SetScript("OnEvent", on_event)
     main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
