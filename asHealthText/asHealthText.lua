@@ -136,7 +136,7 @@ local function update_rune()
 		end
 	end
 
-	ns.rune_power:SetText(runeCount);
+	ns.rune_power:SetText(tostring(runeCount));
 end
 
 
@@ -165,7 +165,7 @@ local function update_stagger()
 		local stagger = math.ceil(UnitStagger("player") / UnitHealthMax("player") * 100);
 
 		if stagger > 0 then
-			ns.combo_power:SetText(stagger);
+			ns.combo_power:SetText(tostring(stagger));
 			ns.combo_power:Show();
 		else
 			ns.combo_power:SetText("");
@@ -400,6 +400,7 @@ local function on_event(self, event, arg1, arg2, arg3, ...)
 				main_frame:Hide();
 			end
 		end
+		update_raidicon();
 	elseif event == "PLAYER_TARGET_CHANGED" then
 		AHT_TargetClass = nil;
 		if UnitIsConnected("target") then
@@ -435,7 +436,6 @@ local function on_event(self, event, arg1, arg2, arg3, ...)
 		end
 
 		update_threat();
-
 		update_raidicon();
 	elseif event == "UNIT_TARGET" and arg1 == "target" then
 		if UnitIsPlayer("targettarget") then
