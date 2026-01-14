@@ -138,7 +138,11 @@ local function check_needtointerrupt(unit)
 
         if name then
             local casttype = get_typeofcast(unit);
-            return name, casttype == "uninterruptable";
+            if casttype == nil then
+                return nil, false;
+            else
+                return name, casttype == "uninterruptable";
+            end
         end
     end
 

@@ -61,7 +61,7 @@ local function check_trigger(nameplate)
 		local bcasting = check_cast(unit);
 		if bcasting then
 			local type = get_typeofcast(nameplate);
-			if type ~= "uninterruptable" then
+			if type and type ~= "uninterruptable" then
 				return true;
 			end
 		end
