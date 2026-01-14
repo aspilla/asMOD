@@ -67,4 +67,6 @@
 			</Frame>
 		</Frames>
 	</Button>
+	<Texture name="asUnitFrameNotInteruptTemplate" virtual="true" atlas="RaidFrame-Hp-Fill">		
+	</Texture>
 </Ui>

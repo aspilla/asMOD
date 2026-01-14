@@ -43,13 +43,24 @@ main_frame:Show();
 local function setup_castbar()
     local castbar = CreateFrame("StatusBar", nil, UIParent)
     castbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-    castbar:GetStatusBarTexture():SetHorizTile(false)
+    local statustexture = castbar:GetStatusBarTexture();
+    statustexture:SetHorizTile(false)
     castbar:SetMinMaxValues(0, 100)
     castbar:SetValue(100)
     castbar:SetHeight(configs.height)
     castbar:SetWidth(configs.width - (configs.height + 2) * 1.2)
     castbar:SetStatusBarColor(1, 0.9, 0.9);
     castbar:SetAlpha(configs.alpha);
+
+    castbar.notinterruptable = castbar:CreateTexture(nil, "ARTWORK", "asTargetCastBarNotInteruptTemplate", 1);
+    castbar.notinterruptable:SetParent(castbar);
+    castbar.notinterruptable:ClearAllPoints();
+    castbar.notinterruptable:SetPoint("TOPLEFT", statustexture, "TOPLEFT", 0, 0);
+    castbar.notinterruptable:SetPoint("BOTTOMRIGHT", statustexture, "BOTTOMRIGHT", 0, 0);
+    castbar.notinterruptable:SetVertexColor(configs.notinterruptcolor[1], configs.notinterruptcolor[2],
+        configs.notinterruptcolor[3]);
+    castbar.notinterruptable:SetAlpha(0);
+    castbar.notinterruptable:Show();
 
     castbar.important = castbar:CreateTexture(nil, "BACKGROUND")
     castbar.important:SetPoint("TOPLEFT", castbar, "TOPLEFT", -2, 2)
@@ -128,6 +139,8 @@ local function hide_castbar(castbar)
     castbar.failstart = nil;
     castbar.soundalerted = false;
     castbar.duration_obj = nil;
+    castbar.notinterruptable:SetAlpha(0);
+    castbar.important:SetAlpha(0);
 end
 
 
@@ -199,12 +212,6 @@ local function check_casting(castbar, event)
             local color = configs.interruptcolor;
             local type = get_typeofcast(unit);
 
-            if type and type == "uninterruptable" then
-                color = configs.notinterruptcolor;
-            else
-                color = configs.interruptcolor;
-            end
-
             castbar:SetStatusBarColor(color[1], color[2], color[3]);
             text:SetText(name);
             show_raidicon(unit, mark);
@@ -219,6 +226,9 @@ local function check_casting(castbar, event)
                 local istargeted = UnitIsUnit(unit .. "target", "player");
                 local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(istargeted, 1, 0);
                 castbar.targetedindi:SetAlpha(alpha);
+
+                local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(notInterruptible, 1, 0);
+                castbar.notinterruptable:SetAlpha(alpha);
             end
 
             if UnitExists(targettarget) then
@@ -237,7 +247,7 @@ local function check_casting(castbar, event)
             end
 
 
-            if name and castbar.soundalerted == false and UnitCanAttack("player", unit) then
+            if name and type and castbar.soundalerted == false and UnitCanAttack("player", unit) then
                 local isfocus = UnitIsUnit(unit, "focus");
                 local soundfile = nil;
 
@@ -378,8 +388,6 @@ end
 
 local function init()
     ns.setup_option();
-   
-
     ns.targetcastbar = setup_castbar();
     ns.targetcastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height + 2) * 1.2) / 2, configs
         .ypoint)
@@ -392,6 +400,8 @@ local function init()
     ns.focuscastbar:SetScript("OnEvent", on_unit_event);
     register_unit(ns.focuscastbar, "focus");
 
+    ns.focuscastbar:SetScale(ns.options.FocusCastScale);
+    
     local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
     if libasConfig then

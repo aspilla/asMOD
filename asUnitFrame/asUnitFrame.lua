@@ -13,6 +13,7 @@ local configs = {
     buffsizerate = 0.8,
     font = STANDARD_TEXT_FONT,
     framelevel = 900,
+    notinterruptcolor = { 0.9, 0.9, 0.9 },
 };
 
 ns.isevoker = false;
@@ -396,13 +397,35 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame.castbar = CreateFrame("StatusBar", nil, frame)
     frame.castbar:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -3);
     frame.castbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-    frame.castbar:GetStatusBarTexture():SetHorizTile(false)
+    local statustexture = frame.castbar:GetStatusBarTexture();
+    statustexture:SetHorizTile(false)
     frame.castbar:SetMinMaxValues(0, 100)
     frame.castbar:SetValue(100)
     frame.castbar:SetHeight(castbarheight)
     frame.castbar:SetWidth(width - ((castbarheight + 1) * 1.2));
     frame.castbar:SetStatusBarColor(1, 0.9, 0.9);
     frame.castbar:SetAlpha(1);
+
+    frame.castbar.notinterruptable = frame.castbar:CreateTexture(nil, "ARTWORK", "asUnitFrameNotInteruptTemplate", 1);
+    frame.castbar.notinterruptable:SetParent(frame.castbar);
+    frame.castbar.notinterruptable:ClearAllPoints();
+    frame.castbar.notinterruptable:SetPoint("TOPLEFT", statustexture, "TOPLEFT", 0, 0);
+    frame.castbar.notinterruptable:SetPoint("BOTTOMRIGHT", statustexture, "BOTTOMRIGHT", 0, 0);
+    frame.castbar.notinterruptable:SetVertexColor(configs.notinterruptcolor[1], configs.notinterruptcolor[2],
+        configs.notinterruptcolor[3]);
+    frame.castbar.notinterruptable:SetAlpha(0);
+    frame.castbar.notinterruptable:Show();
+
+
+    frame.castbar.important = frame.castbar:CreateTexture(nil, "BACKGROUND")
+    frame.castbar.important:SetPoint("TOPLEFT", frame.castbar, "TOPLEFT", -2, 2)
+    frame.castbar.important:SetPoint("BOTTOMRIGHT", frame.castbar, "BOTTOMRIGHT", 2, -2)
+
+    frame.castbar.important:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga")
+    frame.castbar.important:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    frame.castbar.important:SetVertexColor(1, 0, 0, 1);
+    frame.castbar.important:SetAlpha(0);
+    frame.castbar.important:Show();
 
     frame.castbar.bg = frame.castbar:CreateTexture(nil, "BACKGROUND")
     frame.castbar.bg:SetPoint("TOPLEFT", frame.castbar, "TOPLEFT", -1, 1)

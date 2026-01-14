@@ -26,5 +26,7 @@
 			</Layer>
 		</Layers>
 	</Frame>
+	<Texture name="asTargetCastBarNotInteruptTemplate" virtual="true" atlas="RaidFrame-Hp-Fill">		
+	</Texture>
 	<Script file="asTargetCastBar.lua"/>
 </Ui>

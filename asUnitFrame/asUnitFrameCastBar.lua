@@ -1,7 +1,6 @@
 local _, ns = ...;
 
 local configs = {
-    nointerruptcolor = { 0.9, 0.9, 0.9 },
     interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
     failcolor = { 1, 0, 0 },
 };
@@ -17,14 +16,8 @@ local function hide_castbar(castbar)
     targetname:Hide();
     castbar.failstart = nil;
     castbar.duration_obj = nil;
-end
-
-local function get_typeofcast(unit)
-    local nameplate = C_NamePlate.GetNamePlateForUnit(unit, issecure())
-    if nameplate and nameplate.UnitFrame and nameplate.UnitFrame.castBar then
-        return nameplate.UnitFrame.castBar.barType;
-    end
-    return nil;
+    castbar.notinterruptable:SetAlpha(0);
+    castbar.important:SetAlpha(0);
 end
 
 
@@ -72,14 +65,17 @@ local function check_casting(castbar, event)
             castbar.failstart = nil;
 
             local color = {};
-            color = configs.interruptcolor;
-            local type = get_typeofcast(unit);
-
-            if type and type == "uninterruptable" then
-                color = configs.nointerruptcolor;
-            end
-
+            color = configs.interruptcolor;            
             castbar:SetStatusBarColor(color[1], color[2], color[3]);
+
+            if C_CurveUtil and C_CurveUtil.EvaluateColorValueFromBoolean then
+                local isimportant = C_Spell.IsSpellImportant(spellid);
+                local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
+                castbar.important:SetAlpha(alpha);
+                
+                local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(notInterruptible, 1, 0);
+                castbar.notinterruptable:SetAlpha(alpha);
+            end
 
             text:SetText(name);
 

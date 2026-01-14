@@ -70,10 +70,6 @@ function ns.setup_option()
                 Settings.CreateSlider(category, setting, options, tooltip);
                 Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
-
-                if name == "FocusCastScale" and ns.focuscastbar then
-                    ns.focuscastbar:SetScale(currentValue);
-                end
             else
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
                 Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
