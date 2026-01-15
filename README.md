@@ -1,4 +1,4 @@
-# asMOD (Midnight)
+# asMOD Collection (Midnight)
 
 asMOD is a collection of custom-made World of Warcraft addons.
 
@@ -13,9 +13,9 @@ asMOD is a collection of custom-made World of Warcraft addons.
 * **Retail (Midnight) Support:** Fully compatible with the latest expansion.
 
 ## Changes in Midnight
-* **Combat API Secret Transition:** Tracking for buffs/debuffs and additional calculations has been restricted. Consequently, many asMOD combat-related addons have been modified or had features reduced.
+* **Combat API Secret Transition:** Tracking for buffs/debuffs and additional calculations has been restricted. Many asMOD combat-related addons have been modified or had features reduced.
 * **Blizzard Announcement:** https://warcraft.wiki.gg/wiki/Patch_12.0.0/Planned_API_changes
-* DBM/Details features have been integrated into the default WoW UI; asMOD has been updated to utilize the default UI as well.
+* **Default UI Integration:** DBM/Details features have been integrated into the default WoW UI; asMOD has been updated to utilize the default UI as well.
 * **Enhanced Standalone Use:** The `/asconfig` and `/asclear` commands for repositioning can now be used even if you only install individual addons without the main `asMOD` package.
 
 ## Unsupported Addons (from Midnight)
@@ -25,7 +25,7 @@ asMOD is a collection of custom-made World of Warcraft addons.
 * asDotSnapshot: Unsupported due to debuff tracking restrictions.
 * asFixCombatText: Unsupported as combat text values are now secret.
 * asHealerChatAlert: Unsupported as mana values are now secret.
-* asOverlay : Unsupported due to buff tracking restrictions.
+* asOverlay: Unsupported due to debuff tracking restrictions.
 * asReady: Unsupported due to restrictions on tracking skill usage.
 * asSummonTracker: Unsupported due to restrictions on tracking skill usage.
 
@@ -33,10 +33,10 @@ asMOD is a collection of custom-made World of Warcraft addons.
 
 The following issue may occur:
 
-1. **Edit Mode Error:** Errors may occur when using Edit Mode, preventing settings from being saved. Please disable asUnitFrame before making changes in Edit Mode.
+1. **Edit Mode Error:** Errors may occur when using Edit Mode, preventing settings from being saved. Please disable `asUnitFrame` before making changes in Edit Mode.
 
 ## Installation (CurseForge)
-1. Search for `asMOD_Kr` on CurseForge and install the addons.
+1. Install `asMOD` from CurseForge (asMOD includes other asMOD addons: https://www.curseforge.com/wow/addons/asmod).
 2. When the asMOD popup appears stating "asMOD will change the default interface settings," click **Change**.
 3. Adjust `ESC > Options > Gameplay > Advanced Cooldown Settings`.
 
@@ -58,8 +58,7 @@ The following issue may occur:
 2. Disable `asUnitFrame` before using `Edit Mode`.
 
 ## asMOD Addon List (Midnight)
-
-Note: Midnight addons are not yet registered on CurseForge. Please refer to GitHub for detailed descriptions.
+All asMOD addons can function independently. If you wish to use only specific addons, you can install them separately via the links below.
 
 | Addon | Description | CurseForge | Github |
 | :--- | :--- | :---: | :---: |
@@ -81,7 +80,7 @@ Note: Midnight addons are not yet registered on CurseForge. Please refer to GitH
 | asFixUnitFrame | Hides specific default Blizzard unit frame elements | [Link](https://www.curseforge.com/wow/addons/asfixunitframe) | [Link](https://github.com/aspilla/asMOD/tree/main/asFixUnitFrame) |
 | asGCDBar | Global Cooldown (GCD) progress bar | [Link](https://www.curseforge.com/wow/addons/asgcdbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asGCDBar) |
 | asGearScoreLite | Shows item levels in Character and Inspect windows | [Link](https://www.curseforge.com/wow/addons/asgearscorelite) | [Link](https://github.com/aspilla/asMOD/tree/main/asGearScoreLite) |
-| asHealthText | Text-based HUD | [Link](https://www.curseforge.com/wow/addons/ashealthtext) | [Link](https://github.com/aspilla/asMOD/tree/main/asHealthText) |
+| asHealthText | (Not Included) Text-based HUD | [Link](https://www.curseforge.com/wow/addons/ashealthtext) | [Link](https://github.com/aspilla/asMOD/tree/main/asHealthText) |
 | asHideActionBar | Automatically hides Action Bar 1 | [Link](https://www.curseforge.com/wow/addons/ashideactionbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideActionBar) |
 | asHideBagsBar | Automatically hides the bottom-right menu/bags bar | [Link](https://www.curseforge.com/wow/addons/ashidebagsbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideBagsBar) |
 | asHideNamePlates | Hides nameplates except for casting mobs | [Link](https://www.curseforge.com/wow/addons/ashidenameplates) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideNamePlates) |
@@ -99,11 +98,9 @@ Note: Midnight addons are not yet registered on CurseForge. Please refer to GitH
 | asTargetCastBar | Cast bars for Target and Focus | [Link](https://www.curseforge.com/wow/addons/astargetcastingbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asTargetCastBar) |
 | asTrueGCD | Displays history of recently used spells and items | [Link](https://www.curseforge.com/wow/addons/astruegcd) | [Link](https://github.com/aspilla/asMOD/tree/main/asTrueGCD) |
 | asUnitFrame | Simple unit frames | [Link](https://www.curseforge.com/wow/addons/asunitframe) | [Link](https://github.com/aspilla/asMOD/tree/main/asUnitFrame) |
-
-
 ---
 
-# asMOD (한밤)
+# asMOD 모음집 (한밤)
 
 asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
@@ -142,7 +139,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 1.  **편집 모드 오류:** 편집 모드 사용 시 오류가 발생하여 설정 변경이 불가능할 수 있음. asUnitFrame을 끈 상태에서 편집 모드를 진행 필요.
 
 ## 설치 방법 (CurseForge)
-1. CurseForge 에서 asMOD_Kr을 검색하여 애드온들 설치
+1. CurseForge 에서 asMOD를 설치 (asMOD에 다른 asMOD 애드온들이 포함 되어 있음, https://www.curseforge.com/wow/addons/asmod)
 2. `asMOD` 애드온 사용시 `asMOD가 '기본 인터페이스 설정'을 변경합니다. 채팅창에 '/asMOD'명령어로 기능을 다시 불러 올 수 있습니다.` 창에서 `변경`을 클릭
 3. `esc >> 옵션 >> 게임플레이 개선 >> 고급 재사용시간 설정` 조정
 
@@ -166,8 +163,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 
 ## asMOD 애드온 목록 (한밤)
-
-참고) 한밤 애드온은 아직 CurseForge에 미 등록 상태 임. 상세한 설명은 Github를 참고
+모든 asMOD 애드온은 개별 동작 가능함, 일부 애드온만 사용 원할 경우 아래 Link를 통해 별도로 설치 가능
 
 | 애드온 | 설명 | CurseForge | Github |
 | :--- | :--- | :---: | :---: |
@@ -189,7 +185,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 | asFixUnitFrame | 블리자드 기본 유닛 프레임 기능 숨김 | [링크](https://www.curseforge.com/wow/addons/asfixunitframe) | [링크](https://github.com/aspilla/asMOD/tree/main/asFixUnitFrame) |
 | asGCDBar | 전역 재사용 대기시간(GCD) 표시 바 | [링크](https://www.curseforge.com/wow/addons/asgcdbar) | [링크](https://github.com/aspilla/asMOD/tree/main/asGCDBar) |
 | asGearScoreLite | 캐릭터 창/살펴보기 창에 아이템 레벨 표시 | [링크](https://www.curseforge.com/wow/addons/asgearscorelite) | [링크](https://github.com/aspilla/asMOD/tree/main/asGearScoreLite) |
-| asHealthText | 텍스트 기반 HUD | [링크](https://www.curseforge.com/wow/addons/ashealthtext) | [링크](https://github.com/aspilla/asMOD/tree/main/asHealthText) |
+| asHealthText | (미포함) 텍스트 기반 HUD | [링크](https://www.curseforge.com/wow/addons/ashealthtext) | [링크](https://github.com/aspilla/asMOD/tree/main/asHealthText) |
 | asHideActionBar | 1번 액션 바를 자동 숨김 | [링크](https://www.curseforge.com/wow/addons/ashideactionbar) | [링크](https://github.com/aspilla/asMOD/tree/main/asHideActionBar) |
 | asHideBagsBar | 우측 하단의 메뉴 자동 숨김 | [링크](https://www.curseforge.com/wow/addons/ashidebagsbar) | [링크](https://github.com/aspilla/asMOD/tree/main/asHideBagsBar) |
 | asHideNamePlates | 케스팅중인 몹 외 이름표를 숨김 | [링크](https://www.curseforge.com/wow/addons/ashidenameplates) | [링크](https://github.com/aspilla/asMOD/tree/main/asHideNamePlates) |

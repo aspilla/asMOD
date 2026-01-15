@@ -210,21 +210,18 @@ local function add_unit(unit)
         healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
         healthbar.bgTexture:Hide();
 
-
-
         healthbar.border = healthbar:CreateTexture(nil, "BACKGROUND", "asNamePlatesBorderTemplate");
         healthbar.border:SetPoint("TOPLEFT", healthbar, "TOPLEFT", -1, 1);
         healthbar.border:SetPoint("BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 1, -1);
         healthbar.border:SetColorTexture(0, 0, 0, 0.5);
-
         healthbar.border:Show();
 
 
-
+        healthbar.selectedBorder:SetParent(healthbar);
         healthbar.selectedBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
         healthbar.selectedBorder:ClearAllPoints();
-        healthbar.selectedBorder:SetPoint("TOPLEFT", healthbar, "TOPLEFT", -2, 2);
-        healthbar.selectedBorder:SetPoint("BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 2, -2);
+        healthbar.selectedBorder:SetPoint("TOPLEFT", healthbar.border, "TOPLEFT", -1, 1);
+        healthbar.selectedBorder:SetPoint("BOTTOMRIGHT", healthbar.border, "BOTTOMRIGHT", 1, -1);  
     end
 
     local previousTexture = healthbar:GetStatusBarTexture();
