@@ -125,7 +125,7 @@ function ns.update_color(asframe)
             end
         end
 
-        if not (ns.instype == ns.enums.none) and ns.options.ShowQuestColor and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
+        if ns.instype == ns.enums.none and ns.options.ShowQuestColor and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
             return ns.options.QuestColor;
         end
 
