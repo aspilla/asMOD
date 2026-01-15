@@ -7,7 +7,7 @@ local Options_Default = {
 };
 
 ns.configs = {
-	size = 28,
+	size = 32,
 	sizerate = 0.8,
 	target_xpoint = 125,
 	target_ypoint = -150,

@@ -222,6 +222,7 @@ local function add_unit(unit)
 
 
         healthbar.selectedBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
+        healthbar.selectedBorder:ClearAllPoints();
         healthbar.selectedBorder:SetPoint("TOPLEFT", healthbar, "TOPLEFT", -2, 2);
         healthbar.selectedBorder:SetPoint("BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 2, -2);
     end

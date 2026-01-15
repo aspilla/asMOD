@@ -140,8 +140,7 @@ local function update_frames(unit, auraList, numAuras)
         local frame = parent.frames[j];
 
         if (frame) then
-            frame:Hide();
-            frame.data = {};
+            frame:Hide();            
         end
     end
 
@@ -165,8 +164,7 @@ local function clear_frames()
         local frame = main_frame.target_frame.frames[i];
 
         if (frame) then
-            frame:Hide();
-            frame.data = {};
+            frame:Hide();            
         end
     end
 end
@@ -266,8 +264,7 @@ local function create_frames(parent, bright, rate)
         -- Resize
         frame:SetWidth(ns.configs.size * rate);
         frame:SetHeight(ns.configs.size * ns.configs.sizerate * rate);
-        frame:EnableMouse(false);
-        frame.data = {};
+        frame:EnableMouse(false);        
         frame:Hide();
     end
 
