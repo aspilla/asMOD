@@ -184,6 +184,7 @@ local function add_unit(unit)
     end
 
     local asframe = namePlateFrameBase.asNamePlates;
+    local scale = NamePlateDriverMixin:GetNamePlateScale();
     asframe:SetParent(healthbar);
     asframe:SetFrameLevel(healthbar:GetFrameLevel() + 1000);
     asframe.nameplateBase = namePlateFrameBase;
@@ -191,35 +192,37 @@ local function add_unit(unit)
     asframe.alerttype = nil;
     asframe.checkcolor = false;
 
-
     asframe:UnregisterAllEvents();
     asframe:SetScript("OnEvent", nil);
 
     if unitFrame.castBar then
         asframe.casticon:ClearAllPoints();
         PixelUtil.SetPoint(asframe.casticon, "BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0.5, -1);
-        local scale = NamePlateDriverMixin:GetNamePlateScale();
-        local height = 22 * scale.vertical + 10
+
+        local height = 34.6 * scale.vertical;
         asframe.casticon:SetWidth(height * 1.2);
         asframe.casticon:SetHeight(height);
         asframe.casticon:Hide();
         asframe.iscast = false;
     end
 
-    if ns.options.ChangeTexture and not healthbar.border then
-        healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
-        healthbar.bgTexture:Hide();
+    if ns.options.ChangeTexture then
+        if not healthbar.border then
+            healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+            healthbar.bgTexture:Hide();
 
-        healthbar.border = healthbar:CreateTexture(nil, "BACKGROUND", "asNamePlatesBorderTemplate");
-        PixelUtil.SetPoint(healthbar.border, "TOPLEFT", healthbar, "TOPLEFT", -1, 1);
-        PixelUtil.SetPoint(healthbar.border, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 1, -1);
-        healthbar.border:SetColorTexture(0, 0, 0, 0.5);
-        healthbar.border:Show();
+            healthbar.border = healthbar:CreateTexture(nil, "BACKGROUND", "asNamePlatesBorderTemplate");
+            PixelUtil.SetPoint(healthbar.border, "TOPLEFT", healthbar, "TOPLEFT", -1, 1);
+            PixelUtil.SetPoint(healthbar.border, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 1, -1);
+            healthbar.border:SetColorTexture(0, 0, 0, 0.5);
+            healthbar.border:Show();
 
-        healthbar.selectedBorder:ClearAllPoints();
-        healthbar.selectedBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
-        PixelUtil.SetPoint(healthbar.selectedBorder, "TOPLEFT", healthbar.border, "TOPLEFT", -1, 1);
-        PixelUtil.SetPoint(healthbar.selectedBorder, "BOTTOMRIGHT", healthbar.border, "BOTTOMRIGHT", 1, -1);
+            healthbar.selectedBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
+            local offset = 3 * scale.vertical;
+            healthbar.selectedBorder:ClearAllPoints();
+            PixelUtil.SetPoint(healthbar.selectedBorder, "TOPLEFT", healthbar, "TOPLEFT", -offset, offset);
+            PixelUtil.SetPoint(healthbar.selectedBorder, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", offset, -offset);
+        end
     end
 
     local previousTexture = healthbar:GetStatusBarTexture();
@@ -230,27 +233,12 @@ local function add_unit(unit)
     asframe.coloroverlay:SetVertexColor(previousTexture:GetVertexColor());
     asframe.coloroverlay:Hide();
 
-    asframe:SetScript("OnEvent", on_asframe_event);
-
-    if not UnitIsPlayer(unit) then
-        asframe:RegisterEvent("PLAYER_TARGET_CHANGED");
-        asframe:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit);
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
-    end
-
     asframe.powerbar:ClearAllPoints();
     PixelUtil.SetPoint(asframe.powerbar, "TOP", healthbar, "BOTTOM", 0, 2);
     asframe.powerbar:Hide();
 
     asframe.motext:ClearAllPoints();
-    PixelUtil.SetPoint(asframe.motext,"TOP", healthbar, "BOTTOM", 0, -1);
+    PixelUtil.SetPoint(asframe.motext, "TOP", healthbar, "BOTTOM", 0, -1);
     asframe.motext:Hide();
 
     asframe.targetedindi:ClearAllPoints();
@@ -288,6 +276,21 @@ local function add_unit(unit)
         if level < 0 or level > UnitLevel("player") then
             asframe.isboss = true;
         end
+    end
+
+    asframe:SetScript("OnEvent", on_asframe_event);
+
+    if not UnitIsPlayer(unit) then
+        asframe:RegisterEvent("PLAYER_TARGET_CHANGED");
+        asframe:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
+        asframe:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
+        asframe:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
+        asframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit);
+        asframe:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
+        asframe:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
+        asframe:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
+        asframe:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
+        asframe:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
     end
 
     local function callback()
