@@ -83,10 +83,6 @@ function ns.setup_frame(asframe)
         asframe.powerbar:SetHeight(ns.ACRB_HealerManaBarHeight);
 
         local powertype = UnitPowerType(asframe.unit);
-        local powercolor = PowerBarColor[powertype]
-        if powercolor then
-            asframe.powerbar:SetStatusBarColor(powercolor.r, powercolor.g, powercolor.b)
-        end
 
         asframe.ispowerupdate = false;
         asframe.ishealer = false
@@ -95,12 +91,18 @@ function ns.setup_frame(asframe)
                 asframe.ispowerupdate = true;
                 asframe.ishealer = true;
             end
+            powertype = 0;
         elseif istanker then
             if ns.options.BottomTankPowerBar and powertype > 0 then
                 asframe.ispowerupdate = true;
             end
         end
-
+        
+        local powercolor = PowerBarColor[powertype]
+        if powercolor then
+            asframe.powerbar:SetStatusBarColor(powercolor.r, powercolor.g, powercolor.b)
+        end
+        
         if asframe.ispowerupdate then
             asframe.powerbar:Show();
         else
