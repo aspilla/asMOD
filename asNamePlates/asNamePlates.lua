@@ -197,7 +197,7 @@ local function add_unit(unit)
 
     if unitFrame.castBar then
         asframe.casticon:ClearAllPoints();
-        asframe.casticon:SetPoint("BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0.5, -1);
+        PixelUtil.SetPoint(asframe.casticon, "BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0.5, -1);
         local scale = NamePlateDriverMixin:GetNamePlateScale();
         local height = 22 * scale.vertical + 10
         asframe.casticon:SetWidth(height * 1.2);
@@ -211,24 +211,22 @@ local function add_unit(unit)
         healthbar.bgTexture:Hide();
 
         healthbar.border = healthbar:CreateTexture(nil, "BACKGROUND", "asNamePlatesBorderTemplate");
-        healthbar.border:SetPoint("TOPLEFT", healthbar, "TOPLEFT", -1, 1);
-        healthbar.border:SetPoint("BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 1, -1);
+        PixelUtil.SetPoint(healthbar.border, "TOPLEFT", healthbar, "TOPLEFT", -1, 1);
+        PixelUtil.SetPoint(healthbar.border, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 1, -1);
         healthbar.border:SetColorTexture(0, 0, 0, 0.5);
         healthbar.border:Show();
 
-
-        healthbar.selectedBorder:SetParent(healthbar);
-        healthbar.selectedBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
         healthbar.selectedBorder:ClearAllPoints();
-        healthbar.selectedBorder:SetPoint("TOPLEFT", healthbar.border, "TOPLEFT", -1, 1);
-        healthbar.selectedBorder:SetPoint("BOTTOMRIGHT", healthbar.border, "BOTTOMRIGHT", 1, -1);  
+        healthbar.selectedBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
+        PixelUtil.SetPoint(healthbar.selectedBorder, "TOPLEFT", healthbar.border, "TOPLEFT", -1, 1);
+        PixelUtil.SetPoint(healthbar.selectedBorder, "BOTTOMRIGHT", healthbar.border, "BOTTOMRIGHT", 1, -1);
     end
 
     local previousTexture = healthbar:GetStatusBarTexture();
     asframe.coloroverlay:SetParent(healthbar);
     asframe.coloroverlay:ClearAllPoints();
-    asframe.coloroverlay:SetPoint("TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
-    asframe.coloroverlay:SetPoint("BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
+    PixelUtil.SetPoint(asframe.coloroverlay, "TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
+    PixelUtil.SetPoint(asframe.coloroverlay, "BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
     asframe.coloroverlay:SetVertexColor(previousTexture:GetVertexColor());
     asframe.coloroverlay:Hide();
 
@@ -248,15 +246,15 @@ local function add_unit(unit)
     end
 
     asframe.powerbar:ClearAllPoints();
-    asframe.powerbar:SetPoint("TOP", healthbar, "BOTTOM", 0, 2);
+    PixelUtil.SetPoint(asframe.powerbar, "TOP", healthbar, "BOTTOM", 0, 2);
     asframe.powerbar:Hide();
 
     asframe.motext:ClearAllPoints();
-    asframe.motext:SetPoint("TOP", healthbar, "BOTTOM", 0, -1);
+    PixelUtil.SetPoint(asframe.motext,"TOP", healthbar, "BOTTOM", 0, -1);
     asframe.motext:Hide();
 
     asframe.targetedindi:ClearAllPoints();
-    asframe.targetedindi:SetPoint("RIGHT", healthbar, "LEFT", 5, 0);
+    PixelUtil.SetPoint(asframe.targetedindi, "RIGHT", healthbar, "LEFT", 5, 0);
     asframe.targetedindi:SetAlpha(0);
     asframe.targetedindi:Show();
     asframe.targetedinditype = 1;
@@ -270,7 +268,7 @@ local function add_unit(unit)
     asframe.powertype = powertype;
 
     asframe:ClearAllPoints();
-    asframe:SetPoint("TOPLEFT", healthbar, "TOPLEFT", -5, 1);
+    PixelUtil.SetPoint(asframe, "TOPLEFT", healthbar, "TOPLEFT", -5, 1);
 
     local checkcolor = false;
 
