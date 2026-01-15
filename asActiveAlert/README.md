@@ -1,6 +1,6 @@
 # asActiveAlert (Midnight)
 
-
+Displays highlighted spells to the left of the character.
 
 ![asActiveAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asActiveAlert.jpg?raw=true)
 
@@ -8,12 +8,12 @@
 
 * **Spell Activation Alerts**:
     * When a spell becomes available or is highlighted by a specific effect (the glowing border effect in the default UI), the spell icon is displayed to the left of the character.
-    * The list of spells cannot be edited manually.
+    * Manual editing of the spell list is not supported.
     * Displays cooldown progress on the icons.
 
 ## Configuration
 * **Positioning**: Enter the `/asConfig` command in the chat.
-* **Reset Position**: Enter the `/asClear` command in the chat to restore the default position.
+* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ---
 

@@ -1,4 +1,4 @@
-# asMisdirection
+# asMisdirection (Midnight)
 
 Auto Macros for Misdirection, Tricks of the Trade.
 
@@ -43,7 +43,7 @@ Auto Macros for Misdirection, Tricks of the Trade.
 
 ---
 
-# asMisdirection 
+# asMisdirection (한밤)
 
 눈속임, 속임수 거래 자동 매크로
 
