@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rGearScoreLite
 ## Notes: Displays item levels on Character Info/Inspect window.
 ## Notes-koKR: 캐릭터 창/살펴보기 창에 아이템 레벨 표시
-## Version : 251225
+## Version : 260116
 ## OptionalDeps: Blizzard_InspectUI
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
