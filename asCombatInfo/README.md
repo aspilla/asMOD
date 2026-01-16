@@ -1,30 +1,30 @@
 # asCombatInfo (Midnight)
 
-Enhances the Cooldown Manager.
+Enhancements for the Cooldown Manager.
 
 ![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN2.jpg?raw=true)
 
-
 ## Key Features 
 
-* **Icon/Border Style**: Modifies the shape and appearance of icons and borders.
-* **Charge Count**: Moves the charge count to the bottom and changes the color to green.
-* **Hotkeys**: Displays hotkey text on the icons.
-* **Alignment**: Centers icons when they span two rows.
+* **Icon/Border Appearance**: Changes the styling of icons and borders.
+* **Stack Counts**: Moved to the bottom and changed to green.
+* **Hotkey Display**: Displays hotkeys (For Stealth or Druid forms, hotkeys update only when in the respective form).
+* **2-Row Center Alignment**: Icons in the second row are centered.
 ![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN.jpg?raw=true)
 
-* **Font**: Changes the font to the default Blizzard font.
-* **Buff Indicators**: Adds a blue border during enhancement or debuff status.
-* **Buff Bar Visuals**: Changes the appearance of the buff bar and applies class colors.
-* Recommended to use alongside `asPowerBar`.
+* **Font Updates**: Uses the default WoW font.
+* **Aura Highlights**: Adds blue borders during buff or empowerment effects.
+* **Buff Bar Skinning**: Changes the appearance of buff bars and applies class colors.
+* **Integration**: Recommended for use with `asPowerBar`.
 
 ## Configuration 
-* Settings can be adjusted via `ESC` > `Options` > `Addons` > `asCombatInfo`.
-* `AlignedBuff`: Centers the buff icons (Default: Off).
-* `CombatAlphaChange`: Changes transparency when out of combat (Default: On).
-* `ChangeBuffBar`: Modifies the visual style of the buff bars. (Default: On).
-* `BuffBarClassColor`: Applies class colors to the buff bars.(Default: On).
-* `HideBarName` : Hides name text on the buff bars. (Default: On)
+* Adjust settings via `ESC` > `Options` > `Addons` > `asCombatInfo`.
+* `AlignedBuff`: Center-align buffs (Default: Off).
+* `CombatAlphaChange`: Adjust transparency when out of combat (Default: On).
+* `ChangeBuffBar`: Update the appearance of the buff bar (Default: On).
+* `BuffBarClassColor`: Apply class colors to the buff bar (Default: On).
+* `ShowHotKey`: Display hotkey text (Default: On).
+* `HideBarName`: Hide skill names on the buff bar (Default: On).
 
 ---
 
@@ -38,7 +38,7 @@ Enhances the Cooldown Manager.
 
 *   **아이콘/테두리 모양 변경** 
 *   **충전 횟수 하단 이동 및 녹색 변경** 
-*   **단축키 표시** 
+*   **단축키 표시** : 은신이나, 드루이드 변신 관련해서는 해당 폼으로 변경해야 단축키 표시가 됨
 *   **2열 아이콘 가운데 정렬**
 ![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN.jpg?raw=true)
 

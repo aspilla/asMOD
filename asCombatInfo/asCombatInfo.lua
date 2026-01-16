@@ -87,6 +87,22 @@ local function update_bars(viewer)
 	end
 end
 
+local function get_spellhotkey(spellid, debug)
+	local slots = C_ActionBar.FindSpellActionButtons(spellid)
+	if slots and #slots > 0 then
+		for _, slot in ipairs(slots) do
+			if debug then
+				print(slot);
+			end
+			local text = ns.hotkeys[slot];
+			if text then
+				return text;
+			end
+		end
+	end
+	return nil;
+end
+
 -- Core function to remove padding and apply modifications. Doing Blizzard's work for them.
 local function update_buttons(viewer)
 	-- Don't apply modifications in edit mode
@@ -229,11 +245,12 @@ local function update_buttons(viewer)
 			end
 		end
 
-		if not isbuff then
+		if not isbuff and ns.options.ShowHotKey then
 			local spellid = button:GetSpellID();
 
 			if not issecretvalue(spellid) then
-				local keytext = ns.hotkeys[spellid];
+				button.asspellid = spellid;
+				local keytext = get_spellhotkey(spellid);
 
 				if keytext then
 					button.hotkey:SetText(keytext);
@@ -304,6 +321,48 @@ local function update_buttons(viewer)
 	end
 end
 
+local function update_hotkey(viewer)
+	-- Don't apply modifications in edit mode
+	if EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() then
+		return
+	end
+
+	if not ns.options.ShowHotKey then
+		return;
+	end
+
+	local childs = { viewer:GetChildren() };
+
+
+	-- Get the visible icons (because they're fully dynamic)
+	local visiblechilds = {}
+	for _, child in ipairs(childs) do
+		if child:IsShown() then
+			table.insert(visiblechilds, child)
+		end
+	end
+
+	if #visiblechilds == 0 then
+		return
+	end
+
+	for _, button in ipairs(visiblechilds) do
+		if button.asspellid then
+			local spellid = button.asspellid;
+
+			if not issecretvalue(spellid) then
+				local keytext = get_spellhotkey(spellid);
+				if keytext then
+					button.hotkey:SetText(keytext);
+					button.hotkey:Show();
+				else
+					button.hotkey:Hide();
+				end
+			end
+		end
+	end
+end
+
 
 local updateframe = CreateFrame("Frame");
 local todolist = {};
@@ -330,6 +389,11 @@ local viewers = {
 	EssentialCooldownViewer,
 	BuffIconCooldownViewer,
 	BuffBarCooldownViewer
+}
+
+local keyviewers = {
+	UtilityCooldownViewer,
+	EssentialCooldownViewer,
 }
 
 local function check_name(name)
@@ -374,60 +438,53 @@ local function check_name(name)
 	return name;
 end
 
-local function scan_keys(name, total, bforce)
+local function scan_keys(name, total)
 	for i = 1, total do
-		local f = getglobal(name .. i);
-		if not f then
+		local actionbutton = getglobal(name .. i);
+		if not actionbutton then
 			break
 		end
 		;
-		local hotkey = getglobal(f:GetName() .. "HotKey");
+		local hotkey = getglobal(actionbutton:GetName() .. "HotKey");
 		if not hotkey then
 			break
 		end
-		;
 
 		local text = hotkey:GetText();
-		if f.action then
-			local actionType, id = GetActionInfo(f.action)
-
-			if (actionType == "spell" or actionType == "macro") and id and text ~= "●" then
-				if ns.hotkeys[id] == nil or bforce then
-					ns.hotkeys[id] = check_name(text);
-				end
+		local slot = actionbutton.action;
+		if slot then
+			if ns.hotkeys[slot] == nil then
+				ns.hotkeys[slot] = check_name(text);
 			end
 		end
 	end
 end
 
-local function check_hotkeys(ball)
+local function check_hotkeys()
 	if not ns.options.ShowHotKey then
 		return;
 	end
 
-	if ball then
-		wipe(ns.hotkeys);
-		scan_keys("ActionButton", 12);
-		scan_keys("MultiBarBottomLeftButton", 12);
-		scan_keys("MultiBarBottomRightButton", 12);
-		scan_keys("MultiBarRightButton", 12);
-		scan_keys("MultiBarLeftButton", 12);
-		scan_keys("MultiBar5Button", 12);
-		scan_keys("MultiBar6Button", 12);
-		scan_keys("MultiBar7Button", 12);
-		scan_keys("BonusActionButton", 12);
-		scan_keys("ExtraActionButton", 12);
-		scan_keys("VehicleMenuBarActionButton", 12);
-		scan_keys("OverrideActionBarButton", 12);
-		scan_keys("PetActionButton", 10);
-	else
-		scan_keys("ActionButton", 12, true);
-	end
+
+	wipe(ns.hotkeys);
+	scan_keys("ActionButton", 12);
+	scan_keys("MultiBarBottomLeftButton", 12);
+	scan_keys("MultiBarBottomRightButton", 12);
+	scan_keys("MultiBarRightButton", 12);
+	scan_keys("MultiBarLeftButton", 12);
+	scan_keys("MultiBar5Button", 12);
+	scan_keys("MultiBar6Button", 12);
+	scan_keys("MultiBar7Button", 12);
+	scan_keys("BonusActionButton", 12);
+	scan_keys("ExtraActionButton", 12);
+	scan_keys("VehicleMenuBarActionButton", 12);
+	scan_keys("OverrideActionBarButton", 12);
+	scan_keys("PetActionButton", 10);
 end
 
 -- Do the work
 local function init()
-	check_hotkeys(true);
+	check_hotkeys();
 	for _, viewer in ipairs(viewers) do
 		if viewer then
 			update_buttons(viewer)
@@ -449,6 +506,16 @@ local function init()
 					add_todolist(viewer)
 				end)
 			end
+		end
+	end
+end
+
+local function refresh()
+	scan_keys("ActionButton", 12);
+	scan_keys("BonusActionButton", 12);
+	for _, viewer in ipairs(keyviewers) do
+		if viewer then
+			update_hotkey(viewer);
 		end
 	end
 end
@@ -477,8 +544,8 @@ local function on_event(self, event, arg)
 		if ns.options.CombatAlphaChange then
 			set_viewersalpha(configs.normalalpha);
 		end
-	elseif event == "UPDATE_SHAPESHIFT_COOLDOWN" then
-		check_hotkeys(false);
+	elseif event == "UPDATE_BONUS_ACTIONBAR" then
+		refresh();
 	else
 		C_Timer.After(0.5, init);
 
@@ -496,10 +563,9 @@ main_frame:RegisterEvent("ADDON_LOADED");
 main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
 main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
-main_frame:RegisterEvent("UPDATE_BINDINGS");
 main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
 main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-main_frame:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN");
+main_frame:RegisterEvent("UPDATE_BONUS_ACTIONBAR");
 
 main_frame:SetScript("OnEvent", on_event);
