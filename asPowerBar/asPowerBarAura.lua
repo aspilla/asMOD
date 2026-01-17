@@ -37,7 +37,7 @@ local function check_void()
     end
 
     if stack then
-        --ns.combocountbar:SetMinMaxValues(0, 50)
+        ns.combocountbar:SetMinMaxValues(0, 50)
         ns.combocountbar:SetValue(stack)
         ns.combotext:SetText(stack);
         ns.combocountbar:Show();
@@ -64,5 +64,16 @@ function ns.setup_auracombo(auraid, maxcombo)
         gvalue.auraid = auraid;
         main_frame:RegisterUnitEvent("UNIT_AURA", "player");
         check_auracount();
+    end
+end
+
+function ns.setup_void()
+    gvalue.check_func = nil;
+    main_frame:UnregisterEvent("UNIT_AURA");
+
+    if ns.options.ShowClassResource then        
+        gvalue.check_func = check_void;        
+        main_frame:RegisterUnitEvent("UNIT_AURA", "player");
+        check_void();
     end
 end

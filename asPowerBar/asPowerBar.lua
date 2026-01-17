@@ -84,6 +84,10 @@ local function init_class()
             powerlevel = Enum.PowerType.ComboPoints;
         end
 
+        if (spec and spec == 3) then
+            spellid = 22842;
+        end
+
         if (spec and spec == 4) then
             powerlevel = Enum.PowerType.ComboPoints;
         end
@@ -92,6 +96,10 @@ local function init_class()
     if (englishClass == "MONK") then
         if (spec and spec == 1) then
             bstagger = true;
+        end
+
+        if (spec and spec == 2) then
+            spellid = 115151;
         end
 
         if (spec and spec == 3) then
@@ -123,17 +131,28 @@ local function init_class()
     end
 
     if (englishClass == "WARRIOR") then
+
+        if (spec and spec == 1) then
+            spellid = 7384;
+        end
+
+        if (spec and spec == 2) then
+            spellid = 85288;
+        end
+
         if (spec and spec == 3) then
             spellid = 2565;
         end
     end
 
     if (englishClass == "DEMONHUNTER") then
+
+        if spec and spec == 2 then
+            spellid = 203720;
+        end
+
         if spec and spec == 3 then
-            --ns.combocountbar:SetMinMaxValues(0, 50);
-            --ns.aura_func = ns.check_void;
-            --main_frame:RegisterUnitEvent("UNIT_AURA", "player");
-            --ns.aura_func();
+            --ns.setup_void();
         end
     end
 
@@ -145,6 +164,10 @@ local function init_class()
         if (spec and spec == 2) then
             spellid = 19434;
         end
+
+        if (spec and spec == 3) then
+            spellid = 259495;
+        end
     end
 
     if (englishClass == "SHAMAN") then
@@ -155,6 +178,9 @@ local function init_class()
         if spec and spec == 2 then
             auraid = 344179;
             max_aura = 10;
+        end
+        if (spec and spec == 3) then
+            spellid = 61295;
         end
     end
 

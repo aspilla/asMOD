@@ -98,8 +98,8 @@ All asMOD addons can function independently. If you wish to use only specific ad
 | asTargetCastBar | Cast bars for Target and Focus | [Link](https://www.curseforge.com/wow/addons/astargetcastingbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asTargetCastBar) |
 | asTrueGCD | Displays history of recently used spells and items | [Link](https://www.curseforge.com/wow/addons/astruegcd) | [Link](https://github.com/aspilla/asMOD/tree/main/asTrueGCD) |
 | asUnitFrame | Simple unit frames | [Link](https://www.curseforge.com/wow/addons/asunitframe) | [Link](https://github.com/aspilla/asMOD/tree/main/asUnitFrame) |
----
 
+---
 # asMOD 모음집 (한밤)
 
 asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
