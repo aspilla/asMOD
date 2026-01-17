@@ -4,6 +4,8 @@ asMOD is a collection of custom-made World of Warcraft addons.
 
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_party.jpg?raw=true)
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/YLXFy8kB6UE?si=Y8h6YHQ0l8pW4gug" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Features of asMOD
 
 * **Simple:** Each addon functions independently and focuses on enhancing the default UI with lightweight features.
@@ -19,15 +21,15 @@ asMOD is a collection of custom-made World of Warcraft addons.
 * **Enhanced Standalone Use:** The `/asconfig` and `/asclear` commands for repositioning can now be used even if you only install individual addons without the main `asMOD` package.
 
 ## Unsupported Addons (from Midnight)
-* asAutoMarker: Unsupported due to inability to track mob GUIDs.
-* asBooldlustAlert: Unsupported due to debuff tracking restrictions.
-* asDBMCastingAlert: Unsupported due to the removal of DBM integration.
-* asDotSnapshot: Unsupported due to debuff tracking restrictions.
-* asFixCombatText: Unsupported as combat text values are now secret.
-* asHealerChatAlert: Unsupported as mana values are now secret.
-* asOverlay: Unsupported due to debuff tracking restrictions.
-* asReady: Unsupported due to restrictions on tracking skill usage.
-* asSummonTracker: Unsupported due to restrictions on tracking skill usage.
+* **asAutoMarker**: Unsupported due to inability to track mob GUIDs.
+* **asBooldlustAlert**: Unsupported due to debuff tracking restrictions.
+* **asDBMCastingAlert**: Unsupported due to the removal of DBM integration.
+* **asDotSnapshot**: Unsupported due to debuff tracking restrictions.
+* **asFixCombatText**: Unsupported as combat text values are now secret.
+* **asHealerChatAlert**: Unsupported as mana values are now secret.
+* **asOverlay**: Unsupported due to debuff tracking restrictions.
+* **asReady**: Unsupported due to restrictions on tracking skill usage.
+* **asSummonTracker**: Unsupported due to restrictions on tracking skill usage.
 
 ## Important Note (Regarding asUnitFrame)
 
@@ -39,15 +41,17 @@ The following issue may occur:
 1. Install `asMOD` from CurseForge (asMOD includes other asMOD addons: https://www.curseforge.com/wow/addons/asmod).
 2. When the asMOD popup appears stating "asMOD will change the default interface settings," click **Change**.
 3. Adjust `ESC > Options > Gameplay > Advanced Cooldown Settings`.
+4. The `asMOD_layout` Edit Mode profile is automatically installed. You can adjust it to your personal preference if desired.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/-7xsxpKTS7U?si=Rj7atkBM71u8X6mM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Installation (Inven)
 
 1. The Inven version includes Korean fonts and has a different installation process. Please refer to the video below:
-<iframe width="560" height="315" src="https://www.youtube.com/embed/6F7Amrvdda8?si=rKcZRo5ctJHyI0Zq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-2. Adjust `ESC > Options > Gameplay > Advanced Cooldown Settings`.
+<iframe width="560" height="315" src="https://www.youtube.com/embed/WZQ_9VIF7RE?si=ojzV4SJ17osDU6mA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+2. After copying, follow the same configuration as the CurseForge version.
 3. After installation, updates can be managed via CurseForge.
 
 ## Positioning Guide
@@ -106,6 +110,8 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_party.jpg?raw=true)
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/YLXFy8kB6UE?si=Y8h6YHQ0l8pW4gug" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## asMOD의 특징
 
 *   **Simple:** 각 애드온은 기본 UI를 강화하는 간단한 기능만 지원하며 개별로 동작
@@ -142,15 +148,17 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 1. CurseForge 에서 asMOD를 설치 (asMOD에 다른 asMOD 애드온들이 포함 되어 있음, https://www.curseforge.com/wow/addons/asmod)
 2. `asMOD` 애드온 사용시 `asMOD가 '기본 인터페이스 설정'을 변경합니다. 채팅창에 '/asMOD'명령어로 기능을 다시 불러 올 수 있습니다.` 창에서 `변경`을 클릭
 3. `esc >> 옵션 >> 게임플레이 개선 >> 고급 재사용시간 설정` 조정
+4. `asMOD_layout` 편집모드를 자동으로 설치함, 원치 않으면 개인 설정으로 조정 가능
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/-7xsxpKTS7U?si=Rj7atkBM71u8X6mM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 설치 방법 (인벤)
 
 1. 인벤 버전은 한글 폰트를 포함하고 있어 설치법에 차이가 있음, 아래 영상을 참고
-<iframe width="560" height="315" src="https://www.youtube.com/embed/6F7Amrvdda8?si=rKcZRo5ctJHyI0Zq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-2. `esc >> 옵션 >> 게임플레이 개선 >> 고급 재사용시간 설정` 조정
+<iframe width="560" height="315" src="https://www.youtube.com/embed/WZQ_9VIF7RE?si=ojzV4SJ17osDU6mA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+2. 복사 후 CurseForge 와 동일한 설정
 3. 설치 후 CurseForge로 업데이트 가능
 
 
