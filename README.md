@@ -2,6 +2,9 @@
 
 asMOD is a collection of custom-made World of Warcraft addons.
 
+## Important Notice!! Not supported in The War Within
+Versions 12.0.0 and 12.0.1 are exclusively for Midnight/Pre-Midnight and cannot be used in The War Within. For The War Within, version 11.2.7 must be used!
+
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_party.jpg?raw=true)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/eVZ58UiQwl8?si=exHJVZS-YnykgmSh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -48,18 +51,17 @@ The following issue may occur:
 ## Installation (Inven)
 
 1. The Inven version includes Korean fonts and has a different installation process. Please refer to the video below:
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/WZQ_9VIF7RE?si=ojzV4SJ17osDU6mA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
 2. After copying, follow the same configuration as the CurseForge version.
 3. After installation, updates can be managed via CurseForge.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/WZQ_9VIF7RE?si=ojzV4SJ17osDU6mA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
 ## Positioning Guide
 1. Use the `/asconfig` command to adjust frame positions.
+2. Disable `asUnitFrame` before using `Edit Mode`.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/sqFLkn9vQ_8?si=ZqZ5d-RYENt5tnhQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-2. Disable `asUnitFrame` before using `Edit Mode`.
 
 ## asMOD Addon List (Midnight)
 All asMOD addons can function independently. If you wish to use only specific addons, you can install them separately via the links below.
@@ -108,6 +110,9 @@ All asMOD addons can function independently. If you wish to use only specific ad
 
 asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
+## 주의사항!! 내부전쟁 미지원
+12.0.0, 12.0.1 버전은 한밤/소한밤 전용으로 내부전쟁은 사용 불가 함, 내부전쟁에서는 11.2.7 버전 사용필요!
+
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_party.jpg?raw=true)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/eVZ58UiQwl8?si=exHJVZS-YnykgmSh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -139,10 +144,8 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 
 ## 주의사항 (asUnitFrame 관련)
-
 다음과 같은 오류가 발생 할 수 있음.
-
-1.  **편집 모드 오류:** 편집 모드 사용 시 오류가 발생하여 설정 변경이 불가능할 수 있음. asUnitFrame을 끈 상태에서 편집 모드를 진행 필요.
+**편집 모드 오류:** 편집 모드 사용 시 오류가 발생하여 설정 변경이 불가능할 수 있음. asUnitFrame을 끈 상태에서 편집 모드를 진행 필요.
 
 ## 설치 방법 (CurseForge)
 1. CurseForge 에서 asMOD를 설치 (asMOD에 다른 asMOD 애드온들이 포함 되어 있음, https://www.curseforge.com/wow/addons/asmod)
@@ -155,19 +158,18 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 ## 설치 방법 (인벤)
 
 1. 인벤 버전은 한글 폰트를 포함하고 있어 설치법에 차이가 있음, 아래 영상을 참고
+2. 복사 후 CurseForge 와 동일한 설정
+3. 설치 후 CurseForge로 업데이트 가능
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/WZQ_9VIF7RE?si=ojzV4SJ17osDU6mA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-2. 복사 후 CurseForge 와 동일한 설정
-3. 설치 후 CurseForge로 업데이트 가능
 
 
 ## 위치 설정 방법
 1. `/asconfig` 명령으로 위치 조정 가능
+2. `편집모드` 사용시 asUnitFrame 끄고 진행
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/sqFLkn9vQ_8?si=ZqZ5d-RYENt5tnhQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-2. `편집모드` 사용시 asUnitFrame 끄고 진행
 
 
 ## asMOD 애드온 목록 (한밤)
