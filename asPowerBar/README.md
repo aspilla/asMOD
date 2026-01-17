@@ -21,7 +21,7 @@ Displays Primary and Class resources.
 * **Death Knight:** Runes
 * **Priest:** [Discipline] Power Word: Radiance cooldown, [Holy] Holy Word: Serenity cooldown, [Shadow] Mind Blast cooldown
 * **Warrior:** [Arms] Overpower cooldown, [Fury] Raging Blow cooldown, [Protection] Shield Block cooldown
-* **Demon Hunter:** [Vengeance] Demon Spikes
+* **Demon Hunter:** [Vengeance] Demon Spikes cooldown
 * **Hunter:** [Beast Mastery] Barbed Shot cooldown, [Marksmanship] Aimed Shot cooldown, [Survival] Wildfire Bomb cooldown
 
 ## Configuration
@@ -56,7 +56,7 @@ Displays Primary and Class resources.
 *   **죽음의 기사 :** 룬
 *   **사제 :** [수양] 광휘 쿨다운, [신성] 평온 쿨다운, [암흑] 정신분열 쿨다운
 *   **전사 :** [무기] 제압 쿨다운, [분노] 분노의 강타 쿨다운, [방어] 방패 올리기 쿨다운 
-*   **악마사냥꾼 :** [복수] 악마 쐐기
+*   **악마사냥꾼 :** [복수] 악마 쐐기 쿨다운
 *   **사냥꾼 :** [야수] 날카로운 사격 쿨다운, [사격] 조준 사격 쿨다운, [생존] 야생불 폭탄 쿨다운
 
 
