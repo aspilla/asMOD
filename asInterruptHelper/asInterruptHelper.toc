@@ -9,6 +9,5 @@
 ## Category: asMOD
 Libs\LibStub\LibStub.lua
 Libs\LibasConfig\LibasConfig.lua
-asInterruptHelperLib.lua
 asInterruptHelperOption.lua
 asInterruptHelper.xml
