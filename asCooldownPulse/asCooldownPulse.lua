@@ -280,6 +280,16 @@ local function init()
     ns.setup_option();
     create_buttons();
     C_Timer.NewTicker(0.2, on_update);
+
+    if ns.options.CombatAlphaChange then
+        if UnitAffectingCombat("player") then
+            main_frame:SetAlpha(configs.combatalpha);
+        else
+            main_frame:SetAlpha(configs.normalalpha);
+        end
+    else
+        main_frame:SetAlpha(configs.combatalpha);
+    end    
 end
 
 main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
@@ -292,6 +302,6 @@ main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 main_frame:SetScript("OnEvent", on_event);
 main_frame:EnableMouse(false);
 main_frame:Show();
-main_frame:SetSize(0,0);
+main_frame:SetSize(0, 0);
 
 C_Timer.After(0.5, init);
