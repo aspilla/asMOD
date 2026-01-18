@@ -153,7 +153,7 @@ function ns.update_cast(asframe)
             asframe.casticon:Show();
         end
 
-        if ns.optios.AlertImportantSpell then
+        if ns.options.AlertImportantSpell then
             local isimportant = C_Spell.IsSpellImportant(spellid);
             local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
             asframe.important:SetAlpha(alpha);

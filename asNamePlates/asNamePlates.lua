@@ -221,12 +221,15 @@ local function add_unit(unit)
             PixelUtil.SetPoint(healthbar.selectedBorder, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", offset, -offset);
         end
     end
+    
+    
+    asframe.important:ClearAllPoints();
     asframe.important:SetParent(healthbar);
     asframe.important:SetDrawLayer("BACKGROUND", -6);
     asframe.important:SetPoint("TOPLEFT", healthbar, "TOPLEFT", -3, 3);
     asframe.important:SetPoint("BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 3, -3);
-    asframe.important:Show();
     asframe.important:SetAlpha(0);
+    asframe.important:Show();    
     asframe.importantshowtype = 1;
 
     local previousTexture = healthbar:GetStatusBarTexture();

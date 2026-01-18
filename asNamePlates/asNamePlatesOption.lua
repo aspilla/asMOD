@@ -232,6 +232,7 @@ local function on_panelshow()
         setup_checkboxoption("[기능] 시전 Icon 표시", "ShowCastIcon");
         setup_checkboxoption("[기능] Debuff Icon 변경", "ChangeDebuffIcon");
         setup_checkboxoption("[기능] Targeted 강조", "ShowTargeted");
+        setup_checkboxoption("[기능] 중요 스킬 시전 강조", "AlertImportantSpell");
 
         setup_slideoption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");
 
@@ -258,6 +259,7 @@ local function on_panelshow()
         setup_checkboxoption("[Feature] Show cast icon", "ShowCastIcon");
         setup_checkboxoption("[Feature] Change Debuff Icon", "ChangeDebuffIcon");
         setup_checkboxoption("[Feature] Alert Targeted", "ShowTargeted");
+        setup_checkboxoption("[Feature] Alert Important Spell Casting", "AlertImportantSpell");
 
         setup_slideoption("Nameplate vertical alignment (nameplateOverlapV)", "nameplateOverlapV");
 
