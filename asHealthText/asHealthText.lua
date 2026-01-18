@@ -59,7 +59,7 @@ local function update_power(frame, unit)
 	if UnitExists(unit) then
 		local powertype = UnitPowerType(unit);
 
-		local value     = UnitPower(unit, powertype, true);
+		local value     = UnitPower(unit, powertype, false);
 		if powertype == 0 then
 			value = UnitPowerPercent("player", powertype, false, curve);
 		end
