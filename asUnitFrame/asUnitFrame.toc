@@ -11,7 +11,6 @@ Libs\LibStub\LibStub.lua
 Libs\LibasConfig\LibasConfig.lua
 asUnitFrameHide.lua
 asUnitFrame.xml
-asUnitFrameLib.lua
 asUnitFrameOption.lua
 asUnitFrameAura.lua
 asUnitFrameTotem.lua

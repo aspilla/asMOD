@@ -9,8 +9,7 @@ local configs = {
 local function hide_castbar(castbar)
     local targetname = castbar.targetname;
     castbar:SetValue(0);
-    castbar:Hide();
-    ns.lib.PixelGlow_Stop(castbar);
+    castbar:Hide();    
     castbar.isAlert = false;
     targetname:SetText("");
     targetname:Hide();

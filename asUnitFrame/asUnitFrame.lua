@@ -417,12 +417,12 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame.castbar.notinterruptable:Show();
 
 
-    frame.castbar.important = frame.castbar:CreateTexture(nil, "BACKGROUND")
-    frame.castbar.important:SetPoint("TOPLEFT", frame.castbar, "TOPLEFT", -2, 2)
-    frame.castbar.important:SetPoint("BOTTOMRIGHT", frame.castbar, "BOTTOMRIGHT", 2, -2)
-
-    frame.castbar.important:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga")
-    frame.castbar.important:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    frame.castbar.important = frame.castbar:CreateTexture(nil, "BACKGROUND");
+    frame.castbar.important:SetDrawLayer("BACKGROUND", -6);
+    frame.castbar.important:SetPoint("TOPLEFT", frame.castbar, "TOPLEFT", -2, 2);
+    frame.castbar.important:SetPoint("BOTTOMRIGHT", frame.castbar, "BOTTOMRIGHT", 2, -2);
+    frame.castbar.important:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga");
+    frame.castbar.important:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
     frame.castbar.important:SetVertexColor(1, 0, 0, 1);
     frame.castbar.important:SetAlpha(0);
     frame.castbar.important:Show();
