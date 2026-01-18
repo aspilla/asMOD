@@ -9,6 +9,5 @@
 ## Category: asMOD
 Libs\LibStub\LibStub.lua
 Libs\LibasConfig\LibasConfig.lua
-asTargetCastBarLib.lua
 asTargetCastBarOption.lua
 asTargetCastBar.xml

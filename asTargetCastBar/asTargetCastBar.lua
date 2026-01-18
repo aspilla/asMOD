@@ -50,12 +50,12 @@ local function setup_castbar()
     castbar.notinterruptable:SetAlpha(0);
     castbar.notinterruptable:Show();
 
-    castbar.important = castbar:CreateTexture(nil, "BACKGROUND")
-    castbar.important:SetPoint("TOPLEFT", castbar, "TOPLEFT", -2, 2)
-    castbar.important:SetPoint("BOTTOMRIGHT", castbar, "BOTTOMRIGHT", 2, -2)
-
-    castbar.important:SetTexture("Interface\\Addons\\asTargetCastBar\\border.tga")
-    castbar.important:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+    castbar.important = castbar:CreateTexture(nil, "BACKGROUND");
+    castbar.important:SetDrawLayer("BACKGROUND", -6);
+    castbar.important:SetPoint("TOPLEFT", castbar, "TOPLEFT", -2, 2);
+    castbar.important:SetPoint("BOTTOMRIGHT", castbar, "BOTTOMRIGHT", 2, -2);
+    castbar.important:SetTexture("Interface\\Addons\\asTargetCastBar\\border.tga");
+    castbar.important:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
     castbar.important:SetVertexColor(1, 0, 0, 1);
     castbar.important:SetAlpha(0);
     castbar.important:Show();
@@ -109,7 +109,7 @@ local function setup_castbar()
     castbar.targetedindi:Show();
 
     castbar.start = 0;
-    castbar.duration = 0;    
+    castbar.duration = 0;
     castbar.targetedinditype = 1;
     return castbar;
 end
@@ -119,11 +119,10 @@ local function hide_castbar(castbar)
     local targetname = castbar.targetname;
     castbar:SetValue(0);
     castbar:Hide();
-    ns.lib.PixelGlow_Stop(castbar);
     castbar.isAlert = false;
     targetname:SetText("");
     targetname:Hide();
-    castbar.failstart = nil;    
+    castbar.failstart = nil;
     castbar.duration_obj = nil;
     castbar.notinterruptable:SetAlpha(0);
     castbar.important:SetAlpha(0);
@@ -187,25 +186,24 @@ local function check_casting(castbar, event)
             castbar:SetMinMaxValues(start, endTime)
             castbar.failstart = nil;
 
-            local color = configs.interruptcolor;            
+            local color = configs.interruptcolor;
             castbar:SetStatusBarColor(color[1], color[2], color[3]);
             text:SetText(name);
             show_raidicon(unit, mark);
             frameicon:Show();
             castbar:Show();
 
-            if C_CurveUtil and C_CurveUtil.EvaluateColorValueFromBoolean then
-                local isimportant = C_Spell.IsSpellImportant(spellid);
-                local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
-                castbar.important:SetAlpha(alpha);
 
-                local istargeted = UnitIsUnit(unit .. "target", "player");
-                local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(istargeted, 1, 0);
-                castbar.targetedindi:SetAlpha(alpha);
+            local isimportant = C_Spell.IsSpellImportant(spellid);
+            local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
+            castbar.important:SetAlpha(alpha);
 
-                local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(notInterruptible, 1, 0);
-                castbar.notinterruptable:SetAlpha(alpha);
-            end
+            local istargeted = UnitIsUnit(unit .. "target", "player");
+            local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(istargeted, 1, 0);
+            castbar.targetedindi:SetAlpha(alpha);
+
+            local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(notInterruptible, 1, 0);
+            castbar.notinterruptable:SetAlpha(alpha);
 
             if UnitExists(targettarget) then
                 local _, Class = UnitClass(targettarget)
@@ -277,7 +275,7 @@ local function on_unit_event(castbar, event, ...)
 end
 
 local function on_event(self, event, ...)
-    if event == "PLAYER_TARGET_CHANGED" then        
+    if event == "PLAYER_TARGET_CHANGED" then
         check_unit(ns.targetcastbar, "target");
     elseif event == "PLAYER_FOCUS_CHANGED" then
         check_unit(ns.focuscastbar, "focus");
@@ -319,6 +317,13 @@ local function update_castbar(castbar)
         if castbar.targetedinditype == 3 then
             castbar.targetedinditype = 1;
         end
+
+        if castbar.important:IsShown() then
+            castbar.important:Hide();
+        else
+            castbar.important:Show();
+        end
+
         updatecount = 1;
     end
 end
