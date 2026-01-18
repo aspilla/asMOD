@@ -3,12 +3,11 @@
 ## Title: |cffff3399as|rNamePlates
 ## Notes: Nameplate Enhancement Addon
 ## Notes-koKR:이름표 강화 애드온
-## Version : 251225 
+## Version : 260118 
 ## SavedVariablesPerCharacter: ANameP_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asNamePlates.xml
-asNamePlatesLib.lua
 asNamePlatesOption.lua
 asNamePlatesPool.lua
 asNamePlatesFeature.lua

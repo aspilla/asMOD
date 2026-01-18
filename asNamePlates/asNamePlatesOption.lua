@@ -21,6 +21,7 @@ ns.option_default = {
     ChangeDebuffIcon = true,
     ChangeTexture = true,
     ShowTargeted = true,
+    AlertImportantSpell = true,
 
     AggroColor = { r = 0.4, g = 0.2, b = 0.8 },
     TankAggroLoseColor = { r = 1, g = 0.5, b = 0.5 },

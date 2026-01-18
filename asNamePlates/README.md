@@ -1,36 +1,38 @@
 # asNamePlates (Midnight)
 
-Nameplate Enhancement Addon
+Nameplate enhancement addon.
 
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_MN.jpg?raw=true)
 
 **Note:** Friendly nameplates are not modified.
 
-## Nameplate Color Customization
+## Nameplate Color Coding
 Colors are displayed based on the following priority:
 
-  * <span style = "background-color:#6633cc">**Purple:**</span> High threat level (DPS/Healer)  
-  * <span style = "background-color:#ff8080">**Bright Red:**</span> Low threat level (Tank)
-  * <span style = "background-color:#ccff99">**Light Green:**</span> Casting an interruptible spell
-  * <span style = "background-color:#e6e6e6">**Gray:**</span> Casting an uninterruptible spell  
-  * <span style = "background-color:#ff80ff">**Pink:**</span> Affected by your debuff
-  * <span style = "background-color:#80ffff">**Sky Blue:**</span> Normal threat level
-  * <span style = "background-color:#00ff33">**Green:**</span> Boss mobs (dungeons, high-level (e.g., 91+), or ?? level mobs)
-  * <span style = "background-color:#ffcc80">**Ochre:**</span> Caster mobs (dungeons) or Quest mobs (field)
-
+* <span style = "background-color:#6633cc">**Purple:**</span> High threat level (DPS/Healer)  
+* <span style = "background-color:#ff8080">**Light Red:**</span> Low threat level (Tank)
+* <span style = "background-color:#ccff99">**Light Green:**</span> Casting an interruptible spell
+* <span style = "background-color:#e6e6e6">**Gray:**</span> Casting an uninterruptible spell  
+* <span style = "background-color:#ff80ff">**Pink:**</span> Target has your debuff active
+* <span style = "background-color:#80ffff">**Sky Blue:**</span> Normal threat level
+* <span style = "background-color:#00ff33">**Green:**</span> Boss mobs (Higher level than player or ?? level in dungeons)
+* <span style = "background-color:#ffcc80">**Ocher:**</span> Caster mobs (Dungeons) or Quest mobs (World)
+  
 ## Additional Features
 
-* **Vertical Overlap Adjustment**: Configure the vertical spacing between nameplates (`nameplateOverlapV`).
-* **Mouseover Indicator**: Displays a green arrow at the bottom of the mouseover target.
-* **Target Power Display**: For your current target, displays the mob's energy below the health bar (if not using mana, `ShowPower`).
-* **Cast Icons**: Displays the skill icon while a mob is casting (if not using mana, `ShowCastIcon`).
-* **Aura Enhancements**: Adjusts the position of buff/debuff duration and stacks, and adds borders (`ChangeDebuffIcon`).
-* **Visual Overhaul**: Changes the nameplate texture and borders (`ChangeTexture`).
-* **Targeted Highlight (`ShowTargeted`)**: Flashes red/yellow exclamation marks on the right side when you are the target of a spell or mob.
+* Adjusts vertical overlap spacing for nameplates (`nameplateOverlapV`).
+* Displays a green arrow below the mouseover target.
+* Displays the mob's secondary resource (if not Mana) below the health bar for the current target (`ShowPower`).
+* Displays skill icons during casts (`ShowCastIcon`).
+* Repositions buff/debuff duration and stack text and adds borders to icons (`ChangeDebuffIcon`).
+* Updates nameplate textures and borders (`ChangeTexture`).
+* Highlights the current target (`ShowTargeted`).
+* Highlights important spells (`AlertImportantSpell`).
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
 
 ## Configuration
 * `Esc > Options > Addons > asNamePlates`
-* You can toggle the color customization features on/off and adjust specific colors.
+* You can toggle individual features or customize the color settings.
 
 ---
 
@@ -63,6 +65,9 @@ Colors are displayed based on the following priority:
 * 버프/디버프 시간/중첩 위치 조정 및 테두리 추가 (`ChangeDebuffIcon`)
 * 이름표 Texture 및 테두리 변경 (`ChangeTexture`)
 * Targeted 강조 (`ShowTargeted`)
+* 중요 스킬 강조 (`AlertImportantSpell`)
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
+
 
 ## 설정
 * `Esc > 옵션 > 애드온 > asNamePlates`

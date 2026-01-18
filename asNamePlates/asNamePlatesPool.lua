@@ -56,6 +56,10 @@ local function create_frame()
     object.targetedindi = object:CreateFontString(nil, "OVERLAY");
     object.targetedindi:SetFont(STANDARD_TEXT_FONT, ns.configs.mousefontsize + 1, "OUTLINE");
 
+    object.important = object:CreateTexture(nil, "OVERLAY", "asNamePlatesBorderTemplate");
+    object.important:SetColorTexture(1, 0, 0, 1);
+    object.importantshowtype = 0;
+
     return object;
 end
 

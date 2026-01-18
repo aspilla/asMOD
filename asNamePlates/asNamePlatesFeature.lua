@@ -139,45 +139,28 @@ function ns.update_color(asframe)
     else
         asframe.coloroverlay:Hide();
     end
-
-    if alerttype ~= asframe.alerttype then
-        if alerttype == 3 then
-            ns.lib.PixelGlow_Start(healthBar, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1000);
-            ns.lib.PixelGlow_Stop(asframe.casticon);
-            ns.lib.PixelGlow_Stop(asframe);
-        elseif alerttype == 2 then
-            ns.lib.PixelGlow_Start(asframe, { 1, 1, 0, 1 }, 16, nil, 5, 2, nil, nil, nil, nil, 1000);
-            ns.lib.PixelGlow_Stop(asframe.casticon);
-            ns.lib.PixelGlow_Stop(healthBar);
-        elseif alerttype == 1 then
-            ns.lib.PixelGlow_Start(asframe.casticon);
-            ns.lib.PixelGlow_Stop(asframe);
-            ns.lib.PixelGlow_Stop(healthBar);
-        else
-            ns.lib.PixelGlow_Stop(asframe.casticon);
-            ns.lib.PixelGlow_Stop(asframe);
-            ns.lib.PixelGlow_Stop(healthBar);
-        end
-        asframe.alerttype = alerttype;
-    end
 end
 
 function ns.update_cast(asframe)
-    if not ns.options.ShowCastIcon then
-        return;
-    end
-
-    local unit = asframe.unit;
-    local name, _, texture = UnitCastingInfo(unit);
+    local unit                                     = asframe.unit;
+    local name, _, texture, _, _, _, _, _, spellid = UnitCastingInfo(unit);
     if not name then
-        name, _, texture = UnitChannelInfo(unit);
+        name, _, texture, _, _, _, _, spellid = UnitChannelInfo(unit);
     end
-
     if name then
-        asframe.casticon.icon:SetTexture(texture);
-        asframe.casticon:Show();
+        if ns.options.ShowCastIcon then
+            asframe.casticon.icon:SetTexture(texture);
+            asframe.casticon:Show();
+        end
+
+        if ns.optios.AlertImportantSpell then
+            local isimportant = C_Spell.IsSpellImportant(spellid);
+            local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
+            asframe.important:SetAlpha(alpha);
+        end
     else
         asframe.casticon:Hide();
+        asframe.important:SetAlpha(0);
     end
 end
 
@@ -232,5 +215,15 @@ function ns.update_targeted(asframe)
         end
     else
         asframe.targetedindi:SetAlpha(0);
+    end
+
+    if asframe.importantshowtype == 1 then
+        asframe.important:Hide();
+        asframe.importantshowtype = 2;
+    elseif asframe.importantshowtype == 2 then
+        asframe.importantshowtype = 0;
+    else
+        asframe.important:Show();
+        asframe.importantshowtype = 1;
     end
 end

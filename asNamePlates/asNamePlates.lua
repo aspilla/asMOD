@@ -80,11 +80,10 @@ local function remove_unit(unit)
     if namePlateFrameBase.asNamePlates ~= nil then
         local asframe = namePlateFrameBase.asNamePlates;
 
-        ns.lib.PixelGlow_Stop(asframe.casticon);
-        ns.lib.PixelGlow_Stop(asframe);
-
         asframe.casticon:Hide();
         asframe.coloroverlay:Hide();
+        asframe.important:SetAlpha(0);
+        asframe.important:Hide();
 
         asframe:Hide();
         asframe:UnregisterAllEvents();
@@ -94,8 +93,7 @@ local function remove_unit(unit)
             asframe.timer:Cancel();
             asframe.timer = nil;
         end
-
-        asframe.alerttype = nil;
+        
         asframe:ClearAllPoints();
         ns.free_asframe(asframe);
         asframe = nil;
@@ -188,8 +186,7 @@ local function add_unit(unit)
     asframe:SetParent(healthbar);
     asframe:SetFrameLevel(healthbar:GetFrameLevel() + 1000);
     asframe.nameplateBase = namePlateFrameBase;
-    asframe.unit = unit;
-    asframe.alerttype = nil;
+    asframe.unit = unit;    
     asframe.checkcolor = false;
 
     asframe:UnregisterAllEvents();
@@ -224,6 +221,13 @@ local function add_unit(unit)
             PixelUtil.SetPoint(healthbar.selectedBorder, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", offset, -offset);
         end
     end
+    asframe.important:SetParent(healthbar);
+    asframe.important:SetDrawLayer("BACKGROUND", -6);
+    asframe.important:SetPoint("TOPLEFT", healthbar, "TOPLEFT", -3, 3);
+    asframe.important:SetPoint("BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 3, -3);
+    asframe.important:Show();
+    asframe.important:SetAlpha(0);
+    asframe.importantshowtype = 1;
 
     local previousTexture = healthbar:GetStatusBarTexture();
     asframe.coloroverlay:SetParent(healthbar);
