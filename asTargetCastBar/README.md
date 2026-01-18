@@ -15,7 +15,9 @@ Cast bar for Target and Focus targets.
     * **Uninterruptible**: Gray
     * **Interruptible**: Bright Green
 * **Highlight Important Spells**: Displays a red border for critical skills.
+
 ![asTargetCastBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asTargetCastBar_important.gif?raw=true)
+
 * **Target Aggro Indicator**: Flashes red or yellow exclamation marks on the right side when you are being targeted by a mob.
 
 ## Configuration
@@ -43,6 +45,7 @@ Cast bar for Target and Focus targets.
     *   **차단 불가능**: 회색
     *   **차단 가능**: 밝은 녹색
 *   **중요 스킬 강조**: 중요 시킬 시 빨간색 태두리 표시
+
 ![asTargetCastBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asTargetCastBar_important.gif?raw=true)
 
 *   **내가 대상일 경우 강조**: 내가 대상일 경우 우측에 빨간색/노란색 느낌표 점멸

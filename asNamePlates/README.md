@@ -28,6 +28,7 @@ Colors are displayed based on the following priority:
 * Updates nameplate textures and borders (`ChangeTexture`).
 * Highlights the current target (`ShowTargeted`).
 * Highlights important spells (`AlertImportantSpell`).
+
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
 
 ## Configuration
@@ -66,6 +67,7 @@ Colors are displayed based on the following priority:
 * 이름표 Texture 및 테두리 변경 (`ChangeTexture`)
 * Targeted 강조 (`ShowTargeted`)
 * 중요 스킬 강조 (`AlertImportantSpell`)
+
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
 
 
