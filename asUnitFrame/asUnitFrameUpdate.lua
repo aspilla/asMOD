@@ -36,12 +36,11 @@ end
 
 function ns.update_unitframe(frame)
     local unit = frame.unit;
-    local showplayermana = false;
+
 
     if unit == "player" then
         update_playerunit()
         unit = ns.unit_player;
-        showplayermana = (unit ~= "player");
 
         if not InCombatLockdown() and unit ~= frame:GetAttribute("unit") then
             frame:SetAttribute("unit", unit);
@@ -83,15 +82,23 @@ function ns.update_unitframe(frame)
         frame.pvalue:SetText(string.format("%d", valuePct));
     end
 
-    if frame.updateCastBar then
-        ns.update_castbar(frame.castbar);
+    frame.hvalue:SetText(AbbreviateLargeNumbers(value))
+end
+
+function ns.update_unitframe_other(frame)
+    local unit = frame.unit;
+    local showplayermana = false;
+
+    if unit == "player" then
+        unit = ns.unit_player;
+        showplayermana = (unit ~= "player");
+    elseif unit == "pet" then
+        unit = ns.unit_pet;
     end
 
-    if frame.updatecount == 1 then
-        frame.updatecount = 0;
-    else
-        frame.updatecount = frame.updatecount + 1;
+    if not UnitExists(unit) then
         return;
+    else
     end
 
     local role = UnitGroupRolesAssigned(unit);
@@ -185,7 +192,6 @@ function ns.update_unitframe(frame)
         ]]
     end
 
-    frame.hvalue:SetText(AbbreviateLargeNumbers(value))
     frame.name:SetText(name);
     if raidicon then
         SetRaidTargetIconTexture(frame.mark, raidicon);
@@ -269,10 +275,6 @@ function ns.update_unitframe(frame)
         frame.aggro:Hide();
     end
 
-    if frame.portrait then
-        SetPortraitTexture(frame.portrait.portrait, unit, false);
-    end
-
     if UnitAffectingCombat("player") then
         frame:SetAlpha(1);
     elseif ns.options.CombatAlphaChange then
@@ -291,9 +293,22 @@ function ns.update_unitframe(frame)
         end
     end
 
-    ns.update_auras(frame);
-
     if needtohide then
         frame.range:Hide();
+    end
+end
+
+function ns.update_unitframe_portrait(frame)
+    local unit = frame.unit;
+    
+
+    if unit == "player" then
+        unit = ns.unit_player;    
+    elseif unit == "pet" then
+        unit = ns.unit_pet;
+    end
+
+    if frame.portrait then
+        SetPortraitTexture(frame.portrait.portrait, unit, false);
     end
 end

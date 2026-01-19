@@ -521,8 +521,28 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
         ns.update_unitframe(frame);
     end
 
+    frame.callback2 = function()
+        ns.update_unitframe_other(frame);
+    end
+
+    frame.callback3 = function()
+        ns.update_unitframe_portrait(frame);
+    end
+
+    frame.callback4 = function()
+        ns.update_auras(frame);
+    end
+    frame.callback5 = function()
+        if frame.updateCastBar then
+            ns.update_castbar(frame.castbar);
+        end
+    end
 
     C_Timer.NewTicker(configs.updaterate, frame.callback);
+    C_Timer.NewTicker(configs.updaterate * 2, frame.callback2);
+    C_Timer.NewTicker(configs.updaterate * 4, frame.callback3);
+    C_Timer.NewTicker(configs.updaterate * 2, frame.callback4);
+    C_Timer.NewTicker(configs.updaterate, frame.callback5);
 end
 
 local function init(parent)
@@ -566,10 +586,10 @@ local function init(parent)
         end
     end
 
- 
+
     local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
-	if libasConfig then		
+    if libasConfig then
         libasConfig.load_position(parent.PlayerFrame, "PlayerFrame", AUF_Positions.PlayerFrame);
         libasConfig.load_position(parent.TargetFrame, "TargetFrame", AUF_Positions.TargetFrame);
         libasConfig.load_position(parent.FocusFrame, "FocusFrame", AUF_Positions.FocusFrame);
@@ -581,7 +601,7 @@ local function init(parent)
                 libasConfig.load_position(parent.BossFrames[i], "BossFrame" .. i, AUF_Positions.BossFrames[i]);
             end
         end
-	end
+    end
 
     local _, engclass = UnitClass("player");
 
