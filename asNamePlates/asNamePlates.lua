@@ -70,15 +70,27 @@ local function on_asframe_event(asframe, event, ...)
     end
 end
 
-local function remove_unit(unit)
-    local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(unit, issecure());
+local function restore_default(nameplate_base)
+    local unitframe = nameplate_base.UnitFrame;
+    if unitframe then
+        local healthbar = unitframe.healthBar;
+        if healthbar then
+            healthbar:SetStatusBarTexture("UI-HUD-CoolDownManager-Bar");
+            healthbar.bgTexture:SetAlpha(1);
+            healthbar.selectedBorder:SetAlpha(1);
+        end
+    end
+end
 
-    if not namePlateFrameBase then
+local function remove_unit(unit)
+    local nameplate_base = C_NamePlate.GetNamePlateForUnit(unit, issecure());
+
+    if not nameplate_base then
         return;
     end
 
-    if namePlateFrameBase.asNamePlates ~= nil then
-        local asframe = namePlateFrameBase.asNamePlates;
+    if nameplate_base.asNamePlates ~= nil then
+        local asframe = nameplate_base.asNamePlates;
 
         asframe.casticon:Hide();
         asframe.coloroverlay:Hide();
@@ -86,6 +98,8 @@ local function remove_unit(unit)
         asframe.important:Hide();
         asframe.border:Hide();
         asframe.selected:Hide();
+
+        restore_default(nameplate_base)
 
         asframe:Hide();
         asframe:UnregisterAllEvents();
@@ -101,8 +115,8 @@ local function remove_unit(unit)
         asframe = nil;
     end
 
-    if namePlateFrameBase and namePlateFrameBase.asNamePlates ~= nil then
-        namePlateFrameBase.asNamePlates = nil;
+    if nameplate_base and nameplate_base.asNamePlates ~= nil then
+        nameplate_base.asNamePlates = nil;
     end
 end
 
@@ -160,36 +174,38 @@ end
 local org_height = nil;
 
 local function add_unit(unit)
-    local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(unit, issecure());
+    local nameplate_base = C_NamePlate.GetNamePlateForUnit(unit, issecure());
 
-    if not namePlateFrameBase then
+    if not nameplate_base then
         return;
     end
 
-    if namePlateFrameBase.UnitFrame:IsForbidden() then
+    if nameplate_base.UnitFrame:IsForbidden() then
         return;
     end
 
-    local unitframe = namePlateFrameBase.UnitFrame;
+    local unitframe = nameplate_base.UnitFrame;
     local healthbar = unitframe.healthBar;
     local castbar = unitframe.castBar;
 
     if not UnitCanAttack("player", unit) then
-        if namePlateFrameBase.asNamePlates then
+        if nameplate_base.asNamePlates then
             remove_unit(unit);
+        else
+            restore_default(nameplate_base);
         end
         return;
     end
 
-    if namePlateFrameBase.asNamePlates == nil then
-        namePlateFrameBase.asNamePlates = ns.get_asframe();
+    if nameplate_base.asNamePlates == nil then
+        nameplate_base.asNamePlates = ns.get_asframe();
     end
 
-    local asframe = namePlateFrameBase.asNamePlates;
+    local asframe = nameplate_base.asNamePlates;
     local scale = NamePlateDriverMixin:GetNamePlateScale();
     asframe:SetParent(healthbar);
     asframe:SetFrameLevel(healthbar:GetFrameLevel() + 1000);
-    asframe.nameplateBase = namePlateFrameBase;
+    asframe.nameplateBase = nameplate_base;
     asframe.unit = unit;
     asframe.checkcolor = false;
 
@@ -240,8 +256,7 @@ local function add_unit(unit)
             asframe.border:SetAlpha(1);
             asframe.border:Show();
 
-            local bgtexture = healthbar.bgTexture;
-            bgtexture:SetAlpha(0);
+            healthbar.bgTexture:SetAlpha(0);
             healthbar.selectedBorder:SetAlpha(0)
         end
     else
