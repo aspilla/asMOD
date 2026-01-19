@@ -84,6 +84,8 @@ local function remove_unit(unit)
         asframe.coloroverlay:Hide();
         asframe.important:SetAlpha(0);
         asframe.important:Hide();
+        asframe.border:Hide();
+        asframe.selected:Hide();
 
         asframe:Hide();
         asframe:UnregisterAllEvents();
