@@ -27,6 +27,10 @@ local function create_frame()
     end
 
     object.coloroverlay = object:CreateTexture(nil, "ARTWORK", template, 1);
+    object.selected = object:CreateTexture(nil, "BACKGROUND");
+    object.selected:SetColorTexture(1, 1, 1, 1);
+    object.border = object:CreateTexture(nil, "BACKGROUND");
+    object.border:SetColorTexture(0, 0, 0, 1);
 
     object.powerbar = CreateFrame("StatusBar", nil, object);
     object.powerbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
@@ -56,8 +60,8 @@ local function create_frame()
     object.targetedindi = object:CreateFontString(nil, "OVERLAY");
     object.targetedindi:SetFont(STANDARD_TEXT_FONT, ns.configs.mousefontsize + 1, "OUTLINE");
 
-    object.important = object:CreateTexture(nil, "OVERLAY", "asNamePlatesBorderTemplate");
-    object.important:SetColorTexture(1, 0, 0, 1);
+    object.important = object:CreateTexture(nil, "OVERLAY");
+    object.important:SetColorTexture(1, 0, 0, 0.5);
     object.importantshowtype = 0;
 
     return object;

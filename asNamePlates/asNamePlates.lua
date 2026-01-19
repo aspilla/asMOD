@@ -93,7 +93,7 @@ local function remove_unit(unit)
             asframe.timer:Cancel();
             asframe.timer = nil;
         end
-        
+
         asframe:ClearAllPoints();
         ns.free_asframe(asframe);
         asframe = nil;
@@ -155,6 +155,7 @@ local function hook_refresh(auraframe)
     end
 end
 
+local org_height = nil;
 
 local function add_unit(unit)
     local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(unit, issecure());
@@ -167,8 +168,9 @@ local function add_unit(unit)
         return;
     end
 
-    local unitFrame = namePlateFrameBase.UnitFrame;
-    local healthbar = unitFrame.healthBar;
+    local unitframe = namePlateFrameBase.UnitFrame;
+    local healthbar = unitframe.healthBar;
+    local castbar = unitframe.castBar;
 
     if not UnitCanAttack("player", unit) then
         if namePlateFrameBase.asNamePlates then
@@ -186,18 +188,32 @@ local function add_unit(unit)
     asframe:SetParent(healthbar);
     asframe:SetFrameLevel(healthbar:GetFrameLevel() + 1000);
     asframe.nameplateBase = namePlateFrameBase;
-    asframe.unit = unit;    
+    asframe.unit = unit;
     asframe.checkcolor = false;
 
     asframe:UnregisterAllEvents();
     asframe:SetScript("OnEvent", nil);
 
-    if unitFrame.castBar then
-        asframe.casticon:ClearAllPoints();
-        PixelUtil.SetPoint(asframe.casticon, "BOTTOMLEFT", unitFrame.castBar, "BOTTOMRIGHT", 0.5, -1);
+    if org_height == nil then
+        local healthbar_height = healthbar:GetHeight();
+        local castbar_height = castbar:GetHeight();
 
-        local height = 34.6 * scale.vertical;
-        asframe.casticon:SetWidth(height * 1.2);
+        if not issecretvalue(healthbar_height) then
+            org_height = healthbar_height + castbar_height;
+        end
+    end
+
+    if castbar then
+        asframe.casticon:ClearAllPoints();
+        PixelUtil.SetPoint(asframe.casticon, "BOTTOMLEFT", castbar, "BOTTOMRIGHT", 1.5, -1);
+
+        local height = 36 * scale.vertical;
+
+        if org_height then
+            height = org_height + 5;
+        end
+
+        asframe.casticon:SetWidth(height * 1.1);
         asframe.casticon:SetHeight(height);
         asframe.casticon:Hide();
         asframe.iscast = false;
@@ -206,30 +222,38 @@ local function add_unit(unit)
     if ns.options.ChangeTexture then
         if not healthbar.border then
             healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
-            healthbar.bgTexture:Hide();
 
-            healthbar.border = healthbar:CreateTexture(nil, "BACKGROUND", "asNamePlatesBorderTemplate");
-            PixelUtil.SetPoint(healthbar.border, "TOPLEFT", healthbar, "TOPLEFT", -1, 1);
-            PixelUtil.SetPoint(healthbar.border, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 1, -1);
-            healthbar.border:SetColorTexture(0, 0, 0, 0.5);
-            healthbar.border:Show();
+            asframe.selected:SetParent(healthbar);
+            asframe.selected:SetDrawLayer("BACKGROUND", -6);
+            asframe.selected:ClearAllPoints();
+            PixelUtil.SetPoint(asframe.selected, "TOPLEFT", healthbar, "TOPLEFT", -2, 2);
+            PixelUtil.SetPoint(asframe.selected, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 2, -2);
+            asframe.selected:SetAlpha(1);
 
-            healthbar.selectedBorder:SetTexture("Interface\\Addons\\asNamePlates\\border.tga");
-            local offset = 3 * scale.vertical;
-            healthbar.selectedBorder:ClearAllPoints();
-            PixelUtil.SetPoint(healthbar.selectedBorder, "TOPLEFT", healthbar, "TOPLEFT", -offset, offset);
-            PixelUtil.SetPoint(healthbar.selectedBorder, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", offset, -offset);
+            asframe.border:SetParent(healthbar);
+            asframe.border:SetDrawLayer("BACKGROUND", -5);
+            asframe.border:ClearAllPoints();
+            PixelUtil.SetPoint(asframe.border, "TOPLEFT", healthbar, "TOPLEFT", -1, 1);
+            PixelUtil.SetPoint(asframe.border, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 1, -1);
+            asframe.border:SetAlpha(1);
+            asframe.border:Show();
+
+            local bgtexture = healthbar.bgTexture;
+            bgtexture:SetAlpha(0);
+            healthbar.selectedBorder:SetAlpha(0)
         end
+    else
+        asframe.selected:SetAlpha(0);
+        asframe.border:SetAlpha(0);
     end
-    
-    
+
     asframe.important:ClearAllPoints();
     asframe.important:SetParent(healthbar);
-    asframe.important:SetDrawLayer("BACKGROUND", -6);
-    asframe.important:SetPoint("TOPLEFT", healthbar, "TOPLEFT", -3, 3);
-    asframe.important:SetPoint("BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 3, -3);
+    asframe.important:SetDrawLayer("OVERLAY", 1);
+    asframe.important:SetPoint("TOPLEFT", healthbar, "TOPLEFT", -1, 1);
+    asframe.important:SetPoint("BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 1, -1);
     asframe.important:SetAlpha(0);
-    asframe.important:Show();    
+    asframe.important:Show();
     asframe.importantshowtype = 1;
 
     local previousTexture = healthbar:GetStatusBarTexture();
@@ -249,7 +273,7 @@ local function add_unit(unit)
     asframe.motext:Hide();
 
     asframe.targetedindi:ClearAllPoints();
-    PixelUtil.SetPoint(asframe.targetedindi, "RIGHT", healthbar, "LEFT", 5, 0);
+    PixelUtil.SetPoint(asframe.targetedindi, "RIGHT", healthbar, "LEFT", 0, 0);
     asframe.targetedindi:SetAlpha(0);
     asframe.targetedindi:Show();
     asframe.targetedinditype = 1;
@@ -313,11 +337,14 @@ local function add_unit(unit)
 
     asframe.timer = C_Timer.NewTicker(ns.configs.updaterate, callback);
 
-    if ns.options.ChangeDebuffIcon and unitFrame.AurasFrame.RefreshList then
-        hooksecurefunc(unitFrame.AurasFrame, "RefreshList", function()
-            hook_refresh(unitFrame.AurasFrame)
+    if ns.options.ChangeDebuffIcon and unitframe.AurasFrame.RefreshList then
+        hooksecurefunc(unitframe.AurasFrame, "RefreshList", function()
+            hook_refresh(unitframe.AurasFrame)
         end)
     end
+
+    ns.update_target(asframe);
+    ns.update_color(asframe);
 end
 
 

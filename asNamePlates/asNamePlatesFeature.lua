@@ -156,11 +156,11 @@ function ns.update_cast(asframe)
         if ns.options.AlertImportantSpell then
             local isimportant = C_Spell.IsSpellImportant(spellid);
             local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
-            asframe.important:SetAlpha(alpha);
+            asframe.important:SetAlpha(alpha);            
         end
     else
         asframe.casticon:Hide();
-        asframe.important:SetAlpha(0);
+        asframe.important:SetAlpha(0);        
     end
 end
 
@@ -168,10 +168,16 @@ function ns.update_target(asframe)
     if asframe.unit and UnitIsUnit(asframe.unit, "target") then
         asframe.casticon.border:SetVertexColor(1, 1, 1);
         asframe.casticon:SetAlpha(1);
+        asframe.selected:SetVertexColor(1,1,1);
+        asframe.selected:Show();
         ns.update_power(asframe);
+    elseif asframe.unit and UnitIsUnit(asframe.unit, "focus") then        
+        asframe.selected:SetVertexColor(0,1,0);
+        asframe.selected:Show();
     else
         asframe.casticon.border:SetVertexColor(0, 0, 0);
         asframe.casticon:SetAlpha(0.7);
+        asframe.selected:Hide();
     end
 end
 
@@ -182,6 +188,7 @@ function ns.update_mouseover(asframe)
             return;
         end
     end
+
     asframe.motext:Hide();
 end
 
