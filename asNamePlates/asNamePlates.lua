@@ -140,10 +140,9 @@ local function change_item(button)
     end
 
     if not button.border then
-        button.border = button:CreateTexture(nil, "BACKGROUND", "asNamePlatesBorderTemplate");
+        button.border = button:CreateTexture(nil, "BACKGROUND");
         button.border:SetAllPoints(button);
         button.border:SetColorTexture(0, 0, 0, 1);
-        button.border:SetTexCoord(0.04, 0.04, 0.04, 0.96, 0.96, 0.04, 0.96, 0.96);
     else
         button.border:SetAlpha(1)
     end

@@ -42,11 +42,8 @@ local function create_frame()
 
     object.powerbar.bg = object.powerbar:CreateTexture(nil, "BACKGROUND");
     object.powerbar.bg:SetPoint("TOPLEFT", object.powerbar, "TOPLEFT", -1, 1);
-    object.powerbar.bg:SetPoint("BOTTOMRIGHT", object.powerbar, "BOTTOMRIGHT", 1, -1);
-
-    object.powerbar.bg:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga");
-    object.powerbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-    object.powerbar.bg:SetVertexColor(0, 0, 0, 1);
+    object.powerbar.bg:SetPoint("BOTTOMRIGHT", object.powerbar, "BOTTOMRIGHT", 1, -1);   
+    object.powerbar.bg:SetColorTexture(0, 0, 0, 1);
 
     object.powerbar.value = object.powerbar:CreateFontString(nil, "ARTWORK");
     object.powerbar.value:SetFont(STANDARD_TEXT_FONT, ns.configs.powerfontsize, "OUTLINE");

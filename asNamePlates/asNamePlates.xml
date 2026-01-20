@@ -29,6 +29,4 @@
 	</Texture>
 	<Texture name="asNamePlates2Template" virtual="true" atlas="RaidFrame-Hp-Fill">		
 	</Texture>
-	<Texture name="asNamePlatesBorderTemplate" virtual="true" file="Interface\Addons\asNamePlates\border.tga">		
-	</Texture>	
 </Ui>
