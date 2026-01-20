@@ -94,6 +94,8 @@ local function set_debuff(frame, unit, aura, color)
 
     if color then
         frame.border:SetVertexColor(color.r, color.g, color.b);
+    else
+        frame.border:SetVertexColor(0, 0, 0);
     end
 end
 
@@ -133,7 +135,7 @@ local function update_frames(unit, auraList, numAuras)
         frame.unit = unit;
         frame.auraInstanceID = aura.auraInstanceID;
 
-        local color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);        
+        local color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);
 
         set_debuff(frame, unit, aura, color);
         frame:Show();
@@ -143,7 +145,7 @@ local function update_frames(unit, auraList, numAuras)
         local frame = parent.frames[j];
 
         if (frame) then
-            frame:Hide();            
+            frame:Hide();
         end
     end
 
@@ -167,7 +169,7 @@ local function clear_frames()
         local frame = main_frame.target_frame.frames[i];
 
         if (frame) then
-            frame:Hide();            
+            frame:Hide();
         end
     end
 end
@@ -187,7 +189,7 @@ local function on_event(self, event, arg1, ...)
         update_auras(arg1);
     elseif (event == "PLAYER_TARGET_CHANGED") then
         clear_frames();
-        update_auras("target");        
+        update_auras("target");
     elseif (event == "PLAYER_ENTERING_WORLD") then
         update_auras("target");
         update_auras("player");
@@ -267,7 +269,7 @@ local function create_frames(parent, bright, rate)
         -- Resize
         frame:SetWidth(ns.configs.size * rate);
         frame:SetHeight(ns.configs.size * ns.configs.sizerate * rate);
-        frame:EnableMouse(false);        
+        frame:EnableMouse(false);
         frame:Hide();
     end
 
