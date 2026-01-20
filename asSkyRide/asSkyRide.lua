@@ -37,10 +37,7 @@ local function init_addon()
     ns.bar.bg = ns.bar:CreateTexture(nil, "BACKGROUND");
     ns.bar.bg:SetPoint("TOPLEFT", ns.bar, "TOPLEFT", -1, 1);
     ns.bar.bg:SetPoint("BOTTOMRIGHT", ns.bar, "BOTTOMRIGHT", 1, -1);
-
-    ns.bar.bg:SetTexture("Interface\\Addons\\asSkyRide\\border.tga");
-    ns.bar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-    ns.bar.bg:SetVertexColor(0, 0, 0, 1);
+    ns.bar.bg:SetColorTexture(0, 0, 0, 1);
 
     ns.bar.text = ns.bar:CreateFontString(nil, "ARTWORK");
     ns.bar.text:SetFont(ns.configs.font, ns.configs.fontSize, ns.configs.fontOutline);
@@ -66,10 +63,7 @@ local function init_addon()
         combobars[i].bg = combobars[i]:CreateTexture(nil, "BACKGROUND");
         combobars[i].bg:SetPoint("TOPLEFT", combobars[i], "TOPLEFT", -1, 1);
         combobars[i].bg:SetPoint("BOTTOMRIGHT", combobars[i], "BOTTOMRIGHT", 1, -1);
-
-        combobars[i].bg:SetTexture("Interface\\Addons\\asSkyRide\\border.tga");
-        combobars[i].bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-        combobars[i].bg:SetVertexColor(0, 0, 0, 1);
+        combobars[i].bg:SetColorTexture(0, 0, 0, 1);
 
         if i == 1 then
             combobars[i]:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", 0, 1);
@@ -98,10 +92,7 @@ local function init_addon()
         combobars[i].bg = combobars[i]:CreateTexture(nil, "BACKGROUND");
         combobars[i].bg:SetPoint("TOPLEFT", combobars[i], "TOPLEFT", -1, 1);
         combobars[i].bg:SetPoint("BOTTOMRIGHT", combobars[i], "BOTTOMRIGHT", 1, -1);
-
-        combobars[i].bg:SetTexture("Interface\\Addons\\asSkyRide\\border.tga");
-        combobars[i].bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);        
-        combobars[i].bg:SetVertexColor(0, 0, 0, 1);
+        combobars[i].bg:SetColorTexture(0, 0, 0, 1);
 
         if i == 1 then
             combobars[i]:SetPoint("BOTTOMLEFT", ns.combobars[1][1], "TOPLEFT", 0, 1);
