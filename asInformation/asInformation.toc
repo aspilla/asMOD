@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rInformation
 ## Notes: Displays primary/secondary stats increase.
 ## Notes-koKR: 1차/2차 능력치 증가량 표시
-## Version : 250112
+## Version : 260120
 ## SavedVariablesPerCharacter: ASInformationSaved, ASInformation_Positions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

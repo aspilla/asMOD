@@ -105,10 +105,7 @@ local function init_frames()
     ns.primarybar.bg = ns.primarybar:CreateTexture(nil, "BACKGROUND")
     ns.primarybar.bg:SetPoint("TOPLEFT", ns.primarybar, "TOPLEFT", -1, 1)
     ns.primarybar.bg:SetPoint("BOTTOMRIGHT", ns.primarybar, "BOTTOMRIGHT", 1, -1)
-
-    ns.primarybar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
-    ns.primarybar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    ns.primarybar.bg:SetVertexColor(0, 0, 0, 1);
+    ns.primarybar.bg:SetColorTexture(0, 0, 0, 1);
 
     ns.primarytext = ns.primarybar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     ns.primarytext:SetPoint("RIGHT", ns.primarybar, "RIGHT", -1, 0)
@@ -135,10 +132,7 @@ local function init_frames()
     ns.critbar.bg = ns.critbar:CreateTexture(nil, "BACKGROUND")
     ns.critbar.bg:SetPoint("TOPLEFT", ns.critbar, "TOPLEFT", -1, 1)
     ns.critbar.bg:SetPoint("BOTTOMRIGHT", ns.critbar, "BOTTOMRIGHT", 1, -1)
-
-    ns.critbar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
-    ns.critbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    ns.critbar.bg:SetVertexColor(0, 0, 0, 1);
+    ns.critbar.bg:SetColorTexture(0, 0, 0, 1);
 
     ns.crittext = ns.critbar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     ns.crittext:SetPoint("RIGHT", ns.critbar, "RIGHT", -1, 0)
@@ -161,10 +155,7 @@ local function init_frames()
     ns.hastebar.bg = ns.hastebar:CreateTexture(nil, "BACKGROUND")
     ns.hastebar.bg:SetPoint("TOPLEFT", ns.hastebar, "TOPLEFT", -1, 1)
     ns.hastebar.bg:SetPoint("BOTTOMRIGHT", ns.hastebar, "BOTTOMRIGHT", 1, -1)
-
-    ns.hastebar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
-    ns.hastebar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    ns.hastebar.bg:SetVertexColor(0, 0, 0, 1);
+    ns.hastebar.bg:SetColorTexture(0, 0, 0, 1);
 
     ns.hastetext = ns.hastebar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     ns.hastetext:SetPoint("RIGHT", ns.hastebar, "RIGHT", -1, 0)
@@ -187,10 +178,7 @@ local function init_frames()
     ns.masterybar.bg = ns.masterybar:CreateTexture(nil, "BACKGROUND")
     ns.masterybar.bg:SetPoint("TOPLEFT", ns.masterybar, "TOPLEFT", -1, 1)
     ns.masterybar.bg:SetPoint("BOTTOMRIGHT", ns.masterybar, "BOTTOMRIGHT", 1, -1)
-
-    ns.masterybar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
-    ns.masterybar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    ns.masterybar.bg:SetVertexColor(0, 0, 0, 1);
+    ns.masterybar.bg:SetColorTexture(0, 0, 0, 1);
 
     ns.masterytext = ns.masterybar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     ns.masterytext:SetPoint("RIGHT", ns.masterybar, "RIGHT", -1, 0)
@@ -213,10 +201,7 @@ local function init_frames()
     ns.versbar.bg = ns.versbar:CreateTexture(nil, "BACKGROUND")
     ns.versbar.bg:SetPoint("TOPLEFT", ns.versbar, "TOPLEFT", -1, 1)
     ns.versbar.bg:SetPoint("BOTTOMRIGHT", ns.versbar, "BOTTOMRIGHT", 1, -1)
-
-    ns.versbar.bg:SetTexture("Interface\\Addons\\asInformation\\border.tga")
-    ns.versbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    ns.versbar.bg:SetVertexColor(0, 0, 0, 1);
+    ns.versbar.bg:SetColorTexture(0, 0, 0, 1);
 
     ns.verstext = ns.versbar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     ns.verstext:SetPoint("RIGHT", ns.versbar, "RIGHT", -1, 0)
