@@ -229,11 +229,9 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     end
 
     frame.targetborder = frame.healthbar:CreateTexture(nil, "BACKGROUND", nil, -8)
-    frame.targetborder:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga")
     frame.targetborder:SetPoint("TOPLEFT", frame, "TOPLEFT", -2, 2);
     frame.targetborder:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 2, -2);
-    frame.targetborder:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-    frame.targetborder:SetVertexColor(1, 1, 1)
+    frame.targetborder:SetColorTexture(1, 1, 1)
     frame.targetborder:SetAlpha(1);
     frame.targetborder:Hide();
 
@@ -315,10 +313,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame.healthbar.bg = frame.healthbar:CreateTexture(nil, "BACKGROUND");
     frame.healthbar.bg:SetPoint("TOPLEFT", frame.healthbar, "TOPLEFT", -1, 1);
     frame.healthbar.bg:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", 1, -1);
-
-    frame.healthbar.bg:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga");
-    frame.healthbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-    frame.healthbar.bg:SetVertexColor(0, 0, 0, 1);
+    frame.healthbar.bg:SetColorTexture(0, 0, 0, 1);
 
     frame.pvalue = frame:CreateFontString(nil, "ARTWORK");
     frame.pvalue:SetFont(STANDARD_TEXT_FONT, fontsize + 1, FontOutline);
@@ -382,10 +377,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame.powerbar.bg = frame.powerbar:CreateTexture(nil, "BACKGROUND");
     frame.powerbar.bg:SetPoint("TOPLEFT", frame.powerbar, "TOPLEFT", -1, 1);
     frame.powerbar.bg:SetPoint("BOTTOMRIGHT", frame.powerbar, "BOTTOMRIGHT", 1, -1);
-
-    frame.powerbar.bg:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga");
-    frame.powerbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-    frame.powerbar.bg:SetVertexColor(0, 0, 0, 1);
+    frame.powerbar.bg:SetColorTexture(0, 0, 0, 1);
 
     frame.powerbar.value = frame.powerbar:CreateFontString(nil, "ARTWORK");
     frame.powerbar.value:SetFont(STANDARD_TEXT_FONT, fontsize - 2, FontOutline);
@@ -421,19 +413,14 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame.castbar.important:SetDrawLayer("BACKGROUND", -6);
     frame.castbar.important:SetPoint("TOPLEFT", frame.castbar, "TOPLEFT", -2, 2);
     frame.castbar.important:SetPoint("BOTTOMRIGHT", frame.castbar, "BOTTOMRIGHT", 2, -2);
-    frame.castbar.important:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga");
-    frame.castbar.important:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-    frame.castbar.important:SetVertexColor(1, 0, 0, 1);
+    frame.castbar.important:SetColorTexture(1, 0, 0, 1);
     frame.castbar.important:SetAlpha(0);
     frame.castbar.important:Show();
 
     frame.castbar.bg = frame.castbar:CreateTexture(nil, "BACKGROUND")
     frame.castbar.bg:SetPoint("TOPLEFT", frame.castbar, "TOPLEFT", -1, 1)
     frame.castbar.bg:SetPoint("BOTTOMRIGHT", frame.castbar, "BOTTOMRIGHT", 1, -1)
-
-    frame.castbar.bg:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga")
-    frame.castbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    frame.castbar.bg:SetVertexColor(0, 0, 0, 1);
+    frame.castbar.bg:SetColorTexture(0, 0, 0, 1);
     frame.castbar.bg:Show();
 
     frame.castbar.name = frame.castbar:CreateFontString(nil, "OVERLAY");
@@ -518,7 +505,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame:SetScript("OnEvent", on_unitevent);
 
     frame.callback = function()
-        ns.update_unitframe(frame);
+        ns.update_unithealth(frame);
     end
 
     frame.callback2 = function()
@@ -543,6 +530,16 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     C_Timer.NewTicker(configs.updaterate * 4, frame.callback3);
     C_Timer.NewTicker(configs.updaterate * 2, frame.callback4);
     C_Timer.NewTicker(configs.updaterate, frame.callback5);
+end
+
+local function update_unitframe(unit)
+    local frame = ns.unitframes[unit];
+    if frame then
+        ns.update_unithealth(frame);
+        ns.update_unitframe_other(frame);
+        ns.update_unitframe_portrait(frame);
+        ns.update_auras(frame);
+    end
 end
 
 local function init(parent)
@@ -610,11 +607,6 @@ local function init(parent)
     end
 end
 
-local function check_unitauras(unit)
-    local frame = ns.unitframes[unit];
-    ns.update_auras(frame);
-end
-
 local bfirst = true;
 local function on_mainevent(self, event, arg1, arg2, arg3)
     if bfirst then
@@ -625,30 +617,25 @@ local function on_mainevent(self, event, arg1, arg2, arg3)
     if event == "PLAYER_ENTERING_WORLD" then
         ns.HideDefaults();
     elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
-        check_unitauras("target");
-        check_unitauras("targettarget");
+        update_unitframe("target");
+        update_unitframe("targettarget");
     elseif event == "UNIT_TARGET" then
-        check_unitauras("targettarget")
+        update_unitframe("targettarget");
     elseif event == "PLAYER_TARGET_CHANGED" then
-        check_unitauras("target");
-        check_unitauras("targettarget");
+        update_unitframe("target");
+        update_unitframe("targettarget");                
     elseif event == "UNIT_PORTRAIT_UPDATE" then
-        local frame = ns.unitframes[arg1];
-        if frame and frame.portrait then
-            SetPortraitTexture(frame.portrait.portrait, frame.unit, false);
-        end
+        update_unitframe(arg1);        
     elseif event == "PORTRAITS_UPDATED" then
-        for _, frame in pairs(ns.unitframes) do
-            if frame.portrait then
-                SetPortraitTexture(frame.portrait.portrait, frame.unit, false);
-            end
+        for unit, _ in pairs(ns.unitframes) do
+            update_unitframe(unit);
         end
     elseif event == "PLAYER_FOCUS_CHANGED" then
-        check_unitauras("focus");
+        update_unitframe("focus");
     elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
         for i = 1, MAX_BOSS_FRAMES do
             local unit = "boss" .. i;
-            check_unitauras(unit);
+            update_unitframe(unit);
         end
     end
 end

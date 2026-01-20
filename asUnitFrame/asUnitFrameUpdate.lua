@@ -34,7 +34,7 @@ local function update_playerunit()
     end
 end
 
-function ns.update_unitframe(frame)
+function ns.update_unithealth(frame)
     local unit = frame.unit;
 
 
@@ -312,3 +312,4 @@ function ns.update_unitframe_portrait(frame)
         SetPortraitTexture(frame.portrait.portrait, unit, false);
     end
 end
+
