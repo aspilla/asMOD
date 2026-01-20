@@ -3,10 +3,9 @@
 ## Title: |cffff3399as|rCombatInfo
 ## Notes: Enhances the Cooldown Manager.
 ## Notes-koKR:쿨다운 메니저 강화
-## Version : 251225
+## Version : 260120
 ## SavedVariablesPerCharacter: ACI_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asCombatInfoOption.lua
-asCombatInfo.xml
 asCombatInfo.lua

@@ -3,6 +3,7 @@
 local configs    = {
 	combatalpha = 1,
 	normalalpha = 0.5,
+	font = STANDARD_TEXT_FONT,
 }
 
 local _, Class   = UnitClass("player")
@@ -47,10 +48,7 @@ local function update_bars(viewer)
 				bar.bg = bar:CreateTexture(nil, "BACKGROUND");
 				bar.bg:SetPoint("TOPLEFT", bar, "TOPLEFT", -1, 1);
 				bar.bg:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 1, -1);
-
-				bar.bg:SetTexture("Interface\\Addons\\asCombatInfo\\border.tga");
-				bar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-				bar.bg:SetVertexColor(0, 0, 0, 1);
+				bar.bg:SetColorTexture(0, 0, 0, 1);
 			end
 
 			if item.Icon then
@@ -66,10 +64,9 @@ local function update_bars(viewer)
 				button.Icon:SetTexCoord(.08, .92, iconrate, 1 - iconrate);
 
 				if not button.border then
-					button.border = button:CreateTexture(nil, "BACKGROUND", "asCombatInfoBorderTemplate");
+					button.border = button:CreateTexture(nil, "BACKGROUND");
 					button.border:SetAllPoints(button);
-					button.border:SetColorTexture(0, 0, 0, 1);
-					button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+					button.border:SetColorTexture(0, 0, 0, 1);					
 				else
 					button.border:SetAlpha(1)
 				end
@@ -78,7 +75,7 @@ local function update_bars(viewer)
 				if button.Applications then
 					local r = button.Applications;
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, height / 2 + 3, "OUTLINE");
+						r:SetFont(configs.font, height / 2 + 3, "OUTLINE");
 						r:SetTextColor(0, 1, 0);
 					end
 				end
@@ -165,7 +162,7 @@ local function update_buttons(viewer)
 			if button.ChargeCount then
 				for _, r in next, { button.ChargeCount:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, width / 3 + 1, "OUTLINE");
+						r:SetFont(configs.font, width / 3 + 1, "OUTLINE");
 						r:ClearAllPoints();
 						r:SetPoint("CENTER", button, "BOTTOM", 0, 1);
 						r:SetTextColor(0, 1, 0);
@@ -184,7 +181,7 @@ local function update_buttons(viewer)
 			if button.Applications then
 				for _, r in next, { button.Applications:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, width / 3 + 2, "OUTLINE");
+						r:SetFont(configs.font, width / 3 + 2, "OUTLINE");
 						r:ClearAllPoints();
 						r:SetPoint("CENTER", button, "BOTTOM", 0, 1);
 						r:SetTextColor(0, 1, 0);
@@ -196,10 +193,9 @@ local function update_buttons(viewer)
 
 
 			if not button.border then
-				button.border = button:CreateTexture(nil, "BACKGROUND", "asCombatInfoBorderTemplate");
+				button.border = button:CreateTexture(nil, "BACKGROUND");
 				button.border:SetAllPoints(button);
-				button.border:SetColorTexture(0, 0, 0, 1);
-				button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+				button.border:SetColorTexture(0, 0, 0, 1);				
 			else
 				button.border:SetAlpha(1)
 			end
@@ -208,7 +204,7 @@ local function update_buttons(viewer)
 			if button.Cooldown then
 				for _, r in next, { button.Cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, width / 3 + 1, "OUTLINE");
+						r:SetFont(configs.font, width / 3 + 1, "OUTLINE");
 						r:ClearAllPoints();
 						if isbuff then
 							r:SetPoint("CENTER", button, "TOP", 0, 0);
@@ -238,7 +234,7 @@ local function update_buttons(viewer)
 			if not isbuff then
 				if not button.hotkey then
 					button.hotkey = button:CreateFontString(nil, "ARTWORK");
-					button.hotkey:SetFont(STANDARD_TEXT_FONT, width / 3 - 3, "OUTLINE");
+					button.hotkey:SetFont(configs.font, width / 3 - 3, "OUTLINE");
 					button.hotkey:SetPoint("TOPRIGHT", button, "TOPRIGHT", -2, -2);
 					button.hotkey:SetTextColor(1, 1, 1, 1);
 				end
