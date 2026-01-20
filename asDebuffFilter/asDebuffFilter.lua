@@ -91,7 +91,10 @@ local function set_debuff(frame, unit, aura, color)
     frame.icon:SetTexture(aura.icon);
     frame.count:SetText(C_UnitAuras.GetAuraApplicationDisplayCount(unit, aura.auraInstanceID, 1, 100));
     set_cooldownframe(frame.cooldown, aura.expirationTime, aura.duration, true);
-    frame.border:SetVertexColor(color.r, color.g, color.b);
+
+    if color then
+        frame.border:SetVertexColor(color.r, color.g, color.b);
+    end
 end
 
 local debuffinfo = {
