@@ -54,9 +54,7 @@ local function setup_castbar()
     castbar.important:SetDrawLayer("BACKGROUND", -6);
     castbar.important:SetPoint("TOPLEFT", castbar, "TOPLEFT", -2, 2);
     castbar.important:SetPoint("BOTTOMRIGHT", castbar, "BOTTOMRIGHT", 2, -2);
-    castbar.important:SetTexture("Interface\\Addons\\asTargetCastBar\\border.tga");
-    castbar.important:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-    castbar.important:SetVertexColor(1, 0, 0, 1);
+    castbar.important:SetColorTexture(1, 0, 0, 1);
     castbar.important:SetAlpha(0);
     castbar.important:Show();
 
@@ -64,10 +62,7 @@ local function setup_castbar()
     castbar.bg = castbar:CreateTexture(nil, "BACKGROUND")
     castbar.bg:SetPoint("TOPLEFT", castbar, "TOPLEFT", -1, 1)
     castbar.bg:SetPoint("BOTTOMRIGHT", castbar, "BOTTOMRIGHT", 1, -1)
-
-    castbar.bg:SetTexture("Interface\\Addons\\asTargetCastBar\\border.tga")
-    castbar.bg:SetTexCoord(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
-    castbar.bg:SetVertexColor(0, 0, 0, 1);
+    castbar.bg:SetColorTexture(0, 0, 0, 1);
     castbar.bg:Show();
 
     castbar.name = castbar:CreateFontString(nil, "OVERLAY");
