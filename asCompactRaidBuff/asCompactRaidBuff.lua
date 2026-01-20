@@ -97,12 +97,12 @@ function ns.setup_frame(asframe)
                 asframe.ispowerupdate = true;
             end
         end
-        
+
         local powercolor = PowerBarColor[powertype]
         if powercolor then
             asframe.powerbar:SetStatusBarColor(powercolor.r, powercolor.g, powercolor.b)
         end
-        
+
         if asframe.ispowerupdate then
             asframe.powerbar:Show();
         else
@@ -163,7 +163,7 @@ local function change_button(button, notchangerate, changesize)
     end
 
     local rate = configs.iconrate;
-    
+
     if notchangerate then
         rate = 1;
     end
@@ -179,10 +179,9 @@ local function change_button(button, notchangerate, changesize)
         end
 
         if not button.border then
-            button.border = button:CreateTexture(nil, "BACKGROUND", "asCompactRaidBuffBorderTemplate");
+            button.border = button:CreateTexture(nil, "BACKGROUND");
             button.border:SetDrawLayer("BACKGROUND");
             button.border:SetColorTexture(0, 0, 0, 1);
-            button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
             button.border:Show();
         end
         button.border:ClearAllPoints();
@@ -225,7 +224,7 @@ local function change_defaults(frame)
             end
         end
         if frame.CenterDefensiveBuff then
-            change_button(frame.CenterDefensiveBuff, false ,true);
+            change_button(frame.CenterDefensiveBuff, false, true);
         end
     end
 end
