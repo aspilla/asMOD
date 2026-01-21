@@ -261,6 +261,22 @@ local function on_mouseupdate()
     end
 end
 
+local function register_unit(button, unit)
+    button.unit = unit;
+    button:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
+    button:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
+    button:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
+    button:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit);
+    button:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
+    button:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
+    button:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", unit);
+    button:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
+    button:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
+    button:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit);
+    button:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
+    button:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
+    button:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
+end
 
 local function create_button(unit)
     local size = configs.size;
@@ -293,11 +309,21 @@ local function create_button(unit)
     frame:Hide();
     frame.soundalerted = false;
 
-    local function on_update()
-        check_casting(frame, unit);
-    end
+    if unit == "target" or unit == "focus" then
 
-    C_Timer.NewTicker(0.3, on_update);
+        local function on_unit_event()
+            check_casting(frame, unit);
+        end
+
+        register_unit(frame, unit);
+        frame:SetScript("OnEvent", on_unit_event);
+    else
+        local function on_update()
+            check_casting(frame, unit);
+        end
+
+        C_Timer.NewTicker(0.3, on_update);
+    end
 
     return frame;
 end
