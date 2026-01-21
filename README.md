@@ -2,9 +2,6 @@
 
 asMOD is a collection of custom-made World of Warcraft addons.
 
-## Important Notice!! Not supported in The War Within
-Versions 12.0.0 and 12.0.1 are exclusively for Midnight/Pre-Midnight and cannot be used in The War Within. For The War Within, version 11.2.7 must be used!
-
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_party.jpg?raw=true)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/eVZ58UiQwl8?si=exHJVZS-YnykgmSh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -35,27 +32,41 @@ Versions 12.0.0 and 12.0.1 are exclusively for Midnight/Pre-Midnight and cannot 
 * **asSummonTracker**: Unsupported due to restrictions on tracking skill usage.
 
 ## Important Note (Regarding asUnitFrame)
-
 The following issue may occur:
-
-1. **Edit Mode Error:** Errors may occur when using Edit Mode, preventing settings from being saved. Please disable `asUnitFrame` before making changes in Edit Mode.
+**Edit Mode Error:** Errors may occur when using Edit Mode, preventing settings from being saved. Please disable `asUnitFrame` before making changes in Edit Mode.
 
 ## Installation (CurseForge)
 1. Install `asMOD` from CurseForge (asMOD includes other asMOD addons: https://www.curseforge.com/wow/addons/asmod).
 2. When the asMOD popup appears stating "asMOD will change the default interface settings," click **Change**.
-3. Adjust `ESC > Options > Gameplay > Advanced Cooldown Settings`.
-4. The `asMOD_layout` Edit Mode profile is automatically installed. You can adjust it to your personal preference if desired.
+3. Go to `ESC > Options > Gameplay > Advanced Cooldown Settings` to configure the center buttons. The default setup targets 6 large icons and 1 buff bar.
+4. Use the **asMOD Setup macro** in `ESC > Macros` to apply recommended settings like reduced damage font size. This also enables Misdirection/Tank Assist macros.
+5. Check `ESC > Edit Mode` to ensure the **"asMOD_Layout"** is properly applied.
+6. If you do not want the bottom action bar to hide automatically, uncheck `asHideActionBar` in `ESC > Addons`.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/-7xsxpKTS7U?si=Rj7atkBM71u8X6mM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Installation (Inven)
 
-1. The Inven version includes Korean fonts and has a different installation process. Please refer to the video below:
-2. After copying, follow the same configuration as the CurseForge version.
-3. After installation, updates can be managed via CurseForge.
+1. Download the latest version from the Inven addon library.
+2. (Optional) Reset game settings by clicking the gear icon next to the Play button in the launcher.
+3. (Optional) Backup your existing Font, Interface, and WTF folders (or delete them).
+4. Open the game folder from the launcher and extract the files into the `_retail_` directory.
+5. When using the `asMOD` addon, a window will state "asMOD will change the default interface settings." Click **Change**.
+6. Go to `ESC > Options > Gameplay > Advanced Cooldown Settings` to configure the center buttons. The default setup targets 6 large icons and 1 buff bar.
+7. Use the **asMOD Setup macro** in `ESC > Macros` to apply recommended settings like reduced damage font size. This also enables Misdirection/Tank Assist macros.
+8. Check `ESC > Edit Mode` to ensure the **"asMOD_Layout"** is properly applied.
+9. If you do not want the bottom action bar to hide automatically, uncheck `asHideActionBar` in `ESC > Addons`.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/WZQ_9VIF7RE?si=ojzV4SJ17osDU6mA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+## How to Update
+1. All asMOD addons can be updated via CurseForge.
+2. For Inven users, you only need to repeat steps 1 and 4 of the installation guide.
+
+## How to Uninstall
+1. Delete the installed folders (`Interface` and `Font`).
+2. Go to `ESC > Edit Mode` and delete the `asMOD_Layout` profile.
+3. It is recommended to reset your WoW settings to default.
 
 ## Positioning Guide
 1. Use the `/asconfig` command to adjust frame positions.
@@ -110,9 +121,6 @@ All asMOD addons can function independently. If you wish to use only specific ad
 
 asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
-## 주의사항!! 내부전쟁 미지원
-12.0.0, 12.0.1 버전은 한밤/소한밤 전용으로 내부전쟁은 사용 불가 함, 내부전쟁에서는 11.2.7 버전 사용필요!
-
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_party.jpg?raw=true)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/eVZ58UiQwl8?si=exHJVZS-YnykgmSh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -150,19 +158,35 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 ## 설치 방법 (CurseForge)
 1. CurseForge 에서 asMOD를 설치 (asMOD에 다른 asMOD 애드온들이 포함 되어 있음, https://www.curseforge.com/wow/addons/asmod)
 2. `asMOD` 애드온 사용시 `asMOD가 '기본 인터페이스 설정'을 변경합니다. 채팅창에 '/asMOD'명령어로 기능을 다시 불러 올 수 있습니다.` 창에서 `변경`을 클릭
-3. `esc >> 옵션 >> 게임플레이 개선 >> 고급 재사용시간 설정` 조정
-4. `asMOD_layout` 편집모드를 자동으로 설치함, 원치 않으면 개인 설정으로 조정 가능
+3. `esc >> 설정 >> 게임 플레이 개선 >> 고급 재사용 대기시간 설정` 클릭하여 가운데 버튼 설정을 합니다. 큰 아이콘 6개, 버프바 1개 사용을 목표로 설정 하였습니다.
+4. `esc >> 매크로 설정` 에서 asMOD Setup 매크로를 사용하면 데미지 폰트 사이즈 축소등 추천 설정 사용이 가능합니다. 추가로 눈속임/탱커 지원 매크로도 사용가능 합니다.
+5. `esc >>폅집 모드 >> "asMOD_Layout"` 설정이 잘  되어 있는 지 확인 합니다.
+6. 하단 단축바가 자동으로 사라지는 것을 원치 않으면 esc >> 애드온 >> `asHideActionBar`를 채크 해제 하세요.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/-7xsxpKTS7U?si=Rj7atkBM71u8X6mM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 설치 방법 (인벤)
 
-1. 인벤 버전은 한글 폰트를 포함하고 있어 설치법에 차이가 있음, 아래 영상을 참고
-2. 복사 후 CurseForge 와 동일한 설정
-3. 설치 후 CurseForge로 업데이트 가능
+1. 인벤 자료실에서 "다운로드" 버튼을 눌러 최신 버전을 받습니다.
+2. (선택 사항) 런처 플레이버튼 옆 톱니바퀴를 눌러 게임 설정을 초기화 합니다. 
+3. (선택 사항) 기존 Font, Interface, WTF 폴더를 Backup 합니다. (삭제 하셔도 됩니다.)
+4. 런처에서 게임 폴더를 열어 _retail_ 에 압축을 풀어 줍니다.
+5. `asMOD` 애드온 사용시 `asMOD가 '기본 인터페이스 설정'을 변경합니다. 채팅창에 '/asMOD'명령어로 기능을 다시 불러 올 수 있습니다.` 창에서 `변경`을 클릭
+6. `esc >> 설정 >> 게임 플레이 개선 >> 고급 재사용 대기시간 설정` 클릭하여 가운데 버튼 설정을 합니다. 큰 아이콘 6개, 버프바 1개 사용을 목표로 설정 하였습니다.
+7. `esc >> 매크로 설정` 에서 asMOD Setup 매크로를 사용하면 데미지 폰트 사이즈 축소등 추천 설정 사용이 가능합니다. 추가로 눈속임/탱커 지원 매크로도 사용가능 합니다.
+8. `esc >>폅집 모드 >> "asMOD_Layout"` 설정이 잘  되어 있는 지 확인 합니다.
+9. 하단 단축바가 자동으로 사라지는 것을 원치 않으면 esc >> 애드온 >> `asHideActionBar`를 채크 해제 하세요.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/WZQ_9VIF7RE?si=ojzV4SJ17osDU6mA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+## asMOD 업데이트 방법
+1. 모든 asMOD 애드온은 CurseForge에서 업데이트 가능합니다.
+2. 인벤 설치 방법 중 1, 4번 만 하셔도 됩니다.
+
+## asMOD 삭제법
+1. 설치한 폴더를 지워 주세요. (Interface, Font 폴더를 지우시면 됩니다.)
+2. esc >> 편집 모드 >> asMOD_Layout 을 삭제해 주세요.
+3. 와우 설정을 초기화 하는 것을 추천 합니다.
 
 
 ## 위치 설정 방법
