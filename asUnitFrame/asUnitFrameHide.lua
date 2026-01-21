@@ -54,7 +54,7 @@ local function hide_unitframe(unit)
     end
 end
 
-function ns.HideDefaults()
+function ns.hide_defauls()
     hide_unitframe("player");
     hide_unitframe("target");
     hide_unitframe("focus");
@@ -71,4 +71,4 @@ function ns.HideDefaults()
     end
 end
 
-ns.HideDefaults();
+ns.hide_defauls();

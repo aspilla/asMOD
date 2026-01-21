@@ -506,30 +506,18 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
 
     frame.callback = function()
         ns.update_unithealth(frame);
-    end
-
-    frame.callback2 = function()
-        ns.update_unitframe_other(frame);
-    end
-
-    frame.callback3 = function()
-        ns.update_unitframe_portrait(frame);
-    end
-
-    frame.callback4 = function()
-        ns.update_auras(frame);
-    end
-    frame.callback5 = function()
         if frame.updateCastBar then
             ns.update_castbar(frame.castbar);
         end
     end
 
+    frame.callback2 = function()
+        ns.update_unitframe_other(frame);
+        ns.update_auras(frame);
+    end
+
     C_Timer.NewTicker(configs.updaterate, frame.callback);
     C_Timer.NewTicker(configs.updaterate * 2, frame.callback2);
-    C_Timer.NewTicker(configs.updaterate * 4, frame.callback3);
-    C_Timer.NewTicker(configs.updaterate * 2, frame.callback4);
-    C_Timer.NewTicker(configs.updaterate, frame.callback5);
 end
 
 local function update_unitframe(unit)
@@ -542,42 +530,52 @@ local function update_unitframe(unit)
     end
 end
 
-local function init(parent)
+local function update_unitportait(unit)
+    local frame = ns.unitframes[unit];
+    if frame then
+        ns.update_unitframe_portrait(frame);
+    end
+end
+
+
+local function init(framelist)
     ns.setup_option();
 
-    parent.PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    parent.TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    parent.FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    parent.PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    parent.TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    framelist.PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    framelist.TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    framelist.FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    framelist.PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+    framelist.TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 
 
-    create_unitframe(parent.PlayerFrame, "player", -configs.xpoint, configs.ypoint, configs.width, configs.healthheight,
+    create_unitframe(framelist.PlayerFrame, "player", -configs.xpoint, configs.ypoint, configs.width,
+        configs.healthheight,
         configs.powerheight, 12, false,
         false);
-    create_unitframe(parent.TargetFrame, "target", configs.xpoint, configs.ypoint, configs.width, configs.healthheight,
+    create_unitframe(framelist.TargetFrame, "target", configs.xpoint, configs.ypoint, configs.width, configs
+        .healthheight,
         configs.powerheight, 12, false,
         false);
-    create_unitframe(parent.FocusFrame, "focus", configs.xpoint + configs.width, configs.ypoint, configs.width - 50,
+    create_unitframe(framelist.FocusFrame, "focus", configs.xpoint + configs.width, configs.ypoint, configs.width - 50,
         configs.healthheight - 15,
         configs.powerheight - 2,
         11,
         false, true);
-    create_unitframe(parent.PetFrame, "pet", -configs.xpoint - 50, configs.ypoint - 40, configs.width - 100,
+    create_unitframe(framelist.PetFrame, "pet", -configs.xpoint - 50, configs.ypoint - 40, configs.width - 100,
         configs.healthheight - 20,
         configs.powerheight - 3,
         9,
         true, true);
-    create_unitframe(parent.TargetTargetFrame, "targettarget", configs.xpoint + 50, configs.ypoint - 40,
+    create_unitframe(framelist.TargetTargetFrame, "targettarget", configs.xpoint + 50, configs.ypoint - 40,
         configs.width - 100,
         configs.healthheight - 20,
         configs.powerheight - 3, 9, true, true);
 
-    parent.BossFrames = {};
+    framelist.BossFrames = {};
     if (MAX_BOSS_FRAMES) then
         for i = 1, MAX_BOSS_FRAMES do
-            parent.BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-            create_unitframe(parent.BossFrames[i], "boss" .. i, configs.xpoint + 250, 200 - (i - 1) * 70,
+            framelist.BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+            create_unitframe(framelist.BossFrames[i], "boss" .. i, configs.xpoint + 250, 200 - (i - 1) * 70,
                 configs.width - 50,
                 configs.healthheight - 15, configs.powerheight - 2, 11);
         end
@@ -587,15 +585,15 @@ local function init(parent)
     local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
     if libasConfig then
-        libasConfig.load_position(parent.PlayerFrame, "PlayerFrame", AUF_Positions.PlayerFrame);
-        libasConfig.load_position(parent.TargetFrame, "TargetFrame", AUF_Positions.TargetFrame);
-        libasConfig.load_position(parent.FocusFrame, "FocusFrame", AUF_Positions.FocusFrame);
-        libasConfig.load_position(parent.PetFrame, "PetFrame", AUF_Positions.PetFrame);
-        libasConfig.load_position(parent.TargetTargetFrame, "TargetTargetFrame", AUF_Positions.TargetTargetFrame);
+        libasConfig.load_position(framelist.PlayerFrame, "PlayerFrame", AUF_Positions.PlayerFrame);
+        libasConfig.load_position(framelist.TargetFrame, "TargetFrame", AUF_Positions.TargetFrame);
+        libasConfig.load_position(framelist.FocusFrame, "FocusFrame", AUF_Positions.FocusFrame);
+        libasConfig.load_position(framelist.PetFrame, "PetFrame", AUF_Positions.PetFrame);
+        libasConfig.load_position(framelist.TargetTargetFrame, "TargetTargetFrame", AUF_Positions.TargetTargetFrame);
 
         if (MAX_BOSS_FRAMES) then
             for i = 1, MAX_BOSS_FRAMES do
-                libasConfig.load_position(parent.BossFrames[i], "BossFrame" .. i, AUF_Positions.BossFrames[i]);
+                libasConfig.load_position(framelist.BossFrames[i], "BossFrame" .. i, AUF_Positions.BossFrames[i]);
             end
         end
     end
@@ -608,14 +606,15 @@ local function init(parent)
 end
 
 local bfirst = true;
-local function on_mainevent(self, event, arg1, arg2, arg3)
+local function on_mainevent(self, event, ...)
     if bfirst then
         init(ASMOD_asUnitFrame);
         bfirst = false;
     end
 
     if event == "PLAYER_ENTERING_WORLD" then
-        ns.HideDefaults();
+        ns.hide_defauls();
+        update_unitframe("player");
     elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
         update_unitframe("target");
         update_unitframe("targettarget");
@@ -623,15 +622,18 @@ local function on_mainevent(self, event, arg1, arg2, arg3)
         update_unitframe("targettarget");
     elseif event == "PLAYER_TARGET_CHANGED" then
         update_unitframe("target");
-        update_unitframe("targettarget");                
+        update_unitframe("targettarget");
     elseif event == "UNIT_PORTRAIT_UPDATE" then
-        update_unitframe(arg1);        
+        local unit = ...;
+        update_unitportait(unit);
     elseif event == "PORTRAITS_UPDATED" then
         for unit, _ in pairs(ns.unitframes) do
-            update_unitframe(unit);
+            update_unitportait(unit);
         end
     elseif event == "PLAYER_FOCUS_CHANGED" then
         update_unitframe("focus");
+    elseif event == "UNIT_PET" then
+        update_unitframe("pet");
     elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
         for i = 1, MAX_BOSS_FRAMES do
             local unit = "boss" .. i;
@@ -649,4 +651,5 @@ main_frame:RegisterEvent("PORTRAITS_UPDATED");
 main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
 main_frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
 main_frame:RegisterUnitEvent("UNIT_TARGET", "target");
+main_frame:RegisterUnitEvent("UNIT_PET", "player");
 main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
