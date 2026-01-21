@@ -8,7 +8,7 @@ ns.configs = {
 };
 
 ns.option_default = {
-    version = 251220,
+    version = 260121,
 
     ShowAggro = true,
     ShowDebuffColor = true,
@@ -137,7 +137,7 @@ local function setup_slideoption(text, option)
         Slider.Text:SetText(format("%.1f", max(ANameP_Options[option], 0)));
         if not InCombatLockdown() then
             SetCVar("nameplateOverlapV", ANameP_Options[option]);
-        end
+        end        
     end)
     Slider:Show();
     if not InCombatLockdown() then
@@ -203,6 +203,7 @@ ns.setup_alloptions = function()
         SetCVar("nameplateOverlapV", ANameP_Options["nameplateOverlapV"]);
         bfirst = false;
     end
+    ns.options = CopyTable(ANameP_Options);
 end
 
 
