@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rBuffFilter
 ## Notes: Displays the target's buffs.
 ## Notes-koKR:대상의 버프를 표시
-## Version : 251225
+## Version : 260122
 ## SavedVariablesPerCharacter: ABF_Options, ABF_Positions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

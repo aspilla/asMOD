@@ -25,7 +25,7 @@ local function set_buff(frame, unit, aura)
 	end
 end
 
-local function update_auraframes(unit, auraList)
+local function update_auraframes(unit, auraList, filter)
 	local i = 0;
 	local parent = main_frame.targetframe;
 
@@ -40,6 +40,10 @@ local function update_auraframes(unit, auraList)
 		local frame = parent.frames[i];
 
 		set_buff(frame, unit, aura);
+
+		frame.auraid = aura.auraInstanceID;
+		frame.unit = unit
+		frame.filter = filter;
 		frame:Show();
 	end
 
@@ -71,7 +75,7 @@ local function update_auras(unit)
 	end
 
 	local activeBuff = C_UnitAuras.GetUnitAuras(unit, filter, maxscancount);
-	update_auraframes(unit, activeBuff);
+	update_auraframes(unit, activeBuff, filter);
 end
 
 local function clear_frames()
@@ -200,7 +204,21 @@ local function create_frames(parent, bright, max)
 		frame:SetWidth(ns.configs.size);
 		frame:SetHeight(ns.configs.size * ns.configs.sizerate);
 
+		if not frame:GetScript("OnEnter") then
+			frame:SetScript("OnEnter", function(self)
+				if self.auraid then
+					GameTooltip_SetDefaultAnchor(GameTooltip, self);
+					GameTooltip:SetUnitBuffByAuraInstanceID(self.unit, self.auraid, self.filter);		
+				end
+			end)
+			frame:SetScript("OnLeave", function()
+				GameTooltip:Hide();
+			end)
+		end
+
 		frame:EnableMouse(false);
+		frame:SetMouseMotionEnabled(true);
+
 		frame:Hide();
 	end
 end
