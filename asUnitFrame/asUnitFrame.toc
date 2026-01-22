@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rUnitFrame
 ## Notes: Simple unit frames
 ## Notes-koKR: 간단한 유닛 프레임
-## Version : 260122
+## Version : 260123
 ## SavedVariablesPerCharacter: AUF_Options, AUF_Positions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

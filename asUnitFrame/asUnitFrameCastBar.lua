@@ -19,8 +19,20 @@ local function hide_castbar(castbar)
     castbar.important:SetAlpha(0);
 end
 
+local function get_interrupttext(interruptedby)
+	if interruptedby then
+		local unitname = UnitNameFromGUID(interruptedby);
+		if unitname then
+			return SPELL_INTERRUPTED_BY:format(unitname);
+		end
+	end
 
-local function check_casting(castbar, event)
+	return INTERRUPTED;
+end
+
+
+
+local function check_casting(castbar, event, interuptedby)
     local unit         = castbar.unit;
     local frameIcon    = castbar.button.icon;
     local text         = castbar.name;
@@ -48,7 +60,12 @@ local function check_casting(castbar, event)
             castbar:SetStatusBarColor(color[1], color[2], color[3]);
             castbar.failstart = currtime;
             castbar.duration_obj = nil;
+            if interuptedby then
+                targetname:SetText(get_interrupttext(interuptedby));
+                targetname:SetTextColor(1, 1, 1);
+            end
             castbar:Show();
+
         elseif name then
             local duration;
 
@@ -107,7 +124,25 @@ local function check_casting(castbar, event)
 end
 
 local function on_castevent(self, event, ...)
-    check_casting(self, event);
+
+    local interruptedby = nil;
+
+    if ( event == "UNIT_SPELLCAST_INTERRUPTED" ) then
+		interruptedby = select(4, ...);
+    elseif ( event == "UNIT_SPELLCAST_CHANNEL_STOP" ) then
+		interruptedby = select(4, ...);
+		local complete = interruptedby == nil;
+		if ( not complete) then
+            event = "UNIT_SPELLCAST_INTERRUPTED";
+		end
+	elseif ( event == "UNIT_SPELLCAST_EMPOWER_STOP" ) then
+		local _, _, _, complete, interrupted = ...;
+        interruptedby = interrupted;
+		if ( not complete) then
+            event = "UNIT_SPELLCAST_INTERRUPTED";
+		end
+    end
+    check_casting(self, event, interruptedby);
 end
 
 function ns.register_castevents(castbar, unit)
