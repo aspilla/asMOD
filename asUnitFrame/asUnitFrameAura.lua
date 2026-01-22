@@ -21,7 +21,7 @@ local function set_aura(frame, unit, aura, color)
 
     frame.border:SetVertexColor(color.r, color.g, color.b);
 end
-local function update_buffs(frame, auralist)
+local function update_buffs(frame, auralist, filter)
     local i = 0;
     local parent = frame;
     local unit = frame.unit;
@@ -37,6 +37,7 @@ local function update_buffs(frame, auralist)
 
         buffframe.unit = unit;
         buffframe.auraInstanceID = aura.auraInstanceID;
+        buffframe.filter = filter
         local color = { r = 0, g = 0, b = 0 };
 
         set_aura(buffframe, unit, aura, color);
@@ -67,7 +68,7 @@ for dispeltype, v in pairs(debuffinfo) do
     colorcurve:AddPoint(dispeltype, v);
 end
 
-local function update_debuffs(frame, auraList)
+local function update_debuffs(frame, auraList, filter)
     local i = 0;
     local parent = frame;
     local unit = frame.unit;
@@ -82,6 +83,7 @@ local function update_debuffs(frame, auraList)
 
         debuffframe.unit = unit;
         debuffframe.auraInstanceID = aura.auraInstanceID;
+        debuffframe.filter = filter
 
         local color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);
 
@@ -112,11 +114,11 @@ function ns.update_auras(frame)
         end
 
         local activeDebuffs = C_UnitAuras.GetUnitAuras(unit, filter, #(frame.debuffframes));
-        update_debuffs(frame, activeDebuffs);
+        update_debuffs(frame, activeDebuffs, filter);
     end
 
     if frame.buffupdate then
         local activeBuffs = C_UnitAuras.GetUnitAuras(unit, bufffilter, #(frame.buffframes));
-        update_buffs(frame, activeBuffs);
+        update_buffs(frame, activeBuffs, filter);
     end
 end

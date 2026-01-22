@@ -62,6 +62,7 @@ local function check_casting(castbar, event)
             castbar:SetReverseFill(bchannel);
             castbar:SetMinMaxValues(start, endTime)
             castbar.failstart = nil;
+            castbar.castspellid = spellid;
 
             local color = {};
             color = configs.interruptcolor;            

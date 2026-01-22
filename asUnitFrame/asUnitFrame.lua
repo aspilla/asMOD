@@ -76,7 +76,20 @@ local function createdebuffframes(parent, bright, fontsize, width, count)
         frame:ClearAllPoints();
         update_debuffanchor(parent.debuffframes, idx, 1, bright, parent, width / count);
 
+        if not frame:GetScript("OnEnter") then
+            frame:SetScript("OnEnter", function(self)
+                if self.auraInstanceID then
+                    GameTooltip_SetDefaultAnchor(GameTooltip, self);
+                    GameTooltip:SetUnitDebuffByAuraInstanceID(self.unit, self.auraInstanceID, self.filter);
+                end
+            end)
+            frame:SetScript("OnLeave", function()
+                GameTooltip:Hide();
+            end)
+        end
+
         frame:EnableMouse(false);
+        frame:SetMouseMotionEnabled(true);
         frame:Hide();
     end
 end
@@ -130,7 +143,21 @@ local function create_buffframes(parent, bright, fontsize, width, count)
         frame:ClearAllPoints();
         update_buffanchor(parent.buffframes, idx, 2, bright, parent, width);
 
+         if not frame:GetScript("OnEnter") then
+            frame:SetScript("OnEnter", function(self)
+                if self.auraInstanceID then
+                    GameTooltip_SetDefaultAnchor(GameTooltip, self);
+                    GameTooltip:SetUnitBuffByAuraInstanceID(self.unit, self.auraInstanceID, self.filter);
+                end
+            end)
+            frame:SetScript("OnLeave", function()
+                GameTooltip:Hide();
+            end)
+        end
+
         frame:EnableMouse(false);
+        frame:SetMouseMotionEnabled(true);
+        
         frame:Hide();
     end
 end
@@ -186,6 +213,19 @@ local function create_totemframes(parent, bright, fontsize, width, count)
         button:SetAttribute("totem-slot", idx);
         button:SetAlpha(0);
         button:Show();
+
+        if not button:GetScript("OnEnter") then
+            button:SetScript("OnEnter", function(self)
+                if self.totemslot then
+                    GameTooltip_SetDefaultAnchor(GameTooltip, self);
+                    GameTooltip:SetTotem(self.totemslot)
+                end
+            end)
+            button:SetScript("OnLeave", function()
+                GameTooltip:Hide();
+            end)
+        end
+
     end
 
     return;
@@ -384,6 +424,18 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame.powerbar.value:SetTextColor(1, 1, 1, 1)
     frame.powerbar.value:SetPoint("CENTER", frame.powerbar, "CENTER", 0, 0);
 
+    if not frame:GetScript("OnEnter") then
+        frame:SetScript("OnEnter", function(self)
+            if self.unit then
+                GameTooltip_SetDefaultAnchor(GameTooltip, self);
+                GameTooltip:SetUnit(self.unit);
+            end
+        end)
+        frame:SetScript("OnLeave", function()
+            GameTooltip:Hide();
+        end)
+    end
+
     local castbarheight = height - 5;
 
     frame.castbar = CreateFrame("StatusBar", nil, frame)
@@ -431,7 +483,20 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame.castbar.time:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
     frame.castbar.time:SetPoint("RIGHT", frame.castbar, "RIGHT", -3, 0);
 
+    if not frame.castbar:GetScript("OnEnter") then
+        frame.castbar:SetScript("OnEnter", function(self)
+            if self.castspellid then
+                GameTooltip_SetDefaultAnchor(GameTooltip, self);
+                GameTooltip:SetSpellByID(self.castspellid);
+            end
+        end)
+        frame.castbar:SetScript("OnLeave", function()
+            GameTooltip:Hide();
+        end)
+    end
+
     frame.castbar:EnableMouse(false);
+    frame.castbar:SetMouseMotionEnabled(true);
     frame.castbar:Hide();
 
     frame.castbar.button = CreateFrame("Button", nil, frame.castbar, "AUFFrameTemplate");
@@ -448,9 +513,12 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
 
     frame.castbar.targetname = frame.castbar:CreateFontString(nil, "OVERLAY");
     frame.castbar.targetname:SetFont(configs.font, fontsize - 1);
-    frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);
+    frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);  
+
+
     frame.debuffupdate = false;
     frame.totemupdate = false;
+
 
     if debuffupdate and ns.options.ShowDebuff then
         createdebuffframes(frame, true, fontsize, width, 4);
