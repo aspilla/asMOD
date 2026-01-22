@@ -15,8 +15,8 @@ local function hide_castbar(castbar)
     targetname:Hide();
     castbar.failstart = nil;
     castbar.duration_obj = nil;
+    castbar.important:SetAlpha(0);    
     castbar.notinterruptable:SetAlpha(0);
-    castbar.important:SetAlpha(0);
 end
 
 local function get_interrupttext(interruptedby)
@@ -54,7 +54,7 @@ local function check_casting(castbar, event, interuptedby)
         if event == "UNIT_SPELLCAST_INTERRUPTED" then
             castbar:SetMinMaxValues(0, 100);
             castbar:SetValue(100);
-            local failtext = "Interrupted"
+            local failtext = INTERRUPTED
             local color = configs.failcolor;
             time:SetText(failtext);
             castbar:SetStatusBarColor(color[1], color[2], color[3]);
@@ -63,7 +63,11 @@ local function check_casting(castbar, event, interuptedby)
             if interuptedby then
                 targetname:SetText(get_interrupttext(interuptedby));
                 targetname:SetTextColor(1, 1, 1);
+            else
+                targetname:SetText("");
             end
+            castbar.important:SetAlpha(0);            
+            castbar.notinterruptable:SetAlpha(0);
             castbar:Show();
 
         elseif name then
@@ -176,7 +180,7 @@ function ns.update_castbar(castbar)
     local current = GetTime();
 
     if failstart then
-        if current - failstart > 0.5 then
+        if current - failstart > 1 then
             hide_castbar(castbar);
         end
     else
