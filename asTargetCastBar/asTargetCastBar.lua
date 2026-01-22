@@ -73,7 +73,20 @@ local function setup_castbar()
     castbar.time:SetFont(STANDARD_TEXT_FONT, configs.timesize);
     castbar.time:SetPoint("RIGHT", castbar, "RIGHT", -3, 0);
 
+    if not castbar:GetScript("OnEnter") then
+        castbar:SetScript("OnEnter", function(self)
+            if self.castspellid and self.castspellid > 0 then
+                GameTooltip_SetDefaultAnchor(GameTooltip, self);
+                GameTooltip:SetSpellByID(self.castspellid);
+            end
+        end)
+        castbar:SetScript("OnLeave", function()
+            GameTooltip:Hide();
+        end)
+    end
+
     castbar:EnableMouse(false);
+    castbar:SetMouseMotionEnabled(true);
     castbar.isAlert = false;
     castbar:Hide();
 
@@ -102,6 +115,7 @@ local function setup_castbar()
     castbar.targetedindi:SetFont(configs.font, configs.namesize + 1, "OUTLINE");
     castbar.targetedindi:SetPoint("LEFT", castbar, "RIGHT", 0, 1);
     castbar.targetedindi:Show();
+    
 
     castbar.start = 0;
     castbar.duration = 0;
@@ -180,6 +194,7 @@ local function check_casting(castbar, event)
 
             castbar:SetMinMaxValues(start, endTime)
             castbar.failstart = nil;
+            castbar.castspellid = spellid;
 
             local color = configs.interruptcolor;
             castbar:SetStatusBarColor(color[1], color[2], color[3]);
