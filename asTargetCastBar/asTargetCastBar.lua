@@ -11,6 +11,7 @@ local configs = {
     failedcolor = { 1, 0, 0 },
     updaterate = 0.1,
     font = STANDARD_TEXT_FONT,
+    interruptedtext = INTERRUPTED;
 }
 
 configs.namesize = configs.height * 0.7;
@@ -20,6 +21,10 @@ local region = GetCurrentRegion();
 
 if region == 2 and GetLocale() ~= "koKR" then
     configs.font = "Fonts\\2002.ttf";
+end
+
+if GetLocale() == "koKR" then
+    configs.interruptedtext = "차단됨";
 end
 
 local main_frame = CreateFrame("FRAME", nil, UIParent)
@@ -183,7 +188,7 @@ local function check_casting(castbar, event, interuptedby)
         if event == "UNIT_SPELLCAST_INTERRUPTED" then
             castbar:SetMinMaxValues(0, 100);
             castbar:SetValue(100);
-            local failtext = INTERRUPTED
+            local failtext = configs.interruptedtext;
             local color = configs.failedcolor;
 
             time:SetText(failtext);
