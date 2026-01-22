@@ -9,6 +9,7 @@ local configs    = {
 local _, Class   = UnitClass("player")
 ns.classcolor    = RAID_CLASS_COLORS[Class];
 ns.hotkeys       = {};
+ns.nextspellid 	 = nil;
 
 local main_frame = CreateFrame("Frame");
 local function update_bars(viewer)
@@ -66,7 +67,7 @@ local function update_bars(viewer)
 				if not button.border then
 					button.border = button:CreateTexture(nil, "BACKGROUND");
 					button.border:SetAllPoints(button);
-					button.border:SetColorTexture(0, 0, 0, 1);					
+					button.border:SetColorTexture(0, 0, 0, 1);
 				else
 					button.border:SetAlpha(1)
 				end
@@ -195,7 +196,17 @@ local function update_buttons(viewer)
 			if not button.border then
 				button.border = button:CreateTexture(nil, "BACKGROUND");
 				button.border:SetAllPoints(button);
-				button.border:SetColorTexture(0, 0, 0, 1);				
+				button.border:SetColorTexture(0, 0, 0, 1);
+
+				button.nextspell = button:CreateTexture(nil, "OVERLAY");
+				button.nextspell:SetDrawLayer("OVERLAY", 7);
+				button.nextspell:SetAtlas("talents-node-circle-greenglow");
+				button.nextspell:SetPoint("CENTER", button, "CENTER", 0, 0);
+				button.nextspell:SetSize(width /2 + 3, width / 2 +3);
+				button.nextsize = 1;
+				
+				--button.nextspell:SetVertexColor(0, 1, 0, 1);
+				button.nextspell:Hide();
 			else
 				button.border:SetAlpha(1)
 			end
@@ -221,6 +232,21 @@ local function update_buttons(viewer)
 						button.border:SetColorTexture(0, 1, 1);
 					else
 						button.border:SetColorTexture(0, 0, 0);
+					end
+
+					if ns.options.AlertAssitedSpell then						
+						if ns.nextspellid and ns.nextspellid == button.asspellid then
+							button.nextspell:Show();
+							if button.nextsize == 1 then
+								button.nextspell:SetSize(width/3, width/3);
+								button.nextsize = 0;
+							else
+								button.nextspell:SetSize(width, width);
+								button.nextsize = 1;
+							end
+						else
+							button.nextspell:Hide();
+						end
 					end
 				end
 
@@ -555,6 +581,10 @@ local function on_event(self, event, arg)
 	end
 end
 
+local function on_update()
+	ns.nextspellid = C_AssistedCombat.GetNextCastSpell(true);
+end
+
 main_frame:RegisterEvent("ADDON_LOADED");
 main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
@@ -565,3 +595,5 @@ main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 main_frame:RegisterEvent("UPDATE_BONUS_ACTIONBAR");
 
 main_frame:SetScript("OnEvent", on_event);
+
+C_Timer.NewTicker(0.2, on_update);

@@ -7,6 +7,7 @@ local Options_Default = {
     BuffBarClassColor = true,
     ShowHotKey = true,
     HideBarName = true,
+    AlertAssitedSpell = false,
 };
 
 ns.options = CopyTable(Options_Default);
