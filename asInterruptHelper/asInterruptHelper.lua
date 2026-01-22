@@ -276,6 +276,8 @@ local function register_unit(button, unit)
     button:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
     button:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
     button:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
+    button:RegisterEvent("PLAYER_TARGET_CHANGED");
+    button:RegisterEvent("PLAYER_FOCUS_CHANGED");
 end
 
 local function create_button(unit)
