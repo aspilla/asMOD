@@ -3,7 +3,12 @@ local _, ns = ...;
 local configs = {
     interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
     failcolor = { 1, 0, 0 },
+    interruptedtext = INTERRUPTED;
 };
+
+if GetLocale() == "koKR" then
+    configs.interruptedtext = "차단됨";
+end
 
 
 local function hide_castbar(castbar)
@@ -54,7 +59,7 @@ local function check_casting(castbar, event, interuptedby)
         if event == "UNIT_SPELLCAST_INTERRUPTED" then
             castbar:SetMinMaxValues(0, 100);
             castbar:SetValue(100);
-            local failtext = INTERRUPTED
+            local failtext = configs.interruptedtext;
             local color = configs.failcolor;
             time:SetText(failtext);
             castbar:SetStatusBarColor(color[1], color[2], color[3]);
