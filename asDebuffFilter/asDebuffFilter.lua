@@ -133,7 +133,8 @@ local function update_frames(unit, auraList, numAuras)
         local frame = parent.frames[i];
 
         frame.unit = unit;
-        frame.auraInstanceID = aura.auraInstanceID;
+        frame.auraid = aura.auraInstanceID;
+        frame.filter = filters[unit];
 
         local color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);
 
@@ -269,7 +270,21 @@ local function create_frames(parent, bright, rate)
         -- Resize
         frame:SetWidth(ns.configs.size * rate);
         frame:SetHeight(ns.configs.size * ns.configs.sizerate * rate);
+
+        if not frame:GetScript("OnEnter") then
+            frame:SetScript("OnEnter", function(self)
+                if self.auraid then
+                    GameTooltip_SetDefaultAnchor(GameTooltip, self);
+                    GameTooltip:SetUnitDebuffByAuraInstanceID(self.unit, self.auraid, self.filter);
+                end
+            end)
+            frame:SetScript("OnLeave", function()
+                GameTooltip:Hide();
+            end)
+        end
+
         frame:EnableMouse(false);
+        frame:SetMouseMotionEnabled(true);
         frame:Hide();
     end
 
@@ -320,11 +335,6 @@ local function init()
     main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
     main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
     main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
-    main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
-    main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-    main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-    main_frame:RegisterUnitEvent("UNIT_PET", "player")
-
 
     main_frame:SetScript("OnEvent", on_event)
 
