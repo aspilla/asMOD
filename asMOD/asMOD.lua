@@ -107,7 +107,7 @@ local function setup_wowoptions()
 	SetCVar("nameplateShowEnemies", 1)
 	SetCVar("nameplateShowFriends", 0)
 	SetCVar("nameplateShowFriendlyNPCs", 0)
-	SetCVar("namePlateStyle", Enum.NamePlateStyle.Modern);
+	SetCVar("namePlateStyle", Enum.NamePlateStyle.Block);
 
 	--개인 자원바
 	SetCVar("nameplateShowSelf", "0");
