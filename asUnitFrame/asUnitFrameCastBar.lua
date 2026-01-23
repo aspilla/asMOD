@@ -147,7 +147,7 @@ local function on_castevent(self, event, ...)
 	elseif ( event == "UNIT_SPELLCAST_EMPOWER_STOP" ) then
 		local _, _, _, complete, interrupted = ...;
         interruptedby = interrupted;
-		if ( not complete) then
+		if (not issecretvalue(complete)) and  (not complete) then
             event = "UNIT_SPELLCAST_INTERRUPTED";
 		end
     end
