@@ -80,7 +80,7 @@ local function setup_castbar()
 
     if not castbar:GetScript("OnEnter") then
         castbar:SetScript("OnEnter", function(self)
-            if self.castspellid and self.castspellid > 0 then
+            if self.castspellid then
                 GameTooltip_SetDefaultAnchor(GameTooltip, self);
                 GameTooltip:SetSpellByID(self.castspellid);
             end
@@ -320,7 +320,7 @@ local function on_unit_event(castbar, event, ...)
 	elseif ( event == "UNIT_SPELLCAST_EMPOWER_STOP" ) then
 		local _, _, _, complete, interrupted = ...;
         interruptedby = interrupted;
-		if ( not complete) then
+		if (not issecretvalue(complete)) and  (not complete) then
             event = "UNIT_SPELLCAST_INTERRUPTED";
 		end
     end
