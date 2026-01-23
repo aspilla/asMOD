@@ -3,6 +3,7 @@ local main_frame = CreateFrame("Frame", nil, UIParent);
 
 local configs = {
     fontsize = 12,
+    castbar_heightadder = 5,
 }
 
 ns.enums = {
@@ -140,12 +141,23 @@ local function change_item(button)
     end
 
     if not button.border then
-        button.border = button:CreateTexture(nil, "BACKGROUND");
-        button.border:SetAllPoints(button);
-        button.border:SetColorTexture(0, 0, 0, 1);
+        button.border = button:CreateTexture(nil, "ARTWORK");
+        button.border:SetTexture("Interface\\Addons\\asNamePlates\\border.tga")
+        button.border:SetDrawLayer("ARTWORK", 6);
+        button.border:SetVertexColor(0, 0, 0, 1);
+        button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+        button.border:ClearAllPoints();
+        button.border:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0);
+        button.border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0);
+        local mask = button.Icon:GetMaskTexture(1)
+		if mask then
+			button.Icon:RemoveMaskTexture(mask);
+		end
+        button.Icon:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
     else
         button.border:SetAlpha(1)
     end
+    
     button.border:Show()
 
     if button.CountFrame and button.CountFrame.Count then
@@ -227,13 +239,13 @@ local function add_unit(unit)
         local height = 36 * scale.vertical;
 
         if org_height then
-            height = org_height + 5;
+            height = org_height + configs.castbar_heightadder;
         end
 
         asframe.casticon:SetWidth(height * 1.1);
         asframe.casticon:SetHeight(height);
         asframe.casticon:Hide();
-        asframe.iscast = false;
+        asframe.iscast = false;        
     end
 
     if ns.options.ChangeTexture then
