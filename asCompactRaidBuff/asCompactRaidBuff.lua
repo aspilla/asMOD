@@ -155,38 +155,41 @@ local function hook_func(frame)
     end
 end
 
-local function change_button(button, notchangerate, changesize)
+local function change_button(button, changeborder, changesize)
     local width = button:GetWidth();
 
     if changesize then
         width = width * ns.options.CenterDefensiveSizeRate;
     end
 
-    local rate = configs.iconrate;
+    local rate = 1;
 
-    if notchangerate then
-        rate = 1;
+    if changesize then
+        rate = configs.iconrate;
     end
 
     if ns.options.ChangeIcon then
-        button:SetSize(width, width * rate);
-
-        if button.icon then
-            button.icon:ClearAllPoints();
-            button.icon:SetPoint("CENTER", 0, 0);
-            button.icon:SetSize(width - 2, width * rate - 2);
-            button.icon:SetTexCoord(.08, .92, .08, .92);
+        if changesize then
+            button:SetSize(width, width * rate);
         end
+        
+        if changeborder then
+            if button.icon then
+                button.icon:SetTexCoord(.08, .92, .08, .92);
+            end
 
-        if not button.border then
-            button.border = button:CreateTexture(nil, "BACKGROUND");
-            button.border:SetDrawLayer("BACKGROUND");
-            button.border:SetColorTexture(0, 0, 0, 1);
-            button.border:Show();
+            if not button.border then
+                button.border = button:CreateTexture(nil, "BACKGROUND");
+                button.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga")
+                button.border:SetDrawLayer("ARTWORK", 6);
+                button.border:SetVertexColor(0, 0, 0, 1);
+                button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92)
+                button.border:Show();
+            end
+            button.border:ClearAllPoints();
+            button.border:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0);
+            button.border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0);
         end
-        button.border:ClearAllPoints();
-        button.border:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0);
-        button.border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0);
     end
 
     if button.count then
@@ -215,16 +218,16 @@ local function change_defaults(frame)
     if frame and not frame:IsForbidden() then
         if frame.buffFrames then
             for i = 1, #frame.buffFrames do
-                change_button(frame.buffFrames[i]);
+                change_button(frame.buffFrames[i], true);
             end
         end
         if frame.debuffFrames then
             for i = 1, #frame.debuffFrames do
-                change_button(frame.debuffFrames[i], true);
+                change_button(frame.debuffFrames[i], false);
             end
         end
         if frame.CenterDefensiveBuff then
-            change_button(frame.CenterDefensiveBuff, false, true);
+            change_button(frame.CenterDefensiveBuff, true, true);
         end
     end
 end
