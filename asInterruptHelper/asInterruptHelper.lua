@@ -177,6 +177,7 @@ end
 local function check_sound(frame, unit, notInterruptible)
     if frame.soundalerted == false and unit ~= "mouseover" then
         local isfocus = false;
+        frame.soundalerted = true;
         if unit == "focus" then
             if UnitIsUnit(unit, "target") then
                 return;
@@ -204,8 +205,7 @@ local function check_sound(frame, unit, notInterruptible)
             end
         end
 
-        if soundfile then
-            frame.soundalerted = true;
+        if soundfile then            
             PlaySoundFile(soundfile, "MASTER");
         end
     end

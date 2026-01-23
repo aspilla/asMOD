@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rInterruptHelper
 ## Notes: Interrupt/Stun Cooldown Tracker
 ## Notes-koKR: 차단/스턴 스킬 쿨다운 표시
-## Version : 260123
+## Version : 260123_2
 ## SavedVariablesPerCharacter: AIH_Options, AIH_Positions_1, AIH_Positions_2
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
