@@ -15,21 +15,19 @@ end
 
 --AddMessage
 local function asMOD_AddMessage(self, text, ...)
-
 	if self:IsForbidden() then
 		return
 	end
 
-	if issecretvalue(text) then
-		return;
-	end
-	-- URL pattern to find URLs in the text
-	local urlPattern = '([wWhH][wWtT][wWtT][%.pP]%S+[^%p%s])'
+	if not issecretvalue(text) then
+		-- URL pattern to find URLs in the text
+		local urlPattern = '([wWhH][wWtT][wWtT][%.pP]%S+[^%p%s])'
 
-	-- Check if the pattern exists in the text
-	if text:find(urlPattern) then
-		-- Highlight and hyperlink the URLs
-		text = text:gsub(urlPattern, '|cffffdd00|Hurl:%1|h[%1]|h|r')
+		-- Check if the pattern exists in the text
+		if text:find(urlPattern) then
+			-- Highlight and hyperlink the URLs
+			text = text:gsub(urlPattern, '|cffffdd00|Hurl:%1|h[%1]|h|r')
+		end
 	end
 
 	-- Call the original message handler with the modified text
