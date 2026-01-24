@@ -1,7 +1,7 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 251216,
-    LockWindow = false,
+    Version = 260124,
+    LockWindow = true,
     FontSize = 20,
     Font = 1,
     ShowWhenCombat = true,

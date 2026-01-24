@@ -64,7 +64,7 @@ local function on_update()
 		end
 	end
 
-	if ns.options.ShowWhenCombat and not ns.options.LockWindow then
+	if ns.options.ShowWhenCombat and ns.options.LockWindow then
 		if InCombatLockdown() then
 			main_frame:Show();
 		else
