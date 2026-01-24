@@ -49,6 +49,7 @@ function asDebuffPrivateAuraAnchorMixin:SetUnit(unit)
             iconAnchor = iconAnchor,
             iconWidth = self:GetWidth(),
             iconHeight = self:GetHeight(),
+            borderScale = 1.2,
         };
         privateAnchorArgs.durationAnchor = nil;
 
