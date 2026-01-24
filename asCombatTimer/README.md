@@ -11,7 +11,7 @@ Displays the elapsed time after combat starts.
 ## Settings
 *   You can change the options for `asCombatTimer` in the `ESC` > `Settings` > `AddOns` tab.
 1.  **LockWindow**:
-    *   Locks the position setting. (Default: Unlocked)
+    *   Locks the position setting. (Default: Locked)
 2.  **Font Size**:
     *   Specifies the font size. (Default: 20)
 3.  **Font**:
@@ -37,7 +37,7 @@ Displays the elapsed time after combat starts.
 ## 설정
 *   `ESC` > `설정` > `애드온` > `asCombatTimer`  옵션을 변경 가능.
 1.  **LockWindow**:
-    *   위치 설정을 고정 합니다. (기본값: 해제)
+    *   위치 설정을 고정 합니다. (기본값: 설정)
 2.  **Font Size**:
     *   폰트 크기를 지정 합니다. (기본값: 20)
 3.  **Font**:
