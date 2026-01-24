@@ -139,21 +139,21 @@ local function check_needtointerrupt(unit)
         if name then
             local casttype = get_typeofcast(unit);
             if casttype == nil then
-                return nil, false;
+                return name, nil;
             else
                 return name, casttype == "uninterruptable";
             end
         end
     end
 
-    return nil;
+    return nil, nil;
 end
 
 
-local function find_spell(notInterruptible, isBoss)
+local function find_spell(notinterruptible, isboss)
     local list;
 
-    if notInterruptible then
+    if notinterruptible then
         list = stunSpells;
 
         for _, v in pairs(list) do
@@ -166,7 +166,7 @@ local function find_spell(notInterruptible, isBoss)
             return v.spellid;
         end
 
-        if not isBoss then
+        if not isboss then
             for _, v in pairs(stunSpells) do
                 return v.spellid;
             end
@@ -174,10 +174,9 @@ local function find_spell(notInterruptible, isBoss)
     end
 end
 
-local function check_sound(frame, unit, notInterruptible)
-    if frame.soundalerted == false and unit ~= "mouseover" then
+local function check_sound(frame, unit, notinterruptible)
+    if unit ~= "mouseover" then
         local isfocus = false;
-        frame.soundalerted = true;
         if unit == "focus" then
             if UnitIsUnit(unit, "target") then
                 return;
@@ -187,7 +186,7 @@ local function check_sound(frame, unit, notInterruptible)
 
         local soundfile = nil;
 
-        if notInterruptible then
+        if notinterruptible then
             if ns.options.PlaySoundStun then
                 if isfocus then
                     soundfile = configs.focusstunvoice
@@ -205,7 +204,7 @@ local function check_sound(frame, unit, notInterruptible)
             end
         end
 
-        if soundfile then            
+        if soundfile then
             PlaySoundFile(soundfile, "MASTER");
         end
     end
@@ -215,38 +214,48 @@ end
 
 local function check_casting(frame, unit)
     if not UnitExists(unit) then
-        frame.soundalerted = false;
+        frame.soundchecked = false;
         frame:Hide();
         return;
     end
 
-    local name, not_interruptible = check_needtointerrupt(unit)
+    local name, notinterruptible = check_needtointerrupt(unit)
 
     if name then
-        local isBoss = false;
-        local needtointerrupt = true;
-        local level = UnitLevel(unit);
-
-        if level < 0 or level > UnitLevel("player") then
-            isBoss = true;
-        end
-
-        if not_interruptible then
-            if isBoss then
-                needtointerrupt = false;
+        if notinterruptible ~= nil then
+            local soundalert = false;
+            if frame.soundchecked == false then
+                soundalert = true;
             end
-        end
+            frame.soundchecked = true;
+            local isboss = false;
+            local needtointerrupt = true;
+            local level = UnitLevel(unit);
 
-        if needtointerrupt then
-            local spellID = find_spell(not_interruptible, isBoss);
+            if level < 0 or level > UnitLevel("player") then
+                isboss = true;
+            end
 
-            if spellID then
-                show_interruptspell(frame, spellID);
-                check_sound(frame, unit, not_interruptible);
+            if notinterruptible then
+                if isboss then
+                    needtointerrupt = false;
+                end
+            end
+
+            if needtointerrupt then
+                local interupt_spellid = find_spell(notinterruptible, isboss);
+
+                if interupt_spellid then
+                    show_interruptspell(frame, interupt_spellid);
+
+                    if soundalert then
+                        check_sound(frame, unit, notinterruptible);
+                    end
+                end
             end
         end
     else
-        frame.soundalerted = false;
+        frame.soundchecked = false;
         frame:Hide();
     end
 end
@@ -309,11 +318,23 @@ local function create_button(unit)
 
     frame:EnableMouse(false);
     frame:Hide();
-    frame.soundalerted = false;
+    frame.soundchecked = false;
 
-    if unit == "target" or unit == "focus" then
+    if unit == "target" then
+        local function on_unit_event(_, event)
+            if event == "PLAYER_TARGET_CHANGED" then
+                frame.soundchecked = false;
+            end
+            check_casting(frame, unit);
+        end
 
+        register_unit(frame, unit);
+        frame:SetScript("OnEvent", on_unit_event);
+    elseif unit == "focus" then
         local function on_unit_event()
+            if event == "PLAYER_FOCUS_CHANGED" then
+                frame.soundchecked = false;
+            end
             check_casting(frame, unit);
         end
 
@@ -331,13 +352,7 @@ local function create_button(unit)
 end
 
 local function on_event(self, event)
-    if event == "PLAYER_TARGET_CHANGED" then
-        main_frame.targetframe.soundalerted = false;
-    elseif event == "PLAYER_FOCUS_CHANGED" then
-        main_frame.focusframe.soundalerted = false;
-    else
-        init_player();
-    end
+    init_player();
 end
 
 local function init()
@@ -375,8 +390,6 @@ local function init()
     main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
     main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
     main_frame:RegisterUnitEvent("UNIT_PET", "player");
-    main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
-    main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
 
     init_player();
 end
