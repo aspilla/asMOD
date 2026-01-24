@@ -2,7 +2,9 @@
 
 Hides nameplates except for mobs that are casting.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/aVWyNqrT2C4?si=6_xC-XOIqE8cXira" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+![asHideNamePlates](https://github.com/aspilla/asMOD/blob/main/.Pictures/asHideNamePlates.gif?raw=true)
+
+<`Auto Trigger` Example>
 
 ## Addon Activation Conditions
 
@@ -31,7 +33,9 @@ Hides nameplates except for mobs that are casting.
 
 케스팅중인 몹 외 이름표를 숨김
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/aVWyNqrT2C4?si=6_xC-XOIqE8cXira" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+![asHideNamePlates](https://github.com/aspilla/asMOD/blob/main/.Pictures/asHideNamePlates.gif?raw=true)
+
+<`Auto Trigger` 예제>
 
 ## 애드온 동작 조건
 
