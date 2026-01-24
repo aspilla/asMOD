@@ -6,6 +6,8 @@ asMOD is a collection of custom-made World of Warcraft addons.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/jxMk3LePSxk?si=j5YbrMeHnzxF47or" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/0zHGbe_qgHo?si=EgcUnzB4wVjHYt5W" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Features of asMOD
 
 * **Simple:** Each addon functions independently and focuses on enhancing the default UI with lightweight features.
@@ -129,6 +131,8 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_party.jpg?raw=true)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/jxMk3LePSxk?si=j5YbrMeHnzxF47or" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/0zHGbe_qgHo?si=EgcUnzB4wVjHYt5W" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## asMOD의 특징
 
