@@ -21,6 +21,7 @@ Cast bar for Target and Focus targets.
 * **Target Aggro Indicator**: Flashes red or yellow exclamation marks on the right side when you are being targeted by a mob.
 
 ## Configuration
+* `ShowTarget`: Toggle display of the Target cast bar (Default: true).
 * `ShowFocus`: Toggle display of the Focus target cast bar (Default: true).
 * `FocusCastScale`: Adjust the size scale of the Focus target cast bar (Default: 1.2).
 * **Move Position**: Enter the `/asConfig` command in the chat.
@@ -51,6 +52,7 @@ Cast bar for Target and Focus targets.
 *   **내가 대상일 경우 강조**: 내가 대상일 경우 우측에 빨간색/노란색 느낌표 점멸
 
 ## 설정
+*   `ShowTarget`: 대상 시전 바 표시 여부 (기본 true)
 *   `ShowFocus`: 주시 대상 시전 바 표시 여부 (기본 true)
 *   `FocusCastScale`: 주시 대상 시전 바 크기 배율 (기본 1.2)
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력

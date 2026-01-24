@@ -11,7 +11,7 @@ local configs = {
     failedcolor = { 1, 0, 0 },
     updaterate = 0.1,
     font = STANDARD_TEXT_FONT,
-    interruptedtext = INTERRUPTED;
+    interruptedtext = INTERRUPTED,
 }
 
 configs.namesize = configs.height * 0.7;
@@ -120,7 +120,7 @@ local function setup_castbar()
     castbar.targetedindi:SetFont(configs.font, configs.namesize + 1, "OUTLINE");
     castbar.targetedindi:SetPoint("LEFT", castbar, "RIGHT", 0, 1);
     castbar.targetedindi:Show();
-    
+
 
     castbar.start = 0;
     castbar.duration = 0;
@@ -155,14 +155,14 @@ local function show_raidicon(unit, markframe)
 end
 
 local function get_interrupttext(interruptedby)
-	if interruptedby then
-		local unitname = UnitNameFromGUID(interruptedby);
-		if unitname then
-			return SPELL_INTERRUPTED_BY:format(unitname);
-		end
-	end
+    if interruptedby then
+        local unitname = UnitNameFromGUID(interruptedby);
+        if unitname then
+            return SPELL_INTERRUPTED_BY:format(unitname);
+        end
+    end
 
-	return INTERRUPTED;
+    return INTERRUPTED;
 end
 
 local function check_casting(castbar, event, interuptedby)
@@ -200,7 +200,7 @@ local function check_casting(castbar, event, interuptedby)
                 targetname:SetText(get_interrupttext(interuptedby));
                 targetname:SetTextColor(1, 1, 1);
             else
-                targetname:SetText("");                
+                targetname:SetText("");
             end
             castbar.important:SetAlpha(0);
             castbar.targetedindi:SetAlpha(0);
@@ -275,7 +275,11 @@ local function check_unit(castbar, unit)
         return;
     end
 
-    if unit == "focus" then
+    if unit == "target" then
+        if not ns.options.ShowTarget then
+            return;
+        end
+    elseif unit == "focus" then
         if not ns.options.ShowFocus then
             return;
         end
@@ -309,20 +313,20 @@ end
 local function on_unit_event(castbar, event, ...)
     local interruptedby = nil;
 
-    if ( event == "UNIT_SPELLCAST_INTERRUPTED" ) then
-		interruptedby = select(4, ...);
-    elseif ( event == "UNIT_SPELLCAST_CHANNEL_STOP" ) then
-		interruptedby = select(4, ...);
-		local complete = interruptedby == nil;
-		if ( not complete) then
+    if (event == "UNIT_SPELLCAST_INTERRUPTED") then
+        interruptedby = select(4, ...);
+    elseif (event == "UNIT_SPELLCAST_CHANNEL_STOP") then
+        interruptedby = select(4, ...);
+        local complete = interruptedby == nil;
+        if (not complete) then
             event = "UNIT_SPELLCAST_INTERRUPTED";
-		end
-	elseif ( event == "UNIT_SPELLCAST_EMPOWER_STOP" ) then
-		local _, _, _, complete, interrupted = ...;
+        end
+    elseif (event == "UNIT_SPELLCAST_EMPOWER_STOP") then
+        local _, _, _, complete, interrupted = ...;
         interruptedby = interrupted;
-		if (not issecretvalue(complete)) and  (not complete) then
+        if (not issecretvalue(complete)) and (not complete) then
             event = "UNIT_SPELLCAST_INTERRUPTED";
-		end
+        end
     end
     check_casting(castbar, event, interruptedby);
 end
@@ -395,10 +399,18 @@ local function init()
     ns.focuscastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height + 2) * 1.2) / 2,
         configs.ypoint + 150);
 
-    ns.targetcastbar:SetScript("OnEvent", on_unit_event);
-    register_unit(ns.targetcastbar, "target");
-    ns.focuscastbar:SetScript("OnEvent", on_unit_event);
-    register_unit(ns.focuscastbar, "focus");
+
+    if ns.options.ShowTarget then
+        ns.targetcastbar:SetScript("OnEvent", on_unit_event);
+        register_unit(ns.targetcastbar, "target");
+    end
+
+
+    if ns.options.ShowFocus then
+        ns.focuscastbar:SetScript("OnEvent", on_unit_event);
+        register_unit(ns.focuscastbar, "focus");
+    end
+
 
     ns.focuscastbar:SetScale(ns.options.FocusCastScale);
 

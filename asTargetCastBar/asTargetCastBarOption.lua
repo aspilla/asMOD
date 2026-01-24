@@ -2,6 +2,7 @@ local _, ns = ...;
 local Options_Default = {
     Version = 250706,
     ShowFocus = true,
+    ShowTarget = true,
     FocusCastScale = 1.2;
 };
 
@@ -21,10 +22,13 @@ function ns.setup_option()
         ATCB_Options[variable] = value;
         ns.options[variable] = value;
         
-        if variable == "FocusCastScale" and ns.focuscastbar then
-            ns.focuscastbar:SetScale(value);
+        if variable == "FocusCastScale" then
+            if ns.focuscastbar then
+                ns.focuscastbar:SetScale(value);
+            end
+        else
+            ReloadUI();
         end
-
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asTargetCastBar")
