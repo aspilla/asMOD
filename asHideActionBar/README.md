@@ -1,30 +1,47 @@
 # asHideActionBar (Midnight)
 
-Automatically hides 1st action bar
+Automatically hides action bars.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/qjCYipwukhI?si=TA-GghasudzmAASR" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asHideActionBar.gif?raw=true)
 
 ## Target Frames
-*   `MainActionBar` : Primary Action Bar
-*   `StanceBar` : Stance Bar
-*   `PetActionBar` : Pet Action Bar
+
+You can choose which bars to hide using the following settings:
+* `Action Bar 1`: (`HideActionBar1`)
+* `Stance Bar`: (`HideStanceBar`)
+* `Pet Bar`: (`HidePetBar`)
+* `Action Bar 2`: (`HideActionBar2`)
+* `Action Bar 3`: (`HideActionBar3`)
+* `Action Bar 4`: (`HideActionBar4`)
+* `Action Bar 5`: (`HideActionBar5`)
+* `Action Bar 6`: (`HideActionBar6`)
+* `Action Bar 7`: (`HideActionBar7`)
+* `Action Bar 8`: (`HideActionBar8`)
 
 ## Configuration
-No configuration
+Settings can be modified via `ESC` > `Options` > `AddOns` > `asHideActionBar`.
 
 ---
 
 # asHideActionBar (한밤)
 
-1번 액션 바를 자동 숨김
+액션 바들을 자동 숨김
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/qjCYipwukhI?si=TA-GghasudzmAASR" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asHideActionBar.gif?raw=true)
 
 ## 대상 프레임
 
-*   `MainActionBar` : 1번 Action Bar
-*   `StanceBar` : 태세바
-*   `PetActionBar` : Pet Action Bar
+다음 설정으로 숨김 여부 선택 가능
+*   `행동 단축바 1` : (`HideActionBar1`)
+*   `태세바` : (`HideStanceBar`)
+*   `소환수 바` : (`HidePetBar`)
+*   `행동 단축바 2` : (`HideActionBar2`)
+*   `행동 단축바 3` : (`HideActionBar3`)
+*   `행동 단축바 4` : (`HideActionBar4`)
+*   `행동 단축바 5` : (`HideActionBar5`)
+*   `행동 단축바 6` : (`HideActionBar6`)
+*   `행동 단축바 7` : (`HideActionBar7`)
+*   `행동 단축바 8` : (`HideActionBar8`)
 
 ## 설정
-설정 없음
+`ESC` > `설정` > `애드온` > `asHideActionBar` 에서 설정 변경 가능

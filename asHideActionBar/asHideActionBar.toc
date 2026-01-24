@@ -1,9 +1,11 @@
 ## Interface: 110207, 120000, 120001
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rHideActionBar
-## Notes: Automatically hides 1st action bar
-## Notes-koKR: 1번 액션 바를 자동 숨김
-## Version : 251129
+## Notes: Automatically hides action bars
+## Notes-koKR: 액션 바를 자동 숨김
+## Version : 260124
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## SavedVariablesPerCharacter: AHAB_Options
 ## Category: asMOD
+asHideActionBarOption.lua
 asHideActionBar.lua

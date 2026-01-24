@@ -1,7 +1,11 @@
+local _, ns = ...;
+
 local configs = {
 	offset = 100,
 	updaterate = 0.5,
 };
+
+local hidelist = {};
 
 local function check_frame(frame, cpoint, offset, show)
 	if not frame then
@@ -33,13 +37,38 @@ local function on_update()
 	y = y / uiScale;
 	local cpoint = { x = x, y = y };
 
-	check_frame(MainActionBar, cpoint, configs.offset, false);
-	check_frame(StanceBar, cpoint, configs.offset, false);
-	check_frame(PetActionBar, cpoint, configs.offset, false);
+	for name, option in pairs(hidelist) do
+		if option then
+			local frame = _G[name];
+			check_frame(frame, cpoint, configs.offset, false);
+		end
+	end
 end
 
-hide_frame(MainActionBar);
-hide_frame(StanceBar);
-hide_frame(PetActionBar);
+local function init()
+	ns.setup_option();
 
-C_Timer.NewTicker(configs.updaterate, on_update);
+	hidelist = {
+		["MainActionBar"] = ns.options.HideActionBar1,
+		["PetActionBar"] = ns.options.HidePetBar,
+		["StanceBar"] = ns.options.HideStanceBar,
+		["MultiBarBottomLeft"] = ns.options.HideActionBar2,
+		["MultiBarBottomRight"] = ns.options.HideActionBar3,
+		["MultiBarLeft"] = ns.options.HideActionBar4,
+		["MultiBarRight"] = ns.options.HideActionBar5,
+		["MultiBar5"] = ns.options.HideActionBar6,
+		["MultiBar6"] = ns.options.HideActionBar7,
+		["MultiBar7"] = ns.options.HideActionBar8,
+	};
+
+	for name, option in pairs(hidelist) do
+		if option then
+			local frame = _G[name];
+			hide_frame(frame);
+		end
+	end
+
+	C_Timer.NewTicker(configs.updaterate, on_update);
+end
+
+C_Timer.After(0.5, init);
