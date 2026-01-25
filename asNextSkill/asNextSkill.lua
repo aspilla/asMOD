@@ -10,12 +10,14 @@ local main_frame = CreateFrame("Button", nil, UIParent, "asNextSkillFrameTemplat
 local function on_update()
 	local nextspellid = C_AssistedCombat.GetNextCastSpell(false);
 
-	local info = C_Spell.GetSpellInfo(nextspellid);
-	if info then
-		main_frame.icon:SetTexture(info.iconID);
-		main_frame:Show();
-	else
-		main_frame:Hide();
+	if nextspellid then
+		local info = C_Spell.GetSpellInfo(nextspellid);
+		if info then
+			main_frame.icon:SetTexture(info.iconID);
+			main_frame:Show();
+		else
+			main_frame:Hide();
+		end
 	end
 end
 
