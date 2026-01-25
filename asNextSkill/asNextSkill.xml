@@ -8,6 +8,9 @@
 			<Layer level="ARTWORK" textureSubLevel="7">
 				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asNextSkill\border.tga"/>								
 			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentKeyText" parentKey="keytext" justifyH="RIGHT"/>							
+			</Layer>
 		</Layers>		
 	</Frame>
 	<Script file="asNextSkill.lua"/>
