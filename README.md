@@ -23,15 +23,15 @@ asMOD is a collection of custom-made World of Warcraft addons.
 * **Enhanced Standalone Convenience:** The `/asconfig` and `/asclear` commands for repositioning can now be used even if you only install individual addons without the main `asMOD` package.
 
 ## Unsupported Addons (from Midnight)
-* asAutoMarker: Unsupported due to the inability to track mob GUIDs.
-* asBooldlustAlert: Unsupported due to debuff tracking restrictions.
-* asDBMCastingAlert: Unsupported due to the removal of DBM integration.
-* asDotSnapshot: Unsupported due to debuff tracking restrictions.
-* asFixCombatText: Unsupported as combat values have been moved to secret status.
-* asHealerChatAlert: Unsupported as mana values are now secret.
-* asOverlay: Unsupported due to buff tracking restrictions.
-* asReady: Unsupported due to restrictions on tracking skill usage.
-* asSummonTracker: Unsupported due to restrictions on tracking skill usage.
+* **asAutoMarker**: Unsupported due to the inability to track mob GUIDs.
+* **asBooldlustAlert**: Unsupported due to debuff tracking restrictions.
+* **asDBMCastingAlert**: Unsupported due to the removal of DBM integration.
+* **asDotSnapshot**: Unsupported due to debuff tracking restrictions.
+* **asFixCombatText**: Unsupported as combat values have been moved to secret status.
+* **asHealerChatAlert**: Unsupported as mana values are now secret.
+* **asOverlay**: Unsupported due to buff tracking restrictions.
+* **asReady**: Unsupported due to restrictions on tracking skill usage.
+* **asSummonTracker**: Unsupported due to restrictions on tracking skill usage.
 
 ## Important Note (asUnitFrame)
 The following issue may occur:
@@ -111,6 +111,7 @@ Each asMOD addon functions independently. If you wish to use only specific addon
 | asMisdirection | Automated Misdirection and Tricks of the Trade macro | [Link](https://www.curseforge.com/wow/addons/asmisdirection) | [Link](https://github.com/aspilla/asMOD/tree/main/asMisdirection) |
 | asMOD | asMOD Collection Settings | [Link](https://www.curseforge.com/wow/addons/asmod) | [Link](https://github.com/aspilla/asMOD/tree/main/asMOD) |
 | asNamePlates | Nameplate enhancement addon | [Link](https://www.curseforge.com/wow/addons/asnameplates) | [Link](https://github.com/aspilla/asMOD/tree/main/asNamePlates) |
+| asNextSkill | (Not included) Notification for the next recommended skill | [Link](https://www.curseforge.com/wow/addons/asnextskill) | [Link](https://github.com/aspilla/asMOD/tree/main/asNextSkill) |
 | asPowerBar | Displays Main and Class resources | [Link](https://www.curseforge.com/wow/addons/aspowerbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asPowerBar) |
 | asPremadeGroupsFilter | Premade Group Finder (Keystone/Raid) enhancement | [Link](https://www.curseforge.com/wow/addons/aspremadegroupsfilter) | [Link](https://github.com/aspilla/asMOD/tree/main/asPremadeGroupsFilter) |
 | asRangeDisplay | Distance display for Target/Focus/Mouseover | [Link](https://www.curseforge.com/wow/addons/asrangedisplay) | [Link](https://github.com/aspilla/asMOD/tree/main/asRangeDisplay) |
@@ -239,6 +240,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 | asMisdirection | 눈속임, 속임수 거래 자동 매크로 | [링크](https://www.curseforge.com/wow/addons/asmisdirection) | [링크](https://github.com/aspilla/asMOD/tree/main/asMisdirection) |
 | asMOD | asMOD 모음집 설정 | [링크](https://www.curseforge.com/wow/addons/asmod) | [링크](https://github.com/aspilla/asMOD/tree/main/asMOD) |
 | asNamePlates | 이름표 강화 애드온 | [링크](https://www.curseforge.com/wow/addons/asnameplates) | [링크](https://github.com/aspilla/asMOD/tree/main/asNamePlates) |
+| asNextSkill | (미포함) 다음 쓰면 좋은 스킬 알림 | [링크](https://www.curseforge.com/wow/addons/asnextskill) | [링크](https://github.com/aspilla/asMOD/tree/main/asNextSkill) |
 | asPowerBar | 주 자원/직업 자원 표시 | [링크](https://www.curseforge.com/wow/addons/aspowerbar) | [링크](https://github.com/aspilla/asMOD/tree/main/asPowerBar) |
 | asPremadeGroupsFilter | 쐐기돌/공격대 검색 창 강화 | [링크](https://www.curseforge.com/wow/addons/aspremadegroupsfilter) | [링크](https://github.com/aspilla/asMOD/tree/main/asPremadeGroupsFilter) |
 | asRangeDisplay | 대상/주시/마우스오버 거리를 표시 | [링크](https://www.curseforge.com/wow/addons/asrangedisplay) | [링크](https://github.com/aspilla/asMOD/tree/main/asRangeDisplay) |
