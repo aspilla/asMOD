@@ -3,7 +3,6 @@
 	xpoint = -60,
 	ypoint = 0,
 	alpha = 0.9,
-	fontsize = 10,
 }
 
 local main_frame = CreateFrame("Button", nil, UIParent, "asNextSkillFrameTemplate");
@@ -34,26 +33,16 @@ local function init()
 	C_Timer.NewTicker(0.2, on_update);
 end
 
-main_frame:EnableMouse(false);
-
-for _, r in next, { main_frame.cooldown:GetRegions() } do
-	if r:GetObjectType() == "FontString" then
-		r:SetFont(STANDARD_TEXT_FONT, configs.fontsize, "OUTLINE");
-		r:SetDrawLayer("OVERLAY");
-		break
-	end
-end
-
 main_frame.icon:SetTexCoord(.08, .92, .08, .92)
 main_frame.icon:SetAlpha(configs.alpha);
 main_frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92)
 main_frame.border:SetVertexColor(0, 0, 0);
-main_frame.cooldown:Show();
 
 main_frame:ClearAllPoints();
 main_frame:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint);
 main_frame:SetSize(configs.size, configs.size * 0.9);
 main_frame:SetAlpha(configs.alpha);
+main_frame:EnableMouse(false);
 main_frame:Show();
 
 C_Timer.After(0.5, init);
