@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rCooldownPulse
 ## Notes: Displays cooldowns for trinkets, racial traits, healthstones, and potions.
 ## Notes-koKR:장신구, 종특, 생석, 물약 쿨 표시
-## Version : 251225
+## Version : 260125
 ## SavedVariablesPerCharacter: ACDP_Options, ACDP_Positions_1, ACDP_Positions_2
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
