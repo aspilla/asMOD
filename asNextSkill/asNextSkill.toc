@@ -1,0 +1,12 @@
+## Interface: 120000, 120001
+## Author: |cffff3399Aspilla|r [Azshara - KR]
+## Title: |cffff3399as|rNextSkill
+## Notes: Notification for the next recommended skill to use.
+## Notes-koKR: 다음 쓰면 좋은 스킬 알림
+## Version : 260125
+## SavedVariablesPerCharacter: ASNS_Positions
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
+asNextSkill.xml
