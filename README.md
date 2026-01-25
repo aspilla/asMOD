@@ -73,6 +73,8 @@ The following issue may occur:
 2. Go to `ESC > Edit Mode` and delete the `asMOD_Layout` profile.
 3. It is recommended to reset your WoW settings to default.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/z52_zORKDTU?si=2RNoLF5hSB2GNwq8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Positioning Guide
 1. Use the `/asconfig` command to adjust frame positions.
 2. Disable `asUnitFrame` before using `Edit Mode`. Repositioned layouts should be saved with a **new name** other than `asMOD_Layout`.
@@ -198,6 +200,8 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 1. 설치한 폴더를 지워 주세요. (`Interface`, `Font` 폴더를 지우시면 됩니다.)
 2. esc >> 편집 모드 >> asMOD_Layout 을 삭제해 주세요.
 3. 와우 설정을 초기화 하는 것을 추천 합니다.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/z52_zORKDTU?si=2RNoLF5hSB2GNwq8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 위치 설정 방법
 1. `/asconfig` 명령으로 위치 조정 가능 
