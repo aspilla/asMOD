@@ -1,12 +1,12 @@
 ﻿local configs = {
-	size = 26,
-	xpoint = 0,
-	ypoint = -26,
+	size = 40,
+	xpoint = -60,
+	ypoint = 0,
 	alpha = 0.9,
 	fontsize = 10,
 }
 
-local main_frame = CreateFrame("Button", nil, parent, "asNextSkillFrameTemplate");
+local main_frame = CreateFrame("Button", nil, UIParent, "asNextSkillFrameTemplate");
 
 local function on_update()
 	local nextspellid = C_AssistedCombat.GetNextCastSpell(false);
