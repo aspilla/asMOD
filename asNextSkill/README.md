@@ -28,7 +28,7 @@ Notification for the next recommended skill to use.
 ## 주요 기능
 
 *  **와우 기본 단일 버튼 보조 기능 안내를 아이콘으로 표시** : 딜사이클 조정은 불가
-*  **해당 기술의 단축치 표시**   
+*  **해당 기술의 단축키 표시**   
 
 
 ## 설정
