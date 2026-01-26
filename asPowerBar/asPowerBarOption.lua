@@ -3,6 +3,10 @@ local Options_Default = {
     Version = 251216,
     ShowClassResource = true,
     CombatAlphaChange = true,
+    BarWidth = 238,
+    PowerBarHeight = 8,
+    ComboBarHeight = 5,
+    FontSize = 12,
 };
 
 ns.options = CopyTable(Options_Default);
@@ -21,7 +25,10 @@ function ns.setup_option()
         local variable = get_variable_from_cvar_name(cvar_name)
         ASPB_Options[variable] = value;
         ns.options[variable] = value;
-        ReloadUI();
+        
+        if tonumber(value) == nil then
+            ReloadUI();
+        end
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asPowerBar")
@@ -56,7 +63,7 @@ function ns.setup_option()
             if tonumber(defaultValue) ~= nil then
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
                     type(defaultValue), name, defaultValue);
-                local options = Settings.CreateSliderOptions(0, 100, 1);
+                local options = Settings.CreateSliderOptions(0, 400, 1);
                 options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
                 Settings.CreateSlider(category, setting, options, tooltip);
                 Settings.SetValue(cvar_name, currentValue);

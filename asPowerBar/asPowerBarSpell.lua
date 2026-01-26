@@ -18,7 +18,7 @@ local function setup_max_spell(max)
 
     gvalue.maxspell = max;
 
-    local width = ((ns.configs.width + 2) / max);
+    local width = ((ns.options.BarWidth + 2) / max);
     local spellframes = ns.spellframes;
 
     ns.chargebar:SetWidth(width)
@@ -67,7 +67,7 @@ local function check_spellcooldown(spellid)
     setup_max_spell(chargeinfo.maxCharges);
     ns.combocountbar:SetMinMaxValues(0, chargeinfo.maxCharges)
     ns.combocountbar:SetValue(chargeinfo.currentCharges);
-    ns.chargebar:SetTimerDuration(durationinfo, 0, 1);
+    ns.chargebar:SetTimerDuration(durationinfo, 1, 0);
     update_framerange(gvalue.inrange, notenough);
 end
 
@@ -144,6 +144,7 @@ function ns.setup_spell(spellid)
     main_frame:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
     main_frame:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
     main_frame:UnregisterEvent("ACTION_RANGE_CHECK_UPDATE");
+    ns.combocountbar:SetClipsChildren(false);
 
     if timer then
         timer:Cancel();
@@ -153,10 +154,11 @@ function ns.setup_spell(spellid)
         gvalue.spellid = spellid
         gvalue.actionslots = get_actionslot(spellid);
         gvalue.inrange = true;
-        ns.combocountbar.bg:SetVertexColor(0.3, 0.3, 0.3, 1);
+        ns.combocountbar.bg:SetVertexColor(0.8, 0.8, 0.8, 1);
         ns.combocountbar:Show();
         ns.combocountbar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
-        ns.chargebar:SetReverseFill(true);
+        ns.combocountbar:SetClipsChildren(true);
+        ns.chargebar:SetReverseFill(false);
         ns.chargebar:Show();
 
         main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");

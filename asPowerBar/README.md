@@ -1,20 +1,20 @@
 # asPowerBar (Midnight)
 
-Displays Primary and Class resources.
+Displays Main Resources and Class Resources.
 
 ![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_MN.jpg?raw=true)
 
 ## Key Features
 
-* **Primary Resource Bar:** Displays primary resources such as Mana, Rage, Energy, Runic Power, and Focus. (Includes resource cost prediction during casting)
-* **Class Resources:** Displays secondary class-specific resources like Combo Points, Holy Power, Soul Shards, Arcane Charges, Chi, and major skills in a segmented bar format.
+* **Main Resource Bar:** Displays primary resources such as Mana, Rage, Energy, Runic Power, and Focus. Includes a resource consumption prediction feature during casting.
+* **Class Resources:** Displays secondary class-specific resources (e.g., Combo Points, Holy Power, Soul Shards, Arcane Charges, Chi) in a segmented bar format.
 
 ## Class & Specialization Support
 * **Evoker:** Essence
 * **Paladin:** Holy Power
 * **Mage:** [Arcane] Arcane Charges, [Fire] Fire Blast cooldown, [Frost] Flurry cooldown
 * **Warlock:** Soul Shards, [Destruction] Soul Shard Fragments
-* **Druid:** [Feral] Combo Points, [Restoration] Combo Points, [Guardian] Frenzied Regeneration cooldown
+* **Druid:** [Feral/Restoration] Combo Points, [Guardian] Frenzied Regeneration cooldown
 * **Monk:** [Brewmaster] Stagger, [Mistweaver] Renewing Mist cooldown, [Windwalker] Chi
 * **Rogue:** Combo Points, Supercharged
 * **Shaman:** [Enhancement] Maelstrom Weapon, [Elemental] Lava Burst cooldown, [Restoration] Riptide cooldown
@@ -25,12 +25,19 @@ Displays Primary and Class resources.
 * **Hunter:** [Beast Mastery] Barbed Shot cooldown, [Marksmanship] Aimed Shot cooldown, [Survival] Wildfire Bomb cooldown
 
 ## Configuration
-* Adjust settings via `ESC` > `Options` > `Addons` > `asPowerBar`.
-* `ShowClassResource`: Toggle display of class-specific resources (Default: On).
-* `CombatAlphaChange`: Adjust transparency when out of combat (Default: On).
+* Accessible via `ESC` > `Options` > `AddOns` > `asPowerBar`.
+* `ShowClassResource`: Toggle class-specific resource display (Default: On).
+* `CombatAlphaChange`: Adjusts transparency when out of combat (Default: On).
+* `BarWidth`: Width of the PowerBar (Default: 238).
+* `PowerBarHeight`: Height of the main resource bar (Default: 8).
+* `ComboBarHeight`: Height of the secondary resource bar (Default: 5).
+* `FontSize`: Font size for text (Default: 12).
 
-* **Move Position**: Enter the `/asConfig` command in the chat.
-* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
+* **Repositioning**: Enter the `/asconfig` command in the chat window.
+* **Reset Position**: Enter the `/asclear` command in the chat window to reset to default settings.
+* **Note**: After changing bar sizes, use the `/reload` command to reinitialize the addon.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/gKEHCNP9rbE?si=WC6rvwnzKqc6Sdjz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ---
 # asPowerBar (한밤)
@@ -64,6 +71,13 @@ Displays Primary and Class resources.
 *   `ESC` > `설정` > `애드온` > `asPowerBar` 에서 설정 가능
 *   `ShowClassResource`: 직업 전문화 특성 표시 여부 (Default On)
 *   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
+*   `BarWidth` : PowerBar 넓이 (Default 238)
+*   `PowerBarHeight` : 주 자원바 높이 (Default 8)
+*   `ComboBarHeigh` : 보조 자원바 높이 (Default 5)
+*   `FontSize` : 글꼴 크기 (Default 12)
 
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
+*  바 크기 변경 후 `/reload` 명령어로 다시 Addon 초기화 필요
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/gKEHCNP9rbE?si=WC6rvwnzKqc6Sdjz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
