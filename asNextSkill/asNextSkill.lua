@@ -29,6 +29,20 @@ local function get_spellhotkey(spellid)
 	return nil;
 end
 
+local function clear_cooldownframe(self)
+	self:Clear();
+end
+
+local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
+	if enable then
+		self:SetDrawEdge(forceShowDrawEdge);
+		self:SetCooldown(start, duration, modRate);
+	else
+		clear_cooldownframe(self);
+	end
+end
+
+
 local function on_update()
 	local nextspellid = C_AssistedCombat.GetNextCastSpell(ns.options.AssistShowOnly);
 
@@ -36,6 +50,14 @@ local function on_update()
 		local info = C_Spell.GetSpellInfo(nextspellid);
 		if info then
 			main_frame.icon:SetTexture(info.iconID);
+
+			local coolinfo = C_Spell.GetSpellCooldown(nextspellid);
+			if coolinfo then
+				set_cooldownframe(main_frame.cooldown, coolinfo.startTime, coolinfo.duration, true);	
+			else
+				main_frame.cooldown:Hide();
+			end
+
 			local keytext = get_spellhotkey(nextspellid);
 			if keytext then
 				main_frame.keytext:SetText(keytext)
@@ -51,7 +73,6 @@ local function on_update()
 end
 
 local function on_event(self, event)
-
 	if event == "UPDATE_BONUS_ACTIONBAR" then
 		wipe(hotkey_cache);
 		ns.refresh();
@@ -89,6 +110,21 @@ main_frame.icon:SetTexCoord(.08, .92, .08, .92)
 main_frame.icon:SetAlpha(configs.alpha);
 main_frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92)
 main_frame.border:SetVertexColor(0, 0, 0);
+
+main_frame.cooldown:SetHideCountdownNumbers(false);
+main_frame.cooldown:SetDrawSwipe(true);
+
+for _, r in next, { main_frame.cooldown:GetRegions() } do
+	if r:GetObjectType() == "FontString" then
+		r:SetFont(STANDARD_TEXT_FONT, configs.fontsize, "OUTLINE");
+		r:ClearAllPoints();
+		r:SetPoint("TOP", 0, 5);
+		r:SetDrawLayer("OVERLAY");
+		break;
+	end
+end
+main_frame.cooldown:Show();
+
 main_frame.keytext:ClearAllPoints();
 main_frame.keytext:SetPoint("CENTER", main_frame, "CENTER", 0, 0);
 main_frame.keytext:SetFont(STANDARD_TEXT_FONT, configs.fontsize, "OUTLINE");
