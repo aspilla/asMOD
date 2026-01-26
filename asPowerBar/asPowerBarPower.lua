@@ -31,7 +31,7 @@ local function update_powercost(bar, amount)
         return
     end
 
-    local barSize = (amount / gvalue.maxpower) * ns.configs.width;
+    local barSize = (amount / gvalue.maxpower) * ns.options.BarWidth;
     bar:SetWidth(barSize);
     bar:Show();
 end
