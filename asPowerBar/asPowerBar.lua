@@ -284,7 +284,7 @@ local function init_addon()
     ns.combocountbar:Hide();
 
     ns.combotext = main_frame:CreateFontString(nil, "OVERLAY");
-    ns.combotext:SetFont(ns.configs.font, ns.options.FontSize - 2, ns.configs.fontOutline);
+    ns.combotext:SetFont(ns.configs.font, ns.options.FontSize - 3, ns.configs.fontOutline);
     ns.combotext:SetPoint("CENTER", ns.combocountbar, "CENTER", 0, 0);
     ns.combotext:SetTextColor(1, 1, 1, 1)
     ns.combotext:Hide();
