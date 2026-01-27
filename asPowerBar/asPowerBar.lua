@@ -5,7 +5,7 @@ ns.configs       = {
     font        = STANDARD_TEXT_FONT,
     fontOutline = "OUTLINE",
     xpoint      = 0,
-    ypoint      = -180,
+    ypoint      = -179,
     combatalpha = 1,
     normalalpha = 0.5,
     framelevel  = 9000,
@@ -132,7 +132,8 @@ local function init_class()
         end
 
         if (spec and spec == 2) then
-            spellid = 85288;
+            auraid = 12950;
+            max_aura = 4;
         end
 
         if (spec and spec == 3) then
@@ -141,12 +142,18 @@ local function init_class()
     end
 
     if (englishClass == "DEMONHUNTER") then
+
+         if spec and spec == 1 then
+            spellid = 195072;            
+        end
+
         if spec and spec == 2 then
-            spellid = 203720;
+            spellid = 228477;            
         end
 
         if spec and spec == 3 then
-            --ns.setup_void();
+            auraid = 1225789;
+            max_aura = 50;
         end
     end
 
@@ -160,7 +167,8 @@ local function init_class()
         end
 
         if (spec and spec == 3) then
-            spellid = 259495;
+            auraid = 260285;
+            max_aura = 3;
         end
     end
 

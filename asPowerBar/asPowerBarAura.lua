@@ -6,44 +6,29 @@ local gvalue = {
 };
 
 local function check_auracount()
-    local combo = 0;
-
     if not gvalue.auraid then
         return;
     end
 
-    if C_Secrets.GetSpellAuraSecrecy and C_Secrets.GetSpellAuraSecrecy(gvalue.auraid) == 0 then
-        local aura = C_UnitAuras.GetUnitAuraBySpellID("player", gvalue.auraid);
-
-        if aura then
-            combo = aura.applications;
-        end
-    end
-
-    if combo then
-        ns.show_combo(combo);
-    end
+    local aura = C_UnitAuras.GetUnitAuraBySpellID("player", gvalue.auraid);
+    local count = aura and aura.applications or 0
+    ns.show_combo(count);
 end
 
 local function check_void()
-    local stack = 0;
+    local aura = C_UnitAuras.GetPlayerAuraBySpellID(1225789) or C_UnitAuras.GetPlayerAuraBySpellID(1227702)
+    local count = aura and aura.applications or 0
+    local max = C_SpellBook.IsSpellKnown(1247534) and 35 or 50
 
-    if C_Secrets.GetSpellAuraSecrecy and C_Secrets.GetSpellAuraSecrecy(1225789) == 0 then
-        local auravoid = C_UnitAuras.GetUnitAuraBySpellID("player", 1225789);
-
-        if auravoid then
-            stack = auravoid.applications;
-        end
-    end
-
-    if stack then
-        ns.combocountbar:SetMinMaxValues(0, 50)
-        ns.combocountbar:SetValue(stack)
-        ns.combotext:SetText(stack);
+    if count then
+        ns.combocountbar:SetMinMaxValues(0, max)
+        ns.combocountbar:SetValue(count)
+        ns.combotext:SetText(count);
         ns.combocountbar:Show();
         ns.combotext:Show();
     end
 end
+
 
 local function on_event()
     if gvalue.check_func then
@@ -57,23 +42,26 @@ main_frame:SetScript("OnEvent", on_event);
 function ns.setup_auracombo(auraid, maxcombo)
     gvalue.check_func = nil;
     main_frame:UnregisterEvent("UNIT_AURA");
+    ns.setup_whirlwind();
+    ns.setup_tipofspear();
 
     if auraid and maxcombo and ns.options.ShowClassResource then
-        ns.setup_max_combo(maxcombo);
-        gvalue.check_func = check_auracount;
-        gvalue.auraid = auraid;
-        main_frame:RegisterUnitEvent("UNIT_AURA", "player");
-        check_auracount();
-    end
-end
-
-function ns.setup_void()
-    gvalue.check_func = nil;
-    main_frame:UnregisterEvent("UNIT_AURA");
-
-    if ns.options.ShowClassResource then        
-        gvalue.check_func = check_void;        
-        main_frame:RegisterUnitEvent("UNIT_AURA", "player");
-        check_void();
+        if auraid == 1225789 then
+            gvalue.check_func = check_void;
+            main_frame:RegisterUnitEvent("UNIT_AURA", "player");
+            ns.combocountbar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
+            ns.combocountbar.bg:SetVertexColor(0, 0, 0, 1);
+            check_void();
+        elseif auraid == 12950 then
+            ns.setup_whirlwind(auraid);
+        elseif auraid == 260285 then
+            ns.setup_tipofspear(auraid);
+        else
+            ns.setup_max_combo(maxcombo);
+            gvalue.check_func = check_auracount;
+            gvalue.auraid = auraid;
+            main_frame:RegisterUnitEvent("UNIT_AURA", "player");
+            check_auracount();
+        end
     end
 end

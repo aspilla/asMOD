@@ -20,9 +20,13 @@ Displays Main Resources and Class Resources.
 * **Shaman:** [Enhancement] Maelstrom Weapon, [Elemental] Lava Burst cooldown, [Restoration] Riptide cooldown
 * **Death Knight:** Runes
 * **Priest:** [Discipline] Power Word: Radiance cooldown, [Holy] Holy Word: Serenity cooldown, [Shadow] Mind Blast cooldown
-* **Warrior:** [Arms] Overpower cooldown, [Fury] Raging Blow cooldown, [Protection] Shield Block cooldown
-* **Demon Hunter:** [Vengeance] Demon Spikes cooldown
-* **Hunter:** [Beast Mastery] Barbed Shot cooldown, [Marksmanship] Aimed Shot cooldown, [Survival] Wildfire Bomb cooldown
+* **Warrior:** [Arms] Overpower cooldown, [Fury] Whirlwind buff (7m distance check unavailable), [Protection] Shield Block cooldown
+* **Demon Hunter:** [Havoc] Fel Rush cooldown, [Vengeance] Soul Fragment buff, [Aldrachi Reaper] Soul Fragment buff
+* **Hunter:** [Beast Mastery] Barbed Shot cooldown, [Marksmanship] Aimed Shot cooldown, [Survival] Tip of the Spear buff
+
+* **(Note)** For Fury Warriors, the Whirlwind buff tracking cannot check the 7-meter distance to the target.
+
+![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_whirlwind.gif?raw=true)
 
 ## Configuration
 * Accessible via `ESC` > `Options` > `AddOns` > `asPowerBar`.
@@ -62,19 +66,24 @@ Displays Main Resources and Class Resources.
 *   **주술사 :** [고양] 소용돌이치는 무기, [정기] 용암 폭발 쿨다운, [복원] 성난 해일 쿨다운
 *   **죽음의 기사 :** 룬
 *   **사제 :** [수양] 광휘 쿨다운, [신성] 평온 쿨다운, [암흑] 정신분열 쿨다운
-*   **전사 :** [무기] 제압 쿨다운, [분노] 분노의 강타 쿨다운, [방어] 방패 올리기 쿨다운 
-*   **악마사냥꾼 :** [복수] 악마 쐐기 쿨다운
-*   **사냥꾼 :** [야수] 날카로운 사격 쿨다운, [사격] 조준 사격 쿨다운, [생존] 야생불 폭탄 쿨다운
+*   **전사 :** [무기] 제압 쿨다운, [분노] 소용돌이 버프 (대상과의 거리 7미터는 채크 불가), [방어] 방패 올리기 쿨다운 
+*   **악마사냥꾼 :** [파멸] 지옥 돌진 쿨다운, [복수] 영혼 파편 버프, [포식] 영혼 파편 버프
+*   **사냥꾼 :** [야수] 날카로운 사격 쿨다운, [사격] 조준 사격 쿨다운, [생존] 창끝 버프
+
+* (주의) 분노 전사 소용돌이 버프 는 대상과의 거리 7미터는 채크 불가함
+
+![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_whirlwind.gif?raw=true)
+
 
 
 ## 설정 (Configuration)
-*   `ESC` > `설정` > `애드온` > `asPowerBar` 에서 설정 가능
-*   `ShowClassResource`: 직업 전문화 특성 표시 여부 (Default On)
-*   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
-*   `BarWidth` : PowerBar 넓이 (Default 238)
-*   `PowerBarHeight` : 주 자원바 높이 (Default 8)
-*   `ComboBarHeigh` : 보조 자원바 높이 (Default 5)
-*   `FontSize` : 글꼴 크기 (Default 12)
+*  `ESC` > `설정` > `애드온` > `asPowerBar` 에서 설정 가능
+*  `ShowClassResource`: 직업 전문화 특성 표시 여부 (Default On)
+*  `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
+*  `BarWidth` : PowerBar 넓이 (Default 238)
+*  `PowerBarHeight` : 주 자원바 높이 (Default 8)
+*  `ComboBarHeight` : 보조 자원바 높이 (Default 5)
+*  `FontSize` : 글꼴 크기 (Default 12)
 
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

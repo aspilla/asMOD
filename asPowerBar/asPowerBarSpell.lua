@@ -7,7 +7,7 @@ local gvalue = {
     inrange = true,
 };
 
-local function setup_max_spell(max)
+function ns.setup_max_spell(max)
     if issecretvalue(max) then
         return;
     end
@@ -64,11 +64,17 @@ local function check_spellcooldown(spellid)
     local durationinfo = C_Spell.GetSpellChargeDuration(spellid);
     local _, notenough = C_Spell.IsSpellUsable(spellid);
 
-    setup_max_spell(chargeinfo.maxCharges);
+    ns.setup_max_spell(chargeinfo.maxCharges);
     ns.combocountbar:SetMinMaxValues(0, chargeinfo.maxCharges)
     ns.combocountbar:SetValue(chargeinfo.currentCharges);
     ns.chargebar:SetTimerDuration(durationinfo, 1, 0);
     update_framerange(gvalue.inrange, notenough);
+end
+
+
+local function check_soul()
+    local count = C_Spell.GetSpellCastCount(228477) or 0
+    ns.combocountbar:SetValue(count);
 end
 
 
@@ -151,20 +157,29 @@ function ns.setup_spell(spellid)
     end
 
     if spellid and ns.options.ShowClassResource then
-        gvalue.spellid = spellid
-        gvalue.actionslots = get_actionslot(spellid);
-        gvalue.inrange = true;
-        ns.combocountbar.bg:SetVertexColor(0.8, 0.8, 0.8, 1);
-        ns.combocountbar:Show();
-        ns.combocountbar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
-        ns.combocountbar:SetClipsChildren(true);
-        ns.chargebar:SetReverseFill(false);
-        ns.chargebar:Show();
+        if spellid == 228477 then
+            ns.setup_max_spell(6);
+            ns.combocountbar:SetMinMaxValues(0, 6);
+            ns.combocountbar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
+            ns.combocountbar.bg:SetVertexColor(0, 0, 0, 1);
+            ns.combocountbar:Show();
+            timer = C_Timer.NewTicker(0.2, check_soul);
+        else
+            gvalue.spellid = spellid
+            gvalue.actionslots = get_actionslot(spellid);
+            gvalue.inrange = true;
+            ns.combocountbar.bg:SetVertexColor(0.8, 0.8, 0.8, 1);
+            ns.combocountbar:Show();
+            ns.combocountbar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
+            ns.combocountbar:SetClipsChildren(true);
+            ns.chargebar:SetReverseFill(false);
+            ns.chargebar:Show();
 
-        main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
-        main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
-        main_frame:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");
+            main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
+            main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
+            main_frame:RegisterEvent("ACTION_RANGE_CHECK_UPDATE");
 
-        timer = C_Timer.NewTicker(0.2, update_spell);
+            timer = C_Timer.NewTicker(0.2, update_spell);
+        end
     end
 end
