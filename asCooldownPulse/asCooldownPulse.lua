@@ -163,6 +163,11 @@ end
 local function create_buttons()
     local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
+    local offset = 0;
+    if  ASMOD_asUnitFrame and ASMOD_asUnitFrame.is_simplemode then
+        offset = 14;
+    end
+
     for i = 1, #ns.trinkets + 1 do
         local frame = CreateFrame("Button", nil, main_frame, "asCooldownPulseFrameTemplate");
         frame.cooldown:SetHideCountdownNumbers(false);
@@ -185,7 +190,7 @@ local function create_buttons()
         frame.count:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -3, 3);
 
         if i == 1 then
-            frame:SetPoint("TOPRIGHT", UIParent, "CENTER", configs.t_xpoint, configs.t_ypoint)
+            frame:SetPoint("TOPRIGHT", UIParent, "CENTER", configs.t_xpoint, configs.t_ypoint - offset)
 
             if libasConfig then
                 libasConfig.load_position(frame, "asCooldownPulse(Trinkets)", ACDP_Positions_1);
@@ -222,7 +227,7 @@ local function create_buttons()
         frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
 
         if i == 1 then
-            frame:SetPoint("TOPRIGHT", UIParent, "CENTER", configs.i_xpoint, configs.i_ypoint)
+            frame:SetPoint("TOPRIGHT", UIParent, "CENTER", configs.i_xpoint, configs.i_ypoint - offset)
             if libasConfig then
                 libasConfig.load_position(frame, "asCooldownPulse(Item)", ACDP_Positions_2);
             end
