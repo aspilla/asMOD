@@ -1,19 +1,19 @@
 # asUnitFrame (Midnight)
 
-Simple Unit Frames
+Simple unit frames
 
-Default Settings
+Default settings
 ![asUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asUnitFrame.jpg?raw=true)
 
-Portrait Disabled Settings
-![asUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_raid.jpg?raw=true)
+When portrait is disabled
+![asUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asUnitFrame_woportrait.jpg?raw=true)
 
-This addon replaces the default unit frames. It is highly recommended to use it alongside other asMOD addons, specifically:
-* **asPowerBar**: Displays energy and resources
-* **asDebuffFilter**: Displays target debuffs
-* **asBuffFilter**: Displays target buffs
-* **asDotFilter**: Tracks boss debuffs
-* **asTargetCastingBar**: Displays target casting progress
+This addon replaces the default unit frames. It is recommended to use it with other asMOD addons, specifically:
+* asPowerBar : Displays resources like energy
+* asDebuffFilter : Displays debuffs on the target
+* asBuffFilter : Displays buffs on the target
+* asDotFilter : Tracks debuffs on bosses
+* asTargetCastingBar : Displays target's casting
 
 
 ## Supported Unit Frames
@@ -22,65 +22,84 @@ This addon replaces the default unit frames. It is highly recommended to use it 
 * Focus
 * Pet
 * Target of Target
-* Boss (1 ~ 5)
+* Boss (Boss 1 ~ 5) frames are supported.
 
 ## Key Features
 * **Health Bar:**
-    * Displays current health, maximum health, and percentage (%).
-    * Death status indicator.
-    * Displays incoming healing and shields (absorption).
-    * Class color coding.
+        * Displays current health, max health, and percentage (%).
+        * Displays death status.
+        * Displays incoming healing and shields (absorption).
+        * Displays class colors        
 * **Resource Bar:**
-    * The player's primary resource is hidden if displayed by `asPowerBar`.
-    * Additional mana bar display for mana-using classes (Player).
+    * Hidden if the player's primary resource is displayed in asPowerBar
+    * Displays an additional mana bar if the player has mana in addition to their primary resource        
 * **Cast Bar (Focus, Boss):**
-    * Displays name, icon, and remaining/total time of the current spell.
+    * Displays the name, icon, and remaining/total time of the current spell.
 * **Status Icons:**
-    * Elite/Rare/World Boss indicators.
-    * Combat status icon.
-    * Resting status icon (Player).
-    * Party/Raid Leader icons.
-    * Role (Tank/DPS/Healer) icons.
+    * Elite/Rare/World Boss icons.
+    * In-combat icon.
+    * Resting icon (Player).
+    * Party leader/Raid leader icons.
+    * Role (Tank/Damage/Healer) icons.
 * **Raid Markers:** Displays assigned raid markers (Star, Circle, etc.).
-* **Aggro (Threat Level):** Displays the player's threat percentage and status via color on the target frame.
-* **Portraits (Optional):**
-    * Displays unit portraits.
+* **Aggro (Threat Level):** Displays the player's threat level (%) and status color on the target frame. 
+* **Portrait (Optional):**
+    * Displays unit portraits
 * **Debuff Display (Pet, Target of Target):**
-    * Displays up to 4 debuffs at the bottom of the frame.
+    * Displays debuffs at the bottom of the frame. (Max 4)
 * **Buff Display (Boss):**
-    * Displays up to 4 buffs on the left side of the frame (Optional).
+    * Displays buffs on the left side of the frame (Max 4, optional)
     ![asUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asunitframe_bossbuff.jpg?raw=true)
 * **Totem Bar (Optional, Player):**
-    * Displays a totem bar at the bottom of the player frame.
-    * Icons can be clicked to instantly destroy the corresponding totem.
-* **Target Selection Indicator (Optional, Focus, Boss):**
-    * Displays a white border if the focus or boss unit is your current target.
+    * Displays a totem bar at the bottom of the player frame
+    * Can immediately destroy the totem by clicking the icon
+* **Target Selection Status (Optional, Focus, Boss):**
+    * Displays a white border if the focus or boss is the current target.
 * **Range Check (Optional, Target, Focus, Boss):**
-    * For hostile targets, the frame turns red if the distance exceeds 40m (30m for Evoker/Demon Hunter).
+    * For hostile targets, the frame turns red if the distance is over 40m. (30m for Evoker/Demon Hunter)
 * **Hide Default UI:** Automatically hides default Blizzard unit frames (Player, Target, Focus, Pet, Boss).
-* **Right-Click Menu:** Supports target interaction menus via right-click.
-* **Ping/Click Casting:** Supports the ping and click-casting systems.
-* **Vehicles:** Automatically swaps frames when entering a vehicle (Player frame becomes Vehicle, Pet frame becomes Player).
-* **Combat Transparency:** Transparency is reduced to 50% out of combat and becomes 100% (opaque) during combat.
+* **Right-click Menu:** Right-clicking each unit frame enables the target interaction menu.
+* **Ping/Click-Cast System Support:** * **Vehicle Interface:** When the player enters a vehicle, the player frame automatically switches to the vehicle unit, and the pet frame switches to the player unit.
+* **Combat Status Transparency:** Transparency is slightly lower (50%) out of combat and becomes fully opaque (100%) during combat.
 
 ## Configuration
 
-* **Move Position**: Enter the `/asConfig` command in the chat.
-* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
+* **Repositioning** : Enter the `/asConfig` command in the chat window
+* **Reset Position** : Enter the `/asClear` command in the chat window to reset to default settings 
     
-* **Settings (ESC > Options > Addons > asUnitFrame):**
-    * `ShowPortrait`: Toggle unit portraits.
-    * `ShowTotemBar`: Toggle totem bar below the player frame.
-    * `ShowBossBuff`: Toggle display of 4 buffs on boss frames.
-    * `ShowTargetBorder`: Toggle white border when Focus/Boss is the current target.
-    * `CheckRange`: Toggle distance checking for Target/Focus/Boss.
-    * `OffPortraitDebuffOnRaid`: Disable stun debuff display on portraits during raids.
-    * `CombatAlphaChange`: Toggle transparency changes based on combat status.
+* **esc >> Options >> Addons >> asUnitFrame Settings (Default On)**
+    * `ShowPortrait` : Toggle portraits
+    * `ShowTotemBar` : Toggle totem bar at the bottom of the player frame
+    * `ShowBossBuff` : Toggle 4 buffs on boss frames 
+    * `ShowTargetBorder` : Displays a white border when focus/boss is the current target
+    * `CheckRange` : Checks distance with target/focus/boss
+    * `OffPortraitDebuffOnRaid` : Do not show stun debuffs on portraits during raids
+    * `CombatAlphaChange` : Transparency change out of combat
+    * **Player/Target Size Adjustment**
+    * `Width` : Default 200
+    * `Height`: Default 35
+    * `PowerWidth`: Default 80
+    * `PowerHeight`: Default 5
+    * `FontSize`: Default 12
+    * **Focus/Boss Size Adjustment**
+    * `FocusWidth` : Default 150
+    * `FocusHeight`: Default 20
+    * `FocusPowerWidth`: Default 60
+    * `FocusPowerHeight`: Default 3
+    * `FocusFontSize`: Default 11
+    * **Pet/Target of Target Size Adjustment**
+    * `PetWidth` : Default 100
+    * `PetHeight`: Default 15
+    * `PetPowerWidth`: Default 40
+    * `PetPowerHeight`: Default 2
+    * `PetFontSize`: Default 9
 
-## Important Notes (Known Issues)
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/gAUZp3xXlIA?si=DrQSSUP2xpaur9FP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-The following issues may occur:
-1. **Edit Mode Error:** Errors may occur when using the default Edit Mode, preventing settings from being changed. Please disable `asUnitFrame` before using Edit Mode.
+## Precautions (Regarding Errors)
+
+The following errors may occur.
+1.  **Edit Mode Error:** Errors may occur when using Edit Mode, making it impossible to change settings. Need to disable asUnitFrame before using Edit Mode.
 
 ---
 # asUnitFrame (한밤)
@@ -91,7 +110,7 @@ The following issues may occur:
 ![asUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asUnitFrame.jpg?raw=true)
 
 초상화 미사용 설정시
-![asUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_raid.jpg?raw=true)
+![asUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asUnitFrame_woportrait.jpg?raw=true)
 
 기본 유닛 프레임을 대체하는 애드온입니다. 다른 asMOD 애드온과 함께 사용하는 것을 권장하며, 다음 애드온들이 추천됩니다:
 * asPowerBar : 기력등을 표시
@@ -161,6 +180,26 @@ The following issues may occur:
     *   `CheckRange` : 대상/주시/보스와의 거리를 체크
     *   `OffPortraitDebuffOnRaid` : 레이드에서는 초상화에 스턴 디버프 표시 안함
     *   `CombatAlphaChange` : 비전투시 투명도 변경
+    *   **플레이어 대상 크기 조정**
+    *   `Width` :기본값 200
+    *   `Height`:기본값  35
+    *   `PowerWidth`:기본값  80
+    *   `PowerHeight`:기본값  5
+    *   `FontSize`:기본값  12
+    *   **주시/보스 크기 조정**
+    *   `FocusWidth` :기본값 150
+    *   `FocusHeight`:기본값  20
+    *   `FocusPowerWidth`:기본값  60
+    *   `FocusPowerHeight`:기본값  3
+    *   `FocusFontSize`:기본값  11
+    *   **소환수/대상의대상 크기 조정**
+    *   `PetWidth` :기본값 100
+    *   `PetHeight`:기본값  15
+    *   `PetPowerWidth`:기본값  40
+    *   `PetPowerHeight`:기본값  2
+    *   `PetFontSize`:기본값 = 9
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/gAUZp3xXlIA?si=DrQSSUP2xpaur9FP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 주의사항 (오류 관련)
 
