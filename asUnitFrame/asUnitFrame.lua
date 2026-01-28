@@ -664,33 +664,35 @@ local function init(framelist)
     framelist.TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 
     local offset = 0;
+    local fontoffset = 0;
     if framelist.is_simplemode then
         offset = 5;
+        fontoffset = 2;
     end
 
     create_unitframe(framelist.PlayerFrame, "player", -configs.xpoint, configs.ypoint, ns.options.Width,
         ns.options.Height,
-        ns.options.PowerWidth, ns.options.PowerHeight, ns.options.FontSize, false,
+        ns.options.PowerWidth, ns.options.PowerHeight, ns.options.FontSize - fontoffset, false,
         false);
     create_unitframe(framelist.TargetFrame, "target", configs.xpoint, configs.ypoint, ns.options.Width, ns.options
         .Height,
-        ns.options.PowerWidth, ns.options.PowerHeight, ns.options.FontSize, false,
+        ns.options.PowerWidth, ns.options.PowerHeight, ns.options.FontSize -fontoffset, false,
         false);
     create_unitframe(framelist.FocusFrame, "focus", configs.xpoint + ns.options.Width, configs.ypoint,
         ns.options.FocusWidth,
         ns.options.FocusHeight,
         ns.options.FocusPowerWidth, ns.options.FocusPowerHeight,
-        ns.options.FocusFontSize,
-        false, true);
+        ns.options.FocusFontSize - fontoffset,
+        false, framelist.is_simplemode);
     create_unitframe(framelist.PetFrame, "pet", -configs.xpoint - 50, configs.ypoint - 40 + offset, ns.options.PetWidth,
         ns.options.PetHeight,
         ns.options.PetPowerWidth, ns.options.PetPowerHeight,
-        ns.options.PetFontSize,
+        ns.options.PetFontSize - fontoffset,
         true, true);
     create_unitframe(framelist.TargetTargetFrame, "targettarget", configs.xpoint + 50, configs.ypoint - 40 + offset,
         ns.options.PetWidth,
         ns.options.PetHeight,
-        ns.options.PetPowerWidth, ns.options.PetPowerHeight, ns.options.PetFontSize, true, true);
+        ns.options.PetPowerWidth, ns.options.PetPowerHeight, ns.options.PetFontSize - fontoffset, true, true);
 
     framelist.BossFrames = {};
     if (MAX_BOSS_FRAMES) then
@@ -698,7 +700,7 @@ local function init(framelist)
             framelist.BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
             create_unitframe(framelist.BossFrames[i], "boss" .. i, configs.xpoint + 250, 200 - (i - 1) * 70,
                 ns.options.FocusWidth, ns.options.FocusHeight,
-                ns.options.FocusPowerWidth, ns.options.FocusPowerHeight, ns.options.FocusFontSize, false, true);
+                ns.options.FocusPowerWidth, ns.options.FocusPowerHeight, ns.options.FocusFontSize - fontoffset, false, framelist.is_simplemode);
         end
     end
 
