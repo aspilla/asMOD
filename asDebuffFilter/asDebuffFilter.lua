@@ -297,14 +297,19 @@ local function init()
     ns.setup_option();
     local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
-    main_frame:SetPoint("CENTER", 0, 0)
-    main_frame:SetWidth(1)
-    main_frame:SetHeight(1)
-    main_frame:Show()
+    main_frame:SetPoint("CENTER", 0, 0);
+    main_frame:SetWidth(1);
+    main_frame:SetHeight(1);
+    main_frame:Show();
+
+    local offset = 0;
+    if  ASMOD_asUnitFrame and ASMOD_asUnitFrame.is_simplemode then
+        offset = 16;
+    end
 
     main_frame.target_frame = CreateFrame("Frame", nil, main_frame)
 
-    main_frame.target_frame:SetPoint("CENTER", ns.configs.target_xpoint, ns.configs.target_ypoint)
+    main_frame.target_frame:SetPoint("CENTER", ns.configs.target_xpoint, ns.configs.target_ypoint - offset )
     main_frame.target_frame:SetWidth(1)
     main_frame.target_frame:SetHeight(1)
     main_frame.target_frame:Show()
@@ -319,7 +324,7 @@ local function init()
 
     main_frame.player_frame = CreateFrame("Frame", nil, main_frame)
 
-    main_frame.player_frame:SetPoint("CENTER", ns.configs.player_xpoint, ns.configs.player_ypoint)
+    main_frame.player_frame:SetPoint("CENTER", ns.configs.player_xpoint, ns.configs.player_ypoint - offset)
     main_frame.player_frame:SetWidth(1)
     main_frame.player_frame:SetHeight(1)
     main_frame.player_frame:Show()

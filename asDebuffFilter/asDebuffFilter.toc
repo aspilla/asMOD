@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rDebuffFilter
 ## Notes: Displays debuffs of player and target
 ## Notes-koKR:플레이어 및 대상 디버프 표시
-## Version : 260124
+## Version : 260128
 ## SavedVariablesPerCharacter: ADF_Options, ADF_Positions_1, ADF_Positions_2
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
