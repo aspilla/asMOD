@@ -266,13 +266,12 @@ function ns.update_unitframe_other(frame)
         if (display and display ~= 0) then
             frame.aggro:SetText(format("%1.0f", display) .. "%");
             local r, g, b = GetThreatStatusColor(status)
-            frame.aggro:SetTextColor(r, g, b, 1);
-            frame.aggro:Show();
+            frame.aggro:SetTextColor(r, g, b, 1);            
         else
-            frame.aggro:Hide();
+            frame.aggro:SetText("");
         end
     else
-        frame.aggro:Hide();
+        frame.aggro:SetText("");
     end
 
     if UnitAffectingCombat("player") then

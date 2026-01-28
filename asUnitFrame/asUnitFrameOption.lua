@@ -8,6 +8,21 @@ local Options_Default = {
     ShowDebuff = true,
     CheckRange = true,
     CombatAlphaChange = true,
+    Width = 200,
+    Height = 35,
+    PowerWidth = 80,
+    PowerHeight = 5,
+    FontSize = 12,
+    FocusWidth = 150,
+    FocusHeight = 20,
+    FocusPowerWidth = 60,
+    FocusPowerHeight = 3,
+    FocusFontSize = 11,
+    PetWidth = 100,
+    PetHeight = 15,
+    PetPowerWidth = 40,
+    PetPowerHeight = 2,
+    PetFontSize = 9,
 };
 
 ns.options = CopyTable(Options_Default);
@@ -27,7 +42,9 @@ function ns.setup_option()
         AUF_Options[variable] = value;
         ns.options[variable] = value;
         
-        ReloadUI();
+        if tonumber(value) == nil then
+            ReloadUI();
+        end
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asUnitFrame")
@@ -70,7 +87,7 @@ function ns.setup_option()
 
             if tonumber(defaultValue) ~= nil then
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
-                local options = Settings.CreateSliderOptions(0, 100, 1);
+                local options = Settings.CreateSliderOptions(0, 400, 1);
                 options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
                 Settings.CreateSlider(category, setting, options, tooltip);
                 Settings.SetValue(cvar_name, currentValue);

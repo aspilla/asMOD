@@ -3,11 +3,9 @@ ASMOD_asUnitFrame = {};
 
 local configs = {
     updaterate = 0.1,
-    width = 200,
+
     xpoint = 225,
     ypoint = -198,
-    healthheight = 35,
-    powerheight = 5,
     buffcount = 4,
     buffsize = 25,
     buffsizerate = 0.8,
@@ -31,7 +29,7 @@ local function update_debuffanchor(frames, index, offsetX, right, parent, width)
     local buff = frames[index];
 
     if (index == 1) then
-        buff:SetPoint("TOPLEFT", parent.healthbar, "BOTTOMLEFT", 0, -(configs.powerheight / 2 + 2));
+        buff:SetPoint("TOPLEFT", parent.healthbar, "BOTTOMLEFT", 0, -4);
     else
         buff:SetPoint("BOTTOMLEFT", frames[index - 1], "BOTTOMRIGHT", offsetX, 0);
     end
@@ -143,7 +141,7 @@ local function create_buffframes(parent, bright, fontsize, width, count)
         frame:ClearAllPoints();
         update_buffanchor(parent.buffframes, idx, 2, bright, parent, width);
 
-         if not frame:GetScript("OnEnter") then
+        if not frame:GetScript("OnEnter") then
             frame:SetScript("OnEnter", function(self)
                 if self.auraInstanceID then
                     GameTooltip_SetDefaultAnchor(GameTooltip, self);
@@ -157,7 +155,7 @@ local function create_buffframes(parent, bright, fontsize, width, count)
 
         frame:EnableMouse(false);
         frame:SetMouseMotionEnabled(true);
-        
+
         frame:Hide();
     end
 end
@@ -225,7 +223,6 @@ local function create_totemframes(parent, bright, fontsize, width, count)
                 GameTooltip:Hide();
             end)
         end
-
     end
 
     return;
@@ -237,7 +234,8 @@ local function on_unitevent(self, event, arg1, arg2)
     end
 end
 
-local function create_unitframe(frame, unit, x, y, width, height, powerbarheight, fontsize, debuffupdate, is_small)
+local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth, powerbarheight, fontsize, debuffupdate,
+                                is_small)
     local FontOutline = "OUTLINE";
 
 
@@ -356,12 +354,17 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame.healthbar.bg:SetColorTexture(0, 0, 0, 1);
 
     frame.pvalue = frame:CreateFontString(nil, "ARTWORK");
-    frame.pvalue:SetFont(STANDARD_TEXT_FONT, fontsize + 1, FontOutline);
-    frame.pvalue:SetTextColor(1, 1, 1, 1)
+    frame.pvalue:SetFont(STANDARD_TEXT_FONT, fontsize + 1, "THICKOUTLINE");
+    frame.pvalue:SetTextColor(1, 1, 1, 1);
+
+    frame.sperator = frame:CreateFontString(nil, "ARTWORK");
+    frame.sperator:SetFont(STANDARD_TEXT_FONT, fontsize + 1, FontOutline);
+    frame.sperator:SetTextColor(1, 1, 1, 1)
+    frame.sperator:SetText("|");
 
     frame.hvalue = frame:CreateFontString(nil, "ARTWORK");
     frame.hvalue:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
-    frame.hvalue:SetTextColor(1, 1, 1, 1)
+    frame.hvalue:SetTextColor(1, 1, 1, 1);
 
     frame.name = frame:CreateFontString(nil, "ARTWORK");
     frame.name:SetFont(configs.font, fontsize, FontOutline);
@@ -375,24 +378,66 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame.classtext:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
     frame.classtext:SetTextColor(1, 1, 1, 1)
 
+    if not ns.options.ShowPortrait then
+        if is_small then
+            if x < 0 then
+                frame.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -4, 0);
+                frame.sperator:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3), 0);
+                frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3 + 10), 0);
+                frame.name:SetPoint("LEFT", frame, "LEFT", 4, 0);
+                frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
+                frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+            else
+                frame.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 4, 0);
+                frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3), 0);
+                frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3 + 10), 0);
+                frame.name:SetPoint("RIGHT", frame, "RIGHT", -4, 0);
+                frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
+                frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+            end
+        else
+            if x < 0 then
+                frame.pvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -4, 4);
+                frame.sperator:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 3), 4);
+                frame.hvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 3 + 10), 4);
+                frame.name:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, -4);
+                frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
+                frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+            else
+                frame.pvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", 4, 4);
+                frame.sperator:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 3), 4);
+                frame.hvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 3 + 10), 4);
+                frame.name:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -4);
+                frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
+                frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+            end
 
-    if x < 0 then
-        frame.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 2, 0);
-        frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -2, 0);
-        frame.name:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
-        frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
-        frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+            frame.classtext:Hide();
+            frame.aggro:Hide();
+        end
     else
-        frame.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -2, 0);
-        frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 2, 0);
-        frame.name:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
-        frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
-        frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+        if x < 0 then
+            frame.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -4, 0);
+            frame.sperator:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3), 0);
+            frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3 + 10), 0);
+            frame.name:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
+            frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
+            frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+        else
+            frame.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 4, 0);
+            frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3), 0);
+            frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3 + 10), 0);
+            frame.name:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
+            frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
+            frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+        end
     end
 
     if is_small then
         frame.classtext:Hide();
         frame.aggro:Hide();
+        frame.sperator:Hide();
+        frame.hvalue:Hide();
     end
 
     frame.is_small = is_small;
@@ -408,10 +453,10 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
     frame.powerbar:GetStatusBarTexture():SetHorizTile(false)
     frame.powerbar:SetMinMaxValues(0, 100)
     frame.powerbar:SetValue(100)
-    frame.powerbar:SetWidth(hwidth / 2);
+    frame.powerbar:SetWidth(powerbarwidth);
     frame.powerbar:SetHeight(powerbarheight)
     frame.powerbar:SetPoint("CENTER", frame.healthbar, "BOTTOM", 0, 0);
-    frame.powerbar:SetFrameLevel(frame.healthbar:GetFrameLevel() + 3);
+    frame.powerbar:SetFrameLevel(configs.framelevel + 3);
     frame.powerbar:Show();
 
     frame.powerbar.bg = frame.powerbar:CreateTexture(nil, "BACKGROUND");
@@ -440,7 +485,8 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
 
     frame.castbar = CreateFrame("StatusBar", nil, frame)
     frame.castbar:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -3);
-    frame.castbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+    frame.castbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+    frame.castbar:SetFrameLevel(configs.framelevel);
     local statustexture = frame.castbar:GetStatusBarTexture();
     statustexture:SetHorizTile(false)
     frame.castbar:SetMinMaxValues(0, 100)
@@ -513,7 +559,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarheight
 
     frame.castbar.targetname = frame.castbar:CreateFontString(nil, "OVERLAY");
     frame.castbar.targetname:SetFont(configs.font, fontsize - 1);
-    frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);  
+    frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);
 
 
     frame.debuffupdate = false;
@@ -609,43 +655,50 @@ end
 local function init(framelist)
     ns.setup_option();
 
+    framelist.is_simplemode = not ns.options.ShowPortrait;
+
     framelist.PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
     framelist.TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
     framelist.FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
     framelist.PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
     framelist.TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 
+    local offset = 0;
+    if framelist.is_simplemode then
+        offset = 5;
+    end
 
-    create_unitframe(framelist.PlayerFrame, "player", -configs.xpoint, configs.ypoint, configs.width,
-        configs.healthheight,
-        configs.powerheight, 12, false,
+    create_unitframe(framelist.PlayerFrame, "player", -configs.xpoint, configs.ypoint, ns.options.Width,
+        ns.options.Height,
+        ns.options.PowerWidth, ns.options.PowerHeight, ns.options.FontSize, false,
         false);
-    create_unitframe(framelist.TargetFrame, "target", configs.xpoint, configs.ypoint, configs.width, configs
-        .healthheight,
-        configs.powerheight, 12, false,
+    create_unitframe(framelist.TargetFrame, "target", configs.xpoint, configs.ypoint, ns.options.Width, ns.options
+        .Height,
+        ns.options.PowerWidth, ns.options.PowerHeight, ns.options.FontSize, false,
         false);
-    create_unitframe(framelist.FocusFrame, "focus", configs.xpoint + configs.width, configs.ypoint, configs.width - 50,
-        configs.healthheight - 15,
-        configs.powerheight - 2,
-        11,
+    create_unitframe(framelist.FocusFrame, "focus", configs.xpoint + ns.options.Width, configs.ypoint,
+        ns.options.FocusWidth,
+        ns.options.FocusHeight,
+        ns.options.FocusPowerWidth, ns.options.FocusPowerHeight,
+        ns.options.FocusFontSize,
         false, true);
-    create_unitframe(framelist.PetFrame, "pet", -configs.xpoint - 50, configs.ypoint - 40, configs.width - 100,
-        configs.healthheight - 20,
-        configs.powerheight - 3,
-        9,
+    create_unitframe(framelist.PetFrame, "pet", -configs.xpoint - 50, configs.ypoint - 40 + offset, ns.options.PetWidth,
+        ns.options.PetHeight,
+        ns.options.PetPowerWidth, ns.options.PetPowerHeight,
+        ns.options.PetFontSize,
         true, true);
-    create_unitframe(framelist.TargetTargetFrame, "targettarget", configs.xpoint + 50, configs.ypoint - 40,
-        configs.width - 100,
-        configs.healthheight - 20,
-        configs.powerheight - 3, 9, true, true);
+    create_unitframe(framelist.TargetTargetFrame, "targettarget", configs.xpoint + 50, configs.ypoint - 40 + offset,
+        ns.options.PetWidth,
+        ns.options.PetHeight,
+        ns.options.PetPowerWidth, ns.options.PetPowerHeight, ns.options.PetFontSize, true, true);
 
     framelist.BossFrames = {};
     if (MAX_BOSS_FRAMES) then
         for i = 1, MAX_BOSS_FRAMES do
             framelist.BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
             create_unitframe(framelist.BossFrames[i], "boss" .. i, configs.xpoint + 250, 200 - (i - 1) * 70,
-                configs.width - 50,
-                configs.healthheight - 15, configs.powerheight - 2, 11);
+                ns.options.FocusWidth, ns.options.FocusHeight,
+                ns.options.FocusPowerWidth, ns.options.FocusPowerHeight, ns.options.FocusFontSize, false, true);
         end
     end
 
