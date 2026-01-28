@@ -232,15 +232,19 @@ end
 
 local function init()
 	ns.setup_option();
-	main_frame:SetPoint("CENTER", 0, 0)
-	main_frame:SetWidth(1)
-	main_frame:SetHeight(1)
-	main_frame:Show()
+	main_frame:SetPoint("CENTER", 0, 0);
+	main_frame:SetWidth(1);
+	main_frame:SetHeight(1);
+	main_frame:Show();
 
+	local offset = 0;
+    if  ASMOD_asUnitFrame and ASMOD_asUnitFrame.is_simplemode then
+        offset = 16;
+    end
 
 	main_frame.targetframe = CreateFrame("Frame", nil, main_frame)
 
-	main_frame.targetframe:SetPoint("CENTER", ns.configs.target_xpoint, ns.configs.target_ypoint)
+	main_frame.targetframe:SetPoint("CENTER", ns.configs.target_xpoint, ns.configs.target_ypoint - offset)
 	main_frame.targetframe:SetWidth(1)
 	main_frame.targetframe:SetHeight(1)
 	main_frame.targetframe:Show()
