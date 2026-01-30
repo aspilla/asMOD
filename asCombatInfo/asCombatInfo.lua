@@ -9,7 +9,7 @@ local configs    = {
 local _, Class   = UnitClass("player")
 ns.classcolor    = RAID_CLASS_COLORS[Class];
 ns.hotkeys       = {};
-ns.nextspellid 	 = nil;
+ns.nextspellid   = nil;
 
 local main_frame = CreateFrame("Frame");
 local function update_bars(viewer)
@@ -202,9 +202,9 @@ local function update_buttons(viewer)
 				button.nextspell:SetDrawLayer("OVERLAY", 7);
 				button.nextspell:SetAtlas("talents-node-circle-greenglow");
 				button.nextspell:SetPoint("CENTER", button, "CENTER", 0, 0);
-				button.nextspell:SetSize(width /2 + 3, width / 2 +3);
+				button.nextspell:SetSize(width / 2 + 3, width / 2 + 3);
 				button.nextsize = 1;
-				
+
 				--button.nextspell:SetVertexColor(0, 1, 0, 1);
 				button.nextspell:Hide();
 			else
@@ -227,18 +227,18 @@ local function update_buttons(viewer)
 					end
 				end
 
-				button.asupdate = function()
+				local function on_update()
 					if button.cooldownUseAuraDisplayTime == true then
 						button.border:SetColorTexture(0, 1, 1);
 					else
 						button.border:SetColorTexture(0, 0, 0);
 					end
 
-					if ns.options.AlertAssitedSpell then						
+					if ns.options.AlertAssitedSpell then
 						if ns.nextspellid and ns.nextspellid == button.asspellid then
 							button.nextspell:Show();
 							if button.nextsize == 1 then
-								button.nextspell:SetSize(width/3, width/3);
+								button.nextspell:SetSize(width / 3, width / 3);
 								button.nextsize = 0;
 							else
 								button.nextspell:SetSize(width, width);
@@ -250,11 +250,9 @@ local function update_buttons(viewer)
 					end
 				end
 
-				if button.astimer then
-					button.astimer:Cancel();
+				if button.astimer == nil then
+					button.astimer = C_Timer.NewTicker(0.2, on_update);
 				end
-
-				button.astimer = C_Timer.NewTicker(0.2, button.asupdate);
 			end
 
 			if not isbuff then
@@ -504,21 +502,18 @@ local function check_hotkeys()
 	scan_keys("PetActionButton", 10);
 end
 
--- Do the work
 local function init()
 	check_hotkeys();
 	for _, viewer in ipairs(viewers) do
 		if viewer then
-			update_buttons(viewer)
-
-			-- Hook Layout to reapply when Blizzard updates
+			update_buttons(viewer);
+			
 			if viewer.Layout then
 				hooksecurefunc(viewer, "Layout", function()
 					add_todolist(viewer)
 				end)
 			end
-
-			-- Hook Show/Hide to reapply when icons appear/disappear
+			
 			local children = { viewer:GetChildren() }
 			for _, child in ipairs(children) do
 				child:HookScript("OnShow", function()
