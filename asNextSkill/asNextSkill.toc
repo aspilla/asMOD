@@ -3,8 +3,8 @@
 ## Title: |cffff3399as|rNextSkill
 ## Notes: Notification for the next recommended skill to use.
 ## Notes-koKR: 다음 쓰면 좋은 스킬 알림
-## Version : 260127
-## SavedVariablesPerCharacter: ASNS_Positions
+## Version : 260130
+## SavedVariablesPerCharacter: ASNS_Positions, ASNS_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 Libs\LibStub\LibStub.lua

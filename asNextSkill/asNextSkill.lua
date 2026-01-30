@@ -59,7 +59,7 @@ local function on_update()
 			end
 
 			local keytext = get_spellhotkey(nextspellid);
-			if keytext then
+			if ns.options.ShowHotKey and keytext then
 				main_frame.keytext:SetText(keytext)
 				main_frame.keytext:Show();
 			else
