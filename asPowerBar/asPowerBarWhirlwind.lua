@@ -91,15 +91,17 @@ local main_frame = CreateFrame("Frame");
 main_frame:SetScript("OnEvent", on_event);
 
 function ns.setup_whirlwind(spellid)
-    main_frame:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-    if timer then
-        timer:Cancel();
-    end
-
     if spellid and C_SpellBook.IsSpellKnown(spellid) then
         ns.setup_max_combo(configs.maxstack);
         gvalue.isunhinged = C_SpellBook.IsSpellKnown(configs.unhingedid) or false;
         main_frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
         timer = C_Timer.NewTicker(0.2, on_update);
+    end
+end
+
+function ns.clear_whirlwind()
+    main_frame:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+    if timer then
+        timer:Cancel();
     end
 end

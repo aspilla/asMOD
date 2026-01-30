@@ -22,7 +22,7 @@ local function check_void()
 
     if count then
         ns.combocountbar:SetMinMaxValues(0, max)
-        ns.combocountbar:SetValue(count)
+        ns.combocountbar:SetValue(count, Enum.StatusBarInterpolation.ExponentialEaseOut)
         ns.combotext:SetText(count);
         ns.combocountbar:Show();
         ns.combotext:Show();
@@ -40,11 +40,6 @@ local main_frame = CreateFrame("Frame");
 main_frame:SetScript("OnEvent", on_event);
 
 function ns.setup_auracombo(auraid, maxcombo)
-    gvalue.check_func = nil;
-    main_frame:UnregisterEvent("UNIT_AURA");
-    ns.setup_whirlwind();
-    ns.setup_tipofspear();
-
     if auraid and maxcombo and ns.options.ShowClassResource then
         if auraid == 1225789 then
             gvalue.check_func = check_void;
@@ -56,6 +51,8 @@ function ns.setup_auracombo(auraid, maxcombo)
             ns.setup_whirlwind(auraid);
         elseif auraid == 260285 then
             ns.setup_tipofspear(auraid);
+        elseif auraid == 1221389 then
+            ns.setup_shatter(auraid);
         else
             ns.setup_max_combo(maxcombo);
             gvalue.check_func = check_auracount;
@@ -64,4 +61,12 @@ function ns.setup_auracombo(auraid, maxcombo)
             check_auracount();
         end
     end
+end
+
+function ns.clear_auracombo()
+    gvalue.check_func = nil;
+    main_frame:UnregisterEvent("UNIT_AURA");
+    ns.setup_whirlwind();
+    ns.setup_tipofspear();
+    ns.setup_shatter();
 end

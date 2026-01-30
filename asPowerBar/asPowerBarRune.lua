@@ -80,11 +80,13 @@ main_frame:SetScript("OnEvent", on_event);
 
 
 function ns.setup_rune(bupdate_rune)
-
-    main_frame:UnregisterEvent("RUNE_POWER_UPDATE");
     if bupdate_rune and ns.options.ShowClassResource then
         ns.setup_max_combo(6);
         update_rune()        
         main_frame:RegisterEvent("RUNE_POWER_UPDATE");
     end
+end
+
+function ns.clear_rune()
+    main_frame:UnregisterEvent("RUNE_POWER_UPDATE");
 end

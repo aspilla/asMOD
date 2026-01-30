@@ -6,15 +6,15 @@ Displays Main Resources and Class Resources.
 
 ## Key Features
 
-* **Main Resource Bar:** Displays primary resources such as Mana, Rage, Energy, Runic Power, and Focus. Includes a resource consumption prediction feature during casting.
+* **Main Resource Bar:** Displays primary resources such as Mana, Rage, Energy, Runic Power, and Focus. (Includes resource consumption prediction during casting)
 * **Class Resources:** Displays secondary class-specific resources (e.g., Combo Points, Holy Power, Soul Shards, Arcane Charges, Chi) in a segmented bar format.
 
 ## Class & Specialization Support
 * **Evoker:** Essence
 * **Paladin:** Holy Power
-* **Mage:** [Arcane] Arcane Charges, [Fire] Fire Blast cooldown, [Frost] Flurry cooldown
+* **Mage:** [Arcane] Arcane Charges, [Fire] Fire Blast cooldown, [Frost] Target Shatter debuff stacks
 * **Warlock:** Soul Shards, [Destruction] Soul Shard Fragments
-* **Druid:** [Feral/Restoration] Combo Points, [Guardian] Frenzied Regeneration cooldown
+* **Druid:** [Feral] Combo Points, [Restoration] Combo Points, [Guardian] Frenzied Regeneration cooldown
 * **Monk:** [Brewmaster] Stagger, [Mistweaver] Renewing Mist cooldown, [Windwalker] Chi
 * **Rogue:** Combo Points, Supercharged
 * **Shaman:** [Enhancement] Maelstrom Weapon, [Elemental] Lava Burst cooldown, [Restoration] Riptide cooldown
@@ -24,18 +24,22 @@ Displays Main Resources and Class Resources.
 * **Demon Hunter:** [Havoc] Fel Rush cooldown, [Vengeance] Soul Fragment buff, [Aldrachi Reaper] Soul Fragment buff
 * **Hunter:** [Beast Mastery] Barbed Shot cooldown, [Marksmanship] Aimed Shot cooldown, [Survival] Tip of the Spear buff
 
-* **(Note)** For Fury Warriors, the Whirlwind buff tracking cannot check the 7-meter distance to the target.
+* (Note) For Frost Mages, the `Shatter` debuff will only be displayed if the `Shatter` debuff is enabled in the `Cooldown Manager`.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/4h5D5e9yC9E?si=n3WXwqYGOgi_7Ytf" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+* (Note) For Fury Warriors, the `Whirlwind` buff tracking cannot check the 7-meter distance to the target.
 
 ![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_whirlwind.gif?raw=true)
 
 ## Configuration
 * Accessible via `ESC` > `Options` > `AddOns` > `asPowerBar`.
-* `ShowClassResource`: Toggle class-specific resource display (Default: On).
-* `CombatAlphaChange`: Adjusts transparency when out of combat (Default: On).
-* `BarWidth`: Width of the PowerBar (Default: 238).
-* `PowerBarHeight`: Height of the main resource bar (Default: 8).
-* `ComboBarHeight`: Height of the secondary resource bar (Default: 5).
-* `FontSize`: Font size for text (Default: 12).
+* `ShowClassResource`: Toggle class-specific resource display (Default: On)
+* `CombatAlphaChange`: Adjusts transparency when out of combat (Default: On)
+* `BarWidth`: Width of the PowerBar (Default: 238)
+* `PowerBarHeight`: Height of the main resource bar (Default: 8)
+* `ComboBarHeight`: Height of the secondary resource bar (Default: 5)
+* `FontSize`: Font size for text (Default: 12)
 
 * **Repositioning**: Enter the `/asconfig` command in the chat window.
 * **Reset Position**: Enter the `/asclear` command in the chat window to reset to default settings.
@@ -58,7 +62,7 @@ Displays Main Resources and Class Resources.
 ## 직업 전문화 특성
 *   **기원사 :** 정수
 *   **성기사 :** 신성한 힘
-*   **마법사 :** [비전] 비전 충전물, [화염] 화염작열 쿨다운, [냉기] 진눈깨비 쿨다운
+*   **마법사 :** [비전] 비전 충전물, [화염] 화염작열 쿨다운, [냉기] 대상 빙결 디버프 중첩
 *   **흑마법사 :** 영혼의 조각, [파괴] 영혼의 조각 파편
 *   **드루이드 :** [야성] 연계 점수, [회복] 연계 점수, [수호] 광포한 재생력 쿨다운
 *   **수도사 :** [양조] 시간차, [운무] 소생의 안개 쿨다운 [풍운] 기
@@ -70,7 +74,11 @@ Displays Main Resources and Class Resources.
 *   **악마사냥꾼 :** [파멸] 지옥 돌진 쿨다운, [복수] 영혼 파편 버프, [포식] 영혼 파편 버프
 *   **사냥꾼 :** [야수] 날카로운 사격 쿨다운, [사격] 조준 사격 쿨다운, [생존] 창끝 버프
 
-* (주의) 분노 전사 소용돌이 버프 는 대상과의 거리 7미터는 채크 불가함
+* (주의) 냉기 법사 `빙결` 디버프는 `재사용 대기시간 관리자`에서 `빙결` 디버프를 표시해야 표기 됨
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/4h5D5e9yC9E?si=n3WXwqYGOgi_7Ytf" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+* (주의) 분노 전사 `소용돌이` 버프 는 대상과의 거리 7미터는 채크 불가함
 
 ![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_whirlwind.gif?raw=true)
 

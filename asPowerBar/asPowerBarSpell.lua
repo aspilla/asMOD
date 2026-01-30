@@ -27,10 +27,17 @@ function ns.setup_max_spell(max)
         spellframes[i]:Hide();
     end
 
+    local curr = 0;
+
     for i = 1, max do
         local spellframe = spellframes[i];
         spellframe:SetWidth(width);
         spellframe:Show();
+        curr = i;
+    end
+
+    if max and curr < max then
+        ns.spellborder:Show();
     end
 end
 
@@ -66,7 +73,7 @@ local function check_spellcooldown(spellid)
 
     ns.setup_max_spell(chargeinfo.maxCharges);
     ns.combocountbar:SetMinMaxValues(0, chargeinfo.maxCharges)
-    ns.combocountbar:SetValue(chargeinfo.currentCharges);
+    ns.combocountbar:SetValue(chargeinfo.currentCharges, Enum.StatusBarInterpolation.ExponentialEaseOut);
     ns.chargebar:SetTimerDuration(durationinfo, 1, 0);
     update_framerange(gvalue.inrange, notenough);
 end
@@ -74,7 +81,7 @@ end
 
 local function check_soul()
     local count = C_Spell.GetSpellCastCount(228477) or 0
-    ns.combocountbar:SetValue(count);
+    ns.combocountbar:SetValue(count, Enum.StatusBarInterpolation.ExponentialEaseOut);
 end
 
 
@@ -147,15 +154,6 @@ local timer = nil;
 main_frame:SetScript("OnEvent", on_event);
 
 function ns.setup_spell(spellid)
-    main_frame:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
-    main_frame:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
-    main_frame:UnregisterEvent("ACTION_RANGE_CHECK_UPDATE");
-    ns.combocountbar:SetClipsChildren(false);
-
-    if timer then
-        timer:Cancel();
-    end
-
     if spellid and ns.options.ShowClassResource then
         if spellid == 228477 then
             ns.setup_max_spell(6);
@@ -181,5 +179,16 @@ function ns.setup_spell(spellid)
 
             timer = C_Timer.NewTicker(0.2, update_spell);
         end
+    end
+end
+
+function ns.clear_spell()
+    main_frame:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
+    main_frame:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
+    main_frame:UnregisterEvent("ACTION_RANGE_CHECK_UPDATE");
+    ns.combocountbar:SetClipsChildren(false);
+
+    if timer then
+        timer:Cancel();
     end
 end

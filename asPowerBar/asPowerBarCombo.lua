@@ -67,10 +67,9 @@ function ns.show_combo(combo, partial)
     local combobars = ns.combobars;
     local max = gvalue.maxcombo;
     if partial then
-        ns.combotext:SetText(partial);
-
         local pmax = gvalue.maxpartial;
         combo = math.floor(partial / pmax);
+        ns.combotext:SetText(partial / pmax);
         local pvalue = partial % pmax;
 
         for i = 1, max do
@@ -79,7 +78,7 @@ function ns.show_combo(combo, partial)
                 combobar:SetValue(pvalue, Enum.StatusBarInterpolation.ExponentialEaseOut);
                 combobar:SetStatusBarColor(1, 1, 1);
             elseif i <= combo then
-                combobar:SetValue(pmax);
+                combobar:SetValue(pmax, Enum.StatusBarInterpolation.ExponentialEaseOut);
                 combobar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
             else
                 combobar:SetValue(0);
@@ -91,7 +90,7 @@ function ns.show_combo(combo, partial)
         for i = 1, max do
             local combobar = combobars[i];
             if i <= combo then
-                combobar:SetValue(1);
+                combobar:SetValue(1, Enum.StatusBarInterpolation.ExponentialEaseOut);
             else
                 combobar:SetValue(0);
             end
@@ -167,13 +166,7 @@ local timer = nil;
 main_frame:SetScript("OnEvent", on_event);
 
 function ns.setup_combo(powerlevel, bpartial, brogue)
-    main_frame:UnregisterEvent("UNIT_POWER_UPDATE")
-    main_frame:UnregisterEvent("UNIT_DISPLAYPOWER");
-
-    if timer then
-        timer:Cancel();
-    end
-
+    local updaterate = 0.2;
     if powerlevel and ns.options.ShowClassResource then
         gvalue.bpartial = bpartial;
         gvalue.powerlevel = powerlevel;
@@ -181,14 +174,26 @@ function ns.setup_combo(powerlevel, bpartial, brogue)
         local max = UnitPowerMax("player", gvalue.powerlevel);
         local maxpartial = nil;
         if gvalue.bpartial then
-            maxpartial = UnitPowerDisplayMod(gvalue.powerlevel)
+            maxpartial = UnitPowerDisplayMod(gvalue.powerlevel);
+            ns.combotext:Show();
         elseif gvalue.powerlevel == Enum.PowerType.Essence then
             maxpartial = 10;
+            ns.combotext:Show();
+            updaterate = 0.1;
         end
 
         ns.setup_max_combo(max, maxpartial);
         main_frame:RegisterEvent("UNIT_POWER_UPDATE");
         main_frame:RegisterEvent("UNIT_DISPLAYPOWER");
-        timer = C_Timer.NewTicker(0.2, update_combo);
+        timer = C_Timer.NewTicker(updaterate, update_combo);
+    end
+end
+
+function ns.clear_combo()
+    main_frame:UnregisterEvent("UNIT_POWER_UPDATE")
+    main_frame:UnregisterEvent("UNIT_DISPLAYPOWER");
+
+    if timer then
+        timer:Cancel();
     end
 end

@@ -19,8 +19,6 @@ main_frame:SetScript("OnEvent", on_event);
 
 
 function ns.setup_stagger(bstagger)
-
-    main_frame:UnregisterEvent("UNIT_AURA");
     if bstagger and ns.options.ShowClassResource then
         main_frame:RegisterUnitEvent("UNIT_AURA", "player");
         update_stagger();
@@ -29,4 +27,8 @@ function ns.setup_stagger(bstagger)
         ns.combocountbar:Show();
         ns.combotext:Show();        
     end
+end
+
+function ns.clear_stagger()
+    main_frame:UnregisterEvent("UNIT_AURA");
 end

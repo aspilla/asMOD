@@ -79,9 +79,5 @@ function ns.setup_power()
     if timer then
         timer:Cancel();
     end
-
-    ns.bar:Show();
-    ns.bar.text:Show();
-
     timer = C_Timer.NewTicker(0.1, update_power);
 end

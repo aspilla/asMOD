@@ -1,7 +1,7 @@
-local _, ns      = ...;
+local _, ns          = ...;
 
 --configurations
-ns.configs       = {
+ns.configs           = {
     font        = STANDARD_TEXT_FONT,
     fontOutline = "OUTLINE",
     xpoint      = 0,
@@ -11,10 +11,49 @@ ns.configs       = {
     framelevel  = 9000,
 };
 
-local _, Class   = UnitClass("player")
-ns.classcolor    = RAID_CLASS_COLORS[Class];
+local backdropConfig = {
+    edgeFile = "Interface\\Buttons\\WHITE8X8",
+    edgeSize = 1,
+    bgFile = "Interface\\Buttons\\WHITE8X8",
+    tile = false,
+}
 
-local main_frame = CreateFrame("FRAME", nil, UIParent);
+local _, Class       = UnitClass("player")
+ns.classcolor        = RAID_CLASS_COLORS[Class];
+
+local main_frame     = CreateFrame("FRAME", nil, UIParent);
+
+local function set_height(heightprimary, heightsecondary)
+    ns.combocountbar:SetHeight(heightsecondary);
+    ns.chargebar:SetHeight(heightsecondary);
+
+    for i = 1, 20 do
+        ns.combobars[i]:SetHeight(heightsecondary);
+    end
+
+    for i = 1, 20 do
+        ns.spellframes[i]:SetHeight(heightsecondary + 2);
+    end
+    ns.spellborder:SetHeight(heightsecondary + 2);
+    ns.bar:SetHeight(heightprimary);
+end
+
+local function resizebars(bsmallprimary, bbigsecondary)
+    local heightprimary = ns.options.PowerBarHeight;
+    local heightsecondary = ns.options.ComboBarHeight;
+    if bbigsecondary then
+        heightsecondary = heightsecondary + 3;
+    end
+
+    if bsmallprimary then
+        heightprimary = heightprimary - 3;
+        ns.bar.text:Hide();
+    else
+        ns.bar.text:Show();
+    end
+
+    set_height(heightprimary, heightsecondary);
+end
 
 local function init_class()
     local localizedClass, englishClass = UnitClass("player")
@@ -32,10 +71,13 @@ local function init_class()
     local auraid = nil;
     local max_aura = nil;
     local bstagger = false;
+    local bsmallprimary = false;
+    local bbigsecondary = false;
 
     ns.combotext:SetText("");
     ns.combotext:Hide();
     ns.combocountbar:Hide();
+    ns.chargebar:Hide();
 
     for i = 1, 20 do
         ns.combobars[i]:Hide();
@@ -43,14 +85,39 @@ local function init_class()
 
     for i = 1, 20 do
         ns.spellframes[i]:Hide();
+        ns.spellframes[i].range:Hide();
+        ns.spellframes[i].notenough:Hide();
     end
+
+    ns.spellborder:Hide();
+
+    ns.clear_auracombo();
+    ns.clear_combo();
+    ns.clear_shatter();
+    ns.clear_rune();
+    ns.clear_spell();
+    ns.clear_stagger();
+    ns.clear_tipofspear();
+    ns.clear_whirlwind();
 
     if (englishClass == "EVOKER") then
         powerlevel = Enum.PowerType.Essence;
+        bsmallprimary = true;
+        bbigsecondary = true;
     end
 
     if (englishClass == "PALADIN") then
         powerlevel = Enum.PowerType.HolyPower;
+
+        if (spec and spec == 2) then
+            bsmallprimary = true;
+            bbigsecondary = true;
+        end
+
+        if (spec and spec == 3) then
+            bsmallprimary = true;
+            bbigsecondary = true;
+        end
     end
 
     if (englishClass == "MAGE") then
@@ -60,10 +127,15 @@ local function init_class()
 
         if (spec and spec == 2) then
             spellid = 108853;
+            bsmallprimary = true;
+            bbigsecondary = true;
         end
 
         if (spec and spec == 3) then
-            spellid = 44614;
+            auraid = 1221389;
+            max_aura = 20;
+            bsmallprimary = true;
+            bbigsecondary = true;
         end
     end
 
@@ -73,6 +145,9 @@ local function init_class()
         if (spec and spec == 3) then
             bpartial = true;
         end
+
+        bsmallprimary = true;
+        bbigsecondary = true;
     end
 
     if (englishClass == "DRUID") then
@@ -142,13 +217,12 @@ local function init_class()
     end
 
     if (englishClass == "DEMONHUNTER") then
-
-         if spec and spec == 1 then
-            spellid = 195072;            
+        if spec and spec == 1 then
+            spellid = 195072;
         end
 
         if spec and spec == 2 then
-            spellid = 228477;            
+            spellid = 228477;
         end
 
         if spec and spec == 3 then
@@ -179,18 +253,27 @@ local function init_class()
         if spec and spec == 2 then
             auraid = 344179;
             max_aura = 10;
+            bsmallprimary = true;
+            bbigsecondary = true;
         end
         if (spec and spec == 3) then
             spellid = 61295;
         end
     end
 
+    resizebars(bsmallprimary, bbigsecondary);
     ns.setup_power();
-    ns.setup_auracombo(auraid, max_aura);
-    ns.setup_combo(powerlevel, bpartial, brogue);
-    ns.setup_rune(bupdaterune);
-    ns.setup_spell(spellid);
-    ns.setup_stagger(bstagger);
+    if auraid then
+        ns.setup_auracombo(auraid, max_aura);
+    elseif powerlevel then
+        ns.setup_combo(powerlevel, bpartial, brogue);
+    elseif bupdaterune then
+        ns.setup_rune(bupdaterune);
+    elseif spellid then
+        ns.setup_spell(spellid);
+    elseif bstagger then
+        ns.setup_stagger(bstagger);
+    end
 end
 
 local function on_event(self, event, ...)
@@ -219,13 +302,6 @@ local function on_event(self, event, ...)
     return;
 end
 
-local backdropConfig = {
-    edgeFile = "Interface\\Buttons\\WHITE8X8",
-    edgeSize = 1,
-    bgFile = "Interface\\Buttons\\WHITE8X8",
-    tile = false,
-}
-
 local function init_addon()
     ns.setup_option();
     main_frame:SetPoint("BOTTOM", UIParent, "CENTER", ns.configs.xpoint, ns.configs.ypoint)
@@ -243,7 +319,7 @@ local function init_addon()
     ns.bar:SetWidth(ns.options.BarWidth)
     ns.bar:SetHeight(ns.options.PowerBarHeight)
     ns.bar:SetPoint("BOTTOM", main_frame, "BOTTOM", 0, 0)
-    ns.bar:Hide();
+    ns.bar:Show();
     ns.bar:EnableMouse(false);
 
     ns.bar.bg = ns.bar:CreateTexture(nil, "BACKGROUND");
@@ -284,8 +360,8 @@ local function init_addon()
     ns.combocountbar:Hide();
 
     ns.combotext = main_frame:CreateFontString(nil, "OVERLAY");
-    ns.combotext:SetFont(ns.configs.font, ns.options.FontSize - 3, ns.configs.fontOutline);
-    ns.combotext:SetPoint("CENTER", ns.combocountbar, "CENTER", 0, 0);
+    ns.combotext:SetFont(ns.configs.font, ns.options.FontSize - 1, ns.configs.fontOutline);
+    ns.combotext:SetPoint("CENTER", ns.combocountbar, "CENTER", 0, 1);
     ns.combotext:SetTextColor(1, 1, 1, 1)
     ns.combotext:Hide();
 
@@ -349,6 +425,17 @@ local function init_addon()
         ns.spellframes[i]:Hide();
         ns.spellframes[i]:EnableMouse(false);
     end
+
+    ns.spellborder = CreateFrame("Frame", nil, main_frame, "BackdropTemplate");
+    ns.spellborder:SetFrameLevel(ns.configs.framelevel + 201);
+    ns.spellborder:SetHeight(ns.options.ComboBarHeight + 2);
+    ns.spellborder:SetWidth(ns.options.BarWidth + 2);
+    ns.spellborder:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", -1, 0);
+    ns.spellborder:SetBackdrop(backdropConfig)
+    ns.spellborder:SetBackdropBorderColor(0, 0, 0, 1);
+    ns.spellborder:SetBackdropColor(0, 0, 0, 0);
+    ns.spellborder:EnableMouse(false);
+    ns.spellborder:Hide();
 
 
     ns.chargebar = CreateFrame("StatusBar", nil, ns.combocountbar);
