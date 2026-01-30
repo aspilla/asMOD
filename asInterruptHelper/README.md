@@ -16,12 +16,12 @@ Displays cooldowns for Interrupt and Stun skills.
     * Displays interruptible skills above the Target and Focus cast bars.
     * Displays skills above the mouse cursor when a mouseover target exists.
 * **When an Interruptible Spell is Cast**:
-    * Displays the primary interrupt skill. If the interrupt skill is on cooldown and the mob is susceptible to stuns (same level), stun skills are displayed instead.
+    * Displays the primary interrupt skill. If the interrupt skill is on cooldown, it displays a stun skill if the mob is susceptible to stuns (same level).
 * **When a Non-Interruptible Spell is Cast**:
     * Displays stun skills if the mob is susceptible to stuns (same level).
 * **Skill Display Priority**:
-    * Prioritizes skills with shorter cooldowns. (If cooldowns are equal, the skill with the lower ID is prioritized.)
-* **Voice Alerts**: Provides voice notifications when an interrupt or stun is required (only functions when nameplates are visible).
+    * Skills with shorter cooldowns have higher priority. (If cooldowns are equal, the skill with the lower ID is prioritized.)
+* **Voice Alerts**: Provides voice notifications when an interrupt or stun is required (only functions when nameplates are visible). Voice alerts trigger when the Target or Focus casts during combat. If a Focus target exists, alerts for the Target are suppressed, and only Focus alerts are played.
 
 ## Configuration
 
@@ -60,7 +60,8 @@ Settings can be modified via `ESC` > `Options` > `AddOns` > `asInterruptHelper`:
     * 스턴이 가능한 몹 (Level이 동등한 몹) 인 경우 스턴 스킬을 표시.
 *   **스킬 표시 우선 순위**:
     * 쿨이 짧은 스킬이 우선순위를 가짐. (쿨이 같은경우 ID 가 작은수 인 경우) 
-*   **음성 알림**: 차단 필요/스턴 필요시 음성 알림 (이름표가 표시 되는 경우만 판단 가능)    
+*   **음성 알림**: 차단 필요/스턴 필요시 음성 알림 (이름표가 표시 되는 경우만 판단 가능), 대상/주시대상 전투 중 시전시 음성 알림을 하며, 주시 대상 있는 경우 대상에 대한 음성을 알리지 않고 주시대상만 알림
+
 
 ## 설정
 

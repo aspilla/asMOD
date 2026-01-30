@@ -77,8 +77,12 @@ local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdg
     end
 end
 
+local coolcurve = C_CurveUtil.CreateCurve();
+coolcurve:AddPoint(0.0, 0);
+coolcurve:AddPoint(0.001, 1);
+coolcurve:AddPoint(1.0, 1);
 
-local function show_interruptspell(frame, spellid)
+local function show_interruptspell(frame, spellid, alpha)
     spellid = C_Spell.GetOverrideSpell(spellid);
     local spellInfo = C_Spell.GetSpellInfo(spellid);
 
@@ -86,8 +90,8 @@ local function show_interruptspell(frame, spellid)
         return;
     end
 
-    local spellCooldownInfo = C_Spell.GetSpellCooldown(spellid);
-    if not spellCooldownInfo then
+    local durationobj = C_Spell.GetSpellCooldownDuration(spellid);
+    if not durationobj then
         return;
     end
 
@@ -98,6 +102,7 @@ local function show_interruptspell(frame, spellid)
     local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellid);
 
     frame.icon:SetTexture(spellInfo.iconID);
+    frame.icon_desaturated:SetTexture(spellInfo.iconID);
 
     if (isUsable) then
         frame.icon:SetVertexColor(1.0, 1.0, 1.0);
@@ -107,18 +112,11 @@ local function show_interruptspell(frame, spellid)
         frame.icon:SetVertexColor(0.4, 0.4, 0.4);
     end
 
-    set_cooldownframe(frame.cooldown, spellCooldownInfo.startTime, spellCooldownInfo.duration, true);
+    set_cooldownframe(frame.cooldown, durationobj:GetStartTime(), durationobj:GetTotalDuration(), true);
+    frame.icon_desaturated:SetAlpha(durationobj:EvaluateRemainingPercent(coolcurve));
 
+    frame:SetAlpha(alpha);
     frame:Show();
-end
-
-
-local function is_attackable(unit)
-    local reaction = UnitReaction("player", unit);
-    if reaction and reaction <= 4 then
-        return true;
-    end
-    return false;
 end
 
 local function get_typeofcast(unit)
@@ -130,18 +128,18 @@ local function get_typeofcast(unit)
 end
 
 local function check_needtointerrupt(unit)
-    if UnitExists(unit) and is_attackable(unit) then
-        local name = UnitCastingInfo(unit);
+    if UnitExists(unit) and UnitCanAttack("player", unit) then
+        local name, _, texture, starttime, endtime, _, _, notinterruptible, spellid = UnitCastingInfo(unit);
         if not name then
-            name = UnitChannelInfo(unit);
+            name, _, texture, starttime, endtime, _, notinterruptible, spellid = UnitChannelInfo(unit);
         end
 
         if name then
             local casttype = get_typeofcast(unit);
             if casttype == nil then
-                return name, nil;
+                return name, nil, notinterruptible;
             else
-                return name, casttype == "uninterruptable";
+                return name, casttype == "uninterruptable", notinterruptible;
             end
         end
     end
@@ -150,40 +148,36 @@ local function check_needtointerrupt(unit)
 end
 
 
-local function find_spell(notinterruptible, isboss)
-    local list;
+local function find_spell(isboss)
+    local interrupt_spellid = nil;
+    local stun_spellid = nil;
 
-    if notinterruptible then
-        list = stunSpells;
-
-        for _, v in pairs(list) do
-            return v.spellid;
-        end
-    else
-        list = interruptSpells;
-
-        for _, v in pairs(list) do
-            return v.spellid;
-        end
-
-        if not isboss then
-            for _, v in pairs(stunSpells) do
-                return v.spellid;
-            end
+    do
+        for _, v in pairs(interruptSpells) do
+            interrupt_spellid = v.spellid;
+            break;
         end
     end
+
+    if not isboss then
+        for _, v in pairs(stunSpells) do
+            stun_spellid = v.spellid;
+            break;
+        end
+    end
+
+    return interrupt_spellid, stun_spellid;
 end
 
-local function check_sound(frame, unit, notinterruptible)
+local function check_sound(unit, notinterruptible)
     if unit ~= "mouseover" then
-        local isfocus = false;
-        if unit == "focus" then
-            if UnitIsUnit(unit, "target") then
+        if unit == "target" then
+            if UnitExists("focus") then
                 return;
             end
-            isfocus = UnitIsUnit(unit, "focus") and unit ~= "target";
         end
 
+        local isfocus = UnitIsUnit(unit, "focus");
         local soundfile = nil;
 
         if notinterruptible then
@@ -219,23 +213,40 @@ local function check_casting(frame, unit)
         return;
     end
 
-    local name, notinterruptible = check_needtointerrupt(unit)
+    local name, notinterruptible, realnotinterruptible = check_needtointerrupt(unit)
 
     if name then
-        if notinterruptible ~= nil then
-            local soundalert = false;
-            if frame.soundchecked == false then
-                soundalert = true;
-            end
-            frame.soundchecked = true;
-            local isboss = false;
-            local needtointerrupt = true;
-            local level = UnitLevel(unit);
+        local soundalert = false;
+        if frame.soundchecked == false then
+            soundalert = true;
+        end
+        frame.soundchecked = true;
+        local isboss = false;
+        local needtointerrupt = true;
+        local level = UnitLevel(unit);
 
-            if level < 0 or level > UnitLevel("player") then
-                isboss = true;
-            end
+        if level < 0 or level > UnitLevel("player") then
+            isboss = true;
+        end
 
+        local interrupt_spellid, stun_spellid = find_spell(isboss);
+
+        if interrupt_spellid then
+            show_interruptspell(frame.ibutton, interrupt_spellid, 0);
+        else
+            frame.ibutton:Hide();
+        end
+
+        if stun_spellid then
+            show_interruptspell(frame.sbutton, stun_spellid, 1);
+        else
+            frame.sbutton:Hide();
+        end
+
+        local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(realnotinterruptible, 0, 1);
+        frame.ibutton:SetAlpha(alpha);
+
+        if notinterruptible ~= nil and UnitAffectingCombat(unit) then
             if notinterruptible then
                 if isboss then
                     needtointerrupt = false;
@@ -243,17 +254,12 @@ local function check_casting(frame, unit)
             end
 
             if needtointerrupt then
-                local interupt_spellid = find_spell(notinterruptible, isboss);
-
-                if interupt_spellid then
-                    show_interruptspell(frame, interupt_spellid);
-
-                    if soundalert then
-                        check_sound(frame, unit, notinterruptible);
-                    end
+                if soundalert then
+                    check_sound(unit, notinterruptible);
                 end
             end
         end
+        frame:Show();
     else
         frame.soundchecked = false;
         frame:Hide();
@@ -289,16 +295,13 @@ local function register_unit(button, unit)
     button:RegisterEvent("PLAYER_FOCUS_CHANGED");
 end
 
-local function create_button(unit)
-    local size = configs.size;
-
-    if unit == "target" then
-        size = configs.targetsize;
-    end
-
-    local frame = CreateFrame("Button", nil, main_frame, "AIHFrameTemplate");
+local function create_coolbutton(parent, size, level)
+    local frame = CreateFrame("Button", nil, parent, "AIHFrameTemplate");
     frame:SetWidth(size);
     frame:SetHeight(size * 0.9);
+    frame:SetPoint("CENTER", parent, "CENTER", 0, 0);
+    frame:SetFrameLevel(level);
+    frame:EnableMouse(false);
 
     frame.cooldown:SetHideCountdownNumbers(false);
     for _, r in next, { frame.cooldown:GetRegions() } do
@@ -313,11 +316,31 @@ local function create_button(unit)
     end
 
     frame.icon:SetTexCoord(.08, .92, .08, .92);
+    frame.icon_desaturated:SetTexCoord(.08, .92, .08, .92);
+    frame.icon_desaturated:SetDesaturated(true);
     frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
     frame.border:SetVertexColor(0, 0, 0);
 
-    frame:EnableMouse(false);
+
     frame:Hide();
+    return frame;
+end
+
+local function create_button(unit)
+    local size = configs.size;
+
+    if unit == "target" then
+        size = configs.targetsize;
+    end
+
+    local frame = CreateFrame("Frame");
+    frame:SetWidth(size);
+    frame:SetHeight(size * 0.9);
+    frame:EnableMouse(false);
+    frame:Show();
+
+    frame.sbutton = create_coolbutton(frame, size, 1000);
+    frame.ibutton = create_coolbutton(frame, size, 2000);
     frame.soundchecked = false;
 
     if unit == "target" then
@@ -351,7 +374,7 @@ local function create_button(unit)
     return frame;
 end
 
-local function on_event(self, event)
+local function on_event()
     init_player();
 end
 

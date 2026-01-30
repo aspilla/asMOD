@@ -5,6 +5,9 @@
 			<Layer level="BACKGROUND">
 				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
 			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentIconD" parentKey="icon_desaturated" setAllPoints="true"/>
+			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
 				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asInterruptHelper\border.tga"/>
 			</Layer>
