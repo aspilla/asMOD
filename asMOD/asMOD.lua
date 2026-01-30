@@ -57,7 +57,7 @@ local function create_macro()
 	end
 
 	local macroText =
-	"/console WorldTextScale 0.5\n/console turnspeed 180\n/console set ResampleAlwaysSharpen 1";
+	"/console WorldTextScale_v2 0.5\n/console turnspeed 180\n/console set ResampleAlwaysSharpen 1";
 	local macroName = "asMOD Setup";
 	local macroID = GetMacroIndexByName(macroName);
 
