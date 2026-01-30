@@ -35,26 +35,9 @@ local function get_spellinfo(spellid)
 
     local spellInfo = C_Spell.GetSpellInfo(spellid);
     if spellInfo then
-        return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange,
+        return spellid, spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo
+            .maxRange,
             spellInfo.spellID, spellInfo.originalIconID;
-    end
-end
-
-local function get_spellcooldown(spellid)
-    if not spellid then
-        return nil;
-    end
-
-    local or_spellid = C_Spell.GetOverrideSpell(spellid)
-
-    if or_spellid then
-        spellid = or_spellid;
-    end
-
-    local spellCooldownInfo = C_Spell.GetSpellCooldown(spellid);
-    if spellCooldownInfo then
-        return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled,
-            spellCooldownInfo.modRate;
     end
 end
 
@@ -70,6 +53,11 @@ local function set_cooldownframe(self, start, duration, enable)
         clear_cooldownframe(self);
     end
 end
+
+local coolcurve = C_CurveUtil.CreateCurve();
+coolcurve:AddPoint(0.0, 0);
+coolcurve:AddPoint(0.001, 1);
+coolcurve:AddPoint(1.0, 1);
 
 local function update_buttons(list, buttons, spellid)
     local i = 1;
@@ -102,11 +90,12 @@ local function update_buttons(list, buttons, spellid)
             if isusable then
                 local frame = buttons[i];
                 frame.icon:SetTexture(icon);
+                frame.icon_desaturated:SetTexture(icon);
                 set_cooldownframe(frame.cooldown, start, duration, true);
-                if duration > 10 then
-                    frame.icon:SetDesaturated(true);
+                if duration > 2 then
+                    frame.icon_desaturated:SetAlpha(1);
                 else
-                    frame.icon:SetDesaturated(false);
+                    frame.icon_desaturated:SetAlpha(0);
                 end
                 if count > 0 then
                     frame.count:SetText(count);
@@ -129,13 +118,14 @@ local function update_buttons(list, buttons, spellid)
     end
 
     if spellid then
-        local _, _, icon = get_spellinfo(spellid);
-        local start, duration, enable = get_spellcooldown(spellid);
-        local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellid);
+        local or_spellid, _, _, icon = get_spellinfo(spellid);
+        local isUsable, notEnoughMana = C_Spell.IsSpellUsable(or_spellid);
+        local durationobj = C_Spell.GetSpellCooldownDuration(or_spellid);
+
 
         local frame = buttons[i];
         frame.icon:SetTexture(icon);
-        set_cooldownframe(frame.cooldown, start, duration, true);
+        frame.icon_desaturated:SetTexture(icon);
         if (isUsable) then
             frame.icon:SetVertexColor(1.0, 1.0, 1.0);
         elseif (notEnoughMana) then
@@ -143,18 +133,24 @@ local function update_buttons(list, buttons, spellid)
         else
             frame.icon:SetVertexColor(0.4, 0.4, 0.4);
         end
+        if durationobj then
+            set_cooldownframe(frame.cooldown, durationobj:GetStartTime(), durationobj:GetTotalDuration(), true);
+            frame.icon_desaturated:SetAlpha(durationobj:EvaluateRemainingPercent(coolcurve));
+        else
+            set_cooldownframe(frame.cooldown, 0, 0, false);
+            frame.icon_desaturated:SetAlpha(1);
+        end
+
         frame.count:Hide();
         frame:Show()
         i = i + 1;
 
         for j = i, #list + 1 do
-            local frame = buttons[j];
-            frame:Hide();
+            buttons[j]:Hide();
         end
     else
         for j = i, #list do
-            local frame = buttons[j];
-            frame:Hide();
+            buttons[j]:Hide();
         end
     end
 end
@@ -164,7 +160,7 @@ local function create_buttons()
     local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
     local offset = 0;
-    if  ASMOD_asUnitFrame and ASMOD_asUnitFrame.is_simplemode then
+    if ASMOD_asUnitFrame and ASMOD_asUnitFrame.is_simplemode then
         offset = 14;
     end
 
@@ -182,6 +178,8 @@ local function create_buttons()
         end
 
         frame.icon:SetTexCoord(.08, .92, .08, .92);
+        frame.icon_desaturated:SetTexCoord(.08, .92, .08, .92);
+        frame.icon_desaturated:SetDesaturated(true);
         frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
         frame.border:SetVertexColor(0, 0, 0);
 
@@ -294,7 +292,7 @@ local function init()
         end
     else
         main_frame:SetAlpha(configs.combatalpha);
-    end    
+    end
 end
 
 main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
