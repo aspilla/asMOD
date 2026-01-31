@@ -382,15 +382,15 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
         if is_small then
             if x < 0 then
                 frame.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -4, 0);
-                frame.sperator:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3), 0);
-                frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3 + 10), 0);
+                frame.sperator:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3 + 4), 0);
+                frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3 + 12), 0);
                 frame.name:SetPoint("LEFT", frame, "LEFT", 4, 0);
                 frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
                 frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
             else
                 frame.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 4, 0);
-                frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3), 0);
-                frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3 + 10), 0);
+                frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3 + 4), 0);
+                frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3 + 12), 0);
                 frame.name:SetPoint("RIGHT", frame, "RIGHT", -4, 0);
                 frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
                 frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
@@ -398,15 +398,15 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
         else
             if x < 0 then
                 frame.pvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -4, 4);
-                frame.sperator:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 3), 4);
-                frame.hvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 3 + 10), 4);
+                frame.sperator:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 3 + 4), 4);
+                frame.hvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 3 + 12), 4);
                 frame.name:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, -4);
                 frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
                 frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
             else
                 frame.pvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", 4, 4);
-                frame.sperator:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 3), 4);
-                frame.hvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 3 + 10), 4);
+                frame.sperator:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 3 + 4), 4);
+                frame.hvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 3 + 12), 4);
                 frame.name:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -4);
                 frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
                 frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
@@ -418,15 +418,15 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     else
         if x < 0 then
             frame.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -4, 0);
-            frame.sperator:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3), 0);
-            frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3 + 10), 0);
+            frame.sperator:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3 + 4), 0);
+            frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3 + 12), 0);
             frame.name:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
             frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
             frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
         else
             frame.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 4, 0);
-            frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3), 0);
-            frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3 + 10), 0);
+            frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3 + 4), 0);
+            frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3 + 12), 0);
             frame.name:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
             frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
             frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
