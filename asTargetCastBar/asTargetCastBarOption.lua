@@ -4,6 +4,7 @@ local Options_Default = {
     ShowFocus = true,
     ShowTarget = true,
     FocusCastScale = 1.2;
+    TargetCastScale = 1;
 };
 
 ns.options = CopyTable(Options_Default);
@@ -25,6 +26,10 @@ function ns.setup_option()
         if variable == "FocusCastScale" then
             if ns.focuscastbar then
                 ns.focuscastbar:SetScale(value);
+            end
+        elseif variable == "TargetCastScale" then
+            if ns.targetcastbar then
+                ns.targetcastbar:SetScale(value);
             end
         else
             ReloadUI();

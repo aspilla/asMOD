@@ -411,7 +411,7 @@ local function init()
         register_unit(ns.focuscastbar, "focus");
     end
 
-
+    ns.targetcastbar:SetScale(ns.options.TargetCastScale);
     ns.focuscastbar:SetScale(ns.options.FocusCastScale);
 
     local libasConfig = LibStub:GetLibrary("LibasConfig", true);
