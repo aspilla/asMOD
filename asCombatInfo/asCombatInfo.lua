@@ -85,18 +85,10 @@ local function update_bars(viewer)
 	end
 end
 
-local function get_spellhotkey(spellid, debug)
-	local slots = C_ActionBar.FindSpellActionButtons(spellid)
-	if slots and #slots > 0 then
-		for _, slot in ipairs(slots) do
-			if debug then
-				print(slot);
-			end
-			local text = ns.hotkeys[slot];
-			if text then
-				return text;
-			end
-		end
+local function get_spellhotkey(spellid)
+	local text = ns.hotkeys[spellid];
+	if text then
+		return text;
 	end
 	return nil;
 end
@@ -473,8 +465,11 @@ local function scan_keys(name, total)
 		local text = hotkey:GetText();
 		local slot = actionbutton.action;
 		if slot then
-			if ns.hotkeys[slot] == nil then
-				ns.hotkeys[slot] = check_name(text);
+			local actionType, id, subType = GetActionInfo(slot)
+			if (actionType == "spell" or actionType == "macro") and id then				
+				if ns.hotkeys[id] == nil then
+					ns.hotkeys[id] = check_name(text);
+				end
 			end
 		end
 	end
