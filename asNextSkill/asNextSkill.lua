@@ -9,22 +9,11 @@ local configs = {
 }
 
 local main_frame = CreateFrame("Button", nil, UIParent, "asNextSkillFrameTemplate");
-local hotkey_cache = {};
 
 local function get_spellhotkey(spellid)
-	local cache = hotkey_cache[spellid];
-	if cache then
-		return cache;
-	end
-
-	local slots = C_ActionBar.FindSpellActionButtons(spellid)
-	if slots and #slots > 0 then
-		for _, slot in ipairs(slots) do
-			local text = ns.hotkeys[slot];
-			if text then
-				return text;
-			end
-		end
+	local text = ns.hotkeys[spellid];
+	if text then
+		return text;
 	end
 	return nil;
 end
@@ -53,7 +42,7 @@ local function on_update()
 
 			local coolinfo = C_Spell.GetSpellCooldown(nextspellid);
 			if coolinfo then
-				set_cooldownframe(main_frame.cooldown, coolinfo.startTime, coolinfo.duration, true);	
+				set_cooldownframe(main_frame.cooldown, coolinfo.startTime, coolinfo.duration, true);
 			else
 				main_frame.cooldown:Hide();
 			end
@@ -73,11 +62,9 @@ local function on_update()
 end
 
 local function on_event(self, event)
-	if event == "UPDATE_BONUS_ACTIONBAR" then
-		wipe(hotkey_cache);
+	if event == "UPDATE_BONUS_ACTIONBAR" then		
 		ns.refresh();
 	else
-		wipe(hotkey_cache);
 		ns.check_hotkeys();
 	end
 end

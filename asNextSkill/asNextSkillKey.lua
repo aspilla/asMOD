@@ -59,9 +59,13 @@ local function scan_keys(name, total)
 
 		local text = hotkey:GetText();
 		local slot = actionbutton.action;
+
 		if slot then
-			if ns.hotkeys[slot] == nil then
-				ns.hotkeys[slot] = check_name(text);
+			local actionType, id, subType = GetActionInfo(slot)
+			if (actionType == "spell" or actionType == "macro") and id then				
+				if ns.hotkeys[id] == nil then
+					ns.hotkeys[id] = check_name(text);
+				end
 			end
 		end
 	end
@@ -84,10 +88,7 @@ function ns.check_hotkeys()
 	scan_keys("PetActionButton", 10);
 end
 
-
 function ns.refresh()
 	scan_keys("ActionButton", 12);
 	scan_keys("BonusActionButton", 12);
 end
-
-
