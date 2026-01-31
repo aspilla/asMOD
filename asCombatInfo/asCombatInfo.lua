@@ -9,6 +9,7 @@ local configs    = {
 local _, Class   = UnitClass("player")
 ns.classcolor    = RAID_CLASS_COLORS[Class];
 ns.hotkeys       = {};
+ns.hotkeyslots       = {};
 ns.nextspellid   = nil;
 
 local main_frame = CreateFrame("Frame");
@@ -90,6 +91,17 @@ local function get_spellhotkey(spellid)
 	if text then
 		return text;
 	end
+
+	local slots = C_ActionBar.FindSpellActionButtons(spellid)
+	if slots and #slots > 0 then
+		for _, slot in ipairs(slots) do
+			text = ns.hotkeyslots[slot];
+			if text then
+				return text;
+			end
+		end
+	end
+
 	return nil;
 end
 
@@ -462,14 +474,18 @@ local function scan_keys(name, total)
 			break
 		end
 
-		local text = hotkey:GetText();
+		local text = check_name(hotkey:GetText());
 		local slot = actionbutton.action;
+
 		if slot then
 			local actionType, id, subType = GetActionInfo(slot)
-			if (actionType == "spell" or actionType == "macro") and id then				
+			if (actionType == "spell" or actionType == "macro") and id then
 				if ns.hotkeys[id] == nil then
-					ns.hotkeys[id] = check_name(text);
+					ns.hotkeys[id] = text;
 				end
+			end
+			if ns.hotkeyslots[slot] == nil then
+				ns.hotkeyslots[slot] = text;
 			end
 		end
 	end
@@ -482,6 +498,7 @@ local function check_hotkeys()
 
 
 	wipe(ns.hotkeys);
+	wipe(ns.hotkeyslots);
 	scan_keys("ActionButton", 12);
 	scan_keys("MultiBarBottomLeftButton", 12);
 	scan_keys("MultiBarBottomRightButton", 12);
