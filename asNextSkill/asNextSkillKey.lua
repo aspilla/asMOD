@@ -58,18 +58,19 @@ local function scan_keys(name, total)
 			break
 		end
 
-		local text = check_name(hotkey:GetText());
+		local text = hotkey:GetText();
 		local slot = actionbutton.action;
 
-		if slot then
+		if slot and text then
+			local keytext = check_name(text);
 			local actionType, id, subType = GetActionInfo(slot)
 			if (actionType == "spell" or actionType == "macro") and id then
 				if ns.hotkeys[id] == nil then
-					ns.hotkeys[id] = text;
+					ns.hotkeys[id] = keytext;
 				end
 			end
 			if ns.hotkeyslots[slot] == nil then
-				ns.hotkeyslots[slot] = text;
+				ns.hotkeyslots[slot] = keytext;
 			end
 		end
 	end
