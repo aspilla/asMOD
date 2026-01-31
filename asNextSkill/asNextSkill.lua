@@ -15,6 +15,17 @@ local function get_spellhotkey(spellid)
 	if text then
 		return text;
 	end
+
+	local slots = C_ActionBar.FindSpellActionButtons(spellid)
+	if slots and #slots > 0 then
+		for _, slot in ipairs(slots) do
+			text = ns.hotkeyslots[slot];
+			if text then
+				return text;
+			end
+		end
+	end
+
 	return nil;
 end
 

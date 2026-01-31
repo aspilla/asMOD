@@ -2,6 +2,7 @@ local _, ns = ...;
 
 
 ns.hotkeys = {};
+ns.hotkeyslots = {};
 
 local function check_name(name)
 	name = string.gsub(name, "Num Pad ", "");
@@ -57,15 +58,18 @@ local function scan_keys(name, total)
 			break
 		end
 
-		local text = hotkey:GetText();
+		local text = check_name(hotkey:GetText());
 		local slot = actionbutton.action;
 
 		if slot then
 			local actionType, id, subType = GetActionInfo(slot)
-			if (actionType == "spell" or actionType == "macro") and id then				
+			if (actionType == "spell" or actionType == "macro") and id then
 				if ns.hotkeys[id] == nil then
-					ns.hotkeys[id] = check_name(text);
+					ns.hotkeys[id] = text;
 				end
+			end
+			if ns.hotkeyslots[slot] == nil then
+				ns.hotkeyslots[slot] = text;
 			end
 		end
 	end
@@ -73,6 +77,7 @@ end
 
 function ns.check_hotkeys()
 	wipe(ns.hotkeys);
+	wipe(ns.hotkeyslots);
 	scan_keys("ActionButton", 12);
 	scan_keys("MultiBarBottomLeftButton", 12);
 	scan_keys("MultiBarBottomRightButton", 12);
