@@ -63,14 +63,16 @@ local function scan_keys(name, total)
 
 		if slot and text then
 			local keytext = check_name(text);
-			local actionType, id, subType = GetActionInfo(slot)
-			if (actionType == "spell" or actionType == "macro") and id then
-				if ns.hotkeys[id] == nil then
-					ns.hotkeys[id] = keytext;
+			if keytext ~= "●" then
+				local actionType, id, subType = GetActionInfo(slot)
+				if (actionType == "spell" or actionType == "macro") and id then
+					if ns.hotkeys[id] == nil then
+						ns.hotkeys[id] = keytext;
+					end
 				end
-			end
-			if ns.hotkeyslots[slot] == nil then
-				ns.hotkeyslots[slot] = keytext;
+				if ns.hotkeyslots[slot] == nil then
+					ns.hotkeyslots[slot] = keytext;
+				end
 			end
 		end
 	end
