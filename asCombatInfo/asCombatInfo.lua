@@ -9,7 +9,7 @@ local configs    = {
 local _, Class   = UnitClass("player")
 ns.classcolor    = RAID_CLASS_COLORS[Class];
 ns.hotkeys       = {};
-ns.hotkeyslots       = {};
+ns.hotkeyslots   = {};
 ns.nextspellid   = nil;
 
 local main_frame = CreateFrame("Frame");
@@ -479,14 +479,16 @@ local function scan_keys(name, total)
 
 		if slot and text then
 			local keytext = check_name(text);
-			local actionType, id, subType = GetActionInfo(slot)
-			if (actionType == "spell" or actionType == "macro") and id then
-				if ns.hotkeys[id] == nil then
-					ns.hotkeys[id] = keytext;
+			if keytext ~= "●" then
+				local actionType, id, subType = GetActionInfo(slot)
+				if (actionType == "spell" or actionType == "macro") and id then
+					if ns.hotkeys[id] == nil then
+						ns.hotkeys[id] = keytext;
+					end
 				end
-			end
-			if ns.hotkeyslots[slot] == nil then
-				ns.hotkeyslots[slot] = keytext;
+				if ns.hotkeyslots[slot] == nil then
+					ns.hotkeyslots[slot] = keytext;
+				end
 			end
 		end
 	end
@@ -520,13 +522,13 @@ local function init()
 	for _, viewer in ipairs(viewers) do
 		if viewer then
 			update_buttons(viewer);
-			
+
 			if viewer.Layout then
 				hooksecurefunc(viewer, "Layout", function()
 					add_todolist(viewer)
 				end)
 			end
-			
+
 			local children = { viewer:GetChildren() }
 			for _, child in ipairs(children) do
 				child:HookScript("OnShow", function()
