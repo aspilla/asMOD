@@ -82,9 +82,6 @@ local function create_privateframes(parent)
     return;
 end
 
-local filters = {}
-filters["target"] = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
-filters["player"] = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
 
 local activeDebuffs = {};
 
@@ -116,7 +113,7 @@ for dispeltype, v in pairs(debuffinfo) do
 end
 
 
-local function update_frames(unit, auraList, numAuras)
+local function update_frames(unit, auraList, numAuras, filter)
     local i = 0;
     local parent = main_frame.target_frame;
 
@@ -135,7 +132,7 @@ local function update_frames(unit, auraList, numAuras)
 
         frame.unit = unit;
         frame.auraid = aura.auraInstanceID;
-        frame.filter = filters[unit];
+        frame.filter = filter;
 
         local color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);
 
@@ -161,9 +158,19 @@ local function update_frames(unit, auraList, numAuras)
     end
 end
 
+local debufffilter_attack = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
+local debufffilter_helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
+
+
 local function update_auras(unit)
-    activeDebuffs[unit] = C_UnitAuras.GetUnitAuras(unit, filters[unit], ns.configs.max_debuffs);
-    update_frames(unit, activeDebuffs[unit], ns.configs.max_debuffs);
+    local filter = debufffilter_helpful;
+
+    if UnitCanAttack("player", unit) then
+        filter = debufffilter_attack;
+    end
+
+    activeDebuffs[unit] = C_UnitAuras.GetUnitAuras(unit, filter, ns.configs.max_debuffs);
+    update_frames(unit, activeDebuffs[unit], ns.configs.max_debuffs, filter);
 end
 
 local function clear_frames()
@@ -303,13 +310,13 @@ local function init()
     main_frame:Show();
 
     local offset = 0;
-    if  ASMOD_asUnitFrame and ASMOD_asUnitFrame.is_simplemode then
+    if ASMOD_asUnitFrame and ASMOD_asUnitFrame.is_simplemode then
         offset = 16;
     end
 
     main_frame.target_frame = CreateFrame("Frame", nil, main_frame)
 
-    main_frame.target_frame:SetPoint("CENTER", ns.configs.target_xpoint, ns.configs.target_ypoint - offset )
+    main_frame.target_frame:SetPoint("CENTER", ns.configs.target_xpoint, ns.configs.target_ypoint - offset)
     main_frame.target_frame:SetWidth(1)
     main_frame.target_frame:SetHeight(1)
     main_frame.target_frame:Show()
