@@ -698,7 +698,7 @@ local function init(framelist)
     if (MAX_BOSS_FRAMES) then
         for i = 1, MAX_BOSS_FRAMES do
             framelist.BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-            create_unitframe(framelist.BossFrames[i], "boss" .. i, configs.xpoint + 250, 200 - (i - 1) * 70,
+            create_unitframe(framelist.BossFrames[i], "boss" .. i, configs.xpoint + 250, 160 - (i - 1) * 70,
                 ns.options.FocusWidth, ns.options.FocusHeight,
                 ns.options.FocusPowerWidth, ns.options.FocusPowerHeight, ns.options.FocusFontSize - fontoffset, false, framelist.is_simplemode);
         end
