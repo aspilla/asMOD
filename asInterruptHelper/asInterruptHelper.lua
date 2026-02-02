@@ -79,8 +79,8 @@ end
 
 local coolcurve = C_CurveUtil.CreateCurve();
 coolcurve:AddPoint(0.0, 0);
-coolcurve:AddPoint(0.001, 1);
-coolcurve:AddPoint(1.0, 1);
+coolcurve:AddPoint(1.5, 0);
+coolcurve:AddPoint(1.6, 1);
 
 local function show_interruptspell(frame, spellid, alpha)
     spellid = C_Spell.GetOverrideSpell(spellid);
@@ -113,7 +113,7 @@ local function show_interruptspell(frame, spellid, alpha)
     end
 
     set_cooldownframe(frame.cooldown, durationobj:GetStartTime(), durationobj:GetTotalDuration(), true);
-    frame.icon_desaturated:SetAlpha(durationobj:EvaluateRemainingPercent(coolcurve));
+    frame.icon_desaturated:SetAlpha(durationobj:EvaluateRemainingDuration(coolcurve));
 
     frame:SetAlpha(alpha);
     frame:Show();
