@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rPowerBar
 ## Notes: Displays Primary and Class Resources.
 ## Notes-koKR: 주 자원/직업 자원 표시
-## Version : 260130
+## Version : 260203
 ## SavedVariablesPerCharacter: ASPB_Options, ASPB_Positions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

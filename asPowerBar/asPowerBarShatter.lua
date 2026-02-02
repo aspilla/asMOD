@@ -1,11 +1,19 @@
 local _, ns = ...;
 
+local configs = {
+	polishedflush = 1261082,
+	heartofice = 1247799,
+	textureid = 7439203,
+	maxshatter = 20,
+	baseshatter = 4,
+}
+
 local gvalues = {
 	updateframe = nil,
-	cdid = nil,
-	textureid = 7439203,
-	maxstack = 3.3,	
+	cdid = nil,	
 };
+
+
 
 local function on_cooldownupdate(frame)
 	local auraid = frame.auraInstanceID;
@@ -41,7 +49,7 @@ local function scan_viewer()
 					local textureid = frame.Icon:GetTexture();
 
 					if textureid and not issecretvalue(textureid) then
-						if textureid == gvalues.textureid then
+						if textureid == configs.textureid then
 							gvalues.updateframe = frame;
 							gvalues.cdid = frame.cooldownID;
 							return;
@@ -86,7 +94,19 @@ local timer;
 
 function ns.setup_shatter(spellid)
 	if spellid then
-		ns.setup_max_spell(gvalues.maxstack);
+		local shattercount = configs.baseshatter;
+
+		if C_SpellBook.IsSpellKnown(configs.heartofice) then
+			shattercount = shattercount + 1;
+		end
+
+		if C_SpellBook.IsSpellKnown(configs.polishedflush) then
+			shattercount = shattercount + 1;
+		end
+
+		local maxstack = configs.maxshatter / shattercount;
+
+		ns.setup_max_spell(maxstack);
 		ns.combocountbar:SetMinMaxValues(0, 20);
 		ns.combocountbar:SetValue(0);
 		ns.combotext:SetText("0");
