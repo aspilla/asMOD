@@ -79,6 +79,17 @@ The following issue may occur:
 1. Use the `/asconfig` command to adjust frame positions.
 2. Disable `asUnitFrame` before using `Edit Mode`. Repositioned layouts should be saved with a **new name** other than `asMOD_Layout`.
 
+## Cooldown Manager Configuration
+* Go to `ESC > Options > Gameplay > Advanced Cooldown Settings` to configure the center buttons.
+1. [Main Center Skills] 6, [Top Buffs] 7, [Bottom Buff Bar] 2 rows (Default Recommended)
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/cooldown1row.jpg?raw=true)
+
+2. [Main Center Skills] 7 ~ 12, [Top Buffs] 7, [Bottom Buff Bar] None (Recommended to disable asGCDBar)
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/cooldown2row.jpg?raw=true)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
 ## asMOD Addon List (Midnight)
 Each asMOD addon functions independently. If you wish to use only specific addons, you can install them separately via the links below:
 
@@ -111,7 +122,7 @@ Each asMOD addon functions independently. If you wish to use only specific addon
 | asMisdirection | Automated Misdirection and Tricks of the Trade macro | [Link](https://www.curseforge.com/wow/addons/asmisdirection) | [Link](https://github.com/aspilla/asMOD/tree/main/asMisdirection) |
 | asMOD | asMOD Collection Settings | [Link](https://www.curseforge.com/wow/addons/asmod) | [Link](https://github.com/aspilla/asMOD/tree/main/asMOD) |
 | asNamePlates | Nameplate enhancement addon | [Link](https://www.curseforge.com/wow/addons/asnameplates) | [Link](https://github.com/aspilla/asMOD/tree/main/asNamePlates) |
-| asNextSkill |  Notification for the next recommended skill | [Link](https://www.curseforge.com/wow/addons/asnextskill) | [Link](https://github.com/aspilla/asMOD/tree/main/asNextSkill) |
+| asNextSkill | Notification for the next recommended skill | [Link](https://www.curseforge.com/wow/addons/asnextskill) | [Link](https://github.com/aspilla/asMOD/tree/main/asNextSkill) |
 | asPowerBar | Displays Main and Class resources | [Link](https://www.curseforge.com/wow/addons/aspowerbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asPowerBar) |
 | asPremadeGroupsFilter | Premade Group Finder (Keystone/Raid) enhancement | [Link](https://www.curseforge.com/wow/addons/aspremadegroupsfilter) | [Link](https://github.com/aspilla/asMOD/tree/main/asPremadeGroupsFilter) |
 | asRangeDisplay | Distance display for Target/Focus/Mouseover | [Link](https://www.curseforge.com/wow/addons/asrangedisplay) | [Link](https://github.com/aspilla/asMOD/tree/main/asRangeDisplay) |
@@ -207,6 +218,17 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 ## 위치 설정 방법
 1. `/asconfig` 명령으로 위치 조정 가능 
 2. `편집모드` 사용시 asUnitFrame 끄고 진행, `asMOD_Layout`이 아닌 새로운 이름으로 저장 필요
+
+## 재사용 대기시간 관리자 설정
+* `esc >> 설정 >> 게임 플레이 개선 >> 고급 재사용 대기시간 설정` 클릭하여 가운데 버튼 설정
+1. [중앙주스킬] 6개, [상단버프] 7개, [하단버프바] 2줄 설정 (기본 추천)
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/cooldown1row.jpg?raw=true)
+
+2. [중앙주스킬] 7개 ~ 12개, [상단버프] 7개, [하단버프바] 없음 설정 (asGCDBar 끄는것을 추전)
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/cooldown2row.jpg?raw=true)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 
 ## asMOD 애드온 목록 (한밤)
 모든 asMOD 애드온은 개별 동작 가능함, 일부 애드온만 사용 원할 경우 아래 Link를 통해 별도로 설치 가능
