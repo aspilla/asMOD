@@ -102,8 +102,10 @@ local function init_class()
 
     if (englishClass == "EVOKER") then
         powerlevel = Enum.PowerType.Essence;
-        bsmallprimary = true;
-        bbigsecondary = true;
+        if (spec and spec ~= 2) then
+            bsmallprimary = true;
+            bbigsecondary = true;
+        end
     end
 
     if (englishClass == "PALADIN") then

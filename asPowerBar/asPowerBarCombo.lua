@@ -178,7 +178,6 @@ function ns.setup_combo(powerlevel, bpartial, brogue)
             ns.combotext:Show();
         elseif gvalue.powerlevel == Enum.PowerType.Essence then
             maxpartial = 10;
-            ns.combotext:Show();
             updaterate = 0.1;
         end
 
