@@ -312,6 +312,13 @@ local function init_addon()
     main_frame:SetFrameLevel(ns.configs.framelevel + 400);
     main_frame:Show();
 
+    main_frame.bgframe = CreateFrame("Frame", nil, main_frame);
+    main_frame.bgframe:SetWidth(ns.options.BarWidth)
+    main_frame.bgframe:SetHeight(ns.options.PowerBarHeight)
+    main_frame.bgframe:SetFrameLevel(ns.configs.framelevel - 100);
+    main_frame.bgframe:Show();
+   
+
     ns.bar = CreateFrame("StatusBar", nil, main_frame)
     ns.bar:SetFrameLevel(ns.configs.framelevel);
     ns.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
@@ -324,10 +331,12 @@ local function init_addon()
     ns.bar:Show();
     ns.bar:EnableMouse(false);
 
-    ns.bar.bg = ns.bar:CreateTexture(nil, "BACKGROUND");
-    ns.bar.bg:SetPoint("TOPLEFT", ns.bar, "TOPLEFT", -1, 1);
-    ns.bar.bg:SetPoint("BOTTOMRIGHT", ns.bar, "BOTTOMRIGHT", 1, -1);
-    ns.bar.bg:SetColorTexture(0, 0, 0, 1);
+    ns.bg = main_frame.bgframe:CreateTexture(nil, "BACKGROUND");
+    ns.bg:SetPoint("TOPLEFT", ns.bar, "TOPLEFT", -1, 1);
+    ns.bg:SetPoint("BOTTOMRIGHT", ns.bar, "BOTTOMRIGHT", 1, -1);
+    ns.bg:SetColorTexture(0, 0, 0, 1);
+
+    
 
     ns.bar.text = main_frame:CreateFontString(nil, "ARTWORK");
     ns.bar.text:SetFont(ns.configs.font, ns.options.FontSize, ns.configs.fontOutline);
@@ -341,6 +350,7 @@ local function init_addon()
     ns.bar.predictbar:SetPoint("BOTTOMRIGHT", parenttexture, "BOTTOMRIGHT", 0, 0);
     ns.bar.predictbar:SetVertexColor(0.5, 0.5, 0.5)
     ns.bar.predictbar:Hide();
+    ns.bar:SetClipsChildren(true);
 
     ns.combocountbar = CreateFrame("StatusBar", nil, main_frame);
     ns.combocountbar:SetStatusBarTexture("RaidFrame-Hp-Fill");

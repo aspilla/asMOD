@@ -30,6 +30,7 @@ local function update_powercost(bar, amount)
         bar:Hide();
         return
     end
+  
 
     local barSize = (amount / gvalue.maxpower) * ns.options.BarWidth;
     bar:SetWidth(barSize);
@@ -58,7 +59,7 @@ local function update_power()
         gvalue.maxpower = valueMax;
     end
 
-    local cost = get_spellcost(powertype);
+    local cost = get_spellcost(powertype);   
 
     ns.bar:SetMinMaxValues(0, valueMax)
     ns.bar:SetValue(value, Enum.StatusBarInterpolation.ExponentialEaseOut);
