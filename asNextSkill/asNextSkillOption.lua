@@ -2,7 +2,8 @@ local _, ns = ...;
 local Options_Default = {
     version = 260125,
     ShowHotKey = true,
-    AssistShowOnly = false;
+    AssistShowOnly = false,
+    UIScale = 1.0,
 };
 
 ns.options = CopyTable(Options_Default);
@@ -21,7 +22,13 @@ function ns.setup_option()
         local variable = get_variable_from_cvar_name(cvar_name)
         ASNS_Options[variable] = value;
         ns.options[variable] = value;
-        ReloadUI();
+        if variable == "UIScale" then
+            if ns.main_frame then
+                ns.main_frame:SetScale(value);
+            end
+        else
+            ReloadUI();
+        end
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asNextSkill")
@@ -44,11 +51,22 @@ function ns.setup_option()
             local defaultValue = Options_Default[variable];
             local currentValue = ASNS_Options[variable];
 
-            local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
-            name, defaultValue);
-            Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
-            Settings.SetValue(cvar_name, currentValue);
-            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            if tonumber(defaultValue) ~= nil then
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue), name, defaultValue);
+                local options = Settings.CreateSliderOptions(0.5, 3, 0.1);
+                options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+                Settings.CreateSlider(category, setting, options, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            else
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue),
+                    name, defaultValue);
+                Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            end
         end
     end
 

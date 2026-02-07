@@ -9,6 +9,7 @@ local configs = {
 }
 
 local main_frame = CreateFrame("Button", nil, UIParent, "asNextSkillFrameTemplate");
+ns.main_frame = main_frame;
 
 local function get_spellhotkey(spellid)
 	local text = ns.hotkeys[spellid];
