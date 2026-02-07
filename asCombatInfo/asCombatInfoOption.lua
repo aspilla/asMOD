@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-    version = 251225,
+    version = 260206,
     AlignedBuff = false,
     CombatAlphaChange = true,
     ChangeBuffBar = true,
@@ -8,6 +8,11 @@ local Options_Default = {
     ShowHotKey = true,
     HideBarName = true,
     AlertAssitedSpell = false,
+    SpellBorderWidth = 2,
+    BuffBorderWidth = 2,
+    SpellIconRate = 9,
+    BuffIconRate = 8,
+
 };
 
 ns.options = CopyTable(Options_Default);
@@ -26,7 +31,11 @@ function ns.setup_option()
         local variable = get_variable_from_cvar_name(cvar_name)
         ACI_Options[variable] = value;
         ns.options[variable] = value;
-        ReloadUI();
+        if tonumber(value) == nil then
+            ReloadUI();
+        else
+            ns.refreshall()
+        end
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asCombatInfo")
@@ -49,11 +58,22 @@ function ns.setup_option()
             local defaultValue = Options_Default[variable];
             local currentValue = ACI_Options[variable];
 
-            local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
-            name, defaultValue);
-            Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
-            Settings.SetValue(cvar_name, currentValue);
-            Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            if tonumber(defaultValue) ~= nil then
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue), name, defaultValue);
+                local options = Settings.CreateSliderOptions(1, 9, 1);
+                options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+                Settings.CreateSlider(category, setting, options, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            else
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue),
+                    name, defaultValue);
+                Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            end
         end
     end
 

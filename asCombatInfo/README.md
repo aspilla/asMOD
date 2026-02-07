@@ -4,33 +4,35 @@ Enhances the Cooldown Manager.
 
 ![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN2.jpg?raw=true)
 
-## Key Features
+## Key Features 
 
-* **Icon and Border Styling**: Customizes the appearance of icons and borders.
-* **Charge Count Adjustments**: Moves charge counts to the bottom and changes the color to green.
-* **Hotkey Display**: Displays hotkeys. For Stealth or Druid forms, hotkeys are updated only when switched to the respective form.
-* **Double-Row Center Alignment**: Aligns icons in two rows to the center.
+* **Icon/Border Shape Modification** * **Charge Count Repositioning**: Moved to the bottom and color changed to green. 
+* **Hotkey Display**: For Stealth or Druid forms, hotkeys are displayed only when switched to the corresponding form.
+* **Center Alignment for 2-Row Icons**
 ![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN.jpg?raw=true)
 
-* **Font Replacement**: Changes the default font to the standard WoW font.
-* **Buff/Debuff Borders**: Adds a blue border during active enhancement or weakening effects.
-* **Buff Bar Styling**: Changes the appearance of buff bars and displays them in class-specific colors.
-* **Combat Assist Highlight**: Highlights specific support/utility skills.
+* **Font Replacement**: Changes the font to the default WoW font. 
+* **Buff/Debuff Borders**: Adds a blue border during active buffs/debuffs.
+* **Buff Bar Skinning**: Modifies the appearance of buff bars and displays them in class-specific colors.
+* **Combat Assistance Skill Highlighting**
 
 ![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_assist.gif?raw=true)
 
 * Recommended for use with `asPowerBar`.
 
-## Configuration
-
+## Configuration 
 * Accessible via `ESC` > `Options` > `AddOns` > `asCombatInfo`.
-* `AlignedBuff`: Center-aligns buffs (Default: Off).
+* `AlignedBuff`: Center-align buffs (Default: Off).
 * `CombatAlphaChange`: Adjusts transparency when out of combat (Default: On).
-* `ChangeBuffBar`: Modifies the appearance of buff bars (Default: On).
-* `BuffBarClassColor`: Changes buff bar colors to class colors (Default: On).
-* `ShowHotKey`: Displays hotkeys (Default: On).
+* `ChangeBuffBar`: Modifies the appearance of the buff bar (Default: On).
+* `BuffBarClassColor`: Changes buff bar color to class-specific color (Default: On).
+* `ShowHotKey`: Toggle display of hotkeys (Default: On).
 * `HideBarName`: Hides spell names on the buff bar (Default: On).
 * `AlertAssitedSpell`: Highlights combat assistance skills (Default: Off).
+* `SpellIconRate`: Skill icon height ratio (Default: 9, height is 90% of width).
+* `SpellBorderWidth`: Border thickness for skill icons (Default: 2).
+* `BuffIconRate`: Buff icon height ratio (Default: 8, height is 80% of width).
+* `BuffBorderWidth`: Border thickness for buff icons (Default: 2).
 
 ---
 
@@ -67,3 +69,7 @@ Enhances the Cooldown Manager.
 *   `ShowHotKey` : 단축키 표시 (Default On)
 *   `HideBarName` : 버프 바 스킬 명을 숨김 (Default On)
 *   `AlertAssitedSpell` : 전투보조기능 스킬 강조 (Default off)
+*   `SpellIconRate` : 기술 아이콘 높이 비율 (Default 9, 넓이의 90% 높이)
+*   `SpellBorderWidth` : 기술 아이콘 테두리 두깨 (Default 2)
+*   `BuffIconRate` : 버프 아이콘 높이 비율 (Default 8, 넓이의 80% 높이)
+*   `BuffBorderWidth` : 버프 아이콘 테두리 두깨 (Default 2)

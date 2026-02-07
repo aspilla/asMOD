@@ -105,12 +105,11 @@ local function get_spellhotkey(spellid)
 	return nil;
 end
 
--- Core function to remove padding and apply modifications. Doing Blizzard's work for them.
-local function update_buttons(viewer)
-	-- Don't apply modifications in edit mode
+local function update_buttons(viewer, forced)
 	if EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() then
 		return
 	end
+
 	local isbar = (viewer == BuffBarCooldownViewer);
 	if isbar then
 		update_bars(viewer);
@@ -121,11 +120,9 @@ local function update_buttons(viewer)
 	local childs = { viewer:GetChildren() };
 	local isbuff = (viewer == BuffIconCooldownViewer);
 
-	-- Get the visible icons (because they're fully dynamic)
 	local visiblechilds = {}
 	for _, child in ipairs(childs) do
 		if child:IsShown() then
-			-- Store original position for sorting
 			local point, relativeTo, relativePoint, x, y = child:GetPoint(1)
 			child.originalX = x or 0
 			child.originalY = y or 0
@@ -138,15 +135,17 @@ local function update_buttons(viewer)
 	end
 
 	for _, button in ipairs(visiblechilds) do
-		local rate = 0.9;
-		local iconrate = .088;
+		local rate = math.min(ns.options.SpellIconRate / 10, 0.9);
+		local iconrate = 0.08 + (0.9 - rate) / 2
+		local borderwidth = ns.options.SpellBorderWidth;
 
 		if isbuff then
-			rate = 0.8;
-			iconrate = .16;
+			rate = math.min(ns.options.BuffIconRate / 10, 0.9);
+			iconrate = 0.16 + (0.8 - rate) / 2;
+			borderwidth = ns.options.BuffBorderWidth;
 		end
 
-		if not button.bconfiged then
+		if not button.bconfiged or forced then
 			local width = button:GetWidth();
 			button.bconfiged = true;
 			button:SetSize(width, width * rate);
@@ -159,7 +158,7 @@ local function update_buttons(viewer)
 				end
 				button.Icon:ClearAllPoints();
 				button.Icon:SetPoint("CENTER", 0, 0);
-				button.Icon:SetSize(width - 4, width * rate - 4);
+				button.Icon:SetSize(width - borderwidth, width * rate - borderwidth);
 				button.Icon:SetTexCoord(.08, .92, iconrate, 1 - iconrate);
 			end
 
@@ -197,7 +196,7 @@ local function update_buttons(viewer)
 			end
 
 
-			if not button.border then
+			if not button.border or forced then
 				button.border = button:CreateTexture(nil, "BACKGROUND");
 				button.border:SetAllPoints(button);
 				button.border:SetColorTexture(0, 0, 0, 1);
@@ -209,7 +208,6 @@ local function update_buttons(viewer)
 				button.nextspell:SetSize(width / 2 + 3, width / 2 + 3);
 				button.nextsize = 1;
 
-				--button.nextspell:SetVertexColor(0, 1, 0, 1);
 				button.nextspell:Hide();
 			else
 				button.border:SetAlpha(1)
@@ -217,6 +215,9 @@ local function update_buttons(viewer)
 			button.border:Show()
 
 			if button.Cooldown then
+				button.Cooldown:SetAllPoints(button.Icon)
+				button.Cooldown:SetSwipeTexture("Interface\\Buttons\\WHITE8X8");
+				button.Cooldown:SetSwipeColor(0, 0, 0, 0.8)
 				for _, r in next, { button.Cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
 						r:SetFont(configs.font, width / 3 + 1, "OUTLINE");
@@ -308,12 +309,11 @@ local function update_buttons(viewer)
 		return a.originalY > b.originalY
 	end)
 
-	-- Reposition buttons respecting orientation and stride
-	local buttonWidth = visiblechilds[1]:GetWidth()
-	local buttonHeight = visiblechilds[1]:GetHeight()
+	local buttonwidth = visiblechilds[1]:GetWidth()
+	local buttonheight = visiblechilds[1]:GetHeight()
 
-	-- Calculate grid dimensions
-	local numIcons = #visiblechilds
+
+	local num_icons = #visiblechilds
 
 	for i, child in ipairs(visiblechilds) do
 		if bcentered then
@@ -321,22 +321,20 @@ local function update_buttons(viewer)
 			local row = math.floor(index / stride)
 			local col = index % stride
 
-			-- Determine number of icons in this row
-			local rowStart = row * stride + 1
-			local rowEnd = math.min(rowStart + stride - 1, numIcons)
-			local iconsInRow = rowEnd - rowStart + 1
+			local row_start = row * stride + 1
+			local row_end = math.min(row_start + stride - 1, num_icons)
+			local icons_in_row = row_end - row_start + 1
 
-			-- Compute the actual width of this row
-			local rowWidth = iconsInRow * buttonWidth + (iconsInRow - 1) * overlap
+			local rowwidth = icons_in_row * buttonwidth + (icons_in_row - 1) * overlap
 
-			-- Center this row
-			local rowStartX = -rowWidth / 2
 
-			-- Column offset inside centered row
-			local xOffset = rowStartX + col * (buttonWidth + overlap)
-			local yOffset = row * (buttonHeight + overlap)
+			local row_startX = -rowwidth / 2
+
+
+			local xOffset = row_startX + col * (buttonwidth + overlap)
+			local yOffset = row * (buttonheight + overlap)
 			child:ClearAllPoints();
-			child:SetPoint("TOP", viewer, "TOP", xOffset + buttonWidth / 2, -yOffset);
+			child:SetPoint("TOP", viewer, "TOP", xOffset + buttonwidth / 2, -yOffset);
 		else
 			local point, relativeTo, relativePoint, x, y = child:GetPoint(1);
 			child:ClearAllPoints();
@@ -346,7 +344,6 @@ local function update_buttons(viewer)
 end
 
 local function update_hotkey(viewer)
-	-- Don't apply modifications in edit mode
 	if EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() then
 		return
 	end
@@ -357,8 +354,6 @@ local function update_hotkey(viewer)
 
 	local childs = { viewer:GetChildren() };
 
-
-	-- Get the visible icons (because they're fully dynamic)
 	local visiblechilds = {}
 	for _, child in ipairs(childs) do
 		if child:IsShown() then
@@ -402,7 +397,6 @@ updateframe:SetScript("OnUpdate", function()
 	end
 end)
 
--- Schedule an update to apply the modifications during the same frame, but after Blizzard is done mucking with things
 local function add_todolist(viewer)
 	todolist[viewer] = true
 	updateframe:Show()
@@ -538,6 +532,14 @@ local function init()
 					add_todolist(viewer)
 				end)
 			end
+		end
+	end
+end
+
+function ns.refreshall()
+	for _, viewer in ipairs(viewers) do
+		if viewer then
+			update_buttons(viewer, true);
 		end
 	end
 end
