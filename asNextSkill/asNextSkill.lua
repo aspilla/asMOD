@@ -94,6 +94,8 @@ local function init()
 		libasConfig.load_position(main_frame, "asNextSkill", ASNS_Positions);
 	end
 
+	 ns.main_frame:SetScale(ns.options.UIScale);
+
 	ns.check_hotkeys();
 	main_frame:RegisterEvent("UPDATE_BONUS_ACTIONBAR");
 	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
