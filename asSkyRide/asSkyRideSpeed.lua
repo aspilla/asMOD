@@ -1,10 +1,16 @@
 local _, ns = ...;
 
 local function update_speed()
+
+    if not ns.ready then
+        return;
+    end
+
     if not IsFlying("player") then
         ns.frame:Hide();
         return;
     end
+
     ns.frame:Show();
 
     local isGliding, canGlide, forwardSpeed = C_PlayerInfo.GetGlidingInfo()

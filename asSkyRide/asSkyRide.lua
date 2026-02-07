@@ -15,6 +15,7 @@ ns.configs   = {
 };
 
 ns.frame    = CreateFrame("FRAME", nil, UIParent);
+ns.ready = false;
 
 local function init_addon()
     ns.frame:SetPoint("BOTTOM", UIParent, "CENTER", ns.configs.xpoint, ns.configs.ypoint)
@@ -114,6 +115,8 @@ local function init_addon()
 	if libasConfig then
 		libasConfig.load_position(ns.frame, "asSkyRide", ASKYR_Positions);
 	end
+
+    ns.ready = true;
 end
 
 C_Timer.After(0.5, init_addon);

@@ -60,6 +60,9 @@ local function check_spellcooldown(spellid, index)
 end
 
 local function update_spell()
+    if not ns.ready then
+        return;
+    end
     if not IsFlying("player") then
         return;
     end
