@@ -1,12 +1,12 @@
 # asNextSkill (Midnight)
 
-Notification for the next recommended skill to use.
+Notification for the next recommended skill.
 
 ![asNextSkill](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNextSkill.gif?raw=true)
 
 ## Key Features
 
-* **Visual Icon for Default Single-Button Assistance**: Displays icons based on the default WoW UI's spell alerts (Rotation customization is not supported).
+* **Visual Icon for Default Single-Button Assistant**: Displays icons based on the default WoW UI's spell alerts (Note: Rotation customization is not supported).
 * **Hotkey Display**: Shows the assigned hotkey for the recommended skill.
 
 ## Configuration
@@ -14,6 +14,7 @@ Notification for the next recommended skill to use.
 * Accessible via `ESC` > `Options` > `AddOns` > `asNextSkill`.
 * `ShowHotKey`: Toggle display of hotkeys (Default: On).
 * `AssistShowOnly`: Only suggest skills that are currently registered on your action bars (Default: Off).
+* `UIScale`: Adjust the size of the button icon (Default: 1.0).
 * **Repositioning**: Enter the `/asconfig` command in the chat window.
 * **Reset Position**: Enter the `/asclear` command in the chat window to reset to default settings.
 
@@ -35,5 +36,6 @@ Notification for the next recommended skill to use.
 *   `ESC` > `설정` > `애드온` > `asNextSkill` 에서 설정 가능
 *  `ShowHotKey` : 단축키 표시 (기본 : 사용)
 *  `AssistShowOnly` : 단축바에 등록된 기술만 안내 (기본 : 미사용)
+*  `UIScale` : 버튼 크기 배율 (기본 : 1.0)
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
