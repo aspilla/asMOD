@@ -194,13 +194,19 @@ local function change_button(button, changeborder, changesize)
 
     if button.count then
         button.count:SetFont(STANDARD_TEXT_FONT, (width / 2) * ns.options.CooldownSizeRate, "OUTLINE");
+        button.count:SetParent(button.cooldown);
         button.count:ClearAllPoints();
-        button.count:SetPoint("CENTER", button, "BOTTOM", 0, 1);
+        button.count:SetPoint("CENTER", button.cooldown, "BOTTOM", 0, 1);
         button.count:SetTextColor(0, 1, 0);
+        button.count:SetDrawLayer("OVERLAY");
     end
 
     if button.cooldown and ns.options.ShowCooldown then
         button.cooldown:SetHideCountdownNumbers(false);
+        button.cooldown:SetAllPoints(button.icon);
+		button.cooldown:SetSwipeTexture("Interface\\Buttons\\WHITE8X8");
+		button.cooldown:SetSwipeColor(0, 0, 0, 0.6);
+        button.cooldown:SetDrawEdge(false);        
 
         for _, r in next, { button.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
