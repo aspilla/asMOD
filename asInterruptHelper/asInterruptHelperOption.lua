@@ -3,9 +3,7 @@ local Options_Default = {
     version = 250727,
     ShowTarget = true,
     ShowFocus = true,
-    ShowMouseOver = true,
-    PlaySoundKick = true,
-    PlaySoundStun = false,
+    ShowMouseOver = true,    
 };
 
 ns.options = CopyTable(Options_Default);
