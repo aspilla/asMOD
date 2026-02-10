@@ -37,12 +37,7 @@ local function check_cast(unit)
 	end
 end
 
-local function get_typeofcast(nameplate)
-	if nameplate and nameplate.UnitFrame and nameplate.UnitFrame.castBar then
-		return nameplate.UnitFrame.castBar.barType;
-	end
-	return nil;
-end
+
 
 local function check_trigger(nameplate)
 	local unit = nameplate.unitToken;
@@ -60,10 +55,7 @@ local function check_trigger(nameplate)
 	if status then
 		local bcasting = check_cast(unit);
 		if bcasting then
-			local type = get_typeofcast(nameplate);
-			if type and type ~= "uninterruptable" then
-				return true;
-			end
+			return true;
 		end
 	end
 
