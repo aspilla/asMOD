@@ -8,7 +8,7 @@ ns.configs = {
 };
 
 ns.option_default = {
-    version = 260121,
+    version = 260210,
 
     ShowAggro = true,
     ShowDebuffColor = true,
@@ -25,7 +25,7 @@ ns.option_default = {
 
     AggroColor = { r = 0.4, g = 0.2, b = 0.8 },
     TankAggroLoseColor = { r = 1, g = 0.5, b = 0.5 },
-    UninterruptableColor = { r = 0.9, g = 0.9, b = 0.9 },
+    NotinterruptableColor = { r = 0.9, g = 0.9, b = 0.9 },
     InterruptableColor = { r = 204 / 255, g = 255 / 255, b = 153 / 255 },
     DebuffColor = { r = 1, g = 0.5, b = 1 },
     CombatColor = { r = 0.5, g = 1, b = 1 },
@@ -248,7 +248,7 @@ local function on_panelshow()
 
         setup_checkboxoption("[기능] 시전 색상 표시", "ShowCastColor");
         setup_coloroption("[색상] 차단가능", "InterruptableColor");
-        setup_coloroption("[색상] 차단불가", "UninterruptableColor");
+        setup_coloroption("[색상] 차단불가", "NotinterruptableColor");
 
         setup_checkboxoption("[기능] 던전, Boss 몹 색상 표시", "ShowBossColor");
         setup_coloroption("[색상] Boss Mob", "BossColor");
@@ -273,7 +273,7 @@ local function on_panelshow()
 
         setup_checkboxoption("[Feature] Show cast color", "ShowCastColor");
         setup_coloroption("[Color] Interrutable", "InterruptableColor");
-        setup_coloroption("[Color] Uninterruptable", "UninterruptableColor");
+        setup_coloroption("[Color] Uninterruptable", "NotinterruptableColor");
 
         setup_checkboxoption("[Feature] Show debuff color", "ShowDebuffColor");
         setup_coloroption("[Color] Debuff", "DebuffColor");

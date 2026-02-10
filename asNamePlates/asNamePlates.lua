@@ -95,6 +95,8 @@ local function remove_unit(unit)
 
         asframe.casticon:Hide();
         asframe.coloroverlay:Hide();
+        asframe.notinterruptable:SetAlpha(0);
+        asframe.notinterruptable:Hide();
         asframe.important:SetAlpha(0);
         asframe.important:Hide();
         asframe.border:Hide();
@@ -150,14 +152,17 @@ local function change_item(button)
         button.border:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0);
         button.border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0);
         local mask = button.Icon:GetMaskTexture(1)
-		if mask then
-			button.Icon:RemoveMaskTexture(mask);
-		end
+        if mask then
+            button.Icon:RemoveMaskTexture(mask);
+        end
         button.Icon:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+        button.Cooldown:SetAllPoints(button.Icon);
+        button.Cooldown:SetSwipeTexture("Interface\\Buttons\\WHITE8X8");
+        button.Cooldown:SetSwipeColor(0, 0, 0, 0.8);
     else
         button.border:SetAlpha(1)
     end
-    
+
     button.border:Show()
 
     if button.CountFrame and button.CountFrame.Count then
@@ -245,7 +250,7 @@ local function add_unit(unit)
         asframe.casticon:SetWidth(height * 1.1);
         asframe.casticon:SetHeight(height);
         asframe.casticon:Hide();
-        asframe.iscast = false;        
+        asframe.iscast = false;
     end
 
     if ns.options.ChangeTexture then
@@ -291,6 +296,14 @@ local function add_unit(unit)
     PixelUtil.SetPoint(asframe.coloroverlay, "BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
     asframe.coloroverlay:SetVertexColor(previousTexture:GetVertexColor());
     asframe.coloroverlay:Hide();
+
+    asframe.notinterruptable:SetParent(healthbar);
+    asframe.notinterruptable:ClearAllPoints();
+    PixelUtil.SetPoint(asframe.notinterruptable, "TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
+    PixelUtil.SetPoint(asframe.notinterruptable, "BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
+    asframe.notinterruptable:SetAlpha(0);
+    asframe.notinterruptable:Hide();
+
 
     asframe.powerbar:ClearAllPoints();
     PixelUtil.SetPoint(asframe.powerbar, "TOP", healthbar, "BOTTOM", 0, 2);

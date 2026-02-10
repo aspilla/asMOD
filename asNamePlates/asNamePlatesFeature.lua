@@ -92,12 +92,10 @@ function ns.update_color(asframe)
 
         --Cast Color
         if asframe.casticon:IsShown() and ns.options.ShowCastColor then
-            local bartype = castbar.barType;
-            if bartype == "uninterruptable" then
-                return ns.options.UninterruptableColor;
-            end
-
+            asframe.notinterruptable:Show();
             return ns.options.InterruptableColor;
+        else
+            asframe.notinterruptable:Hide();
         end
 
 
@@ -143,9 +141,9 @@ end
 
 function ns.update_cast(asframe)
     local unit                                     = asframe.unit;
-    local name, _, texture, _, _, _, _, _, spellid = UnitCastingInfo(unit);
+    local name, _, texture, _, _, _, _, notinterruptible, spellid = UnitCastingInfo(unit);
     if not name then
-        name, _, texture, _, _, _, _, spellid = UnitChannelInfo(unit);
+        name, _, texture, _, _, _, notinterruptible, spellid = UnitChannelInfo(unit);
     end
     if name then
         if ns.options.ShowCastIcon then
@@ -153,14 +151,19 @@ function ns.update_cast(asframe)
             asframe.casticon:Show();
         end
 
+        if ns.options.ShowCastColor then
+            local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(notinterruptible, 1, 0);
+            asframe.notinterruptable:SetAlpha(alpha);
+        end
+
         if ns.options.AlertImportantSpell then
             local isimportant = C_Spell.IsSpellImportant(spellid);
             local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
-            asframe.important:SetAlpha(alpha);            
+            asframe.important:SetAlpha(alpha);
         end
     else
         asframe.casticon:Hide();
-        asframe.important:SetAlpha(0);        
+        asframe.important:SetAlpha(0);
     end
 end
 
@@ -168,11 +171,11 @@ function ns.update_target(asframe)
     if asframe.unit and UnitIsUnit(asframe.unit, "target") then
         asframe.casticon.border:SetVertexColor(1, 1, 1);
         asframe.casticon:SetAlpha(1);
-        asframe.selected:SetVertexColor(1,1,1);
+        asframe.selected:SetVertexColor(1, 1, 1);
         asframe.selected:Show();
         ns.update_power(asframe);
-    elseif asframe.unit and UnitIsUnit(asframe.unit, "focus") then        
-        asframe.selected:SetVertexColor(0,1,0);
+    elseif asframe.unit and UnitIsUnit(asframe.unit, "focus") then
+        asframe.selected:SetVertexColor(0, 1, 0);
         asframe.selected:Show();
     else
         asframe.casticon.border:SetVertexColor(0, 0, 0);

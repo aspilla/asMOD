@@ -27,6 +27,9 @@ local function create_frame()
     end
 
     object.coloroverlay = object:CreateTexture(nil, "ARTWORK", template, 1);
+    object.notinterruptable = object:CreateTexture(nil, "ARTWORK", template, 2);
+    local color = ns.options.NotinterruptableColor;
+    object.notinterruptable:SetVertexColor(color.r, color.g, color.b);   
     object.selected = object:CreateTexture(nil, "BACKGROUND");
     object.selected:SetColorTexture(1, 1, 1, 1);
     object.border = object:CreateTexture(nil, "BACKGROUND");
