@@ -19,17 +19,15 @@ local function is_party(unit)
     return false;
 end
 
-local function is_tank(unit)
-    local assignedRole = UnitGroupRolesAssigned(unit);
-    if assignedRole == "TANK" or assignedRole == "MAINTANK" then
+local function is_tank(role)
+    if role == "TANK" or role == "MAINTANK" then
         return true;
     end
     return false;
 end
 
-local function is_healer(unit)
-    local assignedRole = UnitGroupRolesAssigned(unit);
-    if assignedRole == "HEALER" then
+local function is_healer(role)
+    if role == "HEALER" then
         return true;
     end
     return false;
@@ -60,8 +58,9 @@ function ns.setup_frame(asframe)
         return;
     end
 
-    local istanker = is_tank(asframe.unit);
-    local ishealer = is_healer(asframe.unit);
+    local role = UnitGroupRolesAssigned(unit);
+    local istanker = is_tank(role);
+    local ishealer = is_healer(role);
 
     local strata = "LOW";
     local framelevel = 4;
@@ -172,12 +171,11 @@ local function change_button(button, changeborder, changesize)
         if changesize then
             button:SetSize(width, width * rate);
         end
-        
-        if changeborder then
-            if button.icon then
-                button.icon:SetTexCoord(.08, .92, .08, .92);
-            end
+        if button.icon then
+            button.icon:SetTexCoord(.08, .92, .08, .92);
+        end
 
+        if changeborder then
             if not button.border then
                 button.border = button:CreateTexture(nil, "BACKGROUND");
                 button.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga")
@@ -187,10 +185,18 @@ local function change_button(button, changeborder, changesize)
                 button.border:Show();
             end
             button.border:ClearAllPoints();
-            button.border:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0);
-            button.border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0);
+            button.border:SetPoint("TOPLEFT", button.icon, "TOPLEFT", 0, 0);
+            button.border:SetPoint("BOTTOMRIGHT", button.icon, "BOTTOMRIGHT", 0, 0);
+        else
+            button.border:SetParent(button.cooldown);
+            button.border:ClearAllPoints();
+            button.border:SetDrawLayer("OVERLAY", -3);
+            button.border:SetPoint("TOPLEFT", button.cooldown, "TOPLEFT", -1, 1);
+            button.border:SetPoint("BOTTOMRIGHT", button.cooldown, "BOTTOMRIGHT", 1, -1);
         end
     end
+
+
 
     if button.count then
         button.count:SetFont(STANDARD_TEXT_FONT, (width / 2) * ns.options.CooldownSizeRate, "OUTLINE");
@@ -204,9 +210,9 @@ local function change_button(button, changeborder, changesize)
     if button.cooldown and ns.options.ShowCooldown then
         button.cooldown:SetHideCountdownNumbers(false);
         button.cooldown:SetAllPoints(button.icon);
-		button.cooldown:SetSwipeTexture("Interface\\Buttons\\WHITE8X8");
-		button.cooldown:SetSwipeColor(0, 0, 0, 0.6);
-        button.cooldown:SetDrawEdge(false);        
+        button.cooldown:SetSwipeTexture("Interface\\Buttons\\WHITE8X8");
+        button.cooldown:SetSwipeColor(0, 0, 0, 0.6);
+        button.cooldown:SetDrawEdge(false);
 
         for _, r in next, { button.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
@@ -219,6 +225,8 @@ local function change_button(button, changeborder, changesize)
         end
     end
 end
+
+
 
 local function change_defaults(frame)
     if frame and not frame:IsForbidden() then
@@ -234,7 +242,7 @@ local function change_defaults(frame)
         end
         if frame.CenterDefensiveBuff then
             change_button(frame.CenterDefensiveBuff, true, true);
-        end
+        end        
     end
 end
 
