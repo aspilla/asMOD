@@ -92,10 +92,7 @@ function ns.update_color(asframe)
 
         --Cast Color
         if asframe.casticon:IsShown() and ns.options.ShowCastColor then
-            asframe.notinterruptable:Show();
             return ns.options.InterruptableColor;
-        else
-            asframe.notinterruptable:Hide();
         end
 
 
@@ -133,14 +130,21 @@ function ns.update_color(asframe)
     local color = getColor();
 
     if color then
+        if color == ns.options.InterruptableColor then
+            asframe.notinterruptable:Show();
+        else
+            asframe.notinterruptable:Hide();
+        end
+
         update_barcolor(asframe, color);
     else
+        asframe.notinterruptable:Hide();
         asframe.coloroverlay:Hide();
     end
 end
 
 function ns.update_cast(asframe)
-    local unit                                     = asframe.unit;
+    local unit                                                    = asframe.unit;
     local name, _, texture, _, _, _, _, notinterruptible, spellid = UnitCastingInfo(unit);
     if not name then
         name, _, texture, _, _, _, notinterruptible, spellid = UnitChannelInfo(unit);
