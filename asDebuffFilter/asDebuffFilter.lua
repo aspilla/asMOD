@@ -49,7 +49,7 @@ function asDebuffPrivateAuraAnchorMixin:SetUnit(unit)
             iconAnchor = iconAnchor,
             iconWidth = self:GetWidth(),
             iconHeight = self:GetHeight(),
-            borderScale = 1.2,
+            borderScale = 2.0,
         };
         privateAnchorArgs.durationAnchor = nil;
 
@@ -70,7 +70,7 @@ local function create_privateframes(parent)
     for idx = 1, 2 do
         parent.PrivateAuraAnchors[idx] = CreateFrame("Frame", nil, parent, "asDebuffPrivateAuraAnchorTemplate");
         parent.PrivateAuraAnchors[idx].auraIndex = idx;
-        parent.PrivateAuraAnchors[idx]:SetSize(size, size * ns.configs.sizerate);
+        parent.PrivateAuraAnchors[idx]:SetSize((size - 5), (size - 5) * ns.configs.sizerate);
         parent.PrivateAuraAnchors[idx]:SetUnit("player");
 
         if idx == 2 then
