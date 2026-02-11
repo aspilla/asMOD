@@ -97,6 +97,7 @@ local function get_spellhotkey(spellid)
 		for _, slot in ipairs(slots) do
 			text = ns.hotkeyslots[slot];
 			if text then
+				ns.hotkeys[spellid] = text;
 				return text;
 			end
 		end
@@ -343,46 +344,6 @@ local function update_buttons(viewer, forced)
 	end
 end
 
-local function update_hotkey(viewer)
-	if EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() then
-		return
-	end
-
-	if not ns.options.ShowHotKey then
-		return;
-	end
-
-	local childs = { viewer:GetChildren() };
-
-	local visiblechilds = {}
-	for _, child in ipairs(childs) do
-		if child:IsShown() then
-			table.insert(visiblechilds, child)
-		end
-	end
-
-	if #visiblechilds == 0 then
-		return
-	end
-
-	for _, button in ipairs(visiblechilds) do
-		if button.asspellid then
-			local spellid = button.asspellid;
-
-			if not issecretvalue(spellid) then
-				local keytext = get_spellhotkey(spellid);
-				if keytext and keytext ~= "●" then
-					button.hotkey:SetText(keytext);
-					button.hotkey:Show();
-				else
-					button.hotkey:Hide();
-				end
-			end
-		end
-	end
-end
-
-
 local updateframe = CreateFrame("Frame");
 local todolist = {};
 updateframe:Hide()
@@ -461,8 +422,7 @@ local function scan_keys(name, total)
 		local actionbutton = getglobal(name .. i);
 		if not actionbutton then
 			break
-		end
-		;
+		end		
 		local hotkey = getglobal(actionbutton:GetName() .. "HotKey");
 		if not hotkey then
 			break
@@ -471,17 +431,34 @@ local function scan_keys(name, total)
 		local text = hotkey:GetText();
 		local slot = actionbutton.action;
 
+		if name == "ActionButton" then
+			slot = i;
+		end
+
 		if slot and text then
 			local keytext = check_name(text);
 			if keytext ~= "●" then
-				local actionType, id, subType = GetActionInfo(slot)
-				if (actionType == "spell" or actionType == "macro") and id then
-					if ns.hotkeys[id] == nil then
-						ns.hotkeys[id] = keytext;
-					end
-				end
 				if ns.hotkeyslots[slot] == nil then
 					ns.hotkeyslots[slot] = keytext;
+				end
+			end
+		end
+	end
+end
+
+local function scan_actionslots()
+	for slot = 1, 180 do
+		local keytext = ns.hotkeyslots[slot];
+
+		if slot > 72 and slot <= 108 then
+			keytext = ns.hotkeyslots[(slot - 1) % 12 + 1];
+		end
+		
+		if keytext then
+			local type, id, subType = GetActionInfo(slot);			
+			if (type == "spell" or type == "macro") and id then
+				if ns.hotkeys[id] == nil then
+					ns.hotkeys[id] = keytext;
 				end
 			end
 		end
@@ -509,6 +486,8 @@ local function check_hotkeys()
 	scan_keys("VehicleMenuBarActionButton", 12);
 	scan_keys("OverrideActionBarButton", 12);
 	scan_keys("PetActionButton", 10);
+
+	scan_actionslots();
 end
 
 local function init()
@@ -544,16 +523,6 @@ function ns.refreshall()
 	end
 end
 
-local function refresh()
-	scan_keys("ActionButton", 12);
-	scan_keys("BonusActionButton", 12);
-	for _, viewer in ipairs(keyviewers) do
-		if viewer then
-			update_hotkey(viewer);
-		end
-	end
-end
-
 local function set_viewersalpha(alpha)
 	for _, viewer in ipairs(viewers) do
 		viewer:SetAlpha(alpha);
@@ -578,8 +547,6 @@ local function on_event(self, event, arg)
 		if ns.options.CombatAlphaChange then
 			set_viewersalpha(configs.normalalpha);
 		end
-	elseif event == "UPDATE_BONUS_ACTIONBAR" then
-		refresh();
 	else
 		C_Timer.After(0.5, init);
 
@@ -604,7 +571,6 @@ main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
 main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
 main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-main_frame:RegisterEvent("UPDATE_BONUS_ACTIONBAR");
 
 main_frame:SetScript("OnEvent", on_event);
 
