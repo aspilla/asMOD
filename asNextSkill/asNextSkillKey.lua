@@ -61,17 +61,34 @@ local function scan_keys(name, total)
 		local text = hotkey:GetText();
 		local slot = actionbutton.action;
 
+		if name == "ActionButton" then
+			slot = i;
+		end
+
 		if slot and text then
 			local keytext = check_name(text);
 			if keytext ~= "●" then
-				local actionType, id, subType = GetActionInfo(slot)
-				if (actionType == "spell" or actionType == "macro") and id then
-					if ns.hotkeys[id] == nil then
-						ns.hotkeys[id] = keytext;
-					end
-				end
 				if ns.hotkeyslots[slot] == nil then
 					ns.hotkeyslots[slot] = keytext;
+				end
+			end
+		end
+	end
+end
+
+local function scan_actionslots()
+	for slot = 1, 180 do
+		local keytext = ns.hotkeyslots[slot];
+
+		if slot > 72 and slot <= 108 then
+			keytext = ns.hotkeyslots[(slot - 1) % 12 + 1];
+		end
+		
+		if keytext then
+			local type, id, subType = GetActionInfo(slot);			
+			if (type == "spell" or type == "macro") and id then
+				if ns.hotkeys[id] == nil then
+					ns.hotkeys[id] = keytext;
 				end
 			end
 		end
@@ -94,9 +111,7 @@ function ns.check_hotkeys()
 	scan_keys("VehicleMenuBarActionButton", 12);
 	scan_keys("OverrideActionBarButton", 12);
 	scan_keys("PetActionButton", 10);
+
+	scan_actionslots();
 end
 
-function ns.refresh()
-	scan_keys("ActionButton", 12);
-	scan_keys("BonusActionButton", 12);
-end

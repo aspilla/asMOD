@@ -22,6 +22,7 @@ local function get_spellhotkey(spellid)
 		for _, slot in ipairs(slots) do
 			text = ns.hotkeyslots[slot];
 			if text then
+				ns.hotkeys[spellid] = text;
 				return text;
 			end
 		end
@@ -74,11 +75,7 @@ local function on_update()
 end
 
 local function on_event(self, event)
-	if event == "UPDATE_BONUS_ACTIONBAR" then		
-		ns.refresh();
-	else
-		ns.check_hotkeys();
-	end
+	ns.check_hotkeys();
 end
 
 local function init()
@@ -94,10 +91,9 @@ local function init()
 		libasConfig.load_position(main_frame, "asNextSkill", ASNS_Positions);
 	end
 
-	 ns.main_frame:SetScale(ns.options.UIScale);
+	ns.main_frame:SetScale(ns.options.UIScale);
 
-	ns.check_hotkeys();
-	main_frame:RegisterEvent("UPDATE_BONUS_ACTIONBAR");
+	ns.check_hotkeys();	
 	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 	main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
 	main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
