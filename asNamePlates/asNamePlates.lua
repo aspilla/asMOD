@@ -499,7 +499,7 @@ local function create_macro()
         return;
     end
     local macroText =
-    "/run SetCVar (\"nameplateGlobalScale\", 1.0)\n/run SetCVar (\"nameplateSelectedScale\", 1.3)\n/run SetCVar(\"nameplateUseClassColorForFriendlyPlayerUnitName\", 1)\n/run SetCVar(\"nameplateShowOnlyNameForFriendlyPlayerUnits\", 1)\n/reload";
+    "/run SetCVar (\"nameplateGlobalScale\", 1.0)\n/run SetCVar (\"nameplateSelectedScale\", 1.3)\n/run SetCVar(\"nameplateUseClassColorForFriendlyPlayerUnitNames\", 1)\n/run SetCVar(\"nameplateShowOnlyNameForFriendlyPlayerUnits\", 1)\n/reload";
     local macroName = "asNamePlates Setup";
     local macroID = GetMacroIndexByName(macroName);
 
