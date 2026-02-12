@@ -22,6 +22,7 @@ ns.option_default = {
     ChangeTexture = true,
     ShowTargeted = true,
     AlertImportantSpell = true,
+    ChangeFriendNamePlates = false,
 
     AggroColor = { r = 0.4, g = 0.2, b = 0.8 },
     TankAggroLoseColor = { r = 1, g = 0.5, b = 0.5 },
@@ -230,6 +231,7 @@ local function on_panelshow()
 
     if GetLocale() == "koKR" then
         setup_checkboxoption("[기능] 이름표 모양 변경", "ChangeTexture");
+        setup_checkboxoption("[기능] 아군 이름표 모양 변경", "ChangeFriendNamePlates");
         setup_checkboxoption("[기능] 하단에 기력 표시", "ShowPower");
         setup_checkboxoption("[기능] 시전 Icon 표시", "ShowCastIcon");
         setup_checkboxoption("[기능] Debuff Icon 변경", "ChangeDebuffIcon");
@@ -258,6 +260,7 @@ local function on_panelshow()
         setup_coloroption("[색상] Quest, Caster", "QuestColor");
     else
         setup_checkboxoption("[Feature] Change Texture", "ChangeTexture");
+        setup_checkboxoption("[Feature] Change Friend Nameplates", "ChangeFriendNamePlates");
         setup_checkboxoption("[Feature] Show Power below", "ShowPower");
         setup_checkboxoption("[Feature] Show cast icon", "ShowCastIcon");
         setup_checkboxoption("[Feature] Change Debuff Icon", "ChangeDebuffIcon");

@@ -29,8 +29,10 @@ Colors are displayed based on the following priority:
 * **Targeted Highlight (`ShowTargeted`)**: Displays a blinking exclamation mark on the left when you are targeted. For tanks, this only triggers when a mob is casting at you.
 * **Important Spell Alert (`AlertImportantSpell`)**: The health bar flashes red when an important spell is being cast (see screenshot below).
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
-* **Setup Macro Creation**: Adjusts target nameplate size and sets friendly nameplates to show class colors. Use the `asNamePlates Setup` macro and ensure the `Simplified Friendly Nameplates` option is set to OFF.
+* **Modify Friendly Nameplate Settings (ChangeFriendNamePlates)**: Changes the appearance of friendly nameplates as shown below. (Default: Off)
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
+* **Setup Macro Creation**: Adjusts target nameplate size and sets friendly nameplates to show class colors. Use the `asNamePlates Setup` macro and ensure the `Simplified Friendly Nameplates` option is set to OFF.
+
 
 ## Configuration
 * `ESC > Options > AddOns > asNamePlates`
@@ -69,8 +71,10 @@ Colors are displayed based on the following priority:
 * **Targeted 강조 (`ShowTargeted`)** : 나를 대상으로 하는 경우 좌측에 깜빡이는 느낌표 표시, 탱커의 경우 나를 대상으로 케스팅 하는 경우만
 * **중요 스킬 강조 (`AlertImportantSpell`)** : 중요 스킬 시전시 생명력이 빨간색으로 깜빡임 (아래 스샷 참고)
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
-* **이름표 Setup 매크로 생성** : 대상 이름표 크기, 아군 이름표 직업 색상 이름으로 변경, `asNamePlates Setup` 메크로 사용 및 `아군 이름표 간소화 옵션` off 필요
+* **아군 이름표 설정 변경 (`ChangeFriendNamePlates`)** : 아군 이름표를 아래와 같이 변경 합니다. (기본 Off)
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
+* **이름표 Setup 매크로 생성** : 대상 이름표 크기, 아군 이름표 직업 색상 이름으로 변경, `asNamePlates Setup` 메크로 사용 및 `아군 이름표 간소화 옵션` off 필요
+
 
 
 
