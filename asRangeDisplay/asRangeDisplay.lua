@@ -87,15 +87,10 @@ local main_frame = CreateFrame("Frame", nil, UIParent);
 local function is_helpful(unit)
 	if UnitIsUnit("player", unit) then
 		return false;
-	else
-		local reaction = UnitReaction("player", unit);
-
-		if reaction and reaction <= 4 then
-			return false;
-		else
-			return true;
-		end
+	elseif UnitCanAttack("player", unit) then
+		return false;
 	end
+	return true;
 end
 
 local function check_range(unit)
