@@ -1,18 +1,17 @@
 local _, ns = ...;
 local Options_Default = {
-    version = 260206,
+    version = 260212,
     AlignedBuff = false,
     CombatAlphaChange = true,
     ChangeBuffBar = true,
     BuffBarClassColor = true,
     ShowHotKey = true,
-    HideBarName = true,
+    HideBarName = false,
     AlertAssitedSpell = false,
     SpellBorderWidth = 2,
     BuffBorderWidth = 2,
     SpellIconRate = 9,
     BuffIconRate = 8,
-
 };
 
 ns.options = CopyTable(Options_Default);
