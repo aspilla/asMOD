@@ -89,15 +89,15 @@ local function checkList()
 	local idx = 1;
 
 	for _, id in pairs(events) do
-		local timeRemaining = C_EncounterTimeline.GetEventTimeRemaining(id);
+		local remain = C_EncounterTimeline.GetEventTimeRemaining(id);
 
-		if timeRemaining and timeRemaining < ns.options.MinTimetoShow then
+		if remain and remain  > 0 and remain < ns.options.MinTimetoShow then
 			local eventinfo = C_EncounterTimeline.GetEventInfo(id);
 
 			if eventinfo then
 				local button = ns.asDBMTimer.buttons[idx];
 				button.icon:SetTexture(eventinfo.iconFileID);
-				button.cooltext:SetText(string.format("%.1f", timeRemaining));
+				button.cooltext:SetText(string.format("%.1f", remain));
 				if ns.options.ShowName and eventinfo.spellID then
 					button.text:SetText(string.format("%5s", C_Spell.GetSpellName(eventinfo.spellID)));
 				else
