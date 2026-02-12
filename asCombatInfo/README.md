@@ -27,7 +27,7 @@ Enhances the Cooldown Manager.
 * `ChangeBuffBar`: Modifies the appearance of the buff bar (Default: On).
 * `BuffBarClassColor`: Changes buff bar color to class-specific color (Default: On).
 * `ShowHotKey`: Toggle display of hotkeys (Default: On).
-* `HideBarName`: Hides spell names on the buff bar (Default: On).
+* `HideBarName`: Hides spell names on the buff bar (Default: Off).
 * `AlertAssitedSpell`: Highlights combat assistance skills (Default: Off).
 * `SpellIconRate`: Skill icon height ratio (Default: 9, height is 90% of width).
 * `SpellBorderWidth`: Border thickness for skill icons (Default: 2).
@@ -67,7 +67,7 @@ Enhances the Cooldown Manager.
 *   `ChangeBuffBar` : 버프 바 외형을 변경 (Default On)
 *   `BuffBarClassColor` : 버프 바 색상을 직업 색상으로 변경 (Default On)
 *   `ShowHotKey` : 단축키 표시 (Default On)
-*   `HideBarName` : 버프 바 스킬 명을 숨김 (Default On)
+*   `HideBarName` : 버프 바 스킬 명을 숨김 (Default Off)
 *   `AlertAssitedSpell` : 전투보조기능 스킬 강조 (Default off)
 *   `SpellIconRate` : 기술 아이콘 높이 비율 (Default 9, 넓이의 90% 높이)
 *   `SpellBorderWidth` : 기술 아이콘 테두리 두깨 (Default 2)

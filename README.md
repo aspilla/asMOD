@@ -44,7 +44,7 @@ The following issue may occur:
 2. When using the `asMOD` addon, a window will state "asMOD will change the default interface settings." Click **Change**.
 3. Go to `ESC > Options > Gameplay > Advanced Cooldown Settings` to configure the center buttons. The default setup targets 6 large icons and 1 buff bar.
 4. Use the **asMOD Setup macro** in `ESC > Macros` to apply recommended settings (e.g., reduced damage font size). This also enables Misdirection/Tank Assist macros.
-5. Check `ESC > Edit Mode` to ensure the **"asMOD_Layout"** is properly applied.
+5. Check `ESC > Edit Mode` to ensure the **"asMOD_Layout"** is properly applied. (Note: If you have a large number of saved Edit Mode layouts, asMOD_Layout may not be created correctly. Please delete some existing layouts and run the /asMOD command again.)
 6. If you do not want the bottom action bar to hide automatically, uncheck `asHideActionBar` in `ESC > Addons`.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/-7xsxpKTS7U?si=Rj7atkBM71u8X6mM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -58,7 +58,7 @@ The following issue may occur:
 5. When using the `asMOD` addon, a window will state "asMOD will change the default interface settings." Click **Change**.
 6. Go to `ESC > Options > Gameplay > Advanced Cooldown Settings` to configure the center buttons. The default setup targets 6 large icons and 1 buff bar.
 7. Use the **asMOD Setup macro** in `ESC > Macros` to apply recommended settings (e.g., reduced damage font size). This also enables Misdirection/Tank Assist macros.
-8. Check `ESC > Edit Mode` to ensure the **"asMOD_Layout"** is properly applied.
+8. Check `ESC > Edit Mode` to ensure the **"asMOD_Layout"** is properly applied. (Note: If you have a large number of saved Edit Mode layouts, asMOD_Layout may not be created correctly. Please delete some existing layouts and run the /asMOD command again.)
 9. If you do not want the bottom action bar to hide automatically, uncheck `asHideActionBar` in `ESC > Addons`.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/WZQ_9VIF7RE?si=ojzV4SJ17osDU6mA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -186,7 +186,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 2. `asMOD` 애드온 사용시 `asMOD가 '기본 인터페이스 설정'을 변경합니다. 채팅창에 '/asMOD'명령어로 기능을 다시 불러 올 수 있습니다.` 창에서 `변경`을 클릭
 3. `esc >> 설정 >> 게임 플레이 개선 >> 고급 재사용 대기시간 설정` 클릭하여 가운데 버튼 설정을 합니다. 큰 아이콘 6개, 버프바 1개 사용을 목표로 설정 하였습니다.
 4. `esc >> 매크로 설정` 에서 asMOD Setup 매크로를 사용하면 데미지 폰트 사이즈 축소등 추천 설정 사용이 가능합니다. 추가로 눈속임/탱커 지원 매크로도 사용가능 합니다.
-5. `esc >>폅집 모드 >> "asMOD_Layout"` 설정이 잘  되어 있는 지 확인 합니다.
+5. `esc >>폅집 모드 >> "asMOD_Layout"` 설정이 잘  되어 있는 지 확인 합니다. (주의! 편집모드 Layout이 많은 경우 `asMOD_Layout`이 생성 안되니 삭제하고 `/asMOD` 명령어를 다시 실행)
 6. 하단 단축바가 자동으로 사라지는 것을 원치 않으면 esc >> 애드온 >> `asHideActionBar`를 채크 해제 하세요.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/-7xsxpKTS7U?si=Rj7atkBM71u8X6mM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -200,7 +200,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 5. `asMOD` 애드온 사용시 `asMOD가 '기본 인터페이스 설정'을 변경합니다. 채팅창에 '/asMOD'명령어로 기능을 다시 불러 올 수 있습니다.` 창에서 `변경`을 클릭
 6. `esc >> 설정 >> 게임 플레이 개선 >> 고급 재사용 대기시간 설정` 클릭하여 가운데 버튼 설정을 합니다. 큰 아이콘 6개, 버프바 1개 사용을 목표로 설정 하였습니다.
 7. `esc >> 매크로 설정` 에서 asMOD Setup 매크로를 사용하면 데미지 폰트 사이즈 축소등 추천 설정 사용이 가능합니다. 추가로 눈속임/탱커 지원 매크로도 사용가능 합니다.
-8. `esc >>폅집 모드 >> "asMOD_Layout"` 설정이 잘  되어 있는 지 확인 합니다.
+8. `esc >>폅집 모드 >> "asMOD_Layout"` 설정이 잘  되어 있는 지 확인 합니다.  (주의! 편집모드 Layout이 많은 경우 `asMOD_Layout`이 생성 안되니 삭제하고 `/asMOD` 명령어를 다시 실행)
 9. 하단 단축바가 자동으로 사라지는 것을 원치 않으면 esc >> 애드온 >> `asHideActionBar`를 채크 해제 하세요.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/WZQ_9VIF7RE?si=ojzV4SJ17osDU6mA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
