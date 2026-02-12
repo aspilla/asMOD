@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rHideNamePlates
 ## Notes: Hides nameplates except for mobs that are casting.
 ## Notes-koKR:케스팅중인 몹 외 이름표를 숨김
-## Version : 260210
+## Version : 260212
 ## SavedVariablesPerCharacter: AHNP_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

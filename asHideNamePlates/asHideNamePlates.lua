@@ -15,15 +15,6 @@ local function get_unitframe(nameplate)
 	end
 end
 
-local function is_faction(unit)
-	local reaction = UnitReaction("player", unit);
-	if reaction and reaction <= 4 then
-		return true;
-	elseif UnitIsPlayer(unit) then
-		return false;
-	end
-end
-
 local function check_cast(unit)
 	local name = UnitCastingInfo(unit);
 	if not name then
@@ -42,11 +33,15 @@ end
 local function check_trigger(nameplate)
 	local unit = nameplate.unitToken;
 
-	if not is_faction(unit) then
+	if not UnitCanAttack("player", unit) then
 		return false;
 	end
 
 	if UnitIsUnit(unit, "target") then
+		return false;
+	end
+
+	if (UnitClassification(unit) == "minus") then
 		return false;
 	end
 
@@ -127,7 +122,7 @@ local function hide_nameplates(nameplate, bshow)
 
 	local unit = nameplate.unitToken;
 
-	if is_faction(unit) == false then
+	if not UnitCanAttack("player", unit) then
 		return;
 	end
 
