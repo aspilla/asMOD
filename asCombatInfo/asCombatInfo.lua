@@ -485,7 +485,7 @@ local function init()
 	check_hotkeys();
 	for _, viewer in ipairs(viewers) do
 		if viewer then
-			update_buttons(viewer);
+			update_buttons(viewer, true);
 			if viewer.Layout then
 				hooksecurefunc(viewer, "Layout", function()
 					add_todolist(viewer)
