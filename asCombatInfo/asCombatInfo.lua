@@ -146,8 +146,7 @@ local function update_buttons(viewer, forced)
 				iconrate = 0.16 + (0.8 - rate) / 2;
 				borderwidth = ns.options.BuffBorderWidth;
 			end
-			local width = button:GetWidth();
-			button.bconfiged = true;
+			local width = button:GetWidth();			
 			button:SetSize(width, width * rate);
 
 
@@ -195,8 +194,7 @@ local function update_buttons(viewer, forced)
 				end
 			end
 
-
-			if not button.border or forced then
+			if not button.border then
 				button.border = button:CreateTexture(nil, "BACKGROUND");
 				button.border:SetAllPoints(button);
 				button.border:SetColorTexture(0, 0, 0, 1);
@@ -231,56 +229,60 @@ local function update_buttons(viewer, forced)
 						break;
 					end
 				end
+			end
 
-				local function on_update()
-					if button.cooldownUseAuraDisplayTime == true then
-						button.border:SetColorTexture(0, 1, 1);
+			local function on_update()
+				if button.cooldownUseAuraDisplayTime == true then
+					button.border:SetColorTexture(0, 1, 1);
+				else
+					button.border:SetColorTexture(0, 0, 0);
+				end
+
+				if ns.options.AlertAssitedSpell then
+					if ns.nextspellid and ns.nextspellid == button.asspellid then
+						button.nextspell:Show();
+						if button.nextsize == 1 then
+							button.nextspell:SetSize(width / 3, width / 3);
+							button.nextsize = 0;
+						else
+							button.nextspell:SetSize(width, width);
+							button.nextsize = 1;
+						end
 					else
-						button.border:SetColorTexture(0, 0, 0);
-					end
-
-					if ns.options.AlertAssitedSpell then
-						if ns.nextspellid and ns.nextspellid == button.asspellid then
-							button.nextspell:Show();
-							if button.nextsize == 1 then
-								button.nextspell:SetSize(width / 3, width / 3);
-								button.nextsize = 0;
-							else
-								button.nextspell:SetSize(width, width);
-								button.nextsize = 1;
-							end
-						else
-							button.nextspell:Hide();
-						end
-					end
-				end
-
-				if button.astimer == nil then
-					button.astimer = C_Timer.NewTicker(0.2, on_update);
-				end
-
-				if not isbuff and ns.options.ShowHotKey then
-					if not button.hotkey then
-						button.hotkey = button:CreateFontString(nil, "ARTWORK");
-						button.hotkey:SetFont(configs.font, width / 3 - 3, "OUTLINE");
-						button.hotkey:SetPoint("TOPRIGHT", button, "TOPRIGHT", -2, -2);
-						button.hotkey:SetTextColor(1, 1, 1, 1);
-					end
-					local spellid = button:GetSpellID();
-
-					if not issecretvalue(spellid) then
-						button.asspellid = spellid;
-						local keytext = get_spellhotkey(spellid);
-
-						if keytext and keytext ~= "●" then
-							button.hotkey:SetText(keytext);
-							button.hotkey:Show();
-						else
-							button.hotkey:Hide();
-						end
+						button.nextspell:Hide();
 					end
 				end
 			end
+
+			if button.astimer then
+				button.astimer:Cancel();
+			end
+
+			button.astimer = C_Timer.NewTicker(0.2, on_update);
+
+			if not isbuff and ns.options.ShowHotKey then
+				if not button.hotkey then
+					button.hotkey = button:CreateFontString(nil, "ARTWORK");
+					button.hotkey:SetFont(configs.font, width / 3 - 3, "OUTLINE");
+					button.hotkey:SetPoint("TOPRIGHT", button, "TOPRIGHT", -2, -2);
+					button.hotkey:SetTextColor(1, 1, 1, 1);
+				end
+				local spellid = button:GetSpellID();
+
+				if not issecretvalue(spellid) then
+					button.asspellid = spellid;
+					local keytext = get_spellhotkey(spellid);
+
+					if keytext and keytext ~= "●" then
+						button.hotkey:SetText(keytext);
+						button.hotkey:Show();
+					else
+						button.hotkey:Hide();
+					end
+				end
+			end
+
+			button.bconfiged = true;
 		end
 	end
 
