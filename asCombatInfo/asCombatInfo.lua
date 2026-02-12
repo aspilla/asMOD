@@ -136,17 +136,16 @@ local function update_buttons(viewer, forced)
 	end
 
 	for _, button in ipairs(visiblechilds) do
-		local rate = math.min(ns.options.SpellIconRate / 10, 0.9);
-		local iconrate = 0.08 + (0.9 - rate) / 2
-		local borderwidth = ns.options.SpellBorderWidth;
+		if button.bconfiged == nil or forced then
+			local rate = math.min(ns.options.SpellIconRate / 10, 0.9);
+			local iconrate = 0.08 + (0.9 - rate) / 2
+			local borderwidth = ns.options.SpellBorderWidth;
 
-		if isbuff then
-			rate = math.min(ns.options.BuffIconRate / 10, 0.9);
-			iconrate = 0.16 + (0.8 - rate) / 2;
-			borderwidth = ns.options.BuffBorderWidth;
-		end
-
-		if not button.bconfiged or forced then
+			if isbuff then
+				rate = math.min(ns.options.BuffIconRate / 10, 0.9);
+				iconrate = 0.16 + (0.8 - rate) / 2;
+				borderwidth = ns.options.BuffBorderWidth;
+			end
 			local width = button:GetWidth();
 			button.bconfiged = true;
 			button:SetSize(width, width * rate);
@@ -259,30 +258,27 @@ local function update_buttons(viewer, forced)
 				if button.astimer == nil then
 					button.astimer = C_Timer.NewTicker(0.2, on_update);
 				end
-			end
 
-			if not isbuff then
-				if not button.hotkey then
-					button.hotkey = button:CreateFontString(nil, "ARTWORK");
-					button.hotkey:SetFont(configs.font, width / 3 - 3, "OUTLINE");
-					button.hotkey:SetPoint("TOPRIGHT", button, "TOPRIGHT", -2, -2);
-					button.hotkey:SetTextColor(1, 1, 1, 1);
-				end
-			end
-		end
+				if not isbuff and ns.options.ShowHotKey then
+					if not button.hotkey then
+						button.hotkey = button:CreateFontString(nil, "ARTWORK");
+						button.hotkey:SetFont(configs.font, width / 3 - 3, "OUTLINE");
+						button.hotkey:SetPoint("TOPRIGHT", button, "TOPRIGHT", -2, -2);
+						button.hotkey:SetTextColor(1, 1, 1, 1);
+					end
+					local spellid = button:GetSpellID();
 
-		if not isbuff and ns.options.ShowHotKey then
-			local spellid = button:GetSpellID();
+					if not issecretvalue(spellid) then
+						button.asspellid = spellid;
+						local keytext = get_spellhotkey(spellid);
 
-			if not issecretvalue(spellid) then
-				button.asspellid = spellid;
-				local keytext = get_spellhotkey(spellid);
-
-				if keytext and keytext ~= "●" then
-					button.hotkey:SetText(keytext);
-					button.hotkey:Show();
-				else
-					button.hotkey:Hide();
+						if keytext and keytext ~= "●" then
+							button.hotkey:SetText(keytext);
+							button.hotkey:Show();
+						else
+							button.hotkey:Hide();
+						end
+					end
 				end
 			end
 		end
@@ -348,7 +344,6 @@ local updateframe = CreateFrame("Frame");
 local todolist = {};
 updateframe:Hide()
 
-
 updateframe:SetScript("OnUpdate", function()
 	updateframe:Hide()
 
@@ -370,10 +365,6 @@ local viewers = {
 	BuffBarCooldownViewer
 }
 
-local keyviewers = {
-	UtilityCooldownViewer,
-	EssentialCooldownViewer,
-}
 
 local function check_name(name)
 	name = string.gsub(name, "Num Pad ", "");
@@ -422,7 +413,7 @@ local function scan_keys(name, total)
 		local actionbutton = getglobal(name .. i);
 		if not actionbutton then
 			break
-		end		
+		end
 		local hotkey = getglobal(actionbutton:GetName() .. "HotKey");
 		if not hotkey then
 			break
@@ -453,9 +444,9 @@ local function scan_actionslots()
 		if slot > 72 and slot <= 108 then
 			keytext = ns.hotkeyslots[(slot - 1) % 12 + 1];
 		end
-		
+
 		if keytext then
-			local type, id, subType = GetActionInfo(slot);			
+			local type, id, subType = GetActionInfo(slot);
 			if (type == "spell" or type == "macro") and id then
 				if ns.hotkeys[id] == nil then
 					ns.hotkeys[id] = keytext;
@@ -495,21 +486,66 @@ local function init()
 	for _, viewer in ipairs(viewers) do
 		if viewer then
 			update_buttons(viewer);
-
 			if viewer.Layout then
 				hooksecurefunc(viewer, "Layout", function()
 					add_todolist(viewer)
 				end)
 			end
 
-			local children = { viewer:GetChildren() }
-			for _, child in ipairs(children) do
-				child:HookScript("OnShow", function()
-					add_todolist(viewer)
-				end)
-				child:HookScript("OnHide", function()
-					add_todolist(viewer)
-				end)
+			if ns.options.AlignedBuff then
+				if viewer == BuffBarCooldownViewer then
+					local children = { viewer:GetChildren() }
+					for _, child in ipairs(children) do
+						if ns.options.HideBarName then
+							child:HookScript("OnShow", function()
+								add_todolist(viewer);
+							end)
+						else
+							child:HookScript("OnShow", function()
+								if child.bconfiged == nil then
+									add_todolist(viewer);
+								end
+							end)
+						end
+					end
+				elseif viewer == BuffIconCooldownViewer then
+					local children = { viewer:GetChildren() }
+					for _, child in ipairs(children) do
+						child:HookScript("OnShow", function()
+							add_todolist(viewer);
+						end)
+
+						child:HookScript("OnHide", function()
+							add_todolist(viewer);
+						end)
+					end
+				end
+			else
+				if viewer == BuffBarCooldownViewer then
+					local children = { viewer:GetChildren() }
+					for _, child in ipairs(children) do
+						if ns.options.HideBarName then
+							child:HookScript("OnShow", function()
+								add_todolist(viewer);
+							end)
+						else
+							child:HookScript("OnShow", function()
+								if child.bconfiged == nil then
+									add_todolist(viewer);
+								end
+							end)
+						end
+					end
+				elseif viewer == BuffIconCooldownViewer then
+					local children = { viewer:GetChildren() }
+					for _, child in ipairs(children) do
+						child:HookScript("OnShow", function()
+							if child.bconfiged == nil then
+								add_todolist(viewer);
+							end
+						end)
+					end
+				end
 			end
 		end
 	end
