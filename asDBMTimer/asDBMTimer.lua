@@ -135,6 +135,7 @@ local function checkList()
 					button.text:SetText("");
 				end
 				
+				--[[
 				local j = 1;
 				local color = {0, 0, 0};
 				if eventinfo.icons and not issecretvalue(eventinfo.icons) then
@@ -161,6 +162,7 @@ local function checkList()
 				end
 
 				button.border:SetVertexColor(color[1], color[2], color[3]);
+				]]
 
 				button:Show();
 				idx = idx + 1;
