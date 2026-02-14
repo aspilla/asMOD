@@ -7,7 +7,8 @@ local configs = {
 	fontoutline = "THICKOUTLINE",
 	maxshow = 3,
 	xpoint = 200,
-	ypoint = 50,
+	ypoint = 50,	
+	maxicons = 4,
 }
 -- 설정 끝
 
@@ -59,7 +60,7 @@ local function setupUI()
 		ns.asDBMTimer.buttons[i] = CreateFrame("Button", nil, ns.asDBMTimer, "asDBMTimerFrameTemplate");
 		local button = ns.asDBMTimer.buttons[i];
 		button:SetWidth(ns.options.Size);
-		button:SetHeight(ns.options.Size * 0.9);		
+		button:SetHeight(ns.options.Size * 0.9);
 		button:SetAlpha(1);
 		button:EnableMouse(false);
 		button:Hide();
@@ -80,9 +81,37 @@ local function setupUI()
 		button.text:SetFont(configs.font, configs.namefontsize, configs.fontoutline)
 		button.text:SetPoint("TOP", button, "BOTTOM", 0, -1);
 		button.text:SetWidth(ns.options.Size);
+
+		button.icons = {};
+		for j = 1, configs.maxicons do
+			button.icons[j] = button:CreateTexture(nil, "ARTWORK");
+			button.icons[j]:SetSize(ns.options.Size/2 - 2, ns.options.Size/2 - 2);
+			if j == 1 then
+				button.icons[j]:SetPoint("BOTTOMLEFT", button, "TOPLEFT", 0, 1);
+			elseif j == 3 then
+				button.icons[j]:SetPoint("BOTTOMLEFT", button.icons[1], "TOPLEFT", 0, 1);
+			else
+				button.icons[j]:SetPoint("LEFT", button.icons[j - 1], "RIGHT", 1, 0);
+			end
+			button.icons[j]:Hide();
+		end
+
 		button:EnableMouse(false);
 	end
 end
+
+local atlases = {
+	[Enum.EncounterEventIconmask.TankRole] = "icons_16x16_tank",
+	[Enum.EncounterEventIconmask.DpsRole] = "icons_16x16_damage",
+	[Enum.EncounterEventIconmask.HealerRole] = "icons_16x16_heal",
+	[Enum.EncounterEventIconmask.DeadlyEffect] = "icons_16x16_deadly",
+	[Enum.EncounterEventIconmask.MagicEffect] = "icons_16x16_magic",
+	[Enum.EncounterEventIconmask.CurseEffect] = "icons_16x16_curse",
+	[Enum.EncounterEventIconmask.PoisonEffect] = "icons_16x16_poison",
+	[Enum.EncounterEventIconmask.DiseaseEffect] = "icons_16x16_disease",
+	[Enum.EncounterEventIconmask.EnrageEffect] = "icons_16x16_enrage",
+	[Enum.EncounterEventIconmask.BleedEffect] = "icons_16x16_bleed",
+};
 
 local function checkList()
 	local events = C_EncounterTimeline.GetEventList();
@@ -90,9 +119,11 @@ local function checkList()
 
 	for _, id in pairs(events) do
 		local remain = C_EncounterTimeline.GetEventTimeRemaining(id);
+		local state = C_EncounterTimeline.GetEventState(id)
 
-		if remain and remain  > 0 and remain < ns.options.MinTimetoShow then
+		if remain and remain < ns.options.MinTimetoShow and state and state < 2 then
 			local eventinfo = C_EncounterTimeline.GetEventInfo(id);
+			
 
 			if eventinfo then
 				local button = ns.asDBMTimer.buttons[idx];
@@ -103,6 +134,33 @@ local function checkList()
 				else
 					button.text:SetText("");
 				end
+				
+				local j = 1;
+				local color = {0, 0, 0};
+				if eventinfo.icons and not issecretvalue(eventinfo.icons) then
+					for _, mask in pairs(Enum.EncounterEventIconmask) do
+						if FlagsUtil.IsSet(eventinfo.icons, mask) then
+							local atlas = atlases[mask];
+
+							if mask == Enum.EncounterEventIconmask.DeadlyEffect then
+								color = {1, 0, 0};							
+							end
+
+							button.icons[j]:SetAtlas(atlas);
+							button.icons[j]:Show();
+							j = j + 1;
+							if j > configs.maxicons then
+								break;
+							end
+						end
+					end
+				end
+
+				for i = j, configs.maxicons do
+					button.icons[i]:Hide();
+				end
+
+				button.border:SetVertexColor(color[1], color[2], color[3]);
 
 				button:Show();
 				idx = idx + 1;
