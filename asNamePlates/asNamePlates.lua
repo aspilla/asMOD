@@ -471,7 +471,9 @@ local function on_main_event(self, event, ...)
         remove_unit(unit);
     elseif event == "UNIT_FACTION" then
         local unit = ...;
-        add_unit(unit);
+        if string.find(unit, "nameplate") then            
+            add_unit(unit);
+        end
     elseif event == "PLAYER_ENTERING_WORLD" then
         local isInstance, instanceType = IsInInstance();
         ns.instype = ns.enums.none;
