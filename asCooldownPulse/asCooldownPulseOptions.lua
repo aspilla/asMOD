@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-	version = 260201,
+	version = 260214,
 	CombatAlphaChange = true,
 	ShowTrinkets = true,
 	TrinketSize = 28,
@@ -11,7 +11,7 @@ local Options_Default = {
 };
 
 local Options_DefaultSpells = {
-	[186289] = 2, -- 생냥 독수리 상
+
 }
 
 ns.options = CopyTable(Options_Default);

@@ -11,7 +11,7 @@ Displays cooldowns for trinkets, racial abilities, Healthstones, and potions.
 * **Combat Potion Cooldown Display (Left)**: Displays the cooldown for major combat potions.
 * **Survival Potion Cooldown Display (Left)**: Displays the cooldown for major survival potions.
 * **Healthstone Cooldown/Count Display (Left)**: Only displayed when a Healthstone is in your inventory.
-* **Skill Cooldown Tracking (Bottom of Target Frame)**: Designed to track specific skills that are not shown in the `Cooldown Manager`, such as Survival Hunter's `Aspect of the Eagle` (Only `Aspect of the Eagle` is registered by default).
+* **Skill Cooldown Tracking (Bottom of Target Frame)**: Designed to track specific skills that are not shown in the `Cooldown Manager`. (No skills registered by default; defensive or utility skills can be added.)
 
 ## Configuration
 * Accessible via `ESC` > `Options` > `AddOns` > `asCooldownPulse`.
@@ -48,7 +48,7 @@ Displays cooldowns for trinkets, racial abilities, Healthstones, and potions.
 *   **전투 물약 쿨 표시(좌측)** : 대표 물약 쿨만 표시
 *   **생존 물약 쿨 표시(좌측)** : 대표 물약 쿨만 표시
 *   **생석 쿨/사용 가능 개수 표시(좌측)** : 생석을 지니고 있을때만 표시
-*   **스킬 쿨 추적 (타겟 프레임 하단)** : 생냥 `독수리의 상` 등 `재사용 대기 관리자`에 표시 안되는 스킬을 추적하기 위한 설정 (`독수리의 상` 만 등록 되어 있음)
+*   **스킬 쿨 추적 (타겟 프레임 하단)** : `재사용 대기 관리자`에 표시 안되는 스킬을 추적하기 위한 설정, (등록 스킬 없음 생존기등 추가 가능)
 
 
 ## 설정
