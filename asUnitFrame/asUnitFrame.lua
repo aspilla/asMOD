@@ -354,7 +354,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     frame.healthbar.bg:SetColorTexture(0, 0, 0, 1);
 
     frame.pvalue = frame:CreateFontString(nil, "ARTWORK");
-    frame.pvalue:SetFont(STANDARD_TEXT_FONT, fontsize + 1, "THICKOUTLINE");
+    frame.pvalue:SetFont(STANDARD_TEXT_FONT, fontsize + 1, FontOutline);
     frame.pvalue:SetTextColor(1, 1, 1, 1);
 
     frame.sperator = frame:CreateFontString(nil, "ARTWORK");
@@ -667,7 +667,7 @@ local function init(framelist)
     local fontoffset = 0;
     if framelist.is_simplemode then
         offset = 5;
-        fontoffset = 2;
+        fontoffset = 0;
     end
 
     create_unitframe(framelist.PlayerFrame, "player", -configs.xpoint, configs.ypoint, ns.options.Width,
