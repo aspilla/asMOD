@@ -84,6 +84,23 @@ local function update_bars(viewer)
 			end
 		end
 	end
+
+	if ns.options.TopAlignedBar then
+		local buttonheight = visiblechilds[1]:GetHeight()
+
+		for i, child in ipairs(visiblechilds) do
+			local point, relativeTo, relativePoint, x, y = child:GetPoint(1);
+			child:ClearAllPoints();
+			child:SetPoint(point, relativeTo, relativePoint, x, -((buttonheight - 9) * (i - 1)));
+		end
+	elseif ns.options.BottomAlignedBar then
+		local buttonheight = visiblechilds[1]:GetHeight()
+
+		for i, child in ipairs(visiblechilds) do
+			child:ClearAllPoints();
+			child:SetPoint("BOTTOM", viewer, "BOTTOM", 0, ((buttonheight - 9) * (i - 1)));
+		end
+	end
 end
 
 local function get_spellhotkey(spellid)
@@ -146,7 +163,7 @@ local function update_buttons(viewer, forced)
 				iconrate = 0.16 + (0.8 - rate) / 2;
 				borderwidth = ns.options.BuffBorderWidth;
 			end
-			local width = button:GetWidth();			
+			local width = button:GetWidth();
 			button:SetSize(width, width * rate);
 
 
@@ -494,23 +511,32 @@ local function init()
 				end)
 			end
 
-			if ns.options.AlignedBuff then
-				if viewer == BuffBarCooldownViewer then
-					local children = { viewer:GetChildren() }
-					for _, child in ipairs(children) do
-						if ns.options.HideBarName then
-							child:HookScript("OnShow", function()
+
+			if viewer == BuffBarCooldownViewer then
+				local children = { viewer:GetChildren() }
+				for _, child in ipairs(children) do
+					if ns.options.TopAlignedBar or ns.options.BottomAlignedBar then
+						child:HookScript("OnShow", function()
+							add_todolist(viewer);
+						end)
+
+						child:HookScript("OnHide", function()
+							add_todolist(viewer);
+						end)
+					elseif ns.options.HideBarName then
+						child:HookScript("OnShow", function()
+							add_todolist(viewer);
+						end)
+					else
+						child:HookScript("OnShow", function()
+							if child.bconfiged == nil then
 								add_todolist(viewer);
-							end)
-						else
-							child:HookScript("OnShow", function()
-								if child.bconfiged == nil then
-									add_todolist(viewer);
-								end
-							end)
-						end
+							end
+						end)
 					end
-				elseif viewer == BuffIconCooldownViewer then
+				end
+			elseif viewer == BuffIconCooldownViewer then
+				if ns.options.AlignedBuff then
 					local children = { viewer:GetChildren() }
 					for _, child in ipairs(children) do
 						child:HookScript("OnShow", function()
@@ -521,24 +547,7 @@ local function init()
 							add_todolist(viewer);
 						end)
 					end
-				end
-			else
-				if viewer == BuffBarCooldownViewer then
-					local children = { viewer:GetChildren() }
-					for _, child in ipairs(children) do
-						if ns.options.HideBarName then
-							child:HookScript("OnShow", function()
-								add_todolist(viewer);
-							end)
-						else
-							child:HookScript("OnShow", function()
-								if child.bconfiged == nil then
-									add_todolist(viewer);
-								end
-							end)
-						end
-					end
-				elseif viewer == BuffIconCooldownViewer then
+				else
 					local children = { viewer:GetChildren() }
 					for _, child in ipairs(children) do
 						child:HookScript("OnShow", function()

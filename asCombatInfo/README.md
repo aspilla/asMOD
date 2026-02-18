@@ -18,21 +18,27 @@ Enhances the Cooldown Manager.
 
 ![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_assist.gif?raw=true)
 
+* **Buff Bar Alignment (Top/Bottom)**
+Top alignment has higher priority.
+<iframe width="560" height="315" src="https://www.youtube.com/embed/w8jLjrb14qA?si=CuZVWc30kCwlJ-Xy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 * Recommended for use with `asPowerBar`.
 
 ## Configuration 
 * Accessible via `ESC` > `Options` > `AddOns` > `asCombatInfo`.
-* `AlignedBuff`: Center-align buffs (Default: Off).
-* `CombatAlphaChange`: Adjusts transparency when out of combat (Default: On).
-* `ChangeBuffBar`: Modifies the appearance of the buff bar (Default: On).
-* `BuffBarClassColor`: Changes buff bar color to class-specific color (Default: On).
-* `ShowHotKey`: Toggle display of hotkeys (Default: On).
-* `HideBarName`: Hides spell names on the buff bar (Default: Off).
-* `AlertAssitedSpell`: Highlights combat assistance skills (Default: Off).
-* `SpellIconRate`: Skill icon height ratio (Default: 9, height is 90% of width).
-* `SpellBorderWidth`: Border thickness for skill icons (Default: 2).
-* `BuffIconRate`: Buff icon height ratio (Default: 8, height is 80% of width).
-* `BuffBorderWidth`: Border thickness for buff icons (Default: 2).
+* `AlignedBuff`: Center-align buffs (Default: Off)
+* `TopAlignedBar`: Align buff bar to the top (Default: Off)
+* `BottomAlignedBar`: Align buff bar to the bottom (Default: Off)
+* `CombatAlphaChange`: Adjusts transparency when out of combat (Default: On)
+* `ChangeBuffBar`: Modifies the appearance of the buff bar (Default: On)
+* `BuffBarClassColor`: Changes buff bar color to class-specific color (Default: On)
+* `ShowHotKey`: Toggle display of hotkeys (Default: On)
+* `HideBarName`: Hides spell names on the buff bar (Default: Off)
+* `AlertAssitedSpell`: Highlights combat assistance skills (Default: Off)
+* `SpellIconRate`: Skill icon height ratio (Default: 9, height is 90% of width)
+* `SpellBorderWidth`: Border thickness for skill icons (Default: 2)
+* `BuffIconRate`: Buff icon height ratio (Default: 8, height is 80% of width)
+* `BuffBorderWidth`: Border thickness for buff icons (Default: 2)
 
 ---
 
@@ -57,12 +63,18 @@ Enhances the Cooldown Manager.
 
 ![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_assist.gif?raw=true)
 
+*   **버프바 정렬 (위/아래)**
+위 정렬이 우선순위 높음
+<iframe width="560" height="315" src="https://www.youtube.com/embed/w8jLjrb14qA?si=CuZVWc30kCwlJ-Xy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 
 *   `asPowerBar`와 같이 사용하는 것을 추천
 
 ## 설정 
 *   `ESC` > `설정` > `애드온` > `asCombatInfo` 에서 설정 가능
 *   `AlignedBuff` : 버프 가운데 정렬 (Default Off)
+*   `TopAlignedBar` : 버프바 위 정렬 (Default Off)
+*   `BottomAlignedBar` : 버프바 아래 정렬 (Default Off)
 *   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
 *   `ChangeBuffBar` : 버프 바 외형을 변경 (Default On)
 *   `BuffBarClassColor` : 버프 바 색상을 직업 색상으로 변경 (Default On)
