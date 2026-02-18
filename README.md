@@ -135,9 +135,12 @@ Each asMOD addon functions independently. If you wish to use only specific addon
 | asTrueGCD | Displays history of recently used spells and items | [Link](https://www.curseforge.com/wow/addons/astruegcd) | [Link](https://github.com/aspilla/asMOD/tree/main/asTrueGCD) |
 | asUnitFrame | Simple unit frames | [Link](https://www.curseforge.com/wow/addons/asunitframe) | [Link](https://github.com/aspilla/asMOD/tree/main/asUnitFrame) |
 
+# FAQ
+https://github.com/aspilla/asMOD/wiki/FAQ
+
 # Contact & Support
-1. **Korean Users:** Visit the **Inven asMOD Forum** (https://www.inven.co.kr/board/wow/5288)
-2. **English Users:** Visit the **asMOD YouTube Channel** (https://www.youtube.com/@asmod-wow)
+1. **Korean Users**: Visit the **Inven asMOD Forum** (https://www.inven.co.kr/board/wow/5288)
+2. **English Users**: Visit **GitHub** (https://github.com/aspilla/asMOD) or the **asMOD YouTube Channel** (https://www.youtube.com/@asmod-wow)
 
 ---
 # asMOD 모음집 (한밤)
@@ -277,6 +280,9 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 | asTrueGCD | 최근 주문/아이템 기록 표시 | [링크](https://www.curseforge.com/wow/addons/astruegcd) | [링크](https://github.com/aspilla/asMOD/tree/main/asTrueGCD) |
 | asUnitFrame | 간단한 유닛 프레임 | [링크](https://www.curseforge.com/wow/addons/asunitframe) | [링크](https://github.com/aspilla/asMOD/tree/main/asUnitFrame) |
 
+# 자주하는 질문
+https://github.com/aspilla/asMOD/wiki/FAQ
+
 # 문의 방법
 1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
-2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow)
+2. `영문 유저` : `Github` 방문 (https://github.com/aspilla/asMOD), `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow)
