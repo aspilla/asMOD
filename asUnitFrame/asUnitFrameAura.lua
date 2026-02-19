@@ -19,7 +19,11 @@ local function set_aura(frame, unit, aura, color)
 
     set_cooldownframe(frame.cooldown, aura.expirationTime, aura.duration, true);
 
-    frame.border:SetVertexColor(color.r, color.g, color.b);
+    if color then
+        frame.border:SetVertexColor(color.r, color.g, color.b);
+    else
+        frame.border:SetVertexColor(0, 0, 0);
+    end
 end
 local function update_buffs(frame, auralist, filter)
     local i = 0;
