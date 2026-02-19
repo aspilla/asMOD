@@ -99,8 +99,8 @@ local function setup_wowoptions()
 	SetCVar("spellActivationOverlayOpacity", 0.65);
 
 	--힐량 데미지
-	SetCVar("floatingCombatTextCombatHealing", 1);
-	SetCVar("floatingCombatTextCombatDamage", 1);
+	SetCVar("floatingCombatTextCombatHealing_v2", 1);
+	SetCVar("floatingCombatTextCombatDamage_v2", 1);
 
 	--이름표
 	SetCVar("nameplateShowAll", 1)
@@ -129,6 +129,9 @@ local function setup_wowoptions()
 
 	--데미지 미터
 	SetCVar("damageMeterEnabled", 1);
+
+	--보스 타임라인
+	SetCVar("combatWarningsEnabled", 1);
 
 
 	--채팅창에 직업색상을 표시하게 합니다.
