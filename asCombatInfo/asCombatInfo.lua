@@ -536,26 +536,15 @@ local function init()
 					end
 				end
 			elseif viewer == BuffIconCooldownViewer then
-				if ns.options.AlignedBuff then
-					local children = { viewer:GetChildren() }
-					for _, child in ipairs(children) do
-						child:HookScript("OnShow", function()
-							add_todolist(viewer);
-						end)
+				local children = { viewer:GetChildren() }
+				for _, child in ipairs(children) do
+					child:HookScript("OnShow", function()
+						add_todolist(viewer);
+					end)
 
-						child:HookScript("OnHide", function()
-							add_todolist(viewer);
-						end)
-					end
-				else
-					local children = { viewer:GetChildren() }
-					for _, child in ipairs(children) do
-						child:HookScript("OnShow", function()
-							if child.bconfiged == nil then
-								add_todolist(viewer);
-							end
-						end)
-					end
+					child:HookScript("OnHide", function()
+						add_todolist(viewer);
+					end)
 				end
 			end
 		end
