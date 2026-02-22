@@ -53,6 +53,7 @@ asMOD minimizes the use of the **ACE Library**. To copy settings, use the `WTF` 
 3. **Copy Character**: Copy the folder of the character that is already configured (e.g., OldChar).
 4. **Rename Folder**: Rename the copied folder (e.g., OldChar - Copy) to the name of the new character (e.g., NewChar).
 5. **Restart Game**: Log in to apply the identical settings.
+*  Demo Video https://www.youtube.com/watch?v=ilB8XTOdAmI
 
 ## 9. Changelogs
 Unfortunately, changelogs are only provided in **Korean** at the **Inven asMOD Forum** (https://www.inven.co.kr/board/wow/5288). English users are encouraged to use translation tools to check updates by date.
@@ -113,6 +114,7 @@ asMOD는 자체 크기 변경을 지원하지 않으므로, 와우 기본 UI 설
 *   캐릭터 복사: 기존에 설정이 완료된 캐릭터 폴더(예: OldChar)를 복사하여 같은 폴더에 붙여넣습니다.
 *   폴더 이름 변경: 복사된 폴더(OldChar - 복사본)의 이름을 애드온 설정을 적용할 캐릭터 이름(NewChar)으로 변경합니다.
 *   게임 재접속: 해당 캐릭터로 접속하면 기존 캐릭터의 설정이 동일하게 적용됩니다.
+*   시연 영상 https://www.youtube.com/watch?v=ilB8XTOdAmI
 
 ## 9. 변경점 
 *   아쉽게도 `한글` 변경점만 `인벤 asMOD 포럼` (https://www.inven.co.kr/board/wow/5288) 에 공유 하고 있습니다. `영문` 유저는 날짜별 변경점을 번역해서 확이하시기 바랍니다.
