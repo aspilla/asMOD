@@ -460,7 +460,7 @@ local function scan_actionslots()
 	for slot = 1, 180 do
 		local keytext = ns.hotkeyslots[slot];
 
-		if slot > 72 and slot <= 108 then
+		if (slot > 72 and slot <= 132) or (slot > 12 and slot <= 24) then
 			keytext = ns.hotkeyslots[(slot - 1) % 12 + 1];
 		end
 
@@ -491,12 +491,6 @@ local function check_hotkeys()
 	scan_keys("MultiBar5Button", 12);
 	scan_keys("MultiBar6Button", 12);
 	scan_keys("MultiBar7Button", 12);
-	scan_keys("BonusActionButton", 12);
-	scan_keys("ExtraActionButton", 12);
-	scan_keys("VehicleMenuBarActionButton", 12);
-	scan_keys("OverrideActionBarButton", 12);
-	scan_keys("PetActionButton", 10);
-
 	scan_actionslots();
 end
 
