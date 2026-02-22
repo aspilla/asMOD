@@ -7,7 +7,7 @@ Enhances the Cooldown Manager.
 ## Key Features 
 
 * **Icon/Border Shape Modification** * **Charge Count Repositioning**: Moved to the bottom and color changed to green. 
-* **Hotkey Display**: For Stealth or Druid forms, hotkeys are displayed only when switched to the corresponding form.
+* **Hotkey Display**: If duplicate skills are registered (e.g., Stances or Druid forms), the skill in the lower-numbered slot takes priority.
 * **Center Alignment for 2-Row Icons**
 ![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN.jpg?raw=true)
 
@@ -52,7 +52,7 @@ Top alignment has higher priority.
 
 *   **아이콘/테두리 모양 변경** 
 *   **충전 횟수 하단 이동 및 녹색 변경** 
-*   **단축키 표시** : 은신이나, 드루이드 변신 관련해서는 해당 폼으로 변경해야 단축키 표시가 됨
+*   **단축키 표시** : 태세/드루이드 폼 관련 같은 스킬이 중복해서 등록된 경우 Slot 번호가 작은 단축키 기준으로 단축키 표시
 *   **2열 아이콘 가운데 정렬**
 ![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN.jpg?raw=true)
 
