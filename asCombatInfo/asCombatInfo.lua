@@ -112,7 +112,13 @@ local function get_spellhotkey(spellid)
 	local slots = C_ActionBar.FindSpellActionButtons(spellid)
 	if slots and #slots > 0 then
 		for _, slot in ipairs(slots) do
-			text = ns.hotkeyslots[slot];
+
+			local scanslot = slot
+			if (slot > 72 and slot <= 132) or (slot > 12 and slot <= 24) then
+				scanslot = (slot - 1) % 12 + 1;
+			end
+
+			text = ns.hotkeyslots[scanslot];
 			if text then
 				ns.hotkeys[spellid] = text;
 				return text;
