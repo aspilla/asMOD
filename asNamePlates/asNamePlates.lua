@@ -180,7 +180,7 @@ local function hook_refresh(auraframe)
     if auraframe.auraItemFramePool then
         local pool = auraframe.auraItemFramePool;
         for button in pool:EnumerateActive() do
-            if button.isasmod == nil then
+            if button and button.isasmod == nil then
                 change_item(button);
             end
         end
@@ -379,7 +379,7 @@ local function add_unit(unit)
     asframe.timer = C_Timer.NewTicker(ns.configs.updaterate, callback);
 
     if ns.options.ChangeDebuffIcon and unitframe.AurasFrame.RefreshList then
-        hooksecurefunc(unitframe.AurasFrame, "RefreshList", function()
+        hooksecurefunc(unitframe.AurasFrame, "RefreshAuras", function()
             hook_refresh(unitframe.AurasFrame)
         end)
     end
