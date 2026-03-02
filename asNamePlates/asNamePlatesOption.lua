@@ -4,7 +4,7 @@ local _, ns = ...;
 ns.configs = {
     powerfontsize = 6,
     mousefontsize = 12,
-    updaterate = 0.2,
+    updaterate = 0.1,
 };
 
 ns.option_default = {

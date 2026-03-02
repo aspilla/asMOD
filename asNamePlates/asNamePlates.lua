@@ -370,6 +370,9 @@ local function add_unit(unit)
         ns.update_color(asframe);
         ns.update_targeted(asframe);
         ns.update_mouseover(asframe);
+        if ns.options.ChangeDebuffIcon and unitframe.AurasFrame.RefreshList then
+            hook_refresh(unitframe.AurasFrame);
+        end
     end
 
     if asframe.timer then
@@ -379,9 +382,11 @@ local function add_unit(unit)
     asframe.timer = C_Timer.NewTicker(ns.configs.updaterate, callback);
 
     if ns.options.ChangeDebuffIcon and unitframe.AurasFrame.RefreshList then
+        --[[
         hooksecurefunc(unitframe.AurasFrame, "RefreshAuras", function()
             hook_refresh(unitframe.AurasFrame)
         end)
+        ]]
     end
 
     ns.update_target(asframe);
