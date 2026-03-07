@@ -12,135 +12,186 @@ asMOD is a collection of custom-made World of Warcraft addons.
 
 ## Features of asMOD
 
-* **Simple:** Each addon functions independently and focuses on enhancing the default UI with lightweight features.
-* **Optimized Performance:** Highly optimized to minimize impact on game performance, ensuring smooth gameplay without lag or frame drops.
+* **Simple:** Each addon provides simple features that enhance the default UI and functions independently.
+* **Optimized Performance:** Optimized to minimize impact on game performance, ensuring smooth gameplay without lag or frame drops.
 * **Easy Installation:** Can be installed with a single click.
-* **All Classes & Specs Support**
-* **Retail (Midnight) Support**
+* **Full Support:** Supports all classes and specializations.
+* **Retail Support:** Fully compatible with the Midnight expansion.
 
-## Changes from Midnight Expansion
-* **Combat API Secret Transition:** Tracking for buffs/debuffs and additional calculations has been restricted. Consequently, many asMOD combat-related addons have been modified or had features reduced.
-* **Blizzard Announcement:** https://warcraft.wiki.gg/wiki/Patch_12.0.0/Planned_API_changes
-* **Default UI Integration:** DBM/Details features have been integrated into the default WoW UI; asMOD has been updated to utilize these default UI elements.
-* **Enhanced Standalone Convenience:** The `/asconfig` and `/asclear` commands for repositioning can now be used even if you only install individual addons without the main `asMOD` package.
+## Changes from Midnight Onward
+* **Combat API Secret Transition:** Buff/debuff tracking and certain calculations are now restricted due to API changes. Consequently, many asMOD addons have been modified or had features reduced.
+* **Blizzard Announcement:** [Patch 12.0.0 Planned API Changes](https://warcraft.wiki.gg/wiki/Patch_12.0.0/Planned_API_changes)
+* **UI Integration:** Since many features of DBM/Details have been absorbed into the default WoW UI, asMOD has been updated to work seamlessly with the default UI.
+* **Improved Standalone Use:** Commands like `/asconfig` and `/asclear` can now be used with individual addons even if the main `asMOD` package is not installed.
 
 ## Unsupported Addons (from Midnight)
-* **asAutoMarker**: Unsupported due to the inability to track mob GUIDs.
-* **asBooldlustAlert**: Unsupported due to debuff tracking restrictions.
-* **asDBMCastingAlert**: Unsupported due to the removal of DBM integration.
-* **asDotSnapshot**: Unsupported due to debuff tracking restrictions.
-* **asFixCombatText**: Unsupported as combat values have been moved to secret status.
-* **asHealerChatAlert**: Unsupported as mana values are now secret.
-* **asOverlay**: Unsupported due to buff tracking restrictions.
-* **asReady**: Unsupported due to restrictions on tracking skill usage.
-* **asSummonTracker**: Unsupported due to restrictions on tracking skill usage.
+* asAutoMarker: Unsupported as mob GUIDs can no longer be identified.
+* asBooldlustAlert: Unsupported due to debuff tracking restrictions.
+* asDBMCastingAlert: Unsupported due to the removal of DBM features.
+* asDotSnapshot: Unsupported due to debuff tracking restrictions.
+* asFixCombatText: Unsupported as values have been moved to secret status.
+* asHealerChatAlert: Unsupported as remaining mana values are now secret.
+* asOverlay: Unsupported due to buff tracking restrictions.
+* asReady: Unsupported as skill usage tracking is restricted.
+* asSummonTracker: Unsupported as skill usage tracking is restricted.
 
-## Important Note (asUnitFrame)
+## Precautions (asUnitFrame)
 The following issue may occur:
-**Edit Mode Error:** Errors may occur when using Edit Mode, which might prevent settings from being changed. Please disable `asUnitFrame` before making changes in Edit Mode.
+**Edit Mode Error:** Errors may occur when using Blizzard's Edit Mode, making it impossible to change settings. Please disable `asUnitFrame` before entering Edit Mode.
 
 ## Installation (CurseForge)
-1. Install `asMOD` from CurseForge (asMOD includes other asMOD addons: https://www.curseforge.com/wow/addons/asmod).
-2. When using the `asMOD` addon, a window will state "asMOD will change the default interface settings." Click **Change**.
-3. Go to `ESC > Options > Gameplay > Advanced Cooldown Settings` to configure the center buttons. The default setup targets 6 large icons and 1 buff bar.
-4. Use the **asMOD Setup macro** in `ESC > Macros` to apply recommended settings (e.g., reduced damage font size). This also enables Misdirection/Tank Assist macros.
-5. Check `ESC > Edit Mode` to ensure the **"asMOD_Layout"** is properly applied. (Note: If you have a large number of saved Edit Mode layouts, asMOD_Layout may not be created correctly. Please delete some existing layouts and run the /asMOD command again.)
-6. If you do not want the bottom action bar to hide automatically, uncheck `asHideActionBar` in `ESC > Addons`.
+1.  Install `asMOD` from CurseForge (This includes all other asMOD addons: [Link](https://www.curseforge.com/wow/addons/asmod)).
+2.  When the prompt appears saying "asMOD will change the default interface settings," click **Change**.
+3.  Navigate to `ESC >> Options >> Gameplay >> Advanced Cooldown Settings` to configure the center buttons. The recommended setup is 6 large icons and 1 buff bar.
+4.  Go to `ESC >> Macros` and use the **asMOD Setup macro** to apply recommended settings like reduced damage font size. This also enables Misdirection/Tank Assist macros.
+5.  Check `ESC >> Edit Mode` to ensure the **"asMOD_Layout"** is properly applied. (Note: If you have too many Edit Mode layouts, `asMOD_Layout` might not be created. Delete existing ones and run `/asMOD` again).
+6.  If you do not want the bottom action bar to hide automatically, uncheck `asHideActionBar` in `ESC >> Addons`.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/-7xsxpKTS7U?si=Rj7atkBM71u8X6mM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Installation (Inven)
 
-1. Download the latest version from the **Inven** addon library.
-2. (Optional) Reset game settings by clicking the gear icon next to the Play button in the launcher.
-3. (Optional) Backup your existing Font, Interface, and WTF folders (or delete them).
-4. Open the game folder from the launcher and extract the files into the `_retail_` directory.
-5. When using the `asMOD` addon, a window will state "asMOD will change the default interface settings." Click **Change**.
-6. Go to `ESC > Options > Gameplay > Advanced Cooldown Settings` to configure the center buttons. The default setup targets 6 large icons and 1 buff bar.
-7. Use the **asMOD Setup macro** in `ESC > Macros` to apply recommended settings (e.g., reduced damage font size). This also enables Misdirection/Tank Assist macros.
-8. Check `ESC > Edit Mode` to ensure the **"asMOD_Layout"** is properly applied. (Note: If you have a large number of saved Edit Mode layouts, asMOD_Layout may not be created correctly. Please delete some existing layouts and run the /asMOD command again.)
-9. If you do not want the bottom action bar to hide automatically, uncheck `asHideActionBar` in `ESC > Addons`.
+1.  Download the latest version from the **Inven** Addon Library.
+2.  (Optional) Reset game settings by clicking the gear icon next to the Play button in the launcher.
+3.  (Optional) Backup or delete your existing Font, Interface, and WTF folders.
+4.  Open the game folder from the launcher and extract the files into the `_retail_` directory.
+5.  When the prompt appears saying "asMOD will change the default interface settings," click **Change**.
+6.  Navigate to `ESC >> Options >> Gameplay >> Advanced Cooldown Settings` to configure the center buttons.
+7.  Use the **asMOD Setup macro** in `ESC >> Macros` to apply recommended settings.
+8.  Verify the **"asMOD_Layout"** in `ESC >> Edit Mode`. (Note: Delete excess layouts if it doesn't appear and rerun `/asMOD`).
+9.  Uncheck `asHideActionBar` in `ESC >> Addons` if you want the action bar to stay visible.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/WZQ_9VIF7RE?si=ojzV4SJ17osDU6mA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Configuration After Talent Change
-1. Go to `ESC > Edit Mode` and select the **"asMOD_Layout"** profile.
+1.  Select the **"asMOD_Layout"** in `ESC >> Edit Mode`.
 
 ## How to Update
-1. All asMOD addons can be updated via CurseForge.
-2. For **Inven** users, simply repeat steps **1** and **4** of the installation guide.
+1.  All asMOD addons can be updated via CurseForge.
+2.  For **Inven** users, simply repeat steps **1** and **4** of the installation guide.
 
 ## How to Uninstall
-1. Delete the installed folders (`Interface` and `Font`).
-2. Go to `ESC > Edit Mode` and delete the `asMOD_Layout` profile.
-3. It is recommended to reset your WoW settings to default.
+1.  Delete the `Interface` and `Font` folders in your game directory.
+2.  Delete the `asMOD_Layout` in `ESC >> Edit Mode`.
+3.  It is recommended to reset your WoW settings to default.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/z52_zORKDTU?si=2RNoLF5hSB2GNwq8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Positioning Guide
-1. Use the `/asconfig` command to adjust frame positions.
-2. Disable `asUnitFrame` before using `Edit Mode`. Repositioned layouts should be saved with a **new name** other than `asMOD_Layout`.
+1.  Use the `/asconfig` command to adjust frame positions.
+2.  Disable `asUnitFrame` before using `Edit Mode`, and save your layout with a name **other than** `asMOD_Layout`.
 
 ## Cooldown Manager Configuration
-* Go to `ESC > Options > Gameplay > Advanced Cooldown Settings` to configure the center buttons.
-1. [Main Center Skills] 6, [Top Buffs] 7, [Bottom Buff Bar] 2 rows (Default Recommended)
+* Navigate to `ESC >> Options >> Gameplay >> Advanced Cooldown Settings`.
+1.  **Option 1:** [Main Skills] 6, [Top Buffs] 7, [Bottom Buff Bar] 2 rows (Recommended).
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/cooldown1row.jpg?raw=true)
 
-2. [Main Center Skills] 7 ~ 12, [Top Buffs] 7, [Bottom Buff Bar] None (Recommended to disable asGCDBar)
+2.  **Option 2:** [Main Skills] 7–12, [Top Buffs] 7, [Bottom Buff Bar] None (Recommended to disable `asGCDBar`).
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/cooldown2row.jpg?raw=true)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
 ## asMOD Addon List (Midnight)
-Each asMOD addon functions independently. If you wish to use only specific addons, you can install them separately via the links below:
+Every asMOD addon functions independently. If you prefer specific ones, use the links below.
 
 | Addon | Description | CurseForge | Github |
 | :--- | :--- | :---: | :---: |
-| asActiveAlert | Highlighted spell alerts displayed to the left of the character | [Link](https://www.curseforge.com/wow/addons/asactivealert) | [Link](https://github.com/aspilla/asMOD/tree/main/asActiveAlert) |
-| asBattleRes | Combat Resurrection charges and cooldown display | [Link](https://www.curseforge.com/wow/addons/asbattleres) | [Link](https://github.com/aspilla/asMOD/tree/main/asBattleRes) |
-| asBuffFilter | Target buff display | [Link](https://www.curseforge.com/wow/addons/asbufffilter) | [Link](https://github.com/aspilla/asMOD/tree/main/asBuffFilter) |
-| asCastBar | Cast bar with icons and cast time display | [Link](https://www.curseforge.com/wow/addons/ascastbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asCastBar) |
-| asCastingAlert | Target spell cast notifications | [Link](https://www.curseforge.com/wow/addons/ascastingalert) | [Link](https://github.com/aspilla/asMOD/tree/main/asCastingAlert) |
+| asActiveAlert | Highlighted spells on the left of the character | [Link](https://www.curseforge.com/wow/addons/asactivealert) | [Link](https://github.com/aspilla/asMOD/tree/main/asActiveAlert) |
+| asBattleRes | Combat Rez charges and cooldown tracker | [Link](https://www.curseforge.com/wow/addons/asbattleres) | [Link](https://github.com/aspilla/asMOD/tree/main/asBattleRes) |
+| asBuffFilter | Displays target buffs | [Link](https://www.curseforge.com/wow/addons/asbufffilter) | [Link](https://github.com/aspilla/asMOD/tree/main/asBuffFilter) |
+| asCastBar | Cast bar with icons and timers | [Link](https://www.curseforge.com/wow/addons/ascastbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asCastBar) |
+| asCastingAlert | Alerts for target spell casting | [Link](https://www.curseforge.com/wow/addons/ascastingalert) | [Link](https://github.com/aspilla/asMOD/tree/main/asCastingAlert) |
 | asCombatInfo | Enhanced Cooldown Manager | [Link](https://www.curseforge.com/wow/addons/ascombatinfo) | [Link](https://github.com/aspilla/asMOD/tree/main/asCombatInfo) |
-| asCombatTimer | Displays time elapsed since combat started | [Link](https://www.curseforge.com/wow/addons/ascombattimer) | [Link](https://github.com/aspilla/asMOD/tree/main/asCombatTimer) |
-| asCooldownPulse | Trinket, Racial, Healthstone, and Potion cooldown display | [Link](https://www.curseforge.com/wow/addons/ascooldownpulse) | [Link](https://github.com/aspilla/asMOD/tree/main/asCooldownPulse) |
-| asCompactRaidBuff | Raid and Party frame enhancements | [Link](https://www.curseforge.com/wow/addons/ascompactraidbuff) | [Link](https://github.com/aspilla/asMOD/tree/main/asCompactRaidBuff) |
-| asCPUProfile | Monitor addon latency performance (/asCPU) | [Link](https://www.curseforge.com/wow/addons/ascpuprofile) | [Link](https://github.com/aspilla/asMOD/tree/main/asCPUProfile) |
-| asDBMTimer | Enhanced Boss Timeline | [Link](https://www.curseforge.com/wow/addons/asdbmtimer) | [Link](https://github.com/aspilla/asMOD/tree/main/asDBMTimer) |
-| asDebuffFilter | Player and Target debuff display | [Link](https://www.curseforge.com/wow/addons/asdebufffilter) | [Link](https://github.com/aspilla/asMOD/tree/main/asDebuffFilter) |
-| asDotFilter | Tracks Boss/Focus debuffs | [Link](https://www.curseforge.com/wow/addons/asdotfilter) | [Link](https://github.com/aspilla/asMOD/tree/main/asDotFilter) |
-| asFixChat | Supports `Tab` channel switching and `URL Copy` | [Link](https://www.curseforge.com/wow/addons/asfixchat) | [Link](https://github.com/aspilla/asMOD/tree/main/asFixChat) |
-| asFixHotkey | Abbreviates action bar hotkey text | [Link](https://www.curseforge.com/wow/addons/asfixhotkey) | [Link](https://github.com/aspilla/asMOD/tree/main/asFixHotkey) |
-| asFixUnitFrame | Hides specific Blizzard default unit frame elements | [Link](https://www.curseforge.com/wow/addons/asfixunitframe) | [Link](https://github.com/aspilla/asMOD/tree/main/asFixUnitFrame) |
-| asGCDBar | Global Cooldown (GCD) status bar | [Link](https://www.curseforge.com/wow/addons/asgcdbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asGCDBar) |
-| asGearScoreLite | Shows item levels in Character and Inspect windows | [Link](https://www.curseforge.com/wow/addons/asgearscorelite) | [Link](https://github.com/aspilla/asMOD/tree/main/asGearScoreLite) |
-| asHealthText | (Not included) Text-based HUD | [Link](https://www.curseforge.com/wow/addons/ashealthtext) | [Link](https://github.com/aspilla/asMOD/tree/main/asHealthText) |
+| asCombatTimer | Displays time elapsed in combat | [Link](https://www.curseforge.com/wow/addons/ascombattimer) | [Link](https://github.com/aspilla/asMOD/tree/main/asCombatTimer) |
+| asCooldownPulse | Trinket, racial, and potion cooldowns | [Link](https://www.curseforge.com/wow/addons/ascooldownpulse) | [Link](https://github.com/aspilla/asMOD/tree/main/asCooldownPulse) |
+| asCompactRaidBuff | Raid and party frame enhancement | [Link](https://www.curseforge.com/wow/addons/ascompactraidbuff) | [Link](https://github.com/aspilla/asMOD/tree/main/asCompactRaidBuff) |
+| asCPUProfile | Addon performance check (/asCPU) | [Link](https://www.curseforge.com/wow/addons/ascpuprofile) | [Link](https://github.com/aspilla/asMOD/tree/main/asCPUProfile) |
+| asDBMTimer | Enhanced boss timeline | [Link](https://www.curseforge.com/wow/addons/asdbmtimer) | [Link](https://github.com/aspilla/asMOD/tree/main/asDBMTimer) |
+| asDebuffFilter | Player and target debuff display | [Link](https://www.curseforge.com/wow/addons/asdebufffilter) | [Link](https://github.com/aspilla/asMOD/tree/main/asDebuffFilter) |
+| asDotFilter | Tracks boss and focus debuffs | [Link](https://www.curseforge.com/wow/addons/asdotfilter) | [Link](https://github.com/aspilla/asMOD/tree/main/asDotFilter) |
+| asFixChat | `Tab` channel switching and URL copy | [Link](https://www.curseforge.com/wow/addons/asfixchat) | [Link](https://github.com/aspilla/asMOD/tree/main/asFixChat) |
+| asFixHotkey | Shortens action bar hotkey text | [Link](https://www.curseforge.com/wow/addons/asfixhotkey) | [Link](https://github.com/aspilla/asMOD/tree/main/asFixHotkey) |
+| asFixUnitFrame | Hides specific default unit frame elements | [Link](https://www.curseforge.com/wow/addons/asfixunitframe) | [Link](https://github.com/aspilla/asMOD/tree/main/asFixUnitFrame) |
+| asGCDBar | Global Cooldown (GCD) progress bar | [Link](https://www.curseforge.com/wow/addons/asgcdbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asGCDBar) |
+| asGearScoreLite | Item level on character and inspect windows | [Link](https://www.curseforge.com/wow/addons/asgearscorelite) | [Link](https://github.com/aspilla/asMOD/tree/main/asGearScoreLite) |
+| asHealthText | (Optional) Text-based HUD | [Link](https://www.curseforge.com/wow/addons/ashealthtext) | [Link](https://github.com/aspilla/asMOD/tree/main/asHealthText) |
 | asHideActionBar | Automatically hides Action Bar 1 | [Link](https://www.curseforge.com/wow/addons/ashideactionbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideActionBar) |
-| asHideBagsBar | Automatically hides the bottom-right menu/bags bar | [Link](https://www.curseforge.com/wow/addons/ashidebagsbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideBagsBar) |
+| asHideBagsBar | Hides the bottom-right menu/bags bar | [Link](https://www.curseforge.com/wow/addons/ashidebagsbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideBagsBar) |
 | asHideNamePlates | Hides nameplates except for casting mobs | [Link](https://www.curseforge.com/wow/addons/ashidenameplates) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideNamePlates) |
 | asInformation | Displays primary and secondary stat gains | [Link](https://www.curseforge.com/wow/addons/asinformation) | [Link](https://github.com/aspilla/asMOD/tree/main/asInformation) |
-| asInterruptHelper | Interrupt/Stun skill cooldown display | [Link](https://www.curseforge.com/wow/addons/asinterrupthelper) | [Link](https://github.com/aspilla/asMOD/tree/main/asInterruptHelper) |
-| asMisdirection | Automated Misdirection and Tricks of the Trade macro | [Link](https://www.curseforge.com/wow/addons/asmisdirection) | [Link](https://github.com/aspilla/asMOD/tree/main/asMisdirection) |
-| asMOD | asMOD Collection Settings | [Link](https://www.curseforge.com/wow/addons/asmod) | [Link](https://github.com/aspilla/asMOD/tree/main/asMOD) |
-| asNamePlates | Nameplate enhancement addon | [Link](https://www.curseforge.com/wow/addons/asnameplates) | [Link](https://github.com/aspilla/asMOD/tree/main/asNamePlates) |
-| asNextSkill | Notification for the next recommended skill | [Link](https://www.curseforge.com/wow/addons/asnextskill) | [Link](https://github.com/aspilla/asMOD/tree/main/asNextSkill) |
-| asPowerBar | Displays Main and Class resources | [Link](https://www.curseforge.com/wow/addons/aspowerbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asPowerBar) |
-| asPremadeGroupsFilter | Premade Group Finder (Keystone/Raid) enhancement | [Link](https://www.curseforge.com/wow/addons/aspremadegroupsfilter) | [Link](https://github.com/aspilla/asMOD/tree/main/asPremadeGroupsFilter) |
-| asRangeDisplay | Distance display for Target/Focus/Mouseover | [Link](https://www.curseforge.com/wow/addons/asrangedisplay) | [Link](https://github.com/aspilla/asMOD/tree/main/asRangeDisplay) |
-| asScavenger | Automatic junk item selling | [Link](https://www.curseforge.com/wow/addons/asscavenger) | [Link](https://github.com/aspilla/asMOD/tree/main/asScavenger) |
-| asSkyRide | `Skyriding` resource, speed, and cooldown display | [Link](https://www.curseforge.com/wow/addons/asskyride) | [Link](https://github.com/aspilla/asMOD/tree/main/asSkyRide) |
-| asSpamFilter | Repositions default UI error message location | [Link](https://www.curseforge.com/wow/addons/asspamfilter) | [Link](https://github.com/aspilla/asMOD/tree/main/asSpamFilter) |
-| asTargetCastBar | Cast bars for Target/Focus | [Link](https://www.curseforge.com/wow/addons/astargetcastingbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asTargetCastBar) |
-| asTrueGCD | Displays history of recently used spells and items | [Link](https://www.curseforge.com/wow/addons/astruegcd) | [Link](https://github.com/aspilla/asMOD/tree/main/asTrueGCD) |
+| asInterruptHelper | Interrupt and stun cooldown tracker | [Link](https://www.curseforge.com/wow/addons/asinterrupthelper) | [Link](https://github.com/aspilla/asMOD/tree/main/asInterruptHelper) |
+| asMisdirection | Automated Misdirection/Tricks macro | [Link](https://www.curseforge.com/wow/addons/asmisdirection) | [Link](https://github.com/aspilla/asMOD/tree/main/asMisdirection) |
+| asMOD | Collection settings for asMOD | [Link](https://www.curseforge.com/wow/addons/asmod) | [Link](https://github.com/aspilla/asMOD/tree/main/asMOD) |
+| asNamePlates | Enhanced nameplates | [Link](https://www.curseforge.com/wow/addons/asnameplates) | [Link](https://github.com/aspilla/asMOD/tree/main/asNamePlates) |
+| asNextSkill | Recommended next skill notification | [Link](https://www.curseforge.com/wow/addons/asnextskill) | [Link](https://github.com/aspilla/asMOD/tree/main/asNextSkill) |
+| asPowerBar | Main and class resource display | [Link](https://www.curseforge.com/wow/addons/aspowerbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asPowerBar) |
+| asPremadeGroupsFilter | Group Finder enhancement | [Link](https://www.curseforge.com/wow/addons/aspremadegroupsfilter) | [Link](https://github.com/aspilla/asMOD/tree/main/asPremadeGroupsFilter) |
+| asRangeDisplay | Distance display for target/focus/mouseover | [Link](https://www.curseforge.com/wow/addons/asrangedisplay) | [Link](https://github.com/aspilla/asMOD/tree/main/asRangeDisplay) |
+| asScavenger | Automatic vendor for junk items | [Link](https://www.curseforge.com/wow/addons/asscavenger) | [Link](https://github.com/aspilla/asMOD/tree/main/asScavenger) |
+| asSkyRide | Skyriding resource and speed tracker | [Link](https://www.curseforge.com/wow/addons/asskyride) | [Link](https://github.com/aspilla/asMOD/tree/main/asSkyRide) |
+| asSpamFilter | Repositions default UI error messages | [Link](https://www.curseforge.com/wow/addons/asspamfilter) | [Link](https://github.com/aspilla/asMOD/tree/main/asSpamFilter) |
+| asTargetCastBar | Target and focus cast bars | [Link](https://www.curseforge.com/wow/addons/astargetcastingbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asTargetCastBar) |
+| asTrueGCD | History of recently used spells/items | [Link](https://www.curseforge.com/wow/addons/astruegcd) | [Link](https://github.com/aspilla/asMOD/tree/main/asTrueGCD) |
 | asUnitFrame | Simple unit frames | [Link](https://www.curseforge.com/wow/addons/asunitframe) | [Link](https://github.com/aspilla/asMOD/tree/main/asUnitFrame) |
 
-# FAQ
-https://github.com/aspilla/asMOD/wiki/FAQ
-
 # Contact & Support
-1. **Korean Users**: Visit the **Inven asMOD Forum** (https://www.inven.co.kr/board/wow/5288)
-2. **English Users**: Visit **GitHub** (https://github.com/aspilla/asMOD) or the **asMOD YouTube Channel** (https://www.youtube.com/@asmod-wow)
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit [GitHub](https://github.com/aspilla/asMOD) or the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow).
+
+# asMOD FAQ
+
+## 0. Guidelines to Follow
+### Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
+### Manuals
+Please read the documentation above thoroughly before asking questions.
+
+### asMOD Philosophy
+asMOD aims for simple addons that work without complex configurations. All addons are written to minimize settings; therefore, most requests for additional configuration options will be declined.
+
+## 1. Troubleshooting Errors
+Install the `Bugsack` and `BugGrabber` addons to collect error logs. Copy the error message using **CTRL+C** and provide it when contacting support. The following errors are known and currently unresolvable:
+
+* **asGearScoreLite Conflict:** If it conflicts with other item level display addons (e.g., TinyTip), disable the conflicting addon.
+* **Edit Mode Error:** Blizzard's Edit Mode may not function correctly while `asUnitFrame` is active. Please disable it temporarily when using Edit Mode.
+
+## 2. Adjusting Position or Size
+* **Size Settings:** Some addons support size adjustment. If it is not mentioned in the specific addon manual, size adjustment is not supported.
+* **Position Settings:** Refer to the [Installation/Manual] guide to adjust positions.
+
+## 3. Screen UI Scaling
+asMOD sets the UI scale to 0.75 upon installation.
+* **Adjustment:** Change the **UI Scale** in `ESC >> Options >> Graphics`.
+
+## 4. Using Only Specific Addons
+Every addon is **independent**. If you wish to use them individually, search for and install only the ones you need on CurseForge, or disable unwanted features in `ESC >> Addons`.
+
+## 5. Initial Setup and Reset
+* **Rerunning Setup:** If you clicked "No" during installation or the settings are corrupted, type `/asmod` in the chat window.
+* **Full Reset:** Type `/console cvar_default` followed by `/asmod`. (Note: This will reset all game settings to default).
+
+## 6. Auto-Hide Feature (Mouseover)
+* **Micro Menu & Bags Bar:** Visible only when hovered. To keep them always visible, disable `asHideBagsBar`.
+* **Bottom Action Bar:** Visible only when hovered. To keep it always visible, disable `asHideActionBar`.
+
+## 7. Other General Settings
+* **Layout Issues After Talent Change:** Type `/asmod` or re-select the **asMOD_Layout** in **Edit Mode**.
+* **Nameplate Issues:** If nameplates overlap or are not visible, go to `ESC >> Options` and change the Nameplate Motion Type to **'Stacking Nameplates'**.
+
+## 8. How to Sync Settings Between Characters
+asMOD minimizes the use of the ACE Library. To copy settings, use the `WTF` folder method:
+1.  **Exit the Game:** Close WoW completely. Click the gear icon next to the "Play" button in the Battle.net launcher to find your install folder.
+2.  Navigate to: `World of Warcraft/_retail_/WTF/Account/[Account Name]/[Server Name]`.
+3.  **Copy Character:** Copy the folder of the character that is already configured (e.g., OldChar).
+4.  **Rename Folder:** Rename the copied folder (e.g., OldChar - Copy) to the name of the new character (e.g., NewChar).
+5.  **Restart Game:** Log in to apply the identical settings.
+6.  Demonstration Video: https://www.youtube.com/watch?v=ilB8XTOdAmI
+
+## 9. Changelogs
+Unfortunately, changelogs are only provided in **Korean** at the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288). English users are encouraged to use translation tools to check updates by date.
 
 ---
 # asMOD 모음집 (한밤)
@@ -280,9 +331,63 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 | asTrueGCD | 최근 주문/아이템 기록 표시 | [링크](https://www.curseforge.com/wow/addons/astruegcd) | [링크](https://github.com/aspilla/asMOD/tree/main/asTrueGCD) |
 | asUnitFrame | 간단한 유닛 프레임 | [링크](https://www.curseforge.com/wow/addons/asunitframe) | [링크](https://github.com/aspilla/asMOD/tree/main/asUnitFrame) |
 
-# 자주하는 질문
-https://github.com/aspilla/asMOD/wiki/FAQ
 
 # 문의 방법
 1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
 2. `영문 유저` : `Github` 방문 (https://github.com/aspilla/asMOD), `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow)
+
+
+# 자주하는 질문 (asMOD FAQ)
+
+## 0. 이것은 꼭 지켜 주세요
+### 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)
+
+### 설명서
+위 설명서를 꼭 다 읽고 질문해 주세요.
+
+### asMOD철학
+애드온이 설정이 부족한 부분이 맘에 안들 수 있습니다. asMOD는 설정없이 사용하는 간단한 애드온을 지향 합니다. 
+모든 애드온이 설정을 최소화 하는것으로 고려되어 작성 되어 있어 설정 추가 요구는 대부분 거절 됩니다. 
+
+## 1. 오류가 났을 경우 처리 방법
+`Bugsack` `BugGrabber`애드온을 추가하여 오류를 수집하세요. 오류 메시지를 **CTRL+C**로 복사해 문의처에 남겨 주세요. 다음 오류는 이미 알고 있고 해결이 안되는 이슈 입니다.
+
+* **asGearScoreLite 충돌:** 타 아이템 레벨 확인 애드온(TinyTip 등)과 충돌 시 해당 애드온을 끄고 사용하세요.
+* **편집 모드 오류:** `asUnitFrame` 활성화 시 편집 모드가 동작하지 않을 수 있습니다. 편집 모드 사용 시에는 잠시 꺼두시기 바랍니다.
+
+## 2. 위치나 크기 변경
+* **크기 설정:** 일부 애드온 크기 설정을 지원합니다. 각 애드온 설명서에 설명 되지 않았다면 크기 설정은 지원하지 않습니다. 
+* **위치 설정:** [설치/설명서] 가이드 글을 참고하여 조정하세요.
+
+## 3. 화면 UI 크기 조정
+asMOD 설치시 그래픽 설정의 UI 설정을 0.75로 축소 합니다. 
+* **설정 방법:** `ESC > 설정 > 그래픽`에서 **UI 크기**를 **0.75**에서 변경하세요.
+
+## 4. 일부 애드온만 사용하기
+모든 애드온은 **독립적**입니다. 개별 사용을 원하시면 커스포지(CurseForge)에서 검색하여 필요한 것만 설치하거나, `ESC > 애드온 목록`에서 원치 않는 기능을 끄시면 됩니다.
+
+## 5. 초기 설정 및 리셋
+* **설정 재실행:** 설치 중 "아니오"를 눌렀거나 설정이 꼬였다면 채팅창에 `/asmod`를 입력하세요.
+* **완전 초기화:** `/console cvar_default` 입력 후 `/asmod`를 실행하세요. (모든 설정이 초기화되니 주의)
+
+## 6. 자동 숨김 기능 (마우스 오버)
+* **가방 및 메뉴 바:** 마우스를 가져갈 때만 보입니다. 항상 보고 싶다면 `asHideBagsBar`를 비활성화하세요.
+* **하단 스킬 바:** 마우스를 가져갈 때만 보입니다. 항상 보고 싶다면 `asHideActionBar`를 비활성화하세요.
+
+## 7. 기타 일반 설정
+* **특성 변경 후 레이아웃 이상:** `/asmod`를 입력하거나, `편집 모드`에서 **asMOD_Layout**을 다시 선택하세요.
+* **이름표(Nameplate) 문제:** 이름표가 겹치거나 안 보인다면 `ESC > 설정`에서 이름표 배열 설정을 **'상하 정렬'**로 변경하세요.
+
+## 8. 케릭별 설정 동기화 방법
+*  **ACE Library** 사용을 최소화 하고 있습니다. 설정 복사를 위해 `WTF` 폴더 복사하기를 사용하시면 됩니다.
+*   게임 종료: 와우를 완전히 종료합니다. `베틀넷` 런처에서 `플레이` 버튼 옆 톱니바퀴를 누르면 `와우 설치 폴더`를 찾을 수 있습니다.
+*   World of Warcraft/_retail_/WTF/Account/[계정명]/[서버명] 경로로 이동합니다.
+*   캐릭터 복사: 기존에 설정이 완료된 캐릭터 폴더(예: OldChar)를 복사하여 같은 폴더에 붙여넣습니다.
+*   폴더 이름 변경: 복사된 폴더(OldChar - 복사본)의 이름을 애드온 설정을 적용할 캐릭터 이름(NewChar)으로 변경합니다.
+*   게임 재접속: 해당 캐릭터로 접속하면 기존 캐릭터의 설정이 동일하게 적용됩니다.
+*   시연 영상 https://www.youtube.com/watch?v=ilB8XTOdAmI
+
+## 9. 변경점 
+*   아쉽게도 `한글` 변경점만 `인벤 asMOD 포럼` (https://www.inven.co.kr/board/wow/5288) 에 공유 하고 있습니다. `영문` 유저는 날짜별 변경점을 번역해서 확이하시기 바랍니다.
