@@ -58,7 +58,7 @@ function ns.setup_frame(asframe)
         return;
     end
 
-    local role = UnitGroupRolesAssigned(unit);
+    local role = UnitGroupRolesAssigned(asframe.unit);
     local istanker = is_tank(role);
     local ishealer = is_healer(role);
 
