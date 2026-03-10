@@ -116,7 +116,7 @@ Every asMOD addon functions independently. If you prefer specific ones, use the 
 | asGCDBar | Global Cooldown (GCD) progress bar | [Link](https://www.curseforge.com/wow/addons/asgcdbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asGCDBar) |
 | asGearScoreLite | Item level on character and inspect windows | [Link](https://www.curseforge.com/wow/addons/asgearscorelite) | [Link](https://github.com/aspilla/asMOD/tree/main/asGearScoreLite) |
 | asHealthText | (Optional) Text-based HUD | [Link](https://www.curseforge.com/wow/addons/ashealthtext) | [Link](https://github.com/aspilla/asMOD/tree/main/asHealthText) |
-| asHideActionBar | Automatically hides Action Bar 1 | [Link](https://www.curseforge.com/wow/addons/ashideactionbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideActionBar) |
+| asHideActionBar | Automatically hides Action Bars | [Link](https://www.curseforge.com/wow/addons/ashideactionbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideActionBar) |
 | asHideBagsBar | Hides the bottom-right menu/bags bar | [Link](https://www.curseforge.com/wow/addons/ashidebagsbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideBagsBar) |
 | asHideNamePlates | Hides nameplates except for casting mobs | [Link](https://www.curseforge.com/wow/addons/ashidenameplates) | [Link](https://github.com/aspilla/asMOD/tree/main/asHideNamePlates) |
 | asInformation | Displays primary and secondary stat gains | [Link](https://www.curseforge.com/wow/addons/asinformation) | [Link](https://github.com/aspilla/asMOD/tree/main/asInformation) |
@@ -308,7 +308,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 | asGCDBar | 전역 재사용 대기시간(GCD) 표시 바 | [링크](https://www.curseforge.com/wow/addons/asgcdbar) | [링크](https://github.com/aspilla/asMOD/tree/main/asGCDBar) |
 | asGearScoreLite | 캐릭터 창/살펴보기 창에 아이템 레벨 표시 | [링크](https://www.curseforge.com/wow/addons/asgearscorelite) | [링크](https://github.com/aspilla/asMOD/tree/main/asGearScoreLite) |
 | asHealthText | (미포함) 텍스트 기반 HUD | [링크](https://www.curseforge.com/wow/addons/ashealthtext) | [링크](https://github.com/aspilla/asMOD/tree/main/asHealthText) |
-| asHideActionBar | 1번 액션 바를 자동 숨김 | [링크](https://www.curseforge.com/wow/addons/ashideactionbar) | [링크](https://github.com/aspilla/asMOD/tree/main/asHideActionBar) |
+| asHideActionBar | 액션 바를 자동 숨김 | [링크](https://www.curseforge.com/wow/addons/ashideactionbar) | [링크](https://github.com/aspilla/asMOD/tree/main/asHideActionBar) |
 | asHideBagsBar | 우측 하단의 메뉴 자동 숨김 | [링크](https://www.curseforge.com/wow/addons/ashidebagsbar) | [링크](https://github.com/aspilla/asMOD/tree/main/asHideBagsBar) |
 | asHideNamePlates | 케스팅중인 몹 외 이름표를 숨김 | [링크](https://www.curseforge.com/wow/addons/ashidenameplates) | [링크](https://github.com/aspilla/asMOD/tree/main/asHideNamePlates) |
 | asInformation | 1차/2차 능력치 증가량 표시 | [링크](https://www.curseforge.com/wow/addons/asinformation) | [링크](https://github.com/aspilla/asMOD/tree/main/asInformation) |
