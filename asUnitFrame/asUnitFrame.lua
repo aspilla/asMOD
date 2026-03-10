@@ -354,7 +354,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     frame.healthbar.bg:SetColorTexture(0, 0, 0, 1);
 
     frame.pvalue = frame:CreateFontString(nil, "ARTWORK");
-    frame.pvalue:SetFont(STANDARD_TEXT_FONT, fontsize + 1, FontOutline);
+    frame.pvalue:SetFont(STANDARD_TEXT_FONT, fontsize + 2, FontOutline);
     frame.pvalue:SetTextColor(1, 1, 1, 1);
 
     frame.sperator = frame:CreateFontString(nil, "ARTWORK");
@@ -401,19 +401,16 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
                 frame.sperator:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 3 + 4), 4);
                 frame.hvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 3 + 12), 4);
                 frame.name:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, -4);
-                frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
-                frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+                frame.classtext:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 4, 4);
+                frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
             else
                 frame.pvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", 4, 4);
                 frame.sperator:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 3 + 4), 4);
                 frame.hvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 3 + 12), 4);
                 frame.name:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -4);
-                frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
-                frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+                frame.classtext:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -4, 4);
+                frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
             end
-
-            frame.classtext:Hide();
-            frame.aggro:Hide();
         end
     else
         if x < 0 then
@@ -438,6 +435,11 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
         frame.aggro:Hide();
         frame.sperator:Hide();
         frame.hvalue:Hide();
+    end
+
+    if ns.options.ShowAggroInfo == false then
+        frame.classtext:Hide();
+        frame.aggro:Hide();
     end
 
     frame.is_small = is_small;

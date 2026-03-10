@@ -6,6 +6,7 @@ local Options_Default = {
     ShowBossBuff = true,
     ShowTargetBorder = true,
     ShowDebuff = true,
+    ShowAggroInfo = true,
     CheckRange = true,
     CombatAlphaChange = true,
     Width = 200,

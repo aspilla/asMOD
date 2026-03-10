@@ -72,6 +72,7 @@ This addon replaces the default unit frames. It is recommended to use it with ot
     * `ShowTotemBar` : Toggle totem bar at the bottom of the player frame
     * `ShowBossBuff` : Toggle 4 buffs on boss frames 
     * `ShowTargetBorder` : Displays a white border when focus/boss is the current target
+    * `ShowAggroInfo` : Toggle display of aggro status and player rest state.
     * `CheckRange` : Checks distance with target/focus/boss
     * `OffPortraitDebuffOnRaid` : Do not show stun debuffs on portraits during raids
     * `CombatAlphaChange` : Transparency change out of combat
@@ -177,6 +178,7 @@ The following errors may occur.
     *   `ShowTotemBar` : 플레이어 프레임 하단에 토템바 표시 여부
     *   `ShowBossBuff` : 보스 프레임에 버프 4개 표시 여부 
     *   `ShowTargetBorder` : 주시/보스가 대상인 경우 하얀색 테두리 표시
+    *   `ShowAggroInfo` : 어그로 및 플레이어 휴식 상태 표시 여부
     *   `CheckRange` : 대상/주시/보스와의 거리를 체크
     *   `OffPortraitDebuffOnRaid` : 레이드에서는 초상화에 스턴 디버프 표시 안함
     *   `CombatAlphaChange` : 비전투시 투명도 변경
