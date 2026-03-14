@@ -211,6 +211,7 @@ local function init()
 	end
 end
 
+main_frame:SetFrameStrata("LOW");
 main_frame:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint);
 main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
 main_frame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
