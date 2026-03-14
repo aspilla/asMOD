@@ -88,6 +88,7 @@ local function init()
 
 	ns.setup_option();
 
+	main_button:SetFrameStrata("LOW");
 	main_button:EnableMouse(true);
 	main_button:RegisterForDrag("LeftButton");
 	main_button:SetMovable(true);
