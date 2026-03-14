@@ -229,9 +229,6 @@ local function create_coolbutton(parent, size, level)
             break
         end
     end
-    if unit == "mouseover" then
-        frame:SetFrameStrata("MEDIUM");
-    end
 
     frame.icon:SetTexCoord(.08, .92, .08, .92);
     frame.icon_desaturated:SetTexCoord(.08, .92, .08, .92);
@@ -256,6 +253,12 @@ local function create_button(unit)
     frame:SetHeight(size * 0.9);
     frame:EnableMouse(false);
     frame:Show();
+
+    if unit == "mouseover" then
+        frame:SetFrameStrata("MEDIUM");
+    else
+        frame:SetFrameStrata("LOW");
+    end
 
     frame.sbutton = create_coolbutton(frame, size, 1000);
     frame.ibutton = create_coolbutton(frame, size, 2000);
