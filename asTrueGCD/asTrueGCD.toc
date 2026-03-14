@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rTrueGCD
 ## Notes: Displays records of recent spells/items usages.
 ## Notes-koKR:최근 주문/아이템 기록 표시
-## Version : 251220
+## Version : 250315
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## SavedVariablesPerCharacter: ATGCD_Positions
 ## Category: asMOD

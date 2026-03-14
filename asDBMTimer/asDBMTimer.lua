@@ -24,7 +24,8 @@ end
 
 
 local function setupUI()
-	ns.asDBMTimer = CreateFrame("FRAME", nil, UIParent)
+	ns.asDBMTimer = CreateFrame("FRAME", nil, UIParent);
+	ns.asDBMTimer:SetFrameStrata("LOW");
 	ns.asDBMTimer:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
 	ns.asDBMTimer:SetWidth(100)
 	ns.asDBMTimer:SetHeight(100)

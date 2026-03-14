@@ -306,6 +306,7 @@ end
 
 local function init_addon()
     ns.setup_option();
+    main_frame:SetFrameStrata("LOW");
     main_frame:SetPoint("BOTTOM", UIParent, "CENTER", ns.configs.xpoint, ns.configs.ypoint)
     main_frame:SetWidth(ns.options.BarWidth)
     main_frame:SetHeight(ns.options.PowerBarHeight)

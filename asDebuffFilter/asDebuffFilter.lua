@@ -303,7 +303,7 @@ end
 local function init()
     ns.setup_option();
     local libasConfig = LibStub:GetLibrary("LibasConfig", true);
-
+    main_frame:SetFrameStrata("LOW");
     main_frame:SetPoint("CENTER", 0, 0);
     main_frame:SetWidth(1);
     main_frame:SetHeight(1);

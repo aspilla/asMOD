@@ -109,6 +109,7 @@ local function init()
 	C_Timer.NewTicker(0.2, on_update);
 end
 
+main_frame:SetFrameStrata("LOW");
 main_frame.icon:SetTexCoord(.08, .92, .08, .92)
 main_frame.icon:SetAlpha(configs.alpha);
 main_frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92)

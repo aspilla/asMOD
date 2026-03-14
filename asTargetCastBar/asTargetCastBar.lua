@@ -28,6 +28,7 @@ if GetLocale() == "koKR" then
 end
 
 local main_frame = CreateFrame("FRAME", nil, UIParent)
+main_frame:SetFrameStrata("LOW");
 main_frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
 main_frame:SetWidth(0)
 main_frame:SetHeight(0)
@@ -35,6 +36,7 @@ main_frame:Show();
 
 local function setup_castbar()
     local castbar = CreateFrame("StatusBar", nil, UIParent)
+    castbar:SetFrameStrata("LOW");
     castbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     local statustexture = castbar:GetStatusBarTexture();
     statustexture:SetHorizTile(false)

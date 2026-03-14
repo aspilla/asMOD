@@ -117,8 +117,9 @@ local function init()
 		yOfs = configs.ypoint,
 	}
 
-	ns.setup_option();	
-
+	ns.setup_option();
+	
+	main_frame:SetFrameStrata("LOW");
 	main_frame:EnableMouse(true);
 	main_frame:RegisterForDrag("LeftButton");
 	main_frame:SetMovable(true);

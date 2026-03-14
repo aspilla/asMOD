@@ -7,11 +7,12 @@ local configs = {
     threshold = 100,
 };
 
-local main_frame = CreateFrame("Frame", "asInformationFrame", UIParent)
-main_frame:SetSize(100, 100)
-main_frame:SetPoint("CENTER", UIParent, "CENTER", -165, -300)
-main_frame:SetMovable(true)
-main_frame:RegisterForDrag("LeftButton")
+local main_frame = CreateFrame("Frame", "asInformationFrame", UIParent);
+main_frame:SetFrameStrata("LOW");
+main_frame:SetSize(100, 100);
+main_frame:SetPoint("CENTER", UIParent, "CENTER", -165, -300);
+main_frame:SetMovable(true);
+main_frame:RegisterForDrag("LeftButton");
 
 
 -- Saved variables for position, lock state, and stat thresholds

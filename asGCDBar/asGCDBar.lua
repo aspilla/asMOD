@@ -29,6 +29,7 @@ local function on_event(self, event)
 end
 
 local function init()
+	main_frame:SetFrameStrata("LOW");
 	main_frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
 	main_frame:SetWidth(0)
 	main_frame:SetHeight(0)

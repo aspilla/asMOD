@@ -491,6 +491,7 @@ local function on_event(self, event, arg1, arg2, arg3, ...)
 	return;
 end
 
+main_frame:SetFrameStrata("MEDIUM");
 main_frame:SetScript("OnEvent", on_event)
 C_Timer.NewTicker(0.1, on_update);
 on_load()

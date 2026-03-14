@@ -18,6 +18,8 @@ ns.frame    = CreateFrame("FRAME", nil, UIParent);
 ns.ready = false;
 
 local function init_addon()
+
+    ns.frame:SetFrameStrata("LOW");
     ns.frame:SetPoint("BOTTOM", UIParent, "CENTER", ns.configs.xpoint, ns.configs.ypoint)
     ns.frame:SetWidth(ns.configs.width)
     ns.frame:SetHeight(ns.configs.height)

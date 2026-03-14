@@ -146,6 +146,7 @@ local function init()
         frame:Show();
     end
 
+    main_frame:SetFrameStrata("LOW");
     main_frame:SetScript("OnEvent", on_event);
     main_frame:RegisterEvent("UNIT_SPELLCAST_START");
     main_frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");

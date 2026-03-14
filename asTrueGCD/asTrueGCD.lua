@@ -321,6 +321,7 @@ local function init()
 	end
 
 	C_Timer.NewTicker(0.25, on_update);
+	main_frame:SetFrameStrata("LOW");
 	main_frame:SetScript("OnEvent", on_event)
 
 	main_frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
