@@ -2,11 +2,11 @@
 
 asMOD is a collection of custom-made World of Warcraft addons.
 
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_party.jpg?raw=true)
+![sample](https://media.forgecdn.net/attachments/1582/36/asmod_party-jpg.jpg)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/jxMk3LePSxk?si=j5YbrMeHnzxF47or" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_raid.jpg?raw=true)
+![sample](https://media.forgecdn.net/attachments/1582/35/asmod_raid-jpg.jpg)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/bLfws1IyxQA?si=oM4Mn46FF3Lm6rnA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -84,10 +84,10 @@ The following issue may occur:
 ## Cooldown Manager Configuration
 * Navigate to `ESC >> Options >> Gameplay >> Advanced Cooldown Settings`.
 1.  **Option 1:** [Main Skills] 6, [Top Buffs] 7, [Bottom Buff Bar] 2 rows (Recommended).
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/cooldown1row.jpg?raw=true)
+![sample](https://media.forgecdn.net/attachments/1582/37/cooldown1row-jpg.jpg)
 
 2.  **Option 2:** [Main Skills] 7–12, [Top Buffs] 7, [Bottom Buff Bar] None (Recommended to disable `asGCDBar`).
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/cooldown2row.jpg?raw=true)
+![sample](https://media.forgecdn.net/attachments/1582/38/cooldown2row-jpg.jpg)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -186,19 +186,22 @@ asMOD minimizes the use of the ACE Library. To copy settings, use the `WTF` fold
 5.  **Restart Game:** Log in to apply the identical settings.
 6.  Demonstration Video: https://www.youtube.com/watch?v=ilB8XTOdAmI
 
-### 9. Changelogs
-Unfortunately, changelogs are only provided in **Korean** at the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288). English users are encouraged to use translation tools to check updates by date.
+### 9. UI Transparency Out of Combat
+* To clearly distinguish combat status, the UI becomes transparent when out of combat.
+* This feature can be disabled individually for each UI element, such as `asPowerBar` and `asCombatInfo`.
 
+### 10. Changelogs
+* Unfortunately, changelogs are only provided in **Korean** at the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288). English users are encouraged to use translation tools to check updates by date.
 ---
 # asMOD 모음집 (한밤)
 
 asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_party.jpg?raw=true)
+![sample](https://media.forgecdn.net/attachments/1582/36/asmod_party-jpg.jpg)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/jxMk3LePSxk?si=j5YbrMeHnzxF47or" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asmod_raid.jpg?raw=true)
+![sample](https://media.forgecdn.net/attachments/1582/35/asmod_raid-jpg.jpg)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/bLfws1IyxQA?si=oM4Mn46FF3Lm6rnA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -276,10 +279,10 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 ## 재사용 대기시간 관리자 설정
 * `esc >> 설정 >> 게임 플레이 개선 >> 고급 재사용 대기시간 설정` 클릭하여 가운데 버튼 설정
 1. [중앙주스킬] 6개, [상단버프] 7개, [하단버프바] 2줄 설정 (기본 추천)
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/cooldown1row.jpg?raw=true)
+![sample](https://media.forgecdn.net/attachments/1582/37/cooldown1row-jpg.jpg)
 
 2. [중앙주스킬] 7개 ~ 12개, [상단버프] 7개, [하단버프바] 없음 설정 (asGCDBar 끄는것을 추전)
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/cooldown2row.jpg?raw=true)
+![sample](https://media.forgecdn.net/attachments/1582/38/cooldown2row-jpg.jpg)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -380,5 +383,10 @@ asMOD 설치시 그래픽 설정의 UI 설정을 0.75로 축소 합니다.
 *   게임 재접속: 해당 캐릭터로 접속하면 기존 캐릭터의 설정이 동일하게 적용됩니다.
 *   시연 영상 https://www.youtube.com/watch?v=ilB8XTOdAmI
 
-### 9. 변경점 
+### 9. 비전투 중 UI 투명도
+*   전투 구분을 위해 비전투중에 UI가 투명화 됩니다.
+*   asPowerBar, asCombatInfo 등 각 UI 별로 비전투 투명화 되는 것을 끌 수 있습니다.
+
+### 10. 변경점 
 *   아쉽게도 `한글` 변경점만 `인벤 asMOD 포럼` (https://www.inven.co.kr/board/wow/5288) 에 공유 하고 있습니다. `영문` 유저는 날짜별 변경점을 번역해서 확이하시기 바랍니다.
+
