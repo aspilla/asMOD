@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rHealthText
 ## Notes: Text-based HUD
 ## Notes-koKR: 텍스트 기반 HUD
-## Version : 260315
+## Version : 260317
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asHealthText.lua

@@ -143,6 +143,7 @@ end
 local function update_combo()
 	if ns.powerlevel then
 		local power = UnitPower("player", ns.powerlevel, ns.bupdate_partial);
+		local max = UnitPowerMax("player", ns.powerlevel, ns.bupdate_partial);
 		local showstr = string.format("%d", power);
 
 		if ns.bupdate_partial then
