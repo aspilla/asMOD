@@ -192,6 +192,8 @@ asMOD minimizes the use of the ACE Library. To copy settings, use the `WTF` fold
 
 ### 10. Changelogs
 * Unfortunately, changelogs are only provided in **Korean** at the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288). English users are encouraged to use translation tools to check updates by date.
+
+
 ---
 # asMOD 모음집 (한밤)
 
