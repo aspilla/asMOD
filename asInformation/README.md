@@ -2,7 +2,7 @@
 
 Displays primary/secondary stats increase.
 
-![asInformation](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInformation.jpg?raw=true)
+![asInformation](https://media.forgecdn.net/attachments/1585/697/asinformation-jpg.jpg)
 
 ## Key Features
 
@@ -26,13 +26,18 @@ Displays primary/secondary stats increase.
 * **Haste Threshold (Slider)**: Sets the Haste value (0-300%) at which the Haste text will be highlighted.
 * **Move Position**: Enter the `/asConfig` command in the chat.
 * **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
+
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
 ---
 
 # asInformation (한밤)
 
 1차/2차 능력치 증가량 표시
 
-![asInformation](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInformation.jpg?raw=true)   
+![asInformation](https://media.forgecdn.net/attachments/1585/697/asinformation-jpg.jpg)   
 
 ## 주요 기능
 
@@ -56,3 +61,7 @@ Displays primary/secondary stats increase.
 
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
+
+## 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)

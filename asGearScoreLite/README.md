@@ -1,7 +1,7 @@
 # asGearScoreLite (Midnight)
 
 Displays item level in Character Info/Inspect window.
-![asGearScoreLite](https://github.com/aspilla/asMOD/blob/main/.Pictures/asGearScoreLite.jpg?raw=true)
+![asGearScoreLite](https://media.forgecdn.net/attachments/1585/693/asgearscorelite-jpg.jpg)
 
 ## Key Features
 
@@ -13,6 +13,10 @@ Displays item level in Character Info/Inspect window.
 
 ## Configuration
 None
+
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
 
 
 
@@ -34,7 +38,7 @@ Blizzard_InspectUI/InspectPVPFrame.lua:71: bad argument #1 to 'UnitFactionGroup'
 
 캐릭터 창/살펴보기 창에 아이템 레벨 표시
 
-![asGearScoreLite](https://github.com/aspilla/asMOD/blob/main/.Pictures/asGearScoreLite.jpg?raw=true)
+![asGearScoreLite](https://media.forgecdn.net/attachments/1585/693/asgearscorelite-jpg.jpg)
 
 ## 주요 기능
 
@@ -59,3 +63,7 @@ Blizzard_InspectUI/InspectPVPFrame.lua:71: bad argument #1 to 'UnitFactionGroup'
 [string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:60: in function <Blizzard_InspectUI/InspectPVPFrame.lua:58>
 ```
 * 한밤 레벨업시 퀘스트 보상 아이템 레벨이 기본 레벨로 표시
+
+## 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)

@@ -4,11 +4,11 @@ Displays cooldowns for Interrupt and Stun skills.
 
 <For Target/Focus>
 
-![asInterruptHelper(Target/Focus)](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInterruptHelper_target.jpg?raw=true)   
+![asInterruptHelper(Target/Focus)](https://media.forgecdn.net/attachments/1585/699/asinterrupthelper_target-jpg.jpg)   
 
 <For Mouseover Target>
 
-![asInterruptHelper(Mouseover)](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInterruptHelper.jpg?raw=true)   
+![asInterruptHelper(Mouseover)](https://media.forgecdn.net/attachments/1585/698/asinterrupthelper-jpg.jpg)   
 
 ## Key Features
 
@@ -32,6 +32,10 @@ Settings can be modified via `ESC` > `Options` > `AddOns` > `asInterruptHelper`:
 * **Repositioning**: Enter the `/asconfig` command in the chat window.
 * **Reset Position**: Enter the `/asclear` command in the chat window to reset to default settings.
 
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
 ---
 
 # asInterruptHelper (한밤)
@@ -40,11 +44,11 @@ Settings can be modified via `ESC` > `Options` > `AddOns` > `asInterruptHelper`:
 
 <주시/대상의 경우>
 
-![asInterruptHelper(Target/Focus)](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInterruptHelper_target.jpg?raw=true)   
+![asInterruptHelper(Target/Focus)](https://media.forgecdn.net/attachments/1585/699/asinterrupthelper_target-jpg.jpg)   
 
 <마우스 오버 대상의 경우>
 
-![asInterruptHelper(Mouseover)](https://github.com/aspilla/asMOD/blob/main/.Pictures/asInterruptHelper.jpg?raw=true)   
+![asInterruptHelper(Mouseover)](https://media.forgecdn.net/attachments/1585/698/asinterrupthelper-jpg.jpg)   
 
 ## 주요 기능
 
@@ -67,3 +71,7 @@ Settings can be modified via `ESC` > `Options` > `AddOns` > `asInterruptHelper`:
 *   `ShowMouseOver` : 마우스 오버 대상의 차단 스킬 표시 여부
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
+
+## 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)

@@ -2,7 +2,7 @@
 
 Displays Battle Resurrection charges and cooldown.
 
-![asBattleRes](https://github.com/aspilla/asMOD/blob/main/.Pictures/asbattleres.jpg?raw=true)
+![asBattleRes](https://media.forgecdn.net/attachments/1585/661/asbattleres-jpg.jpg)
 
 ## Key Features
 
@@ -25,13 +25,18 @@ Displays Battle Resurrection charges and cooldown.
 * **Move Position**: Enter `/asConfig` in the chat.
 * **Reset Position**: Enter `/asClear` in the chat to restore default settings.
 
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
+
 ---
 
 # asBattleRes (한밤)
 
 전투 부활 횟수/대기시간 표시
 
-![asBattleRes](https://github.com/aspilla/asMOD/blob/main/.Pictures/asbattleres.jpg?raw=true)
+![asBattleRes](https://media.forgecdn.net/attachments/1585/661/asbattleres-jpg.jpg)
 
 ## 주요 기능
 
@@ -53,3 +58,7 @@ Displays Battle Resurrection charges and cooldown.
     *   설정 메뉴에서 'LockWindow' 옵션을 체크.
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
+
+## 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)

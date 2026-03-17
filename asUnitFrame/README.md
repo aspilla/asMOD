@@ -3,10 +3,10 @@
 Simple unit frames
 
 Default settings
-![asUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asUnitFrame.jpg?raw=true)
+![asUnitFrame](https://media.forgecdn.net/attachments/1585/715/asunitframe-jpg.jpg)
 
 When portrait is disabled
-![asUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asUnitFrame_woportrait.jpg?raw=true)
+![asUnitFrame](https://media.forgecdn.net/attachments/1585/714/asunitframe_woportrait-jpg.jpg)
 
 This addon replaces the default unit frames. It is recommended to use it with other asMOD addons, specifically:
 * asPowerBar : Displays resources like energy
@@ -102,16 +102,20 @@ This addon replaces the default unit frames. It is recommended to use it with ot
 The following errors may occur.
 1.  **Edit Mode Error:** Errors may occur when using Edit Mode, making it impossible to change settings. Need to disable asUnitFrame before using Edit Mode.
 
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
 ---
 # asUnitFrame (한밤)
 
 간단한 유닛 프레임
 
 기본 설정
-![asUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asUnitFrame.jpg?raw=true)
+![asUnitFrame](https://media.forgecdn.net/attachments/1585/715/asunitframe-jpg.jpg)
 
 초상화 미사용 설정시
-![asUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asUnitFrame_woportrait.jpg?raw=true)
+![asUnitFrame](https://media.forgecdn.net/attachments/1585/714/asunitframe_woportrait-jpg.jpg)
 
 기본 유닛 프레임을 대체하는 애드온입니다. 다른 asMOD 애드온과 함께 사용하는 것을 권장하며, 다음 애드온들이 추천됩니다:
 * asPowerBar : 기력등을 표시
@@ -207,3 +211,7 @@ The following errors may occur.
 
 다음과 같은 오류가 발생 할 수 있습니다.
 1.  **편집 모드 오류:** 편집 모드 사용 시 오류가 발생하여 설정 변경 불가 가능. asUnitFrame을 끄고 편집 모드 진행 필요.
+
+## 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)

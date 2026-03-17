@@ -2,7 +2,7 @@
 
 Cast bar for Target and Focus targets.
 
-![asTargetCastBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asTargetCastBar_MN.jpg?raw=true)
+![asTargetCastBar](https://media.forgecdn.net/attachments/1585/712/astargetcastbar_mn-jpg.jpg)
 
 ## Key Features
 
@@ -28,13 +28,17 @@ Cast bar for Target and Focus targets.
 * **Move Position**: Enter the `/asConfig` command in the chat.
 * **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
 ---
 
 # asTargetCastBar (한밤)
 
 대상/주시대상 시전 바
 
-![asTargetCastBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asTargetCastBar_MN.jpg?raw=true)
+![asTargetCastBar](https://media.forgecdn.net/attachments/1585/712/astargetcastbar_mn-jpg.jpg)
 
 ## 주요 기능
 
@@ -59,3 +63,7 @@ Cast bar for Target and Focus targets.
 *   `FocusCastScale`: 주시 대상 시전 바 크기 배율 (기본 1.2)
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
+
+## 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)

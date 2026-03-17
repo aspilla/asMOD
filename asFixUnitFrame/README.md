@@ -2,9 +2,7 @@
 
 Turn off features of Unit Frames.
 
-![asFixUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixUnitFrame.png?raw=true)
-
-![asFixUnitFrame2](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixUnitFrame2.png?raw=true)
+![asFixUnitFrame](https://media.forgecdn.net/attachments/1585/691/asfixunitframe-png.png)
 
 ## Key Features
 
@@ -28,15 +26,17 @@ Turn off features of Unit Frames.
 * `ShowClassColor`: Change health bar colors to class colors (Default: Enabled).
 * `ShowAggro`: Display numeric threat level on the Target (Default: Enabled).
 
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
 ---
 
 # asFixUnitFrame (한밤)
 
 블리자드 기본 유닛 프레임 기능 숨김
 
-![asFixUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixUnitFrame.png?raw=true)
-
-![asFixUnitFrame2](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixUnitFrame2.png?raw=true)
+![asFixUnitFrame](https://media.forgecdn.net/attachments/1585/691/asfixunitframe-png.png)
 
 ## 주요 기능
 
@@ -59,3 +59,7 @@ Turn off features of Unit Frames.
 *   `HideTotemBar` : 플레이어 토템바 숨김 (기본: 비활성).
 *   `ShowClassColor` : 생명력 색상을 직업 색상으로 (기본: 활성).
 *   `ShowAggro` : 대상위 위협수준 표시 (기본: 활성).
+
+## 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)

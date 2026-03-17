@@ -2,7 +2,7 @@
 
 Nameplate enhancement addon
 
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_MN.jpg?raw=true)
+![sample](https://media.forgecdn.net/attachments/1585/702/asnameplates_mn-jpg.jpg)
 
 **Note:** Friendly nameplates are not modified.
 
@@ -38,13 +38,17 @@ Colors are displayed based on the following priority:
 * `ESC > Options > AddOns > asNamePlates`
 * You can toggle color-changing features and customize colors here.
 
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
 ---
 
 # asNamePlates (한밤)
 
 이름표 강화 애드온
 
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_MN.jpg?raw=true)
+![sample](https://media.forgecdn.net/attachments/1585/702/asnameplates_mn-jpg.jpg)
 
 **참고:** 우호적인 대상의 이름표는 수정하지 않습니다.
 
@@ -75,10 +79,10 @@ Colors are displayed based on the following priority:
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
 * **이름표 Setup 매크로 생성** : 대상 이름표 크기, 아군 이름표 직업 색상 이름으로 변경, `asNamePlates Setup` 메크로 사용 및 `아군 이름표 간소화 옵션` off 필요
 
-
-
-
-
 ## 설정
 * `Esc > 옵션 > 애드온 > asNamePlates`
 * 색상 변경 및 색상 변경 기능 On/Off 가능
+
+## 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)

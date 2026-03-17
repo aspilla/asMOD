@@ -3,7 +3,7 @@
 Enhancements for Mythic+ and Raid Finder.
 
 ## Mythic+ Dungeons  
-![asPremadeGroupsFilter_Party](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPremadeGroupsFilter_party.jpg?raw=true)
+![asPremadeGroupsFilter_Party](https://media.forgecdn.net/attachments/1585/705/aspremadegroupsfilter_party-jpg.jpg)
 
 * Displays specialization icons for each group member.
 * Displays small color bars representing the class of each member.
@@ -13,7 +13,7 @@ Enhancements for Mythic+ and Raid Finder.
 * Displays the group leader's Mythic+ score (`ShowLeaderScore` option, default: true).
 
 ## Raid 
-![asPremadeGroupsFilter_raid](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPremadeGroupsFilter_Raid.jpg?raw=true)
+![asPremadeGroupsFilter_raid](https://media.forgecdn.net/attachments/1585/704/aspremadegroupsfilter_raid-jpg.jpg)
 
 * Displays the count of each class within each role (Tank, Healer, Damage) in the group.
 * Displays the party leader's role icon and role (T/D/H) in their class color.
@@ -22,6 +22,11 @@ Enhancements for Mythic+ and Raid Finder.
 
 * Adjustments can be made via `ESC` > `Options` > `Addons` > `asPremadeGroupsFilter`.
 * `ShowHealerSpec`: If enabled, displays the healer's specialization icon/bar in the Mythic+ list. (Default: false)
+
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
 
 ---
 
@@ -40,7 +45,7 @@ Enhancements for Mythic+ and Raid Finder.
 *   파티장의 신화 쐐기돌 점수 표시 (`ShowLeaderScore` 옵션, 기본값: true)
 
 ## 공격대 
-![asPremadeGroupsFilter_raid](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPremadeGroupsFilter_Raid.jpg?raw=true)
+![asPremadeGroupsFilter_raid](https://media.forgecdn.net/attachments/1585/704/aspremadegroupsfilter_raid-jpg.jpg)
 
 *   그룹에 있는 각 역할(탱커, 힐러, 딜러) 내 각 직업의 수를 표시.
 *   파티장의 역할 아이콘과 역할 (T/D/H)을 직업 색상으로 표시.
@@ -51,3 +56,7 @@ Enhancements for Mythic+ and Raid Finder.
 *   `ShowHealerSpec`: 선택하면 신화 쐐기돌 목록에 힐러의 전문화 아이콘/바가 표시. (기본값: false)
 *   `ShowTankerSpec`: 선택하면 신화 쐐기돌 목록에 탱커의 전문화 아이콘/바가 표시. (기본값: false)
 *   `ShowLeaderScore` : 선택하면 신화 쐐기돌 목록에 그룹 리더의 신화 쐐기돌 점수가 표시. (기본값: true)
+
+## 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)

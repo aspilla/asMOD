@@ -2,15 +2,13 @@
 
 Enhances the Cooldown Manager.
 
-![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN2.jpg?raw=true)
+![asCombatInfo](https://media.forgecdn.net/attachments/1585/665/ascombatinfo_mn-jpg.jpg)
 
 ## Key Features 
 
 * **Icon/Border Shape Modification** * **Charge Count Repositioning**: Moved to the bottom and color changed to green. 
 * **Hotkey Display**: If duplicate skills are registered (e.g., Stances or Druid forms), the skill in the lower-numbered slot takes priority.
 * **Center Alignment for 2-Row Icons**
-![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN.jpg?raw=true)
-
 * **Font Replacement**: Changes the font to the default WoW font. 
 * **Buff/Debuff Borders**: Adds a blue border during active buffs/debuffs.
 * **Buff Bar Skinning**: Modifies the appearance of buff bars and displays them in class-specific colors.
@@ -40,13 +38,17 @@ Top alignment has higher priority.
 * `BuffIconRate`: Buff icon height ratio (Default: 8, height is 80% of width)
 * `BuffBorderWidth`: Border thickness for buff icons (Default: 2)
 
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
 ---
 
 # asCombatInfo (한밤)
 
 쿨다운 메니저를 강화
 
-![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN2.jpg?raw=true)
+![asCombatInfo](https://media.forgecdn.net/attachments/1585/665/ascombatinfo_mn-jpg.jpg)
 
 ## 주요 기능 
 
@@ -54,8 +56,6 @@ Top alignment has higher priority.
 *   **충전 횟수 하단 이동 및 녹색 변경** 
 *   **단축키 표시** : 태세/드루이드 폼 관련 같은 스킬이 중복해서 등록된 경우 Slot 번호가 작은 단축키 기준으로 단축키 표시
 *   **2열 아이콘 가운데 정렬**
-![asCombatInfo](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatInfo_MN.jpg?raw=true)
-
 *   **폰트를 와우 기본 폰트로 변경** 
 *   **강화/약화 버프시 파란색 테두리 추가**
 *   **버프바 외형을 변경하고 직업 색상으로 표시**
@@ -85,3 +85,7 @@ Top alignment has higher priority.
 *   `SpellBorderWidth` : 기술 아이콘 테두리 두깨 (Default 2)
 *   `BuffIconRate` : 버프 아이콘 높이 비율 (Default 8, 넓이의 80% 높이)
 *   `BuffBorderWidth` : 버프 아이콘 테두리 두깨 (Default 2)
+
+## 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)

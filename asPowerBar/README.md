@@ -2,7 +2,7 @@
 
 Displays Main Resources and Class Resources.
 
-![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_MN.jpg?raw=true)
+![asPowerBar](https://media.forgecdn.net/attachments/1585/703/aspowerbar_mn-jpg.jpg)
 
 ## Key Features
 
@@ -30,7 +30,12 @@ Displays Main Resources and Class Resources.
 
 * (Note) For Fury Warriors, the `Whirlwind` buff tracking cannot check the 7-meter distance to the target.
 
-![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_whirlwind.gif?raw=true)
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
+
+![asPowerBar](https://media.forgecdn.net/attachments/1585/703/aspowerbar_mn-jpg.jpg)
 
 ## Configuration
 * Accessible via `ESC` > `Options` > `AddOns` > `asPowerBar`.
@@ -82,8 +87,6 @@ Displays Main Resources and Class Resources.
 
 ![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_whirlwind.gif?raw=true)
 
-
-
 ## 설정 (Configuration)
 *  `ESC` > `설정` > `애드온` > `asPowerBar` 에서 설정 가능
 *  `ShowClassResource`: 직업 전문화 특성 표시 여부 (Default On)
@@ -98,3 +101,7 @@ Displays Main Resources and Class Resources.
 *  바 크기 변경 후 `/reload` 명령어로 다시 Addon 초기화 필요
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/gKEHCNP9rbE?si=WC6rvwnzKqc6Sdjz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)

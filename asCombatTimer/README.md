@@ -2,7 +2,7 @@
 
 Displays the elapsed time after combat starts.
 
-![asCombatTimer](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatTimer.jpg?raw=true)
+![asCombatTimer](https://media.forgecdn.net/attachments/1585/667/ascombattimer-jpg.jpg)
 
 ## Key Features
 
@@ -22,13 +22,17 @@ Displays the elapsed time after combat starts.
 * **Move Position**: Enter the `/asConfig` command in the chat.
 * **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
 ---
 
 # asCombatTimer (한밤)
 
 전투 시작 후 경과 시간을 표시
 
-![asCombatTimer](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCombatTimer.jpg?raw=true)
+![asCombatTimer](https://media.forgecdn.net/attachments/1585/667/ascombattimer-jpg.jpg)
 
 ## 주요 기능
 
@@ -47,3 +51,7 @@ Displays the elapsed time after combat starts.
 
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
+
+## 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)

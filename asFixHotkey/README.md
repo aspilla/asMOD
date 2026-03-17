@@ -2,7 +2,7 @@
 
 Abbreviates action bars' hotkey text
 
-![asFixHotkey](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixHotKey.png?raw=true)
+![asFixHotkey](https://media.forgecdn.net/attachments/1585/690/asfixhotkey-png.png)
 
 ## Key Features
 
@@ -23,13 +23,17 @@ Abbreviates action bars' hotkey text
 ## Configuration
 No configuration options.
 
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
 ---
 
 # asFixHotkey (Midnight)
 
 액션바 단축키 텍스트를 축약
 
-![asFixHotkey](https://github.com/aspilla/asMOD/blob/main/.Pictures/asFixHotKey.png?raw=true)
+![asFixHotkey](https://media.forgecdn.net/attachments/1585/690/asfixhotkey-png.png)
 
 ## 주요 기능
 
@@ -48,3 +52,7 @@ No configuration options.
 
 ## 설정
 설정 없음
+
+## 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)

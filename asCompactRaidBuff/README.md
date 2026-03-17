@@ -2,7 +2,7 @@
 
 Raid and Party Frame Enhancements
 
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCompactRaidBuff_MN.jpg?raw=true)   
+![sample](https://media.forgecdn.net/attachments/1585/668/ascompactraidbuff_mn-jpg.jpg)   
 
 ## Key Features
 * **Healer-Only Mana Bar (Bottom, Configurable)**
@@ -24,13 +24,17 @@ Raid and Party Frame Enhancements
 * `ShowCasting`: Cast target notification (Default: On)
 * `ShowCastingRaid`: Cast target notification during raids (Default: Off)
 
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
 ---
 
 # asCompactRaidBuff (한밤)
 
 공격대 및 파티 프레임 강화
 
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asCompactRaidBuff_MN.jpg?raw=true)   
+![sample](https://media.forgecdn.net/attachments/1585/668/ascompactraidbuff_mn-jpg.jpg)   
 
 ## 주요 기능
 *   **힐러 전용 마나 바 (하단, 설정 가능)**    
@@ -51,3 +55,7 @@ Raid and Party Frame Enhancements
 *   `CooldownSizeRate` : 버프 남은 시간 폰트 크기 비율 (기본: 1)
 *   `ShowCasting` : 시전 대상 알림 (기본: On)
 *   `ShowCastingRaid` : 레이드시 시전 대상 알림 (기본: Off)
+
+## 문의처
+1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
+2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)
