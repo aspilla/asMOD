@@ -112,7 +112,6 @@ local function get_spellhotkey(spellid)
 	local slots = C_ActionBar.FindSpellActionButtons(spellid)
 	if slots and #slots > 0 then
 		for _, slot in ipairs(slots) do
-
 			local scanslot = slot
 			if (slot > 72 and slot <= 132) or (slot > 12 and slot <= 24) then
 				scanslot = (slot - 1) % 12 + 1;
@@ -159,6 +158,7 @@ local function update_buttons(viewer, forced)
 	end
 
 	for _, button in ipairs(visiblechilds) do
+		local width = button:GetWidth();
 		if button.bconfiged == nil or forced then
 			local rate = math.min(ns.options.SpellIconRate / 10, 0.9);
 			local iconrate = 0.08 + (0.9 - rate) / 2
@@ -169,7 +169,7 @@ local function update_buttons(viewer, forced)
 				iconrate = 0.16 + (0.8 - rate) / 2;
 				borderwidth = ns.options.BuffBorderWidth;
 			end
-			local width = button:GetWidth();
+
 			button:SetSize(width, width * rate);
 
 
@@ -282,30 +282,30 @@ local function update_buttons(viewer, forced)
 			end
 
 			button.astimer = C_Timer.NewTicker(0.2, on_update);
+			button.bconfiged = true;
+		end
 
-			if not isbuff and ns.options.ShowHotKey then
+		if ns.options.ShowHotKey and not isbuff then
+			local spellid = button:GetSpellID();
+
+			if not issecretvalue(spellid) and spellid ~= button.asspellid then
+				button.asspellid = spellid;
+				local keytext = get_spellhotkey(spellid);
+
 				if not button.hotkey then
 					button.hotkey = button:CreateFontString(nil, "ARTWORK");
 					button.hotkey:SetFont(configs.font, width / 3 - 3, "OUTLINE");
 					button.hotkey:SetPoint("TOPRIGHT", button, "TOPRIGHT", -2, -2);
 					button.hotkey:SetTextColor(1, 1, 1, 1);
 				end
-				local spellid = button:GetSpellID();
 
-				if not issecretvalue(spellid) then
-					button.asspellid = spellid;
-					local keytext = get_spellhotkey(spellid);
-
-					if keytext and keytext ~= "●" then
-						button.hotkey:SetText(keytext);
-						button.hotkey:Show();
-					else
-						button.hotkey:Hide();
-					end
+				if keytext and keytext ~= "●" then
+					button.hotkey:SetText(keytext);
+					button.hotkey:Show();
+				else
+					button.hotkey:Hide();
 				end
 			end
-
-			button.bconfiged = true;
 		end
 	end
 
