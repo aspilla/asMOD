@@ -92,8 +92,9 @@ The following issue may occur:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
-## asMOD Addon List (Midnight)
-Every asMOD addon functions independently. If you prefer specific ones, use the links below.
+## asMOD Addon List and Manuals
+All asMOD addons function independently. If you wish to use only specific addons, you can install them separately using the links below.
+The functional descriptions for each addon are organized on their respective CurseForge pages. It is highly recommended that you read them.
 
 | Addon | Description | CurseForge | Github |
 | :--- | :--- | :---: | :---: |
@@ -289,8 +290,9 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 <iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
-## asMOD 애드온 목록 (한밤)
+## asMOD 애드온 목록 및 설명서
 모든 asMOD 애드온은 개별 동작 가능함, 일부 애드온만 사용 원할 경우 아래 Link를 통해 별도로 설치 가능
+CurseForge Link에 각 애드온의 기능 설명이 정리 되어 있어, 반드시 읽어보는것을 추천 함.
 
 | 애드온 | 설명 | CurseForge | Github |
 | :--- | :--- | :---: | :---: |
