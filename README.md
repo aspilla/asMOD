@@ -191,7 +191,11 @@ asMOD minimizes the use of the ACE Library. To copy settings, use the `WTF` fold
 * To clearly distinguish combat status, the UI becomes transparent when out of combat.
 * This feature can be disabled individually for each UI element, such as `asPowerBar` and `asCombatInfo`.
 
-### 10. Changelogs
+### 10. Changing Fonts (Regarding Font Size)
+* The Inven version of asMOD includes fonts. These are located in `World of Warcraft/_retail_/Fonts`.
+* If the font size is too small or not to your liking, you can delete or replace the files in that folder.
+
+### 11. Changelogs
 * Unfortunately, changelogs are only provided in **Korean** at the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288). English users are encouraged to use translation tools to check updates by date.
 
 
@@ -379,7 +383,7 @@ asMOD 설치시 그래픽 설정의 UI 설정을 0.75로 축소 합니다.
 * **이름표(Nameplate) 문제:** 이름표가 겹치거나 안 보인다면 `ESC > 설정`에서 이름표 배열 설정을 **'상하 정렬'**로 변경하세요.
 
 ### 8. 케릭별 설정 동기화 방법
-*  **ACE Library** 사용을 최소화 하고 있습니다. 설정 복사를 위해 `WTF` 폴더 복사하기를 사용하시면 됩니다.
+*   설정 복사를 위해 `WTF` 폴더 복사하기를 사용하시면 됩니다.
 *   게임 종료: 와우를 완전히 종료합니다. `베틀넷` 런처에서 `플레이` 버튼 옆 톱니바퀴를 누르면 `와우 설치 폴더`를 찾을 수 있습니다.
 *   World of Warcraft/_retail_/WTF/Account/[계정명]/[서버명] 경로로 이동합니다.
 *   캐릭터 복사: 기존에 설정이 완료된 캐릭터 폴더(예: OldChar)를 복사하여 같은 폴더에 붙여넣습니다.
@@ -391,6 +395,10 @@ asMOD 설치시 그래픽 설정의 UI 설정을 0.75로 축소 합니다.
 *   전투 구분을 위해 비전투중에 UI가 투명화 됩니다.
 *   asPowerBar, asCombatInfo 등 각 UI 별로 비전투 투명화 되는 것을 끌 수 있습니다.
 
-### 10. 변경점 
+### 10. 폰트 변경 (글씨 크기 관련)
+*   인벤 다운로드 asMOD는 폰트도 포함하고 있습니다. World of Warcraft/_retail_/Font 가 위치 입니다.
+*   글씨 크기가 작거나 마음에 안드는 경우 해당 Font를 삭제/변경하시면 됩니다.
+
+### 11. 변경점 
 *   아쉽게도 `한글` 변경점만 `인벤 asMOD 포럼` (https://www.inven.co.kr/board/wow/5288) 에 공유 하고 있습니다. `영문` 유저는 날짜별 변경점을 번역해서 확이하시기 바랍니다.
 
