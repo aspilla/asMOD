@@ -629,6 +629,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 
     frame.callback2 = function()
         ns.update_unitframe_other(frame);
+        ns.update_unitframe_portrait(frame);
         ns.update_auras(frame);
     end
 
