@@ -1,6 +1,6 @@
 # asGearScoreLite (Midnight)
 
-Displays item level in Character Info/Inspect window.
+Displays item level in Character Info/Inspect window. (functional only out of combat)
 ![asGearScoreLite](https://media.forgecdn.net/attachments/1585/693/asgearscorelite-jpg.jpg)
 
 ## Key Features
@@ -36,7 +36,7 @@ Blizzard_InspectUI/InspectPVPFrame.lua:71: bad argument #1 to 'UnitFactionGroup'
 
 # asGearScoreLite (한밤)
 
-캐릭터 창/살펴보기 창에 아이템 레벨 표시
+캐릭터 창/살펴보기 창에 아이템 레벨 표시 (비전투시 동작)
 
 ![asGearScoreLite](https://media.forgecdn.net/attachments/1585/693/asgearscorelite-jpg.jpg)
 
