@@ -23,6 +23,7 @@ Switch chat channels using `Tab`, support `URL copy`.
     * Automatically place the URL into the chat input box.
     * Highlight the text within the input box.
     * Allow for easy copying to the clipboard (using Ctrl+C or Cmd+C).
+* **Operational only in Chat Window 1**
 
 ## Configuration
 No configuration options.
@@ -60,6 +61,7 @@ No configuration options.
     *   URL이 자동으로 채팅 입력창에 배치됨.
     *   입력창의 텍스트가 강조 표시됨.
     *   URL을 클립보드에 쉽게 복사(Ctrl+C 또는 Cmd+C 사용) 가능.
+*   **1번 채팅창에서만 동작**
 
 ## 설정
 설정 없음
