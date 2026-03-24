@@ -351,19 +351,16 @@ local function add_unit(unit)
     end
 
     asframe:SetScript("OnEvent", on_asframe_event);
-
-    if not UnitIsPlayer(unit) then
-        asframe:RegisterEvent("PLAYER_TARGET_CHANGED");
-        asframe:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit);
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
-        asframe:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
-    end
+    asframe:RegisterEvent("PLAYER_TARGET_CHANGED");
+    asframe:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
+    asframe:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
+    asframe:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
+    asframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit);
+    asframe:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
+    asframe:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
+    asframe:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
+    asframe:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
+    asframe:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
 
     local function callback()
         ns.update_power(asframe);
@@ -380,15 +377,6 @@ local function add_unit(unit)
     end
 
     asframe.timer = C_Timer.NewTicker(ns.configs.updaterate, callback);
-
-    if ns.options.ChangeDebuffIcon and unitframe.AurasFrame.RefreshList then
-        --[[
-        hooksecurefunc(unitframe.AurasFrame, "RefreshAuras", function()
-            hook_refresh(unitframe.AurasFrame)
-        end)
-        ]]
-    end
-
     ns.update_target(asframe);
     ns.update_color(asframe);
 end
@@ -476,7 +464,7 @@ local function on_main_event(self, event, ...)
         remove_unit(unit);
     elseif event == "UNIT_FACTION" then
         local unit = ...;
-        if string.find(unit, "nameplate") then            
+        if string.find(unit, "nameplate") then
             add_unit(unit);
         end
     elseif event == "PLAYER_ENTERING_WORLD" then
