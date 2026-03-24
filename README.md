@@ -46,6 +46,7 @@ The following issue may occur:
 4.  Go to `ESC >> Macros` and use the **asMOD Setup macro** to apply recommended settings like reduced damage font size. This also enables Misdirection/Tank Assist macros.
 5.  Check `ESC >> Edit Mode` to ensure the **"asMOD_Layout"** is properly applied. (Note: If you have too many Edit Mode layouts, `asMOD_Layout` might not be created. Delete existing ones and run `/asMOD` again).
 6.  If you do not want the bottom action bar to hide automatically, uncheck `asHideActionBar` in `ESC >> Addons`.
+7. `asHideNameplates` and `asMisdirection` require additional configuration. In the video, the option to change friendly nameplates in `asNamePlates` was enabled, and `asNextSkill` was set to disabled.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/-7xsxpKTS7U?si=Rj7atkBM71u8X6mM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -60,6 +61,7 @@ The following issue may occur:
 7.  Use the **asMOD Setup macro** in `ESC >> Macros` to apply recommended settings.
 8.  Verify the **"asMOD_Layout"** in `ESC >> Edit Mode`. (Note: Delete excess layouts if it doesn't appear and rerun `/asMOD`).
 9.  Uncheck `asHideActionBar` in `ESC >> Addons` if you want the action bar to stay visible.
+10. `asHideNameplates` and `asMisdirection` require additional configuration. In the video, the option to change friendly nameplates in `asNamePlates` was enabled, and `asNextSkill` was set to disabled.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/WZQ_9VIF7RE?si=ojzV4SJ17osDU6mA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -248,6 +250,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 4. `esc >> 매크로 설정` 에서 asMOD Setup 매크로를 사용하면 데미지 폰트 사이즈 축소등 추천 설정 사용이 가능합니다. 추가로 눈속임/탱커 지원 매크로도 사용가능 합니다.
 5. `esc >>폅집 모드 >> "asMOD_Layout"` 설정이 잘  되어 있는 지 확인 합니다. (주의! 편집모드 Layout이 많은 경우 `asMOD_Layout`이 생성 안되니 삭제하고 `/asMOD` 명령어를 다시 실행)
 6. 하단 단축바가 자동으로 사라지는 것을 원치 않으면 esc >> 애드온 >> `asHideActionBar`를 채크 해제 하세요.
+7. `asHideNameplates`, `asMisdirection` 은 추가 설정이 필요합니다. 영상에서는 `asNamePlates`의 아군 이름표 변경 옵션을 키고, `asNextSkill`은 미사용으로 하였습니다.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/-7xsxpKTS7U?si=Rj7atkBM71u8X6mM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -262,6 +265,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 7. `esc >> 매크로 설정` 에서 asMOD Setup 매크로를 사용하면 데미지 폰트 사이즈 축소등 추천 설정 사용이 가능합니다. 추가로 눈속임/탱커 지원 매크로도 사용가능 합니다.
 8. `esc >>폅집 모드 >> "asMOD_Layout"` 설정이 잘  되어 있는 지 확인 합니다.  (주의! 편집모드 Layout이 많은 경우 `asMOD_Layout`이 생성 안되니 삭제하고 `/asMOD` 명령어를 다시 실행)
 9. 하단 단축바가 자동으로 사라지는 것을 원치 않으면 esc >> 애드온 >> `asHideActionBar`를 채크 해제 하세요.
+10. `asHideNameplates`, `asMisdirection` 은 추가 설정이 필요합니다. 영상에서는 `asNamePlates`의 아군 이름표 변경 옵션을 키고, `asNextSkill`은 미사용으로 하였습니다.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/WZQ_9VIF7RE?si=ojzV4SJ17osDU6mA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
