@@ -30,13 +30,13 @@ local function save_position(frame, option)
 	option.yOfs = yOfs
 end
 
-local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
-	if enable then
-		self:SetDrawEdge(forceShowDrawEdge);
-		self:SetCooldown(start, duration, modRate);
-	else
-		clear_cooldownframe(self);
-	end
+local function set_cooldownframe(self, durationobject, enable)
+    if enable then
+        self:SetDrawEdge(nil);
+        self:SetCooldownFromDurationObject(durationobject);
+    else
+        clear_cooldownframe(self);
+    end
 end
 
 local bMouseEnabled = true;
@@ -63,6 +63,7 @@ local function on_update()
 
 	local count = C_Spell.GetSpellDisplayCount(configs.spellid);
 	local chargeinfo = C_Spell.GetSpellCharges(configs.spellid);
+	local chargeduration = C_Spell.GetSpellChargeDuration(configs.spellid);
 
 
 	main_button.count:SetText(count);
@@ -71,8 +72,7 @@ local function on_update()
 
 	if chargeinfo then
 		main_button.cooldown:Show();
-		set_cooldownframe(main_button.cooldown, chargeinfo.cooldownStartTime,
-			chargeinfo.cooldownDuration, true, true);
+		set_cooldownframe(main_button.cooldown, chargeduration, true);
 	else
 		main_button.cooldown:Hide();
 	end

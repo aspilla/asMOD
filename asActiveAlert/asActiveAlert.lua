@@ -51,13 +51,13 @@ local function clear_cooldownframe(self)
 	self:Clear();
 end
 
-local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
-	if enable then
-		self:SetDrawEdge(forceShowDrawEdge);
-		self:SetCooldown(start, duration, modRate);
-	else
-		clear_cooldownframe(self);
-	end
+local function set_cooldownframe(self, durationobject, enable)
+    if enable then
+        self:SetDrawEdge(nil);
+        self:SetCooldownFromDurationObject(durationobject);
+    else
+        clear_cooldownframe(self);
+    end
 end
 
 local function update_anchor(frames, index, size, offsetX, right, parent)
@@ -128,7 +128,9 @@ local function update_spells()
 				frame.icon:SetVertexColor(0.4, 0.4, 0.4);
 			end
 
-			set_cooldownframe(frame.cooldown, start, duration, true);
+			local durationobj = C_Spell.GetSpellCooldownDuration(id);
+
+			set_cooldownframe(frame.cooldown, durationobj, true);
 			frame:Show();
 
 			frame_idx = frame_idx + 1;

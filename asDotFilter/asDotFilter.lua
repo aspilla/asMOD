@@ -52,10 +52,10 @@ local function clear_cooldownframe(self)
     self:Clear();
 end
 
-local function set_cooldownframe(self, extime, duration, enable)
+local function set_cooldownframe(self, durationobject, enable)
     if enable then
         self:SetDrawEdge(nil);
-        self:SetCooldownFromExpirationTime(extime, duration, nil);
+        self:SetCooldownFromDurationObject(durationobject);
     else
         clear_cooldownframe(self);
     end
@@ -95,8 +95,9 @@ local function set_debuff(frame, unit, aura, color)
 
     frame.count:Show();
     frame.count:SetText(C_UnitAuras.GetAuraApplicationDisplayCount(unit, aura.auraInstanceID, 1, 100));
+    local durationobject = C_UnitAuras.GetAuraDuration(unit, aura.auraInstanceID);
 
-    set_cooldownframe(frame.cooldown, aura.expirationTime, aura.duration, true);
+    set_cooldownframe(frame.cooldown, durationobject, true);
 
     if color then
         frame.border:SetVertexColor(color.r, color.g, color.b);

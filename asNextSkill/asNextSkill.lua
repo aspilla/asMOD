@@ -41,13 +41,13 @@ local function clear_cooldownframe(self)
 	self:Clear();
 end
 
-local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
-	if enable then
-		self:SetDrawEdge(forceShowDrawEdge);
-		self:SetCooldown(start, duration, modRate);
-	else
-		clear_cooldownframe(self);
-	end
+local function set_cooldownframe(self, durationobject, enable)
+    if enable then
+        self:SetDrawEdge(nil);
+        self:SetCooldownFromDurationObject(durationobject);
+    else
+        clear_cooldownframe(self);
+    end
 end
 
 
@@ -58,10 +58,10 @@ local function on_update()
 		local info = C_Spell.GetSpellInfo(nextspellid);
 		if info then
 			main_frame.icon:SetTexture(info.iconID);
-
-			local coolinfo = C_Spell.GetSpellCooldown(nextspellid);
-			if coolinfo then
-				set_cooldownframe(main_frame.cooldown, coolinfo.startTime, coolinfo.duration, true);
+			
+			local durationobj = C_Spell.GetSpellCooldownDuration(nextspellid);
+			if durationobj then
+				set_cooldownframe(main_frame.cooldown, durationobj, true);
 			else
 				main_frame.cooldown:Hide();
 			end

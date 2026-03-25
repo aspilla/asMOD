@@ -4,13 +4,13 @@ local function clear_cooldownframe(self)
 	self:Clear();
 end
 
-local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
-	if enable then
-		self:SetDrawEdge(forceShowDrawEdge);
-		self:SetCooldown(start, duration, modRate);
-	else
-		clear_cooldownframe(self);
-	end
+local function set_cooldownframe(self, durationobject, enable)
+    if enable then
+        self:SetDrawEdge(nil);
+        self:SetCooldownFromDurationObject(durationobject);
+    else
+        clear_cooldownframe(self);
+    end
 end
 
 
@@ -24,7 +24,9 @@ local function set_totem(frame, startTime, duration, icon)
 		buttonIcon:Show();
 		buttonBorder:Show();
 		frame:SetAlpha(1);
-		set_cooldownframe(buttonCooldown, startTime, duration, true);
+		local durationobj = C_DurationUtil.CreateDuration();
+    	--durationobj:SetTimeFromStart(startTime, duration);
+		--set_cooldownframe(buttonCooldown, durationobj, true);
 		buttonCooldown:Show();
 	else
 		buttonIcon:Hide();
@@ -40,7 +42,7 @@ function ns.update_totems(frame)
 	for i = 1, MAX_TOTEMS do
 		haveTotem, name, startTime, duration, icon = GetTotemInfo(i);
 		button = frame.totembuttons[i];
-		button.totemslot = i;
+		button.totemslot = i;		
 		set_totem(button, startTime, duration, icon);
 	end
 end

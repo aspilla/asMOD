@@ -192,15 +192,14 @@ local function clear_cooldownframe(self)
 	self:Clear();
 end
 
-local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
-	if enable and enable ~= 0 and start > 0 and duration > 0 then
-		self:SetDrawEdge(forceShowDrawEdge);
-		self:SetCooldown(start, duration, modRate);
-	else
-		clear_cooldownframe(self);
-	end
+local function set_cooldownframe(self, durationobject, enable)
+    if enable then
+        self:SetDrawEdge(nil);
+        self:SetCooldownFromDurationObject(durationobject);
+    else
+        clear_cooldownframe(self);
+    end
 end
-
 local function on_event(self, event, arg1, arg2, arg3)
 	if (event == "UNIT_SPELLCAST_START") then
 		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
@@ -224,7 +223,8 @@ local function on_event(self, event, arg1, arg2, arg3)
 
 			local duration = (endTime - startTime) / 1000;
 			endTime = endTime / 1000;
-			set_cooldownframe(frameCooldown, endTime - duration, duration, duration > 0, true);
+			local duraitonobject = UnitCastingDuration("player")
+			set_cooldownframe(frameCooldown, duraitonobject, true);
 			frame:Show();
 		else
 			frame:Hide();
@@ -251,7 +251,8 @@ local function on_event(self, event, arg1, arg2, arg3)
 
 			local duration = (endTime - startTime) / 1000;
 			endTime = endTime / 1000;
-			set_cooldownframe(frameCooldown, endTime - duration, duration, duration > 0, true);
+			local duraitonobject = UnitChannelDuration("player")
+			set_cooldownframe(frameCooldown, duraitonobject, true);
 			frame:Show();
 		else
 			frame:Hide();

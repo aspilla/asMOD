@@ -4,10 +4,10 @@ local function clear_cooldownframe(self)
     self:Clear();
 end
 
-local function set_cooldownframe(self, extime, duration, enable)
+local function set_cooldownframe(self, durationobject, enable)
     if enable then
         self:SetDrawEdge(nil);
-        self:SetCooldownFromExpirationTime(extime, duration, nil);
+        self:SetCooldownFromDurationObject(durationobject);
     else
         clear_cooldownframe(self);
     end
@@ -16,8 +16,9 @@ end
 local function set_aura(frame, unit, aura, color)
     frame.icon:SetTexture(aura.icon);
     frame.count:SetText(C_UnitAuras.GetAuraApplicationDisplayCount(unit, aura.auraInstanceID, 1, 100));
+    local durationobject = C_UnitAuras.GetAuraDuration(unit, aura.auraInstanceID);
 
-    set_cooldownframe(frame.cooldown, aura.expirationTime, aura.duration, true);
+    set_cooldownframe(frame.cooldown, durationobject, true);
 
     if color then
         frame.border:SetVertexColor(color.r, color.g, color.b);
@@ -25,7 +26,7 @@ local function set_aura(frame, unit, aura, color)
         frame.border:SetVertexColor(0, 0, 0);
     end
 end
-local function update_buffs(frame, auralist, filter)
+local function update_buffs(frame, auralist, filter, durationobject)
     local i = 0;
     local parent = frame;
     local unit = frame.unit;
@@ -90,7 +91,7 @@ local function update_debuffs(frame, auraList, filter)
         debuffframe.filter = filter
 
         local color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);
-
+        
         set_aura(debuffframe, unit, aura, color);
         debuffframe:Show();
     end

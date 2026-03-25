@@ -5,19 +5,20 @@ local function clear_cooldownframe(self)
 	self:Clear();
 end
 
-local function set_cooldownframe(self, extime, duration, enable)
-	if enable then
-		self:SetDrawEdge(nil);
-		self:SetCooldownFromExpirationTime(extime, duration, nil);
-	else
-		clear_cooldownframe(self);
-	end
+local function set_cooldownframe(self, durationobject, enable)
+    if enable then
+        self:SetDrawEdge(nil);
+        self:SetCooldownFromDurationObject(durationobject);
+    else
+        clear_cooldownframe(self);
+    end
 end
 
 local function set_buff(frame, unit, aura)
 	frame.icon:SetTexture(aura.icon);
 	frame.count:SetText(C_UnitAuras.GetAuraApplicationDisplayCount(unit, aura.auraInstanceID, 1, 100));
-	set_cooldownframe(frame.cooldown, aura.expirationTime, aura.duration, true);
+	local durationobject = C_UnitAuras.GetAuraDuration(unit, aura.auraInstanceID);
+	set_cooldownframe(frame.cooldown, durationobject, true);
 
 	if C_CurveUtil and C_CurveUtil.EvaluateColorValueFromBoolean then
 		local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(aura.isStealable, 1, 0);

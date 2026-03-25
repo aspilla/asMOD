@@ -57,10 +57,10 @@ local function clear_cooldownframe(self)
     self:Clear();
 end
 
-local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
+local function set_cooldownframe(self, durationobject, enable)
     if enable then
-        self:SetDrawEdge(forceShowDrawEdge);
-        self:SetCooldown(start, duration, modRate);
+        self:SetDrawEdge(nil);
+        self:SetCooldownFromDurationObject(durationobject);
     else
         clear_cooldownframe(self);
     end
@@ -101,7 +101,7 @@ local function show_interruptspell(frame, spellid, alpha)
         frame.icon:SetVertexColor(0.4, 0.4, 0.4);
     end
 
-    set_cooldownframe(frame.cooldown, durationobj:GetStartTime(), durationobj:GetTotalDuration(), true);
+    set_cooldownframe(frame.cooldown, durationobj, true);
     frame.icon_desaturated:SetAlpha(durationobj:EvaluateRemainingDuration(coolcurve));
 
     frame:SetAlpha(alpha);

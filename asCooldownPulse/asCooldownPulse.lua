@@ -50,10 +50,10 @@ local function clear_cooldownframe(self)
     self:Clear();
 end
 
-local function set_cooldownframe(self, start, duration, enable, forceShowDrawEdge, modRate)
+local function set_cooldownframe(self, durationobject, enable)
     if enable then
-        self:SetDrawEdge(forceShowDrawEdge);
-        self:SetCooldown(start, duration, modRate);
+        self:SetDrawEdge(nil);
+        self:SetCooldownFromDurationObject(durationobject);
     else
         clear_cooldownframe(self);
     end
@@ -70,6 +70,7 @@ local function update_spellbutton(frame, spellid)
     local durationobj = C_Spell.GetSpellCooldownDuration(or_spellid);
     local count = C_Spell.GetSpellDisplayCount(or_spellid);
     local chargeinfo = C_Spell.GetSpellCharges(or_spellid);
+    local chargeduration = C_Spell.GetSpellChargeDuration(or_spellid);
 
     frame.icon:SetTexture(icon);
     frame.icon_desaturated:SetTexture(icon);
@@ -85,17 +86,16 @@ local function update_spellbutton(frame, spellid)
     frame.count:SetText(count);
     frame.count:Show();
 
-    if chargeinfo then
+    if chargeduration then
         frame.cooldown:Show();
-        set_cooldownframe(frame.cooldown, chargeinfo.cooldownStartTime,
-            chargeinfo.cooldownDuration, true, true);
+        set_cooldownframe(frame.cooldown, chargeduration, true);
         frame.icon_desaturated:SetAlpha(0);
     else
         if durationobj then
-            set_cooldownframe(frame.cooldown, durationobj:GetStartTime(), durationobj:GetTotalDuration(), true);
+            set_cooldownframe(frame.cooldown, durationobj, true);
             frame.icon_desaturated:SetAlpha(durationobj:EvaluateRemainingDuration(coolcurve));
         else
-            set_cooldownframe(frame.cooldown, 0, 0, false);
+            set_cooldownframe(frame.cooldown, durationobj, false);
             frame.icon_desaturated:SetAlpha(1);
         end
     end
@@ -107,6 +107,9 @@ local function update_itembutton(frame, itemid, istrinket, ishealthstone)
     local _, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemid)
     local start, duration = C_Item.GetItemCooldown(itemid);
     local count = C_Item.GetItemCount(itemid, false, true, false, false);
+    local durationobj = C_DurationUtil.CreateDuration();
+    durationobj:SetTimeFromStart(start, duration);
+
 
     if istrinket then
         count = 0;
@@ -114,7 +117,7 @@ local function update_itembutton(frame, itemid, istrinket, ishealthstone)
 
     frame.icon:SetTexture(icon);
     frame.icon_desaturated:SetTexture(icon);
-    set_cooldownframe(frame.cooldown, start, duration, true);
+    set_cooldownframe(frame.cooldown, durationobj, true);
     if duration > 2 then
         frame.icon_desaturated:SetAlpha(1);
     else
