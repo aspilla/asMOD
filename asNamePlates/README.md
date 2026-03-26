@@ -31,12 +31,18 @@ Colors are displayed based on the following priority:
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
 * **Modify Friendly Nameplate Settings (ChangeFriendNamePlates)**: Changes the appearance of friendly nameplates as shown below. (Default: Off)
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
-* **Setup Macro Creation**: Adjusts target nameplate size and sets friendly nameplates to show class colors. Use the `asNamePlates Setup` macro and ensure the `Simplified Friendly Nameplates` option is set to OFF.
+* **Setup Macro Creation**: Adjusts target nameplate size and sets friendly nameplates to show class colors. Use the `asNamePlates Setup` macro.
 
 
 ## Configuration
 * `ESC > Options > AddOns > asNamePlates`
 * You can toggle color-changing features and customize colors here.
+
+## Recommended Nameplate Settings
+* When selecting **ChangeFriendNamePlates**, the "Simplify Friendly Nameplates" option must be turned **OFF**.
+![sample](https://media.forgecdn.net/attachments/1600/308/i1643642077-jpg.jpg)
+![sample](https://media.forgecdn.net/attachments/1600/307/i1897865702-jpg.jpg)
+![sample](https://media.forgecdn.net/attachments/1600/306/i1527298036-jpg.jpg)
 
 ## Contact Information
 1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
@@ -75,13 +81,19 @@ Colors are displayed based on the following priority:
 * **Targeted 강조 (`ShowTargeted`)** : 나를 대상으로 하는 경우 좌측에 깜빡이는 느낌표 표시, 탱커의 경우 나를 대상으로 케스팅 하는 경우만
 * **중요 스킬 강조 (`AlertImportantSpell`)** : 중요 스킬 시전시 생명력이 빨간색으로 깜빡임 (아래 스샷 참고)
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
-* **아군 이름표 설정 변경 (`ChangeFriendNamePlates`)** : 아군 이름표를 아래와 같이 변경 합니다. (기본 Off)
+* **아군 이름표 설정 변경 (`ChangeFriendNamePlates`)** : 아군 이름표를 아래와 같이 변경 합니다. (기본 Off, 접속시 다시 설정 합니다.)
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
-* **이름표 Setup 매크로 생성** : 대상 이름표 크기, 아군 이름표 직업 색상 이름으로 변경, `asNamePlates Setup` 메크로 사용 및 `아군 이름표 간소화 옵션` off 필요
+* **이름표 Setup 매크로 생성** : 대상 이름표 크기, 아군 이름표 직업 색상 이름으로 변경, `asNamePlates Setup` 메크로 사용
 
 ## 설정
 * `Esc > 옵션 > 애드온 > asNamePlates`
 * 색상 변경 및 색상 변경 기능 On/Off 가능
+
+## 이름표 추천 설정
+* `ChangeFriendNamePlates` 선택시는 아군 이름표 간소화 옵션 off 필요
+![sample](https://media.forgecdn.net/attachments/1600/308/i1643642077-jpg.jpg)
+![sample](https://media.forgecdn.net/attachments/1600/307/i1897865702-jpg.jpg)
+![sample](https://media.forgecdn.net/attachments/1600/306/i1527298036-jpg.jpg)
 
 ## 문의처
 1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
