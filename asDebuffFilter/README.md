@@ -5,7 +5,7 @@ Displays player and target debuffs.
 
 ## Key Features
 
-Displays debuffs for the Player (up to 6 on the left) and the Target (up to 6 on the right).
+Displays debuffs & private aura for the Player (up to 6 on the left) and the Target (up to 6 on the right).
 
 
 ## Configuration 
@@ -28,6 +28,7 @@ Displays debuffs for the Player (up to 6 on the left) and the Target (up to 6 on
 ## 주요 기능
 
 플레이어(좌측 6개), 대상 (우측 6개) 표시
+Private Aura(좌측 6개)
 
 
 ## 설정 

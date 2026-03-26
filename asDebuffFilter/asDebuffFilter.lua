@@ -53,29 +53,40 @@ function asDebuffPrivateAuraAnchorMixin:SetUnit(unit)
         };
         privateAnchorArgs.durationAnchor = nil;
 
-        --self.anchorID = C_UnitAuras.AddPrivateAuraAnchor(privateAnchorArgs);
+        self.anchorID = C_UnitAuras.AddPrivateAuraAnchor(privateAnchorArgs);
     end
 end
+
+local bsetupprivate = false;
 
 local function create_privateframes(parent)
     if parent.PrivateAuraAnchors == nil then
         parent.PrivateAuraAnchors = {};
     end
 
+    if UnitAffectingCombat("player") then
+        return;
+    end
+
+    bsetupprivate = true;
+
 
     local size = ns.configs.size + 5;
 
     size = size * ns.options.PlayerDebuffRate;
 
-    for idx = 1, 2 do
+    for idx = 1, ns.configs.max_private do
         parent.PrivateAuraAnchors[idx] = CreateFrame("Frame", nil, parent, "asDebuffPrivateAuraAnchorTemplate");
         parent.PrivateAuraAnchors[idx].auraIndex = idx;
         parent.PrivateAuraAnchors[idx]:SetSize((size - 5), (size - 5) * ns.configs.sizerate);
         parent.PrivateAuraAnchors[idx]:SetUnit("player");
 
-        if idx == 2 then
+        if idx > 1 then
             parent.PrivateAuraAnchors[idx]:ClearAllPoints();
-            parent.PrivateAuraAnchors[idx]:SetPoint("RIGHT", parent.PrivateAuraAnchors[1], "LEFT", -1, 0);
+            parent.PrivateAuraAnchors[idx]:SetPoint("RIGHT", parent.PrivateAuraAnchors[idx - 1], "LEFT", -1, 0);
+        else
+            parent.PrivateAuraAnchors[idx]:ClearAllPoints();
+            parent.PrivateAuraAnchors[idx]:SetPoint("RIGHT", parent, "LEFT", 0, 0);
         end
     end
 
@@ -148,15 +159,6 @@ local function update_frames(unit, auraList, numAuras, filter)
             frame:Hide();
         end
     end
-
-    if parent == main_frame.player_frame then
-        parent.PrivateAuraAnchors[1]:ClearAllPoints();
-        if i == 0 then
-            parent.PrivateAuraAnchors[1]:SetPoint("BOTTOMRIGHT", main_frame.player_frame, "BOTTOMLEFT", 0, 0);
-        else
-            parent.PrivateAuraAnchors[1]:SetPoint("BOTTOMRIGHT", parent.frames[i], "BOTTOMLEFT", -1, 0);
-        end
-    end
 end
 
 local debufffilter_attack = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
@@ -208,6 +210,9 @@ local function on_event(self, event, arg1, ...)
         set_combatalpha();
     elseif event == "PLAYER_REGEN_ENABLED" then
         set_combatalpha();
+        if bsetupprivate == false and main_frame.private_frame then
+            create_privateframes(main_frame.private_frame);
+        end
     end
 end
 
@@ -329,7 +334,6 @@ local function init()
     end
 
 
-
     main_frame.player_frame = CreateFrame("Frame", nil, main_frame)
 
     main_frame.player_frame:SetPoint("CENTER", ns.configs.player_xpoint, ns.configs.player_ypoint - offset)
@@ -338,11 +342,26 @@ local function init()
     main_frame.player_frame:Show()
 
     create_frames(main_frame.player_frame, false, ns.options.PlayerDebuffRate);
-    create_privateframes(main_frame.player_frame);
 
     if libasConfig then
         libasConfig.load_position(main_frame.player_frame, "asDebuffFilter(Player)", ADF_Positions_2);
     end
+
+
+    main_frame.private_frame = CreateFrame("Frame", nil, main_frame)
+
+    main_frame.private_frame:SetPoint("CENTER", ns.configs.private_xpoint, ns.configs.private_ypoint - offset)
+    main_frame.private_frame:SetWidth(1)
+    main_frame.private_frame:SetHeight(1)
+    main_frame.private_frame:Show();
+
+    create_privateframes(main_frame.private_frame);
+
+    if libasConfig then
+        libasConfig.load_position(main_frame.private_frame, "asDebuffFilter(Private)", ADF_Positions_3);
+    end
+
+
 
     main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
     main_frame:RegisterUnitEvent("UNIT_AURA", "player");

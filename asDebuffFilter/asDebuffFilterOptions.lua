@@ -13,7 +13,10 @@ ns.configs = {
 	target_ypoint = -150,
 	player_xpoint = -125,
 	player_ypoint = -115,
+	private_xpoint = -125,
+	private_ypoint = -115 + 45,
 	max_debuffs = 7,
+	max_private = 6,
 	cool_fontsize = 12, -- Cooldown Font Size
 	count_fontsize = 13, -- Count Font Size
 	combat_alpha = 1,   -- 전투중 Alpha 값
@@ -50,6 +53,10 @@ function ns.setup_option()
 
 	if ADF_Positions_2 == nil then
 		ADF_Positions_2 = {};
+	end
+
+	if ADF_Positions_3 == nil then
+		ADF_Positions_3 = {};
 	end
 
 	ns.options = CopyTable(ADF_Options);
