@@ -9,7 +9,10 @@ function ChatEdit_CustomTabPressed(self)
 	local RTB_PVPType = C_PvP.GetZonePVPInfo();
 	local bInstance, RTB_ZoneType = IsInInstance();
 	local bRaid = (GetNumGroupMembers() > 0 and IsInRaid());
-	local tellTarget = self:GetAttribute("tellTarget");
+	local tellTarget = nil;
+	if not UnitAffectingCombat("player") and not C_InstanceEncounter.IsEncounterInProgress() then
+		tellTarget = self:GetAttribute("tellTarget");
+	end
 	bInstance = (IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance());
 	if RTB_PVPType == "combat" or RTB_ZoneType == "pvp" then
 		bBattle = true;
