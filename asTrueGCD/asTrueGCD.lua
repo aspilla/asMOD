@@ -193,12 +193,12 @@ local function clear_cooldownframe(self)
 end
 
 local function set_cooldownframe(self, durationobject, enable)
-    if enable then
-        self:SetDrawEdge(nil);
-        self:SetCooldownFromDurationObject(durationobject);
-    else
-        clear_cooldownframe(self);
-    end
+	if enable then
+		self:SetDrawEdge(nil);
+		self:SetCooldownFromDurationObject(durationobject);
+	else
+		clear_cooldownframe(self);
+	end
 end
 local function on_event(self, event, arg1, arg2, arg3)
 	if (event == "UNIT_SPELLCAST_START") then
@@ -221,8 +221,6 @@ local function on_event(self, event, arg1, arg2, arg3)
 				frame.text:Hide();
 			end
 
-			local duration = (endTime - startTime) / 1000;
-			endTime = endTime / 1000;
 			local duraitonobject = UnitCastingDuration("player")
 			set_cooldownframe(frameCooldown, duraitonobject, true);
 			frame:Show();
@@ -249,8 +247,6 @@ local function on_event(self, event, arg1, arg2, arg3)
 				frame.text:Hide();
 			end
 
-			local duration = (endTime - startTime) / 1000;
-			endTime = endTime / 1000;
 			local duraitonobject = UnitChannelDuration("player")
 			set_cooldownframe(frameCooldown, duraitonobject, true);
 			frame:Show();
