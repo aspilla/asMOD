@@ -14,7 +14,7 @@ local function set_cooldownframe(self, durationobject, enable)
 end
 
 
-local function set_totem(frame, startTime, duration, icon)
+local function set_totem(frame, icon)
 	local buttonIcon = frame.Icon.icon;
 	local buttonBorder = frame.Icon.border;
 	local buttonCooldown = frame.Icon.cooldown;
@@ -42,6 +42,6 @@ function ns.update_totems(frame)
 		haveTotem, name, startTime, duration, icon = GetTotemInfo(i);
 		button = frame.totembuttons[i];
 		button.totemslot = i;
-		set_totem(button, startTime, duration, icon);
+		set_totem(button, icon);
 	end
 end
