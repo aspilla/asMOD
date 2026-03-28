@@ -30,23 +30,6 @@ local function get_spellicons(spellid)
 	end
 end
 
-local function get_spellcooldown(spellid)
-	if not spellid then
-		return nil;
-	end
-
-	local or_spellid = C_Spell.GetOverrideSpell(spellid)
-
-	if or_spellid then
-		spellid = or_spellid;
-	end
-
-	local info = C_Spell.GetSpellCooldown(spellid);
-	if info then
-		return info.startTime, info.duration
-	end
-end
-
 local function clear_cooldownframe(self)
 	self:Clear();
 end
@@ -89,9 +72,8 @@ local function update_spells()
 
 	for _, id in pairs(spell_list) do
 		local icon = get_spellicons(id);
-		local start, duration, _ = get_spellcooldown(id);
 		local isusable, notenoughmana = C_Spell.IsSpellUsable(id);
-
+		
 		if (icon) then
 			local frame = parent.frames[frame_idx];
 
