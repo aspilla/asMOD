@@ -194,9 +194,9 @@ asMOD minimizes the use of the ACE Library. To copy settings, use the `WTF` fold
 * This feature can be disabled individually for each UI element, such as `asPowerBar` and `asCombatInfo`.
 
 ### 10. Changing Fonts (Regarding Font Size)
-* The Inven version of asMOD includes fonts, located in `World of Warcraft/_retail_/Fonts`.
-* If the font size is too small or not to your liking, you can delete or replace the files in that folder.
-* The default font used in the video is not shared directly. It is recommended for use only on QHD resolutions or higher. (You can search for "Devil UI Font" on Google).
+* The Inven version of asMOD includes fonts (`K_Damage.ttf`, the English WoW damage font). These are located in `World of Warcraft/_retail_/Fonts`.
+* If you are not satisfied with the font, you can delete or replace the files in that folder.
+* The default font shown in the video is not shared directly. It is recommended for use only on QHD resolutions or higher. (You can search for "Devil UI Font" on Google and replace `2002.ttf` and `2002b.ttf`).
 
 ### 11. Nameplate Settings
 * If you require detailed nameplate configuration, please refer to the manual below:
@@ -410,9 +410,9 @@ asMOD 설치시 그래픽 설정의 UI 설정을 0.75로 축소 합니다.
 *   asPowerBar, asCombatInfo 등 각 UI 별로 비전투 투명화 되는 것을 끌 수 있습니다.
 
 ### 10. 폰트 변경 (글씨 크기 관련)
-*   인벤 다운로드 asMOD는 폰트도 포함하고 있습니다. World of Warcraft/_retail_/Font 가 위치 입니다.
-*   글씨 크기가 작거나 마음에 안드는 경우 해당 Font를 삭제/변경하시면 됩니다.
-*   영상에 사용중인 기본 Font는 직접 공유는 안하고 있습니다. QHD 이상에서만 사용권장 드립니다. (Devil UI 폰트로 구글 검색 하시면 됩니다.)
+*   인벤 다운로드 asMOD는 폰트도 포함(`K_Damage.ttf`, 와우 영문판 데미지 폰트)하고 있습니다. World of Warcraft/_retail_/Font 가 위치 입니다.
+*   글씨 마음에 안드는 경우 해당 Font를 삭제/변경하시면 됩니다. 
+*   영상에 사용중인 기본 Font는 직접 공유는 안하고 있습니다. QHD 이상에서만 사용권장 드립니다. (Devil UI 폰트로 구글 검색, `2002.ttf`, `2002b.ttf` 변경 하시면 됩니다.)
 
 ### 11. 이름표 설정 
 *  상세 이름표 설정이 필요한 경우 아래 설명서 참고 하세요.
