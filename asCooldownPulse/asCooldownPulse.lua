@@ -66,10 +66,12 @@ coolcurve:AddPoint(1.6, 1);
 
 local function update_spellbutton(frame, spellid)
     local or_spellid, _, _, icon = ns.get_spellinfo(spellid);
+    if or_spellid == nil then
+        or_spellid = spellid;
+    end
     local isUsable, notEnoughMana = C_Spell.IsSpellUsable(or_spellid);
     local durationobj = C_Spell.GetSpellCooldownDuration(or_spellid);
     local count = C_Spell.GetSpellDisplayCount(or_spellid);
-    local chargeinfo = C_Spell.GetSpellCharges(or_spellid);
     local chargeduration = C_Spell.GetSpellChargeDuration(or_spellid);
 
     frame.icon:SetTexture(icon);
