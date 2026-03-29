@@ -21,11 +21,11 @@ Colors are displayed based on the following priority:
 ## Other Features
 
 * **Vertical Overlap Adjustment (`nameplateOverlapV`)**: Set to 1.1 by default.
-* **Mouseover Indicator**: Displays a green arrow at the bottom of the mouseover target.
 * **Target Power Display**: Shows mob energy below the health bar if it's not mana (`ShowPower`).
 * **Cast Icon Display**: Displays the skill icon while casting (`ShowCastIcon`).
 * **Aura Adjustment**: Adjusts buff/debuff duration/stack position and adds borders (`ChangeDebuffIcon`).
 * **Texture and Border Customization (`ChangeTexture`)**: Displays a white border for the current target and a green border for the focus target. Changes health bars to a rectangular shape.
+* **Mouseover Indicator**: Display blue border on focus (`ChangeTexture`)
 * **Targeted Highlight (`ShowTargeted`)**: Displays a blinking exclamation mark on the left when you are targeted. For tanks, this only triggers when a mob is casting at you.
 * **Important Spell Alert (`AlertImportantSpell`)**: The health bar flashes red when an important spell is being cast (see screenshot below).
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
@@ -73,11 +73,11 @@ Colors are displayed based on the following priority:
 ## 기타 기능
 
 * **이름표 세로 정렬 간격 설정(`nameplateOverlapV`)** : 1.1을 기본으로 설정
-* **마우스오버 대상 녹색 화살표 하단 표시**
 * **대상의 경우 몹의 기력을 체력바 아래 표시 (마나가 아닐 경우, `ShowPower`)**
 * **시전중일 경우 스킬 아이콘 표시 (마나가 아닐 경우, `ShowCastIcon`)**
 * **버프/디버프 시간/중첩 위치 조정 및 테두리 추가 (`ChangeDebuffIcon`)**
 * **이름표 Texture 및 테두리 변경 (`ChangeTexture`)** : 대상의 경우 흰색 테두리, 주시의 경우 녹색 테두리 표시, 생명력바를 사각형 모양으로 변경
+* **마우스오버 대상 파란색 테두리 표시 (`ChangeTexture`)**
 * **Targeted 강조 (`ShowTargeted`)** : 나를 대상으로 하는 경우 좌측에 깜빡이는 느낌표 표시, 탱커의 경우 나를 대상으로 케스팅 하는 경우만
 * **중요 스킬 강조 (`AlertImportantSpell`)** : 중요 스킬 시전시 생명력이 빨간색으로 깜빡임 (아래 스샷 참고)
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)

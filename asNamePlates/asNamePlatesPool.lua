@@ -30,6 +30,8 @@ local function create_frame()
     object.notinterruptable = object:CreateTexture(nil, "ARTWORK", template, 2);
     local color = ns.options.NotinterruptableColor;
     object.notinterruptable:SetVertexColor(color.r, color.g, color.b);   
+    object.focused = object:CreateTexture(nil, "BACKGROUND");
+    object.focused:SetColorTexture(0, 0, 1, 1);
     object.selected = object:CreateTexture(nil, "BACKGROUND");
     object.selected:SetColorTexture(1, 1, 1, 1);
     object.border = object:CreateTexture(nil, "BACKGROUND");
@@ -52,10 +54,6 @@ local function create_frame()
     object.powerbar.value:SetFont(STANDARD_TEXT_FONT, ns.configs.powerfontsize, "OUTLINE");
     object.powerbar.value:SetTextColor(1, 1, 1, 1)
     object.powerbar.value:SetPoint("CENTER", object.powerbar, "CENTER", 0, 0);
-
-    object.motext = object:CreateFontString(nil, "OVERLAY");
-    object.motext:SetFont(STANDARD_TEXT_FONT, ns.configs.mousefontsize, "OUTLINE");
-    object.motext:SetText(mouseoverIcon);
 
     object.targetedindi = object:CreateFontString(nil, "OVERLAY");
     object.targetedindi:SetFont(STANDARD_TEXT_FONT, ns.configs.mousefontsize + 1, "OUTLINE");

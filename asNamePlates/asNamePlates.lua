@@ -63,6 +63,8 @@ end
 local function on_asframe_event(asframe, event, ...)
     if (event == "PLAYER_TARGET_CHANGED") then
         ns.update_target(asframe);
+    elseif (event == "PLAYER_FOCUS_CHANGED") then
+        ns.update_target(asframe);
     elseif event == "UPDATE_MOUSEOVER_UNIT" then
         ns.update_mouseover(asframe);
     else
@@ -101,6 +103,7 @@ local function remove_unit(unit)
         asframe.important:Hide();
         asframe.border:Hide();
         asframe.selected:Hide();
+        asframe.focused:Hide();
 
         restore_default(nameplate_base)
 
@@ -257,6 +260,13 @@ local function add_unit(unit)
         if not healthbar.border then
             healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
 
+            asframe.focused:SetParent(healthbar);
+            asframe.focused:SetDrawLayer("BACKGROUND", -7);
+            asframe.focused:ClearAllPoints();
+            PixelUtil.SetPoint(asframe.focused, "TOPLEFT", healthbar, "TOPLEFT", -4, 4);
+            PixelUtil.SetPoint(asframe.focused, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 4, -4);
+            asframe.focused:SetAlpha(1);
+
             asframe.selected:SetParent(healthbar);
             asframe.selected:SetDrawLayer("BACKGROUND", -6);
             asframe.selected:ClearAllPoints();
@@ -276,6 +286,7 @@ local function add_unit(unit)
             healthbar.selectedBorder:SetAlpha(0)
         end
     else
+        asframe.focused:SetAlpha(0);
         asframe.selected:SetAlpha(0);
         asframe.border:SetAlpha(0);
     end
@@ -308,10 +319,6 @@ local function add_unit(unit)
     asframe.powerbar:ClearAllPoints();
     PixelUtil.SetPoint(asframe.powerbar, "TOP", healthbar, "BOTTOM", 0, 2);
     asframe.powerbar:Hide();
-
-    asframe.motext:ClearAllPoints();
-    PixelUtil.SetPoint(asframe.motext, "TOP", healthbar, "BOTTOM", 0, -1);
-    asframe.motext:Hide();
 
     asframe.targetedindi:ClearAllPoints();
     PixelUtil.SetPoint(asframe.targetedindi, "RIGHT", healthbar, "LEFT", 0, 0);
@@ -352,6 +359,7 @@ local function add_unit(unit)
 
     asframe:SetScript("OnEvent", on_asframe_event);
     asframe:RegisterEvent("PLAYER_TARGET_CHANGED");
+    asframe:RegisterEvent("PLAYER_FOCUS_CHANGED");
     asframe:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
     asframe:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
     asframe:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);

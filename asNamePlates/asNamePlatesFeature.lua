@@ -191,12 +191,12 @@ end
 function ns.update_mouseover(asframe)
     if UnitExists("mouseover") then
         if asframe.unit and UnitIsUnit(asframe.unit, "mouseover") then
-            asframe.motext:Show();
+            asframe.focused:Show();            
             return;
         end
     end
 
-    asframe.motext:Hide();
+    asframe.focused:Hide();   
 end
 
 local targetedtexts = {};
