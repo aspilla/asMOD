@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rBattleRes
 ## Notes:Displays Combat Resurrection charges and cooldown.
 ## Notes-koKR: 전투 부활 횟수/대기시간 표시
-## Version : 260315
+## Version : 260401
 ## SavedVariablesPerCharacter: ASBR_Options, ASBR_Position 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
