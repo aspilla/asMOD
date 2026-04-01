@@ -63,7 +63,9 @@ local function show_castings()
         local button = ns.casts[currshow];
 
         button.icon:SetTexture(texture);
-        button.cooldown:SetCooldownFromDurationObject(duration);
+        if duration then
+            button.cooldown:SetCooldownFromDurationObject(duration);
+        end
 
         local isimportant = C_Spell.IsSpellImportant(spellid);
         local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
