@@ -193,13 +193,14 @@ local function clear_cooldownframe(self)
 end
 
 local function set_cooldownframe(self, durationobject, enable)
-	if enable then
-		self:SetDrawEdge(nil);
-		self:SetCooldownFromDurationObject(durationobject);
-	else
-		clear_cooldownframe(self);
-	end
+    if enable and durationobject  then
+        self:SetDrawEdge(nil);
+        self:SetCooldownFromDurationObject(durationobject);
+    else
+        clear_cooldownframe(self);
+    end
 end
+
 local function on_event(self, event, arg1, arg2, arg3)
 	if (event == "UNIT_SPELLCAST_START") then
 		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
