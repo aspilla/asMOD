@@ -6,7 +6,7 @@ local function clear_cooldownframe(self)
 end
 
 local function set_cooldownframe(self, durationobject, enable)
-    if enable then
+    if enable and durationobject then
         self:SetDrawEdge(nil);
         self:SetCooldownFromDurationObject(durationobject);
     else
