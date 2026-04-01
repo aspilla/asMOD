@@ -3,6 +3,7 @@ local _, ns = ...;
 local Options_Default = {
     version = 251209,
     HideModifier = 1,
+    Alpha = 0,
 };
 
 ns.options = CopyTable(Options_Default);
@@ -32,7 +33,9 @@ function ns.setup_option()
         local variable = get_variable_from_cvar_name(cvar_name)
         AHNP_Options[variable] = value;
         ns.options[variable] = value;
-        ReloadUI();
+        if type(value) ~= "number" then
+            ReloadUI();
+        end
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asHideNamePlates");
@@ -73,6 +76,15 @@ function ns.setup_option()
                 Settings.CreateDropdown(category, setting, GetOptions, tooltip);
                 Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            elseif tonumber(defaultValue) ~= nil then
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue),
+                    name, defaultValue);
+                local options = Settings.CreateSliderOptions(0, 1, 0.1);
+                options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+                Settings.CreateSlider(category, setting, options, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);            
             else
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
                     type(defaultValue), name, defaultValue);

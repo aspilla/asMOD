@@ -129,14 +129,27 @@ local function hide_nameplates(nameplate, bshow)
 	local unitframe = get_unitframe(nameplate);
 
 	if bshow then
-		unitframe:Show();
+		
+		if ns.options.Alpha > 0 then
+			unitframe:SetAlpha(1);
+		else
+			unitframe:Show();
+		end
 		return;
 	end
 
-	if is_mustshow(unit) then
-		unitframe:Show();
+	if is_mustshow(unit) then		
+		if ns.options.Alpha > 0 then
+			unitframe:SetAlpha(1);
+		else
+			unitframe:Show();
+		end
 	else
-		unitframe:Hide();
+		if ns.options.Alpha > 0 then
+			unitframe:SetAlpha(ns.options.Alpha);
+		else
+			unitframe:Hide();
+		end
 	end
 end
 
