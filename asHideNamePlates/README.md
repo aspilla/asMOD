@@ -28,7 +28,13 @@ Hides all nameplates except for mobs that are currently casting.
 
 ## Configuration
 Settings can be changed via `ESC` > `Options` > `AddOns` > `asHideNamePlates`.
-* `Alpha`: Adjust the transparency of hidden nameplates (0 = Fully hidden, 1 = Fully visible).
+The following settings control whether nameplates of hostile targets in combat are hidden when they are not casting:
+
+* `Alpha`: Adjust the transparency of hidden nameplates (Default: 0 for fully hidden, 1 for no hiding).
+* `ShowBoss`: Boss mobs are always visible (Default: On).
+* `ShowNoDebuff`: Mobs without your debuffs remain visible (Default: Off, intended for DoT classes).
+* `HideMinusMob`: Hides non-essential/minor mobs (Default: On).
+* `ShowPlayers`: Hostile players remain visible (Default: On).
 
 ## Contact Information
 1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
@@ -66,7 +72,14 @@ Settings can be changed via `ESC` > `Options` > `AddOns` > `asHideNamePlates`.
 
 ## 설정
 `ESC` > `설정` > `애드온` > `asHideNamePlates` 에서 설정 변경 가능
+아래 설정은 전투중인 적대적 대상이 케스팅 중일때 이름표 숨김 여부를 조정
 * `Alpha` 숨김 정도 조정 (기본 0 완전 숨김 ~ 1 숨김 안함)
+* `ShowBoss` 보스몹은 늘 보임 (기본 On)
+* `ShowNoDebuff` 내 디버프가 없는 몹은 보임 (기본 Off, 도트 딜러용 옵션)
+* `HideMinusMob` 중요하지 않은 몹은 숨김 (기본 On)
+* `ShowPlayers` 적대적 대상의 경우 보임 (기본 On)
+
+
 
 ## 문의처
 1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)

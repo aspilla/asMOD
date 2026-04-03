@@ -4,6 +4,10 @@ local Options_Default = {
     version = 251209,
     HideModifier = 1,
     Alpha = 0,
+    ShowBoss = true,
+    ShowNoDebuff = false,
+    HideMinusMob = true,
+    ShowPlayers = true,
 };
 
 ns.options = CopyTable(Options_Default);

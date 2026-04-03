@@ -89,11 +89,37 @@ local function check_needtohide(nameplate)
 	return check_trigger(nameplate);
 end
 
+local function get_auracount(list)
+    local count = 0;
+    if list:IsForbidden() then
+        return count
+    end
+    local children = list:GetLayoutChildren()
+    if #children == 0 then
+        return count;
+    end
+    for _, child in ipairs(children) do
+        if child.auraInstanceID then
+            count = count + 1;
+        end
+    end
+
+    return count;
+end
+
 local isTank = false;
 
-local function is_mustshow(unit)
+local function is_mustshow(unit, unitframe)
 	if UnitIsUnit(unit, "target") or UnitIsUnit(unit, "focus") then
 		return true;
+	end
+	
+	if ns.options.HideMinusMob and (UnitClassification(unit) == "minus") then
+		return false;
+	end
+
+	if ns.options.ShowPlayers and UnitIsPlayer(unit) then
+		return false;
 	end
 
 	local bcasting = check_cast(unit);
@@ -103,9 +129,28 @@ local function is_mustshow(unit)
 		return true;
 	end
 
-
 	if isTank and status and status < 2 then
 		return true;
+	end
+
+	if ns.options.ShowBoss then
+		local level = UnitLevel(unit);
+
+		if level then
+			if level < 0 or level > UnitLevel("player") then
+				return true;
+			end
+		end
+	end
+
+	if ns.options.ShowNoDebuff and unitframe and unitframe.AurasFrame then		
+		local debufflist = unitframe.AurasFrame.DebuffListFrame
+
+		local activeDebuffs = get_auracount(debufflist);
+
+		if activeDebuffs == 0 then
+			return true;
+		end
 	end
 
 	return false;
@@ -129,7 +174,6 @@ local function hide_nameplates(nameplate, bshow)
 	local unitframe = get_unitframe(nameplate);
 
 	if bshow then
-		
 		if ns.options.Alpha > 0 then
 			unitframe:SetAlpha(1);
 		else
@@ -138,7 +182,7 @@ local function hide_nameplates(nameplate, bshow)
 		return;
 	end
 
-	if is_mustshow(unit) then		
+	if is_mustshow(unit, unitframe) then
 		if ns.options.Alpha > 0 then
 			unitframe:SetAlpha(1);
 		else
