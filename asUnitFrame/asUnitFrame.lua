@@ -629,8 +629,9 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 
     frame.callback2 = function()
         ns.update_unitframe_other(frame);
-        ns.update_unitframe_portrait(frame);
         ns.update_auras(frame);
+        --off due to shuttering
+        --ns.update_unitframe_portrait(frame);
     end
 
     C_Timer.NewTicker(configs.updaterate, frame.callback);
@@ -641,9 +642,9 @@ local function update_unitframe(unit)
     local frame = ns.unitframes[unit];
     if frame then
         ns.update_unithealth(frame);
-        ns.update_unitframe_other(frame);
-        ns.update_unitframe_portrait(frame);
+        ns.update_unitframe_other(frame);        
         ns.update_auras(frame);
+        ns.update_unitframe_portrait(frame);
     end
 end
 
