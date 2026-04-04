@@ -1,18 +1,8 @@
---Tab 기능
-local function BNet_GetBNetIDAccount(name)
-	return GetAutoCompletePresenceID(name);
-end
-
-
 function ChatEdit_CustomTabPressed(self)
 	local bBattle = false;
 	local RTB_PVPType = C_PvP.GetZonePVPInfo();
 	local bInstance, RTB_ZoneType = IsInInstance();
 	local bRaid = (GetNumGroupMembers() > 0 and IsInRaid());
-	local tellTarget = nil;
-	if not UnitAffectingCombat("player") and not C_InstanceEncounter.IsEncounterInProgress() then
-		tellTarget = self:GetAttribute("tellTarget");
-	end
 	bInstance = (IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance());
 	if RTB_PVPType == "combat" or RTB_ZoneType == "pvp" then
 		bBattle = true;
@@ -33,12 +23,6 @@ function ChatEdit_CustomTabPressed(self)
 			self:SetAttribute("chatType", "INSTANCE_CHAT")
 		elseif (IsInGuild()) then
 			self:SetAttribute("chatType", "GUILD")
-		elseif (tellTarget) then
-			if (BNet_GetBNetIDAccount(tellTarget)) then
-				self:SetAttribute("chatType", "BN_WHISPER");
-			else
-				self:SetAttribute("chatType", "WHISPER");
-			end
 		else
 			return
 		end
@@ -51,12 +35,6 @@ function ChatEdit_CustomTabPressed(self)
 			self:SetAttribute("chatType", "INSTANCE_CHAT")
 		elseif (IsInGuild()) then
 			self:SetAttribute("chatType", "GUILD")
-		elseif (tellTarget) then
-			if (BNet_GetBNetIDAccount(tellTarget)) then
-				self:SetAttribute("chatType", "BN_WHISPER");
-			else
-				self:SetAttribute("chatType", "WHISPER");
-			end
 		else
 			self:SetAttribute("chatType", "SAY")
 		end
@@ -67,12 +45,6 @@ function ChatEdit_CustomTabPressed(self)
 			self:SetAttribute("chatType", "INSTANCE_CHAT")
 		elseif (IsInGuild()) then
 			self:SetAttribute("chatType", "GUILD")
-		elseif (tellTarget) then
-			if (BNet_GetBNetIDAccount(tellTarget)) then
-				self:SetAttribute("chatType", "BN_WHISPER");
-			else
-				self:SetAttribute("chatType", "WHISPER");
-			end
 		else
 			self:SetAttribute("chatType", "SAY")
 		end
@@ -81,37 +53,17 @@ function ChatEdit_CustomTabPressed(self)
 			self:SetAttribute("chatType", "INSTANCE_CHAT")
 		elseif (IsInGuild()) then
 			self:SetAttribute("chatType", "GUILD")
-		elseif (tellTarget) then
-			if (BNet_GetBNetIDAccount(tellTarget)) then
-				self:SetAttribute("chatType", "BN_WHISPER");
-			else
-				self:SetAttribute("chatType", "WHISPER");
-			end
 		else
 			self:SetAttribute("chatType", "SAY")
 		end
 	elseif (currchat == "INSTANCE_CHAT") then
 		if (IsInGuild()) then
 			self:SetAttribute("chatType", "GUILD")
-		elseif (tellTarget) then
-			if (BNet_GetBNetIDAccount(tellTarget)) then
-				self:SetAttribute("chatType", "BN_WHISPER");
-			else
-				self:SetAttribute("chatType", "WHISPER");
-			end
 		else
 			self:SetAttribute("chatType", "SAY")
 		end
 	elseif (currchat == "GUILD") then
-		if (tellTarget) then
-			if (BNet_GetBNetIDAccount(tellTarget)) then
-				self:SetAttribute("chatType", "BN_WHISPER");
-			else
-				self:SetAttribute("chatType", "WHISPER");
-			end
-		else
-			self:SetAttribute("chatType", "SAY")
-		end
+		self:SetAttribute("chatType", "SAY")
 	else
 		self:SetAttribute("chatType", "SAY")
 	end

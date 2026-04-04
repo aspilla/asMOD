@@ -12,8 +12,7 @@ Switch chat channels using `Tab`, support `URL copy`.
     * **Raid**: When in a raid group.
     * **Battleground**: When in a battleground or PvP area.
     * **Instance**: When in a dungeon or instance group (and not in a raid/battleground).
-    * **Guild**: When in a guild and none of the above conditions apply.
-    * **Whisper**: When there is a whisper target (automatically switches to Battle.net whisper if the target is a Battle.net friend, Not work during combat).
+    * **Guild**: When in a guild and none of the above conditions apply.    
 
 ### URL Copy
 ![URL](https://media.forgecdn.net/attachments/1585/688/asfixchat-jpg.jpg)
@@ -48,8 +47,7 @@ No configuration options.
     *   **공격대**: 공격대 그룹에 속해 있는 경우.
     *   **전장**: 전장 또는 PvP 지역에 있는 경우.
     *   **인스턴스 대화**: 던전 또는 인스턴스 그룹에 있는 경우 (공격대/전장이 아닌 경우).
-    *   **길드**: 위의 상황에 해당하지 않고 길드에 속해 있는 경우.
-    *   **귓속말**: 귓속말 대상이 있는 경우 (Battlenet 귓속말 대상인 경우는 Battlenet 귓속말로 변경, 전투중 동작 안함)
+    *   **길드**: 위의 상황에 해당하지 않고 길드에 속해 있는 경우.    
     
 
 ### URL Copy
