@@ -6,6 +6,7 @@ local gvalue = {
     bpartial   = false,
     powerlevel = nil,
     brogue     = false,
+    bferal     = false,
 }
 
 function ns.setup_max_combo(max, maxpartial)
@@ -110,6 +111,20 @@ function ns.show_combo(combo, partial)
             end
         end
     end
+
+    if gvalue.bferal then
+        local aura = C_UnitAuras.GetPlayerAuraBySpellID(405189);
+        local count = aura and aura.applications or 0
+        for i = 1, max do
+            local combobar = combobars[i];
+
+            if i <= count then
+                combobar:SetStatusBarColor(0, 1, 1);
+            else
+                combobar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
+            end
+        end
+    end
 end
 
 local prevpower = nil;
@@ -165,12 +180,13 @@ local timer = nil;
 
 main_frame:SetScript("OnEvent", on_event);
 
-function ns.setup_combo(powerlevel, bpartial, brogue)
+function ns.setup_combo(powerlevel, bpartial, brogue, bferal)
     local updaterate = 0.2;
     if powerlevel and ns.options.ShowClassResource then
         gvalue.bpartial = bpartial;
         gvalue.powerlevel = powerlevel;
         gvalue.brogue = brogue;
+        gvalue.bferal = bferal;
         local max = UnitPowerMax("player", gvalue.powerlevel);
         local maxpartial = nil;
         if gvalue.bpartial then

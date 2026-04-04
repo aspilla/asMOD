@@ -67,6 +67,7 @@ local function init_class()
     local powerlevel = nil;
     local bpartial = false;
     local brogue = false;
+    local bferal = false;
     local spellid = nil;
     local auraid = nil;
     local max_aura = nil;
@@ -155,6 +156,7 @@ local function init_class()
     if (englishClass == "DRUID") then
         if (spec and spec == 2) then
             powerlevel = Enum.PowerType.ComboPoints;
+            bferal = true; 
         end
 
         if (spec and spec == 3) then
@@ -268,7 +270,7 @@ local function init_class()
     if auraid then
         ns.setup_auracombo(auraid, max_aura);
     elseif powerlevel then
-        ns.setup_combo(powerlevel, bpartial, brogue);
+        ns.setup_combo(powerlevel, bpartial, brogue, bferal);
     elseif bupdaterune then
         ns.setup_rune(bupdaterune);
     elseif spellid then

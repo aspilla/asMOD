@@ -14,7 +14,7 @@ Displays Main Resources and Class Resources.
 * **Paladin:** Holy Power
 * **Mage:** [Arcane] Arcane Charges, [Fire] Fire Blast cooldown, [Frost] Target Shatter debuff stacks
 * **Warlock:** Soul Shards, [Destruction] Soul Shard Fragments
-* **Druid:** [Feral] Combo Points, [Restoration] Combo Points, [Guardian] Frenzied Regeneration cooldown
+* **Druid:** [Feral] Combo Points (Show Overflowing Power), [Restoration] Combo Points, [Guardian] Frenzied Regeneration cooldown
 * **Monk:** [Brewmaster] Stagger, [Mistweaver] Renewing Mist cooldown, [Windwalker] Chi
 * **Rogue:** Combo Points, Supercharged
 * **Shaman:** [Enhancement] Maelstrom Weapon, [Elemental] Lava Burst cooldown, [Restoration] Riptide cooldown
@@ -69,7 +69,7 @@ Displays Main Resources and Class Resources.
 *   **성기사 :** 신성한 힘
 *   **마법사 :** [비전] 비전 충전물, [화염] 화염작열 쿨다운, [냉기] 대상 빙결 디버프 중첩
 *   **흑마법사 :** 영혼의 조각, [파괴] 영혼의 조각 파편
-*   **드루이드 :** [야성] 연계 점수, [회복] 연계 점수, [수호] 광포한 재생력 쿨다운
+*   **드루이드 :** [야성] 연계 점수 (넘쳐흐르는 힘 표시), [회복] 연계 점수, [수호] 광포한 재생력 쿨다운
 *   **수도사 :** [양조] 시간차, [운무] 소생의 안개 쿨다운 [풍운] 기
 *   **도적 :** 연계 점수, 초자력 충전 
 *   **주술사 :** [고양] 소용돌이치는 무기, [정기] 용암 폭발 쿨다운, [복원] 성난 해일 쿨다운
