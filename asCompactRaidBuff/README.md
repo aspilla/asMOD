@@ -23,6 +23,7 @@ Raid and Party Frame Enhancements
 * `CooldownSizeRate`: Remaining duration font size ratio (Default: 1)
 * `ShowCasting`: Cast target notification (Default: On)
 * `ShowCastingRaid`: Cast target notification during raids (Default: Off)
+* `ShowMark`: Displays target marker icons (Default: On)
 
 ## How to Set Up Click Casting
 * `ESC > Options > Keybindings > Click Casting`
@@ -81,6 +82,7 @@ Detailed explanations can be found on community macro boards (e.g., WoW Inven Ma
 *   `CooldownSizeRate` : 버프 남은 시간 폰트 크기 비율 (기본: 1)
 *   `ShowCasting` : 시전 대상 알림 (기본: On)
 *   `ShowCastingRaid` : 레이드시 시전 대상 알림 (기본: Off)
+*   `ShowMark` : 대상 표시기 아이콘을 표시 (기본: On)
 
 ## 클릭 시전 설정 방법
 * `esc >> 설정 >> 단축키 설정 >> 클릭 시전`

@@ -14,7 +14,10 @@ local function update_raidicon(asframe)
 	if asframe.needtosetup then
 		ns.setup_frame(asframe);
 	end
-	show_raidicon(asframe.displayedUnit, asframe.raidicon);
+
+	if ns.options.ShowMark then
+		show_raidicon(asframe.displayedUnit, asframe.raidicon);
+	end
 end
 
 local function update_power(asframe)

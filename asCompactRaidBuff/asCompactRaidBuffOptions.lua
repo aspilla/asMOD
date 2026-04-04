@@ -13,6 +13,7 @@ local Options_Default = {
     CooldownSizeRate = 1,
     ShowCasting = true,
     ShowCastingRaid = false,
+    ShowMark = true,
 };
 
 ns.options = CopyTable(Options_Default);
