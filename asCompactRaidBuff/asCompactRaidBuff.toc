@@ -3,12 +3,11 @@
 ## Title: |cffff3399as|rCompactRaidBuff
 ## Notes: Enhances Raid and Party Frames
 ## Notes-koKR:공격대 및 파티 프레임 강화
-## Version : 260405
+## Version : 260407
 ## SavedVariablesPerCharacter: ACRB_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asCompactRaidBuff.xml
 asCompactRaidBuffOptions.lua
 asCompactRaidBuffFeatures.lua
-asCompactRaidBuffCast.lua
 asCompactRaidBuff.lua

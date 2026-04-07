@@ -119,16 +119,14 @@ function ns.setup_frame(asframe)
     if asframe.raidicon then
         asframe.raidicon:SetSize(height / 3 - 3, height / 3 - 3);
     end
-
-    ns.init_cast(asframe, (height / 3 - 3));
+    
     ns.update_features(asframe);
 
     asframe.callback = function()
         if asframe.frame:IsShown() then
             if asframe.needtosetup then
                 ns.setup_frame(asframe);
-            end
-            ns.update_cast(asframe);
+            end            
         elseif asframe.timer then
             asframe.timer:Cancel();
         end

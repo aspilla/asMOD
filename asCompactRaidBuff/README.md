@@ -12,7 +12,6 @@ Raid and Party Frame Enhancements
 * **Buff/Debuff/Defensive Stack Counts**: Changed to green and moved to the bottom
 * **Buff Icon Borders**
 * **Defensive Cooldown Icon Resizing**
-* **Cast Target Notification (Top)**: Red border displayed for major spells
 
 ## Configuration
 * `BottomHealerManaBar`: Display healer mana bar (Default: On)
@@ -21,8 +20,6 @@ Raid and Party Frame Enhancements
 * `ShowCooldown`: Add cooldown timers to buffs/debuffs/defensives (Default: On)
 * `CenterDefensiveSizeRate`: Defensive icon size ratio (Default: 0.6 = 60%)
 * `CooldownSizeRate`: Remaining duration font size ratio (Default: 1)
-* `ShowCasting`: Cast target notification (Default: On)
-* `ShowCastingRaid`: Cast target notification during raids (Default: Off)
 * `ShowMark`: Displays target marker icons (Default: On)
 
 ## How to Set Up Click Casting
@@ -71,7 +68,6 @@ Detailed explanations can be found on community macro boards (e.g., WoW Inven Ma
 *   **버프/디버프/생존기 중첩 숫자 녹색 표시 및 위치 하단으로 이동**
 *   **버프 아이콘 테두리 추가**
 *   **생존기 아이콘 크기 조정**
-*   **시전 대상 알림(상단)** : 중요 스킬시 빨간 테두리 표시
 
 ## 설정
 *   `BottomHealerManaBar` : 힐러 마나바 표시 (기본: On)
@@ -80,8 +76,6 @@ Detailed explanations can be found on community macro boards (e.g., WoW Inven Ma
 *   `ShowCooldown` : 버프/디버프/생존기 쿨다운 추가 (기본: On)
 *   `CenterDefensiveSizeRate` : 생존기 아이콘 크기 비율 (기본: 0.6 = 60%)
 *   `CooldownSizeRate` : 버프 남은 시간 폰트 크기 비율 (기본: 1)
-*   `ShowCasting` : 시전 대상 알림 (기본: On)
-*   `ShowCastingRaid` : 레이드시 시전 대상 알림 (기본: Off)
 *   `ShowMark` : 대상 표시기 아이콘을 표시 (기본: On)
 
 ## 클릭 시전 설정 방법

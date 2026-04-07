@@ -11,8 +11,6 @@ local Options_Default = {
     ShowCooldown = true,
     CenterDefensiveSizeRate = 0.6,
     CooldownSizeRate = 1,
-    ShowCasting = true,
-    ShowCastingRaid = false,
     ShowMark = true,
 };
 
