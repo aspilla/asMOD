@@ -107,20 +107,19 @@ end
 
 local function update_itembutton(frame, itemid, istrinket, ishealthstone)
     local _, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemid)
-    local start, duration = C_Item.GetItemCooldown(itemid);
+    local start, duration, enable = C_Item.GetItemCooldown(itemid);
     local count = C_Item.GetItemCount(itemid, false, true, false, false);
     local durationobj = C_DurationUtil.CreateDuration();
     durationobj:SetTimeFromStart(start, duration);
-
-
+    
     if istrinket then
         count = 0;
     end
 
     frame.icon:SetTexture(icon);
     frame.icon_desaturated:SetTexture(icon);
-    set_cooldownframe(frame.cooldown, durationobj, true);
-    if duration > 2 then
+    set_cooldownframe(frame.cooldown, durationobj, enable);
+    if duration > 2 or enable == false then
         frame.icon_desaturated:SetAlpha(1);
     else
         frame.icon_desaturated:SetAlpha(0);
