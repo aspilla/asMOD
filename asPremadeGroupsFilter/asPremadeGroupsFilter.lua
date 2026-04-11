@@ -54,7 +54,7 @@ local function update_searchentry(entry, ...)
     end
 
     if (categoryID == 2) then
-        local numMembers = resultInfo.numMembers;
+        local numMembers = resultInfo.numMembers or 0;
         local overallColor = C_ChallengeMode.GetDungeonScoreRarityColor(resultInfo.leaderOverallDungeonScore or 0) or
             HIGHLIGHT_FONT_COLOR;
         local orderIndexes = {};
@@ -152,7 +152,7 @@ local function update_searchentry(entry, ...)
             end
         end
     elseif (categoryID == 3) then
-        local numMembers = resultInfo.numMembers;
+        local numMembers = resultInfo.numMembers or 0;
         local classes = {};
         local leader_role;
         local leader_class;

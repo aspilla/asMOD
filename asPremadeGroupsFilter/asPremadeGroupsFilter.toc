@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rPremadeGroupsFilter
 ## Notes: Enhancements for Mythic+ and Raid Finder.
 ## Notes-koKR: 쐐기돌/공격대 검색 창 강화
-## Version : 251225
+## Version : 250411
 ## SavedVariablesPerCharacter: APMGF_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
