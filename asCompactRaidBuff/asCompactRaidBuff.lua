@@ -119,14 +119,14 @@ function ns.setup_frame(asframe)
     if asframe.raidicon then
         asframe.raidicon:SetSize(height / 3 - 3, height / 3 - 3);
     end
-    
+
     ns.update_features(asframe);
 
     asframe.callback = function()
         if asframe.frame:IsShown() then
             if asframe.needtosetup then
                 ns.setup_frame(asframe);
-            end            
+            end
         elseif asframe.timer then
             asframe.timer:Cancel();
         end
@@ -240,7 +240,7 @@ local function change_defaults(frame)
         end
         if frame.CenterDefensiveBuff then
             change_button(frame.CenterDefensiveBuff, true, true);
-        end        
+        end
     end
 end
 
@@ -318,6 +318,19 @@ local function on_update()
     framebuffer = {};
 end
 
+local function remove_grouptext()
+    hooksecurefunc("CompactRaidGroup_GenerateForGroup", function(groupindex)
+        local frame = _G["CompactRaidGroup" .. groupindex]
+        if frame and not InCombatLockdown() and frame.title:GetHeight() > 0 then
+            frame.title:SetText("");
+            frame.title:SetHeight(0);
+
+            if frame.updateLayoutFunc then
+                frame.updateLayoutFunc(frame);
+            end
+        end
+    end)
+end
 
 local timero;
 local timero2;
@@ -334,6 +347,10 @@ local function init()
     setup_frames();
     timero = C_Timer.NewTicker(ns.UpdateRate + 0.01, on_update);
     timero2 = C_Timer.NewTicker(ns.UpdateRate + 0.02, ns.update_featuresforall);
+
+    if ns.options.RemoveGroupText then
+        remove_grouptext();
+    end
 end
 
 local bfirst = true;
