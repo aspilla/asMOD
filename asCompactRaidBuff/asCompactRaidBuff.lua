@@ -349,7 +349,7 @@ local function init()
     timero2 = C_Timer.NewTicker(ns.UpdateRate + 0.02, ns.update_featuresforall);
 
     if ns.options.RemoveGroupText then
-        remove_grouptext();
+        --remove_grouptext();
     end
 end
 

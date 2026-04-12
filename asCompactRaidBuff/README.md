@@ -12,7 +12,6 @@ Raid and Party Frame Enhancements
 * **Buff/Debuff/Defensive Stack Count (Displayed in green and moved to the bottom)**
 * **Buff Icon Border Added**
 * **Defensive Icon Resizing**
-* **Hide Group Names and reduce party spacing in horizontal Raid Layouts**
 
 ## Configuration
 * `BottomHealerManaBar`: Displays healer mana bar (Default: On)
@@ -22,7 +21,6 @@ Raid and Party Frame Enhancements
 * `CenterDefensiveSizeRate`: Size ratio for defensive icons (Default: 0.6 = 60%)
 * `CooldownSizeRate`: Font size ratio for remaining buff duration (Default: 1)
 * `ShowMark`: Displays target marker icons (Default: On)
-* `RemoveGroupText`: Hides party group names (Default: On)
 
 ## How to Set Up Click Casting
 * `ESC > Options > Keybindings > Click Casting`
@@ -70,7 +68,6 @@ Detailed explanations can be found on community macro boards (e.g., WoW Inven Ma
 *   **버프/디버프/생존기 중첩 숫자 녹색 표시 및 위치 하단으로 이동**
 *   **버프 아이콘 테두리 추가**
 *   **생존기 아이콘 크기 조정**
-*   **그룹명 숨기고 공격대 가로 Layout시 파티간격을 좁게 함**
 
 ## 설정
 *   `BottomHealerManaBar` : 힐러 마나바 표시 (기본: On)
@@ -80,7 +77,6 @@ Detailed explanations can be found on community macro boards (e.g., WoW Inven Ma
 *   `CenterDefensiveSizeRate` : 생존기 아이콘 크기 비율 (기본: 0.6 = 60%)
 *   `CooldownSizeRate` : 버프 남은 시간 폰트 크기 비율 (기본: 1)
 *   `ShowMark` : 대상 표시기 아이콘을 표시 (기본: On)
-*   `RemoveGroupText` : 파티 그룹명 숨김 (기본: On)
 
 ## 클릭 시전 설정 방법
 * `esc >> 설정 >> 단축키 설정 >> 클릭 시전`
