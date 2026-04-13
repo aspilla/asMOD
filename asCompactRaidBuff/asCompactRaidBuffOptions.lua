@@ -12,7 +12,7 @@ local Options_Default = {
     CenterDefensiveSizeRate = 0.6,
     CooldownSizeRate = 1,
     ShowMark = true,
-    --RemoveGroupText = true,
+    RemoveGroupText = true,
 };
 
 ns.options = CopyTable(Options_Default);

@@ -321,12 +321,14 @@ end
 local function remove_grouptext()
     hooksecurefunc("CompactRaidGroup_GenerateForGroup", function(groupindex)
         local frame = _G["CompactRaidGroup" .. groupindex]
-        if frame and not InCombatLockdown() and frame.title:GetHeight() > 0 then
-            frame.title:SetText("");
-            frame.title:SetHeight(0);
-
-            if frame.updateLayoutFunc then
-                frame.updateLayoutFunc(frame);
+        if frame and not InCombatLockdown() then
+            local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(frame.groupType);
+            if useHorizontalGroups then
+                frame.title:SetText("");
+                frame.title:SetHeight(0);
+                local firstUnitFrame = _G[frame:GetName() .. "Member1"];
+                firstUnitFrame:ClearAllPoints();
+                firstUnitFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
             end
         end
     end)
@@ -349,7 +351,7 @@ local function init()
     timero2 = C_Timer.NewTicker(ns.UpdateRate + 0.02, ns.update_featuresforall);
 
     if ns.options.RemoveGroupText then
-        --remove_grouptext();
+        remove_grouptext();
     end
 end
 
