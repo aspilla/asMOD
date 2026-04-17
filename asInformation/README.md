@@ -1,35 +1,30 @@
 # asInformation (Midnight)
 
-Displays primary/secondary stats increase.
-
-![asInformation](https://media.forgecdn.net/attachments/1585/697/asinformation-jpg.jpg)
+Displays primary and secondary stat increases.
 
 ## Key Features
 
-* **Primary/Secondary Stat Display**: Displays stats (Primary stats, Haste, Critical Strike, Mastery, Versatility) in a bar format.
-* **Increase Notification (Color Change)**: Changes the bar color to the stat's specific color when a stat increases above the minimum value recorded out of combat. The reference value is based on the lowest value recorded during 20 seconds out of combat.
-* **Threshold Notification**:
-    * Custom percentage thresholds can be set (Default: 100%).
-    * The threshold for the primary stat is triggered when it increases by 20% compared to the minimum value.
-    * When a stat reaches or exceeds this value, the border of the corresponding stat bar will flash.
+* **Primary/Secondary Stat Display**: Displays stats (Primary Stat (Strength, Agility, or Intellect depending on class), Haste, Critical Strike, Mastery, and Versatility) in a bar format.
+* **Increase Notification (Color Change)**: When primary or secondary stats increase above the minimum out-of-combat value, the increase is highlighted as a colored bar. The reference point is the lowest value recorded during 20 seconds out of combat. (e.g., The red additional bar in the image below indicates an increase in Critical Strike).
 
+![asInformation](https://media.forgecdn.net/attachments/1635/37/asinformation-jpg.jpg) 
 
 ## Configuration
 
-* Access via the `/asinformation` chat command or `ESC > Options > Addons > asInformation`.
+* Access via the `/asinformation` chat command or `ESC` > `Options` > `AddOns` > `asInformation`.
 * **Lock Frame**: Select to prevent moving the frame. Deselect to allow dragging.
 * **Show Haste**: Toggles the display of Haste percentage.
 * **Show Crit**: Toggles the display of Critical Strike percentage.
 * **Show Mastery**: Toggles the display of Mastery percentage.
 * **Show Versatility**: Toggles the display of Versatility percentage.
-* **Show Main Stat**: Toggles the display of the player's primary stat (Strength, Agility, or Intelligence).
-* **Haste Threshold (Slider)**: Sets the Haste value (0-300%) at which the Haste text will be highlighted.
-* **Move Position**: Enter the `/asConfig` command in the chat.
-* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
+* **Show Primary Stat**: Toggles the display of the player's primary stat (Strength, Agility, or Intellect).
 
-## Contact Information
-1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
-2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+* **Move Position**: Enter the `/asConfig` command in the chat window.
+* **Reset Position**: Enter the `/asClear` command in the chat window to reset to default settings.
+
+## Contact
+1. **Korean Users**: Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288)
+2. **English Users**: Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/)
 
 ---
 
@@ -37,16 +32,13 @@ Displays primary/secondary stats increase.
 
 1차/2차 능력치 증가량 표시
 
-![asInformation](https://media.forgecdn.net/attachments/1585/697/asinformation-jpg.jpg)   
-
 ## 주요 기능
 
 *   **1차/2차 능력치 표시**: 프레임에 표시할 능력치(주 능력치(직업별 힘, 민첩 또는 지능), 가속, 치명타, 특화, 유연성)를 바 형태로 표시.
-*   **증가 알림(색상 변경)**: 1/2차 능력치가 비전투 중 최소값 보다 증가 할 경우 바 색상을 능력치 생상으로 변경. 기준값은 비전투 20초 중 가장 낮은 값을 참고함.
-*   **임계값 알림**:
-    *   사용자 지정 백분율 임계값을 설정할 수 있습니다. 기본 100%
-    *   1차 스텟의 임계값은 최소값 대비 20% 증가한 경우 입니다.
-    *   1/2차 스텟이 이 값에 도달하거나 초과하면 프레임의 해당 스텟의 바의 테두리가 빤짝입니다.
+*   **증가 알림(색상 변경)**: 1/2차 능력치가 비전투 중 최소값 보다 증가 할 경우, 증가치를 능력치 색상의 바로 표시. 기준값은 비전투 20초 중 가장 낮은 값을 참고함. (예. 아래 사진의 빨간색 추가 바는 치명이 증가 했다는 의미)
+
+![asInformation](https://media.forgecdn.net/attachments/1635/37/asinformation-jpg.jpg)   
+
 
 ## 설정
 
@@ -57,7 +49,6 @@ Displays primary/secondary stats increase.
 *   **특화 표시**: 특화 백분율 표시를 토글합니다.
 *   **유연 표시**: 유연성 백분율 표시를 토글합니다.
 *   **주요 스탯 표시**: 플레이어의 주요 스탯(힘, 민첩 또는 지능) 표시를 토글합니다.
-*   **가속 임계값 (슬라이더)**: 가속 텍스트가 강조 표시될 가속 값(0-300%)을 설정합니다.
 
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
