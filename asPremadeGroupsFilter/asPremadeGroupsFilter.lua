@@ -27,7 +27,7 @@ local function update_searchentry(entry, ...)
     local resultInfo = C_LFGList.GetSearchResultInfo(resultID);
     local leaderIcon = CreateAtlasMarkup("groupfinder-icon-leader", 14, 9, 0, 0);
 
-    if not entry.DataDisplay.Enumerate then
+    if not entry.DataDisplay.Enumerate or issecretvalue(resultInfo) then
         return;
     end
 
@@ -55,6 +55,11 @@ local function update_searchentry(entry, ...)
 
     if (categoryID == 2) then
         local numMembers = resultInfo.numMembers or 0;
+
+        if issecretvalue(resultInfo.leaderOverallDungeonScore) then
+            return;
+        end
+
         local overallColor = C_ChallengeMode.GetDungeonScoreRarityColor(resultInfo.leaderOverallDungeonScore or 0) or
             HIGHLIGHT_FONT_COLOR;
         local orderIndexes = {};
