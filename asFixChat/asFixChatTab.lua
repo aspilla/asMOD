@@ -65,7 +65,7 @@ function ChatEdit_CustomTabPressed(self)
 	elseif (currchat == "GUILD") then
 		self:SetAttribute("chatType", "SAY")
 	else
-		self:SetAttribute("chatType", "SAY")
+		return;
 	end
 
 	ChatFrameEditBoxMixin.UpdateHeader(self);
