@@ -8,7 +8,7 @@ asMOD is a collection of custom-made World of Warcraft addons.
 
 ![sample](https://media.forgecdn.net/attachments/1582/35/asmod_raid-jpg.jpg)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/0ypem7WBfDA?si=d2oWe8biQdEJgvFj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/a6dkOBvUDFA?si=EanEyzkuQO8oxCot" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Features of asMOD
 
@@ -207,7 +207,9 @@ asMOD minimizes the use of the ACE Library. To copy settings, use the `WTF` fold
 * [asCompactRaidBuff](https://www.curseforge.com/wow/addons/ascompactraidbuff)
 
 ### 13. Changelogs
-* Unfortunately, changelogs are only provided in **Korean** at the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288). English users are encouraged to use translation tools to check updates by date.
+* **Korean Users**: Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288)
+* **English Users**: Check the "Changelog" tab on CurseForge
+* **Detailed Code Changes**: Check [GitHub](https://github.com/aspilla/asMOD)
 
 
 ---
@@ -221,7 +223,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 ![sample](https://media.forgecdn.net/attachments/1582/35/asmod_raid-jpg.jpg)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/0ypem7WBfDA?si=d2oWe8biQdEJgvFj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/a6dkOBvUDFA?si=EanEyzkuQO8oxCot" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## asMOD의 특징
 
@@ -423,5 +425,7 @@ asMOD 설치시 그래픽 설정의 UI 설정을 0.75로 축소 합니다.
 * [asCompactRaidBuff](https://www.curseforge.com/wow/addons/ascompactraidbuff)
 
 ### 13. 변경점 
-*   아쉽게도 `한글` 변경점만 `인벤 asMOD 포럼` (https://www.inven.co.kr/board/wow/5288) 에 공유 하고 있습니다. `영문` 유저는 날짜별 변경점을 번역해서 확이하시기 바랍니다.
+*   `한글 유저` : `인벤 asMOD 포럼` (https://www.inven.co.kr/board/wow/5288)
+*   `영문 유저` :  커스 포지 파일 변경점 확인
+*   `상세 코드 변경점` : `Github 확인` (https://github.com/aspilla/asMOD)
 
