@@ -27,7 +27,7 @@ Notifies you when the Bloodlust/Heroism exhaustion debuff expires and is ready f
 
 ---
 
-# asBloodlustAlert (Midnight)
+# asBloodlustAlert (한밤)
 
 블러드 사용 불가 디버프가 사라저 준비 되면 알림니다.
 ![asBloodlustAlert](https://media.forgecdn.net/attachments/1640/484/asbloodlustalert-jpg.jpg)
