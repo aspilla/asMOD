@@ -3,7 +3,9 @@
 ## Title: |cffff3399as|rDotFilter
 ## Notes: Debuff tracker for boss and focus
 ## Notes-koKR: 보스/주시 디버프를 추적
-## Version : 260401
+## Version : 260420
+## SavedVariablesPerCharacter: ADotF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+asDotFilterOptions.lua
 asDotFilter.xml

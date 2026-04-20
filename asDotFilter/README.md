@@ -10,9 +10,9 @@ Debuff tracker for boss and focus
 2.  **Supports WoW's Default Boss Frames/Focus Frames**
 3.  **Supports asUnitFrame**
 
-## User Settings
-
-No settings available.
+## Configuration
+* You can change options by navigating to `ESC` > `Options` > `AddOns` > `asDotFilter`.
+* **MaxShow**: The maximum number of debuffs to display (Default: 3).
 
 ---
 
@@ -29,5 +29,5 @@ No settings available.
 3.  **asUnitFrame 지원**
 
 ## 사용자 설정
-
-설정 없음
+*   `ESC` > `설정` > `애드온` 탭에서 `asDotFilter`를 찾아 옵션을 변경할 수 있습니다.
+*   **MaxShow**: 최대 표시 디버프 개수. (기본 3개)

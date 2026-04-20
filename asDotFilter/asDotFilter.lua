@@ -2,8 +2,7 @@
 
 local configs = {
     size = 30,
-    sizerate = 0.8,
-    maxshow = 2,
+    sizerate = 0.8,    
     alpha = 0.9,
     cool_fontsize = 12,
     count_fontsize = 13,
@@ -136,10 +135,10 @@ local function update_debuffs(unit)
             return;
         end
 
-        local aura_list = C_UnitAuras.GetUnitAuras(unit, filter, configs.maxshow);
+        local aura_list = C_UnitAuras.GetUnitAuras(unit, filter, ns.options.MaxShow);
 
         for _, aura in ipairs(aura_list) do
-            if numdebuffs > configs.maxshow then
+            if numdebuffs > ns.options.MaxShow then
                 break;
             end
 
@@ -186,7 +185,7 @@ local function update_debuffs(unit)
         end
     end
 
-    for i = numdebuffs, configs.maxshow do
+    for i = numdebuffs, ns.options.MaxShow do
         local frame = main_frame.units[unit].frames[i];
 
         if (frame) then
@@ -223,6 +222,9 @@ local function on_update()
 end
 
 local function init()
+
+    ns.setup_option();
+
     main_frame:SetPoint("CENTER", 0, 0)
     main_frame:SetWidth(1)
     main_frame:SetHeight(1)    
