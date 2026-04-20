@@ -152,7 +152,14 @@ local function hook_func(frame)
     end
 end
 
+local version = select(4, GetBuildInfo());
+
 local function change_button(button, changeborder, changesize)
+
+    if version >= 120005 then
+        return;
+    end
+
     local width = button:GetWidth();
 
     if changesize then
@@ -227,6 +234,8 @@ end
 
 
 local function change_defaults(frame)
+
+
     if frame and not frame:IsForbidden() then
         if frame.buffFrames then
             for i = 1, #frame.buffFrames do
@@ -242,6 +251,7 @@ local function change_defaults(frame)
             change_button(frame.CenterDefensiveBuff, true, true);
         end
     end
+
 end
 
 
