@@ -2,7 +2,8 @@
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rBloodlustAlert
 ## Notes: Notifies when the Bloodlust debuff off
-## Version : 250719_3
+## Notes-koKR: 블러드 사용 불가 디버프가 사라저 준비 되면 알림
+## Version : 260420
 ## SavedVariablesPerCharacter: ABLA_Options, ABLA_Positions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
