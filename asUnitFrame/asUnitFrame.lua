@@ -448,7 +448,16 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     frame.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
     frame.mark:SetWidth(fontsize + 2);
     frame.mark:SetHeight(fontsize + 2);
-    frame.mark:SetPoint("CENTER", frame.healthbar, "CENTER", 0, 0);
+
+    if not ns.options.ShowPortrait then
+        frame.mark:SetPoint("BOTTOM", frame.pvalue, "TOP", 0, 1);
+    else
+        if x < 0 then
+            frame.mark:SetPoint("LEFT", frame.healthbar, "LEFT", 10, 0);
+        else
+            frame.mark:SetPoint("RIGHT", frame.healthbar, "RIGHT", -10, 0);
+        end
+    end
 
     frame.powerbar = CreateFrame("StatusBar", nil, frame);
     frame.powerbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
@@ -642,7 +651,7 @@ local function update_unitframe(unit)
     local frame = ns.unitframes[unit];
     if frame then
         ns.update_unithealth(frame);
-        ns.update_unitframe_other(frame);        
+        ns.update_unitframe_other(frame);
         ns.update_auras(frame);
         ns.update_unitframe_portrait(frame);
     end
@@ -680,7 +689,7 @@ local function init(framelist)
         false);
     create_unitframe(framelist.TargetFrame, "target", configs.xpoint, configs.ypoint, ns.options.Width, ns.options
         .Height,
-        ns.options.PowerWidth, ns.options.PowerHeight, ns.options.FontSize -fontoffset, false,
+        ns.options.PowerWidth, ns.options.PowerHeight, ns.options.FontSize - fontoffset, false,
         false);
     create_unitframe(framelist.FocusFrame, "focus", configs.xpoint + ns.options.Width, configs.ypoint,
         ns.options.FocusWidth,
@@ -704,7 +713,8 @@ local function init(framelist)
             framelist.BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
             create_unitframe(framelist.BossFrames[i], "boss" .. i, configs.xpoint + 250, 160 - (i - 1) * 70,
                 ns.options.FocusWidth, ns.options.FocusHeight,
-                ns.options.FocusPowerWidth, ns.options.FocusPowerHeight, ns.options.FocusFontSize - fontoffset, false, framelist.is_simplemode);
+                ns.options.FocusPowerWidth, ns.options.FocusPowerHeight, ns.options.FocusFontSize - fontoffset, false,
+                framelist.is_simplemode);
         end
     end
 
