@@ -6,13 +6,8 @@ ns.ACRB_HealerManaBarHeight = 4;
 local Options_Default = {
     version = 251228,
     BottomHealerManaBar = true, -- 힐러 마나바
-    BottomTankPowerBar = true, -- 탱커 Power 바
-    ChangeIcon = true,
-    ShowCooldown = true,
-    CenterDefensiveSizeRate = 0.6,
-    CooldownSizeRate = 1,
-    ShowMark = true,
-    RemoveGroupText = true,
+    BottomTankPowerBar = true, -- 탱커 Power 바   
+    ShowMark = true,    
 };
 
 ns.options = CopyTable(Options_Default);

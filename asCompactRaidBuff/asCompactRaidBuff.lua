@@ -9,16 +9,6 @@ local configs = {
 ns.asraid = {};
 ns.asparty = {};
 
-local function is_party(unit)
-    for i = 1, 4 do
-        if unit and UnitIsUnit(unit, "party" .. i) then
-            return true
-        end
-    end
-
-    return false;
-end
-
 local function is_tank(role)
     if role == "TANK" or role == "MAINTANK" then
         return true;
@@ -32,8 +22,6 @@ local function is_healer(role)
     end
     return false;
 end
-
-
 
 function ns.setup_frame(asframe)
     if not asframe.frame or asframe.frame:IsForbidden() then
@@ -54,7 +42,7 @@ function ns.setup_frame(asframe)
         asframe.displayedUnit = frame.unit;
     end
 
-    if (not UnitIsPlayer(asframe.unit)) and not is_party(asframe.unit) then
+    if (not UnitIsPlayer(asframe.unit)) then
         return;
     end
 
@@ -152,110 +140,6 @@ local function hook_func(frame)
     end
 end
 
-local version = select(4, GetBuildInfo());
-
-local function change_button(button, changeborder, changesize)
-
-    if version >= 120005 then
-        return;
-    end
-
-    local width = button:GetWidth();
-
-    if changesize then
-        width = width * ns.options.CenterDefensiveSizeRate;
-    end
-
-    local rate = 1;
-
-    if changesize then
-        rate = configs.iconrate;
-    end
-
-    if ns.options.ChangeIcon then
-        if changesize then
-            button:SetSize(width, width * rate);
-        end
-        if button.icon then
-            button.icon:SetTexCoord(.08, .92, .08, .92);
-        end
-
-        if changeborder then
-            if not button.border then
-                button.border = button:CreateTexture(nil, "BACKGROUND");
-                button.border:SetTexture("Interface\\Addons\\asCompactRaidBuff\\border.tga")
-                button.border:SetDrawLayer("ARTWORK", 6);
-                button.border:SetVertexColor(0, 0, 0, 1);
-                button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92)
-                button.border:Show();
-            end
-            button.border:ClearAllPoints();
-            button.border:SetPoint("TOPLEFT", button.icon, "TOPLEFT", 0, 0);
-            button.border:SetPoint("BOTTOMRIGHT", button.icon, "BOTTOMRIGHT", 0, 0);
-        else
-            button.border:SetParent(button.cooldown);
-            button.border:ClearAllPoints();
-            button.border:SetDrawLayer("OVERLAY", -3);
-            button.border:SetPoint("TOPLEFT", button.cooldown, "TOPLEFT", -1, 1);
-            button.border:SetPoint("BOTTOMRIGHT", button.cooldown, "BOTTOMRIGHT", 1, -1);
-        end
-    end
-
-
-
-    if button.count then
-        button.count:SetFont(STANDARD_TEXT_FONT, (width / 2) * ns.options.CooldownSizeRate, "OUTLINE");
-        button.count:SetParent(button.cooldown);
-        button.count:ClearAllPoints();
-        button.count:SetPoint("CENTER", button.cooldown, "BOTTOM", 0, 1);
-        button.count:SetTextColor(0, 1, 0);
-        button.count:SetDrawLayer("OVERLAY");
-    end
-
-    if button.cooldown and ns.options.ShowCooldown then
-        button.cooldown:SetHideCountdownNumbers(false);
-        button.cooldown:SetAllPoints(button.icon);
-        button.cooldown:SetSwipeTexture("Interface\\Buttons\\WHITE8X8");
-        button.cooldown:SetSwipeColor(0, 0, 0, 0.6);
-        button.cooldown:SetDrawEdge(false);
-
-        for _, r in next, { button.cooldown:GetRegions() } do
-            if r:GetObjectType() == "FontString" then
-                r:SetFont(STANDARD_TEXT_FONT, (width / 2) * ns.options.CooldownSizeRate, "OUTLINE");
-                r:ClearAllPoints();
-                r:SetPoint("CENTER", button, "TOP", 0, 0);
-                r:SetDrawLayer("OVERLAY");
-                break;
-            end
-        end
-    end
-end
-
-
-
-local function change_defaults(frame)
-
-
-    if frame and not frame:IsForbidden() then
-        if frame.buffFrames then
-            for i = 1, #frame.buffFrames do
-                change_button(frame.buffFrames[i], true);
-            end
-        end
-        if frame.debuffFrames then
-            for i = 1, #frame.debuffFrames do
-                change_button(frame.debuffFrames[i], false);
-            end
-        end
-        if frame.CenterDefensiveBuff then
-            change_button(frame.CenterDefensiveBuff, true, true);
-        end
-    end
-
-end
-
-
-
 local max_y = 0;
 local function update_all(frame)
     if frame and not frame:IsForbidden() and frame.GetName then
@@ -263,10 +147,9 @@ local function update_all(frame)
 
         if name and not (name == nil) then
             if string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame") then
-                if not (frame.unit and UnitIsPlayer(frame.unit)) and not is_party(frame.unit) then
+                if not (frame.unit and UnitIsPlayer(frame.unit))  then
                     return
-                end
-                change_defaults(frame);
+                end                
 
                 local x, y = frame:GetSize();
 
@@ -287,10 +170,9 @@ local function update_all(frame)
                 ns.asraid[name].israid = true;
                 ns.asraid[name].frame = frame;
             elseif string.find(name, "CompactPartyFrameMember") then
-                if not (frame.unit and UnitIsPlayer(frame.unit)) and not is_party(frame.unit) then
+                if not (frame.unit and UnitIsPlayer(frame.unit))  then
                     return
-                end
-                change_defaults(frame);
+                end                
 
                 if ns.asparty[name] == nil then
                     ns.asparty[name] = CreateFrame("Frame");
@@ -331,14 +213,11 @@ end
 local function remove_grouptext()
     hooksecurefunc("CompactRaidGroup_GenerateForGroup", function(groupindex)
         local frame = _G["CompactRaidGroup" .. groupindex]
-        if frame and not InCombatLockdown() then
+        if frame then
             local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(frame.groupType);
             if useHorizontalGroups then
                 frame.title:SetText("");
                 frame.title:SetHeight(0);
-                local firstUnitFrame = _G[frame:GetName() .. "Member1"];
-                firstUnitFrame:ClearAllPoints();
-                firstUnitFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
             end
         end
     end)
@@ -359,10 +238,6 @@ local function init()
     setup_frames();
     timero = C_Timer.NewTicker(ns.UpdateRate + 0.01, on_update);
     timero2 = C_Timer.NewTicker(ns.UpdateRate + 0.02, ns.update_featuresforall);
-
-    if ns.options.RemoveGroupText then
-        remove_grouptext();
-    end
 end
 
 local bfirst = true;
@@ -398,3 +273,4 @@ main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
 
 
 hooksecurefunc("DefaultCompactUnitFrameSetup", hook_func);
+--remove_grouptext();
