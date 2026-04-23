@@ -1,12 +1,15 @@
 local _, ns = ...;
 
 local function show_raidicon(unit, markframe)
-	local raidicon = GetRaidTargetIndex(unit);
-	if raidicon then
-		SetRaidTargetIconTexture(markframe, raidicon);
-		markframe:Show();
-	else
-		markframe:Hide();
+	if markframe then
+		local raidicon = GetRaidTargetIndex(unit);
+
+		if raidicon then
+			SetRaidTargetIconTexture(markframe, raidicon);
+			markframe:Show();
+		else
+			markframe:Hide();
+		end
 	end
 end
 

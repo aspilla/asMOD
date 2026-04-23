@@ -147,9 +147,9 @@ local function update_all(frame)
 
         if name and not (name == nil) then
             if string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame") then
-                if not (frame.unit and UnitIsPlayer(frame.unit))  then
+                if not (frame.unit and UnitIsPlayer(frame.unit)) then
                     return
-                end                
+                end
 
                 local x, y = frame:GetSize();
 
@@ -170,9 +170,9 @@ local function update_all(frame)
                 ns.asraid[name].israid = true;
                 ns.asraid[name].frame = frame;
             elseif string.find(name, "CompactPartyFrameMember") then
-                if not (frame.unit and UnitIsPlayer(frame.unit))  then
+                if not (frame.unit and UnitIsPlayer(frame.unit)) then
                     return
-                end                
+                end
 
                 if ns.asparty[name] == nil then
                     ns.asparty[name] = CreateFrame("Frame");
@@ -210,17 +210,24 @@ local function on_update()
     framebuffer = {};
 end
 
-local function remove_grouptext()
-    hooksecurefunc("CompactRaidGroup_GenerateForGroup", function(groupindex)
-        local frame = _G["CompactRaidGroup" .. groupindex]
-        if frame then
-            local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(frame.groupType);
-            if useHorizontalGroups then
-                frame.title:SetText("");
-                frame.title:SetHeight(0);
-            end
+local function change_group(groupindex)
+    local frame = _G["CompactRaidGroup" .. groupindex]
+    if frame then
+        local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(frame.groupType);
+        if useHorizontalGroups then
+            frame.title:SetText("");
+            frame.title:SetHeight(0);
         end
-    end)
+    end
+end
+
+
+local function remove_grouptext()
+    hooksecurefunc("CompactRaidGroup_GenerateForGroup", change_group)
+
+    for i = 1, 8 do
+        change_group(i);
+    end
 end
 
 local timero;
@@ -273,4 +280,4 @@ main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
 
 
 hooksecurefunc("DefaultCompactUnitFrameSetup", hook_func);
---remove_grouptext();
+remove_grouptext();
