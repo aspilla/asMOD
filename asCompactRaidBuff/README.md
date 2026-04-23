@@ -8,11 +8,13 @@ Raid and Party Frame Enhancements
 * **Healer-Specific Mana Bar (Bottom, configurable)**
 * **Tank-Specific Power Bar (Bottom, configurable)**: Displayed only when the resource is not mana.
 * **Raid Marker Display (Middle-left)**
+* **Hide Group Names and reduce party spacing in horizontal Raid Layouts**
 
 ## Configuration
 * `BottomHealerManaBar`: Displays healer mana bar (Default: On)
 * `BottomTankPowerBar`: Displays tank power bar (Default: On)
 * `ShowMark`: Displays target marker icons (Default: On)
+* `RemoveGroupText`: Hides party group names (Default: On)
 
 ## How to Set Up Click Casting
 * `ESC > Options > Keybindings > Click Casting`
@@ -55,12 +57,14 @@ Detailed explanations can be found on community macro boards (e.g., WoW Inven Ma
 ## 주요 기능
 *   **힐러 전용 마나 바 (하단, 설정 가능)**    
 *   **탱커 전용 파워 바 (하단, 설정 가능)** :  마나가 아닌 경우만 표시
-*   **공격대 징표 표시 (좌중단)**    
+*   **공격대 징표 표시 (좌중단)**
+*   **그룹명 숨기고 공격대 가로 Layout시 파티간격을 좁게 함**
 
 ## 설정
 *   `BottomHealerManaBar` : 힐러 마나바 표시 (기본: On)
 *   `BottomTankPowerBar` : 힐러 마나바 표시 (기본: On)
 *   `ShowMark` : 대상 표시기 아이콘을 표시 (기본: On)
+*   `RemoveGroupText` : 파티 그룹명 숨김 (기본: On)
 
 ## 클릭 시전 설정 방법
 * `esc >> 설정 >> 단축키 설정 >> 클릭 시전`

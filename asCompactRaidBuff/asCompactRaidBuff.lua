@@ -245,6 +245,10 @@ local function init()
     setup_frames();
     timero = C_Timer.NewTicker(ns.UpdateRate + 0.01, on_update);
     timero2 = C_Timer.NewTicker(ns.UpdateRate + 0.02, ns.update_featuresforall);
+
+    if ns.options.RemoveGroupText then
+        remove_grouptext();
+    end
 end
 
 local bfirst = true;
@@ -280,4 +284,3 @@ main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
 
 
 hooksecurefunc("DefaultCompactUnitFrameSetup", hook_func);
-remove_grouptext();
