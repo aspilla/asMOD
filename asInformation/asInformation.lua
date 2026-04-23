@@ -295,6 +295,13 @@ local function get_crit()
     rangedCrit = GetRangedCritChance();
     meleeCrit = GetCritChance();
 
+    if issecretvalue(rangedCrit) or issecretvalue(spellCrit) or issecretvalue(meleeCrit) then
+        if critfunc then
+            return critfunc();
+        end
+        return 0;
+    end
+
     if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
         critfunc = GetSpellCritChance;
         critChance = spellCrit;
@@ -337,7 +344,7 @@ local function recode_stats()
             -- Calculate minimum from combat snapshots
             local minStat = nil
             for _, snapshot in ipairs(history) do
-                if minStat == nil or (snapshot.value < minStat and snapshot.value > 0) then
+                if not issecretvalue(snapshot.value) and (minStat == nil or (snapshot.value < minStat and snapshot.value > 0)) then
                     minStat = snapshot.value
                 end
             end
