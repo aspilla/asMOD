@@ -143,30 +143,30 @@ local function update_combo()
     end
 
     if gvalue.powerlevel == Enum.PowerType.Essence then
-        local peace, interrupted = GetPowerRegenForPowerType(Enum.PowerType.Essence)
-        if (peace == nil or peace == 0) then
-            peace = 0.2;
-        end
-        local cooldownDuration = 1 / peace;
-        local currtime = GetTime();
-        local maxpartial = gvalue.maxpartial;
-        local max = gvalue.maxcombo;
+        local peace, interrupted = GetPowerRegenForPowerType(Enum.PowerType.Essence);
 
-        if power ~= prevpower then
-            prevpower = power;
-            prevstart = currtime;
-        end
+        if peace then
+            local cooldownDuration = 1 / peace;
+            local currtime = GetTime();
+            local maxpartial = gvalue.maxpartial;
+            local max = gvalue.maxcombo;
 
-        local remain = 0;
-
-        if prevstart and prevpower < max then
-            remain = math.ceil(maxpartial * (currtime - prevstart) / cooldownDuration);
-            if remain >= maxpartial then
-                remain = maxpartial - 1;
+            if power ~= prevpower then
+                prevpower = power;
+                prevstart = currtime;
             end
-        end
 
-        partial = prevpower * maxpartial + remain;
+            local remain = 0;
+
+            if prevstart and prevpower < max then
+                remain = math.ceil(maxpartial * (currtime - prevstart) / cooldownDuration);
+                if remain >= maxpartial then
+                    remain = maxpartial - 1;
+                end
+            end
+
+            partial = prevpower * maxpartial + remain;
+        end
     end
     ns.show_combo(power, partial);
 end
