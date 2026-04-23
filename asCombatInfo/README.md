@@ -37,6 +37,9 @@ Top alignment has higher priority.
 * `SpellBorderWidth`: Border thickness for skill icons (Default: 2)
 * `BuffIconRate`: Buff icon height ratio (Default: 8, height is 80% of width)
 * `BuffBorderWidth`: Border thickness for buff icons (Default: 2)
+* `SpellMillisecondsThreshold`: The time threshold at which the remaining spell cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
+* `BuffMillisecondsThreshold`: The time threshold at which the remaining buff cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
+
 
 ## Contact Information
 1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
@@ -85,6 +88,8 @@ Top alignment has higher priority.
 *   `SpellBorderWidth` : 기술 아이콘 테두리 두깨 (Default 2)
 *   `BuffIconRate` : 버프 아이콘 높이 비율 (Default 8, 넓이의 80% 높이)
 *   `BuffBorderWidth` : 버프 아이콘 테두리 두깨 (Default 2)
+*   `SpellMillisecondsThreshold` : 남은 스킬 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
+*   `BuffMillisecondsThreshold` : 남은 버프 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
 
 ## 문의처
 1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)

@@ -14,6 +14,8 @@ local Options_Default = {
     BuffBorderWidth = 2,
     SpellIconRate = 9,
     BuffIconRate = 8,
+    SpellMillisecondsThreshold = 3,
+    BuffMillisecondsThreshold = 3,
 };
 
 ns.options = CopyTable(Options_Default);
@@ -59,7 +61,16 @@ function ns.setup_option()
             local defaultValue = Options_Default[variable];
             local currentValue = ACI_Options[variable];
 
-            if tonumber(defaultValue) ~= nil then
+
+            if name == "SpellMillisecondsThreshold" or name == "BuffMillisecondsThreshold" then
+				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+					type(defaultValue), name, defaultValue);
+				local options = Settings.CreateSliderOptions(0, 10, 1);
+				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+				Settings.CreateSlider(category, setting, options, tooltip);
+				Settings.SetValue(cvar_name, currentValue);
+				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            elseif tonumber(defaultValue) ~= nil then
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
                     type(defaultValue), name, defaultValue);
                 local options = Settings.CreateSliderOptions(1, 9, 1);

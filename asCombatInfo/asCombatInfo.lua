@@ -239,6 +239,16 @@ local function update_buttons(viewer, forced)
 				button.Cooldown:SetAllPoints(button.Icon)
 				button.Cooldown:SetSwipeTexture("Interface\\Buttons\\WHITE8X8");
 				button.Cooldown:SetSwipeColor(0, 0, 0, 0.8)
+
+				if isbuff then
+					if ns.options.BuffMillisecondsThreshold then
+						button.Cooldown:SetCountdownMillisecondsThreshold(ns.options.BuffMillisecondsThreshold);
+					end
+				else
+					if ns.options.SpellMillisecondsThreshold then
+						button.Cooldown:SetCountdownMillisecondsThreshold(ns.options.SpellMillisecondsThreshold);
+					end
+				end
 				for _, r in next, { button.Cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
 						r:SetFont(configs.font, width / 3 + 1, "OUTLINE");
