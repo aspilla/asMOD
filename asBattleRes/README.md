@@ -16,6 +16,7 @@ Displays Battle Resurrection charges and cooldown.
 
 1. **Configuration**:
     * Adjust settings via `ESC` > `Options` > `Addons` > `asBattleRes`.
+    * `MillisecondsThreshold`: The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
 2. **Repositioning**:
     * Ensure the 'LockWindow' option in the settings menu is unchecked (Default: Checked).
     * Left-click and drag the frame to the desired location.
@@ -24,6 +25,7 @@ Displays Battle Resurrection charges and cooldown.
     * Check the 'LockWindow' option in the settings menu.
 * **Move Position**: Enter `/asConfig` in the chat.
 * **Reset Position**: Enter `/asClear` in the chat to restore default settings.
+
 
 ## Contact Information
 1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
@@ -50,6 +52,7 @@ Displays Battle Resurrection charges and cooldown.
 
 1.  **설정 변경**:
     *   `ESC` > `설정` > `애드온` > `asBattleRes` 에서 설정 가능
+    *  `MillisecondsThreshold` : 남은 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
 2.  **프레임 위치 변경**:
     *   설정 메뉴에서 'LockWindow' 옵션이 체크 해제되어 있는지 확인합니다. (기본값: 체크)
     *   프레임을 마우스 왼쪽 버튼으로 클릭한 상태로 드래그하여 원하는 위치로 이동
@@ -58,6 +61,7 @@ Displays Battle Resurrection charges and cooldown.
     *   설정 메뉴에서 'LockWindow' 옵션을 체크.
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
+
 
 ## 문의처
 1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)

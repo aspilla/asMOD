@@ -31,12 +31,12 @@ local function save_position(frame, option)
 end
 
 local function set_cooldownframe(self, durationobject, enable)
-    if enable and durationobject then
-        self:SetDrawEdge(nil);
-        self:SetCooldownFromDurationObject(durationobject);
-    else
-        clear_cooldownframe(self);
-    end
+	if enable and durationobject then
+		self:SetDrawEdge(nil);
+		self:SetCooldownFromDurationObject(durationobject);
+	else
+		clear_cooldownframe(self);
+	end
 end
 
 local bMouseEnabled = true;
@@ -95,6 +95,10 @@ local function init()
 
 	main_button.cooldown:SetHideCountdownNumbers(false);
 	main_button.cooldown:SetDrawSwipe(true);
+
+	if ns.options.MillisecondsThreshold then
+		main_button.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+	end
 
 	for _, r in next, { main_button.cooldown:GetRegions() } do
 		if r:GetObjectType() == "FontString" then
