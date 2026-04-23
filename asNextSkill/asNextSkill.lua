@@ -20,7 +20,6 @@ local function get_spellhotkey(spellid)
 	local slots = C_ActionBar.FindSpellActionButtons(spellid)
 	if slots and #slots > 0 then
 		for _, slot in ipairs(slots) do
-
 			local scanslot = slot
 			if (slot > 72 and slot <= 132) or (slot > 12 and slot <= 24) then
 				scanslot = (slot - 1) % 12 + 1;
@@ -42,12 +41,12 @@ local function clear_cooldownframe(self)
 end
 
 local function set_cooldownframe(self, durationobject, enable)
-    if enable and durationobject  then
-        self:SetDrawEdge(nil);
-        self:SetCooldownFromDurationObject(durationobject);
-    else
-        clear_cooldownframe(self);
-    end
+	if enable and durationobject then
+		self:SetDrawEdge(nil);
+		self:SetCooldownFromDurationObject(durationobject);
+	else
+		clear_cooldownframe(self);
+	end
 end
 
 
@@ -58,7 +57,7 @@ local function on_update()
 		local info = C_Spell.GetSpellInfo(nextspellid);
 		if info then
 			main_frame.icon:SetTexture(info.iconID);
-			
+
 			local durationobj = C_Spell.GetSpellCooldownDuration(nextspellid);
 			if durationobj then
 				set_cooldownframe(main_frame.cooldown, durationobj, true);
@@ -99,7 +98,7 @@ local function init()
 
 	ns.main_frame:SetScale(ns.options.UIScale);
 
-	ns.check_hotkeys();	
+	ns.check_hotkeys();
 	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 	main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
 	main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
@@ -117,6 +116,10 @@ main_frame.border:SetVertexColor(0, 0, 0);
 
 main_frame.cooldown:SetHideCountdownNumbers(false);
 main_frame.cooldown:SetDrawSwipe(true);
+
+if ns.options.MillisecondsThreshold then
+	main_frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+end
 
 for _, r in next, { main_frame.cooldown:GetRegions() } do
 	if r:GetObjectType() == "FontString" then
