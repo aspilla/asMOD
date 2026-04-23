@@ -2,7 +2,7 @@
 
 local configs = {
     size = 30,
-    sizerate = 0.8,    
+    sizerate = 0.8,
     alpha = 0.9,
     cool_fontsize = 12,
     count_fontsize = 13,
@@ -52,7 +52,7 @@ local function clear_cooldownframe(self)
 end
 
 local function set_cooldownframe(self, durationobject, enable)
-    if enable and durationobject  then
+    if enable and durationobject then
         self:SetDrawEdge(nil);
         self:SetCooldownFromDurationObject(durationobject);
     else
@@ -150,6 +150,12 @@ local function update_debuffs(unit)
                 frame = main_frame.units[unit].frames[numdebuffs];
                 frame:EnableMouse(false);
                 frame.cooldown:SetDrawSwipe(true);
+
+                if ns.options.MillisecondsThreshold then
+                    frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+                end
+
+
                 for _, r in next, { frame.cooldown:GetRegions() } do
                     if r:GetObjectType() == "FontString" then
                         r:SetFont(STANDARD_TEXT_FONT, configs.cool_fontsize, "OUTLINE");
@@ -168,7 +174,7 @@ local function update_debuffs(unit)
                 frame.count:SetFont(STANDARD_TEXT_FONT, configs.count_fontsize, "OUTLINE");
                 frame.count:ClearAllPoints();
                 frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
-		        frame.count:SetTextColor(0, 1, 0);
+                frame.count:SetTextColor(0, 1, 0);
 
                 frame.snapshot:SetFont(STANDARD_TEXT_FONT, configs.count_fontsize - 1, "OUTLINE")
                 frame.snapshot:ClearAllPoints();
@@ -222,12 +228,11 @@ local function on_update()
 end
 
 local function init()
-
     ns.setup_option();
 
     main_frame:SetPoint("CENTER", 0, 0)
     main_frame:SetWidth(1)
-    main_frame:SetHeight(1)    
+    main_frame:SetHeight(1)
     main_frame:Show()
     main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
     main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
