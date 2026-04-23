@@ -129,6 +129,24 @@ end
 
 local prevpower = nil;
 local prevstart = nil;
+local prevregan = nil;
+
+local function get_regen()
+    local peace, interrupted = GetPowerRegenForPowerType(Enum.PowerType.Essence);
+
+    if issecretvalue(peace) then
+        if prevregan then
+            return prevregan;
+        else
+            return 0.2;
+        end
+    elseif peace then        
+        prevregan = peace;
+        return prevregan
+    else
+        return 0.2;
+    end       
+end
 
 local function update_combo()
     if gvalue.powerlevel == nil then
@@ -143,7 +161,7 @@ local function update_combo()
     end
 
     if gvalue.powerlevel == Enum.PowerType.Essence then
-        local peace, interrupted = GetPowerRegenForPowerType(Enum.PowerType.Essence);
+        local peace = get_regen();
 
         if peace then
             local cooldownDuration = 1 / peace;
