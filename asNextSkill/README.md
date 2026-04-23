@@ -15,6 +15,7 @@ Notification for the next recommended skill.
 * `ShowHotKey`: Toggle display of hotkeys (Default: On).
 * `AssistShowOnly`: Only suggest skills that are currently registered on your action bars (Default: Off).
 * `UIScale`: Adjust the size of the button icon (Default: 1.0).
+* `MillisecondsThreshold`: The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
 * **Repositioning**: Enter the `/asConfig` command in the chat window.
 * **Reset Position**: Enter the `/asClear` command in the chat window to reset to default settings.
 
@@ -41,6 +42,7 @@ Notification for the next recommended skill.
 *  `ShowHotKey` : 단축키 표시 (기본 : 사용)
 *  `AssistShowOnly` : 단축바에 등록된 기술만 안내 (기본 : 미사용)
 *  `UIScale` : 버튼 크기 배율 (기본 : 1.0)
+*  `MillisecondsThreshold` : 남은 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
 
