@@ -8,6 +8,7 @@ local Options_Default = {
 	ItemSize = 28,
 	ShowSpells = true,
 	SpellSize = 28,
+	MillisecondsThreshold = 3,
 };
 
 local Options_DefaultSpells = {
@@ -277,7 +278,15 @@ function ns.setup_option()
 			local defaultValue = Options_Default[variable];
 			local currentValue = ACDP_Options[variable];
 
-			if tonumber(defaultValue) ~= nil then
+			if name == "MillisecondsThreshold" then
+				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+					type(defaultValue), name, defaultValue);
+				local options = Settings.CreateSliderOptions(0, 10, 1);
+				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+				Settings.CreateSlider(category, setting, options, tooltip);
+				Settings.SetValue(cvar_name, currentValue);
+				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+			elseif tonumber(defaultValue) ~= nil then
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
 					type(defaultValue), name, defaultValue);
 				local options = Settings.CreateSliderOptions(0, 400, 1);

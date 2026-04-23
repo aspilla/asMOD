@@ -51,7 +51,7 @@ local function clear_cooldownframe(self)
 end
 
 local function set_cooldownframe(self, durationobject, enable)
-    if enable and durationobject  then
+    if enable and durationobject then
         self:SetDrawEdge(nil);
         self:SetCooldownFromDurationObject(durationobject);
     else
@@ -111,7 +111,7 @@ local function update_itembutton(frame, itemid, istrinket, ishealthstone)
     local count = C_Item.GetItemCount(itemid, false, true, false, false);
     local durationobj = C_DurationUtil.CreateDuration();
     durationobj:SetTimeFromStart(start, duration);
-    
+
     if istrinket then
         count = 0;
     end
@@ -199,6 +199,10 @@ local function create_button(size)
     local frame = CreateFrame("Button", nil, main_frame, "asCooldownPulseFrameTemplate");
     frame.cooldown:SetHideCountdownNumbers(false);
     frame.cooldown:SetDrawSwipe(true);
+
+    if ns.options.MillisecondsThreshold then
+        frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+    end
 
     for _, r in next, { frame.cooldown:GetRegions() } do
         if r:GetObjectType() == "FontString" then

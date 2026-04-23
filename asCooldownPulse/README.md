@@ -22,6 +22,7 @@ Displays cooldowns for trinkets, racial abilities, Healthstones, and potions.
 * `ItemSize`: Icon size for potion/Healthstone cooldowns (Default: 28).
 * `ShowSpells`: Toggle display of skill cooldown tracking (Default: On).
 * `SpellSize`: Icon size for skill cooldown tracking (Default: 28).
+* `MillisecondsThreshold`: The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
 
 * A `/reload` is required after changing sizes.
 
@@ -64,6 +65,7 @@ Displays cooldowns for trinkets, racial abilities, Healthstones, and potions.
 *   `ItemSize`  : 물약/생석 쿨 사이즈 (Default 28)
 *   `ShowSpells` : 스킬 쿨 추적 표시 여부 (Default On)
 *   `SpellSize` : 스킬 쿨 추적 사이즈 (Default 28)
+*  `MillisecondsThreshold` : 남은 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
 
 * 크기 변경후 `/reload` 필요
 
