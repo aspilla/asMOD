@@ -176,6 +176,10 @@ local function create_frames(parent, bright, max)
 		local frame = parent.frames[idx];
 		frame.cooldown:SetDrawSwipe(true);
 
+		if ns.options.MillisecondsThreshold then
+            frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+        end
+
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
 				r:SetFont(STANDARD_TEXT_FONT, ns.configs.cool_fontsize, "OUTLINE");

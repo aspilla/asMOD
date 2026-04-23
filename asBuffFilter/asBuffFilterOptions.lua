@@ -10,12 +10,13 @@ ns.configs = {
     cool_fontsize = 12, -- Cooldown Font Size
     count_fontsize = 13,    -- Count Font Size
     combat_alpha = 1,       -- 전투중 Alpha 값
-    normal_alpha = 0.5,     -- 비 전투중 Alpha 값
+    normal_alpha = 0.5,     -- 비 전투중 Alpha 값	
 };
 
 local Options_Default = {
 	Version = 25260103,
 	CombatAlphaChange = true,
+	MillisecondsThreshold = 3,
 };
 
 ns.options = CopyTable(Options_Default);
@@ -61,7 +62,15 @@ function ns.setup_option()
 			local defaultValue = Options_Default[variable];
 			local currentValue = ABF_Options[variable];
 
-			if tonumber(defaultValue) ~= nil then
+			if name == "MillisecondsThreshold" then
+				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+					type(defaultValue), name, defaultValue);
+				local options = Settings.CreateSliderOptions(0, 10, 1);
+				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+				Settings.CreateSlider(category, setting, options, tooltip);
+				Settings.SetValue(cvar_name, currentValue);
+				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+			elseif tonumber(defaultValue) ~= nil then
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
 					type(defaultValue), name, defaultValue);
 				local options = Settings.CreateSliderOptions(1, 2, 0.1);

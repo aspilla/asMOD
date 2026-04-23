@@ -13,8 +13,10 @@ Displays target buffs on the right side (Up to 7 during combat, up to 21 out of 
 * Purgeable Buffs: Displays a white border when a buff can be dispelled or stolen.
 
 ### Configuration
-
+* Adjust settings via `ESC` > `Options` > `Addons` > `asBuffFilter`.
 * `CombatAlphaChange`: Changes transparency when out of combat (Default: On).
+* `MillisecondsThreshold`: The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
+
 * **Move Position**: Enter the `/asConfig` command in the chat.
 * **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
@@ -40,8 +42,9 @@ Displays target buffs on the right side (Up to 7 during combat, up to 21 out of 
 * 버프 무효화(훔치기)가 가능하면 테두리를 흰색으로 표시
 
 ### 설정
-
+*   `ESC` > `설정` > `애드온` > `asBuffFilter` 에서 설정 가능
 *   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
+*  `MillisecondsThreshold` : 남은 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
 
