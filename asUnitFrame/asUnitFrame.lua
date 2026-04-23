@@ -48,6 +48,9 @@ local function createdebuffframes(parent, bright, fontsize, width, count)
         local frame = parent.debuffframes[idx];
 
         frame.cooldown:SetDrawSwipe(true);
+        if ns.options.MillisecondsThreshold then
+            frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+        end
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
@@ -115,6 +118,9 @@ local function create_buffframes(parent, bright, fontsize, width, count)
         local frame = parent.buffframes[idx];
 
         frame.cooldown:SetDrawSwipe(true);
+        if ns.options.MillisecondsThreshold then
+            frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+        end
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
@@ -187,6 +193,9 @@ local function create_totemframes(parent, bright, fontsize, width, count)
         local frame = button.Icon;
 
         frame.cooldown:SetDrawSwipe(true);
+        if ns.options.MillisecondsThreshold then
+            frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+        end
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
@@ -282,6 +291,9 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
         frame.portrait:SetFrameLevel(configs.framelevel - 20);
         local pframe = frame.portrait;
         pframe.cooldown:SetDrawSwipe(true);
+        if ns.options.MillisecondsThreshold then
+            pframe.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+        end
         for _, r in next, { pframe.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");

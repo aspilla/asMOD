@@ -94,6 +94,7 @@ This addon replaces the default unit frames. It is recommended to use it with ot
     * `PetPowerWidth`: Default 40
     * `PetPowerHeight`: Default 2
     * `PetFontSize`: Default 9
+    * `MillisecondsThreshold`: The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
 
     <iframe width="560" height="315" src="https://www.youtube.com/embed/gAUZp3xXlIA?si=DrQSSUP2xpaur9FP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -204,6 +205,7 @@ The following errors may occur.
     *   `PetPowerWidth`:기본값  40
     *   `PetPowerHeight`:기본값  2
     *   `PetFontSize`:기본값 = 9
+    *  `MillisecondsThreshold` : 남은 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
 
     <iframe width="560" height="315" src="https://www.youtube.com/embed/gAUZp3xXlIA?si=DrQSSUP2xpaur9FP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
