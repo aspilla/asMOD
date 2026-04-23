@@ -8,6 +8,7 @@
 		--[115356] = true, --고술 바람의 일격
 		--[455055] = true, --일거리 시작
 	},
+	MillisecondsThreshold = 3,
 }
 
 local main_frame = CreateFrame("Frame", nil, UIParent);
@@ -35,12 +36,12 @@ local function clear_cooldownframe(self)
 end
 
 local function set_cooldownframe(self, durationobject, enable)
-    if enable and durationobject then
-        self:SetDrawEdge(nil);
-        self:SetCooldownFromDurationObject(durationobject);
-    else
-        clear_cooldownframe(self);
-    end
+	if enable and durationobject then
+		self:SetDrawEdge(nil);
+		self:SetCooldownFromDurationObject(durationobject);
+	else
+		clear_cooldownframe(self);
+	end
 end
 
 local function update_anchor(frames, index, size, offsetX, right, parent)
@@ -73,7 +74,7 @@ local function update_spells()
 	for _, id in pairs(spell_list) do
 		local icon = get_spellicons(id);
 		local isusable, notenoughmana = C_Spell.IsSpellUsable(id);
-		
+
 		if (icon) then
 			local frame = parent.frames[frame_idx];
 
@@ -81,6 +82,10 @@ local function update_spells()
 				parent.frames[frame_idx] = CreateFrame("Button", nil, parent, "asActiveAlertFrameTemplate");
 				frame = parent.frames[frame_idx];
 				frame:EnableMouse(false);
+
+				if configs.MillisecondsThreshold then
+					frame.cooldown:SetCountdownMillisecondsThreshold(configs.MillisecondsThreshold);
+				end
 
 				for _, r in next, { frame.cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
