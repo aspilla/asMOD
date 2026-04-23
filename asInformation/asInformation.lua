@@ -3,7 +3,7 @@ local _, ns = ...;
 local configs = {
     combatalpha = 1,
     normalalpha = 0.5,
-    updaterate = 0.2,    
+    updaterate = 0.2,
 };
 
 local main_frame = CreateFrame("Frame", "asInformationFrame", UIParent);
@@ -20,7 +20,7 @@ local defaultOptions = {
     relativePoint = "CENTER",
     xOfs = -165,
     yOfs = -250,
-    isLocked = true,    
+    isLocked = true,
     showHaste = true,
     showCrit = true,
     showMastery = true,
@@ -329,14 +329,17 @@ local function recode_stats()
             Versatility = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE),
         }
 
+
         for statName, value in pairs(currentStats) do
-            local snapshot = { value = value }
-            table.insert(statHistory[statName], 1, snapshot)
+            if not issecretvalue(value) then
+                local snapshot = { value = value }
+                table.insert(statHistory[statName], 1, snapshot)
 
-            local numList = #statHistory[statName];
+                local numList = #statHistory[statName];
 
-            if numList > 100 then
-                table.remove(statHistory[statName], numList);
+                if numList > 100 then
+                    table.remove(statHistory[statName], numList);
+                end
             end
         end
 
@@ -344,7 +347,7 @@ local function recode_stats()
             -- Calculate minimum from combat snapshots
             local minStat = nil
             for _, snapshot in ipairs(history) do
-                if not issecretvalue(snapshot.value) and (minStat == nil or (snapshot.value < minStat and snapshot.value > 0)) then
+                if minStat == nil or (snapshot.value < minStat and snapshot.value > 0) then
                     minStat = snapshot.value
                 end
             end
@@ -413,7 +416,7 @@ local function update_stats()
     local haste = GetHaste()
     local crit = get_crit()
     local mastery = GetMasteryEffect()
-    local versatility = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE);
+    local versatility = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) or 0;
     local primaryStatValue = get_primarystat()
 
     if ASInformationSaved.showCrit then
@@ -602,7 +605,7 @@ local function setup_option()
     end)
 
     optionsPanel.refresh = function()
-        lockCheckbox:SetChecked(ASInformationSaved.isLocked)        
+        lockCheckbox:SetChecked(ASInformationSaved.isLocked)
     end
 
     -- Show the options panel when the slash command is used
