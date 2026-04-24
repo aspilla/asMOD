@@ -246,9 +246,11 @@ local function init()
     timero = C_Timer.NewTicker(ns.UpdateRate + 0.01, on_update);
     timero2 = C_Timer.NewTicker(ns.UpdateRate + 0.02, ns.update_featuresforall);
 
+    --[[
     if ns.options.RemoveGroupText then
         remove_grouptext();
     end
+    ]]
 end
 
 local bfirst = true;

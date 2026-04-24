@@ -8,7 +8,7 @@ local Options_Default = {
     BottomHealerManaBar = true, -- 힐러 마나바
     BottomTankPowerBar = true, -- 탱커 Power 바   
     ShowMark = true,
-    RemoveGroupText = true,
+    --RemoveGroupText = true,
 };
 
 ns.options = CopyTable(Options_Default);
