@@ -3,7 +3,7 @@ local version = select(4, GetBuildInfo());
 
 local configs = {
 	uiscale = 0.75,
-	version = 260108,
+	version = 260425,
 };
 
 local function import_layout(layout_text, name)
