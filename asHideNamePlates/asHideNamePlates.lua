@@ -5,6 +5,11 @@ local configs = {
 	updaterate = 0.2,
 };
 
+local globals = {
+	istank = false,
+	isparty = false,
+}
+
 local usePlater = C_AddOns.LoadAddOn("Plater");
 
 local function get_unitframe(nameplate)
@@ -69,6 +74,10 @@ local function check_needtohide(nameplate)
 		return false;
 	end
 
+	if ns.options.WorkOnlyParty and not globals.isparty then
+		return false;
+	end
+
 	if ns.options.HideModifier == 1 then
 		if AHNP_ButtonPressed then
 			return true;
@@ -107,7 +116,7 @@ local function get_auracount(list)
     return count;
 end
 
-local isTank = false;
+
 
 local function is_mustshow(unit, unitframe)
 	if UnitIsUnit(unit, "target") or UnitIsUnit(unit, "focus") then
@@ -129,7 +138,7 @@ local function is_mustshow(unit, unitframe)
 		return true;
 	end
 
-	if isTank and status and status < 2 then
+	if globals.istank and status and status < 2 then
 		return true;
 	end
 
@@ -218,11 +227,19 @@ local function on_update()
 end
 
 local function on_event(self, event, ...)
-	isTank = false;
+	globals.istank = false;
 	local assignedRole = UnitGroupRolesAssigned("player");
 
 	if (assignedRole and assignedRole == "TANK") then
-		isTank = true;
+		globals.istank = true;
+	end
+
+	globals.isparty = false;
+
+	if IsInGroup() then
+		if not IsInRaid() then
+			globals.isparty = true;			
+		end
 	end
 end
 
