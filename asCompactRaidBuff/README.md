@@ -2,6 +2,10 @@
 
 Raid and Party Frame Enhancements
 
+## Changes After Patch 12.0.5
+* Following the 12.0.5 patch, it is no longer possible to modify the buff/debuff display on the default raid frames. Consequently, the related features in asCompactRaidBuff have been removed.
+* While it is technically possible to implement a separate buff/debuff display, I have concluded that it is impossible to perfectly replicate the default raid frame functionality under the current WoW API structure. Furthermore, I believe it is inefficient to allocate CPU resources to provide a subpar feature, so there are no plans for additional updates regarding this unless the API changes.
+
 ## Key Features
 * **Healer-Specific Mana Bar (Bottom, configurable)**
 * **Tank-Specific Power Bar (Bottom, configurable)**: Displayed only when the resource is not mana.
@@ -47,6 +51,10 @@ Detailed explanations can be found on community macro boards (e.g., WoW Inven Ma
 # asCompactRaidBuff (한밤)
 
 공격대 및 파티 프레임 강화
+
+## 12.0.5 패치 이후 변경점
+* 12.0.5 패치가 되며 기본 레이드 프레임의 버프/디버프 표시를 변경할 수 없게 변경 되었습니다. asCompactRaidBuff의 관련 기능은 삭제 되었습니다.
+* 별도의 버프/디버프를 표시하는 방식으로 구현이 가능하나 현재 와우 API 구조상 기본 레이드 기능을 100% 구현 할 수 없다는 판단이고, 부족한 기능을 CPU 리소스를 투입하여 사용하는 것은 별로라고 판단 되어 API 변경없이 관련된 추가 변경 계획은 없습니다.
 
 ## 주요 기능
 *   **힐러 전용 마나 바 (하단, 설정 가능)**    
