@@ -66,6 +66,8 @@ The following issue may occur:
 1.  Use the `/asconfig` command to adjust frame positions.
 2.  Disable `asUnitFrame` before using `Edit Mode`, and save your layout with a name **other than** `asMOD_Layout`.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/eSMc_PrLlnc?si=HDvr5EaklEbJrhQF" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Cooldown Manager Configuration
 * Navigate to `ESC >> Options >> Gameplay >> Advanced Cooldown Settings`.
 1.  **Option 1:** [Main Skills] 6, [Top Buffs] 7, [Bottom Buff Bar] 2 rows (Recommended).
@@ -264,6 +266,8 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 ## 위치 설정 방법
 1. `/asconfig` 명령으로 위치 조정 가능 
 2. `편집모드` 사용시 asUnitFrame 끄고 진행, `asMOD_Layout`이 아닌 새로운 이름으로 저장 필요
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/eSMc_PrLlnc?si=HDvr5EaklEbJrhQF" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 재사용 대기시간 관리자 설정
 * `esc >> 설정 >> 게임 플레이 개선 >> 고급 재사용 대기시간 설정` 클릭하여 가운데 버튼 설정
