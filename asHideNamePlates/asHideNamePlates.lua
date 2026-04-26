@@ -7,7 +7,7 @@ local configs = {
 
 local globals = {
 	istank = false,
-	isparty = false,
+	needtoupdate = false,
 }
 
 local usePlater = C_AddOns.LoadAddOn("Plater");
@@ -74,10 +74,6 @@ local function check_needtohide(nameplate)
 		return false;
 	end
 
-	if ns.options.WorkOnlyParty and not globals.isparty then
-		return false;
-	end
-
 	if ns.options.HideModifier == 1 then
 		if AHNP_ButtonPressed then
 			return true;
@@ -99,21 +95,21 @@ local function check_needtohide(nameplate)
 end
 
 local function get_auracount(list)
-    local count = 0;
-    if list:IsForbidden() then
-        return count
-    end
-    local children = list:GetLayoutChildren()
-    if #children == 0 then
-        return count;
-    end
-    for _, child in ipairs(children) do
-        if child.auraInstanceID then
-            count = count + 1;
-        end
-    end
+	local count = 0;
+	if list:IsForbidden() then
+		return count
+	end
+	local children = list:GetLayoutChildren()
+	if #children == 0 then
+		return count;
+	end
+	for _, child in ipairs(children) do
+		if child.auraInstanceID then
+			count = count + 1;
+		end
+	end
 
-    return count;
+	return count;
 end
 
 
@@ -122,7 +118,7 @@ local function is_mustshow(unit, unitframe)
 	if UnitIsUnit(unit, "target") or UnitIsUnit(unit, "focus") then
 		return true;
 	end
-	
+
 	if ns.options.HideMinusMob and (UnitClassification(unit) == "minus") then
 		return false;
 	end
@@ -152,7 +148,7 @@ local function is_mustshow(unit, unitframe)
 		end
 	end
 
-	if ns.options.ShowNoDebuff and unitframe and unitframe.AurasFrame then		
+	if ns.options.ShowNoDebuff and unitframe and unitframe.AurasFrame then
 		local debufflist = unitframe.AurasFrame.DebuffListFrame
 
 		local activeDebuffs = get_auracount(debufflist);
@@ -209,6 +205,10 @@ end
 
 
 local function on_update()
+	if not globals.needtoupdate then
+		return;
+	end
+
 	local needtohide = false;
 
 	for _, nameplate in pairs(C_NamePlate.GetNamePlates(issecure())) do
@@ -234,11 +234,21 @@ local function on_event(self, event, ...)
 		globals.istank = true;
 	end
 
-	globals.isparty = false;
+	globals.needtoupdate = false;
 
 	if IsInGroup() then
-		if not IsInRaid() then
-			globals.isparty = true;			
+		if IsInRaid() then
+			if ns.options.WorkOnRaid then
+				globals.needtoupdate = true;
+			end
+		else
+			if ns.options.WorkOnParty then
+				globals.needtoupdate = true;
+			end
+		end
+	else
+		if ns.options.WorkOnSolo then
+			globals.needtoupdate = true;
 		end
 	end
 end

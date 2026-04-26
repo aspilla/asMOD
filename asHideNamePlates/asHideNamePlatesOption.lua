@@ -8,7 +8,9 @@ local Options_Default = {
     ShowNoDebuff = false,
     HideMinusMob = true,
     ShowPlayers = true,
-    WorkOnlyParty = true,
+    WorkOnParty = true,
+    WorkOnRaid = false,
+    WorkOnSolo = false,
 };
 
 ns.options = CopyTable(Options_Default);

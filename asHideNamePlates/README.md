@@ -35,7 +35,9 @@ The following settings control whether nameplates of hostile targets in combat a
 * `ShowNoDebuff`: Mobs without your debuffs remain visible (Default: Off, intended for DoT classes).
 * `HideMinusMob`: Hides non-essential/minor mobs (Default: On).
 * `ShowPlayers`: Hostile players remain visible (Default: On).
-* `WorkOnlyParty`: Only functions while in a party (Inactive during Raids or Solo play) (Default: On).
+* `WorkOnParty`: Functions while in a party (Default: On)
+* `WorkOnRaid`: Functions during raids (Default: Off)
+* `WorkOnSolo`: Functions during solo play (Default: Off)
 
 ## Contact Information
 1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
@@ -79,7 +81,9 @@ The following settings control whether nameplates of hostile targets in combat a
 * `ShowNoDebuff` 내 디버프가 없는 몹은 보임 (기본 Off, 도트 딜러용 옵션)
 * `HideMinusMob` 중요하지 않은 몹은 숨김 (기본 On)
 * `ShowPlayers` 적대적 대상의 경우 보임 (기본 On)
-* `WorkOnlyParty` 파티시만 동작 (레이드 및 솔로인 경우 미동작) (기본 On)
+* `WorkOnParty` 파티시 동작 (기본 On)
+* `WorkOnRaid` 레이드시 동작 (기본 Off)
+* `WorkOnSolo` 솔로잉시 동작 (기본 Off)
 
 
 
