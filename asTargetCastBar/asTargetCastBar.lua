@@ -244,15 +244,20 @@ local function check_casting(castbar, event, interuptedby)
             castbar.notinterruptable:SetAlpha(alpha);
 
             if UnitExists(targettarget) then
-                local _, Class = UnitClass(targettarget)
-                if Class then
-                    local classcolor = RAID_CLASS_COLORS[Class]
-                    if classcolor then
-                        targetname:SetTextColor(classcolor.r, classcolor.g, classcolor.b);
-                        targetname:SetText(UnitName("targettarget"));
-                        targetname:Show();
-                    end
+                local _, class = UnitClass(targettarget)
+                local classcolor = nil;
+                if class then
+                    classcolor = RAID_CLASS_COLORS[class];
                 end
+
+                if classcolor then
+                    targetname:SetTextColor(classcolor.r, classcolor.g, classcolor.b);
+                else
+                    targetname:SetTextColor(1, 1, 1);
+                end
+
+                targetname:SetText(UnitName(targettarget));
+                targetname:Show();
             else
                 targetname:SetText("");
                 targetname:Hide();
