@@ -1,7 +1,7 @@
-# asDBMCastingAlert
+# asDBMCastingAlert (Midnight)
 
 Displays casting bars of casting mobs (excluding Target and Focus).
-![asDBMCastingAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDBMCastingAlert.png?raw=true)
+![asDBMCastingAlert](https://media.forgecdn.net/attachments/1654/60/asdbmcastalert-jpg.jpg)
 
 ## Key Features
 * Displays up to 3 casting bars.
@@ -22,10 +22,10 @@ Displays casting bars of casting mobs (excluding Target and Focus).
 2. **English Users**: Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/)
 ---
 
-# asDBMCastingAlert
+# asDBMCastingAlert (한밤)
 
 시전중인 몹의 케스팅바를 표시 (대상, 주시 미포함)
-![asDBMCastingAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDBMCastingAlert.png?raw=true)
+![asDBMCastingAlert](https://media.forgecdn.net/attachments/1654/60/asdbmcastalert-jpg.jpg)
 
 ## 주요 기능
 *   최대 3개의 시전바를 표시
