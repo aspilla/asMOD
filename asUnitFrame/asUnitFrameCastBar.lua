@@ -3,7 +3,7 @@ local _, ns = ...;
 local configs = {
     interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
     failcolor = { 1, 0, 0 },
-    interruptedtext = INTERRUPTED;
+    interruptedtext = INTERRUPTED,
 };
 
 if GetLocale() == "koKR" then
@@ -14,25 +14,25 @@ end
 local function hide_castbar(castbar)
     local targetname = castbar.targetname;
     castbar:SetValue(0);
-    castbar:Hide();    
+    castbar:Hide();
     castbar.isAlert = false;
     targetname:SetText("");
     targetname:Hide();
     castbar.failstart = nil;
     castbar.duration_obj = nil;
-    castbar.important:SetAlpha(0);    
+    castbar.important:SetAlpha(0);
     castbar.notinterruptable:SetAlpha(0);
 end
 
 local function get_interrupttext(interruptedby)
-	if interruptedby then
-		local unitname = UnitNameFromGUID(interruptedby);
-		if unitname then
-			return SPELL_INTERRUPTED_BY:format(unitname);
-		end
-	end
+    if interruptedby then
+        local unitname = UnitNameFromGUID(interruptedby);
+        if unitname then
+            return SPELL_INTERRUPTED_BY:format(unitname);
+        end
+    end
 
-	return INTERRUPTED;
+    return INTERRUPTED;
 end
 
 
@@ -71,10 +71,9 @@ local function check_casting(castbar, event, interuptedby)
             else
                 targetname:SetText("");
             end
-            castbar.important:SetAlpha(0);            
+            castbar.important:SetAlpha(0);
             castbar.notinterruptable:SetAlpha(0);
             castbar:Show();
-
         elseif name then
             local duration;
 
@@ -91,14 +90,14 @@ local function check_casting(castbar, event, interuptedby)
             castbar.castspellid = spellid;
 
             local color = {};
-            color = configs.interruptcolor;            
+            color = configs.interruptcolor;
             castbar:SetStatusBarColor(color[1], color[2], color[3]);
 
             if C_CurveUtil and C_CurveUtil.EvaluateColorValueFromBoolean then
                 local isimportant = C_Spell.IsSpellImportant(spellid);
                 local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
                 castbar.important:SetAlpha(alpha);
-                
+
                 local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(notInterruptible, 1, 0);
                 castbar.notinterruptable:SetAlpha(alpha);
             end
@@ -110,14 +109,19 @@ local function check_casting(castbar, event, interuptedby)
 
             if UnitExists(targettarget) then
                 local _, Class = UnitClass(targettarget)
+                local classcolor = nil;
                 if Class then
-                    local classcolor = RAID_CLASS_COLORS[Class]
-                    if classcolor then
-                        targetname:SetTextColor(classcolor.r, classcolor.g, classcolor.b);
-                        targetname:SetText(UnitName("targettarget"));
-                        targetname:Show();
-                    end
+                    classcolor = RAID_CLASS_COLORS[Class];
                 end
+
+                if classcolor then
+                    targetname:SetTextColor(classcolor.r, classcolor.g, classcolor.b);
+                else
+                    targetname:SetTextColor(1, 1, 1);
+                end
+
+                targetname:SetText(UnitName(targettarget));
+                targetname:Show();
             else
                 targetname:SetText("");
                 targetname:Hide();
@@ -133,23 +137,22 @@ local function check_casting(castbar, event, interuptedby)
 end
 
 local function on_castevent(self, event, ...)
-
     local interruptedby = nil;
 
-    if ( event == "UNIT_SPELLCAST_INTERRUPTED" ) then
-		interruptedby = select(4, ...);
-    elseif ( event == "UNIT_SPELLCAST_CHANNEL_STOP" ) then
-		interruptedby = select(4, ...);
-		local complete = interruptedby == nil;
-		if ( not complete) then
+    if (event == "UNIT_SPELLCAST_INTERRUPTED") then
+        interruptedby = select(4, ...);
+    elseif (event == "UNIT_SPELLCAST_CHANNEL_STOP") then
+        interruptedby = select(4, ...);
+        local complete = interruptedby == nil;
+        if (not complete) then
             event = "UNIT_SPELLCAST_INTERRUPTED";
-		end
-	elseif ( event == "UNIT_SPELLCAST_EMPOWER_STOP" ) then
-		local _, _, _, complete, interrupted = ...;
+        end
+    elseif (event == "UNIT_SPELLCAST_EMPOWER_STOP") then
+        local _, _, _, complete, interrupted = ...;
         interruptedby = interrupted;
-		if (not issecretvalue(complete)) and  (not complete) then
+        if (not issecretvalue(complete)) and (not complete) then
             event = "UNIT_SPELLCAST_INTERRUPTED";
-		end
+        end
     end
     check_casting(self, event, interruptedby);
 end
