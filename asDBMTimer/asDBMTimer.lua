@@ -80,7 +80,7 @@ local function setupUI()
 
 		button.text = button:CreateFontString(nil, "OVERLAY");
 		button.text:SetFont(configs.font, configs.namefontsize, configs.fontoutline)
-		button.text:SetPoint("TOP", button, "BOTTOM", 0, -1);
+		button.text:SetPoint("LEFT", button, "BOTTOMLEFT", 0, -15);
 		button.text:SetWidth(ns.options.Size);
 
 		button.icons = {};

@@ -7,11 +7,11 @@ local Options_Default = {
 };
 
 local OtherOptions_Default = {
-    Version = 251219,
+    Version = 260428,
     point = "CENTER",
     point2 = "CENTER",
     x = 250, -- 기본 X 위치 (asDBMTimer.lua의 ADBMT_X와 동일하게 설정)
-    y = 0,  -- 기본 Y 위치 (asDBMTimer.lua의 ADBMT_Y와 동일하게 설정)
+    y = 30,  -- 기본 Y 위치 (asDBMTimer.lua의 ADBMT_Y와 동일하게 설정)
 }
 
 ns.options = CopyTable(Options_Default);
