@@ -1,6 +1,7 @@
 # asDBMCastingAlert (Midnight)
 
 Displays casting bars of casting mobs (excluding Target and Focus).
+Starting from Midnight, this addon is no longer dependent on DBM.
 ![asDBMCastingAlert](https://media.forgecdn.net/attachments/1654/60/asdbmcastalert-jpg.jpg)
 
 ## Key Features
@@ -25,6 +26,7 @@ Displays casting bars of casting mobs (excluding Target and Focus).
 # asDBMCastingAlert (한밤)
 
 시전중인 몹의 케스팅바를 표시 (대상, 주시 미포함)
+한밤부터 이 애드온은 DBM과 상관이 없습니다.
 ![asDBMCastingAlert](https://media.forgecdn.net/attachments/1654/60/asdbmcastalert-jpg.jpg)
 
 ## 주요 기능
