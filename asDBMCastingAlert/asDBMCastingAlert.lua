@@ -54,8 +54,12 @@ local function on_update()
 		castingInfos:Clear();
 	end
 
-	for unit, needtosound in pairs(castingunits) do
-		if UnitExists(unit) then
+
+	for _, nameplate in pairs(C_NamePlate.GetNamePlates(issecure())) do
+
+		local unit = nameplate.unitToken;
+
+		if unit and UnitExists(unit) and UnitClassification(unit) ~= "minus" and UnitThreatSituation("player", unit) then		
 			local bchannel = false;
 			local duration = nil;
 			local name, _, texture, starttime, endtime, _, _, notInterruptible, spellid = UnitCastingInfo(unit);
@@ -85,11 +89,7 @@ local function on_update()
 					endtime = endtime,
 					level = level,
 				}
-			else
-				castingunits[unit] = nil;
 			end
-		else
-			castingunits[unit] = nil;
 		end
 	end
 
@@ -113,17 +113,11 @@ local function on_update()
 				local text         = castbar.name;
 				local time         = castbar.time;
 				local targetname   = castbar.targetname;
-				local mark         = castbar.mark;
-				local duration;
+				local mark         = castbar.mark;				
 				local bchannel     = castingInfo.bchannel;
 				local targettarget = unit .. "target";
-
-				if bchannel then
-					duration = UnitChannelDuration(unit);
-				else
-					duration = UnitCastingDuration(unit);
-				end
-				castbar.duration_obj = duration;
+				
+				castbar.duration_obj = castingInfo.duration;
 				frameicon:SetTexture(castingInfo.texture);
 				castbar:SetReverseFill(bchannel);
 
@@ -189,12 +183,6 @@ local function on_update()
 	end
 end
 
-
-local function on_event(self, event, unit)
-	if unit and UnitCanAttack("player", unit) and UnitAffectingCombat(unit) and UnitClassification(unit) ~= "minus" and string.find(unit, "nameplate") then
-		castingunits[unit] = true;
-	end
-end
 
 local function update_castbar(castbar)
 	local current = GetTime();
@@ -361,12 +349,6 @@ local function init()
 	if libasConfig then
 		libasConfig.load_position(main_frame.bars[1], "asDBMCastingAlert", ADCA_Position);
 	end
-
-	main_frame:SetScript("OnEvent", on_event);
-	main_frame:RegisterEvent("UNIT_SPELLCAST_START");
-	main_frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");
-	main_frame:RegisterEvent("NAME_PLATE_UNIT_ADDED");
-	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 	local timer = C_Timer.NewTicker(0.2, on_update);
 end

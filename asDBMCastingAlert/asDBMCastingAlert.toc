@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rDBMCastingAlert
 ## Notes: Displays casting bars of casting mobs.
 ## Notes-koKR:시전중인 몹의 케스팅바를 표시
-## Version : 260427
+## Version : 260429
 ## SavedVariablesPerCharacter: ADCA_Options, ADCA_Position
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
