@@ -17,7 +17,6 @@ end
 
 local main_frame = CreateFrame("Frame", nil, UIParent);
 local showtable = TableUtil.CreatePriorityTable(comparator, TableUtil.Constants.AssociativePriorityTable);
-local castingunits = {};
 ns.casts = {};
 
 local function check_casting(unit)
@@ -98,22 +97,15 @@ local function on_update()
 
     showtable:Clear();
 
-    for unit, _ in pairs(castingunits) do
-        local bcasting = check_casting(unit);
+    for _, nameplate in pairs(C_NamePlate.GetNamePlates(issecure())) do
+		local unit = nameplate.unitToken;
 
-        if not bcasting then
-            castingunits[unit] = nil;
+		if unit and UnitExists(unit) and UnitClassification(unit) ~= "minus" and UnitThreatSituation("player", unit) then		
+            check_casting(unit);
         end
     end
 
     show_castings();
-end
-
-local function on_event(self, event, unit)
-
-    if unit and UnitCanAttack("player", unit) and UnitAffectingCombat(unit) and UnitClassification(unit) ~= "minus" and string.find(unit, "nameplate") then
-        castingunits[unit] = true;
-    end
 end
 
 local function init()
@@ -149,10 +141,6 @@ local function init()
     end
 
     main_frame:SetFrameStrata("LOW");
-    main_frame:SetScript("OnEvent", on_event);
-    main_frame:RegisterEvent("UNIT_SPELLCAST_START");
-    main_frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");
-    main_frame:RegisterEvent("NAME_PLATE_UNIT_ADDED");
     main_frame:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint);
     main_frame:SetAlpha(configs.alpha);
     main_frame:SetSize(1, 1);
