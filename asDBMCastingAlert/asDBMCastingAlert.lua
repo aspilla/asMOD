@@ -231,7 +231,7 @@ local function setup_castbar()
 	castbar:SetStatusBarColor(1, 0.9, 0.9);
 	castbar:SetAlpha(configs.alpha);
 
-	castbar.notinterruptable = castbar:CreateTexture(nil, "ARTWORK", "asTargetCastBarNotInteruptTemplate", 1);
+	castbar.notinterruptable = castbar:CreateTexture(nil, "ARTWORK", "asDBMCastAlertNotInteruptTemplate", 1);
 	castbar.notinterruptable:SetParent(castbar);
 	castbar.notinterruptable:ClearAllPoints();
 	castbar.notinterruptable:SetPoint("TOPLEFT", statustexture, "TOPLEFT", 0, 0);
