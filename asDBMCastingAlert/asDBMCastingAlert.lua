@@ -281,7 +281,7 @@ local function setup_castbar()
 	castbar.isAlert = false;
 	castbar:Hide();
 
-	castbar.button = CreateFrame("Button", nil, castbar, "ATCBFrameTemplate");
+	castbar.button = CreateFrame("Button", nil, castbar, "ADCAFrameTemplate");
 	castbar.button:SetPoint("RIGHT", castbar, "LEFT", -1, 0)
 	castbar.button:SetWidth((configs.height + 2) * 1.2);
 	castbar.button:SetHeight(configs.height + 2);
