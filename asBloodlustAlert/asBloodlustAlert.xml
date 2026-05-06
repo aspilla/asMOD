@@ -1,0 +1,20 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\Blizzard_SharedXML\UI.xsd">
+	<Frame name="asBLAButtonTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel="1000">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
+			</Layer>
+			<Layer level="ARTWORK" textureSubLevel="7">
+				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asBattleRes\border.tga"/>
+			</Layer>			
+		</Layers>
+		<Frames>
+			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="true" drawEdge="true" hidden="true" frameLevel="1000">				
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="-1"/>
+				</Anchors>
+			</Cooldown>
+		</Frames>
+	</Frame>	
+</Ui>

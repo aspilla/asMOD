@@ -1,13 +1,15 @@
 ﻿## Interface: 120001, 120005
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rBloodlustAlert
-## Notes: Notifies when the Bloodlust debuff off
-## Notes-koKR: 블러드 사용 불가 디버프가 사라저 준비 되면 알림
+## Notes: Alerts for Bloodlust start and readiness
+## Notes-koKR: 블러드 시작/준비 알림
 ## Version : 260420
-## SavedVariablesPerCharacter: ABLA_Options, ABLA_Positions
+## SavedVariablesPerCharacter: ABLA_Options, ABLA_Positions, ABLA_Positions2
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 Libs\LibStub\LibStub.lua
 Libs\LibasConfig\LibasConfig.lua
+asBloodlustAlert.xml
+asBloodlustAlertLib.lua
 asBloodlustAlertOption.lua
 asBloodlustAlert.lua

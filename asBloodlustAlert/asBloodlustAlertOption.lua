@@ -1,11 +1,14 @@
 local _, ns = ...;
 
 local Options_Default = {
-    ClassOnly = true,
+    Version = 260505,        
+    ReadyAlert = true,
+    StartAlert = true,
+    ShowBuff = true,
     VoiceAlert = true,
-    InRaid = false,
     FontSize = 30,
     ShowTime = 2,
+    MillisecondsThreshold = 3,
 }
 
 local tempoption = {};
@@ -23,18 +26,21 @@ function ns.SetupOptionPanels()
         local variable = get_variable_from_cvar_name(cvar_name)
         ABLA_Options[variable] = value;
         ns.options[variable] = value;
-        ns.checkStatus();
+        ns.check_status();
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asBloodlustAlert")
 
-    if ABLA_Options == nil then
+    if ABLA_Options == nil or Options_Default.Version ~= ABLA_Options.Version then
         ABLA_Options = {};
         ABLA_Options = CopyTable(Options_Default);
     end
 
     if ABLA_Positions == nil then
         ABLA_Positions = {};
+    end
+    if ABLA_Positions2 == nil then
+        ABLA_Positions2 = {};
     end
 
     for variable, _ in pairs(Options_Default) do
