@@ -102,12 +102,16 @@ local function setup_wowoptions()
 	SetCVar("floatingCombatTextCombatHealing_v2", 1);
 	SetCVar("floatingCombatTextCombatDamage_v2", 1);
 
+	--자동룻
+	SetCVar("autoLootDefault", 1);
+
 	--이름표
 	SetCVar("nameplateShowAll", 1)
 	SetCVar("nameplateShowEnemies", 1)
-	SetCVar("nameplateShowFriends", 0)
+	SetCVar("nameplateShowFriendlyPlayers", 1)
 	SetCVar("nameplateShowFriendlyNPCs", 0)
 	SetCVar("namePlateStyle", Enum.NamePlateStyle.Block);
+	SetCVar("UnitNameNPC", 1);
 
 	--개인 자원바
 	SetCVar("nameplateShowSelf", "0");
