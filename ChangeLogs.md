@@ -4,11 +4,13 @@
 
 ### asNamePlates
 
+* Support 12.0.7
 * Default on for below option.
 * **Modify Friendly Nameplate Settings (FriendNamePlatesColor)**: Changes the appearance of friendly nameplates as shown below. (Default: On)
 
 --- 
 
+* 12.0.7 지원
 * 아래 설정 기본 On으로 변경
 * **아군 이름표 설정 변경 (`FriendNamePlatesColor`)** : 아군 이름표를 아래와 같이 변경 합니다. (기본 On, 접속시 다시 설정 합니다.)
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
@@ -16,6 +18,7 @@
 
 ### asMOD
 
+* Support 12.0.7
 * Automatically enables Friendly Nameplates when configuring asMOD.
 * Automatically enables all NPC Names when configuring asMOD.
 * Automatically enables Auto Loot when configuring asMOD.
@@ -23,6 +26,7 @@
 
 ---
 
+* 12.0.7 지원
 * 아군 이름표을 /asMOD 설정시 키도록 변경 
 * 모든 NPC 이름을 /asMOD 설정시 키도록 변경
 * 자동룻을 /asMOD 설정시 키도록 변경
