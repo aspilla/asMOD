@@ -519,7 +519,7 @@ local function create_macro()
         EditMacro(macroID, macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText)
     end
 
-    if ns.options.ChangeFriendNamePlates then
+    if ns.options.FriendNamePlatesColor then
         SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 1);
         SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", 1);
     end

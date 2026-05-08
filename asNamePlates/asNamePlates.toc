@@ -1,9 +1,9 @@
-﻿## Interface: 120001, 120005
+﻿## Interface: 120005, 120007
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rNamePlates
 ## Notes: Nameplate Enhancement Addon
 ## Notes-koKR:이름표 강화 애드온
-## Version : 260329
+## Version : 260509
 ## SavedVariablesPerCharacter: ANameP_Options 
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
