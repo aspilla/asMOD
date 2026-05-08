@@ -1,5 +1,20 @@
 # ChangeLogs
 
+
+## 260510 update
+
+### asPowerBar
+
+* Support 12.0.7
+* Bugfix : Frost mage shatter could not be shown after specialization change.
+
+---
+
+* 12.0.7 지원
+* 오류 수정 : 냉법 빙결 중첩이 특성 변경시 안보일 수 있는 문제 수정
+
+
+
 ## 260509 update
 
 ### asNamePlates
