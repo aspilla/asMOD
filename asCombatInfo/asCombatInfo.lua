@@ -301,7 +301,7 @@ local function update_buttons(viewer, forced)
 			if not issecretvalue(spellid) and spellid ~= button.asspellid then
 				button.asspellid = spellid;
 				local keytext = get_spellhotkey(spellid);
-
+				
 				if not button.hotkey then
 					button.hotkey = button:CreateFontString(nil, "ARTWORK");
 					button.hotkey:SetFont(configs.font, width / 3 - 3, "OUTLINE");
@@ -472,30 +472,10 @@ local function scan_keys(name, total)
 	end
 end
 
-local function scan_actionslots()
-	for slot = 1, 180 do
-		local keytext = ns.hotkeyslots[slot];
-
-		if (slot > 72 and slot <= 132) or (slot > 12 and slot <= 24) then
-			keytext = ns.hotkeyslots[(slot - 1) % 12 + 1];
-		end
-
-		if keytext then
-			local type, id, subType = GetActionInfo(slot);
-			if (type == "spell" or type == "macro") and id then
-				if ns.hotkeys[id] == nil then
-					ns.hotkeys[id] = keytext;
-				end
-			end
-		end
-	end
-end
-
 local function check_hotkeys()
 	if not ns.options.ShowHotKey then
 		return;
 	end
-
 
 	wipe(ns.hotkeys);
 	wipe(ns.hotkeyslots);
@@ -506,8 +486,7 @@ local function check_hotkeys()
 	scan_keys("MultiBarLeftButton", 12);
 	scan_keys("MultiBar5Button", 12);
 	scan_keys("MultiBar6Button", 12);
-	scan_keys("MultiBar7Button", 12);
-	scan_actionslots();
+	scan_keys("MultiBar7Button", 12);	
 end
 
 local function init()
@@ -583,8 +562,8 @@ local function on_event(self, event, arg)
 		ns.setup_option();
 	end
 
-	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then
-		C_Timer.After(0.5, init);
+	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then		
+		C_Timer.After(0.5, init);		
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		if ns.options.CombatAlphaChange then
 			set_viewersalpha(configs.combatalpha);
@@ -593,7 +572,7 @@ local function on_event(self, event, arg)
 		if ns.options.CombatAlphaChange then
 			set_viewersalpha(configs.normalalpha);
 		end
-	else
+	else		
 		C_Timer.After(0.5, init);
 
 		if ns.options.CombatAlphaChange then
