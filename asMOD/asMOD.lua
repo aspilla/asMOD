@@ -121,6 +121,8 @@ local function setup_wowoptions()
 	SetCVar("raidFramesDisplayDebuffs", 1);
 	SetCVar("raidFramesDispelIndicatorType", 1);
 	SetCVar("raidFramesDisplayPowerBars", 0);
+	SetCVar("raidOptionDisplayMainTankAndAssist", 0);
+	SetCVar("raidFramesCenterBigDefensive", 1);
 
 	--Unit Frame 설정 변경
 	SetCVar("showTargetOfTarget", 1);
@@ -222,7 +224,7 @@ if GetLocale() == "koKR" then
 		whileDead = true,
 		hideOnEscape = true,
 		preferredIndex = 3,
-	}	
+	}
 else
 	StaticPopupDialogs["asMOD"] = {
 		text =
@@ -236,5 +238,5 @@ else
 		whileDead = true,
 		hideOnEscape = true,
 		preferredIndex = 3,
-	}	
+	}
 end
