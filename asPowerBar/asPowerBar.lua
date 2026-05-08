@@ -292,7 +292,7 @@ local function on_event(self, event, ...)
         C_Timer.After(0.5, init_class);
     elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or event ==
         "ACTIVE_TALENT_GROUP_CHANGED" then
-        C_Timer.After(0.5, init_class);
+        C_Timer.After(1, init_class);
     elseif event == "PLAYER_REGEN_DISABLED" then
         if ns.options.CombatAlphaChange then
             main_frame:SetAlpha(ns.configs.combatalpha);
