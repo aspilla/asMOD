@@ -1,18 +1,13 @@
 local _, ns = ...;
 local Options_Default = {
+    Version = 260509,
     MinTimetoShow = 3,
     Size = 50,
-    ShowName = true, 
-    LockPosition = true, -- 위치 잠금 옵션 추가
+    TextSize = 15,
+    ShowName = true,
+    ShowButton = true,
+    ShowText = true,
 };
-
-local OtherOptions_Default = {
-    Version = 260428,
-    point = "CENTER",
-    point2 = "CENTER",
-    x = 250, -- 기본 X 위치 (asDBMTimer.lua의 ADBMT_X와 동일하게 설정)
-    y = 30,  -- 기본 Y 위치 (asDBMTimer.lua의 ADBMT_Y와 동일하게 설정)
-}
 
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
@@ -35,15 +30,17 @@ function ns.setup_option()
     local category = Settings.RegisterVerticalLayoutCategory("asDBMTimer")
 
 
-    if ADTI_Options == nil or ADTI_OtherOptions == nil or OtherOptions_Default.Version ~= ADTI_OtherOptions.Version then
+    if ADTI_Options == nil or Options_Default.Version ~= ADTI_Options.Version then
         ADTI_Options = {}
-        ADTI_Options = CopyTable(Options_Default);
-        ADTI_OtherOptions = {};
-        ADTI_OtherOptions = CopyTable(OtherOptions_Default);
+        ADTI_Options = CopyTable(Options_Default);        
     end
 
     if ADTI_Positions == nil then
         ADTI_Positions = {};
+    end
+
+    if ADTI_Positions2 == nil then
+        ADTI_Positions2 = {};
     end
 
     ns.options = CopyTable(ADTI_Options);
@@ -60,26 +57,7 @@ function ns.setup_option()
         local defaultValue = Options_Default[variable]
         local currentValue = ADTI_Options[variable];
 
-        if variable == "LockPosition" then     -- LockPosition 옵션 처리
-            local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
-                name, defaultValue);
-            Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
-            Settings.SetValue(cvar_name, currentValue);
-            Settings.SetOnValueChangedCallback(cvar_name, function(_, setting, value)
-                OnSettingChanged(_, setting, value)
-                if ns.asDBMTimer then
-                    if value == true then
-                        ns.asDBMTimer:EnableMouse(false);
-                        ns.asDBMTimer.text:Hide();
-                        ns.asDBMTimer.tex:Hide();     -- Hide texture
-                    else
-                        ns.asDBMTimer:EnableMouse(true);
-                        ns.asDBMTimer.text:Show();
-                        ns.asDBMTimer.tex:Show();     -- Show texture
-                    end
-                end
-            end);
-        elseif tonumber(defaultValue) ~= nil then
+        if tonumber(defaultValue) ~= nil then
             local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue),
                 name, defaultValue);
             local options = Settings.CreateSliderOptions(0, 100, 1);
@@ -96,39 +74,5 @@ function ns.setup_option()
         end
     end
 
-    Settings.RegisterAddOnCategory(category)
-	ns.LoadPosition();
-
-    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
-
-	if libasConfig then
-		libasConfig.load_position(ns.asDBMTimer, "asDBMTimer", ADTI_Positions);
-	end
-
-    if ns.options.LockPosition and ns.asDBMTimer then
-        ns.asDBMTimer:EnableMouse(false);
-        ns.asDBMTimer.text:Hide();
-        ns.asDBMTimer.tex:Hide(); -- Hide texture
-    elseif ns.asDBMTimer then
-        ns.asDBMTimer:EnableMouse(true);
-        ns.asDBMTimer.text:Show();
-        ns.asDBMTimer.tex:Show(); -- Show texture
-    end
-end
-
-function ns.LoadPosition()
-    if ns.asDBMTimer then
-        ns.asDBMTimer:ClearAllPoints()
-        ns.asDBMTimer:SetPoint(ADTI_OtherOptions.point, UIParent, ADTI_OtherOptions.point2, ADTI_OtherOptions.x,
-            ADTI_OtherOptions.y);
-    end
-end
-
-function ns.SavePosition(frame)
-    if frame then
-        ADTI_OtherOptions.point, _, ADTI_OtherOptions.point2, ADTI_OtherOptions.x, ADTI_OtherOptions.y = frame:GetPoint();
-        if frame.StopMovingOrSizing then
-            frame:StopMovingOrSizing();
-        end
-    end
+    Settings.RegisterAddOnCategory(category)	
 end

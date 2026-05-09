@@ -7,54 +7,23 @@ local configs = {
 	fontoutline = "THICKOUTLINE",
 	maxshow = 3,
 	xpoint = 200,
-	ypoint = 50,	
+	ypoint = 50,
 	maxicons = 4,
+	text_xpoint = 0,
+	text_ypoint = 20,
+
 }
 -- 설정 끝
 
-local function init_position()
-	C_Timer.After(2, ns.setup_option);
-end
-
-local function on_event(self, event, arg1, ...)
-	if event == "ADDON_LOADED" and arg1 == "asDBMTimer" then
-		init_position();
-	end
-end
-
-
 local function setupUI()
+	ns.setup_option();
+
 	ns.asDBMTimer = CreateFrame("FRAME", nil, UIParent);
 	ns.asDBMTimer:SetFrameStrata("LOW");
 	ns.asDBMTimer:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
 	ns.asDBMTimer:SetWidth(100)
 	ns.asDBMTimer:SetHeight(100)
-	ns.asDBMTimer:SetMovable(true);
-	ns.asDBMTimer:EnableMouse(true);
-	ns.asDBMTimer:RegisterForDrag("LeftButton");
-	ns.asDBMTimer.text = ns.asDBMTimer:CreateFontString(nil, "OVERLAY")
-	ns.asDBMTimer.text:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
-	ns.asDBMTimer.text:SetPoint("CENTER", ns.asDBMTimer, "CENTER", 0, 0)
-	ns.asDBMTimer.text:SetText("asDBMTimer(Position)");
-	ns.asDBMTimer.text:Hide();
-	ns.asDBMTimer.tex = ns.asDBMTimer:CreateTexture(nil, "ARTWORK");
-	ns.asDBMTimer.tex:SetAllPoints();
-	ns.asDBMTimer.tex:SetColorTexture(0.0, 0.5, 1.0); -- Blue color for visibility
-	ns.asDBMTimer.tex:SetAlpha(0.5);
-	ns.asDBMTimer.tex:Hide();
 	ns.asDBMTimer:Show();
-	ns.asDBMTimer:SetScript("OnEvent", on_event);
-	ns.asDBMTimer:RegisterEvent("ADDON_LOADED");
-
-	ns.asDBMTimer:SetScript("OnDragStart", function(self)
-		self:StartMoving();
-	end)
-	ns.asDBMTimer:SetScript("OnDragStop", function(self)
-		self:StopMovingOrSizing();
-		ns.SavePosition(self);
-	end);
-
-
 	ns.asDBMTimer.buttons = {};
 
 	for i = 1, configs.maxshow do
@@ -86,7 +55,7 @@ local function setupUI()
 		button.icons = {};
 		for j = 1, configs.maxicons do
 			button.icons[j] = button:CreateTexture(nil, "ARTWORK");
-			button.icons[j]:SetSize(ns.options.Size/2 - 2, ns.options.Size/2 - 2);
+			button.icons[j]:SetSize(ns.options.Size / 2 - 2, ns.options.Size / 2 - 2);
 			if j == 1 then
 				button.icons[j]:SetPoint("BOTTOMLEFT", button, "TOPLEFT", 0, 1);
 			elseif j == 3 then
@@ -98,6 +67,29 @@ local function setupUI()
 		end
 
 		button:EnableMouse(false);
+	end
+
+	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+
+	if libasConfig then
+		libasConfig.load_position(ns.asDBMTimer, "asDBMTimer", ADTI_Positions);
+	end
+
+
+	ns.asDBMText = CreateFrame("FRAME", nil, UIParent);
+	ns.asDBMText:SetFrameStrata("LOW");
+	ns.asDBMText:SetPoint("CENTER", UIParent, "CENTER", configs.text_xpoint, configs.text_ypoint)
+	ns.asDBMText:SetWidth(100)
+	ns.asDBMText:SetHeight(ns.options.TextSize);
+	ns.asDBMText:Show();
+
+	ns.msgtext = ns.asDBMText:CreateFontString(nil, "OVERLAY");
+	ns.msgtext:SetFont(configs.font, ns.options.TextSize, configs.fontoutline)
+	ns.msgtext:SetPoint("CENTER", ns.asDBMText, "CENTER", 0, 0);
+	ns.msgtext:Hide();
+
+	if libasConfig then
+		libasConfig.load_position(ns.asDBMText, "asDBMTimer(Text)", ADTI_Positions2);
 	end
 end
 
@@ -114,9 +106,18 @@ local atlases = {
 	[Enum.EncounterEventIconmask.BleedEffect] = "icons_16x16_bleed",
 };
 
-local function checkList()
+local textinfo = {
+	name = "",
+	remain = nil,
+	extime = nil,
+}
+
+local function check_list()
 	local events = C_EncounterTimeline.GetEventList();
 	local idx = 1;
+
+	textinfo.remain = nil;
+	textinfo.extime = nil;
 
 	for _, id in pairs(events) do
 		local remain = C_EncounterTimeline.GetEventTimeRemaining(id);
@@ -124,7 +125,7 @@ local function checkList()
 
 		if remain and remain < ns.options.MinTimetoShow and state and state < 2 then
 			local eventinfo = C_EncounterTimeline.GetEventInfo(id);
-			
+
 
 			if eventinfo then
 				local button = ns.asDBMTimer.buttons[idx];
@@ -135,7 +136,7 @@ local function checkList()
 				else
 					button.text:SetText("");
 				end
-				
+
 				--[[
 				local j = 1;
 				local color = {0, 0, 0};
@@ -165,7 +166,17 @@ local function checkList()
 				button.border:SetVertexColor(color[1], color[2], color[3]);
 				]]
 
-				button:Show();
+				if remain > 0 and (textinfo.remain == nil or textinfo.remain > remain) then
+					textinfo.name = C_Spell.GetSpellName(eventinfo.spellID);
+					textinfo.remain = remain;
+					textinfo.extime = remain + GetTime();
+				end
+
+				if ns.options.ShowButton then
+					button:Show();
+				else
+					button:Hide();
+				end
 				idx = idx + 1;
 
 				if idx > configs.maxshow then
@@ -181,18 +192,28 @@ local function checkList()
 	end
 end
 
+local function update_text()
+
+	if ns.options.ShowText and textinfo.extime then
+		local remain = textinfo.extime - GetTime();
+		if remain > 0 and remain < ns.options.MinTimetoShow and textinfo.name then
+			ns.msgtext:SetText(string.format("%s (%.1f)", textinfo.name, remain));
+			ns.msgtext:Show();
+		else
+			ns.msgtext:Hide();
+		end
+	else
+		ns.msgtext:Hide();
+	end
+
+end
+
 
 local function initAddon()
 	setupUI();
-	C_Timer.NewTicker(0.2, checkList);
+	C_Timer.NewTicker(0.2, check_list);
+	C_Timer.NewTicker(0.1, update_text);
 end
 
-function ns.GetPosition()
-	local left = ns.asDBMTimer:GetLeft();
-	local bottom = ns.asDBMTimer:GetBottom();
-	local height = ns.asDBMTimer:GetHeight();
 
-	return left, bottom, height;
-end
-
-initAddon();
+C_Timer.After(0.5, initAddon);
