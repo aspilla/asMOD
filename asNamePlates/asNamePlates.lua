@@ -518,6 +518,7 @@ local function create_macro()
     else
         EditMacro(macroID, macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText)
     end
+
 end
 
 

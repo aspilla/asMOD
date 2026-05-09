@@ -8,7 +8,7 @@ ns.configs = {
 };
 
 ns.option_default = {
-    version = 260210,
+    version = 260510,
 
     ShowAggro = true,
     ShowDebuffColor = true,
@@ -138,7 +138,7 @@ local function setup_slideoption(text, option)
         Slider.Text:SetText(format("%.1f", max(ANameP_Options[option], 0)));
         if not InCombatLockdown() then
             SetCVar("nameplateOverlapV", ANameP_Options[option]);
-        end        
+        end
     end)
     Slider:Show();
     if not InCombatLockdown() then
@@ -202,6 +202,10 @@ local bfirst = true;
 ns.setup_alloptions = function()
     if bfirst and not InCombatLockdown() then
         SetCVar("nameplateOverlapV", ANameP_Options["nameplateOverlapV"]);
+        if ns.options.FriendNamePlatesColor then
+            SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 1);
+            SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", 1);
+        end
         bfirst = false;
     end
     ns.options = CopyTable(ANameP_Options);
@@ -287,11 +291,6 @@ local function on_panelshow()
         setup_checkboxoption("[Feature] Dungeon, Show Caster hint", "ShowCasterColor");
         setup_checkboxoption("[Feature] Field, Show quest mob colors", "ShowQuestColor");
         setup_coloroption("[Color] Quest/Caster", "QuestColor");
-    end
-
-    if ns.options.FriendNamePlatesColor then
-        SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 1);
-        SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", 1);
     end
 end
 local function on_panelhide()
