@@ -78,6 +78,17 @@ The following issue may occur:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+## WoW Setting Changes when using asMOD Collection
+* The following World of Warcraft settings will be modified. The `asMOD` addon may change these settings upon logging in with a new character; if you do not want this, please disable the `asMOD` addon.
+
+1. `Controls` > `Auto Loot` On
+2. `Action Bars` > `Show Cooldown Numbers` On
+3. `Combat` > `Spell Alert Opacity` 65%, `Personal Resource Display` Off
+4. `Nameplates` > `NPC Names` All NPCs, `Always Show Nameplates` On, `Enemy Units` On, `Friendly Players` On, `Nameplate Motion Type` Stacking Nameplates, `Friendly NPC Nameplates` Off, `Style` Larger Nameplates (Block Bar)
+5. `Interface Options` > `Display Class Colors` On, `Display Tanks and Assistants` Off, `Show Debuffs` On, `Status Text` None (Off), `Center-align Defensive Cooldowns` On, `Color Debuffs by Type` On
+6. `Gameplay Improvements` > `Enable Cooldowns` On, `Enable Damage Meter` On, `Enable Boss Alerts` On
+7. `Graphics` > `UI Scale` 75%
+
 
 ## asMOD Addon List and Manuals
 All asMOD addons function independently. If you wish to use only specific addons, you can install them separately using the links below.
@@ -279,6 +290,16 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 ![sample](https://media.forgecdn.net/attachments/1582/38/cooldown2row-jpg.jpg)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## asMOD 모음집 사용시 와우 설정 변경 
+* 와우 설정 중 다음의 설정을 변경 합니다. `asMOD` 애드온이 신규 케릭 접속시 설정을 변경할 수 있으니 원치 않으신 분은 `asMOD` 애드온을 꺼 놓으시길 바랍니다.
+1. `조작 설정` > `자동전리품 획득` On
+2. `행동 단축바` > `재사용 대기시간 숫자 보이기` On
+3. `전투` > `주문 경보 투명도` 65%, `개인 자원 표시` Off
+4. `이름표` > `NPC 이름 표시` 모든 NPC, `항상 이름표 표시` On, `적 개채 이름표` On,  `아군 플레이어 이름표` On, `이름표 상하 정렬` 적대적 대상, `아군 NPC 이름표` Off, `양식` 블록 막대
+5. `인터페이스 설정` > `공격대창 직업색상 표시` On, `방어 전담과 지원공격 전담 표시` Off, `약화 지속표과 표시` On, `상태바 표시` Off, `강력한 방어능력 중앙정렬` On, `무효화 가능 약화 효과 색상` On
+6. `게임 플레이 개선` > `재사용 대기시간 활성화` On, `피해량 측정기 활성화` On, `우두머리 경고 활성화` On
+7. `그래픽` > `UI 확대/축소 사용` 75%
 
 
 ## asMOD 애드온 목록 및 설명서

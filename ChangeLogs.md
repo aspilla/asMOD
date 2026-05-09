@@ -1,5 +1,35 @@
 # ChangeLogs
 
+## 260511 update
+
+### asDBMTimer
+
+* Support 12.0.7
+* New Feature : **Skill Name (Remaining Time) in Center**: Can be disabled in settings.
+
+---
+
+* 12.0.7 지원
+* New Feature : **중앙에 스킬명 (남은시간) 표시 **: 설정에서 Off 가능
+
+![asDBMTimer](https://media.forgecdn.net/attachments/1672/994/asdbmtimer-jpg.jpg)
+
+### asNamePlates
+
+* Bugfix : Not change friend nameplates setting could not be applied
+
+---
+
+* Bugfix : 아군이름표 설정이 적용 안될 수 있는 문제 수정
+
+### asMOD 
+
+* Applied nameplate vertical stacking options (Requires /asMOD).
+
+---
+
+* 이름표 상하 정렬 옵션 적용 (/asMOD 필요)
+
 
 ## 260510 update
 

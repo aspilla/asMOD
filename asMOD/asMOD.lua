@@ -111,6 +111,7 @@ local function setup_wowoptions()
 	SetCVar("nameplateShowFriendlyPlayers", 1)
 	SetCVar("nameplateShowFriendlyNPCs", 0)
 	SetCVar("namePlateStyle", Enum.NamePlateStyle.Block);
+	SetCVar("nameplateStackingTypes",  "A");
 	SetCVar("UnitNameNPC", 1);
 
 	--개인 자원바
