@@ -288,6 +288,11 @@ local function on_panelshow()
         setup_checkboxoption("[Feature] Field, Show quest mob colors", "ShowQuestColor");
         setup_coloroption("[Color] Quest/Caster", "QuestColor");
     end
+
+    if ns.options.FriendNamePlatesColor then
+        SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 1);
+        SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", 1);
+    end
 end
 local function on_panelhide()
     if scrollFrame then
