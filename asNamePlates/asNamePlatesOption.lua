@@ -106,7 +106,7 @@ local function setup_checkboxoption(text, option)
         ANameP_Options[option] = cb:GetChecked();
         ns.setup_alloptions();
     end)
-    cb:SetChecked(ANameP_Options[option]);
+    cb:SetChecked(ANameP_Options[option]);    
 end
 
 local function setup_slideoption(text, option)
@@ -198,11 +198,10 @@ local function setup_coloroption(text, option)
     end)
 end
 
-local bfirst = true;
 ns.setup_alloptions = function()
     ns.options = CopyTable(ANameP_Options);
 
-    if bfirst and not InCombatLockdown() then
+    if not InCombatLockdown() then
         SetCVar("nameplateOverlapV", ANameP_Options["nameplateOverlapV"]);
         if ns.options.FriendNamePlatesColor then
             SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 1);
@@ -211,7 +210,6 @@ ns.setup_alloptions = function()
             SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 0);
             SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", 0);
         end
-        bfirst = false;
     end
 end
 
