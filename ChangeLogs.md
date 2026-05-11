@@ -1,5 +1,16 @@
 # ChangeLogs
 
+## 260512 update
+
+### asNamePlates
+
+* Bugfix : Friend Nameplates Change option off could not be applied.
+
+---
+
+* 오류 수정: 아군 이름표 변경 off 설정이 적용 안되는 이슈 해결
+
+
 ## 260511 update
 
 ### asDBMTimer
