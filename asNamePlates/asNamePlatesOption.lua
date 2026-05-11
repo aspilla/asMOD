@@ -200,15 +200,19 @@ end
 
 local bfirst = true;
 ns.setup_alloptions = function()
+    ns.options = CopyTable(ANameP_Options);
+
     if bfirst and not InCombatLockdown() then
         SetCVar("nameplateOverlapV", ANameP_Options["nameplateOverlapV"]);
         if ns.options.FriendNamePlatesColor then
             SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 1);
             SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", 1);
+        else
+            SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 0);
+            SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", 0);
         end
         bfirst = false;
     end
-    ns.options = CopyTable(ANameP_Options);
 end
 
 
