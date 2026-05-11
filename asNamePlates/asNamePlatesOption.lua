@@ -52,6 +52,7 @@ end
 
 local scrollFrame = nil
 local scrollChild = nil;
+local bfirst = true;
 
 local function setup_childpanel()
     curr_y = 0;
@@ -103,6 +104,7 @@ local function setup_checkboxoption(text, option)
     cb:SetPoint("TOPLEFT", 20, curr_y)
     cb.Text:SetText(text)
     cb:HookScript("OnClick", function()
+        bfirst = true;
         ANameP_Options[option] = cb:GetChecked();
         ns.setup_alloptions();
     end)
@@ -136,14 +138,12 @@ local function setup_slideoption(text, option)
     Slider:HookScript("OnValueChanged", function()
         ANameP_Options[option] = Slider:GetValue();
         Slider.Text:SetText(format("%.1f", max(ANameP_Options[option], 0)));
-        if not InCombatLockdown() then
-            SetCVar("nameplateOverlapV", ANameP_Options[option]);
-        end
+        bfirst = true;
+        ns.setup_alloptions();
     end)
     Slider:Show();
-    if not InCombatLockdown() then
-        SetCVar("nameplateOverlapV", ANameP_Options[option]);
-    end
+
+    
 end
 
 local function show_colorpicker(r, g, b, a, changedCallback)
@@ -201,7 +201,8 @@ end
 ns.setup_alloptions = function()
     ns.options = CopyTable(ANameP_Options);
 
-    if not InCombatLockdown() then
+    if bfirst and not InCombatLockdown() then
+        bfirst = false;        
         SetCVar("nameplateOverlapV", ANameP_Options["nameplateOverlapV"]);
         if ns.options.FriendNamePlatesColor then
             SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 1);
