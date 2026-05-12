@@ -6,7 +6,7 @@ local configs = {
 	namefontsize = 12,
 	fontoutline = "THICKOUTLINE",
 	maxshow = 3,
-	xpoint = 200,
+	xpoint = 290,
 	ypoint = 50,
 	maxicons = 4,
 	text_xpoint = 0,
@@ -110,6 +110,7 @@ local textinfo = {
 	name = "",
 	remain = nil,
 	extime = nil,
+	icon = nil,
 }
 
 local function check_list()
@@ -166,8 +167,9 @@ local function check_list()
 				button.border:SetVertexColor(color[1], color[2], color[3]);
 				]]
 
-				if remain > 0 and (textinfo.remain == nil or textinfo.remain > remain) then
+				if state == 0 and remain > 0 and (textinfo.remain == nil or textinfo.remain > remain) then
 					textinfo.name = C_Spell.GetSpellName(eventinfo.spellID);
+					textinfo.icon = eventinfo.iconFileID;
 					textinfo.remain = remain;
 					textinfo.extime = remain + GetTime();
 				end
@@ -196,8 +198,8 @@ local function update_text()
 
 	if ns.options.ShowText and textinfo.extime then
 		local remain = textinfo.extime - GetTime();
-		if remain > 0 and remain < ns.options.MinTimetoShow and textinfo.name then
-			ns.msgtext:SetText(string.format("%s (%.1f)", textinfo.name, remain));
+		if remain > 0 and remain < ns.options.MinTimetoShow and textinfo.name and textinfo.icon then
+			ns.msgtext:SetText(string.format("|T" .. textinfo.icon .. ":0|t %s %.1f", textinfo.name, remain));
 			ns.msgtext:Show();
 		else
 			ns.msgtext:Hide();

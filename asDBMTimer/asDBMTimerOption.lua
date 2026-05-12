@@ -1,7 +1,7 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 260509,
-    MinTimetoShow = 3,
+    Version = 260512,
+    MinTimetoShow = 5,
     Size = 50,
     TextSize = 15,
     ShowName = true,
