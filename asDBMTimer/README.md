@@ -15,7 +15,7 @@
 
 Settings can be adjusted via **ESC > Options > AddOns > asDBMTimer**.
 
-* `MinTimetoShow`: Minimum time to trigger the alert (Default: 3 seconds).
+* `MinTimetoShow`: Minimum time to trigger the alert (Default: 5 seconds).
 * `Size`: Icon size (Default: 50).
 * `ShowName`: Whether to display skill names (Default: On).
 * `ShowButton`: Whether to display the icon (Default: On).
@@ -48,7 +48,7 @@ Settings can be adjusted via **ESC > Options > AddOns > asDBMTimer**.
 
 **esc >> 설정 >> 애드온 >> asDBMTimer** 에서 설정 가능
 
-* `MinTimetoShow` 최소 표시 시간 (기본 3초)
+* `MinTimetoShow` 최소 표시 시간 (기본 5초)
 * `Size` 아이콘 크기 (기본 50)
 * `ShowName`: 스킬명 표시 여부. (기본 On)
 * `ShowButton` : 아이콘 표시 여부. (기본 On)

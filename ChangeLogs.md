@@ -1,5 +1,21 @@
 # ChangeLogs
 
+## 260514 update
+
+### asDBMTimer 
+
+* Bug Fix: Modified to prevent text notifications for pending events.
+* Adjusted the default button position.
+* Added icons to text notifications.
+* Modified the default setting to trigger notifications if the remaining time is less than 5 seconds.
+
+---
+
+* 오류 수정 : 대기중인 이벤트는 글씨로 안 알리도록 수정
+* 버튼 기본 위치 수정
+* 글씨 알림에 아이콘 표시
+* 기본 시간 5초 미만이면 알리도록 수정
+
 ## 260513 update
 
 ### asNamePlates
