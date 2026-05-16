@@ -1,8 +1,8 @@
 ﻿local _, ns = ...;
 local configs = {
 	size = 40,
-	xpoint = 350,
-	ypoint = -400,
+    xpoint = -240,
+    ypoint = -305,
 	alpha = 1,
 	cool_fontsize = 12,
 	spellid = 20484,
@@ -14,22 +14,6 @@ local function clear_cooldownframe(self)
 	self:Clear();
 end
 
--- Function to load saved position
-local function load_position(frame, option)
-	frame:ClearAllPoints()
-	frame:SetPoint(option.point, UIParent, option.relativePoint, option.xOfs,
-		option.yOfs)
-end
-
--- Function to save position
-local function save_position(frame, option)
-	local point, _, relativePoint, xOfs, yOfs = frame:GetPoint()
-	option.point = point
-	option.relativePoint = relativePoint
-	option.xOfs = xOfs
-	option.yOfs = yOfs
-end
-
 local function set_cooldownframe(self, durationobject, enable)
 	if enable and durationobject then
 		self:SetDrawEdge(nil);
@@ -39,22 +23,8 @@ local function set_cooldownframe(self, durationobject, enable)
 	end
 end
 
-local bMouseEnabled = true;
-
 local function on_update()
-	if ns.options.LockWindow then
-		if bMouseEnabled then
-			main_button:EnableMouse(false);
-			bMouseEnabled = false;
-		end
-	else
-		if not bMouseEnabled then
-			main_button:EnableMouse(true);
-			bMouseEnabled = true;
-		end
-	end
-
-	if IsInGroup() or not ns.options.LockWindow then
+	if IsInGroup() then
 		main_button:Show();
 	else
 		main_button:Hide();
@@ -79,13 +49,6 @@ local function on_update()
 end
 
 local function init()
-	ASBR_Position = ASBR_Position or {
-		point = "CENTER",
-		relativePoint = "CENTER",
-		xOfs = configs.xpoint,
-		yOfs = configs.ypoint,
-	}
-
 	ns.setup_option();
 
 	main_button:SetFrameStrata("LOW");
@@ -120,24 +83,6 @@ local function init()
 	main_button:SetWidth(configs.size);
 	main_button:SetHeight(configs.size * 0.9);
 	main_button:SetAlpha(configs.alpha);
-
-
-	main_button:SetScript("OnDragStart", function(self)
-		if not ns.options.LockWindow then
-			self:StartMoving()
-			self.isMoving = true
-		end
-	end)
-
-	main_button:SetScript("OnDragStop", function(self)
-		if self.isMoving then
-			self:StopMovingOrSizing()
-			self.isMoving = false
-			save_position(main_button, ASBR_Position);
-		end
-	end)
-
-	load_position(main_button, ASBR_Position);
 
 	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 

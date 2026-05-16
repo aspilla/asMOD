@@ -1,7 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 251216,
-    LockWindow = true,
+    Version = 251216,    
     MillisecondsThreshold = 3,
 };
 
@@ -33,6 +32,10 @@ function ns.setup_option()
         ASBR_Options = {};
         ASBR_Options = CopyTable(Options_Default);
     end
+
+    if ASBR_Position == nil then
+        ASBR_Position = {};
+	end
 
     ns.options = CopyTable(ASBR_Options);
 

@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rBloodlustAlert
 ## Notes: Alerts for Bloodlust start and readiness
 ## Notes-koKR: 블러드 시작/준비 알림
-## Version : 260506
+## Version : 260516
 ## SavedVariablesPerCharacter: ABLA_Options, ABLA_Positions, ABLA_Positions2
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD

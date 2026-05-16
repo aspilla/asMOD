@@ -1,5 +1,28 @@
 # ChangeLogs
 
+## 260516 update
+
+### asBattleRes
+
+* Adjusted the default position.
+* Removed the manual frame dragging feature; moving frames is now only possible via `/asConfig` and `/asClear` commands.
+ 
+---
+
+* 기본 위치 수정 
+* 프레임 이동기능 삭제, `/asconfig` `/asclear` 명령어로만 이동 가능
+![asBattleRes](https://media.forgecdn.net/attachments/1683/910/asbattleres-jpg.jpg)
+
+### asBloodlustAlert
+* Adjusted the default position.
+
+---
+
+* 기본 위치 수정 
+
+
+
+
 ## 260514 update
 
 ### asDBMTimer 
