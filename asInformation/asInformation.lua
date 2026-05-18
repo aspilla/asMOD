@@ -10,17 +10,13 @@ local main_frame = CreateFrame("Frame", "asInformationFrame", UIParent);
 main_frame:SetFrameStrata("LOW");
 main_frame:SetSize(100, 100);
 main_frame:SetPoint("CENTER", UIParent, "CENTER", -165, -300);
-main_frame:SetMovable(true);
-main_frame:RegisterForDrag("LeftButton");
-
 
 -- Saved variables for position, lock state, and stat thresholds
 local defaultOptions = {
     point = "TOP",
     relativePoint = "CENTER",
     xOfs = -165,
-    yOfs = -250,
-    isLocked = true,
+    yOfs = -250,    
     showHaste = true,
     showCrit = true,
     showMastery = true,
@@ -68,21 +64,6 @@ else -- Default to English
     L["Show Primary"] = "Show Primary Stat"
 end
 
--- Function to load saved position
-local function load_position()
-    main_frame:ClearAllPoints()
-    main_frame:SetPoint(ASInformationSaved.point, UIParent, ASInformationSaved.relativePoint, ASInformationSaved.xOfs,
-        ASInformationSaved.yOfs)
-end
-
--- Function to save position
-local function save_position()
-    local point, _, relativePoint, xOfs, yOfs = main_frame:GetPoint()
-    ASInformationSaved.point = point
-    ASInformationSaved.relativePoint = relativePoint
-    ASInformationSaved.xOfs = xOfs
-    ASInformationSaved.yOfs = yOfs
-end
 
 
 local function init_frames()
@@ -264,7 +245,6 @@ local function init_frames()
     yOffset = -2
 end
 
-local bMouseEnabled = true;
 local needReposition = true;
 
 -- Function to get primary stat based on class, inspired by PaperDollFrame.lua
@@ -484,18 +464,6 @@ local function update_stats()
             ns.primarybar_min:SetValue(minStat, Enum.StatusBarInterpolation.ExponentialEaseOut);
         end
     end
-
-    if ASInformationSaved.isLocked then
-        if bMouseEnabled then
-            main_frame:EnableMouse(false);
-            bMouseEnabled = false;
-        end
-    else
-        if not bMouseEnabled then
-            main_frame:EnableMouse(true);
-            bMouseEnabled = true;
-        end
-    end
 end
 
 
@@ -505,23 +473,6 @@ local function on_update()
     recode_stats()
     update_stats() -- This will use recentMinimumStats in the next plan step
 end
-
-
--- Make the addon frame movable
-main_frame:SetScript("OnMouseDown", function(self, button)
-    if button == "LeftButton" and not ASInformationSaved.isLocked then
-        self:StartMoving()
-        self.isMoving = true
-    end
-end)
-
-main_frame:SetScript("OnMouseUp", function(self, button)
-    if button == "LeftButton" and self.isMoving then
-        self:StopMovingOrSizing()
-        self.isMoving = false
-        save_position()
-    end
-end)
 
 local function setup_option()
     -- Create the options panel
@@ -549,18 +500,8 @@ local function setup_option()
     title:SetPoint("TOPLEFT", 16, -16)
     title:SetText("asInformation Options")
 
-    local lockCheckbox = CreateFrame("CheckButton", nil, optionsPanel, "InterfaceOptionsCheckButtonTemplate")
-    lockCheckbox:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -16)
-    lockCheckbox.Text:SetText(L["Lock Frame"])
-    lockCheckbox:SetChecked(ASInformationSaved.isLocked)
-
-    lockCheckbox:SetScript("OnClick", function(self)
-        ASInformationSaved.isLocked = self:GetChecked()
-    end)
-
-
     local critCheckbox = CreateFrame("CheckButton", nil, optionsPanel, "InterfaceOptionsCheckButtonTemplate")
-    critCheckbox:SetPoint("TOPLEFT", lockCheckbox, "BOTTOMLEFT", 0, -30)
+    critCheckbox:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -30)
     critCheckbox.Text:SetText(L["Show Crit"])
     critCheckbox:SetChecked(ASInformationSaved.showCrit)
     critCheckbox:SetScript("OnClick", function(self)
@@ -604,10 +545,6 @@ local function setup_option()
         needReposition = true;
     end)
 
-    optionsPanel.refresh = function()
-        lockCheckbox:SetChecked(ASInformationSaved.isLocked)
-    end
-
     -- Show the options panel when the slash command is used
     SLASH_ASINFORMATION1 = "/asinformation"
     SlashCmdList["ASINFORMATION"] = function()
@@ -619,11 +556,9 @@ end
 local bfirst = true;
 
 local function init()
-    setup_option()
-    load_position()
-    init_frames();
-    main_frame:SetUserPlaced(true)
-
+    setup_option();
+    init_frames(); 
+    
     local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
     if libasConfig then

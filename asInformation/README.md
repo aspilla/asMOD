@@ -12,7 +12,6 @@ Displays primary and secondary stat increases.
 ## Configuration
 
 * Access via the `/asinformation` chat command or `ESC` > `Options` > `AddOns` > `asInformation`.
-* **Lock Frame**: Select to prevent moving the frame. Deselect to allow dragging.
 * **Show Haste**: Toggles the display of Haste percentage.
 * **Show Crit**: Toggles the display of Critical Strike percentage.
 * **Show Mastery**: Toggles the display of Mastery percentage.
@@ -43,7 +42,6 @@ Displays primary and secondary stat increases.
 ## 설정
 
 *   `/asinformation` 대화창 명령어 혹은 `esc >> 설정 >> 애드온 >> asInformation` 통해 접근 가능.
-*   **프레임 잠금**: 프레임 이동을 방지하려면 선택합니다. 드래그를 허용하려면 선택 취소합니다.
 *   **가속 표시**: 가속 백분율 표시를 토글합니다.
 *   **크리 표시**: 치명타 및 극대화 백분율 표시를 토글합니다.
 *   **특화 표시**: 특화 백분율 표시를 토글합니다.
