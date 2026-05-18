@@ -21,6 +21,7 @@ Colors are displayed based on the following priority:
 ## Other Features
 
 * **Vertical Overlap Adjustment (`nameplateOverlapV`)**: Set to 1.1 by default.
+* **Nameplate Selected Scale (`nameplateSelectedScale`)**: Set to 1.3 by default (WoW default is 1.2). **Note:** If you uninstall the addon, you need to reset it using the following command: `/run SetCVar ("nameplateSelectedScale", 1.2)`
 * **Target Power Display**: Shows mob energy below the health bar if it's not mana (`ShowPower`).
 * **Cast Icon Display**: Displays the skill icon while casting (`ShowCastIcon`).
 * **Aura Adjustment**: Adjusts buff/debuff duration/stack position and adds borders (`ChangeDebuffIcon`).
@@ -72,7 +73,8 @@ Colors are displayed based on the following priority:
   
 ## 기타 기능
 
-* **이름표 세로 정렬 간격 설정(`nameplateOverlapV`)** : 1.1을 기본으로 설정
+* **이름표 세로 정렬 간격 설정(`nameplateOverlapV`)** : 1.1을 기본으로 설정 (와우 기본 설정은 1.3)
+* **이름표 주대상 크기 정도(`nameplateSelectedScale`)** : 1.3을 기본으로 설정 (와우 기본 설정은 1.2) **참고:** 애드온 삭제시 다음 명령어로 초기화 필요 `/run SetCVar ("nameplateSelectedScale", 1.3)`
 * **대상의 경우 몹의 기력을 체력바 아래 표시 (마나가 아닐 경우, `ShowPower`)**
 * **시전중일 경우 스킬 아이콘 표시 (마나가 아닐 경우, `ShowCastIcon`)**
 * **버프/디버프 시간/중첩 위치 조정 및 테두리 추가 (`ChangeDebuffIcon`)**

@@ -34,6 +34,7 @@ ns.option_default = {
     BossColor = { r = 0, g = 1, b = 0.2 },
 
     nameplateOverlapV = 1.1,
+    nameplateSelectedScale = 1.3,
 };
 
 ns.options = CopyTable(ns.option_default);
@@ -204,6 +205,7 @@ ns.setup_alloptions = function()
     if bfirst and not InCombatLockdown() then
         bfirst = false;        
         SetCVar("nameplateOverlapV", ANameP_Options["nameplateOverlapV"]);
+        SetCVar("nameplateSelectedScale", ANameP_Options["nameplateSelectedScale"]);
         if ns.options.FriendNamePlatesColor then
             SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 1);
             SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", 1);
@@ -245,7 +247,8 @@ local function on_panelshow()
         setup_checkboxoption("[기능] Targeted 강조", "ShowTargeted");
         setup_checkboxoption("[기능] 중요 스킬 시전 강조", "AlertImportantSpell");
 
-        setup_slideoption("이름표 상하 정렬 정도 (nameplateOverlapV)", "nameplateOverlapV");
+        setup_slideoption("이름표 상하 정렬 정도(nameplateOverlapV, 와우 1.3, 애드온 1.1)", "nameplateOverlapV");
+        setup_slideoption("이름표 주대상 크기 정도(nameplateSelectedScale, 기본 1.2, 애드온 1.3)", "nameplateSelectedScale");
 
         setup_checkboxoption("[기능] 어그로 색상 표시", "ShowAggro");
         setup_coloroption("[색상] 어그로 상위", "AggroColor");
@@ -274,7 +277,8 @@ local function on_panelshow()
         setup_checkboxoption("[Feature] Alert Targeted", "ShowTargeted");
         setup_checkboxoption("[Feature] Alert Important Spell Casting", "AlertImportantSpell");
 
-        setup_slideoption("Nameplate vertical alignment (nameplateOverlapV)", "nameplateOverlapV");
+        setup_slideoption("Nameplate vertical alignment (nameplateOverlapV, wow 1.3 addon 1.1)", "nameplateOverlapV");
+        setup_slideoption("Nameplate target scale (nameplateSelectedScale, wow 1.2, addon 1.3)", "nameplateSelectedScale");
 
         setup_checkboxoption("[Feature] Show aggro colors", "ShowAggro");
         setup_coloroption("[Color] Top aggro", "AggroColor");

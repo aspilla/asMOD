@@ -497,31 +497,6 @@ local function on_main_event(self, event, ...)
     end
 end
 
-local function create_macro()
-    if InCombatLockdown() then
-        return;
-    end
-    local macroText =
-    "/run SetCVar (\"nameplateGlobalScale\", 1.0)\n/run SetCVar (\"nameplateSelectedScale\", 1.3)\n/run SetCVar(\"nameplateUseClassColorForFriendlyPlayerUnitNames\", 1)\n/run SetCVar(\"nameplateShowOnlyNameForFriendlyPlayerUnits\", 1)\n/reload";
-    local macroName = "asNamePlates Setup";
-    local macroID = GetMacroIndexByName(macroName);
-
-
-    if (macroID == 0) then
-        local global, perChar = GetNumMacros();
-
-        if global < 120 then
-            CreateMacro(macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText, false);
-        else
-            print("asMOD error:too many macros, so need to delete some")
-        end
-    else
-        EditMacro(macroID, macroName, "Inv_10_inscription3_darkmoondeckbox_black", macroText)
-    end
-
-end
-
-
 local function init()
     main_frame:RegisterEvent("NAME_PLATE_UNIT_ADDED");
     main_frame:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
@@ -540,9 +515,7 @@ local function init()
     main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
     main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 
-    main_frame:SetScript("OnEvent", on_main_event)
-
-    C_Timer.After(1, create_macro);
+    main_frame:SetScript("OnEvent", on_main_event)    
 end
 
 init();
