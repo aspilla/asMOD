@@ -8,7 +8,7 @@ ns.configs = {
 };
 
 ns.option_default = {
-    version = 260510,
+    version = 260519,
 
     ShowAggro = true,
     ShowDebuffColor = true,
