@@ -32,7 +32,6 @@ Colors are displayed based on the following priority:
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
 * **Modify Friendly Nameplate Settings (FriendNamePlatesColor)**: Changes the appearance of friendly nameplates as shown below. (Default: On)
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
-* **Setup Macro Creation**: Adjusts target nameplate size and sets friendly nameplates to show class colors. Use the `asNamePlates Setup` macro.
 
 
 ## Configuration
@@ -85,7 +84,7 @@ Colors are displayed based on the following priority:
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
 * **아군 이름표 설정 변경 (`FriendNamePlatesColor`)** : 아군 이름표를 아래와 같이 변경 합니다. (기본 On, 접속시 다시 설정 합니다.)
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
-* **이름표 Setup 매크로 생성** : 대상 이름표 크기, 아군 이름표 직업 색상 이름으로 변경, `asNamePlates Setup` 메크로 사용
+
 
 ## 설정
 * `Esc > 옵션 > 애드온 > asNamePlates`

@@ -1,5 +1,47 @@
 # ChangeLogs
 
+
+## 260518 update
+
+### asNamePlates
+
+#### New feature
+* **Nameplate Selected Scale (`nameplateSelectedScale`)**: Set to 1.3 by default (WoW default is 1.2). **Note:** If you uninstall the addon, you need to reset it using the following command: `/run SetCVar ("nameplateSelectedScale", 1.2)`
+#### Remove feature
+* **Setup Macro Creation**: Adjusts target nameplate size and sets friendly nameplates to show class colors. Use the `asNamePlates Setup` macro.
+
+
+---
+
+#### 신규 기능
+* **이름표 주대상 크기 정도(`nameplateSelectedScale`)** : 1.3을 기본으로 설정 (와우 기본 설정은 1.2) **참고:** 애드온 삭제시 다음 명령어로 초기화 필요 `/run SetCVar ("nameplateSelectedScale", 1.3)`
+#### 기능 삭제
+* **이름표 Setup 매크로 생성** : 대상 이름표 크기, 아군 이름표 직업 색상 이름으로 변경, `asNamePlates Setup` 메크로 사용
+  
+
+### asCombatTimer
+
+#### Remove feature
+*   **LockWindow**: Locks the position setting. (Default: Locked)
+
+---
+
+#### 기능 삭제
+* **LockWindow**: 위치 설정을 고정 합니다. (기본값: 설정)
+
+
+### asInformation
+
+#### Remove feature
+*   **LockWindow**: Locks the position setting. (Default: Locked)
+
+---
+
+#### 기능 삭제
+* **LockWindow**: 위치 설정을 고정 합니다. (기본값: 설정)
+
+
+
 ## 260516 update
 
 ### asBattleRes
