@@ -204,8 +204,18 @@ ns.setup_alloptions = function()
 
     if bfirst and not InCombatLockdown() then
         bfirst = false;        
-        SetCVar("nameplateOverlapV", ANameP_Options["nameplateOverlapV"]);
-        SetCVar("nameplateSelectedScale", ANameP_Options["nameplateSelectedScale"]);
+        if ANameP_Options["nameplateOverlapV"] then
+            SetCVar("nameplateOverlapV", ANameP_Options["nameplateOverlapV"]);
+        else
+            SetCVar("nameplateOverlapV", 1.3);
+        end
+
+        if ANameP_Options["nameplateSelectedScale"] and ANameP_Options["nameplateSelectedScale"] > 1.2 then
+            SetCVar("nameplateSelectedScale", ANameP_Options["nameplateSelectedScale"]);
+        else
+            SetCVar("nameplateSelectedScale", 1.2);
+        end
+
         if ns.options.FriendNamePlatesColor then
             SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 1);
             SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", 1);
