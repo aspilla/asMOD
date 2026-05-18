@@ -4,6 +4,7 @@ local main_frame = CreateFrame("Frame", nil, UIParent);
 
 local configs = {
     iconrate = 0.9,
+    font = STANDARD_TEXT_FONT,
 }
 
 ns.asraid = {};
@@ -106,6 +107,19 @@ function ns.setup_frame(asframe)
 
     if asframe.raidicon then
         asframe.raidicon:SetSize(height / 3 - 3, height / 3 - 3);
+    end
+
+    
+
+    if (not asframe.leadericon) then
+        asframe.leadericon = frame:CreateFontString(nil, "ARTWORK");
+        asframe.leadericon:SetFont(configs.font, height / 5);
+        asframe.leadericon:SetTextColor(1, 1, 1, 1);
+        asframe.leadericon:SetPoint("TOPLEFT", frame.healthBar, "TOPLEFT", 3, 4);
+        local leader = CreateAtlasMarkup("groupfinder-icon-leader", 14, 9, 0, 0);
+        asframe.leadericon:SetText(leader);
+        asframe.leadericon:Hide();
+
     end
 
     ns.update_features(asframe);

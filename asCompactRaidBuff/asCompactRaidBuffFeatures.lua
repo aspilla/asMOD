@@ -13,6 +13,17 @@ local function show_raidicon(unit, markframe)
 	end
 end
 
+local function update_leader(asframe)
+	if ns.options.ShowLeader and  asframe.leadericon then
+		if UnitIsGroupLeader(asframe.displayedUnit) then
+			asframe.leadericon:Show();
+		else
+			asframe.leadericon:Hide();
+		end
+	end
+end
+
+
 local function update_raidicon(asframe)
 	if asframe.needtosetup then
 		ns.setup_frame(asframe);
@@ -68,5 +79,6 @@ function ns.update_features(asframe)
 	if asframe and asframe.frame and asframe.frame:IsShown() then
 		update_power(asframe);
 		update_raidicon(asframe);
+		update_leader(asframe);
 	end
 end
