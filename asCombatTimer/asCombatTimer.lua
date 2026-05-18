@@ -14,28 +14,11 @@ local configs = {
 -- 옵션끝
 local main_frame = CreateFrame("Frame", nil, UIParent);
 
--- Function to load saved position
-local function load_position(frame, option)
-	frame:ClearAllPoints()
-	frame:SetPoint(option.point, UIParent, option.relativePoint, option.xOfs,
-		option.yOfs)
-end
-
--- Function to save position
-local function save_position(frame, option)
-	local point, _, relativePoint, xOfs, yOfs = frame:GetPoint()
-	option.point = point
-	option.relativePoint = relativePoint
-	option.xOfs = xOfs
-	option.yOfs = yOfs
-end
-
 ns.update_options = function()
 	main_frame.timertext:SetFont(configs.fonts[ns.options.Font], ns.options.FontSize, "OUTLINE");
 end
 
-local gvalues = {
-	bmouseenabled = true,
+local gvalues = {	
 	combatstart = nil,
 	combatend = nil,
 	encounterstart = nil,
@@ -52,19 +35,8 @@ end
 
 local function on_update()
 	local timertext = main_frame.timertext;
-	if ns.options.LockWindow then
-		if gvalues.bmouseenabled then
-			main_frame:EnableMouse(false);
-			gvalues.bmouseenabled = false;
-		end
-	else
-		if not gvalues.bmouseenabled then
-			main_frame:EnableMouse(true);
-			gvalues.bmouseenabled = true;
-		end
-	end
 
-	if ns.options.ShowWhenCombat and ns.options.LockWindow then
+	if ns.options.ShowWhenCombat then
 		if InCombatLockdown() then
 			main_frame:Show();
 		else
@@ -110,19 +82,9 @@ local function on_event(self, event)
 end
 
 local function init()
-	ASTM_Position = ASTM_Position or {
-		point = "CENTER",
-		relativePoint = "CENTER",
-		xOfs = configs.xpoint,
-		yOfs = configs.ypoint,
-	}
-
 	ns.setup_option();
-	
+
 	main_frame:SetFrameStrata("LOW");
-	main_frame:EnableMouse(true);
-	main_frame:RegisterForDrag("LeftButton");
-	main_frame:SetMovable(true);
 
 	main_frame.timertext = main_frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	main_frame.timertext:ClearAllPoints();
@@ -136,26 +98,7 @@ local function init()
 	main_frame:SetHeight(configs.size * 0.9);	
 	main_frame:Show();
 
-
-
-	main_frame:SetScript("OnDragStart", function(self)
-		if not ns.options.LockWindow then
-			self:StartMoving()
-			self.isMoving = true
-		end
-	end)
-
-	main_frame:SetScript("OnDragStop", function(self)
-		if self.isMoving then
-			self:StopMovingOrSizing()
-			self.isMoving = false
-			save_position(main_frame, ASTM_Position);
-		end
-	end)
-
 	ns.update_options();
-
-	load_position(main_frame, ASTM_Position);
 
 	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
@@ -168,8 +111,7 @@ local function init()
 	main_frame:RegisterEvent("ENCOUNTER_START");
 	main_frame:RegisterEvent("ENCOUNTER_END");
 	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-	main_frame:SetScript("OnEvent", on_event)
-
+	main_frame:SetScript("OnEvent", on_event);
 
 	C_Timer.NewTicker(0.1, on_update);
 end
