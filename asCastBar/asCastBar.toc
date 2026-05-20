@@ -1,9 +1,14 @@
 ﻿## Interface: 120005, 120007
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCastBar
-## Notes:Displays an icon and cast time on the cast bar.
-## Notes-koKR:시전 바에 아이콘과 시전시간 표시
-## Version : 260101
+## Notes:Simple cast bar.
+## Notes-koKR:간단한 시전 바
+## Version : 260520
+## SavedVariablesPerCharacter: ACB_Options, ACB_Positions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
+asCastBarOptions.lua
 asCastBar.xml
+asCastBarFeatures.lua
