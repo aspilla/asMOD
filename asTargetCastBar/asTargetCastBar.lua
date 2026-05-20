@@ -167,7 +167,7 @@ local function get_interrupttext(interruptedby)
     return INTERRUPTED;
 end
 
-local function check_casting(castbar, event, interuptedby)
+local function check_casting(castbar, event, interuptedby, complete)
     local unit         = castbar.unit;
     local frameicon    = castbar.button.icon;
     local text         = castbar.name;
@@ -179,11 +179,13 @@ local function check_casting(castbar, event, interuptedby)
 
     if UnitExists(unit) then
         local bchannel = false;
+        local numStages = nil;
         local name, _, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
             unit);
 
         if not name then
-            name, _, texture, start, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(unit);
+            name, _, texture, start, endTime, isTradeSkill, notInterruptible, spellid, _, numStages = UnitChannelInfo(
+                unit);
             bchannel = true;
         end
 
@@ -208,19 +210,24 @@ local function check_casting(castbar, event, interuptedby)
             castbar.targetedindi:SetAlpha(0);
             castbar.notinterruptable:SetAlpha(0);
             castbar:Show();
-        elseif name then
+        elseif name and not complete then
             local duration;
 
             if bchannel then
-                duration = UnitChannelDuration(unit);
+                if numStages and numStages > 0 then
+                    duration = UnitEmpoweredChannelDuration(unit, true);
+                    bchannel = false;
+                else
+                    duration = UnitChannelDuration(unit);
+                end
             else
                 duration = UnitCastingDuration(unit);
             end
             castbar.duration_obj = duration;
             frameicon:SetTexture(texture);
             castbar:SetReverseFill(bchannel);
-
-            castbar:SetMinMaxValues(start, endTime)
+            castbar:SetMinMaxValues(duration:GetStartTime() * 1000, duration:GetEndTime() * 1000);
+            
             castbar.failstart = nil;
             castbar.castspellid = spellid;
 
@@ -319,23 +326,23 @@ end
 
 local function on_unit_event(castbar, event, ...)
     local interruptedby = nil;
+    local complete = nil;
 
     if (event == "UNIT_SPELLCAST_INTERRUPTED") then
         interruptedby = select(4, ...);
     elseif (event == "UNIT_SPELLCAST_CHANNEL_STOP") then
         interruptedby = select(4, ...);
-        local complete = interruptedby == nil;
+        complete = interruptedby == nil;
         if (not complete) then
             event = "UNIT_SPELLCAST_INTERRUPTED";
         end
     elseif (event == "UNIT_SPELLCAST_EMPOWER_STOP") then
-        local _, _, _, complete, interrupted = ...;
-        interruptedby = interrupted;
+        _, _, _, complete, interruptedby = ...;        
         if (not issecretvalue(complete)) and (not complete) then
             event = "UNIT_SPELLCAST_INTERRUPTED";
         end
     end
-    check_casting(castbar, event, interruptedby);
+    check_casting(castbar, event, interruptedby, complete);
 end
 
 local function on_event(self, event, ...)
