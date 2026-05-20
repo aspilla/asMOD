@@ -1,5 +1,60 @@
 # ChangeLogs
 
+## 260520 update
+
+### asCastBar
+#### New feature: Simple Design Mode
+![asCastBar](https://media.forgecdn.net/attachments/1690/241/ascastbar-jpg.jpg)
+
+1. **Apply Simple Design**: Currently in Beta Test and disabled by default. Requires checking `SimpleDesign` in the settings.
+2. **Channeling Tick Display**: Supports Mind Flay / Mind Flay: Insanity (Shadow Priest), Arcane Missiles (Mage), and Drain Soul (Warlock).
+
+---
+#### 신규 기능 : Simple Design Mode
+1.  **Simple Design 적용** : 현재 Beta Test 중으로 기본 off 되어 있음, 설정에서 SimpleDesign 채크 필요
+2.  **채널링 Tick 표시**  : 정신 채찍/정신 채찍 광기(암사), 신비한 화살(마법사), 영혼흡수(흑마) 지원
+
+
+### asCompactRaidBuff
+
+#### New feature
+* **Party/Raid Leader Display (Top-Left)**
+* `ShowLeader`: Displays the party/raid leader icon (Default: On).
+
+---
+
+#### 신규 기능
+*   **파티/공격대 리더 표시 (좌상단)**
+*   `ShowLeader` : 파티/공격대 리버더 표시 (기본: On)
+
+
+### asNamePlates
+
+#### Bug Fix: Resolved an issue where new options might not function properly.
+
+---
+
+#### 오류 수정 : 신규 옵션이 정상 동작 안할 수 있는 이슈 해결
+
+### asPowerBar
+
+#### Bug Fix: Fixed an issue where the cooldown was not announced for skills with a single charge.
+
+---
+
+#### 오류 수정 : 1충전 스킬인 경우 쿨 안내가 안되는 문제 수정
+
+
+### asTargetCastBar/asUnitFrame
+
+#### Bug Fix: Fixed an issue where the Evoker empowerment skill cast notifications were displayed incorrectly.
+
+---
+
+#### 오류 수정 : 기원사 충전 스킬 시전 안내가 잘못 되는 문제 수정
+
+
+
 
 ## 260519 update
 

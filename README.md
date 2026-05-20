@@ -100,7 +100,7 @@ The functional descriptions for each addon are organized on their respective Cur
 | asBattleRes | Combat Rez charges and cooldown tracker | [Link](https://www.curseforge.com/wow/addons/asbattleres) | [Link](https://github.com/aspilla/asMOD/tree/main/asBattleRes) |
 | asBloodlustAlert | Alerts for Bloodlust start and readiness | [Link](https://www.curseforge.com/wow/addons/asbloodlustalert) | [Link](https://github.com/aspilla/asMOD/tree/main/asBloodlustAlert) |
 | asBuffFilter | Displays target buffs | [Link](https://www.curseforge.com/wow/addons/asbufffilter) | [Link](https://github.com/aspilla/asMOD/tree/main/asBuffFilter) |
-| asCastBar | Cast bar with icons and timers | [Link](https://www.curseforge.com/wow/addons/ascastbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asCastBar) |
+| asCastBar | Simple cast bar | [Link](https://www.curseforge.com/wow/addons/ascastbar) | [Link](https://github.com/aspilla/asMOD/tree/main/asCastBar) |
 | asCastingAlert | Alerts for target spell casting | [Link](https://www.curseforge.com/wow/addons/ascastingalert) | [Link](https://github.com/aspilla/asMOD/tree/main/asCastingAlert) |
 | asCombatInfo | Enhanced Cooldown Manager | [Link](https://www.curseforge.com/wow/addons/ascombatinfo) | [Link](https://github.com/aspilla/asMOD/tree/main/asCombatInfo) |
 | asCombatTimer | Displays time elapsed in combat | [Link](https://www.curseforge.com/wow/addons/ascombattimer) | [Link](https://github.com/aspilla/asMOD/tree/main/asCombatTimer) |
@@ -312,7 +312,7 @@ CurseForge Link에 각 애드온의 기능 설명이 정리 되어 있어, 반�
 | asBattleRes | 전투 부활 횟수/대기시간 표시 | [링크](https://www.curseforge.com/wow/addons/asbattleres) | [링크](https://github.com/aspilla/asMOD/tree/main/asBattleRes) |
 | asBloodlustAlert | 블러드 시작/준비 알림 | [링크](https://www.curseforge.com/wow/addons/asbloodlustalert) | [링크](https://github.com/aspilla/asMOD/tree/main/asBloodlustAlert) |
 | asBuffFilter | 대상의 버프를 표시 | [링크](https://www.curseforge.com/wow/addons/asbufffilter) | [링크](https://github.com/aspilla/asMOD/tree/main/asBuffFilter) |
-| asCastBar | 시전 바에 아이콘과 시전시간 표시 | [링크](https://www.curseforge.com/wow/addons/ascastbar) | [링크](https://github.com/aspilla/asMOD/tree/main/asCastBar) |
+| asCastBar | 간단한 시전 바 | [링크](https://www.curseforge.com/wow/addons/ascastbar) | [링크](https://github.com/aspilla/asMOD/tree/main/asCastBar) |
 | asCastingAlert | 대상 시전 주문 알림 | [링크](https://www.curseforge.com/wow/addons/ascastingalert) | [링크](https://github.com/aspilla/asMOD/tree/main/asCastingAlert) |
 | asCombatInfo | 쿨다운 메니저 강화 | [링크](https://www.curseforge.com/wow/addons/ascombatinfo) | [링크](https://github.com/aspilla/asMOD/tree/main/asCombatInfo) |
 | asCombatTimer | 전투 시작 후 경과 시간을 표시 | [링크](https://www.curseforge.com/wow/addons/ascombattimer) | [링크](https://github.com/aspilla/asMOD/tree/main/asCombatTimer) |
