@@ -95,10 +95,6 @@ local function setup_childpanel()
 end
 
 local function setup_checkboxoption(text, option)
-    if ANameP_Options[option] == nil then
-        ANameP_Options[option] = ns.option_default[option];
-    end
-
     curr_y = curr_y + y_adder;
 
     local cb = CreateFrame("CheckButton", nil, scrollChild, "InterfaceOptionsCheckButtonTemplate")
@@ -109,14 +105,10 @@ local function setup_checkboxoption(text, option)
         ANameP_Options[option] = cb:GetChecked();
         ns.setup_alloptions();
     end)
-    cb:SetChecked(ANameP_Options[option]);    
+    cb:SetChecked(ANameP_Options[option]);
 end
 
 local function setup_slideoption(text, option)
-    if ANameP_Options[option] == nil then
-        ANameP_Options[option] = ns.option_default[option];
-    end
-
     curr_y = curr_y + y_adder;
 
     if scrollChild == nil then
@@ -143,8 +135,6 @@ local function setup_slideoption(text, option)
         ns.setup_alloptions();
     end)
     Slider:Show();
-
-    
 end
 
 local function show_colorpicker(r, g, b, a, changedCallback)
@@ -156,11 +146,6 @@ local function show_colorpicker(r, g, b, a, changedCallback)
 end
 
 local function setup_coloroption(text, option)
-    if ANameP_Options[option] == nil then
-        ANameP_Options[option] = ns.option_default[option];
-        ns.options = CopyTable(ANameP_Options);
-    end
-
     curr_y = curr_y + y_adder;
 
     if scrollChild == nil then
@@ -200,18 +185,34 @@ local function setup_coloroption(text, option)
 end
 
 ns.setup_alloptions = function()
+    if ANameP_Options == nil then
+        ANameP_Options = {};
+        ANameP_Options = CopyTable(ns.option_default);
+    end
+
+    if ANameP_Options.version ~= ns.option_default.version then
+        ANameP_Options = CopyTable(ns.option_default);
+    end
+
+    for variable, _ in pairs(ns.option_default) do
+        if ANameP_Options[variable] == nil then
+            ANameP_Options[variable] = ns.option_default[variable];
+        end
+    end
+
+
     ns.options = CopyTable(ANameP_Options);
 
     if bfirst and not InCombatLockdown() then
-        bfirst = false;        
-        if ANameP_Options["nameplateOverlapV"] then
-            SetCVar("nameplateOverlapV", ANameP_Options["nameplateOverlapV"]);
+        bfirst = false;
+        if ns.options.nameplateOverlapV then
+            SetCVar("nameplateOverlapV", ns.options.nameplateOverlapV);
         else
             SetCVar("nameplateOverlapV", 1.3);
         end
 
-        if ANameP_Options["nameplateSelectedScale"] and ANameP_Options["nameplateSelectedScale"] > 1.2 then
-            SetCVar("nameplateSelectedScale", ANameP_Options["nameplateSelectedScale"]);
+        if ns.options.nameplateSelectedScale and ns.options.nameplateSelectedScale > 1.2 then
+            SetCVar("nameplateSelectedScale", ns.options.nameplateSelectedScale);
         else
             SetCVar("nameplateSelectedScale", 1.2);
         end
@@ -229,15 +230,6 @@ end
 
 local function on_event(self, event, addOnName)
     if addOnName == "asNamePlates" then
-        if ANameP_Options == nil then
-            ANameP_Options = {};
-            ANameP_Options = CopyTable(ns.option_default);
-        end
-
-        if ANameP_Options.version ~= ns.option_default.version then
-            ANameP_Options = CopyTable(ns.option_default);
-        end
-
         ns.setup_alloptions();
     elseif event == "PLAYER_REGEN_ENABLED" then
         ns.setup_alloptions();
