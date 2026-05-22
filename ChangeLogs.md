@@ -1,6 +1,19 @@
 # ChangeLogs
 
+## 260523 update
+
+### asCastBar
+#### New feature: Simple Design Mode (Default On)
+#### Bugfix
+---
+#### 신규 기능 : Simple Design Mode (기본 On)
+#### 오류 수정
+
+
+
 ## 260520 update
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/V8kfo_yETjs?si=fv80oB87gZDmaLL9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ### asCastBar
 #### New feature: Simple Design Mode

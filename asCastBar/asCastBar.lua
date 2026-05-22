@@ -18,7 +18,7 @@ configs.tickspells = {
     -- 사제 (Priest)
     -- ----------------------------------------------------------------
     [15407]  = 6, -- 정신 채찍 (Mind Flay) - 암흑
-    [391403] = 6,  -- 정신 채찍: 광기 (Mind Flay: Insanity) - 암흑
+    [391403] = 6, -- 정신 채찍: 광기 (Mind Flay: Insanity) - 암흑
     -- ----------------------------------------------------------------
     -- 마법사 (Mage)
     -- ----------------------------------------------------------------
@@ -50,7 +50,7 @@ main_frame:SetHeight(0)
 main_frame:Show();
 
 local function setup_castbar()
-    configs.namesize = ns.options.BarHeight * 0.7;
+    configs.namesize = ns.options.BarHeight * 0.6;
     configs.timesize = ns.options.BarHeight * 0.5;
     local castbar = CreateFrame("StatusBar", nil, UIParent)
     castbar:SetFrameStrata("LOW");
@@ -134,6 +134,17 @@ local function setup_castbar()
     return castbar;
 end
 
+function ns.resize(castbar)
+    configs.namesize = ns.options.BarHeight * 0.6;
+    configs.timesize = ns.options.BarHeight * 0.5;
+    castbar:SetHeight(ns.options.BarHeight)
+    castbar:SetWidth(ns.options.BarWidth - (ns.options.BarHeight + 2) * 1.2)
+    castbar.name:SetFont(STANDARD_TEXT_FONT, configs.namesize);
+    castbar.time:SetFont(STANDARD_TEXT_FONT, configs.timesize);
+
+    castbar.button:SetWidth((ns.options.BarHeight + 2) * 1.2);
+    castbar.button:SetHeight(ns.options.BarHeight + 2);
+end
 
 local function hide_castbar(castbar)
     castbar:SetValue(0);
@@ -156,16 +167,13 @@ local function getStageDuration(stage, NumStages, unit)
     else
         return GetUnitEmpowerStageDuration(unit, stage - 1);
     end
-end;
+end
 
-local function check_casting(castbar, event, interuptedby, complete)
-    local unit         = castbar.unit;
-    local frameicon    = castbar.button.icon;
-    local text         = castbar.name;
-    local time         = castbar.time;
-    local mark         = castbar.mark;
-    local targettarget = unit .. "target";
-    local currtime     = GetTime();
+local function check_casting(castbar, event, unit, complete)
+    local frameicon = castbar.button.icon;
+    local text      = castbar.name;
+    local time      = castbar.time;
+    local currtime  = GetTime();
 
     if UnitExists(unit) then
         local bchannel = false;
@@ -178,7 +186,6 @@ local function check_casting(castbar, event, interuptedby, complete)
                 unit);
             bchannel = true;
         end
-
 
         if event == "UNIT_SPELLCAST_INTERRUPTED" then
             castbar:SetMinMaxValues(0, 100);
@@ -251,7 +258,7 @@ local function check_casting(castbar, event, interuptedby, complete)
                     if (stageduration > -1) then
                         sum = sum + stageduration;
                         local portion = sum / (duration:GetTotalDuration() * 1000);
-                        local offset = width * portion;                        
+                        local offset = width * portion;
 
                         if tick then
                             tick:ClearAllPoints();
@@ -266,7 +273,7 @@ local function check_casting(castbar, event, interuptedby, complete)
                     local tick = castbar.ticks[i]
                     tick:Hide();
                 end
-            elseif (ns.options.ShowTick and bchannel and configs.tickspells[spellid] ) then
+            elseif (ns.options.ShowTick and bchannel and configs.tickspells[spellid]) then
                 local tickcount = configs.tickspells[spellid];
 
                 if tickcount > 0 then
@@ -320,31 +327,32 @@ local function check_unit(castbar, unit)
 
     castbar.failstart = nil;
     castbar.donestart = nil;
-    check_casting(castbar, "NOTHING");
+    check_casting(castbar, "NOTHING", unit);
 end
 
 
-local function register_unit(castbar, unit)
-    castbar.unit = unit;
-    castbar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
-    castbar:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
-    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
-    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit);
-    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
-    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
-    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", unit);
-    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
-    castbar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
-    castbar:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit);
-    castbar:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
-    castbar:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
-    castbar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
-    castbar:RegisterUnitEvent("UNIT_TARGET", unit);
+local function register_unit(castbar)
+    local unit, unit2 = "player", "vehicle";
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit, unit2);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit, unit2);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit, unit2);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit, unit2);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit, unit2);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit, unit2);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", unit, unit2);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit, unit2);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit, unit2);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit, unit2);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_START", unit, unit2);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit, unit2);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit, unit2);
+    castbar:RegisterUnitEvent("UNIT_TARGET", unit, unit2);
 end
 
 local function on_unit_event(castbar, event, ...)
     local interruptedby = nil;
     local complete = nil;
+    local unit = ...;
 
     if (event == "UNIT_SPELLCAST_INTERRUPTED") then
         interruptedby = select(4, ...);
@@ -361,12 +369,13 @@ local function on_unit_event(castbar, event, ...)
             event = "UNIT_SPELLCAST_INTERRUPTED";
         end
     end
-    check_casting(castbar, event, interruptedby, complete);
+    check_casting(castbar, event, unit, complete);
 end
 
 local function on_event(self, event, ...)
     if event == "PLAYER_ENTERING_WORLD" then
         check_unit(ns.playercastbar, "player");
+        check_unit(ns.playercastbar, "vehicle");
     end
 end
 
@@ -396,6 +405,11 @@ local function on_update()
     update_castbar(ns.playercastbar);
 end
 
+local function hidedefault(castframe)
+    castframe:UnregisterAllEvents();
+    castframe:Hide();
+end
+
 local function init()
     ns.setup_option();
 
@@ -406,7 +420,7 @@ local function init()
             .ypoint)
 
         ns.playercastbar:SetScript("OnEvent", on_unit_event);
-        register_unit(ns.playercastbar, "player");
+        register_unit(ns.playercastbar);
 
 
         local libasConfig = LibStub:GetLibrary("LibasConfig", true);
@@ -416,15 +430,15 @@ local function init()
         end
 
         check_unit(ns.playercastbar, "player");
+        check_unit(ns.playercastbar, "vehicle");
 
         main_frame:SetScript("OnEvent", on_event)
         main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
         C_Timer.NewTicker(configs.updaterate, on_update);
 
-        local castframe = PlayerCastingBarFrame;
-        castframe:UnregisterAllEvents();
-        castframe:Hide();
+        hidedefault(PlayerCastingBarFrame);
+        hidedefault(PetCastingBarFrame);
     end
 end
 

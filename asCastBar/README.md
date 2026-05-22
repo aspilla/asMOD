@@ -5,7 +5,7 @@ Simple Cast Bar
 ## Simple Design Mode
 ![asCastBar](https://media.forgecdn.net/attachments/1690/241/ascastbar-jpg.jpg)
 
-1. **Apply Simple Design**: Currently in Beta Test and disabled by default. Requires checking `SimpleDesign` in the settings.
+1. **Apply Simple Design**: 
 2. **Channeling Tick Display**: Supports Mind Flay / Mind Flay: Insanity (Shadow Priest), Arcane Missiles (Mage), and Drain Soul (Warlock).
 
 ## Normal Mode (Default)
@@ -17,7 +17,7 @@ Simple Cast Bar
 
 ## Configuration
 * Settings can be adjusted via **ESC > Options > AddOns > asCastBar**.
-* `SimpleDesign`: Whether to apply Simple Design Mode (Default: Off, planned to be changed to On by default in a future update).
+* `SimpleDesign`: Whether to apply Simple Design Mode (Default: On, planned to be changed to On by default in a future update).
 * `BarWidth`: Cast bar width (Default: 238).
 * `BarHeight`: Cast bar height (Default: 20).
 * `ShowTick`: Whether to display channel ticks, functions only in Simple Design Mode (Default: On).
@@ -38,7 +38,7 @@ Simple Cast Bar
 ## Simple Design Mode
 ![asCastBar](https://media.forgecdn.net/attachments/1690/241/ascastbar-jpg.jpg)
 
-1.  **Simple Design 적용** : 현재 Beta Test 중으로 기본 off 되어 있음, 설정에서 SimpleDesign 채크 필요
+1.  **Simple Design 적용** 
 2.  **채널링 Tick 표시**  : 정신 채찍/정신 채찍 광기(암사), 신비한 화살(마법사), 영혼흡수(흑마) 지원
 
 
@@ -52,7 +52,7 @@ Simple Cast Bar
 
 ## 설정 
 *   `ESC` > `설정` > `애드온` > `asCastBar` 에서 설정 가능
-*  `SimpleDesign` : Simple Design Mode 적용 여부 (기본 Off, 향후 기본 설정 On으로 변경 예정)
+*  `SimpleDesign` : Simple Design Mode 적용 여부 (기본 On)
 *  `BarWidth` : 시전바 넓이 (기본 238)
 *  `BarWidth` : 시전바 높이 (기본 20)
 *  `ShowTick` : 채널 Tick 표기 여부, Simple Design Mode 에서만 동작 (기본 On)
