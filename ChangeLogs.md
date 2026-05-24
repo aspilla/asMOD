@@ -1,5 +1,13 @@
 # ChangeLogs
 
+## 260524 update
+
+### asCastBar
+#### Bugfix
+---
+#### 오류 수정
+
+
 ## 260523 update
 
 ### asCastBar

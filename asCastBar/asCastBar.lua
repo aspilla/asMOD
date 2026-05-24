@@ -221,7 +221,7 @@ local function check_casting(castbar, event, unit, complete)
             frameicon:SetTexture(texture);
 
             castbar:SetReverseFill(reverse);
-            castbar:SetMinMaxValues(duration:GetStartTime() * 1000, duration:GetEndTime() * 1000);
+            castbar:SetMinMaxValues(duration:GetStartTime() , duration:GetEndTime() );
             castbar.failstart = nil;
             castbar.donestart = nil;
             castbar.castspellid = spellid;
@@ -257,7 +257,7 @@ local function check_casting(castbar, event, unit, complete)
                     local tick = castbar.ticks[i];
                     if (stageduration > -1) then
                         sum = sum + stageduration;
-                        local portion = sum / (duration:GetTotalDuration() * 1000);
+                        local portion = sum / (duration:GetTotalDuration() *1000 );
                         local offset = width * portion;
 
                         if tick then
@@ -397,7 +397,7 @@ local function update_castbar(castbar)
             castbar.time:SetText(string.format("%.1f/%.1f", castbar.duration_obj:GetRemainingDuration(0),
                 castbar.duration_obj:GetTotalDuration(0)));
         end
-        castbar:SetValue(current * 1000, Enum.StatusBarInterpolation.ExponentialEaseOut);
+        castbar:SetValue(current , Enum.StatusBarInterpolation.ExponentialEaseOut);
     end
 end
 
