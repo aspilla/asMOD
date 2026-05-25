@@ -91,7 +91,7 @@ local function check_casting(castbar, event, interuptedby, complete)
             castbar.duration_obj = duration;
             frameicon:SetTexture(texture);
             castbar:SetReverseFill(bchannel);
-            castbar:SetMinMaxValues(start, endTime);
+            castbar:SetMinMaxValues(duration:GetStartTime(), duration:GetEndTime());
             castbar.failstart = nil;
             castbar.castspellid = spellid;
 
@@ -202,6 +202,6 @@ function ns.update_castbar(castbar)
             castbar.time:SetText(string.format("%.1f/%.1f", castbar.duration_obj:GetRemainingDuration(0),
                 castbar.duration_obj:GetTotalDuration(0)));
         end
-        castbar:SetValue(current * 1000, Enum.StatusBarInterpolation.ExponentialEaseOut);
+        castbar:SetValue(current, Enum.StatusBarInterpolation.ExponentialEaseOut);
     end
 end

@@ -26,7 +26,7 @@ local function set_aura(frame, unit, aura, color)
         frame.border:SetVertexColor(0, 0, 0);
     end
 end
-local function update_buffs(frame, auralist, filter, durationobject)
+local function update_buffs(frame, auralist, filter)
     local i = 0;
     local parent = frame;
     local unit = frame.unit;
@@ -124,6 +124,6 @@ function ns.update_auras(frame)
 
     if frame.buffupdate then
         local activeBuffs = C_UnitAuras.GetUnitAuras(unit, bufffilter, #(frame.buffframes));
-        update_buffs(frame, activeBuffs, filter);
+        update_buffs(frame, activeBuffs, bufffilter);
     end
 end
