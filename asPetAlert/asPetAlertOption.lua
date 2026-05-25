@@ -5,6 +5,19 @@ local Options_Default = {
     FontSize = 30,
 }
 
+local L= {
+    FontSize = "Alert Font Size",
+}
+
+
+if GetLocale() == "koKR" then
+L= {
+    FontSize = "알림 글씨 크기",
+}
+end
+
+
+
 local tempoption = {};
 ns.options = CopyTable(Options_Default);
 
@@ -50,15 +63,15 @@ function ns.SetupOptionPanels()
         if name ~= "Version" then
             if tonumber(defaultValue) ~= nil then
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-                    type(defaultValue), name, defaultValue);
-                local options = Settings.CreateSliderOptions(1, 40, 1);
+                    type(defaultValue), L[name], defaultValue);
+                local options = Settings.CreateSliderOptions(5, 50, 1);
                 options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
                 Settings.CreateSlider(category, setting, options, tooltip);
                 Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             else
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-                    type(defaultValue), name, defaultValue);
+                    type(defaultValue), L[name], defaultValue);
 
                 Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
                 Settings.SetValue(cvar_name, currentValue);

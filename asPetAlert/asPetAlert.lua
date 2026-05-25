@@ -18,8 +18,8 @@ local gvalues    = {
 }
 
 if GetLocale() == "koKR" then
-    gvalues.nopet_msg = "팻 없음";
-    gvalues.diepet_msg = "팻 죽음";
+    gvalues.nopet_msg = "소환수 없음";
+    gvalues.diepet_msg = "소환수 죽음";
 end
 
 

@@ -1,7 +1,9 @@
 # asPetAlert (Midnight)
 
 Alerts you when your pet is dead or missing.
+
 ![asPetAlert](https://media.forgecdn.net/attachments/1698/83/aspetalert-jpg.jpg)
+
 ![asPetAlert](https://media.forgecdn.net/attachments/1698/84/aspetalert1-jpg.jpg)
 
 ## Features
@@ -17,20 +19,22 @@ Alerts you when your pet is dead or missing.
 * **Reset Position**: Enter the `/asClear` command in the chat window to reset to default settings.
 
 * Settings can be adjusted via **ESC > Options > AddOns > asPetAlert**.
-* `FontSize`: Text size (Default: 30).
+* `Alert Font Size`: Text size (Default: 30).
 ---
 # asPetAlert (한밤)
 
 소환수 죽거나 없으면 알림
+
 ![asPetAlert](https://media.forgecdn.net/attachments/1698/83/aspetalert-jpg.jpg)
+
 ![asPetAlert](https://media.forgecdn.net/attachments/1698/84/aspetalert1-jpg.jpg)
 
 
 ## 기능
 
 *   냉법(특성), 부정죽기, 사냥꾼 (격냥은 특성), 흑마 (희생 특성 아닌경우) 동작
-*   팻이 없으면 `팻 없음` 이라고 화면 중앙에 알림 (비행시 알리지 않음)
-*   팻이 죽으면 `팻 죽음` 이라고 화명 중앙에 알림
+*   소환수가 없으면 `소환수 없음` 이라고 화면 중앙에 알림 (비행시 알리지 않음)
+*   소환수가 죽으면 `소환수 죽음` 이라고 화명 중앙에 알림
 
 ## 설정
 
@@ -39,4 +43,4 @@ Alerts you when your pet is dead or missing.
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
 
 *   `ESC` > `설정` > `애드온` 탭에서 `asPetAlert`를 찾아 옵션을 변경할 수 있습니다.
-*   `FontSize` 글씨 크기 (기본 30)
+*   `알림 글씨 크기` 글씨 크기 (기본 30)
