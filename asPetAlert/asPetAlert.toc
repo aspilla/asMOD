@@ -1,0 +1,13 @@
+﻿## Interface: 120005, 120007
+## Author: |cffff3399Aspilla|r [Azshara - KR]
+## Title: |cffff3399as|rPetAlert
+## Notes: Alerts you when your pet is dead or missing.
+## Notes-koKR: 소환수 죽거나 없으면 알림
+## Version : 260525
+## SavedVariablesPerCharacter: APA_Options, APA_Positions
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
+asPetAlertOption.lua
+asPetAlert.lua
