@@ -119,6 +119,10 @@ local function on_event(self, event, ...)
     init_class();
 end
 
+function ns.check_status()
+    ns.msgtext:SetFont(configs.font, ns.options.FontSize, configs.fontoutline);
+end
+
 local function init()
     ns.SetupOptionPanels();
     ns.msgtext = main_frame:CreateFontString(nil, "OVERLAY");

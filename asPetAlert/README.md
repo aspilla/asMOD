@@ -21,7 +21,7 @@ Alerts you when your pet is dead or missing.
 ---
 # asPetAlert (한밤)
 
-소환수 죽거나 없으면 알립니다.
+소환수 죽거나 없으면 알림
 ![asPetAlert](https://media.forgecdn.net/attachments/1698/83/aspetalert-jpg.jpg)
 ![asPetAlert](https://media.forgecdn.net/attachments/1698/84/aspetalert1-jpg.jpg)
 
