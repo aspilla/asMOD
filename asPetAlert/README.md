@@ -4,7 +4,6 @@ Alerts you when your pet is dead or missing.
 
 ![asPetAlert](https://media.forgecdn.net/attachments/1698/83/aspetalert-jpg.jpg)
 
-![asPetAlert](https://media.forgecdn.net/attachments/1698/84/aspetalert1-jpg.jpg)
 
 ## Features
 
@@ -27,7 +26,6 @@ Alerts you when your pet is dead or missing.
 
 ![asPetAlert](https://media.forgecdn.net/attachments/1698/83/aspetalert-jpg.jpg)
 
-![asPetAlert](https://media.forgecdn.net/attachments/1698/84/aspetalert1-jpg.jpg)
 
 
 ## 기능
