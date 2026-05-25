@@ -61,7 +61,7 @@ local function onupdate()
             alert_diepet();
             bhide = false;
         end
-    elseif not IsFlying("player") then
+    elseif not IsMounted() then
         alert_nopet()
         bhide = false;
     end
