@@ -1,5 +1,21 @@
 # ChangeLogs
 
+## 260525 update
+
+### New Addon, asPetAlert
+https://www.curseforge.com/wow/addons/aspetalert
+
+### asBloodlustAlert, asTargetCastBar, asUnitFrame 
+#### Bugfix
+
+---
+### 신규 애드온, asPetAlert
+https://www.curseforge.com/wow/addons/aspetalert
+
+### asBloodlustAlert, asTargetCastBar, asUnitFrame 
+#### 오류 수정
+
+
 ## 260524 update
 
 ### asCastBar
