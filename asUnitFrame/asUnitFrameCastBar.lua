@@ -145,6 +145,7 @@ end
 local function on_castevent(self, event, ...)
     local interruptedby = nil;
     local complete = nil;
+    local bdone = false;
 
     if (event == "UNIT_SPELLCAST_INTERRUPTED") then
         interruptedby = select(4, ...);
@@ -154,13 +155,15 @@ local function on_castevent(self, event, ...)
         if (not complete) then
             event = "UNIT_SPELLCAST_INTERRUPTED";
         end
+        bdone = true;
     elseif (event == "UNIT_SPELLCAST_EMPOWER_STOP") then
         _, _, _, complete, interruptedby = ...;        
         if (not issecretvalue(complete)) and (not complete) then
             event = "UNIT_SPELLCAST_INTERRUPTED";
         end
+        bdone = true;
     end
-    check_casting(self, event, interruptedby, complete);
+    check_casting(self, event, interruptedby, bdone);
 end
 
 function ns.register_castevents(castbar, unit)
