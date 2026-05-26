@@ -20,6 +20,8 @@ local function check_void()
     local count = aura and aura.applications or 0
     local max = C_SpellBook.IsSpellKnown(1247534) and 35 or 50
 
+    ns.setup_max_spell(max/5);
+
     if count then
         ns.combocountbar:SetMinMaxValues(0, max)
         ns.combocountbar:SetValue(count, Enum.StatusBarInterpolation.ExponentialEaseOut)
@@ -44,7 +46,7 @@ function ns.setup_auracombo(auraid, maxcombo)
         if auraid == 1225789 then
             gvalue.check_func = check_void;
             main_frame:RegisterUnitEvent("UNIT_AURA", "player");
-            ns.combocountbar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
+            ns.combocountbar:SetStatusBarColor(0.3, 0.3, 1);
             ns.combocountbar.bg:SetVertexColor(0, 0, 0, 1);
             check_void();
         elseif auraid == 12950 then
