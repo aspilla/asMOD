@@ -14,7 +14,7 @@ local configs    = {
 local gvalues    = {
     nopet_msg  = "No Pet",
     diepet_msg = "Pet Died",
-    bwork      = false,
+    timer = nil,
 }
 
 if GetLocale() == "koKR" then
@@ -40,9 +40,6 @@ end
 local bred = false;
 
 local function onupdate()
-    if not gvalues.bwork then
-        return;
-    end
 
     if ns.msgtext:IsShown() then
         if bred then
@@ -80,26 +77,26 @@ local function init_class()
         spec = 1;
     end
 
-    gvalues.bwork = false;
+    local bwork = false;
 
     if (englishClass == "MAGE") then
         if (spec and spec == 3) then
             if (C_SpellBook.IsSpellKnown(31687)) then
-                gvalues.bwork = true;
+                bwork = true;
             end
         end
     end
 
     if (englishClass == "WARLOCK") then
         if not (C_SpellBook.IsSpellKnown(108503)) then
-            gvalues.bwork = true;
+            bwork = true;
         end
     end
 
 
     if (englishClass == "DEATHKNIGHT") then
         if (spec and spec == 3) then
-            gvalues.bwork = true;
+            bwork = true;
         end
     end
 
@@ -107,12 +104,23 @@ local function init_class()
     if (englishClass == "HUNTER") then
         if (spec and spec == 2) then
             if (C_SpellBook.IsSpellKnown(1223323)) then
-                gvalues.bwork = true;
+                bwork = true;
             end
         else
-            gvalues.bwork = true;
+            bwork = true;
         end
     end
+
+    if gvalues.timer then
+        gvalues.timer:Cancel();
+    end
+
+    if bwork then
+        gvalues.timer = C_Timer.NewTicker(configs.refresh_rate, onupdate);
+    else
+        hide();
+    end
+
 end
 
 local function on_event(self, event, ...)
@@ -148,8 +156,7 @@ local function init()
         libasConfig.load_position(main_frame, "asPetAlert", APA_Positions);
     end
 
-    ns.msgtext:SetFont(configs.font, ns.options.FontSize, configs.fontoutline)
-    C_Timer.NewTicker(configs.refresh_rate, onupdate);
+    ns.msgtext:SetFont(configs.font, ns.options.FontSize, configs.fontoutline)   
 
     init_class();
 end

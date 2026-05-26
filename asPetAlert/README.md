@@ -19,7 +19,9 @@ Alerts you when your pet is dead or missing.
 
 * Settings can be adjusted via **ESC > Options > AddOns > asPetAlert**.
 * `Alert Font Size`: Text size (Default: 30).
+
 ---
+
 # asPetAlert (한밤)
 
 소환수 죽거나 없으면 알림
