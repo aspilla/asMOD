@@ -1,5 +1,49 @@
 # ChangeLogs
 
+## 260528 update
+
+### asCooldownPulse
+#### Adding Orc Warlock/Shaman, Bloodelf Rogue Racial Skill
+
+---
+
+#### 오크흑마/주술사, 블엘도적 동특 등록
+
+
+## 260527 update
+
+### asTargetCastBar, asUnitFrame
+#### Bugfix
+
+---
+
+#### 오류 수정
+
+## 260526 update
+
+### asPetAlert
+#### Bugfix
+
+---
+
+#### 오류 수정
+
+### asPowerBar
+#### Devourer DH Improvements
+
+---
+
+#### 포식 악사 개선
+
+
+---
+### 신규 애드온, asPetAlert
+https://www.curseforge.com/wow/addons/aspetalert
+
+### asBloodlustAlert, asTargetCastBar, asUnitFrame 
+#### 오류 수정
+
+
 ## 260525 update
 
 ### New Addon, asPetAlert
