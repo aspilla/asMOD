@@ -211,7 +211,7 @@ local function on_update()
 
 	local needtohide = false;
 
-	for _, nameplate in pairs(C_NamePlate.GetNamePlates(issecure())) do
+	for _, nameplate in pairs(C_NamePlate.GetNamePlates()) do
 		if (nameplate) then
 			if check_needtohide(nameplate) then
 				needtohide = true;
@@ -219,7 +219,7 @@ local function on_update()
 			end
 		end
 	end
-	for _, nameplate in pairs(C_NamePlate.GetNamePlates(issecure())) do
+	for _, nameplate in pairs(C_NamePlate.GetNamePlates()) do
 		if (nameplate) then
 			hide_nameplates(nameplate, (not needtohide));
 		end
