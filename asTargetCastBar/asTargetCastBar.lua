@@ -6,12 +6,13 @@ local configs = {
     xpoint = 0,
     ypoint = -100,
     alpha = 1,
-    notinterruptcolor = { 0.9, 0.9, 0.9 },
+    notinterruptcolor = { 0.6, 0.6, 0.6 },
     interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
     failedcolor = { 1, 0, 0 },
-    updaterate = 0.1,
+    updaterate = 0.05,
     font = STANDARD_TEXT_FONT,
     interruptedtext = INTERRUPTED,
+    faildonetime = 1,
 }
 
 configs.namesize = configs.height * 0.7;
@@ -371,7 +372,7 @@ local function update_castbar(castbar)
     local current = GetTime();
 
     if failstart then
-        if current - failstart > 1 then
+        if current - failstart > configs.faildonetime then
             hide_castbar(castbar);
         end
     else
