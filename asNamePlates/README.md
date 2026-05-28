@@ -20,18 +20,22 @@ Colors are displayed based on the following priority:
 
 ## Other Features
 
-* **Vertical Overlap Adjustment (`nameplateOverlapV`)**: Set to 1.1 by default.
-* **Nameplate Selected Scale (`nameplateSelectedScale`)**: Set to 1.3 by default (WoW default is 1.2). **Note:** If you uninstall the addon, you need to reset it using the following command: `/run SetCVar ("nameplateSelectedScale", 1.2)`
-* **Target Power Display**: Shows mob energy below the health bar if it's not mana (`ShowPower`).
-* **Cast Icon Display**: Displays the skill icon while casting (`ShowCastIcon`).
-* **Aura Adjustment**: Adjusts buff/debuff duration/stack position and adds borders (`ChangeDebuffIcon`).
-* **Texture and Border Customization (`ChangeTexture`)**: Displays a white border for the current target and a green border for the focus target. Changes health bars to a rectangular shape.
-* **Mouseover Indicator**: Display blue border on focus (`ChangeTexture`)
-* **Targeted Highlight (`ShowTargeted`)**: Displays a blinking exclamation mark on the left when you are targeted. For tanks, this only triggers when a mob is casting at you.
-* **Important Spell Alert (`AlertImportantSpell`)**: The health bar flashes red when an important spell is being cast (see screenshot below).
+* **Displays enemy power under the health bar for targeted units (Only when the resource is not mana, `[Feature] Show Power below`)**
+* **Displays spell icons while casting (Only when the resource is not mana, `[Feature] Show cast icon`)**
+* **Adjusts buff/debuff duration and stack counts position, and adds borders (`[Feature] Change Debuff Icon`)**
+* **Modifies nameplate textures and borders (`[Feature] Change Texture`)**: Displays a white border for your current target, a green border for your focus target, and changes the health bar to a square shape.
+* **Displays a blue border on mouseover targets (`[Feature] Change Texture`)**
+* **Targeted Highlights (`[Feature] Alert Targeted`)**: Displays a flashing exclamation mark on the left when you are targeted by an enemy; for tanks, this triggers only when an enemy is casting a spell at you.
+* **Important Spell Highlights (`[Feature] Alert Important Spell Casting`)**: The health bar flashes red when an enemy casts an important spell (See screenshot below).
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
-* **Modify Friendly Nameplate Settings (FriendNamePlatesColor)**: Changes the appearance of friendly nameplates as shown below. (Default: On)
+* **Modifies friendly nameplate settings (`[Feature] Change Friend Nameplates`)**: Alters friendly nameplates as shown below (Default: On, reapplied upon logging in).
+* **Nameplate Vertical Stacking Interval (`Nameplate vertical alignment`)**: Set to 1.1 by default (WoW default is 1.3).
+* **Nameplate Selected Scale (`Nameplate target scale`)**: Set to 1.3 by default (WoW default is 1.2). 
+* **Note:** If you uninstall the addon, you need to reset it using the following command: `/run SetCVar ("nameplateSelectedScale", 1.2)`
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
+* **Nameplate Mouse Click Hitbox Settings (`Click Hit Inset`)**: See video below (Default: 7, reapplied upon logging in).
+<iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 
 
 ## Configuration
@@ -72,18 +76,21 @@ Colors are displayed based on the following priority:
   
 ## 기타 기능
 
-* **이름표 세로 정렬 간격 설정(`nameplateOverlapV`)** : 1.1을 기본으로 설정 (와우 기본 설정은 1.3)
-* **이름표 주대상 크기 정도(`nameplateSelectedScale`)** : 1.3을 기본으로 설정 (와우 기본 설정은 1.2) **참고:** 애드온 삭제시 다음 명령어로 초기화 필요 `/run SetCVar ("nameplateSelectedScale", 1.3)`
-* **대상의 경우 몹의 기력을 체력바 아래 표시 (마나가 아닐 경우, `ShowPower`)**
-* **시전중일 경우 스킬 아이콘 표시 (마나가 아닐 경우, `ShowCastIcon`)**
-* **버프/디버프 시간/중첩 위치 조정 및 테두리 추가 (`ChangeDebuffIcon`)**
-* **이름표 Texture 및 테두리 변경 (`ChangeTexture`)** : 대상의 경우 흰색 테두리, 주시의 경우 녹색 테두리 표시, 생명력바를 사각형 모양으로 변경
-* **마우스오버 대상 파란색 테두리 표시 (`ChangeTexture`)**
-* **Targeted 강조 (`ShowTargeted`)** : 나를 대상으로 하는 경우 좌측에 깜빡이는 느낌표 표시, 탱커의 경우 나를 대상으로 케스팅 하는 경우만
-* **중요 스킬 강조 (`AlertImportantSpell`)** : 중요 스킬 시전시 생명력이 빨간색으로 깜빡임 (아래 스샷 참고)
+* **대상의 경우 몹의 기력을 체력바 아래 표시 (마나가 아닐 경우, `[기능] 하단에 기력 표시`)**
+* **시전중일 경우 스킬 아이콘 표시 (마나가 아닐 경우, `[기능] 시전 Icon 표시`)**
+* **버프/디버프 시간/중첩 위치 조정 및 테두리 추가 (`[기능] Debuff Icon 변경`)**
+* **이름표 Texture 및 테두리 변경 (`[기능] 이름표 모양 변경`)** : 대상의 경우 흰색 테두리, 주시의 경우 녹색 테두리 표시, 생명력바를 사각형 모양으로 변경
+* **마우스오버 대상 파란색 테두리 표시 (`[기능] 이름표 모양 변경`)**
+* **Targeted 강조 (`[기능] Targeted 강조`)** : 나를 대상으로 하는 경우 좌측에 깜빡이는 느낌표 표시, 탱커의 경우 나를 대상으로 케스팅 하는 경우만
+* **중요 스킬 강조 (`[기능] 중요 스킬 시전 강조`)** : 중요 스킬 시전시 생명력이 빨간색으로 깜빡임 (아래 스샷 참고)
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
-* **아군 이름표 설정 변경 (`FriendNamePlatesColor`)** : 아군 이름표를 아래와 같이 변경 합니다. (기본 On, 접속시 다시 설정 합니다.)
+* **아군 이름표 설정 변경 (`[기능] 아군 이름표 모양 변경`)** : 아군 이름표를 아래와 같이 변경 합니다. (기본 On, 접속시 다시 설정 합니다.)
+* **이름표 세로 정렬 간격 설정(`이름표 상하 정렬 정도`)** : 1.1을 기본으로 설정 (와우 기본 설정은 1.3)
+* **이름표 주대상 크기 정도(`이름표 주대상 크기 정도`)** : 1.3을 기본으로 설정 (와우 기본 설정은 1.2) 
+* **참고:** 애드온 삭제시 다음 명령어로 초기화 필요 `/run SetCVar ("nameplateSelectedScale", 1.2)`
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
+* **이름표 마우스 클릭 범위 설정 (`클릭 Hit Inset`)** : 아래영상 참고  (기본 7, 접속시 다시 설정 합니다.)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
 ## 설정

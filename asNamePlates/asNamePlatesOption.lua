@@ -23,10 +23,10 @@ ns.option_default = {
     ShowTargeted = true,
     AlertImportantSpell = true,
     FriendNamePlatesColor = true,
-
+    
     AggroColor = { r = 0.4, g = 0.2, b = 0.8 },
     TankAggroLoseColor = { r = 1, g = 0.5, b = 0.5 },
-    NotinterruptableColor = { r = 0.9, g = 0.9, b = 0.9 },
+    NotinterruptableColor = { r = 0.6, g = 0.6, b = 0.6 },
     InterruptableColor = { r = 204 / 255, g = 255 / 255, b = 153 / 255 },
     DebuffColor = { r = 1, g = 0.5, b = 1 },
     CombatColor = { r = 0.5, g = 1, b = 1 },
@@ -35,6 +35,7 @@ ns.option_default = {
 
     nameplateOverlapV = 1.1,
     nameplateSelectedScale = 1.3,
+    HitTestInsets = 7,
 };
 
 ns.options = CopyTable(ns.option_default);
@@ -108,7 +109,7 @@ local function setup_checkboxoption(text, option)
     cb:SetChecked(ANameP_Options[option]);
 end
 
-local function setup_slideoption(text, option)
+local function setup_slideoption(text, option, binsets)
     curr_y = curr_y + y_adder;
 
     if scrollChild == nil then
@@ -121,16 +122,20 @@ local function setup_slideoption(text, option)
 
     local Slider = CreateFrame("Slider", nil, scrollChild, "OptionsSliderTemplate");
     Slider:SetOrientation('HORIZONTAL');
-    Slider:SetPoint("LEFT", title, "RIGHT", 5, 0);
+    Slider:SetPoint("RIGHT", scrollChild, "RIGHT", -5, curr_y);
     Slider:SetWidth(200)
     Slider:SetHeight(20)
-    Slider.Text:SetText(format("%.1f", max(ANameP_Options[option], 0)));
-    Slider:SetMinMaxValues(0.3, 2);
+    Slider.Text:SetText(format("%.1f", ANameP_Options[option]));
+    if binsets then
+        Slider:SetMinMaxValues(-10, 10);
+    else
+        Slider:SetMinMaxValues(0.3, 2);
+    end
     Slider:SetValue(ANameP_Options[option]);
 
     Slider:HookScript("OnValueChanged", function()
         ANameP_Options[option] = Slider:GetValue();
-        Slider.Text:SetText(format("%.1f", max(ANameP_Options[option], 0)));
+        Slider.Text:SetText(format("%.1f", ANameP_Options[option]));
         bfirst = true;
         ns.setup_alloptions();
     end)
@@ -224,6 +229,12 @@ ns.setup_alloptions = function()
             SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 0);
             SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", 0);
         end
+        
+        if ns.options.HitTestInsets ~= nil then
+            local v = ns.options.HitTestInsets;
+            C_NamePlateManager.SetNamePlateHitTestInsets(0, v, v, v, v);        
+            C_NamePlateManager.SetNamePlateHitTestInsets(1, v, v, v, v);        
+        end
     end
 end
 
@@ -251,6 +262,7 @@ local function on_panelshow()
 
         setup_slideoption("이름표 상하 정렬 정도(nameplateOverlapV, 와우 1.3, 애드온 1.1)", "nameplateOverlapV");
         setup_slideoption("이름표 주대상 크기 정도(nameplateSelectedScale, 기본 1.2, 애드온 1.3)", "nameplateSelectedScale");
+        setup_slideoption("클릭 Hit Inset(NamePlateHitTestInsets, 기본 0, 애드온 7)", "HitTestInsets", true);
 
         setup_checkboxoption("[기능] 어그로 색상 표시", "ShowAggro");
         setup_coloroption("[색상] 어그로 상위", "AggroColor");
@@ -281,6 +293,7 @@ local function on_panelshow()
 
         setup_slideoption("Nameplate vertical alignment (nameplateOverlapV, wow 1.3 addon 1.1)", "nameplateOverlapV");
         setup_slideoption("Nameplate target scale (nameplateSelectedScale, wow 1.2, addon 1.3)", "nameplateSelectedScale");
+        setup_slideoption("Click Hit Inset(NamePlateHitTestInsets, Default 0, Addon 7)", "HitTestInsets", true);
 
         setup_checkboxoption("[Feature] Show aggro colors", "ShowAggro");
         setup_coloroption("[Color] Top aggro", "AggroColor");
