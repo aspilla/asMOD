@@ -7,7 +7,7 @@ local configs = {
 	height = 17,
 	alpha = 1,
 	updaterate = 0.1,
-	notinterruptcolor = { 0.9, 0.9, 0.9 },
+	notinterruptcolor = { 0.6, 0.6, 0.6 },
 	interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
 
 	font = STANDARD_TEXT_FONT,
@@ -55,40 +55,41 @@ local function on_update()
 	end
 
 
-	for _, nameplate in pairs(C_NamePlate.GetNamePlates(issecure())) do
+	for _, nameplate in pairs(C_NamePlate.GetNamePlates()) do
+		if nameplate and nameplate.unitToken then
+			local unit = nameplate.unitToken;
 
-		local unit = nameplate.unitToken;
-
-		if unit and UnitExists(unit) and UnitClassification(unit) ~= "minus" and UnitThreatSituation("player", unit) then		
-			local bchannel = false;
-			local duration = nil;
-			local name, _, texture, starttime, endtime, _, _, notInterruptible, spellid = UnitCastingInfo(unit);
-			if not name then
-				bchannel = true;
-				name, _, texture, starttime, endtime, _, notInterruptible, spellid = UnitChannelInfo(unit);
-				duration = UnitChannelDuration(unit);
-			else
-				duration = UnitCastingDuration(unit);
-			end
-
-			if name then
-				local level = UnitLevel(unit);
-
-				if level < 0 then
-					level = 1000;
+			if unit and UnitExists(unit) and UnitClassification(unit) ~= "minus" and UnitThreatSituation("player", unit) then
+				local bchannel = false;
+				local duration = nil;
+				local name, _, texture, starttime, endtime, _, _, notInterruptible, spellid = UnitCastingInfo(unit);
+				if not name then
+					bchannel = true;
+					name, _, texture, starttime, endtime, _, notInterruptible, spellid = UnitChannelInfo(unit);
+					duration = UnitChannelDuration(unit);
+				else
+					duration = UnitCastingDuration(unit);
 				end
 
-				castingInfos[unit] = {
-					texture = texture,
-					name = name,
-					duration = duration,
-					spellid = spellid,
-					notInterruptible = notInterruptible,
-					bchannel = bchannel,
-					start = starttime,
-					endtime = endtime,
-					level = level,
-				}
+				if name then
+					local level = UnitLevel(unit);
+
+					if level < 0 then
+						level = 1000;
+					end
+
+					castingInfos[unit] = {
+						texture = texture,
+						name = name,
+						duration = duration,
+						spellid = spellid,
+						notInterruptible = notInterruptible,
+						bchannel = bchannel,
+						start = starttime,
+						endtime = endtime,
+						level = level,
+					}
+				end
 			end
 		end
 	end
@@ -108,15 +109,15 @@ local function on_update()
 			end
 
 			if i <= ns.options.MaxShow and main_frame and needshow then
-				local castbar      = main_frame.bars[i];
-				local frameicon    = castbar.button.icon;
-				local text         = castbar.name;
-				local time         = castbar.time;
-				local targetname   = castbar.targetname;
-				local mark         = castbar.mark;				
-				local bchannel     = castingInfo.bchannel;
-				local targettarget = unit .. "target";
-				
+				local castbar        = main_frame.bars[i];
+				local frameicon      = castbar.button.icon;
+				local text           = castbar.name;
+				local time           = castbar.time;
+				local targetname     = castbar.targetname;
+				local mark           = castbar.mark;
+				local bchannel       = castingInfo.bchannel;
+				local targettarget   = unit .. "target";
+
 				castbar.duration_obj = castingInfo.duration;
 				frameicon:SetTexture(castingInfo.texture);
 				castbar:SetReverseFill(bchannel);
@@ -293,7 +294,7 @@ local function setup_castbar()
 	castbar.button.border:Show();
 	castbar.button:Show();
 
-	
+
 
 	castbar.mark = castbar:CreateTexture(nil, "ARTWORK");
 	castbar.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
