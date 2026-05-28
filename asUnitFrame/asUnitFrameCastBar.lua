@@ -4,6 +4,7 @@ local configs = {
     interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
     failcolor = { 1, 0, 0 },
     interruptedtext = INTERRUPTED,
+    faildonetime = 1,
 };
 
 if GetLocale() == "koKR" then
@@ -197,7 +198,7 @@ function ns.update_castbar(castbar)
     local current = GetTime();
 
     if failstart then
-        if current - failstart > 1 then
+        if current - failstart > configs.faildonetime then
             hide_castbar(castbar);
         end
     else

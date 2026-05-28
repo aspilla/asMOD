@@ -11,7 +11,7 @@ local configs = {
     buffsizerate = 0.8,
     font = STANDARD_TEXT_FONT,
     framelevel = 900,
-    notinterruptcolor = { 0.9, 0.9, 0.9 },
+    notinterruptcolor = { 0.6, 0.6, 0.6 },
 };
 
 ns.isevoker = false;
