@@ -80,7 +80,7 @@ local function create_privateframes(parent)
     for idx = 1, ns.configs.max_private do
         parent.PrivateAuraAnchors[idx] = CreateFrame("Frame", nil, parent, "asDebuffPrivateAuraAnchorTemplate");
         parent.PrivateAuraAnchors[idx].auraIndex = idx;
-        parent.PrivateAuraAnchors[idx]:SetSize((size - 5), (size - 5) * ns.configs.sizerate);
+        parent.PrivateAuraAnchors[idx]:SetSize((size - 5), (size - 5));
         parent.PrivateAuraAnchors[idx]:SetUnit("player");        
 
         if idx > 1 then
