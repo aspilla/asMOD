@@ -97,11 +97,13 @@ local function on_update()
 
     showtable:Clear();
 
-    for _, nameplate in pairs(C_NamePlate.GetNamePlates(issecure())) do
-		local unit = nameplate.unitToken;
+    for _, nameplate in pairs(C_NamePlate.GetNamePlates()) do
+        if nameplate and nameplate.unitToken then
+            local unit = nameplate.unitToken;
 
-		if unit and UnitExists(unit) and UnitClassification(unit) ~= "minus" and UnitThreatSituation("player", unit) then		
-            check_casting(unit);
+            if unit and UnitExists(unit) and UnitClassification(unit) ~= "minus" and UnitThreatSituation("player", unit) then
+                check_casting(unit);
+            end
         end
     end
 
@@ -151,9 +153,9 @@ local function init()
 
     local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
-	if libasConfig then
-		libasConfig.load_position(main_frame, "asCastingAlert", ACTA_Positions);
-	end
+    if libasConfig then
+        libasConfig.load_position(main_frame, "asCastingAlert", ACTA_Positions);
+    end
 
     C_Timer.NewTicker(configs.updaterate, on_update);
 end
