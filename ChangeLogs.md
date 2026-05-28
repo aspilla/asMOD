@@ -1,5 +1,45 @@
 # ChangeLogs
 
+## 260529 update
+
+### asNamePlates
+#### Darkened the color for uninterruptible spell casts (Requires settings reset)
+#### New Feature
+* **Nameplate Mouse Click Hitbox Settings (`Click Hit Inset`)**: See video below (Default: 7, reapplied upon logging in).
+<iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+---
+#### 차단 불가 스킬 시전시 색상 좀더 어둡게 (설정 초기화 필요)
+#### 신규 기능
+* **이름표 마우스 클릭 범위 설정 (`클릭 Hit Inset`)** : 아래영상 참고  (기본 7, 접속시 다시 설정 합니다.)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+### asTargetCastBar, asUnitFrame, asCastBar, asDBMCastingAlert
+
+#### Smoothed the cast bar animation and slightly darkened the color for uninterruptible spell casts.
+---
+#### 시전바를 부드럽게 개선, 차단 불가 스킬 색상 조금 어둡게 
+
+### asCooldownPulse
+#### Improved Arcane Torrent visibility for classes where the Blood Elf racial ability was not showing properly.
+---
+#### 블러드 엘브 비전 격류 안보이는 직업 개선
+
+### asDebuffFilter
+
+#### Adjusted the Private Aura borders (now appears as a square)
+---
+#### PrivateAura 테두리 조정 (정사각형으로 보임)
+
+### asCastingAlert, asHideNamePlates
+#### Bugfix
+
+---
+
+#### 오류 수정
+
+
 ## 260528 update
 
 ### asCooldownPulse
