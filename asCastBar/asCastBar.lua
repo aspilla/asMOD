@@ -4,13 +4,15 @@ local configs = {
     xpoint = 0,
     ypoint = -273,
     alpha = 1,
-    notinterruptcolor = { 0.9, 0.9, 0.9 },
+    notinterruptcolor = { 0.6, 0.6, 0.6 },
     interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
     failedcolor = { 1, 0, 0 },
-    updaterate = 0.1,
+    updaterate = 0.05,
     font = STANDARD_TEXT_FONT,
     interruptedtext = INTERRUPTED,
     maxtick = 10,
+    channeldonetime = 0.1,
+    faildonetime = 1,
 }
 
 configs.tickspells = {
@@ -385,11 +387,11 @@ local function update_castbar(castbar)
     local current = GetTime();
 
     if failstart then
-        if current - failstart > 1 then
+        if current - failstart > configs.faildonetime then
             hide_castbar(castbar);
         end
     elseif donestart then
-        if current - donestart > 0.2 then
+        if current - donestart > configs.channeldonetime then
             hide_castbar(castbar);
         end
     else
@@ -397,6 +399,7 @@ local function update_castbar(castbar)
             castbar.time:SetText(string.format("%.1f/%.1f", castbar.duration_obj:GetRemainingDuration(0),
                 castbar.duration_obj:GetTotalDuration(0)));
         end
+
         castbar:SetValue(current , Enum.StatusBarInterpolation.ExponentialEaseOut);
     end
 end

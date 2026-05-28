@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rCastBar
 ## Notes:Simple cast bar.
 ## Notes-koKR:간단한 시전 바
-## Version : 260524
+## Version : 260529
 ## SavedVariablesPerCharacter: ACB_Options, ACB_Positions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
