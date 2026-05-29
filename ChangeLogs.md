@@ -1,12 +1,31 @@
 # ChangeLogs
 
+## 260530 update
+
+### asCombatInfo, asCompactRaidBuff, asCooldownPulse, asFixUnitFrame, asNamePlates
+#### Performance improvement
+---
+#### 성능 개선
+
+
+### asPowerBar
+#### Frost mage shatter bugfix, performance improvement.
+---
+#### 냉법 빙결 오류 수정, 성능개선
+
+### asScavenger260530
+
+#### Fix when trashs are too many, it could not sell all.
+---
+#### 잡템이 많은경우 다 안팔리는 문제 수정
+
+
 ## 260529 update
 
 ### asNamePlates
 #### Darkened the color for uninterruptible spell casts (Requires settings reset)
 #### New Feature
 * **Nameplate Mouse Click Hitbox Settings (`Click Hit Inset`)**: See video below (Default: 7, reapplied upon logging in).
-<iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ---
 #### 차단 불가 스킬 시전시 색상 좀더 어둡게 (설정 초기화 필요)
