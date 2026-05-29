@@ -301,7 +301,7 @@ local function update_buttons(viewer, forced)
 			if not issecretvalue(spellid) and spellid ~= button.asspellid then
 				button.asspellid = spellid;
 				local keytext = get_spellhotkey(spellid);
-				
+
 				if not button.hotkey then
 					button.hotkey = button:CreateFontString(nil, "ARTWORK");
 					button.hotkey:SetFont(configs.font, width / 3 - 3, "OUTLINE");
@@ -486,7 +486,7 @@ local function check_hotkeys()
 	scan_keys("MultiBarLeftButton", 12);
 	scan_keys("MultiBar5Button", 12);
 	scan_keys("MultiBar6Button", 12);
-	scan_keys("MultiBar7Button", 12);	
+	scan_keys("MultiBar7Button", 12);
 end
 
 local function init()
@@ -495,16 +495,46 @@ local function init()
 		if viewer then
 			update_buttons(viewer, true);
 			if viewer.Layout then
-				hooksecurefunc(viewer, "Layout", function()
-					add_todolist(viewer)
-				end)
+				if viewer.__aci_hooked == nil then
+					hooksecurefunc(viewer, "Layout", function()
+						add_todolist(viewer)
+					end)
+					viewer.__aci_hooked = true;
+				end
 			end
 
 
 			if viewer == BuffBarCooldownViewer then
 				local children = { viewer:GetChildren() }
 				for _, child in ipairs(children) do
-					if ns.options.TopAlignedBar or ns.options.BottomAlignedBar then
+					if child.__aci_hooked == nil then
+						child.__aci_hooked = true;
+						if (ns.options.TopAlignedBar or ns.options.BottomAlignedBar) then
+							child:HookScript("OnShow", function()
+								add_todolist(viewer);
+							end)
+
+							child:HookScript("OnHide", function()
+								add_todolist(viewer);
+							end)
+						elseif ns.options.HideBarName then
+							child:HookScript("OnShow", function()
+								add_todolist(viewer);
+							end)
+						else
+							child:HookScript("OnShow", function()
+								if child.bconfiged == nil then
+									add_todolist(viewer);
+								end
+							end)
+						end
+					end
+				end
+			elseif viewer == BuffIconCooldownViewer then
+				local children = { viewer:GetChildren() }
+				for _, child in ipairs(children) do
+					if child.__aci_hooked == nil then
+						child.__aci_hooked = true;
 						child:HookScript("OnShow", function()
 							add_todolist(viewer);
 						end)
@@ -512,28 +542,7 @@ local function init()
 						child:HookScript("OnHide", function()
 							add_todolist(viewer);
 						end)
-					elseif ns.options.HideBarName then
-						child:HookScript("OnShow", function()
-							add_todolist(viewer);
-						end)
-					else
-						child:HookScript("OnShow", function()
-							if child.bconfiged == nil then
-								add_todolist(viewer);
-							end
-						end)
 					end
-				end
-			elseif viewer == BuffIconCooldownViewer then
-				local children = { viewer:GetChildren() }
-				for _, child in ipairs(children) do
-					child:HookScript("OnShow", function()
-						add_todolist(viewer);
-					end)
-
-					child:HookScript("OnHide", function()
-						add_todolist(viewer);
-					end)
 				end
 			end
 		end
@@ -562,8 +571,8 @@ local function on_event(self, event, arg)
 		ns.setup_option();
 	end
 
-	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then		
-		C_Timer.After(0.5, init);		
+	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then
+		C_Timer.After(0.5, init);
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		if ns.options.CombatAlphaChange then
 			set_viewersalpha(configs.combatalpha);
@@ -572,7 +581,7 @@ local function on_event(self, event, arg)
 		if ns.options.CombatAlphaChange then
 			set_viewersalpha(configs.normalalpha);
 		end
-	else		
+	else
 		C_Timer.After(0.5, init);
 
 		if ns.options.CombatAlphaChange then
