@@ -10,7 +10,7 @@ local configs = {
 
 local gvalues = {
 	updateframe = nil,
-	cdid = nil,	
+	cdid = nil,
 };
 
 
@@ -61,15 +61,17 @@ local function scan_viewer()
 	end
 end
 
+local bhooked = false;
 local function init()
 	local viewer = BuffIconCooldownViewer;
 	if viewer then
 		if viewer.Layout then
 			scan_viewer();
 
-			hooksecurefunc(viewer, "Layout", function()
-				scan_viewer();
-			end)
+			if bhooked == false then
+				hooksecurefunc(viewer, "Layout", scan_viewer);
+				bhooked = true;
+			end
 		end
 	end
 end
@@ -131,4 +133,5 @@ function ns.clear_shatter()
 	main_frame:UnregisterEvent("PLAYER_REGEN_ENABLED");
 	main_frame:UnregisterEvent("PLAYER_ENTERING_WORLD");
 	gvalues.updateframe = nil;
+	gvalues.cid = nil;
 end
