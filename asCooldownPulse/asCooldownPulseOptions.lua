@@ -121,7 +121,7 @@ local function SetupSubOption(panel, titlename, coption, soption)
 		editBoxMiddle:SetTexCoord(0, 0.9375, 0, 1)
 	end
 
-	editBox:HookScript("OnTextChanged", function() end);
+	--editBox:HookScript("OnTextChanged", function() end);
 	editBox:SetHeight(32)
 	editBox:SetWidth(150)
 	editBox:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
