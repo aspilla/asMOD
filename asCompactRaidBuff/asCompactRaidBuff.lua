@@ -109,7 +109,7 @@ function ns.setup_frame(asframe)
         asframe.raidicon:SetSize(height / 3 - 3, height / 3 - 3);
     end
 
-    
+
 
     if (not asframe.leadericon) then
         asframe.leadericon = frame:CreateFontString(nil, "ARTWORK");
@@ -119,7 +119,6 @@ function ns.setup_frame(asframe)
         local leader = CreateAtlasMarkup("groupfinder-icon-leader", 14, 9, 0, 0);
         asframe.leadericon:SetText(leader);
         asframe.leadericon:Hide();
-
     end
 
     ns.update_features(asframe);
@@ -235,9 +234,12 @@ local function change_group(groupindex)
     end
 end
 
-
+local bhooked = false;
 local function remove_grouptext()
-    hooksecurefunc("CompactRaidGroup_GenerateForGroup", change_group)
+    if bhooked == false then
+        hooksecurefunc("CompactRaidGroup_GenerateForGroup", change_group)
+        bhooked = true;
+    end
 
     for i = 1, 8 do
         change_group(i);
