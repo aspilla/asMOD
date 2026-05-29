@@ -11,6 +11,7 @@ local function hide_combattext()
     end
 end
 
+local bhooked = false;
 local function hide_targetbuffs()
     -- TargetFrame의 Buff Debuff를 숨긴다.
     if ns.options.HideDebuff then
@@ -20,8 +21,11 @@ local function hide_targetbuffs()
             buff:Hide();
         end
 
-        hooksecurefunc("TargetFrame_UpdateBuffAnchor", _UpdateBuffAnchor);
-        hooksecurefunc("TargetFrame_UpdateDebuffAnchor", _UpdateBuffAnchor);
+        if bhooked == false then
+            hooksecurefunc("TargetFrame_UpdateBuffAnchor", _UpdateBuffAnchor);
+            hooksecurefunc("TargetFrame_UpdateDebuffAnchor", _UpdateBuffAnchor);
+            bhooked = true;
+        end
     end
 end
 
@@ -44,6 +48,7 @@ local function show_aggro()
     end
 end
 
+local bhooked2 = false;
 local function hide_classbar()
     if not ns.options.HideClassBar then
         return;
@@ -76,10 +81,14 @@ local function hide_classbar()
 
     if (frame) then
         frame:Hide();
-        frame:HookScript("OnShow", on_show);
+        if bhooked2 == false then
+            frame:HookScript("OnShow", on_show);
+            bhooked2 = true;
+        end
     end
 end
 
+local bhooked3 = false;
 local function hide_totembar()
     if not ns.options.HideTotemBar then
         return;
@@ -95,7 +104,10 @@ local function hide_totembar()
 
     if (frame) then
         frame:Hide();
-        frame:HookScript("OnShow", on_show);
+        if bhooked3 == false then
+            frame:HookScript("OnShow", on_show);
+            bhooked3 = true;
+        end
     end
 end
 

@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rFixUnitFrame
 ## Notes: Turn off features of Unit Frames.
 ## Notes-koKR: 블리자드 기본 유닛 프레임 기능 숨김
-## Version : 251214
+## Version : 260530
 ## SavedVariablesPerCharacter: AFUF_Options
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
