@@ -23,7 +23,7 @@ ns.option_default = {
     ShowTargeted = true,
     AlertImportantSpell = true,
     FriendNamePlatesColor = true,
-    
+
     AggroColor = { r = 0.4, g = 0.2, b = 0.8 },
     TankAggroLoseColor = { r = 1, g = 0.5, b = 0.5 },
     NotinterruptableColor = { r = 0.6, g = 0.6, b = 0.6 },
@@ -101,11 +101,14 @@ local function setup_checkboxoption(text, option)
     local cb = CreateFrame("CheckButton", nil, scrollChild, "InterfaceOptionsCheckButtonTemplate")
     cb:SetPoint("TOPLEFT", 20, curr_y)
     cb.Text:SetText(text)
-    cb:HookScript("OnClick", function()
-        bfirst = true;
-        ANameP_Options[option] = cb:GetChecked();
-        ns.setup_alloptions();
-    end)
+    if cb.bhooked == nil then
+        cb:HookScript("OnClick", function()
+            bfirst = true;
+            ANameP_Options[option] = cb:GetChecked();
+            ns.setup_alloptions();
+        end)
+        cb.bhooked = true;
+    end
     cb:SetChecked(ANameP_Options[option]);
 end
 
@@ -133,12 +136,15 @@ local function setup_slideoption(text, option, binsets)
     end
     Slider:SetValue(ANameP_Options[option]);
 
-    Slider:HookScript("OnValueChanged", function()
-        ANameP_Options[option] = Slider:GetValue();
-        Slider.Text:SetText(format("%.1f", ANameP_Options[option]));
-        bfirst = true;
-        ns.setup_alloptions();
-    end)
+    if Slider.bhooked == nil then
+        Slider:HookScript("OnValueChanged", function()
+            ANameP_Options[option] = Slider:GetValue();
+            Slider.Text:SetText(format("%.1f", ANameP_Options[option]));
+            bfirst = true;
+            ns.setup_alloptions();
+        end)
+        Slider.bhooked = true;
+    end
     Slider:Show();
 end
 
@@ -229,11 +235,11 @@ ns.setup_alloptions = function()
             SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 0);
             SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", 0);
         end
-        
+
         if ns.options.HitTestInsets ~= nil then
             local v = ns.options.HitTestInsets;
-            C_NamePlateManager.SetNamePlateHitTestInsets(0, v, v, v, v);        
-            C_NamePlateManager.SetNamePlateHitTestInsets(1, v, v, v, v);        
+            C_NamePlateManager.SetNamePlateHitTestInsets(0, v, v, v, v);
+            C_NamePlateManager.SetNamePlateHitTestInsets(1, v, v, v, v);
         end
     end
 end
