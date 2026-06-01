@@ -80,7 +80,11 @@ local function on_update()
 end
 
 local function on_event(self, event)
-	ns.check_hotkeys();
+	if event == "UPDATE_BINDINGS" then
+		ns.check_hotkeys();
+	else
+		wipe(ns.hotkeys);
+	end
 end
 
 local function init()
@@ -103,6 +107,7 @@ local function init()
 	main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
 	main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 	main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+	main_frame:RegisterEvent("UPDATE_BINDINGS");
 
 	main_frame:SetScript("OnEvent", on_event);
 	C_Timer.NewTicker(0.2, on_update);
