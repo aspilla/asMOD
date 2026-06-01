@@ -1,14 +1,14 @@
-# ChangeLogs
+# 변경점
 
 ## 260601 update
 
 ### asCombatInfo, asNextSkill
-* performance improvement
+* 성능 개선
 
 ---
 ### asScavenger
-* bugfix
+* 오류 수정
 
 ---
 ### asMOD
-* 12.0.7 layout update
+* 12.0.7 layout 적용
