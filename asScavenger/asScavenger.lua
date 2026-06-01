@@ -36,12 +36,17 @@ end
 
 local function on_event(self)
 	local list = get_trashlist();
-	local count = math.floor(#list/configs.pertick) + 1;
+	local count = math.floor(#list / configs.pertick) + 1;
 	local c = C_Container;
 	local idx = 1;
 
 	local function sell_trash()
 		for i = 1, configs.pertick do
+			if not (MerchantFrame and MerchantFrame:IsShown()) then
+				gvalues.timer:Cancel();
+				return;
+			end
+
 			if idx > #list then
 				gvalues.timer:Cancel();
 				return;

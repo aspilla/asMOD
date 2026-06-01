@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rScanvenger
 ## Notes:Auto-sell Junk Items
 ## Notes-koKR:자동 잡템 판매
-## Version : 260529
+## Version : 260601
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asScavenger.lua
