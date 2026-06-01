@@ -5,10 +5,8 @@
 ### asCombatInfo, asNextSkill
 * performance improvement
 
----
 ### asScavenger
 * bugfix
 
----
 ### asMOD
 * 12.0.7 layout update
