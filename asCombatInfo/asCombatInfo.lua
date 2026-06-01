@@ -298,9 +298,13 @@ local function update_buttons(viewer, forced)
 		if ns.options.ShowHotKey and not isbuff then
 			local spellid = button:GetSpellID();
 
-			if not issecretvalue(spellid) and spellid ~= button.asspellid then
-				button.asspellid = spellid;
-				local keytext = get_spellhotkey(spellid);
+			if not issecretvalue(spellid) or button.asspellid then
+
+				if not issecretvalue(spellid) then
+					button.asspellid = spellid;
+				end
+
+				local keytext = get_spellhotkey(button.asspellid);
 
 				if not button.hotkey then
 					button.hotkey = button:CreateFontString(nil, "ARTWORK");
@@ -476,7 +480,6 @@ local function check_hotkeys()
 	if not ns.options.ShowHotKey then
 		return;
 	end
-
 	wipe(ns.hotkeys);
 	wipe(ns.hotkeyslots);
 	scan_keys("ActionButton", 12);
@@ -489,8 +492,25 @@ local function check_hotkeys()
 	scan_keys("MultiBar7Button", 12);
 end
 
+local function on_update()
+	ns.nextspellid = C_AssistedCombat.GetNextCastSpell(true);
+end
+
+local checkfirst = true;
+local timer = nil;
 local function init()
-	check_hotkeys();
+	if ns.options.ShowHotKey then
+		if checkfirst then
+			check_hotkeys();
+			checkfirst = false;
+		end
+		wipe(ns.hotkeys);
+	end
+
+	if ns.options.AlertAssitedSpell and timer == nil then
+		timer = C_Timer.NewTicker(0.2, on_update);
+	end
+
 	for _, viewer in ipairs(viewers) do
 		if viewer then
 			update_buttons(viewer, true);
@@ -568,11 +588,13 @@ local bfirst = true;
 local function on_event(self, event, arg)
 	if bfirst then
 		bfirst = false;
-		ns.setup_option();
+		ns.setup_option();		
 	end
 
-	if event == "ADDON_LOADED" and arg == "Blizzard_CooldownManager" then
-		C_Timer.After(0.5, init);
+	if event == "ADDON_LOADED" then
+		if arg == "Blizzard_CooldownManager" then
+			C_Timer.After(0.5, init);
+		end
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		if ns.options.CombatAlphaChange then
 			set_viewersalpha(configs.combatalpha);
@@ -581,6 +603,8 @@ local function on_event(self, event, arg)
 		if ns.options.CombatAlphaChange then
 			set_viewersalpha(configs.normalalpha);
 		end
+	elseif event == "UPDATE_BINDINGS" then
+		check_hotkeys();
 	else
 		C_Timer.After(0.5, init);
 
@@ -594,10 +618,6 @@ local function on_event(self, event, arg)
 	end
 end
 
-local function on_update()
-	ns.nextspellid = C_AssistedCombat.GetNextCastSpell(true);
-end
-
 main_frame:RegisterEvent("ADDON_LOADED");
 main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
@@ -605,7 +625,6 @@ main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
 main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
 main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+main_frame:RegisterEvent("UPDATE_BINDINGS");
 
 main_frame:SetScript("OnEvent", on_event);
-
-C_Timer.NewTicker(0.2, on_update);
