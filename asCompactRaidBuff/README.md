@@ -2,21 +2,33 @@
 
 Raid and Party Frame Enhancements
 
+![asCompactRaidBuff](https://media.forgecdn.net/attachments/1713/782/ascompactraidbuff-jpg.jpg)
+
 ## Changes After Patch 12.0.5
 * Following the 12.0.5 patch, it is no longer possible to modify the buff/debuff display on the default raid frames. Consequently, the related features in asCompactRaidBuff have been removed.
 * While it is technically possible to implement a separate buff/debuff display, I have concluded that it is impossible to perfectly replicate the default raid frame functionality under the current WoW API structure. Furthermore, I believe it is inefficient to allocate CPU resources to provide a subpar feature, so there are no plans for additional updates regarding this unless the API changes.
+* The feature to change healer HoT colors will be disabled in the near future. It has been confirmed to work properly up to version 12.0.7.
 
-## Key Features
-* **Healer-Only Mana Bar (Bottom, Configurable)**
-* **Tank-Only Power Bar (Bottom, Configurable)**: Displays only when the resource is not mana.
-* **Raid Target Marker Display (Center-Left)**
-* **Party/Raid Leader Display (Top-Left)**
 
-## Configuration
-* `BottomHealerManaBar`: Displays the healer mana bar (Default: On).
-* `BottomTankPowerBar`: Displays the tank power bar (Default: On).
-* `ShowMark`: Displays the target marker icon (Default: On).
-* `ShowLeader`: Displays the party/raid leader icon (Default: On).
+## Key Features & Configuration
+* Accessible via `ESC` > `Options` > `AddOns` > `asCompactRaidBuff`.
+* `[Bottom] Displays the healer mana bar`:  (Default: On).
+* `[Bottom] Displays the tank power bar`: Displays only when the resource is not mana (Default: On).
+* `[Left] Displays the marker icon`: (Default: On).
+* `[Top Left] Displays the party/raid leader icon`:(Default: On).
+* `[Color] Change health color when HOT buffed`:(Default: On).
+
+        | Class               | Color Change     |
+        | ------------------- | ---------------- |
+        | Restoration Druid   | Regrowth         |
+        | Holy Paladin        | Beacon of Virtue |
+        | Discipline Priest   | Atonement        |
+        | Holy Priest         | Renew            |
+        | Preservation Evoker | Echo             |
+        | Restoration Shaman  | Riptide          |
+        | Mistweaver Monk     | Renewing Mist    |
+        | Augmentation Evoker | Prescience       |
+
 
 ## How to Set Up Click Casting
 * `ESC > Options > Keybindings > Click Casting`
@@ -54,21 +66,34 @@ Detailed explanations can be found on community macro boards (e.g., WoW Inven Ma
 
 공격대 및 파티 프레임 강화
 
+![asCompactRaidBuff](https://media.forgecdn.net/attachments/1713/782/ascompactraidbuff-jpg.jpg)
+
 ## 12.0.5 패치 이후 변경점
 * 12.0.5 패치가 되며 기본 레이드 프레임의 버프/디버프 표시를 변경할 수 없게 변경 되었습니다. asCompactRaidBuff의 관련 기능은 삭제 되었습니다.
 * 별도의 버프/디버프를 표시하는 방식으로 구현이 가능하나 현재 와우 API 구조상 기본 레이드 기능을 100% 구현 할 수 없다는 판단이고, 부족한 기능을 CPU 리소스를 투입하여 사용하는 것은 별로라고 판단 되어 API 변경없이 관련된 추가 변경 계획은 없습니다.
+* 힐러 HOT 색상변경 기능은 조만간 기능이 막힐 예정입니다. 12.0.7 까지는 정상 동작 확인 하였습니다.
 
-## 주요 기능
-*   **힐러 전용 마나 바 (하단, 설정 가능)**    
-*   **탱커 전용 파워 바 (하단, 설정 가능)** :  마나가 아닌 경우만 표시
-*   **공격대 징표 표시 (좌중단)**
-*   **파티/공격대 리더 표시 (좌상단)**
 
-## 설정
-*   `BottomHealerManaBar` : 힐러 마나바 표시 (기본: On)
-*   `BottomTankPowerBar` : 힐러 마나바 표시 (기본: On)
-*   `ShowMark` : 대상 표시기 아이콘을 표시 (기본: On)
-*   `ShowLeader` : 파티/공격대 리버더 표시 (기본: On)
+## 주요 기능 & 설정
+*   `ESC` > `설정` > `애드온` > `asCompactRaidBuff` 에서 설정 가능
+*   `[하단] 힐러 마나 표시` : (기본: On)
+*   `[하단] 탱커 파워 표시` : 마나가 아닌 경우만 표시 (기본: On)
+*   `[좌측] 징표 아이콘을 표시` : (기본: On)
+*   `[좌상] 파티/공격대 리더 표시` : (기본: On)
+*   `[색상] 힐러 HOT 버프시 색상 변경` : (기본: On)
+   
+   
+        | 직업          | 색상 변경   |
+        | ------------- | ----------- |
+        | 회복 드루이드 | 회복        |
+        | 신성 기사     | 고결의 봉화 |
+        | 수양 사제     | 속죄        |
+        | 신성 사제     | 소생        |
+        | 보존 기원사   | 메아리      |
+        | 복원 주술사   | 성난 해일   |
+        | 운무 수도사   | 소생의 안개 |
+        | 증강 기원사   | 예지        |
+
 
 ## 클릭 시전 설정 방법
 * `esc >> 설정 >> 단축키 설정 >> 클릭 시전`

@@ -16,5 +16,7 @@
 			<Cooldown parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" enableMouse="false">
 			</Cooldown>
 		</Frames>
-	</Frame>	
+	</Frame>
+	<Texture name="asBuffTextureTemplate" virtual="true" atlas="RaidFrame-Hp-Fill">		
+	</Texture>
 </Ui>

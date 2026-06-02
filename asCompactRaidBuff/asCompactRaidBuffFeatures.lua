@@ -14,7 +14,7 @@ local function show_raidicon(unit, markframe)
 end
 
 local function update_leader(asframe)
-	if ns.options.ShowLeader and  asframe.leadericon then
+	if ns.options.ShowLeader and asframe.leadericon then
 		if UnitIsGroupLeader(asframe.displayedUnit) then
 			asframe.leadericon:Show();
 		else
@@ -80,5 +80,40 @@ function ns.update_features(asframe)
 		update_power(asframe);
 		update_raidicon(asframe);
 		update_leader(asframe);
+	end
+end
+
+function ns.update_namecolor(asframe)
+	if not ns.options.BuffColor then
+		return;
+	end
+
+	if asframe == nil or not asframe.buffcolor then
+		return;
+	end
+	local found = false;
+
+	if ns.ACRB_ShowList and ns.ACRB_ShowList.buffid then
+		local auras = C_UnitAuras.GetUnitAuras(asframe.displayedUnit, "PLAYER|HELPFUL");
+		for _, aura in ipairs(auras) do
+			if not issecretvalue(aura.spellId) and aura.spellId == ns.ACRB_ShowList.buffid then
+				found = true;
+				break;
+			end
+		end
+	end
+
+	if (found) then
+		asframe.buffcolor:Show();
+	else
+		asframe.buffcolor:Hide();
+	end
+
+	local frame = asframe.frame;
+
+	if asframe.buffcolor:IsShown() and asframe.classcolor then
+		frame.name:SetVertexColor(asframe.classcolor.r, asframe.classcolor.g, asframe.classcolor.b);
+	else
+		frame.name:SetVertexColor(1.0, 1.0, 1.0);
 	end
 end

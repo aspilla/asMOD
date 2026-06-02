@@ -43,13 +43,12 @@ function ns.setup_frame(asframe)
         asframe.displayedUnit = frame.unit;
     end
 
-    if (not UnitIsPlayer(asframe.unit)) then
-        return;
-    end
-
     local role = UnitGroupRolesAssigned(asframe.unit);
     local istanker = is_tank(role);
     local ishealer = is_healer(role);
+
+    local class = select(2, UnitClass(asframe.unit));
+    asframe.classcolor = class and RAID_CLASS_COLORS[class] or nil;
 
     local strata = "LOW";
     local framelevel = 4;
@@ -109,8 +108,6 @@ function ns.setup_frame(asframe)
         asframe.raidicon:SetSize(height / 3 - 3, height / 3 - 3);
     end
 
-
-
     if (not asframe.leadericon) then
         asframe.leadericon = frame:CreateFontString(nil, "ARTWORK");
         asframe.leadericon:SetFont(configs.font, height / 5);
@@ -121,13 +118,27 @@ function ns.setup_frame(asframe)
         asframe.leadericon:Hide();
     end
 
+    if not asframe.buffcolor then
+        asframe.buffcolor = frame:CreateTexture(nil, "BORDER", "asBuffTextureTemplate", 7);
+        asframe.buffcolor:Hide();
+    end
+
+    if asframe.buffcolor then
+        local previousTexture = frame.healthBar:GetStatusBarTexture();
+        asframe.buffcolor:ClearAllPoints();
+        asframe.buffcolor:SetAllPoints(previousTexture);
+        asframe.buffcolor:SetVertexColor(0.5, 0.5, 0.5);
+    end
+
     ns.update_features(asframe);
+    ns.update_namecolor(asframe);
 
     asframe.callback = function()
         if asframe.frame:IsShown() then
             if asframe.needtosetup then
                 ns.setup_frame(asframe);
             end
+            ns.update_namecolor(asframe);
         elseif asframe.timer then
             asframe.timer:Cancel();
         end
@@ -160,7 +171,7 @@ local function update_all(frame)
 
         if name and not (name == nil) then
             if string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame") then
-                if not (frame.unit and UnitIsPlayer(frame.unit)) then
+                if not (frame.unit) then
                     return
                 end
 
@@ -183,8 +194,8 @@ local function update_all(frame)
                 ns.asraid[name].israid = true;
                 ns.asraid[name].frame = frame;
             elseif string.find(name, "CompactPartyFrameMember") then
-                if not (frame.unit and UnitIsPlayer(frame.unit)) then
-                    return
+                if not (frame.unit) then
+                    return;
                 end
 
                 if ns.asparty[name] == nil then
@@ -250,6 +261,26 @@ local timero;
 local timero2;
 
 local function init()
+    local spec = C_SpecializationInfo.GetSpecialization();
+    local localizedClass, englishClass = UnitClass("player");
+    ns.listname = nil;
+
+    ns.ACRB_ShowList = nil;
+
+    if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
+        spec = 1;
+    end    
+
+    if spec then
+        ns.listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
+
+        if (englishClass == "DRUID" and spec == 4) then
+            ns.isRestro = true;
+        end
+    end
+
+    ns.ACRB_ShowList = CopyTable(ns[ns.listname]);
+
     if timero then
         timero:Cancel();
     end
@@ -300,5 +331,23 @@ main_frame:RegisterEvent("ROLE_CHANGED_INFORM");
 main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
 main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
 
+local function hook_name_func(frame)
+    local asframe = nil;
+    if frame and not frame:IsForbidden() and frame.GetName then
+        local name = frame:GetName();
+        if name then
+            if IsInRaid() then
+                asframe = (name and ns.asraid[name]) or nil;
+            else
+                asframe = (name and ns.asparty[name]) or nil;
+            end
+        end
+    end
+
+    if asframe then
+        ns.update_namecolor(asframe);
+    end
+end
 
 hooksecurefunc("DefaultCompactUnitFrameSetup", hook_func);
+hooksecurefunc("CompactUnitFrame_UpdateName", hook_name_func);
