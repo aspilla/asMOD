@@ -18,16 +18,16 @@ Raid and Party Frame Enhancements
 * `[Top Left] Displays the party/raid leader icon`:(Default: On).
 * `[Color] Change health color when HOT buffed`:(Default: On).
 
-        | Class               | Color Change     |
-        | ------------------- | ---------------- |
-        | Restoration Druid   | Regrowth         |
-        | Holy Paladin        | Beacon of Virtue |
-        | Discipline Priest   | Atonement        |
-        | Holy Priest         | Renew            |
-        | Preservation Evoker | Echo             |
-        | Restoration Shaman  | Riptide          |
-        | Mistweaver Monk     | Renewing Mist    |
-        | Augmentation Evoker | Prescience       |
+    | Class               | Color Change     |
+    | ------------------- | ---------------- |
+    | Restoration Druid   | Regrowth         |
+    | Holy Paladin        | Beacon of Virtue |
+    | Discipline Priest   | Atonement        |
+    | Holy Priest         | Renew            |
+    | Preservation Evoker | Echo             |
+    | Restoration Shaman  | Riptide          |
+    | Mistweaver Monk     | Renewing Mist    |
+    | Augmentation Evoker | Prescience       |
 
 
 ## How to Set Up Click Casting
@@ -83,16 +83,16 @@ Detailed explanations can be found on community macro boards (e.g., WoW Inven Ma
 *   `[색상] 힐러 HOT 버프시 색상 변경` : (기본: On)
    
    
-        | 직업          | 색상 변경   |
-        | ------------- | ----------- |
-        | 회복 드루이드 | 회복        |
-        | 신성 기사     | 고결의 봉화 |
-        | 수양 사제     | 속죄        |
-        | 신성 사제     | 소생        |
-        | 보존 기원사   | 메아리      |
-        | 복원 주술사   | 성난 해일   |
-        | 운무 수도사   | 소생의 안개 |
-        | 증강 기원사   | 예지        |
+    | 직업          | 색상 변경   |
+    | ------------- | ----------- |
+    | 회복 드루이드 | 회복        |
+    | 신성 기사     | 고결의 봉화 |
+    | 수양 사제     | 속죄        |
+    | 신성 사제     | 소생        |
+    | 보존 기원사   | 메아리      |
+    | 복원 주술사   | 성난 해일   |
+    | 운무 수도사   | 소생의 안개 |
+    | 증강 기원사   | 예지        |
 
 
 ## 클릭 시전 설정 방법
