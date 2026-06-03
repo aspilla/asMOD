@@ -275,7 +275,7 @@ local function check_casting(castbar, event, unit, complete)
                     local tick = castbar.ticks[i]
                     tick:Hide();
                 end
-            elseif (ns.options.ShowTick and bchannel and configs.tickspells[spellid]) then
+            elseif (ns.options.ShowTick and bchannel and not issecretvalue(spellid) and configs.tickspells[spellid]) then
                 local tickcount = configs.tickspells[spellid];
 
                 if tickcount > 0 then
