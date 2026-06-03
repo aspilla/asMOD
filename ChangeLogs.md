@@ -1,5 +1,10 @@
 # ChangeLogs
 
+## 260604 update
+### asCastBar, asPetAlert
+* Bugfix
+
+
 ## 260603 update
 
 ### asCompactRaidBuff

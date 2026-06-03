@@ -1,5 +1,9 @@
 # 변경점
 
+## 260604 update
+### asCastBar, asPetAlert
+* 오류 수정
+
 ## 260603 update
 
 ### asCompactRaidBuff
