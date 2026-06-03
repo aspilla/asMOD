@@ -14,7 +14,7 @@ local configs    = {
 local gvalues    = {
     nopet_msg  = "No Pet",
     diepet_msg = "Pet Died",
-    timer = nil,
+    timer      = nil,
 }
 
 if GetLocale() == "koKR" then
@@ -40,7 +40,6 @@ end
 local bred = false;
 
 local function onupdate()
-
     if ns.msgtext:IsShown() then
         if bred then
             bred = false;
@@ -52,15 +51,18 @@ local function onupdate()
     end
 
     local bhide = true;
-
-    if UnitExists("pet") then
-        if UnitIsDead("pet") then
-            alert_diepet();
+    if UnitInVehicle("player") or (OverrideActionBar and OverrideActionBar:IsShown()) then
+        --do nothing
+    else
+        if UnitExists("pet") then
+            if UnitIsDead("pet") then
+                alert_diepet();
+                bhide = false;
+            end
+        elseif not IsMounted() then
+            alert_nopet()
             bhide = false;
         end
-    elseif not IsMounted() then
-        alert_nopet()
-        bhide = false;
     end
 
     if bhide then
@@ -120,7 +122,6 @@ local function init_class()
     else
         hide();
     end
-
 end
 
 local function on_event(self, event, ...)
@@ -156,7 +157,7 @@ local function init()
         libasConfig.load_position(main_frame, "asPetAlert", APA_Positions);
     end
 
-    ns.msgtext:SetFont(configs.font, ns.options.FontSize, configs.fontoutline)   
+    ns.msgtext:SetFont(configs.font, ns.options.FontSize, configs.fontoutline)
 
     init_class();
 end

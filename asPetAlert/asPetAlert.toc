@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rPetAlert
 ## Notes: Alerts you when your pet is dead or missing.
 ## Notes-koKR: 소환수 죽거나 없으면 알림
-## Version : 260528
+## Version : 260604
 ## SavedVariablesPerCharacter: APA_Options, APA_Positions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
