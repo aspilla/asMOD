@@ -15,7 +15,7 @@ end
 
 local function update_leader(asframe)
 	if ns.options.ShowLeader and asframe.leadericon then
-		if UnitIsGroupLeader(asframe.displayedUnit) then
+		if UnitIsGroupLeader(asframe.frame.unit) then
 			asframe.leadericon:Show();
 		else
 			asframe.leadericon:Hide();
@@ -25,20 +25,12 @@ end
 
 
 local function update_raidicon(asframe)
-	if asframe.needtosetup then
-		ns.setup_frame(asframe);
-	end
-
 	if ns.options.ShowMark then
-		show_raidicon(asframe.displayedUnit, asframe.raidicon);
+		show_raidicon((asframe.frame.displayedUnit or asframe.frame.unit), asframe.raidicon);
 	end
 end
 
 local function update_power(asframe)
-	if asframe.needtosetup then
-		ns.setup_frame(asframe);
-	end
-
 	if not asframe.ispowerupdate then
 		return;
 	end
@@ -49,41 +41,14 @@ local function update_power(asframe)
 		powertype = 0;
 	end
 
-	local unit = asframe.unit;
+	local unit = asframe.frame.unit;
 	local power = UnitPower(unit, powertype);
 	local maxPower = UnitPowerMax(unit, powertype);
 	asframe.powerbar:SetMinMaxValues(0, maxPower);
 	asframe.powerbar:SetValue(power);
 end
 
-
-function ns.update_featuresforall()
-	if IsInRaid() then
-		for _, asframe in pairs(ns.asraid) do
-			if asframe and asframe.frame and asframe.frame:IsShown() then
-				update_power(asframe);
-				update_raidicon(asframe);
-			end
-		end
-	else
-		for _, asframe in pairs(ns.asparty) do
-			if asframe and asframe.frame and asframe.frame:IsShown() then
-				update_power(asframe);
-				update_raidicon(asframe);
-			end
-		end
-	end
-end
-
-function ns.update_features(asframe)
-	if asframe and asframe.frame and asframe.frame:IsShown() then
-		update_power(asframe);
-		update_raidicon(asframe);
-		update_leader(asframe);
-	end
-end
-
-function ns.update_namecolor(asframe)
+local function update_auracolor(asframe)
 	if not ns.options.BuffColor then
 		return;
 	end
@@ -92,9 +57,10 @@ function ns.update_namecolor(asframe)
 		return;
 	end
 	local found = false;
+	local unit = asframe.frame.displayedUnit or asframe.frame.unit;
 
 	if ns.ACRB_ShowList and ns.ACRB_ShowList.buffid then
-		local auras = C_UnitAuras.GetUnitAuras(asframe.displayedUnit, "PLAYER|HELPFUL");
+		local auras = C_UnitAuras.GetUnitAuras(unit, "PLAYER|HELPFUL");
 		for _, aura in ipairs(auras) do
 			if not issecretvalue(aura.spellId) and aura.spellId == ns.ACRB_ShowList.buffid then
 				found = true;
@@ -108,6 +74,14 @@ function ns.update_namecolor(asframe)
 	else
 		asframe.buffcolor:Hide();
 	end
+	ns.update_namecolor(asframe);
+end
+
+function ns.update_namecolor(asframe)
+
+	if asframe == nil or not asframe.buffcolor then
+		return;
+	end
 
 	local frame = asframe.frame;
 
@@ -115,5 +89,14 @@ function ns.update_namecolor(asframe)
 		frame.name:SetVertexColor(asframe.classcolor.r, asframe.classcolor.g, asframe.classcolor.b);
 	else
 		frame.name:SetVertexColor(1.0, 1.0, 1.0);
+	end
+end
+
+function ns.update_features(asframe)
+	if asframe and asframe.frame and asframe.frame:IsShown() then
+		update_power(asframe);
+		update_raidicon(asframe);
+		update_leader(asframe);
+		update_auracolor(asframe);		
 	end
 end

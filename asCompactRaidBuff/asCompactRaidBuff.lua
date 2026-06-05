@@ -29,25 +29,16 @@ function ns.setup_frame(asframe)
         return
     end
     local frame = asframe.frame;
+    local unit = frame.unit;
     local width, height = frame:GetSize();
 
     asframe.needtosetup = false;
 
-    if frame.unit then
-        asframe.unit = frame.unit;
-    end
-
-    if frame.displayedUnit then
-        asframe.displayedUnit = frame.displayedUnit;
-    else
-        asframe.displayedUnit = frame.unit;
-    end
-
-    local role = UnitGroupRolesAssigned(asframe.unit);
+    local role = UnitGroupRolesAssigned(unit);
     local istanker = is_tank(role);
     local ishealer = is_healer(role);
 
-    local class = select(2, UnitClass(asframe.unit));
+    local class = select(2, UnitClass(unit));
     asframe.classcolor = class and RAID_CLASS_COLORS[class] or nil;
 
     local strata = "LOW";
@@ -69,7 +60,7 @@ function ns.setup_frame(asframe)
         asframe.powerbar:SetWidth(width - 2);
         asframe.powerbar:SetHeight(ns.ACRB_HealerManaBarHeight);
 
-        local powertype = UnitPowerType(asframe.unit);
+        local powertype = UnitPowerType(unit);
 
         asframe.ispowerupdate = false;
         asframe.ishealer = false
@@ -131,14 +122,10 @@ function ns.setup_frame(asframe)
     end
 
     ns.update_features(asframe);
-    ns.update_namecolor(asframe);
 
     asframe.callback = function()
         if asframe.frame:IsShown() then
-            if asframe.needtosetup then
-                ns.setup_frame(asframe);
-            end
-            ns.update_namecolor(asframe);
+            ns.update_features(asframe);
         elseif asframe.timer then
             asframe.timer:Cancel();
         end
@@ -156,7 +143,7 @@ end
 local framebuffer = {};
 
 local function hook_func(frame)
-    if frame and not frame:IsForbidden() and frame.GetName then
+    if frame and not frame:IsForbidden() and frame.GetName and frame:IsShown() then
         local name = frame:GetName();
         if name then
             framebuffer[name] = frame;
@@ -164,26 +151,14 @@ local function hook_func(frame)
     end
 end
 
-local max_y = 0;
 local function update_all(frame)
     if frame and not frame:IsForbidden() and frame.GetName then
         local name = frame:GetName();
 
-        if name and not (name == nil) then
+        if not (name == nil) then
             if string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame") then
                 if not (frame.unit) then
                     return
-                end
-
-                local x, y = frame:GetSize();
-
-                if y > max_y then
-                    max_y = y;
-                end
-
-                if y <= max_y / 2 then
-                    ns.asraid[name] = nil;
-                    return;
                 end
 
                 if ns.asraid[name] == nil then
@@ -227,10 +202,15 @@ local function setup_frames()
 end
 
 local function on_update()
+    local updated = false;
     for _, newframe in pairs(framebuffer) do
         update_all(newframe);
+        updated = true;
     end
 
+    if updated then
+        setup_frames();
+    end
     framebuffer = {};
 end
 
@@ -258,40 +238,28 @@ local function remove_grouptext()
 end
 
 local timero;
-local timero2;
 
 local function init()
     local spec = C_SpecializationInfo.GetSpecialization();
     local localizedClass, englishClass = UnitClass("player");
-    ns.listname = nil;
 
     ns.ACRB_ShowList = nil;
 
     if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
         spec = 1;
-    end    
-
-    if spec then
-        ns.listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
-
-        if (englishClass == "DRUID" and spec == 4) then
-            ns.isRestro = true;
-        end
     end
 
-    ns.ACRB_ShowList = CopyTable(ns[ns.listname]);
+    if spec then
+        local listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
+        ns.ACRB_ShowList = CopyTable(ns[listname]);
+    end
 
     if timero then
         timero:Cancel();
     end
 
-    if timero2 then
-        timero2:Cancel();
-    end
-
     setup_frames();
-    timero = C_Timer.NewTicker(ns.UpdateRate + 0.01, on_update);
-    timero2 = C_Timer.NewTicker(ns.UpdateRate + 0.02, ns.update_featuresforall);
+    timero = C_Timer.NewTicker(ns.UpdateRate, on_update);
 
     --[[
     if ns.options.RemoveGroupText then
@@ -309,27 +277,20 @@ local function on_event(self, event)
         bfirst = false;
     end
 
-    if (event == "PLAYER_ENTERING_WORLD") then
-
-    elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED") then
+    if (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED") then
         init();
-    elseif (event == "GROUP_ROSTER_UPDATE") or (event == "CVAR_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
-        init();
-    elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
-        init();
+    elseif (event == "GROUP_ROSTER_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
+        setup_frames();
     end
 end
 
 main_frame:SetScript("OnEvent", on_event)
-main_frame:RegisterEvent("GROUP_ROSTER_UPDATE");
 main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
 main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-main_frame:RegisterEvent("CVAR_UPDATE");
+main_frame:RegisterEvent("GROUP_ROSTER_UPDATE");
 main_frame:RegisterEvent("ROLE_CHANGED_INFORM");
-main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
-main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
 
 local function hook_name_func(frame)
     local asframe = nil;
