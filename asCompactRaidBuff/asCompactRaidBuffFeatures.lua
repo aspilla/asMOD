@@ -15,7 +15,8 @@ end
 
 local function update_leader(asframe)
 	if ns.options.ShowLeader and asframe.leadericon then
-		if UnitIsGroupLeader(asframe.frame.unit) then
+		local unit = asframe.frame.unit
+		if UnitIsGroupLeader(unit) then
 			asframe.leadericon:Show();
 		else
 			asframe.leadericon:Hide();
@@ -26,7 +27,8 @@ end
 
 local function update_raidicon(asframe)
 	if ns.options.ShowMark then
-		show_raidicon((asframe.frame.displayedUnit or asframe.frame.unit), asframe.raidicon);
+		local unit = asframe.frame.displayedUnit or asframe.frame.unit;
+		show_raidicon(unit, asframe.raidicon);
 	end
 end
 
@@ -78,7 +80,6 @@ local function update_auracolor(asframe)
 end
 
 function ns.update_namecolor(asframe)
-
 	if asframe == nil or not asframe.buffcolor then
 		return;
 	end
@@ -97,6 +98,6 @@ function ns.update_features(asframe)
 		update_power(asframe);
 		update_raidicon(asframe);
 		update_leader(asframe);
-		update_auracolor(asframe);		
+		update_auracolor(asframe);
 	end
 end
