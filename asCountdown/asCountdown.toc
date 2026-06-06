@@ -1,0 +1,10 @@
+## Interface: 120005, 120007
+## Author: |cffff3399Aspilla|r [Azshara - KR]
+## Title: |cffff3399as|rCountdown
+## Notes:Countdown Voice Alerts.
+## Notes-koKR: 초읽기 음성 알림
+## Version : 260606
+## SavedVariablesPerCharacter: 
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
+asCountdown.lua
