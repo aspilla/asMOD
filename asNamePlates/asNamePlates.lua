@@ -227,6 +227,11 @@ local function add_unit(unit)
     asframe.nameplateBase = nameplate_base;
     asframe.unit = unit;
     asframe.checkcolor = false;
+    asframe.issimplified = unitframe:IsSimplified();
+
+    if asframe.issimplified == nil then
+        asframe.issimplified = false;
+    end
 
     asframe:UnregisterAllEvents();
     asframe:SetScript("OnEvent", nil);
@@ -257,34 +262,32 @@ local function add_unit(unit)
     end
 
     if ns.options.ChangeTexture then
-        if not healthbar.border then
-            healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+        healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
 
-            asframe.focused:SetParent(healthbar);
-            asframe.focused:SetDrawLayer("BACKGROUND", -7);
-            asframe.focused:ClearAllPoints();
-            PixelUtil.SetPoint(asframe.focused, "TOPLEFT", healthbar, "TOPLEFT", -4, 4);
-            PixelUtil.SetPoint(asframe.focused, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 4, -4);
-            asframe.focused:SetAlpha(1);
+        asframe.focused:SetParent(healthbar);
+        asframe.focused:SetDrawLayer("BACKGROUND", -7);
+        asframe.focused:ClearAllPoints();
+        PixelUtil.SetPoint(asframe.focused, "TOPLEFT", healthbar, "TOPLEFT", -4, 4);
+        PixelUtil.SetPoint(asframe.focused, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 4, -4);
+        asframe.focused:SetAlpha(1);
 
-            asframe.selected:SetParent(healthbar);
-            asframe.selected:SetDrawLayer("BACKGROUND", -6);
-            asframe.selected:ClearAllPoints();
-            PixelUtil.SetPoint(asframe.selected, "TOPLEFT", healthbar, "TOPLEFT", -2, 2);
-            PixelUtil.SetPoint(asframe.selected, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 2, -2);
-            asframe.selected:SetAlpha(1);
+        asframe.selected:SetParent(healthbar);
+        asframe.selected:SetDrawLayer("BACKGROUND", -6);
+        asframe.selected:ClearAllPoints();
+        PixelUtil.SetPoint(asframe.selected, "TOPLEFT", healthbar, "TOPLEFT", -2, 2);
+        PixelUtil.SetPoint(asframe.selected, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 2, -2);
+        asframe.selected:SetAlpha(1);
 
-            asframe.border:SetParent(healthbar);
-            asframe.border:SetDrawLayer("BACKGROUND", -5);
-            asframe.border:ClearAllPoints();
-            PixelUtil.SetPoint(asframe.border, "TOPLEFT", healthbar, "TOPLEFT", -1, 1);
-            PixelUtil.SetPoint(asframe.border, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 1, -1);
-            asframe.border:SetAlpha(1);
-            asframe.border:Show();
+        asframe.border:SetParent(healthbar);
+        asframe.border:SetDrawLayer("BACKGROUND", -5);
+        asframe.border:ClearAllPoints();
+        PixelUtil.SetPoint(asframe.border, "TOPLEFT", healthbar, "TOPLEFT", -1, 1);
+        PixelUtil.SetPoint(asframe.border, "BOTTOMRIGHT", healthbar, "BOTTOMRIGHT", 1, -1);
+        asframe.border:SetAlpha(1);
+        asframe.border:Show();
 
-            healthbar.bgTexture:SetAlpha(0);
-            healthbar.selectedBorder:SetAlpha(0)
-        end
+        healthbar.bgTexture:SetAlpha(0);
+        healthbar.selectedBorder:SetAlpha(0)
     else
         asframe.focused:SetAlpha(0);
         asframe.selected:SetAlpha(0);
@@ -361,6 +364,7 @@ local function add_unit(unit)
     asframe:RegisterEvent("PLAYER_TARGET_CHANGED");
     asframe:RegisterEvent("PLAYER_FOCUS_CHANGED");
     asframe:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
+
     asframe:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
     asframe:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
     asframe:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit);
@@ -370,12 +374,18 @@ local function add_unit(unit)
     asframe:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
     asframe:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
 
+
     local function callback()
-        ns.update_power(asframe);
-        ns.update_color(asframe);
-        ns.update_targeted(asframe);
+        asframe.tick = asframe.tick + 1;
+
+        if asframe.tick > 2 then
+            ns.update_power(asframe);
+            ns.update_color(asframe);
+            ns.update_targeted(asframe);
+            asframe.tick = 0;
+        end
         ns.update_mouseover(asframe);
-        if ns.options.ChangeDebuffIcon and unitframe.AurasFrame.RefreshList then
+        if ns.options.ChangeDebuffIcon and unitframe.AurasFrame.RefreshList and not asframe.issimplified then
             hook_refresh(unitframe.AurasFrame);
         end
     end
@@ -384,9 +394,17 @@ local function add_unit(unit)
         asframe.timer:Cancel();
     end
 
+    asframe.tick = 2;
+
     asframe.timer = C_Timer.NewTicker(ns.configs.updaterate, callback);
     ns.update_target(asframe);
     ns.update_color(asframe);
+    ns.update_mouseover(asframe);
+    ns.update_targeted(asframe);
+
+    if ns.options.ChangeDebuffIcon and unitframe.AurasFrame.RefreshList and not asframe.issimplified then
+        hook_refresh(unitframe.AurasFrame);
+    end
 end
 
 
@@ -515,7 +533,7 @@ local function init()
     main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
     main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 
-    main_frame:SetScript("OnEvent", on_main_event)    
+    main_frame:SetScript("OnEvent", on_main_event)
 end
 
 init();

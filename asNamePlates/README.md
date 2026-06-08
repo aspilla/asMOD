@@ -14,7 +14,7 @@ Colors are displayed based on the following priority:
 * <span style = "background-color:#ccff99">**Light Green:**</span> Casting an interruptible spell
 * <span style = "background-color:#e6e6e6">**Gray:**</span> Casting a non-interruptible spell
 * <span style = "background-color:#ff80ff">**Pink:**</span> Your debuff is present
-* <span style = "background-color:#80ffff">**Sky Blue:**</span> Normal Threat Level
+* <span style = "background-color:#80ffff">**Sky Blue:**</span> Normal Threat Level (Default off, Need to turn on `[Feature] Show combat colors`)
 * <span style = "background-color:#00ff33">**Green:**</span> Boss (Inside dungeons, high-level or ?? level mobs)
 * <span style = "background-color:#ffcc80">**Ocher:**</span> Caster mobs (Inside dungeons) or Quest mobs (World)
 
@@ -70,7 +70,7 @@ Colors are displayed based on the following priority:
   * <span style = "background-color:#ccff99">**연녹색:**</span> 차단 가능한 주문을 시전
   * <span style = "background-color:#e6e6e6">**회색:**</span> 차단 불가 주문을 시전  
   * <span style = "background-color:#ff80ff">**핑크:**</span> 내 디버프가 있음
-  * <span style = "background-color:#80ffff">**하늘색:**</span> 일반 위협 수준
+  * <span style = "background-color:#80ffff">**하늘색:**</span> 일반 위협 수준 (기본 off, '[기능] 전투중 색상 표시` On 필요)
   * <span style = "background-color:#00ff33">**녹색:**</span> 보스몹 (던전인 경우, 레벨에 높거(예 91렙)나 ?? 레벨몹)
   * <span style = "background-color:#ffcc80">**황토색:**</span> 케스터 몹 (던전인 경우), 퀘스트 몹 (필드).
   

@@ -5,28 +5,27 @@ function ns.update_power(asframe)
         return;
     end
     local unit = asframe.unit;
-    local powerType, powerTypeString = UnitPowerType(unit);
 
-    if powerType and powerType > 0 and UnitIsUnit(unit, "target") then
-        local power = UnitPower(unit);
-        local maxPower = UnitPowerMax(unit);
+    if UnitIsUnit(unit, "target") then
+        local powerType, powerTypeString = UnitPowerType(unit);
 
-        asframe.powerbar:SetMinMaxValues(0, maxPower);
-        asframe.powerbar:SetValue(power);
-        asframe.powerbar.value:SetText(power);
-        asframe.powerbar:Show();
+        if powerType and powerType > 0 then
+            local power = UnitPower(unit);
+            local maxPower = UnitPowerMax(unit);
+
+            asframe.powerbar:SetMinMaxValues(0, maxPower);
+            asframe.powerbar:SetValue(power);
+            asframe.powerbar.value:SetText(power);
+            asframe.powerbar:Show();
+        else
+            asframe.powerbar:Hide();
+        end
     else
         asframe.powerbar:Hide();
     end
 end
 
 local function update_barcolor(asframe, color)
-    local parent = asframe.nameplateBase;
-
-    if not parent or not parent.UnitFrame or parent.UnitFrame:IsForbidden() or not asframe.coloroverlay then
-        return;
-    end
-
     asframe.coloroverlay:SetVertexColor(color.r, color.g, color.b);
     asframe.coloroverlay:Show();
 end
@@ -49,85 +48,80 @@ local function get_auracount(list)
     return count;
 end
 
+local function get_color(asframe)
+    local unit = asframe.unit;
+
+    if UnitIsPlayer(unit) then
+        return nil;
+    end
+
+    local status = UnitThreatSituation("player", unit);
+    local incombat = UnitAffectingCombat(unit);
+
+    local nameplate = asframe.nameplateBase;
+    local UnitFrame = nameplate.UnitFrame;
+
+    if not UnitFrame or UnitFrame:IsForbidden() then
+        return nil;
+    end
+
+    local debufflist = UnitFrame.AurasFrame.DebuffListFrame;
+
+    --Target and Aggro High Priority
+    if IsInGroup() and ns.options.ShowAggro and incombat then
+        if ns.istanker then
+            if status == nil or status == 0 then
+                return ns.options.TankAggroLoseColor;
+            end
+        end
+        if status and status > 0 then
+            return ns.options.AggroColor;
+        end
+    end
+
+    --Cast Color
+    if asframe.casticon:IsShown() and ns.options.ShowCastColor then
+        return ns.options.InterruptableColor;
+    end
+
+
+    --Debuff Color
+    if ns.options.ShowDebuffColor then
+        local activeDebuffs = get_auracount(debufflist);
+
+        if activeDebuffs > 0 then
+            return ns.options.DebuffColor;
+        end
+    end
+
+    if status and ns.options.ShowCombat then
+        --return UnitHealthPercent(unit, ns.colorcurve);
+        return ns.options.CombatColor;
+    end
+
+    if ns.instype == ns.enums.party then
+        if asframe.isboss and ns.options.ShowBossColor then
+            return ns.options.BossColor;
+        end
+
+        if asframe.powertype ~= nil and asframe.powertype == 0 and ns.options.ShowCasterColor then
+            return ns.options.QuestColor;
+        end
+    end
+
+    if ns.instype == ns.enums.none and ns.options.ShowQuestColor and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
+        return ns.options.QuestColor;
+    end
+
+    return nil;
+end
+
 function ns.update_color(asframe)
     if not asframe.unit or not asframe.checkcolor or not asframe.coloroverlay then
         return;
     end
 
-    local unit = asframe.unit;
-    local nameplate = asframe.nameplateBase;
-
-    if not nameplate or not nameplate.UnitFrame or nameplate.UnitFrame:IsForbidden() then
-        return;
-    end
-    local UnitFrame = nameplate.UnitFrame;
-    local healthBar = UnitFrame.healthBar;
-    local castbar = UnitFrame.castBar;
-    local debufflist = UnitFrame.AurasFrame.DebuffListFrame
-
-    if not healthBar and healthBar:IsForbidden() then
-        return;
-    end
-
-    local status = UnitThreatSituation("player", unit);
-    local incombat = UnitAffectingCombat(unit);
-    local alerttype = 0;
-
-    local function getColor()
-        if UnitIsPlayer(unit) then
-            return nil;
-        end
-
-        --Target and Aggro High Priority
-        if IsInGroup() and ns.options.ShowAggro and incombat then
-            if ns.istanker then
-                if status == nil or status == 0 then
-                    return ns.options.TankAggroLoseColor;
-                end
-            end
-            if status and status > 0 then
-                return ns.options.AggroColor;
-            end
-        end
-
-        --Cast Color
-        if asframe.casticon:IsShown() and ns.options.ShowCastColor then
-            return ns.options.InterruptableColor;
-        end
-
-
-        --Debuff Color
-        if ns.options.ShowDebuffColor then
-            local activeDebuffs = get_auracount(debufflist);
-
-            if activeDebuffs > 0 then
-                return ns.options.DebuffColor;
-            end
-        end
-
-        if status and ns.options.ShowAggro then
-            --return UnitHealthPercent(unit, ns.colorcurve);
-            return ns.options.CombatColor;
-        end
-
-        if ns.instype == ns.enums.party then
-            if asframe.isboss and ns.options.ShowBossColor then
-                return ns.options.BossColor;
-            end
-
-            if asframe.powertype ~= nil and asframe.powertype == 0 and ns.options.ShowCasterColor then
-                return ns.options.QuestColor;
-            end
-        end
-
-        if ns.instype == ns.enums.none and ns.options.ShowQuestColor and C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
-            return ns.options.QuestColor;
-        end
-
-        return nil;
-    end
-
-    local color = getColor();
+    local color = get_color(asframe);
 
     if color then
         if color == ns.options.InterruptableColor then
@@ -191,12 +185,12 @@ end
 function ns.update_mouseover(asframe)
     if UnitExists("mouseover") then
         if asframe.unit and UnitIsUnit(asframe.unit, "mouseover") then
-            asframe.focused:Show();            
+            asframe.focused:Show();
             return;
         end
     end
 
-    asframe.focused:Hide();   
+    asframe.focused:Hide();
 end
 
 local targetedtexts = {};
@@ -204,7 +198,7 @@ local targetedtexts = {};
 targetedtexts[1] = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0, 255, 0, 0);
 targetedtexts[2] = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0);
 function ns.update_targeted(asframe)
-    if not ns.options.ShowTargeted then
+    if not ns.options.ShowTargeted  then
         return;
     end
 

@@ -12,8 +12,6 @@ local function create_casticon(parent)
     return frame;
 end
 
-local mouseoverIcon = CreateAtlasMarkup("poi-door-arrow-up", 12, 12, 0, 0, 0, 255, 0);
-
 local function create_frame()
     local object = CreateFrame("Frame", nil);
 
@@ -56,7 +54,7 @@ local function create_frame()
     object.powerbar.value:SetPoint("CENTER", object.powerbar, "CENTER", 0, 0);
 
     object.targetedindi = object:CreateFontString(nil, "OVERLAY");
-    object.targetedindi:SetFont(STANDARD_TEXT_FONT, ns.configs.mousefontsize + 1, "OUTLINE");
+    object.targetedindi:SetFont(STANDARD_TEXT_FONT, ns.configs.mousefontsize + 1, "OUTLINE");    
 
     object.important = object:CreateTexture(nil, "OVERLAY");
     object.important:SetColorTexture(1, 0, 0, 0.5);

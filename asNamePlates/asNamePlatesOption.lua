@@ -11,6 +11,7 @@ ns.option_default = {
     version = 260519,
 
     ShowAggro = true,
+    ShowCombat = false,
     ShowDebuffColor = true,
     ShowQuestColor = true,
     ShowBossColor = true,
@@ -271,6 +272,7 @@ local function on_panelshow()
         setup_slideoption("클릭 Hit Inset(NamePlateHitTestInsets, 기본 0, 애드온 7)", "HitTestInsets", true);
 
         setup_checkboxoption("[기능] 어그로 색상 표시", "ShowAggro");
+        setup_checkboxoption("[기능] 전투중 색상 표시(끄면 상위/상실만 표시)", "ShowCombat");
         setup_coloroption("[색상] 어그로 상위", "AggroColor");
         setup_coloroption("[색상] 어그로 상실", "TankAggroLoseColor");
         setup_coloroption("[색상] 어그로 전투중 색상", "CombatColor");
@@ -302,6 +304,7 @@ local function on_panelshow()
         setup_slideoption("Click Hit Inset(NamePlateHitTestInsets, Default 0, Addon 7)", "HitTestInsets", true);
 
         setup_checkboxoption("[Feature] Show aggro colors", "ShowAggro");
+        setup_checkboxoption("[Feature] Show combat colors(if off then just show top/lost)", "ShowCombat");
         setup_coloroption("[Color] Top aggro", "AggroColor");
         setup_coloroption("[Color] Aggro lost", "TankAggroLoseColor");
         setup_coloroption("[Color] Aggro combat normal", "CombatColor");
