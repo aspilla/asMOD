@@ -2,6 +2,8 @@
 
 Countdown Voice Alerts
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/hLSdsTEEre0?si=c3eXrD42mmVkps4O" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Key Features
 * **Countdown Voice Alerts**: Plays voice announcements for 5, 4, 3, 2, 1 seconds only.
     
@@ -18,6 +20,8 @@ Countdown Voice Alerts
 # asCountdown (한밤)
 
 초읽기 음성 알림
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/0Ju_TcGKcZA?si=FGK0FWOknIu--hm3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 주요 기능
 *  **초읽이 음성 알림**: 5초 4초 3초 2초 1초만 음성으로 알림    
