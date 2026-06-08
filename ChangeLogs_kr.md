@@ -1,4 +1,20 @@
 # 변경점
+https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
+
+## 260608 update
+### asNamePlates 
+* 성능개선
+* 오류 수정 : Minor 몹 클릭시 대상 선정이 안되는 이슈
+* 신규 옵션 추가 `[기능] 전투중 색상 표시(끄면 상위 어그로/어그로 상실만 표시)`, 기본 Off, (제작자 의견) 전투중 몹 색상 변경 보다, Mob Type 이 중요하다는 판단, 기존과 같이 동작하려면 Option On 필요
+
+
+#### 신규 애드온 asCountdown
+* 초읽기 음성 알림
+* [링크](https://www.curseforge.com/wow/addons/ascountdown)
+
+## 260605 update
+### asCompactRaidBuff
+* 오류수정, 성능개선
 
 ## 260604 update
 ### asCastBar, asPetAlert

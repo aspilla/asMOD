@@ -1,4 +1,21 @@
 # ChangeLogs
+https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
+
+## 260608 update
+### asNamePlates 
+* Performance improvements.
+* Bug Fix: Fixed an issue where minor mobs could not be selected when clicked.
+* Added a new option `[Feature] Display Combat Colors (If Off, only High aggro/Loss of aggro is displayed)` (Default: Off). (Developer Note: Decided that mob type is more important than changing mob colors during combat. To retain the previous behavior, this option must be turned On).
+
+#### New Addon: asCountdown
+* Countdown Voice Alerts.
+* [Link](https://www.curseforge.com/wow/addons/ascountdown)
+
+
+## 260605 update
+### asCompactRaidBuff
+* Bugfix, Performance improvement
+
 
 ## 260604 update
 ### asCastBar, asPetAlert
