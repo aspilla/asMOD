@@ -47,16 +47,13 @@ end
 --설정 끝
 local main_frame = CreateFrame("Frame", "ADotF", UIParent);
 
-local function clear_cooldownframe(self)
-    self:Clear();
-end
 
-local function set_cooldownframe(self, durationobject, enable)
+local function set_cooldownframe(cooldown, durationobject, enable)
     if enable and durationobject then
-        self:SetDrawEdge(nil);
-        self:SetCooldownFromDurationObject(durationobject);
+        cooldown:SetDrawEdge(nil);
+        cooldown:SetCooldownFromDurationObject(durationobject);
     else
-        clear_cooldownframe(self);
+        cooldown:Clear();
     end
 end
 
