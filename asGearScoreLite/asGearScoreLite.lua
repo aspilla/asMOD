@@ -25,7 +25,6 @@ local itemslots = {
 local main_frame = CreateFrame("Frame", nil, UIParent);
 local leveltexts = {};
 local avg_text;
-local bfirst = true;
 local binit = false;
 
 
@@ -179,6 +178,10 @@ local function init_inspectframe()
 		leveltext:SetTextColor(1, 1, 1);
 		leveltexts["target"][slot] = leveltext;
 	end
+
+	if InspectPaperDollItemsFrame then
+		InspectPaperDollItemsFrame:HookScript("OnShow", on_show);		
+	end
 end
 
 local function on_event(self, event, arg1)
@@ -186,11 +189,6 @@ local function on_event(self, event, arg1)
 		check_player();
 	elseif (event == "ADDON_LOADED" and arg1 == "Blizzard_InspectUI") then
 		init_inspectframe();
-	end
-
-	if InspectPaperDollItemsFrame and bfirst then
-		InspectPaperDollItemsFrame:HookScript("OnShow", on_show);
-		bfirst = false;
 	end
 end
 
@@ -200,8 +198,6 @@ main_frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
 main_frame:RegisterEvent("ADDON_LOADED");
 
 CharacterFrame:HookScript("OnShow", check_player);
-
-
 
 leveltexts["player"] = {};
 leveltexts["target"] = {};
