@@ -24,22 +24,22 @@ local itemslots = {
 
 local main_frame = CreateFrame("Frame", nil, UIParent);
 local leveltexts = {};
-local inspectframe = _G["InspectFrame"];
 local avg_text;
 local bfirst = true;
+local binit = false;
 
 
 local function update_player()
 	local unit = "player";
 
 	for i = 1, #itemslots do
-		local slot = GetInventorySlotInfo(itemslots[i]);		
+		local slot = GetInventorySlotInfo(itemslots[i]);
 		local leveltext = leveltexts[unit][i];
 		local location = ItemLocation:CreateFromEquipmentSlot(slot)
 
 		if location:IsValid() then
 			local item = Item:CreateFromEquipmentSlot(slot);
-			
+
 			if item then
 				item:ContinueOnItemLoad(function()
 					local level = item:GetCurrentItemLevel();
@@ -63,20 +63,19 @@ local function update_player()
 end
 
 local function get_levelfromslot(unit, slotID)
-    
-    local tooltip = C_TooltipInfo.GetInventoryItem(unit, slotID)
-    
-    if tooltip and tooltip.lines then        
-        for _, line in ipairs(tooltip.lines) do
-            if line.leftText then                
-                local iLevel = line.leftText:match("%d+")
-                if line.leftText:find(STAT_AVERAGE_ITEM_LEVEL) then
-                    return tonumber(iLevel)
-                end
-            end
-        end
-    end
-    return nil
+	local tooltip = C_TooltipInfo.GetInventoryItem(unit, slotID)
+
+	if tooltip and tooltip.lines then
+		for _, line in ipairs(tooltip.lines) do
+			if line.leftText then
+				local iLevel = line.leftText:match("%d+")
+				if line.leftText:find(STAT_AVERAGE_ITEM_LEVEL) then
+					return tonumber(iLevel)
+				end
+			end
+		end
+	end
+	return nil
 end
 
 local function update_target()
@@ -85,6 +84,10 @@ local function update_target()
 	local weapon_count = 0;
 	local two_head = nil;
 	local unit = "target";
+
+	if binit == false then
+		return;
+	end
 
 	for i = 1, #itemslots do
 		local slot = GetInventorySlotInfo(itemslots[i]);
@@ -150,9 +153,39 @@ local function on_show()
 	C_Timer.After(0.5, check_inspect);
 end
 
-local function on_event(self, event)
+
+local function init_inspectframe()
+	if binit then
+		return;
+	end
+
+	binit = true;
+
+	local inspectframe = _G["InspectFrame"];
+	
+	avg_text = inspectframe:CreateFontString(nil, "OVERLAY");
+	avg_text:SetFont(configs.font, configs.fontsize, "THICKOUTLINE");
+	avg_text:SetText("Avg: 0")
+	avg_text:SetPoint("TOPRIGHT", inspectframe, "TOPRIGHT", -10, -30)
+	avg_text:SetTextColor(1, 1, 1);
+	avg_text:Show();
+
+	for slot, n in pairs(itemslots) do
+		local button = _G["Inspect" .. n]
+		local leveltext = main_frame:CreateFontString(nil, "OVERLAY");
+		leveltext:SetParent(button);
+		leveltext:SetFont(configs.font, configs.fontsize, "THICKOUTLINE");
+		leveltext:SetPoint("TOP", button, "TOP", 0, -3);
+		leveltext:SetTextColor(1, 1, 1);
+		leveltexts["target"][slot] = leveltext;
+	end
+end
+
+local function on_event(self, event, arg1)
 	if (event == "PLAYER_EQUIPMENT_CHANGED") then
 		check_player();
+	elseif (event == "ADDON_LOADED" and arg1 == "Blizzard_InspectUI") then
+		init_inspectframe();
 	end
 
 	if InspectPaperDollItemsFrame and bfirst then
@@ -168,12 +201,7 @@ main_frame:RegisterEvent("ADDON_LOADED");
 
 CharacterFrame:HookScript("OnShow", check_player);
 
-avg_text = inspectframe:CreateFontString(nil, "OVERLAY");
-avg_text:SetFont(configs.font, configs.fontsize, "THICKOUTLINE");
-avg_text:SetText("Avg: 0")
-avg_text:SetPoint("TOPRIGHT", inspectframe, "TOPRIGHT", -10, -30)
-avg_text:SetTextColor(1, 1, 1);
-avg_text:Show()
+
 
 leveltexts["player"] = {};
 leveltexts["target"] = {};
@@ -188,13 +216,7 @@ for slot, n in pairs(itemslots) do
 	leveltexts["player"][slot] = leveltext;
 end
 
-
-for slot, n in pairs(itemslots) do
-	local button = _G["Inspect" .. n]
-	local leveltext = main_frame:CreateFontString(nil, "OVERLAY");
-	leveltext:SetParent(button);
-	leveltext:SetFont(configs.font, configs.fontsize, "THICKOUTLINE");
-	leveltext:SetPoint("TOP", button, "TOP", 0, -3);
-	leveltext:SetTextColor(1, 1, 1);
-	leveltexts["target"][slot] = leveltext;
+if C_AddOns.LoadAddOn("Blizzard_InspectUI") then
+	init_inspectframe();
 end
+

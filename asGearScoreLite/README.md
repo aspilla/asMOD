@@ -19,19 +19,6 @@ None
 2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
 
 
-
-## Known Issues
-* Conflict with other addons (ex. TinyTip etc.)
-
-```lua
-Blizzard_InspectUI/InspectPVPFrame.lua:71: bad argument #1 to 'UnitFactionGroup' (Usage: local factionGroupTag, localized = UnitFactionGroup(unitName [, checkDisplayRace]))
-[string "=[C]"]: in function `UnitFactionGroup'
-[string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:71: in function `InspectPVPFrame_Update'
-[string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:60: in function <Blizzard_InspectUI/InspectPVPFrame.lua:58>
-```
-
-*Quest reward item levels may display as base levels during Midnight leveling
-
 ---
 
 # asGearScoreLite (한밤)
@@ -50,19 +37,6 @@ Blizzard_InspectUI/InspectPVPFrame.lua:71: bad argument #1 to 'UnitFactionGroup'
 
 ## 설정
 없음
-
-
-
-## 알고 있는 이슈
-*   다른 애드온과 충돌시 아래 메시지 (ex. TinyTip 등)
-
-```lua
-Blizzard_InspectUI/InspectPVPFrame.lua:71: bad argument #1 to 'UnitFactionGroup' (Usage: local factionGroupTag, localized = UnitFactionGroup(unitName [, checkDisplayRace]))
-[string "=[C]"]: in function `UnitFactionGroup'
-[string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:71: in function `InspectPVPFrame_Update'
-[string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:60: in function <Blizzard_InspectUI/InspectPVPFrame.lua:58>
-```
-* 한밤 레벨업시 퀘스트 보상 아이템 레벨이 기본 레벨로 표시
 
 ## 문의처
 1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)

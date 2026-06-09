@@ -1,6 +1,16 @@
 # 변경점
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260609 update
+### asGearScoreLite
+* 오류 수정 : 다른 애드온과의 충돌 이슈 수정
+```lua
+Blizzard_InspectUI/InspectPVPFrame.lua:71: bad argument #1 to 'UnitFactionGroup' (Usage: local factionGroupTag, localized = UnitFactionGroup(unitName [, checkDisplayRace]))
+[string "=[C]"]: in function `UnitFactionGroup'
+[string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:71: in function `InspectPVPFrame_Update'
+[string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:60: in function <Blizzard_InspectUI/InspectPVPFrame.lua:58>
+```
+
 ## 260608 update
 ### asNamePlates 
 * 성능개선

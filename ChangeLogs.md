@@ -1,6 +1,16 @@
 # ChangeLogs
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260609 update
+### asGearScoreLite
+* Bug Fix: Fixed a conflict issue with other addons.
+```lua
+Blizzard_InspectUI/InspectPVPFrame.lua:71: bad argument #1 to 'UnitFactionGroup' (Usage: local factionGroupTag, localized = UnitFactionGroup(unitName [, checkDisplayRace]))
+[string "=[C]"]: in function `UnitFactionGroup'
+[string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:71: in function `InspectPVPFrame_Update'
+[string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:60: in function <Blizzard_InspectUI/InspectPVPFrame.lua:58>
+```
+
 ## 260608 update
 ### asNamePlates 
 * Performance improvements.
