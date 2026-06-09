@@ -10,8 +10,9 @@ https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 >[string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:71: in function `InspectPVPFrame_Update'
 >[string "@Blizzard_InspectUI/InspectPVPFrame.lua"]:60: in function <Blizzard_InspectUI/InspectPVPFrame.lua:58>
 >```
+
 ### asUnitFrame
-* 성능개선
+* Performance improvement
 
 
 ## 260608 update
