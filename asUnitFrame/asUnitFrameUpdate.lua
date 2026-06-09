@@ -7,6 +7,10 @@ local icons = {
     elite = CreateAtlasMarkup("nameplates-icon-elite-gold", 14, 14),
     rare = CreateAtlasMarkup("UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare-Star", 14, 14),
     rareelite = CreateAtlasMarkup("nameplates-icon-elite-silver", 14, 14),
+    tank = CreateAtlasMarkup("roleicon-tiny-tank"),
+    dps = CreateAtlasMarkup("roleicon-tiny-dps"),
+    healer = CreateAtlasMarkup("roleicon-tiny-healer"),
+
 };
 
 local curve = C_CurveUtil.CreateCurve();
@@ -162,11 +166,11 @@ function ns.update_unitframe_other(frame)
         if (role and role ~= "NONE") then
             local texture = nil;
             if (role == "TANK") then
-                texture = CreateAtlasMarkup("roleicon-tiny-tank");
+                texture = icons.tank;
             elseif (role == "DAMAGER") then
-                texture = CreateAtlasMarkup("roleicon-tiny-dps");
+                texture = icons.dps;
             elseif (role == "HEALER") then
-                texture = CreateAtlasMarkup("roleicon-tiny-healer");
+                texture = icons.healer;
             end
 
             if texture then

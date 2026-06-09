@@ -642,6 +642,9 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     frame:SetScript("OnEvent", on_unitevent);
 
     frame.callback = function()
+        if not frame:IsShown() then
+            return;
+        end
         ns.update_unithealth(frame);
         if frame.updateCastBar then
             ns.update_castbar(frame.castbar);
@@ -649,6 +652,9 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     end
 
     frame.callback2 = function()
+        if not frame:IsShown() then
+            return;
+        end
         ns.update_unitframe_other(frame);
         ns.update_auras(frame);
         --off due to shuttering
