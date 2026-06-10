@@ -64,7 +64,7 @@ local function update_auracolor(asframe)
 	if ns.ACRB_ShowList and ns.ACRB_ShowList.buffid then
 		local aura = C_UnitAuras.GetUnitAuraBySpellID(unit, ns.ACRB_ShowList.buffid)
 		
-		if aura and UnitIsUnit(aura.sourceUnit, "player") then
+		if aura and aura.sourceUnit and UnitIsUnit(aura.sourceUnit, "player") then
 			found = true;
 		end
 	end
