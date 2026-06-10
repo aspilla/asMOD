@@ -1,6 +1,11 @@
 # ChangeLogs
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+
+## 260611 update
+### asCompactRaidBuff
+* Performance improvement
+
 ## 260610 update
 ### asGearScoreLite
 * Bug Fix: Fixed a conflict issue with other addons.

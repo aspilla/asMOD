@@ -1,6 +1,10 @@
 # 변경점
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260611 update
+### asCompactRaidBuff
+* 성능 개선
+
 ## 260610 update
 ### asGearScoreLite
 * 오류 수정 : 다른 애드온과의 충돌 이슈 수정
