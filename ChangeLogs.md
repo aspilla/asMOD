@@ -1,7 +1,7 @@
 # ChangeLogs
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
-## 260611 update
+## 260612 update
 ### asNamePlates (New Feature)
 * **Changes the health bar background color for low health targets (`Display Low Health Background Color`)**
   ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)

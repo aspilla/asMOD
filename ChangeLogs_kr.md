@@ -1,7 +1,7 @@
 # 변경점
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
-## 260611 update
+## 260612 update
 ### asNamePlates (신규 기능)
 * **낮은 체력 대상 체력바 배경 색상 변경 (`낮은체력 배경 색상 표시`)**
   ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)
