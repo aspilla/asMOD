@@ -1,6 +1,19 @@
 # ChangeLogs
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260611 update
+### asNamePlates (New Feature)
+* **Changes the health bar background color for low health targets (`Display Low Health Background Color`)**
+  ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)
+
+| Class | Low Health (Dark Purple) | High Health (Dark Blue) |
+| ------------- | ----------- | -----------|
+| Hunter | 20% when Kill Shot (Black Arrow) is available | 80% when Black Arrow is available |
+| Warrior | 20% for Execute (35% with talent) | |
+| Mage | 30% for Scorch | |
+| Priest | 20% for Shadow Word: Death | |
+| Death Knight | 35% for Soul Reaper | |
+| Destruction Warlock | 20% for Shadowburn | |
 
 ## 260611 update
 ### asCompactRaidBuff

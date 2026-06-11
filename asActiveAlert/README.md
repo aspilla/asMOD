@@ -25,7 +25,7 @@ Displays highlighted spells to the left of the character.
 
 테두리 강조 주문 케릭 좌측 표시
 
-![asActiveAlert](https://github.com/aspilla/asMOD/blob/main/.Pictures/asActiveAlert.jpg?raw=true)
+![asActiveAlert](https://media.forgecdn.net/attachments/1585/658/asactivealert-jpg.jpg)
 
 ## 주요 기능
 

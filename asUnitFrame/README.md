@@ -49,7 +49,7 @@ This addon replaces the default unit frames. It is recommended to use it with ot
     * Displays debuffs at the bottom of the frame. (Max 4)
 * **Buff Display (Boss):**
     * Displays buffs on the left side of the frame (Max 4, optional)
-    ![asUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asunitframe_bossbuff.jpg?raw=true)
+    ![asUnitFrame](https://media.forgecdn.net/attachments/1729/241/asunitframe_bossbuff-jpg.jpg)
 * **Totem Bar (Optional, Player):**
     * Displays a totem bar at the bottom of the player frame
     * Can immediately destroy the totem by clicking the icon
@@ -159,7 +159,7 @@ The following errors may occur.
     *   프레임 하단에 디버프 표시. (최대 4개)
 *   **버프 표시 (보스):**
     *   프레임 좌측에 버프 표시 (최대 4개, 옵션)
-    ![asUnitFrame](https://github.com/aspilla/asMOD/blob/main/.Pictures/asunitframe_bossbuff.jpg?raw=true)
+    ![asUnitFrame](https://media.forgecdn.net/attachments/1729/241/asunitframe_bossbuff-jpg.jpg)
 *   **토템 바 (선택 사항, 플레이어):**
     *   플레이어 프레임 하단에 토템바 표시
     *   아이콘 클릭으로 해당 토템을 즉시 파괴 가능

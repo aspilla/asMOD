@@ -35,7 +35,7 @@ Enhancements for Mythic+ and Raid Finder.
 쐐기돌/공격대 검색 창 강화
 
 ## 신화 쐐기돌 던전  
-![asPremadeGroupsFilter_Party](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPremadeGroupsFilter_party.jpg?raw=true)
+![asPremadeGroupsFilter_Party](https://media.forgecdn.net/attachments/1585/705/aspremadegroupsfilter_party-jpg.jpg)
 
 *   그룹의 각 구성원에 대한 전문화 아이콘을 표시.
 *   각 구성원의 직업을 나타내는 작은 색상 바를 표시.

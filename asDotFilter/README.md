@@ -2,7 +2,7 @@
 
 Debuff tracker for boss and focus
 
-![asDotFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDotFilter.jpg?raw=true)
+![asDotFilter](https://media.forgecdn.net/attachments/1729/237/asdotfilter-jpg.jpg)
 
 ## Main Features
 
@@ -21,7 +21,7 @@ Debuff tracker for boss and focus
 
 보스/주시 디버프를 추적
 
-![asDotFilter](https://github.com/aspilla/asMOD/blob/main/.Pictures/asDotFilter.jpg?raw=true)
+![asDotFilter](https://media.forgecdn.net/attachments/1729/237/asdotfilter-jpg.jpg)
 
 ## 주요 기능
 

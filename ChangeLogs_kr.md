@@ -2,6 +2,21 @@
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
 ## 260611 update
+### asNamePlates (신규 기능)
+* **낮은 체력 대상 체력바 배경 색상 변경 (`낮은체력 배경 색상 표시`)**
+  ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)
+
+| 직업          | 낮은 체력 (어두운 보라색)   |높은 체력  (어두운 파란색)  |
+| ------------- | ----------- | -----------|
+| 사냥꾼        | 마무리 사격(어둠 화살) 가능시 20%  | 어둠 화살 가능시 80%  |
+| 전사        | 마무리 일격 20% (특성시 35%) |  |
+| 마법사        | 불태우기 30% |  |
+| 사제        |  죽음 20% |  |
+| 죽기        |  영혼 수확자 35% |  |
+| 파흑        |  어둠의 연소 20% |  |
+
+
+## 260611 update
 ### asCompactRaidBuff
 * 성능 개선
 

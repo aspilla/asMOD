@@ -29,13 +29,7 @@ Displays Main Resources and Class Resources.
 <iframe width="560" height="315" src="https://www.youtube.com/embed/4h5D5e9yC9E?si=n3WXwqYGOgi_7Ytf" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 * (Note) For Fury Warriors, the `Whirlwind` buff tracking cannot check the 7-meter distance to the target.
-
-## Contact Information
-1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
-2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
-
-
-![asPowerBar](https://media.forgecdn.net/attachments/1585/703/aspowerbar_mn-jpg.jpg)
+![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_whirlwind.gif?raw=true)
 
 ## Configuration
 * Accessible via `ESC` > `Options` > `AddOns` > `asPowerBar`.
@@ -52,12 +46,16 @@ Displays Main Resources and Class Resources.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/gKEHCNP9rbE?si=WC6rvwnzKqc6Sdjz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+## Contact Information
+1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
+2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
+
 ---
 # asPowerBar (한밤)
 
 주 자원/직업 자원 표시
 
-![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_MN.jpg?raw=true)
+![asPowerBar](https://media.forgecdn.net/attachments/1585/703/aspowerbar_mn-jpg.jpg)
 
 ## 주요 기능 (Features)
 
@@ -84,7 +82,6 @@ Displays Main Resources and Class Resources.
 <iframe width="560" height="315" src="https://www.youtube.com/embed/4h5D5e9yC9E?si=n3WXwqYGOgi_7Ytf" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 * (주의) 분노 전사 `소용돌이` 버프 는 대상과의 거리 7미터는 채크 불가함
-
 ![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_whirlwind.gif?raw=true)
 
 ## 설정 (Configuration)
