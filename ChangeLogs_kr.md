@@ -2,6 +2,9 @@
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
 ## 260612 update
+### asCompactRaidBuff 
+* 오류수정 : 공격대내 같은 힐러가 있을때 버프 추적이 안되는 이슈 개선
+
 ### asNamePlates (신규 기능)
 * **낮은 체력 대상 체력바 배경 색상 변경 (`낮은체력 배경 색상 표시`)**
   ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)

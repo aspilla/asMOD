@@ -2,6 +2,9 @@
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
 ## 260612 update
+### asCompactRaidBuff 
+* Bug Fix: Fixed an issue where buffs were not being tracked properly when there were duplicate healers of the same class in the raid.
+
 ### asNamePlates (New Feature)
 * **Changes the health bar background color for low health targets (`Display Low Health Background Color`)**
   ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)

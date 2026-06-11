@@ -64,8 +64,18 @@ local function update_auracolor(asframe)
 	if ns.ACRB_ShowList and ns.ACRB_ShowList.buffid then
 		local aura = C_UnitAuras.GetUnitAuraBySpellID(unit, ns.ACRB_ShowList.buffid)
 		
-		if aura and aura.sourceUnit and UnitIsUnit(aura.sourceUnit, "player") then
-			found = true;
+		if aura then
+			if aura.sourceUnit and UnitIsUnit(aura.sourceUnit, "player") then
+				found = true;
+			else
+				local auras = C_UnitAuras.GetUnitAuras(unit, "PLAYER|HELPFUL");
+				for _, a in ipairs(auras) do
+					if not issecretvalue(a.spellId) and a.spellId == ns.ACRB_ShowList.buffid then
+						found = true;
+						break;
+					end
+				end
+			end
 		end
 	end
 
