@@ -29,12 +29,26 @@ Colors are displayed based on the following priority:
 * **Important Spell Highlights (`[Feature] Alert Important Spell Casting`)**: The health bar flashes red when an enemy casts an important spell (See screenshot below).
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
 * **Modifies friendly nameplate settings (`[Feature] Change Friend Nameplates`)**: Alters friendly nameplates as shown below (Default: On, reapplied upon logging in).
+![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
+
 * **Nameplate Vertical Stacking Interval (`Nameplate vertical alignment`)**: Set to 1.1 by default (WoW default is 1.3).
 * **Nameplate Selected Scale (`Nameplate target scale`)**: Set to 1.3 by default (WoW default is 1.2). 
 * **Note:** If you uninstall the addon, you need to reset it using the following command: `/run SetCVar ("nameplateSelectedScale", 1.2)`
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
+
 * **Nameplate Mouse Click Hitbox Settings (`Click Hit Inset`)**: See video below (Default: 7, reapplied upon logging in).
 <iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+* **Changes the health bar background color for low health targets (`Display Low Health Background Color`)**
+  ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)
+
+| Class | Low Health (Dark Purple) | High Health (Dark Blue) |
+| ------------- | ----------- | -----------|
+| Hunter | 20% when Kill Shot (Black Arrow) is available | 80% when Black Arrow is available |
+| Warrior | 20% for Execute (35% with talent) | |
+| Mage | 30% for Scorch | |
+| Priest | 20% for Shadow Word: Death | |
+| Death Knight | 35% for Soul Reaper | |
+| Destruction Warlock | 20% for Shadowburn | |
 
 
 
@@ -85,12 +99,27 @@ Colors are displayed based on the following priority:
 * **중요 스킬 강조 (`[기능] 중요 스킬 시전 강조`)** : 중요 스킬 시전시 생명력이 빨간색으로 깜빡임 (아래 스샷 참고)
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
 * **아군 이름표 설정 변경 (`[기능] 아군 이름표 모양 변경`)** : 아군 이름표를 아래와 같이 변경 합니다. (기본 On, 접속시 다시 설정 합니다.)
+  ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
+  
 * **이름표 세로 정렬 간격 설정(`이름표 상하 정렬 정도`)** : 1.1을 기본으로 설정 (와우 기본 설정은 1.3)
 * **이름표 주대상 크기 정도(`이름표 주대상 크기 정도`)** : 1.3을 기본으로 설정 (와우 기본 설정은 1.2) 
 * **참고:** 애드온 삭제시 다음 명령어로 초기화 필요 `/run SetCVar ("nameplateSelectedScale", 1.2)`
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
+
 * **이름표 마우스 클릭 범위 설정 (`클릭 Hit Inset`)** : 아래영상 참고  (기본 7, 접속시 다시 설정 합니다.)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+* **낮은 체력 대상 체력바 배경 색상 변경 (`낮은체력 배경 색상 표시`)**
+  ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)
+
+| 직업          | 낮은 체력 (어두운 보라색)   |높은 체력  (어두운 파란색)  |
+| ------------- | ----------- | -----------|
+| 사냥꾼        | 마무리 사격(어둠 화살) 가능시 20%  | 어둠 화살 가능시 80%  |
+| 전사        | 마무리 일격 20% (특성시 35%) |  |
+| 마법사        | 불태우기 30% |  |
+| 사제        |  죽음 20% |  |
+| 죽기        |  영혼 수확자 35% |  |
+| 파흑        |  어둠의 연소 20% |  |
+
 
 
 ## 설정

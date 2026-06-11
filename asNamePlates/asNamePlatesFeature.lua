@@ -135,6 +135,16 @@ function ns.update_color(asframe)
         asframe.notinterruptable:Hide();
         asframe.coloroverlay:Hide();
     end
+
+    if ns.colorcurve and ns.options.ShowLowHealth then
+        local color = UnitHealthPercent(asframe.unit, false, ns.colorcurve);
+
+        asframe.border:SetColorTexture(color:GetRGBA());
+
+    else
+        asframe.border:SetColorTexture(0, 0, 0);
+    end
+
 end
 
 function ns.update_cast(asframe)

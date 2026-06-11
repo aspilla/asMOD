@@ -24,6 +24,7 @@ ns.option_default = {
     ShowTargeted = true,
     AlertImportantSpell = true,
     FriendNamePlatesColor = true,
+    ShowLowHealth = true,
 
     AggroColor = { r = 0.4, g = 0.2, b = 0.8 },
     TankAggroLoseColor = { r = 1, g = 0.5, b = 0.5 },
@@ -33,6 +34,8 @@ ns.option_default = {
     CombatColor = { r = 0.5, g = 1, b = 1 },
     QuestColor = { r = 1, g = 0.8, b = 0.5 },
     BossColor = { r = 0, g = 1, b = 0.2 },
+    LowHealthColor = { r = 0.2, g = 0, b = 0.2},
+    HighHealthColor = { r = 0.2, g = 0, b = 0.5},
 
     nameplateOverlapV = 1.1,
     nameplateSelectedScale = 1.3,
@@ -272,9 +275,10 @@ local function on_panelshow()
         setup_slideoption("클릭 Hit Inset(NamePlateHitTestInsets, 기본 0, 애드온 7)", "HitTestInsets", true);
 
         setup_checkboxoption("[기능] 어그로 색상 표시", "ShowAggro");
-        setup_checkboxoption("[기능] 전투중 색상 표시(끄면 상위/상실만 표시)", "ShowCombat");
         setup_coloroption("[색상] 어그로 상위", "AggroColor");
         setup_coloroption("[색상] 어그로 상실", "TankAggroLoseColor");
+
+        setup_checkboxoption("[기능] 전투중 색상 표시(끄면 상위/상실만 표시)", "ShowCombat");
         setup_coloroption("[색상] 어그로 전투중 색상", "CombatColor");
 
         setup_checkboxoption("[기능] 디버프 색상 표시", "ShowDebuffColor");
@@ -290,6 +294,10 @@ local function on_panelshow()
         setup_checkboxoption("[기능] 던전, Caster 몹 색상 표시", "ShowCasterColor");
         setup_checkboxoption("[기능] 필드, Quest 몹 색상 표시", "ShowQuestColor");
         setup_coloroption("[색상] Quest, Caster", "QuestColor");
+
+        setup_checkboxoption("[기능] 낮은체력 배경 색상 표시", "ShowLowHealth");
+        setup_coloroption("[색상] 낮은 체력 배경 색상", "LowHealthColor");
+        setup_coloroption("[색상] 높은 체력 배경 색상(사냥꾼 검은화살 전용)", "HighHealthColor");
     else
         setup_checkboxoption("[Feature] Change Texture", "ChangeTexture");
         setup_checkboxoption("[Feature] Change Friend Nameplates", "FriendNamePlatesColor");
@@ -304,9 +312,10 @@ local function on_panelshow()
         setup_slideoption("Click Hit Inset(NamePlateHitTestInsets, Default 0, Addon 7)", "HitTestInsets", true);
 
         setup_checkboxoption("[Feature] Show aggro colors", "ShowAggro");
-        setup_checkboxoption("[Feature] Show combat colors(if off then just show top/lost)", "ShowCombat");
         setup_coloroption("[Color] Top aggro", "AggroColor");
         setup_coloroption("[Color] Aggro lost", "TankAggroLoseColor");
+
+        setup_checkboxoption("[Feature] Show combat colors(if off then just show top/lost)", "ShowCombat");
         setup_coloroption("[Color] Aggro combat normal", "CombatColor");
 
         setup_checkboxoption("[Feature] Show cast color", "ShowCastColor");
@@ -322,6 +331,10 @@ local function on_panelshow()
         setup_checkboxoption("[Feature] Dungeon, Show Caster hint", "ShowCasterColor");
         setup_checkboxoption("[Feature] Field, Show quest mob colors", "ShowQuestColor");
         setup_coloroption("[Color] Quest/Caster", "QuestColor");
+
+        setup_checkboxoption("[Feature] Display Low Health Background Color", "ShowLowHealth");
+        setup_coloroption("[Color] Low health background color", "LowHealthColor");
+        setup_coloroption("[Color] High health background color (Only for hunter black arrow)", "HighHealthColor");
     end
 end
 local function on_panelhide()

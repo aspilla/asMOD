@@ -442,11 +442,9 @@ local function init_class()
         end
 
         if (englishClass == "PRIEST") then
+            if (C_SpellBook.IsSpellKnown(32379)) then
             lowhealthpercent = 20;
-        end
-
-        if (englishClass == "PALADIN") then
-            lowhealthpercent = 20;
+            end
         end
 
         if (englishClass == "DEATHKNIGHT") then
@@ -457,7 +455,7 @@ local function init_class()
 
         if (englishClass == "WARLOCK") then
             if (C_SpellBook.IsSpellKnown(17877)) then --어연
-                lowhealthpercent = 30;
+                lowhealthpercent = 20;
             end
         end
     end
@@ -465,18 +463,16 @@ local function init_class()
     if highhealthpercent > 0 and lowhealthpercent > 0 then
         ns.colorcurve = C_CurveUtil.CreateColorCurve();
         ns.colorcurve:SetType(Enum.LuaCurveType.Step);
-        ns.colorcurve:AddPoint(highhealthpercent / 100, CreateColor(1, 0.2, 0.2, 1));
-        ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0.5, 1, 1, 1));
-        ns.colorcurve:AddPoint(0, CreateColor(1, 0, 0, 1));
+        ns.colorcurve:AddPoint(highhealthpercent / 100, CreateColor(ns.options.HighHealthColor.r, ns.options.HighHealthColor.g, ns.options.HighHealthColor.b, 1));
+        ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0, 0, 0, 1));
+        ns.colorcurve:AddPoint(0, CreateColor(ns.options.LowHealthColor.r, ns.options.LowHealthColor.g, ns.options.LowHealthColor.b, 1));
     elseif lowhealthpercent > 0 then
         ns.colorcurve = C_CurveUtil.CreateColorCurve();
         ns.colorcurve:SetType(Enum.LuaCurveType.Step);
-        ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0.5, 1, 1, 1));
-        ns.colorcurve:AddPoint(0, CreateColor(1, 0, 0, 1));
+        ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0, 0, 0, 1));
+        ns.colorcurve:AddPoint(0, CreateColor(ns.options.LowHealthColor.r, ns.options.LowHealthColor.g, ns.options.LowHealthColor.b, 1));
     else
-        ns.colorcurve = C_CurveUtil.CreateColorCurve();
-        ns.colorcurve:SetType(Enum.LuaCurveType.Step);
-        ns.colorcurve:AddPoint(0, CreateColor(0.5, 1, 1, 1));
+        ns.colorcurve = nil;
     end
 end
 
