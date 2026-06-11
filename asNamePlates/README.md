@@ -28,9 +28,10 @@ Colors are displayed based on the following priority:
 * **Targeted Highlights (`[Feature] Alert Targeted`)**: Displays a flashing exclamation mark on the left when you are targeted by an enemy; for tanks, this triggers only when an enemy is casting a spell at you.
 * **Important Spell Highlights (`[Feature] Alert Important Spell Casting`)**: The health bar flashes red when an enemy casts an important spell (See screenshot below).
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
-* **Modifies friendly nameplate settings (`[Feature] Change Friend Nameplates`)**: Alters friendly nameplates as shown below (Default: On, reapplied upon logging in).
-![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
 
+* **Modifies friendly nameplate settings (`[Feature] Change Friend Nameplates`)**: Alters friendly nameplates as shown below (Default: On, reapplied upon logging in).
+![sample](https://media.forgecdn.net/attachments/1729/305/asnameplates_friend-jpg.jpg)
+  
 * **Nameplate Vertical Stacking Interval (`Nameplate vertical alignment`)**: Set to 1.1 by default (WoW default is 1.3).
 * **Nameplate Selected Scale (`Nameplate target scale`)**: Set to 1.3 by default (WoW default is 1.2). 
 * **Note:** If you uninstall the addon, you need to reset it using the following command: `/run SetCVar ("nameplateSelectedScale", 1.2)`
@@ -98,8 +99,9 @@ Colors are displayed based on the following priority:
 * **Targeted 강조 (`[기능] Targeted 강조`)** : 나를 대상으로 하는 경우 좌측에 깜빡이는 느낌표 표시, 탱커의 경우 나를 대상으로 케스팅 하는 경우만
 * **중요 스킬 강조 (`[기능] 중요 스킬 시전 강조`)** : 중요 스킬 시전시 생명력이 빨간색으로 깜빡임 (아래 스샷 참고)
 ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
+
 * **아군 이름표 설정 변경 (`[기능] 아군 이름표 모양 변경`)** : 아군 이름표를 아래와 같이 변경 합니다. (기본 On, 접속시 다시 설정 합니다.)
-  ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNameplates_friend.jpg?raw=true)
+![sample](https://media.forgecdn.net/attachments/1729/305/asnameplates_friend-jpg.jpg)
   
 * **이름표 세로 정렬 간격 설정(`이름표 상하 정렬 정도`)** : 1.1을 기본으로 설정 (와우 기본 설정은 1.3)
 * **이름표 주대상 크기 정도(`이름표 주대상 크기 정도`)** : 1.3을 기본으로 설정 (와우 기본 설정은 1.2) 
