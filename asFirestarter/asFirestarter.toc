@@ -1,0 +1,14 @@
+﻿## Interface: 120005, 120007
+## Author: |cffff3399Aspilla|r [Azshara - KR]
+## Title: |cffff3399as|rFirestarter
+## Notes: Firestarter and Scorch Alerts
+## Notes-koKR:방화광 및 불태우기 알림
+## Version : 260612
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## SavedVariablesPerCharacter: AFS_Options, AFS_Positions
+## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
+asFirestarterOption.lua
+asFirestarter.xml
+asFirestarter.lua
