@@ -14,8 +14,8 @@ Firestarter and Scorch Alerts
 ## Configuration
 
 Settings can be adjusted via **ESC > Options > AddOns > asFirestarter**:
-* `Button Size` (Default: 20)
-* `Health Text Size` (Default: 10)
+* `Button Size` (Default: 30)
+* `Health Text Size` (Default: 15)
 * `Display Health Percentage` (Default: On)
 * **Move Position**: Enter the `/asConfig` command in the chat window.
 * **Reset Position**: Enter the `/asClear` command in the chat window to reset to default settings.
@@ -43,8 +43,8 @@ Settings can be adjusted via **ESC > Options > AddOns > asFirestarter**:
 ## 설정
 
 esc >> 설정 >> 애드온 >> asFirestarter 에서 다음 설정이 가능합니다.
-*   `버튼 크기` (기본값: 20)
-*   `체력 글씨 크기` (기본값: 10) 
+*   `버튼 크기` (기본값: 30)
+*   `체력 글씨 크기` (기본값: 15) 
 *   `체력 수치 표시` (기본값: 표시)
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
