@@ -408,7 +408,7 @@ local function add_unit(unit)
 end
 
 
-local function init_class()
+local function init_lowhealth()
     local localizedClass, englishClass = UnitClass("player");
 
     local lowhealthpercent = 0;
@@ -419,8 +419,8 @@ local function init_class()
                 lowhealthpercent = 30;
             end
 
-            if (C_SpellBook.IsSpellKnown(384581)) then
-                lowhealthpercent = 35;
+            if (C_SpellBook.IsSpellKnown(205026)) then
+                highhealthpercent = 90;
             end
         end
 
@@ -471,6 +471,11 @@ local function init_class()
         ns.colorcurve:SetType(Enum.LuaCurveType.Step);
         ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0, 0, 0, 1));
         ns.colorcurve:AddPoint(0, CreateColor(ns.options.LowHealthColor.r, ns.options.LowHealthColor.g, ns.options.LowHealthColor.b, 1));
+    elseif highhealthpercent > 0  then
+        ns.colorcurve = C_CurveUtil.CreateColorCurve();
+        ns.colorcurve:SetType(Enum.LuaCurveType.Step);
+        ns.colorcurve:AddPoint(highhealthpercent / 100, CreateColor(ns.options.HighHealthColor.r, ns.options.HighHealthColor.g, ns.options.HighHealthColor.b, 1));
+        ns.colorcurve:AddPoint(0, CreateColor(0, 0, 0, 1));        
     else
         ns.colorcurve = nil;
     end
@@ -500,13 +505,13 @@ local function on_main_event(self, event, ...)
             end
         end
         update_tanklist();
-        init_class();
+        init_lowhealth();
         check_playertankrole();
     elseif event == "GROUP_JOINED" or event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ROLES_ASSIGNED" then
         update_tanklist();
         check_playertankrole();
     elseif event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" then
-        init_class();
+        init_lowhealth();
         check_playertankrole();
     end
 end
