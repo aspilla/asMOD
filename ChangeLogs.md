@@ -1,6 +1,34 @@
 # ChangeLogs
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+
+## 260614 update
+### asNamePlates 
+* Fixed an issue to prevent errors even if color settings are incorrectly configured.
+
+### asUnitFrame
+* Adjusted the health percentage to display down to one decimal place. 
+* Developer Note: Since the default API rounds down percentages, displaying decimal places should help improve accuracy.
+* Fixed the raid target icon position on the small health bar when portraits are turned off.
+* New Feature: **Changes the health bar background color for low health targets (`ShowLowHealth`)**
+  
+| Class | Low Health (Dark Purple) | High Health (Dark Blue) |
+| ------------- | ----------- | -----------|
+| Hunter | Kill Shot (Black Arrow) 20% | Black Arrow 80% |
+| Warrior | Execute 20% (35% with talent) | |
+| Mage | Scorch 30% | Firestarter 90% |
+| Priest | Shadow Word: Death 20% | |
+| Death Knight | Soul Reaper 35% | |
+| Destruction Warlock | Shadowburn 20% | |
+
+### asHealthText
+* Adjusted the health percentage to display down to one decimal place. 
+* Developer Note: Since the default API rounds down percentages, displaying decimal places should help improve accuracy.
+
+## 260613 update
+### asNamePlates 
+* Added Fire Mage's 90% Firestarter threshold to the "Display Low Health Background Color" feature.
+
 ## 260612 update
 ### asCompactRaidBuff 
 * Bug Fix: Fixed an issue where buffs were not being tracked properly when there were duplicate healers of the same class in the raid.
