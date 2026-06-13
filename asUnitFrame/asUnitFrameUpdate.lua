@@ -15,8 +15,8 @@ local icons = {
 
 local pctcurve = C_CurveUtil.CreateCurve();
 pctcurve:SetType(Enum.LuaCurveType.Linear);
-pctcurve:AddPoint(0.0, 0.0);
-pctcurve:AddPoint(1.0, 100.0);
+pctcurve:AddPoint(0, 0);
+pctcurve:AddPoint(1, 100);
 
 local function update_playerunit()
     local hasValidVehicleUI = UnitHasVehicleUI("player");
