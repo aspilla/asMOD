@@ -26,8 +26,8 @@ curve:AddPoint(1, 100);
 
 local function update_health(frame, unit)
 	if UnitExists(unit) then
-		local valuePct = UnitHealthPercent(unit, false, curve);
-		frame:SetText(string.format("%d", valuePct));
+		local valuePct = UnitHealthPercent(unit, true, curve);
+		frame:SetText(string.format("%.1f", valuePct));
 		frame:Show();
 
 		local role = UnitGroupRolesAssigned(unit);
