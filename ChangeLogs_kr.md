@@ -20,6 +20,9 @@ https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 | 죽기        |  영혼 수확자 35% |  |
 | 파흑        |  어둠의 연소 20% |  |
 
+### asPowerBar
+* 드루이드 수정, 표범폼일때만 연계점수가 보이도록 수정, 전특성 동일
+
 ### asHealthText
 * 생명력 백분율이 소숫점 1자리까지 표시 되도록 수정 
 * 재작자 의견 - API 백분율 표시 방식이 자리내림으로 표시 되어 수숫점 표시로 정확도를 높이는것이 좋을것으로 생각됨
