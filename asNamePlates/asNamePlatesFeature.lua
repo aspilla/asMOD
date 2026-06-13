@@ -26,8 +26,12 @@ function ns.update_power(asframe)
 end
 
 local function update_barcolor(asframe, color)
-    asframe.coloroverlay:SetVertexColor(color.r, color.g, color.b);
-    asframe.coloroverlay:Show();
+    if color.r and color.g and color.b then
+        asframe.coloroverlay:SetVertexColor(color.r, color.g, color.b);
+        asframe.coloroverlay:Show();
+    else
+        asframe.coloroverlay:Hide();
+    end
 end
 
 local function get_auracount(list)
@@ -94,8 +98,7 @@ local function get_color(asframe)
         end
     end
 
-    if status and ns.options.ShowCombat then
-        --return UnitHealthPercent(unit, ns.colorcurve);
+    if status and ns.options.ShowCombat then        
         return ns.options.CombatColor;
     end
 
@@ -137,7 +140,7 @@ function ns.update_color(asframe)
     end
 
     if ns.colorcurve and ns.options.ShowLowHealth then
-        local color = UnitHealthPercent(asframe.unit, false, ns.colorcurve);
+        local color = UnitHealthPercent(asframe.unit, true, ns.colorcurve);
 
         asframe.border:SetColorTexture(color:GetRGBA());
 
