@@ -2,7 +2,7 @@
 
 Firestarter and Scorch Alerts
 
-![asFirestarter](https://media.forgecdn.net/attachments/1731/398/asfirestarter-jpg.jpg)
+![asFirestarter](https://media.forgecdn.net/attachments/1732/812/asfirestarter-jpg.jpg)
 
 
 ## Key Features
@@ -15,7 +15,7 @@ Firestarter and Scorch Alerts
 
 Settings can be adjusted via **ESC > Options > AddOns > asFirestarter**:
 * `Button Size` (Default: 30)
-* `Health Text Size` (Default: 15)
+* `Health Text Size` (Default: 10)
 * `Display Health Percentage` (Default: On)
 * **Move Position**: Enter the `/asConfig` command in the chat window.
 * **Reset Position**: Enter the `/asClear` command in the chat window to reset to default settings.
@@ -31,7 +31,7 @@ Settings can be adjusted via **ESC > Options > AddOns > asFirestarter**:
 
 방화광 및 불태우기 알림
 
-![asFirestarter](https://media.forgecdn.net/attachments/1731/398/asfirestarter-jpg.jpg)
+![asFirestarter](https://media.forgecdn.net/attachments/1732/812/asfirestarter-jpg.jpg)
 
 
 ## 주요 기능
@@ -44,7 +44,7 @@ Settings can be adjusted via **ESC > Options > AddOns > asFirestarter**:
 
 esc >> 설정 >> 애드온 >> asFirestarter 에서 다음 설정이 가능합니다.
 *   `버튼 크기` (기본값: 30)
-*   `체력 글씨 크기` (기본값: 15) 
+*   `체력 글씨 크기` (기본값: 10) 
 *   `체력 수치 표시` (기본값: 표시)
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
