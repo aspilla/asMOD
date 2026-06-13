@@ -6,7 +6,7 @@ local gvalue = {
     bpartial   = false,
     powerlevel = nil,
     brogue     = false,
-    bferal     = false,
+    bdruid     = false,
 }
 
 function ns.setup_max_combo(max, maxpartial)
@@ -112,16 +112,34 @@ function ns.show_combo(combo, partial)
         end
     end
 
-    if gvalue.bferal then
+    if gvalue.bdruid then
         local aura = C_UnitAuras.GetPlayerAuraBySpellID(405189);
         local count = aura and aura.applications or 0
         for i = 1, max do
             local combobar = combobars[i];
-
             if i <= count then
                 combobar:SetStatusBarColor(0, 1, 1);
             else
                 combobar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
+            end
+        end
+    end
+end
+
+local function check_form()
+    local combobars = ns.combobars;
+    local max = gvalue.maxcombo;
+    if gvalue.bdruid then
+        local formid = GetShapeshiftFormID()
+        if formid == 1 then
+            for i = 1, max do
+                local combobar = combobars[i];
+                combobar:Show();
+            end
+        else
+            for i = 1, max do
+                local combobar = combobars[i];
+                combobar:Hide();
             end
         end
     end
@@ -140,12 +158,12 @@ local function get_regen()
         else
             return 0.2;
         end
-    elseif peace then        
+    elseif peace then
         prevregan = peace;
         return prevregan
     else
         return 0.2;
-    end       
+    end
 end
 
 local function update_combo()
@@ -190,6 +208,10 @@ local function update_combo()
 end
 
 local function on_event(self, event, arg1)
+    if event == "UPDATE_SHAPESHIFT_FORM" then
+        check_form();
+    end
+
     update_combo();
 end
 
@@ -198,13 +220,13 @@ local timer = nil;
 
 main_frame:SetScript("OnEvent", on_event);
 
-function ns.setup_combo(powerlevel, bpartial, brogue, bferal)
+function ns.setup_combo(powerlevel, bpartial, brogue, bdruid)
     local updaterate = 0.2;
     if powerlevel and ns.options.ShowClassResource then
         gvalue.bpartial = bpartial;
         gvalue.powerlevel = powerlevel;
         gvalue.brogue = brogue;
-        gvalue.bferal = bferal;
+        gvalue.bdruid = bdruid;
         local max = UnitPowerMax("player", gvalue.powerlevel);
         local maxpartial = nil;
         if gvalue.bpartial then
@@ -216,8 +238,13 @@ function ns.setup_combo(powerlevel, bpartial, brogue, bferal)
         end
 
         ns.setup_max_combo(max, maxpartial);
+        check_form();
+        update_combo();        
         main_frame:RegisterEvent("UNIT_POWER_UPDATE");
         main_frame:RegisterEvent("UNIT_DISPLAYPOWER");
+        if bdruid then
+            main_frame:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
+        end
         timer = C_Timer.NewTicker(updaterate, update_combo);
     end
 end
@@ -225,6 +252,7 @@ end
 function ns.clear_combo()
     main_frame:UnregisterEvent("UNIT_POWER_UPDATE")
     main_frame:UnregisterEvent("UNIT_DISPLAYPOWER");
+    main_frame:UnregisterEvent("UPDATE_SHAPESHIFT_FORM");
 
     if timer then
         timer:Cancel();

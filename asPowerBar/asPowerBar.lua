@@ -67,7 +67,7 @@ local function init_class()
     local powerlevel = nil;
     local bpartial = false;
     local brogue = false;
-    local bferal = false;
+    local bdruid = false;
     local spellid = nil;
     local auraid = nil;
     local max_aura = nil;
@@ -154,18 +154,8 @@ local function init_class()
     end
 
     if (englishClass == "DRUID") then
-        if (spec and spec == 2) then
-            powerlevel = Enum.PowerType.ComboPoints;
-            bferal = true; 
-        end
-
-        if (spec and spec == 3) then
-            spellid = 22842;
-        end
-
-        if (spec and spec == 4) then
-            powerlevel = Enum.PowerType.ComboPoints;
-        end
+        powerlevel = Enum.PowerType.ComboPoints;
+        bdruid = true;
     end
 
     if (englishClass == "MONK") then
@@ -270,7 +260,7 @@ local function init_class()
     if auraid then
         ns.setup_auracombo(auraid, max_aura);
     elseif powerlevel then
-        ns.setup_combo(powerlevel, bpartial, brogue, bferal);
+        ns.setup_combo(powerlevel, bpartial, brogue, bdruid);
     elseif bupdaterune then
         ns.setup_rune(bupdaterune);
     elseif spellid then
@@ -320,7 +310,7 @@ local function init_addon()
     main_frame.bgframe:SetHeight(ns.options.PowerBarHeight)
     main_frame.bgframe:SetFrameLevel(ns.configs.framelevel - 100);
     main_frame.bgframe:Show();
-   
+
 
     ns.bar = CreateFrame("StatusBar", nil, main_frame)
     ns.bar:SetFrameLevel(ns.configs.framelevel);
@@ -339,7 +329,7 @@ local function init_addon()
     ns.bg:SetPoint("BOTTOMRIGHT", ns.bar, "BOTTOMRIGHT", 1, -1);
     ns.bg:SetColorTexture(0, 0, 0, 1);
 
-    
+
 
     ns.bar.text = main_frame:CreateFontString(nil, "ARTWORK");
     ns.bar.text:SetFont(ns.configs.font, ns.options.FontSize, ns.configs.fontOutline);
