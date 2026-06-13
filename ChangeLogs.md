@@ -21,6 +21,9 @@ https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 | Death Knight | Soul Reaper 35% | |
 | Destruction Warlock | Shadowburn 20% | |
 
+### asPowerBar
+* Druid Updates: Adjusted combo points to only be visible while in Cat Form (Applies to all specializations).
+
 ### asHealthText
 * Adjusted the health percentage to display down to one decimal place. 
 * Developer Note: Since the default API rounds down percentages, displaying decimal places should help improve accuracy.
