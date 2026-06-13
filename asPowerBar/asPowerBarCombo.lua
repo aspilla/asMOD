@@ -127,9 +127,9 @@ function ns.show_combo(combo, partial)
 end
 
 local function check_form()
-    local combobars = ns.combobars;
-    local max = gvalue.maxcombo;
     if gvalue.bdruid then
+        local combobars = ns.combobars;
+        local max = gvalue.maxcombo;
         local formid = GetShapeshiftFormID()
         if formid == 1 then
             for i = 1, max do
