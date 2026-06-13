@@ -61,6 +61,16 @@ This addon replaces the default unit frames. It is recommended to use it with ot
 * **Right-click Menu:** Right-clicking each unit frame enables the target interaction menu.
 * **Ping/Click-Cast System Support:** * **Vehicle Interface:** When the player enters a vehicle, the player frame automatically switches to the vehicle unit, and the pet frame switches to the player unit.
 * **Combat Status Transparency:** Transparency is slightly lower (50%) out of combat and becomes fully opaque (100%) during combat.
+* **Changes the health bar background color for low health targets (`ShowLowHealth`)**
+  
+| Class | Low Health (Dark Purple) | High Health (Dark Blue) |
+| ------------- | ----------- | -----------|
+| Hunter | 20% for Kill Shot (Black Arrow) | 80% for Black Arrow |
+| Warrior | 20% for Execute (35% with talent) | |
+| Mage | 30% for Scorch | 90% for Firestarter |
+| Priest | 20% for Shadow Word: Death | |
+| Death Knight | 35% for Soul Reaper | |
+| Destruction Warlock | 20% for Shadowburn | |
 
 ## Configuration
 
@@ -76,6 +86,7 @@ This addon replaces the default unit frames. It is recommended to use it with ot
     * `CheckRange` : Checks distance with target/focus/boss
     * `OffPortraitDebuffOnRaid` : Do not show stun debuffs on portraits during raids
     * `CombatAlphaChange` : Transparency change out of combat
+    * `ShowLowHealth` : Changes the health bar background color for low health targets 
     * **Player/Target Size Adjustment**
     * `Width` : Default 200
     * `Height`: Default 35
@@ -172,6 +183,16 @@ The following errors may occur.
 *   **핑(Ping)/클릭 시전 시스템 지원:** 
 *   **차량 탑승:** 플레이어가 차량에 탑승하면 플레이어 프레임이 차량 유닛으로, 소환수 프레임이 플레이어 유닛으로 자동 전환.
 *   **전투 상태 투명도:** 비전투 시 프레임 투명도가 약간 낮아지고(50%), 전투 시 완전히 불투명해짐(100%).
+* **낮은 체력 대상 체력바 배경 색상 변경 (`ShowLowHealth`)**
+  
+| 직업          | 낮은 체력 (어두운 보라색)   |높은 체력  (어두운 파란색)  |
+| ------------- | ----------- | -----------|
+| 사냥꾼        | 마무리 사격(어둠 화살) 20%  | 어둠 화살 80%  |
+| 전사        | 마무리 일격 20% (특성시 35%) |  |
+| 마법사        | 불태우기 30% | 방화광 90%  |
+| 사제        |  죽음 20% |  |
+| 죽기        |  영혼 수확자 35% |  |
+| 파흑        |  어둠의 연소 20% |  |
 
 ## 설정
 
@@ -187,6 +208,7 @@ The following errors may occur.
     *   `CheckRange` : 대상/주시/보스와의 거리를 체크
     *   `OffPortraitDebuffOnRaid` : 레이드에서는 초상화에 스턴 디버프 표시 안함
     *   `CombatAlphaChange` : 비전투시 투명도 변경
+    *   `ShowLowHealth` : 대상 낮은 체력시 색상 변경
     *   **플레이어 대상 크기 조정**
     *   `Width` :기본값 200
     *   `Height`:기본값  35

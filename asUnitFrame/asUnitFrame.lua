@@ -12,6 +12,9 @@ local configs = {
     font = STANDARD_TEXT_FONT,
     framelevel = 900,
     notinterruptcolor = { 0.6, 0.6, 0.6 },
+    lowhealthcolor = { r = 0.2, g = 0, b = 0.2 },
+    highhealthcolor = { r = 0.2, g = 0, b = 0.5 },
+
 };
 
 ns.isevoker = false;
@@ -394,15 +397,15 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
         if is_small then
             if x < 0 then
                 frame.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -4, 0);
-                frame.sperator:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3 + 4), 0);
-                frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3 + 12), 0);
+                frame.sperator:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4), 0);
+                frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4 + 8), 0);
                 frame.name:SetPoint("LEFT", frame, "LEFT", 4, 0);
                 frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
                 frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
             else
                 frame.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 4, 0);
-                frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3 + 4), 0);
-                frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3 + 12), 0);
+                frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4), 0);
+                frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4 + 8), 0);
                 frame.name:SetPoint("RIGHT", frame, "RIGHT", -4, 0);
                 frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
                 frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
@@ -410,15 +413,15 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
         else
             if x < 0 then
                 frame.pvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -4, 4);
-                frame.sperator:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 3 + 4), 4);
-                frame.hvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 3 + 12), 4);
+                frame.sperator:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 4), 4);
+                frame.hvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 4 + 8), 4);
                 frame.name:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, -4);
                 frame.classtext:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 4, 4);
                 frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
             else
                 frame.pvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", 4, 4);
-                frame.sperator:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 3 + 4), 4);
-                frame.hvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 3 + 12), 4);
+                frame.sperator:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 4), 4);
+                frame.hvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 4 + 8), 4);
                 frame.name:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -4);
                 frame.classtext:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -4, 4);
                 frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
@@ -427,15 +430,15 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     else
         if x < 0 then
             frame.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -4, 0);
-            frame.sperator:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3 + 4), 0);
-            frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 3 + 12), 0);
+            frame.sperator:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4), 0);
+            frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4 + 8), 0);
             frame.name:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
             frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
             frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
         else
             frame.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 4, 0);
-            frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3 + 4), 0);
-            frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 3 + 12), 0);
+            frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4), 0);
+            frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4 + 8), 0);
             frame.name:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
             frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
             frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
@@ -462,7 +465,11 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     frame.mark:SetHeight(fontsize + 2);
 
     if not ns.options.ShowPortrait then
-        frame.mark:SetPoint("BOTTOM", frame.pvalue, "TOP", 0, 1);
+        if is_small then
+            frame.mark:SetPoint("CENTER", frame.healthbar, "CENTER", 0, 0);            
+        else
+            frame.mark:SetPoint("BOTTOM", frame.pvalue, "TOP", 0, 1);
+        end
     else
         if x < 0 then
             frame.mark:SetPoint("LEFT", frame.healthbar, "LEFT", 10, 0);
@@ -683,6 +690,84 @@ local function update_unitportait(unit)
 end
 
 
+local function init_lowhealth()
+    local localizedClass, englishClass = UnitClass("player");
+
+    local lowhealthpercent = 0;
+    local highhealthpercent = 0;
+    do
+        if (englishClass == "MAGE") then
+            if (C_SpellBook.IsSpellKnown(2948)) then
+                lowhealthpercent = 30;
+            end
+
+            if (C_SpellBook.IsSpellKnown(205026)) then
+                highhealthpercent = 90;
+            end
+        end
+
+        if (englishClass == "HUNTER") then
+            if (C_SpellBook.IsSpellKnown(466930) or C_SpellBook.IsSpellKnown(466932)) then
+                highhealthpercent = 80;
+                lowhealthpercent = 20;
+            elseif (C_SpellBook.IsSpellKnown(53351)) then
+                lowhealthpercent = 20;
+            end
+        end
+
+        if (englishClass == "WARRIOR") then
+            if (C_SpellBook.IsSpellKnown(281001)) then
+                lowhealthpercent = 35;
+            else
+                lowhealthpercent = 20;
+            end
+        end
+
+        if (englishClass == "PRIEST") then
+            if (C_SpellBook.IsSpellKnown(32379)) then
+                lowhealthpercent = 20;
+            end
+        end
+
+        if (englishClass == "DEATHKNIGHT") then
+            if (C_SpellBook.IsSpellKnown(343294)) then
+                lowhealthpercent = 35;
+            end
+        end
+
+        if (englishClass == "WARLOCK") then
+            if (C_SpellBook.IsSpellKnown(17877)) then --어연
+                lowhealthpercent = 20;
+            end
+        end
+    end
+
+    if highhealthpercent > 0 and lowhealthpercent > 0 then
+        ns.colorcurve = C_CurveUtil.CreateColorCurve();
+        ns.colorcurve:SetType(Enum.LuaCurveType.Step);
+        ns.colorcurve:AddPoint(highhealthpercent / 100,
+            CreateColor(configs.highhealthcolor.r, configs.highhealthcolor.g, configs.highhealthcolor.b, 1));
+        ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0, 0, 0, 1));
+        ns.colorcurve:AddPoint(0,
+            CreateColor(configs.lowhealthcolor.r, configs.lowhealthcolor.g, configs.lowhealthcolor.b, 1));
+    elseif lowhealthpercent > 0 then
+        ns.colorcurve = C_CurveUtil.CreateColorCurve();
+        ns.colorcurve:SetType(Enum.LuaCurveType.Step);
+        ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0, 0, 0, 1));
+        ns.colorcurve:AddPoint(0,
+            CreateColor(configs.lowhealthcolor.r, configs.lowhealthcolor.g, configs.lowhealthcolor.b, 1));
+    elseif highhealthpercent > 0 then
+        ns.colorcurve = C_CurveUtil.CreateColorCurve();
+        ns.colorcurve:SetType(Enum.LuaCurveType.Step);
+        ns.colorcurve:AddPoint(highhealthpercent / 100,
+            CreateColor(configs.highhealthcolor.r, configs.highhealthcolor.g, configs.highhealthcolor.b, 1));
+        ns.colorcurve:AddPoint(0, CreateColor(0, 0, 0, 1));
+    else
+        ns.colorcurve = nil;
+    end
+end
+
+
 local function init(framelist)
     ns.setup_option();
 
@@ -758,6 +843,8 @@ local function init(framelist)
     if engclass == "EVOKER" or engclass == "DEMONHUNTER" then
         ns.isevoker = true;
     end
+
+    init_lowhealth();
 end
 
 local bfirst = true;
@@ -794,6 +881,8 @@ local function on_mainevent(self, event, ...)
             local unit = "boss" .. i;
             update_unitframe(unit);
         end
+    elseif event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" then
+        init_lowhealth();
     end
 end
 local main_frame = CreateFrame("Frame");
@@ -808,3 +897,6 @@ main_frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
 main_frame:RegisterUnitEvent("UNIT_TARGET", "target");
 main_frame:RegisterUnitEvent("UNIT_PET", "player");
 main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
+main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");

@@ -9,6 +9,7 @@ local Options_Default = {
     ShowAggroInfo = true,
     CheckRange = true,
     CombatAlphaChange = true,
+    ShowLowHealth = true,
     Width = 200,
     Height = 35,
     PowerWidth = 80,

@@ -13,10 +13,10 @@ local icons = {
 
 };
 
-local curve = C_CurveUtil.CreateCurve();
-curve:SetType(Enum.LuaCurveType.Linear);
-curve:AddPoint(0, 0);
-curve:AddPoint(1, 100);
+local pctcurve = C_CurveUtil.CreateCurve();
+pctcurve:SetType(Enum.LuaCurveType.Linear);
+pctcurve:AddPoint(0.0, 0.0);
+pctcurve:AddPoint(1.0, 100.0);
 
 local function update_playerunit()
     local hasValidVehicleUI = UnitHasVehicleUI("player");
@@ -60,33 +60,42 @@ function ns.update_unithealth(frame)
 
     -- Healthbar
     local value = UnitHealth(unit);
-    local valueMax = UnitHealthMax(unit);
-    local valuePct = UnitHealthPercent(unit, false, curve);
+    local max = UnitHealthMax(unit);
+    local pct = UnitHealthPercent(unit, true, pctcurve);
 
     local incomingheal = UnitGetIncomingHeals(unit) or 0;
     local totalabsorb = UnitGetTotalAbsorbs(unit) or 0;
     local totalhealabsorb = UnitGetTotalHealAbsorbs(unit) or 0;
 
 
-    frame.healthbar:SetMinMaxValues(0, valueMax)
+    frame.healthbar:SetMinMaxValues(0, max)
     frame.healthbar:SetValue(value, Enum.StatusBarInterpolation.ExponentialEaseOut);
 
-    frame.healthbar.absorbBar:SetMinMaxValues(0, valueMax);
+    frame.healthbar.absorbBar:SetMinMaxValues(0, max);
     frame.healthbar.absorbBar:SetValue(totalabsorb, Enum.StatusBarInterpolation.ExponentialEaseOut);
 
-    frame.healthbar.healabsorbBar:SetMinMaxValues(0, valueMax);
+    frame.healthbar.healabsorbBar:SetMinMaxValues(0, max);
     frame.healthbar.healabsorbBar:SetValue(totalhealabsorb, Enum.StatusBarInterpolation.ExponentialEaseOut);
 
-    frame.healthbar.incominghealBar:SetMinMaxValues(0, valueMax);
+    frame.healthbar.incominghealBar:SetMinMaxValues(0, max);
     frame.healthbar.incominghealBar:SetValue(incomingheal, Enum.StatusBarInterpolation.ExponentialEaseOut);
 
     if UnitIsDead(unit) then
         frame.pvalue:SetText("Dead");
     else
-        frame.pvalue:SetText(string.format("%d", valuePct));
+        frame.pvalue:SetText(string.format("%.1f", pct));
     end
 
-    frame.hvalue:SetText(AbbreviateLargeNumbers(value))
+    frame.hvalue:SetText(AbbreviateLargeNumbers(value));
+
+    if ns.colorcurve and ns.options.ShowLowHealth and UnitCanAttack("player", unit) then
+        local color = UnitHealthPercent(unit, true, ns.colorcurve);
+
+        frame.healthbar.bg:SetColorTexture(color:GetRGBA());
+
+    else
+        frame.healthbar.bg:SetColorTexture(0, 0, 0);
+    end
 end
 
 function ns.update_unitframe_other(frame)
