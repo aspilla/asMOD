@@ -1,10 +1,10 @@
 
 local _, ns = ...;
 local Options_Default = {
-    Version = 260611,
+    Version = 260612,
     Size = 30,
     ShowHealth = true,
-    FontSize = 15,
+    FontSize = 10,
 };
 
 local L= {

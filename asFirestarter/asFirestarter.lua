@@ -2,7 +2,7 @@
 
 local configs = {
     updaterate = 0.2,
-    maxshow = 10,
+    maxshow = 2,
     xpoint = 0,
     ypoint = -60,
     baseframelevel = 1000,
@@ -23,14 +23,14 @@ local function on_update()
         local curve = button.curve;
 
         if curve then
-            if UnitExists("target") and UnitCanAttack("player", "target") then
-                local alpha = UnitHealthPercent("target", false, curve);
+            if UnitExists("target") and UnitCanAttack("player", "target") and not UnitIsDead("target") then
+                local alpha = UnitHealthPercent("target", true, curve);
 
                 button:Show();
                 button:SetAlpha(alpha);
                 if ns.options.ShowHealth then
-                    local pct = UnitHealthPercent("target", false, hcurve);
-                    button.health:SetText(string.format("%d", pct));
+                    local pct = UnitHealthPercent("target", true, hcurve);
+                    button.health:SetText(string.format("%.1f", pct));
                 else
                     button.health:Hide();
                 end
