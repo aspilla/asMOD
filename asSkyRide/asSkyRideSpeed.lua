@@ -1,7 +1,6 @@
 local _, ns = ...;
 
 local function update_speed()
-
     if not ns.ready then
         return;
     end
@@ -13,17 +12,20 @@ local function update_speed()
 
     ns.frame:Show();
 
-    local isGliding, canGlide, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
-	local base = isGliding and forwardSpeed or GetUnitSpeed("player")
-	local movespeed = Round(base / BASE_MOVEMENT_SPEED * 100);
+    local isGliding, canGlide, forwardSpeed = C_PlayerInfo.GetGlidingInfo();
+    local base = isGliding and forwardSpeed or GetUnitSpeed("player");
 
-    ns.bar:SetMinMaxValues(0, 1100)
-    ns.bar:SetValue(movespeed, Enum.StatusBarInterpolation.ExponentialEaseOut);
+    if not issecretvalue(base) then
+        local movespeed = Round(base / BASE_MOVEMENT_SPEED * 100);
 
-    local durationinfo = C_Spell.GetSpellCooldownDuration(361584)
+        ns.bar:SetMinMaxValues(0, 1100)
+        ns.bar:SetValue(movespeed, Enum.StatusBarInterpolation.ExponentialEaseOut);
 
-    if durationinfo then
-        ns.bar.text:SetText(string.format("%2d", durationinfo:GetRemainingDuration(0)));
+        local durationinfo = C_Spell.GetSpellCooldownDuration(361584)
+
+        if durationinfo then
+            ns.bar.text:SetText(string.format("%.1f", durationinfo:GetRemainingDuration(0)));
+        end
     end
 end
 
