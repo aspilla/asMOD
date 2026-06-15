@@ -1,6 +1,16 @@
 # ChangeLogs
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260615 update
+#### asPremadeGroupFilter, asCPUProfile, asGCDBar, asInterruptHelper, asRangeDisplay, asTrueGCD, asFixHotkey, asHideActionBars, asHideBagsBar, asMisdirection, asSpamFilter, asFixChat, asActiveAlert, asBuffFilter, asDotFilter
+* 12.0.7 Toc update
+
+#### asSkyRide
+* Bug fix
+* Showing `Whirling Surge` cooldown time with 0.1 second resolution.
+
+#### asCooldownPulse
+* Add Orc warlock racial spell
 
 ## 260614 update
 ### asNamePlates 

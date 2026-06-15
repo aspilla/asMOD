@@ -1,6 +1,17 @@
 # 변경점
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260615 update
+#### asPremadeGroupFilter, asCPUProfile, asGCDBar, asInterruptHelper, asRangeDisplay, asTrueGCD, asFixHotkey, asHideActionBars, asHideBagsBar, asMisdirection, asSpamFilter, asFixChat, asActiveAlert, asBuffFilter, asDotFilter
+* 12.0.7 Toc 수정
+
+#### asSkyRide
+* 오류 수정
+* `전방 쇄도` 남은시간을 0.1초 단위로 표시
+
+#### asCooldownPulse
+* 오크 흑마법사 종특 추가
+
 ## 260614 update
 ### asNamePlates 
 * 색상 설정이 잘 못 되었어도 오류가 안나도록 수정

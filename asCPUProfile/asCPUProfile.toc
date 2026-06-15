@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rCPUProfile
 ## Notes: Check addon latency and performance (/asCPU)
 ## Notes-koKR:애드온 Latency 성능 확인 (/asCPU)
-## Version : 251225
+## Version : 260615
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asCPUProfile.lua

@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rHideActionBar
 ## Notes: Automatically hides action bars
 ## Notes-koKR: 액션 바를 자동 숨김
-## Version : 260124
+## Version : 260615
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## SavedVariablesPerCharacter: AHAB_Options
 ## Category: asMOD
