@@ -1,6 +1,21 @@
 # ChangeLogs
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260617 update
+#### asHealthText
+* Add option
+Adjustable via **ESC > Options > AddOns > asHealthText**
+* `Display Health Decimals` (Default: On)
+
+#### asDBMTimer
+* Added role icon display.
+![asDBMTimer](https://media.forgecdn.net/attachments/1738/743/asdbmtimer-jpg.jpg)
+5. **Display Role Assignment Icons (Tank, etc.)**: Can be turned Off in the settings.
+
+#### asInterruptHelper
+* Add Devourer `Void Nova`
+
+
 ## 260615 update
 #### asPremadeGroupFilter, asCPUProfile, asGCDBar, asInterruptHelper, asRangeDisplay, asTrueGCD, asFixHotkey, asHideActionBars, asHideBagsBar, asMisdirection, asSpamFilter, asFixChat, asActiveAlert, asBuffFilter, asDotFilter
 * 12.0.7 Toc update

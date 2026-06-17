@@ -1,6 +1,21 @@
 # 변경점
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260617 update
+#### asHealthText
+* 설정 추가
+**esc >> 설정 >> 애드온 >> asHealthText** 에서 설정 가능
+* `생명력 소숫점 첫자리 표시` (기본 On)
+
+#### asDBMTimer
+* 임무 아이콘 표시 추가
+![asDBMTimer](https://media.forgecdn.net/attachments/1738/743/asdbmtimer-jpg.jpg)
+5.  **역할 임무 아이콘 표시(탱커 등)** : 설정에서 Off 가능
+
+#### asInterruptHelper
+* 포식악사 `공허 회오리` 추가
+
+
 ## 260615 update
 #### asPremadeGroupFilter, asCPUProfile, asGCDBar, asInterruptHelper, asRangeDisplay, asTrueGCD, asFixHotkey, asHideActionBars, asHideBagsBar, asMisdirection, asSpamFilter, asFixChat, asActiveAlert, asBuffFilter, asDotFilter
 * 12.0.7 Toc 수정
