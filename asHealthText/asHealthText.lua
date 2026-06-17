@@ -24,10 +24,12 @@ curve:SetType(Enum.LuaCurveType.Linear);
 curve:AddPoint(0, 0);
 curve:AddPoint(1, 100);
 
+local formattext = "%.1f";
+
 local function update_health(frame, unit)
 	if UnitExists(unit) then
 		local valuePct = UnitHealthPercent(unit, true, curve);
-		frame:SetText(string.format("%.1f", valuePct));
+		frame:SetText(string.format(formattext, valuePct));
 		frame:Show();
 
 		local role = UnitGroupRolesAssigned(unit);
@@ -138,7 +140,6 @@ local function update_rune()
 
 	ns.rune_power:SetText(tostring(runeCount));
 end
-
 
 local function update_combo()
 	if ns.powerlevel then
@@ -318,65 +319,6 @@ local function on_update()
 end
 
 
-local function on_load()
-	ns.playerhealth = main_frame:CreateFontString(nil, "OVERLAY");
-	ns.player_mana = main_frame:CreateFontString(nil, "OVERLAY");
-	ns.target_health = main_frame:CreateFontString(nil, "OVERLAY");
-	ns.target_mana = main_frame:CreateFontString(nil, "OVERLAY");
-	ns.pet_health = main_frame:CreateFontString(nil, "OVERLAY");
-	ns.pet_mana = main_frame:CreateFontString(nil, "OVERLAY");
-	ns.threat_value = main_frame:CreateFontString(nil, "OVERLAY");
-	ns.targettarget = main_frame:CreateFontString(nil, "OVERLAY");
-	ns.rune_power = main_frame:CreateFontString(nil, "OVERLAY");
-	ns.raidicon = main_frame:CreateTexture(nil, "ARTWORK");
-	ns.combo_power = main_frame:CreateFontString(nil, "OVERLAY");
-
-	ns.playerhealth:SetFont(configs.font, configs.healthsize, configs.fontoutline)
-	ns.player_mana:SetFont(configs.font, configs.manasize, configs.fontoutline)
-	ns.target_health:SetFont(configs.font, configs.healthsize, configs.fontoutline)
-	ns.target_mana:SetFont(configs.font, configs.manasize, configs.fontoutline)
-	ns.pet_health:SetFont(configs.font, configs.petsize, configs.fontoutline)
-	ns.pet_mana:SetFont(configs.font, configs.petmanasize, configs.fontoutline)
-	ns.threat_value:SetFont(configs.font, configs.manasize, configs.fontoutline)
-	ns.targettarget:SetFont(configs.font, configs.manasize, configs.fontoutline)
-	ns.rune_power:SetFont(configs.font, configs.healthsize, configs.fontoutline)
-	ns.raidicon:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
-	ns.raidicon:SetSize(configs.healthsize, configs.healthsize);
-	ns.combo_power:SetFont(configs.font, configs.healthsize, configs.fontoutline)
-
-	ns.playerhealth:SetPoint("CENTER", UIParent, "CENTER", 0 - configs.xpoint, configs.ypoint)
-	ns.player_mana:SetPoint("TOP", ns.playerhealth, "BOTTOM", 0, -2)
-	ns.target_health:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
-	ns.target_mana:SetPoint("TOP", ns.target_health, "BOTTOM", 0, -2)
-	ns.targettarget:SetPoint("BOTTOM", ns.target_health, "TOP", 0, 2)
-	ns.threat_value:SetPoint("BOTTOM", ns.targettarget, "TOP", 0, 2)
-
-	ns.rune_power:SetPoint("RIGHT", ns.playerhealth, "LEFT", -2, 0)
-	ns.combo_power:SetPoint("RIGHT", ns.rune_power, "LEFT", 0, 0)
-	ns.raidicon:SetPoint("LEFT", ns.target_health, "RIGHT", 2, 0)
-	ns.pet_health:SetPoint("RIGHT", ns.combo_power, "LEFT", -2, 0)
-	ns.pet_mana:SetPoint("TOP", ns.pet_health, "BOTTOM", 0, -2)
-
-
-	ns.combo_power:SetTextColor(1, 1, 0, 1)
-
-
-	init_powertype();
-
-	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
-	main_frame:RegisterEvent("PLAYER_REGEN_DISABLED")
-	main_frame:RegisterEvent("PLAYER_REGEN_ENABLED")
-	main_frame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
-	main_frame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
-	main_frame:RegisterEvent("VARIABLES_LOADED")
-	main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-	main_frame:RegisterEvent("PLAYER_TALENT_UPDATE")
-	main_frame:RegisterUnitEvent("UNIT_TARGET", "target")
-	main_frame:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", "player", "target");
-	main_frame:RegisterEvent("RAID_TARGET_UPDATE");
-end
-
 
 local function on_event(self, event, arg1, arg2, arg3, ...)
 	if event == "PLAYER_ENTERING_WORLD" or event == "VARIABLES_LOADED" then
@@ -492,7 +434,73 @@ local function on_event(self, event, arg1, arg2, arg3, ...)
 	return;
 end
 
-main_frame:SetFrameStrata("MEDIUM");
-main_frame:SetScript("OnEvent", on_event)
-C_Timer.NewTicker(0.1, on_update);
-on_load()
+local function init()
+	ns.setup_option();
+
+	if not ns.options.ShowDecimal then
+		formattext = "%.0f";
+	end
+
+	ns.playerhealth = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.player_mana = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.target_health = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.target_mana = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.pet_health = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.pet_mana = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.threat_value = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.targettarget = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.rune_power = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.raidicon = main_frame:CreateTexture(nil, "ARTWORK");
+	ns.combo_power = main_frame:CreateFontString(nil, "OVERLAY");
+
+	ns.playerhealth:SetFont(configs.font, configs.healthsize, configs.fontoutline)
+	ns.player_mana:SetFont(configs.font, configs.manasize, configs.fontoutline)
+	ns.target_health:SetFont(configs.font, configs.healthsize, configs.fontoutline)
+	ns.target_mana:SetFont(configs.font, configs.manasize, configs.fontoutline)
+	ns.pet_health:SetFont(configs.font, configs.petsize, configs.fontoutline)
+	ns.pet_mana:SetFont(configs.font, configs.petmanasize, configs.fontoutline)
+	ns.threat_value:SetFont(configs.font, configs.manasize, configs.fontoutline)
+	ns.targettarget:SetFont(configs.font, configs.manasize, configs.fontoutline)
+	ns.rune_power:SetFont(configs.font, configs.healthsize, configs.fontoutline)
+	ns.raidicon:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
+	ns.raidicon:SetSize(configs.healthsize, configs.healthsize);
+	ns.combo_power:SetFont(configs.font, configs.healthsize, configs.fontoutline)
+
+	ns.playerhealth:SetPoint("CENTER", UIParent, "CENTER", 0 - configs.xpoint, configs.ypoint)
+	ns.player_mana:SetPoint("TOP", ns.playerhealth, "BOTTOM", 0, -2)
+	ns.target_health:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
+	ns.target_mana:SetPoint("TOP", ns.target_health, "BOTTOM", 0, -2)
+	ns.targettarget:SetPoint("BOTTOM", ns.target_health, "TOP", 0, 2)
+	ns.threat_value:SetPoint("BOTTOM", ns.targettarget, "TOP", 0, 2)
+
+	ns.rune_power:SetPoint("RIGHT", ns.playerhealth, "LEFT", -2, 0)
+	ns.combo_power:SetPoint("RIGHT", ns.rune_power, "LEFT", 0, 0)
+	ns.raidicon:SetPoint("LEFT", ns.target_health, "RIGHT", 2, 0)
+	ns.pet_health:SetPoint("RIGHT", ns.combo_power, "LEFT", -2, 0)
+	ns.pet_mana:SetPoint("TOP", ns.pet_health, "BOTTOM", 0, -2)
+
+
+	ns.combo_power:SetTextColor(1, 1, 0, 1)
+
+
+	init_powertype();
+
+	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
+	main_frame:RegisterEvent("PLAYER_REGEN_DISABLED")
+	main_frame:RegisterEvent("PLAYER_REGEN_ENABLED")
+	main_frame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+	main_frame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
+	main_frame:RegisterEvent("VARIABLES_LOADED")
+	main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+	main_frame:RegisterEvent("PLAYER_TALENT_UPDATE")
+	main_frame:RegisterUnitEvent("UNIT_TARGET", "target")
+	main_frame:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", "player", "target");
+	main_frame:RegisterEvent("RAID_TARGET_UPDATE");
+
+	main_frame:SetFrameStrata("MEDIUM");
+	main_frame:SetScript("OnEvent", on_event)
+	C_Timer.NewTicker(0.1, on_update);
+end
+
+C_Timer.After(0.5, init);

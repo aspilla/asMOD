@@ -28,8 +28,8 @@ Displays health and resource percentages for the player, target, and pet, along 
     * **Evoker**: Essence.
 
 ## Configuration
-
-This addon does not have an in-game GUI. You can adjust the positioning and settings by editing the **Lua variables** located at the top of the `asHealthText/asHealthText.lua` file.
+Adjustable via **ESC > Options > AddOns > asHealthText**
+* `Display Health Decimals` (Default: On)
 
 ## Contact Information
 1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
@@ -68,8 +68,9 @@ This addon does not have an in-game GUI. You can adjust the positioning and sett
 
 
 ## 설정
+**esc >> 설정 >> 애드온 >> asHealthText** 에서 설정 가능
+* `생명력 소숫점 첫자리 표시` (기본 On)
 
-별도 설정은 없으며 `asHealthText/asHealthText.lua` 파일 상단의 Lua 변수를 편집하여 위치 조정 가능
 
 ## 문의처
 1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
