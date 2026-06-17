@@ -19,16 +19,17 @@ local function setupUI()
 	ns.setup_option();
 
 	ns.asDBMTimer = CreateFrame("FRAME", nil, UIParent);
-	ns.asDBMTimer:SetFrameStrata("LOW");
-	ns.asDBMTimer:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
-	ns.asDBMTimer:SetWidth(100)
-	ns.asDBMTimer:SetHeight(100)
-	ns.asDBMTimer:Show();
-	ns.asDBMTimer.buttons = {};
+	local timerframe = ns.asDBMTimer;
+	timerframe:SetFrameStrata("LOW");
+	timerframe:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
+	timerframe:SetWidth(100)
+	timerframe:SetHeight(100)
+	timerframe:Show();
+	timerframe.buttons = {};
 
 	for i = 1, configs.maxshow do
-		ns.asDBMTimer.buttons[i] = CreateFrame("Button", nil, ns.asDBMTimer, "asDBMTimerFrameTemplate");
-		local button = ns.asDBMTimer.buttons[i];
+		timerframe.buttons[i] = CreateFrame("Button", nil, timerframe, "asDBMTimerFrameTemplate");
+		local button = timerframe.buttons[i];
 		button:SetWidth(ns.options.Size);
 		button:SetHeight(ns.options.Size * 0.9);
 		button:SetAlpha(1);
@@ -41,7 +42,7 @@ local function setupUI()
 		if i == 1 then
 			button:SetPoint("CENTER", 0, 0);
 		else
-			button:SetPoint("RIGHT", ns.asDBMTimer.buttons[i - 1], "LEFT", -1, 0);
+			button:SetPoint("RIGHT", timerframe.buttons[i - 1], "LEFT", -1, 0);
 		end
 		button.cooltext = button:CreateFontString(nil, "OVERLAY");
 		button.cooltext:SetFont(configs.font, configs.coolfontsize, configs.fontoutline)
@@ -63,7 +64,11 @@ local function setupUI()
 			else
 				button.icons[j]:SetPoint("LEFT", button.icons[j - 1], "RIGHT", 1, 0);
 			end
-			button.icons[j]:Hide();
+			if ns.options.ShowRole then
+				button.icons[j]:Show();
+			else
+				button.icons[j]:Hide();
+			end
 		end
 
 		button:EnableMouse(false);
@@ -72,24 +77,42 @@ local function setupUI()
 	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
 	if libasConfig then
-		libasConfig.load_position(ns.asDBMTimer, "asDBMTimer", ADTI_Positions);
+		libasConfig.load_position(timerframe, "asDBMTimer", ADTI_Positions);
 	end
 
 
 	ns.asDBMText = CreateFrame("FRAME", nil, UIParent);
-	ns.asDBMText:SetFrameStrata("LOW");
-	ns.asDBMText:SetPoint("CENTER", UIParent, "CENTER", configs.text_xpoint, configs.text_ypoint)
-	ns.asDBMText:SetWidth(100)
-	ns.asDBMText:SetHeight(ns.options.TextSize);
-	ns.asDBMText:Show();
+	local textframe = ns.asDBMText;
 
-	ns.msgtext = ns.asDBMText:CreateFontString(nil, "OVERLAY");
-	ns.msgtext:SetFont(configs.font, ns.options.TextSize, configs.fontoutline)
-	ns.msgtext:SetPoint("CENTER", ns.asDBMText, "CENTER", 0, 0);
-	ns.msgtext:Hide();
+	textframe:SetFrameStrata("LOW");
+	textframe:SetPoint("CENTER", UIParent, "CENTER", configs.text_xpoint, configs.text_ypoint)
+	textframe:SetWidth(100)
+	textframe:SetHeight(ns.options.TextSize);
+	textframe:Show();
+
+	textframe.text = textframe:CreateFontString(nil, "OVERLAY");
+	textframe.text:SetFont(configs.font, ns.options.TextSize, configs.fontoutline)
+	textframe.text:SetPoint("CENTER", textframe, "CENTER", 0, 0);
+	textframe.text:Show();
+
+	textframe.icons = {};
+	for j = 1, configs.maxicons do
+		textframe.icons[j] = textframe:CreateTexture(nil, "ARTWORK");
+		textframe.icons[j]:SetSize(ns.options.TextSize, ns.options.TextSize);
+		if j == 1 then
+			textframe.icons[j]:SetPoint("RIGHT", textframe.text, "LEFT", -1, 0);
+		else
+			textframe.icons[j]:SetPoint("RIGHT", textframe.icons[j - 1], "LEFT", -1, 0);
+		end
+		if ns.options.ShowRole then
+			textframe.icons[j]:Show();
+		else
+			textframe.icons[j]:Hide();
+		end
+	end
 
 	if libasConfig then
-		libasConfig.load_position(ns.asDBMText, "asDBMTimer(Text)", ADTI_Positions2);
+		libasConfig.load_position(textframe, "asDBMTimer(Text)", ADTI_Positions2);
 	end
 end
 
@@ -138,40 +161,17 @@ local function check_list()
 					button.text:SetText("");
 				end
 
-				--[[
-				local j = 1;
-				local color = {0, 0, 0};
-				if eventinfo.icons and not issecretvalue(eventinfo.icons) then
-					for _, mask in pairs(Enum.EncounterEventIconmask) do
-						if FlagsUtil.IsSet(eventinfo.icons, mask) then
-							local atlas = atlases[mask];
-
-							if mask == Enum.EncounterEventIconmask.DeadlyEffect then
-								color = {1, 0, 0};							
-							end
-
-							button.icons[j]:SetAtlas(atlas);
-							button.icons[j]:Show();
-							j = j + 1;
-							if j > configs.maxicons then
-								break;
-							end
-						end
-					end
+				if ns.options.ShowRole then
+					C_EncounterTimeline.SetEventIconTextures(id,
+						Constants.EncounterTimelineIconMasks.EncounterTimelineAllIcons, button.icons);
 				end
-
-				for i = j, configs.maxicons do
-					button.icons[i]:Hide();
-				end
-
-				button.border:SetVertexColor(color[1], color[2], color[3]);
-				]]
 
 				if state == 0 and remain > 0 and (textinfo.remain == nil or textinfo.remain > remain) then
 					textinfo.name = C_Spell.GetSpellName(eventinfo.spellID);
 					textinfo.icon = eventinfo.iconFileID;
 					textinfo.remain = remain;
 					textinfo.extime = remain + GetTime();
+					textinfo.eventid = id;
 				end
 
 				if ns.options.ShowButton then
@@ -195,19 +195,23 @@ local function check_list()
 end
 
 local function update_text()
-
+	local textframe = ns.asDBMText;
 	if ns.options.ShowText and textinfo.extime then
 		local remain = textinfo.extime - GetTime();
 		if remain > 0 and remain < ns.options.MinTimetoShow and textinfo.name and textinfo.icon then
-			ns.msgtext:SetText(string.format("|T" .. textinfo.icon .. ":0|t %s %.1f", textinfo.name, remain));
-			ns.msgtext:Show();
+			textframe.text:SetText(string.format("|T" .. textinfo.icon .. ":0|t %s %.1f", textinfo.name, remain));
+			if ns.options.ShowRole then
+				C_EncounterTimeline.SetEventIconTextures(textinfo.eventid,
+					Constants.EncounterTimelineIconMasks.EncounterTimelineAllIcons, textframe.icons);
+			end
+
+			textframe:Show();
 		else
-			ns.msgtext:Hide();
+			textframe:Hide();
 		end
 	else
-		ns.msgtext:Hide();
+		textframe:Hide();
 	end
-
 end
 
 

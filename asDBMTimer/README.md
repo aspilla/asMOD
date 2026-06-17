@@ -1,25 +1,28 @@
 # asDBMTimer (Midnight)
 
 **Enhanced Boss Timeline**
-![asDBMTimer](https://media.forgecdn.net/attachments/1672/994/asdbmtimer-jpg.jpg)
+![asDBMTimer](https://media.forgecdn.net/attachments/1738/743/asdbmtimer-jpg.jpg)
 **Note**: This addon is not associated with DBM (Deadly Boss Mods).
 
 ## Key Features
 
 1. **Large Icon Display**: Adjustable size.
 2. **Skill Name Display**: Can be hidden.
-3. **3-Second Countdown Notification**: Adjustable timing.
+3. **5-Second Countdown Notification**: Adjustable timing.
 4. **Skill Name (Remaining Time) in Center**: Can be disabled in settings.
+5. **Show Role Icons (ex. Tank)** : Can be disabled in settings.
 
 ## Configuration
 
 Settings can be adjusted via **ESC > Options > AddOns > asDBMTimer**.
 
-* `MinTimetoShow`: Minimum time to trigger the alert (Default: 5 seconds).
-* `Size`: Icon size (Default: 50).
-* `ShowName`: Whether to display skill names (Default: On).
-* `ShowButton`: Whether to display the icon (Default: On).
-* `ShowText`: Whether to display text notifications in the center of the screen (Default: On).
+* `Minimum time to trigger the alert` (Default: 5 seconds).
+* `[Button] Icon size` (Default: 50).
+* `[Center] Text size` (Default: 15).
+* `[Button] Whether to display skill names` (Default: On).
+* `[Button] Whether to display the icon` (Default: On).
+* `[Center] Whether to display text notifications in the center of the screen` (Default: On).
+* `Whether to display role icons` (Default: On).
 
 * **Move Position**: Enter the `/asConfig` command in the chat window.
 * **Reset Position**: Enter the `/asClear` command in the chat window to reset to default settings.
@@ -32,7 +35,7 @@ Settings can be adjusted via **ESC > Options > AddOns > asDBMTimer**.
 # asDBMTimer (한밤)
 
 **보스 타임라인 강화**
-![asDBMTimer](https://media.forgecdn.net/attachments/1672/994/asdbmtimer-jpg.jpg)
+![asDBMTimer](https://media.forgecdn.net/attachments/1738/743/asdbmtimer-jpg.jpg)
 **Note**: 이 애드온은 DBM (Deadly Boss Mods)과 연관없음.
 
 
@@ -40,19 +43,22 @@ Settings can be adjusted via **ESC > Options > AddOns > asDBMTimer**.
 
 1.  **큰 아이콘 표시**: 크기 조정 가능
 2.  **스킬 명 표시**: 숨기기 가능
-3.  **3초전 표시**: 시간 조정 가능
-4.  **중앙에 스킬명 (남은시간) 표시 **: 설정에서 Off 가능
+3.  **5초전 표시**: 시간 조정 가능
+4.  **중앙에 스킬명 (남은시간) 표시**: 설정에서 Off 가능
+5.  **역할 임무 아이콘 표시(탱커 등)** : 설정에서 Off 가능
 
 
 ## 설정
 
 **esc >> 설정 >> 애드온 >> asDBMTimer** 에서 설정 가능
 
-* `MinTimetoShow` 최소 표시 시간 (기본 5초)
-* `Size` 아이콘 크기 (기본 50)
-* `ShowName`: 스킬명 표시 여부. (기본 On)
-* `ShowButton` : 아이콘 표시 여부. (기본 On)
-* `ShowText` : 화면가운데 글씨 알림 여부. (기본 On)
+* `최소 표시 시간` (기본 5초)
+* `[버튼] 아이콘 크기` (기본 50)
+* `[중앙] 글자 크기` (기본 15)
+* `[버튼] 스킬명 표시 여부` (기본 On)
+* `[버튼] 아이콘 표시 여부` (기본 On)
+* `[중앙] 화면가운데 글씨 알림 여부` (기본 On)
+* `임무 아이콘 표시 여부` (기본 On)
 
 
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력

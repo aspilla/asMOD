@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rDBMTimer
 ## Notes: Enhanced Boss Timeline
 ## Notes-koKR:보스 타임라인 강화
-## Version : 260512
+## Version : 260617
 ## SavedVariablesPerCharacter: ADTI_Options, ADTI_Positions, ADTI_Positions2
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
