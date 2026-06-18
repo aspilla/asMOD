@@ -5,6 +5,9 @@ https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 ### asFixChat
 * URL에서 +등 특수문자가 잘려 나오는 문제 수정
 
+### Bugsack/BugGrabber
+* 12.0.7 update
+
 ## 260617 update
 ### asHealthText
 * 설정 추가
