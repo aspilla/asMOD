@@ -21,7 +21,7 @@ local function asMOD_AddMessage(self, text, ...)
 
 	if not issecretvalue(text) then
 		-- URL pattern to find URLs in the text
-		local urlPattern = '([wWhH][wWtT][wWtT][%.pP]%S+[^%p%s])'
+		local urlPattern = '([wWhH][wWtT][wWtT][%.pP]%S+[^%s%.,;:!%?%)%]%>%"\'])'
 
 		-- Check if the pattern exists in the text
 		if text:find(urlPattern) then

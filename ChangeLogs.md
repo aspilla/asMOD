@@ -1,30 +1,34 @@
 # ChangeLogs
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260618 update
+### asFixChat
+* Fixed an issue where special characters such as `+` were being cut off in URLs.
+
 ## 260617 update
-#### asHealthText
+### asHealthText
 * Add option
 Adjustable via **ESC > Options > AddOns > asHealthText**
 * `Display Health Decimals` (Default: On)
 
-#### asDBMTimer
+### asDBMTimer
 * Added role icon display.
 ![asDBMTimer](https://media.forgecdn.net/attachments/1738/743/asdbmtimer-jpg.jpg)
 5. **Display Role Assignment Icons (Tank, etc.)**: Can be turned Off in the settings.
 
-#### asInterruptHelper
+### asInterruptHelper
 * Add Devourer `Void Nova`
 
 
 ## 260615 update
-#### asPremadeGroupFilter, asCPUProfile, asGCDBar, asInterruptHelper, asRangeDisplay, asTrueGCD, asFixHotkey, asHideActionBars, asHideBagsBar, asMisdirection, asSpamFilter, asFixChat, asActiveAlert, asBuffFilter, asDotFilter
+### asPremadeGroupFilter, asCPUProfile, asGCDBar, asInterruptHelper, asRangeDisplay, asTrueGCD, asFixHotkey, asHideActionBars, asHideBagsBar, asMisdirection, asSpamFilter, asFixChat, asActiveAlert, asBuffFilter, asDotFilter
 * 12.0.7 Toc update
 
-#### asSkyRide
+### asSkyRide
 * Bug fix
 * Showing `Whirling Surge` cooldown time with 0.1 second resolution.
 
-#### asCooldownPulse
+### asCooldownPulse
 * Add Orc warlock racial spell
 
 ## 260614 update
