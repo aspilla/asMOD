@@ -6,9 +6,9 @@ asMOD is a collection of custom-made World of Warcraft addons.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/X6PzmxDiEhw?si=EDnpQXElQXZL451v" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-![sample](https://media.forgecdn.net/attachments/1727/685/asmod_raid-jpg.jpg)
+![sample](https://media.forgecdn.net/attachments/1743/879/asmod_raid-jpg.jpg)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/DLClJu1G3rw?si=6qjFl-YzQh08JHBN" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8V7uoOiK0ok?si=r_qWJxKNOHb4Xoxu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Features of asMOD
 
@@ -206,11 +206,12 @@ asMOD minimizes the use of the ACE Library. To copy settings, use the `WTF` fold
 * The default UI also supports click casting and mouse wheel casting. Please refer to the manual below:
 * [asCompactRaidBuff](https://www.curseforge.com/wow/addons/ascompactraidbuff)
 
-### 13. Changelogs
-* **Korean Users**: Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288)
-* **English Users**: Check the "Changelog" tab on CurseForge
-* **Detailed Code Changes**: Check [GitHub](https://github.com/aspilla/asMOD)
+### 13. WoW Optimization Settings Guide
+* [Optimization Guide](https://github.com/aspilla/asMOD/blob/main/PerformanceOptimization.md)
 
+### 14. Changelogs
+* [Link](https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md)
+* **Detailed Code Changes**: Check [GitHub](https://github.com/aspilla/asMOD)
 
 ---
 
@@ -222,9 +223,9 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/X6PzmxDiEhw?si=EDnpQXElQXZL451v" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-![sample](https://media.forgecdn.net/attachments/1727/685/asmod_raid-jpg.jpg)
+![sample](https://media.forgecdn.net/attachments/1743/879/asmod_raid-jpg.jpg)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/DLClJu1G3rw?si=6qjFl-YzQh08JHBN" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8V7uoOiK0ok?si=r_qWJxKNOHb4Xoxu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## asMOD의 특징
 
@@ -424,8 +425,9 @@ asMOD 설치시 그래픽 설정의 UI 설정을 0.75로 축소 합니다.
 *  기본 UI도 클릭 시전 및 마우스 휠 시전이 가능합니다. 아래 설명서 참고 하세요
 * [asCompactRaidBuff](https://www.curseforge.com/wow/addons/ascompactraidbuff)
 
-### 13. 변경점 
-*   `한글 유저` : `인벤 asMOD 포럼` (https://www.inven.co.kr/board/wow/5288)
-*   `영문 유저` :  커스 포지 파일 변경점 확인
-*   `상세 코드 변경점` : `Github 확인` (https://github.com/aspilla/asMOD)
+### 13. 와우 설정 최적화 가이드
+* [가이드](https://github.com/aspilla/asMOD/blob/main/PerformanceOptimization.md)
 
+### 14. 변경점 
+*   [링크](https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md)
+*   `상세 코드 변경점` : `Github 확인` (https://github.com/aspilla/asMOD)
