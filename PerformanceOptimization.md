@@ -1,3 +1,67 @@
+# WoW Optimization Settings Guide
+
+The goal of this guide is to maintain visual quality during Raid/Mythic+/Outdoor gameplay while securing a minimum of 60+ FPS during Bloodlust/Burst and heavy AoE (Adds) phases.
+
+## Recommended Specs for WoW
+* **Monitor**: 4K or higher, 120Hz, FSR supported (G-Sync compatible) is recommended. WoW heavily relies on addons, resulting in a text-dense screen. Utilizing a 4K monitor vastly improves overall visibility and text clarity.
+* **CPU**: WoW heavily depends on CPU single-core throughput. It is highly recommended to prioritize investing in the CPU—AMD Ryzen 7 7800X3D or higher is recommended.
+* **Graphics Card**: For a 4K monitor, an RX 9070 with 16GB VRAM or higher is recommended. For QHD, 12GB VRAM or higher is recommended. Since WoW is frequently bottlenecked by CPU resources, the GPU rarely hits 100% utilization. If you primarily play WoW, over-specifying the graphics card is unnecessary.
+
+## PC Environment (Developer System & Settings)
+* **Specs**: Ryzen 7 7800X3D, RX 9070, DDR5 4800MHz 32GB
+* **OS/Drivers**: Windows 11 25H2 (Latest Version), Latest Graphics Drivers
+* **BIOS Settings**: **SMT (Simultaneous Multithreading) Disabled**. This forces the CPU to utilize 8 physical cores instead of 16 logical threads, focusing entirely on maximizing single-core boost clock performance.
+* **AMD Radeon Software**: Turn **Off** all features except **FSR** (If your monitor does not support FSR, *Enhanced Sync* is recommended instead).
+![AMD setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1969365628.jpg?MW=800)
+
+* **Windows Advanced Graphics Settings**: If you experience stability issues, turn **Off** HAGS (Hardware-Accelerated GPU Scheduling). AutoHDR is only recommended if you are using an OLED monitor.
+![Windows setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1328734615.jpg?MW=800)
+
+* **Monitor Max Refresh Rate Configuration**: Install RTSS (RivaTuner Statistics Server) and configure **Async** frame-limiting settings. This yields the absolute best frame-time consistency and FPS stability.
+![RTSS setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1629502312.jpg?MW=800)
+
+## In-Game Graphics Settings
+* **General Rule**: Disable CPU-heavy tasks entirely and maximize pure GPU-bound settings.
+* **Vertical Sync**: Disabled (Handled via FSR/Driver/RTSS).
+* **Anti-Aliasing**: Image-based, **CMAA or CMAA2** (Crucial).
+* **Shadow Quality**: High (The most cost-effective performance-to-visual ratio).
+* **Liquid Detail**: Good.
+* **Particle Density**: High.
+* **SSAO**: High.
+* **Depth Effects**: **Disabled** (High CPU usage with negligible visual return).
+* **Compute Effects**: **Low or Disabled** (High CPU usage with negligible visual return).
+* **Spell Density**: **Essential** (Reduces clutter by dynamically hiding other players' spell visual effects. Tanks may consider dropping this to Low).
+* **View Distance**: 7 (Environment Detail: 10, Ground Clutter: 10).
+* **Ray Traced Shadows**: **Disabled** (Turn this off immediately if you experience random game crashes/freezes on AMD graphics cards).
+* **VRS (Variable Rate Shading) Mode**: **Disabled** (Provides no real-world performance gain and causes subtle, distracting screen flickering/shimmering).
+* **In-Game Max FPS Toggles**: Turn **Off** all in-game frame limiters (It is much better to limit frame rates via RTSS or the GPU Driver level).
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dVZ1apjDg1s?si=ViT6zcc7t_PreT-f" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## In-Game Sound Settings
+* **Sound Channels**: **32** (Setting this to 128 channels heavily drains CPU resources. If certain addon audio/voice alerts clip or fail to trigger, bump this up to 64).
+* **Use Reverb**: **Disabled** (Consumes unnecessary CPU cycles).
+
+## Addon Optimization
+* Addons have a massive, direct impact on game FPS.
+* Open `ESC > AddOns` and actively manage your suite to keep the **Average CPU Usage** around **1%**.
+* *Note*: **Peak Usage** can spike high momentarily when addons initialize their databases upon loading, which is normal.
+
+## LFR 25-Man 4K Gameplay Video
+* Minimum FPS holds steadily around 105, with a consistent average of 117 FPS.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8V7uoOiK0ok?si=n52daSb6_Z6KUa-5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## References
+* [AMD PC Optimization & Performance Fix Guide](https://www.reddit.com/r/AMDHelp/comments/1lnxb8o/ultimate_amd_performance_fix_guide_stop_lag_fps/?share_id=siID34gkiYvcxnC8WBKZe&utm_content=1&utm_medium=android_app&utm_name=androidcss&utm_source=share&utm_term=1)
+* [RTSS Setup and Configuration Guide](https://www.youtube.com/watch?v=WZJbTuBeVzE&si=AqgVnkDFQgKrZs2I)
+* [WoW In-Depth Graphics Settings Guide](https://www.youtube.com/watch?v=7v2tDNQc2Uo)
+* [Sound Channels & CPU Overhead Analysis](https://youtube.com/watch?v=lZRBJ7VJXgM&si=oY9zuQpUZodQ9jpm)
+* [FHD vs UHD Raid FPS Benchmark Comparison](https://www.inven.co.kr/board/wow/4739/253503)
+* [4K Raid GPU Utilization & Scaling Report](https://www.inven.co.kr/board/wow/4739/239906)
+
+---
+
 # 와우 설정 최적화 가이드
 
 레이드/쐐기/필드 플레이시 품질도 챙기면서 블러드 구간/광 구간 FPS를 최소 60이상 확보하는것을 목표로 함
