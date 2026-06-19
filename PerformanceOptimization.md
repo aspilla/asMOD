@@ -57,3 +57,5 @@
 * [RTSS 설정 관련](https://www.youtube.com/watch?v=WZJbTuBeVzE&si=AqgVnkDFQgKrZs2I)
 * [와우 그래픽 설정 관련](https://www.youtube.com/watch?v=7v2tDNQc2Uo)
 * [사운드 채널 관련](https://youtube.com/watch?v=lZRBJ7VJXgM&si=oY9zuQpUZodQ9jpm)
+* [FHD, UHD 레이드 FPS 비교](https://www.inven.co.kr/board/wow/4739/253503)
+* [4K, Raid GPU 사용률 관련](https://www.inven.co.kr/board/wow/4739/239906)
