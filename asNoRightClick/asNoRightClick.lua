@@ -1,5 +1,5 @@
 ﻿local configs = {
-	doubleclicktime = 0.4,
+	doubleclicktime = 0.2,
 };
 
 local lasttime = 0;
