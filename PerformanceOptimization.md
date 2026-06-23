@@ -36,12 +36,11 @@
 * **Ray Traced Shadows (CRITICAL)**: **Disabled** (Consumes CPU resources. Turn this off immediately if you experience random game crashes/freezes on AMD graphics cards).
 * **VRS (Variable Rate Shading) Mode**: **Disabled** (Provides no real-world performance gain and causes subtle, distracting screen flickering/shimmering).
 * **In-Game Max FPS Toggles (CRITICAL)**: **Disabled** (It is highly recommended to limit frame rates via RTSS or the GPU Driver level instead).
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/dVZ1apjDg1s?si=ViT6zcc7t_PreT-f" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/up337gU1C8g?si=VsxNCm842wlIb2pz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## In-Game Sound Settings
 * **Sound Channels (CRITICAL)**: **32** (Setting this to 128 channels heavily drains CPU resources. If certain addon audio/voice alerts clip or fail to trigger, bump this up to 64).
-* **Use Reverb (CRITICAL)**: **Disabled** (Consumes unnecessary CPU cycles).
+* **Enable Reverb (CRITICAL)**: **Disabled** (Consumes unnecessary CPU cycles).
 
 ## Addon Optimization
 * Addons have a massive, direct impact on game minimum FPS.
