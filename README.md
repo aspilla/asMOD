@@ -2,6 +2,7 @@
 
 asMOD is a collection of custom-made World of Warcraft addons.
 
+## asMOD Play Video
 ![sample](https://media.forgecdn.net/attachments/1707/334/asmod_party-jpg.jpg)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/X6PzmxDiEhw?si=EDnpQXElQXZL451v" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -9,6 +10,11 @@ asMOD is a collection of custom-made World of Warcraft addons.
 ![sample](https://media.forgecdn.net/attachments/1743/879/asmod_raid-jpg.jpg)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/8V7uoOiK0ok?si=r_qWJxKNOHb4Xoxu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## asMOD Performance
+* Securing 60+ FPS stably even during Bloodlust burst phases, with a momentary minimum of 50 FPS during heavy AoE phases.
+<iframe width="560" height="315" src="https://www.youtube.com/embed/X4GBWola1F0?si=flJ-I2Jr8w5_LUD3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 
 ## Features of asMOD
 
@@ -219,6 +225,7 @@ asMOD minimizes the use of the ACE Library. To copy settings, use the `WTF` fold
 
 asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
+## asMOD 사용 영상
 ![sample](https://media.forgecdn.net/attachments/1707/334/asmod_party-jpg.jpg)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/X6PzmxDiEhw?si=EDnpQXElQXZL451v" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -226,6 +233,10 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 ![sample](https://media.forgecdn.net/attachments/1743/879/asmod_raid-jpg.jpg)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/8V7uoOiK0ok?si=r_qWJxKNOHb4Xoxu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## asMOD 성능
+* 블러드 타임 60 FPS 이상 안정적 확보, 광역 구간 순간 최소 50 FPS
+<iframe width="560" height="315" src="https://www.youtube.com/embed/X4GBWola1F0?si=flJ-I2Jr8w5_LUD3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## asMOD의 특징
 

@@ -1,18 +1,14 @@
-# WoW Optimization Settings Guide (For High-End PCs)
+# WoW Graphics/Sound Optimization Settings Guide (Targeting Minimum FPS Improvement)
 
-* This guide targets high-end PCs equipped with CPUs having 16 or more cores and GPUs with 12GB or more VRAM.
+## Goal
 * The primary goal is to maintain visual quality during Raid/Mythic+/Outdoor gameplay while securing a minimum of 60+ FPS during Bloodlust/Burst and heavy AoE (Adds) phases.
+* This guide targets high-end PCs equipped with CPUs having 16 or more cores and GPUs with 12GB or more VRAM.
 * Achieving a stable average of 120 FPS with a minimum of 60 FPS delivers a vastly superior gaming experience compared to an inconsistent fluctuation of 300 maximum FPS dropping down to 20 minimum FPS.
 * Since WoW's minimum FPS drops are mostly caused by CPU bottlenecks, this guide focuses heavily on minimizing CPU overhead.
-* If your PC specs are lower, you can lower other options in addition to the recommended disabled ("Off") settings below.
+* If your PC specs are lower, you can lower other options in addition to the recommended disabled ("Off") settings below. If you have plenty of room in your minimum framerate, you can raise the options.
 * While frame generation technologies like AFMF (AMD Fluid Motion Frames) can boost minimum FPS, establishing a baseline of at least 60 native FPS is still required, so frame generation is not covered separately here.
 
-## Recommended Specs for WoW
-* **Monitor**: 4K or higher, 120Hz, FSR supported (G-Sync compatible) is recommended. WoW heavily relies on addons, resulting in a text-dense screen. Utilizing a 4K monitor vastly improves overall visibility and text clarity.
-* **CPU**: WoW heavily depends on CPU single-core throughput. It is highly recommended to prioritize investing in the CPU—AMD Ryzen 7 7800X3D or higher is recommended.
-* **Graphics Card**: For a 4K monitor, an RX 9070 with 16GB VRAM or higher is recommended. For QHD, 12GB VRAM or higher is recommended. Since WoW is frequently bottlenecked by CPU resources, the GPU rarely hits 100% utilization. If you primarily play WoW, over-specifying the graphics card is unnecessary.
-
-## PC Environment (Developer System & Settings)
+## PC Environment (For Reference, Developer System Specs & Settings)
 * **Specs**: Ryzen 7 7800X3D, RX 9070, DDR5 4800MHz 32GB
 * **OS/Drivers**: Windows 11 25H2 (Latest Version), Latest Graphics Drivers
 * **BIOS Settings**: **SMT (Simultaneous Multithreading) Disabled**. This forces the CPU to utilize 8 physical cores instead of 16 logical threads. While this yields a 3–4% improvement in minimum FPS stability, the difference is minor. If you use your PC for multi-threaded productivity workloads or have a CPU with fewer than 16 cores, keeping SMT ON is recommended.
@@ -26,26 +22,26 @@
 ![RTSS setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1629502312.jpg?MW=800)
 
 ## In-Game Graphics Settings
-* **General Rule**: Disable **Important** options that cause heavy CPU usage, and set the remaining pure GPU-bound settings to maximum/optimal values. (Lower-spec setups will need further compromises outside of the disabled options).
+* **General Rule**: Disable **critical** options that cause heavy CPU usage, and set the remaining pure GPU-bound settings to maximum/optimal values. (Lower-spec setups will need further compromises outside of the disabled options).
 * **Vertical Sync**: Disabled (Handled via FSR).
-* **Anti-Aliasing (Important)**: Image-based, **CMAA or CMAA2** (Offers the best performance-to-visual ratio).
+* **Anti-Aliasing (CRITICAL)**: Image-based, **CMAA or CMAA2** (Offers the best performance-to-visual ratio).
 * **Shadow Quality**: High (The most cost-effective performance-to-visual ratio. Lowering this further increases FPS).
 * **Liquid Detail**: Good (Balanced for visual quality. Lowering this further increases FPS).
 * **Particle Density**: High (Balanced for visual quality. Lowering this further increases FPS).
 * **SSAO**: High (Balanced for visual quality. Lowering this further increases FPS).
-* **Depth Effects (Important)**: **Disabled** (High CPU usage with negligible visual return).
-* **Compute Effects (Important)**: **Low or Disabled** (High CPU usage with negligible visual return).
-* **Spell Density (Important)**: **Essential** (Minimizes other players' spell visual effects to reduce clutter. Tanks may consider dropping this to Low).
+* **Depth Effects (CRITICAL)**: **Disabled** (High CPU usage with negligible visual return).
+* **Compute Effects (CRITICAL)**: **Low or Disabled** (High CPU usage with negligible visual return).
+* **Spell Density (CRITICAL)**: **Essential** (Minimizes other players' spell visual effects to reduce clutter. Tanks may consider dropping this to Low).
 * **View Distance**: 7 (Environment Detail: 10, Ground Clutter: 10. Does not cause a significant FPS variance in raid instances, balanced for visual quality).
-* **Ray Traced Shadows (Important)**: **Disabled** (Consumes CPU resources. Turn this off immediately if you experience random game crashes/freezes on AMD graphics cards).
+* **Ray Traced Shadows (CRITICAL)**: **Disabled** (Consumes CPU resources. Turn this off immediately if you experience random game crashes/freezes on AMD graphics cards).
 * **VRS (Variable Rate Shading) Mode**: **Disabled** (Provides no real-world performance gain and causes subtle, distracting screen flickering/shimmering).
-* **In-Game Max FPS Toggles (Important)**: **Disabled** (It is highly recommended to limit frame rates via RTSS or the GPU Driver level instead).
+* **In-Game Max FPS Toggles (CRITICAL)**: **Disabled** (It is highly recommended to limit frame rates via RTSS or the GPU Driver level instead).
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/dVZ1apjDg1s?si=ViT6zcc7t_PreT-f" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## In-Game Sound Settings
-* **Sound Channels (Important)**: **32** (Setting this to 128 channels heavily drains CPU resources. If certain addon audio/voice alerts clip or fail to trigger, bump this up to 64).
-* **Use Reverb (Important)**: **Disabled** (Consumes unnecessary CPU cycles).
+* **Sound Channels (CRITICAL)**: **32** (Setting this to 128 channels heavily drains CPU resources. If certain addon audio/voice alerts clip or fail to trigger, bump this up to 64).
+* **Use Reverb (CRITICAL)**: **Disabled** (Consumes unnecessary CPU cycles).
 
 ## Addon Optimization
 * Addons have a massive, direct impact on game minimum FPS.
@@ -57,8 +53,8 @@
 <iframe width="560" height="315" src="https://www.youtube.com/embed/8V7uoOiK0ok?si=mtm5CKDubQ65NoE1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Heroic 30-Man 4K Gameplay Video
-* Securing 60+ FPS stably even during heavy Bloodlust burst phases.
-<iframe width="560" height="315" src="https://www.youtube.com/embed/k2xdsoY7mzI?si=yvg5EL7Ujn73Iyyt" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+* Securing 60+ FPS stably even during Bloodlust burst phases, with a momentary minimum of 50 FPS during heavy AoE phases.
+<iframe width="560" height="315" src="https://www.youtube.com/embed/X4GBWola1F0?si=flJ-I2Jr8w5_LUD3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## References
 * [AMD PC Optimization & Performance Fix Guide](https://www.reddit.com/r/AMDHelp/comments/1lnxb8o/ultimate_amd_performance_fix_guide_stop_lag_fps/?share_id=siID34gkiYvcxnC8WBKZe&utm_content=1&utm_medium=android_app&utm_name=androidcss&utm_source=share&utm_term=1)
@@ -68,23 +64,23 @@
 * [FHD vs UHD Raid FPS Benchmark Comparison](https://www.inven.co.kr/board/wow/4739/253503)
 * [4K Raid GPU Utilization & Scaling Report](https://www.inven.co.kr/board/wow/4739/239906)
 
+## Recommended Specs for WoW (For Reference)
+* **Monitor**: 4K or higher, 120Hz, FSR supported (G-Sync compatible) is recommended. WoW heavily relies on addons, resulting in a text-dense screen. Utilizing a 4K monitor vastly improves overall visibility and text clarity.
+* **CPU**: WoW heavily depends on CPU single-core throughput. It is highly recommended to prioritize investing in the CPU—AMD Ryzen 7 7800X3D or higher is recommended.
+* **Graphics Card**: For a 4K monitor, an RX 9070 with 16GB VRAM or higher is recommended. For QHD, 12GB VRAM or higher is recommended. Since WoW is frequently bottlenecked by CPU resources, the GPU rarely hits 100% utilization. If you primarily play WoW, over-specifying the graphics card is unnecessary.
 ---
 
-# 와우 설정 최적화 가이드 (상급 PC 대상)
+# 와우 그래픽/사운드 설정 팁 (최소 FPS 개선 목표)
 
-* 16코어 이상, VRAM 12GB 이상 상급 PC를 대상으로 함.
+## 목표
 * 레이드/쐐기/필드에서 그래픽 품질을 챙기면서 블러드 구간/광 구간 FPS(초당 게임 주사율)를 최소 60이상 확보하는것을 목표로 함.
+* 16코어 이상, VRAM 12GB 이상 상급 PC를 대상으로 함.
 * 최대 FPS 300, 최소 FPS 20 보다, 평균 FPS 120, 최소 FPS 60이 더 좋은 게임 경험을 제공함.
 * 와우 최소 FPS는 대부분 CPU 병목에서 발생 하는 만큼, CPU 병목을 최소화는 방법임.
-* 사양이 낮은 경우에는 아래 끔 항목외 옵션을 낮추면 됨.
+* 사양이 낮은 경우에는 아래 끔 항목외 옵션을 낮추면 됨, 최소 프레임에 여유가 있다면 옵션을 상향하면 됨.
 * AFMF(AMD Fruid Motion Frame)등 프레임 생성 기술로 최소 FPS 를 상승 시킬 수 있으나, 이 또한 최소 60 FPS 확보는 필요해서 별도로 다루지 않음.
 
-## 와우 추천 System
-* 모니터 : 4K 이상, 120Hz, FSR 지원 (G-Sync 지원) 추천 : 와우는 애드온을 많이 사용하여 화면에 글씨가 많음, 4K 모니터 사용시 가시성에 큰 도움이 됨.
-* CPU : 와우는 CPU 자원이 중요하여 CPU 에 투자하는 것을 추전, 7800x3d 이상 추천.
-* 그래픽 카드 : 4K 모니터 사용시 Rx9070, 16GB VRAM 이상, QHD 모니터 사용시 12GB VRAM 이상 그래픽 카드 추천, 그래픽 카드는 CPU 성능 부족으로 100% 사용이 안되므로 와우만 한다면 너무 좋은 그래픽 카드는 필요 없음.
-
-## PC 환경 (개발자 시스템 및 설정)
+## PC 환경 (참고, 개발자 시스템 사향 및 설정)
 * 7800x3d, Rx9070, DDR5 4800 32GB.
 * Windows 11 25H2 최신버전, Driver 최신.
 * BIOS 설정 : SMT 끄기 (CPU를 16코어가 아닌 8코어로만 씀), 최소 FPS 관점 3~4% 개선 효과 있으나 큰 차이 아니므로 다른 업무를 보거나, 16코어 미만은 SMT ON 추천.
@@ -129,8 +125,8 @@
 <iframe width="560" height="315" src="https://www.youtube.com/embed/8V7uoOiK0ok?si=mtm5CKDubQ65NoE1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 영웅 30인 4K 영상
-* 블러드 타임 60 프레임 이상 확보.
-<iframe width="560" height="315" src="https://www.youtube.com/embed/k2xdsoY7mzI?si=yvg5EL7Ujn73Iyyt" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+* 블러드 타임 60 FPS 이상 안정적 확보, 광역 구간 순간 최소 50 FPS
+<iframe width="560" height="315" src="https://www.youtube.com/embed/X4GBWola1F0?si=flJ-I2Jr8w5_LUD3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 참고 자료
 * [AMD PC 최적화 설정 관련](https://www.reddit.com/r/AMDHelp/comments/1lnxb8o/ultimate_amd_performance_fix_guide_stop_lag_fps/?share_id=siID34gkiYvcxnC8WBKZe&utm_content=1&utm_medium=android_app&utm_name=androidcss&utm_source=share&utm_term=1)
@@ -139,3 +135,8 @@
 * [사운드 채널 관련](https://youtube.com/watch?v=lZRBJ7VJXgM&si=oY9zuQpUZodQ9jpm)
 * [FHD, UHD 레이드 FPS 비교](https://www.inven.co.kr/board/wow/4739/253503)
 * [4K, Raid GPU 사용률 관련](https://www.inven.co.kr/board/wow/4739/239906)
+
+## 와우 추천 System (참고)
+* 모니터 : 4K 이상, 120Hz, FSR 지원 (G-Sync 지원) 추천 : 와우는 애드온을 많이 사용하여 화면에 글씨가 많음, 4K 모니터 사용시 가시성에 큰 도움이 됨.
+* CPU : 와우는 CPU 자원이 중요하여 CPU 에 투자하는 것을 추전, 7800x3d 이상 추천.
+* 그래픽 카드 : 4K 모니터 사용시 Rx9070, 16GB VRAM 이상, QHD 모니터 사용시 12GB VRAM 이상 그래픽 카드 추천, 그래픽 카드는 CPU 성능 부족으로 100% 사용이 안되므로 와우만 한다면 너무 좋은 그래픽 카드는 필요 없음.
