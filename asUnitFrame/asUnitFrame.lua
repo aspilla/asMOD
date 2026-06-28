@@ -2,18 +2,18 @@ local _, ns = ...;
 ASMOD_asUnitFrame = {};
 
 local configs = {
-    updaterate = 0.1,
+	updaterate = 0.1,
 
-    xpoint = 225,
-    ypoint = -198,
-    buffcount = 4,
-    buffsize = 25,
-    buffsizerate = 0.8,
-    font = STANDARD_TEXT_FONT,
-    framelevel = 900,
-    notinterruptcolor = { 0.6, 0.6, 0.6 },
-    lowhealthcolor = { r = 0.2, g = 0, b = 0.2 },
-    highhealthcolor = { r = 0.2, g = 0, b = 0.5 },
+	xpoint = 225,
+	ypoint = -198,
+	buffcount = 4,
+	buffsize = 25,
+	buffsizerate = 0.8,
+	font = STANDARD_TEXT_FONT,
+	framelevel = 900,
+	notinterruptcolor = { 0.6, 0.6, 0.6 },
+	lowhealthcolor = { r = 0.2, g = 0, b = 0.2 },
+	highhealthcolor = { r = 0.2, g = 0, b = 0.5 },
 
 };
 
@@ -25,865 +25,865 @@ ns.unitframes = {};
 local region = GetCurrentRegion();
 
 if region == 2 and GetLocale() ~= "koKR" then
-    configs.font = "Fonts\\2002.ttf";
+	configs.font = "Fonts\\2002.ttf";
 end
 
 local function update_debuffanchor(frames, index, offsetX, right, parent, width)
-    local buff = frames[index];
+	local buff = frames[index];
 
-    if (index == 1) then
-        buff:SetPoint("TOPLEFT", parent.healthbar, "BOTTOMLEFT", 0, -4);
-    else
-        buff:SetPoint("BOTTOMLEFT", frames[index - 1], "BOTTOMRIGHT", offsetX, 0);
-    end
+	if (index == 1) then
+		buff:SetPoint("TOPLEFT", parent.healthbar, "BOTTOMLEFT", 0, -4);
+	else
+		buff:SetPoint("BOTTOMLEFT", frames[index - 1], "BOTTOMRIGHT", offsetX, 0);
+	end
 
-    buff:SetWidth(width - offsetX);
-    buff:SetHeight(width * configs.buffsizerate);
+	buff:SetWidth(width - offsetX);
+	buff:SetHeight(width * configs.buffsizerate);
 end
 
 local function createdebuffframes(parent, bright, fontsize, width, count)
-    if parent.debuffframes == nil then
-        parent.debuffframes = {};
-    end
+	if parent.debuffframes == nil then
+		parent.debuffframes = {};
+	end
 
-    for idx = 1, count do
-        parent.debuffframes[idx] = CreateFrame("Button", nil, parent, "AUFDebuffFrameTemplate");
-        local frame = parent.debuffframes[idx];
+	for idx = 1, count do
+		parent.debuffframes[idx] = CreateFrame("Button", nil, parent, "AUFDebuffFrameTemplate");
+		local frame = parent.debuffframes[idx];
 
-        frame.cooldown:SetDrawSwipe(true);
-        if ns.options.MillisecondsThreshold then
-            frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
-        end
-        for _, r in next, { frame.cooldown:GetRegions() } do
-            if r:GetObjectType() == "FontString" then
-                r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-                r:ClearAllPoints();
-                r:SetPoint("CENTER", frame, "TOP", 0, -1);
-                r:SetDrawLayer("OVERLAY");
-                break
-            end
-        end
+		frame.cooldown:SetDrawSwipe(true);
+		if ns.options.MillisecondsThreshold then
+			frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+		end
+		for _, r in next, { frame.cooldown:GetRegions() } do
+			if r:GetObjectType() == "FontString" then
+				r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+				r:ClearAllPoints();
+				r:SetPoint("CENTER", frame, "TOP", 0, -1);
+				r:SetDrawLayer("OVERLAY");
+				break
+			end
+		end
 
-        frame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-        frame.count:ClearAllPoints()
-        frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
-        frame.count:SetTextColor(0, 1, 0);
+		frame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+		frame.count:ClearAllPoints()
+		frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
+		frame.count:SetTextColor(0, 1, 0);
 
-        frame.icon:SetTexCoord(.08, .92, .16, .84);
-        frame.icon:SetAlpha(1);
+		frame.icon:SetTexCoord(.08, .92, .16, .84);
+		frame.icon:SetAlpha(1);
 
 
-        frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-        frame.border:SetVertexColor(0, 0, 0);
-        frame.border:SetAlpha(1);
+		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+		frame.border:SetVertexColor(0, 0, 0);
+		frame.border:SetAlpha(1);
 
-        frame:ClearAllPoints();
-        update_debuffanchor(parent.debuffframes, idx, 1, bright, parent, width / count);
+		frame:ClearAllPoints();
+		update_debuffanchor(parent.debuffframes, idx, 1, bright, parent, width / count);
 
-        if not frame:GetScript("OnEnter") then
-            frame:SetScript("OnEnter", function(self)
-                if self.auraInstanceID then
-                    GameTooltip_SetDefaultAnchor(GameTooltip, self);
-                    GameTooltip:SetUnitDebuffByAuraInstanceID(self.unit, self.auraInstanceID, self.filter);
-                end
-            end)
-            frame:SetScript("OnLeave", function()
-                GameTooltip:Hide();
-            end)
-        end
+		if not frame:GetScript("OnEnter") then
+			frame:SetScript("OnEnter", function(self)
+				if self.auraInstanceID then
+					GameTooltip_SetDefaultAnchor(GameTooltip, self);
+					GameTooltip:SetUnitDebuffByAuraInstanceID(self.unit, self.auraInstanceID, self.filter);
+				end
+			end)
+			frame:SetScript("OnLeave", function()
+				GameTooltip:Hide();
+			end)
+		end
 
-        frame:EnableMouse(false);
-        frame:SetMouseMotionEnabled(true);
-        frame:Hide();
-    end
+		frame:EnableMouse(false);
+		frame:SetMouseMotionEnabled(true);
+		frame:Hide();
+	end
 end
 
 local function update_buffanchor(frames, index, offsetX, right, parent, width)
-    local buff = frames[index];
+	local buff = frames[index];
 
-    if (index == 1) then
-        buff:SetPoint("RIGHT", parent.healthbar, "LEFT", -offsetX, 0);
-    else
-        buff:SetPoint("RIGHT", frames[index - 1], "LEFT", -offsetX, 0);
-    end
+	if (index == 1) then
+		buff:SetPoint("RIGHT", parent.healthbar, "LEFT", -offsetX, 0);
+	else
+		buff:SetPoint("RIGHT", frames[index - 1], "LEFT", -offsetX, 0);
+	end
 
-    buff:SetWidth(width - offsetX);
-    buff:SetHeight(width * configs.buffsizerate);
+	buff:SetWidth(width - offsetX);
+	buff:SetHeight(width * configs.buffsizerate);
 end
 
 local function create_buffframes(parent, bright, fontsize, width, count)
-    if parent.buffframes == nil then
-        parent.buffframes = {};
-    end
+	if parent.buffframes == nil then
+		parent.buffframes = {};
+	end
 
-    for idx = 1, count do
-        parent.buffframes[idx] = CreateFrame("Button", nil, parent, "AUFDebuffFrameTemplate");
-        local frame = parent.buffframes[idx];
+	for idx = 1, count do
+		parent.buffframes[idx] = CreateFrame("Button", nil, parent, "AUFDebuffFrameTemplate");
+		local frame = parent.buffframes[idx];
 
-        frame.cooldown:SetDrawSwipe(true);
-        if ns.options.MillisecondsThreshold then
-            frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
-        end
-        for _, r in next, { frame.cooldown:GetRegions() } do
-            if r:GetObjectType() == "FontString" then
-                r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-                r:ClearAllPoints();
-                r:SetPoint("CENTER", frame, "TOP", 0, -1);
-                r:SetDrawLayer("OVERLAY");
-                break
-            end
-        end
+		frame.cooldown:SetDrawSwipe(true);
+		if ns.options.MillisecondsThreshold then
+			frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+		end
+		for _, r in next, { frame.cooldown:GetRegions() } do
+			if r:GetObjectType() == "FontString" then
+				r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+				r:ClearAllPoints();
+				r:SetPoint("CENTER", frame, "TOP", 0, -1);
+				r:SetDrawLayer("OVERLAY");
+				break
+			end
+		end
 
-        frame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-        frame.count:ClearAllPoints()
-        frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
-        frame.count:SetTextColor(0, 1, 0);
+		frame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+		frame.count:ClearAllPoints()
+		frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
+		frame.count:SetTextColor(0, 1, 0);
 
-        frame.icon:SetTexCoord(.08, .92, .16, .84);
-        frame.icon:SetAlpha(1);
+		frame.icon:SetTexCoord(.08, .92, .16, .84);
+		frame.icon:SetAlpha(1);
 
 
-        frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-        frame.border:SetVertexColor(1, 1, 1);
-        frame.border:SetAlpha(1);
+		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+		frame.border:SetVertexColor(1, 1, 1);
+		frame.border:SetAlpha(1);
 
-        frame:ClearAllPoints();
-        update_buffanchor(parent.buffframes, idx, 2, bright, parent, width);
+		frame:ClearAllPoints();
+		update_buffanchor(parent.buffframes, idx, 2, bright, parent, width);
 
-        if not frame:GetScript("OnEnter") then
-            frame:SetScript("OnEnter", function(self)
-                if self.auraInstanceID then
-                    GameTooltip_SetDefaultAnchor(GameTooltip, self);
-                    GameTooltip:SetUnitBuffByAuraInstanceID(self.unit, self.auraInstanceID, self.filter);
-                end
-            end)
-            frame:SetScript("OnLeave", function()
-                GameTooltip:Hide();
-            end)
-        end
+		if not frame:GetScript("OnEnter") then
+			frame:SetScript("OnEnter", function(self)
+				if self.auraInstanceID then
+					GameTooltip_SetDefaultAnchor(GameTooltip, self);
+					GameTooltip:SetUnitBuffByAuraInstanceID(self.unit, self.auraInstanceID, self.filter);
+				end
+			end)
+			frame:SetScript("OnLeave", function()
+				GameTooltip:Hide();
+			end)
+		end
 
-        frame:EnableMouse(false);
-        frame:SetMouseMotionEnabled(true);
+		frame:EnableMouse(false);
+		frame:SetMouseMotionEnabled(true);
 
-        frame:Hide();
-    end
+		frame:Hide();
+	end
 end
 
 local function update_totemanchor(frames, index, offsetX, right, parent, width)
-    local button = frames[index];
+	local button = frames[index];
 
-    if (index == 1) then
-        button:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, -2);
-    else
-        button:SetPoint("BOTTOMRIGHT", frames[index - 1], "BOTTOMLEFT", -offsetX, 0);
-    end
+	if (index == 1) then
+		button:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, -2);
+	else
+		button:SetPoint("BOTTOMRIGHT", frames[index - 1], "BOTTOMLEFT", -offsetX, 0);
+	end
 
-    -- Resize
-    button:SetWidth(width);
-    button:SetHeight(width * configs.buffsizerate);
-    button.Icon:SetWidth(width);
-    button.Icon:SetHeight(width * configs.buffsizerate);
+	-- Resize
+	button:SetWidth(width);
+	button:SetHeight(width * configs.buffsizerate);
+	button.Icon:SetWidth(width);
+	button.Icon:SetHeight(width * configs.buffsizerate);
 end
 
 local function create_totemframes(parent, bright, fontsize, width, count)
-    if parent.totembuttons == nil then
-        parent.totembuttons = {};
-    end
+	if parent.totembuttons == nil then
+		parent.totembuttons = {};
+	end
 
-    for idx = 1, count do
-        parent.totembuttons[idx] = CreateFrame("Button", nil, parent, "asTotemButtonTemplate");
-        local button = parent.totembuttons[idx];
-        local frame = button.Icon;
+	for idx = 1, count do
+		parent.totembuttons[idx] = CreateFrame("Button", nil, parent, "asTotemButtonTemplate");
+		local button = parent.totembuttons[idx];
+		local frame = button.Icon;
 
-        frame.cooldown:SetDrawSwipe(true);
-        if ns.options.MillisecondsThreshold then
-            frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
-        end
-        for _, r in next, { frame.cooldown:GetRegions() } do
-            if r:GetObjectType() == "FontString" then
-                r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-                r:ClearAllPoints();
-                r:SetPoint("BOTTOM", 0, -5);
-                r:SetDrawLayer("OVERLAY");
-                break
-            end
-        end
+		frame.cooldown:SetDrawSwipe(true);
+		if ns.options.MillisecondsThreshold then
+			frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+		end
+		for _, r in next, { frame.cooldown:GetRegions() } do
+			if r:GetObjectType() == "FontString" then
+				r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+				r:ClearAllPoints();
+				r:SetPoint("BOTTOM", 0, -5);
+				r:SetDrawLayer("OVERLAY");
+				break
+			end
+		end
 
-        frame.icon:SetTexCoord(.08, .92, .16, .84);
-        frame.icon:SetAlpha(1);
+		frame.icon:SetTexCoord(.08, .92, .16, .84);
+		frame.icon:SetAlpha(1);
 
-        frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-        frame.border:SetVertexColor(0, 0, 0);
-        frame.border:SetAlpha(1);
+		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+		frame.border:SetVertexColor(0, 0, 0);
+		frame.border:SetAlpha(1);
 
-        button:ClearAllPoints();
-        update_totemanchor(parent.totembuttons, idx, 1, bright, parent, (width / 2 - 3) / count);
-        frame:Show();
-        button:SetAttribute("type", "destroytotem");
-        button:SetAttribute("totem-slot", idx);
-        button:SetAlpha(0);
-        button:Show();
+		button:ClearAllPoints();
+		update_totemanchor(parent.totembuttons, idx, 1, bright, parent, (width / 2 - 3) / count);
+		frame:Show();
+		button:SetAttribute("type", "destroytotem");
+		button:SetAttribute("totem-slot", idx);
+		button:SetAlpha(0);
+		button:Show();
 
-        if not button:GetScript("OnEnter") then
-            button:SetScript("OnEnter", function(self)
-                if self.totemslot then
-                    GameTooltip_SetDefaultAnchor(GameTooltip, self);
-                    GameTooltip:SetTotem(self.totemslot)
-                end
-            end)
-            button:SetScript("OnLeave", function()
-                GameTooltip:Hide();
-            end)
-        end
-    end
+		if not button:GetScript("OnEnter") then
+			button:SetScript("OnEnter", function(self)
+				if self.totemslot then
+					GameTooltip_SetDefaultAnchor(GameTooltip, self);
+					GameTooltip:SetTotem(self.totemslot)
+				end
+			end)
+			button:SetScript("OnLeave", function()
+				GameTooltip:Hide();
+			end)
+		end
+	end
 
-    return;
+	return;
 end
 
 local function on_unitevent(self, event, arg1, arg2)
-    if event == "PLAYER_TOTEM_UPDATE" then
-        ns.update_totems(self);
-    end
+	if event == "PLAYER_TOTEM_UPDATE" then
+		ns.update_totems(self);
+	end
 end
 
 local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth, powerbarheight, fontsize, debuffupdate,
-                                is_small)
-    local FontOutline = "OUTLINE";
+								is_small)
+	local FontOutline = "OUTLINE";
 
 
-    frame:ClearAllPoints();
-    frame:SetPoint("CENTER", UIParent, "CENTER", x, y);
-    frame:SetSize(width, height)
-    frame:SetFrameStrata("LOW");
-    frame:SetFrameLevel(configs.framelevel);
+	frame:ClearAllPoints();
+	frame:SetPoint("CENTER", UIParent, "CENTER", x, y);
+	frame:SetSize(width, height)
+	frame:SetFrameStrata("LOW");
+	frame:SetFrameLevel(configs.framelevel);
 
-    frame.range = frame:CreateTexture(nil, "ARTWORK");
-    frame.range:SetColorTexture(0.8, 0, 0);
-    frame.range:SetAlpha(0.3);
-    frame.range:SetAllPoints(frame);
-    frame.range:Hide();
+	frame.range = frame:CreateTexture(nil, "ARTWORK");
+	frame.range:SetColorTexture(0.8, 0, 0);
+	frame.range:SetAlpha(0.3);
+	frame.range:SetAllPoints(frame);
+	frame.range:Hide();
 
-    frame.healthbar = CreateFrame("StatusBar", nil, frame);
-    frame.healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
-    frame.healthbar:SetFrameLevel(configs.framelevel - 20);
-    frame.healthbar:GetStatusBarTexture():SetHorizTile(false)
-    frame.healthbar:SetMinMaxValues(0, 100)
-    frame.healthbar:SetValue(100)
-    frame.healthbar:SetHeight(height);
-    frame.healthbar:Show();
+	frame.healthbar = CreateFrame("StatusBar", nil, frame);
+	frame.healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+	frame.healthbar:SetFrameLevel(configs.framelevel - 20);
+	frame.healthbar:GetStatusBarTexture():SetHorizTile(false)
+	frame.healthbar:SetMinMaxValues(0, 100)
+	frame.healthbar:SetValue(100)
+	frame.healthbar:SetHeight(height);
+	frame.healthbar:Show();
 
-    if x < 0 then
-        frame.healthbar:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0);
-    else
-        frame.healthbar:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
-    end
+	if x < 0 then
+		frame.healthbar:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0);
+	else
+		frame.healthbar:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
+	end
 
-    frame.targetborder = frame.healthbar:CreateTexture(nil, "BACKGROUND", nil, -8)
-    frame.targetborder:SetPoint("TOPLEFT", frame, "TOPLEFT", -2, 2);
-    frame.targetborder:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 2, -2);
-    frame.targetborder:SetColorTexture(1, 1, 1)
-    frame.targetborder:SetAlpha(1);
-    frame.targetborder:Hide();
+	frame.targetborder = frame.healthbar:CreateTexture(nil, "BACKGROUND", nil, -8)
+	frame.targetborder:SetPoint("TOPLEFT", frame, "TOPLEFT", -2, 2);
+	frame.targetborder:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 2, -2);
+	frame.targetborder:SetColorTexture(1, 1, 1)
+	frame.targetborder:SetAlpha(1);
+	frame.targetborder:Hide();
 
-    local hwidth = width;
+	local hwidth = width;
 
-    if ns.options.ShowPortrait then
-        hwidth = width - height * 1.1;
+	if ns.options.ShowPortrait then
+		hwidth = width - height * 1.1;
 
-        frame.portrait = CreateFrame("Button", nil, frame, "AUFDebuffFrameTemplate");
-        frame.portrait:SetFrameLevel(configs.framelevel - 20);
-        local pframe = frame.portrait;
-        pframe.cooldown:SetDrawSwipe(true);
-        if ns.options.MillisecondsThreshold then
-            pframe.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
-        end
-        for _, r in next, { pframe.cooldown:GetRegions() } do
-            if r:GetObjectType() == "FontString" then
-                r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-                r:ClearAllPoints();
-                r:SetPoint("CENTER", 0, 0);
-                r:SetDrawLayer("OVERLAY");
-                break
-            end
-        end
+		frame.portrait = CreateFrame("Button", nil, frame, "AUFDebuffFrameTemplate");
+		frame.portrait:SetFrameLevel(configs.framelevel - 20);
+		local pframe = frame.portrait;
+		pframe.cooldown:SetDrawSwipe(true);
+		if ns.options.MillisecondsThreshold then
+			pframe.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+		end
+		for _, r in next, { pframe.cooldown:GetRegions() } do
+			if r:GetObjectType() == "FontString" then
+				r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+				r:ClearAllPoints();
+				r:SetPoint("CENTER", 0, 0);
+				r:SetDrawLayer("OVERLAY");
+				break
+			end
+		end
 
-        pframe.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-        pframe.count:ClearAllPoints()
-        pframe.count:SetPoint("BOTTOMRIGHT", pframe.icon, "BOTTOMRIGHT", -2, 2);
+		pframe.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+		pframe.count:ClearAllPoints()
+		pframe.count:SetPoint("BOTTOMRIGHT", pframe.icon, "BOTTOMRIGHT", -2, 2);
 
-        pframe.portrait:SetTexCoord(.08, .92, .08, .92);
-        pframe.portrait:SetAlpha(1);
-        pframe.icon:SetTexCoord(.08, .92, .08, .92);
-        pframe.icon:SetAlpha(1);
-        pframe.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-        pframe.border:SetVertexColor(0, 0, 0)
-        pframe.border:SetAlpha(1);
+		pframe.portrait:SetTexCoord(.08, .92, .08, .92);
+		pframe.portrait:SetAlpha(1);
+		pframe.icon:SetTexCoord(.08, .92, .08, .92);
+		pframe.icon:SetAlpha(1);
+		pframe.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+		pframe.border:SetVertexColor(0, 0, 0)
+		pframe.border:SetAlpha(1);
 
-        pframe:SetSize(height * 1.1, height + 2);
+		pframe:SetSize(height * 1.1, height + 2);
 
-        if x < 0 then
-            pframe:SetPoint("TOPRIGHT", frame.healthbar, "TOPLEFT", 0, 1);
-        else
-            pframe:SetPoint("TOPLEFT", frame.healthbar, "TOPRIGHT", 0, 1);
-        end
-        pframe.portrait:Show();
-        pframe:Show();
-    end
+		if x < 0 then
+			pframe:SetPoint("TOPRIGHT", frame.healthbar, "TOPLEFT", 0, 1);
+		else
+			pframe:SetPoint("TOPLEFT", frame.healthbar, "TOPRIGHT", 0, 1);
+		end
+		pframe.portrait:Show();
+		pframe:Show();
+	end
 
-    frame.healthbar:SetWidth(hwidth);
+	frame.healthbar:SetWidth(hwidth);
 
-    frame.healthbar.absorbBar = CreateFrame("StatusBar", nil, frame);
-    frame.healthbar.absorbBar:SetFrameLevel(configs.framelevel - 15);
-    frame.healthbar.absorbBar:SetStatusBarTexture("RaidFrame-Hp-Fill");
-    frame.healthbar.absorbBar:SetMinMaxValues(0, 100)
-    frame.healthbar.absorbBar:SetStatusBarColor(0.5, 0.5, 0.5, 0.5);
-    frame.healthbar.absorbBar:SetValue(0)
-    frame.healthbar.absorbBar:SetHeight(height);
-    frame.healthbar.absorbBar:SetAllPoints(frame.healthbar);
-    frame.healthbar.absorbBar:Show();
+	frame.healthbar.absorbBar = CreateFrame("StatusBar", nil, frame);
+	frame.healthbar.absorbBar:SetFrameLevel(configs.framelevel - 15);
+	frame.healthbar.absorbBar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+	frame.healthbar.absorbBar:SetMinMaxValues(0, 100)
+	frame.healthbar.absorbBar:SetStatusBarColor(0.5, 0.5, 0.5, 0.5);
+	frame.healthbar.absorbBar:SetValue(0)
+	frame.healthbar.absorbBar:SetHeight(height);
+	frame.healthbar.absorbBar:SetAllPoints(frame.healthbar);
+	frame.healthbar.absorbBar:Show();
 
-    frame.healthbar.healabsorbBar = CreateFrame("StatusBar", nil, frame);
-    frame.healthbar.healabsorbBar:SetFrameLevel(configs.framelevel - 10);
-    frame.healthbar.healabsorbBar:SetStatusBarTexture("RaidFrame-Hp-Fill");
-    frame.healthbar.healabsorbBar:SetMinMaxValues(0, 100)
-    frame.healthbar.healabsorbBar:SetStatusBarColor(0.7, 0.47, 0.05, 0.5);
-    frame.healthbar.healabsorbBar:SetValue(0)
-    frame.healthbar.healabsorbBar:SetHeight(height);
-    frame.healthbar.healabsorbBar:SetAllPoints(frame.healthbar);
-    frame.healthbar.healabsorbBar:Show();
+	frame.healthbar.healabsorbBar = CreateFrame("StatusBar", nil, frame);
+	frame.healthbar.healabsorbBar:SetFrameLevel(configs.framelevel - 10);
+	frame.healthbar.healabsorbBar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+	frame.healthbar.healabsorbBar:SetMinMaxValues(0, 100)
+	frame.healthbar.healabsorbBar:SetStatusBarColor(0.7, 0.47, 0.05, 0.5);
+	frame.healthbar.healabsorbBar:SetValue(0)
+	frame.healthbar.healabsorbBar:SetHeight(height);
+	frame.healthbar.healabsorbBar:SetAllPoints(frame.healthbar);
+	frame.healthbar.healabsorbBar:Show();
 
-    frame.healthbar.incominghealBar = CreateFrame("StatusBar", nil, frame);
-    frame.healthbar.incominghealBar:SetFrameLevel(configs.framelevel - 5);
-    frame.healthbar.incominghealBar:SetStatusBarTexture("RaidFrame-Hp-Fill");
-    frame.healthbar.incominghealBar:SetMinMaxValues(0, 100)
-    frame.healthbar.incominghealBar:SetStatusBarColor(0.3, 0.8, 0.3, 0.5);
-    frame.healthbar.incominghealBar:SetValue(0)
-    frame.healthbar.incominghealBar:SetHeight(height);
-    frame.healthbar.incominghealBar:SetAllPoints(frame.healthbar);
-    frame.healthbar.incominghealBar:Show();
-
-
-    frame.healthbar.bg = frame.healthbar:CreateTexture(nil, "BACKGROUND");
-    frame.healthbar.bg:SetPoint("TOPLEFT", frame.healthbar, "TOPLEFT", -1, 1);
-    frame.healthbar.bg:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", 1, -1);
-    frame.healthbar.bg:SetColorTexture(0, 0, 0, 1);
-
-    frame.pvalue = frame:CreateFontString(nil, "ARTWORK");
-    frame.pvalue:SetFont(STANDARD_TEXT_FONT, fontsize + 2, FontOutline);
-    frame.pvalue:SetTextColor(1, 1, 1, 1);
-
-    frame.sperator = frame:CreateFontString(nil, "ARTWORK");
-    frame.sperator:SetFont(STANDARD_TEXT_FONT, fontsize + 1, FontOutline);
-    frame.sperator:SetTextColor(1, 1, 1, 1)
-    frame.sperator:SetText("|");
-
-    frame.hvalue = frame:CreateFontString(nil, "ARTWORK");
-    frame.hvalue:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
-    frame.hvalue:SetTextColor(1, 1, 1, 1);
-
-    frame.name = frame:CreateFontString(nil, "ARTWORK");
-    frame.name:SetFont(configs.font, fontsize, FontOutline);
-    frame.name:SetTextColor(1, 1, 1, 1)
-
-    frame.aggro = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.aggro:SetFont(STANDARD_TEXT_FONT, fontsize, FontOutline);
-    frame.aggro:SetTextColor(1, 1, 1, 1)
-
-    frame.classtext = frame.healthbar:CreateFontString(nil, "ARTWORK");
-    frame.classtext:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
-    frame.classtext:SetTextColor(1, 1, 1, 1)
-
-    if not ns.options.ShowPortrait then
-        if is_small then
-            if x < 0 then
-                frame.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -4, 0);
-                frame.sperator:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4), 0);
-                frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4 + 8), 0);
-                frame.name:SetPoint("LEFT", frame, "LEFT", 4, 0);
-                frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
-                frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
-            else
-                frame.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 4, 0);
-                frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4), 0);
-                frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4 + 8), 0);
-                frame.name:SetPoint("RIGHT", frame, "RIGHT", -4, 0);
-                frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
-                frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
-            end
-        else
-            if x < 0 then
-                frame.pvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -4, 4);
-                frame.sperator:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 4), 4);
-                frame.hvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 4 + 8), 4);
-                frame.name:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, -4);
-                frame.classtext:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 4, 4);
-                frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
-            else
-                frame.pvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", 4, 4);
-                frame.sperator:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 4), 4);
-                frame.hvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 4 + 8), 4);
-                frame.name:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -4);
-                frame.classtext:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -4, 4);
-                frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
-            end
-        end
-    else
-        if x < 0 then
-            frame.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -4, 0);
-            frame.sperator:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4), 0);
-            frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4 + 8), 0);
-            frame.name:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
-            frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
-            frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
-        else
-            frame.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 4, 0);
-            frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4), 0);
-            frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4 + 8), 0);
-            frame.name:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
-            frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
-            frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
-        end
-    end
-
-    if is_small then
-        frame.classtext:Hide();
-        frame.aggro:Hide();
-        frame.sperator:Hide();
-        frame.hvalue:Hide();
-    end
-
-    if ns.options.ShowAggroInfo == false then
-        frame.classtext:Hide();
-        frame.aggro:Hide();
-    end
-
-    frame.is_small = is_small;
-
-    frame.mark = frame.healthbar:CreateTexture(nil, "ARTWORK");
-    frame.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
-    frame.mark:SetWidth(fontsize + 2);
-    frame.mark:SetHeight(fontsize + 2);
-
-    if not ns.options.ShowPortrait then
-        if is_small then
-            frame.mark:SetPoint("CENTER", frame.healthbar, "CENTER", 0, 0);            
-        else
-            frame.mark:SetPoint("BOTTOM", frame.pvalue, "TOP", 0, 1);
-        end
-    else
-        if x < 0 then
-            frame.mark:SetPoint("LEFT", frame.healthbar, "LEFT", 10, 0);
-        else
-            frame.mark:SetPoint("RIGHT", frame.healthbar, "RIGHT", -10, 0);
-        end
-    end
-
-    frame.powerbar = CreateFrame("StatusBar", nil, frame);
-    frame.powerbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-    frame.powerbar:GetStatusBarTexture():SetHorizTile(false)
-    frame.powerbar:SetMinMaxValues(0, 100)
-    frame.powerbar:SetValue(100)
-    frame.powerbar:SetWidth(powerbarwidth);
-    frame.powerbar:SetHeight(powerbarheight)
-    frame.powerbar:SetPoint("CENTER", frame.healthbar, "BOTTOM", 0, 0);
-    frame.powerbar:SetFrameLevel(configs.framelevel + 3);
-    frame.powerbar:Show();
-
-    frame.powerbar.bg = frame.powerbar:CreateTexture(nil, "BACKGROUND");
-    frame.powerbar.bg:SetPoint("TOPLEFT", frame.powerbar, "TOPLEFT", -1, 1);
-    frame.powerbar.bg:SetPoint("BOTTOMRIGHT", frame.powerbar, "BOTTOMRIGHT", 1, -1);
-    frame.powerbar.bg:SetColorTexture(0, 0, 0, 1);
-
-    frame.powerbar.value = frame.powerbar:CreateFontString(nil, "ARTWORK");
-    frame.powerbar.value:SetFont(STANDARD_TEXT_FONT, fontsize - 2, FontOutline);
-    frame.powerbar.value:SetTextColor(1, 1, 1, 1)
-    frame.powerbar.value:SetPoint("CENTER", frame.powerbar, "CENTER", 0, 0);
-
-    if not frame:GetScript("OnEnter") then
-        frame:SetScript("OnEnter", function(self)
-            if self.unit then
-                GameTooltip_SetDefaultAnchor(GameTooltip, self);
-                GameTooltip:SetUnit(self.unit);
-            end
-        end)
-        frame:SetScript("OnLeave", function()
-            GameTooltip:Hide();
-        end)
-    end
-
-    local castbarheight = height - 5;
-
-    frame.castbar = CreateFrame("StatusBar", nil, frame)
-    frame.castbar:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -3);
-    frame.castbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
-    frame.castbar:SetFrameLevel(configs.framelevel);
-    local statustexture = frame.castbar:GetStatusBarTexture();
-    statustexture:SetHorizTile(false)
-    frame.castbar:SetMinMaxValues(0, 100)
-    frame.castbar:SetValue(100)
-    frame.castbar:SetHeight(castbarheight)
-    frame.castbar:SetWidth(width - ((castbarheight + 1) * 1.2));
-    frame.castbar:SetStatusBarColor(1, 0.9, 0.9);
-    frame.castbar:SetAlpha(1);
-
-    frame.castbar.notinterruptable = frame.castbar:CreateTexture(nil, "ARTWORK", "asUnitFrameNotInteruptTemplate", 1);
-    frame.castbar.notinterruptable:SetParent(frame.castbar);
-    frame.castbar.notinterruptable:ClearAllPoints();
-    frame.castbar.notinterruptable:SetPoint("TOPLEFT", statustexture, "TOPLEFT", 0, 0);
-    frame.castbar.notinterruptable:SetPoint("BOTTOMRIGHT", statustexture, "BOTTOMRIGHT", 0, 0);
-    frame.castbar.notinterruptable:SetVertexColor(configs.notinterruptcolor[1], configs.notinterruptcolor[2],
-        configs.notinterruptcolor[3]);
-    frame.castbar.notinterruptable:SetAlpha(0);
-    frame.castbar.notinterruptable:Show();
+	frame.healthbar.incominghealBar = CreateFrame("StatusBar", nil, frame);
+	frame.healthbar.incominghealBar:SetFrameLevel(configs.framelevel - 5);
+	frame.healthbar.incominghealBar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+	frame.healthbar.incominghealBar:SetMinMaxValues(0, 100)
+	frame.healthbar.incominghealBar:SetStatusBarColor(0.3, 0.8, 0.3, 0.5);
+	frame.healthbar.incominghealBar:SetValue(0)
+	frame.healthbar.incominghealBar:SetHeight(height);
+	frame.healthbar.incominghealBar:SetAllPoints(frame.healthbar);
+	frame.healthbar.incominghealBar:Show();
 
 
-    frame.castbar.important = frame.castbar:CreateTexture(nil, "BACKGROUND");
-    frame.castbar.important:SetDrawLayer("BACKGROUND", -6);
-    frame.castbar.important:SetPoint("TOPLEFT", frame.castbar, "TOPLEFT", -2, 2);
-    frame.castbar.important:SetPoint("BOTTOMRIGHT", frame.castbar, "BOTTOMRIGHT", 2, -2);
-    frame.castbar.important:SetColorTexture(1, 0, 0, 1);
-    frame.castbar.important:SetAlpha(0);
-    frame.castbar.important:Show();
+	frame.healthbar.bg = frame.healthbar:CreateTexture(nil, "BACKGROUND");
+	frame.healthbar.bg:SetPoint("TOPLEFT", frame.healthbar, "TOPLEFT", -1, 1);
+	frame.healthbar.bg:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", 1, -1);
+	frame.healthbar.bg:SetColorTexture(0, 0, 0, 1);
 
-    frame.castbar.bg = frame.castbar:CreateTexture(nil, "BACKGROUND")
-    frame.castbar.bg:SetPoint("TOPLEFT", frame.castbar, "TOPLEFT", -1, 1)
-    frame.castbar.bg:SetPoint("BOTTOMRIGHT", frame.castbar, "BOTTOMRIGHT", 1, -1)
-    frame.castbar.bg:SetColorTexture(0, 0, 0, 1);
-    frame.castbar.bg:Show();
+	frame.pvalue = frame:CreateFontString(nil, "ARTWORK");
+	frame.pvalue:SetFont(STANDARD_TEXT_FONT, fontsize + 2, FontOutline);
+	frame.pvalue:SetTextColor(1, 1, 1, 1);
 
-    frame.castbar.name = frame.castbar:CreateFontString(nil, "OVERLAY");
-    frame.castbar.name:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
-    frame.castbar.name:SetPoint("LEFT", frame.castbar, "LEFT", 3, 0);
+	frame.sperator = frame:CreateFontString(nil, "ARTWORK");
+	frame.sperator:SetFont(STANDARD_TEXT_FONT, fontsize + 1, FontOutline);
+	frame.sperator:SetTextColor(1, 1, 1, 1)
+	frame.sperator:SetText("|");
 
-    frame.castbar.time = frame.castbar:CreateFontString(nil, "OVERLAY");
-    frame.castbar.time:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
-    frame.castbar.time:SetPoint("RIGHT", frame.castbar, "RIGHT", -3, 0);
+	frame.hvalue = frame:CreateFontString(nil, "ARTWORK");
+	frame.hvalue:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
+	frame.hvalue:SetTextColor(1, 1, 1, 1);
 
-    if not frame.castbar:GetScript("OnEnter") then
-        frame.castbar:SetScript("OnEnter", function(self)
-            if self.castspellid then
-                GameTooltip_SetDefaultAnchor(GameTooltip, self);
-                GameTooltip:SetSpellByID(self.castspellid);
-            end
-        end)
-        frame.castbar:SetScript("OnLeave", function()
-            GameTooltip:Hide();
-        end)
-    end
+	frame.name = frame:CreateFontString(nil, "ARTWORK");
+	frame.name:SetFont(configs.font, fontsize, FontOutline);
+	frame.name:SetTextColor(1, 1, 1, 1)
 
-    frame.castbar:EnableMouse(false);
-    frame.castbar:SetMouseMotionEnabled(true);
-    frame.castbar:Hide();
+	frame.aggro = frame.healthbar:CreateFontString(nil, "ARTWORK");
+	frame.aggro:SetFont(STANDARD_TEXT_FONT, fontsize, FontOutline);
+	frame.aggro:SetTextColor(1, 1, 1, 1)
 
-    frame.castbar.button = CreateFrame("Button", nil, frame.castbar, "AUFFrameTemplate");
-    frame.castbar.button:SetPoint("RIGHT", frame.castbar, "LEFT", -2, 0)
-    frame.castbar.button:SetWidth((castbarheight + 1) * 1.1);
-    frame.castbar.button:SetHeight(castbarheight + 1);
-    frame.castbar.button:SetAlpha(1);
-    frame.castbar.button:EnableMouse(false);
-    frame.castbar.button.icon:SetTexCoord(.08, .92, .08, .92);
-    frame.castbar.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-    frame.castbar.button.border:SetVertexColor(0, 0, 0);
-    frame.castbar.button.border:Show();
-    frame.castbar.button:Show();
+	frame.classtext = frame.healthbar:CreateFontString(nil, "ARTWORK");
+	frame.classtext:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
+	frame.classtext:SetTextColor(1, 1, 1, 1)
 
-    frame.castbar.targetname = frame.castbar:CreateFontString(nil, "OVERLAY");
-    frame.castbar.targetname:SetFont(configs.font, fontsize - 1);
-    frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);
+	if not ns.options.ShowPortrait then
+		if is_small then
+			if x < 0 then
+				frame.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -4, 0);
+				frame.sperator:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4), 0);
+				frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4 + 8), 0);
+				frame.name:SetPoint("LEFT", frame, "LEFT", 4, 0);
+				frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
+				frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+			else
+				frame.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 4, 0);
+				frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4), 0);
+				frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4 + 8), 0);
+				frame.name:SetPoint("RIGHT", frame, "RIGHT", -4, 0);
+				frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
+				frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+			end
+		else
+			if x < 0 then
+				frame.pvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -4, 4);
+				frame.sperator:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 4), 4);
+				frame.hvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 4 + 8), 4);
+				frame.name:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, -4);
+				frame.classtext:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 4, 4);
+				frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+			else
+				frame.pvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", 4, 4);
+				frame.sperator:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 4), 4);
+				frame.hvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 4 + 8), 4);
+				frame.name:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -4);
+				frame.classtext:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -4, 4);
+				frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+			end
+		end
+	else
+		if x < 0 then
+			frame.pvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -4, 0);
+			frame.sperator:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4), 0);
+			frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4 + 8), 0);
+			frame.name:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
+			frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
+			frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+		else
+			frame.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 4, 0);
+			frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4), 0);
+			frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4 + 8), 0);
+			frame.name:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
+			frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
+			frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+		end
+	end
+
+	if is_small then
+		frame.classtext:Hide();
+		frame.aggro:Hide();
+		frame.sperator:Hide();
+		frame.hvalue:Hide();
+	end
+
+	if ns.options.ShowAggroInfo == false then
+		frame.classtext:Hide();
+		frame.aggro:Hide();
+	end
+
+	frame.is_small = is_small;
+
+	frame.mark = frame.healthbar:CreateTexture(nil, "ARTWORK");
+	frame.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
+	frame.mark:SetWidth(fontsize + 2);
+	frame.mark:SetHeight(fontsize + 2);
+
+	if not ns.options.ShowPortrait then
+		if is_small then
+			frame.mark:SetPoint("CENTER", frame.healthbar, "CENTER", 0, 0);
+		else
+			frame.mark:SetPoint("BOTTOM", frame.pvalue, "TOP", 0, 1);
+		end
+	else
+		if x < 0 then
+			frame.mark:SetPoint("LEFT", frame.healthbar, "LEFT", 10, 0);
+		else
+			frame.mark:SetPoint("RIGHT", frame.healthbar, "RIGHT", -10, 0);
+		end
+	end
+
+	frame.powerbar = CreateFrame("StatusBar", nil, frame);
+	frame.powerbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+	frame.powerbar:GetStatusBarTexture():SetHorizTile(false)
+	frame.powerbar:SetMinMaxValues(0, 100)
+	frame.powerbar:SetValue(100)
+	frame.powerbar:SetWidth(powerbarwidth);
+	frame.powerbar:SetHeight(powerbarheight)
+	frame.powerbar:SetPoint("CENTER", frame.healthbar, "BOTTOM", 0, 0);
+	frame.powerbar:SetFrameLevel(configs.framelevel + 3);
+	frame.powerbar:Show();
+
+	frame.powerbar.bg = frame.powerbar:CreateTexture(nil, "BACKGROUND");
+	frame.powerbar.bg:SetPoint("TOPLEFT", frame.powerbar, "TOPLEFT", -1, 1);
+	frame.powerbar.bg:SetPoint("BOTTOMRIGHT", frame.powerbar, "BOTTOMRIGHT", 1, -1);
+	frame.powerbar.bg:SetColorTexture(0, 0, 0, 1);
+
+	frame.powerbar.value = frame.powerbar:CreateFontString(nil, "ARTWORK");
+	frame.powerbar.value:SetFont(STANDARD_TEXT_FONT, fontsize - 2, FontOutline);
+	frame.powerbar.value:SetTextColor(1, 1, 1, 1)
+	frame.powerbar.value:SetPoint("CENTER", frame.powerbar, "CENTER", 0, 0);
+
+	if not frame:GetScript("OnEnter") then
+		frame:SetScript("OnEnter", function(self)
+			if self.unit then
+				GameTooltip_SetDefaultAnchor(GameTooltip, self);
+				GameTooltip:SetUnit(self.unit);
+			end
+		end)
+		frame:SetScript("OnLeave", function()
+			GameTooltip:Hide();
+		end)
+	end
+
+	local castbarheight = height - 5;
+
+	frame.castbar = CreateFrame("StatusBar", nil, frame)
+	frame.castbar:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -3);
+	frame.castbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+	frame.castbar:SetFrameLevel(configs.framelevel);
+	local statustexture = frame.castbar:GetStatusBarTexture();
+	statustexture:SetHorizTile(false)
+	frame.castbar:SetMinMaxValues(0, 100)
+	frame.castbar:SetValue(100)
+	frame.castbar:SetHeight(castbarheight)
+	frame.castbar:SetWidth(width - ((castbarheight + 1) * 1.2));
+	frame.castbar:SetStatusBarColor(1, 0.9, 0.9);
+	frame.castbar:SetAlpha(1);
+
+	frame.castbar.notinterruptable = frame.castbar:CreateTexture(nil, "ARTWORK", "asUnitFrameNotInteruptTemplate", 1);
+	frame.castbar.notinterruptable:SetParent(frame.castbar);
+	frame.castbar.notinterruptable:ClearAllPoints();
+	frame.castbar.notinterruptable:SetPoint("TOPLEFT", statustexture, "TOPLEFT", 0, 0);
+	frame.castbar.notinterruptable:SetPoint("BOTTOMRIGHT", statustexture, "BOTTOMRIGHT", 0, 0);
+	frame.castbar.notinterruptable:SetVertexColor(configs.notinterruptcolor[1], configs.notinterruptcolor[2],
+		configs.notinterruptcolor[3]);
+	frame.castbar.notinterruptable:SetAlpha(0);
+	frame.castbar.notinterruptable:Show();
 
 
-    frame.debuffupdate = false;
-    frame.totemupdate = false;
+	frame.castbar.important = frame.castbar:CreateTexture(nil, "BACKGROUND");
+	frame.castbar.important:SetDrawLayer("BACKGROUND", -6);
+	frame.castbar.important:SetPoint("TOPLEFT", frame.castbar, "TOPLEFT", -2, 2);
+	frame.castbar.important:SetPoint("BOTTOMRIGHT", frame.castbar, "BOTTOMRIGHT", 2, -2);
+	frame.castbar.important:SetColorTexture(1, 0, 0, 1);
+	frame.castbar.important:SetAlpha(0);
+	frame.castbar.important:Show();
+
+	frame.castbar.bg = frame.castbar:CreateTexture(nil, "BACKGROUND")
+	frame.castbar.bg:SetPoint("TOPLEFT", frame.castbar, "TOPLEFT", -1, 1)
+	frame.castbar.bg:SetPoint("BOTTOMRIGHT", frame.castbar, "BOTTOMRIGHT", 1, -1)
+	frame.castbar.bg:SetColorTexture(0, 0, 0, 1);
+	frame.castbar.bg:Show();
+
+	frame.castbar.name = frame.castbar:CreateFontString(nil, "OVERLAY");
+	frame.castbar.name:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
+	frame.castbar.name:SetPoint("LEFT", frame.castbar, "LEFT", 3, 0);
+
+	frame.castbar.time = frame.castbar:CreateFontString(nil, "OVERLAY");
+	frame.castbar.time:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
+	frame.castbar.time:SetPoint("RIGHT", frame.castbar, "RIGHT", -3, 0);
+
+	if not frame.castbar:GetScript("OnEnter") then
+		frame.castbar:SetScript("OnEnter", function(self)
+			if self.castspellid then
+				GameTooltip_SetDefaultAnchor(GameTooltip, self);
+				GameTooltip:SetSpellByID(self.castspellid);
+			end
+		end)
+		frame.castbar:SetScript("OnLeave", function()
+			GameTooltip:Hide();
+		end)
+	end
+
+	frame.castbar:EnableMouse(false);
+	frame.castbar:SetMouseMotionEnabled(true);
+	frame.castbar:Hide();
+
+	frame.castbar.button = CreateFrame("Button", nil, frame.castbar, "AUFFrameTemplate");
+	frame.castbar.button:SetPoint("RIGHT", frame.castbar, "LEFT", -2, 0)
+	frame.castbar.button:SetWidth((castbarheight + 1) * 1.1);
+	frame.castbar.button:SetHeight(castbarheight + 1);
+	frame.castbar.button:SetAlpha(1);
+	frame.castbar.button:EnableMouse(false);
+	frame.castbar.button.icon:SetTexCoord(.08, .92, .08, .92);
+	frame.castbar.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+	frame.castbar.button.border:SetVertexColor(0, 0, 0);
+	frame.castbar.button.border:Show();
+	frame.castbar.button:Show();
+
+	frame.castbar.targetname = frame.castbar:CreateFontString(nil, "OVERLAY");
+	frame.castbar.targetname:SetFont(configs.font, fontsize - 1);
+	frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);
 
 
-    if debuffupdate and ns.options.ShowDebuff then
-        createdebuffframes(frame, true, fontsize, width, 4);
-        frame.debuffupdate = true;
-    end
+	frame.debuffupdate = false;
+	frame.totemupdate = false;
 
-    if ns.options.ShowTotemBar and unit == "player" then
-        create_totemframes(frame, true, fontsize, width, MAX_TOTEMS);
-        frame:RegisterEvent("PLAYER_TOTEM_UPDATE");
-        frame.totemupdate = true;
-    end
 
-    frame.updatecount = 1;
-    frame.istargetframe = (unit == "target");
-    frame.isplayerframe = (unit == "player");
+	if debuffupdate and ns.options.ShowDebuff then
+		createdebuffframes(frame, true, fontsize, width, 4);
+		frame.debuffupdate = true;
+	end
 
-    if unit == "focus" or string.find(unit, "boss") then
-        frame.updateCastBar = true;
-        ns.register_castevents(frame.castbar, unit);
-        if ns.options.ShowBossBuff and unit ~= "focus" then
-            create_buffframes(frame, true, fontsize, configs.buffsize, configs.buffcount);
-            frame.buffupdate = true;
-        else
-            frame.buffupdate = false;
-        end
-    else
-        frame.updateCastBar = false;
-        frame.buffupdate = false
-    end
+	if ns.options.ShowTotemBar and unit == "player" then
+		create_totemframes(frame, true, fontsize, width, MAX_TOTEMS);
+		frame:RegisterEvent("PLAYER_TOTEM_UPDATE");
+		frame.totemupdate = true;
+	end
 
-    frame.unit = unit;
-    ns.unitframes[unit] = frame;
+	frame.updatecount = 1;
+	frame.istargetframe = (unit == "target");
+	frame.isplayerframe = (unit == "player");
 
-    SecureUnitButton_OnLoad(frame, unit);
-    frame:SetAttribute("*type2", "togglemenu");
-    frame:RegisterForClicks("AnyUp")
-    Mixin(frame, PingableType_UnitFrameMixin);
-    frame:SetAttribute("ping-receiver", true);
+	if unit == "focus" or string.find(unit, "boss") then
+		frame.updateCastBar = true;
+		ns.register_castevents(frame.castbar, unit);
+		if ns.options.ShowBossBuff and unit ~= "focus" then
+			create_buffframes(frame, true, fontsize, configs.buffsize, configs.buffcount);
+			frame.buffupdate = true;
+		else
+			frame.buffupdate = false;
+		end
+	else
+		frame.updateCastBar = false;
+		frame.buffupdate = false
+	end
 
-    if unit == "player" then
-        frame:Show();
-    else
-        RegisterStateDriver(frame, "visibility", "[@" .. unit .. ",exists] show; hide");
-    end
+	frame.unit = unit;
+	ns.unitframes[unit] = frame;
 
-    if unit == "focus" or string.find(unit, "boss") then
-        frame.bchecktarget = true;
-    else
-        frame.bchecktarget = false;
-    end
+	SecureUnitButton_OnLoad(frame, unit);
+	frame:SetAttribute("*type2", "togglemenu");
+	frame:RegisterForClicks("AnyUp")
+	Mixin(frame, PingableType_UnitFrameMixin);
+	frame:SetAttribute("ping-receiver", true);
 
-    frame:SetScript("OnEvent", on_unitevent);
+	if unit == "player" then
+		frame:Show();
+	else
+		RegisterStateDriver(frame, "visibility", "[@" .. unit .. ",exists] show; hide");
+	end
 
-    frame.callback = function()
-        if not frame:IsShown() then
-            return;
-        end
-        ns.update_unithealth(frame);
-        if frame.updateCastBar then
-            ns.update_castbar(frame.castbar);
-        end
-    end
+	if unit == "focus" or string.find(unit, "boss") then
+		frame.bchecktarget = true;
+	else
+		frame.bchecktarget = false;
+	end
 
-    frame.callback2 = function()
-        if not frame:IsShown() then
-            return;
-        end
-        ns.update_unitframe_other(frame);
-        ns.update_auras(frame);
-        --off due to shuttering
-        --ns.update_unitframe_portrait(frame);
-    end
+	frame:SetScript("OnEvent", on_unitevent);
 
-    C_Timer.NewTicker(configs.updaterate, frame.callback);
-    C_Timer.NewTicker(configs.updaterate * 2, frame.callback2);
+	frame.callback = function()
+		if not frame:IsShown() then
+			return;
+		end
+		ns.update_unithealth(frame);
+		if frame.updateCastBar then
+			ns.update_castbar(frame.castbar);
+		end
+	end
+
+	frame.callback2 = function()
+		if not frame:IsShown() then
+			return;
+		end
+		ns.update_unitframe_other(frame);
+		ns.update_auras(frame);
+		--off due to shuttering
+		--ns.update_unitframe_portrait(frame);
+	end
+
+	C_Timer.NewTicker(configs.updaterate, frame.callback);
+	C_Timer.NewTicker(configs.updaterate * 2, frame.callback2);
 end
 
 local function update_unitframe(unit)
-    local frame = ns.unitframes[unit];
-    if frame then
-        ns.update_unithealth(frame);
-        ns.update_unitframe_other(frame);
-        ns.update_auras(frame);
-        ns.update_unitframe_portrait(frame);
-    end
+	local frame = ns.unitframes[unit];
+	if frame then
+		ns.update_unithealth(frame);
+		ns.update_unitframe_other(frame);
+		ns.update_auras(frame);
+		ns.update_unitframe_portrait(frame);
+	end
 end
 
 local function update_unitportait(unit)
-    local frame = ns.unitframes[unit];
-    if frame then
-        ns.update_unitframe_portrait(frame);
-    end
+	local frame = ns.unitframes[unit];
+	if frame then
+		ns.update_unitframe_portrait(frame);
+	end
 end
 
 
 local function init_lowhealth()
-    local localizedClass, englishClass = UnitClass("player");
+	local localizedClass, englishClass = UnitClass("player");
 
-    local lowhealthpercent = 0;
-    local highhealthpercent = 0;
-    do
-        if (englishClass == "MAGE") then
-            if (C_SpellBook.IsSpellKnown(2948)) then
-                lowhealthpercent = 30;
-            end
+	local lowhealthpercent = 0;
+	local highhealthpercent = 0;
+	do
+		if (englishClass == "MAGE") then
+			if (C_SpellBook.IsSpellKnown(2948) or C_SpellBook.IsSpellKnown(450746)) then
+				lowhealthpercent = 30;
+			end
 
-            if (C_SpellBook.IsSpellKnown(205026)) then
-                highhealthpercent = 90;
-            end
-        end
+			if (C_SpellBook.IsSpellKnown(205026)) then
+				highhealthpercent = 90;
+			end
+		end
 
-        if (englishClass == "HUNTER") then
-            if (C_SpellBook.IsSpellKnown(466930) or C_SpellBook.IsSpellKnown(466932)) then
-                highhealthpercent = 80;
-                lowhealthpercent = 20;
-            elseif (C_SpellBook.IsSpellKnown(53351)) then
-                lowhealthpercent = 20;
-            end
-        end
+		if (englishClass == "HUNTER") then
+			if (C_SpellBook.IsSpellKnown(466930) or C_SpellBook.IsSpellKnown(466932)) then
+				highhealthpercent = 80;
+				lowhealthpercent = 20;
+			elseif (C_SpellBook.IsSpellKnown(53351)) then
+				lowhealthpercent = 20;
+			end
+		end
 
-        if (englishClass == "WARRIOR") then
-            if (C_SpellBook.IsSpellKnown(281001)) then
-                lowhealthpercent = 35;
-            else
-                lowhealthpercent = 20;
-            end
-        end
+		if (englishClass == "WARRIOR") then
+			if (C_SpellBook.IsSpellKnown(281001)) then
+				lowhealthpercent = 35;
+			else
+				lowhealthpercent = 20;
+			end
+		end
 
-        if (englishClass == "PRIEST") then
-            if (C_SpellBook.IsSpellKnown(32379)) then
-                lowhealthpercent = 20;
-            end
-        end
+		if (englishClass == "PRIEST") then
+			if (C_SpellBook.IsSpellKnown(32379)) then
+				lowhealthpercent = 20;
+			end
+		end
 
-        if (englishClass == "DEATHKNIGHT") then
-            if (C_SpellBook.IsSpellKnown(343294)) then
-                lowhealthpercent = 35;
-            end
-        end
+		if (englishClass == "DEATHKNIGHT") then
+			if (C_SpellBook.IsSpellKnown(343294)) then
+				lowhealthpercent = 35;
+			end
+		end
 
-        if (englishClass == "WARLOCK") then
-            if (C_SpellBook.IsSpellKnown(17877)) then --어연
-                lowhealthpercent = 20;
-            end
-        end
-    end
+		if (englishClass == "WARLOCK") then
+			if (C_SpellBook.IsSpellKnown(17877)) then --어연
+				lowhealthpercent = 20;
+			end
+		end
+	end
 
-    if highhealthpercent > 0 and lowhealthpercent > 0 then
-        ns.colorcurve = C_CurveUtil.CreateColorCurve();
-        ns.colorcurve:SetType(Enum.LuaCurveType.Step);
-        ns.colorcurve:AddPoint(highhealthpercent / 100,
-            CreateColor(configs.highhealthcolor.r, configs.highhealthcolor.g, configs.highhealthcolor.b, 1));
-        ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0, 0, 0, 1));
-        ns.colorcurve:AddPoint(0,
-            CreateColor(configs.lowhealthcolor.r, configs.lowhealthcolor.g, configs.lowhealthcolor.b, 1));
-    elseif lowhealthpercent > 0 then
-        ns.colorcurve = C_CurveUtil.CreateColorCurve();
-        ns.colorcurve:SetType(Enum.LuaCurveType.Step);
-        ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0, 0, 0, 1));
-        ns.colorcurve:AddPoint(0,
-            CreateColor(configs.lowhealthcolor.r, configs.lowhealthcolor.g, configs.lowhealthcolor.b, 1));
-    elseif highhealthpercent > 0 then
-        ns.colorcurve = C_CurveUtil.CreateColorCurve();
-        ns.colorcurve:SetType(Enum.LuaCurveType.Step);
-        ns.colorcurve:AddPoint(highhealthpercent / 100,
-            CreateColor(configs.highhealthcolor.r, configs.highhealthcolor.g, configs.highhealthcolor.b, 1));
-        ns.colorcurve:AddPoint(0, CreateColor(0, 0, 0, 1));
-    else
-        ns.colorcurve = nil;
-    end
+	if highhealthpercent > 0 and lowhealthpercent > 0 then
+		ns.colorcurve = C_CurveUtil.CreateColorCurve();
+		ns.colorcurve:SetType(Enum.LuaCurveType.Step);
+		ns.colorcurve:AddPoint(highhealthpercent / 100,
+			CreateColor(configs.highhealthcolor.r, configs.highhealthcolor.g, configs.highhealthcolor.b, 1));
+		ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0, 0, 0, 1));
+		ns.colorcurve:AddPoint(0,
+			CreateColor(configs.lowhealthcolor.r, configs.lowhealthcolor.g, configs.lowhealthcolor.b, 1));
+	elseif lowhealthpercent > 0 then
+		ns.colorcurve = C_CurveUtil.CreateColorCurve();
+		ns.colorcurve:SetType(Enum.LuaCurveType.Step);
+		ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0, 0, 0, 1));
+		ns.colorcurve:AddPoint(0,
+			CreateColor(configs.lowhealthcolor.r, configs.lowhealthcolor.g, configs.lowhealthcolor.b, 1));
+	elseif highhealthpercent > 0 then
+		ns.colorcurve = C_CurveUtil.CreateColorCurve();
+		ns.colorcurve:SetType(Enum.LuaCurveType.Step);
+		ns.colorcurve:AddPoint(highhealthpercent / 100,
+			CreateColor(configs.highhealthcolor.r, configs.highhealthcolor.g, configs.highhealthcolor.b, 1));
+		ns.colorcurve:AddPoint(0, CreateColor(0, 0, 0, 1));
+	else
+		ns.colorcurve = nil;
+	end
 end
 
 
 local function init(framelist)
-    ns.setup_option();
+	ns.setup_option();
 
-    framelist.is_simplemode = not ns.options.ShowPortrait;
+	framelist.is_simplemode = not ns.options.ShowPortrait;
 
-    framelist.PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    framelist.TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    framelist.FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    framelist.PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-    framelist.TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+	framelist.PlayerFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+	framelist.TargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+	framelist.FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+	framelist.PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+	framelist.TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 
-    local offset = 0;
-    local fontoffset = 0;
-    if framelist.is_simplemode then
-        offset = 5;
-        fontoffset = 0;
-    end
+	local offset = 0;
+	local fontoffset = 0;
+	if framelist.is_simplemode then
+		offset = 5;
+		fontoffset = 0;
+	end
 
-    create_unitframe(framelist.PlayerFrame, "player", -configs.xpoint, configs.ypoint, ns.options.Width,
-        ns.options.Height,
-        ns.options.PowerWidth, ns.options.PowerHeight, ns.options.FontSize - fontoffset, false,
-        false);
-    create_unitframe(framelist.TargetFrame, "target", configs.xpoint, configs.ypoint, ns.options.Width, ns.options
-        .Height,
-        ns.options.PowerWidth, ns.options.PowerHeight, ns.options.FontSize - fontoffset, false,
-        false);
-    create_unitframe(framelist.FocusFrame, "focus", configs.xpoint + ns.options.Width, configs.ypoint,
-        ns.options.FocusWidth,
-        ns.options.FocusHeight,
-        ns.options.FocusPowerWidth, ns.options.FocusPowerHeight,
-        ns.options.FocusFontSize - fontoffset,
-        false, framelist.is_simplemode);
-    create_unitframe(framelist.PetFrame, "pet", -configs.xpoint - 50, configs.ypoint - 40 + offset, ns.options.PetWidth,
-        ns.options.PetHeight,
-        ns.options.PetPowerWidth, ns.options.PetPowerHeight,
-        ns.options.PetFontSize - fontoffset,
-        true, true);
-    create_unitframe(framelist.TargetTargetFrame, "targettarget", configs.xpoint + 50, configs.ypoint - 40 + offset,
-        ns.options.PetWidth,
-        ns.options.PetHeight,
-        ns.options.PetPowerWidth, ns.options.PetPowerHeight, ns.options.PetFontSize - fontoffset, true, true);
+	create_unitframe(framelist.PlayerFrame, "player", -configs.xpoint, configs.ypoint, ns.options.Width,
+		ns.options.Height,
+		ns.options.PowerWidth, ns.options.PowerHeight, ns.options.FontSize - fontoffset, false,
+		false);
+	create_unitframe(framelist.TargetFrame, "target", configs.xpoint, configs.ypoint, ns.options.Width, ns.options
+		.Height,
+		ns.options.PowerWidth, ns.options.PowerHeight, ns.options.FontSize - fontoffset, false,
+		false);
+	create_unitframe(framelist.FocusFrame, "focus", configs.xpoint + ns.options.Width, configs.ypoint,
+		ns.options.FocusWidth,
+		ns.options.FocusHeight,
+		ns.options.FocusPowerWidth, ns.options.FocusPowerHeight,
+		ns.options.FocusFontSize - fontoffset,
+		false, framelist.is_simplemode);
+	create_unitframe(framelist.PetFrame, "pet", -configs.xpoint - 50, configs.ypoint - 40 + offset, ns.options.PetWidth,
+		ns.options.PetHeight,
+		ns.options.PetPowerWidth, ns.options.PetPowerHeight,
+		ns.options.PetFontSize - fontoffset,
+		true, true);
+	create_unitframe(framelist.TargetTargetFrame, "targettarget", configs.xpoint + 50, configs.ypoint - 40 + offset,
+		ns.options.PetWidth,
+		ns.options.PetHeight,
+		ns.options.PetPowerWidth, ns.options.PetPowerHeight, ns.options.PetFontSize - fontoffset, true, true);
 
-    framelist.BossFrames = {};
-    if (MAX_BOSS_FRAMES) then
-        for i = 1, MAX_BOSS_FRAMES do
-            framelist.BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-            create_unitframe(framelist.BossFrames[i], "boss" .. i, configs.xpoint + 250, 160 - (i - 1) * 70,
-                ns.options.FocusWidth, ns.options.FocusHeight,
-                ns.options.FocusPowerWidth, ns.options.FocusPowerHeight, ns.options.FocusFontSize - fontoffset, false,
-                framelist.is_simplemode);
-        end
-    end
+	framelist.BossFrames = {};
+	if (MAX_BOSS_FRAMES) then
+		for i = 1, MAX_BOSS_FRAMES do
+			framelist.BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+			create_unitframe(framelist.BossFrames[i], "boss" .. i, configs.xpoint + 250, 160 - (i - 1) * 70,
+				ns.options.FocusWidth, ns.options.FocusHeight,
+				ns.options.FocusPowerWidth, ns.options.FocusPowerHeight, ns.options.FocusFontSize - fontoffset, false,
+				framelist.is_simplemode);
+		end
+	end
 
 
-    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
-    if libasConfig then
-        libasConfig.load_position(framelist.PlayerFrame, "PlayerFrame", AUF_Positions.PlayerFrame);
-        libasConfig.load_position(framelist.TargetFrame, "TargetFrame", AUF_Positions.TargetFrame);
-        libasConfig.load_position(framelist.FocusFrame, "FocusFrame", AUF_Positions.FocusFrame);
-        libasConfig.load_position(framelist.PetFrame, "PetFrame", AUF_Positions.PetFrame);
-        libasConfig.load_position(framelist.TargetTargetFrame, "TargetTargetFrame", AUF_Positions.TargetTargetFrame);
+	if libasConfig then
+		libasConfig.load_position(framelist.PlayerFrame, "PlayerFrame", AUF_Positions.PlayerFrame);
+		libasConfig.load_position(framelist.TargetFrame, "TargetFrame", AUF_Positions.TargetFrame);
+		libasConfig.load_position(framelist.FocusFrame, "FocusFrame", AUF_Positions.FocusFrame);
+		libasConfig.load_position(framelist.PetFrame, "PetFrame", AUF_Positions.PetFrame);
+		libasConfig.load_position(framelist.TargetTargetFrame, "TargetTargetFrame", AUF_Positions.TargetTargetFrame);
 
-        if (MAX_BOSS_FRAMES) then
-            for i = 1, MAX_BOSS_FRAMES do
-                libasConfig.load_position(framelist.BossFrames[i], "BossFrame" .. i, AUF_Positions.BossFrames[i]);
-            end
-        end
-    end
+		if (MAX_BOSS_FRAMES) then
+			for i = 1, MAX_BOSS_FRAMES do
+				libasConfig.load_position(framelist.BossFrames[i], "BossFrame" .. i, AUF_Positions.BossFrames[i]);
+			end
+		end
+	end
 
-    local _, engclass = UnitClass("player");
+	local _, engclass = UnitClass("player");
 
-    if engclass == "EVOKER" or engclass == "DEMONHUNTER" then
-        ns.isevoker = true;
-    end
+	if engclass == "EVOKER" or engclass == "DEMONHUNTER" then
+		ns.isevoker = true;
+	end
 
-    init_lowhealth();
+	init_lowhealth();
 end
 
 local bfirst = true;
 local function on_mainevent(self, event, ...)
-    if bfirst then
-        init(ASMOD_asUnitFrame);
-        bfirst = false;
-    end
+	if bfirst then
+		init(ASMOD_asUnitFrame);
+		bfirst = false;
+	end
 
-    if event == "PLAYER_ENTERING_WORLD" then
-        ns.hide_defauls();
-        update_unitframe("player");
-    elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
-        update_unitframe("target");
-        update_unitframe("targettarget");
-    elseif event == "UNIT_TARGET" then
-        update_unitframe("targettarget");
-    elseif event == "PLAYER_TARGET_CHANGED" then
-        update_unitframe("target");
-        update_unitframe("targettarget");
-    elseif event == "UNIT_PORTRAIT_UPDATE" then
-        local unit = ...;
-        update_unitportait(unit);
-    elseif event == "PORTRAITS_UPDATED" then
-        for unit, _ in pairs(ns.unitframes) do
-            update_unitportait(unit);
-        end
-    elseif event == "PLAYER_FOCUS_CHANGED" then
-        update_unitframe("focus");
-    elseif event == "UNIT_PET" then
-        update_unitframe("pet");
-    elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
-        for i = 1, MAX_BOSS_FRAMES do
-            local unit = "boss" .. i;
-            update_unitframe(unit);
-        end
-    elseif event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" then
-        init_lowhealth();
-    end
+	if event == "PLAYER_ENTERING_WORLD" then
+		ns.hide_defauls();
+		update_unitframe("player");
+	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
+		update_unitframe("target");
+		update_unitframe("targettarget");
+	elseif event == "UNIT_TARGET" then
+		update_unitframe("targettarget");
+	elseif event == "PLAYER_TARGET_CHANGED" then
+		update_unitframe("target");
+		update_unitframe("targettarget");
+	elseif event == "UNIT_PORTRAIT_UPDATE" then
+		local unit = ...;
+		update_unitportait(unit);
+	elseif event == "PORTRAITS_UPDATED" then
+		for unit, _ in pairs(ns.unitframes) do
+			update_unitportait(unit);
+		end
+	elseif event == "PLAYER_FOCUS_CHANGED" then
+		update_unitframe("focus");
+	elseif event == "UNIT_PET" then
+		update_unitframe("pet");
+	elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
+		for i = 1, MAX_BOSS_FRAMES do
+			local unit = "boss" .. i;
+			update_unitframe(unit);
+		end
+	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "TRAIT_CONFIG_UPDATED" or event == "TRAIT_CONFIG_LIST_UPDATED" then
+		init_lowhealth();
+	end
 end
 local main_frame = CreateFrame("Frame");
 main_frame:SetScript("OnEvent", on_mainevent)

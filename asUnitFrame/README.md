@@ -67,7 +67,7 @@ This addon replaces the default unit frames. It is recommended to use it with ot
 | ------------- | ----------- | -----------|
 | Hunter | 20% for Kill Shot (Black Arrow) | 80% for Black Arrow |
 | Warrior | 20% for Execute (35% with talent) | |
-| Mage | 30% for Scorch | 90% for Firestarter |
+| Mage | 30% for Scorch/Scald | 90% for Firestarter |
 | Priest | 20% for Shadow Word: Death | |
 | Death Knight | 35% for Soul Reaper | |
 | Destruction Warlock | 20% for Shadowburn | |
@@ -189,7 +189,7 @@ The following errors may occur.
 | ------------- | ----------- | -----------|
 | 사냥꾼        | 마무리 사격(어둠 화살) 20%  | 어둠 화살 80%  |
 | 전사        | 마무리 일격 20% (특성시 35%) |  |
-| 마법사        | 불태우기 30% | 방화광 90%  |
+| 마법사        | 불태우기/가열 30% | 방화광 90%  |
 | 사제        |  죽음 20% |  |
 | 죽기        |  영혼 수확자 35% |  |
 | 파흑        |  어둠의 연소 20% |  |
