@@ -6,6 +6,7 @@ Countdown Voice Alerts
 
 ## Key Features
 * **Countdown Voice Alerts**: Plays voice announcements for 5, 4, 3, 2, 1 seconds only.
+* **Mythic+ Dungeon Start Timer Voice Alert**
     
 ## Configuration
 * No configuration options available.
@@ -25,6 +26,7 @@ Countdown Voice Alerts
 
 ## 주요 기능
 *  **초읽이 음성 알림**: 5초 4초 3초 2초 1초만 음성으로 알림    
+*  **쐐기 시작 타이머 음성 알림** 
     
 ## 설정
 *  설정 없음

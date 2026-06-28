@@ -18,50 +18,15 @@ if GetLocale() == "koKR" then
 	}
 end
 
-local gvalues = {
-	endtime = nil,
-	timers = {},
-}
-
-local main_frame = CreateFrame("Frame", nil, UIParent);
-
 local function sound(sec)
 	PlaySoundFile(configs.sounds[sec], "Master");
 end
 
-local function cancel_timers()
-	for i = 1, 5 do
-		local timer = gvalues.timers[i];
-		if timer then
-			timer:Cancel();
-		end
+local function hook_func(timer)
+	local digit = floor(timer.time);
+	if digit and not issecretvalue(digit) and digit <= 5 then
+		sound(digit);
 	end
 end
 
-local function set_timers(total)
-	cancel_timers();
-	for i = 1, 5 do
-		if total >= i then
-			local func = function()
-				sound(i);
-			end
-			gvalues.timers[i] = C_Timer.NewTicker(total - i, func, 1);
-		end
-	end
-
-end
-
-
-
-local function on_event(self, event, ...)
-	if event == "START_PLAYER_COUNTDOWN" then
-		local _, remain, total = ...;		
-		set_timers(total);
-	elseif event == "CANCEL_PLAYER_COUNTDOWN" then		
-		cancel_timers();
-	end
-end
-
-main_frame:RegisterEvent("START_PLAYER_COUNTDOWN");
-main_frame:RegisterEvent("CANCEL_PLAYER_COUNTDOWN");
-main_frame:SetScript("OnEvent", on_event);
+hooksecurefunc("StartTimer_SetTexNumbers", hook_func);
