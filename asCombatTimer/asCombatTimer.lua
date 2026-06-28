@@ -1,8 +1,8 @@
 ﻿local _, ns = ...;
 local configs = {
 	size = 40,
-	xpoint = -365,
-	ypoint = -197,
+	xpoint = 164,
+	ypoint = -273,
 	fonts = {
 		[1] = STANDARD_TEXT_FONT,
 		[2] = UNIT_NAME_FONT,
@@ -18,7 +18,7 @@ ns.update_options = function()
 	main_frame.timertext:SetFont(configs.fonts[ns.options.Font], ns.options.FontSize, "OUTLINE");
 end
 
-local gvalues = {	
+local gvalues = {
 	combatstart = nil,
 	combatend = nil,
 	encounterstart = nil,
@@ -95,7 +95,7 @@ local function init()
 
 	main_frame:SetPoint("CENTER", configs.xpoint, configs.ypoint)
 	main_frame:SetWidth(configs.size);
-	main_frame:SetHeight(configs.size * 0.9);	
+	main_frame:SetHeight(configs.size * 0.9);
 	main_frame:Show();
 
 	ns.update_options();
