@@ -1,6 +1,23 @@
 # ChangeLogs
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260628 update
+### asFireStarter 
+* When the `Scald` talent is selected, it displays the Scorch icon and the target's health percentage if the target is below 30% health.
+
+### asUnitFrame/asNamePlats
+* add `Scald` talent.
+ 
+| Class | Low Health (Dark Purple) | High Health (Dark Blue) |
+| ------------- | ----------- | -----------|
+| Mage | 30% for Scorch/Scald | 90% for Firestarter |
+
+### asCountdown
+* **Mythic+ Dungeon Start Timer Voice Alert**
+
+### asCombatTimer
+* Change default position, considering 30-man raid frame location.
+
 ## 260618 update
 ### asFixChat
 * Fixed an issue where special characters such as `+` were being cut off in URLs.

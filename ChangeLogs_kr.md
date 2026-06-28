@@ -1,6 +1,23 @@
 # 변경점
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260628 update
+### asFirestarter
+*	`가열` 특성시 30% 이하 체력의 대상일 경우 불태우기 아이콘 및 대상 체력 수치 표시
+
+### asUnitFrame, asNameplates
+* `가열` 특성 추가.
+
+| 직업          | 낮은 체력 (어두운 보라색)   |높은 체력  (어두운 파란색)  |
+| ------------- | ----------- | -----------|
+| 마법사        | 불태우기/가열 30% | 방화광 90%  |
+
+### asCountdown 
+*  **쐐기 시작 타이머 음성 알림** 
+
+### asCombatTimer
+* 기본 위치 이동, 30인 레이드 고려
+
 ## 260618 update
 ### asFixChat
 * URL에서 +등 특수문자가 잘려 나오는 문제 수정
