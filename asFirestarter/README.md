@@ -10,6 +10,7 @@ Firestarter and Scorch Alerts
 * Works for Fire Mages only.
 * When the `Firestarter` talent is selected, it displays the Firestarter icon and the target's health percentage if the target is above 90% health.
 * When the `Scorch` talent is selected, it displays the Scorch icon and the target's health percentage if the target is below 30% health.
+* When the `Scald` talent is selected, it displays the Scorch icon and the target's health percentage if the target is below 30% health.
 
 ## Configuration
 
@@ -39,6 +40,7 @@ Settings can be adjusted via **ESC > Options > AddOns > asFirestarter**:
 *   화염 법사만 동작
 *   `방화광` 특성시 90% 이상 체력의 대상일 경우 방화광 아이콘 및 대상 체력 수치 표시
 *   `불태우기` 특성시 30% 이하 체력의 대상일 경우 불태우기 아이콘 및 대상 체력 수치 표시
+*		`가열` 특성시 30% 이하 체력의 대상일 경우 불태우기 아이콘 및 대상 체력 수치 표시
 
 ## 설정
 
