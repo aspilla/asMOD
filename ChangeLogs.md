@@ -1,6 +1,17 @@
 # ChangeLogs
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260630 update
+### asCooldownPulse (New Feature)
+* **Skill, Trinket, Potion, and Racial Ability Availability Alerts**: Displays an alert in the center of the screen when a registered skill on `cooldown manager`, an equipped trinket, a primary combat/survival potion, or a racial ability becomes available for use.
+* This feature utilizes updated APIs implemented after the Midnight expansion; consequently, skills, which have the Global Cooldown (GCD), may experience slight notification delays.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+### asUnitFrame, asTargetCastBar, asCastBar
+* Performance Optimization
+
+
 ## 260628 update
 ### asFireStarter 
 * When the `Scald` talent is selected, it displays the Scorch icon and the target's health percentage if the target is below 30% health.

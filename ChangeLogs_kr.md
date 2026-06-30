@@ -1,6 +1,18 @@
 # 변경점
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260630 update
+### asCooldownPulse (New Feature)
+*   **스킬, 장신구, 물약, 종특, 사용가능 알림**: `재사용 대기시간 관리자`에 등록된 스킬, 착용중인 장신구, 전투/생존 대표 물약, 종특 사용가능시 화면 중앙에 알림
+*   한밤 이후 변경된 API 를 사용한 기능으로 글쿨이 있는 스킬의 경우 늦게 알림이 될 수 있습니다.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+### asUnitFrame, asTargetCastBar, asCastBar
+* 성능 개선
+
+
 ## 260628 update
 ### asFirestarter
 *	`가열` 특성시 30% 이하 체력의 대상일 경우 불태우기 아이콘 및 대상 체력 수치 표시
