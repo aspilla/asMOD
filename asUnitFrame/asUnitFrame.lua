@@ -610,6 +610,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 	frame.updatecount = 1;
 	frame.istargetframe = (unit == "target");
 	frame.isplayerframe = (unit == "player");
+	frame.ispetframe = (unit == "pet");
 
 	if unit == "focus" or string.find(unit, "boss") then
 		frame.updateCastBar = true;
