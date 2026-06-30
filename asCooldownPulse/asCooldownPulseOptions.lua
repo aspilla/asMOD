@@ -9,8 +9,37 @@ local Options_Default = {
 	ShowSpells = true,
 	SpellSize = 28,
 	MillisecondsThreshold = 3,
+	ReadyAlertSize = 60,
 };
 
+local L = {
+	CombatAlphaChange = "Adjusts transparency when out of combat.",
+	ShowTrinkets = "Toggle display of trinket/racial cooldowns.",
+	TrinketSize = "Icon size for trinket/racial cooldowns.",
+	ShowItems = "Toggle display of potion/Healthstone cooldowns.",
+	ItemSize = "Icon size for potion/Healthstone cooldowns.",
+	ShowSpells = "Toggle display of skill cooldown tracking.",
+	SpellSize = "Icon size for skill cooldown tracking.",
+	MillisecondsThreshold =
+	"The time threshold at which the remaining cooldown begins displaying in 0.1-second increments.",
+	ReadyAlertSize = "Icon size for skill ready alert.",
+}
+
+
+if GetLocale() == "koKR" then
+	L = {
+		ReadyAlertSize = "스킬 사용가능 알림 아이콘 크기",
+		CombatAlphaChange = "비전투시 투명도 변경",
+		ShowTrinkets = "장신구/종특 쿨 표시 여부",
+		TrinketSize = "장신구/종특 쿨 사이즈",
+		ShowItems = "물약/생석 쿨 표시 여부",
+		ItemSize = "물약/생석 쿨 사이즈",
+		ShowSpells = "스킬 쿨 추적 표시 여부",
+		SpellSize = "스킬 쿨 추적 사이즈",
+		MillisecondsThreshold = "남은 쿨을 0.1초 단위로 보여줄 최소 시간",
+
+	}
+end
 local Options_DefaultSpells = {
 
 }
@@ -174,7 +203,7 @@ local function SetupSubOption(panel, titlename, coption, soption)
 	btn:SetWidth(100)
 	btn:SetScript("OnClick", function()
 		local newspell = editBox:GetNumber();
-		local newtype = tonumber(UIDropDownMenu_GetSelectedValue(dropDown));	
+		local newtype = tonumber(UIDropDownMenu_GetSelectedValue(dropDown));
 		if newspell and newspell > 0 then
 			coption[newspell] = newtype;
 			if soption then
@@ -203,7 +232,7 @@ local function SetupSubOption(panel, titlename, coption, soption)
 		end
 	end);
 
-	
+
 	curr_y = curr_y + y_adder;
 
 	panel.bufflisttext = panel.scrollchild:CreateFontString(nil, "ARTWORK", "GameFontNormal");
@@ -262,6 +291,9 @@ function ns.setup_option()
 		ACDP_Positions_3 = {};
 	end
 
+	if ACDP_Positions_4 == nil then
+		ACDP_Positions_4 = {};
+	end
 
 	ns.options = CopyTable(ACDP_Options);
 	ns.show_list = CopyTable(ACDP_Spelllist);
@@ -280,7 +312,7 @@ function ns.setup_option()
 
 			if name == "MillisecondsThreshold" then
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), name, defaultValue);
+					type(defaultValue), L[name], defaultValue);
 				local options = Settings.CreateSliderOptions(0, 10, 1);
 				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
 				Settings.CreateSlider(category, setting, options, tooltip);
@@ -288,7 +320,7 @@ function ns.setup_option()
 				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
 			elseif tonumber(defaultValue) ~= nil then
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), name, defaultValue);
+					type(defaultValue), L[name], defaultValue);
 				local options = Settings.CreateSliderOptions(0, 400, 1);
 				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
 				Settings.CreateSlider(category, setting, options, tooltip);
@@ -297,7 +329,7 @@ function ns.setup_option()
 			else
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
 					type(defaultValue),
-					name, defaultValue);
+					L[name], defaultValue);
 				Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
 				Settings.SetValue(cvar_name, currentValue);
 				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);

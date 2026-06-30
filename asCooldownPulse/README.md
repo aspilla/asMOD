@@ -1,10 +1,18 @@
 # asCooldownPulse (Midnight)
 
+Displays icons for ready spell.
+
+![asCooldownPulse](https://media.forgecdn.net/attachments/1764/762/ascooldownpulse-jpg.jpg)
+
 Displays cooldowns for trinkets, racial abilities, Healthstones, and potions.
 
 ![asCooldownPulse](https://media.forgecdn.net/attachments/1585/670/ascooldownpulse_mn-jpg.jpg)
 
 ## Key Features
+* **Skill, Trinket, Potion, and Racial Ability Availability Alerts**: Displays an alert in the center of the screen when a registered skill on `cooldown manager`, an equipped trinket, a primary combat/survival potion, or a racial ability becomes available for use.
+* This feature utilizes updated APIs implemented after the Midnight expansion; consequently, skills, which have the Global Cooldown (GCD), may experience slight notification delays.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 * **Trinket Cooldown Display (Right)**: Displays cooldowns for usable trinkets when equipped.
 * **Racial Ability Cooldown Display (Right)**
@@ -15,14 +23,15 @@ Displays cooldowns for trinkets, racial abilities, Healthstones, and potions.
 
 ## Configuration
 * Accessible via `ESC` > `Options` > `AddOns` > `asCooldownPulse`.
-* `CombatAlphaChange`: Adjusts transparency when out of combat (Default: On).
-* `ShowTrinkets`: Toggle display of trinket/racial cooldowns (Default: On).
-* `TrinketSize`: Icon size for trinket/racial cooldowns (Default: 28).
-* `ShowItems`: Toggle display of potion/Healthstone cooldowns (Default: On).
-* `ItemSize`: Icon size for potion/Healthstone cooldowns (Default: 28).
-* `ShowSpells`: Toggle display of skill cooldown tracking (Default: On).
-* `SpellSize`: Icon size for skill cooldown tracking (Default: 28).
-* `MillisecondsThreshold`: The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
+* Icon size for skill ready alert (Default: 60, 0 for off).
+* Adjusts transparency when out of combat (Default: On).
+* Toggle display of trinket/racial cooldowns (Default: On).
+* Icon size for trinket/racial cooldowns (Default: 28).
+* Toggle display of potion/Healthstone cooldowns (Default: On).
+* Icon size for potion/Healthstone cooldowns (Default: 28).
+* Toggle display of skill cooldown tracking (Default: On).
+* Icon size for skill cooldown tracking (Default: 28).
+* The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
 
 * A `/reload` is required after changing sizes.
 
@@ -42,11 +51,20 @@ Displays cooldowns for trinkets, racial abilities, Healthstones, and potions.
 
 # asCooldownPulse (한밤)
 
+준비된 스킬 아이콘으로 알림
+
+![asCooldownPulse](https://media.forgecdn.net/attachments/1764/762/ascooldownpulse-jpg.jpg)
+
 장신구, 종특, 생석, 물약 쿨 표시
 
 ![asCooldownPulse](https://media.forgecdn.net/attachments/1585/670/ascooldownpulse_mn-jpg.jpg)
 
 ## 주요 기능
+
+*   **스킬, 장신구, 물약, 종특, 사용가능 알림**: `재사용 대기시간 관리자`에 등록된 스킬, 착용중인 장신구, 전투/생존 대표 물약, 종특 사용가능시 화면 중앙에 알림
+*   한밤 이후 변경된 API 를 사용한 기능으로 글쿨이 있는 스킬의 경우 늦게 알림이 될 수 있습니다.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 *   **장신구 쿨 표시(우측)**: 사용가능 장신구 착용시 장신구 쿨 표시.
 *   **종특 쿨 표시(우측)** 
@@ -58,15 +76,15 @@ Displays cooldowns for trinkets, racial abilities, Healthstones, and potions.
 
 ## 설정
 *   `ESC` > `설정` > `애드온` > `asCooldownPulse` 에서 설정 가능
-*   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
-*   `ShowTrinkets` : 장신구/종특 쿨 표시 여부 (Default On)
-*   `TrinketSize` : 장신구/종특 쿨 사이즈 (Default 28)
-*   `ShowItems` : 물약/생석 쿨 표시 여부 (Default On)
-*   `ItemSize`  : 물약/생석 쿨 사이즈 (Default 28)
-*   `ShowSpells` : 스킬 쿨 추적 표시 여부 (Default On)
-*   `SpellSize` : 스킬 쿨 추적 사이즈 (Default 28)
-*  `MillisecondsThreshold` : 남은 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
-
+*		스킬 사용가능 알림 아이콘 크기 (기본 60, 0 이면 기능 끄기)
+*   비전투시 투명도 변경 (Default On)
+*   장신구/종특 쿨 표시 여부 (Default On)
+*   장신구/종특 쿨 사이즈 (Default 28)
+*   물약/생석 쿨 표시 여부 (Default On)
+*   물약/생석 쿨 사이즈 (Default 28)
+*   스킬 쿨 추적 표시 여부 (Default On)
+*   스킬 쿨 추적 사이즈 (Default 28)
+	* 남은 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
 * 크기 변경후 `/reload` 필요
 
 *   `ESC` > `설정` > `애드온` > `asCooldownPulse` > `Spell List` 에서 쿨 추적할 스킬 등록 가능
