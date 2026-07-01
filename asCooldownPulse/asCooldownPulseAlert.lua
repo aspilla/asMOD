@@ -52,19 +52,25 @@ end
 
 local function onupdate()
 	for spellid, start in pairs(alertspells) do
-		local cd = C_Spell.GetSpellCooldown(spellid)
+		local or_spellid = C_Spell.GetOverrideSpell(spellid)
+		local id = spellid;
+
+		if or_spellid then
+			id = or_spellid;
+		end
+		local cd = C_Spell.GetSpellCooldown(id)
 		if cd then
 			if start > 0 then
 				if not cd.isActive then
 					local duration = GetTime() - start;
 					if duration > 2 then
-						showalert(spellid);
+						showalert(id);
 					end
 					alertspells[spellid] = 0;
 				end
 			else
 				if cd.isActive and not cd.isOnGCD then
-					alertspells[spellid] = GetTime();
+					alertspells[id] = GetTime();
 				end
 			end
 		end
@@ -124,10 +130,106 @@ local function checktrinkets(slot)
 	end
 end
 
+local function get_powerbarspell()
+	local localizedClass, englishClass = UnitClass("player");
+	local spec = C_SpecializationInfo.GetSpecialization();
+	local spellid = nil;
+
+	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
+		spec = 1;
+	end
+
+
+	if (englishClass == "EVOKER") then
+	end
+
+	if (englishClass == "PALADIN") then
+	end
+
+	if (englishClass == "MAGE") then
+		if (spec and spec == 2) then
+			spellid = 108853;
+		end
+	end
+
+	if (englishClass == "WARLOCK") then
+
+	end
+
+	if (englishClass == "DRUID") then
+	end
+
+	if (englishClass == "MONK") then
+		if (spec and spec == 2) then
+			spellid = 115151;
+		end
+	end
+
+	if (englishClass == "ROGUE") then
+	end
+
+	if (englishClass == "DEATHKNIGHT") then
+	end
+
+	if (englishClass == "PRIEST") then
+		if (spec and spec == 1) then
+			spellid = 194509;
+		end
+
+		if (spec and spec == 2) then
+			spellid = 2050;
+		end
+
+		if (spec and spec == 3) then
+			spellid = 8092;
+		end
+	end
+
+	if (englishClass == "WARRIOR") then
+		if (spec and spec == 1) then
+			spellid = 7384;
+		end
+
+
+		if (spec and spec == 3) then
+			spellid = 2565;
+		end
+	end
+
+	if (englishClass == "DEMONHUNTER") then
+		if spec and spec == 1 then
+			spellid = 195072;
+		end
+
+		if spec and spec == 2 then
+			spellid = 228477;
+		end
+	end
+
+	if (englishClass == "HUNTER") then
+		if (spec and spec == 1) then
+			spellid = 217200;
+		end
+
+		if (spec and spec == 2) then
+			spellid = 19434;
+		end
+	end
+
+	if (englishClass == "SHAMAN") then
+		if (spec and spec == 1) then
+			spellid = 51505;
+		end
+		if (spec and spec == 3) then
+			spellid = 61295;
+		end
+	end
+	if spellid then
+		alertspells[spellid] = 0;
+	end
+end
 local function init_spells()
 	wipe(alertspells);
-
-
 
 	for _, viewer in ipairs(viewers) do
 		if viewer then
@@ -137,6 +239,10 @@ local function init_spells()
 
 	if ns.racial_spell then
 		alertspells[ns.racial_spell] = 0;
+	end
+
+	if ns.options.AlertPowerBar then
+		get_powerbarspell();
 	end
 end
 
