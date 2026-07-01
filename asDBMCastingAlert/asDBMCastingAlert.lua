@@ -186,6 +186,10 @@ end
 
 
 local function update_castbar(castbar)
+	if not castbar:IsShown() then
+		return;
+	end
+
 	local current = GetTime();
 
 	if castbar.duration_obj then
