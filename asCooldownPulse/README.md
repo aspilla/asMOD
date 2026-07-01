@@ -10,7 +10,7 @@ Displays cooldowns for trinkets, racial abilities, Healthstones, and potions.
 
 ## Key Features
 
-- **Skill, Trinket, Potion, and Racial Ability Availability Alerts**: Displays an alert in the center of the screen when a registered skill on `cooldown manager`, an equipped trinket, a primary combat/survival potion, or a racial ability becomes available for use.
+- **Skill, Trinket, Potion, and Racial Ability Availability Alerts**: Displays an alert in the center of the screen when a registered skill on `cooldown manager` and `asPowerBar`, an equipped trinket, a primary combat/survival potion, or a racial ability becomes available for use.
 - This feature utilizes updated APIs implemented after the Midnight expansion; consequently, skills, which have the Global Cooldown (GCD), may experience slight notification delays.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -65,7 +65,7 @@ Displays cooldowns for trinkets, racial abilities, Healthstones, and potions.
 
 ## 주요 기능
 
-- **스킬, 장신구, 물약, 종특, 사용가능 알림**: `재사용 대기시간 관리자`에 등록된 스킬, 착용중인 장신구, 전투/생존 대표 물약, 종특 사용가능시 화면 중앙에 알림
+- **스킬, 장신구, 물약, 종특, 사용가능 알림**: `재사용 대기시간 관리자` 또는 `asPowerBar`에 등록된 스킬, 착용중인 장신구, 전투/생존 대표 물약, 종특 사용가능시 화면 중앙에 알림
 - 한밤 이후 변경된 API 를 사용한 기능으로 글쿨이 있는 스킬의 경우 늦게 알림이 될 수 있습니다.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
