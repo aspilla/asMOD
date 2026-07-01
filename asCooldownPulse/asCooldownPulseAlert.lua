@@ -70,7 +70,7 @@ local function onupdate()
 				end
 			else
 				if cd.isActive and not cd.isOnGCD then
-					alertspells[id] = GetTime();
+					alertspells[spellid] = GetTime();
 				end
 			end
 		end
