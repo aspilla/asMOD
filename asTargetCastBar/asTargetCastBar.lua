@@ -35,7 +35,13 @@ main_frame:SetWidth(0)
 main_frame:SetHeight(0)
 main_frame:Show();
 
-local function setup_castbar()
+local function setup_castbar(scale)
+	local height = configs.height * scale;
+	local width = configs.width * scale;
+	local timesize = configs.timesize * scale;
+	local namesize = configs.namesize * scale;
+
+
 	local castbar = CreateFrame("StatusBar", nil, UIParent)
 	castbar:SetFrameStrata("LOW");
 	castbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
@@ -43,8 +49,8 @@ local function setup_castbar()
 	statustexture:SetHorizTile(false)
 	castbar:SetMinMaxValues(0, 100)
 	castbar:SetValue(100)
-	castbar:SetHeight(configs.height)
-	castbar:SetWidth(configs.width - (configs.height + 2) * 1.2)
+	castbar:SetHeight(height)
+	castbar:SetWidth(width - (height + 2) * 1.2)
 	castbar:SetStatusBarColor(1, 0.9, 0.9);
 	castbar:SetAlpha(configs.alpha);
 
@@ -74,11 +80,11 @@ local function setup_castbar()
 	castbar.bg:Show();
 
 	castbar.name = castbar:CreateFontString(nil, "OVERLAY");
-	castbar.name:SetFont(STANDARD_TEXT_FONT, configs.namesize);
+	castbar.name:SetFont(STANDARD_TEXT_FONT, namesize);
 	castbar.name:SetPoint("LEFT", castbar, "LEFT", 3, 0);
 
 	castbar.time = castbar:CreateFontString(nil, "OVERLAY");
-	castbar.time:SetFont(STANDARD_TEXT_FONT, configs.timesize);
+	castbar.time:SetFont(STANDARD_TEXT_FONT, timesize);
 	castbar.time:SetPoint("RIGHT", castbar, "RIGHT", -3, 0);
 
 	if not castbar:GetScript("OnEnter") then
@@ -100,8 +106,8 @@ local function setup_castbar()
 
 	castbar.button = CreateFrame("Button", nil, castbar, "ATCBFrameTemplate");
 	castbar.button:SetPoint("RIGHT", castbar, "LEFT", -1, 0)
-	castbar.button:SetWidth((configs.height + 2) * 1.2);
-	castbar.button:SetHeight(configs.height + 2);
+	castbar.button:SetWidth((height + 2) * 1.2);
+	castbar.button:SetHeight(height + 2);
 	castbar.button:SetAlpha(1);
 	castbar.button:EnableMouse(false);
 	castbar.button.icon:SetTexCoord(.08, .92, .16, .84);
@@ -111,16 +117,16 @@ local function setup_castbar()
 	castbar.button:Show();
 
 	castbar.targetname = castbar:CreateFontString(nil, "ARTWORK");
-	castbar.targetname:SetFont(configs.font, configs.namesize);
+	castbar.targetname:SetFont(configs.font, namesize);
 	castbar.targetname:SetPoint("TOPRIGHT", castbar, "BOTTOMRIGHT", 0, -2);
 
 	castbar.mark = castbar:CreateTexture(nil, "ARTWORK");
 	castbar.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
-	castbar.mark:SetSize(configs.namesize + 3, configs.namesize + 3);
+	castbar.mark:SetSize(namesize + 3, namesize + 3);
 	castbar.mark:SetPoint("RIGHT", castbar.button, "LEFT", -1, 0);
 
 	castbar.targetedindi = castbar:CreateFontString(nil, "ARTWORK");
-	castbar.targetedindi:SetFont(configs.font, configs.namesize + 1, "OUTLINE");
+	castbar.targetedindi:SetFont(configs.font, namesize + 1, "OUTLINE");
 	castbar.targetedindi:SetPoint("LEFT", castbar, "RIGHT", 0, 1);
 	castbar.targetedindi:Show();
 
@@ -414,12 +420,12 @@ end
 
 local function init()
 	ns.setup_option();
-	ns.targetcastbar = setup_castbar();
+	ns.targetcastbar = setup_castbar(ns.options.TargetCastScale);
 	ns.targetcastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height + 2) * 1.2) / 2, configs
 		.ypoint)
-	ns.focuscastbar = setup_castbar();
+	ns.focuscastbar = setup_castbar(ns.options.FocusCastScale);
 	ns.focuscastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height + 2) * 1.2) / 2,
-		configs.ypoint + 150);
+		configs.ypoint + 160);
 
 
 	if ns.options.ShowTarget then
@@ -433,8 +439,8 @@ local function init()
 		register_unit(ns.focuscastbar, "focus");
 	end
 
-	ns.targetcastbar:SetScale(ns.options.TargetCastScale);
-	ns.focuscastbar:SetScale(ns.options.FocusCastScale);
+	--	ns.targetcastbar:SetScale(ns.options.TargetCastScale);
+	--	ns.focuscastbar:SetScale(ns.options.FocusCastScale);
 
 	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
