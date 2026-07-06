@@ -24,8 +24,8 @@ Cast bar for Target and Focus targets.
 
 - `ShowTarget`: Toggle display of the Target cast bar (Default: true).
 - `ShowFocus`: Toggle display of the Focus target cast bar (Default: true).
-- `TargetCastScale`: Adjust the size scale of the Target cast bar (Default: 1, Require reload).
-- `FocusCastScale`: Adjust the size scale of the Focus target cast bar (Default: 1.2, Require reload).
+- `TargetCastScale`: Adjust the size scale of the Target cast bar (Default: 1, Require `/reload`).
+- `FocusCastScale`: Adjust the size scale of the Focus target cast bar (Default: 1.2, Require '`/reload`).
 - **Move Position**: Enter the `/asConfig` command in the chat.
 - **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
@@ -62,8 +62,8 @@ Cast bar for Target and Focus targets.
 
 - `ShowTarget`: 대상 시전 바 표시 여부 (기본 true).
 - `ShowFocus`: 주시 대상 시전 바 표시 여부 (기본 true).
-- `TargetCastScale`: 대상 시전 바 크기 배율 (기본 1, Reload 필요).
-- `FocusCastScale`: 주시 대상 시전 바 크기 배율 (기본 1.2, Reload 필요).
+- `TargetCastScale`: 대상 시전 바 크기 배율 (기본 1, `/reload` 필요).
+- `FocusCastScale`: 주시 대상 시전 바 크기 배율 (기본 1.2, `/reload` 필요).
 - **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 - **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화
 
