@@ -2,6 +2,13 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260706 update
+
+### asTargetCastBar
+
+- 주시대상 시전바의 크기 조정 방식을 배수 처리(Scale) 방식에서 크기 조정 방식으로 변경
+- 크기 배율 설정 시 `/reload` 필요
+
 ## 260702 update
 
 ### asCooldownPulse

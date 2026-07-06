@@ -2,6 +2,14 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260706 update
+
+### asTargetCastBar
+
+- Changed the focus target cast bar resizing method from scaling to direct width/height adjustment.
+- Changing the scale factor now requires a `/reload`.
+
+
 ## 260702 update
 
 ### asCooldownPulse
