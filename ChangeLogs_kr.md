@@ -2,6 +2,14 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260707 update
+
+### asPremadeGroupFilter (신규 기능)
+
+![aspremadegroupsfilter_raid](https://media.forgecdn.net/attachments/1777/967/aspremadegroupfilterraid-jpg.jpg)
+
+- 그룹에 있는 각 역할(탱커, 힐러, 근딜러, 원딜러) 내 각 직업의 수를 표시. (딜러의 경우 총합을 표시)
+
 ## 260706 update
 
 ### asTargetCastBar

@@ -2,6 +2,14 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260707 update
+
+### asPremadeGroupFilter (new feature)
+
+![aspremadegroupsfilter_raid](https://media.forgecdn.net/attachments/1777/967/aspremadegroupfilterraid-jpg.jpg)
+
+- displays the count of each class within each role (tank, healer, melee damager, ranged damager) in the group. (for damager, show the total number of players )
+
 ## 260706 update
 
 ### asTargetCastBar
