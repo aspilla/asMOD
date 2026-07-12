@@ -1,0 +1,13 @@
+﻿## Interface: 120007
+## Author: |cffff3399Aspilla|r [Azshara - KR]
+## Title: |cffff3399as|rRaidTimer
+## Notes: Major Cooldown Timing Alerts for Raid Boss Encounters
+## Notes-koKR: 레이드 보스전 주요 쿨기 사용시점 알림
+## Version : 260712
+## SavedVariablesPerCharacter: ARTI_Options, ARTI_Positions, ARTI_Positions2, ARTI_Positions3, ARTI_Data
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
+asRaidTimerOption.lua
+asRaidTimer.xml
