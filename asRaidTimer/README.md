@@ -3,6 +3,9 @@
 **Major Cooldown Timing Alerts for Raid Boss Encounters**  
 An addon created to mirror top rankers' major cooldown timings in the Rotmire raid without NSRT.
 
+![asRaidTimer](https://media.forgecdn.net/attachments/1787/912/asraidtimer-jpg.jpg)
+![asRaidTimer](https://media.forgecdn.net/attachments/1787/913/asraidtimer2-jpg.jpg)
+
 ## Key Features
 
 1. **Large Icon Display**: Resizable icon options.
@@ -47,6 +50,9 @@ Adjustable via **ESC > Options > AddOns > asDBMTimer**
 
 **레이드 보스전 주요 쿨기 사용시점 알림**
 진균나락에서 랭커를 쿨기 타이밍을 따라하고 싶으나, NSRT늘 깔기 싫어 만든 애드온
+
+![asRaidTimer](https://media.forgecdn.net/attachments/1787/912/asraidtimer-jpg.jpg)
+![asRaidTimer](https://media.forgecdn.net/attachments/1787/913/asraidtimer2-jpg.jpg)
 
 ## 주요 기능
 
