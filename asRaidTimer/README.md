@@ -1,7 +1,7 @@
 # asRaidTimer (Midnight)
 
 **Major Cooldown Timing Alerts for Raid Boss Encounters**  
-An addon created to mirror top rankers' major cooldown timings in raids without the bloat of installing NSRT.
+An addon created to mirror top rankers' major cooldown timings in the Rotmire raid without NSRT.
 
 ## Key Features
 
