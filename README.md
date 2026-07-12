@@ -10,7 +10,7 @@ asMOD is a collection of custom-made World of Warcraft addons.
 
 ![sample](https://media.forgecdn.net/attachments/1743/879/asmod_raid-jpg.jpg)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/8V7uoOiK0ok?si=r_qWJxKNOHb4Xoxu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fzt-vKDG-xk?si=Jxm3DAIF7sfWVE6m" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## asMOD Performance
 
@@ -265,7 +265,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 ![sample](https://media.forgecdn.net/attachments/1743/879/asmod_raid-jpg.jpg)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/8V7uoOiK0ok?si=r_qWJxKNOHb4Xoxu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fzt-vKDG-xk?si=Jxm3DAIF7sfWVE6m" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## asMOD 성능
 
