@@ -74,7 +74,7 @@ local function parsestring(data_str)
 				end
 			end
 			if not encounter_data.info.EncounterID or not encounter_data.info.Name or not encounter_data.info.Difficulty then
-				print(L "Error");
+				print(L["Error"]);
 				return;
 			end
 		elseif string.match(line, "^time") then
@@ -89,10 +89,10 @@ local function parsestring(data_str)
 				end
 			end
 			if not row.time or not row.spellid then
-				print(L "Error");
+				print(L["Error"]);
 				return;
 			elseif row.ph and row.ph > 1 then
-				print(L "Error2");
+				print(L["Error2"]);
 				return;
 			end
 			table.insert(encounter_data.timeline, row)

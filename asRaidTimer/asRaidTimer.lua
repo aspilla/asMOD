@@ -95,7 +95,7 @@ local function setupUI()
 	textframe.icons = {};
 
 	if libasConfig then
-		libasConfig.load_position(textframe, "asRaidTimer(Text)", ADTI_Positions2);
+		libasConfig.load_position(textframe, "asRaidTimer(Text)", ARTI_Positions2);
 	end
 
 	ns.listframe = CreateFrame("FRAME", nil, UIParent);
