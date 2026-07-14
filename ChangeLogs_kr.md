@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260714 update
+
+### asUnitFrame, asCastBar, asDBMCastingAlert, asTargetCastBar
+- 바가 크게 변경될 경우 기민하게 반영하도록 수정
+
 ## 260707 update
 
 ### asPremadeGroupFilter (신규 기능)

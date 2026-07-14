@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260714 update
+
+### asUnitFrame, asCastBar, asDBMCastingAlert, asTargetCastBar
+- Improved the responsiveness of the progress bars to quickly and accurately reflect sudden or large value changes.
+
 ## 260707 update
 
 ### asPremadeGroupFilter (new feature)
