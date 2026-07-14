@@ -224,6 +224,7 @@ local function check_casting(castbar, event, unit, complete)
 
 			castbar:SetReverseFill(reverse);
 			castbar:SetMinMaxValues(duration:GetStartTime(), duration:GetEndTime());
+			castbar:SetValue(GetTime());
 			castbar.failstart = nil;
 			castbar.donestart = nil;
 			castbar.castspellid = spellid;
