@@ -38,7 +38,7 @@ local function update_playerunit()
 	end
 end
 
-function ns.update_unithealth(frame)
+function ns.update_unithealth(frame, updated)
 	local unit = frame.unit;
 
 	if frame.isplayerframe then
@@ -51,6 +51,13 @@ function ns.update_unithealth(frame)
 		return;
 	end
 
+	local type = Enum.StatusBarInterpolation.ExponentialEaseOut;
+
+	if updated then
+		type = 0;
+	end
+
+
 	-- Healthbar
 	local value = UnitHealth(unit);
 	local max = UnitHealthMax(unit);
@@ -62,17 +69,13 @@ function ns.update_unithealth(frame)
 
 
 	frame.healthbar:SetMinMaxValues(0, max)
-	frame.healthbar:SetValue(value, Enum.StatusBarInterpolation.ExponentialEaseOut);
-
+	frame.healthbar:SetValue(value, type);
 	frame.healthbar.absorbBar:SetMinMaxValues(0, max);
-	frame.healthbar.absorbBar:SetValue(totalabsorb, Enum.StatusBarInterpolation.ExponentialEaseOut);
-
+	frame.healthbar.absorbBar:SetValue(totalabsorb, type);
 	frame.healthbar.healabsorbBar:SetMinMaxValues(0, max);
-	frame.healthbar.healabsorbBar:SetValue(totalhealabsorb, Enum.StatusBarInterpolation.ExponentialEaseOut);
-
+	frame.healthbar.healabsorbBar:SetValue(totalhealabsorb, type);
 	frame.healthbar.incominghealBar:SetMinMaxValues(0, max);
-	frame.healthbar.incominghealBar:SetValue(incomingheal, Enum.StatusBarInterpolation.ExponentialEaseOut);
-
+	frame.healthbar.incominghealBar:SetValue(incomingheal, type);
 	if UnitIsDead(unit) then
 		frame.pvalue:SetText("Dead");
 	else
@@ -90,7 +93,7 @@ function ns.update_unithealth(frame)
 	end
 end
 
-function ns.update_unitframe_other(frame)
+function ns.update_unitframe_other(frame, updated)
 	local unit = frame.unit;
 	local showplayermana = false;
 
@@ -213,7 +216,11 @@ function ns.update_unitframe_other(frame)
 	local power = UnitPower(unit)
 	local maxPower = UnitPowerMax(unit)
 	frame.powerbar:SetMinMaxValues(0, maxPower)
-	frame.powerbar:SetValue(power, Enum.StatusBarInterpolation.ExponentialEaseOut)
+	if udpated then
+		frame.powerbar:SetValue(power);
+	else
+		frame.powerbar:SetValue(power, Enum.StatusBarInterpolation.ExponentialEaseOut);
+	end
 	frame.powerbar.value:SetText(power)
 
 	local powerType, powerToken = UnitPowerType(unit)

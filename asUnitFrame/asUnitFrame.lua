@@ -676,7 +676,7 @@ end
 local function update_unitframe(unit)
 	local frame = ns.unitframes[unit];
 	if frame then
-		ns.update_unithealth(frame);
+		ns.update_unithealth(frame, true);
 		ns.update_unitframe_other(frame);
 		ns.update_auras(frame);
 		ns.update_unitframe_portrait(frame);

@@ -93,6 +93,7 @@ local function check_casting(castbar, event, interuptedby, complete)
 			frameicon:SetTexture(texture);
 			castbar:SetReverseFill(bchannel);
 			castbar:SetMinMaxValues(duration:GetStartTime(), duration:GetEndTime());
+			castbar:SetValue(GetTime());
 			castbar.failstart = nil;
 			castbar.castspellid = spellid;
 
