@@ -122,7 +122,6 @@ local function on_update()
 				frameicon:SetTexture(castingInfo.texture);
 				castbar:SetReverseFill(bchannel);
 				castbar:SetMinMaxValues(castingInfo.start, castingInfo.endtime)
-				castbar:SetValue(GetTime());
 				castbar.failstart = nil;
 				castbar.castspellid = castingInfo.spellid;
 
