@@ -2,6 +2,13 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260715 update
+
+### asInterruptHelper
+- 스킬의 쿨을 확인하여 쿨일 경우 다른 스킬을 안내 합니다.
+- 스킬의 사용 가능 여부를 확인 합니다. 사용가능시 안내 합니다.
+- 스킬이 사거리 밖일 경우 빨간색으로 표시 합니다.
+
 ## 260714 update
 
 ### asUnitFrame, asCastBar, asDBMCastingAlert, asTargetCastBar

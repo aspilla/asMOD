@@ -2,6 +2,13 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260715 update
+
+### asInterruptHelper
+- Monitors skill cooldowns and suggests alternative skills if the primary skill is currently on cooldown.
+- Checks skill availability and displays alerts only when the skill is ready for use.
+- Turns the skill icon red when the target is out of range.
+
 ## 260714 update
 
 ### asUnitFrame, asCastBar, asDBMCastingAlert, asTargetCastBar
