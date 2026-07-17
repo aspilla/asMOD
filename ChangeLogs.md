@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260717 update
+
+### asCountdown
+- Bugfix
+
 ## 260715 update
 
 ### asInterruptHelper

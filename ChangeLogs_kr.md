@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260717 update
+
+### asCountdown
+- 오류수정
+
 ## 260715 update
 
 ### asInterruptHelper
