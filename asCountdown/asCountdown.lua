@@ -19,7 +19,9 @@ if GetLocale() == "koKR" then
 end
 
 local function sound(sec)
-	PlaySoundFile(configs.sounds[sec], "Master");
+	if configs.sounds[sec] then
+		PlaySoundFile(configs.sounds[sec], "Master");
+	end
 end
 
 local function hook_func(timer)
