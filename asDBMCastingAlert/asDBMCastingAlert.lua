@@ -95,6 +95,7 @@ local function on_update()
 	end
 
 	local i = 1;
+	local curr = GetTime();
 
 	castingInfos:Iterate(
 		function(unit, castingInfo)
@@ -122,6 +123,11 @@ local function on_update()
 				frameicon:SetTexture(castingInfo.texture);
 				castbar:SetReverseFill(bchannel);
 				castbar:SetMinMaxValues(castingInfo.start, castingInfo.endtime)
+				if (castbar.currvalue + 150 < curr * 1000) then
+					castbar:SetValue(curr * 1000);
+				else
+					castbar:SetValue(curr * 1000, Enum.StatusBarInterpolation.ExponentialEaseOut);
+				end
 				castbar.failstart = nil;
 				castbar.castspellid = castingInfo.spellid;
 
@@ -195,6 +201,7 @@ local function update_castbar(castbar)
 		castbar.time:SetText(string.format("%.1f/%.1f", castbar.duration_obj:GetRemainingDuration(0),
 			castbar.duration_obj:GetTotalDuration(0)));
 		castbar:SetValue(current * 1000, Enum.StatusBarInterpolation.ExponentialEaseOut);
+		castbar.currvalue = current * 1000;
 	end
 
 
@@ -230,6 +237,7 @@ local function setup_castbar()
 	statustexture:SetHorizTile(false)
 	castbar:SetMinMaxValues(0, 100)
 	castbar:SetValue(100)
+	castbar.currvalue = 100;
 	castbar:SetHeight(configs.height)
 	castbar:SetWidth(configs.width - (configs.height + 2) * 1.2)
 	castbar:SetStatusBarColor(1, 0.9, 0.9);
