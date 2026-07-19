@@ -2,6 +2,15 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260719 update
+
+### asPowerBar
+- Added a new setting to allow turning Off the smooth bar animation.
+- Improved combo points to fade out smoothly when they disappear.
+
+### asDBMCastingAlert
+- Improved new bars to update immediately when they are created.
+
 ## 260717 update
 
 ### asCountdown

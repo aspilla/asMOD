@@ -2,6 +2,15 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260719 update
+
+### asPowerBar
+- 부드러운 바 변경 Off 가능하도록 신규 설정 추가
+- 연계점수가 사라질때 부르럽게 표현하도록 수정
+
+### asDBMCastingAlert
+- 신규 바가 생성 될때 바로 변경 되도록 개선
+
 ## 260717 update
 
 ### asCountdown
