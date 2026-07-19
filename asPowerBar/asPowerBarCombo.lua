@@ -76,13 +76,13 @@ function ns.show_combo(combo, partial)
         for i = 1, max do
             local combobar = combobars[i];
             if pvalue > 0 and i == (combo + 1) then
-                combobar:SetValue(pvalue, Enum.StatusBarInterpolation.ExponentialEaseOut);
+                combobar:SetValue(pvalue, ns.bartype);
                 combobar:SetStatusBarColor(1, 1, 1);
             elseif i <= combo then
-                combobar:SetValue(pmax, Enum.StatusBarInterpolation.ExponentialEaseOut);
+                combobar:SetValue(pmax, ns.bartype);
                 combobar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
             else
-                combobar:SetValue(0);
+                combobar:SetValue(0, ns.bartype);
                 combobar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
             end
         end
@@ -91,9 +91,10 @@ function ns.show_combo(combo, partial)
         for i = 1, max do
             local combobar = combobars[i];
             if i <= combo then
-                combobar:SetValue(1, Enum.StatusBarInterpolation.ExponentialEaseOut);
+                combobar:SetValue(1, ns.bartype);
             else
-                combobar:SetValue(0);
+                combobar:SetValue(0, ns.bartype);
+
             end
         end
     end
@@ -239,7 +240,7 @@ function ns.setup_combo(powerlevel, bpartial, brogue, bdruid)
 
         ns.setup_max_combo(max, maxpartial);
         check_form();
-        update_combo();        
+        update_combo();
         main_frame:RegisterEvent("UNIT_POWER_UPDATE");
         main_frame:RegisterEvent("UNIT_DISPLAYPOWER");
         if bdruid then

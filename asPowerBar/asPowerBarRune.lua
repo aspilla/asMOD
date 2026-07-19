@@ -25,10 +25,10 @@ local function on_update_rune(runebar)
 
     if curr_duration < runebar.duration then
         runebar:SetMinMaxValues(0, runebar.duration)
-        runebar:SetValue((curr_time - runebar.start), Enum.StatusBarInterpolation.ExponentialEaseOut)
+        runebar:SetValue((curr_time - runebar.start), ns.bartype)
     else
         runebar:SetMinMaxValues(0, runebar.duration)
-        runebar:SetValue(runebar.duration, Enum.StatusBarInterpolation.ExponentialEaseOut)
+        runebar:SetValue(runebar.duration, ns.bartype)
         runebar.start = nil;
     end
 end
@@ -82,7 +82,7 @@ main_frame:SetScript("OnEvent", on_event);
 function ns.setup_rune(bupdate_rune)
     if bupdate_rune and ns.options.ShowClassResource then
         ns.setup_max_combo(6);
-        update_rune()        
+        update_rune()
         main_frame:RegisterEvent("RUNE_POWER_UPDATE");
     end
 end

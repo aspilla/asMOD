@@ -22,7 +22,7 @@ local function on_cooldownupdate(frame)
 		local aura = C_UnitAuras.GetAuraDataByAuraInstanceID("target", auraid)
 		if aura then
 			ns.combocountbar:SetValue(aura.applications,
-				Enum.StatusBarInterpolation.ExponentialEaseOut);
+				ns.bartype);
 			ns.combotext:SetText(aura.applications);
 			return;
 		end

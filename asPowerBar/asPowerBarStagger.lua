@@ -5,7 +5,7 @@ local function update_stagger()
     local valmax = UnitHealthMax("player");
 
     ns.combocountbar:SetMinMaxValues(0, valmax)
-    ns.combocountbar:SetValue(val)
+    ns.combocountbar:SetValue(val, ns.bartype);
     ns.combotext:SetText(val);
 end
 
@@ -25,7 +25,7 @@ function ns.setup_stagger(bstagger)
         ns.combocountbar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
         ns.combocountbar.bg:SetVertexColor(0, 0, 0, 1);
         ns.combocountbar:Show();
-        ns.combotext:Show();        
+        ns.combotext:Show();
     end
 end
 

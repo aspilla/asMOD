@@ -67,14 +67,14 @@ end
 
 
 local function check_spellcooldown(spellid)
-    
+
     local chargeinfo = C_Spell.GetSpellCharges(spellid);
     local durationinfo = C_Spell.GetSpellChargeDuration(spellid);
     local _, notenough = C_Spell.IsSpellUsable(spellid);
 
     ns.setup_max_spell(chargeinfo.maxCharges);
     ns.combocountbar:SetMinMaxValues(0, chargeinfo.maxCharges)
-    ns.combocountbar:SetValue(chargeinfo.currentCharges, Enum.StatusBarInterpolation.ExponentialEaseOut);
+    ns.combocountbar:SetValue(chargeinfo.currentCharges, ns.bartype);
 
     if gvalue.maxspell == 1 then
         durationinfo = C_Spell.GetSpellCooldownDuration(spellid);
@@ -82,16 +82,16 @@ local function check_spellcooldown(spellid)
     else
         ns.chargebar:SetTimerDuration(durationinfo, 1, 0);
     end
-    
+
     update_framerange(gvalue.inrange, notenough);
 
-    
+
 end
 
 
 local function check_soul()
     local count = C_Spell.GetSpellCastCount(228477) or 0
-    ns.combocountbar:SetValue(count, Enum.StatusBarInterpolation.ExponentialEaseOut);
+    ns.combocountbar:SetValue(count, ns.bartype);
 end
 
 
