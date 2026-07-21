@@ -79,9 +79,7 @@ local function create_privateframes(parent)
 	end
 end
 
-local debufffilter_attack = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
-local debufffilter_helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
-
+local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
 local borderoption = {
 	showIcon = false,
 	showWhenHarmful = true,
@@ -125,14 +123,12 @@ local function create_aurabutton(rate)
 		frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
 		frame.count:SetTextColor(0, 1, 0);
 
-
-		-- Resize
 		frame:SetWidth(ns.configs.size * rate);
 		frame:SetHeight(ns.configs.size * ns.configs.sizerate * rate);
 
-
 		frame:EnableMouse(false);
 		frame:SetMouseMotionEnabled(true);
+
 		frame:SetIcon(frame.icon);
 		frame:SetAuraBorder(frame.border, borderoption);
 		frame:SetDurationCooldown(frame.cooldown);
@@ -141,22 +137,27 @@ local function create_aurabutton(rate)
 end
 
 local function update_auras(unit)
-	local filter = debufffilter_helpful;
-
+	local container = main_frame.frames[unit];
+	local candidatefilters = {iicanApplyAura = nil};
 	if UnitCanAttack("player", unit) then
-		filter = debufffilter_attack;
+		candidatefilters = {icanApplyAura  = true};
 	end
 
-	main_frame.frames[unit]:UpdateAllAuras();
+	container:SetAuraGroupCandidateFilters("debuffs", candidatefilters);
+	container:UpdateAllAuras();
 end
 
 local function set_combatalpha()
 	if ns.options.CombatAlphaChange then
-		if UnitAffectingCombat("player") then
-			main_frame:SetAlpha(ns.configs.combat_alpha);
-		else
-			main_frame:SetAlpha(ns.configs.normal_alpha);
-		end
+        if UnitAffectingCombat("player") then
+            main_frame:SetAlpha(ns.configs.combat_alpha);
+            main_frame.frames["target"]:SetAlpha(ns.configs.combat_alpha);
+            main_frame.frames["player"]:SetAlpha(ns.configs.combat_alpha);
+        else
+            main_frame:SetAlpha(ns.configs.normal_alpha);
+            main_frame.frames["target"]:SetAlpha(ns.configs.normal_alpha);
+            main_frame.frames["player"]:SetAlpha(ns.configs.normal_alpha);
+        end
 	end
 end
 
@@ -178,16 +179,15 @@ local function on_event(self, event, arg1, ...)
 end
 
 
-local function create_container(parent, unit, anchor, hdir, vdir, filter, rate)
+local function create_container(parent, unit, anchor, hdir, vdir, rate)
 	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
 	container:SetAuraLayoutAnchorPoint(anchor);
 	container:SetAuraLayoutGrowthDirection(hdir, vdir);
 
 	container:SetUnit(unit);
-	container:AddAuraGroup("Debuffs", filter,
+	container:AddAuraGroup("debuffs", filter,
 		{ maxFrameCount = ns.configs.max_debuffs, initializeFrame = create_aurabutton(rate) });
-	container:SetAuraGroupLayout("Debuffs", { elementSpacingX = 1 })
-
+	container:SetAuraGroupLayout("debuffs", { elementSpacingX = 0.1 })
 	return container;
 end
 
@@ -208,7 +208,7 @@ local function init()
 	main_frame.frames = {};
 
 	main_frame.frames["target"] = create_container(mainframe, "target", "LEFT", AnchorUtil.FlowDirection.Right,
-		AnchorUtil.FlowDirection.Down, debufffilter_attack, 1);
+		AnchorUtil.FlowDirection.Down, 1);
 
 	main_frame.frames["target"]:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint, ns.configs.target_ypoint - offset)
 	main_frame.frames["target"]:SetWidth(1)
@@ -222,7 +222,7 @@ local function init()
 
 
 	main_frame.frames["player"] = create_container(mainframe, "player", "RIGHT", AnchorUtil.FlowDirection.Left,
-		AnchorUtil.FlowDirection.Down, debufffilter_helpful, ns.options.PlayerDebuffRate);
+		AnchorUtil.FlowDirection.Down, ns.options.PlayerDebuffRate);
 
 
 	main_frame.frames["player"]:SetPoint("RIGHT", UIParent, "CENTER", ns.configs.player_xpoint, ns.configs.player_ypoint - offset)
@@ -261,4 +261,4 @@ local function init()
 	set_combatalpha();
 end
 
-C_Timer.After(1, init);
+C_Timer.After(2, init);
