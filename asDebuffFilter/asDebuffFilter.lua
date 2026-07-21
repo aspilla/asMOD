@@ -77,8 +77,6 @@ local function create_privateframes(parent)
 			parent.PrivateAuraAnchors[idx]:SetPoint("RIGHT", parent, "LEFT", 0, 0);
 		end
 	end
-
-	return;
 end
 
 local debufffilter_attack = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
@@ -258,8 +256,6 @@ local function init()
 
 	main_frame:SetScript("OnEvent", on_event)
 
-	--주기적으로 Callback
-	--C_Timer.NewTicker(0.2, on_update);
 	update_auras("target");
 	update_auras("player");
 	set_combatalpha();

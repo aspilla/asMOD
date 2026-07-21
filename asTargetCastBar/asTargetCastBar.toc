@@ -1,4 +1,4 @@
-﻿## Interface: 120005, 120007
+﻿## Interface: 120100
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rTargetCastBar
 ## Notes:Cast bar for Target and Focus..

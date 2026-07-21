@@ -1,7 +1,7 @@
-## Interface: 120005, 120007
+## Interface: 120100
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rSpamFilter
-## Notes: Relocates the default UI Error Message display. 
+## Notes: Relocates the default UI Error Message display.
 ## Notes-koKR: 기본 UI 오류 메시지 표시 위치를 이동
 ## Version : 260615
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
