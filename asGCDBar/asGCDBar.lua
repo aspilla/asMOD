@@ -1,8 +1,8 @@
 ﻿local configs = {
-	width = 238,
+	width = 238 + 75,
 	height = 5,
 	xpoint = 0,
-	ypoint = -219,
+	ypoint = -215,
 	combatalpha = 1,
 	normalalpha = 0.5,
 };

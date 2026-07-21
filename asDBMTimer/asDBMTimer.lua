@@ -116,19 +116,6 @@ local function setupUI()
 	end
 end
 
-local atlases = {
-	[Enum.EncounterEventIconmask.TankRole] = "icons_16x16_tank",
-	[Enum.EncounterEventIconmask.DpsRole] = "icons_16x16_damage",
-	[Enum.EncounterEventIconmask.HealerRole] = "icons_16x16_heal",
-	[Enum.EncounterEventIconmask.DeadlyEffect] = "icons_16x16_deadly",
-	[Enum.EncounterEventIconmask.MagicEffect] = "icons_16x16_magic",
-	[Enum.EncounterEventIconmask.CurseEffect] = "icons_16x16_curse",
-	[Enum.EncounterEventIconmask.PoisonEffect] = "icons_16x16_poison",
-	[Enum.EncounterEventIconmask.DiseaseEffect] = "icons_16x16_disease",
-	[Enum.EncounterEventIconmask.EnrageEffect] = "icons_16x16_enrage",
-	[Enum.EncounterEventIconmask.BleedEffect] = "icons_16x16_bleed",
-};
-
 local textinfo = {
 	name = "",
 	remain = nil,

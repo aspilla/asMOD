@@ -39,7 +39,7 @@ ns.option_default = {
 
     nameplateOverlapV = 1.1,
     nameplateSelectedScale = 1.3,
-    HitTestInsets = 7,
+    HitTestInsets = 0,
 };
 
 ns.options = CopyTable(ns.option_default);
@@ -272,7 +272,7 @@ local function on_panelshow()
 
         setup_slideoption("이름표 상하 정렬 정도(nameplateOverlapV, 와우 1.3, 애드온 1.1)", "nameplateOverlapV");
         setup_slideoption("이름표 주대상 크기 정도(nameplateSelectedScale, 기본 1.2, 애드온 1.3)", "nameplateSelectedScale");
-        setup_slideoption("클릭 Hit Inset(NamePlateHitTestInsets, 기본 0, 애드온 7)", "HitTestInsets", true);
+        setup_slideoption("클릭 Hit Inset(NamePlateHitTestInsets, 기본 0, 애드온 0)", "HitTestInsets", true);
 
         setup_checkboxoption("[기능] 어그로 색상 표시", "ShowAggro");
         setup_coloroption("[색상] 어그로 상위", "AggroColor");
@@ -309,7 +309,7 @@ local function on_panelshow()
 
         setup_slideoption("Nameplate vertical alignment (nameplateOverlapV, wow 1.3 addon 1.1)", "nameplateOverlapV");
         setup_slideoption("Nameplate target scale (nameplateSelectedScale, wow 1.2, addon 1.3)", "nameplateSelectedScale");
-        setup_slideoption("Click Hit Inset(NamePlateHitTestInsets, Default 0, Addon 7)", "HitTestInsets", true);
+        setup_slideoption("Click Hit Inset(NamePlateHitTestInsets, Default 0, Addon 0)", "HitTestInsets", true);
 
         setup_checkboxoption("[Feature] Show aggro colors", "ShowAggro");
         setup_coloroption("[Color] Top aggro", "AggroColor");

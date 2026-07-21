@@ -104,6 +104,9 @@ local function update_bars(viewer)
 end
 
 local function get_spellhotkey(spellid)
+	if not spellid then
+		return;
+	end
 	local text = ns.hotkeys[spellid];
 	if text then
 		return text;
@@ -298,7 +301,7 @@ local function update_buttons(viewer, forced)
 		if ns.options.ShowHotKey and not isbuff then
 			local spellid = button:GetSpellID();
 
-			if not issecretvalue(spellid) or button.asspellid then
+			if spellid and not issecretvalue(spellid) or button.asspellid then
 
 				if not issecretvalue(spellid) then
 					button.asspellid = spellid;
@@ -588,7 +591,7 @@ local bfirst = true;
 local function on_event(self, event, arg)
 	if bfirst then
 		bfirst = false;
-		ns.setup_option();		
+		ns.setup_option();
 	end
 
 	if event == "ADDON_LOADED" then

@@ -144,7 +144,7 @@ local function OnEvent(self, event, ...)
         ns.msgtext:SetFont(configs.font, ns.options.FontSize, configs.fontoutline)
         C_Timer.NewTicker(refresh_rate, update_auras);
     end
-    
+
 end
 
 local function OnInit()
@@ -192,7 +192,7 @@ local function OnInit()
 
     if spellInfo then
         main_button.icon:SetTexture(spellInfo.iconID);
-    end    
+    end
 end
 
 OnInit();

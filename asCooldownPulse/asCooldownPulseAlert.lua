@@ -109,7 +109,7 @@ local function update_buttons(viewer)
 	for _, button in ipairs(visiblechilds) do
 		local spellid = button:GetSpellID();
 
-		if not issecretvalue(spellid) and alertspells[spellid] == nil then
+		if spellid and  not issecretvalue(spellid) and alertspells[spellid] == nil then
 			alertspells[spellid] = 0;
 		end
 	end

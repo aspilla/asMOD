@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 251125,
+    Version = 260721,
     ShowPortrait = true,
     ShowTotemBar = true,
     ShowBossBuff = true,
@@ -11,7 +11,7 @@ local Options_Default = {
     CombatAlphaChange = true,
     ShowLowHealth = true,
     Width = 200,
-    Height = 35,
+    Height = 30,
     PowerWidth = 80,
     PowerHeight = 5,
     FontSize = 12,
@@ -44,7 +44,7 @@ function ns.setup_option()
         local variable = get_variable_from_cvar_name(cvar_name)
         AUF_Options[variable] = value;
         ns.options[variable] = value;
-        
+
         if tonumber(value) == nil then
             ReloadUI();
         end
@@ -54,7 +54,7 @@ function ns.setup_option()
 
     if AUF_Options == nil or Options_Default.Version ~= AUF_Options.Version then
         AUF_Options = {};
-        AUF_Options = CopyTable(Options_Default);        
+        AUF_Options = CopyTable(Options_Default);
     end
 
     if AUF_Positions == nil then
@@ -73,7 +73,7 @@ function ns.setup_option()
         end
     end
 
-    ns.options = CopyTable(AUF_Options);    
+    ns.options = CopyTable(AUF_Options);
 
     for variable, _ in pairs(Options_Default) do
         local name = variable;
@@ -83,7 +83,7 @@ function ns.setup_option()
             local tooltip = ""
             if AUF_Options[variable] == nil  then
                 AUF_Options[variable] = Options_Default[variable];
-                ns.options[variable] = Options_Default[variable];                
+                ns.options[variable] = Options_Default[variable];
             end
             local defaultValue = Options_Default[variable];
             local currentValue = AUF_Options[variable];

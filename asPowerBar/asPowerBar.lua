@@ -134,12 +134,14 @@ local function init_class()
             bbigsecondary = true;
         end
 
+        --[[
         if (spec and spec == 3) then
             auraid = 1221389;
             max_aura = 20;
             bsmallprimary = true;
             bbigsecondary = true;
         end
+        ]]
     end
 
     if (englishClass == "WARLOCK") then

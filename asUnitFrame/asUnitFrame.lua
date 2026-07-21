@@ -4,8 +4,8 @@ ASMOD_asUnitFrame = {};
 local configs = {
 	updaterate = 0.1,
 
-	xpoint = 225,
-	ypoint = -198,
+	xpoint = 225 + 35,
+	ypoint = -196,
 	buffcount = 4,
 	buffsize = 25,
 	buffsizerate = 0.8,

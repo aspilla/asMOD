@@ -16,7 +16,7 @@ local defaultOptions = {
     point = "TOP",
     relativePoint = "CENTER",
     xOfs = -165,
-    yOfs = -250,    
+    yOfs = -250,
     showHaste = true,
     showCrit = true,
     showMastery = true,
@@ -557,8 +557,8 @@ local bfirst = true;
 
 local function init()
     setup_option();
-    init_frames(); 
-    
+    init_frames();
+
     local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
     if libasConfig then

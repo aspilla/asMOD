@@ -1,7 +1,7 @@
 ﻿local _, ns = ...;
 local configs = {
 	size = 40,
-    xpoint = -240,
+    xpoint = -240 - 40,
     ypoint = -305,
 	alpha = 1,
 	cool_fontsize = 12,

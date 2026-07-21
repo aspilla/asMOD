@@ -24,10 +24,11 @@ local function create_frame()
         template = "asNamePlates1Template";
     end
 
-    object.coloroverlay = object:CreateTexture(nil, "ARTWORK", template, 1);
-    object.notinterruptable = object:CreateTexture(nil, "ARTWORK", template, 2);
+    object.textureoverlay = object:CreateTexture(nil, "ARTWORK", template, 1);
+    object.coloroverlay = object:CreateTexture(nil, "ARTWORK", template, 2);
+    object.notinterruptable = object:CreateTexture(nil, "ARTWORK", template, 3);
     local color = ns.options.NotinterruptableColor;
-    object.notinterruptable:SetVertexColor(color.r, color.g, color.b);   
+    object.notinterruptable:SetVertexColor(color.r, color.g, color.b);
     object.focused = object:CreateTexture(nil, "BACKGROUND");
     object.focused:SetColorTexture(0, 0, 1, 1);
     object.selected = object:CreateTexture(nil, "BACKGROUND");
@@ -45,7 +46,7 @@ local function create_frame()
 
     object.powerbar.bg = object.powerbar:CreateTexture(nil, "BACKGROUND");
     object.powerbar.bg:SetPoint("TOPLEFT", object.powerbar, "TOPLEFT", -1, 1);
-    object.powerbar.bg:SetPoint("BOTTOMRIGHT", object.powerbar, "BOTTOMRIGHT", 1, -1);   
+    object.powerbar.bg:SetPoint("BOTTOMRIGHT", object.powerbar, "BOTTOMRIGHT", 1, -1);
     object.powerbar.bg:SetColorTexture(0, 0, 0, 1);
 
     object.powerbar.value = object.powerbar:CreateFontString(nil, "ARTWORK");
@@ -54,7 +55,7 @@ local function create_frame()
     object.powerbar.value:SetPoint("CENTER", object.powerbar, "CENTER", 0, 0);
 
     object.targetedindi = object:CreateFontString(nil, "OVERLAY");
-    object.targetedindi:SetFont(STANDARD_TEXT_FONT, ns.configs.mousefontsize + 1, "OUTLINE");    
+    object.targetedindi:SetFont(STANDARD_TEXT_FONT, ns.configs.mousefontsize + 1, "OUTLINE");
 
     object.important = object:CreateTexture(nil, "OVERLAY");
     object.important:SetColorTexture(1, 0, 0, 0.5);

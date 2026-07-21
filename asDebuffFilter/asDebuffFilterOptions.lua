@@ -8,18 +8,18 @@ local Options_Default = {
 };
 
 ns.configs = {
-	size = 32,
+	size = 25,
 	sizerate = 0.8,
-	target_xpoint = 125,
-	target_ypoint = -150,
-	player_xpoint = -125,
-	player_ypoint = -115,
+	target_xpoint = 118,
+	target_ypoint = -110,
+	player_xpoint = -118,
+	player_ypoint = -90,
 	private_xpoint = -125,
 	private_ypoint = -115 + 45,
 	max_debuffs = 7,
 	max_private = 6,
-	cool_fontsize = 12, -- Cooldown Font Size
-	count_fontsize = 13, -- Count Font Size
+	cool_fontsize = 10, -- Cooldown Font Size
+	count_fontsize = 10, -- Count Font Size
 	combat_alpha = 1,   -- 전투중 Alpha 값
 	normal_alpha = 0.5, -- 비 전투중 Alpha 값
 

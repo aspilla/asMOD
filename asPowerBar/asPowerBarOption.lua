@@ -1,11 +1,11 @@
 local _, ns = ...;
 local Options_Default = {
-	Version = 251216,
+	Version = 260722,
 	ShowClassResource = true,
 	CombatAlphaChange = true,
-	BarWidth = 238,
-	PowerBarHeight = 8,
-	ComboBarHeight = 5,
+	BarWidth = 238 + 75,
+	PowerBarHeight = 6,
+	ComboBarHeight = 4,
 	FontSize = 12,
 	ShowAnimation = true,
 };

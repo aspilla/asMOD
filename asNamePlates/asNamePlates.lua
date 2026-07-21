@@ -205,7 +205,6 @@ local function add_unit(unit)
 
 	local unitframe = nameplate_base.UnitFrame;
 	local healthbar = unitframe.healthBar;
-	local castbar = unitframe.castBar;
 
 	if not UnitCanAttack("player", unit) then
 		if nameplate_base.asNamePlates then
@@ -238,28 +237,26 @@ local function add_unit(unit)
 
 	if org_height == nil then
 		local healthbar_height = healthbar:GetHeight();
-		local castbar_height = castbar:GetHeight();
+		local castbar_height = 12;
 
 		if not issecretvalue(healthbar_height) then
 			org_height = healthbar_height + castbar_height;
 		end
 	end
 
-	if castbar then
-		asframe.casticon:ClearAllPoints();
-		PixelUtil.SetPoint(asframe.casticon, "BOTTOMLEFT", castbar, "BOTTOMRIGHT", 1.5, -1);
+	asframe.casticon:ClearAllPoints();
+	PixelUtil.SetPoint(asframe.casticon, "TOPLEFT", healthbar, "TOPRIGHT", 1.5, 2);
 
-		local height = 36 * scale.vertical;
+	local height = 36 * scale.vertical;
 
-		if org_height then
-			height = org_height + configs.castbar_heightadder;
-		end
-
-		asframe.casticon:SetWidth(height * 1.1);
-		asframe.casticon:SetHeight(height);
-		asframe.casticon:Hide();
-		asframe.iscast = false;
+	if org_height then
+		height = org_height + configs.castbar_heightadder;
 	end
+
+	asframe.casticon:SetWidth(height * 1.1);
+	asframe.casticon:SetHeight(height);
+	asframe.casticon:Hide();
+	asframe.iscast = false;
 
 	if ns.options.ChangeTexture then
 		healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
@@ -304,6 +301,13 @@ local function add_unit(unit)
 	asframe.importantshowtype = 1;
 
 	local previousTexture = healthbar:GetStatusBarTexture();
+	asframe.textureoverlay:SetParent(healthbar);
+	asframe.textureoverlay:ClearAllPoints();
+	PixelUtil.SetPoint(asframe.textureoverlay, "TOPLEFT", previousTexture, "TOPLEFT", 0, 0);
+	PixelUtil.SetPoint(asframe.textureoverlay, "BOTTOMRIGHT", previousTexture, "BOTTOMRIGHT", 0, 0);
+	asframe.textureoverlay:SetVertexColor(previousTexture:GetVertexColor());
+    asframe.textureoverlay:Show();
+
 	asframe.coloroverlay:SetParent(healthbar);
 	asframe.coloroverlay:ClearAllPoints();
 	PixelUtil.SetPoint(asframe.coloroverlay, "TOPLEFT", previousTexture, "TOPLEFT", 0, 0);

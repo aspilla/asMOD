@@ -449,7 +449,7 @@ local function bgHide(self)
 end
 
 local function bgUpdate(self, elapsed)
-	AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, self.throttle);
+	TextureUtil.AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, self.throttle);
 	local cooldown = self:GetParent().cooldown;
 	if (cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration() > 3000) then
 		self:SetAlpha(0.5);
@@ -585,7 +585,7 @@ function ns.lib.ButtonGlow_Start(r, color, frequency, frameLevel)
 			for texture in pairs(ButtonGlowTextures) do
 				f[texture]:SetDesaturated(nil)
 				f[texture]:SetVertexColor(1, 1, 1)
-				f[texture]:SetAlpha(f[texture]:GetAlpha() / (f.color and f.color[4] or 1))				
+				f[texture]:SetAlpha(f[texture]:GetAlpha() / (f.color and f.color[4] or 1))
 				updateAlphaAnim(f, 1)
 			end
 			f.color = false
@@ -593,7 +593,7 @@ function ns.lib.ButtonGlow_Start(r, color, frequency, frameLevel)
 			for texture in pairs(ButtonGlowTextures) do
 				f[texture]:SetDesaturated(1)
 				f[texture]:SetVertexColor(color[1], color[2], color[3])
-				f[texture]:SetAlpha(f[texture]:GetAlpha() / (f.color and f.color[4] or 1) * color[4])				
+				f[texture]:SetAlpha(f[texture]:GetAlpha() / (f.color and f.color[4] or 1) * color[4])
 				updateAlphaAnim(f, color and color[4] or 1)
 			end
 			f.color = color
@@ -628,7 +628,7 @@ function ns.lib.ButtonGlow_Start(r, color, frequency, frameLevel)
 		end
 		f.throttle = throttle
 		if f.ctimer then
-			f.ctimer:Cancel();			
+			f.ctimer:Cancel();
 		end
 
 		local cb = function()
