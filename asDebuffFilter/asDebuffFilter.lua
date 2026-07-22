@@ -45,19 +45,12 @@ function asDebuffPrivateAuraAnchorMixin:SetUnit(unit)
 	end
 end
 
-local bsetupprivate = false;
+local bsetup = false;
 
 local function create_privateframes(parent)
 	if parent.PrivateAuraAnchors == nil then
 		parent.PrivateAuraAnchors = {};
 	end
-
-	if UnitAffectingCombat("player") then
-		return;
-	end
-
-	bsetupprivate = true;
-
 
 	local size = ns.configs.size + 5;
 
@@ -141,42 +134,25 @@ end
 
 local function update_auras(unit)
 	local container = main_frame.frames[unit];
-	local candidatefilters = {};
-	if UnitCanAttack("player", unit) then
-		candidatefilters = {};
-	end
+	if container then
+		local candidatefilters = {};
+		if UnitCanAttack("player", unit) then
+			candidatefilters = {};
+		end
 
-	container:SetAuraGroupCandidateFilters("debuffs", candidatefilters);
---	container:UpdateAllAuras();
+		container:SetAuraGroupCandidateFilters("debuffs", candidatefilters);
+	end
 end
 
 local function set_combatalpha()
 	if ns.options.CombatAlphaChange then
-        if UnitAffectingCombat("player") then
-            main_frame:SetAlpha(ns.configs.combat_alpha);
-        else
-            main_frame:SetAlpha(ns.configs.normal_alpha);
-        end
-	end
-end
-
-local function on_event(self, event, arg1, ...)
-	if (event == "PLAYER_TARGET_CHANGED") then
-		update_auras("target");
-	elseif (event == "PLAYER_ENTERING_WORLD") then
-		update_auras("target");
-		update_auras("player");
-		set_combatalpha();
-	elseif event == "PLAYER_REGEN_DISABLED" then
-		set_combatalpha();
-	elseif event == "PLAYER_REGEN_ENABLED" then
-		set_combatalpha();
-		if bsetupprivate == false and main_frame.private_frame then
-			create_privateframes(main_frame.private_frame);
+		if UnitAffectingCombat("player") then
+			main_frame:SetAlpha(ns.configs.combat_alpha);
+		else
+			main_frame:SetAlpha(ns.configs.normal_alpha);
 		end
 	end
 end
-
 
 local function create_container(parent, unit, anchor, hdir, vdir, rate)
 	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
@@ -192,26 +168,22 @@ local function create_container(parent, unit, anchor, hdir, vdir, rate)
 	return container;
 end
 
-local function init()
-	ns.setup_option();
-	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
-	main_frame:SetFrameStrata("LOW");
-	main_frame:SetPoint("CENTER", 0, 0);
-	main_frame:SetWidth(1);
-	main_frame:SetHeight(1);
-	main_frame:Show();
+local function setup_frames()
+	if UnitAffectingCombat("player") then
+		return;
+	end
+	bsetup = true;
 
+	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 	local offset = 0;
 	if ASMOD_asUnitFrame and ASMOD_asUnitFrame.is_simplemode then
 		offset = 16;
 	end
-
-	main_frame.frames = {};
-
 	main_frame.frames["target"] = create_container(main_frame, "target", "LEFT", AnchorUtil.FlowDirection.Right,
 		AnchorUtil.FlowDirection.Down, 1);
 
-	main_frame.frames["target"]:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint, ns.configs.target_ypoint - offset)
+	main_frame.frames["target"]:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
+		ns.configs.target_ypoint - offset)
 	main_frame.frames["target"]:SetWidth(1)
 	main_frame.frames["target"]:SetHeight(1)
 	main_frame.frames["target"]:Show()
@@ -226,7 +198,8 @@ local function init()
 		AnchorUtil.FlowDirection.Down, ns.options.PlayerDebuffRate);
 
 
-	main_frame.frames["player"]:SetPoint("RIGHT", UIParent, "CENTER", ns.configs.player_xpoint, ns.configs.player_ypoint - offset)
+	main_frame.frames["player"]:SetPoint("RIGHT", UIParent, "CENTER", ns.configs.player_xpoint,
+		ns.configs.player_ypoint - offset)
 	main_frame.frames["player"]:SetWidth(1)
 	main_frame.frames["player"]:SetHeight(1)
 	main_frame.frames["player"]:Show()
@@ -250,6 +223,39 @@ local function init()
 		libasConfig.load_position(main_frame.private_frame, "asDebuffFilter(Private)", ADF_Positions_3);
 	end
 
+	update_auras("target");
+	update_auras("player");
+end
+
+local function on_event(self, event, arg1, ...)
+	if (event == "PLAYER_TARGET_CHANGED") then
+		update_auras("target");
+	elseif (event == "PLAYER_ENTERING_WORLD") then
+		update_auras("target");
+		update_auras("player");
+		set_combatalpha();
+	elseif event == "PLAYER_REGEN_DISABLED" then
+		set_combatalpha();
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		set_combatalpha();
+		if bsetup == false then
+			setup_frames();
+		end
+	end
+end
+
+
+
+local function init()
+	ns.setup_option();
+	main_frame:SetFrameStrata("LOW");
+	main_frame:SetPoint("CENTER", 0, 0);
+	main_frame:SetWidth(1);
+	main_frame:SetHeight(1);
+	main_frame:Show();
+	main_frame.frames = {};
+	setup_frames();
+
 	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
 	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 	main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
@@ -257,8 +263,6 @@ local function init()
 
 	main_frame:SetScript("OnEvent", on_event)
 
-	update_auras("target");
-	update_auras("player");
 	set_combatalpha();
 end
 
