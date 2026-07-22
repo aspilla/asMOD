@@ -110,8 +110,8 @@ local function create_aurabutton(rate)
 		frame.borderb:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga")
 		frame.borderb:SetAllPoints(frame);
 		frame.borderb:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-        frame.borderb:SetVertexColor(0, 0, 0);
-		
+		frame.borderb:SetVertexColor(0, 0, 0);
+
 		frame.border = frame:CreateTexture(nil, "ARTWORK");
 		frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga")
 		frame.border:SetAllPoints(frame);
@@ -144,16 +144,16 @@ local function update_target()
 	if main_frame.helpfulframe then
 		if UnitCanAttack("player", "target") then
 			main_frame.harmfulframe:SetEnabled(true);
-        	main_frame.helpfulframe:SetEnabled(false);
-         	main_frame.harmfulframe:Show();
-            main_frame.helpfulframe:Hide();
-            main_frame.harmfulframe:UpdateAllAuras();
-        else
-        	main_frame.harmfulframe:SetEnabled(false);
-        	main_frame.helpfulframe:SetEnabled(true);
-        	main_frame.harmfulframe:Hide();
-            main_frame.helpfulframe:Show();
-            main_frame.helpfulframe:UpdateAllAuras();
+			main_frame.helpfulframe:SetEnabled(false);
+			main_frame.harmfulframe:Show();
+			main_frame.helpfulframe:Hide();
+			main_frame.harmfulframe:UpdateAllAuras();
+		else
+			main_frame.harmfulframe:SetEnabled(false);
+			main_frame.helpfulframe:SetEnabled(true);
+			main_frame.harmfulframe:Hide();
+			main_frame.helpfulframe:Show();
+			main_frame.helpfulframe:UpdateAllAuras();
 		end
 	end
 end
@@ -193,7 +193,8 @@ local function setup_frames()
 	if ASMOD_asUnitFrame and ASMOD_asUnitFrame.is_simplemode then
 		offset = 16;
 	end
-	main_frame.helpfulframe = create_container(main_frame, "target", filter_helpul, "LEFT", AnchorUtil.FlowDirection.Right,
+	main_frame.helpfulframe = create_container(main_frame, "target", filter_helpul, "LEFT",
+		AnchorUtil.FlowDirection.Right,
 		AnchorUtil.FlowDirection.Down, 1);
 
 	main_frame.helpfulframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
@@ -202,7 +203,8 @@ local function setup_frames()
 	main_frame.helpfulframe:SetHeight(1)
 	main_frame.helpfulframe:Show()
 
-	main_frame.harmfulframe = create_container(main_frame, "target", filter_harmful, "LEFT", AnchorUtil.FlowDirection.Right,
+	main_frame.harmfulframe = create_container(main_frame, "target", filter_harmful, "LEFT",
+		AnchorUtil.FlowDirection.Right,
 		AnchorUtil.FlowDirection.Down, 1);
 
 	main_frame.harmfulframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
@@ -217,7 +219,8 @@ local function setup_frames()
 	end
 
 
-	main_frame.playerframe = create_container(main_frame, "player", filter_helpul, "RIGHT", AnchorUtil.FlowDirection.Left,
+	main_frame.playerframe = create_container(main_frame, "player", filter_helpul, "RIGHT", AnchorUtil.FlowDirection
+		.Left,
 		AnchorUtil.FlowDirection.Down, ns.options.PlayerDebuffRate);
 
 
