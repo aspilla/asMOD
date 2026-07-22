@@ -106,6 +106,12 @@ local function create_aurabutton(rate)
 		frame.icon:SetAllPoints(frame);
 		frame.icon:SetTexCoord(.08, .92, .16, .84);
 
+		frame.borderb = frame:CreateTexture(nil, "BORDER");
+		frame.borderb:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga")
+		frame.borderb:SetAllPoints(frame);
+		frame.borderb:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+        frame.borderb:SetVertexColor(0, 0, 0);
+		
 		frame.border = frame:CreateTexture(nil, "ARTWORK");
 		frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga")
 		frame.border:SetAllPoints(frame);
