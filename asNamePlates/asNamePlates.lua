@@ -384,11 +384,10 @@ local function add_unit(unit)
 	local function callback()
 		asframe.tick = asframe.tick + 1;
 
+		if not asframe.nameplateBase:IsShown() then
+			return;
+		end
 		if asframe.tick > 2 then
-			if ns.options.ChangeTexture then
-				healthbar.bgTexture:SetAlpha(0);
-				healthbar.selectedBorder:SetAlpha(0)
-			end
 			ns.update_power(asframe);
 			ns.update_color(asframe);
 			ns.update_targeted(asframe);
