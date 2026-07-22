@@ -72,7 +72,9 @@ local function create_privateframes(parent)
 	end
 end
 
-local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
+local filter_helpul = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
+local filter_harmful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
+
 local borderoption = {
 	showIcon = false,
 	showWhenHarmful = true,
@@ -112,8 +114,8 @@ local function create_aurabutton(rate)
 
 		frame.overlay = CreateFrame("Frame", nil, frame);
 		frame.overlay:SetFrameLevel(frame:GetFrameLevel() + 5);
-		frame.count = frame.overlay:CreateFontString(nil, "OVERLAY");
 
+		frame.count = frame.overlay:CreateFontString(nil, "OVERLAY");
 		frame.count:SetFont(STANDARD_TEXT_FONT, ns.configs.count_fontsize * rate, "OUTLINE")
 		frame.count:ClearAllPoints();
 		frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
@@ -132,15 +134,21 @@ local function create_aurabutton(rate)
 	end
 end
 
-local function update_auras(unit)
-	local container = main_frame.frames[unit];
-	if container then
-		local candidatefilters = {};
-		if UnitCanAttack("player", unit) then
-			candidatefilters = {};
+local function update_target()
+	if main_frame.helpfulframe then
+		if UnitCanAttack("player", "target") then
+			main_frame.harmfulframe:SetEnabled(true);
+        	main_frame.helpfulframe:SetEnabled(false);
+         	main_frame.harmfulframe:Show();
+            main_frame.helpfulframe:Hide();
+            main_frame.harmfulframe:UpdateAllAuras();
+        else
+        	main_frame.harmfulframe:SetEnabled(false);
+        	main_frame.helpfulframe:SetEnabled(true);
+        	main_frame.harmfulframe:Hide();
+            main_frame.helpfulframe:Show();
+            main_frame.helpfulframe:UpdateAllAuras();
 		end
-
-		container:SetAuraGroupCandidateFilters("debuffs", candidatefilters);
 	end
 end
 
@@ -154,7 +162,7 @@ local function set_combatalpha()
 	end
 end
 
-local function create_container(parent, unit, anchor, hdir, vdir, rate)
+local function create_container(parent, unit, filter, anchor, hdir, vdir, rate)
 	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
 	container:SetAuraLayoutAnchorPoint(anchor);
 	container:SetAuraLayoutGrowthDirection(hdir, vdir);
@@ -164,7 +172,7 @@ local function create_container(parent, unit, anchor, hdir, vdir, rate)
 	container:SetAuraGroupLayout("debuffs", { elementSpacingX = 0.1 });
 	container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
 	container:SetUnit(unit);
-	container:SetEnabled(true);
+	container:SetEnabled(false);
 	return container;
 end
 
@@ -179,34 +187,43 @@ local function setup_frames()
 	if ASMOD_asUnitFrame and ASMOD_asUnitFrame.is_simplemode then
 		offset = 16;
 	end
-	main_frame.frames["target"] = create_container(main_frame, "target", "LEFT", AnchorUtil.FlowDirection.Right,
+	main_frame.helpfulframe = create_container(main_frame, "target", filter_helpul, "LEFT", AnchorUtil.FlowDirection.Right,
 		AnchorUtil.FlowDirection.Down, 1);
 
-	main_frame.frames["target"]:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
+	main_frame.helpfulframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
 		ns.configs.target_ypoint - offset)
-	main_frame.frames["target"]:SetWidth(1)
-	main_frame.frames["target"]:SetHeight(1)
-	main_frame.frames["target"]:Show()
+	main_frame.helpfulframe:SetWidth(1)
+	main_frame.helpfulframe:SetHeight(1)
+	main_frame.helpfulframe:Show()
 
+	main_frame.harmfulframe = create_container(main_frame, "target", filter_harmful, "LEFT", AnchorUtil.FlowDirection.Right,
+		AnchorUtil.FlowDirection.Down, 1);
+
+	main_frame.harmfulframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
+		ns.configs.target_ypoint - offset)
+	main_frame.harmfulframe:SetWidth(1)
+	main_frame.harmfulframe:SetHeight(1)
+	main_frame.harmfulframe:Show()
 
 	if libasConfig then
-		libasConfig.load_position(main_frame.frames["target"], "asDebuffFilter(Target)", ADF_Positions_1);
+		libasConfig.load_position(main_frame.helpfulframe, "asDebuffFilter(Target)", ADF_Positions_1);
+		libasConfig.load_position(main_frame.harmfulframe, "asDebuffFilter(Target)", ADF_Positions_1);
 	end
 
 
-	main_frame.frames["player"] = create_container(main_frame, "player", "RIGHT", AnchorUtil.FlowDirection.Left,
+	main_frame.playerframe = create_container(main_frame, "player", filter_helpul, "RIGHT", AnchorUtil.FlowDirection.Left,
 		AnchorUtil.FlowDirection.Down, ns.options.PlayerDebuffRate);
 
 
-	main_frame.frames["player"]:SetPoint("RIGHT", UIParent, "CENTER", ns.configs.player_xpoint,
+	main_frame.playerframe:SetPoint("RIGHT", UIParent, "CENTER", ns.configs.player_xpoint,
 		ns.configs.player_ypoint - offset)
-	main_frame.frames["player"]:SetWidth(1)
-	main_frame.frames["player"]:SetHeight(1)
-	main_frame.frames["player"]:Show()
-
+	main_frame.playerframe:SetWidth(1)
+	main_frame.playerframe:SetHeight(1)
+	main_frame.playerframe:Show()
+	main_frame.playerframe:SetEnabled(true);
 
 	if libasConfig then
-		libasConfig.load_position(main_frame.frames["player"], "asDebuffFilter(Player)", ADF_Positions_2);
+		libasConfig.load_position(main_frame.playerframe, "asDebuffFilter(Player)", ADF_Positions_2);
 	end
 
 
@@ -223,16 +240,14 @@ local function setup_frames()
 		libasConfig.load_position(main_frame.private_frame, "asDebuffFilter(Private)", ADF_Positions_3);
 	end
 
-	update_auras("target");
-	update_auras("player");
+	update_target();
 end
 
 local function on_event(self, event, arg1, ...)
 	if (event == "PLAYER_TARGET_CHANGED") then
-		update_auras("target");
+		update_target();
 	elseif (event == "PLAYER_ENTERING_WORLD") then
-		update_auras("target");
-		update_auras("player");
+		update_target();
 		set_combatalpha();
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		set_combatalpha();
@@ -266,4 +281,4 @@ local function init()
 	set_combatalpha();
 end
 
-C_Timer.After(2, init);
+C_Timer.After(1, init);
