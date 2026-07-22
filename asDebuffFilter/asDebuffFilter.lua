@@ -113,10 +113,13 @@ local function create_aurabutton(rate)
 
 		frame.border = frame:CreateTexture(nil, "ARTWORK");
 		frame.border:SetTexture("Interface\\Addons\\asDebuffFilter\\border.tga")
-		frame.border:SetAllPoints();
+		frame.border:SetAllPoints(frame);
 		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+		frame.border:SetVertexColor(0, 0, 0);
 
-		frame.count = frame:CreateFontString(nil, "OVERLAY");
+		frame.overlay = CreateFrame("Frame", nil, frame);
+		frame.overlay:SetFrameLevel(frame:GetFrameLevel() + 5);
+		frame.count = frame.overlay:CreateFontString(nil, "OVERLAY");
 
 		frame.count:SetFont(STANDARD_TEXT_FONT, ns.configs.count_fontsize * rate, "OUTLINE")
 		frame.count:ClearAllPoints();
@@ -138,25 +141,21 @@ end
 
 local function update_auras(unit)
 	local container = main_frame.frames[unit];
-	local candidatefilters = {iicanApplyAura = nil};
+	local candidatefilters = {};
 	if UnitCanAttack("player", unit) then
-		candidatefilters = {icanApplyAura  = true};
+		candidatefilters = {};
 	end
 
 	container:SetAuraGroupCandidateFilters("debuffs", candidatefilters);
-	container:UpdateAllAuras();
+--	container:UpdateAllAuras();
 end
 
 local function set_combatalpha()
 	if ns.options.CombatAlphaChange then
         if UnitAffectingCombat("player") then
             main_frame:SetAlpha(ns.configs.combat_alpha);
-            main_frame.frames["target"]:SetAlpha(ns.configs.combat_alpha);
-            main_frame.frames["player"]:SetAlpha(ns.configs.combat_alpha);
         else
             main_frame:SetAlpha(ns.configs.normal_alpha);
-            main_frame.frames["target"]:SetAlpha(ns.configs.normal_alpha);
-            main_frame.frames["player"]:SetAlpha(ns.configs.normal_alpha);
         end
 	end
 end
@@ -184,10 +183,12 @@ local function create_container(parent, unit, anchor, hdir, vdir, rate)
 	container:SetAuraLayoutAnchorPoint(anchor);
 	container:SetAuraLayoutGrowthDirection(hdir, vdir);
 
-	container:SetUnit(unit);
 	container:AddAuraGroup("debuffs", filter,
 		{ maxFrameCount = ns.configs.max_debuffs, initializeFrame = create_aurabutton(rate) });
-	container:SetAuraGroupLayout("debuffs", { elementSpacingX = 0.1 })
+	container:SetAuraGroupLayout("debuffs", { elementSpacingX = 0.1 });
+	container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
+	container:SetUnit(unit);
+	container:SetEnabled(true);
 	return container;
 end
 
@@ -207,7 +208,7 @@ local function init()
 
 	main_frame.frames = {};
 
-	main_frame.frames["target"] = create_container(mainframe, "target", "LEFT", AnchorUtil.FlowDirection.Right,
+	main_frame.frames["target"] = create_container(main_frame, "target", "LEFT", AnchorUtil.FlowDirection.Right,
 		AnchorUtil.FlowDirection.Down, 1);
 
 	main_frame.frames["target"]:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint, ns.configs.target_ypoint - offset)
@@ -221,7 +222,7 @@ local function init()
 	end
 
 
-	main_frame.frames["player"] = create_container(mainframe, "player", "RIGHT", AnchorUtil.FlowDirection.Left,
+	main_frame.frames["player"] = create_container(main_frame, "player", "RIGHT", AnchorUtil.FlowDirection.Left,
 		AnchorUtil.FlowDirection.Down, ns.options.PlayerDebuffRate);
 
 
