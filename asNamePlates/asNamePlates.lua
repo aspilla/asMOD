@@ -180,7 +180,6 @@ local function change_item(button)
 end
 
 local function hook_refresh(auraframe)
-	--[[
 	if auraframe.auraItemFramePool then
 		local pool = auraframe.auraItemFramePool;
 		for button in pool:EnumerateActive() do
@@ -189,7 +188,6 @@ local function hook_refresh(auraframe)
 			end
 		end
 	end
-	]]
 end
 
 local org_height = nil;
