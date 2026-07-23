@@ -5,6 +5,13 @@ local filters = {
 	helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player),
 	harmful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful),
 }
+
+local borderoption = {
+	showIcon = false,
+	showWhenHarmful = true,
+	showWhenHelpful = true,
+	style = AuraButtonBorderStyle.Color,
+};
 local bsetup = false;
 
 local function create_aurabutton(size)

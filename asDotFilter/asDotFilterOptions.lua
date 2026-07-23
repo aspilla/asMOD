@@ -3,6 +3,7 @@ local _, ns = ...;
 local Options_Default = {
 	Version = 250920,
 	MaxShow = 3,
+	ShowNameplatesOnly = true,
 	MillisecondsThreshold = 3,
 };
 

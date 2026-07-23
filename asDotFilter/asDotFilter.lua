@@ -3,7 +3,6 @@
 local configs = {
     size = 30,
     sizerate = 0.8,
-    alpha = 0.9,
     cool_fontsize = 12,
     count_fontsize = 13,
 
@@ -19,7 +18,6 @@ local configs = {
 };
 
 local parentframes = {
-    ["target"] = { frame = _G["TargetFrame"], isboss = false },
     ["focus"] = { frame = _G["FocusFrame"], isboss = false },
     ["boss1"] = { frame = _G["Boss1TargetFrame"], isboss = true },
     ["boss2"] = { frame = _G["Boss2TargetFrame"], isboss = true },
@@ -28,175 +26,95 @@ local parentframes = {
     ["boss5"] = { frame = _G["Boss5TargetFrame"], isboss = true },
 };
 
-local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
-local debuffinfo = {
-    [0] = DEBUFF_TYPE_NONE_COLOR,
-    [1] = DEBUFF_TYPE_MAGIC_COLOR,
-    [2] = DEBUFF_TYPE_CURSE_COLOR,
-    [3] = DEBUFF_TYPE_DISEASE_COLOR,
-    [4] = DEBUFF_TYPE_POISON_COLOR,
-    [9] = DEBUFF_TYPE_BLEED_COLOR, -- enrage
-    [11] = DEBUFF_TYPE_BLEED_COLOR,
+local filters = {
+    harmful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player),
+	helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful),
+}
+
+local borderoption = {
+	showIcon = false,
+	showWhenHarmful = true,
+	showWhenHelpful = true,
+	style = AuraButtonBorderStyle.Color,
 };
-local colorcurve = C_CurveUtil.CreateColorCurve();
-colorcurve:SetType(Enum.LuaCurveType.Step);
-for dispeltype, v in pairs(debuffinfo) do
-    colorcurve:AddPoint(dispeltype, v);
-end
 
---설정 끝
 local main_frame = CreateFrame("Frame", "ADotF", UIParent);
+local bsetup = false;
 
+local function create_aurabutton()
+	return function(frame)
+		frame.cooldown = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
+		frame.cooldown:SetAllPoints(frame);
+		frame.cooldown:SetDrawSwipe(true);
+		frame.cooldown:SetReverse(true);
 
-local function set_cooldownframe(cooldown, durationobject, enable)
-    if enable and durationobject then
-        cooldown:SetDrawEdge(nil);
-        cooldown:SetCooldownFromDurationObject(durationobject);
-    else
-        cooldown:Clear();
-    end
+		if ns.options.MillisecondsThreshold then
+			frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+		end
+
+		for _, r in next, { frame.cooldown:GetRegions() } do
+			if r:GetObjectType() == "FontString" then
+				r:SetFont(STANDARD_TEXT_FONT, configs.cool_fontsize, "OUTLINE");
+				r:ClearAllPoints();
+				r:SetPoint("TOP", 0, 5);
+				r:SetDrawLayer("OVERLAY");
+				break;
+			end
+		end
+		frame.icon = frame:CreateTexture(nil, "BACKGROUND")
+		frame.icon:SetAllPoints(frame);
+		frame.icon:SetTexCoord(.08, .92, .16, .84);
+
+		frame.borderb = frame:CreateTexture(nil, "BORDER");
+		frame.borderb:SetTexture("Interface\\Addons\\asDotFilter\\border.tga")
+		frame.borderb:SetAllPoints(frame);
+		frame.borderb:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+		frame.borderb:SetVertexColor(0, 0, 0);
+
+		frame.border = frame:CreateTexture(nil, "ARTWORK");
+		frame.border:SetTexture("Interface\\Addons\\asDotFilter\\border.tga")
+		frame.border:SetAllPoints(frame);
+		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+		frame.border:SetVertexColor(0, 0, 0);
+
+		frame.overlay = CreateFrame("Frame", nil, frame);
+		frame.overlay:SetFrameLevel(frame:GetFrameLevel() + 5);
+
+		frame.count = frame.overlay:CreateFontString(nil, "OVERLAY");
+		frame.count:SetFont(STANDARD_TEXT_FONT, configs.count_fontsize, "OUTLINE")
+		frame.count:ClearAllPoints();
+		frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
+		frame.count:SetTextColor(0, 1, 0);
+
+		frame:SetWidth(configs.size);
+		frame:SetHeight(configs.size * configs.sizerate);
+
+		frame:EnableMouse(false);
+		frame:SetMouseMotionEnabled(true);
+
+		frame:SetIcon(frame.icon);
+		frame:SetAuraBorder(frame.border, borderoption);
+		frame:SetDurationCooldown(frame.cooldown);
+		frame:SetApplicationCount(frame.count);
+	end
 end
-
-local function update_anchor(frames, index, size, offsetX, right, parent, isboss)
-    local buff = frames[index];
-    local point1 = "LEFT";
-    local point2 = "RIGHT";
-    local point3 = "RIGHT";
-
-    if (right == false) then
-        point1 = "RIGHT";
-        point2 = "LEFT";
-        point3 = "LEFT";
-        offsetX = -offsetX;
-    end
-
-    if (index == 1) then
-        if isboss then
-            buff:SetPoint(point1, parent, point2, -50, 0);
-        else
-            buff:SetPoint(point1, parent, point2, 3, 0);
-        end
-    else
-        buff:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
-    end
-
-    -- Resize
-    buff:SetWidth(size);
-    buff:SetHeight(size * configs.sizerate);
-end
-
-
-local function set_debuff(frame, unit, aura, color)
-    frame.icon:SetTexture(aura.icon);
-
-    frame.count:Show();
-    frame.count:SetText(C_UnitAuras.GetAuraApplicationDisplayCount(unit, aura.auraInstanceID, 1, 100));
-    local durationobject = C_UnitAuras.GetAuraDuration(unit, aura.auraInstanceID);
-
-    set_cooldownframe(frame.cooldown, durationobject, true);
-
-    if color then
-        frame.border:SetVertexColor(color.r, color.g, color.b);
-    else
-        frame.border:SetVertexColor(0, 0, 0);
-    end
-end
-
-
-
 local function update_debuffs(unit)
-    local numdebuffs = 1;
-    local parent;
-    local isboss;
-
-
-    if not configs.unitlist[unit] then
-        return;
-    end
-
-    if not main_frame.units then
-        main_frame.units = {};
-    end
-
-    if not main_frame.units[unit] then
-        main_frame.units[unit] = {};
-        main_frame.units[unit].frames = {};
-    end
-
-    if UnitExists(unit) then
-        local parentinfo = parentframes[unit];
-        if parentinfo then
-            parent = parentinfo.frame;
-            isboss = parentinfo.isboss;
-        else
-            return;
-        end
-
-        local aura_list = C_UnitAuras.GetUnitAuras(unit, filter, ns.options.MaxShow);
-
-        for _, aura in ipairs(aura_list) do
-            if numdebuffs > ns.options.MaxShow then
-                break;
-            end
-
-            local frame = main_frame.units[unit].frames[numdebuffs];
-
-            if (not frame) then
-                main_frame.units[unit].frames[numdebuffs] = CreateFrame("Button", nil, main_frame,
-                    "asTargetDotFrameTemplate");
-                frame = main_frame.units[unit].frames[numdebuffs];
-                frame:EnableMouse(false);
-                frame.cooldown:SetDrawSwipe(true);
-
-                if ns.options.MillisecondsThreshold then
-                    frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
-                end
-
-
-                for _, r in next, { frame.cooldown:GetRegions() } do
-                    if r:GetObjectType() == "FontString" then
-                        r:SetFont(STANDARD_TEXT_FONT, configs.cool_fontsize, "OUTLINE");
-                        r:ClearAllPoints();
-                        r:SetPoint("TOP", 0, 5);
-                        r:SetDrawLayer("OVERLAY");
-                        break;
-                    end
-                end
-
-                frame.icon:SetTexCoord(.08, .92, .16, .84);
-                frame.icon:SetAlpha(configs.alpha);
-                frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-                frame.border:SetAlpha(configs.alpha);
-
-                frame.count:SetFont(STANDARD_TEXT_FONT, configs.count_fontsize, "OUTLINE");
-                frame.count:ClearAllPoints();
-                frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
-                frame.count:SetTextColor(0, 1, 0);
-
-                frame.snapshot:SetFont(STANDARD_TEXT_FONT, configs.count_fontsize - 1, "OUTLINE")
-                frame.snapshot:ClearAllPoints();
-                frame.snapshot:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
-                frame:ClearAllPoints();
-                update_anchor(main_frame.units[unit].frames, numdebuffs, configs.size, 2, true, parent, isboss);
-            end
-
-            local color = C_UnitAuras.GetAuraDispelTypeColor(unit, aura.auraInstanceID, colorcurve);
-            set_debuff(frame, unit, aura, color);
-            frame:Show();
-
-            numdebuffs = numdebuffs + 1;
-        end
-    end
-
-    for i = numdebuffs, ns.options.MaxShow do
-        local frame = main_frame.units[unit].frames[i];
-
-        if (frame) then
-            frame:Hide();
-        end
-    end
+	if main_frame.helpfulframes[unit] then
+		if UnitCanAttack("player", unit) then
+			main_frame.harmfulframes[unit]:SetEnabled(true);
+			main_frame.helpfulframes[unit]:SetEnabled(false);
+			main_frame.harmfulframes[unit]:Show();
+			main_frame.helpfulframes[unit]:Hide();
+			main_frame.harmfulframes[unit]:UpdateAllAuras();
+		else
+			main_frame.harmfulframes[unit]:SetEnabled(false);
+			main_frame.helpfulframes[unit]:SetEnabled(true);
+			main_frame.harmfulframes[unit]:Hide();
+			main_frame.helpfulframes[unit]:Show();
+			main_frame.helpfulframes[unit]:UpdateAllAuras();
+		end
+	end
 end
-
 
 local function update_allframes()
     for unit, _ in pairs(configs.unitlist) do
@@ -204,45 +122,85 @@ local function update_allframes()
     end
 end
 
-local function on_event(self, event)
-    local unit;
+local function create_container(parent, unit, filter, anchor, hdir, vdir, bnameplate)
+	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
+	container:SetAuraLayoutAnchorPoint(anchor);
+	container:SetAuraLayoutGrowthDirection(hdir, vdir);
 
+	container:AddAuraGroup("debuffs", filter,
+		{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton() });
+	container:SetAuraGroupLayout("debuffs", { elementSpacingX = 0.1 });
+	container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
+	if bnameplate then
+		container:SetAuraGroupCandidateFilters("debuffs", {nameplateShowPersonal = true});
+	end
+	container:SetUnit(unit);
+	container:SetEnabled(false);
+	return container;
+end
+
+local function setup_frame(unit)
+
+    local parent = parentframes[unit].frame;
+    local isboss = parentframes[unit].isboss;
+    local offset = 3;
+
+    if isboss then
+    	offset = -50;
+    end
+
+	main_frame.helpfulframes[unit] = create_container(parent, unit, filters.helpful, "LEFT",
+		AnchorUtil.FlowDirection.Right,
+		AnchorUtil.FlowDirection.Down, false);
+
+	main_frame.helpfulframes[unit]:SetPoint("LEFT", parent, "RIGHT", offset, 0);
+	main_frame.helpfulframes[unit]:SetWidth(1)
+	main_frame.helpfulframes[unit]:SetHeight(1)
+	main_frame.helpfulframes[unit]:Show()
+
+	main_frame.harmfulframes[unit]= create_container(parent, unit, filters.harmful, "LEFT",
+		AnchorUtil.FlowDirection.Right,
+		AnchorUtil.FlowDirection.Down, ns.options.ShowNameplatesOnly);
+
+    main_frame.harmfulframes[unit]:SetPoint("LEFT", parent, "RIGHT", offset, 0);
+	main_frame.harmfulframes[unit]:SetWidth(1)
+	main_frame.harmfulframes[unit]:SetHeight(1)
+	main_frame.harmfulframes[unit]:Show();
+
+end
+
+local function setup_frames()
+	if UnitAffectingCombat("player") then
+		return;
+	end
+	bsetup = true;
+	for unit, _ in pairs(configs.unitlist) do
+        setup_frame(unit);
+    end
+	update_allframes();
+end
+
+local function on_event(self, event)
     if (event == "PLAYER_FOCUS_CHANGED") then
-        unit = "focus"
-        update_debuffs(unit);
-    elseif (event == "PLAYER_TARGET_CHANGED") then
-        unit = "target";
-        update_debuffs(unit);
+        update_debuffs("focus");
     elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
         update_allframes();
     elseif (event == "PLAYER_ENTERING_WORLD") then
         update_allframes();
+    elseif event == "PLAYER_REGEN_ENABLED" then
+    	if bsetup == false then
+			setup_frames();
+		end
     end
-end
-
-local function on_update()
-    update_allframes();
 end
 
 local function init()
     ns.setup_option();
 
-    main_frame:SetPoint("CENTER", 0, 0)
-    main_frame:SetWidth(1)
-    main_frame:SetHeight(1)
-    main_frame:Show()
-    main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
-    main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
-    main_frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
-    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-    main_frame:SetScript("OnEvent", on_event)
-    C_Timer.NewTicker(0.2, on_update);
-
     local bloaded = C_AddOns.LoadAddOn("asUnitFrame");
 
     if bloaded then
         parentframes = {
-            ["target"] = { frame = ASMOD_asUnitFrame.TargetFrame, isboss = false },
             ["focus"] = { frame = ASMOD_asUnitFrame.FocusFrame, isboss = false },
             ["boss1"] = { frame = ASMOD_asUnitFrame.BossFrames[1], isboss = false },
             ["boss2"] = { frame = ASMOD_asUnitFrame.BossFrames[2], isboss = false },
@@ -251,6 +209,21 @@ local function init()
             ["boss5"] = { frame = ASMOD_asUnitFrame.BossFrames[5], isboss = false },
         };
     end
+    main_frame:SetPoint("CENTER", 0, 0)
+    main_frame:SetWidth(1)
+    main_frame:SetHeight(1)
+    main_frame:Show()
+    main_frame.harmfulframes = {};
+    main_frame.helpfulframes = {};
+
+    setup_frames();
+
+    main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+    main_frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
+    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+    main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+    main_frame:SetScript("OnEvent", on_event)
+
 end
 
 C_Timer.After(1, init);

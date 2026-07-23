@@ -6,7 +6,7 @@ local configs      = {
 	fontoutline = "THICKOUTLINE",
 	xpoint      = 0,
 	ypoint      = -118,
-	focusxpoint = 365,
+	focusxpoint = 365 + 45,
 	focusypoint = -165,
 	mousexpoint = 50,
 	mouseypoint = 0,
@@ -278,7 +278,7 @@ local function init()
 	main_frame.focustext:SetPoint("CENTER", UIParent, "CENTER", configs.focusxpoint, configs.focusypoint);
 	main_frame.focustext:SetText("");
 	main_frame.focustext:Show();
-	
+
 	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
 	if libasConfig then
