@@ -241,9 +241,11 @@ ns.setup_alloptions = function()
         end
 
         if ns.options.HitTestInsets ~= nil then
+        --[[
             local v = ns.options.HitTestInsets;
             C_NamePlateManager.SetNamePlateHitTestInsets(0, v, v, v, v);
             C_NamePlateManager.SetNamePlateHitTestInsets(1, v, v, v, v);
+            ]]
         end
     end
 end
