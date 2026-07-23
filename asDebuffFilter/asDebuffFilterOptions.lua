@@ -5,6 +5,9 @@ local Options_Default = {
 	PlayerDebuffRate = 1.3,
 	CombatAlphaChange = true,
 	MillisecondsThreshold = 3,
+	ShowTarget = true,
+	ShowPlayer = true,
+	ShowPrivate = true,
 };
 
 ns.configs = {
@@ -25,6 +28,26 @@ ns.configs = {
 
 };
 
+local L = {
+	PlayerDebuffRate = "Size scale of player debuffs",
+	CombatAlphaChange = "Change transparency when out of combat",
+	MillisecondsThreshold = "Time threshold with 0.1s increments cooldown",
+	ShowTarget = "Show player's debuffs",
+	ShowPlayer = "Show target's debuffs",
+	ShowPrivate = "Show player's private auras",
+}
+
+
+if GetLocale() == "koKR" then
+	L = {
+		PlayerDebuffRate = "플레이어 디버프 크기 비율",
+		CombatAlphaChange = "비전투중 투명도 변경 여부",
+		MillisecondsThreshold = "0.1초 단위 표시 최소 시간",
+		ShowTarget = "대상의 디버프를 표시",
+		ShowPlayer = "플레이어의 디버프를 표시",
+		ShowPrivate = "플레이어의 Private Aura를 표시",
+	}
+end
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
 
@@ -79,7 +102,7 @@ function ns.setup_option()
 
 			if name == "MillisecondsThreshold" then
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), name, defaultValue);
+					type(defaultValue), L[name], defaultValue);
 				local options = Settings.CreateSliderOptions(0, 10, 1);
 				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
 				Settings.CreateSlider(category, setting, options, tooltip);
@@ -87,7 +110,7 @@ function ns.setup_option()
 				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
 			elseif tonumber(defaultValue) ~= nil then
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), name, defaultValue);
+					type(defaultValue), L[name], defaultValue);
 				local options = Settings.CreateSliderOptions(1, 2, 0.1);
 				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
 				Settings.CreateSlider(category, setting, options, tooltip);
@@ -95,7 +118,7 @@ function ns.setup_option()
 				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
 			else
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), name, defaultValue);
+					type(defaultValue), L[name], defaultValue);
 
 				Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
 				Settings.SetValue(cvar_name, currentValue);

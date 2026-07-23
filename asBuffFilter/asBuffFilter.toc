@@ -10,4 +10,4 @@
 Libs\LibStub\LibStub.lua
 Libs\LibasConfig\LibasConfig.lua
 asBuffFilterOptions.lua
-asBuffFilter.xml
+asBuffFilter.lua

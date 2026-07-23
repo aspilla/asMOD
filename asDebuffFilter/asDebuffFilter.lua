@@ -193,62 +193,67 @@ local function setup_frames()
 	if ASMOD_asUnitFrame and ASMOD_asUnitFrame.is_simplemode then
 		offset = 16;
 	end
-	main_frame.helpfulframe = create_container(main_frame, "target", filter_helpul, "LEFT",
-		AnchorUtil.FlowDirection.Right,
-		AnchorUtil.FlowDirection.Down, 1);
 
-	main_frame.helpfulframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
-		ns.configs.target_ypoint - offset)
-	main_frame.helpfulframe:SetWidth(1)
-	main_frame.helpfulframe:SetHeight(1)
-	main_frame.helpfulframe:Show()
+	if ns.options.ShowTarget then
+		main_frame.helpfulframe = create_container(main_frame, "target", filter_helpul, "LEFT",
+			AnchorUtil.FlowDirection.Right,
+			AnchorUtil.FlowDirection.Down, 1);
 
-	main_frame.harmfulframe = create_container(main_frame, "target", filter_harmful, "LEFT",
-		AnchorUtil.FlowDirection.Right,
-		AnchorUtil.FlowDirection.Down, 1);
+		main_frame.helpfulframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
+			ns.configs.target_ypoint - offset)
+		main_frame.helpfulframe:SetWidth(1)
+		main_frame.helpfulframe:SetHeight(1)
+		main_frame.helpfulframe:Show()
 
-	main_frame.harmfulframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
-		ns.configs.target_ypoint - offset)
-	main_frame.harmfulframe:SetWidth(1)
-	main_frame.harmfulframe:SetHeight(1)
-	main_frame.harmfulframe:Show()
+		main_frame.harmfulframe = create_container(main_frame, "target", filter_harmful, "LEFT",
+			AnchorUtil.FlowDirection.Right,
+			AnchorUtil.FlowDirection.Down, 1);
 
-	if libasConfig then
-		libasConfig.load_position(main_frame.helpfulframe, "asDebuffFilter(Target)", ADF_Positions_1);
-		libasConfig.load_position(main_frame.harmfulframe, "asDebuffFilter(Target)", ADF_Positions_1);
+		main_frame.harmfulframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
+			ns.configs.target_ypoint - offset)
+		main_frame.harmfulframe:SetWidth(1)
+		main_frame.harmfulframe:SetHeight(1)
+		main_frame.harmfulframe:Show()
+
+		if libasConfig then
+			libasConfig.load_position(main_frame.helpfulframe, "asDebuffFilter(Target)", ADF_Positions_1);
+			libasConfig.load_position(main_frame.harmfulframe, "asDebuffFilter(Target)", ADF_Positions_1);
+		end
 	end
 
 
-	main_frame.playerframe = create_container(main_frame, "player", filter_helpul, "RIGHT", AnchorUtil.FlowDirection
-		.Left,
-		AnchorUtil.FlowDirection.Down, ns.options.PlayerDebuffRate);
+	if ns.options.ShowPlayer then
+		main_frame.playerframe = create_container(main_frame, "player", filter_helpul, "RIGHT", AnchorUtil.FlowDirection
+			.Left,
+			AnchorUtil.FlowDirection.Down, ns.options.PlayerDebuffRate);
 
 
-	main_frame.playerframe:SetPoint("RIGHT", UIParent, "CENTER", ns.configs.player_xpoint,
-		ns.configs.player_ypoint - offset)
-	main_frame.playerframe:SetWidth(1)
-	main_frame.playerframe:SetHeight(1)
-	main_frame.playerframe:Show()
-	main_frame.playerframe:SetEnabled(true);
+		main_frame.playerframe:SetPoint("RIGHT", UIParent, "CENTER", ns.configs.player_xpoint,
+			ns.configs.player_ypoint - offset)
+		main_frame.playerframe:SetWidth(1)
+		main_frame.playerframe:SetHeight(1)
+		main_frame.playerframe:Show()
+		main_frame.playerframe:SetEnabled(true);
 
-	if libasConfig then
-		libasConfig.load_position(main_frame.playerframe, "asDebuffFilter(Player)", ADF_Positions_2);
+		if libasConfig then
+			libasConfig.load_position(main_frame.playerframe, "asDebuffFilter(Player)", ADF_Positions_2);
+		end
 	end
 
+	if ns.options.ShowPrivate then
+		main_frame.private_frame = CreateFrame("Frame", nil, main_frame)
 
-	main_frame.private_frame = CreateFrame("Frame", nil, main_frame)
+		main_frame.private_frame:SetPoint("CENTER", ns.configs.private_xpoint, ns.configs.private_ypoint - offset)
+		main_frame.private_frame:SetWidth(1)
+		main_frame.private_frame:SetHeight(1)
+		main_frame.private_frame:Show();
 
-	main_frame.private_frame:SetPoint("CENTER", ns.configs.private_xpoint, ns.configs.private_ypoint - offset)
-	main_frame.private_frame:SetWidth(1)
-	main_frame.private_frame:SetHeight(1)
-	main_frame.private_frame:Show();
+		create_privateframes(main_frame.private_frame);
 
-	create_privateframes(main_frame.private_frame);
-
-	if libasConfig then
-		libasConfig.load_position(main_frame.private_frame, "asDebuffFilter(Private)", ADF_Positions_3);
+		if libasConfig then
+			libasConfig.load_position(main_frame.private_frame, "asDebuffFilter(Private)", ADF_Positions_3);
+		end
 	end
-
 	update_target();
 end
 
@@ -277,7 +282,6 @@ local function init()
 	main_frame:SetWidth(1);
 	main_frame:SetHeight(1);
 	main_frame:Show();
-	main_frame.frames = {};
 	setup_frames();
 
 	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
