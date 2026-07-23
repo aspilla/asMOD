@@ -36,7 +36,6 @@ end
 
 local function get_auracount(list)
     local count = 0;
-    --[[
     if list:IsForbidden() then
         return count
     end
@@ -49,8 +48,6 @@ local function get_auracount(list)
             count = count + 1;
         end
     end
-    ]]
-
     return count;
 end
 
