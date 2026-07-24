@@ -94,11 +94,9 @@ local function init_class()
 
     ns.clear_auracombo();
     ns.clear_combo();
-    ns.clear_shatter();
     ns.clear_rune();
     ns.clear_spell();
     ns.clear_stagger();
-    ns.clear_tipofspear();
     ns.clear_whirlwind();
 
     if (englishClass == "EVOKER") then
@@ -134,14 +132,13 @@ local function init_class()
             bbigsecondary = true;
         end
 
-        --[[
         if (spec and spec == 3) then
-            auraid = 1221389;
-            max_aura = 20;
+            auraid = 205473;
+            max_aura = 5;
             bsmallprimary = true;
             bbigsecondary = true;
         end
-        ]]
+
     end
 
     if (englishClass == "WARLOCK") then
@@ -237,7 +234,7 @@ local function init_class()
         end
 
         if (spec and spec == 3) then
-            auraid = 260285;
+            auraid = 260286;
             max_aura = 3;
         end
     end

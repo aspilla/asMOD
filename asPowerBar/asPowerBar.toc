@@ -11,9 +11,7 @@ Libs\LibStub\LibStub.lua
 Libs\LibasConfig\LibasConfig.lua
 asPowerBarOption.lua
 asPowerBarLib.lua
-asPowerBarShatter.lua
 asPowerBarWhirlwind.lua
-asPowerBarTipofSpear.lua
 asPowerBarRune.lua
 asPowerBarCombo.lua
 asPowerBarStagger.lua
