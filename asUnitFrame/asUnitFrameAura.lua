@@ -1,20 +1,24 @@
 local _, ns = ...;
 
-local bufffilter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful);
-local debufffilter_attack = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
-local debufffilter_helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful);
+ns.filters = {
+	buff = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful),
+	harmful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player),
+	helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful),
+};
 
 function ns.update_auras(frame)
-    local unit = frame.unit;
-    if frame.debuffupdate then
-        local filter = debufffilter_helpful;
+	local unit = frame.unit;
+	if frame.debuffcontainer then
+		if UnitCanAttack("player", unit) then
+			frame.debuffcontainer:SetAuraGroupFilterString("auras", ns.filters.harmful);
+		else
+			frame.debuffcontainer:SetAuraGroupFilterString("auras", ns.filters.helpful);
+		end
 
-        if UnitCanAttack("player", unit) then
-            filter = debufffilter_attack;
-        end
+		frame.debuffcontainer:UpdateAllAuras();
+	end
 
-    end
-
-    if frame.buffupdate then
-    end
+	if frame.buffcontainer then
+		frame.buffcontainer:UpdateAllAuras();
+	end
 end

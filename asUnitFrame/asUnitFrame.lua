@@ -28,145 +28,84 @@ if region == 2 and GetLocale() ~= "koKR" then
 	configs.font = "Fonts\\2002.ttf";
 end
 
-local function update_debuffanchor(frames, index, offsetX, right, parent, width)
-	local buff = frames[index];
 
-	if (index == 1) then
-		buff:SetPoint("TOPLEFT", parent.healthbar, "BOTTOMLEFT", 0, -4);
-	else
-		buff:SetPoint("BOTTOMLEFT", frames[index - 1], "BOTTOMRIGHT", offsetX, 0);
-	end
+local borderoption = {
+	showIcon = false,
+	showWhenHarmful = true,
+	showWhenHelpful = true,
+	style = AuraButtonBorderStyle.Color,
+};
 
-	buff:SetWidth(width - offsetX);
-	buff:SetHeight(width * configs.buffsizerate);
-end
-
-local function createdebuffframes(parent, bright, fontsize, width, count)
-	if parent.debuffframes == nil then
-		parent.debuffframes = {};
-	end
-
-	for idx = 1, count do
-		parent.debuffframes[idx] = CreateFrame("Button", nil, parent, "AUFDebuffFrameTemplate");
-		local frame = parent.debuffframes[idx];
-
+local function create_aurabutton(width, fontsize)
+	return function(frame)
+		frame.cooldown = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
+		frame.cooldown:SetAllPoints(frame);
 		frame.cooldown:SetDrawSwipe(true);
+		frame.cooldown:SetReverse(true);
+
 		if ns.options.MillisecondsThreshold then
 			frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
 		end
+
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
 				r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
 				r:ClearAllPoints();
-				r:SetPoint("CENTER", frame, "TOP", 0, -1);
+				r:SetPoint("TOP", 0, 5);
 				r:SetDrawLayer("OVERLAY");
-				break
+				break;
 			end
 		end
-
-		frame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-		frame.count:ClearAllPoints()
-		frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
-		frame.count:SetTextColor(0, 1, 0);
-
+		frame.icon = frame:CreateTexture(nil, "BACKGROUND")
+		frame.icon:SetAllPoints(frame);
 		frame.icon:SetTexCoord(.08, .92, .16, .84);
-		frame.icon:SetAlpha(1);
 
+		frame.borderb = frame:CreateTexture(nil, "BORDER");
+		frame.borderb:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga")
+		frame.borderb:SetAllPoints(frame);
+		frame.borderb:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+		frame.borderb:SetVertexColor(0, 0, 0);
 
+		frame.border = frame:CreateTexture(nil, "ARTWORK");
+		frame.border:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga")
+		frame.border:SetAllPoints(frame);
 		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 		frame.border:SetVertexColor(0, 0, 0);
-		frame.border:SetAlpha(1);
 
-		frame:ClearAllPoints();
-		update_debuffanchor(parent.debuffframes, idx, 1, bright, parent, width / count);
+		frame.overlay = CreateFrame("Frame", nil, frame);
+		frame.overlay:SetFrameLevel(frame:GetFrameLevel() + 5);
 
-		if not frame:GetScript("OnEnter") then
-			frame:SetScript("OnEnter", function(self)
-				if self.auraInstanceID then
-					GameTooltip_SetDefaultAnchor(GameTooltip, self);
-					GameTooltip:SetUnitDebuffByAuraInstanceID(self.unit, self.auraInstanceID, self.filter);
-				end
-			end)
-			frame:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end)
-		end
-
-		frame:EnableMouse(false);
-		frame:SetMouseMotionEnabled(true);
-		frame:Hide();
-	end
-end
-
-local function update_buffanchor(frames, index, offsetX, right, parent, width)
-	local buff = frames[index];
-
-	if (index == 1) then
-		buff:SetPoint("RIGHT", parent.healthbar, "LEFT", -offsetX, 0);
-	else
-		buff:SetPoint("RIGHT", frames[index - 1], "LEFT", -offsetX, 0);
-	end
-
-	buff:SetWidth(width - offsetX);
-	buff:SetHeight(width * configs.buffsizerate);
-end
-
-local function create_buffframes(parent, bright, fontsize, width, count)
-	if parent.buffframes == nil then
-		parent.buffframes = {};
-	end
-
-	for idx = 1, count do
-		parent.buffframes[idx] = CreateFrame("Button", nil, parent, "AUFDebuffFrameTemplate");
-		local frame = parent.buffframes[idx];
-
-		frame.cooldown:SetDrawSwipe(true);
-		if ns.options.MillisecondsThreshold then
-			frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
-		end
-		for _, r in next, { frame.cooldown:GetRegions() } do
-			if r:GetObjectType() == "FontString" then
-				r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-				r:ClearAllPoints();
-				r:SetPoint("CENTER", frame, "TOP", 0, -1);
-				r:SetDrawLayer("OVERLAY");
-				break
-			end
-		end
-
+		frame.count = frame.overlay:CreateFontString(nil, "OVERLAY");
 		frame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-		frame.count:ClearAllPoints()
-		frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
+		frame.count:ClearAllPoints();
+		frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
 		frame.count:SetTextColor(0, 1, 0);
 
-		frame.icon:SetTexCoord(.08, .92, .16, .84);
-		frame.icon:SetAlpha(1);
-
-
-		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-		frame.border:SetVertexColor(1, 1, 1);
-		frame.border:SetAlpha(1);
-
-		frame:ClearAllPoints();
-		update_buffanchor(parent.buffframes, idx, 2, bright, parent, width);
-
-		if not frame:GetScript("OnEnter") then
-			frame:SetScript("OnEnter", function(self)
-				if self.auraInstanceID then
-					GameTooltip_SetDefaultAnchor(GameTooltip, self);
-					GameTooltip:SetUnitBuffByAuraInstanceID(self.unit, self.auraInstanceID, self.filter);
-				end
-			end)
-			frame:SetScript("OnLeave", function()
-				GameTooltip:Hide();
-			end)
-		end
+		frame:SetWidth(width);
+		frame:SetHeight(width * configs.buffsizerate);
 
 		frame:EnableMouse(false);
 		frame:SetMouseMotionEnabled(true);
 
-		frame:Hide();
+		frame:SetIcon(frame.icon);
+		frame:SetAuraBorder(frame.border, borderoption);
+		frame:SetDurationCooldown(frame.cooldown);
+		frame:SetApplicationCount(frame.count);
 	end
+end
+
+local function create_container(parent, unit, filter, anchor, hdir, vdir, fontsize, width, max)
+    local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
+    container:SetFlowLayoutAnchorPoint(anchor);
+    container:SetFlowLayoutGrowthDirection(hdir, vdir);
+
+    container:AddAuraGroup("auras", filter,
+        { maxFrameCount = max, initializeFrame = create_aurabutton(width, fontsize) });
+    container:SetAuraGroupLayout("auras", { elementSpacingX = 0.1 });
+    container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
+    container:SetUnit(unit);
+    container:SetEnabled(true);
+    return container;
 end
 
 local function update_totemanchor(frames, index, offsetX, right, parent, width)
@@ -236,8 +175,6 @@ local function create_totemframes(parent, bright, fontsize, width, count)
 			end)
 		end
 	end
-
-	return;
 end
 
 local function on_unitevent(self, event, arg1, arg2)
@@ -592,13 +529,13 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 	frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);
 
 
-	frame.debuffupdate = false;
 	frame.totemupdate = false;
 
 
 	if debuffupdate and ns.options.ShowDebuff then
-		createdebuffframes(frame, true, fontsize, width, 4);
-		frame.debuffupdate = true;
+		frame.debuffcontainer = create_container(frame, unit, ns.filters.helpful, "LEFT",AnchorUtil.FlowDirection.Right,
+		AnchorUtil.FlowDirection.Down, fontsize, width/4 - 1, 4);
+		frame.debuffcontainer:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, -3);
 	end
 
 	if ns.options.ShowTotemBar and unit == "player" then
@@ -616,10 +553,8 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 		frame.updateCastBar = true;
 		ns.register_castevents(frame.castbar, unit);
 		if ns.options.ShowBossBuff and unit ~= "focus" then
-			create_buffframes(frame, true, fontsize, configs.buffsize, configs.buffcount);
-			frame.buffupdate = true;
-		else
-			frame.buffupdate = false;
+			frame.buffcontainer = create_container(frame, unit, ns.filters.buff, "RIGHT",AnchorUtil.FlowDirection.Left, AnchorUtil.FlowDirection.Down, fontsize, configs.buffsize, configs.buffcount);
+			frame.buffcontainer:SetPoint("RIGHT", frame, "LEFT", -2, 0);
 		end
 	else
 		frame.updateCastBar = false;
@@ -667,6 +602,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 		--ns.update_unitframe_portrait(frame);
 	end
 
+	ns.update_auras(frame);
 	C_Timer.NewTicker(configs.updaterate, frame.callback);
 	C_Timer.NewTicker(configs.updaterate * 2, frame.callback2);
 end

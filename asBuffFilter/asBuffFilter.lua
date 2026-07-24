@@ -104,8 +104,8 @@ end
 
 local function create_container(parent, unit, filter, anchor, hdir, vdir, size, maxcount)
 	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
-	container:SetAuraLayoutAnchorPoint(anchor);
-	container:SetAuraLayoutGrowthDirection(hdir, vdir);
+	container:SetFlowLayoutAnchorPoint(anchor);
+	container:SetFlowLayoutGrowthDirection(hdir, vdir);
 
 	container:AddAuraGroup("buffs", filter,
 		{ maxFrameCount = maxcount, initializeFrame = create_aurabutton(size) });

@@ -98,20 +98,20 @@ local function create_aurabutton()
 	end
 end
 local function update_debuffs(unit)
-	if main_frame.helpfulframes[unit] then
+	local container = main_frame.containers[unit];
+	if container then
 		if UnitCanAttack("player", unit) then
-			main_frame.harmfulframes[unit]:SetEnabled(true);
-			main_frame.helpfulframes[unit]:SetEnabled(false);
-			main_frame.harmfulframes[unit]:Show();
-			main_frame.helpfulframes[unit]:Hide();
-			main_frame.harmfulframes[unit]:UpdateAllAuras();
+			container:SetAuraGroupFilterString("debuffs", filters.harmful);
+			if ns.options.ShowNameplatesOnly then
+				container:SetAuraGroupCandidateFilters("debuffs", {nameplateShowPersonal = true});
+			else
+				container:SetAuraGroupCandidateFilters("debuffs", {});
+			end
 		else
-			main_frame.harmfulframes[unit]:SetEnabled(false);
-			main_frame.helpfulframes[unit]:SetEnabled(true);
-			main_frame.harmfulframes[unit]:Hide();
-			main_frame.helpfulframes[unit]:Show();
-			main_frame.helpfulframes[unit]:UpdateAllAuras();
+			container:SetAuraGroupFilterString("debuffs", filters.helpful);
+			container:SetAuraGroupCandidateFilters("debuffs", {});
 		end
+		container:UpdateAllAuras();
 	end
 end
 
@@ -121,20 +121,17 @@ local function update_allframes()
     end
 end
 
-local function create_container(parent, unit, filter, anchor, hdir, vdir, bnameplate)
+local function create_container(parent, unit, filter, anchor, hdir, vdir)
 	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
-	container:SetAuraLayoutAnchorPoint(anchor);
-	container:SetAuraLayoutGrowthDirection(hdir, vdir);
+	container:SetFlowLayoutAnchorPoint(anchor);
+	container:SetFlowLayoutGrowthDirection(hdir, vdir);
 
 	container:AddAuraGroup("debuffs", filter,
 		{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton() });
 	container:SetAuraGroupLayout("debuffs", { elementSpacingX = 0.1 });
 	container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
-	if bnameplate then
-		container:SetAuraGroupCandidateFilters("debuffs", {nameplateShowPersonal = true});
-	end
 	container:SetUnit(unit);
-	container:SetEnabled(false);
+	container:SetEnabled(true);
 	return container;
 end
 
@@ -148,23 +145,14 @@ local function setup_frame(unit)
     	offset = -50;
     end
 
-	main_frame.helpfulframes[unit] = create_container(parent, unit, filters.helpful, "LEFT",
+	main_frame.containers[unit] = create_container(parent, unit, filters.helpful, "LEFT",
 		AnchorUtil.FlowDirection.Right,
-		AnchorUtil.FlowDirection.Down, false);
+		AnchorUtil.FlowDirection.Down);
 
-	main_frame.helpfulframes[unit]:SetPoint("LEFT", parent, "RIGHT", offset, 0);
-	main_frame.helpfulframes[unit]:SetWidth(1)
-	main_frame.helpfulframes[unit]:SetHeight(1)
-	main_frame.helpfulframes[unit]:Show()
-
-	main_frame.harmfulframes[unit]= create_container(parent, unit, filters.harmful, "LEFT",
-		AnchorUtil.FlowDirection.Right,
-		AnchorUtil.FlowDirection.Down, ns.options.ShowNameplatesOnly);
-
-    main_frame.harmfulframes[unit]:SetPoint("LEFT", parent, "RIGHT", offset, 0);
-	main_frame.harmfulframes[unit]:SetWidth(1)
-	main_frame.harmfulframes[unit]:SetHeight(1)
-	main_frame.harmfulframes[unit]:Show();
+	main_frame.containers[unit]:SetPoint("LEFT", parent, "RIGHT", offset, 0);
+	main_frame.containers[unit]:SetWidth(1)
+	main_frame.containers[unit]:SetHeight(1)
+	main_frame.containers[unit]:Show()
 
 end
 
@@ -204,8 +192,7 @@ local function init()
     main_frame:SetWidth(1)
     main_frame:SetHeight(1)
     main_frame:Show()
-    main_frame.harmfulframes = {};
-    main_frame.helpfulframes = {};
+    main_frame.containers = {};
 
     setup_frames();
 
