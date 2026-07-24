@@ -118,9 +118,6 @@ local function create_container(parent, unit, filter, anchor, hdir, vdir, size, 
 end
 
 local function setup_frames()
-	if UnitAffectingCombat("player") then
-		return;
-	end
 	bsetup = true;
 
 	local libasConfig = LibStub:GetLibrary("LibasConfig", true);

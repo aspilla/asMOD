@@ -115,6 +115,7 @@ function ns.update_unitframe_other(frame, updated)
 	local role = UnitGroupRolesAssigned(unit);
 
 	--ClassColor
+	if not issecretvalue(role) then
 	if UnitIsPlayer(unit) or (role and role ~= "NONE") then
 		local class = select(2, UnitClass(unit));
 		local classColor = class and RAID_CLASS_COLORS[class] or nil;
@@ -135,6 +136,7 @@ function ns.update_unitframe_other(frame, updated)
 		frame.healthbar:SetStatusBarColor(r, g, b);
 	end
 
+	end
 
 	local raidicon = GetRaidTargetIndex(unit)
 
@@ -166,11 +168,12 @@ function ns.update_unitframe_other(frame, updated)
 	end
 
 	if frame.isplayerframe or frame.istargetframe then
-		if UnitIsGroupLeader(unit) then
+		local isleader =  UnitIsGroupLeader(unit);
+		if not issecretvalue(isleader) and isleader then
 			classtext = classtext .. icons.leader;
 		end
 
-		if (role and role ~= "NONE") then
+		if (role and not issecretvalue(role) and role ~= "NONE") then
 			local texture = nil;
 			if (role == "TANK") then
 				texture = icons.tank;

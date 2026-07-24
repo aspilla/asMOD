@@ -170,9 +170,6 @@ local function setup_frame(unit)
 end
 
 local function setup_frames()
-	if UnitAffectingCombat("player") then
-		return;
-	end
 	bsetup = true;
 	for unit, _ in pairs(configs.unitlist) do
         setup_frame(unit);
