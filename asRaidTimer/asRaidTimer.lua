@@ -248,17 +248,19 @@ end
 local function on_event(_, event, eid, _, difficultyid)
 	if event == "ENCOUNTER_START" then
 		local spec = C_SpecializationInfo.GetSpecialization();
-		if eid and spec and difficultyid then
+		if spec and ns.info and ns.info[spec] and eid and difficultyid then
 			local did = 1;
 			if difficultyid == 16 then
 				did = 2;
 			end
-			local data = ns.infos[spec][did][eid];
-			if data then
-				updatelist(data);
-				gvalues.encounterstart = GetTime();
-				gvalues.data = data;
-				gvalues.previdx = 1;
+			if ns.info[spec][did] then
+				local data = ns.infos[spec][did][eid];
+				if data then
+					updatelist(data);
+					gvalues.encounterstart = GetTime();
+					gvalues.data = data;
+					gvalues.previdx = 1;
+				end
 			end
 		end
 	else

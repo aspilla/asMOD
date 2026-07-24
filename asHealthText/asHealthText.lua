@@ -33,9 +33,9 @@ local function update_health(frame, unit)
 		frame:Show();
 
 		local role = UnitGroupRolesAssigned(unit);
-		if UnitIsPlayer(unit) or (role and role ~= "NONE") then
+		if UnitIsPlayer(unit) or (role and not issecretvalue(role) and role ~= "NONE") then
 			local class = select(2, UnitClass(unit));
-			local classColor = class and RAID_CLASS_COLORS[class] or nil;
+			local classColor = class and not issecretvalue(clase) and RAID_CLASS_COLORS[class] or nil;
 			if classColor then
 				frame:SetTextColor(classColor.r, classColor.g, classColor.b);
 			end

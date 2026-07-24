@@ -232,7 +232,7 @@ local function check_casting(castbar, event, unit, complete)
 			local _, class = UnitClass(unit)
 			local color = configs.interruptcolor;
 
-			if class then
+			if class and not issecretvalue(class) then
 				color = RAID_CLASS_COLORS[class];
 			end
 			castbar:SetStatusBarColor(color.r, color.g, color.b);

@@ -230,7 +230,7 @@ local function on_event(self, event, ...)
 	globals.istank = false;
 	local assignedRole = UnitGroupRolesAssigned("player");
 
-	if (assignedRole and assignedRole == "TANK") then
+	if (assignedRole and not issecretvalue(assignedRole) and assignedRole == "TANK") then
 		globals.istank = true;
 	end
 

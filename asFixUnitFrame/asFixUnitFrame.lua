@@ -142,7 +142,7 @@ local function update_healthbar(unit)
         local r, g, b;
 
         local _, englishClass = UnitClass(unit);
-        if englishClass then
+        if englishClass and not issecretvalue(englishClass) then
             local classColor = RAID_CLASS_COLORS[englishClass];
 
             if (classColor) then

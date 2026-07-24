@@ -153,7 +153,7 @@ local function on_update()
 				if UnitExists(targettarget) then
 					local _, class = UnitClass(targettarget)
 					local classcolor = nil;
-					if class then
+					if class and not issecretvalue(class) then
 						classcolor = RAID_CLASS_COLORS[class];
 					end
 

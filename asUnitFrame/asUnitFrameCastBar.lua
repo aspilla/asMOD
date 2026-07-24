@@ -116,10 +116,10 @@ local function check_casting(castbar, event, interuptedby, complete)
 			castbar:Show();
 
 			if UnitExists(targettarget) then
-				local _, Class = UnitClass(targettarget)
+				local _, class = UnitClass(targettarget)
 				local classcolor = nil;
-				if Class then
-					classcolor = RAID_CLASS_COLORS[Class];
+				if class and not issecretvalue(class) then
+					classcolor = RAID_CLASS_COLORS[class];
 				end
 
 				if classcolor then

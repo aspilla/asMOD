@@ -7,7 +7,7 @@ local configs    = {
 }
 
 local _, Class   = UnitClass("player")
-ns.classcolor    = RAID_CLASS_COLORS[Class];
+ns.classcolor    = Class and not issecretvalue(Class) and RAID_CLASS_COLORS[Class] or nil;
 ns.hotkeys       = {};
 ns.hotkeyslots   = {};
 ns.nextspellid   = nil;

@@ -39,7 +39,7 @@ function ns.setup_frame(asframe)
     local ishealer = is_healer(role);
 
     local class = select(2, UnitClass(unit));
-    asframe.classcolor = class and RAID_CLASS_COLORS[class] or nil;
+    asframe.classcolor = class and not issecretvalue(class) and RAID_CLASS_COLORS[class] or nil;
 
     local strata = "LOW";
     local framelevel = 4;
