@@ -15,17 +15,15 @@ local bhooked = false;
 local function hide_targetbuffs()
     -- TargetFrame의 Buff Debuff를 숨긴다.
     if ns.options.HideDebuff then
+    	--[[
         TargetFrame:UnregisterEvent("UNIT_AURA");
-        local function _UpdateBuffAnchor(self, buff)
-            --For mirroring vertically
-            buff:Hide();
-        end
-
         if bhooked == false then
-            hooksecurefunc("TargetFrame_UpdateBuffAnchor", _UpdateBuffAnchor);
-            hooksecurefunc("TargetFrame_UpdateDebuffAnchor", _UpdateBuffAnchor);
+
+            hooksecurefunc(TargetFrameMixin, "ConfigureAuraContainer", function(self) self:GetAuraContainer():Hide(); end);
+            TargetFrame:GetAuraContainer():Hide();
             bhooked = true;
         end
+        ]]
     end
 end
 

@@ -39,7 +39,6 @@ local borderoption = {
 };
 
 local main_frame = CreateFrame("Frame", "ADotF", UIParent);
-local bsetup = false;
 
 local function create_aurabutton()
 	return function(frame)
@@ -170,7 +169,6 @@ local function setup_frame(unit)
 end
 
 local function setup_frames()
-	bsetup = true;
 	for unit, _ in pairs(configs.unitlist) do
         setup_frame(unit);
     end
@@ -184,10 +182,6 @@ local function on_event(self, event)
         update_allframes();
     elseif (event == "PLAYER_ENTERING_WORLD") then
         update_allframes();
-    elseif event == "PLAYER_REGEN_ENABLED" then
-    	if bsetup == false then
-			setup_frames();
-		end
     end
 end
 
@@ -218,7 +212,6 @@ local function init()
     main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
     main_frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
     main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-    main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
     main_frame:SetScript("OnEvent", on_event)
 
 end

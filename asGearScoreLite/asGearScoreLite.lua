@@ -161,7 +161,7 @@ local function init_inspectframe()
 	binit = true;
 
 	local inspectframe = _G["InspectFrame"];
-	
+
 	avg_text = inspectframe:CreateFontString(nil, "OVERLAY");
 	avg_text:SetFont(configs.font, configs.fontsize, "THICKOUTLINE");
 	avg_text:SetText("Avg: 0")
@@ -180,7 +180,7 @@ local function init_inspectframe()
 	end
 
 	if InspectPaperDollItemsFrame then
-		InspectPaperDollItemsFrame:HookScript("OnShow", on_show);		
+		InspectPaperDollItemsFrame:HookScript("OnShow", on_show);
 	end
 end
 
@@ -215,4 +215,3 @@ end
 if C_AddOns.LoadAddOn("Blizzard_InspectUI") then
 	init_inspectframe();
 end
-

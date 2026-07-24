@@ -261,7 +261,7 @@ local function add_unit(unit)
 	end
 
 	if ns.options.ChangeTexture then
-		--healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+		healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
 
 		asframe.focused:SetParent(healthbar);
 		asframe.focused:SetDrawLayer("BACKGROUND", -7);

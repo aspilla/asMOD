@@ -12,7 +12,6 @@ local borderoption = {
 	showWhenHelpful = true,
 	style = AuraButtonBorderStyle.Color,
 };
-local bsetup = false;
 
 local function create_aurabutton(size)
 	return function(frame)
@@ -118,7 +117,6 @@ local function create_container(parent, unit, filter, anchor, hdir, vdir, size, 
 end
 
 local function setup_frames()
-	bsetup = true;
 
 	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 	local offset = 0;
@@ -186,9 +184,7 @@ local function on_event(self, event, arg1, ...)
 		update_target();
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		set_combatalpha();
-		if bsetup == false then
-			setup_frames();
-		end
+
 		update_target();
 	end
 end

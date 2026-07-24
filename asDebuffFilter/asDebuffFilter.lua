@@ -45,7 +45,6 @@ function asDebuffPrivateAuraAnchorMixin:SetUnit(unit)
 	end
 end
 
-local bsetup = false;
 
 local function create_privateframes(parent)
 	if parent.PrivateAuraAnchors == nil then
@@ -183,7 +182,6 @@ local function create_container(parent, unit, filter, anchor, hdir, vdir, rate)
 end
 
 local function setup_frames()
-	bsetup = true;
 
 	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 	local offset = 0;
@@ -264,9 +262,7 @@ local function on_event(self, event, arg1, ...)
 		set_combatalpha();
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		set_combatalpha();
-		if bsetup == false then
-			setup_frames();
-		end
+
 	end
 end
 
