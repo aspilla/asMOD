@@ -262,7 +262,6 @@ local function on_event(self, event, arg1, ...)
 		set_combatalpha();
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		set_combatalpha();
-
 	end
 end
 
