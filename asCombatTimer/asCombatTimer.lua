@@ -1,7 +1,7 @@
 ﻿local _, ns = ...;
 local configs = {
 	size = 40,
-	xpoint = 164,
+	xpoint = 164 + 45,
 	ypoint = -273,
 	fonts = {
 		[1] = STANDARD_TEXT_FONT,

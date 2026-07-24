@@ -9,13 +9,13 @@ local configs = {
 local main_frame = CreateFrame("Frame", "asInformationFrame", UIParent);
 main_frame:SetFrameStrata("LOW");
 main_frame:SetSize(100, 100);
-main_frame:SetPoint("CENTER", UIParent, "CENTER", -165, -300);
+main_frame:SetPoint("CENTER", UIParent, "CENTER", -165 -45, -300);
 
 -- Saved variables for position, lock state, and stat thresholds
 local defaultOptions = {
     point = "TOP",
     relativePoint = "CENTER",
-    xOfs = -165,
+    xOfs = -165 -45,
     yOfs = -250,
     showHaste = true,
     showCrit = true,
