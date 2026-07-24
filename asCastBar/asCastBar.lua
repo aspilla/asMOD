@@ -2,7 +2,7 @@ local _, ns = ...;
 
 local configs = {
 	xpoint = 0,
-	ypoint = -273,
+	ypoint = -270,
 	alpha = 1,
 	notinterruptcolor = { 0.6, 0.6, 0.6 },
 	interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
