@@ -18,6 +18,8 @@ ns.instype = ns.enums.none;
 ns.istanker = false;
 ns.colorcurve = nil;
 
+local asframes = setmetatable({}, { __mode = "k" });
+
 local function update_tanklist()
 	if ns.instype == ns.enums.none then
 		return nil;
@@ -92,8 +94,8 @@ local function remove_unit(unit)
 		return;
 	end
 
-	if nameplate_base.asNamePlates ~= nil then
-		local asframe = nameplate_base.asNamePlates;
+	if asframes[nameplate_base] ~= nil then
+		local asframe = asframes[nameplate_base];
 
 		asframe.casticon:Hide();
 		asframe.coloroverlay:Hide();
@@ -118,12 +120,9 @@ local function remove_unit(unit)
 
 		asframe:ClearAllPoints();
 		ns.free_asframe(asframe);
-		asframe = nil;
+		asframes[nameplate_base] = nil;
 	end
 
-	if nameplate_base and nameplate_base.asNamePlates ~= nil then
-		nameplate_base.asNamePlates = nil;
-	end
 end
 
 
@@ -205,9 +204,10 @@ local function add_unit(unit)
 
 	local unitframe = nameplate_base.UnitFrame;
 	local healthbar = unitframe.healthBar;
+	local castbar = unitframe.CastBarsContainer.castBar;
 
 	if not UnitCanAttack("player", unit) then
-		if nameplate_base.asNamePlates then
+		if asframes[nameplate_base] then
 			remove_unit(unit);
 		else
 			restore_default(nameplate_base);
@@ -215,11 +215,11 @@ local function add_unit(unit)
 		return;
 	end
 
-	if nameplate_base.asNamePlates == nil then
-		nameplate_base.asNamePlates = ns.get_asframe();
+	if asframes[nameplate_base] == nil then
+		asframes[nameplate_base] = ns.get_asframe();
 	end
 
-	local asframe = nameplate_base.asNamePlates;
+	local asframe = asframes[nameplate_base];
 	local scale = NamePlateDriverMixin:GetNamePlateScale();
 	asframe:SetParent(healthbar);
 	asframe:SetFrameLevel(healthbar:GetFrameLevel() + 1000);
@@ -237,29 +237,31 @@ local function add_unit(unit)
 
 	if org_height == nil then
 		local healthbar_height = healthbar:GetHeight();
-		local castbar_height = 12;
+		local castbar_height = castbar:GetHeight();
 
 		if not issecretvalue(healthbar_height) then
 			org_height = healthbar_height + castbar_height;
 		end
 	end
 
-	asframe.casticon:ClearAllPoints();
-	PixelUtil.SetPoint(asframe.casticon, "TOPLEFT", healthbar, "TOPRIGHT", 1.5, 2);
+	if castbar then
+		asframe.casticon:ClearAllPoints();
+		PixelUtil.SetPoint(asframe.casticon, "BOTTOMLEFT", castbar, "BOTTOMRIGHT", 1.5, -1);
 
-	local height = 36 * scale.vertical;
+		local height = 36 * scale.vertical;
 
-	if org_height then
-		height = org_height + configs.castbar_heightadder;
+		if org_height then
+			height = org_height + configs.castbar_heightadder;
+		end
+
+		asframe.casticon:SetWidth(height * 1.1);
+		asframe.casticon:SetHeight(height);
+		asframe.casticon:Hide();
+		asframe.iscast = false;
 	end
 
-	asframe.casticon:SetWidth(height * 1.1);
-	asframe.casticon:SetHeight(height);
-	asframe.casticon:Hide();
-	asframe.iscast = false;
-
 	if ns.options.ChangeTexture then
-		healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+		--healthbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
 
 		asframe.focused:SetParent(healthbar);
 		asframe.focused:SetDrawLayer("BACKGROUND", -7);
