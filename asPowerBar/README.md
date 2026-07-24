@@ -13,7 +13,7 @@ Primary Resource / Class Resource Display
 
 - **Evoker:** Essence
 - **Paladin:** Holy Power
-- **Mage:** [Arcane] Arcane Charges, [Fire] Fire Blast cooldown, [Frost] Target's Winter's Chill debuff stacks
+- **Mage:** [Arcane] Arcane Charges, [Fire] Fire Blast cooldown, [Frost] Icicles stacks
 - **Warlock:** Soul Shards, [Destruction] Soul Shard Fragments
 - **Druid:** Combo Points (Includes [Feral] Overflowing Power tracker)
 - **Monk:** [Brewmaster] Stagger, [Mistweaver] Renewing Mist cooldown, [Windwalker] Chi
@@ -24,10 +24,6 @@ Primary Resource / Class Resource Display
 - **Warrior:** [Arms] Overpower cooldown, [Fury] Whirlwind buff tracking (Note: cannot check the 7-yard distance requirement to targets), [Protection] Shield Block cooldown
 - **Demon Hunter:** [Havoc] Fel Rush cooldown, [Vengeance] Soul Fragment buff, [Devourer] Soul Fragment buff
 - **Hunter:** [Beast Mastery] Barbed Shot cooldown, [Marksmanship] Aimed Shot cooldown, [Survival] Tip of the Spear buff
-
-- (Caution) The Frost Mage `Winter's Chill` debuff tracker will only function if the `Winter's Chill` debuff is enabled in your `Cooldown Manager`.
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/4h5D5e9yC9E?si=n3WXwqYGOgi_7Ytf" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 - (Caution) The Fury Warrior `Whirlwind` buff tracker cannot check the 7-yard range requirement to the target.
   ![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_whirlwind.gif?raw=true)
@@ -71,7 +67,7 @@ Primary Resource / Class Resource Display
 
 - **기원사 :** 정수
 - **성기사 :** 신성한 힘
-- **마법사 :** [비전] 비전 충전물, [화염] 화염작열 쿨다운, [냉기] 대상 빙결 디버프 중첩
+- **마법사 :** [비전] 비전 충전물, [화염] 화염작열 쿨다운, [냉기] 고드름 버프
 - **흑마법사 :** 영혼의 조각, [파괴] 영혼의 조각 파편
 - **드루이드 :** 연계 점수 ([야성]넘쳐흐르는 힘 표시)
 - **수도사 :** [양조] 시간차, [운무] 소생의 안개 쿨다운 [풍운] 기
@@ -82,10 +78,6 @@ Primary Resource / Class Resource Display
 - **전사 :** [무기] 제압 쿨다운, [분노] 소용돌이 버프 (대상과의 거리 7미터는 채크 불가), [방어] 방패 올리기 쿨다운
 - **악마사냥꾼 :** [파멸] 지옥 돌진 쿨다운, [복수] 영혼 파편 버프, [포식] 영혼 파편 버프
 - **사냥꾼 :** [야수] 날카로운 사격 쿨다운, [사격] 조준 사격 쿨다운, [생존] 창끝 버프
-
-- (주의) 냉기 법사 `빙결` 디버프는 `재사용 대기시간 관리자`에서 `빙결` 디버프를 표시해야 표기 됨
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/4h5D5e9yC9E?si=n3WXwqYGOgi_7Ytf" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 - (주의) 분노 전사 `소용돌이` 버프 는 대상과의 거리 7미터는 채크 불가함
   ![asPowerBar](https://github.com/aspilla/asMOD/blob/main/.Pictures/asPowerBar_whirlwind.gif?raw=true)
