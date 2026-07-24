@@ -664,8 +664,6 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 			return;
 		end
 		ns.update_unitframe_other(frame);
-		ns.update_auras(frame);
-		--off due to shuttering
 		--ns.update_unitframe_portrait(frame);
 	end
 
