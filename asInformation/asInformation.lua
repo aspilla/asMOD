@@ -4,19 +4,17 @@ local configs = {
     combatalpha = 1,
     normalalpha = 0.5,
     updaterate = 0.2,
+    x_point = -165 - 20,
+    y_point = -300,
 };
 
 local main_frame = CreateFrame("Frame", "asInformationFrame", UIParent);
 main_frame:SetFrameStrata("LOW");
 main_frame:SetSize(100, 100);
-main_frame:SetPoint("CENTER", UIParent, "CENTER", -165 -45, -300);
+main_frame:SetPoint("CENTER", UIParent, "CENTER", -165 -20, -300);
 
 -- Saved variables for position, lock state, and stat thresholds
 local defaultOptions = {
-    point = "TOP",
-    relativePoint = "CENTER",
-    xOfs = -165 -45,
-    yOfs = -250,
     showHaste = true,
     showCrit = true,
     showMastery = true,
@@ -544,13 +542,6 @@ local function setup_option()
         ASInformationSaved.showPrimary = self:GetChecked()
         needReposition = true;
     end)
-
-    -- Show the options panel when the slash command is used
-    SLASH_ASINFORMATION1 = "/asinformation"
-    SlashCmdList["ASINFORMATION"] = function()
-        InterfaceOptionsFrame_OpenToCategory(optionsPanel)
-        InterfaceOptionsFrame_OpenToCategory(optionsPanel) -- Double call to avoid interface bug
-    end
 end
 
 local bfirst = true;

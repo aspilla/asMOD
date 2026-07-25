@@ -1,8 +1,8 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 260723,
+    Version = 260724,
     SimpleDesign = true,
-    BarWidth = 238 + 75,
+    BarWidth = 238 + 40,
     BarHeight = 20,
     ShowTick = true,
     Scale = 1,

@@ -1,5 +1,5 @@
 ﻿local configs = {
-	width = 238 + 75,
+	width = 238 + 40,
 	height = 5,
 	xpoint = 0,
 	ypoint = -215,
