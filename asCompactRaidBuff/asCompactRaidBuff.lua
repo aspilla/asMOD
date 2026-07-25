@@ -292,23 +292,4 @@ main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 main_frame:RegisterEvent("GROUP_ROSTER_UPDATE");
 main_frame:RegisterEvent("ROLE_CHANGED_INFORM");
 
-local function hook_name_func(frame)
-    local asframe = nil;
-    if frame and not frame:IsForbidden() and frame.GetName then
-        local name = frame:GetName();
-        if name then
-            if IsInRaid() then
-                asframe = (name and ns.asraid[name]) or nil;
-            else
-                asframe = (name and ns.asparty[name]) or nil;
-            end
-        end
-    end
-
-    if asframe then
-        ns.update_namecolor(asframe);
-    end
-end
-
 hooksecurefunc("DefaultCompactUnitFrameSetup", hook_func);
-hooksecurefunc("CompactUnitFrame_UpdateName", hook_name_func);

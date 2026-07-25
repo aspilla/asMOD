@@ -32,12 +32,10 @@ local function update_health(frame, unit)
 		frame:SetText(string.format(formattext, valuePct));
 		frame:Show();
 
-		if UnitIsPlayer(unit) then
-			local class = select(2, UnitClass(unit));
-			local classColor = class and C_ClassColor.GetClassColor(class) or nil;
-			if classColor then
-				frame:SetTextColor(classColor.r, classColor.g, classColor.b);
-			end
+		local class = select(2, UnitClass(unit));
+		local classcolor = class and C_ClassColor.GetClassColor(class) or nil;
+		if classcolor and UnitIsPlayer(unit) then
+			frame:SetTextColor(classcolor.r, classcolor.g, classcolor.b);
 		else
 			local r = 0;
 			local g = 1.0;

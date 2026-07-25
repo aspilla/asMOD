@@ -13,6 +13,7 @@ local icons = {
 
 };
 
+local locale = GetLocale();
 local pctcurve = C_CurveUtil.CreateCurve();
 pctcurve:SetType(Enum.LuaCurveType.Linear);
 pctcurve:AddPoint(0, 0);
@@ -93,6 +94,7 @@ function ns.update_unithealth(frame, updated)
 	end
 end
 
+
 function ns.update_unitframe_other(frame, updated)
 	local unit = frame.unit;
 	local showplayermana = false;
@@ -112,15 +114,11 @@ function ns.update_unitframe_other(frame, updated)
 		return;
 	end
 
-	local role = UnitGroupRolesAssigned(unit);
+	local class = select(2, UnitClass(unit));
+	local classcolor = class and C_ClassColor.GetClassColor(class) or nil;
 
-	--ClassColor
-	if UnitIsPlayer(unit) or (role and not issecretvalue(role) and role ~= "NONE") then
-		local class = select(2, UnitClass(unit));
-		local classColor = class and C_ClassColor.GetClassColor(class) or nil;
-		if classColor then
-			frame.healthbar:SetStatusBarColor(classColor.r, classColor.g, classColor.b);
-		end
+	if classcolor and UnitIsPlayer(unit) then
+		frame.healthbar:SetStatusBarColor(classcolor.r, classcolor.g, classcolor.b);
 	else
 		local r = 0;
 		local g = 1.0;
@@ -165,7 +163,7 @@ function ns.update_unitframe_other(frame, updated)
 	end
 
 	if frame.isplayerframe or frame.istargetframe then
-		local isleader =  UnitIsGroupLeader(unit);
+		local isleader = UnitIsGroupLeader(unit);
 		if not issecretvalue(isleader) and isleader then
 			classtext = classtext .. icons.leader;
 		end
@@ -194,10 +192,14 @@ function ns.update_unitframe_other(frame, updated)
 			classtext = classtext .. icons.resting;
 		end
 
-        local creatureType = UnitCreatureType(unit)
+        if locale == "koKR" then
+            local creatureType = UnitCreatureType(unit)
 
-        if creatureType and not UnitIsPlayer(unit) then
-            frame.typetext:SetText(creatureType);
+            if creatureType and not UnitIsPlayer(unit) then
+                frame.typetext:SetText(creatureType);
+            else
+                frame.typetext:SetText("");
+            end
         else
             frame.typetext:SetText("");
         end
