@@ -7,6 +7,20 @@ local Options_Default = {
 	MillisecondsThreshold = 3,
 };
 
+local L = {
+	MaxShow = "The maximum number of debuffs to display",
+	ShowNameplatesOnly = "Show nameplates debuff only",
+	MillisecondsThreshold = "Remaining cooldown begins displaying in 0.1-second increments",
+}
+
+
+if GetLocale() == "koKR" then
+	L = {
+		MaxShow = "최대 표시 디버프 개수",
+		ShowNameplatesOnly = "이름표에 표시되는 디버프만 표시",
+		MillisecondsThreshold = "남은 쿨을 0.1초 단위로 보여줄 최소 시간",
+	}
+end
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
 
@@ -48,7 +62,7 @@ function ns.setup_option()
 
 			if name == "MillisecondsThreshold" then
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), name, defaultValue);
+					type(defaultValue), L[name], defaultValue);
 				local options = Settings.CreateSliderOptions(0, 10, 1);
 				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
 				Settings.CreateSlider(category, setting, options, tooltip);
@@ -56,7 +70,7 @@ function ns.setup_option()
 				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
 			elseif tonumber(defaultValue) ~= nil then
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), name, defaultValue);
+					type(defaultValue), L[name], defaultValue);
 				local options = Settings.CreateSliderOptions(1, 7, 1);
 				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
 				Settings.CreateSlider(category, setting, options, tooltip);
@@ -64,7 +78,7 @@ function ns.setup_option()
 				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
 			else
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), name, defaultValue);
+					type(defaultValue), L[name], defaultValue);
 
 				Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
 				Settings.SetValue(cvar_name, currentValue);

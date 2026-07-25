@@ -9,19 +9,19 @@ local Options_Default = {
 
 
 local L = {
-	ShowFocus = "Toggle display of the Focus target cast bar (Default: true).",
-	ShowTarget = "Toggle display of the Target cast bar (Default: true).",
-	FocusCastScale = "Adjust the size scale of the Focus target cast bar (Default: 1.2, Require '/reload').",
-	TargetCastScale = "Adjust the size scale of the Target cast bar (Default: 1, Require '/reload').",
+	ShowFocus = "Toggle display of the Focus target cast bar",
+	ShowTarget = "Toggle display of the Target cast bar",
+	FocusCastScale = "Adjust the size scale of the Focus target cast bar",
+	TargetCastScale = "Adjust the size scale of the Target cast bar",
 }
 
 
 if GetLocale() == "koKR" then
 	L = {
-		ShowFocus = "주시 대상 시전 바 표시 여부 (기본 true).",
-		ShowTarget = "대상 시전 바 표시 여부 (기본 true).",
-		FocusCastScale = "주시 대상 시전 바 크기 배율 (기본 1.2, `/reload` 필요).",
-		TargetCastScale = "대상 시전 바 크기 배율 (기본 1, '/reload' 필요).",
+		ShowFocus = "주시 대상 시전 바 표시 여부",
+		ShowTarget = "대상 시전 바 표시 여부",
+		FocusCastScale = "주시 대상 시전 바 크기 배율",
+		TargetCastScale = "대상 시전 바 크기 배율",
 	}
 end
 
