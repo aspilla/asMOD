@@ -87,7 +87,12 @@ local function update_spellbutton(frame, spellid)
 	if chargeduration then
 		frame.cooldown:Show();
 		set_cooldownframe(frame.cooldown, chargeduration, true);
-		frame.icon_desaturated:SetAlpha(0);
+		local cd = C_Spell.GetSpellCooldown(or_spellid)
+		if cd.isActive and not cd.isOnGCD then
+			frame.icon_desaturated:SetAlpha(1);
+		else
+			frame.icon_desaturated:SetAlpha(0);
+		end
 	else
 		if durationobj then
 			set_cooldownframe(frame.cooldown, durationobj, true);
@@ -237,13 +242,13 @@ local function create_buttons()
 		local frame = create_button(ns.options.TrinketSize);
 
 		if i == 1 then
-			frame:SetPoint("BOTTOMRIGHT", UIParent, "CENTER", configs.t_xpoint, configs.t_ypoint - offset)
+			frame:SetPoint("TOPLEFT", UIParent, "CENTER", configs.s_xpoint, configs.s_ypoint)
 
 			if libasConfig then
 				libasConfig.load_position(frame, "asCooldownPulse(Trinkets)", ACDP_Positions_1);
 			end
 		else
-			frame:SetPoint("RIGHT", ns.tbuttons[i - 1], "LEFT", -0.5, 0);
+			frame:SetPoint("LEFT", ns.tbuttons[i - 1], "RIGHT", -0.5, 0);
 		end
 		ns.tbuttons[i] = frame;
 	end
@@ -265,12 +270,12 @@ local function create_buttons()
 	for i = 1, configs.maxtrackspells do
 		local frame = create_button(ns.options.SpellSize);
 		if i == 1 then
-			frame:SetPoint("TOPLEFT", UIParent, "CENTER", configs.s_xpoint, configs.s_ypoint)
+			frame:SetPoint("BOTTOMRIGHT", UIParent, "CENTER", configs.t_xpoint, configs.t_ypoint - offset)
 			if libasConfig then
 				libasConfig.load_position(frame, "asCooldownPulse(Spell)", ACDP_Positions_3);
 			end
 		else
-			frame:SetPoint("LEFT", ns.sbuttons[i - 1], "RIGHT", -0.5, 0);
+			frame:SetPoint("RIGHT", ns.sbuttons[i - 1], "LEFT", -0.5, 0);
 		end
 		ns.sbuttons[i] = frame;
 	end

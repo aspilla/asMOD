@@ -2,7 +2,7 @@
 local configs = {
 	size = 40,
 	xpoint = 164 + 20,
-	ypoint = -273,
+	ypoint = -270,
 	fonts = {
 		[1] = STANDARD_TEXT_FONT,
 		[2] = UNIT_NAME_FONT,

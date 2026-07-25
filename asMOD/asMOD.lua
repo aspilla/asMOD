@@ -3,7 +3,7 @@ local version = select(4, GetBuildInfo());
 
 local configs = {
 	uiscale = 0.75,
-	version = 260425,
+	version = 260725,
 };
 
 local function import_layout(layout_text, name)
@@ -76,10 +76,6 @@ local function create_macro()
 end
 
 local function setup_wowoptions()
-	-- 모든 UI 위치를 Reset 한다.
-	--asMOD_position = {};
-
-
 	--UI Scale 을 조정합니다.
 	SetCVar("useUiScale", "1");
 
@@ -111,7 +107,7 @@ local function setup_wowoptions()
 	SetCVar("nameplateShowFriendlyPlayers", 1)
 	SetCVar("nameplateShowFriendlyNPCs", 0)
 	SetCVar("namePlateStyle", Enum.NamePlateStyle.Block);
-	SetCVar("nameplateStackingTypes",  "A");
+	SetCVar("nameplateStackingTypes", "A");
 	SetCVar("UnitNameNPC", 1);
 
 	--개인 자원바
@@ -185,59 +181,52 @@ local function show_asMODpopup()
 	StaticPopup_Show("asMOD")
 end
 
-local function on_event(self, event, arg1)
-	if event == "ADDON_LOADED" and arg1 == "asMOD" then
-		if not asMOD_version or asMOD_version ~= configs.version then
-			show_asMODpopup()
-			asMOD_config = true;
-			asMOD_version = configs.version;
-		end
-
-		C_Timer.After(1, create_macro);
-
-		if GetLocale() == "koKR" then
-			DEFAULT_CHAT_FRAME:AddMessage("/asMOD : 최적화된 Interface 옵션 Setup")
-		else
-			DEFAULT_CHAT_FRAME:AddMessage("/asMOD : Setup optimized interface options")
-		end
-
-		SlashCmdList['asMOD'] = show_asMODpopup;
-		SLASH_asMOD1 = '/asMOD';
+local function init()
+	if GetLocale() == "koKR" then
+		StaticPopupDialogs["asMOD"] = {
+			text = "asMOD가 '기본 인터페이스 설정'을 변경합니다. \n채팅창에 '/asMOD'명령어로 기능을 다시 불러 올 수 있습니다.",
+			button1 = "변경",
+			button2 = "다음에",
+			OnAccept = function()
+				setup_wowoptions()
+			end,
+			timeout = 0,
+			whileDead = true,
+			hideOnEscape = true,
+			preferredIndex = 3,
+		}
+	else
+		StaticPopupDialogs["asMOD"] = {
+			text =
+			"asMOD will change the 'Default Interface Settings'. \nYou can reload the features using the '/asMOD' command in the chat.",
+			button1 = "Confirm",
+			button2 = "Cancel",
+			OnAccept = function()
+				setup_wowoptions()
+			end,
+			timeout = 0,
+			whileDead = true,
+			hideOnEscape = true,
+			preferredIndex = 3,
+		}
+	end
+	if not asMOD_version or asMOD_version ~= configs.version then
+		show_asMODpopup()
+		asMOD_config = true;
+		asMOD_version = configs.version;
 	end
 
-	return;
+	if GetLocale() == "koKR" then
+		DEFAULT_CHAT_FRAME:AddMessage("/asMOD : 최적화된 Interface 옵션 Setup")
+	else
+		DEFAULT_CHAT_FRAME:AddMessage("/asMOD : Setup optimized interface options")
+	end
+
+	SlashCmdList['asMOD'] = show_asMODpopup;
+    SLASH_asMOD1 = '/asMOD';
+
+    create_macro();
 end
 
-local main_frame = CreateFrame("Frame")
-main_frame:SetScript("OnEvent", on_event)
-main_frame:RegisterEvent("ADDON_LOADED")
-main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-if GetLocale() == "koKR" then
-	StaticPopupDialogs["asMOD"] = {
-		text = "asMOD가 '기본 인터페이스 설정'을 변경합니다. \n채팅창에 '/asMOD'명령어로 기능을 다시 불러 올 수 있습니다.",
-		button1 = "변경",
-		button2 = "다음에",
-		OnAccept = function()
-			setup_wowoptions()
-		end,
-		timeout = 0,
-		whileDead = true,
-		hideOnEscape = true,
-		preferredIndex = 3,
-	}
-else
-	StaticPopupDialogs["asMOD"] = {
-		text =
-		"asMOD will change the 'Default Interface Settings'. \nYou can reload the features using the '/asMOD' command in the chat.",
-		button1 = "Confirm",
-		button2 = "Cancel",
-		OnAccept = function()
-			setup_wowoptions()
-		end,
-		timeout = 0,
-		whileDead = true,
-		hideOnEscape = true,
-		preferredIndex = 3,
-	}
-end
+C_Timer.After(1, init);
