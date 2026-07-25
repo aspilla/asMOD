@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 260721,
+    Version = 260725,
     ShowPortrait = true,
     ShowTotemBar = true,
     ShowBossBuff = true,
@@ -55,6 +55,7 @@ function ns.setup_option()
     if AUF_Options == nil or Options_Default.Version ~= AUF_Options.Version then
         AUF_Options = {};
         AUF_Options = CopyTable(Options_Default);
+        AUF_Positions = nil;
     end
 
     if AUF_Positions == nil then
@@ -64,6 +65,7 @@ function ns.setup_option()
         AUF_Positions.FocusFrame = {};
         AUF_Positions.PetFrame = {};
         AUF_Positions.TargetTargetFrame = {};
+        AUF_Positions.FocusTargetFrame = {};
 
         AUF_Positions.BossFrames = {};
         if (MAX_BOSS_FRAMES) then

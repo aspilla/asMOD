@@ -330,6 +330,10 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 	frame.classtext:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
 	frame.classtext:SetTextColor(1, 1, 1, 1)
 
+	frame.typetext = frame.healthbar:CreateFontString(nil, "ARTWORK");
+	frame.typetext:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
+	frame.typetext:SetTextColor(1, 1, 1, 1)
+
 	if not ns.options.ShowPortrait then
 		if is_small then
 			if x < 0 then
@@ -361,7 +365,8 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 				frame.hvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 4 + 8), 4);
 				frame.name:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -4);
 				frame.classtext:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -4, 4);
-				frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+				frame.typetext:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+				frame.aggro:SetPoint("BOTTOMRIGHT", frame.typetext, "BOTTOMLEFT", -1, 0);
 			end
 		end
 	else
@@ -371,14 +376,16 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 			frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4 + 8), 0);
 			frame.name:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
 			frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
-			frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+			frame.typetext:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+			frame.aggro:SetPoint("BOTTOMRIGHT", frame.typetext, "BOTTOMLEFT", -1, 0);
 		else
 			frame.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 4, 0);
 			frame.sperator:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4), 0);
 			frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4 + 8), 0);
 			frame.name:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
 			frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
-			frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+			frame.typetext:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+			frame.aggro:SetPoint("BOTTOMLEFT", frame.typetext, "BOTTOMRIGHT", 1, 0);
 		end
 	end
 
@@ -387,6 +394,9 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 		frame.aggro:Hide();
 		frame.sperator:Hide();
 		frame.hvalue:Hide();
+		frame.typetext:Hide();
+    else
+		frame.typetext:Show();
 	end
 
 	if ns.options.ShowAggroInfo == false then
@@ -534,8 +544,8 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 
 	if debuffupdate and ns.options.ShowDebuff then
 		frame.debuffcontainer = create_container(frame, unit, ns.filters.helpful, "LEFT",AnchorUtil.FlowDirection.Right,
-		AnchorUtil.FlowDirection.Down, fontsize, width/4 - 1, 4);
-		frame.debuffcontainer:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, -3);
+		AnchorUtil.FlowDirection.Down, fontsize, width/4, 4);
+		frame.debuffcontainer:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, -5);
 	end
 
 	if ns.options.ShowTotemBar and unit == "player" then
@@ -549,10 +559,10 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 	frame.isplayerframe = (unit == "player");
 	frame.ispetframe = (unit == "pet");
 
-	if unit == "focus" or string.find(unit, "boss") then
+	if string.find(unit, "boss") then
 		frame.updateCastBar = true;
 		ns.register_castevents(frame.castbar, unit);
-		if ns.options.ShowBossBuff and unit ~= "focus" then
+		if ns.options.ShowBossBuff then
 			frame.buffcontainer = create_container(frame, unit, ns.filters.buff, "RIGHT",AnchorUtil.FlowDirection.Left, AnchorUtil.FlowDirection.Down, fontsize, configs.buffsize, configs.buffcount);
 			frame.buffcontainer:SetPoint("RIGHT", frame, "LEFT", -2, 0);
 		end
@@ -713,6 +723,7 @@ local function init(framelist)
 	framelist.FocusFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 	framelist.PetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 	framelist.TargetTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
+	framelist.FocusTargetFrame = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
 
 	local offset = 0;
 	local fontoffset = 0;
@@ -745,11 +756,16 @@ local function init(framelist)
 		ns.options.PetHeight,
 		ns.options.PetPowerWidth, ns.options.PetPowerHeight, ns.options.PetFontSize - fontoffset, true, true);
 
+	create_unitframe(framelist.FocusTargetFrame, "focustarget", configs.xpoint + ns.options.Width + 28, configs.ypoint - 40 + offset,
+		ns.options.PetWidth,
+		ns.options.PetHeight,
+		ns.options.PetPowerWidth, ns.options.PetPowerHeight, ns.options.PetFontSize - fontoffset, true, true);
+
 	framelist.BossFrames = {};
 	if (MAX_BOSS_FRAMES) then
 		for i = 1, MAX_BOSS_FRAMES do
 			framelist.BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-			create_unitframe(framelist.BossFrames[i], "boss" .. i, configs.xpoint + 250, 160 - (i - 1) * 70,
+			create_unitframe(framelist.BossFrames[i], "boss" .. i, configs.xpoint + 200, 160 - (i - 1) * 65,
 				ns.options.FocusWidth, ns.options.FocusHeight,
 				ns.options.FocusPowerWidth, ns.options.FocusPowerHeight, ns.options.FocusFontSize - fontoffset, false,
 				framelist.is_simplemode);
@@ -765,6 +781,7 @@ local function init(framelist)
 		libasConfig.load_position(framelist.FocusFrame, "FocusFrame", AUF_Positions.FocusFrame);
 		libasConfig.load_position(framelist.PetFrame, "PetFrame", AUF_Positions.PetFrame);
 		libasConfig.load_position(framelist.TargetTargetFrame, "TargetTargetFrame", AUF_Positions.TargetTargetFrame);
+		libasConfig.load_position(framelist.FocusTargetFrame, "FocusTargetFrame", AUF_Positions.FocusTargetFrame);
 
 		if (MAX_BOSS_FRAMES) then
 			for i = 1, MAX_BOSS_FRAMES do
@@ -796,7 +813,12 @@ local function on_mainevent(self, event, ...)
 		update_unitframe("target");
 		update_unitframe("targettarget");
 	elseif event == "UNIT_TARGET" then
-		update_unitframe("targettarget");
+        local unit = ...;
+		if unit == "target" then
+			update_unitframe("targettarget");
+		else
+			update_unitframe("focustarget");
+		end
 	elseif event == "PLAYER_TARGET_CHANGED" then
 		update_unitframe("target");
 		update_unitframe("targettarget");
@@ -809,6 +831,7 @@ local function on_mainevent(self, event, ...)
 		end
 	elseif event == "PLAYER_FOCUS_CHANGED" then
 		update_unitframe("focus");
+		update_unitframe("focustarget");
 	elseif event == "UNIT_PET" then
 		update_unitframe("pet");
 	elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
@@ -829,7 +852,7 @@ main_frame:RegisterEvent("UNIT_PORTRAIT_UPDATE");
 main_frame:RegisterEvent("PORTRAITS_UPDATED");
 main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
 main_frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
-main_frame:RegisterUnitEvent("UNIT_TARGET", "target");
+main_frame:RegisterUnitEvent("UNIT_TARGET", "target", "focus");
 main_frame:RegisterUnitEvent("UNIT_PET", "player");
 main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
 main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");

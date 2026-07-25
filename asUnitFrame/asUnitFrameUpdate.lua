@@ -194,13 +194,13 @@ function ns.update_unitframe_other(frame, updated)
 			classtext = classtext .. icons.resting;
 		end
 
-		--[[
         local creatureType = UnitCreatureType(unit)
 
         if creatureType and not UnitIsPlayer(unit) then
-            classtext = classtext .. " (" .. creatureType .. ")";
+            frame.typetext:SetText(creatureType);
+        else
+            frame.typetext:SetText("");
         end
-        ]]
 	end
 
 	frame.name:SetText(name);
@@ -223,7 +223,7 @@ function ns.update_unitframe_other(frame, updated)
 	end
 	frame.powerbar.value:SetText(power)
 
-	local powerType, powerToken = UnitPowerType(unit)
+	local powerType, _ = UnitPowerType(unit)
 
 	if powerType ~= nil then
 		local powerColor = PowerBarColor[powerType]
@@ -240,7 +240,7 @@ function ns.update_unitframe_other(frame, updated)
 					frame.powerbar:SetMinMaxValues(0, manaMax)
 					frame.powerbar:SetValue(manavalue, Enum.StatusBarInterpolation.ExponentialEaseOut);
 					frame.powerbar.value:SetText(manavalue)
-					local powerColor = PowerBarColor[0]
+					powerColor = PowerBarColor[0]
 					frame.powerbar:SetStatusBarColor(powerColor.r, powerColor.g, powerColor.b)
 					frame.powerbar:Show();
 				elseif showplayermana then
