@@ -1,7 +1,7 @@
 local _, ns = ...;
 ---설정부
 local configs = {
-	xpoint = 230,
+	xpoint = 230 + 30,
 	ypoint = -30,
 	width = 180,
 	height = 17,

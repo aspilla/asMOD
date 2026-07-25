@@ -222,7 +222,7 @@ local function setup_frames()
 	if ns.options.ShowPrivate then
 		main_frame.private_frame = CreateFrame("Frame", nil, main_frame)
 
-		main_frame.private_frame:SetPoint("CENTER", ns.configs.private_xpoint, ns.configs.private_ypoint - offset)
+		main_frame.private_frame:SetPoint("RIGHT", UIParent, "CENTER", ns.configs.private_xpoint, ns.configs.private_ypoint - offset)
 		main_frame.private_frame:SetWidth(1)
 		main_frame.private_frame:SetHeight(1)
 		main_frame.private_frame:Show();

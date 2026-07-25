@@ -756,7 +756,7 @@ local function init(framelist)
 		ns.options.PetHeight,
 		ns.options.PetPowerWidth, ns.options.PetPowerHeight, ns.options.PetFontSize - fontoffset, true, true);
 
-	create_unitframe(framelist.FocusTargetFrame, "focustarget", configs.xpoint + ns.options.Width + 28, configs.ypoint - 40 + offset,
+	create_unitframe(framelist.FocusTargetFrame, "focustarget", configs.xpoint + ns.options.Width + 26, configs.ypoint - 40 + offset,
 		ns.options.PetWidth,
 		ns.options.PetHeight,
 		ns.options.PetPowerWidth, ns.options.PetPowerHeight, ns.options.PetFontSize - fontoffset, true, true);
@@ -765,7 +765,7 @@ local function init(framelist)
 	if (MAX_BOSS_FRAMES) then
 		for i = 1, MAX_BOSS_FRAMES do
 			framelist.BossFrames[i] = CreateFrame("Button", nil, UIParent, "AUFUnitButtonTemplate");
-			create_unitframe(framelist.BossFrames[i], "boss" .. i, configs.xpoint + 200, 160 - (i - 1) * 65,
+			create_unitframe(framelist.BossFrames[i], "boss" .. i, configs.xpoint + 200, 140 - (i - 1) * 65,
 				ns.options.FocusWidth, ns.options.FocusHeight,
 				ns.options.FocusPowerWidth, ns.options.FocusPowerHeight, ns.options.FocusFontSize - fontoffset, false,
 				framelist.is_simplemode);

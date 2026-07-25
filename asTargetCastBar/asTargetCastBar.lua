@@ -1,7 +1,7 @@
 ﻿local _, ns = ...;
 
 local configs = {
-	width = 180,
+	width = 200,
 	height = 17,
 	xpoint = 0,
 	ypoint = -100,
