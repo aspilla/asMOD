@@ -2,7 +2,7 @@
 local configs = {
 	size = 30,
 	targetsize = 25,
-	xpoint = 55,
+	xpoint = 63,
 	ypoint = -57,
 	focusxpoint = 0,
 	focusypoint = 67,
@@ -337,7 +337,7 @@ local function create_button(unit)
 end
 
 local function on_event()
-	init_player();
+	C_Timer.After(0.5, init_player);
 end
 
 local function init()
