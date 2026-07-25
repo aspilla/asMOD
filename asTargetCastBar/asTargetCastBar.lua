@@ -50,7 +50,7 @@ local function setup_castbar(scale)
 	castbar:SetMinMaxValues(0, 100)
 	castbar:SetValue(100)
 	castbar:SetHeight(height)
-	castbar:SetWidth(width - (height + 2) * 1.2)
+	castbar:SetWidth(width - (height + 2) * 1.2 - 1)
 	castbar:SetStatusBarColor(1, 0.9, 0.9);
 	castbar:SetAlpha(configs.alpha);
 
@@ -422,10 +422,10 @@ end
 local function init()
 	ns.setup_option();
 	ns.targetcastbar = setup_castbar(ns.options.TargetCastScale);
-	ns.targetcastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height + 2) * 1.2) / 2, configs
+	ns.targetcastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height + 2) * 1.2 + 1) / 2, configs
 		.ypoint)
 	ns.focuscastbar = setup_castbar(ns.options.FocusCastScale);
-	ns.focuscastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height + 2) * 1.2) / 2,
+	ns.focuscastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height + 2) * 1.2 + 1) / 2,
 		configs.ypoint + 160);
 
 
