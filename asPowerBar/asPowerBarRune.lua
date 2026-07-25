@@ -33,8 +33,8 @@ local function on_update_rune(runebar)
     end
 end
 
-local _, Class = UnitClass("player")
-local color = RAID_CLASS_COLORS[Class];
+local _, class = UnitClass("player")
+local color = C_ClassColor.GetClassColor(class);
 local runeIndexes = { 1, 2, 3, 4, 5, 6 };
 
 local function update_rune()

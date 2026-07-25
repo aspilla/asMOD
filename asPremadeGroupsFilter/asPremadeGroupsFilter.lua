@@ -54,7 +54,7 @@ roleicons["RANGER"] = CreateAtlasMarkup("UI-LFG-RoleIcon-RangedDPS", 16, 16, 0, 
 roleicons["HEALER"] = CreateAtlasMarkup("UI-LFG-RoleIcon-Healer", 16, 16, 0, 0);
 
 local function getClassCountText(class, count)
-	local classColor = RAID_CLASS_COLORS[class];
+	local classColor = C_ClassColor.GetClassColor(class);
 	local r, g, b, a = classColor:GetRGBA();
 	return string.format("|cff%02x%02x%02x%s|r", r * 255, g * 255, b * 255, count);
 end
@@ -156,7 +156,7 @@ local function update_searchentry(entry, ...)
 			local isLeader = orderIndexes[i][5];
 
 			if class and spec and role then
-				local classColor = RAID_CLASS_COLORS[class];
+				local classColor = C_ClassColor.GetClassColor(class);
 				local r, g, b, a = classColor:GetRGBA();
 
 				local texture = "astexture" .. i;

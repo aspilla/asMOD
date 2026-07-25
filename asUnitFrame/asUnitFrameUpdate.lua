@@ -117,7 +117,7 @@ function ns.update_unitframe_other(frame, updated)
 	--ClassColor
 	if UnitIsPlayer(unit) or (role and not issecretvalue(role) and role ~= "NONE") then
 		local class = select(2, UnitClass(unit));
-		local classColor = class and not issecretvalue(class) and RAID_CLASS_COLORS[class] or nil;
+		local classColor = class and C_ClassColor.GetClassColor(class) or nil;
 		if classColor then
 			frame.healthbar:SetStatusBarColor(classColor.r, classColor.g, classColor.b);
 		end

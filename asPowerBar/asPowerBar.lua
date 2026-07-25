@@ -18,8 +18,8 @@ local backdropConfig = {
     tile = false,
 }
 
-local _, Class       = UnitClass("player")
-ns.classcolor        = RAID_CLASS_COLORS[Class];
+local _, class       = UnitClass("player")
+ns.classcolor        = C_ClassColor.GetClassColor(class);
 
 local main_frame     = CreateFrame("FRAME", nil, UIParent);
 

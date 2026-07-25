@@ -141,9 +141,9 @@ local function update_healthbar(unit)
 
         local r, g, b;
 
-        local _, englishClass = UnitClass(unit);
-        if englishClass and not issecretvalue(englishClass) then
-            local classColor = RAID_CLASS_COLORS[englishClass];
+        local _, class = UnitClass(unit);
+        if class then
+            local classColor = C_ClassColor.GetClassColor(class);
 
             if (classColor) then
                 r, g, b = classColor.r, classColor.g, classColor.b;

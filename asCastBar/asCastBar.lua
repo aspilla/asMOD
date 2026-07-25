@@ -232,8 +232,8 @@ local function check_casting(castbar, event, unit, complete)
 			local _, class = UnitClass(unit)
 			local color = configs.interruptcolor;
 
-			if class and not issecretvalue(class) then
-				color = RAID_CLASS_COLORS[class];
+			if class then
+				color = C_ClassColor.GetClassColor(class);
 			end
 			castbar:SetStatusBarColor(color.r, color.g, color.b);
 			text:SetText(name);

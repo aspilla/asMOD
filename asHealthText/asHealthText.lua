@@ -32,10 +32,9 @@ local function update_health(frame, unit)
 		frame:SetText(string.format(formattext, valuePct));
 		frame:Show();
 
-		local role = UnitGroupRolesAssigned(unit);
-		if UnitIsPlayer(unit) or (role and not issecretvalue(role) and role ~= "NONE") then
+		if UnitIsPlayer(unit) then
 			local class = select(2, UnitClass(unit));
-			local classColor = class and not issecretvalue(clase) and RAID_CLASS_COLORS[class] or nil;
+			local classColor = class and C_ClassColor.GetClassColor(class) or nil;
 			if classColor then
 				frame:SetTextColor(classColor.r, classColor.g, classColor.b);
 			end
@@ -356,7 +355,7 @@ local function on_event(self, event, arg1, arg2, arg3, ...)
 				local color = nil;
 
 				if class then
-					color = RAID_CLASS_COLORS[class];
+					color = C_ClassColor.GetClassColor(class);
 				end
 
 				if color then
@@ -386,7 +385,7 @@ local function on_event(self, event, arg1, arg2, arg3, ...)
 			local color = nil;
 
 			if class then
-				color = RAID_CLASS_COLORS[class];
+				color = C_ClassColor.GetClassColor(class);
 			end
 
 			if color then

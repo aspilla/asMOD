@@ -153,8 +153,8 @@ local function on_update()
 				if UnitExists(targettarget) then
 					local _, class = UnitClass(targettarget)
 					local classcolor = nil;
-					if class and not issecretvalue(class) then
-						classcolor = RAID_CLASS_COLORS[class];
+					if class then
+						classcolor = C_ClassColor.GetClassColor(class);
 					end
 
 					if classcolor then
