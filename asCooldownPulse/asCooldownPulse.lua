@@ -55,10 +55,6 @@ local function set_cooldownframe(cooldown, durationobject, enable)
 	end
 end
 
-local coolcurve = C_CurveUtil.CreateCurve();
-coolcurve:AddPoint(0.0, 0);
-coolcurve:AddPoint(1.5, 0);
-coolcurve:AddPoint(1.6, 1);
 
 local function update_spellbutton(frame, spellid)
 	local or_spellid, _, _, icon = ns.get_spellinfo(spellid);
@@ -69,6 +65,7 @@ local function update_spellbutton(frame, spellid)
 	local durationobj = C_Spell.GetSpellCooldownDuration(or_spellid);
 	local count = C_Spell.GetSpellDisplayCount(or_spellid);
 	local chargeduration = C_Spell.GetSpellChargeDuration(or_spellid);
+	local cd = C_Spell.GetSpellCooldown(or_spellid)
 
 	frame.icon:SetTexture(icon);
 	frame.icon_desaturated:SetTexture(icon);
@@ -87,8 +84,7 @@ local function update_spellbutton(frame, spellid)
 	if chargeduration then
 		frame.cooldown:Show();
 		set_cooldownframe(frame.cooldown, chargeduration, true);
-		local cd = C_Spell.GetSpellCooldown(or_spellid)
-		if cd.isActive and not cd.isOnGCD then
+		if cd and cd.isActive and not cd.isOnGCD then
 			frame.icon_desaturated:SetAlpha(1);
 		else
 			frame.icon_desaturated:SetAlpha(0);
@@ -96,7 +92,11 @@ local function update_spellbutton(frame, spellid)
 	else
 		if durationobj then
 			set_cooldownframe(frame.cooldown, durationobj, true);
-			frame.icon_desaturated:SetAlpha(durationobj:EvaluateRemainingDuration(coolcurve));
+			if cd and cd.isActive and not cd.isOnGCD then
+				frame.icon_desaturated:SetAlpha(1);
+			else
+				frame.icon_desaturated:SetAlpha(0);
+			end
 		else
 			set_cooldownframe(frame.cooldown, durationobj, false);
 			frame.icon_desaturated:SetAlpha(1);
