@@ -1,8 +1,8 @@
 local _, ns = ...;
 local Options_Default = {
-	version = 260214,
+	version = 260725,
 	CombatAlphaChange = true,
-	ShowTrinkets = true,
+	ShowTrinkets = false,
 	TrinketSize = 28,
 	ShowItems = true,
 	ItemSize = 28,
@@ -44,6 +44,73 @@ if GetLocale() == "koKR" then
 end
 local Options_DefaultSpells = {
 
+	-- Hunter
+	[186265] = 3,
+	[264735] = 2,
+	[109304] = 1,
+
+    --Warlock
+    [6789] = 1,
+    [108416] = 2,
+	[104773] = 3,
+
+    --Mage
+    [55342] = 1,
+    [342245] = 2,
+    [11426] = 3,
+    [235313] = 3,
+    [235450] = 3,
+	[45438] = 4,
+
+    --Warrior
+	[23920] =2,
+	[202168] =1,
+
+    --Rogue
+    [185311] = 1,
+    [1966] = 2,
+    [31224] = 3,
+	[5277] = 4,
+
+    --DH
+    [198589] = 1,
+	[196718] = 2,
+
+	--Druid
+
+	[22842] = 1,
+	[22812] = 2,
+	[61336] = 3,
+
+	--Shaman
+	[108271] = 2,
+	[198103] = 3,
+
+	--DN
+	[48743] = 1,
+	[48707] = 2,
+    [48792] = 3,
+    [51052] = 4,
+
+    --Paladin
+    [642] = 4,
+    [498] = 3,
+    [403876] = 3,
+    [633] = 2,
+    [1022] = 1,
+
+    --Evoker
+    [374251] = 1,
+    [363916] = 2,
+
+
+    --Priest
+    [19236] = 1,
+    [47585] = 2,
+
+    --Monk
+    [122470] = 2,
+    [115203] = 3,
 }
 
 ns.options = CopyTable(Options_Default);

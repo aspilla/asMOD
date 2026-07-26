@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-	Version = 260706,
+	Version = 260726,
 	MinTimetoShow = 10,
 	Size = 50,
 	TextSize = 15,
@@ -264,6 +264,7 @@ function ns.setup_option()
 	if ARTI_Options == nil or Options_Default.Version ~= ARTI_Options.Version then
 		ARTI_Options = {}
 		ARTI_Options = CopyTable(Options_Default);
+		ARTI_Data = nil;
 	end
 
 	if ARTI_Positions == nil then
@@ -279,6 +280,22 @@ function ns.setup_option()
 
 	if ARTI_Data == nil then
 		ARTI_Data = {};
+		ARTI_Data[1] = {
+			[1] = {},
+			[2] = {},
+		};
+		ARTI_Data[2] = {
+			[1] = {},
+			[2] = {},
+		};
+		ARTI_Data[3] = {
+			[1] = {},
+			[2] = {},
+		};
+		ARTI_Data[4] = {
+			[1] = {},
+			[2] = {},
+		};
 	end
 	ns.options = CopyTable(ARTI_Options);
 	ns.infos = CopyTable(ARTI_Data);
