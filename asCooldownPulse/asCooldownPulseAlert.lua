@@ -244,6 +244,10 @@ local function init_spells()
 	if ns.options.AlertPowerBar then
 		get_powerbarspell();
 	end
+
+    for _, v in pairs(ns.trackspells) do
+		alertspells[v[1]] = 0;
+	end
 end
 
 local function init_items()

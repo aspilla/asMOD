@@ -406,7 +406,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 
 	frame.is_small = is_small;
 
-	frame.mark = frame.healthbar:CreateTexture(nil, "ARTWORK");
+	frame.mark = frame:CreateTexture(nil, "ARTWORK");
 	frame.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
 	frame.mark:SetWidth(fontsize + 2);
 	frame.mark:SetHeight(fontsize + 2);
