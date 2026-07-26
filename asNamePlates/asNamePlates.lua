@@ -2,7 +2,7 @@
 local main_frame = CreateFrame("Frame", nil, UIParent);
 
 local configs = {
-	fontsize_rate = 0.5,
+	fontsize = 12,
 	castbar_heightadder = 5,
 }
 
@@ -129,7 +129,7 @@ end
 local function change_item(button)
 	button.isasmod = true;
 
-	local fontsize = button:GetWidth() * configs.fontsize_rate;
+	local fontsize = configs.fontsize;
 
 
 	if button.Cooldown then
