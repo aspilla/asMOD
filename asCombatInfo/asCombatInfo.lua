@@ -191,7 +191,7 @@ local function update_buttons(viewer, forced)
 			if button.ChargeCount then
 				for _, r in next, { button.ChargeCount:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(configs.font, width / 3 + 1, "OUTLINE");
+						r:SetFont(configs.font, width * 0.4, "OUTLINE");
 						r:ClearAllPoints();
 						r:SetPoint("CENTER", button, "BOTTOM", 0, 1);
 						r:SetTextColor(0, 1, 0);
@@ -210,7 +210,7 @@ local function update_buttons(viewer, forced)
 			if button.Applications then
 				for _, r in next, { button.Applications:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(configs.font, width / 3 + 2, "OUTLINE");
+						r:SetFont(configs.font, width * 0.4, "OUTLINE");
 						r:ClearAllPoints();
 						r:SetPoint("CENTER", button, "BOTTOM", 0, 1);
 						r:SetTextColor(0, 1, 0);
@@ -254,7 +254,7 @@ local function update_buttons(viewer, forced)
 				end
 				for _, r in next, { button.Cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(configs.font, width / 3 + 1, "OUTLINE");
+						r:SetFont(configs.font, width * 0.4, "OUTLINE");
 						r:ClearAllPoints();
 						if isbuff then
 							r:SetPoint("CENTER", button, "TOP", 0, 0);

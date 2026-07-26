@@ -19,13 +19,12 @@ ns.configs = {
 	player_ypoint = -115,
 	private_xpoint = -125 - 20,
 	private_ypoint = -120 + 42,
-    max_debuffs = 6,
-	targetmax_debuffs = 12,
+	max_debuffs = 6,
 	max_private = 6,
-	cool_fontsize = 12, -- Cooldown Font Size
-	count_fontsize = 13, -- Count Font Size
-	combat_alpha = 1,   -- 전투중 Alpha 값
-	normal_alpha = 0.5, -- 비 전투중 Alpha 값
+	cool_fontsize_rate = 0.4, -- Cooldown Font Size
+	count_fontsize_rate = 0.4, -- Count Font Size
+	combat_alpha = 1,      -- 전투중 Alpha 값
+	normal_alpha = 0.5,    -- 비 전투중 Alpha 값
 
 };
 

@@ -13,7 +13,7 @@ local borderoption = {
 	style = AuraButtonBorderStyle.Color,
 };
 
-local function create_aurabutton(size)
+local function create_aurabutton(size, issteal)
 	return function(frame)
 		frame.cooldown = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
 		frame.cooldown:SetAllPoints(frame);
@@ -26,7 +26,7 @@ local function create_aurabutton(size)
 
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
-				r:SetFont(STANDARD_TEXT_FONT, size * 0.4, "OUTLINE");
+				r:SetFont(STANDARD_TEXT_FONT, size * ns.configs.cool_fontsize_rate, "OUTLINE");
 				r:ClearAllPoints();
 				r:SetPoint("TOP", 0, 5);
 				r:SetDrawLayer("OVERLAY");
@@ -53,7 +53,7 @@ local function create_aurabutton(size)
 		frame.overlay:SetFrameLevel(frame:GetFrameLevel() + 5);
 
 		frame.count = frame.overlay:CreateFontString(nil, "OVERLAY");
-		frame.count:SetFont(STANDARD_TEXT_FONT, size * 0.5, "OUTLINE")
+		frame.count:SetFont(STANDARD_TEXT_FONT, size * ns.configs.count_fontsize_rate, "OUTLINE")
 		frame.count:ClearAllPoints();
 		frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
 		frame.count:SetTextColor(0, 1, 0);
@@ -64,8 +64,14 @@ local function create_aurabutton(size)
 		frame:EnableMouse(false);
 		frame:SetMouseMotionEnabled(true);
 
-		frame:SetIcon(frame.icon);
-		frame:SetAuraBorder(frame.border, borderoption);
+        frame:SetIcon(frame.icon);
+		if issteal then
+			frame.borderb:Hide();
+            frame.border:SetVertexColor(1, 1, 1);
+			frame.border:Show();
+		else
+			frame:SetAuraBorder(frame.border, borderoption);
+		end
 		frame:SetDurationCooldown(frame.cooldown);
 		frame:SetApplicationCount(frame.count);
 	end
@@ -108,12 +114,32 @@ local function create_container(parent, unit, filter, anchor, hdir, vdir, size, 
 	container:SetFlowLayoutGrowthDirection(hdir, vdir);
 
 	container:AddAuraGroup("buffs", filter,
-		{ maxFrameCount = maxcount, initializeFrame = create_aurabutton(size) });
+		{ maxFrameCount = maxcount, initializeFrame = create_aurabutton(size, false) });
 	container:SetAuraGroupLayout("buffs", { elementSpacingX = 0.1 });
 	container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
 	container:SetUnit(unit);
 	container:SetEnabled(false);
 	return container;
+end
+
+local function create_harmcontainer(parent, unit, filter, anchor, hdir, vdir, size, maxcount)
+    local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
+    container:SetFlowLayoutAnchorPoint(anchor);
+    container:SetFlowLayoutGrowthDirection(hdir, vdir);
+
+    container:AddAuraGroup("steal", filter,
+        { maxFrameCount = maxcount, initializeFrame = create_aurabutton(size, true) });
+    container:SetAuraGroupLayout("steal", { elementSpacingX = 0.1 });
+    container:SetAuraGroupCandidateFilters("steal", { isStealable = true });
+
+    container:AddAuraGroup("buffs", filter,
+        { maxFrameCount = maxcount, initializeFrame = create_aurabutton(size, false) });
+    container:SetAuraGroupLayout("buffs", { elementSpacingX = 0.1 });
+    container:SetAuraGroupCandidateFilters("buffs", { isStealable = false });
+    container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
+    container:SetUnit(unit);
+    container:SetEnabled(false);
+    return container;
 end
 
 local function setup_frames()
@@ -144,7 +170,7 @@ local function setup_frames()
 	main_frame.nchelpfulframe:SetHeight(1)
 	main_frame.nchelpfulframe:Show()
 
-	main_frame.harmfulframe = create_container(main_frame, "target", filters.harmful, "LEFT",
+	main_frame.harmfulframe = create_harmcontainer(main_frame, "target", filters.harmful, "LEFT",
 		AnchorUtil.FlowDirection.Right,
 		AnchorUtil.FlowDirection.Down, ns.configs.size, ns.configs.combat_max_buffs);
 

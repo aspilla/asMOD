@@ -2,7 +2,7 @@
 local main_frame = CreateFrame("Frame", nil, UIParent);
 
 local configs = {
-	fontsize = 12,
+	fontsize_rate = 0.5,
 	castbar_heightadder = 5,
 }
 
@@ -129,7 +129,7 @@ end
 local function change_item(button)
 	button.isasmod = true;
 
-	local fontsize = configs.fontsize;
+	local fontsize = button:GetWidth() * configs.fontsize_rate;
 
 
 	if button.Cooldown then
@@ -170,7 +170,7 @@ local function change_item(button)
 	if button.CountFrame and button.CountFrame.Count then
 		local r = button.CountFrame.Count;
 
-		r:SetFont(STANDARD_TEXT_FONT, fontsize + 1, "OUTLINE");
+		r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
 		r:ClearAllPoints();
 		r:SetPoint("CENTER", button, "BOTTOM", 0, 0);
 		r:SetTextColor(0, 1, 0);

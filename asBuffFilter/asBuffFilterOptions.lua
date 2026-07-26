@@ -7,8 +7,8 @@ ns.configs = {
     target_ypoint = -152,
     combat_max_buffs = 7,
     nocombat_max_buffs = 21,
-    cool_fontsize_rate = 12/28, -- Cooldown Font Size
-    count_fontsize_rate = 13/28,    -- Count Font Size
+    cool_fontsize_rate = 0.4, -- Cooldown Font Size
+    count_fontsize_rate = 0.4,    -- Count Font Size
     combat_alpha = 1,       -- 전투중 Alpha 값
     normal_alpha = 0.5,     -- 비 전투중 Alpha 값
 };

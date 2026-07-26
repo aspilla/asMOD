@@ -11,7 +11,7 @@ ns.racial_spell = nil;
 ns.isdemonstone = false;
 local configs   = {
 	size = 28,
-	font_size = 12,
+	fontsize_rate = 0.4,
 	t_xpoint = -124 - 20,
 	t_ypoint = -165,
 	i_xpoint = -326 - 20,
@@ -196,7 +196,7 @@ local function update_spells(buttons, list)
 end
 
 local function create_button(size)
-	local fontsize = size / 2 - 2;
+	local fontsize = size * configs.fontsize_rate;
 	local frame = CreateFrame("Button", nil, main_frame, "asCooldownPulseFrameTemplate");
 	frame.cooldown:SetHideCountdownNumbers(false);
 	frame.cooldown:SetDrawSwipe(true);

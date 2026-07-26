@@ -1,33 +1,33 @@
 ﻿local _, ns = ...;
 
 local configs = {
-    size = 30,
-    sizerate = 0.8,
-    cool_fontsize = 12,
-    count_fontsize = 13,
+	size = 30,
+	sizerate = 0.8,
+	cool_fontsize = 12,
+	count_fontsize = 13,
 
-    --설정 표시할 Unit
-    unitlist = {
-        ["focus"] = true, -- 주시대상 표시 안하길 원하면 이 줄 삭제
-        ["boss1"] = true,
-        ["boss2"] = true,
-        ["boss3"] = true,
-        ["boss4"] = true,
-        ["boss5"] = true,
-    },
+	--설정 표시할 Unit
+	unitlist = {
+		["focus"] = true, -- 주시대상 표시 안하길 원하면 이 줄 삭제
+		["boss1"] = true,
+		["boss2"] = true,
+		["boss3"] = true,
+		["boss4"] = true,
+		["boss5"] = true,
+	},
 };
 
 local parentframes = {
-    ["focus"] = { frame = _G["FocusFrame"], isboss = false },
-    ["boss1"] = { frame = _G["Boss1TargetFrame"], isboss = true },
-    ["boss2"] = { frame = _G["Boss2TargetFrame"], isboss = true },
-    ["boss3"] = { frame = _G["Boss3TargetFrame"], isboss = true },
-    ["boss4"] = { frame = _G["Boss4TargetFrame"], isboss = true },
-    ["boss5"] = { frame = _G["Boss5TargetFrame"], isboss = true },
+	["focus"] = { frame = _G["FocusFrame"], isboss = false },
+	["boss1"] = { frame = _G["Boss1TargetFrame"], isboss = true },
+	["boss2"] = { frame = _G["Boss2TargetFrame"], isboss = true },
+	["boss3"] = { frame = _G["Boss3TargetFrame"], isboss = true },
+	["boss4"] = { frame = _G["Boss4TargetFrame"], isboss = true },
+	["boss5"] = { frame = _G["Boss5TargetFrame"], isboss = true },
 };
 
 local filters = {
-    harmful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player),
+	harmful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player),
 	helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful),
 }
 
@@ -101,24 +101,24 @@ local function update_debuffs(unit)
 	local container = main_frame.containers[unit];
 	if container then
 		if UnitCanAttack("player", unit) then
-			container:SetAuraGroupFilterString("debuffs", filters.harmful);
-			if ns.options.ShowNameplatesOnly then
-				container:SetAuraGroupCandidateFilters("debuffs", {nameplateShowPersonal = true});
-			else
-				container:SetAuraGroupCandidateFilters("debuffs", {});
+			container:SetAuraGroupFilterString("dots", filters.harmful);
+			if not ns.options.ShowNameplatesOnly then
+				container:SetAuraGroupFilterString("debuffs", filters.harmful);
 			end
 		else
-			container:SetAuraGroupFilterString("debuffs", filters.helpful);
-			container:SetAuraGroupCandidateFilters("debuffs", {});
+			container:SetAuraGroupFilterString("dots", filters.helpful);
+			if not ns.options.ShowNameplatesOnly then
+				container:SetAuraGroupFilterString("debuffs", filters.helpful);
+			end
 		end
 		container:UpdateAllAuras();
 	end
 end
 
 local function update_allframes()
-    for unit, _ in pairs(configs.unitlist) do
-        update_debuffs(unit);
-    end
+	for unit, _ in pairs(configs.unitlist) do
+		update_debuffs(unit);
+	end
 end
 
 local function create_container(parent, unit, filter, anchor, hdir, vdir)
@@ -126,9 +126,17 @@ local function create_container(parent, unit, filter, anchor, hdir, vdir)
 	container:SetFlowLayoutAnchorPoint(anchor);
 	container:SetFlowLayoutGrowthDirection(hdir, vdir);
 
-	container:AddAuraGroup("debuffs", filter,
+	container:AddAuraGroup("dots", filter,
 		{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton() });
-	container:SetAuraGroupLayout("debuffs", { elementSpacingX = 0.1 });
+	container:SetAuraGroupLayout("dots", { elementSpacingX = 0.1 });
+	container:SetAuraGroupCandidateFilters("dots", { nameplateShowPersonal = true });
+
+	if not ns.options.ShowNameplatesOnly then
+		container:AddAuraGroup("debuffs", filter,
+			{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton() });
+		container:SetAuraGroupLayout("debuffs", { elementSpacingX = 0.1 });
+		container:SetAuraGroupCandidateFilters("debuffs", { nameplateShowPersonal = false });
+	end
 	container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
 	container:SetUnit(unit);
 	container:SetEnabled(true);
@@ -136,14 +144,13 @@ local function create_container(parent, unit, filter, anchor, hdir, vdir)
 end
 
 local function setup_frame(unit)
+	local parent = parentframes[unit].frame;
+	local isboss = parentframes[unit].isboss;
+	local offset = 3;
 
-    local parent = parentframes[unit].frame;
-    local isboss = parentframes[unit].isboss;
-    local offset = 3;
-
-    if isboss then
-    	offset = -50;
-    end
+	if isboss then
+		offset = -50;
+	end
 
 	main_frame.containers[unit] = create_container(parent, unit, filters.helpful, "LEFT",
 		AnchorUtil.FlowDirection.Right,
@@ -153,54 +160,52 @@ local function setup_frame(unit)
 	main_frame.containers[unit]:SetWidth(1)
 	main_frame.containers[unit]:SetHeight(1)
 	main_frame.containers[unit]:Show()
-
 end
 
 local function setup_frames()
 	for unit, _ in pairs(configs.unitlist) do
-        setup_frame(unit);
-    end
+		setup_frame(unit);
+	end
 	update_allframes();
 end
 
 local function on_event(self, event)
-    if (event == "PLAYER_FOCUS_CHANGED") then
-        update_debuffs("focus");
-    elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
-        update_allframes();
-    elseif (event == "PLAYER_ENTERING_WORLD") then
-        update_allframes();
-    end
+	if (event == "PLAYER_FOCUS_CHANGED") then
+		update_debuffs("focus");
+	elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
+		update_allframes();
+	elseif (event == "PLAYER_ENTERING_WORLD") then
+		update_allframes();
+	end
 end
 
 local function init()
-    ns.setup_option();
+	ns.setup_option();
 
-    local bloaded = C_AddOns.LoadAddOn("asUnitFrame");
+	local bloaded = C_AddOns.LoadAddOn("asUnitFrame");
 
-    if bloaded then
-        parentframes = {
-            ["focus"] = { frame = ASMOD_asUnitFrame.FocusFrame, isboss = false },
-            ["boss1"] = { frame = ASMOD_asUnitFrame.BossFrames[1], isboss = false },
-            ["boss2"] = { frame = ASMOD_asUnitFrame.BossFrames[2], isboss = false },
-            ["boss3"] = { frame = ASMOD_asUnitFrame.BossFrames[3], isboss = false },
-            ["boss4"] = { frame = ASMOD_asUnitFrame.BossFrames[4], isboss = false },
-            ["boss5"] = { frame = ASMOD_asUnitFrame.BossFrames[5], isboss = false },
-        };
-    end
-    main_frame:SetPoint("CENTER", 0, 0)
-    main_frame:SetWidth(1)
-    main_frame:SetHeight(1)
-    main_frame:Show()
-    main_frame.containers = {};
+	if bloaded then
+		parentframes = {
+			["focus"] = { frame = ASMOD_asUnitFrame.FocusFrame, isboss = false },
+			["boss1"] = { frame = ASMOD_asUnitFrame.BossFrames[1], isboss = false },
+			["boss2"] = { frame = ASMOD_asUnitFrame.BossFrames[2], isboss = false },
+			["boss3"] = { frame = ASMOD_asUnitFrame.BossFrames[3], isboss = false },
+			["boss4"] = { frame = ASMOD_asUnitFrame.BossFrames[4], isboss = false },
+			["boss5"] = { frame = ASMOD_asUnitFrame.BossFrames[5], isboss = false },
+		};
+	end
+	main_frame:SetPoint("CENTER", 0, 0)
+	main_frame:SetWidth(1)
+	main_frame:SetHeight(1)
+	main_frame:Show()
+	main_frame.containers = {};
 
-    setup_frames();
+	setup_frames();
 
-    main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
-    main_frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
-    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-    main_frame:SetScript("OnEvent", on_event)
-
+	main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+	main_frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
+	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	main_frame:SetScript("OnEvent", on_event)
 end
 
 C_Timer.After(1, init);
