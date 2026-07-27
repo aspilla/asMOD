@@ -4,7 +4,7 @@ Displays icons for ready spell.
 
 ![asCooldownPulse](https://media.forgecdn.net/attachments/1764/762/ascooldownpulse-jpg.jpg)
 
-Displays cooldowns for trinkets, racial abilities, Healthstones, and potions.
+Displays cooldowns for trinkets, racial abilities, defensive spells, healthstones, and potions.
 
 ![asCooldownPulse](https://media.forgecdn.net/attachments/1585/670/ascooldownpulse_mn-jpg.jpg)
 
@@ -15,19 +15,19 @@ Displays cooldowns for trinkets, racial abilities, Healthstones, and potions.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-- **Trinket Cooldown Display (Right)**: Displays cooldowns for usable trinkets when equipped.
-- **Racial Ability Cooldown Display (Right)**
+- **Trinket Cooldown Display (Bottom of TargetFrame, Default off)**: Displays cooldowns for usable trinkets when equipped.
+- **Racial Ability Cooldown Display (Bottom of TargetFrame, Default off)**
 - **Combat Potion Cooldown Display (Left)**: Displays the cooldown for major combat potions.
 - **Survival Potion Cooldown Display (Left)**: Displays the cooldown for major survival potions.
 - **Healthstone Cooldown/Count Display (Left)**: Only displayed when a Healthstone is in your inventory.
-- **Skill Cooldown Tracking (Bottom of Target Frame)**: Designed to track specific skills that are not shown in the `Cooldown Manager`. (No skills registered by default; defensive or utility skills can be added.)
+- **Skill Cooldown Tracking (Right)**: Designed to track specific skills, Defensive or utility skills registered.
 
 ## Configuration
 
 - Accessible via `ESC` > `Options` > `AddOns` > `asCooldownPulse`.
 - Icon size for skill ready alert (Default: 60, 0 for off).
 - Adjusts transparency when out of combat (Default: On).
-- Toggle display of trinket/racial cooldowns (Default: On).
+- Toggle display of trinket/racial cooldowns (Default: Off).
 - Icon size for trinket/racial cooldowns (Default: 28).
 - Toggle display of potion/Healthstone cooldowns (Default: On).
 - Icon size for potion/Healthstone cooldowns (Default: 28).
@@ -59,7 +59,7 @@ Displays cooldowns for trinkets, racial abilities, Healthstones, and potions.
 
 ![asCooldownPulse](https://media.forgecdn.net/attachments/1764/762/ascooldownpulse-jpg.jpg)
 
-장신구, 종특, 생석, 물약 쿨 표시
+생존기, 장신구, 종특, 생석, 물약 쿨 표시
 
 ![asCooldownPulse](https://media.forgecdn.net/attachments/1585/670/ascooldownpulse_mn-jpg.jpg)
 
@@ -70,19 +70,19 @@ Displays cooldowns for trinkets, racial abilities, Healthstones, and potions.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-- **장신구 쿨 표시(우측)**: 사용가능 장신구 착용시 장신구 쿨 표시.
-- **종특 쿨 표시(우측)**
+- **장신구 쿨 표시(타켓 프레임 하단, 기본 off)**: 사용가능 장신구 착용시 장신구 쿨 표시.
+- **종특 쿨 표시(타켓 프레임 하단, 기본 off)**
 - **전투 물약 쿨 표시(좌측)** : 대표 물약 쿨만 표시
 - **생존 물약 쿨 표시(좌측)** : 대표 물약 쿨만 표시
 - **생석 쿨/사용 가능 개수 표시(좌측)** : 생석을 지니고 있을때만 표시
-- **스킬 쿨 추적 (타겟 프레임 하단)** : `재사용 대기 관리자`에 표시 안되는 스킬을 추적하기 위한 설정, (등록 스킬 없음 생존기등 추가 가능)
+- **스킬 쿨 추적 (우측)** : `재사용 대기 관리자`에 표시 안되는 스킬을 추적하기 위한 설정, (등록 스킬 없음 생존기등 추가 가능)
 
 ## 설정
 
 - `ESC` > `설정` > `애드온` > `asCooldownPulse` 에서 설정 가능
 - 스킬 사용가능 알림 아이콘 크기 (기본 60, 0 이면 기능 끄기)
 - 비전투시 투명도 변경 (Default On)
-- 장신구/종특 쿨 표시 여부 (Default On)
+- 장신구/종특 쿨 표시 여부 (Default off)
 - 장신구/종특 쿨 사이즈 (Default 28)
 - 물약/생석 쿨 표시 여부 (Default On)
 - 물약/생석 쿨 사이즈 (Default 28)
