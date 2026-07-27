@@ -84,12 +84,12 @@ The following issue may occur:
 
 ## Cooldown Manager Configuration
 
-- Navigate to `ESC >> Options >> Gameplay >> Advanced Cooldown Settings`.
+- Navigate to `ESC >> Options >> Gameplay >> Advanced Cooldown Settings`. (Recommanded to add Trinkets, Racial ability)
 
-1.  **Option 1:** [Main Skills] 6, [Top Buffs] 7, [Bottom Buff Bar] 2 rows (Recommended).
+1.  **Option 1:** [Main Skills] 8, [Top Buffs] 8, [Bottom Buff Bar] 2 rows (Recommended).
     ![sample](https://media.forgecdn.net/attachments/1582/37/cooldown1row-jpg.jpg)
 
-2.  **Option 2:** [Main Skills] 7–12, [Top Buffs] 7, [Bottom Buff Bar] None (Recommended to disable `asGCDBar`).
+2.  **Option 2:** [Main Skills] 9–16, [Top Buffs] 8, [Bottom Buff Bar] None (Recommended to disable `asGCDBar`).
     ![sample](https://media.forgecdn.net/attachments/1582/38/cooldown2row-jpg.jpg)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -339,12 +339,12 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 ## 재사용 대기시간 관리자 설정
 
-- `esc >> 설정 >> 게임 플레이 개선 >> 고급 재사용 대기시간 설정` 클릭하여 가운데 버튼 설정
+- `esc >> 설정 >> 게임 플레이 개선 >> 고급 재사용 대기시간 설정` 클릭하여 가운데 버튼 설정 (장신구 종특 추가 추천)
 
-1. [중앙주스킬] 6개, [상단버프] 7개, [하단버프바] 2줄 설정 (기본 추천)
+1. [중앙주스킬] 8개, [상단버프] 8개, [하단버프바] 2줄 설정 (기본 추천)
    ![sample](https://media.forgecdn.net/attachments/1582/37/cooldown1row-jpg.jpg)
 
-2. [중앙주스킬] 7개 ~ 12개, [상단버프] 7개, [하단버프바] 없음 설정 (asGCDBar 끄는것을 추전)
+2. [중앙주스킬] 9개 ~ 16개, [상단버프] 8개, [하단버프바] 없음 설정 (asGCDBar 끄는것을 추전)
    ![sample](https://media.forgecdn.net/attachments/1582/38/cooldown2row-jpg.jpg)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
