@@ -260,11 +260,12 @@ function ns.setup_option()
 
 	local category = Settings.RegisterVerticalLayoutCategory("asRaidTimer")
 	local _, _ = Settings.RegisterCanvasLayoutSubcategory(category, subpanel, "Timer Data");
+	local clearsetting = false;
 
 	if ARTI_Options == nil or Options_Default.Version ~= ARTI_Options.Version then
 		ARTI_Options = {}
-		ARTI_Options = CopyTable(Options_Default);
-		ARTI_Data = nil;
+        ARTI_Options = CopyTable(Options_Default);
+        clearsetting = true;
 	end
 
 	if ARTI_Positions == nil then
@@ -278,7 +279,7 @@ function ns.setup_option()
 		ARTI_Positions3 = {};
 	end
 
-	if ARTI_Data == nil then
+	if ARTI_Data == nil or clearsetting then
 		ARTI_Data = {};
 		ARTI_Data[1] = {
 			[1] = {},
