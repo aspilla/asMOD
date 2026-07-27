@@ -77,6 +77,8 @@ local function update_spellbutton(frame, spellid)
 		frame.icon:SetVertexColor(0.4, 0.4, 0.4);
 	end
 
+	frame.spellid = or_spellid;
+	frame.itemid = nil;
 
 	frame.count:SetText(count);
 	frame.count:Show();
@@ -131,6 +133,8 @@ local function update_itembutton(frame, itemid, istrinket, ishealthstone)
 	else
 		frame.count:Hide();
 	end
+    frame.itemid = itemid;
+	frame.spellid = nil;
 	if ishealthstone then
 		if count > 0 then
 			frame:Show();
@@ -226,6 +230,24 @@ local function create_button(size)
 	frame:SetWidth(size);
 	frame:SetHeight(size * 0.9);
 	frame:Hide();
+
+	if not frame:GetScript("OnEnter") then
+		frame:SetScript("OnEnter", function(self)
+			if self.spellid then
+				GameTooltip_SetDefaultAnchor(GameTooltip, self);
+				GameTooltip:SetSpellByID(self.spellid);
+            elseif self.itemid then
+            	GameTooltip_SetDefaultAnchor(GameTooltip, self);
+				GameTooltip:SetItemByID(self.itemid);
+			end
+		end)
+		frame:SetScript("OnLeave", function()
+			GameTooltip:Hide();
+		end)
+	end
+
+	frame:EnableMouse(false);
+	frame:SetMouseMotionEnabled(true);
 	return frame;
 end
 

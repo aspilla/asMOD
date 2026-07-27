@@ -1,8 +1,8 @@
 ﻿local _, ns = ...;
 local configs = {
 	size = 40,
-    xpoint = -240 - 20,
-    ypoint = -305,
+	xpoint = -240 - 20,
+	ypoint = -305,
 	alpha = 1,
 	cool_fontsize = 12,
 	spellid = 20484,
