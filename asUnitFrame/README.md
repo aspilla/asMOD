@@ -74,10 +74,43 @@ This addon replaces the default unit frames. It is recommended to use it with ot
 
 ## Configuration
 
-* **Repositioning** : Enter the `/asConfig` command in the chat window
-* **Reset Position** : Enter the `/asClear` command in the chat window to reset to default settings 
-    
-* **esc >> Options >> Addons >> asUnitFrame Settings (Default On)**
+Adjustable via **ESC > Options > AddOns > asUnitFrame**
+
+### General Settings
+- `Show portrait` (Default: On)
+- `Show totem bar` (Default: On)
+- `Show boss buffs (Max 4)` (Default: On)
+- `Show target border on focus/boss` (Default: On)
+- `Show debuff on pet/target of target` (Default: On)
+- `Show aggro status and player rest state` (Default: On)
+- `Check range with target/focus/boss` (Default: On)
+- `Transparency change out of combat` (Default: On)
+- `Change health bar color for low health targets` (Default: On)
+- `Milliseconds threshold (0.1s cooldown increments)` (Default: 3s)
+
+### Player & Target Frame Size
+- `Width` (Default: 200)
+- `Height` (Default: 30)
+- `Power bar width` (Default: 80)
+- `Power bar height` (Default: 5)
+- `Font size` (Default: 12)
+
+### Focus & Boss Frame Size
+- `Width` (Default: 150)
+- `Height` (Default: 20)
+- `Power bar width` (Default: 60)
+- `Power bar height` (Default: 3)
+- `Font size` (Default: 11)
+
+### Pet & Target of Target Frame Size
+- `Width` (Default: 100)
+- `Height` (Default: 15)
+- `Power bar width` (Default: 40)
+- `Power bar height` (Default: 2)
+- `Font size` (Default: 9)
+
+- **Move Anchor Positions**: Type `/asConfig` in the chat window.
+- **Reset Anchor Positions**: Type `/asClear` in the chat window to restore default settings.
     * `ShowPortrait` : Toggle portraits
     * `ShowTotemBar` : Toggle totem bar at the bottom of the player frame
     * `ShowBossBuff` : Toggle 4 buffs on boss frames 
@@ -196,10 +229,43 @@ The following errors may occur.
 
 ## 설정
 
-*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
-*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
-    
-*   **esc >> 설정 >> 애드온 >> asUnitFrame 설정 (기본 On)**
+**esc >> 설정 >> 애드온 >> asUnitFrame** 에서 설정 가능
+
+### 기본 설정
+- `초상화 표시` (기본 On)
+- `플레이어 프레임 하단에 토템바 표시` (기본 On)
+- `보스 프레임 버프 표시 (최대 4개)` (기본 On)
+- `주시/보스가 대상인 경우 하얀색 테두리 표시` (기본 On)
+- `소환수/대상의대상 프레임에 디버프 표시` (기본 On)
+- `어그로 및 플레이어 휴식 상태 표시` (기본 On)
+- `대상/주시/보스와의 거리 체크` (기본 On)
+- `비전투 시 투명도 변경` (기본 On)
+- `대상 낮은 체력 시 색상 변경` (기본 On)
+- `남은 쿨을 0.1초 단위로 보여줄 최소 시간` (기본 3초)
+
+### 플레이어 및 대상 크기 설정
+- `너비` (기본 200)
+- `높이` (기본 30)
+- `자원 바 너비` (기본 80)
+- `자원 바 높이` (기본 5)
+- `글자 크기` (기본 12)
+
+### 주시 및 보스 크기 설정
+- `너비` (기본 150)
+- `높이` (기본 20)
+- `자원 바 너비` (기본 60)
+- `자원 바 높이` (기본 3)
+- `글자 크기` (기본 11)
+
+### 소환수 및 대상의 대상 크기 설정
+- `너비` (기본 100)
+- `높이` (기본 15)
+- `자원 바 너비` (기본 40)
+- `자원 바 높이` (기본 2)
+- `글자 크기` (기본 9)
+
+- **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+- **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화
     *   `ShowPortrait` : 초상화 표시 여부
     *   `ShowTotemBar` : 플레이어 프레임 하단에 토템바 표시 여부
     *   `ShowBossBuff` : 보스 프레임에 버프 4개 표시 여부 

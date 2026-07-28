@@ -31,6 +31,125 @@ local Options_Default = {
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
 
+local L = {
+    ShowPortrait = "Show portrait",
+    ShowTotemBar = "Show totem bar",
+    ShowBossBuff = "Show boss buffs (Max 4)",
+    ShowTargetBorder = "Show target border on focus/boss",
+    ShowDebuff = "Show debuff on pet/target of target",
+    ShowAggroInfo = "Show aggro status and player rest state",
+    CheckRange = "Check range with target/focus/boss",
+    CombatAlphaChange = "Transparency change out of combat",
+    ShowLowHealth = "Change health bar color for low health targets",
+    Width = "Width",
+    Height = "Height",
+    PowerWidth = "Power bar width",
+    PowerHeight = "Power bar height",
+    FontSize = "Font size",
+    FocusWidth = "Width",
+    FocusHeight = "Height",
+    FocusPowerWidth = "Power bar width",
+    FocusPowerHeight = "Power bar height",
+    FocusFontSize = "Font size",
+    PetWidth = "Width",
+    PetHeight = "Height",
+    PetPowerWidth = "Power bar width",
+    PetPowerHeight = "Power bar height",
+    PetFontSize = "Font size",
+    MillisecondsThreshold = "Milliseconds threshold (0.1s cooldown increments)",
+}
+
+local L_Headings = {
+    General = "General Settings",
+    PlayerTarget = "Player & Target Frame Size",
+    FocusBoss = "Focus & Boss Frame Size",
+    PetToT = "Pet & Target of Target Frame Size",
+}
+
+if GetLocale() == "koKR" then
+    L = {
+        ShowPortrait = "초상화 표시",
+        ShowTotemBar = "플레이어 프레임 하단에 토템바 표시",
+        ShowBossBuff = "보스 프레임 버프 표시 (최대 4개)",
+        ShowTargetBorder = "주시/보스가 대상인 경우 하얀색 테두리 표시",
+        ShowDebuff = "소환수/대상의대상 프레임에 디버프 표시",
+        ShowAggroInfo = "어그로 및 플레이어 휴식 상태 표시",
+        CheckRange = "대상/주시/보스와의 거리 체크",
+        CombatAlphaChange = "비전투 시 투명도 변경",
+        ShowLowHealth = "대상 낮은 체력 시 색상 변경",
+        Width = "너비",
+        Height = "높이",
+        PowerWidth = "자원 바 너비",
+        PowerHeight = "자원 바 높이",
+        FontSize = "글자 크기",
+        FocusWidth = "너비",
+        FocusHeight = "높이",
+        FocusPowerWidth = "자원 바 너비",
+        FocusPowerHeight = "자원 바 높이",
+        FocusFontSize = "글자 크기",
+        PetWidth = "너비",
+        PetHeight = "높이",
+        PetPowerWidth = "자원 바 너비",
+        PetPowerHeight = "자원 바 높이",
+        PetFontSize = "글자 크기",
+        MillisecondsThreshold = "남은 쿨을 0.1초 단위로 보여줄 최소 시간",
+    }
+    L_Headings = {
+        General = "기본 설정",
+        PlayerTarget = "플레이어 및 대상 크기 설정",
+        FocusBoss = "주시 및 보스 크기 설정",
+        PetToT = "소환수 및 대상의 대상 크기 설정",
+    }
+end
+
+local Option_Sections = {
+    {
+        Header = "General",
+        Variables = {
+            "ShowPortrait",
+            "ShowTotemBar",
+            "ShowBossBuff",
+            "ShowTargetBorder",
+            "ShowDebuff",
+            "ShowAggroInfo",
+            "CheckRange",
+            "CombatAlphaChange",
+            "ShowLowHealth",
+            "MillisecondsThreshold",
+        }
+    },
+    {
+        Header = "PlayerTarget",
+        Variables = {
+            "Width",
+            "Height",
+            "PowerWidth",
+            "PowerHeight",
+            "FontSize",
+        }
+    },
+    {
+        Header = "FocusBoss",
+        Variables = {
+            "FocusWidth",
+            "FocusHeight",
+            "FocusPowerWidth",
+            "FocusPowerHeight",
+            "FocusFontSize",
+        }
+    },
+    {
+        Header = "PetToT",
+        Variables = {
+            "PetWidth",
+            "PetHeight",
+            "PetPowerWidth",
+            "PetPowerHeight",
+            "PetFontSize",
+        }
+    }
+}
+
 
 function ns.setup_option()
     local function OnSettingChanged(_, setting, value)
@@ -50,7 +169,7 @@ function ns.setup_option()
         end
     end
 
-    local category = Settings.RegisterVerticalLayoutCategory("asUnitFrame")
+    local category, layout = Settings.RegisterVerticalLayoutCategory("asUnitFrame")
 
     if AUF_Options == nil or Options_Default.Version ~= AUF_Options.Version then
         AUF_Options = {};
@@ -75,24 +194,33 @@ function ns.setup_option()
         end
     end
 
-    ns.options = CopyTable(AUF_Options);
-
     for variable, _ in pairs(Options_Default) do
-        local name = variable;
-
-        if name ~= "Version" then
-            local cvar_name = "asUnitFrame_" .. variable;
-            local tooltip = ""
+        if variable ~= "Version" then
             if AUF_Options[variable] == nil  then
                 AUF_Options[variable] = Options_Default[variable];
                 ns.options[variable] = Options_Default[variable];
             end
+        end
+    end
+
+    ns.options = CopyTable(AUF_Options);
+
+    for _, section in ipairs(Option_Sections) do
+        local headingText = L_Headings[section.Header];
+        if layout and CreateSettingsListSectionHeaderInitializer then
+            layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(headingText));
+        end
+
+        for _, variable in ipairs(section.Variables) do
+            local name = variable;
+            local cvar_name = "asUnitFrame_" .. variable;
+            local tooltip = ""
             local defaultValue = Options_Default[variable];
             local currentValue = AUF_Options[variable];
 
             if name == "MillisecondsThreshold" then
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), name, defaultValue);
+					type(defaultValue), L[name], defaultValue);
 				local options = Settings.CreateSliderOptions(0, 10, 1);
 				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
 				Settings.CreateSlider(category, setting, options, tooltip);
@@ -100,14 +228,14 @@ function ns.setup_option()
 				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
 
             elseif tonumber(defaultValue) ~= nil then
-                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), L[name], defaultValue);
                 local options = Settings.CreateSliderOptions(0, 400, 1);
                 options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
                 Settings.CreateSlider(category, setting, options, tooltip);
                 Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             else
-                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), L[name], defaultValue);
 
                 Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
                 Settings.SetValue(cvar_name, currentValue);
