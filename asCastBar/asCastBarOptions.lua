@@ -8,6 +8,24 @@ local Options_Default = {
     Scale = 1,
 };
 
+local L = {
+    SimpleDesign = "심플 디자인 모드 사용",
+    BarWidth = "시전바 넓이",
+    BarHeight = "시전바 높이",
+    ShowTick = "채널링 틱 표시",
+    Scale = "크기",
+}
+
+if GetLocale() == "koKR" then
+    L = {
+        SimpleDesign = "심플 디자인 모드 사용",
+        BarWidth = "시전바 넓이",
+        BarHeight = "시전바 높이",
+        ShowTick = "채널링 틱 표시",
+        Scale = "크기",
+    }
+end
+
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
 
@@ -72,9 +90,10 @@ function ns.setup_option()
         local currentValue = ACB_Options[variable];
 
         if name ~= "Version" then
+            local label = L[name] or name
             if tonumber(defaultValue) ~= nil and name == "Scale" then
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-                    type(defaultValue), name, defaultValue);
+                    type(defaultValue), label, defaultValue);
                 local options = Settings.CreateSliderOptions(0.5, 3, 0.1);
                 options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
                 Settings.CreateSlider(category, setting, options, tooltip);
@@ -82,7 +101,7 @@ function ns.setup_option()
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             elseif tonumber(defaultValue) ~= nil then
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-                    type(defaultValue), name, defaultValue);
+                    type(defaultValue), label, defaultValue);
                 local options = Settings.CreateSliderOptions(10, 500, 1);
                 options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
                 Settings.CreateSlider(category, setting, options, tooltip);
@@ -90,7 +109,7 @@ function ns.setup_option()
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             else
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-                    type(defaultValue), name, defaultValue);
+                    type(defaultValue), label, defaultValue);
                 Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
                 Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);

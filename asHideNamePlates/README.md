@@ -23,23 +23,27 @@ Hides all nameplates except for mobs that are currently casting.
 3. For Tanks, nameplates of mobs for which you have lost aggro.
 
 ## Supported Nameplates
+
 1. Default WoW Nameplates
 2. asNamePlates
 
 ## Configuration
-Settings can be changed via `ESC` > `Options` > `AddOns` > `asHideNamePlates`.
+
+Settings can be modified via `ESC` > `Options` > `AddOns` > `asHideNamePlates`.
 The following settings control whether nameplates of hostile targets in combat are hidden when they are not casting:
 
-* `Alpha`: Adjust the transparency of hidden nameplates (Default: 0 for fully hidden, 1 for no hiding).
-* `ShowBoss`: Boss mobs are always visible (Default: On).
-* `ShowNoDebuff`: Mobs without your debuffs remain visible (Default: Off, intended for DoT classes).
-* `HideMinusMob`: Hides non-essential/minor mobs (Default: On).
-* `ShowPlayers`: Hostile players remain visible (Default: On).
-* `WorkOnParty`: Functions while in a party (Default: On)
-* `WorkOnRaid`: Functions during raids (Default: Off)
-* `WorkOnSolo`: Functions during solo play (Default: Off)
+- `Activation Condition`: Select when to hide nameplates.
+- `Hide Transparency`: Adjust the transparency of hidden nameplates (Default: 0 for fully hidden, 1 for no hiding).
+- `Show Bosses`: Boss mobs are always visible (Default: On).
+- `Show Mobs Without Debuffs`: Mobs without your debuffs remain visible (Default: Off, intended for DoT classes).
+- `Hide Minor Mobs`: Hides non-essential/minor mobs (Default: On).
+- `Show Hostile Players`: Hostile players remain visible (Default: On).
+- `Enable in Party`: Functions while in a party (Default: On)
+- `Enable in Raid`: Functions during raids (Default: Off)
+- `Enable Solo`: Functions during solo play (Default: Off)
 
 ## Contact Information
+
 1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
 2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
 
@@ -66,27 +70,30 @@ The following settings control whether nameplates of hostile targets in combat a
 ## 숨겨지지 않고 표시 되는 이름표
 
 1. 대상이나 주시 대상의 이름표는 표시.
-2. 케스팅 중인 몹은 표시. 
+2. 케스팅 중인 몹은 표시.
 3. 탱커의 경우 어그로를 놓친 몹의 이름표는 표시.
 
 ## 지원 이름표
+
 1. 기본 이름표
 2. asNamePlates
 
 ## 설정
+
 `ESC` > `설정` > `애드온` > `asHideNamePlates` 에서 설정 변경 가능
 아래 설정은 전투중인 적대적 대상이 케스팅 중일때 이름표 숨김 여부를 조정
-* `Alpha` 숨김 정도 조정 (기본 0 완전 숨김 ~ 1 숨김 안함)
-* `ShowBoss` 보스몹은 늘 보임 (기본 On)
-* `ShowNoDebuff` 내 디버프가 없는 몹은 보임 (기본 Off, 도트 딜러용 옵션)
-* `HideMinusMob` 중요하지 않은 몹은 숨김 (기본 On)
-* `ShowPlayers` 적대적 대상의 경우 보임 (기본 On)
-* `WorkOnParty` 파티시 동작 (기본 On)
-* `WorkOnRaid` 레이드시 동작 (기본 Off)
-* `WorkOnSolo` 솔로잉시 동작 (기본 Off)
 
-
+- `동작 조건`: 이름표 숨김이 활성화되는 조건 선택
+- `숨김 투명도`: 숨김 상태일 때의 투명도 조정 (기본 0 완전 숨김 ~ 1 숨김 안함)
+- `보스 항상 표시`: 보스몹은 늘 보임 (기본 On)
+- `디버프 없는 몹 표시`: 내 디버프가 없는 몹은 보임 (기본 Off, 도트 딜러용 옵션)
+- `일반/하급 몹 숨김`: 중요하지 않은 몹은 숨김 (기본 On)
+- `적대적 플레이어 표시`: 적대적 대상의 경우 보임 (기본 On)
+- `파티 중 동작`: 파티 시 동작 (기본 On)
+- `레이드 중 동작`: 레이드 시 동작 (기본 Off)
+- `솔로 플레이 중 동작`: 솔로잉 시 동작 (기본 Off)
 
 ## 문의처
+
 1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
 2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)

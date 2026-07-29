@@ -139,7 +139,6 @@ local function recode_stats()
 		end
 
 		for statName, history in pairs(stat_historys) do
-			-- Calculate minimum from combat snapshots
 			local minStat = nil
 			for _, snapshot in ipairs(history) do
 				if minStat == nil or (snapshot.value < minStat and snapshot.value > 0) then
