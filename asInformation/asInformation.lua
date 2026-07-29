@@ -8,24 +8,25 @@ local configs = {
 	y_point = -300,
 	width = 90,
 	height = 12,
+	barcolor = { r = 0.5, g = 0.5, b = 0.5 },
+	statinfos = {
+		stat = { abbr = "S", color = { r = 1, g = 1, b = 0 } },
+		crit = { abbr = "C", color = { r = 1, g = 0, b = 0 } },
+		haste = { abbr = "H", color = { r = 0, g = 1, b = 0 } },
+		mastery = { abbr = "M", color = { r = 0.5, g = 0, b = 1 } },
+		vers = { abbr = "V", color = { r = 0, g = 0, b = 1 } },
+	},
 };
 
-local stat_configs = {
-	Stat = { abbr = "S", color = { r = 1, g = 1, b = 0 } },
-	Crit = { abbr = "C", color = { r = 1, g = 0, b = 0 } },
-	Haste = { abbr = "H", color = { r = 0, g = 1, b = 0 } },
-	Mastery = { abbr = "M", color = { r = 0.5, g = 0, b = 1 } },
-	Versatility = { abbr = "V", color = { r = 0, g = 0, b = 1 } }
+local gvalues = {
+	historys = { stat = {}, crit = {}, haste = {}, mastery = {}, vers = {} },
+	minstats = { stat = nil, crit = nil, haste = nil, mastery = nil, vers = nil },
 }
 
 local main_frame = CreateFrame("Frame", "asInformationFrame", UIParent);
 main_frame:SetFrameStrata("LOW");
 main_frame:SetSize(configs.width, (configs.height + 2) * 5);
 main_frame:SetPoint("CENTER", UIParent, "CENTER", configs.x_point, configs.y_point);
-
-local default_barcolor = { r = 0.5, g = 0.5, b = 0.5 }
-local stat_historys = { Stat = {}, Crit = {}, Haste = {}, Mastery = {}, Versatility = {} }
-local recent_minstats = { Stat = nil, Crit = nil, Haste = nil, Mastery = nil, Versatility = nil }
 
 local function create_bar(name, parent, config)
 	local bar = CreateFrame("StatusBar", "asInformation" .. name .. "Bar", parent);
@@ -36,7 +37,7 @@ local function create_bar(name, parent, config)
 	bar.minbar = CreateFrame("StatusBar", nil, bar);
 	bar.minbar:SetAllPoints(bar)
 	bar.minbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-	bar.minbar:SetStatusBarColor(default_barcolor.r, default_barcolor.g, default_barcolor.b);
+	bar.minbar:SetStatusBarColor(configs.barcolor.r, configs.barcolor.g, configs.barcolor.b);
 	bar.minbar:SetFrameLevel(bar:GetFrameLevel() + 10);
 
 	bar.bg = bar:CreateTexture(nil, "BACKGROUND")
@@ -57,11 +58,11 @@ local function create_bar(name, parent, config)
 end
 
 local function init_frames()
-	ns.primarybar = create_bar("PrimaryStat", main_frame, stat_configs.Stat)
-	ns.critbar = create_bar("Crit", main_frame, stat_configs.Crit)
-	ns.hastebar = create_bar("Haste", main_frame, stat_configs.Haste)
-	ns.masterybar = create_bar("Mastery", main_frame, stat_configs.Mastery)
-	ns.versbar = create_bar("Versatility", main_frame, stat_configs.Versatility)
+	ns.primarybar = create_bar("PrimaryStat", main_frame, configs.statinfos.stat)
+	ns.critbar = create_bar("Crit", main_frame, configs.statinfos.crit)
+	ns.hastebar = create_bar("Haste", main_frame, configs.statinfos.haste)
+	ns.masterybar = create_bar("Mastery", main_frame, configs.statinfos.mastery)
+	ns.versbar = create_bar("Versatility", main_frame, configs.statinfos.vers)
 end
 
 ns.needreposition = true;
@@ -113,39 +114,39 @@ local function get_crit()
 end
 
 local function recode_stats()
-	local inCombat = UnitAffectingCombat("player");
+	local incombat = UnitAffectingCombat("player");
 
-	if not inCombat then
-		local currentStats = {
-			Stat = get_primarystat(),
-			Crit = get_crit(),
-			Haste = GetHaste(),
-			Mastery = GetMasteryEffect(),
-			Versatility = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE),
+	if not incombat then
+		local currstats = {
+			stat = get_primarystat(),
+			crit = get_crit(),
+			haste = GetHaste(),
+			mastery = GetMasteryEffect(),
+			vers = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE),
 		}
 
 
-		for statName, value in pairs(currentStats) do
+		for name, value in pairs(currstats) do
 			if not issecretvalue(value) then
 				local snapshot = { value = value }
-				table.insert(stat_historys[statName], 1, snapshot)
+				table.insert(gvalues.historys[name], 1, snapshot)
 
-				local numList = #stat_historys[statName];
+				local listcount = #gvalues.historys[name];
 
-				if numList > 100 then
-					table.remove(stat_historys[statName], numList);
+				if listcount > 100 then
+					table.remove(gvalues.historys[name], listcount);
 				end
 			end
 		end
 
-		for statName, history in pairs(stat_historys) do
-			local minStat = nil
+		for name, history in pairs(gvalues.historys) do
+			local min = nil
 			for _, snapshot in ipairs(history) do
-				if minStat == nil or (snapshot.value < minStat and snapshot.value > 0) then
-					minStat = snapshot.value
+				if min == nil or (snapshot.value < min and snapshot.value > 0) then
+					min = snapshot.value
 				end
 			end
-			recent_minstats[statName] = minStat
+			gvalues.minstats[name] = min
 		end
 	end
 end
@@ -193,13 +194,13 @@ local function update_stats()
 	local versatility = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) or 0;
 	local pristat = get_primarystat();
 
-	if ns.options.showCrit then update_bar(ns.critbar, crit, recent_minstats.Crit, 100, "%.2f%%") end
-	if ns.options.showHaste then update_bar(ns.hastebar, haste, recent_minstats.Haste, 100, "%.2f%%") end
-	if ns.options.showMastery then update_bar(ns.masterybar, mastery, recent_minstats.Mastery, 100, "%.2f%%") end
-	if ns.options.showVer then update_bar(ns.versbar, versatility, recent_minstats.Versatility, 100, "%.2f%%") end
+	if ns.options.showCrit then update_bar(ns.critbar, crit, gvalues.minstats.crit, 100, "%.2f%%") end
+	if ns.options.showHaste then update_bar(ns.hastebar, haste, gvalues.minstats.haste, 100, "%.2f%%") end
+	if ns.options.showMastery then update_bar(ns.masterybar, mastery, gvalues.minstats.mastery, 100, "%.2f%%") end
+	if ns.options.showVer then update_bar(ns.versbar, versatility, gvalues.minstats.vers, 100, "%.2f%%") end
 
 	if ns.options.showPrimary then
-		local min = recent_minstats.Stat or 0;
+		local min = gvalues.minstats.stat or 0;
 		local max = min * 2;
 		update_bar(ns.primarybar, pristat, min, max, "%d");
 	end
@@ -211,7 +212,15 @@ local function on_update()
 	update_stats();
 end
 
-local bfirst = true;
+
+local function on_event()
+	if UnitAffectingCombat("player") then
+		main_frame:SetAlpha(configs.combatalpha);
+	else
+		main_frame:SetAlpha(configs.normalalpha);
+	end
+end
+
 
 local function init()
 	ns.setup_option();
@@ -223,29 +232,13 @@ local function init()
 		libasConfig.load_position(main_frame, "asInformation", AINF_Position);
 	end
 
-	bfirst = false;
+	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+	main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+	on_event();
+	main_frame:SetScript("OnEvent", on_event)
+
 	C_Timer.NewTicker(configs.updaterate, on_update);
 end
 
-local function on_event(self, event, ...)
-	local arg = ...;
-
-	if event == "PLAYER_ENTERING_WORLD" then
-		if UnitAffectingCombat("player") then
-			main_frame:SetAlpha(configs.combatalpha);
-		else
-			main_frame:SetAlpha(configs.normalalpha);
-		end
-	elseif event == "PLAYER_REGEN_DISABLED" then
-		main_frame:SetAlpha(configs.combatalpha);
-	elseif event == "PLAYER_REGEN_ENABLED" then
-		main_frame:SetAlpha(configs.normalalpha);
-	elseif event == "ADDON_LOADED" and arg == "asInformation" and bfirst == true then
-		C_Timer.After(0.5, init);
-	end
-end
-main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
-main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
-main_frame:RegisterEvent("ADDON_LOADED");
-main_frame:SetScript("OnEvent", on_event)
+C_Timer.After(1, init);
