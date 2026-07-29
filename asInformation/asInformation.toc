@@ -1,13 +1,14 @@
-## Interface: 120100
+## Interface: 120007, 120100
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rInformation
 ## Notes: Displays primary/secondary stats increase.
 ## Notes-koKR: 1차/2차 능력치 증가량 표시
-## Version : 260518
-## SavedVariablesPerCharacter: ASInformationSaved, ASInformation_Positions
+## Version : 260729
+## SavedVariablesPerCharacter: AINF_Options, AINF_Position
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 Libs\LibStub\LibStub.lua
 Libs\LibasConfig\LibasConfig.lua
+asInformationOption.lua
 asInformationLib.lua
 asInformation.lua

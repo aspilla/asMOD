@@ -12,6 +12,7 @@ Libs\LibasConfig\LibasConfig.lua
 asPowerBarOption.lua
 asPowerBarLib.lua
 asPowerBarWhirlwind.lua
+asPowerBarShatter.lua
 asPowerBarRune.lua
 asPowerBarCombo.lua
 asPowerBarStagger.lua

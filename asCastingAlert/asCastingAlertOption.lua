@@ -5,6 +5,17 @@ local Options_Default = {
     ShowTarget = true,
 };
 
+local L = {
+	ShowTarget = "Display the current target's casting",
+}
+
+
+if GetLocale() == "koKR" then
+	L = {
+		ShowTarget = "대상의 시전을 표시",
+	}
+end
+
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
 
@@ -52,14 +63,14 @@ function ns.setup_option()
 
         if name ~= "Version" then
             if tonumber(defaultValue) ~= nil then
-                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), L[name], defaultValue);
                 local options = Settings.CreateSliderOptions(0, 100, 1);
                 options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
                 Settings.CreateSlider(category, setting, options, tooltip);
                 Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             else
-                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), name, defaultValue);
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), L[name], defaultValue);
                 Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
                 Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);

@@ -22,23 +22,32 @@ Top alignment has higher priority.
 
 * Recommended for use with `asPowerBar`.
 
-## Configuration 
-* Accessible via `ESC` > `Options` > `AddOns` > `asCombatInfo`.
-* `AlignedBuff`: Center-align buffs (Default: Off)
-* `TopAlignedBar`: Align buff bar to the top (Default: Off)
-* `BottomAlignedBar`: Align buff bar to the bottom (Default: Off)
-* `CombatAlphaChange`: Adjusts transparency when out of combat (Default: On)
-* `ChangeBuffBar`: Modifies the appearance of the buff bar (Default: On)
-* `BuffBarClassColor`: Changes buff bar color to class-specific color (Default: On)
-* `ShowHotKey`: Toggle display of hotkeys (Default: On)
-* `HideBarName`: Hides spell names on the buff bar (Default: Off)
-* `AlertAssitedSpell`: Highlights combat assistance skills (Default: Off)
-* `SpellIconRate`: Skill icon height ratio (Default: 9, height is 90% of width)
-* `SpellBorderWidth`: Border thickness for skill icons (Default: 2)
-* `BuffIconRate`: Buff icon height ratio (Default: 8, height is 80% of width)
-* `BuffBorderWidth`: Border thickness for buff icons (Default: 2)
-* `SpellMillisecondsThreshold`: The time threshold at which the remaining spell cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
-* `BuffMillisecondsThreshold`: The time threshold at which the remaining buff cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
+## Configuration
+
+Adjustable via **ESC > Options > AddOns > asCombatInfo**
+
+### Common Settings
+- `Transparency change out of combat` (Default: On)
+- `Display hotkey` (Default: On)
+- `Alert assisted spell` (Default: Off)
+
+### Bar Settings
+- `Change buff bar` (Default: On)
+- `Buff bar class color` (Default: On)
+- `Top aligned bar` (Default: Off)
+- `Bottom aligned bar` (Default: Off)
+- `Hide bar name` (Default: Off)
+
+### Buff Settings
+- `Aligned buff` (Default: Off)
+- `Border width` (Default: 2)
+- `Icon size rate` (Default: 8, the height is 80% of the width)
+- `Milliseconds threshold (0.1s cooldown increments)` (Default: 3s)
+
+### Spell Settings
+- `Border width` (Default: 2)
+- `Icon size rate` (Default: 9, the height is 90% of the width)
+- `Milliseconds threshold (0.1s cooldown increments)` (Default: 3s)
 
 
 ## Contact Information
@@ -73,23 +82,32 @@ Top alignment has higher priority.
 
 *   `asPowerBar`와 같이 사용하는 것을 추천
 
-## 설정 
-*   `ESC` > `설정` > `애드온` > `asCombatInfo` 에서 설정 가능
-*   `AlignedBuff` : 버프 가운데 정렬 (Default Off)
-*   `TopAlignedBar` : 버프바 위 정렬 (Default Off)
-*   `BottomAlignedBar` : 버프바 아래 정렬 (Default Off)
-*   `CombatAlphaChange` : 비전투시 투명도 변경 (Default On)
-*   `ChangeBuffBar` : 버프 바 외형을 변경 (Default On)
-*   `BuffBarClassColor` : 버프 바 색상을 직업 색상으로 변경 (Default On)
-*   `ShowHotKey` : 단축키 표시 (Default On)
-*   `HideBarName` : 버프 바 스킬 명을 숨김 (Default Off)
-*   `AlertAssitedSpell` : 전투보조기능 스킬 강조 (Default off)
-*   `SpellIconRate` : 기술 아이콘 높이 비율 (Default 9, 넓이의 90% 높이)
-*   `SpellBorderWidth` : 기술 아이콘 테두리 두깨 (Default 2)
-*   `BuffIconRate` : 버프 아이콘 높이 비율 (Default 8, 넓이의 80% 높이)
-*   `BuffBorderWidth` : 버프 아이콘 테두리 두깨 (Default 2)
-*   `SpellMillisecondsThreshold` : 남은 스킬 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
-*   `BuffMillisecondsThreshold` : 남은 버프 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
+## 설정
+
+**esc >> 설정 >> 애드온 >> asCombatInfo** 에서 설정 가능
+
+### 공통 설정
+- `비전투 시 투명도 변경` (기본 On)
+- `단축키 표시 여부` (기본 On)
+- `지원 스킬 알림` (기본 Off)
+
+### 바 설정
+- `버프 바 변경` (기본 On)
+- `버프 바 직업 색상` (기본 On)
+- `위로 정렬 바` (기본 Off)
+- `아래로 정렬 바` (기본 Off)
+- `바 이름 숨기기` (기본 Off)
+
+### 버프 설정
+- `버프 정렬` (기본 Off)
+- `테두리 두께` (기본 2)
+- `아이콘 크기 비율` (기본 8, 높이가 가로길이의 80%)
+- `남은 쿨 소수점 최소 시간` (기본 3초)
+
+### 스킬 설정
+- `테두리 두께` (기본 2)
+- `아이콘 크기 비율` (기본 9, 높이가 가로길이의 90%)
+- `남은 쿨 소수점 최소 시간` (기본 3초)
 
 ## 문의처
 1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)

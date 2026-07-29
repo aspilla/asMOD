@@ -16,7 +16,7 @@ Displays Battle Resurrection charges and cooldown.
 
 * **Configuration**:
     * Adjust settings via `ESC` > `Options` > `Addons` > `asBattleRes`.
-    * `MillisecondsThreshold`: The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
+    * The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
 * **Move Position**: Enter `/asConfig` in the chat.
 * **Reset Position**: Enter `/asClear` in the chat to restore default settings.
 
@@ -45,7 +45,7 @@ Displays Battle Resurrection charges and cooldown.
 
 *   **설정 변경**:
     *   `ESC` > `설정` > `애드온` > `asBattleRes` 에서 설정 가능
-    *  `MillisecondsThreshold` : 남은 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
+    *  남은 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
 

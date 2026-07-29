@@ -133,8 +133,8 @@ local function init_class()
         end
 
         if (spec and spec == 3) then
-            auraid = 205473;
-            max_aura = 5;
+            auraid = 1221389;
+            max_aura = 20;
             bsmallprimary = true;
             bbigsecondary = true;
         end

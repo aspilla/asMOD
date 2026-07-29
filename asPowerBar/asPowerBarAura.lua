@@ -51,6 +51,8 @@ function ns.setup_auracombo(auraid, maxcombo)
             check_void();
         elseif auraid == 12950 then
             ns.setup_whirlwind(auraid);
+            elseif auraid == 1221389 then
+                ns.setup_shatter(auraid);
         else
             ns.setup_max_combo(maxcombo);
             gvalue.check_func = check_auracount;
@@ -65,4 +67,5 @@ function ns.clear_auracombo()
     gvalue.check_func = nil;
     main_frame:UnregisterEvent("UNIT_AURA");
     ns.setup_whirlwind();
+    ns.setup_shatter();
 end

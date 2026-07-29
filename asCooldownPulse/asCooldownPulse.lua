@@ -81,10 +81,8 @@ local function update_spellbutton(frame, spellid)
 	frame.itemid = nil;
 
 	frame.count:SetText(count);
-	frame.count:Show();
 
 	if chargeduration then
-		frame.cooldown:Show();
 		set_cooldownframe(frame.cooldown, chargeduration, true);
 		if cd and cd.isActive and not cd.isOnGCD then
 			frame.icon_desaturated:SetAlpha(1);
@@ -204,6 +202,7 @@ local function create_button(size)
 	local frame = CreateFrame("Button", nil, main_frame, "asCooldownPulseFrameTemplate");
 	frame.cooldown:SetHideCountdownNumbers(false);
 	frame.cooldown:SetDrawSwipe(true);
+	frame.cooldown:Show();
 
 	if ns.options.MillisecondsThreshold then
 		frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
@@ -227,6 +226,7 @@ local function create_button(size)
 	frame.count:ClearAllPoints();
 	frame.count:SetTextColor(0, 1, 0);
 	frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
+	frame.count:Show();
 	frame:SetWidth(size);
 	frame:SetHeight(size * 0.9);
 	frame:Hide();

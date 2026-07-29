@@ -6,23 +6,24 @@ Targeted Spell Cast Alert
 
 ## Key Features
 
-* **Central Display**: Shows the spell icon and remaining cast time in the center of the screen.
-* **Display Priority**:
-    * Mobs with higher levels have higher priority for cast alerts.
-    * Your current target's cast has a lower display priority compared to high-level mobs.
-    * Casts from `Minor` (trivial) mobs are not displayed.
+- **Central Display**: Shows the spell icon and remaining cast time in the center of the screen.
+- **Display Priority**:
+  - Mobs with higher levels have higher priority for cast alerts.
+  - Your current target's cast has a lower display priority compared to high-level mobs.
+  - Casts from `Minor` (trivial) mobs are not displayed.
 
 ## Configuration
 
 The following options are available via `ESC` > `Options` > `Addons` > `asCastingAlert`:
-* `ShowTarget` (Default: true): Toggle whether to display the current target's casting progress.
-* **Move Position**: Enter the `/asConfig` command in the chat.
-* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
+
+- Toggle whether to display the current target's casting progress.(Default: On)
+- **Move Position**: Enter the `/asConfig` command in the chat.
+- **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ## Contact Information
+
 1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
 2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
-
 
 ---
 
@@ -32,22 +33,23 @@ The following options are available via `ESC` > `Options` > `Addons` > `asCastin
 
 ![asCastingAlert](https://media.forgecdn.net/attachments/1585/664/ascastingalert_mn-jpg.jpg)
 
-
 ## 주요 기능
 
-*   **아이콘/남은 쿨을 중앙에 표시**    
-*   **표시 우선 순위**:
-    *   몹 Level 이 높으면 시전 표시 우선수위가 높음
-    *   대상의 시전은 표시 우선 순위가 낮음
-    *   `Minor` 몹의 시전은 표시 하지 않음
+- **아이콘/남은 쿨을 중앙에 표시**
+- **표시 우선 순위**:
+  - 몹 Level 이 높으면 시전 표시 우선수위가 높음
+  - 대상의 시전은 표시 우선 순위가 낮음
+  - `Minor` 몹의 시전은 표시 하지 않음
 
 ## 설정
 
 esc >> 설정 >> 애드온 >> asCastingAlert 에서 다음 설정이 가능합니다.
-*   `ShowTarget` (기본값: true) : 대상의 시전을 표시할지 여부
-*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
-*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
+
+- 대상의 시전을 표시할지 여부 (기본값: On)
+- **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+- **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화
 
 ## 문의처
+
 1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
 2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)
