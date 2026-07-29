@@ -32,7 +32,7 @@ local function update_player()
 	local unit = "player";
 
 	for i = 1, #itemslots do
-		local slot = GetInventorySlotInfo(itemslots[i]);
+		local slot = C_PaperDollInfo.GetInventorySlotInfo(itemslots[i]);
 		local leveltext = leveltexts[unit][i];
 		local location = ItemLocation:CreateFromEquipmentSlot(slot)
 
@@ -89,7 +89,7 @@ local function update_target()
 	end
 
 	for i = 1, #itemslots do
-		local slot = GetInventorySlotInfo(itemslots[i]);
+		local slot = C_PaperDollInfo.GetInventorySlotInfo(itemslots[i]);
 		local link = GetInventoryItemLink(unit, slot);
 		local leveltext = leveltexts[unit][i];
 

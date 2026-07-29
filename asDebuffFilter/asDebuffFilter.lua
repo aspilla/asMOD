@@ -29,6 +29,8 @@ function asDebuffPrivateAuraAnchorMixin:SetUnit(unit)
 		privateAnchorArgs.auraIndex = self.auraIndex;
 		privateAnchorArgs.parent = self;
 		privateAnchorArgs.showCountdownFrame = true;
+		privateAnchorArgs.showCooldownFrame = true;
+		privateAnchorArgs.showCooldownEdge = true;
 		privateAnchorArgs.showCountdownNumbers = true;
 		privateAnchorArgs.isContainer = false;
 

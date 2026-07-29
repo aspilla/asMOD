@@ -51,7 +51,7 @@ end
 
 local function scan_itemslots()
 	for _, v in pairs(itemslots) do
-		local idx = GetInventorySlotInfo(string.upper(v));
+		local idx = C_PaperDollInfo.GetInventorySlotInfo(string.upper(v));
 
 		local itemid = GetInventoryItemID("player", idx)
 
