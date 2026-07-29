@@ -2,6 +2,10 @@
   ShowMacro = false, -- Macro 이름을 보이려면 true로
 };
 
+local function getglobal(var)
+	return _G[var];
+end
+
 local function check_name(name)
   name = string.gsub(name, "Num Pad ", "");
   name = string.gsub(name, "숫자패드 ", "");

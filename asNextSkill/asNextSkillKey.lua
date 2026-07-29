@@ -4,6 +4,10 @@ local _, ns = ...;
 ns.hotkeys = {};
 ns.hotkeyslots = {};
 
+local function getglobal(var)
+	return _G[var];
+end
+
 local function check_name(name)
 	name = string.gsub(name, "Num Pad ", "");
 	name = string.gsub(name, "숫자패드 ", "");

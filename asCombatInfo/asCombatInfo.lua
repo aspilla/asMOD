@@ -12,6 +12,10 @@ ns.hotkeys       = {};
 ns.hotkeyslots   = {};
 ns.nextspellid   = nil;
 
+local function getglobal(var)
+	return _G[var];
+end
+
 local main_frame = CreateFrame("Frame");
 local function update_bars(viewer)
 	if not ns.options.ChangeBuffBar then
