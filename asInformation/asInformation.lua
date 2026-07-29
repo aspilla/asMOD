@@ -11,11 +11,11 @@ local configs = {
 };
 
 local stat_configs = {
-	Stat = { abbr = "S", gemColor = { r = 1, g = 1, b = 0 } },
-	Crit = { abbr = "C", gemColor = { r = 1, g = 0, b = 0 } },
-	Haste = { abbr = "H", gemColor = { r = 0, g = 1, b = 0 } },
-	Mastery = { abbr = "M", gemColor = { r = 0.5, g = 0, b = 1 } },
-	Versatility = { abbr = "V", gemColor = { r = 0, g = 0, b = 1 } }
+	Stat = { abbr = "S", color = { r = 1, g = 1, b = 0 } },
+	Crit = { abbr = "C", color = { r = 1, g = 0, b = 0 } },
+	Haste = { abbr = "H", color = { r = 0, g = 1, b = 0 } },
+	Mastery = { abbr = "M", color = { r = 0.5, g = 0, b = 1 } },
+	Versatility = { abbr = "V", color = { r = 0, g = 0, b = 1 } }
 }
 
 local main_frame = CreateFrame("Frame", "asInformationFrame", UIParent);
@@ -23,7 +23,7 @@ main_frame:SetFrameStrata("LOW");
 main_frame:SetSize(configs.width, (configs.height + 2) * 5);
 main_frame:SetPoint("CENTER", UIParent, "CENTER", configs.x_point, configs.y_point);
 
-local defaultBarColor = { r = 0.5, g = 0.5, b = 0.5 }
+local default_barcolor = { r = 0.5, g = 0.5, b = 0.5 }
 local stat_historys = { Stat = {}, Crit = {}, Haste = {}, Mastery = {}, Versatility = {} }
 local recent_minstats = { Stat = nil, Crit = nil, Haste = nil, Mastery = nil, Versatility = nil }
 
@@ -31,12 +31,12 @@ local function create_bar(name, parent, config)
 	local bar = CreateFrame("StatusBar", "asInformation" .. name .. "Bar", parent);
 	bar:SetSize(configs.width, configs.height)
 	bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-	bar:SetStatusBarColor(config.gemColor.r, config.gemColor.g, config.gemColor.b);
+	bar:SetStatusBarColor(config.color.r, config.color.g, config.color.b);
 
 	bar.minbar = CreateFrame("StatusBar", nil, bar);
 	bar.minbar:SetAllPoints(bar)
 	bar.minbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-	bar.minbar:SetStatusBarColor(defaultBarColor.r, defaultBarColor.g, defaultBarColor.b);
+	bar.minbar:SetStatusBarColor(default_barcolor.r, default_barcolor.g, default_barcolor.b);
 	bar.minbar:SetFrameLevel(bar:GetFrameLevel() + 10);
 
 	bar.bg = bar:CreateTexture(nil, "BACKGROUND")
@@ -46,7 +46,7 @@ local function create_bar(name, parent, config)
 
 	bar.text = bar.minbar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 	bar.text:SetPoint("RIGHT", bar.minbar, "RIGHT", -1, 0)
-	bar.text:SetTextColor(config.gemColor.r, config.gemColor.g, config.gemColor.b)
+	bar.text:SetTextColor(config.color.r, config.color.g, config.color.b)
 
 	bar.name = bar.minbar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 	bar.name:SetPoint("LEFT", bar.minbar, "LEFT", 1, 0)
@@ -68,10 +68,10 @@ ns.needreposition = true;
 
 local function get_primarystat()
 	local currspec = C_SpecializationInfo.GetSpecialization() or 1;
-	local primaryStatID = select(6, C_SpecializationInfo.GetSpecializationInfo(currspec)) or 1;
-	local primaryStatValue = UnitStat("player", primaryStatID);
+	local pristatid = select(6, C_SpecializationInfo.GetSpecializationInfo(currspec)) or 1;
+	local pristat = UnitStat("player", pristatid);
 
-	return primaryStatValue;
+	return pristat;
 end
 
 local critfunc = nil;
@@ -84,32 +84,32 @@ local function get_crit()
 		return 0;
 	end
 
-	local spellCrit, rangedCrit, meleeCrit;
-	local critChance;
+	local spellcrit, rangedcrit, meleecrit;
+	local critchance;
 
-	spellCrit = GetSpellCritChance();
-	rangedCrit = GetRangedCritChance();
-	meleeCrit = GetCritChance();
+	spellcrit = GetSpellCritChance();
+	rangedcrit = GetRangedCritChance();
+	meleecrit = GetCritChance();
 
-	if issecretvalue(rangedCrit) or issecretvalue(spellCrit) or issecretvalue(meleeCrit) then
+	if issecretvalue(rangedcrit) or issecretvalue(spellcrit) or issecretvalue(meleecrit) then
 		if critfunc then
 			return critfunc();
 		end
 		return 0;
 	end
 
-	if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
+	if (spellcrit >= rangedcrit and spellcrit >= meleecrit) then
 		critfunc = GetSpellCritChance;
-		critChance = spellCrit;
-	elseif (rangedCrit >= meleeCrit) then
+		critchance = spellcrit;
+	elseif (rangedcrit >= meleecrit) then
 		critfunc = GetRangedCritChance;
-		critChance = rangedCrit;
+		critchance = rangedcrit;
 	else
 		critfunc = GetCritChance;
-		critChance = meleeCrit;
+		critchance = meleecrit;
 	end
 
-	return critChance;
+	return critchance;
 end
 
 local function recode_stats()
@@ -151,97 +151,57 @@ local function recode_stats()
 end
 
 local function check_reposition()
-	if ns.needreposition then
-		ns.needreposition = false;
+	if not ns.needreposition then return end
+	ns.needreposition = false;
 
-		local prevframe = main_frame;
-		local yOffset = 0;
+	local prevframe = main_frame;
+	local yoffset = 0;
 
-		if ns.options.showPrimary then
-			ns.primarybar:SetPoint("TOPLEFT", prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0,
-				yOffset);
-			ns.primarybar:Show();
-			prevframe = ns.primarybar;
-			yOffset = -2;
+	local function update_bar_visibility(bar, show)
+		if show then
+			bar:SetPoint("TOPLEFT", prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0, yoffset);
+			bar:Show();
+			prevframe = bar;
+			yoffset = -2;
 		else
-			ns.primarybar:Hide();
+			bar:Hide();
 		end
+	end
 
-		if ns.options.showCrit then
-			ns.critbar:SetPoint("TOPLEFT", prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0, yOffset);
-			ns.critbar:Show();
-			prevframe = ns.critbar;
-			yOffset = -2;
-		else
-			ns.critbar:Hide();
-		end
+	update_bar_visibility(ns.primarybar, ns.options.showPrimary);
+	update_bar_visibility(ns.critbar, ns.options.showCrit);
+	update_bar_visibility(ns.hastebar, ns.options.showHaste);
+	update_bar_visibility(ns.masterybar, ns.options.showMastery);
+	update_bar_visibility(ns.versbar, ns.options.showVer);
+end
 
-		if ns.options.showHaste then
-			ns.hastebar:SetPoint("TOPLEFT", prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0,
-				yOffset);
-			ns.hastebar:Show();
-			prevframe = ns.hastebar;
-			yOffset = -2;
-		else
-			ns.hastebar:Hide();
-		end
+local function update_bar(bar, value, minvalue, max, formatString)
+	if bar and bar.text then
+		bar:SetMinMaxValues(0, max);
+		bar:SetValue(value, Enum.StatusBarInterpolation.ExponentialEaseOut);
+		bar.text:SetText(string.format(formatString, value));
 
-		if ns.options.showMastery then
-			ns.masterybar:SetPoint("TOPLEFT", prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0,
-				yOffset);
-			ns.masterybar:Show();
-			prevframe = ns.masterybar;
-			yOffset = -2;
-		else
-			ns.masterybar:Hide();
-		end
-
-		if ns.options.showVer then
-			ns.versbar:SetPoint("TOPLEFT", prevframe, (prevframe == main_frame and "TOPLEFT" or "BOTTOMLEFT"), 0,
-				yOffset);
-			ns.versbar:Show();
-			prevframe = ns.versbar;
-			yOffset = -2;
-		else
-			ns.versbar:Hide();
-		end
+		bar.minbar:SetMinMaxValues(0, max);
+		bar.minbar:SetValue(minvalue or 0, Enum.StatusBarInterpolation.ExponentialEaseOut);
 	end
 end
 
 local function update_stats()
-	local function update_bar(bar, value, minValue, formatString)
-		if bar and bar.text then
-			bar:SetMinMaxValues(0, 100);
-			bar:SetValue(value, Enum.StatusBarInterpolation.ExponentialEaseOut);
-			bar.text:SetText(string.format(formatString, value));
-
-			bar.minbar:SetMinMaxValues(0, 100);
-			bar.minbar:SetValue(minValue or 0, Enum.StatusBarInterpolation.ExponentialEaseOut);
-		end
-	end
-
 	local haste = GetHaste();
 	local crit = get_crit();
 	local mastery = GetMasteryEffect();
 	local versatility = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) or 0;
-	local primaryStatValue = get_primarystat();
+	local pristat = get_primarystat();
 
-	if ns.options.showCrit then update_bar(ns.critbar, crit, recent_minstats.Crit, "%.2f%%") end
-	if ns.options.showHaste then update_bar(ns.hastebar, haste, recent_minstats.Haste, "%.2f%%") end
-	if ns.options.showMastery then update_bar(ns.masterybar, mastery, recent_minstats.Mastery, "%.2f%%") end
-	if ns.options.showVer then update_bar(ns.versbar, versatility, recent_minstats.Versatility, "%.2f%%") end
+	if ns.options.showCrit then update_bar(ns.critbar, crit, recent_minstats.Crit, 100, "%.2f%%") end
+	if ns.options.showHaste then update_bar(ns.hastebar, haste, recent_minstats.Haste, 100, "%.2f%%") end
+	if ns.options.showMastery then update_bar(ns.masterybar, mastery, recent_minstats.Mastery, 100, "%.2f%%") end
+	if ns.options.showVer then update_bar(ns.versbar, versatility, recent_minstats.Versatility, 100, "%.2f%%") end
 
 	if ns.options.showPrimary then
-		if ns.primarybar and ns.primarybar.text then
-			local minStat = recent_minstats.Stat or 0;
-			local maxVal = minStat * 2;
-			ns.primarybar:SetMinMaxValues(0, maxVal);
-			ns.primarybar:SetValue(primaryStatValue, Enum.StatusBarInterpolation.ExponentialEaseOut);
-			ns.primarybar.text:SetText(string.format("%d", primaryStatValue));
-
-			ns.primarybar.minbar:SetMinMaxValues(0, maxVal);
-			ns.primarybar.minbar:SetValue(minStat, Enum.StatusBarInterpolation.ExponentialEaseOut);
-		end
+		local min = recent_minstats.Stat or 0;
+		local max = min * 2;
+		update_bar(ns.primarybar, pristat, min, max, "%d");
 	end
 end
 
