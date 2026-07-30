@@ -95,7 +95,7 @@ function ns.update_unithealth(frame, updated)
 end
 
 
-function ns.update_unitframe_other(frame, updated)
+function ns.update_unitframe_other(frame)
 	local unit = frame.unit;
 	local showplayermana = false;
 
@@ -234,7 +234,7 @@ function ns.update_unitframe_other(frame, updated)
 		end
 
 		if frame.isplayerframe then
-			if powerType > 0 then
+			if powerType > 0 or ns.isfrostm then
 				local manavalue = UnitPower(unit, 0);
 				local manaMax = UnitPowerMax(unit, 0);
 

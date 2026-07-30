@@ -2,20 +2,20 @@ local _, ns          = ...;
 
 --configurations
 ns.configs           = {
-    font        = STANDARD_TEXT_FONT,
-    fontOutline = "OUTLINE",
-    xpoint      = 0,
-    ypoint      = -179,
-    combatalpha = 1,
-    normalalpha = 0.5,
-    framelevel  = 9000,
+	font        = STANDARD_TEXT_FONT,
+	fontOutline = "OUTLINE",
+	xpoint      = 0,
+	ypoint      = -179,
+	combatalpha = 1,
+	normalalpha = 0.5,
+	framelevel  = 9000,
 };
 
 local backdropConfig = {
-    edgeFile = "Interface\\Buttons\\WHITE8X8",
-    edgeSize = 1,
-    bgFile = "Interface\\Buttons\\WHITE8X8",
-    tile = false,
+	edgeFile = "Interface\\Buttons\\WHITE8X8",
+	edgeSize = 1,
+	bgFile = "Interface\\Buttons\\WHITE8X8",
+	tile = false,
 }
 
 local _, class       = UnitClass("player")
@@ -24,462 +24,487 @@ ns.classcolor        = C_ClassColor.GetClassColor(class);
 local main_frame     = CreateFrame("FRAME", nil, UIParent);
 
 local function set_height(heightprimary, heightsecondary)
-    ns.combocountbar:SetHeight(heightsecondary);
-    ns.chargebar:SetHeight(heightsecondary);
+	ns.combocountbar:SetHeight(heightsecondary);
+	ns.chargebar:SetHeight(heightsecondary);
 
-    for i = 1, 20 do
-        ns.combobars[i]:SetHeight(heightsecondary);
-    end
+	for i = 1, 20 do
+		ns.combobars[i]:SetHeight(heightsecondary);
+	end
 
-    for i = 1, 20 do
-        ns.spellframes[i]:SetHeight(heightsecondary + 2);
-    end
-    ns.spellborder:SetHeight(heightsecondary + 2);
-    ns.bar:SetHeight(heightprimary);
+	for i = 1, 20 do
+		ns.spellframes[i]:SetHeight(heightsecondary + 2);
+	end
+	ns.spellborder:SetHeight(heightsecondary + 2);
+	ns.bar:SetHeight(heightprimary);
 end
 
 local function resizebars(bsmallprimary, bbigsecondary)
-    local heightprimary = ns.options.PowerBarHeight;
-    local heightsecondary = ns.options.ComboBarHeight;
-    if bbigsecondary then
-        heightsecondary = heightsecondary + 3;
-    end
+	local heightprimary = ns.options.PowerBarHeight;
+	local heightsecondary = ns.options.ComboBarHeight;
+	if bbigsecondary then
+		heightsecondary = heightsecondary + 3;
+	end
 
-    if bsmallprimary then
-        heightprimary = heightprimary - 3;
-        ns.bar.text:Hide();
-    else
-        ns.bar.text:Show();
-    end
+	if bsmallprimary then
+		heightprimary = heightprimary - 3;
+		ns.bar.text:Hide();
+	else
+		ns.bar.text:Show();
+	end
 
-    set_height(heightprimary, heightsecondary);
+	set_height(heightprimary, heightsecondary);
 end
 
 local function init_class()
-    local localizedClass, englishClass = UnitClass("player")
-    local spec = C_SpecializationInfo.GetSpecialization();
+	local localizedClass, englishClass = UnitClass("player")
+	local spec = C_SpecializationInfo.GetSpecialization();
 
-    if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
-        spec = 1;
-    end
+	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
+		spec = 1;
+	end
 
-    local bupdaterune = false;
-    local powerlevel = nil;
-    local bpartial = false;
-    local brogue = false;
-    local bdruid = false;
-    local spellid = nil;
-    local auraid = nil;
-    local max_aura = nil;
-    local bstagger = false;
-    local bsmallprimary = false;
-    local bbigsecondary = false;
+	local bupdaterune = false;
+	local powerlevel = nil;
+	local bpartial = false;
+	local brogue = false;
+	local bdruid = false;
+	local spellid = nil;
+	local auraid = nil;
+	local max_aura = nil;
+	local bstagger = false;
+	local bsmallprimary = false;
+	local bbigsecondary = false;
+	local bshatter = false;
 
-    ns.combotext:SetText("");
-    ns.combotext:Hide();
-    ns.combocountbar:Hide();
-    ns.chargebar:Hide();
+	ns.combotext:SetText("");
+	ns.combotext:Hide();
+	ns.combocountbar:Hide();
+	ns.chargebar:Hide();
 
-    for i = 1, 20 do
-        ns.combobars[i]:Hide();
-    end
+	for i = 1, 20 do
+		ns.combobars[i]:Hide();
+	end
 
-    for i = 1, 20 do
-        ns.spellframes[i]:Hide();
-        ns.spellframes[i].range:Hide();
-        ns.spellframes[i].notenough:Hide();
-    end
+	for i = 1, 20 do
+		ns.spellframes[i]:Hide();
+		ns.spellframes[i].range:Hide();
+		ns.spellframes[i].notenough:Hide();
+	end
 
-    ns.spellborder:Hide();
+	ns.spellborder:Hide();
 
-    ns.clear_auracombo();
-    ns.clear_combo();
-    ns.clear_rune();
-    ns.clear_spell();
-    ns.clear_stagger();
-    ns.clear_whirlwind();
+	ns.clear_auracombo();
+	ns.clear_combo();
+	ns.clear_rune();
+	ns.clear_spell();
+	ns.clear_stagger();
+	ns.clear_whirlwind();
+	ns.clear_shatter();
+	ns.clear_power();
 
-    if (englishClass == "EVOKER") then
-        powerlevel = Enum.PowerType.Essence;
-        if (spec and spec ~= 2) then
-            bsmallprimary = true;
-            bbigsecondary = true;
-        end
-    end
+	if (englishClass == "EVOKER") then
+		powerlevel = Enum.PowerType.Essence;
+		if (spec and spec ~= 2) then
+			bsmallprimary = true;
+			bbigsecondary = true;
+		end
+	end
 
-    if (englishClass == "PALADIN") then
-        powerlevel = Enum.PowerType.HolyPower;
+	if (englishClass == "PALADIN") then
+		powerlevel = Enum.PowerType.HolyPower;
 
-        if (spec and spec == 2) then
-            bsmallprimary = true;
-            bbigsecondary = true;
-        end
+		if (spec and spec == 2) then
+			bsmallprimary = true;
+			bbigsecondary = true;
+		end
 
-        if (spec and spec == 3) then
-            bsmallprimary = true;
-            bbigsecondary = true;
-        end
-    end
+		if (spec and spec == 3) then
+			bsmallprimary = true;
+			bbigsecondary = true;
+		end
+	end
 
-    if (englishClass == "MAGE") then
-        if (spec and spec == 1) then
-            powerlevel = Enum.PowerType.ArcaneCharges
-        end
+	if (englishClass == "MAGE") then
+		if (spec and spec == 1) then
+			powerlevel = Enum.PowerType.ArcaneCharges
+		end
 
-        if (spec and spec == 2) then
-            spellid = 108853;
-            bsmallprimary = true;
-            bbigsecondary = true;
-        end
+		if (spec and spec == 2) then
+			spellid = 108853;
+			bsmallprimary = true;
+			bbigsecondary = true;
+		end
 
-        if (spec and spec == 3) then
-            auraid = 1221389;
-            max_aura = 20;
-            bsmallprimary = true;
-            bbigsecondary = true;
-        end
+		if (spec and spec == 3) then
+			auraid = 205473;
+			max_aura = 5;
+			bshatter = true;
+		end
+	end
 
-    end
+	if (englishClass == "WARLOCK") then
+		powerlevel = Enum.PowerType.SoulShards
 
-    if (englishClass == "WARLOCK") then
-        powerlevel = Enum.PowerType.SoulShards
+		if (spec and spec == 3) then
+			bpartial = true;
+		end
 
-        if (spec and spec == 3) then
-            bpartial = true;
-        end
+		bsmallprimary = true;
+		bbigsecondary = true;
+	end
 
-        bsmallprimary = true;
-        bbigsecondary = true;
-    end
+	if (englishClass == "DRUID") then
+		powerlevel = Enum.PowerType.ComboPoints;
+		bdruid = true;
+	end
 
-    if (englishClass == "DRUID") then
-        powerlevel = Enum.PowerType.ComboPoints;
-        bdruid = true;
-    end
+	if (englishClass == "MONK") then
+		if (spec and spec == 1) then
+			bstagger = true;
+		end
 
-    if (englishClass == "MONK") then
-        if (spec and spec == 1) then
-            bstagger = true;
-        end
+		if (spec and spec == 2) then
+			spellid = 115151;
+		end
 
-        if (spec and spec == 2) then
-            spellid = 115151;
-        end
+		if (spec and spec == 3) then
+			powerlevel = Enum.PowerType.Chi
+		end
+	end
 
-        if (spec and spec == 3) then
-            powerlevel = Enum.PowerType.Chi
-        end
-    end
+	if (englishClass == "ROGUE") then
+		powerlevel = Enum.PowerType.ComboPoints
+		brogue = true;
+	end
 
-    if (englishClass == "ROGUE") then
-        powerlevel = Enum.PowerType.ComboPoints
-        brogue = true;
-    end
+	if (englishClass == "DEATHKNIGHT") then
+		bupdaterune = true;
+	end
 
-    if (englishClass == "DEATHKNIGHT") then
-        bupdaterune = true;
-    end
+	if (englishClass == "PRIEST") then
+		if (spec and spec == 1) then
+			spellid = 194509;
+		end
 
-    if (englishClass == "PRIEST") then
-        if (spec and spec == 1) then
-            spellid = 194509;
-        end
+		if (spec and spec == 2) then
+			spellid = 2050;
+		end
 
-        if (spec and spec == 2) then
-            spellid = 2050;
-        end
+		if (spec and spec == 3) then
+			spellid = 8092;
+		end
+	end
 
-        if (spec and spec == 3) then
-            spellid = 8092;
-        end
-    end
+	if (englishClass == "WARRIOR") then
+		if (spec and spec == 1) then
+			spellid = 7384;
+		end
 
-    if (englishClass == "WARRIOR") then
-        if (spec and spec == 1) then
-            spellid = 7384;
-        end
+		if (spec and spec == 2) then
+			auraid = 12950;
+			max_aura = 4;
+		end
 
-        if (spec and spec == 2) then
-            auraid = 12950;
-            max_aura = 4;
-        end
+		if (spec and spec == 3) then
+			spellid = 2565;
+		end
+	end
 
-        if (spec and spec == 3) then
-            spellid = 2565;
-        end
-    end
+	if (englishClass == "DEMONHUNTER") then
+		if spec and spec == 1 then
+			spellid = 195072;
+		end
 
-    if (englishClass == "DEMONHUNTER") then
-        if spec and spec == 1 then
-            spellid = 195072;
-        end
+		if spec and spec == 2 then
+			spellid = 228477;
+		end
 
-        if spec and spec == 2 then
-            spellid = 228477;
-        end
+		if spec and spec == 3 then
+			auraid = 1225789;
+			max_aura = 50;
+		end
+	end
 
-        if spec and spec == 3 then
-            auraid = 1225789;
-            max_aura = 50;
-        end
-    end
+	if (englishClass == "HUNTER") then
+		if (spec and spec == 1) then
+			spellid = 217200;
+		end
 
-    if (englishClass == "HUNTER") then
-        if (spec and spec == 1) then
-            spellid = 217200;
-        end
+		if (spec and spec == 2) then
+			spellid = 19434;
+		end
 
-        if (spec and spec == 2) then
-            spellid = 19434;
-        end
+		if (spec and spec == 3) then
+			auraid = 260286;
+			max_aura = 3;
+		end
+	end
 
-        if (spec and spec == 3) then
-            auraid = 260286;
-            max_aura = 3;
-        end
-    end
+	if (englishClass == "SHAMAN") then
+		if (spec and spec == 1) then
+			spellid = 51505;
+		end
+		if spec and spec == 2 then
+			auraid = 344179;
+			max_aura = 10;
+			bsmallprimary = true;
+			bbigsecondary = true;
+		end
+		if (spec and spec == 3) then
+			spellid = 61295;
+		end
+	end
 
-    if (englishClass == "SHAMAN") then
-        if (spec and spec == 1) then
-            spellid = 51505;
-        end
-        if spec and spec == 2 then
-            auraid = 344179;
-            max_aura = 10;
-            bsmallprimary = true;
-            bbigsecondary = true;
-        end
-        if (spec and spec == 3) then
-            spellid = 61295;
-        end
-    end
+	resizebars(bsmallprimary, bbigsecondary);
+	if bshatter then
+		ns.setup_shatter();
+	else
+		ns.setup_power();
+	end
 
-    resizebars(bsmallprimary, bbigsecondary);
-    ns.setup_power();
-    if auraid then
-        ns.setup_auracombo(auraid, max_aura);
-    elseif powerlevel then
-        ns.setup_combo(powerlevel, bpartial, brogue, bdruid);
-    elseif bupdaterune then
-        ns.setup_rune(bupdaterune);
-    elseif spellid then
-        ns.setup_spell(spellid);
-    elseif bstagger then
-        ns.setup_stagger(bstagger);
-    end
+	if auraid then
+		ns.setup_auracombo(auraid, max_aura);
+	elseif powerlevel then
+		ns.setup_combo(powerlevel, bpartial, brogue, bdruid);
+	elseif bupdaterune then
+		ns.setup_rune(bupdaterune);
+	elseif spellid then
+		ns.setup_spell(spellid);
+	elseif bstagger then
+		ns.setup_stagger(bstagger);
+	end
 end
 
 local function on_event(self, event, ...)
-    if event == "PLAYER_ENTERING_WORLD" then
-        if ns.options.CombatAlphaChange then
-            if UnitAffectingCombat("player") then
-                main_frame:SetAlpha(ns.configs.combatalpha);
-            else
-                main_frame:SetAlpha(ns.configs.normalalpha);
-            end
-        end
-        C_Timer.After(0.5, init_class);
-    elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or event ==
-        "ACTIVE_TALENT_GROUP_CHANGED" then
-        C_Timer.After(1, init_class);
-    elseif event == "PLAYER_REGEN_DISABLED" then
-        if ns.options.CombatAlphaChange then
-            main_frame:SetAlpha(ns.configs.combatalpha);
-        end
-    elseif event == "PLAYER_REGEN_ENABLED" then
-        if ns.options.CombatAlphaChange then
-            main_frame:SetAlpha(ns.configs.normalalpha);
-        end
-    end
+	if event == "PLAYER_ENTERING_WORLD" then
+		if ns.options.CombatAlphaChange then
+			if UnitAffectingCombat("player") then
+				main_frame:SetAlpha(ns.configs.combatalpha);
+			else
+				main_frame:SetAlpha(ns.configs.normalalpha);
+			end
+		end
+		C_Timer.After(0.5, init_class);
+	elseif (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or event ==
+		"ACTIVE_TALENT_GROUP_CHANGED" then
+		C_Timer.After(1, init_class);
+	elseif event == "PLAYER_REGEN_DISABLED" then
+		if ns.options.CombatAlphaChange then
+			main_frame:SetAlpha(ns.configs.combatalpha);
+		end
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		if ns.options.CombatAlphaChange then
+			main_frame:SetAlpha(ns.configs.normalalpha);
+		end
+	end
 
-    return;
+	return;
 end
 
 local function init_addon()
-    ns.setup_option();
-    main_frame:SetFrameStrata("LOW");
-    main_frame:SetPoint("BOTTOM", UIParent, "CENTER", ns.configs.xpoint, ns.configs.ypoint)
-    main_frame:SetWidth(ns.options.BarWidth)
-    main_frame:SetHeight(ns.options.PowerBarHeight)
-    main_frame:SetFrameLevel(ns.configs.framelevel + 400);
-    main_frame:Show();
+	ns.setup_option();
+	main_frame:SetFrameStrata("LOW");
+	main_frame:SetPoint("BOTTOM", UIParent, "CENTER", ns.configs.xpoint, ns.configs.ypoint)
+	main_frame:SetWidth(ns.options.BarWidth)
+	main_frame:SetHeight(ns.options.PowerBarHeight)
+	main_frame:SetFrameLevel(ns.configs.framelevel + 400);
+	main_frame:Show();
 
-    main_frame.bgframe = CreateFrame("Frame", nil, main_frame);
-    main_frame.bgframe:SetWidth(ns.options.BarWidth)
-    main_frame.bgframe:SetHeight(ns.options.PowerBarHeight)
-    main_frame.bgframe:SetFrameLevel(ns.configs.framelevel - 100);
-    main_frame.bgframe:Show();
-
-
-    ns.bar = CreateFrame("StatusBar", nil, main_frame)
-    ns.bar:SetFrameLevel(ns.configs.framelevel);
-    ns.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-    ns.bar:GetStatusBarTexture():SetHorizTile(false)
-    ns.bar:SetMinMaxValues(0, 100)
-    ns.bar:SetValue(100)
-    ns.bar:SetWidth(ns.options.BarWidth)
-    ns.bar:SetHeight(ns.options.PowerBarHeight)
-    ns.bar:SetPoint("BOTTOM", main_frame, "BOTTOM", 0, 0)
-    ns.bar:Show();
-    ns.bar:EnableMouse(false);
-
-    ns.bg = main_frame.bgframe:CreateTexture(nil, "BACKGROUND");
-    ns.bg:SetPoint("TOPLEFT", ns.bar, "TOPLEFT", -1, 1);
-    ns.bg:SetPoint("BOTTOMRIGHT", ns.bar, "BOTTOMRIGHT", 1, -1);
-    ns.bg:SetColorTexture(0, 0, 0, 1);
+	main_frame.bgframe = CreateFrame("Frame", nil, main_frame);
+	main_frame.bgframe:SetWidth(ns.options.BarWidth)
+	main_frame.bgframe:SetHeight(ns.options.PowerBarHeight)
+	main_frame.bgframe:SetFrameLevel(ns.configs.framelevel - 100);
+	main_frame.bgframe:Show();
 
 
+	ns.bar = CreateFrame("StatusBar", nil, main_frame)
+	ns.bar:SetFrameLevel(ns.configs.framelevel);
+	ns.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+	ns.bar:GetStatusBarTexture():SetHorizTile(false)
+	ns.bar:SetMinMaxValues(0, 100)
+	ns.bar:SetValue(100)
+	ns.bar:SetWidth(ns.options.BarWidth)
+	ns.bar:SetHeight(ns.options.PowerBarHeight)
+	ns.bar:SetPoint("BOTTOM", main_frame, "BOTTOM", 0, 0)
+	ns.bar:Show();
+	ns.bar:EnableMouse(false);
 
-    ns.bar.text = main_frame:CreateFontString(nil, "ARTWORK");
-    ns.bar.text:SetFont(ns.configs.font, ns.options.FontSize, ns.configs.fontOutline);
-    ns.bar.text:SetPoint("CENTER", ns.bar, "CENTER", 0, 0);
-    ns.bar.text:SetTextColor(1, 1, 1, 1);
+	ns.bg = main_frame.bgframe:CreateTexture(nil, "BACKGROUND");
+	ns.bg:SetPoint("TOPLEFT", ns.bar, "TOPLEFT", -1, 1);
+	ns.bg:SetPoint("BOTTOMRIGHT", ns.bar, "BOTTOMRIGHT", 1, -1);
+	ns.bg:SetColorTexture(0, 0, 0, 1);
 
-    ns.bar.predictbar = ns.bar:CreateTexture(nil, "ARTWORK", "asPredictionBarTemplate");
-    local parenttexture = ns.bar:GetStatusBarTexture();
-    ns.bar.predictbar:ClearAllPoints();
-    ns.bar.predictbar:SetPoint("TOPRIGHT", parenttexture, "TOPRIGHT", 0, 0);
-    ns.bar.predictbar:SetPoint("BOTTOMRIGHT", parenttexture, "BOTTOMRIGHT", 0, 0);
-    ns.bar.predictbar:SetVertexColor(0.5, 0.5, 0.5)
-    ns.bar.predictbar:Hide();
-    ns.bar:SetClipsChildren(true);
+	ns.bar.countframes = {};
+	for i = 1, 20 do
+		ns.bar.countframes[i] = CreateFrame("Frame", nil, main_frame, "BackdropTemplate");
+		ns.bar.countframes[i]:SetFrameLevel(ns.configs.framelevel + 200);
+		ns.bar.countframes[i]:SetHeight(ns.options.PowerBarHeight + 2);
+		ns.bar.countframes[i]:SetWidth(20);
 
-    ns.combocountbar = CreateFrame("StatusBar", nil, main_frame);
-    ns.combocountbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
-    ns.combocountbar:GetStatusBarTexture():SetHorizTile(false);
-    ns.combocountbar:SetFrameLevel(ns.configs.framelevel);
-    ns.combocountbar:SetMinMaxValues(0, 100);
-    ns.combocountbar:SetValue(100);
-    ns.combocountbar:SetHeight(ns.options.ComboBarHeight);
-    ns.combocountbar:SetWidth(20);
-    ns.combocountbar:SetClipsChildren(false);
+		if i == 1 then
+			ns.bar.countframes[i]:SetPoint("TOPLEFT", ns.bar, "TOPLEFT", -1, 0);
+		else
+			ns.bar.countframes[i]:SetPoint("LEFT", ns.bar.countframes[i - 1], "RIGHT", 0, 0);
+		end
 
-    ns.combocountbar.bg = ns.combocountbar:CreateTexture(nil, "BACKGROUND");
-    ns.combocountbar.bg:SetPoint("TOPLEFT", ns.combocountbar, "TOPLEFT", -1, 1);
-    ns.combocountbar.bg:SetPoint("BOTTOMRIGHT", ns.combocountbar, "BOTTOMRIGHT", 1, -1);
-    ns.combocountbar.bg:SetColorTexture(0.2, 0.2, 0.2, 1);
-    ns.combocountbar:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", 0, 1);
-    ns.combocountbar:SetWidth(ns.options.BarWidth);
-    ns.combocountbar:SetStatusBarColor(1, 1, 1);
-    ns.combocountbar:Hide();
+		ns.bar.countframes[i]:SetBackdrop(backdropConfig)
+		ns.bar.countframes[i]:SetBackdropBorderColor(0, 0, 0, 1);
+		ns.bar.countframes[i]:SetBackdropColor(0, 0, 0, 0);
 
-    ns.combotext = main_frame:CreateFontString(nil, "OVERLAY");
-    ns.combotext:SetFont(ns.configs.font, ns.options.FontSize - 1, ns.configs.fontOutline);
-    ns.combotext:SetPoint("CENTER", ns.combocountbar, "CENTER", 0, 1);
-    ns.combotext:SetTextColor(1, 1, 1, 1)
-    ns.combotext:Hide();
+		ns.bar.countframes[i]:Hide();
+		ns.bar.countframes[i]:EnableMouse(false);
+	end
 
-    ns.combobars = {};
+	ns.bar.text = main_frame:CreateFontString(nil, "ARTWORK");
+	ns.bar.text:SetFont(ns.configs.font, ns.options.FontSize, ns.configs.fontOutline);
+	ns.bar.text:SetPoint("CENTER", ns.bar, "CENTER", 0, 0);
+	ns.bar.text:SetTextColor(1, 1, 1, 1);
 
-    for i = 1, 20 do
-        ns.combobars[i] = CreateFrame("StatusBar", nil, main_frame);
-        ns.combobars[i]:SetStatusBarTexture("RaidFrame-Hp-Fill");
-        ns.combobars[i]:GetStatusBarTexture():SetHorizTile(false);
-        ns.combobars[i]:SetFrameLevel(ns.configs.framelevel + 100);
-        ns.combobars[i]:SetMinMaxValues(0, 100);
-        ns.combobars[i]:SetValue(100);
-        ns.combobars[i]:SetHeight(ns.options.ComboBarHeight);
-        ns.combobars[i]:SetWidth(20);
+	ns.bar.predictbar = ns.bar:CreateTexture(nil, "ARTWORK", "asPredictionBarTemplate");
+	local parenttexture = ns.bar:GetStatusBarTexture();
+	ns.bar.predictbar:ClearAllPoints();
+	ns.bar.predictbar:SetPoint("TOPRIGHT", parenttexture, "TOPRIGHT", 0, 0);
+	ns.bar.predictbar:SetPoint("BOTTOMRIGHT", parenttexture, "BOTTOMRIGHT", 0, 0);
+	ns.bar.predictbar:SetVertexColor(0.5, 0.5, 0.5)
+	ns.bar.predictbar:Hide();
+	ns.bar:SetClipsChildren(true);
 
-        ns.combobars[i].bg = ns.combobars[i]:CreateTexture(nil, "BACKGROUND");
-        ns.combobars[i].bg:SetPoint("TOPLEFT", ns.combobars[i], "TOPLEFT", -1, 1);
-        ns.combobars[i].bg:SetPoint("BOTTOMRIGHT", ns.combobars[i], "BOTTOMRIGHT", 1, -1);
-        ns.combobars[i].bg:SetColorTexture(0, 0, 0, 1);
+	ns.combocountbar = CreateFrame("StatusBar", nil, main_frame);
+	ns.combocountbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+	ns.combocountbar:GetStatusBarTexture():SetHorizTile(false);
+	ns.combocountbar:SetFrameLevel(ns.configs.framelevel);
+	ns.combocountbar:SetMinMaxValues(0, 100);
+	ns.combocountbar:SetValue(100);
+	ns.combocountbar:SetHeight(ns.options.ComboBarHeight);
+	ns.combocountbar:SetWidth(20);
+	ns.combocountbar:SetClipsChildren(false);
 
-        if i == 1 then
-            ns.combobars[i]:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", 0, 1);
-        else
-            ns.combobars[i]:SetPoint("LEFT", ns.combobars[i - 1], "RIGHT", 1, 0);
-        end
+	ns.combocountbar.bg = ns.combocountbar:CreateTexture(nil, "BACKGROUND");
+	ns.combocountbar.bg:SetPoint("TOPLEFT", ns.combocountbar, "TOPLEFT", -1, 1);
+	ns.combocountbar.bg:SetPoint("BOTTOMRIGHT", ns.combocountbar, "BOTTOMRIGHT", 1, -1);
+	ns.combocountbar.bg:SetColorTexture(0.2, 0.2, 0.2, 1);
+	ns.combocountbar:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", 0, 1);
+	ns.combocountbar:SetWidth(ns.options.BarWidth);
+	ns.combocountbar:SetStatusBarColor(1, 1, 1);
+	ns.combocountbar:Hide();
 
-        ns.combobars[i]:Hide();
-        ns.combobars[i]:EnableMouse(false);
-    end
+	ns.combotext = main_frame:CreateFontString(nil, "OVERLAY");
+	ns.combotext:SetFont(ns.configs.font, ns.options.FontSize - 1, ns.configs.fontOutline);
+	ns.combotext:SetPoint("CENTER", ns.combocountbar, "CENTER", 0, 1);
+	ns.combotext:SetTextColor(1, 1, 1, 1)
+	ns.combotext:Hide();
 
-    ns.spellframes = {};
+	ns.combobars = {};
 
-    for i = 1, 20 do
-        ns.spellframes[i] = CreateFrame("Frame", nil, main_frame, "BackdropTemplate");
-        ns.spellframes[i]:SetFrameLevel(ns.configs.framelevel + 200);
-        ns.spellframes[i]:SetHeight(ns.options.ComboBarHeight + 2);
-        ns.spellframes[i]:SetWidth(20);
+	for i = 1, 20 do
+		ns.combobars[i] = CreateFrame("StatusBar", nil, main_frame);
+		ns.combobars[i]:SetStatusBarTexture("RaidFrame-Hp-Fill");
+		ns.combobars[i]:GetStatusBarTexture():SetHorizTile(false);
+		ns.combobars[i]:SetFrameLevel(ns.configs.framelevel + 100);
+		ns.combobars[i]:SetMinMaxValues(0, 100);
+		ns.combobars[i]:SetValue(100);
+		ns.combobars[i]:SetHeight(ns.options.ComboBarHeight);
+		ns.combobars[i]:SetWidth(20);
 
-        ns.spellframes[i].range = ns.spellframes[i]:CreateTexture(nil, "ARTWORK");
-        ns.spellframes[i].range:SetColorTexture(0.6, 0, 0);
-        ns.spellframes[i].range:SetAlpha(0.5);
-        ns.spellframes[i].range:SetAllPoints(ns.spellframes[i]);
-        ns.spellframes[i].range:Hide();
+		ns.combobars[i].bg = ns.combobars[i]:CreateTexture(nil, "BACKGROUND");
+		ns.combobars[i].bg:SetPoint("TOPLEFT", ns.combobars[i], "TOPLEFT", -1, 1);
+		ns.combobars[i].bg:SetPoint("BOTTOMRIGHT", ns.combobars[i], "BOTTOMRIGHT", 1, -1);
+		ns.combobars[i].bg:SetColorTexture(0, 0, 0, 1);
 
-        ns.spellframes[i].notenough = ns.spellframes[i]:CreateTexture(nil, "ARTWORK");
-        ns.spellframes[i].notenough:SetColorTexture(0.3, 0.3, 0.3);
-        ns.spellframes[i].notenough:SetAlpha(0.5);
-        ns.spellframes[i].notenough:SetAllPoints(ns.spellframes[i]);
-        ns.spellframes[i].notenough:Hide();
+		if i == 1 then
+			ns.combobars[i]:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", 0, 1);
+		else
+			ns.combobars[i]:SetPoint("LEFT", ns.combobars[i - 1], "RIGHT", 1, 0);
+		end
 
-        if i == 1 then
-            ns.spellframes[i]:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", -1, 0);
-        else
-            ns.spellframes[i]:SetPoint("LEFT", ns.spellframes[i - 1], "RIGHT", 0, 0);
-        end
+		ns.combobars[i]:Hide();
+		ns.combobars[i]:EnableMouse(false);
+	end
 
-        ns.spellframes[i]:SetBackdrop(backdropConfig)
-        ns.spellframes[i]:SetBackdropBorderColor(0, 0, 0, 1);
-        ns.spellframes[i]:SetBackdropColor(0, 0, 0, 0);
+	ns.spellframes = {};
 
-        ns.spellframes[i]:Hide();
-        ns.spellframes[i]:EnableMouse(false);
-    end
+	for i = 1, 20 do
+		ns.spellframes[i] = CreateFrame("Frame", nil, main_frame, "BackdropTemplate");
+		ns.spellframes[i]:SetFrameLevel(ns.configs.framelevel + 200);
+		ns.spellframes[i]:SetHeight(ns.options.ComboBarHeight + 2);
+		ns.spellframes[i]:SetWidth(20);
 
-    ns.spellborder = CreateFrame("Frame", nil, main_frame, "BackdropTemplate");
-    ns.spellborder:SetFrameLevel(ns.configs.framelevel + 201);
-    ns.spellborder:SetHeight(ns.options.ComboBarHeight + 2);
-    ns.spellborder:SetWidth(ns.options.BarWidth + 2);
-    ns.spellborder:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", -1, 0);
-    ns.spellborder:SetBackdrop(backdropConfig)
-    ns.spellborder:SetBackdropBorderColor(0, 0, 0, 1);
-    ns.spellborder:SetBackdropColor(0, 0, 0, 0);
-    ns.spellborder:EnableMouse(false);
-    ns.spellborder:Hide();
+		ns.spellframes[i].range = ns.spellframes[i]:CreateTexture(nil, "ARTWORK");
+		ns.spellframes[i].range:SetColorTexture(0.6, 0, 0);
+		ns.spellframes[i].range:SetAlpha(0.5);
+		ns.spellframes[i].range:SetAllPoints(ns.spellframes[i]);
+		ns.spellframes[i].range:Hide();
+
+		ns.spellframes[i].notenough = ns.spellframes[i]:CreateTexture(nil, "ARTWORK");
+		ns.spellframes[i].notenough:SetColorTexture(0.3, 0.3, 0.3);
+		ns.spellframes[i].notenough:SetAlpha(0.5);
+		ns.spellframes[i].notenough:SetAllPoints(ns.spellframes[i]);
+		ns.spellframes[i].notenough:Hide();
+
+		if i == 1 then
+			ns.spellframes[i]:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", -1, 0);
+		else
+			ns.spellframes[i]:SetPoint("LEFT", ns.spellframes[i - 1], "RIGHT", 0, 0);
+		end
+
+		ns.spellframes[i]:SetBackdrop(backdropConfig)
+		ns.spellframes[i]:SetBackdropBorderColor(0, 0, 0, 1);
+		ns.spellframes[i]:SetBackdropColor(0, 0, 0, 0);
+
+		ns.spellframes[i]:Hide();
+		ns.spellframes[i]:EnableMouse(false);
+	end
+
+	ns.spellborder = CreateFrame("Frame", nil, main_frame, "BackdropTemplate");
+	ns.spellborder:SetFrameLevel(ns.configs.framelevel + 201);
+	ns.spellborder:SetHeight(ns.options.ComboBarHeight + 2);
+	ns.spellborder:SetWidth(ns.options.BarWidth + 2);
+	ns.spellborder:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", -1, 0);
+	ns.spellborder:SetBackdrop(backdropConfig)
+	ns.spellborder:SetBackdropBorderColor(0, 0, 0, 1);
+	ns.spellborder:SetBackdropColor(0, 0, 0, 0);
+	ns.spellborder:EnableMouse(false);
+	ns.spellborder:Hide();
 
 
-    ns.chargebar = CreateFrame("StatusBar", nil, ns.combocountbar);
-    ns.chargebar:SetStatusBarTexture("RaidFrame-Hp-Fill");
-    ns.chargebar:GetStatusBarTexture():SetHorizTile(false);
-    ns.chargebar:SetFrameLevel(ns.configs.framelevel + 100);
-    ns.chargebar:SetMinMaxValues(0, 100);
-    ns.chargebar:SetValue(0);
-    ns.chargebar:SetHeight(ns.options.ComboBarHeight);
-    ns.chargebar:SetWidth(20);
-    local texturepoint = ns.combocountbar:GetStatusBarTexture();
-    ns.chargebar:SetPoint("LEFT", texturepoint, "RIGHT", 0, 0);
-    ns.chargebar:SetStatusBarColor(0.8, 0.8, 0.8);
-    ns.chargebar:Hide();
-    ns.chargebar:EnableMouse(false);
+	ns.chargebar = CreateFrame("StatusBar", nil, ns.combocountbar);
+	ns.chargebar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+	ns.chargebar:GetStatusBarTexture():SetHorizTile(false);
+	ns.chargebar:SetFrameLevel(ns.configs.framelevel + 100);
+	ns.chargebar:SetMinMaxValues(0, 100);
+	ns.chargebar:SetValue(0);
+	ns.chargebar:SetHeight(ns.options.ComboBarHeight);
+	ns.chargebar:SetWidth(20);
+	local texturepoint = ns.combocountbar:GetStatusBarTexture();
+	ns.chargebar:SetPoint("LEFT", texturepoint, "RIGHT", 0, 0);
+	ns.chargebar:SetStatusBarColor(0.8, 0.8, 0.8);
+	ns.chargebar:Hide();
+	ns.chargebar:EnableMouse(false);
 
 
-    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
-    if libasConfig then
-        libasConfig.load_position(main_frame, "asPowerBar", ASPB_Positions);
-    end
+	if libasConfig then
+		libasConfig.load_position(main_frame, "asPowerBar", ASPB_Positions);
+	end
 
-    main_frame:SetScript("OnEvent", on_event)
+	main_frame:SetScript("OnEvent", on_event)
 
-    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-    main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
-    main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
-    main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
-    main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-    main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+	main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+	main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+	main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+	main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+	main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 
-    if ns.options.CombatAlphaChange then
-        if UnitAffectingCombat("player") then
-            main_frame:SetAlpha(ns.configs.combatalpha);
-        else
-            main_frame:SetAlpha(ns.configs.normalalpha);
-        end
-    end
-    init_class();
+	if ns.options.CombatAlphaChange then
+		if UnitAffectingCombat("player") then
+			main_frame:SetAlpha(ns.configs.combatalpha);
+		else
+			main_frame:SetAlpha(ns.configs.normalalpha);
+		end
+	end
+	init_class();
 end
 
 C_Timer.After(0.5, init_addon);

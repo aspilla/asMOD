@@ -21,6 +21,7 @@ ns.isevoker = false;
 ns.unit_player = "player";
 ns.unit_pet = "pet";
 ns.unitframes = {};
+ns.isfrostm = false;
 
 local region = GetCurrentRegion();
 
@@ -637,7 +638,9 @@ end
 
 local function init_lowhealth()
 	local localizedClass, englishClass = UnitClass("player");
+	local spec = C_SpecializationInfo.GetSpecialization();
 
+	ns.isfrostm = false;
 	local lowhealthpercent = 0;
 	local highhealthpercent = 0;
 	do
@@ -648,6 +651,10 @@ local function init_lowhealth()
 
 			if (C_SpellBook.IsSpellKnown(205026)) then
 				highhealthpercent = 90;
+			end
+
+			if spec == 3 then
+				ns.isfrostm = true;
 			end
 		end
 

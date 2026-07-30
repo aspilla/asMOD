@@ -82,3 +82,9 @@ function ns.setup_power()
     end
     timer = C_Timer.NewTicker(0.1, update_power);
 end
+
+function ns.clear_power()
+	if timer then
+		timer:Cancel();
+	end
+end
