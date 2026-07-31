@@ -8,4 +8,4 @@
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asDotFilterOptions.lua
-asDotFilter.xml
+asDotFilter.lua
