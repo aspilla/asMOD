@@ -36,6 +36,7 @@ local L = {
 	ShowTarget = "Show target's debuffs",
 	ShowPlayer = "Show player's debuffs",
 	ShowPrivate = "Show player's private auras",
+	HideBloodDebuff = "Hide bloodlust debuffs",
 }
 
 
@@ -47,6 +48,7 @@ if GetLocale() == "koKR" then
 		ShowTarget = "대상의 디버프를 표시",
 		ShowPlayer = "플레이어의 디버프를 표시",
 		ShowPrivate = "플레이어의 Private Aura를 표시",
+		HideBloodDebuff = "블러드 디버프는 숨김",
 	}
 end
 ns.options = CopyTable(Options_Default);

@@ -16,6 +16,7 @@ local configs      = {
     button_fontsize = 12,
     buff_id = 2825,
     buff_duration = 40,
+    debuff_duration = 600,
 };
 
 local lust_debuffs = {
@@ -24,7 +25,6 @@ local lust_debuffs = {
     80354,  --mage
     264689, --hunter
     390435, --evoker
-    --25771,  --test
 }
 
 
@@ -111,11 +111,19 @@ local function update_auras()
             end
 
             if start_time and GetTime() - start_time < configs.buff_duration and ns.options.ShowBuff then
-                main_button:Show();
+                main_button.icon:SetDesaturated(false);
                 local durationobj = C_DurationUtil.CreateDuration();
                 durationobj:SetTimeFromStart(start_time, configs.buff_duration);
                 set_cooldownframe(main_button.cooldown, durationobj, true);
                 ns.lib.ButtonGlow_Start(main_button);
+                main_button:Show();
+            elseif ns.options.ShowRemain then
+                main_button.icon:SetDesaturated(true);
+                local durationobj = C_DurationUtil.CreateDuration();
+                durationobj:SetTimeFromEnd(aura.expirationTime, aura.duration);
+                set_cooldownframe(main_button.cooldown, durationobj, true);
+                ns.lib.ButtonGlow_Stop(main_button);
+                main_button:Show();
             else
                 main_button:Hide();
             end

@@ -17,6 +17,14 @@ local configs = {
 
 };
 
+local lust_debuffs = {
+    [57723] = true,  --shaman (alliance)
+    [57724] = true,  --shaman
+    [80354] = true,  --mage
+    [264689] = true, --hunter
+    [390435] = true, --evoker
+};
+
 ns.isevoker = false;
 ns.unit_player = "player";
 ns.unit_pet = "pet";
@@ -96,6 +104,11 @@ local function create_aurabutton(width, fontsize)
 end
 
 local function create_container(parent, unit, filter, anchor, hdir, vdir, fontsize, width, max)
+    local cfilters = {}
+
+    if ns.options.HideBloodDebuff then
+    	cfilters.excludeSpellIDs = lust_debuffs;
+    end
     local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
     container:SetFlowLayoutAnchorPoint(anchor);
     container:SetFlowLayoutGrowthDirection(hdir, vdir);
@@ -103,6 +116,7 @@ local function create_container(parent, unit, filter, anchor, hdir, vdir, fontsi
     container:AddAuraGroup("auras", filter,
         { maxFrameCount = max, initializeFrame = create_aurabutton(width, fontsize) });
     container:SetAuraGroupLayout("auras", { elementSpacingX = 0.1 });
+    container:SetAuraGroupCandidateFilters("auras", cfilters);
     container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
     container:SetUnit(unit);
     container:SetEnabled(true);

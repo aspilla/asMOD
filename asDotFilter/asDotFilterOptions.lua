@@ -3,6 +3,7 @@ local _, ns = ...;
 local Options_Default = {
 	Version = 250920,
 	MaxShow = 3,
+	HideBloodDebuff = true,
 	ShowNameplatesOnly = true,
 	MillisecondsThreshold = 3,
 };
@@ -11,6 +12,7 @@ local L = {
 	MaxShow = "The maximum number of debuffs to display",
 	ShowNameplatesOnly = "Show nameplates debuff only",
 	MillisecondsThreshold = "Remaining cooldown begins displaying in 0.1-second increments",
+	HideBloodDebuff = "Hide bloodlust debuffs",
 }
 
 
@@ -19,6 +21,7 @@ if GetLocale() == "koKR" then
 		MaxShow = "최대 표시 디버프 개수",
 		ShowNameplatesOnly = "이름표에 표시되는 디버프만 표시",
 		MillisecondsThreshold = "남은 쿨을 0.1초 단위로 보여줄 최소 시간",
+		HideBloodDebuff = "블러드 디버프는 숨김",
 	}
 end
 ns.options = CopyTable(Options_Default);

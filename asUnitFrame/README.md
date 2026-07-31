@@ -82,6 +82,7 @@ Adjustable via **ESC > Options > AddOns > asUnitFrame**
 - `Show boss buffs (Max 4)` (Default: On)
 - `Show target border on focus/boss` (Default: On)
 - `Show debuff on pet/target of target` (Default: On)
+- `Hide bloodlust debuffs` (Default: On)
 - `Show aggro status and player rest state` (Default: On)
 - `Check range with target/focus/boss` (Default: On)
 - `Transparency change out of combat` (Default: On)
@@ -120,6 +121,7 @@ Adjustable via **ESC > Options > AddOns > asUnitFrame**
     * `OffPortraitDebuffOnRaid` : Do not show stun debuffs on portraits during raids
     * `CombatAlphaChange` : Transparency change out of combat
     * `ShowLowHealth` : Changes the health bar background color for low health targets 
+    * `HideBloodDebuff` : Hide bloodlust debuffs
     * **Player/Target Size Adjustment**
     * `Width` : Default 200
     * `Height`: Default 35
@@ -237,6 +239,7 @@ The following errors may occur.
 - `보스 프레임 버프 표시 (최대 4개)` (기본 On)
 - `주시/보스가 대상인 경우 하얀색 테두리 표시` (기본 On)
 - `소환수/대상의대상 프레임에 디버프 표시` (기본 On)
+- `블러드 디버프는 숨김` (기본 On)
 - `어그로 및 플레이어 휴식 상태 표시` (기본 On)
 - `대상/주시/보스와의 거리 체크` (기본 On)
 - `비전투 시 투명도 변경` (기본 On)
@@ -275,6 +278,7 @@ The following errors may occur.
     *   `OffPortraitDebuffOnRaid` : 레이드에서는 초상화에 스턴 디버프 표시 안함
     *   `CombatAlphaChange` : 비전투시 투명도 변경
     *   `ShowLowHealth` : 대상 낮은 체력시 색상 변경
+    *   `HideBloodDebuff` : 블러드 디버프는 숨김
     *   **플레이어 대상 크기 조정**
     *   `Width` :기본값 200
     *   `Height`:기본값  35

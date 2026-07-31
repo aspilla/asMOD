@@ -26,6 +26,14 @@ local parentframes = {
 	["boss5"] = { frame = _G["Boss5TargetFrame"], isboss = true },
 };
 
+local lust_debuffs = {
+	[57723] = true,  --shaman (alliance)
+	[57724] = true,  --shaman
+	[80354] = true,  --mage
+	[264689] = true, --hunter
+	[390435] = true, --evoker
+};
+
 local filters = {
 	harmful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player),
 	helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful),
@@ -141,6 +149,12 @@ local function setup_frame(unit)
 	local isboss = parentframes[unit].isboss;
 	local offset = 3;
 
+	local cfilters = { nameplateShowPersonal = false };
+
+	if ns.options.HideBloodDebuff then
+		cfilters.excludeSpellIDs = lust_debuffs;
+	end
+
 	if isboss then
 		offset = -50;
 	end
@@ -153,7 +167,7 @@ local function setup_frame(unit)
 		{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton(configs.size) });
 
 	if not ns.options.ShowNameplatesOnly then
-		add_group(main_frame.containers[unit], "debuffs", filters.helpful, { nameplateShowPersonal = false },
+		add_group(main_frame.containers[unit], "debuffs", filters.helpful, cfilters,
 			{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton(configs.size) });
 	end
 

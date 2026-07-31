@@ -1,6 +1,13 @@
 ﻿local _, ns = ...;
 local main_frame = CreateFrame("Frame", nil, UIParent);
 
+local lust_debuffs = {
+    [57723] = true,  --shaman (alliance)
+    [57724] = true,  --shaman
+    [80354] = true,  --mage
+    [264689] = true, --hunter
+    [390435] = true, --evoker
+}
 asDebuffPrivateAuraAnchorMixin = {};
 
 function asDebuffPrivateAuraAnchorMixin:SetUnit(unit)
@@ -189,11 +196,17 @@ local function setup_frames()
 	end
 
 	if ns.options.ShowTarget then
+        local cfilters = { nameplateShowPersonal = false };
+
+        if ns.options.HideBloodDebuff then
+        	cfilters.excludeSpellIDs = lust_debuffs;
+        end
+
 		main_frame.targetframe = create_container(main_frame, "target", "LEFT", AnchorUtil.FlowDirection.Right,
 			AnchorUtil.FlowDirection.Down);
 		add_group(main_frame.targetframe, "dots", filters.helpful, { nameplateShowPersonal = true },
 			{ maxFrameCount = ns.configs.max_debuffs, initializeFrame = create_aurabutton(ns.configs.size) });
-		add_group(main_frame.targetframe, "debuffs", filters.helpful, { nameplateShowPersonal = false },
+		add_group(main_frame.targetframe, "debuffs", filters.helpful, cfilters,
 			{ maxFrameCount = ns.configs.max_debuffs, initializeFrame = create_aurabutton(ns.configs.size) });
 		main_frame.targetframe:SetEnabled(true);
 
@@ -210,9 +223,16 @@ local function setup_frames()
 
 
 	if ns.options.ShowPlayer then
+        local cfilter = {}
+
+        if ns.options.HideBloodDebuff then
+        	cfilter.excludeSpellIDs = lust_debuffs;
+        end
+
 		main_frame.playerframe = create_container(main_frame, "player", "RIGHT", AnchorUtil.FlowDirection.Left,
 			AnchorUtil.FlowDirection.Down);
-		add_group(main_frame.playerframe, "debuffs", filters.helpful, {},
+
+		add_group(main_frame.playerframe, "debuffs", filters.helpful, cfilter,
 			{ maxFrameCount = ns.configs.max_debuffs, initializeFrame = create_aurabutton(ns.configs.size * ns.options.PlayerDebuffRate) });
 		main_frame.playerframe:SetEnabled(true);
 

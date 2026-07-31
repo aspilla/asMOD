@@ -16,6 +16,7 @@ Debuff tracker for boss and focus
 - The maximum number of debuffs to display (Default: 3).
 - The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
 - Show nameplates' debuff only. (Default: On).
+- Hide bloodlust debuffs (Default: On).
 
 ---
 
@@ -37,3 +38,4 @@ Debuff tracker for boss and focus
 - 최대 표시 디버프 개수. (기본 3개)
 - 남은 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
 - 이름표에 표시되는 디버프만 표시. (기본 On)
+- 블러드 디버프는 숨김 (기본 On)

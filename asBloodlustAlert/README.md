@@ -11,6 +11,7 @@ Notifies when Bloodlust is ready to use after the exhaustion debuff expires.
 - Displays "Bloodlust Start" in the center of the screen.
 - Provides a voice alert: "Bloodlust Start."
 - Displays the remaining duration of Bloodlust in the bottom-left corner.
+- Displays the remaining duration of the Bloodlust exhaustion debuff as a desaturated (grayed-out) button.
  
 - Displays "Bloodlust Ready" in the center of the screen.
 - Provides a voice alert: "Bloodlust Ready."
@@ -26,6 +27,7 @@ Notifies when Bloodlust is ready to use after the exhaustion debuff expires.
 - Options can be changed by navigating to `ESC` > `Options` > `AddOns` > `asBloodlustAlert`.
 - Notifies when Bloodlust starts (Default: On).
 - Displays the Bloodlust duration as a button (Default: On).
+- Displays the debuff duration as a button (Default: On).
 - Notifies when Bloodlust is ready (Default: On).
 - Provides voice alerts (Default: On).
 - Font size for the center alert text (Default: 30).
@@ -46,6 +48,7 @@ Notifies when Bloodlust is ready to use after the exhaustion debuff expires.
 - 화면 중앙에 "블러드 시작"라고 알립니다.
 - 음성으로 "블러드 시작"라고 알립니다.
 - 블러드 지속시간을 좌측 하단에 알립니다.
+- 블러드 디버프(만족감 등) 잔여 지속시간을 흑백 버튼으로 표시합니다.
 
 - 화면 중앙에 "블러드 준비"라고 알립니다.
 - 음성으로 "블러드 준비"라고 알립니다.
@@ -61,6 +64,7 @@ Notifies when Bloodlust is ready to use after the exhaustion debuff expires.
 - `ESC` > `설정` > `애드온` 탭에서 `asBloodlustAlert`를 찾아 옵션을 변경할 수 있습니다.
 - 블러드 시작됨을 알림. (기본 On)
 - 블러드 지속시간을 버튼으로 알림 (기본 On)
+- 디버프 지속시간을 버튼으로 표시 (기본 On)
 - 블러드 준비됨을 알림 (기본 On)
 - 음성으로 알림 (기본 On)
 - 화면 중앙 알림 글씨 크기 (기본 30)

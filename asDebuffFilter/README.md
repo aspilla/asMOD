@@ -16,6 +16,7 @@ Displays debuffs & private aura for the Player (up to 6 on the left) and the Tar
 - Show player's debuffs (Default: On).
 - Show taget's debuffs (Default: On).
 - Show player's private aura (Default: On).
+- Hide bloodlust debuffs (Default: On).
 
 - **Move Position**: Enter the `/asConfig` command in the chat.
 - **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
@@ -46,6 +47,7 @@ Private Aura(좌측 6개)
 - 대상의 디버프를 표시 (기본 On)
 - 플레이어의 디버프를 표시 (기본 On)
 - 플레이어의 Private Aura를 표시 (기본 On)
+- 블러드 디버프는 숨김 (기본 On)
 
 - **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 - **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화
