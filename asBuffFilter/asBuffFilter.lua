@@ -2,7 +2,7 @@
 local main_frame = CreateFrame("Frame", nil, UIParent);
 
 local filters = {
-	helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player),
+	helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player, AuraUtil.AuraFilters.Raid),
 	harmful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful),
 }
 
@@ -64,10 +64,10 @@ local function create_aurabutton(size, issteal)
 		frame:EnableMouse(false);
 		frame:SetMouseMotionEnabled(true);
 
-        frame:SetIcon(frame.icon);
+		frame:SetIcon(frame.icon);
 		if issteal then
 			frame.borderb:Hide();
-            frame.border:SetVertexColor(1, 1, 1);
+			frame.border:SetVertexColor(1, 1, 1);
 			frame.border:Show();
 		else
 			frame:SetAuraBorder(frame.border, borderoption);
@@ -108,72 +108,57 @@ local function update_target()
 	end
 end
 
-local function create_container(parent, unit, filter, anchor, hdir, vdir, size, maxcount)
+local function create_container(parent, unit, anchor, hdir, vdir)
 	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
 	container:SetFlowLayoutAnchorPoint(anchor);
 	container:SetFlowLayoutGrowthDirection(hdir, vdir);
-
-	container:AddAuraGroup("buffs", filter,
-		{ maxFrameCount = maxcount, initializeFrame = create_aurabutton(size, false) });
-	container:SetAuraGroupLayout("buffs", { elementSpacingX = 0.1 });
-	container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
 	container:SetUnit(unit);
 	container:SetEnabled(false);
 	return container;
 end
 
-local function create_harmcontainer(parent, unit, filter, anchor, hdir, vdir, size, maxcount)
-    local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
-    container:SetFlowLayoutAnchorPoint(anchor);
-    container:SetFlowLayoutGrowthDirection(hdir, vdir);
-
-    container:AddAuraGroup("steal", filter,
-        { maxFrameCount = maxcount, initializeFrame = create_aurabutton(size, true) });
-    container:SetAuraGroupLayout("steal", { elementSpacingX = 0.1 });
-    container:SetAuraGroupCandidateFilters("steal", { isStealable = true });
-
-    container:AddAuraGroup("buffs", filter,
-        { maxFrameCount = maxcount, initializeFrame = create_aurabutton(size, false) });
-    container:SetAuraGroupLayout("buffs", { elementSpacingX = 0.1 });
-    container:SetAuraGroupCandidateFilters("buffs", { isStealable = false });
-    container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
-    container:SetUnit(unit);
-    container:SetEnabled(false);
-    return container;
+local function add_group(container, gname, filter, cfilters, initinfos)
+	container:AddAuraGroup(gname, filter, initinfos);
+	container:SetAuraGroupLayout(gname, { elementSpacingX = 0.1 });
+	container:SetAuraGroupCandidateFilters(gname, cfilters);
 end
 
 local function setup_frames()
-
 	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 	local offset = 0;
 	if ASMOD_asUnitFrame and ASMOD_asUnitFrame.is_simplemode then
 		offset = 14;
 	end
 
-	main_frame.helpfulframe = create_container(main_frame, "target", filters.helpful, "LEFT",
-		AnchorUtil.FlowDirection.Right,
-		AnchorUtil.FlowDirection.Down, ns.configs.size, ns.configs.combat_max_buffs);
 
+	main_frame.helpfulframe = create_container(main_frame, "target", "LEFT", AnchorUtil.FlowDirection.Right,
+		AnchorUtil.FlowDirection.Down);
+	add_group(main_frame.helpfulframe, "buffs", filters.helpful, {},
+		{ maxFrameCount = ns.configs.combat_max_buffs, initializeFrame = create_aurabutton(ns.configs.size, false) });
 	main_frame.helpfulframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
 		ns.configs.target_ypoint - offset)
 	main_frame.helpfulframe:SetWidth(1)
 	main_frame.helpfulframe:SetHeight(1)
 	main_frame.helpfulframe:Show()
 
-	main_frame.nchelpfulframe = create_container(main_frame, "target", filters.harmful, "LEFT",
+	main_frame.nchelpfulframe = create_container(main_frame, "target", "LEFT",
 		AnchorUtil.FlowDirection.Right,
-		AnchorUtil.FlowDirection.Down, ns.configs.nocombat_size, ns.configs.nocombat_max_buffs);
-
+		AnchorUtil.FlowDirection.Down);
+	add_group(main_frame.nchelpfulframe, "buffs", filters.harmful, {},
+		{ maxFrameCount = ns.configs.nocombat_max_buffs, initializeFrame = create_aurabutton(ns.configs.nocombat_size,
+			false) });
 	main_frame.nchelpfulframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
 		ns.configs.target_ypoint - offset)
 	main_frame.nchelpfulframe:SetWidth(1)
 	main_frame.nchelpfulframe:SetHeight(1)
 	main_frame.nchelpfulframe:Show()
 
-	main_frame.harmfulframe = create_harmcontainer(main_frame, "target", filters.harmful, "LEFT",
-		AnchorUtil.FlowDirection.Right,
-		AnchorUtil.FlowDirection.Down, ns.configs.size, ns.configs.combat_max_buffs);
-
+	main_frame.harmfulframe = create_container(main_frame, "target", "LEFT", AnchorUtil.FlowDirection.Right,
+		AnchorUtil.FlowDirection.Down);
+	add_group(main_frame.harmfulframe, "steal", filters.helpful, { isStealable = true },
+		{ maxFrameCount = ns.configs.combat_max_buffs, initializeFrame = create_aurabutton(ns.configs.size, false) });
+	add_group(main_frame.harmfulframe, "buffs", filters.helpful, { isStealable = false },
+		{ maxFrameCount = ns.configs.combat_max_buffs, initializeFrame = create_aurabutton(ns.configs.size, false) });
 	main_frame.harmfulframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
 		ns.configs.target_ypoint - offset)
 	main_frame.harmfulframe:SetWidth(1)
@@ -210,13 +195,9 @@ local function on_event(self, event, arg1, ...)
 		update_target();
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		set_combatalpha();
-
 		update_target();
 	end
 end
-
-
-
 
 local function init()
 	ns.setup_option();
