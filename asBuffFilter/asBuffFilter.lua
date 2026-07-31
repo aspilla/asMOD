@@ -2,7 +2,7 @@
 local main_frame = CreateFrame("Frame", nil, UIParent);
 
 local filters = {
-	helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player, AuraUtil.AuraFilters.Raid),
+	helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player, AuraUtil.AuraFilters.RaidInCombat ),
 	harmful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful),
 }
 

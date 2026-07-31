@@ -8,6 +8,7 @@ local Options_Default = {
 	ShowTarget = true,
 	ShowPlayer = true,
 	ShowPrivate = true,
+	HideBloodDebuff = true,
 };
 
 ns.configs = {
@@ -30,10 +31,10 @@ ns.configs = {
 
 local L = {
 	PlayerDebuffRate = "Size scale of player debuffs",
-	CombatAlphaChange = "Change transparency when out of combat",
-	MillisecondsThreshold = "Time threshold with 0.1s increments cooldown",
-	ShowTarget = "Show player's debuffs",
-	ShowPlayer = "Show target's debuffs",
+	CombatAlphaChange = "Adjusts transparency when out of combat",
+	MillisecondsThreshold = "Remaining cooldown begins displaying in 0.1-second increments",
+	ShowTarget = "Show target's debuffs",
+	ShowPlayer = "Show player's debuffs",
 	ShowPrivate = "Show player's private auras",
 }
 

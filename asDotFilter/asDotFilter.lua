@@ -3,8 +3,8 @@
 local configs = {
 	size = 30,
 	sizerate = 0.8,
-	cool_fontsize = 12,
-	count_fontsize = 13,
+	cool_fontsize_rate = 12 / 30,
+	count_fontsize_rate = 13 / 30,
 
 	--설정 표시할 Unit
 	unitlist = {
@@ -40,7 +40,7 @@ local borderoption = {
 
 local main_frame = CreateFrame("Frame", "ADotF", UIParent);
 
-local function create_aurabutton()
+local function create_aurabutton(size)
 	return function(frame)
 		frame.cooldown = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
 		frame.cooldown:SetAllPoints(frame);
@@ -53,7 +53,7 @@ local function create_aurabutton()
 
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
-				r:SetFont(STANDARD_TEXT_FONT, configs.cool_fontsize, "OUTLINE");
+				r:SetFont(STANDARD_TEXT_FONT, size * configs.cool_fontsize_rate, "OUTLINE");
 				r:ClearAllPoints();
 				r:SetPoint("TOP", 0, 5);
 				r:SetDrawLayer("OVERLAY");
@@ -80,13 +80,13 @@ local function create_aurabutton()
 		frame.overlay:SetFrameLevel(frame:GetFrameLevel() + 5);
 
 		frame.count = frame.overlay:CreateFontString(nil, "OVERLAY");
-		frame.count:SetFont(STANDARD_TEXT_FONT, configs.count_fontsize, "OUTLINE")
+		frame.count:SetFont(STANDARD_TEXT_FONT, size * configs.count_fontsize_rate, "OUTLINE")
 		frame.count:ClearAllPoints();
 		frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
 		frame.count:SetTextColor(0, 1, 0);
 
-		frame:SetWidth(configs.size);
-		frame:SetHeight(configs.size * configs.sizerate);
+		frame:SetWidth(size);
+		frame:SetHeight(size * configs.sizerate);
 
 		frame:EnableMouse(false);
 		frame:SetMouseMotionEnabled(true);
@@ -121,26 +121,19 @@ local function update_allframes()
 	end
 end
 
-local function create_container(parent, unit, filter, anchor, hdir, vdir)
+local function create_container(parent, unit, anchor, hdir, vdir)
 	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
 	container:SetFlowLayoutAnchorPoint(anchor);
 	container:SetFlowLayoutGrowthDirection(hdir, vdir);
-
-	container:AddAuraGroup("dots", filter,
-		{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton() });
-	container:SetAuraGroupLayout("dots", { elementSpacingX = 0.1 });
-	container:SetAuraGroupCandidateFilters("dots", { nameplateShowPersonal = true });
-
-	if not ns.options.ShowNameplatesOnly then
-		container:AddAuraGroup("debuffs", filter,
-			{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton() });
-		container:SetAuraGroupLayout("debuffs", { elementSpacingX = 0.1 });
-		container:SetAuraGroupCandidateFilters("debuffs", { nameplateShowPersonal = false });
-	end
-	container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
 	container:SetUnit(unit);
-	container:SetEnabled(true);
+	container:SetEnabled(false);
 	return container;
+end
+
+local function add_group(container, gname, filter, cfilters, initinfos)
+	container:AddAuraGroup(gname, filter, initinfos);
+	container:SetAuraGroupLayout(gname, { elementSpacingX = 0.1 });
+	container:SetAuraGroupCandidateFilters(gname, cfilters);
 end
 
 local function setup_frame(unit)
@@ -152,9 +145,19 @@ local function setup_frame(unit)
 		offset = -50;
 	end
 
-	main_frame.containers[unit] = create_container(parent, unit, filters.helpful, "LEFT",
+	main_frame.containers[unit] = create_container(parent, unit, "LEFT",
 		AnchorUtil.FlowDirection.Right,
 		AnchorUtil.FlowDirection.Down);
+
+	add_group(main_frame.containers[unit], "dots", filters.helpful, { nameplateShowPersonal = true },
+		{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton(configs.size) });
+
+	if not ns.options.ShowNameplatesOnly then
+		add_group(main_frame.containers[unit], "debuffs", filters.helpful, { nameplateShowPersonal = false },
+			{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton(configs.size) });
+	end
+
+	main_frame.containers[unit]:SetEnabled(true);
 
 	main_frame.containers[unit]:SetPoint("LEFT", parent, "RIGHT", offset, 0);
 	main_frame.containers[unit]:SetWidth(1)

@@ -85,7 +85,7 @@ local borderoption = {
 	style = AuraButtonBorderStyle.Color,
 };
 
-local function create_aurabutton(rate)
+local function create_aurabutton(size)
 	return function(frame)
 		frame.cooldown = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
 		frame.cooldown:SetAllPoints(frame);
@@ -98,7 +98,7 @@ local function create_aurabutton(rate)
 
 		for _, r in next, { frame.cooldown:GetRegions() } do
 			if r:GetObjectType() == "FontString" then
-				r:SetFont(STANDARD_TEXT_FONT, ns.configs.size * ns.configs.cool_fontsize_rate * rate, "OUTLINE");
+				r:SetFont(STANDARD_TEXT_FONT, size * ns.configs.cool_fontsize_rate, "OUTLINE");
 				r:ClearAllPoints();
 				r:SetPoint("TOP", 0, 5);
 				r:SetDrawLayer("OVERLAY");
@@ -125,13 +125,13 @@ local function create_aurabutton(rate)
 		frame.overlay:SetFrameLevel(frame:GetFrameLevel() + 5);
 
 		frame.count = frame.overlay:CreateFontString(nil, "OVERLAY");
-		frame.count:SetFont(STANDARD_TEXT_FONT, ns.configs.size * ns.configs.count_fontsize_rate * rate, "OUTLINE")
+		frame.count:SetFont(STANDARD_TEXT_FONT, size * ns.configs.count_fontsize_rate, "OUTLINE")
 		frame.count:ClearAllPoints();
 		frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
 		frame.count:SetTextColor(0, 1, 0);
 
-		frame:SetWidth(ns.configs.size * rate);
-		frame:SetHeight(ns.configs.size * ns.configs.sizerate * rate);
+		frame:SetWidth(size);
+		frame:SetHeight(size * ns.configs.sizerate);
 
 		frame:EnableMouse(false);
 		frame:SetMouseMotionEnabled(true);
@@ -166,38 +166,19 @@ local function set_combatalpha()
 	end
 end
 
-local function create_container(parent, unit, filter, anchor, hdir, vdir, rate)
+local function create_container(parent, unit, anchor, hdir, vdir)
 	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
 	container:SetFlowLayoutAnchorPoint(anchor);
 	container:SetFlowLayoutGrowthDirection(hdir, vdir);
-
-	container:AddAuraGroup("debuffs", filter,
-		{ maxFrameCount = ns.configs.max_debuffs, initializeFrame = create_aurabutton(rate) });
-	container:SetAuraGroupLayout("debuffs", { elementSpacingX = 0.1 });
-	container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
 	container:SetUnit(unit);
-	container:SetEnabled(true);
+	container:SetEnabled(false);
 	return container;
 end
 
-local function create_targetcontainer(parent, unit, filter, anchor, hdir, vdir, rate)
-	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
-	container:SetFlowLayoutAnchorPoint(anchor);
-	container:SetFlowLayoutGrowthDirection(hdir, vdir);
-
-	container:AddAuraGroup("dots", filter,
-        { maxFrameCount = ns.configs.max_debuffs, initializeFrame = create_aurabutton(rate) });
-    container:SetAuraGroupLayout("dots", { elementSpacingX = 0.1 });
-    container:SetAuraGroupCandidateFilters("dots", { nameplateShowPersonal  = true });
-	container:AddAuraGroup("debuffs", filter,
-		{ maxFrameCount = ns.configs.max_debuffs, initializeFrame = create_aurabutton(rate) });
-	container:SetAuraGroupLayout("debuffs", { elementSpacingX = 0.1 });
-	container:SetAuraGroupCandidateFilters("debuffs", { nameplateShowPersonal  = false });
-
-	container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
-	container:SetUnit(unit);
-	container:SetEnabled(true);
-	return container;
+local function add_group(container, gname, filter, cfilters, initinfos)
+	container:AddAuraGroup(gname, filter, initinfos);
+	container:SetAuraGroupLayout(gname, { elementSpacingX = 0.1 });
+	container:SetAuraGroupCandidateFilters(gname, cfilters);
 end
 local function setup_frames()
 
@@ -208,9 +189,13 @@ local function setup_frames()
 	end
 
 	if ns.options.ShowTarget then
-		main_frame.targetframe = create_targetcontainer(main_frame, "target", filters.helpful, "LEFT",
-			AnchorUtil.FlowDirection.Right,
-			AnchorUtil.FlowDirection.Down, 1);
+		main_frame.targetframe = create_container(main_frame, "target", "LEFT", AnchorUtil.FlowDirection.Right,
+			AnchorUtil.FlowDirection.Down);
+		add_group(main_frame.targetframe, "dots", filters.helpful, { nameplateShowPersonal = true },
+			{ maxFrameCount = ns.configs.max_debuffs, initializeFrame = create_aurabutton(ns.configs.size) });
+		add_group(main_frame.targetframe, "debuffs", filters.helpful, { nameplateShowPersonal = false },
+			{ maxFrameCount = ns.configs.max_debuffs, initializeFrame = create_aurabutton(ns.configs.size) });
+		main_frame.targetframe:SetEnabled(true);
 
 		main_frame.targetframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
 			ns.configs.target_ypoint - offset)
@@ -225,9 +210,11 @@ local function setup_frames()
 
 
 	if ns.options.ShowPlayer then
-		main_frame.playerframe = create_container(main_frame, "player", filters.helpful, "RIGHT", AnchorUtil.FlowDirection
-			.Left,
-			AnchorUtil.FlowDirection.Down, ns.options.PlayerDebuffRate);
+		main_frame.playerframe = create_container(main_frame, "player", "RIGHT", AnchorUtil.FlowDirection.Left,
+			AnchorUtil.FlowDirection.Down);
+		add_group(main_frame.playerframe, "debuffs", filters.helpful, {},
+			{ maxFrameCount = ns.configs.max_debuffs, initializeFrame = create_aurabutton(ns.configs.size * ns.options.PlayerDebuffRate) });
+		main_frame.playerframe:SetEnabled(true);
 
 
 		main_frame.playerframe:SetPoint("RIGHT", UIParent, "CENTER", ns.configs.player_xpoint,
