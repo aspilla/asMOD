@@ -3,105 +3,65 @@ local _, ns = ...;
 local configs = {
 	polishedflush = 1261082,
 	heartofice = 1247799,
-	textureid = 7439203,
 	maxshatter = 20,
 	baseshatter = 4,
+	spellid = 1221389,
 }
 
-local gvalues = {
-	updateframe = nil,
-	cdid = nil,
-	type = 0,
-	colorcurve = C_CurveUtil.CreateColorCurve(),
-};
+local main_frame = CreateFrame("Frame", nil, UIParent);
+main_frame:SetSize(1, 1);
+main_frame:Show();
+
+local function create_aurabutton(max)
+	return function(frame)
+		frame:SetWidth(1);
+		frame:SetHeight(1);
+		frame.bar = CreateFrame("StatusBar", nil, frame)
+		frame.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+		frame.bar:GetStatusBarTexture():SetHorizTile(false)
+		frame.bar:SetStatusBarColor(1, 0, 1);
+		frame.bar:SetMinMaxValues(0, max);
+		frame.bar:SetWidth(ns.options.BarWidth)
+		frame.bar:SetHeight(ns.options.PowerBarHeight)
+		frame.bar:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0)
+		frame.bar:Show();
+		frame.bar:EnableMouse(false);
+
+		frame.bg = frame:CreateTexture(nil, "BACKGROUND");
+		frame.bg:SetPoint("TOPLEFT", frame.bar, "TOPLEFT", -1, 1);
+		frame.bg:SetPoint("BOTTOMRIGHT", frame.bar, "BOTTOMRIGHT", 1, -1);
+		frame.bg:SetColorTexture(0, 0, 0, 1);
 
 
-
-local function on_cooldownupdate(frame)
-	local aura = frame.auraDataCached;
-
-	if aura and UnitExists("target") then
-		ns.bar:SetValue(aura.applications, gvalues.type);
-		ns.bar.text:SetText(aura.applications);
-		--	local color = gvalues.colorcurve:Evaluate(aura.applications);
-		ns.bar:SetStatusBarColor(CreateColor(1, 0, 1, 1):GetRGBA());
-		gvalues.type = 1;
-		return;
-	end
-	ns.bar:SetValue(0);
-	ns.bar.text:SetText("0");
-	gvalues.type = 0;
-end
-
-
-
-local function scan_viewer()
-	local viewer = BuffIconCooldownViewer;
-	if viewer and viewer.GetChildren then
-		local childs = { viewer:GetChildren() };
-
-		for _, frame in ipairs(childs) do
-			if frame.cooldownID then
-				if gvalues.cdid then
-					if frame.cooldownID == gvalues.cdid then
-						gvalues.updateframe = frame;
-						return;
-					end
-				else
-					local textureid = frame.Icon:GetTexture();
-
-					if textureid and not issecretvalue(textureid) then
-						if textureid == configs.textureid then
-							gvalues.updateframe = frame;
-							gvalues.cdid = frame.cooldownID;
-							return;
-						end
-					end
-				end
-			end
-		end
+		frame.overlay = CreateFrame("Frame", nil, frame);
+		frame.overlay:SetFrameLevel(frame:GetFrameLevel() + 200);
+		frame.count = frame.overlay:CreateFontString(nil, "OVERLAY");
+		frame.count:SetFont(ns.configs.font, ns.options.FontSize, ns.configs.fontOutline)
+		frame.count:ClearAllPoints();
+		frame.count:SetPoint("CENTER", frame.bar, "CENTER", 0, 0);
+		frame.count:SetTextColor(1, 1, 1);
+		frame:SetApplicationCount(frame.count);
+		frame:SetApplicationBar(frame.bar, { maxApplications = max });
+		frame:Show();
 	end
 end
 
-local bhooked = false;
-local function init()
-	local viewer = BuffIconCooldownViewer;
-	if viewer then
-		if viewer.Layout then
-			scan_viewer();
-
-			if bhooked == false then
-				hooksecurefunc(viewer, "Layout", scan_viewer);
-				bhooked = true;
-			end
-		end
-	end
+local function create_container(parent, unit, anchor, hdir, vdir)
+	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
+	container:SetFlowLayoutAnchorPoint(anchor);
+	container:SetFlowLayoutGrowthDirection(hdir, vdir);
+	container:SetUnit(unit);
+	container:SetEnabled(true);
+	return container;
 end
 
-local function on_event(_, event, arg)
-	if event == "PLAYER_TARGET_CHANGED" then
-		if gvalues.updateframe then
-			gvalues.type = 0;
-			on_cooldownupdate(gvalues.updateframe);
-		end
-	end
+local function add_group(container, gname, filter, cfilters, initinfos)
+	container:AddAuraGroup(gname, filter, initinfos);
+	container:SetAuraGroupLayout(gname, { elementSpacingX = 0.1 });
+	container:SetAuraGroupCandidateFilters(gname, cfilters);
 end
-
-local function on_update()
-	if gvalues.updateframe then
-		on_cooldownupdate(gvalues.updateframe);
-	end
-end
-
-local main_frame = CreateFrame("Frame");
-main_frame:SetScript("OnEvent", on_event);
-local timer;
 
 local function setup_max_shatter(max, min)
-	if issecretvalue(max) then
-		return;
-	end
-
 	local frames = ns.bar.countframes;
 	for i = 1, 20 do
 		frames[i]:Hide();
@@ -110,16 +70,35 @@ local function setup_max_shatter(max, min)
 	if max == 0 then
 		return;
 	end
-
 	local width = ((ns.options.BarWidth + 2) / max);
 	for i = 1, max do
 		local frame = frames[i];
 		frame:SetWidth(width);
 		frame:Show();
 	end
+
+	local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
+	local cfilters = { includeSpellIDs = { [configs.spellid] = true } };
+
+	if main_frame.container == nil then
+		main_frame.container = create_container(main_frame, "target", "BOTTOM", AnchorUtil.FlowDirection.Right,
+			AnchorUtil.FlowDirection.Down);
+		add_group(main_frame.container, "shatter", filter, cfilters,
+			{ maxFrameCount = 1, initializeFrame = create_aurabutton(max) });
+		main_frame.container:SetPoint("BOTTOM", ns.bar, "BOTTOM", 0, 0);
+		main_frame.container:SetWidth(1)
+		main_frame.container:SetHeight(1)
+		main_frame.container:Show()
+	end
 end
 
-function ns.setup_shatter()
+local function on_event(_, event)
+	if (event == "PLAYER_TARGET_CHANGED") and main_frame.container then
+		main_frame.container:UpdateAllAuras();
+	end
+end
+
+function ns.setup_shatter(parent)
 	local shattercount = configs.baseshatter;
 
 	if C_SpellBook.IsSpellKnown(configs.heartofice) then
@@ -129,25 +108,23 @@ function ns.setup_shatter()
 	if C_SpellBook.IsSpellKnown(configs.polishedflush) then
 		shattercount = shattercount + 1;
 	end
-
-	ns.bar:SetMinMaxValues(0, 20);
+	main_frame:SetParent(parent);
+	main_frame:SetFrameLevel(ns.configs.framelevel + 200);
+	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
+	main_frame:SetScript("OnEvent", on_event)
+	ns.bar:SetValue(0);
+	ns.bar.text:Hide();
 	setup_max_shatter(20, shattercount);
-	init();
-	scan_viewer();
-	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
-	main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
-	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-	timer = C_Timer.NewTicker(0.2, on_update);
+	main_frame.container:SetEnabled(true);
 end
 
 function ns.clear_shatter()
-	if timer then
-		timer:Cancel();
+	local frames = ns.bar.countframes;
+	for i = 1, 20 do
+		frames[i]:Hide();
 	end
-	main_frame:UnregisterEvent("PLAYER_TARGET_CHANGED");
-	main_frame:UnregisterEvent("PLAYER_REGEN_ENABLED");
-	main_frame:UnregisterEvent("PLAYER_ENTERING_WORLD");
-	setup_max_shatter(0);
-	gvalues.updateframe = nil;
-	gvalues.cid = nil;
+	if main_frame.container then
+		main_frame.container:SetEnabled(false);
+	end
+	main_frame:UnregisterAllEvents();
 end

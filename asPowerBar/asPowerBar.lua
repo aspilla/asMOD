@@ -257,7 +257,7 @@ local function init_class()
 
 	resizebars(bsmallprimary, bbigsecondary);
 	if bshatter then
-		ns.setup_shatter();
+		ns.setup_shatter(main_frame);
 	else
 		ns.setup_power();
 	end
@@ -337,7 +337,7 @@ local function init_addon()
 	ns.bar.countframes = {};
 	for i = 1, 20 do
 		ns.bar.countframes[i] = CreateFrame("Frame", nil, main_frame, "BackdropTemplate");
-		ns.bar.countframes[i]:SetFrameLevel(ns.configs.framelevel + 200);
+		ns.bar.countframes[i]:SetFrameLevel(ns.configs.framelevel + 300);
 		ns.bar.countframes[i]:SetHeight(ns.options.PowerBarHeight + 2);
 		ns.bar.countframes[i]:SetWidth(20);
 
