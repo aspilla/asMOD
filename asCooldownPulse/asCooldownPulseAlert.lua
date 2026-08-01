@@ -107,9 +107,10 @@ local function update_buttons(viewer)
 	end
 
 	for _, button in ipairs(visiblechilds) do
+		local itemlocation = button:GetItemLocation();
 		local spellid = button:GetSpellID();
 
-		if spellid and  not issecretvalue(spellid) and alertspells[spellid] == nil then
+		if itemlocation == nil and spellid and  not issecretvalue(spellid) and alertspells[spellid] == nil then
 			alertspells[spellid] = 0;
 		end
 	end
