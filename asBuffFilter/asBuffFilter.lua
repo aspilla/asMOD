@@ -130,10 +130,9 @@ local function setup_frames()
 		offset = 14;
 	end
 
-
 	main_frame.helpfulframe = create_container(main_frame, "target", "LEFT", AnchorUtil.FlowDirection.Right,
 		AnchorUtil.FlowDirection.Down);
-	add_group(main_frame.helpfulframe, "buffs", filters.helpful, {},
+	add_group(main_frame.helpfulframe, "buffs", filters.helpful, cfilters,
 		{ maxFrameCount = ns.configs.combat_max_buffs, initializeFrame = create_aurabutton(ns.configs.size, false) });
 	main_frame.helpfulframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
 		ns.configs.target_ypoint - offset)
@@ -155,9 +154,9 @@ local function setup_frames()
 
 	main_frame.harmfulframe = create_container(main_frame, "target", "LEFT", AnchorUtil.FlowDirection.Right,
 		AnchorUtil.FlowDirection.Down);
-	add_group(main_frame.harmfulframe, "steal", filters.helpful, { isStealable = true },
-		{ maxFrameCount = ns.configs.combat_max_buffs, initializeFrame = create_aurabutton(ns.configs.size, false) });
-	add_group(main_frame.harmfulframe, "buffs", filters.helpful, { isStealable = false },
+	add_group(main_frame.harmfulframe, "steal", filters.harmful, { isStealable = true },
+		{ maxFrameCount = ns.configs.combat_max_buffs, initializeFrame = create_aurabutton(ns.configs.size, true) });
+	add_group(main_frame.harmfulframe, "buffs", filters.harmful, { isStealable = false },
 		{ maxFrameCount = ns.configs.combat_max_buffs, initializeFrame = create_aurabutton(ns.configs.size, false) });
 	main_frame.harmfulframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
 		ns.configs.target_ypoint - offset)
