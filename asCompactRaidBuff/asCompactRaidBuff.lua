@@ -24,6 +24,64 @@ local function is_healer(role)
 	return false;
 end
 
+local function create_aurabutton(statusbar)
+	return function(frame)
+		local texture = statusbar:GetStatusBarTexture();
+		frame.buffcolor = frame:CreateTexture(nil, "BORDER", "asBuffTextureTemplate", 7);
+		frame:SetFrameLevel(statusbar:GetFrameLevel() + 1);
+		frame.buffcolor:ClearAllPoints();
+		frame.buffcolor:SetAllPoints(texture);
+		frame.buffcolor:SetVertexColor(0.5, 0.5, 0.5);
+
+		frame:Show();
+	end
+end
+
+local function create_container(parent, unit, anchor, hdir, vdir)
+	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
+	container:SetFlowLayoutAnchorPoint(anchor);
+	container:SetFlowLayoutGrowthDirection(hdir, vdir);
+	container:SetUnit(unit);
+	container:SetEnabled(true);
+	return container;
+end
+
+local function add_group(container, gname, filter, cfilters, initinfos)
+	container:AddAuraGroup(gname, filter, initinfos);
+	container:SetAuraGroupLayout(gname, { elementSpacingX = 0.1 });
+	container:SetAuraGroupCandidateFilters(gname, cfilters);
+end
+
+local function setup_buffcolor(asframe)
+	if not ns.showlist then
+		if asframe.container then
+			asframe.container:SetEnabled(false);
+		end
+		return;
+	end
+
+	if asframe.frame and asframe.frame.healthBar then
+		local unit = asframe.frame.displayedUnit or asframe.frame.unit;
+
+		local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player,
+			AuraUtil.AuraFilters.RaidInCombat);
+		local cfilters = { includeSpellIDs = ns.showlist };
+
+		if asframe.container == nil then
+			asframe.container = create_container(asframe.frame.healthBar, unit, "BOTTOM", AnchorUtil.FlowDirection.Right,
+				AnchorUtil.FlowDirection.Down);
+			add_group(asframe.container, "whilwind", filter, cfilters,
+				{ maxFrameCount = 1, initializeFrame = create_aurabutton(asframe.frame.healthBar) });
+			asframe.container:SetPoint("BOTTOM", asframe, "BOTTOM", 0, 0);
+			asframe.container:SetWidth(1)
+			asframe.container:SetHeight(1)
+			asframe.container:Show()
+			asframe.container:SetFrameLevel(asframe.frame:GetFrameLevel());
+		end
+		asframe.container:SetEnabled(true);
+	end
+end
+
 function ns.setup_frame(asframe)
 	if not asframe.frame or asframe.frame:IsForbidden() then
 		return
@@ -109,16 +167,8 @@ function ns.setup_frame(asframe)
 		asframe.leadericon:Hide();
 	end
 
-	if not asframe.buffcolor then
-		asframe.buffcolor = frame:CreateTexture(nil, "BORDER", "asBuffTextureTemplate", 7);
-		asframe.buffcolor:Hide();
-	end
-
-	if asframe.buffcolor then
-		local previousTexture = frame.healthBar:GetStatusBarTexture();
-		asframe.buffcolor:ClearAllPoints();
-		asframe.buffcolor:SetAllPoints(previousTexture);
-		asframe.buffcolor:SetVertexColor(0.5, 0.5, 0.5);
+	if ns.options.BuffColor then
+		setup_buffcolor(asframe);
 	end
 
 	ns.update_features(asframe);
@@ -240,6 +290,22 @@ end
 local timero;
 
 local function init()
+	local spec = C_SpecializationInfo.GetSpecialization();
+	local localizedClass, englishClass = UnitClass("player");
+
+	ns.showlist = nil;
+
+	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
+		spec = 1;
+	end
+
+	if spec then
+		local listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
+		if ns[listname] then
+			ns.showlist = CopyTable(ns[listname]);
+		end
+	end
+
 	if timero then
 		timero:Cancel();
 	end

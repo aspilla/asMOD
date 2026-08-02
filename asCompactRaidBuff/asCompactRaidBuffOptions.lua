@@ -33,6 +33,40 @@ if GetLocale() == "koKR" then
     }
 end
 
+ns.ACRB_ShowList_MONK_2 = {
+    [119611] = true, --소생의 안개
+
+}
+-- 신기
+ns.ACRB_ShowList_PALADIN_1 = {
+    [200025] = true, -- 고결의 봉화
+
+}
+-- 수사
+ns.ACRB_ShowList_PRIEST_1 = {
+    [194384] = true, -- 속죄
+}
+
+-- 신사
+ns.ACRB_ShowList_PRIEST_2 = {
+    [139] = true, -- 소생
+}
+
+ns.ACRB_ShowList_SHAMAN_3 = {
+    [61295] =true, --성난 해일
+}
+
+ns.ACRB_ShowList_DRUID_4 = {
+    [774] = true, --회복
+}
+
+ns.ACRB_ShowList_EVOKER_2 = {
+    [364343] = true, --메아리
+}
+
+ns.ACRB_ShowList_EVOKER_3 = {
+    [410089] = true, --예지
+}
 ns.options = CopyTable(Options_Default);
 
 local tempoption = {};
