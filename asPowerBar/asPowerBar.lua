@@ -22,6 +22,7 @@ local _, class       = UnitClass("player")
 ns.classcolor        = C_ClassColor.GetClassColor(class);
 
 local main_frame     = CreateFrame("FRAME", nil, UIParent);
+ns.main_frame = main_frame;
 
 local function set_height(heightprimary, heightsecondary)
 	ns.combocountbar:SetHeight(heightsecondary);
@@ -332,7 +333,7 @@ local function init_addon()
 	ns.bg = main_frame.bgframe:CreateTexture(nil, "BACKGROUND");
 	ns.bg:SetPoint("TOPLEFT", ns.bar, "TOPLEFT", -1, 1);
 	ns.bg:SetPoint("BOTTOMRIGHT", ns.bar, "BOTTOMRIGHT", 1, -1);
-	ns.bg:SetColorTexture(0, 0, 0, 1);
+	ns.bg:SetColorTexture(0.1, 0.1, 0.1, 1);
 
 	ns.bar.countframes = {};
 	for i = 1, 20 do
@@ -342,7 +343,7 @@ local function init_addon()
 		ns.bar.countframes[i]:SetWidth(20);
 
 		if i == 1 then
-			ns.bar.countframes[i]:SetPoint("TOPLEFT", ns.bar, "TOPLEFT", -1, 0);
+			ns.bar.countframes[i]:SetPoint("TOPLEFT", ns.bar, "TOPLEFT", -1, 1);
 		else
 			ns.bar.countframes[i]:SetPoint("LEFT", ns.bar.countframes[i - 1], "RIGHT", 0, 0);
 		end
@@ -382,7 +383,7 @@ local function init_addon()
 	ns.combocountbar.bg = ns.combocountbar:CreateTexture(nil, "BACKGROUND");
 	ns.combocountbar.bg:SetPoint("TOPLEFT", ns.combocountbar, "TOPLEFT", -1, 1);
 	ns.combocountbar.bg:SetPoint("BOTTOMRIGHT", ns.combocountbar, "BOTTOMRIGHT", 1, -1);
-	ns.combocountbar.bg:SetColorTexture(0.2, 0.2, 0.2, 1);
+	ns.combocountbar.bg:SetColorTexture(0.1, 0.1, 0.1, 1);
 	ns.combocountbar:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", 0, 1);
 	ns.combocountbar:SetWidth(ns.options.BarWidth);
 	ns.combocountbar:SetStatusBarColor(1, 1, 1);
@@ -409,7 +410,7 @@ local function init_addon()
 		ns.combobars[i].bg = ns.combobars[i]:CreateTexture(nil, "BACKGROUND");
 		ns.combobars[i].bg:SetPoint("TOPLEFT", ns.combobars[i], "TOPLEFT", -1, 1);
 		ns.combobars[i].bg:SetPoint("BOTTOMRIGHT", ns.combobars[i], "BOTTOMRIGHT", 1, -1);
-		ns.combobars[i].bg:SetColorTexture(0, 0, 0, 1);
+		ns.combobars[i].bg:SetColorTexture(0.1, 0.1, 0.1, 1);
 
 		if i == 1 then
 			ns.combobars[i]:SetPoint("BOTTOMLEFT", ns.bar, "TOPLEFT", 0, 1);

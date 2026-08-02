@@ -1,107 +1,85 @@
-local _, ns      = ...
+local _, ns = ...;
 
-local gvalue     = {
-    stack         = 0,
-    expiretime    = nil,
-    noconsumetime = 0,
-    isunhinged    = false,
-}
-local castguids  = {}
-
-local configs    = {
-    maxstack   = 4,
-    duration   = 20,
-    unhingedid = 386628,
-};
-
-local generators = {
-    [190411] = true,
-    [6343]   = true,
-    [435222] = true,
+local configs = {
+	max = 4,
+	spellid = 85739,
+	barcolor = C_ClassColor.GetClassColor("WARRIOR");
 }
 
-local spenders   = {
-    [23881]  = true,
-    [85288]  = true,
-    [280735] = true,
-    [202168] = true,
-    [184367] = true,
-    [335096] = true,
-    [335097] = true,
-    [5308]   = true,
-}
+local main_frame = CreateFrame("Frame", nil, UIParent);
+main_frame:SetSize(1, 1);
+main_frame:Show();
 
-local function is_spellidrange()
-    return C_Item.IsItemInRange(63427, "target")
+local function create_aurabutton(max)
+	return function(frame)
+		frame:SetWidth(1);
+		frame:SetHeight(1);
+		frame.bar = CreateFrame("StatusBar", nil, frame)
+		frame.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+		frame.bar:GetStatusBarTexture():SetHorizTile(false)
+		frame.bar:SetStatusBarColor(configs.barcolor:GetRGB());
+		frame.bar:SetMinMaxValues(0, max);
+		frame.bar:SetWidth(ns.options.BarWidth)
+		frame.bar:SetHeight(ns.options.ComboBarHeight)
+		frame.bar:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0)
+		frame.bar:Show();
+		frame.bar:EnableMouse(false);
+
+		frame.bg = frame:CreateTexture(nil, "BACKGROUND");
+		frame.bg:SetPoint("TOPLEFT", frame.bar, "TOPLEFT", -1, 1);
+		frame.bg:SetPoint("BOTTOMRIGHT", frame.bar, "BOTTOMRIGHT", 1, -1);
+		frame.bg:SetColorTexture(0.1, 0.1, 0.1, 1);
+		frame:SetApplicationBar(frame.bar, { maxApplications = max });
+		frame:Show();
+	end
 end
 
-local function on_event(_, event, ...)
-    local unit, castguid, spellid = ...
-    if unit ~= "player" then return end
-    if event ~= "UNIT_SPELLCAST_SUCCEEDED" then return end
-
-    if castguid and castguids[castguid] then return end
-    if castguid then castguids[castguid] = true end
-
-    if gvalue.isunhinged and (
-            spellid == 50622
-            or spellid == 46924
-            or spellid == 227847
-            or spellid == 184362
-            or spellid == 446035
-        ) then
-        gvalue.noconsumetime = GetTime() + 2
-    end
-
-    if generators[spellid] then
-        local hasTarget = UnitExists("target") and UnitCanAttack("player", "target") and not UnitIsDead("target");
-        if hasTarget and not is_spellidrange() then return end
-        C_Timer.After(0.15, function()
-            if UnitAffectingCombat("player") then
-                gvalue.stack = configs.maxstack
-                gvalue.expiretime = GetTime() + configs.duration
-                ns.show_combo(gvalue.stack);
-            end
-        end)
-
-        return
-    end
-
-    if spenders[spellid] then
-        if (GetTime() < gvalue.noconsumetime) and (spellid == 23881) then return end
-        if (gvalue.stack or 0) <= 0 then return end
-        gvalue.stack = math.max(0, (gvalue.stack or 0) - 1)
-        if gvalue.stack == 0 then gvalue.expiretime = nil end
-
-        ns.show_combo(gvalue.stack);
-    end
+local function create_container(parent, unit, anchor, hdir, vdir)
+	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
+	container:SetFlowLayoutAnchorPoint(anchor);
+	container:SetFlowLayoutGrowthDirection(hdir, vdir);
+	container:SetUnit(unit);
+	container:SetEnabled(true);
+	return container;
 end
 
-local function on_update()
-    if gvalue.expiretime and GetTime() >= gvalue.expiretime then
-        gvalue.stack = 0
-        gvalue.expiretime = nil
-    end
-
-    ns.show_combo(gvalue.stack);
+local function add_group(container, gname, filter, cfilters, initinfos)
+	container:AddAuraGroup(gname, filter, initinfos);
+	container:SetAuraGroupLayout(gname, { elementSpacingX = 0.1 });
+	container:SetAuraGroupCandidateFilters(gname, cfilters);
 end
 
-local timer = nil;
-local main_frame = CreateFrame("Frame");
-main_frame:SetScript("OnEvent", on_event);
+local function setup_max_whilwind(max)
 
-function ns.setup_whirlwind(spellid)
-    if spellid and C_SpellBook.IsSpellKnown(spellid) then
-        ns.setup_max_combo(configs.maxstack);
-        gvalue.isunhinged = C_SpellBook.IsSpellKnown(configs.unhingedid) or false;
-        main_frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
-        timer = C_Timer.NewTicker(0.2, on_update);
-    end
+	local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player);
+	local cfilters = { includeSpellIDs = { [configs.spellid] = true } };
+
+	if main_frame.container == nil then
+		main_frame.container = create_container(main_frame, "player", "BOTTOM", AnchorUtil.FlowDirection.Right,
+			AnchorUtil.FlowDirection.Down);
+		add_group(main_frame.container, "whilwind", filter, cfilters,
+			{ maxFrameCount = 1, initializeFrame = create_aurabutton(max) });
+		main_frame.container:SetPoint("BOTTOM", ns.combocountbar, "BOTTOM", 0, 0);
+		main_frame.container:SetWidth(1)
+		main_frame.container:SetHeight(1)
+		main_frame.container:Show()
+	end
+end
+
+
+function ns.setup_whirlwind()
+	ns.setup_max_spell(configs.max);
+    ns.combocountbar:Show();
+	ns.combocountbar:SetValue(0);
+	main_frame:SetParent(ns.main_frame);
+	main_frame:SetFrameLevel(ns.configs.framelevel);
+	setup_max_whilwind(configs.max);
+	main_frame.container:SetEnabled(true);
 end
 
 function ns.clear_whirlwind()
-    main_frame:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-    if timer then
-        timer:Cancel();
-    end
+	ns.combocountbar:Hide();
+	if main_frame.container then
+		main_frame.container:SetEnabled(false);
+	end
 end

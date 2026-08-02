@@ -19,10 +19,10 @@ local function create_aurabutton(max)
 		frame.bar = CreateFrame("StatusBar", nil, frame)
 		frame.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
 		frame.bar:GetStatusBarTexture():SetHorizTile(false)
-		frame.bar:SetStatusBarColor(1, 0, 1);
+		frame.bar:SetStatusBarColor(0.7, 0.4, 1);
 		frame.bar:SetMinMaxValues(0, max);
 		frame.bar:SetWidth(ns.options.BarWidth)
-		frame.bar:SetHeight(ns.options.PowerBarHeight)
+		frame.bar:SetHeight(ns.bar:GetHeight())
 		frame.bar:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0)
 		frame.bar:Show();
 		frame.bar:EnableMouse(false);
@@ -30,7 +30,7 @@ local function create_aurabutton(max)
 		frame.bg = frame:CreateTexture(nil, "BACKGROUND");
 		frame.bg:SetPoint("TOPLEFT", frame.bar, "TOPLEFT", -1, 1);
 		frame.bg:SetPoint("BOTTOMRIGHT", frame.bar, "BOTTOMRIGHT", 1, -1);
-		frame.bg:SetColorTexture(0, 0, 0, 1);
+		frame.bg:SetColorTexture(0.1, 0.1, 0.1, 1);
 
 
 		frame.overlay = CreateFrame("Frame", nil, frame);
@@ -114,7 +114,7 @@ function ns.setup_shatter(parent)
 	main_frame:SetScript("OnEvent", on_event)
 	ns.bar:SetValue(0);
 	ns.bar.text:Hide();
-	setup_max_shatter(20, shattercount);
+	setup_max_shatter(configs.maxshatter, shattercount);
 	main_frame.container:SetEnabled(true);
 end
 

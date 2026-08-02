@@ -50,7 +50,7 @@ function ns.setup_auracombo(auraid, maxcombo)
             ns.combocountbar.bg:SetVertexColor(0, 0, 0, 1);
             check_void();
         elseif auraid == 12950 then
-            ns.setup_whirlwind(auraid);
+            ns.setup_whirlwind();
         else
             ns.setup_max_combo(maxcombo);
             gvalue.check_func = check_auracount;
@@ -64,5 +64,4 @@ end
 function ns.clear_auracombo()
     gvalue.check_func = nil;
     main_frame:UnregisterEvent("UNIT_AURA");
-    ns.setup_whirlwind();
 end
