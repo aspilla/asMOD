@@ -27,9 +27,9 @@ local parentframes = {
 };
 
 local lust_debuffs = {
-	[57723] = true,  --shaman (alliance)
-	[57724] = true,  --shaman
-	[80354] = true,  --mage
+	[57723] = true, --shaman (alliance)
+	[57724] = true, --shaman
+	[80354] = true, --mage
 	[264689] = true, --hunter
 	[390435] = true, --evoker
 };
@@ -129,7 +129,7 @@ local function update_allframes()
 	end
 end
 
-local function create_container(parent, unit, anchor, hdir, vdir)
+local function create_container(parent, unit, anchor, hdir, vdir, sortmethod, sortdirection)
 	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
 	container:SetFlowLayoutAnchorPoint(anchor);
 	container:SetFlowLayoutGrowthDirection(hdir, vdir);
@@ -138,10 +138,13 @@ local function create_container(parent, unit, anchor, hdir, vdir)
 	return container;
 end
 
-local function add_group(container, gname, filter, cfilters, initinfos)
+local function add_group(container, gname, filter, cfilters, initinfos, sortmethod, sortdirection)
 	container:AddAuraGroup(gname, filter, initinfos);
 	container:SetAuraGroupLayout(gname, { elementSpacingX = 0.1 });
 	container:SetAuraGroupCandidateFilters(gname, cfilters);
+	if sortmethod then
+		container:SetAuraGroupSortMethod(gname, sortmethod, sortdirection);
+	end
 end
 
 local function setup_frame(unit)
@@ -164,11 +167,13 @@ local function setup_frame(unit)
 		AnchorUtil.FlowDirection.Down);
 
 	add_group(main_frame.containers[unit], "dots", filters.helpful, { nameplateShowPersonal = true },
-		{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton(configs.size) });
+		{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton(configs.size) },
+		AuraContainerSortMethod.NameOnly, AuraContainerSortDirection.Normal);
 
 	if not ns.options.ShowNameplatesOnly then
 		add_group(main_frame.containers[unit], "debuffs", filters.helpful, cfilters,
-			{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton(configs.size) });
+			{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton(configs.size) },
+			AuraContainerSortMethod.NameOnly, AuraContainerSortDirection.Normal);
 	end
 
 	main_frame.containers[unit]:SetEnabled(true);
