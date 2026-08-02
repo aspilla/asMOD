@@ -11,7 +11,7 @@ Primary Resource / Class Resource Display
 
 ## Class & Specialization Features
 
-- **Evoker:** Essence
+- **Evoker:** Essence, [Augmentation] Ebon Might
 - **Paladin:** Holy Power
 - **Mage:** [Arcane] Arcane Charges, [Fire] Fire Blast cooldown, [Frost] Target's Winter's Chill debuff stacks, Icicle stacks
 - **Warlock:** Soul Shards, [Destruction] Soul Shard Fragments
@@ -62,7 +62,7 @@ Primary Resource / Class Resource Display
 
 ## 직업 전문화 특성
 
-- **기원사 :** 정수
+- **기원사 :** 정수, [증강] 칠흑의 힘
 - **성기사 :** 신성한 힘
 - **마법사 :** [비전] 비전 충전물, [화염] 화염작열 쿨다운, [냉기] 대상 빙결 디버프 중첩, 고드름 중첩
 - **흑마법사 :** 영혼의 조각, [파괴] 영혼의 조각 파편
