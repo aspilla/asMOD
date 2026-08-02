@@ -29,7 +29,7 @@ ns.isevoker = false;
 ns.unit_player = "player";
 ns.unit_pet = "pet";
 ns.unitframes = {};
-ns.isfrostm = false;
+ns.bshowmana = false;
 
 local region = GetCurrentRegion();
 
@@ -651,14 +651,14 @@ end
 
 
 local function init_lowhealth()
-	local localizedClass, englishClass = UnitClass("player");
+	local _, class = UnitClass("player");
 	local spec = C_SpecializationInfo.GetSpecialization();
 
-	ns.isfrostm = false;
+	ns.bshowmana = false;
 	local lowhealthpercent = 0;
 	local highhealthpercent = 0;
 	do
-		if (englishClass == "MAGE") then
+		if (class == "MAGE") then
 			if (C_SpellBook.IsSpellKnown(2948) or C_SpellBook.IsSpellKnown(450746)) then
 				lowhealthpercent = 30;
 			end
@@ -668,11 +668,17 @@ local function init_lowhealth()
 			end
 
 			if spec == 3 then
-				ns.isfrostm = true;
+				ns.bshowmana = true;
 			end
 		end
 
-		if (englishClass == "HUNTER") then
+		if (class == "EVOKER") then
+			if spec == 3 then
+				ns.bshowmana = true;
+			end
+		end
+
+		if (class == "HUNTER") then
 			if (C_SpellBook.IsSpellKnown(466930) or C_SpellBook.IsSpellKnown(466932)) then
 				highhealthpercent = 80;
 				lowhealthpercent = 20;
@@ -681,7 +687,7 @@ local function init_lowhealth()
 			end
 		end
 
-		if (englishClass == "WARRIOR") then
+		if (class == "WARRIOR") then
 			if (C_SpellBook.IsSpellKnown(281001)) then
 				lowhealthpercent = 35;
 			else
@@ -689,19 +695,19 @@ local function init_lowhealth()
 			end
 		end
 
-		if (englishClass == "PRIEST") then
+		if (class == "PRIEST") then
 			if (C_SpellBook.IsSpellKnown(32379)) then
 				lowhealthpercent = 20;
 			end
 		end
 
-		if (englishClass == "DEATHKNIGHT") then
+		if (class == "DEATHKNIGHT") then
 			if (C_SpellBook.IsSpellKnown(343294)) then
 				lowhealthpercent = 35;
 			end
 		end
 
-		if (englishClass == "WARLOCK") then
+		if (class == "WARLOCK") then
 			if (C_SpellBook.IsSpellKnown(17877)) then --어연
 				lowhealthpercent = 20;
 			end

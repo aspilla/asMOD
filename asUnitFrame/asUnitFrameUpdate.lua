@@ -234,7 +234,7 @@ function ns.update_unitframe_other(frame)
 		end
 
 		if frame.isplayerframe then
-			if powerType > 0 or ns.isfrostm then
+			if powerType > 0 or ns.bshowmana then
 				local manavalue = UnitPower(unit, 0);
 				local manaMax = UnitPowerMax(unit, 0);
 

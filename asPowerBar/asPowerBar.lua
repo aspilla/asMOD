@@ -22,7 +22,7 @@ local _, class       = UnitClass("player")
 ns.classcolor        = C_ClassColor.GetClassColor(class);
 
 local main_frame     = CreateFrame("FRAME", nil, UIParent);
-ns.main_frame = main_frame;
+ns.main_frame        = main_frame;
 
 local function set_height(heightprimary, heightsecondary)
 	ns.combocountbar:SetHeight(heightsecondary);
@@ -76,6 +76,7 @@ local function init_class()
 	local bsmallprimary = false;
 	local bbigsecondary = false;
 	local bshatter = false;
+	local aurabarid = nil;
 
 	ns.combotext:SetText("");
 	ns.combotext:Hide();
@@ -101,13 +102,17 @@ local function init_class()
 	ns.clear_stagger();
 	ns.clear_whirlwind();
 	ns.clear_shatter();
+	ns.clear_aurabar();
 	ns.clear_power();
 
 	if (englishClass == "EVOKER") then
 		powerlevel = Enum.PowerType.Essence;
-		if (spec and spec ~= 2) then
+		if (spec and spec == 1) then
 			bsmallprimary = true;
 			bbigsecondary = true;
+		end
+		if (spec and spec == 3) then
+			aurabarid = 395296;
 		end
 	end
 
@@ -258,7 +263,9 @@ local function init_class()
 
 	resizebars(bsmallprimary, bbigsecondary);
 	if bshatter then
-		ns.setup_shatter(main_frame);
+		ns.setup_shatter();
+    elseif aurabarid then
+		ns.setup_aurabar(aurabarid);
 	else
 		ns.setup_power();
 	end
