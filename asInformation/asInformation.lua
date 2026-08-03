@@ -5,7 +5,7 @@ local configs = {
 	normalalpha = 0.5,
 	updaterate = 0.2,
 	x_point = -165 - 25,
-	y_point = -300,
+	y_point = -288,
 	width = 90,
 	height = 12,
 	barcolor = { r = 0.5, g = 0.5, b = 0.5 },
