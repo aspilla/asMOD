@@ -78,7 +78,7 @@ local function setup_container(spellid)
 	if main_frame.container == nil then
 		main_frame.container = create_container(main_frame, "player", "BOTTOM", AnchorUtil.FlowDirection.Right,
 			AnchorUtil.FlowDirection.Down);
-		add_group(main_frame.container, "shatter", filter, cfilters,
+		add_group(main_frame.container, "aurabar", filter, cfilters,
 			{ maxFrameCount = 1, initializeFrame = create_aurabutton() });
 		main_frame.container:SetPoint("BOTTOM", ns.bar, "BOTTOM", 0, 0);
 		main_frame.container:SetWidth(1)

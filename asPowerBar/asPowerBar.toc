@@ -13,11 +13,11 @@ asPowerBarOption.lua
 asPowerBarLib.lua
 asPowerBarWhirlwind.lua
 asPowerBarShatter.lua
-asPowerBarAuraBar.lua
 asPowerBarRune.lua
 asPowerBarCombo.lua
 asPowerBarStagger.lua
-asPowerBarAura.lua
+asPowerBarAuraBar.lua
+asPowerBarAuraCombo.lua
 asPowerBarSpell.lua
 asPowerBarPower.lua
 asPowerBar.xml
