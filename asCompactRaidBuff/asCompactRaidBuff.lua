@@ -70,9 +70,9 @@ local function setup_buffcolor(asframe)
 		if asframe.container == nil then
 			asframe.container = create_container(asframe.frame.healthBar, unit, "BOTTOM", AnchorUtil.FlowDirection.Right,
 				AnchorUtil.FlowDirection.Down);
-			add_group(asframe.container, "whilwind", filter, cfilters,
+			add_group(asframe.container, "buffcolor", filter, cfilters,
 				{ maxFrameCount = 1, initializeFrame = create_aurabutton(asframe.frame.healthBar) });
-			asframe.container:SetPoint("BOTTOM", asframe, "BOTTOM", 0, 0);
+			asframe.container:SetPoint("BOTTOM", asframe.frame.healthBar, "BOTTOM", 0, 0);
 			asframe.container:SetWidth(1)
 			asframe.container:SetHeight(1)
 			asframe.container:Show()
