@@ -8,18 +8,6 @@
 * If your PC specs are lower, you can lower other options in addition to the recommended disabled ("Off") settings below. If you have plenty of room in your minimum framerate, you can raise the options.
 * While frame generation technologies like AFMF (AMD Fluid Motion Frames) can boost minimum FPS, establishing a baseline of at least 60 native FPS is still required, so frame generation is not covered separately here.
 
-## PC Environment (For Reference, Developer System Specs & Settings)
-* **Specs**: Ryzen 7 7800X3D, RX 9070, DDR5 4800MHz 32GB
-* **OS/Drivers**: Windows 11 25H2 (Latest Version), Latest Graphics Drivers
-* **BIOS Settings**: **SMT (Simultaneous Multithreading) Disabled**. This forces the CPU to utilize 8 physical cores instead of 16 logical threads. While this yields a 3–4% improvement in minimum FPS stability, the difference is minor. If you use your PC for multi-threaded productivity workloads or have a CPU with fewer than 16 cores, keeping SMT ON is recommended.
-* **AMD Radeon Software**: Turn **Off** all features except **FSR** (If your monitor does not support FSR, *Enhanced Sync* is recommended instead. For Nvidia users, turning off most optional control panel features should yield a similar stable result).
-![AMD setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1969365628.jpg?MW=800)
-
-* **Windows Advanced Graphics Settings**: If you experience stability issues, turn **Off** HAGS (Hardware-Accelerated GPU Scheduling). AutoHDR is only recommended if you are using an OLED monitor.
-![Windows setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1328734615.jpg?MW=800)
-
-* **Monitor Max Refresh Rate Configuration**: Install RTSS (RivaTuner Statistics Server) and configure **Async** frame-limiting settings for the absolute best frame-time consistency and FPS stability. Alternatively, you can limit the maximum refresh rate directly within the GPU Driver.
-![RTSS setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1629502312.jpg?MW=800)
 
 ## In-Game Graphics Settings
 * **General Rule**: Disable **critical** options that cause heavy CPU usage, and set the remaining pure GPU-bound settings to maximum/optimal values. (Lower-spec setups will need further compromises outside of the disabled options).
@@ -47,6 +35,11 @@
 * Open `ESC > AddOns` and actively manage your suite to keep the **Average CPU Usage** around **1%**.
 * *Note*: **Peak Usage** can spike high momentarily when addons initialize their databases upon loading, which is normal behavior.
 
+* **Windows Advanced Graphics Settings**: If you experience stability issues, turn **Off** HAGS (Hardware-Accelerated GPU Scheduling). AutoHDR is only recommended if you are using an OLED monitor.
+![Windows setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1328734615.jpg?MW=800)
+
+* **Monitor Max Refresh Rate Configuration**: Install RTSS (RivaTuner Statistics Server) and configure **Async** frame-limiting settings for the absolute best frame-time consistency and FPS stability. Alternatively, you can limit the maximum refresh rate directly within the GPU Driver.
+![RTSS setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1629502312.jpg?MW=800)
 ## LFR 25-Man 4K Gameplay Video
 * Minimum FPS holds steadily around 105, with a consistent average of 117 FPS.
 <iframe width="560" height="315" src="https://www.youtube.com/embed/8V7uoOiK0ok?si=mtm5CKDubQ65NoE1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -54,6 +47,13 @@
 ## Heroic 30-Man 4K Gameplay Video
 * Securing 60+ FPS stably even during Bloodlust burst phases, with a momentary minimum of 50 FPS during heavy AoE phases.
 <iframe width="560" height="315" src="https://www.youtube.com/embed/X4GBWola1F0?si=flJ-I2Jr8w5_LUD3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## PC Environment (For Reference, Developer System Specs & Settings)
+* **Specs**: Ryzen 7 7800X3D, RX 9070, DDR5 4800MHz 32GB
+* **OS/Drivers**: Windows 11 25H2 (Latest Version), Latest Graphics Drivers
+* **BIOS Settings**: **SMT (Simultaneous Multithreading) Disabled**. This forces the CPU to utilize 8 physical cores instead of 16 logical threads. While this yields a 3–4% improvement in minimum FPS stability, the difference is minor. If you use your PC for multi-threaded productivity workloads or have a CPU with fewer than 16 cores, keeping SMT ON is recommended.
+* **AMD Radeon Software**: Turn **Off** all features except **FSR** (If your monitor does not support FSR, *Enhanced Sync* is recommended instead. For Nvidia users, turning off most optional control panel features should yield a similar stable result).
+![AMD setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1969365628.jpg?MW=800)
 
 ## References
 * [AMD PC Optimization & Performance Fix Guide](https://www.reddit.com/r/AMDHelp/comments/1lnxb8o/ultimate_amd_performance_fix_guide_stop_lag_fps/?share_id=siID34gkiYvcxnC8WBKZe&utm_content=1&utm_medium=android_app&utm_name=androidcss&utm_source=share&utm_term=1)
@@ -78,19 +78,6 @@
 * 와우 최소 FPS는 대부분 CPU 병목에서 발생 하는 만큼, CPU 병목을 최소화는 방법임.
 * 사양이 낮은 경우에는 아래 끔 항목외 옵션을 낮추면 됨, 최소 프레임에 여유가 있다면 옵션을 상향하면 됨.
 * AFMF(AMD Fruid Motion Frame)등 프레임 생성 기술로 최소 FPS 를 상승 시킬 수 있으나, 이 또한 최소 60 FPS 확보는 필요해서 별도로 다루지 않음.
-
-## PC 환경 (참고, 개발자 시스템 사향 및 설정)
-* 7800x3d, Rx9070, DDR5 4800 32GB.
-* Windows 11 25H2 최신버전, Driver 최신.
-* BIOS 설정 : SMT 끄기 (CPU를 16코어가 아닌 8코어로만 씀), 최소 FPS 관점 3~4% 개선 효과 있으나 큰 차이 아니므로 다른 업무를 보거나, 16코어 미만은 SMT ON 추천.
-* AMD 설정 : FSR 외 모두 Off (FSR 지원 모니터가 아닌경우 Enhanced Sync 추천, Nvidia의 경우 대부분의 Option는 Off 해도 무리 없을것으로 판단 됨)
-![AMD setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1969365628.jpg?MW=800)
-
-* Windows 그래픽 상세 설정 - 문제가 생긴다면 HAGS를 끌것, AutoHDR 설정은 OLED 모니터에서만 추천.
-![Windows setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1328734615.jpg?MW=800)
-
-* 모니터 최대 주사율 설정 - RTSS 설치후 async 설정, FPS 유지력이 가장 좋음, Driver에서 최대 주사율 설정하는 방법도 있음.
-![RTSS setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1629502312.jpg?MW=800)
 
 ## 게임 그래픽 설정
 * CPU 사용을 하는 **중요** 항목은 끔, 나머지는 최대/최적 설정 (사양이 낮은 경우 끔 항목 외 타협 필요)
@@ -126,6 +113,19 @@
 ## 영웅 30인 4K 영상
 * 블러드 타임 60 FPS 이상 안정적 확보, 광역 구간 순간 최소 50 FPS
 <iframe width="560" height="315" src="https://www.youtube.com/embed/X4GBWola1F0?si=flJ-I2Jr8w5_LUD3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## PC 환경 (참고, 개발자 시스템 사향 및 설정)
+* 7800x3d, Rx9070, DDR5 4800 32GB.
+* Windows 11 25H2 최신버전, Driver 최신.
+* BIOS 설정 : SMT 끄기 (CPU를 16코어가 아닌 8코어로만 씀), 최소 FPS 관점 3~4% 개선 효과 있으나 큰 차이 아니므로 다른 업무를 보거나, 16코어 미만은 SMT ON 추천.
+* AMD 설정 : FSR 외 모두 Off (FSR 지원 모니터가 아닌경우 Enhanced Sync 추천, Nvidia의 경우 대부분의 Option는 Off 해도 무리 없을것으로 판단 됨)
+![AMD setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1969365628.jpg?MW=800)
+
+* Windows 그래픽 상세 설정 - 문제가 생긴다면 HAGS를 끌것, AutoHDR 설정은 OLED 모니터에서만 추천.
+![Windows setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1328734615.jpg?MW=800)
+
+* 모니터 최대 주사율 설정 - RTSS 설치후 async 설정, FPS 유지력이 가장 좋음, Driver에서 최대 주사율 설정하는 방법도 있음.
+![RTSS setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1629502312.jpg?MW=800)
 
 ## 참고 자료
 * [AMD PC 최적화 설정 관련](https://www.reddit.com/r/AMDHelp/comments/1lnxb8o/ultimate_amd_performance_fix_guide_stop_lag_fps/?share_id=siID34gkiYvcxnC8WBKZe&utm_content=1&utm_medium=android_app&utm_name=androidcss&utm_source=share&utm_term=1)
