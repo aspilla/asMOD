@@ -4,12 +4,14 @@ local Options_Default = {
     FontSize = 20,
     Font = 1,
     ShowWhenCombat = true,
+    ShowSubSeconds = true,
 };
 
 local L = {
     FontSize = "폰트 크기",
     Font = "폰트",
     ShowWhenCombat = "전투 중 표시",
+    ShowSubSeconds = "0.1초 단위 표시",
 }
 
 if GetLocale() == "koKR" then
@@ -17,6 +19,7 @@ if GetLocale() == "koKR" then
         FontSize = "폰트 크기",
         Font = "폰트",
         ShowWhenCombat = "전투 중 표시",
+        ShowSubSeconds = "0.1초 단위 표시",
     }
 end
 

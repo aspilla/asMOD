@@ -1,13 +1,14 @@
 ﻿local _, ns = ...;
 local configs = {
 	size = 40,
-	xpoint = 164 + 20,
+	xpoint = 164,
 	ypoint = -270,
 	fonts = {
 		[1] = STANDARD_TEXT_FONT,
 		[2] = UNIT_NAME_FONT,
 		[3] = DAMAGE_TEXT_FONT,
 	},
+	updaterate = 0.05
 };
 
 
@@ -27,10 +28,16 @@ local gvalues = {
 
 -- Function to format seconds into HH:MM:SS
 local function format_time(seconds)
-	seconds = math.floor(seconds);
-	local minutes = math.floor((seconds % 3600) / 60);
-	local secs = seconds % 60;
-	return string.format("[%02d:%02d]", minutes, secs);
+	if ns.options.ShowSubSeconds then
+		local minutes = math.floor((seconds % 3600) / 60);
+		local secs = seconds % 60;
+		return string.format("[%02d:%04.1f]", minutes, secs);
+	else
+		seconds = math.floor(seconds);
+		local minutes = math.floor((seconds % 3600) / 60);
+		local secs = seconds % 60;
+		return string.format("[%02d:%02d]", minutes, secs);
+	end
 end
 
 local function on_update()
@@ -88,9 +95,13 @@ local function init()
 
 	main_frame.timertext = main_frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	main_frame.timertext:ClearAllPoints();
-	main_frame.timertext:SetPoint("CENTER", main_frame, "CENTER", 0, 0);
+	main_frame.timertext:SetPoint("LEFT", main_frame, "LEFT", 0, 0);
 	main_frame.timertext:SetTextColor(1, 1, 1);
-	main_frame.timertext:SetText("[00:00]");
+	if ns.options.ShowSubSeconds then
+		main_frame.timertext:SetText("[00:00.0]");
+	else
+		main_frame.timertext:SetText("[00:00]");
+	end
 	main_frame.timertext:Show();
 
 	main_frame:SetPoint("CENTER", configs.xpoint, configs.ypoint)
@@ -113,7 +124,7 @@ local function init()
 	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 	main_frame:SetScript("OnEvent", on_event);
 
-	C_Timer.NewTicker(0.1, on_update);
+	C_Timer.NewTicker(configs.updaterate, on_update);
 end
 
 C_Timer.After(0.5, init);

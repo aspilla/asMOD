@@ -6,7 +6,7 @@ Displays the elapsed time after combat starts.
 
 ## Key Features
 
-- **Combat Time Tracking**: The timer starts automatically when combat begins, displaying the elapsed time in `[MM:SS]` format.
+- **Combat Time Tracking**: The timer starts automatically when combat begins, displaying the elapsed time in `[MM:SS]` or `[MM:SS.T]` (tenths of a second) format.
 
 ## Settings
 
@@ -18,6 +18,8 @@ Displays the elapsed time after combat starts.
     - Determines the font type. (Default: STANDARD_TEXT_FONT)
 3.  **ShowWhenCombat**:
     - Determines to show only combat. (Default: Checked)
+4.  **ShowSubSeconds**:
+    - Determines whether to show combat time down to 0.1-second precision. (Default: Checked)
 
 - **Move Position**: Enter the `/asConfig` command in the chat.
 - **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
@@ -37,7 +39,7 @@ Displays the elapsed time after combat starts.
 
 ## 주요 기능
 
-- **전투 시간 추적**: 전투가 시작되면 타이머가 자동으로 작동하며, 경과 시간을 `[분:초]` 형식으로 표시.
+- **전투 시간 추적**: 전투가 시작되면 타이머가 자동으로 작동하며, 경과 시간을 `[분:초]` 또는 `[분:초.소수점첫째자리]` 형식으로 표시.
 
 ## 설정
 
@@ -49,6 +51,8 @@ Displays the elapsed time after combat starts.
     - 폰트 종류를 결정 합니다. (기본값 : STANDARD_TEXT_FONT)
 3.  **전투 중 표시**:
     - 전투 중 표시 (비전투시 숨김). (기본값 : 설정 )
+4.  **0.1초 단위 표시**:
+    - 0.1초 단위까지 세부적인 경과 시간을 표시합니다. (기본값 : 설정)
 
 - **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 - **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화
