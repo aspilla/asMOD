@@ -36,7 +36,7 @@ Colors are displayed based on the following priority:
 * **Nameplate Selected Scale (`Nameplate target scale`)**: Set to 1.3 by default (WoW default is 1.2). 
 * **Note:** If you uninstall the addon, you need to reset it using the following command: `/run SetCVar ("nameplateSelectedScale", 1.2)`
 
-* **Nameplate Mouse Click Hitbox Settings (`Click Hit Inset`)**: See video below (Default: 7, reapplied upon logging in).
+* **Nameplate Mouse Click Hitbox Settings (`Click Hit Inset`)**: See video below (Default: 0, Wow default : 0).
 <iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 * **Changes the health bar background color for low health targets (`Display Low Health Background Color`)**
@@ -107,7 +107,7 @@ Colors are displayed based on the following priority:
 * **이름표 주대상 크기 정도(`이름표 주대상 크기 정도`)** : 1.3을 기본으로 설정 (와우 기본 설정은 1.2) 
 * **참고:** 애드온 삭제시 다음 명령어로 초기화 필요 `/run SetCVar ("nameplateSelectedScale", 1.2)`
 
-* **이름표 마우스 클릭 범위 설정 (`클릭 Hit Inset`)** : 아래영상 참고  (기본 7, 접속시 다시 설정 합니다.)
+* **이름표 마우스 클릭 범위 설정 (`클릭 Hit Inset`)** : 아래영상 참고  (기본 0, 와우 기본 설정 0)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 * **낮은 체력 대상 체력바 배경 색상 변경 (`낮은체력 배경 색상 표시`)**

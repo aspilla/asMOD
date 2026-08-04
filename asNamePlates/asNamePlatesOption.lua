@@ -8,7 +8,7 @@ ns.configs = {
 };
 
 ns.option_default = {
-    version = 260519,
+    version = 260804,
 
     ShowAggro = true,
     ShowCombat = false,
@@ -242,9 +242,8 @@ ns.setup_alloptions = function()
 
         if ns.options.HitTestInsets ~= nil then
             local v = ns.options.HitTestInsets;
-           -- print(C_NamePlateManager.GetNamePlateHitTestInsets(0));
-            --C_NamePlateManager.SetNamePlateHitTestInsets(0, v, v, v, v);
-            --C_NamePlateManager.SetNamePlateHitTestInsets(1, v, v, v, v);
+            C_NamePlateManager.SetNamePlateHitTestInsets(0, v, v, v, v);
+            C_NamePlateManager.SetNamePlateHitTestInsets(1, v, v, v, v);
         end
     end
 end
