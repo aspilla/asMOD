@@ -10,16 +10,16 @@ formatter:AddBreakpoint({
 	format = "%.1f"
 });
 
-local function create_aurabutton()
+local function create_aurabutton(color)
 	return function(frame)
 		frame:SetWidth(1);
 		frame:SetHeight(1);
 		frame.bar = CreateFrame("StatusBar", nil, frame)
 		frame.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
 		frame.bar:GetStatusBarTexture():SetHorizTile(false)
-		frame.bar:SetStatusBarColor(0.7, 0.4, 1);
-		frame.bar:SetWidth(ns.options.BarWidth)
-		frame.bar:SetHeight(ns.bar:GetHeight())
+		frame.bar:SetStatusBarColor(color:GetRGB());
+		frame.bar:SetWidth(ns.options.BarWidth / 2)
+		frame.bar:SetHeight(ns.combocountbar:GetHeight())
 		frame.bar:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0)
 		frame.bar:Show();
 		frame.bar:EnableMouse(false);
@@ -68,34 +68,53 @@ local function add_group(container, gname, filter, cfilters, initinfos)
 	container:SetAuraGroupCandidateFilters(gname, cfilters);
 end
 
-local function setup_container(spellid)
+local function setup_container(idx, spellid, direction)
 	local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player);
 	local cfilters = { includeSpellIDs = { [spellid] = true } };
 
-	if main_frame.container == nil then
-		main_frame.container = create_container(main_frame, "player", "BOTTOM", AnchorUtil.FlowDirection.Right,
-			AnchorUtil.FlowDirection.Down);
-		add_group(main_frame.container, "aurabar", filter, cfilters,
-			{ maxFrameCount = 1, initializeFrame = create_aurabutton() });
-		main_frame.container:SetPoint("BOTTOM", ns.bar, "BOTTOM", 0, 0);
-		main_frame.container:SetWidth(1)
-		main_frame.container:SetHeight(1)
+	if main_frame.containers == nil then
+		main_frame.containers = {};
 	end
-	main_frame.container:Show()
-	main_frame.container:SetEnabled(true);
+
+	--idx should be 1 or 2
+	if main_frame.containers[idx] == nil then
+		local xoffset = ns.options.BarWidth / 4;
+        local color = CreateColor(1, 0.5, 0.2);
+
+        if idx == 1 then
+        	color = CreateColor(0.5, 0.2, 1);
+			xoffset = -(ns.options.BarWidth / 4);
+		end
+
+		main_frame.containers[idx] = create_container(main_frame, "player", "BOTTOM", AnchorUtil.FlowDirection.Right,
+			AnchorUtil.FlowDirection.Down);
+		add_group(main_frame.containers[idx], "lunabar", filter, cfilters,
+			{ maxFrameCount = 1, initializeFrame = create_aurabutton(color) });
+
+
+		main_frame.containers[idx]:SetPoint("BOTTOM", ns.combocountbar, "BOTTOM", xoffset, 0);
+		main_frame.containers[idx]:SetWidth(1)
+		main_frame.containers[idx]:SetHeight(1)
+	end
+	main_frame.containers[idx]:Show()
+	main_frame.containers[idx]:SetEnabled(true);
 end
 
-function ns.setup_aurabar(spellid)
+function ns.setup_luna(spellids)
+	ns.combocountbar:SetValue(0);
+	ns.combocountbar:Show();
 	main_frame:SetParent(ns.main_frame);
 	main_frame:SetFrameLevel(ns.configs.framelevel + 200);
-	ns.bar:SetValue(0);
-	ns.bar.text:Hide();
-	setup_container(spellid);
+	for idx = 1, 2 do
+		setup_container(idx, spellids[idx], idx - 1);
+	end
 end
 
-function ns.clear_aurabar()
-	if main_frame.container then
-		main_frame.container:SetEnabled(false);
-		main_frame.container:Hide();
+function ns.clear_luna()
+	for idx = 1, 2 do
+		if main_frame.containers and main_frame.containers[idx] then
+			main_frame.containers[idx]:SetEnabled(false);
+			main_frame.containers[idx]:Hide();
+		end
 	end
 end

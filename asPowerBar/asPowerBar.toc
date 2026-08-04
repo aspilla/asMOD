@@ -17,6 +17,7 @@ asPowerBarRune.lua
 asPowerBarCombo.lua
 asPowerBarStagger.lua
 asPowerBarAuraBar.lua
+asPowerBarLuna.lua
 asPowerBarAuraCombo.lua
 asPowerBarSpell.lua
 asPowerBarPower.lua

@@ -57,7 +57,7 @@ local function setup_max_whilwind(max)
 	if main_frame.container == nil then
 		main_frame.container = create_container(main_frame, "player", "BOTTOM", AnchorUtil.FlowDirection.Right,
 			AnchorUtil.FlowDirection.Down);
-		add_group(main_frame.container, "whilwind", filter, cfilters,
+		add_group(main_frame.container, "whirlwind", filter, cfilters,
 			{ maxFrameCount = 1, initializeFrame = create_aurabutton(max) });
 		main_frame.container:SetPoint("BOTTOM", ns.combocountbar, "BOTTOM", 0, 0);
 		main_frame.container:SetWidth(1)

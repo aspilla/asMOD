@@ -77,6 +77,7 @@ local function init_class()
 	local bbigsecondary = false;
 	local bshatter = false;
 	local aurabarid = nil;
+	local bluna = false;
 
 	ns.combotext:SetText("");
 	ns.combotext:Hide();
@@ -104,6 +105,7 @@ local function init_class()
 	ns.clear_shatter();
 	ns.clear_aurabar();
 	ns.clear_power();
+	ns.clear_luna();
 
 	if (englishClass == "EVOKER") then
 		powerlevel = Enum.PowerType.Essence;
@@ -160,8 +162,12 @@ local function init_class()
 	end
 
 	if (englishClass == "DRUID") then
-		powerlevel = Enum.PowerType.ComboPoints;
-		bdruid = true;
+		if (spec and spec == 1) then
+			bluna = true;
+		else
+			powerlevel = Enum.PowerType.ComboPoints;
+			bdruid = true;
+		end
 	end
 
 	if (englishClass == "MONK") then
@@ -264,7 +270,7 @@ local function init_class()
 	resizebars(bsmallprimary, bbigsecondary);
 	if bshatter then
 		ns.setup_shatter();
-    elseif aurabarid then
+	elseif aurabarid then
 		ns.setup_aurabar(aurabarid);
 	else
 		ns.setup_power();
@@ -280,6 +286,8 @@ local function init_class()
 		ns.setup_spell(spellid);
 	elseif bstagger then
 		ns.setup_stagger(bstagger);
+	elseif bluna then
+		ns.setup_luna({48518, 48517 })
 	end
 end
 
