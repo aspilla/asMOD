@@ -23,6 +23,7 @@ local L = {
 	Import = "Import",
 	Error = "[asRaidTimer] Invalid Syntax",
 	Error2 = "[asRaidTimer] Not support phase 2 or bigger",
+	TimerData = "Timer Setups",
 }
 
 
@@ -40,6 +41,7 @@ if GetLocale() == "koKR" then
 		Import = "적용",
 		Error = "[asRaidTimer] 잘못된 형식",
 		Error2 = "[asRaidTimer] Phase 2 이상 미지원",
+		TimerData = "타이머 설정",
 	}
 end
 
@@ -189,7 +191,7 @@ local function SetupSubOption(panel)
 
 	local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	title:SetPoint("TOP")
-	title:SetText("List")
+	title:SetText(L.TimerData)
 
 	curr_y = curr_y + y_adder;
 
@@ -259,7 +261,7 @@ function ns.setup_option()
 	end
 
 	local category = Settings.RegisterVerticalLayoutCategory("asRaidTimer")
-	local _, _ = Settings.RegisterCanvasLayoutSubcategory(category, subpanel, "Timer Data");
+	local _, _ = Settings.RegisterCanvasLayoutSubcategory(category, subpanel, L.TimerData);
 	local clearsetting = false;
 
 	if ARTI_Options == nil or Options_Default.Version ~= ARTI_Options.Version then

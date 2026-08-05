@@ -24,7 +24,13 @@ local L = {
 	MillisecondsThreshold =
 	"The time threshold at which the remaining cooldown begins displaying in 0.1-second increments.",
 	ReadyAlertSize = "Icon size for skill ready alert.",
-	AlertPowerBar = "Ready alert for asPowerBar spell"
+	AlertPowerBar = "Ready alert for asPowerBar spell",
+	SpellList = "Defensive Spell List",
+	SpellID = "Spell Id",
+	Priority = "Priority",
+	LoadDefault = "Load Default",
+	Add = "Add",
+	Remove = "Remove",
 }
 
 
@@ -39,7 +45,13 @@ if GetLocale() == "koKR" then
 		ShowSpells = "스킬 쿨 추적 표시 여부",
 		SpellSize = "스킬 쿨 추적 사이즈",
 		MillisecondsThreshold = "남은 쿨을 0.1초 단위로 보여줄 최소 시간",
-		AlertPowerBar = "asPowerBar 등록 스킬을 알림"
+		AlertPowerBar = "asPowerBar 등록 스킬을 알림",
+		SpellList = "생존기 스킬 목록",
+		SpellID = "스킬 번호(Spell Id)",
+		Priority = "우선 순위",
+		LoadDefault = "기본 설정",
+		Add = "추가",
+		Remove = "제거",
 	}
 end
 local Options_DefaultSpells = {
@@ -164,7 +176,7 @@ local function SetupSubOption(panel, titlename, coption, soption)
 
 	curr_y = curr_y + y_adder;
 
-	local localeTexts = { "Spell ID", "Priority" };
+	local localeTexts = { L.SpellID, L.Priority };
 
 	local x = 10;
 
@@ -182,7 +194,7 @@ local function SetupSubOption(panel, titlename, coption, soption)
 
 	local btn0 = CreateFrame("Button", nil, panel.scrollchild, "UIPanelButtonTemplate")
 	btn0:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
-	btn0:SetText("Load Default")
+	btn0:SetText(L.LoadDefault)
 	btn0:SetWidth(100)
 	btn0:SetScript("OnClick", function()
 		ACDP_Spelllist = CopyTable(Options_DefaultSpells);
@@ -270,7 +282,7 @@ local function SetupSubOption(panel, titlename, coption, soption)
 
 	local btn = CreateFrame("Button", nil, panel.scrollchild, "UIPanelButtonTemplate")
 	btn:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
-	btn:SetText("Add")
+	btn:SetText(L.Add)
 	btn:SetWidth(100)
 	btn:SetScript("OnClick", function()
 		local newspell = editBox:GetNumber();
@@ -289,7 +301,7 @@ local function SetupSubOption(panel, titlename, coption, soption)
 
 	local btn2 = CreateFrame("Button", nil, panel.scrollchild, "UIPanelButtonTemplate")
 	btn2:SetPoint("LEFT", panel.scrollchild, "TOPLEFT", x, curr_y)
-	btn2:SetText("Delete")
+	btn2:SetText(L.Remove)
 	btn2:SetWidth(100)
 	btn2:SetScript("OnClick", function()
 		local newspell = editBox:GetNumber();
@@ -336,7 +348,7 @@ function ns.setup_option()
 	end
 
 	local category = Settings.RegisterVerticalLayoutCategory("asCooldownPulse");
-	local subcategory, subcategoryLayout = Settings.RegisterCanvasLayoutSubcategory(category, ns.buffpanel, "Spell List");
+	local subcategory, subcategoryLayout = Settings.RegisterCanvasLayoutSubcategory(category, ns.buffpanel, L.SpellList);
 
 	if ACDP_Options == nil or ACDP_Options.version ~= Options_Default.version then
 		ACDP_Options = {};
@@ -414,5 +426,5 @@ function ns.setup_option()
 
 	Settings.RegisterAddOnCategory(category)
 
-	SetupSubOption(ns.buffpanel, "Spell List", ns.show_list, ACDP_Spelllist);
+	SetupSubOption(ns.buffpanel, L.SpellList, ns.show_list, ACDP_Spelllist);
 end
