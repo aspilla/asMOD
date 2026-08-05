@@ -1,7 +1,7 @@
 local _, ns = ...;
 
 local Options_Default = {
-	Version = 260505,
+	Version = 260805,
 	ReadyAlert = true,
 	StartAlert = true,
 	ShowBuff = true,
@@ -60,6 +60,8 @@ function ns.SetupOptionPanels()
 	if ABLA_Options == nil or Options_Default.Version ~= ABLA_Options.Version then
 		ABLA_Options = {};
 		ABLA_Options = CopyTable(Options_Default);
+		ABLA_Positions = {};
+		ABLA_Positions2 = {};
 	end
 
 	if ABLA_Positions == nil then

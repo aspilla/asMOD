@@ -5,8 +5,9 @@
 ## Notes-koKR:전역 재사용 대기시간(GCD) 표시 바
 ## Version : 260615
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
-## SavedVariablesPerCharacter: AGCDB_Positions
+## SavedVariablesPerCharacter: AGCDB_Options, AGCDB_Positions
 ## Category: asMOD
 Libs\LibStub\LibStub.lua
 Libs\LibasConfig\LibasConfig.lua
+asGCDBarOption.lua
 asGCDBar.lua

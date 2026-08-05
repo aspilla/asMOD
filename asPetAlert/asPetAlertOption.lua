@@ -41,6 +41,8 @@ function ns.SetupOptionPanels()
     if APA_Options == nil or Options_Default.Version ~= APA_Options.Version then
         APA_Options = {};
         APA_Options = CopyTable(Options_Default);
+        APA_Positions = {};
+        APA_Positions2 = {};
     end
 
     if APA_Positions == nil then

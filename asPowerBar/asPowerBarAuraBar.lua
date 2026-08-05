@@ -48,7 +48,7 @@ local function create_aurabutton()
 				}
 			}
 		});
-		frame:SetDurationBar(frame.bar, { interpolation = 1, direction = 1 });
+		frame:SetDurationBar(frame.bar, { interpolation = ns.bartype, direction = 1 });
 		frame:Show();
 	end
 end

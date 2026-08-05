@@ -1,7 +1,7 @@
 
 local _, ns = ...;
 local Options_Default = {
-    Version = 250622,
+    Version = 250805,
     ShowTarget = true,
 };
 
@@ -42,6 +42,7 @@ function ns.setup_option()
     if ACTA_Options == nil or Options_Default.Version ~= ACTA_Options.Version then
         ACTA_Options = {};
         ACTA_Options = CopyTable(Options_Default);
+        ACTA_Positions = {};
     end
 
     if ACTA_Positions == nil then

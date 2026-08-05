@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-	version = 250727,
+	version = 250805,
 	ShowTarget = true,
 	ShowFocus = true,
 	ShowMouseOver = true,
@@ -194,6 +194,8 @@ function ns.setup_option()
 	if AIH_Options == nil or AIH_Options.version ~= Options_Default.version then
 		AIH_Options = {};
 		AIH_Options = CopyTable(Options_Default);
+		AIH_Positions_1 = {};
+		AIH_Positions_2 = {};
 	end
 
 	if AIH_Positions_1 == nil then

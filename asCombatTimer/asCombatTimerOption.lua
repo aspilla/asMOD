@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 260124,    
+    Version = 260805,
     FontSize = 20,
     Font = 1,
     ShowWhenCombat = true,
@@ -52,6 +52,7 @@ function ns.setup_option()
     if ASTM_Options == nil or Options_Default.Version ~= ASTM_Options.Version then
         ASTM_Options = {};
         ASTM_Options = CopyTable(Options_Default);
+        ASTM_Position = {};
     end
 
     if ASTM_Position == nil then

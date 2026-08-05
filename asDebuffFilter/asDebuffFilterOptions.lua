@@ -1,7 +1,7 @@
 local _, ns = ...;
 
 local Options_Default = {
-	Version = 250920,
+	Version = 260805,
 	PlayerDebuffRate = 1.3,
 	CombatAlphaChange = true,
 	MillisecondsThreshold = 3,
@@ -73,6 +73,9 @@ function ns.setup_option()
 	if ADF_Options == nil or Options_Default.Version ~= ADF_Options.Version then
 		ADF_Options = {};
 		ADF_Options = CopyTable(Options_Default);
+		ADF_Positions_1 = {};
+		ADF_Positions_2 = {};
+		ADF_Positions_3 = {};
 	end
 
 	if ADF_Positions_1 == nil then

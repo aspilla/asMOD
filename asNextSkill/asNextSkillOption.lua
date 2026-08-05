@@ -52,6 +52,11 @@ function ns.setup_option()
 	if ASNS_Options == nil or ASNS_Options.version ~= Options_Default.version then
 		ASNS_Options = {};
 		ASNS_Options = CopyTable(Options_Default);
+		ASNS_Positions = {};
+	end
+
+	if ASNS_Positions == nil then
+		ASNS_Positions = {};
 	end
 	ns.options = CopyTable(ASNS_Options);
 

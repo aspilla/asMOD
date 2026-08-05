@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-	version = 260730,
+	version = 260805,
 	CombatAlphaChange = true,
 	ShowTrinkets = false,
 	TrinketSize = 28,
@@ -343,6 +343,10 @@ function ns.setup_option()
 		ACDP_Options = CopyTable(Options_Default);
 		ACDP_Spelllist = {};
 		ACDP_Spelllist = CopyTable(Options_DefaultSpells);
+		ACDP_Positions_1 = {};
+		ACDP_Positions_2 = {};
+		ACDP_Positions_3 = {};
+		ACDP_Positions_4 = {};
 	end
 
 	if ACDP_Spelllist == nil then

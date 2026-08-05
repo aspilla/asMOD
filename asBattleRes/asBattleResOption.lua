@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 251216,
+    Version = 260805,
     MillisecondsThreshold = 3,
 };
 
@@ -42,6 +42,7 @@ function ns.setup_option()
     if ASBR_Options == nil or Options_Default.Version ~= ASBR_Options.Version then
         ASBR_Options = {};
         ASBR_Options = CopyTable(Options_Default);
+        ASBR_Position = {};
     end
 
     if ASBR_Position == nil then

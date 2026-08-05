@@ -41,7 +41,7 @@ local function create_aurabutton(max)
 		frame.count:SetPoint("CENTER", frame.bar, "CENTER", 0, 0);
 		frame.count:SetTextColor(1, 1, 1);
 		frame:SetApplicationCount(frame.count);
-		frame:SetApplicationBar(frame.bar, { maxApplications = max });
+		frame:SetApplicationBar(frame.bar, { maxApplications = max , interpolation = ns.bartype});
 		frame:Show();
 	end
 end

@@ -24,7 +24,7 @@ local function check_void()
 
     if count then
         ns.combocountbar:SetMinMaxValues(0, max)
-        ns.combocountbar:SetValue(count, Enum.StatusBarInterpolation.ExponentialEaseOut)
+        ns.combocountbar:SetValue(count, ns.bartype)
         ns.combotext:SetText(count);
         ns.combocountbar:Show();
         ns.combotext:Show();

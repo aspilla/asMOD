@@ -48,6 +48,7 @@ function ns.setup_option()
     if AFS_Options == nil or Options_Default.Version ~= AFS_Options.Version then
         AFS_Options = {};
         AFS_Options = CopyTable(Options_Default);
+        AFS_Positions = {};
     end
 
     if AFS_Positions == nil then

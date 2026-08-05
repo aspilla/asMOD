@@ -16,7 +16,7 @@ Displays `Skyriding` resources/speed/cooldowns.
 
 
 ## Configuration
-No separate configuration.
+Configure settings under **Options** -> **AddOns** -> **asSkyRide** (supports bar width, height, font size, and animation settings).
 
 * **Move Position**: Enter the `/asConfig` command in the chat.
 * **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
@@ -45,7 +45,7 @@ No separate configuration.
 
 
 ## 설정 (Configuration)
-별도의 설정은 없음
+게임 설정 내 **설정** -> **애드온** -> **asSkyRide** 메뉴에서 세부 설정이 가능합니다. (바 넓이, 속도바 높이, 자원바 높이, 글꼴 크기, 부드러운 애니메이션 토글 등)
 
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 

@@ -1,8 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
 	Version = 260805,
-	ShowClassResource = true,
-	CombatAlphaChange = true,
 	BarWidth = 238 + 40,
 	PowerBarHeight = 6,
 	ComboBarHeight = 4,
@@ -11,11 +9,9 @@ local Options_Default = {
 };
 
 local L = {
-	ShowClassResource = "Class-specific resource(Spell Charge..) display",
-	CombatAlphaChange = "Adjusts transparency when out of combat",
 	BarWidth = "Width of Bars",
-	PowerBarHeight = "Height of the main resource bar",
-	ComboBarHeight = "Height of the secondary resource bar",
+	PowerBarHeight = "Height of the speed bar",
+	ComboBarHeight = "Height of the resource bar",
 	FontSize = "Font size for text",
 	ShowAnimation = "Toggle smooth bar change animation",
 }
@@ -23,11 +19,9 @@ local L = {
 
 if GetLocale() == "koKR" then
 	L = {
-		ShowClassResource = "직업 전문화 자원(스킬등) 표시",
-		CombatAlphaChange = "비전투시 투명도 변경",
 		BarWidth = "바 넓이",
-		PowerBarHeight = "주 자원바 높이",
-		ComboBarHeight = "보조 자원바 높이",
+		PowerBarHeight = "속도바 높이",
+		ComboBarHeight = "자원바 높이",
 		FontSize = "글꼴 크기",
 		ShowAnimation = "부드러운 바 애니메이션",
 	}
@@ -47,7 +41,7 @@ function ns.setup_option()
 
 		local cvar_name = setting:GetVariable()
 		local variable = get_variable_from_cvar_name(cvar_name)
-		ASPB_Options[variable] = value;
+		ASKYR_Options[variable] = value;
 		ns.options[variable] = value;
 
 		if tonumber(value) == nil then
@@ -55,35 +49,35 @@ function ns.setup_option()
 		end
 	end
 
-	local category = Settings.RegisterVerticalLayoutCategory("asPowerBar")
+	local category = Settings.RegisterVerticalLayoutCategory("asSkyRide")
 
 	if not category then
 		return;
 	end
 
-	if ASPB_Options == nil or Options_Default.Version ~= ASPB_Options.Version then
-		ASPB_Options = {};
-		ASPB_Options = CopyTable(Options_Default);
-		ASPB_Positions = {};
+	if ASKYR_Options == nil or Options_Default.Version ~= ASKYR_Options.Version then
+		ASKYR_Options = {};
+		ASKYR_Options = CopyTable(Options_Default);
+		ASKYR_Positions = {};
 	end
 
-	if ASPB_Positions == nil then
-		ASPB_Positions = {};
+	if ASKYR_Positions == nil then
+		ASKYR_Positions = {};
 	end
 
-	ns.options = CopyTable(ASPB_Options);
+	ns.options = CopyTable(ASKYR_Options);
 
 
 	for variable, _ in pairs(Options_Default) do
 		local name = variable;
-		local cvar_name = "asPowerBar_" .. variable;
+		local cvar_name = "asSkyRide_" .. variable;
 		local tooltip = ""
-		if ASPB_Options[variable] == nil then
-			ASPB_Options[variable] = Options_Default[variable];
+		if ASKYR_Options[variable] == nil then
+			ASKYR_Options[variable] = Options_Default[variable];
 			ns.options[variable] = Options_Default[variable];
 		end
 		local defaultValue = Options_Default[variable];
-		local currentValue = ASPB_Options[variable];
+		local currentValue = ASKYR_Options[variable];
 
 		if name ~= "Version" then
 			if tonumber(defaultValue) ~= nil then

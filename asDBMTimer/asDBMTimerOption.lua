@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 260512,
+    Version = 260805,
     MinTimetoShow = 5,
     Size = 50,
     TextSize = 15,
@@ -58,6 +58,8 @@ function ns.setup_option()
     if ADTI_Options == nil or Options_Default.Version ~= ADTI_Options.Version then
         ADTI_Options = {}
         ADTI_Options = CopyTable(Options_Default);
+        ADTI_Positions = {};
+        ADTI_Positions2 = {};
     end
 
     if ADTI_Positions == nil then

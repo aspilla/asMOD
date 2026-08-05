@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 260725,
+    Version = 260805,
     ShowPortrait = true,
     ShowTotemBar = true,
     ShowBossBuff = true,

@@ -1,6 +1,6 @@
-﻿local configs = {
-	width = 238 + 40,
-	height = 5,
+﻿local _, ns = ...;
+
+local configs = {
 	xpoint = 0,
 	ypoint = -215,
 	combatalpha = 1,
@@ -11,24 +11,38 @@ local main_frame = CreateFrame("FRAME", nil, UIParent)
 
 local function on_update()
 	local durationinfo = C_Spell.GetSpellCooldownDuration(61304);
-	main_frame.gcdbar:SetTimerDuration(durationinfo, Enum.StatusBarInterpolation.ExponentialEaseOut);
+	main_frame.gcdbar:SetTimerDuration(durationinfo, ns.bartype);
 end
 
 local function on_event(self, event)
 	if event == "PLAYER_REGEN_DISABLED" then
-		main_frame:SetAlpha(configs.combatalpha);
-	elseif event == "PLAYER_REGEN_ENABLED" then
-		main_frame:SetAlpha(configs.normalalpha);
-	elseif event == "PLAYER_ENTERING_WORLD" then
-		if UnitAffectingCombat("player") then
+		if ns.options.CombatAlphaChange then
 			main_frame:SetAlpha(configs.combatalpha);
 		else
+			main_frame:SetAlpha(1);
+		end
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		if ns.options.CombatAlphaChange then
 			main_frame:SetAlpha(configs.normalalpha);
+		else
+			main_frame:SetAlpha(1);
+		end
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		if ns.options.CombatAlphaChange then
+			if UnitAffectingCombat("player") then
+				main_frame:SetAlpha(configs.combatalpha);
+			else
+				main_frame:SetAlpha(configs.normalalpha);
+			end
+		else
+			main_frame:SetAlpha(1);
 		end
 	end
 end
 
 local function init()
+	ns.setup_option();
+
 	main_frame:SetFrameStrata("LOW");
 	main_frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
 	main_frame:SetWidth(0)
@@ -40,8 +54,8 @@ local function init()
 	main_frame.gcdbar:GetStatusBarTexture():SetHorizTile(false)
 	main_frame.gcdbar:SetMinMaxValues(0, 100)
 	main_frame.gcdbar:SetValue(0)
-	main_frame.gcdbar:SetHeight(configs.height)
-	main_frame.gcdbar:SetWidth(configs.width)
+	main_frame.gcdbar:SetHeight(ns.options.BarHeight)
+	main_frame.gcdbar:SetWidth(ns.options.BarWidth)
 	main_frame.gcdbar:SetStatusBarColor(1, 0.9, 0.9);
 
 	main_frame.gcdbar.bg = main_frame.gcdbar:CreateTexture(nil, "BACKGROUND")
@@ -71,10 +85,14 @@ local function init()
 	main_frame:SetScript("OnEvent", on_event);
 	C_Timer.NewTicker(0.1, on_update);
 
-	if UnitAffectingCombat("player") then
-		main_frame:SetAlpha(configs.combatalpha);
+	if ns.options.CombatAlphaChange then
+		if UnitAffectingCombat("player") then
+			main_frame:SetAlpha(configs.combatalpha);
+		else
+			main_frame:SetAlpha(configs.normalalpha);
+		end
 	else
-		main_frame:SetAlpha(configs.normalalpha);
+		main_frame:SetAlpha(1);
 	end
 end
 

@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 260725,
+    Version = 260805,
     SimpleDesign = true,
     BarWidth = 238 + 40,
     BarHeight = 20,
@@ -70,6 +70,7 @@ function ns.setup_option()
     if ACB_Options == nil or Options_Default.Version ~= ACB_Options.Version then
         ACB_Options = {};
         ACB_Options = CopyTable(Options_Default);
+        ACB_Positions = {};
     end
 
     if ACB_Positions == nil then

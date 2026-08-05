@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-	version = 250726,
+	version = 250805,
 	ShowTarget = true,
 	ShowMouseOver = true,
 	ShowFocus = true,
@@ -44,6 +44,8 @@ function ns.setup_option()
 	if ARD_Options == nil or ARD_Options.version ~= Options_Default.version then
 		ARD_Options = {};
 		ARD_Options = CopyTable(Options_Default);
+		ARD_Positions_1 = {};
+		ARD_Positions_2 = {};
 	end
 
 	if ARD_Positions_1 == nil then

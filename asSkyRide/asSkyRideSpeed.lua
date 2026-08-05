@@ -19,7 +19,7 @@ local function update_speed()
         local movespeed = Round(base / BASE_MOVEMENT_SPEED * 100);
 
         ns.bar:SetMinMaxValues(0, 1100)
-        ns.bar:SetValue(movespeed, Enum.StatusBarInterpolation.ExponentialEaseOut);
+        ns.bar:SetValue(movespeed, ns.bartype);
 
         local durationinfo = C_Spell.GetSpellCooldownDuration(361584)
 

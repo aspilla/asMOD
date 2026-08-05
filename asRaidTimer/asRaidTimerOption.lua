@@ -266,6 +266,9 @@ function ns.setup_option()
 		ARTI_Options = {}
         ARTI_Options = CopyTable(Options_Default);
         clearsetting = true;
+        ARTI_Positions = {};
+        ARTI_Positions2 = {};
+        ARTI_Positions3 = {};
 	end
 
 	if ARTI_Positions == nil then

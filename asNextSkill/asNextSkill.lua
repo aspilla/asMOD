@@ -88,9 +88,6 @@ end
 local function init()
 	ns.setup_option();
 
-	if ASNS_Positions == nil then
-		ASNS_Positions = {};
-	end
 
 	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 

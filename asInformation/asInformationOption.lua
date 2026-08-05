@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-	Version = 260103,
+	Version = 260805,
 	showHaste = true,
 	showCrit = true,
 	showMastery = true,
@@ -55,6 +55,7 @@ function ns.setup_option()
 		-- do nothing
 	else
 		AINF_Options = CopyTable(Options_Default);
+		AINF_Position = {};
 	end
 
 	if AINF_Position == nil then
