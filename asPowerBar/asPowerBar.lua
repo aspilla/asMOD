@@ -1,5 +1,7 @@
 local _, ns          = ...;
 
+ASPowerBarInfo       = {};
+
 --configurations
 ns.configs           = {
 	font        = STANDARD_TEXT_FONT,
@@ -107,6 +109,8 @@ local function init_class()
 	ns.clear_power();
 	ns.clear_luna();
 
+	ASPowerBarInfo.nomana = false;
+
 	if (englishClass == "EVOKER") then
 		powerlevel = Enum.PowerType.Essence;
 		if (spec and spec == 1) then
@@ -122,8 +126,7 @@ local function init_class()
 		powerlevel = Enum.PowerType.HolyPower;
 
 		if (spec and spec == 2) then
-			bsmallprimary = true;
-			bbigsecondary = true;
+			aurabarid = 132403;
 		end
 
 		if (spec and spec == 3) then
@@ -270,8 +273,10 @@ local function init_class()
 	resizebars(bsmallprimary, bbigsecondary);
 	if bshatter then
 		ns.setup_shatter();
+		ASPowerBarInfo.nomana = true;
 	elseif aurabarid then
 		ns.setup_aurabar(aurabarid);
+		ASPowerBarInfo.nomana = true;
 	else
 		ns.setup_power();
 	end
