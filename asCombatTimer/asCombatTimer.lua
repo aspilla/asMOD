@@ -17,6 +17,20 @@ local main_frame = CreateFrame("Frame", nil, UIParent);
 
 ns.update_options = function()
 	main_frame.timertext:SetFont(configs.fonts[ns.options.Font], ns.options.FontSize, "OUTLINE");
+	if main_frame.timertext_sub then
+		main_frame.timertext_sub:SetFont(configs.fonts[ns.options.Font], ns.options.FontSize * 0.8, "OUTLINE");
+	end
+
+	if main_frame.bg then
+		main_frame.bg:ClearAllPoints();
+		if ns.options.ShowSubSeconds then
+			main_frame.bg:SetPoint("TOPLEFT", main_frame.timertext, "TOPLEFT", -6, 3);
+			main_frame.bg:SetPoint("BOTTOMRIGHT", main_frame.timertext_sub, "BOTTOMRIGHT", 6, -3);
+		else
+			main_frame.bg:SetPoint("TOPLEFT", main_frame.timertext, "TOPLEFT", -6, 3);
+			main_frame.bg:SetPoint("BOTTOMRIGHT", main_frame.timertext, "BOTTOMRIGHT", 6, -3);
+		end
+	end
 end
 
 local gvalues = {
@@ -31,17 +45,21 @@ local function format_time(seconds)
 	if ns.options.ShowSubSeconds then
 		local minutes = math.floor((seconds % 3600) / 60);
 		local secs = seconds % 60;
-		return string.format("[%02d:%04.1f]", minutes, secs);
+		local formatted_secs = string.format("%04.1f", secs);
+		local main_part = string.format("%02d:%s.", minutes, formatted_secs:sub(1, -3));
+		local sub_part = string.format("%s", formatted_secs:sub(-1));
+		return main_part, sub_part;
 	else
 		seconds = math.floor(seconds);
 		local minutes = math.floor((seconds % 3600) / 60);
 		local secs = seconds % 60;
-		return string.format("[%02d:%02d]", minutes, secs);
+		return string.format("%02d:%02d", minutes, secs), nil;
 	end
 end
 
 local function on_update()
 	local timertext = main_frame.timertext;
+	local timertext_sub = main_frame.timertext_sub;
 
 	if ns.options.ShowWhenCombat then
 		if InCombatLockdown() then
@@ -66,7 +84,15 @@ local function on_update()
 	end
 
 	if time_sec >= 0 then
-		timertext:SetText(format_time(time_sec));
+		local main_part, sub_part = format_time(time_sec);
+		timertext:SetText(main_part);
+		if sub_part then
+			timertext_sub:SetText(sub_part);
+			timertext_sub:Show();
+		else
+			timertext_sub:SetText("");
+			timertext_sub:Hide();
+		end
 	end
 end
 
@@ -95,12 +121,25 @@ local function init()
 
 	main_frame.timertext = main_frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	main_frame.timertext:ClearAllPoints();
-	main_frame.timertext:SetPoint("LEFT", main_frame, "LEFT", 0, 0);
+	main_frame.timertext:SetPoint("LEFT", main_frame, "LEFT", 6, 0);
 	main_frame.timertext:SetTextColor(1, 1, 1);
+
+	main_frame.timertext_sub = main_frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	main_frame.timertext_sub:ClearAllPoints();
+	main_frame.timertext_sub:SetPoint("BOTTOMLEFT", main_frame.timertext, "BOTTOMRIGHT", 0, 0);
+	main_frame.timertext_sub:SetTextColor(1, 1, 1);
+
+	main_frame.bg = main_frame:CreateTexture(nil, "BACKGROUND");
+	main_frame.bg:SetColorTexture(0.1, 0.1, 0.1, 0.8);
+
 	if ns.options.ShowSubSeconds then
-		main_frame.timertext:SetText("[00:00.0]");
+		main_frame.timertext:SetText("00:00.");
+		main_frame.timertext_sub:SetText("0");
+		main_frame.timertext_sub:Show();
 	else
-		main_frame.timertext:SetText("[00:00]");
+		main_frame.timertext:SetText("00:00");
+		main_frame.timertext_sub:SetText("");
+		main_frame.timertext_sub:Hide();
 	end
 	main_frame.timertext:Show();
 
