@@ -1,14 +1,12 @@
-﻿local configs = {
-	size = 26,
+﻿local _, ns = ...;
+
+local configs = {
 	xpoint = -100,
 	ypoint = 0,
-	alpha = 0.9,
-	fontsize = 10,
 	blacklist = {
 		--[115356] = true, --고술 바람의 일격
 		--[455055] = true, --일거리 시작
 	},
-	MillisecondsThreshold = 3,
 }
 
 local main_frame = CreateFrame("Frame", nil, UIParent);
@@ -81,26 +79,26 @@ local function update_spells()
 				frame = parent.frames[frame_idx];
 				frame:EnableMouse(false);
 
-				if configs.MillisecondsThreshold then
-					frame.cooldown:SetCountdownMillisecondsThreshold(configs.MillisecondsThreshold);
+				if ns.options.MillisecondsThreshold then
+					frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
 				end
 
 				for _, r in next, { frame.cooldown:GetRegions() } do
 					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, configs.fontsize, "OUTLINE");
+						r:SetFont(STANDARD_TEXT_FONT, ns.options.FontSize, "OUTLINE");
 						r:SetDrawLayer("OVERLAY");
 						break
 					end
 				end
 
 				frame.icon:SetTexCoord(.08, .92, .08, .92)
-				frame.icon:SetAlpha(configs.alpha);
+				frame.icon:SetAlpha(ns.options.Alpha);
 				frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92)
 				frame.border:SetVertexColor(0, 0, 0);
 				frame.cooldown:Show();
 
 				frame:ClearAllPoints();
-				update_anchor(parent.frames, frame_idx, configs.size, 2, false, parent);
+				update_anchor(parent.frames, frame_idx, ns.options.Size, 2, false, parent);
 			end
 
 			frame.icon:SetTexture(icon);
@@ -187,6 +185,8 @@ end
 
 
 local function init()
+	ns.setup_option();
+
 	if ASAA_Positions == nil then
 		ASAA_Positions = {};
 	end

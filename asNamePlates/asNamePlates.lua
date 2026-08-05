@@ -98,6 +98,7 @@ local function remove_unit(unit)
 		local asframe = asframes[nameplate_base];
 
 		asframe.casticon:Hide();
+		asframe.textureoverlay:Hide();
 		asframe.coloroverlay:Hide();
 		asframe.notinterruptable:SetAlpha(0);
 		asframe.notinterruptable:Hide();

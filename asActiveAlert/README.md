@@ -12,6 +12,8 @@ Displays highlighted spells to the left of the character.
     * Displays cooldown progress on the icons.
 
 ## Configuration
+Configure settings under **Options** -> **AddOns** -> **asActiveAlert** (supports icon size, icon alpha, font size, and milliseconds threshold settings).
+
 * **Positioning**: Enter the `/asConfig` command in the chat.
 * **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
@@ -35,6 +37,8 @@ Displays highlighted spells to the left of the character.
     *   재사용 대기시간 표시  
 
 ## 설정
+게임 설정 내 **설정** -> **애드온** -> **asActiveAlert** 메뉴에서 세부 설정이 가능합니다. (아이콘 크기, 아이콘 투명도, 글꼴 크기, 남은 쿨 소수점 최소 시간 토글 등)
+
 *  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 *  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
 
