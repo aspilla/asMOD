@@ -1,8 +1,8 @@
 local _, ns = ...;
 local configs = {
-    colors = {
-    	[48518] = CreateColor(0.5, 0.2, 1),
-     	[48517] = CreateColor(1, 0.5, 0.2),
+	colors = {
+		[48518] = CreateColor(0.5, 0.2, 1),
+		[48517] = CreateColor(1, 0.5, 0.2),
 	}
 }
 
@@ -83,9 +83,9 @@ local function setup_container(idx, spellid)
 	--idx should be 1 or 2
 	if main_frame.containers[idx] == nil then
 		local xoffset = ns.options.BarWidth / 4;
-        local color = configs.colors[spellid];
+		local color = configs.colors[spellid];
 
-        if idx == 1 then
+		if idx == 1 then
 			xoffset = -(ns.options.BarWidth / 4);
 		end
 
@@ -104,12 +104,14 @@ local function setup_container(idx, spellid)
 end
 
 function ns.setup_luna(spellids)
-	ns.combocountbar:SetValue(0);
-	ns.combocountbar:Show();
-	main_frame:SetParent(ns.main_frame);
-	main_frame:SetFrameLevel(ns.configs.framelevel + 200);
-	for idx = 1, 2 do
-		setup_container(idx, spellids[idx]);
+	if spellids and #spellids == 2 and ns.options.ShowClassResource then
+		ns.combocountbar:SetValue(0);
+		ns.combocountbar:Show();
+		main_frame:SetParent(ns.main_frame);
+		main_frame:SetFrameLevel(ns.configs.framelevel + 200);
+		for idx = 1, 2 do
+			setup_container(idx, spellids[idx]);
+		end
 	end
 end
 
