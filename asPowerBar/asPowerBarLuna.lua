@@ -1,4 +1,10 @@
 local _, ns = ...;
+local configs = {
+    colors = {
+    	[48518] = CreateColor(0.5, 0.2, 1),
+     	[48517] = CreateColor(1, 0.5, 0.2),
+	}
+}
 
 local main_frame = CreateFrame("Frame", nil, UIParent);
 main_frame:SetSize(1, 1);
@@ -29,7 +35,6 @@ local function create_aurabutton(color)
 		frame.bg:SetPoint("BOTTOMRIGHT", frame.bar, "BOTTOMRIGHT", 1, -1);
 		frame.bg:SetColorTexture(0.1, 0.1, 0.1, 1);
 
-
 		frame.overlay = CreateFrame("Frame", nil, frame);
 		frame.overlay:SetFrameLevel(frame:GetFrameLevel() + 200);
 		frame.text = frame.overlay:CreateFontString(nil, "OVERLAY");
@@ -58,7 +63,6 @@ local function create_container(parent, unit, anchor, hdir, vdir)
 	container:SetFlowLayoutAnchorPoint(anchor);
 	container:SetFlowLayoutGrowthDirection(hdir, vdir);
 	container:SetUnit(unit);
-	container:SetEnabled(true);
 	return container;
 end
 
@@ -68,7 +72,7 @@ local function add_group(container, gname, filter, cfilters, initinfos)
 	container:SetAuraGroupCandidateFilters(gname, cfilters);
 end
 
-local function setup_container(idx, spellid, direction)
+local function setup_container(idx, spellid)
 	local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player);
 	local cfilters = { includeSpellIDs = { [spellid] = true } };
 
@@ -79,16 +83,15 @@ local function setup_container(idx, spellid, direction)
 	--idx should be 1 or 2
 	if main_frame.containers[idx] == nil then
 		local xoffset = ns.options.BarWidth / 4;
-        local color = CreateColor(1, 0.5, 0.2);
+        local color = configs.colors[spellid];
 
         if idx == 1 then
-        	color = CreateColor(0.5, 0.2, 1);
 			xoffset = -(ns.options.BarWidth / 4);
 		end
 
 		main_frame.containers[idx] = create_container(main_frame, "player", "BOTTOM", AnchorUtil.FlowDirection.Right,
 			AnchorUtil.FlowDirection.Down);
-		add_group(main_frame.containers[idx], "lunabar", filter, cfilters,
+		add_group(main_frame.containers[idx], "aurabar", filter, cfilters,
 			{ maxFrameCount = 1, initializeFrame = create_aurabutton(color) });
 
 
@@ -106,7 +109,7 @@ function ns.setup_luna(spellids)
 	main_frame:SetParent(ns.main_frame);
 	main_frame:SetFrameLevel(ns.configs.framelevel + 200);
 	for idx = 1, 2 do
-		setup_container(idx, spellids[idx], idx - 1);
+		setup_container(idx, spellids[idx]);
 	end
 end
 
