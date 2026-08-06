@@ -81,5 +81,6 @@ function ns.clear_whirlwind()
 	ns.combocountbar:Hide();
 	if main_frame.container then
 		main_frame.container:SetEnabled(false);
+		main_frame.container:Hide();
 	end
 end

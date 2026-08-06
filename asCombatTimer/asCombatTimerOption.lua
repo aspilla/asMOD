@@ -1,7 +1,7 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 260805,
-    FontSize = 20,
+    Version = 260806,
+    FontSize = 17,
     Font = 1,
     ShowWhenCombat = true,
     ShowSubSeconds = true,

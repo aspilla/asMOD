@@ -125,6 +125,7 @@ function ns.clear_shatter()
 	end
 	if main_frame.container then
 		main_frame.container:SetEnabled(false);
+		main_frame.container:Hide();
 	end
 	main_frame:UnregisterAllEvents();
 end

@@ -78,7 +78,7 @@ local function init_class()
 	local bsmallprimary = false;
 	local bbigsecondary = false;
 	local bshatter = false;
-	local aurabarid = nil;
+	local aurabarids = nil;
 	local bluna = false;
 
 	ns.combotext:SetText("");
@@ -118,7 +118,7 @@ local function init_class()
 			bbigsecondary = true;
 		end
 		if (spec and spec == 3) then
-			aurabarid = 395296;
+			aurabarids = {[395296] = CreateColor(0.7, 0.4, 1)};
 		end
 	end
 
@@ -126,7 +126,7 @@ local function init_class()
 		powerlevel = Enum.PowerType.HolyPower;
 
 		if (spec and spec == 2) then
-			aurabarid = 132403;
+			aurabarids = {[132403] = CreateColor(0.7, 0.4, 1)};
 		end
 
 		if (spec and spec == 3) then
@@ -142,8 +142,7 @@ local function init_class()
 
 		if (spec and spec == 2) then
 			spellid = 108853;
-			bsmallprimary = true;
-			bbigsecondary = true;
+			aurabarids = {[190319] = CreateColor(0.7, 0.4, 1), [383874] = CreateColor(0.4, 1, 0.7)};
 		end
 
 		if (spec and spec == 3) then
@@ -274,8 +273,8 @@ local function init_class()
 	if bshatter then
 		ns.setup_shatter();
 		ASPowerBarInfo.nomana = true;
-	elseif aurabarid then
-		ns.setup_aurabar(aurabarid);
+	elseif aurabarids then
+		ns.setup_aurabar(aurabarids);
 		ASPowerBarInfo.nomana = true;
 	else
 		ns.setup_power();

@@ -14,7 +14,7 @@ Primary Resource / Class Resource Display
 
 - **Evoker:** Essence, [Augmentation] Ebon Might
 - **Paladin:** Holy Power, [Protection] Shield of Rightness
-- **Mage:** [Arcane] Arcane Charges, [Fire] Fire Blast cooldown, [Frost] Target's Winter's Chill debuff stacks, Icicle stacks
+- **Mage:** [Arcane] Arcane Charges, [Fire] Fire Blast cooldown, Combustion, Hyperthermia, [Frost] Target's Winter's Chill debuff stacks, Icicle stacks
 - **Warlock:** Soul Shards, [Destruction] Soul Shard Fragments
 - **Druid:** Combo Points (Includes [Feral] Overflowing Power tracker), [Balance] Eclipse (Lunar, Solar)
 - **Monk:** [Brewmaster] Stagger, [Mistweaver] Renewing Mist cooldown, [Windwalker] Chi
@@ -66,7 +66,7 @@ Primary Resource / Class Resource Display
 
 - **기원사 :** 정수, [증강] 칠흑의 힘
 - **성기사 :** 신성한 힘, [보호] 정의의 방패
-- **마법사 :** [비전] 비전 충전물, [화염] 화염작열 쿨다운, [냉기] 대상 빙결 디버프 중첩, 고드름 중첩
+- **마법사 :** [비전] 비전 충전물, [화염] 화염작열 쿨다운, 발화, 이상 고열, [냉기] 대상 빙결 디버프 중첩, 고드름 중첩
 - **흑마법사 :** 영혼의 조각, [파괴] 영혼의 조각 파편
 - **드루이드 :** 연계 점수 ([야성]넘쳐흐르는 힘 표시), [조화] 일월식 (달, 태양)
 - **수도사 :** [양조] 시간차, [운무] 소생의 안개 쿨다운 [풍운] 기
