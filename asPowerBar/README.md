@@ -16,7 +16,7 @@ Primary Resource / Class Resource Display
 - **Paladin:** Holy Power, [Protection] Shield of Rightness
 - **Mage:** [Arcane] Arcane Charges, [Fire] Fire Blast cooldown, Combustion, Hyperthermia, [Frost] Target's Winter's Chill debuff stacks, Icicle stacks
 - **Warlock:** Soul Shards, [Destruction] Soul Shard Fragments
-- **Druid:** Combo Points (Includes [Feral] Overflowing Power tracker), [Balance] Eclipse (Lunar, Solar)
+- **Druid:** Combo Points (Includes [Feral] Overflowing Power tracker), [Balance] Eclipse (Lunar, Solar), [Guardian] ironfur
 - **Monk:** [Brewmaster] Stagger, [Mistweaver] Renewing Mist cooldown, [Windwalker] Chi
 - **Rogue:** Combo Points, Animacharged Combo Points
 - **Shaman:** [Enhancement] Maelstrom Weapon, [Elemental] Lava Burst cooldown, [Restoration] Riptide cooldown
@@ -68,7 +68,7 @@ Primary Resource / Class Resource Display
 - **성기사 :** 신성한 힘, [보호] 정의의 방패
 - **마법사 :** [비전] 비전 충전물, [화염] 화염작열 쿨다운, 발화, 이상 고열, [냉기] 대상 빙결 디버프 중첩, 고드름 중첩
 - **흑마법사 :** 영혼의 조각, [파괴] 영혼의 조각 파편
-- **드루이드 :** 연계 점수 ([야성]넘쳐흐르는 힘 표시), [조화] 일월식 (달, 태양)
+- **드루이드 :** 연계 점수 ([야성]넘쳐흐르는 힘 표시), [조화] 일월식 (달, 태양), [수호] 무쇠 가죽
 - **수도사 :** [양조] 시간차, [운무] 소생의 안개 쿨다운 [풍운] 기
 - **도적 :** 연계 점수, 초자력 충전
 - **주술사 :** [고양] 소용돌이치는 무기, [정기] 용암 폭발 쿨다운, [복원] 성난 해일 쿨다운

@@ -79,6 +79,7 @@ local function init_class()
 	local bbigsecondary = false;
 	local bshatter = false;
 	local aurabarids = nil;
+	local auracountids = nil;
 	local bluna = false;
 
 	ns.combotext:SetText("");
@@ -108,6 +109,7 @@ local function init_class()
 	ns.clear_aurabar();
 	ns.clear_power();
 	ns.clear_luna();
+	ns.clear_auracountbar();
 
 	ASPowerBarInfo.nomana = false;
 
@@ -118,7 +120,7 @@ local function init_class()
 			bbigsecondary = true;
 		end
 		if (spec and spec == 3) then
-			aurabarids = {[395296] = CreateColor(0.7, 0.4, 1)};
+			aurabarids = { [395296] = CreateColor(0.7, 0.4, 1) };
 		end
 	end
 
@@ -126,7 +128,7 @@ local function init_class()
 		powerlevel = Enum.PowerType.HolyPower;
 
 		if (spec and spec == 2) then
-			aurabarids = {[132403] = CreateColor(0.7, 0.4, 1)};
+			aurabarids = { [132403] = CreateColor(0.7, 0.4, 1) };
 		end
 
 		if (spec and spec == 3) then
@@ -142,7 +144,7 @@ local function init_class()
 
 		if (spec and spec == 2) then
 			spellid = 108853;
-			aurabarids = {[190319] = CreateColor(0.7, 0.4, 1), [383874] = CreateColor(0.4, 1, 0.7)};
+			aurabarids = { [190319] = CreateColor(0.7, 0.4, 1), [383874] = CreateColor(0.4, 1, 0.7) };
 		end
 
 		if (spec and spec == 3) then
@@ -166,6 +168,8 @@ local function init_class()
 	if (englishClass == "DRUID") then
 		if (spec and spec == 1) then
 			bluna = true;
+		elseif (spec and spec == 3) then
+			auracountids = { [192081] = C_ClassColor.GetClassColor("DRUID") };
 		else
 			powerlevel = Enum.PowerType.ComboPoints;
 			bdruid = true;
@@ -291,7 +295,9 @@ local function init_class()
 	elseif bstagger then
 		ns.setup_stagger(bstagger);
 	elseif bluna then
-		ns.setup_luna({48518, 48517 })
+		ns.setup_luna({ 48518, 48517 })
+	elseif auracountids then
+		ns.setup_auracountbar(auracountids);
 	end
 end
 

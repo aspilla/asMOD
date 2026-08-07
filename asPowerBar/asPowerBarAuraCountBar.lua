@@ -19,7 +19,7 @@ local function create_aurabutton(color)
 		frame.bar:GetStatusBarTexture():SetHorizTile(false)
 		frame.bar:SetStatusBarColor(color:GetRGB());
 		frame.bar:SetWidth(ns.options.BarWidth)
-		frame.bar:SetHeight(ns.bar:GetHeight())
+		frame.bar:SetHeight(ns.combocountbar:GetHeight())
 		frame.bar:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0)
 		frame.bar:Show();
 		frame.bar:EnableMouse(false);
@@ -35,19 +35,9 @@ local function create_aurabutton(color)
 		frame.text = frame.overlay:CreateFontString(nil, "OVERLAY");
 		frame.text:SetFont(ns.configs.font, ns.options.FontSize, ns.configs.fontOutline)
 		frame.text:ClearAllPoints();
-		frame.text:SetPoint("CENTER", frame.bar, "CENTER", 0, 0);
+		frame.text:SetPoint("LEFT", frame.bar, "LEFT", 3, 0);
 		frame.text:SetTextColor(1, 1, 1);
-		frame:SetDurationText(frame.text, {
-			textFormat = {
-				formatString = "{}",
-				components = {
-					{
-						property = 0,
-						formatter = formatter
-					}
-				}
-			}
-		});
+		frame:SetApplicationCount(frame.text);
 		frame:SetDurationBar(frame.bar, { interpolation = ns.bartype, direction = 1 });
 		frame:Show();
 	end
@@ -79,7 +69,7 @@ local function setup_container(spellid, color)
 		container:SetFrameLevel(main_frame:GetFrameLevel() + #(main_frame.containers))
 		add_group(container, "aurabar", filter, cfilters,
 			{ maxFrameCount = 1, initializeFrame = create_aurabutton(color) });
-		container:SetPoint("BOTTOM", ns.bar, "BOTTOM", 0, 0);
+		container:SetPoint("BOTTOM", ns.combocountbar, "BOTTOM", 0, 0);
 		container:SetWidth(1)
 		container:SetHeight(1)
 	end
@@ -87,11 +77,11 @@ local function setup_container(spellid, color)
 	main_frame.containers[spellid]:SetEnabled(true);
 end
 
-function ns.setup_aurabar(spellids)
+function ns.setup_auracountbar(spellids)
 	main_frame:SetParent(ns.main_frame);
 	main_frame:SetFrameLevel(ns.configs.framelevel + 200);
-	ns.bar:SetValue(0);
-	ns.bar.text:Hide();
+	ns.combocountbar:SetValue(0);
+	ns.combocountbar:Show();
 	if main_frame.containers == nil then
 		main_frame.containers = {};
 	end
@@ -100,7 +90,7 @@ function ns.setup_aurabar(spellids)
 	end
 end
 
-function ns.clear_aurabar()
+function ns.clear_auracountbar()
 	if main_frame.containers then
 		for _, container in pairs(main_frame.containers) do
 			container:SetEnabled(false);
