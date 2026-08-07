@@ -4,9 +4,9 @@ asMOD is a collection of custom-made World of Warcraft addons.
 
 ## asMOD Play Video
 
-![sample](https://media.forgecdn.net/attachments/1707/334/asmod_party-jpg.jpg)
+![sample](https://media.forgecdn.net/attachments/1849/706/ie-c-ioi2-2026-08-07-213112-jpg.jpg)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/X6PzmxDiEhw?si=EDnpQXElQXZL451v" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bfyZxcaRBAI?si=o0qYSFqEKuv0lPjo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ![sample](https://media.forgecdn.net/attachments/1743/879/asmod_raid-jpg.jpg)
 
@@ -259,9 +259,10 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 ## asMOD 사용 영상
 
-![sample](https://media.forgecdn.net/attachments/1707/334/asmod_party-jpg.jpg)
+![sample](https://media.forgecdn.net/attachments/1849/706/ie-c-ioi2-2026-08-07-213112-jpg.jpg)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/X6PzmxDiEhw?si=EDnpQXElQXZL451v" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bfyZxcaRBAI?si=o0qYSFqEKuv0lPjo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 
 ![sample](https://media.forgecdn.net/attachments/1743/879/asmod_raid-jpg.jpg)
 
