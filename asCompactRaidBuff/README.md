@@ -51,6 +51,13 @@ Detailed explanations can be found on community macro boards (e.g., WoW Inven Ma
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/riUBD0Mxwgg?si=V_eQH924Uo6XzTZw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+## How to Display Only Desired Healing Over Time (HoT) Buffs
+
+You can adjust this setting by navigating to:
+`Esc` >> `Options` >> `Gameplay Improvements` >> `Advanced Cooldown Settings` >> `Party Buffs`
+
+![sample](https://media.forgecdn.net/attachments/1849/210/ie-c-ioi2-2026-08-07-185301-jpg.jpg)
+
 ## Contact Information
 
 1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
@@ -111,6 +118,11 @@ Detailed explanations can be found on community macro boards (e.g., WoW Inven Ma
 ```
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/riUBD0Mxwgg?si=V_eQH924Uo6XzTZw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## 원하는 힐버프(HOT) 만 표시 하는 방법
+
+`esc` >> `설정` >> `게임 플레이 개선` >> `고급 재사용 대기시간 설정` >> `파티 강화 효과` 에서 조정 가능
+![sample](https://media.forgecdn.net/attachments/1849/210/ie-c-ioi2-2026-08-07-185301-jpg.jpg)
 
 ## 문의처
 

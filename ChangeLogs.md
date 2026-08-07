@@ -2,6 +2,48 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260811 Update (12.1.0, Season 2 Patch Support)
+
+### Layout Changes
+- Added support for tracking trinkets and racial traits via the new `Cooldown Manager` feature. The number of primary central buttons has been increased from 6 to 8.
+- Overall positions for asMOD layouts and addons have been updated.
+- Reconfiguring your `Cooldown Manager` settings is highly recommended.
+
+### Addon Settings Reset
+- Due to the layout changes, all addon positions have been readjusted.
+- If you have custom addon positions or options, you will need to re-adjust them manually.
+
+### Addon Settings Enhanced & Descriptions Added
+- Addon settings have been slightly expanded. However, keeping the default settings is strongly recommended.
+- As a reminder, `asMOD` is not designed with custom configuration in mind.
+
+### asPowerBar
+- Enhanced tracking for essential class buffs/debuffs.
+- Removed dependency on `Cooldown Manager`. Buffs/debuffs displayed on asPowerBar can now be safely removed from `Cooldown Manager`.
+- Please refer to the manual for detailed instructions.
+
+### asCooldownPulse
+- Since trinket, racial trait, and potion cooldowns can now be tracked in `Cooldown Manager`, the previous trinket slots have been reassigned to Class Defensive Cooldowns.
+- Trinket and racial tracking features are now OFF by default, but can be re-enabled in the options.
+- Known Issue: Cooldown timers for certain skills are currently not displaying properly.
+
+### asDebuffFilter, asUnitFrame
+- Bloodlust / Heroism debuffs (Sated, Exhaustion, etc.) will no longer be displayed.
+
+### asDotFilter, asDebuffFilter
+- Major debuffs displayed on nameplates are now sorted alphabetically based on priority.
+
+### asCompactRaidBuff
+- Added functionality to configure desired buffs via `Cooldown Manager`. Additional setup is required.
+- Please refer to the manual for detailed instructions.
+
+### asBloodlustAlert
+- Displays the remaining duration of Bloodlust/Heroism debuffs as a gray button.
+
+### asCombatTimer
+- Timer now displays down to tenths of a second (0.1s precision).
+
+
 ## 260719 update
 
 ### asPowerBar
