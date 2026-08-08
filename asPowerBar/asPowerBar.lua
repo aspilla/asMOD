@@ -77,10 +77,10 @@ local function init_class()
 	local bstagger = false;
 	local bsmallprimary = false;
 	local bbigsecondary = false;
-	local bshatter = false;
 	local aurabarids = nil;
 	local auracountids = nil;
 	local bluna = false;
+	local stackinfo = nil;
 
 	ns.combotext:SetText("");
 	ns.combotext:Hide();
@@ -105,11 +105,11 @@ local function init_class()
 	ns.clear_spell();
 	ns.clear_stagger();
 	ns.clear_whirlwind();
-	ns.clear_shatter();
 	ns.clear_aurabar();
 	ns.clear_power();
 	ns.clear_luna();
 	ns.clear_auracountbar();
+	ns.clear_stack();
 
 	ASPowerBarInfo.nomana = false;
 
@@ -150,19 +150,24 @@ local function init_class()
 		if (spec and spec == 3) then
 			auraid = 205473;
 			max_aura = 5;
-			bshatter = true;
+			stackinfo = { spellid = 1221389, max = 20, color = CreateColor(0.7, 0.3, 1), unit = "target" }
 		end
 	end
 
 	if (englishClass == "WARLOCK") then
 		powerlevel = Enum.PowerType.SoulShards
 
+		if (spec and spec == 1) then
+			bsmallprimary = true; bbigsecondary = true;
+		end
+		if (spec and spec == 2) then
+			stackinfo = { spellid = 296553, max = 20, color = CreateColor(0.7, 0.3, 1), unit = "player" }
+		end
 		if (spec and spec == 3) then
 			bpartial = true;
+			bsmallprimary = true;
+			bbigsecondary = true;
 		end
-
-		bsmallprimary = true;
-		bbigsecondary = true;
 	end
 
 	if (englishClass == "DRUID") then
@@ -274,11 +279,11 @@ local function init_class()
 	end
 
 	resizebars(bsmallprimary, bbigsecondary);
-	if bshatter then
-		ns.setup_shatter();
-		ASPowerBarInfo.nomana = true;
-	elseif aurabarids then
+	if aurabarids then
 		ns.setup_aurabar(aurabarids);
+		ASPowerBarInfo.nomana = true;
+    elseif stackinfo then
+		ns.setup_stack(stackinfo);
 		ASPowerBarInfo.nomana = true;
 	else
 		ns.setup_power();

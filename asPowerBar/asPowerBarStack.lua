@@ -1,25 +1,17 @@
 local _, ns = ...;
 
-local configs = {
-	polishedflush = 1261082,
-	heartofice = 1247799,
-	maxshatter = 20,
-	baseshatter = 4,
-	spellid = 1221389,
-}
-
 local main_frame = CreateFrame("Frame", nil, UIParent);
 main_frame:SetSize(1, 1);
 main_frame:Show();
 
-local function create_aurabutton(max)
+local function create_aurabutton(max, color)
 	return function(frame)
 		frame:SetWidth(1);
 		frame:SetHeight(1);
 		frame.bar = CreateFrame("StatusBar", nil, frame)
 		frame.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
 		frame.bar:GetStatusBarTexture():SetHorizTile(false)
-		frame.bar:SetStatusBarColor(0.7, 0.4, 1);
+		frame.bar:SetStatusBarColor(color:GetRGB());
 		frame.bar:SetMinMaxValues(0, max);
 		frame.bar:SetWidth(ns.options.BarWidth)
 		frame.bar:SetHeight(ns.bar:GetHeight())
@@ -61,7 +53,7 @@ local function add_group(container, gname, filter, cfilters, initinfos)
 	container:SetAuraGroupCandidateFilters(gname, cfilters);
 end
 
-local function setup_max_shatter(max, min)
+local function setup_container(spellid, max, color, unit)
 	local frames = ns.bar.countframes;
 	for i = 1, 20 do
 		frames[i]:Hide();
@@ -77,19 +69,24 @@ local function setup_max_shatter(max, min)
 		frame:Show();
 	end
 
-	local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
-	local cfilters = { includeSpellIDs = { [configs.spellid] = true } };
+	local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player);
+	local cfilters = { includeSpellIDs = { [spellid] = true } };
+
+	if unit == "target" then
+		filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Harmful, AuraUtil.AuraFilters.Player);
+	end
 
 	if main_frame.container == nil then
-		main_frame.container = create_container(main_frame, "target", "BOTTOM", AnchorUtil.FlowDirection.Right,
+		main_frame.container = create_container(main_frame, unit, "BOTTOM", AnchorUtil.FlowDirection.Right,
 			AnchorUtil.FlowDirection.Down);
-		add_group(main_frame.container, "shatter", filter, cfilters,
-			{ maxFrameCount = 1, initializeFrame = create_aurabutton(max) });
+		add_group(main_frame.container, "stack", filter, cfilters,
+			{ maxFrameCount = 1, initializeFrame = create_aurabutton(max, color) });
 		main_frame.container:SetPoint("BOTTOM", ns.bar, "BOTTOM", 0, 0);
 		main_frame.container:SetWidth(1)
 		main_frame.container:SetHeight(1)
-		main_frame.container:Show()
 	end
+	main_frame.container:Show()
+	main_frame.container:SetEnabled(true);
 end
 
 local function on_event(_, event)
@@ -98,27 +95,20 @@ local function on_event(_, event)
 	end
 end
 
-function ns.setup_shatter()
-	local shattercount = configs.baseshatter;
-
-	if C_SpellBook.IsSpellKnown(configs.heartofice) then
-		shattercount = shattercount + 1;
-	end
-
-	if C_SpellBook.IsSpellKnown(configs.polishedflush) then
-		shattercount = shattercount + 1;
-	end
+function ns.setup_stack(stackinfo)
 	main_frame:SetParent(ns.main_frame);
 	main_frame:SetFrameLevel(ns.configs.framelevel + 200);
-	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
-	main_frame:SetScript("OnEvent", on_event)
 	ns.bar:SetValue(0);
 	ns.bar.text:Hide();
-	setup_max_shatter(configs.maxshatter, shattercount);
-	main_frame.container:SetEnabled(true);
+	setup_container(stackinfo.spellid, stackinfo.max, stackinfo.color, stackinfo.unit);
+
+	if stackinfo.unit == "target" then
+		main_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
+		main_frame:SetScript("OnEvent", on_event)
+	end
 end
 
-function ns.clear_shatter()
+function ns.clear_stack()
 	local frames = ns.bar.countframes;
 	for i = 1, 20 do
 		frames[i]:Hide();
