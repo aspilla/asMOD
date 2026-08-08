@@ -62,8 +62,9 @@ local function setup_max_whilwind(max)
 		main_frame.container:SetPoint("BOTTOM", ns.combocountbar, "BOTTOM", 0, 0);
 		main_frame.container:SetWidth(1)
 		main_frame.container:SetHeight(1)
-		main_frame.container:Show()
 	end
+	main_frame.container:Show()
+	main_frame.container:SetEnabled(true);
 end
 
 
@@ -74,7 +75,6 @@ function ns.setup_whirlwind()
 	main_frame:SetParent(ns.main_frame);
 	main_frame:SetFrameLevel(ns.configs.framelevel);
 	setup_max_whilwind(configs.max);
-	main_frame.container:SetEnabled(true);
 end
 
 function ns.clear_whirlwind()

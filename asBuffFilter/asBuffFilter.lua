@@ -2,7 +2,8 @@
 local main_frame = CreateFrame("Frame", nil, UIParent);
 
 local filters = {
-	helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player, AuraUtil.AuraFilters.RaidInCombat ),
+	helpful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player,
+		AuraUtil.AuraFilters.RaidInCombat),
 	harmful = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful),
 }
 
@@ -13,50 +14,109 @@ local borderoption = {
 	style = AuraButtonBorderStyle.Color,
 };
 
+
+
 local function create_aurabutton(size, issteal)
+	local formatter = C_StringUtil.CreateNumericRuleFormatter();
+	if ns.options.MillisecondsThreshold then
+		formatter:AddBreakpoint({
+			threshold = 0,
+			format = "%.1f",
+            step = 0.1,
+			rounding = 1,
+		});
+		formatter:AddBreakpoint({
+			threshold = ns.options.MillisecondsThreshold,
+			format = "%d",
+			step = 1,
+			rounding = 1,
+		});
+	else
+		formatter:AddBreakpoint({
+			threshold = 0,
+			format = "%d",
+			step = 1,
+			rounding = 1,
+		});
+	end
+
+	if GetLocale() == "koKR" then
+		formatter:AddBreakpoint({
+			threshold = 60,
+			format = "%d분",
+			components = {
+				{ div = 60, step = 1, rounding = 1 } },
+		});
+		formatter:AddBreakpoint({
+			threshold = 3600,
+			format = "%d시간",
+			components = {
+				{ div = 3600, step = 1, rounding = 1 } },
+		});
+		formatter:AddBreakpoint({
+			threshold = 86400,
+			format = "%d일",
+			components = {
+				{ div = 86400, step = 1, rounding = 1 } },
+		});
+	else
+		formatter:AddBreakpoint({
+			threshold = 60,
+			format = "%dm",
+			components = {
+				{ div = 60, step = 1, rounding = 1 } },
+		});
+		formatter:AddBreakpoint({
+			threshold = 3600,
+			format = "%dh",
+			components = {
+				{ div = 3600, step = 1, rounding = 1 } },
+		});
+		formatter:AddBreakpoint({
+			threshold = 86400,
+			format = "%dd",
+			components = {
+				{ div = 86400, step = 1, rounding = 1 } },
+		});
+	end
 	return function(frame)
 		frame.cooldown = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
 		frame.cooldown:SetAllPoints(frame);
 		frame.cooldown:SetDrawSwipe(true);
 		frame.cooldown:SetReverse(true);
+		frame.cooldown:SetHideCountdownNumbers(true);
 
-		if ns.options.MillisecondsThreshold then
-			frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
-		end
-
-		for _, r in next, { frame.cooldown:GetRegions() } do
-			if r:GetObjectType() == "FontString" then
-				r:SetFont(STANDARD_TEXT_FONT, size * ns.configs.cool_fontsize_rate, "OUTLINE");
-				r:ClearAllPoints();
-				r:SetPoint("TOP", 0, 5);
-				r:SetDrawLayer("OVERLAY");
-				break;
-			end
-		end
 		frame.icon = frame:CreateTexture(nil, "BACKGROUND")
 		frame.icon:SetAllPoints(frame);
 		frame.icon:SetTexCoord(.08, .92, .16, .84);
 
-		frame.borderb = frame:CreateTexture(nil, "BORDER");
+		frame.overlay = CreateFrame("Frame", nil, frame);
+		frame.overlay:SetFrameLevel(frame:GetFrameLevel() + 5);
+		frame.overlay:SetAllPoints(frame);
+
+		frame.borderb = frame.overlay:CreateTexture(nil, "BORDER");
 		frame.borderb:SetTexture("Interface\\Addons\\asBuffFilter\\border.tga")
-		frame.borderb:SetAllPoints(frame);
+		frame.borderb:SetAllPoints(frame.overlay);
 		frame.borderb:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 		frame.borderb:SetVertexColor(0, 0, 0);
 
-		frame.border = frame:CreateTexture(nil, "ARTWORK");
+		frame.border = frame.overlay:CreateTexture(nil, "ARTWORK");
 		frame.border:SetTexture("Interface\\Addons\\asBuffFilter\\border.tga")
-		frame.border:SetAllPoints(frame);
+		frame.border:SetAllPoints(frame.overlay);
 		frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
 		frame.border:SetVertexColor(0, 0, 0);
-
-		frame.overlay = CreateFrame("Frame", nil, frame);
-		frame.overlay:SetFrameLevel(frame:GetFrameLevel() + 5);
 
 		frame.count = frame.overlay:CreateFontString(nil, "OVERLAY");
 		frame.count:SetFont(STANDARD_TEXT_FONT, size * ns.configs.count_fontsize_rate, "OUTLINE")
 		frame.count:ClearAllPoints();
-		frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 1);
+		frame.count:SetPoint("CENTER", frame.overlay, "BOTTOM", 0, 1);
 		frame.count:SetTextColor(0, 1, 0);
+
+		frame.remain = frame.overlay:CreateFontString(nil, "OVERLAY");
+		frame.remain:SetFont(STANDARD_TEXT_FONT, size * ns.configs.count_fontsize_rate, "OUTLINE")
+		frame.remain:ClearAllPoints();
+		frame.remain:SetPoint("CENTER", frame.overlay, "TOP", 0, -1);
+		frame.remain:SetTextColor(1, 1, 1);
 
 		frame:SetWidth(size);
 		frame:SetHeight(size * ns.configs.sizerate);
@@ -73,6 +133,17 @@ local function create_aurabutton(size, issteal)
 			frame:SetAuraBorder(frame.border, borderoption);
 		end
 		frame:SetDurationCooldown(frame.cooldown);
+		frame:SetDurationText(frame.remain, {
+			textFormat = {
+				formatString = "{}",
+				components = {
+					{
+						property = 0,
+						formatter = formatter
+					}
+				}
+			}
+		});
 		frame:SetApplicationCount(frame.count);
 	end
 end
@@ -144,8 +215,11 @@ local function setup_frames()
 		AnchorUtil.FlowDirection.Right,
 		AnchorUtil.FlowDirection.Down);
 	add_group(main_frame.nchelpfulframe, "buffs", filters.harmful, {},
-		{ maxFrameCount = ns.configs.nocombat_max_buffs, initializeFrame = create_aurabutton(ns.configs.nocombat_size,
-			false) });
+		{
+			maxFrameCount = ns.configs.nocombat_max_buffs,
+			initializeFrame = create_aurabutton(ns.configs.nocombat_size,
+				false)
+		});
 	main_frame.nchelpfulframe:SetPoint("LEFT", UIParent, "CENTER", ns.configs.target_xpoint,
 		ns.configs.target_ypoint - offset)
 	main_frame.nchelpfulframe:SetWidth(1)

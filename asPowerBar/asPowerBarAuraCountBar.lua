@@ -4,12 +4,6 @@ local main_frame = CreateFrame("Frame", nil, UIParent);
 main_frame:SetSize(1, 1);
 main_frame:Show();
 
-local formatter = C_StringUtil.CreateNumericRuleFormatter();
-formatter:AddBreakpoint({
-	threshold = 0,
-	format = "%.1f"
-});
-
 local function create_aurabutton(color)
 	return function(frame)
 		frame:SetWidth(1);
