@@ -14,6 +14,9 @@ local configs = {
 	updaterate = 0.2,
 };
 
+local blacklists = {
+	[125439] = true,
+}
 local main_frame = CreateFrame("Frame");
 local frames = {};
 local frameidx = 1;
@@ -89,37 +92,6 @@ local function onupdate()
 		end
 	end
 end
-local function update_buttons(viewer)
-	local childs = { viewer:GetChildren() };
-
-	local visiblechilds = {}
-	for _, child in ipairs(childs) do
-		if child:IsShown() then
-			local point, relativeTo, relativePoint, x, y = child:GetPoint(1)
-			child.originalX = x or 0
-			child.originalY = y or 0
-			table.insert(visiblechilds, child)
-		end
-	end
-
-	if #visiblechilds == 0 then
-		return
-	end
-
-	for _, button in ipairs(visiblechilds) do
-		local itemlocation = button:GetItemLocation();
-		local spellid = button:GetSpellID();
-
-		if itemlocation == nil and spellid and  not issecretvalue(spellid) and alertspells[spellid] == nil then
-			alertspells[spellid] = 0;
-		end
-	end
-end
-
-local viewers = {
-	UtilityCooldownViewer,
-	EssentialCooldownViewer,
-}
 
 local function checktrinkets(slot)
 	local itemid = GetInventoryItemID("player", slot);
@@ -131,124 +103,50 @@ local function checktrinkets(slot)
 	end
 end
 
-local function get_powerbarspell()
-	local localizedClass, englishClass = UnitClass("player");
-	local spec = C_SpecializationInfo.GetSpecialization();
-	local spellid = nil;
+local function scan_spellbook(tab)
+	local lineinfo = C_SpellBook.GetSpellBookSkillLineInfo(tab);
 
-	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
-		spec = 1;
+	if not lineinfo or not lineinfo.name then
+		return;
 	end
 
+	for i = lineinfo.itemIndexOffset + 1, lineinfo.itemIndexOffset + lineinfo.numSpellBookItems do
+		local spellname = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player);
 
-	if (englishClass == "EVOKER") then
-	end
-
-	if (englishClass == "PALADIN") then
-	end
-
-	if (englishClass == "MAGE") then
-		if (spec and spec == 2) then
-			spellid = 108853;
-		end
-	end
-
-	if (englishClass == "WARLOCK") then
-
-	end
-
-	if (englishClass == "DRUID") then
-	end
-
-	if (englishClass == "MONK") then
-		if (spec and spec == 2) then
-			spellid = 115151;
-		end
-	end
-
-	if (englishClass == "ROGUE") then
-	end
-
-	if (englishClass == "DEATHKNIGHT") then
-	end
-
-	if (englishClass == "PRIEST") then
-		if (spec and spec == 1) then
-			spellid = 194509;
+		if not spellname then
+			do break end
 		end
 
-		if (spec and spec == 2) then
-			spellid = 2050;
-		end
+		local slottype, actionid, spellid = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
+		local ispassive = C_SpellBook.IsSpellBookItemPassive(i, Enum.SpellBookSpellBank.Player)
 
-		if (spec and spec == 3) then
-			spellid = 8092;
-		end
-	end
+		if not ispassive then
+			if (slottype == Enum.SpellBookItemType.Flyout) then
+				local _, _, slots = GetFlyoutInfo(actionid);
+				for j = 1, slots do
+					local fspellid, _, _, _, _ = GetFlyoutSlotInfo(actionid, j);
 
-	if (englishClass == "WARRIOR") then
-		if (spec and spec == 1) then
-			spellid = 7384;
+					if fspellid and not blacklists[fspellid] then
+						alertspells[fspellid] = 0;
+					end
+				end
+			else
+				if spellid and not blacklists[spellid] then
+					alertspells[spellid] = 0;
+				end
+			end
 		end
-
-
-		if (spec and spec == 3) then
-			spellid = 2565;
-		end
-	end
-
-	if (englishClass == "DEMONHUNTER") then
-		if spec and spec == 1 then
-			spellid = 195072;
-		end
-
-		if spec and spec == 2 then
-			spellid = 228477;
-		end
-	end
-
-	if (englishClass == "HUNTER") then
-		if (spec and spec == 1) then
-			spellid = 217200;
-		end
-
-		if (spec and spec == 2) then
-			spellid = 19434;
-		end
-	end
-
-	if (englishClass == "SHAMAN") then
-		if (spec and spec == 1) then
-			spellid = 51505;
-		end
-		if (spec and spec == 3) then
-			spellid = 61295;
-		end
-	end
-	if spellid then
-		alertspells[spellid] = 0;
 	end
 end
+
 local function init_spells()
 	wipe(alertspells);
-
-	for _, viewer in ipairs(viewers) do
-		if viewer then
-			update_buttons(viewer);
-		end
-	end
 
 	if ns.racial_spell then
 		alertspells[ns.racial_spell] = 0;
 	end
-
-	if ns.options.AlertPowerBar then
-		get_powerbarspell();
-	end
-
-    for _, v in pairs(ns.trackspells) do
-		alertspells[v[1]] = 0;
-	end
+	scan_spellbook(2);
+	scan_spellbook(3);
 end
 
 local function init_items()

@@ -10,7 +10,7 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 
 ## Key Features
 
-- **Skill, Trinket, Potion, and Racial Ability Availability Alerts**: Displays an alert in the center of the screen when a registered skill on `cooldown manager` and `asPowerBar`, an equipped trinket, a primary combat/survival potion, or a racial ability becomes available for use.
+- **Skill, Trinket, Potion, and Racial Ability Availability Alerts**: Skill on `Spell Book`, an equipped trinket, a primary combat/survival potion, or a racial ability becomes available for use.
 - This feature utilizes updated APIs implemented after the Midnight expansion; consequently, skills, which have the Global Cooldown (GCD), may experience slight notification delays.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -34,11 +34,10 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 - Toggle display of skill cooldown tracking (Default: On).
 - Icon size for skill cooldown tracking (Default: 28).
 - The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
-- Ready alert for asPowerBar spell (Default: On).
 
 - A `/reload` is required after changing sizes.
 
-- You can register skills for cooldown tracking via `ESC` > `Options` > `AddOns` > `asCooldownPulse` > `Spell List`.
+- You can register skills for cooldown tracking via `ESC` > `Options` > `AddOns` > `asCooldownPulse` > `Defensive Spell List`.
 - To find the `Spell ID`, using an additional addon like ID Tip is recommended.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/51H0QW8MXyY?si=04JGGrTUrJJo6jzj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -65,7 +64,7 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 
 ## 주요 기능
 
-- **스킬, 장신구, 물약, 종특, 사용가능 알림**: `재사용 대기시간 관리자` 또는 `asPowerBar`에 등록된 스킬, 착용중인 장신구, 전투/생존 대표 물약, 종특 사용가능시 화면 중앙에 알림
+- **스킬, 장신구, 물약, 종특, 사용가능 알림**: '스킬북`에 등록 된 스킬, 종특 장신구, 물약등
 - 한밤 이후 변경된 API 를 사용한 기능으로 글쿨이 있는 스킬의 경우 늦게 알림이 될 수 있습니다.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -75,7 +74,7 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 - **전투 물약 쿨 표시(좌측)** : 대표 물약 쿨만 표시
 - **생존 물약 쿨 표시(좌측)** : 대표 물약 쿨만 표시
 - **생석 쿨/사용 가능 개수 표시(좌측)** : 생석을 지니고 있을때만 표시
-- **스킬 쿨 추적 (우측)** : `재사용 대기 관리자`에 표시 안되는 스킬을 추적하기 위한 설정, (등록 스킬 없음 생존기등 추가 가능)
+- **생존기 쿨 추적 (우측)** : 직업 필수 생존기 추적 
 
 ## 설정
 
@@ -89,11 +88,10 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 - 스킬 쿨 추적 표시 여부 (Default On)
 - 스킬 쿨 추적 사이즈 (Default 28)
 - 남은 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
-- asPowerBar 등록 스킬을 알림 (기본 On)
 
 - 크기 변경후 `/reload` 필요
-- `ESC` > `설정` > `애드온` > `asCooldownPulse` > `Spell List` 에서 쿨 추적할 스킬 등록 가능
-- `Spell ID` 확인이 필요하여 ID Tip등 추가 애드온 사용
+- `ESC` > `설정` > `애드온` > `asCooldownPulse` > `생존기 스킬 목록` 에서 쿨 추적할 스킬 등록 가능
+- `스킬 번호(Spell ID)` 확인이 필요하여 ID Tip등 추가 애드온 사용
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/51H0QW8MXyY?si=04JGGrTUrJJo6jzj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
