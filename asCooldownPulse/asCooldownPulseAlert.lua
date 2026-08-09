@@ -12,6 +12,7 @@ local configs = {
 		[224464] = false,
 	},
 	updaterate = 0.2,
+	mincooldown = 2,
 };
 
 local blacklists = {
@@ -65,9 +66,9 @@ local function onupdate()
 		local cd = C_Spell.GetSpellCooldown(id)
 		if cd then
 			if start > 0 then
-				if not cd.isActive then
+				if not cd.isActive or cd.isOnGCD then
 					local duration = GetTime() - start;
-					if duration > 2 then
+					if duration > 0 then
 						showalert(id);
 					end
 					alertspells[spellid] = 0;
@@ -88,7 +89,7 @@ local function onupdate()
 				showalert(itemid, true);
 			end
 			alertitems[itemid] = false;
-		elseif duration > 2 then
+		elseif duration > configs.mincooldown then
 			alertitems[itemid] = true;
 		end
 	end
@@ -128,7 +129,7 @@ local function scan_spellbook(tab)
 					local fspellid, _, _, _, _ = GetFlyoutSlotInfo(actionid, j);
 
 					if fspellid and not blacklists[fspellid] then
-						alertspells[fspellid] = 0;
+						--alertspells[fspellid] = 0;
 					end
 				end
 			else
@@ -158,9 +159,7 @@ local function init_items()
 end
 
 local function on_event(_, event)
-	if event == "SPELL_UPDATE_COOLDOWN" then
-		onupdate();
-	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
+	if event == "PLAYER_EQUIPMENT_CHANGED" then
 		C_Timer.After(1, init_items);
 	else
 		C_Timer.After(1, init_spells);
@@ -206,7 +205,6 @@ function ns.init_alert()
 	main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 	main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 	main_frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
-	main_frame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
 	main_frame:RegisterUnitEvent("UNIT_PET", "player");
 
 	init_spells();

@@ -9,9 +9,7 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 ![asCooldownPulse](https://media.forgecdn.net/attachments/1585/670/ascooldownpulse_mn-jpg.jpg)
 
 ## Key Features
-
-- **Skill, Trinket, Potion, and Racial Ability Availability Alerts**: Skill on `Spell Book`, an equipped trinket, a primary combat/survival potion, or a racial ability becomes available for use.
-- This feature utilizes updated APIs implemented after the Midnight expansion; consequently, skills, which have the Global Cooldown (GCD), may experience slight notification delays.
+- **Usable Skill, Trinket, Potion, and Racial Notifications**: Skills listed in the `Spellbook` (excluding grouped skills), racials, trinkets, potions, etc.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -64,8 +62,7 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 
 ## 주요 기능
 
-- **스킬, 장신구, 물약, 종특, 사용가능 알림**: '스킬북`에 등록 된 스킬, 종특 장신구, 물약등
-- 한밤 이후 변경된 API 를 사용한 기능으로 글쿨이 있는 스킬의 경우 늦게 알림이 될 수 있습니다.
+- **스킬, 장신구, 물약, 종특, 사용가능 알림**: '스킬북`에 등록 된 스킬(묶음 형태 스킬 제외), 종특 장신구, 물약등
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
