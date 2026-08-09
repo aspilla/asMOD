@@ -7,8 +7,9 @@ Debuff tracker for boss and focus
 ## Main Features
 
 1.  **Track Player-Cast Debuffs** : Show debuffs which shows on namplates
-2.  **Supports WoW's Default Boss Frames/Focus Frames**
-3.  **Supports asUnitFrame**
+2.  **Debuff Refresh Indicator**: Displays a white border when the debuff timer falls below 30% (Pandemic window), indicating it's time to refresh.
+3.  **Supports WoW's Default Boss Frames/Focus Frames**
+4.  **Supports asUnitFrame**
 
 ## Configuration
 
@@ -29,8 +30,9 @@ Debuff tracker for boss and focus
 ## 주요 기능
 
 1.  **플레이어 시전 Debuff 추적** : 이름표에 표시되는 디버프만 표시
-2.  **와우 기본 보스 프레임/주시 프레임 지원**
-3.  **asUnitFrame 지원**
+2.  **Debuff 리필 시점 알림** : 30% 시간이 남아 Debuff 리필이 필요하면 테두리를 하얀색으로 표시
+3.  **와우 기본 보스 프레임/주시 프레임 지원**
+4.  **asUnitFrame 지원**
 
 ## 사용자 설정
 
