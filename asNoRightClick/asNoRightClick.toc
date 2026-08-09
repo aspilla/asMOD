@@ -3,7 +3,7 @@
 ## Title: |cffff3399as|rNoRightClick
 ## Notes: Prevents accidental target changes caused by right-clicking during combat. Requires a double-click to execute the action.
 ## Notes-koKR: 전투중 우클릭으로 인한 Targeting 변경 방지, 2번 클릭 하면 동작
-## Version : 260403
+## Version : 260809
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 asNoRightClick.lua
