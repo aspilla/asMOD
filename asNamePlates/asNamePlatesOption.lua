@@ -23,7 +23,6 @@ ns.option_default = {
     ChangeTexture = true,
     ShowTargeted = true,
     AlertImportantSpell = true,
-    FriendNamePlatesColor = true,
     ShowLowHealth = true,
 
     AggroColor = { r = 0.4, g = 0.2, b = 0.8 },
@@ -232,14 +231,6 @@ ns.setup_alloptions = function()
             SetCVar("nameplateSelectedScale", 1.2);
         end
 
-        if ns.options.FriendNamePlatesColor then
-            SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 1);
-            SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", 1);
-        else
-            SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 0);
-            SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", 0);
-        end
-
         if ns.options.HitTestInsets ~= nil then
             local v = ns.options.HitTestInsets;
             C_NamePlateManager.SetNamePlateHitTestInsets(0, v, v, v, v);
@@ -263,7 +254,6 @@ local function on_panelshow()
 
     if GetLocale() == "koKR" then
         setup_checkboxoption("[기능] 이름표 모양 변경", "ChangeTexture");
-        setup_checkboxoption("[기능] 아군 이름표 모양 변경", "FriendNamePlatesColor");
         setup_checkboxoption("[기능] 하단에 기력 표시", "ShowPower");
         setup_checkboxoption("[기능] 시전 Icon 표시", "ShowCastIcon");
         setup_checkboxoption("[기능] Debuff Icon 변경", "ChangeDebuffIcon");
@@ -300,7 +290,6 @@ local function on_panelshow()
         setup_coloroption("[색상] 높은 체력 배경 색상(사냥꾼 검은화살 전용)", "HighHealthColor");
     else
         setup_checkboxoption("[Feature] Change Texture", "ChangeTexture");
-        setup_checkboxoption("[Feature] Change Friend Nameplates", "FriendNamePlatesColor");
         setup_checkboxoption("[Feature] Show Power below", "ShowPower");
         setup_checkboxoption("[Feature] Show cast icon", "ShowCastIcon");
         setup_checkboxoption("[Feature] Change Debuff Icon", "ChangeDebuffIcon");
