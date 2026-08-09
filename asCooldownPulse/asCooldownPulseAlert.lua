@@ -17,6 +17,7 @@ local configs = {
 local blacklists = {
 	[125439] = true,
 }
+
 local main_frame = CreateFrame("Frame");
 local frames = {};
 local frameidx = 1;
