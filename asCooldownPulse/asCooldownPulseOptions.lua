@@ -10,7 +10,6 @@ local Options_Default = {
 	SpellSize = 28,
 	MillisecondsThreshold = 3,
 	ReadyAlertSize = 60,
-	AlertPowerBar = true,
 };
 
 local L = {
@@ -24,7 +23,6 @@ local L = {
 	MillisecondsThreshold =
 	"The time threshold at which the remaining cooldown begins displaying in 0.1-second increments.",
 	ReadyAlertSize = "Icon size for skill ready alert.",
-	AlertPowerBar = "Ready alert for asPowerBar spell",
 	SpellList = "Defensive Spell List",
 	SpellID = "Spell Id",
 	Priority = "Priority",
@@ -45,7 +43,6 @@ if GetLocale() == "koKR" then
 		ShowSpells = "스킬 쿨 추적 표시 여부",
 		SpellSize = "스킬 쿨 추적 사이즈",
 		MillisecondsThreshold = "남은 쿨을 0.1초 단위로 보여줄 최소 시간",
-		AlertPowerBar = "asPowerBar 등록 스킬을 알림",
 		SpellList = "생존기 스킬 목록",
 		SpellID = "스킬 번호(Spell Id)",
 		Priority = "우선 순위",
