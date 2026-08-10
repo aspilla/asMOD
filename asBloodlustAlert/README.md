@@ -12,7 +12,7 @@ Notifies when Bloodlust is ready to use after the exhaustion debuff expires.
 - Provides a voice alert: "Bloodlust Start."
 - Displays the remaining duration of Bloodlust in the bottom-left corner.
 - Displays the remaining duration of the Bloodlust exhaustion debuff as a desaturated (grayed-out) button.
- 
+
 - Displays "Bloodlust Ready" in the center of the screen.
 - Provides a voice alert: "Bloodlust Ready."
 - Only notifies when the Bloodlust debuff expires naturally (when the remaining duration changes from 1 second to 0).
