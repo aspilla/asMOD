@@ -2,11 +2,11 @@
 
 Displays the elapsed time after combat starts.
 
-![asCombatTimer](https://media.forgecdn.net/attachments/1585/667/ascombattimer-jpg.jpg)
+![asCombatTimer](https://media.forgecdn.net/attachments/1857/103/ie-c-ioi2-2026-08-10-214543-jpg.jpg)
 
 ## Key Features
 
-- **Combat Time Tracking**: The timer starts automatically when combat begins, displaying the elapsed time in `[MM:SS]` or `[MM:SS.T]` (tenths of a second) format.
+- **Combat Time Tracking**: The timer starts automatically when combat begins, displaying the elapsed time in `MM:SS` or `MM:SS.T` (tenths of a second) format.
 
 ## Settings
 
@@ -35,11 +35,11 @@ Displays the elapsed time after combat starts.
 
 전투 시작 후 경과 시간을 표시
 
-![asCombatTimer](https://media.forgecdn.net/attachments/1585/667/ascombattimer-jpg.jpg)
+![asCombatTimer](https://media.forgecdn.net/attachments/1857/103/ie-c-ioi2-2026-08-10-214543-jpg.jpg)
 
 ## 주요 기능
 
-- **전투 시간 추적**: 전투가 시작되면 타이머가 자동으로 작동하며, 경과 시간을 `[분:초]` 또는 `[분:초.소수점첫째자리]` 형식으로 표시.
+- **전투 시간 추적**: 전투가 시작되면 타이머가 자동으로 작동하며, 경과 시간을 `분:초` 또는 `분:초.소수점첫째자리` 형식으로 표시.
 
 ## 설정
 

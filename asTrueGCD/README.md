@@ -5,22 +5,24 @@ Displays records of recent spells/items usages.
 
 ## Key Features
 
-* **Active Cast Tracking**
-    * Displays the icon of the spell currently being cast.
-    * Shows the remaining cast time as a cooldown overlay.
-* **Spell/Item History**
-    * Displays up to the last three successfully cast spells or used items to the left of the current cast icon.
-    * History icons automatically fade out after approximately 5 seconds.
-* **Cancellation Indicator**
-    * If a spell cast is cancelled, an "X" mark is displayed over the corresponding icon in the history.
-* **Chain Cast Counter**
-    * Displays a counter on the icon when the same spell or item is used multiple times in a row.
+- **Active Cast Tracking**
+  - Displays the icon of the spell currently being cast.
+  - Shows the remaining cast time as a cooldown overlay.
+- **Spell/Item History**
+  - Displays up to the last three successfully cast spells or used items to the left of the current cast icon.
+  - History icons automatically fade out after approximately 5 seconds.
+- **Cancellation Indicator**
+  - If a spell cast is cancelled, an "X" mark is displayed over the corresponding icon in the history.
+- **Chain Cast Counter**
+  - Displays a counter on the icon when the same spell or item is used multiple times in a row.
 
 ## Configuration
-* **Move Position**: Enter the `/asConfig` command in the chat.
-* **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
+
+- **Move Position**: Enter the `/asConfig` command in the chat.
+- **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
 
 ## Contact Information
+
 1.  **Korean Users:** Visit the [Inven asMOD Forum](https://www.inven.co.kr/board/wow/5288).
 2.  **English Users:** Visit the [asMOD YouTube Channel](https://www.youtube.com/@asmod-wow) or [GitHub](https://github.com/aspilla/asMOD/).
 
@@ -33,19 +35,20 @@ Displays records of recent spells/items usages.
 
 ## 주요 기능
 
-*   **시전중 주문 표시** 
-    *   현재 시전 중인 주문의 아이콘을 표시하고 남은시간을 쿨로 표시.
-*   **주문/아이템 시전 기록**
-    *   현재 시전 아이콘의 왼쪽에 성공적으로 시전했거나 사용한 마지막 세 개의 주문 또는 아이템 아이콘을 순서대로 최대 3개 표시.
-    *   기록 아이콘은 약 5초 후에 사라집니다.
-*   **취소 표시**: 주문 시전이 취소되면 기록의 해당 아이콘에 "X"가 표시.
-*   **연속 시전 카운터**: 동일한 주문/아이템을 연속으로 여러 번 사용한 경우, 아이콘에 카운터가 표시.   
-
+- **시전중 주문 표시**
+  - 현재 시전 중인 주문의 아이콘을 표시하고 남은시간을 쿨로 표시.
+- **주문/아이템 시전 기록**
+  - 현재 시전 아이콘의 왼쪽에 성공적으로 시전했거나 사용한 마지막 세 개의 주문 또는 아이템 아이콘을 순서대로 최대 3개 표시.
+  - 기록 아이콘은 약 5초 후에 사라집니다.
+- **취소 표시**: 주문 시전이 취소되면 기록의 해당 아이콘에 "X"가 표시.
+- **연속 시전 카운터**: 동일한 주문/아이템을 연속으로 여러 번 사용한 경우, 아이콘에 카운터가 표시.
 
 ## 설정
-*  **위치 이동** : `/asConfig` 명령어 채팅창에 입력
-*  **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화 
+
+- **위치 이동** : `/asConfig` 명령어 채팅창에 입력
+- **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화
 
 ## 문의처
+
 1. `한글 유저` : `인벤 asMOD 포럼` 방문 (https://www.inven.co.kr/board/wow/5288)
 2. `영문 유저` : `Youtube asMOD 채널` 방문 (https://www.youtube.com/@asmod-wow), `Github` 방문 (https://github.com/aspilla/asMOD/)
