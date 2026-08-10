@@ -11,7 +11,7 @@ local configs = {
 		[5512] = false,
 		[224464] = false,
 	},
-	updaterate = 0.2,
+	updaterate = 0.3,
 	mincooldown = 2,
 };
 
@@ -144,9 +144,7 @@ end
 local function init_spells()
 	wipe(alertspells);
 
-	if ns.racial_spell then
-		alertspells[ns.racial_spell] = 0;
-	end
+	scan_spellbook(1);
 	scan_spellbook(2);
 	scan_spellbook(3);
 end
