@@ -109,7 +109,9 @@ local function setup_wowoptions()
 	SetCVar("namePlateStyle", Enum.NamePlateStyle.Block);
 	SetCVar("nameplateStackingTypes", "A");
 	SetCVar("UnitNameNPC", 1);
-
+ 	SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", 1);
+    SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", 1);
+    SetCVar("nameplateShowFriendlyRealmName", 0);
 	--개인 자원바
 	SetCVar("nameplateShowSelf", "0");
 
