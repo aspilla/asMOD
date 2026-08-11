@@ -4,6 +4,8 @@ https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
 ## 260811 Update (12.1.0, Season 2 Patch Support)
 
+### Caution: This update will not function correctly on Season 1 client. Please download after the weekly maintenance.
+
 ### Layout Changes
 - Added support for tracking trinkets and racial traits via the new `Cooldown Manager` feature. The number of primary central buttons has been increased from 6 to 8.
 - Overall positions for asMOD layouts and addons have been updated.
