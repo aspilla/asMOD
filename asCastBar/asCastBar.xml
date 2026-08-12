@@ -10,7 +10,7 @@
 				<Texture name="$parentIcon" parentKey="icon"/>
 			</Layer>
 			<Layer level="OVERLAY">
-				<Texture name="$parentBorder" file="Interface\Addons\asTargetCastBar\border.tga" parentKey="border">
+				<Texture name="$parentBorder" file="Interface\Addons\asCastBar\border.tga" parentKey="border">
 					<Size>
 						<AbsDimension x="17" y="17"/>
 					</Size>
@@ -23,13 +23,13 @@
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
-				</Texture>	
+				</Texture>
 			</Layer>
 		</Layers>
 	</Frame>
-	<Texture name="asCastBarNotInteruptTemplate" virtual="true" atlas="RaidFrame-Hp-Fill">		
+	<Texture name="asCastBarNotInteruptTemplate" virtual="true" atlas="RaidFrame-Hp-Fill">
 	</Texture>
-	<Frame name="asCastIconFrameTemplate" virtual="true" enableMouse="false">		
+	<Frame name="asCastIconFrameTemplate" virtual="true" enableMouse="false">
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>

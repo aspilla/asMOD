@@ -2,6 +2,10 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260812 update
+
+- Bugfix asBloodlustAlert, asBuffFilter, asCastBar, asDBMCastingAlert, asDebuffFilter, asDotFilter, asFixHotkey, asNamePlates, asSpamFilter, asUnitFrame
+
 ## 260811 Update (12.1.0, Season 2 Patch Support)
 
 ### Caution: This update will not function correctly on Season 1 client. Please download after the weekly maintenance.

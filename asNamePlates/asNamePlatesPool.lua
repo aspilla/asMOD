@@ -21,7 +21,7 @@ local function create_frame()
     local template = "asNamePlates2Template";
 
     if not ns.options.ChangeTexture then
-        template = "asNamePlates1Template";
+        template = "asNamePlatesTemplate";
     end
 
     object.textureoverlay = object:CreateTexture(nil, "ARTWORK", template, 1);

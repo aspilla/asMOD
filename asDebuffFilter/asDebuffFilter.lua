@@ -89,7 +89,7 @@ local borderoption = {
 	showIcon = false,
 	showWhenHarmful = true,
 	showWhenHelpful = true,
-	style = AuraButtonBorderStyle.Color,
+	style = Enum.CustomAuraButtonDispelTypeTextureStyle.PreserveAsset,
 };
 
 local function create_aurabutton(size)

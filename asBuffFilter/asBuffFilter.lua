@@ -11,7 +11,7 @@ local borderoption = {
 	showIcon = false,
 	showWhenHarmful = true,
 	showWhenHelpful = true,
-	style = AuraButtonBorderStyle.Color,
+	style = Enum.CustomAuraButtonDispelTypeTextureStyle.PreserveAsset,
 };
 
 
@@ -200,6 +200,8 @@ local function setup_frames()
 	if ASMOD_asUnitFrame and ASMOD_asUnitFrame.is_simplemode then
 		offset = 14;
 	end
+
+	local cfilters = {};
 
 	main_frame.helpfulframe = create_container(main_frame, "target", "LEFT", AnchorUtil.FlowDirection.Right,
 		AnchorUtil.FlowDirection.Down);

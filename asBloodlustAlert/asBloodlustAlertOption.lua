@@ -52,7 +52,6 @@ function ns.SetupOptionPanels()
 		local variable = get_variable_from_cvar_name(cvar_name)
 		ABLA_Options[variable] = value;
 		ns.options[variable] = value;
-		ns.check_status();
 	end
 
 	local category = Settings.RegisterVerticalLayoutCategory("asBloodlustAlert")

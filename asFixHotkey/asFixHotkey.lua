@@ -81,8 +81,7 @@ local function update_hotkeys(name, type, hide, total)
   end
 end
 
-local function on_event(self, event, arg1)
-  if event == "PLAYER_ENTERING_WORLD" or "UPDATE_BINDINGS" then
+local function on_event()
     update_hotkeys("ActionButton", "ACTIONBUTTON", 1, 12);
     update_hotkeys("MultiBarBottomLeftButton", "MULTIACTIONBAR1BUTTON", 1, 12);
     update_hotkeys("MultiBarBottomRightButton", "MULTIACTIONBAR2BUTTON", 1, 12);
@@ -96,8 +95,6 @@ local function on_event(self, event, arg1)
     update_hotkeys("MultiBar5Button", "MULTIACTIONBAR5BUTTON", 1, 12);
     update_hotkeys("MultiBar6Button", "MULTIACTIONBAR6BUTTON", 1, 12);
     update_hotkeys("MultiBar7Button", "MULTIACTIONBAR7BUTTON", 1, 12);
-    return;
-  end
 end
 
 local main_frame = CreateFrame("Frame")

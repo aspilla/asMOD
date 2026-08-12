@@ -168,6 +168,7 @@ function ns.update_unitframe_other(frame)
 			classtext = classtext .. icons.leader;
 		end
 
+		local role = UnitGroupRolesAssigned(unit);
 		if (role and not issecretvalue(role) and role ~= "NONE") then
 			local texture = nil;
 			if (role == "TANK") then
@@ -218,7 +219,8 @@ function ns.update_unitframe_other(frame)
 	local power = UnitPower(unit)
 	local maxPower = UnitPowerMax(unit)
 	frame.powerbar:SetMinMaxValues(0, maxPower)
-	if udpated then
+
+	if updated then
 		frame.powerbar:SetValue(power);
 	else
 		frame.powerbar:SetValue(power, Enum.StatusBarInterpolation.ExponentialEaseOut);

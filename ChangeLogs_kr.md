@@ -2,6 +2,10 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260812 update
+
+- Bugfix asBloodlustAlert, asBuffFilter, asCastBar, asDBMCastingAlert, asDebuffFilter, asDotFilter, asFixHotkey, asNamePlates, asSpamFilter, asUnitFrame
+
 ## 260811 update (12.1.0, 시즌 2 패치 지원)
 
 ### 주의사항, 이패치는 시즌 1에서는 정상 동작 하지 않습니다. 주간 점검이후 다운로드 받으세요. 

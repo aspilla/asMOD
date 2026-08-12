@@ -163,11 +163,12 @@ end
 
 
 UIErrorsFrame:SetScript("OnEvent",
-	function(self, event, messageType, message, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+	function(self, event, ...)
 		if event == "UI_ERROR_MESSAGE" then
-			TryDisplayMessage(messageType, message, RED_FONT_COLOR:GetRGB());
+			local msgtype, message = ...;
+			TryDisplayMessage(msgtype, message, RED_FONT_COLOR:GetRGB());
 		else
-			originalOnEvent(self, event, messageType, message, nil, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+			originalOnEvent(self, event, ...)
 		end
 	end
 )
