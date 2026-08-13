@@ -2,6 +2,9 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260813 update
+- asDebuffFilter (change private aura position)
+
 ## 260812 update
 
 - Bugfix asBloodlustAlert, asBuffFilter, asCastBar, asDBMCastingAlert, asDebuffFilter, asDotFilter, asFixHotkey, asNamePlates, asSpamFilter, asUnitFrame
