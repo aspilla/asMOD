@@ -52,10 +52,10 @@ function ns.update_unithealth(frame, updated)
 		return;
 	end
 
-	local type = Enum.StatusBarInterpolation.ExponentialEaseOut;
+	local bartype = Enum.StatusBarInterpolation.ExponentialEaseOut;
 
 	if updated then
-		type = 0;
+		bartype = 0;
 	end
 
 
@@ -70,13 +70,13 @@ function ns.update_unithealth(frame, updated)
 
 
 	frame.healthbar:SetMinMaxValues(0, max)
-	frame.healthbar:SetValue(value, type);
+	frame.healthbar:SetValue(value, bartype);
 	frame.healthbar.absorbBar:SetMinMaxValues(0, max);
-	frame.healthbar.absorbBar:SetValue(totalabsorb, type);
+	frame.healthbar.absorbBar:SetValue(totalabsorb, bartype);
 	frame.healthbar.healabsorbBar:SetMinMaxValues(0, max);
-	frame.healthbar.healabsorbBar:SetValue(totalhealabsorb, type);
+	frame.healthbar.healabsorbBar:SetValue(totalhealabsorb, bartype);
 	frame.healthbar.incominghealBar:SetMinMaxValues(0, max);
-	frame.healthbar.incominghealBar:SetValue(incomingheal, type);
+	frame.healthbar.incominghealBar:SetValue(incomingheal, bartype);
 	if UnitIsDead(unit) then
 		frame.pvalue:SetText("Dead");
 	else
@@ -219,12 +219,7 @@ function ns.update_unitframe_other(frame)
 	local power = UnitPower(unit)
 	local maxPower = UnitPowerMax(unit)
 	frame.powerbar:SetMinMaxValues(0, maxPower)
-
-	if updated then
-		frame.powerbar:SetValue(power);
-	else
-		frame.powerbar:SetValue(power, Enum.StatusBarInterpolation.ExponentialEaseOut);
-	end
+	frame.powerbar:SetValue(power, Enum.StatusBarInterpolation.ExponentialEaseOut);
 	frame.powerbar.value:SetText(power)
 
 	local powerType, _ = UnitPowerType(unit)

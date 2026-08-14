@@ -144,7 +144,11 @@ local function init_class()
 
 		if (spec and spec == 2) then
 			spellid = 108853;
-			aurabarids = { [190319] = CreateColor(0.7, 0.4, 1), [383874] = CreateColor(0.4, 1, 0.7) };
+			if (C_SpellBook.IsSpellKnown(449619)) then
+				aurabarids = { [190319] = CreateColor(0.7, 0.4, 1), [383874] = CreateColor(0.4, 1, 0.7) };
+			else
+				aurabarids = { [190319] = CreateColor(0.7, 0.4, 1)};
+			end
 		end
 
 		if (spec and spec == 3) then

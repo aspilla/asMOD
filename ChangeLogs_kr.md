@@ -2,6 +2,9 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260814 update
+- Bugfix asCooldownPulse, asFixChat, asInterruptHelper, asNextSkill, asPowerBar, asUnitFrame
+
 ## 260813 update
 - asDebuffFilter (Private Aura 위치 수정)
 

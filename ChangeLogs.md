@@ -2,6 +2,9 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260814 update
+- Bugfix asCooldownPulse, asFixChat, asInterruptHelper, asNextSkill, asPowerBar, asUnitFrame
+
 ## 260813 update
 - asDebuffFilter (change private aura position)
 

@@ -424,6 +424,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 				frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4 + 8), 0);
 				frame.name:SetPoint("LEFT", frame, "LEFT", 4, 0);
 				frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
+				frame.typetext:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
 				frame.aggro:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
 			else
 				frame.pvalue:SetPoint("LEFT", frame.healthbar, "LEFT", 4, 0);
@@ -431,6 +432,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 				frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4 + 8), 0);
 				frame.name:SetPoint("RIGHT", frame, "RIGHT", -4, 0);
 				frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
+				frame.typetext:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
 				frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
 			end
 		else
@@ -440,6 +442,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 				frame.hvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 4 + 8), 4);
 				frame.name:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, -2);
 				frame.classtext:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 4, 2);
+				frame.typetext:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
 				frame.aggro:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
 			else
 				frame.pvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", 4, 4);
@@ -620,10 +623,6 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 	frame.castbar.targetname:SetFont(configs.font, fontsize - 1);
 	frame.castbar.targetname:SetPoint("TOPRIGHT", frame.castbar, "BOTTOMRIGHT", 0, -2);
 
-
-	frame.totemupdate = false;
-
-
 	if debuffupdate and ns.options.ShowDebuff then
 		frame.debuffcontainer = create_container(frame, unit, ns.filters.helpful, "LEFT",AnchorUtil.FlowDirection.Right,
 		AnchorUtil.FlowDirection.Down, fontsize, width/4, 4);
@@ -633,7 +632,6 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 	if ns.options.ShowTotemBar and unit == "player" then
 		create_totemframes(frame, true, fontsize, width, MAX_TOTEMS);
 		frame:RegisterEvent("PLAYER_TOTEM_UPDATE");
-		frame.totemupdate = true;
 	end
 
 	frame.updatecount = 1;
@@ -650,7 +648,6 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 		end
 	else
 		frame.updateCastBar = false;
-		frame.buffupdate = false
 	end
 
 	frame.unit = unit;

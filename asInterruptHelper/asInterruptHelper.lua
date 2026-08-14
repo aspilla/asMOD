@@ -144,7 +144,7 @@ local function find_spell(isboss)
 			if firstspellid == nil then
 				firstspellid = v.spellid;
 			end
-			if isUsable then
+			if isUsable and cd then
 				if not cd.isActive or cd.isOnGCD then
 					interrupt_spellid = v.spellid;
 					break;
@@ -156,7 +156,7 @@ local function find_spell(isboss)
 				local cd = C_Spell.GetSpellCooldown(v.spellid)
 				local isUsable, notEnoughMana = C_Spell.IsSpellUsable(v.spellid);
 
-				if isUsable then
+				if isUsable and cd then
 					if not cd.isActive or cd.isOnGCD then
 						interrupt_spellid = v.spellid;
 						break;
@@ -178,7 +178,7 @@ local function find_spell(isboss)
 			end
 			local isUsable, notEnoughMana = C_Spell.IsSpellUsable(v.spellid);
 
-			if isUsable then
+			if isUsable and cd then
 				if not cd.isActive or cd.isOnGCD then
 					stun_spellid = v.spellid;
 					break;

@@ -2,8 +2,8 @@
 
 --we replace the default setitemref and use it to parse links for alt invite and url copy
 local function asSetItemRef(link, ...)
-	local type, value = link:match("(%a+):(.+)")
-	if (type == "url") then
+	local linktype, value = link:match("(%a+):(.+)")
+	if (linktype == "url") then
 		local eb = LAST_ACTIVE_CHAT_EDIT_BOX or ChatFrame1EditBox
 		if not eb then return end
 		eb:SetText(value)

@@ -68,7 +68,7 @@ local function onupdate()
 			if start > 0 then
 				if not cd.isActive or cd.isOnGCD then
 					local duration = GetTime() - start;
-					if duration > 0 then
+					if duration > configs.mincooldown then
 						showalert(id);
 					end
 					alertspells[spellid] = 0;

@@ -109,9 +109,9 @@ local function get_actionslot(spellid)
     spellid = C_Spell.GetOverrideSpell(spellid)
 
     for slot = 1, 180 do
-        local type, id, subType = GetActionInfo(slot);
+        local actiontype, id, subType = GetActionInfo(slot);
 
-        if id and type and type == "macro" then
+        if id and actiontype and actiontype == "macro" then
             if id == spellid then
                 ret[slot] = true;
             end
@@ -119,9 +119,9 @@ local function get_actionslot(spellid)
     end
 
     for slot = 1, 180 do
-        local type, id, subType = GetActionInfo(slot);
+        local actiontype, id, subType = GetActionInfo(slot);
 
-        if id and type and type == "spell" then
+        if id and actiontype and actiontype == "spell" then
             if id == spellid then
                 ret[slot] = true;
             end

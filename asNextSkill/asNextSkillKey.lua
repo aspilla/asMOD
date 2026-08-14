@@ -89,8 +89,8 @@ local function scan_actionslots()
 		end
 
 		if keytext then
-			local type, id, subType = GetActionInfo(slot);
-			if (type == "spell" or type == "macro") and id then
+			local actiontype, id, subType = GetActionInfo(slot);
+			if (actiontype == "spell" or actiontype == "macro") and id then
 				if ns.hotkeys[id] == nil then
 					ns.hotkeys[id] = keytext;
 				end
