@@ -11,15 +11,11 @@ Displays the elapsed time after combat starts.
 ## Settings
 
 - You can change the options for `asCombatTimer` in the `ESC` > `Settings` > `AddOns` tab.
-
-1.  **Font Size**:
-    - Specifies the font size. (Default: 20)
-2.  **Font**:
-    - Determines the font type. (Default: STANDARD_TEXT_FONT)
-3.  **ShowWhenCombat**:
-    - Determines to show only combat. (Default: Checked)
-4.  **ShowSubSeconds**:
-    - Determines whether to show combat time down to 0.1-second precision. (Default: Checked)
+  - Specifies the font size. (Default: 20)
+  - Determines the font type. (Default: STANDARD_TEXT_FONT)
+  - Determines to show only combat. (Default: Checked)
+  - Determines whether to show combat time down to 0.1-second precision. (Default: Checked)
+  - Determines whether to show background (Default: Checked)
 
 - **Move Position**: Enter the `/asConfig` command in the chat.
 - **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
@@ -44,15 +40,11 @@ Displays the elapsed time after combat starts.
 ## 설정
 
 - `ESC` > `설정` > `애드온` > `asCombatTimer` 옵션을 변경 가능.
-
-1.  **폰트 크기**:
     - 폰트 크기를 지정 합니다. (기본값: 20)
-2.  **폰트**:
     - 폰트 종류를 결정 합니다. (기본값 : STANDARD_TEXT_FONT)
-3.  **전투 중 표시**:
     - 전투 중 표시 (비전투시 숨김). (기본값 : 설정 )
-4.  **0.1초 단위 표시**:
     - 0.1초 단위까지 세부적인 경과 시간을 표시합니다. (기본값 : 설정)
+    - 배경 표시 여부. (기본값: 설정)
 
 - **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 - **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화

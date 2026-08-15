@@ -9,11 +9,11 @@ local Options_Default = {
 };
 
 local L = {
-    SimpleDesign = "심플 디자인 모드 사용",
-    BarWidth = "시전바 넓이",
-    BarHeight = "시전바 높이",
-    ShowTick = "채널링 틱 표시",
-    Scale = "크기",
+    SimpleDesign = "Simple Design Mode",
+    BarWidth = "Bar Width",
+    BarHeight = "Bar Height",
+    ShowTick = "Show channeling tick",
+    Scale = "Scale",
 }
 
 if GetLocale() == "koKR" then

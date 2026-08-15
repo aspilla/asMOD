@@ -2,6 +2,15 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260815 update
+
+### asCombatTimer
+- 영문옵션 안나오는 이슈 수정
+- 배경 숨기기 옵션 추가
+
+### asCastBar
+- 영문옵션 안나오는 이슈 수정
+
 ## 260814 update
 - Bugfix asCooldownPulse, asFixChat, asInterruptHelper, asNextSkill, asPowerBar, asUnitFrame
 

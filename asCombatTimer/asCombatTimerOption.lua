@@ -5,21 +5,24 @@ local Options_Default = {
     Font = 1,
     ShowWhenCombat = true,
     ShowSubSeconds = true,
+    ShowBackground = true,
 };
 
 local L = {
-    FontSize = "폰트 크기",
-    Font = "폰트",
-    ShowWhenCombat = "전투 중 표시",
-    ShowSubSeconds = "0.1초 단위 표시",
+    FontSize = "Font Size",
+    Font = "Font",
+    ShowWhenCombat = "Show only during combat",
+    ShowSubSeconds = "Show 0.1 second",
+    ShowBackground = "Show background",
 }
 
 if GetLocale() == "koKR" then
     L = {
         FontSize = "폰트 크기",
         Font = "폰트",
-        ShowWhenCombat = "전투 중 표시",
+        ShowWhenCombat = "전투 중 만 표시",
         ShowSubSeconds = "0.1초 단위 표시",
+        ShowBackground = "배경 표시",
     }
 end
 

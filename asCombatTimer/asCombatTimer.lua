@@ -22,13 +22,14 @@ ns.update_options = function()
 	end
 
 	if main_frame.bg then
-		main_frame.bg:ClearAllPoints();
-		if ns.options.ShowSubSeconds then
+		if not ns.options.ShowBackground then
+			main_frame.bg:Hide();
+		else
+			main_frame.bg:ClearAllPoints();
 			main_frame.bg:SetPoint("TOPLEFT", main_frame.timertext, "TOPLEFT", -6, 3);
 			main_frame.bg:SetPoint("BOTTOMRIGHT", main_frame.timertext_sub, "BOTTOMRIGHT", 6, -3);
-		else
-			main_frame.bg:SetPoint("TOPLEFT", main_frame.timertext, "TOPLEFT", -6, 3);
-			main_frame.bg:SetPoint("BOTTOMRIGHT", main_frame.timertext, "BOTTOMRIGHT", 6, -3);
+			main_frame.bg:SetColorTexture(0.1, 0.1, 0.1, 0.8);
+			main_frame.bg:Show();
 		end
 	end
 end
@@ -130,7 +131,7 @@ local function init()
 	main_frame.timertext_sub:SetTextColor(1, 1, 1);
 
 	main_frame.bg = main_frame:CreateTexture(nil, "BACKGROUND");
-	main_frame.bg:SetColorTexture(0.1, 0.1, 0.1, 0.8);
+
 
 	if ns.options.ShowSubSeconds then
 		main_frame.timertext:SetText("00:00.");

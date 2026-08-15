@@ -2,6 +2,16 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
 
+## 260815 update
+
+### asCombatTimer
+- Fixed an issue where English options were not displayed.
+- Added an option to hide the background.
+
+### asCastBar
+- Fixed an issue where English options were not displayed.
+
+
 ## 260814 update
 - Bugfix asCooldownPulse, asFixChat, asInterruptHelper, asNextSkill, asPowerBar, asUnitFrame
 
