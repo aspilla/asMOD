@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260815_2 update
+
+### asinterrupthelper
+- 거리 및 스킬 쿨다운을 주기적으로 확인 안하는 이슈 개선
+
 ## 260815 update
 
 ### asCombatTimer

@@ -1,15 +1,20 @@
-# ChangeLogs
+# changelogs
 
-https://github.com/aspilla/asMOD/blob/main/ChangeLogs.md
+https://github.com/aspilla/asmod/blob/main/changelogs.md
+
+## 260815_2 update
+
+### asinterrupthelper
+- fixed an issue where range and skill cooldowns were not being checked periodically.
 
 ## 260815 update
 
-### asCombatTimer
-- Fixed an issue where English options were not displayed.
-- Added an option to hide the background.
+### ascombattimer
+- fixed an issue where english options were not displayed.
+- added an option to hide the background.
 
-### asCastBar
-- Fixed an issue where English options were not displayed.
+### ascastbar
+- fixed an issue where english options were not displayed.
 
 
 ## 260814 update

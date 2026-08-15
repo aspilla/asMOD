@@ -9,6 +9,7 @@ local configs = {
 	mousexpoint = 50,
 	mouseypoint = -20,
 	fontsize = 9,
+	update_rate = 0.3,
 };
 
 ns.spec = C_SpecializationInfo.GetSpecialization();
@@ -325,13 +326,17 @@ local function create_button(unit)
 
 		register_unit(frame, unit);
 		frame:SetScript("OnEvent", on_unit_event);
-	else
-		local function on_update()
-			check_casting(frame, unit);
-		end
-
-		C_Timer.NewTicker(0.3, on_update);
 	end
+
+    if frame.timer then
+        frame.timer:Cancel();
+    end
+
+	frame.on_update = function()
+		check_casting(frame, unit);
+	end
+
+	frame.timer = C_Timer.NewTicker(configs.update_rate, frame.on_update);
 
 	return frame;
 end
