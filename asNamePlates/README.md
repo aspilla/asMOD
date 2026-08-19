@@ -21,34 +21,33 @@ Colors are displayed based on the following priority:
 
 ## Other Features
 
-- **Displays enemy power under the health bar for targeted units (Only when the resource is not mana, `[Feature] Show Power below`)**
-- **Displays spell icons while casting (Only when the resource is not mana, `[Feature] Show cast icon`)**
-- **Adjusts buff/debuff duration and stack counts position, and adds borders (`[Feature] Change Debuff Icon`)**
-- **Modifies nameplate textures and borders (`[Feature] Change Texture`)**: Displays a white border for your current target, a green border for your focus target, and changes the health bar to a square shape.
-- **Displays a blue border on mouseover targets (`[Feature] Change Texture`)**
-- **Targeted Highlights (`[Feature] Alert Targeted`)**: Displays a flashing exclamation mark on the left when you are targeted by an enemy; for tanks, this triggers only when an enemy is casting a spell at you.
-- **Important Spell Highlights (`[Feature] Alert Important Spell Casting`)**: The health bar flashes red when an enemy casts an important spell (See screenshot below).
+- Displays enemy power under the health bar for targeted units (Only when the resource is not mana, `[Feature] Show Power below`)
+- Displays spell icons while casting (Only when the resource is not mana, `[Feature] Show cast icon`)
+- Adjusts buff/debuff duration and stack counts position, and adds borders (`[Feature] Change Debuff Icon`)
+- Modifies nameplate textures and borders (`[Feature] Change Texture`): Displays a white border for your current target, a green border for your focus target, and changes the health bar to a square shape.
+- Displays a blue border on mouseover targets (`[Feature] Change Texture`)
+- Targeted Highlights (`[Feature] Alert Targeted`)**: Displays a flashing exclamation mark on the left when you are targeted by an enemy; for tanks, this triggers only when an enemy is casting a spell at you.
+- Important Spell Highlights (`[Feature] Alert Important Spell Casting`): The health bar flashes red when an enemy casts an important spell (See screenshot below).
   ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
 
-- **Nameplate Vertical Stacking Interval (`Nameplate vertical alignment`)**: Set to 1.1 by default (WoW default is 1.3).
-- **Nameplate Selected Scale (`Nameplate target scale`)**: Set to 1.3 by default (WoW default is 1.2).
-- **Note:** If you uninstall the addon, you need to reset it using the following command: `/run SetCVar ("nameplateSelectedScale", 1.2)`
+- Nameplate Vertical Stacking Interval (`Nameplate vertical alignment`): Set to 1.1 by default (WoW default is 1.3).
+- Nameplate Selected Scale (`Nameplate target scale`): Set to 1.3 by default (WoW default is 1.2).
+	- **Note:** If you uninstall the addon, you need to reset it using the following command: `/run SetCVar ("nameplateSelectedScale", 1.2)`
 
-- **Nameplate Mouse Click Hitbox Settings (`Click Hit Inset`)**: See video below (Default: 0, Wow default : 0).
+- Nameplate Mouse Click Hitbox Settings (`Click Hit Inset`): See video below (Default: 0, Wow default : 0).
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-- **Changes the health bar background color for low health targets (`Display Low Health Background Color`)**
+- Changes the health bar background color for low health targets (`Display Low Health Background Color`)
   ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)
-
-| Class               | Low Health (Dark Purple)          | High Health (Dark Blue) |
-| ------------------- | --------------------------------- | ----------------------- |
-| Hunter              | 20% for Kill Shot (Black Arrow)   | 80% for Black Arrow     |
-| Warrior             | 20% for Execute (35% with talent) |                         |
-| Mage                | 30% for Scorch/Scald              | 90% for Firestarter     |
-| Priest              | 20% for Shadow Word: Death        |                         |
-| Death Knight        | 35% for Soul Reaper               |                         |
-| Destruction Warlock | 20% for Shadowburn                |                         |
+	
+	| Class               | Low Health (Dark Purple)          | High Health (Dark Blue) |
+	| ------------------- | --------------------------------- | ----------------------- |
+	| Hunter              | 20% for Kill Shot (Black Arrow)   | 80% for Black Arrow     |
+	| Warrior             | 20% for Execute (35% with talent) |                         |
+	| Mage                | 30% for Scorch/Scald              | 90% for Firestarter     |
+	| Priest              | 20% for Shadow Word: Death        |                         |
+	| Death Knight        | 35% for Soul Reaper               |                         |
+	| Destruction Warlock | 20% for Shadowburn                |                         |
 
 ## Configuration
 
@@ -91,34 +90,32 @@ Colors are displayed based on the following priority:
 
 ## 기타 기능
 
-- **대상의 경우 몹의 기력을 체력바 아래 표시 (마나가 아닐 경우, `[기능] 하단에 기력 표시`)**
-- **시전중일 경우 스킬 아이콘 표시 (마나가 아닐 경우, `[기능] 시전 Icon 표시`)**
-- **버프/디버프 시간/중첩 위치 조정 및 테두리 추가 (`[기능] Debuff Icon 변경`)**
-- **이름표 Texture 및 테두리 변경 (`[기능] 이름표 모양 변경`)** : 대상의 경우 흰색 테두리, 주시의 경우 녹색 테두리 표시, 생명력바를 사각형 모양으로 변경
-- **마우스오버 대상 파란색 테두리 표시 (`[기능] 이름표 모양 변경`)**
-- **Targeted 강조 (`[기능] Targeted 강조`)** : 나를 대상으로 하는 경우 좌측에 깜빡이는 느낌표 표시, 탱커의 경우 나를 대상으로 케스팅 하는 경우만
-- **중요 스킬 강조 (`[기능] 중요 스킬 시전 강조`)** : 중요 스킬 시전시 생명력이 빨간색으로 깜빡임 (아래 스샷 참고)
+- 대상의 경우 몹의 기력을 체력바 아래 표시 (마나가 아닐 경우, `[기능] 하단에 기력 표시`)
+- 시전중일 경우 스킬 아이콘 표시 (마나가 아닐 경우, `[기능] 시전 Icon 표시`)
+- 버프/디버프 시간/중첩 위치 조정 및 테두리 추가 (`[기능] Debuff Icon 변경`)
+- 이름표 Texture 및 테두리 변경 (`[기능] 이름표 모양 변경`) : 대상의 경우 흰색 테두리, 주시의 경우 녹색 테두리 표시, 생명력바를 사각형 모양으로 변경
+- 마우스오버 대상 파란색 테두리 표시 (`[기능] 이름표 모양 변경`)
+- Targeted 강조 (`[기능] Targeted 강조`) : 나를 대상으로 하는 경우 좌측에 깜빡이는 느낌표 표시, 탱커의 경우 나를 대상으로 케스팅 하는 경우만
+- 중요 스킬 강조 (`[기능] 중요 스킬 시전 강조`) : 중요 스킬 시전시 생명력이 빨간색으로 깜빡임 (아래 스샷 참고)
   ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
 
-- **이름표 세로 정렬 간격 설정(`이름표 상하 정렬 정도`)** : 1.1을 기본으로 설정 (와우 기본 설정은 1.3)
-- **이름표 주대상 크기 정도(`이름표 주대상 크기 정도`)** : 1.3을 기본으로 설정 (와우 기본 설정은 1.2)
-- **참고:** 애드온 삭제시 다음 명령어로 초기화 필요 `/run SetCVar ("nameplateSelectedScale", 1.2)`
+- 이름표 세로 정렬 간격 설정(`이름표 상하 정렬 정도`) : 1.1을 기본으로 설정 (와우 기본 설정은 1.3)
+- 이름표 주대상 크기 정도(`이름표 주대상 크기 정도`) : 1.3을 기본으로 설정 (와우 기본 설정은 1.2)
+	- **참고:** 애드온 삭제시 다음 명령어로 초기화 필요 `/run SetCVar ("nameplateSelectedScale", 1.2)`
+- 이름표 마우스 클릭 범위 설정 (`클릭 Hit Inset`) : 아래영상 참고 (기본 0, 와우 기본 설정 0)
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-- **이름표 마우스 클릭 범위 설정 (`클릭 Hit Inset`)** : 아래영상 참고 (기본 0, 와우 기본 설정 0)
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-- **낮은 체력 대상 체력바 배경 색상 변경 (`낮은체력 배경 색상 표시`)**
+- 낮은 체력 대상 체력바 배경 색상 변경 (`낮은체력 배경 색상 표시`)
   ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)
 
-| 직업   | 낮은 체력 (어두운 보라색)    | 높은 체력 (어두운 파란색) |
-| ------ | ---------------------------- | ------------------------- |
-| 사냥꾼 | 마무리 사격(어둠 화살) 20%   | 어둠 화살 80%             |
-| 전사   | 마무리 일격 20% (특성시 35%) |                           |
-| 마법사 | 불태우기/가열 30%            | 방화광 90%                |
-| 사제   | 죽음 20%                     |                           |
-| 죽기   | 영혼 수확자 35%              |                           |
-| 파흑   | 어둠의 연소 20%              |                           |
+	| 직업   | 낮은 체력 (어두운 보라색)    | 높은 체력 (어두운 파란색) |
+	| ------ | ---------------------------- | ------------------------- |
+	| 사냥꾼 | 마무리 사격(어둠 화살) 20%   | 어둠 화살 80%             |
+	| 전사   | 마무리 일격 20% (특성시 35%) |                           |
+	| 마법사 | 불태우기/가열 30%            | 방화광 90%                |
+	| 사제   | 죽음 20%                     |                           |
+	| 죽기   | 영혼 수확자 35%              |                           |
+	| 파흑   | 어둠의 연소 20%              |                           |
 
 ## 설정
 
