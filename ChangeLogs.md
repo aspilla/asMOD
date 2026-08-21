@@ -2,6 +2,10 @@
 
 https://github.com/aspilla/asmod/blob/main/changelogs.md
 
+## 260821 update
+- asCooldownPulse : Alert only spells more than 10 seconds cooldown (Configurable)
+
+
 ## 260815_2 update
 
 ### asinterrupthelper

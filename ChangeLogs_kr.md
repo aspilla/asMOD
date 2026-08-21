@@ -2,6 +2,9 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260821 update
+- asCooldownPulse : 10초 이상 쿨의 스킬만 재사용 알림(설정 가능)
+
 ## 260815_2 update
 
 ### asinterrupthelper
