@@ -12,7 +12,6 @@ local configs = {
 		[224464] = false,
 	},
 	updaterate = 0.3,
-	mincooldown = 2,
 };
 
 local blacklists = {
@@ -56,6 +55,12 @@ local function showalert(id, isitem)
 end
 
 local function onupdate()
+    local mincooldown = ns.options.MinCooldown - configs.updaterate - 0.1;
+
+    if mincooldown < 0 then
+   		mincooldown = 0;
+    end
+
 	for spellid, start in pairs(alertspells) do
 		local or_spellid = C_Spell.GetOverrideSpell(spellid)
 		local id = spellid;
@@ -68,7 +73,7 @@ local function onupdate()
 			if start > 0 then
 				if not cd.isActive or cd.isOnGCD then
 					local duration = GetTime() - start;
-					if duration > configs.mincooldown then
+					if duration > mincooldown then
 						showalert(id);
 					end
 					alertspells[spellid] = 0;
@@ -89,7 +94,7 @@ local function onupdate()
 				showalert(itemid, true);
 			end
 			alertitems[itemid] = false;
-		elseif duration > configs.mincooldown then
+		elseif duration > mincooldown then
 			alertitems[itemid] = true;
 		end
 	end

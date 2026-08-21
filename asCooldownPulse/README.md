@@ -9,7 +9,7 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 ![asCooldownPulse](https://media.forgecdn.net/attachments/1585/670/ascooldownpulse_mn-jpg.jpg)
 
 ## Key Features
-- **Usable Skill, Trinket, Potion, and Racial Notifications**: Skills listed in the `Spellbook` (excluding grouped skills), racials, trinkets, potions, etc.
+- **Usable Skill, Trinket, Potion, and Racial Notifications**: Skills listed in the `Spellbook` (excluding grouped skills), racials, trinkets, potions, etc which has more than 10 seconds cooldown.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -32,6 +32,7 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 - Toggle display of skill cooldown tracking (Default: On).
 - Icon size for skill cooldown tracking (Default: 28).
 - The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
+- The minimum time of cooldown to alert (Default: 10 seconds).
 
 - A `/reload` is required after changing sizes.
 
@@ -62,7 +63,7 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 
 ## 주요 기능
 
-- **스킬, 장신구, 물약, 종특, 사용가능 알림**: '스킬북`에 등록 된 스킬(묶음 형태 스킬 제외), 종특 장신구, 물약등
+- **스킬, 장신구, 물약, 종특, 사용가능 알림**: '스킬북`에 등록 된 스킬(묶음 형태 스킬 제외), 종특 장신구, 물약등, 10초 이상 쿨일 경우
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
