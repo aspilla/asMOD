@@ -53,7 +53,7 @@ local function create_aurabutton(size)
 		formatter:AddBreakpoint({
 			threshold = 0,
 			format = "%.1f",
-            step = 0.1,
+			step = 0.1,
 			rounding = 1,
 		});
 		formatter:AddBreakpoint({
@@ -184,12 +184,12 @@ local function update_debuffs(unit)
 	if container then
 		if UnitCanAttack("player", unit) then
 			container:SetAuraGroupFilterString("dots", filters.harmful);
-			if not ns.options.ShowNameplatesOnly then
+			if ns.options.ShowType >= 2 then
 				container:SetAuraGroupFilterString("debuffs", filters.harmful);
 			end
 		else
 			container:SetAuraGroupFilterString("dots", filters.helpful);
-			if not ns.options.ShowNameplatesOnly then
+			if ns.options.ShowType >= 2 then
 				container:SetAuraGroupFilterString("debuffs", filters.helpful);
 			end
 		end
@@ -226,12 +226,6 @@ local function setup_frame(unit)
 	local isboss = parentframes[unit].isboss;
 	local offset = 3;
 
-	local cfilters = { nameplateShowPersonal = false };
-
-	if ns.options.HideBloodDebuff then
-		cfilters.excludeSpellIDs = lust_debuffs;
-	end
-
 	if isboss then
 		offset = -50;
 	end
@@ -240,12 +234,27 @@ local function setup_frame(unit)
 		AnchorUtil.FlowDirection.Right,
 		AnchorUtil.FlowDirection.Down);
 
-	add_group(main_frame.containers[unit], "dots", filters.helpful, { nameplateShowPersonal = true },
-		{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton(configs.size) },
-		AuraContainerSortMethod.NameOnly, AuraContainerSortDirection.Normal);
-
-	if not ns.options.ShowNameplatesOnly then
+	if ns.options.ShowType == 3 then
+		local cfilters = { nameplateShowPersonal = false };
+		if ns.options.HideBloodDebuff then
+			cfilters.excludeSpellIDs = lust_debuffs;
+		end
+		add_group(main_frame.containers[unit], "dots", filters.helpful, { nameplateShowPersonal = true },
+			{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton(configs.size) },
+			AuraContainerSortMethod.NameOnly, AuraContainerSortDirection.Normal);
 		add_group(main_frame.containers[unit], "debuffs", filters.helpful, cfilters,
+			{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton(configs.size) },
+			AuraContainerSortMethod.NameOnly, AuraContainerSortDirection.Normal);
+	elseif ns.options.ShowType == 2 then
+		local cfilters = { nameplateShowPersonal = false, includeSpellIDs = ns.show_list  };
+		add_group(main_frame.containers[unit], "dots", filters.helpful, { nameplateShowPersonal = true },
+			{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton(configs.size) },
+			AuraContainerSortMethod.NameOnly, AuraContainerSortDirection.Normal);
+		add_group(main_frame.containers[unit], "debuffs", filters.helpful, cfilters,
+			{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton(configs.size) },
+			AuraContainerSortMethod.NameOnly, AuraContainerSortDirection.Normal);
+	else
+		add_group(main_frame.containers[unit], "dots", filters.helpful, { includeSpellIDs = ns.show_list },
 			{ maxFrameCount = ns.options.MaxShow, initializeFrame = create_aurabutton(configs.size) },
 			AuraContainerSortMethod.NameOnly, AuraContainerSortDirection.Normal);
 	end
