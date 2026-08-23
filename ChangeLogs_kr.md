@@ -2,6 +2,9 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260823 update
+- asDotFilter : 원하는 디버프를 추적하기 위한 옵션 추가, 사냥꾼 징표, 화법 디버프 추적 가능하도록 추가 
+
 ## 260821 update
 - asCooldownPulse : 10초 이상 쿨의 스킬만 재사용 알림(설정 가능)
 

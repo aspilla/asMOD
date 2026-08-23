@@ -2,6 +2,9 @@
 
 https://github.com/aspilla/asmod/blob/main/changelogs.md
 
+## 260823 update
+- asDotFilter: Added options to track custom debuffs, including Hunter's Mark and Fire Mage debuffs.
+
 ## 260821 update
 - asCooldownPulse : Alert only spells more than 10 seconds cooldown (Configurable)
 
