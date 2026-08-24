@@ -2,6 +2,10 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260824 update
+- asUnitFrame, asDebuffFilter, asBuffFilter, asDotFilter: 오류 수정 - 몹이 공격 불가에서 가능 변경시 다른 플레이어의 디버프도 보이는 이슈 개선
+- asNamePlates : 오류 수정 - 비밀값 참조 가능성 개선
+
 ## 260823 update
 - asDotFilter : 원하는 디버프를 추적하기 위한 옵션 추가, 사냥꾼 징표, 화법 디버프 추적 가능하도록 추가 
 

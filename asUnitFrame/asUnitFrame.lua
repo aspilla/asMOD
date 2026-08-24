@@ -259,9 +259,28 @@ local function create_totemframes(parent, bright, fontsize, width, count)
 	end
 end
 
+local function update_unitframe(unit)
+	local frame = ns.unitframes[unit];
+	if frame then
+		ns.update_unithealth(frame, true);
+		ns.update_unitframe_other(frame);
+		ns.update_auras(frame);
+		ns.update_unitframe_portrait(frame);
+	end
+end
+
+local function update_unitportait(unit)
+	local frame = ns.unitframes[unit];
+	if frame then
+		ns.update_unitframe_portrait(frame);
+	end
+end
+
 local function on_unitevent(self, event, arg1, arg2)
 	if event == "PLAYER_TOTEM_UPDATE" then
 		ns.update_totems(self);
+    elseif event == "UNIT_FACTION" then
+		update_unitframe(arg1);
 	end
 end
 
@@ -634,6 +653,8 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 		frame:RegisterEvent("PLAYER_TOTEM_UPDATE");
 	end
 
+	frame:RegisterUnitEvent("UNIT_FACTION", unit);
+
 	frame.updatecount = 1;
 	frame.istargetframe = (unit == "target");
 	frame.isplayerframe = (unit == "player");
@@ -696,22 +717,6 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 	C_Timer.NewTicker(configs.updaterate * 2, frame.callback2);
 end
 
-local function update_unitframe(unit)
-	local frame = ns.unitframes[unit];
-	if frame then
-		ns.update_unithealth(frame, true);
-		ns.update_unitframe_other(frame);
-		ns.update_auras(frame);
-		ns.update_unitframe_portrait(frame);
-	end
-end
-
-local function update_unitportait(unit)
-	local frame = ns.unitframes[unit];
-	if frame then
-		ns.update_unitframe_portrait(frame);
-	end
-end
 
 
 local function init_lowhealth()

@@ -274,13 +274,15 @@ local function setup_frames()
 	update_allframes();
 end
 
-local function on_event(self, event)
+local function on_event(self, event, unit)
 	if (event == "PLAYER_FOCUS_CHANGED") then
 		update_debuffs("focus");
 	elseif (event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
 		update_allframes();
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		update_allframes();
+	elseif (event == "UNIT_FACTION" and unit) then
+		update_debuffs(unit);
 	end
 end
 
@@ -310,6 +312,7 @@ local function init()
 	main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
 	main_frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
 	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	main_frame:RegisterUnitEvent("UNIT_FACTION", "focus", "boss1", "boss2", "boss3", "boss4", "boss5")
 	main_frame:SetScript("OnEvent", on_event)
 end
 

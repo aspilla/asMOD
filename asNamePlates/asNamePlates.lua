@@ -240,7 +240,7 @@ local function add_unit(unit)
 		local healthbar_height = healthbar:GetHeight();
 		local castbar_height = castbar:GetHeight();
 
-		if not issecretvalue(healthbar_height) then
+		if not issecretvalue(healthbar_height) and not issecretvalue(castbar_height) then
 			org_height = healthbar_height + castbar_height;
 		end
 	end

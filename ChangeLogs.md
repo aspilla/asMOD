@@ -2,6 +2,10 @@
 
 https://github.com/aspilla/asmod/blob/main/changelogs.md
 
+## 260824 update
+- asUnitFrame, asDebuffFilter, asBuffFilter, asDotFilter: Fixed an issue where debuffs from other players became visible when a mob transitioned from non-attackable to attackable.
+- asNamePlates: Bug fix - Improved potential secret value references.
+
 ## 260823 update
 - asDotFilter: Added options to track custom debuffs, including Hunter's Mark and Fire Mage debuffs.
 

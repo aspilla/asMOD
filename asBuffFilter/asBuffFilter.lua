@@ -271,6 +271,8 @@ local function on_event(self, event, arg1, ...)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		set_combatalpha();
 		update_target();
+	elseif event == "UNIT_FACTION" then
+    	update_target();
 	end
 end
 
@@ -289,6 +291,8 @@ local function init()
 	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 	main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
 	main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+	main_frame:RegisterUnitEvent("UNIT_FACTION", "target");
+
 	main_frame:SetScript("OnEvent", on_event);
 
 	set_combatalpha();
