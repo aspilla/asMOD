@@ -2,6 +2,14 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260825 update 
+### asCompactRaidBuff (New feature)
+![asCompactRaidBuff](https://media.forgecdn.net/attachments/1893/698/ascompactraidbuff-jpg.jpg)
+- `[좌측] 힐러 HOT 버프시 남은 시간을 표시` : (기본: On)
+- `[색상] 힐러 HOT 버프 Pandemic 시간에 색상 변경` : 적회색 (기본: On)
+- `[크기] 남은 시간 글씨 크기` : (기본: 12)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/wQj2mbgynn4?si=T1uaYFFUNq8XyLrj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## 260824 update
 - asUnitFrame, asDebuffFilter, asBuffFilter, asDotFilter: 오류 수정 - 몹이 공격 불가에서 가능 변경시 다른 플레이어의 디버프도 보이는 이슈 개선
 - asNamePlates : 오류 수정 - 비밀값 참조 가능성 개선

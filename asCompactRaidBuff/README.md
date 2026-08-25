@@ -2,7 +2,7 @@
 
 Raid and Party Frame Enhancements
 
-![asCompactRaidBuff](https://media.forgecdn.net/attachments/1713/782/ascompactraidbuff-jpg.jpg)
+![asCompactRaidBuff](https://media.forgecdn.net/attachments/1893/698/ascompactraidbuff-jpg.jpg)
 
 ## Key Features & Configuration
 
@@ -11,7 +11,10 @@ Raid and Party Frame Enhancements
 - `[Bottom] Displays the tank power bar`: Displays only when the resource is not mana (Default: On).
 - `[Left] Displays the marker icon`: (Default: On).
 - `[Top Left] Displays the party/raid leader icon`:(Default: On).
-- `[Color] Change health color when HOT buffed`: Not supporting to change buff (Default: On).
+- `[Color] Change health color when HOT buffed`: Not supporting to change buff, Grey color (Default: On).
+- `[Left] Display the remain time of HOT buff` : (Default On)
+- `[Color] Change health color when HOT pandemic time` : Red grey color  (Default On)
+- `[Size] Remain font size` : (Default 12)
 
 | Class               | Color Change     |
 | ------------------- | ---------------- |
@@ -23,6 +26,8 @@ Raid and Party Frame Enhancements
 | Restoration Shaman  | Riptide          |
 | Mistweaver Monk     | Renewing Mist    |
 | Augmentation Evoker | Prescience       |
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/wQj2mbgynn4?si=T1uaYFFUNq8XyLrj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## How to Set Up Click Casting
 
@@ -69,7 +74,7 @@ You can adjust this setting by navigating to:
 
 공격대 및 파티 프레임 강화
 
-![asCompactRaidBuff](https://media.forgecdn.net/attachments/1713/782/ascompactraidbuff-jpg.jpg)
+![asCompactRaidBuff](https://media.forgecdn.net/attachments/1893/698/ascompactraidbuff-jpg.jpg)
 
 ## 주요 기능 & 설정
 
@@ -78,7 +83,10 @@ You can adjust this setting by navigating to:
 - `[하단] 탱커 파워 표시` : 마나가 아닌 경우만 표시 (기본: On)
 - `[좌측] 징표 아이콘을 표시` : (기본: On)
 - `[좌상] 파티/공격대 리더 표시` : (기본: On)
-- `[색상] 힐러 HOT 버프시 색상 변경` : 버프 변경은 지원하지 않음 (기본: On)
+- `[색상] 힐러 HOT 버프시 색상 변경` : 버프 변경은 지원하지 않음, 회색 (기본: On)
+- `[좌측] 힐러 HOT 버프시 남은 시간을 표시` : (기본: On)
+- `[색상] 힐러 HOT 버프 Pandemic 시간에 색상 변경` : 적회색 (기본: On)
+- `[크기] 남은 시간 글씨 크기` : (기본: 12)
 
 | 직업          | 색상 변경   |
 | ------------- | ----------- |
@@ -90,6 +98,8 @@ You can adjust this setting by navigating to:
 | 복원 주술사   | 성난 해일   |
 | 운무 수도사   | 소생의 안개 |
 | 증강 기원사   | 예지        |
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/wQj2mbgynn4?si=T1uaYFFUNq8XyLrj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 클릭 시전 설정 방법
 

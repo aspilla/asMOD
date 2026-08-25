@@ -25,14 +25,66 @@ local function is_healer(role)
 end
 
 local function create_aurabutton(statusbar)
+	local formatter = C_StringUtil.CreateNumericRuleFormatter();
+    if ns.options.MillisecondsThreshold then
+        formatter:AddBreakpoint({
+            threshold = 0,
+            format = "%.1f",
+            step = 0.1,
+            rounding = 1,
+        });
+        formatter:AddBreakpoint({
+            threshold = ns.options.MillisecondsThreshold,
+            format = "%d",
+            step = 1,
+            rounding = 1,
+        });
+    else
+        formatter:AddBreakpoint({
+            threshold = 0,
+            format = "%d",
+            step = 1,
+            rounding = 1,
+        });
+    end
+	local fontsize = ns.options.RemainFontSize or 12;
 	return function(frame)
 		local texture = statusbar:GetStatusBarTexture();
-		frame.buffcolor = frame:CreateTexture(nil, "BORDER", "asBuffTextureTemplate", 7);
 		frame:SetFrameLevel(statusbar:GetFrameLevel() + 1);
+
+		frame.buffcolor = frame:CreateTexture(nil, "BORDER", "asBuffTextureTemplate", 6);
 		frame.buffcolor:ClearAllPoints();
 		frame.buffcolor:SetAllPoints(texture);
 		frame.buffcolor:SetVertexColor(0.5, 0.5, 0.5);
 
+		frame.pbuffcolor = frame:CreateTexture(nil, "BORDER", "asBuffTextureTemplate", 7);
+		frame.pbuffcolor:ClearAllPoints();
+		frame.pbuffcolor:SetAllPoints(texture);
+		frame.pbuffcolor:SetVertexColor(0.7, 0.5, 0.5);
+
+		frame.remain = frame:CreateFontString(nil, "OVERLAY");
+		frame.remain:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+		frame.remain:ClearAllPoints();
+		frame.remain:SetPoint("LEFT", frame.buffcolor, "LEFT", 18, 0);
+		frame.remain:SetTextColor(0, 1, 0);
+
+		if ns.options.ShowRemain then
+			frame:SetDurationText(frame.remain, {
+				textFormat = {
+					formatString = "{}",
+					components = {
+						{
+							property = 0,
+							formatter = formatter
+						}
+					}
+				}
+			});
+		end
+
+		if ns.options.ShowPandemicColor then
+			frame:AddPandemicRegion(frame.pbuffcolor);
+		end
 		frame:Show();
 	end
 end

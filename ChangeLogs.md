@@ -1,6 +1,14 @@
 # changelogs
 
-https://github.com/aspilla/asmod/blob/main/changelogs.md
+https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
+
+## 260825 update 
+### asCompactRaidBuff (New feature)
+![asCompactRaidBuff](https://media.forgecdn.net/attachments/1893/698/ascompactraidbuff-jpg.jpg)
+- `[Left] Display the remain time of HOT buff` : (Default On)
+- `[Color] Change health color when HOT pandemic time` : Red grey color  (Default On)
+- `[Size] Remain font size` : (Default 12)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/wQj2mbgynn4?si=T1uaYFFUNq8XyLrj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 260824 update
 - asUnitFrame, asDebuffFilter, asBuffFilter, asDotFilter: Fixed an issue where debuffs from other players became visible when a mob transitioned from non-attackable to attackable.
