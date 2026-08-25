@@ -3,7 +3,7 @@
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
 ## 260825 update 
-### asCompactRaidBuff (New feature)
+### asCompactRaidBuff (신규 기능)
 ![asCompactRaidBuff](https://media.forgecdn.net/attachments/1893/698/ascompactraidbuff-jpg.jpg)
 - `[좌측] 힐러 HOT 버프시 남은 시간을 표시` : (기본: On)
 - `[색상] 힐러 HOT 버프 Pandemic 시간에 색상 변경` : 적회색 (기본: On)

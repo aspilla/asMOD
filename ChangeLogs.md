@@ -1,4 +1,4 @@
-# changelogs
+# Change Logs
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
