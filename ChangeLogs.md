@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 260827 update
+### asUnitFrame, asTargetCastBar
+- Display interrupter's class color
+
+
 ## 260825 update 
 ### asCompactRaidBuff (New feature)
 ![asCompactRaidBuff](https://media.forgecdn.net/attachments/1893/698/ascompactraidbuff-jpg.jpg)

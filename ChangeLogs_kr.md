@@ -2,6 +2,10 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260827 update 
+### asUnitFrame, asTargetCastBar
+- 차단자 직업 색상 표시
+
 ## 260825 update 
 ### asCompactRaidBuff (신규 기능)
 ![asCompactRaidBuff](https://media.forgecdn.net/attachments/1893/698/ascompactraidbuff-jpg.jpg)

@@ -167,6 +167,13 @@ local function get_interrupttext(interruptedby)
 	if interruptedby then
 		local unitname = UnitNameFromGUID(interruptedby);
 		if unitname and SPELL_INTERRUPTED_BY then
+			local _, class, _ = UnitClassFromGUID(interruptedby);
+			if class then
+				local color = C_ClassColor.GetClassColor(class);
+				if color then
+					unitname = color:WrapTextInColorCode(unitname);
+				end
+			end
 			return SPELL_INTERRUPTED_BY:format(unitname);
 		end
 	end
