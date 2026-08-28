@@ -2,9 +2,12 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
-## 260827 update 
+## 260828 update 
 ### asUnitFrame, asTargetCastBar
 - 차단자 직업 색상 표시
+
+### asCompactRaidBuff
+- 공찾에서 파티원 변경이 있으면 렉이 일부 생기는 이슈 개선
 
 ## 260825 update 
 ### asCompactRaidBuff (신규 기능)

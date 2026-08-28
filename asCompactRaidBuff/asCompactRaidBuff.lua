@@ -3,29 +3,29 @@ local _, ns = ...;
 local main_frame = CreateFrame("Frame", nil, UIParent);
 
 local configs = {
-	iconrate = 0.9,
-	font = STANDARD_TEXT_FONT,
+    iconrate = 0.9,
+    font = STANDARD_TEXT_FONT,
 }
 
 ns.asraid = {};
 ns.asparty = {};
 
 local function is_tank(role)
-	if role == "TANK" or role == "MAINTANK" then
-		return true;
-	end
-	return false;
+    if role == "TANK" or role == "MAINTANK" then
+        return true;
+    end
+    return false;
 end
 
 local function is_healer(role)
-	if role == "HEALER" then
-		return true;
-	end
-	return false;
+    if role == "HEALER" then
+        return true;
+    end
+    return false;
 end
 
 local function create_aurabutton(statusbar)
-	local formatter = C_StringUtil.CreateNumericRuleFormatter();
+    local formatter = C_StringUtil.CreateNumericRuleFormatter();
     if ns.options.MillisecondsThreshold then
         formatter:AddBreakpoint({
             threshold = 0,
@@ -47,325 +47,328 @@ local function create_aurabutton(statusbar)
             rounding = 1,
         });
     end
-	local fontsize = ns.options.RemainFontSize or 12;
-	return function(frame)
-		local texture = statusbar:GetStatusBarTexture();
-		frame:SetFrameLevel(statusbar:GetFrameLevel() + 1);
+    local fontsize = ns.options.RemainFontSize or 12;
+    return function(frame)
+        local texture = statusbar:GetStatusBarTexture();
+        frame:SetFrameLevel(statusbar:GetFrameLevel() + 1);
 
-		frame.buffcolor = frame:CreateTexture(nil, "BORDER", "asBuffTextureTemplate", 6);
-		frame.buffcolor:ClearAllPoints();
-		frame.buffcolor:SetAllPoints(texture);
-		frame.buffcolor:SetVertexColor(0.5, 0.5, 0.5);
+        frame.buffcolor = frame:CreateTexture(nil, "BORDER", "asBuffTextureTemplate", 6);
+        frame.buffcolor:ClearAllPoints();
+        frame.buffcolor:SetAllPoints(texture);
+        frame.buffcolor:SetVertexColor(0.5, 0.5, 0.5);
 
-		frame.pbuffcolor = frame:CreateTexture(nil, "BORDER", "asBuffTextureTemplate", 7);
-		frame.pbuffcolor:ClearAllPoints();
-		frame.pbuffcolor:SetAllPoints(texture);
-		frame.pbuffcolor:SetVertexColor(0.7, 0.5, 0.5);
+        frame.pbuffcolor = frame:CreateTexture(nil, "BORDER", "asBuffTextureTemplate", 7);
+        frame.pbuffcolor:ClearAllPoints();
+        frame.pbuffcolor:SetAllPoints(texture);
+        frame.pbuffcolor:SetVertexColor(0.7, 0.5, 0.5);
 
-		frame.remain = frame:CreateFontString(nil, "OVERLAY");
-		frame.remain:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-		frame.remain:ClearAllPoints();
-		frame.remain:SetPoint("LEFT", frame.buffcolor, "LEFT", 18, 0);
-		frame.remain:SetTextColor(0, 1, 0);
+        frame.remain = frame:CreateFontString(nil, "OVERLAY");
+        frame.remain:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+        frame.remain:ClearAllPoints();
+        frame.remain:SetPoint("LEFT", frame.buffcolor, "LEFT", 18, 0);
+        frame.remain:SetTextColor(0, 1, 0);
 
-		if ns.options.ShowRemain then
-			frame:SetDurationText(frame.remain, {
-				textFormat = {
-					formatString = "{}",
-					components = {
-						{
-							property = 0,
-							formatter = formatter
-						}
-					}
-				}
-			});
-		end
+        if ns.options.ShowRemain then
+            frame:SetDurationText(frame.remain, {
+                textFormat = {
+                    formatString = "{}",
+                    components = {
+                        {
+                            property = 0,
+                            formatter = formatter
+                        }
+                    }
+                }
+            });
+        end
 
-		if ns.options.ShowPandemicColor then
-			frame:AddPandemicRegion(frame.pbuffcolor);
-		end
-		frame:Show();
-	end
+        if ns.options.ShowPandemicColor then
+            frame:AddPandemicRegion(frame.pbuffcolor);
+        end
+        frame:Show();
+    end
 end
 
 local function create_container(parent, unit, anchor, hdir, vdir)
-	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
-	container:SetFlowLayoutAnchorPoint(anchor);
-	container:SetFlowLayoutGrowthDirection(hdir, vdir);
-	container:SetUnit(unit);
-	container:SetEnabled(true);
-	return container;
+    local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
+    container:SetFlowLayoutAnchorPoint(anchor);
+    container:SetFlowLayoutGrowthDirection(hdir, vdir);
+    container:SetUnit(unit);
+    container:SetEnabled(true);
+    return container;
 end
 
 local function add_group(container, gname, filter, cfilters, initinfos)
-	container:AddAuraGroup(gname, filter, initinfos);
-	container:SetAuraGroupLayout(gname, { elementSpacingX = 0.1 });
-	container:SetAuraGroupCandidateFilters(gname, cfilters);
+    container:AddAuraGroup(gname, filter, initinfos);
+    container:SetAuraGroupLayout(gname, { elementSpacingX = 0.1 });
+    container:SetAuraGroupCandidateFilters(gname, cfilters);
 end
 
 local function setup_buffcolor(asframe)
-	if not ns.showlist then
-		if asframe.container then
-			asframe.container:SetEnabled(false);
-		end
-		return;
-	end
+    if not ns.showlist then
+        if asframe.container then
+            asframe.container:SetEnabled(false);
+        end
+        return;
+    end
 
-	if asframe.frame and asframe.frame.healthBar then
-		local unit = asframe.frame.displayedUnit or asframe.frame.unit;
+    if asframe.frame and asframe.frame.healthBar then
+        local unit = asframe.frame.displayedUnit or asframe.frame.unit;
 
-		local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player,
-			AuraUtil.AuraFilters.RaidInCombat);
-		local cfilters = { includeSpellIDs = ns.showlist };
+        local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player,
+            AuraUtil.AuraFilters.RaidInCombat);
+        local cfilters = { includeSpellIDs = ns.showlist };
 
-		if asframe.container == nil then
-			asframe.container = create_container(asframe.frame.healthBar, unit, "BOTTOM", AnchorUtil.FlowDirection.Right,
-				AnchorUtil.FlowDirection.Down);
-			add_group(asframe.container, "buffcolor", filter, cfilters,
-				{ maxFrameCount = 1, initializeFrame = create_aurabutton(asframe.frame.healthBar) });
-			asframe.container:SetPoint("BOTTOM", asframe.frame.healthBar, "BOTTOM", 0, 0);
-			asframe.container:SetWidth(1)
-			asframe.container:SetHeight(1)
-			asframe.container:Show()
-			asframe.container:SetFrameLevel(asframe.frame:GetFrameLevel());
-		end
-		asframe.container:SetEnabled(true);
-	end
+        if asframe.container == nil then
+            asframe.container = create_container(asframe.frame.healthBar, unit, "BOTTOM", AnchorUtil.FlowDirection.Right,
+                AnchorUtil.FlowDirection.Down);
+            add_group(asframe.container, "buffcolor", filter, cfilters,
+                { maxFrameCount = 1, initializeFrame = create_aurabutton(asframe.frame.healthBar) });
+            asframe.container:SetPoint("BOTTOM", asframe.frame.healthBar, "BOTTOM", 0, 0);
+            asframe.container:SetWidth(1)
+            asframe.container:SetHeight(1)
+            asframe.container:Show()
+            asframe.container:SetFrameLevel(asframe.frame:GetFrameLevel());
+        end
+        asframe.container:SetEnabled(true);
+    end
 end
 
 function ns.setup_frame(asframe)
-	if not asframe.frame or asframe.frame:IsForbidden() then
-		return
-	end
-	local frame = asframe.frame;
-	local unit = frame.unit;
-	local width, height = frame:GetSize();
+    if not asframe.frame or asframe.frame:IsForbidden() then
+        return
+    end
+    local frame = asframe.frame;
+    local unit = frame.unit;
+    local width, height = frame:GetSize();
 
-	asframe.needtosetup = false;
+    asframe.needtosetup = false;
 
-	local role = UnitGroupRolesAssigned(unit);
-	local istanker = is_tank(role);
-	local ishealer = is_healer(role);
+    local role = UnitGroupRolesAssigned(unit);
+    local istanker = is_tank(role);
+    local ishealer = is_healer(role);
 
-	local class = select(2, UnitClass(unit));
-	asframe.classcolor = class and C_ClassColor.GetClassColor(class) or nil;
+    local class = select(2, UnitClass(unit));
+    asframe.classcolor = class and C_ClassColor.GetClassColor(class) or nil;
 
-	local strata = "LOW";
-	local framelevel = 4;
+    local strata = "LOW";
+    local framelevel = 4;
 
-	if (not asframe.powerbar) then
-		asframe.powerbar = CreateFrame("StatusBar", nil, frame.healthBar);
-		asframe.powerbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
-		asframe.powerbar:GetStatusBarTexture():SetHorizTile(false);
-		asframe.powerbar:SetMinMaxValues(0, 100);
-		asframe.powerbar:SetValue(100);
-		asframe.powerbar:SetPoint("BOTTOM", frame.healthBar, "BOTTOM", 0, 0);
-		asframe.powerbar:SetFrameStrata(strata);
-		asframe.powerbar:SetFrameLevel(framelevel);
-		asframe.powerbar:Hide();
-	end
+    if (not asframe.powerbar) then
+        asframe.powerbar = CreateFrame("StatusBar", nil, frame.healthBar);
+        asframe.powerbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+        asframe.powerbar:GetStatusBarTexture():SetHorizTile(false);
+        asframe.powerbar:SetMinMaxValues(0, 100);
+        asframe.powerbar:SetValue(100);
+        asframe.powerbar:SetPoint("BOTTOM", frame.healthBar, "BOTTOM", 0, 0);
+        asframe.powerbar:SetFrameStrata(strata);
+        asframe.powerbar:SetFrameLevel(framelevel);
+        asframe.powerbar:Hide();
+    end
 
-	if asframe.powerbar then
-		asframe.powerbar:SetWidth(width - 2);
-		asframe.powerbar:SetHeight(ns.ACRB_HealerManaBarHeight);
+    if asframe.powerbar then
+        asframe.powerbar:SetWidth(width - 2);
+        asframe.powerbar:SetHeight(ns.ACRB_HealerManaBarHeight);
 
-		local powertype = UnitPowerType(unit);
+        local powertype = UnitPowerType(unit);
 
-		asframe.ispowerupdate = false;
-		asframe.ishealer = false
-		if ishealer then
-			if ns.options.BottomHealerManaBar then
-				asframe.ispowerupdate = true;
-				asframe.ishealer = true;
-			end
-			powertype = 0;
-		elseif istanker then
-			if ns.options.BottomTankPowerBar and powertype > 0 then
-				asframe.ispowerupdate = true;
-			end
-		end
+        asframe.ispowerupdate = false;
+        asframe.ishealer = false
+        if ishealer then
+            if ns.options.BottomHealerManaBar then
+                asframe.ispowerupdate = true;
+                asframe.ishealer = true;
+            end
+            powertype = 0;
+        elseif istanker then
+            if ns.options.BottomTankPowerBar and powertype > 0 then
+                asframe.ispowerupdate = true;
+            end
+        end
 
-		local powercolor = PowerBarColor[powertype]
-		if powercolor then
-			asframe.powerbar:SetStatusBarColor(powercolor.r, powercolor.g, powercolor.b)
-		end
+        local powercolor = PowerBarColor[powertype]
+        if powercolor then
+            asframe.powerbar:SetStatusBarColor(powercolor.r, powercolor.g, powercolor.b)
+        end
 
-		if asframe.ispowerupdate then
-			asframe.powerbar:Show();
-		else
-			asframe.powerbar:Hide();
-		end
-	end
+        if asframe.ispowerupdate then
+            asframe.powerbar:Show();
+        else
+            asframe.powerbar:Hide();
+        end
+    end
 
-	if (not asframe.raidicon) then
-		asframe.raidicon = frame:CreateTexture(nil, "ARTWORK");
-		asframe.raidicon:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
-		asframe.raidicon:SetPoint("LEFT", frame.healthBar, "LEFT", 2, 0);
-		asframe.raidicon:Hide();
-	end
+    if (not asframe.raidicon) then
+        asframe.raidicon = frame:CreateTexture(nil, "ARTWORK");
+        asframe.raidicon:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
+        asframe.raidicon:SetPoint("LEFT", frame.healthBar, "LEFT", 2, 0);
+        asframe.raidicon:Hide();
+    end
 
-	if asframe.raidicon then
-		asframe.raidicon:SetSize(height / 3 - 3, height / 3 - 3);
-	end
+    if asframe.raidicon then
+        asframe.raidicon:SetSize(height / 3 - 3, height / 3 - 3);
+    end
 
-	if (not asframe.leadericon) then
-		asframe.leadericon = frame:CreateFontString(nil, "ARTWORK");
-		asframe.leadericon:SetFont(configs.font, height / 5);
-		asframe.leadericon:SetTextColor(1, 1, 1, 1);
-		asframe.leadericon:SetPoint("TOPLEFT", frame.healthBar, "TOPLEFT", 3, 4);
-		local leader = CreateAtlasMarkup("groupfinder-icon-leader", 14, 9, 0, 0);
-		asframe.leadericon:SetText(leader);
-		asframe.leadericon:Hide();
-	end
+    if (not asframe.leadericon) then
+        asframe.leadericon = frame:CreateFontString(nil, "ARTWORK");
+        asframe.leadericon:SetFont(configs.font, height / 5);
+        asframe.leadericon:SetTextColor(1, 1, 1, 1);
+        asframe.leadericon:SetPoint("TOPLEFT", frame.healthBar, "TOPLEFT", 3, 4);
+        local leader = CreateAtlasMarkup("groupfinder-icon-leader", 14, 9, 0, 0);
+        asframe.leadericon:SetText(leader);
+        asframe.leadericon:Hide();
+    end
 
-	if ns.options.BuffColor then
-		setup_buffcolor(asframe);
-	end
+    if ns.options.BuffColor then
+        setup_buffcolor(asframe);
+    end
 
-	ns.update_features(asframe);
+    ns.update_features(asframe);
 
-	asframe.callback = function()
-		if asframe.frame:IsShown() then
-			ns.update_features(asframe);
-		elseif asframe.timer then
-			asframe.timer:Cancel();
-		end
-	end
+    asframe.callback = function()
+        if asframe.frame:IsShown() then
+            ns.update_features(asframe);
+        elseif asframe.timer then
+            asframe.timer:Cancel();
+        end
+    end
 
-	if asframe.timer then
-		asframe.timer:Cancel();
-	end
 
-	if asframe.frame:IsShown() then
-		asframe.timer = C_Timer.NewTicker(ns.UpdateRate, asframe.callback);
-	end
+    if asframe.frame:IsShown() then
+        if not asframe.timer then
+            asframe.timer = C_Timer.NewTicker(ns.UpdateRate, asframe.callback);
+        end
+    else
+        if asframe.timer then
+            asframe.timer:Cancel();
+        end
+    end
 end
 
 local framebuffer = {};
 
 local function hook_func(frame)
-	if frame and not frame:IsForbidden() and frame.GetName and frame:IsShown() then
-		local name = frame:GetName();
-		if name then
-			framebuffer[name] = frame;
-		end
-	end
+    if frame and not frame:IsForbidden() and frame.GetName and frame:IsShown() then
+        local name = frame:GetName();
+        if name then
+            framebuffer[name] = frame;
+        end
+    end
 end
 
 local function update_all(frame)
-	if frame and not frame:IsForbidden() and frame.GetName then
-		local name = frame:GetName();
+    if frame and not frame:IsForbidden() and frame.GetName then
+        local name = frame:GetName();
 
-		if not (name == nil) then
-			if string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame") then
-				if not (frame.unit) then
-					return
-				end
+        if not (name == nil) then
+            if string.find(name, "CompactRaidGroup") or string.find(name, "CompactRaidFrame") then
+                if not (frame.unit) then
+                    return
+                end
 
-				if ns.asraid[name] == nil then
-					ns.asraid[name] = CreateFrame("Frame");
-				end
+                if ns.asraid[name] == nil then
+                    ns.asraid[name] = CreateFrame("Frame");
+                end
 
-				ns.asraid[name].needtosetup = true;
-				ns.asraid[name].israid = true;
-				ns.asraid[name].frame = frame;
-			elseif string.find(name, "CompactPartyFrameMember") then
-				if not (frame.unit) then
-					return;
-				end
+                ns.asraid[name].needtosetup = true;
+                ns.asraid[name].israid = true;
+                ns.asraid[name].frame = frame;
+            elseif string.find(name, "CompactPartyFrameMember") then
+                if not (frame.unit) then
+                    return;
+                end
 
-				if ns.asparty[name] == nil then
-					ns.asparty[name] = CreateFrame("Frame");
-				end
+                if ns.asparty[name] == nil then
+                    ns.asparty[name] = CreateFrame("Frame");
+                end
 
-				ns.asparty[name].needtosetup = true;
-				ns.asparty[name].israid = false;
-				ns.asparty[name].frame = frame;
-			end
-		end
-	end
+                ns.asparty[name].needtosetup = true;
+                ns.asparty[name].israid = false;
+                ns.asparty[name].frame = frame;
+            end
+        end
+    end
 end
 
 local function setup_frames()
-	if (IsInRaid()) then
-		for _, asframe in pairs(ns.asraid) do
-			if asframe and asframe.frame and asframe.frame:IsShown() then
-				ns.setup_frame(asframe);
-			end
-		end
-	elseif (IsInGroup()) then
-		for _, asframe in pairs(ns.asparty) do
-			if asframe and asframe.frame and asframe.frame:IsShown() then
-				ns.setup_frame(asframe);
-			end
-		end
-	end
+    if (IsInRaid()) then
+        for _, asframe in pairs(ns.asraid) do
+            if asframe and asframe.frame and asframe.frame:IsShown() then
+                ns.setup_frame(asframe);
+            end
+        end
+    elseif (IsInGroup()) then
+        for _, asframe in pairs(ns.asparty) do
+            if asframe and asframe.frame and asframe.frame:IsShown() then
+                ns.setup_frame(asframe);
+            end
+        end
+    end
 end
 
 local function on_update()
-	local updated = false;
-	for _, newframe in pairs(framebuffer) do
-		update_all(newframe);
-		updated = true;
-	end
+    local updated = false;
+    for _, newframe in pairs(framebuffer) do
+        update_all(newframe);
+        updated = true;
+    end
 
-	if updated then
-		setup_frames();
-	end
-	framebuffer = {};
+    if updated then
+        setup_frames();
+    end
+    framebuffer = {};
 end
 
 local function change_group(groupindex)
-	local frame = _G["CompactRaidGroup" .. groupindex]
-	if frame then
-		local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(frame.groupType);
-		if useHorizontalGroups then
-			frame.title:SetText("");
-			frame.title:SetHeight(0);
-		end
-	end
+    local frame = _G["CompactRaidGroup" .. groupindex]
+    if frame then
+        local useHorizontalGroups = EditModeManagerFrame:ShouldRaidFrameUseHorizontalRaidGroups(frame.groupType);
+        if useHorizontalGroups then
+            frame.title:SetText("");
+            frame.title:SetHeight(0);
+        end
+    end
 end
 
 local bhooked = false;
 local function remove_grouptext()
-	if bhooked == false then
-		hooksecurefunc("CompactRaidGroup_GenerateForGroup", change_group)
-		bhooked = true;
-	end
+    if bhooked == false then
+        hooksecurefunc("CompactRaidGroup_GenerateForGroup", change_group)
+        bhooked = true;
+    end
 
-	for i = 1, 8 do
-		change_group(i);
-	end
+    for i = 1, 8 do
+        change_group(i);
+    end
 end
 
 local timero;
 
 local function init()
-	local spec = C_SpecializationInfo.GetSpecialization();
-	local localizedClass, englishClass = UnitClass("player");
+    local spec = C_SpecializationInfo.GetSpecialization();
+    local localizedClass, englishClass = UnitClass("player");
 
-	ns.showlist = nil;
+    ns.showlist = nil;
 
-	if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
-		spec = 1;
-	end
+    if spec == nil or spec > 4 or (englishClass ~= "DRUID" and spec > 3) then
+        spec = 1;
+    end
 
-	if spec then
-		local listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
-		if ns[listname] then
-			ns.showlist = CopyTable(ns[listname]);
-		end
-	end
+    if spec then
+        local listname = "ACRB_ShowList_" .. englishClass .. "_" .. spec;
+        if ns[listname] then
+            ns.showlist = CopyTable(ns[listname]);
+        end
+    end
 
-	if timero then
-		timero:Cancel();
-	end
+    if timero then
+        timero:Cancel();
+    end
 
-	setup_frames();
-	timero = C_Timer.NewTicker(ns.UpdateRate, on_update);
+    setup_frames();
+    timero = C_Timer.NewTicker(ns.UpdateRate, on_update);
 
-	--[[
+    --[[
     if ns.options.RemoveGroupText then
         remove_grouptext();
     end
@@ -373,19 +376,30 @@ local function init()
 end
 
 local bfirst = true;
+local bupdate_need = false;
+
+local function update_frames()
+    if bupdate_need then
+        bupdate_need = false;
+        setup_frames();
+    end
+end
 
 local function on_event(self, event)
-	if bfirst then
-		ns.setup_option();
-		init();
-		bfirst = false;
-	end
+    if bfirst then
+        ns.setup_option();
+        init();
+        bfirst = false;
+    end
 
-	if (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED") then
-		init();
-	elseif (event == "GROUP_ROSTER_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
-		setup_frames();
-	end
+    if (event == "TRAIT_CONFIG_UPDATED") or (event == "TRAIT_CONFIG_LIST_UPDATED") or (event == "ACTIVE_TALENT_GROUP_CHANGED") then
+        init();
+    elseif (event == "GROUP_ROSTER_UPDATE") or (event == "ROLE_CHANGED_INFORM") then
+        if bupdate_need == false then
+            bupdate_need = true;
+            C_Timer.After(0.3, update_frames);
+        end
+    end
 end
 
 main_frame:SetScript("OnEvent", on_event)

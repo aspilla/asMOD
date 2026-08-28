@@ -6,6 +6,8 @@ https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 ### asUnitFrame, asTargetCastBar
 - Display interrupter's class color
 
+### asCompactRaidBuff
+- Fixed an issue causing minor lag when party members change in Raid Finder.
 
 ## 260825 update 
 ### asCompactRaidBuff (New feature)
