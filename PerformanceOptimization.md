@@ -45,7 +45,7 @@
 
 ## PC Test Environment (Reference Specs & Configuration)
 - **CPU/GPU/RAM:** 7800X3D, RX 9070, DDR5 4800 32GB
-- **OS/Driver:** Windows 11 25H2 (Latest), Drivers up to date
+- **OS/Driver:** Windows 11 25H2 (Latest), Drivers up to date (Uses ISO Debloater, Core Isolation Off, Game Mode On; yields minor difference).
 - **BIOS Settings:** SMT Off (Uses 8 physical cores instead of 16 threads; yields a 3–4% minimum FPS improvement. Since the gain is minor, SMT ON is recommended for multitasking or CPUs with fewer than 16 threads).
 - **AMD Software Settings:** Off for all features except FSR (Enhanced Sync is recommended if the monitor lacks FreeSync/FSR support. For NVIDIA GPUs, most extra driver features can also be turned Off). If using a FreeSync monitor, set Frame Rate Target Control 2–3 FPS below the monitor's maximum refresh rate.
 ![AMD setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1969365628.jpg?MW=800)
@@ -57,12 +57,13 @@
 - [Sound Channel CPU Overhead Analysis](https://youtube.com/watch?v=lZRBJ7VJXgM&si=oY9zuQpUZodQ9jpm)
 - [FHD vs UHD Raid FPS Benchmark Comparison](https://www.inven.co.kr/board/wow/4739/253503)
 - [4K Raid GPU Usage & CPU Bottleneck Analysis](https://www.inven.co.kr/board/wow/4739/239906)
+- [Windows Installation ISO Debloater](https://github.com/itsNileshHere/Windows-Iso-Debloater)
+- [Post-Windows Installation Optimization](https://github.com/Raphire/Win11Debloat)
 
 ## Recommended Hardware Setup for WoW (Reference)
 - **Monitor:** 4K resolution, 120Hz+, FreeSync / G-Sync support recommended. WoW uses many addons with fine text elements; 4K significantly improves text clarity and UI legibility.
 - **CPU:** WoW relies heavily on single-thread CPU performance. Investing in a high-end CPU like the Ryzen 7800X3D or better is strongly recommended.
 - **Graphics Card:** For 4K resolution, an RX 9070 with 16GB+ VRAM is recommended; for QHD (1440p), 12GB+ VRAM is recommended. Since WoW is often limited by CPU bottlenecks in raids, top-tier GPUs are not strictly necessary unless playing at native 4K with max settings.
-
 ---
 
 # 와우 그래픽/사운드 설정 팁 (최소 FPS 개선 목표)
@@ -112,7 +113,7 @@
 
 ## PC 환경 (참고, 개발자 시스템 사향 및 설정)
 * 7800x3d, Rx9070, DDR5 4800 32GB.
-* Windows 11 25H2 최신버전, Driver 최신.
+* Windows 11 25H2 최신버전, Driver 최신. (Iso Debloater 사용, 코어격리 Off, 게임모드 On, 큰차이는 없음)
 * BIOS 설정 : SMT 끄기 (CPU를 16코어가 아닌 8코어로만 씀), 최소 FPS 관점 3~4% 개선 효과 있으나 큰 차이 아니므로 다른 업무를 보거나, 16코어 미만은 SMT ON 추천.
 * AMD 설정 : FSR 외 모두 Off (FSR 지원 모니터가 아닌경우 Enhanced Sync 추천, Nvidia의 경우 대부분의 Option는 Off 해도 무리 없을것으로 판단 됨), Free sync 모니터를 사용 중이라면, 프레임 속도 목표 제어는 모니터 주사율 보다 2~3정도 낮게
 ![AMD setting](https://upload3.inven.co.kr/upload/2026/06/19/bbs/i1969365628.jpg?MW=800)
@@ -124,6 +125,8 @@
 * [사운드 채널 관련](https://youtube.com/watch?v=lZRBJ7VJXgM&si=oY9zuQpUZodQ9jpm)
 * [FHD, UHD 레이드 FPS 비교](https://www.inven.co.kr/board/wow/4739/253503)
 * [4K, Raid GPU 사용률 관련](https://www.inven.co.kr/board/wow/4739/239906)
+* [Windows 설치 iso 최적화](https://github.com/itsNileshHere/Windows-Iso-Debloater)
+* [Windows 설치 후 최적화](https://github.com/Raphire/Win11Debloat)
 
 ## 와우 추천 System (참고)
 * 모니터 : 4K 이상, 120Hz, FSR 지원 (G-Sync 지원) 추천 : 와우는 애드온을 많이 사용하여 화면에 글씨가 많음, 4K 모니터 사용시 가시성에 큰 도움이 됨.
