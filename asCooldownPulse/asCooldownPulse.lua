@@ -56,12 +56,12 @@ local function set_cooldownframe(cooldown, durationobject, enable)
 end
 
 
-local function update_spellbutton(frame, spellid)
+local function update_spellbutton(frame, spellid, charged)
 	local or_spellid, _, _, icon = ns.get_spellinfo(spellid);
 	if or_spellid == nil then
 		or_spellid = spellid;
 	end
-	local isUsable, notEnoughMana = C_Spell.IsSpellUsable(or_spellid);
+	local usable, notenoughmana = C_Spell.IsSpellUsable(or_spellid);
 	local durationobj = C_Spell.GetSpellCooldownDuration(or_spellid);
 	local count = C_Spell.GetSpellDisplayCount(or_spellid);
 	local chargeduration = C_Spell.GetSpellChargeDuration(or_spellid);
@@ -69,9 +69,9 @@ local function update_spellbutton(frame, spellid)
 
 	frame.icon:SetTexture(icon);
 	frame.icon_desaturated:SetTexture(icon);
-	if (isUsable) then
+	if (usable) then
 		frame.icon:SetVertexColor(1.0, 1.0, 1.0);
-	elseif (notEnoughMana) then
+	elseif (notenoughmana) then
 		frame.icon:SetVertexColor(0.5, 0.5, 1.0);
 	else
 		frame.icon:SetVertexColor(0.4, 0.4, 0.4);
@@ -82,7 +82,7 @@ local function update_spellbutton(frame, spellid)
 
 	frame.count:SetText(count);
 
-	if chargeduration then
+	if charged and chargeduration then
 		set_cooldownframe(frame.cooldown, chargeduration, true);
 		if cd and cd.isActive and not cd.isOnGCD then
 			frame.icon_desaturated:SetAlpha(1);
@@ -188,7 +188,8 @@ local function update_spells(buttons, list)
 	for _, value in pairs(list) do
 		local frame = buttons[i];
 		local spellid = value[1];
-		update_spellbutton(frame, spellid);
+		local charged = value[3];
+		update_spellbutton(frame, spellid, charged);
 		i = i + 1;
 	end
 
@@ -337,8 +338,13 @@ function ns.scan_spells()
 
 	wipe(ns.trackspells);
 	for spellid, priority in pairs(ns.show_list) do
-		if C_SpellBook.IsSpellKnown(spellid) then
-			table.insert(ns.trackspells, i, { spellid, priority });
+        if C_SpellBook.IsSpellKnown(spellid) then
+            local chinfo = C_Spell.GetSpellCharges(spellid);
+            local max = 1;
+            if chinfo and not issecrettable(chinfo.maxCharges) then
+                max = chinfo.maxCharges;
+            end
+			table.insert(ns.trackspells, i, { spellid, priority, (max > 1) });
 			i = i + 1;
 
 			if i > configs.maxtrackspells then

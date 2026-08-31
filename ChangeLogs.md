@@ -2,6 +2,13 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 260901 update
+### asCooldownPulse
+- Bugfix: Fixed an issue where the cooldown for certain skills was not displayed.
+
+### asBattleRes
+- Displays available charges in green at the center, matching other asMOD addons; displays in gray when unavailable.
+
 ## 260827 update
 ### asUnitFrame, asTargetCastBar
 - Display interrupter's class color

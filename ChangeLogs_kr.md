@@ -2,6 +2,13 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260901 update 
+### asCooldownPulse
+- Bugfix : 일부 스킬 쿨이 안보이는 문제 수정
+
+### asBattleRes
+- 사용 가능 회수 다른 asMOD 애드온과 같은 녹색 중앙에 표시, 사용 불가시 회색으로 표시
+
 ## 260828 update 
 ### asUnitFrame, asTargetCastBar
 - 차단자 직업 색상 표시
