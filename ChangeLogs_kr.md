@@ -2,6 +2,10 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260902 update 
+### asCooldownPulse
+- Bugfix
+
 ## 260901 update 
 ### asCooldownPulse
 - Bugfix : 일부 스킬 쿨이 안보이는 문제 수정

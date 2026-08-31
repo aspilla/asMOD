@@ -2,6 +2,10 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 260902 update 
+### asCooldownPulse
+- Bugfix
+ 
 ## 260901 update
 ### asCooldownPulse
 - Bugfix: Fixed an issue where the cooldown for certain skills was not displayed.

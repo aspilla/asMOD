@@ -8,6 +8,7 @@ ns.items        = { 241308, 241304, 5512 };
 ns.racials      = { 26297, 265221, 357214, 20594, 58984, 202719, 20572, 20549, 274738, 59752, 256948, 312411, 7744, 255647, 287712, 312924, 68992, 69070, 291944, 1237885, 255654, 107079, 20589, 59542, 436344, 155145, 33697, 25046, 50613, 80483, 28730, 69179, 129597, 33702 };
 ns.trackspells  = {};
 ns.racial_spell = nil;
+ns.racial_charged = nil;
 ns.isdemonstone = false;
 local configs   = {
 	size = 28,
@@ -144,7 +145,7 @@ local function update_itembutton(frame, itemid, istrinket, ishealthstone)
 	end
 end
 
-local function update_buttons(list, buttons, spellid)
+local function update_buttons(list, buttons, spellid, charged)
 	local i = 1;
 
 	for _, itemid in pairs(list) do
@@ -173,7 +174,7 @@ local function update_buttons(list, buttons, spellid)
 
 	if spellid then
 		local frame = buttons[i];
-		update_spellbutton(frame, spellid);
+		update_spellbutton(frame, spellid, charged);
 		i = i + 1;
 	end
 
@@ -307,7 +308,7 @@ end
 
 local function on_update()
 	if ns.options.ShowTrinkets then
-		update_buttons(ns.trinkets, ns.tbuttons, ns.racial_spell);
+		update_buttons(ns.trinkets, ns.tbuttons, ns.racial_spell, ns.racial_charged);
 	end
 
 	if ns.options.ShowItems then
@@ -330,6 +331,12 @@ function ns.scan_spells()
 	for _, spellid in pairs(ns.racials) do
 		if C_SpellBook.IsSpellKnown(spellid) then
 			ns.racial_spell = spellid;
+			local chinfo = C_Spell.GetSpellCharges(spellid);
+            local max = 1;
+            if chinfo and not issecrettable(chinfo.maxCharges) then
+                max = chinfo.maxCharges;
+            end
+            ns.racial_charged = (max > 1);
 			break;
 		end
 	end
