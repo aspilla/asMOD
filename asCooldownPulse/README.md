@@ -6,7 +6,7 @@ Displays icons for ready spell.
 
 Displays cooldowns for trinkets, racial abilities, defensive spells, healthstones, and potions.
 
-![asCooldownPulse](https://media.forgecdn.net/attachments/1585/670/ascooldownpulse_mn-jpg.jpg)
+![asCooldownPulse](https://media.forgecdn.net/attachments/1913/63/ascooldownpulse-jpg.jpg)
 
 ## Key Features
 - **Usable Skill, Trinket, Potion, and Racial Notifications**: Skills listed in the `Spellbook` (excluding grouped skills), racials, trinkets, potions, etc which has more than 10 seconds cooldown.
@@ -59,7 +59,7 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 
 생존기, 장신구, 종특, 생석, 물약 쿨 표시
 
-![asCooldownPulse](https://media.forgecdn.net/attachments/1585/670/ascooldownpulse_mn-jpg.jpg)
+![asCooldownPulse](https://media.forgecdn.net/attachments/1913/63/ascooldownpulse-jpg.jpg)
 
 ## 주요 기능
 

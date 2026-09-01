@@ -333,7 +333,7 @@ function ns.scan_spells()
 			ns.racial_spell = spellid;
 			local chinfo = C_Spell.GetSpellCharges(spellid);
             local max = 1;
-            if chinfo and not issecrettable(chinfo.maxCharges) then
+            if chinfo and not issecretvalue(chinfo.maxCharges) then
                 max = chinfo.maxCharges;
             end
             ns.racial_charged = (max > 1);
@@ -348,7 +348,7 @@ function ns.scan_spells()
         if C_SpellBook.IsSpellKnown(spellid) then
             local chinfo = C_Spell.GetSpellCharges(spellid);
             local max = 1;
-            if chinfo and not issecrettable(chinfo.maxCharges) then
+            if chinfo and not issecretvalue(chinfo.maxCharges) then
                 max = chinfo.maxCharges;
             end
 			table.insert(ns.trackspells, i, { spellid, priority, (max > 1) });
