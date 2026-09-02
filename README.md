@@ -3,16 +3,16 @@
 asMOD is a collection of custom-made World of Warcraft addons.
 
 ```
-In 2005, after experiencing game stuttering while using addons made by others, I began creating my own.
-Configuring addons one by one was also a tedious task, so I made them as simple as possible—without complex setup options.
-I have been sharing my addons on Inven since 2008, and starting in 2025, through CurseForge as well.
+In 2005, after experiencing game stuttering while using addons made by others, I began creating my own. 
+Configuring addons one by one was also a tedious task, so I made them as simple as possible—without complex setup options. 
+I have been sharing my addons on Inven since 2008, and starting in 2025, through CurseForge as well. 
 Over the past 20 years, the collection has grown to over 40 addons, continuously developed under the following core principles:
 
-1. Addons must be as simple as possible.
-2. There should be no complex configuration processes.
+1) Addon features must be simple and have zero impact on game performance.
+2) There should be no complex configuration processes.
 
-Because of these two core rules, you may love or hate my addons.
-I recommend them to those who want to enjoy the game optimally as configured by the developer without overthinking.
+Because of these two core rules, you may love or hate my addons. 
+I recommend them to those who want to enjoy the game optimally as configured by the developer without overthinking. 
 If you prefer customizing addons to suit your specific preferences, I recommend looking for other alternatives.
 ```
 
@@ -272,15 +272,15 @@ asMOD minimizes the use of the ACE Library. To copy settings, use the `WTF` fold
 asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 ```
-2005년 남이 만든 애드온을 사용하다가 게임에서 끊김 현상을 느끼고 제가 사용하는 애드온은 직접 만들어 사용해 왔습니다. 
-애드온을 일일이 설정하는 것도 상당히 귀찮은 작업이었기에 설정도 없는 그런 간단한 애드온이었습니다. 
-2008년부터 만든 애드온을 인벤에 공유해 왔고, 2025년부터는 커스 포지를 통해 공유하고 있습니다. 
-20여 년간 만들어온 애드온이 이제 무려 40여 개, 나름 다음과 같은 방침으로 지속적으로 만들어 오고 있습니다.
-1. 애드온은 최대한 심플해야 한다.
-2. 복잡한 설정 과정은 없어야 한다.
-위 두 가지 핵심 규칙 때문에 제 애드온이 좋을 수도 싫을 수도 있습니다. 
-별 고민 없이 개발자가 설정한 대로 게임을 최적으로 즐기고 싶은 분들에게 추천합니다. 
-애드온을 자신에게 맞춰 설정하는 것을 좋아하는 분들은 다른 대안을 찾는 것을 추천합니다.
+2005년 남이 만든 애드온을 사용하다가 게임 끊김 현상을 느껴, 제가 쓸 애드온은 직접 만들어 사용하기 시작했습니다.
+애드온을 일일이 설정하는 것 역시 귀찮은 일이었기에 별도의 설정조차 없는 간단한 애드온들이었습니다.
+2008년부터는 직접 만든 애드온을 인벤에 공유해 왔고, 2025년부터는 커스포지를 통해 공유하고 있습니다.
+20여 년간 만들어 온 애드온이 어느덧 40여 개에 달하며, 나름대로 다음과 같은 방침을 지속해서 지켜오고 있습니다.
+
+1) 애드온 기능 간결하고 게임 성능에 영향이 없어야 한다.
+2) 복잡한 설정 과정이 없어야 한다.
+
+이 두 가지 핵심 규칙 때문에 제 애드온은 호불호가 갈릴 수 있습니다. 개발자가 설정해 둔 대로 별 고민 없이 게임을 최적으로 즐기고 싶은 분들께 추천합니다. 반면, 애드온을 입맛에 맞춰 세세하게 설정하는 것을 선호하시는 분들께는 다른 대안을 추천해 드립니다.
 ```
 
 ## asMOD 사용 영상
