@@ -61,7 +61,7 @@ local function get_color(asframe)
     local status = UnitThreatSituation("player", unit);
     local incombat = UnitAffectingCombat(unit);
 
-    local nameplate = asframe.nameplateBase;
+    local nameplate = asframe.nameplate_base;
     local UnitFrame = nameplate.UnitFrame;
 
     if not UnitFrame or UnitFrame:IsForbidden() then
@@ -142,11 +142,9 @@ function ns.update_color(asframe)
         local color = UnitHealthPercent(asframe.unit, true, ns.colorcurve);
 
         asframe.border:SetColorTexture(color:GetRGBA());
-
     else
         asframe.border:SetColorTexture(0, 0, 0);
     end
-
 end
 
 function ns.update_cast(asframe)
@@ -210,7 +208,7 @@ local targetedtexts = {};
 targetedtexts[1] = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0, 255, 0, 0);
 targetedtexts[2] = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0);
 function ns.update_targeted(asframe)
-    if not ns.options.ShowTargeted  then
+    if not ns.options.ShowTargeted then
         return;
     end
 
