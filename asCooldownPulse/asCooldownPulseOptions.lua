@@ -10,7 +10,10 @@ local Options_Default = {
 	SpellSize = 28,
 	MillisecondsThreshold = 3,
 	ReadyAlertSize = 60,
-	MinCooldown = 10,
+	MinCooldown = 15,
+	EnableTTS = true,
+	TTS_ID = -1,
+	SoundVolume = 70,
 };
 
 local L = {
@@ -23,6 +26,9 @@ local L = {
 	SpellSize = "Icon size for skill cooldown tracking.",
 	MillisecondsThreshold =
 	"The time threshold at which the remaining cooldown begins displaying in 0.1-second increments.",
+	EnableTTS = "Alert spell sound using TTS",
+	TTS_ID = "TTS ID",
+	SoundVolume = "Sound Volume",
 	ReadyAlertSize = "Icon size for skill ready alert.",
 	MinCooldown = "Minimun time(second) of cooldown to alert.",
 	SpellList = "Defensive Spell List",
@@ -46,6 +52,9 @@ if GetLocale() == "koKR" then
 		SpellSize = "스킬 쿨 추적 사이즈",
 		MillisecondsThreshold = "남은 쿨을 0.1초 단위로 보여줄 최소 시간",
 		MinCooldown = "알림할 최소 쿨다운 시간(초)",
+		EnableTTS = "TTS 로 스킬 쿨 음성 알림",
+		TTS_ID = "TTS ID",
+		SoundVolume = "음성 크기",
 		SpellList = "생존기 스킬 목록",
 		SpellID = "스킬 번호(Spell Id)",
 		Priority = "우선 순위",
@@ -397,7 +406,44 @@ function ns.setup_option()
 			local defaultValue = Options_Default[variable];
 			local currentValue = ACDP_Options[variable];
 
-			if name == "MillisecondsThreshold" then
+			if name == "TTS_ID" then
+                local function GetOptions()
+                    local container = Settings.CreateControlTextContainer()
+
+                    local ttsinfos = C_VoiceChat.GetTtsVoices();
+                    for id, v in pairs(ttsinfos) do
+                        container:Add(v.voiceID, v.name);
+                    end
+                    return container:GetData()
+                end
+
+                if currentValue < 0 then
+                    local ttsinfos = C_VoiceChat.GetTtsVoices();
+                    local locale = GetLocale();
+                    local findLang = "Korean";
+
+                    if not (locale == "koKR") then
+                        findLang = "English";
+                    end
+
+                    ACDP_Options[variable] = 0;
+                    ns.options[variable] = 0;
+
+                    for id, v in pairs(ttsinfos) do
+                        if strfind(v.name, findLang) then
+                            currentValue = v.voiceID;
+                            ACDP_Options[variable] = currentValue;
+                            ns.options[variable] = currentValue;
+                        end
+                    end
+                end
+
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), L[name], defaultValue);
+
+                Settings.CreateDropdown(category, setting, GetOptions, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            elseif name == "MillisecondsThreshold" then
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
 					type(defaultValue), L[name], defaultValue);
 				local options = Settings.CreateSliderOptions(0, 10, 1);
@@ -405,6 +451,14 @@ function ns.setup_option()
 				Settings.CreateSlider(category, setting, options, tooltip);
 				Settings.SetValue(cvar_name, currentValue);
 				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+			elseif name == "SoundVolume" then
+					local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+						type(defaultValue), L[name], defaultValue);
+					local options = Settings.CreateSliderOptions(0, 100, 1);
+					options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+					Settings.CreateSlider(category, setting, options, tooltip);
+					Settings.SetValue(cvar_name, currentValue);
+					Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
 			elseif tonumber(defaultValue) ~= nil then
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
 					type(defaultValue), L[name], defaultValue);

@@ -6,6 +6,7 @@ local Options_Default = {
     BarHeight = 20,
     ShowTick = true,
     Scale = 1,
+    SmoothBar = true,
 };
 
 local L = {
@@ -14,6 +15,7 @@ local L = {
     BarHeight = "Bar Height",
     ShowTick = "Show channeling tick",
     Scale = "Scale",
+    SmoothBar = "Smooth Bar",
 }
 
 if GetLocale() == "koKR" then
@@ -23,6 +25,7 @@ if GetLocale() == "koKR" then
         BarHeight = "시전바 높이",
         ShowTick = "채널링 틱 표시",
         Scale = "크기",
+        SmoothBar = "부드러운 바",
     }
 end
 

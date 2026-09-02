@@ -24,6 +24,7 @@ Simple Cast Bar
 - Cast bar width (Default: 238).
 - Cast bar height (Default: 20).
 - Whether to display channel ticks, functions only in Simple Design Mode (Default: On).
+- Smooth bar, comsume more CPU (Default: On).
 - **Move Position**: Enter the `/asConfig` command in the chat window.
 - **Reset Position**: Enter the `/asClear` command in the chat window to reset to default settings.
 
@@ -62,6 +63,7 @@ Simple Cast Bar
 - 시전바 넓이 (기본 238)
 - 시전바 높이 (기본 20)
 - 채널링 틱 표시, 심플 디자인 모드에서만 동작 (기본 On)
+- 부드러운 바, CPU 점유율 증가 (기본 On)
 - **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 - **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화
 

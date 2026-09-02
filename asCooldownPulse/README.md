@@ -9,8 +9,9 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 ![asCooldownPulse](https://media.forgecdn.net/attachments/1913/63/ascooldownpulse-jpg.jpg)
 
 ## Key Features
-- **Usable Skill, Trinket, Potion, and Racial Notifications**: Skills listed in the `Spellbook` (excluding grouped skills), racials, trinkets, potions, etc which has more than 10 seconds cooldown.
-
+- **Ability, Trinket, Potion, Racial, and Usable Item Notifications**: Skills registered in the spellbook (excluding stance/bundled abilities), racials, trinkets, potions, etc., after 15 seconds have elapsed since use (cooldown reductions caused by procs cannot be tracked).
+- **Voice Notifications**: Announces spell and item names via TTS voice. If you place a `SpellName.mp3` file inside the `SpellSound` folder in the addon directory and turn off the `Alert spell sound using TTS` option, you can customize sound alerts for specific skills.
+ 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 - **Trinket Cooldown Display (Bottom of TargetFrame, Default off)**: Displays cooldowns for usable trinkets when equipped.
@@ -32,7 +33,10 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 - Toggle display of skill cooldown tracking (Default: On).
 - Icon size for skill cooldown tracking (Default: 28).
 - The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
-- The minimum time of cooldown to alert (Default: 10 seconds).
+- The minimum time of cooldown to alert (Default: 15 seconds).
+- Alert spell sound using TTS (Default: On)
+- TTS ID (Default: Zira)
+- Sound Volume (Default: 70)
 
 - A `/reload` is required after changing sizes.
 
@@ -63,7 +67,8 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 
 ## 주요 기능
 
-- **스킬, 장신구, 물약, 종특, 사용가능 알림**: '스킬북`에 등록 된 스킬(묶음 형태 스킬 제외), 종특 장신구, 물약등, 10초 이상 쿨일 경우
+- **스킬, 장신구, 물약, 종특, 사용가능 알림**: '스킬북`에 등록 된 스킬(묶음 형태 스킬 제외), 종특 장신구, 물약등, 사용 후 15초 이상 지났을 경우(발동 등에 의해 쿨이 줄어든 경우는 파악 불가)
+- **음성 알림** 스킬 명 아이템 명을 TTS 음성으로 알림, 애드온 폴더내 `SpellSound` 폴더에 `스킬명.mp3` 파일 추가하고 `TTS 로 스킬 쿨 음성 알림` 옵션을 끄면 특정 스킬만 원하는 사운드로 알림 가능
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -78,14 +83,18 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 
 - `ESC` > `설정` > `애드온` > `asCooldownPulse` 에서 설정 가능
 - 스킬 사용가능 알림 아이콘 크기 (기본 60, 0 이면 기능 끄기)
-- 비전투시 투명도 변경 (Default On)
-- 장신구/종특 쿨 표시 여부 (Default off)
-- 장신구/종특 쿨 사이즈 (Default 28)
-- 물약/생석 쿨 표시 여부 (Default On)
-- 물약/생석 쿨 사이즈 (Default 28)
-- 스킬 쿨 추적 표시 여부 (Default On)
-- 스킬 쿨 추적 사이즈 (Default 28)
+- 비전투시 투명도 변경 (기본 On)
+- 장신구/종특 쿨 표시 여부 (기본 off)
+- 장신구/종특 쿨 사이즈 (기본 28)
+- 물약/생석 쿨 표시 여부 (기본 On)
+- 물약/생석 쿨 사이즈 (기본 28)
+- 스킬 쿨 추적 표시 여부 (기본 On)
+- 스킬 쿨 추적 사이즈 (기본 28)
 - 남은 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
+- 알림할 최소 쿨다운 시간(기본 15초)
+- TTS 로 스킬 쿨 음성 알림 (기본 On)
+- TTS ID (기본 Heami)
+- 음성 크기 (기본 70)
 
 - 크기 변경후 `/reload` 필요
 - `ESC` > `설정` > `애드온` > `asCooldownPulse` > `생존기 스킬 목록` 에서 쿨 추적할 스킬 등록 가능

@@ -1,6 +1,15 @@
 # Change Logs
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
+## 260904 update
+
+### asCastBar
+- Modified the bar to render smoothly (Added option).
+- Smooth bar, comsume more CPU (Default: On).
+
+### asCooldownPulse
+- Added voice notification feature for skill cooldown alerts (Check documentation).
+- **Voice Notifications**: Announces spell and item names via TTS voice. If you place a `SpellName.mp3` file inside the `SpellSound` folder in the addon directory and turn off the `Alert spell sound using TTS` option, you can customize sound alerts for specific skills.
 
 ## 260902/260903 update 
 ### asCooldownPulse
