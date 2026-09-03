@@ -14,6 +14,7 @@ local Options_Default = {
 	EnableTTS = true,
 	TTS_ID = -1,
 	SoundVolume = 70,
+	AlertSound = false,
 };
 
 local L = {
@@ -31,6 +32,7 @@ local L = {
 	SoundVolume = "Sound Volume",
 	ReadyAlertSize = "Icon size for skill ready alert.",
 	MinCooldown = "Minimun time(second) of cooldown to alert.",
+	AlertSound = "Sound notification for skill ready alert.",
 	SpellList = "Defensive Spell List",
 	SpellID = "Spell Id",
 	Priority = "Priority",
@@ -55,6 +57,7 @@ if GetLocale() == "koKR" then
 		EnableTTS = "TTS 로 스킬 쿨 음성 알림",
 		TTS_ID = "TTS ID",
 		SoundVolume = "음성 크기",
+		AlertSound = "스킬 쿨다운시 알림음 재생",
 		SpellList = "생존기 스킬 목록",
 		SpellID = "스킬 번호(Spell Id)",
 		Priority = "우선 순위",

@@ -49,22 +49,24 @@ end
 
 local voicealert_start = {};
 local function spellsound(id, isitem)
-    local currtime = GetTime();
-    if id and (voicealert_start[id] == nil or voicealert_start[id] < currtime) then
-        --3초간 금지
-        voicealert_start[id] = currtime + 3;
-        local name = "";
-        if isitem then
-            name = alertitemnames[id];
-        else
-            name = alertspellnames[id];
-        end
-        if name then
-            if ns.options.EnableTTS then
-                C_VoiceChat.SpeakText(ns.options.TTS_ID, name, configs.soundrate,
-                    ns.options.SoundVolume);
+    if ns.options.AlertSound then
+        local currtime = GetTime();
+        if id and (voicealert_start[id] == nil or voicealert_start[id] < currtime) then
+            --3초간 금지
+            voicealert_start[id] = currtime + 3;
+            local name = "";
+            if isitem then
+                name = alertitemnames[id];
             else
-                PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\" .. name .. ".mp3", "MASTER")
+                name = alertspellnames[id];
+            end
+            if name then
+                if ns.options.EnableTTS then
+                    C_VoiceChat.SpeakText(ns.options.TTS_ID, name, configs.soundrate,
+                        ns.options.SoundVolume);
+                else
+                    PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\" .. name .. ".mp3", "MASTER")
+                end
             end
         end
     end
