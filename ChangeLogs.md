@@ -1,6 +1,13 @@
 # Change Logs
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
+
+## 260905 update
+
+### asCooldownPulse
+- Changed skill cooldown voice notification to be OFF by default.
+- Many users seemed to prefer not having voice notifications enabled by default. It is now OFF by default; if desired, enable the `Play Alert Sound on Skill Cooldown` option.
+
 ## 260904 update
 
 ### asCastBar
