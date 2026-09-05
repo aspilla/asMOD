@@ -2,8 +2,9 @@
 
 Displays Battle Resurrection charges and cooldown.
 
-![asBattleRes](https://media.forgecdn.net/attachments/1585/661/asbattleres-jpg.jpg)
-![asBattleRes](https://media.forgecdn.net/attachments/1683/910/asbattleres-jpg.jpg)
+![asBattleRes](https://media.forgecdn.net/attachments/1922/735/asbettleres-jpg.jpg)
+
+![asBattleRes](https://media.forgecdn.net/attachments/1922/736/asbettleres2-jpg.jpg)
 
 ## Key Features
 
@@ -30,8 +31,9 @@ Displays Battle Resurrection charges and cooldown.
 
 전투 부활 횟수/대기시간 표시
 
-![asBattleRes](https://media.forgecdn.net/attachments/1585/661/asbattleres-jpg.jpg)
-![asBattleRes](https://media.forgecdn.net/attachments/1683/910/asbattleres-jpg.jpg)
+![asBattleRes](https://media.forgecdn.net/attachments/1922/735/asbettleres-jpg.jpg)
+
+![asBattleRes](https://media.forgecdn.net/attachments/1922/736/asbettleres2-jpg.jpg)
 
 ## 주요 기능
 
