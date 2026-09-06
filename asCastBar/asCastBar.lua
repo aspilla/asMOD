@@ -7,7 +7,7 @@ local configs = {
     notinterruptcolor = { 0.6, 0.6, 0.6 },
     interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
     failedcolor = { 1, 0, 0 },
-    updaterate = 0.03,
+    updaterate = 0.05,
     font = STANDARD_TEXT_FONT,
     interruptedtext = INTERRUPTED,
     maxtick = 10,
@@ -451,7 +451,7 @@ local function init()
             main_frame:SetScript("OnUpdate", on_update);
         else
             ns.bartype = Enum.StatusBarInterpolation.ExponentialEaseOut;
-            local updaterate = ns.options.UpdateRate and (1/ns.options.UpdateRate) or configs.updaterate;
+            local updaterate = ns.options.RefreshRate and (1 / ns.options.RefreshRate) or configs.updaterate;
             C_Timer.NewTicker(updaterate, on_update);
         end
 

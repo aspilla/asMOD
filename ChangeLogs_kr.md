@@ -2,6 +2,18 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260907 update
+
+### asCastBar
+- Option 추가 및 변경, 매프레임마다 변경 옵션은 저사양 PC 에서 끈길 수 있어 옵션 추가
+- 매 프레임마다 바를 변경, CPU 점유율 증가 (기본 Off, 고성능 PC에서 권장)
+- 초당 업데이트 횟수 (기본 20, 매 프레임마다 바를 변경 옵션을 꺼야 동작)
+
+### asPowerBar
+- [악흑] 임프 카운트에서 악마핵 중첩 표시
+- 제작자 의견, 악마의 핵 중첩 판단이 중요하다고 생각 되어, 임프 카운트에서 악마의 핵 중첩으로 변경
+
+
 ## 260906 update
 
 ### asCastBar

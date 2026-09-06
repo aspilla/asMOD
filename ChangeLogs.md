@@ -2,6 +2,17 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 260907 update
+
+### asCastBar
+- Added and revised options: Added an option for updating every frame, as it may cause stuttering on lower-end PCs.
+- Update bar every frame, increases CPU usage (Default: Off, recommended for high-performance PCs).
+- Updates per second (Default: 20, active only when the "Update bar every frame" option is disabled).
+
+### asPowerBar
+- [Demonology Warlock] Displays Demonic Core stacks on the Imp Counter.
+- Developer Note: Demonic Core stacks are important, so the display has been updated to show Demonic Core stacks on the Imp Counter instead.
+
 ## 260906 update
 
 ### asCastBar
