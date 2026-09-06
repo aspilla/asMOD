@@ -1,4 +1,15 @@
+local orig_ChatEdit_CustomTabPressed = ChatEdit_CustomTabPressed
+
 function ChatEdit_CustomTabPressed(self)
+	if orig_ChatEdit_CustomTabPressed and orig_ChatEdit_CustomTabPressed(self) then
+		return true;
+	end
+
+	local text = self:GetText();
+	if text and strsub(text, 1, 1) == "/" then
+		return; -- let default secure slash command completion handle it
+	end
+
 	local bBattle = false;
 	local RTB_PVPType = C_PvP.GetZonePVPInfo();
 	local bInstance, RTB_ZoneType = IsInInstance();
@@ -69,4 +80,5 @@ function ChatEdit_CustomTabPressed(self)
 	end
 
 	ChatFrameEditBoxMixin.UpdateHeader(self);
+	return true;
 end

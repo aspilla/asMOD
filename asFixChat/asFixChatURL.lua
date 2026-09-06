@@ -13,37 +13,34 @@ local function asSetItemRef(link, ...)
 	end
 end
 
---AddMessage
-local function asMOD_AddMessage(self, text, ...)
-	if self:IsForbidden() then
-		return
+local function asMOD_AddMessageFilter(self, event, text, ...)
+	if not text or issecretvalue(text) then
+		return false, text, ...
 	end
 
-	if not issecretvalue(text) then
-		-- URL pattern to find URLs in the text
-		local urlPattern = '([wWhH][wWtT][wWtT][%.pP]%S+[^%s%.,;:!%?%)%]%>%"\'])'
+	local urlPattern = '([wWhH][wWtT][wWtT][%.pP]%S+[^%s%.,;:!%?%)%]%>%"\'])'
 
-		-- Check if the pattern exists in the text
-		if text:find(urlPattern) then
-			-- Highlight and hyperlink the URLs
-			text = text:gsub(urlPattern, '|cffffdd00|Hurl:%1|h[%1]|h|r')
-		end
+	if text:find(urlPattern) then
+		text = text:gsub(urlPattern, '|cffffdd00|Hurl:%1|h[%1]|h|r')
+		return false, text, ...
 	end
 
-	-- Call the original message handler with the modified text
-	if self.DefaultAddMessage then
-		return self.DefaultAddMessage(self, text, ...)
-	else
-		return
-	end
+	return false, text, ...
 end
 
---skin chat
-local chatframe = _G["ChatFrame" .. 1]
---adjust channel display
-if chatframe then
-	chatframe.DefaultAddMessage = chatframe.AddMessage
-	chatframe.AddMessage = asMOD_AddMessage
-end
+ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", asMOD_AddMessageFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", asMOD_AddMessageFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_OFFICER", asMOD_AddMessageFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY", asMOD_AddMessageFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER", asMOD_AddMessageFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID", asMOD_AddMessageFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_LEADER", asMOD_AddMessageFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_WARNING", asMOD_AddMessageFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", asMOD_AddMessageFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT", asMOD_AddMessageFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT_LEADER", asMOD_AddMessageFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", asMOD_AddMessageFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", asMOD_AddMessageFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_COMMUNITIES_CHANNEL", asMOD_AddMessageFilter)
 
 hooksecurefunc("SetItemRef", asSetItemRef);

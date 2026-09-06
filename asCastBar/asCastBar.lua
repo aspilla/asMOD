@@ -7,7 +7,7 @@ local configs = {
     notinterruptcolor = { 0.6, 0.6, 0.6 },
     interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
     failedcolor = { 1, 0, 0 },
-    updaterate = 0.05,
+    updaterate = 0.03,
     font = STANDARD_TEXT_FONT,
     interruptedtext = INTERRUPTED,
     maxtick = 10,
@@ -446,12 +446,13 @@ local function init()
         main_frame:SetScript("OnEvent", on_event)
         main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
-        if ns.options.SmoothBar then
+        if ns.options.SmoothyBar then
             ns.bartype = 0;
             main_frame:SetScript("OnUpdate", on_update);
         else
             ns.bartype = Enum.StatusBarInterpolation.ExponentialEaseOut;
-            C_Timer.NewTicker(configs.updaterate, on_update);
+            local updaterate = ns.options.UpdateRate and (1/ns.options.UpdateRate) or configs.updaterate;
+            C_Timer.NewTicker(updaterate, on_update);
         end
 
         hidedefault(PlayerCastingBarFrame);

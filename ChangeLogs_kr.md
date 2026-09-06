@@ -2,6 +2,23 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260906 update
+
+### asCastBar
+- Option 추가 및 변경, 매프레임마다 변경 옵션은 저사양 PC 에서 끈길 수 있어 옵션 추가
+- 매 프레임마다 바를 변경, CPU 점유율 증가 (기본 Off, 고성능 PC에서 권장)
+- 초당 업데이트 횟수 (기본 30, 매 프레임마다 바를 변경 옵션을 꺼야 동작)
+
+### asFixChat
+- Taint 오류 가능성 개선
+- URL 변경은 귓속말에서는 동작 안함
+
+## 260905 update
+
+### asCooldownPulse
+- 스킬 쿨 알림시 음성 알림 기능 기본 off 로 변경
+- 음성 알림을 원치 않는 사람이 좀 많은거 같습니다. 기본 Off 로 변경하고 원하는 사람은 `스킬 쿨다운시 알림음 재생` 옵션을 켜야 함
+
 ## 260904 update
 
 ### asCastBar

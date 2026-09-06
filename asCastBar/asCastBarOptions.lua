@@ -6,7 +6,8 @@ local Options_Default = {
     BarHeight = 20,
     ShowTick = true,
     Scale = 1,
-    SmoothBar = true,
+    SmoothyBar = false,
+    UpdateRate = 30,
 };
 
 local L = {
@@ -15,7 +16,8 @@ local L = {
     BarHeight = "Bar Height",
     ShowTick = "Show channeling tick",
     Scale = "Scale",
-    SmoothBar = "Smooth Bar",
+    SmoothyBar = "Update per every frame",
+    UpdateRate = "Update rate per second"
 }
 
 if GetLocale() == "koKR" then
@@ -25,7 +27,8 @@ if GetLocale() == "koKR" then
         BarHeight = "시전바 높이",
         ShowTick = "채널링 틱 표시",
         Scale = "크기",
-        SmoothBar = "부드러운 바",
+        SmoothyBar = "프레임마다 업데이트",
+        UpdateRate = "초당 업데이트 횟수"
     }
 end
 
@@ -103,6 +106,14 @@ function ns.setup_option()
                 Settings.CreateSlider(category, setting, options, tooltip);
                 Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            elseif tonumber(defaultValue) ~= nil and name == "UpdateRate" then
+                    local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                        type(defaultValue), label, defaultValue);
+                    local options = Settings.CreateSliderOptions(1, 60, 1);
+                    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+                    Settings.CreateSlider(category, setting, options, tooltip);
+                    Settings.SetValue(cvar_name, currentValue);
+                    Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             elseif tonumber(defaultValue) ~= nil then
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
                     type(defaultValue), label, defaultValue);

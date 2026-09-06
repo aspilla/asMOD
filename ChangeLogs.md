@@ -2,6 +2,17 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 260906 update
+
+### asCastBar
+- Added and revised options: Added an option for updating every frame, as it may cause stuttering on lower-end PCs.
+- Update bar every frame, increases CPU usage (Default: Off, recommended for high-performance PCs).
+- Updates per second (Default: 30, active only when the "Update bar every frame" option is disabled).
+
+### asFixChat
+- Reduced potential Taint errors.
+- URL conversion no longer functions in whispers.
+
 ## 260905 update
 
 ### asCooldownPulse
