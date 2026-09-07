@@ -84,28 +84,14 @@ function ns.update_unithealth(frame, updated)
 	end
 
 	frame.hvalue:SetText(AbbreviateLargeNumbers(value));
-
-	if ns.colorcurve and ns.options.ShowLowHealth and UnitCanAttack("player", unit) then
-		local color = UnitHealthPercent(unit, true, ns.colorcurve);
-
-		frame.healthbar.bg:SetColorTexture(color:GetRGBA());
-	else
-		frame.healthbar.bg:SetColorTexture(0, 0, 0);
-	end
 end
 
-
-function ns.update_unitframe_other(frame)
+function ns.update_unitframe_event(frame)
 	local unit = frame.unit;
-	local showplayermana = false;
 
 	if frame.isplayerframe then
 		update_playerunit()
 		unit = ns.unit_player;
-		showplayermana = (unit ~= "player");
-		if not InCombatLockdown() and unit ~= frame:GetAttribute("unit") then
-			frame:SetAttribute("unit", unit);
-		end
 	elseif frame.ispetframe then
 		unit = ns.unit_pet;
 	end
@@ -214,6 +200,35 @@ function ns.update_unitframe_other(frame)
 		frame.mark:Hide();
 	end
 	frame.classtext:SetText(classtext);
+end
+
+
+function ns.update_unitframe_other(frame)
+	local unit = frame.unit;
+	local showplayermana = false;
+
+	if frame.isplayerframe then
+		update_playerunit()
+		unit = ns.unit_player;
+		showplayermana = (unit ~= "player");
+		if not InCombatLockdown() and unit ~= frame:GetAttribute("unit") then
+			frame:SetAttribute("unit", unit);
+		end
+	elseif frame.ispetframe then
+		unit = ns.unit_pet;
+	end
+
+	if not UnitExists(unit) then
+		return;
+	end
+
+	if ns.colorcurve and ns.options.ShowLowHealth and UnitCanAttack("player", unit) then
+		local color = UnitHealthPercent(unit, true, ns.colorcurve);
+
+		frame.healthbar.bg:SetColorTexture(color:GetRGBA());
+	else
+		frame.healthbar.bg:SetColorTexture(0, 0, 0);
+	end
 
 	--Power
 	local power = UnitPower(unit)

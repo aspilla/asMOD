@@ -2,6 +2,12 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260908 update
+
+### asUnitFrame
+- 성능 개선
+
+
 ## 260907 update
 
 ### asCastBar

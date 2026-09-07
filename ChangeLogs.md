@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 260908 update
+
+### asUnitFrame
+- Performance improvements
+
 ## 260907 update
 
 ### asCastBar

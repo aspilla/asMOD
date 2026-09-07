@@ -264,6 +264,7 @@ local function update_unitframe(unit)
 	if frame then
 		ns.update_unithealth(frame, true);
 		ns.update_unitframe_other(frame);
+		ns.update_unitframe_event(frame);
 		ns.update_auras(frame);
 		ns.update_unitframe_portrait(frame);
 	end
@@ -279,8 +280,8 @@ end
 local function on_unitevent(self, event, arg1, arg2)
 	if event == "PLAYER_TOTEM_UPDATE" then
 		ns.update_totems(self);
-    elseif event == "UNIT_FACTION" then
-		update_unitframe(arg1);
+    else
+        ns.update_unitframe_event(self);
 	end
 end
 
@@ -654,6 +655,15 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 	end
 
 	frame:RegisterUnitEvent("UNIT_FACTION", unit);
+    frame:RegisterUnitEvent("UNIT_NAME_UPDATE", unit);
+    frame:RegisterUnitEvent("UNIT_CLASSIFICATION_CHANGED", unit);
+	frame:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", unit);
+    frame:RegisterUnitEvent("UNIT_EXITING_VEHICLE", unit);
+    frame:RegisterUnitEvent("UNIT_LEVEL", unit);
+    frame:RegisterUnitEvent("UNIT_COMBAT", unit);
+    frame:RegisterEvent("GROUP_ROSTER_UPDATE");
+    frame:RegisterEvent("PARTY_LEADER_CHANGED");
+    frame:RegisterEvent("RAID_TARGET_UPDATE");
 
 	frame.updatecount = 1;
 	frame.istargetframe = (unit == "target");
@@ -692,7 +702,6 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 		frame.bchecktarget = false;
 	end
 
-	frame:SetScript("OnEvent", on_unitevent);
 
 	frame.callback = function()
 		if not frame:IsShown() then
@@ -709,10 +718,12 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 			return;
 		end
 		ns.update_unitframe_other(frame);
-		--ns.update_unitframe_portrait(frame);
 	end
 
 	ns.update_auras(frame);
+	ns.update_unitframe_event(frame);
+
+	frame:SetScript("OnEvent", on_unitevent);
 	C_Timer.NewTicker(configs.updaterate, frame.callback);
 	C_Timer.NewTicker(configs.updaterate * 2, frame.callback2);
 end
