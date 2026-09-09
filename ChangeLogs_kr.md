@@ -2,7 +2,7 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
-## 260909 update
+## 260911 update
 
 ### asUnitFrame
 - 성능 개선
