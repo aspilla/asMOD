@@ -126,6 +126,10 @@ local function update_healthbar(unit)
         return;
     end
 
+    if not UnitIsPlayer(unit) then
+        return;
+    end
+
     --Healthbar 직업 색상
     local function update_color(frame)
         if not (frame) then

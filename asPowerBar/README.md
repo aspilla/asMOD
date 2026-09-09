@@ -21,8 +21,8 @@ Primary Resource / Class Resource Display
 - **Rogue:** Combo Points, Animacharged Combo Points
 - **Shaman:** [Enhancement] Maelstrom Weapon, [Elemental] Lava Burst cooldown, [Restoration] Riptide cooldown
 - **Death Knight:** Runes
-- **Priest:** [Discipline] Power Word: Radiance cooldown, [Holy] Holy Word: Serenity cooldown, [Shadow] Mind Blast cooldown
-- **Warrior:** [Arms] Overpower cooldown, [Fury] Whirlwind buff tracking (Note: cannot check the 7-yard distance requirement to targets), [Protection] Shield Block cooldown
+- **Priest:** [Discipline] Power Word: Radiance cooldown, [Holy] Holy Word: Serenity cooldownn
+- **Warrior:** [Arms] Overpower cooldown, [Fury] Whirlwind buff tracking, [Protection] Shield Block cooldown
 - **Demon Hunter:** [Havoc] Fel Rush cooldown, [Vengeance] Soul Fragment buff, [Devourer] Soul Fragment buff
 - **Hunter:** [Beast Mastery] Barbed Shot cooldown, [Marksmanship] Aimed Shot cooldown, [Survival] Tip of the Spear buff
 
@@ -73,8 +73,8 @@ Primary Resource / Class Resource Display
 - **도적 :** 연계 점수, 초자력 충전
 - **주술사 :** [고양] 소용돌이치는 무기, [정기] 용암 폭발 쿨다운, [복원] 성난 해일 쿨다운
 - **죽음의 기사 :** 룬
-- **사제 :** [수양] 광휘 쿨다운, [신성] 평온 쿨다운, [암흑] 정신분열 쿨다운
-- **전사 :** [무기] 제압 쿨다운, [분노] 소용돌이 버프 (대상과의 거리 7미터는 채크 불가), [방어] 방패 올리기 쿨다운
+- **사제 :** [수양] 광휘 쿨다운, [신성] 평온 쿨다운
+- **전사 :** [무기] 제압 쿨다운, [분노] 소용돌이 버프, [방어] 방패 올리기 쿨다운
 - **악마사냥꾼 :** [파멸] 지옥 돌진 쿨다운, [복수] 영혼 파편 버프, [포식] 영혼 파편 버프
 - **사냥꾼 :** [야수] 날카로운 사격 쿨다운, [사격] 조준 사격 쿨다운, [생존] 창끝 버프
 

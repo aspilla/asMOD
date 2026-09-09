@@ -2,11 +2,16 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
-## 260908 update
+## 260909 update
 
 ### asUnitFrame
 - 성능 개선
 
+### asPowerBar
+- 암사 정분 쿨 삭제 (정분을 1중첩으로 사용하고 있고 발동도 있어서 삭제)
+
+### asFixUnitFrame
+- 직업 색상을 플레이어인 경우만 표시
 
 ## 260907 update
 

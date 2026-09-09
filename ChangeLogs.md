@@ -2,10 +2,16 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
-## 260908 update
+## 260910 update
 
 ### asUnitFrame
-- Performance improvements
+- Performance improvements.
+
+### asPowerBar
+- [Shadow Priest] Removed Mind Blast cooldown tracking (Removed because Mind Blast is used at 1 charge and procs frequently).
+
+### asFixUnitFrame
+- Display class colors for players only 
 
 ## 260907 update
 

@@ -222,10 +222,6 @@ local function init_class()
         if (spec and spec == 2) then
             spellid = 2050;
         end
-
-        if (spec and spec == 3) then
-            spellid = 8092;
-        end
     end
 
     if (englishClass == "WARRIOR") then
