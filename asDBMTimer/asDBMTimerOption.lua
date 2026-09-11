@@ -5,7 +5,7 @@ local Options_Default = {
     Size = 50,
     TextSize = 15,
     ShowName = true,
-    ShowButton = true,
+    Show_Button = false,
     ShowText = true,
     ShowRole = true,
 };
@@ -14,10 +14,10 @@ local L = {
     MinTimetoShow = "Minimum time to trigger the alert",
     Size = "[Button] Icon size",
     TextSize = "[Center] Text size",
-    ShowName = "[Button] Whether to display skill names",
-    ShowButton = "[Button] Whether to display the icon",
-    ShowText = "[Center] Whether to display text notifications in the center of the screen",
-    ShowRole = "Whether to display role icons",
+    ShowName = "[Button] Display skill names",
+    Show_Button = "[Button] Display the icon",
+    ShowText = "[Center] Display text notifications in the center of the screen",
+    ShowRole = "Display role icons",
 }
 
 
@@ -27,7 +27,7 @@ if GetLocale() == "koKR" then
         Size = "[버튼] 아이콘 크기",
         TextSize = "[중앙] 글자 크기",
         ShowName = "[버튼] 스킬명 표시 여부",
-        ShowButton = "[버튼] 아이콘 표시 여부",
+        Show_Button = "[버튼] 아이콘 표시 여부",
         ShowText = "[중앙] 화면가운데 글씨 알림 여부",
         ShowRole = "임무 아이콘 표시 여부",
     }

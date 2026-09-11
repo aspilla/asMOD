@@ -6,7 +6,7 @@
 
 ## Key Features
 
-1. **Large Icon Display**: Adjustable size.
+1. **Large Icon Display**: Adjustable size (default Off).
 2. **Skill Name Display**: Can be hidden.
 3. **5-Second Countdown Notification**: Adjustable timing.
 4. **Skill Name (Remaining Time) in Center**: Can be disabled in settings.
@@ -19,9 +19,9 @@ Settings can be adjusted via **ESC > Options > AddOns > asDBMTimer**.
 - `Minimum time to trigger the alert` (Default: 5 seconds).
 - `[Button] Icon size` (Default: 50).
 - `[Center] Text size` (Default: 15).
-- `[Button] Whether to display skill names` (Default: On).
-- `[Button] Whether to display the icon` (Default: On).
-- `[Center] Whether to display text notifications in the center of the screen` (Default: On).
+- `[Button] Display skill names` (Default: On).
+- `[Button] Display the icon` (Default: Off).
+- `[Center] Display text notifications in the center of the screen` (Default: On).
 - `Whether to display role icons` (Default: On).
 
 - **Move Position**: Enter the `/asConfig` command in the chat window.
@@ -42,7 +42,7 @@ Settings can be adjusted via **ESC > Options > AddOns > asDBMTimer**.
 
 ## 주요 기능
 
-1.  **큰 아이콘 표시**: 크기 조정 가능
+1.  **큰 아이콘 표시**: 크기 조정 가능 (기본 Off)
 2.  **스킬 명 표시**: 숨기기 가능
 3.  **5초전 표시**: 시간 조정 가능
 4.  **중앙에 스킬명 (남은시간) 표시**: 설정에서 Off 가능
@@ -56,7 +56,7 @@ Settings can be adjusted via **ESC > Options > AddOns > asDBMTimer**.
 - `[버튼] 아이콘 크기` (기본 50)
 - `[중앙] 글자 크기` (기본 15)
 - `[버튼] 스킬명 표시 여부` (기본 On)
-- `[버튼] 아이콘 표시 여부` (기본 On)
+- `[버튼] 아이콘 표시 여부` (기본 Off)
 - `[중앙] 화면가운데 글씨 알림 여부` (기본 On)
 - `임무 아이콘 표시 여부` (기본 On)
 

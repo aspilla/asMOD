@@ -2,6 +2,23 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260912 update
+
+### asDotFilter
+- 아군 플레이어를 주시 잡았을때만 디버프를 모두 표시
+
+### asDBMTimer
+- 큰 아이콘 표시 설정을 기본 Off 로 변경
+1.  **큰 아이콘 표시**: 크기 조정 가능 (기본 Off)
+
+### asUnitFrame
+- 버그 수정
+
+### asMOD
+- 편집모드 Layout 수정, 공격대 알림 위치 및 기본 UI 보스 프레임 위치 변경
+- 공격대 알림 위치가 보스 프레임과 겹치는 문제가 있고, 버튼도 중복 정보라 위치를 일부 조정하였습니다.
+- `/asmod` 명령어로 적용해 주셔야 합니다.
+
 ## 260911 update
 
 ### asUnitFrame

@@ -677,11 +677,15 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 
     frame:RegisterUnitEvent("UNIT_FACTION", unit);
     frame:RegisterUnitEvent("UNIT_NAME_UPDATE", unit);
-    frame:RegisterUnitEvent("UNIT_CLASSIFICATION_CHANGED", unit);
     frame:RegisterUnitEvent("UNIT_LEVEL", unit);
-    frame:RegisterEvent("ROLE_CHANGED_INFORM");
-    frame:RegisterEvent("PARTY_LEADER_CHANGED");
     frame:RegisterEvent("RAID_TARGET_UPDATE");
+
+    if frame.isplayerframe or frame.istargetframe then
+        frame:RegisterUnitEvent("UNIT_CLASSIFICATION_CHANGED", unit);
+        frame:RegisterEvent("ROLE_CHANGED_INFORM");
+        frame:RegisterEvent("PARTY_LEADER_CHANGED");
+        frame:RegisterEvent("GROUP_ROSTER_UPDATE");
+    end
     if frame.isplayerframe then
         frame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", unit);
         frame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", unit);
@@ -922,7 +926,8 @@ local function on_mainevent(self, event, ...)
     end
 
     if event == "PLAYER_ENTERING_WORLD" then
-        ns.hide_defauls();
+        ns.hide_defaults();
+        ns.update_playerunit();
         update_unitframe("player");
     elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED") then
         update_unitframe("target");

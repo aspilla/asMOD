@@ -2,6 +2,23 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 260912 update
+
+### asDotFilter
+- Displays all debuffs only when a friendly player is set as Focus.
+
+### asDBMTimer
+- Changed the large icon display setting to OFF by default.
+1. **Show Large Icon**: Resizable (Default: Off)
+
+### asUnitFrame
+- Bug fixes.
+
+### asMOD
+- Adjusted Edit Mode Layout: modified Raid Warning position and default UI Boss Frame position.
+- Fixed an issue where the Raid Warning position overlapped with the Boss Frame, and repositioned elements to eliminate redundant button information.
+- Must be applied using the `/asmod` command.
+
 ## 260911 update
 
 ### asUnitFrame

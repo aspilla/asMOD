@@ -161,7 +161,7 @@ local function check_list()
 					textinfo.eventid = id;
 				end
 
-				if ns.options.ShowButton then
+				if ns.options.Show_Button then
 					button:Show();
 				else
 					button:Hide();
