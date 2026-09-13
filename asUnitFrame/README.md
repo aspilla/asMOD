@@ -114,37 +114,8 @@ Adjustable via **ESC > Options > AddOns > asUnitFrame**
 
 - **Move Anchor Positions**: Type `/asConfig` in the chat window.
 - **Reset Anchor Positions**: Type `/asClear` in the chat window to restore default settings.
-  - `ShowPortrait` : Toggle portraits
-  - `ShowTotemBar` : Toggle totem bar at the bottom of the player frame
-  - `ShowBossBuff` : Toggle 4 buffs on boss frames
-  - `ShowTargetBorder` : Displays a white border when focus/boss is the current target
-  - `ShowAggroInfo` : Toggle display of aggro status and player rest state.
-  - `CheckRange` : Checks distance with target/focus/boss
-  - `OffPortraitDebuffOnRaid` : Do not show stun debuffs on portraits during raids
-  - `CombatAlphaChange` : Transparency change out of combat
-  - `ShowLowHealth` : Changes the health bar background color for low health targets
-  - `HideBloodDebuff` : Hide bloodlust debuffs
-  - **Player/Target Size Adjustment**
-  - `Width` : Default 200
-  - `Height`: Default 35
-  - `PowerWidth`: Default 80
-  - `PowerHeight`: Default 5
-  - `FontSize`: Default 12
-  - **Focus/Boss Size Adjustment**
-  - `FocusWidth` : Default 150
-  - `FocusHeight`: Default 20
-  - `FocusPowerWidth`: Default 60
-  - `FocusPowerHeight`: Default 3
-  - `FocusFontSize`: Default 11
-  - **Pet/Target of Target Size Adjustment**
-  - `PetWidth` : Default 100
-  - `PetHeight`: Default 15
-  - `PetPowerWidth`: Default 40
-  - `PetPowerHeight`: Default 2
-  - `PetFontSize`: Default 9
-  - `MillisecondsThreshold`: The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
 
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/gAUZp3xXlIA?si=DrQSSUP2xpaur9FP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/gAUZp3xXlIA?si=DrQSSUP2xpaur9FP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Precautions (Regarding Errors)
 
@@ -280,37 +251,8 @@ The following errors may occur.
 
 - **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 - **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화
-  - `ShowPortrait` : 초상화 표시 여부
-  - `ShowTotemBar` : 플레이어 프레임 하단에 토템바 표시 여부
-  - `ShowBossBuff` : 보스 프레임에 버프 4개 표시 여부
-  - `ShowTargetBorder` : 주시/보스가 대상인 경우 하얀색 테두리 표시
-  - `ShowAggroInfo` : 어그로 및 플레이어 휴식 상태 표시 여부
-  - `CheckRange` : 대상/주시/보스와의 거리를 체크
-  - `OffPortraitDebuffOnRaid` : 레이드에서는 초상화에 스턴 디버프 표시 안함
-  - `CombatAlphaChange` : 비전투시 투명도 변경
-  - `ShowLowHealth` : 대상 낮은 체력시 색상 변경
-  - `HideBloodDebuff` : 블러드 디버프는 숨김
-  - **플레이어 대상 크기 조정**
-  - `Width` :기본값 200
-  - `Height`:기본값 35
-  - `PowerWidth`:기본값 80
-  - `PowerHeight`:기본값 5
-  - `FontSize`:기본값 12
-  - **주시/보스 크기 조정**
-  - `FocusWidth` :기본값 150
-  - `FocusHeight`:기본값 20
-  - `FocusPowerWidth`:기본값 60
-  - `FocusPowerHeight`:기본값 3
-  - `FocusFontSize`:기본값 11
-  - **소환수/대상의대상 크기 조정**
-  - `PetWidth` :기본값 100
-  - `PetHeight`:기본값 15
-  - `PetPowerWidth`:기본값 40
-  - `PetPowerHeight`:기본값 2
-  - `PetFontSize`:기본값 = 9
-  - `MillisecondsThreshold` : 남은 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
 
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/gAUZp3xXlIA?si=DrQSSUP2xpaur9FP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/gAUZp3xXlIA?si=DrQSSUP2xpaur9FP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 주의사항 (오류 관련)
 
