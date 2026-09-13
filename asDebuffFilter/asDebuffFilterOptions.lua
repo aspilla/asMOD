@@ -7,7 +7,7 @@ local Options_Default = {
 	MillisecondsThreshold = 3,
 	ShowTarget = true,
 	ShowPlayer = true,
-	ShowPrivate = true,
+	ShowPrivate2 = false,
 	HideBloodDebuff = true,
 };
 
@@ -35,7 +35,7 @@ local L = {
 	MillisecondsThreshold = "Remaining cooldown begins displaying in 0.1-second increments",
 	ShowTarget = "Show target's debuffs",
 	ShowPlayer = "Show player's debuffs",
-	ShowPrivate = "Show player's private auras",
+	ShowPrivate2 = "Show player's private auras",
 	HideBloodDebuff = "Hide bloodlust debuffs",
 }
 
@@ -47,7 +47,7 @@ if GetLocale() == "koKR" then
 		MillisecondsThreshold = "0.1초 단위 표시 최소 시간",
 		ShowTarget = "대상의 디버프를 표시",
 		ShowPlayer = "플레이어의 디버프를 표시",
-		ShowPrivate = "플레이어의 Private Aura를 표시",
+		ShowPrivate2 = "플레이어의 Private Aura를 표시",
 		HideBloodDebuff = "블러드 디버프는 숨김",
 	}
 end

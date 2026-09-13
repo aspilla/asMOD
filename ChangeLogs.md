@@ -1,6 +1,14 @@
 # Change Logs
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
+## 260913 update
+
+### asDebuffFilter
+- Improved alignment behavior so debuffs expand properly from the anchor when moving position.
+- Changed Private Aura display to OFF by default to prevent redundant overlapping.
+
+### asBuffFilter
+- Improved alignment behavior so buffs expand properly from the anchor when moving position.
 
 ## 260912 update
 

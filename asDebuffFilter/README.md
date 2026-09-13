@@ -15,7 +15,7 @@ Displays debuffs & private aura for the Player (up to 6 on the left) and the Tar
 - The time threshold at which the remaining cooldown begins displaying in 0.1-second increments (Default: 3 seconds).
 - Show player's debuffs (Default: On).
 - Show taget's debuffs (Default: On).
-- Show player's private aura (Default: On).
+- Show player's private aura (Default: Off).
 - Hide bloodlust debuffs (Default: On).
 
 - **Move Position**: Enter the `/asConfig` command in the chat.
@@ -46,7 +46,7 @@ Private Aura(좌측 6개)
 - 남은 쿨을 0.1초 단위로 보여줄 최소 시간 (기본 3초)
 - 대상의 디버프를 표시 (기본 On)
 - 플레이어의 디버프를 표시 (기본 On)
-- 플레이어의 Private Aura를 표시 (기본 On)
+- 플레이어의 Private Aura를 표시 (기본 Off)
 - 블러드 디버프는 숨김 (기본 On)
 
 - **위치 이동** : `/asConfig` 명령어 채팅창에 입력

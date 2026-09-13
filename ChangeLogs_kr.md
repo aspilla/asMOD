@@ -2,6 +2,15 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260913 update
+
+### asDebuffFilter
+- 위치 이동시 디버프 표시 방향이 중앙 중심 되는 부분 개선
+- Private Aura 는 중복 표시로 기본 Off 로 변경
+
+### asBuffFilter
+- 위치 이동시 버프 표시 방향이 중앙 중심 되는 부분 개선
+
 ## 260912 update
 
 ### asDotFilter
