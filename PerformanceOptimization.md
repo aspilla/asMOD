@@ -58,7 +58,7 @@
 - [FHD vs UHD Raid FPS Benchmark Comparison](https://www.inven.co.kr/board/wow/4739/253503)
 - [4K Raid GPU Usage & CPU Bottleneck Analysis](https://www.inven.co.kr/board/wow/4739/239906)
 - [Windows Installation ISO Debloater](https://github.com/itsNileshHere/Windows-Iso-Debloater)
-- [Post-Windows Installation Optimization](https://github.com/Raphire/Win11Debloat)
+- [Post-Windows Installation Optimization](https://winhance.net/)
 
 ## Recommended Hardware Setup for WoW (Reference)
 - **Monitor:** 4K resolution, 120Hz+, FreeSync / G-Sync support recommended. WoW uses many addons with fine text elements; 4K significantly improves text clarity and UI legibility.
@@ -126,7 +126,7 @@
 * [FHD, UHD 레이드 FPS 비교](https://www.inven.co.kr/board/wow/4739/253503)
 * [4K, Raid GPU 사용률 관련](https://www.inven.co.kr/board/wow/4739/239906)
 * [Windows 설치 iso 최적화](https://github.com/itsNileshHere/Windows-Iso-Debloater)
-* [Windows 설치 후 최적화](https://github.com/Raphire/Win11Debloat)
+* [Windows 설치 후 최적화](https://winhance.net/)
 
 ## 와우 추천 System (참고)
 * 모니터 : 4K 이상, 120Hz, FSR 지원 (G-Sync 지원) 추천 : 와우는 애드온을 많이 사용하여 화면에 글씨가 많음, 4K 모니터 사용시 가시성에 큰 도움이 됨.
