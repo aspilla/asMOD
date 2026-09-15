@@ -290,6 +290,64 @@ local function update_searchentry(entry, ...)
 	end
 end
 
+local function update_applicant(member, appID, memberIdx, status, pendingStatus)
+	local grayedOut = not pendingStatus and (status == "failed" or status == "cancelled" or status == "declined" or status == "declined_full" or status == "declined_delisted" or status == "invitedeclined" or status == "timedout" or status == "inviteaccepted" or status == "invitedeclined");
+
+	local name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship, dungeonScore, pvpItemLevel, _faction, _raceID, _specID, isLeaver = C_LFGList.GetApplicantMemberInfo(appID, memberIdx);
+
+	local roleIcons = { member.RoleIcon1, member.RoleIcon2, member.RoleIcon3 };
+
+	local specIcon;
+	if _specID and _specID > 0 then
+		local _, _, _, icon = GetSpecializationInfoByID(_specID);
+		specIcon = icon;
+	end
+
+	local classColor;
+	if class then
+		classColor = C_ClassColor.GetClassColor(class) or RAID_CLASS_COLORS[class];
+	end
+
+	for _, roleIcon in ipairs(roleIcons) do
+		if not grayedOut and roleIcon and roleIcon:IsShown() then
+			if classColor then
+				if not roleIcon.asClassBar then
+					roleIcon.asClassBar = roleIcon:CreateTexture(nil, "OVERLAY");
+					roleIcon.asClassBar:SetHeight(3);
+					roleIcon.asClassBar:SetPoint("TOPLEFT", roleIcon, "BOTTOMLEFT", 0, -1);
+					roleIcon.asClassBar:SetPoint("TOPRIGHT", roleIcon, "BOTTOMRIGHT", 0, -1);
+				end
+				roleIcon.asClassBar:SetColorTexture(classColor.r, classColor.g, classColor.b, 1);
+				roleIcon.asClassBar:Show();
+			elseif roleIcon.asClassBar then
+				roleIcon.asClassBar:Hide();
+			end
+
+			local role = roleIcon.role;
+			local showSpec = (role == "DAMAGER") or (role == "TANK" and ns.options and ns.options.ShowTankerSpec) or (role == "HEALER" and ns.options and ns.options.ShowHealerSpec);
+
+			if showSpec and specIcon then
+				if not roleIcon.asSpecIcon then
+					roleIcon.asSpecIcon = roleIcon:CreateTexture(nil, "OVERLAY");
+					roleIcon.asSpecIcon:SetPoint("TOPLEFT", roleIcon, "TOPLEFT", 1, -1);
+					roleIcon.asSpecIcon:SetPoint("BOTTOMRIGHT", roleIcon, "BOTTOMRIGHT", -1, 1);
+					roleIcon.asSpecIcon:SetTexCoord(0.08, 0.92, 0.08, 0.92);
+				end
+				roleIcon.asSpecIcon:SetTexture(specIcon);
+				roleIcon.asSpecIcon:Show();
+			elseif roleIcon.asSpecIcon then
+				roleIcon.asSpecIcon:Hide();
+			end
+		else
+			if roleIcon and roleIcon.asClassBar then
+				roleIcon.asClassBar:Hide();
+			end
+			if roleIcon and roleIcon.asSpecIcon then
+				roleIcon.asSpecIcon:Hide();
+			end
+		end
+	end
+end
 local function inin_specs()
 	for i = 1, 2000 do
 		local id, name, description, icon, _, class = GetSpecializationInfoByID(i)
@@ -301,4 +359,5 @@ end
 
 ns.setup_option();
 hooksecurefunc("LFGListSearchEntry_Update", update_searchentry);
+hooksecurefunc("LFGListApplicationViewer_UpdateApplicantMember", update_applicant);
 inin_specs();

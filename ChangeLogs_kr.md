@@ -2,6 +2,17 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260915 update
+
+### asPremadeGroupsFilter
+- 신규 기능 : 파티모집창 직업 필터에 전문화 아이콘, 직업 색상바 추가.
+
+![asPremadeGroupsFilter_app](https://media.forgecdn.net/attachments/1948/871/aspremadegroupfilter-jpg.jpg)
+- 지원자의 전문화 아이콘을 표시.
+- 지원자의 직업을 나타내는 작은 색상 바를 표시.
+- 선택적으로 탱커에 대한 전문화 아이콘/직업 색상바 표시 (옵션, 기본값: false).
+- 선택적으로 힐러에 대한 전문화 아이콘/직업 색상바 표시 (옵션, 기본값: false).
+
 ## 260913 update
 
 ### asDebuffFilter

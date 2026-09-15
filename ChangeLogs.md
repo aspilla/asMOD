@@ -1,6 +1,19 @@
 # Change Logs
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
+
+## 260915 update
+
+### asPremadeGroupsFilter
+- New Feature: Applicant's specialization icons, class color bar.
+
+![asPremadeGroupsFilter_app](https://media.forgecdn.net/attachments/1948/871/aspremadegroupfilter-jpg.jpg)
+- Displays applicant specialization icons.
+- Displays a small colored bar indicating the applicant's class.
+- Option to display specialization icon/class color bar for Tanks (Optional, Default: false).
+- Option to display specialization icon/class color bar for Healers (Optional, Default: false).
+
+
 ## 260913 update
 
 ### asDebuffFilter
