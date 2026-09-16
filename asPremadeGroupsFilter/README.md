@@ -20,6 +20,14 @@ Enhancements for Mythic+ and Raid Finder.
 - Displays the count of each class within each role (Tank, Healer, Melee Damager, Ranged Damager) in the group. (for Damager, show the total number of players )
 - Displays the party leader's role icon and role (T/D/H) in their class color.
 
+## Group Leader
+
+![asPremadeGroupsFilter_app](https://media.forgecdn.net/attachments/1948/871/aspremadegroupfilter-jpg.jpg)
+- Displays applicant specialization icons.
+- Displays a small colored bar indicating the applicant's class.
+- Option to display specialization icon/class color bar for Tanks (Optional, Default: false).
+- Option to display specialization icon/class color bar for Healers (Optional, Default: false).
+
 ## Configuration
 
 - Adjustments can be made via `ESC` > `Options` > `Addons` > `asPremadeGroupsFilter`.
@@ -52,6 +60,14 @@ Enhancements for Mythic+ and Raid Finder.
 
 - 그룹에 있는 각 역할(탱커, 힐러, 근딜러, 원딜러) 내 각 직업의 수를 표시. (딜러의 경우 총합을 표시)
 - 파티장의 역할 아이콘과 역할 (T/D/H)을 직업 색상으로 표시.
+
+## 파티장
+
+![asPremadeGroupsFilter_app](https://media.forgecdn.net/attachments/1948/871/aspremadegroupfilter-jpg.jpg)
+- 지원자의 전문화 아이콘을 표시.
+- 지원자의 직업을 나타내는 작은 색상 바를 표시.
+- 선택적으로 탱커에 대한 전문화 아이콘/직업 색상바 표시 (옵션, 기본값: false).
+- 선택적으로 힐러에 대한 전문화 아이콘/직업 색상바 표시 (옵션, 기본값: false).
 
 ## 설정
 
