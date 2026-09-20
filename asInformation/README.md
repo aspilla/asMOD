@@ -7,7 +7,7 @@ Displays primary and secondary stat increases.
 - **Primary/Secondary Stat Display**: Displays stats (Primary Stat (Strength, Agility, or Intellect depending on class), Haste, Critical Strike, Mastery, and Versatility) in a bar format.
 - **Increase Notification (Color Change)**: When primary or secondary stats increase above the minimum out-of-combat value, the increase is highlighted as a colored bar. The reference point is the lowest value recorded during 20 seconds out of combat. (e.g., The red additional bar in the image below indicates an increase in Critical Strike).
 
-![asInformation](https://media.forgecdn.net/attachments/1635/37/asinformation-jpg.jpg)
+![asInformation](https://media.forgecdn.net/attachments/1961/547/iiei-2026-09-20-182451-png.png)
 
 ## Configuration
 
@@ -37,7 +37,7 @@ Displays primary and secondary stat increases.
 - **1차/2차 능력치 표시**: 프레임에 표시할 능력치(주 능력치(직업별 힘, 민첩 또는 지능), 가속, 치명타, 특화, 유연성)를 바 형태로 표시.
 - **증가 알림(색상 변경)**: 1/2차 능력치가 비전투 중 최소값 보다 증가 할 경우, 증가치를 능력치 색상의 바로 표시. 기준값은 비전투 20초 중 가장 낮은 값을 참고함. (예. 아래 사진의 빨간색 추가 바는 치명이 증가 했다는 의미)
 
-![asInformation](https://media.forgecdn.net/attachments/1635/37/asinformation-jpg.jpg)
+![asInformation](https://media.forgecdn.net/attachments/1961/547/iiei-2026-09-20-182451-png.png)
 
 ## 설정
 

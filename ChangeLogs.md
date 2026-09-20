@@ -1,6 +1,10 @@
 # Change Logs
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
+## 260920 update
+
+### asInformation
+- Adjusted bar and text colors to improve readability of percentage values.
 
 ## 260915 update
 

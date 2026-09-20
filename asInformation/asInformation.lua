@@ -10,11 +10,11 @@ local configs = {
 	height = 12,
 	barcolor = { r = 0.5, g = 0.5, b = 0.5 },
 	statinfos = {
-		stat = { abbr = "S", color = { r = 1, g = 1, b = 0 } },
-		crit = { abbr = "C", color = { r = 1, g = 0, b = 0 } },
-		haste = { abbr = "H", color = { r = 0, g = 1, b = 0 } },
-		mastery = { abbr = "M", color = { r = 0.5, g = 0, b = 1 } },
-		vers = { abbr = "V", color = { r = 0, g = 0, b = 1 } },
+		stat = { abbr = "S", textcolor = { r = 1, g = 1, b = 0.3 }, color = { r = 0.8, g = 0.8, b = 0} },
+		crit = { abbr = "C", textcolor = { r = 1, g = 0.3, b = 0.3 }, color = { r = 0.8, g = 0, b = 0 }  },
+		haste = { abbr = "H", textcolor = { r = 0.3, g = 1, b = 0.3 }, color = { r = 0, g = 0.8, b = 0 } },
+		mastery = { abbr = "M", textcolor = { r = 0.8, g = 0.3, b = 1 }, color = { r = 0.5, g = 0.2, b = 0.8 }  },
+		vers = { abbr = "V", textcolor = { r = 0.3, g = 0.3, b = 1 }, color = { r = 0.3, g = 0.3, b = 0.8 } },
 	},
 };
 
@@ -47,7 +47,7 @@ local function create_bar(name, parent, config)
 
 	bar.text = bar.minbar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 	bar.text:SetPoint("RIGHT", bar.minbar, "RIGHT", -1, 0)
-	bar.text:SetTextColor(config.color.r, config.color.g, config.color.b)
+	bar.text:SetTextColor(config.textcolor.r, config.textcolor.g, config.textcolor.b)
 
 	bar.name = bar.minbar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 	bar.name:SetPoint("LEFT", bar.minbar, "LEFT", 1, 0)

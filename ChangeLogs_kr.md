@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260920 update
+
+### asInformation
+- 퍼센트 수치가 잘 보이도록 바와 글자의 색상 조정
+
 ## 260915 update
 
 ### asPremadeGroupsFilter
