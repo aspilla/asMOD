@@ -11,7 +11,7 @@ Displays primary and secondary stat increases.
 
 ## Configuration
 
-- Access via the `/asinformation` chat command or `ESC` > `Options` > `AddOns` > `asInformation`.
+- `ESC` > `Options` > `AddOns` > `asInformation`.
 - **Show Haste**: Toggles the display of Haste percentage.
 - **Show Crit**: Toggles the display of Critical Strike percentage.
 - **Show Mastery**: Toggles the display of Mastery percentage.
@@ -41,7 +41,7 @@ Displays primary and secondary stat increases.
 
 ## 설정
 
-- `/asinformation` 대화창 명령어 혹은 `esc >> 설정 >> 애드온 >> asInformation` 통해 접근 가능.
+- `esc >> 설정 >> 애드온 >> asInformation` 통해 접근 가능.
 - **가속 표시**: 가속 백분율 표시를 토글합니다.
 - **크리 표시**: 치명타 및 극대화 백분율 표시를 토글합니다.
 - **특화 표시**: 특화 백분율 표시를 토글합니다.
