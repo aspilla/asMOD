@@ -4,6 +4,7 @@ Primary Resource / Class Resource Display
 
 ![asPowerBar](https://media.forgecdn.net/attachments/1842/428/iiei-2026-08-04-185700-png.png)
 ![asPowerBar](https://media.forgecdn.net/attachments/1842/427/ie-c-ioi2-2026-08-02-123015-jpg.jpg)
+![asPowerBar](https://media.forgecdn.net/attachments/1967/345/iiei-2026-09-22-222428-png.png)
 
 ## Features
 
@@ -22,7 +23,7 @@ Primary Resource / Class Resource Display
 - **Shaman:** [Enhancement] Maelstrom Weapon, [Elemental] Lava Burst cooldown, [Restoration] Riptide cooldown
 - **Death Knight:** Runes
 - **Priest:** [Discipline] Power Word: Radiance cooldown, [Holy] Holy Word: Serenity cooldownn
-- **Warrior:** [Arms] Overpower cooldown, [Fury] Whirlwind buff tracking, [Protection] Shield Block cooldown
+- **Warrior:** [Arms] Overpower cooldown, [Fury] Whirlwind buff tracking, [Protection] Ignore Pain stack and duration
 - **Demon Hunter:** [Havoc] Fel Rush cooldown, [Vengeance] Soul Fragment buff, [Devourer] Soul Fragment buff
 - **Hunter:** [Beast Mastery] Barbed Shot cooldown, [Marksmanship] Aimed Shot cooldown, [Survival] Tip of the Spear buff
 
@@ -54,8 +55,14 @@ Primary Resource / Class Resource Display
 
 주 자원/직업 자원 표시
 
+- 조화 드루이드 일월식
 ![asPowerBar](https://media.forgecdn.net/attachments/1842/428/iiei-2026-08-04-185700-png.png)
+
+- 냉법 빙결 디버프
 ![asPowerBar](https://media.forgecdn.net/attachments/1842/427/ie-c-ioi2-2026-08-02-123015-jpg.jpg)
+
+- 방어전사 고통 감내 중첩 및 지속시간
+![asPowerBar](https://media.forgecdn.net/attachments/1967/345/iiei-2026-09-22-222428-png.png)
 
 ## 주요 기능 (Features)
 
@@ -74,7 +81,7 @@ Primary Resource / Class Resource Display
 - **주술사 :** [고양] 소용돌이치는 무기, [정기] 용암 폭발 쿨다운, [복원] 성난 해일 쿨다운
 - **죽음의 기사 :** 룬
 - **사제 :** [수양] 광휘 쿨다운, [신성] 평온 쿨다운
-- **전사 :** [무기] 제압 쿨다운, [분노] 소용돌이 버프, [방어] 방패 올리기 쿨다운
+- **전사 :** [무기] 제압 쿨다운, [분노] 소용돌이 버프, [방어] 고통 감내 중첩 및 지속 시간
 - **악마사냥꾼 :** [파멸] 지옥 돌진 쿨다운, [복수] 영혼 파편 버프, [포식] 영혼 파편 버프
 - **사냥꾼 :** [야수] 날카로운 사격 쿨다운, [사격] 조준 사격 쿨다운, [생존] 창끝 버프
 

@@ -64,10 +64,12 @@ local function setup_container(spellid, max, color, unit, showcount)
         return;
     end
     local width = ((ns.options.BarWidth + 2) / max);
-    for i = 1, max do
-        local frame = frames[i];
-        frame:SetWidth(width);
-        frame:Show();
+    if max <= 20 then
+        for i = 1, max do
+            local frame = frames[i];
+            frame:SetWidth(width);
+            frame:Show();
+        end
     end
 
     local filter = AuraUtil.CreateFilterString(AuraUtil.AuraFilters.Helpful, AuraUtil.AuraFilters.Player);

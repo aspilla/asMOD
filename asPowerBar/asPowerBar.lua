@@ -85,6 +85,8 @@ local function init_class()
     local auracountids = nil;
     local bluna = false;
     local stackinfo = nil;
+    local maxcount = nil;
+    local showduration = false;
 
     ns.combotext:SetText("");
     ns.combotext:Hide();
@@ -235,7 +237,10 @@ local function init_class()
         end
 
         if (spec and spec == 3) then
-            spellid = 2565;
+            auracountids = { [190456] = C_ClassColor.GetClassColor("WARRIOR") };
+            maxcount = 100;
+            showduration = true;
+            bbigsecondary = true;
         end
     end
 
@@ -308,7 +313,7 @@ local function init_class()
     elseif bluna then
         ns.setup_luna({ 48518, 48517 })
     elseif auracountids then
-        ns.setup_auracountbar(auracountids);
+        ns.setup_auracountbar(auracountids, maxcount, showduration);
     end
 end
 
