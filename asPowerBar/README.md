@@ -2,8 +2,13 @@
 
 Primary Resource / Class Resource Display
 
+- Balance Druid Eclipse (Lunar, Solar)
 ![asPowerBar](https://media.forgecdn.net/attachments/1842/428/iiei-2026-08-04-185700-png.png)
+
+- Frost Mage Target's Winter's Chill debuff stacks, Icicle stacks
 ![asPowerBar](https://media.forgecdn.net/attachments/1842/427/ie-c-ioi2-2026-08-02-123015-jpg.jpg)
+
+- Protection Warrior Ignore Pain stack and duration 
 ![asPowerBar](https://media.forgecdn.net/attachments/1967/345/iiei-2026-09-22-222428-png.png)
 
 ## Features

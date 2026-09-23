@@ -13,7 +13,7 @@ local function create_aurabutton(color, maxcount, showduration)
         frame.bar:GetStatusBarTexture():SetHorizTile(false)
         frame.bar:SetStatusBarColor(color:GetRGB());
         frame.bar:SetWidth(ns.options.BarWidth)
-            frame.bar:SetHeight(ns.combocountbar:GetHeight())
+        frame.bar:SetHeight(ns.combocountbar:GetHeight())
         frame.bar:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0)
         frame.bar:Show();
         frame.bar:EnableMouse(false);
@@ -48,7 +48,6 @@ local function create_aurabutton(color, maxcount, showduration)
             else
                 frame.remainbar:Hide();
             end
-
         else
             frame:SetApplicationCount(frame.text);
             frame:SetDurationBar(frame.bar, { interpolation = ns.bartype, direction = 1 });

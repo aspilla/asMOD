@@ -1,6 +1,15 @@
 # Change Logs
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
+
+## 260923 update
+
+### asPowerBar
+- Protection Warrior change : Ignore Pain stack and duration
+- Developer Note: Added support because tracking Protection Warrior Ignore Pain stacks was difficult.
+![asPowerBar](https://media.forgecdn.net/attachments/1967/345/iiei-2026-09-22-222428-png.png)
+
+
 ## 260920 update
 
 ### asInformation

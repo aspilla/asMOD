@@ -2,6 +2,13 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260923 update
+
+### asPowerBar
+- 방어 전사 변경 : 고통 감내 중첩 및 지속시간
+- 개발자 의견 : 방어전사 고감 중첩 확인이 어려워 지원하는것이 좋다고 판단됨
+![asPowerBar](https://media.forgecdn.net/attachments/1967/345/iiei-2026-09-22-222428-png.png)
+
 ## 260920 update
 
 ### asInformation
