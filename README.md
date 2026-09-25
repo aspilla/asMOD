@@ -3,16 +3,16 @@
 asMOD is a collection of custom-made World of Warcraft addons.
 
 ```
-In 2005, after experiencing game stuttering while using addons made by others, I began creating my own. 
-Configuring addons one by one was also a tedious task, so I made them as simple as possible—without complex setup options. 
-I have been sharing my addons on Inven since 2008, and starting in 2025, through CurseForge as well. 
+In 2005, after experiencing game stuttering while using addons made by others, I began creating my own.
+Configuring addons one by one was also a tedious task, so I made them as simple as possible—without complex setup options.
+I have been sharing my addons on Inven since 2008, and starting in 2025, through CurseForge as well.
 Over the past 20 years, the collection has grown to over 40 addons, continuously developed under the following core principles:
 
 1) Addon features must be simple and have zero impact on game performance.
 2) There should be no complex configuration processes.
 
-Because of these two core rules, you may love or hate my addons. 
-I recommend them to those who want to enjoy the game optimally as configured by the developer without overthinking. 
+Because of these two core rules, you may love or hate my addons.
+I recommend them to those who want to enjoy the game optimally as configured by the developer without overthinking.
 If you prefer customizing addons to suit your specific preferences, I recommend looking for other alternatives.
 ```
 
@@ -27,9 +27,9 @@ If you prefer customizing addons to suit your specific preferences, I recommend 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/_qKvwzW-8V4?si=3z2PsgBhGSW6u3BK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Default UI mode
-- Turn off `asUnitFrame` and disable `Simple Design Mode` in `asCastBar`.
-![Sample](https://media.forgecdn.net/attachments/1933/800/default_mode-jpg.jpg)
 
+- Turn off `asUnitFrame` and disable `Simple Design Mode` in `asCastBar`.
+  ![Sample](https://media.forgecdn.net/attachments/1933/800/default_mode-jpg.jpg)
 
 ## asMOD Performance
 
@@ -172,6 +172,7 @@ The functional descriptions for each addon are organized on their respective Cur
 | asScavenger           | Automatic vendor for junk items                                 |      [Link](https://www.curseforge.com/wow/addons/asscavenger)      |      [Link](https://github.com/aspilla/asMOD/tree/main/asScavenger)      |
 | asSkyRide             | Skyriding resource and speed tracker                            |       [Link](https://www.curseforge.com/wow/addons/asskyride)       |       [Link](https://github.com/aspilla/asMOD/tree/main/asSkyRide)       |
 | asSpamFilter          | Repositions default UI error messages                           |     [Link](https://www.curseforge.com/wow/addons/asspamfilter)      |     [Link](https://github.com/aspilla/asMOD/tree/main/asSpamFilter)      |
+| asSpellRemain         | Spell Cooldown Remaining Time Tracker                           |     [Link](https://www.curseforge.com/wow/addons/asspellremain)     |     [Link](https://github.com/aspilla/asMOD/tree/main/asSpellRemain)     |
 | asTargetCastBar       | Target and focus cast bars                                      |  [Link](https://www.curseforge.com/wow/addons/astargetcastingbar)   |    [Link](https://github.com/aspilla/asMOD/tree/main/asTargetCastBar)    |
 | asTrueGCD             | History of recently used spells/items                           |       [Link](https://www.curseforge.com/wow/addons/astruegcd)       |       [Link](https://github.com/aspilla/asMOD/tree/main/asTrueGCD)       |
 | asUnitFrame           | Simple unit frames                                              |      [Link](https://www.curseforge.com/wow/addons/asunitframe)      |      [Link](https://github.com/aspilla/asMOD/tree/main/asUnitFrame)      |
@@ -299,8 +300,9 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 <iframe width="560" height="315" src="https://www.youtube.com/embed/_qKvwzW-8V4?si=3z2PsgBhGSW6u3BK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Default UI mode
+
 - `asUnitFrame` 을 끄고, `asCastBar`의 `Simple Design Mode` 를 비 활성화
-![Sample](https://media.forgecdn.net/attachments/1933/800/default_mode-jpg.jpg)
+  ![Sample](https://media.forgecdn.net/attachments/1933/800/default_mode-jpg.jpg)
 
 ## asMOD 성능
 
@@ -443,6 +445,7 @@ CurseForge Link에 각 애드온의 기능 설명이 정리 되어 있어, 반�
 | asScavenger           | 자동 잡템 판매                           |      [링크](https://www.curseforge.com/wow/addons/asscavenger)      |      [링크](https://github.com/aspilla/asMOD/tree/main/asScavenger)      |
 | asSkyRide             | `하늘 비행` 자원/속도/쿨 표시            |       [링크](https://www.curseforge.com/wow/addons/asskyride)       |       [링크](https://github.com/aspilla/asMOD/tree/main/asSkyRide)       |
 | asSpamFilter          | 기본 UI 오류 메시지 표시 위치를 이동     |     [링크](https://www.curseforge.com/wow/addons/asspamfilter)      |     [링크](https://github.com/aspilla/asMOD/tree/main/asSpamFilter)      |
+| asSpellRemain         | 스킬 쿨 남은시간 추적                    |     [Link](https://www.curseforge.com/wow/addons/asspellremain)     |     [Link](https://github.com/aspilla/asMOD/tree/main/asSpellRemain)     |
 | asTargetCastBar       | 대상/주시대상 시전 바                    |  [링크](https://www.curseforge.com/wow/addons/astargetcastingbar)   |    [링크](https://github.com/aspilla/asMOD/tree/main/asTargetCastBar)    |
 | asTrueGCD             | 최근 주문/아이템 기록 표시               |       [링크](https://www.curseforge.com/wow/addons/astruegcd)       |       [링크](https://github.com/aspilla/asMOD/tree/main/asTrueGCD)       |
 | asUnitFrame           | 간단한 유닛 프레임                       |      [링크](https://www.curseforge.com/wow/addons/asunitframe)      |      [링크](https://github.com/aspilla/asMOD/tree/main/asUnitFrame)      |

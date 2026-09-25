@@ -14,6 +14,8 @@ Spell Cooldown Remaining Time Tracker
 Adjustable via **ESC > Options > AddOns > asSpellRemain**
 
 - `[Center] Font Size` (Default: 15)
+- `Tracked Spell List` (Tracks 1 active spell from the registered list, editable)
+
 - **Move Anchor Positions**: Type `/asConfig` in the chat window.
 - **Reset Anchor Positions**: Type `/asClear` in the chat window to restore default settings.
 
@@ -41,6 +43,7 @@ Adjustable via **ESC > Options > AddOns > asSpellRemain**
 **esc >> 설정 >> 애드온 >> asSpellRemain** 에서 설정 가능
 
 - `[중앙] 글자 크기` (기본 15)
+- `추적 스킬 목록` (등록된 스킬중 사용 가능한 1개의 스킬을 추적함, 편집 가능)
 - **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 - **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화
 

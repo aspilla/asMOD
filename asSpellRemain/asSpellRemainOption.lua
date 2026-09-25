@@ -12,7 +12,7 @@ local L = {
 	LoadDefault = "Load Default",
 	Add = "Add",
 	Remove = "Remove",
-	Msg = "[asSpellRemian] tracking :"
+	Msg = "[asSpellRemain] tracking :"
 }
 
 
@@ -25,7 +25,7 @@ if GetLocale() == "koKR" then
 		LoadDefault = "기본 설정",
 		Add = "추가",
 		Remove = "제거",
-		Msg = "[asSpellRemian] 추적 :"
+		Msg = "[asSpellRemain] 추적 :"
 	}
 end
 
