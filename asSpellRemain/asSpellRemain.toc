@@ -1,0 +1,13 @@
+﻿## Interface: 120100
+## Author: |cffff3399Aspilla|r [Azshara - KR]
+## Title: |cffff3399as|rSpellRemain
+## Notes: Spell Cooldown Remaining Time Tracker
+## Notes-koKR: 스킬 쿨 남은시간 추적
+## Version : 260925
+## SavedVariablesPerCharacter: ASPR_Options, ASPR_Positions, ASPR_SpellList
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
+asSpellRemainOption.lua
+asSpellRemain.lua
