@@ -2,6 +2,23 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 260926 update
+
+### asSpellRemain (New addon)
+Spell Cooldown Remaining Time Tracker
+
+![asSpellRemain](https://media.forgecdn.net/attachments/1974/898/asspellremain-jpg.jpg)
+
+#### Features
+- Tracks the remaining cooldown of 1 selected spell when it is on cooldown.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/u-HoGuD8Cdw?si=Z5s8PJ8PvEbcUdfm" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+- Pre-registered movement abilities include:
+
+![asSpellRemain](https://media.forgecdn.net/attachments/1974/899/asspellremain2-jpg.jpg)
+
+
 ## 260923 update
 
 ### asPowerBar

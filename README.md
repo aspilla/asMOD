@@ -113,6 +113,9 @@ The following issue may occur:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+## Resolution Support
+- Supports FHD, QHD/UHD, 4K, and Ultrawide resolutions. Considering font readability, a monitor size of 27 inches or larger is recommended.
+
 ## WoW Setting Changes when using asMOD Collection
 
 - The following World of Warcraft settings will be modified. The `asMOD` addon may change these settings upon logging in with a new character; if you do not want this, please disable the `asMOD` addon.
@@ -386,6 +389,9 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+## 해상도 지원
+- FHD, UHD, 4K, Wide 해상도를 지원합니다. 글씨 크기를 고려하면 27인치 이상의 모니터 사용을 추천합니다.
+
 ## asMOD 모음집 사용시 와우 설정 변경
 
 - 와우 설정 중 다음의 설정을 변경 합니다. `asMOD` 애드온이 신규 케릭 접속시 설정을 변경할 수 있으니 원치 않으신 분은 `asMOD` 애드온을 꺼 놓으시길 바랍니다.
@@ -445,7 +451,7 @@ CurseForge Link에 각 애드온의 기능 설명이 정리 되어 있어, 반�
 | asScavenger           | 자동 잡템 판매                           |      [링크](https://www.curseforge.com/wow/addons/asscavenger)      |      [링크](https://github.com/aspilla/asMOD/tree/main/asScavenger)      |
 | asSkyRide             | `하늘 비행` 자원/속도/쿨 표시            |       [링크](https://www.curseforge.com/wow/addons/asskyride)       |       [링크](https://github.com/aspilla/asMOD/tree/main/asSkyRide)       |
 | asSpamFilter          | 기본 UI 오류 메시지 표시 위치를 이동     |     [링크](https://www.curseforge.com/wow/addons/asspamfilter)      |     [링크](https://github.com/aspilla/asMOD/tree/main/asSpamFilter)      |
-| asSpellRemain         | 스킬 쿨 남은시간 추적                    |     [Link](https://www.curseforge.com/wow/addons/asspellremain)     |     [Link](https://github.com/aspilla/asMOD/tree/main/asSpellRemain)     |
+| asSpellRemain         | 스킬 쿨 남은시간 추적                    |     [링크](https://www.curseforge.com/wow/addons/asspellremain)     |     [링크](https://github.com/aspilla/asMOD/tree/main/asSpellRemain)     |
 | asTargetCastBar       | 대상/주시대상 시전 바                    |  [링크](https://www.curseforge.com/wow/addons/astargetcastingbar)   |    [링크](https://github.com/aspilla/asMOD/tree/main/asTargetCastBar)    |
 | asTrueGCD             | 최근 주문/아이템 기록 표시               |       [링크](https://www.curseforge.com/wow/addons/astruegcd)       |       [링크](https://github.com/aspilla/asMOD/tree/main/asTrueGCD)       |
 | asUnitFrame           | 간단한 유닛 프레임                       |      [링크](https://www.curseforge.com/wow/addons/asunitframe)      |      [링크](https://github.com/aspilla/asMOD/tree/main/asUnitFrame)      |
