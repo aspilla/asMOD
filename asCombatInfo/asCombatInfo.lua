@@ -1,389 +1,382 @@
-﻿local _, ns      = ...;
+﻿local _, ns    = ...;
 
-local configs    = {
-	combatalpha = 1,
-	normalalpha = 0.5,
-	font = STANDARD_TEXT_FONT,
+local configs  = {
+    combatalpha = 1,
+    normalalpha = 0.5,
+    font = STANDARD_TEXT_FONT,
 }
 
-local _, Class   = UnitClass("player")
-ns.classcolor    = Class and C_ClassColor.GetClassColor(Class) or nil;
-ns.hotkeys       = {};
-ns.hotkeyslots   = {};
-ns.nextspellid   = nil;
+local _, Class = UnitClass("player")
+ns.classcolor  = Class and C_ClassColor.GetClassColor(Class) or nil;
+ns.hotkeys     = {};
+ns.hotkeyslots = {};
+ns.nextspellid = nil;
 
 local function getglobal(var)
-	return _G[var];
+    return _G[var];
 end
 
 local main_frame = CreateFrame("Frame");
 local function update_bars(viewer)
-	if not ns.options.ChangeBuffBar then
-		return;
-	end
+    if not ns.options.ChangeBuffBar then
+        return;
+    end
 
-	local childs = { viewer:GetChildren() };
-	local visiblechilds = {}
-	for _, child in ipairs(childs) do
-		if child:IsShown() then
-			table.insert(visiblechilds, child)
-		end
-	end
+    local visiblechilds = {}
+    for child in viewer.itemFramePool:EnumerateActive() do
+        if child:IsShown() then
+            table.insert(visiblechilds, child)
+        end
+    end
 
-	if #visiblechilds == 0 then
-		return
-	end
+    if #visiblechilds == 0 then
+        return
+    end
 
-	for _, item in ipairs(visiblechilds) do
-		if ns.options.HideBarName then
-			local bar = item.Bar;
-			bar.Name:Hide();
-		end
+    for _, item in ipairs(visiblechilds) do
+        if ns.options.HideBarName then
+            local bar = item.Bar;
+            bar.Name:Hide();
+        end
 
-		if not item.bconfiged then
-			item.bconfiged = true;
+        if not item.bconfiged then
+            item.bconfiged = true;
 
-			if item.Bar then
-				local bar = item.Bar;
-				bar:SetStatusBarTexture("RaidFrame-Hp-Fill");
-				if ns.options.BuffBarClassColor then
-					bar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
-				end
-				bar.BarBG:Hide();
+            if item.Bar then
+                local bar = item.Bar;
+                bar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+                if ns.options.BuffBarClassColor then
+                    bar:SetStatusBarColor(ns.classcolor.r, ns.classcolor.g, ns.classcolor.b);
+                end
+                bar.BarBG:Hide();
 
-				bar.bg = bar:CreateTexture(nil, "BACKGROUND");
-				bar.bg:SetPoint("TOPLEFT", bar, "TOPLEFT", -1, 1);
-				bar.bg:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 1, -1);
-				bar.bg:SetColorTexture(0, 0, 0, 1);
-			end
+                bar.bg = bar:CreateTexture(nil, "BACKGROUND");
+                bar.bg:SetPoint("TOPLEFT", bar, "TOPLEFT", -1, 1);
+                bar.bg:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 1, -1);
+                bar.bg:SetColorTexture(0, 0, 0, 1);
+            end
 
-			if item.Icon then
-				local button = item.Icon
-				local height = item.Bar:GetHeight();
+            if item.Icon then
+                local button = item.Icon
+                local height = item.Bar:GetHeight();
 
-				local rate = 1.2;
-				local iconrate = .16;
-				button:SetSize(height * rate, height);
-				button.Icon:ClearAllPoints();
-				button.Icon:SetPoint("CENTER", 0, 0);
-				button.Icon:SetSize(height * rate - 2, height - 2);
-				button.Icon:SetTexCoord(.08, .92, iconrate, 1 - iconrate);
+                local rate = 1.2;
+                local iconrate = .16;
+                button:SetSize(height * rate, height);
+                button.Icon:ClearAllPoints();
+                button.Icon:SetPoint("CENTER", 0, 0);
+                button.Icon:SetSize(height * rate - 2, height - 2);
+                button.Icon:SetTexCoord(.08, .92, iconrate, 1 - iconrate);
 
-				if not button.border then
-					button.border = button:CreateTexture(nil, "BACKGROUND");
-					button.border:SetAllPoints(button);
-					button.border:SetColorTexture(0, 0, 0, 1);
-				else
-					button.border:SetAlpha(1)
-				end
-				button.border:Show()
+                if not button.border then
+                    button.border = button:CreateTexture(nil, "BACKGROUND");
+                    button.border:SetAllPoints(button);
+                    button.border:SetColorTexture(0, 0, 0, 1);
+                else
+                    button.border:SetAlpha(1)
+                end
+                button.border:Show()
 
-				if button.Applications then
-					local r = button.Applications;
-					if r:GetObjectType() == "FontString" then
-						r:SetFont(configs.font, height / 2 + 3, "OUTLINE");
-						r:SetTextColor(0, 1, 0);
-					end
-				end
-			end
-		end
-	end
+                if button.Applications then
+                    local r = button.Applications;
+                    if r:GetObjectType() == "FontString" then
+                        r:SetFont(configs.font, height / 2 + 3, "OUTLINE");
+                        r:SetTextColor(0, 1, 0);
+                    end
+                end
+            end
+        end
+    end
 
-	if ns.options.TopAlignedBar then
-		local buttonheight = visiblechilds[1]:GetHeight()
+    if ns.options.TopAlignedBar then
+        local buttonheight = visiblechilds[1]:GetHeight()
 
-		for i, child in ipairs(visiblechilds) do
-			local point, relativeTo, relativePoint, x, y = child:GetPoint(1);
-			child:ClearAllPoints();
-			child:SetPoint(point, relativeTo, relativePoint, x, -((buttonheight - 9) * (i - 1)));
-		end
-	elseif ns.options.BottomAlignedBar then
-		local buttonheight = visiblechilds[1]:GetHeight()
+        for i, child in ipairs(visiblechilds) do
+            local point, relativeTo, relativePoint, x, y = child:GetPoint(1);
+            child:ClearAllPoints();
+            child:SetPoint(point, relativeTo, relativePoint, x, -((buttonheight - 9) * (i - 1)));
+        end
+    elseif ns.options.BottomAlignedBar then
+        local buttonheight = visiblechilds[1]:GetHeight()
 
-		for i, child in ipairs(visiblechilds) do
-			child:ClearAllPoints();
-			child:SetPoint("BOTTOM", viewer, "BOTTOM", 0, ((buttonheight - 9) * (i - 1)));
-		end
-	end
+        for i, child in ipairs(visiblechilds) do
+            child:ClearAllPoints();
+            child:SetPoint("BOTTOM", viewer, "BOTTOM", 0, ((buttonheight - 9) * (i - 1)));
+        end
+    end
 end
 
 local function get_spellhotkey(spellid)
-	if not spellid then
-		return;
-	end
-	local text = ns.hotkeys[spellid];
-	if text then
-		return text;
-	end
+    if not spellid then
+        return;
+    end
+    local text = ns.hotkeys[spellid];
+    if text then
+        return text;
+    end
 
-	local slots = C_ActionBar.FindSpellActionButtons(spellid)
-	if slots and #slots > 0 then
-		for _, slot in ipairs(slots) do
-			local scanslot = slot
-			if (slot > 72 and slot <= 132) or (slot > 12 and slot <= 24) then
-				scanslot = (slot - 1) % 12 + 1;
-			end
+    local slots = C_ActionBar.FindSpellActionButtons(spellid)
+    if slots and #slots > 0 then
+        for _, slot in ipairs(slots) do
+            local scanslot = slot
+            if (slot > 72 and slot <= 132) or (slot > 12 and slot <= 24) then
+                scanslot = (slot - 1) % 12 + 1;
+            end
 
-			text = ns.hotkeyslots[scanslot];
-			if text then
-				ns.hotkeys[spellid] = text;
-				return text;
-			end
-		end
-	end
+            text = ns.hotkeyslots[scanslot];
+            if text then
+                ns.hotkeys[spellid] = text;
+                return text;
+            end
+        end
+    end
 
-	return nil;
+    return nil;
 end
 
 local function update_buttons(viewer, forced)
-	if EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() then
-		return
-	end
+    if EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() then
+        return
+    end
 
-	local isbar = (viewer == BuffBarCooldownViewer);
-	if isbar then
-		update_bars(viewer);
-		return;
-	end
+    local isbar = (viewer == BuffBarCooldownViewer);
+    if isbar then
+        update_bars(viewer);
+        return;
+    end
 
+    local isbuff = (viewer == BuffIconCooldownViewer);
+    local visiblechilds = {}
+    for child in viewer.itemFramePool:EnumerateActive() do
+        if isbuff and ns.options.AlignedBuff then
+            if child:IsShown() then
+                table.insert(visiblechilds, child)
+            end
+        else
+            table.insert(visiblechilds, child)
+        end
+    end
 
-	local childs = { viewer:GetChildren() };
-	local isbuff = (viewer == BuffIconCooldownViewer);
+    if #visiblechilds == 0 then
+        return
+    end
 
-	local visiblechilds = {}
-	for _, child in ipairs(childs) do
-		if child:IsShown() then
-			local point, relativeTo, relativePoint, x, y = child:GetPoint(1)
-			child.originalX = x or 0
-			child.originalY = y or 0
-			table.insert(visiblechilds, child)
-		end
-	end
+    for _, button in ipairs(visiblechilds) do
+        local width = button:GetWidth();
+        if button.bconfiged == nil or forced then
+            local rate = math.min(ns.options.SpellIconRate / 10, 0.9);
+            local iconrate = 0.08 + (0.9 - rate) / 2
+            local borderwidth = ns.options.SpellBorderWidth;
 
-	if #visiblechilds == 0 then
-		return
-	end
+            if isbuff then
+                rate = math.min(ns.options.BuffIconRate / 10, 0.9);
+                iconrate = 0.16 + (0.8 - rate) / 2;
+                borderwidth = ns.options.BuffBorderWidth;
+            end
 
-	for _, button in ipairs(visiblechilds) do
-		local width = button:GetWidth();
-		if button.bconfiged == nil or forced then
-			local rate = math.min(ns.options.SpellIconRate / 10, 0.9);
-			local iconrate = 0.08 + (0.9 - rate) / 2
-			local borderwidth = ns.options.SpellBorderWidth;
-
-			if isbuff then
-				rate = math.min(ns.options.BuffIconRate / 10, 0.9);
-				iconrate = 0.16 + (0.8 - rate) / 2;
-				borderwidth = ns.options.BuffBorderWidth;
-			end
-
-			button:SetSize(width, width * rate);
+            button:SetSize(width, width * rate);
 
 
-			if button.Icon then
-				local mask = button.Icon:GetMaskTexture(1)
-				if mask then
-					button.Icon:RemoveMaskTexture(mask);
-				end
-				button.Icon:ClearAllPoints();
-				button.Icon:SetPoint("CENTER", 0, 0);
-				button.Icon:SetSize(width - borderwidth, width * rate - borderwidth);
-				button.Icon:SetTexCoord(.08, .92, iconrate, 1 - iconrate);
-			end
+            if button.Icon then
+                local mask = button.Icon:GetMaskTexture(1)
+                if mask then
+                    button.Icon:RemoveMaskTexture(mask);
+                end
+                button.Icon:ClearAllPoints();
+                button.Icon:SetPoint("CENTER", 0, 0);
+                button.Icon:SetSize(width - borderwidth, width * rate - borderwidth);
+                button.Icon:SetTexCoord(.08, .92, iconrate, 1 - iconrate);
+            end
 
 
-			if button.ChargeCount then
-				for _, r in next, { button.ChargeCount:GetRegions() } do
-					if r:GetObjectType() == "FontString" then
-						r:SetFont(configs.font, width * 0.4, "OUTLINE");
-						r:ClearAllPoints();
-						r:SetPoint("CENTER", button, "BOTTOM", 0, 1);
-						r:SetTextColor(0, 1, 0);
-						r:SetDrawLayer("OVERLAY");
-						break;
-					end
-				end
-			end
+            if button.ChargeCount then
+                for _, r in next, { button.ChargeCount:GetRegions() } do
+                    if r:GetObjectType() == "FontString" then
+                        r:SetFont(configs.font, width * 0.4, "OUTLINE");
+                        r:ClearAllPoints();
+                        r:SetPoint("CENTER", button, "BOTTOM", 0, 1);
+                        r:SetTextColor(0, 1, 0);
+                        r:SetDrawLayer("OVERLAY");
+                        break;
+                    end
+                end
+            end
 
-			if button.DebuffBorder then
-				button.DebuffBorder:ClearAllPoints();
-				button.DebuffBorder:SetPoint("TOPLEFT", button, "TOPLEFT", -4, 4);
-				button.DebuffBorder:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 4, -4);
-			end
+            if button.DebuffBorder then
+                button.DebuffBorder:ClearAllPoints();
+                button.DebuffBorder:SetPoint("TOPLEFT", button, "TOPLEFT", -4, 4);
+                button.DebuffBorder:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 4, -4);
+            end
 
-			if button.Applications then
-				for _, r in next, { button.Applications:GetRegions() } do
-					if r:GetObjectType() == "FontString" then
-						r:SetFont(configs.font, width * 0.4, "OUTLINE");
-						r:ClearAllPoints();
-						r:SetPoint("CENTER", button, "BOTTOM", 0, 1);
-						r:SetTextColor(0, 1, 0);
-						r:SetDrawLayer("OVERLAY");
-						break;
-					end
-				end
-			end
+            if button.Applications then
+                for _, r in next, { button.Applications:GetRegions() } do
+                    if r:GetObjectType() == "FontString" then
+                        r:SetFont(configs.font, width * 0.4, "OUTLINE");
+                        r:ClearAllPoints();
+                        r:SetPoint("CENTER", button, "BOTTOM", 0, 1);
+                        r:SetTextColor(0, 1, 0);
+                        r:SetDrawLayer("OVERLAY");
+                        break;
+                    end
+                end
+            end
 
-			if not button.border then
-				button.border = button:CreateTexture(nil, "BACKGROUND");
-				button.border:SetAllPoints(button);
-				button.border:SetColorTexture(0, 0, 0, 1);
+            if not button.border then
+                button.border = button:CreateTexture(nil, "BACKGROUND");
+                button.border:SetAllPoints(button);
+                button.border:SetColorTexture(0, 0, 0, 1);
 
-				button.nextspell = button:CreateTexture(nil, "OVERLAY");
-				button.nextspell:SetDrawLayer("OVERLAY", 7);
-				button.nextspell:SetAtlas("talents-node-circle-greenglow");
-				button.nextspell:SetPoint("CENTER", button, "CENTER", 0, 0);
-				button.nextspell:SetSize(width / 2 + 3, width / 2 + 3);
-				button.nextsize = 1;
+                button.nextspell = button:CreateTexture(nil, "OVERLAY");
+                button.nextspell:SetDrawLayer("OVERLAY", 7);
+                button.nextspell:SetAtlas("talents-node-circle-greenglow");
+                button.nextspell:SetPoint("CENTER", button, "CENTER", 0, 0);
+                button.nextspell:SetSize(width / 2 + 3, width / 2 + 3);
+                button.nextsize = 1;
 
-				button.nextspell:Hide();
-			else
-				button.border:SetAlpha(1)
-			end
-			button.border:Show()
+                button.nextspell:Hide();
+            else
+                button.border:SetAlpha(1)
+            end
+            button.border:Show()
 
-			if button.Cooldown then
-				button.Cooldown:SetAllPoints(button.Icon)
-				button.Cooldown:SetSwipeTexture("Interface\\Buttons\\WHITE8X8");
-				button.Cooldown:SetSwipeColor(0, 0, 0, 0.8)
+            if button.Cooldown then
+                button.Cooldown:SetAllPoints(button.Icon)
+                button.Cooldown:SetSwipeTexture("Interface\\Buttons\\WHITE8X8");
+                button.Cooldown:SetSwipeColor(0, 0, 0, 0.8)
 
-				if isbuff then
-					if ns.options.BuffMillisecondsThreshold then
-						button.Cooldown:SetCountdownMillisecondsThreshold(ns.options.BuffMillisecondsThreshold);
-					end
-				else
-					if ns.options.SpellMillisecondsThreshold then
-						button.Cooldown:SetCountdownMillisecondsThreshold(ns.options.SpellMillisecondsThreshold);
-					end
-				end
-				for _, r in next, { button.Cooldown:GetRegions() } do
-					if r:GetObjectType() == "FontString" then
-						r:SetFont(configs.font, width * 0.4, "OUTLINE");
-						r:ClearAllPoints();
-						if isbuff then
-							r:SetPoint("CENTER", button, "TOP", 0, 0);
-						else
-							r:SetPoint("CENTER", 0, 0);
-						end
-						r:SetDrawLayer("OVERLAY");
-						break;
-					end
-				end
-			end
+                if isbuff then
+                    if ns.options.BuffMillisecondsThreshold then
+                        button.Cooldown:SetCountdownMillisecondsThreshold(ns.options.BuffMillisecondsThreshold);
+                    end
+                else
+                    if ns.options.SpellMillisecondsThreshold then
+                        button.Cooldown:SetCountdownMillisecondsThreshold(ns.options.SpellMillisecondsThreshold);
+                    end
+                end
+                for _, r in next, { button.Cooldown:GetRegions() } do
+                    if r:GetObjectType() == "FontString" then
+                        r:SetFont(configs.font, width * 0.4, "OUTLINE");
+                        r:ClearAllPoints();
+                        if isbuff then
+                            r:SetPoint("CENTER", button, "TOP", 0, 0);
+                        else
+                            r:SetPoint("CENTER", 0, 0);
+                        end
+                        r:SetDrawLayer("OVERLAY");
+                        break;
+                    end
+                end
+            end
 
-			local function on_update()
-				if button.cooldownUseAuraDisplayTime == true then
-					button.border:SetColorTexture(0, 1, 1);
-				else
-					button.border:SetColorTexture(0, 0, 0);
-				end
+            local function on_update()
+                if button.cooldownUseAuraDisplayTime == true then
+                    button.border:SetColorTexture(0, 1, 1);
+                else
+                    button.border:SetColorTexture(0, 0, 0);
+                end
 
-				if ns.options.AlertAssitedSpell then
-					if ns.nextspellid and ns.nextspellid == button.asspellid then
-						button.nextspell:Show();
-						if button.nextsize == 1 then
-							button.nextspell:SetSize(width / 3, width / 3);
-							button.nextsize = 0;
-						else
-							button.nextspell:SetSize(width, width);
-							button.nextsize = 1;
-						end
-					else
-						button.nextspell:Hide();
-					end
-				end
-			end
+                if ns.options.AlertAssitedSpell then
+                    if ns.nextspellid and ns.nextspellid == button.asspellid then
+                        button.nextspell:Show();
+                        if button.nextsize == 1 then
+                            button.nextspell:SetSize(width / 3, width / 3);
+                            button.nextsize = 0;
+                        else
+                            button.nextspell:SetSize(width, width);
+                            button.nextsize = 1;
+                        end
+                    else
+                        button.nextspell:Hide();
+                    end
+                end
+            end
 
-			if button.astimer then
-				button.astimer:Cancel();
-			end
+            if button.astimer then
+                button.astimer:Cancel();
+            end
 
-			button.astimer = C_Timer.NewTicker(0.2, on_update);
-			button.bconfiged = true;
-		end
+            button.astimer = C_Timer.NewTicker(0.2, on_update);
+            button.bconfiged = true;
+        end
 
-		if ns.options.ShowHotKey and not isbuff then
-			local spellid = button:GetSpellID();
+        if ns.options.ShowHotKey and not isbuff then
+            local spellid = button:GetSpellID();
 
-			if spellid and not issecretvalue(spellid) or button.asspellid then
+            if spellid and not issecretvalue(spellid) or button.asspellid then
+                if not issecretvalue(spellid) then
+                    button.asspellid = spellid;
+                end
 
-				if not issecretvalue(spellid) then
-					button.asspellid = spellid;
-				end
+                local keytext = get_spellhotkey(button.asspellid);
 
-				local keytext = get_spellhotkey(button.asspellid);
+                if not button.hotkey then
+                    button.hotkey = button:CreateFontString(nil, "ARTWORK");
+                    button.hotkey:SetFont(configs.font, width / 3 - 3, "OUTLINE");
+                    button.hotkey:SetPoint("TOPRIGHT", button, "TOPRIGHT", -2, -2);
+                    button.hotkey:SetTextColor(1, 1, 1, 1);
+                end
 
-				if not button.hotkey then
-					button.hotkey = button:CreateFontString(nil, "ARTWORK");
-					button.hotkey:SetFont(configs.font, width / 3 - 3, "OUTLINE");
-					button.hotkey:SetPoint("TOPRIGHT", button, "TOPRIGHT", -2, -2);
-					button.hotkey:SetTextColor(1, 1, 1, 1);
-				end
+                if keytext and keytext ~= "●" then
+                    button.hotkey:SetText(keytext);
+                    button.hotkey:Show();
+                else
+                    button.hotkey:Hide();
+                end
+            end
+        end
+    end
 
-				if keytext and keytext ~= "●" then
-					button.hotkey:SetText(keytext);
-					button.hotkey:Show();
-				else
-					button.hotkey:Hide();
-				end
-			end
-		end
-	end
+    local isHorizontal = viewer.isHorizontal;
 
-	local isHorizontal = viewer.isHorizontal;
+    if not isHorizontal then
+        return;
+    end
 
-	if not isHorizontal then
-		return;
-	end
+    local bcentered = true;
 
-	local bcentered = true;
+    if isbuff and not ns.options.AlignedBuff then
+        bcentered = false;
+    end
 
-	if isbuff and not ns.options.AlignedBuff then
-		bcentered = false;
-	end
+    local stride = viewer.stride or #visiblechilds
+    local overlap = viewer.childXPadding;
 
-	local stride = viewer.stride or #visiblechilds
-	local overlap = viewer.childXPadding;
+    table.sort(visiblechilds, function(a, b)
+        return a.layoutIndex < b.layoutIndex;
+    end)
 
-	table.sort(visiblechilds, function(a, b)
-		if math.abs(a.originalY - b.originalY) < 1 then
-			return a.originalX < b.originalX
-		end
-		return a.originalY > b.originalY
-	end)
-
-	local buttonwidth = visiblechilds[1]:GetWidth()
-	local buttonheight = visiblechilds[1]:GetHeight()
+    local buttonwidth = visiblechilds[1]:GetWidth()
+    local buttonheight = visiblechilds[1]:GetHeight()
 
 
-	local num_icons = #visiblechilds
+    local num_icons = #visiblechilds
 
-	for i, child in ipairs(visiblechilds) do
-		if bcentered then
-			local index = i - 1
-			local row = math.floor(index / stride)
-			local col = index % stride
+    for i, child in ipairs(visiblechilds) do
+        if bcentered then
+            local index = i - 1
+            local row = math.floor(index / stride)
+            local col = index % stride
 
-			local row_start = row * stride + 1
-			local row_end = math.min(row_start + stride - 1, num_icons)
-			local icons_in_row = row_end - row_start + 1
+            local row_start = row * stride + 1
+            local row_end = math.min(row_start + stride - 1, num_icons)
+            local icons_in_row = row_end - row_start + 1
 
-			local rowwidth = icons_in_row * buttonwidth + (icons_in_row - 1) * overlap
-
-
-			local row_startX = -rowwidth / 2
+            local rowwidth = icons_in_row * buttonwidth + (icons_in_row - 1) * overlap
 
 
-			local xOffset = row_startX + col * (buttonwidth + overlap)
-			local yOffset = row * (buttonheight + overlap)
-			child:ClearAllPoints();
-			child:SetPoint("TOP", viewer, "TOP", xOffset + buttonwidth / 2, -yOffset);
-		else
-			local point, relativeTo, relativePoint, x, y = child:GetPoint(1);
-			child:ClearAllPoints();
-			child:SetPoint(point, relativeTo, relativePoint, x, 0);
-		end
-	end
+            local row_startX = -rowwidth / 2
+
+
+            local xOffset = row_startX + col * (buttonwidth + overlap)
+            local yOffset = row * (buttonheight + overlap)
+            child:ClearAllPoints();
+            child:SetPoint("TOP", viewer, "TOP", xOffset + buttonwidth / 2, -yOffset);
+        else
+            local point, relativeTo, relativePoint, x, y = child:GetPoint(1);
+            child:ClearAllPoints();
+            child:SetPoint(point, relativeTo, relativePoint, x, 0);
+        end
+    end
 end
 
 local updateframe = CreateFrame("Frame");
@@ -391,238 +384,236 @@ local todolist = {};
 updateframe:Hide()
 
 updateframe:SetScript("OnUpdate", function()
-	updateframe:Hide()
+    updateframe:Hide()
 
-	for viewer in pairs(todolist) do
-		todolist[viewer] = nil
-		update_buttons(viewer)
-	end
+    for viewer in pairs(todolist) do
+        todolist[viewer] = nil
+        update_buttons(viewer)
+    end
 end)
 
 local function add_todolist(viewer)
-	todolist[viewer] = true
-	updateframe:Show()
+    todolist[viewer] = true
+    updateframe:Show()
 end
 
 local viewers = {
-	UtilityCooldownViewer,
-	EssentialCooldownViewer,
-	BuffIconCooldownViewer,
-	BuffBarCooldownViewer
+    UtilityCooldownViewer,
+    EssentialCooldownViewer,
+    BuffIconCooldownViewer,
+    BuffBarCooldownViewer
 }
 
 
 local function check_name(name)
-	name = string.gsub(name, "Num Pad ", "");
-	name = string.gsub(name, "숫자패드 ", "");
-	name = string.gsub(name, "Num Pad", "");
-	name = string.gsub(name, "숫자패드", "");
+    name = string.gsub(name, "Num Pad ", "");
+    name = string.gsub(name, "숫자패드 ", "");
+    name = string.gsub(name, "Num Pad", "");
+    name = string.gsub(name, "숫자패드", "");
 
-	name = string.gsub(name, "Middle Mouse", "M3");
-	name = string.gsub(name, "마우스 가운데 버튼", "M3");
-	name = string.gsub(name, "Mouse Button (%d)", "M%1");
-	name = string.gsub(name, "(%d)번 마우스 버튼", "M%1");
-	name = string.gsub(name, "Mouse Wheel Up", "MU");
-	name = string.gsub(name, "마우스 휠 위로", "MU");
-	name = string.gsub(name, "Mouse Wheel Down", "MD");
-	name = string.gsub(name, "마우스 휠 아래로", "MD");
-	name = string.gsub(name, "^s%-", "S");
-	name = string.gsub(name, "^a%-", "A");
-	name = string.gsub(name, "^c%-", "C");
-	name = string.gsub(name, "Delete", "Dt");
-	name = string.gsub(name, "Page Down", "Pd");
-	name = string.gsub(name, "Page Up", "Pu");
-	name = string.gsub(name, "Insert", "In");
-	name = string.gsub(name, "Del", "Dt");
-	name = string.gsub(name, "Home", "Hm");
-	name = string.gsub(name, "Capslock", "Ck");
-	name = string.gsub(name, "Num Lock", "Nk");
-	name = string.gsub(name, "Scroll Lock", "Sk");
-	name = string.gsub(name, "Backspace", "Bs");
-	name = string.gsub(name, "Spacebar", "Sb");
-	name = string.gsub(name, "스페이스 바", "Sb");
-	name = string.gsub(name, "End", "Ed");
-	name = string.gsub(name, "Up Arrow", "^");
-	name = string.gsub(name, "위 화살표", "^");
-	name = string.gsub(name, "Down Arrow", "V");
-	name = string.gsub(name, "아래 화살표", "V");
-	name = string.gsub(name, "Right Arrow", ">");
-	name = string.gsub(name, "오른쪽 화살표", ">");
-	name = string.gsub(name, "Left Arrow", "<");
-	name = string.gsub(name, "왼쪽 화살표", "<");
+    name = string.gsub(name, "Middle Mouse", "M3");
+    name = string.gsub(name, "마우스 가운데 버튼", "M3");
+    name = string.gsub(name, "Mouse Button (%d)", "M%1");
+    name = string.gsub(name, "(%d)번 마우스 버튼", "M%1");
+    name = string.gsub(name, "Mouse Wheel Up", "MU");
+    name = string.gsub(name, "마우스 휠 위로", "MU");
+    name = string.gsub(name, "Mouse Wheel Down", "MD");
+    name = string.gsub(name, "마우스 휠 아래로", "MD");
+    name = string.gsub(name, "^s%-", "S");
+    name = string.gsub(name, "^a%-", "A");
+    name = string.gsub(name, "^c%-", "C");
+    name = string.gsub(name, "Delete", "Dt");
+    name = string.gsub(name, "Page Down", "Pd");
+    name = string.gsub(name, "Page Up", "Pu");
+    name = string.gsub(name, "Insert", "In");
+    name = string.gsub(name, "Del", "Dt");
+    name = string.gsub(name, "Home", "Hm");
+    name = string.gsub(name, "Capslock", "Ck");
+    name = string.gsub(name, "Num Lock", "Nk");
+    name = string.gsub(name, "Scroll Lock", "Sk");
+    name = string.gsub(name, "Backspace", "Bs");
+    name = string.gsub(name, "Spacebar", "Sb");
+    name = string.gsub(name, "스페이스 바", "Sb");
+    name = string.gsub(name, "End", "Ed");
+    name = string.gsub(name, "Up Arrow", "^");
+    name = string.gsub(name, "위 화살표", "^");
+    name = string.gsub(name, "Down Arrow", "V");
+    name = string.gsub(name, "아래 화살표", "V");
+    name = string.gsub(name, "Right Arrow", ">");
+    name = string.gsub(name, "오른쪽 화살표", ">");
+    name = string.gsub(name, "Left Arrow", "<");
+    name = string.gsub(name, "왼쪽 화살표", "<");
 
-	return name;
+    return name;
 end
 
 local function scan_keys(name, total)
-	for i = 1, total do
-		local actionbutton = getglobal(name .. i);
-		if not actionbutton then
-			break
-		end
-		local hotkey = getglobal(actionbutton:GetName() .. "HotKey");
-		if not hotkey then
-			break
-		end
+    for i = 1, total do
+        local actionbutton = getglobal(name .. i);
+        if not actionbutton then
+            break
+        end
+        local hotkey = getglobal(actionbutton:GetName() .. "HotKey");
+        if not hotkey then
+            break
+        end
 
-		local text = hotkey:GetText();
-		local slot = actionbutton.action;
+        local text = hotkey:GetText();
+        local slot = actionbutton.action;
 
-		if name == "ActionButton" then
-			slot = i;
-		end
+        if name == "ActionButton" then
+            slot = i;
+        end
 
-		if slot and text then
-			local keytext = check_name(text);
-			if keytext ~= "●" then
-				if ns.hotkeyslots[slot] == nil then
-					ns.hotkeyslots[slot] = keytext;
-				end
-			end
-		end
-	end
+        if slot and text then
+            local keytext = check_name(text);
+            if keytext ~= "●" then
+                if ns.hotkeyslots[slot] == nil then
+                    ns.hotkeyslots[slot] = keytext;
+                end
+            end
+        end
+    end
 end
 
 local function check_hotkeys()
-	if not ns.options.ShowHotKey then
-		return;
-	end
-	wipe(ns.hotkeys);
-	wipe(ns.hotkeyslots);
-	scan_keys("ActionButton", 12);
-	scan_keys("MultiBarBottomLeftButton", 12);
-	scan_keys("MultiBarBottomRightButton", 12);
-	scan_keys("MultiBarRightButton", 12);
-	scan_keys("MultiBarLeftButton", 12);
-	scan_keys("MultiBar5Button", 12);
-	scan_keys("MultiBar6Button", 12);
-	scan_keys("MultiBar7Button", 12);
+    if not ns.options.ShowHotKey then
+        return;
+    end
+    wipe(ns.hotkeys);
+    wipe(ns.hotkeyslots);
+    scan_keys("ActionButton", 12);
+    scan_keys("MultiBarBottomLeftButton", 12);
+    scan_keys("MultiBarBottomRightButton", 12);
+    scan_keys("MultiBarRightButton", 12);
+    scan_keys("MultiBarLeftButton", 12);
+    scan_keys("MultiBar5Button", 12);
+    scan_keys("MultiBar6Button", 12);
+    scan_keys("MultiBar7Button", 12);
 end
 
 local function on_update()
-	ns.nextspellid = C_AssistedCombat.GetNextCastSpell(true);
+    ns.nextspellid = C_AssistedCombat.GetNextCastSpell(true);
 end
 
 local checkfirst = true;
 local timer = nil;
 local function init()
-	if ns.options.ShowHotKey then
-		if checkfirst then
-			check_hotkeys();
-			checkfirst = false;
-		end
-		wipe(ns.hotkeys);
-	end
+    if ns.options.ShowHotKey then
+        if checkfirst then
+            check_hotkeys();
+            checkfirst = false;
+        end
+        wipe(ns.hotkeys);
+    end
 
-	if ns.options.AlertAssitedSpell and timer == nil then
-		timer = C_Timer.NewTicker(0.2, on_update);
-	end
+    if ns.options.AlertAssitedSpell and timer == nil then
+        timer = C_Timer.NewTicker(0.2, on_update);
+    end
 
-	for _, viewer in ipairs(viewers) do
-		if viewer then
-			update_buttons(viewer, true);
-			if viewer.Layout then
-				if viewer.__aci_hooked == nil then
-					hooksecurefunc(viewer, "Layout", function()
-						add_todolist(viewer)
-					end)
-					viewer.__aci_hooked = true;
-				end
-			end
+    for _, viewer in ipairs(viewers) do
+        if viewer then
+            update_buttons(viewer, true);
+            if viewer.Layout then
+                if viewer.__aci_hooked == nil then
+                    hooksecurefunc(viewer, "RefreshData", function()
+                        add_todolist(viewer)
+                    end)
+                    viewer.__aci_hooked = true;
+                end
+            end
 
 
-			if viewer == BuffBarCooldownViewer then
-				local children = { viewer:GetChildren() }
-				for _, child in ipairs(children) do
-					if child.__aci_hooked == nil then
-						child.__aci_hooked = true;
-						if (ns.options.TopAlignedBar or ns.options.BottomAlignedBar) then
-							child:HookScript("OnShow", function()
-								add_todolist(viewer);
-							end)
+            if viewer == BuffBarCooldownViewer then
+                for child in viewer.itemFramePool:EnumerateActive() do
+                    if child.__aci_hooked == nil then
+                        child.__aci_hooked = true;
+                        if (ns.options.TopAlignedBar or ns.options.BottomAlignedBar) then
+                            child:HookScript("OnShow", function()
+                                add_todolist(viewer);
+                            end)
 
-							child:HookScript("OnHide", function()
-								add_todolist(viewer);
-							end)
-						elseif ns.options.HideBarName then
-							child:HookScript("OnShow", function()
-								add_todolist(viewer);
-							end)
-						else
-							child:HookScript("OnShow", function()
-								if child.bconfiged == nil then
-									add_todolist(viewer);
-								end
-							end)
-						end
-					end
-				end
-			elseif viewer == BuffIconCooldownViewer then
-				local children = { viewer:GetChildren() }
-				for _, child in ipairs(children) do
-					if child.__aci_hooked == nil then
-						child.__aci_hooked = true;
-						child:HookScript("OnShow", function()
-							add_todolist(viewer);
-						end)
+                            child:HookScript("OnHide", function()
+                                add_todolist(viewer);
+                            end)
+                        elseif ns.options.HideBarName then
+                            child:HookScript("OnShow", function()
+                                add_todolist(viewer);
+                            end)
+                        else
+                            child:HookScript("OnShow", function()
+                                if child.bconfiged == nil then
+                                    add_todolist(viewer);
+                                end
+                            end)
+                        end
+                    end
+                end
+            elseif viewer == BuffIconCooldownViewer then
+                for child in viewer.itemFramePool:EnumerateActive() do
+                    if child.__aci_hooked == nil then
+                        child.__aci_hooked = true;
+                        child:HookScript("OnShow", function()
+                            add_todolist(viewer);
+                        end)
 
-						child:HookScript("OnHide", function()
-							add_todolist(viewer);
-						end)
-					end
-				end
-			end
-		end
-	end
+                        child:HookScript("OnHide", function()
+                            add_todolist(viewer);
+                        end)
+                    end
+                end
+            end
+        end
+    end
 end
 
 function ns.refreshall()
-	for _, viewer in ipairs(viewers) do
-		if viewer then
-			update_buttons(viewer, true);
-		end
-	end
+    for _, viewer in ipairs(viewers) do
+        if viewer then
+            update_buttons(viewer, true);
+        end
+    end
 end
 
 local function set_viewersalpha(alpha)
-	for _, viewer in ipairs(viewers) do
-		viewer:SetAlpha(alpha);
-	end
+    for _, viewer in ipairs(viewers) do
+        viewer:SetAlpha(alpha);
+    end
 end
 
 
 local bfirst = true;
 local function on_event(self, event, arg)
-	if bfirst then
-		bfirst = false;
-		ns.setup_option();
-	end
+    if bfirst then
+        bfirst = false;
+        ns.setup_option();
+    end
 
-	if event == "ADDON_LOADED" then
-		if arg == "Blizzard_CooldownManager" then
-			C_Timer.After(0.5, init);
-		end
-	elseif event == "PLAYER_REGEN_DISABLED" then
-		if ns.options.CombatAlphaChange then
-			set_viewersalpha(configs.combatalpha);
-		end
-	elseif event == "PLAYER_REGEN_ENABLED" then
-		if ns.options.CombatAlphaChange then
-			set_viewersalpha(configs.normalalpha);
-		end
-	elseif event == "UPDATE_BINDINGS" then
-		check_hotkeys();
-	else
-		C_Timer.After(0.5, init);
+    if event == "ADDON_LOADED" then
+        if arg == "Blizzard_CooldownManager" then
+            C_Timer.After(0.5, init);
+        end
+    elseif event == "PLAYER_REGEN_DISABLED" then
+        if ns.options.CombatAlphaChange then
+            set_viewersalpha(configs.combatalpha);
+        end
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        if ns.options.CombatAlphaChange then
+            set_viewersalpha(configs.normalalpha);
+        end
+    elseif event == "UPDATE_BINDINGS" then
+        check_hotkeys();
+    else
+        C_Timer.After(0.5, init);
 
-		if ns.options.CombatAlphaChange then
-			if UnitAffectingCombat("player") then
-				set_viewersalpha(configs.combatalpha);
-			else
-				set_viewersalpha(configs.normalalpha);
-			end
-		end
-	end
+        if ns.options.CombatAlphaChange then
+            if UnitAffectingCombat("player") then
+                set_viewersalpha(configs.combatalpha);
+            else
+                set_viewersalpha(configs.normalalpha);
+            end
+        end
+    end
 end
 
 main_frame:RegisterEvent("ADDON_LOADED");
@@ -633,5 +624,6 @@ main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
 main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
 main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 main_frame:RegisterEvent("UPDATE_BINDINGS");
+main_frame:RegisterEvent("COOLDOWN_VIEWER_DATA_LOADED");
 
 main_frame:SetScript("OnEvent", on_event);

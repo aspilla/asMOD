@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 260927 Update
+
+### asCombatInfo
+- Bugfix: Fixed an issue that button order occasionally changed.
+
 ## 260926 update
 
 ### asSpellRemain (New addon)

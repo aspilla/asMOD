@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260927 update
+
+### asCombatInfo
+- Bugfix : 가끔 버튼 순서가 변경되는 이슈 개선
+
 ## 260926 update
 
 ### asSpellRemain (신규 애드온)
