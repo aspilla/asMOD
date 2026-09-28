@@ -2,6 +2,17 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 260928 Update
+
+### asCombatInfo
+- Bugfix: Fixed an issue that buff bar order changed when aligned options are on.
+
+### asNextSkill
+- Bugfix
+
+### asFireStarter
+- Add `asFireStarter` to asMOD Suit
+
 ## 260927 Update
 
 ### asCombatInfo

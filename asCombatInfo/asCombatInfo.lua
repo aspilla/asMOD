@@ -24,7 +24,11 @@ local function update_bars(viewer)
 
     local visiblechilds = {}
     for child in viewer.itemFramePool:EnumerateActive() do
-        if child:IsShown() then
+        if ns.options.TopAlignedBar or ns.options.BottomAlignedBar then
+            if child:IsShown() then
+                table.insert(visiblechilds, child)
+            end
+        else
             table.insert(visiblechilds, child)
         end
     end
@@ -88,8 +92,13 @@ local function update_bars(viewer)
         end
     end
 
+
     if ns.options.TopAlignedBar then
         local buttonheight = visiblechilds[1]:GetHeight()
+
+        table.sort(visiblechilds, function(a, b)
+            return a.layoutIndex < b.layoutIndex;
+        end)
 
         for i, child in ipairs(visiblechilds) do
             local point, relativeTo, relativePoint, x, y = child:GetPoint(1);
@@ -98,6 +107,10 @@ local function update_bars(viewer)
         end
     elseif ns.options.BottomAlignedBar then
         local buttonheight = visiblechilds[1]:GetHeight()
+
+        table.sort(visiblechilds, function(a, b)
+            return a.layoutIndex < b.layoutIndex;
+        end)
 
         for i, child in ipairs(visiblechilds) do
             child:ClearAllPoints();
@@ -514,7 +527,7 @@ local function init()
     for _, viewer in ipairs(viewers) do
         if viewer then
             update_buttons(viewer, true);
-            if viewer.Layout then
+            if viewer.RefreshData then
                 if viewer.__aci_hooked == nil then
                     hooksecurefunc(viewer, "RefreshData", function()
                         add_todolist(viewer)
@@ -590,7 +603,7 @@ local function on_event(self, event, arg)
     end
 
     if event == "ADDON_LOADED" then
-        if arg == "Blizzard_CooldownManager" then
+        if arg == "Blizzard_CooldownViewer" then
             C_Timer.After(0.5, init);
         end
     elseif event == "PLAYER_REGEN_DISABLED" then

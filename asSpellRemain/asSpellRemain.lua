@@ -64,7 +64,6 @@ end
 
 local function initAddon()
     setupUI();
-    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
     main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
     main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
     main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");

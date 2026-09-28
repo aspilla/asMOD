@@ -58,6 +58,7 @@ local function on_update()
 
 			local durationobj = C_Spell.GetSpellCooldownDuration(nextspellid);
 			if durationobj then
+			    main_frame.cooldown:Show();
 				set_cooldownframe(main_frame.cooldown, durationobj, true);
 			else
 				main_frame.cooldown:Hide();

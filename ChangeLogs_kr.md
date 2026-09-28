@@ -2,6 +2,17 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260928 Update
+
+### asCombatInfo
+- Bugfix: 정렬 옵션을 켰을때 버프바가 순서가 변경되는 문제 수정
+
+### asNextSkill
+- Bugfix
+
+### asFireStarter
+-  `asFireStarter` 모음집에 포함
+
 ## 260927 update
 
 ### asCombatInfo
