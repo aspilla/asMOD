@@ -114,6 +114,7 @@ The following issue may occur:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Resolution Support
+
 - Supports FHD, QHD/UHD, 4K, and Ultrawide resolutions. Considering font readability, a monitor size of 27 inches or larger is recommended.
 
 ## WoW Setting Changes when using asMOD Collection
@@ -151,7 +152,7 @@ The functional descriptions for each addon are organized on their respective Cur
 | asDBMCastingAlert     | Displays casting bars of casting mobs.                          |   [Link](https://www.curseforge.com/wow/addons/asdbmcastingalert)   |   [Link](https://github.com/aspilla/asMOD/tree/main/asDBMCastingAlert)   |
 | asDebuffFilter        | Player and target debuff display                                |    [Link](https://www.curseforge.com/wow/addons/asdebufffilter)     |    [Link](https://github.com/aspilla/asMOD/tree/main/asDebuffFilter)     |
 | asDotFilter           | Tracks boss and focus debuffs                                   |      [Link](https://www.curseforge.com/wow/addons/asdotfilter)      |      [Link](https://github.com/aspilla/asMOD/tree/main/asDotFilter)      |
-| asFirestarter         | Firestarter and Scorch Alerts                        |     [Link](https://www.curseforge.com/wow/addons/asfirestarter)     |     [Link](https://github.com/aspilla/asMOD/tree/main/asFirestarter)     |
+| asFirestarter         | Firestarter and Scorch Alerts                                   |     [Link](https://www.curseforge.com/wow/addons/asfirestarter)     |     [Link](https://github.com/aspilla/asMOD/tree/main/asFirestarter)     |
 | asFixChat             | `Tab` channel switching and URL copy                            |       [Link](https://www.curseforge.com/wow/addons/asfixchat)       |       [Link](https://github.com/aspilla/asMOD/tree/main/asFixChat)       |
 | asFixHotkey           | Shortens action bar hotkey text                                 |      [Link](https://www.curseforge.com/wow/addons/asfixhotkey)      |      [Link](https://github.com/aspilla/asMOD/tree/main/asFixHotkey)      |
 | asFixUnitFrame        | Hides specific default unit frame elements                      |    [Link](https://www.curseforge.com/wow/addons/asfixunitframe)     |    [Link](https://github.com/aspilla/asMOD/tree/main/asFixUnitFrame)     |
@@ -169,6 +170,7 @@ The functional descriptions for each addon are organized on their respective Cur
 | asNextSkill           | Recommended next skill notification                             |      [Link](https://www.curseforge.com/wow/addons/asnextskill)      |      [Link](https://github.com/aspilla/asMOD/tree/main/asNextSkill)      |
 | asPetAlert            | Alerts you when your pet is dead or missing                     |      [Link](https://www.curseforge.com/wow/addons/aspetalert)       |      [Link](https://github.com/aspilla/asMOD/tree/main/asPetAlert)       |
 | asPowerBar            | Main and class resource display                                 |      [Link](https://www.curseforge.com/wow/addons/aspowerbar)       |      [Link](https://github.com/aspilla/asMOD/tree/main/asPowerBar)       |
+| asPowerInfusion       | Display Power Infusion                                          |    [Link](https://www.curseforge.com/wow/addons/aspowerinfusion)    |    [Link](https://github.com/aspilla/asMOD/tree/main/asPowerInfusion)    |
 | asPremadeGroupsFilter | Group Finder enhancement                                        | [Link](https://www.curseforge.com/wow/addons/aspremadegroupsfilter) | [Link](https://github.com/aspilla/asMOD/tree/main/asPremadeGroupsFilter) |
 | asRaidTimer           | (Optional) Alert cooldown timing for raid                       |      [Link](https://www.curseforge.com/wow/addons/asraidtimer)      |      [Link](https://github.com/aspilla/asMOD/tree/main/asRaidTimer)      |
 | asRangeDisplay        | Distance display for target/focus/mouseover                     |    [Link](https://www.curseforge.com/wow/addons/asrangedisplay)     |    [Link](https://github.com/aspilla/asMOD/tree/main/asRangeDisplay)     |
@@ -390,6 +392,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 <iframe width="560" height="315" src="https://www.youtube.com/embed/fcLwhaml6yA?si=qikm0n-tD88pFei9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 해상도 지원
+
 - FHD, UHD, 4K, Wide 해상도를 지원합니다. 글씨 크기를 고려하면 27인치 이상의 모니터 사용을 추천합니다.
 
 ## asMOD 모음집 사용시 와우 설정 변경
@@ -427,7 +430,7 @@ CurseForge Link에 각 애드온의 기능 설명이 정리 되어 있어, 반�
 | asDBMTimer            | 보스 타임라인 강화                       |      [링크](https://www.curseforge.com/wow/addons/asdbmtimer)       |      [링크](https://github.com/aspilla/asMOD/tree/main/asDBMTimer)       |
 | asDebuffFilter        | 플레이어 및 대상 디버프 표시             |    [링크](https://www.curseforge.com/wow/addons/asdebufffilter)     |    [링크](https://github.com/aspilla/asMOD/tree/main/asDebuffFilter)     |
 | asDotFilter           | 보스/주시 디버프를 추적                  |      [링크](https://www.curseforge.com/wow/addons/asdotfilter)      |      [링크](https://github.com/aspilla/asMOD/tree/main/asDotFilter)      |
-| asFirestarter         | 방화광 및 불태우기 알림         |     [링크](https://www.curseforge.com/wow/addons/asfirestarter)     |     [링크](https://github.com/aspilla/asMOD/tree/main/asFirestarter)     |
+| asFirestarter         | 방화광 및 불태우기 알림                  |     [링크](https://www.curseforge.com/wow/addons/asfirestarter)     |     [링크](https://github.com/aspilla/asMOD/tree/main/asFirestarter)     |
 | asFixChat             | `Tab` 채팅 채널 전환, `URL 복사` 지원    |       [링크](https://www.curseforge.com/wow/addons/asfixchat)       |       [링크](https://github.com/aspilla/asMOD/tree/main/asFixChat)       |
 | asFixHotkey           | 액션바 단축키 텍스트를 축약              |      [링크](https://www.curseforge.com/wow/addons/asfixhotkey)      |      [링크](https://github.com/aspilla/asMOD/tree/main/asFixHotkey)      |
 | asFixUnitFrame        | 블리자드 기본 유닛 프레임 기능 숨김      |    [링크](https://www.curseforge.com/wow/addons/asfixunitframe)     |    [링크](https://github.com/aspilla/asMOD/tree/main/asFixUnitFrame)     |
@@ -445,6 +448,7 @@ CurseForge Link에 각 애드온의 기능 설명이 정리 되어 있어, 반�
 | asNextSkill           | 다음 쓰면 좋은 스킬 알림                 |      [링크](https://www.curseforge.com/wow/addons/asnextskill)      |      [링크](https://github.com/aspilla/asMOD/tree/main/asNextSkill)      |
 | asPetAlert            | 소환수 죽거나 없으면 알림                |      [링크](https://www.curseforge.com/wow/addons/aspetalert)       |      [링크](https://github.com/aspilla/asMOD/tree/main/asPetAlert)       |
 | asPowerBar            | 주 자원/직업 자원 표시                   |      [링크](https://www.curseforge.com/wow/addons/aspowerbar)       |      [링크](https://github.com/aspilla/asMOD/tree/main/asPowerBar)       |
+| asPowerInfusion       | 마력 주입 표시                           |    [링크](https://www.curseforge.com/wow/addons/aspowerinfusion)    |    [랑크](https://github.com/aspilla/asMOD/tree/main/asPowerInfusion)    |
 | asPremadeGroupsFilter | 쐐기돌/공격대 검색 창 강화               | [링크](https://www.curseforge.com/wow/addons/aspremadegroupsfilter) | [링크](https://github.com/aspilla/asMOD/tree/main/asPremadeGroupsFilter) |
 | asRaidTimer           | (미포함) 레이드 주요 쿨기 사용시점 알림  |      [링크](https://www.curseforge.com/wow/addons/asraidtimer)      |      [링크](https://github.com/aspilla/asMOD/tree/main/asRaidTimer)      |
 | asRangeDisplay        | 대상/주시/마우스오버 거리를 표시         |    [링크](https://www.curseforge.com/wow/addons/asrangedisplay)     |    [링크](https://github.com/aspilla/asMOD/tree/main/asRangeDisplay)     |

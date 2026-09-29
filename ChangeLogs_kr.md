@@ -2,6 +2,24 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 260929 Update
+
+### asPowerInfusion (신규 애드온)
+마력 주입 표시
+- 참고: 사제 자신이 시전한 `마력 주입` 도 표시 됨 
+
+![asPowerInfusion](https://media.forgecdn.net/attachments/1987/81/aspowerinfusion-jpg.jpg)
+
+### asPetAlert (신규 기능)
+- 전투중 소환수가 공격하고 있지 않으면, 소환수 수동적 Icon을 화면 중앙에 표시
+  - (참고 : '소환수 수동적` 기술을 소환수 바에 추가 해야 동작)
+ 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/uwxPIyvxujI?si=EG3pWy8DTC7gTxz6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+### asBattleRes
+- 오류 수정 : 마우스 클릭이 되는 이슈 개선
+
+
 ## 260928 Update
 
 ### asCombatInfo

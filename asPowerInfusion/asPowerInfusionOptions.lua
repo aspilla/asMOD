@@ -35,23 +35,23 @@ function ns.setup_option()
 
 		local cvar_name = setting:GetVariable()
 		local variable = get_variable_from_cvar_name(cvar_name)
-		API_Options[variable] = value;
+		APOI_Options[variable] = value;
 		ns.options[variable] = value;
 	end
 
 	local category = Settings.RegisterVerticalLayoutCategory("asPowerInfusion")
 
-	if API_Options == nil or Options_Default.Version ~= API_Options.Version then
-		API_Options = {};
-		API_Options = CopyTable(Options_Default);
-		API_Positions = {};
+	if APOI_Options == nil or Options_Default.Version ~= APOI_Options.Version then
+		APOI_Options = {};
+		APOI_Options = CopyTable(Options_Default);
+		APOI_Positions = {};
 	end
 
-	if API_Positions == nil then
-		API_Positions = {};
+	if APOI_Positions == nil then
+		APOI_Positions = {};
 	end
 
-	ns.options = CopyTable(API_Options);
+	ns.options = CopyTable(APOI_Options);
 
 	for variable, _ in pairs(Options_Default) do
 		local name = variable;
@@ -59,12 +59,12 @@ function ns.setup_option()
 		if name ~= "Version" then
 			local cvar_name = "asPowerInfusion_" .. variable;
 			local tooltip = ""
-			if API_Options[variable] == nil then
-				API_Options[variable] = Options_Default[variable];
+			if APOI_Options[variable] == nil then
+				APOI_Options[variable] = Options_Default[variable];
 				ns.options[variable] = Options_Default[variable];
 			end
 			local defaultValue = Options_Default[variable];
-			local currentValue = API_Options[variable];
+			local currentValue = APOI_Options[variable];
 
 
 			if name == "MillisecondsThreshold" then

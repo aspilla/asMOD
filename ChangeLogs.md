@@ -2,6 +2,23 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 260929 Update
+
+### asPowerInfusion (New Addon)
+Displays Power Infusion status.
+- Note: `Power Infusion` cast by the Priest themselves is also displayed.
+
+![asPowerInfusion](https://media.forgecdn.net/attachments/1987/81/aspowerinfusion-jpg.jpg)
+
+### asPetAlert (New Feature)
+- Displays a `Pet Passive` icon in the center of the screen during combat if your pet is not actively attacking.
+  - (Note: Requires the `Pet Passive` skill to be placed on your pet action bar to function.)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/uwxPIyvxujI?si=EG3pWy8DTC7gTxz6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+### asBattleRes
+- Bugfix : Resolved an issue where the frame unexpectedly registered mouse clicks.
+
 ## 260928 Update
 
 ### asCombatInfo

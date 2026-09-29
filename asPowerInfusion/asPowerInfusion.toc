@@ -3,8 +3,8 @@
 ## Title: |cffff3399as|rPowerInfusion
 ## Notes: Display Power Infusion
 ## Notes-koKR: 마력 주입 표시
-## Version : 260926
-## SavedVariablesPerCharacter: API_Options, API_Positions
+## Version : 260929
+## SavedVariablesPerCharacter: APOI_Options, APOI_Positions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 Libs\LibStub\LibStub.lua

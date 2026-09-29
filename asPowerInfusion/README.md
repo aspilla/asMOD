@@ -1,9 +1,11 @@
 # asPowerInfusion (Midnight)
 
-
 ## Key Features
 
 Display Power Infusion
+- Note: `Power Infusion` cast by the priest themselves is also displayed.
+
+![asPowerInfusion](https://media.forgecdn.net/attachments/1987/81/aspowerinfusion-jpg.jpg)
 
 
 ## Configuration
@@ -25,6 +27,10 @@ Display Power Infusion
 ## 주요 기능
 
 마력 주입 표시
+- 참고: 사제 자신이 시전한 `마력 주입` 도 표시 됨 
+
+![asPowerInfusion](https://media.forgecdn.net/attachments/1987/81/aspowerinfusion-jpg.jpg)
+
 
 ## 설정
 

@@ -15,6 +15,7 @@ local function create_aurabutton(size)
         frame.cooldown:SetAllPoints(frame);
         frame.cooldown:SetDrawSwipe(true);
         frame.cooldown:SetReverse(true);
+        frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
 
         frame.icon = frame:CreateTexture(nil, "BACKGROUND")
         frame.icon:SetAllPoints(frame);
@@ -64,7 +65,7 @@ local function setup_frames()
     main_frame.playeranchor:Show();
 
     if libasConfig then
-        libasConfig.load_position(main_frame.playeranchor, "asPowerInfusion(Player)", API_Positions);
+        libasConfig.load_position(main_frame.playeranchor, "asPowerInfusion(Player)", APOI_Positions);
     end
     local cfilter = {}
 

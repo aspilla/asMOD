@@ -3,16 +3,19 @@ local _, ns = ...;
 local Options_Default = {
     Version = 260505,
     FontSize = 30,
+    ShowPassive = true,
 }
 
 local L= {
     FontSize = "Alert Font Size",
+    ShowPassive = "Display button when pet is passive",
 }
 
 
 if GetLocale() == "koKR" then
 L= {
     FontSize = "알림 글씨 크기",
+    ShowPassive = "펫 수동적 버튼 표시",
 }
 end
 

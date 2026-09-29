@@ -55,9 +55,7 @@ local function init()
     ns.setup_option();
 
     main_button:SetFrameStrata("LOW");
-    main_button:EnableMouse(true);
-    main_button:RegisterForDrag("LeftButton");
-    main_button:SetMovable(true);
+    main_button:EnableMouse(false);
 
     main_button.cooldown:SetHideCountdownNumbers(false);
     main_button.cooldown:SetDrawSwipe(true);
