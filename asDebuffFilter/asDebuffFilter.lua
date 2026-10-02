@@ -200,7 +200,7 @@ local function create_aurabutton(size)
         frame:SetMouseMotionEnabled(true);
 
         frame:SetIcon(frame.icon);
-        frame:SetAuraBorder(frame.border, borderoption);
+        frame:AddDispelTypeTexture(frame.border, borderoption);
         frame:SetDurationCooldown(frame.cooldown);
         frame:SetDurationText(frame.remain, {
             textFormat = {
@@ -290,7 +290,6 @@ local function setup_frames()
         main_frame.targetframe:SetWidth(1)
         main_frame.targetframe:SetHeight(1)
         main_frame.targetframe:Show()
-
     end
 
 
@@ -314,8 +313,11 @@ local function setup_frames()
             AnchorUtil.FlowDirection.Down);
 
         add_group(main_frame.playerframe, "debuffs", filters.helpful, cfilter,
-            { maxFrameCount = ns.configs.max_debuffs, initializeFrame = create_aurabutton(ns.configs.size *
-            ns.options.PlayerDebuffRate) });
+            {
+                maxFrameCount = ns.configs.max_debuffs,
+                initializeFrame = create_aurabutton(ns.configs.size *
+                    ns.options.PlayerDebuffRate)
+            });
         main_frame.playerframe:SetEnabled(true);
         main_frame.playerframe:SetPoint("RIGHT", main_frame.playeranchor, "RIGHT", 0, 0)
         main_frame.playerframe:SetWidth(1)

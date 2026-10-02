@@ -15,7 +15,6 @@ local borderoption = {
 };
 
 
-
 local function create_aurabutton(size, issteal)
     local formatter = C_StringUtil.CreateNumericRuleFormatter();
     if ns.options.MillisecondsThreshold then
@@ -130,7 +129,7 @@ local function create_aurabutton(size, issteal)
             frame.border:SetVertexColor(1, 1, 1);
             frame.border:Show();
         else
-            frame:SetAuraBorder(frame.border, borderoption);
+            frame:AddDispelTypeTexture(frame.border, borderoption);
         end
         frame:SetDurationCooldown(frame.cooldown);
         frame:SetDurationText(frame.remain, {

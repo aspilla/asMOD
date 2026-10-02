@@ -153,7 +153,7 @@ local function create_aurabutton(width, fontsize)
         frame:SetMouseMotionEnabled(true);
 
         frame:SetIcon(frame.icon);
-        frame:SetAuraBorder(frame.border, borderoption);
+        frame:AddDispelTypeTexture(frame.border, borderoption);
         frame:SetDurationCooldown(frame.cooldown);
         frame:SetDurationText(frame.remain, {
             textFormat = {
