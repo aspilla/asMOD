@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261003 Update
+
+### asCooldownPulse
+- Fixed an issue where spells set for cooldown completion alerts were not triggering if their cooldown duration was short.
+
 ## 260929 Update
 
 ### asPowerInfusion (New Addon)

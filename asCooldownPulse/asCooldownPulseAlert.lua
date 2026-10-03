@@ -89,6 +89,7 @@ local function showalert(id, isitem)
     end
 end
 
+local cached = {};
 local function onupdate()
     local mincooldown = ns.options.MinCooldown - configs.updaterate - 0.1;
 
@@ -108,8 +109,9 @@ local function onupdate()
             if start > 0 then
                 if not cd.isActive or cd.isOnGCD then
                     local duration = GetTime() - start;
-                    if duration > mincooldown then
+                    if duration >= mincooldown or cached[id] then
                         showalert(id);
+                        cached[id] = true;
                     end
                     alertspells[spellid] = 0;
                 end
@@ -129,7 +131,7 @@ local function onupdate()
                 showalert(itemid, true);
             end
             alertitems[itemid] = false;
-        elseif duration > mincooldown then
+        elseif duration >= mincooldown then
             alertitems[itemid] = true;
         end
     end
@@ -185,6 +187,7 @@ end
 local function init_spells()
     wipe(alertspells);
     wipe(alertspellnames);
+    wipe(cached);
 
     scan_spellbook(1);
     scan_spellbook(2);

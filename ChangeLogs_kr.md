@@ -2,6 +2,12 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261003 Update
+
+### asCooldownPulse
+- 쿨완료 안내된 스킬은 쿨이 짧은 경우에도 알림을 하도록 수정
+
+
 ## 260929 Update
 
 ### asPowerInfusion (신규 애드온)
