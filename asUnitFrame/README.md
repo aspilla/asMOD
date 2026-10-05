@@ -43,6 +43,7 @@ This addon replaces the default unit frames. It is recommended to use it with ot
 - **Aggro (Threat Level):** Displays the player's threat level (%) and status color on the target frame.
 - **Portrait (Optional):**
   - Displays unit portraits
+  - For Target/Focus, display 1 stun debuff over portrait.
 - **Debuff Display (Pet, Target of Target):**
   - Displays debuffs at the bottom of the frame. (Max 4)
 - **Buff Display (Boss):**
@@ -179,6 +180,7 @@ The following errors may occur.
 - **어그로(위협 수준):** 대상 프레임에서 플레이어의 위협 수준(%) 및 상태를 색상으로 표시.
 - **초상화 (선택 사항):**
   - 유닛 초상화를 표시
+  - 초상와 위에 스턴기등 주요 디버프 1개 표시
 - **디버프 표시 (소환수, 대상의 대상):**
   - 프레임 하단에 디버프 표시. (최대 4개)
 - **버프 표시 (보스):**

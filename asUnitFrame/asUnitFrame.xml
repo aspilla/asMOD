@@ -8,7 +8,7 @@
 				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
 			</Layer>
 			<Layer level="BORDER">
-				<Texture name="$parentBorder" parentKey="border" file="Interface\Addons\asUnitFrame\border.tga" setAllPoints="true"/>				
+				<Texture name="$parentBorder" parentKey="border" file="Interface\Addons\asUnitFrame\border.tga" setAllPoints="true"/>
 			</Layer>
 		</Layers>
 	</Frame>
@@ -17,31 +17,14 @@
 			<Layer level="BACKGROUND">
 				<Texture name="$parentPortrait" parentKey="portrait" setAllPoints="true" />
 			</Layer>
-			<Layer level="BORDER">
-				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
-			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asUnitFrame\border.tga"/>				
+				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asUnitFrame\border.tga"/>
 			</Layer>
-			<Layer level="OVERLAY">
-				<FontString name="$parentCount" parentKey="count" justifyH="RIGHT"/>				
-			</Layer>	
 		</Layers>
-		<Frames>
-			<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" frameLevel = "1000">
-				<Anchors>
-					<Anchor point="CENTER">
-						<Offset>
-							<AbsDimension x="0" y="-1"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Cooldown>
-		</Frames>
 	</Frame>
-	<Button name="asTotemButtonTemplate" inherits="SecureUnitButtonTemplate" virtual="true" hidden="true">		
+	<Button name="asTotemButtonTemplate" inherits="SecureUnitButtonTemplate" virtual="true" hidden="true">
 		<Frames>
-			<Frame parentKey="Icon" useParentLevel="true">				
+			<Frame parentKey="Icon" useParentLevel="true">
 				<Anchors>
 					<Anchor point="CENTER" />
 				</Anchors>
@@ -50,8 +33,8 @@
 						<Texture name="$parentTexture" parentKey="icon" setAllPoints="true"/>
 					</Layer>
 					<Layer level="ARTWORK" textureSubLevel="7">
-						<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asUnitFrame\border.tga"/>				
-					</Layer>					
+						<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asUnitFrame\border.tga"/>
+					</Layer>
 				</Layers>
 				<Frames>
 					<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" frameLevel = "1000">
@@ -67,6 +50,6 @@
 			</Frame>
 		</Frames>
 	</Button>
-	<Texture name="asUnitFrameNotInteruptTemplate" virtual="true" atlas="RaidFrame-Hp-Fill">		
+	<Texture name="asUnitFrameNotInteruptTemplate" virtual="true" atlas="RaidFrame-Hp-Fill">
 	</Texture>
 </Ui>

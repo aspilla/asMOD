@@ -190,6 +190,71 @@ local function create_container(parent, unit, filter, anchor, hdir, vdir, fontsi
     return container;
 end
 
+local function create_paurabutton(width, height, fontsize)
+    return function(frame)
+        frame.cooldown = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
+        frame.cooldown:SetAllPoints(frame);
+        frame.cooldown:SetDrawSwipe(true);
+        frame.cooldown:SetReverse(true);
+
+        for _, r in next, { frame.cooldown:GetRegions() } do
+            if r:GetObjectType() == "FontString" then
+                r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
+                r:ClearAllPoints();
+                r:SetPoint("CENTER", 0, 0);
+                r:SetDrawLayer("OVERLAY");
+                break
+            end
+        end
+        frame.icon = frame:CreateTexture(nil, "BACKGROUND")
+        frame.icon:SetAllPoints(frame);
+        frame.icon:SetTexCoord(.08, .92, .16, .84);
+
+        frame.overlay = CreateFrame("Frame", nil, frame);
+        frame.overlay:SetFrameLevel(frame:GetFrameLevel() + 5);
+        frame.overlay:SetAllPoints(frame);
+
+        frame.borderb = frame.overlay:CreateTexture(nil, "BORDER");
+        frame.borderb:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga")
+        frame.borderb:SetAllPoints(frame.overlay);
+        frame.borderb:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+        frame.borderb:SetVertexColor(0, 0, 0);
+
+        frame.border = frame.overlay:CreateTexture(nil, "ARTWORK");
+        frame.border:SetTexture("Interface\\Addons\\asUnitFrame\\border.tga")
+        frame.border:SetAllPoints(frame.overlay);
+        frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+        frame.border:SetVertexColor(0, 0, 0);
+
+        frame:SetWidth(width);
+        frame:SetHeight(height);
+
+        frame:EnableMouse(false);
+        frame:SetMouseMotionEnabled(true);
+
+        frame:SetIcon(frame.icon);
+        frame:SetDurationCooldown(frame.cooldown);
+        frame:AddDispelTypeTexture(frame.border, borderoption);
+    end
+end
+
+local function create_pcontainer(parent, unit, filter, anchor, hdir, vdir, height, width, fontsize)
+    local cfilters = {}
+    cfilters.nameplateShowAll = true;
+    local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
+    container:SetFlowLayoutAnchorPoint(anchor);
+    container:SetFlowLayoutGrowthDirection(hdir, vdir);
+
+    container:AddAuraGroup("auras", filter,
+        { maxFrameCount = 1, initializeFrame = create_paurabutton(width, height, fontsize) });
+    container:SetAuraGroupLayout("auras", { elementSpacingX = 0.1 });
+    container:SetAuraGroupCandidateFilters("auras", cfilters);
+    container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);
+    container:SetUnit(unit);
+    container:SetEnabled(true);
+    return container;
+end
+
 local function update_totemanchor(frames, index, offsetX, right, parent, width)
     local button = frames[index];
 
@@ -331,34 +396,18 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 
     local hwidth = width;
 
+    frame.istargetframe = (unit == "target");
+    frame.isplayerframe = (unit == "player");
+    frame.ispetframe = (unit == "pet");
+    frame.isfocusframe = (unit == "focus");
     if ns.options.ShowPortrait then
         hwidth = width - height * 1.1;
 
         frame.portrait = CreateFrame("Button", nil, frame, "AUFDebuffFrameTemplate");
         frame.portrait:SetFrameLevel(configs.framelevel - 20);
         local pframe = frame.portrait;
-        pframe.cooldown:SetDrawSwipe(true);
-        if ns.options.MillisecondsThreshold then
-            pframe.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
-        end
-        for _, r in next, { pframe.cooldown:GetRegions() } do
-            if r:GetObjectType() == "FontString" then
-                r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-                r:ClearAllPoints();
-                r:SetPoint("CENTER", 0, 0);
-                r:SetDrawLayer("OVERLAY");
-                break
-            end
-        end
-
-        pframe.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-        pframe.count:ClearAllPoints()
-        pframe.count:SetPoint("BOTTOMRIGHT", pframe.icon, "BOTTOMRIGHT", -2, 2);
-
         pframe.portrait:SetTexCoord(.08, .92, .08, .92);
         pframe.portrait:SetAlpha(1);
-        pframe.icon:SetTexCoord(.08, .92, .08, .92);
-        pframe.icon:SetAlpha(1);
         pframe.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
         pframe.border:SetVertexColor(0, 0, 0)
         pframe.border:SetAlpha(1);
@@ -372,6 +421,12 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
         end
         pframe.portrait:Show();
         pframe:Show();
+        if frame.istargetframe or frame.isfocusframe then
+            frame.pdebuffcontainer =  create_pcontainer(frame, unit, ns.filters.helpful, "RIGHT", AnchorUtil.FlowDirection.Left,
+                AnchorUtil.FlowDirection.Down, height + 1, height * 1.1, fontsize);
+
+            frame.pdebuffcontainer:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0);
+        end
     end
 
     frame.healthbar:SetWidth(hwidth);
@@ -665,15 +720,13 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
         frame.debuffcontainer:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, -5);
     end
 
+
     if ns.options.ShowTotemBar and unit == "player" then
         create_totemframes(frame, true, fontsize, width, MAX_TOTEMS);
         frame:RegisterEvent("PLAYER_TOTEM_UPDATE");
     end
 
     frame.updatecount = 1;
-    frame.istargetframe = (unit == "target");
-    frame.isplayerframe = (unit == "player");
-    frame.ispetframe = (unit == "pet");
 
     frame:RegisterUnitEvent("UNIT_FACTION", unit);
     frame:RegisterUnitEvent("UNIT_NAME_UPDATE", unit);

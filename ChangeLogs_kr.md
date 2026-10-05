@@ -2,6 +2,12 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261005 Update
+
+### asUnitFrame (신규 기능)
+- 초상화창에 대상/주시의 스턴 디버프 1개 표시
+- 12.1.5 지원 
+
 ## 261003 Update
 
 ### asCooldownPulse

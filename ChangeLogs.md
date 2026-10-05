@@ -2,6 +2,12 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261005 Update
+
+### asUnitFrame (New Feature)
+- Displays 1 target/focus stun debuff on the portrait frame.
+- Support for Patch 12.1.5.
+
 ## 261003 Update
 
 ### asCooldownPulse

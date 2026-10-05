@@ -21,4 +21,8 @@ function ns.update_auras(frame)
 	if frame.buffcontainer then
 		frame.buffcontainer:UpdateAllAuras();
 	end
+
+	if frame.pdebuffcontainer then
+		frame.pdebuffcontainer:UpdateAllAuras();
+	end
 end
