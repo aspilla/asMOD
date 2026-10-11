@@ -2,6 +2,10 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261012 update
+### asCompactRaidBuff
+- 오류 수정: 힐러 HOT 이 표시 안되는 이슈 개선
+
 ## 261011 update
 - 12.1.5 Toc 및 API 지원
 

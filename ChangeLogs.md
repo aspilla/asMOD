@@ -2,6 +2,10 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261012 update
+### asCompactRaidBuff
+- Bugfix : Fix an issue that HOT buff coloring is not working.
+
 ## 261011 update
 - 12.1.5 Toc and API update
 

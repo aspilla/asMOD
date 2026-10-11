@@ -129,6 +129,9 @@ local function setup_buffcolor(asframe)
             asframe.container:SetHeight(1)
             asframe.container:Show()
             asframe.container:SetFrameLevel(asframe.frame:GetFrameLevel());
+        else
+            asframe.container:SetUnit(unit);
+            asframe.container:UpdateAllAuras();
         end
         asframe.container:SetEnabled(true);
     end
