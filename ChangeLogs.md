@@ -2,6 +2,9 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261011 update
+- 12.1.5 Toc and API update
+
 ## 261005 Update
 
 ### asUnitFrame (New Feature)

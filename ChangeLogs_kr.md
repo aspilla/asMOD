@@ -2,6 +2,9 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261011 update
+- 12.1.5 Toc 및 API 지원
+
 ## 261005 Update
 
 ### asUnitFrame (신규 기능)
