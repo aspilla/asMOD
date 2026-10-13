@@ -2,6 +2,13 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261013 Update
+
+### asCastBar, asTargetCastBar, asDBMCastingAlert, asUnitFrame
+- Improved bar animations for smoother progress visual updates.
+- Updated channeled cast bar colors to better match the default UI style.
+- Changed setting behavior: closing the options window will now automatically `/reload` the UI to apply changes.
+
 ## 261012 update
 ### asCompactRaidBuff
 - Bugfix : Fix an issue that HOT buff coloring is not working.

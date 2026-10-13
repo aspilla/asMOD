@@ -6,7 +6,6 @@ local Options_Default = {
     BarHeight = 20,
     ShowTick = true,
     Scale = 1,
-    SmoothyBar = false,
     RefreshRate = 20,
 };
 
@@ -16,7 +15,6 @@ local L = {
     BarHeight = "Bar Height",
     ShowTick = "Show channeling tick",
     Scale = "Scale",
-    SmoothyBar = "Update per every frame",
     RefreshRate = "Refresh rate per second"
 }
 
@@ -27,7 +25,6 @@ if GetLocale() == "koKR" then
         BarHeight = "시전바 높이",
         ShowTick = "채널링 틱 표시",
         Scale = "크기",
-        SmoothyBar = "프레임마다 업데이트",
         RefreshRate = "초당 업데이트 횟수"
     }
 end
@@ -38,6 +35,8 @@ local tempoption = {};
 local function hidecallback()
     ns.playercastbar:Hide()
 end
+
+local bupdated = false;
 
 function ns.setup_option()
     local function OnSettingChanged(_, setting, value)
@@ -63,7 +62,7 @@ function ns.setup_option()
                 C_Timer.After(2, hidecallback);
             end
         else
-            ReloadUI();
+            bupdated = true;
         end
     end
 
@@ -131,6 +130,11 @@ function ns.setup_option()
             end
         end
     end
-
     Settings.RegisterAddOnCategory(category)
+
+    EventRegistry:RegisterCallback("SettingsPanel.OnHide", function()
+        if bupdated then
+            ReloadUI();
+        end
+    end);
 end

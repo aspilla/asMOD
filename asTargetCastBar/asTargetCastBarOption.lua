@@ -27,6 +27,7 @@ end
 
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
+local bupdated = false;
 
 function ns.setup_option()
 	local function OnSettingChanged(_, setting, value)
@@ -44,7 +45,7 @@ function ns.setup_option()
 		if variable == "FocusCastScale" then
 		elseif variable == "TargetCastScale" then
 		else
-			ReloadUI();
+			bupdated = true;
 		end
 	end
 
@@ -101,4 +102,10 @@ function ns.setup_option()
 	end
 
 	Settings.RegisterAddOnCategory(category)
+
+	EventRegistry:RegisterCallback("SettingsPanel.OnHide", function()
+        if bupdated then
+            ReloadUI();
+        end
+    end);
 end

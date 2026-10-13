@@ -12,8 +12,10 @@ if GetLocale() == "koKR" then
 end
 
 
+local zero_duration = C_DurationUtil.CreateDuration();
 local function hide_castbar(castbar)
 	local targetname = castbar.targetname;
+	castbar:SetTimerDuration(zero_duration);
 	castbar:SetValue(0);
 	castbar:Hide();
 	castbar.isAlert = false;
@@ -66,6 +68,7 @@ local function check_casting(castbar, event, interuptedby, complete)
 			bchannel = true;
 		end
 		if event == "UNIT_SPELLCAST_INTERRUPTED" then
+		    castbar:SetTimerDuration(zero_duration);
 			castbar:SetMinMaxValues(0, 100);
 			castbar:SetValue(100);
 			local failtext = configs.interruptedtext;
@@ -98,9 +101,11 @@ local function check_casting(castbar, event, interuptedby, complete)
 			end
 			castbar.duration_obj = duration;
 			frameicon:SetTexture(texture);
-			castbar:SetReverseFill(bchannel);
-			castbar:SetMinMaxValues(duration:GetStartTime(), duration:GetEndTime());
-			castbar:SetValue(GetTime());
+			local direction = 0;
+            if bchannel then
+                direction = Enum.StatusBarTimerDirection.RemainingTime;
+            end
+            castbar:SetTimerDuration(duration, 0, direction);
 			castbar.failstart = nil;
 			castbar.castspellid = spellid;
 
@@ -218,6 +223,5 @@ function ns.update_castbar(castbar)
 			castbar.time:SetText(string.format("%.1f/%.1f", castbar.duration_obj:GetRemainingDuration(0),
 				castbar.duration_obj:GetTotalDuration(0)));
 		end
-		castbar:SetValue(current, Enum.StatusBarInterpolation.ExponentialEaseOut);
 	end
 end

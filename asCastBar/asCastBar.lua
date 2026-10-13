@@ -51,8 +51,7 @@ main_frame:SetWidth(0)
 main_frame:SetHeight(0)
 main_frame:Show();
 
-ns.bartype = 0;
-
+local zero_duration = C_DurationUtil.CreateDuration();
 local function setup_castbar()
     configs.namesize = ns.options.BarHeight * 0.6;
     configs.timesize = ns.options.BarHeight * 0.5;
@@ -60,7 +59,7 @@ local function setup_castbar()
     castbar:SetFrameStrata("LOW");
     castbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
     local statustexture = castbar:GetStatusBarTexture();
-    statustexture:SetHorizTile(false)
+    statustexture:SetHorizTile(false);
     castbar:SetMinMaxValues(0, 100)
     castbar:SetValue(100)
     castbar:SetHeight(ns.options.BarHeight)
@@ -151,6 +150,7 @@ function ns.resize(castbar)
 end
 
 local function hide_castbar(castbar)
+    castbar:SetTimerDuration(zero_duration);
     castbar:SetValue(0);
     castbar:Hide();
     castbar.isAlert = false;
@@ -192,6 +192,7 @@ local function check_casting(castbar, event, unit, complete)
         end
 
         if event == "UNIT_SPELLCAST_INTERRUPTED" then
+            castbar:SetTimerDuration(zero_duration);
             castbar:SetMinMaxValues(0, 100);
             castbar:SetValue(100);
             local failtext = configs.interruptedtext;
@@ -224,9 +225,11 @@ local function check_casting(castbar, event, unit, complete)
             castbar.duration_obj = duration;
             frameicon:SetTexture(texture);
 
-            castbar:SetReverseFill(reverse);
-            castbar:SetMinMaxValues(duration:GetStartTime(), duration:GetEndTime());
-            castbar:SetValue(GetTime());
+            local direction = 0;
+            if reverse then
+                direction = Enum.StatusBarTimerDirection.RemainingTime;
+            end
+            castbar:SetTimerDuration(duration, 0, direction);
             castbar.failstart = nil;
             castbar.donestart = nil;
             castbar.castspellid = spellid;
@@ -406,8 +409,6 @@ local function update_castbar(castbar)
             castbar.time:SetText(string.format("%.1f/%.1f", castbar.duration_obj:GetRemainingDuration(0),
                 castbar.duration_obj:GetTotalDuration(0)));
         end
-
-        castbar:SetValue(current, ns.bartype);
     end
 end
 
@@ -446,14 +447,8 @@ local function init()
         main_frame:SetScript("OnEvent", on_event)
         main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
-        if ns.options.SmoothyBar then
-            ns.bartype = 0;
-            main_frame:SetScript("OnUpdate", on_update);
-        else
-            ns.bartype = Enum.StatusBarInterpolation.ExponentialEaseOut;
-            local updaterate = ns.options.RefreshRate and (1 / ns.options.RefreshRate) or configs.updaterate;
-            C_Timer.NewTicker(updaterate, on_update);
-        end
+        local updaterate = ns.options.RefreshRate and (1 / ns.options.RefreshRate) or configs.updaterate;
+        C_Timer.NewTicker(updaterate, on_update);
 
         hidedefault(PlayerCastingBarFrame);
         hidedefault(PetCastingBarFrame);

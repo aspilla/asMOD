@@ -24,8 +24,7 @@ Simple Cast Bar
 - Cast bar width (Default: 238).
 - Cast bar height (Default: 20).
 - Whether to display channel ticks, functions only in Simple Design Mode (Default: On).
-- Update per every frame, comsume more CPU (Default: off, Recommended for high-end PCs).
-- Refresh rate per second (Default: 20, only works when updating per every frame is disabled).
+- Refresh rate per second (Default: 20).
 - **Move Position**: Enter the `/asConfig` command in the chat window.
 - **Reset Position**: Enter the `/asClear` command in the chat window to reset to default settings.
 
@@ -64,8 +63,7 @@ Simple Cast Bar
 - 시전바 넓이 (기본 238)
 - 시전바 높이 (기본 20)
 - 채널링 틱 표시, 심플 디자인 모드에서만 동작 (기본 On)
-- 매 프레임마다 바를 변경, CPU 점유율 증가 (기본 Off, 고성능 PC에서 권장)
-- 초당 업데이트 횟수 (기본 20, 매 프레임마다 바를 변경 옵션을 꺼야 동작)
+- 초당 업데이트 횟수 (기본 20)
 - **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 - **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화
 

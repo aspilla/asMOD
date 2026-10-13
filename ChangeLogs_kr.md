@@ -2,6 +2,12 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261013 update
+### asCastBar, asTargetCastBar, asDBMCastingAlert
+- 바가 부드럽게 변경 되도록 개선
+- 채널 시전바 색상이 기본과 유사한 방식으로 표시 되도록 변경
+- 옵션 변경시 설정 창을 닫으면 Reload 하도록 변경
+
 ## 261012 update
 ### asCompactRaidBuff
 - 오류 수정: 힐러 HOT 이 표시 안되는 이슈 개선
