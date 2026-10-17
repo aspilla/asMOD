@@ -1,107 +1,115 @@
 local _, ns = ...;
 ns.configs = {
     size = 28,
-	sizerate = 0.8,
+    sizerate = 0.8,
     nocombat_size = 20,
     target_xpoint = 125 + 20,
     target_ypoint = -152,
     combat_max_buffs = 7,
     nocombat_max_buffs = 21,
-    cool_fontsize_rate = 0.4, -- Cooldown Font Size
-    count_fontsize_rate = 0.4,    -- Count Font Size
-    combat_alpha = 1,       -- 전투중 Alpha 값
-    normal_alpha = 0.5,     -- 비 전투중 Alpha 값
+    cool_fontsize_rate = 0.4,  -- Cooldown Font Size
+    count_fontsize_rate = 0.4, -- Count Font Size
+    combat_alpha = 1,          -- 전투중 Alpha 값
+    normal_alpha = 0.5,        -- 비 전투중 Alpha 값
 };
 
 local Options_Default = {
-	Version = 251003,
-	CombatAlphaChange = true,
-	MillisecondsThreshold = 3,
+    Version = 251003,
+    CombatAlphaChange = true,
+    MillisecondsThreshold = 3,
 };
 
 local L = {
-	CombatAlphaChange = "Adjusts transparency when out of combat",
-	MillisecondsThreshold = "Remaining cooldown begins displaying in 0.1-second increments",
+    CombatAlphaChange = "Adjusts transparency when out of combat",
+    MillisecondsThreshold = "Remaining cooldown begins displaying in 0.1-second increments",
 }
 
 
 if GetLocale() == "koKR" then
-	L = {
-		CombatAlphaChange = "비전투시 투명도 변경",
-		MillisecondsThreshold = "남은 쿨을 0.1초 단위로 보여줄 최소 시간",
-	}
+    L = {
+        CombatAlphaChange = "비전투시 투명도 변경",
+        MillisecondsThreshold = "남은 쿨을 0.1초 단위로 보여줄 최소 시간",
+    }
 end
 
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
+local bupdated = false;
 
 function ns.setup_option()
-	local function OnSettingChanged(_, setting, value)
-		local function get_variable_from_cvar_name(cvar_name)
-			local variable_start_index = string.find(cvar_name, "_") + 1
-			local variable = string.sub(cvar_name, variable_start_index)
-			return variable
-		end
+    local function OnSettingChanged(_, setting, value)
+        local function get_variable_from_cvar_name(cvar_name)
+            local variable_start_index = string.find(cvar_name, "_") + 1
+            local variable = string.sub(cvar_name, variable_start_index)
+            return variable
+        end
 
-		local cvar_name = setting:GetVariable()
-		local variable = get_variable_from_cvar_name(cvar_name)
-		ABF_Options[variable] = value;
-		ns.options[variable] = value;
-	end
+        local cvar_name = setting:GetVariable()
+        local variable = get_variable_from_cvar_name(cvar_name)
+        ABF_Options[variable] = value;
+        ns.options[variable] = value;
+        bupdated = true;
+    end
 
-	local category = Settings.RegisterVerticalLayoutCategory("asBuffFilter")
+    local category = Settings.RegisterVerticalLayoutCategory("asBuffFilter")
 
-	if ABF_Options == nil or Options_Default.Version ~= ABF_Options.Version then
-		ABF_Options = {};
-		ABF_Options = CopyTable(Options_Default);
-		ABF_Positions = {};
-	end
+    if ABF_Options == nil or Options_Default.Version ~= ABF_Options.Version then
+        ABF_Options = {};
+        ABF_Options = CopyTable(Options_Default);
+        ABF_Positions = {};
+    end
 
-	if ABF_Positions == nil then
-		ABF_Positions = {};
-	end
+    if ABF_Positions == nil then
+        ABF_Positions = {};
+    end
 
-	ns.options = CopyTable(ABF_Options);
+    ns.options = CopyTable(ABF_Options);
 
-	for variable, _ in pairs(Options_Default) do
-		local name = variable;
+    for variable, _ in pairs(Options_Default) do
+        local name = variable;
 
-		if name ~= "Version" then
-			local cvar_name = "asBuffFilter_" .. variable;
-			local tooltip = ""
-			if ABF_Options[variable] == nil then
-				ABF_Options[variable] = Options_Default[variable];
-				ns.options[variable] = Options_Default[variable];
-			end
-			local defaultValue = Options_Default[variable];
-			local currentValue = ABF_Options[variable];
+        if name ~= "Version" then
+            local cvar_name = "asBuffFilter_" .. variable;
+            local tooltip = ""
+            if ABF_Options[variable] == nil then
+                ABF_Options[variable] = Options_Default[variable];
+                ns.options[variable] = Options_Default[variable];
+            end
+            local defaultValue = Options_Default[variable];
+            local currentValue = ABF_Options[variable];
 
-			if name == "MillisecondsThreshold" then
-				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), L[name], defaultValue);
-				local options = Settings.CreateSliderOptions(0, 10, 1);
-				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
-				Settings.CreateSlider(category, setting, options, tooltip);
-				Settings.SetValue(cvar_name, currentValue);
-				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
-			elseif tonumber(defaultValue) ~= nil then
-				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), L[name], defaultValue);
-				local options = Settings.CreateSliderOptions(1, 2, 0.1);
-				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
-				Settings.CreateSlider(category, setting, options, tooltip);
-				Settings.SetValue(cvar_name, currentValue);
-				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
-			else
-				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), L[name], defaultValue);
+            if name == "MillisecondsThreshold" then
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue), L[name], defaultValue);
+                local options = Settings.CreateSliderOptions(0, 10, 1);
+                options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+                Settings.CreateSlider(category, setting, options, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            elseif tonumber(defaultValue) ~= nil then
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue), L[name], defaultValue);
+                local options = Settings.CreateSliderOptions(1, 2, 0.1);
+                options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+                Settings.CreateSlider(category, setting, options, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            else
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue), L[name], defaultValue);
 
-				Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
-				Settings.SetValue(cvar_name, currentValue);
-				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
-			end
-		end
-	end
+                Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+            end
+        end
+    end
 
-	Settings.RegisterAddOnCategory(category)
+    Settings.RegisterAddOnCategory(category);
+
+    EventRegistry:RegisterCallback("SettingsPanel.OnHide", function()
+        if bupdated then
+            ReloadUI();
+        end
+    end);
 end

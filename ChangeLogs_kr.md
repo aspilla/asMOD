@@ -2,6 +2,15 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261017 Update
+
+### asNamePlates (신규 기능)
+- 이름표 상단 여백 : `0.04`을 기본으로 설정 (와우 기본 설정은 `0.08`, `4`로 설정하면 `0.04`, 만렙이 아닐 경우 `5`로 설정 추천)
+	- **참고:** 애드온 삭제시 다음 명령어로 초기화 필요 `/run SetCVar("nameplateTopInset", "0.08")`
+
+### asGCDBar
+- 원래 의도대로 글로벌 남은 시간 기준으로 바가 줄어들도록 표시
+
 ## 261013 update
 ### asCastBar, asTargetCastBar, asDBMCastingAlert, asUnitFrame
 - 바가 부드럽게 변경 되도록 개선

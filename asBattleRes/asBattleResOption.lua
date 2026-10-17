@@ -17,7 +17,7 @@ end
 
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
-
+local bupdated = false;
 
 function ns.setup_option()
     local function OnSettingChanged(_, setting, value)
@@ -31,6 +31,7 @@ function ns.setup_option()
         local variable = get_variable_from_cvar_name(cvar_name)
         ASBR_Options[variable] = value;
         ns.options[variable] = value;
+        bupdated = true;
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asBattleRes")
@@ -89,5 +90,11 @@ function ns.setup_option()
         end
     end
 
-    Settings.RegisterAddOnCategory(category)
+    Settings.RegisterAddOnCategory(category);
+
+    EventRegistry:RegisterCallback("SettingsPanel.OnHide", function()
+        if bupdated then
+            ReloadUI();
+        end
+    end);
 end

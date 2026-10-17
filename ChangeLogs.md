@@ -2,6 +2,15 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261017 Update
+
+### asNamePlates (New Feature)
+- Nameplate Top Inset: Set to `0.04` by default (Default WoW setting is `0.08`; entering `4` sets it to `0.04`, recommended setting is `5` if below max level).
+  - **Note:** If you uninstall the addon, reset this value using the following command: `/run SetCVar("nameplateTopInset", "0.08")`
+
+### asGCDBar
+- Adjusted bar behavior to properly shrink based on remaining Global Cooldown (GCD) duration as originally intended.
+
 ## 261013 Update
 
 ### asCastBar, asTargetCastBar, asDBMCastingAlert, asUnitFrame

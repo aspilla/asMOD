@@ -39,6 +39,7 @@ end
 
 local tempoption = {};
 ns.options = CopyTable(Options_Default);
+local bupdated = false;
 
 function ns.SetupOptionPanels()
 	local function OnSettingChanged(_, setting, value)
@@ -51,7 +52,8 @@ function ns.SetupOptionPanels()
 		local cvar_name = setting:GetVariable()
 		local variable = get_variable_from_cvar_name(cvar_name)
 		ABLA_Options[variable] = value;
-		ns.options[variable] = value;
+        ns.options[variable] = value;
+		bupdated = true;
 	end
 
 	local category = Settings.RegisterVerticalLayoutCategory("asBloodlustAlert")
@@ -102,5 +104,11 @@ function ns.SetupOptionPanels()
 		ns.options[variable] = currentValue;
 	end
 
-	Settings.RegisterAddOnCategory(category)
+    Settings.RegisterAddOnCategory(category);
+
+    EventRegistry:RegisterCallback("SettingsPanel.OnHide", function()
+        if bupdated then
+            ReloadUI();
+        end
+    end);
 end

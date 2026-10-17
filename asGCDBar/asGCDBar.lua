@@ -10,8 +10,8 @@ local configs = {
 local main_frame = CreateFrame("FRAME", nil, UIParent)
 
 local function on_update()
-	local durationinfo = C_Spell.GetSpellCooldownDuration(61304);
-	main_frame.gcdbar:SetTimerDuration(durationinfo, ns.bartype);
+    local durationinfo = C_Spell.GetSpellCooldownDuration(61304);
+    main_frame.gcdbar:SetTimerDuration(durationinfo, 0, Enum.StatusBarTimerDirection.RemainingTime);
 end
 
 local function on_event(self, event)

@@ -5,7 +5,7 @@ Simple status bar to visualize the player's Global Cooldown (GCD)
 
 ## Configuration
 
-Configure settings under **Options** -> **AddOns** -> **asGCDBar** (supports bar width, height, transparency out of combat, and animation settings).
+Configure settings under **Options** -> **AddOns** -> **asGCDBar** (supports bar width, height, transparency out of combat).
 
 - **Move Position**: Enter the `/asConfig` command in the chat.
 - **Reset Position**: Enter the `/asClear` command in the chat to restore default settings.
@@ -24,7 +24,7 @@ Configure settings under **Options** -> **AddOns** -> **asGCDBar** (supports bar
 
 ## 설정
 
-게임 설정 내 **설정** -> **애드온** -> **asGCDBar** 메뉴에서 세부 설정이 가능합니다. (바 넓이, GCD바 높이, 비전투시 투명도 변경, 부드러운 애니메이션 토글 등)
+게임 설정 내 **설정** -> **애드온** -> **asGCDBar** 메뉴에서 세부 설정이 가능합니다. (바 넓이, GCD바 높이, 비전투시 투명도 변경)
 
 - **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 - **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화

@@ -37,6 +37,9 @@ Colors are displayed based on the following priority:
 - Nameplate Mouse Click Hitbox Settings (`Click Hit Inset`): See video below (Default: 0, Wow default : 0).
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+- Nameplate Top Inset: Set to `0.04` by default (Default WoW setting is `0.08`; entering `4` sets it to `0.04`, recommended setting is `5` if below max level).
+  - **Note:** If you uninstall the addon, reset this value using the following command: `/run SetCVar("nameplateTopInset", "0.08")`
+
 - Changes the health bar background color for low health targets (`Display Low Health Background Color`)
   ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)
 	
@@ -102,9 +105,13 @@ Colors are displayed based on the following priority:
 - 이름표 세로 정렬 간격 설정(`이름표 상하 정렬 정도`) : 1.1을 기본으로 설정 (와우 기본 설정은 1.3)
 - 이름표 주대상 크기 정도(`이름표 주대상 크기 정도`) : 1.3을 기본으로 설정 (와우 기본 설정은 1.2)
 	- **참고:** 애드온 삭제시 다음 명령어로 초기화 필요 `/run SetCVar ("nameplateSelectedScale", 1.2)`
+	
 - 이름표 마우스 클릭 범위 설정 (`클릭 Hit Inset`) : 아래영상 참고 (기본 0, 와우 기본 설정 0)
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+- 이름표 상단 여백 : `0.04`을 기본으로 설정 (와우 기본 설정은 `0.08`, `4`로 설정하면 `0.04`, 만렙이 아닐 경우 `5`로 설정 추천)
+	- **참고:** 애드온 삭제시 다음 명령어로 초기화 필요 `/run SetCVar("nameplateTopInset", "0.08")`
+	
 - 낮은 체력 대상 체력바 배경 색상 변경 (`낮은체력 배경 색상 표시`)
   ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)
 

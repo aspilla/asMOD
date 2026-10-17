@@ -1,4 +1,3 @@
-
 local _, ns = ...;
 local Options_Default = {
     Version = 250805,
@@ -6,18 +5,19 @@ local Options_Default = {
 };
 
 local L = {
-	ShowTarget = "Display the current target's casting",
+    ShowTarget = "Display the current target's casting",
 }
 
 
 if GetLocale() == "koKR" then
-	L = {
-		ShowTarget = "대상의 시전을 표시",
-	}
+    L = {
+        ShowTarget = "대상의 시전을 표시",
+    }
 end
 
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
+local bupdated = false;
 
 function ns.setup_option()
     local function OnSettingChanged(_, setting, value)
@@ -31,6 +31,7 @@ function ns.setup_option()
         local variable = get_variable_from_cvar_name(cvar_name)
         ACTA_Options[variable] = value;
         ns.options[variable] = value;
+        bupdated = true;
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asCastingAlert")
@@ -64,14 +65,16 @@ function ns.setup_option()
 
         if name ~= "Version" then
             if tonumber(defaultValue) ~= nil then
-                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), L[name], defaultValue);
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue), L[name], defaultValue);
                 local options = Settings.CreateSliderOptions(0, 100, 1);
                 options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
                 Settings.CreateSlider(category, setting, options, tooltip);
                 Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             else
-                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), L[name], defaultValue);
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue), L[name], defaultValue);
                 Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
                 Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
@@ -79,5 +82,10 @@ function ns.setup_option()
         end
     end
 
-    Settings.RegisterAddOnCategory(category)
+    Settings.RegisterAddOnCategory(category);
+    EventRegistry:RegisterCallback("SettingsPanel.OnHide", function()
+        if bupdated then
+            ReloadUI();
+        end
+    end);
 end

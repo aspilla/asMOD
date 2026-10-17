@@ -26,7 +26,7 @@ end
 
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
-
+local bupdated = false;
 
 function ns.setup_option()
 	local function OnSettingChanged(_, setting, value)
@@ -40,10 +40,7 @@ function ns.setup_option()
 		local variable = get_variable_from_cvar_name(cvar_name)
 		ASAA_Options[variable] = value;
 		ns.options[variable] = value;
-
-		if tonumber(value) == nil then
-			ReloadUI();
-		end
+		bupdated = true;
 	end
 
 	local category = Settings.RegisterVerticalLayoutCategory("asActiveAlert")
@@ -120,4 +117,10 @@ function ns.setup_option()
 	end
 
 	Settings.RegisterAddOnCategory(category)
+
+	EventRegistry:RegisterCallback("SettingsPanel.OnHide", function()
+        if bupdated then
+            ReloadUI();
+        end
+    end);
 end

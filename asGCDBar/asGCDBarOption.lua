@@ -4,14 +4,12 @@ local Options_Default = {
 	BarWidth = 238 + 40,
 	BarHeight = 5,
 	CombatAlphaChange = true,
-	ShowAnimation = true,
 };
 
 local L = {
 	BarWidth = "Width of Bar",
 	BarHeight = "Height of the GCD bar",
 	CombatAlphaChange = "Adjusts transparency when out of combat",
-	ShowAnimation = "Toggle smooth bar change animation",
 }
 
 
@@ -20,13 +18,12 @@ if GetLocale() == "koKR" then
 		BarWidth = "바 넓이",
 		BarHeight = "GCD바 높이",
 		CombatAlphaChange = "비전투시 투명도 변경",
-		ShowAnimation = "부드러운 바 애니메이션",
 	}
 end
 
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
-
+local bupdated = false;
 
 function ns.setup_option()
 	local function OnSettingChanged(_, setting, value)
@@ -40,10 +37,7 @@ function ns.setup_option()
 		local variable = get_variable_from_cvar_name(cvar_name)
 		AGCDB_Options[variable] = value;
 		ns.options[variable] = value;
-
-		if tonumber(value) == nil then
-			ReloadUI();
-		end
+		bupdated = true;
 	end
 
 	local category = Settings.RegisterVerticalLayoutCategory("asGCDBar")
@@ -97,9 +91,9 @@ function ns.setup_option()
 
 	Settings.RegisterAddOnCategory(category)
 
-	if ns.options.ShowAnimation then
-		ns.bartype = Enum.StatusBarInterpolation.ExponentialEaseOut;
-	else
-		ns.bartype = 0;
-	end
+	EventRegistry:RegisterCallback("SettingsPanel.OnHide", function()
+        if bupdated then
+            ReloadUI();
+        end
+    end);
 end

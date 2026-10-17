@@ -39,6 +39,7 @@ ns.option_default = {
     nameplateOverlapV = 1.1,
     nameplateSelectedScale = 1.3,
     HitTestInsets = 0,
+    TopInset = 4,
 };
 
 ns.options = CopyTable(ns.option_default);
@@ -115,7 +116,7 @@ local function setup_checkboxoption(text, option)
     cb:SetChecked(ANameP_Options[option]);
 end
 
-local function setup_slideoption(text, option, binsets)
+local function setup_slideoption(text, option, type)
     curr_y = curr_y + y_adder;
 
     if scrollChild == nil then
@@ -132,7 +133,9 @@ local function setup_slideoption(text, option, binsets)
     Slider:SetWidth(200)
     Slider:SetHeight(20)
     Slider.Text:SetText(format("%.1f", ANameP_Options[option]));
-    if binsets then
+    if type == 2 then
+        Slider:SetMinMaxValues(1, 10);
+    elseif type == 1 then
         Slider:SetMinMaxValues(-10, 10);
     else
         Slider:SetMinMaxValues(0.3, 2);
@@ -236,6 +239,10 @@ ns.setup_alloptions = function()
             C_NamePlateManager.SetNamePlateHitTestInsets(0, v, v, v, v);
             C_NamePlateManager.SetNamePlateHitTestInsets(1, v, v, v, v);
         end
+
+        if ns.options.TopInset and ns.options.TopInset > 0 then
+            SetCVar("nameplateTopInset", ns.options.TopInset/100)
+        end
     end
 end
 
@@ -262,7 +269,8 @@ local function on_panelshow()
 
         setup_slideoption("이름표 상하 정렬 정도(nameplateOverlapV, 와우 1.3, 애드온 1.1)", "nameplateOverlapV");
         setup_slideoption("이름표 주대상 크기 정도(nameplateSelectedScale, 기본 1.2, 애드온 1.3)", "nameplateSelectedScale");
-        setup_slideoption("클릭 Hit Inset(NamePlateHitTestInsets, 기본 0, 애드온 0)", "HitTestInsets", true);
+        setup_slideoption("클릭 Hit Inset(NamePlateHitTestInsets, 기본 0, 애드온 0)", "HitTestInsets", 1);
+        setup_slideoption("상단 여백 (기본 0.08, 애드온 0.04)", "TopInset", 2);
 
         setup_checkboxoption("[기능] 어그로 색상 표시", "ShowAggro");
         setup_coloroption("[색상] 어그로 상위", "AggroColor");
@@ -298,7 +306,8 @@ local function on_panelshow()
 
         setup_slideoption("Nameplate vertical alignment (nameplateOverlapV, wow 1.3 addon 1.1)", "nameplateOverlapV");
         setup_slideoption("Nameplate target scale (nameplateSelectedScale, wow 1.2, addon 1.3)", "nameplateSelectedScale");
-        setup_slideoption("Click Hit Inset(NamePlateHitTestInsets, Default 0, Addon 0)", "HitTestInsets", true);
+        setup_slideoption("Click Hit Inset(NamePlateHitTestInsets, Default 0, Addon 0)", "HitTestInsets", 1);
+        setup_slideoption("Top Inset(Default 0.08, Addon 0.04)", "TopInset", 2);
 
         setup_checkboxoption("[Feature] Show aggro colors", "ShowAggro");
         setup_coloroption("[Color] Top aggro", "AggroColor");
@@ -332,6 +341,7 @@ local function on_panelhide()
         scrollFrame:UnregisterAllEvents()
         scrollFrame = nil;
     end
+
 end
 
 panel:RegisterEvent("ADDON_LOADED");

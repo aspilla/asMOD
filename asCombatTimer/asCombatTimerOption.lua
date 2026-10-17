@@ -28,7 +28,7 @@ end
 
 ns.options = CopyTable(Options_Default);
 local tempoption = {};
-
+local bupdated = false;
 
 function ns.setup_option()
     local function OnSettingChanged(_, setting, value)
@@ -43,6 +43,7 @@ function ns.setup_option()
         ASTM_Options[variable] = value;
         ns.options[variable] = value;
         ns.update_options();
+        bupdated = true;
     end
 
     local category = Settings.RegisterVerticalLayoutCategory("asCombatTimer")
@@ -86,7 +87,8 @@ function ns.setup_option()
                     return container:GetData()
                 end
 
-                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption, type(defaultValue), label, defaultValue)
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue), label, defaultValue)
                 Settings.CreateDropdown(category, setting, GetOptions, tooltip)
                 Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged)
@@ -108,5 +110,11 @@ function ns.setup_option()
         end
     end
 
-    Settings.RegisterAddOnCategory(category)
+    Settings.RegisterAddOnCategory(category);
+
+    EventRegistry:RegisterCallback("SettingsPanel.OnHide", function()
+        if bupdated then
+            ReloadUI();
+        end
+    end);
 end
