@@ -2,14 +2,14 @@
 
 Simple Cast Bar
 
-## Simple Design Mode
+## Simple Design Mode (Default)
 
 ![asCastBar](https://media.forgecdn.net/attachments/1690/241/ascastbar-jpg.jpg)
 
 1. **Apply Simple Design**:
 2. **Channeling Tick Display**: Supports Mind Flay / Mind Flay: Insanity (Shadow Priest), Arcane Missiles (Mage), and Drain Soul (Warlock).
 
-## Normal Mode (Default)
+## Normal Mode
 
 ![asCastBar](https://media.forgecdn.net/attachments/1042/261/i14077747456.jpg)
 
@@ -39,14 +39,14 @@ Simple Cast Bar
 
 간단한 시전바
 
-## Simple Design Mode
+## Simple Design Mode (기본)
 
 ![asCastBar](https://media.forgecdn.net/attachments/1690/241/ascastbar-jpg.jpg)
 
 1.  **Simple Design 적용**
 2.  **채널링 Tick 표시** : 정신 채찍/정신 채찍 광기(암사), 신비한 화살(마법사), 영혼흡수(흑마) 지원
 
-## Normal Mode, Default
+## Normal Mode
 
 ![asCastBar](https://media.forgecdn.net/attachments/1042/261/i14077747456.jpg)
 
