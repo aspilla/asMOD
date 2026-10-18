@@ -1,0 +1,14 @@
+﻿## Interface: 120100, 120105
+## Author: |cffff3399Aspilla|r [Azshara - KR]
+## Title: |cffff3399as|rStanceAlert
+## Notes: Alerts stealth/stance/form
+## Notes-koKR: 은신/태세/폼 알림
+## Version : 261018
+## SavedVariablesPerCharacter: ASTA_Options, ASTA_Positions, ASTA_Positions2
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
+asStanceAlertOption.lua
+asStanceAlert.xml
+asStanceAlert.lua
