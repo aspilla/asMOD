@@ -2,6 +2,28 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261018 Update
+
+### asStanceAlert (New Addon)
+- Alerts for stealth, stances, and forms.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/x9i9i5ReSS8?si=Z7ZflciuIUbOPmhs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+#### Text type (Default)
+![asStanceAlert](https://media.forgecdn.net/attachments/2070/505/asstancealert-jpg.jpg);
+
+
+#### Button type (Configuration required)
+![asStanceAlert](https://media.forgecdn.net/attachments/2070/506/asstancealert2-jpg.jpg);
+
+
+#### Features
+- **Druid**: Alerts when not in the current specialization's appropriate form.
+- **Rogue**: Alerts when in `Stealth`.
+- **Warrior**: Alerts when not in the current specialization's appropriate stance.
+- **Shadow Priest**: Alerts when not in `Shadowform`.
+- **Shaman**: Alerts when in `Ghost Wolf` form.
+
 ## 261017 Update
 
 ### asNamePlates (New Feature)

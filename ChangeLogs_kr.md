@@ -2,6 +2,28 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261018 Update
+
+### asStanceAlert (신규 애드온)
+- 은신/태세/폼을 알림
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/x9i9i5ReSS8?si=Z7ZflciuIUbOPmhs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+#### 글씨 형식 (기본)
+![asStanceAlert](https://media.forgecdn.net/attachments/2070/505/asstancealert-jpg.jpg);
+
+
+#### 버튼 형식 (설정 필요)
+![asStanceAlert](https://media.forgecdn.net/attachments/2070/506/asstancealert2-jpg.jpg);
+
+
+#### 기능
+- **드루이드** : 현 특성 폼이 아닌 경우 알림
+- **도적** : `은신`시 알림
+- **전사** : 현 특성 태세가 아닌 경우 알림
+- **암사** : `암흑 형상`이 아닌 경우 알림
+- **주술사** : `늑대폼`인 경우 알림
+
 ## 261017 Update
 
 ### asNamePlates (신규 기능)
