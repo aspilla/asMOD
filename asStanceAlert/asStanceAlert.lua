@@ -30,7 +30,7 @@ local gvalues    = {
         [3] = "Travel Form",
         [4] = "Moonkin Form",
     },
-    showframe = ns.msgtext;
+    showframe   = ns.msgtext,
 }
 
 if GetLocale() == "koKR" then
@@ -49,7 +49,13 @@ if GetLocale() == "koKR" then
 end
 
 local function setstanceicon(index)
-    local spellid = select (4, GetShapeshiftFormInfo(index));
+    local spellid;
+
+    if index < 5 then
+        spellid = select(4, GetShapeshiftFormInfo(index));
+    else
+        spellid = index;
+    end
     if spellid then
         local spellinfo = C_Spell.GetSpellInfo(spellid);
         if spellinfo and spellinfo.iconID then
@@ -136,7 +142,7 @@ local function init_class()
         bwork = true;
         gvalues.alertstance = 1;
         ns.msgtext:SetText(gvalues.wolf_msg);
-        setstanceicon(gvalues.alertstance);
+        setstanceicon(2645);
     end
 
     if (englishClass == "WARRIOR") then
@@ -180,7 +186,6 @@ local function init_class()
         gvalues.showframe = ns.button;
     else
         gvalues.showframe = ns.msgtext;
-
     end
 
     if gvalues.timer then
@@ -247,7 +252,6 @@ local function init()
     main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
     main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
     main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-
 end
 
 C_Timer.After(1, init);
