@@ -2,6 +2,14 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261019 Update
+
+### asCombatInfo
+- Bugfix : 1 Level 플레이 오류 개선
+
+### asStanceAlert
+- Bugfix : 드루이드 플레이시 오류 개선
+
 ## 261018 Update
 
 ### asStanceAlert (신규 애드온)

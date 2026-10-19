@@ -102,8 +102,10 @@ local function update_bars(viewer)
 
         for i, child in ipairs(visiblechilds) do
             local point, relativeTo, relativePoint, x, y = child:GetPoint(1);
-            child:ClearAllPoints();
-            child:SetPoint(point, relativeTo, relativePoint, x, -((buttonheight - 9) * (i - 1)));
+            if relativeTo then
+                child:ClearAllPoints();
+                child:SetPoint(point, relativeTo, relativePoint, x, -((buttonheight - 9) * (i - 1)));
+            end
         end
     elseif ns.options.BottomAlignedBar then
         local buttonheight = visiblechilds[1]:GetHeight()
@@ -386,8 +388,10 @@ local function update_buttons(viewer, forced)
             child:SetPoint("TOP", viewer, "TOP", xOffset + buttonwidth / 2, -yOffset);
         else
             local point, relativeTo, relativePoint, x, y = child:GetPoint(1);
-            child:ClearAllPoints();
-            child:SetPoint(point, relativeTo, relativePoint, x, 0);
+            if relativeTo then
+                child:ClearAllPoints();
+                child:SetPoint(point, relativeTo, relativePoint, x, 0);
+            end
         end
     end
 end

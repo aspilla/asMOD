@@ -51,6 +51,10 @@ end
 local function setstanceicon(index)
     local spellid;
 
+    if index == 0 then
+        return false;
+    end
+
     if index < 5 then
         spellid = select(4, GetShapeshiftFormInfo(index));
     else
@@ -73,10 +77,6 @@ end
 local bred = false;
 
 local function onupdate()
-    if gvalues.alertstance == nil then
-        return;
-    end
-
     if ns.msgtext:IsShown() then
         if bred then
             bred = false;
@@ -86,6 +86,12 @@ local function onupdate()
             ns.msgtext:SetTextColor(1, 0, 0);
         end
     end
+end
+
+local function updateform()
+    if gvalues.alertstance == nil then
+        return;
+    end
 
     local bhide = true;
 
@@ -93,16 +99,18 @@ local function onupdate()
 
     if gvalues.bdruid then
         if index ~= gvalues.alertstance then
-            local text = gvalues.forms[index];
-            if text then
-                bhide = false;
-                ns.msgtext:SetText(text);
+            if ns.options.ButtonAlert then
+                local updated = setstanceicon(index);
+                if updated then
+                    bhide = false;
+                end
+            else
+                local text = gvalues.forms[index];
+                if text then
+                    bhide = false;
+                    ns.msgtext:SetText(text);
+                end
             end
-            local updated = setstanceicon(index);
-            if updated then
-                bhide = false;
-            end
-
             if bhide == false then
                 gvalues.showframe:Show();
             end
@@ -197,10 +205,15 @@ local function init_class()
     else
         hide();
     end
+    updateform();
 end
 
 local function on_event(self, event, ...)
-    init_class();
+    if event == "UPDATE_SHAPESHIFT_FORM" then
+        updateform();
+    else
+        init_class();
+    end
 end
 
 function ns.check_status()
@@ -252,6 +265,7 @@ local function init()
     main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
     main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
     main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+    main_frame:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
 end
 
 C_Timer.After(1, init);

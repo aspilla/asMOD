@@ -2,6 +2,14 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261019 Update
+
+### asCombatInfo
+- Bugfix : Fixing error when play at level 1
+
+### asStanceAlert
+- Bugfix : Fixing error when play druid
+
 ## 261018 Update
 
 ### asStanceAlert (New Addon)
