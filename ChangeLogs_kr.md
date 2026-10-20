@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261020 Update
+
+### asReady (신규 애드온)
+- 파티원 차단 내용 확인용으로 기능 변경하여 한밤 지원
+
 ## 261019 Update
 
 ### asCombatInfo

@@ -1,6 +1,10 @@
 # Change Logs
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
+## 261020 Update
+
+### asReady (New Addon)
+- Reworked to track party member interrupts, updated with full support for Midnight.
 
 ## 261019 Update
 
