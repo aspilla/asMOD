@@ -5,20 +5,17 @@
     <Frame name="AUFFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
-			</Layer>
-			<Layer level="BORDER">
-				<Texture name="$parentBorder" parentKey="border" file="Interface\Addons\asUnitFrame\border.tga" setAllPoints="true"/>
+				<Texture  parentKey="icon" setAllPoints="true"/>
 			</Layer>
 		</Layers>
 	</Frame>
 	<Frame name="AUFDebuffFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel = "1000">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentPortrait" parentKey="portrait" setAllPoints="true" />
+				<Texture  parentKey="portrait" setAllPoints="true" />
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asUnitFrame\border.tga"/>
+				<Texture  parentKey="border" setAllPoints="true" file="Interface\Addons\asUnitFrame\border.tga"/>
 			</Layer>
 		</Layers>
 	</Frame>
@@ -30,14 +27,14 @@
 				</Anchors>
 				<Layers>
 					<Layer level="BORDER">
-						<Texture name="$parentTexture" parentKey="icon" setAllPoints="true"/>
+						<Texture  parentKey="icon" setAllPoints="true"/>
 					</Layer>
 					<Layer level="ARTWORK" textureSubLevel="7">
-						<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asUnitFrame\border.tga"/>
+						<Texture  parentKey="border" setAllPoints="true" file="Interface\Addons\asUnitFrame\border.tga"/>
 					</Layer>
 				</Layers>
 				<Frames>
-					<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" frameLevel = "1000">
+					<Cooldown parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" frameLevel = "1000">
 						<Anchors>
 							<Anchor point="CENTER">
 								<Offset>

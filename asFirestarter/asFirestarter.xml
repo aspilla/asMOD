@@ -6,11 +6,11 @@
 				<Texture parentKey="icon" setAllPoints="true" />
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="6">
-				<Texture parentKey="border" setAllPoints="true" file="Interface\Addons\asFirestarter\border.tga"/>	
+				<Texture parentKey="border" setAllPoints="true" file="Interface\Addons\asFirestarter\border.tga"/>
 			</Layer>
 			<Layer level="OVERLAY">
-				<FontString name="$parentHealth" parentKey="health" justifyH="RIGHT"/>							
-			</Layer>	
+				<FontString name="$parentHealth" parentKey="health" justifyH="RIGHT"/>
+			</Layer>
 		</Layers>
-	</Frame>	
+	</Frame>
 </Ui>

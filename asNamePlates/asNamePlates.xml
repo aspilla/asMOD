@@ -3,18 +3,17 @@
 	<Frame name="asNamePlatesBuffFrameTemplate" virtual="true" enableMouse="true" frameStrata="LOW" frameLevel="1000">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
+				<Texture  parentKey="icon" setAllPoints="true"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asNamePlates\border.tga"/>				
+				<Texture  parentKey="border" setAllPoints="true" file="Interface\Addons\asNamePlates\border.tga"/>
 			</Layer>
 			<Layer level="OVERLAY">
-				<FontString name="$parentCount" parentKey="count"  justifyH="RIGHT"/>											
-				<FontString name="$parentSnapshot" parentKey="snapshot"  justifyH="RIGHT"/>											
+				<FontString  parentKey="count"  justifyH="RIGHT"/>
 			</Layer>
 		</Layers>
 		<Frames>
-			<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" enableMouse="false" frameLevel="1000">
+			<Cooldown parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" enableMouse="false" frameLevel="1000">
 				<Anchors>
 					<Anchor point="CENTER">
 						<Offset>
@@ -25,8 +24,8 @@
 			</Cooldown>
 		</Frames>
 	</Frame>
-	<Texture name="asNamePlatesTemplate" virtual="true" atlas="UI-HUD-CoolDownManager-Bar">		
+	<Texture name="asNamePlatesTemplate" virtual="true" atlas="UI-HUD-CoolDownManager-Bar">
 	</Texture>
-	<Texture name="asNamePlates2Template" virtual="true" atlas="RaidFrame-Hp-Fill">		
+	<Texture name="asNamePlates2Template" virtual="true" atlas="RaidFrame-Hp-Fill">
 	</Texture>
 </Ui>

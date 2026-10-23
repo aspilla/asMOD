@@ -6,15 +6,15 @@
 				<Texture parentKey="icon" setAllPoints="true" />
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="6">
-				<Texture parentKey="border" setAllPoints="true" file="Interface\Addons\asCastingAlert\border.tga"/>	
+				<Texture parentKey="border" setAllPoints="true" file="Interface\Addons\asCastingAlert\border.tga"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture parentKey="important" setAllPoints="true" file="Interface\Addons\asCastingAlert\border.tga"/>	
-			</Layer>			
+				<Texture parentKey="important" setAllPoints="true" file="Interface\Addons\asCastingAlert\border.tga"/>
+			</Layer>
 		</Layers>
 		<Frames>
 			<Cooldown parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" enableMouse="false">
 			</Cooldown>
 		</Frames>
-	</Frame>	
+	</Frame>
 </Ui>

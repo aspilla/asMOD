@@ -127,7 +127,7 @@ local function on_update()
 
             frameicon:SetTexture(interrupt_info.icon);
             remainbar.duration_obj = duration;
-            remainbar:SetTimerDuration(duration, 0, 0);
+            remainbar:SetTimerDuration(duration, 0, Enum.StatusBarTimerDirection.RemainingTime);
             remainbar.castspellid = interrupt_info.spellid;
 
             local color = interrupt_info.color
@@ -203,14 +203,16 @@ local function setup_bar()
 
     remainbar.button = CreateFrame("Button", nil, remainbar, "ASRYFrameTemplate");
     remainbar.button:SetPoint("RIGHT", remainbar, "LEFT", -1, 0)
-    remainbar.button:SetWidth((configs.height + 2) * 1.2);
-    remainbar.button:SetHeight(configs.height + 2);
+    remainbar.button:SetWidth((configs.height) * 1.2);
+    remainbar.button:SetHeight(configs.height);
     remainbar.button:SetAlpha(1);
     remainbar.button:EnableMouse(false);
     remainbar.button.icon:SetTexCoord(.08, .92, .16, .84);
-    remainbar.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-    remainbar.button.border:SetVertexColor(0, 0, 0);
-    remainbar.button.border:Show();
+    remainbar.button.bg = remainbar.button:CreateTexture(nil, "BACKGROUND")
+    remainbar.button.bg:SetPoint("TOPLEFT", remainbar.button, "TOPLEFT", -1, 1)
+    remainbar.button.bg:SetPoint("BOTTOMRIGHT", remainbar.button, "BOTTOMRIGHT", 1, -1)
+    remainbar.button.bg:SetColorTexture(0, 0, 0, 1);
+    remainbar.button.bg:Show();
     remainbar.button:Show();
 
     remainbar.mark = remainbar:CreateTexture(nil, "ARTWORK");

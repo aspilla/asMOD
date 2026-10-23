@@ -3,17 +3,17 @@
 	<Frame name="ATGCDFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel="1000">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentIcon" parentKey="icon"/>
+				<Texture parentKey="icon" setAllPoints="true" />
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture name="$parentBorder" parentKey ="border" file="Interface\Addons\asTrueGCD\border.tga"/>						
+				<Texture  parentKey ="border" file="Interface\Addons\asTrueGCD\border.tga"/>
 			</Layer>
-			<Layer level="OVERLAY">							
-				<FontString name="$parentCancel" justifyH="CENTER" parentKey ="text"/>					
+			<Layer level="OVERLAY">
+				<FontString justifyH="CENTER" parentKey ="text"/>
 			</Layer>
 		</Layers>
 		<Frames>
-			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="false" drawEdge="true" hidden="true" frameLevel="1000">
+			<Cooldown inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="false" drawEdge="true" hidden="true" frameLevel="1000">
 				<Size x="36" y="36"/>
 				<Anchors>
 					<Anchor point="CENTER" x="0" y="-1"/>

@@ -3,12 +3,12 @@
 	<Frame name="asDBMTimerFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel="1000">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentIcon" parentKey="icon"/>
+				<Texture parentKey="icon" setAllPoints="true" />
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture name="$parentBorder" parentKey="border" file="Interface\Addons\asDBMTimer\border.tga"/>									
+				<Texture  parentKey="border" file="Interface\Addons\asDBMTimer\border.tga"/>
 			</Layer>
-		</Layers>	
+		</Layers>
 	</Frame>
 	<Script file="asDBMTimer.lua"/>
 </Ui>

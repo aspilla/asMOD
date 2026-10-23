@@ -3,17 +3,17 @@
 	<Frame name="asBattleResFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel="1000">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
+				<Texture  parentKey="icon" setAllPoints="true"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asBattleRes\border.tga"/>
+				<Texture  parentKey="border" setAllPoints="true" file="Interface\Addons\asBattleRes\border.tga"/>
 			</Layer>
 			<Layer level="OVERLAY">
-				<FontString name="$parentCount" parentKey="count" justifyH="RIGHT"/>							
+				<FontString  parentKey="count" justifyH="RIGHT"/>
 			</Layer>
 		</Layers>
 		<Frames>
-			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="false" drawEdge="true" hidden="true" frameLevel="1000">				
+			<Cooldown inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="false" drawEdge="true" hidden="true" frameLevel="1000">
 				<Anchors>
 					<Anchor point="CENTER" x="0" y="-1"/>
 				</Anchors>

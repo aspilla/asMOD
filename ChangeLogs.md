@@ -1,6 +1,12 @@
 # Change Logs
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
+
+## 261023 Update
+
+### asCastBar, asDBMCastingAlert, asReady, asTargetCastBar, asUnitFrame
+- Adjusted cast bar icons to match the design consistency of the bars.
+
 ## 261020 Update
 
 ### asReady (New Addon)

@@ -3,10 +3,10 @@
 	<Frame name="asSTAButtonTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel="1000">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentIcon" parentKey="icon" setAllPoints="true"/>
+				<Texture  parentKey="icon" setAllPoints="true"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture name="$parentBorder" parentKey="border" setAllPoints="true" file="Interface\Addons\asStanceAlert\border.tga"/>
+				<Texture  parentKey="border" setAllPoints="true" file="Interface\Addons\asStanceAlert\border.tga"/>
 			</Layer>
 		</Layers>
 	</Frame>

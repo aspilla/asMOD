@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261023 Update
+
+### asCastBar, asDBMCastingAlert, asReady, asTargetCastBar, asUnitFrame
+- 케스팅바 아이콘 모양이 바와 통일성이 되도록 수정
+
 ## 261020 Update
 
 ### asReady (신규 애드온)

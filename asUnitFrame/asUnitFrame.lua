@@ -422,7 +422,8 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
         pframe.portrait:Show();
         pframe:Show();
         if frame.istargetframe or frame.isfocusframe then
-            frame.pdebuffcontainer =  create_pcontainer(frame, unit, ns.filters.helpful, "RIGHT", AnchorUtil.FlowDirection.Left,
+            frame.pdebuffcontainer = create_pcontainer(frame, unit, ns.filters.helpful, "RIGHT",
+                AnchorUtil.FlowDirection.Left,
                 AnchorUtil.FlowDirection.Down, height + 1, height * 1.1, fontsize);
 
             frame.pdebuffcontainer:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0);
@@ -492,6 +493,20 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     frame.classtext:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
     frame.classtext:SetTextColor(1, 1, 1, 1)
 
+    frame.roleIcon = frame:CreateTexture(nil, "ARTWORK");
+    frame.roleIcon:SetSize(fontsize + 2, fontsize + 2);
+
+    frame.optionTable = {
+        displayRaidRoleIcon = false,
+        displayRoleIcon = true,
+        textureMap = {
+            VEHICLE = "RaidFrame-Icon-Vehicle",
+            HEALER = "UI-Frame-HealerIcon",
+            TANK = "UI-Frame-TankIcon",
+            DAMAGER = "UI-Frame-DPSIcon",
+        }
+    }
+
     frame.combattext = frame.healthbar:CreateFontString(nil, "ARTWORK");
     frame.combattext:SetFont(STANDARD_TEXT_FONT, fontsize - 1, FontOutline);
     frame.combattext:SetTextColor(1, 1, 1, 1)
@@ -508,7 +523,8 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
                 frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4 + 8), 0);
                 frame.name:SetPoint("LEFT", frame, "LEFT", 4, 0);
                 frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
-                frame.combattext:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+                frame.roleIcon:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+                frame.combattext:SetPoint("BOTTOMRIGHT", frame.roleIcon, "BOTTOMLEFT", -1, 0);
                 frame.typetext:SetPoint("BOTTOMRIGHT", frame.combattext, "BOTTOMLEFT", -1, 0);
                 frame.aggro:SetPoint("BOTTOMRIGHT", frame.typetext, "BOTTOMLEFT", -1, 0);
             else
@@ -517,7 +533,8 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
                 frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4 + 8), 0);
                 frame.name:SetPoint("RIGHT", frame, "RIGHT", -4, 0);
                 frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
-                frame.combattext:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+                frame.roleIcon:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+                frame.combattext:SetPoint("BOTTOMLEFT", frame.roleIcon, "BOTTOMRIGHT", 1, 0);
                 frame.typetext:SetPoint("BOTTOMLEFT", frame.combattext, "BOTTOMRIGHT", 1, 0);
                 frame.aggro:SetPoint("BOTTOMLEFT", frame.typetext, "BOTTOMRIGHT", 1, 0);
             end
@@ -528,7 +545,8 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
                 frame.hvalue:SetPoint("BOTTOMRIGHT", frame.healthbar, "BOTTOMRIGHT", -(fontsize * 4 + 8), 4);
                 frame.name:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, -2);
                 frame.classtext:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 4, 2);
-                frame.combattext:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+                frame.roleIcon:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+                frame.combattext:SetPoint("BOTTOMLEFT", frame.roleIcon, "BOTTOMRIGHT", 1, 0);
                 frame.typetext:SetPoint("BOTTOMLEFT", frame.combattext, "BOTTOMRIGHT", 1, 0);
                 frame.aggro:SetPoint("BOTTOMLEFT", frame.typetext, "BOTTOMRIGHT", 1, 0);
             else
@@ -537,7 +555,8 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
                 frame.hvalue:SetPoint("BOTTOMLEFT", frame.healthbar, "BOTTOMLEFT", (fontsize * 4 + 8), 4);
                 frame.name:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -2);
                 frame.classtext:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -4, 2);
-                frame.combattext:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+                frame.roleIcon:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+                frame.combattext:SetPoint("BOTTOMRIGHT", frame.roleIcon, "BOTTOMLEFT", -1, 0);
                 frame.typetext:SetPoint("BOTTOMRIGHT", frame.combattext, "BOTTOMLEFT", -1, 0);
                 frame.aggro:SetPoint("BOTTOMRIGHT", frame.typetext, "BOTTOMLEFT", -1, 0);
             end
@@ -549,7 +568,8 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
             frame.hvalue:SetPoint("RIGHT", frame.healthbar, "RIGHT", -(fontsize * 4 + 8), 0);
             frame.name:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
             frame.classtext:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
-            frame.combattext:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+            frame.roleIcon:SetPoint("BOTTOMRIGHT", frame.classtext, "BOTTOMLEFT", -1, 0);
+            frame.combattext:SetPoint("BOTTOMRIGHT", frame.roleIcon, "BOTTOMLEFT", -1, 0);
             frame.typetext:SetPoint("BOTTOMRIGHT", frame.combattext, "BOTTOMLEFT", -1, 0);
             frame.aggro:SetPoint("BOTTOMRIGHT", frame.typetext, "BOTTOMLEFT", -1, 0);
         else
@@ -558,7 +578,8 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
             frame.hvalue:SetPoint("LEFT", frame.healthbar, "LEFT", (fontsize * 4 + 8), 0);
             frame.name:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -2, 1);
             frame.classtext:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 2, 1);
-            frame.combattext:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+            frame.roleIcon:SetPoint("BOTTOMLEFT", frame.classtext, "BOTTOMRIGHT", 1, 0);
+            frame.combattext:SetPoint("BOTTOMLEFT", frame.roleIcon, "BOTTOMRIGHT", 1, 0);
             frame.typetext:SetPoint("BOTTOMLEFT", frame.combattext, "BOTTOMRIGHT", 1, 0);
             frame.aggro:SetPoint("BOTTOMLEFT", frame.typetext, "BOTTOMRIGHT", 1, 0);
         end
@@ -566,6 +587,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 
     if is_small then
         frame.classtext:Hide();
+        frame.roleIcon:Hide();
         frame.combattext:Hide();
         frame.aggro:Hide();
         frame.sperator:Hide();
@@ -700,14 +722,16 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 
     frame.castbar.button = CreateFrame("Button", nil, frame.castbar, "AUFFrameTemplate");
     frame.castbar.button:SetPoint("RIGHT", frame.castbar, "LEFT", -2, 0)
-    frame.castbar.button:SetWidth((castbarheight + 1) * 1.1);
-    frame.castbar.button:SetHeight(castbarheight + 1);
+    frame.castbar.button:SetWidth((castbarheight) * 1.1);
+    frame.castbar.button:SetHeight(castbarheight);
     frame.castbar.button:SetAlpha(1);
     frame.castbar.button:EnableMouse(false);
     frame.castbar.button.icon:SetTexCoord(.08, .92, .08, .92);
-    frame.castbar.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-    frame.castbar.button.border:SetVertexColor(0, 0, 0);
-    frame.castbar.button.border:Show();
+    frame.castbar.button.bg = frame.castbar.button:CreateTexture(nil, "BACKGROUND")
+    frame.castbar.button.bg:SetPoint("TOPLEFT", frame.castbar.button, "TOPLEFT", -1, 1)
+    frame.castbar.button.bg:SetPoint("BOTTOMRIGHT", frame.castbar.button, "BOTTOMRIGHT", 1, -1)
+    frame.castbar.button.bg:SetColorTexture(0, 0, 0, 1);
+    frame.castbar.button.bg:Show();
     frame.castbar.button:Show();
 
     frame.castbar.targetname = frame.castbar:CreateFontString(nil, "OVERLAY");
@@ -756,6 +780,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
         frame.updateCastBar = false;
     end
 
+
     frame.unit = unit;
     ns.unitframes[unit] = frame;
 
@@ -776,7 +801,6 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     else
         frame.bchecktarget = false;
     end
-
 
     frame.callback = function()
         if not frame:IsShown() then

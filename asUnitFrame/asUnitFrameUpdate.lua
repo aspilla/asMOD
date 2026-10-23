@@ -159,6 +159,8 @@ function ns.update_unitframe_event(frame)
             classtext = classtext .. icons.leader;
         end
 
+        UnitFrameUtil.UpdateUnitFrameRoleIcon(frame);
+        --[[
         local role = UnitGroupRolesAssigned(unit);
         if (role and not issecretvalue(role) and role ~= "NONE") then
             local texture = nil;
@@ -174,6 +176,7 @@ function ns.update_unitframe_event(frame)
                 classtext = classtext .. texture;
             end
         end
+        ]]
 
         if locale == "koKR" then
             local creatureType = UnitCreatureType(unit)

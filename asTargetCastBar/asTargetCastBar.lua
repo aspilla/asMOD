@@ -107,14 +107,16 @@ local function setup_castbar(scale)
 
 	castbar.button = CreateFrame("Button", nil, castbar, "ATCBFrameTemplate");
 	castbar.button:SetPoint("RIGHT", castbar, "LEFT", -1, 0)
-	castbar.button:SetWidth((height + 2) * 1.2);
-	castbar.button:SetHeight(height + 2);
+	castbar.button:SetWidth((height) * 1.2);
+	castbar.button:SetHeight(height);
 	castbar.button:SetAlpha(1);
 	castbar.button:EnableMouse(false);
 	castbar.button.icon:SetTexCoord(.08, .92, .16, .84);
-	castbar.button.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-	castbar.button.border:SetVertexColor(0, 0, 0);
-	castbar.button.border:Show();
+	castbar.button.bg = castbar.button:CreateTexture(nil, "BACKGROUND")
+    castbar.button.bg:SetPoint("TOPLEFT", castbar.button, "TOPLEFT", -1, 1)
+    castbar.button.bg:SetPoint("BOTTOMRIGHT", castbar.button, "BOTTOMRIGHT", 1, -1)
+    castbar.button.bg:SetColorTexture(0, 0, 0, 1);
+    castbar.button.bg:Show();
 	castbar.button:Show();
 
 	castbar.targetname = castbar:CreateFontString(nil, "ARTWORK");
