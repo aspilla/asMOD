@@ -54,7 +54,7 @@ The following issue may occur:
 
 1.  Install `asMOD` from CurseForge (This includes all other asMOD addons: [Link](https://www.curseforge.com/wow/addons/asmod)).
 2.  When the prompt appears saying "asMOD will change the default interface settings," click **Change**.
-3.  Navigate to `ESC >> Options >> Gameplay >> Advanced Cooldown Settings` to configure the center buttons. The recommended setup is 6 large icons and 1 buff bar.
+3.  Navigate to `ESC >> Options >> Gameplay >> Advanced Cooldown Settings` to configure the center buttons. The recommended setup is 8 large icons and 1 buff bar.
 4.  Go to `ESC >> Macros` and use the **asMOD Setup macro** to apply recommended settings like reduced damage font size. This also enables Misdirection/Tank Assist macros.
 5.  Check `ESC >> Edit Mode` to ensure the **"asMOD_Layout"** is properly applied. (Note: If you have too many Edit Mode layouts, `asMOD_Layout` might not be created. Delete existing ones and run `/asMOD` again).
 6.  If you do not want the bottom action bar to hide automatically, uncheck `asHideActionBar` in `ESC >> Addons`.
@@ -334,7 +334,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 1. CurseForge 에서 asMOD를 설치 (asMOD에 다른 asMOD 애드온들이 포함 되어 있음, https://www.curseforge.com/wow/addons/asmod)
 2. `asMOD` 애드온 사용시 `asMOD가 '기본 인터페이스 설정'을 변경합니다. 채팅창에 '/asMOD'명령어로 기능을 다시 불러 올 수 있습니다.` 창에서 `변경`을 클릭
-3. `esc >> 설정 >> 게임 플레이 개선 >> 고급 재사용 대기시간 설정` 클릭하여 가운데 버튼 설정을 합니다. 큰 아이콘 6개, 버프바 1개 사용을 목표로 설정 하였습니다.
+3. `esc >> 설정 >> 게임 플레이 개선 >> 고급 재사용 대기시간 설정` 클릭하여 가운데 버튼 설정을 합니다. 큰 아이콘 8개, 버프바 1개 사용을 목표로 설정 하였습니다.
 4. `esc >> 매크로 설정` 에서 asMOD Setup 매크로를 사용하면 데미지 폰트 사이즈 축소등 추천 설정 사용이 가능합니다. 추가로 눈속임/탱커 지원 매크로도 사용가능 합니다.
 5. `esc >>폅집 모드 >> "asMOD_Layout"` 설정이 잘 되어 있는 지 확인 합니다. (주의! 편집모드 Layout이 많은 경우 `asMOD_Layout`이 생성 안되니 삭제하고 `/asMOD` 명령어를 다시 실행)
 6. 하단 단축바가 자동으로 사라지는 것을 원치 않으면 esc >> 애드온 >> `asHideActionBar`를 채크 해제 하세요.

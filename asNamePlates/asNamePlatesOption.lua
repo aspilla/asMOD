@@ -33,13 +33,13 @@ ns.option_default = {
     CombatColor = { r = 0.5, g = 1, b = 1 },
     QuestColor = { r = 1, g = 0.8, b = 0.5 },
     BossColor = { r = 0, g = 1, b = 0.2 },
-    LowHealthColor = { r = 0.2, g = 0, b = 0.2},
-    HighHealthColor = { r = 0.2, g = 0, b = 0.5},
+    LowHealthColor = { r = 0.2, g = 0, b = 0.2 },
+    HighHealthColor = { r = 0.2, g = 0, b = 0.5 },
 
     nameplateOverlapV = 1.1,
     nameplateSelectedScale = 1.3,
     HitTestInsets = 0,
-    TopInset = 4,
+    TopGap = 8,
 };
 
 ns.options = CopyTable(ns.option_default);
@@ -240,8 +240,8 @@ ns.setup_alloptions = function()
             C_NamePlateManager.SetNamePlateHitTestInsets(1, v, v, v, v);
         end
 
-        if ns.options.TopInset and ns.options.TopInset > 0 then
-            SetCVar("nameplateTopInset", ns.options.TopInset/100)
+        if ns.options.TopGap and ns.options.TopGap > 0 then
+            SetCVar("nameplateTopInset", ns.options.TopGap / 100)
         end
     end
 end
@@ -270,7 +270,7 @@ local function on_panelshow()
         setup_slideoption("이름표 상하 정렬 정도(nameplateOverlapV, 와우 1.3, 애드온 1.1)", "nameplateOverlapV");
         setup_slideoption("이름표 주대상 크기 정도(nameplateSelectedScale, 기본 1.2, 애드온 1.3)", "nameplateSelectedScale");
         setup_slideoption("클릭 Hit Inset(NamePlateHitTestInsets, 기본 0, 애드온 0)", "HitTestInsets", 1);
-        setup_slideoption("상단 여백 (기본 0.08, 애드온 0.04)", "TopInset", 2);
+        setup_slideoption("상단 여백 (기본 8, 애드온 8)", "TopGap", 2);
 
         setup_checkboxoption("[기능] 어그로 색상 표시", "ShowAggro");
         setup_coloroption("[색상] 어그로 상위", "AggroColor");
@@ -307,7 +307,7 @@ local function on_panelshow()
         setup_slideoption("Nameplate vertical alignment (nameplateOverlapV, wow 1.3 addon 1.1)", "nameplateOverlapV");
         setup_slideoption("Nameplate target scale (nameplateSelectedScale, wow 1.2, addon 1.3)", "nameplateSelectedScale");
         setup_slideoption("Click Hit Inset(NamePlateHitTestInsets, Default 0, Addon 0)", "HitTestInsets", 1);
-        setup_slideoption("Top Inset(Default 0.08, Addon 0.04)", "TopInset", 2);
+        setup_slideoption("Top Inset(Default 8, Addon 8)", "TopGap", 2);
 
         setup_checkboxoption("[Feature] Show aggro colors", "ShowAggro");
         setup_coloroption("[Color] Top aggro", "AggroColor");
@@ -341,7 +341,6 @@ local function on_panelhide()
         scrollFrame:UnregisterAllEvents()
         scrollFrame = nil;
     end
-
 end
 
 panel:RegisterEvent("ADDON_LOADED");

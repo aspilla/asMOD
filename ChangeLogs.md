@@ -2,6 +2,12 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261025 Update
+
+### asNamePlates
+- Changed the default setting for `Nameplate TopInset` (Nameplate Top Margin) back to World of Warcraft's default setting.
+- **Developer Note:** When top-screen UI elements (such as invasion progress bars) appear, setting the inset to `4` can cause nameplates to get hidden. Therefore, the default configuration has been restored to the standard WoW margin.
+
 ## 261024 Update
 
 ### asUnitFrame

@@ -2,6 +2,12 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261025 Update
+
+### asNamePlates
+- `Nameplate TopInset` 설정 (이름표 상단 여백) 기본 설정을 와우 기본 설정으로 변경.
+- 개발자 의견 : 침공등의 상단 정보가 나올때 `4`로 설정할 경우 이름표가 숨을 수 있어 기본 설정은 와우 기본 여백으로 설정.
+
 ## 261024 Update
 
 ### asUnitFrame
