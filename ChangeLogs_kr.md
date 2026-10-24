@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261024 Update
+
+### asUnitFrame
+- 초상화 스턴기가 10초 이하의 짧은 쿨부터 보이게 수정
+
 ## 261023 Update
 
 ### asCastBar, asDBMCastingAlert, asReady, asTargetCastBar, asUnitFrame

@@ -241,12 +241,14 @@ end
 local function create_pcontainer(parent, unit, filter, anchor, hdir, vdir, height, width, fontsize)
     local cfilters = {}
     cfilters.nameplateShowAll = true;
+    cfilters.maxDuration = 10;
+
     local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
     container:SetFlowLayoutAnchorPoint(anchor);
     container:SetFlowLayoutGrowthDirection(hdir, vdir);
 
     container:AddAuraGroup("auras", filter,
-        { maxFrameCount = 1, initializeFrame = create_paurabutton(width, height, fontsize) });
+        { maxFrameCount = 1, initializeFrame = create_paurabutton(width, height, fontsize), sortMethod = AuraContainerSortMethod.Expiration, sortDirection = 1 });
     container:SetAuraGroupLayout("auras", { elementSpacingX = 0.1 });
     container:SetAuraGroupCandidateFilters("auras", cfilters);
     container:SetAuraProcessingPolicy(CustomAuraContainerAuraProcessingPolicy.ProcessAura);

@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261024 Update
+
+### asUnitFrame
+- Adjusted portrait stun debuff display to trigger for shorter cooldowns/durations of 10 seconds or less.
+
 ## 261023 Update
 
 ### asCastBar, asDBMCastingAlert, asReady, asTargetCastBar, asUnitFrame
