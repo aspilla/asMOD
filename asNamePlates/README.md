@@ -28,6 +28,7 @@ Colors are displayed based on the following priority:
 - Displays a blue border on mouseover targets (`[Feature] Change Texture`)
 - Targeted Highlights (`[Feature] Alert Targeted`)**: Displays a flashing exclamation mark on the left when you are targeted by an enemy; for tanks, this triggers only when an enemy is casting a spell at you.
 - Important Spell Highlights (`[Feature] Alert Important Spell Casting`): The health bar flashes red when an enemy casts an important spell (See screenshot below).
+
   ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
 
 - Nameplate Vertical Stacking Interval (`Nameplate vertical alignment`): Set to 1.1 by default (WoW default is 1.3).
@@ -35,12 +36,16 @@ Colors are displayed based on the following priority:
 	- **Note:** If you uninstall the addon, you need to reset it using the following command: `/run SetCVar ("nameplateSelectedScale", 1.2)`
 
 - Nameplate Mouse Click Hitbox Settings (`Click Hit Inset`): See video below (Default: 0, Wow default : 0).
+
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 - Nameplate Top Inset: Set to `0.08` by default (Best setting is `4` which is setted as `0.04`, recommended setting is `5` if below max level).
   - **Note:** If you uninstall the addon, reset this value using the following command: `/run SetCVar("nameplateTopInset", "0.08")`
 
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/kbM1lHwgjE4?si=7Ab17Tf2JLerGT5p" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 - Changes the health bar background color for low health targets (`Display Low Health Background Color`)
+
   ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)
 	
 	| Class               | Low Health (Dark Purple)          | High Health (Dark Blue) |
@@ -100,6 +105,7 @@ Colors are displayed based on the following priority:
 - 마우스오버 대상 파란색 테두리 표시 (`[기능] 이름표 모양 변경`)
 - Targeted 강조 (`[기능] Targeted 강조`) : 나를 대상으로 하는 경우 좌측에 깜빡이는 느낌표 표시, 탱커의 경우 나를 대상으로 케스팅 하는 경우만
 - 중요 스킬 강조 (`[기능] 중요 스킬 시전 강조`) : 중요 스킬 시전시 생명력이 빨간색으로 깜빡임 (아래 스샷 참고)
+
   ![sample](https://github.com/aspilla/asMOD/blob/main/.Pictures/asNamePlates_important.gif?raw=true)
 
 - 이름표 세로 정렬 간격 설정(`이름표 상하 정렬 정도`) : 1.1을 기본으로 설정 (와우 기본 설정은 1.3)
@@ -107,12 +113,16 @@ Colors are displayed based on the following priority:
 	- **참고:** 애드온 삭제시 다음 명령어로 초기화 필요 `/run SetCVar ("nameplateSelectedScale", 1.2)`
 	
 - 이름표 마우스 클릭 범위 설정 (`클릭 Hit Inset`) : 아래영상 참고 (기본 0, 와우 기본 설정 0)
+
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/b6vMuBdw2wM?si=6vJYKfkM_Y0L-cFE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 - 이름표 상단 여백 : `0.08`을 기본으로 설정 (최적의 설정은`4` 즉 `0.04`로 설정 됨, 만렙이 아닐 경우 `5`로 설정 추천)
 	- **참고:** 애드온 삭제시 다음 명령어로 초기화 필요 `/run SetCVar("nameplateTopInset", "0.08")`
+
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/kbM1lHwgjE4?si=7Ab17Tf2JLerGT5p" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 	
 - 낮은 체력 대상 체력바 배경 색상 변경 (`낮은체력 배경 색상 표시`)
+
   ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)
 
 	| 직업   | 낮은 체력 (어두운 보라색)    | 높은 체력 (어두운 파란색) |
