@@ -85,6 +85,8 @@ local function setupText(role, infos, fontstring)
     fontstring:Show();
 end
 
+local leaderIcon = CreateAtlasMarkup("groupfinder-icon-leader", 14, 9, 0, 0);
+
 local function update_searchentry(entry, ...)
     if (not LFGListFrame.SearchPanel:IsShown()) then
         return;
@@ -93,7 +95,6 @@ local function update_searchentry(entry, ...)
     local categoryID = LFGListFrame.SearchPanel.categoryID;
     local resultID = entry.resultID;
     local resultInfo = C_LFGList.GetSearchResultInfo(resultID);
-    local leaderIcon = CreateAtlasMarkup("groupfinder-icon-leader", 14, 9, 0, 0);
 
     if not entry.DataDisplay.Enumerate or issecretvalue(resultInfo) then
         return;
@@ -143,9 +144,11 @@ local function update_searchentry(entry, ...)
         end);
 
         local texture = "asscore";
-        entry.DataDisplay.Enumerate[texture] = entry.DataDisplay.Enumerate:CreateFontString(nil, "ARTWORK");
-        entry.DataDisplay.Enumerate[texture]:SetFont(STANDARD_TEXT_FONT, 10);
-        entry.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", entry.DataDisplay.Enumerate["Icon5"], "LEFT", -1, 0);
+        if (not entry.DataDisplay.Enumerate[texture]) then
+            entry.DataDisplay.Enumerate[texture] = entry.DataDisplay.Enumerate:CreateFontString(nil, "ARTWORK");
+            entry.DataDisplay.Enumerate[texture]:SetFont(STANDARD_TEXT_FONT, 10);
+            entry.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", entry.DataDisplay.Enumerate["Icon5"], "LEFT", -1, 0);
+        end
 
         if overallColor and resultInfo.leaderOverallDungeonScore and ns.options.ShowLeaderScore then
             entry.DataDisplay.Enumerate[texture]:SetText(overallColor:WrapTextInColorCode(tostring(resultInfo
@@ -299,10 +302,10 @@ end
 
 local function update_applicant(member, appID, memberIdx, status, pendingStatus)
     local grayedOut = not pendingStatus and
-    (status == "failed" or status == "cancelled" or status == "declined" or status == "declined_full" or status == "declined_delisted" or status == "invitedeclined" or status == "timedout" or status == "inviteaccepted" or status == "invitedeclined");
+        (status == "failed" or status == "cancelled" or status == "declined" or status == "declined_full" or status == "declined_delisted" or status == "invitedeclined" or status == "timedout" or status == "inviteaccepted" or status == "invitedeclined");
 
     local name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship, dungeonScore, pvpItemLevel, _faction, _raceID, _specID, isLeaver =
-    C_LFGList.GetApplicantMemberInfo(appID, memberIdx);
+        C_LFGList.GetApplicantMemberInfo(appID, memberIdx);
 
     local roleIcons = { member.RoleIcon1, member.RoleIcon2, member.RoleIcon3 };
 
@@ -334,7 +337,7 @@ local function update_applicant(member, appID, memberIdx, status, pendingStatus)
 
             local role = roleIcon.role;
             local showSpec = (role == "DAMAGER") or (role == "TANK" and ns.options and ns.options.ShowTankerSpec) or
-            (role == "HEALER" and ns.options and ns.options.ShowHealerSpec);
+                (role == "HEALER" and ns.options and ns.options.ShowHealerSpec);
 
             if showSpec and specIcon then
                 if not roleIcon.asSpecIcon then

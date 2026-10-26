@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261026 Update
+
+### asPremadeGroupsFilter
+- Resolved an issue that caused increasing memory usage over time.
+
 ## 261025 Update
 
 ### asNamePlates

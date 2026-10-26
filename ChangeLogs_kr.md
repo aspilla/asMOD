@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261026 Update
+
+### asPremadeGroupsFilter
+- 메모리 사용률이 증가하는 이슈 개선
+
 ## 261025 Update
 
 ### asNamePlates
