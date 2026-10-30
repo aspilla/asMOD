@@ -295,7 +295,7 @@ local function setup_castbar()
     castbar.button:SetAlpha(1);
     castbar.button:EnableMouse(false);
     castbar.button.icon:SetTexCoord(.08, .92, .16, .84);
-    castbar.button.bg = castbar.button:CreateTexture(nil, "BACKGROUND")
+    castbar.button.bg = castbar.button:CreateTexture(nil, "BACKGROUND",nil , -7)
     castbar.button.bg:SetPoint("TOPLEFT", castbar.button, "TOPLEFT", -1, 1)
     castbar.button.bg:SetPoint("BOTTOMRIGHT", castbar.button, "BOTTOMRIGHT", 1, -1)
     castbar.button.bg:SetColorTexture(0, 0, 0, 1);

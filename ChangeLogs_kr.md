@@ -2,6 +2,21 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261030 Update
+
+### asCooldownPulse (신규 옵션)
+- `알림시 크기 애니메이션` (기본 On)
+
+### asUnitFrame (신규 옵션)
+- `어그로 상태 표시` (기본 On)
+- `몹 타입 표시` (기본 Off)
+- `몹 정예 표시/파티 리더 표시` (기본 On)
+- `플레이어 역할 표시` (기본 On)
+- `전투/휴식 여부 표시` (기본 On)
+
+### asCastBar, asTargetCastBar, asDBMCastingAlert, asUnitFrame
+- 오류 수정: 케스팅바 아이콘이 가끔 검게 나오는 이슈 해결
+
 ## 261026 Update
 
 ### asPremadeGroupsFilter

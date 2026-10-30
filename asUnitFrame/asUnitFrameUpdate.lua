@@ -178,7 +178,7 @@ function ns.update_unitframe_event(frame)
         end
         ]]
 
-        if locale == "koKR" then
+        if ns.options.ShowTypeInfo then
             local creatureType = UnitCreatureType(unit)
 
             if creatureType and not UnitIsPlayer(unit) then

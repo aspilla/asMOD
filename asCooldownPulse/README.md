@@ -38,6 +38,7 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 - TTS ID (Default: Zira)
 - Sound Volume (Default: 70)
 - Sound notification for skill ready alert (Default: Off)
+- Scale animation for alert button (Default: On)
 
 - A `/reload` is required after changing sizes.
 
@@ -97,6 +98,7 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 - TTS ID (기본 Heami)
 - 음성 크기 (기본 70)
 - 스킬 쿨다운시 알림음 재생 (기본 Off)
+- 알림시 크기 애니메이션 (기본 On)
 
 
 - 크기 변경후 `/reload` 필요

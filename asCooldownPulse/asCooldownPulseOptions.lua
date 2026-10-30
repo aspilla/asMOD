@@ -9,12 +9,13 @@ local Options_Default = {
     ShowSpells = true,
     SpellSize = 28,
     MillisecondsThreshold = 3,
-    ReadyAlertSize = 60,
+    ReadyAlertSize = 80,
     MinCooldown = 15,
     EnableTTS = true,
     TTS_ID = -1,
     SoundVolume = 70,
     AlertSound = false,
+    ShowScaleAnim = true,
 };
 
 local L = {
@@ -33,6 +34,7 @@ local L = {
     ReadyAlertSize = "Icon size for skill ready alert.",
     MinCooldown = "Minimun time(second) of cooldown to alert.",
     AlertSound = "Sound notification for skill ready alert.",
+    ShowScaleAnim = "Scale animation for alert button",
     SpellList = "Defensive Spell List",
     SpellID = "Spell Id",
     Priority = "Priority",
@@ -58,6 +60,7 @@ if GetLocale() == "koKR" then
         TTS_ID = "TTS ID",
         SoundVolume = "음성 크기",
         AlertSound = "스킬 쿨다운시 알림음 재생",
+        ShowScaleAnim = "알림시 크기 애니메이션",
         SpellList = "생존기 스킬 목록",
         SpellID = "스킬 번호(Spell Id)",
         Priority = "우선 순위",

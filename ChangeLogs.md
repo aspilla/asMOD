@@ -2,6 +2,22 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261030 Update
+
+### asCooldownPulse (New option)
+- `Scale animation for alert button` (Default: On)
+
+### asUnitFrame (New option)
+- `Show aggro status` (Default: On)
+- `Show type of creature` (Default Off)
+- `Show elite class of mob/leader of party` (Default On)
+- `Show role of players` (Default On)
+- `Show combat/resting status` (Default On)
+
+### asCastBar, asTargetCastBar, asDBMCastingAlert, asUnitFrame
+- **Bug Fix:** Resolved an issue where cast bar icons would occasionally display as a black square.
+
+
 ## 261026 Update
 
 ### asPremadeGroupsFilter

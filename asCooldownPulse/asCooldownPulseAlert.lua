@@ -4,7 +4,7 @@ local configs = {
     pointx = 0,
     pointy = 10,
     alerttime = 0.2,
-    fadetime = 1,
+    fadetime = 0.5,
     defaultitems = {
         [241308] = false,
         [241304] = false,
@@ -13,6 +13,10 @@ local configs = {
     },
     updaterate = 0.3,
     soundrate = 1,
+    alphafrom = 0.5,
+    alphato = 1,
+    scalefrom = 0.8,
+    scaleto = 1,
 };
 
 local blacklists = {
@@ -37,9 +41,8 @@ local alertitemnames = {
 
 local function showfade(icon)
     frames[frameidx].icon:SetTexture(icon);
-    ns.fadein(frames[frameidx], configs.alerttime, 0, 1)
-    ns.fadeout(frames[frameidx], configs.fadetime, 1, 0)
 
+    frames[frameidx].anim:Restart();
     frameidx = frameidx + 1;
 
     if frameidx > 10 then
@@ -221,29 +224,58 @@ function ns.init_alert()
     local i = 1;
 
     while (i <= 10) do
-        frames[i] = CreateFrame("Frame", nil, UIParent)
+        local frame = CreateFrame("Frame", nil, UIParent)
         if i == 1 then
-            frames[i]:SetPoint("CENTER", configs.pointx, configs.pointy);
+            frame:SetPoint("CENTER", configs.pointx, configs.pointy);
         else
-            frames[i]:SetPoint("CENTER", frames[i - 1], "CENTER", 0, 0);
+            frame:SetPoint("CENTER", frames[i - 1], "CENTER", 0, 0);
         end
 
 
-        frames[i]:SetWidth(ns.options.ReadyAlertSize);
-        frames[i]:SetHeight(ns.options.ReadyAlertSize * 0.9);
-        frames[i]:SetScale(1);
-        frames[i]:SetAlpha(0);
-        frames[i]:SetFrameStrata("LOW");
-        frames[i]:EnableMouse(false);
-        frames[i]:Show();
+        frame:SetWidth(ns.options.ReadyAlertSize);
+        frame:SetHeight(ns.options.ReadyAlertSize * 0.9);
+        frame:SetScale(1);
+        frame:SetAlpha(0);
+        frame:SetFrameStrata("LOW");
+        frame:EnableMouse(false);
+        frame:Show();
 
-        frames[i].icon = frames[i]:CreateTexture(nil, "BACKGROUND");
-        frames[i].icon:SetTexture("");
-        frames[i].icon:ClearAllPoints();
-        frames[i].icon:SetAllPoints(frames[i]);
-        frames[i].icon:SetTexCoord(.08, .92, .08, .92);
-        frames[i].icon:Show();
+        frame.icon = frame:CreateTexture(nil, "BACKGROUND");
+        frame.icon:SetTexture("");
+        frame.icon:ClearAllPoints();
+        frame.icon:SetAllPoints(frame);
+        frame.icon:SetTexCoord(.08, .92, .08, .92);
+        frame.icon:Show();
 
+        frame.anim = frame:CreateAnimationGroup();
+        local fadein = frame.anim:CreateAnimation("Alpha");
+        fadein:SetOrder(1);
+        fadein:SetFromAlpha(configs.alphafrom);
+        fadein:SetToAlpha(configs.alphato);
+        fadein:SetDuration(configs.fadetime);
+
+        local fadeout = frame.anim:CreateAnimation("Alpha");
+        fadeout:SetOrder(2)
+        fadeout:SetFromAlpha(configs.alphato);
+        fadeout:SetToAlpha(configs.alphafrom);
+        fadeout:SetDuration(configs.fadetime);
+
+        if ns.options.ShowScaleAnim then
+            local zoomin = frame.anim:CreateAnimation("Scale");
+            zoomin:SetOrder(1);
+            zoomin:SetOrigin("CENTER", 0, 0);
+            zoomin:SetScaleFrom(configs.scalefrom, configs.scalefrom);
+            zoomin:SetScaleTo(configs.scaleto, configs.scaleto);
+            zoomin:SetDuration(configs.fadetime);
+
+            local zoomout = frame.anim:CreateAnimation("Scale");
+            zoomout:SetOrder(2)
+            zoomout:SetOrigin("CENTER", 0, 0);
+            zoomout:SetScaleFrom(configs.scaleto, configs.scaleto);
+            zoomout:SetScaleTo(configs.scalefrom, configs.scalefrom);
+            zoomout:SetDuration(configs.fadetime);
+        end
+        frames[i] = frame;
         i = i + 1;
     end
 
