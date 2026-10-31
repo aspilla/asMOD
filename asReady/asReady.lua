@@ -208,7 +208,7 @@ local function setup_bar()
     remainbar.button:SetAlpha(1);
     remainbar.button:EnableMouse(false);
     remainbar.button.icon:SetTexCoord(.08, .92, .16, .84);
-    remainbar.button.bg = remainbar.button:CreateTexture(nil, "BACKGROUND")
+    remainbar.button.bg = remainbar.button:CreateTexture(nil, "BACKGROUND", nil, -7)
     remainbar.button.bg:SetPoint("TOPLEFT", remainbar.button, "TOPLEFT", -1, 1)
     remainbar.button.bg:SetPoint("BOTTOMRIGHT", remainbar.button, "BOTTOMRIGHT", 1, -1)
     remainbar.button.bg:SetColorTexture(0, 0, 0, 1);

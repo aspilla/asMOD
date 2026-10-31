@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261031 Update
+
+### asReady
+- **Bug Fix:** Resolved an issue where cast bar icons would occasionally display as a black square.
+
 ## 261030 Update
 
 ### asCooldownPulse (New option)

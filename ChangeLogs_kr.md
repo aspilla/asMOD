@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261031 Update
+
+### asReady
+- 오류 수정: 케스팅바 아이콘이 가끔 검게 나오는 이슈 해결
+
 ## 261030 Update
 
 ### asCooldownPulse (신규 옵션)
