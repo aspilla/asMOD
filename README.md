@@ -16,11 +16,11 @@ I recommend them to those who want to enjoy the game optimally as configured by 
 If you prefer customizing addons to suit your specific preferences, I recommend looking for other alternatives.
 ```
 
-## asMOD Play Video (Simple UI mode)
+## asMOD Play Video (Simple UI mode, Default)
 
-![sample](https://media.forgecdn.net/attachments/1849/706/ie-c-ioi2-2026-08-07-213112-jpg.jpg)
+![sample](https://media.forgecdn.net/attachments/2138/305/asmod_dd-jpg.jpg)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/bfyZxcaRBAI?si=o0qYSFqEKuv0lPjo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DNakntB71Dw?si=yUuD2Zmrpl2jPbme" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ![sample](https://media.forgecdn.net/attachments/1929/108/asmodraid-jpg.jpg)
 
@@ -255,9 +255,7 @@ asMOD minimizes the use of the ACE Library. To copy settings, use the `WTF` fold
 
 ### 10. Changing Fonts (Regarding Font Size)
 
-- The Inven version of asMOD includes fonts (`K_Damage.ttf`, the English WoW damage font). These are located in `World of Warcraft/_retail_/Fonts`.
-- If you are not satisfied with the font, you can delete or replace the files in that folder.
-- The default font shown in the video is not shared directly. It is recommended for use only on QHD resolutions or higher. (You can search for "Devil UI Font" on Google and replace `2002.ttf` and `2002b.ttf`).
+- Regarding the font on the sample video, using `Gotham Narrow Ultra`
 
 ### 11. Nameplate Settings
 
@@ -296,11 +294,11 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 이 두 가지 핵심 규칙 때문에 제 애드온은 호불호가 갈릴 수 있습니다. 개발자가 설정해 둔 대로 별 고민 없이 게임을 최적으로 즐기고 싶은 분들께 추천합니다. 반면, 애드온을 입맛에 맞춰 세세하게 설정하는 것을 선호하시는 분들께는 다른 대안을 추천해 드립니다.
 ```
 
-## asMOD 사용 영상 (Simple UI mode)
+## asMOD 사용 영상 (Simple UI mode, 기본)
 
-![sample](https://media.forgecdn.net/attachments/1849/706/ie-c-ioi2-2026-08-07-213112-jpg.jpg)
+![sample](https://media.forgecdn.net/attachments/2138/305/asmod_dd-jpg.jpg)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/bfyZxcaRBAI?si=o0qYSFqEKuv0lPjo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DNakntB71Dw?si=yUuD2Zmrpl2jPbme" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ![sample](https://media.forgecdn.net/attachments/1929/108/asmodraid-jpg.jpg)
 
@@ -537,8 +535,8 @@ asMOD 설치시 그래픽 설정의 UI 설정을 0.75로 축소 합니다.
 ### 10. 폰트 변경 (글씨 크기 관련)
 
 - 인벤 다운로드 asMOD는 폰트도 포함(`K_Damage.ttf`, 와우 영문판 데미지 폰트)하고 있습니다. World of Warcraft/_retail_/Font 가 위치 입니다.
-- 글씨 마음에 안드는 경우 해당 Font를 삭제/변경하시면 됩니다.
-- 영상에 사용중인 기본 Font는 직접 공유는 안하고 있습니다. QHD 이상에서만 사용권장 드립니다. (Devil UI 폰트로 구글 검색, `2002.ttf`, `2002b.ttf` 변경 하시면 됩니다.)
+- 영상에서 사용하는 폰트는 다름 링크 에서 다운 가능합니다. QHD 이상에서만 사용권장 드립니다. 
+- [인벤 자료실 링크 Click](https://wow.inven.co.kr/dataninfo/addonpds/detail.php?idx=13145&rurl=/dataninfo/addonpds/list.php?)
 
 ### 11. 이름표 설정
 
