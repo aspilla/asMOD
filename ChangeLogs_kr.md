@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261104 Update
+
+### asCooldownPulse
+- 오류 수정 : 쿨 알림 버튼이 `asconfig`로 이동 안되는 문제 수정
+
 ## 261031 Update
 
 ### asReady

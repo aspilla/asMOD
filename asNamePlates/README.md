@@ -42,8 +42,6 @@ Colors are displayed based on the following priority:
 - Nameplate Top Inset: Set to `0.08` by default (Best setting is `4` which is setted as `0.04`, recommended setting is `5` if below max level).
   - **Note:** If you uninstall the addon, reset this value using the following command: `/run SetCVar("nameplateTopInset", "0.08")`
 
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/kbM1lHwgjE4?si=7Ab17Tf2JLerGT5p" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
 - Changes the health bar background color for low health targets (`Display Low Health Background Color`)
 
   ![sample](https://media.forgecdn.net/attachments/1729/195/asnameplates_lowcolor-jpg.jpg)
@@ -118,8 +116,6 @@ Colors are displayed based on the following priority:
 
 - 이름표 상단 여백 : `0.08`을 기본으로 설정 (최적의 설정은`4` 즉 `0.04`로 설정 됨, 만렙이 아닐 경우 `5`로 설정 추천)
 	- **참고:** 애드온 삭제시 다음 명령어로 초기화 필요 `/run SetCVar("nameplateTopInset", "0.08")`
-
-	<iframe width="560" height="315" src="https://www.youtube.com/embed/kbM1lHwgjE4?si=7Ab17Tf2JLerGT5p" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 	
 - 낮은 체력 대상 체력바 배경 색상 변경 (`낮은체력 배경 색상 표시`)
 

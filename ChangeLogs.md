@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261104 Update
+
+### asCooldownPulse
+- **Bug Fix:** Fixed an issue where the cooldown alert button could not be moved using `/asconfig`.
+
 ## 261031 Update
 
 ### asReady
