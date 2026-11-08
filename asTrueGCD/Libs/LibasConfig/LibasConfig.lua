@@ -1,6 +1,6 @@
 local major = "LibasConfig";
 
-local CONST_LIB_VERSION = 1;
+local CONST_LIB_VERSION = 2;
 
 local libStub = _G.LibStub
 local libasConfig = libStub:NewLibrary(major, CONST_LIB_VERSION)
@@ -53,7 +53,7 @@ end
 
 function libasConfig.load_position(frame, addonname, savevariable)
     gpositions[addonname] = {
-        name = addonname,        
+        name = addonname,
     };
 
     gpositions[addonname].anchor1, _, gpositions[addonname].anchor2, gpositions[addonname].x, gpositions[addonname].y =
@@ -102,15 +102,12 @@ local function save_positions()
         local savevariable = positions.savevariable;
         local frame = framelist[index];
 
-        savevariable.positions = {};        
+        savevariable.positions = {};
         savevariable.positions.anchor1, _, savevariable.positions.anchor2, savevariable.positions.x, savevariable.positions.y =
         frame:GetPoint();
     end
     cancel_position();
-    ReloadUI();
 end
-
-
 local function show_clearpopup()
     StaticPopup_Show("asClear")
 end
@@ -121,7 +118,6 @@ local function reset_positions()
         local positions = gpositions[index];
         positions.savevariable.positions = nil;
     end
-    ReloadUI();
 end
 
 do
@@ -134,15 +130,16 @@ do
             button2 = "취소",
             OnAccept = function()
                 save_positions()
+                ReloadUI();
             end,
 
             OnCancel = function(_, reason)
                 cancel_position();
+                ReloadUI();
             end,
             timeout = 0,
             whileDead = true,
             hideOnEscape = true,
-            preferredIndex = 3,
         }
 
 
@@ -152,6 +149,7 @@ do
             button2 = "다음에",
             OnAccept = function()
                 reset_positions()
+                ReloadUI();
             end,
             timeout = 0,
             whileDead = true,
@@ -167,15 +165,16 @@ do
             button2 = "Cancel",
             OnAccept = function()
                 save_positions()
+                ReloadUI();
             end,
 
             OnCancel = function(_, reason)
                 cancel_position();
+                ReloadUI();
             end,
             timeout = 0,
             whileDead = true,
             hideOnEscape = true,
-            preferredIndex = 3,
         }
 
 
@@ -185,11 +184,11 @@ do
             button2 = "Cancel",
             OnAccept = function()
                 reset_positions()
+                ReloadUI();
             end,
             timeout = 0,
             whileDead = true,
             hideOnEscape = true,
-            preferredIndex = 3,
         }
     end
 
