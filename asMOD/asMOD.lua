@@ -4,7 +4,12 @@ local version = select(4, GetBuildInfo());
 local configs = {
     uiscale = 0.75,
     version = 260807,
+    adder = 2,
 };
+
+if version >= 120107 then
+	configs.adder = 3;
+end
 
 local function import_layout(layout_text, name)
     local importLayoutInfo = C_EditMode.ConvertStringToLayoutInfo(layout_text);
@@ -47,7 +52,7 @@ local function select_layout(name)
     end
 
     if index then
-        C_EditMode.SetActiveLayout(index + 2);
+        C_EditMode.SetActiveLayout(index + configs.adder);
     end
 end
 
@@ -175,7 +180,6 @@ local function setup_wowoptions()
             ["minimapPos"] = 234.2022186215915,
         }
     end
-    ns.show_resetpopup();
 end
 
 local function show_asMODpopup()
@@ -190,7 +194,8 @@ local function init()
             button1 = "변경",
             button2 = "다음에",
             OnAccept = function()
-                setup_wowoptions()
+                setup_wowoptions();
+                ReloadUI();
             end,
             timeout = 0,
             whileDead = true,
@@ -204,7 +209,8 @@ local function init()
             button1 = "Confirm",
             button2 = "Cancel",
             OnAccept = function()
-                setup_wowoptions()
+                setup_wowoptions();
+                ReloadUI();
             end,
             timeout = 0,
             whileDead = true,

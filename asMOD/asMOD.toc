@@ -7,6 +7,5 @@
 ## SavedVariablesPerCharacter: asMOD_config, asMOD_version
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
-asMODReset.lua
 asMODSettings.lua
 asMOD.lua
