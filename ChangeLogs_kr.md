@@ -12,6 +12,9 @@ https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 ### asCastingAlert, asInteruptHelper
 - 오류 수정 : 쿨 다운 음영이 반대로 된 부분 개선
 
+### asMOD
+- 12.1.7 지원
+
 ## 261104 Update
 
 ### asCooldownPulse

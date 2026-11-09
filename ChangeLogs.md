@@ -12,6 +12,9 @@ https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 ### asCastingAlert, asInterruptHelper
 - Bug Fix: Fixed an issue where the cooldown shadow animation/overlay was inverted.
 
+### asMOD
+- Support 12.1.7
+
 ## 261104 Update
 
 ### asCooldownPulse
