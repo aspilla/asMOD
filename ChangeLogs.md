@@ -9,6 +9,8 @@ https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 - Displays remaining cooldowns for vanish/fade utilities on the right side.
 - Mage (`Invisibility`, `Greater Invisibility`), Hunter (`Feign Death`), Rogue (`Vanish`), Night Elf (`Shadowmeld`), Warrior (`Spell Reflection` — cannot distinguish whether it reflects magic).
 
+### asCastingAlert, asInterruptHelper
+- Bug Fix: Fixed an issue where the cooldown shadow animation/overlay was inverted.
 
 ## 261104 Update
 

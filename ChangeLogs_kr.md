@@ -9,6 +9,9 @@ https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 - `소멸`등 회피기 남은 쿨은 우측에 표시.
 - 법사(`투명화`, `상급 투명화`), 사냥꾼 (`죽은척 하기`), 도적 (`소멸`), 나엘 (`그숨`), 전사 (`주문 반사`, 마법 여부는 판단 못함)
 
+### asCastingAlert, asInteruptHelper
+- 오류 수정 : 쿨 다운 음영이 반대로 된 부분 개선
+
 ## 261104 Update
 
 ### asCooldownPulse
