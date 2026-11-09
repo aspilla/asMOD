@@ -133,9 +133,8 @@ do
                 ReloadUI();
             end,
 
-            OnCancel = function(_, reason)
+            OnCancel = function()
                 cancel_position();
-                ReloadUI();
             end,
             timeout = 0,
             whileDead = true,
@@ -168,9 +167,8 @@ do
                 ReloadUI();
             end,
 
-            OnCancel = function(_, reason)
+            OnCancel = function()
                 cancel_position();
-                ReloadUI();
             end,
             timeout = 0,
             whileDead = true,
