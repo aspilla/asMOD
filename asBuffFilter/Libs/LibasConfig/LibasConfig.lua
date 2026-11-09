@@ -9,6 +9,33 @@ if (not libasConfig) then
     return
 end
 
+local L = {
+    msg1 = "/asConfig : Config positions of asMOD addons",
+    msg2 = "/asClear : Reset positions as default configuration",
+
+    configtext = "Config positions of asMOD addons",
+    configbutton1 = "Save",
+    configbutton2 = "Cancel",
+    cleartext = "Reset all configurations to default",
+    clearbutton1 = "Confirm",
+    clearbutton2 = "Cancel",
+}
+
+
+if GetLocale() == "koKR" then
+    L = {
+        msg1 = "/asConfig : asMOD 의 위치 조정",
+        msg2 = "/asClear : asMOD 기본 위치로 설정 초기화",
+        configtext = "asMOD 애드온의 위치를 조정 합니다. 완료를 누르면 위치가 저장 됩니다. 원치 않을 경우 취소를 누르세요",
+        configbutton1 = "완료",
+        configbutton2 = "취소",
+        cleartext = "asMOD 위치를 모두 기본으로 초기화 합니다.",
+        clearbutton1 = "변경",
+        clearbutton2 = "다음에",
+    }
+end
+
+
 local gpositions = {};
 
 local function on_stopdrag(self)
@@ -68,7 +95,7 @@ function libasConfig.load_position(frame, addonname, savevariable)
             savepositions.y);
 
         gpositions[addonname].anchor1, gpositions[addonname].anchor2, gpositions[addonname].x, gpositions[addonname].y =
-        savepositions.anchor1, savepositions.anchor2, savepositions.x, savepositions.y;
+            savepositions.anchor1, savepositions.anchor2, savepositions.x, savepositions.y;
     end
 
     gpositions[addonname].savevariable = savevariable;
@@ -104,7 +131,7 @@ local function save_positions()
 
         savevariable.positions = {};
         savevariable.positions.anchor1, _, savevariable.positions.anchor2, savevariable.positions.x, savevariable.positions.y =
-        frame:GetPoint();
+            frame:GetPoint();
     end
     cancel_position();
 end
@@ -121,74 +148,39 @@ local function reset_positions()
 end
 
 do
-    if GetLocale() == "koKR" then
-        DEFAULT_CHAT_FRAME:AddMessage("/asConfig : asMOD 의 위치 조정");
-        DEFAULT_CHAT_FRAME:AddMessage("/asClear : asMOD 기본 위치로 설정 초기화");
-        StaticPopupDialogs["asConfig"] = {
-            text = "asMOD 애드온의 위치를 조정 합니다. 완료를 누르면 위치가 저장 됩니다. 원치 않을 경우 취소를 누르세요",
-            button1 = "완료",
-            button2 = "취소",
-            OnAccept = function()
-                save_positions()
-                ReloadUI();
-            end,
+    DEFAULT_CHAT_FRAME:AddMessage(L.msg1);
+    DEFAULT_CHAT_FRAME:AddMessage(L.msg2);
+    StaticPopupDialogs["asConfig"] = {
+        text = L.configtext,
+        button1 = L.configbutton1,
+        button2 = L.configbutton2,
+        OnAccept = function()
+            save_positions()
+            ReloadUI();
+        end,
 
-            OnCancel = function()
-                cancel_position();
-            end,
-            timeout = 0,
-            whileDead = true,
-            hideOnEscape = true,
-        }
-
-
-        StaticPopupDialogs["asClear"] = {
-            text = "asMOD 위치를 모두 기본으로 초기화 합니다.",
-            button1 = "변경",
-            button2 = "다음에",
-            OnAccept = function()
-                reset_positions()
-                ReloadUI();
-            end,
-            timeout = 0,
-            whileDead = true,
-            hideOnEscape = true,
-            preferredIndex = 3,
-        }
-    else
-        DEFAULT_CHAT_FRAME:AddMessage("/asConfig : Config positions of asMOD addons");
-        DEFAULT_CHAT_FRAME:AddMessage("/asClear : Reset positions as default configuration");
-        StaticPopupDialogs["asConfig"] = {
-            text = "Config positions of asMOD addons",
-            button1 = "Save",
-            button2 = "Cancel",
-            OnAccept = function()
-                save_positions()
-                ReloadUI();
-            end,
-
-            OnCancel = function()
-                cancel_position();
-            end,
-            timeout = 0,
-            whileDead = true,
-            hideOnEscape = true,
-        }
+        OnCancel = function()
+            cancel_position();
+        end,
+        timeout = 0,
+        whileDead = true,
+        hideOnEscape = true,
+    }
 
 
-        StaticPopupDialogs["asClear"] = {
-            text = "Reset all configurations to default",
-            button1 = "Confirm",
-            button2 = "Cancel",
-            OnAccept = function()
-                reset_positions()
-                ReloadUI();
-            end,
-            timeout = 0,
-            whileDead = true,
-            hideOnEscape = true,
-        }
-    end
+    StaticPopupDialogs["asClear"] = {
+        text = L.cleartext,
+        button1 = L.clearbutton1,
+        button2 = L.clearbutton2,
+        OnAccept = function()
+            reset_positions()
+            ReloadUI();
+        end,
+        timeout = 0,
+        whileDead = true,
+        hideOnEscape = true,
+        preferredIndex = 3,
+    }
 
     SlashCmdList['asConfig'] = show_configpopup
     SlashCmdList['asClear'] = show_clearpopup
