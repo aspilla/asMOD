@@ -13,7 +13,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Cooldown parentKey="cooldown" hideCountdownNumbers="true" inherits="CooldownFrameTemplate" reverse="true" hidden="true" frameLevel="1000">
+			<Cooldown parentKey="cooldown" hideCountdownNumbers="true" inherits="CooldownFrameTemplate" reverse="false" hidden="true" frameLevel="1000">
 				<Anchors>
 					<Anchor point="CENTER">
 						<Offset>

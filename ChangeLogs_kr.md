@@ -2,6 +2,13 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261109 Update
+
+### asCastingAlert (신규 기능)
+![asCastingAlert](https://media.forgecdn.net/attachments/2172/855/ascastingalert-jpg.jpg)
+- `소멸`등 회피기 남은 쿨은 우측에 표시.
+- 법사(`투명화`, `상급 투명화`), 사냥꾼 (`죽은척 하기`), 도적 (`소멸`), 나엘 (`그숨`), 전사 (`주문 반사`, 마법 여부는 판단 못함)
+
 ## 261104 Update
 
 ### asCooldownPulse

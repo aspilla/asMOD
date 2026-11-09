@@ -2,6 +2,14 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261109 Update
+
+### asCastingAlert (New Function)
+![asCastingAlert](https://media.forgecdn.net/attachments/2172/855/ascastingalert-jpg.jpg)
+- Displays remaining cooldowns for vanish/fade utilities on the right side.
+- Mage (`Invisibility`, `Greater Invisibility`), Hunter (`Feign Death`), Rogue (`Vanish`), Night Elf (`Shadowmeld`), Warrior (`Spell Reflection` — cannot distinguish whether it reflects magic).
+
+
 ## 261104 Update
 
 ### asCooldownPulse

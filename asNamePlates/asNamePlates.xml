@@ -8,21 +8,7 @@
 			<Layer level="ARTWORK" textureSubLevel="7">
 				<Texture  parentKey="border" setAllPoints="true" file="Interface\Addons\asNamePlates\border.tga"/>
 			</Layer>
-			<Layer level="OVERLAY">
-				<FontString  parentKey="count"  justifyH="RIGHT"/>
-			</Layer>
 		</Layers>
-		<Frames>
-			<Cooldown parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" enableMouse="false" frameLevel="1000">
-				<Anchors>
-					<Anchor point="CENTER">
-						<Offset>
-							<AbsDimension x="0" y="-1"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Cooldown>
-		</Frames>
 	</Frame>
 	<Texture name="asNamePlatesTemplate" virtual="true" atlas="UI-HUD-CoolDownManager-Bar">
 	</Texture>

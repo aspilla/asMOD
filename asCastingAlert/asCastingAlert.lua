@@ -60,6 +60,7 @@ local function show_castings()
         local texture = castinfo.texture;
         local spellid = castinfo.spellid;
         local button = ns.casts[currshow];
+        local helper = ns.helpers[currshow];
 
         button.icon:SetTexture(texture);
         if duration then
@@ -74,6 +75,11 @@ local function show_castings()
         alpha = C_CurveUtil.EvaluateColorValueFromBoolean(istargeted, 1, 0);
         button:SetAlpha(alpha);
 
+        if helper then
+            ns.check_helper(helper);
+            helper:SetAlpha(alpha);
+        end
+
         button:Show();
         currshow = currshow + 1;
 
@@ -87,6 +93,7 @@ local function show_castings()
 
     for i = currshow, configs.maxshow do
         ns.casts[i]:Hide();
+        ns.helpers[i]:Hide();
     end
 end
 
@@ -156,6 +163,8 @@ local function init()
     if libasConfig then
         libasConfig.load_position(main_frame, "asCastingAlert", ACTA_Positions);
     end
+
+    ns.inithelper()
 
     C_Timer.NewTicker(configs.updaterate, on_update);
 end

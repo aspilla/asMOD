@@ -2,16 +2,19 @@ local _, ns = ...;
 local Options_Default = {
     Version = 250805,
     ShowTarget = true,
+    ShowHelper = true,
 };
 
 local L = {
     ShowTarget = "Display the current target's casting",
+    ShowHelper = "Display vanish spell cooldown",
 }
 
 
 if GetLocale() == "koKR" then
     L = {
         ShowTarget = "대상의 시전을 표시",
+        ShowHelper = "소멸 스킬 쿨을 표시",
     }
 end
 
@@ -44,12 +47,16 @@ function ns.setup_option()
         ACTA_Options = {};
         ACTA_Options = CopyTable(Options_Default);
         ACTA_Positions = {};
+        ACTA_Positions2 = {};
     end
 
     if ACTA_Positions == nil then
         ACTA_Positions = {};
     end
 
+    if ACTA_Positions2 == nil then
+        ACTA_Positions2 = {};
+    end
     ns.options = CopyTable(ACTA_Options);
 
     for variable, _ in pairs(Options_Default) do

@@ -13,7 +13,31 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Cooldown parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true" enableMouse="false">
+			<Cooldown parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="false" drawEdge="true" hidden="true" enableMouse="false">
+			</Cooldown>
+		</Frames>
+	</Frame>
+	<Frame name="asCAVanishTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel="1000">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture  parentKey="icon" setAllPoints="true"/>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentIconD" parentKey="icon_desaturated" setAllPoints="true"/>
+			</Layer>
+			<Layer level="ARTWORK" textureSubLevel="7">
+				<Texture  parentKey="border" setAllPoints="true" file="Interface\Addons\asCastingAlert\border.tga"/>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Cooldown parentKey="cooldown" inherits="CooldownFrameTemplate" reverse="false" hidden="true">
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
 			</Cooldown>
 		</Frames>
 	</Frame>

@@ -2,15 +2,17 @@
 
 Targeted Spell Cast Alert
 
-![asCastingAlert](https://media.forgecdn.net/attachments/1585/664/ascastingalert_mn-jpg.jpg)
+![asCastingAlert](https://media.forgecdn.net/attachments/2172/855/ascastingalert-jpg.jpg)
 
 ## Key Features
 
-- **Central Display**: Shows the spell icon and remaining cast time in the center of the screen.
-- **Display Priority**:
+- Shows the spell icon and remaining cast time in the center of the screen.
+- Display Priority :
   - Mobs with higher levels have higher priority for cast alerts.
   - Your current target's cast has a lower display priority compared to high-level mobs.
   - Casts from `Minor` (trivial) mobs are not displayed.
+- Displays remaining cooldowns for vanish/fade utilities on the right side.
+- Mage (`Invisibility`, `Greater Invisibility`), Hunter (`Feign Death`), Rogue (`Vanish`), Night Elf (`Shadowmeld`), Warrior (`Spell Reflection` — cannot distinguish whether it reflects magic).
 
 ## Configuration
 
@@ -31,15 +33,17 @@ The following options are available via `ESC` > `Options` > `Addons` > `asCastin
 
 대상된 시전 주문 알림
 
-![asCastingAlert](https://media.forgecdn.net/attachments/1585/664/ascastingalert_mn-jpg.jpg)
+![asCastingAlert](https://media.forgecdn.net/attachments/2172/855/ascastingalert-jpg.jpg)
 
 ## 주요 기능
 
-- **아이콘/남은 쿨을 중앙에 표시**
-- **표시 우선 순위**:
+- 대상된 주문 시전의 아이콘/남은 쿨을 중앙에 표시.
+- 표시 우선 순위 :
   - 몹 Level 이 높으면 시전 표시 우선수위가 높음
   - 대상의 시전은 표시 우선 순위가 낮음
   - `Minor` 몹의 시전은 표시 하지 않음
+- `소멸`등 회피기 남은 쿨은 우측에 표시.
+- 법사(`투명화`, `상급 투명화`), 사냥꾼 (`죽은척 하기`), 도적 (`소멸`), 나엘 (`그숨`), 전사 (`주문 반사`, 마법 여부는 판단 못함)
 
 ## 설정
 
