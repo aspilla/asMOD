@@ -5,10 +5,10 @@ https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 ## 261110 Update
 
 ### asCastingAlert
-- Bugfix : Error when turn off `vanish cooldown`
+- Bugfix : Fixing error when turn off `vanish cooldown`
 
 ### asInterruptHelper
-- improve code
+- Improving code
 
 ## 261109 Update
 
