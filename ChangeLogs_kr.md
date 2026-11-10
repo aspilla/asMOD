@@ -2,6 +2,14 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261110 Update
+
+### asCastingAlert
+- 오류 수정 : `소멸 쿨` 표시 끌 경우 오류 문제 수정
+
+### asInterruptHelper
+- 코드 개선
+
 ## 261109 Update
 
 ### asCastingAlert (신규 기능)

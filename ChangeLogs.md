@@ -2,6 +2,14 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261110 Update
+
+### asCastingAlert
+- Bugfix : Error when turn off `vanish cooldown`
+
+### asInterruptHelper
+- improve code
+
 ## 261109 Update
 
 ### asCastingAlert (New Function)

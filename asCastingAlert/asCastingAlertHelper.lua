@@ -56,15 +56,9 @@ coolcurve:AddPoint(1.5, 0);
 coolcurve:AddPoint(1.6, 1);
 
 local function show_spell(frame, spellid)
-    spellid = C_Spell.GetOverrideSpell(spellid);
     local spellInfo = C_Spell.GetSpellInfo(spellid);
 
     if not spellInfo then
-        return;
-    end
-
-    local durationobj = C_Spell.GetSpellCooldownDuration(spellid);
-    if not durationobj then
         return;
     end
 
@@ -85,6 +79,10 @@ local function show_spell(frame, spellid)
         frame.icon:SetVertexColor(0.4, 0.4, 0.4);
     end
 
+    local durationobj = C_Spell.GetSpellCooldownDuration(spellid);
+    if not durationobj then
+        return;
+    end
     set_cooldownframe(frame.cooldown, durationobj, true);
     frame.icon_desaturated:SetAlpha(durationobj:EvaluateRemainingDuration(coolcurve));
 end

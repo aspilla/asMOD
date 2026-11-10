@@ -93,7 +93,10 @@ local function show_castings()
 
     for i = currshow, configs.maxshow do
         ns.casts[i]:Hide();
-        ns.helpers[i]:Hide();
+
+        if ns.helpers[i] then
+            ns.helpers[i]:Hide();
+        end
     end
 end
 
