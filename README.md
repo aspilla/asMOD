@@ -16,7 +16,7 @@ I recommend them to those who want to enjoy the game optimally as configured by 
 If you prefer customizing addons to suit your specific preferences, I recommend looking for other alternatives.
 ```
 
-## asMOD Play Video (Simple UI mode, Default)
+## asMOD Play Video (asMOD Design mode, Default)
 
 ![sample](https://media.forgecdn.net/attachments/2138/305/asmod_dd-jpg.jpg)
 
@@ -26,7 +26,7 @@ If you prefer customizing addons to suit your specific preferences, I recommend 
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/9PKPo5NLuTg?si=ybaxYi3zhPqizhbq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Classic UI mode
+## Classic Design mode
 
 - Turn off `asUnitFrame` and disable `Simple Design Mode` in `asCastBar`.
   ![Sample](https://media.forgecdn.net/attachments/1933/800/default_mode-jpg.jpg)
@@ -294,7 +294,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 이 두 가지 핵심 규칙 때문에 제 애드온은 호불호가 갈릴 수 있습니다. 개발자가 설정해 둔 대로 별 고민 없이 게임을 최적으로 즐기고 싶은 분들께 추천합니다. 반면, 애드온을 입맛에 맞춰 세세하게 설정하는 것을 선호하시는 분들께는 다른 대안을 추천해 드립니다.
 ```
 
-## asMOD 사용 영상 (asMOD UI 설정, 기본)
+## asMOD 사용 영상 (asMOD 디자인 설정, 기본)
 
 ![sample](https://media.forgecdn.net/attachments/2138/305/asmod_dd-jpg.jpg)
 
@@ -304,7 +304,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/9PKPo5NLuTg?si=ybaxYi3zhPqizhbq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## 클래식 UI 설정
+## 클래식 디자인 설정
 
 - `asUnitFrame` 을 끄고, `asCastBar`의 `Simple Design Mode` 를 비 활성화
   ![Sample](https://media.forgecdn.net/attachments/1933/800/default_mode-jpg.jpg)
