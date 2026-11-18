@@ -54,8 +54,6 @@
 - [RivaTuner Statistics Server (RTSS) Setup Guide](https://www.youtube.com/watch?v=WZJbTuBeVzE&si=AqgVnkDFQgKrZs2I)
 - [WoW In-Game Graphics Settings Optimization](https://www.youtube.com/watch?v=7v2tDNQc2Uo)
 - [Sound Channel CPU Overhead Analysis](https://youtube.com/watch?v=lZRBJ7VJXgM&si=oY9zuQpUZodQ9jpm)
-- [FHD vs UHD Raid FPS Benchmark Comparison](https://www.inven.co.kr/board/wow/4739/253503)
-- [4K Raid GPU Usage & CPU Bottleneck Analysis](https://www.inven.co.kr/board/wow/4739/239906)
 - [Windows Installation ISO Debloater](https://github.com/itsNileshHere/Windows-Iso-Debloater)
 - [Post-Windows Installation Optimization](https://winhance.net/)
 
@@ -121,8 +119,6 @@
 * [RTSS 설정 관련](https://www.youtube.com/watch?v=WZJbTuBeVzE&si=AqgVnkDFQgKrZs2I)
 * [와우 그래픽 설정 관련](https://www.youtube.com/watch?v=7v2tDNQc2Uo)
 * [사운드 채널 관련](https://youtube.com/watch?v=lZRBJ7VJXgM&si=oY9zuQpUZodQ9jpm)
-* [FHD, UHD 레이드 FPS 비교](https://www.inven.co.kr/board/wow/4739/253503)
-* [4K, Raid GPU 사용률 관련](https://www.inven.co.kr/board/wow/4739/239906)
 * [Windows 설치 iso 최적화](https://github.com/itsNileshHere/Windows-Iso-Debloater)
 * [Windows 설치 후 최적화](https://winhance.net/)
 
