@@ -234,7 +234,7 @@ local function setup_castbar()
     castbar:SetMinMaxValues(0, 100)
     castbar:SetValue(100)
     castbar:SetHeight(configs.height)
-    castbar:SetWidth(configs.width - (configs.height + 2) * 1.2)
+    castbar:SetWidth(configs.width - (configs.height) * 1.2)
     castbar:SetStatusBarColor(1, 0.9, 0.9);
     castbar:SetAlpha(configs.alpha);
 

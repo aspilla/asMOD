@@ -63,7 +63,7 @@ local function setup_castbar()
     castbar:SetMinMaxValues(0, 100)
     castbar:SetValue(100)
     castbar:SetHeight(ns.options.BarHeight)
-    castbar:SetWidth(ns.options.BarWidth - (ns.options.BarHeight + 2) * 1.2 - 1)
+    castbar:SetWidth(ns.options.BarWidth - (ns.options.BarHeight) * 1.2 - 1)
     castbar:SetStatusBarColor(1, 0.9, 0.9);
     castbar:SetAlpha(configs.alpha);
 
@@ -144,11 +144,11 @@ function ns.resize(castbar)
     configs.namesize = ns.options.BarHeight * 0.6;
     configs.timesize = ns.options.BarHeight * 0.5;
     castbar:SetHeight(ns.options.BarHeight)
-    castbar:SetWidth(ns.options.BarWidth - (ns.options.BarHeight + 2) * 1.2)
+    castbar:SetWidth(ns.options.BarWidth - (ns.options.BarHeight) * 1.2 - 1)
     castbar.name:SetFont(STANDARD_TEXT_FONT, configs.namesize);
     castbar.time:SetFont(STANDARD_TEXT_FONT, configs.timesize);
 
-    castbar.button:SetWidth((ns.options.BarHeight) * 1.2 - 1);
+    castbar.button:SetWidth((ns.options.BarHeight) * 1.2);
     castbar.button:SetHeight(ns.options.BarHeight);
 end
 
@@ -430,7 +430,7 @@ local function init()
     if ns.options.SimpleDesign then
         ns.playercastbar = setup_castbar();
         ns.playercastbar:SetPoint("CENTER", UIParent, "CENTER",
-            configs.xpoint + ((ns.options.BarHeight + 2) * 1.2 + 1) / 2,
+            configs.xpoint + ((ns.options.BarHeight) * 1.2 + 1) / 2,
             configs
             .ypoint)
 

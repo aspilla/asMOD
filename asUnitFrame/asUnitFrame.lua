@@ -677,7 +677,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     local castbarheight = height - 5;
 
     frame.castbar = CreateFrame("StatusBar", nil, frame)
-    frame.castbar:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, -3);
+    frame.castbar:SetPoint("TOP", frame, "BOTTOM", ((castbarheight) * 1.2  + 1)/2, -3);
     frame.castbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
     frame.castbar:SetFrameLevel(configs.framelevel);
     local statustexture = frame.castbar:GetStatusBarTexture();
@@ -685,7 +685,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     frame.castbar:SetMinMaxValues(0, 100)
     frame.castbar:SetValue(100)
     frame.castbar:SetHeight(castbarheight)
-    frame.castbar:SetWidth(width - ((castbarheight + 1) * 1.2));
+    frame.castbar:SetWidth(width - (castbarheight) * 1.2 - 2); --unit frame보다 1px 큼
     frame.castbar:SetStatusBarColor(1, 0.9, 0.9);
     frame.castbar:SetAlpha(1);
 
@@ -739,12 +739,12 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     frame.castbar:Hide();
 
     frame.castbar.button = CreateFrame("Button", nil, frame.castbar, "AUFFrameTemplate");
-    frame.castbar.button:SetPoint("RIGHT", frame.castbar, "LEFT", -2, 0)
-    frame.castbar.button:SetWidth((castbarheight) * 1.1);
+    frame.castbar.button:SetPoint("RIGHT", frame.castbar, "LEFT", -1, 0)
+    frame.castbar.button:SetWidth((castbarheight) * 1.2);
     frame.castbar.button:SetHeight(castbarheight);
     frame.castbar.button:SetAlpha(1);
     frame.castbar.button:EnableMouse(false);
-    frame.castbar.button.icon:SetTexCoord(.08, .92, .08, .92);
+    frame.castbar.button.icon:SetTexCoord(.08, .92, .16, .84);
     frame.castbar.button.bg = frame.castbar.button:CreateTexture(nil, "BACKGROUND", nil, -7)
     frame.castbar.button.bg:SetPoint("TOPLEFT", frame.castbar.button, "TOPLEFT", -1, 1)
     frame.castbar.button.bg:SetPoint("BOTTOMRIGHT", frame.castbar.button, "BOTTOMRIGHT", 1, -1)
