@@ -15,8 +15,8 @@ end
 local zero_duration = C_DurationUtil.CreateDuration();
 local function hide_castbar(castbar)
 	local targetname = castbar.targetname;
-	castbar:SetTimerDuration(zero_duration);
-	castbar:SetValue(0);
+	castbar.bar:SetTimerDuration(zero_duration);
+	castbar.bar:SetValue(0);
 	castbar:Hide();
 	castbar.isAlert = false;
 	targetname:SetText("");
@@ -51,6 +51,7 @@ local function check_casting(castbar, event, interuptedby, complete)
 	local unit         = castbar.unit;
 	local frameicon    = castbar.button.icon;
 	local text         = castbar.name;
+	local bar          = castbar.bar;
 	local time         = castbar.time;
 	local targetname   = castbar.targetname;
 	local targettarget = unit .. "target";
@@ -68,13 +69,13 @@ local function check_casting(castbar, event, interuptedby, complete)
 			bchannel = true;
 		end
 		if event == "UNIT_SPELLCAST_INTERRUPTED" then
-		    castbar:SetTimerDuration(zero_duration);
-			castbar:SetMinMaxValues(0, 100);
-			castbar:SetValue(100);
+			bar:SetTimerDuration(zero_duration);
+			bar:SetMinMaxValues(0, 100);
+			bar:SetValue(100);
 			local failtext = configs.interruptedtext;
 			local color = configs.failcolor;
 			time:SetText(failtext);
-			castbar:SetStatusBarColor(color[1], color[2], color[3]);
+			bar:SetStatusBarColor(color[1], color[2], color[3]);
 			castbar.failstart = currtime;
 			castbar.duration_obj = nil;
 			if interuptedby then
@@ -102,16 +103,16 @@ local function check_casting(castbar, event, interuptedby, complete)
 			castbar.duration_obj = duration;
 			frameicon:SetTexture(texture);
 			local direction = 0;
-            if bchannel then
-                direction = Enum.StatusBarTimerDirection.RemainingTime;
-            end
-            castbar:SetTimerDuration(duration, 0, direction);
+			if bchannel then
+				direction = Enum.StatusBarTimerDirection.RemainingTime;
+			end
+			bar:SetTimerDuration(duration, 0, direction);
 			castbar.failstart = nil;
 			castbar.castspellid = spellid;
 
 			local color = {};
 			color = configs.interruptcolor;
-			castbar:SetStatusBarColor(color[1], color[2], color[3]);
+			bar:SetStatusBarColor(color[1], color[2], color[3]);
 
 			if C_CurveUtil and C_CurveUtil.EvaluateColorValueFromBoolean then
 				local isimportant = C_Spell.IsSpellImportant(spellid);

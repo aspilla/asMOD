@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-    Version = 250805,
+    Version = 261120,
     HideTarget = true,
     HideFocus = true,
     MaxShow = 3,

@@ -20,11 +20,11 @@ Simple Cast Bar
 ## Configuration
 
 - Settings can be adjusted via **ESC > Options > AddOns > asCastBar**.
-- Whether to apply Simple Design Mode (Default: On).
-- Cast bar width (Default: 238).
-- Cast bar height (Default: 20).
-- Whether to display channel ticks, functions only in Simple Design Mode (Default: On).
-- Refresh rate per second (Default: 20).
+  - Whether to apply Simple Design Mode (Default: On).
+  - Cast bar width (Default: 238).
+  - Cast bar height (Default: 20).
+  - Whether to display channel ticks, functions only in Simple Design Mode (Default: On).
+  - Font Size Ratio (Default: 0.6)
 - **Move Position**: Enter the `/asConfig` command in the chat window.
 - **Reset Position**: Enter the `/asClear` command in the chat window to reset to default settings.
 
@@ -59,11 +59,11 @@ Simple Cast Bar
 ## 설정
 
 - `ESC` > `설정` > `애드온` > `asCastBar` 에서 설정 가능
-- 심플 디자인 모드 사용 (기본 On)
-- 시전바 넓이 (기본 238)
-- 시전바 높이 (기본 20)
-- 채널링 틱 표시, 심플 디자인 모드에서만 동작 (기본 On)
-- 초당 업데이트 횟수 (기본 20)
+  - 심플 디자인 모드 사용 (기본 On)
+  - 시전바 넓이 (기본 238)
+  - 시전바 높이 (기본 20)
+  - 채널링 틱 표시, 심플 디자인 모드에서만 동작 (기본 On)
+  - 폰트 크기 비율 (기본 0.6)
 - **위치 이동** : `/asConfig` 명령어 채팅창에 입력
 - **위치 초기화** : `/asClear` 명령어 채팅창에 입력, 기본 설정으로 초기화
 

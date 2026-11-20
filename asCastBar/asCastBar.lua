@@ -7,12 +7,13 @@ local configs = {
     notinterruptcolor = { 0.6, 0.6, 0.6 },
     interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
     failedcolor = { 1, 0, 0 },
-    updaterate = 0.05,
+    updaterate = 0.1,
     font = STANDARD_TEXT_FONT,
     interruptedtext = INTERRUPTED,
     maxtick = 10,
     channeldonetime = 0.1,
     faildonetime = 1,
+    buttonwidthrate = 1.2,
 }
 
 configs.tickspells = {
@@ -53,22 +54,21 @@ main_frame:Show();
 
 local zero_duration = C_DurationUtil.CreateDuration();
 local function setup_castbar()
-    configs.namesize = ns.options.BarHeight * 0.6;
-    configs.timesize = ns.options.BarHeight * 0.5;
-    local castbar = CreateFrame("StatusBar", nil, UIParent)
+    local castbar = CreateFrame("Frame", nil, UIParent);
     castbar:SetFrameStrata("LOW");
-    castbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-    local statustexture = castbar:GetStatusBarTexture();
-    statustexture:SetHorizTile(false);
-    castbar:SetMinMaxValues(0, 100)
-    castbar:SetValue(100)
-    castbar:SetHeight(ns.options.BarHeight)
-    castbar:SetWidth(ns.options.BarWidth - (ns.options.BarHeight) * 1.2 - 1)
-    castbar:SetStatusBarColor(1, 0.9, 0.9);
     castbar:SetAlpha(configs.alpha);
 
-    castbar.notinterruptable = castbar:CreateTexture(nil, "ARTWORK", "asCastBarNotInteruptTemplate", 1);
-    castbar.notinterruptable:SetParent(castbar);
+    castbar.bar = CreateFrame("StatusBar", nil, castbar)
+    castbar.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+    local statustexture = castbar.bar:GetStatusBarTexture();
+    statustexture:SetHorizTile(false);
+    castbar.bar:SetMinMaxValues(0, 100)
+    castbar.bar:SetValue(100)
+    castbar.bar:SetStatusBarColor(1, 0.9, 0.9);
+    castbar.bar:SetPoint("RIGHT", castbar, "RIGHT", 0, 0);
+
+    castbar.notinterruptable = castbar.bar:CreateTexture(nil, "ARTWORK", "asCastBarNotInteruptTemplate", 1);
+    castbar.notinterruptable:SetParent(castbar.bar);
     castbar.notinterruptable:ClearAllPoints();
     castbar.notinterruptable:SetPoint("TOPLEFT", statustexture, "TOPLEFT", 0, 0);
     castbar.notinterruptable:SetPoint("BOTTOMRIGHT", statustexture, "BOTTOMRIGHT", 0, 0);
@@ -77,24 +77,22 @@ local function setup_castbar()
     castbar.notinterruptable:SetAlpha(0);
     castbar.notinterruptable:Show();
 
-    castbar.bg = castbar:CreateTexture(nil, "BACKGROUND")
-    castbar.bg:SetPoint("TOPLEFT", castbar, "TOPLEFT", -1, 1)
-    castbar.bg:SetPoint("BOTTOMRIGHT", castbar, "BOTTOMRIGHT", 1, -1)
+    castbar.bg = castbar.bar:CreateTexture(nil, "BACKGROUND")
+    castbar.bg:SetPoint("TOPLEFT", castbar.bar, "TOPLEFT", -1, 1)
+    castbar.bg:SetPoint("BOTTOMRIGHT", castbar.bar, "BOTTOMRIGHT", 1, -1)
     castbar.bg:SetColorTexture(0, 0, 0, 1);
     castbar.bg:Show();
 
-    castbar.name = castbar:CreateFontString(nil, "OVERLAY");
-    castbar.name:SetFont(STANDARD_TEXT_FONT, configs.namesize);
-    castbar.name:SetPoint("LEFT", castbar, "LEFT", 3, 0);
+    castbar.name = castbar.bar:CreateFontString(nil, "OVERLAY");
+    castbar.name:SetPoint("LEFT", castbar.bar, "LEFT", 3, 0);
 
-    castbar.time = castbar:CreateFontString(nil, "OVERLAY");
-    castbar.time:SetFont(STANDARD_TEXT_FONT, configs.timesize);
-    castbar.time:SetPoint("RIGHT", castbar, "RIGHT", -3, 0);
+    castbar.time = castbar.bar:CreateFontString(nil, "OVERLAY");
+    castbar.time:SetPoint("RIGHT", castbar.bar, "RIGHT", -3, 0);
 
     castbar.ticks = {}
 
     for i = 1, configs.maxtick do
-        local tick = castbar:CreateTexture(nil, "OVERLAY");
+        local tick = castbar.bar:CreateTexture(nil, "OVERLAY");
         tick:SetTexture("Interface\\Buttons\\WHITE8X8");
         tick:SetVertexColor(1, 1, 1, 1);
         tick:SetWidth(1);
@@ -121,9 +119,7 @@ local function setup_castbar()
     castbar:Hide();
 
     castbar.button = CreateFrame("Button", nil, castbar, "ACBFrameTemplate");
-    castbar.button:SetPoint("RIGHT", castbar, "LEFT", -1, 0)
-    castbar.button:SetWidth((ns.options.BarHeight) * 1.2);
-    castbar.button:SetHeight(ns.options.BarHeight);
+    castbar.button:SetPoint("LEFT", castbar, "LEFT", 0, 0)
     castbar.button:SetAlpha(1);
     castbar.button:EnableMouse(false);
     castbar.button.icon:SetTexCoord(.08, .92, .16, .84);
@@ -141,20 +137,20 @@ local function setup_castbar()
 end
 
 function ns.resize(castbar)
-    configs.namesize = ns.options.BarHeight * 0.6;
-    configs.timesize = ns.options.BarHeight * 0.5;
-    castbar:SetHeight(ns.options.BarHeight)
-    castbar:SetWidth(ns.options.BarWidth - (ns.options.BarHeight) * 1.2 - 1)
-    castbar.name:SetFont(STANDARD_TEXT_FONT, configs.namesize);
-    castbar.time:SetFont(STANDARD_TEXT_FONT, configs.timesize);
-
-    castbar.button:SetWidth((ns.options.BarHeight) * 1.2);
+    local fontsize = ns.options.BarHeight * ns.options.FontSizeRate;
+    castbar:SetHeight(ns.options.BarHeight);
+    castbar:SetWidth(ns.options.BarWidth);
+    castbar.bar:SetHeight(ns.options.BarHeight);
+    castbar.bar:SetWidth(ns.options.BarWidth - (ns.options.BarHeight) * configs.buttonwidthrate - 1);
+    castbar.button:SetWidth((ns.options.BarHeight) * configs.buttonwidthrate);
     castbar.button:SetHeight(ns.options.BarHeight);
+    castbar.name:SetFont(configs.font, fontsize);
+    castbar.time:SetFont(configs.font, fontsize);
 end
 
 local function hide_castbar(castbar)
-    castbar:SetTimerDuration(zero_duration);
-    castbar:SetValue(0);
+    castbar.bar:SetTimerDuration(zero_duration);
+    castbar.bar:SetValue(0);
     castbar:Hide();
     castbar.isAlert = false;
     castbar.failstart = nil;
@@ -180,6 +176,7 @@ local function check_casting(castbar, event, unit, complete)
     local frameicon = castbar.button.icon;
     local text      = castbar.name;
     local time      = castbar.time;
+    local bar 		= castbar.bar;
     local currtime  = GetTime();
 
     if UnitExists(unit) then
@@ -195,16 +192,16 @@ local function check_casting(castbar, event, unit, complete)
         end
 
         if event == "UNIT_SPELLCAST_INTERRUPTED" then
-            castbar:SetTimerDuration(zero_duration);
-            castbar:SetMinMaxValues(0, 100);
-            castbar:SetValue(100);
+            bar:SetTimerDuration(zero_duration);
+            bar:SetMinMaxValues(0, 100);
+            bar:SetValue(100);
             local failtext = configs.interruptedtext;
             local color = configs.failedcolor;
 
             time:SetText(failtext);
-            castbar:SetStatusBarColor(color[1], color[2], color[3]);
+            bar:SetStatusBarColor(color[1], color[2], color[3]);
             castbar.failstart = currtime;
-            castbar:SetStatusBarDesaturated(false);
+            bar:SetStatusBarDesaturated(false);
             castbar.duration_obj = nil;
             castbar.notinterruptable:SetAlpha(0);
             castbar:Show();
@@ -232,7 +229,7 @@ local function check_casting(castbar, event, unit, complete)
             if reverse then
                 direction = Enum.StatusBarTimerDirection.RemainingTime;
             end
-            castbar:SetTimerDuration(duration, 0, direction);
+            bar:SetTimerDuration(duration, 0, direction);
             castbar.failstart = nil;
             castbar.donestart = nil;
             castbar.castspellid = spellid;
@@ -243,7 +240,7 @@ local function check_casting(castbar, event, unit, complete)
             if class then
                 color = C_ClassColor.GetClassColor(class);
             end
-            castbar:SetStatusBarColor(color.r, color.g, color.b);
+            bar:SetStatusBarColor(color.r, color.g, color.b);
             text:SetText(name);
             frameicon:Show();
             castbar:Show();
@@ -254,8 +251,8 @@ local function check_casting(castbar, event, unit, complete)
             if stages and stages > 0 then
                 local maxstages = stages + 1;
                 local sum = 0;
-                local left = castbar:GetLeft();
-                local right = castbar:GetRight();
+                local left = bar:GetLeft();
+                local right = bar:GetRight();
 
                 if not left or not right then
                     return;
@@ -273,8 +270,8 @@ local function check_casting(castbar, event, unit, complete)
 
                         if tick then
                             tick:ClearAllPoints();
-                            tick:SetPoint("TOP", castbar, "TOPLEFT", offset, -1);
-                            tick:SetPoint("BOTTOM", castbar, "BOTTOMLEFT", offset, 1);
+                            tick:SetPoint("TOP", bar, "TOPLEFT", offset, -1);
+                            tick:SetPoint("BOTTOM", bar, "BOTTOMLEFT", offset, 1);
                             tick:Show();
                         end
                     end
@@ -289,14 +286,14 @@ local function check_casting(castbar, event, unit, complete)
 
                 if tickcount > 0 then
                     local count = math.min(tickcount, configs.maxtick);
-                    local width = castbar:GetWidth();
+                    local width = bar:GetWidth();
 
                     for i = 1, count - 1 do
                         local tick = castbar.ticks[i];
 
                         tick:ClearAllPoints();
-                        tick:SetPoint("TOP", castbar, "TOPRIGHT", -(width * i / tickcount), -1);
-                        tick:SetPoint("BOTTOM", castbar, "BOTTOMRIGHT", -(width * i / tickcount), 1);
+                        tick:SetPoint("TOP", bar, "TOPRIGHT", -(width * i / tickcount), -1);
+                        tick:SetPoint("BOTTOM", bar, "BOTTOMRIGHT", -(width * i / tickcount), 1);
                         tick:Show();
                     end
 
@@ -429,14 +426,10 @@ local function init()
 
     if ns.options.SimpleDesign then
         ns.playercastbar = setup_castbar();
-        ns.playercastbar:SetPoint("CENTER", UIParent, "CENTER",
-            configs.xpoint + ((ns.options.BarHeight) * 1.2 + 1) / 2,
-            configs
-            .ypoint)
-
+        ns.resize(ns.playercastbar);
+        ns.playercastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint);
         ns.playercastbar:SetScript("OnEvent", on_unit_event);
         register_unit(ns.playercastbar);
-
 
         local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
@@ -450,8 +443,7 @@ local function init()
         main_frame:SetScript("OnEvent", on_event)
         main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
-        local updaterate = ns.options.RefreshRate and (1 / ns.options.RefreshRate) or configs.updaterate;
-        C_Timer.NewTicker(updaterate, on_update);
+        C_Timer.NewTicker(configs.updaterate, on_update);
 
         hidedefault(PlayerCastingBarFrame);
         hidedefault(PetCastingBarFrame);

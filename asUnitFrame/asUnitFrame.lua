@@ -14,6 +14,7 @@ local configs = {
     notinterruptcolor = { 0.6, 0.6, 0.6 },
     lowhealthcolor = { r = 0.2, g = 0, b = 0.2 },
     highhealthcolor = { r = 0.2, g = 0, b = 0.5 },
+    buttonwidthrate = 1.2,
 
 };
 
@@ -676,21 +677,26 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
 
     local castbarheight = height - 5;
 
-    frame.castbar = CreateFrame("StatusBar", nil, frame)
-    frame.castbar:SetPoint("TOP", frame, "BOTTOM", ((castbarheight) * 1.2  + 1)/2, -3);
-    frame.castbar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+    frame.castbar = CreateFrame("Frame", nil, frame);
     frame.castbar:SetFrameLevel(configs.framelevel);
-    local statustexture = frame.castbar:GetStatusBarTexture();
-    statustexture:SetHorizTile(false)
-    frame.castbar:SetMinMaxValues(0, 100)
-    frame.castbar:SetValue(100)
-    frame.castbar:SetHeight(castbarheight)
-    frame.castbar:SetWidth(width - (castbarheight) * 1.2 - 2); --unit frame보다 1px 큼
-    frame.castbar:SetStatusBarColor(1, 0.9, 0.9);
     frame.castbar:SetAlpha(1);
+    frame.castbar:SetPoint("TOP", frame, "BOTTOM", 0, -3);
+    frame.castbar:SetHeight(castbarheight)
+    frame.castbar:SetWidth(width - 1);
 
-    frame.castbar.notinterruptable = frame.castbar:CreateTexture(nil, "ARTWORK", "asUnitFrameNotInteruptTemplate", 1);
-    frame.castbar.notinterruptable:SetParent(frame.castbar);
+    frame.castbar.bar = CreateFrame("StatusBar", nil, frame.castbar)
+    frame.castbar.bar:SetStatusBarTexture("RaidFrame-Hp-Fill");
+    local statustexture = frame.castbar.bar:GetStatusBarTexture();
+    statustexture:SetHorizTile(false)
+    frame.castbar.bar:SetMinMaxValues(0, 100)
+    frame.castbar.bar:SetValue(100)
+    frame.castbar.bar:SetHeight(castbarheight)
+    frame.castbar.bar:SetWidth(width - castbarheight * configs.buttonwidthrate - 2); --unit frame보다 1px 큼
+    frame.castbar.bar:SetStatusBarColor(1, 0.9, 0.9);
+    frame.castbar.bar:SetPoint("RIGHT", frame.castbar, "RIGHT", 0, 0);
+
+    frame.castbar.notinterruptable = frame.castbar.bar:CreateTexture(nil, "ARTWORK", "asUnitFrameNotInteruptTemplate", 1);
+    frame.castbar.notinterruptable:SetParent(frame.castbar.bar);
     frame.castbar.notinterruptable:ClearAllPoints();
     frame.castbar.notinterruptable:SetPoint("TOPLEFT", statustexture, "TOPLEFT", 0, 0);
     frame.castbar.notinterruptable:SetPoint("BOTTOMRIGHT", statustexture, "BOTTOMRIGHT", 0, 0);
@@ -708,19 +714,19 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     frame.castbar.important:SetAlpha(0);
     frame.castbar.important:Show();
 
-    frame.castbar.bg = frame.castbar:CreateTexture(nil, "BACKGROUND")
-    frame.castbar.bg:SetPoint("TOPLEFT", frame.castbar, "TOPLEFT", -1, 1)
-    frame.castbar.bg:SetPoint("BOTTOMRIGHT", frame.castbar, "BOTTOMRIGHT", 1, -1)
+    frame.castbar.bg = frame.castbar.bar:CreateTexture(nil, "BACKGROUND")
+    frame.castbar.bg:SetPoint("TOPLEFT", frame.castbar.bar, "TOPLEFT", -1, 1)
+    frame.castbar.bg:SetPoint("BOTTOMRIGHT", frame.castbar.bar, "BOTTOMRIGHT", 1, -1)
     frame.castbar.bg:SetColorTexture(0, 0, 0, 1);
     frame.castbar.bg:Show();
 
-    frame.castbar.name = frame.castbar:CreateFontString(nil, "OVERLAY");
-    frame.castbar.name:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
-    frame.castbar.name:SetPoint("LEFT", frame.castbar, "LEFT", 3, 0);
+    frame.castbar.name = frame.castbar.bar:CreateFontString(nil, "OVERLAY");
+    frame.castbar.name:SetFont(configs.font, fontsize - 2);
+    frame.castbar.name:SetPoint("LEFT", frame.castbar.bar, "LEFT", 3, 0);
 
-    frame.castbar.time = frame.castbar:CreateFontString(nil, "OVERLAY");
-    frame.castbar.time:SetFont(STANDARD_TEXT_FONT, fontsize - 1);
-    frame.castbar.time:SetPoint("RIGHT", frame.castbar, "RIGHT", -3, 0);
+    frame.castbar.time = frame.castbar.bar:CreateFontString(nil, "OVERLAY");
+    frame.castbar.time:SetFont(configs.font, fontsize - 2);
+    frame.castbar.time:SetPoint("RIGHT", frame.castbar.bar, "RIGHT", -3, 0);
 
     if not frame.castbar:GetScript("OnEnter") then
         frame.castbar:SetScript("OnEnter", function(self)
@@ -739,8 +745,8 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     frame.castbar:Hide();
 
     frame.castbar.button = CreateFrame("Button", nil, frame.castbar, "AUFFrameTemplate");
-    frame.castbar.button:SetPoint("RIGHT", frame.castbar, "LEFT", -1, 0)
-    frame.castbar.button:SetWidth((castbarheight) * 1.2);
+    frame.castbar.button:SetPoint("LEFT", frame.castbar, "LEFT", 0, 0)
+    frame.castbar.button:SetWidth(castbarheight * configs.buttonwidthrate);
     frame.castbar.button:SetHeight(castbarheight);
     frame.castbar.button:SetAlpha(1);
     frame.castbar.button:EnableMouse(false);

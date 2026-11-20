@@ -1,22 +1,19 @@
 ﻿local _, ns = ...;
 
 local configs = {
-	width = 200,
-	height = 17,
 	xpoint = 0,
 	ypoint = -100,
+	focus_ypoint = 60,
 	alpha = 1,
 	notinterruptcolor = { 0.6, 0.6, 0.6 },
 	interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
 	failedcolor = { 1, 0, 0 },
-	updaterate = 0.05,
+	updaterate = 0.1,
 	font = STANDARD_TEXT_FONT,
 	interruptedtext = INTERRUPTED,
 	faildonetime = 1,
+	buttonwidthrate = 1.2,
 }
-
-configs.namesize = configs.height * 0.7;
-configs.timesize = configs.height * 0.5;
 
 local region = GetCurrentRegion();
 local zero_duration = C_DurationUtil.CreateDuration();
@@ -36,27 +33,22 @@ main_frame:SetWidth(0)
 main_frame:SetHeight(0)
 main_frame:Show();
 
-local function setup_castbar(scale)
-	local height = configs.height * scale;
-	local width = configs.width * scale;
-	local timesize = configs.timesize * scale;
-	local namesize = configs.namesize * scale;
+local function setup_castbar()
+	local castbar = CreateFrame("Frame", nil, UIParent);
+    castbar:SetFrameStrata("LOW");
+    castbar:SetAlpha(configs.alpha);
 
-
-	local castbar = CreateFrame("StatusBar", nil, UIParent)
-	castbar:SetFrameStrata("LOW");
-	castbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-	local statustexture = castbar:GetStatusBarTexture();
+    castbar.bar = CreateFrame("StatusBar", nil, castbar)
+	castbar.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+	local statustexture = castbar.bar:GetStatusBarTexture();
 	statustexture:SetHorizTile(false)
-	castbar:SetMinMaxValues(0, 100)
-	castbar:SetValue(100)
-	castbar:SetHeight(height)
-	castbar:SetWidth(width - (height) * 1.2 - 1)
-	castbar:SetStatusBarColor(1, 0.9, 0.9);
-	castbar:SetAlpha(configs.alpha);
+	castbar.bar:SetMinMaxValues(0, 100)
+	castbar.bar:SetValue(100)
+	castbar.bar:SetStatusBarColor(1, 0.9, 0.9);
+    castbar.bar:SetPoint("RIGHT", castbar, "RIGHT", 0, 0);
 
-	castbar.notinterruptable = castbar:CreateTexture(nil, "ARTWORK", "asTargetCastBarNotInteruptTemplate", 1);
-	castbar.notinterruptable:SetParent(castbar);
+	castbar.notinterruptable = castbar.bar:CreateTexture(nil, "ARTWORK", "asTargetCastBarNotInteruptTemplate", 1);
+	castbar.notinterruptable:SetParent(castbar.bar);
 	castbar.notinterruptable:ClearAllPoints();
 	castbar.notinterruptable:SetPoint("TOPLEFT", statustexture, "TOPLEFT", 0, 0);
 	castbar.notinterruptable:SetPoint("BOTTOMRIGHT", statustexture, "BOTTOMRIGHT", 0, 0);
@@ -74,19 +66,17 @@ local function setup_castbar(scale)
 	castbar.important:Show();
 
 
-	castbar.bg = castbar:CreateTexture(nil, "BACKGROUND")
-	castbar.bg:SetPoint("TOPLEFT", castbar, "TOPLEFT", -1, 1)
-	castbar.bg:SetPoint("BOTTOMRIGHT", castbar, "BOTTOMRIGHT", 1, -1)
+    castbar.bg = castbar.bar:CreateTexture(nil, "BACKGROUND")
+	castbar.bg:SetPoint("TOPLEFT", castbar.bar, "TOPLEFT", -1, 1)
+	castbar.bg:SetPoint("BOTTOMRIGHT", castbar.bar, "BOTTOMRIGHT", 1, -1)
 	castbar.bg:SetColorTexture(0, 0, 0, 1);
 	castbar.bg:Show();
 
-	castbar.name = castbar:CreateFontString(nil, "OVERLAY");
-	castbar.name:SetFont(STANDARD_TEXT_FONT, namesize);
-	castbar.name:SetPoint("LEFT", castbar, "LEFT", 3, 0);
+	castbar.name = castbar.bar:CreateFontString(nil, "OVERLAY");
+	castbar.name:SetPoint("LEFT", castbar.bar, "LEFT", 3, 0);
 
-	castbar.time = castbar:CreateFontString(nil, "OVERLAY");
-	castbar.time:SetFont(STANDARD_TEXT_FONT, timesize);
-	castbar.time:SetPoint("RIGHT", castbar, "RIGHT", -3, 0);
+	castbar.time = castbar.bar:CreateFontString(nil, "OVERLAY");
+	castbar.time:SetPoint("RIGHT", castbar.bar, "RIGHT", -3, 0);
 
 	if not castbar:GetScript("OnEnter") then
 		castbar:SetScript("OnEnter", function(self)
@@ -106,9 +96,7 @@ local function setup_castbar(scale)
 	castbar:Hide();
 
 	castbar.button = CreateFrame("Button", nil, castbar, "ATCBFrameTemplate");
-	castbar.button:SetPoint("RIGHT", castbar, "LEFT", -1, 0)
-	castbar.button:SetWidth((height) * 1.2);
-	castbar.button:SetHeight(height);
+	castbar.button:SetPoint("LEFT", castbar, "LEFT", 0, 0)
 	castbar.button:SetAlpha(1);
 	castbar.button:EnableMouse(false);
 	castbar.button.icon:SetTexCoord(.08, .92, .16, .84);
@@ -120,16 +108,13 @@ local function setup_castbar(scale)
 	castbar.button:Show();
 
 	castbar.targetname = castbar:CreateFontString(nil, "ARTWORK");
-	castbar.targetname:SetFont(configs.font, namesize);
 	castbar.targetname:SetPoint("TOPRIGHT", castbar, "BOTTOMRIGHT", 0, -2);
 
 	castbar.mark = castbar:CreateTexture(nil, "ARTWORK");
 	castbar.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
-	castbar.mark:SetSize(namesize + 3, namesize + 3);
 	castbar.mark:SetPoint("RIGHT", castbar.button, "LEFT", -1, 0);
 
 	castbar.targetedindi = castbar:CreateFontString(nil, "ARTWORK");
-	castbar.targetedindi:SetFont(configs.font, namesize + 1, "OUTLINE");
 	castbar.targetedindi:SetPoint("LEFT", castbar, "RIGHT", 0, 1);
 	castbar.targetedindi:Show();
 
@@ -140,11 +125,25 @@ local function setup_castbar(scale)
 	return castbar;
 end
 
+function ns.resize(castbar, height, width)
+    local fontsize = height * ns.options.FontSizeRate;
+    castbar:SetHeight(height);
+    castbar:SetWidth(width);
+    castbar.bar:SetHeight(height);
+    castbar.bar:SetWidth(width - height * configs.buttonwidthrate - 1);
+    castbar.button:SetWidth(height * configs.buttonwidthrate);
+    castbar.button:SetHeight(height);
+    castbar.name:SetFont(configs.font, fontsize);
+    castbar.time:SetFont(configs.font, fontsize);
+    castbar.targetname:SetFont(configs.font, fontsize);
+    castbar.mark:SetSize(fontsize + 3, fontsize + 3);
+    castbar.targetedindi:SetFont(configs.font, fontsize + 1, "OUTLINE");
+end
 
 local function hide_castbar(castbar)
 	local targetname = castbar.targetname;
-	castbar:SetTimerDuration(zero_duration);
-	castbar:SetValue(0);
+	castbar.bar:SetTimerDuration(zero_duration);
+	castbar.bar:SetValue(0);
 	castbar:Hide();
 	castbar.isAlert = false;
 	targetname:SetText("");
@@ -187,7 +186,8 @@ end
 
 local function check_casting(castbar, event, interuptedby, complete)
 	local unit         = castbar.unit;
-	local frameicon    = castbar.button.icon;
+    local frameicon    = castbar.button.icon;
+	local bar 		   = castbar.bar;
 	local text         = castbar.name;
 	local time         = castbar.time;
 	local targetname   = castbar.targetname;
@@ -208,16 +208,16 @@ local function check_casting(castbar, event, interuptedby, complete)
 		end
 
 		if event == "UNIT_SPELLCAST_INTERRUPTED" then
-		    castbar:SetTimerDuration(zero_duration);
-			castbar:SetMinMaxValues(0, 100);
-			castbar:SetValue(100);
+		    bar:SetTimerDuration(zero_duration);
+			bar:SetMinMaxValues(0, 100);
+			bar:SetValue(100);
 			local failtext = configs.interruptedtext;
 			local color = configs.failedcolor;
 
 			time:SetText(failtext);
-			castbar:SetStatusBarColor(color[1], color[2], color[3]);
+			bar:SetStatusBarColor(color[1], color[2], color[3]);
 			castbar.failstart = currtime;
-			castbar:SetStatusBarDesaturated(false);
+			bar:SetStatusBarDesaturated(false);
 			castbar.duration_obj = nil;
 			if interuptedby then
 				targetname:SetText(get_interrupttext(interuptedby));
@@ -249,13 +249,13 @@ local function check_casting(castbar, event, interuptedby, complete)
             if bchannel then
                 direction = Enum.StatusBarTimerDirection.RemainingTime;
             end
-            castbar:SetTimerDuration(duration, 0, direction);
+            bar:SetTimerDuration(duration, 0, direction);
 
 			castbar.failstart = nil;
 			castbar.castspellid = spellid;
 
 			local color = configs.interruptcolor;
-			castbar:SetStatusBarColor(color[1], color[2], color[3]);
+			bar:SetStatusBarColor(color[1], color[2], color[3]);
 			text:SetText(name);
 			show_raidicon(unit, mark);
 			frameicon:Show();
@@ -435,12 +435,12 @@ end
 
 local function init()
 	ns.setup_option();
-	ns.targetcastbar = setup_castbar(ns.options.TargetCastScale);
-	ns.targetcastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height) * 1.2 + 1) / 2, configs
-		.ypoint)
-	ns.focuscastbar = setup_castbar(ns.options.FocusCastScale);
-	ns.focuscastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint + ((configs.height) * 1.2 + 1) / 2,
-		configs.ypoint + 160);
+    ns.targetcastbar = setup_castbar();
+	ns.resize(ns.targetcastbar, ns.options.TargetHeight, ns.options.TargetWidth);
+	ns.targetcastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
+	ns.focuscastbar = setup_castbar();
+	ns.resize(ns.focuscastbar, ns.options.FocusHeight, ns.options.FocusWidth);
+	ns.focuscastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.focus_ypoint);
 
 
 	if ns.options.ShowTarget then

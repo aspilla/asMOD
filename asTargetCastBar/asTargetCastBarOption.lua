@@ -1,18 +1,24 @@
 local _, ns = ...;
 local Options_Default = {
-	Version = 250706,
+	Version = 261120,
 	ShowFocus = true,
 	ShowTarget = true,
-	FocusCastScale = 1.2,
-	TargetCastScale = 1,
+	TargetHeight = 17,
+	TargetWidth = 200,
+	FocusHeight = 17 * 1.3,
+	FocusWidth = 200 * 1.3,
+	FontSizeRate = 0.6,
 };
 
 
 local L = {
 	ShowFocus = "Toggle display of the Focus target cast bar",
 	ShowTarget = "Toggle display of the Target cast bar",
-	FocusCastScale = "Adjust the size scale of the Focus target cast bar",
-	TargetCastScale = "Adjust the size scale of the Target cast bar",
+	TargetHeight = "Target cast bar height",
+	FocusHeight = "Focus cast bar height",
+	TargetWidth = "Target cast bar width",
+	FocusWidth = "Focus cast bar width",
+	FontSizeRate = "Font size rate",
 }
 
 
@@ -20,14 +26,30 @@ if GetLocale() == "koKR" then
 	L = {
 		ShowFocus = "주시 대상 시전 바 표시 여부",
 		ShowTarget = "대상 시전 바 표시 여부",
-		FocusCastScale = "주시 대상 시전 바 크기 배율",
-		TargetCastScale = "대상 시전 바 크기 배율",
+		TargetHeight = "대상 시전 바 높이",
+		FocusHeight = "주시 대상 시전 바 높이",
+		TargetWidth = "대상 시전 바 넓이",
+		FocusWidth = "주시 대상 시전 바 넓이",
+		FontSizeRate = "폰트 크기 비율",
 	}
 end
 
 ns.options = CopyTable(Options_Default);
+
 local tempoption = {};
+
 local bupdated = false;
+
+local function resize(castbar, height, width)
+	if castbar then
+		ns.resize(castbar, height, width);
+		castbar:Show();
+		local function hidecallback()
+			castbar:Hide();
+		end
+		C_Timer.After(2, hidecallback);
+	end
+end
 
 function ns.setup_option()
 	local function OnSettingChanged(_, setting, value)
@@ -42,8 +64,9 @@ function ns.setup_option()
 		ATCB_Options[variable] = value;
 		ns.options[variable] = value;
 
-		if variable == "FocusCastScale" then
-		elseif variable == "TargetCastScale" then
+		if string.find(variable, "Width") or string.find(variable, "Height") or variable == "FontSizeRate" then
+			resize(ns.targetcastbar, ns.options.TargetHeight, ns.options.TargetWidth);
+			resize(ns.focuscastbar, ns.options.FocusHeight, ns.options.FocusWidth);
 		else
 			bupdated = true;
 		end
@@ -83,17 +106,34 @@ function ns.setup_option()
 		local currentValue = ATCB_Options[variable];
 
 		if name ~= "Version" then
-			if tonumber(defaultValue) ~= nil then
+			local label = L[name] or name
+			if tonumber(defaultValue) ~= nil and name == "FontSizeRate" then
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), L[name], defaultValue);
-				local options = Settings.CreateSliderOptions(0.5, 3, 0.1);
+					type(defaultValue), label, defaultValue);
+				local options = Settings.CreateSliderOptions(0.5, 1.0, 0.1);
+				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+				Settings.CreateSlider(category, setting, options, tooltip);
+				Settings.SetValue(cvar_name, currentValue);
+				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+			elseif tonumber(defaultValue) ~= nil and string.find(name, "Height") then
+				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+					type(defaultValue), label, defaultValue);
+				local options = Settings.CreateSliderOptions(10, 200, 1);
+				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+				Settings.CreateSlider(category, setting, options, tooltip);
+				Settings.SetValue(cvar_name, currentValue);
+				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+			elseif tonumber(defaultValue) ~= nil and string.find(name, "Width") then
+				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+					type(defaultValue), label, defaultValue);
+				local options = Settings.CreateSliderOptions(100, 2000, 1);
 				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
 				Settings.CreateSlider(category, setting, options, tooltip);
 				Settings.SetValue(cvar_name, currentValue);
 				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
 			else
 				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), L[name], defaultValue);
+					type(defaultValue), label, defaultValue);
 				Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
 				Settings.SetValue(cvar_name, currentValue);
 				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
@@ -104,8 +144,8 @@ function ns.setup_option()
 	Settings.RegisterAddOnCategory(category)
 
 	EventRegistry:RegisterCallback("SettingsPanel.OnHide", function()
-        if bupdated then
-            ReloadUI();
-        end
-    end);
+		if bupdated then
+			ReloadUI();
+		end
+	end);
 end

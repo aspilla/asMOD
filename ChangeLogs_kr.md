@@ -2,6 +2,15 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261120 Update
+
+### asCastBar, asDBMCastingAlert, asTargetCastBar, asUnitFrame, asReady
+- 오류 수정 : 시전바가 중앙에 배치 안되는 문제 수정
+
+### asReady, asDBMCastingAlert
+- 위치 이동으로 설정/위치설정이 초기화 됩니다.
+
+
 ## 261119 Update
 
 ### asCastBar, asDBMCastingAlert, asTargetCastBar, asUnitFrame

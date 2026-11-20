@@ -2,6 +2,15 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261120 Update
+
+### asCastBar, asDBMCastingAlert, asTargetCastBar, asUnitFrame, asReady
+- Bug Fix : Fixed an issue where the cast bar was not properly centered.
+
+### asReady, asDBMCastingAlert
+- Settings and frame positions will be reset due to frame repositioning changes.
+
+
 ## 261119 Update
 
 ### asCastBar, asDBMCastingAlert, asTargetCastBar, asUnitFrame

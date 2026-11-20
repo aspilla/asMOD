@@ -1,6 +1,6 @@
 local _, ns = ...;
 local Options_Default = {
-    version = 240211,
+    version = 261120,
     MaxShow = 6,
     MaxTime = 15,
 };
@@ -43,6 +43,7 @@ function ns.SetupOptionPanels()
     if ARDY_Options == nil or ARDY_Options.version ~= Options_Default.version then
         ARDY_Options = {};
         ARDY_Options = CopyTable(Options_Default);
+        ARDY_Positions = {};
     end
 
     if ARDY_Positions == nil then

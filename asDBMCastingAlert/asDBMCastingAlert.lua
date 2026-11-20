@@ -1,7 +1,7 @@
 local _, ns = ...;
 ---설정부
 local configs = {
-    xpoint = 230 + 30,
+    xpoint = 230 + 20,
     ypoint = -30,
     width = 180,
     height = 17,
@@ -9,8 +9,8 @@ local configs = {
     updaterate = 0.1,
     notinterruptcolor = { 0.6, 0.6, 0.6 },
     interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
-
     font = STANDARD_TEXT_FONT,
+    buttonwidthrate = 1.2,
 };
 
 configs.namesize = configs.height * 0.5; --Spell 명 Font Size, 높이의 50%
@@ -114,7 +114,7 @@ local function on_update()
                 local castbar        = main_frame.bars[i];
                 local frameicon      = castbar.button.icon;
                 local text           = castbar.name;
-                local time           = castbar.time;
+                local bar			 = castbar.bar;
                 local targetname     = castbar.targetname;
                 local mark           = castbar.mark;
                 local bchannel       = castingInfo.bchannel;
@@ -126,12 +126,12 @@ local function on_update()
                 if bchannel then
                     direction = Enum.StatusBarTimerDirection.RemainingTime;
                 end
-                castbar:SetTimerDuration(castingInfo.duration, 0, direction);
+                bar:SetTimerDuration(castingInfo.duration, 0, direction);
                 castbar.failstart = nil;
                 castbar.castspellid = castingInfo.spellid;
 
                 local color = configs.interruptcolor;
-                castbar:SetStatusBarColor(color[1], color[2], color[3]);
+                bar:SetStatusBarColor(color[1], color[2], color[3]);
                 text:SetText(castingInfo.name);
                 show_raidicon(unit, mark);
                 frameicon:Show();
@@ -182,7 +182,7 @@ local function on_update()
     for j = i, ns.options.MaxShow do
         if main_frame then
             local frame = main_frame.bars[j];
-            frame:SetTimerDuration(zero_duration);
+            frame.bar:SetTimerDuration(zero_duration);
             frame.duration_obj = nil;
             frame:Hide();
         end
@@ -226,20 +226,24 @@ local function update_castbar(castbar)
 end
 
 local function setup_castbar()
-    local castbar = CreateFrame("StatusBar", nil, UIParent)
+	local castbar = CreateFrame("Frame", nil, UIParent);
     castbar:SetFrameStrata("LOW");
-    castbar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-    local statustexture = castbar:GetStatusBarTexture();
-    statustexture:SetHorizTile(false)
-    castbar:SetMinMaxValues(0, 100)
-    castbar:SetValue(100)
-    castbar:SetHeight(configs.height)
-    castbar:SetWidth(configs.width - (configs.height) * 1.2)
-    castbar:SetStatusBarColor(1, 0.9, 0.9);
     castbar:SetAlpha(configs.alpha);
+    castbar:SetHeight(configs.height);
+    castbar:SetWidth(configs.width);
+    castbar.bar = CreateFrame("StatusBar", nil, castbar);
+    castbar.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+    local statustexture = castbar.bar:GetStatusBarTexture();
+    statustexture:SetHorizTile(false)
+    castbar.bar:SetMinMaxValues(0, 100)
+    castbar.bar:SetValue(100)
+    castbar.bar:SetHeight(configs.height)
+    castbar.bar:SetWidth(configs.width - configs.height * configs.buttonwidthrate - 1);
+    castbar.bar:SetStatusBarColor(1, 0.9, 0.9);
+    castbar.bar:SetPoint("RIGHT", castbar, "RIGHT", 0, 0);
 
-    castbar.notinterruptable = castbar:CreateTexture(nil, "ARTWORK", "asDBMCastAlertNotInteruptTemplate", 1);
-    castbar.notinterruptable:SetParent(castbar);
+    castbar.notinterruptable = castbar.bar:CreateTexture(nil, "ARTWORK", "asDBMCastAlertNotInteruptTemplate", 1);
+    castbar.notinterruptable:SetParent(castbar.bar);
     castbar.notinterruptable:ClearAllPoints();
     castbar.notinterruptable:SetPoint("TOPLEFT", statustexture, "TOPLEFT", 0, 0);
     castbar.notinterruptable:SetPoint("BOTTOMRIGHT", statustexture, "BOTTOMRIGHT", 0, 0);
@@ -257,19 +261,19 @@ local function setup_castbar()
     castbar.important:Show();
 
 
-    castbar.bg = castbar:CreateTexture(nil, "BACKGROUND")
-    castbar.bg:SetPoint("TOPLEFT", castbar, "TOPLEFT", -1, 1)
-    castbar.bg:SetPoint("BOTTOMRIGHT", castbar, "BOTTOMRIGHT", 1, -1)
+    castbar.bg = castbar.bar:CreateTexture(nil, "BACKGROUND")
+    castbar.bg:SetPoint("TOPLEFT", castbar.bar, "TOPLEFT", -1, 1)
+    castbar.bg:SetPoint("BOTTOMRIGHT", castbar.bar, "BOTTOMRIGHT", 1, -1)
     castbar.bg:SetColorTexture(0, 0, 0, 1);
     castbar.bg:Show();
 
-    castbar.name = castbar:CreateFontString(nil, "OVERLAY");
-    castbar.name:SetFont(STANDARD_TEXT_FONT, configs.namesize);
-    castbar.name:SetPoint("LEFT", castbar, "LEFT", 3, 0);
+    castbar.name = castbar.bar:CreateFontString(nil, "OVERLAY");
+    castbar.name:SetFont(configs.font, configs.namesize);
+    castbar.name:SetPoint("LEFT", castbar.bar, "LEFT", 3, 0);
 
     castbar.time = castbar:CreateFontString(nil, "OVERLAY");
-    castbar.time:SetFont(STANDARD_TEXT_FONT, configs.timesize);
-    castbar.time:SetPoint("TOPRIGHT", castbar, "TOPRIGHT", -3, -1);
+    castbar.time:SetFont(configs.font, configs.timesize);
+    castbar.time:SetPoint("TOPRIGHT", castbar.bar, "TOPRIGHT", -3, -1);
 
     if not castbar:GetScript("OnEnter") then
         castbar:SetScript("OnEnter", function(self)
@@ -289,8 +293,8 @@ local function setup_castbar()
     castbar:Hide();
 
     castbar.button = CreateFrame("Button", nil, castbar, "ADCAFrameTemplate");
-    castbar.button:SetPoint("RIGHT", castbar, "LEFT", -1, 0)
-    castbar.button:SetWidth((configs.height) * 1.2);
+    castbar.button:SetPoint("LEFT", castbar, "LEFT", 0, 0)
+    castbar.button:SetWidth((configs.height) * configs.buttonwidthrate);
     castbar.button:SetHeight(configs.height);
     castbar.button:SetAlpha(1);
     castbar.button:EnableMouse(false);
@@ -314,9 +318,9 @@ local function setup_castbar()
     castbar.targetedindi:SetPoint("LEFT", castbar, "RIGHT", 0, 1);
     castbar.targetedindi:Show();
 
-    castbar.targetname = castbar:CreateFontString(nil, "ARTWORK");
+    castbar.targetname = castbar.bar:CreateFontString(nil, "ARTWORK");
     castbar.targetname:SetFont(configs.font, configs.namesize);
-    castbar.targetname:SetPoint("BOTTOMRIGHT", castbar, "BOTTOMRIGHT", -3, 1);
+    castbar.targetname:SetPoint("BOTTOMRIGHT", castbar.bar, "BOTTOMRIGHT", -3, 1);
 
 
     castbar.start = 0;
