@@ -2,6 +2,20 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261124 Update
+
+### asCooldownButton (New Addon)
+- Separated trinket, defensive cooldown, and potion buttons out from `asCooldownPulse`.
+
+### asCooldownPulse (New Feature)
+- Separated trinket, defensive cooldown, and potion buttons into `asCooldownButton`.
+- **Per-Specialization Blacklist Management:** Allows you to individually manage spell/item blacklists per specialization (Spec). Unchecking an item excludes it from alerts, and when the `Use Blacklist` option is enabled, the minimum cooldown duration setting is ignored so only non-blacklisted abilities trigger alerts.
+![asCooldownPulse](https://media.forgecdn.net/attachments/2267/597/ascooldownblacklist-jpg.jpg)
+
+### asMOD
+- support 12.1.7
+
+
 ## 261120 Update
 
 ### asCastBar, asDBMCastingAlert, asTargetCastBar, asUnitFrame, asReady

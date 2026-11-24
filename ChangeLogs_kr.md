@@ -12,6 +12,8 @@ https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 - **전문화별 블랙리스트 관리**: 전문화(Spec)별로 스킬/아이템 블랙리스트를 개별 관리할 수 있습니다. 체크를 해제하면 알림에서 제외되며, `블랙리스트 사용` 옵션 활성화 시 최소 쿨다운 시간 설정이 무시되고 블랙리스트 외 스킬만 알림이 표시됩니다.
 ![asCooldownPulse](https://media.forgecdn.net/attachments/2267/597/ascooldownblacklist-jpg.jpg)
 
+### asMOD
+- 12.1.7 지원
 
 
 ## 261120 Update
