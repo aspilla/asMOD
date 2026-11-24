@@ -4,12 +4,7 @@ local version = select(4, GetBuildInfo());
 local configs = {
     uiscale = 0.75,
     version = 260807,
-    adder = 2,
 };
-
-if version >= 120107 then
-	configs.adder = 3;
-end
 
 local function import_layout(layout_text, name)
     local importLayoutInfo = C_EditMode.ConvertStringToLayoutInfo(layout_text);
@@ -51,8 +46,8 @@ local function select_layout(name)
         end
     end
 
-    if index then
-        C_EditMode.SetActiveLayout(index + configs.adder);
+    if index and Enum.EditModePresetLayoutsMeta and Enum.EditModePresetLayoutsMeta.NumValues then
+        C_EditMode.SetActiveLayout(index + Enum.EditModePresetLayoutsMeta.NumValues);
     end
 end
 

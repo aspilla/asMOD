@@ -1,424 +1,388 @@
-local _, ns     = ...;
+local _, ns = ...;
 
-ns.tbuttons     = {};
-ns.ibuttons     = {};
-ns.sbuttons     = {};
-ns.trinkets     = { 13, 14 };
-ns.items        = { 241308, 241304, 5512 };
-ns.racials      = { 26297, 265221, 357214, 20594, 58984, 202719, 20572, 20549, 274738, 59752, 256948, 312411, 7744, 255647, 287712, 312924, 68992, 69070, 291944, 1237885, 255654, 107079, 20589, 59542, 436344, 155145, 33697, 25046, 50613, 80483, 28730, 69179, 129597, 33702 };
-ns.trackspells  = {};
-ns.racial_spell = nil;
-ns.racial_charged = nil;
-ns.isdemonstone = false;
-local configs   = {
-	size = 28,
-	fontsize_rate = 0.4,
-	t_xpoint = -124 - 20,
-	t_ypoint = -165,
-	i_xpoint = -326 - 20,
-	i_ypoint = -165,
-	s_xpoint = 124 + 20,
-	s_ypoint = -217,
-	combatalpha = 1,
-	normalalpha = 0.5,
-	maxtrackspells = 10,
-}
+local configs = {
+    pointx = 0,
+    pointy = 10,
+    alerttime = 0.2,
+    fadetime = 0.5,
+    defaultitems = {
+        [241308] = false,
+        [241304] = false,
+        [5512] = false,
+        [224464] = false,
+    },
+    updaterate = 0.3,
+    soundrate = 1,
+    alphafrom = 0.5,
+    alphato = 1,
+    scalefrom = 0.8,
+    scaleto = 1,
+};
 
+local blacklists = {
+    [125439] = true,
+};
 
+ns.all_spells = {};
+ns.all_items = {};
 
-local main_frame = CreateFrame("Frame", nil, UIParent);
-
-function ns.get_spellinfo(spellid)
-	if not spellid then
-		return nil;
-	end
-
-	local or_spellid = C_Spell.GetOverrideSpell(spellid)
-
-	if or_spellid then
-		spellid = or_spellid;
-	end
-
-	local spellInfo = C_Spell.GetSpellInfo(spellid);
-	if spellInfo then
-		return spellid, spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo
-			.maxRange,
-			spellInfo.spellID, spellInfo.originalIconID;
-	end
+function ns.get_current_spec_id()
+    local specIndex = GetSpecialization();
+    if specIndex and specIndex > 0 then
+        local specID = GetSpecializationInfo(specIndex);
+        if specID and specID > 0 then
+            return specID;
+        end
+    end
+    return 0;
 end
 
-local function set_cooldownframe(cooldown, durationobject, enable)
-	if enable and durationobject then
-		cooldown:SetDrawEdge(nil);
-		cooldown:SetCooldownFromDurationObject(durationobject);
-	else
-		cooldown:Clear();
-	end
+function ns.get_current_spec_name()
+    local specIndex = GetSpecialization();
+    if specIndex and specIndex > 0 then
+        local _, name = GetSpecializationInfo(specIndex);
+        if name and name ~= "" then
+            return name;
+        end
+    end
+    return SPECIALIZATION or "Specialization";
 end
 
-
-local function update_spellbutton(frame, spellid, charged)
-	local or_spellid, _, _, icon = ns.get_spellinfo(spellid);
-	if or_spellid == nil then
-		or_spellid = spellid;
-	end
-	local usable, notenoughmana = C_Spell.IsSpellUsable(or_spellid);
-	local durationobj = C_Spell.GetSpellCooldownDuration(or_spellid);
-	local count = C_Spell.GetSpellDisplayCount(or_spellid);
-	local chargeduration = C_Spell.GetSpellChargeDuration(or_spellid);
-	local cd = C_Spell.GetSpellCooldown(or_spellid)
-
-	frame.icon:SetTexture(icon);
-	frame.icon_desaturated:SetTexture(icon);
-	if (usable) then
-		frame.icon:SetVertexColor(1.0, 1.0, 1.0);
-	elseif (notenoughmana) then
-		frame.icon:SetVertexColor(0.5, 0.5, 1.0);
-	else
-		frame.icon:SetVertexColor(0.4, 0.4, 0.4);
-	end
-
-	frame.spellid = or_spellid;
-	frame.itemid = nil;
-
-	frame.count:SetText(count);
-
-	if charged and chargeduration then
-		set_cooldownframe(frame.cooldown, chargeduration, true);
-		if cd and cd.isActive and not cd.isOnGCD then
-			frame.icon_desaturated:SetAlpha(1);
-		else
-			frame.icon_desaturated:SetAlpha(0);
-		end
-	else
-		if durationobj then
-			set_cooldownframe(frame.cooldown, durationobj, true);
-			if cd and cd.isActive and not cd.isOnGCD then
-				frame.icon_desaturated:SetAlpha(1);
-			else
-				frame.icon_desaturated:SetAlpha(0);
-			end
-		else
-			set_cooldownframe(frame.cooldown, durationobj, false);
-			frame.icon_desaturated:SetAlpha(1);
-		end
-	end
-
-	frame:Show()
+function ns.is_blacklisted(id)
+    if not id then
+        return false;
+    end
+    if blacklists[id] then
+        return true;
+    end
+    local specID = ns.get_current_spec_id();
+    if ACDP_Options and ACDP_Options.Blacklists and ACDP_Options.Blacklists[specID] then
+        if ACDP_Options.Blacklists[specID][id] then
+            return true;
+        end
+    end
+    return false;
 end
 
-local function update_itembutton(frame, itemid, istrinket, ishealthstone)
-	local _, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemid)
-	local start, duration, enable = C_Item.GetItemCooldown(itemid);
-	local count = C_Item.GetItemCount(itemid, false, true, false, false);
-	local durationobj = C_DurationUtil.CreateDuration();
-	durationobj:SetTimeFromStart(start, duration);
+local main_frame = CreateFrame("Frame");
+local frames = {};
+local frameidx = 1;
+local alertspells = {};
+local alertitems = {};
+local alertspellnames = {};
+local alertitemnames = {};
 
-	if istrinket then
-		count = 0;
-	end
+local function showfade(icon)
+    frames[frameidx].icon:SetTexture(icon);
 
-	frame.icon:SetTexture(icon);
-	frame.icon_desaturated:SetTexture(icon);
-	set_cooldownframe(frame.cooldown, durationobj, enable);
-	if duration > 2 or enable == false then
-		frame.icon_desaturated:SetAlpha(1);
-	else
-		frame.icon_desaturated:SetAlpha(0);
-	end
-	if count > 0 then
-		frame.count:SetText(count);
-		frame.count:Show();
-	else
-		frame.count:Hide();
-	end
-    frame.itemid = itemid;
-	frame.spellid = nil;
-	if ishealthstone then
-		if count > 0 then
-			frame:Show();
-		else
-			frame:Hide();
-		end
-	else
-		frame:Show()
-	end
+    frames[frameidx].anim:Restart();
+    frameidx = frameidx + 1;
+
+    if frameidx > 10 then
+        frameidx = 1;
+    end
 end
 
-local function update_buttons(list, buttons, spellid, charged)
-	local i = 1;
-
-	for _, itemid in pairs(list) do
-		local isusable = true;
-		local istrinket = false;
-		local ishealthstone = false;
-		if itemid < 20 then
-			itemid = GetInventoryItemID("player", itemid);
-			if itemid then
-				isusable = C_Item.IsUsableItem(itemid);
-			end
-			istrinket = true;
-		elseif itemid == 5512 then
-			if ns.isdemonstone then
-				itemid = 224464;
-			end
-			ishealthstone = true;
-		end
-
-		if itemid and isusable then
-			local frame = buttons[i];
-			update_itembutton(frame, itemid, istrinket, ishealthstone);
-			i = i + 1;
-		end
-	end
-
-	if spellid then
-		local frame = buttons[i];
-		update_spellbutton(frame, spellid, charged);
-		i = i + 1;
-	end
-
-	for j = i, #buttons do
-		buttons[j]:Hide();
-	end
-end
-
-local function update_spells(buttons, list)
-	local i = 1;
-
-	for _, value in pairs(list) do
-		local frame = buttons[i];
-		local spellid = value[1];
-		local charged = value[3];
-		update_spellbutton(frame, spellid, charged);
-		i = i + 1;
-	end
-
-	for j = i, #buttons do
-		buttons[j]:Hide();
-	end
-end
-
-local function create_button(size)
-	local fontsize = size * configs.fontsize_rate;
-	local frame = CreateFrame("Button", nil, main_frame, "asCooldownPulseFrameTemplate");
-	frame.cooldown:SetHideCountdownNumbers(false);
-	frame.cooldown:SetDrawSwipe(true);
-	frame.cooldown:Show();
-
-	if ns.options.MillisecondsThreshold then
-		frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
-	end
-
-	for _, r in next, { frame.cooldown:GetRegions() } do
-		if r:GetObjectType() == "FontString" then
-			r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-			r:SetDrawLayer("OVERLAY");
-			break
-		end
-	end
-
-	frame.icon:SetTexCoord(.08, .92, .08, .92);
-	frame.icon_desaturated:SetTexCoord(.08, .92, .08, .92);
-	frame.icon_desaturated:SetDesaturated(true);
-	frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-	frame.border:SetVertexColor(0, 0, 0);
-
-	frame.count:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
-	frame.count:ClearAllPoints();
-	frame.count:SetTextColor(0, 1, 0);
-	frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
-	frame.count:Show();
-	frame:SetWidth(size);
-	frame:SetHeight(size * 0.9);
-	frame:Hide();
-
-	if not frame:GetScript("OnEnter") then
-		frame:SetScript("OnEnter", function(self)
-			if self.spellid then
-				GameTooltip_SetDefaultAnchor(GameTooltip, self);
-				GameTooltip:SetSpellByID(self.spellid);
-            elseif self.itemid then
-            	GameTooltip_SetDefaultAnchor(GameTooltip, self);
-				GameTooltip:SetItemByID(self.itemid);
-			end
-		end)
-		frame:SetScript("OnLeave", function()
-			GameTooltip:Hide();
-		end)
-	end
-
-	frame:EnableMouse(false);
-	frame:SetMouseMotionEnabled(true);
-	return frame;
-end
-
-
-local function create_buttons()
-	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
-
-	local offset = 0;
-	if ASMOD_asUnitFrame and ASMOD_asUnitFrame.is_simplemode then
-		offset = 14;
-	end
-
-	for i = 1, #ns.trinkets + 1 do
-		local frame = create_button(ns.options.TrinketSize);
-
-		if i == 1 then
-			frame:SetPoint("TOPLEFT", UIParent, "CENTER", configs.s_xpoint, configs.s_ypoint)
-
-			if libasConfig then
-				libasConfig.load_position(frame, "asCooldownPulse(Trinkets)", ACDP_Positions_1);
-			end
-		else
-			frame:SetPoint("LEFT", ns.tbuttons[i - 1], "RIGHT", -0.5, 0);
-		end
-		ns.tbuttons[i] = frame;
-	end
-
-	for i = 1, #ns.items do
-		local frame = create_button(ns.options.ItemSize);
-
-		if i == 1 then
-			frame:SetPoint("BOTTOMLEFT", UIParent, "CENTER", configs.i_xpoint, configs.i_ypoint - offset)
-			if libasConfig then
-				libasConfig.load_position(frame, "asCooldownPulse(Item)", ACDP_Positions_2);
-			end
-		else
-			frame:SetPoint("LEFT", ns.ibuttons[i - 1], "RIGHT", -0.5, 0);
-		end
-		ns.ibuttons[i] = frame;
-	end
-
-	for i = 1, configs.maxtrackspells do
-		local frame = create_button(ns.options.SpellSize);
-		if i == 1 then
-			frame:SetPoint("BOTTOMRIGHT", UIParent, "CENTER", configs.t_xpoint, configs.t_ypoint - offset)
-			if libasConfig then
-				libasConfig.load_position(frame, "asCooldownPulse(Spell)", ACDP_Positions_3);
-			end
-		else
-			frame:SetPoint("RIGHT", ns.sbuttons[i - 1], "LEFT", -0.5, 0);
-		end
-		ns.sbuttons[i] = frame;
-	end
-end
-
-
-local function on_update()
-	if ns.options.ShowTrinkets then
-		update_buttons(ns.trinkets, ns.tbuttons, ns.racial_spell, ns.racial_charged);
-	end
-
-	if ns.options.ShowItems then
-		update_buttons(ns.items, ns.ibuttons);
-	end
-
-	if ns.options.ShowSpells then
-		update_spells(ns.sbuttons, ns.trackspells);
-	end
-end
-
-function ns.scan_spells()
-	if C_SpellBook.IsSpellKnown(386689, 0) then
-		ns.isdemonstone = true;
-	else
-		ns.isdemonstone = false;
-	end
-
-	ns.racial_spell = nil;
-	for _, spellid in pairs(ns.racials) do
-		if C_SpellBook.IsSpellKnown(spellid) then
-			ns.racial_spell = spellid;
-			local chinfo = C_Spell.GetSpellCharges(spellid);
-            local max = 1;
-            if chinfo and not issecretvalue(chinfo.maxCharges) then
-                max = chinfo.maxCharges;
+local voicealert_start = {};
+local function spellsound(id, isitem)
+    if ns.options.AlertSound then
+        local currtime = GetTime();
+        if id and (voicealert_start[id] == nil or voicealert_start[id] < currtime) then
+            --3초간 금지
+            voicealert_start[id] = currtime + 3;
+            local name = "";
+            if isitem then
+                name = alertitemnames[id];
+            else
+                name = alertspellnames[id];
             end
-            ns.racial_charged = (max > 1);
-			break;
-		end
-	end
-
-	local i = 1;
-
-	wipe(ns.trackspells);
-	for spellid, priority in pairs(ns.show_list) do
-        if C_SpellBook.IsSpellKnown(spellid) then
-            local chinfo = C_Spell.GetSpellCharges(spellid);
-            local max = 1;
-            if chinfo and not issecretvalue(chinfo.maxCharges) then
-                max = chinfo.maxCharges;
+            if name then
+                if ns.options.EnableTTS then
+                    C_VoiceChat.SpeakText(ns.options.TTS_ID, name, configs.soundrate,
+                        ns.options.SoundVolume);
+                else
+                    PlaySoundFile("Interface\\AddOns\\asCooldownPulse\\SpellSound\\" .. name .. ".mp3", "MASTER")
+                end
             end
-			table.insert(ns.trackspells, i, { spellid, priority, (max > 1) });
-			i = i + 1;
-
-			if i > configs.maxtrackspells then
-				break;
-			end
-		end
-	end
-
-	table.sort(ns.trackspells, function(a, b)
-		return a[2] > b[2]
-	end)
+        end
+    end
 end
 
-local function on_event(self, event)
-	if event == "PLAYER_REGEN_DISABLED" then
-		if ns.options.CombatAlphaChange then
-			main_frame:SetAlpha(configs.combatalpha);
-		end
-	elseif event == "PLAYER_REGEN_ENABLED" then
-		if ns.options.CombatAlphaChange then
-			main_frame:SetAlpha(configs.normalalpha);
-		end
-	elseif event == "PLAYER_ENTERING_WORLD" then
-		if ns.options.CombatAlphaChange then
-			if UnitAffectingCombat("player") then
-				main_frame:SetAlpha(configs.combatalpha);
-			else
-				main_frame:SetAlpha(configs.normalalpha);
-			end
-		end
-	else
-		ns.scan_spells();
-	end
+local function showalert(id, isitem)
+    if isitem then
+        local _, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(id);
+        if not icon then
+            icon = C_Item.GetItemIconByID(id);
+        end
+        if icon then
+            spellsound(id, true);
+            showfade(icon);
+        end
+    else
+        local info = C_Spell.GetSpellInfo(id);
+
+        if info then
+            spellsound(id, false);
+            showfade(info.iconID);
+        end
+    end
+end
+
+local cached = {};
+local function onupdate()
+    local use_blacklist = ns.options.UseBlacklist;
+    local mincooldown = ns.options.MinCooldown - configs.updaterate - 0.1;
+
+    if mincooldown < 0 then
+        mincooldown = 0;
+    end
+
+    for spellid, start in pairs(alertspells) do
+        if not (use_blacklist and ns.is_blacklisted(spellid)) then
+            local or_spellid = C_Spell.GetOverrideSpell(spellid);
+            local id = spellid;
+
+            if or_spellid then
+                id = or_spellid;
+            end
+            local cd = C_Spell.GetSpellCooldown(id);
+            if cd then
+                if start > 0 then
+                    if not cd.isActive or cd.isOnGCD then
+                        local duration = GetTime() - start;
+                        if duration >= mincooldown or cached[id] then
+                            showalert(id);
+                            cached[id] = true;
+                        end
+                        alertspells[spellid] = 0;
+                    end
+                else
+                    if cd.isActive and not cd.isOnGCD then
+                        alertspells[spellid] = GetTime();
+                    end
+                end
+            end
+        end
+    end
+
+    for itemid, iscool in pairs(alertitems) do
+        if not (use_blacklist and ns.is_blacklisted(itemid)) then
+            local start, duration, enable = C_Item.GetItemCooldown(itemid);
+
+            if start == 0 then
+                if iscool then
+                    showalert(itemid, true);
+                end
+                alertitems[itemid] = false;
+            elseif use_blacklist or duration >= mincooldown then
+                if duration > 0 then
+                    alertitems[itemid] = true;
+                end
+            end
+        end
+    end
+end
+
+local function register_item(itemid)
+    local name, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemid);
+    if not icon then
+        icon = C_Item.GetItemIconByID(itemid);
+    end
+    ns.all_items[itemid] = { id = itemid, name = name or ("Item " .. itemid), icon = icon };
+
+    if not name then
+        local item = Item:CreateFromItemID(itemid);
+        item:ContinueOnItemLoad(function()
+            local loadedName, _, _, _, _, _, _, _, _, loadedIcon = C_Item.GetItemInfo(itemid);
+            if ns.all_items[itemid] then
+                ns.all_items[itemid].name = loadedName or ("Item " .. itemid);
+                ns.all_items[itemid].icon = loadedIcon or C_Item.GetItemIconByID(itemid);
+                if alertitems[itemid] ~= nil and loadedName then
+                    alertitemnames[itemid] = loadedName;
+                end
+                if ns.refresh_blacklist_ui then
+                    ns.refresh_blacklist_ui();
+                end
+            end
+        end);
+    end
+
+    local is_blocked = ns.options.UseBlacklist and ns.is_blacklisted(itemid);
+    if not is_blocked then
+        alertitems[itemid] = false;
+        if name then
+            alertitemnames[itemid] = name;
+        end
+    end
+end
+
+local function checktrinkets(slot)
+    local itemid = GetInventoryItemID("player", slot);
+    if itemid then
+        local isusable = C_Item.IsUsableItem(itemid);
+        if isusable then
+            register_item(itemid);
+        end
+    end
+end
+
+local function scan_spellbook(tab)
+    local lineinfo = C_SpellBook.GetSpellBookSkillLineInfo(tab);
+
+    if not lineinfo or not lineinfo.name then
+        return;
+    end
+
+    for i = lineinfo.itemIndexOffset + 1, lineinfo.itemIndexOffset + lineinfo.numSpellBookItems do
+        local spellname = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player);
+
+        if not spellname then
+            break;
+        end
+
+        local slottype, actionid, spellid = C_SpellBook.GetSpellBookItemType(i, Enum.SpellBookSpellBank.Player);
+        local ispassive = C_SpellBook.IsSpellBookItemPassive(i, Enum.SpellBookSpellBank.Player);
+
+        if not ispassive and spellid then
+            if (slottype ~= Enum.SpellBookItemType.Flyout) then
+                if not blacklists[spellid] then
+                    local info = C_Spell.GetSpellInfo(spellid);
+                    local icon = info and info.iconID;
+                    ns.all_spells[spellid] = { id = spellid, name = spellname, icon = icon };
+
+                    local is_blocked = ns.options.UseBlacklist and ns.is_blacklisted(spellid);
+                    if not is_blocked then
+                        alertspells[spellid] = 0;
+                        alertspellnames[spellid] = spellname;
+                    end
+                end
+            end
+        end
+    end
+end
+
+local function init_spells()
+    wipe(alertspells);
+    wipe(alertspellnames);
+    wipe(cached);
+    wipe(ns.all_spells);
+
+    scan_spellbook(1);
+    scan_spellbook(2);
+    scan_spellbook(3);
+end
+
+local function init_items()
+    wipe(alertitems);
+    wipe(alertitemnames);
+    wipe(ns.all_items);
+
+    for itemid, _ in pairs(configs.defaultitems) do
+        register_item(itemid);
+    end
+
+    checktrinkets(13);
+    checktrinkets(14);
+end
+
+function ns.refresh_alerts()
+    init_spells();
+    init_items();
+end
+
+local function on_event(_, event)
+    if event == "PLAYER_EQUIPMENT_CHANGED" then
+        C_Timer.After(1, function()
+            init_items();
+            if ns.refresh_blacklist_ui then
+                ns.refresh_blacklist_ui();
+            end
+        end);
+    else
+        C_Timer.After(1, function()
+            init_spells();
+            if ns.refresh_blacklist_ui then
+                ns.refresh_blacklist_ui();
+            end
+        end);
+    end
 end
 
 local function init()
-	ns.setup_option();
-	create_buttons();
-	ns.scan_spells();
-	C_Timer.NewTicker(0.2, on_update);
+    ns.setup_option();
+    local i = 1;
 
-	if ns.options.CombatAlphaChange then
-		if UnitAffectingCombat("player") then
-			main_frame:SetAlpha(configs.combatalpha);
-		else
-			main_frame:SetAlpha(configs.normalalpha);
-		end
-	else
-		main_frame:SetAlpha(configs.combatalpha);
-	end
+    while (i <= 10) do
+        local frame = CreateFrame("Frame", nil, UIParent);
+        if i == 1 then
+            frame:SetPoint("CENTER", configs.pointx, configs.pointy);
+        else
+            frame:SetPoint("CENTER", frames[i - 1], "CENTER", 0, 0);
+        end
 
-	if ns.options.ReadyAlertSize then
-		ns.init_alert();
-	end
+        frame:SetWidth(ns.options.ReadyAlertSize);
+        frame:SetHeight(ns.options.ReadyAlertSize * 0.9);
+        frame:SetScale(1);
+        frame:SetAlpha(0);
+        frame:SetFrameStrata("LOW");
+        frame:EnableMouse(false);
+        frame:Show();
+
+        frame.icon = frame:CreateTexture(nil, "BACKGROUND");
+        frame.icon:SetTexture("");
+        frame.icon:ClearAllPoints();
+        frame.icon:SetAllPoints(frame);
+        frame.icon:SetTexCoord(.08, .92, .08, .92);
+        frame.icon:Show();
+
+        frame.anim = frame:CreateAnimationGroup();
+        local fadein = frame.anim:CreateAnimation("Alpha");
+        fadein:SetOrder(1);
+        fadein:SetFromAlpha(configs.alphafrom);
+        fadein:SetToAlpha(configs.alphato);
+        fadein:SetDuration(configs.fadetime);
+
+        local fadeout = frame.anim:CreateAnimation("Alpha");
+        fadeout:SetOrder(2);
+        fadeout:SetFromAlpha(configs.alphato);
+        fadeout:SetToAlpha(configs.alphafrom);
+        fadeout:SetDuration(configs.fadetime);
+
+        if ns.options.ShowScaleAnim then
+            local zoomin = frame.anim:CreateAnimation("Scale");
+            zoomin:SetOrder(1);
+            zoomin:SetOrigin("CENTER", 0, 0);
+            zoomin:SetScaleFrom(configs.scalefrom, configs.scalefrom);
+            zoomin:SetScaleTo(configs.scaleto, configs.scaleto);
+            zoomin:SetDuration(configs.fadetime);
+
+            local zoomout = frame.anim:CreateAnimation("Scale");
+            zoomout:SetOrder(2);
+            zoomout:SetOrigin("CENTER", 0, 0);
+            zoomout:SetScaleFrom(configs.scaleto, configs.scaleto);
+            zoomout:SetScaleTo(configs.scalefrom, configs.scalefrom);
+            zoomout:SetDuration(configs.fadetime);
+        end
+        frames[i] = frame;
+        i = i + 1;
+    end
+
+    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+    if libasConfig then
+        libasConfig.load_position(frames[1], "asCooldownPulse(Alert)", ACDP_Positions);
+    end
+
+    main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
+    main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
+    main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+    main_frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");
+    main_frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+    main_frame:RegisterUnitEvent("UNIT_PET", "player");
+
+    ns.refresh_alerts();
+    main_frame:SetScript("OnEvent", on_event);
+
+    C_Timer.NewTicker(configs.updaterate, onupdate);
 end
-main_frame:SetFrameStrata("LOW");
-main_frame:RegisterEvent("TRAIT_CONFIG_UPDATED");
-main_frame:RegisterEvent("TRAIT_CONFIG_LIST_UPDATED");
-main_frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-main_frame:RegisterEvent("PLAYER_REGEN_DISABLED");
-main_frame:RegisterEvent("PLAYER_REGEN_ENABLED");
-main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-main_frame:RegisterUnitEvent("UNIT_PET", "player");
-
-main_frame:SetScript("OnEvent", on_event);
-main_frame:EnableMouse(false);
-main_frame:Show();
-main_frame:SetSize(0, 0);
 
 C_Timer.After(0.5, init);

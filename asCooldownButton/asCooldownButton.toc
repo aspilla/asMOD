@@ -1,0 +1,14 @@
+﻿## Interface: 120105, 120107
+## Author: |cffff3399Aspilla|r [Azshara - KR]
+## Title: |cffff3399as|rCooldownButton
+## Notes:Defensive spell/healthstone/potion cooldowns.
+## Notes-koKR:생존기/생석/물약 쿨
+## Version : 261124
+## SavedVariablesPerCharacter: ACDB_Options, ACDB_Positions_1, ACDB_Positions_2, ACDB_Positions_3, ACDB_Spelllist
+## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
+## Category: asMOD
+Libs\LibStub\LibStub.lua
+Libs\LibasConfig\LibasConfig.lua
+asCooldownButtonOptions.lua
+asCooldownButton.xml
+asCooldownButton.lua

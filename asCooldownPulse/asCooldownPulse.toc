@@ -1,15 +1,13 @@
 ﻿## Interface: 120105, 120107
 ## Author: |cffff3399Aspilla|r [Azshara - KR]
 ## Title: |cffff3399as|rCooldownPulse
-## Notes: Ready Spell Alert, Defensive spell/healthstone/potion cooldowns.
-## Notes-koKR:준비된 스킬 알림, 생존기/생석/물약 쿨
-## Version : 261104
-## SavedVariablesPerCharacter: ACDP_Options, ACDP_Positions_1, ACDP_Positions_2, ACDP_Positions_3, ACDP_Spelllist, ACDP_Positions_4
+## Notes: Ready Spell Alert
+## Notes-koKR:준비된 스킬 알림
+## Version : 261124
+## SavedVariablesPerCharacter: ACDP_Options, ACDP_Positions
 ## IconTexture: Interface\Icons\Inv_10_inscription3_darkmoondeckbox_black.blp
 ## Category: asMOD
 Libs\LibStub\LibStub.lua
 Libs\LibasConfig\LibasConfig.lua
 asCooldownPulseOptions.lua
-asCooldownPulseAlert.lua
-asCooldownPulse.xml
 asCooldownPulse.lua
