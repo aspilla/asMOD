@@ -111,9 +111,6 @@ end
 local function showalert(id, isitem)
     if isitem then
         local _, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(id);
-        if not icon then
-            icon = C_Item.GetItemIconByID(id);
-        end
         if icon then
             spellsound(id, true);
             showfade(icon);
@@ -135,6 +132,10 @@ local function onupdate()
 
     if mincooldown < 0 then
         mincooldown = 0;
+    end
+
+    if use_blacklist then
+        mincooldown = 1.6;
     end
 
     for spellid, start in pairs(alertspells) do
@@ -185,10 +186,6 @@ end
 
 local function register_item(itemid)
     local name, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemid);
-    if not icon then
-        icon = C_Item.GetItemIconByID(itemid);
-    end
-    ns.all_items[itemid] = { id = itemid, name = name or ("Item " .. itemid), icon = icon };
 
     if not name then
         local item = Item:CreateFromItemID(itemid);
@@ -205,6 +202,8 @@ local function register_item(itemid)
                 end
             end
         end);
+    else
+        ns.all_items[itemid] = { id = itemid, name = name or ("Item " .. itemid), icon = icon };
     end
 
     local is_blocked = ns.options.UseBlacklist and ns.is_blacklisted(itemid);

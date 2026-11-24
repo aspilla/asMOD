@@ -2,7 +2,7 @@
 
 Displays cooldowns for trinkets, racial abilities, defensive spells, healthstones, and potions.
 
-![asCooldownButton](https://media.forgecdn.net/attachments/1913/63/ascooldownpulse-jpg.jpg)
+![asCooldownButton](https://media.forgecdn.net/attachments/2267/564/ascooldownbutton-jpg.jpg)
 
 ## Key Features
 - **Trinket Cooldown Display (Bottom of TargetFrame, Default off)**: Displays cooldowns for usable trinkets when equipped.
@@ -45,7 +45,7 @@ Displays cooldowns for trinkets, racial abilities, defensive spells, healthstone
 
 생존기, 장신구, 종특, 생석, 물약 쿨 표시
 
-![asCooldownButton](https://media.forgecdn.net/attachments/1913/63/ascooldownpulse-jpg.jpg)
+![asCooldownButton](https://media.forgecdn.net/attachments/2267/564/ascooldownbutton-jpg.jpg)
 
 ## 주요 기능
 
