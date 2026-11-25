@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 local ASF_X = 300;
 local ASF_Y = 160;
 
