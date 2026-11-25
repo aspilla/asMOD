@@ -4,6 +4,11 @@ ASMOD_asUnitFrame = {};
 ---@class AUFFrameTemplate : Frame
 ---@field icon Texture
 
+---@class AUFDebuffFrameTemplate : Frame
+---@field portrait Texture
+---@field border Texture
+
+
 local configs = {
     updaterate = 0.1,
 

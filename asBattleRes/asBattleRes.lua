@@ -1,4 +1,12 @@
 ﻿local _, ns = ...;
+
+---@class asBattleResFrameTemplate : Frame
+---@field icon Texture
+---@field border Texture
+---@field cooldown Cooldown | CooldownFrameTemplate
+---@field count FontString
+
+
 local configs = {
     size = 40,
     xpoint = -240 - 20,
