@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 
+## 261125 Update
+
+### asCooldownPulse
+- Bugfix
+
 ## 261124 Update
 
 ### asCooldownButton (신규 애드온)

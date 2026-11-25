@@ -27,9 +27,9 @@ ns.all_spells = {};
 ns.all_items = {};
 
 function ns.get_current_spec_id()
-    local specIndex = GetSpecialization();
+    local specIndex = C_SpecializationInfo.GetSpecialization();
     if specIndex and specIndex > 0 then
-        local specID = GetSpecializationInfo(specIndex);
+        local specID = C_SpecializationInfo.GetSpecializationInfo(specIndex);
         if specID and specID > 0 then
             return specID;
         end
@@ -38,9 +38,9 @@ function ns.get_current_spec_id()
 end
 
 function ns.get_current_spec_name()
-    local specIndex = GetSpecialization();
+    local specIndex = C_SpecializationInfo.GetSpecialization();
     if specIndex and specIndex > 0 then
-        local _, name = GetSpecializationInfo(specIndex);
+        local _, name = C_SpecializationInfo.GetSpecializationInfo(specIndex);
         if name and name ~= "" then
             return name;
         end
@@ -139,46 +139,42 @@ local function onupdate()
     end
 
     for spellid, start in pairs(alertspells) do
-        if not (use_blacklist and ns.is_blacklisted(spellid)) then
-            local or_spellid = C_Spell.GetOverrideSpell(spellid);
-            local id = spellid;
+        local or_spellid = C_Spell.GetOverrideSpell(spellid);
+        local id = spellid;
 
-            if or_spellid then
-                id = or_spellid;
-            end
-            local cd = C_Spell.GetSpellCooldown(id);
-            if cd then
-                if start > 0 then
-                    if not cd.isActive or cd.isOnGCD then
-                        local duration = GetTime() - start;
-                        if duration >= mincooldown or cached[id] then
-                            showalert(id);
-                            cached[id] = true;
-                        end
-                        alertspells[spellid] = 0;
+        if or_spellid then
+            id = or_spellid;
+        end
+        local cd = C_Spell.GetSpellCooldown(id);
+        if cd then
+            if start > 0 then
+                if not cd.isActive or cd.isOnGCD then
+                    local duration = GetTime() - start;
+                    if duration >= mincooldown or cached[id] then
+                        showalert(id);
+                        cached[id] = true;
                     end
-                else
-                    if cd.isActive and not cd.isOnGCD then
-                        alertspells[spellid] = GetTime();
-                    end
+                    alertspells[spellid] = 0;
+                end
+            else
+                if cd.isActive and not cd.isOnGCD then
+                    alertspells[spellid] = GetTime();
                 end
             end
         end
     end
 
     for itemid, iscool in pairs(alertitems) do
-        if not (use_blacklist and ns.is_blacklisted(itemid)) then
-            local start, duration, enable = C_Item.GetItemCooldown(itemid);
+        local start, duration, enable = C_Item.GetItemCooldown(itemid);
 
-            if start == 0 then
-                if iscool then
-                    showalert(itemid, true);
-                end
-                alertitems[itemid] = false;
-            elseif use_blacklist or duration >= mincooldown then
-                if duration > 0 then
-                    alertitems[itemid] = true;
-                end
+        if start == 0 then
+            if iscool then
+                showalert(itemid, true);
+            end
+            alertitems[itemid] = false;
+        elseif use_blacklist or duration >= mincooldown then
+            if duration > 0 then
+                alertitems[itemid] = true;
             end
         end
     end
@@ -187,6 +183,7 @@ end
 local function register_item(itemid)
     local name, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemid);
 
+    ns.all_items[itemid] = { id = itemid, name = name or ("Item " .. itemid), icon = icon };
     if not name then
         local item = Item:CreateFromItemID(itemid);
         item:ContinueOnItemLoad(function()
@@ -202,8 +199,6 @@ local function register_item(itemid)
                 end
             end
         end);
-    else
-        ns.all_items[itemid] = { id = itemid, name = name or ("Item " .. itemid), icon = icon };
     end
 
     local is_blocked = ns.options.UseBlacklist and ns.is_blacklisted(itemid);
@@ -290,21 +285,10 @@ function ns.refresh_alerts()
 end
 
 local function on_event(_, event)
-    if event == "PLAYER_EQUIPMENT_CHANGED" then
-        C_Timer.After(1, function()
-            init_items();
-            if ns.refresh_blacklist_ui then
-                ns.refresh_blacklist_ui();
-            end
-        end);
-    else
-        C_Timer.After(1, function()
-            init_spells();
-            if ns.refresh_blacklist_ui then
-                ns.refresh_blacklist_ui();
-            end
-        end);
-    end
+    C_Timer.After(1, function()
+        ns.refresh_alerts();
+        ns.refresh_blacklist_ui();
+    end);
 end
 
 local function init()

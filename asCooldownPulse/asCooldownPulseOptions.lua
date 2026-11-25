@@ -76,12 +76,8 @@ local function SetupBlacklistPanel(panel)
         local specID = ns.get_current_spec_id and ns.get_current_spec_id() or 0;
         ACDP_Options.Blacklists = ACDP_Options.Blacklists or {};
         ACDP_Options.Blacklists[specID] = {};
-        if ns.refresh_blacklist_ui then
-            ns.refresh_blacklist_ui();
-        end
-        if ns.refresh_alerts then
-            ns.refresh_alerts();
-        end
+        ns.refresh_blacklist_ui();
+        ns.refresh_alerts();
     end);
 
     local btnUnselectAll = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate");
@@ -102,12 +98,8 @@ local function SetupBlacklistPanel(panel)
                 ACDP_Options.Blacklists[specID][id] = true;
             end
         end
-        if ns.refresh_blacklist_ui then
-            ns.refresh_blacklist_ui();
-        end
-        if ns.refresh_alerts then
-            ns.refresh_alerts();
-        end
+        ns.refresh_blacklist_ui();
+        ns.refresh_alerts();
     end);
 
     local scrollFrame = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate");
@@ -187,9 +179,7 @@ local function SetupBlacklistPanel(panel)
                     else
                         ACDP_Options.Blacklists[specID][data.id] = true;
                     end
-                    if ns.refresh_alerts then
-                        ns.refresh_alerts();
-                    end
+                    ns.refresh_alerts();
                 end
             end);
 
@@ -311,9 +301,7 @@ function ns.setup_option()
         ACDP_Options[variable] = value;
         ns.options[variable] = value;
         if variable == "UseBlacklist" or variable == "MinCooldown" then
-            if ns.refresh_alerts then
-                ns.refresh_alerts();
-            end
+            ns.refresh_alerts();
         else
             bupdated = true;
         end
@@ -327,7 +315,8 @@ function ns.setup_option()
 
     ns.blacklistpanel = CreateFrame("Frame");
     SetupBlacklistPanel(ns.blacklistpanel);
-    local subcategory, subcategoryLayout = Settings.RegisterCanvasLayoutSubcategory(category, ns.blacklistpanel, L.Blacklist);
+    local subcategory, subcategoryLayout = Settings.RegisterCanvasLayoutSubcategory(category, ns.blacklistpanel,
+        L.Blacklist);
 
     if ACDP_Options == nil then
         ACDP_Options = CopyTable(Options_Default);

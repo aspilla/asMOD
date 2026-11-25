@@ -2,6 +2,11 @@
 
 https://github.com/aspilla/asmod/blob/main/ChangeLogs.md
 
+## 261125 Update
+
+### asCooldownPulse
+- Bugfix
+
 ## 261124 Update
 
 ### asCooldownButton (New Addon)
