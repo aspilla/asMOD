@@ -14,7 +14,7 @@ local main_frame = CreateFrame("Frame", nil, UIParent);
 local function setupUI()
     ns.setup_option();
 
-    ns.textframe = CreateFrame("FRAME", nil, UIParent);
+    ns.textframe = CreateFrame("Frame", nil, UIParent);
     local textframe = ns.textframe;
 
     textframe:SetFrameStrata("LOW");

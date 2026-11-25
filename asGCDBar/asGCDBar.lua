@@ -7,7 +7,7 @@ local configs = {
 	normalalpha = 0.5,
 };
 
-local main_frame = CreateFrame("FRAME", nil, UIParent)
+local main_frame = CreateFrame("Frame", nil, UIParent)
 
 local function on_update()
     local durationinfo = C_Spell.GetSpellCooldownDuration(61304);

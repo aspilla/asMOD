@@ -14,7 +14,7 @@ ns.configs   = {
     normalalpha = 0.5,
 };
 
-ns.frame    = CreateFrame("FRAME", nil, UIParent);
+ns.frame    = CreateFrame("Frame", nil, UIParent);
 ns.ready = false;
 
 local function init_addon()

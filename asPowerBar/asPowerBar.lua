@@ -23,7 +23,7 @@ local backdropConfig = {
 local _, class       = UnitClass("player")
 ns.classcolor        = C_ClassColor.GetClassColor(class);
 
-local main_frame     = CreateFrame("FRAME", nil, UIParent);
+local main_frame     = CreateFrame("Frame", nil, UIParent);
 ns.main_frame        = main_frame;
 
 local function set_height(heightprimary, heightsecondary)

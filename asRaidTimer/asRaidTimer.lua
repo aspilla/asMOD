@@ -32,7 +32,7 @@ end
 local function setupUI()
 	ns.setup_option();
 
-	ns.timerframe = CreateFrame("FRAME", nil, UIParent);
+	ns.timerframe = CreateFrame("Frame", nil, UIParent);
 	local timerframe = ns.timerframe;
 	timerframe:SetFrameStrata("LOW");
 	timerframe:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
@@ -78,7 +78,7 @@ local function setupUI()
 	end
 
 
-	ns.textframe = CreateFrame("FRAME", nil, UIParent);
+	ns.textframe = CreateFrame("Frame", nil, UIParent);
 	local textframe = ns.textframe;
 
 	textframe:SetFrameStrata("LOW");
@@ -98,7 +98,7 @@ local function setupUI()
 		libasConfig.load_position(textframe, "asRaidTimer(Text)", ARTI_Positions2);
 	end
 
-	ns.listframe = CreateFrame("FRAME", nil, UIParent);
+	ns.listframe = CreateFrame("Frame", nil, UIParent);
 	local listframe = ns.listframe;
 
 	listframe:SetFrameStrata("LOW");

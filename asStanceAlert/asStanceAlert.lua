@@ -1,6 +1,6 @@
 local _, ns      = ...;
 
-local main_frame = CreateFrame("FRAME", nil, UIParent);
+local main_frame = CreateFrame("Frame", nil, UIParent);
 
 local configs    = {
     font = STANDARD_TEXT_FONT,

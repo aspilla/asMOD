@@ -1,7 +1,7 @@
 local _, ns        = ...;
 
 local refresh_rate = 0.2;
-local main_frame   = CreateFrame("FRAME", nil, UIParent);
+local main_frame   = CreateFrame("Frame", nil, UIParent);
 local main_button  = CreateFrame("Button", nil, UIParent, "asBLAButtonTemplate");
 
 local configs      = {

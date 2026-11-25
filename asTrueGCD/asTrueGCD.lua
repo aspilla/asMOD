@@ -65,7 +65,7 @@ local function scan_itemslots()
 end
 
 
-local main_frame = CreateFrame("FRAME", nil, UIParent)
+local main_frame = CreateFrame("Frame", nil, UIParent)
 main_frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
 main_frame:SetWidth(0)
 main_frame:SetHeight(0)

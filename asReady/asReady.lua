@@ -241,7 +241,7 @@ end
 
 local function init()
 	ns.SetupOptionPanels();
-	main_frame = CreateFrame("FRAME", nil, UIParent)
+	main_frame = CreateFrame("Frame", nil, UIParent)
 	main_frame:SetScript("OnEvent", on_event);
 
 	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");

@@ -341,7 +341,7 @@ end
 
 local function init()
     ns.SetupOptionPanels();
-    main_frame = CreateFrame("FRAME", nil, UIParent)
+    main_frame = CreateFrame("Frame", nil, UIParent)
 
     if main_frame.bars == nil then
         main_frame.bars = {};

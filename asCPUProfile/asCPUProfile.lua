@@ -48,14 +48,14 @@ for i, title in ipairs(headers) do
 end
 
 local rowList = {}
-local currentYOffset = -25 
+local currentYOffset = -25
 
 local function update_row(parent, index, datas)
     local rowInfo = rowList[index]
     local addonName = datas[1];
 
     if rowInfo then
-        
+
         rowInfo.nameText:SetText(addonName);
         for i = 2, 9 do
             if i <= 3 then
@@ -65,25 +65,25 @@ local function update_row(parent, index, datas)
             end
         end
     else
-        
+
         local row = CreateFrame("Frame", nil, parent)
         row:SetSize(800, 20)
-        
-        row:SetPoint("TOPLEFT", 0, currentYOffset)
-        currentYOffset = currentYOffset - 25 
 
-        
+        row:SetPoint("TOPLEFT", 0, currentYOffset)
+        currentYOffset = currentYOffset - 25
+
+
         local nameText = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         nameText:SetPoint("LEFT", row, "LEFT", 0, 0)
         nameText:SetWidth(150)
         nameText:SetJustifyH("CENTER")
         nameText:SetText(addonName)
 
-        
+
         local cpuTexts = {}
         for i = 2, 9 do
             local cpuText = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-            cpuText:SetPoint("LEFT", nameText, "RIGHT", (i - 2) * 80, 0) 
+            cpuText:SetPoint("LEFT", nameText, "RIGHT", (i - 2) * 80, 0)
             cpuText:SetWidth(80)
             cpuText:SetJustifyH("CENTER")
             if i <= 3 then
@@ -94,11 +94,11 @@ local function update_row(parent, index, datas)
             cpuTexts[i] = cpuText
         end
 
-        
+
         rowList[index] = {
             row = row,
             nameText = nameText,
-            cpuTexts = cpuTexts, 
+            cpuTexts = cpuTexts,
         }
     end
 end
@@ -190,7 +190,7 @@ local function on_update()
     end
 end
 
-local function init()    
+local function init()
 	print("|cff33ff99/ascpu|r : Open the asCPUProfile window")
 
     on_update();

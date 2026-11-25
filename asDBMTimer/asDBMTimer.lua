@@ -18,7 +18,7 @@ local configs = {
 local function setupUI()
 	ns.setup_option();
 
-	ns.asDBMTimer = CreateFrame("FRAME", nil, UIParent);
+	ns.asDBMTimer = CreateFrame("Frame", nil, UIParent);
 	local timerframe = ns.asDBMTimer;
 	timerframe:SetFrameStrata("LOW");
 	timerframe:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
@@ -81,7 +81,7 @@ local function setupUI()
 	end
 
 
-	ns.asDBMText = CreateFrame("FRAME", nil, UIParent);
+	ns.asDBMText = CreateFrame("Frame", nil, UIParent);
 	local textframe = ns.asDBMText;
 
 	textframe:SetFrameStrata("LOW");
