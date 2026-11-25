@@ -1,29 +1,32 @@
 ﻿local _, ns = ...;
 
+---@class ATCBFrameTemplate: Frame
+---@field icon Texture
+
 local configs = {
-	xpoint = 0,
-	ypoint = -100,
-	focus_ypoint = 60,
-	alpha = 1,
-	notinterruptcolor = { 0.6, 0.6, 0.6 },
-	interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
-	failedcolor = { 1, 0, 0 },
-	updaterate = 0.1,
-	font = STANDARD_TEXT_FONT,
-	interruptedtext = INTERRUPTED,
-	faildonetime = 1,
-	buttonwidthrate = 1.2,
+    xpoint = 0,
+    ypoint = -100,
+    focus_ypoint = 60,
+    alpha = 1,
+    notinterruptcolor = CreateColor(0.6, 0.6, 0.6),
+    interruptcolor = CreateColor(204 / 255, 255 / 255, 153 / 255),
+    failedcolor = { 1, 0, 0 },
+    updaterate = 0.1,
+    font = STANDARD_TEXT_FONT,
+    interruptedtext = INTERRUPTED,
+    faildonetime = 1,
+    buttonwidthrate = 1.2,
 }
 
 local region = GetCurrentRegion();
 local zero_duration = C_DurationUtil.CreateDuration();
 
 if region == 2 and GetLocale() ~= "koKR" then
-	configs.font = "Fonts\\2002.ttf";
+    configs.font = "Fonts\\2002.ttf";
 end
 
 if GetLocale() == "koKR" then
-	configs.interruptedtext = "차단됨";
+    configs.interruptedtext = "차단됨";
 end
 
 local main_frame = CreateFrame("Frame", nil, UIParent)
@@ -34,95 +37,94 @@ main_frame:SetHeight(0)
 main_frame:Show();
 
 local function setup_castbar()
-	local castbar = CreateFrame("Frame", nil, UIParent);
+    local castbar = CreateFrame("Frame", nil, UIParent);
     castbar:SetFrameStrata("LOW");
     castbar:SetAlpha(configs.alpha);
 
     castbar.bar = CreateFrame("StatusBar", nil, castbar)
-	castbar.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
-	local statustexture = castbar.bar:GetStatusBarTexture();
-	statustexture:SetHorizTile(false)
-	castbar.bar:SetMinMaxValues(0, 100)
-	castbar.bar:SetValue(100)
-	castbar.bar:SetStatusBarColor(1, 0.9, 0.9);
+    castbar.bar:SetStatusBarTexture("RaidFrame-Hp-Fill")
+    local statustexture = castbar.bar:GetStatusBarTexture();
+    statustexture:SetHorizTile(false)
+    castbar.bar:SetMinMaxValues(0, 100)
+    castbar.bar:SetValue(100)
+    castbar.bar:SetStatusBarColor(1, 0.9, 0.9);
     castbar.bar:SetPoint("RIGHT", castbar, "RIGHT", 0, 0);
 
-	castbar.notinterruptable = castbar.bar:CreateTexture(nil, "ARTWORK", "asTargetCastBarNotInteruptTemplate", 1);
-	castbar.notinterruptable:SetParent(castbar.bar);
-	castbar.notinterruptable:ClearAllPoints();
-	castbar.notinterruptable:SetPoint("TOPLEFT", statustexture, "TOPLEFT", 0, 0);
-	castbar.notinterruptable:SetPoint("BOTTOMRIGHT", statustexture, "BOTTOMRIGHT", 0, 0);
-	castbar.notinterruptable:SetVertexColor(configs.notinterruptcolor[1], configs.notinterruptcolor[2],
-		configs.notinterruptcolor[3]);
-	castbar.notinterruptable:SetAlpha(0);
-	castbar.notinterruptable:Show();
+    castbar.notinterruptable = castbar.bar:CreateTexture(nil, "ARTWORK", "asTargetCastBarNotInteruptTemplate", 1);
+    castbar.notinterruptable:SetParent(castbar.bar);
+    castbar.notinterruptable:ClearAllPoints();
+    castbar.notinterruptable:SetPoint("TOPLEFT", statustexture, "TOPLEFT", 0, 0);
+    castbar.notinterruptable:SetPoint("BOTTOMRIGHT", statustexture, "BOTTOMRIGHT", 0, 0);
+    castbar.notinterruptable:SetVertexColor(configs.notinterruptcolor:GetRGB());
+    castbar.notinterruptable:SetAlpha(0);
+    castbar.notinterruptable:Show();
 
-	castbar.important = castbar:CreateTexture(nil, "BACKGROUND");
-	castbar.important:SetDrawLayer("BACKGROUND", -6);
-	castbar.important:SetPoint("TOPLEFT", castbar, "TOPLEFT", -2, 2);
-	castbar.important:SetPoint("BOTTOMRIGHT", castbar, "BOTTOMRIGHT", 2, -2);
-	castbar.important:SetColorTexture(1, 0, 0, 1);
-	castbar.important:SetAlpha(0);
-	castbar.important:Show();
+    castbar.important = castbar:CreateTexture(nil, "BACKGROUND");
+    castbar.important:SetDrawLayer("BACKGROUND", -6);
+    castbar.important:SetPoint("TOPLEFT", castbar, "TOPLEFT", -2, 2);
+    castbar.important:SetPoint("BOTTOMRIGHT", castbar, "BOTTOMRIGHT", 2, -2);
+    castbar.important:SetColorTexture(1, 0, 0, 1);
+    castbar.important:SetAlpha(0);
+    castbar.important:Show();
 
 
     castbar.bg = castbar.bar:CreateTexture(nil, "BACKGROUND")
-	castbar.bg:SetPoint("TOPLEFT", castbar.bar, "TOPLEFT", -1, 1)
-	castbar.bg:SetPoint("BOTTOMRIGHT", castbar.bar, "BOTTOMRIGHT", 1, -1)
-	castbar.bg:SetColorTexture(0, 0, 0, 1);
-	castbar.bg:Show();
+    castbar.bg:SetPoint("TOPLEFT", castbar.bar, "TOPLEFT", -1, 1)
+    castbar.bg:SetPoint("BOTTOMRIGHT", castbar.bar, "BOTTOMRIGHT", 1, -1)
+    castbar.bg:SetColorTexture(0, 0, 0, 1);
+    castbar.bg:Show();
 
-	castbar.name = castbar.bar:CreateFontString(nil, "OVERLAY");
-	castbar.name:SetPoint("LEFT", castbar.bar, "LEFT", 3, 0);
+    castbar.name = castbar.bar:CreateFontString(nil, "OVERLAY");
+    castbar.name:SetPoint("LEFT", castbar.bar, "LEFT", 3, 0);
 
-	castbar.time = castbar.bar:CreateFontString(nil, "OVERLAY");
-	castbar.time:SetPoint("RIGHT", castbar.bar, "RIGHT", -3, 0);
+    castbar.time = castbar.bar:CreateFontString(nil, "OVERLAY");
+    castbar.time:SetPoint("RIGHT", castbar.bar, "RIGHT", -3, 0);
 
-	if not castbar:GetScript("OnEnter") then
-		castbar:SetScript("OnEnter", function(self)
-			if self.castspellid then
-				GameTooltip_SetDefaultAnchor(GameTooltip, self);
-				GameTooltip:SetSpellByID(self.castspellid);
-			end
-		end)
-		castbar:SetScript("OnLeave", function()
-			GameTooltip:Hide();
-		end)
-	end
+    if not castbar:GetScript("OnEnter") then
+        castbar:SetScript("OnEnter", function(self)
+            if self.castspellid then
+                GameTooltip_SetDefaultAnchor(GameTooltip, self);
+                GameTooltip:SetSpellByID(self.castspellid);
+            end
+        end)
+        castbar:SetScript("OnLeave", function()
+            GameTooltip:Hide();
+        end)
+    end
 
-	castbar:EnableMouse(false);
-	castbar:SetMouseMotionEnabled(true);
-	castbar.isAlert = false;
-	castbar:Hide();
+    castbar:EnableMouse(false);
+    castbar:SetMouseMotionEnabled(true);
+    castbar.isAlert = false;
+    castbar:Hide();
 
-	castbar.button = CreateFrame("Button", nil, castbar, "ATCBFrameTemplate");
-	castbar.button:SetPoint("LEFT", castbar, "LEFT", 0, 0)
-	castbar.button:SetAlpha(1);
-	castbar.button:EnableMouse(false);
-	castbar.button.icon:SetTexCoord(.08, .92, .16, .84);
-	castbar.button.bg = castbar.button:CreateTexture(nil, "BACKGROUND", nil , -7)
+    castbar.button = CreateFrame("Button", nil, castbar, "ATCBFrameTemplate");
+    castbar.button:SetPoint("LEFT", castbar, "LEFT", 0, 0)
+    castbar.button:SetAlpha(1);
+    castbar.button:EnableMouse(false);
+    castbar.button.icon:SetTexCoord(.08, .92, .16, .84);
+    castbar.button.bg = castbar.button:CreateTexture(nil, "BACKGROUND", nil, -7)
     castbar.button.bg:SetPoint("TOPLEFT", castbar.button, "TOPLEFT", -1, 1)
     castbar.button.bg:SetPoint("BOTTOMRIGHT", castbar.button, "BOTTOMRIGHT", 1, -1)
     castbar.button.bg:SetColorTexture(0, 0, 0, 1);
     castbar.button.bg:Show();
-	castbar.button:Show();
+    castbar.button:Show();
 
-	castbar.targetname = castbar:CreateFontString(nil, "ARTWORK");
-	castbar.targetname:SetPoint("TOPRIGHT", castbar, "BOTTOMRIGHT", 0, -2);
+    castbar.targetname = castbar:CreateFontString(nil, "ARTWORK");
+    castbar.targetname:SetPoint("TOPRIGHT", castbar, "BOTTOMRIGHT", 0, -2);
 
-	castbar.mark = castbar:CreateTexture(nil, "ARTWORK");
-	castbar.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
-	castbar.mark:SetPoint("RIGHT", castbar.button, "LEFT", -1, 0);
+    castbar.mark = castbar:CreateTexture(nil, "ARTWORK");
+    castbar.mark:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
+    castbar.mark:SetPoint("RIGHT", castbar.button, "LEFT", -1, 0);
 
-	castbar.targetedindi = castbar:CreateFontString(nil, "ARTWORK");
-	castbar.targetedindi:SetPoint("LEFT", castbar, "RIGHT", 0, 1);
-	castbar.targetedindi:Show();
+    castbar.targetedindi = castbar:CreateFontString(nil, "ARTWORK");
+    castbar.targetedindi:SetPoint("LEFT", castbar, "RIGHT", 0, 1);
+    castbar.targetedindi:Show();
 
 
-	castbar.start = 0;
-	castbar.duration = 0;
-	castbar.targetedinditype = 1;
-	return castbar;
+    castbar.start = 0;
+    castbar.duration = 0;
+    castbar.targetedinditype = 1;
+    return castbar;
 end
 
 function ns.resize(castbar, height, width)
@@ -141,245 +143,245 @@ function ns.resize(castbar, height, width)
 end
 
 local function hide_castbar(castbar)
-	local targetname = castbar.targetname;
-	castbar.bar:SetTimerDuration(zero_duration);
-	castbar.bar:SetValue(0);
-	castbar:Hide();
-	castbar.isAlert = false;
-	targetname:SetText("");
-	targetname:Hide();
-	castbar.failstart = nil;
-	castbar.duration_obj = nil;
-	castbar.important:SetAlpha(0);
-	castbar.targetedindi:SetAlpha(0);
-	castbar.notinterruptable:SetAlpha(0);
+    local targetname = castbar.targetname;
+    castbar.bar:SetTimerDuration(zero_duration);
+    castbar.bar:SetValue(0);
+    castbar:Hide();
+    castbar.isAlert = false;
+    targetname:SetText("");
+    targetname:Hide();
+    castbar.failstart = nil;
+    castbar.duration_obj = nil;
+    castbar.important:SetAlpha(0);
+    castbar.targetedindi:SetAlpha(0);
+    castbar.notinterruptable:SetAlpha(0);
 end
 
 
 local function show_raidicon(unit, markframe)
-	local raidicon = GetRaidTargetIndex(unit);
-	if raidicon then
-		SetRaidTargetIconTexture(markframe, raidicon);
-		markframe:Show();
-	else
-		markframe:Hide();
-	end
+    local raidicon = GetRaidTargetIndex(unit);
+    if raidicon then
+        SetRaidTargetIconTexture(markframe, raidicon);
+        markframe:Show();
+    else
+        markframe:Hide();
+    end
 end
 
 local function get_interrupttext(interruptedby)
-	if interruptedby then
-		local unitname = UnitNameFromGUID(interruptedby);
-		if unitname and SPELL_INTERRUPTED_BY then
-			local _, class, _ = UnitClassFromGUID(interruptedby);
-			if class then
-				local color = C_ClassColor.GetClassColor(class);
-				if color then
-					unitname = color:WrapTextInColorCode(unitname);
-				end
-			end
-			return SPELL_INTERRUPTED_BY:format(unitname);
-		end
-	end
+    if interruptedby then
+        local unitname = UnitNameFromGUID(interruptedby);
+        if unitname and SPELL_INTERRUPTED_BY then
+            local _, class, _ = UnitClassFromGUID(interruptedby);
+            if class then
+                local color = C_ClassColor.GetClassColor(class);
+                if color then
+                    unitname = color:WrapTextInColorCode(unitname);
+                end
+            end
+            return SPELL_INTERRUPTED_BY:format(unitname);
+        end
+    end
 
-	return INTERRUPTED;
+    return INTERRUPTED;
 end
 
 local function check_casting(castbar, event, interuptedby, complete)
-	local unit         = castbar.unit;
+    local unit         = castbar.unit;
     local frameicon    = castbar.button.icon;
-	local bar 		   = castbar.bar;
-	local text         = castbar.name;
-	local time         = castbar.time;
-	local targetname   = castbar.targetname;
-	local mark         = castbar.mark;
-	local targettarget = unit .. "target";
-	local currtime     = GetTime();
+    local bar          = castbar.bar;
+    local text         = castbar.name;
+    local time         = castbar.time;
+    local targetname   = castbar.targetname;
+    local mark         = castbar.mark;
+    local targettarget = unit .. "target";
+    local currtime     = GetTime();
 
-	if UnitExists(unit) then
-		local bchannel = false;
-		local numStages = nil;
-		local name, _, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-			unit);
+    if UnitExists(unit) then
+        local bchannel = false;
+        local numStages = nil;
+        local name, _, texture, start, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
+            unit);
 
-		if not name then
-			name, _, texture, start, endTime, isTradeSkill, notInterruptible, spellid, _, numStages = UnitChannelInfo(
-				unit);
-			bchannel = true;
-		end
+        if not name then
+            name, _, texture, start, endTime, isTradeSkill, notInterruptible, spellid, _, numStages = UnitChannelInfo(
+                unit);
+            bchannel = true;
+        end
 
-		if event == "UNIT_SPELLCAST_INTERRUPTED" then
-		    bar:SetTimerDuration(zero_duration);
-			bar:SetMinMaxValues(0, 100);
-			bar:SetValue(100);
-			local failtext = configs.interruptedtext;
-			local color = configs.failedcolor;
+        if event == "UNIT_SPELLCAST_INTERRUPTED" then
+            bar:SetTimerDuration(zero_duration);
+            bar:SetMinMaxValues(0, 100);
+            bar:SetValue(100);
+            local failtext = configs.interruptedtext;
+            local color = configs.failedcolor;
 
-			time:SetText(failtext);
-			bar:SetStatusBarColor(color[1], color[2], color[3]);
-			castbar.failstart = currtime;
-			bar:SetStatusBarDesaturated(false);
-			castbar.duration_obj = nil;
-			if interuptedby then
-				targetname:SetText(get_interrupttext(interuptedby));
-				targetname:SetTextColor(1, 1, 1);
-			else
-				targetname:SetText("");
-			end
-			castbar.important:SetAlpha(0);
-			castbar.targetedindi:SetAlpha(0);
-			castbar.notinterruptable:SetAlpha(0);
-			castbar:Show();
-		elseif name and not complete then
-			local duration;
+            time:SetText(failtext);
+            bar:SetStatusBarColor(color[1], color[2], color[3]);
+            castbar.failstart = currtime;
+            bar:SetStatusBarDesaturated(false);
+            castbar.duration_obj = nil;
+            if interuptedby then
+                targetname:SetText(get_interrupttext(interuptedby));
+                targetname:SetTextColor(1, 1, 1);
+            else
+                targetname:SetText("");
+            end
+            castbar.important:SetAlpha(0);
+            castbar.targetedindi:SetAlpha(0);
+            castbar.notinterruptable:SetAlpha(0);
+            castbar:Show();
+        elseif name and not complete then
+            local duration;
 
-			if bchannel then
-				if numStages and numStages > 0 then
-					duration = UnitEmpoweredChannelDuration(unit, true);
-					bchannel = false;
-				else
-					duration = UnitChannelDuration(unit);
-				end
-			else
-				duration = UnitCastingDuration(unit);
-			end
-			castbar.duration_obj = duration;
-			frameicon:SetTexture(texture);
+            if bchannel then
+                if numStages and numStages > 0 then
+                    duration = UnitEmpoweredChannelDuration(unit, true);
+                    bchannel = false;
+                else
+                    duration = UnitChannelDuration(unit);
+                end
+            else
+                duration = UnitCastingDuration(unit);
+            end
+            castbar.duration_obj = duration;
+            frameicon:SetTexture(texture);
 
-			local direction = 0;
+            local direction = 0;
             if bchannel then
                 direction = Enum.StatusBarTimerDirection.RemainingTime;
             end
             bar:SetTimerDuration(duration, 0, direction);
 
-			castbar.failstart = nil;
-			castbar.castspellid = spellid;
+            castbar.failstart = nil;
+            castbar.castspellid = spellid;
 
-			local color = configs.interruptcolor;
-			bar:SetStatusBarColor(color[1], color[2], color[3]);
-			text:SetText(name);
-			show_raidicon(unit, mark);
-			frameicon:Show();
-			castbar:Show();
+            local color = configs.interruptcolor;
+            bar:SetStatusBarColor(color:GetRGB());
+            text:SetText(name);
+            show_raidicon(unit, mark);
+            frameicon:Show();
+            castbar:Show();
 
 
-			local isimportant = C_Spell.IsSpellImportant(spellid);
-			local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
-			castbar.important:SetAlpha(alpha);
+            local isimportant = C_Spell.IsSpellImportant(spellid);
+            local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
+            castbar.important:SetAlpha(alpha);
 
-			local istargeted = UnitIsUnit(unit .. "target", "player");
-			local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(istargeted, 1, 0);
-			castbar.targetedindi:SetAlpha(alpha);
+            local istargeted = UnitIsUnit(unit .. "target", "player");
+            alpha = C_CurveUtil.EvaluateColorValueFromBoolean(istargeted, 1, 0);
+            castbar.targetedindi:SetAlpha(alpha);
 
-			local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(notInterruptible, 1, 0);
-			castbar.notinterruptable:SetAlpha(alpha);
+            alpha = C_CurveUtil.EvaluateColorValueFromBoolean(notInterruptible, 1, 0);
+            castbar.notinterruptable:SetAlpha(alpha);
 
-			if UnitExists(targettarget) then
-				local _, class = UnitClass(targettarget)
-				local classcolor = nil;
-				if class then
-					classcolor = C_ClassColor.GetClassColor(class);
-				end
+            if UnitExists(targettarget) then
+                local _, class = UnitClass(targettarget)
+                local classcolor = nil;
+                if class then
+                    classcolor = C_ClassColor.GetClassColor(class);
+                end
 
-				if classcolor then
-					targetname:SetTextColor(classcolor.r, classcolor.g, classcolor.b);
-				else
-					targetname:SetTextColor(1, 1, 1);
-				end
+                if classcolor then
+                    targetname:SetTextColor(classcolor.r, classcolor.g, classcolor.b);
+                else
+                    targetname:SetTextColor(1, 1, 1);
+                end
 
-				targetname:SetText(UnitName(targettarget));
-				targetname:Show();
-			else
-				targetname:SetText("");
-				targetname:Hide();
-			end
-		else
-			if castbar.failstart == nil then
-				hide_castbar(castbar);
-			end
-		end
-	else
-		hide_castbar(castbar);
-	end
+                targetname:SetText(UnitName(targettarget));
+                targetname:Show();
+            else
+                targetname:SetText("");
+                targetname:Hide();
+            end
+        else
+            if castbar.failstart == nil then
+                hide_castbar(castbar);
+            end
+        end
+    else
+        hide_castbar(castbar);
+    end
 end
 
 local function check_unit(castbar, unit)
-	if not castbar then
-		return;
-	end
+    if not castbar then
+        return;
+    end
 
-	if not UnitExists(unit) then
-		hide_castbar(castbar);
-		return;
-	end
+    if not UnitExists(unit) then
+        hide_castbar(castbar);
+        return;
+    end
 
-	if unit == "target" then
-		if not ns.options.ShowTarget then
-			return;
-		end
-	elseif unit == "focus" then
-		if not ns.options.ShowFocus then
-			return;
-		end
-	end
+    if unit == "target" then
+        if not ns.options.ShowTarget then
+            return;
+        end
+    elseif unit == "focus" then
+        if not ns.options.ShowFocus then
+            return;
+        end
+    end
 
-	castbar.failstart = nil;
+    castbar.failstart = nil;
 
 
-	check_casting(castbar, "NOTHING");
+    check_casting(castbar, "NOTHING");
 end
 
 
 local function register_unit(castbar, unit)
-	castbar.unit = unit;
-	castbar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
-	castbar:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
-	castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
-	castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit);
-	castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
-	castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
-	castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", unit);
-	castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
-	castbar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
-	castbar:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit);
-	castbar:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
-	castbar:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
-	castbar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
-	castbar:RegisterUnitEvent("UNIT_TARGET", unit);
+    castbar.unit = unit;
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
+    castbar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
+    castbar:RegisterUnitEvent("UNIT_TARGET", unit);
 end
 
 local function on_unit_event(castbar, event, ...)
-	local interruptedby = nil;
-	local complete = nil;
-	local bdone = false;
+    local interruptedby = nil;
+    local complete = nil;
+    local bdone = false;
 
-	if (event == "UNIT_SPELLCAST_INTERRUPTED") then
-		interruptedby = select(4, ...);
-	elseif (event == "UNIT_SPELLCAST_CHANNEL_STOP") then
-		interruptedby = select(4, ...);
-		complete = interruptedby == nil;
-		if (not complete) then
-			event = "UNIT_SPELLCAST_INTERRUPTED";
-		end
-		bdone = true;
-	elseif (event == "UNIT_SPELLCAST_EMPOWER_STOP") then
-		_, _, _, complete, interruptedby = ...;
-		if (not issecretvalue(complete)) and (not complete) then
-			event = "UNIT_SPELLCAST_INTERRUPTED";
-		end
-		bdone = true;
-	end
-	check_casting(castbar, event, interruptedby, bdone);
+    if (event == "UNIT_SPELLCAST_INTERRUPTED") then
+        interruptedby = select(4, ...);
+    elseif (event == "UNIT_SPELLCAST_CHANNEL_STOP") then
+        interruptedby = select(4, ...);
+        complete = interruptedby == nil;
+        if (not complete) then
+            event = "UNIT_SPELLCAST_INTERRUPTED";
+        end
+        bdone = true;
+    elseif (event == "UNIT_SPELLCAST_EMPOWER_STOP") then
+        _, _, _, complete, interruptedby = ...;
+        if (not issecretvalue(complete)) and (not complete) then
+            event = "UNIT_SPELLCAST_INTERRUPTED";
+        end
+        bdone = true;
+    end
+    check_casting(castbar, event, interruptedby, bdone);
 end
 
 local function on_event(self, event, ...)
-	if event == "PLAYER_TARGET_CHANGED" then
-		check_unit(ns.targetcastbar, "target");
-	elseif event == "PLAYER_FOCUS_CHANGED" then
-		check_unit(ns.focuscastbar, "focus");
-	elseif event == "PLAYER_ENTERING_WORLD" then
-		check_unit(ns.targetcastbar, "target");
-		check_unit(ns.focuscastbar, "focus");
-	end
+    if event == "PLAYER_TARGET_CHANGED" then
+        check_unit(ns.targetcastbar, "target");
+    elseif event == "PLAYER_FOCUS_CHANGED" then
+        check_unit(ns.focuscastbar, "focus");
+    elseif event == "PLAYER_ENTERING_WORLD" then
+        check_unit(ns.targetcastbar, "target");
+        check_unit(ns.focuscastbar, "focus");
+    end
 end
 
 local targetedtexts = {};
@@ -390,89 +392,89 @@ targetedtexts[2] = CreateAtlasMarkup("QuestLegendary", 16, 16, 0, 0);
 local updatecount = 1;
 
 local function update_castbar(castbar)
-	if not castbar:IsShown() then
-		return;
-	end
+    if not castbar:IsShown() then
+        return;
+    end
 
-	local failstart = castbar.failstart;
-	local current = GetTime();
+    local failstart = castbar.failstart;
+    local current = GetTime();
 
-	if failstart then
-		if current - failstart > configs.faildonetime then
-			hide_castbar(castbar);
-		end
-	else
-		if castbar.duration_obj then
-			castbar.time:SetText(string.format("%.1f/%.1f", castbar.duration_obj:GetRemainingDuration(0),
-				castbar.duration_obj:GetTotalDuration(0)));
-		end
-	end
+    if failstart then
+        if current - failstart > configs.faildonetime then
+            hide_castbar(castbar);
+        end
+    else
+        if castbar.duration_obj then
+            castbar.time:SetText(string.format("%.1f/%.1f", castbar.duration_obj:GetRemainingDuration(0),
+                castbar.duration_obj:GetTotalDuration(0)));
+        end
+    end
 
-	updatecount = updatecount + 1;
+    updatecount = updatecount + 1;
 
-	if updatecount > 3 then
-		castbar.targetedindi:SetText(targetedtexts[castbar.targetedinditype]);
-		castbar.targetedinditype = (castbar.targetedinditype + 1);
+    if updatecount > 3 then
+        castbar.targetedindi:SetText(targetedtexts[castbar.targetedinditype]);
+        castbar.targetedinditype = (castbar.targetedinditype + 1);
 
-		if castbar.targetedinditype == 3 then
-			castbar.targetedinditype = 1;
-		end
+        if castbar.targetedinditype == 3 then
+            castbar.targetedinditype = 1;
+        end
 
-		if castbar.important:IsShown() then
-			castbar.important:Hide();
-		else
-			castbar.important:Show();
-		end
+        if castbar.important:IsShown() then
+            castbar.important:Hide();
+        else
+            castbar.important:Show();
+        end
 
-		updatecount = 1;
-	end
+        updatecount = 1;
+    end
 end
 
 local function on_update()
-	update_castbar(ns.targetcastbar);
-	update_castbar(ns.focuscastbar);
+    update_castbar(ns.targetcastbar);
+    update_castbar(ns.focuscastbar);
 end
 
 local function init()
-	ns.setup_option();
+    ns.setup_option();
     ns.targetcastbar = setup_castbar();
-	ns.resize(ns.targetcastbar, ns.options.TargetHeight, ns.options.TargetWidth);
-	ns.targetcastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
-	ns.focuscastbar = setup_castbar();
-	ns.resize(ns.focuscastbar, ns.options.FocusHeight, ns.options.FocusWidth);
-	ns.focuscastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.focus_ypoint);
+    ns.resize(ns.targetcastbar, ns.options.TargetHeight, ns.options.TargetWidth);
+    ns.targetcastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
+    ns.focuscastbar = setup_castbar();
+    ns.resize(ns.focuscastbar, ns.options.FocusHeight, ns.options.FocusWidth);
+    ns.focuscastbar:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.focus_ypoint);
 
 
-	if ns.options.ShowTarget then
-		ns.targetcastbar:SetScript("OnEvent", on_unit_event);
-		register_unit(ns.targetcastbar, "target");
-	end
+    if ns.options.ShowTarget then
+        ns.targetcastbar:SetScript("OnEvent", on_unit_event);
+        register_unit(ns.targetcastbar, "target");
+    end
 
 
-	if ns.options.ShowFocus then
-		ns.focuscastbar:SetScript("OnEvent", on_unit_event);
-		register_unit(ns.focuscastbar, "focus");
-	end
+    if ns.options.ShowFocus then
+        ns.focuscastbar:SetScript("OnEvent", on_unit_event);
+        register_unit(ns.focuscastbar, "focus");
+    end
 
-	--	ns.targetcastbar:SetScale(ns.options.TargetCastScale);
-	--	ns.focuscastbar:SetScale(ns.options.FocusCastScale);
+    --	ns.targetcastbar:SetScale(ns.options.TargetCastScale);
+    --	ns.focuscastbar:SetScale(ns.options.FocusCastScale);
 
-	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
-	if libasConfig then
-		libasConfig.load_position(ns.targetcastbar, "asTargetCastBar (Target)", ATCB_Positions_1);
-		libasConfig.load_position(ns.focuscastbar, "asTargetCastBar (Focus)", ATCB_Positions_2);
-	end
+    if libasConfig then
+        libasConfig.load_position(ns.targetcastbar, "asTargetCastBar (Target)", ATCB_Positions_1);
+        libasConfig.load_position(ns.focuscastbar, "asTargetCastBar (Focus)", ATCB_Positions_2);
+    end
 
-	check_unit(ns.targetcastbar, "target");
-	check_unit(ns.focuscastbar, "focus");
+    check_unit(ns.targetcastbar, "target");
+    check_unit(ns.focuscastbar, "focus");
 
-	main_frame:SetScript("OnEvent", on_event)
-	main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
-	main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
-	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+    main_frame:SetScript("OnEvent", on_event)
+    main_frame:RegisterEvent("PLAYER_TARGET_CHANGED");
+    main_frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
-	C_Timer.NewTicker(configs.updaterate, on_update);
+    C_Timer.NewTicker(configs.updaterate, on_update);
 end
 
 C_Timer.After(0.5, init);

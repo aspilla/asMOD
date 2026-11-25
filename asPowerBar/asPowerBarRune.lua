@@ -34,7 +34,7 @@ local function on_update_rune(runebar)
 end
 
 local _, class = UnitClass("player")
-local color = C_ClassColor.GetClassColor(class);
+local color = class and C_ClassColor.GetClassColor(class) or CreateColor(1, 1, 1);
 local runeIndexes = { 1, 2, 3, 4, 5, 6 };
 
 local function update_rune()

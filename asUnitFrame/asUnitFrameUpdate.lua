@@ -300,7 +300,7 @@ function ns.update_unitframe_other(frame)
             display = percentage;
         end
 
-        if (display and display ~= 0) then
+        if (display and display ~= 0 and status) then
             frame.aggro:SetText(format("%1.0f", display) .. "%");
             local r, g, b = GetThreatStatusColor(status)
             frame.aggro:SetTextColor(r, g, b, 1);

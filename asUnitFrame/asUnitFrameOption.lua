@@ -214,7 +214,7 @@ function ns.setup_option()
 
     for variable, _ in pairs(Options_Default) do
         if variable ~= "Version" then
-            if AUF_Options[variable] == nil  then
+            if AUF_Options[variable] == nil then
                 AUF_Options[variable] = Options_Default[variable];
                 ns.options[variable] = Options_Default[variable];
             end
@@ -237,23 +237,24 @@ function ns.setup_option()
             local currentValue = AUF_Options[variable];
 
             if name == "MillisecondsThreshold" then
-				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), L[name], defaultValue);
-				local options = Settings.CreateSliderOptions(0, 10, 1);
-				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
-				Settings.CreateSlider(category, setting, options, tooltip);
-				Settings.SetValue(cvar_name, currentValue);
-				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
-
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue), L[name], defaultValue);
+                local options = Settings.CreateSliderOptions(0, 10, 1);
+                options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+                Settings.CreateSlider(category, setting, options, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             elseif tonumber(defaultValue) ~= nil then
-                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), L[name], defaultValue);
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue), L[name], defaultValue);
                 local options = Settings.CreateSliderOptions(0, 400, 1);
                 options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
                 Settings.CreateSlider(category, setting, options, tooltip);
                 Settings.SetValue(cvar_name, currentValue);
                 Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             else
-                local setting = Settings.RegisterAddOnSetting(category, cvar_name,  variable, tempoption, type(defaultValue), L[name], defaultValue);
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue), L[name], defaultValue);
 
                 Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
                 Settings.SetValue(cvar_name, currentValue);

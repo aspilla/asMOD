@@ -1,5 +1,8 @@
 local _, ns = ...;
----설정부
+
+---@class ADCAFrameTemplate : Frame
+---@field icon Texture
+
 local configs = {
     xpoint = 230 + 20,
     ypoint = -30,
@@ -7,8 +10,8 @@ local configs = {
     height = 17,
     alpha = 1,
     updaterate = 0.1,
-    notinterruptcolor = { 0.6, 0.6, 0.6 },
-    interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
+    notinterruptcolor = CreateColor(0.6, 0.6, 0.6),
+    interruptcolor = CreateColor(204 / 255, 255 / 255, 153 / 255),
     font = STANDARD_TEXT_FONT,
     buttonwidthrate = 1.2,
 };
@@ -131,7 +134,7 @@ local function on_update()
                 castbar.castspellid = castingInfo.spellid;
 
                 local color = configs.interruptcolor;
-                bar:SetStatusBarColor(color[1], color[2], color[3]);
+                bar:SetStatusBarColor(color:GetRGB());
                 text:SetText(castingInfo.name);
                 show_raidicon(unit, mark);
                 frameicon:Show();
@@ -143,10 +146,10 @@ local function on_update()
                 castbar.important:SetAlpha(alpha);
 
                 local istargeted = UnitIsUnit(unit .. "target", "player");
-                local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(istargeted, 1, 0);
+                alpha = C_CurveUtil.EvaluateColorValueFromBoolean(istargeted, 1, 0);
                 castbar.targetedindi:SetAlpha(alpha);
 
-                local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(castingInfo.notInterruptible, 1, 0);
+                alpha = C_CurveUtil.EvaluateColorValueFromBoolean(castingInfo.notInterruptible, 1, 0);
                 castbar.notinterruptable:SetAlpha(alpha);
 
                 if UnitExists(targettarget) then
@@ -247,8 +250,7 @@ local function setup_castbar()
     castbar.notinterruptable:ClearAllPoints();
     castbar.notinterruptable:SetPoint("TOPLEFT", statustexture, "TOPLEFT", 0, 0);
     castbar.notinterruptable:SetPoint("BOTTOMRIGHT", statustexture, "BOTTOMRIGHT", 0, 0);
-    castbar.notinterruptable:SetVertexColor(configs.notinterruptcolor[1], configs.notinterruptcolor[2],
-        configs.notinterruptcolor[3]);
+    castbar.notinterruptable:SetVertexColor(configs.notinterruptcolor:GetRGB());
     castbar.notinterruptable:SetAlpha(0);
     castbar.notinterruptable:Show();
 

@@ -1,201 +1,201 @@
 ﻿local _, ns = ...;
 
 local configs = {
-	xpoint = -100,
-	ypoint = 0,
-	blacklist = {
-		--[115356] = true, --고술 바람의 일격
-		--[455055] = true, --일거리 시작
-	},
+    xpoint = -100,
+    ypoint = 0,
+    blacklist = {
+        --[115356] = true, --고술 바람의 일격
+        --[455055] = true, --일거리 시작
+    },
 }
 
 local main_frame = CreateFrame("Frame", nil, UIParent);
 local spell_list = {};
 
 local function get_spellicons(spellid)
-	if not spellid then
-		return nil;
-	end
+    if not spellid then
+        return nil;
+    end
 
-	local or_spellid = C_Spell.GetOverrideSpell(spellid)
+    local or_spellid = C_Spell.GetOverrideSpell(spellid)
 
-	if or_spellid then
-		spellid = or_spellid;
-	end
+    if or_spellid then
+        spellid = or_spellid;
+    end
 
-	local info = C_Spell.GetSpellInfo(spellid);
-	if info then
-		return info.iconID, info.originalIconID;
-	end
+    local info = C_Spell.GetSpellInfo(spellid);
+    if info then
+        return info.iconID, info.originalIconID;
+    end
 end
 
 
 
 local function set_cooldownframe(cooldown, durationobject, enable)
-	if enable and durationobject then
-		cooldown:SetDrawEdge(nil);
-		cooldown:SetCooldownFromDurationObject(durationobject);
-	else
-		cooldown:Clear();
-	end
+    if enable and durationobject then
+        cooldown:SetDrawEdge(nil);
+        cooldown:SetCooldownFromDurationObject(durationobject);
+    else
+        cooldown:Clear();
+    end
 end
 
 local function update_anchor(frames, index, size, offsetX, right, parent)
-	local frame = frames[index];
-	local point1 = "TOPLEFT";
-	local point2 = "BOTTOMLEFT";
-	local point3 = "TOPRIGHT";
+    local frame = frames[index];
+    local point1 = "TOPLEFT";
+    local point2 = "BOTTOMLEFT";
+    local point3 = "TOPRIGHT";
 
-	if (right == false) then
-		point1 = "TOPRIGHT";
-		point2 = "BOTTOMRIGHT";
-		point3 = "TOPLEFT";
-		offsetX = -offsetX;
-	end
+    if (right == false) then
+        point1 = "TOPRIGHT";
+        point2 = "BOTTOMRIGHT";
+        point3 = "TOPLEFT";
+        offsetX = -offsetX;
+    end
 
-	if (index == 1) then
-		frame:SetPoint("CENTER", parent, "CENTER", 0, 0);
-	else
-		frame:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
-	end
+    if (index == 1) then
+        frame:SetPoint("CENTER", parent, "CENTER", 0, 0);
+    else
+        frame:SetPoint(point1, frames[index - 1], point3, offsetX, 0);
+    end
 
-	frame:SetWidth(size);
-	frame:SetHeight(size * 0.9);
+    frame:SetWidth(size);
+    frame:SetHeight(size * 0.9);
 end
 
 local function update_spells()
-	local frame_idx = 1;
-	local parent = main_frame;
+    local frame_idx = 1;
+    local parent = main_frame;
 
-	for _, id in pairs(spell_list) do
-		local icon = get_spellicons(id);
-		local isusable, notenoughmana = C_Spell.IsSpellUsable(id);
+    for _, id in pairs(spell_list) do
+        local icon = get_spellicons(id);
+        local isusable, notenoughmana = C_Spell.IsSpellUsable(id);
 
-		if (icon) then
-			local frame = parent.frames[frame_idx];
+        if (icon) then
+            local frame = parent.frames[frame_idx];
 
-			if (not frame) then
-				parent.frames[frame_idx] = CreateFrame("Button", nil, parent, "asActiveAlertFrameTemplate");
-				frame = parent.frames[frame_idx];
-				frame:EnableMouse(false);
+            if (not frame) then
+                parent.frames[frame_idx] = CreateFrame("Button", nil, parent, "asActiveAlertFrameTemplate");
+                frame = parent.frames[frame_idx];
+                frame:EnableMouse(false);
 
-				if ns.options.MillisecondsThreshold then
-					frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
-				end
+                if ns.options.MillisecondsThreshold then
+                    frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
+                end
 
-				for _, r in next, { frame.cooldown:GetRegions() } do
-					if r:GetObjectType() == "FontString" then
-						r:SetFont(STANDARD_TEXT_FONT, ns.options.FontSize, "OUTLINE");
-						r:SetDrawLayer("OVERLAY");
-						break
-					end
-				end
+                for _, r in next, { frame.cooldown:GetRegions() } do
+                    if r:GetObjectType() == "FontString" then
+                        r:SetFont(STANDARD_TEXT_FONT, ns.options.FontSize, "OUTLINE");
+                        r:SetDrawLayer("OVERLAY");
+                        break
+                    end
+                end
 
-				frame.icon:SetTexCoord(.08, .92, .08, .92)
-				frame.icon:SetAlpha(ns.options.Alpha);
-				frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92)
-				frame.border:SetVertexColor(0, 0, 0);
-				frame.cooldown:Show();
+                frame.icon:SetTexCoord(.08, .92, .08, .92)
+                frame.icon:SetAlpha(ns.options.Alpha);
+                frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92)
+                frame.border:SetVertexColor(0, 0, 0);
+                frame.cooldown:Show();
 
-				frame:ClearAllPoints();
-				update_anchor(parent.frames, frame_idx, ns.options.Size, 2, false, parent);
-			end
+                frame:ClearAllPoints();
+                update_anchor(parent.frames, frame_idx, ns.options.Size, 2, false, parent);
+            end
 
-			frame.icon:SetTexture(icon);
+            frame.icon:SetTexture(icon);
 
-			if (isusable) then
-				frame.icon:SetVertexColor(1.0, 1.0, 1.0);
-			elseif (notenoughmana) then
-				frame.icon:SetVertexColor(0.5, 0.5, 1.0);
-			else
-				frame.icon:SetVertexColor(0.4, 0.4, 0.4);
-			end
+            if (isusable) then
+                frame.icon:SetVertexColor(1.0, 1.0, 1.0);
+            elseif (notenoughmana) then
+                frame.icon:SetVertexColor(0.5, 0.5, 1.0);
+            else
+                frame.icon:SetVertexColor(0.4, 0.4, 0.4);
+            end
 
-			local durationobj = C_Spell.GetSpellCooldownDuration(id);
+            local durationobj = C_Spell.GetSpellCooldownDuration(id);
 
-			set_cooldownframe(frame.cooldown, durationobj, true);
-			frame:Show();
+            set_cooldownframe(frame.cooldown, durationobj, true);
+            frame:Show();
 
-			frame_idx = frame_idx + 1;
-		end
-	end
+            frame_idx = frame_idx + 1;
+        end
+    end
 
-	for i = frame_idx, #parent.frames do
-		local frame = parent.frames[i];
+    for i = frame_idx, #parent.frames do
+        local frame = parent.frames[i];
 
-		if (frame) then
-			frame:Hide();
-		end
-	end
+        if (frame) then
+            frame:Hide();
+        end
+    end
 end
 
 local function insert_spell(id)
-	if not id then
-		return;
-	end
+    if not id then
+        return;
+    end
 
-	if configs.blacklist and configs.blacklist[id] then
-		return;
-	end
+    if configs.blacklist and configs.blacklist[id] then
+        return;
+    end
 
-	if not C_SpellBook.IsSpellKnown(id) then
-		return;
-	end
+    if not C_SpellBook.IsSpellKnown(id) then
+        return;
+    end
 
-	local _, org_icon = get_spellicons(id);
+    local _, org_icon = get_spellicons(id);
 
-	if org_icon then
-		if spell_list[org_icon] then
-			return;
-		end
+    if org_icon then
+        if spell_list[org_icon] then
+            return;
+        end
 
-		spell_list[org_icon] = id;
+        spell_list[org_icon] = id;
 
-		update_spells();
-	end
+        update_spells();
+    end
 end
 
 local function delete_spell(id)
-	if id then
-		local _, org_icon = get_spellicons(id);
-		for previcon, spellid in pairs(spell_list) do
-			if spellid == id or previcon == org_icon then
-				spell_list[previcon] = nil;
-			end
-		end
-	else
-		spell_list = {};
-	end
-	update_spells();
+    if id then
+        local _, org_icon = get_spellicons(id);
+        for previcon, spellid in pairs(spell_list) do
+            if spellid == id or previcon == org_icon then
+                spell_list[previcon] = nil;
+            end
+        end
+    else
+        spell_list = {};
+    end
+    update_spells();
 end
 
 local function on_event(self, event, arg1)
-	if event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
-		insert_spell(arg1)
-	elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
-		delete_spell(arg1)
-	elseif event == "SPELL_UPDATE_COOLDOWN" then
-		update_spells();
-	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and (arg1 == "player" or arg1 == "pet") then
-		update_spells();
-	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
-		delete_spell()
-	end
+    if event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
+        insert_spell(arg1)
+    elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
+        delete_spell(arg1)
+    elseif event == "SPELL_UPDATE_COOLDOWN" then
+        update_spells();
+    elseif event == "UNIT_SPELLCAST_SUCCEEDED" and (arg1 == "player" or arg1 == "pet") then
+        update_spells();
+    elseif event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
+        delete_spell()
+    end
 end
 
 
 local function init()
-	ns.setup_option();
+    ns.setup_option();
 
-	if ASAA_Positions == nil then
-		ASAA_Positions = {};
-	end
+    if ASAA_Positions == nil then
+        ASAA_Positions = {};
+    end
 
-	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
-	if libasConfig then
-		libasConfig.load_position(main_frame, "asActiveAlert", ASAA_Positions);
-	end
+    if libasConfig then
+        libasConfig.load_position(main_frame, "asActiveAlert", ASAA_Positions);
+    end
 end
 
 main_frame:SetFrameStrata("LOW");

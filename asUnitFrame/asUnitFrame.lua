@@ -1,6 +1,9 @@
 local _, ns = ...;
 ASMOD_asUnitFrame = {};
 
+---@class AUFFrameTemplate : Frame
+---@field icon Texture
+
 local configs = {
     updaterate = 0.1,
 
@@ -11,9 +14,9 @@ local configs = {
     buffsizerate = 0.8,
     font = STANDARD_TEXT_FONT,
     framelevel = 900,
-    notinterruptcolor = { 0.6, 0.6, 0.6 },
-    lowhealthcolor = { r = 0.2, g = 0, b = 0.2 },
-    highhealthcolor = { r = 0.2, g = 0, b = 0.5 },
+    notinterruptcolor = CreateColor(0.6, 0.6, 0.6),
+    lowhealthcolor = CreateColor(0.2, 0, 0.2),
+    highhealthcolor = CreateColor(0.2, 0,0.5),
     buttonwidthrate = 1.2,
 
 };
@@ -700,8 +703,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     frame.castbar.notinterruptable:ClearAllPoints();
     frame.castbar.notinterruptable:SetPoint("TOPLEFT", statustexture, "TOPLEFT", 0, 0);
     frame.castbar.notinterruptable:SetPoint("BOTTOMRIGHT", statustexture, "BOTTOMRIGHT", 0, 0);
-    frame.castbar.notinterruptable:SetVertexColor(configs.notinterruptcolor[1], configs.notinterruptcolor[2],
-        configs.notinterruptcolor[3]);
+    frame.castbar.notinterruptable:SetVertexColor(configs.notinterruptcolor:GetRGB());
     frame.castbar.notinterruptable:SetAlpha(0);
     frame.castbar.notinterruptable:Show();
 
@@ -909,22 +911,18 @@ local function init_lowhealth()
     if highhealthpercent > 0 and lowhealthpercent > 0 then
         ns.colorcurve = C_CurveUtil.CreateColorCurve();
         ns.colorcurve:SetType(Enum.LuaCurveType.Step);
-        ns.colorcurve:AddPoint(highhealthpercent / 100,
-            CreateColor(configs.highhealthcolor.r, configs.highhealthcolor.g, configs.highhealthcolor.b, 1));
+        ns.colorcurve:AddPoint(highhealthpercent / 100, configs.highhealthcolor);
         ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0, 0, 0, 1));
-        ns.colorcurve:AddPoint(0,
-            CreateColor(configs.lowhealthcolor.r, configs.lowhealthcolor.g, configs.lowhealthcolor.b, 1));
+        ns.colorcurve:AddPoint(0, configs.lowhealthcolor);
     elseif lowhealthpercent > 0 then
         ns.colorcurve = C_CurveUtil.CreateColorCurve();
         ns.colorcurve:SetType(Enum.LuaCurveType.Step);
         ns.colorcurve:AddPoint(lowhealthpercent / 100, CreateColor(0, 0, 0, 1));
-        ns.colorcurve:AddPoint(0,
-            CreateColor(configs.lowhealthcolor.r, configs.lowhealthcolor.g, configs.lowhealthcolor.b, 1));
+        ns.colorcurve:AddPoint(0, configs.lowhealthcolor);
     elseif highhealthpercent > 0 then
         ns.colorcurve = C_CurveUtil.CreateColorCurve();
         ns.colorcurve:SetType(Enum.LuaCurveType.Step);
-        ns.colorcurve:AddPoint(highhealthpercent / 100,
-            CreateColor(configs.highhealthcolor.r, configs.highhealthcolor.g, configs.highhealthcolor.b, 1));
+        ns.colorcurve:AddPoint(highhealthpercent / 100, configs.highhealthcolor);
         ns.colorcurve:AddPoint(0, CreateColor(0, 0, 0, 1));
     else
         ns.colorcurve = nil;

@@ -5,7 +5,7 @@ https://github.com/aspilla/asMOD/blob/main/ChangeLogs_kr.md
 ## 261125 Update
 
 ### asCooldownPulse
-- Bugfix
+- 오류 수정
 
 ## 261124 Update
 

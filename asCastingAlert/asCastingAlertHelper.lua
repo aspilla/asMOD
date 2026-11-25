@@ -9,9 +9,9 @@ local configs = {
 };
 
 ns.vanishspells = {
-    [66] = 60,--Invisibility
-    [1856] = 60, -- Vanish
-    [5384] = 60, -- Feign Death
+    [66] = 60,     --Invisibility
+    [1856] = 60,   -- Vanish
+    [5384] = 60,   -- Feign Death
     [23920] = 60,  -- Spell Reflection
     [58984] = 120, --Shadowmeld
 };
@@ -174,7 +174,7 @@ function ns.inithelper()
     if ns.options.ShowHelper then
         for i = 1, configs.maxshow do
             if not ns.helpers[i] then
-                ns.helpers[i] =  create_helper(main_frame, size, 1000);
+                ns.helpers[i] = create_helper(main_frame, size, 1000);
             end
         end
     end

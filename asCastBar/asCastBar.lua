@@ -1,12 +1,15 @@
 local _, ns = ...;
 
+---@class ACBFrameTemplate : Frame
+---@field icon Texture
+
 local configs = {
     xpoint = 0,
     ypoint = -270,
     alpha = 1,
-    notinterruptcolor = { 0.6, 0.6, 0.6 },
-    interruptcolor = { 204 / 255, 255 / 255, 153 / 255 },
-    failedcolor = { 1, 0, 0 },
+    notinterruptcolor = CreateColor(0.6, 0.6, 0.6),
+    interruptcolor = CreateColor(204 / 255, 255 / 255, 153 / 255),
+    failedcolor = CreateColor( 1, 0, 0);
     updaterate = 0.1,
     font = STANDARD_TEXT_FONT,
     interruptedtext = INTERRUPTED,
@@ -72,8 +75,7 @@ local function setup_castbar()
     castbar.notinterruptable:ClearAllPoints();
     castbar.notinterruptable:SetPoint("TOPLEFT", statustexture, "TOPLEFT", 0, 0);
     castbar.notinterruptable:SetPoint("BOTTOMRIGHT", statustexture, "BOTTOMRIGHT", 0, 0);
-    castbar.notinterruptable:SetVertexColor(configs.notinterruptcolor[1], configs.notinterruptcolor[2],
-        configs.notinterruptcolor[3]);
+    castbar.notinterruptable:SetVertexColor(configs.notinterruptcolor:GetRGB());
     castbar.notinterruptable:SetAlpha(0);
     castbar.notinterruptable:Show();
 
@@ -123,7 +125,7 @@ local function setup_castbar()
     castbar.button:SetAlpha(1);
     castbar.button:EnableMouse(false);
     castbar.button.icon:SetTexCoord(.08, .92, .16, .84);
-    castbar.button.bg = castbar.button:CreateTexture(nil, "BACKGROUND", nil , -7)
+    castbar.button.bg = castbar.button:CreateTexture(nil, "BACKGROUND", nil, -7)
     castbar.button.bg:SetPoint("TOPLEFT", castbar.button, "TOPLEFT", -1, 1)
     castbar.button.bg:SetPoint("BOTTOMRIGHT", castbar.button, "BOTTOMRIGHT", 1, -1)
     castbar.button.bg:SetColorTexture(0, 0, 0, 1);
@@ -176,7 +178,7 @@ local function check_casting(castbar, event, unit, complete)
     local frameicon = castbar.button.icon;
     local text      = castbar.name;
     local time      = castbar.time;
-    local bar 		= castbar.bar;
+    local bar       = castbar.bar;
     local currtime  = GetTime();
 
     if UnitExists(unit) then
@@ -199,7 +201,7 @@ local function check_casting(castbar, event, unit, complete)
             local color = configs.failedcolor;
 
             time:SetText(failtext);
-            bar:SetStatusBarColor(color[1], color[2], color[3]);
+            bar:SetStatusBarColor(color:GetRGB());
             castbar.failstart = currtime;
             bar:SetStatusBarDesaturated(false);
             castbar.duration_obj = nil;
@@ -235,12 +237,8 @@ local function check_casting(castbar, event, unit, complete)
             castbar.castspellid = spellid;
 
             local _, class = UnitClass(unit)
-            local color = configs.interruptcolor;
-
-            if class then
-                color = C_ClassColor.GetClassColor(class);
-            end
-            bar:SetStatusBarColor(color.r, color.g, color.b);
+            local color = class and C_ClassColor.GetClassColor(class) or configs.interruptcolor;
+            bar:SetStatusBarColor(color:GetRGB());
             text:SetText(name);
             frameicon:Show();
             castbar:Show();
@@ -263,7 +261,7 @@ local function check_casting(castbar, event, unit, complete)
                 for i = 1, maxstages - 1, 1 do
                     local stageduration = getStageDuration(i, maxstages, unit);
                     local tick = castbar.ticks[i];
-                    if (stageduration > -1) then
+                    if (stageduration > -1) and duration then
                         sum = sum + stageduration;
                         local portion = sum / (duration:GetTotalDuration() * 1000);
                         local offset = width * portion;

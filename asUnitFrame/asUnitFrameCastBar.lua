@@ -119,7 +119,7 @@ local function check_casting(castbar, event, interuptedby, complete)
 				local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(isimportant, 1, 0);
 				castbar.important:SetAlpha(alpha);
 
-				local alpha = C_CurveUtil.EvaluateColorValueFromBoolean(notInterruptible, 1, 0);
+				alpha = C_CurveUtil.EvaluateColorValueFromBoolean(notInterruptible, 1, 0);
 				castbar.notinterruptable:SetAlpha(alpha);
 			end
 

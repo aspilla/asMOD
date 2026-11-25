@@ -28,10 +28,10 @@ local lust_debuffs = {
 }
 
 
-local ready_msg    = "Bloodlust ready";
-local start_msg    = "Bloodlust start";
-local ready_sound  = "Ready.mp3";
-local start_sound  = "Start.mp3";
+local ready_msg   = "Bloodlust ready";
+local start_msg   = "Bloodlust start";
+local ready_sound = "Ready.mp3";
+local start_sound = "Start.mp3";
 
 
 if GetLocale() == "koKR" then
@@ -152,7 +152,6 @@ local function OnEvent(self, event, ...)
         ns.msgtext:SetFont(configs.font, ns.options.FontSize, configs.fontoutline)
         C_Timer.NewTicker(refresh_rate, update_auras);
     end
-
 end
 
 local function OnInit()

@@ -5,14 +5,14 @@ local Options_Default = {
 };
 
 local L = {
-	MillisecondsThreshold = "Remaining cooldown begins displaying in 0.1-second increments",
+    MillisecondsThreshold = "Remaining cooldown begins displaying in 0.1-second increments",
 }
 
 
 if GetLocale() == "koKR" then
-	L = {
-		MillisecondsThreshold = "남은 쿨을 0.1초 단위로 보여줄 최소 시간",
-	}
+    L = {
+        MillisecondsThreshold = "남은 쿨을 0.1초 단위로 보여줄 최소 시간",
+    }
 end
 
 ns.options = CopyTable(Options_Default);
@@ -48,7 +48,7 @@ function ns.setup_option()
 
     if ASBR_Position == nil then
         ASBR_Position = {};
-	end
+    end
 
     ns.options = CopyTable(ASBR_Options);
 
@@ -65,13 +65,13 @@ function ns.setup_option()
 
         if name ~= "Version" then
             if name == "MillisecondsThreshold" then
-				local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
-					type(defaultValue), L[name], defaultValue);
-				local options = Settings.CreateSliderOptions(0, 10, 1);
-				options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
-				Settings.CreateSlider(category, setting, options, tooltip);
-				Settings.SetValue(cvar_name, currentValue);
-				Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
+                local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
+                    type(defaultValue), L[name], defaultValue);
+                local options = Settings.CreateSliderOptions(0, 10, 1);
+                options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+                Settings.CreateSlider(category, setting, options, tooltip);
+                Settings.SetValue(cvar_name, currentValue);
+                Settings.SetOnValueChangedCallback(cvar_name, OnSettingChanged);
             elseif tonumber(defaultValue) ~= nil then
                 local setting = Settings.RegisterAddOnSetting(category, cvar_name, variable, tempoption,
                     type(defaultValue), L[name], defaultValue);
