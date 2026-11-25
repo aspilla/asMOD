@@ -1,5 +1,13 @@
 local _, ns       = ...;
 
+---@class asCooldownButtonFrameTemplate : Frame
+---@field icon Texture
+---@field icon_desaturated Texture
+---@field border Texture
+---@field cooldown Cooldown | CooldownFrameTemplate
+---@field count FontString
+
+
 ns.tbuttons       = {};
 ns.ibuttons       = {};
 ns.sbuttons       = {};
@@ -229,6 +237,8 @@ local function create_button(size)
     frame.count:SetTextColor(0, 1, 0);
     frame.count:SetPoint("CENTER", frame, "BOTTOM", 0, 0);
     frame.count:Show();
+    frame.spellid = nil;
+    frame.itemid = nil;
     frame:SetWidth(size);
     frame:SetHeight(size * 0.9);
     frame:Hide();

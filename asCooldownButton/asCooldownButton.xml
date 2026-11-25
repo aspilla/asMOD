@@ -3,16 +3,16 @@
 	<Frame name="asCooldownButtonFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel="1000">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture  parentKey="icon" setAllPoints="true"/>
+				<Texture parentKey="icon" setAllPoints="true"/>
 			</Layer>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentIconD" parentKey="icon_desaturated" setAllPoints="true"/>
+				<Texture parentKey="icon_desaturated" setAllPoints="true"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture  parentKey="border" setAllPoints="true" file="Interface\Addons\asCooldownButton\border.tga"/>
+				<Texture parentKey="border" setAllPoints="true" file="Interface\Addons\asCooldownButton\border.tga"/>
 			</Layer>
 			<Layer level="OVERLAY">
-				<FontString  parentKey="count" justifyH="RIGHT"/>
+				<FontString parentKey="count" justifyH="RIGHT"/>
 			</Layer>
 		</Layers>
 		<Frames>

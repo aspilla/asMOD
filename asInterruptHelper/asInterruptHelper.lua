@@ -1,4 +1,12 @@
 ﻿local _, ns = ...;
+
+---@class AIHFrameTemplate : Frame
+---@field icon Texture
+---@field icon_desaturated Texture
+---@field border Texture
+---@field cooldown Cooldown | CooldownFrameTemplate
+
+
 local configs = {
     size = 30,
     targetsize = 25,

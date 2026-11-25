@@ -1,5 +1,10 @@
 local _, ns        = ...;
 
+---@class asBLAButtonTemplate : Frame
+---@field icon Texture
+---@field border Texture
+---@field cooldown Cooldown | CooldownFrameTemplate
+
 local refresh_rate = 0.2;
 local main_frame   = CreateFrame("Frame", nil, UIParent);
 local main_button  = CreateFrame("Button", nil, UIParent, "asBLAButtonTemplate");

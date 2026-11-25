@@ -3,10 +3,10 @@
 	<Frame name="asNamePlatesBuffFrameTemplate" virtual="true" enableMouse="true" frameStrata="LOW" frameLevel="1000">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture  parentKey="icon" setAllPoints="true"/>
+				<Texture parentKey="icon" setAllPoints="true"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture  parentKey="border" setAllPoints="true" file="Interface\Addons\asNamePlates\border.tga"/>
+				<Texture parentKey="border" setAllPoints="true" file="Interface\Addons\asNamePlates\border.tga"/>
 			</Layer>
 		</Layers>
 	</Frame>

@@ -1,4 +1,8 @@
-﻿local configs = {
+﻿---@class asCastIconFrameTemplate : Frame
+---@field icon Texture
+---@field border Texture
+
+local configs = {
     ShowTime = true,
     ShowIcon = true,
 }

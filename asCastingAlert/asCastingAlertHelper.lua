@@ -1,4 +1,11 @@
 local _, ns = ...;
+
+---@class asCAVanishTemplate : Frame
+---@field icon Texture
+---@field icon_desaturated Texture
+---@field border Texture
+---@field cooldown Cooldown | CooldownFrameTemplate
+
 local configs = {
     maxshow = 10,
     size = 30,

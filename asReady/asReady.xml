@@ -6,7 +6,7 @@
 		</Size>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture  parentKey="icon" setAllPoints="true"/>
+				<Texture parentKey="icon" setAllPoints="true"/>
 			</Layer>
 		</Layers>
 	</Frame>

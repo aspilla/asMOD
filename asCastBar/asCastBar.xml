@@ -15,10 +15,10 @@
 	<Frame name="asCastIconFrameTemplate" virtual="true" enableMouse="false">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture  parentKey="icon" setAllPoints="true"/>
+				<Texture parentKey="icon" setAllPoints="true"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture  parentKey="border" setAllPoints="true" file="Interface\Addons\asCastbar\border.tga"/>
+				<Texture parentKey="border" setAllPoints="true" file="Interface\Addons\asCastbar\border.tga"/>
 			</Layer>
 		</Layers>
 	</Frame>

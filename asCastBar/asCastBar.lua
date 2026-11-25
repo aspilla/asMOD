@@ -9,7 +9,7 @@ local configs = {
     alpha = 1,
     notinterruptcolor = CreateColor(0.6, 0.6, 0.6),
     interruptcolor = CreateColor(204 / 255, 255 / 255, 153 / 255),
-    failedcolor = CreateColor( 1, 0, 0);
+    failedcolor = CreateColor(1, 0, 0),
     updaterate = 0.1,
     font = STANDARD_TEXT_FONT,
     interruptedtext = INTERRUPTED,
@@ -90,6 +90,7 @@ local function setup_castbar()
 
     castbar.time = castbar.bar:CreateFontString(nil, "OVERLAY");
     castbar.time:SetPoint("RIGHT", castbar.bar, "RIGHT", -3, 0);
+    castbar.castspellid = nil;
 
     castbar.ticks = {}
 

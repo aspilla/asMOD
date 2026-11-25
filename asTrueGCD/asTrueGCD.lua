@@ -1,4 +1,12 @@
 ﻿local _, ns   = ...;
+
+---@class ATGCDFrameTemplate : Frame
+---@field icon Texture
+---@field text FontString
+---@field border Texture
+---@field cooldown Cooldown | CooldownFrameTemplate
+
+
 local configs = {
     xpoint = 56,
     ypoint = -360,

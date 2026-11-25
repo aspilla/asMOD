@@ -3,13 +3,13 @@
 	<Frame name="asNextSkillFrameTemplate" virtual="true" enableMouse="false" frameStrata="LOW" frameLevel="1000">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture  parentKey="icon" setAllPoints="true"/>
+				<Texture parentKey="icon" setAllPoints="true"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture  parentKey="border" setAllPoints="true" file="Interface\Addons\asNextSkill\border.tga"/>
+				<Texture parentKey="border" setAllPoints="true" file="Interface\Addons\asNextSkill\border.tga"/>
 			</Layer>
 			<Layer level="OVERLAY">
-				<FontString name="$parentKeyText" parentKey="keytext" justifyH="RIGHT"/>
+				<FontString parentKey="keytext" justifyH="RIGHT"/>
 			</Layer>
 		</Layers>
 		<Frames>

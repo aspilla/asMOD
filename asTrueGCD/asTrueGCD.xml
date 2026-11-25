@@ -6,7 +6,7 @@
 				<Texture parentKey="icon" setAllPoints="true" />
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="7">
-				<Texture  parentKey ="border" file="Interface\Addons\asTrueGCD\border.tga"/>
+				<Texture parentKey ="border" file="Interface\Addons\asTrueGCD\border.tga"/>
 			</Layer>
 			<Layer level="OVERLAY">
 				<FontString justifyH="CENTER" parentKey ="text"/>
