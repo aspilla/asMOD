@@ -1,7 +1,7 @@
 local _, ns = ...;
 
 --configurations
-ns.configs   = {
+ns.configs  = {
     font        = STANDARD_TEXT_FONT,
     fontSize    = 12,
     fontOutline = "OUTLINE",
@@ -15,7 +15,7 @@ ns.configs   = {
 };
 
 ns.frame    = CreateFrame("Frame", nil, UIParent);
-ns.ready = false;
+ns.ready    = false;
 
 local function init_addon()
     ns.setup_option();
@@ -115,9 +115,9 @@ local function init_addon()
 
     local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
-	if libasConfig then
-		libasConfig.load_position(ns.frame, "asSkyRide", ASKYR_Positions);
-	end
+    if libasConfig then
+        libasConfig.load_position(ns.frame, "asSkyRide", ASKYR_Positions);
+    end
 
     ns.ready = true;
 end

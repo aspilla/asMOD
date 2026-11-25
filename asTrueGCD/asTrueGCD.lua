@@ -1,67 +1,67 @@
 ﻿local _, ns   = ...;
 local configs = {
-	xpoint = 56,
-	ypoint = -360,
-	iconsize = 25,
+    xpoint = 56,
+    ypoint = -360,
+    iconsize = 25,
 };
 
 
 ns.blacklist = {
-	[75] = 1,
-	[6603] = 1,
-	[240022] = 1,
-	[467718] = 1,
-	[1228085] = 1,
-	[463429] = 1,
-	[7268] = 1,
+    [75] = 1,
+    [6603] = 1,
+    [240022] = 1,
+    [467718] = 1,
+    [1228085] = 1,
+    [463429] = 1,
+    [7268] = 1,
 }
 
 ns.knownspelllist = {};
 
 local itemslots = {
-	"HeadSlot",
-	"NeckSlot",
-	"ShoulderSlot",
-	"BackSlot",
-	"ChestSlot",
-	"WristSlot",
-	"MainHandSlot",
-	"SecondaryHandSlot",
-	"HandsSlot",
-	"WaistSlot",
-	"LegsSlot",
-	"FeetSlot",
-	"Finger0Slot",
-	"Finger1Slot",
-	"Trinket0Slot",
-	"Trinket1Slot",
+    "HeadSlot",
+    "NeckSlot",
+    "ShoulderSlot",
+    "BackSlot",
+    "ChestSlot",
+    "WristSlot",
+    "MainHandSlot",
+    "SecondaryHandSlot",
+    "HandsSlot",
+    "WaistSlot",
+    "LegsSlot",
+    "FeetSlot",
+    "Finger0Slot",
+    "Finger1Slot",
+    "Trinket0Slot",
+    "Trinket1Slot",
 }
 
 local function get_spellinfo(spellid)
-	if not spellid then
-		return nil;
-	end
+    if not spellid then
+        return nil;
+    end
 
-	local spellinfo = C_Spell.GetSpellInfo(spellid);
-	if spellinfo then
-		return spellinfo.name, nil, spellinfo.iconID, spellinfo.castTime, spellinfo.minRange, spellinfo.maxRange,
-			spellinfo.spellID, spellinfo.originalIconID;
-	end
+    local spellinfo = C_Spell.GetSpellInfo(spellid);
+    if spellinfo then
+        return spellinfo.name, nil, spellinfo.iconID, spellinfo.castTime, spellinfo.minRange, spellinfo.maxRange,
+            spellinfo.spellID, spellinfo.originalIconID;
+    end
 end
 
 local function scan_itemslots()
-	for _, v in pairs(itemslots) do
-		local idx = C_PaperDollInfo.GetInventorySlotInfo(string.upper(v));
+    for _, v in pairs(itemslots) do
+        local idx = C_PaperDollInfo.GetInventorySlotInfo(string.upper(v)) or 0;
 
-		local itemid = GetInventoryItemID("player", idx)
+        local itemid = GetInventoryItemID("player", idx)
 
-		if itemid then
-			local _, id = C_Item.GetItemSpell(itemid);
-			if id then
-				ns.knownspelllist[id] = itemid;
-			end
-		end
-	end
+        if itemid then
+            local _, id = C_Item.GetItemSpell(itemid);
+            if id then
+                ns.knownspelllist[id] = itemid;
+            end
+        end
+    end
 end
 
 
@@ -74,34 +74,34 @@ main_frame:Show();
 
 main_frame.frames = {};
 for i = 0, 3 do
-	local frame = CreateFrame("Button", nil, UIParent, "ATGCDFrameTemplate");
+    local frame = CreateFrame("Button", nil, UIParent, "ATGCDFrameTemplate");
 
-	if i == 0 then
-		frame:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
-	else
-		frame:SetPoint("BOTTOMRIGHT", main_frame.frames[i - 1], "BOTTOMLEFT", -1, 0);
-	end
+    if i == 0 then
+        frame:SetPoint("CENTER", UIParent, "CENTER", configs.xpoint, configs.ypoint)
+    else
+        frame:SetPoint("BOTTOMRIGHT", main_frame.frames[i - 1], "BOTTOMLEFT", -1, 0);
+    end
 
-	frame:SetWidth(configs.iconsize);
-	frame:SetHeight(configs.iconsize * 0.9);
-	frame:SetAlpha(1);
-	frame:EnableMouse(false);
-	frame.icon:SetTexCoord(.08, .92, .08, .92);
-	frame.icon:Show();
-	frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
-	frame.border:SetVertexColor(0, 0, 0);
-	frame.border:Show();
+    frame:SetWidth(configs.iconsize);
+    frame:SetHeight(configs.iconsize * 0.9);
+    frame:SetAlpha(1);
+    frame:EnableMouse(false);
+    frame.icon:SetTexCoord(.08, .92, .08, .92);
+    frame.icon:Show();
+    frame.border:SetTexCoord(0.08, 0.08, 0.08, 0.92, 0.92, 0.08, 0.92, 0.92);
+    frame.border:SetVertexColor(0, 0, 0);
+    frame.border:Show();
 
-	frame.cooldown:SetHideCountdownNumbers(true);
+    frame.cooldown:SetHideCountdownNumbers(true);
 
-	frame.text:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE");
-	frame.text:ClearAllPoints();
-	frame.text:SetPoint("CENTER", frame, "CENTER", 0, 0);
+    frame.text:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE");
+    frame.text:ClearAllPoints();
+    frame.text:SetPoint("CENTER", frame, "CENTER", 0, 0);
 
-	frame:Hide();
-	frame:EnableMouse(false);
+    frame:Hide();
+    frame:EnableMouse(false);
 
-	main_frame.frames[i] = frame;
+    main_frame.frames[i] = frame;
 end
 local castframe = main_frame.frames[0];
 castframe:SetWidth(configs.iconsize * 1.3);
@@ -114,73 +114,73 @@ local spellseqcount = 0;
 ns.spelllist = {};
 
 local function insert_spell(spellid, bcancel, bitem)
-	if spellid == nil then
-		return
-	end
+    if spellid == nil then
+        return
+    end
 
-	if ns.blacklist[spellid] then
-		return;
-	end
+    if ns.blacklist[spellid] then
+        return;
+    end
 
-	if spellid == prevspellid and not bcancel then
-		spellseqcount = spellseqcount + 1;
-	elseif not bcancel then
-		prevspellid = spellid;
-		spellseqcount = 0;
-	end
+    if spellid == prevspellid and not bcancel then
+        spellseqcount = spellseqcount + 1;
+    elseif not bcancel then
+        prevspellid = spellid;
+        spellseqcount = 0;
+    end
 
-	local name, discard, icon = get_spellinfo(spellid)
+    local name, discard, icon = get_spellinfo(spellid)
 
-	if bitem then
-		icon = select(10, C_Item.GetItemInfo(spellid));
-	end
+    if bitem then
+        icon = select(10, C_Item.GetItemInfo(spellid));
+    end
 
 
-	if icon == nil then
-		return;
-	elseif icon == 136243 then
-		return;
-	end
+    if icon == nil then
+        return;
+    elseif icon == 136243 then
+        return;
+    end
 
-	local current = GetTime();
+    local current = GetTime();
 
-	if #ns.spelllist > 3 then
-		table.remove(ns.spelllist, 4);
-	end
+    if #ns.spelllist > 3 then
+        table.remove(ns.spelllist, 4);
+    end
 
-	table.insert(ns.spelllist, 1, { icon, spellseqcount, bcancel, current, spellid });
+    table.insert(ns.spelllist, 1, { icon, spellseqcount, bcancel, current, spellid });
 
-	return;
+    return;
 end
 
 
 local function on_update()
-	local current = GetTime();
+    local current = GetTime();
 
-	for i = 1, 3 do
-		local spell = ns.spelllist[4 - i];
-		local frame = main_frame.frames[4 - i];
+    for i = 1, 3 do
+        local spell = ns.spelllist[4 - i];
+        local frame = main_frame.frames[4 - i];
 
-		if spell then
-			if spell[4] and current - spell[4] > 5 then
-				frame:Hide();
-			else
-				frame.icon:SetTexture(spell[1]);
-				frame.spellid = spell[5];
+        if spell then
+            if spell[4] and current - spell[4] > 5 then
+                frame:Hide();
+            else
+                frame.icon:SetTexture(spell[1]);
+                frame.spellid = spell[5];
 
-				if spell[3] then
-					frame.text:SetText("X");
-					frame.text:SetTextColor(1, 0, 0);
-				elseif spell[2] > 0 then
-					frame.text:SetText(spell[2] + 1);
-					frame.text:SetTextColor(1, 1, 1);
-				else
-					frame.text:SetText("");
-				end
-				frame:Show();
-			end
-		end
-	end
+                if spell[3] then
+                    frame.text:SetText("X");
+                    frame.text:SetTextColor(1, 0, 0);
+                elseif spell[2] > 0 then
+                    frame.text:SetText(spell[2] + 1);
+                    frame.text:SetTextColor(1, 1, 1);
+                else
+                    frame.text:SetText("");
+                end
+                frame:Show();
+            end
+        end
+    end
 end
 local interrupttime = 0;
 local interruptprevicon = nil;
@@ -191,7 +191,7 @@ local prevtime = 0;
 
 
 local function set_cooldownframe(cooldown, durationobject, enable)
-    if enable and durationobject  then
+    if enable and durationobject then
         cooldown:SetDrawEdge(nil);
         cooldown:SetCooldownFromDurationObject(durationobject);
     else
@@ -200,134 +200,134 @@ local function set_cooldownframe(cooldown, durationobject, enable)
 end
 
 local function on_event(self, event, arg1, arg2, arg3)
-	if (event == "UNIT_SPELLCAST_START") then
-		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
-			"player");
-		local frame = castframe;
-		local frameIcon = frame.icon;
-		local frameCooldown = frame.cooldown;
+    if (event == "UNIT_SPELLCAST_START") then
+        local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellid = UnitCastingInfo(
+            "player");
+        local frame = castframe;
+        local frameIcon = frame.icon;
+        local frameCooldown = frame.cooldown;
 
-		if name and frameIcon then
-			--if name and frameIcon and isTargetPlayer then
-			frameIcon:SetTexture(texture);
-			frame.spellid = spellid;
+        if name and frameIcon then
+            --if name and frameIcon and isTargetPlayer then
+            frameIcon:SetTexture(texture);
+            frame.spellid = spellid;
 
-			if spellid == prevspellid then
-				frame.text:SetText(spellseqcount + 2);
-				frame.text:SetTextColor(1, 1, 1);
-				frame.text:Show();
-			else
-				frame.text:Hide();
-			end
+            if spellid == prevspellid then
+                frame.text:SetText(spellseqcount + 2);
+                frame.text:SetTextColor(1, 1, 1);
+                frame.text:Show();
+            else
+                frame.text:Hide();
+            end
 
-			local duraitonobject = UnitCastingDuration("player")
-			set_cooldownframe(frameCooldown, duraitonobject, true);
-			frame:Show();
-		else
-			frame:Hide();
-		end
-	elseif (event == "UNIT_SPELLCAST_CHANNEL_START") then
-		local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(
-			"player");
-		local frame = castframe;
-		local frameIcon = frame.icon;
-		local frameCooldown = frame.cooldown;
+            local duraitonobject = UnitCastingDuration("player")
+            set_cooldownframe(frameCooldown, duraitonobject, true);
+            frame:Show();
+        else
+            frame:Hide();
+        end
+    elseif (event == "UNIT_SPELLCAST_CHANNEL_START") then
+        local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellid = UnitChannelInfo(
+            "player");
+        local frame = castframe;
+        local frameIcon = frame.icon;
+        local frameCooldown = frame.cooldown;
 
-		if name and frameIcon then
-			--if name and frameIcon and isTargetPlayer then
-			frameIcon:SetTexture(texture);
-			frame.spellid = spellid;
+        if name and frameIcon then
+            --if name and frameIcon and isTargetPlayer then
+            frameIcon:SetTexture(texture);
+            frame.spellid = spellid;
 
-			if spellid == prevspellid then
-				frame.text:SetText(spellseqcount + 2);
-				frame.text:SetTextColor(1, 1, 1);
-				frame.text:Show();
-			else
-				frame.text:Hide();
-			end
+            if spellid == prevspellid then
+                frame.text:SetText(spellseqcount + 2);
+                frame.text:SetTextColor(1, 1, 1);
+                frame.text:Show();
+            else
+                frame.text:Hide();
+            end
 
-			local duraitonobject = UnitChannelDuration("player")
-			set_cooldownframe(frameCooldown, duraitonobject, true);
-			frame:Show();
-		else
-			frame:Hide();
-		end
-	elseif event == "UNIT_SPELLCAST_STOP" then
-		local name = UnitCastingInfo("player");
-		if not name then
-			castframe:Hide();
-		end
-	elseif event == "UNIT_SPELLCAST_CHANNEL_STOP" then
-		local name = UnitChannelInfo("player");
-		if not name then
-			castframe:Hide();
-		end
-	elseif event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
-		local spellid = arg3;
-		local name, discard, icon = get_spellinfo(spellid);
-		local curtime = GetTime();
+            local duraitonobject = UnitChannelDuration("player")
+            set_cooldownframe(frameCooldown, duraitonobject, true);
+            frame:Show();
+        else
+            frame:Hide();
+        end
+    elseif event == "UNIT_SPELLCAST_STOP" then
+        local name = UnitCastingInfo("player");
+        if not name then
+            castframe:Hide();
+        end
+    elseif event == "UNIT_SPELLCAST_CHANNEL_STOP" then
+        local name = UnitChannelInfo("player");
+        if not name then
+            castframe:Hide();
+        end
+    elseif event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
+        local spellid = arg3;
+        local name, discard, icon = get_spellinfo(spellid);
+        local curtime = GetTime();
 
-		if (previcon and previcon == icon and (curtime - prevtime) < 0.5) then
+        if (previcon and previcon == icon and (curtime - prevtime) < 0.5) then
 
-		else
-			local itemid = ns.knownspelllist[spellid];
+        else
+            local itemid = ns.knownspelllist[spellid];
 
-			if itemid then
-				insert_spell(itemid, nil, true);
-			else
-				insert_spell(spellid, nil);
-			end
-			previcon = icon;
-			prevtime = curtime;
-		end
-	elseif event == "UNIT_SPELLCAST_INTERRUPTED" and arg1 == "player" then
-		local spellid = arg3;
-		local name, discard, icon = get_spellinfo(spellid);
+            if itemid then
+                insert_spell(itemid, nil, true);
+            else
+                insert_spell(spellid, nil);
+            end
+            previcon = icon;
+            prevtime = curtime;
+        end
+    elseif event == "UNIT_SPELLCAST_INTERRUPTED" and arg1 == "player" then
+        local spellid = arg3;
+        local name, discard, icon = get_spellinfo(spellid);
 
-		local curtime = GetTime();
-		if (interruptprevicon and interruptprevicon == icon and (curtime - interrupttime) < 0.5) then
+        local curtime = GetTime();
+        if (interruptprevicon and interruptprevicon == icon and (curtime - interrupttime) < 0.5) then
 
-		else
-			local itemid = ns.knownspelllist[spellid];
+        else
+            local itemid = ns.knownspelllist[spellid];
 
-			if itemid then
-				insert_spell(itemid, true, true);
-			else
-				insert_spell(spellid, true);
-			end
-			interruptprevicon = icon;
-			interrupttime = curtime;
-		end
-	else
-		scan_itemslots();
-	end
+            if itemid then
+                insert_spell(itemid, true, true);
+            else
+                insert_spell(spellid, true);
+            end
+            interruptprevicon = icon;
+            interrupttime = curtime;
+        end
+    else
+        scan_itemslots();
+    end
 
-	return;
+    return;
 end
 
 local function init()
-	if ATGCD_Positions == nil then
-		ATGCD_Positions = {};
-	end
+    if ATGCD_Positions == nil then
+        ATGCD_Positions = {};
+    end
 
-	local libasConfig = LibStub:GetLibrary("LibasConfig", true);
+    local libasConfig = LibStub:GetLibrary("LibasConfig", true);
 
-	if libasConfig then
-		libasConfig.load_position(castframe, "asTrueGCD", ATGCD_Positions);
-	end
+    if libasConfig then
+        libasConfig.load_position(castframe, "asTrueGCD", ATGCD_Positions);
+    end
 
-	C_Timer.NewTicker(0.25, on_update);
-	main_frame:SetFrameStrata("LOW");
-	main_frame:SetScript("OnEvent", on_event)
+    C_Timer.NewTicker(0.25, on_update);
+    main_frame:SetFrameStrata("LOW");
+    main_frame:SetScript("OnEvent", on_event)
 
-	main_frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
-	main_frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player");
-	main_frame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player");
-	main_frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player");
-	main_frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player");
-	main_frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player");
-	main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-	main_frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+    main_frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
+    main_frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player");
+    main_frame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player");
+    main_frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player");
+    main_frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player");
+    main_frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player");
+    main_frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+    main_frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
 end
 
 C_Timer.After(0.5, init);

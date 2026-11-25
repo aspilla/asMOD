@@ -41,7 +41,7 @@ local function update_text()
         local id = ns.spellinfo.id;
         local name = ns.spellinfo.name;
         local cd = C_Spell.GetSpellCooldown(id)
-        if not cd.isActive or cd.isOnGCD then
+        if cd and (not cd.isActive or cd.isOnGCD) then
             textframe:Hide();
         else
             local duration = C_Spell.GetSpellCooldownDuration(id, true)
