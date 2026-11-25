@@ -100,5 +100,4 @@ function ns.SetupOptionPanels()
             ReloadUI();
         end
     end);
-
 end

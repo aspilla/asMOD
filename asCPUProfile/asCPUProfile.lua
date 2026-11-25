@@ -55,7 +55,6 @@ local function update_row(parent, index, datas)
     local addonName = datas[1];
 
     if rowInfo then
-
         rowInfo.nameText:SetText(addonName);
         for i = 2, 9 do
             if i <= 3 then
@@ -65,7 +64,6 @@ local function update_row(parent, index, datas)
             end
         end
     else
-
         local row = CreateFrame("Frame", nil, parent)
         row:SetSize(800, 20)
 
@@ -191,7 +189,7 @@ local function on_update()
 end
 
 local function init()
-	print("|cff33ff99/ascpu|r : Open the asCPUProfile window")
+    print("|cff33ff99/ascpu|r : Open the asCPUProfile window")
 
     on_update();
     C_Timer.NewTicker(5, on_update);
