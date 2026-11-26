@@ -20,7 +20,7 @@ If you prefer customizing addons to suit your specific preferences, I recommend 
 
 ![sample](https://media.forgecdn.net/attachments/2138/305/asmod_dd-jpg.jpg)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/DNakntB71Dw?si=yUuD2Zmrpl2jPbme" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/zToOamGhcGw?si=060q9fmaJ_a0lOQI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ![sample](https://media.forgecdn.net/attachments/2229/301/ie-c-ioi2-2026-11-18-195837-jpg.jpg)
 
@@ -299,7 +299,7 @@ asMOD는 직접 만든 월드 오브 워크래프트 애드온들을 모음
 
 ![sample](https://media.forgecdn.net/attachments/2138/305/asmod_dd-jpg.jpg)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/DNakntB71Dw?si=yUuD2Zmrpl2jPbme" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/zToOamGhcGw?si=060q9fmaJ_a0lOQI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ![sample](https://media.forgecdn.net/attachments/2229/301/ie-c-ioi2-2026-11-18-195837-jpg.jpg)
 

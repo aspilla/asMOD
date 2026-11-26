@@ -10,9 +10,6 @@ Displays icons for ready spell.
 ![asCooldownPulse](https://media.forgecdn.net/attachments/2267/597/ascooldownblacklist-jpg.jpg)
 - **Voice Notifications(Default Off)**: Announces spell and item names via TTS voice. If you place a `SpellName.mp3` file inside the `SpellSound` folder in the addon directory and turn off the `Alert spell sound using TTS` option, you can customize sound alerts for specific skills. To use this feature, enable the `Sound notification for skill ready alert` option in the addon settings.
  
-<iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-
 ## Configuration
 
 - Accessible via `ESC` > `Options` > `AddOns` > `asCooldownPulse`.
@@ -48,8 +45,6 @@ Displays icons for ready spell.
 - **전문화별 블랙리스트 관리**: 전문화(Spec)별로 스킬/아이템 블랙리스트를 개별 관리할 수 있습니다. 체크를 해제하면 알림에서 제외되며, `블랙리스트 사용` 옵션 활성화 시 최소 쿨다운 시간 설정을 3초로 설정 합니다.
 ![asCooldownPulse](https://media.forgecdn.net/attachments/2267/597/ascooldownblacklist-jpg.jpg)
 - **음성 알림 (기본 off)**: 스킬 명 아이템 명을 TTS 음성으로 알림, 애드온 폴더내 `SpellSound` 폴더에 `스킬명.mp3` 파일 추가하고 `TTS 로 스킬 쿨 음성 알림` 옵션을 끄면 특정 스킬만 원하는 사운드로 알림 가능. 이 기능을 이용하기 위해서 `스킬 쿨다운시 알림음 재생` 옵션을 켜야 함.
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/DDT9QemuJIE?si=OK1inMFZmvS6PdkW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 설정
 
