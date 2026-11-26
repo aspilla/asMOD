@@ -185,7 +185,7 @@ local function create_container(parent, unit, filter, anchor, hdir, vdir, fontsi
     if ns.options.HideBloodDebuff then
         cfilters.excludeSpellIDs = lust_debuffs;
     end
-    local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
+    local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate"); ---@class any
     container:SetFlowLayoutAnchorPoint(anchor);
     container:SetFlowLayoutGrowthDirection(hdir, vdir);
 
@@ -208,6 +208,7 @@ local function create_paurabutton(width, height, fontsize)
 
         for _, r in next, { frame.cooldown:GetRegions() } do
             if r:GetObjectType() == "FontString" then
+---@diagnostic disable-next-line: undefined-field
                 r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
                 r:ClearAllPoints();
                 r:SetPoint("CENTER", 0, 0);
@@ -252,7 +253,7 @@ local function create_pcontainer(parent, unit, filter, anchor, hdir, vdir, heigh
     cfilters.nameplateShowAll = true;
     cfilters.maxDuration = 10;
 
-    local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate");
+    local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate"); ---@class any
     container:SetFlowLayoutAnchorPoint(anchor);
     container:SetFlowLayoutGrowthDirection(hdir, vdir);
 
@@ -325,6 +326,7 @@ local function create_totemframes(parent, bright, fontsize, width, count)
             button:SetScript("OnEnter", function(self)
                 if self.totemslot then
                     GameTooltip_SetDefaultAnchor(GameTooltip, self);
+---@diagnostic disable-next-line: undefined-field
                     GameTooltip:SetTotem(self.totemslot)
                 end
             end)
@@ -675,6 +677,7 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
         frame:SetScript("OnEnter", function(self)
             if self.unit then
                 GameTooltip_SetDefaultAnchor(GameTooltip, self);
+---@diagnostic disable-next-line: undefined-field
                 GameTooltip:SetUnit(self.unit);
             end
         end)
@@ -734,12 +737,14 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     frame.castbar.time = frame.castbar.bar:CreateFontString(nil, "OVERLAY");
     frame.castbar.time:SetFont(configs.font, fontsize - 2);
     frame.castbar.time:SetPoint("RIGHT", frame.castbar.bar, "RIGHT", -3, 0);
+    frame.castbar.castspellid = nil;
 
     if not frame.castbar:GetScript("OnEnter") then
-        frame.castbar:SetScript("OnEnter", function(self)
-            if self.castspellid then
-                GameTooltip_SetDefaultAnchor(GameTooltip, self);
-                GameTooltip:SetSpellByID(self.castspellid);
+        frame.castbar:SetScript("OnEnter", function()
+            if frame.castbar.castspellid then
+                GameTooltip_SetDefaultAnchor(GameTooltip, frame.castbar);
+---@diagnostic disable-next-line: undefined-field
+                GameTooltip:SetSpellByID(frame.castbar.castspellid);
             end
         end)
         frame.castbar:SetScript("OnLeave", function()

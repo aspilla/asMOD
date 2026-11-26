@@ -105,10 +105,11 @@ local function setup_castbar()
     end
 
     if not castbar:GetScript("OnEnter") then
-        castbar:SetScript("OnEnter", function(self)
-            if self.castspellid then
-                GameTooltip_SetDefaultAnchor(GameTooltip, self);
-                GameTooltip:SetSpellByID(self.castspellid);
+        castbar:SetScript("OnEnter", function()
+            if castbar.castspellid then
+                GameTooltip_SetDefaultAnchor(GameTooltip, castbar);
+---@diagnostic disable-next-line: undefined-field
+                GameTooltip:SetSpellByID(castbar.castspellid);
             end
         end)
         castbar:SetScript("OnLeave", function()
@@ -225,6 +226,10 @@ local function check_casting(castbar, event, unit, complete)
             else
                 duration = UnitCastingDuration(unit);
             end
+
+            if not duration then
+                return;
+            end
             castbar.duration_obj = duration;
             frameicon:SetTexture(texture);
 
@@ -262,7 +267,7 @@ local function check_casting(castbar, event, unit, complete)
                 for i = 1, maxstages - 1, 1 do
                     local stageduration = getStageDuration(i, maxstages, unit);
                     local tick = castbar.ticks[i];
-                    if (stageduration > -1) and duration then
+                    if (stageduration > -1) then
                         sum = sum + stageduration;
                         local portion = sum / (duration:GetTotalDuration() * 1000);
                         local offset = width * portion;
