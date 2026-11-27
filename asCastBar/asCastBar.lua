@@ -104,19 +104,19 @@ local function setup_castbar()
         castbar.ticks[i] = tick;
     end
 
+    ---@diagnostic disable: undefined-field
     if not castbar:GetScript("OnEnter") then
-        castbar:SetScript("OnEnter", function()
-            if castbar.castspellid then
-                GameTooltip_SetDefaultAnchor(GameTooltip, castbar);
----@diagnostic disable-next-line: undefined-field
-                GameTooltip:SetSpellByID(castbar.castspellid);
+        castbar:SetScript("OnEnter", function(self)
+            if self.castspellid then
+                GameTooltip_SetDefaultAnchor(GameTooltip, self);
+                GameTooltip:SetSpellByID(self.castspellid);
             end
         end)
         castbar:SetScript("OnLeave", function()
             GameTooltip:Hide();
         end)
     end
-
+    ---@diagnostic enable: undefined-field
     castbar:EnableMouse(false);
     castbar:SetMouseMotionEnabled(true);
     castbar.isAlert = false;
@@ -257,11 +257,6 @@ local function check_casting(castbar, event, unit, complete)
                 local sum = 0;
                 local left = bar:GetLeft();
                 local right = bar:GetRight();
-
-                if not left or not right then
-                    return;
-                end
-
                 local width = right - left;
 
                 for i = 1, maxstages - 1, 1 do

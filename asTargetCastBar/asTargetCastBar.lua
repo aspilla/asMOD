@@ -80,6 +80,7 @@ local function setup_castbar()
     castbar.time = castbar.bar:CreateFontString(nil, "OVERLAY");
     castbar.time:SetPoint("RIGHT", castbar.bar, "RIGHT", -3, 0);
 
+    ---@diagnostic disable: undefined-field
     if not castbar:GetScript("OnEnter") then
         castbar:SetScript("OnEnter", function(self)
             if self.castspellid then
@@ -91,6 +92,7 @@ local function setup_castbar()
             GameTooltip:Hide();
         end)
     end
+    ---@diagnostic enable: undefined-field
 
     castbar:EnableMouse(false);
     castbar:SetMouseMotionEnabled(true);

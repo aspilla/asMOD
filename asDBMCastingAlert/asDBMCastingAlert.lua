@@ -60,8 +60,10 @@ local function on_update()
 
 
     for _, nameplate in pairs(C_NamePlate.GetNamePlates()) do
+        ---@diagnostic disable: undefined-field
         if nameplate and nameplate.unitToken then
             local unit = nameplate.unitToken;
+            ---@diagnostic enable: undefined-field
 
             if unit and UnitExists(unit) and UnitClassification(unit) ~= "minus" and UnitThreatSituation("player", unit) then
                 local bchannel = false;
@@ -277,6 +279,7 @@ local function setup_castbar()
     castbar.time:SetFont(configs.font, configs.timesize);
     castbar.time:SetPoint("TOPRIGHT", castbar.bar, "TOPRIGHT", -3, -1);
 
+    ---@diagnostic disable: undefined-field
     if not castbar:GetScript("OnEnter") then
         castbar:SetScript("OnEnter", function(self)
             if self.castspellid then
@@ -288,6 +291,7 @@ local function setup_castbar()
             GameTooltip:Hide();
         end)
     end
+    ---@diagnostic enable: undefined-field
 
     castbar:EnableMouse(false);
     castbar:SetMouseMotionEnabled(true);

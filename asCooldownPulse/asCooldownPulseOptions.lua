@@ -150,6 +150,8 @@ local function SetupBlacklistPanel(panel)
             local infoBtn = CreateFrame("Button", nil, row);
             infoBtn:SetPoint("TOPLEFT", icon, "TOPLEFT");
             infoBtn:SetPoint("BOTTOMRIGHT", row, "BOTTOMRIGHT");
+
+            ---@diagnostic disable: undefined-field
             infoBtn:SetScript("OnEnter", function()
                 if row.data then
                     GameTooltip:SetOwner(row, "ANCHOR_TOPLEFT");
@@ -164,9 +166,11 @@ local function SetupBlacklistPanel(panel)
             infoBtn:SetScript("OnLeave", function()
                 GameTooltip:Hide();
             end);
+            ---@diagnostic enable: undefined-field
 
             cb:SetFrameLevel(infoBtn:GetFrameLevel() + 2);
 
+            ---@diagnostic disable: undefined-field
             cb:SetScript("OnClick", function(self)
                 local checked = self:GetChecked();
                 local data = row.data;
@@ -182,6 +186,7 @@ local function SetupBlacklistPanel(panel)
                     ns.refresh_alerts();
                 end
             end);
+            ---@diagnostic enable: undefined-field
 
             rowPool[idx] = row;
         end

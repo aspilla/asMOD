@@ -739,19 +739,19 @@ local function create_unitframe(frame, unit, x, y, width, height, powerbarwidth,
     frame.castbar.time:SetPoint("RIGHT", frame.castbar.bar, "RIGHT", -3, 0);
     frame.castbar.castspellid = nil;
 
+    ---@diagnostic disable: undefined-field
     if not frame.castbar:GetScript("OnEnter") then
-        frame.castbar:SetScript("OnEnter", function()
-            if frame.castbar.castspellid then
-                GameTooltip_SetDefaultAnchor(GameTooltip, frame.castbar);
----@diagnostic disable-next-line: undefined-field
-                GameTooltip:SetSpellByID(frame.castbar.castspellid);
+        frame.castbar:SetScript("OnEnter", function(self)
+            if self.castspellid then
+                GameTooltip_SetDefaultAnchor(GameTooltip, self);
+                GameTooltip:SetSpellByID(self.castspellid);
             end
         end)
         frame.castbar:SetScript("OnLeave", function()
             GameTooltip:Hide();
         end)
     end
-
+    ---@diagnostic enable: undefined-field
     frame.castbar:EnableMouse(false);
     frame.castbar:SetMouseMotionEnabled(true);
     frame.castbar:Hide();

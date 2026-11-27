@@ -218,6 +218,7 @@ local function create_button(size)
         frame.cooldown:SetCountdownMillisecondsThreshold(ns.options.MillisecondsThreshold);
     end
 
+    ---@diagnostic disable: undefined-field
     for _, r in next, { frame.cooldown:GetRegions() } do
         if r:GetObjectType() == "FontString" then
             r:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE");
@@ -225,6 +226,7 @@ local function create_button(size)
             break
         end
     end
+    ---@diagnostic enable: undefined-field
 
     frame.icon:SetTexCoord(.08, .92, .08, .92);
     frame.icon_desaturated:SetTexCoord(.08, .92, .08, .92);
@@ -243,6 +245,7 @@ local function create_button(size)
     frame:SetHeight(size * 0.9);
     frame:Hide();
 
+    ---@diagnostic disable: undefined-field
     if not frame:GetScript("OnEnter") then
         frame:SetScript("OnEnter", function(self)
             if self.spellid then
@@ -257,6 +260,7 @@ local function create_button(size)
             GameTooltip:Hide();
         end)
     end
+    ---@diagnostic enable: undefined-field
 
     frame:EnableMouse(false);
     frame:SetMouseMotionEnabled(true);

@@ -194,6 +194,7 @@ local function setup_bar()
     remainbar.time:SetFont(configs.font, configs.textsize);
     remainbar.time:SetPoint("RIGHT", remainbar.bar, "RIGHT", -3, 0);
 
+    ---@diagnostic disable: undefined-field
     if not remainbar:GetScript("OnEnter") then
         remainbar:SetScript("OnEnter", function(self)
             if self.castspellid then
@@ -205,6 +206,7 @@ local function setup_bar()
             GameTooltip:Hide();
         end)
     end
+    ---@diagnostic enable: undefined-field
 
     remainbar:EnableMouse(false);
     remainbar:SetMouseMotionEnabled(true);
