@@ -185,7 +185,7 @@ local function create_container(parent, unit, filter, anchor, hdir, vdir, fontsi
     if ns.options.HideBloodDebuff then
         cfilters.excludeSpellIDs = lust_debuffs;
     end
-    local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate"); ---@class any
+    local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate"); ---@type any
     container:SetFlowLayoutAnchorPoint(anchor);
     container:SetFlowLayoutGrowthDirection(hdir, vdir);
 
@@ -253,7 +253,7 @@ local function create_pcontainer(parent, unit, filter, anchor, hdir, vdir, heigh
     cfilters.nameplateShowAll = true;
     cfilters.maxDuration = 10;
 
-    local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate"); ---@class any
+    local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate"); ---@type any
     container:SetFlowLayoutAnchorPoint(anchor);
     container:SetFlowLayoutGrowthDirection(hdir, vdir);
 

@@ -319,27 +319,27 @@ local function init()
         frame.icon:Show();
 
         frame.anim = frame:CreateAnimationGroup();
-        local fadein = frame.anim:CreateAnimation("Alpha"); ---@class any
+        local fadein = frame.anim:CreateAnimation("Alpha"); ---@type any
         fadein:SetOrder(1);
         fadein:SetFromAlpha(configs.alphafrom);
         fadein:SetToAlpha(configs.alphato);
         fadein:SetDuration(configs.fadetime);
 
-        local fadeout = frame.anim:CreateAnimation("Alpha"); ---@class any
+        local fadeout = frame.anim:CreateAnimation("Alpha"); ---@type any
         fadeout:SetOrder(2);
         fadeout:SetFromAlpha(configs.alphato);
         fadeout:SetToAlpha(configs.alphafrom);
         fadeout:SetDuration(configs.fadetime);
 
         if ns.options.ShowScaleAnim then
-            local zoomin = frame.anim:CreateAnimation("Scale"); ---@class any
+            local zoomin = frame.anim:CreateAnimation("Scale"); ---@type any
             zoomin:SetOrder(1);
             zoomin:SetOrigin("CENTER", 0, 0);
             zoomin:SetScaleFrom(configs.scalefrom, configs.scalefrom);
             zoomin:SetScaleTo(configs.scaleto, configs.scaleto);
             zoomin:SetDuration(configs.fadetime);
 
-            local zoomout = frame.anim:CreateAnimation("Scale"); ---@class any
+            local zoomout = frame.anim:CreateAnimation("Scale"); ---@type any
             zoomout:SetOrder(2);
             zoomout:SetOrigin("CENTER", 0, 0);
             zoomout:SetScaleFrom(configs.scaleto, configs.scaleto);
